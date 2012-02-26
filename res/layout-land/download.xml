@@ -1,0 +1,207 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:a="http://schemas.android.com/apk/res/android"
+              a:orientation="vertical"
+              a:layout_width="fill_parent"
+              a:layout_height="fill_parent">
+
+    <RelativeLayout a:orientation="horizontal"
+                    a:layout_width="fill_parent"
+                    a:layout_height="0dip"
+                    a:layout_weight="1">
+
+        <RelativeLayout
+                a:id="@+id/download_control_layout"
+                a:layout_width="wrap_content"
+                a:layout_height="fill_parent"
+                a:layout_alignParentRight="true"
+                a:background="@color/mediaControlBackground"
+                >
+
+            <LinearLayout
+                    a:orientation="horizontal"
+                    a:layout_width="wrap_content"
+                    a:layout_height="wrap_content"
+                    a:layout_alignParentTop="true"
+                    a:layout_alignParentLeft="true">
+
+                <ImageButton
+                        a:id="@+id/download_previous"
+                        a:src="@drawable/media_backward"
+                        a:background="@android:color/transparent"
+                        a:padding="0dip"
+                        a:layout_width="wrap_content"
+                        a:layout_height="wrap_content"
+                        a:layout_gravity="center_vertical"
+                        />
+                <ImageButton
+                        a:id="@+id/download_pause"
+                        a:src="@drawable/media_pause"
+                        a:background="@android:color/transparent"
+                        a:padding="0dip"
+                        a:layout_width="wrap_content"
+                        a:layout_height="wrap_content"
+                        a:layout_gravity="center_vertical"
+                        />
+                <ImageButton
+                        a:id="@+id/download_stop"
+                        a:src="@drawable/media_stop"
+                        a:background="@android:color/transparent"
+                        a:padding="0dip"
+                        a:layout_width="wrap_content"
+                        a:layout_height="wrap_content"
+                        a:layout_gravity="center_vertical"
+                        />
+                <ImageButton
+                        a:id="@+id/download_start"
+                        a:src="@drawable/media_start"
+                        a:background="@android:color/transparent"
+                        a:padding="0dip"
+                        a:layout_width="wrap_content"
+                        a:layout_height="wrap_content"
+                        a:layout_gravity="center_vertical"
+                        />
+                <ImageButton
+                        a:id="@+id/download_next"
+                        a:src="@drawable/media_forward"
+                        a:background="@android:color/transparent"
+                        a:padding="0dip"
+                        a:layout_width="wrap_content"
+                        a:layout_height="wrap_content"
+                        a:layout_gravity="center_vertical"
+                        />
+            </LinearLayout>
+
+            <TextView
+                    a:id="@+id/download_status"
+                    a:layout_width="wrap_content"
+                    a:layout_height="wrap_content"
+                    a:layout_alignParentBottom="true"
+                    a:layout_centerHorizontal="true"
+                    a:layout_marginBottom="8dip"
+                    a:singleLine="true"
+                    a:ellipsize="end"
+                    a:textAppearance="?android:attr/textAppearanceSmall"
+                    a:textColor="#c0c0c0"/>
+
+            <TextView
+                    a:id="@+id/download_song_title"
+                    a:layout_width="150dip"
+                    a:layout_height="wrap_content"
+                    a:layout_gravity="center_horizontal"
+                    a:layout_above="@+id/download_status"
+                    a:layout_centerHorizontal="true"
+                    a:layout_marginLeft="12dip"
+                    a:layout_marginRight="12dip"
+                    a:maxLines="2"
+                    a:ellipsize="end"
+                    a:gravity="center_horizontal"
+                    a:textAppearance="?android:attr/textAppearanceMedium"
+                    a:textColor="@color/mediaControlForeground"/>
+
+            <LinearLayout
+                    a:orientation="horizontal"
+                    a:layout_width="wrap_content"
+                    a:layout_height="wrap_content"
+                    a:layout_centerHorizontal="true"
+                    a:layout_centerVertical="true">
+
+                <ImageButton
+                        a:id="@+id/download_shuffle"
+                        a:src="@drawable/media_shuffle"
+                        a:background="@android:color/transparent"
+                        a:layout_width="wrap_content"
+                        a:layout_height="wrap_content"
+                        a:padding="9dip"/>
+                <ImageButton
+                        a:id="@+id/download_repeat"
+                        a:src="@drawable/media_repeat_off"
+                        a:background="@android:color/transparent"
+                        a:layout_width="wrap_content"
+                        a:layout_height="wrap_content"
+                        a:padding="9dip"/>
+                <ImageButton
+                        a:id="@+id/download_toggle_list"
+                        a:src="@drawable/media_toggle_list"
+                        a:background="@android:color/transparent"
+                        a:layout_width="wrap_content"
+                        a:layout_height="wrap_content"
+                        a:padding="9dip"/>
+                <Button
+                        a:id="@+id/download_equalizer"
+                        a:text="EQ"
+                        a:textStyle="bold"
+                        a:textSize="22sp"
+                        a:visibility="gone"
+                        a:background="@android:color/transparent"
+                        a:layout_width="wrap_content"
+                        a:layout_height="wrap_content"
+                        a:layout_marginTop="3dip"
+                        a:padding="9dip"
+                        />
+                <Button
+                        a:id="@+id/download_jukebox"
+                        a:text="RC"
+                        a:textStyle="bold"
+                        a:textSize="22sp"
+                        a:background="@android:color/transparent"
+                        a:layout_width="wrap_content"
+                        a:layout_height="wrap_content"
+                        a:layout_marginTop="3dip"
+                        a:padding="9dip"
+                        />
+                <Button
+                        a:id="@+id/download_visualizer"
+                        a:text="VIS"
+                        a:textStyle="bold"
+                        a:textSize="22sp"
+                        a:visibility="gone"
+                        a:background="@android:color/transparent"
+                        a:layout_width="wrap_content"
+                        a:layout_height="wrap_content"
+                        a:layout_marginTop="3dip"
+                        a:padding="9dip"
+                        />
+            </LinearLayout>
+
+        </RelativeLayout>
+
+        <net.sourceforge.subsonic.androidapp.util.MyViewFlipper
+                a:id="@+id/download_playlist_flipper"
+                a:layout_width="wrap_content"
+                a:layout_height="fill_parent"
+                a:layout_alignParentLeft="true"
+                a:layout_toLeftOf="@+id/download_control_layout"
+                >
+
+            <FrameLayout
+                    a:id="@+id/download_album_art_layout"
+                    a:layout_width="fill_parent"
+                    a:layout_height="fill_parent"
+                    a:background="@drawable/album_art_background">
+                <ImageView
+                        a:id="@+id/download_album_art_image"
+                        a:layout_width="wrap_content"
+                        a:layout_height="wrap_content"
+                        a:layout_gravity="center"
+                        a:layout_marginTop="20dip"
+                        a:scaleType="fitCenter"/>
+                <LinearLayout
+                        a:id="@+id/download_visualizer_view_layout"
+                        a:layout_width="fill_parent"
+                        a:layout_height="60dip"
+                        a:layout_marginLeft="60dip"
+                        a:layout_marginRight="60dip"
+                        a:layout_gravity="bottom|center_horizontal"/>
+            </FrameLayout>
+
+            <include layout="@layout/download_playlist"/>
+
+        </net.sourceforge.subsonic.androidapp.util.MyViewFlipper>
+
+    </RelativeLayout>
+
+    <include layout="@layout/download_slider"/>
+
+    <include layout="@layout/download_button_bar_flipper"/>
+
+</LinearLayout>

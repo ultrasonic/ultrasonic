@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:a="http://schemas.android.com/apk/res/android">
+
+    <item
+        a:id="@+id/menu_shuffle"
+        a:icon="@drawable/ic_menu_shuffle"
+        a:title="@string/download.menu_shuffle"
+        />
+
+    <item
+        a:id="@+id/menu_save_playlist"
+        a:icon="@drawable/ic_menu_save"
+        a:title="@string/download.menu_save"
+        />
+
+    <item
+        a:id="@+id/menu_remove_all"
+        a:icon="@drawable/ic_menu_remove_all"
+        a:title="@string/download.menu_remove_all"
+        />
+
+    <item
+        a:id="@+id/menu_screen_on_off"
+        a:icon="@drawable/ic_menu_screen_on_off"
+        a:title="@string/download.menu_screen_on"
+        />
+</menu>

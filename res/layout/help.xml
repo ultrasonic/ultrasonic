@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<RelativeLayout xmlns:a="http://schemas.android.com/apk/res/android"
+                a:layout_width="fill_parent"
+                a:layout_height="fill_parent">
+
+    <LinearLayout a:id="@+id/help_buttons"
+                  a:layout_width="fill_parent"
+                  a:layout_height="wrap_content"
+                  a:layout_weight="0"
+                  a:layout_alignParentBottom="true"
+                  a:padding="4dip"
+                  a:gravity="center_horizontal"
+                  a:background="#ffcccccc">
+
+        <Button a:id="@+id/help_back"
+                a:text="@string/help.back"
+                a:layout_width="wrap_content"
+                a:layout_height="fill_parent"
+                a:layout_marginRight="5dip"
+                a:paddingLeft="25dip"
+                a:paddingRight="25dip"/>
+
+        <Button a:id="@+id/help_close"
+                a:text="@string/help.close"
+                a:layout_width="wrap_content"
+                a:layout_height="fill_parent"
+                a:layout_marginLeft="5dip"
+                a:paddingLeft="25dip"
+                a:paddingRight="25dip"/>
+    </LinearLayout>
+
+
+    <WebView
+            a:id="@+id/help_contents"
+            a:layout_width="fill_parent"
+            a:layout_height="wrap_content"
+            a:layout_above="@id/help_buttons"
+            a:layout_weight="1"
+            a:fadingEdge="vertical"
+            a:fadingEdgeLength="12dip"/>
+
+  </RelativeLayout>

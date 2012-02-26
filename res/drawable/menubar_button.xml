@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<selector xmlns:a="http://schemas.android.com/apk/res/android">
+    ﻿
+    <item a:state_pressed="true"
+          a:drawable="@drawable/menubar_button_pressed"/>
+
+    <item a:state_enabled="true"
+          a:drawable="@drawable/menubar_button_normal"/>
+
+    <item a:drawable="@drawable/menubar_button_disabled"/>
+
+</selector>
+        
+        

@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:a="http://schemas.android.com/apk/res/android"
+              a:orientation="vertical"
+              a:layout_width="fill_parent"
+              a:layout_height="wrap_content">
+
+    <TextView
+            a:id="@+id/equalizer.frequency"
+            a:textSize="12sp"
+            a:textColor="#c0c0c0"
+            a:layout_width="wrap_content"
+            a:layout_height="wrap_content"
+            a:layout_marginTop="8dp"
+            a:layout_alignParentLeft="true"
+            />
+
+    <TextView
+            a:id="@+id/equalizer.level"
+            a:text="0 dB"
+            a:textSize="12sp"
+            a:textColor="#c0c0c0"
+            a:gravity="right"
+            a:layout_width="wrap_content"
+            a:layout_height="wrap_content"
+            a:layout_marginTop="8dp"
+            a:layout_alignParentRight="true"
+            a:layout_toRightOf="@+id/equalizer.frequency"
+            />
+
+    <SeekBar
+            a:id="@+id/equalizer.bar"
+            a:layout_width="fill_parent"
+            a:layout_height="wrap_content"
+            a:layout_below="@+id/equalizer.frequency"
+            />
+
+
+</RelativeLayout>
+

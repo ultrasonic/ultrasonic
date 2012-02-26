@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:a="http://schemas.android.com/apk/res/android"
+              a:id="@+id/save_playlist_root"
+              a:padding="10dip"
+              a:orientation="vertical"
+              a:layout_width="fill_parent"
+              a:layout_height="fill_parent">
+
+    <EditText
+            a:id="@+id/save_playlist_name"
+            a:layout_width="fill_parent"
+            a:layout_height="wrap_content"
+            a:inputType="text"
+            a:singleLine="true"/>
+
+</LinearLayout>
+

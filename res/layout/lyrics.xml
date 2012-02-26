@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:a="http://schemas.android.com/apk/res/android"
+              a:orientation="vertical"
+              a:layout_width="fill_parent"
+              a:layout_height="fill_parent">
+
+    <include layout="@layout/tab_progress"/>
+
+    <ScrollView
+            a:layout_width="fill_parent"
+            a:layout_height="0dip"
+            a:layout_weight="1.0">
+
+        <LinearLayout
+                a:orientation="vertical"
+                a:layout_width="fill_parent"
+                a:layout_height="fill_parent">
+            <TextView
+                    a:id="@+id/lyrics_artist"
+                    a:textAppearance="?android:attr/textAppearanceMedium"
+                    a:gravity="center_horizontal"
+                    a:layout_width="fill_parent"
+                    a:layout_height="wrap_content"
+                    a:paddingLeft="10dip"
+                    a:paddingRight="10dip"
+                    a:paddingTop="10dip"
+                    a:paddingBottom="4dip"
+                    />
+
+            <TextView
+                    a:id="@+id/lyrics_title"
+                    a:textAppearance="?android:attr/textAppearanceMedium"
+                    a:gravity="center_horizontal"
+                    a:layout_width="fill_parent"
+                    a:layout_height="wrap_content"
+                    a:paddingLeft="10dip"
+                    a:paddingRight="10dip"
+                    />
+
+            <TextView
+                    a:id="@+id/lyrics_text"
+                    a:textAppearance="?android:attr/textAppearanceSmall"
+                    a:gravity="center_horizontal"
+                    a:layout_width="fill_parent"
+                    a:layout_height="wrap_content"
+                    a:paddingLeft="10dip"
+                    a:paddingRight="10dip"
+                    />
+
+        </LinearLayout>
+
+    </ScrollView>
+
+    <include layout="@layout/button_bar"/>
+
+</LinearLayout>
+

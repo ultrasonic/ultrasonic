@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<LinearLayout
+        xmlns:a="http://schemas.android.com/apk/res/android"
+        a:orientation="vertical"
+        a:layout_width="fill_parent"
+        a:layout_height="wrap_content">
+
+    <LinearLayout
+            a:orientation="horizontal"
+            a:background="@drawable/menubar_button_normal"
+            a:paddingTop="6dip"
+            a:paddingBottom="4dip"
+            a:paddingLeft="6dp"
+            a:paddingRight="6dp"
+            a:layout_weight="1"
+            a:layout_width="fill_parent"
+            a:layout_height="0dip">
+
+        <ImageView
+                a:id="@+id/select_album_cover_art"
+                a:layout_gravity="center_vertical"
+                a:layout_width="wrap_content"
+                a:layout_height="wrap_content"/>
+
+        <LinearLayout
+                a:orientation="vertical"
+                a:layout_weight="1"
+                a:layout_width="0dip"
+                a:layout_height="wrap_content">
+
+            <TextView
+                    a:id="@+id/select_album_text1"
+                    a:singleLine="true"
+                    a:layout_width="wrap_content"
+                    a:layout_height="wrap_content"
+                    a:layout_marginLeft="10dip"
+                    a:layout_marginRight="10dip"
+                    a:textColor="@android:color/primary_text_light"
+                    a:textAppearance="?android:attr/textAppearanceMedium"/>
+
+            <TextView
+                    a:id="@+id/select_album_text2"
+                    a:singleLine="true"
+                    a:layout_width="wrap_content"
+                    a:layout_height="wrap_content"
+                    a:layout_marginLeft="10dip"
+                    a:layout_marginRight="10dip"
+                    a:textColor="@android:color/secondary_text_light"
+                    a:textAppearance="?android:attr/textAppearanceSmall"/>
+
+        </LinearLayout>
+
+        <ImageButton
+                a:id="@+id/select_album_play_all"
+                a:src="@drawable/select_album_play_all"
+                a:background="@android:color/transparent"
+                a:layout_gravity="center_vertical"
+                a:layout_width="wrap_content"
+                a:layout_height="wrap_content"/>
+
+    </LinearLayout>
+
+    <View
+            a:layout_width="fill_parent"
+            a:layout_height="1px"
+            a:background="@color/dividerColor"/>
+
+</LinearLayout>

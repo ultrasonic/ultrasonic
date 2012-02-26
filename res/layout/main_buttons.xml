@@ -1,0 +1,119 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:a="http://schemas.android.com/apk/res/android"
+              a:orientation="vertical"
+              a:layout_width="fill_parent"
+              a:layout_height="wrap_content">
+
+    <LinearLayout
+            a:id="@+id/main_select_server"
+            a:orientation="horizontal"
+            a:paddingTop="2dip"
+            a:paddingBottom="2dip"
+            a:paddingLeft="6dp"
+            a:layout_width="fill_parent"
+            a:layout_height="wrap_content"
+            a:minHeight="?android:attr/listPreferredItemHeight">
+
+        <ImageView
+                a:src="@drawable/main_select_server"
+                a:layout_gravity="center_vertical"
+                a:layout_width="wrap_content"
+                a:layout_height="wrap_content"/>
+
+        <LinearLayout
+                a:orientation="vertical"
+                a:layout_width="wrap_content"
+                a:layout_height="wrap_content">
+
+            <TextView a:id="@+id/main.select_server_1"
+                      a:text="@string/main.select_server"
+                      a:layout_width="fill_parent"
+                      a:layout_height="wrap_content"
+                      a:layout_marginLeft="10dip"
+                      a:layout_marginTop="6dip"
+                      a:textAppearance="?android:attr/textAppearanceLarge"/>
+
+            <TextView a:id="@+id/main.select_server_2"
+                      a:layout_width="fill_parent"
+                      a:layout_height="wrap_content"
+                      a:layout_marginLeft="10dip"
+                      a:textAppearance="?android:attr/textAppearanceSmall"/>
+
+        </LinearLayout>
+    </LinearLayout>
+
+    <TextView
+            a:id="@+id/main_albums"
+            a:text="@string/main.albums_title"
+            a:layout_width="fill_parent"
+            a:layout_height="wrap_content"
+            a:textAppearance="?android:attr/textAppearanceSmall"
+            a:textColor="#EFEFEF"
+            a:textStyle="bold"
+            a:background="#A5A5A5"
+            a:gravity="center_vertical"
+            a:paddingLeft="4dp"/>
+
+    <TextView
+            a:id="@+id/main_albums_newest"
+            a:text="@string/main.albums_newest"
+            a:drawableRight="@drawable/list_item_artist"
+            a:drawablePadding="6dip"
+            a:layout_width="fill_parent"
+            a:layout_height="wrap_content"
+            a:textAppearance="?android:attr/textAppearanceMedium"
+            a:gravity="center_vertical"
+            a:paddingLeft="6dip"
+            a:paddingRight="6dip"
+            a:minHeight="50dip"/>
+    <TextView
+            a:id="@+id/main_albums_recent"
+            a:text="@string/main.albums_recent"
+            a:drawableRight="@drawable/list_item_artist"
+            a:drawablePadding="6dip"
+            a:layout_width="fill_parent"
+            a:layout_height="wrap_content"
+            a:textAppearance="?android:attr/textAppearanceMedium"
+            a:gravity="center_vertical"
+            a:paddingLeft="6dip"
+            a:paddingRight="6dip"
+            a:minHeight="50dip"/>
+    <TextView
+            a:id="@+id/main_albums_frequent"
+            a:text="@string/main.albums_frequent"
+            a:drawableRight="@drawable/list_item_artist"
+            a:drawablePadding="6dip"
+            a:layout_width="fill_parent"
+            a:layout_height="wrap_content"
+            a:textAppearance="?android:attr/textAppearanceMedium"
+            a:gravity="center_vertical"
+            a:paddingLeft="6dip"
+            a:paddingRight="6dip"
+            a:minHeight="50dip"/>
+    <TextView
+            a:id="@+id/main_albums_highest"
+            a:text="@string/main.albums_highest"
+            a:drawableRight="@drawable/list_item_artist"
+            a:drawablePadding="6dip"
+            a:layout_width="fill_parent"
+            a:layout_height="wrap_content"
+            a:textAppearance="?android:attr/textAppearanceMedium"
+            a:gravity="center_vertical"
+            a:paddingLeft="6dip"
+            a:paddingRight="6dip"
+            a:minHeight="50dip"/>
+    <TextView
+            a:id="@+id/main_albums_random"
+            a:text="@string/main.albums_random"
+            a:drawableRight="@drawable/list_item_artist"
+            a:drawablePadding="6dip"
+            a:layout_width="fill_parent"
+            a:layout_height="wrap_content"
+            a:textAppearance="?android:attr/textAppearanceMedium"
+            a:gravity="center_vertical"
+            a:paddingLeft="6dip"
+            a:paddingRight="6dip"
+            a:minHeight="50dip"/>
+
+</LinearLayout>
+

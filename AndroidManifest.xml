@@ -1,0 +1,117 @@
+<?xml version="1.0" encoding="utf-8"?>
+<manifest xmlns:a="http://schemas.android.com/apk/res/android"
+          package="net.sourceforge.subsonic.androidapp"
+          a:installLocation="auto"
+          a:versionCode="46"
+          a:versionName="3.3">
+
+    <uses-permission a:name="android.permission.INTERNET"/>
+    <uses-permission a:name="android.permission.READ_PHONE_STATE"/>
+    <uses-permission a:name="android.permission.ACCESS_NETWORK_STATE"/>
+    <uses-permission a:name="android.permission.WAKE_LOCK"/>
+    <uses-permission a:name="android.permission.WRITE_EXTERNAL_STORAGE"/>
+    <uses-permission a:name="android.permission.RECORD_AUDIO"/>
+    <uses-permission a:name="android.permission.MODIFY_AUDIO_SETTINGS"/>
+
+    <uses-sdk a:minSdkVersion="3" a:targetSdkVersion="10"/>
+
+    <supports-screens a:anyDensity="true" a:xlargeScreens="true" a:largeScreens="true" a:normalScreens="true" a:smallScreens="true"/>
+
+    <application a:label="@string/common.appname" a:icon="@drawable/launch" a:theme="@style/Wheat">
+
+        <activity a:name="net.sourceforge.subsonic.androidapp.activity.MainActivity"
+                  a:label="Subsonic"
+                  a:configChanges="orientation|keyboardHidden"
+                  a:launchMode="standard">
+            <intent-filter>
+                <action a:name="android.intent.action.MAIN"/>
+                <category a:name="android.intent.category.LAUNCHER"/>
+            </intent-filter>
+        </activity>
+
+        <activity a:name="net.sourceforge.subsonic.androidapp.activity.SelectArtistActivity"
+                  a:configChanges="orientation|keyboardHidden"
+                  a:launchMode="standard"/>
+
+        <activity a:name="net.sourceforge.subsonic.androidapp.activity.SelectAlbumActivity"
+                  a:configChanges="orientation|keyboardHidden"/>
+
+        <activity a:name="net.sourceforge.subsonic.androidapp.activity.SearchActivity"
+                  a:label="@string/search.label"
+                  a:configChanges="orientation|keyboardHidden"
+                  a:launchMode="singleTask"/>
+
+        <activity a:name="net.sourceforge.subsonic.androidapp.activity.SelectPlaylistActivity"
+                  a:label="@string/playlist.label"
+                  a:configChanges="orientation|keyboardHidden"
+                  a:launchMode="standard"/>
+
+        <activity a:name="net.sourceforge.subsonic.androidapp.activity.DownloadActivity"
+                  a:configChanges="keyboardHidden"
+                  a:launchMode="singleTask"/>
+
+        <activity a:name="net.sourceforge.subsonic.androidapp.activity.SettingsActivity"
+                  a:theme="@android:style/Theme"
+                  a:configChanges="orientation|keyboardHidden"
+                  a:launchMode="singleTask"/>
+
+        <activity a:name="net.sourceforge.subsonic.androidapp.activity.HelpActivity"
+                  a:label="@string/help.label"
+                  a:launchMode="singleTask"/>
+
+        <activity a:name="net.sourceforge.subsonic.androidapp.activity.LyricsActivity"
+                  a:configChanges="orientation|keyboardHidden"
+                  a:launchMode="singleTask"/>
+
+        <activity a:name="net.sourceforge.subsonic.androidapp.activity.EqualizerActivity"
+                  a:label="@string/equalizer.label"
+                  a:configChanges="orientation|keyboardHidden"
+                  a:launchMode="singleTask"/>
+
+        <activity a:name="net.sourceforge.subsonic.androidapp.activity.VoiceQueryReceiverActivity"
+                  a:launchMode="singleTask">
+            <intent-filter>
+                <action a:name="android.media.action.MEDIA_PLAY_FROM_SEARCH" />
+                <category a:name="android.intent.category.DEFAULT" />
+            </intent-filter>
+        </activity>
+
+        <activity a:name="net.sourceforge.subsonic.androidapp.activity.QueryReceiverActivity"
+                  a:launchMode="singleTask">
+            <intent-filter>
+                <action a:name="android.intent.action.SEARCH"/>
+            </intent-filter>
+            <meta-data a:name="android.app.searchable" a:resource="@xml/searchable"/>
+        </activity>
+
+        <service a:name="net.sourceforge.subsonic.androidapp.service.DownloadServiceImpl"
+                 a:label="Subsonic Download Service"/>
+
+        <receiver a:name="net.sourceforge.subsonic.androidapp.receiver.MediaButtonIntentReceiver">
+            <intent-filter a:priority="999">
+                <action a:name="android.intent.action.MEDIA_BUTTON" />
+            </intent-filter>
+        </receiver>
+
+        <receiver a:name="net.sourceforge.subsonic.androidapp.receiver.BluetoothIntentReceiver">
+            <intent-filter>
+                <action a:name="android.bluetooth.a2dp.action.SINK_STATE_CHANGED"/>
+            </intent-filter>
+        </receiver>
+
+        <receiver a:name="net.sourceforge.subsonic.androidapp.provider.SubsonicAppWidgetProvider" >
+            <intent-filter>
+                <action a:name="android.appwidget.action.APPWIDGET_UPDATE"/>
+            </intent-filter>
+            <meta-data a:name="android.appwidget.provider" a:resource="@xml/appwidget_info"/>
+        </receiver>
+
+        <provider a:name="net.sourceforge.subsonic.androidapp.provider.SearchSuggestionProvider"
+                  a:authorities="net.sourceforge.subsonic.androidapp.provider.SearchSuggestionProvider"/>
+
+        <meta-data a:name="android.app.default_searchable"
+                   a:value="net.sourceforge.subsonic.androidapp.activity.QueryReceiverActivity"/>
+
+    </application>
+
+</manifest>

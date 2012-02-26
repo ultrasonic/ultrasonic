@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:a="http://schemas.android.com/apk/res/android"
+              a:orientation="horizontal"
+              a:layout_weight="1"
+              a:layout_width="0dip"
+              a:layout_height="fill_parent"
+              a:padding="10dp">
+
+    <ProgressBar
+            a:layout_width="wrap_content"
+            a:layout_height="fill_parent"
+            a:layout_marginRight="10dp"/>
+
+    <TextView
+            a:id="@+id/progress_message"
+            a:text="@string/progress.wait"
+            a:layout_width="wrap_content"
+            a:layout_height="fill_parent"/>
+
+</LinearLayout>

@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:a="http://schemas.android.com/apk/res/android"
+              a:orientation="horizontal"
+              a:background="@android:color/transparent"
+              a:paddingTop="6dp"
+              a:paddingBottom="0dp"
+              a:layout_width="fill_parent"
+              a:layout_height="wrap_content">
+
+        <Button a:id="@+id/select_album_pin"
+                a:text="@string/common.pin"
+                a:textAppearance="?android:attr/textAppearanceSmall"
+                a:layout_marginLeft="6dp"
+                a:layout_marginRight="3dp"
+                a:layout_weight="1"
+                a:layout_width="0dp"
+                a:layout_height="fill_parent"/>
+
+        <Button a:id="@+id/select_album_unpin"
+                a:text="@string/common.unpin"
+                a:textAppearance="?android:attr/textAppearanceSmall"
+                a:layout_marginLeft="3dp"
+                a:layout_marginRight="3dp"
+                a:layout_weight="1"
+                a:layout_width="0dp"
+                a:layout_height="fill_parent"/>
+
+        <Button a:id="@+id/select_album_delete"
+                a:text="@string/common.delete"
+                a:textAppearance="?android:attr/textAppearanceSmall"
+                a:layout_marginLeft="3dp"
+                a:layout_marginRight="6dp"
+                a:layout_weight="1"
+                a:layout_width="0dp"
+                a:layout_height="fill_parent"/>
+
+        <Button a:id="@+id/select_album_more"
+                a:text="@string/select_album.more"
+                a:textAppearance="?android:attr/textAppearanceSmall"
+                a:visibility="gone"
+                a:layout_marginLeft="6dp"
+                a:layout_marginRight="6dp"
+                a:layout_weight="1"
+                a:layout_width="0dp"
+                a:layout_height="fill_parent"/>
+
+</LinearLayout>
+

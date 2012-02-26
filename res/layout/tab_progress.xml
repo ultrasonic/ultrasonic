@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:a="http://schemas.android.com/apk/res/android"
+              a:id="@+id/tab_progress"
+              a:orientation="horizontal"
+              a:visibility="gone"
+              a:padding="10dp"
+              a:layout_gravity="top"
+              a:layout_width="fill_parent"
+              a:layout_height="wrap_content">
+
+    <ProgressBar
+            a:layout_width="16dp"
+            a:layout_height="16dp"
+            a:layout_gravity="center_vertical"
+            a:layout_marginRight="6dp"/>
+
+    <TextView
+            a:id="@+id/tab_progress_message"
+            a:text="@string/progress.wait"
+            a:layout_width="wrap_content"
+            a:layout_height="wrap_content"
+            a:layout_gravity="center_vertical"/>
+
+</LinearLayout>

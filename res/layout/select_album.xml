@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:a="http://schemas.android.com/apk/res/android"
+              a:orientation="vertical"
+              a:layout_width="fill_parent"
+              a:layout_height="fill_parent">
+
+    <include layout="@layout/action_bar"/>
+
+    <View
+            a:layout_width="fill_parent"
+            a:layout_height="1px"
+            a:background="@color/dividerColor"/>
+
+    <include layout="@layout/tab_progress"/>
+
+    <TextView
+            a:id="@+id/select_album_empty"
+            a:text="@string/select_album.empty"
+            a:visibility="gone"
+            a:layout_width="fill_parent"
+            a:layout_height="wrap_content"
+            a:padding="10dip"/>
+
+    <ListView a:id="@+id/select_album_entries"
+              a:textFilterEnabled="true"
+              a:layout_width="fill_parent"
+              a:layout_height="0dip"
+              a:layout_weight="1.0"/>
+
+    <LinearLayout a:orientation="horizontal"
+                  a:layout_marginTop="6dp"
+                  a:layout_marginBottom="3dp"
+                  a:layout_width="fill_parent"
+                  a:layout_height="wrap_content">
+
+        <Button a:id="@+id/select_album_select"
+                a:text="@string/select_album.select"
+                a:textAppearance="?android:attr/textAppearanceSmall"
+                a:visibility="gone"
+                a:layout_marginLeft="6dp"
+                a:layout_marginRight="3dp"
+                a:layout_weight="1"
+                a:layout_width="0dp"
+                a:layout_height="fill_parent"/>
+
+        <Button a:id="@+id/select_album_play_now"
+                a:text="@string/common.play_now"
+                a:textAppearance="?android:attr/textAppearanceSmall"
+                a:visibility="gone"
+                a:layout_marginLeft="3dp"
+                a:layout_marginRight="3dp"
+                a:layout_weight="1"
+                a:layout_width="0dp"
+                a:layout_height="fill_parent"/>
+
+        <Button a:id="@+id/select_album_play_last"
+                a:text="@string/common.play_last"
+                a:textAppearance="?android:attr/textAppearanceSmall"
+                a:visibility="gone"
+                a:layout_marginLeft="3dp"
+                a:layout_marginRight="6dp"
+                a:layout_weight="1"
+                a:layout_width="0dp"
+                a:layout_height="fill_parent"/>
+
+    </LinearLayout>
+
+    <include layout="@layout/button_bar"/>
+
+</LinearLayout>
+

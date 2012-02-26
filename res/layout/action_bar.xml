@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:a="http://schemas.android.com/apk/res/android"
+        a:layout_width="fill_parent"
+        a:layout_height="45dp"
+        a:background="@drawable/menubar_button_disabled">
+
+    <ImageView
+            a:id="@+id/actionbar_home_icon"
+            a:src="@drawable/main_header_icon"
+            a:layout_width="wrap_content"
+            a:layout_height="wrap_content"
+            a:layout_gravity="center_vertical"
+            a:layout_alignParentTop="true"
+            a:layout_alignParentLeft="true"
+            a:layout_alignParentBottom="true"
+            a:paddingLeft="4dip"
+            a:paddingRight="4dip"
+            a:paddingTop="2dip"
+            a:paddingBottom="2dip"
+            a:scaleType="centerInside"
+            />
+
+    <ImageButton
+            a:id="@+id/action_button_2"
+            a:src="@drawable/action_search"
+            a:layout_width="wrap_content"
+            a:layout_height="wrap_content"
+            a:layout_alignParentRight="true"
+            a:layout_alignParentTop="true"
+            a:layout_alignParentBottom="true"
+            a:scaleType="center"
+            a:padding="5dp"
+            a:background="@drawable/actionbar_button"
+            />
+
+    <ImageButton
+            a:id="@+id/action_button_1"
+            a:src="@drawable/action_shuffle"
+            a:layout_width="wrap_content"
+            a:layout_height="wrap_content"
+            a:layout_alignParentTop="true"
+            a:layout_alignParentBottom="true"
+            a:layout_toLeftOf="@id/action_button_2"
+            a:scaleType="center"
+            a:padding="5dp"
+            a:background="@drawable/actionbar_button"
+            />
+
+    <TextView
+            a:id="@+id/actionbar_title_text"
+            a:text="Subsonic"
+            a:layout_width="wrap_content"
+            a:layout_height="wrap_content"
+            a:layout_alignParentTop="true"
+            a:layout_alignParentBottom="true"
+            a:layout_toLeftOf="@id/action_button_1"
+            a:layout_toRightOf="@id/actionbar_home_icon"
+            a:gravity="center_vertical"
+            a:textColor="#FFFFFF"
+            a:textSize="18sp"
+            a:textStyle="bold"
+            a:shadowColor="#000000"
+            a:shadowDx="1"
+            a:shadowDy="1"
+            a:shadowRadius="1"
+            a:lineSpacingMultiplier="0.85"
+            a:ellipsize="middle"
+            a:inputType="none"
+            />
+
+</RelativeLayout>

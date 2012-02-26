@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:a="http://schemas.android.com/apk/res/android"
+	a:layout_width="fill_parent"
+	a:layout_height="fill_parent"
+	a:padding="3dp">
+	<ImageView 
+		a:id="@+id/notification_image"
+		a:layout_width="wrap_content"
+		a:layout_height="fill_parent"
+		a:layout_marginRight="10dp"
+		a:layout_marginLeft="5dp"/>
+	<TextView 
+		a:id="@+id/notification_title"
+		a:layout_height="wrap_content"
+		a:layout_width="fill_parent"
+		a:textSize="16sp"
+		a:textStyle="bold"
+		a:textColor="@color/notificationTitle"
+		a:singleLine="true"
+		a:layout_toRightOf="@id/notification_image"
+		a:layout_alignParentTop="true"/>
+	<TextView 
+		a:id="@+id/notification_artist"
+		a:layout_height="wrap_content"
+		a:layout_width="fill_parent"
+		a:textSize="15sp"
+		a:textColor="@color/notificationArtist"
+		a:singleLine="true"
+		a:layout_toRightOf="@id/notification_image"
+		a:layout_below="@id/notification_title"/>
+</RelativeLayout>

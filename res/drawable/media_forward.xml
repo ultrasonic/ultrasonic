@@ -1,0 +1,5 @@
+<?xml version="1.0" encoding="utf-8"?>
+<selector xmlns:a="http://schemas.android.com/apk/res/android">
+    <item a:state_pressed="true" a:drawable="@drawable/media_forward_pressed" />
+    <item a:drawable="@drawable/media_forward_normal" />
+</selector>

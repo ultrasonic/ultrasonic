@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<LinearLayout
+        xmlns:a="http://schemas.android.com/apk/res/android"
+        a:orientation="vertical"
+        a:layout_width="fill_parent"
+        a:layout_height="fill_parent"
+        a:layout_weight="1">
+
+    <TextView
+            a:id="@+id/download_empty"
+            a:text="@string/download.empty"
+            a:layout_width="fill_parent"
+            a:layout_height="wrap_content"
+            a:padding="10dip"/>
+
+    <ListView
+            a:id="@+id/download_list"
+            a:layout_width="fill_parent"
+            a:layout_height="fill_parent"
+            a:layout_weight="1"
+            a:cacheColorHint="#00000000"/>
+
+</LinearLayout>
