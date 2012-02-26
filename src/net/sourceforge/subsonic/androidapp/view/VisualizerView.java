@@ -52,7 +52,7 @@ public class VisualizerView extends View {
 
         paint.setStrokeWidth(2f);
         paint.setAntiAlias(true);
-        paint.setColor(Color.rgb(129, 201, 54));
+        paint.setColor(Color.rgb(0, 153, 204));
     }
 
     public boolean isActive() {

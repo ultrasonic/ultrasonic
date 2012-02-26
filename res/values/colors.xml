@@ -4,10 +4,12 @@
     <color name="mediaControlForeground">#F0F0F0</color>
     <color name="dividerColor">#555555</color>
     <color name="appwidget_text">#FFFFFF</color>
-    <color name="notificationArtist">#434343</color>
-    <color name="notificationTitle">#000000</color>
-
-    <color name="wheatBackground">#F1F0E6</color>
-    <color name="wheatForeground1">#494B26</color>
-    <color name="wheatForeground2">#830009</color>
+    <color name="notificationArtist">#ff0099cc</color>
+    <color name="notificationTitle">#FFFFFF</color>
+    <color name="buttonoff">#FFFFFF</color>
+    <color name="buttonon">#ff0099cc</color>
+    <color name="white">#ffffffff</color>
+    <color name="black">#ff000000</color>
+    <color name="transparent">#00000000</color>
+    <color name="cyan">#ff0099cc</color>
 </resources>

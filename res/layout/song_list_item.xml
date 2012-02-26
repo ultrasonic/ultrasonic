@@ -9,7 +9,7 @@
             a:layout_width="wrap_content"
             a:layout_height="fill_parent"
             a:gravity="center_vertical"
-            a:checkMark="?android:attr/textCheckMark"
+            a:checkMark="@drawable/btn_check_custom"
             a:paddingLeft="3dip"/>
 
     <LinearLayout a:orientation="vertical"

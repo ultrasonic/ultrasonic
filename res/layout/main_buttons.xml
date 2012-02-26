@@ -15,7 +15,7 @@
             a:minHeight="?android:attr/listPreferredItemHeight">
 
         <ImageView
-                a:src="@drawable/main_select_server"
+                a:src="@drawable/ic_menu_compass"
                 a:layout_gravity="center_vertical"
                 a:layout_width="wrap_content"
                 a:layout_height="wrap_content"/>
@@ -48,11 +48,10 @@
             a:layout_width="fill_parent"
             a:layout_height="wrap_content"
             a:textAppearance="?android:attr/textAppearanceSmall"
-            a:textColor="#EFEFEF"
-            a:textStyle="bold"
-            a:background="#A5A5A5"
+            a:textColor="@color/cyan"
+            a:background="@color/transparent"
             a:gravity="center_vertical"
-            a:paddingLeft="4dp"/>
+            a:paddingLeft="6dp" a:textAllCaps="true" a:textStyle="bold"/>
 
     <TextView
             a:id="@+id/main_albums_newest"

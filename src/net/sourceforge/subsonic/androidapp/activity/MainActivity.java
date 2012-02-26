@@ -141,6 +141,16 @@ public class MainActivity extends SubsonicTabActivity {
             }
         });
 
+        // Button 3: menu
+        ImageButton actionMenuButton = (ImageButton)findViewById(R.id.action_button_3);
+        actionMenuButton.setImageResource(R.drawable.ic_menu_moreoverflow);
+        actionMenuButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+            	openOptionsMenu(); 
+            }
+        });
+
         // Remember the current theme.
         theme = Util.getTheme(this);
 

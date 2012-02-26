@@ -116,81 +116,108 @@
                     a:layout_marginRight="80dip"
                     a:layout_gravity="center_horizontal"
                     a:layout_above="@+id/download_song_title"/>
+
+            <ImageButton
+                a:id="@+id/action_button_3"
+                a:layout_width="wrap_content"
+                a:layout_height="wrap_content"
+                a:layout_alignLeft="@+id/download_visualizer"
+                a:layout_alignParentBottom="true"
+                a:layout_alignParentRight="true"
+                a:background="@drawable/list_selector_holo_dark"
+                a:paddingBottom="12dip"
+                a:paddingLeft="8dip"
+                a:paddingTop="24dip"
+                a:src="@drawable/ic_menu_moreoverflow" />
 
         </RelativeLayout>
 
         <include layout="@layout/download_playlist"/>
 
     </net.sourceforge.subsonic.androidapp.util.MyViewFlipper>
+
+    <LinearLayout
+        a:layout_width="fill_parent"
+        a:layout_height="wrap_content"
+        a:layout_marginTop="0dip"
+        a:background="@color/mediaControlBackground"
+        a:orientation="horizontal"
+        a:paddingBottom="0dip"
+        a:paddingTop="0dip" >
 
-    <LinearLayout a:orientation="horizontal"
-                  a:layout_width="fill_parent"
-                  a:layout_height="wrap_content"
-                  a:layout_marginTop="0dip"
-                  a:background="@color/mediaControlBackground"
-                  a:paddingTop="0dip"
-                  a:paddingBottom="0dip">
         <ImageButton
-                a:id="@+id/download_shuffle"
-                a:src="@drawable/media_shuffle"
-                a:background="@android:color/transparent"
-                a:layout_width="0dip"
-                a:layout_height="fill_parent"
-                a:layout_gravity="center_vertical|left"
-                a:layout_weight="1"
-                a:paddingLeft="4dip"/>
+            a:id="@+id/download_shuffle"
+            a:layout_width="0dip"
+            a:layout_height="fill_parent"
+            a:layout_gravity="center_vertical|left"
+            a:layout_weight="1"
+            a:background="@android:color/transparent"
+            a:paddingLeft="4dip"
+            a:src="@drawable/media_shuffle" />
+
         <ImageButton
-                a:id="@+id/download_previous"
-                a:src="@drawable/media_backward"
-                a:background="@android:color/transparent"
-                a:padding="0dip"
-                a:layout_width="wrap_content"
-                a:layout_height="wrap_content"
-                a:layout_gravity="center_vertical"/>
+            a:id="@+id/download_previous"
+            a:layout_width="0dp"
+            a:layout_height="wrap_content"
+            a:layout_gravity="center_vertical"
+            a:layout_weight="1"
+            a:background="@android:color/transparent"
+            a:padding="0dip"
+            a:src="@drawable/media_backward" />
+
         <ImageButton
-                a:id="@+id/download_pause"
-                a:src="@drawable/media_pause"
-                a:background="@android:color/transparent"
-                a:padding="0dip"
-                a:layout_width="wrap_content"
-                a:layout_height="wrap_content"
-                a:layout_gravity="center_vertical"/>
+            a:id="@+id/download_pause"
+            a:layout_width="0dp"
+            a:layout_height="wrap_content"
+            a:layout_gravity="center_vertical"
+            a:layout_weight="1"
+            a:background="@android:color/transparent"
+            a:padding="0dip"
+            a:src="@drawable/media_pause" />
+
         <ImageButton
-                a:id="@+id/download_stop"
-                a:src="@drawable/media_stop"
-                a:background="@android:color/transparent"
-                a:padding="0dip"
-                a:layout_width="wrap_content"
-                a:layout_height="wrap_content"
-                a:layout_gravity="center_vertical"/>
+            a:id="@+id/download_stop"
+            a:layout_width="0dp"
+            a:layout_height="wrap_content"
+            a:layout_gravity="center_vertical"
+            a:layout_weight="1"
+            a:background="@android:color/transparent"
+            a:padding="0dip"
+            a:src="@drawable/media_stop" />
+
         <ImageButton
-                a:id="@+id/download_start"
-                a:src="@drawable/media_start"
-                a:background="@android:color/transparent"
-                a:padding="0dip"
-                a:layout_width="wrap_content"
-                a:layout_height="wrap_content"
-                a:layout_gravity="center_vertical"/>
+            a:id="@+id/download_start"
+            a:layout_width="0dp"
+            a:layout_height="wrap_content"
+            a:layout_gravity="center_vertical"
+            a:layout_weight="1"
+            a:background="@android:color/transparent"
+            a:padding="0dip"
+            a:src="@drawable/media_start" />
+
         <ImageButton
-                a:id="@+id/download_next"
-                a:src="@drawable/media_forward"
-                a:background="@android:color/transparent"
-                a:padding="0dip"
-                a:layout_width="wrap_content"
-                a:layout_height="wrap_content"
-                a:layout_gravity="center_vertical"/>
+            a:id="@+id/download_next"
+            a:layout_width="0dp"
+            a:layout_height="wrap_content"
+            a:layout_gravity="center_vertical"
+            a:layout_weight="1"
+            a:background="@android:color/transparent"
+            a:padding="0dip"
+            a:src="@drawable/media_forward" />
+
         <ImageButton
-                a:id="@+id/download_toggle_list"
-                a:src="@drawable/media_toggle_list"
-                a:background="@android:color/transparent"
-                a:layout_width="0dip"
-                a:layout_height="fill_parent"
-                a:layout_gravity="center_vertical|right"
-                a:layout_weight="1"
-                a:paddingRight="4dip"/>
+            a:id="@+id/download_toggle_list"
+            a:layout_width="0dip"
+            a:layout_height="fill_parent"
+            a:layout_gravity="center_vertical|right"
+            a:layout_weight="1"
+            a:background="@android:color/transparent"
+            a:paddingRight="4dip"
+            a:src="@drawable/media_toggle_list" />
     </LinearLayout>
-
-    <include layout="@layout/download_slider"/>
+
+    <include
+        layout="@layout/download_slider" />
 
     <include layout="@layout/download_button_bar_flipper"/>
 

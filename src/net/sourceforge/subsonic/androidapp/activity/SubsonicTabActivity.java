@@ -213,7 +213,7 @@ public class SubsonicTabActivity extends Activity {
 
         // Set the font of title in the action bar.
         TextView text = (TextView) findViewById(R.id.actionbar_title_text);
-        Typeface typeface = Typeface.createFromAsset(getAssets(), "fonts/Storopia.ttf");
+        Typeface typeface = Typeface.createFromAsset(getAssets(), "fonts/Roboto-Regular.ttf");
         text.setTypeface(typeface);
 
         text.setText(title);
@@ -227,9 +227,13 @@ public class SubsonicTabActivity extends Activity {
     private void applyTheme() {
         String theme = Util.getTheme(this);
         if ("dark".equals(theme)) {
-            setTheme(android.R.style.Theme);
+            setTheme(R.style.Dark);
         } else if ("light".equals(theme)) {
-            setTheme(android.R.style.Theme_Light);
+            setTheme(R.style.Light);
+        } else if ("fullscreen".equals(theme)) {
+            setTheme(R.style.Fullscreen);
+        } else if ("fullscreenlight".equals(theme)) {
+            setTheme(R.style.Fullscreenlight);
         }
     }
 

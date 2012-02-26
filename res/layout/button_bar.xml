@@ -4,7 +4,7 @@
               a:orientation="vertical"
               a:layout_gravity="bottom"
               a:layout_width="fill_parent"
-              a:layout_height="wrap_content">
+              a:layout_height="wrap_content" a:background="@color/black">
 
     <View
             a:layout_width="fill_parent"
@@ -13,48 +13,84 @@
 
     <LinearLayout a:orientation="horizontal"
                   a:layout_width="fill_parent"
-                  a:layout_height="wrap_content"
+                  a:layout_height="42dip"
                   a:gravity="center_horizontal">
-
-        <ImageButton a:id="@+id/button_bar_home"
-                     a:src="@drawable/menu_home"
-                     a:contentDescription="@string/button_bar.home"
-                     a:background="@drawable/menubar_button"
-                     a:layout_weight="1"
-                     a:layout_width="0dp"
-                     a:layout_height="wrap_content"/>
-
-        <ImageButton a:id="@+id/button_bar_music"
-                     a:src="@drawable/menu_browse"
-                     a:contentDescription="@string/button_bar.browse"
-                     a:background="@drawable/menubar_button"
-                     a:layout_weight="1"
-                     a:layout_width="0dp"
-                     a:layout_height="wrap_content"/>
-
-        <ImageButton a:id="@+id/button_bar_search"
-                     a:src="@drawable/menu_search"
-                     a:contentDescription="@string/button_bar.search"
-                     a:background="@drawable/menubar_button"
-                     a:layout_weight="1"
-                     a:layout_width="0dp"
-                     a:layout_height="wrap_content"/>
-
-        <ImageButton a:id="@+id/button_bar_playlists"
-                     a:src="@drawable/menu_playlists"
-                     a:contentDescription="@string/button_bar.playlists"
-                     a:background="@drawable/menubar_button"
-                     a:layout_weight="1"
-                     a:layout_width="0dp"
-                     a:layout_height="wrap_content"/>
-
-        <ImageButton a:id="@+id/button_bar_now_playing"
-                     a:src="@drawable/menu_now_playing"
-                     a:contentDescription="@string/button_bar.now_playing"
-                     a:background="@drawable/menubar_button"
-                     a:layout_weight="1"
-                     a:layout_width="0dp"
-                     a:layout_height="wrap_content"/>
+
+        <ImageButton
+            a:id="@+id/button_bar_home"
+            a:layout_width="0dp"
+            a:layout_height="match_parent"
+            a:layout_weight="1"
+            a:background="@drawable/buttonbar_selector"
+            a:contentDescription="@string/button_bar.home"
+            a:src="@drawable/menu_home" />
+
+        <View
+            a:layout_width="1px"
+            a:layout_height="fill_parent"
+            a:layout_marginBottom="5dp"
+            a:layout_marginTop="8dp"
+            a:layout_weight="0.01"
+            a:background="@color/dividerColor" />
+
+        <ImageButton
+            a:id="@+id/button_bar_music"
+            a:layout_width="0dp"
+            a:layout_height="match_parent"
+            a:layout_weight="1"
+            a:background="@drawable/buttonbar_selector"
+            a:contentDescription="@string/button_bar.browse"
+            a:src="@drawable/menu_browse" />
+
+        <View
+            a:layout_width="1px"
+            a:layout_height="fill_parent"
+            a:layout_marginBottom="5dp"
+            a:layout_marginTop="8dp"
+            a:layout_weight="0.01"
+            a:background="@color/dividerColor" />
+
+        <ImageButton
+            a:id="@+id/button_bar_search"
+            a:layout_width="0dp"
+            a:layout_height="match_parent"
+            a:layout_weight="1"
+            a:background="@drawable/buttonbar_selector"
+            a:contentDescription="@string/button_bar.search"
+            a:src="@drawable/menu_search" />
+
+        <View
+            a:layout_width="1px"
+            a:layout_height="fill_parent"
+            a:layout_marginBottom="5dp"
+            a:layout_marginTop="8dp"
+            a:layout_weight="0.01"
+            a:background="@color/dividerColor" />
+
+        <ImageButton
+            a:id="@+id/button_bar_playlists"
+            a:layout_width="0dp"
+            a:layout_height="match_parent"
+            a:layout_weight="1"
+            a:background="@drawable/buttonbar_selector"
+            a:contentDescription="@string/button_bar.playlists"
+            a:src="@drawable/menu_playlists" />
+
+        <View
+            a:layout_width="1px"
+            a:layout_height="fill_parent"
+            a:layout_marginBottom="5dp"
+            a:layout_marginTop="8dp"
+            a:background="@color/dividerColor" />
+
+        <ImageButton
+            a:id="@+id/button_bar_now_playing"
+            a:layout_width="0dp"
+            a:layout_height="match_parent"
+            a:layout_weight="1"
+            a:background="@drawable/buttonbar_selector"
+            a:contentDescription="@string/button_bar.now_playing"
+            a:src="@drawable/menu_now_playing" />
 
     </LinearLayout>
 </LinearLayout>

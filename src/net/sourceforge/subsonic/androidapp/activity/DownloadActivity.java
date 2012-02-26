@@ -79,7 +79,7 @@ public class DownloadActivity extends SubsonicTabActivity implements OnGestureLi
 
     private static final int DIALOG_SAVE_PLAYLIST = 100;
     private static final int PERCENTAGE_OF_SCREEN_FOR_SWIPE = 5;
-    private static final int COLOR_BUTTON_ENABLED = Color.rgb(129, 201, 54);
+    private static final int COLOR_BUTTON_ENABLED = Color.rgb(0, 153, 204);
     private static final int COLOR_BUTTON_DISABLED = Color.rgb(164, 166, 158);
 
     private ViewFlipper playlistFlipper;
@@ -237,6 +237,16 @@ public class DownloadActivity extends SubsonicTabActivity implements OnGestureLi
             }
         });
 
+        // Button: menu
+        ImageButton actionMenuButton = (ImageButton)findViewById(R.id.action_button_3);
+        actionMenuButton.setImageResource(R.drawable.ic_menu_moreoverflow);
+        actionMenuButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+            	openOptionsMenu(); 
+            }
+        });
+
         repeatButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -346,7 +356,7 @@ public class DownloadActivity extends SubsonicTabActivity implements OnGestureLi
         }
 
         // TODO: Extract to utility method and cache.
-        Typeface typeface = Typeface.createFromAsset(getAssets(), "fonts/Storopia.ttf");
+        Typeface typeface = Typeface.createFromAsset(getAssets(), "fonts/Roboto-Regular.ttf");
         equalizerButton.setTypeface(typeface);
         visualizerButton.setTypeface(typeface);
         jukeboxButton.setTypeface(typeface);

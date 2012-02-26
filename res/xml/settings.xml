@@ -109,7 +109,7 @@
         <ListPreference
                 a:title="@string/settings.theme_title"
                 a:key="theme"
-                a:defaultValue="wheat"
+                a:defaultValue="Dark"
                 a:entryValues="@array/themeValues"
                 a:entries="@array/themeNames"/>
 

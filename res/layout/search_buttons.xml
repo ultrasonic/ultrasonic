@@ -23,7 +23,7 @@
             a:textAppearance="?android:attr/textAppearanceSmall"
             a:textColor="#EFEFEF"
             a:textStyle="bold"
-            a:background="#A5A5A5"
+            a:background="#ff555555"
             a:gravity="center_vertical"
             a:paddingLeft="4dp"/>
 
@@ -35,7 +35,7 @@
             a:textAppearance="?android:attr/textAppearanceSmall"
             a:textColor="#EFEFEF"
             a:textStyle="bold"
-            a:background="#A5A5A5"
+            a:background="#ff555555"
             a:gravity="center_vertical"
             a:paddingLeft="4dp"/>
 
@@ -47,7 +47,7 @@
             a:textAppearance="?android:attr/textAppearanceSmall"
             a:textColor="#EFEFEF"
             a:textStyle="bold"
-            a:background="#A5A5A5"
+            a:background="#ff555555"
             a:gravity="center_vertical"
             a:paddingLeft="4dp"/>
 

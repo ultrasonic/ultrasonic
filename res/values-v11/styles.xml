@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <style name="Dark" parent="@android:style/Theme.Holo">
+        <item name="android:textColorSecondary">@color/cyan</item>
+    </style>
+    <style name="Light" parent="@android:style/Theme.Holo.Light">
+        <item name="android:textColorSecondary">@color/cyan</item>
+    </style>
+    <style name="Fullscreen" parent="@android:style/Theme.Holo.NoActionBar.Fullscreen">
+        <item name="android:textColorSecondary">@color/cyan</item>
+    </style>
+    <style name="Fullscreenlight" parent="@android:style/Theme.Holo.Light.NoActionBar.Fullscreen">
+        <item name="android:textColorSecondary">@color/cyan</item>
+    </style>
+</resources>

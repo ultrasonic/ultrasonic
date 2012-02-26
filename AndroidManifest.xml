@@ -1,9 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:a="http://schemas.android.com/apk/res/android"
           package="net.sourceforge.subsonic.androidapp"
-          a:installLocation="auto"
-          a:versionCode="46"
-          a:versionName="3.3">
+          a:versionCode="47"
+          a:versionName="3.9.9" a:installLocation="auto">
 
     <uses-permission a:name="android.permission.INTERNET"/>
     <uses-permission a:name="android.permission.READ_PHONE_STATE"/>
@@ -13,11 +12,11 @@
     <uses-permission a:name="android.permission.RECORD_AUDIO"/>
     <uses-permission a:name="android.permission.MODIFY_AUDIO_SETTINGS"/>
 
-    <uses-sdk a:minSdkVersion="3" a:targetSdkVersion="10"/>
+    <uses-sdk a:minSdkVersion="3" a:targetSdkVersion="15"/>
 
     <supports-screens a:anyDensity="true" a:xlargeScreens="true" a:largeScreens="true" a:normalScreens="true" a:smallScreens="true"/>
 
-    <application a:label="@string/common.appname" a:icon="@drawable/launch" a:theme="@style/Wheat">
+    <application a:label="@string/common.appname" a:icon="@drawable/ic_launcher" a:theme="@style/Dark">
 
         <activity a:name="net.sourceforge.subsonic.androidapp.activity.MainActivity"
                   a:label="Subsonic"
@@ -51,7 +50,6 @@
                   a:launchMode="singleTask"/>
 
         <activity a:name="net.sourceforge.subsonic.androidapp.activity.SettingsActivity"
-                  a:theme="@android:style/Theme"
                   a:configChanges="orientation|keyboardHidden"
                   a:launchMode="singleTask"/>
 

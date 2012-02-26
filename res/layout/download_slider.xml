@@ -1,13 +1,20 @@
 <?xml version="1.0" encoding="utf-8"?>
-<net.sourceforge.subsonic.androidapp.util.HorizontalSlider
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical" >
+    
+    <net.sourceforge.subsonic.androidapp.util.HorizontalSlider
         xmlns:a="http://schemas.android.com/apk/res/android"
-        style="?android:attr/progressBarStyleHorizontal"
         a:id="@+id/download_progress_bar"
-        a:indeterminate="false"
-        a:background="@color/mediaControlBackground"
+        style="?android:attr/progressBarStyleHorizontal"
         a:layout_width="fill_parent"
-        a:layout_height="wrap_content"
+        a:layout_height="48dp"
+        a:background="@color/mediaControlBackground"
+        a:indeterminate="false"
+        a:paddingBottom="7dip"
         a:paddingLeft="7dip"
         a:paddingRight="7dip"
-        a:paddingTop="3dip"
-        a:paddingBottom="7dip"/>
+        a:paddingTop="7dip" />
+
+</LinearLayout>

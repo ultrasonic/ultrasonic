@@ -1,14 +1,41 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <style name="Wheat" parent="android:Theme.Light">
-        <item name="android:windowBackground">@color/wheatBackground</item>
-        <item name="android:textColorPrimary">@color/wheatForeground1</item>
-        <item name="android:textColorSecondary">@color/wheatForeground2</item>
-        <item name="android:listViewStyle">@style/WheatListView</item>
+    <style name="Dark" parent="@android:style/Theme">
+        <item name="android:listViewStyle">@style/listselect</item>
+        <item name="android:progressBarStyleHorizontal">@style/customprogress</item>
+        <item name="android:textColorPrimary">@color/white</item>
+        <item name="android:textColorSecondary">@color/cyan</item>
     </style>
-
-    <style name="WheatListView" parent="android:style/Widget.ListView.White">
-        <item name="android:cacheColorHint">@color/wheatBackground</item>
+    
+    <style name="Light" parent="@android:style/Theme.Light">
+        <item name="android:listViewStyle">@style/listselectlight</item>
+        <item name="android:progressBarStyleHorizontal">@style/customprogress</item>
+        <item name="android:textColorSecondary">@color/cyan</item>
     </style>
-
+    
+    <style name="Fullscreen" parent="@android:style/Theme.Black.NoTitleBar.Fullscreen">
+        <item name="android:listViewStyle">@style/listselect</item>
+        <item name="android:progressBarStyleHorizontal">@style/customprogress</item>
+        <item name="android:textColorPrimary">@color/white</item>
+        <item name="android:textColorSecondary">@color/cyan</item>
+    </style>
+    
+    <style name="Fullscreenlight" parent="@android:style/Theme.Light.NoTitleBar.Fullscreen">
+        <item name="android:listViewStyle">@style/listselectlight</item>
+        <item name="android:progressBarStyleHorizontal">@style/customprogress</item>
+        <item name="android:textColorSecondary">@color/cyan</item>
+    </style>
+    
+    <style name="listselect" parent="android:style/Widget.ListView">
+        <item name="android:listSelector">@drawable/list_selector_holo_dark</item>
+    </style>
+    
+    <style name="listselectlight" parent="android:style/Widget.ListView.White">
+        <item name="android:listSelector">@drawable/list_selector_holo_light</item>
+    </style>
+    
+    <style name="customprogress" parent="android:style/Widget.ProgressBar.Horizontal">
+        <item name="android:progressDrawable">@drawable/progress_horizontal_holo_dark</item>
+    </style>
+    
 </resources>

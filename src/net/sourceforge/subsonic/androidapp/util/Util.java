@@ -568,7 +568,7 @@ public final class Util {
         String text = song.getArtist();
         
         // Set the icon, scrolling text and timestamp
-        final Notification notification = new Notification(R.drawable.stat_notify_playing, title, System.currentTimeMillis());
+        final Notification notification = new Notification(R.drawable.ic_stat_subsonic, title, System.currentTimeMillis());
         notification.flags |= Notification.FLAG_NO_CLEAR | Notification.FLAG_ONGOING_EVENT;
 
         RemoteViews contentView = new RemoteViews(context.getPackageName(), R.layout.notification);

@@ -97,70 +97,87 @@
                     a:gravity="center_horizontal"
                     a:textAppearance="?android:attr/textAppearanceMedium"
                     a:textColor="@color/mediaControlForeground"/>
-
+
             <LinearLayout
-                    a:orientation="horizontal"
-                    a:layout_width="wrap_content"
-                    a:layout_height="wrap_content"
-                    a:layout_centerHorizontal="true"
-                    a:layout_centerVertical="true">
+                a:layout_width="wrap_content"
+                a:layout_height="wrap_content"
+                a:layout_centerHorizontal="true"
+                a:layout_centerVertical="true"
+                a:orientation="horizontal" >
 
                 <ImageButton
-                        a:id="@+id/download_shuffle"
-                        a:src="@drawable/media_shuffle"
-                        a:background="@android:color/transparent"
-                        a:layout_width="wrap_content"
-                        a:layout_height="wrap_content"
-                        a:padding="9dip"/>
+                    a:id="@+id/download_shuffle"
+                    a:layout_width="0dp"
+                    a:layout_height="wrap_content"
+                    a:layout_weight="1"
+                    a:background="@android:color/transparent"
+                    a:padding="9dip"
+                    a:src="@drawable/media_shuffle" />
+
                 <ImageButton
-                        a:id="@+id/download_repeat"
-                        a:src="@drawable/media_repeat_off"
-                        a:background="@android:color/transparent"
-                        a:layout_width="wrap_content"
-                        a:layout_height="wrap_content"
-                        a:padding="9dip"/>
+                    a:id="@+id/download_repeat"
+                    a:layout_width="0dp"
+                    a:layout_height="match_parent"
+                    a:layout_weight="1"
+                    a:background="@android:color/transparent"
+                    a:padding="9dip"
+                    a:src="@drawable/media_repeat_off" />
+
                 <ImageButton
-                        a:id="@+id/download_toggle_list"
-                        a:src="@drawable/media_toggle_list"
-                        a:background="@android:color/transparent"
-                        a:layout_width="wrap_content"
-                        a:layout_height="wrap_content"
-                        a:padding="9dip"/>
+                    a:id="@+id/download_toggle_list"
+                    a:layout_width="0dp"
+                    a:layout_height="match_parent"
+                    a:layout_weight="1"
+                    a:background="@android:color/transparent"
+                    a:padding="9dip"
+                    a:src="@drawable/media_toggle_list" />
+
                 <Button
-                        a:id="@+id/download_equalizer"
-                        a:text="EQ"
-                        a:textStyle="bold"
-                        a:textSize="22sp"
-                        a:visibility="gone"
-                        a:background="@android:color/transparent"
-                        a:layout_width="wrap_content"
-                        a:layout_height="wrap_content"
-                        a:layout_marginTop="3dip"
-                        a:padding="9dip"
-                        />
+                    a:id="@+id/download_equalizer"
+                    a:layout_width="0dp"
+                    a:layout_height="wrap_content"
+                    a:layout_marginTop="3dip"
+                    a:layout_weight="1"
+                    a:background="@android:color/transparent"
+                    a:padding="9dip"
+                    a:text="EQ"
+                    a:textSize="22sp"
+                    a:textStyle="bold"
+                    a:visibility="gone" />
+
                 <Button
-                        a:id="@+id/download_jukebox"
-                        a:text="RC"
-                        a:textStyle="bold"
-                        a:textSize="22sp"
-                        a:background="@android:color/transparent"
-                        a:layout_width="wrap_content"
-                        a:layout_height="wrap_content"
-                        a:layout_marginTop="3dip"
-                        a:padding="9dip"
-                        />
+                    a:id="@+id/download_jukebox"
+                    a:layout_width="0dp"
+                    a:layout_height="match_parent"
+                    a:layout_marginTop="3dip"
+                    a:layout_weight="1"
+                    a:background="@android:color/transparent"
+                    a:padding="9dip"
+                    a:text="RC"
+                    a:textSize="22sp"
+                    a:textStyle="bold" />
+
+                <ImageButton
+                    a:id="@+id/action_button_3"
+                    a:layout_width="0dp"
+                    a:layout_height="match_parent"
+                    a:layout_weight="1"
+                    a:background="@drawable/list_selector_holo_dark"
+                    a:padding="9dip"
+                    a:src="@drawable/ic_menu_moreoverflow" />
+
                 <Button
-                        a:id="@+id/download_visualizer"
-                        a:text="VIS"
-                        a:textStyle="bold"
-                        a:textSize="22sp"
-                        a:visibility="gone"
-                        a:background="@android:color/transparent"
-                        a:layout_width="wrap_content"
-                        a:layout_height="wrap_content"
-                        a:layout_marginTop="3dip"
-                        a:padding="9dip"
-                        />
+                    a:id="@+id/download_visualizer"
+                    a:layout_width="0dp"
+                    a:layout_height="wrap_content"
+                    a:layout_marginTop="3dip"
+                    a:layout_weight="1"
+                    a:background="@android:color/transparent"
+                    a:padding="9dip"
+                    a:text="VIS"
+                    a:textSize="22sp"
+                    a:textStyle="bold"
+                    a:visibility="gone" />
             </LinearLayout>
 
         </RelativeLayout>

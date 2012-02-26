@@ -138,7 +138,8 @@
     <string name="settings.invalid_username">Please specify a valid username (no trailing spaces).</string>
     <string name="settings.appearance_title">Appearance</string>
     <string name="settings.theme_title">Theme</string>
-    <string name="settings.theme_wheat">Wheat</string>
+    <string name="settings.theme_fullscreen">Fullscreen Dark</string>
+    <string name="settings.theme_fullscreenlight">Fullscreen Light</string>
     <string name="settings.theme_light">Light</string>
     <string name="settings.theme_dark">Dark</string>
     <string name="settings.network_title">Network</string>
