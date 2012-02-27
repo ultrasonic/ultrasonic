@@ -140,7 +140,7 @@ public class SearchActivity extends SubsonicTabActivity {
 
         // Button 2: search
         final ImageButton actionSearchButton = (ImageButton)findViewById(R.id.action_button_2);
-        actionSearchButton.setImageResource(R.drawable.action_search);
+        actionSearchButton.setImageResource(R.drawable.ic_menu_search);
         actionSearchButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {

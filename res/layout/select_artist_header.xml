@@ -10,7 +10,7 @@
         a:minHeight="?android:attr/listPreferredItemHeight">
 
     <ImageView
-            a:src="@drawable/select_artist_folder"
+            a:src="@drawable/ic_menu_select_artist_folder"
             a:layout_gravity="center_vertical"
             a:layout_width="wrap_content"
             a:layout_height="wrap_content"/>

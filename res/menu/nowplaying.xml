@@ -2,13 +2,13 @@
 <menu xmlns:a="http://schemas.android.com/apk/res/android">
 
     <item
-        a:id="@+id/menu_shuffle"
+        a:id="@+id/ic_menu_shuffle"
         a:icon="@drawable/ic_menu_shuffle"
         a:title="@string/download.menu_shuffle"
         />
 
     <item
-        a:id="@+id/menu_save_playlist"
+        a:id="@+id/menu_save_playlist" 
         a:icon="@drawable/ic_menu_save"
         a:title="@string/download.menu_save"
         />

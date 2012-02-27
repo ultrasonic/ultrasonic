@@ -66,7 +66,7 @@ public class SelectPlaylistActivity extends SubsonicTabActivity implements Adapt
 
 		// Button 2: refresh
         ImageButton refreshButton = (ImageButton) findViewById(R.id.action_button_2);
-		refreshButton.setImageResource(R.drawable.action_refresh);
+		refreshButton.setImageResource(R.drawable.ic_menu_refresh);
 		refreshButton.setOnClickListener(new View.OnClickListener() {
 			@Override
 			public void onClick(View view) {

@@ -172,7 +172,7 @@ public class SelectAlbumActivity extends SubsonicTabActivity {
 
         // Button 1: play all
         playAllButton = (ImageButton) findViewById(R.id.action_button_1);
-        playAllButton.setImageResource(R.drawable.action_play_all);
+        playAllButton.setImageResource(R.drawable.ic_menu_play_all);
         playAllButton.setVisibility(View.GONE);
         playAllButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -183,7 +183,7 @@ public class SelectAlbumActivity extends SubsonicTabActivity {
 
         // Button 2: refresh
         ImageButton refreshButton = (ImageButton) findViewById(R.id.action_button_2);
-        refreshButton.setImageResource(R.drawable.action_refresh);
+        refreshButton.setImageResource(R.drawable.ic_menu_refresh);
         refreshButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {

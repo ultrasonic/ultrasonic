@@ -75,6 +75,6 @@
         a:padding="5dp"
         a:scaleType="center"
         a:showAsAction="ifRoom|withText"
-        a:src="@drawable/search" />
+        a:src="@drawable/ic_menu_search" />
 
 </RelativeLayout>

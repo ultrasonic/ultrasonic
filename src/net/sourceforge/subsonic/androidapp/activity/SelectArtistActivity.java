@@ -78,7 +78,7 @@ public class SelectArtistActivity extends SubsonicTabActivity implements Adapter
 
         // Button 1: shuffle
         ImageButton shuffleButton = (ImageButton) findViewById(R.id.action_button_1);
-        shuffleButton.setImageResource(R.drawable.action_shuffle);
+        shuffleButton.setImageResource(R.drawable.ic_menu_shuffle);
         shuffleButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -90,7 +90,7 @@ public class SelectArtistActivity extends SubsonicTabActivity implements Adapter
 
         // Button 2: refresh
         ImageButton refreshButton = (ImageButton) findViewById(R.id.action_button_2);
-        refreshButton.setImageResource(R.drawable.action_refresh);
+        refreshButton.setImageResource(R.drawable.ic_menu_refresh);
         refreshButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {

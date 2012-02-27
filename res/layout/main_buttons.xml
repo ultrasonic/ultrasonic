@@ -56,7 +56,7 @@
     <TextView
             a:id="@+id/main_albums_newest"
             a:text="@string/main.albums_newest"
-            a:drawableRight="@drawable/list_item_artist"
+            a:drawableRight="@drawable/list_item_more"
             a:drawablePadding="6dip"
             a:layout_width="fill_parent"
             a:layout_height="wrap_content"
@@ -68,7 +68,7 @@
     <TextView
             a:id="@+id/main_albums_recent"
             a:text="@string/main.albums_recent"
-            a:drawableRight="@drawable/list_item_artist"
+            a:drawableRight="@drawable/list_item_more"
             a:drawablePadding="6dip"
             a:layout_width="fill_parent"
             a:layout_height="wrap_content"
@@ -80,7 +80,7 @@
     <TextView
             a:id="@+id/main_albums_frequent"
             a:text="@string/main.albums_frequent"
-            a:drawableRight="@drawable/list_item_artist"
+            a:drawableRight="@drawable/list_item_more"
             a:drawablePadding="6dip"
             a:layout_width="fill_parent"
             a:layout_height="wrap_content"
@@ -92,7 +92,7 @@
     <TextView
             a:id="@+id/main_albums_highest"
             a:text="@string/main.albums_highest"
-            a:drawableRight="@drawable/list_item_artist"
+            a:drawableRight="@drawable/list_item_more"
             a:drawablePadding="6dip"
             a:layout_width="fill_parent"
             a:layout_height="wrap_content"
@@ -104,7 +104,7 @@
     <TextView
             a:id="@+id/main_albums_random"
             a:text="@string/main.albums_random"
-            a:drawableRight="@drawable/list_item_artist"
+            a:drawableRight="@drawable/list_item_more"
             a:drawablePadding="6dip"
             a:layout_width="fill_parent"
             a:layout_height="wrap_content"

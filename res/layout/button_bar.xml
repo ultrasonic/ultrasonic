@@ -23,7 +23,7 @@
             a:layout_weight="1"
             a:background="@drawable/buttonbar_selector"
             a:contentDescription="@string/button_bar.home"
-            a:src="@drawable/menu_home" />
+            a:src="@drawable/ic_menu_home" />
 
         <View
             a:layout_width="1px"
@@ -40,7 +40,7 @@
             a:layout_weight="1"
             a:background="@drawable/buttonbar_selector"
             a:contentDescription="@string/button_bar.browse"
-            a:src="@drawable/menu_browse" />
+            a:src="@drawable/ic_menu_browse" />
 
         <View
             a:layout_width="1px"
@@ -57,7 +57,7 @@
             a:layout_weight="1"
             a:background="@drawable/buttonbar_selector"
             a:contentDescription="@string/button_bar.search"
-            a:src="@drawable/menu_search" />
+            a:src="@drawable/ic_menu_search" />
 
         <View
             a:layout_width="1px"
@@ -74,7 +74,7 @@
             a:layout_weight="1"
             a:background="@drawable/buttonbar_selector"
             a:contentDescription="@string/button_bar.playlists"
-            a:src="@drawable/menu_playlists" />
+            a:src="@drawable/ic_menu_playlists" />
 
         <View
             a:layout_width="1px"
@@ -90,7 +90,7 @@
             a:layout_weight="1"
             a:background="@drawable/buttonbar_selector"
             a:contentDescription="@string/button_bar.now_playing"
-            a:src="@drawable/menu_now_playing" />
+            a:src="@drawable/ic_menu_play_all" />
 
     </LinearLayout>
 </LinearLayout>
