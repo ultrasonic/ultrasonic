@@ -160,14 +160,14 @@ public class SubsonicAppWidgetProvider extends AppWidgetProvider {
 
             if (bitmap == null) {
                 // Set default cover art
-                views.setImageViewResource(R.id.appwidget_coverart, R.drawable.appwidget_art_unknown);
+                views.setImageViewResource(R.id.appwidget_coverart, R.drawable.appwidget_art_default);
             } else {
                 bitmap = getRoundedCornerBitmap(bitmap);
                 views.setImageViewBitmap(R.id.appwidget_coverart, bitmap);
             }
         } catch (Exception x) {
             Log.e(TAG, "Failed to load cover art", x);
-            views.setImageViewResource(R.id.appwidget_coverart, R.drawable.appwidget_art_unknown);
+            views.setImageViewResource(R.id.appwidget_coverart, R.drawable.appwidget_art_default);
         }
 
         // Link actions buttons to intents

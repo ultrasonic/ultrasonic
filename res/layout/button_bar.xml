@@ -81,6 +81,7 @@
             a:layout_height="fill_parent"
             a:layout_marginBottom="5dp"
             a:layout_marginTop="8dp"
+            a:layout_weight="0.01"
             a:background="@color/dividerColor" />
 
         <ImageButton
