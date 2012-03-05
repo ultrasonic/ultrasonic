@@ -12,7 +12,7 @@
     <uses-permission a:name="android.permission.RECORD_AUDIO"/>
     <uses-permission a:name="android.permission.MODIFY_AUDIO_SETTINGS"/>
 
-    <uses-sdk a:minSdkVersion="3" a:targetSdkVersion="15"/>
+    <uses-sdk a:minSdkVersion="4" a:targetSdkVersion="15"/>
 
     <supports-screens a:anyDensity="true" a:xlargeScreens="true" a:largeScreens="true" a:normalScreens="true" a:smallScreens="true"/>
 
@@ -97,11 +97,11 @@
             </intent-filter>
         </receiver>
 
-        <receiver a:name="net.sourceforge.subsonic.androidapp.provider.SubsonicAppWidgetProvider" >
+        <receiver a:name="net.sourceforge.subsonic.androidapp.provider.SubsonicAppWidgetProvider4x1" a:label="Subsonic (4x1)" >
             <intent-filter>
                 <action a:name="android.appwidget.action.APPWIDGET_UPDATE"/>
             </intent-filter>
-            <meta-data a:name="android.appwidget.provider" a:resource="@xml/appwidget_info"/>
+            <meta-data a:name="android.appwidget.provider" a:resource="@xml/appwidget_info_4x1"/>
         </receiver>
 
         <provider a:name="net.sourceforge.subsonic.androidapp.provider.SearchSuggestionProvider"

@@ -6,14 +6,7 @@
 
     <include 
             layout="@layout/action_bar"
-            a:layout_width="fill_parent"
-            a:layout_height="45dp"
-            />
-
-    <View
-            a:layout_width="fill_parent"
-            a:layout_height="1px"
-            a:background="@color/dividerColor"/>
+            a:layout_width="fill_parent"/>
 
     <ListView
             a:id="@+id/main_list"

@@ -24,6 +24,7 @@ import android.app.Notification;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.app.Service;
+import android.appwidget.AppWidgetProvider;
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.DialogInterface;
@@ -40,15 +41,17 @@ import android.os.Environment;
 import android.os.Handler;
 import android.util.Log;
 import android.view.Gravity;
+import android.view.KeyEvent;
 import android.widget.RemoteViews;
 import android.widget.Toast;
 import net.sourceforge.subsonic.androidapp.R;
 import net.sourceforge.subsonic.androidapp.activity.DownloadActivity;
+import net.sourceforge.subsonic.androidapp.activity.MainActivity;
 import net.sourceforge.subsonic.androidapp.domain.MusicDirectory;
 import net.sourceforge.subsonic.androidapp.domain.PlayerState;
 import net.sourceforge.subsonic.androidapp.domain.RepeatMode;
 import net.sourceforge.subsonic.androidapp.domain.Version;
-import net.sourceforge.subsonic.androidapp.provider.SubsonicAppWidgetProvider;
+import net.sourceforge.subsonic.androidapp.provider.SubsonicAppWidgetProvider4x1;
 import net.sourceforge.subsonic.androidapp.receiver.MediaButtonIntentReceiver;
 import net.sourceforge.subsonic.androidapp.service.DownloadServiceImpl;
 import org.apache.http.HttpEntity;
@@ -74,7 +77,7 @@ import java.util.concurrent.ConcurrentHashMap;
  * @author Sindre Mehus
  * @version $Id$
  */
-public final class Util {
+public class Util extends DownloadActivity {
 
     private static final String TAG = Util.class.getSimpleName();
 
@@ -566,6 +569,7 @@ public final class Util {
         // Use the same text for the ticker and the expanded notification
         String title = song.getTitle();
         String text = song.getArtist();
+        String album = song.getAlbum();
         
         // Set the icon, scrolling text and timestamp
         final Notification notification = new Notification(R.drawable.ic_stat_subsonic, title, System.currentTimeMillis());
@@ -589,8 +593,9 @@ public final class Util {
 		}
 
 		// set the text for the notifications
-        contentView.setTextViewText(R.id.notification_title, title);
-        contentView.setTextViewText(R.id.notification_artist, text);
+        contentView.setTextViewText(R.id.trackname, title);
+        contentView.setTextViewText(R.id.artist, text);
+        contentView.setTextViewText(R.id.album, album);
         
         notification.contentView = contentView;  
         
@@ -606,7 +611,8 @@ public final class Util {
         });
 
         // Update widget
-        SubsonicAppWidgetProvider.getInstance().notifyChange(context, downloadService, true);
+        linkButtons(context, contentView, false);
+        SubsonicAppWidgetProvider4x1.getInstance().notifyChange(context, downloadService, true);
     }
 
     public static void hidePlayingNotification(final Context context, final DownloadServiceImpl downloadService, Handler handler) {
@@ -620,7 +626,7 @@ public final class Util {
         });
 
         // Update widget
-        SubsonicAppWidgetProvider.getInstance().notifyChange(context, downloadService, false);
+        SubsonicAppWidgetProvider4x1.getInstance().notifyChange(context, downloadService, false);
     }
 
     public static void sleepQuietly(long millis) {
@@ -772,5 +778,32 @@ public final class Util {
         }
 
         context.sendBroadcast(intent);
+    }
+    
+    private static void linkButtons(Context context, RemoteViews views, boolean playerActive) {
+
+        Intent intent = new Intent(context, playerActive ? DownloadActivity.class : MainActivity.class);
+        PendingIntent pendingIntent = PendingIntent.getActivity(context, 0, intent, 0);
+        views.setOnClickPendingIntent(R.id.appwidget_coverart, pendingIntent);
+        views.setOnClickPendingIntent(R.id.appwidget_top, pendingIntent);
+        
+        // Emulate media button clicks.
+        intent = new Intent("1");
+        intent.setComponent(new ComponentName(context, DownloadServiceImpl.class));
+        intent.putExtra(Intent.EXTRA_KEY_EVENT, new KeyEvent(KeyEvent.ACTION_DOWN, KeyEvent.KEYCODE_MEDIA_PLAY_PAUSE));
+        pendingIntent = PendingIntent.getService(context, 0, intent, 0);
+        views.setOnClickPendingIntent(R.id.control_play, pendingIntent);
+
+        intent = new Intent("2");  // Use a unique action name to ensure a different PendingIntent to be created.
+        intent.setComponent(new ComponentName(context, DownloadServiceImpl.class));
+        intent.putExtra(Intent.EXTRA_KEY_EVENT, new KeyEvent(KeyEvent.ACTION_DOWN, KeyEvent.KEYCODE_MEDIA_NEXT));
+        pendingIntent = PendingIntent.getService(context, 0, intent, 0);
+        views.setOnClickPendingIntent(R.id.control_next, pendingIntent);
+        
+        intent = new Intent("3");  // Use a unique action name to ensure a different PendingIntent to be created.
+        intent.setComponent(new ComponentName(context, DownloadServiceImpl.class));
+        intent.putExtra(Intent.EXTRA_KEY_EVENT, new KeyEvent(KeyEvent.ACTION_DOWN, KeyEvent.KEYCODE_MEDIA_PREVIOUS));
+        pendingIntent = PendingIntent.getService(context, 0, intent, 0);
+        views.setOnClickPendingIntent(R.id.control_previous, pendingIntent);
     }
 }

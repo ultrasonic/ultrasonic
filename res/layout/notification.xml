@@ -1,31 +1,103 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:a="http://schemas.android.com/apk/res/android"
-	a:layout_width="fill_parent"
-	a:layout_height="fill_parent"
-	a:padding="3dp">
-	<ImageView 
-		a:id="@+id/notification_image"
-		a:layout_width="wrap_content"
-		a:layout_height="fill_parent"
-		a:layout_marginRight="10dp"
-		a:layout_marginLeft="5dp"/>
-	<TextView 
-		a:id="@+id/notification_title"
-		a:layout_height="wrap_content"
-		a:layout_width="fill_parent"
-		a:textSize="16sp"
-		a:textStyle="bold"
-		a:textColor="@color/notificationTitle"
-		a:singleLine="true"
-		a:layout_toRightOf="@id/notification_image"
-		a:layout_alignParentTop="true"/>
-	<TextView 
-		a:id="@+id/notification_artist"
-		a:layout_height="wrap_content"
-		a:layout_width="fill_parent"
-		a:textSize="15sp"
-		a:textColor="@color/notificationArtist"
-		a:singleLine="true"
-		a:layout_toRightOf="@id/notification_image"
-		a:layout_below="@id/notification_title"/>
-</RelativeLayout>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/statusbar"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
+    android:orientation="vertical" >
+
+    <LinearLayout
+        xmlns:android="http://schemas.android.com/apk/res/android"
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent"
+        android:orientation="horizontal" >
+
+        <ImageView
+            android:id="@+id/notification_image"
+            android:layout_width="64.0dip"
+            android:layout_height="64.0dip"
+            android:layout_weight="0.0"
+            android:gravity="center" />
+
+        <ImageView
+            android:id="@+id/status_icon"
+            android:layout_width="64.0dip"
+            android:layout_height="64.0dip"
+            android:background="@drawable/status_bg"
+            android:scaleType="center"
+            android:visibility="gone" />
+
+        <LinearLayout
+            android:layout_width="0.0dp"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_vertical"
+            android:layout_weight="1.0"
+            android:orientation="vertical"
+            android:paddingLeft="11.0dip" >
+
+            <TextView
+                android:id="@+id/trackname"
+                style="@android:style/TextAppearance.StatusBar.EventContent.Title"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="left"
+                android:ellipsize="marquee"
+                android:focusable="true"
+                android:singleLine="true" />
+
+            <TextView
+                android:id="@+id/artist"
+                style="@android:style/TextAppearance.StatusBar.EventContent"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="left"
+                android:ellipsize="end"
+                android:scrollHorizontally="true"
+                android:singleLine="true" />
+
+            <TextView
+                android:id="@+id/album"
+                style="@android:style/TextAppearance.StatusBar.EventContent"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="left"
+                android:ellipsize="end"
+                android:scrollHorizontally="true"
+                android:singleLine="true" />
+        </LinearLayout>
+
+        <ImageButton
+            android:id="@+id/control_previous"
+            android:layout_width="40dip"
+            android:layout_height="40dip"
+            android:layout_gravity="center|right"
+            android:layout_marginRight="5dip"
+            android:layout_marginTop="2dip"
+            android:layout_weight="0.0"
+            android:background="@drawable/btn_bg"
+            android:src="@drawable/status_prev" />
+
+        <ImageButton
+            android:id="@+id/control_play"
+            android:layout_width="40dip"
+            android:layout_height="40dip"
+            android:layout_gravity="center|right"
+            android:layout_marginRight="5dip"
+            android:layout_marginTop="2dip"
+            android:layout_weight="0.0"
+            android:background="@drawable/btn_bg"
+            android:src="@drawable/status_play" />
+
+        <ImageButton
+            android:id="@+id/control_next"
+            android:layout_width="40dip"
+            android:layout_height="40dip"
+            android:layout_gravity="center|right"
+            android:layout_marginRight="5dip"
+            android:layout_marginTop="2dip"
+            android:layout_weight="0.0"
+            android:background="@drawable/btn_bg"
+            android:src="@drawable/status_next" />
+
+    </LinearLayout>
+
+</LinearLayout>

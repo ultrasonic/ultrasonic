@@ -6,11 +6,6 @@
 
     <include layout="@layout/action_bar"/>
 
-    <View
-            a:layout_width="fill_parent"
-            a:layout_height="1dp"
-            a:background="@color/dividerColor"/>
-
     <include layout="@layout/tab_progress"/>
 
     <ListView a:id="@+id/select_artist_list"

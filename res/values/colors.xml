@@ -11,5 +11,7 @@
     <color name="white">#ffffffff</color>
     <color name="black">#ff000000</color>
     <color name="transparent">#00000000</color>
+    <color name="grey">#ffe0e0e0</color>
     <color name="cyan">#ff0099cc</color>
+    <color name="ics_opaque">#8033b5e5</color>
 </resources>

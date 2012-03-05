@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:a="http://schemas.android.com/apk/res/android"
     a:layout_width="fill_parent"
-    a:layout_height="45dp"
+    a:layout_height="48dp"
     a:background="@drawable/action_bar_bg"
     a:gravity="center" >
 

@@ -26,7 +26,7 @@
 
                 <ImageButton
                         a:id="@+id/download_previous"
-                        a:src="@drawable/media_backward"
+                        a:src="@drawable/media_backward_normal"
                         a:background="@android:color/transparent"
                         a:padding="0dip"
                         a:layout_width="wrap_content"
@@ -35,7 +35,7 @@
                         />
                 <ImageButton
                         a:id="@+id/download_pause"
-                        a:src="@drawable/media_pause"
+                        a:src="@drawable/media_pause_normal"
                         a:background="@android:color/transparent"
                         a:padding="0dip"
                         a:layout_width="wrap_content"
@@ -44,7 +44,7 @@
                         />
                 <ImageButton
                         a:id="@+id/download_stop"
-                        a:src="@drawable/media_stop"
+                        a:src="@drawable/media_stop_normal"
                         a:background="@android:color/transparent"
                         a:padding="0dip"
                         a:layout_width="wrap_content"
@@ -53,7 +53,7 @@
                         />
                 <ImageButton
                         a:id="@+id/download_start"
-                        a:src="@drawable/media_start"
+                        a:src="@drawable/media_start_normal"
                         a:background="@android:color/transparent"
                         a:padding="0dip"
                         a:layout_width="wrap_content"
@@ -62,7 +62,7 @@
                         />
                 <ImageButton
                         a:id="@+id/download_next"
-                        a:src="@drawable/media_forward"
+                        a:src="@drawable/media_forward_normal"
                         a:background="@android:color/transparent"
                         a:padding="0dip"
                         a:layout_width="wrap_content"
@@ -112,7 +112,7 @@
                     a:layout_weight="1"
                     a:background="@android:color/transparent"
                     a:padding="9dip"
-                    a:src="@drawable/media_shuffle" />
+                    a:src="@drawable/media_shuffle_normal" />
 
                 <ImageButton
                     a:id="@+id/download_repeat"
@@ -130,7 +130,7 @@
                     a:layout_weight="1"
                     a:background="@android:color/transparent"
                     a:padding="9dip"
-                    a:src="@drawable/media_toggle_list" />
+                    a:src="@drawable/media_toggle_list_normal" />
 
                 <Button
                     a:id="@+id/download_equalizer"

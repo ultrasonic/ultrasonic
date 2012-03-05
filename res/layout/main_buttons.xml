@@ -49,7 +49,6 @@
             a:layout_height="wrap_content"
             a:textAppearance="?android:attr/textAppearanceSmall"
             a:textColor="@color/cyan"
-            a:background="@color/transparent"
             a:gravity="center_vertical"
             a:paddingLeft="6dp" a:textAllCaps="true" a:textStyle="bold"/>
 
