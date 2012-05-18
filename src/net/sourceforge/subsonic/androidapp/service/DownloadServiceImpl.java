@@ -881,8 +881,6 @@ public class DownloadServiceImpl extends Service implements DownloadService {
 
     private class BufferTask extends CancellableTask {
 
-        private static final int BUFFER_LENGTH_SECONDS = 5;
-
         private final DownloadFile downloadFile;
         private final int position;
         private final long expectedFileSize;
@@ -893,9 +891,9 @@ public class DownloadServiceImpl extends Service implements DownloadService {
             this.position = position;
             partialFile = downloadFile.getPartialFile();
 
-            // Calculate roughly how many bytes BUFFER_LENGTH_SECONDS corresponds to.
+            // Calculate roughly how many bytes buffer length corresponds to.
             int bitRate = downloadFile.getBitRate();
-            long byteCount = Math.max(100000, bitRate * 1024 / 8 * BUFFER_LENGTH_SECONDS);
+            long byteCount = Math.max(100000, bitRate * 1024 / 8 * downloadFile.getBufferLength());
 
             // Find out how large the file should grow before resuming playback.
             expectedFileSize = partialFile.length() + byteCount;

@@ -55,6 +55,8 @@ public class SettingsActivity extends PreferenceActivity implements SharedPrefer
     private ListPreference cacheSize;
     private EditTextPreference cacheLocation;
     private ListPreference preloadCount;
+    private ListPreference bufferLength;
+    private ListPreference networkTimeout;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -67,6 +69,8 @@ public class SettingsActivity extends PreferenceActivity implements SharedPrefer
         cacheSize = (ListPreference) findPreference(Constants.PREFERENCES_KEY_CACHE_SIZE);
         cacheLocation = (EditTextPreference) findPreference(Constants.PREFERENCES_KEY_CACHE_LOCATION);
         preloadCount = (ListPreference) findPreference(Constants.PREFERENCES_KEY_PRELOAD_COUNT);
+        bufferLength = (ListPreference) findPreference(Constants.PREFERENCES_KEY_BUFFER_LENGTH);
+        networkTimeout = (ListPreference) findPreference(Constants.PREFERENCES_KEY_NETWORK_TIMEOUT);
 
         findPreference("testConnection1").setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
             @Override
@@ -148,6 +152,9 @@ public class SettingsActivity extends PreferenceActivity implements SharedPrefer
         cacheSize.setSummary(cacheSize.getEntry());
         cacheLocation.setSummary(cacheLocation.getText());
         preloadCount.setSummary(preloadCount.getEntry());
+        bufferLength.setSummary(bufferLength.getEntry());
+        networkTimeout.setSummary(networkTimeout.getEntry());
+        
         for (ServerSettings ss : serverSettings.values()) {
             ss.update();
         }

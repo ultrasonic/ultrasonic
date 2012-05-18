@@ -85,4 +85,48 @@
         <item>@string/settings.max_bitrate_unlimited</item>
     </string-array>
 
+    <string-array name="bufferLengthValues">
+	<item>2</item>
+	<item>5</item>
+	<item>8</item>
+	<item>10</item>
+	<item>12</item>
+	<item>15</item>
+	<item>20</item>
+	<item>30</item>
+    </string-array>
+
+    <string-array name="bufferLengthNames">
+	<item>@string/settings.buffer_length_2</item>
+	<item>@string/settings.buffer_length_5</item>
+	<item>@string/settings.buffer_length_8</item>
+	<item>@string/settings.buffer_length_10</item>
+	<item>@string/settings.buffer_length_12</item>
+	<item>@string/settings.buffer_length_15</item>
+	<item>@string/settings.buffer_length_20</item>
+	<item>@string/settings.buffer_length_30</item>
+    </string-array>
+
+    <string-array name="networkTimeoutValues">
+	<item>15000</item>
+	<item>30000</item>
+	<item>45000</item>
+	<item>60000</item>
+	<item>75000</item>
+	<item>90000</item>
+	<item>105000</item>
+	<item>120000</item>
+    </string-array>
+
+    <string-array name="networkTimeoutNames">
+	<item>@string/settings.network_timeout_15000</item>
+	<item>@string/settings.network_timeout_30000</item>
+	<item>@string/settings.network_timeout_45000</item>
+	<item>@string/settings.network_timeout_60000</item>
+	<item>@string/settings.network_timeout_75000</item>
+	<item>@string/settings.network_timeout_90000</item>
+	<item>@string/settings.network_timeout_105000</item>
+	<item>@string/settings.network_timeout_120000</item>
+    </string-array>
+
 </resources>

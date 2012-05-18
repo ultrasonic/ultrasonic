@@ -82,6 +82,10 @@ public class DownloadFile {
         }
         return song.getBitRate() == null ? 160 : song.getBitRate();
     }
+    
+    public int getBufferLength() {
+    	return Util.getBufferLength(this.context);
+    }
 
     public synchronized void download() {
         FileUtil.createDirectoryForParent(saveFile);
@@ -203,11 +207,11 @@ public class DownloadFile {
                     Log.i(TAG, "Acquired wake lock " + wakeLock);
                 }
 
-                if (saveFile.exists()) {
+                if (saveFile.exists() && saveFile.length() == song.getSize()) {
                     Log.i(TAG, saveFile + " already exists. Skipping.");
                     return;
                 }
-                if (completeFile.exists()) {
+                if (completeFile.exists() && completeFile.length() == song.getSize()) {
                     if (save) {
                         Util.atomicCopy(completeFile, saveFile);
                     } else {

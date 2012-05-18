@@ -74,6 +74,8 @@ public final class Constants {
     public static final String PREFERENCES_KEY_SCROBBLE = "scrobble";
     public static final String PREFERENCES_KEY_REPEAT_MODE = "repeatMode";
     public static final String PREFERENCES_KEY_WIFI_REQUIRED_FOR_DOWNLOAD = "wifiRequiredForDownload";
+    public static final String PREFERENCES_KEY_BUFFER_LENGTH = "bufferLength";
+    public static final String PREFERENCES_KEY_NETWORK_TIMEOUT = "networkTimeout";
 
     // Name of the preferences file.
     public static final String PREFERENCES_FILE_NAME = "net.sourceforge.subsonic.androidapp_preferences";

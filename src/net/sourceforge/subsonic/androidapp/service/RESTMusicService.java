@@ -670,6 +670,8 @@ public class RESTMusicService implements MusicService {
                     new UsernamePasswordCredentials(username, password));
 
             try {
+            	httpClient.getParams().setParameter("http.socket.timeout", Util.getNetworkTimeout(context));
+            	
                 HttpResponse response = httpClient.execute(request, httpContext);
                 detectRedirect(originalUrl, context, httpContext);
                 return response;

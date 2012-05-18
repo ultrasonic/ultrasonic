@@ -138,6 +138,20 @@
                 a:key="wifiRequiredForDownload"
                 a:defaultValue="false"/>
 
+        <ListPreference
+				a:title="@string/settings.buffer_length"
+				a:key="bufferLength"
+				a:defaultValue="5"
+				a:entryValues="@array/bufferLengthValues"
+				a:entries="@array/bufferLengthNames"/>
+
+		<ListPreference
+				a:title="@string/settings.network_timeout"
+				a:key="networkTimeout"
+				a:defaultValue="15000"
+				a:entryValues="@array/networkTimeoutValues"
+				a:entries="@array/networkTimeoutNames"/>
+
     </PreferenceCategory>
 
     <PreferenceCategory

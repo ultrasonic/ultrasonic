@@ -806,4 +806,14 @@ public class Util extends DownloadActivity {
         pendingIntent = PendingIntent.getService(context, 0, intent, 0);
         views.setOnClickPendingIntent(R.id.control_previous, pendingIntent);
     }
+    
+    public static int getNetworkTimeout(Context context) {
+        SharedPreferences prefs = getPreferences(context);
+        return Integer.parseInt(prefs.getString(Constants.PREFERENCES_KEY_NETWORK_TIMEOUT, "15000"));
+    }
+    
+    public static int getBufferLength(Context context) {
+        SharedPreferences prefs = getPreferences(context);
+        return Integer.parseInt(prefs.getString(Constants.PREFERENCES_KEY_BUFFER_LENGTH, "5"));
+    }
 }
