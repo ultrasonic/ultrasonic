@@ -85,7 +85,7 @@
             android:layout_marginTop="2dip"
             android:layout_weight="0.0"
             android:background="@drawable/btn_bg"
-            android:src="@drawable/status_play" />
+            android:src="@drawable/status_pause" />
 
         <ImageButton
             android:id="@+id/control_next"
