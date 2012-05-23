@@ -13,12 +13,12 @@
             a:layout_width="fill_parent"
             a:layout_height="wrap_content"
             a:minHeight="?android:attr/listPreferredItemHeight">
-
+
         <ImageView
-                a:src="@drawable/ic_menu_compass"
-                a:layout_gravity="center_vertical"
-                a:layout_width="wrap_content"
-                a:layout_height="wrap_content"/>
+            a:layout_width="wrap_content"
+            a:layout_height="wrap_content"
+            a:layout_gravity="center_vertical"
+            a:src="@drawable/ic_menu_select_artist_folder" />
 
         <LinearLayout
                 a:orientation="vertical"

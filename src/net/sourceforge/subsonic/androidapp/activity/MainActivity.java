@@ -36,6 +36,7 @@ import android.view.ContextMenu;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.Window;
 import android.widget.AdapterView;
 import android.widget.ImageButton;
 import android.widget.ListView;
@@ -117,8 +118,20 @@ public class MainActivity extends SubsonicTabActivity {
         // Title: Subsonic
         setTitle(R.string.common_appname);
 
-        // Button 1: shuffle
-        ImageButton actionShuffleButton = (ImageButton)findViewById(R.id.action_button_1);
+        // Button 1: search
+        ImageButton actionSearchButton = (ImageButton)findViewById(R.id.action_button_1);
+        actionSearchButton.setImageResource(R.drawable.ic_menu_search);
+        actionSearchButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+            	Intent intent = new Intent(MainActivity.this, SearchActivity.class);
+            	intent.putExtra(Constants.INTENT_EXTRA_REQUEST_SEARCH, true);
+                Util.startActivityWithoutTransition(MainActivity.this, intent);
+            }
+        });
+        
+        // Button 2: shuffle
+        ImageButton actionShuffleButton = (ImageButton)findViewById(R.id.action_button_2);
         actionShuffleButton.setImageResource(R.drawable.ic_menu_shuffle);
         actionShuffleButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -129,28 +142,26 @@ public class MainActivity extends SubsonicTabActivity {
             }
         });
 
-        // Button 2: search
-        ImageButton actionSearchButton = (ImageButton)findViewById(R.id.action_button_2);
-        actionSearchButton.setImageResource(R.drawable.ic_menu_search);
-        actionSearchButton.setOnClickListener(new View.OnClickListener() {
+        // Button 3: help
+        ImageButton actionHelpButton = (ImageButton)findViewById(R.id.action_button_3);
+        actionHelpButton.setImageResource(R.drawable.ic_menu_help);
+        actionHelpButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-            	Intent intent = new Intent(MainActivity.this, SearchActivity.class);
-            	intent.putExtra(Constants.INTENT_EXTRA_REQUEST_SEARCH, true);
-                Util.startActivityWithoutTransition(MainActivity.this, intent);
+            	startActivity(new Intent(MainActivity.this, HelpActivity.class));
             }
         });
 
-        // Button 3: menu
-        ImageButton actionMenuButton = (ImageButton)findViewById(R.id.action_button_3);
-        actionMenuButton.setImageResource(R.drawable.ic_menu_moreoverflow);
-        actionMenuButton.setOnClickListener(new View.OnClickListener() {
+        // Button 4: settings
+        ImageButton actionSettingsButton = (ImageButton)findViewById(R.id.action_button_4);
+        actionSettingsButton.setImageResource(R.drawable.ic_menu_settings);
+        actionSettingsButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-            	openOptionsMenu(); 
+            	startActivity(new Intent(MainActivity.this, SettingsActivity.class));
             }
         });
-
+        
         // Remember the current theme.
         theme = Util.getTheme(this);
 

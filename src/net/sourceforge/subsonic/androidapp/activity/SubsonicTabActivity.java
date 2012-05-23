@@ -71,7 +71,7 @@ public class SubsonicTabActivity extends Activity {
         setUncaughtExceptionHandler();
         applyTheme();
         super.onCreate(bundle);
-        requestWindowFeature(Window.FEATURE_NO_TITLE);
+       	requestWindowFeature(Window.FEATURE_NO_TITLE);
         startService(new Intent(this, DownloadServiceImpl.class));
         setVolumeControlStream(AudioManager.STREAM_MUSIC);
     }
@@ -151,8 +151,10 @@ public class SubsonicTabActivity extends Activity {
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        MenuInflater inflater = getMenuInflater();
-        inflater.inflate(R.menu.main, menu);
+    	if (android.os.Build.VERSION.SDK_INT < 11) {
+    		MenuInflater inflater = getMenuInflater();
+    		inflater.inflate(R.menu.main, menu);
+    	}
         return true;
     }
 
