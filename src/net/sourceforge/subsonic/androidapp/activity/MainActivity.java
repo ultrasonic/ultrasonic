@@ -118,20 +118,8 @@ public class MainActivity extends SubsonicTabActivity {
         // Title: Subsonic
         setTitle(R.string.common_appname);
 
-        // Button 1: search
-        ImageButton actionSearchButton = (ImageButton)findViewById(R.id.action_button_1);
-        actionSearchButton.setImageResource(R.drawable.ic_menu_search);
-        actionSearchButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-            	Intent intent = new Intent(MainActivity.this, SearchActivity.class);
-            	intent.putExtra(Constants.INTENT_EXTRA_REQUEST_SEARCH, true);
-                Util.startActivityWithoutTransition(MainActivity.this, intent);
-            }
-        });
-        
-        // Button 2: shuffle
-        ImageButton actionShuffleButton = (ImageButton)findViewById(R.id.action_button_2);
+        // Button 1: shuffle
+        ImageButton actionShuffleButton = (ImageButton)findViewById(R.id.action_button_1);
         actionShuffleButton.setImageResource(R.drawable.ic_menu_shuffle);
         actionShuffleButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -141,7 +129,17 @@ public class MainActivity extends SubsonicTabActivity {
                 Util.startActivityWithoutTransition(MainActivity.this, intent);
             }
         });
-
+        
+        // Button 2: settings
+        ImageButton actionSettingsButton = (ImageButton)findViewById(R.id.action_button_2);
+        actionSettingsButton.setImageResource(R.drawable.ic_menu_settings);
+        actionSettingsButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+            	startActivity(new Intent(MainActivity.this, SettingsActivity.class));
+            }
+        });
+        
         // Button 3: help
         ImageButton actionHelpButton = (ImageButton)findViewById(R.id.action_button_3);
         actionHelpButton.setImageResource(R.drawable.ic_menu_help);
@@ -151,14 +149,14 @@ public class MainActivity extends SubsonicTabActivity {
             	startActivity(new Intent(MainActivity.this, HelpActivity.class));
             }
         });
-
-        // Button 4: settings
-        ImageButton actionSettingsButton = (ImageButton)findViewById(R.id.action_button_4);
-        actionSettingsButton.setImageResource(R.drawable.ic_menu_settings);
-        actionSettingsButton.setOnClickListener(new View.OnClickListener() {
+        
+        // Button 4: exit
+        ImageButton actionSearchButton = (ImageButton)findViewById(R.id.action_button_4);
+        actionSearchButton.setImageResource(R.drawable.ic_menu_exit);
+        actionSearchButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-            	startActivity(new Intent(MainActivity.this, SettingsActivity.class));
+            	exit();
             }
         });
         

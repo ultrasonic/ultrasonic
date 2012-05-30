@@ -138,33 +138,19 @@ public class SearchActivity extends SubsonicTabActivity {
 		// Button 1: gone
 		findViewById(R.id.action_button_1).setVisibility(View.GONE);
 
-        // Button 2: search
-        final ImageButton actionSearchButton = (ImageButton)findViewById(R.id.action_button_2);
+		// Button 2: gone
+		findViewById(R.id.action_button_2).setVisibility(View.GONE);
+        
+		// Button 3: gone
+		findViewById(R.id.action_button_3).setVisibility(View.GONE);
+		
+        // Button 4: search
+        final ImageButton actionSearchButton = (ImageButton)findViewById(R.id.action_button_4);
         actionSearchButton.setImageResource(R.drawable.ic_menu_search);
         actionSearchButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 onSearchRequested();
-            }
-        });
-        
-        // Button 3: help
-        ImageButton actionHelpButton = (ImageButton)findViewById(R.id.action_button_3);
-        actionHelpButton.setImageResource(R.drawable.ic_menu_help);
-        actionHelpButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-            	startActivity(new Intent(SearchActivity.this, HelpActivity.class));
-            }
-        });
-
-        // Button 4: settings
-        ImageButton actionSettingsButton = (ImageButton)findViewById(R.id.action_button_4);
-        actionSettingsButton.setImageResource(R.drawable.ic_menu_settings);
-        actionSettingsButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-            	startActivity(new Intent(SearchActivity.this, SettingsActivity.class));
             }
         });
 

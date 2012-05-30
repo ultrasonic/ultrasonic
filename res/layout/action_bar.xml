@@ -52,7 +52,7 @@
         a:scaleType="center"
         a:showAsAction="ifRoom|withText"
         a:src="@drawable/ic_menu_help" />
-
+
     <ImageButton
         a:id="@+id/action_button_4"
         a:layout_width="wrap_content"
@@ -63,8 +63,8 @@
         a:padding="5dp"
         a:scaleType="center"
         a:showAsAction="ifRoom|withText"
-        a:src="@drawable/ic_menu_settings" />
-
+        a:src="@drawable/ic_menu_exit" />
+
     <ImageButton
         a:id="@+id/action_button_1"
         a:layout_width="wrap_content"
@@ -75,8 +75,8 @@
         a:padding="5dp"
         a:scaleType="center"
         a:showAsAction="ifRoom|withText"
-        a:src="@drawable/ic_menu_search" />
-
+        a:src="@drawable/ic_menu_shuffle" />
+
     <ImageButton
         a:id="@+id/action_button_2"
         a:layout_width="wrap_content"
@@ -87,6 +87,6 @@
         a:padding="5dp"
         a:scaleType="center"
         a:showAsAction="ifRoom|withText"
-        a:src="@drawable/ic_menu_shuffle" />
+        a:src="@drawable/ic_menu_settings" />
 
 </RelativeLayout>

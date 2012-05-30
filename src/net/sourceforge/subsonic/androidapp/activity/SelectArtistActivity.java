@@ -76,8 +76,14 @@ public class SelectArtistActivity extends SubsonicTabActivity implements Adapter
 
         setTitle(Util.isOffline(this) ? R.string.music_library_label_offline : R.string.music_library_label);
 
-        // Button 1: shuffle
-        ImageButton shuffleButton = (ImageButton) findViewById(R.id.action_button_1);
+		// Button 1: gone
+		findViewById(R.id.action_button_1).setVisibility(View.GONE);
+
+		// Button 2: gone
+		findViewById(R.id.action_button_2).setVisibility(View.GONE);
+        
+        // Button 3: shuffle
+        ImageButton shuffleButton = (ImageButton) findViewById(R.id.action_button_3);
         shuffleButton.setImageResource(R.drawable.ic_menu_shuffle);
         shuffleButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -88,8 +94,8 @@ public class SelectArtistActivity extends SubsonicTabActivity implements Adapter
             }
         });
 
-        // Button 2: refresh
-        ImageButton refreshButton = (ImageButton) findViewById(R.id.action_button_2);
+        // Button 4: refresh
+        ImageButton refreshButton = (ImageButton) findViewById(R.id.action_button_4);
         refreshButton.setImageResource(R.drawable.ic_menu_refresh);
         refreshButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -97,26 +103,8 @@ public class SelectArtistActivity extends SubsonicTabActivity implements Adapter
                 refresh();
             }
         });
-        
-        // Button 3: help
-        ImageButton actionHelpButton = (ImageButton)findViewById(R.id.action_button_3);
-        actionHelpButton.setImageResource(R.drawable.ic_menu_help);
-        actionHelpButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-            	startActivity(new Intent(SelectArtistActivity.this, HelpActivity.class));
-            }
-        });
 
-        // Button 4: settings
-        ImageButton actionSettingsButton = (ImageButton)findViewById(R.id.action_button_4);
-        actionSettingsButton.setImageResource(R.drawable.ic_menu_settings);
-        actionSettingsButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-            	startActivity(new Intent(SelectArtistActivity.this, SettingsActivity.class));
-            }
-        });
+
 
         musicFolders = null;
         load();

@@ -9,14 +9,14 @@
                  a:layout_width="fill_parent"
                  a:layout_height="0dip"
                  a:layout_weight="1">
-
+
         <RelativeLayout
-                a:id="@+id/download_album_art_layout"
-                a:orientation="vertical"
-                a:layout_width="fill_parent"
-                a:layout_height="fill_parent"
-                a:layout_weight="1"
-                a:background="@drawable/album_art_background">
+            a:id="@+id/download_album_art_layout"
+            a:layout_width="fill_parent"
+            a:layout_height="fill_parent"
+            a:layout_weight="1"
+            a:background="@drawable/pinstripe_tile"
+            a:orientation="vertical" >
 
             <ImageButton
                     a:id="@+id/download_repeat"

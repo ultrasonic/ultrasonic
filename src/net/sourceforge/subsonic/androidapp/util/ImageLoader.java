@@ -66,7 +66,8 @@ public class ImageLoader implements Runnable {
         // Determine the density-dependent image sizes.
         imageSizeDefault = context.getResources().getDrawable(R.drawable.unknown_album).getIntrinsicHeight();
         DisplayMetrics metrics = context.getResources().getDisplayMetrics();
-        imageSizeLarge = (int) Math.round(Math.min(metrics.widthPixels, metrics.heightPixels) * 0.6);
+        /*imageSizeLarge = (int) Math.round(Math.min(metrics.widthPixels, metrics.heightPixels) * 0.6);*/
+        imageSizeLarge = (int) Math.round(Math.min(metrics.widthPixels, metrics.heightPixels));
 
         for (int i = 0; i < CONCURRENCY; i++) {
             new Thread(this, "ImageLoader").start();
@@ -98,7 +99,7 @@ public class ImageLoader implements Runnable {
         if (!large) {
             setUnknownImage(view, large);
         }
-        queue.offer(new Task(view, entry, size, large, large, crossfade));
+        queue.offer(new Task(view, entry, size, false, large, crossfade));
     }
 
     private String getKey(String coverArtId, int size) {

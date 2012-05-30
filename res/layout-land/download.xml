@@ -189,12 +189,13 @@
                 a:layout_alignParentLeft="true"
                 a:layout_toLeftOf="@+id/download_control_layout"
                 >
-
+
             <FrameLayout
-                    a:id="@+id/download_album_art_layout"
-                    a:layout_width="fill_parent"
-                    a:layout_height="fill_parent"
-                    a:background="@drawable/album_art_background">
+                a:id="@+id/download_album_art_layout"
+                a:layout_width="fill_parent"
+                a:layout_height="fill_parent"
+                a:background="@drawable/pinstripe_tile" >
+
                 <ImageView
                         a:id="@+id/download_album_art_image"
                         a:layout_width="wrap_content"
