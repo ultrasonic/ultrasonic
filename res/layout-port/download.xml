@@ -9,14 +9,14 @@
                  a:layout_width="fill_parent"
                  a:layout_height="0dip"
                  a:layout_weight="1">
-
+
         <RelativeLayout
-            a:id="@+id/download_album_art_layout"
-            a:layout_width="fill_parent"
-            a:layout_height="fill_parent"
-            a:layout_weight="1"
-            a:background="@drawable/pinstripe_tile"
-            a:orientation="vertical" >
+                a:id="@+id/download_album_art_layout"
+                a:orientation="vertical"
+                a:layout_width="fill_parent"
+                a:layout_height="fill_parent"
+                a:layout_weight="1"
+                a:background="@drawable/album_art_background">
 
             <ImageButton
                     a:id="@+id/download_repeat"
@@ -40,7 +40,7 @@
                     a:layout_gravity="top|right"
                     a:layout_below="@+id/download_repeat"
                     a:paddingTop="12dip"
-                    a:paddingLeft="14dip"
+                    a:paddingLeft="0dip"
                     a:paddingBottom="15dip"/>
 
             <Button
@@ -140,7 +140,7 @@
             a:background="@drawable/list_selector_holo_dark"
             a:paddingBottom="12dip"
             a:paddingLeft="8dip"
-            a:paddingTop="24dip"
+            a:paddingTop="12dip"
             a:src="@drawable/ic_menu_moreoverflow" />
 
         <ImageButton
