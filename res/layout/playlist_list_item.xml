@@ -1,8 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <TextView xmlns:a="http://schemas.android.com/apk/res/android"
           a:id="@android:id/text1"
-          a:drawableRight="@drawable/list_item_more"
-          a:drawablePadding="6dip"
           a:layout_width="fill_parent"
           a:layout_height="wrap_content"
           a:textAppearance="?android:attr/textAppearanceMedium"
@@ -10,3 +8,5 @@
           a:paddingLeft="6dip"
           a:paddingRight="6dip"
           a:minHeight="50dip"/>
+
+                    <!-- a:drawableRight="@drawable/list_item_more"           a:drawablePadding="6dip"-->

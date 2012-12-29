@@ -57,6 +57,7 @@ public class SettingsActivity extends PreferenceActivity implements SharedPrefer
     private ListPreference preloadCount;
     private ListPreference bufferLength;
     private ListPreference networkTimeout;
+    private ListPreference maxAlbums;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -71,6 +72,7 @@ public class SettingsActivity extends PreferenceActivity implements SharedPrefer
         preloadCount = (ListPreference) findPreference(Constants.PREFERENCES_KEY_PRELOAD_COUNT);
         bufferLength = (ListPreference) findPreference(Constants.PREFERENCES_KEY_BUFFER_LENGTH);
         networkTimeout = (ListPreference) findPreference(Constants.PREFERENCES_KEY_NETWORK_TIMEOUT);
+        maxAlbums = (ListPreference) findPreference(Constants.PREFERENCES_KEY_MAX_ALBUMS);
 
         findPreference("testConnection1").setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
             @Override
@@ -154,6 +156,7 @@ public class SettingsActivity extends PreferenceActivity implements SharedPrefer
         preloadCount.setSummary(preloadCount.getEntry());
         bufferLength.setSummary(bufferLength.getEntry());
         networkTimeout.setSummary(networkTimeout.getEntry());
+        maxAlbums.setSummary(maxAlbums.getEntry());
         
         for (ServerSettings ss : serverSettings.values()) {
             ss.update();
@@ -181,7 +184,7 @@ public class SettingsActivity extends PreferenceActivity implements SharedPrefer
             Util.unregisterMediaButtonEventReceiver(this);
         }
     }
-
+    
     private void setCacheLocation(String path) {
         File dir = new File(path);
         if (!FileUtil.ensureDirectoryExistsAndIsReadWritable(dir)) {

@@ -342,7 +342,7 @@ public class DownloadActivity extends SubsonicTabActivity implements OnGestureLi
             visualizerButton.setVisibility(View.GONE);
         } else {
             visualizerView = new VisualizerView(this);
-            visualizerViewLayout.addView(visualizerView, new LinearLayout.LayoutParams(LinearLayout.LayoutParams.FILL_PARENT, LinearLayout.LayoutParams.FILL_PARENT));
+            visualizerViewLayout.addView(visualizerView, new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.MATCH_PARENT));
 
             visualizerView.setOnTouchListener(new View.OnTouchListener() {
                 @Override

@@ -28,7 +28,11 @@ import net.sourceforge.subsonic.androidapp.domain.Version;
  */
 public class ServerTooOldException extends Exception {
 
-    private final String text;
+    /**
+	 * 
+	 */
+	private static final long serialVersionUID = -7955245839000220002L;
+	private final String text;
     private final Version serverVersion;
     private final Version requiredVersion;
 

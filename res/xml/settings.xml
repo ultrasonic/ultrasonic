@@ -203,6 +203,20 @@
                 a:summary="@string/settings.screen_lit_summary"
                 a:key="screenLitOnDownload"
                 a:defaultValue="true"/>
+        
+        <CheckBoxPreference
+                a:title="@string/settings.show_notification"
+                a:summary="@string/settings.show_notification_summary"
+                a:key="showNotification"
+                a:defaultValue="true"/>
+        
+        <ListPreference
+                a:title="@string/settings.max_albums"
+                a:summary="@string/settings.max_albums_summary"
+                a:key="maxAlbums"
+                a:defaultValue="20"
+                a:entryValues="@array/maxAlbumsValues"
+                a:entries="@array/maxAlbumsNames"/>
 
         <Preference
                 a:key="clearSearchHistory"

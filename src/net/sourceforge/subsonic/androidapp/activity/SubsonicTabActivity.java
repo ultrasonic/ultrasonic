@@ -368,7 +368,7 @@ public class SubsonicTabActivity extends Activity {
                 PackageInfo packageInfo = context.getPackageManager().getPackageInfo("net.sourceforge.subsonic.androidapp", 0);
                 file = new File(Environment.getExternalStorageDirectory(), "subsonic-stacktrace.txt");
                 printWriter = new PrintWriter(file);
-                printWriter.println("Android API level: " + Build.VERSION.SDK);
+                printWriter.println("Android API level: " + Build.VERSION.SDK_INT);
                 printWriter.println("Subsonic version name: " + packageInfo.versionName);
                 printWriter.println("Subsonic version code: " + packageInfo.versionCode);
                 printWriter.println();

@@ -86,6 +86,17 @@
             android:layout_weight="0.0"
             android:background="@drawable/btn_bg"
             android:src="@drawable/status_pause" />
+        
+        <ImageButton
+            android:id="@+id/control_stop"
+            android:layout_width="40dip"
+            android:layout_height="40dip"
+            android:layout_gravity="center|right"
+            android:layout_marginRight="5dip"
+            android:layout_marginTop="2dip"
+            android:layout_weight="0.0"
+            android:background="@drawable/btn_bg"
+            android:src="@drawable/status_stop" />
 
         <ImageButton
             android:id="@+id/control_next"

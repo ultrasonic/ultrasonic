@@ -18,6 +18,7 @@
  */
 package net.sourceforge.subsonic.androidapp.service;
 
+import android.app.Notification;
 import android.app.Service;
 import android.content.Context;
 import android.content.Intent;
@@ -27,6 +28,7 @@ import android.os.Handler;
 import android.os.IBinder;
 import android.os.PowerManager;
 import android.util.Log;
+import net.sourceforge.subsonic.androidapp.R;
 import net.sourceforge.subsonic.androidapp.audiofx.EqualizerController;
 import net.sourceforge.subsonic.androidapp.audiofx.VisualizerController;
 import net.sourceforge.subsonic.androidapp.domain.MusicDirectory;
@@ -72,6 +74,8 @@ public class DownloadServiceImpl extends Service implements DownloadService {
     private final List<DownloadFile> cleanupCandidates = new ArrayList<DownloadFile>();
     private final Scrobbler scrobbler = new Scrobbler();
     private final JukeboxService jukeboxService = new JukeboxService(this);
+    private final Notification notification = new Notification(R.drawable.ic_stat_subsonic, null, System.currentTimeMillis());
+            
     private DownloadFile currentPlaying;
     private DownloadFile currentDownloading;
     private CancellableTask bufferTask;
@@ -121,6 +125,8 @@ public class DownloadServiceImpl extends Service implements DownloadService {
                 return false;
             }
         });
+        
+    	notification.flags |= Notification.FLAG_NO_CLEAR | Notification.FLAG_ONGOING_EVENT;
 
         if (equalizerAvailable) {
             equalizerController = new EqualizerController(this, mediaPlayer);
@@ -386,15 +392,15 @@ public class DownloadServiceImpl extends Service implements DownloadService {
 
     synchronized void setCurrentPlaying(DownloadFile currentPlaying, boolean showNotification) {
         this.currentPlaying = currentPlaying;
-
+        
         if (currentPlaying != null) {
         	Util.broadcastNewTrackInfo(this, currentPlaying.getSong());
         } else {
             Util.broadcastNewTrackInfo(this, null);
         }
 
-        if (currentPlaying != null && showNotification) {
-            Util.showPlayingNotification(this, this, handler, currentPlaying.getSong());
+        if (Util.isNotificationEnabled(this) && currentPlaying != null && showNotification) {
+            Util.showPlayingNotification(this, this, handler, currentPlaying.getSong(), this.notification, this.playerState);
         } else {
             Util.hidePlayingNotification(this, this, handler);
         }
@@ -611,15 +617,20 @@ public class DownloadServiceImpl extends Service implements DownloadService {
             lifecycleSupport.serializeDownloadQueue();
         }
 
-        boolean show = this.playerState == PAUSED && playerState == PlayerState.STARTED;
-        boolean hide = this.playerState == STARTED && playerState == PlayerState.PAUSED;
+        boolean show = playerState == PlayerState.STARTED || playerState == PlayerState.PAUSED;
+        boolean hide = playerState == PlayerState.IDLE || playerState == PlayerState.STOPPED;
         Util.broadcastPlaybackStatusChange(this, playerState);
 
         this.playerState = playerState;
-        if (show) {
-            Util.showPlayingNotification(this, this, handler, currentPlaying.getSong());
-        } else if (hide) {
-            Util.hidePlayingNotification(this, this, handler);
+        
+        if (Util.isNotificationEnabled(this)) {
+        	if (show) {
+        		Util.showPlayingNotification(this, this, handler, currentPlaying.getSong(), this.notification, this.playerState);
+        	} else if (hide) {
+        		Util.hidePlayingNotification(this, this, handler);
+        	}
+        } else {
+        	Util.hidePlayingNotification(this, this, handler);
         }
 
         if (playerState == STARTED) {
@@ -896,7 +907,11 @@ public class DownloadServiceImpl extends Service implements DownloadService {
             long byteCount = Math.max(100000, bitRate * 1024 / 8 * downloadFile.getBufferLength());
 
             // Find out how large the file should grow before resuming playback.
-            expectedFileSize = partialFile.length() + byteCount;
+            if (position == 0) {
+            	expectedFileSize = byteCount;
+            } else {
+            	expectedFileSize = partialFile.length() + byteCount;
+            }
         }
 
         @Override

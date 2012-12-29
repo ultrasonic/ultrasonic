@@ -58,6 +58,7 @@ import org.apache.http.params.HttpParams;
 import org.apache.http.protocol.BasicHttpContext;
 import org.apache.http.protocol.ExecutionContext;
 import org.apache.http.protocol.HttpContext;
+import org.xmlpull.v1.XmlPullParser;
 
 import android.content.Context;
 import android.content.SharedPreferences;
@@ -67,6 +68,7 @@ import android.graphics.BitmapFactory;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.util.Log;
+import android.util.Xml;
 import net.sourceforge.subsonic.androidapp.R;
 import net.sourceforge.subsonic.androidapp.domain.Indexes;
 import net.sourceforge.subsonic.androidapp.domain.JukeboxStatus;
@@ -170,6 +172,13 @@ public class RESTMusicService implements MusicService {
         Reader reader = getReader(context, progressListener, "ping", null);
         try {
             new ErrorParser(context).parse(reader);
+            XmlPullParser parser;
+            parser = Xml.newPullParser();
+            parser.setInput(reader);
+            String version = parser.getAttributeValue(null, "version");
+            if (version != null) {
+                Util.setServerRestVersion(context, new Version(version));
+            }
         } finally {
             Util.close(reader);
         }

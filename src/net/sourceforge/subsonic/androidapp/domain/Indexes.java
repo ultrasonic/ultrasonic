@@ -26,7 +26,11 @@ import java.io.Serializable;
  */
 public class Indexes implements Serializable {
 
-    private final long lastModified;
+    /**
+	 * 
+	 */
+	private static final long serialVersionUID = -9186563899711652646L;
+	private final long lastModified;
     private final List<Artist> shortcuts;
     private final List<Artist> artists;
 

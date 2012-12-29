@@ -26,7 +26,12 @@ package net.sourceforge.subsonic.androidapp.service;
  */
 public class OfflineException extends Exception {
 
-    public OfflineException(String message) {
+    /**
+	 * 
+	 */
+	private static final long serialVersionUID = -4479642294747429444L;
+
+	public OfflineException(String message) {
         super(message);
     }
 }

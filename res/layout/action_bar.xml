@@ -1,92 +1,46 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:a="http://schemas.android.com/apk/res/android"
-    a:layout_width="fill_parent"
-    a:layout_height="48dp"
-    a:background="@drawable/action_bar_bg"
-    a:gravity="center" >
+	a:layout_width="fill_parent" a:layout_height="48dp" a:background="@drawable/action_bar_bg"
+	a:gravity="center">
 
-    <ImageView
-        a:id="@+id/actionbar_home_icon"
-        a:layout_width="wrap_content"
-        a:layout_height="wrap_content"
-        a:layout_alignParentBottom="true"
-        a:layout_alignParentLeft="true"
-        a:layout_alignParentTop="true"
-        a:layout_gravity="center_vertical"
-        a:paddingBottom="2dip"
-        a:paddingLeft="4dip"
-        a:paddingRight="4dip"
-        a:paddingTop="2dip"
-        a:scaleType="centerInside"
-        a:src="@drawable/main_header_icon" />
-            />    
+	<ImageView a:id="@+id/actionbar_home_icon" a:layout_width="wrap_content"
+		a:layout_height="wrap_content" a:layout_alignParentBottom="true"
+		a:layout_alignParentLeft="true" a:layout_alignParentTop="true"
+		a:layout_gravity="center_vertical" a:paddingBottom="2dip"
+		a:paddingLeft="4dip" a:paddingRight="4dip" a:paddingTop="2dip"
+		a:scaleType="centerInside" a:src="@drawable/main_header_icon" />
+	/>
 
-    <TextView
-        a:id="@+id/actionbar_title_text"
-        a:layout_width="wrap_content"
-        a:layout_height="wrap_content"
-        a:layout_alignParentBottom="true"
-        a:layout_alignParentTop="true"
-        a:layout_toRightOf="@id/actionbar_home_icon"
-        a:ellipsize="middle"
-        a:gravity="center_vertical"
-        a:inputType="none"
-        a:lineSpacingMultiplier="0.85"
-        a:shadowColor="#000000"
-        a:shadowDx="1"
-        a:shadowDy="1"
-        a:shadowRadius="1"
-        a:text="Subsonic"
-        a:textColor="#FFFFFF"
-        a:textSize="18sp"
-        a:textStyle="bold" />
+	<TextView a:id="@+id/actionbar_title_text" a:layout_width="wrap_content"
+		a:layout_height="wrap_content" a:layout_alignParentBottom="true"
+		a:layout_alignParentTop="true" a:layout_toRightOf="@id/actionbar_home_icon"
+		a:ellipsize="middle" a:gravity="center_vertical" a:inputType="none"
+		a:lineSpacingMultiplier="0.85" a:shadowColor="#000000" a:shadowDx="1"
+		a:shadowDy="1" a:shadowRadius="1" a:text="Subsonic" a:textColor="#FFFFFF"
+		a:textSize="18sp" a:textStyle="bold" />
 
-    <ImageButton
-        a:id="@+id/action_button_3"
-        a:layout_width="wrap_content"
-        a:layout_height="match_parent"
-        a:layout_alignParentTop="true"
-        a:layout_toLeftOf="@+id/action_button_4"
-        a:background="@drawable/list_selector_holo_dark"
-        a:padding="5dp"
-        a:scaleType="center"
-        a:showAsAction="ifRoom|withText"
-        a:src="@drawable/ic_menu_help" />
-
-    <ImageButton
-        a:id="@+id/action_button_4"
-        a:layout_width="wrap_content"
-        a:layout_height="match_parent"
-        a:layout_alignParentBottom="true"
-        a:layout_alignParentRight="true"
-        a:background="@drawable/list_selector_holo_dark"
-        a:padding="5dp"
-        a:scaleType="center"
-        a:showAsAction="ifRoom|withText"
-        a:src="@drawable/ic_menu_exit" />
-
-    <ImageButton
-        a:id="@+id/action_button_1"
-        a:layout_width="wrap_content"
-        a:layout_height="match_parent"
-        a:layout_alignParentTop="true"
-        a:layout_toLeftOf="@+id/action_button_2"
-        a:background="@drawable/list_selector_holo_dark"
-        a:padding="5dp"
-        a:scaleType="center"
-        a:showAsAction="ifRoom|withText"
-        a:src="@drawable/ic_menu_shuffle" />
-
-    <ImageButton
-        a:id="@+id/action_button_2"
-        a:layout_width="wrap_content"
-        a:layout_height="match_parent"
-        a:layout_alignParentTop="true"
-        a:layout_toLeftOf="@+id/action_button_3"
-        a:background="@drawable/list_selector_holo_dark"
-        a:padding="5dp"
-        a:scaleType="center"
-        a:showAsAction="ifRoom|withText"
-        a:src="@drawable/ic_menu_settings" />
+	<ImageButton a:id="@+id/action_button_3" a:layout_width="wrap_content"
+		a:layout_height="match_parent" a:layout_alignParentTop="true"
+		a:layout_toLeftOf="@+id/action_button_4" a:background="@drawable/list_selector_holo_dark"
+		a:padding="5dp" a:scaleType="center" a:showAsAction="ifRoom|withText"
+		a:src="@drawable/ic_menu_help" />
+
+	<ImageButton a:id="@+id/action_button_4" a:layout_width="wrap_content"
+		a:layout_height="match_parent" a:layout_alignParentBottom="true"
+		a:layout_alignParentRight="true" a:background="@drawable/list_selector_holo_dark"
+		a:padding="5dp" a:scaleType="center" a:showAsAction="ifRoom|withText"
+		a:src="@drawable/ic_menu_exit" />
+
+	<ImageButton a:id="@+id/action_button_1" a:layout_width="wrap_content"
+		a:layout_height="match_parent" a:layout_alignParentTop="true"
+		a:layout_toLeftOf="@+id/action_button_2" a:background="@drawable/list_selector_holo_dark"
+		a:padding="5dp" a:scaleType="center" a:showAsAction="ifRoom|withText"
+		a:src="@drawable/ic_menu_shuffle" />
+
+	<ImageButton a:id="@+id/action_button_2" a:layout_width="wrap_content"
+		a:layout_height="match_parent" a:layout_alignParentTop="true"
+		a:layout_toLeftOf="@+id/action_button_3" a:background="@drawable/list_selector_holo_dark"
+		a:padding="5dp" a:scaleType="center" a:showAsAction="ifRoom|withText"
+		a:src="@drawable/ic_menu_settings" />
 
 </RelativeLayout>

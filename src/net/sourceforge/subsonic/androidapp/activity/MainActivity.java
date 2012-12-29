@@ -22,8 +22,11 @@ package net.sourceforge.subsonic.androidapp.activity;
 import java.util.Arrays;
 
 import net.sourceforge.subsonic.androidapp.R;
+import net.sourceforge.subsonic.androidapp.domain.Version;
 import net.sourceforge.subsonic.androidapp.service.DownloadService;
 import net.sourceforge.subsonic.androidapp.service.DownloadServiceImpl;
+import net.sourceforge.subsonic.androidapp.service.MusicService;
+import net.sourceforge.subsonic.androidapp.service.MusicServiceFactory;
 import net.sourceforge.subsonic.androidapp.util.Constants;
 import net.sourceforge.subsonic.androidapp.util.MergeAdapter;
 import net.sourceforge.subsonic.androidapp.util.Util;
@@ -76,9 +79,10 @@ public class MainActivity extends SubsonicTabActivity {
         final View albumsNewestButton = buttons.findViewById(R.id.main_albums_newest);
         final View albumsRandomButton = buttons.findViewById(R.id.main_albums_random);
         final View albumsHighestButton = buttons.findViewById(R.id.main_albums_highest);
+        final View albumsStarredButton = buttons.findViewById(R.id.main_albums_starred);        
         final View albumsRecentButton = buttons.findViewById(R.id.main_albums_recent);
         final View albumsFrequentButton = buttons.findViewById(R.id.main_albums_frequent);
-
+        
         final View dummyView = findViewById(R.id.main_dummy);
 
         int instance = Util.getActiveServer(this);
@@ -86,13 +90,14 @@ public class MainActivity extends SubsonicTabActivity {
         serverTextView.setText(name);
 
         ListView list = (ListView) findViewById(R.id.main_list);
-
+        
         MergeAdapter adapter = new MergeAdapter();
         adapter.addViews(Arrays.asList(serverButton), true);
         if (!Util.isOffline(this)) {
             adapter.addView(albumsTitle, false);
-            adapter.addViews(Arrays.asList(albumsNewestButton, albumsRandomButton, albumsHighestButton, albumsRecentButton, albumsFrequentButton), true);
+            adapter.addViews(Arrays.asList(albumsNewestButton, albumsRecentButton, albumsFrequentButton, albumsHighestButton, albumsStarredButton, albumsRandomButton), true);
         }
+        
         list.setAdapter(adapter);
         registerForContextMenu(dummyView);
 
@@ -111,6 +116,8 @@ public class MainActivity extends SubsonicTabActivity {
                     showAlbumList("recent");
                 } else if (view == albumsFrequentButton) {
                     showAlbumList("frequent");
+                } else if (view == albumsStarredButton) {
+                    showAlbumList("starred");
                 }
             }
         });
@@ -270,7 +277,7 @@ public class MainActivity extends SubsonicTabActivity {
     private void showAlbumList(String type) {
         Intent intent = new Intent(this, SelectAlbumActivity.class);
         intent.putExtra(Constants.INTENT_EXTRA_NAME_ALBUM_LIST_TYPE, type);
-        intent.putExtra(Constants.INTENT_EXTRA_NAME_ALBUM_LIST_SIZE, 20);
+        intent.putExtra(Constants.INTENT_EXTRA_NAME_ALBUM_LIST_SIZE, Util.getMaxAlbums(this));
         intent.putExtra(Constants.INTENT_EXTRA_NAME_ALBUM_LIST_OFFSET, 0);
 		Util.startActivityWithoutTransition(this, intent);
 	}

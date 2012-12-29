@@ -61,7 +61,11 @@ public class MusicDirectory {
     }
 
     public static class Entry implements Serializable {
-        private String id;
+        /**
+		 * 
+		 */
+		private static final long serialVersionUID = -3509705707977261992L;
+		private String id;
         private String parent;
         private boolean directory;
         private String title;

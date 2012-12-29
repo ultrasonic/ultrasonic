@@ -25,7 +25,11 @@ import java.io.Serializable;
  */
 public class Playlist implements Serializable {
 
-    private String id;
+    /**
+	 * 
+	 */
+	private static final long serialVersionUID = -6658599528577231609L;
+	private String id;
     private String name;
 
     public Playlist(String id, String name) {

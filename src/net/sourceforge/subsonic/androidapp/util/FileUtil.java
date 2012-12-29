@@ -25,6 +25,7 @@ import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.io.Serializable;
 import java.util.Arrays;
+import java.util.Locale;
 import java.util.SortedSet;
 import java.util.TreeSet;
 import java.util.Iterator;
@@ -248,7 +249,7 @@ public class FileUtil {
      */
     public static String getExtension(String name) {
         int index = name.lastIndexOf('.');
-        return index == -1 ? "" : name.substring(index + 1).toLowerCase();
+        return index == -1 ? "" : name.substring(index + 1).toLowerCase(Locale.getDefault());
     }
 
     /**
@@ -288,7 +289,7 @@ public class FileUtil {
         ObjectInputStream in = null;
         try {
             in = new ObjectInputStream(new FileInputStream(file));
-            T result = (T) in.readObject();
+            T result = (T)in.readObject();
             Log.i(TAG, "Deserialized object from " + file);
             return result;
         } catch (Throwable x) {

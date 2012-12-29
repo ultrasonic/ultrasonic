@@ -18,6 +18,7 @@
  */
 package net.sourceforge.subsonic.androidapp.util;
 
+import static net.sourceforge.subsonic.androidapp.domain.PlayerState.PAUSED;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.Notification;
@@ -129,6 +130,11 @@ public class Util extends DownloadActivity {
         }
         SharedPreferences prefs = getPreferences(context);
         return prefs.getBoolean(Constants.PREFERENCES_KEY_SCROBBLE, false);
+    }
+    
+    public static boolean isNotificationEnabled(Context context) {
+        SharedPreferences prefs = getPreferences(context);
+        return prefs.getBoolean(Constants.PREFERENCES_KEY_SHOW_NOTIFICATION, false);
     }
 
     public static void setActiveServer(Context context, int instance) {
@@ -563,18 +569,14 @@ public class Util extends DownloadActivity {
                 })
                 .show();
     }
-
-    public static void showPlayingNotification(final Context context, final DownloadServiceImpl downloadService, Handler handler, MusicDirectory.Entry song) {
+    
+    public static void showPlayingNotification(final Context context, final DownloadServiceImpl downloadService, Handler handler, MusicDirectory.Entry song, final Notification notification, PlayerState playerState) {
 
         // Use the same text for the ticker and the expanded notification
         String title = song.getTitle();
         String text = song.getArtist();
         String album = song.getAlbum();
         
-        // Set the icon, scrolling text and timestamp
-        final Notification notification = new Notification(R.drawable.ic_stat_subsonic, title, System.currentTimeMillis());
-        notification.flags |= Notification.FLAG_NO_CLEAR | Notification.FLAG_ONGOING_EVENT;
-
         RemoteViews contentView = new RemoteViews(context.getPackageName(), R.layout.notification);
 
         // Set the album art.
@@ -596,6 +598,11 @@ public class Util extends DownloadActivity {
         contentView.setTextViewText(R.id.trackname, title);
         contentView.setTextViewText(R.id.artist, text);
         contentView.setTextViewText(R.id.album, album);
+                
+    	if (playerState == PlayerState.PAUSED)
+			contentView.setImageViewResource(R.id.control_play, R.drawable.ic_appwidget_music_play);
+		else if (playerState == PlayerState.STARTED)
+			contentView.setImageViewResource(R.id.control_play, R.drawable.ic_appwidget_music_pause);
         
         notification.contentView = contentView;  
         
@@ -805,11 +812,23 @@ public class Util extends DownloadActivity {
         intent.putExtra(Intent.EXTRA_KEY_EVENT, new KeyEvent(KeyEvent.ACTION_DOWN, KeyEvent.KEYCODE_MEDIA_PREVIOUS));
         pendingIntent = PendingIntent.getService(context, 0, intent, 0);
         views.setOnClickPendingIntent(R.id.control_previous, pendingIntent);
+        
+        // Emulate media button clicks.
+        intent = new Intent("4");
+        intent.setComponent(new ComponentName(context, DownloadServiceImpl.class));
+        intent.putExtra(Intent.EXTRA_KEY_EVENT, new KeyEvent(KeyEvent.ACTION_DOWN, KeyEvent.KEYCODE_MEDIA_STOP));
+        pendingIntent = PendingIntent.getService(context, 0, intent, 0);
+        views.setOnClickPendingIntent(R.id.control_stop, pendingIntent);
     }
     
     public static int getNetworkTimeout(Context context) {
         SharedPreferences prefs = getPreferences(context);
         return Integer.parseInt(prefs.getString(Constants.PREFERENCES_KEY_NETWORK_TIMEOUT, "15000"));
+    }
+    
+    public static int getMaxAlbums(Context context) {
+        SharedPreferences prefs = getPreferences(context);
+        return Integer.parseInt(prefs.getString(Constants.PREFERENCES_KEY_MAX_ALBUMS, "20"));
     }
     
     public static int getBufferLength(Context context) {

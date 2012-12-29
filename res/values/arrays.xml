@@ -128,5 +128,29 @@
 	<item>@string/settings.network_timeout_105000</item>
 	<item>@string/settings.network_timeout_120000</item>
     </string-array>
+    
+    <string-array name="maxAlbumsValues">
+	<item>5</item>
+	<item>10</item>
+	<item>20</item>
+	<item>30</item>
+	<item>40</item>
+	<item>50</item>
+	<item>100</item>
+	<item>250</item>
+	<item>500</item>
+    </string-array>
+       
+    <string-array name="maxAlbumsNames">
+	<item>@string/settings.max_albums_5</item>
+	<item>@string/settings.max_albums_10</item>
+	<item>@string/settings.max_albums_20</item>
+	<item>@string/settings.max_albums_30</item>
+	<item>@string/settings.max_albums_40</item>
+	<item>@string/settings.max_albums_50</item>
+	<item>@string/settings.max_albums_100</item>
+	<item>@string/settings.max_albums_250</item>
+	<item>@string/settings.max_albums_500</item>
+    </string-array>
 
 </resources>

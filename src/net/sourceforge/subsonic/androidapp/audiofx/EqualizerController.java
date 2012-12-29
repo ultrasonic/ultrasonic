@@ -107,7 +107,11 @@ public class EqualizerController {
 
     private static class EqualizerSettings implements Serializable {
 
-        private final short[] bandLevels;
+        /**
+		 * 
+		 */
+		private static final long serialVersionUID = 1477565229521401809L;
+		private final short[] bandLevels;
         private short preset;
         private final boolean enabled;
 

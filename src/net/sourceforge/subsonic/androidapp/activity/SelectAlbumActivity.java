@@ -103,10 +103,9 @@ public class SelectAlbumActivity extends SubsonicTabActivity {
         playLastButton = (Button) findViewById(R.id.select_album_play_last);
         pinButton = (Button) footer.findViewById(R.id.select_album_pin);
         unpinButton = (Button) footer.findViewById(R.id.select_album_unpin);
-        unpinButton = (Button) footer.findViewById(R.id.select_album_unpin);
         deleteButton = (Button) footer.findViewById(R.id.select_album_delete);
         moreButton = (Button) footer.findViewById(R.id.select_album_more);
-        emptyView = findViewById(R.id.select_album_empty);
+		emptyView = findViewById(R.id.select_album_empty);
 
         selectButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -308,6 +307,8 @@ public class SelectAlbumActivity extends SubsonicTabActivity {
             setTitle(R.string.main_albums_recent);
         } else if ("frequent".equals(albumListType)) {
             setTitle(R.string.main_albums_frequent);
+        } else if ("starred".equals(albumListType)) {
+            setTitle(R.string.main_albums_starred);
         }
 
         new LoadTask() {
@@ -322,7 +323,14 @@ public class SelectAlbumActivity extends SubsonicTabActivity {
                     pinButton.setVisibility(View.GONE);
                     unpinButton.setVisibility(View.GONE);
                     deleteButton.setVisibility(View.GONE);
-                    moreButton.setVisibility(View.VISIBLE);
+                    
+                    // Hide more button when results are less than album list size
+                    if (result.getFirst().getChildren().size() < getIntent().getIntExtra(Constants.INTENT_EXTRA_NAME_ALBUM_LIST_SIZE, 0)) {
+                    	moreButton.setVisibility(View.GONE);
+                    } else {
+                    	moreButton.setVisibility(View.VISIBLE);
+                    }
+                    
                     entryList.addFooterView(footer);
 
                     moreButton.setOnClickListener(new View.OnClickListener() {
