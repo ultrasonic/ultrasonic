@@ -33,13 +33,19 @@ import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
 import android.util.Log;
+import android.view.GestureDetector;
+import android.view.GestureDetector.SimpleOnGestureListener;
 import android.view.KeyEvent;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
+import android.view.MotionEvent;
 import android.view.View;
+import android.view.View.OnClickListener;
 import android.view.Window;
+import android.view.animation.TranslateAnimation;
 import android.widget.TextView;
+import android.widget.Toast;
 import net.sourceforge.subsonic.androidapp.R;
 import net.sourceforge.subsonic.androidapp.domain.MusicDirectory;
 import net.sourceforge.subsonic.androidapp.service.DownloadService;
@@ -54,10 +60,12 @@ import net.sourceforge.subsonic.androidapp.util.Util;
 /**
  * @author Sindre Mehus
  */
-public class SubsonicTabActivity extends Activity {
-
+public class SubsonicTabActivity extends Activity implements OnClickListener{
     private static final String TAG = SubsonicTabActivity.class.getSimpleName();
     private static ImageLoader IMAGE_LOADER;
+    private static final int SWIPE_MIN_DISTANCE = 120;
+    private static final int SWIPE_MAX_OFF_PATH = 250;
+    private static final int SWIPE_THRESHOLD_VELOCITY = 200;
 
     private boolean destroyed;
     private View homeButton;
@@ -65,6 +73,15 @@ public class SubsonicTabActivity extends Activity {
     private View searchButton;
     private View playlistButton;
     private View nowPlayingButton;
+    
+    private GestureDetector gestureDetector;
+    View.OnTouchListener gestureListener;
+    
+	enum SwipeDirection
+	{
+		Left,
+		Right
+	};
 
     @Override
     protected void onCreate(Bundle bundle) {
@@ -74,6 +91,14 @@ public class SubsonicTabActivity extends Activity {
        	requestWindowFeature(Window.FEATURE_NO_TITLE);
         startService(new Intent(this, DownloadServiceImpl.class));
         setVolumeControlStream(AudioManager.STREAM_MUSIC);
+        
+        gestureDetector = new GestureDetector(new GestureActivity());
+        gestureListener = new View.OnTouchListener() {
+        	@Override
+        	public boolean onTouch(View v, MotionEvent event) {
+                return gestureDetector.onTouchEvent(event);
+            }
+        };
     }
 
     @Override
@@ -89,7 +114,7 @@ public class SubsonicTabActivity extends Activity {
                 Util.startActivityWithoutTransition(SubsonicTabActivity.this, intent);
             }
         });
-
+        
         musicButton = findViewById(R.id.button_bar_music);
         musicButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -385,5 +410,105 @@ public class SubsonicTabActivity extends Activity {
             }
         }
     }
+
+	@Override
+	public void onClick(View arg0) {
+		// TODO Auto-generated method stub
+		
+	}
+	
+	class GestureActivity extends SimpleOnGestureListener {
+	    @Override
+	    public boolean onFling(MotionEvent e1, MotionEvent e2, float velocityX, float velocityY) {
+	        try {
+	            if (Math.abs(e1.getY() - e2.getY()) > SWIPE_MAX_OFF_PATH)
+	                return false;
+	            
+	            SwipeDirection swipe = null;
+	            
+	            // right to left swipe
+	            if(e1.getX() - e2.getX() > SWIPE_MIN_DISTANCE && Math.abs(velocityX) > SWIPE_THRESHOLD_VELOCITY) {
+	            	swipe = SwipeDirection.Left;
+	            }  else if (e2.getX() - e1.getX() > SWIPE_MIN_DISTANCE && Math.abs(velocityX) > SWIPE_THRESHOLD_VELOCITY) {
+	            	swipe = SwipeDirection.Right;
+	            }
+	            
+		        String name = SubsonicTabActivity.this.getClass().getSimpleName();
+		        
+		        switch (swipe)
+		        {
+		        	case Right:
+		        		if (name.equalsIgnoreCase("MainActivity"))
+		        		{
+		        			Intent intent = new Intent(SubsonicTabActivity.this, DownloadActivity.class);
+		        			SubsonicTabActivity.this.startActivity(intent);
+		        		}
+		        		else if (name.equalsIgnoreCase("SelectArtistActivity") || name.equalsIgnoreCase("SelectAlbumActivity"))
+		        		{
+			                Intent intent = new Intent(SubsonicTabActivity.this, MainActivity.class);
+			                intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+			                SubsonicTabActivity.this.startActivity(intent);
+		        		}
+		        		else if (name.equalsIgnoreCase("SearchActivity"))
+		        		{
+			                Intent intent = new Intent(SubsonicTabActivity.this, SelectArtistActivity.class);
+			                intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+			                SubsonicTabActivity.this.startActivity(intent);
+		        		}
+		        		else if (name.equalsIgnoreCase("SelectPlaylistActivity"))
+		        		{
+			                Intent intent = new Intent(SubsonicTabActivity.this, SearchActivity.class);
+			                intent.putExtra(Constants.INTENT_EXTRA_REQUEST_SEARCH, true);
+			                SubsonicTabActivity.this.startActivity(intent);
+		        		}
+		        		else if (name.equalsIgnoreCase("DownloadActivity") || name.equalsIgnoreCase("LyricsActivity"))
+		        		{
+			                Intent intent = new Intent(SubsonicTabActivity.this, SelectPlaylistActivity.class);
+			                intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+			                SubsonicTabActivity.this.startActivity(intent);
+		        		}
+		        				
+		        		break;
+		        	case Left:
+		        		if (name.equalsIgnoreCase("MainActivity"))
+		        		{
+			                Intent intent = new Intent(SubsonicTabActivity.this, SelectArtistActivity.class);
+			                intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+			                SubsonicTabActivity.this.startActivity(intent);
+		        		}
+		        		if (name.equalsIgnoreCase("SelectArtistActivity") || name.equalsIgnoreCase("SelectAlbumActivity"))
+		        		{
+			                Intent intent = new Intent(SubsonicTabActivity.this, SearchActivity.class);
+			                intent.putExtra(Constants.INTENT_EXTRA_REQUEST_SEARCH, true);
+			                SubsonicTabActivity.this.startActivity(intent);
+		        		}
+		        		else if (name.equalsIgnoreCase("SearchActivity"))
+		        		{
+			                Intent intent = new Intent(SubsonicTabActivity.this, SelectPlaylistActivity.class);
+			                intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+			                SubsonicTabActivity.this.startActivity(intent);
+		        		}
+		        		else if (name.equalsIgnoreCase("SelectPlaylistActivity"))
+		        		{
+		        			Intent intent = new Intent(SubsonicTabActivity.this, DownloadActivity.class);
+		        			SubsonicTabActivity.this.startActivity(intent);
+		        		}
+		        		else if (name.equalsIgnoreCase("DownloadActivity") || name.equalsIgnoreCase("LyricsActivity"))
+		        		{
+			                Intent intent = new Intent(SubsonicTabActivity.this, MainActivity.class);
+			                intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+			                SubsonicTabActivity.this.startActivity(intent);
+		        		}
+		        		
+		        		break;
+		        }
+	        } catch (Exception e) {
+	            // nothing
+	        }
+        
+	        return false;
+	    }
+
+	}
 }
 

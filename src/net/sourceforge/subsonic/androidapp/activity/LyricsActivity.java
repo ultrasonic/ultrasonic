@@ -20,6 +20,9 @@
 package net.sourceforge.subsonic.androidapp.activity;
 
 import android.os.Bundle;
+import android.view.View;
+import android.view.ViewGroup;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 import net.sourceforge.subsonic.androidapp.R;
 import net.sourceforge.subsonic.androidapp.domain.Lyrics;
@@ -40,6 +43,8 @@ public final class LyricsActivity extends SubsonicTabActivity {
     protected void onCreate(Bundle bundle) {
         super.onCreate(bundle);
         setContentView(R.layout.lyrics);
+        View view = findViewById(R.id.lyrics_scrollview);
+        if (view != null) view.setOnTouchListener(gestureListener);
         load();
     }
 
@@ -58,6 +63,7 @@ public final class LyricsActivity extends SubsonicTabActivity {
                 TextView artistView = (TextView) findViewById(R.id.lyrics_artist);
                 TextView titleView = (TextView) findViewById(R.id.lyrics_title);
                 TextView textView = (TextView) findViewById(R.id.lyrics_text);
+                
                 if (result != null && result.getArtist() != null) {
                     artistView.setText(result.getArtist());
                     titleView.setText(result.getTitle());
@@ -65,6 +71,7 @@ public final class LyricsActivity extends SubsonicTabActivity {
                 } else {
                     artistView.setText(R.string.lyrics_nomatch);
                 }
+                
             }
         };
         task.execute();

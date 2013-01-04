@@ -55,6 +55,7 @@ public class SelectPlaylistActivity extends SubsonicTabActivity implements Adapt
         list = (ListView) findViewById(R.id.select_playlist_list);
         emptyTextView = findViewById(R.id.select_playlist_empty);
         list.setOnItemClickListener(this);
+        list.setOnTouchListener(gestureListener);
         registerForContextMenu(list);
 
         // Title: Playlists

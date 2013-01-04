@@ -90,6 +90,7 @@ public class MainActivity extends SubsonicTabActivity {
         serverTextView.setText(name);
 
         ListView list = (ListView) findViewById(R.id.main_list);
+        list.setOnTouchListener(gestureListener);
         
         MergeAdapter adapter = new MergeAdapter();
         adapter.addViews(Arrays.asList(serverButton), true);

@@ -801,19 +801,18 @@ public class Util extends DownloadActivity {
         pendingIntent = PendingIntent.getService(context, 0, intent, 0);
         views.setOnClickPendingIntent(R.id.control_play, pendingIntent);
 
-        intent = new Intent("2");  // Use a unique action name to ensure a different PendingIntent to be created.
+        intent = new Intent("2");
         intent.setComponent(new ComponentName(context, DownloadServiceImpl.class));
         intent.putExtra(Intent.EXTRA_KEY_EVENT, new KeyEvent(KeyEvent.ACTION_DOWN, KeyEvent.KEYCODE_MEDIA_NEXT));
         pendingIntent = PendingIntent.getService(context, 0, intent, 0);
         views.setOnClickPendingIntent(R.id.control_next, pendingIntent);
         
-        intent = new Intent("3");  // Use a unique action name to ensure a different PendingIntent to be created.
+        intent = new Intent("3");
         intent.setComponent(new ComponentName(context, DownloadServiceImpl.class));
         intent.putExtra(Intent.EXTRA_KEY_EVENT, new KeyEvent(KeyEvent.ACTION_DOWN, KeyEvent.KEYCODE_MEDIA_PREVIOUS));
         pendingIntent = PendingIntent.getService(context, 0, intent, 0);
         views.setOnClickPendingIntent(R.id.control_previous, pendingIntent);
         
-        // Emulate media button clicks.
         intent = new Intent("4");
         intent.setComponent(new ComponentName(context, DownloadServiceImpl.class));
         intent.putExtra(Intent.EXTRA_KEY_EVENT, new KeyEvent(KeyEvent.ACTION_DOWN, KeyEvent.KEYCODE_MEDIA_STOP));

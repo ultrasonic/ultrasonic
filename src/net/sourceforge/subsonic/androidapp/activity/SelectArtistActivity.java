@@ -64,6 +64,7 @@ public class SelectArtistActivity extends SubsonicTabActivity implements Adapter
 
         artistList = (ListView) findViewById(R.id.select_artist_list);
         artistList.setOnItemClickListener(this);
+        artistList.setOnTouchListener(gestureListener);
 
         folderButton = LayoutInflater.from(this).inflate(R.layout.select_artist_header, artistList, false);
         folderName = (TextView) folderButton.findViewById(R.id.select_artist_folder_2);

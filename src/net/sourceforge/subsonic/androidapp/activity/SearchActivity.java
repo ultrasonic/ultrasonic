@@ -133,6 +133,8 @@ public class SearchActivity extends SubsonicTabActivity {
                 }
             }
         });
+        list.setOnTouchListener(gestureListener);
+        
         registerForContextMenu(list);
 
 		// Button 1: gone

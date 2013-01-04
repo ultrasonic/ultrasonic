@@ -74,8 +74,8 @@ public class DownloadServiceImpl extends Service implements DownloadService {
     private final List<DownloadFile> cleanupCandidates = new ArrayList<DownloadFile>();
     private final Scrobbler scrobbler = new Scrobbler();
     private final JukeboxService jukeboxService = new JukeboxService(this);
-    private final Notification notification = new Notification(R.drawable.ic_stat_subsonic, null, System.currentTimeMillis());
-            
+    private final Notification notification = new Notification(R.drawable.ic_stat_subsonic, null, System.currentTimeMillis()); 
+    		           
     private DownloadFile currentPlaying;
     private DownloadFile currentDownloading;
     private CancellableTask bufferTask;

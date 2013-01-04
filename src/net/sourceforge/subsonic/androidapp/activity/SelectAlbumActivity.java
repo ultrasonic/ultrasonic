@@ -96,6 +96,7 @@ public class SelectAlbumActivity extends SubsonicTabActivity {
                 }
             }
         });
+        entryList.setOnTouchListener(gestureListener);
 
         coverArtView = (ImageView) findViewById(R.id.actionbar_home_icon);
         selectButton = (Button) findViewById(R.id.select_album_select);
