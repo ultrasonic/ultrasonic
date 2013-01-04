@@ -577,38 +577,31 @@ public class Util extends DownloadActivity {
         String text = song.getArtist();
         String album = song.getAlbum();
         
-        RemoteViews contentView = new RemoteViews(context.getPackageName(), R.layout.notification);
-
         // Set the album art.
 		try {
 			int size = context.getResources().getDrawable(R.drawable.unknown_album).getIntrinsicHeight();
             Bitmap bitmap = FileUtil.getAlbumArtBitmap(context, song, size);
 			if (bitmap == null) {
 				// set default album art
-				contentView.setImageViewResource(R.id.notification_image, R.drawable.unknown_album);
+				notification.contentView.setImageViewResource(R.id.notification_image, R.drawable.unknown_album);
 			} else {
-				contentView.setImageViewBitmap(R.id.notification_image, bitmap);
+				notification.contentView.setImageViewBitmap(R.id.notification_image, bitmap);
 			}
 		} catch (Exception x) {
 			Log.w(TAG, "Failed to get notification cover art", x);
-			contentView.setImageViewResource(R.id.notification_image, R.drawable.unknown_album);
+			notification.contentView.setImageViewResource(R.id.notification_image, R.drawable.unknown_album);
 		}
 
 		// set the text for the notifications
-        contentView.setTextViewText(R.id.trackname, title);
-        contentView.setTextViewText(R.id.artist, text);
-        contentView.setTextViewText(R.id.album, album);
+		notification.contentView.setTextViewText(R.id.trackname, title);
+		notification.contentView.setTextViewText(R.id.artist, text);
+		notification.contentView.setTextViewText(R.id.album, album);
                 
     	if (playerState == PlayerState.PAUSED)
-			contentView.setImageViewResource(R.id.control_play, R.drawable.ic_appwidget_music_play);
+    		notification.contentView.setImageViewResource(R.id.control_play, R.drawable.ic_appwidget_music_play);
 		else if (playerState == PlayerState.STARTED)
-			contentView.setImageViewResource(R.id.control_play, R.drawable.ic_appwidget_music_pause);
+			notification.contentView.setImageViewResource(R.id.control_play, R.drawable.ic_appwidget_music_pause);
         
-        notification.contentView = contentView;  
-        
-        Intent notificationIntent = new Intent(context, DownloadActivity.class);
-        notification.contentIntent = PendingIntent.getActivity(context, 0, notificationIntent, 0);
-
         // Send the notification and put the service in the foreground.
         handler.post(new Runnable() {
             @Override
@@ -618,7 +611,6 @@ public class Util extends DownloadActivity {
         });
 
         // Update widget
-        linkButtons(context, contentView, false);
         SubsonicAppWidgetProvider4x1.getInstance().notifyChange(context, downloadService, true);
     }
 
@@ -787,7 +779,7 @@ public class Util extends DownloadActivity {
         context.sendBroadcast(intent);
     }
     
-    private static void linkButtons(Context context, RemoteViews views, boolean playerActive) {
+    public static void linkButtons(Context context, RemoteViews views, boolean playerActive) {
 
         Intent intent = new Intent(context, playerActive ? DownloadActivity.class : MainActivity.class);
         PendingIntent pendingIntent = PendingIntent.getActivity(context, 0, intent, 0);

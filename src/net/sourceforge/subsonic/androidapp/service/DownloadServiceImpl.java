@@ -19,6 +19,7 @@
 package net.sourceforge.subsonic.androidapp.service;
 
 import android.app.Notification;
+import android.app.PendingIntent;
 import android.app.Service;
 import android.content.Context;
 import android.content.Intent;
@@ -28,7 +29,9 @@ import android.os.Handler;
 import android.os.IBinder;
 import android.os.PowerManager;
 import android.util.Log;
+import android.widget.RemoteViews;
 import net.sourceforge.subsonic.androidapp.R;
+import net.sourceforge.subsonic.androidapp.activity.DownloadActivity;
 import net.sourceforge.subsonic.androidapp.audiofx.EqualizerController;
 import net.sourceforge.subsonic.androidapp.audiofx.VisualizerController;
 import net.sourceforge.subsonic.androidapp.domain.MusicDirectory;
@@ -127,6 +130,10 @@ public class DownloadServiceImpl extends Service implements DownloadService {
         });
         
     	notification.flags |= Notification.FLAG_NO_CLEAR | Notification.FLAG_ONGOING_EVENT;
+        notification.contentView = new RemoteViews(this.getPackageName(), R.layout.notification);
+        Intent notificationIntent = new Intent(this, DownloadActivity.class);
+        notification.contentIntent = PendingIntent.getActivity(this, 0, notificationIntent, 0);
+        Util.linkButtons(this, notification.contentView, false);
 
         if (equalizerAvailable) {
             equalizerController = new EqualizerController(this, mediaPlayer);
