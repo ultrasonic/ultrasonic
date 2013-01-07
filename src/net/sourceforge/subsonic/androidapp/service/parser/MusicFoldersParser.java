@@ -27,7 +27,6 @@ import org.xmlpull.v1.XmlPullParser;
 import android.content.Context;
 import net.sourceforge.subsonic.androidapp.R;
 import net.sourceforge.subsonic.androidapp.domain.MusicFolder;
-import net.sourceforge.subsonic.androidapp.domain.Playlist;
 import net.sourceforge.subsonic.androidapp.util.ProgressListener;
 
 /**

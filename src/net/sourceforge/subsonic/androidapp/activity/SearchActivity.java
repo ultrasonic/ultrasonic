@@ -27,6 +27,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.view.ContextMenu;
 import android.view.LayoutInflater;
+import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.View;
 import android.view.MenuItem;
@@ -137,26 +138,14 @@ public class SearchActivity extends SubsonicTabActivity {
         
         registerForContextMenu(list);
 
-		// Button 1: gone
-		findViewById(R.id.action_button_1).setVisibility(View.GONE);
-
-		// Button 2: gone
-		findViewById(R.id.action_button_2).setVisibility(View.GONE);
-        
-		// Button 3: gone
-		findViewById(R.id.action_button_3).setVisibility(View.GONE);
-		
-        // Button 4: search
-        final ImageButton actionSearchButton = (ImageButton)findViewById(R.id.action_button_4);
-        actionSearchButton.setImageResource(R.drawable.ic_menu_search);
-        actionSearchButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                onSearchRequested();
-            }
-        });
-
         onNewIntent(getIntent());
+    }
+    
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+    	super.onCreateOptionsMenu(menu);
+    	
+    	return true;
     }
 
     @Override
@@ -196,41 +185,6 @@ public class SearchActivity extends SubsonicTabActivity {
             MenuInflater inflater = getMenuInflater();
             inflater.inflate(R.menu.select_song_context, menu);
         }
-    }
-
-    @Override
-    public boolean onContextItemSelected(MenuItem menuItem) {
-        AdapterView.AdapterContextMenuInfo info = (AdapterView.AdapterContextMenuInfo) menuItem.getMenuInfo();
-        Object selectedItem = list.getItemAtPosition(info.position);
-
-        Artist artist = selectedItem instanceof Artist ? (Artist) selectedItem : null;
-        MusicDirectory.Entry entry = selectedItem instanceof MusicDirectory.Entry ? (MusicDirectory.Entry) selectedItem : null;
-        String id = artist != null ? artist.getId() : entry.getId();
-
-        switch (menuItem.getItemId()) {
-            case R.id.album_menu_play_now:
-                downloadRecursively(id, false, false, true);
-                break;
-            case R.id.album_menu_play_last:
-                downloadRecursively(id, false, true, false);
-                break;
-            case R.id.album_menu_pin:
-                downloadRecursively(id, true, true, false);
-                break;
-            case R.id.song_menu_play_now:
-                onSongSelected(entry, false, false, true, false);
-                break;
-            case R.id.song_menu_play_next:
-                onSongSelected(entry, false, true, false, true);
-                break;
-            case R.id.song_menu_play_last:
-                onSongSelected(entry, false, true, false, false);
-                break;
-            default:
-                return super.onContextItemSelected(menuItem);
-        }
-
-        return true;
     }
 
     private void search(final String query, final boolean autoplay) {

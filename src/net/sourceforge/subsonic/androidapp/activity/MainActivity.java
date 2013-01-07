@@ -22,26 +22,27 @@ package net.sourceforge.subsonic.androidapp.activity;
 import java.util.Arrays;
 
 import net.sourceforge.subsonic.androidapp.R;
-import net.sourceforge.subsonic.androidapp.domain.Version;
+import net.sourceforge.subsonic.androidapp.service.DownloadFile;
 import net.sourceforge.subsonic.androidapp.service.DownloadService;
 import net.sourceforge.subsonic.androidapp.service.DownloadServiceImpl;
-import net.sourceforge.subsonic.androidapp.service.MusicService;
-import net.sourceforge.subsonic.androidapp.service.MusicServiceFactory;
 import net.sourceforge.subsonic.androidapp.util.Constants;
 import net.sourceforge.subsonic.androidapp.util.MergeAdapter;
 import net.sourceforge.subsonic.androidapp.util.Util;
 import net.sourceforge.subsonic.androidapp.util.FileUtil;
+import android.app.ActionBar;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.view.ContextMenu;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.Window;
+import android.view.WindowManager;
 import android.widget.AdapterView;
-import android.widget.ImageButton;
 import android.widget.ListView;
 import android.widget.TextView;
 
@@ -69,7 +70,7 @@ public class MainActivity extends SubsonicTabActivity {
         setContentView(R.layout.main);
 
         loadSettings();
-
+        
         View buttons = LayoutInflater.from(this).inflate(R.layout.main_buttons, null);
 
         final View serverButton = buttons.findViewById(R.id.main_select_server);
@@ -126,48 +127,6 @@ public class MainActivity extends SubsonicTabActivity {
         // Title: Subsonic
         setTitle(R.string.common_appname);
 
-        // Button 1: shuffle
-        ImageButton actionShuffleButton = (ImageButton)findViewById(R.id.action_button_1);
-        actionShuffleButton.setImageResource(R.drawable.ic_menu_shuffle);
-        actionShuffleButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Intent intent = new Intent(MainActivity.this, DownloadActivity.class);
-                intent.putExtra(Constants.INTENT_EXTRA_NAME_SHUFFLE, true);
-                Util.startActivityWithoutTransition(MainActivity.this, intent);
-            }
-        });
-        
-        // Button 2: settings
-        ImageButton actionSettingsButton = (ImageButton)findViewById(R.id.action_button_2);
-        actionSettingsButton.setImageResource(R.drawable.ic_menu_settings);
-        actionSettingsButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-            	startActivity(new Intent(MainActivity.this, SettingsActivity.class));
-            }
-        });
-        
-        // Button 3: help
-        ImageButton actionHelpButton = (ImageButton)findViewById(R.id.action_button_3);
-        actionHelpButton.setImageResource(R.drawable.ic_menu_help);
-        actionHelpButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-            	startActivity(new Intent(MainActivity.this, HelpActivity.class));
-            }
-        });
-        
-        // Button 4: exit
-        ImageButton actionSearchButton = (ImageButton)findViewById(R.id.action_button_4);
-        actionSearchButton.setImageResource(R.drawable.ic_menu_exit);
-        actionSearchButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-            	exit();
-            }
-        });
-        
         // Remember the current theme.
         theme = Util.getTheme(this);
 
@@ -192,6 +151,15 @@ public class MainActivity extends SubsonicTabActivity {
         if (theme != null && !theme.equals(Util.getTheme(this))) {
             restart();
         }
+    }
+    
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+    	super.onCreateOptionsMenu(menu);
+    	MenuInflater inflater = getMenuInflater();
+    	inflater.inflate(R.menu.main, menu);
+    	
+    	return true;
     }
 
     @Override
@@ -220,7 +188,7 @@ public class MainActivity extends SubsonicTabActivity {
                 break;
         }
     }
-
+    
     @Override
     public boolean onContextItemSelected(MenuItem menuItem) {
         switch (menuItem.getItemId()) {
@@ -244,7 +212,36 @@ public class MainActivity extends SubsonicTabActivity {
         restart();
         return true;
     }
+    
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+                
+            case R.id.main_shuffle:
+            	Intent intent1 = new Intent(this, DownloadActivity.class);
+            	intent1.putExtra(Constants.INTENT_EXTRA_NAME_SHUFFLE, true);
+            	Util.startActivityWithoutTransition(this, intent1);
+                return true;
+                
+            case R.id.menu_exit:
+                Intent intent = new Intent(this, MainActivity.class);
+                intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                intent.putExtra(Constants.INTENT_EXTRA_NAME_EXIT, true);
+                Util.startActivityWithoutTransition(this, intent);
+                return true;
 
+            case R.id.menu_settings:
+                startActivity(new Intent(this, SettingsActivity.class));
+                return true;
+
+            case R.id.menu_help:
+                startActivity(new Intent(this, HelpActivity.class));
+                return true;
+        }
+
+        return false;
+    }
+    
     private void setActiveServer(int instance) {
         if (Util.getActiveServer(this) != instance) {
             DownloadService service = getDownloadService();

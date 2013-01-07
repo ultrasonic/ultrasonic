@@ -34,7 +34,6 @@ public class VisualizerController {
     private static final String TAG = VisualizerController.class.getSimpleName();
     private static final int PREFERRED_CAPTURE_SIZE = 128; // Must be a power of two.
 
-    private final Context context;
     private Visualizer visualizer;
 
     // Class initialization fails when this throws an exception.
@@ -54,7 +53,6 @@ public class VisualizerController {
     }
 
     public VisualizerController(Context context, MediaPlayer mediaPlayer) {
-        this.context = context;
         try {
             visualizer = new Visualizer(mediaPlayer.getAudioSessionId());
         } catch (Throwable x) {

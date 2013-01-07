@@ -23,6 +23,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.view.ContextMenu;
 import android.view.Menu;
+import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
@@ -61,26 +62,16 @@ public class SelectPlaylistActivity extends SubsonicTabActivity implements Adapt
         // Title: Playlists
         setTitle(R.string.playlist_label);
 
-		// Button 1: gone
-		findViewById(R.id.action_button_1).setVisibility(View.GONE);
-
-		// Button 2: gone
-		findViewById(R.id.action_button_2).setVisibility(View.GONE);
-
-		// Button 3: gone
-		findViewById(R.id.action_button_3).setVisibility(View.GONE);
-		
-		// Button 4: refresh
-        ImageButton refreshButton = (ImageButton) findViewById(R.id.action_button_4);
-		refreshButton.setImageResource(R.drawable.ic_menu_refresh);
-		refreshButton.setOnClickListener(new View.OnClickListener() {
-			@Override
-			public void onClick(View view) {
-				refresh();
-			}
-		});
-
         load();
+    }
+    
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+    	super.onCreateOptionsMenu(menu);
+    	MenuInflater inflater = getMenuInflater();
+    	inflater.inflate(R.menu.select_common, menu);
+    	
+    	return true;
     }
 
 	private void refresh() {
@@ -131,6 +122,33 @@ public class SelectPlaylistActivity extends SubsonicTabActivity implements Adapt
                 return super.onContextItemSelected(menuItem);
         }
         return true;
+    }
+    
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+
+            case R.id.menu_refresh:
+            	refresh();
+                return true;
+                
+            case R.id.menu_exit:
+                Intent intent = new Intent(this, MainActivity.class);
+                intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                intent.putExtra(Constants.INTENT_EXTRA_NAME_EXIT, true);
+                Util.startActivityWithoutTransition(this, intent);
+                return true;
+
+            case R.id.menu_settings:
+                startActivity(new Intent(this, SettingsActivity.class));
+                return true;
+
+            case R.id.menu_help:
+                startActivity(new Intent(this, HelpActivity.class));
+                return true;                
+        }
+
+        return false;
     }
 
     @Override

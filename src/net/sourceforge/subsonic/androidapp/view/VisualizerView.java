@@ -23,7 +23,6 @@ import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
 import android.media.audiofx.Visualizer;
-import android.util.AttributeSet;
 import android.view.View;
 import net.sourceforge.subsonic.androidapp.audiofx.VisualizerController;
 import net.sourceforge.subsonic.androidapp.domain.PlayerState;

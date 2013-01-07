@@ -6,11 +6,10 @@
     <LinearLayout a:id="@+id/help_buttons"
                   a:layout_width="fill_parent"
                   a:layout_height="wrap_content"
-                  a:layout_weight="0"
                   a:layout_alignParentBottom="true"
                   a:padding="4dip"
                   a:gravity="center_horizontal"
-                  a:background="#ffcccccc">
+                  a:background="@drawable/menubar_button_normal">
 
         <Button a:id="@+id/help_back"
                 a:text="@string/help.back"
@@ -35,7 +34,6 @@
             a:layout_width="fill_parent"
             a:layout_height="wrap_content"
             a:layout_above="@id/help_buttons"
-            a:layout_weight="1"
             a:fadingEdge="vertical"
             a:fadingEdgeLength="12dip"/>
 

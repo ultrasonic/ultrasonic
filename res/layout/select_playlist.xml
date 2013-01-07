@@ -4,8 +4,6 @@
               a:layout_width="fill_parent"
               a:layout_height="fill_parent">
 
-    <include layout="@layout/action_bar"/>
-
     <include layout="@layout/tab_progress"/>
 
     <TextView

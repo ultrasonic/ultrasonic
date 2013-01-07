@@ -12,11 +12,11 @@
     <uses-permission a:name="android.permission.RECORD_AUDIO"/>
     <uses-permission a:name="android.permission.MODIFY_AUDIO_SETTINGS"/>
 
-    <uses-sdk a:minSdkVersion="11" a:targetSdkVersion="16"/>
+    <uses-sdk a:minSdkVersion="11" a:targetSdkVersion="14"/>
 
     <supports-screens a:anyDensity="true" a:xlargeScreens="true" a:largeScreens="true" a:normalScreens="true" a:smallScreens="true"/>
 
-    <application a:label="@string/common.appname" a:icon="@drawable/ic_launcher" a:theme="@style/Dark">
+    <application a:label="@string/common.appname" a:icon="@drawable/ic_launcher" a:theme="@style/Dark" a:allowBackup="false">
 
         <activity a:name="net.sourceforge.subsonic.androidapp.activity.MainActivity"
                   a:label="Subsonic"
@@ -38,7 +38,8 @@
         <activity a:name="net.sourceforge.subsonic.androidapp.activity.SearchActivity"
                   a:label="@string/search.label"
                   a:configChanges="orientation|keyboardHidden"
-                  a:launchMode="singleTask"/>
+                  a:launchMode="singleTask"
+                  />
 
         <activity a:name="net.sourceforge.subsonic.androidapp.activity.SelectPlaylistActivity"
                   a:label="@string/playlist.label"
@@ -47,8 +48,10 @@
 
         <activity a:name="net.sourceforge.subsonic.androidapp.activity.DownloadActivity"
                   a:configChanges="keyboardHidden"
-                  a:launchMode="singleTask"/>
-
+                  a:launchMode="singleTask"
+                  a:theme="@android:style/Theme.NoTitleBar.Fullscreen"
+                  />
+        
         <activity a:name="net.sourceforge.subsonic.androidapp.activity.SettingsActivity"
                   a:configChanges="orientation|keyboardHidden"
                   a:launchMode="singleTask"/>
@@ -65,7 +68,7 @@
                   a:label="@string/equalizer.label"
                   a:configChanges="orientation|keyboardHidden"
                   a:launchMode="singleTask"/>
-
+        
         <activity a:name="net.sourceforge.subsonic.androidapp.activity.VoiceQueryReceiverActivity"
                   a:launchMode="singleTask">
             <intent-filter>
@@ -81,6 +84,7 @@
             </intent-filter>
             <meta-data a:name="android.app.searchable" a:resource="@xml/searchable"/>
         </activity>
+        
 
         <service a:name="net.sourceforge.subsonic.androidapp.service.DownloadServiceImpl"
                  a:label="Subsonic Download Service"/>

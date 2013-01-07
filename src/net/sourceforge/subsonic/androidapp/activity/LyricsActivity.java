@@ -21,8 +21,6 @@ package net.sourceforge.subsonic.androidapp.activity;
 
 import android.os.Bundle;
 import android.view.View;
-import android.view.ViewGroup;
-import android.widget.RelativeLayout;
 import android.widget.TextView;
 import net.sourceforge.subsonic.androidapp.R;
 import net.sourceforge.subsonic.androidapp.domain.Lyrics;

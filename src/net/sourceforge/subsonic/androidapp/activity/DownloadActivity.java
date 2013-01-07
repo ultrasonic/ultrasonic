@@ -46,6 +46,7 @@ import android.view.MenuItem;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.Window;
 import android.view.WindowManager;
 import android.view.animation.AnimationUtils;
 import android.widget.AdapterView;
@@ -120,8 +121,11 @@ public class DownloadActivity extends SubsonicTabActivity implements OnGestureLi
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        getWindow().requestFeature(Window.FEATURE_ACTION_BAR_OVERLAY);
         setContentView(R.layout.download);
 
+        getActionBar().hide();
+        
         WindowManager w = getWindowManager();
         Display d = w.getDefaultDisplay();
         swipeDistance = (d.getWidth() + d.getHeight()) * PERCENTAGE_OF_SCREEN_FOR_SWIPE / 100;
@@ -497,6 +501,7 @@ public class DownloadActivity extends SubsonicTabActivity implements OnGestureLi
 
 	@Override
 	public boolean onCreateOptionsMenu(Menu menu) {
+    	super.onCreateOptionsMenu(menu);
 		MenuInflater inflater = getMenuInflater();
 		inflater.inflate(R.menu.nowplaying, menu);
 		return true;

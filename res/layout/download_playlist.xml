@@ -17,7 +17,7 @@
     <ListView
             a:id="@+id/download_list"
             a:layout_width="fill_parent"
-            a:layout_height="fill_parent"
+            a:layout_height="0dip"
             a:layout_weight="1"
             a:cacheColorHint="#00000000"/>
 

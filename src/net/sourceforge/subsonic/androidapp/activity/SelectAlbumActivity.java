@@ -26,9 +26,11 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.ContextMenu;
 import android.view.LayoutInflater;
+import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.Window;
 import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.ImageButton;
@@ -62,9 +64,10 @@ public class SelectAlbumActivity extends SubsonicTabActivity {
     private Button unpinButton;
     private Button deleteButton;
     private Button moreButton;
-    private ImageView coverArtView;
+    //private ImageView coverArtView;
     private boolean licenseValid;
-    private ImageButton playAllButton;
+    private boolean playAllButtonVisible;
+    private MenuItem playAllButton;
 
     /**
      * Called when the activity is first created.
@@ -98,7 +101,7 @@ public class SelectAlbumActivity extends SubsonicTabActivity {
         });
         entryList.setOnTouchListener(gestureListener);
 
-        coverArtView = (ImageView) findViewById(R.id.actionbar_home_icon);
+        //coverArtView = (ImageView) findViewById(R.id.actionbar_home_icon);
         selectButton = (Button) findViewById(R.id.select_album_select);
         playNowButton = (Button) findViewById(R.id.select_album_play_now);
         playLastButton = (Button) findViewById(R.id.select_album_play_last);
@@ -169,33 +172,25 @@ public class SelectAlbumActivity extends SubsonicTabActivity {
         } else {
             getMusicDirectory(id, name);
         }
+    }
+    
+    @Override
+    public boolean onPrepareOptionsMenu(Menu menu) {
+        super.onPrepareOptionsMenu(menu);
+        playAllButton = menu.findItem(R.id.select_album_play_all);
+        playAllButton.setVisible(playAllButtonVisible);
 
-		// Button 1: gone
-		findViewById(R.id.action_button_1).setVisibility(View.GONE);
-
-		// Button 2: gone
-		findViewById(R.id.action_button_2).setVisibility(View.GONE);
-        
-        // Button 3: play all
-        playAllButton = (ImageButton) findViewById(R.id.action_button_3);
-        playAllButton.setImageResource(R.drawable.ic_menu_play_all);
-        playAllButton.setVisibility(View.GONE);
-        playAllButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                playAll();
-            }
-        });
-
-        // Button 4: refresh
-        ImageButton refreshButton = (ImageButton) findViewById(R.id.action_button_4);
-        refreshButton.setImageResource(R.drawable.ic_menu_refresh);
-        refreshButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                refresh();
-            }
-        });
+        return true;
+    }
+    
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+    	super.onCreateOptionsMenu(menu);
+    	MenuInflater inflater = getMenuInflater();
+    	inflater.inflate(R.menu.select_album, menu);
+    	inflater.inflate(R.menu.select_common, menu);
+    	
+    	return true;
     }
 
     private void playAll() {
@@ -267,10 +262,50 @@ public class SelectAlbumActivity extends SubsonicTabActivity {
             case R.id.song_menu_play_last:
                 getDownloadService().download(songs, false, false, false);
                 break;
+            case R.id.select_album_play_all:
+            	playAll();
+            	break;
             default:
                 return super.onContextItemSelected(menuItem);
         }
         return true;
+    }
+    
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+
+        	case R.id.main_shuffle:
+        		Intent intent1 = new Intent(this, DownloadActivity.class);
+        		intent1.putExtra(Constants.INTENT_EXTRA_NAME_SHUFFLE, true);
+        		Util.startActivityWithoutTransition(this, intent1);
+        		return true;
+        
+            case R.id.menu_refresh:
+            	refresh();
+                return true;
+                
+            case R.id.select_album_play_all:
+            	playAll();
+            	return true;
+            	
+            case R.id.menu_exit:
+                Intent intent = new Intent(this, MainActivity.class);
+                intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                intent.putExtra(Constants.INTENT_EXTRA_NAME_EXIT, true);
+                Util.startActivityWithoutTransition(this, intent);
+                return true;
+
+            case R.id.menu_settings:
+                startActivity(new Intent(this, SettingsActivity.class));
+                return true;
+
+            case R.id.menu_help:
+                startActivity(new Intent(this, HelpActivity.class));
+                return true;            	
+        }
+
+        return false;
     }
 
     private void getMusicDirectory(final String id, String name) {
@@ -560,7 +595,7 @@ public class SelectAlbumActivity extends SubsonicTabActivity {
             }
 
             if (songCount > 0) {
-                getImageLoader().loadImage(coverArtView, entries.get(0), false, true);
+                //getImageLoader().loadImage(coverArtView, entries.get(0), false, true);
                 entryList.addFooterView(footer);
                 selectButton.setVisibility(View.VISIBLE);
                 playNowButton.setVisibility(View.VISIBLE);
@@ -568,9 +603,14 @@ public class SelectAlbumActivity extends SubsonicTabActivity {
             }
 
             boolean isAlbumList = getIntent().hasExtra(Constants.INTENT_EXTRA_NAME_ALBUM_LIST_TYPE);
+            playAllButtonVisible = !(isAlbumList || entries.isEmpty());
 
             emptyView.setVisibility(entries.isEmpty() ? View.VISIBLE : View.GONE);
-            playAllButton.setVisibility(isAlbumList || entries.isEmpty() ? View.GONE : View.VISIBLE);
+            
+            if (playAllButton != null) {
+            	playAllButton.setVisible(playAllButtonVisible);
+            }
+            
             entryList.setAdapter(new EntryAdapter(SelectAlbumActivity.this, getImageLoader(), entries, true));
             licenseValid = result.getSecond();
 

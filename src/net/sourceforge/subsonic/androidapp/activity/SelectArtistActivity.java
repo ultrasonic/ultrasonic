@@ -23,11 +23,11 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.view.ContextMenu;
 import android.view.LayoutInflater;
+import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
-import android.widget.ImageButton;
 import android.widget.ListView;
 import android.widget.TextView;
 import net.sourceforge.subsonic.androidapp.R;
@@ -77,38 +77,18 @@ public class SelectArtistActivity extends SubsonicTabActivity implements Adapter
 
         setTitle(Util.isOffline(this) ? R.string.music_library_label_offline : R.string.music_library_label);
 
-		// Button 1: gone
-		findViewById(R.id.action_button_1).setVisibility(View.GONE);
-
-		// Button 2: gone
-		findViewById(R.id.action_button_2).setVisibility(View.GONE);
-        
-        // Button 3: shuffle
-        ImageButton shuffleButton = (ImageButton) findViewById(R.id.action_button_3);
-        shuffleButton.setImageResource(R.drawable.ic_menu_shuffle);
-        shuffleButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Intent intent = new Intent(SelectArtistActivity.this, DownloadActivity.class);
-                intent.putExtra(Constants.INTENT_EXTRA_NAME_SHUFFLE, true);
-                Util.startActivityWithoutTransition(SelectArtistActivity.this, intent);
-            }
-        });
-
-        // Button 4: refresh
-        ImageButton refreshButton = (ImageButton) findViewById(R.id.action_button_4);
-        refreshButton.setImageResource(R.drawable.ic_menu_refresh);
-        refreshButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                refresh();
-            }
-        });
-
-
-
         musicFolders = null;
         load();
+    }
+    
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+    	super.onCreateOptionsMenu(menu);
+    	MenuInflater inflater = getMenuInflater();
+    	inflater.inflate(R.menu.main, menu);
+    	inflater.inflate(R.menu.select_common, menu);
+    	
+    	return true;
     }
 
     private void refresh() {
@@ -233,5 +213,38 @@ public class SelectArtistActivity extends SubsonicTabActivity implements Adapter
         }
 
         return true;
+    }
+    
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+
+            case R.id.menu_refresh:
+            	refresh();
+                return true;
+            
+            case R.id.main_shuffle:
+                Intent intent = new Intent(this, DownloadActivity.class);
+                intent.putExtra(Constants.INTENT_EXTRA_NAME_SHUFFLE, true);
+                Util.startActivityWithoutTransition(this, intent);
+                return true;
+                
+            case R.id.menu_exit:
+                Intent intent1 = new Intent(this, MainActivity.class);
+                intent1.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                intent1.putExtra(Constants.INTENT_EXTRA_NAME_EXIT, true);
+                Util.startActivityWithoutTransition(this, intent1);
+                return true;
+
+            case R.id.menu_settings:
+                startActivity(new Intent(this, SettingsActivity.class));
+                return true;
+
+            case R.id.menu_help:
+                startActivity(new Intent(this, HelpActivity.class));
+                return true;                
+        }
+
+        return false;
     }
 }

@@ -33,7 +33,7 @@
     <style name="listselectlight" parent="android:style/Widget.ListView.White">
         <item name="android:listSelector">@drawable/list_selector_holo_light</item>
     </style>
-    
+     
     <style name="customprogress" parent="android:style/Widget.ProgressBar.Horizontal">
         <item name="android:progressDrawable">@drawable/progress_horizontal_holo_dark</item>
     </style>

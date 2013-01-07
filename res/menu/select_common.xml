@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:a="http://schemas.android.com/apk/res/android" >
+
+    <item
+        a:id="@+id/menu_refresh"
+        a:icon="@drawable/ic_menu_refresh"
+        a:showAsAction="ifRoom|withText"
+        a:title="@string/select_artist.refresh"/>
+
+</menu>

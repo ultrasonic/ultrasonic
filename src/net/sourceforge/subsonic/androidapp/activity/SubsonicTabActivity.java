@@ -27,7 +27,6 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageInfo;
-import android.graphics.Typeface;
 import android.media.AudioManager;
 import android.os.Build;
 import android.os.Bundle;
@@ -43,9 +42,7 @@ import android.view.MotionEvent;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.Window;
-import android.view.animation.TranslateAnimation;
 import android.widget.TextView;
-import android.widget.Toast;
 import net.sourceforge.subsonic.androidapp.R;
 import net.sourceforge.subsonic.androidapp.domain.MusicDirectory;
 import net.sourceforge.subsonic.androidapp.service.DownloadService;
@@ -82,13 +79,21 @@ public class SubsonicTabActivity extends Activity implements OnClickListener{
 		Left,
 		Right
 	};
+	
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+    	MenuInflater inflater = getMenuInflater();
+    	inflater.inflate(R.menu.common, menu);
+    	
+    	return true;
+    }
 
     @Override
     protected void onCreate(Bundle bundle) {
         setUncaughtExceptionHandler();
         applyTheme();
         super.onCreate(bundle);
-       	requestWindowFeature(Window.FEATURE_NO_TITLE);
+
         startService(new Intent(this, DownloadServiceImpl.class));
         setVolumeControlStream(AudioManager.STREAM_MUSIC);
         
@@ -175,15 +180,6 @@ public class SubsonicTabActivity extends Activity implements OnClickListener{
     }
 
     @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-    	if (android.os.Build.VERSION.SDK_INT < 11) {
-    		MenuInflater inflater = getMenuInflater();
-    		inflater.inflate(R.menu.main, menu);
-    	}
-        return true;
-    }
-
-    @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
 
@@ -232,23 +228,6 @@ public class SubsonicTabActivity extends Activity implements OnClickListener{
     public void finish() {
         super.finish();
         Util.disablePendingTransition(this);
-    }
-
-    @Override
-    public void setTitle(CharSequence title) {
-        super.setTitle(title);
-
-        // Set the font of title in the action bar.
-        TextView text = (TextView) findViewById(R.id.actionbar_title_text);
-        Typeface typeface = Typeface.createFromAsset(getAssets(), "fonts/Roboto-Regular.ttf");
-        text.setTypeface(typeface);
-
-        text.setText(title);
-    }
-
-    @Override
-    public void setTitle(int titleId) {
-        setTitle(getString(titleId));
     }
 
     private void applyTheme() {

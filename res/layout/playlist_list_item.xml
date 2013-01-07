@@ -8,5 +8,3 @@
           a:paddingLeft="6dip"
           a:paddingRight="6dip"
           a:minHeight="50dip"/>
-
-                    <!-- a:drawableRight="@drawable/list_item_more"           a:drawablePadding="6dip"-->

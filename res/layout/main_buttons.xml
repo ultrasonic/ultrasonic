@@ -1,4 +1,5 @@
-<?xml version="1.0" encoding="utf-8"?><LinearLayout xmlns:a="http://schemas.android.com/apk/res/android"
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:a="http://schemas.android.com/apk/res/android"
 	a:orientation="vertical" a:layout_width="fill_parent" a:layout_height="wrap_content">
 
 	<LinearLayout a:id="@+id/main_select_server"
@@ -7,8 +8,7 @@
 		a:minHeight="?android:attr/listPreferredItemHeight">
 
 		<ImageView a:layout_width="wrap_content" a:layout_height="wrap_content"
-			a:layout_gravity="center_vertical" a:src="@drawable/ic_menu_select_artist_folder"
-			a:contentDescription="TODO" />
+			a:layout_gravity="center_vertical" a:src="@drawable/ic_menu_select_artist_folder" />
 
 		<LinearLayout a:orientation="vertical" a:layout_width="wrap_content"
 			a:layout_height="wrap_content">
@@ -35,7 +35,6 @@
 		a:layout_width="fill_parent" a:layout_height="wrap_content"
 		a:textAppearance="?android:attr/textAppearanceMedium" a:gravity="center_vertical"
 		a:paddingLeft="6dip" a:paddingRight="6dip" a:minHeight="40dip" />
-	<!-- 		a:drawableRight="@drawable/list_item_more" a:drawablePadding="6dip" -->
 	
 	<TextView a:id="@+id/main_albums_recent" a:text="@string/main.albums_recent"
 		a:layout_width="fill_parent" a:layout_height="wrap_content"
