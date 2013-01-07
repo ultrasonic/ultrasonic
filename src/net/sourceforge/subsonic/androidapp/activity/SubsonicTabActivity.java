@@ -232,13 +232,13 @@ public class SubsonicTabActivity extends Activity implements OnClickListener{
 
     private void applyTheme() {
         String theme = Util.getTheme(this);
-        if ("dark".equals(theme)) {
+        if ("dark".equalsIgnoreCase(theme)) {
             setTheme(R.style.Dark);
-        } else if ("light".equals(theme)) {
+        } else if ("light".equalsIgnoreCase(theme)) {
             setTheme(R.style.Light);
-        } else if ("fullscreen".equals(theme)) {
+        } else if ("fullscreen".equalsIgnoreCase(theme)) {
             setTheme(R.style.Fullscreen);
-        } else if ("fullscreenlight".equals(theme)) {
+        } else if ("fullscreenlight".equalsIgnoreCase(theme)) {
             setTheme(R.style.Fullscreenlight);
         }
     }

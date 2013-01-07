@@ -2,7 +2,7 @@
 <manifest xmlns:a="http://schemas.android.com/apk/res/android"
           package="net.sourceforge.subsonic.androidapp"
           a:versionCode="47"
-          a:versionName="3.9.9.4" a:installLocation="auto">
+          a:versionName="3.9.9.5" a:installLocation="auto">
 
     <uses-permission a:name="android.permission.INTERNET"/>
     <uses-permission a:name="android.permission.READ_PHONE_STATE"/>
@@ -16,7 +16,7 @@
 
     <supports-screens a:anyDensity="true" a:xlargeScreens="true" a:largeScreens="true" a:normalScreens="true" a:smallScreens="true"/>
 
-    <application a:label="@string/common.appname" a:icon="@drawable/ic_launcher" a:theme="@style/Dark" a:allowBackup="false">
+    <application a:label="@string/common.appname" a:icon="@drawable/ic_launcher" a:allowBackup="false">
 
         <activity a:name="net.sourceforge.subsonic.androidapp.activity.MainActivity"
                   a:label="Subsonic"

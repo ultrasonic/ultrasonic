@@ -169,8 +169,8 @@ public final class R {
         public static final int download_control_layout=0x7f0d0011;
         public static final int download_duration=0x7f0d0026;
         public static final int download_empty=0x7f0d0029;
-        public static final int download_equalizer=0x7f0d001c;
-        public static final int download_jukebox=0x7f0d001d;
+        public static final int download_equalizer=0x7f0d001b;
+        public static final int download_jukebox=0x7f0d001c;
         public static final int download_list=0x7f0d002a;
         public static final int download_next=0x7f0d0016;
         public static final int download_pause=0x7f0d0013;
@@ -184,8 +184,8 @@ public final class R {
         public static final int download_start=0x7f0d0015;
         public static final int download_status=0x7f0d0017;
         public static final int download_stop=0x7f0d0014;
-        public static final int download_toggle_list=0x7f0d001b;
-        public static final int download_visualizer=0x7f0d001f;
+        public static final int download_toggle_list=0x7f0d001f;
+        public static final int download_visualizer=0x7f0d001d;
         public static final int download_visualizer_view_layout=0x7f0d0023;
         public static final int equalizer_bar=0x7f0d0031;
         public static final int equalizer_frequency=0x7f0d002f;

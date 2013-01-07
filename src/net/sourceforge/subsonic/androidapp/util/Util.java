@@ -179,7 +179,7 @@ public class Util extends DownloadActivity {
 
     public static String getTheme(Context context) {
         SharedPreferences prefs = getPreferences(context);
-        return prefs.getString(Constants.PREFERENCES_KEY_THEME, null);
+        return prefs.getString(Constants.PREFERENCES_KEY_THEME, "dark");
     }
 
     public static int getMaxBitrate(Context context) {

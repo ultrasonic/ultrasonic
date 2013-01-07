@@ -6,34 +6,68 @@
 		a:id="@+id/download_playlist_flipper" a:layout_width="fill_parent"
 		a:layout_height="0dip" a:layout_weight="1">
 
-		<RelativeLayout a:id="@+id/download_album_art_layout"
-			a:orientation="vertical" a:layout_width="fill_parent"
-			a:layout_height="fill_parent" a:layout_weight="1"
-			a:background="@drawable/album_art_background">
+		<RelativeLayout
+		    a:id="@+id/download_album_art_layout"
+		    a:layout_width="fill_parent"
+		    a:layout_height="fill_parent"
+		    a:layout_weight="1"
+		    a:background="@drawable/album_art_background"
+		    a:gravity="left"
+		    a:orientation="vertical" >
 
-			<ImageButton a:id="@+id/download_repeat" a:src="@drawable/media_repeat_off"
-				a:background="@color/transparent" a:layout_width="wrap_content"
-				a:layout_height="wrap_content" a:layout_gravity="top|right"
-				a:paddingTop="24dip" a:paddingLeft="8dip" a:paddingBottom="12dip" />
+			<ImageButton
+			    a:id="@+id/download_repeat"
+			    a:layout_width="60dp"
+			    a:layout_height="60dp"
+			    a:layout_gravity="top|right"
+				a:layout_alignParentLeft="true"			    
+			    a:background="@color/transparent"
+			    a:paddingBottom="12dip"
+			    a:paddingLeft="12dip"
+			    a:paddingTop="24dip"
+			    a:src="@drawable/media_repeat_off" />
 
-			<Button a:id="@+id/download_jukebox" a:text="RC" a:textStyle="bold"
-				a:textSize="22sp" a:background="@android:color/transparent"
-				a:layout_width="wrap_content" a:layout_height="wrap_content"
-				a:layout_gravity="top|right" a:layout_below="@+id/download_repeat"
-				a:paddingTop="12dip" a:paddingLeft="0dip" a:paddingBottom="15dip" />
+			<Button 
+			    a:id="@+id/download_jukebox" 
+			    a:text="RC" 
+			    a:textStyle="bold"
+				a:textSize="22sp"
+				a:background="@android:color/transparent"
+			    a:layout_width="60dp"
+			    a:layout_height="60dp"
+				a:layout_gravity="top|left"
+				a:layout_alignParentLeft="true"
+				a:layout_below="@+id/download_repeat"
+				a:paddingTop="12dip"
+				a:paddingLeft="12dip"
+				a:paddingBottom="15dip" />
 
-			<Button a:id="@+id/download_equalizer" a:text="EQ"
-				a:textStyle="bold" a:textSize="22sp" a:background="@android:color/transparent"
-				a:layout_width="wrap_content" a:layout_height="wrap_content"
-				a:layout_gravity="top|right" a:layout_alignParentRight="true"
-				a:paddingTop="24dip" a:paddingRight="16dip" a:paddingBottom="12dip" />
+			<Button a:id="@+id/download_equalizer"
+			    a:text="EQ"
+				a:textStyle="bold"
+				a:textSize="22sp"
+				a:background="@android:color/transparent"
+				a:layout_width="60dp"
+			    a:layout_height="60dp"
+				a:layout_gravity="top|right"
+				a:layout_alignParentRight="true"
+				a:paddingTop="24dip"
+				a:paddingRight="0dip"
+				a:paddingBottom="12dip" />
 
-			<Button a:id="@+id/download_visualizer" a:text="VIS"
-				a:textStyle="bold" a:textSize="22sp" a:background="@android:color/transparent"
-				a:layout_width="wrap_content" a:layout_height="wrap_content"
-				a:layout_gravity="top|right" a:layout_alignParentRight="true"
-				a:layout_below="@+id/download_equalizer" a:layout_alignBottom="@+id/download_jukebox"
-				a:paddingTop="12dip" a:paddingRight="12dip" a:paddingBottom="12dip" />
+			<Button a:id="@+id/download_visualizer"
+			    a:text="VIS"
+				a:textStyle="bold"
+				a:textSize="22sp"
+				a:background="@android:color/transparent"
+			    a:layout_width="60dp"
+			    a:layout_height="60dp"				
+				a:layout_gravity="top|right"
+				a:layout_alignParentRight="true"
+				a:layout_below="@+id/download_equalizer"
+				a:paddingTop="12dip"
+				a:paddingRight="12dip"
+				a:paddingBottom="12dip" />
 
 			<ImageView a:id="@+id/download_album_art_image"
 				a:layout_width="wrap_content" a:layout_height="wrap_content"
@@ -67,11 +101,6 @@
 		a:layout_height="wrap_content" a:layout_marginTop="0dip"
 		a:background="@color/mediaControlBackground" a:orientation="horizontal"
 		a:paddingBottom="0dip" a:paddingTop="0dip">
-		<ImageButton a:id="@+id/menu_selector" a:layout_width="0dp"
-			a:layout_height="wrap_content" a:layout_weight="1"
-			a:background="@drawable/list_selector_holo_dark" a:paddingBottom="12dip"
-			a:paddingLeft="8dip" a:paddingTop="12dip" a:src="@drawable/ic_menu_moreoverflow" />
-
 		<ImageButton a:id="@+id/download_shuffle" a:layout_width="0dip"
 			a:layout_height="fill_parent" a:layout_gravity="center_vertical|left"
 			a:layout_weight="1" a:background="@drawable/list_selector_holo_dark"
@@ -102,6 +131,11 @@
 			a:layout_weight="1" a:background="@drawable/list_selector_holo_dark"
 			a:padding="0dip" a:src="@drawable/media_forward_normal" />
 
+		<ImageButton a:id="@+id/menu_selector" a:layout_width="0dp"
+			a:layout_height="wrap_content" a:layout_weight="1"
+			a:background="@drawable/list_selector_holo_dark" a:paddingBottom="12dip"
+			a:paddingLeft="8dip" a:paddingTop="12dip" a:src="@drawable/ic_menu_moreoverflow" />
+		
 		<ImageButton a:id="@+id/download_toggle_list"
 			a:layout_width="0dip" a:layout_height="fill_parent" a:layout_weight="1"
 			a:background="@drawable/list_selector_holo_dark" a:paddingRight="4dip"
