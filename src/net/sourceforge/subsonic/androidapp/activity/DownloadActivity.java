@@ -121,11 +121,8 @@ public class DownloadActivity extends SubsonicTabActivity implements OnGestureLi
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        getWindow().requestFeature(Window.FEATURE_ACTION_BAR_OVERLAY);
         setContentView(R.layout.download);
 
-        getActionBar().hide();
-        
         WindowManager w = getWindowManager();
         Display d = w.getDefaultDisplay();
         swipeDistance = (d.getWidth() + d.getHeight()) * PERCENTAGE_OF_SCREEN_FOR_SWIPE / 100;
@@ -242,7 +239,7 @@ public class DownloadActivity extends SubsonicTabActivity implements OnGestureLi
         });
 
         // Button: menu
-        ImageButton actionMenuButton = (ImageButton)findViewById(R.id.action_button_3);
+        ImageButton actionMenuButton = (ImageButton)findViewById(R.id.menu_selector);
         actionMenuButton.setImageResource(R.drawable.ic_menu_moreoverflow);
         actionMenuButton.setOnClickListener(new View.OnClickListener() {
             @Override

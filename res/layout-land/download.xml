@@ -78,7 +78,7 @@
 					a:layout_weight="1" a:background="@android:color/transparent"
 					a:padding="9dip" a:text="RC" a:textSize="22sp" a:textStyle="bold" />
 
-				<ImageButton a:id="@+id/action_button_3" a:layout_width="0dp"
+				<ImageButton a:id="@+id/menu_selector" a:layout_width="0dp"
 					a:layout_height="match_parent" a:layout_weight="1"
 					a:background="@drawable/list_selector_holo_dark" a:padding="9dip"
 					a:src="@drawable/ic_menu_moreoverflow" />

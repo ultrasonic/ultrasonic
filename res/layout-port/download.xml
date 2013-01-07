@@ -67,7 +67,7 @@
 		a:layout_height="wrap_content" a:layout_marginTop="0dip"
 		a:background="@color/mediaControlBackground" a:orientation="horizontal"
 		a:paddingBottom="0dip" a:paddingTop="0dip">
-		<ImageButton a:id="@+id/action_button_3" a:layout_width="0dp"
+		<ImageButton a:id="@+id/menu_selector" a:layout_width="0dp"
 			a:layout_height="wrap_content" a:layout_weight="1"
 			a:background="@drawable/list_selector_holo_dark" a:paddingBottom="12dip"
 			a:paddingLeft="8dip" a:paddingTop="12dip" a:src="@drawable/ic_menu_moreoverflow" />

@@ -138,7 +138,6 @@ public final class R {
         public static final int unknown_album_large=0x7f020056;
     }
     public static final class id {
-        public static final int action_button_3=0x7f0d001e;
         public static final int album=0x7f0d004c;
         public static final int album_artist=0x7f0d0002;
         public static final int album_coverart=0x7f0d0000;
@@ -227,6 +226,7 @@ public final class R {
         public static final int menu_remove_all=0x7f0d007f;
         public static final int menu_save_playlist=0x7f0d007e;
         public static final int menu_screen_on_off=0x7f0d0080;
+        public static final int menu_selector=0x7f0d001e;
         public static final int menu_settings=0x7f0d007a;
         public static final int menu_show_album=0x7f0d0081;
         public static final int menu_shuffle=0x7f0d0084;

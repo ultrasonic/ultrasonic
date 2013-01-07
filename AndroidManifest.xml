@@ -12,7 +12,7 @@
     <uses-permission a:name="android.permission.RECORD_AUDIO"/>
     <uses-permission a:name="android.permission.MODIFY_AUDIO_SETTINGS"/>
 
-    <uses-sdk a:minSdkVersion="11" a:targetSdkVersion="14"/>
+    <uses-sdk a:minSdkVersion="13" a:targetSdkVersion="16"/>
 
     <supports-screens a:anyDensity="true" a:xlargeScreens="true" a:largeScreens="true" a:normalScreens="true" a:smallScreens="true"/>
 
