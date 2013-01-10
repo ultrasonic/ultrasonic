@@ -71,6 +71,8 @@ public class SubsonicTabActivity extends Activity implements OnClickListener{
     private View playlistButton;
     private View nowPlayingButton;
     
+    //private boolean shortPress = false;
+    
     private GestureDetector gestureDetector;
     View.OnTouchListener gestureListener;
     
@@ -209,7 +211,6 @@ public class SubsonicTabActivity extends Activity implements OnClickListener{
         getImageLoader().clear();
     }
 
-
     @Override
     public boolean onKeyDown(int keyCode, KeyEvent event) {
         boolean isVolumeDown = keyCode == KeyEvent.KEYCODE_VOLUME_DOWN;
@@ -221,6 +222,19 @@ public class SubsonicTabActivity extends Activity implements OnClickListener{
             getDownloadService().adjustJukeboxVolume(isVolumeUp);
             return true;
         }
+        
+//	    if (keyCode == KeyEvent.KEYCODE_VOLUME_DOWN || keyCode == KeyEvent.KEYCODE_VOLUME_UP) {
+//	        if(event.getAction() == KeyEvent.ACTION_DOWN){
+//	            event.startTracking();
+//	            
+//	            if(event.getRepeatCount() == 0){
+//	                shortPress = true;
+//	            }
+//	            
+//	            return true;
+//	        }
+//	    }
+        
         return super.onKeyDown(keyCode, event);
     }
 
@@ -487,7 +501,50 @@ public class SubsonicTabActivity extends Activity implements OnClickListener{
         
 	        return false;
 	    }
-
 	}
+	
+//	@Override
+//	public boolean onKeyLongPress(int keyCode, KeyEvent event) {
+//    	DownloadService service = getDownloadService();
+//        int current = service.getCurrentPlayingIndex();
+//        
+//	    switch(keyCode){
+//    		case KeyEvent.KEYCODE_VOLUME_UP:
+//    			shortPress = false;
+//    			
+//    			if (current == -1) {
+//    				service.play(0);
+//    			} else {
+//    				current++;
+//    				service.play(current);
+//    			}
+//    			return true;
+//    		case KeyEvent.KEYCODE_VOLUME_DOWN:
+//    			shortPress = false;
+//    			
+//    			if (current == -1 || current == 0) {
+//    				service.play(0);
+//    			} else {
+//    				current--;
+//    				service.play(current);
+//    			}
+//    			return true;
+//	    }
+//	    
+//	    return super.onKeyLongPress(keyCode, event);
+//	}
+//	
+//	@Override
+//	public boolean onKeyUp(int keyCode, KeyEvent event) {
+//	    if (keyCode == KeyEvent.KEYCODE_VOLUME_DOWN) {
+//	        shortPress = false;
+//	        return true;
+//	    } else if (keyCode == KeyEvent.KEYCODE_VOLUME_UP){
+//	        shortPress = false;
+//	        return true;
+//	    }
+//	    
+//	    return super.onKeyUp(keyCode, event);
+//	}
 }
 

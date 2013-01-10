@@ -46,7 +46,6 @@ import android.view.MenuItem;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.Window;
 import android.view.WindowManager;
 import android.view.animation.AnimationUtils;
 import android.widget.AdapterView;
@@ -363,7 +362,7 @@ public class DownloadActivity extends SubsonicTabActivity implements OnGestureLi
         visualizerButton.setTypeface(typeface);
         jukeboxButton.setTypeface(typeface);
     }
-
+    
     @Override
     protected void onResume() {
         super.onResume();
@@ -511,10 +510,15 @@ public class DownloadActivity extends SubsonicTabActivity implements OnGestureLi
         savePlaylist.setEnabled(savePlaylistEnabled);
         savePlaylist.setVisible(savePlaylistEnabled);
         MenuItem screenOption = menu.findItem(R.id.menu_screen_on_off);
-        if (getDownloadService().getKeepScreenOn()) {
-        	screenOption.setTitle(R.string.download_menu_screen_off);
-        } else {
-        	screenOption.setTitle(R.string.download_menu_screen_on);
+        
+        DownloadService downloadService = getDownloadService();
+        
+        if (downloadService != null) {
+        	if (getDownloadService().getKeepScreenOn()) {
+        		screenOption.setTitle(R.string.download_menu_screen_off);
+        	} else {
+        		screenOption.setTitle(R.string.download_menu_screen_on);
+        	}
         }
         return super.onPrepareOptionsMenu(menu);
     }

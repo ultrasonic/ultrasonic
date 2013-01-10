@@ -73,7 +73,7 @@ public class DownloadServiceLifecycleSupport {
             } else if (DownloadServiceImpl.CMD_PAUSE.equals(action)) {
                 downloadService.pause();
             } else if (DownloadServiceImpl.CMD_STOP.equals(action)) {
-                downloadService.pause();
+                downloadService.stop();
                 downloadService.seekTo(0);
             }
         }

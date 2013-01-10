@@ -77,6 +77,8 @@ public interface DownloadService {
     void next();
 
     void pause();
+    
+    void stop();
 
     void start();
 

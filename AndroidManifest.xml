@@ -2,7 +2,7 @@
 <manifest xmlns:a="http://schemas.android.com/apk/res/android"
           package="net.sourceforge.subsonic.androidapp"
           a:versionCode="47"
-          a:versionName="3.9.9.5" a:installLocation="auto">
+          a:versionName="3.9.9.6" a:installLocation="auto">
 
     <uses-permission a:name="android.permission.INTERNET"/>
     <uses-permission a:name="android.permission.READ_PHONE_STATE"/>
@@ -12,7 +12,7 @@
     <uses-permission a:name="android.permission.RECORD_AUDIO"/>
     <uses-permission a:name="android.permission.MODIFY_AUDIO_SETTINGS"/>
 
-    <uses-sdk a:minSdkVersion="13" a:targetSdkVersion="16"/>
+    <uses-sdk a:minSdkVersion="14" a:targetSdkVersion="16"/>
 
     <supports-screens a:anyDensity="true" a:xlargeScreens="true" a:largeScreens="true" a:normalScreens="true" a:smallScreens="true"/>
 
@@ -85,9 +85,16 @@
             <meta-data a:name="android.app.searchable" a:resource="@xml/searchable"/>
         </activity>
         
-
-        <service a:name="net.sourceforge.subsonic.androidapp.service.DownloadServiceImpl"
-                 a:label="Subsonic Download Service"/>
+        <service a:name="net.sourceforge.subsonic.androidapp.service.DownloadServiceImpl" a:label="Subsonic Download Service">
+            <intent-filter>
+                <action a:name="net.sourceforge.subsonic.androidapp.CMD_TOGGLEPAUSE" />
+                <action a:name="net.sourceforge.subsonic.androidapp.CMD_PLAY" />
+                <action a:name="net.sourceforge.subsonic.androidapp.CMD_PAUSE" />
+                <action a:name="net.sourceforge.subsonic.androidapp.CMD_NEXT" />
+                <action a:name="net.sourceforge.subsonic.androidapp.CMD_PREVIOUS" />
+                <action a:name="net.sourceforge.subsonic.androidapp.CMD_STOP" />
+            </intent-filter>
+        </service>
 
         <receiver a:name="net.sourceforge.subsonic.androidapp.receiver.MediaButtonIntentReceiver">
             <intent-filter a:priority="999">

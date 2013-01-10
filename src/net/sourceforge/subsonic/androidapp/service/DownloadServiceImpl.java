@@ -21,13 +21,19 @@ package net.sourceforge.subsonic.androidapp.service;
 import android.app.Notification;
 import android.app.PendingIntent;
 import android.app.Service;
+import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Bitmap;
 import android.media.AudioManager;
+import android.media.AudioManager.OnAudioFocusChangeListener;
+import android.media.MediaMetadataRetriever;
 import android.media.MediaPlayer;
+import android.media.RemoteControlClient;
 import android.os.Handler;
 import android.os.IBinder;
 import android.os.PowerManager;
+import android.util.DisplayMetrics;
 import android.util.Log;
 import android.widget.RemoteViews;
 import net.sourceforge.subsonic.androidapp.R;
@@ -37,11 +43,14 @@ import net.sourceforge.subsonic.androidapp.audiofx.VisualizerController;
 import net.sourceforge.subsonic.androidapp.domain.MusicDirectory;
 import net.sourceforge.subsonic.androidapp.domain.PlayerState;
 import net.sourceforge.subsonic.androidapp.domain.RepeatMode;
+import net.sourceforge.subsonic.androidapp.receiver.MediaButtonIntentReceiver;
 import net.sourceforge.subsonic.androidapp.util.CancellableTask;
 import net.sourceforge.subsonic.androidapp.util.LRUCache;
 import net.sourceforge.subsonic.androidapp.util.ShufflePlayBuffer;
 import net.sourceforge.subsonic.androidapp.util.SimpleServiceBinder;
 import net.sourceforge.subsonic.androidapp.util.Util;
+import net.sourceforge.subsonic.androidapp.util.RemoteControlHelper;
+import net.sourceforge.subsonic.androidapp.util.RemoteControlClientCompat;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -96,6 +105,10 @@ public class DownloadServiceImpl extends Service implements DownloadService {
     private VisualizerController visualizerController;
     private boolean showVisualization;
     private boolean jukeboxEnabled;
+    
+    RemoteControlClientCompat remoteControlClientCompat;
+    AudioManager audioManager;
+    ComponentName mediaButtonReceiverComponent;
 
     static {
         try {
@@ -113,6 +126,16 @@ public class DownloadServiceImpl extends Service implements DownloadService {
             visualizerAvailable = false;
         }
     }
+    
+	private OnAudioFocusChangeListener _afChangeListener = new OnAudioFocusChangeListener() {
+		public void onAudioFocusChange(int focusChange) {
+			if (focusChange == AudioManager.AUDIOFOCUS_GAIN) {
+				start();
+			} else if (focusChange == AudioManager.AUDIOFOCUS_LOSS) {
+				stop();
+			}
+		}
+	};
 
     @Override
     public void onCreate() {
@@ -149,6 +172,9 @@ public class DownloadServiceImpl extends Service implements DownloadService {
                 visualizerController = null;
             }
         }
+        
+        audioManager = (AudioManager) getSystemService(AUDIO_SERVICE);
+        mediaButtonReceiverComponent = new ComponentName(this, MediaButtonIntentReceiver.class);
 
         PowerManager pm = (PowerManager)getSystemService(Context.POWER_SERVICE);
         wakeLock = pm.newWakeLock(PowerManager.PARTIAL_WAKE_LOCK, this.getClass().getName());
@@ -549,9 +575,40 @@ public class DownloadServiceImpl extends Service implements DownloadService {
             handleError(x);
         }
     }
+    
+    @Override
+    public synchronized void stop() {
+    	AudioManager am = (AudioManager) getSystemService(Context.AUDIO_SERVICE);
+		am.abandonAudioFocus(_afChangeListener);
+    	
+        try {
+            if (playerState == STARTED) {
+                if (jukeboxEnabled) {
+                    jukeboxService.stop();
+                } else {
+                    mediaPlayer.pause();
+                }
+                setPlayerState(PAUSED);
+            }
+        } catch (Exception x) {
+            handleError(x);
+        }
+        
+        //seekTo(0);
+    }
 
     @Override
     public synchronized void start() {
+		AudioManager am = (AudioManager) getSystemService(Context.AUDIO_SERVICE);
+		int result = am.requestAudioFocus(_afChangeListener, AudioManager.STREAM_MUSIC, AudioManager.AUDIOFOCUS_GAIN);
+		
+		if (result == AudioManager.AUDIOFOCUS_REQUEST_FAILED)
+			stop();
+
+		// grab the media button when we have audio focus
+		AudioManager audioManager = (AudioManager)getSystemService(Context.AUDIO_SERVICE);
+		audioManager.registerMediaButtonEventReceiver(new ComponentName(this, MediaButtonIntentReceiver.class));
+    	
         try {
             if (jukeboxEnabled) {
                 jukeboxService.start();
@@ -630,6 +687,59 @@ public class DownloadServiceImpl extends Service implements DownloadService {
 
         this.playerState = playerState;
         
+        if (remoteControlClientCompat == null) {
+            Intent intent = new Intent(Intent.ACTION_MEDIA_BUTTON);
+            intent.setComponent(mediaButtonReceiverComponent);
+            remoteControlClientCompat = new RemoteControlClientCompat(PendingIntent.getBroadcast(this, 0, intent, 0));
+            RemoteControlHelper.registerRemoteControlClient(audioManager, remoteControlClientCompat);
+        }
+
+        switch (playerState)
+        {
+        	case STARTED:
+        		remoteControlClientCompat.setPlaybackState(RemoteControlClient.PLAYSTATE_PLAYING);
+        		break;
+        	case PAUSED:
+        		remoteControlClientCompat.setPlaybackState(RemoteControlClient.PLAYSTATE_PAUSED);
+        		break;
+        	case IDLE:
+        	case STOPPED:
+        		remoteControlClientCompat.setPlaybackState(RemoteControlClient.PLAYSTATE_STOPPED);
+        		break;
+        }	
+
+        remoteControlClientCompat.setTransportControlFlags(
+                RemoteControlClient.FLAG_KEY_MEDIA_PLAY |
+                RemoteControlClient.FLAG_KEY_MEDIA_PAUSE |
+                RemoteControlClient.FLAG_KEY_MEDIA_NEXT |
+                RemoteControlClient.FLAG_KEY_MEDIA_PREVIOUS |
+                RemoteControlClient.FLAG_KEY_MEDIA_STOP);
+
+        try {
+        	
+        	String artist = currentPlaying.getSong().getArtist();
+        	String album = currentPlaying.getSong().getAlbum();
+        	String title = currentPlaying.getSong().getTitle();
+        	Integer duration = currentPlaying.getSong().getDuration();
+        	
+        	MusicService musicService = MusicServiceFactory.getMusicService(this);
+        	DisplayMetrics metrics = this.getResources().getDisplayMetrics();
+            int size = Math.min(metrics.widthPixels, metrics.heightPixels);
+            Bitmap bitmap = musicService.getCoverArt(this, currentPlaying.getSong(), size, true, null);
+       	
+        	// Update the remote controls
+        	remoteControlClientCompat.editMetadata(true)
+                .putString(MediaMetadataRetriever.METADATA_KEY_ARTIST, artist)
+                .putString(MediaMetadataRetriever.METADATA_KEY_TITLE, title)
+                .putString(MediaMetadataRetriever.METADATA_KEY_ALBUM, album)
+                .putLong(MediaMetadataRetriever.METADATA_KEY_DURATION, duration)
+                .putBitmap(RemoteControlClientCompat.MetadataEditorCompat.METADATA_KEY_ARTWORK, bitmap)
+                .apply();
+        }
+        catch (Exception e) {
+        	//
+        }
+        
         if (Util.isNotificationEnabled(this)) {
         	if (show) {
         		Util.showPlayingNotification(this, this, handler, currentPlaying.getSong(), this.notification, this.playerState);
@@ -639,7 +749,7 @@ public class DownloadServiceImpl extends Service implements DownloadService {
         } else {
         	Util.hidePlayingNotification(this, this, handler);
         }
-
+        
         if (playerState == STARTED) {
             scrobbler.scrobble(this, currentPlaying, false);
         } else if (playerState == COMPLETED) {
