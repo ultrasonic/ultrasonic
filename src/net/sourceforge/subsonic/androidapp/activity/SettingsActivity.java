@@ -58,6 +58,8 @@ public class SettingsActivity extends PreferenceActivity implements SharedPrefer
     private ListPreference bufferLength;
     private ListPreference networkTimeout;
     private ListPreference maxAlbums;
+    private ListPreference maxSongs;
+    private ListPreference maxArtists;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -73,6 +75,8 @@ public class SettingsActivity extends PreferenceActivity implements SharedPrefer
         bufferLength = (ListPreference) findPreference(Constants.PREFERENCES_KEY_BUFFER_LENGTH);
         networkTimeout = (ListPreference) findPreference(Constants.PREFERENCES_KEY_NETWORK_TIMEOUT);
         maxAlbums = (ListPreference) findPreference(Constants.PREFERENCES_KEY_MAX_ALBUMS);
+        maxSongs = (ListPreference) findPreference(Constants.PREFERENCES_KEY_MAX_SONGS);
+        maxArtists = (ListPreference) findPreference(Constants.PREFERENCES_KEY_MAX_ARTISTS);
 
         findPreference("testConnection1").setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
             @Override
@@ -157,6 +161,8 @@ public class SettingsActivity extends PreferenceActivity implements SharedPrefer
         bufferLength.setSummary(bufferLength.getEntry());
         networkTimeout.setSummary(networkTimeout.getEntry());
         maxAlbums.setSummary(maxAlbums.getEntry());
+        maxArtists.setSummary(maxArtists.getEntry());
+        maxSongs.setSummary(maxSongs.getEntry());
         
         for (ServerSettings ss : serverSettings.values()) {
             ss.update();

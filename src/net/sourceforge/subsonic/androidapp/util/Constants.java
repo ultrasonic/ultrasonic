@@ -78,6 +78,8 @@ public final class Constants {
     public static final String PREFERENCES_KEY_NETWORK_TIMEOUT = "networkTimeout";
     public static final String PREFERENCES_KEY_SHOW_NOTIFICATION = "showNotification";
     public static final String PREFERENCES_KEY_MAX_ALBUMS = "maxAlbums";
+    public static final String PREFERENCES_KEY_MAX_SONGS = "maxSongs";
+    public static final String PREFERENCES_KEY_MAX_ARTISTS = "maxArtists";
     // Name of the preferences file.
     public static final String PREFERENCES_FILE_NAME = "net.sourceforge.subsonic.androidapp_preferences";
 

@@ -64,9 +64,6 @@ public class SearchActivity extends SubsonicTabActivity {
     private static final int DEFAULT_ALBUMS = 5;
     private static final int DEFAULT_SONGS = 10;
 
-    private static final int MAX_ARTISTS = 10;
-    private static final int MAX_ALBUMS = 20;
-    private static final int MAX_SONGS = 25;
     private ListView list;
 
     private View artistsHeading;
@@ -169,7 +166,6 @@ public class SearchActivity extends SubsonicTabActivity {
     @Override
     public void onCreateContextMenu(ContextMenu menu, View view, ContextMenu.ContextMenuInfo menuInfo) {
         super.onCreateContextMenu(menu, view, menuInfo);
-
         AdapterView.AdapterContextMenuInfo info = (AdapterView.AdapterContextMenuInfo) menuInfo;
         Object selectedItem = list.getItemAtPosition(info.position);
 
@@ -187,11 +183,50 @@ public class SearchActivity extends SubsonicTabActivity {
         }
     }
 
+    @Override
+    public boolean onContextItemSelected(MenuItem menuItem) {
+        AdapterView.AdapterContextMenuInfo info = (AdapterView.AdapterContextMenuInfo) menuItem.getMenuInfo();
+        Object selectedItem = list.getItemAtPosition(info.position);
+
+        Artist artist = selectedItem instanceof Artist ? (Artist) selectedItem : null;
+        MusicDirectory.Entry entry = selectedItem instanceof MusicDirectory.Entry ? (MusicDirectory.Entry) selectedItem : null;
+        String id = artist != null ? artist.getId() : entry.getId();
+
+        switch (menuItem.getItemId()) {
+            case R.id.album_menu_play_now:
+                downloadRecursively(id, false, false, true);
+                break;
+            case R.id.album_menu_play_last:
+                downloadRecursively(id, false, true, false);
+                break;
+            case R.id.album_menu_pin:
+                downloadRecursively(id, true, true, false);
+                break;
+            case R.id.song_menu_play_now:
+                onSongSelected(entry, false, false, true, false);
+                break;
+            case R.id.song_menu_play_next:
+                onSongSelected(entry, false, true, false, true);
+                break;
+            case R.id.song_menu_play_last:
+                onSongSelected(entry, false, true, false, false);
+                break;
+            default:
+                return super.onContextItemSelected(menuItem);
+        }
+
+        return true;
+    }
+    
     private void search(final String query, final boolean autoplay) {
+    	final int maxArtists = Util.getMaxArtists(this);
+    	final int maxAlbums = Util.getMaxAlbums(this);
+    	final int maxSongs = Util.getMaxSongs(this);
+    	
         BackgroundTask<SearchResult> task = new TabActivityBackgroundTask<SearchResult>(this) {
             @Override
             protected SearchResult doInBackground() throws Throwable {
-                SearchCritera criteria = new SearchCritera(query, MAX_ARTISTS, MAX_ALBUMS, MAX_SONGS);
+                SearchCritera criteria = new SearchCritera(query, maxArtists, maxAlbums, maxSongs);
                 MusicService service = MusicServiceFactory.getMusicService(SearchActivity.this);
                 return service.search(criteria, SearchActivity.this, this);
             }

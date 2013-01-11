@@ -178,6 +178,40 @@
     </PreferenceCategory>
 
     <PreferenceCategory
+            a:title="@string/settings.search_title">
+        
+        <ListPreference
+                a:title="@string/settings.max_artists"
+                a:summary="@string/settings.max_artists_summary"
+                a:key="maxArtists"
+                a:defaultValue="10"
+                a:entryValues="@array/maxArtistsValues"
+                a:entries="@array/maxArtistsNames"/>
+        
+        <ListPreference
+                a:title="@string/settings.max_albums"
+                a:summary="@string/settings.max_albums_summary"
+                a:key="maxAlbums"
+                a:defaultValue="20"
+                a:entryValues="@array/maxAlbumsValues"
+                a:entries="@array/maxAlbumsNames"/>
+        
+        <ListPreference
+                a:title="@string/settings.max_songs"
+                a:summary="@string/settings.max_songs_summary"
+                a:key="maxSongs"
+                a:defaultValue="25"
+                a:entryValues="@array/maxSongsValues"
+                a:entries="@array/maxSongsNames"/>
+        
+        <Preference
+                a:key="clearSearchHistory"
+                a:title="@string/settings.clear_search_history"
+                a:persistent="false"/>
+        
+    </PreferenceCategory>
+    
+    <PreferenceCategory
             a:title="@string/settings.other_title">
 
         <CheckBoxPreference
@@ -209,19 +243,6 @@
                 a:summary="@string/settings.show_notification_summary"
                 a:key="showNotification"
                 a:defaultValue="true"/>
-        
-        <ListPreference
-                a:title="@string/settings.max_albums"
-                a:summary="@string/settings.max_albums_summary"
-                a:key="maxAlbums"
-                a:defaultValue="20"
-                a:entryValues="@array/maxAlbumsValues"
-                a:entries="@array/maxAlbumsNames"/>
-
-        <Preference
-                a:key="clearSearchHistory"
-                a:title="@string/settings.clear_search_history"
-                a:persistent="false"/>
 
     </PreferenceCategory>
 

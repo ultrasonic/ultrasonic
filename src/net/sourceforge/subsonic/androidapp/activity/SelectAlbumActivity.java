@@ -185,10 +185,10 @@ public class SelectAlbumActivity extends SubsonicTabActivity {
     
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-    	super.onCreateOptionsMenu(menu);
     	MenuInflater inflater = getMenuInflater();
     	inflater.inflate(R.menu.select_album, menu);
     	inflater.inflate(R.menu.select_common, menu);
+    	super.onCreateOptionsMenu(menu);
     	
     	return true;
     }
@@ -223,8 +223,7 @@ public class SelectAlbumActivity extends SubsonicTabActivity {
     @Override
     public void onCreateContextMenu(ContextMenu menu, View view, ContextMenu.ContextMenuInfo menuInfo) {
         super.onCreateContextMenu(menu, view, menuInfo);
-        AdapterView.AdapterContextMenuInfo info =
-                (AdapterView.AdapterContextMenuInfo) menuInfo;
+        AdapterView.AdapterContextMenuInfo info = (AdapterView.AdapterContextMenuInfo) menuInfo;
 
         MusicDirectory.Entry entry = (MusicDirectory.Entry) entryList.getItemAtPosition(info.position);
 

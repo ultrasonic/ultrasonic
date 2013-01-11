@@ -83,10 +83,10 @@ public class SelectArtistActivity extends SubsonicTabActivity implements Adapter
     
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-    	super.onCreateOptionsMenu(menu);
     	MenuInflater inflater = getMenuInflater();
     	inflater.inflate(R.menu.main, menu);
     	inflater.inflate(R.menu.select_common, menu);
+    	super.onCreateOptionsMenu(menu);
     	
     	return true;
     }
@@ -178,6 +178,7 @@ public class SelectArtistActivity extends SubsonicTabActivity implements Adapter
                     }
                 }
             }
+            
             menu.setGroupCheckable(MENU_GROUP_MUSIC_FOLDER, true, true);
         }
     }

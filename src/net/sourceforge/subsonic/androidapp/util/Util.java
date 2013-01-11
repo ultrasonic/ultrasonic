@@ -820,6 +820,16 @@ public class Util extends DownloadActivity {
         return Integer.parseInt(prefs.getString(Constants.PREFERENCES_KEY_MAX_ALBUMS, "20"));
     }
     
+    public static int getMaxSongs(Context context) {
+        SharedPreferences prefs = getPreferences(context);
+        return Integer.parseInt(prefs.getString(Constants.PREFERENCES_KEY_MAX_SONGS, "25"));
+    }
+    
+    public static int getMaxArtists(Context context) {
+        SharedPreferences prefs = getPreferences(context);
+        return Integer.parseInt(prefs.getString(Constants.PREFERENCES_KEY_MAX_ARTISTS, "10"));
+    }
+    
     public static int getBufferLength(Context context) {
         SharedPreferences prefs = getPreferences(context);
         return Integer.parseInt(prefs.getString(Constants.PREFERENCES_KEY_BUFFER_LENGTH, "5"));

@@ -155,9 +155,9 @@ public class MainActivity extends SubsonicTabActivity {
     
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-    	super.onCreateOptionsMenu(menu);
     	MenuInflater inflater = getMenuInflater();
     	inflater.inflate(R.menu.main, menu);
+    	super.onCreateOptionsMenu(menu);
     	
     	return true;
     }

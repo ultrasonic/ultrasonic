@@ -67,9 +67,9 @@ public class SelectPlaylistActivity extends SubsonicTabActivity implements Adapt
     
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-    	super.onCreateOptionsMenu(menu);
     	MenuInflater inflater = getMenuInflater();
     	inflater.inflate(R.menu.select_common, menu);
+    	super.onCreateOptionsMenu(menu);
     	
     	return true;
     }

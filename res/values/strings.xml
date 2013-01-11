@@ -180,6 +180,7 @@
     <string name="settings.clear_search_history">Clear search history</string>
     <string name="settings.search_history_cleared">Search history cleared</string>
     <string name="settings.other_title">Other settings</string>
+    <string name="settings.search_title">Search settings</string>
     <string name="settings.scrobble_title">Scrobble to Last.fm</string>
     <string name="settings.scrobble_summary">Remember to set up your Last.fm user and password on the Subsonic server</string>
     <string name="settings.hide_media_title">Hide from other</string>
@@ -220,8 +221,27 @@
     <string name="settings.max_albums_100">100</string>
     <string name="settings.max_albums_250">250</string>
     <string name="settings.max_albums_500">500</string>
+    <string name="settings.max_songs">Max Songs</string>
+    <string name="settings.max_songs_summary">Number of songs to return</string>
+    <string name="settings.max_songs_5">5</string>
+    <string name="settings.max_songs_10">10</string>
+    <string name="settings.max_songs_25">25</string>
+    <string name="settings.max_songs_50">50</string>
+    <string name="settings.max_songs_75">75</string>
+    <string name="settings.max_songs_100">100</string>
+    <string name="settings.max_songs_200">200</string>
+    <string name="settings.max_songs_500">500</string>
+    <string name="settings.max_artists">Max Artists</string>
+    <string name="settings.max_artists_summary">Number of artists to return</string>
+    <string name="settings.max_artists_5">5</string>
+    <string name="settings.max_artists_10">10</string>
+    <string name="settings.max_artists_25">25</string>
+    <string name="settings.max_artists_50">50</string>
+    <string name="settings.max_artists_75">75</string>
+    <string name="settings.max_artists_100">100</string>
+    <string name="settings.max_artists_200">200</string>
+    <string name="settings.max_artists_500">500</string>
     
-
     <string name="music_service.retry">A network error occurred. Retrying %1$d of %2$d.</string>
 
     <string name="background_task.wait">Please wait&#8230;</string>
