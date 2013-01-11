@@ -32,7 +32,6 @@ import android.app.Dialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Color;
-import android.graphics.Typeface;
 import android.os.Bundle;
 import android.os.Handler;
 import android.view.ContextMenu;
@@ -50,7 +49,6 @@ import android.view.WindowManager;
 import android.view.animation.AnimationUtils;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
-import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ImageView;
@@ -79,9 +77,7 @@ public class DownloadActivity extends SubsonicTabActivity implements OnGestureLi
 
     private static final int DIALOG_SAVE_PLAYLIST = 100;
     private static final int PERCENTAGE_OF_SCREEN_FOR_SWIPE = 5;
-    private static final int COLOR_BUTTON_ENABLED = Color.rgb(0, 153, 204);
-    private static final int COLOR_BUTTON_DISABLED = Color.rgb(164, 166, 158);
-
+    
     private ViewFlipper playlistFlipper;
     private ViewFlipper buttonBarFlipper;
     private TextView emptyTextView;
@@ -101,9 +97,9 @@ public class DownloadActivity extends SubsonicTabActivity implements OnGestureLi
     private View startButton;
     private View shuffleButton;
     private ImageButton repeatButton;
-    private Button equalizerButton;
-    private Button visualizerButton;
-    private Button jukeboxButton;
+    private MenuItem equalizerMenuItem;
+    private MenuItem visualizerMenuItem;
+    private MenuItem jukeboxMenuItem;
     private View toggleListButton;
     private ScheduledExecutorService executorService;
     private DownloadFile currentPlaying;
@@ -113,7 +109,9 @@ public class DownloadActivity extends SubsonicTabActivity implements OnGestureLi
     private int swipeDistance;
     private int swipeVelocity;
     private VisualizerView visualizerView;
-
+    private boolean visualizerAvailable;
+    private boolean equalizerAvailable;
+    
     /**
      * Called when the activity is first created.
      */
@@ -147,9 +145,6 @@ public class DownloadActivity extends SubsonicTabActivity implements OnGestureLi
         startButton = findViewById(R.id.download_start);
         shuffleButton = findViewById(R.id.download_shuffle);
         repeatButton = (ImageButton) findViewById(R.id.download_repeat);
-        equalizerButton = (Button) findViewById(R.id.download_equalizer);
-        visualizerButton = (Button) findViewById(R.id.download_visualizer);
-        jukeboxButton = (Button) findViewById(R.id.download_jukebox);
         LinearLayout visualizerViewLayout = (LinearLayout) findViewById(R.id.download_visualizer_view_layout);
 
         toggleListButton = findViewById(R.id.download_toggle_list);
@@ -165,9 +160,6 @@ public class DownloadActivity extends SubsonicTabActivity implements OnGestureLi
         pauseButton.setOnTouchListener(touchListener);
         stopButton.setOnTouchListener(touchListener);
         startButton.setOnTouchListener(touchListener);
-        equalizerButton.setOnTouchListener(touchListener);
-        visualizerButton.setOnTouchListener(touchListener);
-        jukeboxButton.setOnTouchListener(touchListener);
         buttonBarFlipper.setOnTouchListener(touchListener);
         emptyTextView.setOnTouchListener(touchListener);
         albumArtImageView.setOnTouchListener(touchListener);
@@ -237,16 +229,6 @@ public class DownloadActivity extends SubsonicTabActivity implements OnGestureLi
             }
         });
 
-        // Button: menu
-        ImageButton actionMenuButton = (ImageButton)findViewById(R.id.menu_selector);
-        actionMenuButton.setImageResource(R.drawable.ic_menu_moreoverflow);
-        actionMenuButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-            	openOptionsMenu(); 
-            }
-        });
-
         repeatButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -266,34 +248,6 @@ public class DownloadActivity extends SubsonicTabActivity implements OnGestureLi
                     default:
                         break;
                 }
-            }
-        });
-
-        equalizerButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                startActivity(new Intent(DownloadActivity.this, EqualizerActivity.class));
-            }
-        });
-
-        visualizerButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                boolean active = !visualizerView.isActive();
-                visualizerView.setActive(active);
-                getDownloadService().setShowVisualization(visualizerView.isActive());
-                updateButtons();
-                Util.toast(DownloadActivity.this, active ? R.string.download_visualizer_on : R.string.download_visualizer_off);
-            }
-        });
-
-        jukeboxButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                boolean jukeboxEnabled = !getDownloadService().isJukeboxEnabled();
-                getDownloadService().setJukeboxEnabled(jukeboxEnabled);
-                updateButtons();
-                Util.toast(DownloadActivity.this, jukeboxEnabled ? R.string.download_jukebox_on : R.string.download_jukebox_off, false);
             }
         });
 
@@ -333,15 +287,11 @@ public class DownloadActivity extends SubsonicTabActivity implements OnGestureLi
             downloadService.setShufflePlayEnabled(true);
         }
 
-        boolean visualizerAvailable = downloadService != null && downloadService.getVisualizerController() != null;
-        boolean equalizerAvailable = downloadService != null && downloadService.getEqualizerController() != null;
+        visualizerAvailable = downloadService != null && downloadService.getVisualizerController() != null;
+        equalizerAvailable = downloadService != null && downloadService.getEqualizerController() != null;
 
-        if (!equalizerAvailable) {
-            equalizerButton.setVisibility(View.GONE);
-        }
-        if (!visualizerAvailable) {
-            visualizerButton.setVisibility(View.GONE);
-        } else {
+
+        if (visualizerAvailable) {
             visualizerView = new VisualizerView(this);
             visualizerViewLayout.addView(visualizerView, new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.MATCH_PARENT));
 
@@ -355,12 +305,6 @@ public class DownloadActivity extends SubsonicTabActivity implements OnGestureLi
                 }
             });
         }
-
-        // TODO: Extract to utility method and cache.
-        Typeface typeface = Typeface.createFromAsset(getAssets(), "fonts/Roboto-Regular.ttf");
-        equalizerButton.setTypeface(typeface);
-        visualizerButton.setTypeface(typeface);
-        jukeboxButton.setTypeface(typeface);
     }
     
     @Override
@@ -407,16 +351,22 @@ public class DownloadActivity extends SubsonicTabActivity implements OnGestureLi
     }
 
     private void updateButtons() {
-        boolean eqEnabled = getDownloadService() != null && getDownloadService().getEqualizerController() != null &&
-                getDownloadService().getEqualizerController().isEnabled();
-        equalizerButton.setTextColor(eqEnabled ? COLOR_BUTTON_ENABLED : COLOR_BUTTON_DISABLED);
+        boolean eqEnabled = getDownloadService() != null && getDownloadService().getEqualizerController() != null && getDownloadService().getEqualizerController().isEnabled();
+        
+        if (equalizerMenuItem != null) {
+        	equalizerMenuItem.setEnabled(eqEnabled);
+        }
 
         if (visualizerView != null) {
-            visualizerButton.setTextColor(visualizerView.isActive() ? COLOR_BUTTON_ENABLED : COLOR_BUTTON_DISABLED);
+        	if (visualizerMenuItem != null) {
+        		visualizerMenuItem.setEnabled(visualizerView.isActive());
+        	}
         }
 
         boolean jukeboxEnabled = getDownloadService() != null && getDownloadService().isJukeboxEnabled();
-        jukeboxButton.setTextColor(jukeboxEnabled ? COLOR_BUTTON_ENABLED : COLOR_BUTTON_DISABLED);
+        if (jukeboxMenuItem != null) {
+        	jukeboxMenuItem.setEnabled(jukeboxEnabled);
+        }
     }
 
     // Scroll to current playing/downloading.
@@ -481,7 +431,7 @@ public class DownloadActivity extends SubsonicTabActivity implements OnGestureLi
             return super.onCreateDialog(id);
         }
     }
-
+    
     @Override
     protected void onPrepareDialog(int id, Dialog dialog) {
         if (id == DIALOG_SAVE_PLAYLIST) {
@@ -510,6 +460,14 @@ public class DownloadActivity extends SubsonicTabActivity implements OnGestureLi
         savePlaylist.setEnabled(savePlaylistEnabled);
         savePlaylist.setVisible(savePlaylistEnabled);
         MenuItem screenOption = menu.findItem(R.id.menu_screen_on_off);
+        equalizerMenuItem = menu.findItem(R.id.download_equalizer);
+        visualizerMenuItem = menu.findItem(R.id.download_visualizer);
+        jukeboxMenuItem = menu.findItem(R.id.download_jukebox);
+        
+      	equalizerMenuItem.setEnabled(equalizerAvailable);
+        equalizerMenuItem.setVisible(equalizerAvailable);
+        visualizerMenuItem.setEnabled(visualizerAvailable);
+        visualizerMenuItem.setVisible(visualizerAvailable);
         
         DownloadService downloadService = getDownloadService();
         
@@ -594,6 +552,22 @@ public class DownloadActivity extends SubsonicTabActivity implements OnGestureLi
             case R.id.menu_save_playlist:
                 showDialog(DIALOG_SAVE_PLAYLIST);
                 return true;
+            case R.id.download_equalizer:
+            	startActivity(new Intent(DownloadActivity.this, EqualizerActivity.class));
+            	return true;
+            case R.id.download_visualizer:
+                boolean active = !visualizerView.isActive();
+                visualizerView.setActive(active);
+                getDownloadService().setShowVisualization(visualizerView.isActive());
+                updateButtons();
+                Util.toast(DownloadActivity.this, active ? R.string.download_visualizer_on : R.string.download_visualizer_off);
+            	return true;
+            case R.id.download_jukebox:
+                boolean jukeboxEnabled = !getDownloadService().isJukeboxEnabled();
+                getDownloadService().setJukeboxEnabled(jukeboxEnabled);
+                updateButtons();
+                Util.toast(DownloadActivity.this, jukeboxEnabled ? R.string.download_jukebox_on : R.string.download_jukebox_off, false);
+            	return true;            	
             default:
                 return false;
         }
@@ -792,7 +766,8 @@ public class DownloadActivity extends SubsonicTabActivity implements OnGestureLi
                 break;
         }
 
-        jukeboxButton.setTextColor(getDownloadService().isJukeboxEnabled() ? COLOR_BUTTON_ENABLED : COLOR_BUTTON_DISABLED);
+        if (jukeboxMenuItem != null)
+        	jukeboxMenuItem.setEnabled(getDownloadService().isJukeboxEnabled());
     }
 
     private class SongListAdapter extends ArrayAdapter<DownloadFile> {

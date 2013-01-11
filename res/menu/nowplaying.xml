@@ -2,11 +2,20 @@
 <menu xmlns:a="http://schemas.android.com/apk/res/android">
 
     <item
-        a:id="@+id/ic_menu_shuffle"
-        a:icon="@drawable/ic_menu_shuffle"
-        a:title="@string/download.menu_shuffle"
+        a:id="@+id/download_equalizer"
+        a:title="@string/download.menu_equalizer"
         />
-
+    
+    <item
+        a:id="@+id/download_visualizer"
+        a:title="@string/download.menu_visualizer"
+        />
+    
+    <item
+        a:id="@+id/download_jukebox"
+        a:title="@string/download.menu_jukebox"
+        />  
+    
     <item
         a:id="@+id/menu_save_playlist" 
         a:icon="@drawable/ic_menu_save"

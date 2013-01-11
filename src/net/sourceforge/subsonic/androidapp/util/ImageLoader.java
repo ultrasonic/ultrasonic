@@ -35,6 +35,7 @@ import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
 import net.sourceforge.subsonic.androidapp.R;
+import net.sourceforge.subsonic.androidapp.activity.DownloadActivity;
 import net.sourceforge.subsonic.androidapp.domain.MusicDirectory;
 import net.sourceforge.subsonic.androidapp.service.MusicService;
 import net.sourceforge.subsonic.androidapp.service.MusicServiceFactory;
@@ -66,7 +67,8 @@ public class ImageLoader implements Runnable {
         // Determine the density-dependent image sizes.
         imageSizeDefault = context.getResources().getDrawable(R.drawable.unknown_album).getIntrinsicHeight();
         DisplayMetrics metrics = context.getResources().getDisplayMetrics();
-        imageSizeLarge = (int) Math.round(Math.min(metrics.widthPixels, metrics.heightPixels) * 0.6);
+        //imageSizeLarge = (int) Math.round(Math.min(metrics.widthPixels, metrics.heightPixels) * 0.6);
+        imageSizeLarge = (int) Math.round(Math.min(metrics.widthPixels, metrics.heightPixels));
 
         for (int i = 0; i < CONCURRENCY; i++) {
             new Thread(this, "ImageLoader").start();
@@ -78,7 +80,7 @@ public class ImageLoader implements Runnable {
     private void createLargeUnknownImage(Context context) {
         BitmapDrawable drawable = (BitmapDrawable) context.getResources().getDrawable(R.drawable.unknown_album_large);
         Bitmap bitmap = Bitmap.createScaledBitmap(drawable.getBitmap(), imageSizeLarge, imageSizeLarge, true);
-        bitmap = createReflection(bitmap);
+        //bitmap = createReflection(bitmap);
         largeUnknownImage = Util.createDrawableFromBitmap(context, bitmap);
     }
 
@@ -232,7 +234,7 @@ public class ImageLoader implements Runnable {
                 Bitmap bitmap = musicService.getCoverArt(view.getContext(), entry, size, saveToFile, null);
 
                 if (reflection) {
-                    bitmap = createReflection(bitmap);
+                    //bitmap = createReflection(bitmap);
                 }
 
                 final Drawable drawable = Util.createDrawableFromBitmap(view.getContext(), bitmap);

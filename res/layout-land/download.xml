@@ -13,6 +13,14 @@
 				a:layout_height="wrap_content" a:layout_alignParentTop="true"
 				a:layout_alignParentLeft="true">
 
+			    <ImageButton a:id="@+id/download_shuffle" a:src="@drawable/media_shuffle_normal"
+					a:background="@android:color/transparent" a:padding="0dip"			        
+					a:layout_width="wrap_content" a:layout_height="wrap_content"
+					a:layout_gravity="center_vertical" />
+				<ImageButton a:id="@+id/download_repeat" a:src="@drawable/media_repeat_off"
+				    a:background="@android:color/transparent" a:padding="0dip"
+				    a:layout_width="wrap_content" a:layout_height="wrap_content" 
+					a:layout_gravity="center_vertical" />
 				<ImageButton a:id="@+id/download_previous" a:src="@drawable/media_backward_normal"
 					a:background="@android:color/transparent" a:padding="0dip"
 					a:layout_width="wrap_content" a:layout_height="wrap_content"
@@ -33,6 +41,10 @@
 					a:background="@android:color/transparent" a:padding="0dip"
 					a:layout_width="wrap_content" a:layout_height="wrap_content"
 					a:layout_gravity="center_vertical" />
+				<ImageButton a:id="@+id/download_toggle_list" a:src="@drawable/media_toggle_list_normal"
+				    a:background="@android:color/transparent" a:padding="0dip"
+					a:layout_width="wrap_content" a:layout_height="wrap_content"
+ 					a:layout_gravity="center_vertical" />
 			</LinearLayout>
 
 			<TextView a:id="@+id/download_status" a:layout_width="wrap_content"
@@ -44,49 +56,9 @@
 			<TextView a:id="@+id/download_song_title" a:layout_width="150dip"
 				a:layout_height="wrap_content" a:layout_gravity="center_horizontal"
 				a:layout_above="@+id/download_status" a:layout_centerHorizontal="true"
-				a:layout_marginLeft="12dip" a:layout_marginRight="12dip" a:maxLines="2"
+				a:layout_marginLeft="12dip" a:layout_marginRight="12dip" a:layout_marginTop="12dip" a:maxLines="2"
 				a:ellipsize="end" a:gravity="center_horizontal" a:textAppearance="?android:attr/textAppearanceMedium"
 				a:textColor="@color/mediaControlForeground" />
-
-		 <LinearLayout a:layout_width="wrap_content"
-				a:layout_height="wrap_content" a:layout_centerHorizontal="true"
-				a:layout_centerVertical="true" a:orientation="horizontal">
-
-				<ImageButton a:id="@+id/download_shuffle"
-					a:layout_width="0dp" a:layout_height="wrap_content"
-					a:layout_weight="1" a:background="@android:color/transparent"
-					a:padding="9dip" a:src="@drawable/media_shuffle_normal" />
-
-				<ImageButton a:id="@+id/download_repeat" a:layout_width="0dp"
-					a:layout_height="match_parent" a:layout_weight="1"
-					a:background="@android:color/transparent" a:padding="9dip"
-					a:src="@drawable/media_repeat_off" />
-
-				<Button a:id="@+id/download_equalizer" a:layout_width="0dp"
-					a:layout_height="match_parent" a:layout_marginTop="3dip" a:layout_marginBottom="4dip"
-					a:layout_weight="1" a:background="@android:color/transparent"
-					a:padding="9dip" a:text="EQ" a:textSize="22sp" a:textStyle="bold" />
-
-				<Button a:id="@+id/download_jukebox" a:layout_width="0dp"
-					a:layout_height="match_parent" a:layout_marginTop="3dip" a:layout_marginBottom="4dip"
-					a:layout_weight="1" a:background="@android:color/transparent"
-					a:padding="9dip" a:text="RC" a:textSize="22sp" a:textStyle="bold" />
-
-				<Button a:id="@+id/download_visualizer" a:layout_width="0dp"
-					a:layout_height="match_parent" a:layout_marginTop="3dip" a:layout_marginBottom="4dip"
-					a:layout_weight="1" a:background="@android:color/transparent"
-					a:padding="9dip" a:text="VIS" a:textSize="22sp" a:textStyle="bold" />
-				
-				<ImageButton a:id="@+id/menu_selector" a:layout_width="0dp"
-					a:layout_height="match_parent" a:layout_weight="1"
-					a:background="@drawable/list_selector_holo_dark" a:padding="9dip"
-					a:src="@drawable/ic_menu_moreoverflow" />
-				
-				<ImageButton a:id="@+id/download_toggle_list"
-					a:layout_width="0dp" a:layout_height="match_parent"
-					a:layout_weight="1" a:background="@android:color/transparent"
-					a:padding="9dip" a:src="@drawable/media_toggle_list_normal" />
-			</LinearLayout>
 
 		</RelativeLayout>
 
@@ -95,12 +67,13 @@
 			a:layout_height="fill_parent" a:layout_alignParentLeft="true"
 			a:layout_toLeftOf="@+id/download_control_layout">
 
-			<FrameLayout a:id="@+id/download_album_art_layout"
-				a:layout_width="fill_parent" a:layout_height="fill_parent"
-				a:background="@drawable/album_art_background">
+			<FrameLayout a:id="@+id/download_album_art_layout" a:layout_width="fill_parent" a:layout_height="fill_parent" 
+			    a:background="@color/black">
+				
 				<ImageView a:id="@+id/download_album_art_image"
 					a:layout_width="wrap_content" a:layout_height="wrap_content"
-					a:layout_gravity="center" a:layout_marginTop="20dip" a:scaleType="fitCenter" />
+					a:layout_gravity="center" a:layout_marginTop="0dip" a:scaleType="fitCenter" />
+				
 				<LinearLayout a:id="@+id/download_visualizer_view_layout"
 					a:layout_width="fill_parent" a:layout_height="60dip"
 					a:layout_marginLeft="60dip" a:layout_marginRight="60dip"

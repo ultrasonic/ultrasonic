@@ -717,9 +717,10 @@ public class DownloadServiceImpl extends Service implements DownloadService {
 
         try {
         	
-        	String artist = currentPlaying.getSong().getArtist();
+        	//String artist = currentPlaying.getSong().getArtist();
+        	//String album = currentPlaying.getSong().getAlbum();
         	String album = currentPlaying.getSong().getAlbum();
-        	String title = currentPlaying.getSong().getTitle();
+        	String title = currentPlaying.getSong().getArtist() + " - " + currentPlaying.getSong().getTitle();
         	Integer duration = currentPlaying.getSong().getDuration();
         	
         	MusicService musicService = MusicServiceFactory.getMusicService(this);
@@ -729,7 +730,7 @@ public class DownloadServiceImpl extends Service implements DownloadService {
        	
         	// Update the remote controls
         	remoteControlClientCompat.editMetadata(true)
-                .putString(MediaMetadataRetriever.METADATA_KEY_ARTIST, artist)
+                //.putString(MediaMetadataRetriever.METADATA_KEY_ARTIST, artist)
                 .putString(MediaMetadataRetriever.METADATA_KEY_TITLE, title)
                 .putString(MediaMetadataRetriever.METADATA_KEY_ALBUM, album)
                 .putLong(MediaMetadataRetriever.METADATA_KEY_DURATION, duration)
