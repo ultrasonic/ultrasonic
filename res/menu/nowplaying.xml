@@ -3,16 +3,19 @@
 
     <item
         a:id="@+id/download_equalizer"
+        a:showAsAction="ifRoom|withText"
         a:title="@string/download.menu_equalizer"
         />
     
     <item
         a:id="@+id/download_visualizer"
+        a:showAsAction="ifRoom|withText"
         a:title="@string/download.menu_visualizer"
         />
     
     <item
         a:id="@+id/download_jukebox"
+        a:showAsAction="ifRoom|withText"
         a:title="@string/download.menu_jukebox"
         />  
     

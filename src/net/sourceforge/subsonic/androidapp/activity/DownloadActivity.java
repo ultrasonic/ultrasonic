@@ -290,7 +290,6 @@ public class DownloadActivity extends SubsonicTabActivity implements OnGestureLi
         visualizerAvailable = downloadService != null && downloadService.getVisualizerController() != null;
         equalizerAvailable = downloadService != null && downloadService.getEqualizerController() != null;
 
-
         if (visualizerAvailable) {
             visualizerView = new VisualizerView(this);
             visualizerViewLayout.addView(visualizerView, new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.MATCH_PARENT));
@@ -300,7 +299,7 @@ public class DownloadActivity extends SubsonicTabActivity implements OnGestureLi
                 public boolean onTouch(View view, MotionEvent motionEvent) {
                     visualizerView.setActive(!visualizerView.isActive());
                     getDownloadService().setShowVisualization(visualizerView.isActive());
-                    updateButtons();
+                    //updateButtons();
                     return true;
                 }
             });
@@ -347,7 +346,7 @@ public class DownloadActivity extends SubsonicTabActivity implements OnGestureLi
             visualizerView.setActive(downloadService != null && downloadService.getShowVisualization());
         }
 
-        updateButtons();
+        //updateButtons();
     }
 
     private void updateButtons() {
@@ -559,13 +558,13 @@ public class DownloadActivity extends SubsonicTabActivity implements OnGestureLi
                 boolean active = !visualizerView.isActive();
                 visualizerView.setActive(active);
                 getDownloadService().setShowVisualization(visualizerView.isActive());
-                updateButtons();
+                //updateButtons();
                 Util.toast(DownloadActivity.this, active ? R.string.download_visualizer_on : R.string.download_visualizer_off);
             	return true;
             case R.id.download_jukebox:
                 boolean jukeboxEnabled = !getDownloadService().isJukeboxEnabled();
                 getDownloadService().setJukeboxEnabled(jukeboxEnabled);
-                updateButtons();
+                //updateButtons();
                 Util.toast(DownloadActivity.this, jukeboxEnabled ? R.string.download_jukebox_on : R.string.download_jukebox_off, false);
             	return true;            	
             default:
