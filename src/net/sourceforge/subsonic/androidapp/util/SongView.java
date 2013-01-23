@@ -164,6 +164,12 @@ public class SongView extends LinearLayout implements Checkable {
             statusTextView.setText(null);
         }
         statusTextView.setCompoundDrawablesWithIntrinsicBounds(leftImage, 0, rightImage, 0);
+        
+    	if (!song.getStarred()) {
+			starImageView.setImageDrawable(getResources().getDrawable(R.drawable.star_hollow));
+    	} else {
+    		starImageView.setImageDrawable(getResources().getDrawable(R.drawable.star));
+    	}
 
         boolean playing = downloadService.getCurrentPlaying() == downloadFile;
         if (playing) {
