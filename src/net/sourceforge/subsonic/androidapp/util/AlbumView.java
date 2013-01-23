@@ -21,10 +21,13 @@ package net.sourceforge.subsonic.androidapp.util;
 import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import net.sourceforge.subsonic.androidapp.R;
 import net.sourceforge.subsonic.androidapp.domain.MusicDirectory;
+import net.sourceforge.subsonic.androidapp.service.MusicService;
+import net.sourceforge.subsonic.androidapp.service.MusicServiceFactory;
 
 /**
  * Used to display albums in a {@code ListView}.
@@ -36,6 +39,7 @@ public class AlbumView extends LinearLayout {
     private TextView titleView;
     private TextView artistView;
     private View coverArtView;
+    private ImageView starImageView;
 
     public AlbumView(Context context) {
         super(context);
@@ -44,12 +48,46 @@ public class AlbumView extends LinearLayout {
         titleView = (TextView) findViewById(R.id.album_title);
         artistView = (TextView) findViewById(R.id.album_artist);
         coverArtView = findViewById(R.id.album_coverart);
+        starImageView = (ImageView) findViewById(R.id.album_star);
     }
 
-    public void setAlbum(MusicDirectory.Entry album, ImageLoader imageLoader) {
+    public void setAlbum(final MusicDirectory.Entry album, ImageLoader imageLoader) {
         titleView.setText(album.getTitle());
         artistView.setText(album.getArtist());
         artistView.setVisibility(album.getArtist() == null ? View.GONE : View.VISIBLE);
+        starImageView.setImageDrawable(album.getStarred() ? getResources().getDrawable(R.drawable.star) : getResources().getDrawable(R.drawable.star_hollow));
         imageLoader.loadImage(coverArtView, album, false, true);
+        
+        starImageView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+            	final boolean isStarred = album.getStarred();
+            	final String id = album.getId();
+            	
+            	if (!isStarred) {
+					starImageView.setImageDrawable(getResources().getDrawable(R.drawable.star));
+					album.setStarred(true);
+            	} else {
+            		starImageView.setImageDrawable(getResources().getDrawable(R.drawable.star_hollow));
+            		album.setStarred(false);
+            	}
+            	
+            	new Thread(new Runnable() {
+            	    public void run() {
+                    	MusicService musicService = MusicServiceFactory.getMusicService(null);
+                    	
+            			try {
+            				if (!isStarred) {
+            					musicService.star(id, getContext(), null);
+            				} else {
+            					musicService.unstar(id, getContext(), null);
+            				}
+            			} catch (Exception e) {
+							e.printStackTrace();
+						}
+            	    }
+            	  }).start();
+            }
+        });
     }
 }

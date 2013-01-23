@@ -38,10 +38,11 @@
     </LinearLayout>
 
     <ImageView
-            a:layout_width="wrap_content"
-            a:layout_height="wrap_content"
-            a:layout_gravity="right|center_vertical"
-            a:paddingRight="6dip"/>
-                <!-- a:src="@drawable/list_item_more"-->
-
+        	a:id="@+id/album_star" 
+        	a:layout_width="wrap_content"
+			a:layout_height="fill_parent"
+			a:gravity="center_vertical"
+			a:background="@drawable/list_selector_holo_dark"
+            a:src="@drawable/star_hollow" />
+    
 </LinearLayout>

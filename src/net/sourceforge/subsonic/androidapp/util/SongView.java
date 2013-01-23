@@ -25,6 +25,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.Checkable;
 import android.widget.CheckedTextView;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import net.sourceforge.subsonic.androidapp.R;
@@ -32,6 +33,8 @@ import net.sourceforge.subsonic.androidapp.domain.MusicDirectory;
 import net.sourceforge.subsonic.androidapp.service.DownloadService;
 import net.sourceforge.subsonic.androidapp.service.DownloadServiceImpl;
 import net.sourceforge.subsonic.androidapp.service.DownloadFile;
+import net.sourceforge.subsonic.androidapp.service.MusicService;
+import net.sourceforge.subsonic.androidapp.service.MusicServiceFactory;
 
 import java.io.File;
 import java.util.WeakHashMap;
@@ -48,6 +51,7 @@ public class SongView extends LinearLayout implements Checkable {
     private static Handler handler;
 
     private CheckedTextView checkedTextView;
+    private ImageView starImageView;
     private TextView titleTextView;
     private TextView artistTextView;
     private TextView durationTextView;
@@ -59,6 +63,7 @@ public class SongView extends LinearLayout implements Checkable {
         LayoutInflater.from(context).inflate(R.layout.song_list_item, this, true);
 
         checkedTextView = (CheckedTextView) findViewById(R.id.song_check);
+        starImageView = (ImageView) findViewById(R.id.song_star);
         titleTextView = (TextView) findViewById(R.id.song_title);
         artistTextView = (TextView) findViewById(R.id.song_artist);
         durationTextView = (TextView) findViewById(R.id.song_duration);
@@ -66,13 +71,15 @@ public class SongView extends LinearLayout implements Checkable {
 
         INSTANCES.put(this, null);
         int instanceCount = INSTANCES.size();
+        
         if (instanceCount > 50) {
             Log.w(TAG, instanceCount + " live SongView instances");
         }
+        
         startUpdater();
     }
 
-    public void setSong(MusicDirectory.Entry song, boolean checkable) {
+    public void setSong(final MusicDirectory.Entry song, boolean checkable) {
         this.song = song;
         StringBuilder artist = new StringBuilder(40);
 
@@ -95,8 +102,41 @@ public class SongView extends LinearLayout implements Checkable {
         titleTextView.setText(song.getTitle());
         artistTextView.setText(artist);
         durationTextView.setText(Util.formatDuration(song.getDuration()));
+        starImageView.setImageDrawable(song.getStarred() ? getResources().getDrawable(R.drawable.star) : getResources().getDrawable(R.drawable.star_hollow));
         checkedTextView.setVisibility(checkable && !song.isVideo() ? View.VISIBLE : View.GONE);
 
+        starImageView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+            	final boolean isStarred = song.getStarred();
+            	final String id = song.getId();
+            	
+            	if (!isStarred) {
+					starImageView.setImageDrawable(getResources().getDrawable(R.drawable.star));
+					song.setStarred(true);
+            	} else {
+            		starImageView.setImageDrawable(getResources().getDrawable(R.drawable.star_hollow));
+            		song.setStarred(false);
+            	}
+            	
+            	new Thread(new Runnable() {
+            	    public void run() {
+                    	MusicService musicService = MusicServiceFactory.getMusicService(null);
+                    	
+            			try {
+            				if (!isStarred) {
+            					musicService.star(id, getContext(), null);
+            				} else {
+            					musicService.unstar(id, getContext(), null);
+            				}
+            			} catch (Exception e) {
+							e.printStackTrace();
+						}
+            	    }
+            	  }).start();
+            }
+        });
+        
         update();
     }
 

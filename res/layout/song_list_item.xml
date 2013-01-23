@@ -11,7 +11,7 @@
             a:gravity="center_vertical"
             a:checkMark="@drawable/btn_check_custom"
             a:paddingLeft="3dip"/>
-
+    
     <LinearLayout a:orientation="vertical"
                   a:layout_width="0dip"
                   a:layout_height="wrap_content"
@@ -73,4 +73,12 @@
 
         </LinearLayout>
     </LinearLayout>
+    
+    <ImageView
+        	a:id="@+id/song_star" 
+        	a:layout_width="wrap_content"
+			a:layout_height="fill_parent"
+			a:gravity="center_vertical"
+			a:background="@drawable/list_selector_holo_dark"
+            a:src="@drawable/star_hollow" />
 </LinearLayout>

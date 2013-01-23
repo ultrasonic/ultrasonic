@@ -203,6 +203,24 @@ public class RESTMusicService implements MusicService {
             Util.close(reader);
         }
     }
+    
+    public void star(String id, Context context, ProgressListener progressListener) throws Exception {
+        Reader reader = getReader(context, progressListener, "star", null, "id", id);
+        try {
+        	new ErrorParser(context).parse(reader);
+        } finally {
+            Util.close(reader);
+        }
+    }
+    
+    public void unstar(String id, Context context, ProgressListener progressListener) throws Exception {
+        Reader reader = getReader(context, progressListener, "unstar", null, "id", id);
+        try {
+        	new ErrorParser(context).parse(reader);
+        } finally {
+            Util.close(reader);
+        }
+    }
 
     @Override
     public Indexes getIndexes(String musicFolderId, boolean refresh, Context context, ProgressListener progressListener) throws Exception {

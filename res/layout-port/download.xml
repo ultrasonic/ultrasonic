@@ -6,15 +6,10 @@
 		a:id="@+id/download_playlist_flipper" a:layout_width="fill_parent"
 		a:layout_height="0dip" a:layout_weight="1">
 
-		<RelativeLayout
-		    a:id="@+id/download_album_art_layout"
-		    a:layout_width="fill_parent"
-		    a:layout_height="fill_parent"
-		    a:layout_weight="1"
-		    a:gravity="left"
-		    a:orientation="vertical"
-		    a:background="@color/black" 
-		    >
+		<RelativeLayout a:id="@+id/download_album_art_layout"
+			a:layout_width="fill_parent" a:layout_height="fill_parent"
+			a:layout_weight="1" a:gravity="left" a:orientation="vertical"
+			a:background="@color/black">
 
 			<ImageView a:id="@+id/download_album_art_image"
 				a:layout_width="wrap_content" a:layout_height="wrap_content"
@@ -29,9 +24,10 @@
 			<TextView a:id="@+id/download_song_title" a:layout_width="wrap_content"
 				a:layout_height="wrap_content" a:layout_gravity="center_horizontal"
 				a:layout_above="@+id/download_status" a:layout_centerHorizontal="true"
-				a:layout_marginLeft="16dip" a:layout_marginRight="16dip" a:layout_marginTop="16dip"
-				a:singleLine="true" a:textColor="@color/mediaControlForeground"
-				a:textStyle="bold" a:textSize="18sp" a:ellipsize="end" />
+				a:layout_marginLeft="16dip" a:layout_marginRight="16dip"
+				a:layout_marginTop="16dip" a:singleLine="true"
+				a:textColor="@color/mediaControlForeground" a:textStyle="bold"
+				a:textSize="18sp" a:ellipsize="end" />
 
 			<LinearLayout a:id="@+id/download_visualizer_view_layout"
 				a:layout_width="fill_parent" a:layout_height="60dip"
@@ -48,16 +44,11 @@
 		a:layout_height="wrap_content" a:layout_marginTop="0dip"
 		a:background="@color/mediaControlBackground" a:orientation="horizontal"
 		a:paddingBottom="0dip" a:paddingTop="0dip">
-		
+
 		<ImageButton a:id="@+id/download_shuffle" a:layout_width="0dip"
-			a:layout_height="fill_parent" a:layout_gravity="center_vertical|left"
+			a:layout_height="match_parent" a:layout_gravity="center_vertical"
 			a:layout_weight="1" a:background="@drawable/list_selector_holo_dark"
 			a:paddingLeft="4dip" a:src="@drawable/media_shuffle_normal" />
-		
-	    <ImageButton a:id="@+id/download_repeat" a:layout_width="0dip"
-		    a:layout_height="fill_parent" a:layout_gravity="center_vertical|left"
-			a:layout_weight="1" a:background="@drawable/list_selector_holo_dark"
-			a:paddingLeft="4dip" a:src="@drawable/media_repeat_off" />		
 
 		<ImageButton a:id="@+id/download_previous" a:layout_width="0dp"
 			a:layout_height="match_parent" a:layout_gravity="center_vertical"
@@ -83,11 +74,17 @@
 			a:layout_height="match_parent" a:layout_gravity="center_vertical"
 			a:layout_weight="1" a:background="@drawable/list_selector_holo_dark"
 			a:padding="0dip" a:src="@drawable/media_forward_normal" />
-		
+
+		<ImageButton a:id="@+id/download_repeat" a:layout_width="0dip"
+			a:layout_height="match_parent" a:layout_gravity="center_vertical"
+			a:layout_weight="1" a:background="@drawable/list_selector_holo_dark"
+			a:src="@drawable/media_repeat_off" />
+
 		<ImageButton a:id="@+id/download_toggle_list"
-			a:layout_width="0dip" a:layout_height="fill_parent" a:layout_weight="1"
-			a:background="@drawable/list_selector_holo_dark" a:paddingRight="4dip"
-			a:src="@drawable/media_toggle_list_normal" a:paddingTop="12dip" a:paddingBottom="12dip" />
+			a:layout_width="0dip" a:layout_height="fill_parent" a:layout_gravity="center_vertical"
+			a:layout_weight="1" a:background="@drawable/list_selector_holo_dark"
+			a:paddingRight="4dip" a:src="@drawable/media_toggle_list_normal"
+			a:paddingTop="12dip" a:paddingBottom="12dip" />
 	</LinearLayout>
 
 	<include layout="@layout/download_slider" />

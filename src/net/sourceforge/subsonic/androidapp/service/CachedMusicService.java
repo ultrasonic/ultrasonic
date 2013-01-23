@@ -231,4 +231,15 @@ public class CachedMusicService implements MusicService {
             restUrl = newUrl;
         }
     }
+
+	@Override
+	public void star(String id, Context context, ProgressListener progressListener) throws Exception {
+		musicService.star(id, context, progressListener);
+		
+	}
+
+	@Override
+	public void unstar(String id, Context context, ProgressListener progressListener) throws Exception {
+		musicService.unstar(id, context, progressListener);
+	}
 }

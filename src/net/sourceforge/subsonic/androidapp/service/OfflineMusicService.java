@@ -139,6 +139,16 @@ public class OfflineMusicService extends RESTMusicService {
     }
 
     @Override
+    public void star(String id, Context context, ProgressListener progressListener) throws Exception {
+        throw new OfflineException("Star not available in offline mode");
+    }
+    
+    @Override
+    public void unstar(String id, Context context, ProgressListener progressListener) throws Exception {
+        throw new OfflineException("UnStar not available in offline mode");
+    }
+    
+    @Override
     public List<MusicFolder> getMusicFolders(Context context, ProgressListener progressListener) throws Exception {
         throw new OfflineException("Music folders not available in offline mode");
     }

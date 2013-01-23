@@ -102,7 +102,10 @@ public class Util extends DownloadActivity {
     }
 
     public static boolean isOffline(Context context) {
-        return getActiveServer(context) == 0;
+        if (context == null)
+        	return false;
+        else
+        	return  getActiveServer(context) == 0;
     }
 
     public static boolean isScreenLitOnDownload(Context context) {

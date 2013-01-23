@@ -92,6 +92,11 @@ public abstract class AbstractParser {
     protected boolean getBoolean(String name) {
         return "true".equals(get(name));
     }
+    
+    protected boolean getValueExists(String name) {
+    	String value = get(name);
+    	return value != null && !value.isEmpty();
+    }
 
     protected Integer getInteger(String name) {
         String s = get(name);

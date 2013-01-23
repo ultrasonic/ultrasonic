@@ -46,6 +46,10 @@ public interface MusicService {
     boolean isLicenseValid(Context context, ProgressListener progressListener) throws Exception;
 
     List<MusicFolder> getMusicFolders(Context context, ProgressListener progressListener) throws Exception;
+    
+    void star(String id, Context context, ProgressListener progressListener) throws Exception;
+    
+    void unstar(String id, Context context, ProgressListener progressListener) throws Exception;
 
     Indexes getIndexes(String musicFolderId, boolean refresh, Context context, ProgressListener progressListener) throws Exception;
 

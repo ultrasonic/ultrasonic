@@ -84,7 +84,25 @@ public class MusicDirectory {
         private Integer bitRate;
         private String path;
         private boolean video;
+        private boolean starred;
+        private Integer discNumber;
+        
+        public Integer getDiscNumber() {
+        	return discNumber;
+        }
+        
+        public void setDiscNumber(Integer discNumber) {
+        	this.discNumber = discNumber;
+        }
 
+        public boolean getStarred() {
+        	return starred;
+        }
+        
+        public void setStarred(boolean starred) {
+        	this.starred = starred;
+        }
+        
         public String getId() {
             return id;
         }

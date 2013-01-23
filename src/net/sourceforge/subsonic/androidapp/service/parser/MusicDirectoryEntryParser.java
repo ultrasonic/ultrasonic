@@ -38,6 +38,7 @@ public class MusicDirectoryEntryParser extends AbstractParser {
         entry.setDirectory(getBoolean("isDir"));
         entry.setCoverArt(get("coverArt"));
         entry.setArtist(get("artist"));
+        entry.setStarred(getValueExists("starred"));
 
         if (!entry.isDirectory()) {
             entry.setAlbum(get("album"));
@@ -53,7 +54,9 @@ public class MusicDirectoryEntryParser extends AbstractParser {
             entry.setBitRate(getInteger("bitRate"));
             entry.setPath(get("path"));
             entry.setVideo(getBoolean("isVideo"));
+            entry.setDiscNumber(getInteger("discNumber"));
         }
+        
         return entry;
     }
 }
