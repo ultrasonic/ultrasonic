@@ -378,10 +378,9 @@ public class SelectAlbumActivity extends SubsonicTabActivity {
                     if (result.getFirst().getChildren().size() < getIntent().getIntExtra(Constants.INTENT_EXTRA_NAME_ALBUM_LIST_SIZE, 0)) {
                     	moreButton.setVisibility(View.GONE);
                     } else {
+                    	entryList.addFooterView(footer);
                     	moreButton.setVisibility(View.VISIBLE);
                     }
-                    
-                    entryList.addFooterView(footer);
 
                     moreButton.setOnClickListener(new View.OnClickListener() {
                         @Override

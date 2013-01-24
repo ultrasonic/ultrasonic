@@ -137,7 +137,7 @@
     <string name="settings.server_username">Username</string>
     <string name="settings.server_password">Password</string>
     <string name="settings.cache_title">Music Cache</string>
-    <string name="settings.preload">Songs to preload</string>
+    <string name="settings.preload">Songs To Preload</string>
     <string name="settings.cache_size">Cache Size</string>
     <string name="settings.cache_location">Cache Location</string>
     <string name="settings.cache_location_error">Invalid cache location. Using default.</string>
@@ -167,7 +167,7 @@
     <string name="settings.max_bitrate_256">256 Kbps</string>
     <string name="settings.max_bitrate_320">320 Kbps</string>
     <string name="settings.max_bitrate_unlimited">Unlimited</string>
-    <string name="settings.wifi_required_title">Wi-Fi streaming only</string>
+    <string name="settings.wifi_required_title">Wi-Fi Streaming Only</string>
     <string name="settings.wifi_required_summary">Only stream media if connected to Wi-Fi</string>
     <string name="settings.preload_1">1 song</string>
     <string name="settings.preload_2">2 songs</string>
@@ -184,7 +184,7 @@
     <string name="settings.cache_size_10000">10 GB</string>
     <string name="settings.cache_size_20000">20 GB</string>
     <string name="settings.cache_size_unlimited">Unlimited</string>
-    <string name="settings.clear_search_history">Clear search history</string>
+    <string name="settings.clear_search_history">Clear Search History</string>
     <string name="settings.search_history_cleared">Search history cleared</string>
     <string name="settings.other_title">Other Settings</string>
     <string name="settings.search_title">Search Settings</string>
@@ -197,8 +197,8 @@
     <string name="settings.media_button_summary">Respond to phone, headset and Bluetooth media buttons</string>
     <string name="settings.screen_lit_title">Keep Screen On</string>
     <string name="settings.screen_lit_summary">Keeping the screen on while downloading improves download speed.</string>
-    <string name="settings.buffer_length">Buffer length</string>
-    <string name="settings.network_timeout">Network timeout</string>
+    <string name="settings.buffer_length">Buffer Length</string>
+    <string name="settings.network_timeout">Network Timeout</string>
     <string name="settings.buffer_length_2">2 seconds</string>
     <string name="settings.buffer_length_5">5 seconds</string>
     <string name="settings.buffer_length_8">8 seconds</string>
@@ -215,7 +215,7 @@
     <string name="settings.network_timeout_90000">90 seconds</string>
     <string name="settings.network_timeout_105000">105 seconds</string>
     <string name="settings.network_timeout_120000">120 seconds</string>
-    <string name="settings.show_notification">Show notification</string>
+    <string name="settings.show_notification">Show Notification</string>
     <string name="settings.show_notification_summary">Show now playing notification in the status bar</string>
     <string name="settings.max_albums">Max Albums</string>
     <string name="settings.max_albums_summary">Number of albums to return</string>
