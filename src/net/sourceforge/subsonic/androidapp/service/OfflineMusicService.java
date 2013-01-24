@@ -222,6 +222,11 @@ public class OfflineMusicService extends RESTMusicService {
     public JukeboxStatus setJukeboxGain(float gain, Context context, ProgressListener progressListener) throws Exception {
         throw new OfflineException("Jukebox not available in offline mode");
     }
+    
+    @Override
+    public SearchResult getStarred(Context context, ProgressListener progressListener) throws Exception {
+    	throw new OfflineException("Starred not available in offline mode");
+    }
 
     @Override
     public MusicDirectory getRandomSongs(int size, Context context, ProgressListener progressListener) throws Exception {

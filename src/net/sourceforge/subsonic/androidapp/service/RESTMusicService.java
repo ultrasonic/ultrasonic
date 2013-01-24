@@ -410,6 +410,16 @@ public class RESTMusicService implements MusicService {
             Util.close(reader);
         }
     }
+    
+    @Override
+    public SearchResult getStarred(Context context, ProgressListener progressListener) throws Exception {
+        Reader reader = getReader(context, progressListener, "getStarred", null);
+        try {
+            return new SearchResult2Parser(context).parse(reader, progressListener);
+        } finally {
+            Util.close(reader);
+        }	
+    }
 
     @Override
     public Version getLocalVersion(Context context) throws Exception {

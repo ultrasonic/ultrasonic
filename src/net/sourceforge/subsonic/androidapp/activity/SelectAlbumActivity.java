@@ -30,11 +30,8 @@ import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
-import android.view.Window;
 import android.widget.AdapterView;
 import android.widget.Button;
-import android.widget.ImageButton;
-import android.widget.ImageView;
 import android.widget.ListView;
 import net.sourceforge.subsonic.androidapp.R;
 import net.sourceforge.subsonic.androidapp.domain.MusicDirectory;
@@ -162,6 +159,7 @@ public class SelectAlbumActivity extends SubsonicTabActivity {
         String playlistId = getIntent().getStringExtra(Constants.INTENT_EXTRA_NAME_PLAYLIST_ID);
         String playlistName = getIntent().getStringExtra(Constants.INTENT_EXTRA_NAME_PLAYLIST_NAME);
         String albumListType = getIntent().getStringExtra(Constants.INTENT_EXTRA_NAME_ALBUM_LIST_TYPE);
+        int getStarredTracks = getIntent().getIntExtra(Constants.INTENT_EXTRA_NAME_STARRED, 0);
         int albumListSize = getIntent().getIntExtra(Constants.INTENT_EXTRA_NAME_ALBUM_LIST_SIZE, 0);
         int albumListOffset = getIntent().getIntExtra(Constants.INTENT_EXTRA_NAME_ALBUM_LIST_OFFSET, 0);
 
@@ -169,6 +167,8 @@ public class SelectAlbumActivity extends SubsonicTabActivity {
             getPlaylist(playlistId, playlistName);
         } else if (albumListType != null) {
             getAlbumList(albumListType, albumListSize, albumListOffset);
+        } else if (getStarredTracks != 0) {
+        	getStarred();
         } else {
             getMusicDirectory(id, name);
         }
@@ -318,6 +318,17 @@ public class SelectAlbumActivity extends SubsonicTabActivity {
             }
         }.execute();
     }
+    
+    private void getStarred() {
+        setTitle(R.string.main_songs_starred);
+
+        new LoadTask() {
+            @Override
+            protected MusicDirectory load(MusicService service) throws Exception {
+                return Util.getSongsFromSearchResult(service.getStarred(SelectAlbumActivity.this, this));
+            }
+        }.execute();
+    }
 
     private void getPlaylist(final String playlistId, String playlistName) {
         setTitle(playlistName);
@@ -344,6 +355,10 @@ public class SelectAlbumActivity extends SubsonicTabActivity {
             setTitle(R.string.main_albums_frequent);
         } else if ("starred".equals(albumListType)) {
             setTitle(R.string.main_albums_starred);
+        } else if ("alphabeticalByName".equals(albumListType)) {
+        	setTitle(R.string.main_albums_alphaByName);
+        } else if ("alphabeticalByArtist".equals(albumListType)) {
+        	setTitle(R.string.main_albums_alphaByArtist);
         }
 
         new LoadTask() {

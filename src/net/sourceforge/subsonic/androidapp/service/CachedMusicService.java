@@ -164,6 +164,11 @@ public class CachedMusicService implements MusicService {
     public MusicDirectory getRandomSongs(int size, Context context, ProgressListener progressListener) throws Exception {
         return musicService.getRandomSongs(size, context, progressListener);
     }
+    
+    @Override
+    public SearchResult getStarred(Context context, ProgressListener progressListener) throws Exception {
+    	return musicService.getStarred(context, progressListener);
+    }
 
     @Override
     public Bitmap getCoverArt(Context context, MusicDirectory.Entry entry, int size, boolean saveToFile, ProgressListener progressListener) throws Exception {

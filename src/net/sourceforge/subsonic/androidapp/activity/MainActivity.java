@@ -25,11 +25,14 @@ import net.sourceforge.subsonic.androidapp.R;
 import net.sourceforge.subsonic.androidapp.service.DownloadFile;
 import net.sourceforge.subsonic.androidapp.service.DownloadService;
 import net.sourceforge.subsonic.androidapp.service.DownloadServiceImpl;
+import net.sourceforge.subsonic.androidapp.service.MusicService;
+import net.sourceforge.subsonic.androidapp.service.MusicServiceFactory;
 import net.sourceforge.subsonic.androidapp.util.Constants;
 import net.sourceforge.subsonic.androidapp.util.MergeAdapter;
 import net.sourceforge.subsonic.androidapp.util.Util;
 import net.sourceforge.subsonic.androidapp.util.FileUtil;
 import android.app.ActionBar;
+import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
@@ -67,6 +70,7 @@ public class MainActivity extends SubsonicTabActivity {
         if (getIntent().hasExtra(Constants.INTENT_EXTRA_NAME_EXIT)) {
             exit();
         }
+        
         setContentView(R.layout.main);
 
         loadSettings();
@@ -77,12 +81,16 @@ public class MainActivity extends SubsonicTabActivity {
         final TextView serverTextView = (TextView) serverButton.findViewById(R.id.main_select_server_2);
 
         final View albumsTitle = buttons.findViewById(R.id.main_albums);
+        final View songsTitle = buttons.findViewById(R.id.main_songs);
         final View albumsNewestButton = buttons.findViewById(R.id.main_albums_newest);
         final View albumsRandomButton = buttons.findViewById(R.id.main_albums_random);
         final View albumsHighestButton = buttons.findViewById(R.id.main_albums_highest);
         final View albumsStarredButton = buttons.findViewById(R.id.main_albums_starred);        
         final View albumsRecentButton = buttons.findViewById(R.id.main_albums_recent);
         final View albumsFrequentButton = buttons.findViewById(R.id.main_albums_frequent);
+        final View albumsAlphaByNameButton = buttons.findViewById(R.id.main_albums_alphaByName);
+        final View albumsAlphaByArtistButton = buttons.findViewById(R.id.main_albums_alphaByArtist);
+        final View songsStarredButton = buttons.findViewById(R.id.main_songs_starred);
         
         final View dummyView = findViewById(R.id.main_dummy);
 
@@ -95,9 +103,12 @@ public class MainActivity extends SubsonicTabActivity {
         
         MergeAdapter adapter = new MergeAdapter();
         adapter.addViews(Arrays.asList(serverButton), true);
+        
         if (!Util.isOffline(this)) {
+        	adapter.addView(songsTitle, false);
+        	adapter.addViews(Arrays.asList(songsStarredButton), true);
             adapter.addView(albumsTitle, false);
-            adapter.addViews(Arrays.asList(albumsNewestButton, albumsRecentButton, albumsFrequentButton, albumsHighestButton, albumsStarredButton, albumsRandomButton), true);
+            adapter.addViews(Arrays.asList(albumsNewestButton, albumsRecentButton, albumsFrequentButton, albumsHighestButton, albumsRandomButton, albumsStarredButton, albumsAlphaByNameButton, albumsAlphaByArtistButton), true);
         }
         
         list.setAdapter(adapter);
@@ -120,6 +131,12 @@ public class MainActivity extends SubsonicTabActivity {
                     showAlbumList("frequent");
                 } else if (view == albumsStarredButton) {
                     showAlbumList("starred");
+                } else if (view == albumsAlphaByNameButton) {
+                	showAlbumList("alphabeticalByName");
+                } else if (view == albumsAlphaByArtistButton) {
+                	showAlbumList("alphabeticalByArtist");
+                } else if (view == songsStarredButton) {
+                	showStarredSongs();
                 }
             }
         });
@@ -279,4 +296,10 @@ public class MainActivity extends SubsonicTabActivity {
         intent.putExtra(Constants.INTENT_EXTRA_NAME_ALBUM_LIST_OFFSET, 0);
 		Util.startActivityWithoutTransition(this, intent);
 	}
+    
+    private void showStarredSongs() {
+    	Intent intent = new Intent(this, SelectAlbumActivity.class);
+    	intent.putExtra(Constants.INTENT_EXTRA_NAME_STARRED, 1);
+    	Util.startActivityWithoutTransition(this, intent);
+    }
 }

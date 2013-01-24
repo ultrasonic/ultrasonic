@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:a="http://schemas.android.com/apk/res/android"
-	a:orientation="vertical" a:layout_width="fill_parent" a:layout_height="wrap_content">
+	a:orientation="vertical" a:layout_width="fill_parent" a:layout_height="fill_parent">
 
 	<LinearLayout a:id="@+id/main_select_server"
 		a:orientation="horizontal" a:paddingTop="2dip" a:paddingBottom="2dip"
@@ -11,7 +11,7 @@
 			a:layout_gravity="center_vertical" a:src="@drawable/ic_menu_select_artist_folder" />
 
 		<LinearLayout a:orientation="vertical" a:layout_width="wrap_content"
-			a:layout_height="wrap_content">
+			a:layout_height="fill_parent">
 
 			<TextView a:id="@+id/main.select_server_1" a:text="@string/main.select_server"
 				a:layout_width="fill_parent" a:layout_height="wrap_content"
@@ -25,6 +25,17 @@
 		</LinearLayout>
 	</LinearLayout>
 
+	<TextView a:id="@+id/main_songs" a:text="@string/main.songs_title"
+		a:layout_width="fill_parent" a:layout_height="wrap_content"
+		a:textAppearance="?android:attr/textAppearanceSmall" a:textColor="@color/cyan"
+		a:gravity="center_vertical" a:paddingLeft="6dp" a:textAllCaps="true"
+		a:textStyle="bold" />
+	
+	<TextView a:id="@+id/main_songs_starred" a:text="@string/main.songs_starred"
+		a:layout_width="fill_parent" a:layout_height="wrap_content"
+		a:textAppearance="?android:attr/textAppearanceMedium" a:gravity="center_vertical"
+		a:paddingLeft="6dip" a:paddingRight="6dip" a:minHeight="40dip" />
+	
 	<TextView a:id="@+id/main_albums" a:text="@string/main.albums_title"
 		a:layout_width="fill_parent" a:layout_height="wrap_content"
 		a:textAppearance="?android:attr/textAppearanceSmall" a:textColor="@color/cyan"
@@ -50,16 +61,27 @@
 		a:layout_width="fill_parent" a:layout_height="wrap_content"
 		a:textAppearance="?android:attr/textAppearanceMedium" a:gravity="center_vertical"
 		a:paddingLeft="6dip" a:paddingRight="6dip" a:minHeight="40dip" />
+				
+	<TextView a:id="@+id/main_albums_random" a:text="@string/main.albums_random"
+		a:layout_width="fill_parent" a:layout_height="wrap_content"
+		a:textAppearance="?android:attr/textAppearanceMedium" a:gravity="center_vertical"
+		a:paddingLeft="6dip" a:paddingRight="6dip" a:minHeight="40dip" />
 	
 	<TextView a:id="@+id/main_albums_starred" a:layout_width="fill_parent"
 		a:layout_height="wrap_content" a:gravity="center_vertical"
 		a:minHeight="40dip" a:paddingLeft="6dip" a:paddingRight="6dip"
 		a:text="@string/main.albums_starred" a:textAppearance="?android:attr/textAppearanceMedium" />
+	
+	<TextView a:id="@+id/main_albums_alphaByName" a:layout_width="fill_parent"
+		a:layout_height="wrap_content" a:gravity="center_vertical"
+		a:minHeight="40dip" a:paddingLeft="6dip" a:paddingRight="6dip"
+		a:text="@string/main.albums_alphaByName" a:textAppearance="?android:attr/textAppearanceMedium" />
+	
+	<TextView a:id="@+id/main_albums_alphaByArtist" a:layout_width="fill_parent"
+		a:layout_height="wrap_content" a:gravity="center_vertical"
+		a:minHeight="40dip" a:paddingLeft="6dip" a:paddingRight="6dip"
+		a:text="@string/main.albums_alphaByArtist" a:textAppearance="?android:attr/textAppearanceMedium" />
+		
 			
-	<TextView a:id="@+id/main_albums_random" a:text="@string/main.albums_random"
-		a:layout_width="fill_parent" a:layout_height="wrap_content"
-		a:textAppearance="?android:attr/textAppearanceMedium" a:gravity="center_vertical"
-		a:paddingLeft="6dip" a:paddingRight="6dip" a:minHeight="40dip" />
-
 </LinearLayout>
 

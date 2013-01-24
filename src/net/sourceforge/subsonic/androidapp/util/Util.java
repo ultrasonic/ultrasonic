@@ -49,7 +49,9 @@ import net.sourceforge.subsonic.androidapp.activity.MainActivity;
 import net.sourceforge.subsonic.androidapp.domain.MusicDirectory;
 import net.sourceforge.subsonic.androidapp.domain.PlayerState;
 import net.sourceforge.subsonic.androidapp.domain.RepeatMode;
+import net.sourceforge.subsonic.androidapp.domain.SearchResult;
 import net.sourceforge.subsonic.androidapp.domain.Version;
+import net.sourceforge.subsonic.androidapp.domain.MusicDirectory.Entry;
 import net.sourceforge.subsonic.androidapp.provider.SubsonicAppWidgetProvider4x1;
 import net.sourceforge.subsonic.androidapp.receiver.MediaButtonIntentReceiver;
 import net.sourceforge.subsonic.androidapp.service.DownloadServiceImpl;
@@ -729,6 +731,16 @@ public class Util extends DownloadActivity {
             notificationManager.cancel(Constants.NOTIFICATION_ID_PLAYING);
             Log.i(TAG, "Service.stopForeground() not available. Using work-around.");
         }
+    }
+    
+    public static MusicDirectory getSongsFromSearchResult(SearchResult searchResult) {
+    	MusicDirectory musicDirectory = new MusicDirectory();
+    	
+    	for (Entry entry : searchResult.getSongs()) {
+    		musicDirectory.addChild(entry);	
+    	}
+    	
+    	return musicDirectory;
     }
 
     /**
