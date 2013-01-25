@@ -24,6 +24,7 @@ import android.content.Intent;
 import android.util.Log;
 import android.view.KeyEvent;
 import net.sourceforge.subsonic.androidapp.service.DownloadServiceImpl;
+import net.sourceforge.subsonic.androidapp.util.Util;
 
 /**
  * @author Sindre Mehus
@@ -34,17 +35,21 @@ public class MediaButtonIntentReceiver extends BroadcastReceiver {
 
     @Override
     public void onReceive(Context context, Intent intent) {
-        KeyEvent event = (KeyEvent) intent.getExtras().get(Intent.EXTRA_KEY_EVENT);
-        Log.i(TAG, "Got MEDIA_BUTTON key event: " + event);
+    	if (Util.getMediaButtonsPreference(context)) {
+    		KeyEvent event = (KeyEvent) intent.getExtras().get(Intent.EXTRA_KEY_EVENT);
+    		Log.i(TAG, "Got MEDIA_BUTTON key event: " + event);
 
-        Intent serviceIntent = new Intent(context, DownloadServiceImpl.class);
-        serviceIntent.putExtra(Intent.EXTRA_KEY_EVENT, event);
-        context.startService(serviceIntent);
+    		Intent serviceIntent = new Intent(context, DownloadServiceImpl.class);
+    		serviceIntent.putExtra(Intent.EXTRA_KEY_EVENT, event);
+    		context.startService(serviceIntent);
 
-        try {
-            abortBroadcast();
-        } catch (Exception x) {
-            // Ignored.
-        }
+    		try {
+    			if (isOrderedBroadcast()) {
+    				abortBroadcast();
+    			}
+    		} catch (Exception x) {
+    			// Ignored.
+    		}
+    	}
     }
 }

@@ -15,24 +15,19 @@
  along with Subsonic.  If not, see <http://www.gnu.org/licenses/>.
 
  Copyright 2009 (C) Sindre Mehus
- */
+  */
 
 package net.sourceforge.subsonic.androidapp.activity;
 
 import java.util.Arrays;
 
 import net.sourceforge.subsonic.androidapp.R;
-import net.sourceforge.subsonic.androidapp.service.DownloadFile;
 import net.sourceforge.subsonic.androidapp.service.DownloadService;
 import net.sourceforge.subsonic.androidapp.service.DownloadServiceImpl;
-import net.sourceforge.subsonic.androidapp.service.MusicService;
-import net.sourceforge.subsonic.androidapp.service.MusicServiceFactory;
 import net.sourceforge.subsonic.androidapp.util.Constants;
 import net.sourceforge.subsonic.androidapp.util.MergeAdapter;
 import net.sourceforge.subsonic.androidapp.util.Util;
 import net.sourceforge.subsonic.androidapp.util.FileUtil;
-import android.app.ActionBar;
-import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
@@ -43,8 +38,6 @@ import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
-import android.view.Window;
-import android.view.WindowManager;
 import android.widget.AdapterView;
 import android.widget.ListView;
 import android.widget.TextView;
@@ -69,6 +62,7 @@ public class MainActivity extends SubsonicTabActivity {
         super.onCreate(savedInstanceState);
         if (getIntent().hasExtra(Constants.INTENT_EXTRA_NAME_EXIT)) {
             exit();
+            return;
         }
         
         setContentView(R.layout.main);
@@ -277,6 +271,7 @@ public class MainActivity extends SubsonicTabActivity {
 
     private void exit() {
         stopService(new Intent(this, DownloadServiceImpl.class));
+        Util.unregisterMediaButtonEventReceiver(this);
         finish();
     }
 

@@ -60,9 +60,9 @@ import net.sourceforge.subsonic.androidapp.util.Util;
  */
 public class SearchActivity extends SubsonicTabActivity {
 
-    private static final int DEFAULT_ARTISTS = 3;
-    private static final int DEFAULT_ALBUMS = 5;
-    private static final int DEFAULT_SONGS = 10;
+    private static int DEFAULT_ARTISTS;
+    private static int DEFAULT_ALBUMS;
+    private static int DEFAULT_SONGS;
 
     private ListView list;
 
@@ -89,6 +89,10 @@ public class SearchActivity extends SubsonicTabActivity {
 
         setTitle(R.string.search_title);
 
+        DEFAULT_ARTISTS = Util.getDefaultArtists(this);
+        DEFAULT_ALBUMS = Util.getDefaultAlbums(this);
+        DEFAULT_SONGS = Util.getDefaultSongs(this);
+        
         View buttons = LayoutInflater.from(this).inflate(R.layout.search_buttons, null);
 
         artistsHeading = buttons.findViewById(R.id.search_artists);

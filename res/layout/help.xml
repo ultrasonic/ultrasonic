@@ -28,13 +28,12 @@
                 a:paddingRight="25dip"/>
     </LinearLayout>
 
-
     <WebView
-            a:id="@+id/help_contents"
-            a:layout_width="fill_parent"
-            a:layout_height="wrap_content"
-            a:layout_above="@id/help_buttons"
-            a:fadingEdge="vertical"
-            a:fadingEdgeLength="12dip"/>
+        a:id="@+id/help_contents"
+        a:layout_width="fill_parent"
+        a:layout_height="match_parent"
+        a:layout_above="@id/help_buttons"
+        a:fadingEdge="vertical"
+        a:fadingEdgeLength="12dip" />
 
   </RelativeLayout>

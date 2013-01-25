@@ -206,6 +206,7 @@ public class SubsonicTabActivity extends Activity implements OnClickListener{
 
     @Override
     protected void onDestroy() {
+    	Util.unregisterMediaButtonEventReceiver(this);
         super.onDestroy();
         destroyed = true;
         getImageLoader().clear();

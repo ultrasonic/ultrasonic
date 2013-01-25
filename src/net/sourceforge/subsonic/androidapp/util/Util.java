@@ -600,10 +600,12 @@ public class Util extends DownloadActivity {
 		notification.contentView.setTextViewText(R.id.artist, text);
 		notification.contentView.setTextViewText(R.id.album, album);
                 
-    	if (playerState == PlayerState.PAUSED)
+    	if (playerState == PlayerState.PAUSED) {
     		notification.contentView.setImageViewResource(R.id.control_play, R.drawable.ic_appwidget_music_play);
-		else if (playerState == PlayerState.STARTED)
+    	}
+		else if (playerState == PlayerState.STARTED) {
 			notification.contentView.setImageViewResource(R.id.control_play, R.drawable.ic_appwidget_music_pause);
+		}
         
         // Send the notification and put the service in the foreground.
         handler.post(new Runnable() {
@@ -612,7 +614,7 @@ public class Util extends DownloadActivity {
                 startForeground(downloadService, Constants.NOTIFICATION_ID_PLAYING, notification);
             }
         });
-
+        
         // Update widget
         SubsonicAppWidgetProvider4x1.getInstance().notifyChange(context, downloadService, true);
     }
@@ -673,12 +675,7 @@ public class Util extends DownloadActivity {
 
     public static void registerMediaButtonEventReceiver(Context context) {
 
-        // Only do it if enabled in the settings.
-        SharedPreferences prefs = getPreferences(context);
-        boolean enabled = prefs.getBoolean(Constants.PREFERENCES_KEY_MEDIA_BUTTONS, true);
-
-        if (enabled) {
-
+        if (getMediaButtonsPreference(context)) {
             // AudioManager.registerMediaButtonEventReceiver() was introduced in Android 2.2.
             // Use reflection to maintain compatibility with 1.5.
             try {
@@ -830,9 +827,19 @@ public class Util extends DownloadActivity {
         return Integer.parseInt(prefs.getString(Constants.PREFERENCES_KEY_NETWORK_TIMEOUT, "15000"));
     }
     
+    public static int getDefaultAlbums(Context context) {
+        SharedPreferences prefs = getPreferences(context);
+        return Integer.parseInt(prefs.getString(Constants.PREFERENCES_KEY_DEFAULT_ALBUMS, "5"));
+    }
+    
     public static int getMaxAlbums(Context context) {
         SharedPreferences prefs = getPreferences(context);
         return Integer.parseInt(prefs.getString(Constants.PREFERENCES_KEY_MAX_ALBUMS, "20"));
+    }
+
+    public static int getDefaultSongs(Context context) {
+        SharedPreferences prefs = getPreferences(context);
+        return Integer.parseInt(prefs.getString(Constants.PREFERENCES_KEY_DEFAULT_SONGS, "10"));
     }
     
     public static int getMaxSongs(Context context) {
@@ -845,8 +852,18 @@ public class Util extends DownloadActivity {
         return Integer.parseInt(prefs.getString(Constants.PREFERENCES_KEY_MAX_ARTISTS, "10"));
     }
     
+    public static int getDefaultArtists(Context context) {
+        SharedPreferences prefs = getPreferences(context);
+        return Integer.parseInt(prefs.getString(Constants.PREFERENCES_KEY_DEFAULT_ARTISTS, "3"));
+    }
+    
     public static int getBufferLength(Context context) {
         SharedPreferences prefs = getPreferences(context);
         return Integer.parseInt(prefs.getString(Constants.PREFERENCES_KEY_BUFFER_LENGTH, "5"));
+    }
+    
+    public static boolean getMediaButtonsPreference(Context context) {
+        SharedPreferences prefs = getPreferences(context);
+        return prefs.getBoolean(Constants.PREFERENCES_KEY_MEDIA_BUTTONS, true);
     }
 }

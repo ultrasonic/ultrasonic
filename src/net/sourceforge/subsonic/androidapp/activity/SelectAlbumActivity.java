@@ -61,7 +61,6 @@ public class SelectAlbumActivity extends SubsonicTabActivity {
     private Button unpinButton;
     private Button deleteButton;
     private Button moreButton;
-    //private ImageView coverArtView;
     private boolean licenseValid;
     private boolean playAllButtonVisible;
     private MenuItem playAllButton;
@@ -98,7 +97,6 @@ public class SelectAlbumActivity extends SubsonicTabActivity {
         });
         entryList.setOnTouchListener(gestureListener);
 
-        //coverArtView = (ImageView) findViewById(R.id.actionbar_home_icon);
         selectButton = (Button) findViewById(R.id.select_album_select);
         playNowButton = (Button) findViewById(R.id.select_album_play_now);
         playLastButton = (Button) findViewById(R.id.select_album_play_last);
@@ -608,7 +606,6 @@ public class SelectAlbumActivity extends SubsonicTabActivity {
             }
 
             if (songCount > 0) {
-                //getImageLoader().loadImage(coverArtView, entries.get(0), false, true);
                 entryList.addFooterView(footer);
                 selectButton.setVisibility(View.VISIBLE);
                 playNowButton.setVisibility(View.VISIBLE);

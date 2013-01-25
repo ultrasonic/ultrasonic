@@ -168,6 +168,7 @@ public class DownloadServiceLifecycleSupport {
         downloadService.unregisterReceiver(ejectEventReceiver);
         downloadService.unregisterReceiver(headsetEventReceiver);
         downloadService.unregisterReceiver(intentReceiver);
+        Util.unregisterMediaButtonEventReceiver(downloadService);
 
         TelephonyManager telephonyManager = (TelephonyManager) downloadService.getSystemService(Context.TELEPHONY_SERVICE);
         telephonyManager.listen(phoneStateListener, PhoneStateListener.LISTEN_NONE);

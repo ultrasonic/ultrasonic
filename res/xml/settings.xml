@@ -181,24 +181,42 @@
             a:title="@string/settings.search_title">
         
         <ListPreference
+                a:title="@string/settings.default_artists"
+                a:key="defaultArtists"
+                a:defaultValue="3"
+                a:entryValues="@array/defaultSearchValues"
+                a:entries="@array/defaultSearchNames"/>
+        
+        <ListPreference
                 a:title="@string/settings.max_artists"
-                a:summary="@string/settings.max_artists_summary"
                 a:key="maxArtists"
                 a:defaultValue="10"
                 a:entryValues="@array/maxArtistsValues"
                 a:entries="@array/maxArtistsNames"/>
-        
+
+        <ListPreference
+                a:title="@string/settings.default_albums"
+                a:key="defaultAlbums"
+                a:defaultValue="5"
+                a:entryValues="@array/defaultSearchValues"
+                a:entries="@array/defaultSearchNames"/>
+                
         <ListPreference
                 a:title="@string/settings.max_albums"
-                a:summary="@string/settings.max_albums_summary"
                 a:key="maxAlbums"
                 a:defaultValue="20"
                 a:entryValues="@array/maxAlbumsValues"
                 a:entries="@array/maxAlbumsNames"/>
         
         <ListPreference
+                a:title="@string/settings.default_songs"
+                a:key="defaultSongs"
+                a:defaultValue="10"
+                a:entryValues="@array/defaultSearchValues"
+                a:entries="@array/defaultSearchNames"/>
+              
+        <ListPreference
                 a:title="@string/settings.max_songs"
-                a:summary="@string/settings.max_songs_summary"
                 a:key="maxSongs"
                 a:defaultValue="25"
                 a:entryValues="@array/maxSongsValues"

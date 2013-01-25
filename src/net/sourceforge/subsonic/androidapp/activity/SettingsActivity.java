@@ -60,6 +60,10 @@ public class SettingsActivity extends PreferenceActivity implements SharedPrefer
     private ListPreference maxAlbums;
     private ListPreference maxSongs;
     private ListPreference maxArtists;
+    private ListPreference defaultAlbums;
+    private ListPreference defaultSongs;
+    private ListPreference defaultArtists;
+
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -77,6 +81,9 @@ public class SettingsActivity extends PreferenceActivity implements SharedPrefer
         maxAlbums = (ListPreference) findPreference(Constants.PREFERENCES_KEY_MAX_ALBUMS);
         maxSongs = (ListPreference) findPreference(Constants.PREFERENCES_KEY_MAX_SONGS);
         maxArtists = (ListPreference) findPreference(Constants.PREFERENCES_KEY_MAX_ARTISTS);
+        defaultArtists = (ListPreference) findPreference(Constants.PREFERENCES_KEY_DEFAULT_ARTISTS);
+        defaultSongs = (ListPreference) findPreference(Constants.PREFERENCES_KEY_DEFAULT_SONGS);
+        defaultAlbums = (ListPreference) findPreference(Constants.PREFERENCES_KEY_DEFAULT_ALBUMS);
 
         findPreference("testConnection1").setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
             @Override
@@ -163,6 +170,9 @@ public class SettingsActivity extends PreferenceActivity implements SharedPrefer
         maxAlbums.setSummary(maxAlbums.getEntry());
         maxArtists.setSummary(maxArtists.getEntry());
         maxSongs.setSummary(maxSongs.getEntry());
+        defaultAlbums.setSummary(defaultAlbums.getEntry());
+        defaultArtists.setSummary(defaultArtists.getEntry());
+        defaultSongs.setSummary(defaultSongs.getEntry());
         
         for (ServerSettings ss : serverSettings.values()) {
             ss.update();

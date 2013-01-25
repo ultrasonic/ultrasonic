@@ -81,6 +81,10 @@ public final class Constants {
     public static final String PREFERENCES_KEY_MAX_ALBUMS = "maxAlbums";
     public static final String PREFERENCES_KEY_MAX_SONGS = "maxSongs";
     public static final String PREFERENCES_KEY_MAX_ARTISTS = "maxArtists";
+    public static final String PREFERENCES_KEY_DEFAULT_ALBUMS = "defaultAlbums";
+    public static final String PREFERENCES_KEY_DEFAULT_SONGS = "defaultSongs";
+    public static final String PREFERENCES_KEY_DEFAULT_ARTISTS = "defaultArtists";
+    
     // Name of the preferences file.
     public static final String PREFERENCES_FILE_NAME = "net.sourceforge.subsonic.androidapp_preferences";
 

@@ -218,7 +218,6 @@
     <string name="settings.show_notification">Show Notification</string>
     <string name="settings.show_notification_summary">Show now playing notification in the status bar</string>
     <string name="settings.max_albums">Max Albums</string>
-    <string name="settings.max_albums_summary">Number of albums to return</string>
     <string name="settings.max_albums_5">5</string>
     <string name="settings.max_albums_10">10</string>
     <string name="settings.max_albums_20">20</string>
@@ -229,7 +228,6 @@
     <string name="settings.max_albums_250">250</string>
     <string name="settings.max_albums_500">500</string>
     <string name="settings.max_songs">Max Songs</string>
-    <string name="settings.max_songs_summary">Number of songs to return</string>
     <string name="settings.max_songs_5">5</string>
     <string name="settings.max_songs_10">10</string>
     <string name="settings.max_songs_25">25</string>
@@ -239,7 +237,7 @@
     <string name="settings.max_songs_200">200</string>
     <string name="settings.max_songs_500">500</string>
     <string name="settings.max_artists">Max Artists</string>
-    <string name="settings.max_artists_summary">Number of artists to return</string>
+    <string name="settings.max_artists_3">3</string>
     <string name="settings.max_artists_5">5</string>
     <string name="settings.max_artists_10">10</string>
     <string name="settings.max_artists_25">25</string>
@@ -248,6 +246,9 @@
     <string name="settings.max_artists_100">100</string>
     <string name="settings.max_artists_200">200</string>
     <string name="settings.max_artists_500">500</string>
+    <string name="settings.default_artists">Default Artists</string>
+    <string name="settings.default_albums">Default Albums</string>
+    <string name="settings.default_songs">Default Songs</string>
     
     <string name="music_service.retry">A network error occurred. Retrying %1$d of %2$d.</string>
 

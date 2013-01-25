@@ -344,27 +344,6 @@ public class DownloadActivity extends SubsonicTabActivity implements OnGestureLi
         if (visualizerView != null) {
             visualizerView.setActive(downloadService != null && downloadService.getShowVisualization());
         }
-
-        //updateButtons();
-    }
-
-    private void updateButtons() {
-        boolean eqEnabled = getDownloadService() != null && getDownloadService().getEqualizerController() != null && getDownloadService().getEqualizerController().isEnabled();
-        
-        if (equalizerMenuItem != null) {
-        	equalizerMenuItem.setEnabled(eqEnabled);
-        }
-
-        if (visualizerView != null) {
-        	if (visualizerMenuItem != null) {
-        		visualizerMenuItem.setEnabled(visualizerView.isActive());
-        	}
-        }
-
-        boolean jukeboxEnabled = getDownloadService() != null && getDownloadService().isJukeboxEnabled();
-        if (jukeboxMenuItem != null) {
-        	jukeboxMenuItem.setEnabled(jukeboxEnabled);
-        }
     }
 
     // Scroll to current playing/downloading.

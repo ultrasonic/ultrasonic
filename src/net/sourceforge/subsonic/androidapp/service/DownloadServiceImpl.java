@@ -61,7 +61,7 @@ import java.util.List;
 import static net.sourceforge.subsonic.androidapp.domain.PlayerState.*;
 
 /**
- * @author Sindre Mehus
+ * @author Sindre Mehus, Joshua Bahnsen
  * @version $Id$
  */
 public class DownloadServiceImpl extends Service implements DownloadService {
@@ -86,7 +86,7 @@ public class DownloadServiceImpl extends Service implements DownloadService {
     private final List<DownloadFile> cleanupCandidates = new ArrayList<DownloadFile>();
     private final Scrobbler scrobbler = new Scrobbler();
     private final JukeboxService jukeboxService = new JukeboxService(this);
-    private final Notification notification = new Notification(R.drawable.ic_stat_subsonic, null, System.currentTimeMillis()); 
+    private Notification notification = new Notification(R.drawable.ic_stat_subsonic, null, System.currentTimeMillis()); 
     		           
     private DownloadFile currentPlaying;
     private DownloadFile currentDownloading;
@@ -107,8 +107,6 @@ public class DownloadServiceImpl extends Service implements DownloadService {
     private boolean jukeboxEnabled;
     
     RemoteControlClientCompat remoteControlClientCompat;
-    AudioManager audioManager;
-    ComponentName mediaButtonReceiverComponent;
 
     static {
         try {
@@ -173,9 +171,6 @@ public class DownloadServiceImpl extends Service implements DownloadService {
             }
         }
         
-        audioManager = (AudioManager) getSystemService(AUDIO_SERVICE);
-        mediaButtonReceiverComponent = new ComponentName(this, MediaButtonIntentReceiver.class);
-
         PowerManager pm = (PowerManager)getSystemService(Context.POWER_SERVICE);
         wakeLock = pm.newWakeLock(PowerManager.PARTIAL_WAKE_LOCK, this.getClass().getName());
         wakeLock.setReferenceCounted(false);
@@ -183,7 +178,7 @@ public class DownloadServiceImpl extends Service implements DownloadService {
         instance = this;
         lifecycleSupport.onCreate();
     }
-
+    
     @Override
     public void onStart(Intent intent, int startId) {
         super.onStart(intent, startId);
@@ -202,7 +197,10 @@ public class DownloadServiceImpl extends Service implements DownloadService {
         if (visualizerController != null) {
             visualizerController.release();
         }
-
+        
+    	AudioManager audioManager = (AudioManager) this.getSystemService(Context.AUDIO_SERVICE);
+        RemoteControlHelper.unregisterRemoteControlClient(audioManager, remoteControlClientCompat);
+        notification = null;
         instance = null;
     }
 
@@ -431,6 +429,8 @@ public class DownloadServiceImpl extends Service implements DownloadService {
         } else {
             Util.broadcastNewTrackInfo(this, null);
         }
+        
+        setRemoteControl();
 
         if (Util.isNotificationEnabled(this) && currentPlaying != null && showNotification) {
             Util.showPlayingNotification(this, this, handler, currentPlaying.getSong(), this.notification, this.playerState);
@@ -578,8 +578,8 @@ public class DownloadServiceImpl extends Service implements DownloadService {
     
     @Override
     public synchronized void stop() {
-    	AudioManager am = (AudioManager) getSystemService(Context.AUDIO_SERVICE);
-		am.abandonAudioFocus(_afChangeListener);
+    	AudioManager audioManager = (AudioManager) this.getSystemService(Context.AUDIO_SERVICE);
+		audioManager.abandonAudioFocus(_afChangeListener);
     	
         try {
             if (playerState == STARTED) {
@@ -599,16 +599,6 @@ public class DownloadServiceImpl extends Service implements DownloadService {
 
     @Override
     public synchronized void start() {
-		AudioManager am = (AudioManager) getSystemService(Context.AUDIO_SERVICE);
-		int result = am.requestAudioFocus(_afChangeListener, AudioManager.STREAM_MUSIC, AudioManager.AUDIOFOCUS_GAIN);
-		
-		if (result == AudioManager.AUDIOFOCUS_REQUEST_FAILED)
-			stop();
-
-		// grab the media button when we have audio focus
-		AudioManager audioManager = (AudioManager)getSystemService(Context.AUDIO_SERVICE);
-		audioManager.registerMediaButtonEventReceiver(new ComponentName(this, MediaButtonIntentReceiver.class));
-    	
         try {
             if (jukeboxEnabled) {
                 jukeboxService.start();
@@ -687,59 +677,7 @@ public class DownloadServiceImpl extends Service implements DownloadService {
 
         this.playerState = playerState;
         
-        if (remoteControlClientCompat == null) {
-            Intent intent = new Intent(Intent.ACTION_MEDIA_BUTTON);
-            intent.setComponent(mediaButtonReceiverComponent);
-            remoteControlClientCompat = new RemoteControlClientCompat(PendingIntent.getBroadcast(this, 0, intent, 0));
-            RemoteControlHelper.registerRemoteControlClient(audioManager, remoteControlClientCompat);
-        }
-
-        switch (playerState)
-        {
-        	case STARTED:
-        		remoteControlClientCompat.setPlaybackState(RemoteControlClient.PLAYSTATE_PLAYING);
-        		break;
-        	case PAUSED:
-        		remoteControlClientCompat.setPlaybackState(RemoteControlClient.PLAYSTATE_PAUSED);
-        		break;
-        	case IDLE:
-        	case STOPPED:
-        		remoteControlClientCompat.setPlaybackState(RemoteControlClient.PLAYSTATE_STOPPED);
-        		break;
-        }	
-
-        remoteControlClientCompat.setTransportControlFlags(
-                RemoteControlClient.FLAG_KEY_MEDIA_PLAY |
-                RemoteControlClient.FLAG_KEY_MEDIA_PAUSE |
-                RemoteControlClient.FLAG_KEY_MEDIA_NEXT |
-                RemoteControlClient.FLAG_KEY_MEDIA_PREVIOUS |
-                RemoteControlClient.FLAG_KEY_MEDIA_STOP);
-
-        try {
-        	
-        	//String artist = currentPlaying.getSong().getArtist();
-        	//String album = currentPlaying.getSong().getAlbum();
-        	String album = currentPlaying.getSong().getAlbum();
-        	String title = currentPlaying.getSong().getArtist() + " - " + currentPlaying.getSong().getTitle();
-        	Integer duration = currentPlaying.getSong().getDuration();
-        	
-        	MusicService musicService = MusicServiceFactory.getMusicService(this);
-        	DisplayMetrics metrics = this.getResources().getDisplayMetrics();
-            int size = Math.min(metrics.widthPixels, metrics.heightPixels);
-            Bitmap bitmap = musicService.getCoverArt(this, currentPlaying.getSong(), size, true, null);
-       	
-        	// Update the remote controls
-        	remoteControlClientCompat.editMetadata(true)
-                //.putString(MediaMetadataRetriever.METADATA_KEY_ARTIST, artist)
-                .putString(MediaMetadataRetriever.METADATA_KEY_TITLE, title)
-                .putString(MediaMetadataRetriever.METADATA_KEY_ALBUM, album)
-                .putLong(MediaMetadataRetriever.METADATA_KEY_DURATION, duration)
-                .putBitmap(RemoteControlClientCompat.MetadataEditorCompat.METADATA_KEY_ARTWORK, bitmap)
-                .apply();
-        }
-        catch (Exception e) {
-        	//
-        }
+        setRemoteControl();
         
         if (Util.isNotificationEnabled(this)) {
         	if (show) {
@@ -802,6 +740,68 @@ public class DownloadServiceImpl extends Service implements DownloadService {
         jukeboxService.adjustVolume(up);
     }
 
+    private void setRemoteControl() {
+    	if (Util.getMediaButtonsPreference(this)) {
+        	AudioManager audioManager = (AudioManager) this.getSystemService(Context.AUDIO_SERVICE);
+    		audioManager.requestAudioFocus(_afChangeListener, AudioManager.STREAM_MUSIC, AudioManager.AUDIOFOCUS_GAIN);
+    		
+        	if (remoteControlClientCompat == null) {
+        		audioManager = (AudioManager) this.getSystemService(Context.AUDIO_SERVICE);
+        		Intent intent = new Intent(Intent.ACTION_MEDIA_BUTTON);
+        		intent.setComponent(new ComponentName(this.getPackageName(), MediaButtonIntentReceiver.class.getName()));
+        		remoteControlClientCompat = new RemoteControlClientCompat(PendingIntent.getBroadcast(this, 0, intent, 0));
+        		RemoteControlHelper.registerRemoteControlClient(audioManager, remoteControlClientCompat);
+        	}
+
+        	switch (playerState)
+        	{
+        	case STARTED:
+        		remoteControlClientCompat.setPlaybackState(RemoteControlClient.PLAYSTATE_PLAYING);
+        		break;
+        	case PAUSED:
+        		remoteControlClientCompat.setPlaybackState(RemoteControlClient.PLAYSTATE_PAUSED);
+        		break;
+        	case IDLE:
+        	case STOPPED:
+        		remoteControlClientCompat.setPlaybackState(RemoteControlClient.PLAYSTATE_STOPPED);
+        		break;
+        	}	
+
+        	remoteControlClientCompat.setTransportControlFlags(
+        			RemoteControlClient.FLAG_KEY_MEDIA_PLAY |
+        			RemoteControlClient.FLAG_KEY_MEDIA_PAUSE |
+        			RemoteControlClient.FLAG_KEY_MEDIA_NEXT |
+        			RemoteControlClient.FLAG_KEY_MEDIA_PREVIOUS |
+        			RemoteControlClient.FLAG_KEY_MEDIA_STOP);
+
+        	try {
+
+        		//String artist = currentPlaying.getSong().getArtist();
+        		//String album = currentPlaying.getSong().getAlbum();
+        		String album = currentPlaying.getSong().getAlbum();
+        		String title = currentPlaying.getSong().getArtist() + " - " + currentPlaying.getSong().getTitle();
+        		Integer duration = currentPlaying.getSong().getDuration();
+
+        		MusicService musicService = MusicServiceFactory.getMusicService(this);
+        		DisplayMetrics metrics = this.getResources().getDisplayMetrics();
+        		int size = Math.min(metrics.widthPixels, metrics.heightPixels);
+        		Bitmap bitmap = musicService.getCoverArt(this, currentPlaying.getSong(), size, true, null);
+
+        		// Update the remote controls
+        		remoteControlClientCompat.editMetadata(true)
+        		//.putString(MediaMetadataRetriever.METADATA_KEY_ARTIST, artist)
+        		.putString(MediaMetadataRetriever.METADATA_KEY_TITLE, title)
+        		.putString(MediaMetadataRetriever.METADATA_KEY_ALBUM, album)
+        		.putLong(MediaMetadataRetriever.METADATA_KEY_DURATION, duration)
+        		.putBitmap(RemoteControlClientCompat.MetadataEditorCompat.METADATA_KEY_ARTWORK, bitmap)
+        		.apply();
+        	}
+        	catch (Exception e) {
+        		//
+        	}
+        }
+    }
+    
     private synchronized void bufferAndPlay() {
         reset();
 
