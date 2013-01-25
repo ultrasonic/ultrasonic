@@ -20,6 +20,7 @@
 package net.sourceforge.subsonic.androidapp.activity;
 
 import android.app.Activity;
+import android.content.pm.PackageManager.NameNotFoundException;
 import android.os.Bundle;
 import android.view.KeyEvent;
 import android.view.View;
@@ -46,7 +47,7 @@ public final class HelpActivity extends Activity {
         getWindow().requestFeature(Window.FEATURE_INDETERMINATE_PROGRESS);
 
         setContentView(R.layout.help);
-
+        
         webView = (WebView) findViewById(R.id.help_contents);
         webView.getSettings().setJavaScriptEnabled(true);
         webView.setWebViewClient(new HelpClient());
@@ -105,7 +106,15 @@ public final class HelpActivity extends Activity {
         @Override
         public void onPageFinished(WebView view, String url) {
             setProgressBarIndeterminateVisibility(false);
-            setTitle(view.getTitle());
+            String versionName = null;
+            
+    		try {
+    			versionName = getPackageManager().getPackageInfo(getPackageName(), 0).versionName;
+    		} catch (NameNotFoundException e) {
+    			e.printStackTrace();
+    		}
+    		
+            setTitle(view.getTitle() + " (" + versionName + ")");
             backButton.setEnabled(view.canGoBack());
         }
 

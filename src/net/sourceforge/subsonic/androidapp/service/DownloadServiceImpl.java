@@ -772,6 +772,7 @@ public class DownloadServiceImpl extends Service implements DownloadService {
         			RemoteControlClient.FLAG_KEY_MEDIA_PAUSE |
         			RemoteControlClient.FLAG_KEY_MEDIA_NEXT |
         			RemoteControlClient.FLAG_KEY_MEDIA_PREVIOUS |
+        			RemoteControlClient.FLAG_KEY_MEDIA_PLAY_PAUSE |
         			RemoteControlClient.FLAG_KEY_MEDIA_STOP);
 
         	try {
@@ -797,7 +798,7 @@ public class DownloadServiceImpl extends Service implements DownloadService {
         		.apply();
         	}
         	catch (Exception e) {
-        		//
+        		Log.e(TAG, "Exception in setRemoteControl");
         	}
         }
     }
