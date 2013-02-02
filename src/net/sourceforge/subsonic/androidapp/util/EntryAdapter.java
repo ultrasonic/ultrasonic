@@ -48,22 +48,25 @@ public class EntryAdapter extends ArrayAdapter<MusicDirectory.Entry> {
 
         if (entry.isDirectory()) {
             AlbumView view;
-  // TODO: Reuse AlbumView objects once cover art loading is working.
-//            if (convertView != null && convertView instanceof AlbumView) {
-//                view = (AlbumView) convertView;
-//            } else {
+
+            if (convertView != null && convertView instanceof AlbumView) {
+                view = (AlbumView) convertView;
+            } else {
                 view = new AlbumView(activity);
-//            }
+            }
+            
             view.setAlbum(entry, imageLoader);
             return view;
 
         } else {
             SongView view;
+            
             if (convertView != null && convertView instanceof SongView) {
                 view = (SongView) convertView;
             } else {
                 view = new SongView(activity);
             }
+            
             view.setSong(entry, checkable);
             return view;
         }

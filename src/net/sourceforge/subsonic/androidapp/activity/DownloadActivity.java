@@ -98,7 +98,6 @@ public class DownloadActivity extends SubsonicTabActivity implements OnGestureLi
     private ImageButton repeatButton;
     private MenuItem equalizerMenuItem;
     private MenuItem visualizerMenuItem;
-    private MenuItem jukeboxMenuItem;
     private View toggleListButton;
     private ScheduledExecutorService executorService;
     private DownloadFile currentPlaying;
@@ -276,6 +275,7 @@ public class DownloadActivity extends SubsonicTabActivity implements OnGestureLi
                 onProgressChanged();
             }
         });
+        
         playlistView.setOnTouchListener(gestureListener);
 
         registerForContextMenu(playlistView);
@@ -439,7 +439,6 @@ public class DownloadActivity extends SubsonicTabActivity implements OnGestureLi
         MenuItem screenOption = menu.findItem(R.id.menu_screen_on_off);
         equalizerMenuItem = menu.findItem(R.id.download_equalizer);
         visualizerMenuItem = menu.findItem(R.id.download_visualizer);
-        jukeboxMenuItem = menu.findItem(R.id.download_jukebox);
         
       	equalizerMenuItem.setEnabled(equalizerAvailable);
         equalizerMenuItem.setVisible(equalizerAvailable);
@@ -536,13 +535,11 @@ public class DownloadActivity extends SubsonicTabActivity implements OnGestureLi
                 boolean active = !visualizerView.isActive();
                 visualizerView.setActive(active);
                 getDownloadService().setShowVisualization(visualizerView.isActive());
-                //updateButtons();
                 Util.toast(DownloadActivity.this, active ? R.string.download_visualizer_on : R.string.download_visualizer_off);
             	return true;
             case R.id.download_jukebox:
                 boolean jukeboxEnabled = !getDownloadService().isJukeboxEnabled();
                 getDownloadService().setJukeboxEnabled(jukeboxEnabled);
-                //updateButtons();
                 Util.toast(DownloadActivity.this, jukeboxEnabled ? R.string.download_jukebox_on : R.string.download_jukebox_off, false);
             	return true;            	
             default:
@@ -742,9 +739,6 @@ public class DownloadActivity extends SubsonicTabActivity implements OnGestureLi
                 startButton.setVisibility(View.VISIBLE);
                 break;
         }
-
-        if (jukeboxMenuItem != null)
-        	jukeboxMenuItem.setEnabled(getDownloadService().isJukeboxEnabled());
     }
 
     private class SongListAdapter extends ArrayAdapter<DownloadFile> {

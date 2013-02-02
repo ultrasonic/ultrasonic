@@ -139,6 +139,11 @@ public class Util extends DownloadActivity {
         SharedPreferences prefs = getPreferences(context);
         return prefs.getBoolean(Constants.PREFERENCES_KEY_SHOW_NOTIFICATION, false);
     }
+    
+    public static boolean isLockScreenEnabled(Context context) {
+        SharedPreferences prefs = getPreferences(context);
+        return prefs.getBoolean(Constants.PREFERENCES_KEY_SHOW_LOCK_SCREEN_CONTROLS, false);
+    }
 
     public static void setActiveServer(Context context, int instance) {
         SharedPreferences prefs = getPreferences(context);
@@ -701,7 +706,7 @@ public class Util extends DownloadActivity {
             // Ignored.
         }
     }
-
+    
     private static void startForeground(Service service, int notificationId, Notification notification) {
         // Service.startForeground() was introduced in Android 2.0.
         // Use reflection to maintain compatibility with 1.5.

@@ -18,9 +18,11 @@
  */
 package net.sourceforge.subsonic.androidapp.activity;
 
+import android.app.ActionBar;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.Bundle;
 import android.util.Log;
@@ -606,6 +608,12 @@ public class SelectAlbumActivity extends SubsonicTabActivity {
             }
 
             if (songCount > 0) {
+            	ActionBar actionBar = getActionBar();
+            	
+            	if (actionBar != null) {
+            		getImageLoader().setActionBarArtwork(selectButton, entries.get(0), actionBar);
+            	}
+            	
                 entryList.addFooterView(footer);
                 selectButton.setVisibility(View.VISIBLE);
                 playNowButton.setVisibility(View.VISIBLE);

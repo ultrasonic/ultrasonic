@@ -217,6 +217,8 @@
     <string name="settings.network_timeout_120000">120 seconds</string>
     <string name="settings.show_notification">Show Notification</string>
     <string name="settings.show_notification_summary">Show now playing notification in the status bar</string>
+    <string name="settings.show_lockscreen_controls">Show Lock Screen Controls</string>
+    <string name="settings.show_lockscreen_controls_summary">Show playback controls on the lock screen</string>
     <string name="settings.max_albums">Max Albums</string>
     <string name="settings.max_albums_5">5</string>
     <string name="settings.max_albums_10">10</string>

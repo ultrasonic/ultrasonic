@@ -741,7 +741,7 @@ public class DownloadServiceImpl extends Service implements DownloadService {
     }
 
     private void setRemoteControl() {
-    	if (Util.getMediaButtonsPreference(this)) {
+    	if (Util.isLockScreenEnabled(this)) {
         	AudioManager audioManager = (AudioManager) this.getSystemService(Context.AUDIO_SERVICE);
     		audioManager.requestAudioFocus(_afChangeListener, AudioManager.STREAM_MUSIC, AudioManager.AUDIOFOCUS_GAIN);
     		
