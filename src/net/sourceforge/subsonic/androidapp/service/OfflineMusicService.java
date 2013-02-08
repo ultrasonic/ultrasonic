@@ -32,6 +32,7 @@ import java.util.Set;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.util.Log;
 import net.sourceforge.subsonic.androidapp.domain.Artist;
 import net.sourceforge.subsonic.androidapp.domain.Indexes;
 import net.sourceforge.subsonic.androidapp.domain.JukeboxStatus;
@@ -132,6 +133,7 @@ public class OfflineMusicService extends RESTMusicService {
         try {
             byte[] bytes = Util.toByteArray(in);
             Bitmap bitmap = BitmapFactory.decodeByteArray(bytes, 0, bytes.length);
+            Log.i("getCoverArt", "getCoverArt");
             return Bitmap.createScaledBitmap(bitmap, size, size, true);
         } finally {
             Util.close(in);

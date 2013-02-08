@@ -99,6 +99,8 @@ public class Util extends DownloadActivity {
     // Used by hexEncode()
     private static final char[] HEX_DIGITS = {'0', '1', '2', '3', '4', '5', '6', '7', '8', '9', 'a', 'b', 'c', 'd', 'e', 'f'};
     private static Toast toast;
+    
+    private static MusicDirectory.Entry currentSong;
 
     private Util() {
     }
@@ -580,30 +582,34 @@ public class Util extends DownloadActivity {
     
     public static void showPlayingNotification(final Context context, final DownloadServiceImpl downloadService, Handler handler, MusicDirectory.Entry song, final Notification notification, PlayerState playerState) {
 
-        // Use the same text for the ticker and the expanded notification
-        String title = song.getTitle();
-        String text = song.getArtist();
-        String album = song.getAlbum();
-        
-        // Set the album art.
-		try {
-			int size = context.getResources().getDrawable(R.drawable.unknown_album).getIntrinsicHeight();
-            Bitmap bitmap = FileUtil.getAlbumArtBitmap(context, song, size);
-			if (bitmap == null) {
-				// set default album art
-				notification.contentView.setImageViewResource(R.id.notification_image, R.drawable.unknown_album);
-			} else {
-				notification.contentView.setImageViewBitmap(R.id.notification_image, bitmap);
-			}
-		} catch (Exception x) {
-			Log.w(TAG, "Failed to get notification cover art", x);
-			notification.contentView.setImageViewResource(R.id.notification_image, R.drawable.unknown_album);
-		}
+    	if (currentSong != song) {
+    		currentSong = song;
+    		
+            // Use the same text for the ticker and the expanded notification
+            String title = song.getTitle();
+            String text = song.getArtist();
+            String album = song.getAlbum();
+            
+            // Set the album art.
+    		try {
+    			int size = context.getResources().getDrawable(R.drawable.unknown_album).getIntrinsicHeight();
+                Bitmap bitmap = FileUtil.getAlbumArtBitmap(context, song, size);
+    			if (bitmap == null) {
+    				// set default album art
+    				notification.contentView.setImageViewResource(R.id.notification_image, R.drawable.unknown_album);
+    			} else {
+    				notification.contentView.setImageViewBitmap(R.id.notification_image, bitmap);
+    			}
+    		} catch (Exception x) {
+    			Log.w(TAG, "Failed to get notification cover art", x);
+    			notification.contentView.setImageViewResource(R.id.notification_image, R.drawable.unknown_album);
+    		}
 
-		// set the text for the notifications
-		notification.contentView.setTextViewText(R.id.trackname, title);
-		notification.contentView.setTextViewText(R.id.artist, text);
-		notification.contentView.setTextViewText(R.id.album, album);
+    		// set the text for the notifications
+    		notification.contentView.setTextViewText(R.id.trackname, title);
+    		notification.contentView.setTextViewText(R.id.artist, text);
+    		notification.contentView.setTextViewText(R.id.album, album);
+    	}
                 
     	if (playerState == PlayerState.PAUSED) {
     		notification.contentView.setImageViewResource(R.id.control_play, R.drawable.ic_appwidget_music_play);
@@ -626,8 +632,10 @@ public class Util extends DownloadActivity {
 
     public static void hidePlayingNotification(final Context context, final DownloadServiceImpl downloadService, Handler handler) {
 
+    	currentSong = null;
+    	
         // Remove notification and remove the service from the foreground
-        handler.post(new Runnable() {
+        handler.post(new Runnable(){
             @Override
             public void run() {
                 stopForeground(downloadService, true);

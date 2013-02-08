@@ -36,6 +36,11 @@ public class MediaButtonIntentReceiver extends BroadcastReceiver {
     @Override
     public void onReceive(Context context, Intent intent) {
     	if (Util.getMediaButtonsPreference(context)) {
+    		String intentAction = intent.getAction();
+    		
+    		if (!Intent.ACTION_MEDIA_BUTTON.equals(intentAction))
+    			return;
+    		
     		KeyEvent event = (KeyEvent) intent.getExtras().get(Intent.EXTRA_KEY_EVENT);
     		Log.i(TAG, "Got MEDIA_BUTTON key event: " + event);
 

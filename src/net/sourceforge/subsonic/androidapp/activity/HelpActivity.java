@@ -22,6 +22,7 @@ package net.sourceforge.subsonic.androidapp.activity;
 import android.app.Activity;
 import android.content.pm.PackageManager.NameNotFoundException;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.KeyEvent;
 import android.view.View;
 import android.view.Window;
@@ -37,7 +38,7 @@ import net.sourceforge.subsonic.androidapp.util.Util;
  * @author Sindre Mehus
  */
 public final class HelpActivity extends Activity {
-
+	private static final String TAG = HelpActivity.class.getSimpleName();
     private WebView webView;
     private Button backButton;
 
@@ -111,7 +112,7 @@ public final class HelpActivity extends Activity {
     		try {
     			versionName = getPackageManager().getPackageInfo(getPackageName(), 0).versionName;
     		} catch (NameNotFoundException e) {
-    			e.printStackTrace();
+    			Log.e(TAG, e.getMessage(), e);
     		}
     		
             setTitle(view.getTitle() + " (" + versionName + ")");

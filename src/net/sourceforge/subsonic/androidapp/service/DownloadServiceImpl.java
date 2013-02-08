@@ -106,6 +106,8 @@ public class DownloadServiceImpl extends Service implements DownloadService {
     private boolean showVisualization;
     private boolean jukeboxEnabled;
     
+    private static MusicDirectory.Entry currentSong;
+    
     RemoteControlClientCompat remoteControlClientCompat;
 
     static {
@@ -127,8 +129,12 @@ public class DownloadServiceImpl extends Service implements DownloadService {
     
 	private OnAudioFocusChangeListener _afChangeListener = new OnAudioFocusChangeListener() {
 		public void onAudioFocusChange(int focusChange) {
-			if (focusChange == AudioManager.AUDIOFOCUS_GAIN) {
-				start();
+			if (focusChange == AudioManager.AUDIOFOCUS_LOSS_TRANSIENT) {
+				pause();
+			} else if (focusChange == AudioManager.AUDIOFOCUS_GAIN) {
+				if (playerState == PlayerState.STARTED) {
+					start();
+				}
 			} else if (focusChange == AudioManager.AUDIOFOCUS_LOSS) {
 				stop();
 			}
@@ -776,29 +782,32 @@ public class DownloadServiceImpl extends Service implements DownloadService {
         			RemoteControlClient.FLAG_KEY_MEDIA_STOP);
 
         	try {
+        		if (currentPlaying != null) {
+        			if (currentSong != currentPlaying.getSong()) {
+        				currentSong = currentPlaying.getSong();
+        				
+    					String album = currentPlaying.getSong().getAlbum();
+    					String title = currentPlaying.getSong().getArtist() + " - " + currentPlaying.getSong().getTitle();
+    					Integer duration = currentPlaying.getSong().getDuration();
 
-        		//String artist = currentPlaying.getSong().getArtist();
-        		//String album = currentPlaying.getSong().getAlbum();
-        		String album = currentPlaying.getSong().getAlbum();
-        		String title = currentPlaying.getSong().getArtist() + " - " + currentPlaying.getSong().getTitle();
-        		Integer duration = currentPlaying.getSong().getDuration();
+    					MusicService musicService = MusicServiceFactory.getMusicService(this);
+    					DisplayMetrics metrics = this.getResources().getDisplayMetrics();
+    					int size = Math.min(metrics.widthPixels, metrics.heightPixels);
+    					Bitmap bitmap = musicService.getCoverArt(this, currentPlaying.getSong(), size, true, null);
 
-        		MusicService musicService = MusicServiceFactory.getMusicService(this);
-        		DisplayMetrics metrics = this.getResources().getDisplayMetrics();
-        		int size = Math.min(metrics.widthPixels, metrics.heightPixels);
-        		Bitmap bitmap = musicService.getCoverArt(this, currentPlaying.getSong(), size, true, null);
-
-        		// Update the remote controls
-        		remoteControlClientCompat.editMetadata(true)
-        		//.putString(MediaMetadataRetriever.METADATA_KEY_ARTIST, artist)
-        		.putString(MediaMetadataRetriever.METADATA_KEY_TITLE, title)
-        		.putString(MediaMetadataRetriever.METADATA_KEY_ALBUM, album)
-        		.putLong(MediaMetadataRetriever.METADATA_KEY_DURATION, duration)
-        		.putBitmap(RemoteControlClientCompat.MetadataEditorCompat.METADATA_KEY_ARTWORK, bitmap)
-        		.apply();
+    					// Update the remote controls
+    					remoteControlClientCompat
+    							.editMetadata(true)
+    							.putString(MediaMetadataRetriever.METADATA_KEY_TITLE, title)
+    							.putString(MediaMetadataRetriever.METADATA_KEY_ALBUM, album)
+    							.putLong(MediaMetadataRetriever.METADATA_KEY_DURATION, duration)
+    							.putBitmap(RemoteControlClientCompat.MetadataEditorCompat.METADATA_KEY_ARTWORK, bitmap)
+    							.apply();
+        			}
+        		}
         	}
         	catch (Exception e) {
-        		Log.e(TAG, "Exception in setRemoteControl");
+        		Log.e(TAG, "Exception in setRemoteControl", e);
         	}
         }
     }

@@ -130,7 +130,7 @@ public class SongView extends LinearLayout implements Checkable {
             					musicService.unstar(id, getContext(), null);
             				}
             			} catch (Exception e) {
-							e.printStackTrace();
+							Log.e(TAG, e.getMessage(), e);
 						}
             	    }
             	  }).start();

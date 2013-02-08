@@ -19,6 +19,7 @@
 package net.sourceforge.subsonic.androidapp.util;
 
 import android.content.Context;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.ImageView;
@@ -36,6 +37,7 @@ import net.sourceforge.subsonic.androidapp.service.MusicServiceFactory;
  */
 public class AlbumView extends LinearLayout {
 
+	private static final String TAG = AlbumView.class.getSimpleName();
     private TextView titleView;
     private TextView artistView;
     private View coverArtView;
@@ -83,7 +85,7 @@ public class AlbumView extends LinearLayout {
             					musicService.unstar(id, getContext(), null);
             				}
             			} catch (Exception e) {
-							e.printStackTrace();
+            				Log.e(TAG, e.getMessage(), e);
 						}
             	    }
             	  }).start();

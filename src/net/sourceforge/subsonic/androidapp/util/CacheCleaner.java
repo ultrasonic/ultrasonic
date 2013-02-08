@@ -1,6 +1,9 @@
 package net.sourceforge.subsonic.androidapp.util;
 
 import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
@@ -32,31 +35,33 @@ public class CacheCleaner {
     }
 
     public void clean() {
+    	new Thread(new Runnable() {
+    	    public void run() {
+    	        Log.i(TAG, "Starting cache cleaning.");
 
-        Log.i(TAG, "Starting cache cleaning.");
+    	        if (downloadService == null) {
+    	            Log.e(TAG, "DownloadService not set. Aborting cache cleaning.");
+    	            return;
+    	        }
 
-        if (downloadService == null) {
-            Log.e(TAG, "DownloadService not set. Aborting cache cleaning.");
-            return;
-        }
+    	        try {
+    	            List<File> files = new ArrayList<File>();
+    	            List<File> dirs = new ArrayList<File>();
 
-        try {
+    	            findCandidatesForDeletion(FileUtil.getMusicDirectory(context), files, dirs);
+    	            sortByAscendingModificationTime(files);
 
-            List<File> files = new ArrayList<File>();
-            List<File> dirs = new ArrayList<File>();
+    	            Set<File> undeletable = findUndeletableFiles();
 
-            findCandidatesForDeletion(FileUtil.getMusicDirectory(context), files, dirs);
-            sortByAscendingModificationTime(files);
+    	            deleteFiles(files, undeletable);
+    	            deleteEmptyDirs(dirs, undeletable);
+    	            Log.i(TAG, "Completed cache cleaning.");
 
-            Set<File> undeletable = findUndeletableFiles();
-
-            deleteFiles(files, undeletable);
-            deleteEmptyDirs(dirs, undeletable);
-            Log.i(TAG, "Completed cache cleaning.");
-
-        } catch (RuntimeException x) {
-            Log.e(TAG, "Error in cache cleaning.", x);
-        }
+    	        } catch (RuntimeException x) {
+    	            Log.e(TAG, "Error in cache cleaning.", x);
+    	        }
+    	    }
+    	  }).start();
     }
 
     private void deleteEmptyDirs(List<File> dirs, Set<File> undeletable) {
@@ -68,7 +73,7 @@ public class CacheCleaner {
             File[] children = dir.listFiles();
 
             // Delete empty directory and associated album artwork.
-            if (children.length == 0) {
+            if (children != null && children.length == 0) {
                 Util.delete(dir);
                 Util.delete(FileUtil.getAlbumArtFile(dir));
             }
@@ -88,25 +93,31 @@ public class CacheCleaner {
             bytesUsedBySubsonic += file.length();
         }
 
+        long bytesToDelete = 0;
+        
         // Ensure that file system is not more than 95% full.
-        StatFs stat = new StatFs(files.get(0).getPath());
-        long bytesTotalFs = (long) stat.getBlockCount() * (long) stat.getBlockSize();
-        long bytesAvailableFs = (long) stat.getAvailableBlocks() * (long) stat.getBlockSize();
-        long bytesUsedFs = bytesTotalFs - bytesAvailableFs;
-        long minFsAvailability = Math.round(MAX_FILE_SYSTEM_USAGE * (double) bytesTotalFs);
+        try
+        {
+        	StatFs stat = new StatFs(files.get(0).getPath());
+            long bytesTotalFs = (long) stat.getBlockCount() * (long) stat.getBlockSize();
+            long bytesAvailableFs = (long) stat.getAvailableBlocks() * (long) stat.getBlockSize();
+            long bytesUsedFs = bytesTotalFs - bytesAvailableFs;
+            long minFsAvailability = Math.round(MAX_FILE_SYSTEM_USAGE * (double) bytesTotalFs);
 
-        long bytesToDeleteCacheLimit = Math.max(bytesUsedBySubsonic - cacheSizeBytes, 0L);
-        long bytesToDeleteFsLimit = Math.max(bytesUsedFs - minFsAvailability, 0L);
-        long bytesToDelete = Math.max(bytesToDeleteCacheLimit, bytesToDeleteFsLimit);
+            long bytesToDeleteCacheLimit = Math.max(bytesUsedBySubsonic - cacheSizeBytes, 0L);
+            long bytesToDeleteFsLimit = Math.max(bytesUsedFs - minFsAvailability, 0L);
+            bytesToDelete = Math.max(bytesToDeleteCacheLimit, bytesToDeleteFsLimit);
 
-        Log.i(TAG, "File system       : " + Util.formatBytes(bytesAvailableFs) + " of " + Util.formatBytes(bytesTotalFs) + " available");
-        Log.i(TAG, "Cache limit       : " + Util.formatBytes(cacheSizeBytes));
-        Log.i(TAG, "Cache size before : " + Util.formatBytes(bytesUsedBySubsonic));
-        Log.i(TAG, "Minimum to delete : " + Util.formatBytes(bytesToDelete));
+            Log.i(TAG, "File system       : " + Util.formatBytes(bytesAvailableFs) + " of " + Util.formatBytes(bytesTotalFs) + " available");
+            Log.i(TAG, "Cache limit       : " + Util.formatBytes(cacheSizeBytes));
+            Log.i(TAG, "Cache size before : " + Util.formatBytes(bytesUsedBySubsonic));
+            Log.i(TAG, "Minimum to delete : " + Util.formatBytes(bytesToDelete));
+        } catch (Exception x) {
+        	//
+        }
 
         long bytesDeleted = 0L;
         for (File file : files) {
-
             if (file.getName().equals(Constants.ALBUM_ART_FILE)) {
                 // Move artwork to new folder.
                 file.renameTo(FileUtil.getAlbumArtFile(file.getParentFile()));

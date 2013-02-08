@@ -86,6 +86,7 @@ public class FileUtil {
         File albumArtFile = getAlbumArtFile(context, entry);
         if (albumArtFile.exists()) {
             Bitmap bitmap = BitmapFactory.decodeFile(albumArtFile.getPath());
+            Log.i("getAlbumArtBitmap", String.valueOf(size));
             return bitmap == null ? null : Bitmap.createScaledBitmap(bitmap, size, size, true);
         }
         return null;
