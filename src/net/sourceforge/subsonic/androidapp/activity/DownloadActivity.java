@@ -109,7 +109,6 @@ public class DownloadActivity extends SubsonicTabActivity implements OnGestureLi
     private VisualizerView visualizerView;
     private boolean visualizerAvailable;
     private boolean equalizerAvailable;
-    
     /**
      * Called when the activity is first created.
      */
@@ -260,6 +259,8 @@ public class DownloadActivity extends SubsonicTabActivity implements OnGestureLi
 			
 			@Override
 			public void onStopTrackingTouch(SeekBar seekBar) {
+				getDownloadService().seekTo(getProgressBar().getProgress());
+				onSliderProgressChanged();
 			}
 			
 			@Override
@@ -268,10 +269,6 @@ public class DownloadActivity extends SubsonicTabActivity implements OnGestureLi
 			
 			@Override
 			public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
-                if (fromUser) {
-                    getDownloadService().seekTo(progress);
-                    onSliderProgressChanged();
-                }
 			}
 		});
         		

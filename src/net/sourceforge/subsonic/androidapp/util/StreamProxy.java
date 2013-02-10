@@ -143,7 +143,7 @@ public class StreamProxy implements Runnable {
 			Log.d(TAG, "Processing request");
 
 			try {
-				localPath = URLDecoder.decode(request.getRequestLine().getUri(), "UTF-8");
+				localPath = URLDecoder.decode(request.getRequestLine().getUri(), Constants.UTF_8);
 			} catch (UnsupportedEncodingException e) {
 				Log.e(TAG, "Unsupported encoding", e);
 				return false;
@@ -155,12 +155,6 @@ public class StreamProxy implements Runnable {
 				return false;
 			}
 			
-			Header rangeHeader = request.getLastHeader("Range");
-			
-			if (rangeHeader != null) {
-				cbSkip = Integer.parseInt(rangeHeader.getValue());
-			}
-
 			return true;
 		}
 
@@ -171,7 +165,11 @@ public class StreamProxy implements Runnable {
             // Create HTTP header
             String headers = "HTTP/1.0 200 OK\r\n";
             headers += "Content-Type: " + "application/octet-stream" + "\r\n";
-            headers += "Content-Length: " + fileSize  + "\r\n";
+            
+            if (fileSize > 0) {
+            	headers += "Content-Length: " + fileSize  + "\r\n";
+            }
+            
             headers += "Connection: close\r\n";
             headers += "\r\n";
 

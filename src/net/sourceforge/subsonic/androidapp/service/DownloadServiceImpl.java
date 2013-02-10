@@ -826,8 +826,21 @@ public class DownloadServiceImpl extends Service implements DownloadService {
             final File file = downloadFile.isCompleteFileAvailable() ? downloadFile.getCompleteFile() : downloadFile.getPartialFile();
             downloadFile.updateModificationDate();
             mediaPlayer.setOnCompletionListener(null);
+            mediaPlayer.setOnBufferingUpdateListener(null);
             mediaPlayer.reset();
             setPlayerState(IDLE);
+            
+            mediaPlayer.setOnBufferingUpdateListener(new MediaPlayer.OnBufferingUpdateListener() {
+				@Override
+				public void onBufferingUpdate(MediaPlayer mp, int percent) {
+					SeekBar progressBar = DownloadActivity.getProgressBar();
+					if (progressBar != null) {
+						int secondaryProgress = (int) (((double)percent / (double)100) * progressBar.getMax());
+						DownloadActivity.getProgressBar().setSecondaryProgress(secondaryProgress);
+					}
+				}
+			});
+            
             mediaPlayer.setAudioStreamType(AudioManager.STREAM_MUSIC);
             
             String url = file.getPath();
@@ -845,18 +858,6 @@ public class DownloadServiceImpl extends Service implements DownloadService {
             mediaPlayer.prepare();
             setPlayerState(PREPARED);
             
-            mediaPlayer.setOnBufferingUpdateListener(new MediaPlayer.OnBufferingUpdateListener() {
-				@Override
-				public void onBufferingUpdate(MediaPlayer mp, int percent) {
-					SeekBar progressBar = DownloadActivity.getProgressBar();
-					if (progressBar != null) {
-						int max = progressBar.getMax();
-						int secondaryProgress = (int) (((double)percent / (double)100) * max);
-						DownloadActivity.getProgressBar().setSecondaryProgress(secondaryProgress);
-					}
-				}
-			});
-
             mediaPlayer.setOnCompletionListener(new MediaPlayer.OnCompletionListener() {
                 @Override
                 public void onCompletion(MediaPlayer mediaPlayer) {
