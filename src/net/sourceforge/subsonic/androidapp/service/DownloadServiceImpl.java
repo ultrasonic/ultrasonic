@@ -36,6 +36,7 @@ import android.os.PowerManager;
 import android.util.DisplayMetrics;
 import android.util.Log;
 import android.widget.RemoteViews;
+import android.widget.SeekBar;
 import net.sourceforge.subsonic.androidapp.R;
 import net.sourceforge.subsonic.androidapp.activity.DownloadActivity;
 import net.sourceforge.subsonic.androidapp.audiofx.EqualizerController;
@@ -48,6 +49,7 @@ import net.sourceforge.subsonic.androidapp.util.CancellableTask;
 import net.sourceforge.subsonic.androidapp.util.LRUCache;
 import net.sourceforge.subsonic.androidapp.util.ShufflePlayBuffer;
 import net.sourceforge.subsonic.androidapp.util.SimpleServiceBinder;
+import net.sourceforge.subsonic.androidapp.util.StreamProxy;
 import net.sourceforge.subsonic.androidapp.util.Util;
 import net.sourceforge.subsonic.androidapp.util.RemoteControlHelper;
 import net.sourceforge.subsonic.androidapp.util.RemoteControlClientCompat;
@@ -57,7 +59,6 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
-
 import static net.sourceforge.subsonic.androidapp.domain.PlayerState.*;
 
 /**
@@ -105,9 +106,10 @@ public class DownloadServiceImpl extends Service implements DownloadService {
     private VisualizerController visualizerController;
     private boolean showVisualization;
     private boolean jukeboxEnabled;
+    private StreamProxy proxy;
     
     private static MusicDirectory.Entry currentSong;
-    
+        
     RemoteControlClientCompat remoteControlClientCompat;
 
     static {
@@ -161,7 +163,7 @@ public class DownloadServiceImpl extends Service implements DownloadService {
         Intent notificationIntent = new Intent(this, DownloadActivity.class);
         notification.contentIntent = PendingIntent.getActivity(this, 0, notificationIntent, 0);
         Util.linkButtons(this, notification.contentView, false);
-
+        
         if (equalizerAvailable) {
             equalizerController = new EqualizerController(this, mediaPlayer);
             if (!equalizerController.isAvailable()) {
@@ -827,10 +829,33 @@ public class DownloadServiceImpl extends Service implements DownloadService {
             mediaPlayer.reset();
             setPlayerState(IDLE);
             mediaPlayer.setAudioStreamType(AudioManager.STREAM_MUSIC);
-            mediaPlayer.setDataSource(file.getPath());
+            
+            String url = file.getPath();
+            String playUrl = url;
+            
+            if (proxy == null) {
+                proxy = new StreamProxy(this);
+                proxy.start();
+            }
+            
+            playUrl = String.format("http://127.0.0.1:%d/%s", proxy.getPort(), url);
+            
+            mediaPlayer.setDataSource(playUrl);
             setPlayerState(PREPARING);
             mediaPlayer.prepare();
             setPlayerState(PREPARED);
+            
+            mediaPlayer.setOnBufferingUpdateListener(new MediaPlayer.OnBufferingUpdateListener() {
+				@Override
+				public void onBufferingUpdate(MediaPlayer mp, int percent) {
+					SeekBar progressBar = DownloadActivity.getProgressBar();
+					if (progressBar != null) {
+						int max = progressBar.getMax();
+						int secondaryProgress = (int) (((double)percent / (double)100) * max);
+						DownloadActivity.getProgressBar().setSecondaryProgress(secondaryProgress);
+					}
+				}
+			});
 
             mediaPlayer.setOnCompletionListener(new MediaPlayer.OnCompletionListener() {
                 @Override
