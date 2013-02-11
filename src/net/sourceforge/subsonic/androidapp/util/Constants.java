@@ -85,6 +85,7 @@ public final class Constants {
     public static final String PREFERENCES_KEY_DEFAULT_ALBUMS = "defaultAlbums";
     public static final String PREFERENCES_KEY_DEFAULT_SONGS = "defaultSongs";
     public static final String PREFERENCES_KEY_DEFAULT_ARTISTS = "defaultArtists";
+    public static final String PREFERENCES_KEY_USE_STREAM_PROXY = "useStreamProxy";
     
     // Name of the preferences file.
     public static final String PREFERENCES_FILE_NAME = "net.sourceforge.subsonic.androidapp_preferences";

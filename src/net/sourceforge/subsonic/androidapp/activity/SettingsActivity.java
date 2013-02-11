@@ -20,6 +20,7 @@ package net.sourceforge.subsonic.androidapp.activity;
 
 import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.preference.CheckBoxPreference;
 import android.preference.EditTextPreference;
 import android.preference.ListPreference;
 import android.preference.Preference;
@@ -63,7 +64,8 @@ public class SettingsActivity extends PreferenceActivity implements SharedPrefer
     private ListPreference defaultAlbums;
     private ListPreference defaultSongs;
     private ListPreference defaultArtists;
-
+    private CheckBoxPreference mediaButtonsEnabled;
+    private CheckBoxPreference lockScreenEnabled;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -84,6 +86,8 @@ public class SettingsActivity extends PreferenceActivity implements SharedPrefer
         defaultArtists = (ListPreference) findPreference(Constants.PREFERENCES_KEY_DEFAULT_ARTISTS);
         defaultSongs = (ListPreference) findPreference(Constants.PREFERENCES_KEY_DEFAULT_SONGS);
         defaultAlbums = (ListPreference) findPreference(Constants.PREFERENCES_KEY_DEFAULT_ALBUMS);
+        mediaButtonsEnabled = (CheckBoxPreference) findPreference(Constants.PREFERENCES_KEY_MEDIA_BUTTONS);
+        lockScreenEnabled = (CheckBoxPreference) findPreference(Constants.PREFERENCES_KEY_SHOW_LOCK_SCREEN_CONTROLS);
 
         findPreference("testConnection1").setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
             @Override
@@ -174,6 +178,11 @@ public class SettingsActivity extends PreferenceActivity implements SharedPrefer
         defaultArtists.setSummary(defaultArtists.getEntry());
         defaultSongs.setSummary(defaultSongs.getEntry());
         
+        if (!mediaButtonsEnabled.isChecked()) {
+        	lockScreenEnabled.setChecked(false);
+        	lockScreenEnabled.setEnabled(false);
+        }
+        
         for (ServerSettings ss : serverSettings.values()) {
             ss.update();
         }
@@ -195,8 +204,10 @@ public class SettingsActivity extends PreferenceActivity implements SharedPrefer
 
     private void setMediaButtonsEnabled(boolean enabled) {
         if (enabled) {
+        	lockScreenEnabled.setEnabled(true);
             Util.registerMediaButtonEventReceiver(this);
         } else {
+        	lockScreenEnabled.setEnabled(false);
             Util.unregisterMediaButtonEventReceiver(this);
         }
     }

@@ -117,10 +117,12 @@ public class SelectArtistActivity extends SubsonicTabActivity implements Adapter
 
             @Override
             protected void done(Indexes result) {
-                List<Artist> artists = new ArrayList<Artist>(result.getShortcuts().size() + result.getArtists().size());
-                artists.addAll(result.getShortcuts());
-                artists.addAll(result.getArtists());
-                artistList.setAdapter(new ArtistAdapter(SelectArtistActivity.this, artists));
+            	if (result != null) {
+            		List<Artist> artists = new ArrayList<Artist>(result.getShortcuts().size() + result.getArtists().size());
+            		artists.addAll(result.getShortcuts());
+            		artists.addAll(result.getArtists());
+            		artistList.setAdapter(new ArtistAdapter(SelectArtistActivity.this, artists));
+            	}
 
                 // Display selected music folder
                 if (musicFolders != null) {

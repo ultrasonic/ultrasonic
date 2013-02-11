@@ -146,6 +146,11 @@ public class Util extends DownloadActivity {
         SharedPreferences prefs = getPreferences(context);
         return prefs.getBoolean(Constants.PREFERENCES_KEY_SHOW_LOCK_SCREEN_CONTROLS, false);
     }
+    
+    public static boolean isStreamProxyEnabled(Context context) {
+        SharedPreferences prefs = getPreferences(context);
+        return prefs.getBoolean(Constants.PREFERENCES_KEY_USE_STREAM_PROXY, false);
+    }
 
     public static void setActiveServer(Context context, int instance) {
         SharedPreferences prefs = getPreferences(context);

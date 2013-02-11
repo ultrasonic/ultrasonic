@@ -219,6 +219,8 @@
     <string name="settings.show_notification_summary">Show now playing notification in the status bar</string>
     <string name="settings.show_lockscreen_controls">Show Lock Screen Controls</string>
     <string name="settings.show_lockscreen_controls_summary">Show playback controls on the lock screen</string>
+    <string name="settings.use_stream_proxy">Use Stream Proxy</string>
+    <string name="settings.use_stream_proxy_summary">Stream media playback through a proxy (may help stutter)</string>
     <string name="settings.max_albums">Max Albums</string>
     <string name="settings.max_albums_5">5</string>
     <string name="settings.max_albums_10">10</string>

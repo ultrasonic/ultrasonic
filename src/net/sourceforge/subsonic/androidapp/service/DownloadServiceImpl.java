@@ -754,7 +754,6 @@ public class DownloadServiceImpl extends Service implements DownloadService {
     		audioManager.requestAudioFocus(_afChangeListener, AudioManager.STREAM_MUSIC, AudioManager.AUDIOFOCUS_GAIN);
     		
         	if (remoteControlClientCompat == null) {
-        		audioManager = (AudioManager) this.getSystemService(Context.AUDIO_SERVICE);
         		Intent intent = new Intent(Intent.ACTION_MEDIA_BUTTON);
         		intent.setComponent(new ComponentName(this.getPackageName(), MediaButtonIntentReceiver.class.getName()));
         		remoteControlClientCompat = new RemoteControlClientCompat(PendingIntent.getBroadcast(this, 0, intent, 0));
@@ -788,14 +787,14 @@ public class DownloadServiceImpl extends Service implements DownloadService {
         			if (currentSong != currentPlaying.getSong()) {
         				currentSong = currentPlaying.getSong();
         				
-    					String album = currentPlaying.getSong().getAlbum();
-    					String title = currentPlaying.getSong().getArtist() + " - " + currentPlaying.getSong().getTitle();
-    					Integer duration = currentPlaying.getSong().getDuration();
+    					String album = currentSong.getAlbum();
+    					String title = currentSong.getArtist() + " - " + currentSong.getTitle();
+    					Integer duration = currentSong.getDuration();
 
     					MusicService musicService = MusicServiceFactory.getMusicService(this);
     					DisplayMetrics metrics = this.getResources().getDisplayMetrics();
     					int size = Math.min(metrics.widthPixels, metrics.heightPixels);
-    					Bitmap bitmap = musicService.getCoverArt(this, currentPlaying.getSong(), size, true, null);
+    					Bitmap bitmap = musicService.getCoverArt(this, currentSong, size, true, null);
 
     					// Update the remote controls
     					remoteControlClientCompat
@@ -821,7 +820,7 @@ public class DownloadServiceImpl extends Service implements DownloadService {
         bufferTask.start();
     }
 
-    private synchronized void doPlay(final DownloadFile downloadFile, int position, boolean start) {
+    private synchronized void doPlay(final DownloadFile downloadFile, final int position, final boolean start) {
         try {
             final File file = downloadFile.isCompleteFileAvailable() ? downloadFile.getCompleteFile() : downloadFile.getPartialFile();
             downloadFile.updateModificationDate();
@@ -834,7 +833,9 @@ public class DownloadServiceImpl extends Service implements DownloadService {
 				@Override
 				public void onBufferingUpdate(MediaPlayer mp, int percent) {
 					SeekBar progressBar = DownloadActivity.getProgressBar();
-					if (progressBar != null) {
+					MusicDirectory.Entry song = downloadFile.getSong();
+					
+					if (progressBar != null && song.getTranscodedContentType() == null && Util.getMaxBitrate(getApplicationContext()) == 0) {
 						int secondaryProgress = (int) (((double)percent / (double)100) * progressBar.getMax());
 						DownloadActivity.getProgressBar().setSecondaryProgress(secondaryProgress);
 					}
@@ -846,17 +847,40 @@ public class DownloadServiceImpl extends Service implements DownloadService {
             String url = file.getPath();
             String playUrl = url;
             
-            if (proxy == null) {
-                proxy = new StreamProxy(this);
-                proxy.start();
+            if (Util.isStreamProxyEnabled(this)) {
+                if (proxy == null) {
+                    proxy = new StreamProxy();
+                    proxy.start();
+                }
+                
+                proxy.setDownloadFile(downloadFile);
+                playUrl = String.format("http://127.0.0.1:%d/%s", proxy.getPort(), url);
             }
-            
-            playUrl = String.format("http://127.0.0.1:%d/%s", proxy.getPort(), url);
             
             mediaPlayer.setDataSource(playUrl);
             setPlayerState(PREPARING);
-            mediaPlayer.prepare();
-            setPlayerState(PREPARED);
+            mediaPlayer.prepareAsync();
+            
+            mediaPlayer.setOnPreparedListener(new MediaPlayer.OnPreparedListener() {
+				@Override
+				public void onPrepared(MediaPlayer mp) {
+					setPlayerState(PREPARED);
+					
+					if (position != 0) {
+		                Log.i(TAG, "Restarting player from position " + position);
+		                mp.seekTo(position);
+		            }
+
+		            if (start) {
+		            	mp.start();
+		                setPlayerState(STARTED);
+		            } else {
+		                setPlayerState(PAUSED);
+		            }
+		            
+		            lifecycleSupport.serializeDownloadQueue();
+				}
+			});
             
             mediaPlayer.setOnCompletionListener(new MediaPlayer.OnCompletionListener() {
                 @Override
@@ -883,6 +907,7 @@ public class DownloadServiceImpl extends Service implements DownloadService {
                         // Work-around for apparent bug on certain phones: If close (less than ten seconds) to the end
                         // of the song, skip to the next rather than restarting it.
                         Integer duration = downloadFile.getSong().getDuration() == null ? null : downloadFile.getSong().getDuration() * 1000;
+                        
                         if (duration != null) {
                             if (Math.abs(duration - pos) < 10000) {
                                 Log.i(TAG, "Skipping restart from " + pos  + " of " + duration);
@@ -898,20 +923,6 @@ public class DownloadServiceImpl extends Service implements DownloadService {
                     }
                 }
             });
-
-            if (position != 0) {
-                Log.i(TAG, "Restarting player from position " + position);
-                mediaPlayer.seekTo(position);
-            }
-
-            if (start) {
-                mediaPlayer.start();
-                setPlayerState(STARTED);
-            } else {
-                setPlayerState(PAUSED);
-            }
-            lifecycleSupport.serializeDownloadQueue();
-
         } catch (Exception x) {
             handleError(x);
         }
