@@ -760,19 +760,7 @@ public class DownloadServiceImpl extends Service implements DownloadService {
         		RemoteControlHelper.registerRemoteControlClient(audioManager, remoteControlClientCompat);
         	}
 
-        	switch (playerState)
-        	{
-        	case STARTED:
-        		remoteControlClientCompat.setPlaybackState(RemoteControlClient.PLAYSTATE_PLAYING);
-        		break;
-        	case PAUSED:
-        		remoteControlClientCompat.setPlaybackState(RemoteControlClient.PLAYSTATE_PAUSED);
-        		break;
-        	case IDLE:
-        	case STOPPED:
-        		remoteControlClientCompat.setPlaybackState(RemoteControlClient.PLAYSTATE_STOPPED);
-        		break;
-        	}	
+        	remoteControlClientCompat.setPlaybackState(playerState.getRemoteControlClientPlayState());
 
         	remoteControlClientCompat.setTransportControlFlags(
         			RemoteControlClient.FLAG_KEY_MEDIA_PLAY |
@@ -800,6 +788,7 @@ public class DownloadServiceImpl extends Service implements DownloadService {
     					remoteControlClientCompat
     							.editMetadata(true)
     							.putString(MediaMetadataRetriever.METADATA_KEY_TITLE, title)
+    							.putString(MediaMetadataRetriever.METADATA_KEY_ARTIST, currentSong.getArtist())
     							.putString(MediaMetadataRetriever.METADATA_KEY_ALBUM, album)
     							.putLong(MediaMetadataRetriever.METADATA_KEY_DURATION, duration)
     							.putBitmap(RemoteControlClientCompat.MetadataEditorCompat.METADATA_KEY_ARTWORK, bitmap)
@@ -875,7 +864,7 @@ public class DownloadServiceImpl extends Service implements DownloadService {
 		            	mp.start();
 		                setPlayerState(STARTED);
 		            } else {
-		                setPlayerState(PAUSED);
+		                setPlayerState(STOPPED);
 		            }
 		            
 		            lifecycleSupport.serializeDownloadQueue();
