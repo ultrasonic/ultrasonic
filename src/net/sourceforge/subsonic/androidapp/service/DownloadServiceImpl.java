@@ -760,7 +760,19 @@ public class DownloadServiceImpl extends Service implements DownloadService {
         		RemoteControlHelper.registerRemoteControlClient(audioManager, remoteControlClientCompat);
         	}
 
-        	remoteControlClientCompat.setPlaybackState(playerState.getRemoteControlClientPlayState());
+        	switch (playerState)
+        	{
+        	case STARTED:
+        		remoteControlClientCompat.setPlaybackState(RemoteControlClient.PLAYSTATE_PLAYING);
+        		break;
+        	case PAUSED:
+        		remoteControlClientCompat.setPlaybackState(RemoteControlClient.PLAYSTATE_PAUSED);
+        		break;
+        	case IDLE:
+        	case STOPPED:
+        		remoteControlClientCompat.setPlaybackState(RemoteControlClient.PLAYSTATE_STOPPED);
+        		break;
+        	}	
 
         	remoteControlClientCompat.setTransportControlFlags(
         			RemoteControlClient.FLAG_KEY_MEDIA_PLAY |
