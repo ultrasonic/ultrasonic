@@ -800,6 +800,7 @@ public class DownloadServiceImpl extends Service implements DownloadService {
     					remoteControlClientCompat
     							.editMetadata(true)
     							.putString(MediaMetadataRetriever.METADATA_KEY_TITLE, title)
+    							.putString(MediaMetadataRetriever.METADATA_KEY_ARTIST, currentSong.getArtist())
     							.putString(MediaMetadataRetriever.METADATA_KEY_ALBUM, album)
     							.putLong(MediaMetadataRetriever.METADATA_KEY_DURATION, duration)
     							.putBitmap(RemoteControlClientCompat.MetadataEditorCompat.METADATA_KEY_ARTWORK, bitmap)
@@ -875,7 +876,7 @@ public class DownloadServiceImpl extends Service implements DownloadService {
 		            	mp.start();
 		                setPlayerState(STARTED);
 		            } else {
-		                setPlayerState(PAUSED);
+		                setPlayerState(STOPPED);
 		            }
 		            
 		            lifecycleSupport.serializeDownloadQueue();

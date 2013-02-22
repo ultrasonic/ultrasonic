@@ -200,6 +200,8 @@ public class DownloadServiceLifecycleSupport {
 
         // Work-around: Serialize again, as the restore() method creates a serialization without current playing info.
         serializeDownloadQueue();
+        
+        downloadService.setPlayerState(PlayerState.STOPPED);
     }
 
     private void handleKeyEvent(KeyEvent event) {
@@ -209,6 +211,8 @@ public class DownloadServiceLifecycleSupport {
 
         switch (event.getKeyCode()) {
             case KeyEvent.KEYCODE_MEDIA_PLAY_PAUSE:
+            case KeyEvent.KEYCODE_MEDIA_PLAY:
+            case KeyEvent.KEYCODE_MEDIA_PAUSE:
             case KeyEvent.KEYCODE_HEADSETHOOK:
             	downloadService.togglePlayPause();
                 break;
