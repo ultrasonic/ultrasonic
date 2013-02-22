@@ -171,7 +171,6 @@ public class StreamProxy implements Runnable {
 				headers += "Content-Length: " + fileSize + "\r\n";
 			}
 			
-			headers += "Accept-Ranges: bytes\r\n";
 			headers += "Content-Type: " + "application/octet-stream" + "\r\n";
 			headers += "Connection: close\r\n";
 			headers += "\r\n";
