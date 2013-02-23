@@ -142,6 +142,11 @@ public class Util extends DownloadActivity {
         return prefs.getBoolean(Constants.PREFERENCES_KEY_SHOW_NOTIFICATION, false);
     }
     
+    public static boolean isNotificationAlwaysEnabled(Context context) {
+        SharedPreferences prefs = getPreferences(context);
+        return prefs.getBoolean(Constants.PREFERENCES_KEY_ALWAYS_SHOW_NOTIFICATION, false);
+    }
+    
     public static boolean isLockScreenEnabled(Context context) {
         SharedPreferences prefs = getPreferences(context);
         return prefs.getBoolean(Constants.PREFERENCES_KEY_SHOW_LOCK_SCREEN_CONTROLS, false);

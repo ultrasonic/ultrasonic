@@ -262,6 +262,12 @@
                 a:key="showNotification"
                 a:defaultValue="true"/>
         
+		<CheckBoxPreference
+                a:title="@string/settings.show_notification_always"
+                a:summary="@string/settings.show_notification_always_summary"
+                a:key="alwaysShowNotification"
+                a:defaultValue="true"/>        
+        
        	<CheckBoxPreference
                 a:title="@string/settings.show_lockscreen_controls"
                 a:summary="@string/settings.show_lockscreen_controls_summary"

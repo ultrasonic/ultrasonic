@@ -78,6 +78,7 @@ public final class Constants {
     public static final String PREFERENCES_KEY_BUFFER_LENGTH = "bufferLength";
     public static final String PREFERENCES_KEY_NETWORK_TIMEOUT = "networkTimeout";
     public static final String PREFERENCES_KEY_SHOW_NOTIFICATION = "showNotification";
+    public static final String PREFERENCES_KEY_ALWAYS_SHOW_NOTIFICATION = "alwaysShowNotification";
     public static final String PREFERENCES_KEY_SHOW_LOCK_SCREEN_CONTROLS = "showLockScreen";
     public static final String PREFERENCES_KEY_MAX_ALBUMS = "maxAlbums";
     public static final String PREFERENCES_KEY_MAX_SONGS = "maxSongs";

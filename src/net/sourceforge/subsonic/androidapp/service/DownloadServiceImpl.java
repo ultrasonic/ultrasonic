@@ -51,9 +51,6 @@ import net.sourceforge.subsonic.androidapp.util.ShufflePlayBuffer;
 import net.sourceforge.subsonic.androidapp.util.SimpleServiceBinder;
 import net.sourceforge.subsonic.androidapp.util.StreamProxy;
 import net.sourceforge.subsonic.androidapp.util.Util;
-import net.sourceforge.subsonic.androidapp.util.RemoteControlHelper;
-import net.sourceforge.subsonic.androidapp.util.RemoteControlClientCompat;
-
 import java.io.File;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -107,11 +104,9 @@ public class DownloadServiceImpl extends Service implements DownloadService {
     private boolean showVisualization;
     private boolean jukeboxEnabled;
     private StreamProxy proxy;
-    
     private static MusicDirectory.Entry currentSong;
+    private RemoteControlClient remoteControlClient;
         
-    RemoteControlClientCompat remoteControlClientCompat;
-
     static {
         try {
             EqualizerController.checkAvailable();
@@ -207,7 +202,7 @@ public class DownloadServiceImpl extends Service implements DownloadService {
         }
         
     	AudioManager audioManager = (AudioManager) this.getSystemService(Context.AUDIO_SERVICE);
-        RemoteControlHelper.unregisterRemoteControlClient(audioManager, remoteControlClientCompat);
+    	audioManager.unregisterRemoteControlClient(remoteControlClient);
         notification = null;
         instance = null;
     }
@@ -678,9 +673,11 @@ public class DownloadServiceImpl extends Service implements DownloadService {
         if (playerState == PAUSED) {
             lifecycleSupport.serializeDownloadQueue();
         }
+        
+        boolean showWhenPaused = (playerState == PlayerState.PAUSED && Util.isNotificationAlwaysEnabled(this));
 
-        boolean show = playerState == PlayerState.STARTED || playerState == PlayerState.PAUSED;
-        boolean hide = playerState == PlayerState.IDLE || playerState == PlayerState.STOPPED;
+        boolean show = playerState == PlayerState.STARTED || showWhenPaused;
+        boolean hide = playerState == PlayerState.IDLE || playerState == PlayerState.STOPPED || !showWhenPaused;
         Util.broadcastPlaybackStatusChange(this, playerState);
 
         this.playerState = playerState;
@@ -753,42 +750,43 @@ public class DownloadServiceImpl extends Service implements DownloadService {
         	AudioManager audioManager = (AudioManager) this.getSystemService(Context.AUDIO_SERVICE);
     		audioManager.requestAudioFocus(_afChangeListener, AudioManager.STREAM_MUSIC, AudioManager.AUDIOFOCUS_GAIN);
     		
-        	if (remoteControlClientCompat == null) {
+        	if (remoteControlClient == null) {
         		Intent intent = new Intent(Intent.ACTION_MEDIA_BUTTON);
         		intent.setComponent(new ComponentName(this.getPackageName(), MediaButtonIntentReceiver.class.getName()));
-        		remoteControlClientCompat = new RemoteControlClientCompat(PendingIntent.getBroadcast(this, 0, intent, 0));
-        		RemoteControlHelper.registerRemoteControlClient(audioManager, remoteControlClientCompat);
+        		remoteControlClient = new RemoteControlClient(PendingIntent.getBroadcast(this, 0, intent, 0));
+        		audioManager.registerRemoteControlClient(remoteControlClient);
+        		
+            	remoteControlClient.setTransportControlFlags(
+            			RemoteControlClient.FLAG_KEY_MEDIA_PLAY |
+            			RemoteControlClient.FLAG_KEY_MEDIA_PAUSE |
+            			RemoteControlClient.FLAG_KEY_MEDIA_NEXT |
+            			RemoteControlClient.FLAG_KEY_MEDIA_PREVIOUS |
+            			RemoteControlClient.FLAG_KEY_MEDIA_PLAY_PAUSE |
+            			RemoteControlClient.FLAG_KEY_MEDIA_STOP);
         	}
 
         	switch (playerState)
         	{
         	case STARTED:
-        		remoteControlClientCompat.setPlaybackState(RemoteControlClient.PLAYSTATE_PLAYING);
+        		remoteControlClient.setPlaybackState(RemoteControlClient.PLAYSTATE_PLAYING);
         		break;
         	case PAUSED:
-        		remoteControlClientCompat.setPlaybackState(RemoteControlClient.PLAYSTATE_PAUSED);
+        		remoteControlClient.setPlaybackState(RemoteControlClient.PLAYSTATE_PAUSED);
         		break;
         	case IDLE:
         	case STOPPED:
-        		remoteControlClientCompat.setPlaybackState(RemoteControlClient.PLAYSTATE_STOPPED);
+        		remoteControlClient.setPlaybackState(RemoteControlClient.PLAYSTATE_STOPPED);
         		break;
         	}	
-
-        	remoteControlClientCompat.setTransportControlFlags(
-        			RemoteControlClient.FLAG_KEY_MEDIA_PLAY |
-        			RemoteControlClient.FLAG_KEY_MEDIA_PAUSE |
-        			RemoteControlClient.FLAG_KEY_MEDIA_NEXT |
-        			RemoteControlClient.FLAG_KEY_MEDIA_PREVIOUS |
-        			RemoteControlClient.FLAG_KEY_MEDIA_PLAY_PAUSE |
-        			RemoteControlClient.FLAG_KEY_MEDIA_STOP);
 
         	try {
         		if (currentPlaying != null) {
         			if (currentSong != currentPlaying.getSong()) {
         				currentSong = currentPlaying.getSong();
         				
+        				String artist = currentSong.getArtist();
     					String album = currentSong.getAlbum();
-    					String title = currentSong.getArtist() + " - " + currentSong.getTitle();
+    					String title = artist + " - " + currentSong.getTitle();
     					Integer duration = currentSong.getDuration();
 
     					MusicService musicService = MusicServiceFactory.getMusicService(this);
@@ -797,13 +795,13 @@ public class DownloadServiceImpl extends Service implements DownloadService {
     					Bitmap bitmap = musicService.getCoverArt(this, currentSong, size, true, null);
 
     					// Update the remote controls
-    					remoteControlClientCompat
+    					remoteControlClient
     							.editMetadata(true)
     							.putString(MediaMetadataRetriever.METADATA_KEY_TITLE, title)
-    							.putString(MediaMetadataRetriever.METADATA_KEY_ARTIST, currentSong.getArtist())
+    							.putString(MediaMetadataRetriever.METADATA_KEY_ARTIST, artist)
     							.putString(MediaMetadataRetriever.METADATA_KEY_ALBUM, album)
     							.putLong(MediaMetadataRetriever.METADATA_KEY_DURATION, duration)
-    							.putBitmap(RemoteControlClientCompat.MetadataEditorCompat.METADATA_KEY_ARTWORK, bitmap)
+    							.putBitmap(RemoteControlClient.MetadataEditor.BITMAP_KEY_ARTWORK, bitmap)
     							.apply();
         			}
         		}
