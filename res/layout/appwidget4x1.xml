@@ -1,99 +1,98 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:a="http://schemas.android.com/apk/res/android"
-              a:layout_width="fill_parent"
-              a:layout_height="fill_parent"
-              a:orientation="horizontal"
-              a:background="@drawable/appwidget_bg">
-<ImageView
-	a:id="@+id/appwidget_coverart"
-	a:layout_height="fill_parent" 
-	a:layout_width="81dip"
-	a:scaleType="fitXY"
-	a:src="@drawable/appwidget_art_default"
-	a:clickable="true"
-	a:focusable="true"
-	a:background="@drawable/list_selector_holo_dark"/>
+    a:layout_width="fill_parent"
+    a:layout_height="fill_parent"
+    a:background="@drawable/appwidget_bg"
+    a:orientation="horizontal" >
 
-<LinearLayout
-    a:id="@+id/linearLayout1"
-    a:layout_width="match_parent"
-    a:layout_height="match_parent"
-    a:orientation="vertical" >
-
-    <LinearLayout
-        a:id="@+id/appwidget_top"
-        a:layout_width="fill_parent"
-        a:layout_height="wrap_content"
+    <ImageView
+        a:id="@+id/appwidget_coverart"
+        a:layout_width="81dip"
+        a:layout_height="fill_parent"
         a:background="@drawable/list_selector_holo_dark"
         a:clickable="true"
         a:focusable="true"
-        a:orientation="vertical" >
-
-        <TextView
-            a:id="@+id/title"
-            a:layout_width="fill_parent"
-            a:layout_height="wrap_content"
-            a:ellipsize="none"
-            a:fadingEdge="horizontal"
-            a:fadingEdgeLength="20dip"
-            a:minHeight="16sp"
-            a:paddingLeft="5dip"
-            a:paddingRight="5dip"
-            a:singleLine="true"
-            a:textColor="@color/appwidget_text"
-            a:textSize="16sp"
-            a:textStyle="bold" />
-
-        <TextView
-            a:id="@+id/artist"
-            a:layout_width="fill_parent"
-            a:layout_height="wrap_content"
-            a:ellipsize="none"
-            a:fadingEdge="horizontal"
-            a:fadingEdgeLength="10dip"
-            a:minHeight="12sp"
-            a:paddingBottom="2dip"
-            a:paddingLeft="5dip"
-            a:singleLine="true"
-            a:textColor="@color/cyan"
-            a:textSize="12sp" />
-    </LinearLayout>
+        a:scaleType="fitXY"
+        a:src="@drawable/appwidget_art_default" />
 
     <LinearLayout
-        xmlns:a="http://schemas.android.com/apk/res/android"
-        a:layout_width="fill_parent"
-        a:layout_height="fill_parent"
-        a:layout_marginTop="3dp"
-        a:orientation="horizontal" >
+        a:id="@+id/linearLayout1"
+        a:layout_width="match_parent"
+        a:layout_height="match_parent"
+        a:orientation="vertical" >
 
-        <ImageButton
-            a:id="@+id/control_previous"
-            a:layout_width="0dip"
-            a:layout_height="fill_parent"
-            a:layout_weight="1"
+        <LinearLayout
+            a:id="@+id/appwidget_top"
+            a:layout_width="fill_parent"
+            a:layout_height="wrap_content"
             a:background="@drawable/list_selector_holo_dark"
-            a:scaleType="center"
-            a:src="@drawable/ic_appwidget_music_previous" />
+            a:clickable="true"
+            a:focusable="true"
+            a:orientation="vertical" >
 
-        <ImageButton
-            a:id="@+id/control_play"
-            a:layout_width="0dip"
-            a:layout_height="fill_parent"
-            a:layout_weight="1"
-            a:background="@drawable/list_selector_holo_dark"
-            a:scaleType="center"
-            a:src="@drawable/ic_appwidget_music_play" />
+            <TextView
+                a:id="@+id/title"
+                a:layout_width="fill_parent"
+                a:layout_height="wrap_content"
+                a:ellipsize="none"
+                a:fadingEdge="horizontal"
+                a:fadingEdgeLength="20dip"
+                a:minHeight="16sp"
+                a:paddingLeft="5dip"
+                a:paddingRight="5dip"
+                a:singleLine="true"
+                a:textColor="@color/appwidget_text"
+                a:textSize="16sp"
+                a:textStyle="bold" />
 
-        <ImageButton
-            a:id="@+id/control_next" 
-            a:layout_width="0dip"
+            <TextView
+                a:id="@+id/artist"
+                a:layout_width="fill_parent"
+                a:layout_height="wrap_content"
+                a:ellipsize="none"
+                a:fadingEdge="horizontal"
+                a:fadingEdgeLength="10dip"
+                a:minHeight="12sp"
+                a:paddingBottom="2dip"
+                a:paddingLeft="5dip"
+                a:singleLine="true"
+                a:textColor="@color/appwidget_text"
+                a:textSize="12sp" />
+        </LinearLayout>
+
+        <LinearLayout
+            a:layout_width="fill_parent"
             a:layout_height="fill_parent"
-            a:layout_weight="1"
-            a:background="@drawable/list_selector_holo_dark"
-            a:scaleType="center"
-            a:src="@drawable/ic_appwidget_music_next" />
+            a:layout_marginTop="3dp"
+            a:orientation="horizontal" >
+
+            <ImageButton
+                a:id="@+id/control_previous"
+                a:layout_width="0dip"
+                a:layout_height="fill_parent"
+                a:layout_weight="1"
+                a:background="@drawable/list_selector_holo_dark"
+                a:scaleType="center"
+                a:src="@drawable/ic_appwidget_music_previous" />
+
+            <ImageButton
+                a:id="@+id/control_play"
+                a:layout_width="0dip"
+                a:layout_height="fill_parent"
+                a:layout_weight="1"
+                a:background="@drawable/list_selector_holo_dark"
+                a:scaleType="center"
+                a:src="@drawable/ic_appwidget_music_play" />
+
+            <ImageButton
+                a:id="@+id/control_next"
+                a:layout_width="0dip"
+                a:layout_height="fill_parent"
+                a:layout_weight="1"
+                a:background="@drawable/list_selector_holo_dark"
+                a:scaleType="center"
+                a:src="@drawable/ic_appwidget_music_next" />
+        </LinearLayout>
     </LinearLayout>
-
-</LinearLayout>
 
 </LinearLayout>

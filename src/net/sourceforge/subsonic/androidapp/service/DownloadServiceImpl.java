@@ -44,6 +44,7 @@ import net.sourceforge.subsonic.androidapp.audiofx.VisualizerController;
 import net.sourceforge.subsonic.androidapp.domain.MusicDirectory;
 import net.sourceforge.subsonic.androidapp.domain.PlayerState;
 import net.sourceforge.subsonic.androidapp.domain.RepeatMode;
+import net.sourceforge.subsonic.androidapp.provider.SubsonicAppWidgetProvider4x1;
 import net.sourceforge.subsonic.androidapp.receiver.MediaButtonIntentReceiver;
 import net.sourceforge.subsonic.androidapp.util.CancellableTask;
 import net.sourceforge.subsonic.androidapp.util.LRUCache;
@@ -435,7 +436,10 @@ public class DownloadServiceImpl extends Service implements DownloadService {
         
         setRemoteControl();
 
-        if (Util.isNotificationEnabled(this) && currentPlaying != null && showNotification) {
+        // Update widget
+        SubsonicAppWidgetProvider4x1.getInstance().notifyChange(this, this, playerState == PlayerState.STARTED);
+        
+        if (currentPlaying != null && showNotification) {
             Util.showPlayingNotification(this, this, handler, currentPlaying.getSong(), this.notification, this.playerState);
         } else {
             Util.hidePlayingNotification(this, this, handler);
@@ -684,15 +688,14 @@ public class DownloadServiceImpl extends Service implements DownloadService {
         
         setRemoteControl();
         
-        if (Util.isNotificationEnabled(this)) {
-        	if (show) {
-        		Util.showPlayingNotification(this, this, handler, currentPlaying.getSong(), this.notification, this.playerState);
-        	} else if (hide) {
-        		Util.hidePlayingNotification(this, this, handler);
-        	}
-        } else {
-        	Util.hidePlayingNotification(this, this, handler);
-        }
+        // Update widget
+        SubsonicAppWidgetProvider4x1.getInstance().notifyChange(this, this, playerState == PlayerState.STARTED);
+        
+       	if (show) {
+       		Util.showPlayingNotification(this, this, handler, currentPlaying.getSong(), this.notification, this.playerState);
+       	} else if (hide) {
+       		Util.hidePlayingNotification(this, this, handler);
+       	}
         
         if (playerState == STARTED) {
             scrobbler.scrobble(this, currentPlaying, false);

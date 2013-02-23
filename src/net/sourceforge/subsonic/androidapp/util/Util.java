@@ -592,52 +592,53 @@ public class Util extends DownloadActivity {
     
     public static void showPlayingNotification(final Context context, final DownloadServiceImpl downloadService, Handler handler, MusicDirectory.Entry song, final Notification notification, PlayerState playerState) {
 
-    	if (currentSong != song) {
-    		currentSong = song;
-    		
-            // Use the same text for the ticker and the expanded notification
-            String title = song.getTitle();
-            String text = song.getArtist();
-            String album = song.getAlbum();
-            
-            // Set the album art.
-    		try {
-    			int size = context.getResources().getDrawable(R.drawable.unknown_album).getIntrinsicHeight();
-                Bitmap bitmap = FileUtil.getAlbumArtBitmap(context, song, size);
-    			if (bitmap == null) {
-    				// set default album art
-    				notification.contentView.setImageViewResource(R.id.notification_image, R.drawable.unknown_album);
-    			} else {
-    				notification.contentView.setImageViewBitmap(R.id.notification_image, bitmap);
-    			}
-    		} catch (Exception x) {
-    			Log.w(TAG, "Failed to get notification cover art", x);
-    			notification.contentView.setImageViewResource(R.id.notification_image, R.drawable.unknown_album);
-    		}
+		if (Util.isNotificationEnabled(context)) {
+			if (currentSong != song) {
+				currentSong = song;
 
-    		// set the text for the notifications
-    		notification.contentView.setTextViewText(R.id.trackname, title);
-    		notification.contentView.setTextViewText(R.id.artist, text);
-    		notification.contentView.setTextViewText(R.id.album, album);
-    	}
-                
-    	if (playerState == PlayerState.PAUSED) {
-    		notification.contentView.setImageViewResource(R.id.control_play, R.drawable.ic_appwidget_music_play);
-    	}
-		else if (playerState == PlayerState.STARTED) {
-			notification.contentView.setImageViewResource(R.id.control_play, R.drawable.ic_appwidget_music_pause);
+				// Use the same text for the ticker and the expanded
+				// notification
+				String title = song.getTitle();
+				String text = song.getArtist();
+				String album = song.getAlbum();
+
+				// Set the album art.
+				try {
+					int size = context.getResources()
+							.getDrawable(R.drawable.unknown_album)
+							.getIntrinsicHeight();
+					Bitmap bitmap = FileUtil.getAlbumArtBitmap(context, song, size);
+					if (bitmap == null) {
+						// set default album art
+						notification.contentView.setImageViewResource(R.id.notification_image, R.drawable.unknown_album);
+					} else {
+						notification.contentView.setImageViewBitmap(R.id.notification_image, bitmap);
+					}
+				} catch (Exception x) {
+					Log.w(TAG, "Failed to get notification cover art", x);
+					notification.contentView.setImageViewResource(R.id.notification_image, R.drawable.unknown_album);
+				}
+
+				// set the text for the notifications
+				notification.contentView.setTextViewText(R.id.trackname, title);
+				notification.contentView.setTextViewText(R.id.artist, text);
+				notification.contentView.setTextViewText(R.id.album, album);
+			}
+
+			if (playerState == PlayerState.PAUSED) {
+				notification.contentView.setImageViewResource(R.id.control_play, R.drawable.ic_appwidget_music_play);
+			} else if (playerState == PlayerState.STARTED) {
+				notification.contentView.setImageViewResource(R.id.control_play, R.drawable.ic_appwidget_music_pause);
+			}
+
+			// Send the notification and put the service in the foreground.
+			handler.post(new Runnable() {
+				@Override
+				public void run() {
+					startForeground(downloadService, Constants.NOTIFICATION_ID_PLAYING, notification);
+				}
+			});
 		}
-        
-        // Send the notification and put the service in the foreground.
-        handler.post(new Runnable() {
-            @Override
-            public void run() {
-                startForeground(downloadService, Constants.NOTIFICATION_ID_PLAYING, notification);
-            }
-        });
-        
-        // Update widget
-        SubsonicAppWidgetProvider4x1.getInstance().notifyChange(context, downloadService, true);
     }
 
     public static void hidePlayingNotification(final Context context, final DownloadServiceImpl downloadService, Handler handler) {
@@ -651,9 +652,6 @@ public class Util extends DownloadActivity {
                 stopForeground(downloadService, true);
             }
         });
-
-        // Update widget
-        SubsonicAppWidgetProvider4x1.getInstance().notifyChange(context, downloadService, false);
     }
 
     public static void sleepQuietly(long millis) {
