@@ -188,6 +188,7 @@
     <string name="settings.search_history_cleared">Search history cleared</string>
     <string name="settings.other_title">Other Settings</string>
     <string name="settings.search_title">Search Settings</string>
+    <string name="settings.playback_control_title">Playback Control Settings</string>
     <string name="settings.scrobble_title">Scrobble To Last.fm</string>
     <string name="settings.scrobble_summary">Remember to set up your Last.fm user and password on the Subsonic server</string>
     <string name="settings.hide_media_title">Hide From Other</string>

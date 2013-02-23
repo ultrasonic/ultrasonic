@@ -1,285 +1,221 @@
 <?xml version="1.0" encoding="utf-8"?>
-
 <PreferenceScreen xmlns:a="http://schemas.android.com/apk/res/android"
-                  a:title="@string/settings.title">
+    a:title="@string/settings.title" >
 
-    <PreferenceCategory
-            a:title="@string/settings.servers_title">
-
-        <PreferenceScreen
-                a:key="server1">
-
+    <PreferenceCategory a:title="@string/settings.servers_title" >
+        <PreferenceScreen a:key="server1" >
             <EditTextPreference
-                    a:key="serverName1"
-                    a:title="@string/settings.server_name"
-                    a:defaultValue="Subsonic demo"/>
-
+                a:defaultValue="Subsonic demo"
+                a:key="serverName1"
+                a:title="@string/settings.server_name" />
             <EditTextPreference
-                    a:key="serverUrl1"
-                    a:title="@string/settings.server_address"
-                    a:defaultValue="http://demo.subsonic.org"
-                    a:inputType="textUri"/>
-
+                a:defaultValue="http://demo.subsonic.org"
+                a:inputType="textUri"
+                a:key="serverUrl1"
+                a:title="@string/settings.server_address" />
             <EditTextPreference
-                    a:key="username1"
-                    a:title="@string/settings.server_username"
-                    a:defaultValue="android-guest"/>
-
+                a:defaultValue="android-guest"
+                a:key="username1"
+                a:title="@string/settings.server_username" />
             <EditTextPreference
-                    a:key="password1"
-                    a:title="@string/settings.server_password"
-                    a:password="true"
-                    a:defaultValue="guest"
-                    a:summary="****"/>
-
+                a:defaultValue="guest"
+                a:key="password1"
+                a:password="true"
+                a:summary="****"
+                a:title="@string/settings.server_password" />
             <Preference
-                    a:key="testConnection1"
-                    a:title="@string/settings.test_connection_title"
-                    a:persistent="false"/>
-
+                a:key="testConnection1"
+                a:persistent="false"
+                a:title="@string/settings.test_connection_title" />
         </PreferenceScreen>
-
-        <PreferenceScreen
-                a:key="server2">
-
+        <PreferenceScreen a:key="server2" >
             <EditTextPreference
-                    a:key="serverName2"
-                    a:title="@string/settings.server_name"
-                    a:defaultValue="@string/settings.server_unused1"/>
-
+                a:defaultValue="@string/settings.server_unused1"
+                a:key="serverName2"
+                a:title="@string/settings.server_name" />
             <EditTextPreference
-                    a:key="serverUrl2"
-                    a:title="@string/settings.server_address"
-                    a:defaultValue="http://yourhost"
-                    a:inputType="textUri"/>
-
+                a:defaultValue="http://yourhost"
+                a:inputType="textUri"
+                a:key="serverUrl2"
+                a:title="@string/settings.server_address" />
             <EditTextPreference
-                    a:key="username2"
-                    a:title="@string/settings.server_username"/>
-
+                a:key="username2"
+                a:title="@string/settings.server_username" />
             <EditTextPreference
-                    a:key="password2"
-                    a:title="@string/settings.server_password"
-                    a:password="true"
-                    a:summary="****"/>
-
+                a:key="password2"
+                a:password="true"
+                a:summary="****"
+                a:title="@string/settings.server_password" />
             <Preference
-                    a:key="testConnection2"
-                    a:title="@string/settings.test_connection_title"
-                    a:persistent="false"/>
-
+                a:key="testConnection2"
+                a:persistent="false"
+                a:title="@string/settings.test_connection_title" />
         </PreferenceScreen>
-
-        <PreferenceScreen
-                a:key="server3">
-
+        <PreferenceScreen a:key="server3" >
             <EditTextPreference
-                    a:key="serverName3"
-                    a:title="@string/settings.server_name"
-                    a:defaultValue="@string/settings.server_unused2"/>
-
+                a:defaultValue="@string/settings.server_unused2"
+                a:key="serverName3"
+                a:title="@string/settings.server_name" />
             <EditTextPreference
-                    a:key="serverUrl3"
-                    a:title="@string/settings.server_address"
-                    a:defaultValue="http://yourhost"
-                    a:inputType="textUri"/>
-
+                a:defaultValue="http://yourhost"
+                a:inputType="textUri"
+                a:key="serverUrl3"
+                a:title="@string/settings.server_address" />
             <EditTextPreference
-                    a:key="username3"
-                    a:title="@string/settings.server_username"/>
-
+                a:key="username3"
+                a:title="@string/settings.server_username" />
             <EditTextPreference
-                    a:key="password3"
-                    a:title="@string/settings.server_password"
-                    a:password="true"
-                    a:summary="****"/>
-
+                a:key="password3"
+                a:password="true"
+                a:summary="****"
+                a:title="@string/settings.server_password" />
             <Preference
-                    a:key="testConnection3"
-                    a:title="@string/settings.test_connection_title"
-                    a:persistent="false"/>
-
+                a:key="testConnection3"
+                a:persistent="false"
+                a:title="@string/settings.test_connection_title" />
         </PreferenceScreen>
-
     </PreferenceCategory>
-
-    <PreferenceCategory
-            a:title="@string/settings.appearance_title">
-
+    <PreferenceCategory a:title="@string/settings.appearance_title" >
         <ListPreference
-                a:title="@string/settings.theme_title"
-                a:key="theme"
-                a:defaultValue="Dark"
-                a:entryValues="@array/themeValues"
-                a:entries="@array/themeNames"/>
-
+            a:defaultValue="Dark"
+            a:entries="@array/themeNames"
+            a:entryValues="@array/themeValues"
+            a:key="theme"
+            a:title="@string/settings.theme_title" />
     </PreferenceCategory>
-
-    <PreferenceCategory
-            a:title="@string/settings.network_title">
-
+    <PreferenceCategory a:title="@string/settings.network_title" >
         <ListPreference
-                a:title="@string/settings.max_bitrate_wifi"
-                a:key="maxBitrateWifi"
-                a:defaultValue="0"
-                a:entryValues="@array/maxBitrateValues"
-                a:entries="@array/maxBitrateNames"/>
-
+            a:defaultValue="0"
+            a:entries="@array/maxBitrateNames"
+            a:entryValues="@array/maxBitrateValues"
+            a:key="maxBitrateWifi"
+            a:title="@string/settings.max_bitrate_wifi" />
         <ListPreference
-                a:title="@string/settings.max_bitrate_mobile"
-                a:key="maxBitrateMobile"
-                a:defaultValue="0"
-                a:entryValues="@array/maxBitrateValues"
-                a:entries="@array/maxBitrateNames"/>
-
+            a:defaultValue="0"
+            a:entries="@array/maxBitrateNames"
+            a:entryValues="@array/maxBitrateValues"
+            a:key="maxBitrateMobile"
+            a:title="@string/settings.max_bitrate_mobile" />
         <CheckBoxPreference
-                a:title="@string/settings.wifi_required_title"
-                a:summary="@string/settings.wifi_required_summary"
-                a:key="wifiRequiredForDownload"
-                a:defaultValue="false"/>
-
+            a:defaultValue="false"
+            a:key="wifiRequiredForDownload"
+            a:summary="@string/settings.wifi_required_summary"
+            a:title="@string/settings.wifi_required_title" />
         <ListPreference
-				a:title="@string/settings.buffer_length"
-				a:key="bufferLength"
-				a:defaultValue="5"
-				a:entryValues="@array/bufferLengthValues"
-				a:entries="@array/bufferLengthNames"/>
-
-		<ListPreference
-				a:title="@string/settings.network_timeout"
-				a:key="networkTimeout"
-				a:defaultValue="15000"
-				a:entryValues="@array/networkTimeoutValues"
-				a:entries="@array/networkTimeoutNames"/>
-
+            a:defaultValue="5"
+            a:entries="@array/bufferLengthNames"
+            a:entryValues="@array/bufferLengthValues"
+            a:key="bufferLength"
+            a:title="@string/settings.buffer_length" />
+        <ListPreference
+            a:defaultValue="15000"
+            a:entries="@array/networkTimeoutNames"
+            a:entryValues="@array/networkTimeoutValues"
+            a:key="networkTimeout"
+            a:title="@string/settings.network_timeout" />
     </PreferenceCategory>
-
-    <PreferenceCategory
-            a:title="@string/settings.cache_title">
-
+    <PreferenceCategory a:title="@string/settings.cache_title" >
         <ListPreference
-                a:title="@string/settings.cache_size"
-                a:key="cacheSize"
-                a:defaultValue="500"
-                a:entryValues="@array/cacheSizeValues"
-                a:entries="@array/cacheSizeNames"/>
-
+            a:defaultValue="500"
+            a:entries="@array/cacheSizeNames"
+            a:entryValues="@array/cacheSizeValues"
+            a:key="cacheSize"
+            a:title="@string/settings.cache_size" />
         <EditTextPreference
-                a:title="@string/settings.cache_location"
-                a:key="cacheLocation"/>
-
+            a:key="cacheLocation"
+            a:title="@string/settings.cache_location" />
         <ListPreference
-                a:title="@string/settings.preload"
-                a:key="preloadCount"
-                a:defaultValue="3"
-                a:entryValues="@array/preloadCountValues"
-                a:entries="@array/preloadCountNames"/>
-
+            a:defaultValue="3"
+            a:entries="@array/preloadCountNames"
+            a:entryValues="@array/preloadCountValues"
+            a:key="preloadCount"
+            a:title="@string/settings.preload" />
     </PreferenceCategory>
-
-    <PreferenceCategory
-            a:title="@string/settings.search_title">
-        
+    <PreferenceCategory a:title="@string/settings.search_title" >
         <ListPreference
-                a:title="@string/settings.default_artists"
-                a:key="defaultArtists"
-                a:defaultValue="3"
-                a:entryValues="@array/defaultSearchValues"
-                a:entries="@array/defaultSearchNames"/>
-        
+            a:defaultValue="3"
+            a:entries="@array/defaultSearchNames"
+            a:entryValues="@array/defaultSearchValues"
+            a:key="defaultArtists"
+            a:title="@string/settings.default_artists" />
         <ListPreference
-                a:title="@string/settings.max_artists"
-                a:key="maxArtists"
-                a:defaultValue="10"
-                a:entryValues="@array/maxArtistsValues"
-                a:entries="@array/maxArtistsNames"/>
-
+            a:defaultValue="10"
+            a:entries="@array/maxArtistsNames"
+            a:entryValues="@array/maxArtistsValues"
+            a:key="maxArtists"
+            a:title="@string/settings.max_artists" />
         <ListPreference
-                a:title="@string/settings.default_albums"
-                a:key="defaultAlbums"
-                a:defaultValue="5"
-                a:entryValues="@array/defaultSearchValues"
-                a:entries="@array/defaultSearchNames"/>
-                
+            a:defaultValue="5"
+            a:entries="@array/defaultSearchNames"
+            a:entryValues="@array/defaultSearchValues"
+            a:key="defaultAlbums"
+            a:title="@string/settings.default_albums" />
         <ListPreference
-                a:title="@string/settings.max_albums"
-                a:key="maxAlbums"
-                a:defaultValue="20"
-                a:entryValues="@array/maxAlbumsValues"
-                a:entries="@array/maxAlbumsNames"/>
-        
+            a:defaultValue="20"
+            a:entries="@array/maxAlbumsNames"
+            a:entryValues="@array/maxAlbumsValues"
+            a:key="maxAlbums"
+            a:title="@string/settings.max_albums" />
         <ListPreference
-                a:title="@string/settings.default_songs"
-                a:key="defaultSongs"
-                a:defaultValue="10"
-                a:entryValues="@array/defaultSearchValues"
-                a:entries="@array/defaultSearchNames"/>
-              
+            a:defaultValue="10"
+            a:entries="@array/defaultSearchNames"
+            a:entryValues="@array/defaultSearchValues"
+            a:key="defaultSongs"
+            a:title="@string/settings.default_songs" />
         <ListPreference
-                a:title="@string/settings.max_songs"
-                a:key="maxSongs"
-                a:defaultValue="25"
-                a:entryValues="@array/maxSongsValues"
-                a:entries="@array/maxSongsNames"/>
-        
+            a:defaultValue="25"
+            a:entries="@array/maxSongsNames"
+            a:entryValues="@array/maxSongsValues"
+            a:key="maxSongs"
+            a:title="@string/settings.max_songs" />
         <Preference
-                a:key="clearSearchHistory"
-                a:title="@string/settings.clear_search_history"
-                a:persistent="false"/>
-        
+            a:key="clearSearchHistory"
+            a:persistent="false"
+            a:title="@string/settings.clear_search_history" />
     </PreferenceCategory>
-    
-    <PreferenceCategory
-            a:title="@string/settings.other_title">
-
+    <PreferenceCategory a:title="@string/settings.playback_control_title" >
         <CheckBoxPreference
-                a:title="@string/settings.scrobble_title"
-                a:summary="@string/settings.scrobble_summary"
-                a:key="scrobble"
-                a:defaultValue="false"/>
-
+            a:defaultValue="true"
+            a:key="mediaButtons"
+            a:summary="@string/settings.media_button_summary"
+            a:title="@string/settings.media_button_title" />
         <CheckBoxPreference
-                a:title="@string/settings.hide_media_title"
-                a:summary="@string/settings.hide_media_summary"
-                a:key="hideMedia"
-                a:defaultValue="false"/>
-
+            a:defaultValue="true"
+            a:key="showNotification"
+            a:summary="@string/settings.show_notification_summary"
+            a:title="@string/settings.show_notification" />
         <CheckBoxPreference
-                a:title="@string/settings.media_button_title"
-                a:summary="@string/settings.media_button_summary"
-                a:key="mediaButtons"
-                a:defaultValue="true"/>
-
+            a:defaultValue="true"
+            a:key="alwaysShowNotification"
+            a:summary="@string/settings.show_notification_always_summary"
+            a:title="@string/settings.show_notification_always" />
         <CheckBoxPreference
-                a:title="@string/settings.screen_lit_title"
-                a:summary="@string/settings.screen_lit_summary"
-                a:key="screenLitOnDownload"
-                a:defaultValue="true"/>
-        
+            a:defaultValue="true"
+            a:key="showLockScreen"
+            a:summary="@string/settings.show_lockscreen_controls_summary"
+            a:title="@string/settings.show_lockscreen_controls" />
         <CheckBoxPreference
-                a:title="@string/settings.show_notification"
-                a:summary="@string/settings.show_notification_summary"
-                a:key="showNotification"
-                a:defaultValue="true"/>
-        
-		<CheckBoxPreference
-                a:title="@string/settings.show_notification_always"
-                a:summary="@string/settings.show_notification_always_summary"
-                a:key="alwaysShowNotification"
-                a:defaultValue="true"/>        
-        
-       	<CheckBoxPreference
-                a:title="@string/settings.show_lockscreen_controls"
-                a:summary="@string/settings.show_lockscreen_controls_summary"
-                a:key="showLockScreen"
-                a:defaultValue="true"/>
-       	
-       	<CheckBoxPreference
-                a:title="@string/settings.use_stream_proxy"
-                a:summary="@string/settings.use_stream_proxy_summary"
-                a:key="useStreamProxy"
-                a:defaultValue="false"/>       	
-
+            a:defaultValue="false"
+            a:key="useStreamProxy"
+            a:summary="@string/settings.use_stream_proxy_summary"
+            a:title="@string/settings.use_stream_proxy" />
+    </PreferenceCategory>
+    <PreferenceCategory a:title="@string/settings.other_title" >
+        <CheckBoxPreference
+            a:defaultValue="false"
+            a:key="scrobble"
+            a:summary="@string/settings.scrobble_summary"
+            a:title="@string/settings.scrobble_title" />
+        <CheckBoxPreference
+            a:defaultValue="false"
+            a:key="hideMedia"
+            a:summary="@string/settings.hide_media_summary"
+            a:title="@string/settings.hide_media_title" />
+        <CheckBoxPreference
+            a:defaultValue="true"
+            a:key="screenLitOnDownload"
+            a:summary="@string/settings.screen_lit_summary"
+            a:title="@string/settings.screen_lit_title" />
     </PreferenceCategory>
 
 </PreferenceScreen>
