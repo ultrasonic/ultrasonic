@@ -107,6 +107,7 @@ public class DownloadServiceImpl extends Service implements DownloadService {
     private StreamProxy proxy;
     private static MusicDirectory.Entry currentSong;
     private RemoteControlClient remoteControlClient;
+    private int secondaryProgress = -1;
         
     static {
         try {
@@ -518,7 +519,8 @@ public class DownloadServiceImpl extends Service implements DownloadService {
             if (jukeboxEnabled) {
                 jukeboxService.skip(getCurrentPlayingIndex(), position / 1000);
             } else {
-                mediaPlayer.seekTo(position);
+            	if (secondaryProgress == -1 || secondaryProgress >= position)
+            		mediaPlayer.seekTo(position);
             }
         } catch (Exception x) {
             handleError(x);
@@ -829,8 +831,9 @@ public class DownloadServiceImpl extends Service implements DownloadService {
             mediaPlayer.setOnCompletionListener(null);
             mediaPlayer.setOnBufferingUpdateListener(null);
             mediaPlayer.reset();
+            secondaryProgress = -1; // Ensure seeking in non StreamProxy playback works 
             setPlayerState(IDLE);
-            
+                        
             mediaPlayer.setOnBufferingUpdateListener(new MediaPlayer.OnBufferingUpdateListener() {
 				@Override
 				public void onBufferingUpdate(MediaPlayer mp, int percent) {
@@ -838,7 +841,7 @@ public class DownloadServiceImpl extends Service implements DownloadService {
 					MusicDirectory.Entry song = downloadFile.getSong();
 					
 					if (progressBar != null && song.getTranscodedContentType() == null && Util.getMaxBitrate(getApplicationContext()) == 0) {
-						int secondaryProgress = (int) (((double)percent / (double)100) * progressBar.getMax());
+						secondaryProgress = (int) (((double)percent / (double)100) * progressBar.getMax());
 						DownloadActivity.getProgressBar().setSecondaryProgress(secondaryProgress);
 					}
 				}
