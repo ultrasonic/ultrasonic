@@ -199,7 +199,8 @@
     <string name="settings.screen_lit_title">Keep Screen On</string>
     <string name="settings.screen_lit_summary">Keeping the screen on while downloading improves download speed.</string>
     <string name="settings.buffer_length">Buffer Length</string>
-    <string name="settings.network_timeout">Network Timeout</string>
+    <string name="settings.network_timeout">Network Timeout</string>   
+    <string name="settings.buffer_length_1">1 second</string>
     <string name="settings.buffer_length_2">2 seconds</string>
     <string name="settings.buffer_length_5">5 seconds</string>
     <string name="settings.buffer_length_8">8 seconds</string>
@@ -241,7 +242,7 @@
     <string name="settings.max_songs_50">50</string>
     <string name="settings.max_songs_75">75</string>
     <string name="settings.max_songs_100">100</string>
-    <string name="settings.max_songs_200">200</string>
+    <string name="settings.max_songs_250">250</string>
     <string name="settings.max_songs_500">500</string>
     <string name="settings.max_artists">Max Artists</string>
     <string name="settings.max_artists_3">3</string>
@@ -251,7 +252,7 @@
     <string name="settings.max_artists_50">50</string>
     <string name="settings.max_artists_75">75</string>
     <string name="settings.max_artists_100">100</string>
-    <string name="settings.max_artists_200">200</string>
+    <string name="settings.max_artists_250">250</string>
     <string name="settings.max_artists_500">500</string>
     <string name="settings.default_artists">Default Artists</string>
     <string name="settings.default_albums">Default Albums</string>

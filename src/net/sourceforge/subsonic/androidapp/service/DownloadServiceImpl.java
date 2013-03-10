@@ -146,7 +146,7 @@ public class DownloadServiceImpl extends Service implements DownloadService {
 
         mediaPlayer = new MediaPlayer();
         mediaPlayer.setWakeMode(this, PowerManager.PARTIAL_WAKE_LOCK);
-
+        mediaPlayer.setAudioStreamType(AudioManager.STREAM_MUSIC);
         mediaPlayer.setOnErrorListener(new MediaPlayer.OnErrorListener() {
             @Override
             public boolean onError(MediaPlayer mediaPlayer, int what, int more) {
@@ -759,17 +759,18 @@ public class DownloadServiceImpl extends Service implements DownloadService {
         		Intent intent = new Intent(Intent.ACTION_MEDIA_BUTTON);
         		intent.setComponent(new ComponentName(this.getPackageName(), MediaButtonIntentReceiver.class.getName()));
         		remoteControlClient = new RemoteControlClient(PendingIntent.getBroadcast(this, 0, intent, 0));
-        		audioManager.registerRemoteControlClient(remoteControlClient);
-        		
-            	remoteControlClient.setTransportControlFlags(
-            			RemoteControlClient.FLAG_KEY_MEDIA_PLAY |
-            			RemoteControlClient.FLAG_KEY_MEDIA_PAUSE |
-            			RemoteControlClient.FLAG_KEY_MEDIA_NEXT |
-            			RemoteControlClient.FLAG_KEY_MEDIA_PREVIOUS |
-            			RemoteControlClient.FLAG_KEY_MEDIA_PLAY_PAUSE |
-            			RemoteControlClient.FLAG_KEY_MEDIA_STOP);
         	}
-
+        	
+        	audioManager.registerRemoteControlClient(remoteControlClient);
+        		
+            remoteControlClient.setTransportControlFlags(
+            		RemoteControlClient.FLAG_KEY_MEDIA_PLAY |
+            		RemoteControlClient.FLAG_KEY_MEDIA_PAUSE |
+            		RemoteControlClient.FLAG_KEY_MEDIA_NEXT |
+            		RemoteControlClient.FLAG_KEY_MEDIA_PREVIOUS |
+            		RemoteControlClient.FLAG_KEY_MEDIA_PLAY_PAUSE |
+            		RemoteControlClient.FLAG_KEY_MEDIA_STOP);
+        	
         	switch (playerState)
         	{
         	case STARTED:
@@ -785,32 +786,32 @@ public class DownloadServiceImpl extends Service implements DownloadService {
         	}	
 
         	try {
-        		if (currentPlaying != null) {
-        			if (currentSong != currentPlaying.getSong()) {
-        				currentSong = currentPlaying.getSong();
-        				
-        				String artist = currentSong.getArtist();
-    					String album = currentSong.getAlbum();
-    					String title = artist + " - " + currentSong.getTitle();
-    					Integer duration = currentSong.getDuration();
+				if (currentPlaying != null) {
+					if (currentSong != currentPlaying.getSong()) {
+						currentSong = currentPlaying.getSong();
+					}
 
-    					MusicService musicService = MusicServiceFactory.getMusicService(this);
-    					DisplayMetrics metrics = this.getResources().getDisplayMetrics();
-    					int size = Math.min(metrics.widthPixels, metrics.heightPixels);
-    					Bitmap bitmap = musicService.getCoverArt(this, currentSong, size, true, null);
+					String artist = currentSong.getArtist();
+					String album = currentSong.getAlbum();
+					String title = artist + " - " + currentSong.getTitle();
+					Integer duration = currentSong.getDuration();
 
-    					// Update the remote controls
-    					remoteControlClient
-    							.editMetadata(true)
-    							.putString(MediaMetadataRetriever.METADATA_KEY_TITLE, title)
-    							.putString(MediaMetadataRetriever.METADATA_KEY_ARTIST, artist)
-    							.putString(MediaMetadataRetriever.METADATA_KEY_ALBUM, album)
-    							.putLong(MediaMetadataRetriever.METADATA_KEY_DURATION, duration)
-    							.putBitmap(RemoteControlClient.MetadataEditor.BITMAP_KEY_ARTWORK, bitmap)
-    							.apply();
-        			}
-        		}
-        	}
+					MusicService musicService = MusicServiceFactory.getMusicService(this);
+					DisplayMetrics metrics = this.getResources().getDisplayMetrics();
+					int size = Math.min(metrics.widthPixels, metrics.heightPixels);
+					Bitmap bitmap = musicService.getCoverArt(this, currentSong, size, true, null);
+
+					// Update the remote controls
+					remoteControlClient
+							.editMetadata(true)
+							.putString(MediaMetadataRetriever.METADATA_KEY_TITLE, title)
+							.putString(MediaMetadataRetriever.METADATA_KEY_ARTIST, artist)
+							.putString(MediaMetadataRetriever.METADATA_KEY_ALBUM, album)
+							.putLong(MediaMetadataRetriever.METADATA_KEY_DURATION, duration)
+							.putBitmap(RemoteControlClient.MetadataEditor.BITMAP_KEY_ARTWORK, bitmap)
+							.apply();
+				}
+			}
         	catch (Exception e) {
         		Log.e(TAG, "Exception in setRemoteControl", e);
         	}
@@ -828,6 +829,7 @@ public class DownloadServiceImpl extends Service implements DownloadService {
         try {
             final File file = downloadFile.isCompleteFileAvailable() ? downloadFile.getCompleteFile() : downloadFile.getPartialFile();
             downloadFile.updateModificationDate();
+            
             mediaPlayer.setOnCompletionListener(null);
             mediaPlayer.setOnBufferingUpdateListener(null);
             mediaPlayer.reset();
@@ -846,8 +848,6 @@ public class DownloadServiceImpl extends Service implements DownloadService {
 					}
 				}
 			});
-            
-            mediaPlayer.setAudioStreamType(AudioManager.STREAM_MUSIC);
             
             String url = file.getPath();
             String playUrl = url;
@@ -1071,17 +1071,18 @@ public class DownloadServiceImpl extends Service implements DownloadService {
             this.downloadFile = downloadFile;
             this.position = position;
             partialFile = downloadFile.getPartialFile();
+            int bufferLength = downloadFile.getBufferLength();
 
-            // Calculate roughly how many bytes buffer length corresponds to.
-            int bitRate = downloadFile.getBitRate();
-            long byteCount = Math.max(100000, bitRate * 1024 / 8 * downloadFile.getBufferLength());
+			// Calculate roughly how many bytes buffer length corresponds to.
+			int bitRate = downloadFile.getBitRate();
+			long byteCount = Math.max(100000, bitRate * 1024 / 8 * bufferLength);
 
-            // Find out how large the file should grow before resuming playback.
-            if (position == 0) {
-            	expectedFileSize = byteCount;
-            } else {
-            	expectedFileSize = partialFile.length() + byteCount;
-            }
+			// Find out how large the file should grow before resuming playback.
+			if (position == 0) {
+				expectedFileSize = byteCount;
+			} else {
+				expectedFileSize = partialFile.length() + byteCount;
+			}
         }
 
         @Override
@@ -1089,7 +1090,7 @@ public class DownloadServiceImpl extends Service implements DownloadService {
             setPlayerState(DOWNLOADING);
 
             while (!bufferComplete()) {
-                Util.sleepQuietly(1000L);
+                Util.sleepQuietly(100L);
                 if (isCancelled()) {
                     return;
                 }
@@ -1099,10 +1100,19 @@ public class DownloadServiceImpl extends Service implements DownloadService {
 
         private boolean bufferComplete() {
             boolean completeFileAvailable = downloadFile.isCompleteFileAvailable();
+            if (completeFileAvailable) {
+            	Log.i(TAG, "Buffering complete: Complete file exists (" + completeFileAvailable + ")");
+            	return true;
+            }
+            
             long size = partialFile.length();
-
-            Log.i(TAG, "Buffering " + partialFile + " (" + size + "/" + expectedFileSize + ", " + completeFileAvailable + ")");
-            return completeFileAvailable || size >= expectedFileSize;
+            if (size >= expectedFileSize) {
+            	Log.i(TAG, "Buffering complete: " + partialFile + " (" + size + "/" + expectedFileSize + ")");
+            	return true;
+            }
+            
+            Log.i(TAG, "Buffering incomplete: " + partialFile + " (" + size + "/" + expectedFileSize + ")");
+            return false;
         }
 
         @Override

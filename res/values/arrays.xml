@@ -86,6 +86,7 @@
     </string-array>
 
     <string-array name="bufferLengthValues">
+    <item>1</item>
 	<item>2</item>
 	<item>5</item>
 	<item>8</item>
@@ -96,7 +97,9 @@
 	<item>30</item>
     </string-array>
 
-    <string-array name="bufferLengthNames">
+    <string-array name="bufferLengthNames">    
+	<item>@string/settings.buffer_length_1</item>    
+	<item>@string/settings.buffer_length_2</item>        
 	<item>@string/settings.buffer_length_2</item>
 	<item>@string/settings.buffer_length_5</item>
 	<item>@string/settings.buffer_length_8</item>
@@ -160,7 +163,7 @@
 	<item>50</item>
 	<item>75</item>
 	<item>100</item>
-	<item>200</item>
+	<item>250</item>
 	<item>500</item>
     </string-array>
        
@@ -171,7 +174,7 @@
 	<item>@string/settings.max_songs_50</item>
 	<item>@string/settings.max_songs_75</item>
 	<item>@string/settings.max_songs_100</item>
-	<item>@string/settings.max_songs_200</item>
+	<item>@string/settings.max_songs_250</item>
 	<item>@string/settings.max_songs_500</item>
     </string-array>
     
@@ -182,7 +185,7 @@
 	<item>50</item>
 	<item>75</item>
 	<item>100</item>
-	<item>200</item>
+	<item>250</item>
 	<item>500</item>
     </string-array>
        
@@ -193,7 +196,7 @@
 	<item>@string/settings.max_artists_50</item>
 	<item>@string/settings.max_artists_75</item>
 	<item>@string/settings.max_artists_100</item>
-	<item>@string/settings.max_artists_200</item>
+	<item>@string/settings.max_artists_250</item>
 	<item>@string/settings.max_artists_500</item>
     </string-array>
     
@@ -205,7 +208,7 @@
 	<item>50</item>
 	<item>75</item>
 	<item>100</item>
-	<item>200</item>
+	<item>250</item>
 	<item>500</item>
     </string-array>
        
@@ -217,7 +220,7 @@
 	<item>@string/settings.max_artists_50</item>
 	<item>@string/settings.max_artists_75</item>
 	<item>@string/settings.max_artists_100</item>
-	<item>@string/settings.max_artists_200</item>
+	<item>@string/settings.max_artists_250</item>
 	<item>@string/settings.max_artists_500</item>
     </string-array>
 

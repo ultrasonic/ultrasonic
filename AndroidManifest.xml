@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:a="http://schemas.android.com/apk/res/android"
           package="net.sourceforge.subsonic.androidapp"
-          a:versionCode="62"
-          a:versionName="3.9.9.21" a:installLocation="auto">
+          a:versionCode="63"
+          a:versionName="3.9.9.22" a:installLocation="auto">
 
     <uses-permission a:name="android.permission.INTERNET"/>
     <uses-permission a:name="android.permission.READ_PHONE_STATE"/>
@@ -97,7 +97,7 @@
         </service>
 
         <receiver a:name="net.sourceforge.subsonic.androidapp.receiver.MediaButtonIntentReceiver">
-            <intent-filter a:priority="999">
+            <intent-filter a:priority="2147483647">
                 <action a:name="android.intent.action.MEDIA_BUTTON" />
             </intent-filter>
         </receiver>
