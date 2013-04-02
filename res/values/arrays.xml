@@ -99,7 +99,6 @@
 
     <string-array name="bufferLengthNames">    
 	<item>@string/settings.buffer_length_1</item>    
-	<item>@string/settings.buffer_length_2</item>        
 	<item>@string/settings.buffer_length_2</item>
 	<item>@string/settings.buffer_length_5</item>
 	<item>@string/settings.buffer_length_8</item>
@@ -132,96 +131,38 @@
 	<item>@string/settings.network_timeout_120000</item>
     </string-array>
     
-    <string-array name="maxAlbumsValues">
+    <string-array name="searchValues">
+	<item>1</item>        
+    <item>3</item>
 	<item>5</item>
 	<item>10</item>
+	<item>15</item>
 	<item>20</item>
+	<item>25</item>
 	<item>30</item>
 	<item>40</item>
 	<item>50</item>
-	<item>100</item>
-	<item>250</item>
-	<item>500</item>
-    </string-array>
-       
-    <string-array name="maxAlbumsNames">
-	<item>@string/settings.max_albums_5</item>
-	<item>@string/settings.max_albums_10</item>
-	<item>@string/settings.max_albums_20</item>
-	<item>@string/settings.max_albums_30</item>
-	<item>@string/settings.max_albums_40</item>
-	<item>@string/settings.max_albums_50</item>
-	<item>@string/settings.max_albums_100</item>
-	<item>@string/settings.max_albums_250</item>
-	<item>@string/settings.max_albums_500</item>
-    </string-array>
-    
-    <string-array name="maxSongsValues">
-	<item>5</item>
-	<item>10</item>
-	<item>25</item>
-	<item>50</item>
 	<item>75</item>
 	<item>100</item>
 	<item>250</item>
 	<item>500</item>
     </string-array>
        
-    <string-array name="maxSongsNames">
-	<item>@string/settings.max_songs_5</item>
-	<item>@string/settings.max_songs_10</item>
-	<item>@string/settings.max_songs_25</item>
-	<item>@string/settings.max_songs_50</item>
-	<item>@string/settings.max_songs_75</item>
-	<item>@string/settings.max_songs_100</item>
-	<item>@string/settings.max_songs_250</item>
-	<item>@string/settings.max_songs_500</item>
-    </string-array>
-    
-    <string-array name="maxArtistsValues">
-	<item>5</item>
-	<item>10</item>
-	<item>25</item>
-	<item>50</item>
-	<item>75</item>
-	<item>100</item>
-	<item>250</item>
-	<item>500</item>
-    </string-array>
-       
-    <string-array name="maxArtistsNames">
-	<item>@string/settings.max_artists_5</item>
-	<item>@string/settings.max_artists_10</item>
-	<item>@string/settings.max_artists_25</item>
-	<item>@string/settings.max_artists_50</item>
-	<item>@string/settings.max_artists_75</item>
-	<item>@string/settings.max_artists_100</item>
-	<item>@string/settings.max_artists_250</item>
-	<item>@string/settings.max_artists_500</item>
-    </string-array>
-    
-    <string-array name="defaultSearchValues">
-	<item>3</item>        
-	<item>5</item>
-	<item>10</item>
-	<item>25</item>
-	<item>50</item>
-	<item>75</item>
-	<item>100</item>
-	<item>250</item>
-	<item>500</item>
-    </string-array>
-       
-    <string-array name="defaultSearchNames">
-    <item>@string/settings.max_artists_3</item>
-	<item>@string/settings.max_artists_5</item>
-	<item>@string/settings.max_artists_10</item>
-	<item>@string/settings.max_artists_25</item>
-	<item>@string/settings.max_artists_50</item>
-	<item>@string/settings.max_artists_75</item>
-	<item>@string/settings.max_artists_100</item>
-	<item>@string/settings.max_artists_250</item>
-	<item>@string/settings.max_artists_500</item>
+    <string-array name="searchNames">
+    <item>@string/settings.search_1</item>
+    <item>@string/settings.search_3</item>
+	<item>@string/settings.search_5</item>
+	<item>@string/settings.search_10</item>
+	<item>@string/settings.search_15</item>
+	<item>@string/settings.search_20</item>
+	<item>@string/settings.search_25</item>
+	<item>@string/settings.search_30</item>
+	<item>@string/settings.search_40</item>
+	<item>@string/settings.search_50</item>
+	<item>@string/settings.search_75</item>
+	<item>@string/settings.search_100</item>
+	<item>@string/settings.search_250</item>
+	<item>@string/settings.search_500</item>
     </string-array>
 
 </resources>

@@ -84,11 +84,13 @@ public class FileUtil {
 
     public static Bitmap getAlbumArtBitmap(Context context, MusicDirectory.Entry entry, int size) {
         File albumArtFile = getAlbumArtFile(context, entry);
+        
         if (albumArtFile.exists()) {
             Bitmap bitmap = BitmapFactory.decodeFile(albumArtFile.getPath());
             Log.i("getAlbumArtBitmap", String.valueOf(size));
-            return bitmap == null ? null : Bitmap.createScaledBitmap(bitmap, size, size, true);
+            return bitmap == null ? null : Util.scaleBitmap(bitmap, size); 
         }
+        
         return null;
     }
 
@@ -107,6 +109,9 @@ public class FileUtil {
         } else {
             String artist = fileSystemSafe(entry.getArtist());
             String album = fileSystemSafe(entry.getAlbum());
+            if (album == "unnamed") {
+            	album = fileSystemSafe(entry.getTitle());
+            }
             dir = new File(getMusicDirectory(context).getPath() + "/" + artist + "/" + album);
         }
         return dir;

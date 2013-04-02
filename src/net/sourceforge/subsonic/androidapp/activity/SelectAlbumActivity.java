@@ -22,7 +22,6 @@ import android.app.ActionBar;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.Bundle;
 import android.util.Log;
@@ -48,6 +47,7 @@ import net.sourceforge.subsonic.androidapp.util.Util;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Random;
 
 public class SelectAlbumActivity extends SubsonicTabActivity {
 
@@ -66,6 +66,7 @@ public class SelectAlbumActivity extends SubsonicTabActivity {
     private boolean licenseValid;
     private boolean playAllButtonVisible;
     private MenuItem playAllButton;
+    private Random random = new Random();
 
     /**
      * Called when the activity is first created.
@@ -611,7 +612,9 @@ public class SelectAlbumActivity extends SubsonicTabActivity {
             	ActionBar actionBar = getActionBar();
             	
             	if (actionBar != null) {
-            		getImageLoader().setActionBarArtwork(selectButton, entries.get(0), actionBar);
+            		// Use random entry selection for artwork in list of tracks
+            		int artworkSelection = random.nextInt(entries.size());
+            		getImageLoader().setActionBarArtwork(selectButton, entries.get(artworkSelection), actionBar);
             	}
             	
                 entryList.addFooterView(footer);

@@ -21,11 +21,6 @@ package net.sourceforge.subsonic.androidapp.util;
 import android.app.ActionBar;
 import android.content.Context;
 import android.graphics.Bitmap;
-import android.graphics.Canvas;
-import android.graphics.LinearGradient;
-import android.graphics.Matrix;
-import android.graphics.Paint;
-import android.graphics.Shader;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.graphics.drawable.TransitionDrawable;
@@ -37,7 +32,6 @@ import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
 import net.sourceforge.subsonic.androidapp.R;
-import net.sourceforge.subsonic.androidapp.activity.DownloadActivity;
 import net.sourceforge.subsonic.androidapp.domain.MusicDirectory;
 import net.sourceforge.subsonic.androidapp.service.MusicService;
 import net.sourceforge.subsonic.androidapp.service.MusicServiceFactory;
@@ -82,20 +76,28 @@ public class ImageLoader implements Runnable {
     private void createLargeUnknownImage(Context context) {
         BitmapDrawable drawable = (BitmapDrawable) context.getResources().getDrawable(R.drawable.unknown_album_large);
         Log.i(TAG, "createLargeUnknownImage");
-        Bitmap bitmap = Bitmap.createScaledBitmap(drawable.getBitmap(), imageSizeLarge, imageSizeLarge, true);
+        Bitmap bitmap = Util.scaleBitmap(drawable.getBitmap(), imageSizeLarge);
 
         //bitmap = createReflection(bitmap);
         largeUnknownImage = Util.createDrawableFromBitmap(context, bitmap);
     }
 
     public void loadImage(View view, MusicDirectory.Entry entry, boolean large, boolean crossfade) {
-        if (entry == null || entry.getCoverArt() == null) {
+    	if (entry == null) {
+            setUnknownImage(view, large);
+            return;
+    	}
+    	
+    	String coverArt = entry.getCoverArt();
+    	
+        if (coverArt == null) {
             setUnknownImage(view, large);
             return;
         }
-
+        
         int size = large ? imageSizeLarge : imageSizeDefault;
-        Drawable drawable = cache.get(getKey(entry.getCoverArt(), size));
+        Drawable drawable = cache.get(getKey(coverArt, size));
+        
         if (drawable != null) {
             setImage(view, drawable, large);
             return;
@@ -104,6 +106,7 @@ public class ImageLoader implements Runnable {
         if (!large) {
             setUnknownImage(view, large);
         }
+        
         queue.offer(new Task(view, entry, size, large, large, crossfade));
     }
     

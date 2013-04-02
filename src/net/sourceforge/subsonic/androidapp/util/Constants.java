@@ -73,6 +73,7 @@ public final class Constants {
     public static final String PREFERENCES_KEY_MEDIA_BUTTONS = "mediaButtons";
     public static final String PREFERENCES_KEY_SCREEN_LIT_ON_DOWNLOAD = "screenLitOnDownload";
     public static final String PREFERENCES_KEY_SCROBBLE = "scrobble";
+    public static final String PREFERENCES_KEY_SERVER_SCALING = "serverScaling";
     public static final String PREFERENCES_KEY_REPEAT_MODE = "repeatMode";
     public static final String PREFERENCES_KEY_WIFI_REQUIRED_FOR_DOWNLOAD = "wifiRequiredForDownload";
     public static final String PREFERENCES_KEY_BUFFER_LENGTH = "bufferLength";

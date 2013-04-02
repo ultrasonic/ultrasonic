@@ -137,6 +137,14 @@ public class Util extends DownloadActivity {
         return prefs.getBoolean(Constants.PREFERENCES_KEY_SCROBBLE, false);
     }
     
+    public static boolean isServerScalingEnabled(Context context) {
+        if (isOffline(context)) {
+            return false;
+        }
+        SharedPreferences prefs = getPreferences(context);
+        return prefs.getBoolean(Constants.PREFERENCES_KEY_SERVER_SCALING, false);
+    }
+    
     public static boolean isNotificationEnabled(Context context) {
         SharedPreferences prefs = getPreferences(context);
         return prefs.getBoolean(Constants.PREFERENCES_KEY_SHOW_NOTIFICATION, false);
@@ -692,6 +700,17 @@ public class Util extends DownloadActivity {
         } catch (Throwable x) {
             return new BitmapDrawable(bitmap);
         }
+    }
+    
+    public static Bitmap scaleBitmap(Bitmap bitmap, int size) {
+    	// Try to keep correct aspect ratio of the original image, do not force a square
+		double aspectRatio = (double)bitmap.getHeight() / (double)bitmap.getWidth();
+		
+		// Assume the size given refers to the width of the image, so calculate the new height using
+		//	the previously determined aspect ratio
+		int newHeight = (int) Math.round(size * aspectRatio);
+		
+		return Bitmap.createScaledBitmap(bitmap, size, newHeight, true);
     }
 
     public static void registerMediaButtonEventReceiver(Context context) {

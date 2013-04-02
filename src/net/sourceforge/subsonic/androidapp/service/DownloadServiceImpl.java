@@ -47,6 +47,7 @@ import net.sourceforge.subsonic.androidapp.domain.RepeatMode;
 import net.sourceforge.subsonic.androidapp.provider.SubsonicAppWidgetProvider4x1;
 import net.sourceforge.subsonic.androidapp.receiver.MediaButtonIntentReceiver;
 import net.sourceforge.subsonic.androidapp.util.CancellableTask;
+import net.sourceforge.subsonic.androidapp.util.FileUtil;
 import net.sourceforge.subsonic.androidapp.util.LRUCache;
 import net.sourceforge.subsonic.androidapp.util.ShufflePlayBuffer;
 import net.sourceforge.subsonic.androidapp.util.SimpleServiceBinder;
@@ -796,10 +797,10 @@ public class DownloadServiceImpl extends Service implements DownloadService {
 					String title = artist + " - " + currentSong.getTitle();
 					Integer duration = currentSong.getDuration();
 
-					MusicService musicService = MusicServiceFactory.getMusicService(this);
 					DisplayMetrics metrics = this.getResources().getDisplayMetrics();
 					int size = Math.min(metrics.widthPixels, metrics.heightPixels);
-					Bitmap bitmap = musicService.getCoverArt(this, currentSong, size, true, null);
+					// Always get the album art from disk
+					Bitmap bitmap = FileUtil.getAlbumArtBitmap(this, currentSong, size);
 
 					// Update the remote controls
 					remoteControlClient
@@ -808,8 +809,14 @@ public class DownloadServiceImpl extends Service implements DownloadService {
 							.putString(MediaMetadataRetriever.METADATA_KEY_ARTIST, artist)
 							.putString(MediaMetadataRetriever.METADATA_KEY_ALBUM, album)
 							.putLong(MediaMetadataRetriever.METADATA_KEY_DURATION, duration)
-							.putBitmap(RemoteControlClient.MetadataEditor.BITMAP_KEY_ARTWORK, bitmap)
 							.apply();
+					
+					if (bitmap != null) {
+							remoteControlClient
+								.editMetadata(false)
+								.putBitmap(RemoteControlClient.MetadataEditor.BITMAP_KEY_ARTWORK, bitmap)
+								.apply();
+					}
 				}
 			}
         	catch (Exception e) {

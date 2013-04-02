@@ -258,7 +258,7 @@ public class SubsonicTabActivity extends Activity implements OnClickListener{
         }
     }
 
-    public boolean isDestroyed() {
+    public boolean getIsDestroyed() {
         return destroyed;
     }
 

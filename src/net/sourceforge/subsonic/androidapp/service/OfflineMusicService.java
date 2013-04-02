@@ -134,7 +134,7 @@ public class OfflineMusicService extends RESTMusicService {
             byte[] bytes = Util.toByteArray(in);
             Bitmap bitmap = BitmapFactory.decodeByteArray(bytes, 0, bytes.length);
             Log.i("getCoverArt", "getCoverArt");
-            return Bitmap.createScaledBitmap(bitmap, size, size, true);
+            return Util.scaleBitmap(bitmap, size);
         } finally {
             Util.close(in);
         }

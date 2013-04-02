@@ -448,52 +448,64 @@ public class RESTMusicService implements MusicService {
     }
 
     @Override
-    public Bitmap getCoverArt(Context context, MusicDirectory.Entry entry, int size, boolean saveToFile, ProgressListener progressListener) throws Exception {
+	public Bitmap getCoverArt(Context context, MusicDirectory.Entry entry, int size, boolean saveToFile, ProgressListener progressListener) throws Exception {
+		// Synchronize on the entry so that we don't download concurrently for
+		// the same song.
+		synchronized (entry) {
+			// Use cached file, if existing.
+			Bitmap bitmap = FileUtil.getAlbumArtBitmap(context, entry, size);
+			boolean serverScaling = Util.isServerScalingEnabled(context);
+			
+			if (bitmap == null) {
+				String url = Util.getRestUrl(context, "getCoverArt");
 
-        // Synchronize on the entry so that we don't download concurrently for the same song.
-        synchronized (entry) {
+				InputStream in = null;
+				try {
+					List<String> parameterNames;
+					List<Object> parameterValues;
+					
+					if (serverScaling) {
+						parameterNames = Arrays.asList("id", "size");
+						parameterValues = Arrays.<Object>asList(entry.getCoverArt(), size);
+					}
+					else {
+						parameterNames = Arrays.asList("id");
+						parameterValues = Arrays.<Object> asList(entry.getCoverArt());	
+					}
+					
+					HttpEntity entity = getEntityForURL(context, url, null, parameterNames, parameterValues, progressListener);
+					in = entity.getContent();
 
-            // Use cached file, if existing.
-            Bitmap bitmap = FileUtil.getAlbumArtBitmap(context, entry, size);
-            if (bitmap != null) {
-                return bitmap;
-            }
+					// If content type is XML, an error occurred. Get it.
+					String contentType = Util.getContentType(entity);
+					if (contentType != null && contentType.startsWith("text/xml")) {
+						new ErrorParser(context).parse(new InputStreamReader(in, Constants.UTF_8));
+						return null; // Never reached.
+					}
 
-            String url = Util.getRestUrl(context, "getCoverArt");
+					byte[] bytes = Util.toByteArray(in);
 
-            InputStream in = null;
-            try {
-                List<String> parameterNames = Arrays.asList("id", "size");
-                List<Object> parameterValues = Arrays.<Object>asList(entry.getCoverArt(), size);
-                HttpEntity entity = getEntityForURL(context, url, null, parameterNames, parameterValues, progressListener);
-                in = entity.getContent();
+					// If we aren't allowing server-side scaling, always save the file to disk because it will be unmodified
+					if (!serverScaling || saveToFile) {
+						OutputStream out = null;
+						try {
+							out = new FileOutputStream(FileUtil.getAlbumArtFile(context, entry));
+							out.write(bytes);
+						} finally {
+							Util.close(out);
+						}
+					}
 
-                // If content type is XML, an error occured.  Get it.
-                String contentType = Util.getContentType(entity);
-                if (contentType != null && contentType.startsWith("text/xml")) {
-                    new ErrorParser(context).parse(new InputStreamReader(in, Constants.UTF_8));
-                    return null; // Never reached.
-                }
-
-                byte[] bytes = Util.toByteArray(in);
-
-                if (saveToFile) {
-                    OutputStream out = null;
-                    try {
-                        out = new FileOutputStream(FileUtil.getAlbumArtFile(context, entry));
-                        out.write(bytes);
-                    } finally {
-                        Util.close(out);
-                    }
-                }
-
-                return BitmapFactory.decodeByteArray(bytes, 0, bytes.length);
-
-            } finally {
-                Util.close(in);
-            }
-        }
-    }
+					bitmap = BitmapFactory.decodeByteArray(bytes, 0, bytes.length);
+				} finally {
+					Util.close(in);
+				}
+			}
+			
+			// Return scaled bitmap
+			return Util.scaleBitmap(bitmap, size);
+		}
+	}
 
     @Override
     public HttpResponse getDownloadInputStream(Context context, MusicDirectory.Entry song, long offset, int maxBitrate, CancellableTask task) throws Exception {
