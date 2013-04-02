@@ -68,7 +68,9 @@ public class SubsonicTabActivity extends Activity implements OnClickListener{
     private View homeButton;
     private View musicButton;
     private View searchButton;
+    private View searchSeparator;
     private View playlistButton;
+    private View playlistSeparator;
     private View nowPlayingButton;
     
     //private boolean shortPress = false;
@@ -132,6 +134,8 @@ public class SubsonicTabActivity extends Activity implements OnClickListener{
             }
         });
 
+        searchSeparator = findViewById(R.id.button_bar_search_separator);
+        
         searchButton = findViewById(R.id.button_bar_search);
         searchButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -142,6 +146,8 @@ public class SubsonicTabActivity extends Activity implements OnClickListener{
             }
         });
 
+        playlistSeparator = findViewById(R.id.button_bar_playlists_separator);
+        
         playlistButton = findViewById(R.id.button_bar_playlists);
         playlistButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -265,7 +271,9 @@ public class SubsonicTabActivity extends Activity implements OnClickListener{
     private void updateButtonVisibility() {
         int visibility = Util.isOffline(this) ? View.GONE : View.VISIBLE;
         searchButton.setVisibility(visibility);
+        searchSeparator.setVisibility(visibility);
         playlistButton.setVisibility(visibility);
+        playlistSeparator.setVisibility(visibility);
     }
 
     public void setProgressVisible(boolean visible) {

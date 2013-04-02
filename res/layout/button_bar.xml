@@ -27,7 +27,7 @@
 			a:layout_height="match_parent" a:layout_weight="1"
 			a:background="@drawable/buttonbar_selector" a:contentDescription="@string/button_bar.search"
 			a:src="@drawable/ic_menu_search" />
-		<View a:layout_width="1dp" a:layout_height="fill_parent"
+		<View a:layout_width="1dp" a:id="@+id/button_bar_search_separator" a:layout_height="fill_parent"
 			a:layout_marginBottom="5dp" a:layout_marginTop="8dp" a:layout_weight="0.01"
 			a:background="@drawable/bg_separator" />
 
@@ -35,7 +35,7 @@
 			a:layout_width="0dp" a:layout_height="match_parent" a:layout_weight="1"
 			a:background="@drawable/buttonbar_selector" a:contentDescription="@string/button_bar.playlists"
 			a:src="@drawable/ic_menu_playlists" />
-		<View a:layout_width="1dp" a:layout_height="fill_parent"
+		<View a:layout_width="1dp" a:id="@+id/button_bar_playlists_separator" a:layout_height="fill_parent"
 			a:layout_marginBottom="5dp" a:layout_marginTop="8dp" a:layout_weight="0.01"
 			a:background="@drawable/bg_separator" />
 

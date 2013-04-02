@@ -167,6 +167,7 @@ public class MainActivity extends SubsonicTabActivity {
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
     	MenuInflater inflater = getMenuInflater();
+    	inflater.inflate(R.menu.main_offline, menu);
     	inflater.inflate(R.menu.main, menu);
     	super.onCreateOptionsMenu(menu);
     	
@@ -227,6 +228,11 @@ public class MainActivity extends SubsonicTabActivity {
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
+                
+        	case R.id.main_offline:
+        		setActiveServer(0);
+        		restart();
+                return true;
                 
             case R.id.main_shuffle:
             	Intent intent1 = new Intent(this, DownloadActivity.class);
