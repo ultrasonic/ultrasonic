@@ -1,4 +1,4 @@
-package net.sourceforge.subsonic.androidapp.service.parser;
+package com.thejoshwa.ultrasonic.androidapp.service.parser;
 
 /**
  * @author Sindre Mehus

@@ -16,7 +16,7 @@
 
  Copyright 2011 (C) Sindre Mehus
  */
-package net.sourceforge.subsonic.androidapp.view;
+package com.thejoshwa.ultrasonic.androidapp.view;
 
 import android.content.Context;
 import android.graphics.Canvas;
@@ -24,10 +24,10 @@ import android.graphics.Color;
 import android.graphics.Paint;
 import android.media.audiofx.Visualizer;
 import android.view.View;
-import net.sourceforge.subsonic.androidapp.audiofx.VisualizerController;
-import net.sourceforge.subsonic.androidapp.domain.PlayerState;
-import net.sourceforge.subsonic.androidapp.service.DownloadService;
-import net.sourceforge.subsonic.androidapp.service.DownloadServiceImpl;
+import com.thejoshwa.ultrasonic.androidapp.audiofx.VisualizerController;
+import com.thejoshwa.ultrasonic.androidapp.domain.PlayerState;
+import com.thejoshwa.ultrasonic.androidapp.service.DownloadService;
+import com.thejoshwa.ultrasonic.androidapp.service.DownloadServiceImpl;
 
 /**
  * A simple class that draws waveform data received from a

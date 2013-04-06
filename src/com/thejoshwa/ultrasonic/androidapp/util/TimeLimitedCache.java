@@ -16,7 +16,7 @@
 
  Copyright 2009 (C) Sindre Mehus
  */
-package net.sourceforge.subsonic.androidapp.util;
+package com.thejoshwa.ultrasonic.androidapp.util;
 
 import java.lang.ref.SoftReference;
 import java.util.concurrent.TimeUnit;

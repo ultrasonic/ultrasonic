@@ -16,7 +16,7 @@
 
  Copyright 2011 (C) Sindre Mehus
  */
-package net.sourceforge.subsonic.androidapp.audiofx;
+package com.thejoshwa.ultrasonic.androidapp.audiofx;
 
 import android.content.Context;
 import android.media.MediaPlayer;

@@ -16,7 +16,7 @@
 
  Copyright 2009 (C) Sindre Mehus
  */
-package net.sourceforge.subsonic.androidapp.service;
+package com.thejoshwa.ultrasonic.androidapp.service;
 
 import android.app.Notification;
 import android.app.PendingIntent;
@@ -37,28 +37,28 @@ import android.util.DisplayMetrics;
 import android.util.Log;
 import android.widget.RemoteViews;
 import android.widget.SeekBar;
-import net.sourceforge.subsonic.androidapp.R;
-import net.sourceforge.subsonic.androidapp.activity.DownloadActivity;
-import net.sourceforge.subsonic.androidapp.audiofx.EqualizerController;
-import net.sourceforge.subsonic.androidapp.audiofx.VisualizerController;
-import net.sourceforge.subsonic.androidapp.domain.MusicDirectory;
-import net.sourceforge.subsonic.androidapp.domain.PlayerState;
-import net.sourceforge.subsonic.androidapp.domain.RepeatMode;
-import net.sourceforge.subsonic.androidapp.provider.SubsonicAppWidgetProvider4x1;
-import net.sourceforge.subsonic.androidapp.receiver.MediaButtonIntentReceiver;
-import net.sourceforge.subsonic.androidapp.util.CancellableTask;
-import net.sourceforge.subsonic.androidapp.util.FileUtil;
-import net.sourceforge.subsonic.androidapp.util.LRUCache;
-import net.sourceforge.subsonic.androidapp.util.ShufflePlayBuffer;
-import net.sourceforge.subsonic.androidapp.util.SimpleServiceBinder;
-import net.sourceforge.subsonic.androidapp.util.StreamProxy;
-import net.sourceforge.subsonic.androidapp.util.Util;
+import com.thejoshwa.ultrasonic.androidapp.R;
+import com.thejoshwa.ultrasonic.androidapp.activity.DownloadActivity;
+import com.thejoshwa.ultrasonic.androidapp.audiofx.EqualizerController;
+import com.thejoshwa.ultrasonic.androidapp.audiofx.VisualizerController;
+import com.thejoshwa.ultrasonic.androidapp.domain.MusicDirectory;
+import com.thejoshwa.ultrasonic.androidapp.domain.PlayerState;
+import com.thejoshwa.ultrasonic.androidapp.domain.RepeatMode;
+import com.thejoshwa.ultrasonic.androidapp.provider.UltraSonicAppWidgetProvider4x1;
+import com.thejoshwa.ultrasonic.androidapp.receiver.MediaButtonIntentReceiver;
+import com.thejoshwa.ultrasonic.androidapp.util.CancellableTask;
+import com.thejoshwa.ultrasonic.androidapp.util.FileUtil;
+import com.thejoshwa.ultrasonic.androidapp.util.LRUCache;
+import com.thejoshwa.ultrasonic.androidapp.util.ShufflePlayBuffer;
+import com.thejoshwa.ultrasonic.androidapp.util.SimpleServiceBinder;
+import com.thejoshwa.ultrasonic.androidapp.util.StreamProxy;
+import com.thejoshwa.ultrasonic.androidapp.util.Util;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
-import static net.sourceforge.subsonic.androidapp.domain.PlayerState.*;
+import static com.thejoshwa.ultrasonic.androidapp.domain.PlayerState.*;
 
 /**
  * @author Sindre Mehus, Joshua Bahnsen
@@ -68,12 +68,12 @@ public class DownloadServiceImpl extends Service implements DownloadService {
 
     private static final String TAG = DownloadServiceImpl.class.getSimpleName();
 
-    public static final String CMD_PLAY = "net.sourceforge.subsonic.androidapp.CMD_PLAY";
-    public static final String CMD_TOGGLEPAUSE = "net.sourceforge.subsonic.androidapp.CMD_TOGGLEPAUSE";
-    public static final String CMD_PAUSE = "net.sourceforge.subsonic.androidapp.CMD_PAUSE";
-    public static final String CMD_STOP = "net.sourceforge.subsonic.androidapp.CMD_STOP";
-    public static final String CMD_PREVIOUS = "net.sourceforge.subsonic.androidapp.CMD_PREVIOUS";
-    public static final String CMD_NEXT = "net.sourceforge.subsonic.androidapp.CMD_NEXT";
+    public static final String CMD_PLAY = "com.thejoshwa.ultrasonic.androidapp.CMD_PLAY";
+    public static final String CMD_TOGGLEPAUSE = "com.thejoshwa.ultrasonic.androidapp.CMD_TOGGLEPAUSE";
+    public static final String CMD_PAUSE = "com.thejoshwa.ultrasonic.androidapp.CMD_PAUSE";
+    public static final String CMD_STOP = "com.thejoshwa.ultrasonic.androidapp.CMD_STOP";
+    public static final String CMD_PREVIOUS = "com.thejoshwa.ultrasonic.androidapp.CMD_PREVIOUS";
+    public static final String CMD_NEXT = "com.thejoshwa.ultrasonic.androidapp.CMD_NEXT";
 
     private final IBinder binder = new SimpleServiceBinder<DownloadService>(this);
     private MediaPlayer mediaPlayer;
@@ -86,7 +86,7 @@ public class DownloadServiceImpl extends Service implements DownloadService {
     private final List<DownloadFile> cleanupCandidates = new ArrayList<DownloadFile>();
     private final Scrobbler scrobbler = new Scrobbler();
     private final JukeboxService jukeboxService = new JukeboxService(this);
-    private Notification notification = new Notification(R.drawable.ic_stat_subsonic, null, System.currentTimeMillis()); 
+    private Notification notification = new Notification(R.drawable.ic_stat_ultrasonic, null, System.currentTimeMillis()); 
     		           
     private DownloadFile currentPlaying;
     private DownloadFile currentDownloading;
@@ -439,7 +439,7 @@ public class DownloadServiceImpl extends Service implements DownloadService {
         setRemoteControl();
 
         // Update widget
-        SubsonicAppWidgetProvider4x1.getInstance().notifyChange(this, this, playerState == PlayerState.STARTED);
+        UltraSonicAppWidgetProvider4x1.getInstance().notifyChange(this, this, playerState == PlayerState.STARTED);
         
         if (currentPlaying != null && showNotification) {
             Util.showPlayingNotification(this, this, handler, currentPlaying.getSong(), this.notification, this.playerState);
@@ -692,7 +692,7 @@ public class DownloadServiceImpl extends Service implements DownloadService {
         setRemoteControl();
         
         // Update widget
-        SubsonicAppWidgetProvider4x1.getInstance().notifyChange(this, this, playerState == PlayerState.STARTED);
+        UltraSonicAppWidgetProvider4x1.getInstance().notifyChange(this, this, playerState == PlayerState.STARTED);
         
        	if (show) {
        		Util.showPlayingNotification(this, this, handler, currentPlaying.getSong(), this.notification, this.playerState);
@@ -851,46 +851,8 @@ public class DownloadServiceImpl extends Service implements DownloadService {
 					
 					if (progressBar != null && song.getTranscodedContentType() == null && Util.getMaxBitrate(getApplicationContext()) == 0) {
 						secondaryProgress = (int) (((double)percent / (double)100) * progressBar.getMax());
-						DownloadActivity.getProgressBar().setSecondaryProgress(secondaryProgress);
+						progressBar.setSecondaryProgress(secondaryProgress);
 					}
-				}
-			});
-            
-            String url = file.getPath();
-            String playUrl = url;
-            
-            if (Util.isStreamProxyEnabled(this)) {
-                if (proxy == null) {
-                    proxy = new StreamProxy();
-                    proxy.start();
-                }
-                
-                proxy.setDownloadFile(downloadFile);
-                playUrl = String.format("http://127.0.0.1:%d/%s", proxy.getPort(), url);
-            }
-            
-            mediaPlayer.setDataSource(playUrl);
-            setPlayerState(PREPARING);
-            mediaPlayer.prepareAsync();
-            
-            mediaPlayer.setOnPreparedListener(new MediaPlayer.OnPreparedListener() {
-				@Override
-				public void onPrepared(MediaPlayer mp) {
-					setPlayerState(PREPARED);
-					
-					if (position != 0) {
-		                Log.i(TAG, "Restarting player from position " + position);
-		                mp.seekTo(position);
-		            }
-
-		            if (start) {
-		            	mp.start();
-		                setPlayerState(STARTED);
-		            } else {
-		                setPlayerState(STOPPED);
-		            }
-		            
-		            lifecycleSupport.serializeDownloadQueue();
 				}
 			});
             
@@ -935,11 +897,57 @@ public class DownloadServiceImpl extends Service implements DownloadService {
                     }
                 }
             });
+            
+            mediaPlayer.setOnPreparedListener(new MediaPlayer.OnPreparedListener() {
+				@Override
+				public void onPrepared(MediaPlayer mp) {
+					setPlayerState(PREPARED);
+					
+					SeekBar progressBar = DownloadActivity.getProgressBar();
+					
+					if (progressBar != null && downloadFile.isCompleteFileAvailable()) {
+						// Populate seek bar secondary progress if we have a complete file for consistency
+						DownloadActivity.getProgressBar().setSecondaryProgress(100 * progressBar.getMax());
+					}
+					
+					if (position != 0) {
+		                Log.i(TAG, "Restarting player from position " + position);
+		                mp.seekTo(position);
+		            }
+
+		            if (start) {
+		            	mp.start();
+		                setPlayerState(STARTED);
+		            } else {
+		                setPlayerState(STOPPED);
+		            }
+		            
+		            lifecycleSupport.serializeDownloadQueue();
+				}
+			});
+            
+            String url = file.getPath();
+            String playUrl = url;
+            
+            // Only use stream proxy if it is enabled and no complete file is available
+            if (Util.isStreamProxyEnabled(this) && !downloadFile.isCompleteFileAvailable()) {
+                if (proxy == null) {
+                    proxy = new StreamProxy();
+                    proxy.start();
+                }
+                
+                proxy.setDownloadFile(downloadFile);
+                playUrl = String.format("http://127.0.0.1:%d/%s", proxy.getPort(), url);
+            }
+            
+            mediaPlayer.setDataSource(playUrl);
+            setPlayerState(PREPARING);
+            mediaPlayer.prepareAsync();
         } catch (Exception x) {
             handleError(x);
         }
     }
-
+    
     private void handleError(Exception x) {
         Log.w(TAG, "Media player error: " + x, x);
         mediaPlayer.reset();

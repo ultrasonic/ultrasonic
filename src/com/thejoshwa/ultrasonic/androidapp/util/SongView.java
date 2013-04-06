@@ -16,7 +16,7 @@
 
  Copyright 2009 (C) Sindre Mehus
  */
-package net.sourceforge.subsonic.androidapp.util;
+package com.thejoshwa.ultrasonic.androidapp.util;
 
 import android.content.Context;
 import android.os.Handler;
@@ -28,13 +28,13 @@ import android.widget.CheckedTextView;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
-import net.sourceforge.subsonic.androidapp.R;
-import net.sourceforge.subsonic.androidapp.domain.MusicDirectory;
-import net.sourceforge.subsonic.androidapp.service.DownloadService;
-import net.sourceforge.subsonic.androidapp.service.DownloadServiceImpl;
-import net.sourceforge.subsonic.androidapp.service.DownloadFile;
-import net.sourceforge.subsonic.androidapp.service.MusicService;
-import net.sourceforge.subsonic.androidapp.service.MusicServiceFactory;
+import com.thejoshwa.ultrasonic.androidapp.R;
+import com.thejoshwa.ultrasonic.androidapp.domain.MusicDirectory;
+import com.thejoshwa.ultrasonic.androidapp.service.DownloadService;
+import com.thejoshwa.ultrasonic.androidapp.service.DownloadServiceImpl;
+import com.thejoshwa.ultrasonic.androidapp.service.DownloadFile;
+import com.thejoshwa.ultrasonic.androidapp.service.MusicService;
+import com.thejoshwa.ultrasonic.androidapp.service.MusicServiceFactory;
 
 import java.io.File;
 import java.util.WeakHashMap;

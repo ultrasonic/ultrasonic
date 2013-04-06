@@ -16,7 +16,7 @@
 
  Copyright 2009 (C) Sindre Mehus
  */
-package net.sourceforge.subsonic.androidapp.activity;
+package com.thejoshwa.ultrasonic.androidapp.activity;
 
 import android.app.ActionBar;
 import android.app.AlertDialog;
@@ -34,16 +34,16 @@ import android.view.View;
 import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.ListView;
-import net.sourceforge.subsonic.androidapp.R;
-import net.sourceforge.subsonic.androidapp.domain.MusicDirectory;
-import net.sourceforge.subsonic.androidapp.service.DownloadFile;
-import net.sourceforge.subsonic.androidapp.service.MusicService;
-import net.sourceforge.subsonic.androidapp.service.MusicServiceFactory;
-import net.sourceforge.subsonic.androidapp.util.Constants;
-import net.sourceforge.subsonic.androidapp.util.EntryAdapter;
-import net.sourceforge.subsonic.androidapp.util.Pair;
-import net.sourceforge.subsonic.androidapp.util.TabActivityBackgroundTask;
-import net.sourceforge.subsonic.androidapp.util.Util;
+import com.thejoshwa.ultrasonic.androidapp.R;
+import com.thejoshwa.ultrasonic.androidapp.domain.MusicDirectory;
+import com.thejoshwa.ultrasonic.androidapp.service.DownloadFile;
+import com.thejoshwa.ultrasonic.androidapp.service.MusicService;
+import com.thejoshwa.ultrasonic.androidapp.service.MusicServiceFactory;
+import com.thejoshwa.ultrasonic.androidapp.util.Constants;
+import com.thejoshwa.ultrasonic.androidapp.util.EntryAdapter;
+import com.thejoshwa.ultrasonic.androidapp.util.Pair;
+import com.thejoshwa.ultrasonic.androidapp.util.TabActivityBackgroundTask;
+import com.thejoshwa.ultrasonic.androidapp.util.Util;
 
 import java.util.ArrayList;
 import java.util.List;

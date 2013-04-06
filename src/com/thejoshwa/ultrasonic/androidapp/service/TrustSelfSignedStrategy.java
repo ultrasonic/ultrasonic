@@ -1,9 +1,9 @@
-package net.sourceforge.subsonic.androidapp.service;
+package com.thejoshwa.ultrasonic.androidapp.service;
 
 import java.security.cert.CertificateException;
 import java.security.cert.X509Certificate;
 
-import net.sourceforge.subsonic.androidapp.service.ssl.TrustStrategy;
+import com.thejoshwa.ultrasonic.androidapp.service.ssl.TrustStrategy;
 
 public class TrustSelfSignedStrategy implements TrustStrategy {
 

@@ -16,7 +16,7 @@
 
  Copyright 2009 (C) Sindre Mehus
  */
-package net.sourceforge.subsonic.androidapp.service;
+package com.thejoshwa.ultrasonic.androidapp.service;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -33,19 +33,19 @@ import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.util.Log;
-import net.sourceforge.subsonic.androidapp.domain.Artist;
-import net.sourceforge.subsonic.androidapp.domain.Indexes;
-import net.sourceforge.subsonic.androidapp.domain.JukeboxStatus;
-import net.sourceforge.subsonic.androidapp.domain.Lyrics;
-import net.sourceforge.subsonic.androidapp.domain.MusicDirectory;
-import net.sourceforge.subsonic.androidapp.domain.MusicFolder;
-import net.sourceforge.subsonic.androidapp.domain.Playlist;
-import net.sourceforge.subsonic.androidapp.domain.SearchCritera;
-import net.sourceforge.subsonic.androidapp.domain.SearchResult;
-import net.sourceforge.subsonic.androidapp.util.Constants;
-import net.sourceforge.subsonic.androidapp.util.FileUtil;
-import net.sourceforge.subsonic.androidapp.util.ProgressListener;
-import net.sourceforge.subsonic.androidapp.util.Util;
+import com.thejoshwa.ultrasonic.androidapp.domain.Artist;
+import com.thejoshwa.ultrasonic.androidapp.domain.Indexes;
+import com.thejoshwa.ultrasonic.androidapp.domain.JukeboxStatus;
+import com.thejoshwa.ultrasonic.androidapp.domain.Lyrics;
+import com.thejoshwa.ultrasonic.androidapp.domain.MusicDirectory;
+import com.thejoshwa.ultrasonic.androidapp.domain.MusicFolder;
+import com.thejoshwa.ultrasonic.androidapp.domain.Playlist;
+import com.thejoshwa.ultrasonic.androidapp.domain.SearchCritera;
+import com.thejoshwa.ultrasonic.androidapp.domain.SearchResult;
+import com.thejoshwa.ultrasonic.androidapp.util.Constants;
+import com.thejoshwa.ultrasonic.androidapp.util.FileUtil;
+import com.thejoshwa.ultrasonic.androidapp.util.ProgressListener;
+import com.thejoshwa.ultrasonic.androidapp.util.Util;
 
 /**
  * @author Sindre Mehus

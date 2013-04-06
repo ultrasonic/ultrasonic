@@ -16,7 +16,7 @@
 
  Copyright 2009 (C) Sindre Mehus
  */
-package net.sourceforge.subsonic.androidapp.activity;
+package com.thejoshwa.ultrasonic.androidapp.activity;
 
 import android.content.SharedPreferences;
 import android.os.Bundle;
@@ -28,17 +28,17 @@ import android.preference.PreferenceActivity;
 import android.preference.PreferenceScreen;
 import android.provider.SearchRecentSuggestions;
 import android.util.Log;
-import net.sourceforge.subsonic.androidapp.R;
-import net.sourceforge.subsonic.androidapp.provider.SearchSuggestionProvider;
-import net.sourceforge.subsonic.androidapp.service.DownloadService;
-import net.sourceforge.subsonic.androidapp.service.DownloadServiceImpl;
-import net.sourceforge.subsonic.androidapp.service.MusicService;
-import net.sourceforge.subsonic.androidapp.service.MusicServiceFactory;
-import net.sourceforge.subsonic.androidapp.util.Constants;
-import net.sourceforge.subsonic.androidapp.util.ErrorDialog;
-import net.sourceforge.subsonic.androidapp.util.FileUtil;
-import net.sourceforge.subsonic.androidapp.util.ModalBackgroundTask;
-import net.sourceforge.subsonic.androidapp.util.Util;
+import com.thejoshwa.ultrasonic.androidapp.R;
+import com.thejoshwa.ultrasonic.androidapp.provider.SearchSuggestionProvider;
+import com.thejoshwa.ultrasonic.androidapp.service.DownloadService;
+import com.thejoshwa.ultrasonic.androidapp.service.DownloadServiceImpl;
+import com.thejoshwa.ultrasonic.androidapp.service.MusicService;
+import com.thejoshwa.ultrasonic.androidapp.service.MusicServiceFactory;
+import com.thejoshwa.ultrasonic.androidapp.util.Constants;
+import com.thejoshwa.ultrasonic.androidapp.util.ErrorDialog;
+import com.thejoshwa.ultrasonic.androidapp.util.FileUtil;
+import com.thejoshwa.ultrasonic.androidapp.util.ModalBackgroundTask;
+import com.thejoshwa.ultrasonic.androidapp.util.Util;
 
 import java.io.File;
 import java.net.URL;
@@ -189,7 +189,7 @@ public class SettingsActivity extends PreferenceActivity implements SharedPrefer
     }
 
     private void setHideMedia(boolean hide) {
-        File nomediaDir = new File(FileUtil.getSubsonicDirectory(), ".nomedia");
+        File nomediaDir = new File(FileUtil.getUltraSonicDirectory(), ".nomedia");
         if (hide && !nomediaDir.exists()) {
             if (!nomediaDir.mkdir()) {
                 Log.w(TAG, "Failed to create " + nomediaDir);

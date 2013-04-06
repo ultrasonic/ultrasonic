@@ -16,7 +16,7 @@
 
  Copyright 2009 (C) Sindre Mehus
  */
-package net.sourceforge.subsonic.androidapp.service;
+package com.thejoshwa.ultrasonic.androidapp.service;
 
 import android.content.Context;
 import android.os.Handler;
@@ -26,11 +26,11 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.ProgressBar;
 import android.widget.Toast;
-import net.sourceforge.subsonic.androidapp.R;
-import net.sourceforge.subsonic.androidapp.domain.JukeboxStatus;
-import net.sourceforge.subsonic.androidapp.domain.PlayerState;
-import net.sourceforge.subsonic.androidapp.service.parser.SubsonicRESTException;
-import net.sourceforge.subsonic.androidapp.util.Util;
+import com.thejoshwa.ultrasonic.androidapp.R;
+import com.thejoshwa.ultrasonic.androidapp.domain.JukeboxStatus;
+import com.thejoshwa.ultrasonic.androidapp.domain.PlayerState;
+import com.thejoshwa.ultrasonic.androidapp.service.parser.SubsonicRESTException;
+import com.thejoshwa.ultrasonic.androidapp.util.Util;
 
 import java.util.ArrayList;
 import java.util.Iterator;

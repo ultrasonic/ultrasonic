@@ -74,7 +74,7 @@
 
 		</RelativeLayout>
 
-		<net.sourceforge.subsonic.androidapp.util.MyViewFlipper
+		<com.thejoshwa.ultrasonic.androidapp.util.MyViewFlipper
 			a:id="@+id/download_playlist_flipper" a:layout_width="wrap_content"
 			a:layout_height="fill_parent" a:layout_alignParentLeft="true"
 			a:layout_toLeftOf="@+id/download_control_layout">
@@ -95,7 +95,7 @@
 
 			<include layout="@layout/download_playlist" />
 
-		</net.sourceforge.subsonic.androidapp.util.MyViewFlipper>
+		</com.thejoshwa.ultrasonic.androidapp.util.MyViewFlipper>
 
 	</RelativeLayout>
 

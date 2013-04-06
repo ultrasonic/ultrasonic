@@ -16,7 +16,7 @@
 
  Copyright 2009 (C) Sindre Mehus
  */
-package net.sourceforge.subsonic.androidapp.service.parser;
+package com.thejoshwa.ultrasonic.androidapp.service.parser;
 
 import java.io.Reader;
 import java.util.List;
@@ -25,10 +25,10 @@ import java.util.ArrayList;
 import org.xmlpull.v1.XmlPullParser;
 
 import android.content.Context;
-import net.sourceforge.subsonic.androidapp.R;
-import net.sourceforge.subsonic.androidapp.domain.Artist;
-import net.sourceforge.subsonic.androidapp.domain.Indexes;
-import net.sourceforge.subsonic.androidapp.util.ProgressListener;
+import com.thejoshwa.ultrasonic.androidapp.R;
+import com.thejoshwa.ultrasonic.androidapp.domain.Artist;
+import com.thejoshwa.ultrasonic.androidapp.domain.Indexes;
+import com.thejoshwa.ultrasonic.androidapp.util.ProgressListener;
 import android.util.Log;
 
 /**

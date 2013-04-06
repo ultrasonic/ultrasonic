@@ -16,7 +16,7 @@
 
  Copyright 2009 (C) Sindre Mehus
  */
-package net.sourceforge.subsonic.androidapp.util;
+package com.thejoshwa.ultrasonic.androidapp.util;
 
 import android.app.Activity;
 import android.app.AlertDialog;
@@ -43,18 +43,18 @@ import android.view.Gravity;
 import android.view.KeyEvent;
 import android.widget.RemoteViews;
 import android.widget.Toast;
-import net.sourceforge.subsonic.androidapp.R;
-import net.sourceforge.subsonic.androidapp.activity.DownloadActivity;
-import net.sourceforge.subsonic.androidapp.activity.MainActivity;
-import net.sourceforge.subsonic.androidapp.domain.MusicDirectory;
-import net.sourceforge.subsonic.androidapp.domain.PlayerState;
-import net.sourceforge.subsonic.androidapp.domain.RepeatMode;
-import net.sourceforge.subsonic.androidapp.domain.SearchResult;
-import net.sourceforge.subsonic.androidapp.domain.Version;
-import net.sourceforge.subsonic.androidapp.domain.MusicDirectory.Entry;
-import net.sourceforge.subsonic.androidapp.provider.SubsonicAppWidgetProvider4x1;
-import net.sourceforge.subsonic.androidapp.receiver.MediaButtonIntentReceiver;
-import net.sourceforge.subsonic.androidapp.service.DownloadServiceImpl;
+import com.thejoshwa.ultrasonic.androidapp.R;
+import com.thejoshwa.ultrasonic.androidapp.activity.DownloadActivity;
+import com.thejoshwa.ultrasonic.androidapp.activity.MainActivity;
+import com.thejoshwa.ultrasonic.androidapp.domain.MusicDirectory;
+import com.thejoshwa.ultrasonic.androidapp.domain.PlayerState;
+import com.thejoshwa.ultrasonic.androidapp.domain.RepeatMode;
+import com.thejoshwa.ultrasonic.androidapp.domain.SearchResult;
+import com.thejoshwa.ultrasonic.androidapp.domain.Version;
+import com.thejoshwa.ultrasonic.androidapp.domain.MusicDirectory.Entry;
+import com.thejoshwa.ultrasonic.androidapp.provider.UltraSonicAppWidgetProvider4x1;
+import com.thejoshwa.ultrasonic.androidapp.receiver.MediaButtonIntentReceiver;
+import com.thejoshwa.ultrasonic.androidapp.service.DownloadServiceImpl;
 import org.apache.http.HttpEntity;
 
 import java.io.ByteArrayOutputStream;
@@ -91,8 +91,8 @@ public class Util extends DownloadActivity {
     private static DecimalFormat KILO_BYTE_LOCALIZED_FORMAT = null;
     private static DecimalFormat BYTE_LOCALIZED_FORMAT = null;
 
-    public static final String EVENT_META_CHANGED = "net.sourceforge.subsonic.androidapp.EVENT_META_CHANGED";
-    public static final String EVENT_PLAYSTATE_CHANGED = "net.sourceforge.subsonic.androidapp.EVENT_PLAYSTATE_CHANGED";
+    public static final String EVENT_META_CHANGED = "com.thejoshwa.ultrasonic.androidapp.EVENT_META_CHANGED";
+    public static final String EVENT_PLAYSTATE_CHANGED = "com.thejoshwa.ultrasonic.androidapp.EVENT_PLAYSTATE_CHANGED";
 
     private static final Map<Integer, Version> SERVER_REST_VERSIONS = new ConcurrentHashMap<Integer, Version>();
 

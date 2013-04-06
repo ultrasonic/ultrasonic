@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:a="http://schemas.android.com/apk/res/android"
-          package="net.sourceforge.subsonic.androidapp"
-          a:versionCode="65"
-          a:versionName="3.9.9.24" a:installLocation="auto">
+          package="com.thejoshwa.ultrasonic.androidapp"
+          a:versionCode="1"
+          a:versionName="1.0.0.25" a:installLocation="auto">
 
     <uses-permission a:name="android.permission.INTERNET"/>
     <uses-permission a:name="android.permission.READ_PHONE_STATE"/>
@@ -18,8 +18,8 @@
 
     <application a:label="@string/common.appname" a:icon="@drawable/ic_launcher" a:allowBackup="false">
 
-        <activity a:name="net.sourceforge.subsonic.androidapp.activity.MainActivity"
-                  a:label="Subsonic"
+        <activity a:name="com.thejoshwa.ultrasonic.androidapp.activity.MainActivity"
+                  a:label="UltraSonic"
                   a:configChanges="orientation|keyboardHidden"
                   a:launchMode="standard">
             <intent-filter>
@@ -28,48 +28,48 @@
             </intent-filter>
         </activity>
 
-        <activity a:name="net.sourceforge.subsonic.androidapp.activity.SelectArtistActivity"
+        <activity a:name="com.thejoshwa.ultrasonic.androidapp.activity.SelectArtistActivity"
                   a:configChanges="orientation|keyboardHidden"
                   a:launchMode="standard"/>
 
-        <activity a:name="net.sourceforge.subsonic.androidapp.activity.SelectAlbumActivity"
+        <activity a:name="com.thejoshwa.ultrasonic.androidapp.activity.SelectAlbumActivity"
                   a:configChanges="orientation|keyboardHidden"/>
 
-        <activity a:name="net.sourceforge.subsonic.androidapp.activity.SearchActivity"
+        <activity a:name="com.thejoshwa.ultrasonic.androidapp.activity.SearchActivity"
                   a:label="@string/search.label"
                   a:configChanges="orientation|keyboardHidden"
                   a:launchMode="singleTask"
                   />
 
-        <activity a:name="net.sourceforge.subsonic.androidapp.activity.SelectPlaylistActivity"
+        <activity a:name="com.thejoshwa.ultrasonic.androidapp.activity.SelectPlaylistActivity"
                   a:label="@string/playlist.label"
                   a:configChanges="orientation|keyboardHidden"
                   a:launchMode="standard"/>
 
-        <activity a:name="net.sourceforge.subsonic.androidapp.activity.DownloadActivity"
+        <activity a:name="com.thejoshwa.ultrasonic.androidapp.activity.DownloadActivity"
                   a:configChanges="keyboardHidden"
                   a:launchMode="singleTask"
                   a:theme="@android:style/Theme.NoTitleBar.Fullscreen"
                   />
         
-        <activity a:name="net.sourceforge.subsonic.androidapp.activity.SettingsActivity"
+        <activity a:name="com.thejoshwa.ultrasonic.androidapp.activity.SettingsActivity"
                   a:configChanges="orientation|keyboardHidden"
                   a:launchMode="singleTask"/>
 
-        <activity a:name="net.sourceforge.subsonic.androidapp.activity.HelpActivity"
+        <activity a:name="com.thejoshwa.ultrasonic.androidapp.activity.HelpActivity"
                   a:label="@string/help.label"
                   a:launchMode="singleTask"/>
 
-        <activity a:name="net.sourceforge.subsonic.androidapp.activity.LyricsActivity"
+        <activity a:name="com.thejoshwa.ultrasonic.androidapp.activity.LyricsActivity"
                   a:configChanges="orientation|keyboardHidden"
                   a:launchMode="singleTask"/>
 
-        <activity a:name="net.sourceforge.subsonic.androidapp.activity.EqualizerActivity"
+        <activity a:name="com.thejoshwa.ultrasonic.androidapp.activity.EqualizerActivity"
                   a:label="@string/equalizer.label"
                   a:configChanges="orientation|keyboardHidden"
                   a:launchMode="singleTask"/>
         
-        <activity a:name="net.sourceforge.subsonic.androidapp.activity.VoiceQueryReceiverActivity"
+        <activity a:name="com.thejoshwa.ultrasonic.androidapp.activity.VoiceQueryReceiverActivity"
                   a:launchMode="singleTask">
             <intent-filter>
                 <action a:name="android.media.action.MEDIA_PLAY_FROM_SEARCH" />
@@ -77,7 +77,7 @@
             </intent-filter>
         </activity>
 
-        <activity a:name="net.sourceforge.subsonic.androidapp.activity.QueryReceiverActivity"
+        <activity a:name="com.thejoshwa.ultrasonic.androidapp.activity.QueryReceiverActivity"
                   a:launchMode="singleTask">
             <intent-filter>
                 <action a:name="android.intent.action.SEARCH"/>
@@ -85,41 +85,41 @@
             <meta-data a:name="android.app.searchable" a:resource="@xml/searchable"/>
         </activity>
         
-        <service a:name="net.sourceforge.subsonic.androidapp.service.DownloadServiceImpl" a:label="Subsonic Download Service">
+        <service a:name="com.thejoshwa.ultrasonic.androidapp.service.DownloadServiceImpl" a:label="UltraSonic Download Service">
             <intent-filter>
-                <action a:name="net.sourceforge.subsonic.androidapp.CMD_TOGGLEPAUSE" />
-                <action a:name="net.sourceforge.subsonic.androidapp.CMD_PLAY" />
-                <action a:name="net.sourceforge.subsonic.androidapp.CMD_PAUSE" />
-                <action a:name="net.sourceforge.subsonic.androidapp.CMD_NEXT" />
-                <action a:name="net.sourceforge.subsonic.androidapp.CMD_PREVIOUS" />
-                <action a:name="net.sourceforge.subsonic.androidapp.CMD_STOP" />
+                <action a:name="com.thejoshwa.ultrasonic.androidapp.CMD_TOGGLEPAUSE" />
+                <action a:name="com.thejoshwa.ultrasonic.androidapp.CMD_PLAY" />
+                <action a:name="com.thejoshwa.ultrasonic.androidapp.CMD_PAUSE" />
+                <action a:name="com.thejoshwa.ultrasonic.androidapp.CMD_NEXT" />
+                <action a:name="com.thejoshwa.ultrasonic.androidapp.CMD_PREVIOUS" />
+                <action a:name="com.thejoshwa.ultrasonic.androidapp.CMD_STOP" />
             </intent-filter>
         </service>
 
-        <receiver a:name="net.sourceforge.subsonic.androidapp.receiver.MediaButtonIntentReceiver">
+        <receiver a:name="com.thejoshwa.ultrasonic.androidapp.receiver.MediaButtonIntentReceiver">
             <intent-filter a:priority="2147483647">
                 <action a:name="android.intent.action.MEDIA_BUTTON" />
             </intent-filter>
         </receiver>
 
-        <receiver a:name="net.sourceforge.subsonic.androidapp.receiver.BluetoothIntentReceiver">
+        <receiver a:name="com.thejoshwa.ultrasonic.androidapp.receiver.BluetoothIntentReceiver">
             <intent-filter>
                 <action a:name="android.bluetooth.a2dp.action.SINK_STATE_CHANGED"/>
             </intent-filter>
         </receiver>
 
-        <receiver a:name="net.sourceforge.subsonic.androidapp.provider.SubsonicAppWidgetProvider4x1" a:label="Subsonic (4x1)" >
+        <receiver a:name="com.thejoshwa.ultrasonic.androidapp.provider.UltraSonicAppWidgetProvider4x1" a:label="UltraSonic (4x1)" >
             <intent-filter>
                 <action a:name="android.appwidget.action.APPWIDGET_UPDATE"/>
             </intent-filter>
             <meta-data a:name="android.appwidget.provider" a:resource="@xml/appwidget_info_4x1"/>
         </receiver>
 
-        <provider a:name="net.sourceforge.subsonic.androidapp.provider.SearchSuggestionProvider"
-                  a:authorities="net.sourceforge.subsonic.androidapp.provider.SearchSuggestionProvider"/>
+        <provider a:name="com.thejoshwa.ultrasonic.androidapp.provider.SearchSuggestionProvider"
+                  a:authorities="com.thejoshwa.ultrasonic.androidapp.provider.SearchSuggestionProvider"/>
 
         <meta-data a:name="android.app.default_searchable"
-                   a:value="net.sourceforge.subsonic.androidapp.activity.QueryReceiverActivity"/>
+                   a:value="com.thejoshwa.ultrasonic.androidapp.activity.QueryReceiverActivity"/>
 
     </application>
 

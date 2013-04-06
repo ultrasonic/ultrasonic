@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<net.sourceforge.subsonic.androidapp.util.MyViewFlipper
+<com.thejoshwa.ultrasonic.androidapp.util.MyViewFlipper
         xmlns:a="http://schemas.android.com/apk/res/android"
         a:id="@+id/download_button_bar_flipper"
         a:layout_width="fill_parent"
@@ -60,7 +60,7 @@
 
     <include layout="@layout/button_bar"/>
 
-</net.sourceforge.subsonic.androidapp.util.MyViewFlipper>
+</com.thejoshwa.ultrasonic.androidapp.util.MyViewFlipper>
 
 
 

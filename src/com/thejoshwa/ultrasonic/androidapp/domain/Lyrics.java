@@ -16,7 +16,7 @@
 
  Copyright 2010 (C) Sindre Mehus
  */
-package net.sourceforge.subsonic.androidapp.domain;
+package com.thejoshwa.ultrasonic.androidapp.domain;
 
 /**
  * Song lyrics.

@@ -16,9 +16,9 @@
 
  Copyright 2009 (C) Sindre Mehus
  */
-package net.sourceforge.subsonic.androidapp.service.parser;
+package com.thejoshwa.ultrasonic.androidapp.service.parser;
 
-import net.sourceforge.subsonic.androidapp.domain.Version;
+import com.thejoshwa.ultrasonic.androidapp.domain.Version;
 
 import java.io.BufferedReader;
 import java.io.Reader;

@@ -17,7 +17,7 @@
  Copyright 2009 (C) Sindre Mehus
  */
 
-package net.sourceforge.subsonic.androidapp.activity;
+package com.thejoshwa.ultrasonic.androidapp.activity;
 
 import android.app.Activity;
 import android.content.pm.PackageManager.NameNotFoundException;
@@ -29,8 +29,8 @@ import android.view.Window;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
 import android.widget.Button;
-import net.sourceforge.subsonic.androidapp.R;
-import net.sourceforge.subsonic.androidapp.util.Util;
+import com.thejoshwa.ultrasonic.androidapp.R;
+import com.thejoshwa.ultrasonic.androidapp.util.Util;
 
 /**
  * An HTML-based help screen with Back and Done buttons at the bottom.

@@ -16,7 +16,7 @@
 
  Copyright 2010 (C) Sindre Mehus
  */
-package net.sourceforge.subsonic.androidapp.provider;
+package com.thejoshwa.ultrasonic.androidapp.provider;
 
 import android.content.SearchRecentSuggestionsProvider;
 

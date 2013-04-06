@@ -1,6 +1,6 @@
-package net.sourceforge.subsonic.androidapp.util;
+package com.thejoshwa.ultrasonic.androidapp.util;
 
-import net.sourceforge.subsonic.androidapp.activity.SubsonicTabActivity;
+import com.thejoshwa.ultrasonic.androidapp.activity.SubsonicTabActivity;
 
 /**
  * @author Sindre Mehus

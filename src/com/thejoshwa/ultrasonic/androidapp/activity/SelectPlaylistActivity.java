@@ -17,7 +17,7 @@
  Copyright 2009 (C) Sindre Mehus
  */
 
-package net.sourceforge.subsonic.androidapp.activity;
+package com.thejoshwa.ultrasonic.androidapp.activity;
 
 import android.content.Intent;
 import android.os.Bundle;
@@ -30,14 +30,14 @@ import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ImageButton;
 import android.widget.ListView;
-import net.sourceforge.subsonic.androidapp.R;
-import net.sourceforge.subsonic.androidapp.domain.Playlist;
-import net.sourceforge.subsonic.androidapp.service.MusicServiceFactory;
-import net.sourceforge.subsonic.androidapp.service.MusicService;
-import net.sourceforge.subsonic.androidapp.util.BackgroundTask;
-import net.sourceforge.subsonic.androidapp.util.Constants;
-import net.sourceforge.subsonic.androidapp.util.TabActivityBackgroundTask;
-import net.sourceforge.subsonic.androidapp.util.Util;
+import com.thejoshwa.ultrasonic.androidapp.R;
+import com.thejoshwa.ultrasonic.androidapp.domain.Playlist;
+import com.thejoshwa.ultrasonic.androidapp.service.MusicServiceFactory;
+import com.thejoshwa.ultrasonic.androidapp.service.MusicService;
+import com.thejoshwa.ultrasonic.androidapp.util.BackgroundTask;
+import com.thejoshwa.ultrasonic.androidapp.util.Constants;
+import com.thejoshwa.ultrasonic.androidapp.util.TabActivityBackgroundTask;
+import com.thejoshwa.ultrasonic.androidapp.util.Util;
 
 import java.util.List;
 

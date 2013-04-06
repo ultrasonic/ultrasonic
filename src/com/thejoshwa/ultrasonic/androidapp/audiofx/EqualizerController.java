@@ -16,7 +16,7 @@
 
  Copyright 2011 (C) Sindre Mehus
  */
-package net.sourceforge.subsonic.androidapp.audiofx;
+package com.thejoshwa.ultrasonic.androidapp.audiofx;
 
 import java.io.Serializable;
 
@@ -24,7 +24,7 @@ import android.content.Context;
 import android.media.MediaPlayer;
 import android.media.audiofx.Equalizer;
 import android.util.Log;
-import net.sourceforge.subsonic.androidapp.util.FileUtil;
+import com.thejoshwa.ultrasonic.androidapp.util.FileUtil;
 
 /**
  * Backward-compatible wrapper for {@link Equalizer}, which is API Level 9.

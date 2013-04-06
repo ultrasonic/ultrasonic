@@ -16,15 +16,15 @@
 
  Copyright 2009 (C) Sindre Mehus
  */
-package net.sourceforge.subsonic.androidapp.service;
+package com.thejoshwa.ultrasonic.androidapp.service;
 
 import java.util.List;
 
-import net.sourceforge.subsonic.androidapp.audiofx.EqualizerController;
-import net.sourceforge.subsonic.androidapp.audiofx.VisualizerController;
-import net.sourceforge.subsonic.androidapp.domain.MusicDirectory;
-import net.sourceforge.subsonic.androidapp.domain.PlayerState;
-import net.sourceforge.subsonic.androidapp.domain.RepeatMode;
+import com.thejoshwa.ultrasonic.androidapp.audiofx.EqualizerController;
+import com.thejoshwa.ultrasonic.androidapp.audiofx.VisualizerController;
+import com.thejoshwa.ultrasonic.androidapp.domain.MusicDirectory;
+import com.thejoshwa.ultrasonic.androidapp.domain.PlayerState;
+import com.thejoshwa.ultrasonic.androidapp.domain.RepeatMode;
 
 /**
  * @author Sindre Mehus

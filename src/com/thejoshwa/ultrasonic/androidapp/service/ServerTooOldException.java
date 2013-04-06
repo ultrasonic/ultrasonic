@@ -16,9 +16,9 @@
 
  Copyright 2009 (C) Sindre Mehus
  */
-package net.sourceforge.subsonic.androidapp.service;
+package com.thejoshwa.ultrasonic.androidapp.service;
 
-import net.sourceforge.subsonic.androidapp.domain.Version;
+import com.thejoshwa.ultrasonic.androidapp.domain.Version;
 
 /**
  * Thrown if the REST API version implemented by the server is too old.

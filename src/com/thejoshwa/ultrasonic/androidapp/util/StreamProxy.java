@@ -1,4 +1,4 @@
-package net.sourceforge.subsonic.androidapp.util;
+package com.thejoshwa.ultrasonic.androidapp.util;
 
 import java.io.BufferedOutputStream;
 import java.io.BufferedReader;
@@ -22,8 +22,8 @@ import org.apache.http.Header;
 import org.apache.http.HttpRequest;
 import org.apache.http.message.BasicHttpRequest;
 
-import net.sourceforge.subsonic.androidapp.service.DownloadFile;
-import net.sourceforge.subsonic.androidapp.service.DownloadService;
+import com.thejoshwa.ultrasonic.androidapp.service.DownloadFile;
+import com.thejoshwa.ultrasonic.androidapp.service.DownloadService;
 import android.os.AsyncTask;
 import android.os.Looper;
 import android.util.Log;

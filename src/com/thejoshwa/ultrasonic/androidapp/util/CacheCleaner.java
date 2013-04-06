@@ -1,4 +1,4 @@
-package net.sourceforge.subsonic.androidapp.util;
+package com.thejoshwa.ultrasonic.androidapp.util;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -14,8 +14,8 @@ import java.util.Set;
 import android.content.Context;
 import android.util.Log;
 import android.os.StatFs;
-import net.sourceforge.subsonic.androidapp.service.DownloadFile;
-import net.sourceforge.subsonic.androidapp.service.DownloadService;
+import com.thejoshwa.ultrasonic.androidapp.service.DownloadFile;
+import com.thejoshwa.ultrasonic.androidapp.service.DownloadService;
 
 /**
  * @author Sindre Mehus
@@ -88,9 +88,9 @@ public class CacheCleaner {
 
         long cacheSizeBytes = Util.getCacheSizeMB(context) * 1024L * 1024L;
 
-        long bytesUsedBySubsonic = 0L;
+        long bytesUsedByUltraSonic = 0L;
         for (File file : files) {
-            bytesUsedBySubsonic += file.length();
+            bytesUsedByUltraSonic += file.length();
         }
 
         long bytesToDelete = 0;
@@ -104,13 +104,13 @@ public class CacheCleaner {
             long bytesUsedFs = bytesTotalFs - bytesAvailableFs;
             long minFsAvailability = Math.round(MAX_FILE_SYSTEM_USAGE * (double) bytesTotalFs);
 
-            long bytesToDeleteCacheLimit = Math.max(bytesUsedBySubsonic - cacheSizeBytes, 0L);
+            long bytesToDeleteCacheLimit = Math.max(bytesUsedByUltraSonic - cacheSizeBytes, 0L);
             long bytesToDeleteFsLimit = Math.max(bytesUsedFs - minFsAvailability, 0L);
             bytesToDelete = Math.max(bytesToDeleteCacheLimit, bytesToDeleteFsLimit);
 
             Log.i(TAG, "File system       : " + Util.formatBytes(bytesAvailableFs) + " of " + Util.formatBytes(bytesTotalFs) + " available");
             Log.i(TAG, "Cache limit       : " + Util.formatBytes(cacheSizeBytes));
-            Log.i(TAG, "Cache size before : " + Util.formatBytes(bytesUsedBySubsonic));
+            Log.i(TAG, "Cache size before : " + Util.formatBytes(bytesUsedByUltraSonic));
             Log.i(TAG, "Minimum to delete : " + Util.formatBytes(bytesToDelete));
         } catch (Exception x) {
         	//
@@ -133,7 +133,7 @@ public class CacheCleaner {
         }
 
         Log.i(TAG, "Deleted           : " + Util.formatBytes(bytesDeleted));
-        Log.i(TAG, "Cache size after  : " + Util.formatBytes(bytesUsedBySubsonic - bytesDeleted));
+        Log.i(TAG, "Cache size after  : " + Util.formatBytes(bytesUsedByUltraSonic - bytesDeleted));
     }
 
     private void findCandidatesForDeletion(File file, List<File> files, List<File> dirs) {

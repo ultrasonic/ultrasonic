@@ -16,10 +16,10 @@
 
  Copyright 2009 (C) Sindre Mehus
  */
-package net.sourceforge.subsonic.androidapp.service.parser;
+package com.thejoshwa.ultrasonic.androidapp.service.parser;
 
 import android.content.Context;
-import net.sourceforge.subsonic.androidapp.domain.MusicDirectory;
+import com.thejoshwa.ultrasonic.androidapp.domain.MusicDirectory;
 
 /**
  * @author Sindre Mehus

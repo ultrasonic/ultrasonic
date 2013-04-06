@@ -16,7 +16,7 @@
 
  Copyright 2009 (C) Sindre Mehus
  */
-package net.sourceforge.subsonic.androidapp.domain;
+package com.thejoshwa.ultrasonic.androidapp.domain;
 
 /**
  * Represents a top level directory in which music or other media is stored.

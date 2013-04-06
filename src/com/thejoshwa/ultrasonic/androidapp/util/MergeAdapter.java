@@ -13,7 +13,7 @@
  limitations under the License.
  */
 
-package net.sourceforge.subsonic.androidapp.util;
+package com.thejoshwa.ultrasonic.androidapp.util;
 
 import android.database.DataSetObserver;
 import android.view.View;

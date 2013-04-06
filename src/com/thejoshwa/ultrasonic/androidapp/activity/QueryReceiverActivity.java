@@ -17,16 +17,16 @@
  Copyright 2009 (C) Sindre Mehus
  */
 
-package net.sourceforge.subsonic.androidapp.activity;
+package com.thejoshwa.ultrasonic.androidapp.activity;
 
 import android.app.Activity;
 import android.app.SearchManager;
 import android.content.Intent;
 import android.os.Bundle;
 import android.provider.SearchRecentSuggestions;
-import net.sourceforge.subsonic.androidapp.util.Constants;
-import net.sourceforge.subsonic.androidapp.util.Util;
-import net.sourceforge.subsonic.androidapp.provider.SearchSuggestionProvider;
+import com.thejoshwa.ultrasonic.androidapp.util.Constants;
+import com.thejoshwa.ultrasonic.androidapp.util.Util;
+import com.thejoshwa.ultrasonic.androidapp.provider.SearchSuggestionProvider;
 
 /**
  * Receives search queries and forwards to the SelectAlbumActivity.

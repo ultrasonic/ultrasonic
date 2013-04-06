@@ -5,24 +5,23 @@
     <PreferenceCategory a:title="@string/settings.servers_title" >
         <PreferenceScreen a:key="server1" >
             <EditTextPreference
-                a:defaultValue="Subsonic demo"
+                a:defaultValue="@string/settings.server_unused1"
                 a:key="serverName1"
                 a:title="@string/settings.server_name" />
             <EditTextPreference
-                a:defaultValue="http://demo.subsonic.org"
+                a:defaultValue="http://yourhost"
                 a:inputType="textUri"
                 a:key="serverUrl1"
                 a:title="@string/settings.server_address" />
             <EditTextPreference
-                a:defaultValue="android-guest"
                 a:key="username1"
                 a:title="@string/settings.server_username" />
             <EditTextPreference
-                a:defaultValue="guest"
                 a:key="password1"
                 a:password="true"
                 a:summary="****"
                 a:title="@string/settings.server_password" />
+
             <Preference
                 a:key="testConnection1"
                 a:persistent="false"
@@ -30,7 +29,7 @@
         </PreferenceScreen>
         <PreferenceScreen a:key="server2" >
             <EditTextPreference
-                a:defaultValue="@string/settings.server_unused1"
+                a:defaultValue="@string/settings.server_unused2"
                 a:key="serverName2"
                 a:title="@string/settings.server_name" />
             <EditTextPreference
@@ -46,6 +45,7 @@
                 a:password="true"
                 a:summary="****"
                 a:title="@string/settings.server_password" />
+
             <Preference
                 a:key="testConnection2"
                 a:persistent="false"
@@ -53,7 +53,7 @@
         </PreferenceScreen>
         <PreferenceScreen a:key="server3" >
             <EditTextPreference
-                a:defaultValue="@string/settings.server_unused2"
+                a:defaultValue="@string/settings.server_unused3"
                 a:key="serverName3"
                 a:title="@string/settings.server_name" />
             <EditTextPreference
@@ -69,6 +69,7 @@
                 a:password="true"
                 a:summary="****"
                 a:title="@string/settings.server_password" />
+
             <Preference
                 a:key="testConnection3"
                 a:persistent="false"
@@ -96,11 +97,13 @@
             a:entryValues="@array/maxBitrateValues"
             a:key="maxBitrateMobile"
             a:title="@string/settings.max_bitrate_mobile" />
+
         <CheckBoxPreference
             a:defaultValue="false"
             a:key="wifiRequiredForDownload"
             a:summary="@string/settings.wifi_required_summary"
             a:title="@string/settings.wifi_required_title" />
+
         <ListPreference
             a:defaultValue="5"
             a:entries="@array/bufferLengthNames"
@@ -121,9 +124,11 @@
             a:entryValues="@array/cacheSizeValues"
             a:key="cacheSize"
             a:title="@string/settings.cache_size" />
+
         <EditTextPreference
             a:key="cacheLocation"
             a:title="@string/settings.cache_location" />
+
         <ListPreference
             a:defaultValue="3"
             a:entries="@array/preloadCountNames"
@@ -168,6 +173,7 @@
             a:entryValues="@array/searchValues"
             a:key="maxSongs"
             a:title="@string/settings.max_songs" />
+
         <Preference
             a:key="clearSearchHistory"
             a:persistent="false"
@@ -195,7 +201,7 @@
             a:summary="@string/settings.show_lockscreen_controls_summary"
             a:title="@string/settings.show_lockscreen_controls" />
         <CheckBoxPreference
-            a:defaultValue="false"
+            a:defaultValue="true"
             a:key="useStreamProxy"
             a:summary="@string/settings.use_stream_proxy_summary"
             a:title="@string/settings.use_stream_proxy" />

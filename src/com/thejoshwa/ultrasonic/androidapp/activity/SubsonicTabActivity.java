@@ -16,7 +16,7 @@
 
  Copyright 2009 (C) Sindre Mehus
  */
-package net.sourceforge.subsonic.androidapp.activity;
+package com.thejoshwa.ultrasonic.androidapp.activity;
 
 import java.io.File;
 import java.io.PrintWriter;
@@ -43,16 +43,16 @@ import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.Window;
 import android.widget.TextView;
-import net.sourceforge.subsonic.androidapp.R;
-import net.sourceforge.subsonic.androidapp.domain.MusicDirectory;
-import net.sourceforge.subsonic.androidapp.service.DownloadService;
-import net.sourceforge.subsonic.androidapp.service.DownloadServiceImpl;
-import net.sourceforge.subsonic.androidapp.service.MusicService;
-import net.sourceforge.subsonic.androidapp.service.MusicServiceFactory;
-import net.sourceforge.subsonic.androidapp.util.Constants;
-import net.sourceforge.subsonic.androidapp.util.ImageLoader;
-import net.sourceforge.subsonic.androidapp.util.ModalBackgroundTask;
-import net.sourceforge.subsonic.androidapp.util.Util;
+import com.thejoshwa.ultrasonic.androidapp.R;
+import com.thejoshwa.ultrasonic.androidapp.domain.MusicDirectory;
+import com.thejoshwa.ultrasonic.androidapp.service.DownloadService;
+import com.thejoshwa.ultrasonic.androidapp.service.DownloadServiceImpl;
+import com.thejoshwa.ultrasonic.androidapp.service.MusicService;
+import com.thejoshwa.ultrasonic.androidapp.service.MusicServiceFactory;
+import com.thejoshwa.ultrasonic.androidapp.util.Constants;
+import com.thejoshwa.ultrasonic.androidapp.util.ImageLoader;
+import com.thejoshwa.ultrasonic.androidapp.util.ModalBackgroundTask;
+import com.thejoshwa.ultrasonic.androidapp.util.Util;
 
 /**
  * @author Sindre Mehus
@@ -392,8 +392,8 @@ public class SubsonicTabActivity extends Activity implements OnClickListener{
             PrintWriter printWriter = null;
             try {
 
-                PackageInfo packageInfo = context.getPackageManager().getPackageInfo("net.sourceforge.subsonic.androidapp", 0);
-                file = new File(Environment.getExternalStorageDirectory(), "subsonic-stacktrace.txt");
+                PackageInfo packageInfo = context.getPackageManager().getPackageInfo("com.thejoshwa.ultrasonic.androidapp", 0);
+                file = new File(Environment.getExternalStorageDirectory(), "ultrasonic-stacktrace.txt");
                 printWriter = new PrintWriter(file);
                 printWriter.println("Android API level: " + Build.VERSION.SDK_INT);
                 printWriter.println("Subsonic version name: " + packageInfo.versionName);

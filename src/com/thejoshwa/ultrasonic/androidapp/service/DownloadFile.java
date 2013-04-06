@@ -16,7 +16,7 @@
 
  Copyright 2009 (C) Sindre Mehus
  */
-package net.sourceforge.subsonic.androidapp.service;
+package com.thejoshwa.ultrasonic.androidapp.service;
 
 import java.io.File;
 import java.io.FileOutputStream;
@@ -28,11 +28,11 @@ import android.content.Context;
 import android.os.PowerManager;
 import android.util.DisplayMetrics;
 import android.util.Log;
-import net.sourceforge.subsonic.androidapp.domain.MusicDirectory;
-import net.sourceforge.subsonic.androidapp.util.CancellableTask;
-import net.sourceforge.subsonic.androidapp.util.FileUtil;
-import net.sourceforge.subsonic.androidapp.util.Util;
-import net.sourceforge.subsonic.androidapp.util.CacheCleaner;
+import com.thejoshwa.ultrasonic.androidapp.domain.MusicDirectory;
+import com.thejoshwa.ultrasonic.androidapp.util.CancellableTask;
+import com.thejoshwa.ultrasonic.androidapp.util.FileUtil;
+import com.thejoshwa.ultrasonic.androidapp.util.Util;
+import com.thejoshwa.ultrasonic.androidapp.util.CacheCleaner;
 
 import org.apache.http.HttpResponse;
 import org.apache.http.HttpStatus;

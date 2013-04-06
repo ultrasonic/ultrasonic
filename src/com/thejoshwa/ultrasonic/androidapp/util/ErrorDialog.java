@@ -16,12 +16,12 @@
 
  Copyright 2009 (C) Sindre Mehus
  */
-package net.sourceforge.subsonic.androidapp.util;
+package com.thejoshwa.ultrasonic.androidapp.util;
 
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
-import net.sourceforge.subsonic.androidapp.R;
+import com.thejoshwa.ultrasonic.androidapp.R;
 
 /**
  * @author Sindre Mehus

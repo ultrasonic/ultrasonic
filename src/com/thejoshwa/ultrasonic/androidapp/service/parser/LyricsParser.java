@@ -16,12 +16,12 @@
 
  Copyright 2010 (C) Sindre Mehus
  */
-package net.sourceforge.subsonic.androidapp.service.parser;
+package com.thejoshwa.ultrasonic.androidapp.service.parser;
 
 import android.content.Context;
-import net.sourceforge.subsonic.androidapp.R;
-import net.sourceforge.subsonic.androidapp.domain.Lyrics;
-import net.sourceforge.subsonic.androidapp.util.ProgressListener;
+import com.thejoshwa.ultrasonic.androidapp.R;
+import com.thejoshwa.ultrasonic.androidapp.domain.Lyrics;
+import com.thejoshwa.ultrasonic.androidapp.util.ProgressListener;
 import org.xmlpull.v1.XmlPullParser;
 
 import java.io.Reader;

@@ -16,14 +16,14 @@
 
  Copyright 2010 (C) Sindre Mehus
  */
-package net.sourceforge.subsonic.androidapp.receiver;
+package com.thejoshwa.ultrasonic.androidapp.receiver;
 
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.util.Log;
-import net.sourceforge.subsonic.androidapp.service.DownloadServiceImpl;
-import net.sourceforge.subsonic.androidapp.util.Util;
+import com.thejoshwa.ultrasonic.androidapp.service.DownloadServiceImpl;
+import com.thejoshwa.ultrasonic.androidapp.util.Util;
 
 /**
  * Request media button focus when connected to Bluetooth A2DP.

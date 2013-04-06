@@ -16,7 +16,7 @@
 
  Copyright 2009 (C) Sindre Mehus
  */
-package net.sourceforge.subsonic.androidapp.service;
+package com.thejoshwa.ultrasonic.androidapp.service;
 
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -69,38 +69,38 @@ import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.util.Log;
 import android.util.Xml;
-import net.sourceforge.subsonic.androidapp.R;
-import net.sourceforge.subsonic.androidapp.domain.Indexes;
-import net.sourceforge.subsonic.androidapp.domain.JukeboxStatus;
-import net.sourceforge.subsonic.androidapp.domain.Lyrics;
-import net.sourceforge.subsonic.androidapp.domain.MusicDirectory;
-import net.sourceforge.subsonic.androidapp.domain.MusicFolder;
-import net.sourceforge.subsonic.androidapp.domain.Playlist;
-import net.sourceforge.subsonic.androidapp.domain.SearchCritera;
-import net.sourceforge.subsonic.androidapp.domain.SearchResult;
-import net.sourceforge.subsonic.androidapp.domain.ServerInfo;
-import net.sourceforge.subsonic.androidapp.domain.Version;
-import net.sourceforge.subsonic.androidapp.service.parser.AlbumListParser;
-import net.sourceforge.subsonic.androidapp.service.parser.ErrorParser;
-import net.sourceforge.subsonic.androidapp.service.parser.IndexesParser;
-import net.sourceforge.subsonic.androidapp.service.parser.JukeboxStatusParser;
-import net.sourceforge.subsonic.androidapp.service.parser.LicenseParser;
-import net.sourceforge.subsonic.androidapp.service.parser.LyricsParser;
-import net.sourceforge.subsonic.androidapp.service.parser.MusicDirectoryParser;
-import net.sourceforge.subsonic.androidapp.service.parser.MusicFoldersParser;
-import net.sourceforge.subsonic.androidapp.service.parser.PlaylistParser;
-import net.sourceforge.subsonic.androidapp.service.parser.PlaylistsParser;
-import net.sourceforge.subsonic.androidapp.service.parser.RandomSongsParser;
-import net.sourceforge.subsonic.androidapp.service.parser.SearchResult2Parser;
-import net.sourceforge.subsonic.androidapp.service.parser.SearchResultParser;
-import net.sourceforge.subsonic.androidapp.service.parser.VersionParser;
-import net.sourceforge.subsonic.androidapp.service.ssl.SSLSocketFactory;
-import net.sourceforge.subsonic.androidapp.service.ssl.TrustSelfSignedStrategy;
-import net.sourceforge.subsonic.androidapp.util.CancellableTask;
-import net.sourceforge.subsonic.androidapp.util.Constants;
-import net.sourceforge.subsonic.androidapp.util.FileUtil;
-import net.sourceforge.subsonic.androidapp.util.ProgressListener;
-import net.sourceforge.subsonic.androidapp.util.Util;
+import com.thejoshwa.ultrasonic.androidapp.R;
+import com.thejoshwa.ultrasonic.androidapp.domain.Indexes;
+import com.thejoshwa.ultrasonic.androidapp.domain.JukeboxStatus;
+import com.thejoshwa.ultrasonic.androidapp.domain.Lyrics;
+import com.thejoshwa.ultrasonic.androidapp.domain.MusicDirectory;
+import com.thejoshwa.ultrasonic.androidapp.domain.MusicFolder;
+import com.thejoshwa.ultrasonic.androidapp.domain.Playlist;
+import com.thejoshwa.ultrasonic.androidapp.domain.SearchCritera;
+import com.thejoshwa.ultrasonic.androidapp.domain.SearchResult;
+import com.thejoshwa.ultrasonic.androidapp.domain.ServerInfo;
+import com.thejoshwa.ultrasonic.androidapp.domain.Version;
+import com.thejoshwa.ultrasonic.androidapp.service.parser.AlbumListParser;
+import com.thejoshwa.ultrasonic.androidapp.service.parser.ErrorParser;
+import com.thejoshwa.ultrasonic.androidapp.service.parser.IndexesParser;
+import com.thejoshwa.ultrasonic.androidapp.service.parser.JukeboxStatusParser;
+import com.thejoshwa.ultrasonic.androidapp.service.parser.LicenseParser;
+import com.thejoshwa.ultrasonic.androidapp.service.parser.LyricsParser;
+import com.thejoshwa.ultrasonic.androidapp.service.parser.MusicDirectoryParser;
+import com.thejoshwa.ultrasonic.androidapp.service.parser.MusicFoldersParser;
+import com.thejoshwa.ultrasonic.androidapp.service.parser.PlaylistParser;
+import com.thejoshwa.ultrasonic.androidapp.service.parser.PlaylistsParser;
+import com.thejoshwa.ultrasonic.androidapp.service.parser.RandomSongsParser;
+import com.thejoshwa.ultrasonic.androidapp.service.parser.SearchResult2Parser;
+import com.thejoshwa.ultrasonic.androidapp.service.parser.SearchResultParser;
+import com.thejoshwa.ultrasonic.androidapp.service.parser.VersionParser;
+import com.thejoshwa.ultrasonic.androidapp.service.ssl.SSLSocketFactory;
+import com.thejoshwa.ultrasonic.androidapp.service.ssl.TrustSelfSignedStrategy;
+import com.thejoshwa.ultrasonic.androidapp.util.CancellableTask;
+import com.thejoshwa.ultrasonic.androidapp.util.Constants;
+import com.thejoshwa.ultrasonic.androidapp.util.FileUtil;
+import com.thejoshwa.ultrasonic.androidapp.util.ProgressListener;
+import com.thejoshwa.ultrasonic.androidapp.util.Util;
 
 /**
  * @author Sindre Mehus
@@ -423,7 +423,7 @@ public class RESTMusicService implements MusicService {
 
     @Override
     public Version getLocalVersion(Context context) throws Exception {
-        PackageInfo packageInfo = context.getPackageManager().getPackageInfo("net.sourceforge.subsonic.androidapp", 0);
+        PackageInfo packageInfo = context.getPackageManager().getPackageInfo("com.thejoshwa.ultrasonic.androidapp", 0);
         return new Version(packageInfo.versionName);
     }
 

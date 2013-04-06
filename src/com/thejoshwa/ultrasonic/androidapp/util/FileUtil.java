@@ -16,7 +16,7 @@
 
  Copyright 2009 (C) Sindre Mehus
  */
-package net.sourceforge.subsonic.androidapp.util;
+package com.thejoshwa.ultrasonic.androidapp.util;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -36,7 +36,7 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.Environment;
 import android.util.Log;
-import net.sourceforge.subsonic.androidapp.domain.MusicDirectory;
+import com.thejoshwa.ultrasonic.androidapp.domain.MusicDirectory;
 
 /**
  * @author Sindre Mehus
@@ -95,7 +95,7 @@ public class FileUtil {
     }
 
     public static File getAlbumArtDirectory() {
-        File albumArtDir = new File(getSubsonicDirectory(), "artwork");
+        File albumArtDir = new File(getUltraSonicDirectory(), "artwork");
         ensureDirectoryExistsAndIsReadWritable(albumArtDir);
         ensureDirectoryExistsAndIsReadWritable(new File(albumArtDir, ".nomedia"));
         return albumArtDir;
@@ -127,15 +127,15 @@ public class FileUtil {
     }
 
     private static File createDirectory(String name) {
-        File dir = new File(getSubsonicDirectory(), name);
+        File dir = new File(getUltraSonicDirectory(), name);
         if (!dir.exists() && !dir.mkdirs()) {
             Log.e(TAG, "Failed to create " + name);
         }
         return dir;
     }
 
-    public static File getSubsonicDirectory() {
-        return new File(Environment.getExternalStorageDirectory(), "subsonic");
+    public static File getUltraSonicDirectory() {
+        return new File(Environment.getExternalStorageDirectory(), "ultrasonic");
     }
 
     public static File getDefaultMusicDirectory() {

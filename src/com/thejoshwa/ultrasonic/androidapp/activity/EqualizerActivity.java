@@ -16,7 +16,7 @@
 
  Copyright 2011 (C) Sindre Mehus
  */
-package net.sourceforge.subsonic.androidapp.activity;
+package com.thejoshwa.ultrasonic.androidapp.activity;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -33,9 +33,9 @@ import android.widget.CompoundButton;
 import android.widget.LinearLayout;
 import android.widget.SeekBar;
 import android.widget.TextView;
-import net.sourceforge.subsonic.androidapp.R;
-import net.sourceforge.subsonic.androidapp.audiofx.EqualizerController;
-import net.sourceforge.subsonic.androidapp.service.DownloadServiceImpl;
+import com.thejoshwa.ultrasonic.androidapp.R;
+import com.thejoshwa.ultrasonic.androidapp.audiofx.EqualizerController;
+import com.thejoshwa.ultrasonic.androidapp.service.DownloadServiceImpl;
 
 /**
  * Equalizer controls.

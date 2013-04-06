@@ -16,14 +16,14 @@
 
  Copyright 2009 (C) Sindre Mehus
  */
-package net.sourceforge.subsonic.androidapp.service.parser;
+package com.thejoshwa.ultrasonic.androidapp.service.parser;
 
 import java.io.Reader;
 
 import org.xmlpull.v1.XmlPullParser;
 
 import android.content.Context;
-import net.sourceforge.subsonic.androidapp.domain.JukeboxStatus;
+import com.thejoshwa.ultrasonic.androidapp.domain.JukeboxStatus;
 
 /**
  * @author Sindre Mehus

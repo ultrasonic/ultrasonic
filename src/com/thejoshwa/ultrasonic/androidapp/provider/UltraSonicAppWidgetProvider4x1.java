@@ -16,7 +16,7 @@
 
  Copyright 2010 (C) Sindre Mehus
  */
-package net.sourceforge.subsonic.androidapp.provider;
+package com.thejoshwa.ultrasonic.androidapp.provider;
 
 import android.app.PendingIntent;
 import android.appwidget.AppWidgetManager;
@@ -37,13 +37,13 @@ import android.os.Environment;
 import android.util.Log;
 import android.view.KeyEvent;
 import android.widget.RemoteViews;
-import net.sourceforge.subsonic.androidapp.R;
-import net.sourceforge.subsonic.androidapp.activity.DownloadActivity;
-import net.sourceforge.subsonic.androidapp.activity.MainActivity;
-import net.sourceforge.subsonic.androidapp.domain.MusicDirectory;
-import net.sourceforge.subsonic.androidapp.service.DownloadService;
-import net.sourceforge.subsonic.androidapp.service.DownloadServiceImpl;
-import net.sourceforge.subsonic.androidapp.util.FileUtil;
+import com.thejoshwa.ultrasonic.androidapp.R;
+import com.thejoshwa.ultrasonic.androidapp.activity.DownloadActivity;
+import com.thejoshwa.ultrasonic.androidapp.activity.MainActivity;
+import com.thejoshwa.ultrasonic.androidapp.domain.MusicDirectory;
+import com.thejoshwa.ultrasonic.androidapp.service.DownloadService;
+import com.thejoshwa.ultrasonic.androidapp.service.DownloadServiceImpl;
+import com.thejoshwa.ultrasonic.androidapp.util.FileUtil;
 
 /**
  * Simple widget to show currently playing album art along
@@ -53,14 +53,14 @@ import net.sourceforge.subsonic.androidapp.util.FileUtil;
  *
  * @author Sindre Mehus
  */
-public class SubsonicAppWidgetProvider4x1 extends AppWidgetProvider {
+public class UltraSonicAppWidgetProvider4x1 extends AppWidgetProvider {
 
-    private static SubsonicAppWidgetProvider4x1 instance;
-    private static final String TAG = SubsonicAppWidgetProvider4x1.class.getSimpleName();
+    private static UltraSonicAppWidgetProvider4x1 instance;
+    private static final String TAG = UltraSonicAppWidgetProvider4x1.class.getSimpleName();
 
-    public static synchronized SubsonicAppWidgetProvider4x1 getInstance() {
+    public static synchronized UltraSonicAppWidgetProvider4x1 getInstance() {
         if (instance == null) {
-            instance = new SubsonicAppWidgetProvider4x1();
+            instance = new UltraSonicAppWidgetProvider4x1();
         }
         return instance;
     }
@@ -71,7 +71,7 @@ public class SubsonicAppWidgetProvider4x1 extends AppWidgetProvider {
     }
 
     /**
-     * Initialize given widgets to default state, where we launch Subsonic on default click
+     * Initialize given widgets to default state, where we launch UltraSonic on default click
      * and hide actions if service not running.
      */
     private void defaultAppWidget(Context context, int[] appWidgetIds) {

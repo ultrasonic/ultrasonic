@@ -16,7 +16,7 @@
 
  Copyright 2009 (C) Sindre Mehus
  */
-package net.sourceforge.subsonic.androidapp.util;
+package com.thejoshwa.ultrasonic.androidapp.util;
 
 /**
  * @author Sindre Mehus
@@ -30,7 +30,7 @@ public final class Constants {
     // REST protocol version and client ID.
     // Note: Keep it as low as possible to maintain compatibility with older servers.
     public static final String REST_PROTOCOL_VERSION = "1.7.0";
-    public static final String REST_CLIENT_ID = "android";
+    public static final String REST_CLIENT_ID = "UltraSonic%20for%20Android";
 
     // Names for intent extras.
     public static final String INTENT_EXTRA_NAME_ID = "subsonic.id";
@@ -90,7 +90,7 @@ public final class Constants {
     public static final String PREFERENCES_KEY_USE_STREAM_PROXY = "useStreamProxy";
     
     // Name of the preferences file.
-    public static final String PREFERENCES_FILE_NAME = "net.sourceforge.subsonic.androidapp_preferences";
+    public static final String PREFERENCES_FILE_NAME = "com.thejoshwa.ultrasonic.androidapp_preferences";
 
     // Number of free trial days for non-licensed servers.
     public static final int FREE_TRIAL_DAYS = 30;

@@ -25,7 +25,7 @@
  *
  */
 
-package net.sourceforge.subsonic.androidapp.service.ssl;
+package com.thejoshwa.ultrasonic.androidapp.service.ssl;
 
 import org.apache.http.conn.ConnectTimeoutException;
 import org.apache.http.conn.scheme.HostNameResolver;

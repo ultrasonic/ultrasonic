@@ -17,17 +17,17 @@
  Copyright 2009 (C) Sindre Mehus
   */
 
-package net.sourceforge.subsonic.androidapp.activity;
+package com.thejoshwa.ultrasonic.androidapp.activity;
 
 import java.util.Arrays;
 
-import net.sourceforge.subsonic.androidapp.R;
-import net.sourceforge.subsonic.androidapp.service.DownloadService;
-import net.sourceforge.subsonic.androidapp.service.DownloadServiceImpl;
-import net.sourceforge.subsonic.androidapp.util.Constants;
-import net.sourceforge.subsonic.androidapp.util.MergeAdapter;
-import net.sourceforge.subsonic.androidapp.util.Util;
-import net.sourceforge.subsonic.androidapp.util.FileUtil;
+import com.thejoshwa.ultrasonic.androidapp.R;
+import com.thejoshwa.ultrasonic.androidapp.service.DownloadService;
+import com.thejoshwa.ultrasonic.androidapp.service.DownloadServiceImpl;
+import com.thejoshwa.ultrasonic.androidapp.util.Constants;
+import com.thejoshwa.ultrasonic.androidapp.util.MergeAdapter;
+import com.thejoshwa.ultrasonic.androidapp.util.Util;
+import com.thejoshwa.ultrasonic.androidapp.util.FileUtil;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
@@ -135,7 +135,6 @@ public class MainActivity extends SubsonicTabActivity {
             }
         });
 
-        // Title: Subsonic
         setTitle(R.string.common_appname);
 
         // Remember the current theme.
@@ -167,7 +166,6 @@ public class MainActivity extends SubsonicTabActivity {
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
     	MenuInflater inflater = getMenuInflater();
-    	inflater.inflate(R.menu.main_offline, menu);
     	inflater.inflate(R.menu.main, menu);
     	super.onCreateOptionsMenu(menu);
     	
@@ -229,11 +227,6 @@ public class MainActivity extends SubsonicTabActivity {
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
                 
-        	case R.id.main_offline:
-        		setActiveServer(0);
-        		restart();
-                return true;
-                
             case R.id.main_shuffle:
             	Intent intent1 = new Intent(this, DownloadActivity.class);
             	intent1.putExtra(Constants.INTENT_EXTRA_NAME_SHUFFLE, true);
@@ -284,7 +277,7 @@ public class MainActivity extends SubsonicTabActivity {
     private void showInfoDialog() {
         if (!infoDialogDisplayed) {
             infoDialogDisplayed = true;
-            if (Util.getRestUrl(this, null).contains("demo.subsonic.org")) {
+            if (Util.getRestUrl(this, null).contains("yourhost")) {
                 Util.info(this, R.string.main_welcome_title, R.string.main_welcome_text);
             }
         }

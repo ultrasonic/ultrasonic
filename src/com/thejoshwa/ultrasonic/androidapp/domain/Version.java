@@ -16,7 +16,7 @@
 
  Copyright 2009 (C) Sindre Mehus
  */
-package net.sourceforge.subsonic.androidapp.domain;
+package com.thejoshwa.ultrasonic.androidapp.domain;
 
 /**
  * Represents the version number of the Subsonic Android app.

@@ -16,10 +16,10 @@
 
  Copyright 2010 (C) Sindre Mehus
  */
-package net.sourceforge.subsonic.androidapp.util;
+package com.thejoshwa.ultrasonic.androidapp.util;
 
-import net.sourceforge.subsonic.androidapp.domain.Artist;
-import net.sourceforge.subsonic.androidapp.R;
+import com.thejoshwa.ultrasonic.androidapp.domain.Artist;
+import com.thejoshwa.ultrasonic.androidapp.R;
 import android.widget.ArrayAdapter;
 import android.widget.SectionIndexer;
 import android.content.Context;

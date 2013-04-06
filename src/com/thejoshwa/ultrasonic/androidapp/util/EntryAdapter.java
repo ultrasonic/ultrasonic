@@ -16,15 +16,15 @@
 
  Copyright 2010 (C) Sindre Mehus
  */
-package net.sourceforge.subsonic.androidapp.util;
+package com.thejoshwa.ultrasonic.androidapp.util;
 
 import java.util.List;
 
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
-import net.sourceforge.subsonic.androidapp.activity.SubsonicTabActivity;
-import net.sourceforge.subsonic.androidapp.domain.MusicDirectory;
+import com.thejoshwa.ultrasonic.androidapp.activity.SubsonicTabActivity;
+import com.thejoshwa.ultrasonic.androidapp.domain.MusicDirectory;
 
 /**
  * @author Sindre Mehus

@@ -1,8 +1,8 @@
-package net.sourceforge.subsonic.androidapp.service;
+package com.thejoshwa.ultrasonic.androidapp.service;
 
 import android.content.Context;
 import android.util.Log;
-import net.sourceforge.subsonic.androidapp.util.Util;
+import com.thejoshwa.ultrasonic.androidapp.util.Util;
 
 /**
  * Scrobbles played songs to Last.fm.

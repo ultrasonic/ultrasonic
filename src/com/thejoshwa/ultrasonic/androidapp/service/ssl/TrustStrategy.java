@@ -24,7 +24,7 @@
  * <http://www.apache.org/>.
  *
  */
-package net.sourceforge.subsonic.androidapp.service.ssl;
+package com.thejoshwa.ultrasonic.androidapp.service.ssl;
 
 import java.security.cert.CertificateException;
 import java.security.cert.X509Certificate;

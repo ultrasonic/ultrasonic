@@ -1,4 +1,4 @@
-package net.sourceforge.subsonic.androidapp.domain;
+package com.thejoshwa.ultrasonic.androidapp.domain;
 
 /**
  * @author Sindre Mehus

@@ -4,6 +4,6 @@
             a:hint="@string/search.title"
             a:voiceSearchMode="showVoiceSearchButton|launchRecognizer"
             a:voiceLanguageModel="web_search"
-            a:searchSuggestAuthority="net.sourceforge.subsonic.androidapp.provider.SearchSuggestionProvider"
+            a:searchSuggestAuthority="com.thejoshwa.ultrasonic.androidapp.provider.SearchSuggestionProvider"
             a:searchSuggestSelection=" ?" >
 </searchable>

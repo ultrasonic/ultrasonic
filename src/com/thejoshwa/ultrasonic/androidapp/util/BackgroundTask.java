@@ -16,7 +16,7 @@
 
  Copyright 2009 (C) Sindre Mehus
  */
-package net.sourceforge.subsonic.androidapp.util;
+package com.thejoshwa.ultrasonic.androidapp.util;
 
 import java.io.FileNotFoundException;
 import java.io.IOException;
@@ -26,7 +26,7 @@ import org.xmlpull.v1.XmlPullParserException;
 import android.app.Activity;
 import android.os.Handler;
 import android.util.Log;
-import net.sourceforge.subsonic.androidapp.R;
+import com.thejoshwa.ultrasonic.androidapp.R;
 
 /**
  * @author Sindre Mehus
