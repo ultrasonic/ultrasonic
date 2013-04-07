@@ -29,9 +29,9 @@
                   a:layout_marginTop="6dp"
                   a:layout_marginBottom="3dp"
                   a:layout_width="fill_parent"
-                  a:layout_height="wrap_content">
+                  a:layout_height="wrap_content" >
 
-        <Button a:id="@+id/select_album_select"
+        <Button	a:id="@+id/select_album_select"
                 a:text="@string/select_album.select"
                 a:textAppearance="?android:attr/textAppearanceSmall"
                 a:visibility="gone"
@@ -41,7 +41,7 @@
                 a:layout_width="0dp"
                 a:layout_height="fill_parent"/>
 
-        <Button a:id="@+id/select_album_play_now"
+        <Button	a:id="@+id/select_album_play_now"
                 a:text="@string/common.play_now"
                 a:textAppearance="?android:attr/textAppearanceSmall"
                 a:visibility="gone"

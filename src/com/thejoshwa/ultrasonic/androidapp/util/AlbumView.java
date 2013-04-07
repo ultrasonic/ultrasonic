@@ -60,6 +60,10 @@ public class AlbumView extends LinearLayout {
         starImageView.setImageDrawable(album.getStarred() ? getResources().getDrawable(R.drawable.star) : getResources().getDrawable(R.drawable.star_hollow));
         imageLoader.loadImage(coverArtView, album, false, true);
         
+        if (Util.isOffline(getContext())) {
+        	starImageView.setVisibility(View.GONE);
+        }
+        
         starImageView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {

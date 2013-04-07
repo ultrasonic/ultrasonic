@@ -64,7 +64,6 @@ public class MusicDirectory {
         /**
 		 * 
 		 */
-		private static final long serialVersionUID = -3509705707977261992L;
 		private String id;
         private String parent;
         private boolean directory;
@@ -221,6 +220,10 @@ public class MusicDirectory {
 
         public void setDuration(Integer duration) {
             this.duration = duration;
+        }
+        
+        public void setDuration(long duration) {
+            this.duration = (int) duration;
         }
 
         public Integer getBitRate() {

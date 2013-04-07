@@ -579,7 +579,17 @@ public class Util extends DownloadActivity {
         SharedPreferences prefs = getPreferences(context);
         return prefs.getBoolean(Constants.PREFERENCES_KEY_WIFI_REQUIRED_FOR_DOWNLOAD, false);
     }
-
+    
+    public static boolean shouldDisplayBitrateWithArtist(Context context) {
+        SharedPreferences prefs = getPreferences(context);
+        return prefs.getBoolean(Constants.PREFERENCES_KEY_DISPLAY_BITRATE_WITH_ARTIST, true);
+    }
+    
+    public static boolean shouldUseFolderForArtistName(Context context) {
+        SharedPreferences prefs = getPreferences(context);
+        return prefs.getBoolean(Constants.PREFERENCES_KEY_USE_FOLDER_FOR_ALBUM_ARTIST, false);
+    }
+    
     public static void info(Context context, int titleId, int messageId) {
         showDialog(context, android.R.drawable.ic_dialog_info, titleId, messageId);
     }

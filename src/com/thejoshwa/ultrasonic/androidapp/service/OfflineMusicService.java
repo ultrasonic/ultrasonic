@@ -28,10 +28,12 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Random;
 import java.util.Set;
+import java.util.concurrent.TimeUnit;
 
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.media.MediaMetadataRetriever;
 import android.util.Log;
 import com.thejoshwa.ultrasonic.androidapp.domain.Artist;
 import com.thejoshwa.ultrasonic.androidapp.domain.Indexes;
@@ -113,11 +115,120 @@ public class OfflineMusicService extends RESTMusicService {
         entry.setSize(file.length());
         String root = FileUtil.getMusicDirectory(context).getPath();
         entry.setPath(file.getPath().replaceFirst("^" + root + "/" , ""));
-        if (file.isFile()) {
-            entry.setArtist(file.getParentFile().getParentFile().getName());
-            entry.setAlbum(file.getParentFile().getName());
-        }
         entry.setTitle(name);
+        
+        if (file.isFile()) {
+        	String artist = null;
+        	String album = null;
+        	String title = null;
+        	String track = null;
+        	String disc = null;
+        	String year = null;
+        	String genre = null;
+        	String bitrate = null;
+        	String duration = null;
+        	String hasVideo = null;
+        	
+        	try
+        	{
+            	MediaMetadataRetriever mmr = new MediaMetadataRetriever();
+        		mmr.setDataSource(file.getPath());
+        		artist = mmr.extractMetadata(MediaMetadataRetriever.METADATA_KEY_ARTIST);
+        		album = mmr.extractMetadata(MediaMetadataRetriever.METADATA_KEY_ALBUM);
+        		title = mmr.extractMetadata(MediaMetadataRetriever.METADATA_KEY_TITLE);
+        		track = mmr.extractMetadata(MediaMetadataRetriever.METADATA_KEY_CD_TRACK_NUMBER);
+        		disc = mmr.extractMetadata(MediaMetadataRetriever.METADATA_KEY_DISC_NUMBER);
+        		year = mmr.extractMetadata(MediaMetadataRetriever.METADATA_KEY_YEAR);
+        		genre = mmr.extractMetadata(MediaMetadataRetriever.METADATA_KEY_GENRE);
+        		//bitrate = mmr.extractMetadata(MediaMetadataRetriever.METADATA_KEY_BITRATE);
+                duration = mmr.extractMetadata(MediaMetadataRetriever.METADATA_KEY_DURATION);
+                hasVideo = mmr.extractMetadata(MediaMetadataRetriever.METADATA_KEY_HAS_VIDEO);
+                mmr.release();
+        	} catch (Exception ex) {
+        		
+        	}
+        	
+            entry.setArtist(artist != null ? artist : file.getParentFile().getParentFile().getName());
+            entry.setAlbum(album != null ? album : file.getParentFile().getName());
+           
+            if (title != null) {
+            	entry.setTitle(title);
+            }
+            
+            entry.setVideo(hasVideo != null);
+            
+            if (track != null) {
+          		int slashIndex = track.indexOf("/");
+          		if (slashIndex != 0) {
+          			track = track.substring(0, slashIndex);
+          		}
+          		
+          		int trackValue = 0;
+          		
+          		try {
+          			trackValue = Integer.parseInt(track);
+          		} 
+          		catch(NumberFormatException nfe) {
+          			
+          		}
+          		
+            	entry.setTrack(trackValue);
+            }
+            
+            if (disc != null) {
+          		int slashIndex = disc.indexOf("/");
+          		if (slashIndex != 0) {
+          			disc = disc.substring(0, slashIndex);
+          		}
+          		
+          		int discValue = 0;
+          		
+          		try {
+          			discValue = Integer.parseInt(disc);
+          		} 
+          		catch(NumberFormatException nfe) {
+          			
+          		}
+          		
+            	entry.setDiscNumber(discValue);
+            }
+            
+            if (year != null) {
+            	int yearValue = 0;
+          		try {
+          			yearValue = Integer.parseInt(year);
+          		} catch(NumberFormatException nfe) {
+          			
+          		}
+            	entry.setYear(yearValue);	
+            }
+            
+            if (genre != null) {
+            	entry.setGenre(genre);
+            }
+            
+            if (bitrate != null) {
+              	int bitRateValue = 0;
+          		try {
+          			bitRateValue = Integer.parseInt(bitrate) / 1000;
+          		} catch(NumberFormatException nfe) {
+          			
+          		}
+            	entry.setBitRate(bitRateValue);
+            }
+            
+            if (duration != null) {
+            	long durationValue = 0;
+          		try {
+          			durationValue = Long.parseLong(duration);
+          		} catch(NumberFormatException nfe) {
+          			
+          		}
+          		durationValue = TimeUnit.MILLISECONDS.toSeconds(durationValue);
+            	entry.setDuration(durationValue);
+            }
+        }
+
         entry.setSuffix(FileUtil.getExtension(file.getName().replace(".complete", "")));
 
         File albumArt = FileUtil.getAlbumArtFile(context, entry);

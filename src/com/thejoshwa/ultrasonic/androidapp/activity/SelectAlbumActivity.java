@@ -18,7 +18,6 @@
  */
 package com.thejoshwa.ultrasonic.androidapp.activity;
 
-import android.app.ActionBar;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -34,6 +33,8 @@ import android.view.View;
 import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.ListView;
+import android.widget.TextView;
+
 import com.thejoshwa.ultrasonic.androidapp.R;
 import com.thejoshwa.ultrasonic.androidapp.domain.MusicDirectory;
 import com.thejoshwa.ultrasonic.androidapp.service.DownloadFile;
@@ -46,14 +47,18 @@ import com.thejoshwa.ultrasonic.androidapp.util.TabActivityBackgroundTask;
 import com.thejoshwa.ultrasonic.androidapp.util.Util;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Random;
+import java.util.Set;
+import java.util.concurrent.TimeUnit;
 
 public class SelectAlbumActivity extends SubsonicTabActivity {
 
     private static final String TAG = SelectAlbumActivity.class.getSimpleName();
 
     private ListView entryList;
+    private View header;
     private View footer;
     private View emptyView;
     private Button selectButton;
@@ -66,6 +71,7 @@ public class SelectAlbumActivity extends SubsonicTabActivity {
     private boolean licenseValid;
     private boolean playAllButtonVisible;
     private MenuItem playAllButton;
+    private boolean showHeader = true;
     private Random random = new Random();
 
     /**
@@ -78,7 +84,9 @@ public class SelectAlbumActivity extends SubsonicTabActivity {
 
         entryList = (ListView) findViewById(R.id.select_album_entries);
 
+        header = LayoutInflater.from(this).inflate(R.layout.select_album_header, entryList, false);
         footer = LayoutInflater.from(this).inflate(R.layout.select_album_footer, entryList, false);
+
         entryList.setChoiceMode(ListView.CHOICE_MODE_MULTIPLE);
         entryList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
@@ -343,7 +351,8 @@ public class SelectAlbumActivity extends SubsonicTabActivity {
     }
 
     private void getAlbumList(final String albumListType, final int size, final int offset) {
-
+    	showHeader = false;
+    	
         if ("newest".equals(albumListType)) {
             setTitle(R.string.main_albums_newest);
         } else if ("random".equals(albumListType)) {
@@ -398,6 +407,7 @@ public class SelectAlbumActivity extends SubsonicTabActivity {
                         }
                     });
                 }
+                	
                 super.done(result);
             }
         }.execute();
@@ -599,7 +609,9 @@ public class SelectAlbumActivity extends SubsonicTabActivity {
 
         @Override
         protected void done(Pair<MusicDirectory, Boolean> result) {
-            List<MusicDirectory.Entry> entries = result.getFirst().getChildren();
+        	MusicDirectory musicDirectory = result.getFirst();
+            List<MusicDirectory.Entry> entries = musicDirectory.getChildren();
+            String directoryName = musicDirectory.getName();
 
             int songCount = 0;
             for (MusicDirectory.Entry entry : entries) {
@@ -609,14 +621,10 @@ public class SelectAlbumActivity extends SubsonicTabActivity {
             }
 
             if (songCount > 0) {
-            	ActionBar actionBar = getActionBar();
-            	
-            	if (actionBar != null) {
-            		// Use random entry selection for artwork in list of tracks
-            		int artworkSelection = random.nextInt(entries.size());
-            		getImageLoader().setActionBarArtwork(selectButton, entries.get(artworkSelection), actionBar);
-            	}
-            	
+				if(showHeader) {
+					entryList.addHeaderView(createHeader(entries, directoryName, songCount), null, false);
+				}
+
                 entryList.addFooterView(footer);
                 selectButton.setVisibility(View.VISIBLE);
                 playNowButton.setVisibility(View.VISIBLE);
@@ -639,6 +647,87 @@ public class SelectAlbumActivity extends SubsonicTabActivity {
             if (playAll && songCount > 0) {
                 playAll();
             }
+        }
+        
+        private View createHeader(List<MusicDirectory.Entry> entries, String name, int songCount) {
+            View coverArtView = header.findViewById(R.id.select_album_art);
+            int artworkSelection = random.nextInt(entries.size());
+            getImageLoader().loadImage(coverArtView, entries.get(artworkSelection), true, true);
+
+            TextView titleView = (TextView) header.findViewById(R.id.select_album_title);
+            titleView.setText(name != null ? name : getTitle());
+
+            Set<String> artists = new HashSet<String>();
+            Set<String> grandParents = new HashSet<String>();
+            Set<String> genres = new HashSet<String>();
+            
+            long totalDuration = 0;
+            for (MusicDirectory.Entry entry : entries) {
+                if (!entry.isDirectory()) {
+                	if (Util.shouldUseFolderForArtistName(getBaseContext())) {
+                		// Find the top level folder, assume it is the album artist
+                		String path = entry.getPath();
+                		if (path != null) {
+                			int slashIndex = path.indexOf("/");
+                			if (slashIndex != 0) {
+                				grandParents.add(path.substring(0, slashIndex));
+                			}
+                		}
+                	}
+                	
+                    if (entry.getArtist() != null) {
+                    	totalDuration += entry.getDuration();
+                        artists.add(entry.getArtist());
+                    }
+                    
+                	if (entry.getGenre() != null) {
+                    	genres.add(entry.getGenre());
+                	}
+                }
+            }
+            
+            TextView artistView = (TextView) header.findViewById(R.id.select_album_artist);
+            String artist = null;
+            
+            if (artists.size() == 1) {
+            	artist = artists.iterator().next();
+            } else if (grandParents.size() == 1) {
+            	artist = grandParents.iterator().next();	
+            } else {
+            	artist = getResources().getString(R.string.common_various_artists);
+            }
+            
+            artistView.setText(artist);
+            
+            TextView genreView = (TextView) header.findViewById(R.id.select_album_genre);
+            String genre = null;
+            
+            if (genres.size() == 1) {
+            	genre = genres.iterator().next();
+            } else {
+            	genre = getResources().getString(R.string.common_multiple_genres);
+            }
+            
+            genreView.setText(genre);
+
+            TextView songCountView = (TextView) header.findViewById(R.id.select_album_song_count);
+            String songs = getResources().getQuantityString(R.plurals.select_album_n_songs, songCount, songCount);
+            songCountView.setText(songs);
+            
+            long millis = totalDuration * 1000;
+            
+            String duration = String.format("%02d:%02d:%02d",
+            		TimeUnit.MILLISECONDS.toHours(millis),
+            		TimeUnit.MILLISECONDS.toMinutes(millis) -
+            		TimeUnit.HOURS.toMinutes(TimeUnit.MILLISECONDS.toHours(millis)),
+            	    TimeUnit.MILLISECONDS.toSeconds(millis) - 
+            	    TimeUnit.MINUTES.toSeconds(TimeUnit.MILLISECONDS.toMinutes(millis))
+            	);
+            
+            TextView durationView = (TextView) header.findViewById(R.id.select_album_duration);
+            durationView.setText(duration);
+
+            return header;
         }
     }
 }

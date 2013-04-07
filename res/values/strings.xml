@@ -10,6 +10,8 @@
     <string name="common.pin">Pin</string>
     <string name="common.unpin">Unpin</string>
     <string name="common.delete">Delete</string>
+    <string name="common.various_artists">Various Artists</string>
+    <string name="common.multiple_genres">Multiple Genres</string>
     <string name="button_bar.home">UltraSonic Main</string>
     <string name="button_bar.browse">Media Library</string>
     <string name="button_bar.search">Search</string>
@@ -104,7 +106,7 @@
     <string name="download.jukebox_server_too_old">Remote control is not supported. Please upgrade your Subsonic server.</string>
     <string name="download.jukebox_offline">Remote control is not available in offline mode.</string>
     <string name="download.jukebox_not_authorized">Remote control is not allowed. Please enable jukebox mode in <b>Users &gt; Settings</b> on your Subsonic server.</string>
-    <string name="song_details.all">%1$s %2$s</string>
+    <string name="song_details.all">%1$s%2$s</string>
     <string name="song_details.kbps">%d kbps</string>
     <string name="lyrics.nomatch">No lyrics found</string>
     <string name="error.label">Error</string>
@@ -151,6 +153,10 @@
     <string name="settings.max_bitrate_unlimited">Unlimited</string>
     <string name="settings.wifi_required_title">Wi-Fi Streaming Only</string>
     <string name="settings.wifi_required_summary">Only stream media if connected to Wi-Fi</string>
+    <string name="settings.display_bitrate">Display Bitrate And File Suffix</string>
+    <string name="settings.display_bitrate_summary">Append artist name with bitrate and file suffix</string>
+    <string name="settings.use_folder_for_album_artist">Use Folders For Artist Name</string>
+    <string name="settings.use_folder_for_album_artist_summary">Assume top-level folder is the name of the album artist</string>
     <string name="settings.preload_1">1 song</string>
     <string name="settings.preload_2">2 songs</string>
     <string name="settings.preload_3">3 songs</string>
@@ -259,20 +265,20 @@
     <string name="util.bytes_format.byte">0 B</string>
 
     <plurals name="select_album_n_songs">
-        <item quantity="zero">No songs</item>
-        <item quantity="one">One song</item>
-        <item quantity="other">%d songs</item>
+        <item quantity="zero">No Songs</item>
+        <item quantity="one">1 Song</item>
+        <item quantity="other">%d Songs</item>
     </plurals>
     <plurals name="select_album_n_songs_downloading">
-        <item quantity="one">One song scheduled for download.</item>
-        <item quantity="other">%d songs scheduled for download.</item>
+        <item quantity="one">1 song scheduled for download.</item>
+        <item quantity="other">%d Songs scheduled for download.</item>
     </plurals>
     <plurals name="select_album_n_songs_added">
-        <item quantity="one">One song added to play queue.</item>
+        <item quantity="one">1 song added to play queue.</item>
         <item quantity="other">%d songs added to play queue.</item>
     </plurals>
     <plurals name="select_album_donate_dialog_n_trial_days_left">
-        <item quantity="one">One day left of trial period</item>
+        <item quantity="one">1 day left of trial period</item>
         <item quantity="other">%d days left of trial period</item>
     </plurals>
 

@@ -52,6 +52,8 @@ public class SongView extends LinearLayout implements Checkable {
 
     private CheckedTextView checkedTextView;
     private ImageView starImageView;
+    private TextView trackTextView;
+    private TextView discTextView;
     private TextView titleTextView;
     private TextView artistTextView;
     private TextView durationTextView;
@@ -64,6 +66,7 @@ public class SongView extends LinearLayout implements Checkable {
 
         checkedTextView = (CheckedTextView) findViewById(R.id.song_check);
         starImageView = (ImageView) findViewById(R.id.song_star);
+        trackTextView = (TextView) findViewById(R.id.song_track);
         titleTextView = (TextView) findViewById(R.id.song_title);
         artistTextView = (TextView) findViewById(R.id.song_artist);
         durationTextView = (TextView) findViewById(R.id.song_duration);
@@ -81,7 +84,7 @@ public class SongView extends LinearLayout implements Checkable {
 
     public void setSong(final MusicDirectory.Entry song, boolean checkable) {
         this.song = song;
-        StringBuilder artist = new StringBuilder(40);
+        StringBuilder artist = new StringBuilder(60);
 
         String bitRate = null;
         if (song.getBitRate() != null) {
@@ -95,9 +98,21 @@ public class SongView extends LinearLayout implements Checkable {
             fileFormat = song.getSuffix();
         }
 
-        artist.append(song.getArtist()).append(" (")
-              .append(String.format(getContext().getString(R.string.song_details_all), bitRate == null ? "" : bitRate, fileFormat))
-              .append(")");
+        if (Util.shouldDisplayBitrateWithArtist(getContext())) {
+        	artist.append(song.getArtist()).append(" (")
+        		.append(String.format(getContext().getString(R.string.song_details_all), bitRate == null ? "" : bitRate + " ", fileFormat))
+        		.append(")");
+        } else { 
+        	artist.append(song.getArtist());
+        }
+
+        int trackNumber = song.getTrack();
+        
+        if (trackNumber != 0) {
+            trackTextView.setText(String.format("%02d.", trackNumber));	
+        } else {
+        	trackTextView.setVisibility(View.GONE);
+        }
 
         titleTextView.setText(song.getTitle());
         artistTextView.setText(artist);
@@ -105,6 +120,10 @@ public class SongView extends LinearLayout implements Checkable {
         starImageView.setImageDrawable(song.getStarred() ? getResources().getDrawable(R.drawable.star) : getResources().getDrawable(R.drawable.star_hollow));
         checkedTextView.setVisibility(checkable && !song.isVideo() ? View.VISIBLE : View.GONE);
 
+        if (Util.isOffline(getContext())) {
+        	starImageView.setVisibility(View.GONE);
+        }
+        
         starImageView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
