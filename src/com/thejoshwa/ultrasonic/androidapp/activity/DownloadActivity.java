@@ -33,6 +33,7 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
+import android.util.Log;
 import android.view.ContextMenu;
 import android.view.Display;
 import android.view.GestureDetector;
@@ -58,6 +59,7 @@ import android.widget.TextView;
 import android.widget.ViewFlipper;
 import com.thejoshwa.ultrasonic.androidapp.R;
 import com.thejoshwa.ultrasonic.androidapp.domain.MusicDirectory;
+import com.thejoshwa.ultrasonic.androidapp.domain.MusicDirectory.Entry;
 import com.thejoshwa.ultrasonic.androidapp.domain.PlayerState;
 import com.thejoshwa.ultrasonic.androidapp.domain.RepeatMode;
 import com.thejoshwa.ultrasonic.androidapp.service.DownloadFile;
@@ -73,7 +75,7 @@ import com.thejoshwa.ultrasonic.androidapp.view.VisualizerView;
 import static com.thejoshwa.ultrasonic.androidapp.domain.PlayerState.*;
 
 public class DownloadActivity extends SubsonicTabActivity implements OnGestureListener {
-
+	private static final String TAG = DownloadActivity.class.getSimpleName();
     private static final int DIALOG_SAVE_PLAYLIST = 100;
     private static final int PERCENTAGE_OF_SCREEN_FOR_SWIPE = 5;
     
@@ -96,11 +98,13 @@ public class DownloadActivity extends SubsonicTabActivity implements OnGestureLi
     private View startButton;
     private View shuffleButton;
     private ImageButton repeatButton;
+    private ImageButton starImageView;
     private MenuItem equalizerMenuItem;
     private MenuItem visualizerMenuItem;
     private View toggleListButton;
     private ScheduledExecutorService executorService;
     private DownloadFile currentPlaying;
+    private Entry currentSong;
     private long currentRevision;
     private EditText playlistNameView;
     private GestureDetector gestureScanner;
@@ -142,6 +146,7 @@ public class DownloadActivity extends SubsonicTabActivity implements OnGestureLi
         startButton = findViewById(R.id.download_start);
         shuffleButton = findViewById(R.id.download_shuffle);
         repeatButton = (ImageButton) findViewById(R.id.download_repeat);
+        starImageView = (ImageButton) findViewById(R.id.download_star);
         LinearLayout visualizerViewLayout = (LinearLayout) findViewById(R.id.download_visualizer_view_layout);
 
         toggleListButton = findViewById(R.id.download_toggle_list);
@@ -285,12 +290,52 @@ public class DownloadActivity extends SubsonicTabActivity implements OnGestureLi
         playlistView.setOnTouchListener(gestureListener);
 
         registerForContextMenu(playlistView);
-
+        
         DownloadService downloadService = getDownloadService();
         if (downloadService != null && getIntent().getBooleanExtra(Constants.INTENT_EXTRA_NAME_SHUFFLE, false)) {
             warnIfNetworkOrStorageUnavailable();
             downloadService.setShufflePlayEnabled(true);
         }
+        
+        if (Util.isOffline(this)) {
+        	starImageView.setVisibility(View.GONE);
+        }
+        
+        starImageView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+            	if (currentSong == null) {
+            		return;
+            	}
+            	
+            	final boolean isStarred = currentSong.getStarred();
+            	final String id = currentSong.getId();
+            	
+            	if (!isStarred) {
+					starImageView.setImageDrawable(getResources().getDrawable(R.drawable.ic_star_full));
+					currentSong.setStarred(true);
+            	} else {
+            		starImageView.setImageDrawable(getResources().getDrawable(R.drawable.ic_star_hollow));
+            		currentSong.setStarred(false);
+            	}
+            	
+            	new Thread(new Runnable() {
+            	    public void run() {
+                    	MusicService musicService = MusicServiceFactory.getMusicService(getBaseContext());
+                    	
+            			try {
+            				if (!isStarred) {
+            					musicService.star(id, getBaseContext(), null);
+            				} else {
+            					musicService.unstar(id, getBaseContext(), null);
+            				}
+            			} catch (Exception e) {
+							Log.e(TAG, e.getMessage(), e);
+						}
+            	    }
+            	  }).start();
+            }
+        });
 
         visualizerAvailable = downloadService != null && downloadService.getVisualizerController() != null;
         equalizerAvailable = downloadService != null && downloadService.getEqualizerController() != null;
@@ -669,12 +714,14 @@ public class DownloadActivity extends SubsonicTabActivity implements OnGestureLi
 
         currentPlaying = getDownloadService().getCurrentPlaying();
         if (currentPlaying != null) {
-            MusicDirectory.Entry song = currentPlaying.getSong();
-            songTitleTextView.setText(song.getTitle());
-            albumTextView.setText(song.getAlbum());
-            artistTextView.setText(song.getArtist());
-            getImageLoader().loadImage(albumArtImageView, song, true, true);
+            currentSong = currentPlaying.getSong();
+            starImageView.setImageDrawable(currentSong.getStarred() ? getResources().getDrawable(R.drawable.ic_star_full) : getResources().getDrawable(R.drawable.ic_star_hollow));
+            songTitleTextView.setText(currentSong.getTitle());
+            albumTextView.setText(currentSong.getAlbum());
+            artistTextView.setText(currentSong.getArtist());
+            getImageLoader().loadImage(albumArtImageView, currentSong, true, true);
         } else {
+        	currentSong = null;
             songTitleTextView.setText(null);
             albumTextView.setText(null);
             artistTextView.setText(null);

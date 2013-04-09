@@ -6,6 +6,6 @@
           a:layout_height="wrap_content"
           a:textAppearance="?android:attr/textAppearanceMedium"
           a:gravity="center_vertical"
-          a:paddingLeft="2dip"
-          a:paddingRight="2dip"
+          a:paddingLeft="3dip"
+          a:paddingRight="3dip"
           a:minHeight="50dip"/>

@@ -11,8 +11,7 @@
             a:layout_width="wrap_content"
             a:layout_height="wrap_content"
             a:layout_gravity="left|center_vertical"
-            a:paddingTop="1dip"
-            a:paddingBottom="1dip"/>
+            a:paddingLeft="3dip"/>
 
     <LinearLayout
             a:orientation="vertical"
@@ -46,7 +45,8 @@
 			a:layout_height="fill_parent"
 			a:gravity="center_vertical"
 			a:background="@android:color/transparent"
-            a:src="@drawable/star_hollow"
-            a:focusable="false" />
+            a:src="@drawable/ic_star_hollow"
+            a:focusable="false"
+            a:paddingRight="3dip" />
     
 </LinearLayout>

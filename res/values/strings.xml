@@ -157,6 +157,8 @@
     <string name="settings.display_bitrate_summary">Append artist name with bitrate and file suffix</string>
     <string name="settings.use_folder_for_album_artist">Use Folders For Artist Name</string>
     <string name="settings.use_folder_for_album_artist_summary">Assume top-level folder is the name of the album artist</string>
+    <string name="settings.show_track_number">Show Track Number</string>
+    <string name="settings.show_track_number_summary">Include track number when displaying a song</string>
     <string name="settings.preload_1">1 song</string>
     <string name="settings.preload_2">2 songs</string>
     <string name="settings.preload_3">3 songs</string>

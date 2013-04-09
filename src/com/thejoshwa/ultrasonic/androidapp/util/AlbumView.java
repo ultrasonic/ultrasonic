@@ -57,7 +57,7 @@ public class AlbumView extends LinearLayout {
         titleView.setText(album.getTitle());
         artistView.setText(album.getArtist());
         artistView.setVisibility(album.getArtist() == null ? View.GONE : View.VISIBLE);
-        starImageView.setImageDrawable(album.getStarred() ? getResources().getDrawable(R.drawable.star) : getResources().getDrawable(R.drawable.star_hollow));
+        starImageView.setImageDrawable(album.getStarred() ? getResources().getDrawable(R.drawable.ic_star_full) : getResources().getDrawable(R.drawable.ic_star_hollow));
         imageLoader.loadImage(coverArtView, album, false, true);
         
         if (Util.isOffline(getContext())) {
@@ -71,10 +71,10 @@ public class AlbumView extends LinearLayout {
             	final String id = album.getId();
             	
             	if (!isStarred) {
-					starImageView.setImageDrawable(getResources().getDrawable(R.drawable.star));
+					starImageView.setImageDrawable(getResources().getDrawable(R.drawable.ic_star_full));
 					album.setStarred(true);
             	} else {
-            		starImageView.setImageDrawable(getResources().getDrawable(R.drawable.star_hollow));
+            		starImageView.setImageDrawable(getResources().getDrawable(R.drawable.ic_star_hollow));
             		album.setStarred(false);
             	}
             	

@@ -151,7 +151,7 @@ public class MusicDirectory {
         }
 
         public Integer getTrack() {
-            return track;
+            return track == null ? 0 : track;
         }
 
         public void setTrack(Integer track) {
@@ -159,7 +159,7 @@ public class MusicDirectory {
         }
 
         public Integer getYear() {
-            return year;
+            return year == null ? 0 : year;
         }
 
         public void setYear(Integer year) {

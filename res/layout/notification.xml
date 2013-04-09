@@ -74,7 +74,7 @@
 			android:layout_marginTop="2dip" 
 			android:layout_weight="0.0"
 			android:background="@drawable/btn_bg" 
-			android:src="@drawable/status_prev" />
+			android:src="@drawable/media_backward_normal" />
 
 		<ImageButton 
 		    android:id="@+id/control_play"
@@ -85,7 +85,7 @@
 			android:layout_marginTop="2dip" 
 			android:layout_weight="0.0"
 			android:background="@drawable/btn_bg" 
-			android:src="@drawable/status_pause" />
+			android:src="@drawable/media_pause_normal" />
 
 		<ImageButton 
 		    android:id="@+id/control_stop"
@@ -96,7 +96,7 @@
 			android:layout_marginTop="2dip" 
 			android:layout_weight="0.0"
 			android:background="@drawable/btn_bg" 
-			android:src="@drawable/status_stop" />
+			android:src="@drawable/media_stop_normal" />
 
 		<ImageButton 
 		    android:id="@+id/control_next"
@@ -107,7 +107,7 @@
 			android:layout_marginTop="2dip" 
 			android:layout_weight="0.0"
 			android:background="@drawable/btn_bg" 
-			android:src="@drawable/status_next" />
+			android:src="@drawable/media_forward_normal" />
 
 	</LinearLayout>
 </LinearLayout>

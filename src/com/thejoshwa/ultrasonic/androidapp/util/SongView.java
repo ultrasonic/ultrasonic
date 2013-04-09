@@ -108,7 +108,7 @@ public class SongView extends LinearLayout implements Checkable {
 
         int trackNumber = song.getTrack();
         
-        if (trackNumber != 0) {
+        if (Util.shouldShowTrackNumber(getContext()) && trackNumber != 0) {
             trackTextView.setText(String.format("%02d.", trackNumber));	
         } else {
         	trackTextView.setVisibility(View.GONE);
@@ -117,7 +117,7 @@ public class SongView extends LinearLayout implements Checkable {
         titleTextView.setText(song.getTitle());
         artistTextView.setText(artist);
         durationTextView.setText(Util.formatDuration(song.getDuration()));
-        starImageView.setImageDrawable(song.getStarred() ? getResources().getDrawable(R.drawable.star) : getResources().getDrawable(R.drawable.star_hollow));
+        starImageView.setImageDrawable(song.getStarred() ? getResources().getDrawable(R.drawable.ic_star_full) : getResources().getDrawable(R.drawable.ic_star_hollow));
         checkedTextView.setVisibility(checkable && !song.isVideo() ? View.VISIBLE : View.GONE);
 
         if (Util.isOffline(getContext())) {
@@ -131,10 +131,10 @@ public class SongView extends LinearLayout implements Checkable {
             	final String id = song.getId();
             	
             	if (!isStarred) {
-					starImageView.setImageDrawable(getResources().getDrawable(R.drawable.star));
+					starImageView.setImageDrawable(getResources().getDrawable(R.drawable.ic_star_full));
 					song.setStarred(true);
             	} else {
-            		starImageView.setImageDrawable(getResources().getDrawable(R.drawable.star_hollow));
+            		starImageView.setImageDrawable(getResources().getDrawable(R.drawable.ic_star_hollow));
             		song.setStarred(false);
             	}
             	
@@ -173,7 +173,7 @@ public class SongView extends LinearLayout implements Checkable {
         int rightImage = 0;
 
         if (completeFile.exists()) {
-            leftImage = downloadFile.isSaved() ? R.drawable.ic_stat_saved : R.drawable.ic_stat_downloaded;
+            leftImage = downloadFile.isSaved() ? R.drawable.ic_menu_save : R.drawable.ic_stat_downloaded;
         }
 
         if (downloadFile.isDownloading() && !downloadFile.isDownloadCancelled() && partialFile.exists()) {
@@ -185,9 +185,9 @@ public class SongView extends LinearLayout implements Checkable {
         statusTextView.setCompoundDrawablesWithIntrinsicBounds(leftImage, 0, rightImage, 0);
         
     	if (!song.getStarred()) {
-			starImageView.setImageDrawable(getResources().getDrawable(R.drawable.star_hollow));
+			starImageView.setImageDrawable(getResources().getDrawable(R.drawable.ic_star_hollow));
     	} else {
-    		starImageView.setImageDrawable(getResources().getDrawable(R.drawable.star));
+    		starImageView.setImageDrawable(getResources().getDrawable(R.drawable.ic_star_full));
     	}
 
         boolean playing = downloadService.getCurrentPlaying() == downloadFile;

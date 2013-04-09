@@ -11,7 +11,7 @@
         a:layout_height="fill_parent"
         a:checkMark="@drawable/btn_check_custom"
         a:gravity="center_vertical"
-        a:paddingLeft="0dip" />
+        a:paddingLeft="1dip" />
 
     <LinearLayout
         a:layout_width="0dip"
@@ -69,7 +69,8 @@
                 a:layout_weight="1"
                 a:ellipsize="middle"
                 a:singleLine="true"
-                a:textAppearance="?android:attr/textAppearanceSmall" />
+                a:textAppearance="?android:attr/textAppearanceSmall"
+                a:paddingLeft="4dip" />
 
             <TextView
                 a:id="@+id/song_duration"
@@ -87,9 +88,10 @@
         a:id="@+id/song_star"
         a:layout_width="wrap_content"
         a:layout_height="fill_parent"
+        a:paddingRight="3dip"
         a:background="@android:color/transparent"
         a:focusable="false"
         a:gravity="center_vertical"
-        a:src="@drawable/star_hollow" />
+        a:src="@drawable/ic_star_hollow" />
 
 </LinearLayout>

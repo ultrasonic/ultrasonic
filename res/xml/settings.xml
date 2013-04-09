@@ -86,15 +86,24 @@
 
         <CheckBoxPreference
             a:defaultValue="true"
+            a:key="serverScaling"
+            a:summary="@string/settings.server_scaling_summary"
+            a:title="@string/settings.server_scaling_title" />
+        <CheckBoxPreference
+            a:defaultValue="true"
             a:key="displayBitrateWithArtist"
             a:summary="@string/settings.display_bitrate_summary"
             a:title="@string/settings.display_bitrate" />
-        
-                <CheckBoxPreference
+        <CheckBoxPreference
             a:defaultValue="false"
             a:key="useFolderForAlbumArtist"
             a:summary="@string/settings.use_folder_for_album_artist_summary"
             a:title="@string/settings.use_folder_for_album_artist" />
+        <CheckBoxPreference
+            a:defaultValue="true"
+            a:key="showTrackNumber"
+            a:summary="@string/settings.show_track_number_summary"
+            a:title="@string/settings.show_track_number" />        
     </PreferenceCategory>
     <PreferenceCategory a:title="@string/settings.network_title" >
         <ListPreference
@@ -214,11 +223,6 @@
             a:title="@string/settings.use_stream_proxy" />
     </PreferenceCategory>
     <PreferenceCategory a:title="@string/settings.other_title" >
-        <CheckBoxPreference
-            a:defaultValue="true"
-            a:key="serverScaling"
-            a:summary="@string/settings.server_scaling_summary"
-            a:title="@string/settings.server_scaling_title" />
         <CheckBoxPreference
             a:defaultValue="false"
             a:key="scrobble"

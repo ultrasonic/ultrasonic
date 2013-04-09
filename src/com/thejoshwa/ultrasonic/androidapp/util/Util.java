@@ -590,6 +590,11 @@ public class Util extends DownloadActivity {
         return prefs.getBoolean(Constants.PREFERENCES_KEY_USE_FOLDER_FOR_ALBUM_ARTIST, false);
     }
     
+    public static boolean shouldShowTrackNumber(Context context) {
+        SharedPreferences prefs = getPreferences(context);
+        return prefs.getBoolean(Constants.PREFERENCES_KEY_SHOW_TRACK_NUMBER, false);
+    }
+    
     public static void info(Context context, int titleId, int messageId) {
         showDialog(context, android.R.drawable.ic_dialog_info, titleId, messageId);
     }

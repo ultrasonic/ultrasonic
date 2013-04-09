@@ -108,6 +108,7 @@ public class DownloadServiceImpl extends Service implements DownloadService {
     private StreamProxy proxy;
     private static MusicDirectory.Entry currentSong;
     private RemoteControlClient remoteControlClient;
+    private AudioManager audioManager;
     private int secondaryProgress = -1;
         
     static {
@@ -145,6 +146,7 @@ public class DownloadServiceImpl extends Service implements DownloadService {
     public void onCreate() {
         super.onCreate();
 
+        audioManager = (AudioManager) this.getSystemService(Context.AUDIO_SERVICE);
         mediaPlayer = new MediaPlayer();
         mediaPlayer.setWakeMode(this, PowerManager.PARTIAL_WAKE_LOCK);
         mediaPlayer.setAudioStreamType(AudioManager.STREAM_MUSIC);
@@ -204,7 +206,6 @@ public class DownloadServiceImpl extends Service implements DownloadService {
             visualizerController.release();
         }
         
-    	AudioManager audioManager = (AudioManager) this.getSystemService(Context.AUDIO_SERVICE);
     	audioManager.unregisterRemoteControlClient(remoteControlClient);
         notification = null;
         instance = null;
@@ -588,7 +589,6 @@ public class DownloadServiceImpl extends Service implements DownloadService {
     
     @Override
     public synchronized void stop() {
-    	AudioManager audioManager = (AudioManager) this.getSystemService(Context.AUDIO_SERVICE);
 		audioManager.abandonAudioFocus(_afChangeListener);
     	
         try {
@@ -688,6 +688,9 @@ public class DownloadServiceImpl extends Service implements DownloadService {
         Util.broadcastPlaybackStatusChange(this, playerState);
 
         this.playerState = playerState;
+        if (this.playerState == PlayerState.STARTED) {
+    		audioManager.requestAudioFocus(_afChangeListener, AudioManager.STREAM_MUSIC, AudioManager.AUDIOFOCUS_GAIN);
+        }
         
         setRemoteControl();
         
@@ -753,9 +756,6 @@ public class DownloadServiceImpl extends Service implements DownloadService {
 
     private void setRemoteControl() {
     	if (Util.isLockScreenEnabled(this)) {
-        	AudioManager audioManager = (AudioManager) this.getSystemService(Context.AUDIO_SERVICE);
-    		audioManager.requestAudioFocus(_afChangeListener, AudioManager.STREAM_MUSIC, AudioManager.AUDIOFOCUS_GAIN);
-    		
         	if (remoteControlClient == null) {
         		Intent intent = new Intent(Intent.ACTION_MEDIA_BUTTON);
         		intent.setComponent(new ComponentName(this.getPackageName(), MediaButtonIntentReceiver.class.getName()));
@@ -1102,33 +1102,48 @@ public class DownloadServiceImpl extends Service implements DownloadService {
 
         @Override
         public void execute() {
-            setPlayerState(DOWNLOADING);
+        	if (!getIsCompleteFileAvailable(downloadFile)) {
+                setPlayerState(DOWNLOADING);
 
-            while (!bufferComplete()) {
-                Util.sleepQuietly(100L);
-                if (isCancelled()) {
-                    return;
+                while (!bufferComplete()) {
+                    Util.sleepQuietly(50L);
+                    if (isCancelled()) {
+                        return;
+                    }
                 }
-            }
+
+        	}
+        	
             doPlay(downloadFile, position, true);
         }
-
-        private boolean bufferComplete() {
+        
+        private boolean getIsCompleteFileAvailable(DownloadFile downloadFile) {
             boolean completeFileAvailable = downloadFile.isCompleteFileAvailable();
+           
             if (completeFileAvailable) {
             	Log.i(TAG, "Buffering complete: Complete file exists (" + completeFileAvailable + ")");
             	return true;
             }
             
-            long size = partialFile.length();
-            if (size >= expectedFileSize) {
-            	Log.i(TAG, "Buffering complete: " + partialFile + " (" + size + "/" + expectedFileSize + ")");
-            	return true;
-            }
-            
-            Log.i(TAG, "Buffering incomplete: " + partialFile + " (" + size + "/" + expectedFileSize + ")");
             return false;
         }
+
+		private boolean bufferComplete() {
+			if (!getIsCompleteFileAvailable(downloadFile)) {
+				long size = partialFile.length();
+				if (size >= expectedFileSize) {
+					Log.i(TAG, "Buffering complete: " + partialFile + " ("
+							+ size + "/" + expectedFileSize + ")");
+					return true;
+				}
+
+				Log.i(TAG, "Buffering incomplete: " + partialFile + " (" + size
+						+ "/" + expectedFileSize + ")");
+				return false;
+			} else {
+				return true;
+			}
+		}
 
         @Override
         public String toString() {
