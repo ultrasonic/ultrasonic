@@ -211,6 +211,11 @@
             a:key="showNotification"
             a:summary="@string/settings.show_notification_summary"
             a:title="@string/settings.show_notification" />
+         <CheckBoxPreference
+            a:defaultValue="true"
+            a:key="alwaysShowNotification"
+            a:summary="@string/settings.show_notification_always_summary"
+            a:title="@string/settings.show_notification_always" />
         <CheckBoxPreference
             a:defaultValue="true"
             a:key="showLockScreen"
