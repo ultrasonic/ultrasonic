@@ -1,91 +1,108 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:a="http://schemas.android.com/apk/res/android"
-          package="com.thejoshwa.ultrasonic.androidapp"
-          a:versionCode="4"
-          a:versionName="1.0.0.28" a:installLocation="auto">
+    package="com.thejoshwa.ultrasonic.androidapp"
+    a:installLocation="auto"
+    a:versionCode="4"
+    a:versionName="1.0.0.28" >
 
-    <uses-permission a:name="android.permission.INTERNET"/>
-    <uses-permission a:name="android.permission.READ_PHONE_STATE"/>
-    <uses-permission a:name="android.permission.ACCESS_NETWORK_STATE"/>
-    <uses-permission a:name="android.permission.WAKE_LOCK"/>
-    <uses-permission a:name="android.permission.WRITE_EXTERNAL_STORAGE"/>
-    <uses-permission a:name="android.permission.RECORD_AUDIO"/>
-    <uses-permission a:name="android.permission.MODIFY_AUDIO_SETTINGS"/>
+    <uses-permission a:name="android.permission.INTERNET" />
+    <uses-permission a:name="android.permission.READ_PHONE_STATE" />
+    <uses-permission a:name="android.permission.ACCESS_NETWORK_STATE" />
+    <uses-permission a:name="android.permission.WAKE_LOCK" />
+    <uses-permission a:name="android.permission.WRITE_EXTERNAL_STORAGE" />
+    <uses-permission a:name="android.permission.RECORD_AUDIO" />
+    <uses-permission a:name="android.permission.MODIFY_AUDIO_SETTINGS" />
 
-    <uses-sdk a:minSdkVersion="14" a:targetSdkVersion="17"/>
+    <uses-sdk
+        a:minSdkVersion="14"
+        a:targetSdkVersion="17" />
 
-    <supports-screens a:anyDensity="true" a:xlargeScreens="true" a:largeScreens="true" a:normalScreens="true" a:smallScreens="true"/>
+    <supports-screens
+        a:anyDensity="true"
+        a:largeScreens="true"
+        a:normalScreens="true"
+        a:smallScreens="true"
+        a:xlargeScreens="true" />
 
-    <application a:label="@string/common.appname" a:icon="@drawable/ic_launcher" a:allowBackup="false">
-
-        <activity a:name="com.thejoshwa.ultrasonic.androidapp.activity.MainActivity"
-                  a:label="UltraSonic"
-                  a:configChanges="orientation|keyboardHidden"
-                  a:launchMode="standard">
+    <application
+        a:allowBackup="false"
+        a:icon="@drawable/ic_launcher"
+        a:label="@string/common.appname" >
+        <activity
+            a:name=".activity.MainActivity"
+            a:configChanges="orientation|keyboardHidden"
+            a:label="UltraSonic"
+            a:launchMode="standard" >
             <intent-filter>
-                <action a:name="android.intent.action.MAIN"/>
-                <category a:name="android.intent.category.LAUNCHER"/>
+                <action a:name="android.intent.action.MAIN" />
+
+                <category a:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-
-        <activity a:name="com.thejoshwa.ultrasonic.androidapp.activity.SelectArtistActivity"
-                  a:configChanges="orientation|keyboardHidden"
-                  a:launchMode="standard"/>
-
-        <activity a:name="com.thejoshwa.ultrasonic.androidapp.activity.SelectAlbumActivity"
-                  a:configChanges="orientation|keyboardHidden"/>
-
-        <activity a:name="com.thejoshwa.ultrasonic.androidapp.activity.SearchActivity"
-                  a:label="@string/search.label"
-                  a:configChanges="orientation|keyboardHidden"
-                  a:launchMode="singleTask"
-                  />
-
-        <activity a:name="com.thejoshwa.ultrasonic.androidapp.activity.SelectPlaylistActivity"
-                  a:label="@string/playlist.label"
-                  a:configChanges="orientation|keyboardHidden"
-                  a:launchMode="standard"/>
-
-        <activity a:name="com.thejoshwa.ultrasonic.androidapp.activity.DownloadActivity"
-                  a:configChanges="keyboardHidden"
-                  a:launchMode="singleTask"
-                  a:theme="@android:style/Theme.NoTitleBar.Fullscreen"
-                  />
-        
-        <activity a:name="com.thejoshwa.ultrasonic.androidapp.activity.SettingsActivity"
-                  a:configChanges="orientation|keyboardHidden"
-                  a:launchMode="singleTask"/>
-
-        <activity a:name="com.thejoshwa.ultrasonic.androidapp.activity.HelpActivity"
-                  a:label="@string/help.label"
-                  a:launchMode="singleTask"/>
-
-        <activity a:name="com.thejoshwa.ultrasonic.androidapp.activity.LyricsActivity"
-                  a:configChanges="orientation|keyboardHidden"
-                  a:launchMode="singleTask"/>
-
-        <activity a:name="com.thejoshwa.ultrasonic.androidapp.activity.EqualizerActivity"
-                  a:label="@string/equalizer.label"
-                  a:configChanges="orientation|keyboardHidden"
-                  a:launchMode="singleTask"/>
-        
-        <activity a:name="com.thejoshwa.ultrasonic.androidapp.activity.VoiceQueryReceiverActivity"
-                  a:launchMode="singleTask">
+        <activity
+            a:name=".activity.SelectArtistActivity"
+            a:configChanges="orientation|keyboardHidden"
+            a:launchMode="standard" />
+        <activity
+            a:name=".activity.SelectAlbumActivity"
+            a:configChanges="orientation|keyboardHidden" />
+        <activity
+            a:name=".activity.SearchActivity"
+            a:configChanges="orientation|keyboardHidden"
+            a:label="@string/search.label"
+            a:launchMode="singleTask" />
+        <activity
+            a:name=".activity.SelectPlaylistActivity"
+            a:configChanges="orientation|keyboardHidden"
+            a:label="@string/playlist.label"
+            a:launchMode="standard" />
+        <activity
+            a:name=".activity.DownloadActivity"
+            a:configChanges="keyboardHidden"
+            a:launchMode="singleTask"
+            a:theme="@android:style/Theme.NoTitleBar.Fullscreen" />
+        <activity
+            a:name=".activity.SettingsActivity"
+            a:configChanges="orientation|keyboardHidden"
+            a:launchMode="singleTask" />
+        <activity
+            a:name=".activity.HelpActivity"
+            a:label="@string/help.label"
+            a:launchMode="singleTask" />
+        <activity
+            a:name=".activity.LyricsActivity"
+            a:configChanges="orientation|keyboardHidden"
+            a:launchMode="singleTask" />
+        <activity
+            a:name=".activity.EqualizerActivity"
+            a:configChanges="orientation|keyboardHidden"
+            a:label="@string/equalizer.label"
+            a:launchMode="singleTask" />
+        <activity
+            a:name=".activity.VoiceQueryReceiverActivity"
+            a:launchMode="singleTask" >
             <intent-filter>
                 <action a:name="android.media.action.MEDIA_PLAY_FROM_SEARCH" />
+
                 <category a:name="android.intent.category.DEFAULT" />
             </intent-filter>
         </activity>
-
-        <activity a:name="com.thejoshwa.ultrasonic.androidapp.activity.QueryReceiverActivity"
-                  a:launchMode="singleTask">
+        <activity
+            a:name=".activity.QueryReceiverActivity"
+            a:launchMode="singleTask" >
             <intent-filter>
-                <action a:name="android.intent.action.SEARCH"/>
+                <action a:name="android.intent.action.SEARCH" />
             </intent-filter>
-            <meta-data a:name="android.app.searchable" a:resource="@xml/searchable"/>
+
+            <meta-data
+                a:name="android.app.searchable"
+                a:resource="@xml/searchable" />
         </activity>
-        
-        <service a:name="com.thejoshwa.ultrasonic.androidapp.service.DownloadServiceImpl" a:label="UltraSonic Download Service">
+
+        <service
+            a:name=".service.DownloadServiceImpl"
+            a:label="UltraSonic Download Service"
+            a:exported="false" >
             <intent-filter>
                 <action a:name="com.thejoshwa.ultrasonic.androidapp.CMD_TOGGLEPAUSE" />
                 <action a:name="com.thejoshwa.ultrasonic.androidapp.CMD_PLAY" />
@@ -96,31 +113,43 @@
             </intent-filter>
         </service>
 
-        <receiver a:name="com.thejoshwa.ultrasonic.androidapp.receiver.MediaButtonIntentReceiver">
-            <intent-filter a:priority="2147483647">
+        <receiver a:name=".receiver.MediaButtonIntentReceiver" >
+            <intent-filter a:priority="2147483647" >
                 <action a:name="android.intent.action.MEDIA_BUTTON" />
             </intent-filter>
         </receiver>
-
-        <receiver a:name="com.thejoshwa.ultrasonic.androidapp.receiver.BluetoothIntentReceiver">
+        <receiver a:name=".receiver.BluetoothIntentReceiver" >
             <intent-filter>
-                <action a:name="android.bluetooth.a2dp.action.SINK_STATE_CHANGED"/>
+                <action a:name="android.bluetooth.a2dp.action.SINK_STATE_CHANGED" />
             </intent-filter>
         </receiver>
-
-        <receiver a:name="com.thejoshwa.ultrasonic.androidapp.provider.UltraSonicAppWidgetProvider4x1" a:label="UltraSonic (4x1)" >
+        <receiver
+            a:name=".provider.UltraSonicAppWidgetProvider4x1"
+            a:label="UltraSonic (4x1)" >
             <intent-filter>
-                <action a:name="android.appwidget.action.APPWIDGET_UPDATE"/>
+                <action a:name="android.appwidget.action.APPWIDGET_UPDATE" />
             </intent-filter>
-            <meta-data a:name="android.appwidget.provider" a:resource="@xml/appwidget_info_4x1"/>
+
+            <meta-data
+                a:name="android.appwidget.provider"
+                a:resource="@xml/appwidget_info_4x1" />
         </receiver>
 
-        <provider a:name="com.thejoshwa.ultrasonic.androidapp.provider.SearchSuggestionProvider"
-                  a:authorities="com.thejoshwa.ultrasonic.androidapp.provider.SearchSuggestionProvider"/>
+        <provider
+            a:name=".provider.SearchSuggestionProvider"
+            a:authorities="com.thejoshwa.ultrasonic.androidapp.provider.SearchSuggestionProvider" />
 
-        <meta-data a:name="android.app.default_searchable"
-                   a:value="com.thejoshwa.ultrasonic.androidapp.activity.QueryReceiverActivity"/>
+        <meta-data
+            a:name="android.app.default_searchable"
+            a:value="com.thejoshwa.ultrasonic.androidapp.activity.QueryReceiverActivity" />
 
+        <receiver
+            a:name=".receiver.A2dpIntentReceiver"
+            a:exported="false" >
+            <intent-filter>
+                <action a:name="com.android.music.playstatusrequest" />
+            </intent-filter>
+        </receiver>
     </application>
 
 </manifest>

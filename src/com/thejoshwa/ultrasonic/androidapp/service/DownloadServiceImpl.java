@@ -74,6 +74,9 @@ public class DownloadServiceImpl extends Service implements DownloadService {
     public static final String CMD_STOP = "com.thejoshwa.ultrasonic.androidapp.CMD_STOP";
     public static final String CMD_PREVIOUS = "com.thejoshwa.ultrasonic.androidapp.CMD_PREVIOUS";
     public static final String CMD_NEXT = "com.thejoshwa.ultrasonic.androidapp.CMD_NEXT";
+    
+    public static final String PLAYSTATUS_REQUEST = "com.android.music.playstatusrequest";
+    public static final String PLAYSTATUS_RESPONSE = "com.android.music.playstatusresponse";
 
     private final IBinder binder = new SimpleServiceBinder<DownloadService>(this);
     private MediaPlayer mediaPlayer;
@@ -433,11 +436,12 @@ public class DownloadServiceImpl extends Service implements DownloadService {
         
         if (currentPlaying != null) {
         	Util.broadcastNewTrackInfo(this, currentPlaying.getSong());
+        	Util.broadcastA2dpMetaDataChange(this, getInstance());
         } else {
             Util.broadcastNewTrackInfo(this, null);
         }
         
-        setRemoteControl();
+        updateRemoteControl();
 
         // Update widget
         UltraSonicAppWidgetProvider4x1.getInstance().notifyChange(this, this, playerState == PlayerState.STARTED);
@@ -474,6 +478,7 @@ public class DownloadServiceImpl extends Service implements DownloadService {
     {
         int current = getCurrentPlayingIndex();
         if (current == -1) {
+        	resetProgressBar();
             play(0);
         } else {
             play(current);
@@ -538,8 +543,10 @@ public class DownloadServiceImpl extends Service implements DownloadService {
 
         // Restart song if played more than five seconds.
         if (getPlayerPosition() > 5000 || index == 0) {
+        	resetProgressBar();
             play(index);
         } else {
+        	resetProgressBar();
             play(index - 1);
         }
     }
@@ -548,12 +555,24 @@ public class DownloadServiceImpl extends Service implements DownloadService {
     public synchronized void next() {
         int index = getCurrentPlayingIndex();
         if (index != -1) {
+        	resetProgressBar();
             play(index + 1);
         }
     }
+    
+    private void resetProgressBar()
+    {
+    	SeekBar progressBar = DownloadActivity.getProgressBar();
+    	if (progressBar != null) {
+    		progressBar.setProgress(0);
+    	}
+    	secondaryProgress = -1;
+    }
 
     private void onSongCompleted() {
+    	resetProgressBar();
         int index = getCurrentPlayingIndex();
+        
         if (index != -1) {
             switch (getRepeatMode()) {
                 case OFF:
@@ -593,6 +612,8 @@ public class DownloadServiceImpl extends Service implements DownloadService {
     	
         try {
             if (playerState == STARTED) {
+            	resetProgressBar();
+            	
                 if (jukeboxEnabled) {
                     jukeboxService.stop();
                 } else {
@@ -643,7 +664,7 @@ public class DownloadServiceImpl extends Service implements DownloadService {
             if (jukeboxEnabled) {
                 return jukeboxService.getPositionSeconds() * 1000;
             } else {
-                return mediaPlayer.getCurrentPosition();
+           		return mediaPlayer.getCurrentPosition();
             }
         } catch (Exception x) {
             handleError(x);
@@ -677,35 +698,40 @@ public class DownloadServiceImpl extends Service implements DownloadService {
     synchronized void setPlayerState(PlayerState playerState) {
         Log.i(TAG, this.playerState.name() + " -> " + playerState.name() + " (" + currentPlaying + ")");
 
-        if (playerState == PAUSED) {
+        this.playerState = playerState;
+        
+        if (this.playerState == PAUSED) {
             lifecycleSupport.serializeDownloadQueue();
         }
         
-        boolean showWhenPaused = (playerState == PlayerState.PAUSED && Util.isNotificationAlwaysEnabled(this));
-
-        boolean show = playerState == PlayerState.STARTED || showWhenPaused;
-        boolean hide = playerState == PlayerState.IDLE || playerState == PlayerState.STOPPED || !showWhenPaused;
-        Util.broadcastPlaybackStatusChange(this, playerState);
-
-        this.playerState = playerState;
         if (this.playerState == PlayerState.STARTED) {
     		audioManager.requestAudioFocus(_afChangeListener, AudioManager.STREAM_MUSIC, AudioManager.AUDIOFOCUS_GAIN);
         }
         
-        setRemoteControl();
+        boolean showWhenPaused = (this.playerState == PlayerState.PAUSED && Util.isNotificationAlwaysEnabled(this));
+
+        boolean show = this.playerState == PlayerState.STARTED || showWhenPaused;
+        boolean hide = this.playerState == PlayerState.IDLE || this.playerState == PlayerState.STOPPED || !showWhenPaused;
+        Util.broadcastPlaybackStatusChange(this, this.playerState);
+        Util.broadcastA2dpPlayStatusChange(this, this.playerState, getInstance());
+
+        // Set remote control
+       updateRemoteControl();
         
         // Update widget
-        UltraSonicAppWidgetProvider4x1.getInstance().notifyChange(this, this, playerState == PlayerState.STARTED);
+        UltraSonicAppWidgetProvider4x1.getInstance().notifyChange(this, this, this.playerState == PlayerState.STARTED);
         
        	if (show) {
-       		Util.showPlayingNotification(this, this, handler, currentPlaying.getSong(), this.notification, this.playerState);
+       		if (currentPlaying != null) {
+       			Util.showPlayingNotification(this, this, handler, currentPlaying.getSong(), this.notification, this.playerState);
+       		}
        	} else if (hide) {
        		Util.hidePlayingNotification(this, this, handler);
        	}
         
-        if (playerState == STARTED) {
+        if (this.playerState == STARTED) {
             scrobbler.scrobble(this, currentPlaying, false);
-        } else if (playerState == COMPLETED) {
+        } else if (this.playerState == COMPLETED) {
             scrobbler.scrobble(this, currentPlaying, true);
         }
     }
@@ -754,7 +780,7 @@ public class DownloadServiceImpl extends Service implements DownloadService {
         jukeboxService.adjustVolume(up);
     }
 
-    private void setRemoteControl() {
+    private void updateRemoteControl() {
     	if (Util.isLockScreenEnabled(this)) {
         	if (remoteControlClient == null) {
         		Intent intent = new Intent(Intent.ACTION_MEDIA_BUTTON);
@@ -828,7 +854,14 @@ public class DownloadServiceImpl extends Service implements DownloadService {
     private synchronized void bufferAndPlay() {
         reset();
 
-        bufferTask = new BufferTask(currentPlaying, 0);
+        int progressBarProgress = 0;
+        SeekBar progressBar = DownloadActivity.getProgressBar();
+        
+        if (progressBar != null) {
+        	progressBarProgress = progressBar.getProgress();
+        }
+        
+        bufferTask = new BufferTask(currentPlaying, progressBarProgress);
         bufferTask.start();
     }
 
@@ -1083,21 +1116,27 @@ public class DownloadServiceImpl extends Service implements DownloadService {
         private final File partialFile;
 
         public BufferTask(DownloadFile downloadFile, int position) {
-            this.downloadFile = downloadFile;
-            this.position = position;
-            partialFile = downloadFile.getPartialFile();
-            int bufferLength = downloadFile.getBufferLength();
+    		this.downloadFile = downloadFile;
+    		this.position = position;
+    		partialFile = downloadFile.getPartialFile();
 
-			// Calculate roughly how many bytes buffer length corresponds to.
-			int bitRate = downloadFile.getBitRate();
-			long byteCount = Math.max(100000, bitRate * 1024 / 8 * bufferLength);
+        	if (!Util.isStreamProxyEnabled(getBaseContext())) {
+        		int bufferLength = downloadFile.getBufferLength();
 
-			// Find out how large the file should grow before resuming playback.
-			if (position == 0) {
-				expectedFileSize = byteCount;
-			} else {
-				expectedFileSize = partialFile.length() + byteCount;
-			}
+        		// Calculate roughly how many bytes buffer length corresponds to.
+        		int bitRate = downloadFile.getBitRate();
+        		long byteCount = Math.max(100000, bitRate * 1024 / 8 * bufferLength);
+
+        		// 	Find out how large the file should grow before resuming playback.
+        		if (position == 0) {
+        			expectedFileSize = byteCount;
+        		} else {
+        			expectedFileSize = partialFile.length() + byteCount;
+        		}
+        	} else {
+        		Log.i(TAG, "StreamProxy is enabled, will let media player control buffer size");
+        		expectedFileSize = 0;
+        	}
         }
 
         @Override
@@ -1111,7 +1150,6 @@ public class DownloadServiceImpl extends Service implements DownloadService {
                         return;
                     }
                 }
-
         	}
         	
             doPlay(downloadFile, position, true);
