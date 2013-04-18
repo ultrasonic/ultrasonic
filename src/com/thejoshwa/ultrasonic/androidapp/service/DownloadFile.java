@@ -28,6 +28,7 @@ import android.content.Context;
 import android.os.PowerManager;
 import android.util.DisplayMetrics;
 import android.util.Log;
+
 import com.thejoshwa.ultrasonic.androidapp.domain.MusicDirectory;
 import com.thejoshwa.ultrasonic.androidapp.util.CancellableTask;
 import com.thejoshwa.ultrasonic.androidapp.util.FileUtil;
@@ -62,15 +63,21 @@ public class DownloadFile {
         this.save = save;
         saveFile = FileUtil.getSongFile(context, song);
         bitRate = Util.getMaxBitrate(context);
-        partialFile = new File(saveFile.getParent(), FileUtil.getBaseName(saveFile.getName()) +
-                "." + bitRate + ".partial." + FileUtil.getExtension(saveFile.getName()));
-        completeFile = new File(saveFile.getParent(), FileUtil.getBaseName(saveFile.getName()) +
-                ".complete." + FileUtil.getExtension(saveFile.getName()));
+        partialFile = new File(saveFile.getParent(), FileUtil.getBaseName(saveFile.getName()) + "." + bitRate + ".partial." + FileUtil.getExtension(saveFile.getName()));
+        completeFile = new File(saveFile.getParent(), FileUtil.getBaseName(saveFile.getName()) + ".complete." + FileUtil.getExtension(saveFile.getName()));
         mediaStoreService = new MediaStoreService(context);
     }
 
     public MusicDirectory.Entry getSong() {
         return song;
+    }
+    
+    public boolean isOffline() {
+    	return Util.isOffline(context);
+    }
+    
+    public boolean isStreamProxyEnabled() {
+    	return Util.isStreamProxyEnabled(context);
     }
 
     /**
@@ -198,6 +205,7 @@ public class DownloadFile {
             InputStream in = null;
             FileOutputStream out = null;
             PowerManager.WakeLock wakeLock = null;
+            
             try {
 
                 if (Util.isScreenLitOnDownload(context)) {
@@ -218,6 +226,10 @@ public class DownloadFile {
                         Log.i(TAG, completeFile + " already exists. Skipping.");
                     }
                     return;
+                }
+                if (isOffline()) {
+                	Log.i(TAG, "We are offline. Skipping.");
+                	return;
                 }
 
                 MusicService musicService = MusicServiceFactory.getMusicService(context);

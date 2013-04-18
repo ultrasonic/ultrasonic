@@ -222,7 +222,7 @@
             a:summary="@string/settings.show_lockscreen_controls_summary"
             a:title="@string/settings.show_lockscreen_controls" />
         <CheckBoxPreference
-            a:defaultValue="true"
+            a:defaultValue="false"
             a:key="useStreamProxy"
             a:summary="@string/settings.use_stream_proxy_summary"
             a:title="@string/settings.use_stream_proxy" />

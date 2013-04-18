@@ -67,8 +67,17 @@ public class OfflineMusicService extends RESTMusicService {
             if (file.isDirectory()) {
                 Artist artist = new Artist();
                 artist.setId(file.getPath());
-                artist.setIndex(file.getName().substring(0, 1));
                 artist.setName(file.getName());
+                
+                String artistIndex = "";
+                
+                try {
+                	artistIndex = file.getName().substring(0, 1);
+                }
+                catch (Exception ex) { }
+                
+                artist.setIndex(artistIndex);
+                
                 artists.add(artist);
             }
         }
@@ -125,7 +134,7 @@ public class OfflineMusicService extends RESTMusicService {
         	String disc = null;
         	String year = null;
         	String genre = null;
-        	String bitrate = null;
+        	//String bitrate = null;
         	String duration = null;
         	String hasVideo = null;
         	
@@ -144,9 +153,7 @@ public class OfflineMusicService extends RESTMusicService {
                 duration = mmr.extractMetadata(MediaMetadataRetriever.METADATA_KEY_DURATION);
                 hasVideo = mmr.extractMetadata(MediaMetadataRetriever.METADATA_KEY_HAS_VIDEO);
                 mmr.release();
-        	} catch (Exception ex) {
-        		
-        	}
+        	} catch (Exception ex) { }
         	
             entry.setArtist(artist != null ? artist : file.getParentFile().getParentFile().getName());
             entry.setAlbum(album != null ? album : file.getParentFile().getName());
@@ -157,74 +164,77 @@ public class OfflineMusicService extends RESTMusicService {
             
             entry.setVideo(hasVideo != null);
             
+            Log.i("OfflineMusicService", "Offline Stuff: " + track);
+            
             if (track != null) {
-          		int slashIndex = track.indexOf("/");
-          		if (slashIndex != 0) {
-          			track = track.substring(0, slashIndex);
-          		}
+            	
+            	int trackValue = 0;
+            
+            	try {
+            		int slashIndex = track.indexOf("/");
           		
-          		int trackValue = 0;
+            		if (slashIndex > 0) {
+          				track = track.substring(0, slashIndex);
+            		}
           		
-          		try {
           			trackValue = Integer.parseInt(track);
-          		} 
-          		catch(NumberFormatException nfe) {
-          			
-          		}
-          		
+            	} 
+          		catch(Exception ex) {            Log.e("OfflineMusicService", "Offline Stuff: " + ex); }
+            	
+                Log.i("OfflineMusicService", "Offline Stuff: Setting Track: " + trackValue);
+            	
             	entry.setTrack(trackValue);
             }
             
             if (disc != null) {
-          		int slashIndex = disc.indexOf("/");
-          		if (slashIndex != 0) {
-          			disc = disc.substring(0, slashIndex);
-          		}
+            	int discValue = 0;
+            	
+            	try {
+            		int slashIndex = disc.indexOf("/");
           		
-          		int discValue = 0;
+            		if (slashIndex > 0) {
+            			disc = disc.substring(0, slashIndex);
+            		}
           		
-          		try {
           			discValue = Integer.parseInt(disc);
           		} 
-          		catch(NumberFormatException nfe) {
-          			
-          		}
-          		
-            	entry.setDiscNumber(discValue);
+          		catch(Exception ex) { }
+            	
+      			entry.setDiscNumber(discValue);
             }
             
             if (year != null) {
             	int yearValue = 0;
+            	
           		try {
           			yearValue = Integer.parseInt(year);
-          		} catch(NumberFormatException nfe) {
-          			
-          		}
-            	entry.setYear(yearValue);	
+          		} catch(Exception ex) { }
+          		
+      			entry.setYear(yearValue);            		
             }
             
             if (genre != null) {
             	entry.setGenre(genre);
             }
             
-            if (bitrate != null) {
-              	int bitRateValue = 0;
-          		try {
-          			bitRateValue = Integer.parseInt(bitrate) / 1000;
-          		} catch(NumberFormatException nfe) {
-          			
-          		}
-            	entry.setBitRate(bitRateValue);
-            }
+//            if (bitrate != null) {
+//              	int bitRateValue = 0;
+//              	
+//          		try {
+//          			bitRateValue = Integer.parseInt(bitrate) / 1000;
+//          		} catch(Exception ex) { }
+//          		
+//      			entry.setBitRate(bitRateValue);
+//            }
             
             if (duration != null) {
             	long durationValue = 0;
+            	
           		try {
           			durationValue = Long.parseLong(duration);
-          		} catch(NumberFormatException nfe) {
-          			
-          		}
-          		durationValue = TimeUnit.MILLISECONDS.toSeconds(durationValue);
+          			durationValue = TimeUnit.MILLISECONDS.toSeconds(durationValue);
+          		} catch(Exception ex) { }
+          		
             	entry.setDuration(durationValue);
             }
         }
@@ -232,9 +242,11 @@ public class OfflineMusicService extends RESTMusicService {
         entry.setSuffix(FileUtil.getExtension(file.getName().replace(".complete", "")));
 
         File albumArt = FileUtil.getAlbumArtFile(context, entry);
+        
         if (albumArt.exists()) {
             entry.setCoverArt(albumArt.getPath());
         }
+        
         return entry;
     }
 

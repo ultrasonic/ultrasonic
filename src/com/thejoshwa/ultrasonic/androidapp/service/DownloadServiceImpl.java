@@ -478,7 +478,6 @@ public class DownloadServiceImpl extends Service implements DownloadService {
     {
         int current = getCurrentPlayingIndex();
         if (current == -1) {
-        	resetProgressBar();
             play(0);
         } else {
             play(current);
@@ -543,10 +542,8 @@ public class DownloadServiceImpl extends Service implements DownloadService {
 
         // Restart song if played more than five seconds.
         if (getPlayerPosition() > 5000 || index == 0) {
-        	resetProgressBar();
             play(index);
         } else {
-        	resetProgressBar();
             play(index - 1);
         }
     }
@@ -555,22 +552,11 @@ public class DownloadServiceImpl extends Service implements DownloadService {
     public synchronized void next() {
         int index = getCurrentPlayingIndex();
         if (index != -1) {
-        	resetProgressBar();
             play(index + 1);
         }
     }
-    
-    private void resetProgressBar()
-    {
-    	SeekBar progressBar = DownloadActivity.getProgressBar();
-    	if (progressBar != null) {
-    		progressBar.setProgress(0);
-    	}
-    	secondaryProgress = -1;
-    }
 
     private void onSongCompleted() {
-    	resetProgressBar();
         int index = getCurrentPlayingIndex();
         
         if (index != -1) {
@@ -612,8 +598,6 @@ public class DownloadServiceImpl extends Service implements DownloadService {
     	
         try {
             if (playerState == STARTED) {
-            	resetProgressBar();
-            	
                 if (jukeboxEnabled) {
                     jukeboxService.stop();
                 } else {
@@ -680,7 +664,7 @@ public class DownloadServiceImpl extends Service implements DownloadService {
                 return duration * 1000;
             }
         }
-        if (playerState != IDLE && playerState != DOWNLOADING && playerState != PlayerState.PREPARING) {
+        if (playerState != IDLE && playerState != DOWNLOADING && playerState != PREPARING) {
             try {
                 return mediaPlayer.getDuration();
             } catch (Exception x) {
@@ -716,7 +700,7 @@ public class DownloadServiceImpl extends Service implements DownloadService {
         Util.broadcastA2dpPlayStatusChange(this, this.playerState, getInstance());
 
         // Set remote control
-       updateRemoteControl();
+        updateRemoteControl();
         
         // Update widget
         UltraSonicAppWidgetProvider4x1.getInstance().notifyChange(this, this, this.playerState == PlayerState.STARTED);
@@ -854,14 +838,7 @@ public class DownloadServiceImpl extends Service implements DownloadService {
     private synchronized void bufferAndPlay() {
         reset();
 
-        int progressBarProgress = 0;
-        SeekBar progressBar = DownloadActivity.getProgressBar();
-        
-        if (progressBar != null) {
-        	progressBarProgress = progressBar.getProgress();
-        }
-        
-        bufferTask = new BufferTask(currentPlaying, progressBarProgress);
+        bufferTask = new BufferTask(currentPlaying, 0);
         bufferTask.start();
     }
 
@@ -934,6 +911,8 @@ public class DownloadServiceImpl extends Service implements DownloadService {
             mediaPlayer.setOnPreparedListener(new MediaPlayer.OnPreparedListener() {
 				@Override
 				public void onPrepared(MediaPlayer mp) {
+		            Log.i(TAG, "Media player prepared");
+					
 					setPlayerState(PREPARED);
 					
 					SeekBar progressBar = DownloadActivity.getProgressBar();
@@ -963,8 +942,10 @@ public class DownloadServiceImpl extends Service implements DownloadService {
             String playUrl = url;
             
             // Only use stream proxy if it is enabled and no complete file is available
-            if (Util.isStreamProxyEnabled(this) && !downloadFile.isCompleteFileAvailable()) {
+            if (!downloadFile.isOffline() && downloadFile.isStreamProxyEnabled() && !downloadFile.isCompleteFileAvailable()) {
                 if (proxy == null) {
+                    Log.i(TAG, "Creating StreamProxy instance");
+                	
                     proxy = new StreamProxy();
                     proxy.start();
                 }
@@ -973,8 +954,13 @@ public class DownloadServiceImpl extends Service implements DownloadService {
                 playUrl = String.format("http://127.0.0.1:%d/%s", proxy.getPort(), url);
             }
             
+            Log.i(TAG, "Setting media player data source: " + playUrl);
+            
             mediaPlayer.setDataSource(playUrl);
             setPlayerState(PREPARING);
+            
+            Log.i(TAG, "Preparing media player");
+            		
             mediaPlayer.prepareAsync();
         } catch (Exception x) {
             handleError(x);
@@ -1120,28 +1106,23 @@ public class DownloadServiceImpl extends Service implements DownloadService {
     		this.position = position;
     		partialFile = downloadFile.getPartialFile();
 
-        	if (!Util.isStreamProxyEnabled(getBaseContext())) {
-        		int bufferLength = downloadFile.getBufferLength();
+       		int bufferLength = downloadFile.getBufferLength();
 
-        		// Calculate roughly how many bytes buffer length corresponds to.
-        		int bitRate = downloadFile.getBitRate();
-        		long byteCount = Math.max(100000, bitRate * 1024 / 8 * bufferLength);
+       		// Calculate roughly how many bytes buffer length corresponds to.
+       		int bitRate = downloadFile.getBitRate();
+       		long byteCount = Math.max(100000, bitRate * 1024 / 8 * bufferLength);
 
-        		// 	Find out how large the file should grow before resuming playback.
-        		if (position == 0) {
-        			expectedFileSize = byteCount;
-        		} else {
-        			expectedFileSize = partialFile.length() + byteCount;
-        		}
-        	} else {
-        		Log.i(TAG, "StreamProxy is enabled, will let media player control buffer size");
-        		expectedFileSize = 0;
-        	}
+       		// 	Find out how large the file should grow before resuming playback.
+       		if (position == 0) {
+       			expectedFileSize = byteCount;
+       		} else {
+       			expectedFileSize = partialFile.length() + byteCount;
+       		}
         }
 
         @Override
         public void execute() {
-        	if (!getIsCompleteFileAvailable(downloadFile)) {
+        	if (!downloadFile.isOffline() && !getIsCompleteFileAvailable(downloadFile)) {
                 setPlayerState(DOWNLOADING);
 
                 while (!bufferComplete()) {
@@ -1167,18 +1148,18 @@ public class DownloadServiceImpl extends Service implements DownloadService {
         }
 
 		private boolean bufferComplete() {
-			if (!getIsCompleteFileAvailable(downloadFile)) {
+			if (!downloadFile.isOffline() && getIsCompleteFileAvailable(downloadFile)) {
 				long size = partialFile.length();
+				
 				if (size >= expectedFileSize) {
-					Log.i(TAG, "Buffering complete: " + partialFile + " ("
-							+ size + "/" + expectedFileSize + ")");
+					Log.i(TAG, "Buffering complete: " + partialFile + " (" + size + "/" + expectedFileSize + ")");
 					return true;
 				}
 
-				Log.i(TAG, "Buffering incomplete: " + partialFile + " (" + size
-						+ "/" + expectedFileSize + ")");
+				Log.i(TAG, "Buffering incomplete: " + partialFile + " (" + size + "/" + expectedFileSize + ")");
 				return false;
 			} else {
+				Log.i(TAG, "Buffering complete: " + partialFile);
 				return true;
 			}
 		}

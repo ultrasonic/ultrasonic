@@ -97,8 +97,13 @@ public abstract class ModalBackgroundTask<T> extends BackgroundTask<T> {
                     getHandler().post(new Runnable() {
                         @Override
                         public void run() {
-                            progressDialog.dismiss();
-                            error(t);
+                        	try {
+                        		progressDialog.dismiss();
+                            } catch (Exception e) {
+                                // nothing
+                            }
+
+                        	error(t);
                         }
                     });
                 }
