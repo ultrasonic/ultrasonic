@@ -10,7 +10,7 @@
         <Button a:id="@+id/select_album_pin"
                 a:text="@string/common.pin"
                 a:textAppearance="?android:attr/textAppearanceSmall"
-                a:layout_marginLeft="6dp"
+                a:layout_marginLeft="3dp"
                 a:layout_marginRight="3dp"
                 a:layout_weight="1"
                 a:layout_width="0dp"
@@ -29,7 +29,7 @@
                 a:text="@string/common.delete"
                 a:textAppearance="?android:attr/textAppearanceSmall"
                 a:layout_marginLeft="3dp"
-                a:layout_marginRight="6dp"
+                a:layout_marginRight="3dp"
                 a:layout_weight="1"
                 a:layout_width="0dp"
                 a:layout_height="fill_parent"/>
@@ -38,8 +38,8 @@
                 a:text="@string/select_album.more"
                 a:textAppearance="?android:attr/textAppearanceSmall"
                 a:visibility="gone"
-                a:layout_marginLeft="6dp"
-                a:layout_marginRight="6dp"
+                a:layout_marginLeft="3dp"
+                a:layout_marginRight="3dp"
                 a:layout_weight="1"
                 a:layout_width="0dp"
                 a:layout_height="fill_parent"/>

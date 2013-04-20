@@ -75,7 +75,12 @@ public class SelectArtistActivity extends SubsonicTabActivity implements Adapter
 
         registerForContextMenu(artistList);
 
-        setTitle(Util.isOffline(this) ? R.string.music_library_label_offline : R.string.music_library_label);
+        String title = getIntent().getStringExtra(Constants.INTENT_EXTRA_NAME_ALBUM_LIST_TITLE);
+        if (title == null) {
+        	setTitle(Util.isOffline(this) ? R.string.music_library_label_offline : R.string.music_library_label);
+        } else {
+        	setTitle(title);
+        }
 
         musicFolders = null;
         load();
@@ -94,6 +99,8 @@ public class SelectArtistActivity extends SubsonicTabActivity implements Adapter
     private void refresh() {
         finish();
         Intent intent = getIntent();
+        String title = getIntent().getStringExtra(Constants.INTENT_EXTRA_NAME_ALBUM_LIST_TITLE);
+        intent.putExtra(Constants.INTENT_EXTRA_NAME_ALBUM_LIST_TITLE, title);
         intent.putExtra(Constants.INTENT_EXTRA_NAME_REFRESH, true);
         Util.startActivityWithoutTransition(this, intent);
     }

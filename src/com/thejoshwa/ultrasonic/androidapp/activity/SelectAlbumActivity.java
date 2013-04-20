@@ -168,16 +168,23 @@ public class SelectAlbumActivity extends SubsonicTabActivity {
         String playlistId = getIntent().getStringExtra(Constants.INTENT_EXTRA_NAME_PLAYLIST_ID);
         String playlistName = getIntent().getStringExtra(Constants.INTENT_EXTRA_NAME_PLAYLIST_NAME);
         String albumListType = getIntent().getStringExtra(Constants.INTENT_EXTRA_NAME_ALBUM_LIST_TYPE);
+        String genreName = getIntent().getStringExtra(Constants.INTENT_EXTRA_NAME_GENRE_NAME);
+        int albumListTitle = getIntent().getIntExtra(Constants.INTENT_EXTRA_NAME_ALBUM_LIST_TITLE, 0);
         int getStarredTracks = getIntent().getIntExtra(Constants.INTENT_EXTRA_NAME_STARRED, 0);
+        int getRandomTracks = getIntent().getIntExtra(Constants.INTENT_EXTRA_NAME_RANDOM, 0);
         int albumListSize = getIntent().getIntExtra(Constants.INTENT_EXTRA_NAME_ALBUM_LIST_SIZE, 0);
         int albumListOffset = getIntent().getIntExtra(Constants.INTENT_EXTRA_NAME_ALBUM_LIST_OFFSET, 0);
 
         if (playlistId != null) {
             getPlaylist(playlistId, playlistName);
         } else if (albumListType != null) {
-            getAlbumList(albumListType, albumListSize, albumListOffset);
+            getAlbumList(albumListType, albumListTitle, albumListSize, albumListOffset);
+        } else if (genreName != null) {
+        	getSongsForGenre(genreName, albumListSize, albumListOffset);
         } else if (getStarredTracks != 0) {
         	getStarred();
+        } else if (getRandomTracks != 0) {
+        	getRandom(albumListSize);        	
         } else {
             getMusicDirectory(id, name);
         }
@@ -328,6 +335,44 @@ public class SelectAlbumActivity extends SubsonicTabActivity {
         }.execute();
     }
     
+    private void getSongsForGenre(final String genre, final int count, final int offset) {
+        setTitle(genre);
+
+        new LoadTask() {
+            @Override
+            protected MusicDirectory load(MusicService service) throws Exception {
+                return service.getSongsByGenre(genre, count, offset, SelectAlbumActivity.this, this);
+            }
+            
+            @Override
+            protected void done(Pair<MusicDirectory, Boolean> result) {
+                    // Hide more button when results are less than album list size
+                    if (result.getFirst().getChildren().size() < getIntent().getIntExtra(Constants.INTENT_EXTRA_NAME_ALBUM_LIST_SIZE, 0)) {
+                    	moreButton.setVisibility(View.GONE);
+                    } else {
+                    	moreButton.setVisibility(View.VISIBLE);
+                    }
+
+                    moreButton.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View view) {
+                            Intent intent = new Intent(SelectAlbumActivity.this, SelectAlbumActivity.class);
+                            String genre = getIntent().getStringExtra(Constants.INTENT_EXTRA_NAME_GENRE_NAME);
+                            int size = getIntent().getIntExtra(Constants.INTENT_EXTRA_NAME_ALBUM_LIST_SIZE, 0);
+                            int offset = getIntent().getIntExtra(Constants.INTENT_EXTRA_NAME_ALBUM_LIST_OFFSET, 0) + size;
+
+                            intent.putExtra(Constants.INTENT_EXTRA_NAME_GENRE_NAME, genre);
+                            intent.putExtra(Constants.INTENT_EXTRA_NAME_ALBUM_LIST_SIZE, size);
+                            intent.putExtra(Constants.INTENT_EXTRA_NAME_ALBUM_LIST_OFFSET, offset);
+                            Util.startActivityWithoutTransition(SelectAlbumActivity.this, intent);
+                        }
+                    });
+                	
+                super.done(result);
+            }
+        }.execute();
+    }
+    
     private void getStarred() {
         setTitle(R.string.main_songs_starred);
 
@@ -335,6 +380,17 @@ public class SelectAlbumActivity extends SubsonicTabActivity {
             @Override
             protected MusicDirectory load(MusicService service) throws Exception {
                 return Util.getSongsFromSearchResult(service.getStarred(SelectAlbumActivity.this, this));
+            }
+        }.execute();
+    }
+    
+    private void getRandom(final int size) {
+        setTitle(R.string.main_songs_random);
+
+        new LoadTask() {
+            @Override
+            protected MusicDirectory load(MusicService service) throws Exception {
+                return service.getRandomSongs(size, SelectAlbumActivity.this, this);
             }
         }.execute();
     }
@@ -350,26 +406,10 @@ public class SelectAlbumActivity extends SubsonicTabActivity {
         }.execute();
     }
 
-    private void getAlbumList(final String albumListType, final int size, final int offset) {
+    private void getAlbumList(final String albumListType, final int albumListTitle, final int size, final int offset) {
     	showHeader = false;
     	
-        if ("newest".equals(albumListType)) {
-            setTitle(R.string.main_albums_newest);
-        } else if ("random".equals(albumListType)) {
-            setTitle(R.string.main_albums_random);
-        } else if ("highest".equals(albumListType)) {
-            setTitle(R.string.main_albums_highest);
-        } else if ("recent".equals(albumListType)) {
-            setTitle(R.string.main_albums_recent);
-        } else if ("frequent".equals(albumListType)) {
-            setTitle(R.string.main_albums_frequent);
-        } else if ("starred".equals(albumListType)) {
-            setTitle(R.string.main_albums_starred);
-        } else if ("alphabeticalByName".equals(albumListType)) {
-        	setTitle(R.string.main_albums_alphaByName);
-        } else if ("alphabeticalByArtist".equals(albumListType)) {
-        	setTitle(R.string.main_albums_alphaByArtist);
-        }
+    	setTitle(albumListTitle);
 
         new LoadTask() {
             @Override

@@ -20,7 +20,6 @@
 package com.thejoshwa.ultrasonic.androidapp.activity;
 
 import java.util.Arrays;
-
 import com.thejoshwa.ultrasonic.androidapp.R;
 import com.thejoshwa.ultrasonic.androidapp.service.DownloadService;
 import com.thejoshwa.ultrasonic.androidapp.service.DownloadServiceImpl;
@@ -28,6 +27,7 @@ import com.thejoshwa.ultrasonic.androidapp.util.Constants;
 import com.thejoshwa.ultrasonic.androidapp.util.MergeAdapter;
 import com.thejoshwa.ultrasonic.androidapp.util.Util;
 import com.thejoshwa.ultrasonic.androidapp.util.FileUtil;
+
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
@@ -53,7 +53,7 @@ public class MainActivity extends SubsonicTabActivity {
     private String theme;
 
     private static boolean infoDialogDisplayed;
-
+    
     /**
      * Called when the activity is first created.
      */
@@ -74,8 +74,16 @@ public class MainActivity extends SubsonicTabActivity {
         final View serverButton = buttons.findViewById(R.id.main_select_server);
         final TextView serverTextView = (TextView) serverButton.findViewById(R.id.main_select_server_2);
 
-        final View albumsTitle = buttons.findViewById(R.id.main_albums);
+        final View musicTitle = buttons.findViewById(R.id.main_music);
+        final View artistsButton = buttons.findViewById(R.id.main_artists_button);
+        final View albumsButton = buttons.findViewById(R.id.main_albums_button);
+        final View genresButton = buttons.findViewById(R.id.main_genres_button);
+
         final View songsTitle = buttons.findViewById(R.id.main_songs);
+        final View randomSongsButton = buttons.findViewById(R.id.main_songs_button);
+        final View songsStarredButton = buttons.findViewById(R.id.main_songs_starred);
+
+        final View albumsTitle = buttons.findViewById(R.id.main_albums);
         final View albumsNewestButton = buttons.findViewById(R.id.main_albums_newest);
         final View albumsRandomButton = buttons.findViewById(R.id.main_albums_random);
         final View albumsHighestButton = buttons.findViewById(R.id.main_albums_highest);
@@ -84,8 +92,7 @@ public class MainActivity extends SubsonicTabActivity {
         final View albumsFrequentButton = buttons.findViewById(R.id.main_albums_frequent);
         final View albumsAlphaByNameButton = buttons.findViewById(R.id.main_albums_alphaByName);
         final View albumsAlphaByArtistButton = buttons.findViewById(R.id.main_albums_alphaByArtist);
-        final View songsStarredButton = buttons.findViewById(R.id.main_songs_starred);
-        
+                
         final View dummyView = findViewById(R.id.main_dummy);
 
         int instance = Util.getActiveServer(this);
@@ -99,8 +106,10 @@ public class MainActivity extends SubsonicTabActivity {
         adapter.addViews(Arrays.asList(serverButton), true);
         
         if (!Util.isOffline(this)) {
+        	adapter.addView(musicTitle, false);
+      		adapter.addViews(Arrays.asList(artistsButton, albumsButton, genresButton), true);
         	adapter.addView(songsTitle, false);
-        	adapter.addViews(Arrays.asList(songsStarredButton), true);
+        	adapter.addViews(Arrays.asList(randomSongsButton, songsStarredButton), true);
             adapter.addView(albumsTitle, false);
             adapter.addViews(Arrays.asList(albumsNewestButton, albumsRecentButton, albumsFrequentButton, albumsHighestButton, albumsRandomButton, albumsStarredButton, albumsAlphaByNameButton, albumsAlphaByArtistButton), true);
         }
@@ -114,23 +123,31 @@ public class MainActivity extends SubsonicTabActivity {
                 if (view == serverButton) {
                     dummyView.showContextMenu();
                 } else if (view == albumsNewestButton) {
-                    showAlbumList("newest");
+                    showAlbumList("newest", R.string.main_albums_newest);
                 } else if (view == albumsRandomButton) {
-                    showAlbumList("random");
+                    showAlbumList("random", R.string.main_albums_random);
                 } else if (view == albumsHighestButton) {
-                    showAlbumList("highest");
+                    showAlbumList("highest", R.string.main_albums_highest);
                 } else if (view == albumsRecentButton) {
-                    showAlbumList("recent");
+                    showAlbumList("recent", R.string.main_albums_recent);
                 } else if (view == albumsFrequentButton) {
-                    showAlbumList("frequent");
+                    showAlbumList("frequent", R.string.main_albums_frequent);
                 } else if (view == albumsStarredButton) {
-                    showAlbumList("starred");
+                    showAlbumList("starred", R.string.main_albums_starred);
                 } else if (view == albumsAlphaByNameButton) {
-                	showAlbumList("alphabeticalByName");
+                	showAlbumList("alphabeticalByName", R.string.main_albums_alphaByName);
                 } else if (view == albumsAlphaByArtistButton) {
-                	showAlbumList("alphabeticalByArtist");
+                	showAlbumList("alphabeticalByArtist", R.string.main_albums_alphaByArtist);
                 } else if (view == songsStarredButton) {
                 	showStarredSongs();
+                } else if (view == artistsButton) {
+                	showArtists();
+                } else if (view == albumsButton) {
+                	showAlbumList("alphabeticalByName", R.string.main_albums_title);
+                } else if (view == randomSongsButton) {
+                	showRandomSongs();
+                } else if (view == genresButton) {
+                	showGenres();
                 }
             }
         });
@@ -283,9 +300,10 @@ public class MainActivity extends SubsonicTabActivity {
         }
     }
 
-    private void showAlbumList(String type) {
+    private void showAlbumList(String type, int title) {
         Intent intent = new Intent(this, SelectAlbumActivity.class);
         intent.putExtra(Constants.INTENT_EXTRA_NAME_ALBUM_LIST_TYPE, type);
+        intent.putExtra(Constants.INTENT_EXTRA_NAME_ALBUM_LIST_TITLE, title);
         intent.putExtra(Constants.INTENT_EXTRA_NAME_ALBUM_LIST_SIZE, Util.getMaxAlbums(this));
         intent.putExtra(Constants.INTENT_EXTRA_NAME_ALBUM_LIST_OFFSET, 0);
 		Util.startActivityWithoutTransition(this, intent);
@@ -294,6 +312,26 @@ public class MainActivity extends SubsonicTabActivity {
     private void showStarredSongs() {
     	Intent intent = new Intent(this, SelectAlbumActivity.class);
     	intent.putExtra(Constants.INTENT_EXTRA_NAME_STARRED, 1);
+    	Util.startActivityWithoutTransition(this, intent);
+    }
+    
+    private void showRandomSongs() {
+    	Intent intent = new Intent(this, SelectAlbumActivity.class);
+    	intent.putExtra(Constants.INTENT_EXTRA_NAME_RANDOM, 1);
+    	intent.putExtra(Constants.INTENT_EXTRA_NAME_ALBUM_LIST_SIZE, Util.getMaxSongs(this));
+    	Util.startActivityWithoutTransition(this, intent);
+    }
+    
+    private void showArtists() {
+    	Intent intent = new Intent(this, SelectArtistActivity.class);
+        intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+        intent.putExtra(Constants.INTENT_EXTRA_NAME_ALBUM_LIST_TITLE, "Artists");
+    	Util.startActivityWithoutTransition(this, intent);
+    }
+    
+    private void showGenres() {
+    	Intent intent = new Intent(this, SelectGenreActivity.class);
+        intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
     	Util.startActivityWithoutTransition(this, intent);
     }
 }

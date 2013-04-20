@@ -1102,27 +1102,26 @@ public class DownloadServiceImpl extends Service implements DownloadService {
         private final File partialFile;
 
         public BufferTask(DownloadFile downloadFile, int position) {
-    		this.downloadFile = downloadFile;
-    		this.position = position;
-    		partialFile = downloadFile.getPartialFile();
+            this.downloadFile = downloadFile;
+            this.position = position;
+            partialFile = downloadFile.getPartialFile();
+            int bufferLength = downloadFile.getBufferLength();
 
-       		int bufferLength = downloadFile.getBufferLength();
+			// Calculate roughly how many bytes buffer length corresponds to.
+			int bitRate = downloadFile.getBitRate();
+			long byteCount = Math.max(100000, bitRate * 1024 / 8 * bufferLength);
 
-       		// Calculate roughly how many bytes buffer length corresponds to.
-       		int bitRate = downloadFile.getBitRate();
-       		long byteCount = Math.max(100000, bitRate * 1024 / 8 * bufferLength);
-
-       		// 	Find out how large the file should grow before resuming playback.
-       		if (position == 0) {
-       			expectedFileSize = byteCount;
-       		} else {
-       			expectedFileSize = partialFile.length() + byteCount;
-       		}
+			// Find out how large the file should grow before resuming playback.
+			if (position == 0) {
+				expectedFileSize = byteCount;
+			} else {
+				expectedFileSize = partialFile.length() + byteCount;
+			}
         }
 
         @Override
         public void execute() {
-        	if (!downloadFile.isOffline() && !getIsCompleteFileAvailable(downloadFile)) {
+        	if (!getIsCompleteFileAvailable(downloadFile)) {
                 setPlayerState(DOWNLOADING);
 
                 while (!bufferComplete()) {
@@ -1131,6 +1130,7 @@ public class DownloadServiceImpl extends Service implements DownloadService {
                         return;
                     }
                 }
+
         	}
         	
             doPlay(downloadFile, position, true);
@@ -1148,18 +1148,18 @@ public class DownloadServiceImpl extends Service implements DownloadService {
         }
 
 		private boolean bufferComplete() {
-			if (!downloadFile.isOffline() && getIsCompleteFileAvailable(downloadFile)) {
+			if (!getIsCompleteFileAvailable(downloadFile)) {
 				long size = partialFile.length();
-				
 				if (size >= expectedFileSize) {
-					Log.i(TAG, "Buffering complete: " + partialFile + " (" + size + "/" + expectedFileSize + ")");
+					Log.i(TAG, "Buffering complete: " + partialFile + " ("
+							+ size + "/" + expectedFileSize + ")");
 					return true;
 				}
 
-				Log.i(TAG, "Buffering incomplete: " + partialFile + " (" + size + "/" + expectedFileSize + ")");
+				Log.i(TAG, "Buffering incomplete: " + partialFile + " (" + size
+						+ "/" + expectedFileSize + ")");
 				return false;
 			} else {
-				Log.i(TAG, "Buffering complete: " + partialFile);
 				return true;
 			}
 		}

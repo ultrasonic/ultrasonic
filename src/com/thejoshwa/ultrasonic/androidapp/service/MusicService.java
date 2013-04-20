@@ -24,6 +24,8 @@ import org.apache.http.HttpResponse;
 
 import android.content.Context;
 import android.graphics.Bitmap;
+
+import com.thejoshwa.ultrasonic.androidapp.domain.Genre;
 import com.thejoshwa.ultrasonic.androidapp.domain.Indexes;
 import com.thejoshwa.ultrasonic.androidapp.domain.JukeboxStatus;
 import com.thejoshwa.ultrasonic.androidapp.domain.Lyrics;
@@ -46,6 +48,8 @@ public interface MusicService {
     boolean isLicenseValid(Context context, ProgressListener progressListener) throws Exception;
 
     List<MusicFolder> getMusicFolders(Context context, ProgressListener progressListener) throws Exception;
+    
+    List<Genre> getGenres(Context context, ProgressListener progressListener) throws Exception;
     
     void star(String id, Context context, ProgressListener progressListener) throws Exception;
     
@@ -70,6 +74,8 @@ public interface MusicService {
     MusicDirectory getAlbumList(String type, int size, int offset, Context context, ProgressListener progressListener) throws Exception;
 
     MusicDirectory getRandomSongs(int size, Context context, ProgressListener progressListener) throws Exception;
+    
+    MusicDirectory getSongsByGenre(String genre, int count, int offset, Context context, ProgressListener progressListener) throws Exception;
     
     SearchResult getStarred(Context context, ProgressListener progressListener) throws Exception;
 

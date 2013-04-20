@@ -36,6 +36,7 @@ import android.graphics.BitmapFactory;
 import android.media.MediaMetadataRetriever;
 import android.util.Log;
 import com.thejoshwa.ultrasonic.androidapp.domain.Artist;
+import com.thejoshwa.ultrasonic.androidapp.domain.Genre;
 import com.thejoshwa.ultrasonic.androidapp.domain.Indexes;
 import com.thejoshwa.ultrasonic.androidapp.domain.JukeboxStatus;
 import com.thejoshwa.ultrasonic.androidapp.domain.Lyrics;
@@ -370,6 +371,16 @@ public class OfflineMusicService extends RESTMusicService {
         }
 
         return result;
+    }
+    
+    @Override
+    public MusicDirectory getSongsByGenre(String genre, int count, int offset, Context context, ProgressListener progressListener) throws Exception {
+    	throw new OfflineException("Getting Songs By Genre not available in offline mode");
+    }
+    
+    @Override
+    public List<Genre> getGenres(Context context, ProgressListener progressListener) throws Exception {
+    	throw new OfflineException("Getting Genres not available in offline mode");
     }
 
     private void listFilesRecursively(File parent, List<File> children) {

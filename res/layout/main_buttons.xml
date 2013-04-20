@@ -25,11 +25,37 @@
 		</LinearLayout>
 	</LinearLayout>
 
+	<TextView a:id="@+id/main_music" a:text="@string/main.music"
+		a:layout_width="fill_parent" a:layout_height="wrap_content"
+		a:textAppearance="?android:attr/textAppearanceSmall" a:textColor="@color/cyan"
+		a:gravity="center_vertical" a:paddingLeft="6dp" a:textAllCaps="true"
+		a:textStyle="bold" />
+	
+	<TextView a:id="@+id/main_artists_button" a:text="@string/main.artists_title"
+		a:layout_width="fill_parent" a:layout_height="wrap_content"
+		a:textAppearance="?android:attr/textAppearanceMedium" a:gravity="center_vertical"
+		a:paddingLeft="6dip" a:paddingRight="6dip" a:minHeight="40dip" />
+	
+	<TextView a:id="@+id/main_albums_button" a:text="@string/main.albums_title"
+		a:layout_width="fill_parent" a:layout_height="wrap_content"
+		a:textAppearance="?android:attr/textAppearanceMedium" a:gravity="center_vertical"
+		a:paddingLeft="6dip" a:paddingRight="6dip" a:minHeight="40dip" />
+	
+	<TextView a:id="@+id/main_genres_button" a:text="@string/main.genres_title"
+		a:layout_width="fill_parent" a:layout_height="wrap_content"
+		a:textAppearance="?android:attr/textAppearanceMedium" a:gravity="center_vertical"
+		a:paddingLeft="6dip" a:paddingRight="6dip" a:minHeight="40dip" />			
+	
 	<TextView a:id="@+id/main_songs" a:text="@string/main.songs_title"
 		a:layout_width="fill_parent" a:layout_height="wrap_content"
 		a:textAppearance="?android:attr/textAppearanceSmall" a:textColor="@color/cyan"
 		a:gravity="center_vertical" a:paddingLeft="6dp" a:textAllCaps="true"
 		a:textStyle="bold" />
+	
+	<TextView a:id="@+id/main_songs_button" a:text="@string/main.songs_random"
+		a:layout_width="fill_parent" a:layout_height="wrap_content"
+		a:textAppearance="?android:attr/textAppearanceMedium" a:gravity="center_vertical"
+		a:paddingLeft="6dip" a:paddingRight="6dip" a:minHeight="40dip" />	
 	
 	<TextView a:id="@+id/main_songs_starred" a:text="@string/main.songs_starred"
 		a:layout_width="fill_parent" a:layout_height="wrap_content"

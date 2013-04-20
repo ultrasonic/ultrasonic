@@ -7,14 +7,14 @@
     <include layout="@layout/tab_progress"/>
     
     <TextView
-            a:id="@+id/select_artist_empty"
-            a:text="@string/select_artist.empty"
+            a:id="@+id/select_genre_empty"
+            a:text="@string/select_genre.empty"
             a:visibility="gone"
             a:layout_width="fill_parent"
             a:layout_height="wrap_content"
             a:padding="10dip"/>
 
-    <ListView a:id="@+id/select_artist_list"
+    <ListView a:id="@+id/select_genre_list"
               a:textFilterEnabled="true"
               a:fastScrollEnabled="true"
               a:layout_width="fill_parent"

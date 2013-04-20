@@ -70,6 +70,7 @@ import android.net.NetworkInfo;
 import android.util.Log;
 import android.util.Xml;
 import com.thejoshwa.ultrasonic.androidapp.R;
+import com.thejoshwa.ultrasonic.androidapp.domain.Genre;
 import com.thejoshwa.ultrasonic.androidapp.domain.Indexes;
 import com.thejoshwa.ultrasonic.androidapp.domain.JukeboxStatus;
 import com.thejoshwa.ultrasonic.androidapp.domain.Lyrics;
@@ -82,6 +83,7 @@ import com.thejoshwa.ultrasonic.androidapp.domain.ServerInfo;
 import com.thejoshwa.ultrasonic.androidapp.domain.Version;
 import com.thejoshwa.ultrasonic.androidapp.service.parser.AlbumListParser;
 import com.thejoshwa.ultrasonic.androidapp.service.parser.ErrorParser;
+import com.thejoshwa.ultrasonic.androidapp.service.parser.GenreParser;
 import com.thejoshwa.ultrasonic.androidapp.service.parser.IndexesParser;
 import com.thejoshwa.ultrasonic.androidapp.service.parser.JukeboxStatusParser;
 import com.thejoshwa.ultrasonic.androidapp.service.parser.LicenseParser;
@@ -797,4 +799,40 @@ public class RESTMusicService implements MusicService {
         NetworkInfo networkInfo = manager.getActiveNetworkInfo();
         return networkInfo == null ? -1 : networkInfo.getType();
     }
+
+	@Override
+	public List<Genre> getGenres(Context context, ProgressListener progressListener) throws Exception {
+		checkServerVersion(context, "1.9", "Genres not supported.");
+        Reader reader = getReader(context, progressListener, "getGenres", null);
+        try {
+            return new GenreParser(context).parse(reader, progressListener);
+        } finally {
+            Util.close(reader);
+        }
+	}
+
+	@Override
+	public MusicDirectory getSongsByGenre(String genre, int count, int offset, Context context, ProgressListener progressListener) throws Exception {
+    	checkServerVersion(context, "1.9", "Genres not supported.");
+        HttpParams params = new BasicHttpParams();
+        HttpConnectionParams.setSoTimeout(params, SOCKET_READ_TIMEOUT_GET_RANDOM_SONGS);
+
+        List<String> parameterNames = new ArrayList<String>();
+        List<Object> parameterValues = new ArrayList<Object>();
+
+        parameterNames.add("genre");
+        parameterValues.add(genre);
+        parameterNames.add("count");
+        parameterValues.add(count);
+        parameterNames.add("offset");
+        parameterValues.add(offset);
+       
+        Reader reader = getReader(context, progressListener, "getSongsByGenre", params, parameterNames, parameterValues);
+        
+        try {
+            return new RandomSongsParser(context).parse(reader, progressListener);
+        } finally {
+            Util.close(reader);
+        }
+	}
 }

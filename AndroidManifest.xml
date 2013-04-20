@@ -2,8 +2,8 @@
 <manifest xmlns:a="http://schemas.android.com/apk/res/android"
     package="com.thejoshwa.ultrasonic.androidapp"
     a:installLocation="auto"
-    a:versionCode="6"
-    a:versionName="1.0.0.30" >
+    a:versionCode="7"
+    a:versionName="1.0.1.1" >
 
     <uses-permission a:name="android.permission.INTERNET" />
     <uses-permission a:name="android.permission.READ_PHONE_STATE" />
@@ -78,6 +78,10 @@
             a:configChanges="orientation|keyboardHidden"
             a:label="@string/equalizer.label"
             a:launchMode="singleTask" />
+        <activity
+            a:name=".activity.SelectGenreActivity"
+            a:configChanges="orientation|keyboardHidden"
+            a:launchMode="standard" />        
         <activity
             a:name=".activity.VoiceQueryReceiverActivity"
             a:launchMode="singleTask" >

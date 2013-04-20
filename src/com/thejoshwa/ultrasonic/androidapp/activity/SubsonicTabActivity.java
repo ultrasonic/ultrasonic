@@ -445,7 +445,7 @@ public class SubsonicTabActivity extends Activity implements OnClickListener{
 		        			Intent intent = new Intent(SubsonicTabActivity.this, DownloadActivity.class);
 		        			SubsonicTabActivity.this.startActivity(intent);
 		        		}
-		        		else if (name.equalsIgnoreCase("SelectArtistActivity") || name.equalsIgnoreCase("SelectAlbumActivity"))
+		        		else if (name.equalsIgnoreCase("SelectArtistActivity") || name.equalsIgnoreCase("SelectAlbumActivity") || name.equalsIgnoreCase("SelectGenreActivity"))
 		        		{
 			                Intent intent = new Intent(SubsonicTabActivity.this, MainActivity.class);
 			                intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
@@ -478,7 +478,7 @@ public class SubsonicTabActivity extends Activity implements OnClickListener{
 			                intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
 			                SubsonicTabActivity.this.startActivity(intent);
 		        		}
-		        		if (name.equalsIgnoreCase("SelectArtistActivity") || name.equalsIgnoreCase("SelectAlbumActivity"))
+		        		if (name.equalsIgnoreCase("SelectArtistActivity") || name.equalsIgnoreCase("SelectAlbumActivity") || name.equalsIgnoreCase("SelectGenreActivity"))
 		        		{
 			                Intent intent = new Intent(SubsonicTabActivity.this, SearchActivity.class);
 			                intent.putExtra(Constants.INTENT_EXTRA_REQUEST_SEARCH, true);
