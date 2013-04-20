@@ -43,6 +43,7 @@ public final class Constants {
     public static final String INTENT_EXTRA_NAME_PLAYLIST_ID = "subsonic.playlist.id";
     public static final String INTENT_EXTRA_NAME_PLAYLIST_NAME = "subsonic.playlist.name";
     public static final String INTENT_EXTRA_NAME_ALBUM_LIST_TYPE = "subsonic.albumlisttype";
+    public static final String INTENT_EXTRA_NAME_ALBUM_LIST_TITLE = "subsonic.albumlisttitle";
     public static final String INTENT_EXTRA_NAME_ALBUM_LIST_SIZE = "subsonic.albumlistsize";
     public static final String INTENT_EXTRA_NAME_ALBUM_LIST_OFFSET = "subsonic.albumlistoffset";
     public static final String INTENT_EXTRA_NAME_SHUFFLE = "subsonic.shuffle";
@@ -50,6 +51,8 @@ public final class Constants {
     public static final String INTENT_EXTRA_REQUEST_SEARCH = "subsonic.requestsearch";
     public static final String INTENT_EXTRA_NAME_EXIT = "subsonic.exit";
     public static final String INTENT_EXTRA_NAME_STARRED = "subsonic.starred";
+    public static final String INTENT_EXTRA_NAME_RANDOM = "subsonic.random";
+    public static final String INTENT_EXTRA_NAME_GENRE_NAME = "subsonic.genre";
 
     // Notification IDs.
     public static final int NOTIFICATION_ID_PLAYING = 100;
