@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout 
+    xmlns:android="http://schemas.android.com/apk/res/android"
+	android:id="@+id/now_playing" 
+	android:layout_width="fill_parent"
+	android:layout_height="wrap_content" 
+	android:background="@color/transparent"
+	android:layout_alignParentBottom="true"
+	android:visibility="gone" >
+
+    <LinearLayout 
+	    android:layout_width="fill_parent"
+		android:layout_height="wrap_content" 
+		android:orientation="horizontal">
+
+		<ImageView 
+		    android:id="@+id/now_playing_image"
+			android:layout_width="64.0dip" 
+			android:layout_height="64.0dip"
+			android:layout_weight="0.0" 
+			android:gravity="center" />
+
+		<LinearLayout 
+		    android:layout_width="0.0dp"
+			android:layout_height="wrap_content" 
+			android:layout_gravity="center_vertical"
+			android:layout_weight="1.0" 
+			android:orientation="vertical"
+			android:paddingLeft="11.0dip">
+
+			<TextView 
+			    android:id="@+id/now_playing_trackname"
+				android:textAppearance="?android:attr/textAppearanceMedium"
+				android:layout_width="wrap_content" 
+				android:layout_height="wrap_content"
+				android:layout_gravity="left" 
+				android:ellipsize="marquee"
+				android:focusable="true" 
+				android:singleLine="true" />
+
+			<TextView 
+			    android:id="@+id/now_playing_artist"
+				android:textAppearance="?android:attr/textAppearanceSmall"
+				android:layout_width="wrap_content" 
+				android:layout_height="wrap_content"
+				android:layout_gravity="left" 
+				android:ellipsize="end"
+				android:scrollHorizontally="true" 
+				android:singleLine="true" />
+
+			<TextView 
+			    android:id="@+id/now_playing_album"
+				android:textAppearance="?android:attr/textAppearanceSmall"
+				android:layout_width="wrap_content" 
+				android:layout_height="wrap_content"
+				android:layout_gravity="left" 
+				android:ellipsize="end"
+				android:scrollHorizontally="true" 
+				android:singleLine="true" />
+		</LinearLayout>
+
+		<ImageButton 
+		    android:id="@+id/now_playing_control_play"
+			android:layout_width="40dip" 
+			android:layout_height="40dip"
+			android:layout_gravity="center|right" 
+			android:layout_marginRight="5dip"
+			android:layout_marginTop="2dip" 
+			android:layout_weight="0.0"
+			android:background="@drawable/btn_bg" 
+			android:focusable="false"
+			android:src="@drawable/media_pause_normal" />
+
+	</LinearLayout>
+</LinearLayout>

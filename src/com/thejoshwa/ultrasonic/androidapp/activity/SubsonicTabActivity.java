@@ -1,5 +1,5 @@
 /*
- This file is part of Subsonic.
+ This file is part of UltraSonic.
 
  Subsonic is free software: you can redistribute it and/or modify
  it under the terms of the GNU General Public License as published by
@@ -27,32 +27,36 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageInfo;
+import android.graphics.Bitmap;
 import android.media.AudioManager;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
 import android.util.Log;
-import android.view.GestureDetector;
-import android.view.GestureDetector.SimpleOnGestureListener;
 import android.view.KeyEvent;
-import android.view.Menu;
-import android.view.MenuInflater;
 import android.view.MenuItem;
-import android.view.MotionEvent;
 import android.view.View;
 import android.view.View.OnClickListener;
-import android.view.Window;
+import android.widget.AdapterView;
+import android.widget.ImageButton;
+import android.widget.ImageView;
 import android.widget.TextView;
 import com.thejoshwa.ultrasonic.androidapp.R;
 import com.thejoshwa.ultrasonic.androidapp.domain.MusicDirectory;
+import com.thejoshwa.ultrasonic.androidapp.domain.MusicDirectory.Entry;
+import com.thejoshwa.ultrasonic.androidapp.domain.PlayerState;
+import com.thejoshwa.ultrasonic.androidapp.service.DownloadFile;
 import com.thejoshwa.ultrasonic.androidapp.service.DownloadService;
 import com.thejoshwa.ultrasonic.androidapp.service.DownloadServiceImpl;
 import com.thejoshwa.ultrasonic.androidapp.service.MusicService;
 import com.thejoshwa.ultrasonic.androidapp.service.MusicServiceFactory;
 import com.thejoshwa.ultrasonic.androidapp.util.Constants;
+import com.thejoshwa.ultrasonic.androidapp.util.FileUtil;
 import com.thejoshwa.ultrasonic.androidapp.util.ImageLoader;
 import com.thejoshwa.ultrasonic.androidapp.util.ModalBackgroundTask;
 import com.thejoshwa.ultrasonic.androidapp.util.Util;
+
+import net.simonvt.menudrawer.MenuDrawer;
 
 /**
  * @author Sindre Mehus
@@ -60,38 +64,21 @@ import com.thejoshwa.ultrasonic.androidapp.util.Util;
 public class SubsonicTabActivity extends Activity implements OnClickListener{
     private static final String TAG = SubsonicTabActivity.class.getSimpleName();
     private static ImageLoader IMAGE_LOADER;
-    private static final int SWIPE_MIN_DISTANCE = 120;
-    private static final int SWIPE_MAX_OFF_PATH = 250;
-    private static final int SWIPE_THRESHOLD_VELOCITY = 200;
-
+    private static SubsonicTabActivity instance;
+    
     private boolean destroyed;
-    private View homeButton;
-    private View musicButton;
-    private View searchButton;
-    private View searchSeparator;
-    private View playlistButton;
-    private View playlistSeparator;
-    private View nowPlayingButton;
     
-    //private boolean shortPress = false;
+    private static final String STATE_MENUDRAWER = "com.thejoshwa.ultrasonic.androidapp.menuDrawer";
+    private static final String STATE_ACTIVE_VIEW_ID = "com.thejoshwa.ultrasonic.androidapp.activeViewId";
+    private static boolean hasPeeked = false;
     
-    private GestureDetector gestureDetector;
-    View.OnTouchListener gestureListener;
+    protected MenuDrawer menuDrawer;
+    private int menuActiveViewId;
     
-	enum SwipeDirection
-	{
-		Left,
-		Right
-	};
-	
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-    	MenuInflater inflater = getMenuInflater();
-    	inflater.inflate(R.menu.common, menu);
-    	
-    	return true;
-    }
-
+    private View nowPlaying = null;
+    View searchMenuItem = null;
+    View playlistsMenuItem = null;
+    
     @Override
     protected void onCreate(Bundle bundle) {
         setUncaughtExceptionHandler();
@@ -101,113 +88,71 @@ public class SubsonicTabActivity extends Activity implements OnClickListener{
         startService(new Intent(this, DownloadServiceImpl.class));
         setVolumeControlStream(AudioManager.STREAM_MUSIC);
         
-        gestureDetector = new GestureDetector(new GestureActivity());
-        gestureListener = new View.OnTouchListener() {
-        	@Override
-        	public boolean onTouch(View v, MotionEvent event) {
-                return gestureDetector.onTouchEvent(event);
-            }
-        };
-    }
-
-    @Override
-    protected void onPostCreate(Bundle bundle) {
-        super.onPostCreate(bundle);
-
-        homeButton = findViewById(R.id.button_bar_home);
-        homeButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Intent intent = new Intent(SubsonicTabActivity.this, MainActivity.class);
-                intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-                Util.startActivityWithoutTransition(SubsonicTabActivity.this, intent);
-            }
-        });
-        
-        musicButton = findViewById(R.id.button_bar_music);
-        musicButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Intent intent = new Intent(SubsonicTabActivity.this, SelectArtistActivity.class);
-                intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-                Util.startActivityWithoutTransition(SubsonicTabActivity.this, intent);
-            }
-        });
-
-        searchSeparator = findViewById(R.id.button_bar_search_separator);
-        
-        searchButton = findViewById(R.id.button_bar_search);
-        searchButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Intent intent = new Intent(SubsonicTabActivity.this, SearchActivity.class);
-                intent.putExtra(Constants.INTENT_EXTRA_REQUEST_SEARCH, true);
-                Util.startActivityWithoutTransition(SubsonicTabActivity.this, intent);
-            }
-        });
-
-        playlistSeparator = findViewById(R.id.button_bar_playlists_separator);
-        
-        playlistButton = findViewById(R.id.button_bar_playlists);
-        playlistButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Intent intent = new Intent(SubsonicTabActivity.this, SelectPlaylistActivity.class);
-                intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-                Util.startActivityWithoutTransition(SubsonicTabActivity.this, intent);
-            }
-        });
-
-        nowPlayingButton = findViewById(R.id.button_bar_now_playing);
-        nowPlayingButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Util.startActivityWithoutTransition(SubsonicTabActivity.this, DownloadActivity.class);
-            }
-        });
-
-        if (this instanceof MainActivity) {
-            homeButton.setEnabled(false);
-        } else if (this instanceof SelectAlbumActivity || this instanceof SelectArtistActivity) {
-            musicButton.setEnabled(false);
-        } else if (this instanceof SearchActivity) {
-            searchButton.setEnabled(false);
-        } else if (this instanceof SelectPlaylistActivity) {
-            playlistButton.setEnabled(false);
-        } else if (this instanceof DownloadActivity || this instanceof LyricsActivity) {
-            nowPlayingButton.setEnabled(false);
+        if (bundle != null) {
+            menuActiveViewId = bundle.getInt(STATE_ACTIVE_VIEW_ID);
         }
 
-        updateButtonVisibility();
+        menuDrawer = MenuDrawer.attach(this, MenuDrawer.MENU_DRAG_WINDOW);
+        menuDrawer.setMenuView(R.layout.menu);
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.ICE_CREAM_SANDWICH) {
+            getActionBar().setDisplayHomeAsUpEnabled(true);
+        }
+
+        searchMenuItem = findViewById(R.id.menu_search);
+        playlistsMenuItem = findViewById(R.id.menu_playlists);
+        
+        findViewById(R.id.menu_home).setOnClickListener(this);
+        findViewById(R.id.menu_browse).setOnClickListener(this);
+        searchMenuItem.setOnClickListener(this);
+        playlistsMenuItem.setOnClickListener(this);
+        findViewById(R.id.menu_now_playing).setOnClickListener(this);
+        findViewById(R.id.menu_settings).setOnClickListener(this);
+        findViewById(R.id.menu_help).setOnClickListener(this);
+        findViewById(R.id.menu_exit).setOnClickListener(this);
+
+        TextView activeView = (TextView) findViewById(menuActiveViewId);
+        
+        if (activeView != null) {
+            menuDrawer.setActiveView(activeView);
+        }
+
+        if (!hasPeeked) {
+        	menuDrawer.peekDrawer();
+        	hasPeeked = true;
+        }
+        
+        instance = this;
     }
+    
+	@Override
+	protected void onPostCreate(Bundle bundle) {
+		super.onPostCreate(bundle);
+		
+		showNowPlaying();
+		
+		int visibility = Util.isOffline(this) ? View.GONE : View.VISIBLE;
+        searchMenuItem.setVisibility(visibility);
+        playlistsMenuItem.setVisibility(visibility);
+	}
 
     @Override
     protected void onResume() {
         super.onResume();
+        instance = this;
+        showNowPlaying();
         Util.registerMediaButtonEventReceiver(this);
     }
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
-
-            case R.id.menu_exit:
-                Intent intent = new Intent(this, MainActivity.class);
-                intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-                intent.putExtra(Constants.INTENT_EXTRA_NAME_EXIT, true);
-                Util.startActivityWithoutTransition(this, intent);
-                return true;
-
-            case R.id.menu_settings:
-                startActivity(new Intent(this, SettingsActivity.class));
-                return true;
-
-            case R.id.menu_help:
-                startActivity(new Intent(this, HelpActivity.class));
-                return true;
+        	case android.R.id.home:
+        		menuDrawer.toggleMenu();
+        		return true;
         }
 
-        return false;
+        return super.onOptionsItemSelected(item);
     }
 
     @Override
@@ -230,18 +175,6 @@ public class SubsonicTabActivity extends Activity implements OnClickListener{
             return true;
         }
         
-//	    if (keyCode == KeyEvent.KEYCODE_VOLUME_DOWN || keyCode == KeyEvent.KEYCODE_VOLUME_UP) {
-//	        if(event.getAction() == KeyEvent.ACTION_DOWN){
-//	            event.startTracking();
-//	            
-//	            if(event.getRepeatCount() == 0){
-//	                shortPress = true;
-//	            }
-//	            
-//	            return true;
-//	        }
-//	    }
-        
         return super.onKeyDown(keyCode, event);
     }
 
@@ -249,6 +182,45 @@ public class SubsonicTabActivity extends Activity implements OnClickListener{
     public void finish() {
         super.finish();
         Util.disablePendingTransition(this);
+    }
+    
+    private void showNowPlaying()
+    {
+    	nowPlaying = findViewById(R.id.now_playing);
+		
+		if (nowPlaying != null) {
+			final DownloadService downloadService = DownloadServiceImpl.getInstance();
+			
+			if (downloadService != null) {
+				PlayerState playerState = downloadService.getPlayerState();
+				
+				if (playerState.equals(PlayerState.PAUSED) || playerState.equals(PlayerState.STARTED)) {
+					DownloadFile file = downloadService.getCurrentPlaying();
+					if (file != null) {
+						Entry song = file.getSong();
+						showNowPlaying(this, (DownloadServiceImpl)downloadService, song, playerState);
+					}
+				} else {
+					hideNowPlaying();
+				}
+			}
+			
+			ImageButton nowPlayingControlPlay = (ImageButton) nowPlaying.findViewById(R.id.now_playing_control_play);	
+			
+			nowPlaying.setOnClickListener(new View.OnClickListener() {
+				@Override
+				public void onClick(View view) {
+					Util.startActivityWithoutTransition(SubsonicTabActivity.this, DownloadActivity.class);
+				}
+			});
+		
+			nowPlayingControlPlay.setOnClickListener(new View.OnClickListener() {
+				@Override
+				public void onClick(View view) {
+					downloadService.togglePlayPause();
+				}
+			});
+		}
     }
 
     private void applyTheme() {
@@ -263,17 +235,66 @@ public class SubsonicTabActivity extends Activity implements OnClickListener{
             setTheme(R.style.Fullscreenlight);
         }
     }
+    
+    public void showNowPlaying(final Context context, final DownloadServiceImpl downloadService, MusicDirectory.Entry song, PlayerState playerState) {
+    	nowPlaying = findViewById(R.id.now_playing);
+    	
+    	if (nowPlaying != null) {
+			nowPlaying.setVisibility(View.VISIBLE);
+			
+			String title = song.getTitle();
+			String artist = song.getArtist();
+			String album = song.getAlbum();
 
-    public boolean getIsDestroyed() {
-        return destroyed;
+			try {
+				ImageView nowPlayingImage = (ImageView) nowPlaying.findViewById(R.id.now_playing_image);
+				TextView nowPlayingTrack = (TextView) nowPlaying.findViewById(R.id.now_playing_trackname);
+				TextView nowPlayingArtist = (TextView) nowPlaying.findViewById(R.id.now_playing_artist);
+				TextView nowPlayingAlbum = (TextView) nowPlaying.findViewById(R.id.now_playing_album);
+
+				int size = context.getResources().getDrawable(R.drawable.unknown_album).getIntrinsicHeight();
+
+				Bitmap bitmap = FileUtil.getAlbumArtBitmap(context, song, size);
+
+				if (bitmap == null) {
+					// set default album art
+					nowPlayingImage.setImageResource(R.drawable.unknown_album);
+				} else {
+					nowPlayingImage.setImageBitmap(bitmap);
+				}
+
+				nowPlayingTrack.setText(title);
+				nowPlayingArtist.setText(artist);
+				nowPlayingAlbum.setText(album);
+
+			} catch (Exception x) {
+				Log.w(TAG, "Failed to get notification cover art", x);
+			}
+
+			ImageButton playButton = (ImageButton) nowPlaying.findViewById(R.id.now_playing_control_play);
+
+			if (playerState == PlayerState.PAUSED) {
+				playButton.setImageResource(R.drawable.ic_appwidget_music_play);
+			} else if (playerState == PlayerState.STARTED) {
+				playButton.setImageResource(R.drawable.ic_appwidget_music_pause);
+			}
+		}
     }
 
-    private void updateButtonVisibility() {
-        int visibility = Util.isOffline(this) ? View.GONE : View.VISIBLE;
-        searchButton.setVisibility(visibility);
-        searchSeparator.setVisibility(visibility);
-        playlistButton.setVisibility(visibility);
-        playlistSeparator.setVisibility(visibility);
+    public void hideNowPlaying() {
+    	nowPlaying = findViewById(R.id.now_playing);
+    	
+    	if (nowPlaying != null) {
+    		nowPlaying.setVisibility(View.GONE);
+    	}
+    }   
+
+    public static SubsonicTabActivity getInstance() {
+        return instance;
+    }
+    
+    public boolean getIsDestroyed() {
+        return destroyed;
     }
 
     public void setProgressVisible(boolean visible) {
@@ -396,8 +417,8 @@ public class SubsonicTabActivity extends Activity implements OnClickListener{
                 file = new File(Environment.getExternalStorageDirectory(), "ultrasonic-stacktrace.txt");
                 printWriter = new PrintWriter(file);
                 printWriter.println("Android API level: " + Build.VERSION.SDK_INT);
-                printWriter.println("Subsonic version name: " + packageInfo.versionName);
-                printWriter.println("Subsonic version code: " + packageInfo.versionCode);
+                printWriter.println("UltraSonic version name: " + packageInfo.versionName);
+                printWriter.println("UltraSonic version code: " + packageInfo.versionCode);
                 printWriter.println();
                 throwable.printStackTrace(printWriter);
                 Log.i(TAG, "Stack trace written to " + file);
@@ -413,147 +434,77 @@ public class SubsonicTabActivity extends Activity implements OnClickListener{
         }
     }
 
-	@Override
-	public void onClick(View arg0) {
-		// TODO Auto-generated method stub
-		
-	}
-	
-	class GestureActivity extends SimpleOnGestureListener {
-	    @Override
-	    public boolean onFling(MotionEvent e1, MotionEvent e2, float velocityX, float velocityY) {
-	        try {
-	            if (Math.abs(e1.getY() - e2.getY()) > SWIPE_MAX_OFF_PATH)
-	                return false;
-	            
-	            SwipeDirection swipe = null;
-	            
-	            // right to left swipe
-	            if(e1.getX() - e2.getX() > SWIPE_MIN_DISTANCE && Math.abs(velocityX) > SWIPE_THRESHOLD_VELOCITY) {
-	            	swipe = SwipeDirection.Left;
-	            }  else if (e2.getX() - e1.getX() > SWIPE_MIN_DISTANCE && Math.abs(velocityX) > SWIPE_THRESHOLD_VELOCITY) {
-	            	swipe = SwipeDirection.Right;
-	            }
-	            
-		        String name = SubsonicTabActivity.this.getClass().getSimpleName();
-		        
-		        switch (swipe)
-		        {
-		        	case Right:
-		        		if (name.equalsIgnoreCase("MainActivity"))
-		        		{
-		        			Intent intent = new Intent(SubsonicTabActivity.this, DownloadActivity.class);
-		        			SubsonicTabActivity.this.startActivity(intent);
-		        		}
-		        		else if (name.equalsIgnoreCase("SelectArtistActivity") || name.equalsIgnoreCase("SelectAlbumActivity") || name.equalsIgnoreCase("SelectGenreActivity"))
-		        		{
-			                Intent intent = new Intent(SubsonicTabActivity.this, MainActivity.class);
-			                intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-			                SubsonicTabActivity.this.startActivity(intent);
-		        		}
-		        		else if (name.equalsIgnoreCase("SearchActivity"))
-		        		{
-			                Intent intent = new Intent(SubsonicTabActivity.this, SelectArtistActivity.class);
-			                intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-			                SubsonicTabActivity.this.startActivity(intent);
-		        		}
-		        		else if (name.equalsIgnoreCase("SelectPlaylistActivity"))
-		        		{
-			                Intent intent = new Intent(SubsonicTabActivity.this, SearchActivity.class);
-			                intent.putExtra(Constants.INTENT_EXTRA_REQUEST_SEARCH, true);
-			                SubsonicTabActivity.this.startActivity(intent);
-		        		}
-		        		else if (name.equalsIgnoreCase("DownloadActivity") || name.equalsIgnoreCase("LyricsActivity"))
-		        		{
-			                Intent intent = new Intent(SubsonicTabActivity.this, SelectPlaylistActivity.class);
-			                intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-			                SubsonicTabActivity.this.startActivity(intent);
-		        		}
-		        				
-		        		break;
-		        	case Left:
-		        		if (name.equalsIgnoreCase("MainActivity"))
-		        		{
-			                Intent intent = new Intent(SubsonicTabActivity.this, SelectArtistActivity.class);
-			                intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-			                SubsonicTabActivity.this.startActivity(intent);
-		        		}
-		        		if (name.equalsIgnoreCase("SelectArtistActivity") || name.equalsIgnoreCase("SelectAlbumActivity") || name.equalsIgnoreCase("SelectGenreActivity"))
-		        		{
-			                Intent intent = new Intent(SubsonicTabActivity.this, SearchActivity.class);
-			                intent.putExtra(Constants.INTENT_EXTRA_REQUEST_SEARCH, true);
-			                SubsonicTabActivity.this.startActivity(intent);
-		        		}
-		        		else if (name.equalsIgnoreCase("SearchActivity"))
-		        		{
-			                Intent intent = new Intent(SubsonicTabActivity.this, SelectPlaylistActivity.class);
-			                intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-			                SubsonicTabActivity.this.startActivity(intent);
-		        		}
-		        		else if (name.equalsIgnoreCase("SelectPlaylistActivity"))
-		        		{
-		        			Intent intent = new Intent(SubsonicTabActivity.this, DownloadActivity.class);
-		        			SubsonicTabActivity.this.startActivity(intent);
-		        		}
-		        		else if (name.equalsIgnoreCase("DownloadActivity") || name.equalsIgnoreCase("LyricsActivity"))
-		        		{
-			                Intent intent = new Intent(SubsonicTabActivity.this, MainActivity.class);
-			                intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-			                SubsonicTabActivity.this.startActivity(intent);
-		        		}
-		        		
-		        		break;
-		        }
-	        } catch (Exception e) {
-	            // nothing
-	        }
+    @Override
+    public void onClick(View v) {
+        menuDrawer.setActiveView(v);
+        menuActiveViewId = v.getId();
         
-	        return false;
-	    }
-	}
+        Intent intent;
+        
+        switch (menuActiveViewId) {
+    		case R.id.menu_home:
+    			intent = new Intent(SubsonicTabActivity.this, MainActivity.class);
+    			intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+    			Util.startActivityWithoutTransition(SubsonicTabActivity.this, intent);
+    			break;
+    		case R.id.menu_browse:
+    			intent = new Intent(SubsonicTabActivity.this, SelectArtistActivity.class);
+    			intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+    			Util.startActivityWithoutTransition(SubsonicTabActivity.this, intent);
+    			break;
+    		case R.id.menu_search:
+    			intent = new Intent(SubsonicTabActivity.this, SearchActivity.class);
+    			intent.putExtra(Constants.INTENT_EXTRA_REQUEST_SEARCH, true);
+    			Util.startActivityWithoutTransition(SubsonicTabActivity.this, intent);
+    			break;
+    		case R.id.menu_playlists:
+    			intent = new Intent(SubsonicTabActivity.this, SelectPlaylistActivity.class);
+    			intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+    			Util.startActivityWithoutTransition(SubsonicTabActivity.this, intent);
+    			break;
+    		case R.id.menu_now_playing:
+    			Util.startActivityWithoutTransition(SubsonicTabActivity.this, DownloadActivity.class);
+    			break;
+    		case R.id.menu_settings:
+    			Util.startActivityWithoutTransition(SubsonicTabActivity.this, SettingsActivity.class);
+    			break;
+    		case R.id.menu_help:
+    			Util.startActivityWithoutTransition(SubsonicTabActivity.this, HelpActivity.class);
+    			break;
+    		case R.id.menu_exit:
+    			intent = new Intent(SubsonicTabActivity.this, MainActivity.class);
+    			intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+    			intent.putExtra(Constants.INTENT_EXTRA_NAME_EXIT, true);
+    			Util.startActivityWithoutTransition(SubsonicTabActivity.this, intent);
+    			break;
+        }
+        
+        menuDrawer.closeMenu();
+    }
 	
-//	@Override
-//	public boolean onKeyLongPress(int keyCode, KeyEvent event) {
-//    	DownloadService service = getDownloadService();
-//        int current = service.getCurrentPlayingIndex();
-//        
-//	    switch(keyCode){
-//    		case KeyEvent.KEYCODE_VOLUME_UP:
-//    			shortPress = false;
-//    			
-//    			if (current == -1) {
-//    				service.play(0);
-//    			} else {
-//    				current++;
-//    				service.play(current);
-//    			}
-//    			return true;
-//    		case KeyEvent.KEYCODE_VOLUME_DOWN:
-//    			shortPress = false;
-//    			
-//    			if (current == -1 || current == 0) {
-//    				service.play(0);
-//    			} else {
-//    				current--;
-//    				service.play(current);
-//    			}
-//    			return true;
-//	    }
-//	    
-//	    return super.onKeyLongPress(keyCode, event);
-//	}
-//	
-//	@Override
-//	public boolean onKeyUp(int keyCode, KeyEvent event) {
-//	    if (keyCode == KeyEvent.KEYCODE_VOLUME_DOWN) {
-//	        shortPress = false;
-//	        return true;
-//	    } else if (keyCode == KeyEvent.KEYCODE_VOLUME_UP){
-//	        shortPress = false;
-//	        return true;
-//	    }
-//	    
-//	    return super.onKeyUp(keyCode, event);
-//	}
+    @Override
+    protected void onRestoreInstanceState(Bundle inState) {
+        super.onRestoreInstanceState(inState);
+        menuDrawer.restoreState(inState.getParcelable(STATE_MENUDRAWER));
+    }
+
+    @Override
+    protected void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+        outState.putParcelable(STATE_MENUDRAWER, menuDrawer.saveState());
+        outState.putInt(STATE_ACTIVE_VIEW_ID, menuActiveViewId);
+    }
+	
+    @Override
+    public void onBackPressed() {
+        final int drawerState = menuDrawer.getDrawerState();
+        
+        if (drawerState == MenuDrawer.STATE_OPEN || drawerState == MenuDrawer.STATE_OPENING) {
+            menuDrawer.closeMenu();
+            return;
+        }
+
+        super.onBackPressed();
+    }
 }
 

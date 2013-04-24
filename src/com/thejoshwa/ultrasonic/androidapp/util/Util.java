@@ -55,6 +55,7 @@ import com.thejoshwa.ultrasonic.androidapp.domain.Version;
 import com.thejoshwa.ultrasonic.androidapp.domain.MusicDirectory.Entry;
 import com.thejoshwa.ultrasonic.androidapp.provider.UltraSonicAppWidgetProvider4x1;
 import com.thejoshwa.ultrasonic.androidapp.receiver.MediaButtonIntentReceiver;
+import com.thejoshwa.ultrasonic.androidapp.service.DownloadFile;
 import com.thejoshwa.ultrasonic.androidapp.service.DownloadService;
 import com.thejoshwa.ultrasonic.androidapp.service.DownloadServiceImpl;
 import org.apache.http.HttpEntity;
@@ -824,45 +825,48 @@ public class Util extends DownloadActivity {
     }
     
 	public static void broadcastA2dpMetaDataChange(Context context,	DownloadService downloadService) {
+		MusicDirectory.Entry song = null;
+		Intent avrcpIntent = new Intent(CM_AVRCP_METADATA_CHANGED);
+		
 		if (downloadService != null) {
-			MusicDirectory.Entry song = downloadService.getCurrentPlaying().getSong();
-
-			Intent avrcpIntent = new Intent(CM_AVRCP_METADATA_CHANGED);
-
-			if (song != null) {
-				Bitmap bitmap = FileUtil.getAlbumArtBitmap(context, song, 0);
-				
-				avrcpIntent.putExtra("track", song.getTitle());
-				avrcpIntent.putExtra("track_name", song.getTitle());
-				avrcpIntent.putExtra("artist", song.getArtist());
-				avrcpIntent.putExtra("artist_name", song.getArtist());
-				avrcpIntent.putExtra("album", song.getAlbum());
-				avrcpIntent.putExtra("album_name", song.getAlbum());
-				avrcpIntent.putExtra("cover", (Parcelable) bitmap);
-				avrcpIntent.putExtra("coverart", (Parcelable) bitmap);
-				avrcpIntent.putExtra("ListSize", (long) downloadService.getDownloads().size());
-				avrcpIntent.putExtra("id", (long) downloadService.getCurrentPlayingIndex() + 1);
-				avrcpIntent.putExtra("duration", (long) song.getDuration());
-				avrcpIntent.putExtra("position", (long) downloadService.getPlayerPosition());
-
-			} else {
-				avrcpIntent.putExtra("track", "");
-				avrcpIntent.putExtra("track_name", "");
-				avrcpIntent.putExtra("artist", "");
-				avrcpIntent.putExtra("artist_name", "");
-				avrcpIntent.putExtra("album", "");
-				avrcpIntent.putExtra("album_name", "");
-				avrcpIntent.putExtra("cover", (Parcelable) null);
-				avrcpIntent.putExtra("coverart", (Parcelable) null);
-				avrcpIntent.putExtra("ListSize", (long) 0);
-				avrcpIntent.putExtra("id", (long) 0);
-				avrcpIntent.putExtra("duration", (long) 0);
-				avrcpIntent.putExtra("position", (long) 0);
+			DownloadFile entry = downloadService.getCurrentPlaying();
+			
+			if (entry != null) {
+				song = entry.getSong();	
 			}
-
-			context.sendBroadcast(avrcpIntent);
 		}
-
+		
+		if (downloadService == null || song == null) {
+			avrcpIntent.putExtra("track", "");
+			avrcpIntent.putExtra("track_name", "");
+			avrcpIntent.putExtra("artist", "");
+			avrcpIntent.putExtra("artist_name", "");
+			avrcpIntent.putExtra("album", "");
+			avrcpIntent.putExtra("album_name", "");
+			avrcpIntent.putExtra("cover", (Parcelable) null);
+			avrcpIntent.putExtra("coverart", (Parcelable) null);
+			avrcpIntent.putExtra("ListSize", (long) 0);
+			avrcpIntent.putExtra("id", (long) 0);
+			avrcpIntent.putExtra("duration", (long) 0);
+			avrcpIntent.putExtra("position", (long) 0);
+		} else {
+			Bitmap bitmap = FileUtil.getAlbumArtBitmap(context, song, 0);
+			
+			avrcpIntent.putExtra("track", song.getTitle());
+			avrcpIntent.putExtra("track_name", song.getTitle());
+			avrcpIntent.putExtra("artist", song.getArtist());
+			avrcpIntent.putExtra("artist_name", song.getArtist());
+			avrcpIntent.putExtra("album", song.getAlbum());
+			avrcpIntent.putExtra("album_name", song.getAlbum());
+			avrcpIntent.putExtra("cover", (Parcelable) bitmap);
+			avrcpIntent.putExtra("coverart", (Parcelable) bitmap);
+			avrcpIntent.putExtra("ListSize", (long) downloadService.getDownloads().size());
+			avrcpIntent.putExtra("id", (long) downloadService.getCurrentPlayingIndex() + 1);
+			avrcpIntent.putExtra("duration", (long) song.getDuration());
+			avrcpIntent.putExtra("position", (long) downloadService.getPlayerPosition());
+		}
+		
+		context.sendBroadcast(avrcpIntent);
 	}
 
 	public static void broadcastA2dpPlayStatusChange(Context context, PlayerState state, DownloadService downloadService) {

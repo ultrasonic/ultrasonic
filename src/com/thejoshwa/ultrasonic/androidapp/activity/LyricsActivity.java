@@ -42,7 +42,7 @@ public final class LyricsActivity extends SubsonicTabActivity {
         super.onCreate(bundle);
         setContentView(R.layout.lyrics);
         View view = findViewById(R.id.lyrics_scrollview);
-        if (view != null) view.setOnTouchListener(gestureListener);
+        //if (view != null) view.setOnTouchListener(gestureListener);
         load();
     }
 

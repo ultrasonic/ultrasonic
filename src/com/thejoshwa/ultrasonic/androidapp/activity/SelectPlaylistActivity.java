@@ -56,7 +56,7 @@ public class SelectPlaylistActivity extends SubsonicTabActivity implements Adapt
         list = (ListView) findViewById(R.id.select_playlist_list);
         emptyTextView = findViewById(R.id.select_playlist_empty);
         list.setOnItemClickListener(this);
-        list.setOnTouchListener(gestureListener);
+        //list.setOnTouchListener(gestureListener);
         registerForContextMenu(list);
 
         // Title: Playlists
@@ -127,25 +127,12 @@ public class SelectPlaylistActivity extends SubsonicTabActivity implements Adapt
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
-
+			case android.R.id.home:
+				menuDrawer.toggleMenu();
+				return true; 
             case R.id.menu_refresh:
             	refresh();
                 return true;
-                
-            case R.id.menu_exit:
-                Intent intent = new Intent(this, MainActivity.class);
-                intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-                intent.putExtra(Constants.INTENT_EXTRA_NAME_EXIT, true);
-                Util.startActivityWithoutTransition(this, intent);
-                return true;
-
-            case R.id.menu_settings:
-                startActivity(new Intent(this, SettingsActivity.class));
-                return true;
-
-            case R.id.menu_help:
-                startActivity(new Intent(this, HelpActivity.class));
-                return true;                
         }
 
         return false;

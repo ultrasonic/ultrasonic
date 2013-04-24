@@ -134,7 +134,6 @@ public class SearchActivity extends SubsonicTabActivity {
                 }
             }
         });
-        list.setOnTouchListener(gestureListener);
         
         registerForContextMenu(list);
 

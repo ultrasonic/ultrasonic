@@ -106,7 +106,6 @@ public class SelectAlbumActivity extends SubsonicTabActivity {
                 }
             }
         });
-        entryList.setOnTouchListener(gestureListener);
 
         selectButton = (Button) findViewById(R.id.select_album_select);
         playNowButton = (Button) findViewById(R.id.select_album_play_now);
@@ -289,35 +288,20 @@ public class SelectAlbumActivity extends SubsonicTabActivity {
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
-
+			case android.R.id.home:
+				menuDrawer.toggleMenu();
+				return true; 
         	case R.id.main_shuffle:
         		Intent intent1 = new Intent(this, DownloadActivity.class);
         		intent1.putExtra(Constants.INTENT_EXTRA_NAME_SHUFFLE, true);
         		Util.startActivityWithoutTransition(this, intent1);
         		return true;
-        
             case R.id.menu_refresh:
             	refresh();
                 return true;
-                
             case R.id.select_album_play_all:
             	playAll();
-            	return true;
-            	
-            case R.id.menu_exit:
-                Intent intent = new Intent(this, MainActivity.class);
-                intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-                intent.putExtra(Constants.INTENT_EXTRA_NAME_EXIT, true);
-                Util.startActivityWithoutTransition(this, intent);
-                return true;
-
-            case R.id.menu_settings:
-                startActivity(new Intent(this, SettingsActivity.class));
-                return true;
-
-            case R.id.menu_help:
-                startActivity(new Intent(this, HelpActivity.class));
-                return true;            	
+            	return true;          	
         }
 
         return false;

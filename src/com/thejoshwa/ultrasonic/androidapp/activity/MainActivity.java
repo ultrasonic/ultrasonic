@@ -60,6 +60,7 @@ public class MainActivity extends SubsonicTabActivity {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        
         if (getIntent().hasExtra(Constants.INTENT_EXTRA_NAME_EXIT)) {
             exit();
             return;
@@ -100,7 +101,6 @@ public class MainActivity extends SubsonicTabActivity {
         serverTextView.setText(name);
 
         ListView list = (ListView) findViewById(R.id.main_list);
-        list.setOnTouchListener(gestureListener);
         
         MergeAdapter adapter = new MergeAdapter();
         adapter.addViews(Arrays.asList(serverButton), true);
@@ -243,26 +243,13 @@ public class MainActivity extends SubsonicTabActivity {
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
-                
+    		case android.R.id.home:
+    			menuDrawer.toggleMenu();
+    			return true;                
             case R.id.main_shuffle:
             	Intent intent1 = new Intent(this, DownloadActivity.class);
             	intent1.putExtra(Constants.INTENT_EXTRA_NAME_SHUFFLE, true);
             	Util.startActivityWithoutTransition(this, intent1);
-                return true;
-                
-            case R.id.menu_exit:
-                Intent intent = new Intent(this, MainActivity.class);
-                intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-                intent.putExtra(Constants.INTENT_EXTRA_NAME_EXIT, true);
-                Util.startActivityWithoutTransition(this, intent);
-                return true;
-
-            case R.id.menu_settings:
-                startActivity(new Intent(this, SettingsActivity.class));
-                return true;
-
-            case R.id.menu_help:
-                startActivity(new Intent(this, HelpActivity.class));
                 return true;
         }
 
@@ -325,7 +312,7 @@ public class MainActivity extends SubsonicTabActivity {
     private void showArtists() {
     	Intent intent = new Intent(this, SelectArtistActivity.class);
         intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-        intent.putExtra(Constants.INTENT_EXTRA_NAME_ALBUM_LIST_TITLE, "Artists");
+        intent.putExtra(Constants.INTENT_EXTRA_NAME_ALBUM_LIST_TITLE, getResources().getString(R.string.main_artists_title));
     	Util.startActivityWithoutTransition(this, intent);
     }
     

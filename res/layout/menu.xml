@@ -1,0 +1,91 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/menu_scrollview"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent" >
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical" >
+
+        <TextView
+            android:id="@+id/menu_navigation"
+            style="@style/MenuDrawer.Widget.Category"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/menu.navigation" />
+
+        <TextView
+            android:id="@+id/menu_home"
+            style="@style/MenuDrawer.Widget.Title"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:drawableLeft="@drawable/ic_menu_home"
+            android:text="@string/button_bar.home" />
+
+        <TextView
+            android:id="@+id/menu_browse"
+            style="@style/MenuDrawer.Widget.Title"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:drawableLeft="@drawable/ic_menu_browse"
+            android:text="@string/button_bar.browse" />
+
+        <TextView
+            android:id="@+id/menu_search"
+            style="@style/MenuDrawer.Widget.Title"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:drawableLeft="@drawable/ic_menu_search"
+            android:text="@string/button_bar.search" />
+
+        <TextView
+            android:id="@+id/menu_playlists"
+            style="@style/MenuDrawer.Widget.Title"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:drawableLeft="@drawable/ic_menu_playlists"
+            android:text="@string/button_bar.playlists" />
+
+        <TextView
+            android:id="@+id/menu_now_playing"
+            style="@style/MenuDrawer.Widget.Title"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:drawableLeft="@drawable/ic_menu_play_all"
+            android:text="@string/button_bar.now_playing" />
+
+        <TextView
+            android:id="@+id/menu_common"
+            style="@style/MenuDrawer.Widget.Category"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/menu.common" />
+
+        <TextView
+            android:id="@+id/menu_settings"
+            style="@style/MenuDrawer.Widget.Title"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:drawableLeft="@drawable/ic_menu_settings"
+            android:text="@string/menu.settings" />
+
+        <TextView
+            android:id="@+id/menu_help"
+            style="@style/MenuDrawer.Widget.Title"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:drawableLeft="@drawable/ic_menu_help"
+            android:text="@string/menu.help" />
+
+        <TextView
+            android:id="@+id/menu_exit"
+            style="@style/MenuDrawer.Widget.Title"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:drawableLeft="@drawable/ic_menu_exit"
+            android:text="@string/menu.exit" />
+    </LinearLayout>
+
+</ScrollView>

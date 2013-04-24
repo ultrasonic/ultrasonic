@@ -57,9 +57,7 @@
                 a:textAppearance="?android:attr/textAppearanceSmall"
                 a:textColor="#c0c0c0"/>
     </RelativeLayout>
-
-    <include layout="@layout/button_bar"/>
-
+    
 </com.thejoshwa.ultrasonic.androidapp.util.MyViewFlipper>
 
 

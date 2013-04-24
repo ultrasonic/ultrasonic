@@ -35,10 +35,13 @@ import android.os.IBinder;
 import android.os.PowerManager;
 import android.util.DisplayMetrics;
 import android.util.Log;
+import android.view.View;
 import android.widget.RemoteViews;
 import android.widget.SeekBar;
 import com.thejoshwa.ultrasonic.androidapp.R;
 import com.thejoshwa.ultrasonic.androidapp.activity.DownloadActivity;
+import com.thejoshwa.ultrasonic.androidapp.activity.MainActivity;
+import com.thejoshwa.ultrasonic.androidapp.activity.SubsonicTabActivity;
 import com.thejoshwa.ultrasonic.androidapp.audiofx.EqualizerController;
 import com.thejoshwa.ultrasonic.androidapp.audiofx.VisualizerController;
 import com.thejoshwa.ultrasonic.androidapp.domain.MusicDirectory;
@@ -89,7 +92,7 @@ public class DownloadServiceImpl extends Service implements DownloadService {
     private final List<DownloadFile> cleanupCandidates = new ArrayList<DownloadFile>();
     private final Scrobbler scrobbler = new Scrobbler();
     private final JukeboxService jukeboxService = new JukeboxService(this);
-    private Notification notification = new Notification(R.drawable.ic_stat_ultrasonic, null, System.currentTimeMillis()); 
+    private Notification notification = new Notification(R.drawable.ic_stat_ultrasonic, null, System.currentTimeMillis());
     		           
     private DownloadFile currentPlaying;
     private DownloadFile currentDownloading;
@@ -439,6 +442,7 @@ public class DownloadServiceImpl extends Service implements DownloadService {
         	Util.broadcastA2dpMetaDataChange(this, getInstance());
         } else {
             Util.broadcastNewTrackInfo(this, null);
+            Util.broadcastA2dpMetaDataChange(this, null);
         }
         
         updateRemoteControl();
@@ -446,10 +450,24 @@ public class DownloadServiceImpl extends Service implements DownloadService {
         // Update widget
         UltraSonicAppWidgetProvider4x1.getInstance().notifyChange(this, this, playerState == PlayerState.STARTED);
         
-        if (currentPlaying != null && showNotification) {
-            Util.showPlayingNotification(this, this, handler, currentPlaying.getSong(), this.notification, this.playerState);
+        if (currentPlaying != null) {
+        	if (showNotification) {
+        		Util.showPlayingNotification(this, this, handler, currentPlaying.getSong(), this.notification, this.playerState);
+        	}
+        
+            SubsonicTabActivity tabInstance = SubsonicTabActivity.getInstance();
+            
+            if (tabInstance != null) {
+            	tabInstance.showNowPlaying(this, this, currentPlaying.getSong(), this.playerState);
+            }
         } else {
             Util.hidePlayingNotification(this, this, handler);
+            
+            SubsonicTabActivity tabInstance = SubsonicTabActivity.getInstance();
+            
+            if (tabInstance != null) {
+            	tabInstance.hideNowPlaying();
+            }
         }
     }
 
@@ -708,9 +726,19 @@ public class DownloadServiceImpl extends Service implements DownloadService {
        	if (show) {
        		if (currentPlaying != null) {
        			Util.showPlayingNotification(this, this, handler, currentPlaying.getSong(), this.notification, this.playerState);
+       			
+                SubsonicTabActivity tabInstance = SubsonicTabActivity.getInstance();
+                if (tabInstance != null) {
+                	tabInstance.showNowPlaying(this, this, currentPlaying.getSong(), this.playerState);
+                }
        		}
        	} else if (hide) {
        		Util.hidePlayingNotification(this, this, handler);
+       		
+            SubsonicTabActivity tabInstance = SubsonicTabActivity.getInstance();
+            if (tabInstance != null) {
+            	tabInstance.hideNowPlaying();
+            }
        	}
         
         if (this.playerState == STARTED) {

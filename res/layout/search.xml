@@ -12,6 +12,6 @@
             a:layout_height="0dip"
             a:layout_weight="1.0"/>
 
-    <include layout="@layout/button_bar"/>
+    <include layout="@layout/now_playing" />
 
 </LinearLayout>

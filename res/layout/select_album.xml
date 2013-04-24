@@ -62,8 +62,8 @@
                 a:layout_height="fill_parent"/>
 
     </LinearLayout>
-
-    <include layout="@layout/button_bar"/>
+    
+    <include layout="@layout/now_playing" />
 
 </LinearLayout>
 

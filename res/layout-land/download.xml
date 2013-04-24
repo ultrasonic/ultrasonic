@@ -18,10 +18,11 @@
             a:background="@color/mediaControlBackground" >
 
             <LinearLayout
+                a:id="@+id/linearLayout1"
                 a:layout_width="wrap_content"
                 a:layout_height="wrap_content"
+                a:layout_alignParentBottom="true"
                 a:layout_alignParentLeft="true"
-                a:layout_alignParentTop="true"
                 a:orientation="horizontal"
                 a:paddingBottom="12dip"
                 a:paddingTop="12dip" >
@@ -115,10 +116,11 @@
                 a:id="@+id/download_status"
                 a:layout_width="wrap_content"
                 a:layout_height="wrap_content"
-                a:layout_alignParentBottom="true"
+                a:layout_above="@+id/download_song_title"
                 a:layout_centerHorizontal="true"
                 a:layout_marginBottom="8dip"
                 a:ellipsize="end"
+                a:gravity="center_horizontal"
                 a:singleLine="true"
                 a:textAppearance="?android:attr/textAppearanceSmall"
                 a:textColor="#c0c0c0" />
@@ -127,12 +129,8 @@
                 a:id="@+id/download_song_title"
                 a:layout_width="150dip"
                 a:layout_height="wrap_content"
-                a:layout_above="@+id/download_status"
+                a:layout_above="@+id/linearLayout1"
                 a:layout_centerHorizontal="true"
-                a:layout_gravity="center_horizontal"
-                a:layout_marginLeft="12dip"
-                a:layout_marginRight="12dip"
-                a:layout_marginTop="12dip"
                 a:ellipsize="end"
                 a:gravity="center_horizontal"
                 a:maxLines="2"

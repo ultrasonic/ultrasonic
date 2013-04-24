@@ -14,10 +14,7 @@
           a:layout_width="0dp"
           a:layout_height="0dp"/>
     
-    <include 
-            layout="@layout/button_bar"
-            a:layout_width="fill_parent"
-            a:layout_height="wrap_content"/>
+    <include layout="@layout/now_playing" />
 
 </LinearLayout>
 

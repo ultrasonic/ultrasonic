@@ -287,7 +287,7 @@ public class DownloadActivity extends SubsonicTabActivity implements OnGestureLi
             }
         });
         
-        playlistView.setOnTouchListener(gestureListener);
+        //playlistView.setOnTouchListener(gestureListener);
 
         registerForContextMenu(playlistView);
         

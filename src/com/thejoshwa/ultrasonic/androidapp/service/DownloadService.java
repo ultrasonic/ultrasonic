@@ -111,4 +111,6 @@ public interface DownloadService {
     void setJukeboxEnabled(boolean b);
 
     void adjustJukeboxVolume(boolean up);
+    
+    void togglePlayPause();
 }
