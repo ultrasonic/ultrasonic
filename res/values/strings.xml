@@ -44,6 +44,7 @@
     <string name="menu.exit">Exit</string>
     <string name="menu.settings">Settings</string>
     <string name="menu.help">Help</string>
+    <string name="menu.about">About</string>
     <string name="menu.search">Search</string>
     <string name="menu.navigation">Navigation</string>
 	<string name="menu.common">Common</string>    
@@ -228,6 +229,8 @@
     <string name="settings.show_lockscreen_controls_summary">Show playback controls on the lock screen</string>
     <string name="settings.use_stream_proxy">Use Stream Proxy</string>
     <string name="settings.use_stream_proxy_summary">Stream media playback through a proxy (may help stutter)</string>
+    <string name="settings.show_now_playing">Show Now Playing</string>
+    <string name="settings.show_now_playing_summary">Show currently playing track in all activities</string>
     <string name="settings.max_albums">Max Albums</string>
     <string name="settings.search_1">1</string>
     <string name="settings.search_3">3</string>

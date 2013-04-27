@@ -41,8 +41,10 @@ public final class LyricsActivity extends SubsonicTabActivity {
     protected void onCreate(Bundle bundle) {
         super.onCreate(bundle);
         setContentView(R.layout.lyrics);
-        View view = findViewById(R.id.lyrics_scrollview);
-        //if (view != null) view.setOnTouchListener(gestureListener);
+
+        View nowPlayingMenuItem = findViewById(R.id.menu_now_playing);
+        menuDrawer.setActiveView(nowPlayingMenuItem);
+        
         load();
     }
 

@@ -44,6 +44,7 @@
     <string name="menu.exit">Kilépés</string>
     <string name="menu.settings">Beállítások</string>
     <string name="menu.help">Súgó</string>
+    <string name="menu.about">Információ</string>    
     <string name="menu.search">Keresés</string>
     <string name="menu.navigation">Navigáció</string>
 	<string name="menu.common">Közös</string>  	

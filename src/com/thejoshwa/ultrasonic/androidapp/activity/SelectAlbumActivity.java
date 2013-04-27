@@ -22,6 +22,7 @@ import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.net.Uri;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.ContextMenu;
@@ -31,7 +32,7 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
-import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
 
@@ -53,21 +54,26 @@ import java.util.Random;
 import java.util.Set;
 import java.util.concurrent.TimeUnit;
 
+import com.handmark.pulltorefresh.library.PullToRefreshBase;
+import com.handmark.pulltorefresh.library.PullToRefreshBase.OnRefreshListener;
+import com.handmark.pulltorefresh.library.PullToRefreshListView;
+
 public class SelectAlbumActivity extends SubsonicTabActivity {
 
     private static final String TAG = SelectAlbumActivity.class.getSimpleName();
-
-    private ListView entryList;
+    
+    private PullToRefreshListView refreshAlbumListView;
+    private ListView albumListView;
     private View header;
-    private View footer;
+    private View albumButtons;
     private View emptyView;
-    private Button selectButton;
-    private Button playNowButton;
-    private Button playLastButton;
-    private Button pinButton;
-    private Button unpinButton;
-    private Button deleteButton;
-    private Button moreButton;
+    private ImageView selectButton;
+    private ImageView playNowButton;
+    private ImageView playLastButton;
+    private ImageView pinButton;
+    private ImageView unpinButton;
+    private ImageView deleteButton;
+    private ImageView moreButton;
     private boolean licenseValid;
     private boolean playAllButtonVisible;
     private MenuItem playAllButton;
@@ -81,14 +87,23 @@ public class SelectAlbumActivity extends SubsonicTabActivity {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.select_album);
+        
+        albumButtons = findViewById(R.id.menu_album);
+        
+        refreshAlbumListView = (PullToRefreshListView) findViewById(R.id.select_album_entries);
+        albumListView = refreshAlbumListView.getRefreshableView();
+        
+        refreshAlbumListView.setOnRefreshListener(new OnRefreshListener<ListView>() {
+            @Override
+            public void onRefresh(PullToRefreshBase<ListView> refreshView) {
+                new GetDataTask().execute();
+            }
+        });
 
-        entryList = (ListView) findViewById(R.id.select_album_entries);
+        header = LayoutInflater.from(this).inflate(R.layout.select_album_header, albumListView, false);
 
-        header = LayoutInflater.from(this).inflate(R.layout.select_album_header, entryList, false);
-        footer = LayoutInflater.from(this).inflate(R.layout.select_album_footer, entryList, false);
-
-        entryList.setChoiceMode(ListView.CHOICE_MODE_MULTIPLE);
-        entryList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+        albumListView.setChoiceMode(ListView.CHOICE_MODE_MULTIPLE);
+        albumListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 if (position >= 0) {
@@ -107,13 +122,13 @@ public class SelectAlbumActivity extends SubsonicTabActivity {
             }
         });
 
-        selectButton = (Button) findViewById(R.id.select_album_select);
-        playNowButton = (Button) findViewById(R.id.select_album_play_now);
-        playLastButton = (Button) findViewById(R.id.select_album_play_last);
-        pinButton = (Button) footer.findViewById(R.id.select_album_pin);
-        unpinButton = (Button) footer.findViewById(R.id.select_album_unpin);
-        deleteButton = (Button) footer.findViewById(R.id.select_album_delete);
-        moreButton = (Button) footer.findViewById(R.id.select_album_more);
+        selectButton = (ImageView) findViewById(R.id.select_album_select);
+        playNowButton = (ImageView) findViewById(R.id.select_album_play_now);
+        playLastButton = (ImageView) findViewById(R.id.select_album_play_last);
+        pinButton = (ImageView) findViewById(R.id.select_album_pin);
+        unpinButton = (ImageView) findViewById(R.id.select_album_unpin);
+        deleteButton = (ImageView) findViewById(R.id.select_album_delete);
+        moreButton = (ImageView) findViewById(R.id.select_album_more);
 		emptyView = findViewById(R.id.select_album_empty);
 
         selectButton.setOnClickListener(new View.OnClickListener() {
@@ -158,7 +173,7 @@ public class SelectAlbumActivity extends SubsonicTabActivity {
             }
         });
 
-        registerForContextMenu(entryList);
+        registerForContextMenu(albumListView);
 
         enableButtons();
 
@@ -174,6 +189,9 @@ public class SelectAlbumActivity extends SubsonicTabActivity {
         int albumListSize = getIntent().getIntExtra(Constants.INTENT_EXTRA_NAME_ALBUM_LIST_SIZE, 0);
         int albumListOffset = getIntent().getIntExtra(Constants.INTENT_EXTRA_NAME_ALBUM_LIST_OFFSET, 0);
 
+        View browseMenuItem = findViewById(R.id.menu_browse);
+        menuDrawer.setActiveView(browseMenuItem);
+        
         if (playlistId != null) {
             getPlaylist(playlistId, playlistName);
         } else if (albumListType != null) {
@@ -202,7 +220,6 @@ public class SelectAlbumActivity extends SubsonicTabActivity {
     public boolean onCreateOptionsMenu(Menu menu) {
     	MenuInflater inflater = getMenuInflater();
     	inflater.inflate(R.menu.select_album, menu);
-    	inflater.inflate(R.menu.select_common, menu);
     	super.onCreateOptionsMenu(menu);
     	
     	return true;
@@ -210,8 +227,8 @@ public class SelectAlbumActivity extends SubsonicTabActivity {
 
     private void playAll() {
         boolean hasSubFolders = false;
-        for (int i = 0; i < entryList.getCount(); i++) {
-            MusicDirectory.Entry entry = (MusicDirectory.Entry) entryList.getItemAtPosition(i);
+        for (int i = 0; i < albumListView.getCount(); i++) {
+            MusicDirectory.Entry entry = (MusicDirectory.Entry) albumListView.getItemAtPosition(i);
             if (entry != null && entry.isDirectory()) {
                 hasSubFolders = true;
                 break;
@@ -240,7 +257,7 @@ public class SelectAlbumActivity extends SubsonicTabActivity {
         super.onCreateContextMenu(menu, view, menuInfo);
         AdapterView.AdapterContextMenuInfo info = (AdapterView.AdapterContextMenuInfo) menuInfo;
 
-        MusicDirectory.Entry entry = (MusicDirectory.Entry) entryList.getItemAtPosition(info.position);
+        MusicDirectory.Entry entry = (MusicDirectory.Entry) albumListView.getItemAtPosition(info.position);
 
         if (entry.isDirectory()) {
             MenuInflater inflater = getMenuInflater();
@@ -254,9 +271,9 @@ public class SelectAlbumActivity extends SubsonicTabActivity {
     @Override
     public boolean onContextItemSelected(MenuItem menuItem) {
         AdapterView.AdapterContextMenuInfo info = (AdapterView.AdapterContextMenuInfo) menuItem.getMenuInfo();
-        MusicDirectory.Entry entry = (MusicDirectory.Entry) entryList.getItemAtPosition(info.position);
+        MusicDirectory.Entry entry = (MusicDirectory.Entry) albumListView.getItemAtPosition(info.position);
         List<MusicDirectory.Entry> songs = new ArrayList<MusicDirectory.Entry>(10);
-        songs.add((MusicDirectory.Entry) entryList.getItemAtPosition(info.position));
+        songs.add((MusicDirectory.Entry) albumListView.getItemAtPosition(info.position));
         switch (menuItem.getItemId()) {
             case R.id.album_menu_play_now:
                 downloadRecursively(entry.getId(), false, false, true);
@@ -296,9 +313,6 @@ public class SelectAlbumActivity extends SubsonicTabActivity {
         		intent1.putExtra(Constants.INTENT_EXTRA_NAME_SHUFFLE, true);
         		Util.startActivityWithoutTransition(this, intent1);
         		return true;
-            case R.id.menu_refresh:
-            	refresh();
-                return true;
             case R.id.select_album_play_all:
             	playAll();
             	return true;          	
@@ -308,7 +322,7 @@ public class SelectAlbumActivity extends SubsonicTabActivity {
     }
 
     private void getMusicDirectory(final String id, String name) {
-        setTitle(name);
+    	getActionBar().setSubtitle(name);
 
         new LoadTask() {
             @Override
@@ -320,7 +334,7 @@ public class SelectAlbumActivity extends SubsonicTabActivity {
     }
     
     private void getSongsForGenre(final String genre, final int count, final int offset) {
-        setTitle(genre);
+    	getActionBar().setSubtitle(genre);
 
         new LoadTask() {
             @Override
@@ -358,7 +372,7 @@ public class SelectAlbumActivity extends SubsonicTabActivity {
     }
     
     private void getStarred() {
-        setTitle(R.string.main_songs_starred);
+    	getActionBar().setSubtitle(R.string.main_songs_starred);
 
         new LoadTask() {
             @Override
@@ -369,7 +383,7 @@ public class SelectAlbumActivity extends SubsonicTabActivity {
     }
     
     private void getRandom(final int size) {
-        setTitle(R.string.main_songs_random);
+    	getActionBar().setSubtitle(R.string.main_songs_random);
 
         new LoadTask() {
             @Override
@@ -380,7 +394,7 @@ public class SelectAlbumActivity extends SubsonicTabActivity {
     }
 
     private void getPlaylist(final String playlistId, String playlistName) {
-        setTitle(playlistName);
+    	getActionBar().setSubtitle(playlistName);
 
         new LoadTask() {
             @Override
@@ -393,7 +407,7 @@ public class SelectAlbumActivity extends SubsonicTabActivity {
     private void getAlbumList(final String albumListType, final int albumListTitle, final int size, final int offset) {
     	showHeader = false;
     	
-    	setTitle(albumListTitle);
+    	getActionBar().setSubtitle(albumListTitle);
 
         new LoadTask() {
             @Override
@@ -412,7 +426,6 @@ public class SelectAlbumActivity extends SubsonicTabActivity {
                     if (result.getFirst().getChildren().size() < getIntent().getIntExtra(Constants.INTENT_EXTRA_NAME_ALBUM_LIST_SIZE, 0)) {
                     	moreButton.setVisibility(View.GONE);
                     } else {
-                    	entryList.addFooterView(footer);
                     	moreButton.setVisibility(View.VISIBLE);
                     }
 
@@ -432,6 +445,8 @@ public class SelectAlbumActivity extends SubsonicTabActivity {
                             Util.startActivityWithoutTransition(SelectAlbumActivity.this, intent);
                         }
                     });
+                } else {
+                   	moreButton.setVisibility(View.GONE);
                 }
                 	
                 super.done(result);
@@ -441,9 +456,9 @@ public class SelectAlbumActivity extends SubsonicTabActivity {
 
     private void selectAllOrNone() {
         boolean someUnselected = false;
-        int count = entryList.getCount();
+        int count = albumListView.getCount();
         for (int i = 0; i < count; i++) {
-            if (!entryList.isItemChecked(i) && entryList.getItemAtPosition(i) instanceof MusicDirectory.Entry) {
+            if (!albumListView.isItemChecked(i) && albumListView.getItemAtPosition(i) instanceof MusicDirectory.Entry) {
                 someUnselected = true;
                 break;
             }
@@ -452,20 +467,19 @@ public class SelectAlbumActivity extends SubsonicTabActivity {
     }
 
     private void selectAll(boolean selected, boolean toast) {
-        int count = entryList.getCount();
+        int count = albumListView.getCount();
         int selectedCount = 0;
         for (int i = 0; i < count; i++) {
-            MusicDirectory.Entry entry = (MusicDirectory.Entry) entryList.getItemAtPosition(i);
+            MusicDirectory.Entry entry = (MusicDirectory.Entry) albumListView.getItemAtPosition(i);
             if (entry != null && !entry.isDirectory() && !entry.isVideo()) {
-                entryList.setItemChecked(i, selected);
+                albumListView.setItemChecked(i, selected);
                 selectedCount++;
             }
         }
 
         // Display toast: N tracks selected / N tracks unselected
         if (toast) {
-            int toastResId = selected ? R.string.select_album_n_selected
-                                      : R.string.select_album_n_unselected;
+            int toastResId = selected ? R.string.select_album_n_selected : R.string.select_album_n_unselected;
             Util.toast(this, getString(toastResId, selectedCount));
         }
 
@@ -501,10 +515,10 @@ public class SelectAlbumActivity extends SubsonicTabActivity {
 
     private List<MusicDirectory.Entry> getSelectedSongs() {
         List<MusicDirectory.Entry> songs = new ArrayList<MusicDirectory.Entry>(10);
-        int count = entryList.getCount();
+        int count = albumListView.getCount();
         for (int i = 0; i < count; i++) {
-            if (entryList.isItemChecked(i)) {
-                songs.add((MusicDirectory.Entry) entryList.getItemAtPosition(i));
+            if (albumListView.isItemChecked(i)) {
+                songs.add((MusicDirectory.Entry) albumListView.getItemAtPosition(i));
             }
         }
         return songs;
@@ -526,9 +540,11 @@ public class SelectAlbumActivity extends SubsonicTabActivity {
                 warnIfNetworkOrStorageUnavailable();
                 getDownloadService().download(songs, save, autoplay, playNext);
                 String playlistName = getIntent().getStringExtra(Constants.INTENT_EXTRA_NAME_PLAYLIST_NAME);
+                
                 if (playlistName != null) {
                     getDownloadService().setSuggestedPlaylistName(playlistName);
                 }
+                
                 if (autoplay) {
                     Util.startActivityWithoutTransition(SelectAlbumActivity.this, DownloadActivity.class);
                 } else if (save) {
@@ -646,15 +662,38 @@ public class SelectAlbumActivity extends SubsonicTabActivity {
                 }
             }
 
+            int listSize = getIntent().getIntExtra(Constants.INTENT_EXTRA_NAME_ALBUM_LIST_SIZE, 0);
+            
             if (songCount > 0) {
 				if(showHeader) {
-					entryList.addHeaderView(createHeader(entries, directoryName, songCount), null, false);
+					albumListView.addHeaderView(createHeader(entries, directoryName, songCount), null, false);
 				}
 
-                entryList.addFooterView(footer);
+                pinButton.setVisibility(View.VISIBLE);
+                unpinButton.setVisibility(View.VISIBLE);
+                deleteButton.setVisibility(View.VISIBLE);
                 selectButton.setVisibility(View.VISIBLE);
                 playNowButton.setVisibility(View.VISIBLE);
                 playLastButton.setVisibility(View.VISIBLE);
+                       
+                if (listSize == 0 || songCount < listSize) {
+                	moreButton.setVisibility(View.GONE);
+                } else {
+                	moreButton.setVisibility(View.VISIBLE);
+                }
+            } else {
+                pinButton.setVisibility(View.GONE);
+                unpinButton.setVisibility(View.GONE);
+                deleteButton.setVisibility(View.GONE);
+                selectButton.setVisibility(View.GONE);
+                playNowButton.setVisibility(View.GONE);
+                playLastButton.setVisibility(View.GONE);
+                
+                if (listSize == 0 || result.getFirst().getChildren().size() < listSize) {
+                	albumButtons.setVisibility(View.GONE);
+                } else {
+                	moreButton.setVisibility(View.VISIBLE);
+                }
             }
 
             boolean isAlbumList = getIntent().hasExtra(Constants.INTENT_EXTRA_NAME_ALBUM_LIST_TYPE);
@@ -666,7 +705,7 @@ public class SelectAlbumActivity extends SubsonicTabActivity {
             	playAllButton.setVisible(playAllButtonVisible);
             }
             
-            entryList.setAdapter(new EntryAdapter(SelectAlbumActivity.this, getImageLoader(), entries, true));
+            albumListView.setAdapter(new EntryAdapter(SelectAlbumActivity.this, getImageLoader(), entries, true));
             licenseValid = result.getSecond();
 
             boolean playAll = getIntent().getBooleanExtra(Constants.INTENT_EXTRA_NAME_AUTOPLAY, false);
@@ -681,7 +720,7 @@ public class SelectAlbumActivity extends SubsonicTabActivity {
             getImageLoader().loadImage(coverArtView, entries.get(artworkSelection), true, true);
 
             TextView titleView = (TextView) header.findViewById(R.id.select_album_title);
-            titleView.setText(name != null ? name : getTitle());
+            titleView.setText(name != null ? name : getActionBar().getSubtitle());
 
             Set<String> artists = new HashSet<String>();
             Set<String> grandParents = new HashSet<String>();
@@ -755,5 +794,19 @@ public class SelectAlbumActivity extends SubsonicTabActivity {
 
             return header;
         }
+    }
+        
+    private class GetDataTask extends AsyncTask<Void, Void, String[]> {
+        @Override
+        protected void onPostExecute(String[] result) {
+            refreshAlbumListView.onRefreshComplete();
+            super.onPostExecute(result);
+        }
+
+		@Override
+		protected String[] doInBackground(Void... params) {
+			refresh();
+			return null;
+		}
     }
 }

@@ -34,11 +34,12 @@ import android.os.Bundle;
 import android.os.Environment;
 import android.util.Log;
 import android.view.KeyEvent;
+import android.view.LayoutInflater;
 import android.view.MenuItem;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.View.OnClickListener;
-import android.widget.AdapterView;
-import android.widget.ImageButton;
+import android.view.View.OnTouchListener;
 import android.widget.ImageView;
 import android.widget.TextView;
 import com.thejoshwa.ultrasonic.androidapp.R;
@@ -57,6 +58,7 @@ import com.thejoshwa.ultrasonic.androidapp.util.ModalBackgroundTask;
 import com.thejoshwa.ultrasonic.androidapp.util.Util;
 
 import net.simonvt.menudrawer.MenuDrawer;
+import net.simonvt.menudrawer.Position;
 
 /**
  * @author Sindre Mehus
@@ -70,14 +72,16 @@ public class SubsonicTabActivity extends Activity implements OnClickListener{
     
     private static final String STATE_MENUDRAWER = "com.thejoshwa.ultrasonic.androidapp.menuDrawer";
     private static final String STATE_ACTIVE_VIEW_ID = "com.thejoshwa.ultrasonic.androidapp.activeViewId";
-    private static boolean hasPeeked = false;
+    private static final String STATE_ACTIVE_POSITION = "com.thejoshwa.ultrasonic.androidapp.activePosition";
     
-    protected MenuDrawer menuDrawer;
+    protected MenuDrawer menuDrawer;    
+    private int activePosition = 1;
     private int menuActiveViewId;
-    
     private View nowPlaying = null;
     View searchMenuItem = null;
     View playlistsMenuItem = null;
+    View menuMain = null;
+    public static boolean nowPlayingHidden = false;
     
     @Override
     protected void onCreate(Bundle bundle) {
@@ -89,15 +93,12 @@ public class SubsonicTabActivity extends Activity implements OnClickListener{
         setVolumeControlStream(AudioManager.STREAM_MUSIC);
         
         if (bundle != null) {
+            activePosition = bundle.getInt(STATE_ACTIVE_POSITION);
             menuActiveViewId = bundle.getInt(STATE_ACTIVE_VIEW_ID);
         }
 
-        menuDrawer = MenuDrawer.attach(this, MenuDrawer.MENU_DRAG_WINDOW);
-        menuDrawer.setMenuView(R.layout.menu);
-
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.ICE_CREAM_SANDWICH) {
-            getActionBar().setDisplayHomeAsUpEnabled(true);
-        }
+       	menuDrawer = MenuDrawer.attach(this, MenuDrawer.MENU_DRAG_WINDOW, Position.LEFT);
+        menuDrawer.setMenuView(R.layout.menu_main);
 
         searchMenuItem = findViewById(R.id.menu_search);
         playlistsMenuItem = findViewById(R.id.menu_playlists);
@@ -108,28 +109,31 @@ public class SubsonicTabActivity extends Activity implements OnClickListener{
         playlistsMenuItem.setOnClickListener(this);
         findViewById(R.id.menu_now_playing).setOnClickListener(this);
         findViewById(R.id.menu_settings).setOnClickListener(this);
-        findViewById(R.id.menu_help).setOnClickListener(this);
+        findViewById(R.id.menu_about).setOnClickListener(this);
         findViewById(R.id.menu_exit).setOnClickListener(this);
 
-        TextView activeView = (TextView) findViewById(menuActiveViewId);
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.ICE_CREAM_SANDWICH) {
+            getActionBar().setDisplayHomeAsUpEnabled(true);
+        }
+        
+        TextView activeView = (TextView)findViewById(menuActiveViewId);
         
         if (activeView != null) {
             menuDrawer.setActiveView(activeView);
         }
-
-        if (!hasPeeked) {
-        	menuDrawer.peekDrawer();
-        	hasPeeked = true;
-        }
         
         instance = this;
-    }
+    }    
     
 	@Override
 	protected void onPostCreate(Bundle bundle) {
 		super.onPostCreate(bundle);
 		
-		showNowPlaying();
+		if (!nowPlayingHidden) {
+			showNowPlaying();
+		} else {
+			hideNowPlaying();
+		}
 		
 		int visibility = Util.isOffline(this) ? View.GONE : View.VISIBLE;
         searchMenuItem.setVisibility(visibility);
@@ -140,10 +144,16 @@ public class SubsonicTabActivity extends Activity implements OnClickListener{
     protected void onResume() {
         super.onResume();
         instance = this;
-        showNowPlaying();
+        
+        if (!nowPlayingHidden) {
+			showNowPlaying();
+		} else {
+			hideNowPlaying();
+		}
+        
         Util.registerMediaButtonEventReceiver(this);
     }
-
+    
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
@@ -187,6 +197,13 @@ public class SubsonicTabActivity extends Activity implements OnClickListener{
     private void showNowPlaying()
     {
     	nowPlaying = findViewById(R.id.now_playing);
+    	
+    	if (!Util.getShowNowPlayingPreference(this)) {
+    		if (nowPlaying != null) {
+    			nowPlaying.setVisibility(View.GONE);
+    		}
+    		return;
+    	}
 		
 		if (nowPlaying != null) {
 			final DownloadService downloadService = DownloadServiceImpl.getInstance();
@@ -196,30 +213,33 @@ public class SubsonicTabActivity extends Activity implements OnClickListener{
 				
 				if (playerState.equals(PlayerState.PAUSED) || playerState.equals(PlayerState.STARTED)) {
 					DownloadFile file = downloadService.getCurrentPlaying();
+					
 					if (file != null) {
-						Entry song = file.getSong();
+						final Entry song = file.getSong();						
 						showNowPlaying(this, (DownloadServiceImpl)downloadService, song, playerState);
 					}
 				} else {
 					hideNowPlaying();
 				}
+				
+				ImageView nowPlayingControlPlay = (ImageView) nowPlaying.findViewById(R.id.now_playing_control_play);	
+				
+				SwipeDetector swipeDetector = SwipeDetector.Create(SubsonicTabActivity.this, downloadService);
+				nowPlaying.setOnTouchListener(swipeDetector);
+				
+				nowPlaying.setOnClickListener(new View.OnClickListener() {
+					@Override
+					public void onClick(View v) {
+					}
+				});
+			
+				nowPlayingControlPlay.setOnClickListener(new View.OnClickListener() {
+					@Override
+					public void onClick(View view) {
+						downloadService.togglePlayPause();
+					}
+				});				
 			}
-			
-			ImageButton nowPlayingControlPlay = (ImageButton) nowPlaying.findViewById(R.id.now_playing_control_play);	
-			
-			nowPlaying.setOnClickListener(new View.OnClickListener() {
-				@Override
-				public void onClick(View view) {
-					Util.startActivityWithoutTransition(SubsonicTabActivity.this, DownloadActivity.class);
-				}
-			});
-		
-			nowPlayingControlPlay.setOnClickListener(new View.OnClickListener() {
-				@Override
-				public void onClick(View view) {
-					downloadService.togglePlayPause();
-				}
-			});
 		}
     }
 
@@ -236,21 +256,27 @@ public class SubsonicTabActivity extends Activity implements OnClickListener{
         }
     }
     
-    public void showNowPlaying(final Context context, final DownloadServiceImpl downloadService, MusicDirectory.Entry song, PlayerState playerState) {
+    public void showNowPlaying(final Context context, final DownloadServiceImpl downloadService, final MusicDirectory.Entry song, PlayerState playerState) {
     	nowPlaying = findViewById(R.id.now_playing);
+    	
+    	if (!Util.getShowNowPlayingPreference(this)) {
+    		if (nowPlaying != null) {
+    			nowPlaying.setVisibility(View.GONE);
+    		}
+    		return;
+    	}
     	
     	if (nowPlaying != null) {
 			nowPlaying.setVisibility(View.VISIBLE);
+			nowPlayingHidden = false;
 			
 			String title = song.getTitle();
 			String artist = song.getArtist();
-			String album = song.getAlbum();
-
+			
 			try {
 				ImageView nowPlayingImage = (ImageView) nowPlaying.findViewById(R.id.now_playing_image);
 				TextView nowPlayingTrack = (TextView) nowPlaying.findViewById(R.id.now_playing_trackname);
 				TextView nowPlayingArtist = (TextView) nowPlaying.findViewById(R.id.now_playing_artist);
-				TextView nowPlayingAlbum = (TextView) nowPlaying.findViewById(R.id.now_playing_album);
 
 				int size = context.getResources().getDrawable(R.drawable.unknown_album).getIntrinsicHeight();
 
@@ -262,22 +288,31 @@ public class SubsonicTabActivity extends Activity implements OnClickListener{
 				} else {
 					nowPlayingImage.setImageBitmap(bitmap);
 				}
-
+				
+				nowPlayingImage.setOnClickListener(new View.OnClickListener() {
+		            @Override
+		            public void onClick(View view) {
+		                Intent intent = new Intent(SubsonicTabActivity.this, SelectAlbumActivity.class);
+		                intent.putExtra(Constants.INTENT_EXTRA_NAME_ID, song.getParent());
+		                intent.putExtra(Constants.INTENT_EXTRA_NAME_NAME, song.getAlbum());
+		                Util.startActivityWithoutTransition(SubsonicTabActivity.this, intent);
+		            }
+		        });
+				
 				nowPlayingTrack.setText(title);
 				nowPlayingArtist.setText(artist);
-				nowPlayingAlbum.setText(album);
 
 			} catch (Exception x) {
 				Log.w(TAG, "Failed to get notification cover art", x);
 			}
 
-			ImageButton playButton = (ImageButton) nowPlaying.findViewById(R.id.now_playing_control_play);
+			ImageView playButton = (ImageView) nowPlaying.findViewById(R.id.now_playing_control_play);
 
 			if (playerState == PlayerState.PAUSED) {
 				playButton.setImageResource(R.drawable.ic_appwidget_music_play);
 			} else if (playerState == PlayerState.STARTED) {
 				playButton.setImageResource(R.drawable.ic_appwidget_music_pause);
-			}
+			}			
 		}
     }
 
@@ -436,7 +471,7 @@ public class SubsonicTabActivity extends Activity implements OnClickListener{
 
     @Override
     public void onClick(View v) {
-        menuDrawer.setActiveView(v);
+        //menuDrawer.setActiveView(v);
         menuActiveViewId = v.getId();
         
         Intent intent;
@@ -468,7 +503,7 @@ public class SubsonicTabActivity extends Activity implements OnClickListener{
     		case R.id.menu_settings:
     			Util.startActivityWithoutTransition(SubsonicTabActivity.this, SettingsActivity.class);
     			break;
-    		case R.id.menu_help:
+    		case R.id.menu_about:
     			Util.startActivityWithoutTransition(SubsonicTabActivity.this, HelpActivity.class);
     			break;
     		case R.id.menu_exit:
@@ -493,6 +528,7 @@ public class SubsonicTabActivity extends Activity implements OnClickListener{
         super.onSaveInstanceState(outState);
         outState.putParcelable(STATE_MENUDRAWER, menuDrawer.saveState());
         outState.putInt(STATE_ACTIVE_VIEW_ID, menuActiveViewId);
+        outState.putInt(STATE_ACTIVE_POSITION, activePosition);
     }
 	
     @Override
@@ -506,5 +542,75 @@ public class SubsonicTabActivity extends Activity implements OnClickListener{
 
         super.onBackPressed();
     }
+    
+	static class SwipeDetector implements OnTouchListener {
+
+		public static enum Action {
+			LR, // Left to Right
+			RL, // Right to Left
+			TB, // Top to bottom
+			BT, // Bottom to Top
+			None, // when no action was detected
+			Click
+		}
+
+		public static SwipeDetector Create(SubsonicTabActivity activity, final DownloadService downloadService) {
+			SwipeDetector swipeDetector = new SwipeDetector();
+			swipeDetector.downloadService = downloadService;
+			swipeDetector.activity = activity;
+			return swipeDetector;
+		}
+
+		private static final int MIN_DISTANCE = 100;
+		private float downX, downY, upX, upY;
+		private Action mSwipeDetected = Action.None;
+		private DownloadService downloadService;
+		private SubsonicTabActivity activity;
+
+		@Override
+		public boolean onTouch(View v, MotionEvent event) {
+			switch (event.getAction()) {
+				case MotionEvent.ACTION_DOWN: {
+					downX = event.getX();
+					downY = event.getY();
+					mSwipeDetected = Action.None;
+					return false; // allow other events like Click to be processed
+				} case MotionEvent.ACTION_UP: {
+					upX = event.getX();
+					upY = event.getY();
+
+					float deltaX = downX - upX;
+					float deltaY = downY - upY;
+
+					if (Math.abs(deltaX) > MIN_DISTANCE) {
+						// left or right
+						if (deltaX < 0) {
+							downloadService.previous();
+							return false;
+						}
+						if (deltaX > 0) {
+							downloadService.next();
+							return false;
+						}
+					} else if (Math.abs(deltaY) > MIN_DISTANCE) {
+						if (deltaY < 0) {
+							activity.nowPlayingHidden = true;
+							activity.hideNowPlaying();
+							return false;
+						}
+						if (deltaY > 0) {
+							mSwipeDetected = Action.BT;
+							return false;
+						}
+					}
+
+					Util.startActivityWithoutTransition(activity, DownloadActivity.class);
+					return false;
+				}
+			}
+			
+			return false;
+		}
+	}
 }
 

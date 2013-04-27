@@ -67,10 +67,10 @@
 
 		<ImageButton 
 		    android:id="@+id/control_previous"
-			android:layout_width="40dip" 
-			android:layout_height="40dip"
+			android:layout_width="wrap_content" 
+			android:layout_height="wrap_content"
 			android:layout_gravity="center|right" 
-			android:layout_marginRight="5dip"
+			android:layout_marginRight="2dip"
 			android:layout_marginTop="2dip" 
 			android:layout_weight="0.0"
 			android:background="@drawable/btn_bg" 
@@ -78,10 +78,10 @@
 
 		<ImageButton 
 		    android:id="@+id/control_play"
-			android:layout_width="40dip" 
-			android:layout_height="40dip"
+			android:layout_width="wrap_content" 
+			android:layout_height="wrap_content"
 			android:layout_gravity="center|right" 
-			android:layout_marginRight="5dip"
+			android:layout_marginRight="2dip"
 			android:layout_marginTop="2dip" 
 			android:layout_weight="0.0"
 			android:background="@drawable/btn_bg" 
@@ -89,10 +89,10 @@
 
 		<ImageButton 
 		    android:id="@+id/control_stop"
-			android:layout_width="40dip" 
-			android:layout_height="40dip"
+			android:layout_width="wrap_content" 
+			android:layout_height="wrap_content"
 			android:layout_gravity="center|right" 
-			android:layout_marginRight="5dip"
+			android:layout_marginRight="2dip"
 			android:layout_marginTop="2dip" 
 			android:layout_weight="0.0"
 			android:background="@drawable/btn_bg" 
@@ -100,10 +100,10 @@
 
 		<ImageButton 
 		    android:id="@+id/control_next"
-			android:layout_width="40dip" 
-			android:layout_height="40dip"
+			android:layout_width="wrap_content" 
+			android:layout_height="wrap_content"
 			android:layout_gravity="center|right"
-			android:layout_marginRight="5dip"
+			android:layout_marginRight="2dip"
 			android:layout_marginTop="2dip" 
 			android:layout_weight="0.0"
 			android:background="@drawable/btn_bg" 

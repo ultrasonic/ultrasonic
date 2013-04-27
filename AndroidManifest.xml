@@ -35,7 +35,6 @@
             a:launchMode="standard" >
             <intent-filter>
                 <action a:name="android.intent.action.MAIN" />
-
                 <category a:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
@@ -45,7 +44,7 @@
             a:launchMode="standard" />
         <activity
             a:name=".activity.SelectAlbumActivity"
-            a:configChanges="orientation|keyboardHidden" />
+            a:configChanges="orientation|keyboardHidden"  />
         <activity
             a:name=".activity.SearchActivity"
             a:configChanges="orientation|keyboardHidden"

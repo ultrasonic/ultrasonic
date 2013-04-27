@@ -28,6 +28,8 @@ import android.preference.PreferenceActivity;
 import android.preference.PreferenceScreen;
 import android.provider.SearchRecentSuggestions;
 import android.util.Log;
+import android.view.View;
+
 import com.thejoshwa.ultrasonic.androidapp.R;
 import com.thejoshwa.ultrasonic.androidapp.provider.SearchSuggestionProvider;
 import com.thejoshwa.ultrasonic.androidapp.service.DownloadService;

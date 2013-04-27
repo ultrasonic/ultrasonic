@@ -151,7 +151,11 @@ public class MainActivity extends SubsonicTabActivity {
                 }
             }
         });
+        
+        View homeMenuItem = findViewById(R.id.menu_home);
+        menuDrawer.setActiveView(homeMenuItem);
 
+        getActionBar().setTitle(R.string.common_appname);
         setTitle(R.string.common_appname);
 
         // Remember the current theme.

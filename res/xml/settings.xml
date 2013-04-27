@@ -103,7 +103,12 @@
             a:defaultValue="true"
             a:key="showTrackNumber"
             a:summary="@string/settings.show_track_number_summary"
-            a:title="@string/settings.show_track_number" />        
+            a:title="@string/settings.show_track_number" />
+        <CheckBoxPreference
+            a:defaultValue="true"
+            a:key="showNowPlaying"
+            a:summary="@string/settings.show_now_playing_summary"
+            a:title="@string/settings.show_now_playing" />       
     </PreferenceCategory>
     <PreferenceCategory a:title="@string/settings.network_title" >
         <ListPreference

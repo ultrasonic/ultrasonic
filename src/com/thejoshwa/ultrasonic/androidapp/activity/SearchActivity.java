@@ -86,7 +86,11 @@ public class SearchActivity extends SubsonicTabActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.search);
 
-        setTitle(R.string.search_title);
+        getActionBar().setTitle(R.string.common_appname);
+        getActionBar().setSubtitle(R.string.search_title);
+        
+        View searchMenuItem = findViewById(R.id.menu_search);
+        menuDrawer.setActiveView(searchMenuItem);
 
         DEFAULT_ARTISTS = Util.getDefaultArtists(this);
         DEFAULT_ALBUMS = Util.getDefaultAlbums(this);
@@ -138,13 +142,6 @@ public class SearchActivity extends SubsonicTabActivity {
         registerForContextMenu(list);
 
         onNewIntent(getIntent());
-    }
-    
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-    	super.onCreateOptionsMenu(menu);
-    	
-    	return true;
     }
 
     @Override

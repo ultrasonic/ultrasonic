@@ -94,6 +94,7 @@ public final class Constants {
     public static final String PREFERENCES_KEY_DEFAULT_SONGS = "defaultSongs";
     public static final String PREFERENCES_KEY_DEFAULT_ARTISTS = "defaultArtists";
     public static final String PREFERENCES_KEY_USE_STREAM_PROXY = "useStreamProxy";
+    public static final String PREFERENCES_KEY_SHOW_NOW_PLAYING = "showNowPlaying";
     
     // Name of the preferences file.
     public static final String PREFERENCES_FILE_NAME = "com.thejoshwa.ultrasonic.androidapp_preferences";

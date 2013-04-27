@@ -7,7 +7,8 @@
     <include layout="@layout/tab_progress"/>
     
 
-    <ListView a:id="@+id/select_artist_list"
+    <com.handmark.pulltorefresh.library.PullToRefreshListView
+    		  a:id="@+id/select_artist_list"
               a:textFilterEnabled="true"
               a:fastScrollEnabled="true"
               a:layout_width="fill_parent"

@@ -20,6 +20,7 @@
 package com.thejoshwa.ultrasonic.androidapp.activity;
 
 import android.content.Intent;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.view.ContextMenu;
 import android.view.LayoutInflater;
@@ -30,6 +31,10 @@ import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ListView;
 import android.widget.TextView;
+
+import com.handmark.pulltorefresh.library.PullToRefreshBase;
+import com.handmark.pulltorefresh.library.PullToRefreshListView;
+import com.handmark.pulltorefresh.library.PullToRefreshBase.OnRefreshListener;
 import com.thejoshwa.ultrasonic.androidapp.R;
 import com.thejoshwa.ultrasonic.androidapp.domain.Artist;
 import com.thejoshwa.ultrasonic.androidapp.domain.Indexes;
@@ -49,7 +54,8 @@ public class SelectArtistActivity extends SubsonicTabActivity implements Adapter
 
     private static final int MENU_GROUP_MUSIC_FOLDER = 10;
 
-    private ListView artistList;
+    private PullToRefreshListView refreshArtistListView;
+    private ListView artistListView;
     private View folderButton;
     private TextView folderName;
     private List<MusicFolder> musicFolders;
@@ -62,25 +68,36 @@ public class SelectArtistActivity extends SubsonicTabActivity implements Adapter
         super.onCreate(savedInstanceState);
         setContentView(R.layout.select_artist);
 
-        artistList = (ListView) findViewById(R.id.select_artist_list);
-        artistList.setOnItemClickListener(this);
-        //artistList.setOnTouchListener(gestureListener);
+        refreshArtistListView = (PullToRefreshListView) findViewById(R.id.select_artist_list);
+        artistListView = refreshArtistListView.getRefreshableView();
+        
+        refreshArtistListView.setOnRefreshListener(new OnRefreshListener<ListView>() {
+            @Override
+            public void onRefresh(PullToRefreshBase<ListView> refreshView) {
+                new GetDataTask().execute();
+            }
+        });
+        
+        artistListView.setOnItemClickListener(this);
 
-        folderButton = LayoutInflater.from(this).inflate(R.layout.select_artist_header, artistList, false);
+        folderButton = LayoutInflater.from(this).inflate(R.layout.select_artist_header, artistListView, false);
         folderName = (TextView) folderButton.findViewById(R.id.select_artist_folder_2);
 
         if (!Util.isOffline(this)) {
-            artistList.addHeaderView(folderButton);
+            artistListView.addHeaderView(folderButton);
         }
 
-        registerForContextMenu(artistList);
+        registerForContextMenu(artistListView);
 
         String title = getIntent().getStringExtra(Constants.INTENT_EXTRA_NAME_ALBUM_LIST_TITLE);
         if (title == null) {
-        	setTitle(Util.isOffline(this) ? R.string.music_library_label_offline : R.string.music_library_label);
+        	getActionBar().setSubtitle(Util.isOffline(this) ? R.string.music_library_label_offline : R.string.music_library_label);
         } else {
-        	setTitle(title);
+        	getActionBar().setSubtitle(title);
         }
+        
+        View browseMenuItem = findViewById(R.id.menu_browse);
+        menuDrawer.setActiveView(browseMenuItem);
 
         musicFolders = null;
         load();
@@ -88,11 +105,7 @@ public class SelectArtistActivity extends SubsonicTabActivity implements Adapter
     
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-    	MenuInflater inflater = getMenuInflater();
-    	inflater.inflate(R.menu.main, menu);
-    	inflater.inflate(R.menu.select_common, menu);
     	super.onCreateOptionsMenu(menu);
-    	
     	return true;
     }
 
@@ -128,7 +141,7 @@ public class SelectArtistActivity extends SubsonicTabActivity implements Adapter
             		List<Artist> artists = new ArrayList<Artist>(result.getShortcuts().size() + result.getArtists().size());
             		artists.addAll(result.getShortcuts());
             		artists.addAll(result.getArtists());
-            		artistList.setAdapter(new ArtistAdapter(SelectArtistActivity.this, artists));
+            		artistListView.setAdapter(new ArtistAdapter(SelectArtistActivity.this, artists));
             	}
 
                 // Display selected music folder
@@ -169,7 +182,7 @@ public class SelectArtistActivity extends SubsonicTabActivity implements Adapter
 
         AdapterView.AdapterContextMenuInfo info = (AdapterView.AdapterContextMenuInfo) menuInfo;
 
-        if (artistList.getItemAtPosition(info.position) instanceof Artist) {
+        if (artistListView.getItemAtPosition(info.position) instanceof Artist) {
             MenuInflater inflater = getMenuInflater();
             inflater.inflate(R.menu.select_artist_context, menu);
         } else if (info.position == 0) {
@@ -196,7 +209,7 @@ public class SelectArtistActivity extends SubsonicTabActivity implements Adapter
     public boolean onContextItemSelected(MenuItem menuItem) {
         AdapterView.AdapterContextMenuInfo info = (AdapterView.AdapterContextMenuInfo) menuItem.getMenuInfo();
 
-        Artist artist = (Artist) artistList.getItemAtPosition(info.position);
+        Artist artist = (Artist) artistListView.getItemAtPosition(info.position);
 
         if (artist != null) {
             switch (menuItem.getItemId()) {
@@ -231,9 +244,6 @@ public class SelectArtistActivity extends SubsonicTabActivity implements Adapter
 			case android.R.id.home:
 				menuDrawer.toggleMenu();
 				return true; 
-            case R.id.menu_refresh:
-            	refresh();
-                return true;
             case R.id.main_shuffle:
                 Intent intent = new Intent(this, DownloadActivity.class);
                 intent.putExtra(Constants.INTENT_EXTRA_NAME_SHUFFLE, true);
@@ -242,5 +252,19 @@ public class SelectArtistActivity extends SubsonicTabActivity implements Adapter
         }
 
         return false;
+    }
+    
+    private class GetDataTask extends AsyncTask<Void, Void, String[]> {
+        @Override
+        protected void onPostExecute(String[] result) {
+            refreshArtistListView.onRefreshComplete();
+            super.onPostExecute(result);
+        }
+
+		@Override
+		protected String[] doInBackground(Void... params) {
+			refresh();
+			return null;
+		}
     }
 }

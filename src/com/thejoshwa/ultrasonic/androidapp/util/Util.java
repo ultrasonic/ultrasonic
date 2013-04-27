@@ -1014,4 +1014,9 @@ public class Util extends DownloadActivity {
         SharedPreferences prefs = getPreferences(context);
         return prefs.getBoolean(Constants.PREFERENCES_KEY_MEDIA_BUTTONS, true);
     }
+    
+    public static boolean getShowNowPlayingPreference(Context context) {
+        SharedPreferences prefs = getPreferences(context);
+        return prefs.getBoolean(Constants.PREFERENCES_KEY_SHOW_NOW_PLAYING, true);
+    }
 }

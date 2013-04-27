@@ -20,14 +20,18 @@
 package com.thejoshwa.ultrasonic.androidapp.activity;
 
 import android.content.Intent;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.Menu;
-import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ListView;
+
+import com.handmark.pulltorefresh.library.PullToRefreshBase;
+import com.handmark.pulltorefresh.library.PullToRefreshListView;
+import com.handmark.pulltorefresh.library.PullToRefreshBase.OnRefreshListener;
 import com.thejoshwa.ultrasonic.androidapp.R;
 import com.thejoshwa.ultrasonic.androidapp.domain.Genre;
 import com.thejoshwa.ultrasonic.androidapp.service.MusicService;
@@ -45,7 +49,8 @@ public class SelectGenreActivity extends SubsonicTabActivity implements AdapterV
 
 	private static final String TAG = SelectGenreActivity.class.getSimpleName();
 	
-	private ListView genreList;
+	private PullToRefreshListView refreshGenreListView;
+	private ListView genreListView;
     private View emptyView;
 
     /**
@@ -56,24 +61,32 @@ public class SelectGenreActivity extends SubsonicTabActivity implements AdapterV
         super.onCreate(savedInstanceState);
         setContentView(R.layout.select_genre);
 
-        genreList = (ListView) findViewById(R.id.select_genre_list);
-        genreList.setOnItemClickListener(this);
-        //genreList.setOnTouchListener(gestureListener);
+        refreshGenreListView = (PullToRefreshListView) findViewById(R.id.select_genre_list);
+        genreListView = refreshGenreListView.getRefreshableView();
+        
+        refreshGenreListView.setOnRefreshListener(new OnRefreshListener<ListView>() {
+            @Override
+            public void onRefresh(PullToRefreshBase<ListView> refreshView) {
+                new GetDataTask().execute();
+            }
+        });
+        
+        genreListView.setOnItemClickListener(this);
         
         emptyView = findViewById(R.id.select_genre_empty);
 
-        registerForContextMenu(genreList);
+        registerForContextMenu(genreListView);
+        
+        View browseMenuItem = findViewById(R.id.menu_browse);
+        menuDrawer.setActiveView(browseMenuItem);
 
-        setTitle(R.string.main_genres_title);
+        getActionBar().setSubtitle(R.string.main_genres_title);
 
         load();
     }
     
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-    	MenuInflater inflater = getMenuInflater();
-    	inflater.inflate(R.menu.main, menu);
-    	inflater.inflate(R.menu.select_common, menu);
     	super.onCreateOptionsMenu(menu);
     	
     	return true;
@@ -108,7 +121,7 @@ public class SelectGenreActivity extends SubsonicTabActivity implements AdapterV
         		emptyView.setVisibility(result == null || result.isEmpty() ? View.VISIBLE : View.GONE);
             	
             	if (result != null) {
-            		genreList.setAdapter(new GenreAdapter(SelectGenreActivity.this, result));
+            		genreListView.setAdapter(new GenreAdapter(SelectGenreActivity.this, result));
             	}
             		
             }
@@ -132,9 +145,6 @@ public class SelectGenreActivity extends SubsonicTabActivity implements AdapterV
 			case android.R.id.home:
 				menuDrawer.toggleMenu();
 				return true; 
-            case R.id.menu_refresh:
-            	refresh();
-                return true;
             case R.id.main_shuffle:
                 Intent intent = new Intent(this, DownloadActivity.class);
                 intent.putExtra(Constants.INTENT_EXTRA_NAME_SHUFFLE, true);
@@ -143,5 +153,19 @@ public class SelectGenreActivity extends SubsonicTabActivity implements AdapterV
         }
 
         return false;
+    }
+    
+    private class GetDataTask extends AsyncTask<Void, Void, String[]> {
+        @Override
+        protected void onPostExecute(String[] result) {
+            refreshGenreListView.onRefreshComplete();
+            super.onPostExecute(result);
+        }
+
+		@Override
+		protected String[] doInBackground(Void... params) {
+			refresh();
+			return null;
+		}
     }
 }

@@ -340,6 +340,9 @@ public class DownloadActivity extends SubsonicTabActivity implements OnGestureLi
         visualizerAvailable = downloadService != null && downloadService.getVisualizerController() != null;
         equalizerAvailable = downloadService != null && downloadService.getEqualizerController() != null;
 
+        View nowPlayingMenuItem = findViewById(R.id.menu_now_playing);
+        menuDrawer.setActiveView(nowPlayingMenuItem);
+        
         if (visualizerAvailable) {
             visualizerView = new VisualizerView(this);
             visualizerViewLayout.addView(visualizerView, new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.MATCH_PARENT));

@@ -14,7 +14,8 @@
             a:layout_height="wrap_content"
             a:padding="10dip"/>
 
-    <ListView a:id="@+id/select_genre_list"
+    <com.handmark.pulltorefresh.library.PullToRefreshListView
+        	  a:id="@+id/select_genre_list"
               a:textFilterEnabled="true"
               a:fastScrollEnabled="true"
               a:layout_width="fill_parent"

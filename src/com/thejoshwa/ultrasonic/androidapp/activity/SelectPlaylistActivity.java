@@ -20,16 +20,19 @@
 package com.thejoshwa.ultrasonic.androidapp.activity;
 
 import android.content.Intent;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.view.ContextMenu;
 import android.view.Menu;
-import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
-import android.widget.ImageButton;
 import android.widget.ListView;
+
+import com.handmark.pulltorefresh.library.PullToRefreshBase;
+import com.handmark.pulltorefresh.library.PullToRefreshListView;
+import com.handmark.pulltorefresh.library.PullToRefreshBase.OnRefreshListener;
 import com.thejoshwa.ultrasonic.androidapp.R;
 import com.thejoshwa.ultrasonic.androidapp.domain.Playlist;
 import com.thejoshwa.ultrasonic.androidapp.service.MusicServiceFactory;
@@ -45,7 +48,8 @@ public class SelectPlaylistActivity extends SubsonicTabActivity implements Adapt
 
     private static final int MENU_ITEM_PLAY_ALL = 1;
 
-    private ListView list;
+    private PullToRefreshListView refreshPlaylistsListView;
+    private ListView playlistsListView;
     private View emptyTextView;
 
     @Override
@@ -53,24 +57,32 @@ public class SelectPlaylistActivity extends SubsonicTabActivity implements Adapt
         super.onCreate(savedInstanceState);
         setContentView(R.layout.select_playlist);
 
-        list = (ListView) findViewById(R.id.select_playlist_list);
+        refreshPlaylistsListView = (PullToRefreshListView) findViewById(R.id.select_playlist_list);
+        playlistsListView = refreshPlaylistsListView.getRefreshableView();
+        
+        refreshPlaylistsListView.setOnRefreshListener(new OnRefreshListener<ListView>() {
+            @Override
+            public void onRefresh(PullToRefreshBase<ListView> refreshView) {
+                new GetDataTask().execute();
+            }
+        });
+        
         emptyTextView = findViewById(R.id.select_playlist_empty);
-        list.setOnItemClickListener(this);
-        //list.setOnTouchListener(gestureListener);
-        registerForContextMenu(list);
+        playlistsListView.setOnItemClickListener(this);
+        registerForContextMenu(playlistsListView);
 
-        // Title: Playlists
-        setTitle(R.string.playlist_label);
+        View playlistsMenuItem = findViewById(R.id.menu_playlists);
+        menuDrawer.setActiveView(playlistsMenuItem);
+        
+        getActionBar().setTitle(R.string.common_appname);
+        getActionBar().setSubtitle(R.string.playlist_label);
 
         load();
     }
     
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-    	MenuInflater inflater = getMenuInflater();
-    	inflater.inflate(R.menu.select_common, menu);
     	super.onCreateOptionsMenu(menu);
-    	
     	return true;
     }
 
@@ -92,7 +104,7 @@ public class SelectPlaylistActivity extends SubsonicTabActivity implements Adapt
 
             @Override
             protected void done(List<Playlist> result) {
-                list.setAdapter(new PlaylistAdapter(result));
+                playlistsListView.setAdapter(new PlaylistAdapter(result));
                 emptyTextView.setVisibility(result.isEmpty() ? View.VISIBLE : View.GONE);
             }
         };
@@ -108,7 +120,7 @@ public class SelectPlaylistActivity extends SubsonicTabActivity implements Adapt
     @Override
     public boolean onContextItemSelected(MenuItem menuItem) {
         AdapterView.AdapterContextMenuInfo info = (AdapterView.AdapterContextMenuInfo) menuItem.getMenuInfo();
-        Playlist playlist = (Playlist) list.getItemAtPosition(info.position);
+        Playlist playlist = (Playlist) playlistsListView.getItemAtPosition(info.position);
 
         switch (menuItem.getItemId()) {
             case MENU_ITEM_PLAY_ALL:
@@ -130,9 +142,6 @@ public class SelectPlaylistActivity extends SubsonicTabActivity implements Adapt
 			case android.R.id.home:
 				menuDrawer.toggleMenu();
 				return true; 
-            case R.id.menu_refresh:
-            	refresh();
-                return true;
         }
 
         return false;
@@ -153,5 +162,19 @@ public class SelectPlaylistActivity extends SubsonicTabActivity implements Adapt
         public PlaylistAdapter(List<Playlist> playlists) {
             super(SelectPlaylistActivity.this, R.layout.playlist_list_item, playlists);
         }
+    }
+    
+    private class GetDataTask extends AsyncTask<Void, Void, String[]> {
+        @Override
+        protected void onPostExecute(String[] result) {
+            refreshPlaylistsListView.onRefreshComplete();
+            super.onPostExecute(result);
+        }
+
+		@Override
+		protected String[] doInBackground(Void... params) {
+			refresh();
+			return null;
+		}
     }
 }
