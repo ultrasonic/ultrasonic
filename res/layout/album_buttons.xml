@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/menu_album"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="horizontal"
+    android:padding="10dp" >
+
+    <ImageView
+        android:id="@+id/select_album_select"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        android:src="@drawable/ic_menu_select_all"
+        android:visibility="gone" />
+
+    <ImageView
+        android:id="@+id/select_album_play_now"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        android:src="@drawable/media_start_normal"
+        android:visibility="gone" />
+
+    <ImageView
+        android:id="@+id/select_album_play_last"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        android:src="@drawable/ic_menu_add_to_queue"
+        android:visibility="gone" />
+
+    <ImageView
+        android:id="@+id/select_album_pin"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        android:src="@drawable/ic_menu_pin"
+        android:visibility="gone" />
+
+    <ImageView
+        android:id="@+id/select_album_unpin"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        android:src="@drawable/ic_menu_unpin"
+        android:visibility="gone" />
+
+    <ImageView
+        android:id="@+id/select_album_delete"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        android:src="@drawable/ic_menu_exit"
+        android:visibility="gone" />
+
+    <ImageView
+        android:id="@+id/select_album_more"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        android:src="@drawable/ic_menu_forward"
+        android:visibility="gone" />
+
+</LinearLayout>
