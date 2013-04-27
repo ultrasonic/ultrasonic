@@ -2,8 +2,8 @@
 <manifest xmlns:a="http://schemas.android.com/apk/res/android"
     package="com.thejoshwa.ultrasonic.androidapp"
     a:installLocation="auto"
-    a:versionCode="8"
-    a:versionName="1.0.1.3" >
+    a:versionCode="9"
+    a:versionName="1.1.0.5" >
 
     <uses-permission a:name="android.permission.INTERNET" />
     <uses-permission a:name="android.permission.READ_PHONE_STATE" />
@@ -58,8 +58,7 @@
         <activity
             a:name=".activity.DownloadActivity"
             a:configChanges="keyboardHidden"
-            a:launchMode="singleTask"
-            a:theme="@android:style/Theme.NoTitleBar.Fullscreen" />
+            a:launchMode="singleTask" />
         <activity
             a:name=".activity.SettingsActivity"
             a:configChanges="orientation|keyboardHidden"
@@ -86,7 +85,6 @@
             a:launchMode="singleTask" >
             <intent-filter>
                 <action a:name="android.media.action.MEDIA_PLAY_FROM_SEARCH" />
-
                 <category a:name="android.intent.category.DEFAULT" />
             </intent-filter>
         </activity>

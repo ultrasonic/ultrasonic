@@ -39,6 +39,7 @@ import android.net.NetworkInfo;
 import android.os.Environment;
 import android.os.Handler;
 import android.os.Parcelable;
+import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.Gravity;
 import android.view.KeyEvent;
@@ -633,10 +634,23 @@ public class Util extends DownloadActivity {
 
 				// Set the album art.
 				try {
-					int size = context.getResources()
-							.getDrawable(R.drawable.unknown_album)
-							.getIntrinsicHeight();
+			        DisplayMetrics metrics = context.getResources().getDisplayMetrics();
+			        int imageSizeLarge = (int) Math.round(Math.min(metrics.widthPixels, metrics.heightPixels));
+					
+			        int size = 64;
+			        
+			        if (imageSizeLarge <= 480) {
+			        	size = 64;
+			        } else if (imageSizeLarge <= 768) {
+			        	size = 128;
+			        } else if (imageSizeLarge <= 1024) {
+			        	size = 256;
+			        } else if (imageSizeLarge <= 1080) {
+			        	size = imageSizeLarge;
+			        }
+
 					Bitmap bitmap = FileUtil.getAlbumArtBitmap(context, song, size);
+					
 					if (bitmap == null) {
 						// set default album art
 						notification.contentView.setImageViewResource(R.id.notification_image, R.drawable.unknown_album);
@@ -710,6 +724,15 @@ public class Util extends DownloadActivity {
         } catch (Throwable x) {
             // Ignored
         }
+    }
+    
+    public static Drawable getDrawableFromAttribute(Context context, int attr) {
+    	int[] attrs = new int[] { attr };
+    	android.content.res.TypedArray ta = context.obtainStyledAttributes(attrs);
+    	Drawable drawableFromTheme = ta.getDrawable(0);
+    	ta.recycle();
+    	
+    	return drawableFromTheme;
     }
 
     public static Drawable createDrawableFromBitmap(Context context, Bitmap bitmap) {

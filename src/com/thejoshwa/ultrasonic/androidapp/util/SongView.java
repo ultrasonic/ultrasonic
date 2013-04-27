@@ -19,6 +19,7 @@
 package com.thejoshwa.ultrasonic.androidapp.util;
 
 import android.content.Context;
+import android.graphics.drawable.Drawable;
 import android.os.Handler;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -117,7 +118,7 @@ public class SongView extends LinearLayout implements Checkable {
         titleTextView.setText(song.getTitle());
         artistTextView.setText(artist);
         durationTextView.setText(Util.formatDuration(song.getDuration()));
-        starImageView.setImageDrawable(song.getStarred() ? getResources().getDrawable(R.drawable.ic_star_full) : getResources().getDrawable(R.drawable.ic_star_hollow));
+        starImageView.setImageDrawable(song.getStarred() ? Util.getDrawableFromAttribute(getContext(), R.attr.star_full) : Util.getDrawableFromAttribute(getContext(), R.attr.star_hollow));
         checkedTextView.setVisibility(checkable && !song.isVideo() ? View.VISIBLE : View.GONE);
 
         if (Util.isOffline(getContext())) {
@@ -131,10 +132,10 @@ public class SongView extends LinearLayout implements Checkable {
             	final String id = song.getId();
             	
             	if (!isStarred) {
-					starImageView.setImageDrawable(getResources().getDrawable(R.drawable.ic_star_full));
+					starImageView.setImageDrawable(Util.getDrawableFromAttribute(getContext(), R.attr.star_full));
 					song.setStarred(true);
             	} else {
-            		starImageView.setImageDrawable(getResources().getDrawable(R.drawable.ic_star_hollow));
+            		starImageView.setImageDrawable(Util.getDrawableFromAttribute(getContext(), R.attr.star_hollow));
             		song.setStarred(false);
             	}
             	
@@ -169,30 +170,31 @@ public class SongView extends LinearLayout implements Checkable {
         File completeFile = downloadFile.getCompleteFile();
         File partialFile = downloadFile.getPartialFile();
 
-        int leftImage = 0;
-        int rightImage = 0;
+        Drawable leftImage = null;
+        Drawable rightImage = null;
 
         if (completeFile.exists()) {
-            leftImage = downloadFile.isSaved() ? R.drawable.ic_menu_save : R.drawable.ic_stat_downloaded;
+            leftImage = downloadFile.isSaved() ? Util.getDrawableFromAttribute(getContext(), R.attr.save) : Util.getDrawableFromAttribute(getContext(), R.attr.downloaded);
         }
 
         if (downloadFile.isDownloading() && !downloadFile.isDownloadCancelled() && partialFile.exists()) {
             statusTextView.setText(Util.formatLocalizedBytes(partialFile.length(), getContext()));
-            rightImage = R.drawable.ic_stat_downloading;
+            rightImage = Util.getDrawableFromAttribute(getContext(), R.attr.downloading);
         } else {
             statusTextView.setText(null);
         }
-        statusTextView.setCompoundDrawablesWithIntrinsicBounds(leftImage, 0, rightImage, 0);
+
+        statusTextView.setCompoundDrawablesWithIntrinsicBounds(leftImage, null, rightImage, null);
         
     	if (!song.getStarred()) {
-			starImageView.setImageDrawable(getResources().getDrawable(R.drawable.ic_star_hollow));
+			starImageView.setImageDrawable(Util.getDrawableFromAttribute(getContext(), R.attr.star_hollow));
     	} else {
-    		starImageView.setImageDrawable(getResources().getDrawable(R.drawable.ic_star_full));
+    		starImageView.setImageDrawable(Util.getDrawableFromAttribute(getContext(), R.attr.star_full));
     	}
 
         boolean playing = downloadService.getCurrentPlaying() == downloadFile;
         if (playing) {
-            titleTextView.setCompoundDrawablesWithIntrinsicBounds(R.drawable.ic_stat_play, 0, 0, 0);
+            titleTextView.setCompoundDrawablesWithIntrinsicBounds(Util.getDrawableFromAttribute(getContext(), R.attr.media_play_small), null, null, null);
         } else {
             titleTextView.setCompoundDrawablesWithIntrinsicBounds(0, 0, 0, 0);
         }

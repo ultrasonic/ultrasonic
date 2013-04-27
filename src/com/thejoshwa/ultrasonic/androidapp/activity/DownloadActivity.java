@@ -31,6 +31,7 @@ import android.app.AlertDialog;
 import android.app.Dialog;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.os.Handler;
 import android.util.Log;
@@ -97,8 +98,8 @@ public class DownloadActivity extends SubsonicTabActivity implements OnGestureLi
     private View stopButton;
     private View startButton;
     private View shuffleButton;
-    private ImageButton repeatButton;
-    private ImageButton starImageView;
+    private ImageView repeatButton;
+    private ImageView starImageView;
     private MenuItem equalizerMenuItem;
     private MenuItem visualizerMenuItem;
     private View toggleListButton;
@@ -145,8 +146,8 @@ public class DownloadActivity extends SubsonicTabActivity implements OnGestureLi
         stopButton = findViewById(R.id.download_stop);
         startButton = findViewById(R.id.download_start);
         shuffleButton = findViewById(R.id.download_shuffle);
-        repeatButton = (ImageButton) findViewById(R.id.download_repeat);
-        starImageView = (ImageButton) findViewById(R.id.download_star);
+        repeatButton = (ImageView) findViewById(R.id.download_repeat);
+        starImageView = (ImageView) findViewById(R.id.download_star);
         LinearLayout visualizerViewLayout = (LinearLayout) findViewById(R.id.download_visualizer_view_layout);
 
         toggleListButton = findViewById(R.id.download_toggle_list);
@@ -287,8 +288,6 @@ public class DownloadActivity extends SubsonicTabActivity implements OnGestureLi
             }
         });
         
-        //playlistView.setOnTouchListener(gestureListener);
-
         registerForContextMenu(playlistView);
         
         DownloadService downloadService = getDownloadService();
@@ -312,10 +311,10 @@ public class DownloadActivity extends SubsonicTabActivity implements OnGestureLi
             	final String id = currentSong.getId();
             	
             	if (!isStarred) {
-					starImageView.setImageDrawable(getResources().getDrawable(R.drawable.ic_star_full));
+					starImageView.setImageDrawable(Util.getDrawableFromAttribute(SubsonicTabActivity.getInstance(), R.attr.star_full));
 					currentSong.setStarred(true);
             	} else {
-            		starImageView.setImageDrawable(getResources().getDrawable(R.drawable.ic_star_hollow));
+            		starImageView.setImageDrawable(Util.getDrawableFromAttribute(SubsonicTabActivity.getInstance(), R.attr.star_hollow));
             		currentSong.setStarred(false);
             	}
             	
@@ -697,13 +696,13 @@ public class DownloadActivity extends SubsonicTabActivity implements OnGestureLi
 
         switch (downloadService.getRepeatMode()) {
             case OFF:
-                repeatButton.setImageResource(R.drawable.media_repeat_off);
+            	repeatButton.setImageDrawable(Util.getDrawableFromAttribute(this, R.attr.media_repeat_off));
                 break;
             case ALL:
-                repeatButton.setImageResource(R.drawable.media_repeat_all);
+            	repeatButton.setImageDrawable(Util.getDrawableFromAttribute(this, R.attr.media_repeat_all));
                 break;
             case SINGLE:
-                repeatButton.setImageResource(R.drawable.media_repeat_single);
+            	repeatButton.setImageDrawable(Util.getDrawableFromAttribute(this, R.attr.media_repeat_single));
                 break;
             default:
                 break;
@@ -718,7 +717,8 @@ public class DownloadActivity extends SubsonicTabActivity implements OnGestureLi
         currentPlaying = getDownloadService().getCurrentPlaying();
         if (currentPlaying != null) {
             currentSong = currentPlaying.getSong();
-            starImageView.setImageDrawable(currentSong.getStarred() ? getResources().getDrawable(R.drawable.ic_star_full) : getResources().getDrawable(R.drawable.ic_star_hollow));
+            Drawable starDrawable = currentSong.getStarred() ? Util.getDrawableFromAttribute(SubsonicTabActivity.getInstance(), R.attr.star_full) : Util.getDrawableFromAttribute(SubsonicTabActivity.getInstance(), R.attr.star_hollow);
+            starImageView.setImageDrawable(starDrawable);
             songTitleTextView.setText(currentSong.getTitle());
             albumTextView.setText(currentSong.getAlbum());
             artistTextView.setText(currentSong.getArtist());
@@ -748,8 +748,8 @@ public class DownloadActivity extends SubsonicTabActivity implements OnGestureLi
             progressBar.setProgress(millisPlayed);
             progressBar.setEnabled(currentPlaying.isCompleteFileAvailable() || getDownloadService().isJukeboxEnabled());
         } else {
-            positionTextView.setText("0:00");
-            durationTextView.setText("-:--");
+            positionTextView.setText(R.string.util_zero_time);
+            durationTextView.setText(R.string.util_no_time);
             progressBar.setProgress(0);
             progressBar.setMax(0);
             progressBar.setEnabled(false);

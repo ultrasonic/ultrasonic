@@ -3,15 +3,14 @@
         xmlns:a="http://schemas.android.com/apk/res/android"
         a:id="@+id/download_button_bar_flipper"
         a:layout_width="fill_parent"
-        a:layout_height="wrap_content"
-        a:background="@android:color/black">
+        a:layout_height="wrap_content" >
 
     <RelativeLayout
             a:layout_width="fill_parent"
             a:layout_height="wrap_content"
-            a:background="@android:color/black"
             a:paddingLeft="8dip"
-            a:paddingRight="8dip">
+            a:paddingRight="8dip"
+            a:paddingBottom="8dip" >
 
         <TextView
                 a:id="@+id/download_position"
@@ -20,9 +19,8 @@
                 a:layout_alignParentLeft="true"
                 a:layout_alignParentTop="true"
                 a:layout_marginRight="6dip"
-                a:text="0:00"
-                a:textAppearance="?android:attr/textAppearanceSmall"
-                a:textColor="@color/mediaControlForeground"/>
+                a:text="@string/util.zero_time"
+                a:textAppearance="?android:attr/textAppearanceSmall" />
         <TextView
                 a:id="@+id/download_duration"
                 a:layout_width="wrap_content"
@@ -30,9 +28,8 @@
                 a:layout_alignParentRight="true"
                 a:layout_alignParentTop="true"
                 a:layout_marginLeft="6dip"
-                a:text="-:--"
-                a:textAppearance="?android:attr/textAppearanceSmall"
-                a:textColor="@color/mediaControlForeground"/>
+                a:text="@string/util.no_time"
+                a:textAppearance="?android:attr/textAppearanceSmall" />
         <TextView
                 a:id="@+id/download_artist"
                 a:layout_width="wrap_content"
@@ -44,8 +41,7 @@
                 a:singleLine="true"
                 a:ellipsize="end"
                 a:gravity="center_horizontal"
-                a:textAppearance="?android:attr/textAppearanceSmall"
-                a:textColor="#c0c0c0"/>
+                a:textAppearance="?android:attr/textAppearanceSmall" />
         <TextView
                 a:id="@+id/download_album"
                 a:layout_width="wrap_content"
@@ -54,8 +50,7 @@
                 a:layout_below="@+id/download_artist"
                 a:singleLine="true"
                 a:ellipsize="end"
-                a:textAppearance="?android:attr/textAppearanceSmall"
-                a:textColor="#c0c0c0"/>
+                a:textAppearance="?android:attr/textAppearanceSmall" />
     </RelativeLayout>
     
 </com.thejoshwa.ultrasonic.androidapp.util.MyViewFlipper>

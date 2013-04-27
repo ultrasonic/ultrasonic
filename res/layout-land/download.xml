@@ -14,8 +14,7 @@
             a:id="@+id/download_control_layout"
             a:layout_width="wrap_content"
             a:layout_height="fill_parent"
-            a:layout_alignParentRight="true"
-            a:background="@color/mediaControlBackground" >
+            a:layout_alignParentRight="true" >
 
             <LinearLayout
                 a:id="@+id/linearLayout1"
@@ -27,89 +26,88 @@
                 a:paddingBottom="12dip"
                 a:paddingTop="12dip" >
 
-                <ImageButton
+                <ImageView
                     a:id="@+id/download_shuffle"
                     a:layout_width="0dip"
                     a:layout_height="match_parent"
                     a:layout_gravity="center_vertical"
                     a:layout_weight="1"
-                    a:background="@drawable/list_selector_holo_dark"
+                    a:focusable="true"
                     a:paddingLeft="4dip"
-                    a:src="@drawable/media_shuffle_normal" />
+                    a:src="?attr/media_shuffle" />
 
-                <ImageButton
+                <ImageView
                     a:id="@+id/download_previous"
                     a:layout_width="0dp"
                     a:layout_height="match_parent"
                     a:layout_gravity="center_vertical"
                     a:layout_weight="1"
-                    a:background="@drawable/list_selector_holo_dark"
-                    a:src="@drawable/media_backward_normal" />
+                    a:focusable="true"
+                    a:src="?attr/media_previous" />
 
-                <ImageButton
+                <ImageView
                     a:id="@+id/download_pause"
                     a:layout_width="0dp"
                     a:layout_height="match_parent"
                     a:layout_gravity="center_vertical"
                     a:layout_weight="1"
-                    a:background="@drawable/list_selector_holo_dark"
-                    a:src="@drawable/media_pause_normal" />
+                    a:focusable="true"
+                    a:src="?attr/media_pause" />
 
-                <ImageButton
+                <ImageView
                     a:id="@+id/download_stop"
                     a:layout_width="0dp"
                     a:layout_height="match_parent"
                     a:layout_gravity="center_vertical"
                     a:layout_weight="1"
-                    a:background="@drawable/list_selector_holo_dark"
-                    a:src="@drawable/media_stop_normal" />
+                    a:focusable="true"
+                    a:src="?attr/media_stop" />
 
-                <ImageButton
+                <ImageView
                     a:id="@+id/download_start"
                     a:layout_width="0dp"
                     a:layout_height="match_parent"
                     a:layout_gravity="center_vertical"
                     a:layout_weight="1"
-                    a:background="@drawable/list_selector_holo_dark"
-                    a:src="@drawable/media_start_normal" />
+                    a:focusable="true"
+                    a:src="?attr/media_play" />
 
-                <ImageButton
+                <ImageView
                     a:id="@+id/download_next"
                     a:layout_width="0dp"
                     a:layout_height="match_parent"
                     a:layout_gravity="center_vertical"
                     a:layout_weight="1"
-                    a:background="@drawable/list_selector_holo_dark"
-                    a:src="@drawable/media_forward_normal" />
+                    a:focusable="true"
+                    a:src="?attr/media_next" />
 
-                <ImageButton
+                <ImageView
                     a:id="@+id/download_repeat"
                     a:layout_width="0dip"
                     a:layout_height="match_parent"
                     a:layout_gravity="center_vertical"
                     a:layout_weight="1"
-                    a:background="@drawable/list_selector_holo_dark"
-                    a:src="@drawable/media_repeat_off" />
+                    a:focusable="true"
+                    a:src="?attr/media_repeat_off" />
 
-                <ImageButton
+                <ImageView
                     a:id="@+id/download_star"
                     a:layout_width="0dip"
                     a:layout_height="match_parent"
                     a:layout_weight="1"
-                    a:background="@drawable/list_selector_holo_dark"
-                    a:focusable="false"
+                    a:focusable="true"
                     a:gravity="center_vertical"
-                    a:src="@drawable/ic_star_hollow" />
+                    a:src="?attr/star_hollow" />
 
-                <ImageButton
+                <ImageView
                     a:id="@+id/download_toggle_list"
                     a:layout_width="0dip"
                     a:layout_height="match_parent"
                     a:layout_gravity="center_vertical"
                     a:layout_weight="1"
-                    a:background="@drawable/list_selector_holo_dark"
+                    a:focusable="true"
                     a:paddingRight="4dip"
-                    a:src="@drawable/media_toggle_list_normal" />
+                    a:src="?attr/media_toggle" />
             </LinearLayout>
 
             <TextView
@@ -122,8 +120,7 @@
                 a:ellipsize="end"
                 a:gravity="center_horizontal"
                 a:singleLine="true"
-                a:textAppearance="?android:attr/textAppearanceSmall"
-                a:textColor="#c0c0c0" />
+                a:textAppearance="?android:attr/textAppearanceSmall" />
 
             <TextView
                 a:id="@+id/download_song_title"
@@ -134,8 +131,7 @@
                 a:ellipsize="end"
                 a:gravity="center_horizontal"
                 a:maxLines="2"
-                a:textAppearance="?android:attr/textAppearanceMedium"
-                a:textColor="@color/mediaControlForeground" />
+                a:textAppearance="?android:attr/textAppearanceMedium" />
         </RelativeLayout>
 
         <com.thejoshwa.ultrasonic.androidapp.util.MyViewFlipper
@@ -150,7 +146,6 @@
                 a:layout_width="fill_parent"
                 a:layout_height="fill_parent"
                 a:layout_weight="1"
-                a:background="@color/black"
                 a:gravity="left"
                 a:orientation="horizontal" >
 

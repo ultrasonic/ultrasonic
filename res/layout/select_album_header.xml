@@ -23,8 +23,7 @@
         a:paddingRight="4dip"
         a:paddingTop="10dip"
         a:singleLine="true"
-        a:textAppearance="?android:attr/textAppearanceMedium"
-        a:textColor="@color/mediaControlForeground" />
+        a:textAppearance="?android:attr/textAppearanceMedium" />
 
     <TextView
         a:id="@+id/select_album_artist"

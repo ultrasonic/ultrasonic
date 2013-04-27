@@ -145,8 +145,6 @@
     <string name="settings.invalid_username">Veuillez spécifier un nom d\'utilisateur valide (sans espace à la fin).</string>
     <string name="settings.appearance_title">Apparence</string>
     <string name="settings.theme_title">Thème</string>
-    <string name="settings.theme_fullscreen">Sombre et plein écran</string>
-    <string name="settings.theme_fullscreenlight">Clair et plein écran</string>	
     <string name="settings.theme_light">Clair</string>
     <string name="settings.theme_dark">Sombre</string>
     <string name="settings.network_title">Réseau</string>
@@ -229,6 +227,8 @@
     <string name="settings.show_lockscreen_controls_summary">Afficher les contrôles de lecture sur l\'écran de verrouillage</string>
     <string name="settings.use_stream_proxy">Utiliser un proxy</string>
     <string name="settings.use_stream_proxy_summary">Support de lecture de flux à travers un proxy (peut provoquer des fritures)</string>
+    <string name="settings.show_now_playing">Montrent jouer maintenant</string>
+    <string name="settings.show_now_playing_summary">Afficher jouant actuellement piste dans toutes les activités</string>    
     <string name="settings.max_albums">Albums maximum</string>
     <string name="settings.search_1">1</string>
     <string name="settings.search_3">3</string>
@@ -277,6 +277,8 @@
     <string name="util.bytes_format.megabyte">0.00 Mo</string>
     <string name="util.bytes_format.kilobyte">0 Ko</string>
     <string name="util.bytes_format.byte">0 o</string>
+    <string name="util.no_time">-:--</string>
+    <string name="util.zero_time">0:00</string>
 
     <plurals name="select_album_n_songs">
         <item quantity="zero">Aucun titre</item>

@@ -496,21 +496,23 @@ public class SelectAlbumActivity extends SubsonicTabActivity {
         boolean unpinEnabled = false;
         boolean deleteEnabled = false;
 
+        int pinnedCount = 0;
         for (MusicDirectory.Entry song : selection) {
             DownloadFile downloadFile = getDownloadService().forSong(song);
             if (downloadFile.isCompleteFileAvailable()) {
                 deleteEnabled = true;
             }
             if (downloadFile.isSaved()) {
+            	pinnedCount++;
                 unpinEnabled = true;
             }
         }
-
-        playNowButton.setEnabled(enabled);
-        playLastButton.setEnabled(enabled);
-        pinButton.setEnabled(enabled && !Util.isOffline(this));
-        unpinButton.setEnabled(unpinEnabled);
-        deleteButton.setEnabled(deleteEnabled);
+        
+        playNowButton.setVisibility(enabled ? View.VISIBLE : View.GONE);
+        playLastButton.setVisibility(enabled ? View.VISIBLE : View.GONE);
+        pinButton.setVisibility((enabled && !Util.isOffline(this) && selection.size() > pinnedCount) ? View.VISIBLE : View.GONE);
+        unpinButton.setVisibility(unpinEnabled ? View.VISIBLE : View.GONE);
+        deleteButton.setVisibility(deleteEnabled ? View.VISIBLE : View.GONE);
     }
 
     private List<MusicDirectory.Entry> getSelectedSongs() {
@@ -695,6 +697,8 @@ public class SelectAlbumActivity extends SubsonicTabActivity {
                 	moreButton.setVisibility(View.VISIBLE);
                 }
             }
+            
+            enableButtons();
 
             boolean isAlbumList = getIntent().hasExtra(Constants.INTENT_EXTRA_NAME_ALBUM_LIST_TYPE);
             playAllButtonVisible = !(isAlbumList || entries.isEmpty());

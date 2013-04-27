@@ -10,7 +10,7 @@
             a:layout_width="fill_parent"
             a:layout_height="wrap_content"
             a:drawablePadding="0dp"
-            a:drawableLeft="@drawable/ic_menu_search"
+            a:drawableLeft="?attr/search"
             a:textAppearance="?android:attr/textAppearanceMedium"
             a:gravity="center"
             a:padding="12dp"/>

@@ -11,7 +11,7 @@
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_weight="1"
-        android:src="@drawable/ic_menu_select_all"
+        android:src="?attr/select_all"
         android:visibility="gone" />
 
     <ImageView
@@ -19,7 +19,7 @@
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_weight="1"
-        android:src="@drawable/media_start_normal"
+        android:src="?attr/media_play"
         android:visibility="gone" />
 
     <ImageView
@@ -27,7 +27,7 @@
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_weight="1"
-        android:src="@drawable/ic_menu_add_to_queue"
+        android:src="?attr/add_to_queue"
         android:visibility="gone" />
 
     <ImageView
@@ -35,7 +35,7 @@
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_weight="1"
-        android:src="@drawable/ic_menu_pin"
+        android:src="?attr/pin"
         android:visibility="gone" />
 
     <ImageView
@@ -43,7 +43,7 @@
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_weight="1"
-        android:src="@drawable/ic_menu_unpin"
+        android:src="?attr/unpin"
         android:visibility="gone" />
 
     <ImageView
@@ -51,7 +51,7 @@
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_weight="1"
-        android:src="@drawable/ic_menu_exit"
+        android:src="?attr/exit"
         android:visibility="gone" />
 
     <ImageView
@@ -59,7 +59,7 @@
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_weight="1"
-        android:src="@drawable/ic_menu_forward"
+        android:src="?attr/forward"
         android:visibility="gone" />
 
 </LinearLayout>

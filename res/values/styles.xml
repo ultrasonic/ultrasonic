@@ -1,31 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <style name="Dark" parent="@android:style/Theme">
-        <item name="android:listViewStyle">@style/listselect</item>
-        <item name="android:progressBarStyleHorizontal">@style/customprogress</item>
-        <item name="android:textColorPrimary">@color/white</item>
-        <item name="android:textColorSecondary">@color/cyan</item>
-    </style>
-    
-    <style name="Light" parent="@android:style/Theme.Light">
-        <item name="android:listViewStyle">@style/listselectlight</item>
-        <item name="android:progressBarStyleHorizontal">@style/customprogress</item>
-        <item name="android:textColorSecondary">@color/cyan</item>
-    </style>
-    
-    <style name="Fullscreen" parent="@android:style/Theme.Black.NoTitleBar.Fullscreen">
-        <item name="android:listViewStyle">@style/listselect</item>
-        <item name="android:progressBarStyleHorizontal">@style/customprogress</item>
-        <item name="android:textColorPrimary">@color/white</item>
-        <item name="android:textColorSecondary">@color/cyan</item>
-    </style>
-    
-    <style name="Fullscreenlight" parent="@android:style/Theme.Light.NoTitleBar.Fullscreen">
-        <item name="android:listViewStyle">@style/listselectlight</item>
-        <item name="android:progressBarStyleHorizontal">@style/customprogress</item>
-        <item name="android:textColorSecondary">@color/cyan</item>
-    </style>
-    
     <style name="listselect" parent="android:style/Widget.ListView">
         <item name="android:listSelector">@drawable/list_selector_holo_dark</item>
     </style>
@@ -71,5 +45,39 @@
         <item name="android:drawablePadding">16dp</item>
         <item name="android:gravity">center_vertical</item>
     </style>
+    
+   	<attr name="star_hollow" format="reference"/>
+    <attr name="star_full" format="reference"/>
+    <attr name="about" format="reference"/>
+    <attr name="select_all" format="reference"/>
+    <attr name="add_to_queue" format="reference"/>
+    <attr name="browse" format="reference"/>
+    <attr name="exit" format="reference"/>
+    <attr name="forward" format="reference"/>
+    <attr name="help" format="reference"/>
+    <attr name="home" format="reference"/>
+    <attr name="pin" format="reference"/>
+    <attr name="unpin" format="reference"/>
+    <attr name="playlists" format="reference"/>
+    <attr name="remove_all" format="reference"/>
+    <attr name="save" format="reference"/>
+    <attr name="screen_on_off" format="reference"/>
+	<attr name="search" format="reference"/>    
+	<attr name="select_folder" format="reference"/>
+	<attr name="settings" format="reference"/>	
+	<attr name="share" format="reference"/>
+	<attr name="downloaded" format="reference"/>
+	<attr name="downloading" format="reference"/>
+	<attr name="media_previous" format="reference"/>
+	<attr name="media_next" format="reference"/>
+	<attr name="media_pause" format="reference"/>
+	<attr name="media_repeat_all" format="reference"/>
+	<attr name="media_repeat_off" format="reference"/>
+	<attr name="media_repeat_single" format="reference"/>
+	<attr name="media_shuffle" format="reference"/>
+	<attr name="media_play" format="reference"/>
+	<attr name="media_play_small" format="reference"/>
+	<attr name="media_stop" format="reference"/>
+	<attr name="media_toggle" format="reference"/>
     
 </resources>

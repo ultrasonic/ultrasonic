@@ -145,8 +145,6 @@
     <string name="settings.invalid_username">Adjon meg egy érvényes felhasználónevet (szóközt nem tartalmazhat)!</string>
     <string name="settings.appearance_title">Megjelenítés</string>
     <string name="settings.theme_title">Téma</string>
-    <string name="settings.theme_fullscreen">Teljesképernyős sötét</string>
-    <string name="settings.theme_fullscreenlight">Teljesképernyős világos</string>
     <string name="settings.theme_light">Világos</string>
     <string name="settings.theme_dark">Sötét</string>
     <string name="settings.network_title">Hálózat</string>
@@ -229,6 +227,8 @@
     <string name="settings.show_lockscreen_controls_summary">Lejátszó-kezelőpanel megjelenítése a képernyőzáron.</string>
     <string name="settings.use_stream_proxy">Stream Proxy használata</string>
     <string name="settings.use_stream_proxy_summary">Média lejátszása stream proxy-n keresztül (akadozások elkerülése érdekében).</string>
+    <string name="settings.show_now_playing">Mutat most játszott</string>
+    <string name="settings.show_now_playing_summary">Mutasd éppen lejátszott dal minden tevékenység.</string>    
     <string name="settings.max_albums">Max. albumok</string>
     <string name="settings.search_1">1</string>
     <string name="settings.search_3">3</string>
@@ -277,6 +277,8 @@
     <string name="util.bytes_format.megabyte">0.00 MB</string>
     <string name="util.bytes_format.kilobyte">0 KB</string>
     <string name="util.bytes_format.byte">0 B</string>
+    <string name="util.no_time">-:--</string>
+    <string name="util.zero_time">0:00</string>    
 
     <plurals name="select_album_n_songs">
         <item quantity="zero">Nincsenek dalok</item>

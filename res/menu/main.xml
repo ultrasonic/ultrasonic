@@ -4,7 +4,7 @@
     <item
         	a:id="@+id/main_shuffle"
 			a:showAsAction="ifRoom|withText"
-			a:icon="@drawable/ic_menu_shuffle"
+			a:icon="?attr/media_shuffle"
 			a:title="@string/main.shuffle"
 		 	/>
     

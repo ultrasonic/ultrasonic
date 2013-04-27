@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <style name="UltraSonicTheme" parent="@android:style/Theme.Holo">
+        <item name="star_hollow">@drawable/ic_star_hollow_dark</item>
+        <item name="star_full">@drawable/ic_star_full_dark</item>
+        <item name="about">@drawable/ic_menu_about_dark</item>
+        <item name="select_all">@drawable/ic_menu_select_all_dark</item>
+        <item name="add_to_queue">@drawable/ic_menu_add_to_queue_dark</item>
+        <item name="browse">@drawable/ic_menu_browse_dark</item>
+        <item name="exit">@drawable/ic_menu_exit_dark</item>
+        <item name="forward">@drawable/ic_menu_forward_dark</item>
+        <item name="help">@drawable/ic_menu_help_dark</item>
+        <item name="home">@drawable/ic_menu_home_dark</item>
+        <item name="pin">@drawable/ic_menu_pin_dark</item>
+        <item name="unpin">@drawable/ic_menu_unpin_dark</item>
+        <item name="playlists">@drawable/ic_menu_playlists_dark</item>
+        <item name="remove_all">@drawable/ic_menu_remove_all_dark</item>
+        <item name="save">@drawable/ic_menu_save_dark</item>
+        <item name="screen_on_off">@drawable/ic_menu_screen_on_off_dark</item>
+        <item name="search">@drawable/ic_menu_search_dark</item>
+        <item name="select_folder">@drawable/ic_menu_select_folder_dark</item>
+        <item name="settings">@drawable/ic_menu_settings_dark</item>
+        <item name="share">@drawable/ic_menu_share_dark</item>
+        <item name="downloaded">@drawable/ic_stat_downloaded_dark</item>
+        <item name="downloading">@drawable/ic_stat_downloading_dark</item>        
+        <item name="media_previous">@drawable/media_backward_normal_dark</item>
+        <item name="media_next">@drawable/media_forward_normal_dark</item>
+        <item name="media_pause">@drawable/media_pause_normal_dark</item>
+        <item name="media_repeat_all">@drawable/media_repeat_all</item>
+        <item name="media_repeat_off">@drawable/media_repeat_off_dark</item>
+        <item name="media_repeat_single">@drawable/media_repeat_single</item>
+        <item name="media_shuffle">@drawable/media_shuffle_normal_dark</item>
+        <item name="media_play">@drawable/media_start_normal_dark</item>
+        <item name="media_play_small">@drawable/ic_stat_play_dark</item>        
+        <item name="media_stop">@drawable/media_stop_normal_dark</item>
+        <item name="media_toggle">@drawable/media_toggle_list_normal_dark</item>
+    </style>
+
+    <style name="UltraSonicTheme.Light" parent="@android:style/Theme.Holo.Light">
+        <item name="star_hollow">@drawable/ic_star_hollow_light</item>
+        <item name="star_full">@drawable/ic_star_full_light</item>
+        <item name="about">@drawable/ic_menu_about_light</item>
+        <item name="select_all">@drawable/ic_menu_select_all_light</item>
+        <item name="add_to_queue">@drawable/ic_menu_add_to_queue_light</item>
+        <item name="browse">@drawable/ic_menu_browse_light</item>
+        <item name="exit">@drawable/ic_menu_exit_light</item>
+        <item name="forward">@drawable/ic_menu_forward_light</item>
+        <item name="help">@drawable/ic_menu_help_light</item>
+        <item name="home">@drawable/ic_menu_home_light</item>
+        <item name="pin">@drawable/ic_menu_pin_light</item>
+        <item name="unpin">@drawable/ic_menu_unpin_light</item>
+        <item name="playlists">@drawable/ic_menu_playlists_light</item>
+        <item name="remove_all">@drawable/ic_menu_remove_all_light</item>
+        <item name="save">@drawable/ic_menu_save_light</item>
+        <item name="screen_on_off">@drawable/ic_menu_screen_on_off_light</item>
+        <item name="search">@drawable/ic_menu_search_light</item>
+        <item name="select_folder">@drawable/ic_menu_select_folder_light</item>
+        <item name="settings">@drawable/ic_menu_settings_light</item>
+        <item name="share">@drawable/ic_menu_share_light</item>
+        <item name="downloaded">@drawable/ic_stat_downloaded_light</item>
+        <item name="downloading">@drawable/ic_stat_downloading_light</item>        
+        <item name="media_previous">@drawable/media_backward_normal_light</item>
+        <item name="media_next">@drawable/media_forward_normal_light</item>
+        <item name="media_pause">@drawable/media_pause_normal_light</item>
+        <item name="media_repeat_all">@drawable/media_repeat_all</item>
+        <item name="media_repeat_off">@drawable/media_repeat_off_light</item>
+        <item name="media_repeat_single">@drawable/media_repeat_single</item>
+        <item name="media_shuffle">@drawable/media_shuffle_normal_light</item>
+        <item name="media_play">@drawable/media_start_normal_light</item>
+        <item name="media_play_small">@drawable/ic_stat_play_light</item>        
+        <item name="media_stop">@drawable/media_stop_normal_light</item>
+        <item name="media_toggle">@drawable/media_toggle_list_normal_light</item>
+    </style>
+
+</resources>

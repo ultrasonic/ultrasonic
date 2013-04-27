@@ -45,7 +45,7 @@
 			a:layout_height="fill_parent"
 			a:gravity="center_vertical"
 			a:background="@android:color/transparent"
-            a:src="@drawable/ic_star_hollow"
+            a:src="?attr/star_hollow"
             a:focusable="false"
             a:paddingRight="3dip" />
     

@@ -32,6 +32,7 @@ import android.media.AudioManager;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
+import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
@@ -245,14 +246,11 @@ public class SubsonicTabActivity extends Activity implements OnClickListener{
 
     private void applyTheme() {
         String theme = Util.getTheme(this);
-        if ("dark".equalsIgnoreCase(theme)) {
-            setTheme(R.style.Dark);
-        } else if ("light".equalsIgnoreCase(theme)) {
-            setTheme(R.style.Light);
-        } else if ("fullscreen".equalsIgnoreCase(theme)) {
-            setTheme(R.style.Fullscreen);
-        } else if ("fullscreenlight".equalsIgnoreCase(theme)) {
-            setTheme(R.style.Fullscreenlight);
+        
+        if ("dark".equalsIgnoreCase(theme) || "fullscreen".equalsIgnoreCase(theme)) {
+            setTheme(R.style.UltraSonicTheme);
+        } else if ("light".equalsIgnoreCase(theme) || "fullscreenlight".equalsIgnoreCase(theme)) {
+            setTheme(R.style.UltraSonicTheme_Light);
         }
     }
     
@@ -278,7 +276,20 @@ public class SubsonicTabActivity extends Activity implements OnClickListener{
 				TextView nowPlayingTrack = (TextView) nowPlaying.findViewById(R.id.now_playing_trackname);
 				TextView nowPlayingArtist = (TextView) nowPlaying.findViewById(R.id.now_playing_artist);
 
-				int size = context.getResources().getDrawable(R.drawable.unknown_album).getIntrinsicHeight();
+		        DisplayMetrics metrics = context.getResources().getDisplayMetrics();
+		        int imageSizeLarge = (int) Math.round(Math.min(metrics.widthPixels, metrics.heightPixels));
+				
+		        int size = 64;
+		        
+		        if (imageSizeLarge <= 480) {
+		        	size = 64;
+		        } else if (imageSizeLarge <= 768) {
+		        	size = 128;
+		        } else if (imageSizeLarge <= 1024) {
+		        	size = 256;
+		        } else if (imageSizeLarge <= 1080) {
+		        	size = imageSizeLarge;
+		        }
 
 				Bitmap bitmap = FileUtil.getAlbumArtBitmap(context, song, size);
 
@@ -309,9 +320,9 @@ public class SubsonicTabActivity extends Activity implements OnClickListener{
 			ImageView playButton = (ImageView) nowPlaying.findViewById(R.id.now_playing_control_play);
 
 			if (playerState == PlayerState.PAUSED) {
-				playButton.setImageResource(R.drawable.ic_appwidget_music_play);
+				playButton.setImageDrawable(Util.getDrawableFromAttribute(this, R.attr.media_play));
 			} else if (playerState == PlayerState.STARTED) {
-				playButton.setImageResource(R.drawable.ic_appwidget_music_pause);
+				playButton.setImageDrawable(Util.getDrawableFromAttribute(this, R.attr.media_pause));
 			}			
 		}
     }
@@ -546,11 +557,11 @@ public class SubsonicTabActivity extends Activity implements OnClickListener{
 	static class SwipeDetector implements OnTouchListener {
 
 		public static enum Action {
-			LR, // Left to Right
-			RL, // Right to Left
-			TB, // Top to bottom
-			BT, // Bottom to Top
-			None, // when no action was detected
+			LeftToRight,
+			RightToLeft,
+			TopToBottom,
+			BottomToTop,
+			None,
 			Click
 		}
 
@@ -561,9 +572,8 @@ public class SubsonicTabActivity extends Activity implements OnClickListener{
 			return swipeDetector;
 		}
 
-		private static final int MIN_DISTANCE = 100;
+		private static final int MIN_DISTANCE = 30;
 		private float downX, downY, upX, upY;
-		private Action mSwipeDetected = Action.None;
 		private DownloadService downloadService;
 		private SubsonicTabActivity activity;
 
@@ -573,8 +583,7 @@ public class SubsonicTabActivity extends Activity implements OnClickListener{
 				case MotionEvent.ACTION_DOWN: {
 					downX = event.getX();
 					downY = event.getY();
-					mSwipeDetected = Action.None;
-					return false; // allow other events like Click to be processed
+					return false;
 				} case MotionEvent.ACTION_UP: {
 					upX = event.getX();
 					upY = event.getY();
@@ -599,7 +608,6 @@ public class SubsonicTabActivity extends Activity implements OnClickListener{
 							return false;
 						}
 						if (deltaY > 0) {
-							mSwipeDetected = Action.BT;
 							return false;
 						}
 					}
