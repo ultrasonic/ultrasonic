@@ -2,7 +2,7 @@
 <manifest xmlns:a="http://schemas.android.com/apk/res/android"
     package="com.thejoshwa.ultrasonic.androidapp"
     a:installLocation="auto"
-    a:versionCode="9"
+    a:versionCode="10"
     a:versionName="1.1.0.6" >
 
     <uses-permission a:name="android.permission.INTERNET" />
