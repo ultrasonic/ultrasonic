@@ -846,8 +846,14 @@ public class DownloadServiceImpl extends Service implements DownloadService {
 							.putString(MediaMetadataRetriever.METADATA_KEY_TITLE, title)
 							.putString(MediaMetadataRetriever.METADATA_KEY_ARTIST, artist)
 							.putString(MediaMetadataRetriever.METADATA_KEY_ALBUM, album)
-							.putLong(MediaMetadataRetriever.METADATA_KEY_DURATION, duration)
 							.apply();
+					
+					if (duration != null) {
+						remoteControlClient
+						.editMetadata(false)
+						.putLong(MediaMetadataRetriever.METADATA_KEY_DURATION, duration)
+						.apply();
+					}
 					
 					if (bitmap != null) {
 							remoteControlClient

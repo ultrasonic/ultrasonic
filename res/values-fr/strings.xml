@@ -44,7 +44,7 @@
     <string name="menu.exit">Quitter</string>
     <string name="menu.settings">Paramètres</string>
     <string name="menu.help">Aide</string>
-    <string name="menu.about">Sur</string>    
+    <string name="menu.about">À propos</string>    
     <string name="menu.search">Recherche</string>	
     <string name="menu.navigation">Navigation</string>
 	<string name="menu.common">Général</string>  

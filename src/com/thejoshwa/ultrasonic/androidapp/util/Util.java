@@ -54,7 +54,6 @@ import com.thejoshwa.ultrasonic.androidapp.domain.RepeatMode;
 import com.thejoshwa.ultrasonic.androidapp.domain.SearchResult;
 import com.thejoshwa.ultrasonic.androidapp.domain.Version;
 import com.thejoshwa.ultrasonic.androidapp.domain.MusicDirectory.Entry;
-import com.thejoshwa.ultrasonic.androidapp.provider.UltraSonicAppWidgetProvider4x1;
 import com.thejoshwa.ultrasonic.androidapp.receiver.MediaButtonIntentReceiver;
 import com.thejoshwa.ultrasonic.androidapp.service.DownloadFile;
 import com.thejoshwa.ultrasonic.androidapp.service.DownloadService;
@@ -875,18 +874,38 @@ public class Util extends DownloadActivity {
 		} else {
 			Bitmap bitmap = FileUtil.getAlbumArtBitmap(context, song, 0);
 			
-			avrcpIntent.putExtra("track", song.getTitle());
-			avrcpIntent.putExtra("track_name", song.getTitle());
-			avrcpIntent.putExtra("artist", song.getArtist());
-			avrcpIntent.putExtra("artist_name", song.getArtist());
-			avrcpIntent.putExtra("album", song.getAlbum());
-			avrcpIntent.putExtra("album_name", song.getAlbum());
+			String title = song.getTitle();
+			String artist = song.getArtist();
+			String album = song.getAlbum();
+			Integer duration = song.getDuration();
+			Integer listSize = downloadService.getDownloads().size();
+			Integer id = downloadService.getCurrentPlayingIndex() + 1;
+			Integer playerPosition = downloadService.getPlayerPosition();
+			
+			avrcpIntent.putExtra("track", title);
+			avrcpIntent.putExtra("track_name", title);
+			avrcpIntent.putExtra("artist", artist);
+			avrcpIntent.putExtra("artist_name", artist);
+			avrcpIntent.putExtra("album", album);
+			avrcpIntent.putExtra("album_name", album);
 			avrcpIntent.putExtra("cover", (Parcelable) bitmap);
 			avrcpIntent.putExtra("coverart", (Parcelable) bitmap);
-			avrcpIntent.putExtra("ListSize", (long) downloadService.getDownloads().size());
-			avrcpIntent.putExtra("id", (long) downloadService.getCurrentPlayingIndex() + 1);
-			avrcpIntent.putExtra("duration", (long) song.getDuration());
-			avrcpIntent.putExtra("position", (long) downloadService.getPlayerPosition());
+			
+			if (playerPosition != null) {
+				avrcpIntent.putExtra("position", (long) playerPosition);
+			}
+			
+			if (id != null) {
+				avrcpIntent.putExtra("id", (long) id);
+			}
+			
+			if (listSize != null) {
+				avrcpIntent.putExtra("ListSize", (long) listSize);
+			}
+			
+			if (duration != null) {
+				avrcpIntent.putExtra("duration", (long) duration);
+			}
 		}
 		
 		context.sendBroadcast(avrcpIntent);
@@ -898,20 +917,45 @@ public class Util extends DownloadActivity {
 			Intent avrcpIntent = new Intent(CM_AVRCP_PLAYSTATE_CHANGED);
 
 			MusicDirectory.Entry song = downloadService.getCurrentPlaying().getSong();
+			
+			if (song == null) {
+				return;
+			}
+			
 			Bitmap bitmap = FileUtil.getAlbumArtBitmap(context, song, 0);
 			
-			avrcpIntent.putExtra("track", song.getTitle());
-			avrcpIntent.putExtra("track_name", song.getTitle());
-			avrcpIntent.putExtra("artist", song.getArtist());
-			avrcpIntent.putExtra("artist_name", song.getArtist());
-			avrcpIntent.putExtra("album", song.getAlbum());
-			avrcpIntent.putExtra("album_name", song.getAlbum());
+			String title = song.getTitle();
+			String artist = song.getArtist();
+			String album = song.getAlbum();
+			Integer duration = song.getDuration();
+			Integer listSize = downloadService.getDownloads().size();
+			Integer id = downloadService.getCurrentPlayingIndex() + 1;
+			Integer playerPosition = downloadService.getPlayerPosition();
+			
+			avrcpIntent.putExtra("track", title);
+			avrcpIntent.putExtra("track_name", title);
+			avrcpIntent.putExtra("artist", artist);
+			avrcpIntent.putExtra("artist_name", artist);
+			avrcpIntent.putExtra("album", album);
+			avrcpIntent.putExtra("album_name", album);
 			avrcpIntent.putExtra("cover", (Parcelable) bitmap);
 			avrcpIntent.putExtra("coverart", (Parcelable) bitmap);
-			avrcpIntent.putExtra("ListSize", (long) downloadService.getDownloads().size());
-			avrcpIntent.putExtra("id", (long) downloadService.getCurrentPlayingIndex() + 1);
-			avrcpIntent.putExtra("duration", (long) song.getDuration());
-			avrcpIntent.putExtra("position", (long) downloadService.getPlayerPosition());
+			
+			if (playerPosition != null) {
+				avrcpIntent.putExtra("position", (long) playerPosition);
+			}
+			
+			if (id != null) {
+				avrcpIntent.putExtra("id", (long) id);
+			}
+			
+			if (listSize != null) {
+				avrcpIntent.putExtra("ListSize", (long) listSize);
+			}
+			
+			if (duration != null) {
+				avrcpIntent.putExtra("duration", (long) duration);
+			}
 
 			switch (state) {
 				case STARTED:

@@ -745,7 +745,12 @@ public class SelectAlbumActivity extends SubsonicTabActivity {
                 	}
                 	
                     if (entry.getArtist() != null) {
-                    	totalDuration += entry.getDuration();
+                    	Integer duration = entry.getDuration();
+
+                    	if (duration != null) {
+                    		totalDuration += duration;	
+                    	}
+                   	
                         artists.add(entry.getArtist());
                     }
                     
