@@ -185,7 +185,7 @@ public class SelectArtistActivity extends SubsonicTabActivity implements Adapter
         if (artistListView.getItemAtPosition(info.position) instanceof Artist) {
             MenuInflater inflater = getMenuInflater();
             inflater.inflate(R.menu.select_artist_context, menu);
-        } else if (info.position == 0) {
+        } else if (info.position == 1) {
             String musicFolderId = Util.getSelectedMusicFolderId(this);
             MenuItem menuItem = menu.add(MENU_GROUP_MUSIC_FOLDER, -1, 0, R.string.select_artist_all_folders);
             if (musicFolderId == null) {
@@ -225,7 +225,7 @@ public class SelectArtistActivity extends SubsonicTabActivity implements Adapter
                 default:
                     return super.onContextItemSelected(menuItem);
             }
-        } else if (info.position == 0) {
+        } else if (info.position == 1) {
             MusicFolder selectedFolder = menuItem.getItemId() == -1 ? null : musicFolders.get(menuItem.getItemId());
             String musicFolderId = selectedFolder == null ? null : selectedFolder.getId();
             String musicFolderName = selectedFolder == null ? getString(R.string.select_artist_all_folders)

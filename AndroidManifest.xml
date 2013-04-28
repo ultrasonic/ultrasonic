@@ -3,7 +3,7 @@
     package="com.thejoshwa.ultrasonic.androidapp"
     a:installLocation="auto"
     a:versionCode="9"
-    a:versionName="1.1.0.5" >
+    a:versionName="1.1.0.6" >
 
     <uses-permission a:name="android.permission.INTERNET" />
     <uses-permission a:name="android.permission.READ_PHONE_STATE" />
