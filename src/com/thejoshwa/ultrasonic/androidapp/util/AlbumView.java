@@ -71,10 +71,10 @@ public class AlbumView extends LinearLayout {
             	final String id = album.getId();
             	
             	if (!isStarred) {
-					starImageView.setImageDrawable(getResources().getDrawable(R.attr.star_full));
+					starImageView.setImageDrawable(Util.getDrawableFromAttribute(getContext(), R.attr.star_full));
 					album.setStarred(true);
             	} else {
-            		starImageView.setImageDrawable(getResources().getDrawable(R.attr.star_hollow));
+            		starImageView.setImageDrawable(Util.getDrawableFromAttribute(getContext(), R.attr.star_hollow));
             		album.setStarred(false);
             	}
             	

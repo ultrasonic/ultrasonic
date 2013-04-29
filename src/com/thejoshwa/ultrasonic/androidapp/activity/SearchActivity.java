@@ -176,9 +176,6 @@ public class SearchActivity extends SubsonicTabActivity {
         if (isArtist || isAlbum) {
             MenuInflater inflater = getMenuInflater();
             inflater.inflate(R.menu.select_album_context, menu);
-        } else if (isSong) {
-            MenuInflater inflater = getMenuInflater();
-            inflater.inflate(R.menu.select_song_context, menu);
         }
     }
 
@@ -200,15 +197,6 @@ public class SearchActivity extends SubsonicTabActivity {
                 break;
             case R.id.album_menu_pin:
                 downloadRecursively(id, true, true, false);
-                break;
-            case R.id.song_menu_play_now:
-                onSongSelected(entry, false, false, true, false);
-                break;
-            case R.id.song_menu_play_next:
-                onSongSelected(entry, false, true, false, true);
-                break;
-            case R.id.song_menu_play_last:
-                onSongSelected(entry, false, true, false, false);
                 break;
             default:
                 return super.onContextItemSelected(menuItem);

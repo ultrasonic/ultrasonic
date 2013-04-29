@@ -19,8 +19,16 @@
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_weight="1"
-        android:src="?attr/media_play"
+        android:src="?attr/media_play_now"
         android:visibility="gone" />
+    
+    <ImageView
+        android:id="@+id/select_album_play_next"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        android:src="?attr/media_play_next"
+        android:visibility="gone" />    
 
     <ImageView
         android:id="@+id/select_album_play_last"
