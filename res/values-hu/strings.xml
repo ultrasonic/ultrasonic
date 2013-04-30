@@ -286,13 +286,21 @@
         <item quantity="other">%d dal</item>
     </plurals>
     <plurals name="select_album_n_songs_downloading">
-        <item quantity="one">1 dal letöltésre ütemezve.</item>
-        <item quantity="other">%d dal letöltésre ütemezve.</item>
-    </plurals>
+        <item quantity="one">1 dal kiválasztva kell csapolni.</item>
+        <item quantity="other">%d dal kiválasztva kell csapolni.</item>
+    </plurals>    
+    <plurals name="select_album_n_songs_unpinned">
+        <item quantity="one">1 dal kiválasztva a leválasztani.</item>
+        <item quantity="other">%d dal kiválasztva a leválasztani.</item>
+    </plurals>        
     <plurals name="select_album_n_songs_added">
-        <item quantity="one">1 dal hozzáadva a lejátszási sorhoz.</item>
-        <item quantity="other">%d dal hozzáadva a lejátszási sorhoz.</item>
+        <item quantity="one">1 dal bekerül a nap végére sor.</item>
+        <item quantity="other">%d dal bekerül a nap végére sor.</item>
     </plurals>
+    <plurals name="select_album_n_songs_play_next">
+        <item quantity="one">1 dal egészül aktuális dalt.</item>
+        <item quantity="other">%d dal egészül aktuális dalt.</item>
+    </plurals>    
     <plurals name="select_album_donate_dialog_n_trial_days_left">
         <item quantity="one">1 nap van hátra a próba időszakból.</item>
         <item quantity="other">%d nap van hátra a próba időszakból.</item>

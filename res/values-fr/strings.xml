@@ -53,7 +53,7 @@
     <string name="help.title">Bienvenue dans UltraSonic !</string>
     <string name="help.back">Retour</string>
     <string name="help.close">Fermer</string>
-    <string name="help.url">file:///android_asset/html/fr/index.html</string>
+    <string name="help.url">file:///android_asset/html/en/index.html</string>
     <string name="help.loading">Chargement&#8230;</string>
     <string name="play_video.loading">Chargement de la vidéo&#8230;</string>
 	<string name="play_video.noplugin">Veuillez installer Adobe Flash Player à partir du Google Play Store.</string>
@@ -228,7 +228,7 @@
     <string name="settings.use_stream_proxy">Utiliser un proxy</string>
     <string name="settings.use_stream_proxy_summary">Support de lecture de flux à travers un proxy (peut provoquer des fritures)</string>
     <string name="settings.show_now_playing">Montrer lecture en cours</string>
-    <string name="settings.show_now_playing_summary">Afficher jouant actuellement piste dans toutes les activités</string>    
+    <string name="settings.show_now_playing_summary">Afficher les pistes en cours de lecture dans les autres activités d\'Ultrasonic</string>    
     <string name="settings.max_albums">Albums maximum</string>
     <string name="settings.search_1">1</string>
     <string name="settings.search_3">3</string>
@@ -286,13 +286,21 @@
         <item quantity="other">%d titres</item>
     </plurals>
     <plurals name="select_album_n_songs_downloading">
-        <item quantity="one">Un titre prévu pour téléchargement.</item>
-        <item quantity="other">%d titres prévus pour téléchargement.</item>
-    </plurals>
+        <item quantity="one">Un titre sélectionnée pour être épinglé.</item>
+        <item quantity="other">%d titres sélectionnée pour être épinglé.</item>
+    </plurals>    
+    <plurals name="select_album_n_songs_unpinned">
+        <item quantity="one">Un titre sélectionné pour être dégoupillé.</item>
+        <item quantity="other">%d titres sélectionnés pour être dégoupillé.</item>
+    </plurals>        
     <plurals name="select_album_n_songs_added">
-        <item quantity="one">Un titre ajouté à la file de lecture.</item>
-        <item quantity="other">%d titres ajoutées à la file de lecture.</item>
+        <item quantity="one">Un titre ajouté à la fin de la file d\'attente de lecture.</item>
+        <item quantity="other">%d titres ajouté à la fin de la file d\'attente de lecture.</item>
     </plurals>
+    <plurals name="select_album_n_songs_play_next">
+        <item quantity="one">Un titre inséré après le titre actuel.</item>
+        <item quantity="other">%d titres insérés après le titre actuel.</item>
+    </plurals>    
     <plurals name="select_album_donate_dialog_n_trial_days_left">
         <item quantity="one">Un jour restant à la période d\'essai</item>
         <item quantity="other">%d jours restant à la période d\'essai</item>

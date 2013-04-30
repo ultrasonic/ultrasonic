@@ -424,24 +424,24 @@ public class SelectAlbumActivity extends SubsonicTabActivity {
                     	moreButton.setVisibility(View.GONE);
                     } else {
                     	moreButton.setVisibility(View.VISIBLE);
+                    	
+                        moreButton.setOnClickListener(new View.OnClickListener() {
+                            @Override
+                            public void onClick(View view) {
+                                Intent intent = new Intent(SelectAlbumActivity.this, SelectAlbumActivity.class);
+                                int albumListTitle = getIntent().getIntExtra(Constants.INTENT_EXTRA_NAME_ALBUM_LIST_TITLE, 0);
+                                String type = getIntent().getStringExtra(Constants.INTENT_EXTRA_NAME_ALBUM_LIST_TYPE);
+                                int size = getIntent().getIntExtra(Constants.INTENT_EXTRA_NAME_ALBUM_LIST_SIZE, 0);
+                                int offset = getIntent().getIntExtra(Constants.INTENT_EXTRA_NAME_ALBUM_LIST_OFFSET, 0) + size;
+
+                                intent.putExtra(Constants.INTENT_EXTRA_NAME_ALBUM_LIST_TITLE, albumListTitle);
+                                intent.putExtra(Constants.INTENT_EXTRA_NAME_ALBUM_LIST_TYPE, type);
+                                intent.putExtra(Constants.INTENT_EXTRA_NAME_ALBUM_LIST_SIZE, size);
+                                intent.putExtra(Constants.INTENT_EXTRA_NAME_ALBUM_LIST_OFFSET, offset);
+                                Util.startActivityWithoutTransition(SelectAlbumActivity.this, intent);
+                            }
+                        });
                     }
-
-                    moreButton.setOnClickListener(new View.OnClickListener() {
-                        @Override
-                        public void onClick(View view) {
-                            Intent intent = new Intent(SelectAlbumActivity.this, SelectAlbumActivity.class);
-                            int albumListTitle = getIntent().getIntExtra(Constants.INTENT_EXTRA_NAME_ALBUM_LIST_TITLE, 0);
-                            String type = getIntent().getStringExtra(Constants.INTENT_EXTRA_NAME_ALBUM_LIST_TYPE);
-                            int size = getIntent().getIntExtra(Constants.INTENT_EXTRA_NAME_ALBUM_LIST_SIZE, 0);
-                            int offset = getIntent().getIntExtra(Constants.INTENT_EXTRA_NAME_ALBUM_LIST_OFFSET, 0) + size;
-
-                            intent.putExtra(Constants.INTENT_EXTRA_NAME_ALBUM_LIST_TITLE, albumListTitle);
-                            intent.putExtra(Constants.INTENT_EXTRA_NAME_ALBUM_LIST_TYPE, type);
-                            intent.putExtra(Constants.INTENT_EXTRA_NAME_ALBUM_LIST_SIZE, size);
-                            intent.putExtra(Constants.INTENT_EXTRA_NAME_ALBUM_LIST_OFFSET, offset);
-                            Util.startActivityWithoutTransition(SelectAlbumActivity.this, intent);
-                        }
-                    });
                 } else {
                    	moreButton.setVisibility(View.GONE);
                 }
@@ -548,11 +548,11 @@ public class SelectAlbumActivity extends SubsonicTabActivity {
                 if (autoplay) {
                     Util.startActivityWithoutTransition(SelectAlbumActivity.this, DownloadActivity.class);
                 } else if (save) {
-                    Util.toast(SelectAlbumActivity.this,
-                               getResources().getQuantityString(R.plurals.select_album_n_songs_downloading, songs.size(), songs.size()));
+                    Util.toast(SelectAlbumActivity.this, getResources().getQuantityString(R.plurals.select_album_n_songs_downloading, songs.size(), songs.size()));
+                } else if (playNext) {
+                	Util.toast(SelectAlbumActivity.this, getResources().getQuantityString(R.plurals.select_album_n_songs_play_next, songs.size(), songs.size()));
                 } else if (append) {
-                    Util.toast(SelectAlbumActivity.this,
-                               getResources().getQuantityString(R.plurals.select_album_n_songs_added, songs.size(), songs.size()));
+                    Util.toast(SelectAlbumActivity.this, getResources().getQuantityString(R.plurals.select_album_n_songs_added, songs.size(), songs.size()));
                 }
             }
         };
@@ -568,7 +568,9 @@ public class SelectAlbumActivity extends SubsonicTabActivity {
 
     private void unpin() {
         if (getDownloadService() != null) {
-            getDownloadService().unpin(getSelectedSongs());
+        	List<MusicDirectory.Entry> songs = getSelectedSongs();
+            Util.toast(SelectAlbumActivity.this, getResources().getQuantityString(R.plurals.select_album_n_songs_unpinned, songs.size(), songs.size()));
+            getDownloadService().unpin(songs);
         }
     }
 
@@ -662,7 +664,7 @@ public class SelectAlbumActivity extends SubsonicTabActivity {
                 }
             }
 
-            int listSize = getIntent().getIntExtra(Constants.INTENT_EXTRA_NAME_ALBUM_LIST_SIZE, 0);
+            final int listSize = getIntent().getIntExtra(Constants.INTENT_EXTRA_NAME_ALBUM_LIST_SIZE, 0);
             
             if (songCount > 0) {
 				if(showHeader) {
@@ -681,6 +683,21 @@ public class SelectAlbumActivity extends SubsonicTabActivity {
                 	moreButton.setVisibility(View.GONE);
                 } else {
                 	moreButton.setVisibility(View.VISIBLE);
+                	
+                	if (getIntent().getIntExtra(Constants.INTENT_EXTRA_NAME_RANDOM, 0) > 0) {
+                		moreButton.setOnClickListener(new View.OnClickListener() {
+                        	@Override
+                        	public void onClick(View view) {
+                            	Intent intent = new Intent(SelectAlbumActivity.this, SelectAlbumActivity.class);
+                            	int offset = getIntent().getIntExtra(Constants.INTENT_EXTRA_NAME_ALBUM_LIST_OFFSET, 0) + listSize;
+
+                            	intent.putExtra(Constants.INTENT_EXTRA_NAME_RANDOM, 1);
+                            	intent.putExtra(Constants.INTENT_EXTRA_NAME_ALBUM_LIST_SIZE, listSize);
+                            	intent.putExtra(Constants.INTENT_EXTRA_NAME_ALBUM_LIST_OFFSET, offset);
+                            	Util.startActivityWithoutTransition(SelectAlbumActivity.this, intent);
+                        	}
+                    	});
+                	}
                 }
             } else {
                 pinButton.setVisibility(View.GONE);

@@ -281,17 +281,25 @@
     <string name="util.zero_time">0:00</string>
 
     <plurals name="select_album_n_songs">
-        <item quantity="zero">No Songs</item>
-        <item quantity="one">1 Song</item>
-        <item quantity="other">%d Songs</item>
+        <item quantity="zero">No songs</item>
+        <item quantity="one">1 song</item>
+        <item quantity="other">%d songs</item>
     </plurals>
     <plurals name="select_album_n_songs_downloading">
-        <item quantity="one">1 song scheduled for download.</item>
-        <item quantity="other">%d Songs scheduled for download.</item>
+        <item quantity="one">1 song selected to be pinned.</item>
+        <item quantity="other">%d songs selected to be pinned.</item>
     </plurals>
+    <plurals name="select_album_n_songs_unpinned">
+        <item quantity="one">1 song selected to be unpinned.</item>
+        <item quantity="other">%d songs selected to be unpinned.</item>
+    </plurals>    
     <plurals name="select_album_n_songs_added">
-        <item quantity="one">1 song added to play queue.</item>
-        <item quantity="other">%d songs added to play queue.</item>
+        <item quantity="one">1 song added to the end of play queue.</item>
+        <item quantity="other">%d songs added to the end of play queue.</item>
+    </plurals>
+    <plurals name="select_album_n_songs_play_next">
+        <item quantity="one">1 song inserted after current song.</item>
+        <item quantity="other">%d songs inserted after current song.</item>
     </plurals>
     <plurals name="select_album_donate_dialog_n_trial_days_left">
         <item quantity="one">1 day left of trial period</item>

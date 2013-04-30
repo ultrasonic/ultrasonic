@@ -176,15 +176,11 @@ or to a theme attribute in the form "<code>?[<i>package</i>:][<i>type</i>:]<i>na
         /** <p>Must be a reference to another resource, in the form "<code>@[+][<i>package</i>:]<i>type</i>:<i>name</i></code>"
 or to a theme attribute in the form "<code>?[<i>package</i>:][<i>type</i>:]<i>name</i></code>".
          */
-        public static final int media_play_next=0x7f01003e;
+        public static final int media_play_next=0x7f01003d;
         /** <p>Must be a reference to another resource, in the form "<code>@[+][<i>package</i>:]<i>type</i>:<i>name</i></code>"
 or to a theme attribute in the form "<code>?[<i>package</i>:][<i>type</i>:]<i>name</i></code>".
          */
-        public static final int media_play_now=0x7f01003d;
-        /** <p>Must be a reference to another resource, in the form "<code>@[+][<i>package</i>:]<i>type</i>:<i>name</i></code>"
-or to a theme attribute in the form "<code>?[<i>package</i>:][<i>type</i>:]<i>name</i></code>".
-         */
-        public static final int media_play_small=0x7f01003f;
+        public static final int media_play_small=0x7f01003e;
         /** <p>Must be a reference to another resource, in the form "<code>@[+][<i>package</i>:]<i>type</i>:<i>name</i></code>"
 or to a theme attribute in the form "<code>?[<i>package</i>:][<i>type</i>:]<i>name</i></code>".
          */
@@ -208,11 +204,11 @@ or to a theme attribute in the form "<code>?[<i>package</i>:][<i>type</i>:]<i>na
         /** <p>Must be a reference to another resource, in the form "<code>@[+][<i>package</i>:]<i>type</i>:<i>name</i></code>"
 or to a theme attribute in the form "<code>?[<i>package</i>:][<i>type</i>:]<i>name</i></code>".
          */
-        public static final int media_stop=0x7f010040;
+        public static final int media_stop=0x7f01003f;
         /** <p>Must be a reference to another resource, in the form "<code>@[+][<i>package</i>:]<i>type</i>:<i>name</i></code>"
 or to a theme attribute in the form "<code>?[<i>package</i>:][<i>type</i>:]<i>name</i></code>".
          */
-        public static final int media_toggle=0x7f010041;
+        public static final int media_toggle=0x7f010040;
         /**  Reference to a style for the menu drawer. 
          <p>Must be a reference to another resource, in the form "<code>@[+][<i>package</i>:]<i>type</i>:<i>name</i></code>"
 or to a theme attribute in the form "<code>?[<i>package</i>:][<i>type</i>:]<i>name</i></code>".
@@ -466,70 +462,70 @@ or to a theme attribute in the form "<code>?[<i>package</i>:][<i>type</i>:]<i>na
         public static final int ic_menu_help_light=0x7f02001e;
         public static final int ic_menu_home_dark=0x7f02001f;
         public static final int ic_menu_home_light=0x7f020020;
-        public static final int ic_menu_pin_dark=0x7f020021;
-        public static final int ic_menu_pin_light=0x7f020022;
-        public static final int ic_menu_playlists_dark=0x7f020023;
-        public static final int ic_menu_playlists_light=0x7f020024;
-        public static final int ic_menu_remove_all_dark=0x7f020025;
-        public static final int ic_menu_remove_all_light=0x7f020026;
-        public static final int ic_menu_save_dark=0x7f020027;
-        public static final int ic_menu_save_light=0x7f020028;
-        public static final int ic_menu_screen_on_off_dark=0x7f020029;
-        public static final int ic_menu_screen_on_off_light=0x7f02002a;
-        public static final int ic_menu_search_dark=0x7f02002b;
-        public static final int ic_menu_search_light=0x7f02002c;
-        public static final int ic_menu_select_all_dark=0x7f02002d;
-        public static final int ic_menu_select_all_light=0x7f02002e;
-        public static final int ic_menu_select_folder_dark=0x7f02002f;
-        public static final int ic_menu_select_folder_light=0x7f020030;
-        public static final int ic_menu_settings_dark=0x7f020031;
-        public static final int ic_menu_settings_light=0x7f020032;
-        public static final int ic_menu_share_dark=0x7f020033;
-        public static final int ic_menu_share_light=0x7f020034;
-        public static final int ic_menu_unpin_dark=0x7f020035;
-        public static final int ic_menu_unpin_light=0x7f020036;
-        public static final int ic_star_full_dark=0x7f020037;
-        public static final int ic_star_full_light=0x7f020038;
-        public static final int ic_star_hollow_dark=0x7f020039;
-        public static final int ic_star_hollow_light=0x7f02003a;
-        public static final int ic_stat_downloaded_dark=0x7f02003b;
-        public static final int ic_stat_downloaded_light=0x7f02003c;
-        public static final int ic_stat_downloading_dark=0x7f02003d;
-        public static final int ic_stat_downloading_light=0x7f02003e;
-        public static final int ic_stat_play_dark=0x7f02003f;
-        public static final int ic_stat_play_light=0x7f020040;
-        public static final int ic_stat_ultrasonic=0x7f020041;
-        public static final int indicator_arrow=0x7f020042;
-        public static final int indicator_bg_bottom=0x7f020043;
-        public static final int indicator_bg_top=0x7f020044;
-        public static final int list_background=0x7f020045;
-        public static final int list_focused_holo=0x7f020046;
-        public static final int list_longpressed_holo=0x7f020047;
-        public static final int list_pressed_holo_dark=0x7f020048;
-        public static final int list_pressed_holo_light=0x7f020049;
-        public static final int list_selector_background_transition_holo_dark=0x7f02004a;
-        public static final int list_selector_background_transition_holo_light=0x7f02004b;
-        public static final int list_selector_disabled_holo_dark=0x7f02004c;
-        public static final int list_selector_disabled_holo_light=0x7f02004d;
-        public static final int list_selector_holo_dark=0x7f02004e;
-        public static final int list_selector_holo_light=0x7f02004f;
-        public static final int main_header_icon=0x7f020050;
-        public static final int md__category_background=0x7f020051;
-        public static final int md__list_focused_holo=0x7f020052;
-        public static final int md__list_longpressed_holo=0x7f020053;
-        public static final int md__list_pressed_holo_dark=0x7f020054;
-        public static final int md__list_selector_background_transition_holo_dark=0x7f020055;
-        public static final int md__list_selector_disabled_holo_dark=0x7f020056;
-        public static final int md__list_selector_holo_dark=0x7f020057;
-        public static final int media_backward_normal=0x7f020058;
-        public static final int media_backward_normal_dark=0x7f020059;
-        public static final int media_backward_normal_light=0x7f02005a;
-        public static final int media_forward_normal=0x7f02005b;
-        public static final int media_forward_normal_dark=0x7f02005c;
-        public static final int media_forward_normal_light=0x7f02005d;
-        public static final int media_pause_normal=0x7f02005e;
-        public static final int media_pause_normal_dark=0x7f02005f;
-        public static final int media_pause_normal_light=0x7f020060;
+        public static final int ic_menu_pin=0x7f020021;
+        public static final int ic_menu_playlists_dark=0x7f020022;
+        public static final int ic_menu_playlists_light=0x7f020023;
+        public static final int ic_menu_remove_all_dark=0x7f020024;
+        public static final int ic_menu_remove_all_light=0x7f020025;
+        public static final int ic_menu_save_dark=0x7f020026;
+        public static final int ic_menu_save_light=0x7f020027;
+        public static final int ic_menu_screen_on_off_dark=0x7f020028;
+        public static final int ic_menu_screen_on_off_light=0x7f020029;
+        public static final int ic_menu_search_dark=0x7f02002a;
+        public static final int ic_menu_search_light=0x7f02002b;
+        public static final int ic_menu_select_all_dark=0x7f02002c;
+        public static final int ic_menu_select_all_light=0x7f02002d;
+        public static final int ic_menu_select_folder_dark=0x7f02002e;
+        public static final int ic_menu_select_folder_light=0x7f02002f;
+        public static final int ic_menu_settings_dark=0x7f020030;
+        public static final int ic_menu_settings_light=0x7f020031;
+        public static final int ic_menu_share_dark=0x7f020032;
+        public static final int ic_menu_share_light=0x7f020033;
+        public static final int ic_menu_unpin_dark=0x7f020034;
+        public static final int ic_menu_unpin_light=0x7f020035;
+        public static final int ic_star_full_dark=0x7f020036;
+        public static final int ic_star_full_light=0x7f020037;
+        public static final int ic_star_hollow_dark=0x7f020038;
+        public static final int ic_star_hollow_light=0x7f020039;
+        public static final int ic_stat_downloaded_dark=0x7f02003a;
+        public static final int ic_stat_downloaded_light=0x7f02003b;
+        public static final int ic_stat_downloading_dark=0x7f02003c;
+        public static final int ic_stat_downloading_light=0x7f02003d;
+        public static final int ic_stat_play_dark=0x7f02003e;
+        public static final int ic_stat_play_light=0x7f02003f;
+        public static final int ic_stat_ultrasonic=0x7f020040;
+        public static final int indicator_arrow=0x7f020041;
+        public static final int indicator_bg_bottom=0x7f020042;
+        public static final int indicator_bg_top=0x7f020043;
+        public static final int list_background=0x7f020044;
+        public static final int list_focused_holo=0x7f020045;
+        public static final int list_longpressed_holo=0x7f020046;
+        public static final int list_pressed_holo_dark=0x7f020047;
+        public static final int list_pressed_holo_light=0x7f020048;
+        public static final int list_selector_background_transition_holo_dark=0x7f020049;
+        public static final int list_selector_background_transition_holo_light=0x7f02004a;
+        public static final int list_selector_disabled_holo_dark=0x7f02004b;
+        public static final int list_selector_disabled_holo_light=0x7f02004c;
+        public static final int list_selector_holo_dark=0x7f02004d;
+        public static final int list_selector_holo_light=0x7f02004e;
+        public static final int main_header_icon=0x7f02004f;
+        public static final int md__category_background=0x7f020050;
+        public static final int md__list_focused_holo=0x7f020051;
+        public static final int md__list_longpressed_holo=0x7f020052;
+        public static final int md__list_pressed_holo_dark=0x7f020053;
+        public static final int md__list_selector_background_transition_holo_dark=0x7f020054;
+        public static final int md__list_selector_disabled_holo_dark=0x7f020055;
+        public static final int md__list_selector_holo_dark=0x7f020056;
+        public static final int media_backward_normal=0x7f020057;
+        public static final int media_backward_normal_dark=0x7f020058;
+        public static final int media_backward_normal_light=0x7f020059;
+        public static final int media_forward_normal=0x7f02005a;
+        public static final int media_forward_normal_dark=0x7f02005b;
+        public static final int media_forward_normal_light=0x7f02005c;
+        public static final int media_pause_normal=0x7f02005d;
+        public static final int media_pause_normal_dark=0x7f02005e;
+        public static final int media_pause_normal_light=0x7f02005f;
+        public static final int media_play_next=0x7f020060;
         public static final int media_play_next_dark=0x7f020061;
         public static final int media_play_next_light=0x7f020062;
         public static final int media_play_now_dark=0x7f020063;
@@ -606,20 +602,20 @@ or to a theme attribute in the form "<code>?[<i>package</i>:][<i>type</i>:]<i>na
         public static final int download_equalizer=0x7f0600a5;
         public static final int download_jukebox=0x7f0600a7;
         public static final int download_list=0x7f06003d;
-        public static final int download_next=0x7f06002d;
-        public static final int download_pause=0x7f06002a;
+        public static final int download_next=0x7f06002e;
+        public static final int download_pause=0x7f06002c;
         public static final int download_playlist_flipper=0x7f060033;
         public static final int download_position=0x7f060038;
-        public static final int download_previous=0x7f060029;
+        public static final int download_previous=0x7f06002a;
         public static final int download_progress_bar=0x7f06003e;
-        public static final int download_repeat=0x7f06002e;
-        public static final int download_shuffle=0x7f060028;
+        public static final int download_repeat=0x7f06002f;
+        public static final int download_shuffle=0x7f060029;
         public static final int download_song_title=0x7f060032;
-        public static final int download_star=0x7f06002f;
-        public static final int download_start=0x7f06002c;
+        public static final int download_star=0x7f060030;
+        public static final int download_start=0x7f06002b;
         public static final int download_status=0x7f060031;
-        public static final int download_stop=0x7f06002b;
-        public static final int download_toggle_list=0x7f060030;
+        public static final int download_stop=0x7f06002d;
+        public static final int download_toggle_list=0x7f060028;
         public static final int download_visualizer=0x7f0600a6;
         public static final int download_visualizer_view_layout=0x7f060036;
         public static final int equalizer_bar=0x7f060044;
@@ -821,10 +817,12 @@ or to a theme attribute in the form "<code>?[<i>package</i>:][<i>type</i>:]<i>na
         public static final int select_artist_context=0x7f0e0005;
     }
     public static final class plurals {
-        public static final int select_album_donate_dialog_n_trial_days_left=0x7f0d0003;
+        public static final int select_album_donate_dialog_n_trial_days_left=0x7f0d0005;
         public static final int select_album_n_songs=0x7f0d0000;
-        public static final int select_album_n_songs_added=0x7f0d0002;
+        public static final int select_album_n_songs_added=0x7f0d0003;
         public static final int select_album_n_songs_downloading=0x7f0d0001;
+        public static final int select_album_n_songs_play_next=0x7f0d0004;
+        public static final int select_album_n_songs_unpinned=0x7f0d0002;
     }
     public static final class string {
         public static final int background_task_loading=0x7f080101;

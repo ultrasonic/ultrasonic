@@ -27,6 +27,16 @@
                 a:paddingTop="12dip" >
 
                 <ImageView
+                    a:id="@+id/download_toggle_list"
+                    a:layout_width="0dip"
+                    a:layout_height="match_parent"
+                    a:layout_gravity="center_vertical"
+                    a:layout_weight="1"
+                    a:focusable="true"
+                    a:paddingRight="4dip"
+                    a:src="?attr/media_toggle" />
+                
+                <ImageView
                     a:id="@+id/download_shuffle"
                     a:layout_width="0dip"
                     a:layout_height="match_parent"
@@ -44,6 +54,15 @@
                     a:layout_weight="1"
                     a:focusable="true"
                     a:src="?attr/media_previous" />
+                
+                <ImageView
+                    a:id="@+id/download_start"
+                    a:layout_width="0dp"
+                    a:layout_height="match_parent"
+                    a:layout_gravity="center_vertical"
+                    a:layout_weight="1"
+                    a:focusable="true"
+                    a:src="?attr/media_play" />     
 
                 <ImageView
                     a:id="@+id/download_pause"
@@ -62,15 +81,6 @@
                     a:layout_weight="1"
                     a:focusable="true"
                     a:src="?attr/media_stop" />
-
-                <ImageView
-                    a:id="@+id/download_start"
-                    a:layout_width="0dp"
-                    a:layout_height="match_parent"
-                    a:layout_gravity="center_vertical"
-                    a:layout_weight="1"
-                    a:focusable="true"
-                    a:src="?attr/media_play" />
 
                 <ImageView
                     a:id="@+id/download_next"
@@ -99,15 +109,6 @@
                     a:gravity="center_vertical"
                     a:src="?attr/star_hollow" />
 
-                <ImageView
-                    a:id="@+id/download_toggle_list"
-                    a:layout_width="0dip"
-                    a:layout_height="match_parent"
-                    a:layout_gravity="center_vertical"
-                    a:layout_weight="1"
-                    a:focusable="true"
-                    a:paddingRight="4dip"
-                    a:src="?attr/media_toggle" />
             </LinearLayout>
 
             <TextView
