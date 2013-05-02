@@ -54,6 +54,8 @@
     <attr name="browse" format="reference"/>
     <attr name="exit" format="reference"/>
     <attr name="forward" format="reference"/>
+    <attr name="backward" format="reference"/>
+    <attr name="stop" format="reference"/>
     <attr name="help" format="reference"/>
     <attr name="home" format="reference"/>
     <attr name="pin" format="reference"/>

@@ -65,7 +65,6 @@
             a:launchMode="singleTask" />
         <activity
             a:name=".activity.HelpActivity"
-            a:label="@string/help.label"
             a:launchMode="singleTask" />
         <activity
             a:name=".activity.LyricsActivity"

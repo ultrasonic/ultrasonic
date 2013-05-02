@@ -6,33 +6,34 @@
     <LinearLayout a:id="@+id/help_buttons"
                   a:layout_width="fill_parent"
                   a:layout_height="wrap_content"
-                  a:layout_alignParentBottom="true"
                   a:padding="4dip"
-                  a:gravity="center_horizontal"
-                  a:background="@drawable/menubar_button_normal">
+                  a:gravity="center_horizontal" >
 
-        <Button a:id="@+id/help_back"
-                a:text="@string/help.back"
+        <ImageView a:id="@+id/help_back"
                 a:layout_width="wrap_content"
                 a:layout_height="fill_parent"
-                a:layout_marginRight="5dip"
-                a:paddingLeft="25dip"
-                a:paddingRight="25dip"/>
-
-        <Button a:id="@+id/help_close"
-                a:text="@string/help.close"
+                a:src="?attr/backward"
+                a:layout_weight="1" />
+        
+        <ImageView a:id="@+id/help_stop"
                 a:layout_width="wrap_content"
                 a:layout_height="fill_parent"
-                a:layout_marginLeft="5dip"
-                a:paddingLeft="25dip"
-                a:paddingRight="25dip"/>
+                a:src="?attr/stop"
+                a:layout_weight="1" />
+
+        <ImageView a:id="@+id/help_forward"
+                a:layout_width="wrap_content"
+                a:layout_height="fill_parent" 
+                a:src="?attr/forward"
+                a:layout_weight="1" />
+                
     </LinearLayout>
 
     <WebView
         a:id="@+id/help_contents"
         a:layout_width="fill_parent"
         a:layout_height="match_parent"
-        a:layout_above="@id/help_buttons"
+        a:layout_below="@id/help_buttons"
         a:fadingEdge="vertical"
         a:fadingEdgeLength="12dip" />
 

@@ -15,5 +15,6 @@
     <color name="cyan">#ff0099cc</color>
     <color name="ics_opaque">#8033b5e5</color>
     <color name="md__transparent">#00000000</color>
+    <color name="opaque">#B0000000</color>
     <color name="md__defaultBackground">#FF555555</color>
 </resources>

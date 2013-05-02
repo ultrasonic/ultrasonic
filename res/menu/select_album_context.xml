@@ -7,6 +7,11 @@
         />
 
     <item 
+        a:id="@+id/album_menu_play_next"
+        a:title="@string/common.play_next"
+        />
+    
+    <item 
         a:id="@+id/album_menu_play_last"
         a:title="@string/common.play_last"
         />

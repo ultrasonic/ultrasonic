@@ -668,9 +668,9 @@ public class Util extends DownloadActivity {
 			}
 
 			if (playerState == PlayerState.PAUSED) {
-				notification.contentView.setImageViewResource(R.id.control_play, R.drawable.ic_appwidget_music_play);
+				notification.contentView.setImageViewResource(R.id.control_play, R.drawable.media_start_normal_dark);
 			} else if (playerState == PlayerState.STARTED) {
-				notification.contentView.setImageViewResource(R.id.control_play, R.drawable.ic_appwidget_music_pause);
+				notification.contentView.setImageViewResource(R.id.control_play, R.drawable.media_pause_normal_dark);
 			}
 
 			// Send the notification and put the service in the foreground.

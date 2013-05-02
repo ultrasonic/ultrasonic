@@ -148,9 +148,9 @@ public class UltraSonicAppWidgetProvider4x1 extends AppWidgetProvider {
 
         // Set correct drawable for pause state
         if (playing) {
-            views.setImageViewResource(R.id.control_play, R.drawable.ic_appwidget_music_pause);
+            views.setImageViewResource(R.id.control_play, R.drawable.media_pause_normal_dark);
         } else {
-            views.setImageViewResource(R.id.control_play, R.drawable.ic_appwidget_music_play);
+            views.setImageViewResource(R.id.control_play, R.drawable.media_start_normal_dark);
         }
 
         // Set the cover art

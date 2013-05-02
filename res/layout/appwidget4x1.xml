@@ -1,19 +1,18 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:a="http://schemas.android.com/apk/res/android"
     a:layout_width="fill_parent"
-    a:layout_height="fill_parent"
-    a:background="@drawable/appwidget_bg"
+    a:layout_height="wrap_content"
+    a:background="@color/opaque"
     a:orientation="horizontal" >
 
     <ImageView
         a:id="@+id/appwidget_coverart"
         a:layout_width="81dip"
         a:layout_height="fill_parent"
-        a:background="@drawable/list_selector_holo_dark"
+		a:background="@drawable/list_selector_holo_dark"        
         a:clickable="true"
         a:focusable="true"
-        a:scaleType="fitXY"
-        a:src="@drawable/appwidget_art_default" />
+        a:src="@drawable/ic_launcher" />
 
     <LinearLayout
         a:id="@+id/linearLayout1"
@@ -25,7 +24,7 @@
             a:id="@+id/appwidget_top"
             a:layout_width="fill_parent"
             a:layout_height="wrap_content"
-            a:background="@drawable/list_selector_holo_dark"
+			a:background="@drawable/list_selector_holo_dark"            
             a:clickable="true"
             a:focusable="true"
             a:orientation="vertical" >
@@ -72,8 +71,8 @@
                 a:layout_height="fill_parent"
                 a:layout_weight="1"
                 a:background="@drawable/list_selector_holo_dark"
-                a:scaleType="center"
-                a:src="@drawable/ic_appwidget_music_previous" />
+                a:scaleType="center"               
+                a:src="@drawable/media_backward_normal_dark" />
 
             <ImageButton
                 a:id="@+id/control_play"
@@ -81,8 +80,8 @@
                 a:layout_height="fill_parent"
                 a:layout_weight="1"
                 a:background="@drawable/list_selector_holo_dark"
-                a:scaleType="center"
-                a:src="@drawable/ic_appwidget_music_play" />
+                a:scaleType="center"              
+                a:src="@drawable/media_start_normal_dark" />
 
             <ImageButton
                 a:id="@+id/control_next"
@@ -91,7 +90,7 @@
                 a:layout_weight="1"
                 a:background="@drawable/list_selector_holo_dark"
                 a:scaleType="center"
-                a:src="@drawable/ic_appwidget_music_next" />
+                a:src="@drawable/media_forward_normal_dark" />
         </LinearLayout>
     </LinearLayout>
 

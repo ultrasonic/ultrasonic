@@ -190,13 +190,16 @@ public class SearchActivity extends SubsonicTabActivity {
 
         switch (menuItem.getItemId()) {
             case R.id.album_menu_play_now:
-                downloadRecursively(id, false, false, true);
+                downloadRecursively(id, false, false, true, false);
                 break;
+            case R.id.album_menu_play_next:
+                downloadRecursively(id, false, true, false, true);
+                break;                
             case R.id.album_menu_play_last:
-                downloadRecursively(id, false, true, false);
+                downloadRecursively(id, false, true, false, false);
                 break;
             case R.id.album_menu_pin:
-                downloadRecursively(id, true, true, false);
+                downloadRecursively(id, true, true, false, false);
                 break;
             default:
                 return super.onContextItemSelected(menuItem);

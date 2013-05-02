@@ -188,7 +188,7 @@ public class JukeboxService {
     }
 
     public synchronized void adjustVolume(boolean up) {
-        float delta = up ? 0.1f : -0.1f;
+        float delta = up ? 0.05f : -0.05f;
         gain += delta;
         gain = Math.max(gain, 0.0f);
         gain = Math.min(gain, 1.0f);

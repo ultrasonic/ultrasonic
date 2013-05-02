@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <PreferenceScreen xmlns:a="http://schemas.android.com/apk/res/android"
-    a:title="@string/settings.title" >
+    a:title="@string/common.appname" >
 
     <PreferenceCategory a:title="@string/settings.servers_title" >
         <PreferenceScreen a:key="server1" >

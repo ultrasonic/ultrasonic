@@ -18,12 +18,11 @@
             a:paddingRight="32dp"
             a:paddingBottom="12dp"
             />
-
+      
     <ProgressBar a:id="@+id/jukebox_volume_progress_bar"
-                 style="@android:style/Widget.ProgressBar.Horizontal"
+        style="@android:style/Widget.Holo.Light.ProgressBar.Horizontal"
                  a:layout_width="fill_parent"
                  a:layout_height="wrap_content"
-                 a:paddingBottom="3dp"
-            />
+                 a:paddingBottom="3dp" />
 
 </LinearLayout>

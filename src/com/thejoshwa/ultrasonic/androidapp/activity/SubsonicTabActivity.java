@@ -75,7 +75,7 @@ public class SubsonicTabActivity extends Activity implements OnClickListener{
     private static final String STATE_ACTIVE_VIEW_ID = "com.thejoshwa.ultrasonic.androidapp.activeViewId";
     private static final String STATE_ACTIVE_POSITION = "com.thejoshwa.ultrasonic.androidapp.activePosition";
     
-    protected MenuDrawer menuDrawer;    
+    public MenuDrawer menuDrawer;    
     private int activePosition = 1;
     private int menuActiveViewId;
     private View nowPlaying = null;
@@ -144,6 +144,7 @@ public class SubsonicTabActivity extends Activity implements OnClickListener{
     @Override
     protected void onResume() {
         super.onResume();
+        applyTheme();
         instance = this;
         
         if (!nowPlayingHidden) {
@@ -386,7 +387,7 @@ public class SubsonicTabActivity extends Activity implements OnClickListener{
         return IMAGE_LOADER;
     }
 
-    protected void downloadRecursively(final String id, final boolean save, final boolean append, final boolean autoplay) {
+    protected void downloadRecursively(final String id, final boolean save, final boolean append, final boolean autoplay, final boolean playNext) {
         ModalBackgroundTask<List<MusicDirectory.Entry>> task = new ModalBackgroundTask<List<MusicDirectory.Entry>>(this, false) {
 
             private static final int MAX_SONGS = 500;
@@ -420,11 +421,11 @@ public class SubsonicTabActivity extends Activity implements OnClickListener{
             protected void done(List<MusicDirectory.Entry> songs) {
                 DownloadService downloadService = getDownloadService();
                 if (!songs.isEmpty() && downloadService != null) {
-                    if (!append) {
+                    if (!append && !playNext) {
                         downloadService.clear();
                     }
                     warnIfNetworkOrStorageUnavailable();
-                    downloadService.download(songs, save, autoplay, false);
+                    downloadService.download(songs, save, autoplay, playNext);
                     Util.startActivityWithoutTransition(SubsonicTabActivity.this, DownloadActivity.class);
                 }
             }

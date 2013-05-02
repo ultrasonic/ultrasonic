@@ -9,7 +9,9 @@
         <item name="add_to_queue">@drawable/ic_menu_add_to_queue_dark</item>
         <item name="browse">@drawable/ic_menu_browse_dark</item>
         <item name="exit">@drawable/ic_menu_exit_dark</item>
+        <item name="backward">@drawable/ic_menu_backward_dark</item>
         <item name="forward">@drawable/ic_menu_forward_dark</item>
+		<item name="stop">@drawable/ic_menu_exit_dark</item>        
         <item name="help">@drawable/ic_menu_help_dark</item>
         <item name="home">@drawable/ic_menu_home_dark</item>
         <item name="pin">@drawable/ic_menu_pin</item>
@@ -46,7 +48,9 @@
         <item name="add_to_queue">@drawable/ic_menu_add_to_queue_light</item>
         <item name="browse">@drawable/ic_menu_browse_light</item>
         <item name="exit">@drawable/ic_menu_exit_light</item>
+        <item name="backward">@drawable/ic_menu_backward_light</item>
         <item name="forward">@drawable/ic_menu_forward_light</item>
+		<item name="stop">@drawable/ic_menu_exit_light</item>        
         <item name="help">@drawable/ic_menu_help_light</item>
         <item name="home">@drawable/ic_menu_home_light</item>
         <item name="pin">@drawable/ic_menu_pin</item>
