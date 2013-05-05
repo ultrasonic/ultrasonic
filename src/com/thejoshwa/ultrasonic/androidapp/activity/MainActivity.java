@@ -103,12 +103,23 @@ public class MainActivity extends SubsonicTabActivity {
                 
         final View dummyView = findViewById(R.id.main_dummy);
 
+        boolean shouldShowDialog = false;
+        
         if (!getActiveServerEnabled()) {
+        	shouldShowDialog = true;
         	Util.setActiveServer(this, 0);
         }
 
         int instance = Util.getActiveServer(this);
         String name = Util.getServerName(this, instance);
+        
+        if (name == null) {
+        	shouldShowDialog = true;
+        	Util.setActiveServer(this, 0);
+        	instance = Util.getActiveServer(this);
+            name = Util.getServerName(this, instance);
+        }
+        
         serverTextView.setText(name);
 
         ListView list = (ListView) findViewById(R.id.main_list);
@@ -172,7 +183,7 @@ public class MainActivity extends SubsonicTabActivity {
         // Remember the current theme.
         theme = Util.getTheme(this);
 
-        showInfoDialog();
+        showInfoDialog(shouldShowDialog);
     }
 
     private void loadSettings() {
@@ -213,6 +224,10 @@ public class MainActivity extends SubsonicTabActivity {
                 
         for (int i = 0; i <= Util.getActiveServers(this); i++) {
         	String serverName = Util.getServerName(this, i);
+        	
+        	if (serverName == null) {
+        		continue;
+        	}
         	
         	if (Util.getServerEnabled(this, i)) {
         		int menuItemNum = getMenuItem(i);
@@ -363,10 +378,11 @@ public class MainActivity extends SubsonicTabActivity {
         finish();
     }
 
-    private void showInfoDialog() {
+    private void showInfoDialog(boolean show) {
         if (!infoDialogDisplayed) {
             infoDialogDisplayed = true;
-            if (Util.getRestUrl(this, null).contains("yourhost")) {
+
+            if (show || Util.getRestUrl(this, null).contains("yourhost")) {
                 Util.info(this, R.string.main_welcome_title, R.string.main_welcome_text);
             }
         }

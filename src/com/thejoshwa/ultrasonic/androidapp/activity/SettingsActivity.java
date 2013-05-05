@@ -290,6 +290,10 @@ public class SettingsActivity extends PreferenceActivity implements SharedPrefer
             	serverPasswordPreference.setText(null);
             	serverEnabledPreference.setChecked(true);
             	
+            	if (Util.getActiveServer(SettingsActivity.this) == instance) {
+            		Util.setActiveServer(SettingsActivity.this, 0);
+            	}
+            	
                 activeServers--;
                 serversCategory.removePreference(screen);
                 
