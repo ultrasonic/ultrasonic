@@ -39,6 +39,7 @@ import android.net.NetworkInfo;
 import android.os.Environment;
 import android.os.Handler;
 import android.os.Parcelable;
+import android.preference.PreferenceManager;
 import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.Gravity;
@@ -184,9 +185,8 @@ public class Util extends DownloadActivity {
     }
     
     public static int getActiveServers(Context context) {
-        SharedPreferences prefs = getPreferences(context);
-        String value = prefs.getString(Constants.PREFERENCES_KEY_SERVER_NUMBER, "3");
-        return Integer.parseInt(value); 
+        SharedPreferences settings = PreferenceManager.getDefaultSharedPreferences(context);
+        return settings.getInt(Constants.PREFERENCES_KEY_ACTIVE_SERVERS, 3);
     }
 
     public static String getServerName(Context context, int instance) {

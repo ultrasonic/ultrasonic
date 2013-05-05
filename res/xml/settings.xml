@@ -3,12 +3,6 @@
     a:title="@string/common.appname" >
 
     <PreferenceCategory a:key="serversKey" a:title="@string/settings.servers_title" >
-        <EditTextPreference
-            a:defaultValue="3"
-            a:enabled="false"
-            a:shouldDisableView="true"
-            a:key="serverNum"
-            a:title="@string/settings.server_number" />
     </PreferenceCategory>
     <PreferenceCategory a:title="@string/settings.appearance_title" >
         <ListPreference

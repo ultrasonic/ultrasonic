@@ -27,6 +27,7 @@ import android.preference.ListPreference;
 import android.preference.Preference;
 import android.preference.PreferenceActivity;
 import android.preference.PreferenceCategory;
+import android.preference.PreferenceManager;
 import android.preference.PreferenceScreen;
 import android.provider.SearchRecentSuggestions;
 import android.text.InputType;
@@ -91,8 +92,8 @@ public class SettingsActivity extends PreferenceActivity implements SharedPrefer
     View playlistsMenuItem = null;
     View menuMain = null;
     PreferenceCategory serversCategory;
-    EditTextPreference serverNumPreference;
     Preference addServerPreference;
+    SharedPreferences settings;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -158,9 +159,8 @@ public class SettingsActivity extends PreferenceActivity implements SharedPrefer
             }
         });
         
-        serverNumPreference = (EditTextPreference) findPreference(Constants.PREFERENCES_KEY_SERVER_NUMBER);
-        serverNumPreference.setSummary(serverNumPreference.getText());
-        activeServers = Integer.parseInt(serverNumPreference.getText());
+        settings = PreferenceManager.getDefaultSharedPreferences(this );
+        activeServers = settings.getInt(Constants.PREFERENCES_KEY_ACTIVE_SERVERS, 3);
         
         serversCategory = (PreferenceCategory) findPreference(Constants.PREFERENCES_KEY_SERVERS_KEY);
         
@@ -197,15 +197,17 @@ public class SettingsActivity extends PreferenceActivity implements SharedPrefer
             	}
             	
             	activeServers++;
-            	String instance = String.valueOf(activeServers);
-            	serverNumPreference.setText(instance);
-            	serverNumPreference.setSummary(instance);
+            	
+                SharedPreferences.Editor prefEditor = settings.edit();
+                prefEditor.putInt(Constants.PREFERENCES_KEY_ACTIVE_SERVERS, activeServers);
+                prefEditor.commit();
 
             	Preference addServerPreference = findPreference(Constants.PREFERENCES_KEY_ADD_SERVER);
             	serversCategory.removePreference(addServerPreference);
             	serversCategory.addPreference(addServer(activeServers));
             	serversCategory.addPreference(addServerPreference);
             	
+            	String instance = String.valueOf(activeServers);
             	serverSettings.put(instance, new ServerSettings(instance));
             	
             	addServerPreference.setEnabled(activeServers < maxServerCount);
@@ -290,9 +292,11 @@ public class SettingsActivity extends PreferenceActivity implements SharedPrefer
             	
                 activeServers--;
                 serversCategory.removePreference(screen);
-                String instance = String.valueOf(activeServers);
-                serverNumPreference.setText(instance);            	
-                serverNumPreference.setSummary(instance);
+                
+                SharedPreferences.Editor prefEditor = settings.edit();
+                prefEditor.putInt(Constants.PREFERENCES_KEY_ACTIVE_SERVERS, activeServers);
+                prefEditor.commit();
+                
                 addServerPreference.setEnabled(activeServers < maxServerCount);
                 screen.getDialog().dismiss();
 
