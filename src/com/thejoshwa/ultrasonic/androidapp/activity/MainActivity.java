@@ -45,10 +45,17 @@ import android.widget.TextView;
 public class MainActivity extends SubsonicTabActivity {
 
     private static final int MENU_GROUP_SERVER = 10;
+    private static final int MENU_ITEM_OFFLINE = 111;
     private static final int MENU_ITEM_SERVER_1 = 101;
     private static final int MENU_ITEM_SERVER_2 = 102;
     private static final int MENU_ITEM_SERVER_3 = 103;
-    private static final int MENU_ITEM_OFFLINE = 104;
+    private static final int MENU_ITEM_SERVER_4 = 104;
+    private static final int MENU_ITEM_SERVER_5 = 105;
+    private static final int MENU_ITEM_SERVER_6 = 106;
+    private static final int MENU_ITEM_SERVER_7 = 107;
+    private static final int MENU_ITEM_SERVER_8 = 108;
+    private static final int MENU_ITEM_SERVER_9 = 109;
+    private static final int MENU_ITEM_SERVER_10 = 110;
 
     private String theme;
 
@@ -96,6 +103,10 @@ public class MainActivity extends SubsonicTabActivity {
                 
         final View dummyView = findViewById(R.id.main_dummy);
 
+        if (!getActiveServerEnabled()) {
+        	Util.setActiveServer(this, 0);
+        }
+
         int instance = Util.getActiveServer(this);
         String name = Util.getServerName(this, instance);
         serverTextView.setText(name);
@@ -104,7 +115,7 @@ public class MainActivity extends SubsonicTabActivity {
         
         MergeAdapter adapter = new MergeAdapter();
         adapter.addViews(Arrays.asList(serverButton), true);
-        
+                
         if (!Util.isOffline(this)) {
         	adapter.addView(musicTitle, false);
       		adapter.addViews(Arrays.asList(artistsButton, albumsButton, genresButton), true);
@@ -197,27 +208,76 @@ public class MainActivity extends SubsonicTabActivity {
     public void onCreateContextMenu(ContextMenu menu, View view, ContextMenu.ContextMenuInfo menuInfo) {
         super.onCreateContextMenu(menu, view, menuInfo);
 
-        MenuItem menuItem1 = menu.add(MENU_GROUP_SERVER, MENU_ITEM_SERVER_1, MENU_ITEM_SERVER_1, Util.getServerName(this, 1));
-        MenuItem menuItem2 = menu.add(MENU_GROUP_SERVER, MENU_ITEM_SERVER_2, MENU_ITEM_SERVER_2, Util.getServerName(this, 2));
-        MenuItem menuItem3 = menu.add(MENU_GROUP_SERVER, MENU_ITEM_SERVER_3, MENU_ITEM_SERVER_3, Util.getServerName(this, 3));
-        MenuItem menuItem4 = menu.add(MENU_GROUP_SERVER, MENU_ITEM_OFFLINE, MENU_ITEM_OFFLINE, Util.getServerName(this, 0));
+        int activeServer = Util.getActiveServer(this);
+        boolean checked = false;
+                
+        for (int i = 0; i <= Util.getActiveServers(this); i++) {
+        	String serverName = Util.getServerName(this, i);
+        	
+        	if (Util.getServerEnabled(this, i)) {
+        		int menuItemNum = getMenuItem(i);
+        		
+        		MenuItem menuItem = menu.add(MENU_GROUP_SERVER, menuItemNum, menuItemNum, serverName);
+        		
+        		if (activeServer == i) {
+        			checked = true;
+        			menuItem.setChecked(true);
+        		}
+        	}
+        }
+
+		if (!checked) {
+			menu.findItem(getMenuItem(0)).setChecked(true);	
+        }
+        
         menu.setGroupCheckable(MENU_GROUP_SERVER, true, true);
         menu.setHeaderTitle(R.string.main_select_server);
+    }
+    
+    private boolean getActiveServerEnabled() {
 
-        switch (Util.getActiveServer(this)) {
-            case 0:
-                menuItem4.setChecked(true);
-                break;
-            case 1:
-                menuItem1.setChecked(true);
-                break;
-            case 2:
-                menuItem2.setChecked(true);
-                break;
-            case 3:
-                menuItem3.setChecked(true);
-                break;
-        }
+		int activeServer = Util.getActiveServer(this);
+		boolean activeServerEnabled = false;
+
+		for (int i = 0; i <= Util.getActiveServers(this); i++) {
+			if (Util.getServerEnabled(this, i)) {
+				if (activeServer == i) {
+					activeServerEnabled = true;
+				}
+			}
+		}
+
+		return activeServerEnabled;
+    }
+    
+    private int getMenuItem(int serverInstance) {
+    	switch (serverInstance) {
+    	    case 0:
+    	    	return MENU_ITEM_OFFLINE;
+    		case 1:
+    			return MENU_ITEM_SERVER_1;
+    		case 2:
+    			return MENU_ITEM_SERVER_2;
+    		case 3:
+    			return MENU_ITEM_SERVER_3;
+    		case 4:
+    			return MENU_ITEM_SERVER_4;
+    		case 5:
+    			return MENU_ITEM_SERVER_5;
+    		case 6:
+    			return MENU_ITEM_SERVER_6;
+    		case 7:
+    			return MENU_ITEM_SERVER_7;
+    		case 8:
+    			return MENU_ITEM_SERVER_8;
+	   		case 9:
+    			return MENU_ITEM_SERVER_9;    			    			    			
+       		case 10:
+    			return MENU_ITEM_SERVER_10;    			    			    			
+    			    			    			    			
+    	}
+    	
+		return 0;
     }
     
     @Override
@@ -235,6 +295,27 @@ public class MainActivity extends SubsonicTabActivity {
             case MENU_ITEM_SERVER_3:
                 setActiveServer(3);
                 break;
+            case MENU_ITEM_SERVER_4:
+                setActiveServer(4);
+                break;
+            case MENU_ITEM_SERVER_5:
+                setActiveServer(5);
+                break;
+            case MENU_ITEM_SERVER_6:
+                setActiveServer(6);
+                break;
+            case MENU_ITEM_SERVER_7:
+                setActiveServer(7);
+                break;
+            case MENU_ITEM_SERVER_8:
+                setActiveServer(8);
+                break; 
+            case MENU_ITEM_SERVER_9:
+                setActiveServer(9);
+                break;   
+            case MENU_ITEM_SERVER_10:
+                setActiveServer(10);
+                break;                                                                                                  
             default:
                 return super.onContextItemSelected(menuItem);
         }

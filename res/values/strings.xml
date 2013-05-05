@@ -125,10 +125,14 @@
     <string name="settings.title">UltraSonic Settings</string>
     <string name="settings.test_connection_title">Test Connection</string>
     <string name="settings.servers_title">Servers</string>
+    <string name="settings.server_unused">Unused</string>    
     <string name="settings.server_unused1">Unused 1</string>
     <string name="settings.server_unused2">Unused 2</string>
     <string name="settings.server_unused3">Unused 3</string>
     <string name="settings.server_name">Name</string>
+	<string name="settings.server_add_server">Add Server</string>    
+	<string name="settings.server_number">Number Of Servers</string>
+	<string name="settings.server_remove_server">Remove Server</string>
     <string name="settings.server_address">Server Address</string>
     <string name="settings.server_username">Username</string>
     <string name="settings.server_password">Password</string>

@@ -20,15 +20,16 @@ package com.thejoshwa.ultrasonic.androidapp.activity;
 
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.os.Build;
 import android.os.Bundle;
 import android.preference.CheckBoxPreference;
 import android.preference.EditTextPreference;
 import android.preference.ListPreference;
 import android.preference.Preference;
 import android.preference.PreferenceActivity;
+import android.preference.PreferenceCategory;
 import android.preference.PreferenceScreen;
 import android.provider.SearchRecentSuggestions;
+import android.text.InputType;
 import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
@@ -51,7 +52,6 @@ import java.io.File;
 import java.net.URL;
 import java.util.LinkedHashMap;
 import java.util.Map;
-
 import net.simonvt.menudrawer.MenuDrawer;
 import net.simonvt.menudrawer.Position;
 
@@ -76,6 +76,8 @@ public class SettingsActivity extends PreferenceActivity implements SharedPrefer
     private ListPreference defaultArtists;
     private CheckBoxPreference mediaButtonsEnabled;
     private CheckBoxPreference lockScreenEnabled;
+    private int maxServerCount = 10;
+    private int minServerCount = 0;
     
     private static final String STATE_MENUDRAWER = "com.thejoshwa.ultrasonic.androidapp.menuDrawer";
     private static final String STATE_ACTIVE_VIEW_ID = "com.thejoshwa.ultrasonic.androidapp.activeViewId";
@@ -84,9 +86,13 @@ public class SettingsActivity extends PreferenceActivity implements SharedPrefer
     public MenuDrawer menuDrawer;    
     private int activePosition = 1;
     private int menuActiveViewId;
+    private int activeServers = 3;
     View searchMenuItem = null;
     View playlistsMenuItem = null;
     View menuMain = null;
+    PreferenceCategory serversCategory;
+    EditTextPreference serverNumPreference;
+    Preference addServerPreference;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -114,9 +120,7 @@ public class SettingsActivity extends PreferenceActivity implements SharedPrefer
         findViewById(R.id.menu_about).setOnClickListener(this);
         findViewById(R.id.menu_exit).setOnClickListener(this);
 
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.ICE_CREAM_SANDWICH) {
-            getActionBar().setDisplayHomeAsUpEnabled(true);
-        }
+        getActionBar().setDisplayHomeAsUpEnabled(true);
         
         View browseMenuItem = findViewById(R.id.menu_settings);
         menuDrawer.setActiveView(browseMenuItem);
@@ -144,31 +148,7 @@ public class SettingsActivity extends PreferenceActivity implements SharedPrefer
         mediaButtonsEnabled = (CheckBoxPreference) findPreference(Constants.PREFERENCES_KEY_MEDIA_BUTTONS);
         lockScreenEnabled = (CheckBoxPreference) findPreference(Constants.PREFERENCES_KEY_SHOW_LOCK_SCREEN_CONTROLS);
 
-        findPreference("testConnection1").setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
-            @Override
-            public boolean onPreferenceClick(Preference preference) {
-                testConnection(1);
-                return false;
-            }
-        });
-
-        findPreference("testConnection2").setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
-            @Override
-            public boolean onPreferenceClick(Preference preference) {
-                testConnection(2);
-                return false;
-            }
-        });
-
-        findPreference("testConnection3").setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
-            @Override
-            public boolean onPreferenceClick(Preference preference) {
-                testConnection(3);
-                return false;
-            }
-        });
-
-        findPreference("clearSearchHistory").setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
+        findPreference(Constants.PREFERENCES_KEY_CLEAR_SEARCH_HISTORY).setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
             @Override
             public boolean onPreferenceClick(Preference preference) {
                 SearchRecentSuggestions suggestions = new SearchRecentSuggestions(SettingsActivity.this, SearchSuggestionProvider.AUTHORITY, SearchSuggestionProvider.MODE);
@@ -177,12 +157,64 @@ public class SettingsActivity extends PreferenceActivity implements SharedPrefer
                 return false;
             }
         });
+        
+        serverNumPreference = (EditTextPreference) findPreference(Constants.PREFERENCES_KEY_SERVER_NUMBER);
+        serverNumPreference.setSummary(serverNumPreference.getText());
+        activeServers = Integer.parseInt(serverNumPreference.getText());
+        
+        serversCategory = (PreferenceCategory) findPreference(Constants.PREFERENCES_KEY_SERVERS_KEY);
+        
+        addServerPreference = new Preference(this);
+        addServerPreference.setKey(Constants.PREFERENCES_KEY_ADD_SERVER);
+        addServerPreference.setPersistent(false);
+        addServerPreference.setTitle(getResources().getString(R.string.settings_server_add_server));
+        addServerPreference.setEnabled(activeServers < maxServerCount);
+        serversCategory.addPreference(addServerPreference);
 
-        for (int i = 1; i <= 3; i++) {
+        for (int i = 1; i <= activeServers; i++) {
+        	final int instanceValue = i;
+        	
+        	serversCategory.addPreference(addServer(i));
+        	
+            findPreference(Constants.PREFERENCES_KEY_TEST_CONNECTION + i).setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
+                @Override
+                public boolean onPreferenceClick(Preference preference) {
+
+                    testConnection(instanceValue);
+                    return false;
+                }
+            });
+        	
             String instance = String.valueOf(i);
             serverSettings.put(instance, new ServerSettings(instance));
         }
+        
+        addServerPreference.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
+            @Override
+            public boolean onPreferenceClick(Preference preference) {
+            	if (activeServers == maxServerCount) {
+            		return false;
+            	}
+            	
+            	activeServers++;
+            	String instance = String.valueOf(activeServers);
+            	serverNumPreference.setText(instance);
+            	serverNumPreference.setSummary(instance);
 
+            	Preference addServerPreference = findPreference(Constants.PREFERENCES_KEY_ADD_SERVER);
+            	serversCategory.removePreference(addServerPreference);
+            	serversCategory.addPreference(addServer(activeServers));
+            	serversCategory.addPreference(addServerPreference);
+            	
+            	serverSettings.put(instance, new ServerSettings(instance));
+            	
+            	addServerPreference.setEnabled(activeServers < maxServerCount);
+            	applyTheme();
+            	
+                return true;
+            }
+        });
+        
         SharedPreferences prefs = Util.getPreferences(this);
         prefs.registerOnSharedPreferenceChangeListener(this);
         
@@ -191,16 +223,118 @@ public class SettingsActivity extends PreferenceActivity implements SharedPrefer
         update();
     }
     
+    private PreferenceScreen addServer(final int instance) {
+    	final PreferenceScreen screen = getPreferenceManager().createPreferenceScreen(this);
+    	screen.setTitle(R.string.settings_server_unused);
+    	screen.setKey(Constants.PREFERENCES_KEY_SERVER + instance);
+    	
+    	final EditTextPreference serverNamePreference = new EditTextPreference(this);
+    	serverNamePreference.setKey(Constants.PREFERENCES_KEY_SERVER_NAME + instance);
+    	serverNamePreference.setDefaultValue(getResources().getString(R.string.settings_server_unused));
+    	serverNamePreference.setTitle(R.string.settings_server_name);
+    	
+    	if (serverNamePreference.getText() == null) {
+    		serverNamePreference.setText(getResources().getString(R.string.settings_server_unused));
+    	}
+    	
+    	serverNamePreference.setSummary(serverNamePreference.getText());
+    	
+    	final EditTextPreference serverUrlPreference = new EditTextPreference(this);
+    	serverUrlPreference.setKey(Constants.PREFERENCES_KEY_SERVER_URL + instance);
+    	serverUrlPreference.getEditText().setInputType(InputType.TYPE_TEXT_VARIATION_URI);
+    	serverUrlPreference.setDefaultValue("http://yourhost");
+    	serverUrlPreference.setTitle(R.string.settings_server_address);
+    	
+    	if (serverUrlPreference.getText() == null) {
+    		serverUrlPreference.setText("http://yourhost");
+    	}
+    	
+    	serverUrlPreference.setSummary(serverUrlPreference.getText());
+    	
+    	screen.setSummary(serverUrlPreference.getText());
+    	
+    	final EditTextPreference serverUsernamePreference = new EditTextPreference(this);
+    	serverUsernamePreference.setKey(Constants.PREFERENCES_KEY_USERNAME + instance);
+    	serverUsernamePreference.setTitle(R.string.settings_server_username);
+    	
+    	final EditTextPreference serverPasswordPreference = new EditTextPreference(this);
+    	serverPasswordPreference.setKey(Constants.PREFERENCES_KEY_PASSWORD + instance);
+    	serverPasswordPreference.getEditText().setInputType(InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_VARIATION_PASSWORD);
+    	serverPasswordPreference.setSummary("***");
+    	serverPasswordPreference.setTitle(R.string.settings_server_password);
+    	
+    	final CheckBoxPreference serverEnabledPreference = new CheckBoxPreference(this);
+    	serverEnabledPreference.setDefaultValue(true);
+    	serverEnabledPreference.setKey(Constants.PREFERENCES_KEY_SERVER_ENABLED + instance);
+    	serverEnabledPreference.setTitle(R.string.equalizer_enabled);
+    	
+    	Preference serverRemoveServerPreference = new Preference(this);
+    	serverRemoveServerPreference.setKey(Constants.PREFERENCES_KEY_REMOVE_SERVER + instance);
+    	serverRemoveServerPreference.setPersistent(false);
+    	serverRemoveServerPreference.setTitle(R.string.settings_server_remove_server);
+    	
+    	serverRemoveServerPreference.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
+            @Override
+            public boolean onPreferenceClick(Preference preference) {
+
+            	if (activeServers == minServerCount) {
+            		return false;
+            	}
+            	
+            	// Reset values to null so when we ask for them again they are new
+            	serverNamePreference.setText(null);
+            	serverUrlPreference.setText(null);
+            	serverUsernamePreference.setText(null);
+            	serverPasswordPreference.setText(null);
+            	serverEnabledPreference.setChecked(true);
+            	
+                activeServers--;
+                serversCategory.removePreference(screen);
+                String instance = String.valueOf(activeServers);
+                serverNumPreference.setText(instance);            	
+                serverNumPreference.setSummary(instance);
+                addServerPreference.setEnabled(activeServers < maxServerCount);
+                screen.getDialog().dismiss();
+
+                return true;
+            }
+        });
+    	
+    	Preference serverTestConnectionPreference = new Preference(this);
+    	serverTestConnectionPreference.setKey(Constants.PREFERENCES_KEY_TEST_CONNECTION + instance);
+    	serverTestConnectionPreference.setPersistent(false);
+    	serverTestConnectionPreference.setTitle(R.string.settings_test_connection_title);
+    	serverTestConnectionPreference.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
+            @Override
+            public boolean onPreferenceClick(Preference preference) {
+
+                testConnection(instance);
+                return false;
+            }
+        });
+    	
+    	screen.addPreference(serverNamePreference);
+    	screen.addPreference(serverUrlPreference);
+    	screen.addPreference(serverUsernamePreference);
+    	screen.addPreference(serverPasswordPreference);
+    	screen.addPreference(serverEnabledPreference);
+    	screen.addPreference(serverRemoveServerPreference);
+    	screen.addPreference(serverTestConnectionPreference);
+    	
+    	return screen;
+    }
+    
     private void applyTheme() {
         String theme = Util.getTheme(this);
         
+        // Support the old fullscreen themes as well, for upgrade purposes
         if ("dark".equalsIgnoreCase(theme) || "fullscreen".equalsIgnoreCase(theme)) {
             setTheme(R.style.UltraSonicTheme);
         } else if ("light".equalsIgnoreCase(theme) || "fullscreenlight".equalsIgnoreCase(theme)) {
             setTheme(R.style.UltraSonicTheme_Light);
         }
     }
-
+    
     @Override
     protected void onDestroy() {
         super.onDestroy();
@@ -351,6 +485,7 @@ public class SettingsActivity extends PreferenceActivity implements SharedPrefer
         private EditTextPreference serverName;
         private EditTextPreference serverUrl;
         private EditTextPreference username;
+        private CheckBoxPreference enabled;
         private PreferenceScreen screen;
 
         private ServerSettings(String instance) {
@@ -359,6 +494,7 @@ public class SettingsActivity extends PreferenceActivity implements SharedPrefer
             serverName = (EditTextPreference) findPreference(Constants.PREFERENCES_KEY_SERVER_NAME + instance);
             serverUrl = (EditTextPreference) findPreference(Constants.PREFERENCES_KEY_SERVER_URL + instance);
             username = (EditTextPreference) findPreference(Constants.PREFERENCES_KEY_USERNAME + instance);
+            enabled = (CheckBoxPreference) findPreference(Constants.PREFERENCES_KEY_SERVER_ENABLED + instance);
 
             serverUrl.setOnPreferenceChangeListener(new Preference.OnPreferenceChangeListener() {
                 @Override
@@ -391,11 +527,11 @@ public class SettingsActivity extends PreferenceActivity implements SharedPrefer
         }
 
         public void update() {
-            serverName.setSummary(serverName.getText());
-            serverUrl.setSummary(serverUrl.getText());
-            username.setSummary(username.getText());
-            screen.setSummary(serverUrl.getText());
-            screen.setTitle(serverName.getText());
+       		serverName.setSummary(serverName.getText());
+       		serverUrl.setSummary(serverUrl.getText());
+       		username.setSummary(username.getText());
+       		screen.setSummary(serverUrl.getText());
+       		screen.setTitle(serverName.getText());
         }
     }
     

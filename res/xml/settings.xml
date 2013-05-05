@@ -2,83 +2,17 @@
 <PreferenceScreen xmlns:a="http://schemas.android.com/apk/res/android"
     a:title="@string/common.appname" >
 
-    <PreferenceCategory a:title="@string/settings.servers_title" >
-        <PreferenceScreen a:key="server1" >
-            <EditTextPreference
-                a:defaultValue="@string/settings.server_unused1"
-                a:key="serverName1"
-                a:title="@string/settings.server_name" />
-            <EditTextPreference
-                a:defaultValue="http://yourhost"
-                a:inputType="textUri"
-                a:key="serverUrl1"
-                a:title="@string/settings.server_address" />
-            <EditTextPreference
-                a:key="username1"
-                a:title="@string/settings.server_username" />
-            <EditTextPreference
-                a:key="password1"
-                a:password="true"
-                a:summary="****"
-                a:title="@string/settings.server_password" />
-
-            <Preference
-                a:key="testConnection1"
-                a:persistent="false"
-                a:title="@string/settings.test_connection_title" />
-        </PreferenceScreen>
-        <PreferenceScreen a:key="server2" >
-            <EditTextPreference
-                a:defaultValue="@string/settings.server_unused2"
-                a:key="serverName2"
-                a:title="@string/settings.server_name" />
-            <EditTextPreference
-                a:defaultValue="http://yourhost"
-                a:inputType="textUri"
-                a:key="serverUrl2"
-                a:title="@string/settings.server_address" />
-            <EditTextPreference
-                a:key="username2"
-                a:title="@string/settings.server_username" />
-            <EditTextPreference
-                a:key="password2"
-                a:password="true"
-                a:summary="****"
-                a:title="@string/settings.server_password" />
-
-            <Preference
-                a:key="testConnection2"
-                a:persistent="false"
-                a:title="@string/settings.test_connection_title" />
-        </PreferenceScreen>
-        <PreferenceScreen a:key="server3" >
-            <EditTextPreference
-                a:defaultValue="@string/settings.server_unused3"
-                a:key="serverName3"
-                a:title="@string/settings.server_name" />
-            <EditTextPreference
-                a:defaultValue="http://yourhost"
-                a:inputType="textUri"
-                a:key="serverUrl3"
-                a:title="@string/settings.server_address" />
-            <EditTextPreference
-                a:key="username3"
-                a:title="@string/settings.server_username" />
-            <EditTextPreference
-                a:key="password3"
-                a:password="true"
-                a:summary="****"
-                a:title="@string/settings.server_password" />
-
-            <Preference
-                a:key="testConnection3"
-                a:persistent="false"
-                a:title="@string/settings.test_connection_title" />
-        </PreferenceScreen>
+    <PreferenceCategory a:key="serversKey" a:title="@string/settings.servers_title" >
+        <EditTextPreference
+            a:defaultValue="3"
+            a:enabled="false"
+            a:shouldDisableView="true"
+            a:key="serverNum"
+            a:title="@string/settings.server_number" />
     </PreferenceCategory>
     <PreferenceCategory a:title="@string/settings.appearance_title" >
         <ListPreference
-            a:defaultValue="Dark"
+            a:defaultValue="dark"
             a:entries="@array/themeNames"
             a:entryValues="@array/themeValues"
             a:key="theme"
@@ -108,7 +42,7 @@
             a:defaultValue="true"
             a:key="showNowPlaying"
             a:summary="@string/settings.show_now_playing_summary"
-            a:title="@string/settings.show_now_playing" />       
+            a:title="@string/settings.show_now_playing" />
     </PreferenceCategory>
     <PreferenceCategory a:title="@string/settings.network_title" >
         <ListPreference
@@ -216,7 +150,7 @@
             a:key="showNotification"
             a:summary="@string/settings.show_notification_summary"
             a:title="@string/settings.show_notification" />
-         <CheckBoxPreference
+        <CheckBoxPreference
             a:defaultValue="true"
             a:key="alwaysShowNotification"
             a:summary="@string/settings.show_notification_always_summary"

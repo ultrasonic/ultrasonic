@@ -182,6 +182,12 @@ public class Util extends DownloadActivity {
         SharedPreferences prefs = getPreferences(context);
         return prefs.getInt(Constants.PREFERENCES_KEY_SERVER_INSTANCE, 1);
     }
+    
+    public static int getActiveServers(Context context) {
+        SharedPreferences prefs = getPreferences(context);
+        String value = prefs.getString(Constants.PREFERENCES_KEY_SERVER_NUMBER, "3");
+        return Integer.parseInt(value); 
+    }
 
     public static String getServerName(Context context, int instance) {
         if (instance == 0) {
@@ -189,6 +195,14 @@ public class Util extends DownloadActivity {
         }
         SharedPreferences prefs = getPreferences(context);
         return prefs.getString(Constants.PREFERENCES_KEY_SERVER_NAME + instance, null);
+    }
+    
+    public static boolean getServerEnabled(Context context, int instance) {
+        if (instance == 0) {
+            return true;
+        }
+        SharedPreferences prefs = getPreferences(context);
+        return prefs.getBoolean(Constants.PREFERENCES_KEY_SERVER_ENABLED + instance, true);
     }
 
     public static void setServerRestVersion(Context context, Version version) {

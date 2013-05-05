@@ -113,9 +113,7 @@ public class SubsonicTabActivity extends Activity implements OnClickListener{
         findViewById(R.id.menu_about).setOnClickListener(this);
         findViewById(R.id.menu_exit).setOnClickListener(this);
 
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.ICE_CREAM_SANDWICH) {
-            getActionBar().setDisplayHomeAsUpEnabled(true);
-        }
+        getActionBar().setDisplayHomeAsUpEnabled(true);
         
         TextView activeView = (TextView)findViewById(menuActiveViewId);
         

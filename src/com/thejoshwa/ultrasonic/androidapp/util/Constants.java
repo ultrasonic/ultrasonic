@@ -59,9 +59,15 @@ public final class Constants {
     public static final int NOTIFICATION_ID_ERROR = 101;
 
     // Preferences keys.
+    public static final String PREFERENCES_KEY_SERVER = "server";
+    public static final String PREFERENCES_KEY_SERVER_ENABLED = "serverEnabled";
     public static final String PREFERENCES_KEY_SERVER_INSTANCE = "serverInstanceId";
     public static final String PREFERENCES_KEY_SERVER_NAME = "serverName";
     public static final String PREFERENCES_KEY_SERVER_URL = "serverUrl";
+    public static final String PREFERENCES_KEY_SERVER_NUMBER = "serverNum";
+    public static final String PREFERENCES_KEY_SERVERS_KEY = "serversKey";
+    public static final String PREFERENCES_KEY_ADD_SERVER = "addServer";
+    public static final String PREFERENCES_KEY_REMOVE_SERVER = "removeServer";
     public static final String PREFERENCES_KEY_MUSIC_FOLDER_ID = "musicFolderId";
     public static final String PREFERENCES_KEY_USERNAME = "username";
     public static final String PREFERENCES_KEY_PASSWORD = "password";
@@ -95,6 +101,8 @@ public final class Constants {
     public static final String PREFERENCES_KEY_DEFAULT_ARTISTS = "defaultArtists";
     public static final String PREFERENCES_KEY_USE_STREAM_PROXY = "useStreamProxy";
     public static final String PREFERENCES_KEY_SHOW_NOW_PLAYING = "showNowPlaying";
+    public static final String PREFERENCES_KEY_CLEAR_SEARCH_HISTORY = "clearSearchHistory";
+    public static final String PREFERENCES_KEY_TEST_CONNECTION = "testConnection";
     
     // Name of the preferences file.
     public static final String PREFERENCES_FILE_NAME = "com.thejoshwa.ultrasonic.androidapp_preferences";

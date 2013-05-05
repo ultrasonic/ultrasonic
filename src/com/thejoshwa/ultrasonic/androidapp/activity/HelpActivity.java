@@ -93,9 +93,7 @@ public final class HelpActivity extends Activity implements OnClickListener {
         findViewById(R.id.menu_about).setOnClickListener(this);
         findViewById(R.id.menu_exit).setOnClickListener(this);
 
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.ICE_CREAM_SANDWICH) {
-            getActionBar().setDisplayHomeAsUpEnabled(true);
-        }
+        getActionBar().setDisplayHomeAsUpEnabled(true);
         
         View aboutMenuItem = findViewById(R.id.menu_about);
         menuDrawer.setActiveView(aboutMenuItem);
