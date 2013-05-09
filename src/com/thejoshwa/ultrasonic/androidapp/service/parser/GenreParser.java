@@ -30,7 +30,6 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.Reader;
 import java.io.StringReader;
-import java.nio.CharBuffer;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -65,12 +64,17 @@ public class GenreParser extends AbstractParser {
         	}
         	br.close();
         	
+        	// Replace double escaped ampersand (&amp;apos;) 
+        	xml = xml.replaceAll("(?:&amp;)(amp;|lt;|gt;|#37;|apos;)", "&$1");
+        	
             // Replace unescaped ampersand
-            xml = xml.replaceAll("&(?!amp;|lt;|gt;|#37;)", "&amp;");
+            xml = xml.replaceAll("&(?!amp;|lt;|gt;|#37;|apos;)", "&amp;");
             
             // Replace unescaped percent symbol
             // No replacements for <> at this time
             xml = xml.replaceAll("%", "&#37;");
+            
+            xml = xml.replaceAll("'", "&apos;");
             
             sr = new StringReader(xml);
         } catch (IOException ioe) {

@@ -212,6 +212,43 @@ public class Util extends DownloadActivity {
     public static Version getServerRestVersion(Context context) {
         return SERVER_REST_VERSIONS.get(getActiveServer(context));
     }
+    
+    public static void removeInstanceName(Context context, int instance, int activeInstance) {
+        SharedPreferences prefs = getPreferences(context);
+        SharedPreferences.Editor editor = prefs.edit();
+        
+        int newInstance = instance + 1;
+        
+        String server = prefs.getString(Constants.PREFERENCES_KEY_SERVER + newInstance, null);
+        String serverName = prefs.getString(Constants.PREFERENCES_KEY_SERVER_NAME + newInstance, null);
+        String serverUrl = prefs.getString(Constants.PREFERENCES_KEY_SERVER_URL + newInstance, null);
+        String userName = prefs.getString(Constants.PREFERENCES_KEY_USERNAME + newInstance, null);
+        String password = prefs.getString(Constants.PREFERENCES_KEY_PASSWORD + newInstance, null);
+        boolean serverEnabled = prefs.getBoolean(Constants.PREFERENCES_KEY_SERVER_ENABLED + newInstance, true);
+        
+		editor.putString(Constants.PREFERENCES_KEY_SERVER + instance, server);
+		editor.putString(Constants.PREFERENCES_KEY_SERVER_NAME + instance, serverName);
+		editor.putString(Constants.PREFERENCES_KEY_SERVER_URL + instance, serverUrl);
+		editor.putString(Constants.PREFERENCES_KEY_USERNAME + instance, userName);
+		editor.putString(Constants.PREFERENCES_KEY_PASSWORD + instance, password);
+		editor.putBoolean(Constants.PREFERENCES_KEY_SERVER_ENABLED + instance, serverEnabled);
+		
+		editor.putString(Constants.PREFERENCES_KEY_SERVER + newInstance, null);
+		editor.putString(Constants.PREFERENCES_KEY_SERVER_NAME + newInstance, null);
+		editor.putString(Constants.PREFERENCES_KEY_SERVER_URL + newInstance, null);
+		editor.putString(Constants.PREFERENCES_KEY_USERNAME + newInstance, null);
+		editor.putString(Constants.PREFERENCES_KEY_PASSWORD + newInstance, null);
+		editor.putBoolean(Constants.PREFERENCES_KEY_SERVER_ENABLED + newInstance, true);
+		editor.commit();
+		
+		if (instance == activeInstance) {
+			Util.setActiveServer(context, 0);
+		}
+		
+		if (newInstance == activeInstance) {
+			Util.setActiveServer(context, instance);
+		}
+    }
 
     public static void setSelectedMusicFolderId(Context context, String musicFolderId) {
         int instance = getActiveServer(context);
