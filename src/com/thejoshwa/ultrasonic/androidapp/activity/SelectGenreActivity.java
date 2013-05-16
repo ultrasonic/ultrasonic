@@ -38,9 +38,9 @@ import com.thejoshwa.ultrasonic.androidapp.service.MusicService;
 import com.thejoshwa.ultrasonic.androidapp.service.MusicServiceFactory;
 import com.thejoshwa.ultrasonic.androidapp.util.BackgroundTask;
 import com.thejoshwa.ultrasonic.androidapp.util.Constants;
-import com.thejoshwa.ultrasonic.androidapp.util.GenreAdapter;
 import com.thejoshwa.ultrasonic.androidapp.util.TabActivityBackgroundTask;
 import com.thejoshwa.ultrasonic.androidapp.util.Util;
+import com.thejoshwa.ultrasonic.androidapp.view.GenreAdapter;
 
 import java.util.ArrayList;
 import java.util.List;
