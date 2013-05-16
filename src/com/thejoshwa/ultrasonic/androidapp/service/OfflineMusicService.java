@@ -18,11 +18,15 @@
  */
 package com.thejoshwa.ultrasonic.androidapp.service;
 
+import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.FileReader;
 import java.io.InputStream;
+import java.io.Reader;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
@@ -54,7 +58,8 @@ import com.thejoshwa.ultrasonic.androidapp.util.Util;
  * @author Sindre Mehus
  */
 public class OfflineMusicService extends RESTMusicService {
-
+	private static final String TAG = OfflineMusicService.class.getSimpleName();
+	
     @Override
     public boolean isLicenseValid(Context context, ProgressListener progressListener) throws Exception {
         return true;
@@ -86,14 +91,14 @@ public class OfflineMusicService extends RESTMusicService {
     }
 
     @Override
-    public MusicDirectory getMusicDirectory(String id, boolean refresh, Context context, ProgressListener progressListener) throws Exception {
+    public MusicDirectory getMusicDirectory(String id, String artistName, boolean refresh, Context context, ProgressListener progressListener) throws Exception {
         File dir = new File(id);
         MusicDirectory result = new MusicDirectory();
         result.setName(dir.getName());
 
         Set<String> names = new HashSet<String>();
 
-        for (File file : FileUtil.listMusicFiles(dir)) {
+        for (File file : FileUtil.listMediaFiles(dir)) {
             String name = getName(file);
             if (name != null & !names.contains(name)) {
                 names.add(name);
@@ -253,15 +258,11 @@ public class OfflineMusicService extends RESTMusicService {
 
     @Override
     public Bitmap getCoverArt(Context context, MusicDirectory.Entry entry, int size, boolean saveToFile, ProgressListener progressListener) throws Exception {
-        InputStream in = new FileInputStream(entry.getCoverArt());
-        try {
-            byte[] bytes = Util.toByteArray(in);
-            Bitmap bitmap = BitmapFactory.decodeByteArray(bytes, 0, bytes.length);
-            Log.i("getCoverArt", "getCoverArt");
-            return Util.scaleBitmap(bitmap, size);
-        } finally {
-            Util.close(in);
-        }
+		try {
+			return FileUtil.getAlbumArtBitmap(context, entry, size);
+		} catch(Exception e) {
+			return null;
+		}
     }
 
     @Override
@@ -275,29 +276,210 @@ public class OfflineMusicService extends RESTMusicService {
     }
     
     @Override
-    public List<MusicFolder> getMusicFolders(Context context, ProgressListener progressListener) throws Exception {
+    public List<MusicFolder> getMusicFolders(boolean refresh, Context context, ProgressListener progressListener) throws Exception {
         throw new OfflineException("Music folders not available in offline mode");
     }
 
     @Override
     public SearchResult search(SearchCritera criteria, Context context, ProgressListener progressListener) throws Exception {
-        throw new OfflineException("Search not available in offline mode");
+		List<Artist> artists = new ArrayList<Artist>();
+		List<MusicDirectory.Entry> albums = new ArrayList<MusicDirectory.Entry>();
+		List<MusicDirectory.Entry> songs = new ArrayList<MusicDirectory.Entry>();
+        File root = FileUtil.getMusicDirectory(context);
+		int closeness = 0;
+        for (File artistFile : FileUtil.listFiles(root)) {
+			String artistName = artistFile.getName();
+            if (artistFile.isDirectory()) {
+				if((closeness = matchCriteria(criteria, artistName)) > 0) {
+					Artist artist = new Artist();
+					artist.setId(artistFile.getPath());
+					artist.setIndex(artistFile.getName().substring(0, 1));
+					artist.setName(artistName);
+					artist.setCloseness(closeness);
+					artists.add(artist);
+				}
+				
+				recursiveAlbumSearch(artistName, artistFile, criteria, context, albums, songs);
+            }
+        }
+		
+		Collections.sort(artists, new Comparator<Artist>() {
+			public int compare(Artist lhs, Artist rhs) {
+				if(lhs.getCloseness() == rhs.getCloseness()) {
+					return 0;
+				}
+				else if(lhs.getCloseness() > rhs.getCloseness()) {
+					return -1;
+				}
+				else {
+					return 1;
+				}
+			}
+		});
+		Collections.sort(albums, new Comparator<MusicDirectory.Entry>() {
+			public int compare(MusicDirectory.Entry lhs, MusicDirectory.Entry rhs) {
+				if(lhs.getCloseness() == rhs.getCloseness()) {
+					return 0;
+				}
+				else if(lhs.getCloseness() > rhs.getCloseness()) {
+					return -1;
+				}
+				else {
+					return 1;
+				}
+			}
+		});
+		Collections.sort(songs, new Comparator<MusicDirectory.Entry>() {
+			public int compare(MusicDirectory.Entry lhs, MusicDirectory.Entry rhs) {
+				if(lhs.getCloseness() == rhs.getCloseness()) {
+					return 0;
+				}
+				else if(lhs.getCloseness() > rhs.getCloseness()) {
+					return -1;
+				}
+				else {
+					return 1;
+				}
+			}
+		});
+		
+		return new SearchResult(artists, albums, songs);
     }
+	
+	private void recursiveAlbumSearch(String artistName, File file, SearchCritera criteria, Context context, List<MusicDirectory.Entry> albums, List<MusicDirectory.Entry> songs) {
+		int closeness;
+		for(File albumFile : FileUtil.listMediaFiles(file)) {
+			if(albumFile.isDirectory()) {
+				String albumName = getName(albumFile);
+				if((closeness = matchCriteria(criteria, albumName)) > 0) {
+					MusicDirectory.Entry album = createEntry(context, albumFile, albumName);
+					album.setArtist(artistName);
+					album.setCloseness(closeness);
+					albums.add(album);
+				}
+
+				for(File songFile : FileUtil.listMediaFiles(albumFile)) {
+					String songName = getName(songFile);
+					if(songFile.isDirectory()) {
+						recursiveAlbumSearch(artistName, songFile, criteria, context, albums, songs);
+					}
+					else if((closeness = matchCriteria(criteria, songName)) > 0){
+						MusicDirectory.Entry song = createEntry(context, albumFile, songName);
+						song.setArtist(artistName);
+						song.setAlbum(albumName);
+						song.setCloseness(closeness);
+						songs.add(song);
+					}
+				}
+			}
+			else {
+				String songName = getName(albumFile);
+				if((closeness = matchCriteria(criteria, songName)) > 0) {
+					MusicDirectory.Entry song = createEntry(context, albumFile, songName);
+					song.setArtist(artistName);
+					song.setAlbum(songName);
+					song.setCloseness(closeness);
+					songs.add(song);
+				}
+			}
+		}
+	}
+	private int matchCriteria(SearchCritera criteria, String name) {
+		String query = criteria.getQuery().toLowerCase();
+		String[] queryParts = query.split(" ");
+		String[] nameParts = name.toLowerCase().split(" ");
+		
+		int closeness = 0;
+		for(String queryPart : queryParts) {
+			for(String namePart : nameParts) {
+				if(namePart.equals(queryPart)) {
+					closeness++;
+				}
+			}
+		}
+		
+		return closeness;
+	}
 
     @Override
     public List<Playlist> getPlaylists(boolean refresh, Context context, ProgressListener progressListener) throws Exception {
-        throw new OfflineException("Playlists not available in offline mode");
+        List<Playlist> playlists = new ArrayList<Playlist>();
+        File root = FileUtil.getPlaylistDirectory();
+        for (File file : FileUtil.listFiles(root)) {
+			if(FileUtil.isPlaylistFile(file)) {
+				String id = file.getName();
+				String filename = FileUtil.getBaseName(id);
+				Playlist playlist = new Playlist(id, filename);
+				playlists.add(playlist);
+			} else {
+				// Delete legacy playlist files
+				try {
+					file.delete();
+				} catch(Exception e) {
+					Log.w(TAG, "Failed to delete old playlist file: " + file.getName());
+				}
+			}
+        }
+        return playlists;
     }
 
     @Override
-    public MusicDirectory getPlaylist(String id, Context context, ProgressListener progressListener) throws Exception {
-        throw new OfflineException("Playlists not available in offline mode");
+    public MusicDirectory getPlaylist(String id, String name, Context context, ProgressListener progressListener) throws Exception {
+		DownloadService downloadService = DownloadServiceImpl.getInstance();
+        if (downloadService == null) {
+            return new MusicDirectory();
+        }
+		
+        Reader reader = null;
+		BufferedReader buffer = null;
+		try {
+			File playlistFile = FileUtil.getPlaylistFile(name);
+			reader = new FileReader(playlistFile);
+			buffer = new BufferedReader(reader);
+			
+			MusicDirectory playlist = new MusicDirectory();
+			String line = buffer.readLine();
+	    	if(!"#EXTM3U".equals(line)) return playlist;
+			
+			while( (line = buffer.readLine()) != null ){
+				File entryFile = new File(line);
+				String entryName = getName(entryFile);
+				if(entryFile.exists() && entryName != null){
+					playlist.addChild(createEntry(context, entryFile, entryName));
+				}
+			}
+			
+			return playlist;
+		} finally {
+			Util.close(buffer);
+			Util.close(reader);
+		}
     }
 
     @Override
     public void createPlaylist(String id, String name, List<MusicDirectory.Entry> entries, Context context, ProgressListener progressListener) throws Exception {
         throw new OfflineException("Playlists not available in offline mode");
     }
+	
+	@Override
+	public void deletePlaylist(String id, Context context, ProgressListener progressListener) throws Exception {
+		throw new OfflineException("Playlists not available in offline mode");
+	}
+	
+	@Override
+	public void addToPlaylist(String id, List<MusicDirectory.Entry> toAdd, Context context, ProgressListener progressListener) throws Exception {
+		throw new OfflineException("Updating playlist not available in offline mode");
+	}
+	
+	@Override
+	public void removeFromPlaylist(String id, List<Integer> toRemove, Context context, ProgressListener progressListener) throws Exception {
+		throw new OfflineException("Removing from playlist not available in offline mode");
+	}
+	
+	@Override
+	public void updatePlaylist(String id, String name, String comment, boolean pub, Context context, ProgressListener progressListener) throws Exception {
+		throw new OfflineException("Updating playlist not available in offline mode");
+	}
 
     @Override
     public Lyrics getLyrics(String artist, String title, Context context, ProgressListener progressListener) throws Exception {
@@ -315,7 +497,12 @@ public class OfflineMusicService extends RESTMusicService {
     }
 
     @Override
-    public String getVideoUrl(Context context, String id) {
+    public String getVideoUrl(int maxBitrate, Context context, String id) {
+        return null;
+    }
+
+	@Override
+    public String getVideoStreamUrl(int maxBitrate, Context context, String id) {
         return null;
     }
 
@@ -384,7 +571,7 @@ public class OfflineMusicService extends RESTMusicService {
     }
 
     private void listFilesRecursively(File parent, List<File> children) {
-        for (File file : FileUtil.listMusicFiles(parent)) {
+        for (File file : FileUtil.listMediaFiles(parent)) {
             if (file.isFile()) {
                 children.add(file);
             } else {

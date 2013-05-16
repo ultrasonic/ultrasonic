@@ -44,9 +44,9 @@ public class ShufflePlayBuffer {
     private final List<MusicDirectory.Entry> buffer = new ArrayList<MusicDirectory.Entry>();
     private Context context;
     private int currentServer;
-
-    public ShufflePlayBuffer(Context context) {
-        this.context = context;
+    
+	public ShufflePlayBuffer(Context context) {
+        this.context = context;		
         executorService = Executors.newSingleThreadScheduledExecutor();
         Runnable runnable = new Runnable() {
             @Override
@@ -99,11 +99,10 @@ public class ShufflePlayBuffer {
 
     private void clearBufferIfnecessary() {
         synchronized (buffer) {
-            if (currentServer != Util.getActiveServer(context)) {
-                currentServer = Util.getActiveServer(context);
+        	if (currentServer != Util.getActiveServer(context)) {
+        		currentServer = Util.getActiveServer(context);
                 buffer.clear();
             }
         }
     }
-
 }

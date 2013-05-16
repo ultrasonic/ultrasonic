@@ -1,0 +1,81 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:a="http://schemas.android.com/apk/res/android"
+              a:orientation="horizontal"
+              a:layout_width="fill_parent"
+              a:layout_height="wrap_content"
+              a:paddingBottom="12dip"
+        	  a:paddingTop="12dip" >
+    
+        <ImageView
+            a:id="@+id/download_toggle_list"
+            a:layout_width="0dip"
+            a:layout_height="wrap_content"
+            a:layout_weight="1"
+            a:focusable="true"
+            a:src="?attr/media_toggle" />
+        
+        <ImageView
+            a:id="@+id/download_shuffle"
+            a:layout_width="0dip"
+            a:layout_height="wrap_content"
+            a:layout_weight="1"
+            a:focusable="true"
+            a:src="?attr/media_shuffle" />
+
+        <com.thejoshwa.ultrasonic.androidapp.view.AutoRepeatButton
+            a:id="@+id/download_previous"
+            a:layout_width="0dip"
+            a:layout_height="wrap_content"
+            a:layout_weight="1"
+            a:focusable="true"
+            a:src="?attr/media_previous" />
+        
+        <ImageView
+            a:id="@+id/download_start"
+            a:layout_width="0dip"
+            a:layout_height="wrap_content"
+            a:layout_weight="1"
+            a:focusable="true"
+            a:src="?attr/media_play" />
+
+        <ImageView
+            a:id="@+id/download_pause"
+            a:layout_width="0dip"
+            a:layout_height="wrap_content"
+            a:layout_weight="1"
+            a:focusable="true"
+            a:src="?attr/media_pause" />
+
+        <ImageView
+            a:id="@+id/download_stop"
+            a:layout_width="0dip"
+            a:layout_height="wrap_content"
+            a:layout_weight="1"
+            a:focusable="true"
+            a:src="?attr/media_stop" />
+
+        <com.thejoshwa.ultrasonic.androidapp.view.AutoRepeatButton
+            a:id="@+id/download_next"
+            a:layout_width="0dip"
+            a:layout_height="wrap_content"
+            a:layout_weight="1"
+            a:focusable="true"
+            a:src="?attr/media_next" />
+
+        <ImageView
+            a:id="@+id/download_repeat"
+            a:layout_width="0dip"
+            a:layout_height="wrap_content"
+            a:layout_weight="1"
+            a:focusable="true"
+            a:src="?attr/media_repeat_off" />
+
+        <ImageView
+            a:id="@+id/download_star"
+            a:layout_width="0dip"
+            a:layout_height="wrap_content"
+            a:layout_weight="1"
+            a:focusable="true"
+            a:src="?attr/star_hollow" />
+   
+</LinearLayout>

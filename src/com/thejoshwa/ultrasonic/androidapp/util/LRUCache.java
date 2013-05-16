@@ -22,6 +22,8 @@ import java.lang.ref.SoftReference;
 import java.util.HashMap;
 import java.util.Map;
 
+import android.graphics.drawable.Drawable;
+
 /**
  * @author Sindre Mehus
  */
@@ -98,5 +100,16 @@ public class LRUCache<K,V>{
             timestamp = System.currentTimeMillis();
         }
     }
+
+	protected int sizeOf(String key, Drawable drawable) {
+		// TODO Auto-generated method stub
+		return 0;
+	}
+
+	protected void entryRemoved(boolean evicted, String key,
+			Drawable oldDrawable, Drawable newDrawable) {
+		// TODO Auto-generated method stub
+		
+	}
 
 }

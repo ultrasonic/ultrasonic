@@ -20,6 +20,7 @@ package com.thejoshwa.ultrasonic.androidapp.activity;
 
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.os.Build;
 import android.os.Bundle;
 import android.preference.CheckBoxPreference;
 import android.preference.EditTextPreference;
@@ -77,6 +78,7 @@ public class SettingsActivity extends PreferenceActivity implements SharedPrefer
     private ListPreference defaultArtists;
     private CheckBoxPreference mediaButtonsEnabled;
     private CheckBoxPreference lockScreenEnabled;
+    private CheckBoxPreference gaplessPlaybackEnabled;    
     private int maxServerCount = 10;
     private int minServerCount = 0;
     
@@ -148,6 +150,7 @@ public class SettingsActivity extends PreferenceActivity implements SharedPrefer
         defaultAlbums = (ListPreference) findPreference(Constants.PREFERENCES_KEY_DEFAULT_ALBUMS);
         mediaButtonsEnabled = (CheckBoxPreference) findPreference(Constants.PREFERENCES_KEY_MEDIA_BUTTONS);
         lockScreenEnabled = (CheckBoxPreference) findPreference(Constants.PREFERENCES_KEY_SHOW_LOCK_SCREEN_CONTROLS);
+        gaplessPlaybackEnabled = (CheckBoxPreference) findPreference(Constants.PREFERENCES_KEY_GAPLESS_PLAYBACK);
 
         findPreference(Constants.PREFERENCES_KEY_CLEAR_SEARCH_HISTORY).setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
             @Override
@@ -158,6 +161,11 @@ public class SettingsActivity extends PreferenceActivity implements SharedPrefer
                 return false;
             }
         });
+        
+        if (Build.VERSION.SDK_INT < 14) {
+        	gaplessPlaybackEnabled.setChecked(false);
+        	gaplessPlaybackEnabled.setEnabled(false);
+        }
         
         settings = PreferenceManager.getDefaultSharedPreferences(this );
         activeServers = settings.getInt(Constants.PREFERENCES_KEY_ACTIVE_SERVERS, 3);

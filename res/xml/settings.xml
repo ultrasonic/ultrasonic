@@ -159,6 +159,16 @@
             a:key="useStreamProxy"
             a:summary="@string/settings.use_stream_proxy_summary"
             a:title="@string/settings.use_stream_proxy" />
+        <CheckBoxPreference
+            a:defaultValue="true"
+            a:key="transitionToDownloadOnPlay"
+            a:summary="@string/settings.download_transition_summary"
+            a:title="@string/settings.download_transition" />        
+        <CheckBoxPreference
+            a:defaultValue="false"
+            a:key="gaplessPlayback"
+            a:summary="@string/settings.gapless_playback_summary"
+            a:title="@string/settings.gapless_playback" />
     </PreferenceCategory>
     <PreferenceCategory a:title="@string/settings.other_title" >
         <CheckBoxPreference

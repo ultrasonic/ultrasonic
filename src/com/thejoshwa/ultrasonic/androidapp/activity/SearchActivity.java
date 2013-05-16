@@ -44,13 +44,13 @@ import com.thejoshwa.ultrasonic.androidapp.domain.SearchResult;
 import com.thejoshwa.ultrasonic.androidapp.service.MusicService;
 import com.thejoshwa.ultrasonic.androidapp.service.MusicServiceFactory;
 import com.thejoshwa.ultrasonic.androidapp.service.DownloadService;
-import com.thejoshwa.ultrasonic.androidapp.util.ArtistAdapter;
 import com.thejoshwa.ultrasonic.androidapp.util.BackgroundTask;
 import com.thejoshwa.ultrasonic.androidapp.util.Constants;
-import com.thejoshwa.ultrasonic.androidapp.util.EntryAdapter;
 import com.thejoshwa.ultrasonic.androidapp.util.MergeAdapter;
 import com.thejoshwa.ultrasonic.androidapp.util.TabActivityBackgroundTask;
 import com.thejoshwa.ultrasonic.androidapp.util.Util;
+import com.thejoshwa.ultrasonic.androidapp.view.ArtistAdapter;
+import com.thejoshwa.ultrasonic.androidapp.view.EntryAdapter;
 
 /**
  * Performs searches and displays the matching artists, albums and songs.
@@ -190,16 +190,16 @@ public class SearchActivity extends SubsonicTabActivity {
 
         switch (menuItem.getItemId()) {
             case R.id.album_menu_play_now:
-                downloadRecursively(id, false, false, true, false);
+                downloadRecursively(id, false, false, true, false, false);
                 break;
             case R.id.album_menu_play_next:
-                downloadRecursively(id, false, true, false, true);
+                downloadRecursively(id, false, true, false, true, false);
                 break;                
             case R.id.album_menu_play_last:
-                downloadRecursively(id, false, true, false, false);
+                downloadRecursively(id, false, true, false, false, false);
                 break;
             case R.id.album_menu_pin:
-                downloadRecursively(id, true, true, false, false);
+                downloadRecursively(id, true, true, false, false, false);
                 break;
             default:
                 return super.onContextItemSelected(menuItem);
@@ -330,7 +330,7 @@ public class SearchActivity extends SubsonicTabActivity {
             if (!append) {
                 downloadService.clear();
             }
-            downloadService.download(Arrays.asList(song), save, false, playNext);
+            downloadService.download(Arrays.asList(song), save, false, playNext, false);
             if (autoplay) {
                 downloadService.play(downloadService.size() - 1);
             }
@@ -340,8 +340,10 @@ public class SearchActivity extends SubsonicTabActivity {
     }
 
     private void onVideoSelected(MusicDirectory.Entry entry) {
+    	int maxBitrate = Util.getMaxVideoBitrate(this);
+    	
         Intent intent = new Intent(Intent.ACTION_VIEW);
-        intent.setData(Uri.parse(MusicServiceFactory.getMusicService(this).getVideoUrl(this, entry.getId())));
+        intent.setData(Uri.parse(MusicServiceFactory.getMusicService(this).getVideoUrl(maxBitrate, this, entry.getId())));
         startActivity(intent);
     }
 

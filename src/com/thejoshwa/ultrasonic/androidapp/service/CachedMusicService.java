@@ -54,7 +54,7 @@ public class CachedMusicService implements MusicService {
     private final LRUCache<String, TimeLimitedCache<MusicDirectory>> cachedMusicDirectories;
     private final TimeLimitedCache<Boolean> cachedLicenseValid = new TimeLimitedCache<Boolean>(120, TimeUnit.SECONDS);
     private final TimeLimitedCache<Indexes> cachedIndexes = new TimeLimitedCache<Indexes>(60 * 60, TimeUnit.SECONDS);
-    private final TimeLimitedCache<List<Playlist>> cachedPlaylists = new TimeLimitedCache<List<Playlist>>(60, TimeUnit.SECONDS);
+    private final TimeLimitedCache<List<Playlist>> cachedPlaylists = new TimeLimitedCache<List<Playlist>>(3600, TimeUnit.SECONDS);
     private final TimeLimitedCache<List<MusicFolder>> cachedMusicFolders = new TimeLimitedCache<List<MusicFolder>>(10 * 3600, TimeUnit.SECONDS);
     private final TimeLimitedCache<List<Genre>> cachedGenres = new TimeLimitedCache<List<Genre>>(10 * 3600, TimeUnit.SECONDS);
     private String restUrl;
@@ -82,11 +82,14 @@ public class CachedMusicService implements MusicService {
     }
 
     @Override
-    public List<MusicFolder> getMusicFolders(Context context, ProgressListener progressListener) throws Exception {
+    public List<MusicFolder> getMusicFolders(boolean refresh, Context context, ProgressListener progressListener) throws Exception {
         checkSettingsChanged(context);
+        if (refresh) {
+            cachedMusicFolders.clear();
+        }
         List<MusicFolder> result = cachedMusicFolders.get();
         if (result == null) {
-            result = musicService.getMusicFolders(context, progressListener);
+            result = musicService.getMusicFolders(refresh, context, progressListener);
             cachedMusicFolders.set(result);
         }
         return result;
@@ -109,12 +112,12 @@ public class CachedMusicService implements MusicService {
     }
 
     @Override
-    public MusicDirectory getMusicDirectory(String id, boolean refresh, Context context, ProgressListener progressListener) throws Exception {
+    public MusicDirectory getMusicDirectory(String id, String name, boolean refresh, Context context, ProgressListener progressListener) throws Exception {
         checkSettingsChanged(context);
         TimeLimitedCache<MusicDirectory> cache = refresh ? null : cachedMusicDirectories.get(id);
         MusicDirectory dir = cache == null ? null : cache.get();
         if (dir == null) {
-            dir = musicService.getMusicDirectory(id, refresh, context, progressListener);
+            dir = musicService.getMusicDirectory(id, name, refresh, context, progressListener);
             cache = new TimeLimitedCache<MusicDirectory>(TTL_MUSIC_DIR, TimeUnit.SECONDS);
             cache.set(dir);
             cachedMusicDirectories.put(id, cache);
@@ -128,8 +131,8 @@ public class CachedMusicService implements MusicService {
     }
 
     @Override
-    public MusicDirectory getPlaylist(String id, Context context, ProgressListener progressListener) throws Exception {
-        return musicService.getPlaylist(id, context, progressListener);
+    public MusicDirectory getPlaylist(String id, String name, Context context, ProgressListener progressListener) throws Exception {
+        return musicService.getPlaylist(id, name, context, progressListener);
     }
 
     @Override
@@ -145,9 +148,30 @@ public class CachedMusicService implements MusicService {
 
     @Override
     public void createPlaylist(String id, String name, List<MusicDirectory.Entry> entries, Context context, ProgressListener progressListener) throws Exception {
+		cachedPlaylists.clear();
         musicService.createPlaylist(id, name, entries, context, progressListener);
     }
 
+	@Override
+	public void deletePlaylist(String id, Context context, ProgressListener progressListener) throws Exception {
+		musicService.deletePlaylist(id, context, progressListener);
+	}
+	
+	@Override
+	public void addToPlaylist(String id, List<MusicDirectory.Entry> toAdd, Context context, ProgressListener progressListener) throws Exception {
+		musicService.addToPlaylist(id, toAdd, context, progressListener);
+	}
+	
+	@Override
+	public void removeFromPlaylist(String id, List<Integer> toRemove, Context context, ProgressListener progressListener) throws Exception {
+		musicService.removeFromPlaylist(id, toRemove, context, progressListener);
+	}
+	
+	@Override
+	public void updatePlaylist(String id, String name, String comment, boolean pub, Context context, ProgressListener progressListener) throws Exception {
+		musicService.updatePlaylist(id, name, comment, pub, context, progressListener);
+	}
+	
     @Override
     public Lyrics getLyrics(String artist, String title, Context context, ProgressListener progressListener) throws Exception {
         return musicService.getLyrics(artist, title, context, progressListener);
@@ -165,7 +189,7 @@ public class CachedMusicService implements MusicService {
 
     @Override
     public MusicDirectory getRandomSongs(int size, Context context, ProgressListener progressListener) throws Exception {
-        return musicService.getRandomSongs(size, context, progressListener);
+    	return musicService.getRandomSongs(size, context, progressListener);
     }
     
     @Override
@@ -194,8 +218,13 @@ public class CachedMusicService implements MusicService {
     }
 
     @Override
-    public String getVideoUrl(Context context, String id) {
-        return musicService.getVideoUrl(context, id);
+    public String getVideoUrl(int maxBitrate, Context context, String id) {
+        return musicService.getVideoUrl(maxBitrate, context, id);
+    }
+    
+	@Override
+    public String getVideoStreamUrl(int maxBitrate, Context context, String id) {
+        return musicService.getVideoStreamUrl(maxBitrate, context, id);
     }
 
     @Override

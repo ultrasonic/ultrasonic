@@ -24,11 +24,14 @@ import java.util.List;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
+import java.util.concurrent.locks.ReentrantLock;
 
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.media.RemoteControlClient;
+import android.os.AsyncTask;
 import android.telephony.PhoneStateListener;
 import android.telephony.TelephonyManager;
 import android.util.Log;
@@ -53,6 +56,7 @@ public class DownloadServiceLifecycleSupport {
     private BroadcastReceiver ejectEventReceiver;
     private PhoneStateListener phoneStateListener;
     private boolean externalStorageAvailable= true;
+    private ReentrantLock lock = new ReentrantLock();
 
     /**
      * This receiver manages the intent that could come from other applications.
@@ -73,7 +77,7 @@ public class DownloadServiceLifecycleSupport {
             } else if (DownloadServiceImpl.CMD_PAUSE.equals(action)) {
                 downloadService.pause();
             } else if (DownloadServiceImpl.CMD_STOP.equals(action)) {
-                downloadService.stop();
+                downloadService.pause();
                 downloadService.seekTo(0);
             }
         }
@@ -96,7 +100,7 @@ public class DownloadServiceLifecycleSupport {
             }
         };
 
-        executorService = Executors.newScheduledThreadPool(2);
+        executorService = Executors.newSingleThreadScheduledExecutor();
         executorService.scheduleWithFixedDelay(downloadChecker, 5, 5, TimeUnit.SECONDS);
 
         // Pause when headset is unplugged.
@@ -105,7 +109,9 @@ public class DownloadServiceLifecycleSupport {
             public void onReceive(Context context, Intent intent) {
                 Log.i(TAG, "Headset event for: " + intent.getExtras().get("name"));
                 if (intent.getExtras().getInt("state") == 0) {
-                    downloadService.pause();
+					if(!downloadService.isJukeboxEnabled()) {
+						downloadService.pause();
+					}
                 }
             }
         };
@@ -163,12 +169,11 @@ public class DownloadServiceLifecycleSupport {
 
     public void onDestroy() {
         executorService.shutdown();
-        serializeDownloadQueue();
+        serializeDownloadQueueNow();
         downloadService.clear(false);
         downloadService.unregisterReceiver(ejectEventReceiver);
         downloadService.unregisterReceiver(headsetEventReceiver);
         downloadService.unregisterReceiver(intentReceiver);
-        Util.unregisterMediaButtonEventReceiver(downloadService);
 
         TelephonyManager telephonyManager = (TelephonyManager) downloadService.getSystemService(Context.TELEPHONY_SERVICE);
         telephonyManager.listen(phoneStateListener, PhoneStateListener.LISTEN_NONE);
@@ -179,18 +184,26 @@ public class DownloadServiceLifecycleSupport {
     }
 
     public void serializeDownloadQueue() {
-        State state = new State();
-        for (DownloadFile downloadFile : downloadService.getDownloads()) {
-            state.songs.add(downloadFile.getSong());
-        }
-        state.currentPlayingIndex = downloadService.getCurrentPlayingIndex();
-        state.currentPlayingPosition = downloadService.getPlayerPosition();
+    	new SerializeTask().executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
+    }
+    
+    public void serializeDownloadQueueNow() {
+    	List<DownloadFile> songs = new ArrayList<DownloadFile>(downloadService.getSongs());
+		State state = new State();
+		for (DownloadFile downloadFile : songs) {
+			state.songs.add(downloadFile.getSong());
+		}
+		state.currentPlayingIndex = downloadService.getCurrentPlayingIndex();
+		state.currentPlayingPosition = downloadService.getPlayerPosition();
 
-        Log.i(TAG, "Serialized currentPlayingIndex: " + state.currentPlayingIndex + ", currentPlayingPosition: " + state.currentPlayingPosition);
-        FileUtil.serialize(downloadService, state, FILENAME_DOWNLOADS_SER);
+		Log.i(TAG, "Serialized currentPlayingIndex: " + state.currentPlayingIndex + ", currentPlayingPosition: " + state.currentPlayingPosition);
+		FileUtil.serialize(downloadService, state, FILENAME_DOWNLOADS_SER);
     }
 
-    private void deserializeDownloadQueue() {
+	private void deserializeDownloadQueue() {
+		new DeserializeTask().executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
+	}
+    private void deserializeDownloadQueueNow() {
        State state = FileUtil.deserialize(downloadService, FILENAME_DOWNLOADS_SER);
         if (state == null) {
             return;
@@ -200,33 +213,37 @@ public class DownloadServiceLifecycleSupport {
 
         // Work-around: Serialize again, as the restore() method creates a serialization without current playing info.
         serializeDownloadQueue();
-        
-        downloadService.setPlayerState(PlayerState.STOPPED);
     }
-
+    
     private void handleKeyEvent(KeyEvent event) {
         if (event.getAction() != KeyEvent.ACTION_DOWN || event.getRepeatCount() > 0) {
             return;
         }
 
         switch (event.getKeyCode()) {
-            case KeyEvent.KEYCODE_MEDIA_PLAY_PAUSE:
-            case KeyEvent.KEYCODE_MEDIA_PLAY:
-            case KeyEvent.KEYCODE_MEDIA_PAUSE:
-            case KeyEvent.KEYCODE_HEADSETHOOK:
-            	downloadService.togglePlayPause();
-                break;
-            case KeyEvent.KEYCODE_MEDIA_PREVIOUS:
-                downloadService.previous();
-                break;
-            case KeyEvent.KEYCODE_MEDIA_NEXT:
-                if (downloadService.getCurrentPlayingIndex() < downloadService.size() - 1) {
-                    downloadService.next();
-                }
-                break;
-            case KeyEvent.KEYCODE_MEDIA_STOP:
-                downloadService.reset();
-                break;
+			case KeyEvent.KEYCODE_MEDIA_PLAY_PAUSE:
+			case KeyEvent.KEYCODE_HEADSETHOOK:
+				downloadService.togglePlayPause();
+				break;
+			case KeyEvent.KEYCODE_MEDIA_PREVIOUS:
+				downloadService.previous();
+				break;
+			case KeyEvent.KEYCODE_MEDIA_NEXT:
+				if (downloadService.getCurrentPlayingIndex() < downloadService.size() - 1) {
+					downloadService.next();
+				}
+				break;
+			case KeyEvent.KEYCODE_MEDIA_STOP:
+				downloadService.stop();
+				break;
+			case KeyEvent.KEYCODE_MEDIA_PLAY:
+				if(downloadService.getPlayerState() != PlayerState.STARTED) {
+					downloadService.start();
+				}
+				break;
+			case KeyEvent.KEYCODE_MEDIA_PAUSE:
+				downloadService.pause();
+				break;
             default:
                 break;
         }
@@ -244,7 +261,7 @@ public class DownloadServiceLifecycleSupport {
             switch (state) {
                 case TelephonyManager.CALL_STATE_RINGING:
                 case TelephonyManager.CALL_STATE_OFFHOOK:
-                    if (downloadService.getPlayerState() == PlayerState.STARTED) {
+                    if (downloadService.getPlayerState() == PlayerState.STARTED && !downloadService.isJukeboxEnabled()) {
                         resumeAfterCall = true;
                         downloadService.pause();
                     }
@@ -268,4 +285,30 @@ public class DownloadServiceLifecycleSupport {
         private int currentPlayingIndex;
         private int currentPlayingPosition;
     }
+	
+	private class SerializeTask extends AsyncTask<Void, Void, Void> {
+		@Override
+		protected Void doInBackground(Void... params) {
+			if(lock.tryLock()) {
+				try {
+					serializeDownloadQueueNow();
+				} finally {
+					lock.unlock();
+				}
+			}
+			return null;
+		}
+	}
+	private class DeserializeTask extends AsyncTask<Void, Void, Void> {
+		@Override
+		protected Void doInBackground(Void... params) {
+			try {
+				lock.lock();
+				deserializeDownloadQueueNow();
+			} finally {
+				lock.unlock();
+			}
+			return null;
+		}
+	}
 }

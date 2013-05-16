@@ -64,6 +64,10 @@ public class MusicDirectory {
         /**
 		 * 
 		 */
+		private static final long serialVersionUID = -3339106650010798108L;
+		/**
+		 * 
+		 */
 		private String id;
         private String parent;
         private boolean directory;
@@ -85,6 +89,7 @@ public class MusicDirectory {
         private boolean video;
         private boolean starred;
         private Integer discNumber;
+        private int closeness;
         
         public Integer getDiscNumber() {
         	return discNumber;
@@ -257,6 +262,14 @@ public class MusicDirectory {
         public void setVideo(boolean video) {
             this.video = video;
         }
+        
+    	public int getCloseness() {
+			return closeness;
+		}
+
+		public void setCloseness(int closeness) {
+			this.closeness = closeness;
+		}
 
         @Override
         public boolean equals(Object o) {

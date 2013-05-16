@@ -36,6 +36,8 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.Environment;
 import android.util.Log;
+
+import com.thejoshwa.ultrasonic.androidapp.domain.Artist;
 import com.thejoshwa.ultrasonic.androidapp.domain.MusicDirectory;
 
 /**
@@ -44,11 +46,32 @@ import com.thejoshwa.ultrasonic.androidapp.domain.MusicDirectory;
 public class FileUtil {
 
     private static final String TAG = FileUtil.class.getSimpleName();
-    private static final String[] FILE_SYSTEM_UNSAFE = {"/", "\\", "..", ":", "\"", "?", "*", "<", ">"};
-    private static final String[] FILE_SYSTEM_UNSAFE_DIR = {"\\", "..", ":", "\"", "?", "*", "<", ">"};
+    private static final String[] FILE_SYSTEM_UNSAFE = {"/", "\\", "..", ":", "\"", "?", "*", "<", ">", "|"};
+    private static final String[] FILE_SYSTEM_UNSAFE_DIR = {"\\", "..", ":", "\"", "?", "*", "<", ">", "|"};
     private static final List<String> MUSIC_FILE_EXTENSIONS = Arrays.asList("mp3", "ogg", "aac", "flac", "m4a", "wav", "wma");
+	private static final List<String> VIDEO_FILE_EXTENSIONS = Arrays.asList("flv", "mp4", "m4v", "wmv", "avi", "mov", "mpg", "mkv");
+	private static final List<String> PLAYLIST_FILE_EXTENSIONS = Arrays.asList("m3u");
     private static final File DEFAULT_MUSIC_DIR = createDirectory("music");
 
+    public static File getAnySong(Context context) {
+		File dir = getMusicDirectory(context);
+		return getAnySong(context, dir);
+	}
+	private static File getAnySong(Context context, File dir) {
+		for(File file: dir.listFiles()) {
+			if(file.isDirectory()) {
+				return getAnySong(context, file);
+			}
+
+			String extension = getExtension(file.getName());
+			if(MUSIC_FILE_EXTENSIONS.contains(extension)) {
+				return file;
+			}
+		}
+
+		return null;
+	}
+    
     public static File getSongFile(Context context, MusicDirectory.Entry song) {
         File dir = getAlbumDirectory(context, song);
 
@@ -72,14 +95,30 @@ public class FileUtil {
         return new File(dir, fileName.toString());
     }
 
+	public static File getPlaylistFile(String name) {
+		File playlistDir = getPlaylistDirectory();
+		return new File(playlistDir, fileSystemSafe(name) + ".m3u");
+	}
+    
+	public static File getOldPlaylistFile(String name) {
+		File playlistDir = getPlaylistDirectory();
+		return new File(playlistDir, name);
+	}
+	
+	public static File getPlaylistDirectory() {
+		File playlistDir = new File(getUltraSonicDirectory(), "playlists");
+		ensureDirectoryExistsAndIsReadWritable(playlistDir);
+		return playlistDir;
+	}
+	
     public static File getAlbumArtFile(Context context, MusicDirectory.Entry entry) {
         File albumDir = getAlbumDirectory(context, entry);
         return getAlbumArtFile(albumDir);
     }
 
     public static File getAlbumArtFile(File albumDir) {
-        File albumArtDir = getAlbumArtDirectory();
-        return new File(albumArtDir, Util.md5Hex(albumDir.getPath()) + ".jpeg");
+    	File albumArtDir = getAlbumArtDirectory();
+    	return new File(albumArtDir, Util.md5Hex(albumDir.getPath()) + ".jpeg");
     }
 
     public static Bitmap getAlbumArtBitmap(Context context, MusicDirectory.Entry entry, int size) {
@@ -102,6 +141,11 @@ public class FileUtil {
         
         return null;
     }
+    
+	public static File getArtistDirectory(Context context, Artist artist) {
+		File dir = new File(getMusicDirectory(context).getPath() + "/" + fileSystemSafe(artist.getName()));
+		return dir;
+	}
 
     public static File getAlbumArtDirectory() {
         File albumArtDir = new File(getUltraSonicDirectory(), "artwork");
@@ -110,17 +154,17 @@ public class FileUtil {
         return albumArtDir;
     }
 
-    private static File getAlbumDirectory(Context context, MusicDirectory.Entry entry) {
+    public static File getAlbumDirectory(Context context, MusicDirectory.Entry entry) {
         File dir;
         if (entry.getPath() != null) {
             File f = new File(fileSystemSafeDir(entry.getPath()));
             dir = new File(getMusicDirectory(context).getPath() + "/" + (entry.isDirectory() ? f.getPath() : f.getParent()));
         } else {
             String artist = fileSystemSafe(entry.getArtist());
-            String album = fileSystemSafe(entry.getAlbum());
-            if (album == "unnamed") {
-            	album = fileSystemSafe(entry.getTitle());
-            }
+			String album = fileSystemSafe(entry.getAlbum());
+			if("unnamed".equals(album)) {
+				album = fileSystemSafe(entry.getTitle());
+			}
             dir = new File(getMusicDirectory(context).getPath() + "/" + artist + "/" + album);
         }
         return dir;
@@ -238,22 +282,37 @@ public class FileUtil {
         return new TreeSet<File>(Arrays.asList(files));
     }
 
-    public static SortedSet<File> listMusicFiles(File dir) {
+    public static SortedSet<File> listMediaFiles(File dir) {
         SortedSet<File> files = listFiles(dir);
         Iterator<File> iterator = files.iterator();
         while (iterator.hasNext()) {
             File file = iterator.next();
-            if (!file.isDirectory() && !isMusicFile(file)) {
+            if (!file.isDirectory() && !isMediaFile(file)) {
                 iterator.remove();
             }
         }
         return files;
     }
-
-    private static boolean isMusicFile(File file) {
+    
+    private static boolean isMediaFile(File file) {
         String extension = getExtension(file.getName());
-        return MUSIC_FILE_EXTENSIONS.contains(extension);
+        return MUSIC_FILE_EXTENSIONS.contains(extension) || VIDEO_FILE_EXTENSIONS.contains(extension);
     }
+
+	public static boolean isMusicFile(File file) {
+		String extension = getExtension(file.getName());
+        return MUSIC_FILE_EXTENSIONS.contains(extension);
+	}
+	
+	public static boolean isVideoFile(File file) {
+		String extension = getExtension(file.getName());
+        return VIDEO_FILE_EXTENSIONS.contains(extension);
+	}
+
+	public static boolean isPlaylistFile(File file) {
+		String extension = getExtension(file.getName());
+		return PLAYLIST_FILE_EXTENSIONS.contains(extension);
+	}
 
     /**
      * Returns the extension (the substring after the last dot) of the given file. The dot
@@ -264,7 +323,7 @@ public class FileUtil {
      */
     public static String getExtension(String name) {
         int index = name.lastIndexOf('.');
-        return index == -1 ? "" : name.substring(index + 1).toLowerCase(Locale.getDefault());
+        return index == -1 ? "" : name.substring(index + 1).toLowerCase();
     }
 
     /**
@@ -278,6 +337,19 @@ public class FileUtil {
         int index = name.lastIndexOf('.');
         return index == -1 ? name : name.substring(0, index);
     }
+    
+	public static long getUsedSize(Context context, File file) {
+		long size = 0L;
+
+		if(file.isFile()) {
+			return file.length();
+		} else {
+			for (File child : FileUtil.listFiles(file)) {
+				size += getUsedSize(context, child);
+			}
+			return size;
+		}
+	}
 
     public static <T extends Serializable> boolean serialize(Context context, T obj, String fileName) {
         File file = new File(context.getCacheDir(), fileName);
@@ -304,7 +376,7 @@ public class FileUtil {
         ObjectInputStream in = null;
         try {
             in = new ObjectInputStream(new FileInputStream(file));
-            T result = (T)in.readObject();
+            T result = (T) in.readObject();
             Log.i(TAG, "Deserialized object from " + file);
             return result;
         } catch (Throwable x) {

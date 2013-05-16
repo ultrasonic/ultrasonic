@@ -36,6 +36,8 @@ import android.graphics.drawable.Drawable;
 import android.media.AudioManager;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
+import android.net.wifi.WifiManager;
+import android.os.Build;
 import android.os.Environment;
 import android.os.Handler;
 import android.os.Parcelable;
@@ -400,6 +402,14 @@ public class Util extends DownloadActivity {
             delete(tmp);
         }
     }
+    
+    public static void renameFile(File from, File to) throws IOException {
+		if(from.renameTo(to)) {
+			Log.i(TAG, "Renamed " + from + " to " + to);
+		} else {
+			atomicCopy(from, to);
+		}
+	}    
 
     public static void close(Closeable closeable) {
         try {
@@ -421,6 +431,24 @@ public class Util extends DownloadActivity {
         }
         return true;
     }
+    
+    public static boolean recursiveDelete(File dir) {
+		if (dir != null && dir.exists()) {
+			for(File file: dir.listFiles()) {
+				if(file.isDirectory()) {
+					if(!recursiveDelete(file)) {
+						return false;
+					}
+				} else if(file.exists()) {
+					if(!file.delete()) {
+						return false;
+					}
+				}
+			}
+			return dir.delete();
+		}
+		return false;
+	}
 
     public static void toast(Context context, int messageId) {
         toast(context, messageId, true);
@@ -796,6 +824,11 @@ public class Util extends DownloadActivity {
         }
     }
     
+    public static WifiManager.WifiLock createWifiLock(Context context, String tag) {
+		WifiManager wm = (WifiManager) context.getSystemService(Context.WIFI_SERVICE);
+		return wm.createWifiLock(WifiManager.WIFI_MODE_FULL_HIGH_PERF, tag);
+	}
+    
     public static Bitmap scaleBitmap(Bitmap bitmap, int size) {
     	// Try to keep correct aspect ratio of the original image, do not force a square
 		double aspectRatio = (double)bitmap.getHeight() / (double)bitmap.getWidth();
@@ -1088,6 +1121,18 @@ public class Util extends DownloadActivity {
         views.setOnClickPendingIntent(R.id.control_stop, pendingIntent);
     }
     
+	public static int getMaxVideoBitrate(Context context) {
+        ConnectivityManager manager = (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
+        NetworkInfo networkInfo = manager.getActiveNetworkInfo();
+        if (networkInfo == null) {
+            return 0;
+        }
+
+        boolean wifi = networkInfo.getType() == ConnectivityManager.TYPE_WIFI;
+        SharedPreferences prefs = getPreferences(context);
+        return Integer.parseInt(prefs.getString(wifi ? Constants.PREFERENCES_KEY_MAX_VIDEO_BITRATE_WIFI : Constants.PREFERENCES_KEY_MAX_VIDEO_BITRATE_MOBILE, "0"));
+    }
+    
     public static int getNetworkTimeout(Context context) {
         SharedPreferences prefs = getPreferences(context);
         return Integer.parseInt(prefs.getString(Constants.PREFERENCES_KEY_NETWORK_TIMEOUT, "15000"));
@@ -1136,5 +1181,15 @@ public class Util extends DownloadActivity {
     public static boolean getShowNowPlayingPreference(Context context) {
         SharedPreferences prefs = getPreferences(context);
         return prefs.getBoolean(Constants.PREFERENCES_KEY_SHOW_NOW_PLAYING, true);
+    }
+    
+    public static boolean getGaplessPlaybackPreference(Context context) {
+        SharedPreferences prefs = getPreferences(context);
+        return prefs.getBoolean(Constants.PREFERENCES_KEY_GAPLESS_PLAYBACK, true);
+    }
+    
+    public static boolean getShouldTransitionOnPlaybackPreference(Context context) {
+        SharedPreferences prefs = getPreferences(context);
+        return prefs.getBoolean(Constants.PREFERENCES_KEY_DOWNLOAD_TRANSITION, true);
     }
 }

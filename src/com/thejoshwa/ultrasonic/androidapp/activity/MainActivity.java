@@ -366,12 +366,6 @@ public class MainActivity extends SubsonicTabActivity {
         }
     }
 
-    private void restart() {
-        Intent intent = new Intent(this, MainActivity.class);
-        intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-        Util.startActivityWithoutTransition(this, intent);
-    }
-
     private void exit() {
         stopService(new Intent(this, DownloadServiceImpl.class));
         Util.unregisterMediaButtonEventReceiver(this);

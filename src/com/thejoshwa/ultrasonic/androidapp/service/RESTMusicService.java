@@ -18,7 +18,10 @@
  */
 package com.thejoshwa.ultrasonic.androidapp.service;
 
+import java.io.BufferedWriter;
+import java.io.File;
 import java.io.FileOutputStream;
+import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
@@ -174,13 +177,6 @@ public class RESTMusicService implements MusicService {
         Reader reader = getReader(context, progressListener, "ping", null);
         try {
             new ErrorParser(context).parse(reader);
-            XmlPullParser parser;
-            parser = Xml.newPullParser();
-            parser.setInput(reader);
-            String version = parser.getAttributeValue(null, "version");
-            if (version != null) {
-                Util.setServerRestVersion(context, new Version(version));
-            }
         } finally {
             Util.close(reader);
         }
@@ -197,13 +193,89 @@ public class RESTMusicService implements MusicService {
         }
     }
 
-    public List<MusicFolder> getMusicFolders(Context context, ProgressListener progressListener) throws Exception {
+    public List<MusicFolder> getMusicFolders(boolean refresh, Context context, ProgressListener progressListener) throws Exception {
+        List<MusicFolder> cachedMusicFolders = readCachedMusicFolders(context);
+        if (cachedMusicFolders != null && !refresh) {
+            return cachedMusicFolders;
+        }
+
         Reader reader = getReader(context, progressListener, "getMusicFolders", null);
         try {
-            return new MusicFoldersParser(context).parse(reader, progressListener);
+            List<MusicFolder> musicFolders = new MusicFoldersParser(context).parse(reader, progressListener);
+            writeCachedMusicFolders(context, musicFolders);
+            return musicFolders;
         } finally {
             Util.close(reader);
         }
+    }
+    
+    @Override
+    public Indexes getIndexes(String musicFolderId, boolean refresh, Context context, ProgressListener progressListener) throws Exception {
+        Indexes cachedIndexes = readCachedIndexes(context, musicFolderId);
+        if (cachedIndexes != null && !refresh) {
+            return cachedIndexes;
+        }
+
+        long lastModified = (cachedIndexes == null || refresh) ? 0L : cachedIndexes.getLastModified();
+
+        List<String> parameterNames = new ArrayList<String>();
+        List<Object> parameterValues = new ArrayList<Object>();
+
+		if(lastModified != 0L) {
+			parameterNames.add("ifModifiedSince");
+			parameterValues.add(lastModified);
+		}
+
+        if (musicFolderId != null) {
+            parameterNames.add("musicFolderId");
+            parameterValues.add(musicFolderId);
+        }
+
+        Reader reader = getReader(context, progressListener, "getIndexes", null, parameterNames, parameterValues);
+        try {
+            Indexes indexes = new IndexesParser(context).parse(reader, progressListener);
+            if (indexes != null) {
+                writeCachedIndexes(context, indexes, musicFolderId);
+                return indexes;
+            }
+			if(cachedIndexes != null) {
+				return cachedIndexes;
+			} else {
+				return new Indexes(0, new ArrayList<com.thejoshwa.ultrasonic.androidapp.domain.Artist>(), new ArrayList<com.thejoshwa.ultrasonic.androidapp.domain.Artist>());
+			}
+        } finally {
+            Util.close(reader);
+        }
+    }
+    
+    private Indexes readCachedIndexes(Context context, String musicFolderId) {
+        String filename = getCachedIndexesFilename(context, musicFolderId);
+        return FileUtil.deserialize(context, filename);
+    }
+
+    private void writeCachedIndexes(Context context, Indexes indexes, String musicFolderId) {
+        String filename = getCachedIndexesFilename(context, musicFolderId);
+        FileUtil.serialize(context, indexes, filename);
+    }
+
+    private String getCachedIndexesFilename(Context context, String musicFolderId) {
+        String s = Util.getRestUrl(context, null) + musicFolderId;
+        return "indexes-" + Math.abs(s.hashCode()) + ".ser";
+    }
+    
+    private ArrayList<MusicFolder> readCachedMusicFolders(Context context) {
+        String filename = getCachedMusicFoldersFilename(context);
+        return FileUtil.deserialize(context, filename);
+    }
+
+    private void writeCachedMusicFolders(Context context, List<MusicFolder> musicFolders) {
+        String filename = getCachedMusicFoldersFilename(context);
+        FileUtil.serialize(context, new ArrayList<MusicFolder>(musicFolders), filename);
+    }
+
+    private String getCachedMusicFoldersFilename(Context context) {
+        String s = Util.getRestUrl(context, null);
+        return "musicFolders-" + Math.abs(s.hashCode()) + ".ser";
     }
     
     public void star(String id, Context context, ProgressListener progressListener) throws Exception {
@@ -225,54 +297,10 @@ public class RESTMusicService implements MusicService {
     }
 
     @Override
-    public Indexes getIndexes(String musicFolderId, boolean refresh, Context context, ProgressListener progressListener) throws Exception {
-        Indexes cachedIndexes = readCachedIndexes(context, musicFolderId);
-        long lastModified = cachedIndexes == null ? 0L : cachedIndexes.getLastModified();
-
-        List<String> parameterNames = new ArrayList<String>();
-        List<Object> parameterValues = new ArrayList<Object>();
-
-        parameterNames.add("ifModifiedSince");
-        parameterValues.add(lastModified);
-
-        if (musicFolderId != null) {
-            parameterNames.add("musicFolderId");
-            parameterValues.add(musicFolderId);
-        }
-
-        Reader reader = getReader(context, progressListener, "getIndexes", null, parameterNames, parameterValues);
-        try {
-            Indexes indexes = new IndexesParser(context).parse(reader, progressListener);
-            if (indexes != null) {
-                writeCachedIndexes(context, indexes, musicFolderId);
-                return indexes;
-            }
-            return cachedIndexes;
-        } finally {
-            Util.close(reader);
-        }
-    }
-
-    private Indexes readCachedIndexes(Context context, String musicFolderId) {
-        String filename = getCachedIndexesFilename(context, musicFolderId);
-        return FileUtil.deserialize(context, filename);
-    }
-
-    private void writeCachedIndexes(Context context, Indexes indexes, String musicFolderId) {
-        String filename = getCachedIndexesFilename(context, musicFolderId);
-        FileUtil.serialize(context, indexes, filename);
-    }
-
-    private String getCachedIndexesFilename(Context context, String musicFolderId) {
-        String s = Util.getRestUrl(context, null) + musicFolderId;
-        return "indexes-" + Math.abs(s.hashCode()) + ".ser";
-    }
-
-    @Override
-    public MusicDirectory getMusicDirectory(String id, boolean refresh, Context context, ProgressListener progressListener) throws Exception {
+    public MusicDirectory getMusicDirectory(String id, String name, boolean refresh, Context context, ProgressListener progressListener) throws Exception {
         Reader reader = getReader(context, progressListener, "getMusicDirectory", null, "id", id);
         try {
-            return new MusicDirectoryParser(context).parse(reader, progressListener);
+            return new MusicDirectoryParser(context).parse(name, reader, progressListener);
         } finally {
             Util.close(reader);
         }
@@ -320,18 +348,41 @@ public class RESTMusicService implements MusicService {
     }
 
     @Override
-    public MusicDirectory getPlaylist(String id, Context context, ProgressListener progressListener) throws Exception {
+    public MusicDirectory getPlaylist(String id, String name, Context context, ProgressListener progressListener) throws Exception {
         HttpParams params = new BasicHttpParams();
         HttpConnectionParams.setSoTimeout(params, SOCKET_READ_TIMEOUT_GET_PLAYLIST);
 
         Reader reader = getReader(context, progressListener, "getPlaylist", params, "id", id);
         try {
-            return new PlaylistParser(context).parse(reader, progressListener);
+			MusicDirectory playlist = new PlaylistParser(context).parse(reader, progressListener);
+			
+			File playlistFile = FileUtil.getPlaylistFile(name);
+			FileWriter fw = new FileWriter(playlistFile);
+			BufferedWriter bw = new BufferedWriter(fw);
+			try {
+				fw.write("#EXTM3U\n");
+				for (MusicDirectory.Entry e : playlist.getChildren()) {
+					String filePath = FileUtil.getSongFile(context, e).getAbsolutePath();
+					if(! new File(filePath).exists()){
+						String ext = FileUtil.getExtension(filePath);
+						String base = FileUtil.getBaseName(filePath);
+						filePath = base + ".complete." + ext;                
+					}
+					fw.write(filePath + "\n");
+				}
+			} catch(Exception e) {
+				Log.w(TAG, "Failed to save playlist: " + name);
+			} finally {
+				bw.close();
+				fw.close();
+			}
+			
+			return playlist;
         } finally {
             Util.close(reader);
         }
     }
-
+    
     @Override
     public List<Playlist> getPlaylists(boolean refresh, Context context, ProgressListener progressListener) throws Exception {
         Reader reader = getReader(context, progressListener, "getPlaylists", null);
@@ -367,6 +418,65 @@ public class RESTMusicService implements MusicService {
             Util.close(reader);
         }
     }
+    
+	@Override
+	public void deletePlaylist(String id, Context context, ProgressListener progressListener) throws Exception {		
+		Reader reader = getReader(context, progressListener, "deletePlaylist", null, "id", id);
+		try {
+            new ErrorParser(context).parse(reader);
+        } finally {
+            Util.close(reader);
+        }
+	}
+	
+	@Override
+	public void addToPlaylist(String id, List<MusicDirectory.Entry> toAdd, Context context, ProgressListener progressListener) throws Exception {
+		checkServerVersion(context, "1.8", "Updating playlists is not supported.");
+		List<String> names = new ArrayList<String>();
+		List<Object> values = new ArrayList<Object>();
+		names.add("playlistId");
+		values.add(id);
+		for(MusicDirectory.Entry song: toAdd) {
+			names.add("songIdToAdd");
+			values.add(song.getId());
+		}
+		Reader reader = getReader(context, progressListener, "updatePlaylist", null, names, values);
+    	try {
+            new ErrorParser(context).parse(reader);
+        } finally {
+            Util.close(reader);
+        }
+	}
+	
+	@Override
+	public void removeFromPlaylist(String id, List<Integer> toRemove, Context context, ProgressListener progressListener) throws Exception {
+		checkServerVersion(context, "1.8", "Updating playlists is not supported.");
+		List<String> names = new ArrayList<String>();
+		List<Object> values = new ArrayList<Object>();
+		names.add("playlistId");
+		values.add(id);
+		for(Integer song: toRemove) {
+			names.add("songIndexToRemove");
+			values.add(song);
+		}
+		Reader reader = getReader(context, progressListener, "updatePlaylist", null, names, values);
+    	try {
+            new ErrorParser(context).parse(reader);
+        } finally {
+            Util.close(reader);
+        }
+	}
+	
+	@Override
+	public void updatePlaylist(String id, String name, String comment, boolean pub, Context context, ProgressListener progressListener) throws Exception {
+		checkServerVersion(context, "1.8", "Updating playlists is not supported.");
+		Reader reader = getReader(context, progressListener, "updatePlaylist", null, Arrays.asList("playlistId", "name", "comment", "public"), Arrays.<Object>asList(id, name, comment, pub));
+		try {
+			new ErrorParser(context).parse(reader);
+		} finally {
+			Util.close(reader);
+		}
+	}
 
     @Override
     public Lyrics getLyrics(String artist, String title, Context context, ProgressListener progressListener) throws Exception {
@@ -404,8 +514,14 @@ public class RESTMusicService implements MusicService {
     public MusicDirectory getRandomSongs(int size, Context context, ProgressListener progressListener) throws Exception {
         HttpParams params = new BasicHttpParams();
         HttpConnectionParams.setSoTimeout(params, SOCKET_READ_TIMEOUT_GET_RANDOM_SONGS);
+		
+		List<String> names = new ArrayList<String>();
+        List<Object> values = new ArrayList<Object>();
 
-        Reader reader = getReader(context, progressListener, "getRandomSongs", params, "size", size);
+        names.add("size");
+        values.add(size);
+
+        Reader reader = getReader(context, progressListener, "getRandomSongs", params, names, values);
         try {
             return new RandomSongsParser(context).parse(reader, progressListener);
         } finally {
@@ -487,6 +603,17 @@ public class RESTMusicService implements MusicService {
 
 					byte[] bytes = Util.toByteArray(in);
 
+					File albumDir = FileUtil.getAlbumDirectory(context, entry);
+	                if (albumDir.exists()) {
+	                    OutputStream out = null;
+	                    try {
+	                        out = new FileOutputStream(FileUtil.getAlbumArtFile(albumDir));
+	                        out.write(bytes);
+	                    } finally {
+	                        Util.close(out);
+	                    }
+	                }
+					
 					// If we aren't allowing server-side scaling, always save the file to disk because it will be unmodified
 					if (!serverScaling || saveToFile) {
 						OutputStream out = null;
@@ -545,16 +672,27 @@ public class RESTMusicService implements MusicService {
     }
 
     @Override
-    public String getVideoUrl(Context context, String id) {
+    public String getVideoUrl(int maxBitrate, Context context, String id) {
         StringBuilder builder = new StringBuilder(Util.getRestUrl(context, "videoPlayer"));
         builder.append("&id=").append(id);
-        builder.append("&maxBitRate=500");
+        builder.append("&maxBitRate=").append(maxBitrate);
         builder.append("&autoplay=true");
 
         String url = rewriteUrlWithRedirect(context, builder.toString());
         Log.i(TAG, "Using video URL: " + url);
         return url;
     }
+    
+	@Override
+	public String getVideoStreamUrl(int maxBitrate, Context context, String id) {
+		StringBuilder builder = new StringBuilder(Util.getRestUrl(context, "stream"));
+        builder.append("&id=").append(id);
+        builder.append("&maxBitRate=").append(maxBitrate);
+
+        String url = rewriteUrlWithRedirect(context, builder.toString());
+        Log.i(TAG, "Using video URL: " + url);
+        return url;
+	}
 
     @Override
     public JukeboxStatus updateJukeboxPlaylist(List<String> ids, Context context, ProgressListener progressListener) throws Exception {
@@ -598,7 +736,6 @@ public class RESTMusicService implements MusicService {
         List<String> parameterNames = Arrays.asList("action", "gain");
         List<Object> parameterValues = Arrays.<Object>asList("setGain", gain);
         return executeJukeboxCommand(context, progressListener, parameterNames, parameterValues);
-
     }
 
     private JukeboxStatus executeJukeboxCommand(Context context, ProgressListener progressListener, List<String> parameterNames, List<Object> parameterValues) throws Exception {
@@ -631,116 +768,124 @@ public class RESTMusicService implements MusicService {
         return getReaderForURL(context, url, requestParams, parameterNames, parameterValues, progressListener);
     }
 
-    private Reader getReaderForURL(Context context, String url, HttpParams requestParams, List<String> parameterNames,
-                                   List<Object> parameterValues, ProgressListener progressListener) throws Exception {
-        HttpEntity entity = getEntityForURL(context, url, requestParams, parameterNames, parameterValues, progressListener);
-        if (entity == null) {
-            throw new RuntimeException("No entity received for URL " + url);
-        }
+	private Reader getReaderForURL(Context context, String url, HttpParams requestParams, List<String> parameterNames, List<Object> parameterValues, ProgressListener progressListener) throws Exception {
+		HttpEntity entity = getEntityForURL(context, url, requestParams, parameterNames, parameterValues, progressListener);
+		if (entity == null) {
+			throw new RuntimeException("No entity received for URL " + url);
+		}
 
-        InputStream in = entity.getContent();
-        return new InputStreamReader(in, Constants.UTF_8);
-    }
+		InputStream in = entity.getContent();
+		return new InputStreamReader(in, Constants.UTF_8);
+	}
 
-    private HttpEntity getEntityForURL(Context context, String url, HttpParams requestParams, List<String> parameterNames,
-                                       List<Object> parameterValues, ProgressListener progressListener) throws Exception {
-        return getResponseForURL(context, url, requestParams, parameterNames, parameterValues, null, progressListener, null).getEntity();
-    }
+	private HttpEntity getEntityForURL(Context context, String url, HttpParams requestParams, List<String> parameterNames, List<Object> parameterValues, ProgressListener progressListener) throws Exception {
+		return getResponseForURL(context, url, requestParams, parameterNames,
+				parameterValues, null, progressListener, null).getEntity();
+	}
 
-    private HttpResponse getResponseForURL(Context context, String url, HttpParams requestParams,
-                                           List<String> parameterNames, List<Object> parameterValues,
-                                           List<Header> headers, ProgressListener progressListener, CancellableTask task) throws Exception {
-        Log.d(TAG, "Connections in pool: " + connManager.getConnectionsInPool());
+	private HttpResponse getResponseForURL(Context context, String url, HttpParams requestParams, List<String> parameterNames, List<Object> parameterValues, List<Header> headers, ProgressListener progressListener, CancellableTask task) throws Exception {
+		Log.d(TAG, "Connections in pool: " + connManager.getConnectionsInPool());
 
-        // If not too many parameters, extract them to the URL rather than relying on the HTTP POST request being
-        // received intact. Remember, HTTP POST requests are converted to GET requests during HTTP redirects, thus
-        // loosing its entity.
-        if (parameterNames != null && parameterNames.size() < 10) {
-            StringBuilder builder = new StringBuilder(url);
-            for (int i = 0; i < parameterNames.size(); i++) {
-                builder.append("&").append(parameterNames.get(i)).append("=");
-                builder.append(URLEncoder.encode(String.valueOf(parameterValues.get(i)), "UTF-8"));
-            }
-            url = builder.toString();
-            parameterNames = null;
-            parameterValues = null;
-        }
+		// If not too many parameters, extract them to the URL rather than
+		// relying on the HTTP POST request being
+		// received intact. Remember, HTTP POST requests are converted to GET
+		// requests during HTTP redirects, thus
+		// loosing its entity.
+		if (parameterNames != null && parameterNames.size() < 10) {
+			StringBuilder builder = new StringBuilder(url);
+			for (int i = 0; i < parameterNames.size(); i++) {
+				builder.append("&").append(parameterNames.get(i)).append("=");
+				builder.append(URLEncoder.encode(String.valueOf(parameterValues.get(i)), "UTF-8"));
+			}
+			url = builder.toString();
+			parameterNames = null;
+			parameterValues = null;
+		}
 
-        String rewrittenUrl = rewriteUrlWithRedirect(context, url);
-        return executeWithRetry(context, rewrittenUrl, url, requestParams, parameterNames, parameterValues, headers, progressListener, task);
-    }
+		String rewrittenUrl = rewriteUrlWithRedirect(context, url);
+		return executeWithRetry(context, rewrittenUrl, url, requestParams, parameterNames, parameterValues, headers, progressListener, task);
+	}
 
-    private HttpResponse executeWithRetry(Context context, String url, String originalUrl, HttpParams requestParams,
-                                          List<String> parameterNames, List<Object> parameterValues,
-                                          List<Header> headers, ProgressListener progressListener, CancellableTask task) throws IOException {
-        Log.i(TAG, "Using URL " + url);
+	private HttpResponse executeWithRetry(Context context, String url, String originalUrl, HttpParams requestParams, List<String> parameterNames, List<Object> parameterValues, List<Header> headers, ProgressListener progressListener, CancellableTask task) throws IOException {
+		Log.i(TAG, "Using URL " + url);
 
-        final AtomicReference<Boolean> cancelled = new AtomicReference<Boolean>(false);
-        int attempts = 0;
-        while (true) {
-            attempts++;
-            HttpContext httpContext = new BasicHttpContext();
-            final HttpPost request = new HttpPost(url);
+		SharedPreferences prefs = Util.getPreferences(context);
+		int networkTimeout = Integer.parseInt(prefs.getString(Constants.PREFERENCES_KEY_NETWORK_TIMEOUT, "15000"));
+		HttpParams newParams = httpClient.getParams();
+		HttpConnectionParams.setSoTimeout(newParams, networkTimeout);
+		httpClient.setParams(newParams);
 
-            if (task != null) {
-                // Attempt to abort the HTTP request if the task is cancelled.
-                task.setOnCancelListener(new CancellableTask.OnCancelListener() {
-                    @Override
-                    public void onCancel() {
-                        cancelled.set(true);
-                        request.abort();
-                    }
-                });
-            }
+		final AtomicReference<Boolean> cancelled = new AtomicReference<Boolean>(false);
+		int attempts = 0;
+		while (true) {
+			attempts++;
+			HttpContext httpContext = new BasicHttpContext();
+			final HttpPost request = new HttpPost(url);
 
-            if (parameterNames != null) {
-                List<NameValuePair> params = new ArrayList<NameValuePair>();
-                for (int i = 0; i < parameterNames.size(); i++) {
-                    params.add(new BasicNameValuePair(parameterNames.get(i), String.valueOf(parameterValues.get(i))));
-                }
-                request.setEntity(new UrlEncodedFormEntity(params, Constants.UTF_8));
-            }
+			if (task != null) {
+				// Attempt to abort the HTTP request if the task is cancelled.
+				task.setOnCancelListener(new CancellableTask.OnCancelListener() {
+					@Override
+					public void onCancel() {
+						new Thread(new Runnable() {
+							public void run() {
+								try {
+									cancelled.set(true);
+									request.abort();
+								} catch(Exception e) {
+									Log.e(TAG, "Failed to stop http task");
+								}
+							}
+						}).start();
+					}
+				});
+			}
 
-            if (requestParams != null) {
-                request.setParams(requestParams);
-                Log.d(TAG, "Socket read timeout: " + HttpConnectionParams.getSoTimeout(requestParams) + " ms.");
-            }
+			if (parameterNames != null) {
+				List<NameValuePair> params = new ArrayList<NameValuePair>();
+				for (int i = 0; i < parameterNames.size(); i++) {
+					params.add(new BasicNameValuePair(parameterNames.get(i), String.valueOf(parameterValues.get(i))));
+				}
+				request.setEntity(new UrlEncodedFormEntity(params, Constants.UTF_8));
+			}
 
-            if (headers != null) {
-                for (Header header : headers) {
-                    request.addHeader(header);
-                }
-            }
+			if (requestParams != null) {
+				request.setParams(requestParams);
+				Log.d(TAG, "Socket read timeout: " + HttpConnectionParams.getSoTimeout(requestParams) + " ms.");
+			}
 
-            // Set credentials to get through apache proxies that require authentication.
-            SharedPreferences prefs = Util.getPreferences(context);
-            int instance = prefs.getInt(Constants.PREFERENCES_KEY_SERVER_INSTANCE, 1);
-            String username = prefs.getString(Constants.PREFERENCES_KEY_USERNAME + instance, null);
-            String password = prefs.getString(Constants.PREFERENCES_KEY_PASSWORD + instance, null);
-            httpClient.getCredentialsProvider().setCredentials(new AuthScope(AuthScope.ANY_HOST, AuthScope.ANY_PORT),
-                    new UsernamePasswordCredentials(username, password));
+			if (headers != null) {
+				for (Header header : headers) {
+					request.addHeader(header);
+				}
+			}
 
-            try {
-            	httpClient.getParams().setParameter("http.socket.timeout", Util.getNetworkTimeout(context));
-            	
-                HttpResponse response = httpClient.execute(request, httpContext);
-                detectRedirect(originalUrl, context, httpContext);
-                return response;
-            } catch (IOException x) {
-                request.abort();
-                if (attempts >= HTTP_REQUEST_MAX_ATTEMPTS || cancelled.get()) {
-                    throw x;
-                }
-                if (progressListener != null) {
-                    String msg = context.getResources().getString(R.string.music_service_retry, attempts, HTTP_REQUEST_MAX_ATTEMPTS - 1);
-                    progressListener.updateProgress(msg);
-                }
-                Log.w(TAG, "Got IOException (" + attempts + "), will retry", x);
-                increaseTimeouts(requestParams);
-                Util.sleepQuietly(2000L);
-            }
-        }
-    }
+			// Set credentials to get through apache proxies that require authentication.
+			int instance = prefs.getInt(Constants.PREFERENCES_KEY_SERVER_INSTANCE, 1);
+			String username = prefs.getString(Constants.PREFERENCES_KEY_USERNAME + instance, null);
+			String password = prefs.getString(Constants.PREFERENCES_KEY_PASSWORD + instance, null);
+			httpClient.getCredentialsProvider().setCredentials(new AuthScope(AuthScope.ANY_HOST, AuthScope.ANY_PORT),
+					new UsernamePasswordCredentials(username, password));
+
+			try {
+				HttpResponse response = httpClient.execute(request, httpContext);
+				detectRedirect(originalUrl, context, httpContext);
+				return response;
+			} catch (IOException x) {
+				request.abort();
+				if (attempts >= HTTP_REQUEST_MAX_ATTEMPTS || cancelled.get()) {
+					throw x;
+				}
+				if (progressListener != null) {
+					String msg = context.getResources().getString(R.string.music_service_retry, attempts, HTTP_REQUEST_MAX_ATTEMPTS - 1);
+					progressListener.updateProgress(msg);
+				}
+				Log.w(TAG, "Got IOException (" + attempts + "), will retry", x);
+				increaseTimeouts(requestParams);
+				Util.sleepQuietly(2000L);
+			}
+		}
+	}
 
     private void increaseTimeouts(HttpParams requestParams) {
         if (requestParams != null) {
@@ -758,7 +903,7 @@ public class RESTMusicService implements MusicService {
     private void detectRedirect(String originalUrl, Context context, HttpContext httpContext) {
         HttpUriRequest request = (HttpUriRequest) httpContext.getAttribute(ExecutionContext.HTTP_REQUEST);
         HttpHost host = (HttpHost) httpContext.getAttribute(ExecutionContext.HTTP_TARGET_HOST);
-
+		
 		// Sometimes the request doesn't contain the "http://host" part
 		String redirectedUrl;
 		if (request.getURI().getScheme() == null) {
@@ -766,7 +911,7 @@ public class RESTMusicService implements MusicService {
 		} else {
 			redirectedUrl = request.getURI().toString();
 		}
-        
+
         redirectFrom = originalUrl.substring(0, originalUrl.indexOf("/rest/"));
         redirectTo = redirectedUrl.substring(0, redirectedUrl.indexOf("/rest/"));
 

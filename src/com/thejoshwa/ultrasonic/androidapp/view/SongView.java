@@ -16,18 +16,16 @@
 
  Copyright 2009 (C) Sindre Mehus
  */
-package com.thejoshwa.ultrasonic.androidapp.util;
+package com.thejoshwa.ultrasonic.androidapp.view;
 
 import android.content.Context;
 import android.graphics.drawable.Drawable;
-import android.os.Handler;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.Checkable;
 import android.widget.CheckedTextView;
 import android.widget.ImageView;
-import android.widget.LinearLayout;
 import android.widget.TextView;
 import com.thejoshwa.ultrasonic.androidapp.R;
 import com.thejoshwa.ultrasonic.androidapp.domain.MusicDirectory;
@@ -36,32 +34,30 @@ import com.thejoshwa.ultrasonic.androidapp.service.DownloadServiceImpl;
 import com.thejoshwa.ultrasonic.androidapp.service.DownloadFile;
 import com.thejoshwa.ultrasonic.androidapp.service.MusicService;
 import com.thejoshwa.ultrasonic.androidapp.service.MusicServiceFactory;
+import com.thejoshwa.ultrasonic.androidapp.util.Util;
 
 import java.io.File;
-import java.util.WeakHashMap;
 
 /**
  * Used to display songs in a {@code ListView}.
  *
  * @author Sindre Mehus
  */
-public class SongView extends LinearLayout implements Checkable {
+public class SongView extends UpdateView implements Checkable {
 
     private static final String TAG = SongView.class.getSimpleName();
-    private static final WeakHashMap<SongView, ?> INSTANCES = new WeakHashMap<SongView, Object>();
-    private static Handler handler;
-
     private CheckedTextView checkedTextView;
     private ImageView starImageView;
     private TextView trackTextView;
-    private TextView discTextView;
     private TextView titleTextView;
     private TextView artistTextView;
     private TextView durationTextView;
     private TextView statusTextView;
     private MusicDirectory.Entry song;
-
-    public SongView(Context context) {
+    
+	private DownloadService downloadService;
+	
+	public SongView(Context context) {
         super(context);
         LayoutInflater.from(context).inflate(R.layout.song_list_item, this, true);
 
@@ -72,15 +68,6 @@ public class SongView extends LinearLayout implements Checkable {
         artistTextView = (TextView) findViewById(R.id.song_artist);
         durationTextView = (TextView) findViewById(R.id.song_duration);
         statusTextView = (TextView) findViewById(R.id.song_status);
-
-        INSTANCES.put(this, null);
-        int instanceCount = INSTANCES.size();
-        
-        if (instanceCount > 50) {
-            Log.w(TAG, instanceCount + " live SongView instances");
-        }
-        
-        startUpdater();
     }
 
     public void setSong(final MusicDirectory.Entry song, boolean checkable) {
@@ -157,23 +144,38 @@ public class SongView extends LinearLayout implements Checkable {
             }
         });
         
+        updateBackground();
         update();
     }
+    
+	@Override
+	protected void updateBackground() {
+        if (downloadService == null) {
+        	
+			downloadService = DownloadServiceImpl.getInstance();
+			
+			if(downloadService == null) {
+				return;
+			}
+        }
+		
+		downloadService.forSong(song);
+	}
 
-    private void update() {
-        DownloadService downloadService = DownloadServiceImpl.getInstance();
+	@Override
+    protected void update() {
         if (downloadService == null) {
             return;
         }
 
         DownloadFile downloadFile = downloadService.forSong(song);
-        File completeFile = downloadFile.getCompleteFile();
+        downloadFile.getCompleteFile();
         File partialFile = downloadFile.getPartialFile();
 
         Drawable leftImage = null;
         Drawable rightImage = null;
 
-        if (completeFile.exists()) {
+        if (downloadFile.isWorkDone()) {
             leftImage = downloadFile.isSaved() ? Util.getDrawableFromAttribute(getContext(), R.attr.unpin) : Util.getDrawableFromAttribute(getContext(), R.attr.downloaded);
         }
 
@@ -197,34 +199,6 @@ public class SongView extends LinearLayout implements Checkable {
             titleTextView.setCompoundDrawablesWithIntrinsicBounds(Util.getDrawableFromAttribute(getContext(), R.attr.media_play_small), null, null, null);
         } else {
             titleTextView.setCompoundDrawablesWithIntrinsicBounds(0, 0, 0, 0);
-        }
-    }
-
-    private static synchronized void startUpdater() {
-        if (handler != null) {
-            return;
-        }
-
-        handler = new Handler();
-        Runnable runnable = new Runnable() {
-            @Override
-            public void run() {
-                updateAll();
-                handler.postDelayed(this, 1000L);
-            }
-        };
-        handler.postDelayed(runnable, 1000L);
-    }
-
-    private static void updateAll() {
-        try {
-            for (SongView view : INSTANCES.keySet()) {
-                if (view.isShown()) {
-                    view.update();
-                }
-            }
-        } catch (Throwable x) {
-            Log.w(TAG, "Error when updating song views.", x);
         }
     }
 

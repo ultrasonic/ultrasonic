@@ -16,26 +16,27 @@
 
  Copyright 2009 (C) Sindre Mehus
  */
-package com.thejoshwa.ultrasonic.androidapp.util;
+package com.thejoshwa.ultrasonic.androidapp.view;
 
 import android.content.Context;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.ImageView;
-import android.widget.LinearLayout;
 import android.widget.TextView;
 import com.thejoshwa.ultrasonic.androidapp.R;
 import com.thejoshwa.ultrasonic.androidapp.domain.MusicDirectory;
 import com.thejoshwa.ultrasonic.androidapp.service.MusicService;
 import com.thejoshwa.ultrasonic.androidapp.service.MusicServiceFactory;
+import com.thejoshwa.ultrasonic.androidapp.util.ImageLoader;
+import com.thejoshwa.ultrasonic.androidapp.util.Util;
 
 /**
  * Used to display albums in a {@code ListView}.
  *
  * @author Sindre Mehus
  */
-public class AlbumView extends LinearLayout {
+public class AlbumView extends UpdateView {
 
 	private static final String TAG = AlbumView.class.getSimpleName();
     private TextView titleView;

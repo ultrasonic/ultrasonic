@@ -35,6 +35,8 @@ public class VisualizerController {
     private static final int PREFERRED_CAPTURE_SIZE = 128; // Must be a power of two.
 
     private Visualizer visualizer;
+	private boolean released = false;
+	private int audioSessionId = 0;
 
     // Class initialization fails when this throws an exception.
     static {
@@ -54,7 +56,8 @@ public class VisualizerController {
 
     public VisualizerController(Context context, MediaPlayer mediaPlayer) {
         try {
-            visualizer = new Visualizer(mediaPlayer.getAudioSessionId());
+			audioSessionId = mediaPlayer.getAudioSessionId();
+            visualizer = new Visualizer(audioSessionId);
         } catch (Throwable x) {
             Log.w(TAG, "Failed to create visualizer.", x);
         }
@@ -78,11 +81,21 @@ public class VisualizerController {
     public void release() {
         if (isAvailable()) {
             visualizer.release();
+			released = true;
         }
     }
 
     public Visualizer getVisualizer() {
+		if(released) {
+			released = false;
+			try {
+				visualizer = new Visualizer(audioSessionId);
+			} catch (Throwable x) {
+				visualizer = null;
+				Log.w(TAG, "Failed to create visualizer.", x);
+			}
+		}
+
         return visualizer;
     }
 }
-

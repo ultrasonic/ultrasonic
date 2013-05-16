@@ -90,7 +90,8 @@ public final class PlayVideoActivity extends Activity {
 
     private String getVideoUrl() {
         String id = getIntent().getStringExtra(Constants.INTENT_EXTRA_NAME_ID);
-        return MusicServiceFactory.getMusicService(this).getVideoUrl(this, id);
+        int maxBitrate = Util.getMaxVideoBitrate(this);
+        return MusicServiceFactory.getMusicService(this).getVideoUrl(maxBitrate, this, id);
     }
 
     @Override

@@ -16,7 +16,7 @@
 
  Copyright 2010 (C) Sindre Mehus
  */
-package com.thejoshwa.ultrasonic.androidapp.util;
+package com.thejoshwa.ultrasonic.androidapp.view;
 
 import java.util.List;
 
@@ -25,6 +25,7 @@ import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import com.thejoshwa.ultrasonic.androidapp.activity.SubsonicTabActivity;
 import com.thejoshwa.ultrasonic.androidapp.domain.MusicDirectory;
+import com.thejoshwa.ultrasonic.androidapp.util.ImageLoader;
 
 /**
  * @author Sindre Mehus

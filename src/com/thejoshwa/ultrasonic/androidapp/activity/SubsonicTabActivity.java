@@ -20,14 +20,18 @@ package com.thejoshwa.ultrasonic.androidapp.activity;
 
 import java.io.File;
 import java.io.PrintWriter;
+import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 
 import android.app.Activity;
+import android.app.AlertDialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageInfo;
 import android.graphics.Bitmap;
+import android.graphics.PixelFormat;
 import android.media.AudioManager;
 import android.os.Build;
 import android.os.Bundle;
@@ -35,27 +39,32 @@ import android.os.Environment;
 import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.KeyEvent;
-import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.View.OnTouchListener;
+import android.view.Window;
 import android.widget.ImageView;
 import android.widget.TextView;
 import com.thejoshwa.ultrasonic.androidapp.R;
 import com.thejoshwa.ultrasonic.androidapp.domain.MusicDirectory;
 import com.thejoshwa.ultrasonic.androidapp.domain.MusicDirectory.Entry;
 import com.thejoshwa.ultrasonic.androidapp.domain.PlayerState;
+import com.thejoshwa.ultrasonic.androidapp.domain.Playlist;
 import com.thejoshwa.ultrasonic.androidapp.service.DownloadFile;
 import com.thejoshwa.ultrasonic.androidapp.service.DownloadService;
 import com.thejoshwa.ultrasonic.androidapp.service.DownloadServiceImpl;
 import com.thejoshwa.ultrasonic.androidapp.service.MusicService;
 import com.thejoshwa.ultrasonic.androidapp.service.MusicServiceFactory;
+import com.thejoshwa.ultrasonic.androidapp.service.OfflineException;
+import com.thejoshwa.ultrasonic.androidapp.service.ServerTooOldException;
 import com.thejoshwa.ultrasonic.androidapp.util.Constants;
 import com.thejoshwa.ultrasonic.androidapp.util.FileUtil;
 import com.thejoshwa.ultrasonic.androidapp.util.ImageLoader;
+import com.thejoshwa.ultrasonic.androidapp.util.LoadingTask;
 import com.thejoshwa.ultrasonic.androidapp.util.ModalBackgroundTask;
+import com.thejoshwa.ultrasonic.androidapp.util.SilentBackgroundTask;
 import com.thejoshwa.ultrasonic.androidapp.util.Util;
 
 import net.simonvt.menudrawer.MenuDrawer;
@@ -67,6 +76,7 @@ import net.simonvt.menudrawer.Position;
 public class SubsonicTabActivity extends Activity implements OnClickListener{
     private static final String TAG = SubsonicTabActivity.class.getSimpleName();
     private static ImageLoader IMAGE_LOADER;
+	protected static String theme;
     private static SubsonicTabActivity instance;
     
     private boolean destroyed;
@@ -78,7 +88,7 @@ public class SubsonicTabActivity extends Activity implements OnClickListener{
     public MenuDrawer menuDrawer;    
     private int activePosition = 1;
     private int menuActiveViewId;
-    private View nowPlaying = null;
+    private View nowPlayingView = null;
     View searchMenuItem = null;
     View playlistsMenuItem = null;
     View menuMain = null;
@@ -93,7 +103,7 @@ public class SubsonicTabActivity extends Activity implements OnClickListener{
         startService(new Intent(this, DownloadServiceImpl.class));
         setVolumeControlStream(AudioManager.STREAM_MUSIC);
         
-        if (bundle != null) {
+		if (bundle != null) {
             activePosition = bundle.getInt(STATE_ACTIVE_POSITION);
             menuActiveViewId = bundle.getInt(STATE_ACTIVE_VIEW_ID);
         }
@@ -120,23 +130,12 @@ public class SubsonicTabActivity extends Activity implements OnClickListener{
         if (activeView != null) {
             menuDrawer.setActiveView(activeView);
         }
-        
-        instance = this;
-    }    
+    }
     
 	@Override
 	protected void onPostCreate(Bundle bundle) {
 		super.onPostCreate(bundle);
-		
-		if (!nowPlayingHidden) {
-			showNowPlaying();
-		} else {
-			hideNowPlaying();
-		}
-		
-		int visibility = Util.isOffline(this) ? View.GONE : View.VISIBLE;
-        searchMenuItem.setVisibility(visibility);
-        playlistsMenuItem.setVisibility(visibility);
+        instance = this;
 	}
 
     @Override
@@ -144,14 +143,19 @@ public class SubsonicTabActivity extends Activity implements OnClickListener{
         super.onResume();
         applyTheme();
         instance = this;
+       
+        Util.registerMediaButtonEventReceiver(this);
+        
+		// Make sure to update theme
+        if (theme != null && !theme.equals(Util.getTheme(this))) {
+            restart();
+        }
         
         if (!nowPlayingHidden) {
 			showNowPlaying();
 		} else {
 			hideNowPlaying();
 		}
-        
-        Util.registerMediaButtonEventReceiver(this);
     }
     
     @Override
@@ -187,6 +191,13 @@ public class SubsonicTabActivity extends Activity implements OnClickListener{
         
         return super.onKeyDown(keyCode, event);
     }
+    
+	protected void restart() {
+        Intent intent = new Intent(this, this.getClass());
+        intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+		intent.putExtras(getIntent());
+        Util.startActivityWithoutTransition(this, intent);
+    }
 
     @Override
     public void finish() {
@@ -194,18 +205,22 @@ public class SubsonicTabActivity extends Activity implements OnClickListener{
         Util.disablePendingTransition(this);
     }
     
-    private void showNowPlaying()
+    public boolean isDestroyed() {
+        return destroyed;
+    }
+    
+    public void showNowPlaying()
     {
-    	nowPlaying = findViewById(R.id.now_playing);
+    	nowPlayingView = findViewById(R.id.now_playing);
     	
     	if (!Util.getShowNowPlayingPreference(this)) {
-    		if (nowPlaying != null) {
-    			nowPlaying.setVisibility(View.GONE);
+    		if (nowPlayingView != null) {
+    			nowPlayingView.setVisibility(View.GONE);
     		}
     		return;
     	}
 		
-		if (nowPlaying != null) {
+		if (nowPlayingView != null) {
 			final DownloadService downloadService = DownloadServiceImpl.getInstance();
 			
 			if (downloadService != null) {
@@ -222,12 +237,12 @@ public class SubsonicTabActivity extends Activity implements OnClickListener{
 					hideNowPlaying();
 				}
 				
-				ImageView nowPlayingControlPlay = (ImageView) nowPlaying.findViewById(R.id.now_playing_control_play);	
+				ImageView nowPlayingControlPlay = (ImageView) nowPlayingView.findViewById(R.id.now_playing_control_play);	
 				
 				SwipeDetector swipeDetector = SwipeDetector.Create(SubsonicTabActivity.this, downloadService);
-				nowPlaying.setOnTouchListener(swipeDetector);
+				nowPlayingView.setOnTouchListener(swipeDetector);
 				
-				nowPlaying.setOnClickListener(new View.OnClickListener() {
+				nowPlayingView.setOnClickListener(new View.OnClickListener() {
 					@Override
 					public void onClick(View v) {
 					}
@@ -253,85 +268,95 @@ public class SubsonicTabActivity extends Activity implements OnClickListener{
         }
     }
     
-    public void showNowPlaying(final Context context, final DownloadServiceImpl downloadService, final MusicDirectory.Entry song, PlayerState playerState) {
-    	nowPlaying = findViewById(R.id.now_playing);
-    	
-    	if (!Util.getShowNowPlayingPreference(this)) {
-    		if (nowPlaying != null) {
-    			nowPlaying.setVisibility(View.GONE);
-    		}
-    		return;
-    	}
-    	
-    	if (nowPlaying != null) {
-			nowPlaying.setVisibility(View.VISIBLE);
-			nowPlayingHidden = false;
-			
-			String title = song.getTitle();
-			String artist = song.getArtist();
-			
-			try {
-				ImageView nowPlayingImage = (ImageView) nowPlaying.findViewById(R.id.now_playing_image);
-				TextView nowPlayingTrack = (TextView) nowPlaying.findViewById(R.id.now_playing_trackname);
-				TextView nowPlayingArtist = (TextView) nowPlaying.findViewById(R.id.now_playing_artist);
+    private void showNowPlaying(final Context context, final DownloadServiceImpl downloadService, final MusicDirectory.Entry song, final PlayerState playerState) {
+    	this.runOnUiThread( new Runnable() {
+    	    @Override 
+    	    public void run() {
+    	    	nowPlayingView = findViewById(R.id.now_playing);
+    	    	
+    	    	if (!Util.getShowNowPlayingPreference(SubsonicTabActivity.this)) {
+    	    		if (nowPlayingView != null) {
+    	    			nowPlayingView.setVisibility(View.GONE);
+    	    		}
+    	    		return;
+    	    	}
+    	    	
+    	    	if (nowPlayingView != null) {
+    				nowPlayingView.setVisibility(View.VISIBLE);
+    				nowPlayingHidden = false;
+    				
+    				String title = song.getTitle();
+    				String artist = song.getArtist();
+    				
+    				try {
+    					ImageView nowPlayingImage = (ImageView) nowPlayingView.findViewById(R.id.now_playing_image);
+    					TextView nowPlayingTrack = (TextView) nowPlayingView.findViewById(R.id.now_playing_trackname);
+    					TextView nowPlayingArtist = (TextView) nowPlayingView.findViewById(R.id.now_playing_artist);
 
-		        DisplayMetrics metrics = context.getResources().getDisplayMetrics();
-		        int imageSizeLarge = (int) Math.round(Math.min(metrics.widthPixels, metrics.heightPixels));
-				
-		        int size = 64;
-		        
-		        if (imageSizeLarge <= 480) {
-		        	size = 64;
-		        } else if (imageSizeLarge <= 768) {
-		        	size = 128;
-		        } else if (imageSizeLarge <= 1024) {
-		        	size = 256;
-		        } else if (imageSizeLarge <= 1080) {
-		        	size = imageSizeLarge;
-		        }
+    			        DisplayMetrics metrics = context.getResources().getDisplayMetrics();
+    			        int imageSizeLarge = (int) Math.round(Math.min(metrics.widthPixels, metrics.heightPixels));
+    					
+    			        int size = 64;
+    			        
+    			        if (imageSizeLarge <= 480) {
+    			        	size = 64;
+    			        } else if (imageSizeLarge <= 768) {
+    			        	size = 128;
+    			        } else if (imageSizeLarge <= 1024) {
+    			        	size = 256;
+    			        } else if (imageSizeLarge <= 1080) {
+    			        	size = imageSizeLarge;
+    			        }
 
-				Bitmap bitmap = FileUtil.getAlbumArtBitmap(context, song, size);
+    					Bitmap bitmap = FileUtil.getAlbumArtBitmap(context, song, size);
 
-				if (bitmap == null) {
-					// set default album art
-					nowPlayingImage.setImageResource(R.drawable.unknown_album);
-				} else {
-					nowPlayingImage.setImageBitmap(bitmap);
-				}
-				
-				nowPlayingImage.setOnClickListener(new View.OnClickListener() {
-		            @Override
-		            public void onClick(View view) {
-		                Intent intent = new Intent(SubsonicTabActivity.this, SelectAlbumActivity.class);
-		                intent.putExtra(Constants.INTENT_EXTRA_NAME_ID, song.getParent());
-		                intent.putExtra(Constants.INTENT_EXTRA_NAME_NAME, song.getAlbum());
-		                Util.startActivityWithoutTransition(SubsonicTabActivity.this, intent);
-		            }
-		        });
-				
-				nowPlayingTrack.setText(title);
-				nowPlayingArtist.setText(artist);
+    					if (bitmap == null) {
+    						// set default album art
+    						nowPlayingImage.setImageResource(R.drawable.unknown_album);
+    					} else {
+    						nowPlayingImage.setImageBitmap(bitmap);
+    					}
+    					
+    					nowPlayingImage.setOnClickListener(new View.OnClickListener() {
+    			            @Override
+    			            public void onClick(View view) {
+    			                Intent intent = new Intent(SubsonicTabActivity.this, SelectAlbumActivity.class);
+    			                intent.putExtra(Constants.INTENT_EXTRA_NAME_ID, song.getParent());
+    			                intent.putExtra(Constants.INTENT_EXTRA_NAME_NAME, song.getAlbum());
+    			                Util.startActivityWithoutTransition(SubsonicTabActivity.this, intent);
+    			            }
+    			        });
+    					
+    					nowPlayingTrack.setText(title);
+    					nowPlayingArtist.setText(artist);
 
-			} catch (Exception x) {
-				Log.w(TAG, "Failed to get notification cover art", x);
-			}
+    				} catch (Exception x) {
+    					Log.w(TAG, "Failed to get notification cover art", x);
+    				}
 
-			ImageView playButton = (ImageView) nowPlaying.findViewById(R.id.now_playing_control_play);
+    				ImageView playButton = (ImageView) nowPlayingView.findViewById(R.id.now_playing_control_play);
 
-			if (playerState == PlayerState.PAUSED) {
-				playButton.setImageDrawable(Util.getDrawableFromAttribute(this, R.attr.media_play));
-			} else if (playerState == PlayerState.STARTED) {
-				playButton.setImageDrawable(Util.getDrawableFromAttribute(this, R.attr.media_pause));
-			}			
-		}
+    				if (playerState == PlayerState.PAUSED) {
+    					playButton.setImageDrawable(Util.getDrawableFromAttribute(SubsonicTabActivity.this, R.attr.media_play));
+    				} else if (playerState == PlayerState.STARTED) {
+    					playButton.setImageDrawable(Util.getDrawableFromAttribute(SubsonicTabActivity.this, R.attr.media_pause));
+    				}
+    			}
+    	    }
+    	});
     }
 
     public void hideNowPlaying() {
-    	nowPlaying = findViewById(R.id.now_playing);
+    	this.runOnUiThread( new Runnable() {
+    		@Override 
+    	    public void run() {
+    			nowPlayingView = findViewById(R.id.now_playing);
     	
-    	if (nowPlaying != null) {
-    		nowPlaying.setVisibility(View.GONE);
-    	}
+    			if (nowPlayingView != null) {
+    				nowPlayingView.setVisibility(View.GONE);
+    			}
+    		}
+    	});
     }   
 
     public static SubsonicTabActivity getInstance() {
@@ -384,16 +409,32 @@ public class SubsonicTabActivity extends Activity implements OnClickListener{
         }
         return IMAGE_LOADER;
     }
+    
+	public synchronized static ImageLoader getStaticImageLoader(Context context) {
+		if (IMAGE_LOADER == null) {
+            IMAGE_LOADER = new ImageLoader(context);
+        }
+		return IMAGE_LOADER;
+	}
 
-    protected void downloadRecursively(final String id, final boolean save, final boolean append, final boolean autoplay, final boolean playNext) {
-        ModalBackgroundTask<List<MusicDirectory.Entry>> task = new ModalBackgroundTask<List<MusicDirectory.Entry>>(this, false) {
-
+	protected void downloadRecursively(final String id, final boolean save, final boolean append, final boolean autoplay, final boolean shuffle, final boolean background) {
+		downloadRecursively(id, "", true, save, append, autoplay, shuffle, background);
+    }
+	protected void downloadPlaylist(final String id, final String name, final boolean save, final boolean append, final boolean autoplay, final boolean shuffle, final boolean background) {
+		downloadRecursively(id, name, false, save, append, autoplay, shuffle, background);
+    }
+	protected void downloadRecursively(final String id, final String name, final boolean isDirectory, final boolean save, final boolean append, final boolean autoplay, final boolean shuffle, final boolean background) {
+		ModalBackgroundTask<List<MusicDirectory.Entry>> task = new ModalBackgroundTask<List<MusicDirectory.Entry>>(this, false) {
             private static final int MAX_SONGS = 500;
 
             @Override
             protected List<MusicDirectory.Entry> doInBackground() throws Throwable {
                 MusicService musicService = MusicServiceFactory.getMusicService(SubsonicTabActivity.this);
-                MusicDirectory root = musicService.getMusicDirectory(id, false, SubsonicTabActivity.this, this);
+				MusicDirectory root;
+				if(isDirectory)
+					root = musicService.getMusicDirectory(id, name, false, SubsonicTabActivity.this, this);
+				else
+					root = musicService.getPlaylist(id, name, SubsonicTabActivity.this, this);
                 List<MusicDirectory.Entry> songs = new LinkedList<MusicDirectory.Entry>();
                 getSongsRecursively(root, songs);
                 return songs;
@@ -411,7 +452,7 @@ public class SubsonicTabActivity extends Activity implements OnClickListener{
                 }
                 for (MusicDirectory.Entry dir : parent.getChildren(true, false)) {
                     MusicService musicService = MusicServiceFactory.getMusicService(SubsonicTabActivity.this);
-                    getSongsRecursively(musicService.getMusicDirectory(dir.getId(), false, SubsonicTabActivity.this, this), songs);
+                    getSongsRecursively(musicService.getMusicDirectory(dir.getId(), dir.getTitle(), false, SubsonicTabActivity.this, this), songs);
                 }
             }
 
@@ -419,18 +460,98 @@ public class SubsonicTabActivity extends Activity implements OnClickListener{
             protected void done(List<MusicDirectory.Entry> songs) {
                 DownloadService downloadService = getDownloadService();
                 if (!songs.isEmpty() && downloadService != null) {
-                    if (!append && !playNext) {
+                    if (!append) {
                         downloadService.clear();
                     }
                     warnIfNetworkOrStorageUnavailable();
-                    downloadService.download(songs, save, autoplay, playNext);
-                    Util.startActivityWithoutTransition(SubsonicTabActivity.this, DownloadActivity.class);
+					if(!background) {
+						downloadService.download(songs, save, autoplay, false, shuffle);
+						if (!append && Util.getShouldTransitionOnPlaybackPreference(SubsonicTabActivity.this)) {
+							Util.startActivityWithoutTransition(SubsonicTabActivity.this, DownloadActivity.class);
+						}
+					}
+					else {
+						downloadService.downloadBackground(songs, save);
+					}
                 }
             }
         };
 
         task.execute();
     }
+	
+	protected void addToPlaylist(final List<MusicDirectory.Entry> songs) {
+		if(songs.isEmpty()) {
+			Util.toast(this, "No songs selected");
+			return;
+		}
+		
+		new LoadingTask<List<Playlist>>(this, true) {
+            @Override
+            protected List<Playlist> doInBackground() throws Throwable {
+                MusicService musicService = MusicServiceFactory.getMusicService(SubsonicTabActivity.this);
+				return musicService.getPlaylists(false, SubsonicTabActivity.this, this);
+            }
+            
+            @Override
+            protected void done(final List<Playlist> playlists) {
+				List<String> names = new ArrayList<String>();
+				for(Playlist playlist: playlists) {
+					names.add(playlist.getName());
+				}
+				
+				AlertDialog.Builder builder = new AlertDialog.Builder(SubsonicTabActivity.this);
+				builder.setTitle("Add to Playlist")
+					.setItems(names.toArray(new CharSequence[names.size()]), new DialogInterface.OnClickListener() {
+					public void onClick(DialogInterface dialog, int which) {
+						addToPlaylist(playlists.get(which), songs);
+					}
+				});
+				AlertDialog dialog = builder.create();
+				dialog.show();
+            }
+            
+            @Override
+            protected void error(Throwable error) {            	
+            	String msg;
+            	if (error instanceof OfflineException || error instanceof ServerTooOldException) {
+            		msg = getErrorMessage(error);
+            	} else {
+            		msg = getResources().getString(R.string.playlist_error) + " " + getErrorMessage(error);
+            	}
+            	
+        		Util.toast(SubsonicTabActivity.this, msg, false);
+            }
+        }.execute();
+	}
+	
+	private void addToPlaylist(final Playlist playlist, final List<MusicDirectory.Entry> songs) {		
+		new SilentBackgroundTask<Void>(this) {
+            @Override
+            protected Void doInBackground() throws Throwable {
+                MusicService musicService = MusicServiceFactory.getMusicService(SubsonicTabActivity.this);
+				musicService.addToPlaylist(playlist.getId(), songs, SubsonicTabActivity.this, null);
+                return null;
+            }
+            
+            @Override
+            protected void done(Void result) {
+                Util.toast(SubsonicTabActivity.this, getResources().getString(R.string.updated_playlist, songs.size(), playlist.getName()));
+            }
+            
+            @Override
+            protected void error(Throwable error) {            	
+            	String msg;
+            	if (error instanceof OfflineException || error instanceof ServerTooOldException) {
+            		msg = getErrorMessage(error);
+            	} else {
+            		msg = getResources().getString(R.string.updated_playlist_error, playlist.getName()) + " " + getErrorMessage(error);
+            	}
+            	
+        		Util.toast(SubsonicTabActivity.this, msg, false);
+            }
+        }.execute();
+	}
 
     private void setUncaughtExceptionHandler() {
         Thread.UncaughtExceptionHandler handler = Thread.getDefaultUncaughtExceptionHandler();
@@ -481,7 +602,6 @@ public class SubsonicTabActivity extends Activity implements OnClickListener{
 
     @Override
     public void onClick(View v) {
-        //menuDrawer.setActiveView(v);
         menuActiveViewId = v.getId();
         
         Intent intent;
@@ -620,4 +740,3 @@ public class SubsonicTabActivity extends Activity implements OnClickListener{
 		}
 	}
 }
-

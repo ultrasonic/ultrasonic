@@ -25,6 +25,7 @@ import java.io.InputStream;
 import java.io.OutputStream;
 
 import android.content.Context;
+import android.net.wifi.WifiManager;
 import android.os.PowerManager;
 import android.util.DisplayMetrics;
 import android.util.Log;
@@ -56,6 +57,9 @@ public class DownloadFile {
     private boolean save;
     private boolean failed;
     private int bitRate;
+	private boolean isPlaying = false;
+	private boolean saveWhenDone = false;
+	private boolean completeWhenDone = false;
 
     public DownloadFile(Context context, MusicDirectory.Entry song, boolean save) {
         this.context = context;
@@ -63,40 +67,36 @@ public class DownloadFile {
         this.save = save;
         saveFile = FileUtil.getSongFile(context, song);
         bitRate = Util.getMaxBitrate(context);
-        partialFile = new File(saveFile.getParent(), FileUtil.getBaseName(saveFile.getName()) + "." + bitRate + ".partial." + FileUtil.getExtension(saveFile.getName()));
-        completeFile = new File(saveFile.getParent(), FileUtil.getBaseName(saveFile.getName()) + ".complete." + FileUtil.getExtension(saveFile.getName()));
+        partialFile = new File(saveFile.getParent(), FileUtil.getBaseName(saveFile.getName()) +
+                ".partial." + FileUtil.getExtension(saveFile.getName()));
+        completeFile = new File(saveFile.getParent(), FileUtil.getBaseName(saveFile.getName()) +
+                ".complete." + FileUtil.getExtension(saveFile.getName()));
         mediaStoreService = new MediaStoreService(context);
     }
 
     public MusicDirectory.Entry getSong() {
         return song;
     }
-    
-    public boolean isOffline() {
-    	return Util.isOffline(context);
-    }
-    
-    public boolean isStreamProxyEnabled() {
-    	return Util.isStreamProxyEnabled(context);
-    }
 
     /**
      * Returns the effective bit rate.
      */
     public int getBitRate() {
+		if(!partialFile.exists()) {
+			bitRate = Util.getMaxBitrate(context);
+		}
         if (bitRate > 0) {
             return bitRate;
         }
         return song.getBitRate() == null ? 160 : song.getBitRate();
     }
-    
-    public int getBufferLength() {
-    	return Util.getBufferLength(this.context);
-    }
 
     public synchronized void download() {
         FileUtil.createDirectoryForParent(saveFile);
         failed = false;
+		if(!partialFile.exists()) {
+			bitRate = Util.getMaxBitrate(context);
+		}
         downloadTask = new DownloadTask();
         downloadTask.start();
     }
@@ -132,7 +132,7 @@ public class DownloadFile {
     }
 
     public synchronized boolean isWorkDone() {
-        return saveFile.exists() || (completeFile.exists() && !save);
+        return saveFile.exists() || (completeFile.exists() && !save) || saveWhenDone || completeWhenDone;
     }
 
     public synchronized boolean isDownloading() {
@@ -191,6 +191,30 @@ public class DownloadFile {
             }
         }
     }
+	
+	public void setPlaying(boolean isPlaying) {
+		try {
+			if(saveWhenDone && isPlaying == false) {
+				Util.renameFile(completeFile, saveFile);
+				saveWhenDone = false;
+			} else if(completeWhenDone && isPlaying == false) {
+				if(save) {
+					Util.renameFile(partialFile, saveFile);
+                    mediaStoreService.saveInMediaStore(DownloadFile.this);
+				} else {
+					Util.renameFile(partialFile, completeFile);
+				}
+				completeWhenDone = false;
+			}
+		} catch(IOException ex) {
+			Log.w(TAG, "Failed to rename file " + completeFile + " to " + saveFile);
+		}
+		
+		this.isPlaying = isPlaying;
+	}
+	public boolean getPlaying() {
+		return isPlaying;
+	}
 
     @Override
     public String toString() {
@@ -205,7 +229,7 @@ public class DownloadFile {
             InputStream in = null;
             FileOutputStream out = null;
             PowerManager.WakeLock wakeLock = null;
-            
+			WifiManager.WifiLock wifiLock = null;
             try {
 
                 if (Util.isScreenLitOnDownload(context)) {
@@ -214,52 +238,68 @@ public class DownloadFile {
                     wakeLock.acquire();
                     Log.i(TAG, "Acquired wake lock " + wakeLock);
                 }
+				
+				wifiLock = Util.createWifiLock(context, toString());
+				wifiLock.acquire();
 
-                if (saveFile.exists() && saveFile.length() == song.getSize()) {
+                if (saveFile.exists()) {
                     Log.i(TAG, saveFile + " already exists. Skipping.");
                     return;
                 }
-                if (completeFile.exists() && completeFile.length() == song.getSize()) {
+                if (completeFile.exists()) {
                     if (save) {
-                        Util.atomicCopy(completeFile, saveFile);
+						if(isPlaying) {
+							saveWhenDone = true;
+						} else {
+							Util.renameFile(completeFile, saveFile);
+						}
                     } else {
                         Log.i(TAG, completeFile + " already exists. Skipping.");
                     }
                     return;
                 }
-                if (isOffline()) {
-                	Log.i(TAG, "We are offline. Skipping.");
-                	return;
-                }
 
                 MusicService musicService = MusicServiceFactory.getMusicService(context);
 
-                // Attempt partial HTTP GET, appending to the file if it exists.
-                HttpResponse response = musicService.getDownloadInputStream(context, song, partialFile.length(), bitRate, DownloadTask.this);
-                in = response.getEntity().getContent();
-                boolean partial = response.getStatusLine().getStatusCode() == HttpStatus.SC_PARTIAL_CONTENT;
-                if (partial) {
-                    Log.i(TAG, "Executed partial HTTP GET, skipping " + partialFile.length() + " bytes");
-                }
+				// Some devices seem to throw error on partial file which doesn't exist
+				boolean compare;
+				try {
+					compare = (bitRate == 0) || (song.getDuration() == 0) || (partialFile.length() == 0) || (bitRate * song.getDuration() * 1000 / 8) > partialFile.length();
+				} catch(Exception e) {
+					compare = true;
+				}
+				if(compare) {
+					// Attempt partial HTTP GET, appending to the file if it exists.
+					HttpResponse response = musicService.getDownloadInputStream(context, song, partialFile.length(), bitRate, DownloadTask.this);
+					in = response.getEntity().getContent();
+					boolean partial = response.getStatusLine().getStatusCode() == HttpStatus.SC_PARTIAL_CONTENT;
+					if (partial) {
+						Log.i(TAG, "Executed partial HTTP GET, skipping " + partialFile.length() + " bytes");
+					}
 
-                out = new FileOutputStream(partialFile, partial);
-                long n = copy(in, out);
-                Log.i(TAG, "Downloaded " + n + " bytes to " + partialFile);
-                out.flush();
-                out.close();
+					out = new FileOutputStream(partialFile, partial);
+					long n = copy(in, out);
+					Log.i(TAG, "Downloaded " + n + " bytes to " + partialFile);
+					out.flush();
+					out.close();
 
-                if (isCancelled()) {
-                    throw new Exception("Download of '" + song + "' was cancelled");
-                }
+					if (isCancelled()) {
+						throw new Exception("Download of '" + song + "' was cancelled");
+					}
 
-                downloadAndSaveCoverArt(musicService);
+					downloadAndSaveCoverArt(musicService);
+				}
 
-                if (save) {
-                    Util.atomicCopy(partialFile, saveFile);
-                    mediaStoreService.saveInMediaStore(DownloadFile.this);
-                } else {
-                    Util.atomicCopy(partialFile, completeFile);
-                }
+				if(isPlaying) {
+					completeWhenDone = true;
+				} else {
+					if(save) {
+						Util.renameFile(partialFile, saveFile);
+						mediaStoreService.saveInMediaStore(DownloadFile.this);
+					} else {
+						Util.renameFile(partialFile, completeFile);
+					}
+				}
 
             } catch (Exception x) {
                 Util.close(out);
@@ -277,7 +317,13 @@ public class DownloadFile {
                     wakeLock.release();
                     Log.i(TAG, "Released wake lock " + wakeLock);
                 }
-                new CacheCleaner(context, DownloadServiceImpl.getInstance()).clean();
+				if (wifiLock != null) {
+					wifiLock.release();
+				}
+                new CacheCleaner(context, DownloadServiceImpl.getInstance()).cleanSpace();
+				if(DownloadServiceImpl.getInstance() != null) {
+					((DownloadServiceImpl)DownloadServiceImpl.getInstance()).checkDownloads();
+				}
             }
         }
 

@@ -78,6 +78,8 @@ public final class Constants {
     public static final String PREFERENCES_KEY_SHOW_TRACK_NUMBER = "showTrackNumber";
     public static final String PREFERENCES_KEY_MAX_BITRATE_WIFI = "maxBitrateWifi";
     public static final String PREFERENCES_KEY_MAX_BITRATE_MOBILE = "maxBitrateMobile";
+	public static final String PREFERENCES_KEY_MAX_VIDEO_BITRATE_WIFI = "maxVideoBitrateWifi";
+    public static final String PREFERENCES_KEY_MAX_VIDEO_BITRATE_MOBILE = "maxVideoBitrateMobile";
     public static final String PREFERENCES_KEY_CACHE_SIZE = "cacheSize";
     public static final String PREFERENCES_KEY_CACHE_LOCATION = "cacheLocation";
     public static final String PREFERENCES_KEY_PRELOAD_COUNT = "preloadCount";
@@ -88,6 +90,9 @@ public final class Constants {
     public static final String PREFERENCES_KEY_SERVER_SCALING = "serverScaling";
     public static final String PREFERENCES_KEY_REPEAT_MODE = "repeatMode";
     public static final String PREFERENCES_KEY_WIFI_REQUIRED_FOR_DOWNLOAD = "wifiRequiredForDownload";
+	public static final String PREFERENCES_KEY_SHUFFLE_START_YEAR = "startYear";
+	public static final String PREFERENCES_KEY_SHUFFLE_END_YEAR = "endYear";
+	public static final String PREFERENCES_KEY_SHUFFLE_GENRE = "genre";
     public static final String PREFERENCES_KEY_BUFFER_LENGTH = "bufferLength";
     public static final String PREFERENCES_KEY_NETWORK_TIMEOUT = "networkTimeout";
     public static final String PREFERENCES_KEY_SHOW_NOTIFICATION = "showNotification";
@@ -101,8 +106,12 @@ public final class Constants {
     public static final String PREFERENCES_KEY_DEFAULT_ARTISTS = "defaultArtists";
     public static final String PREFERENCES_KEY_USE_STREAM_PROXY = "useStreamProxy";
     public static final String PREFERENCES_KEY_SHOW_NOW_PLAYING = "showNowPlaying";
+    public static final String PREFERENCES_KEY_GAPLESS_PLAYBACK = "gaplessPlayback";
     public static final String PREFERENCES_KEY_CLEAR_SEARCH_HISTORY = "clearSearchHistory";
     public static final String PREFERENCES_KEY_TEST_CONNECTION = "testConnection";
+    public static final String PREFERENCES_EQUALIZER_ON = "equalizerOn";
+	public static final String PREFERENCES_EQUALIZER_SETTINGS = "equalizerSettings";
+	public static final String PREFERENCES_KEY_DOWNLOAD_TRANSITION = "transitionToDownloadOnPlay";
     
     // Name of the preferences file.
     public static final String PREFERENCES_FILE_NAME = "com.thejoshwa.ultrasonic.androidapp_preferences";

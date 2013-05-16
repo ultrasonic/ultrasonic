@@ -32,7 +32,9 @@ import com.thejoshwa.ultrasonic.androidapp.domain.RepeatMode;
  */
 public interface DownloadService {
 
-    void download(List<MusicDirectory.Entry> songs, boolean save, boolean autoplay, boolean playNext);
+	void download(List<MusicDirectory.Entry> songs, boolean save, boolean autoplay, boolean playNext, boolean shuffle);
+	  
+    void downloadBackground(List<MusicDirectory.Entry> songs, boolean save);
 
     void setShufflePlayEnabled(boolean enabled);
 
@@ -49,18 +51,30 @@ public interface DownloadService {
     void setKeepScreenOn(boolean screenOn);
 
     boolean getShowVisualization();
+    
+    boolean getEqualizerAvailable();
+    
+    boolean getVisualizerAvailable();
 
     void setShowVisualization(boolean showVisualization);
 
     void clear();
 
+	void clearBackground();
+
     void clearIncomplete();
 
     int size();
+    
+	void remove(int which);
 
     void remove(DownloadFile downloadFile);
+    
+	List<DownloadFile> getSongs();
 
     List<DownloadFile> getDownloads();
+    
+	List<DownloadFile> getBackgroundDownloads();
 
     int getCurrentPlayingIndex();
 
@@ -113,4 +127,8 @@ public interface DownloadService {
     void adjustJukeboxVolume(boolean up);
     
     void togglePlayPause();
+    
+    void setVolume(float volume);
+    
+    void swap(boolean mainList, int from, int to);
 }

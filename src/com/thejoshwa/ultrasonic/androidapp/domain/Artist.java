@@ -32,6 +32,7 @@ public class Artist implements Serializable {
 	private String id;
     private String name;
     private String index;
+    private int closeness;
 
     public String getId() {
         return id;
@@ -56,6 +57,14 @@ public class Artist implements Serializable {
     public void setIndex(String index) {
         this.index = index;
     }
+    
+	public int getCloseness() {
+		return closeness;
+	}
+
+	public void setCloseness(int closeness) {
+		this.closeness = closeness;
+	}
 
     @Override
     public String toString() {

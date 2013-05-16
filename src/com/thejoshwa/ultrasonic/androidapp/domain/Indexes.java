@@ -18,6 +18,7 @@
  */
 package com.thejoshwa.ultrasonic.androidapp.domain;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.io.Serializable;
 
@@ -29,26 +30,26 @@ public class Indexes implements Serializable {
     /**
 	 * 
 	 */
-	private static final long serialVersionUID = -9186563899711652646L;
+	private static final long serialVersionUID = 8156117238598414701L;
 	private final long lastModified;
-    private final List<Artist> shortcuts;
-    private final List<Artist> artists;
+    private final List<com.thejoshwa.ultrasonic.androidapp.domain.Artist> shortcuts;
+    private final List<com.thejoshwa.ultrasonic.androidapp.domain.Artist> artists;
 
-    public Indexes(long lastModified, List<Artist> shortcuts, List<Artist> artists) {
+    public Indexes(long lastModified, List<com.thejoshwa.ultrasonic.androidapp.domain.Artist> shortcuts, List<com.thejoshwa.ultrasonic.androidapp.domain.Artist> artists) {
         this.lastModified = lastModified;
         this.shortcuts = shortcuts;
         this.artists = artists;
     }
 
-    public long getLastModified() {
+	public long getLastModified() {
         return lastModified;
     }
 
-    public List<Artist> getShortcuts() {
+    public List<com.thejoshwa.ultrasonic.androidapp.domain.Artist> getShortcuts() {
         return shortcuts;
     }
 
-    public List<Artist> getArtists() {
+    public List<com.thejoshwa.ultrasonic.androidapp.domain.Artist> getArtists() {
         return artists;
     }
 }

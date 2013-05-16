@@ -19,15 +19,20 @@
 
 package com.thejoshwa.ultrasonic.androidapp.activity;
 
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.view.ContextMenu;
 import android.view.Menu;
+import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
+import android.widget.CheckBox;
+import android.widget.EditText;
 import android.widget.ListView;
 
 import com.handmark.pulltorefresh.library.PullToRefreshBase;
@@ -37,20 +42,24 @@ import com.thejoshwa.ultrasonic.androidapp.R;
 import com.thejoshwa.ultrasonic.androidapp.domain.Playlist;
 import com.thejoshwa.ultrasonic.androidapp.service.MusicServiceFactory;
 import com.thejoshwa.ultrasonic.androidapp.service.MusicService;
+import com.thejoshwa.ultrasonic.androidapp.service.OfflineException;
+import com.thejoshwa.ultrasonic.androidapp.service.ServerTooOldException;
 import com.thejoshwa.ultrasonic.androidapp.util.BackgroundTask;
+import com.thejoshwa.ultrasonic.androidapp.util.CacheCleaner;
 import com.thejoshwa.ultrasonic.androidapp.util.Constants;
+import com.thejoshwa.ultrasonic.androidapp.util.LoadingTask;
 import com.thejoshwa.ultrasonic.androidapp.util.TabActivityBackgroundTask;
 import com.thejoshwa.ultrasonic.androidapp.util.Util;
+import com.thejoshwa.ultrasonic.androidapp.view.PlaylistAdapter;
 
 import java.util.List;
 
 public class SelectPlaylistActivity extends SubsonicTabActivity implements AdapterView.OnItemClickListener {
 
-    private static final int MENU_ITEM_PLAY_ALL = 1;
-
     private PullToRefreshListView refreshPlaylistsListView;
     private ListView playlistsListView;
     private View emptyTextView;
+    private PlaylistAdapter playlistAdapter;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -99,12 +108,16 @@ public class SelectPlaylistActivity extends SubsonicTabActivity implements Adapt
             protected List<Playlist> doInBackground() throws Throwable {
                 MusicService musicService = MusicServiceFactory.getMusicService(SelectPlaylistActivity.this);
                 boolean refresh = getIntent().getBooleanExtra(Constants.INTENT_EXTRA_NAME_REFRESH, false);
-                return musicService.getPlaylists(refresh, SelectPlaylistActivity.this, this);
+                List<Playlist> playlists = musicService.getPlaylists(refresh, SelectPlaylistActivity.this, this);
+                
+				if(!Util.isOffline(SelectPlaylistActivity.this))
+					new CacheCleaner(SelectPlaylistActivity.this, getDownloadService()).cleanPlaylists(playlists);
+				return playlists;
             }
 
             @Override
             protected void done(List<Playlist> result) {
-                playlistsListView.setAdapter(new PlaylistAdapter(result));
+            	playlistsListView.setAdapter(playlistAdapter = new PlaylistAdapter(SelectPlaylistActivity.this, result));
                 emptyTextView.setVisibility(result.isEmpty() ? View.VISIBLE : View.GONE);
             }
         };
@@ -114,7 +127,12 @@ public class SelectPlaylistActivity extends SubsonicTabActivity implements Adapt
     @Override
     public void onCreateContextMenu(ContextMenu menu, View view, ContextMenu.ContextMenuInfo menuInfo) {
         super.onCreateContextMenu(menu, view, menuInfo);
-        menu.add(Menu.NONE, MENU_ITEM_PLAY_ALL, MENU_ITEM_PLAY_ALL, R.string.common_play_now);
+
+		MenuInflater inflater = getMenuInflater();		
+		if (Util.isOffline(this))
+			inflater.inflate(R.menu.select_playlist_context_offline, menu);
+		else
+			inflater.inflate(R.menu.select_playlist_context, menu);
     }
 
     @Override
@@ -122,14 +140,35 @@ public class SelectPlaylistActivity extends SubsonicTabActivity implements Adapt
         AdapterView.AdapterContextMenuInfo info = (AdapterView.AdapterContextMenuInfo) menuItem.getMenuInfo();
         Playlist playlist = (Playlist) playlistsListView.getItemAtPosition(info.position);
 
+		Intent intent;
         switch (menuItem.getItemId()) {
-            case MENU_ITEM_PLAY_ALL:
-                Intent intent = new Intent(SelectPlaylistActivity.this, SelectAlbumActivity.class);
+			case R.id.playlist_menu_pin:
+				downloadPlaylist(playlist.getId(), playlist.getName(), true, true, false, false, true);
+				break;
+            case R.id.playlist_menu_play_now:
+                intent = new Intent(SelectPlaylistActivity.this, SelectAlbumActivity.class);
                 intent.putExtra(Constants.INTENT_EXTRA_NAME_PLAYLIST_ID, playlist.getId());
                 intent.putExtra(Constants.INTENT_EXTRA_NAME_PLAYLIST_NAME, playlist.getName());
                 intent.putExtra(Constants.INTENT_EXTRA_NAME_AUTOPLAY, true);
                 Util.startActivityWithoutTransition(SelectPlaylistActivity.this, intent);
                 break;
+			case R.id.playlist_menu_play_shuffled:
+				intent = new Intent(SelectPlaylistActivity.this, SelectAlbumActivity.class);
+                intent.putExtra(Constants.INTENT_EXTRA_NAME_PLAYLIST_ID, playlist.getId());
+                intent.putExtra(Constants.INTENT_EXTRA_NAME_PLAYLIST_NAME, playlist.getName());
+                intent.putExtra(Constants.INTENT_EXTRA_NAME_AUTOPLAY, true);
+				intent.putExtra(Constants.INTENT_EXTRA_NAME_SHUFFLE, true);
+                Util.startActivityWithoutTransition(SelectPlaylistActivity.this, intent);
+                break;
+			case R.id.playlist_menu_delete:
+				deletePlaylist(playlist);
+				break;
+			case R.id.playlist_info:
+				displayPlaylistInfo(playlist);
+				break;
+			case R.id.playlist_update_info:
+				updatePlaylistInfo(playlist);
+				break;
             default:
                 return super.onContextItemSelected(menuItem);
         }
@@ -157,17 +196,121 @@ public class SelectPlaylistActivity extends SubsonicTabActivity implements Adapt
         intent.putExtra(Constants.INTENT_EXTRA_NAME_PLAYLIST_NAME, playlist.getName());
         Util.startActivityWithoutTransition(SelectPlaylistActivity.this, intent);
     }
-
-    private class PlaylistAdapter extends ArrayAdapter<Playlist> {
-        public PlaylistAdapter(List<Playlist> playlists) {
-            super(SelectPlaylistActivity.this, R.layout.playlist_list_item, playlists);
-        }
-    }
     
-    private class GetDataTask extends AsyncTask<Void, Void, String[]> {
+	private void deletePlaylist(final Playlist playlist) {
+		new AlertDialog.Builder(this)
+        .setIcon(android.R.drawable.ic_dialog_alert)
+        .setTitle(R.string.common_confirm)
+        .setMessage(getResources().getString(R.string.delete_playlist, playlist.getName()))
+        .setPositiveButton(R.string.common_ok, new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+				new LoadingTask<Void>(SelectPlaylistActivity.this, false) {
+					@Override
+					protected Void doInBackground() throws Throwable {
+						MusicService musicService = MusicServiceFactory.getMusicService(SelectPlaylistActivity.this);
+						musicService.deletePlaylist(playlist.getId(), SelectPlaylistActivity.this, null);
+						return null;
+					}
+
+					@Override
+					protected void done(Void result) {
+						playlistAdapter.remove(playlist);
+						playlistAdapter.notifyDataSetChanged();
+						Util.toast(SelectPlaylistActivity.this, getResources().getString(R.string.menu_deleted_playlist, playlist.getName()));
+					}
+
+					@Override
+					protected void error(Throwable error) {
+						String msg;
+						if (error instanceof OfflineException || error instanceof ServerTooOldException) {
+							msg = getErrorMessage(error);
+						} else {
+							msg = getResources().getString(R.string.menu_deleted_playlist_error, playlist.getName()) + " " + getErrorMessage(error);
+						}
+
+						Util.toast(SelectPlaylistActivity.this, msg, false);
+					}
+				}.execute();
+			}
+
+        })
+        .setNegativeButton(R.string.common_cancel, null)
+        .show();
+	}
+	
+	private void displayPlaylistInfo(final Playlist playlist) {
+		String message = "Owner: " + playlist.getOwner() + "\nComments: " +
+			((playlist.getComment() == null) ? "" : playlist.getComment()) +
+			"\nSong Count: " + playlist.getSongCount() +
+			((playlist.getPublic() == null) ? "" : ("\nPublic: " + playlist.getPublic()) +
+			((playlist.getCreated() == null) ? "" : ("\nCreation Date: " + playlist.getCreated().replace('T', ' '))));
+		new AlertDialog.Builder(this)
+			.setIcon(android.R.drawable.ic_dialog_alert)
+			.setTitle(playlist.getName())
+			.setMessage(message)
+			.show();
+	}
+	
+	private void updatePlaylistInfo(final Playlist playlist) {
+		View dialogView = getLayoutInflater().inflate(R.layout.update_playlist, null);
+		final EditText nameBox = (EditText)dialogView.findViewById(R.id.get_playlist_name);
+		final EditText commentBox = (EditText)dialogView.findViewById(R.id.get_playlist_comment);
+		final CheckBox publicBox = (CheckBox)dialogView.findViewById(R.id.get_playlist_public);
+		
+		nameBox.setText(playlist.getName());
+		commentBox.setText(playlist.getComment());
+		Boolean pub = playlist.getPublic();
+		if(pub == null) {
+			publicBox.setEnabled(false);
+		} else {
+			publicBox.setChecked(pub);
+		}
+		
+		new AlertDialog.Builder(this)
+			.setIcon(android.R.drawable.ic_dialog_alert)
+			.setTitle(R.string.playlist_update_info)
+			.setView(dialogView)
+			.setPositiveButton(R.string.common_ok, new DialogInterface.OnClickListener() {
+				@Override
+				public void onClick(DialogInterface dialog, int which) {					
+					new LoadingTask<Void>(SelectPlaylistActivity.this, false) {
+						@Override
+						protected Void doInBackground() throws Throwable {
+							MusicService musicService = MusicServiceFactory.getMusicService(SelectPlaylistActivity.this);
+							musicService.updatePlaylist(playlist.getId(), nameBox.getText().toString(), commentBox.getText().toString(), publicBox.isChecked(), SelectPlaylistActivity.this, null);
+							return null;
+						}
+
+						@Override
+						protected void done(Void result) {
+							refresh();
+							Util.toast(SelectPlaylistActivity.this, getResources().getString(R.string.playlist_updated_info, playlist.getName()));
+						}
+
+						@Override
+						protected void error(Throwable error) {
+							String msg;
+							if (error instanceof OfflineException || error instanceof ServerTooOldException) {
+								msg = getErrorMessage(error);
+							} else {
+								msg = getResources().getString(R.string.playlist_updated_info_error, playlist.getName()) + " " + getErrorMessage(error);
+							}
+
+							Util.toast(SelectPlaylistActivity.this, msg, false);
+						}
+					}.execute();
+				}
+
+			})
+			.setNegativeButton(R.string.common_cancel, null)
+			.show();
+	}
+	
+	private class GetDataTask extends AsyncTask<Void, Void, String[]> {
         @Override
         protected void onPostExecute(String[] result) {
-            refreshPlaylistsListView.onRefreshComplete();
+        	refreshPlaylistsListView.onRefreshComplete();
             super.onPostExecute(result);
         }
 

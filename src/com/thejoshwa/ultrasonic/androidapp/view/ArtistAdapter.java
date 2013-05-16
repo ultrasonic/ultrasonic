@@ -16,9 +16,9 @@
 
  Copyright 2010 (C) Sindre Mehus
  */
-package com.thejoshwa.ultrasonic.androidapp.util;
+package com.thejoshwa.ultrasonic.androidapp.view;
 
-import com.thejoshwa.ultrasonic.androidapp.domain.Genre;
+import com.thejoshwa.ultrasonic.androidapp.domain.Artist;
 import com.thejoshwa.ultrasonic.androidapp.R;
 import android.widget.ArrayAdapter;
 import android.widget.SectionIndexer;
@@ -32,20 +32,20 @@ import java.util.ArrayList;
 /**
  * @author Sindre Mehus
 */
-public class GenreAdapter extends ArrayAdapter<Genre> implements SectionIndexer {
+public class ArtistAdapter extends ArrayAdapter<Artist> implements SectionIndexer {
 
     // Both arrays are indexed by section ID.
     private final Object[] sections;
     private final Integer[] positions;
 
-    public GenreAdapter(Context context, List<Genre> genres) {
-        super(context, R.layout.artist_list_item, genres);
+    public ArtistAdapter(Context context, List<Artist> artists) {
+        super(context, R.layout.artist_list_item, artists);
 
         Set<String> sectionSet = new LinkedHashSet<String>(30);
         List<Integer> positionList = new ArrayList<Integer>(30);
-        for (int i = 0; i < genres.size(); i++) {
-            Genre genre = genres.get(i);
-            String index = genre.getIndex();
+        for (int i = 0; i < artists.size(); i++) {
+            Artist artist = artists.get(i);
+            String index = artist.getIndex();
             if (!sectionSet.contains(index)) {
                 sectionSet.add(index);
                 positionList.add(i);
@@ -62,7 +62,11 @@ public class GenreAdapter extends ArrayAdapter<Genre> implements SectionIndexer 
 
     @Override
     public int getPositionForSection(int section) {
-        return positions[section];
+    	if (positions.length > section) {
+    		return positions[section];
+    	} else {
+    		return 0;
+    	}
     }
 
     @Override

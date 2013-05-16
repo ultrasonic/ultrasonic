@@ -18,12 +18,13 @@ import java.net.URLDecoder;
 import java.net.UnknownHostException;
 import java.util.StringTokenizer;
 
-import org.apache.http.Header;
 import org.apache.http.HttpRequest;
 import org.apache.http.message.BasicHttpRequest;
 
+import com.thejoshwa.ultrasonic.androidapp.domain.MusicDirectory;
 import com.thejoshwa.ultrasonic.androidapp.service.DownloadFile;
 import com.thejoshwa.ultrasonic.androidapp.service.DownloadService;
+
 import android.os.AsyncTask;
 import android.os.Looper;
 import android.util.Log;
@@ -35,25 +36,21 @@ public class StreamProxy implements Runnable {
 	private boolean isRunning;
 	private ServerSocket socket;
 	private int port;
-	private DownloadFile downloadFile;
+	private DownloadService downloadService;
 
-	public StreamProxy() {
+	public StreamProxy(DownloadService downloadService) {
 
 		// Create listening socket
 		try {
 			socket = new ServerSocket(0, 0, InetAddress.getByAddress(new byte[] { 127, 0, 0, 1 }));
 			socket.setSoTimeout(5000);
 			port = socket.getLocalPort();
+			this.downloadService = downloadService;
 		} catch (UnknownHostException e) { // impossible
 		} catch (IOException e) {
 			Log.e(TAG, "IOException initializing server", e);
 		}
 	}
-
-	public void setDownloadFile(DownloadFile downloadFile) {
-		this.downloadFile = downloadFile;
-	}
-	
 	
 	public int getPort() {
 		return port;
@@ -67,52 +64,43 @@ public class StreamProxy implements Runnable {
 	public void stop() {
 		isRunning = false;
 		thread.interrupt();
-		try {
-			thread.join(5000);
-		} catch (InterruptedException e) {
-			e.printStackTrace();
-		}
 	}
 
 	@Override
 	public void run() {
-		Looper.prepare();
 		isRunning = true;
-		
 		while (isRunning) {
 			try {
 				Socket client = socket.accept();
-				
 				if (client == null) {
 					continue;
 				}
-				
-				Log.d(TAG, "client connected");
+				Log.i(TAG, "client connected");
 
 				StreamToMediaPlayerTask task = new StreamToMediaPlayerTask(client);
-				
 				if (task.processRequest()) {
-					task.execute();
+					new Thread(task).start();
 				}
+
 			} catch (SocketTimeoutException e) {
 				// Do nothing
 			} catch (IOException e) {
 				Log.e(TAG, "Error connecting to client", e);
 			}
 		}
-		
-		Log.d(TAG, "Proxy interrupted. Shutting down.");
+		Log.i(TAG, "Proxy interrupted. Shutting down.");
 	}
 
-	private class StreamToMediaPlayerTask extends AsyncTask<String, Void, Integer> {
-		File thisFile;
+	private class StreamToMediaPlayerTask implements Runnable {
+
+		String localPath;
 		Socket client;
 		int cbSkip;
 
 		public StreamToMediaPlayerTask(Socket client) {
 			this.client = client;
 		}
-
+		
 		private HttpRequest readRequest() {
 			HttpRequest request = null;
 			InputStream is;
@@ -134,122 +122,121 @@ public class StreamProxy implements Runnable {
 			StringTokenizer st = new StringTokenizer(firstLine);
 			String method = st.nextToken();
 			String uri = st.nextToken();
-			Log.d(TAG, uri);
 			String realUri = uri.substring(1);
-			Log.d(TAG, realUri);
+			Log.i(TAG, realUri);
 			request = new BasicHttpRequest(method, realUri);
 			return request;
 		}
 
 		public boolean processRequest() {
 			HttpRequest request = readRequest();
-			
 			if (request == null) {
 				return false;
 			}
+			
+			// Read HTTP headers
+			Log.i(TAG, "Processing request");
 
-			Log.d(TAG, "Processing request");
-
-			thisFile = downloadFile.isCompleteFileAvailable() ? downloadFile.getCompleteFile() : downloadFile.getPartialFile();
-
-			if (!thisFile.exists()) {
-				Log.e(TAG, "File " + thisFile.getPath() + " does not exist");
+			try {
+				localPath = URLDecoder.decode(request.getRequestLine().getUri(), Constants.UTF_8);
+			} catch (UnsupportedEncodingException e) {
+				Log.e(TAG, "Unsupported encoding", e);
 				return false;
 			}
-
+			
+			Log.i(TAG, "Processing request for file " + localPath);
+			File file = new File(localPath);
+			if (!file.exists()) {
+				Log.e(TAG, "File " + localPath + " does not exist");
+				return false;
+			}
+			
 			return true;
 		}
 
 		@Override
-		protected Integer doInBackground(String... params) {
-			long fileSize = downloadFile.isCompleteFileAvailable() ? downloadFile.getCompleteFile().length() : downloadFile.getSong().getSize();
+		public void run() {
+			Log.i(TAG, "Streaming song in background");
+			DownloadFile downloadFile = downloadService.getCurrentPlaying();
+			MusicDirectory.Entry song = downloadFile.getSong();
+			long fileSize = downloadFile.getBitRate() * ((song.getDuration() != null) ? song.getDuration() : 0) * 1000 / 8;
+			Log.i(TAG, "Streaming fileSize: " + fileSize);
 
-			// Create HTTP header
-			String headers = "HTTP/1.1 200 OK\r\n";
+            // Create HTTP header
+            String headers = "HTTP/1.0 200 OK\r\n";
+            headers += "Content-Type: " + "application/octet-stream" + "\r\n";
+            
+            headers += "Connection: close\r\n";
+            headers += "\r\n";
 
-			if (fileSize > 0) {
-				headers += "Content-Length: " + fileSize + "\r\n";
-			}
-			
-			headers += "Content-Type: " + "application/octet-stream" + "\r\n";
-			headers += "Connection: close\r\n";
-			headers += "\r\n";
+            long cbToSend = fileSize - cbSkip;
+            OutputStream output = null;
+            byte[] buff = new byte[64 * 1024];
+            try {
+                output = new BufferedOutputStream(client.getOutputStream(), 32*1024);                           
+                output.write(headers.getBytes());
 
-			long cbToSend = fileSize - cbSkip;
-			long totalBytesSent = 0;
-			OutputStream output = null;
-			byte[] buff = new byte[64 * 1024];
-			
-			try {
-				output = new BufferedOutputStream(client.getOutputStream(), 32 * 1024);
-				output.write(headers.getBytes());
-	
-				// Loop as long as there's stuff to send
-				while (isRunning && cbToSend > 0 && !client.isClosed()) {
-					// See if there's more to send
-					int cbSentThisBatch = 0;
+				if(!downloadFile.isWorkDone()) {
+					// Loop as long as there's stuff to send
+					while (isRunning && !client.isClosed()) {
 
-					FileInputStream input = new FileInputStream(thisFile);
-					input.skip(cbSkip);
-					int cbToSendThisBatch = input.available();
+						// See if there's more to send
+						File file = new File(localPath);
+						int cbSentThisBatch = 0;
+						if (file.exists()) {
+							FileInputStream input = new FileInputStream(file);
+							input.skip(cbSkip);
+							int cbToSendThisBatch = input.available();
+							while (cbToSendThisBatch > 0) {
+								int cbToRead = Math.min(cbToSendThisBatch, buff.length);
+								int cbRead = input.read(buff, 0, cbToRead);
+								if (cbRead == -1) {
+									break;
+								}
+								cbToSendThisBatch -= cbRead;
+								cbToSend -= cbRead;
+								output.write(buff, 0, cbRead);
+								output.flush();
+								cbSkip += cbRead;
+								cbSentThisBatch += cbRead;
+							}
+							input.close();
+						}
 
-					while (cbToSendThisBatch > 0) {
-						int cbToRead = Math.min(cbToSendThisBatch, buff.length);
-						int cbRead = input.read(buff, 0, cbToRead);
-
-						if (cbRead == -1) {
+						// Done regardless of whether or not it thinks it is
+						if(downloadFile.isWorkDone() && cbSkip >= file.length()) {
 							break;
 						}
 
-						cbToSendThisBatch -= cbRead;
-						cbToSend -= cbRead;
-
-						output.write(buff, 0, cbRead);
-						output.flush();
-
-						cbSkip += cbRead;
-						cbSentThisBatch += cbRead;
-						totalBytesSent += cbRead;
-					}
-
-					input.close();
-
-					if (!downloadFile.isDownloading()) {
-						if (downloadFile.isCompleteFileAvailable()) {
-							if (downloadFile.getCompleteFile().length() == totalBytesSent) {
-								Log.d(TAG, "Track is no longer being downloaded, sent " + totalBytesSent + " / " + fileSize);
-								break;
-							}
+						// If we did nothing this batch, block for a second
+						if (cbSentThisBatch == 0) {
+							Log.d(TAG, "Blocking until more data appears (" + cbToSend + ")");
+							Thread.sleep(1000);
 						}
 					}
-						
-					// If we did nothing this batch, block for a second
-					if (cbSentThisBatch == 0) {
-						Log.d(TAG, "Blocking until more data appears");
-						Thread.sleep(500);
-					}
+				} else {
+					Log.w(TAG, "Requesting data for completely downloaded file");
 				}
-			} catch (SocketException socketException) {
-				Log.e(TAG, "SocketException() thrown, proxy client has probably closed. This can exit harmlessly");
-			} catch (Exception e) {
-				Log.e(TAG, "Exception thrown from streaming task:");
-				Log.e(TAG, e.getClass().getName() + " : " + e.getLocalizedMessage());
-				e.printStackTrace();
-			}
+            }
+            catch (SocketException socketException) {
+                Log.e(TAG, "SocketException() thrown, proxy client has probably closed. This can exit harmlessly");
+            }
+            catch (Exception e) {
+                Log.e(TAG, "Exception thrown from streaming task:");
+                Log.e(TAG, e.getClass().getName() + " : " + e.getLocalizedMessage());
+            }
 
-			// Cleanup
-			try {
-				if (output != null) {
-					output.close();
-				}
-				client.close();
-			} catch (IOException e) {
-				Log.e(TAG, "IOException while cleaning up streaming task:");
-				Log.e(TAG, e.getClass().getName() + " : " + e.getLocalizedMessage());
-				e.printStackTrace();
-			}
-
-			return 1;
-		}
+            // Cleanup
+            try {
+                if (output != null) {
+                    output.close();
+                }
+                client.close();
+            }
+            catch (IOException e) {
+                Log.e(TAG, "IOException while cleaning up streaming task:");                
+                Log.e(TAG, e.getClass().getName() + " : " + e.getLocalizedMessage());
+            }
+        }
 	}
 }

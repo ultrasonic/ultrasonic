@@ -24,7 +24,6 @@ import com.thejoshwa.ultrasonic.androidapp.R;
 import com.thejoshwa.ultrasonic.androidapp.domain.MusicDirectory;
 import com.thejoshwa.ultrasonic.androidapp.util.ProgressListener;
 import org.xmlpull.v1.XmlPullParser;
-
 import java.io.Reader;
 
 /**
@@ -38,7 +37,7 @@ public class MusicDirectoryParser extends MusicDirectoryEntryParser {
         super(context);
     }
 
-    public MusicDirectory parse(Reader reader, ProgressListener progressListener) throws Exception {
+    public MusicDirectory parse(String artist, Reader reader, ProgressListener progressListener) throws Exception {
 
         long t0 = System.currentTimeMillis();
         updateProgress(progressListener, R.string.parser_reading);
@@ -51,7 +50,7 @@ public class MusicDirectoryParser extends MusicDirectoryEntryParser {
             if (eventType == XmlPullParser.START_TAG) {
                 String name = getElementName();
                 if ("child".equals(name)) {
-                    dir.addChild(parseEntry());
+                    dir.addChild(parseEntry(artist));
                 } else if ("directory".equals(name)) {
                     dir.setName(get("name"));
                 } else if ("error".equals(name)) {

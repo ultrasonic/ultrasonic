@@ -22,6 +22,8 @@ import android.content.Context;
 import com.thejoshwa.ultrasonic.androidapp.R;
 import com.thejoshwa.ultrasonic.androidapp.domain.Playlist;
 import com.thejoshwa.ultrasonic.androidapp.util.ProgressListener;
+import com.thejoshwa.ultrasonic.androidapp.view.PlaylistAdapter;
+
 import org.xmlpull.v1.XmlPullParser;
 
 import java.io.Reader;
@@ -51,7 +53,12 @@ public class PlaylistsParser extends AbstractParser {
                 if ("playlist".equals(tag)) {
                     String id = get("id");
                     String name = get("name");
-                    result.add(new Playlist(id, name));
+					String owner = get("owner");
+					String comment = get("comment");
+					String songCount = get("songCount");
+					String created = get("created");
+					String pub = get("public");
+                    result.add(new Playlist(id, name, owner, comment, songCount, created, pub));
                 } else if ("error".equals(tag)) {
                     handleError();
                 }
@@ -61,7 +68,7 @@ public class PlaylistsParser extends AbstractParser {
         validate();
         updateProgress(progressListener, R.string.parser_reading_done);
 
-        return result;
+        return PlaylistAdapter.PlaylistComparator.sort(result);
     }
 
 }

@@ -47,26 +47,34 @@ public interface MusicService {
 
     boolean isLicenseValid(Context context, ProgressListener progressListener) throws Exception;
 
-    List<MusicFolder> getMusicFolders(Context context, ProgressListener progressListener) throws Exception;
-    
     List<Genre> getGenres(Context context, ProgressListener progressListener) throws Exception;
     
     void star(String id, Context context, ProgressListener progressListener) throws Exception;
     
     void unstar(String id, Context context, ProgressListener progressListener) throws Exception;
 
+    List<MusicFolder> getMusicFolders(boolean refresh, Context context, ProgressListener progressListener) throws Exception;
+    
     Indexes getIndexes(String musicFolderId, boolean refresh, Context context, ProgressListener progressListener) throws Exception;
 
-    MusicDirectory getMusicDirectory(String id, boolean refresh, Context context, ProgressListener progressListener) throws Exception;
+    MusicDirectory getMusicDirectory(String id, String name, boolean refresh, Context context, ProgressListener progressListener) throws Exception;
 
     SearchResult search(SearchCritera criteria, Context context, ProgressListener progressListener) throws Exception;
 
-    MusicDirectory getPlaylist(String id, Context context, ProgressListener progressListener) throws Exception;
-
+    MusicDirectory getPlaylist(String id, String name, Context context, ProgressListener progressListener) throws Exception;
+    
     List<Playlist> getPlaylists(boolean refresh, Context context, ProgressListener progressListener) throws Exception;
 
     void createPlaylist(String id, String name, List<MusicDirectory.Entry> entries, Context context, ProgressListener progressListener) throws Exception;
 
+    void deletePlaylist(String id, Context context, ProgressListener progressListener) throws Exception;
+
+	void addToPlaylist(String id, List<MusicDirectory.Entry> toAdd, Context context, ProgressListener progressListener) throws Exception;
+
+	void removeFromPlaylist(String id, List<Integer> toRemove, Context context, ProgressListener progressListener) throws Exception;
+
+	void updatePlaylist(String id, String name, String comment, boolean pub, Context context, ProgressListener progressListener) throws Exception;
+	
     Lyrics getLyrics(String artist, String title, Context context, ProgressListener progressListener) throws Exception;
 
     void scrobble(String id, boolean submission, Context context, ProgressListener progressListener) throws Exception;
@@ -87,7 +95,9 @@ public interface MusicService {
 
     Version getLatestVersion(Context context, ProgressListener progressListener) throws Exception;
 
-    String getVideoUrl(Context context, String id);
+    String getVideoUrl(int maxBitrate, Context context, String id);
+
+	String getVideoStreamUrl(int Bitrate, Context context, String id);
 
     JukeboxStatus updateJukeboxPlaylist(List<String> ids, Context context, ProgressListener progressListener) throws Exception;
 
