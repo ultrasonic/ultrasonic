@@ -148,6 +148,7 @@ public class SubsonicTabActivity extends Activity implements OnClickListener{
         
 		// Make sure to update theme
         if (theme != null && !theme.equals(Util.getTheme(this))) {
+        	theme = Util.getTheme(this);
             restart();
         }
         
