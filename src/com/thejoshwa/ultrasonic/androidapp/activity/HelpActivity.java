@@ -19,12 +19,9 @@
 
 package com.thejoshwa.ultrasonic.androidapp.activity;
 
-import net.simonvt.menudrawer.MenuDrawer;
-import net.simonvt.menudrawer.Position;
 import android.app.Activity;
 import android.content.Intent;
 import android.content.pm.PackageManager.NameNotFoundException;
-import android.os.Build;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.KeyEvent;
@@ -37,10 +34,11 @@ import android.webkit.WebViewClient;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
-
 import com.thejoshwa.ultrasonic.androidapp.R;
 import com.thejoshwa.ultrasonic.androidapp.util.Constants;
 import com.thejoshwa.ultrasonic.androidapp.util.Util;
+import net.simonvt.menudrawer.MenuDrawer;
+import net.simonvt.menudrawer.Position;
 
 /**
  * An HTML-based help screen with Back and Done buttons at the bottom.
@@ -187,9 +185,9 @@ public final class HelpActivity extends Activity implements OnClickListener {
     }
     
     @Override
-    protected void onRestoreInstanceState(Bundle inState) {
-        super.onRestoreInstanceState(inState);
-        menuDrawer.restoreState(inState.getParcelable(STATE_MENUDRAWER));
+    protected void onRestoreInstanceState(Bundle state) {
+        super.onRestoreInstanceState(state);
+        menuDrawer.restoreState(state.getParcelable(STATE_MENUDRAWER));
     }
 
     @Override
@@ -257,7 +255,6 @@ public final class HelpActivity extends Activity implements OnClickListener {
         @Override
         public void onLoadResource(WebView webView, String url) {
             setProgressBarIndeterminateVisibility(true);
-            //setTitle(getResources().getString(R.string.help_loading));
             super.onLoadResource(webView, url);
         }
 

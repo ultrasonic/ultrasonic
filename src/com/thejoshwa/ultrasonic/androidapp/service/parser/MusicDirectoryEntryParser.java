@@ -20,6 +20,7 @@ package com.thejoshwa.ultrasonic.androidapp.service.parser;
 
 import android.content.Context;
 import com.thejoshwa.ultrasonic.androidapp.domain.MusicDirectory;
+import com.thejoshwa.ultrasonic.androidapp.util.Constants;
 
 /**
  * @author Sindre Mehus
@@ -39,7 +40,7 @@ public class MusicDirectoryEntryParser extends AbstractParser {
         entry.setCoverArt(get("coverArt"));
         entry.setArtist(get("artist"));
         entry.setYear(getInteger("year"));
-        entry.setStarred(getValueExists("starred"));
+        entry.setStarred(getValueExists(Constants.STARRED));
 
         if (!entry.isDirectory()) {
             entry.setAlbum(get("album"));

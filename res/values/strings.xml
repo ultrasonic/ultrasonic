@@ -278,9 +278,6 @@
 	<string name="shuffle.startYear">Start Year:</string>
 	<string name="shuffle.endYear">End Year:</string>
 	<string name="shuffle.genre">Genre:</string>
-	<string name="playlist_error">Failed to grab list of playlists</string>	
-   	<string name="updated_playlist">Added %1$s songs to \"%2$s\"</string>
-    <string name="updated_playlist_error">Failed to update \"%s\", please try later.</string>
     <string name="music_service.retry">A network error occurred. Retrying %1$d of %2$d.</string>
     <string name="background_task.wait">Please wait&#8230;</string>
     <string name="background_task.loading">Loading.</string>

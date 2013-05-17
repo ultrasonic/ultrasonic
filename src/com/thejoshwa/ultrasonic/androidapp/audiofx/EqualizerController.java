@@ -59,10 +59,12 @@ public class EqualizerController {
 
     public EqualizerController(Context context, MediaPlayer mediaPlayer) {
         this.context = context;
+        
         try {
 			audioSessionId = mediaPlayer.getAudioSessionId();
             equalizer = new Equalizer(0, audioSessionId);
         } catch (Throwable x) {
+        	equalizer = null;
             Log.w(TAG, "Failed to create equalizer.", x);
         }
     }
@@ -81,6 +83,7 @@ public class EqualizerController {
         try {
             if (isAvailable()) {
                 EqualizerSettings settings = FileUtil.deserialize(context, "equalizer.dat");
+
                 if (settings != null) {
                     settings.apply(equalizer);
                 }
@@ -101,13 +104,14 @@ public class EqualizerController {
     public void release() {
         if (isAvailable()) {
 			released = true;
-            equalizer.release();
+			equalizer.release();
         }
     }
 
     public Equalizer getEqualizer() {
-		if(released) {
+		if (released) {
 			released = false;
+			
 			try {
 				equalizer = new Equalizer(0, audioSessionId);
 			} catch (Throwable x) {
@@ -115,6 +119,7 @@ public class EqualizerController {
 				Log.w(TAG, "Failed to create equalizer.", x);
 			}
 		}
+		
         return equalizer;
     }
 
@@ -131,9 +136,11 @@ public class EqualizerController {
         public EqualizerSettings(Equalizer equalizer) {
             enabled = equalizer.getEnabled();
             bandLevels = new short[equalizer.getNumberOfBands()];
+            
             for (short i = 0; i < equalizer.getNumberOfBands(); i++) {
                 bandLevels[i] = equalizer.getBandLevel(i);
             }
+            
             try {
                 preset = equalizer.getCurrentPreset();
             } catch (Exception x) {
@@ -145,9 +152,11 @@ public class EqualizerController {
             for (short i = 0; i < bandLevels.length; i++) {
                 equalizer.setBandLevel(i, bandLevels[i]);
             }
+            
             if (preset >= 0 && preset < equalizer.getNumberOfPresets()) {
                 equalizer.usePreset(preset);
             }
+            
             equalizer.setEnabled(enabled);
         }
     }

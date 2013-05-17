@@ -19,28 +19,23 @@
 
 package com.thejoshwa.ultrasonic.androidapp.activity;
 
-import java.util.Arrays;
-import com.thejoshwa.ultrasonic.androidapp.R;
-import com.thejoshwa.ultrasonic.androidapp.service.DownloadService;
-import com.thejoshwa.ultrasonic.androidapp.service.DownloadServiceImpl;
-import com.thejoshwa.ultrasonic.androidapp.util.Constants;
-import com.thejoshwa.ultrasonic.androidapp.util.MergeAdapter;
-import com.thejoshwa.ultrasonic.androidapp.util.Util;
-import com.thejoshwa.ultrasonic.androidapp.util.FileUtil;
-
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
-import android.view.ContextMenu;
-import android.view.LayoutInflater;
-import android.view.Menu;
-import android.view.MenuInflater;
-import android.view.MenuItem;
-import android.view.View;
+import android.view.*;
 import android.widget.AdapterView;
 import android.widget.ListView;
 import android.widget.TextView;
+import com.thejoshwa.ultrasonic.androidapp.R;
+import com.thejoshwa.ultrasonic.androidapp.service.DownloadService;
+import com.thejoshwa.ultrasonic.androidapp.service.DownloadServiceImpl;
+import com.thejoshwa.ultrasonic.androidapp.util.Constants;
+import com.thejoshwa.ultrasonic.androidapp.util.FileUtil;
+import com.thejoshwa.ultrasonic.androidapp.util.MergeAdapter;
+import com.thejoshwa.ultrasonic.androidapp.util.Util;
+
+import java.util.Arrays;
 
 public class MainActivity extends SubsonicTabActivity {
 
@@ -57,15 +52,13 @@ public class MainActivity extends SubsonicTabActivity {
     private static final int MENU_ITEM_SERVER_9 = 109;
     private static final int MENU_ITEM_SERVER_10 = 110;
 
-    private String theme;
-
     private static boolean infoDialogDisplayed;
     
     /**
      * Called when the activity is first created.
      */
     @Override
-    public void onCreate(Bundle savedInstanceState) {
+    public void onCreate(final Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         
         if (getIntent().hasExtra(Constants.INTENT_EXTRA_NAME_EXIT)) {
@@ -77,7 +70,7 @@ public class MainActivity extends SubsonicTabActivity {
 
         loadSettings();
         
-        View buttons = LayoutInflater.from(this).inflate(R.layout.main_buttons, null);
+        final View buttons = LayoutInflater.from(this).inflate(R.layout.main_buttons, null);
 
         final View serverButton = buttons.findViewById(R.id.main_select_server);
         final TextView serverTextView = (TextView) serverButton.findViewById(R.id.main_select_server_2);
@@ -122,9 +115,9 @@ public class MainActivity extends SubsonicTabActivity {
         
         serverTextView.setText(name);
 
-        ListView list = (ListView) findViewById(R.id.main_list);
+        final ListView list = (ListView) findViewById(R.id.main_list);
         
-        MergeAdapter adapter = new MergeAdapter();
+        final MergeAdapter adapter = new MergeAdapter();
         adapter.addViews(Arrays.asList(serverButton), true);
                 
         if (!Util.isOffline(this)) {
@@ -155,9 +148,9 @@ public class MainActivity extends SubsonicTabActivity {
                 } else if (view == albumsFrequentButton) {
                     showAlbumList("frequent", R.string.main_albums_frequent);
                 } else if (view == albumsStarredButton) {
-                    showAlbumList("starred", R.string.main_albums_starred);
+                    showAlbumList(Constants.STARRED, R.string.main_albums_starred);
                 } else if (view == albumsAlphaByNameButton) {
-                	showAlbumList("alphabeticalByName", R.string.main_albums_alphaByName);
+                	showAlbumList(Constants.ALPHABETICAL_BY_NAME, R.string.main_albums_alphaByName);
                 } else if (view == albumsAlphaByArtistButton) {
                 	showAlbumList("alphabeticalByArtist", R.string.main_albums_alphaByArtist);
                 } else if (view == songsStarredButton) {
@@ -165,7 +158,7 @@ public class MainActivity extends SubsonicTabActivity {
                 } else if (view == artistsButton) {
                 	showArtists();
                 } else if (view == albumsButton) {
-                	showAlbumList("alphabeticalByName", R.string.main_albums_title);
+                	showAlbumList(Constants.ALPHABETICAL_BY_NAME, R.string.main_albums_title);
                 } else if (view == randomSongsButton) {
                 	showRandomSongs();
                 } else if (view == genresButton) {
@@ -174,7 +167,7 @@ public class MainActivity extends SubsonicTabActivity {
             }
         });
         
-        View homeMenuItem = findViewById(R.id.menu_home);
+        final View homeMenuItem = findViewById(R.id.menu_home);
         menuDrawer.setActiveView(homeMenuItem);
 
         getActionBar().setTitle(R.string.common_appname);
@@ -188,9 +181,9 @@ public class MainActivity extends SubsonicTabActivity {
 
     private void loadSettings() {
         PreferenceManager.setDefaultValues(this, R.xml.settings, false);
-        SharedPreferences prefs = Util.getPreferences(this);
-        if (!prefs.contains(Constants.PREFERENCES_KEY_CACHE_LOCATION)) {
-            SharedPreferences.Editor editor = prefs.edit();
+        final SharedPreferences preferences = Util.getPreferences(this);
+        if (!preferences.contains(Constants.PREFERENCES_KEY_CACHE_LOCATION)) {
+            final SharedPreferences.Editor editor = preferences.edit();
             editor.putString(Constants.PREFERENCES_KEY_CACHE_LOCATION, FileUtil.getDefaultMusicDirectory().getPath());
             editor.commit();
         }
@@ -207,32 +200,32 @@ public class MainActivity extends SubsonicTabActivity {
     }
     
     @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-    	MenuInflater inflater = getMenuInflater();
-    	inflater.inflate(R.menu.main, menu);
+    public boolean onCreateOptionsMenu(final Menu menu) {
+    	final MenuInflater menuInflater = getMenuInflater();
+    	menuInflater.inflate(R.menu.main, menu);
     	super.onCreateOptionsMenu(menu);
     	
     	return true;
     }
 
     @Override
-    public void onCreateContextMenu(ContextMenu menu, View view, ContextMenu.ContextMenuInfo menuInfo) {
+    public void onCreateContextMenu(final ContextMenu menu, final View view, final ContextMenu.ContextMenuInfo menuInfo) {
         super.onCreateContextMenu(menu, view, menuInfo);
 
-        int activeServer = Util.getActiveServer(this);
+        final int activeServer = Util.getActiveServer(this);
         boolean checked = false;
                 
         for (int i = 0; i <= Util.getActiveServers(this); i++) {
-        	String serverName = Util.getServerName(this, i);
+        	final String serverName = Util.getServerName(this, i);
         	
         	if (serverName == null) {
         		continue;
         	}
         	
         	if (Util.getServerEnabled(this, i)) {
-        		int menuItemNum = getMenuItem(i);
+        		final int menuItemNum = getMenuItem(i);
         		
-        		MenuItem menuItem = menu.add(MENU_GROUP_SERVER, menuItemNum, menuItemNum, serverName);
+        		final MenuItem menuItem = menu.add(MENU_GROUP_SERVER, menuItemNum, menuItemNum, serverName);
         		
         		if (activeServer == i) {
         			checked = true;
@@ -251,7 +244,7 @@ public class MainActivity extends SubsonicTabActivity {
     
     private boolean getActiveServerEnabled() {
 
-		int activeServer = Util.getActiveServer(this);
+		final int activeServer = Util.getActiveServer(this);
 		boolean activeServerEnabled = false;
 
 		for (int i = 0; i <= Util.getActiveServers(this); i++) {
@@ -265,7 +258,7 @@ public class MainActivity extends SubsonicTabActivity {
 		return activeServerEnabled;
     }
     
-    private int getMenuItem(int serverInstance) {
+    private static int getMenuItem(final int serverInstance) {
     	switch (serverInstance) {
     	    case 0:
     	    	return MENU_ITEM_OFFLINE;
@@ -288,15 +281,14 @@ public class MainActivity extends SubsonicTabActivity {
 	   		case 9:
     			return MENU_ITEM_SERVER_9;    			    			    			
        		case 10:
-    			return MENU_ITEM_SERVER_10;    			    			    			
-    			    			    			    			
+    			return MENU_ITEM_SERVER_10;
     	}
     	
 		return 0;
     }
     
     @Override
-    public boolean onContextItemSelected(MenuItem menuItem) {
+    public boolean onContextItemSelected(final MenuItem menuItem) {
         switch (menuItem.getItemId()) {
             case MENU_ITEM_OFFLINE:
                 setActiveServer(0);
@@ -341,13 +333,13 @@ public class MainActivity extends SubsonicTabActivity {
     }
     
     @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
+    public boolean onOptionsItemSelected(final MenuItem item) {
         switch (item.getItemId()) {
     		case android.R.id.home:
     			menuDrawer.toggleMenu();
     			return true;                
             case R.id.main_shuffle:
-            	Intent intent1 = new Intent(this, DownloadActivity.class);
+            	final Intent intent1 = new Intent(this, DownloadActivity.class);
             	intent1.putExtra(Constants.INTENT_EXTRA_NAME_SHUFFLE, true);
             	Util.startActivityWithoutTransition(this, intent1);
                 return true;
@@ -356,9 +348,9 @@ public class MainActivity extends SubsonicTabActivity {
         return false;
     }
     
-    private void setActiveServer(int instance) {
+    private void setActiveServer(final int instance) {
         if (Util.getActiveServer(this) != instance) {
-            DownloadService service = getDownloadService();
+            final DownloadService service = getDownloadService();
             if (service != null) {
                 service.clearIncomplete();
             }
@@ -372,7 +364,7 @@ public class MainActivity extends SubsonicTabActivity {
         finish();
     }
 
-    private void showInfoDialog(boolean show) {
+    private void showInfoDialog(final boolean show) {
         if (!infoDialogDisplayed) {
             infoDialogDisplayed = true;
 
@@ -382,8 +374,8 @@ public class MainActivity extends SubsonicTabActivity {
         }
     }
 
-    private void showAlbumList(String type, int title) {
-        Intent intent = new Intent(this, SelectAlbumActivity.class);
+    private void showAlbumList(final String type, final int title) {
+        final Intent intent = new Intent(this, SelectAlbumActivity.class);
         intent.putExtra(Constants.INTENT_EXTRA_NAME_ALBUM_LIST_TYPE, type);
         intent.putExtra(Constants.INTENT_EXTRA_NAME_ALBUM_LIST_TITLE, title);
         intent.putExtra(Constants.INTENT_EXTRA_NAME_ALBUM_LIST_SIZE, Util.getMaxAlbums(this));
@@ -392,27 +384,27 @@ public class MainActivity extends SubsonicTabActivity {
 	}
     
     private void showStarredSongs() {
-    	Intent intent = new Intent(this, SelectAlbumActivity.class);
+    	final Intent intent = new Intent(this, SelectAlbumActivity.class);
     	intent.putExtra(Constants.INTENT_EXTRA_NAME_STARRED, 1);
     	Util.startActivityWithoutTransition(this, intent);
     }
     
     private void showRandomSongs() {
-    	Intent intent = new Intent(this, SelectAlbumActivity.class);
+    	final Intent intent = new Intent(this, SelectAlbumActivity.class);
     	intent.putExtra(Constants.INTENT_EXTRA_NAME_RANDOM, 1);
     	intent.putExtra(Constants.INTENT_EXTRA_NAME_ALBUM_LIST_SIZE, Util.getMaxSongs(this));
     	Util.startActivityWithoutTransition(this, intent);
     }
     
     private void showArtists() {
-    	Intent intent = new Intent(this, SelectArtistActivity.class);
+    	final Intent intent = new Intent(this, SelectArtistActivity.class);
         intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
         intent.putExtra(Constants.INTENT_EXTRA_NAME_ALBUM_LIST_TITLE, getResources().getString(R.string.main_artists_title));
     	Util.startActivityWithoutTransition(this, intent);
     }
     
     private void showGenres() {
-    	Intent intent = new Intent(this, SelectGenreActivity.class);
+    	final Intent intent = new Intent(this, SelectGenreActivity.class);
         intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
     	Util.startActivityWithoutTransition(this, intent);
     }

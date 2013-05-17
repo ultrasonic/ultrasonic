@@ -123,6 +123,8 @@ public final class Constants {
     public static final String DONATION_URL = "http://subsonic.org/pages/android-donation.jsp";
 
     public static final String ALBUM_ART_FILE = "folder.jpeg";
+    public static final String STARRED = "starred";
+    public static final String ALPHABETICAL_BY_NAME = "alphabeticalByName";
 
     private Constants() {
     }

@@ -133,11 +133,24 @@ public class DownloadServiceImpl extends Service implements DownloadService {
     private int secondaryProgress = -1;
     private boolean autoPlayStart = false;
     
-    static {
-    	equalizerAvailable = true;
-		visualizerAvailable = true;
-    }
+	static {
+		try {
+			EqualizerController.checkAvailable();
+			equalizerAvailable = true;
+		} catch (Throwable t) {
+			equalizerAvailable = false;
+		}
+	}
     
+	static {
+		try {
+			VisualizerController.checkAvailable();
+			visualizerAvailable = true;
+		} catch (Throwable t) {
+			visualizerAvailable = false;
+		}
+	}
+	
 	private OnAudioFocusChangeListener _afChangeListener = new OnAudioFocusChangeListener() {
 		public void onAudioFocusChange(int focusChange) {
 			if (focusChange == AudioManager.AUDIOFOCUS_LOSS_TRANSIENT) {

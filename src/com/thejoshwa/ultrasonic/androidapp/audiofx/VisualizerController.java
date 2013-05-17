@@ -86,8 +86,9 @@ public class VisualizerController {
     }
 
     public Visualizer getVisualizer() {
-		if(released) {
+		if (released) {
 			released = false;
+			
 			try {
 				visualizer = new Visualizer(audioSessionId);
 			} catch (Throwable x) {
