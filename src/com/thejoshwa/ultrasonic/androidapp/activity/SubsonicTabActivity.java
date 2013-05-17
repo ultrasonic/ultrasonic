@@ -418,13 +418,13 @@ public class SubsonicTabActivity extends Activity implements OnClickListener{
 		return IMAGE_LOADER;
 	}
 
-	protected void downloadRecursively(final String id, final boolean save, final boolean append, final boolean autoplay, final boolean shuffle, final boolean background) {
-		downloadRecursively(id, "", true, save, append, autoplay, shuffle, background);
+	protected void downloadRecursively(final String id, final boolean save, final boolean append, final boolean autoplay, final boolean shuffle, final boolean background, final boolean playNext) {
+		downloadRecursively(id, "", true, save, append, autoplay, shuffle, background, playNext);
     }
-	protected void downloadPlaylist(final String id, final String name, final boolean save, final boolean append, final boolean autoplay, final boolean shuffle, final boolean background) {
-		downloadRecursively(id, name, false, save, append, autoplay, shuffle, background);
+	protected void downloadPlaylist(final String id, final String name, final boolean save, final boolean append, final boolean autoplay, final boolean shuffle, final boolean background, final boolean playNext) {
+		downloadRecursively(id, name, false, save, append, autoplay, shuffle, background, playNext);
     }
-	protected void downloadRecursively(final String id, final String name, final boolean isDirectory, final boolean save, final boolean append, final boolean autoplay, final boolean shuffle, final boolean background) {
+	protected void downloadRecursively(final String id, final String name, final boolean isDirectory, final boolean save, final boolean append, final boolean autoplay, final boolean shuffle, final boolean background, final boolean playNext) {
 		ModalBackgroundTask<List<MusicDirectory.Entry>> task = new ModalBackgroundTask<List<MusicDirectory.Entry>>(this, false) {
             private static final int MAX_SONGS = 500;
 
@@ -461,12 +461,12 @@ public class SubsonicTabActivity extends Activity implements OnClickListener{
             protected void done(List<MusicDirectory.Entry> songs) {
                 DownloadService downloadService = getDownloadService();
                 if (!songs.isEmpty() && downloadService != null) {
-                    if (!append) {
+                    if (!append && !playNext) {
                         downloadService.clear();
                     }
                     warnIfNetworkOrStorageUnavailable();
 					if(!background) {
-						downloadService.download(songs, save, autoplay, false, shuffle);
+						downloadService.download(songs, save, autoplay, playNext, shuffle);
 						if (!append && Util.getShouldTransitionOnPlaybackPreference(SubsonicTabActivity.this)) {
 							Util.startActivityWithoutTransition(SubsonicTabActivity.this, DownloadActivity.class);
 						}
