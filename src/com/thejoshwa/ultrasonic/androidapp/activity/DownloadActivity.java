@@ -60,7 +60,6 @@ import static com.thejoshwa.ultrasonic.androidapp.domain.PlayerState.*;
 public class DownloadActivity extends SubsonicTabActivity implements OnGestureListener {
 	private static final String TAG = DownloadActivity.class.getSimpleName();
     private static final int DIALOG_SAVE_PLAYLIST = 100;
-    private static final int INCREMENT_TIME = 5000;
     private static final int PERCENTAGE_OF_SCREEN_FOR_SWIPE = 5;
     
     private ViewFlipper playlistFlipper;
@@ -159,7 +158,8 @@ public class DownloadActivity extends SubsonicTabActivity implements OnGestureLi
         
         previousButton.setOnRepeatListener(new Runnable() {
             public void run() {
-                changeProgress(-INCREMENT_TIME);
+            	int incrementTime = Util.getIncrementTime(DownloadActivity.this);
+                changeProgress(-incrementTime);
             }
         });
 
@@ -192,7 +192,8 @@ public class DownloadActivity extends SubsonicTabActivity implements OnGestureLi
         
         nextButton.setOnRepeatListener(new Runnable() {
             public void run() {
-                changeProgress(INCREMENT_TIME);
+            	int incrementTime = Util.getIncrementTime(DownloadActivity.this);
+                changeProgress(incrementTime);
             }
         });
 

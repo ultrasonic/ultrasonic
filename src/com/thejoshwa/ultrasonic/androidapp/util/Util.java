@@ -1173,6 +1173,11 @@ public class Util extends DownloadActivity {
         return Integer.parseInt(prefs.getString(Constants.PREFERENCES_KEY_BUFFER_LENGTH, "5"));
     }
     
+    public static int getIncrementTime(Context context) {
+        SharedPreferences prefs = getPreferences(context);
+        return Integer.parseInt(prefs.getString(Constants.PREFERENCES_KEY_INCREMENT_TIME, "5"));
+    }
+    
     public static boolean getMediaButtonsPreference(Context context) {
         SharedPreferences prefs = getPreferences(context);
         return prefs.getBoolean(Constants.PREFERENCES_KEY_MEDIA_BUTTONS, true);

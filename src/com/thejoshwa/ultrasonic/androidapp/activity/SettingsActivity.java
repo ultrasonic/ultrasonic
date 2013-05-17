@@ -69,6 +69,7 @@ public class SettingsActivity extends PreferenceActivity implements SharedPrefer
     private EditTextPreference cacheLocation;
     private ListPreference preloadCount;
     private ListPreference bufferLength;
+    private ListPreference incrementTime;    
     private ListPreference networkTimeout;
     private ListPreference maxAlbums;
     private ListPreference maxSongs;
@@ -141,6 +142,7 @@ public class SettingsActivity extends PreferenceActivity implements SharedPrefer
         cacheLocation = (EditTextPreference) findPreference(Constants.PREFERENCES_KEY_CACHE_LOCATION);
         preloadCount = (ListPreference) findPreference(Constants.PREFERENCES_KEY_PRELOAD_COUNT);
         bufferLength = (ListPreference) findPreference(Constants.PREFERENCES_KEY_BUFFER_LENGTH);
+        incrementTime = (ListPreference) findPreference(Constants.PREFERENCES_KEY_INCREMENT_TIME);
         networkTimeout = (ListPreference) findPreference(Constants.PREFERENCES_KEY_NETWORK_TIMEOUT);
         maxAlbums = (ListPreference) findPreference(Constants.PREFERENCES_KEY_MAX_ALBUMS);
         maxSongs = (ListPreference) findPreference(Constants.PREFERENCES_KEY_MAX_SONGS);
@@ -392,6 +394,7 @@ public class SettingsActivity extends PreferenceActivity implements SharedPrefer
         cacheLocation.setSummary(cacheLocation.getText());
         preloadCount.setSummary(preloadCount.getEntry());
         bufferLength.setSummary(bufferLength.getEntry());
+        incrementTime.setSummary(incrementTime.getEntry());
         networkTimeout.setSummary(networkTimeout.getEntry());
         maxAlbums.setSummary(maxAlbums.getEntry());
         maxArtists.setSummary(maxArtists.getEntry());

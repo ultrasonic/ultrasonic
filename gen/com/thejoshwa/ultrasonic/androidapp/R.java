@@ -19,18 +19,19 @@ public final class R {
         public static final int slide_out_to_top=0x7f040007;
     }
     public static final class array {
-        public static final int bufferLengthNames=0x7f0b0009;
+        public static final int bufferLengthNames=0x7f0b000a;
         public static final int bufferLengthValues=0x7f0b0008;
         public static final int cacheSizeNames=0x7f0b0005;
         public static final int cacheSizeValues=0x7f0b0004;
+        public static final int incrementTimeValues=0x7f0b0009;
         public static final int maxBitrateNames=0x7f0b0007;
         public static final int maxBitrateValues=0x7f0b0006;
-        public static final int networkTimeoutNames=0x7f0b000b;
-        public static final int networkTimeoutValues=0x7f0b000a;
+        public static final int networkTimeoutNames=0x7f0b000c;
+        public static final int networkTimeoutValues=0x7f0b000b;
         public static final int preloadCountNames=0x7f0b0003;
         public static final int preloadCountValues=0x7f0b0002;
-        public static final int searchNames=0x7f0b000d;
-        public static final int searchValues=0x7f0b000c;
+        public static final int searchNames=0x7f0b000e;
+        public static final int searchValues=0x7f0b000d;
         public static final int themeNames=0x7f0b0001;
         public static final int themeValues=0x7f0b0000;
     }
@@ -858,12 +859,12 @@ or to a theme attribute in the form "<code>?[<i>package</i>:][<i>type</i>:]<i>na
         public static final int select_album_n_songs_unpinned=0x7f0d0002;
     }
     public static final class string {
-        public static final int background_task_loading=0x7f08011e;
-        public static final int background_task_network_error=0x7f080120;
-        public static final int background_task_no_network=0x7f08011f;
-        public static final int background_task_not_found=0x7f080121;
-        public static final int background_task_parse_error=0x7f080122;
-        public static final int background_task_wait=0x7f08011d;
+        public static final int background_task_loading=0x7f08011f;
+        public static final int background_task_network_error=0x7f080121;
+        public static final int background_task_no_network=0x7f080120;
+        public static final int background_task_not_found=0x7f080122;
+        public static final int background_task_parse_error=0x7f080123;
+        public static final int background_task_wait=0x7f08011e;
         public static final int button_bar_browse=0x7f080019;
         public static final int button_bar_home=0x7f080018;
         public static final int button_bar_now_playing=0x7f08001c;
@@ -920,9 +921,9 @@ or to a theme attribute in the form "<code>?[<i>package</i>:][<i>type</i>:]<i>na
         public static final int download_repeat_single=0x7f080080;
         public static final int download_visualizer_off=0x7f080082;
         public static final int download_visualizer_on=0x7f080081;
-        public static final int equalizer_enabled=0x7f08012f;
-        public static final int equalizer_label=0x7f08012e;
-        public static final int equalizer_preset=0x7f080130;
+        public static final int equalizer_enabled=0x7f080130;
+        public static final int equalizer_label=0x7f08012f;
+        public static final int equalizer_preset=0x7f080131;
         public static final int error_label=0x7f080091;
         public static final int help_back=0x7f080046;
         public static final int help_close=0x7f080047;
@@ -968,14 +969,14 @@ or to a theme attribute in the form "<code>?[<i>package</i>:][<i>type</i>:]<i>na
         public static final int menu_settings=0x7f080036;
         public static final int music_library_label=0x7f080055;
         public static final int music_library_label_offline=0x7f080056;
-        public static final int music_service_retry=0x7f08011c;
-        public static final int parser_artist_count=0x7f08012a;
-        public static final int parser_not_authenticated=0x7f080128;
-        public static final int parser_not_authorized=0x7f080129;
-        public static final int parser_reading=0x7f080124;
-        public static final int parser_reading_done=0x7f080125;
-        public static final int parser_upgrade_client=0x7f080126;
-        public static final int parser_upgrade_server=0x7f080127;
+        public static final int music_service_retry=0x7f08011d;
+        public static final int parser_artist_count=0x7f08012b;
+        public static final int parser_not_authenticated=0x7f080129;
+        public static final int parser_not_authorized=0x7f08012a;
+        public static final int parser_reading=0x7f080125;
+        public static final int parser_reading_done=0x7f080126;
+        public static final int parser_upgrade_client=0x7f080127;
+        public static final int parser_upgrade_server=0x7f080128;
         public static final int play_video_loading=0x7f08004a;
         public static final int play_video_noplugin=0x7f08004b;
         public static final int playlist_label=0x7f080040;
@@ -1017,13 +1018,13 @@ or to a theme attribute in the form "<code>?[<i>package</i>:][<i>type</i>:]<i>na
         public static final int select_album_play_all=0x7f08005e;
         public static final int select_album_searching=0x7f08005d;
         public static final int select_album_select=0x7f080058;
-        public static final int select_artist_all_folders=0x7f08012d;
+        public static final int select_artist_all_folders=0x7f08012e;
         public static final int select_artist_empty=0x7f080066;
-        public static final int select_artist_folder=0x7f08012c;
-        public static final int select_artist_refresh=0x7f08012b;
+        public static final int select_artist_folder=0x7f08012d;
+        public static final int select_artist_refresh=0x7f08012c;
         public static final int select_genre_empty=0x7f080067;
         public static final int select_playlist_empty=0x7f080068;
-        public static final int service_connecting=0x7f080123;
+        public static final int service_connecting=0x7f080124;
         public static final int settings_appearance_title=0x7f0800ab;
         public static final int settings_buffer_length=0x7f0800e4;
         public static final int settings_buffer_length_1=0x7f0800e6;
@@ -1062,6 +1063,7 @@ or to a theme attribute in the form "<code>?[<i>package</i>:][<i>type</i>:]<i>na
         public static final int settings_hide_media_summary=0x7f0800de;
         public static final int settings_hide_media_title=0x7f0800dd;
         public static final int settings_hide_media_toast=0x7f0800df;
+        public static final int settings_increment_time=0x7f080119;
         public static final int settings_invalid_url=0x7f0800a9;
         public static final int settings_invalid_username=0x7f0800aa;
         public static final int settings_max_albums=0x7f080105;
@@ -1159,22 +1161,22 @@ or to a theme attribute in the form "<code>?[<i>package</i>:][<i>type</i>:]<i>na
         public static final int settings_use_stream_proxy_summary=0x7f0800fe;
         public static final int settings_wifi_required_summary=0x7f0800be;
         public static final int settings_wifi_required_title=0x7f0800bd;
-        public static final int shuffle_endYear=0x7f08011a;
-        public static final int shuffle_genre=0x7f08011b;
-        public static final int shuffle_startYear=0x7f080119;
+        public static final int shuffle_endYear=0x7f08011b;
+        public static final int shuffle_genre=0x7f08011c;
+        public static final int shuffle_startYear=0x7f08011a;
         public static final int song_details_all=0x7f08008e;
         public static final int song_details_kbps=0x7f08008f;
         public static final int updated_playlist=0x7f08008a;
         public static final int updated_playlist_error=0x7f08008b;
-        public static final int util_bytes_format_byte=0x7f080137;
-        public static final int util_bytes_format_gigabyte=0x7f080134;
-        public static final int util_bytes_format_kilobyte=0x7f080136;
-        public static final int util_bytes_format_megabyte=0x7f080135;
-        public static final int util_no_time=0x7f080138;
-        public static final int util_zero_time=0x7f080139;
-        public static final int widget_initial_text=0x7f080131;
-        public static final int widget_sdcard_busy=0x7f080132;
-        public static final int widget_sdcard_missing=0x7f080133;
+        public static final int util_bytes_format_byte=0x7f080138;
+        public static final int util_bytes_format_gigabyte=0x7f080135;
+        public static final int util_bytes_format_kilobyte=0x7f080137;
+        public static final int util_bytes_format_megabyte=0x7f080136;
+        public static final int util_no_time=0x7f080139;
+        public static final int util_zero_time=0x7f08013a;
+        public static final int widget_initial_text=0x7f080132;
+        public static final int widget_sdcard_busy=0x7f080133;
+        public static final int widget_sdcard_missing=0x7f080134;
     }
     public static final class style {
         public static final int MenuDrawer=0x7f0a0005;

@@ -275,6 +275,7 @@
     <string name="settings.default_artists">Default Artists</string>
     <string name="settings.default_albums">Default Albums</string>
     <string name="settings.default_songs">Default Songs</string>
+    <string name="settings.increment_time">Skip Interval</string>
 	<string name="shuffle.startYear">Start Year:</string>
 	<string name="shuffle.endYear">End Year:</string>
 	<string name="shuffle.genre">Genre:</string>

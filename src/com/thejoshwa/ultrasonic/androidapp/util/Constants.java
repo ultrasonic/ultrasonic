@@ -112,6 +112,7 @@ public final class Constants {
     public static final String PREFERENCES_EQUALIZER_ON = "equalizerOn";
 	public static final String PREFERENCES_EQUALIZER_SETTINGS = "equalizerSettings";
 	public static final String PREFERENCES_KEY_DOWNLOAD_TRANSITION = "transitionToDownloadOnPlay";
+	public static final String PREFERENCES_KEY_INCREMENT_TIME = "incrementTime";
     
     // Name of the preferences file.
     public static final String PREFERENCES_FILE_NAME = "com.thejoshwa.ultrasonic.androidapp_preferences";

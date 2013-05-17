@@ -38,6 +38,49 @@
             a:summary="@string/settings.show_now_playing_summary"
             a:title="@string/settings.show_now_playing" />
     </PreferenceCategory>
+    <PreferenceCategory a:title="@string/settings.playback_control_title" >
+        <CheckBoxPreference
+            a:defaultValue="true"
+            a:key="mediaButtons"
+            a:summary="@string/settings.media_button_summary"
+            a:title="@string/settings.media_button_title" />
+        <CheckBoxPreference
+            a:defaultValue="true"
+            a:key="showNotification"
+            a:summary="@string/settings.show_notification_summary"
+            a:title="@string/settings.show_notification" />
+        <CheckBoxPreference
+            a:defaultValue="true"
+            a:key="alwaysShowNotification"
+            a:summary="@string/settings.show_notification_always_summary"
+            a:title="@string/settings.show_notification_always" />
+        <CheckBoxPreference
+            a:defaultValue="true"
+            a:key="showLockScreen"
+            a:summary="@string/settings.show_lockscreen_controls_summary"
+            a:title="@string/settings.show_lockscreen_controls" />
+        <CheckBoxPreference
+            a:defaultValue="false"
+            a:key="useStreamProxy"
+            a:summary="@string/settings.use_stream_proxy_summary"
+            a:title="@string/settings.use_stream_proxy" />
+        <CheckBoxPreference
+            a:defaultValue="true"
+            a:key="transitionToDownloadOnPlay"
+            a:summary="@string/settings.download_transition_summary"
+            a:title="@string/settings.download_transition" />        
+        <CheckBoxPreference
+            a:defaultValue="false"
+            a:key="gaplessPlayback"
+            a:summary="@string/settings.gapless_playback_summary"
+            a:title="@string/settings.gapless_playback" />
+        <ListPreference
+            a:defaultValue="5000"
+            a:entries="@array/bufferLengthNames"
+            a:entryValues="@array/incrementTimeValues"
+            a:key="incrementTime"
+            a:title="@string/settings.increment_time" />        
+    </PreferenceCategory>    
     <PreferenceCategory a:title="@string/settings.network_title" >
         <ListPreference
             a:defaultValue="0"
@@ -132,43 +175,6 @@
             a:key="clearSearchHistory"
             a:persistent="false"
             a:title="@string/settings.clear_search_history" />
-    </PreferenceCategory>
-    <PreferenceCategory a:title="@string/settings.playback_control_title" >
-        <CheckBoxPreference
-            a:defaultValue="true"
-            a:key="mediaButtons"
-            a:summary="@string/settings.media_button_summary"
-            a:title="@string/settings.media_button_title" />
-        <CheckBoxPreference
-            a:defaultValue="true"
-            a:key="showNotification"
-            a:summary="@string/settings.show_notification_summary"
-            a:title="@string/settings.show_notification" />
-        <CheckBoxPreference
-            a:defaultValue="true"
-            a:key="alwaysShowNotification"
-            a:summary="@string/settings.show_notification_always_summary"
-            a:title="@string/settings.show_notification_always" />
-        <CheckBoxPreference
-            a:defaultValue="true"
-            a:key="showLockScreen"
-            a:summary="@string/settings.show_lockscreen_controls_summary"
-            a:title="@string/settings.show_lockscreen_controls" />
-        <CheckBoxPreference
-            a:defaultValue="false"
-            a:key="useStreamProxy"
-            a:summary="@string/settings.use_stream_proxy_summary"
-            a:title="@string/settings.use_stream_proxy" />
-        <CheckBoxPreference
-            a:defaultValue="true"
-            a:key="transitionToDownloadOnPlay"
-            a:summary="@string/settings.download_transition_summary"
-            a:title="@string/settings.download_transition" />        
-        <CheckBoxPreference
-            a:defaultValue="false"
-            a:key="gaplessPlayback"
-            a:summary="@string/settings.gapless_playback_summary"
-            a:title="@string/settings.gapless_playback" />
     </PreferenceCategory>
     <PreferenceCategory a:title="@string/settings.other_title" >
         <CheckBoxPreference
