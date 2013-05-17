@@ -860,7 +860,9 @@ public class DownloadActivity extends SubsonicTabActivity implements OnGestureLi
                                 .setText(R.string.download_playerstate_buffering);
                         break;
                     case STARTED:
-                        if (getDownloadService().isShufflePlayEnabled()) {
+                    	final DownloadService downloadService = getDownloadService();
+                    	
+                        if (downloadService != null && downloadService.isShufflePlayEnabled()) {
                             statusTextView
                                     .setText(R.string.download_playerstate_playing_shuffle);
                         } else {
