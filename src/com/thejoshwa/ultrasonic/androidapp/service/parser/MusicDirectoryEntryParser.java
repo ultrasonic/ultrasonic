@@ -31,19 +31,22 @@ public class MusicDirectoryEntryParser extends AbstractParser {
         super(context);
     }
 
-    protected MusicDirectory.Entry parseEntry(String artist) {
+    protected MusicDirectory.Entry parseEntry(String artist, boolean isAlbum) {
         MusicDirectory.Entry entry = new MusicDirectory.Entry();
         entry.setId(get("id"));
         entry.setParent(get("parent"));
-        entry.setTitle(get("title"));
-        entry.setDirectory(getBoolean("isDir"));
+        entry.setTitle(isAlbum ? get("name") : get("title"));
+        entry.setIsDirectory(getBoolean("isDir") || isAlbum);
         entry.setCoverArt(get("coverArt"));
         entry.setArtist(get("artist"));
+        entry.setArtistId(get("artistId"));
         entry.setYear(getInteger("year"));
+        entry.setCreated(get("created"));
         entry.setStarred(getValueExists(Constants.STARRED));
 
         if (!entry.isDirectory()) {
             entry.setAlbum(get("album"));
+            entry.setAlbumId(get("albumId"));
             entry.setTrack(getInteger("track"));
             entry.setGenre(get("genre"));
             entry.setContentType(get("contentType"));
@@ -54,8 +57,9 @@ public class MusicDirectoryEntryParser extends AbstractParser {
             entry.setDuration(getInteger("duration"));
             entry.setBitRate(getInteger("bitRate"));
             entry.setPath(get("path"));
-            entry.setVideo(getBoolean("isVideo"));
+            entry.setIsVideo(getBoolean("isVideo"));
             entry.setDiscNumber(getInteger("discNumber"));
+            entry.setType(get("type"));
         } else if(!"".equals(artist)) {
 			entry.setPath(artist + "/" + entry.getTitle());
 		}

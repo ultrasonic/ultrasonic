@@ -33,6 +33,7 @@ import android.content.pm.PackageInfo;
 import android.graphics.Bitmap;
 import android.graphics.PixelFormat;
 import android.media.AudioManager;
+import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
@@ -46,6 +47,7 @@ import android.view.View.OnClickListener;
 import android.view.View.OnTouchListener;
 import android.view.Window;
 import android.widget.ImageView;
+import android.widget.ListView;
 import android.widget.TextView;
 import com.thejoshwa.ultrasonic.androidapp.R;
 import com.thejoshwa.ultrasonic.androidapp.domain.MusicDirectory;
@@ -93,6 +95,7 @@ public class SubsonicTabActivity extends Activity implements OnClickListener{
     View playlistsMenuItem = null;
     View menuMain = null;
     public static boolean nowPlayingHidden = false;
+    boolean licenseValid;
     
     @Override
     protected void onCreate(Bundle bundle) {
@@ -322,7 +325,15 @@ public class SubsonicTabActivity extends Activity implements OnClickListener{
     			            @Override
     			            public void onClick(View view) {
     			                Intent intent = new Intent(SubsonicTabActivity.this, SelectAlbumActivity.class);
-    			                intent.putExtra(Constants.INTENT_EXTRA_NAME_ID, song.getParent());
+    			                
+    			                if (Util.getShouldUseId3Tags(SubsonicTabActivity.this)) {
+    			                	intent.putExtra(Constants.INTENT_EXTRA_NAME_IS_ALBUM, true);
+    			                	intent.putExtra(Constants.INTENT_EXTRA_NAME_ID, song.getAlbumId());
+    			                } else {
+    			                	intent.putExtra(Constants.INTENT_EXTRA_NAME_IS_ALBUM, false);
+    			                	intent.putExtra(Constants.INTENT_EXTRA_NAME_ID, song.getParent());
+    			                }
+    			                
     			                intent.putExtra(Constants.INTENT_EXTRA_NAME_NAME, song.getAlbum());
     			                Util.startActivityWithoutTransition(SubsonicTabActivity.this, intent);
     			            }
@@ -417,6 +428,43 @@ public class SubsonicTabActivity extends Activity implements OnClickListener{
         }
 		return IMAGE_LOADER;
 	}
+	
+    void download(final boolean append, final boolean save, final boolean autoplay, final boolean playNext, final boolean shuffle, final List<Entry> songs) {
+        if (getDownloadService() == null) {
+            return;
+        }
+
+        Runnable onValid = new Runnable() {
+            @Override
+            public void run() {
+                if (!append) {
+                    getDownloadService().clear();
+                }
+
+                warnIfNetworkOrStorageUnavailable();
+                getDownloadService().download(songs, save, autoplay, playNext, shuffle);
+                String playlistName = getIntent().getStringExtra(Constants.INTENT_EXTRA_NAME_PLAYLIST_NAME);
+                if (playlistName != null) {
+                    getDownloadService().setSuggestedPlaylistName(playlistName);
+                }
+                
+                if (autoplay) {
+                	if (Util.getShouldTransitionOnPlaybackPreference(SubsonicTabActivity.this)) {
+                		Util.startActivityWithoutTransition(SubsonicTabActivity.this, DownloadActivity.class);
+                	}
+                } else if (save) {
+                    Util.toast(SubsonicTabActivity.this, getResources().getQuantityString(R.plurals.select_album_n_songs_downloading, songs.size(), songs.size()));
+                } else if (playNext) {
+                	Util.toast(SubsonicTabActivity.this, getResources().getQuantityString(R.plurals.select_album_n_songs_play_next, songs.size(), songs.size()));
+                } else if (append) {
+                    Util.toast(SubsonicTabActivity.this, getResources().getQuantityString(R.plurals.select_album_n_songs_added, songs.size(), songs.size()));
+                }
+            }
+        };
+
+        checkLicenseAndTrialPeriod(onValid);
+    }
+
 
 	protected void downloadRecursively(final String id, final boolean save, final boolean append, final boolean autoplay, final boolean shuffle, final boolean background, final boolean playNext) {
 		downloadRecursively(id, "", true, save, append, autoplay, shuffle, background, playNext);
@@ -432,10 +480,17 @@ public class SubsonicTabActivity extends Activity implements OnClickListener{
             protected List<MusicDirectory.Entry> doInBackground() throws Throwable {
                 MusicService musicService = MusicServiceFactory.getMusicService(SubsonicTabActivity.this);
 				MusicDirectory root;
-				if(isDirectory)
-					root = musicService.getMusicDirectory(id, name, false, SubsonicTabActivity.this, this);
-				else
+				
+				if(isDirectory) {
+					if (Util.getShouldUseId3Tags(SubsonicTabActivity.this)) {
+						root = musicService.getAlbum(id, name, false, SubsonicTabActivity.this, this);
+					} else {
+						root = musicService.getMusicDirectory(id, name, false, SubsonicTabActivity.this, this);
+					}
+				} else {
 					root = musicService.getPlaylist(id, name, SubsonicTabActivity.this, this);
+				}
+				
                 List<MusicDirectory.Entry> songs = new LinkedList<MusicDirectory.Entry>();
                 getSongsRecursively(root, songs);
                 return songs;
@@ -451,9 +506,18 @@ public class SubsonicTabActivity extends Activity implements OnClickListener{
                         songs.add(song);
                     }
                 }
+                
                 for (MusicDirectory.Entry dir : parent.getChildren(true, false)) {
                     MusicService musicService = MusicServiceFactory.getMusicService(SubsonicTabActivity.this);
-                    getSongsRecursively(musicService.getMusicDirectory(dir.getId(), dir.getTitle(), false, SubsonicTabActivity.this, this), songs);
+                    MusicDirectory root;
+                    
+                    if (Util.getShouldUseId3Tags(SubsonicTabActivity.this)) {
+                    	root = musicService.getAlbum(dir.getId(), dir.getTitle(), false, SubsonicTabActivity.this, this);
+                    } else {
+                    	root = musicService.getMusicDirectory(dir.getId(), dir.getTitle(), false, SubsonicTabActivity.this, this);
+                    }
+                    
+                    getSongsRecursively(root, songs);
                 }
             }
 
@@ -531,7 +595,7 @@ public class SubsonicTabActivity extends Activity implements OnClickListener{
             @Override
             protected Void doInBackground() throws Throwable {
                 MusicService musicService = MusicServiceFactory.getMusicService(SubsonicTabActivity.this);
-				musicService.addToPlaylist(playlist.getId(), songs, SubsonicTabActivity.this, null);
+				musicService.updatePlaylist(playlist.getId(), songs, SubsonicTabActivity.this, null);
                 return null;
             }
             
@@ -553,6 +617,61 @@ public class SubsonicTabActivity extends Activity implements OnClickListener{
             }
         }.execute();
 	}
+	
+	protected void checkLicenseAndTrialPeriod(Runnable onValid) {
+        if (licenseValid) {
+            onValid.run();
+            return;
+        }
+
+        int trialDaysLeft = Util.getRemainingTrialDays(this);
+        Log.i(TAG, trialDaysLeft + " trial days left.");
+
+        if (trialDaysLeft == 0) {
+            showDonationDialog(trialDaysLeft, null);
+        } else if (trialDaysLeft < Constants.FREE_TRIAL_DAYS / 2) {
+            showDonationDialog(trialDaysLeft, onValid);
+        } else {
+            Util.toast(this, getResources().getString(R.string.select_album_not_licensed, trialDaysLeft));
+            onValid.run();
+        }
+    }
+
+    private void showDonationDialog(int trialDaysLeft, final Runnable onValid) {
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setIcon(android.R.drawable.ic_dialog_info);
+
+        if (trialDaysLeft == 0) {
+            builder.setTitle(R.string.select_album_donate_dialog_0_trial_days_left);
+        } else {
+            builder.setTitle(getResources().getQuantityString(R.plurals.select_album_donate_dialog_n_trial_days_left,
+                                                              trialDaysLeft, trialDaysLeft));
+        }
+
+        builder.setMessage(R.string.select_album_donate_dialog_message);
+
+        builder.setPositiveButton(R.string.select_album_donate_dialog_now,
+                                  new DialogInterface.OnClickListener() {
+                                      @Override
+                                      public void onClick(DialogInterface dialogInterface, int i) {
+                                          startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse(Constants.DONATION_URL)));
+                                      }
+                                  });
+
+        builder.setNegativeButton(R.string.select_album_donate_dialog_later,
+                                  new DialogInterface.OnClickListener() {
+                                      @Override
+                                      public void onClick(DialogInterface dialogInterface, int i) {
+                                          dialogInterface.dismiss();
+                                          if (onValid != null) {
+                                              onValid.run();
+                                          }
+                                      }
+                                  });
+
+        builder.create().show();
+    }
+
 
     private void setUncaughtExceptionHandler() {
         Thread.UncaughtExceptionHandler handler = Thread.getDefaultUncaughtExceptionHandler();

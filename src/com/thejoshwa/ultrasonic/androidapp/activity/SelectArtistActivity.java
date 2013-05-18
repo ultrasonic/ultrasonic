@@ -128,11 +128,20 @@ public class SelectArtistActivity extends SubsonicTabActivity implements Adapter
             protected Indexes doInBackground() throws Throwable {
                 boolean refresh = getIntent().getBooleanExtra(Constants.INTENT_EXTRA_NAME_REFRESH, false);
                 MusicService musicService = MusicServiceFactory.getMusicService(SelectArtistActivity.this);
-                if (!Util.isOffline(SelectArtistActivity.this)) {
+                boolean isOffline = Util.isOffline(SelectArtistActivity.this);
+                boolean useId3Tags = Util.getShouldUseId3Tags(SelectArtistActivity.this);
+                
+                if (!isOffline && !useId3Tags) {
                     musicFolders = musicService.getMusicFolders(refresh, SelectArtistActivity.this, this);
                 }
+                
                 String musicFolderId = Util.getSelectedMusicFolderId(SelectArtistActivity.this);
-                return musicService.getIndexes(musicFolderId, refresh, SelectArtistActivity.this, this);
+                
+                if (!isOffline && useId3Tags) {
+                	return musicService.getArtists(refresh, SelectArtistActivity.this, this);	
+                } else {
+                	return musicService.getIndexes(musicFolderId, refresh, SelectArtistActivity.this, this);
+                }
             }
 
             @Override

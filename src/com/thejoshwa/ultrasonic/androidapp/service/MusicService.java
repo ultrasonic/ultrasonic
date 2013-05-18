@@ -49,15 +49,21 @@ public interface MusicService {
 
     List<Genre> getGenres(Context context, ProgressListener progressListener) throws Exception;
     
-    void star(String id, Context context, ProgressListener progressListener) throws Exception;
+    void star(String id, String albumId, String artistId, Context context, ProgressListener progressListener) throws Exception;
     
-    void unstar(String id, Context context, ProgressListener progressListener) throws Exception;
+    void unstar(String id, String albumId, String artistId, Context context, ProgressListener progressListener) throws Exception;
 
     List<MusicFolder> getMusicFolders(boolean refresh, Context context, ProgressListener progressListener) throws Exception;
     
     Indexes getIndexes(String musicFolderId, boolean refresh, Context context, ProgressListener progressListener) throws Exception;
+    
+    Indexes getArtists(boolean refresh, Context context, ProgressListener progressListener) throws Exception;
 
     MusicDirectory getMusicDirectory(String id, String name, boolean refresh, Context context, ProgressListener progressListener) throws Exception;
+    
+    MusicDirectory getArtist(String id, String name, boolean refresh, Context context, ProgressListener progressListener) throws Exception;
+    
+    MusicDirectory getAlbum(String id, String name, boolean refresh, Context context, ProgressListener progressListener) throws Exception;
 
     SearchResult search(SearchCritera criteria, Context context, ProgressListener progressListener) throws Exception;
 
@@ -69,7 +75,7 @@ public interface MusicService {
 
     void deletePlaylist(String id, Context context, ProgressListener progressListener) throws Exception;
 
-	void addToPlaylist(String id, List<MusicDirectory.Entry> toAdd, Context context, ProgressListener progressListener) throws Exception;
+	void updatePlaylist(String id, List<MusicDirectory.Entry> toAdd, Context context, ProgressListener progressListener) throws Exception;
 
 	void removeFromPlaylist(String id, List<Integer> toRemove, Context context, ProgressListener progressListener) throws Exception;
 
@@ -80,12 +86,16 @@ public interface MusicService {
     void scrobble(String id, boolean submission, Context context, ProgressListener progressListener) throws Exception;
 
     MusicDirectory getAlbumList(String type, int size, int offset, Context context, ProgressListener progressListener) throws Exception;
+    
+    MusicDirectory getAlbumList2(String type, int size, int offset, Context context, ProgressListener progressListener) throws Exception;
 
     MusicDirectory getRandomSongs(int size, Context context, ProgressListener progressListener) throws Exception;
     
     MusicDirectory getSongsByGenre(String genre, int count, int offset, Context context, ProgressListener progressListener) throws Exception;
     
     SearchResult getStarred(Context context, ProgressListener progressListener) throws Exception;
+    
+    SearchResult getStarred2(Context context, ProgressListener progressListener) throws Exception;
 
     Bitmap getCoverArt(Context context, MusicDirectory.Entry entry, int size, boolean saveToFile, ProgressListener progressListener) throws Exception;
 

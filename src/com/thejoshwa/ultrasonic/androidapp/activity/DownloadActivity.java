@@ -380,9 +380,9 @@ public class DownloadActivity extends SubsonicTabActivity implements OnGestureLi
                     	
             			try {
                             if (isStarred) {
-                                musicService.unstar(id, getBaseContext(), null);
+                                musicService.unstar(id, null, null, getBaseContext(), null);
                             } else {
-                                musicService.star(id, getBaseContext(), null);
+                                musicService.star(id, null, null, getBaseContext(), null);
                             }
             			} catch (Exception e) {
 							Log.e(TAG, e.getMessage(), e);

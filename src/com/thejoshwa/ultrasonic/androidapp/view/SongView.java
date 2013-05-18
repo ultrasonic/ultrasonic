@@ -132,9 +132,9 @@ public class SongView extends UpdateView implements Checkable {
                     	
             			try {
             				if (!isStarred) {
-            					musicService.star(id, getContext(), null);
+            					musicService.star(id, null, null, getContext(), null);
             				} else {
-            					musicService.unstar(id, getContext(), null);
+            					musicService.unstar(id, null, null, getContext(), null);
             				}
             			} catch (Exception e) {
 							Log.e(TAG, e.getMessage(), e);

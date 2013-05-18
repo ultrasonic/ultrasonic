@@ -644,6 +644,18 @@ public class Util extends DownloadActivity {
             throw new RuntimeException(x.getMessage(), x);
         }
     }
+    
+    public static String getGrandparent(final String path) {
+    	// Find the top level folder, assume it is the album artist
+		if (path != null) {
+			int slashIndex = path.indexOf("/");
+			if (slashIndex != 0) {
+				return path.substring(0, slashIndex);
+			}
+		}
+		
+		return null;
+    }
 
     public static boolean isNetworkConnected(Context context) {
         ConnectivityManager manager = (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
@@ -1196,5 +1208,10 @@ public class Util extends DownloadActivity {
     public static boolean getShouldTransitionOnPlaybackPreference(Context context) {
         SharedPreferences prefs = getPreferences(context);
         return prefs.getBoolean(Constants.PREFERENCES_KEY_DOWNLOAD_TRANSITION, true);
+    }
+    
+    public static boolean getShouldUseId3Tags(Context context) {
+        SharedPreferences prefs = getPreferences(context);
+        return prefs.getBoolean(Constants.PREFERENCES_KEY_ID3_TAGS, false);
     }
 }

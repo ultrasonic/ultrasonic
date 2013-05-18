@@ -53,6 +53,7 @@ public final class Constants {
     public static final String INTENT_EXTRA_NAME_STARRED = "subsonic.starred";
     public static final String INTENT_EXTRA_NAME_RANDOM = "subsonic.random";
     public static final String INTENT_EXTRA_NAME_GENRE_NAME = "subsonic.genre";
+    public static final String INTENT_EXTRA_NAME_IS_ALBUM = "subsonic.isalbum";
 
     // Notification IDs.
     public static final int NOTIFICATION_ID_PLAYING = 100;
@@ -113,6 +114,7 @@ public final class Constants {
 	public static final String PREFERENCES_EQUALIZER_SETTINGS = "equalizerSettings";
 	public static final String PREFERENCES_KEY_DOWNLOAD_TRANSITION = "transitionToDownloadOnPlay";
 	public static final String PREFERENCES_KEY_INCREMENT_TIME = "incrementTime";
+	public static final String PREFERENCES_KEY_ID3_TAGS = "useId3Tags";
     
     // Name of the preferences file.
     public static final String PREFERENCES_FILE_NAME = "com.thejoshwa.ultrasonic.androidapp_preferences";
@@ -121,7 +123,7 @@ public final class Constants {
     public static final int FREE_TRIAL_DAYS = 30;
 
     // URL for project donations.
-    public static final String DONATION_URL = "http://subsonic.org/pages/android-donation.jsp";
+    public static final String DONATION_URL = "http://www.subsonic.org/pages/premium.jsp";
 
     public static final String ALBUM_ART_FILE = "folder.jpeg";
     public static final String STARRED = "starred";

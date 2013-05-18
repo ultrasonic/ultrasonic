@@ -53,6 +53,7 @@ public class MainActivity extends SubsonicTabActivity {
     private static final int MENU_ITEM_SERVER_10 = 110;
 
     private static boolean infoDialogDisplayed;
+    private static boolean shouldUseId3;
     
     /**
      * Called when the activity is first created.
@@ -83,7 +84,6 @@ public class MainActivity extends SubsonicTabActivity {
         final View songsTitle = buttons.findViewById(R.id.main_songs);
         final View randomSongsButton = buttons.findViewById(R.id.main_songs_button);
         final View songsStarredButton = buttons.findViewById(R.id.main_songs_starred);
-
         final View albumsTitle = buttons.findViewById(R.id.main_albums);
         final View albumsNewestButton = buttons.findViewById(R.id.main_albums_newest);
         final View albumsRandomButton = buttons.findViewById(R.id.main_albums_random);
@@ -93,6 +93,7 @@ public class MainActivity extends SubsonicTabActivity {
         final View albumsFrequentButton = buttons.findViewById(R.id.main_albums_frequent);
         final View albumsAlphaByNameButton = buttons.findViewById(R.id.main_albums_alphaByName);
         final View albumsAlphaByArtistButton = buttons.findViewById(R.id.main_albums_alphaByArtist);
+        
                 
         final View dummyView = findViewById(R.id.main_dummy);
 
@@ -126,7 +127,14 @@ public class MainActivity extends SubsonicTabActivity {
         	adapter.addView(songsTitle, false);
         	adapter.addViews(Arrays.asList(randomSongsButton, songsStarredButton), true);
             adapter.addView(albumsTitle, false);
-            adapter.addViews(Arrays.asList(albumsNewestButton, albumsRecentButton, albumsFrequentButton, albumsHighestButton, albumsRandomButton, albumsStarredButton, albumsAlphaByNameButton, albumsAlphaByArtistButton), true);
+            
+            if (Util.getShouldUseId3Tags(MainActivity.this)) {
+            	shouldUseId3 = true;
+            	adapter.addViews(Arrays.asList(albumsNewestButton, albumsRecentButton, albumsFrequentButton, albumsRandomButton, albumsStarredButton, albumsAlphaByNameButton, albumsAlphaByArtistButton), true);
+            } else {
+            	shouldUseId3 = false;
+            	adapter.addViews(Arrays.asList(albumsNewestButton, albumsRecentButton, albumsFrequentButton, albumsHighestButton, albumsRandomButton, albumsStarredButton, albumsAlphaByNameButton, albumsAlphaByArtistButton), true);
+            }
         }
         
         list.setAdapter(adapter);
@@ -193,9 +201,11 @@ public class MainActivity extends SubsonicTabActivity {
     protected void onResume() {
         super.onResume();
 
-        // Restart activity if theme has changed.
-        if (theme != null && !theme.equals(Util.getTheme(this))) {
-            restart();
+        boolean id3 = Util.getShouldUseId3Tags(MainActivity.this);
+        
+        if (id3 != shouldUseId3) {
+        	shouldUseId3 = id3;
+        	restart();
         }
     }
     

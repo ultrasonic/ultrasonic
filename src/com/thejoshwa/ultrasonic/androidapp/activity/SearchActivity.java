@@ -27,7 +27,6 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.view.ContextMenu;
 import android.view.LayoutInflater;
-import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.View;
 import android.view.MenuItem;
@@ -39,6 +38,7 @@ import android.net.Uri;
 import com.thejoshwa.ultrasonic.androidapp.R;
 import com.thejoshwa.ultrasonic.androidapp.domain.Artist;
 import com.thejoshwa.ultrasonic.androidapp.domain.MusicDirectory;
+import com.thejoshwa.ultrasonic.androidapp.domain.MusicDirectory.Entry;
 import com.thejoshwa.ultrasonic.androidapp.domain.SearchCritera;
 import com.thejoshwa.ultrasonic.androidapp.domain.SearchResult;
 import com.thejoshwa.ultrasonic.androidapp.service.MusicService;
@@ -80,7 +80,7 @@ public class SearchActivity extends SubsonicTabActivity {
     private ListAdapter moreAlbumsAdapter;
     private ListAdapter moreSongsAdapter;
     private EntryAdapter songAdapter;
-
+    
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -170,10 +170,11 @@ public class SearchActivity extends SubsonicTabActivity {
 
         boolean isArtist = selectedItem instanceof Artist;
         boolean isAlbum = selectedItem instanceof MusicDirectory.Entry && ((MusicDirectory.Entry) selectedItem).isDirectory();
-        boolean isSong = selectedItem instanceof MusicDirectory.Entry && (!((MusicDirectory.Entry) selectedItem).isDirectory())
-                && (!((MusicDirectory.Entry) selectedItem).isVideo());
-
-        if (isArtist || isAlbum) {
+        
+        if (!isArtist && !isAlbum) {
+            MenuInflater inflater = getMenuInflater();
+            inflater.inflate(R.menu.select_song_context, menu);
+        } else {
             MenuInflater inflater = getMenuInflater();
             inflater.inflate(R.menu.select_album_context, menu);
         }
@@ -185,8 +186,9 @@ public class SearchActivity extends SubsonicTabActivity {
         Object selectedItem = list.getItemAtPosition(info.position);
 
         Artist artist = selectedItem instanceof Artist ? (Artist) selectedItem : null;
-        MusicDirectory.Entry entry = selectedItem instanceof MusicDirectory.Entry ? (MusicDirectory.Entry) selectedItem : null;
+        Entry entry = selectedItem instanceof Entry ? (Entry) selectedItem : null;
         String id = artist != null ? artist.getId() : entry.getId();
+    	List<Entry> songs = new ArrayList<Entry>(1);
 
         switch (menuItem.getItemId()) {
             case R.id.album_menu_play_now:
@@ -201,6 +203,41 @@ public class SearchActivity extends SubsonicTabActivity {
             case R.id.album_menu_pin:
                 downloadRecursively(id, true, true, false, false, false, false);
                 break;
+            case R.id.song_menu_play_now:
+            	if (entry != null) {
+            		songs = new ArrayList<MusicDirectory.Entry>(1);
+            		songs.add(entry);
+            		download(false, false, true, false, false, songs);
+            	}
+                break;
+            case R.id.song_menu_play_next:
+            	if (entry != null) {
+            		songs = new ArrayList<MusicDirectory.Entry>(1);
+            		songs.add(entry);
+            		download(true, false, false, true, false, songs);
+            	}
+                break;                
+            case R.id.song_menu_play_last:
+            	if (entry != null) {
+            		songs = new ArrayList<MusicDirectory.Entry>(1);
+            		songs.add(entry);
+            		download(true, false, false, false, false, songs);
+            	}
+                break;
+            case R.id.song_menu_pin:
+            	if (entry != null) {
+            		songs.add(entry);
+            		Util.toast(SearchActivity.this, getResources().getQuantityString(R.plurals.select_album_n_songs_downloading, songs.size(), songs.size()));
+            		downloadBackground(true, songs);
+            	}
+                break;
+            case R.id.song_menu_unpin:
+            	if (entry != null) {
+            		songs.add(entry);
+            		Util.toast(SearchActivity.this, getResources().getQuantityString(R.plurals.select_album_n_songs_unpinned, songs.size(), songs.size()));
+            		getDownloadService().unpin(songs);
+            	}
+                break;                 
             default:
                 return super.onContextItemSelected(menuItem);
         }
@@ -208,6 +245,24 @@ public class SearchActivity extends SubsonicTabActivity {
         return true;
     }
     
+	private void downloadBackground(final boolean save, final List<MusicDirectory.Entry> songs) {
+		if (getDownloadService() == null) {
+			return;
+		}
+
+		Runnable onValid = new Runnable() {
+			@Override
+			public void run() {
+				warnIfNetworkOrStorageUnavailable();
+				getDownloadService().downloadBackground(songs, save);
+
+				Util.toast(SearchActivity.this, getResources().getQuantityString(R.plurals.select_album_n_songs_downloading, songs.size(), songs.size()));
+			}
+		};
+		
+		checkLicenseAndTrialPeriod(onValid);
+	}
+	
     private void search(final String query, final boolean autoplay) {
     	final int maxArtists = Util.getMaxArtists(this);
     	final int maxAlbums = Util.getMaxAlbums(this);
@@ -218,13 +273,16 @@ public class SearchActivity extends SubsonicTabActivity {
             protected SearchResult doInBackground() throws Throwable {
                 SearchCritera criteria = new SearchCritera(query, maxArtists, maxAlbums, maxSongs);
                 MusicService service = MusicServiceFactory.getMusicService(SearchActivity.this);
+                licenseValid = service.isLicenseValid(SearchActivity.this, this);
                 return service.search(criteria, SearchActivity.this, this);
             }
 
             @Override
             protected void done(SearchResult result) {
                 searchResult = result;
+                
                 populateList();
+                
                 if (autoplay) {
                     autoplay();
                 }
@@ -281,9 +339,11 @@ public class SearchActivity extends SubsonicTabActivity {
 
     private void expandArtists() {
         artistAdapter.clear();
+        
         for (Artist artist : searchResult.getArtists()) {
             artistAdapter.add(artist);
         }
+        
         artistAdapter.notifyDataSetChanged();
         mergeAdapter.removeAdapter(moreArtistsAdapter);
         mergeAdapter.notifyDataSetChanged();
@@ -291,9 +351,11 @@ public class SearchActivity extends SubsonicTabActivity {
 
     private void expandAlbums() {
         albumAdapter.clear();
+        
         for (MusicDirectory.Entry album : searchResult.getAlbums()) {
             albumAdapter.add(album);
         }
+        
         albumAdapter.notifyDataSetChanged();
         mergeAdapter.removeAdapter(moreAlbumsAdapter);
         mergeAdapter.notifyDataSetChanged();
@@ -301,9 +363,11 @@ public class SearchActivity extends SubsonicTabActivity {
 
     private void expandSongs() {
         songAdapter.clear();
+        
         for (MusicDirectory.Entry song : searchResult.getSongs()) {
             songAdapter.add(song);
         }
+        
         songAdapter.notifyDataSetChanged();
         mergeAdapter.removeAdapter(moreSongsAdapter);
         mergeAdapter.notifyDataSetChanged();
@@ -320,6 +384,7 @@ public class SearchActivity extends SubsonicTabActivity {
         Intent intent = new Intent(SearchActivity.this, SelectAlbumActivity.class);
         intent.putExtra(Constants.INTENT_EXTRA_NAME_ID, album.getId());
         intent.putExtra(Constants.INTENT_EXTRA_NAME_NAME, album.getTitle());
+        intent.putExtra(Constants.INTENT_EXTRA_NAME_IS_ALBUM, album.isDirectory());
         intent.putExtra(Constants.INTENT_EXTRA_NAME_AUTOPLAY, autoplay);
         Util.startActivityWithoutTransition(SearchActivity.this, intent);
     }
@@ -330,7 +395,9 @@ public class SearchActivity extends SubsonicTabActivity {
             if (!append) {
                 downloadService.clear();
             }
+            
             downloadService.download(Arrays.asList(song), save, false, playNext, false);
+            
             if (autoplay) {
                 downloadService.play(downloadService.size() - 1);
             }

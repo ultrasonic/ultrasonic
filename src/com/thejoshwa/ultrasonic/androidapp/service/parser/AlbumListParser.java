@@ -35,7 +35,7 @@ public class AlbumListParser extends MusicDirectoryEntryParser {
         super(context);
     }
 
-    public MusicDirectory parse(Reader reader, ProgressListener progressListener) throws Exception {
+    public MusicDirectory parse(Reader reader, ProgressListener progressListener, boolean useId3) throws Exception {
 
         updateProgress(progressListener, R.string.parser_reading);
         init(reader);
@@ -47,7 +47,7 @@ public class AlbumListParser extends MusicDirectoryEntryParser {
             if (eventType == XmlPullParser.START_TAG) {
                 String name = getElementName();
                 if ("album".equals(name)) {
-                    dir.addChild(parseEntry(""));
+                    dir.addChild(parseEntry("", useId3));
                 } else if ("error".equals(name)) {
                     handleError();
                 }

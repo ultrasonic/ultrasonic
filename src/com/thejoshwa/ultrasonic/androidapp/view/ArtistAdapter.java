@@ -43,9 +43,11 @@ public class ArtistAdapter extends ArrayAdapter<Artist> implements SectionIndexe
 
         Set<String> sectionSet = new LinkedHashSet<String>(30);
         List<Integer> positionList = new ArrayList<Integer>(30);
+        
         for (int i = 0; i < artists.size(); i++) {
             Artist artist = artists.get(i);
             String index = artist.getIndex();
+            
             if (!sectionSet.contains(index)) {
                 sectionSet.add(index);
                 positionList.add(i);

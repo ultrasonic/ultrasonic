@@ -50,6 +50,7 @@ public class IndexesParser extends AbstractParser {
         List<Artist> artists = new ArrayList<Artist>();
         List<Artist> shortcuts = new ArrayList<Artist>();
         Long lastModified = null;
+        String ignoredArticles = null;
         int eventType;
         String index = "#";
         boolean changed = false;
@@ -58,9 +59,10 @@ public class IndexesParser extends AbstractParser {
             eventType = nextParseEvent();
             if (eventType == XmlPullParser.START_TAG) {
                 String name = getElementName();
-                if ("indexes".equals(name)) {
+                if ("indexes".equals(name) || "artists".equals(name)) {
                     changed = true;
                     lastModified = getLong("lastModified");
+                    ignoredArticles = get("ignoredArticles");
                 } else if ("index".equals(name)) {
                     index = get("name");
 
@@ -68,6 +70,8 @@ public class IndexesParser extends AbstractParser {
                     Artist artist = new Artist();
                     artist.setId(get("id"));
                     artist.setName(get("name"));
+                    artist.setCoverArt(get("coverArt"));
+                    artist.setAlbumCount(getLong("albumCount"));
                     artist.setIndex(index);
                     artists.add(artist);
 

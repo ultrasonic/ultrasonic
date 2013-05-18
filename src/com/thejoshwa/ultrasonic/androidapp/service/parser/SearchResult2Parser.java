@@ -39,7 +39,7 @@ public class SearchResult2Parser extends MusicDirectoryEntryParser {
         super(context);
     }
 
-    public SearchResult parse(Reader reader, ProgressListener progressListener) throws Exception {
+    public SearchResult parse(Reader reader, ProgressListener progressListener, boolean useId3) throws Exception {
         updateProgress(progressListener, R.string.parser_reading);
         init(reader);
 
@@ -57,9 +57,9 @@ public class SearchResult2Parser extends MusicDirectoryEntryParser {
                     artist.setName(get("name"));
                     artists.add(artist);
                 } else if ("album".equals(name)) {
-                    albums.add(parseEntry(""));
+                    albums.add(parseEntry("", useId3));
                 } else if ("song".equals(name)) {
-                    songs.add(parseEntry(""));
+                    songs.add(parseEntry("", false));
                 } else if ("error".equals(name)) {
                     handleError();
                 }

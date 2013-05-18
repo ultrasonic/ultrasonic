@@ -18,8 +18,12 @@
  */
 package com.thejoshwa.ultrasonic.androidapp.domain;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
+import java.util.Locale;
 import java.io.Serializable;
 
 /**
@@ -70,10 +74,12 @@ public class MusicDirectory {
 		 */
 		private String id;
         private String parent;
-        private boolean directory;
+        private boolean isDirectory;
         private String title;
         private String album;
+        private String albumId;
         private String artist;
+        private String artistId;
         private Integer track;
         private Integer year;
         private String genre;
@@ -83,12 +89,15 @@ public class MusicDirectory {
         private String transcodedSuffix;
         private String coverArt;
         private Long size;
+        private Long songCount;
         private Integer duration;
         private Integer bitRate;
         private String path;
-        private boolean video;
-        private boolean starred;
+        private boolean isVideo;
+        private boolean isStarred;
         private Integer discNumber;
+        private String type;
+        private Date created;
         private int closeness;
         
         public Integer getDiscNumber() {
@@ -100,11 +109,11 @@ public class MusicDirectory {
         }
 
         public boolean getStarred() {
-        	return starred;
+        	return isStarred;
         }
         
         public void setStarred(boolean starred) {
-        	this.starred = starred;
+        	this.isStarred = starred;
         }
         
         public String getId() {
@@ -124,11 +133,11 @@ public class MusicDirectory {
         }
 
         public boolean isDirectory() {
-            return directory;
+            return isDirectory;
         }
 
-        public void setDirectory(boolean directory) {
-            this.directory = directory;
+        public void setIsDirectory(boolean directory) {
+            this.isDirectory = directory;
         }
 
         public String getTitle() {
@@ -146,6 +155,14 @@ public class MusicDirectory {
         public void setAlbum(String album) {
             this.album = album;
         }
+        
+        public String getAlbumId() {
+            return albumId;
+        }
+
+        public void setAlbumId(String albumId) {
+            this.albumId = albumId;
+        }
 
         public String getArtist() {
             return artist;
@@ -154,6 +171,14 @@ public class MusicDirectory {
         public void setArtist(String artist) {
             this.artist = artist;
         }
+        
+        public String getArtistId() {
+            return artistId;
+        }
+
+        public void setArtistId(String artistId) {
+            this.artistId = artistId;
+        }
 
         public Integer getTrack() {
             return track == null ? 0 : track;
@@ -161,6 +186,14 @@ public class MusicDirectory {
 
         public void setTrack(Integer track) {
             this.track = track;
+        }
+        
+        public Long getSongcount() {
+            return songCount;
+        }
+
+        public void setSongCount(Long songCount) {
+            this.songCount = songCount;
         }
 
         public Integer getYear() {
@@ -256,11 +289,35 @@ public class MusicDirectory {
         }
 
         public boolean isVideo() {
-            return video;
+            return isVideo;
         }
 
-        public void setVideo(boolean video) {
-            this.video = video;
+        public void setIsVideo(boolean video) {
+            this.isVideo = video;
+        }
+        
+        public String getType() {
+            return type;
+        }
+
+        public void setType(String type) {
+            this.type = type;
+        }
+        
+        public Date getCreated() {
+            return created;
+        }
+
+        public void setCreated(String created) {
+        	if (created != null) {
+        		try {
+					this.created = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss", Locale.ENGLISH).parse(created);
+				} catch (ParseException e) { 
+					this.created = null;
+				}
+        	} else {
+        		this.created = null;
+        	}
         }
         
     	public int getCloseness() {

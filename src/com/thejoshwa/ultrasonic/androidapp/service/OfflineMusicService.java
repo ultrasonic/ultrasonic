@@ -124,7 +124,7 @@ public class OfflineMusicService extends RESTMusicService {
 
     private MusicDirectory.Entry createEntry(Context context, File file, String name) {
         MusicDirectory.Entry entry = new MusicDirectory.Entry();
-        entry.setDirectory(file.isDirectory());
+        entry.setIsDirectory(file.isDirectory());
         entry.setId(file.getPath());
         entry.setParent(file.getParent());
         entry.setSize(file.length());
@@ -168,7 +168,7 @@ public class OfflineMusicService extends RESTMusicService {
             	entry.setTitle(title);
             }
             
-            entry.setVideo(hasVideo != null);
+            entry.setIsVideo(hasVideo != null);
             
             Log.i("OfflineMusicService", "Offline Stuff: " + track);
             
@@ -266,12 +266,12 @@ public class OfflineMusicService extends RESTMusicService {
     }
 
     @Override
-    public void star(String id, Context context, ProgressListener progressListener) throws Exception {
+    public void star(String id, String albumId, String artistId, Context context, ProgressListener progressListener) throws Exception {
         throw new OfflineException("Star not available in offline mode");
     }
     
     @Override
-    public void unstar(String id, Context context, ProgressListener progressListener) throws Exception {
+    public void unstar(String id, String albumId, String artistId, Context context, ProgressListener progressListener) throws Exception {
         throw new OfflineException("UnStar not available in offline mode");
     }
     
@@ -467,7 +467,7 @@ public class OfflineMusicService extends RESTMusicService {
 	}
 	
 	@Override
-	public void addToPlaylist(String id, List<MusicDirectory.Entry> toAdd, Context context, ProgressListener progressListener) throws Exception {
+	public void updatePlaylist(String id, List<MusicDirectory.Entry> toAdd, Context context, ProgressListener progressListener) throws Exception {
 		throw new OfflineException("Updating playlist not available in offline mode");
 	}
 	

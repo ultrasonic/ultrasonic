@@ -61,8 +61,6 @@ import org.apache.http.params.HttpParams;
 import org.apache.http.protocol.BasicHttpContext;
 import org.apache.http.protocol.ExecutionContext;
 import org.apache.http.protocol.HttpContext;
-import org.xmlpull.v1.XmlPullParser;
-
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.content.pm.PackageInfo;
@@ -71,7 +69,6 @@ import android.graphics.BitmapFactory;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.util.Log;
-import android.util.Xml;
 import com.thejoshwa.ultrasonic.androidapp.R;
 import com.thejoshwa.ultrasonic.androidapp.domain.Genre;
 import com.thejoshwa.ultrasonic.androidapp.domain.Indexes;
@@ -263,6 +260,47 @@ public class RESTMusicService implements MusicService {
         return "indexes-" + Math.abs(s.hashCode()) + ".ser";
     }
     
+    @Override
+    public Indexes getArtists(boolean refresh, Context context, ProgressListener progressListener) throws Exception {
+    	checkServerVersion(context, "1.8", "Artists by ID3 tag not supported.");
+    	
+        Indexes cachedArtists = readCachedArtists(context);
+        if (cachedArtists != null && !refresh) {
+            return cachedArtists;
+        }
+
+        Reader reader = getReader(context, progressListener, "getArtists", null);
+        try {
+            Indexes indexes = new IndexesParser(context).parse(reader, progressListener);
+            if (indexes != null) {
+                writeCachedArtists(context, indexes);
+                return indexes;
+            }
+			if(cachedArtists != null) {
+				return cachedArtists;
+			} else {
+				return new Indexes(0, new ArrayList<com.thejoshwa.ultrasonic.androidapp.domain.Artist>(), new ArrayList<com.thejoshwa.ultrasonic.androidapp.domain.Artist>());
+			}
+        } finally {
+            Util.close(reader);
+        }
+    }
+    
+    private Indexes readCachedArtists(Context context) {
+        String filename = getCachedArtistsFilename(context);
+        return FileUtil.deserialize(context, filename);
+    }
+
+    private void writeCachedArtists(Context context, Indexes artists) {
+        String filename = getCachedArtistsFilename(context);
+        FileUtil.serialize(context, artists, filename);
+    }
+
+    private String getCachedArtistsFilename(Context context) {
+    	String s = Util.getRestUrl(context, null);
+        return "indexes-" + Math.abs(s.hashCode()) + ".ser";
+    }
+    
     private ArrayList<MusicFolder> readCachedMusicFolders(Context context) {
         String filename = getCachedMusicFoldersFilename(context);
         return FileUtil.deserialize(context, filename);
@@ -278,8 +316,28 @@ public class RESTMusicService implements MusicService {
         return "musicFolders-" + Math.abs(s.hashCode()) + ".ser";
     }
     
-    public void star(String id, Context context, ProgressListener progressListener) throws Exception {
-        Reader reader = getReader(context, progressListener, "star", null, "id", id);
+    public void star(String id, String albumId, String artistId, Context context, ProgressListener progressListener) throws Exception {
+    	checkServerVersion(context, "1.8", "Starring not supported.");
+    	
+        List<String> parameterNames = new LinkedList<String>();
+        List<Object> parameterValues = new LinkedList<Object>();
+
+        if (id != null) {
+            parameterNames.add("id");
+            parameterValues.add(id);
+        }
+        
+        if (albumId != null) {
+            parameterNames.add("albumId");
+            parameterValues.add(albumId);
+        }
+        
+        if (artistId != null) {
+            parameterNames.add("artistId");
+            parameterValues.add(artistId);
+        }
+    	
+        Reader reader = getReader(context, progressListener, "star", null, parameterNames, parameterValues);
         try {
         	new ErrorParser(context).parse(reader);
         } finally {
@@ -287,8 +345,29 @@ public class RESTMusicService implements MusicService {
         }
     }
     
-    public void unstar(String id, Context context, ProgressListener progressListener) throws Exception {
-        Reader reader = getReader(context, progressListener, "unstar", null, "id", id);
+    public void unstar(String id, String albumId, String artistId, Context context, ProgressListener progressListener) throws Exception {
+    	checkServerVersion(context, "1.8", "Unstarring not supported.");
+    	
+        List<String> parameterNames = new LinkedList<String>();
+        List<Object> parameterValues = new LinkedList<Object>();
+
+        if (id != null) {
+            parameterNames.add("id");
+            parameterValues.add(id);
+        }
+        
+        if (albumId != null) {
+            parameterNames.add("albumId");
+            parameterValues.add(albumId);
+        }
+        
+        if (artistId != null) {
+            parameterNames.add("artistId");
+            parameterValues.add(artistId);
+        }
+
+    	
+        Reader reader = getReader(context, progressListener, "unstar", null, parameterNames, parameterValues);
         try {
         	new ErrorParser(context).parse(reader);
         } finally {
@@ -300,7 +379,31 @@ public class RESTMusicService implements MusicService {
     public MusicDirectory getMusicDirectory(String id, String name, boolean refresh, Context context, ProgressListener progressListener) throws Exception {
         Reader reader = getReader(context, progressListener, "getMusicDirectory", null, "id", id);
         try {
-            return new MusicDirectoryParser(context).parse(name, reader, progressListener);
+            return new MusicDirectoryParser(context).parse(name, reader, progressListener, false);
+        } finally {
+            Util.close(reader);
+        }
+    }
+    
+    @Override
+    public MusicDirectory getArtist(String id, String name, boolean refresh, Context context, ProgressListener progressListener) throws Exception {
+    	checkServerVersion(context, "1.8", "Artist by ID3 tag not supported.");
+    	
+        Reader reader = getReader(context, progressListener, "getArtist", null, "id", id);
+        try {
+            return new MusicDirectoryParser(context).parse(name, reader, progressListener, false);
+        } finally {
+            Util.close(reader);
+        }
+    }
+    
+    @Override
+    public MusicDirectory getAlbum(String id, String name, boolean refresh, Context context, ProgressListener progressListener) throws Exception {
+    	checkServerVersion(context, "1.8", "Album by ID3 tag not supported.");
+    	
+        Reader reader = getReader(context, progressListener, "getAlbum", null, "id", id);
+        try {
+            return new MusicDirectoryParser(context).parse(name, reader, progressListener, true);
         } finally {
             Util.close(reader);
         }
@@ -309,7 +412,11 @@ public class RESTMusicService implements MusicService {
     @Override
     public SearchResult search(SearchCritera critera, Context context, ProgressListener progressListener) throws Exception {
         try {
-            return searchNew(critera, context, progressListener);
+        	if (!Util.isOffline(context) && Util.getShouldUseId3Tags(context)) {
+        		return search3(critera, context, progressListener);
+        	} else {
+        		return search2(critera, context, progressListener);
+        	}
         } catch (ServerTooOldException x) {
             // Ensure backward compatibility with REST 1.3.
             return searchOld(critera, context, progressListener);
@@ -333,15 +440,29 @@ public class RESTMusicService implements MusicService {
     /**
      * Search using the "search2" REST method, available in 1.4.0 and later.
      */
-    private SearchResult searchNew(SearchCritera critera, Context context, ProgressListener progressListener) throws Exception {
-        checkServerVersion(context, "1.4", null);
+    private SearchResult search2(SearchCritera critera, Context context, ProgressListener progressListener) throws Exception {
+        checkServerVersion(context, "1.4", "Search2 not supported.");
 
         List<String> parameterNames = Arrays.asList("query", "artistCount", "albumCount", "songCount");
         List<Object> parameterValues = Arrays.<Object>asList(critera.getQuery(), critera.getArtistCount(),
                                                              critera.getAlbumCount(), critera.getSongCount());
         Reader reader = getReader(context, progressListener, "search2", null, parameterNames, parameterValues);
         try {
-            return new SearchResult2Parser(context).parse(reader, progressListener);
+            return new SearchResult2Parser(context).parse(reader, progressListener, false);
+        } finally {
+            Util.close(reader);
+        }
+    }
+    
+    private SearchResult search3(SearchCritera critera, Context context, ProgressListener progressListener) throws Exception {
+        checkServerVersion(context, "1.8", "Searching by ID3 tag not supported.");
+
+        List<String> parameterNames = Arrays.asList("query", "artistCount", "albumCount", "songCount");
+        List<Object> parameterValues = Arrays.<Object>asList(critera.getQuery(), critera.getArtistCount(),
+                                                             critera.getAlbumCount(), critera.getSongCount());
+        Reader reader = getReader(context, progressListener, "search3", null, parameterNames, parameterValues);
+        try {
+            return new SearchResult2Parser(context).parse(reader, progressListener, true);
         } finally {
             Util.close(reader);
         }
@@ -395,6 +516,8 @@ public class RESTMusicService implements MusicService {
 
     @Override
     public void createPlaylist(String id, String name, List<MusicDirectory.Entry> entries, Context context, ProgressListener progressListener) throws Exception {
+    	checkServerVersion(context, "1.2", "Creating playlist not supported.");
+    	
         List<String> parameterNames = new LinkedList<String>();
         List<Object> parameterValues = new LinkedList<Object>();
 
@@ -420,7 +543,9 @@ public class RESTMusicService implements MusicService {
     }
     
 	@Override
-	public void deletePlaylist(String id, Context context, ProgressListener progressListener) throws Exception {		
+	public void deletePlaylist(String id, Context context, ProgressListener progressListener) throws Exception {
+		checkServerVersion(context, "1.2", "Deleting playlist not supported.");
+		
 		Reader reader = getReader(context, progressListener, "deletePlaylist", null, "id", id);
 		try {
             new ErrorParser(context).parse(reader);
@@ -430,8 +555,9 @@ public class RESTMusicService implements MusicService {
 	}
 	
 	@Override
-	public void addToPlaylist(String id, List<MusicDirectory.Entry> toAdd, Context context, ProgressListener progressListener) throws Exception {
-		checkServerVersion(context, "1.8", "Updating playlists is not supported.");
+	public void updatePlaylist(String id, List<MusicDirectory.Entry> toAdd, Context context, ProgressListener progressListener) throws Exception {
+		checkServerVersion(context, "1.8", "Updating playlist not supported.");
+		
 		List<String> names = new ArrayList<String>();
 		List<Object> values = new ArrayList<Object>();
 		names.add("playlistId");
@@ -450,7 +576,8 @@ public class RESTMusicService implements MusicService {
 	
 	@Override
 	public void removeFromPlaylist(String id, List<Integer> toRemove, Context context, ProgressListener progressListener) throws Exception {
-		checkServerVersion(context, "1.8", "Updating playlists is not supported.");
+		checkServerVersion(context, "1.8", "Removing from playlist not supported.");
+		
 		List<String> names = new ArrayList<String>();
 		List<Object> values = new ArrayList<Object>();
 		names.add("playlistId");
@@ -469,7 +596,7 @@ public class RESTMusicService implements MusicService {
 	
 	@Override
 	public void updatePlaylist(String id, String name, String comment, boolean pub, Context context, ProgressListener progressListener) throws Exception {
-		checkServerVersion(context, "1.8", "Updating playlists is not supported.");
+		checkServerVersion(context, "1.8", "Updating playlist not supported.");
 		Reader reader = getReader(context, progressListener, "updatePlaylist", null, Arrays.asList("playlistId", "name", "comment", "public"), Arrays.<Object>asList(id, name, comment, pub));
 		try {
 			new ErrorParser(context).parse(reader);
@@ -480,6 +607,8 @@ public class RESTMusicService implements MusicService {
 
     @Override
     public Lyrics getLyrics(String artist, String title, Context context, ProgressListener progressListener) throws Exception {
+    	checkServerVersion(context, "1.2", "Lyrics not supported.");
+    	
         Reader reader = getReader(context, progressListener, "getLyrics", null, Arrays.asList("artist", "title"), Arrays.<Object>asList(artist, title));
         try {
             return new LyricsParser(context).parse(reader, progressListener);
@@ -491,6 +620,7 @@ public class RESTMusicService implements MusicService {
     @Override
     public void scrobble(String id, boolean submission, Context context, ProgressListener progressListener) throws Exception {
         checkServerVersion(context, "1.5", "Scrobbling not supported.");
+        
         Reader reader = getReader(context, progressListener, "scrobble", null, Arrays.asList("id", "submission"), Arrays.<Object>asList(id, submission));
         try {
             new ErrorParser(context).parse(reader);
@@ -501,10 +631,25 @@ public class RESTMusicService implements MusicService {
 
     @Override
     public MusicDirectory getAlbumList(String type, int size, int offset, Context context, ProgressListener progressListener) throws Exception {
+    	checkServerVersion(context, "1.2", "Album list not supported.");
+    	
         Reader reader = getReader(context, progressListener, "getAlbumList",
                                   null, Arrays.asList("type", "size", "offset"), Arrays.<Object>asList(type, size, offset));
         try {
-            return new AlbumListParser(context).parse(reader, progressListener);
+            return new AlbumListParser(context).parse(reader, progressListener, false);
+        } finally {
+            Util.close(reader);
+        }
+    }
+    
+    @Override
+    public MusicDirectory getAlbumList2(String type, int size, int offset, Context context, ProgressListener progressListener) throws Exception {
+    	checkServerVersion(context, "1.8", "Album list by ID3 tag not supported.");
+    	
+        Reader reader = getReader(context, progressListener, "getAlbumList2",
+                                  null, Arrays.asList("type", "size", "offset"), Arrays.<Object>asList(type, size, offset));
+        try {
+            return new AlbumListParser(context).parse(reader, progressListener, true);
         } finally {
             Util.close(reader);
         }
@@ -512,6 +657,8 @@ public class RESTMusicService implements MusicService {
 
     @Override
     public MusicDirectory getRandomSongs(int size, Context context, ProgressListener progressListener) throws Exception {
+    	checkServerVersion(context, "1.2", "Random songs not supported.");
+    	
         HttpParams params = new BasicHttpParams();
         HttpConnectionParams.setSoTimeout(params, SOCKET_READ_TIMEOUT_GET_RANDOM_SONGS);
 		
@@ -531,9 +678,23 @@ public class RESTMusicService implements MusicService {
     
     @Override
     public SearchResult getStarred(Context context, ProgressListener progressListener) throws Exception {
+    	checkServerVersion(context, "1.8", "Starred albums not supported.");
+    	
         Reader reader = getReader(context, progressListener, "getStarred", null);
         try {
-            return new SearchResult2Parser(context).parse(reader, progressListener);
+            return new SearchResult2Parser(context).parse(reader, progressListener, false);
+        } finally {
+            Util.close(reader);
+        }	
+    }
+    
+    @Override
+    public SearchResult getStarred2(Context context, ProgressListener progressListener) throws Exception {
+    	checkServerVersion(context, "1.8", "Starred albums by ID3 tag not supported.");
+    	
+        Reader reader = getReader(context, progressListener, "getStarred2", null);
+        try {
+            return new SearchResult2Parser(context).parse(reader, progressListener, true);
         } finally {
             Util.close(reader);
         }	
@@ -948,6 +1109,7 @@ public class RESTMusicService implements MusicService {
 	@Override
 	public List<Genre> getGenres(Context context, ProgressListener progressListener) throws Exception {
 		checkServerVersion(context, "1.9", "Genres not supported.");
+		
         Reader reader = getReader(context, progressListener, "getGenres", null);
         try {
             return new GenreParser(context).parse(reader, progressListener);
@@ -959,6 +1121,7 @@ public class RESTMusicService implements MusicService {
 	@Override
 	public MusicDirectory getSongsByGenre(String genre, int count, int offset, Context context, ProgressListener progressListener) throws Exception {
     	checkServerVersion(context, "1.9", "Genres not supported.");
+    	
         HttpParams params = new BasicHttpParams();
         HttpConnectionParams.setSoTimeout(params, SOCKET_READ_TIMEOUT_GET_RANDOM_SONGS);
 

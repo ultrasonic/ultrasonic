@@ -43,6 +43,7 @@ public class GenreAdapter extends ArrayAdapter<Genre> implements SectionIndexer 
 
         Set<String> sectionSet = new LinkedHashSet<String>(30);
         List<Integer> positionList = new ArrayList<Integer>(30);
+        
         for (int i = 0; i < genres.size(); i++) {
             Genre genre = genres.get(i);
             String index = genre.getIndex();
@@ -51,6 +52,7 @@ public class GenreAdapter extends ArrayAdapter<Genre> implements SectionIndexer 
                 positionList.add(i);
             }
         }
+        
         sections = sectionSet.toArray(new Object[sectionSet.size()]);
         positions = positionList.toArray(new Integer[positionList.size()]);
     }

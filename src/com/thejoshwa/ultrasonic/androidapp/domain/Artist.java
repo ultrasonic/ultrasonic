@@ -32,6 +32,8 @@ public class Artist implements Serializable {
 	private String id;
     private String name;
     private String index;
+    private String coverArt;
+    private Long albumCount;
     private int closeness;
 
     public String getId() {
@@ -57,6 +59,22 @@ public class Artist implements Serializable {
     public void setIndex(String index) {
         this.index = index;
     }
+    
+    public String getCoverArt() {
+        return coverArt;
+    }
+
+    public void setCoverArt(String coverArt) {
+        this.coverArt = coverArt;
+    }
+    
+	public long getAlbumCount() {
+		return albumCount;
+	}
+
+	public void setAlbumCount(Long albumCount) {
+		this.albumCount = albumCount;
+	}
     
 	public int getCloseness() {
 		return closeness;

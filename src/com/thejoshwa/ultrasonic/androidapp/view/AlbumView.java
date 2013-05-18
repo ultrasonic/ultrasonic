@@ -82,12 +82,13 @@ public class AlbumView extends UpdateView {
             	new Thread(new Runnable() {
             	    public void run() {
                     	MusicService musicService = MusicServiceFactory.getMusicService(null);
+                    	boolean useId3 = Util.getShouldUseId3Tags(getContext());
                     	
             			try {
             				if (!isStarred) {
-            					musicService.star(id, getContext(), null);
+            					musicService.star(!useId3 ? id : null, useId3 ? id : null, null, getContext(), null);
             				} else {
-            					musicService.unstar(id, getContext(), null);
+            					musicService.unstar(!useId3 ? id : null, useId3 ? id : null, null, getContext(), null);
             				}
             			} catch (Exception e) {
             				Log.e(TAG, e.getMessage(), e);

@@ -37,6 +37,11 @@
             a:key="showNowPlaying"
             a:summary="@string/settings.show_now_playing_summary"
             a:title="@string/settings.show_now_playing" />
+        <CheckBoxPreference
+            a:defaultValue="false"
+            a:key="useId3Tags"
+            a:summary="@string/settings.use_id3_summary"
+            a:title="@string/settings.use_id3" />        
     </PreferenceCategory>
     <PreferenceCategory a:title="@string/settings.playback_control_title" >
         <CheckBoxPreference

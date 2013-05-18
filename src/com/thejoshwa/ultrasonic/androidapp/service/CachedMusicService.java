@@ -52,8 +52,11 @@ public class CachedMusicService implements MusicService {
 
     private final MusicService musicService;
     private final LRUCache<String, TimeLimitedCache<MusicDirectory>> cachedMusicDirectories;
+    private final LRUCache<String, TimeLimitedCache<MusicDirectory>> cachedArtist;
+    private final LRUCache<String, TimeLimitedCache<MusicDirectory>> cachedAlbum;
     private final TimeLimitedCache<Boolean> cachedLicenseValid = new TimeLimitedCache<Boolean>(120, TimeUnit.SECONDS);
     private final TimeLimitedCache<Indexes> cachedIndexes = new TimeLimitedCache<Indexes>(60 * 60, TimeUnit.SECONDS);
+    private final TimeLimitedCache<Indexes> cachedArtists = new TimeLimitedCache<Indexes>(60 * 60, TimeUnit.SECONDS);
     private final TimeLimitedCache<List<Playlist>> cachedPlaylists = new TimeLimitedCache<List<Playlist>>(3600, TimeUnit.SECONDS);
     private final TimeLimitedCache<List<MusicFolder>> cachedMusicFolders = new TimeLimitedCache<List<MusicFolder>>(10 * 3600, TimeUnit.SECONDS);
     private final TimeLimitedCache<List<Genre>> cachedGenres = new TimeLimitedCache<List<Genre>>(10 * 3600, TimeUnit.SECONDS);
@@ -62,6 +65,8 @@ public class CachedMusicService implements MusicService {
     public CachedMusicService(MusicService musicService) {
         this.musicService = musicService;
         cachedMusicDirectories = new LRUCache<String, TimeLimitedCache<MusicDirectory>>(MUSIC_DIR_CACHE_SIZE);
+        cachedArtist = new LRUCache<String, TimeLimitedCache<MusicDirectory>>(MUSIC_DIR_CACHE_SIZE);
+        cachedAlbum = new LRUCache<String, TimeLimitedCache<MusicDirectory>>(MUSIC_DIR_CACHE_SIZE);
     }
 
     @Override
@@ -110,6 +115,20 @@ public class CachedMusicService implements MusicService {
         }
         return result;
     }
+    
+    @Override
+    public Indexes getArtists(boolean refresh, Context context, ProgressListener progressListener) throws Exception {
+        checkSettingsChanged(context);
+        if (refresh) {
+            cachedArtists.clear();
+        }
+        Indexes result = cachedArtists.get();
+        if (result == null) {
+            result = musicService.getArtists(refresh, context, progressListener);
+            cachedArtists.set(result);
+        }
+        return result;
+    }
 
     @Override
     public MusicDirectory getMusicDirectory(String id, String name, boolean refresh, Context context, ProgressListener progressListener) throws Exception {
@@ -121,6 +140,34 @@ public class CachedMusicService implements MusicService {
             cache = new TimeLimitedCache<MusicDirectory>(TTL_MUSIC_DIR, TimeUnit.SECONDS);
             cache.set(dir);
             cachedMusicDirectories.put(id, cache);
+        }
+        return dir;
+    }
+    
+    @Override
+    public MusicDirectory getArtist(String id, String name, boolean refresh, Context context, ProgressListener progressListener) throws Exception {
+        checkSettingsChanged(context);
+        TimeLimitedCache<MusicDirectory> cache = refresh ? null : cachedArtist.get(id);
+        MusicDirectory dir = cache == null ? null : cache.get();
+        if (dir == null) {
+            dir = musicService.getArtist(id, name, refresh, context, progressListener);
+            cache = new TimeLimitedCache<MusicDirectory>(TTL_MUSIC_DIR, TimeUnit.SECONDS);
+            cache.set(dir);
+            cachedArtist.put(id, cache);
+        }
+        return dir;
+    }
+    
+    @Override
+    public MusicDirectory getAlbum(String id, String name, boolean refresh, Context context, ProgressListener progressListener) throws Exception {
+        checkSettingsChanged(context);
+        TimeLimitedCache<MusicDirectory> cache = refresh ? null : cachedAlbum.get(id);
+        MusicDirectory dir = cache == null ? null : cache.get();
+        if (dir == null) {
+            dir = musicService.getAlbum(id, name, refresh, context, progressListener);
+            cache = new TimeLimitedCache<MusicDirectory>(TTL_MUSIC_DIR, TimeUnit.SECONDS);
+            cache.set(dir);
+            cachedAlbum.put(id, cache);
         }
         return dir;
     }
@@ -158,8 +205,8 @@ public class CachedMusicService implements MusicService {
 	}
 	
 	@Override
-	public void addToPlaylist(String id, List<MusicDirectory.Entry> toAdd, Context context, ProgressListener progressListener) throws Exception {
-		musicService.addToPlaylist(id, toAdd, context, progressListener);
+	public void updatePlaylist(String id, List<MusicDirectory.Entry> toAdd, Context context, ProgressListener progressListener) throws Exception {
+		musicService.updatePlaylist(id, toAdd, context, progressListener);
 	}
 	
 	@Override
@@ -186,6 +233,11 @@ public class CachedMusicService implements MusicService {
     public MusicDirectory getAlbumList(String type, int size, int offset, Context context, ProgressListener progressListener) throws Exception {
         return musicService.getAlbumList(type, size, offset, context, progressListener);
     }
+    
+    @Override
+    public MusicDirectory getAlbumList2(String type, int size, int offset, Context context, ProgressListener progressListener) throws Exception {
+        return musicService.getAlbumList2(type, size, offset, context, progressListener);
+    }
 
     @Override
     public MusicDirectory getRandomSongs(int size, Context context, ProgressListener progressListener) throws Exception {
@@ -195,6 +247,11 @@ public class CachedMusicService implements MusicService {
     @Override
     public SearchResult getStarred(Context context, ProgressListener progressListener) throws Exception {
     	return musicService.getStarred(context, progressListener);
+    }
+    
+    @Override
+    public SearchResult getStarred2(Context context, ProgressListener progressListener) throws Exception {
+    	return musicService.getStarred2(context, progressListener);
     }
 
     @Override
@@ -270,14 +327,14 @@ public class CachedMusicService implements MusicService {
     }
 
 	@Override
-	public void star(String id, Context context, ProgressListener progressListener) throws Exception {
-		musicService.star(id, context, progressListener);
+	public void star(String id, String albumId, String artistId, Context context, ProgressListener progressListener) throws Exception {
+		musicService.star(id, albumId, artistId, context, progressListener);
 		
 	}
 
 	@Override
-	public void unstar(String id, Context context, ProgressListener progressListener) throws Exception {
-		musicService.unstar(id, context, progressListener);
+	public void unstar(String id, String albumId, String artistId, Context context, ProgressListener progressListener) throws Exception {
+		musicService.unstar(id, albumId, artistId, context, progressListener);
 	}
 
 	@Override
