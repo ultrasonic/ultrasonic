@@ -20,10 +20,7 @@ package com.thejoshwa.ultrasonic.androidapp.util;
 
 import android.app.Activity;
 import android.app.AlertDialog;
-import android.app.Notification;
-import android.app.NotificationManager;
 import android.app.PendingIntent;
-import android.app.Service;
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.DialogInterface;
@@ -31,15 +28,15 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.res.Resources;
 import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.media.AudioManager;
+import android.media.AudioManager.OnAudioFocusChangeListener;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.net.wifi.WifiManager;
-import android.os.Build;
 import android.os.Environment;
-import android.os.Handler;
 import android.os.Parcelable;
 import android.preference.PreferenceManager;
 import android.util.DisplayMetrics;
@@ -102,6 +99,12 @@ public class Util extends DownloadActivity {
     
     public static final String CM_AVRCP_PLAYSTATE_CHANGED = "com.android.music.playstatechanged";
     public static final String CM_AVRCP_METADATA_CHANGED = "com.android.music.metachanged";
+    
+    public final static int bluetoothImagesize = 500;
+    
+	private static boolean hasFocus = false;
+	private static boolean pauseFocus = false;
+	private static boolean lowerFocus = false;
 
     private static final Map<Integer, Version> SERVER_REST_VERSIONS = new ConcurrentHashMap<Integer, Version>();
 
@@ -109,7 +112,8 @@ public class Util extends DownloadActivity {
     private static final char[] HEX_DIGITS = {'0', '1', '2', '3', '4', '5', '6', '7', '8', '9', 'a', 'b', 'c', 'd', 'e', 'f'};
     private static Toast toast;
     
-    private static MusicDirectory.Entry currentSong;
+    public static Bitmap bluetoothBitmap;
+    private static Entry currentSong;
 
     private Util() {
     }
@@ -710,83 +714,7 @@ public class Util extends DownloadActivity {
                 .show();
     }
     
-    public static void showPlayingNotification(final Context context, final DownloadServiceImpl downloadService, Handler handler, MusicDirectory.Entry song, final Notification notification, PlayerState playerState) {
-
-		if (Util.isNotificationEnabled(context)) {
-			if (currentSong != song) {
-				currentSong = song;
-
-				// Use the same text for the ticker and the expanded
-				// notification
-				String title = song.getTitle();
-				String text = song.getArtist();
-				String album = song.getAlbum();
-
-				// Set the album art.
-				try {
-			        DisplayMetrics metrics = context.getResources().getDisplayMetrics();
-			        int imageSizeLarge = (int) Math.round(Math.min(metrics.widthPixels, metrics.heightPixels));
-					
-			        int size = 64;
-			        
-			        if (imageSizeLarge <= 480) {
-			        	size = 64;
-			        } else if (imageSizeLarge <= 768) {
-			        	size = 128;
-			        } else if (imageSizeLarge <= 1024) {
-			        	size = 256;
-			        } else if (imageSizeLarge <= 1080) {
-			        	size = imageSizeLarge;
-			        }
-
-					Bitmap bitmap = FileUtil.getAlbumArtBitmap(context, song, size);
-					
-					if (bitmap == null) {
-						// set default album art
-						notification.contentView.setImageViewResource(R.id.notification_image, R.drawable.unknown_album);
-					} else {
-						notification.contentView.setImageViewBitmap(R.id.notification_image, bitmap);
-					}
-				} catch (Exception x) {
-					Log.w(TAG, "Failed to get notification cover art", x);
-					notification.contentView.setImageViewResource(R.id.notification_image, R.drawable.unknown_album);
-				}
-
-				// set the text for the notifications
-				notification.contentView.setTextViewText(R.id.trackname, title);
-				notification.contentView.setTextViewText(R.id.artist, text);
-				notification.contentView.setTextViewText(R.id.album, album);
-			}
-
-			if (playerState == PlayerState.PAUSED) {
-				notification.contentView.setImageViewResource(R.id.control_play, R.drawable.media_start_normal_dark);
-			} else if (playerState == PlayerState.STARTED) {
-				notification.contentView.setImageViewResource(R.id.control_play, R.drawable.media_pause_normal_dark);
-			}
-
-			// Send the notification and put the service in the foreground.
-			handler.post(new Runnable() {
-				@Override
-				public void run() {
-					startForeground(downloadService, Constants.NOTIFICATION_ID_PLAYING, notification);
-				}
-			});
-		}
-    }
-
-    public static void hidePlayingNotification(final Context context, final DownloadServiceImpl downloadService, Handler handler) {
-
-    	currentSong = null;
-    	
-        // Remove notification and remove the service from the foreground
-        handler.post(new Runnable(){
-            @Override
-            public void run() {
-                stopForeground(downloadService, true);
-            }
-        });
-    }
-
+    
     public static void sleepQuietly(long millis) {
         try {
             Thread.sleep(millis);
@@ -841,72 +769,34 @@ public class Util extends DownloadActivity {
 		return wm.createWifiLock(WifiManager.WIFI_MODE_FULL_HIGH_PERF, tag);
 	}
     
-    public static Bitmap scaleBitmap(Bitmap bitmap, int size) {
+    public static int getScaledHeight(double height, double width, int newWidth) {
     	// Try to keep correct aspect ratio of the original image, do not force a square
-		double aspectRatio = (double)bitmap.getHeight() / (double)bitmap.getWidth();
+		double aspectRatio = height / width;
 		
 		// Assume the size given refers to the width of the image, so calculate the new height using
 		//	the previously determined aspect ratio
-		int newHeight = (int) Math.round(size * aspectRatio);
-		
-		return Bitmap.createScaledBitmap(bitmap, size, newHeight, true);
+		return (int) Math.round(newWidth * aspectRatio);		
+    }
+        
+    public static int getScaledHeight(Bitmap bitmap, int width) {
+    	return getScaledHeight((double)bitmap.getHeight(), (double)bitmap.getWidth(), width);
+    }
+    
+    public static Bitmap scaleBitmap(Bitmap bitmap, int size) {
+		return Bitmap.createScaledBitmap(bitmap, size, getScaledHeight(bitmap, size), true);
     }
 
     public static void registerMediaButtonEventReceiver(Context context) {
-
         if (getMediaButtonsPreference(context)) {
-            // AudioManager.registerMediaButtonEventReceiver() was introduced in Android 2.2.
-            // Use reflection to maintain compatibility with 1.5.
-            try {
-                AudioManager audioManager = (AudioManager) context.getSystemService(Context.AUDIO_SERVICE);
-                ComponentName componentName = new ComponentName(context.getPackageName(), MediaButtonIntentReceiver.class.getName());
-                Method method = AudioManager.class.getMethod("registerMediaButtonEventReceiver", ComponentName.class);
-                method.invoke(audioManager, componentName);
-            } catch (Throwable x) {
-                // Ignored.
-            }
+            AudioManager audioManager = (AudioManager) context.getSystemService(Context.AUDIO_SERVICE);
+            audioManager.registerMediaButtonEventReceiver(new ComponentName(context.getPackageName(), MediaButtonIntentReceiver.class.getName()));
+
         }
     }
 
     public static void unregisterMediaButtonEventReceiver(Context context) {
-        // AudioManager.unregisterMediaButtonEventReceiver() was introduced in Android 2.2.
-        // Use reflection to maintain compatibility with 1.5.
-        try {
-            AudioManager audioManager = (AudioManager) context.getSystemService(Context.AUDIO_SERVICE);
-            ComponentName componentName = new ComponentName(context.getPackageName(), MediaButtonIntentReceiver.class.getName());
-            Method method = AudioManager.class.getMethod("unregisterMediaButtonEventReceiver", ComponentName.class);
-            method.invoke(audioManager, componentName);
-        } catch (Throwable x) {
-            // Ignored.
-        }
-    }
-    
-    private static void startForeground(Service service, int notificationId, Notification notification) {
-        // Service.startForeground() was introduced in Android 2.0.
-        // Use reflection to maintain compatibility with 1.5.
-        try {
-            Method method = Service.class.getMethod("startForeground", int.class, Notification.class);
-            method.invoke(service, notificationId, notification);
-            Log.i(TAG, "Successfully invoked Service.startForeground()");
-        } catch (Throwable x) {
-            NotificationManager notificationManager = (NotificationManager) service.getSystemService(Context.NOTIFICATION_SERVICE);
-            notificationManager.notify(Constants.NOTIFICATION_ID_PLAYING, notification);
-            Log.i(TAG, "Service.startForeground() not available. Using work-around.");
-        }
-    }
-
-    private static void stopForeground(Service service, boolean removeNotification) {
-        // Service.stopForeground() was introduced in Android 2.0.
-        // Use reflection to maintain compatibility with 1.5.
-        try {
-            Method method = Service.class.getMethod("stopForeground", boolean.class);
-            method.invoke(service, removeNotification);
-            Log.i(TAG, "Successfully invoked Service.stopForeground()");
-        } catch (Throwable x) {
-            NotificationManager notificationManager = (NotificationManager) service.getSystemService(Context.NOTIFICATION_SERVICE);
-            notificationManager.cancel(Constants.NOTIFICATION_ID_PLAYING);
-            Log.i(TAG, "Service.stopForeground() not available. Using work-around.");
-        }
+        AudioManager audioManager = (AudioManager) context.getSystemService(Context.AUDIO_SERVICE);
+        audioManager.unregisterMediaButtonEventReceiver(new ComponentName(context.getPackageName(), MediaButtonIntentReceiver.class.getName()));
     }
     
     public static MusicDirectory getSongsFromSearchResult(SearchResult searchResult) {
@@ -943,7 +833,7 @@ public class Util extends DownloadActivity {
     }
     
 	public static void broadcastA2dpMetaDataChange(Context context,	DownloadService downloadService) {
-		MusicDirectory.Entry song = null;
+		Entry song = null;
 		Intent avrcpIntent = new Intent(CM_AVRCP_METADATA_CHANGED);
 		
 		if (downloadService != null) {
@@ -967,9 +857,13 @@ public class Util extends DownloadActivity {
 			avrcpIntent.putExtra("id", (long) 0);
 			avrcpIntent.putExtra("duration", (long) 0);
 			avrcpIntent.putExtra("position", (long) 0);
+			bluetoothBitmap = null;
 		} else {
-			Bitmap bitmap = FileUtil.getAlbumArtBitmap(context, song, 0);
-			
+			if (song != currentSong) {
+				currentSong = song;
+				bluetoothBitmap = FileUtil.getAlbumArtBitmap(context, song, bluetoothImagesize, true);		
+			}
+
 			String title = song.getTitle();
 			String artist = song.getArtist();
 			String album = song.getAlbum();
@@ -984,8 +878,8 @@ public class Util extends DownloadActivity {
 			avrcpIntent.putExtra("artist_name", artist);
 			avrcpIntent.putExtra("album", album);
 			avrcpIntent.putExtra("album_name", album);
-			avrcpIntent.putExtra("cover", (Parcelable) bitmap);
-			avrcpIntent.putExtra("coverart", (Parcelable) bitmap);
+			avrcpIntent.putExtra("cover", (Parcelable) bluetoothBitmap);
+			avrcpIntent.putExtra("coverart", (Parcelable) bluetoothBitmap);
 			
 			if (playerPosition != null) {
 				avrcpIntent.putExtra("position", (long) playerPosition);
@@ -1012,13 +906,16 @@ public class Util extends DownloadActivity {
 		if (downloadService.getCurrentPlaying() != null) {
 			Intent avrcpIntent = new Intent(CM_AVRCP_PLAYSTATE_CHANGED);
 
-			MusicDirectory.Entry song = downloadService.getCurrentPlaying().getSong();
+			Entry song = downloadService.getCurrentPlaying().getSong();
 			
 			if (song == null) {
 				return;
 			}
 			
-			Bitmap bitmap = FileUtil.getAlbumArtBitmap(context, song, 0);
+			if (song != currentSong) {
+				currentSong = song;
+				bluetoothBitmap = FileUtil.getAlbumArtBitmap(context, song, bluetoothImagesize, true);
+			}
 			
 			String title = song.getTitle();
 			String artist = song.getArtist();
@@ -1034,8 +931,8 @@ public class Util extends DownloadActivity {
 			avrcpIntent.putExtra("artist_name", artist);
 			avrcpIntent.putExtra("album", album);
 			avrcpIntent.putExtra("album_name", album);
-			avrcpIntent.putExtra("cover", (Parcelable) bitmap);
-			avrcpIntent.putExtra("coverart", (Parcelable) bitmap);
+			avrcpIntent.putExtra("cover", (Parcelable) bluetoothBitmap);
+			avrcpIntent.putExtra("coverart", (Parcelable) bluetoothBitmap);
 			
 			if (playerPosition != null) {
 				avrcpIntent.putExtra("position", (long) playerPosition);
@@ -1099,6 +996,121 @@ public class Util extends DownloadActivity {
 
         context.sendBroadcast(intent);
     }
+    
+    public static int getNotificationImageSize(Context context) {
+        DisplayMetrics metrics = context.getResources().getDisplayMetrics();
+        int imageSizeLarge = (int) Math.round(Math.min(metrics.widthPixels, metrics.heightPixels));
+		
+        int size = 64;
+        
+        if (imageSizeLarge <= 480) {
+        	size = 64;
+        } else if (imageSizeLarge <= 768) {
+        	size = 128;
+        } else {
+        	size = 256;
+        }
+        
+        return size;
+    }
+    
+    public static int getAlbumImageSize(Context context) {
+        DisplayMetrics metrics = context.getResources().getDisplayMetrics();
+        int imageSizeLarge = (int) Math.round(Math.min(metrics.widthPixels, metrics.heightPixels));
+		
+        int size = 128;
+        
+        if (imageSizeLarge <= 480) {
+        	size = 128;
+        } else if (imageSizeLarge <= 768) {
+        	size = 256;
+        } else {
+        	size = 512;
+        }
+        
+        return size;
+    }
+    
+	public static void requestAudioFocus(final Context context) {
+    	if (!hasFocus) {
+    		final AudioManager audioManager = (AudioManager) context.getSystemService(Context.AUDIO_SERVICE);
+			hasFocus = true;
+    		audioManager.requestAudioFocus(new OnAudioFocusChangeListener() {
+				public void onAudioFocusChange(int focusChange) {
+					DownloadServiceImpl downloadService = (DownloadServiceImpl)context;
+					if((focusChange == AudioManager.AUDIOFOCUS_LOSS_TRANSIENT || focusChange == AudioManager.AUDIOFOCUS_LOSS_TRANSIENT_CAN_DUCK) && !downloadService.isJukeboxEnabled()) {
+						if(downloadService.getPlayerState() == PlayerState.STARTED) {							
+							SharedPreferences prefs = getPreferences(context);
+							int lossPref = Integer.parseInt(prefs.getString(Constants.PREFERENCES_KEY_TEMP_LOSS, "1"));
+							if(lossPref == 2 || (lossPref == 1 && focusChange == AudioManager.AUDIOFOCUS_LOSS_TRANSIENT_CAN_DUCK)) {
+								lowerFocus = true;
+								downloadService.setVolume(0.1f);
+							} else if(lossPref == 0 || (lossPref == 1 && focusChange == AudioManager.AUDIOFOCUS_LOSS_TRANSIENT)) {
+								pauseFocus = true;
+								downloadService.pause();
+							}
+						}
+					} else if (focusChange == AudioManager.AUDIOFOCUS_GAIN) {
+						if(pauseFocus) {
+							pauseFocus = false;
+							downloadService.start();
+						} else if(lowerFocus) {
+							lowerFocus = false;
+							downloadService.setVolume(1.0f);
+						}
+					} else if(focusChange == AudioManager.AUDIOFOCUS_LOSS && !downloadService.isJukeboxEnabled()) {
+						hasFocus = false;
+						downloadService.pause();
+						audioManager.abandonAudioFocus(this);
+					}
+				}
+			}, AudioManager.STREAM_MUSIC, AudioManager.AUDIOFOCUS_GAIN);
+    	}
+    }
+	
+	public static int getMinDisplayMetric(Context context)
+	{
+        DisplayMetrics metrics = context.getResources().getDisplayMetrics();
+        return Math.min(metrics.widthPixels, metrics.heightPixels);
+	}
+	
+	public static int calculateInSampleSize(BitmapFactory.Options options, int reqWidth, int reqHeight) {
+		// Raw height and width of image
+		final int height = options.outHeight;
+		final int width = options.outWidth;
+		int inSampleSize = 1;
+
+		if (height > reqHeight || width > reqWidth) {
+
+			// Calculate ratios of height and width to requested height and
+			// width
+			final int heightRatio = Math.round((float) height / (float) reqHeight);
+			final int widthRatio = Math.round((float) width / (float) reqWidth);
+
+			// Choose the smallest ratio as inSampleSize value, this will
+			// guarantee
+			// a final image with both dimensions larger than or equal to the
+			// requested height and width.
+			inSampleSize = heightRatio < widthRatio ? heightRatio : widthRatio;
+		}
+
+		return inSampleSize;
+	}
+
+	public static Bitmap decodeSampledBitmapFromFile(String path, int reqWidth, int reqHeight) {
+
+		// First decode with inJustDecodeBounds=true to check dimensions
+		final BitmapFactory.Options options = new BitmapFactory.Options();
+		options.inJustDecodeBounds = true;
+		BitmapFactory.decodeFile(path, options);
+
+		// Calculate inSampleSize
+		options.inSampleSize = calculateInSampleSize(options, reqWidth, reqHeight);
+
+		// Decode bitmap with inSampleSize set
+		options.inJustDecodeBounds = false;
+		return BitmapFactory.decodeFile(path, options);
+	}
     
     public static void linkButtons(Context context, RemoteViews views, boolean playerActive) {
 

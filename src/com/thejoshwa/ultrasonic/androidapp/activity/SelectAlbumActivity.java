@@ -18,13 +18,11 @@
  */
 package com.thejoshwa.ultrasonic.androidapp.activity;
 
-import android.app.AlertDialog;
-import android.content.DialogInterface;
 import android.content.Intent;
+import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.ContextMenu;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -37,7 +35,6 @@ import android.widget.ListView;
 import android.widget.TextView;
 
 import com.thejoshwa.ultrasonic.androidapp.R;
-import com.thejoshwa.ultrasonic.androidapp.domain.Artist;
 import com.thejoshwa.ultrasonic.androidapp.domain.MusicDirectory;
 import com.thejoshwa.ultrasonic.androidapp.service.DownloadFile;
 import com.thejoshwa.ultrasonic.androidapp.service.MusicService;
@@ -325,7 +322,7 @@ public class SelectAlbumActivity extends SubsonicTabActivity {
                 downloadRecursively(entry.getId(), false, false, true, false, false, false);
                 break;
             case R.id.album_menu_play_next:
-                downloadRecursively(entry.getId(), false, false, true, false, false, true);
+                downloadRecursively(entry.getId(), false, false, false, false, false, true);
                 break;                
             case R.id.album_menu_play_last:
                 downloadRecursively(entry.getId(), false, true, false, false, false, false);
@@ -753,9 +750,9 @@ public class SelectAlbumActivity extends SubsonicTabActivity {
         }
         
         private View createHeader(List<MusicDirectory.Entry> entries, String name, int songCount) {
-            View coverArtView = header.findViewById(R.id.select_album_art);
+            ImageView coverArtView = (ImageView) header.findViewById(R.id.select_album_art);
             int artworkSelection = random.nextInt(entries.size());
-            getImageLoader().loadImage(coverArtView, entries.get(artworkSelection), true, true);
+            getImageLoader().loadImage(coverArtView, entries.get(artworkSelection), true, Util.getAlbumImageSize(SelectAlbumActivity.this), false, true);
 
             TextView titleView = (TextView) header.findViewById(R.id.select_album_title);
             titleView.setText(name != null ? name : getActionBar().getSubtitle());

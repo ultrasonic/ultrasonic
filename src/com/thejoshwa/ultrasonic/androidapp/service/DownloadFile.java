@@ -335,9 +335,8 @@ public class DownloadFile {
         private void downloadAndSaveCoverArt(MusicService musicService) throws Exception {
             try {
                 if (song.getCoverArt() != null) {
-                    DisplayMetrics metrics = context.getResources().getDisplayMetrics();
-                    int size = Math.min(metrics.widthPixels, metrics.heightPixels);
-                    musicService.getCoverArt(context, song, size, true, null);
+                	int size = Util.getMinDisplayMetric(context);
+                    musicService.getCoverArt(context, song, size, true, true, null);
                 }
             } catch (Exception x) {
                 Log.e(TAG, "Failed to get cover art.", x);

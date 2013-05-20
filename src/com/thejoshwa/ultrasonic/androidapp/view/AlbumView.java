@@ -59,7 +59,7 @@ public class AlbumView extends UpdateView {
         artistView.setText(album.getArtist());
         artistView.setVisibility(album.getArtist() == null ? View.GONE : View.VISIBLE);
         starImageView.setImageDrawable(album.getStarred() ? Util.getDrawableFromAttribute(getContext(), R.attr.star_full) : Util.getDrawableFromAttribute(getContext(), R.attr.star_hollow));
-        imageLoader.loadImage(coverArtView, album, false, true);
+        imageLoader.loadImage(coverArtView, album, false, 0, false, true);
         
         if (Util.isOffline(getContext())) {
         	starImageView.setVisibility(View.GONE);

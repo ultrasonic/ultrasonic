@@ -727,12 +727,12 @@ public class RESTMusicService implements MusicService {
     }
 
     @Override
-	public Bitmap getCoverArt(Context context, MusicDirectory.Entry entry, int size, boolean saveToFile, ProgressListener progressListener) throws Exception {
+	public Bitmap getCoverArt(Context context, MusicDirectory.Entry entry, int size, boolean saveToFile, boolean highQuality, ProgressListener progressListener) throws Exception {
 		// Synchronize on the entry so that we don't download concurrently for
 		// the same song.
 		synchronized (entry) {
 			// Use cached file, if existing.
-			Bitmap bitmap = FileUtil.getAlbumArtBitmap(context, entry, size);
+			Bitmap bitmap = FileUtil.getAlbumArtBitmap(context, entry, size, highQuality);
 			boolean serverScaling = Util.isServerScalingEnabled(context);
 			
 			if (bitmap == null) {

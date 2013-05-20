@@ -27,7 +27,6 @@ import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.media.AudioManager;
-import android.media.AudioManager.OnAudioFocusChangeListener;
 import android.media.MediaMetadataRetriever;
 import android.media.MediaPlayer;
 import android.media.RemoteControlClient;
@@ -37,7 +36,6 @@ import android.os.Handler;
 import android.os.IBinder;
 import android.os.Looper;
 import android.os.PowerManager;
-import android.util.DisplayMetrics;
 import android.util.Log;
 import android.widget.RemoteViews;
 import android.widget.SeekBar;
@@ -84,6 +82,8 @@ public class DownloadServiceImpl extends Service implements DownloadService {
     
     public static final String PLAYSTATUS_REQUEST = "com.android.music.playstatusrequest";
     public static final String PLAYSTATUS_RESPONSE = "com.android.music.playstatusresponse";
+    
+    public static final int lockScreenAlbumArtSize = 500;
 
     private final IBinder binder = new SimpleServiceBinder<DownloadService>(this);
 	private Looper mediaPlayerLooper;    
@@ -151,21 +151,8 @@ public class DownloadServiceImpl extends Service implements DownloadService {
 		}
 	}
 	
-	private OnAudioFocusChangeListener _afChangeListener = new OnAudioFocusChangeListener() {
-		public void onAudioFocusChange(int focusChange) {
-			if (focusChange == AudioManager.AUDIOFOCUS_LOSS_TRANSIENT) {
-				pause();
-			} else if (focusChange == AudioManager.AUDIOFOCUS_GAIN) {
-				if (playerState == PlayerState.STARTED) {
-					start();
-				}
-			} else if (focusChange == AudioManager.AUDIOFOCUS_LOSS) {
-				stop();
-			}
-		}
-	};
-
-    @Override
+	@SuppressLint("NewApi")
+	@Override
     public void onCreate() {
         super.onCreate();
         
@@ -213,10 +200,16 @@ public class DownloadServiceImpl extends Service implements DownloadService {
         
     	notification.flags |= Notification.FLAG_NO_CLEAR | Notification.FLAG_ONGOING_EVENT;
         notification.contentView = new RemoteViews(this.getPackageName(), R.layout.notification);
+        Util.linkButtons(this, notification.contentView, false);
+
+        if (Build.VERSION.SDK_INT>= Build.VERSION_CODES.JELLY_BEAN){
+        	notification.bigContentView = new RemoteViews(this.getPackageName(), R.layout.notification_large);
+        	Util.linkButtons(this, notification.bigContentView, false);
+        }
+
         Intent notificationIntent = new Intent(this, DownloadActivity.class);
         notification.contentIntent = PendingIntent.getActivity(this, 0, notificationIntent, 0);
-        Util.linkButtons(this, notification.contentView, false);
-        
+       
         if (equalizerAvailable) {
             equalizerController = new EqualizerController(this, mediaPlayer);
             if (!equalizerController.isAvailable()) {
@@ -366,7 +359,7 @@ public class DownloadServiceImpl extends Service implements DownloadService {
 			autoPlayStart = false;
         }
     }
-
+        
     @Override
     public synchronized void setShufflePlayEnabled(boolean enabled) {
         shufflePlay = enabled;
@@ -560,24 +553,20 @@ public class DownloadServiceImpl extends Service implements DownloadService {
 
         // Update widget
         UltraSonicAppWidgetProvider4x1.getInstance().notifyChange(this, this, playerState == PlayerState.STARTED);
-        
+        SubsonicTabActivity tabInstance = SubsonicTabActivity.getInstance();
+
         if (currentPlaying != null) {
-        	if (showNotification) {
-        		Util.showPlayingNotification(this, this, handler, currentPlaying.getSong(), this.notification, this.playerState);
-        	}
-        
-            SubsonicTabActivity tabInstance = SubsonicTabActivity.getInstance();
-            
             if (tabInstance != null) {
-            	//tabInstance.showNowPlaying(this, this, currentPlaying.getSong(), this.playerState);
+        		int size = Util.getNotificationImageSize(this);
+            	
+            	tabInstance.nowPlayingImage = FileUtil.getAlbumArtBitmap(this, currentPlaying.getSong(), size, true);
+           		tabInstance.showNotification(handler, currentPlaying.getSong(), this, this.notification, this.playerState);
             	tabInstance.showNowPlaying();
             }
         } else {
-            Util.hidePlayingNotification(this, this, handler);
-            
-            SubsonicTabActivity tabInstance = SubsonicTabActivity.getInstance();
-            
             if (tabInstance != null) {
+            	tabInstance.nowPlayingImage = null;
+            	tabInstance.hidePlayingNotification(handler, this);
             	tabInstance.hideNowPlaying();
             }
         }
@@ -891,7 +880,7 @@ public class DownloadServiceImpl extends Service implements DownloadService {
         }
         
         if (this.playerState == PlayerState.STARTED) {
-    		audioManager.requestAudioFocus(_afChangeListener, AudioManager.STREAM_MUSIC, AudioManager.AUDIOFOCUS_GAIN);
+    		Util.requestAudioFocus(this);
         }
         
         boolean showWhenPaused = (this.playerState == PlayerState.PAUSED && Util.isNotificationAlwaysEnabled(this));
@@ -906,22 +895,23 @@ public class DownloadServiceImpl extends Service implements DownloadService {
         
         // Update widget
         UltraSonicAppWidgetProvider4x1.getInstance().notifyChange(this, this, this.playerState == PlayerState.STARTED);
+        SubsonicTabActivity tabInstance = SubsonicTabActivity.getInstance();
         
        	if (show) {
+    		int size = Util.getNotificationImageSize(this);
+    		Bitmap bitmap = FileUtil.getAlbumArtBitmap(this, currentPlaying.getSong(), size, true);
+       		
        		if (currentPlaying != null) {
-       			Util.showPlayingNotification(this, this, handler, currentPlaying.getSong(), this.notification, this.playerState);
-       			
-                SubsonicTabActivity tabInstance = SubsonicTabActivity.getInstance();
                 if (tabInstance != null) {
+                	tabInstance.nowPlayingImage = bitmap;
+                	tabInstance.showNotification(handler, currentPlaying.getSong(), this, this.notification, this.playerState);
                 	tabInstance.showNowPlaying();
-                	//tabInstance.showNowPlaying(this, this, currentPlaying.getSong(), this.playerState);
                 }
        		}
        	} else if (hide) {
-       		Util.hidePlayingNotification(this, this, handler);
-       		
-            SubsonicTabActivity tabInstance = SubsonicTabActivity.getInstance();
             if (tabInstance != null) {
+            	tabInstance.nowPlayingImage = null;
+            	tabInstance.hidePlayingNotification(handler, this);
             	tabInstance.hideNowPlaying();
             }
        	}
@@ -1031,18 +1021,18 @@ public class DownloadServiceImpl extends Service implements DownloadService {
         		Intent intent = new Intent(Intent.ACTION_MEDIA_BUTTON);
         		intent.setComponent(new ComponentName(this.getPackageName(), MediaButtonIntentReceiver.class.getName()));
         		remoteControlClient = new RemoteControlClient(PendingIntent.getBroadcast(this, 0, intent, 0));
+        		
+        		remoteControlClient.setTransportControlFlags(
+                		RemoteControlClient.FLAG_KEY_MEDIA_PLAY |
+                		RemoteControlClient.FLAG_KEY_MEDIA_PAUSE |
+                		RemoteControlClient.FLAG_KEY_MEDIA_NEXT |
+                		RemoteControlClient.FLAG_KEY_MEDIA_PREVIOUS |
+                		RemoteControlClient.FLAG_KEY_MEDIA_PLAY_PAUSE |
+                		RemoteControlClient.FLAG_KEY_MEDIA_STOP);
         	}
         	
         	audioManager.registerRemoteControlClient(remoteControlClient);
         		
-            remoteControlClient.setTransportControlFlags(
-            		RemoteControlClient.FLAG_KEY_MEDIA_PLAY |
-            		RemoteControlClient.FLAG_KEY_MEDIA_PAUSE |
-            		RemoteControlClient.FLAG_KEY_MEDIA_NEXT |
-            		RemoteControlClient.FLAG_KEY_MEDIA_PREVIOUS |
-            		RemoteControlClient.FLAG_KEY_MEDIA_PLAY_PAUSE |
-            		RemoteControlClient.FLAG_KEY_MEDIA_STOP);
-        	
         	switch (playerState)
         	{
         	case STARTED:
@@ -1052,15 +1042,23 @@ public class DownloadServiceImpl extends Service implements DownloadService {
         		remoteControlClient.setPlaybackState(RemoteControlClient.PLAYSTATE_PAUSED);
         		break;
         	case IDLE:
+        	case COMPLETED:
         	case STOPPED:
         		remoteControlClient.setPlaybackState(RemoteControlClient.PLAYSTATE_STOPPED);
         		break;
+			case DOWNLOADING:
+			case PREPARED:
+			case PREPARING:
+			default:
+				break;
         	}	
 
         	try {
 				if (currentPlaying != null) {
 					if (currentSong != currentPlaying.getSong()) {
 						currentSong = currentPlaying.getSong();
+					} else {
+						return;
 					}
 
 					String artist = currentSong.getArtist();
@@ -1068,10 +1066,10 @@ public class DownloadServiceImpl extends Service implements DownloadService {
 					String title = artist + " - " + currentSong.getTitle();
 					Integer duration = currentSong.getDuration();
 
-					DisplayMetrics metrics = this.getResources().getDisplayMetrics();
-					int size = Math.min(metrics.widthPixels, metrics.heightPixels);
 					// Always get the album art from disk
-					Bitmap bitmap = FileUtil.getAlbumArtBitmap(this, currentSong, size);
+					if (Util.bluetoothBitmap == null) {
+						Util.bluetoothBitmap = FileUtil.getAlbumArtBitmap(this, currentSong, Util.bluetoothImagesize, true);
+					}
 
 					// Update the remote controls
 					remoteControlClient
@@ -1088,10 +1086,10 @@ public class DownloadServiceImpl extends Service implements DownloadService {
 						.apply();
 					}
 					
-					if (bitmap != null) {
+					if (Util.bluetoothBitmap != null) {
 							remoteControlClient
 								.editMetadata(false)
-								.putBitmap(RemoteControlClient.MetadataEditor.BITMAP_KEY_ARTWORK, bitmap)
+								.putBitmap(RemoteControlClient.MetadataEditor.BITMAP_KEY_ARTWORK, Util.bluetoothBitmap)
 								.apply();
 					}
 				}

@@ -58,7 +58,8 @@
                 a:layout_above="@+id/download_song_title"
                 a:layout_gravity="center_horizontal"
                 a:layout_marginLeft="80dip"
-                a:layout_marginRight="80dip" />
+                a:layout_marginRight="80dip"
+                a:orientation="vertical" />
         </RelativeLayout>
 
         <include layout="@layout/download_playlist" />

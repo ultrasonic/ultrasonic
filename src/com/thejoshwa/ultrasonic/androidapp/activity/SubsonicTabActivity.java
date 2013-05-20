@@ -24,20 +24,23 @@ import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 
+import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.app.AlertDialog;
+import android.app.Notification;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageInfo;
 import android.graphics.Bitmap;
-import android.graphics.PixelFormat;
+import android.graphics.drawable.Drawable;
 import android.media.AudioManager;
 import android.net.Uri;
+import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
-import android.util.DisplayMetrics;
+import android.os.Handler;
 import android.util.Log;
 import android.view.KeyEvent;
 import android.view.MenuItem;
@@ -45,9 +48,8 @@ import android.view.MotionEvent;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.View.OnTouchListener;
-import android.view.Window;
 import android.widget.ImageView;
-import android.widget.ListView;
+import android.widget.RemoteViews;
 import android.widget.TextView;
 import com.thejoshwa.ultrasonic.androidapp.R;
 import com.thejoshwa.ultrasonic.androidapp.domain.MusicDirectory;
@@ -62,7 +64,6 @@ import com.thejoshwa.ultrasonic.androidapp.service.MusicServiceFactory;
 import com.thejoshwa.ultrasonic.androidapp.service.OfflineException;
 import com.thejoshwa.ultrasonic.androidapp.service.ServerTooOldException;
 import com.thejoshwa.ultrasonic.androidapp.util.Constants;
-import com.thejoshwa.ultrasonic.androidapp.util.FileUtil;
 import com.thejoshwa.ultrasonic.androidapp.util.ImageLoader;
 import com.thejoshwa.ultrasonic.androidapp.util.LoadingTask;
 import com.thejoshwa.ultrasonic.androidapp.util.ModalBackgroundTask;
@@ -95,6 +96,8 @@ public class SubsonicTabActivity extends Activity implements OnClickListener{
     View playlistsMenuItem = null;
     View menuMain = null;
     public static boolean nowPlayingHidden = false;
+    private static Entry currentSong;
+    public Bitmap nowPlayingImage;
     boolean licenseValid;
     
     @Override
@@ -102,7 +105,7 @@ public class SubsonicTabActivity extends Activity implements OnClickListener{
         setUncaughtExceptionHandler();
         applyTheme();
         super.onCreate(bundle);
-
+        
         startService(new Intent(this, DownloadServiceImpl.class));
         setVolumeControlStream(AudioManager.STREAM_MUSIC);
         
@@ -178,6 +181,7 @@ public class SubsonicTabActivity extends Activity implements OnClickListener{
     	Util.unregisterMediaButtonEventReceiver(this);
         super.onDestroy();
         destroyed = true;
+        nowPlayingView = null;
         getImageLoader().clear();
     }
 
@@ -213,54 +217,50 @@ public class SubsonicTabActivity extends Activity implements OnClickListener{
         return destroyed;
     }
     
-    public void showNowPlaying()
-    {
-    	nowPlayingView = findViewById(R.id.now_playing);
-    	
-    	if (!Util.getShowNowPlayingPreference(this)) {
-    		if (nowPlayingView != null) {
-    			nowPlayingView.setVisibility(View.GONE);
-    		}
-    		return;
-    	}
-		
-		if (nowPlayingView != null) {
-			final DownloadService downloadService = DownloadServiceImpl.getInstance();
-			
-			if (downloadService != null) {
-				PlayerState playerState = downloadService.getPlayerState();
-				
-				if (playerState.equals(PlayerState.PAUSED) || playerState.equals(PlayerState.STARTED)) {
-					DownloadFile file = downloadService.getCurrentPlaying();
-					
-					if (file != null) {
-						final Entry song = file.getSong();						
-						showNowPlaying(this, (DownloadServiceImpl)downloadService, song, playerState);
-					}
-				} else {
-					hideNowPlaying();
-				}
-				
-				ImageView nowPlayingControlPlay = (ImageView) nowPlayingView.findViewById(R.id.now_playing_control_play);	
-				
-				SwipeDetector swipeDetector = SwipeDetector.Create(SubsonicTabActivity.this, downloadService);
-				nowPlayingView.setOnTouchListener(swipeDetector);
-				
-				nowPlayingView.setOnClickListener(new View.OnClickListener() {
+	public void showNowPlaying() {
+		this.runOnUiThread(new Runnable() {
+			@Override
+			public void run() {
+				new SilentBackgroundTask<Void>(SubsonicTabActivity.this) {
 					@Override
-					public void onClick(View v) {
+					protected Void doInBackground() throws Throwable {
+						if (!Util.getShowNowPlayingPreference(SubsonicTabActivity.this)) {
+							hideNowPlaying();
+							return null;
+						}
+
+						nowPlayingView = findViewById(R.id.now_playing);
+
+						if (nowPlayingView != null) {
+							final DownloadService downloadService = DownloadServiceImpl	.getInstance();
+
+							if (downloadService != null) {
+								PlayerState playerState = downloadService.getPlayerState();
+
+								if (playerState.equals(PlayerState.PAUSED) || playerState.equals(PlayerState.STARTED)) {
+									DownloadFile file = downloadService.getCurrentPlaying();
+
+									if (file != null) {
+										final Entry song = file.getSong();
+										showNowPlaying(SubsonicTabActivity.this, (DownloadServiceImpl) downloadService, song, playerState);
+									}
+								} else {
+									hideNowPlaying();
+								}
+							}
+						}
+
+						return null;
 					}
-				});
-			
-				nowPlayingControlPlay.setOnClickListener(new View.OnClickListener() {
+
 					@Override
-					public void onClick(View view) {
-						downloadService.togglePlayPause();
+					protected void done(Void result) {
+						return;
 					}
-				});				
+				}.execute();
 			}
-		}
-    }
+		});
+	}
 
     private void applyTheme() {
         String theme = Util.getTheme(this);
@@ -272,104 +272,302 @@ public class SubsonicTabActivity extends Activity implements OnClickListener{
         }
     }
     
-    private void showNowPlaying(final Context context, final DownloadServiceImpl downloadService, final MusicDirectory.Entry song, final PlayerState playerState) {
-    	this.runOnUiThread( new Runnable() {
-    	    @Override 
-    	    public void run() {
-    	    	nowPlayingView = findViewById(R.id.now_playing);
-    	    	
-    	    	if (!Util.getShowNowPlayingPreference(SubsonicTabActivity.this)) {
-    	    		if (nowPlayingView != null) {
-    	    			nowPlayingView.setVisibility(View.GONE);
-    	    		}
-    	    		return;
-    	    	}
-    	    	
-    	    	if (nowPlayingView != null) {
-    				nowPlayingView.setVisibility(View.VISIBLE);
-    				nowPlayingHidden = false;
-    				
-    				String title = song.getTitle();
-    				String artist = song.getArtist();
-    				
-    				try {
-    					ImageView nowPlayingImage = (ImageView) nowPlayingView.findViewById(R.id.now_playing_image);
-    					TextView nowPlayingTrack = (TextView) nowPlayingView.findViewById(R.id.now_playing_trackname);
-    					TextView nowPlayingArtist = (TextView) nowPlayingView.findViewById(R.id.now_playing_artist);
+    public void showNotification(final Handler handler, final MusicDirectory.Entry song, final DownloadServiceImpl downloadService, final Notification notification, final PlayerState playerState) {
+       	
+		if (Util.isNotificationEnabled(this)) {
+	    	new AsyncTask<Void, Void, String[]>() {
+	            @Override
+	            protected void onPostExecute(String[] result) {
+	                super.onPostExecute(result);
+	            }
 
-    			        DisplayMetrics metrics = context.getResources().getDisplayMetrics();
-    			        int imageSizeLarge = (int) Math.round(Math.min(metrics.widthPixels, metrics.heightPixels));
+	    		@SuppressLint("NewApi")
+				@Override
+	    		protected String[] doInBackground(Void... params) {
+					RemoteViews notificationView = notification.contentView;
+					RemoteViews bigNotificationView = null;
+					
+					if (Build.VERSION.SDK_INT>= Build.VERSION_CODES.JELLY_BEAN){
+						bigNotificationView = notification.bigContentView;
+					}
+					
+	    			if (playerState == PlayerState.PAUSED) {
+	    				setImageViewResourceOnUiThread(notificationView, R.id.control_play, R.drawable.media_start_normal_dark);
+	    				
+	    				if (bigNotificationView != null) {
+	    					setImageViewResourceOnUiThread(bigNotificationView, R.id.control_play, R.drawable.media_start_normal_dark);
+	    				}
+	    			} else if (playerState == PlayerState.STARTED) {
+	    				setImageViewResourceOnUiThread(notificationView, R.id.control_play, R.drawable.media_pause_normal_dark);
+	    				
+	    				if (bigNotificationView != null) {
+	    					setImageViewResourceOnUiThread(bigNotificationView, R.id.control_play, R.drawable.media_pause_normal_dark);
+	    				}
+	    			}
+	    			
+	    			if (currentSong != song) {
+	    				currentSong = song;
+	    			    					
+	    				String title = song.getTitle();
+	    				String text = song.getArtist();
+	    				String album = song.getAlbum();
+
+	    				try {
+	    					if (nowPlayingImage == null) {
+	    						setImageViewResourceOnUiThread(notificationView, R.id.notification_image, R.drawable.unknown_album);
+	    						
+	    						if (bigNotificationView != null) {
+	    							setImageViewResourceOnUiThread(bigNotificationView, R.id.notification_image, R.drawable.unknown_album);
+	    						}
+	    					} else {
+	    						setImageViewBitmapOnUiThread(notificationView, R.id.notification_image, nowPlayingImage);
+	    						
+	    						if (bigNotificationView != null) {
+	    							setImageViewBitmapOnUiThread(bigNotificationView, R.id.notification_image, nowPlayingImage);
+	    						}
+	    					}
+	    				} catch (Exception x) {
+	    					Log.w(TAG, "Failed to get notification cover art", x);
+	    					setImageViewResourceOnUiThread(notificationView, R.id.notification_image, R.drawable.unknown_album);
+	    					
+	    					if (bigNotificationView != null) {
+	    						setImageViewResourceOnUiThread(bigNotificationView, R.id.notification_image, R.drawable.unknown_album);
+	    					}
+	    				}
+	    				
+    					setTextViewTextOnUiThread(notificationView, R.id.trackname, title);
+    					setTextViewTextOnUiThread(notificationView, R.id.artist, text);
+    					setTextViewTextOnUiThread(notificationView, R.id.album, album);
     					
-    			        int size = 64;
-    			        
-    			        if (imageSizeLarge <= 480) {
-    			        	size = 64;
-    			        } else if (imageSizeLarge <= 768) {
-    			        	size = 128;
-    			        } else if (imageSizeLarge <= 1024) {
-    			        	size = 256;
-    			        } else if (imageSizeLarge <= 1080) {
-    			        	size = imageSizeLarge;
-    			        }
-
-    					Bitmap bitmap = FileUtil.getAlbumArtBitmap(context, song, size);
-
-    					if (bitmap == null) {
-    						// set default album art
-    						nowPlayingImage.setImageResource(R.drawable.unknown_album);
-    					} else {
-    						nowPlayingImage.setImageBitmap(bitmap);
+    					if (bigNotificationView != null) {
+        					setTextViewTextOnUiThread(bigNotificationView, R.id.trackname, title);
+        					setTextViewTextOnUiThread(bigNotificationView, R.id.artist, text);
+        					setTextViewTextOnUiThread(bigNotificationView, R.id.album, album);
     					}
-    					
-    					nowPlayingImage.setOnClickListener(new View.OnClickListener() {
-    			            @Override
-    			            public void onClick(View view) {
-    			                Intent intent = new Intent(SubsonicTabActivity.this, SelectAlbumActivity.class);
-    			                
-    			                if (Util.getShouldUseId3Tags(SubsonicTabActivity.this)) {
-    			                	intent.putExtra(Constants.INTENT_EXTRA_NAME_IS_ALBUM, true);
-    			                	intent.putExtra(Constants.INTENT_EXTRA_NAME_ID, song.getAlbumId());
-    			                } else {
-    			                	intent.putExtra(Constants.INTENT_EXTRA_NAME_IS_ALBUM, false);
-    			                	intent.putExtra(Constants.INTENT_EXTRA_NAME_ID, song.getParent());
-    			                }
-    			                
-    			                intent.putExtra(Constants.INTENT_EXTRA_NAME_NAME, song.getAlbum());
-    			                Util.startActivityWithoutTransition(SubsonicTabActivity.this, intent);
-    			            }
-    			        });
-    					
-    					nowPlayingTrack.setText(title);
-    					nowPlayingArtist.setText(artist);
+	    			}
 
-    				} catch (Exception x) {
-    					Log.w(TAG, "Failed to get notification cover art", x);
-    				}
+	    			// Send the notification and put the service in the foreground.
+	    			handler.post(new Runnable() {
+	    				@Override
+	    				public void run() {
+	    					downloadService.startForeground(Constants.NOTIFICATION_ID_PLAYING, notification);
+	    				}
+	    			});
+	    			
+	    			return null;
+	    		}
+	    	}.execute();
+		}
+    }
 
-    				ImageView playButton = (ImageView) nowPlayingView.findViewById(R.id.now_playing_control_play);
+    public void hidePlayingNotification(final Handler handler, final DownloadServiceImpl downloadService) {
 
-    				if (playerState == PlayerState.PAUSED) {
-    					playButton.setImageDrawable(Util.getDrawableFromAttribute(SubsonicTabActivity.this, R.attr.media_play));
-    				} else if (playerState == PlayerState.STARTED) {
-    					playButton.setImageDrawable(Util.getDrawableFromAttribute(SubsonicTabActivity.this, R.attr.media_pause));
-    				}
-    			}
-    	    }
-    	});
+    	currentSong = null;
+    	
+        // Remove notification and remove the service from the foreground
+        handler.post(new Runnable(){
+            @Override
+            public void run() {
+            	downloadService.stopForeground(true);
+            }
+        });
+    }
+    
+    private void showNowPlaying(final Context context, final DownloadServiceImpl downloadService, final MusicDirectory.Entry song, final PlayerState playerState) {
+    	nowPlayingView = findViewById(R.id.now_playing);
+    	
+    	if (!Util.getShowNowPlayingPreference(SubsonicTabActivity.this)) {
+    		hideNowPlaying();
+    		return;
+    	}
+    	
+    	if (nowPlayingView != null) {
+			try {
+	   			setVisibilityOnUiThread(nowPlayingView, View.VISIBLE);
+				nowPlayingHidden = false;
+				
+				ImageView playButton = (ImageView) nowPlayingView.findViewById(R.id.now_playing_control_play);
+
+				if (playerState == PlayerState.PAUSED) {
+					setImageDrawableOnUiThread(playButton, Util.getDrawableFromAttribute(SubsonicTabActivity.this, R.attr.media_play));
+				} else if (playerState == PlayerState.STARTED) {
+					setImageDrawableOnUiThread(playButton, Util.getDrawableFromAttribute(SubsonicTabActivity.this, R.attr.media_pause));
+				}
+				
+				String title = song.getTitle();
+				String artist = song.getArtist();
+				
+				final ImageView nowPlayingAlbumArtImage = (ImageView) nowPlayingView.findViewById(R.id.now_playing_image);
+				TextView nowPlayingTrack = (TextView) nowPlayingView.findViewById(R.id.now_playing_trackname);
+				TextView nowPlayingArtist = (TextView) nowPlayingView.findViewById(R.id.now_playing_artist);
+
+				this.runOnUiThread( new Runnable() {
+		    		@Override 
+		    	    public void run() {
+		    			getImageLoader().loadImage(nowPlayingAlbumArtImage, song, true, Util.getNotificationImageSize(SubsonicTabActivity.this), false, true);		
+		    		}
+				});
+								
+				final Intent intent = new Intent(SubsonicTabActivity.this, SelectAlbumActivity.class);
+                
+                if (Util.getShouldUseId3Tags(SubsonicTabActivity.this)) {
+                	intent.putExtra(Constants.INTENT_EXTRA_NAME_IS_ALBUM, true);
+                	intent.putExtra(Constants.INTENT_EXTRA_NAME_ID, song.getAlbumId());
+                } else {
+                	intent.putExtra(Constants.INTENT_EXTRA_NAME_IS_ALBUM, false);
+                	intent.putExtra(Constants.INTENT_EXTRA_NAME_ID, song.getParent());
+                }
+                
+                intent.putExtra(Constants.INTENT_EXTRA_NAME_NAME, song.getAlbum());
+				
+                setOnClickListenerOnUiThread(nowPlayingAlbumArtImage, new View.OnClickListener() {
+		            @Override
+		            public void onClick(View view) {
+		                Util.startActivityWithoutTransition(SubsonicTabActivity.this, intent);
+		            }
+		        });
+                
+				setTextOnUiThread(nowPlayingTrack, title);
+				setTextOnUiThread(nowPlayingArtist, artist);
+				
+				ImageView nowPlayingControlPlay = (ImageView) nowPlayingView.findViewById(R.id.now_playing_control_play);	
+				
+				SwipeDetector swipeDetector = SwipeDetector.Create(SubsonicTabActivity.this, downloadService);
+				setOnTouchListenerOnUiThread(nowPlayingView, swipeDetector);
+				
+				setOnClickListenerOnUiThread(nowPlayingView, new View.OnClickListener() {
+					@Override
+					public void onClick(View v) {
+					}
+				});
+				
+				setOnClickListenerOnUiThread(nowPlayingControlPlay, new View.OnClickListener() {
+					@Override
+					public void onClick(View view) {
+						downloadService.togglePlayPause();
+					}
+				});
+
+			} catch (Exception x) {
+				Log.w(TAG, "Failed to get notification cover art", x);
+			}
+		}
     }
 
     public void hideNowPlaying() {
+    	nowPlayingView = findViewById(R.id.now_playing);
+    	setVisibilityOnUiThread(nowPlayingView, View.GONE);
+    }
+    
+    public void setTextViewTextOnUiThread(final RemoteViews view, final int id, final String text) {
     	this.runOnUiThread( new Runnable() {
     		@Override 
     	    public void run() {
-    			nowPlayingView = findViewById(R.id.now_playing);
-    	
-    			if (nowPlayingView != null) {
-    				nowPlayingView.setVisibility(View.GONE);
+    			if (view != null) {
+    				view.setTextViewText(id, text);
     			}
     		}
     	});
-    }   
+    }
+    
+    public void setImageViewBitmapOnUiThread(final RemoteViews view, final int id, final Bitmap bitmap) {
+    	this.runOnUiThread( new Runnable() {
+    		@Override 
+    	    public void run() {
+    			if (view != null) {
+    				view.setImageViewBitmap(id, bitmap);
+    			}
+    		}
+    	});
+    }
+    
+    public void setImageViewResourceOnUiThread(final RemoteViews view, final int id, final int resouce) {
+    	this.runOnUiThread( new Runnable() {
+    		@Override 
+    	    public void run() {
+    			if (view != null) {
+    				view.setImageViewResource(id, resouce);
+    			}
+    		}
+    	});
+    }
+    
+    public void setOnTouchListenerOnUiThread(final View view, final View.OnTouchListener listener) {
+    	this.runOnUiThread( new Runnable() {
+    		@Override 
+    	    public void run() {
+    			if (view != null && view.getVisibility() != View.GONE) {
+    				view.setOnTouchListener(listener);
+    			}
+    		}
+    	});
+    }
+    
+    public void setOnClickListenerOnUiThread(final View view, final View.OnClickListener listener) {
+    	this.runOnUiThread( new Runnable() {
+    		@Override 
+    	    public void run() {
+    			if (view != null && view.getVisibility() != View.GONE) {
+    				view.setOnClickListener(listener);
+    			}
+    		}
+    	});
+    }
+    
+    public void setTextOnUiThread(final TextView view, final String text) {
+    	this.runOnUiThread( new Runnable() {
+    		@Override 
+    	    public void run() {
+    			if (view != null && view.getVisibility() != View.GONE) {
+    				view.setText(text);
+    			}
+    		}
+    	});
+    }
+    
+    public void setImageResourceOnUiThread(final ImageView view, final int resource) {
+    	this.runOnUiThread( new Runnable() {
+    		@Override 
+    	    public void run() {
+    			if (view != null && view.getVisibility() != View.GONE) {
+    				view.setImageResource(resource);
+    			}
+    		}
+    	});
+    }
+    
+    public void setImageDrawableOnUiThread(final ImageView view, final Drawable drawable) {
+    	this.runOnUiThread( new Runnable() {
+    		@Override 
+    	    public void run() {
+    			if (view != null && view.getVisibility() != View.GONE) {
+    				view.setImageDrawable(drawable);
+    			}
+    		}
+    	});
+    }
+    
+    public void setImageBitmapOnUiThread(final ImageView view, final Bitmap bitmap) {
+    	this.runOnUiThread( new Runnable() {
+    		@Override 
+    	    public void run() {
+    			if (view != null && view.getVisibility() != View.GONE) {
+    				view.setImageBitmap(bitmap);
+    			}
+    		}
+    	});
+    }
+    
+    public void setVisibilityOnUiThread(final View view, final int visibility) {
+    	this.runOnUiThread( new Runnable() {
+    		@Override 
+    	    public void run() {
+    			if (view != null && view.getVisibility() != visibility) {
+    				view.setVisibility(visibility);
+    			}
+    		}
+    	});
+    }
 
     public static SubsonicTabActivity getInstance() {
         return instance;
@@ -842,7 +1040,7 @@ public class SubsonicTabActivity extends Activity implements OnClickListener{
 						}
 					} else if (Math.abs(deltaY) > MIN_DISTANCE) {
 						if (deltaY < 0) {
-							activity.nowPlayingHidden = true;
+							SubsonicTabActivity.nowPlayingHidden = true;
 							activity.hideNowPlaying();
 							return false;
 						}

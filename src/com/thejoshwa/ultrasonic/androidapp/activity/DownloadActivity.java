@@ -443,6 +443,7 @@ public class DownloadActivity extends SubsonicTabActivity implements OnGestureLi
         onCurrentChanged();
         onSliderProgressChanged();
         scrollToCurrent();
+        
         if (downloadService != null && downloadService.getKeepScreenOn()) {
             getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
         } else {
@@ -790,6 +791,7 @@ public class DownloadActivity extends SubsonicTabActivity implements OnGestureLi
         }
 
         currentPlaying = getDownloadService().getCurrentPlaying();
+        
         if (currentPlaying != null) {
             currentSong = currentPlaying.getSong();
             final Drawable starDrawable = currentSong.getStarred() ? Util.getDrawableFromAttribute(SubsonicTabActivity.getInstance(), R.attr.star_full) : Util.getDrawableFromAttribute(SubsonicTabActivity.getInstance(), R.attr.star_hollow);
@@ -797,13 +799,13 @@ public class DownloadActivity extends SubsonicTabActivity implements OnGestureLi
             songTitleTextView.setText(currentSong.getTitle());
             albumTextView.setText(currentSong.getAlbum());
             artistTextView.setText(currentSong.getArtist());
-            getImageLoader().loadImage(albumArtImageView, currentSong, true, true);
+            getImageLoader().loadImage(albumArtImageView, currentSong, true, 0, false, true);
         } else {
         	currentSong = null;
             songTitleTextView.setText(null);
             albumTextView.setText(null);
             artistTextView.setText(null);
-            getImageLoader().loadImage(albumArtImageView, null, true, false);
+            getImageLoader().loadImage(albumArtImageView, null, true, 0, false, false);
         }
     }
 

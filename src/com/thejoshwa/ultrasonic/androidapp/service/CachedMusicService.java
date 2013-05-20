@@ -255,8 +255,8 @@ public class CachedMusicService implements MusicService {
     }
 
     @Override
-    public Bitmap getCoverArt(Context context, MusicDirectory.Entry entry, int size, boolean saveToFile, ProgressListener progressListener) throws Exception {
-        return musicService.getCoverArt(context, entry, size, saveToFile, progressListener);
+    public Bitmap getCoverArt(Context context, MusicDirectory.Entry entry, int size, boolean saveToFile, boolean highQuality, ProgressListener progressListener) throws Exception {
+        return musicService.getCoverArt(context, entry, size, saveToFile, highQuality, progressListener);
     }
 
     @Override

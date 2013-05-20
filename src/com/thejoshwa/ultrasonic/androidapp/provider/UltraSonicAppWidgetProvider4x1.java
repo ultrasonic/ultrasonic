@@ -156,7 +156,7 @@ public class UltraSonicAppWidgetProvider4x1 extends AppWidgetProvider {
         // Set the cover art
         try {
             int size = context.getResources().getDrawable(R.drawable.appwidget_art_default).getIntrinsicHeight();
-            Bitmap bitmap = currentPlaying == null ? null : FileUtil.getAlbumArtBitmap(context, currentPlaying, size);
+            Bitmap bitmap = currentPlaying == null ? null : FileUtil.getAlbumArtBitmap(context, currentPlaying, size, true);
 
             if (bitmap == null) {
                 // Set default cover art

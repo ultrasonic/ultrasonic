@@ -121,26 +121,52 @@ public class FileUtil {
     	return new File(albumArtDir, Util.md5Hex(albumDir.getPath()) + ".jpeg");
     }
 
-    public static Bitmap getAlbumArtBitmap(Context context, MusicDirectory.Entry entry, int size) {
+    public static Bitmap getAlbumArtBitmap(Context context, MusicDirectory.Entry entry, int size, boolean highQuality) {
         File albumArtFile = getAlbumArtFile(context, entry);
         
         if (albumArtFile.exists()) {
-            Bitmap bitmap = BitmapFactory.decodeFile(albumArtFile.getPath());
+        	final BitmapFactory.Options opt = new BitmapFactory.Options();
+
+        	
+        	if (size > 0) {
+            	opt.inJustDecodeBounds = true;
+            	BitmapFactory.decodeFile(albumArtFile.getPath(), opt);
+            
+            	if (highQuality) {
+            		opt.inDither = true;
+            		opt.inPreferQualityOverSpeed = true;
+            	}
+            	
+        		opt.inPurgeable = true;
+        		opt.inSampleSize = Util.calculateInSampleSize(opt, size, Util.getScaledHeight(opt.outHeight, opt.outWidth, size));
+        		opt.inJustDecodeBounds = false;
+        	}
+        	
+            Bitmap bitmap = BitmapFactory.decodeFile(albumArtFile.getPath(), opt);
             Log.i("getAlbumArtBitmap", String.valueOf(size));
+            
             if (bitmap == null) {
             	return null;
             }
             else {
-            	if (size > 0) {
-            		return Util.scaleBitmap(bitmap, size);
-            	}
-            	
             	return bitmap;
             }
         }
         
         return null;
     }
+    
+    public static Bitmap scaleDownBitmap(Bitmap photo, int newHeight, Context context) {
+
+    	 final float densityMultiplier = context.getResources().getDisplayMetrics().density;        
+
+    	 int h= (int) (newHeight*densityMultiplier);
+    	 int w= (int) (h * photo.getWidth()/((double) photo.getHeight()));
+
+    	 photo=Bitmap.createScaledBitmap(photo, w, h, true);
+
+    	 return photo;
+    	 }
     
 	public static File getArtistDirectory(Context context, Artist artist) {
 		File dir = new File(getMusicDirectory(context).getPath() + "/" + fileSystemSafe(artist.getName()));

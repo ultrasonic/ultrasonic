@@ -81,7 +81,8 @@
                     a:layout_height="60dip"
                     a:layout_gravity="bottom|center_horizontal"
                     a:layout_marginLeft="60dip"
-                    a:layout_marginRight="60dip" />
+                    a:layout_marginRight="60dip"
+                    a:orientation="vertical" />
             </FrameLayout>
 
             <include layout="@layout/download_playlist" />
