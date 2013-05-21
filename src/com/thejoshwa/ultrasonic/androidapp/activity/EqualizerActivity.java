@@ -132,45 +132,52 @@ public class EqualizerActivity extends Activity {
     private void initEqualizer() {
         LinearLayout layout = (LinearLayout) findViewById(R.id.equalizer_layout);
 
-        final short minEQLevel = equalizer.getBandLevelRange()[0];
-        final short maxEQLevel = equalizer.getBandLevelRange()[1];
+        try {
+        	short[] bandLevelRange = equalizer.getBandLevelRange();
+        	short numberOfBands = equalizer.getNumberOfBands();
+        	
+            final short minEQLevel = bandLevelRange[0];
+            final short maxEQLevel = bandLevelRange[1];
 
-        for (short i = 0; i < equalizer.getNumberOfBands(); i++) {
-            final short band = i;
+            for (short i = 0; i < numberOfBands; i++) {
+                final short band = i;
 
-            View bandBar = LayoutInflater.from(this).inflate(R.layout.equalizer_bar, null);
-            TextView freqTextView = (TextView) bandBar.findViewById(R.id.equalizer_frequency);
-            final TextView levelTextView = (TextView) bandBar.findViewById(R.id.equalizer_level);
-            SeekBar bar = (SeekBar) bandBar.findViewById(R.id.equalizer_bar);
+                View bandBar = LayoutInflater.from(this).inflate(R.layout.equalizer_bar, null);
+                TextView freqTextView = (TextView) bandBar.findViewById(R.id.equalizer_frequency);
+                final TextView levelTextView = (TextView) bandBar.findViewById(R.id.equalizer_level);
+                SeekBar bar = (SeekBar) bandBar.findViewById(R.id.equalizer_bar);
 
-            freqTextView.setText((equalizer.getCenterFreq(band) / 1000) + " Hz");
+                freqTextView.setText((equalizer.getCenterFreq(band) / 1000) + " Hz");
 
-            bars.put(band, bar);
-            bar.setMax(maxEQLevel - minEQLevel);
-            short level = equalizer.getBandLevel(band);
-            bar.setProgress(level - minEQLevel);
-            bar.setEnabled(equalizer.getEnabled());
-            updateLevelText(levelTextView, level);
+                bars.put(band, bar);
+                bar.setMax(maxEQLevel - minEQLevel);
+                short level = equalizer.getBandLevel(band);
+                bar.setProgress(level - minEQLevel);
+                bar.setEnabled(equalizer.getEnabled());
+                updateLevelText(levelTextView, level);
 
-            bar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
-                @Override
-                public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
-                    short level = (short) (progress + minEQLevel);
-                    if (fromUser) {
-                        equalizer.setBandLevel(band, level);
+                bar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
+                    @Override
+                    public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
+                        short level = (short) (progress + minEQLevel);
+                        if (fromUser) {
+                            equalizer.setBandLevel(band, level);
+                        }
+                        updateLevelText(levelTextView, level);
                     }
-                    updateLevelText(levelTextView, level);
-                }
 
-                @Override
-                public void onStartTrackingTouch(SeekBar seekBar) {
-                }
+                    @Override
+                    public void onStartTrackingTouch(SeekBar seekBar) {
+                    }
 
-                @Override
-                public void onStopTrackingTouch(SeekBar seekBar) {
-                }
-            });
-            layout.addView(bandBar);
+                    @Override
+                    public void onStopTrackingTouch(SeekBar seekBar) {
+                    }
+                });
+                layout.addView(bandBar);
+            }
+        } catch (Exception e) {
+        	//TODO: Show a dialog
         }
     }
 
