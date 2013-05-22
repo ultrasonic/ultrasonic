@@ -203,6 +203,14 @@ public class Util extends DownloadActivity {
         return prefs.getString(Constants.PREFERENCES_KEY_SERVER_NAME + instance, null);
     }
     
+    public static String getUserName(Context context, int instance) {
+        if (instance == 0) {
+            return context.getResources().getString(R.string.main_offline);
+        }
+        SharedPreferences prefs = getPreferences(context);
+        return prefs.getString(Constants.PREFERENCES_KEY_USERNAME + instance, null);
+    }
+    
     public static boolean getServerEnabled(Context context, int instance) {
         if (instance == 0) {
             return true;
@@ -1225,5 +1233,9 @@ public class Util extends DownloadActivity {
     public static boolean getShouldUseId3Tags(Context context) {
         SharedPreferences prefs = getPreferences(context);
         return prefs.getBoolean(Constants.PREFERENCES_KEY_ID3_TAGS, false);
+    }
+    
+    public static boolean isNullOrWhiteSpace(String string) {
+    	return string == null || string.isEmpty() || string.trim().isEmpty();
     }
 }

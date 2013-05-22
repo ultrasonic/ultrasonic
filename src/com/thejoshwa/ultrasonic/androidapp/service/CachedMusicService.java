@@ -26,15 +26,18 @@ import org.apache.http.HttpResponse;
 import android.content.Context;
 import android.graphics.Bitmap;
 
+import com.thejoshwa.ultrasonic.androidapp.domain.ChatMessage;
 import com.thejoshwa.ultrasonic.androidapp.domain.Genre;
 import com.thejoshwa.ultrasonic.androidapp.domain.Indexes;
 import com.thejoshwa.ultrasonic.androidapp.domain.JukeboxStatus;
 import com.thejoshwa.ultrasonic.androidapp.domain.Lyrics;
 import com.thejoshwa.ultrasonic.androidapp.domain.MusicDirectory;
+import com.thejoshwa.ultrasonic.androidapp.domain.MusicDirectory.Entry;
 import com.thejoshwa.ultrasonic.androidapp.domain.MusicFolder;
 import com.thejoshwa.ultrasonic.androidapp.domain.Playlist;
 import com.thejoshwa.ultrasonic.androidapp.domain.SearchCritera;
 import com.thejoshwa.ultrasonic.androidapp.domain.SearchResult;
+import com.thejoshwa.ultrasonic.androidapp.domain.Share;
 import com.thejoshwa.ultrasonic.androidapp.domain.Version;
 import com.thejoshwa.ultrasonic.androidapp.util.CancellableTask;
 import com.thejoshwa.ultrasonic.androidapp.util.LRUCache;
@@ -341,15 +344,32 @@ public class CachedMusicService implements MusicService {
 	public List<Genre> getGenres(Context context, ProgressListener progressListener) throws Exception {
         checkSettingsChanged(context);
         List<Genre> result = cachedGenres.get();
+        
         if (result == null) {
             result = musicService.getGenres(context, progressListener);
             cachedGenres.set(result);
         }
+        
         return result;
 	}
 
 	@Override
 	public MusicDirectory getSongsByGenre(String genre, int count, int offset, Context context, ProgressListener progressListener) throws Exception {
 		return musicService.getSongsByGenre(genre, count, offset, context, progressListener);
+	}
+
+	@Override
+	public List<Share> getShares(Context context, ProgressListener progressListener) throws Exception {
+		return musicService.getShares(context, progressListener);	
+	}
+
+	@Override
+	public List<ChatMessage> getChatMessages(Long since, Context context, ProgressListener progressListener) throws Exception {
+		return musicService.getChatMessages(since, context, progressListener);
+	}
+
+	@Override
+	public void addChatMessage(String message, Context context, ProgressListener progressListener) throws Exception {
+		musicService.addChatMessage(message, context, progressListener);
 	}
 }

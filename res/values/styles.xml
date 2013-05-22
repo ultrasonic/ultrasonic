@@ -82,5 +82,7 @@
 	<attr name="media_play_small" format="reference"/>
 	<attr name="media_stop" format="reference"/>
 	<attr name="media_toggle" format="reference"/>
+	<attr name="chat" format="reference"/>
+	<attr name="chat_send" format="reference" />
     
 </resources>

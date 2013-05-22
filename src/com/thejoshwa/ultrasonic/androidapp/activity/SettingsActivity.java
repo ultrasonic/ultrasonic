@@ -623,6 +623,9 @@ public class SettingsActivity extends PreferenceActivity implements SharedPrefer
     			intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
     			Util.startActivityWithoutTransition(this, intent);
     			break;
+    		case R.id.menu_chat:
+    			Util.startActivityWithoutTransition(this, ChatActivity.class);
+    			break;
     		case R.id.menu_now_playing:
     			Util.startActivityWithoutTransition(this, DownloadActivity.class);
     			break;

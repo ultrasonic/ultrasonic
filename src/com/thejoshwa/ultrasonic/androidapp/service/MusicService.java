@@ -25,6 +25,7 @@ import org.apache.http.HttpResponse;
 import android.content.Context;
 import android.graphics.Bitmap;
 
+import com.thejoshwa.ultrasonic.androidapp.domain.ChatMessage;
 import com.thejoshwa.ultrasonic.androidapp.domain.Genre;
 import com.thejoshwa.ultrasonic.androidapp.domain.Indexes;
 import com.thejoshwa.ultrasonic.androidapp.domain.JukeboxStatus;
@@ -35,6 +36,7 @@ import com.thejoshwa.ultrasonic.androidapp.domain.MusicFolder;
 import com.thejoshwa.ultrasonic.androidapp.domain.Playlist;
 import com.thejoshwa.ultrasonic.androidapp.domain.SearchCritera;
 import com.thejoshwa.ultrasonic.androidapp.domain.SearchResult;
+import com.thejoshwa.ultrasonic.androidapp.domain.Share;
 import com.thejoshwa.ultrasonic.androidapp.domain.Version;
 import com.thejoshwa.ultrasonic.androidapp.util.CancellableTask;
 import com.thejoshwa.ultrasonic.androidapp.util.ProgressListener;
@@ -121,4 +123,10 @@ public interface MusicService {
     JukeboxStatus getJukeboxStatus(Context context, ProgressListener progressListener) throws Exception;
 
     JukeboxStatus setJukeboxGain(float gain, Context context, ProgressListener progressListener) throws Exception;
+    
+    List<Share> getShares(Context context, ProgressListener progressListener) throws Exception;
+    
+    List<ChatMessage> getChatMessages(Long since, Context context, ProgressListener progressListener) throws Exception;
+    
+    void addChatMessage(String message, Context context, ProgressListener progressListener) throws Exception;
 }

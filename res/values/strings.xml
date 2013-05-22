@@ -22,6 +22,7 @@
     <string name="button_bar.home">UltraSonic Main</string>
     <string name="button_bar.browse">Media Library</string>
     <string name="button_bar.search">Search</string>
+    <string name="button_bar.chat">Chat</string>
     <string name="button_bar.playlists">Playlists</string>
     <string name="button_bar.now_playing">Now Playing</string>
     <string name="main.welcome_title">Welcome!</string>
@@ -312,6 +313,7 @@
     <string name="util.bytes_format.byte">0 B</string>
     <string name="util.no_time">-:--</string>
     <string name="util.zero_time">0:00</string>
+    <string name="chat.send_a_message">Send a message</string>
 
     <plurals name="select_album_n_songs">
         <item quantity="zero">No songs</item>

@@ -70,18 +70,22 @@ import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.util.Log;
 import com.thejoshwa.ultrasonic.androidapp.R;
+import com.thejoshwa.ultrasonic.androidapp.domain.ChatMessage;
 import com.thejoshwa.ultrasonic.androidapp.domain.Genre;
 import com.thejoshwa.ultrasonic.androidapp.domain.Indexes;
 import com.thejoshwa.ultrasonic.androidapp.domain.JukeboxStatus;
 import com.thejoshwa.ultrasonic.androidapp.domain.Lyrics;
 import com.thejoshwa.ultrasonic.androidapp.domain.MusicDirectory;
+import com.thejoshwa.ultrasonic.androidapp.domain.MusicDirectory.Entry;
 import com.thejoshwa.ultrasonic.androidapp.domain.MusicFolder;
 import com.thejoshwa.ultrasonic.androidapp.domain.Playlist;
 import com.thejoshwa.ultrasonic.androidapp.domain.SearchCritera;
 import com.thejoshwa.ultrasonic.androidapp.domain.SearchResult;
 import com.thejoshwa.ultrasonic.androidapp.domain.ServerInfo;
+import com.thejoshwa.ultrasonic.androidapp.domain.Share;
 import com.thejoshwa.ultrasonic.androidapp.domain.Version;
 import com.thejoshwa.ultrasonic.androidapp.service.parser.AlbumListParser;
+import com.thejoshwa.ultrasonic.androidapp.service.parser.ChatMessageParser;
 import com.thejoshwa.ultrasonic.androidapp.service.parser.ErrorParser;
 import com.thejoshwa.ultrasonic.androidapp.service.parser.GenreParser;
 import com.thejoshwa.ultrasonic.androidapp.service.parser.IndexesParser;
@@ -95,6 +99,7 @@ import com.thejoshwa.ultrasonic.androidapp.service.parser.PlaylistsParser;
 import com.thejoshwa.ultrasonic.androidapp.service.parser.RandomSongsParser;
 import com.thejoshwa.ultrasonic.androidapp.service.parser.SearchResult2Parser;
 import com.thejoshwa.ultrasonic.androidapp.service.parser.SearchResultParser;
+import com.thejoshwa.ultrasonic.androidapp.service.parser.ShareParser;
 import com.thejoshwa.ultrasonic.androidapp.service.parser.VersionParser;
 import com.thejoshwa.ultrasonic.androidapp.service.ssl.SSLSocketFactory;
 import com.thejoshwa.ultrasonic.androidapp.service.ssl.TrustSelfSignedStrategy;
@@ -1143,4 +1148,61 @@ public class RESTMusicService implements MusicService {
             Util.close(reader);
         }
 	}
+
+	@Override
+	public List<Share> getShares(Context context, ProgressListener progressListener) throws Exception {
+		checkServerVersion(context, "1.6", "Shares not supported.");
+		
+        Reader reader = getReader(context, progressListener, "getShares", null);
+        try {
+            return new ShareParser(context).parse(reader, progressListener);
+        } finally {
+            Util.close(reader);
+        }
+	}
+
+	@Override
+	public List<ChatMessage> getChatMessages(Long since, Context context, ProgressListener progressListener) throws Exception {
+    	checkServerVersion(context, "1.2", "Chat not supported.");
+    	
+        HttpParams params = new BasicHttpParams();
+        HttpConnectionParams.setSoTimeout(params, SOCKET_READ_TIMEOUT_GET_RANDOM_SONGS);
+
+        List<String> parameterNames = new ArrayList<String>();
+        List<Object> parameterValues = new ArrayList<Object>();
+
+        parameterNames.add("since");
+        parameterValues.add(since);
+       
+        Reader reader = getReader(context, progressListener, "getChatMessages", params, parameterNames, parameterValues);
+        
+        try {
+            return new ChatMessageParser(context).parse(reader, progressListener);
+        } finally {
+            Util.close(reader);
+        }
+	}
+	
+	@Override
+	public void addChatMessage(String message, Context context, ProgressListener progressListener) throws Exception {
+    	checkServerVersion(context, "1.2", "Chat not supported.");
+    	
+        HttpParams params = new BasicHttpParams();
+        HttpConnectionParams.setSoTimeout(params, SOCKET_READ_TIMEOUT_GET_RANDOM_SONGS);
+
+        List<String> parameterNames = new ArrayList<String>();
+        List<Object> parameterValues = new ArrayList<Object>();
+
+        parameterNames.add("message");
+        parameterValues.add(message);
+       
+        Reader reader = getReader(context, progressListener, "addChatMessage", params, parameterNames, parameterValues);
+        
+        try {
+            new ErrorParser(context).parse(reader);
+        } finally {
+            Util.close(reader);
+        }
+	}
+
 }

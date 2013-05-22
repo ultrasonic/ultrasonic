@@ -49,6 +49,8 @@ import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.View.OnTouchListener;
 import android.widget.ImageView;
+import android.widget.ListAdapter;
+import android.widget.ListView;
 import android.widget.RemoteViews;
 import android.widget.TextView;
 import com.thejoshwa.ultrasonic.androidapp.R;
@@ -69,7 +71,6 @@ import com.thejoshwa.ultrasonic.androidapp.util.LoadingTask;
 import com.thejoshwa.ultrasonic.androidapp.util.ModalBackgroundTask;
 import com.thejoshwa.ultrasonic.androidapp.util.SilentBackgroundTask;
 import com.thejoshwa.ultrasonic.androidapp.util.Util;
-
 import net.simonvt.menudrawer.MenuDrawer;
 import net.simonvt.menudrawer.Position;
 
@@ -124,6 +125,7 @@ public class SubsonicTabActivity extends Activity implements OnClickListener{
         findViewById(R.id.menu_browse).setOnClickListener(this);
         searchMenuItem.setOnClickListener(this);
         playlistsMenuItem.setOnClickListener(this);
+        findViewById(R.id.menu_chat).setOnClickListener(this);
         findViewById(R.id.menu_now_playing).setOnClickListener(this);
         findViewById(R.id.menu_settings).setOnClickListener(this);
         findViewById(R.id.menu_about).setOnClickListener(this);
@@ -487,6 +489,17 @@ public class SubsonicTabActivity extends Activity implements OnClickListener{
     	    public void run() {
     			if (view != null) {
     				view.setImageViewResource(id, resouce);
+    			}
+    		}
+    	});
+    }
+    
+    public void setListAdapterOnListViewOnUiThread(final ListView view, final ListAdapter adapter) {
+    	this.runOnUiThread( new Runnable() {
+    		@Override 
+    	    public void run() {
+    			if (view != null) {
+            		view.setAdapter(adapter);
     			}
     		}
     	});
@@ -944,6 +957,9 @@ public class SubsonicTabActivity extends Activity implements OnClickListener{
     			intent = new Intent(SubsonicTabActivity.this, SelectPlaylistActivity.class);
     			intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
     			Util.startActivityWithoutTransition(SubsonicTabActivity.this, intent);
+    			break;
+    		case R.id.menu_chat:
+    			Util.startActivityWithoutTransition(SubsonicTabActivity.this, ChatActivity.class);
     			break;
     		case R.id.menu_now_playing:
     			Util.startActivityWithoutTransition(SubsonicTabActivity.this, DownloadActivity.class);

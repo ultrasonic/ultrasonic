@@ -47,6 +47,14 @@
             android:layout_height="wrap_content"
             android:drawableLeft="?attr/playlists"
             android:text="@string/button_bar.playlists" />
+        
+        <TextView
+            android:id="@+id/menu_chat"
+            style="@style/MenuDrawer.Widget.Title"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:drawableLeft="?attr/chat"
+            android:text="@string/button_bar.chat" />
 
         <TextView
             android:id="@+id/menu_now_playing"

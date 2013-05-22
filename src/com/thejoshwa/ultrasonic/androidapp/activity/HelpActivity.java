@@ -96,12 +96,6 @@ public final class HelpActivity extends Activity implements OnClickListener {
         View aboutMenuItem = findViewById(R.id.menu_about);
         menuDrawer.setActiveView(aboutMenuItem);
         
-        TextView activeView = (TextView)findViewById(menuActiveViewId);
-        
-        if (activeView != null) {
-            menuDrawer.setActiveView(activeView);
-        }
-        
         webView = (WebView) findViewById(R.id.help_contents);
         webView.getSettings().setJavaScriptEnabled(true);
         webView.setWebViewClient(new HelpClient());
@@ -230,6 +224,9 @@ public final class HelpActivity extends Activity implements OnClickListener {
     			intent = new Intent(this, SelectPlaylistActivity.class);
     			intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
     			Util.startActivityWithoutTransition(this, intent);
+    			break;
+    		case R.id.menu_chat:
+    			Util.startActivityWithoutTransition(this, ChatActivity.class);
     			break;
     		case R.id.menu_now_playing:
     			Util.startActivityWithoutTransition(this, DownloadActivity.class);
