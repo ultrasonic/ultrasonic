@@ -102,7 +102,7 @@ public class SelectPlaylistActivity extends SubsonicTabActivity implements Adapt
 	}
 
     private void load() {
-        BackgroundTask<List<Playlist>> task = new TabActivityBackgroundTask<List<Playlist>>(this) {
+        BackgroundTask<List<Playlist>> task = new TabActivityBackgroundTask<List<Playlist>>(this, true) {
             @Override
             protected List<Playlist> doInBackground() throws Throwable {
                 MusicService musicService = MusicServiceFactory.getMusicService(SelectPlaylistActivity.this);

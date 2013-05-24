@@ -93,8 +93,7 @@ public class SubsonicTabActivity extends Activity implements OnClickListener{
     private int activePosition = 1;
     private int menuActiveViewId;
     private View nowPlayingView = null;
-    View searchMenuItem = null;
-    View playlistsMenuItem = null;
+    View chatMenuItem = null;
     View menuMain = null;
     public static boolean nowPlayingHidden = false;
     private static Entry currentSong;
@@ -118,14 +117,13 @@ public class SubsonicTabActivity extends Activity implements OnClickListener{
        	menuDrawer = MenuDrawer.attach(this, MenuDrawer.MENU_DRAG_WINDOW, Position.LEFT);
         menuDrawer.setMenuView(R.layout.menu_main);
 
-        searchMenuItem = findViewById(R.id.menu_search);
-        playlistsMenuItem = findViewById(R.id.menu_playlists);
+        chatMenuItem = findViewById(R.id.menu_chat);
         
         findViewById(R.id.menu_home).setOnClickListener(this);
         findViewById(R.id.menu_browse).setOnClickListener(this);
-        searchMenuItem.setOnClickListener(this);
-        playlistsMenuItem.setOnClickListener(this);
-        findViewById(R.id.menu_chat).setOnClickListener(this);
+        findViewById(R.id.menu_search).setOnClickListener(this);
+        findViewById(R.id.menu_playlists).setOnClickListener(this);
+        chatMenuItem.setOnClickListener(this);
         findViewById(R.id.menu_now_playing).setOnClickListener(this);
         findViewById(R.id.menu_settings).setOnClickListener(this);
         findViewById(R.id.menu_about).setOnClickListener(this);
@@ -144,6 +142,9 @@ public class SubsonicTabActivity extends Activity implements OnClickListener{
 	protected void onPostCreate(Bundle bundle) {
 		super.onPostCreate(bundle);
         instance = this;
+        
+        int visibility = Util.isOffline(this) ? View.GONE : View.VISIBLE;
+        chatMenuItem.setVisibility(visibility);
 	}
 
     @Override

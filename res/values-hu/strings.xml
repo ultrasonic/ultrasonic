@@ -7,8 +7,8 @@
     <string name="common.play_now">Lejátszás</string>
     <string name="common.play_next">Lejátszás (Következőként)</string>
     <string name="common.play_last">Lejátszás (Utolsóként)</string>
-    <string name="common.pin">Kijelöl</string>
-    <string name="common.unpin">Visszavon</string>
+    <string name="common.pin">Tárolás</string>
+    <string name="common.unpin">Visszavonás</string>
     <string name="common.delete">Törlés</string>
     <string name="common.various_artists">Különféle előadók</string>
     <string name="common.multiple_genres">Többféle műfaj</string>
@@ -22,6 +22,7 @@
     <string name="button_bar.home">UltraSonic főoldal</string>
     <string name="button_bar.browse">Médiakönyvtár</string>
     <string name="button_bar.search">Keresés</string>
+    <string name="button_bar.chat">Csevegés (Chat)</string>
     <string name="button_bar.playlists">Lejátszási listák</string>
     <string name="button_bar.now_playing">Lejátszó</string>
     <string name="main.welcome_title">Üdvözlet!</string>
@@ -144,10 +145,10 @@
     <string name="settings.title">UltraSonic beállításai</string>
     <string name="settings.test_connection_title">Kapcsolat tesztelése</string>
     <string name="settings.servers_title">Kiszolgálók</string>
-    <string name="settings.server_unused">Nem használt</string>
-    <string name="settings.server_unused1">Nem használt 1</string>
-    <string name="settings.server_unused2">Nem használt 2</string>
-    <string name="settings.server_unused3">Nem használt 3</string>
+    <string name="settings.server_unused">Kiszolgáló</string>
+    <string name="settings.server_unused1">Kiszolgáló 1</string>
+    <string name="settings.server_unused2">Kiszolgáló 2</string>
+    <string name="settings.server_unused3">Kiszolgáló 3</string>
     <string name="settings.server_name">Név</string>
 	<string name="settings.server_add_server">Kiszolgáló hozzáadása</string>    
 	<string name="settings.server_number">Kiszolgálók száma</string>
@@ -155,6 +156,7 @@
     <string name="settings.server_address">Kiszolgáló címe</string>
     <string name="settings.server_username">Felhasználónév</string>
     <string name="settings.server_password">Jelszó</string>
+    <string name="settings.chat_refresh">Csevegés frissítési időköz</string>
     <string name="settings.cache_title">Zene gyorsítótár</string>
     <string name="settings.preload">Dalok előolvasása</string>
     <string name="settings.cache_size">Gyorsítótár mérete</string>
@@ -225,6 +227,7 @@
     <string name="settings.screen_lit_summary">Képernyő ébrentartása a letöltési sebesség növelése érdekében.</string>
     <string name="settings.buffer_length">Pufferméret</string>
     <string name="settings.network_timeout">Hálózati időtúllépés</string>
+    <string name="settings.buffer_length_0">Rokkant</string>
     <string name="settings.buffer_length_1">1 másodperc</string>
     <string name="settings.buffer_length_2">2 másodperc</string>
     <string name="settings.buffer_length_5">5 másodperc</string>
@@ -234,6 +237,7 @@
     <string name="settings.buffer_length_15">15 másodperc</string>
     <string name="settings.buffer_length_20">20 másodperc</string>
     <string name="settings.buffer_length_30">30 másodperc</string>
+    <string name="settings.buffer_length_60">60 másodperc</string>
     <string name="settings.network_timeout_15000">15 másodperc</string>
     <string name="settings.network_timeout_30000">30 másodperc</string>
     <string name="settings.network_timeout_45000">45 másodperc</string>
@@ -304,14 +308,15 @@
     <string name="equalizer.enabled">Engedélyezve</string>
     <string name="equalizer.preset">Profil kiválasztása</string>
     <string name="widget.initial_text">Érintse meg a zene kiválasztásához</string>
-    <string name="widget.sdcard_busy">Az SD kártya nem érhető el</string>
-    <string name="widget.sdcard_missing">Nincs SD kártya</string>
+    <string name="widget.sdcard_busy">Az SD kártya nem elérhető!</string>
+    <string name="widget.sdcard_missing">Nincs SD kártya!</string>
     <string name="util.bytes_format.gigabyte">0.00 GB</string>
     <string name="util.bytes_format.megabyte">0.00 MB</string>
     <string name="util.bytes_format.kilobyte">0 KB</string>
     <string name="util.bytes_format.byte">0 B</string>
     <string name="util.no_time">-:--</string>
     <string name="util.zero_time">0:00</string>
+    <string name="chat.send_a_message">Üzenet küldése</string>
 
     <plurals name="select_album_n_songs">
         <item quantity="zero">Nincsenek dalok</item>
@@ -319,12 +324,12 @@
         <item quantity="other">%d dal</item>
     </plurals>
     <plurals name="select_album_n_songs_downloading">
-        <item quantity="one">1 dal kijelölve.</item>
-        <item quantity="other">%d dal kijelölve.</item>
+        <item quantity="one">1 dal kijelölve tárolásra.</item>
+        <item quantity="other">%d dal kijelölve tárolásra.</item>
     </plurals>
     <plurals name="select_album_n_songs_unpinned">
-        <item quantity="one">1 dal visszavonva.</item>
-        <item quantity="other">%d dal visszavonva.</item>
+        <item quantity="one">1 dal tárolása visszavonva.</item>
+        <item quantity="other">%d dal tárolása visszavonva.</item>
     </plurals> 
     <plurals name="select_album_n_songs_added">
         <item quantity="one">1 dal hozzáadva a lejátszási sorhoz.</item>

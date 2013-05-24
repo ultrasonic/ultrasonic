@@ -37,13 +37,13 @@
             a:key="showNowPlaying"
             a:summary="@string/settings.show_now_playing_summary"
             a:title="@string/settings.show_now_playing" />
+    </PreferenceCategory>
+    <PreferenceCategory a:title="@string/settings.playback_control_title" >
         <CheckBoxPreference
             a:defaultValue="false"
             a:key="useId3Tags"
             a:summary="@string/settings.use_id3_summary"
-            a:title="@string/settings.use_id3" />        
-    </PreferenceCategory>
-    <PreferenceCategory a:title="@string/settings.playback_control_title" >
+            a:title="@string/settings.use_id3" />   
         <CheckBoxPreference
             a:defaultValue="true"
             a:key="mediaButtons"
@@ -118,6 +118,13 @@
             a:entryValues="@array/networkTimeoutValues"
             a:key="networkTimeout"
             a:title="@string/settings.network_timeout" />
+        
+        <ListPreference
+            a:defaultValue="5000"
+            a:entries="@array/chatRefreshNames"
+            a:entryValues="@array/chatRefreshValues"
+            a:key="chatRefreshInterval"
+            a:title="@string/settings.chat_refresh" /> 
     </PreferenceCategory>
     <PreferenceCategory a:title="@string/settings.cache_title" >
         <ListPreference

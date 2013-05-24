@@ -652,7 +652,7 @@ public class SelectAlbumActivity extends SubsonicTabActivity {
     private abstract class LoadTask extends TabActivityBackgroundTask<Pair<MusicDirectory, Boolean>> {
 
         public LoadTask() {
-            super(SelectAlbumActivity.this);
+            super(SelectAlbumActivity.this, true);
         }
 
         protected abstract MusicDirectory load(MusicService service) throws Exception;

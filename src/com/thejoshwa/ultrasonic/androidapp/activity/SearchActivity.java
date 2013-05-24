@@ -268,7 +268,7 @@ public class SearchActivity extends SubsonicTabActivity {
     	final int maxAlbums = Util.getMaxAlbums(this);
     	final int maxSongs = Util.getMaxSongs(this);
     	
-        BackgroundTask<SearchResult> task = new TabActivityBackgroundTask<SearchResult>(this) {
+        BackgroundTask<SearchResult> task = new TabActivityBackgroundTask<SearchResult>(this, true) {
             @Override
             protected SearchResult doInBackground() throws Throwable {
                 SearchCritera criteria = new SearchCritera(query, maxArtists, maxAlbums, maxSongs);

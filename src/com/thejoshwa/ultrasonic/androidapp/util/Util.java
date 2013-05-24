@@ -1235,6 +1235,11 @@ public class Util extends DownloadActivity {
         return prefs.getBoolean(Constants.PREFERENCES_KEY_ID3_TAGS, false);
     }
     
+    public static int getChatRefreshInterval(Context context) {
+        SharedPreferences prefs = getPreferences(context);
+        return Integer.parseInt(prefs.getString(Constants.PREFERENCES_KEY_CHAT_REFRESH_INTERVAL, "5000"));
+    }
+    
     public static boolean isNullOrWhiteSpace(String string) {
     	return string == null || string.isEmpty() || string.trim().isEmpty();
     }

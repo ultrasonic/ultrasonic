@@ -17,6 +17,7 @@
     <string name="button_bar.search">Recherche</string>
     <string name="button_bar.playlists">Playlists</string>
     <string name="button_bar.now_playing">Lecture en cours</string>
+    <string name="button_bar.chat">Clavardage</string>
     <string name="main.welcome_title">Bienvenue!</string>
     <string name="main.welcome_text">Bienvenue dans UltraSonic ! L\'application n\'est pas configurée. Après avoir configuré votre serveur personnel (disponible à partir de <b>subsonic.org</b>), veuillez accéder aux <b>Paramètres</b> et modifier la configuration pour vous y connecter.</string>
     <string name="main.select_server">Sélectionner un serveur</string>
@@ -132,6 +133,7 @@
     <string name="settings.server_address">Adresse du serveur</string>
     <string name="settings.server_username">Nom d\'utilisateur</string>
     <string name="settings.server_password">Mot de passe</string>
+	<string name="settings.chat_refresh">Intervalle de clavardage</string>    
     <string name="settings.cache_title">Cache des musiques</string>
     <string name="settings.preload">Titres à pré-charger</string>
     <string name="settings.cache_size">Taille du cache</string>
@@ -202,6 +204,7 @@
     <string name="settings.screen_lit_summary">Garder l\'écran allumé pendant le téléchargement permet d\'améliorer la vitesse de téléchargement.</string>
     <string name="settings.buffer_length">Longueur de la mémoire tampon</string>
     <string name="settings.network_timeout">Délai d\'attente de connexion</string>
+    <string name="settings.buffer_length_0">Désactivé</string>
     <string name="settings.buffer_length_1">1 seconde</string>
     <string name="settings.buffer_length_2">2 secondes</string>
     <string name="settings.buffer_length_5">5 secondes</string>
@@ -211,6 +214,7 @@
     <string name="settings.buffer_length_15">15 secondes</string>
     <string name="settings.buffer_length_20">20 secondes</string>
     <string name="settings.buffer_length_30">30 secondes</string>
+    <string name="settings.buffer_length_60">60 secondes</string>    
     <string name="settings.network_timeout_15000">15 secondes</string>
     <string name="settings.network_timeout_30000">30 secondes</string>
     <string name="settings.network_timeout_45000">45 secondes</string>
@@ -279,6 +283,7 @@
     <string name="util.bytes_format.byte">0 o</string>
     <string name="util.no_time">-:--</string>
     <string name="util.zero_time">0:00</string>
+    <string name="chat.send_a_message">Envoyer un message</string>
 
     <plurals name="select_album_n_songs">
         <item quantity="zero">Aucun titre</item>

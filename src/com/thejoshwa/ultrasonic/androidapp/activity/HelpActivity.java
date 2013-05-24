@@ -86,6 +86,7 @@ public final class HelpActivity extends Activity implements OnClickListener {
         findViewById(R.id.menu_browse).setOnClickListener(this);
         searchMenuItem.setOnClickListener(this);
         playlistsMenuItem.setOnClickListener(this);
+        findViewById(R.id.menu_chat).setOnClickListener(this);
         findViewById(R.id.menu_now_playing).setOnClickListener(this);
         findViewById(R.id.menu_settings).setOnClickListener(this);
         findViewById(R.id.menu_about).setOnClickListener(this);

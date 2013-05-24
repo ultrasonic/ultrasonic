@@ -3,7 +3,9 @@ package com.thejoshwa.ultrasonic.androidapp.activity;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-import android.content.Intent;
+import java.util.Timer;
+import java.util.TimerTask;
+
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.text.Editable;
@@ -25,7 +27,6 @@ import com.thejoshwa.ultrasonic.androidapp.domain.ChatMessage;
 import com.thejoshwa.ultrasonic.androidapp.service.MusicService;
 import com.thejoshwa.ultrasonic.androidapp.service.MusicServiceFactory;
 import com.thejoshwa.ultrasonic.androidapp.util.BackgroundTask;
-import com.thejoshwa.ultrasonic.androidapp.util.Constants;
 import com.thejoshwa.ultrasonic.androidapp.util.TabActivityBackgroundTask;
 import com.thejoshwa.ultrasonic.androidapp.util.Util;
 import com.thejoshwa.ultrasonic.androidapp.view.ChatAdapter;
@@ -38,9 +39,9 @@ public final class ChatActivity extends SubsonicTabActivity {
     private ListView chatListView;
     private EditText messageEditText;
     private ImageButton sendButton;
-    //private ChatAdapter chatAdapter;
-    private static Long lastChatMessageTime = (long) 0;
-    private static ArrayList<ChatMessage> messageList = new ArrayList<ChatMessage>();
+	private Timer timer = null;
+    private volatile static Long lastChatMessageTime = (long) 0;
+    private volatile static ArrayList<ChatMessage> messageList = new ArrayList<ChatMessage>();
 
     @Override
     protected void onCreate(Bundle bundle) {
@@ -114,13 +115,64 @@ public final class ChatActivity extends SubsonicTabActivity {
         load();
     }
     
+	@Override
+	protected void onPostCreate(Bundle bundle) {
+		super.onPostCreate(bundle);
+		
+		timerMethod();
+	}
+	
+    @Override
+    protected void onResume() {
+        super.onResume();
+        
+        if (!messageList.isEmpty()) {
+        	ChatAdapter chatAdapter = new ChatAdapter(ChatActivity.this, messageList);
+        	chatListView.setAdapter(chatAdapter);
+        }
+        
+        if (timer == null) {
+        	timerMethod();
+        }
+    }
+	
+	@Override
+	protected void onPause() {
+		super.onPause();
+		
+		if (timer != null) {
+			timer.cancel();
+			timer = null;
+		}
+	}
+	
+	private void timerMethod()
+	{
+		int refreshInterval = Util.getChatRefreshInterval(this);
+
+		if (refreshInterval > 0) {
+			timer = new Timer();
+
+			timer.schedule(new TimerTask() {
+				public void run() {
+					ChatActivity.this.runOnUiThread(new Runnable() {
+						@Override
+						public void run() {
+							load();
+						}
+					});
+				}
+			}, refreshInterval, refreshInterval);
+		}
+	}       
+    
     private void sendMessage() {
 		final String message = messageEditText.getText().toString();
 		
 		if (!Util.isNullOrWhiteSpace(message)) {
 			messageEditText.setText("");
 
-			BackgroundTask<Void> task = new TabActivityBackgroundTask<Void>(ChatActivity.this) {
+			BackgroundTask<Void> task = new TabActivityBackgroundTask<Void>(ChatActivity.this, false) {
 				@Override
 				protected Void doInBackground() throws Throwable {
 					MusicService musicService = MusicServiceFactory.getMusicService(ChatActivity.this);
@@ -138,18 +190,8 @@ public final class ChatActivity extends SubsonicTabActivity {
 		}
     }
     
-    @Override
-    protected void onResume() {
-        super.onResume();
-        
-        if (!messageList.isEmpty()) {
-        	ChatAdapter chatAdapter = new ChatAdapter(ChatActivity.this, messageList);
-        	chatListView.setAdapter(chatAdapter);
-        }
-    }
-    
     private synchronized void load() {
-        BackgroundTask<List<ChatMessage>> task = new TabActivityBackgroundTask<List<ChatMessage>>(this) {
+        BackgroundTask<List<ChatMessage>> task = new TabActivityBackgroundTask<List<ChatMessage>>(this, false) {
             @Override
             protected List<ChatMessage> doInBackground() throws Throwable {
                 MusicService musicService = MusicServiceFactory.getMusicService(ChatActivity.this);
@@ -179,26 +221,16 @@ public final class ChatActivity extends SubsonicTabActivity {
         task.execute();
     }
     
-    private void refresh() {
-  		lastChatMessageTime = (long) 0;
-   		messageList = new ArrayList<ChatMessage>();
-   		
-        finish();
-        Intent intent = getIntent();
-        intent.putExtra(Constants.INTENT_EXTRA_NAME_REFRESH, true);
-        Util.startActivityWithoutTransition(this, intent);
-    }
-    
     private class GetDataTask extends AsyncTask<Void, Void, String[]> {
         @Override
         protected void onPostExecute(String[] result) {
+        	load();
             refreshChatListView.onRefreshComplete();
             super.onPostExecute(result);
         }
 
 		@Override
 		protected String[] doInBackground(Void... params) {
-			refresh();
 			return null;
 		}
     }

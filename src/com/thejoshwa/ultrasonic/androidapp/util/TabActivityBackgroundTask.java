@@ -9,15 +9,19 @@ import com.thejoshwa.ultrasonic.androidapp.activity.SubsonicTabActivity;
 public abstract class TabActivityBackgroundTask<T> extends BackgroundTask<T> {
 
     private final SubsonicTabActivity tabActivity;
+    private final boolean changeProgress;
 
-    public TabActivityBackgroundTask(SubsonicTabActivity activity) {
+    public TabActivityBackgroundTask(SubsonicTabActivity activity, boolean changeProgress) {
         super(activity);
         tabActivity = activity;
+        this.changeProgress = changeProgress;
     }
 
     @Override
     public void execute() {
-        tabActivity.setProgressVisible(true);
+    	if (changeProgress) {
+    		tabActivity.setProgressVisible(true);
+    	}
 
         new Thread() {
             @Override
@@ -31,7 +35,10 @@ public abstract class TabActivityBackgroundTask<T> extends BackgroundTask<T> {
                     getHandler().post(new Runnable() {
                         @Override
                         public void run() {
-                            tabActivity.setProgressVisible(false);
+                        	if (changeProgress) {
+                        		tabActivity.setProgressVisible(false);
+                        	}
+                        	
                             done(result);
                         }
                     });
@@ -42,7 +49,10 @@ public abstract class TabActivityBackgroundTask<T> extends BackgroundTask<T> {
                     getHandler().post(new Runnable() {
                         @Override
                         public void run() {
-                            tabActivity.setProgressVisible(false);
+                        	if (changeProgress) {
+                        		tabActivity.setProgressVisible(false);
+                        	}
+                        	
                             error(t);
                         }
                     });

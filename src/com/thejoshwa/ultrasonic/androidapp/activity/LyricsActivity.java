@@ -49,7 +49,7 @@ public final class LyricsActivity extends SubsonicTabActivity {
     }
 
     private void load() {
-        BackgroundTask<Lyrics> task = new TabActivityBackgroundTask<Lyrics>(this) {
+        BackgroundTask<Lyrics> task = new TabActivityBackgroundTask<Lyrics>(this, true) {
             @Override
             protected Lyrics doInBackground() throws Throwable {
                 String artist = getIntent().getStringExtra(Constants.INTENT_EXTRA_NAME_ARTIST);

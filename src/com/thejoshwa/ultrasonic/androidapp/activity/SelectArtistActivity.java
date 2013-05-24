@@ -123,7 +123,7 @@ public class SelectArtistActivity extends SubsonicTabActivity implements Adapter
     }
 
     private void load() {
-        BackgroundTask<Indexes> task = new TabActivityBackgroundTask<Indexes>(this) {
+        BackgroundTask<Indexes> task = new TabActivityBackgroundTask<Indexes>(this, true) {
             @Override
             protected Indexes doInBackground() throws Throwable {
                 boolean refresh = getIntent().getBooleanExtra(Constants.INTENT_EXTRA_NAME_REFRESH, false);

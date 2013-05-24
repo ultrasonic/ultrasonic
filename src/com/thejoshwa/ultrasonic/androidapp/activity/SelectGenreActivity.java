@@ -100,7 +100,7 @@ public class SelectGenreActivity extends SubsonicTabActivity implements AdapterV
     }
 
     private void load() {
-        BackgroundTask<List<Genre>> task = new TabActivityBackgroundTask<List<Genre>>(this) {
+        BackgroundTask<List<Genre>> task = new TabActivityBackgroundTask<List<Genre>>(this, true) {
             @Override
             protected List<Genre> doInBackground() throws Throwable {
                 MusicService musicService = MusicServiceFactory.getMusicService(SelectGenreActivity.this);

@@ -1518,7 +1518,7 @@ public class DownloadServiceImpl extends Service implements DownloadService {
         public void execute() {			
             setPlayerState(DOWNLOADING);
 
-            while (!bufferComplete()) {
+            while (!bufferComplete() && !Util.isOffline(DownloadServiceImpl.this)) {
                 Util.sleepQuietly(1000L);
                 if (isCancelled()) {
                     return;
