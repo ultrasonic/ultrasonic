@@ -78,6 +78,7 @@ public class SettingsActivity extends PreferenceActivity implements SharedPrefer
     private ListPreference defaultSongs;
     private ListPreference defaultArtists;
     private ListPreference chatRefreshInterval;
+    private ListPreference directoryCacheTime;
     private CheckBoxPreference mediaButtonsEnabled;
     private CheckBoxPreference lockScreenEnabled;
     private CheckBoxPreference gaplessPlaybackEnabled;    
@@ -153,6 +154,7 @@ public class SettingsActivity extends PreferenceActivity implements SharedPrefer
         defaultSongs = (ListPreference) findPreference(Constants.PREFERENCES_KEY_DEFAULT_SONGS);
         defaultAlbums = (ListPreference) findPreference(Constants.PREFERENCES_KEY_DEFAULT_ALBUMS);
         chatRefreshInterval = (ListPreference) findPreference(Constants.PREFERENCES_KEY_CHAT_REFRESH_INTERVAL);
+        directoryCacheTime = (ListPreference) findPreference(Constants.PREFERENCES_KEY_DIRECTORY_CACHE_TIME);
         mediaButtonsEnabled = (CheckBoxPreference) findPreference(Constants.PREFERENCES_KEY_MEDIA_BUTTONS);
         lockScreenEnabled = (CheckBoxPreference) findPreference(Constants.PREFERENCES_KEY_SHOW_LOCK_SCREEN_CONTROLS);
         gaplessPlaybackEnabled = (CheckBoxPreference) findPreference(Constants.PREFERENCES_KEY_GAPLESS_PLAYBACK);
@@ -406,6 +408,7 @@ public class SettingsActivity extends PreferenceActivity implements SharedPrefer
         defaultArtists.setSummary(defaultArtists.getEntry());
         defaultSongs.setSummary(defaultSongs.getEntry());
         chatRefreshInterval.setSummary(chatRefreshInterval.getEntry());
+        directoryCacheTime.setSummary(directoryCacheTime.getEntry());
         
         if (!mediaButtonsEnabled.isChecked()) {
         	lockScreenEnabled.setChecked(false);

@@ -33,7 +33,6 @@ import com.thejoshwa.ultrasonic.androidapp.domain.Indexes;
 import com.thejoshwa.ultrasonic.androidapp.domain.JukeboxStatus;
 import com.thejoshwa.ultrasonic.androidapp.domain.Lyrics;
 import com.thejoshwa.ultrasonic.androidapp.domain.MusicDirectory;
-import com.thejoshwa.ultrasonic.androidapp.domain.MusicDirectory.Entry;
 import com.thejoshwa.ultrasonic.androidapp.domain.MusicFolder;
 import com.thejoshwa.ultrasonic.androidapp.domain.Playlist;
 import com.thejoshwa.ultrasonic.androidapp.domain.SearchCritera;
@@ -51,8 +50,7 @@ import com.thejoshwa.ultrasonic.androidapp.util.Util;
  */
 public class CachedMusicService implements MusicService {
 
-    private static final int MUSIC_DIR_CACHE_SIZE = 50;
-    private static final int TTL_MUSIC_DIR = 5 * 60; // Five minutes
+    private static final int MUSIC_DIR_CACHE_SIZE = 100;
 
     private final MusicService musicService;
     private final LRUCache<String, TimeLimitedCache<MusicDirectory>> cachedMusicDirectories;
@@ -138,10 +136,12 @@ public class CachedMusicService implements MusicService {
     public MusicDirectory getMusicDirectory(String id, String name, boolean refresh, Context context, ProgressListener progressListener) throws Exception {
         checkSettingsChanged(context);
         TimeLimitedCache<MusicDirectory> cache = refresh ? null : cachedMusicDirectories.get(id);
+        
         MusicDirectory dir = cache == null ? null : cache.get();
+        
         if (dir == null) {
             dir = musicService.getMusicDirectory(id, name, refresh, context, progressListener);
-            cache = new TimeLimitedCache<MusicDirectory>(TTL_MUSIC_DIR, TimeUnit.SECONDS);
+            cache = new TimeLimitedCache<MusicDirectory>(Util.getDirectoryCacheTime(context), TimeUnit.SECONDS);
             cache.set(dir);
             cachedMusicDirectories.put(id, cache);
         }
@@ -155,7 +155,7 @@ public class CachedMusicService implements MusicService {
         MusicDirectory dir = cache == null ? null : cache.get();
         if (dir == null) {
             dir = musicService.getArtist(id, name, refresh, context, progressListener);
-            cache = new TimeLimitedCache<MusicDirectory>(TTL_MUSIC_DIR, TimeUnit.SECONDS);
+            cache = new TimeLimitedCache<MusicDirectory>(Util.getDirectoryCacheTime(context), TimeUnit.SECONDS);
             cache.set(dir);
             cachedArtist.put(id, cache);
         }
@@ -169,7 +169,7 @@ public class CachedMusicService implements MusicService {
         MusicDirectory dir = cache == null ? null : cache.get();
         if (dir == null) {
             dir = musicService.getAlbum(id, name, refresh, context, progressListener);
-            cache = new TimeLimitedCache<MusicDirectory>(TTL_MUSIC_DIR, TimeUnit.SECONDS);
+            cache = new TimeLimitedCache<MusicDirectory>(Util.getDirectoryCacheTime(context), TimeUnit.SECONDS);
             cache.set(dir);
             cachedAlbum.put(id, cache);
         }

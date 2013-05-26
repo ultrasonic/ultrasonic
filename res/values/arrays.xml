@@ -5,12 +5,10 @@
         <item>light</item>
         <item>dark</item>
     </string-array>
-
     <string-array name="themeNames">
         <item>@string/settings.theme_light</item>
         <item>@string/settings.theme_dark</item>
     </string-array>
-
     <string-array name="preloadCountValues">
         <item>1</item>
         <item>2</item>
@@ -19,7 +17,6 @@
         <item>10</item>
         <item>-1</item>
     </string-array>
-
     <string-array name="preloadCountNames">
         <item>@string/settings.preload_1</item>
         <item>@string/settings.preload_2</item>
@@ -28,7 +25,6 @@
         <item>@string/settings.preload_10</item>
         <item>@string/settings.preload_unlimited</item>
     </string-array>
-
     <string-array name="cacheSizeValues">
         <item>100</item>
         <item>200</item>
@@ -40,7 +36,6 @@
         <item>20000</item>
         <item>-1</item>
     </string-array>
-
     <string-array name="cacheSizeNames">
         <item>@string/settings.cache_size_100</item>
         <item>@string/settings.cache_size_200</item>
@@ -52,7 +47,6 @@
         <item>@string/settings.cache_size_20000</item>
         <item>@string/settings.cache_size_unlimited</item>
     </string-array>
-
     <string-array name="maxBitrateValues">
         <item>32</item>
         <item>64</item>
@@ -66,7 +60,6 @@
         <item>320</item>
         <item>0</item>
     </string-array>
-
     <string-array name="maxBitrateNames">
         <item>@string/settings.max_bitrate_32</item>
         <item>@string/settings.max_bitrate_64</item>
@@ -80,125 +73,136 @@
         <item>@string/settings.max_bitrate_320</item>
         <item>@string/settings.max_bitrate_unlimited</item>
     </string-array>
-
     <string-array name="bufferLengthValues">
-    <item>1</item>
-	<item>2</item>
-	<item>5</item>
-	<item>8</item>
-	<item>10</item>
-	<item>12</item>
-	<item>15</item>
-	<item>20</item>
-	<item>30</item>
+        <item>1</item>
+        <item>2</item>
+        <item>5</item>
+        <item>8</item>
+        <item>10</item>
+        <item>12</item>
+        <item>15</item>
+        <item>20</item>
+        <item>30</item>
     </string-array>
-    
     <string-array name="incrementTimeValues">
-    <item>1000</item>
-	<item>2000</item>
-	<item>5000</item>
-	<item>8000</item>
-	<item>10000</item>
-	<item>12000</item>
-	<item>15000</item>
-	<item>20000</item>
-	<item>30000</item>
+        <item>1000</item>
+        <item>2000</item>
+        <item>5000</item>
+        <item>8000</item>
+        <item>10000</item>
+        <item>12000</item>
+        <item>15000</item>
+        <item>20000</item>
+        <item>30000</item>
     </string-array>
-    
     <string-array name="chatRefreshValues">
-    <item>0</item>
-    <item>1000</item>
-	<item>2000</item>
-	<item>5000</item>
-	<item>8000</item>
-	<item>10000</item>
-	<item>12000</item>
-	<item>15000</item>
-	<item>20000</item>
-	<item>30000</item>	
-	<item>60000</item>
+        <item>0</item>
+        <item>1000</item>
+        <item>2000</item>
+        <item>5000</item>
+        <item>8000</item>
+        <item>10000</item>
+        <item>12000</item>
+        <item>15000</item>
+        <item>20000</item>
+        <item>30000</item>
+        <item>60000</item>
+        <item>120000</item>
     </string-array>
-    
-    <string-array name="chatRefreshNames">    
-    <item>@string/settings.buffer_length_0</item>
-	<item>@string/settings.buffer_length_1</item>    
-	<item>@string/settings.buffer_length_2</item>
-	<item>@string/settings.buffer_length_5</item>
-	<item>@string/settings.buffer_length_8</item>
-	<item>@string/settings.buffer_length_10</item>
-	<item>@string/settings.buffer_length_12</item>
-	<item>@string/settings.buffer_length_15</item>
-	<item>@string/settings.buffer_length_20</item>
-	<item>@string/settings.buffer_length_30</item>
-	<item>@string/settings.buffer_length_60</item>
+    <string-array name="chatRefreshNames">
+        <item>@string/settings.buffer_length_0</item>
+        <item>@string/settings.buffer_length_1</item>
+        <item>@string/settings.buffer_length_2</item>
+        <item>@string/settings.buffer_length_5</item>
+        <item>@string/settings.buffer_length_8</item>
+        <item>@string/settings.buffer_length_10</item>
+        <item>@string/settings.buffer_length_12</item>
+        <item>@string/settings.buffer_length_15</item>
+        <item>@string/settings.buffer_length_20</item>
+        <item>@string/settings.buffer_length_30</item>
+        <item>@string/settings.buffer_length_60</item>
+        <item>@string/settings.buffer_length_120</item>
     </string-array>
-
-    <string-array name="bufferLengthNames">    
-	<item>@string/settings.buffer_length_1</item>    
-	<item>@string/settings.buffer_length_2</item>
-	<item>@string/settings.buffer_length_5</item>
-	<item>@string/settings.buffer_length_8</item>
-	<item>@string/settings.buffer_length_10</item>
-	<item>@string/settings.buffer_length_12</item>
-	<item>@string/settings.buffer_length_15</item>
-	<item>@string/settings.buffer_length_20</item>
-	<item>@string/settings.buffer_length_30</item>
+    <string-array name="directoryCacheTimeValues">
+        <item>0</item>
+        <item>60</item>
+        <item>120</item>
+        <item>300</item>
+        <item>600</item>
+        <item>1800</item>
+        <item>3600</item>
     </string-array>
-
+    <string-array name="directoryCacheTimeNames">
+        <item>@string/settings.directory_cache_time_0</item>
+        <item>@string/settings.directory_cache_time_1</item>
+        <item>@string/settings.directory_cache_time_2</item>
+        <item>@string/settings.directory_cache_time_5</item>
+        <item>@string/settings.directory_cache_time_10</item>
+        <item>@string/settings.directory_cache_time_30</item>
+        <item>@string/settings.directory_cache_time_60</item>
+    </string-array>
+    <string-array name="bufferLengthNames">
+        <item>@string/settings.buffer_length_1</item>
+        <item>@string/settings.buffer_length_2</item>
+        <item>@string/settings.buffer_length_5</item>
+        <item>@string/settings.buffer_length_8</item>
+        <item>@string/settings.buffer_length_10</item>
+        <item>@string/settings.buffer_length_12</item>
+        <item>@string/settings.buffer_length_15</item>
+        <item>@string/settings.buffer_length_20</item>
+        <item>@string/settings.buffer_length_30</item>
+    </string-array>
     <string-array name="networkTimeoutValues">
-	<item>15000</item>
-	<item>30000</item>
-	<item>45000</item>
-	<item>60000</item>
-	<item>75000</item>
-	<item>90000</item>
-	<item>105000</item>
-	<item>120000</item>
+        <item>15000</item>
+        <item>30000</item>
+        <item>45000</item>
+        <item>60000</item>
+        <item>75000</item>
+        <item>90000</item>
+        <item>105000</item>
+        <item>120000</item>
     </string-array>
-
     <string-array name="networkTimeoutNames">
-	<item>@string/settings.network_timeout_15000</item>
-	<item>@string/settings.network_timeout_30000</item>
-	<item>@string/settings.network_timeout_45000</item>
-	<item>@string/settings.network_timeout_60000</item>
-	<item>@string/settings.network_timeout_75000</item>
-	<item>@string/settings.network_timeout_90000</item>
-	<item>@string/settings.network_timeout_105000</item>
-	<item>@string/settings.network_timeout_120000</item>
+        <item>@string/settings.network_timeout_15000</item>
+        <item>@string/settings.network_timeout_30000</item>
+        <item>@string/settings.network_timeout_45000</item>
+        <item>@string/settings.network_timeout_60000</item>
+        <item>@string/settings.network_timeout_75000</item>
+        <item>@string/settings.network_timeout_90000</item>
+        <item>@string/settings.network_timeout_105000</item>
+        <item>@string/settings.network_timeout_120000</item>
     </string-array>
-    
     <string-array name="searchValues">
-	<item>1</item>        
-    <item>3</item>
-	<item>5</item>
-	<item>10</item>
-	<item>15</item>
-	<item>20</item>
-	<item>25</item>
-	<item>30</item>
-	<item>40</item>
-	<item>50</item>
-	<item>75</item>
-	<item>100</item>
-	<item>250</item>
-	<item>500</item>
+        <item>1</item>
+        <item>3</item>
+        <item>5</item>
+        <item>10</item>
+        <item>15</item>
+        <item>20</item>
+        <item>25</item>
+        <item>30</item>
+        <item>40</item>
+        <item>50</item>
+        <item>75</item>
+        <item>100</item>
+        <item>250</item>
+        <item>500</item>
     </string-array>
-       
     <string-array name="searchNames">
-    <item>@string/settings.search_1</item>
-    <item>@string/settings.search_3</item>
-	<item>@string/settings.search_5</item>
-	<item>@string/settings.search_10</item>
-	<item>@string/settings.search_15</item>
-	<item>@string/settings.search_20</item>
-	<item>@string/settings.search_25</item>
-	<item>@string/settings.search_30</item>
-	<item>@string/settings.search_40</item>
-	<item>@string/settings.search_50</item>
-	<item>@string/settings.search_75</item>
-	<item>@string/settings.search_100</item>
-	<item>@string/settings.search_250</item>
-	<item>@string/settings.search_500</item>
+        <item>@string/settings.search_1</item>
+        <item>@string/settings.search_3</item>
+        <item>@string/settings.search_5</item>
+        <item>@string/settings.search_10</item>
+        <item>@string/settings.search_15</item>
+        <item>@string/settings.search_20</item>
+        <item>@string/settings.search_25</item>
+        <item>@string/settings.search_30</item>
+        <item>@string/settings.search_40</item>
+        <item>@string/settings.search_50</item>
+        <item>@string/settings.search_75</item>
+        <item>@string/settings.search_100</item>
+        <item>@string/settings.search_250</item>
+        <item>@string/settings.search_500</item>
     </string-array>
 
 </resources>

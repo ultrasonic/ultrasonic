@@ -144,6 +144,12 @@
             a:entryValues="@array/preloadCountValues"
             a:key="preloadCount"
             a:title="@string/settings.preload" />
+        <ListPreference
+            a:defaultValue="300"
+            a:entries="@array/directoryCacheTimeNames"
+            a:entryValues="@array/directoryCacheTimeValues"
+            a:key="directoryCacheTime"
+            a:title="@string/settings.directory_cache_time" />        
     </PreferenceCategory>
     <PreferenceCategory a:title="@string/settings.search_title" >
         <ListPreference
