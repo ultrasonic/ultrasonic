@@ -3,32 +3,37 @@
     a:layout_width="fill_parent"
     a:layout_height="wrap_content"
     a:minWidth="250dp"
-    a:minHeight="40dp"
-    a:background="@drawable/appwidget_dark_bg_trans"
-    a:orientation="horizontal" >
+    a:minHeight="250dp"
+    a:orientation="vertical"
+    a:background="@drawable/appwidget_dark_bg_trans" >"
 
     <ImageView
         a:id="@+id/appwidget_coverart"
-        a:layout_width="80dp"
-        a:layout_height="80dp"
-        a:layout_gravity="center_vertical"
+        a:layout_width="234dp"
+        a:layout_height="234dp"
+        a:layout_gravity="center_horizontal"
         a:clickable="true"
         a:focusable="true"
+        a:layout_margin="6dip"
+        a:paddingTop="6dip"
+        a:paddingBottom="6dip"
         a:src="@drawable/ic_launcher" />
 
     <LinearLayout
         a:id="@+id/linearLayout1"
         a:layout_width="match_parent"
-        a:layout_height="match_parent"
+        a:layout_height="wrap_content"
         a:orientation="vertical" >
 
-        <LinearLayout
+       <LinearLayout
             a:id="@+id/appwidget_top"
             a:layout_width="fill_parent"
             a:layout_height="wrap_content"
             a:clickable="true"
             a:focusable="true"
-            a:orientation="vertical" >
+            a:orientation="vertical"
+            a:paddingTop="4dip"
+            a:paddingBottom="4dip" >
 
             <TextView
                 a:id="@+id/title"
@@ -38,14 +43,14 @@
                 a:fadingEdge="horizontal"
                 a:fadingEdgeLength="20dip"
                 a:minHeight="16sp"
-                a:paddingLeft="4dip"
-                a:paddingRight="4dip"
-                a:paddingTop="4dip"
+                a:paddingLeft="5dip"
+                a:paddingRight="5dip"
                 a:singleLine="true"
-                a:gravity="center_horizontal"
-                a:text="Title"
                 a:textColor="@color/appwidget_text"
                 a:textSize="16sp"
+                a:text="Title"
+                a:layout_gravity="center_horizontal"
+            	a:gravity="center"
                 a:textStyle="bold" />
 
             <TextView
@@ -56,50 +61,53 @@
                 a:fadingEdge="horizontal"
                 a:fadingEdgeLength="10dip"
                 a:minHeight="12sp"
-                a:paddingBottom="4dip"
-                a:paddingLeft="4dip"
-                a:paddingRight="4dip"
+                a:paddingBottom="2dip"
+                a:paddingLeft="5dip"
                 a:singleLine="true"
-                a:gravity="center_horizontal"
                 a:text="Artist"
+                a:layout_gravity="center_horizontal"
+            	a:gravity="center"
                 a:textColor="@color/appwidget_text"
                 a:textSize="12sp" />
         </LinearLayout>
 
         <LinearLayout
             a:layout_width="fill_parent"
-            a:layout_height="fill_parent"
+            a:layout_height="wrap_content"
+            a:layout_gravity="bottom"
+            a:gravity="bottom"
             a:orientation="horizontal"
             a:paddingBottom="4dip"
-            a:paddingTop="4dip"  >
+            a:paddingTop="4dip" >
 
             <ImageButton
                 a:id="@+id/control_previous"
                 a:layout_width="0dip"
-                a:layout_height="fill_parent"
+                a:layout_height="wrap_content"
                 a:layout_weight="1"
                 a:background="@color/transparent"
-                a:scaleType="center"               
+                a:scaleType="center"
                 a:src="@drawable/media_backward_normal_dark" />
 
             <ImageButton
                 a:id="@+id/control_play"
                 a:layout_width="0dip"
-                a:layout_height="fill_parent"
+                a:layout_height="wrap_content"
                 a:layout_weight="1"
                 a:background="@color/transparent"
-                a:scaleType="center"              
+                a:scaleType="center"
                 a:src="@drawable/media_start_normal_dark" />
 
             <ImageButton
                 a:id="@+id/control_next"
                 a:layout_width="0dip"
-                a:layout_height="fill_parent"
+                a:layout_height="wrap_content"
                 a:layout_weight="1"
                 a:background="@color/transparent"
                 a:scaleType="center"
                 a:src="@drawable/media_forward_normal_dark" />
         </LinearLayout>
+
     </LinearLayout>
 
 </LinearLayout>

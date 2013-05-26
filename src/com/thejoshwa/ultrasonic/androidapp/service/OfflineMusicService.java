@@ -20,9 +20,7 @@ package com.thejoshwa.ultrasonic.androidapp.service;
 
 import java.io.BufferedReader;
 import java.io.File;
-import java.io.FileInputStream;
 import java.io.FileReader;
-import java.io.InputStream;
 import java.io.Reader;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -36,7 +34,6 @@ import java.util.concurrent.TimeUnit;
 
 import android.content.Context;
 import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.media.MediaMetadataRetriever;
 import android.util.Log;
 import com.thejoshwa.ultrasonic.androidapp.domain.Artist;

@@ -30,7 +30,9 @@ import android.view.*;
 import android.view.GestureDetector.OnGestureListener;
 import android.view.animation.AnimationUtils;
 import android.widget.*;
+
 import com.thejoshwa.ultrasonic.androidapp.R;
+import com.thejoshwa.ultrasonic.androidapp.domain.Bookmark;
 import com.thejoshwa.ultrasonic.androidapp.domain.MusicDirectory;
 import com.thejoshwa.ultrasonic.androidapp.domain.MusicDirectory.Entry;
 import com.thejoshwa.ultrasonic.androidapp.domain.PlayerState;
@@ -70,6 +72,8 @@ public class DownloadActivity extends SubsonicTabActivity implements OnGestureLi
     private ImageView albumArtImageView;
     private ListView playlistView;
     private TextView positionTextView;
+    private TextView downloadTrackTextView;
+    private TextView downloadTotalDurationTextView;
     private TextView durationTextView;
     private TextView statusTextView;
     private static SeekBar progressBar;
@@ -90,6 +94,7 @@ public class DownloadActivity extends SubsonicTabActivity implements OnGestureLi
     private boolean visualizerAvailable;
     private boolean equalizerAvailable;
     private SilentBackgroundTask<Void> onProgressChangedTask;
+    //private volatile List<Bookmark> bookmarks;
     
     /**
      * Called when the activity is first created.
@@ -112,6 +117,8 @@ public class DownloadActivity extends SubsonicTabActivity implements OnGestureLi
         artistTextView = (TextView) findViewById(R.id.download_artist);
         albumArtImageView = (ImageView) findViewById(R.id.download_album_art_image);
         positionTextView = (TextView) findViewById(R.id.download_position);
+        downloadTrackTextView = (TextView) findViewById(R.id.download_track);
+        downloadTotalDurationTextView = (TextView) findViewById(R.id.download_total_duration);
         durationTextView = (TextView) findViewById(R.id.download_duration);
         statusTextView = (TextView) findViewById(R.id.download_status);
         progressBar = (SeekBar) findViewById(R.id.download_progress_bar);
@@ -376,13 +383,13 @@ public class DownloadActivity extends SubsonicTabActivity implements OnGestureLi
             	
             	new Thread(new Runnable() {
             	    public void run() {
-                    	final MusicService musicService = MusicServiceFactory.getMusicService(getBaseContext());
+                    	final MusicService musicService = MusicServiceFactory.getMusicService(DownloadActivity.this);
                     	
             			try {
                             if (isStarred) {
-                                musicService.unstar(id, null, null, getBaseContext(), null);
+                                musicService.unstar(id, null, null, DownloadActivity.this, null);
                             } else {
-                                musicService.star(id, null, null, getBaseContext(), null);
+                                musicService.star(id, null, null, DownloadActivity.this, null);
                             }
             			} catch (Exception e) {
 							Log.e(TAG, e.getMessage(), e);
@@ -391,6 +398,19 @@ public class DownloadActivity extends SubsonicTabActivity implements OnGestureLi
             	  }).start();
             }
         });
+
+// TODO: Add bookmark support
+//		new Thread(new Runnable() {
+//			public void run() {
+//				final MusicService musicService = MusicServiceFactory.getMusicService(DownloadActivity.this);
+//
+//				try {
+//					bookmarks = musicService.getBookmarks(DownloadActivity.this, null);
+//				} catch (Exception e) {
+//					Log.e(TAG, e.getMessage(), e);
+//				}
+//			}
+//		}).start();
 
         visualizerAvailable = downloadService != null && downloadService.getVisualizerController() != null;
         equalizerAvailable = downloadService != null && downloadService.getEqualizerController() != null;
@@ -407,7 +427,6 @@ public class DownloadActivity extends SubsonicTabActivity implements OnGestureLi
                 public boolean onTouch(final View view, final MotionEvent motionEvent) {
                     visualizerView.setActive(!visualizerView.isActive());
                     getDownloadService().setShowVisualization(visualizerView.isActive());
-                    //updateButtons();
                     return true;
                 }
             });
@@ -442,7 +461,6 @@ public class DownloadActivity extends SubsonicTabActivity implements OnGestureLi
         onDownloadListChanged();
         onCurrentChanged();
         onSliderProgressChanged();
-        scrollToCurrent();
         
         if (downloadService != null && downloadService.getKeepScreenOn()) {
             getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
@@ -454,7 +472,7 @@ public class DownloadActivity extends SubsonicTabActivity implements OnGestureLi
             visualizerView.setActive(downloadService != null && downloadService.getShowVisualization());
         }
     }
-
+    
     // Scroll to current playing/downloading.
     private void scrollToCurrent() {
         if (getDownloadService() == null) {
@@ -463,14 +481,15 @@ public class DownloadActivity extends SubsonicTabActivity implements OnGestureLi
 
         for (int i = 0; i < playlistView.getAdapter().getCount(); i++) {
             if (currentPlaying == playlistView.getItemAtPosition(i)) {
-                playlistView.setSelectionFromTop(i, 40);
+            	playlistView.smoothScrollToPositionFromTop(i, 40);
                 return;
             }
         }
+        
         final DownloadFile currentDownloading = getDownloadService().getCurrentDownloading();
         for (int i = 0; i < playlistView.getAdapter().getCount(); i++) {
             if (currentDownloading == playlistView.getItemAtPosition(i)) {
-                playlistView.setSelectionFromTop(i, 40);
+                playlistView.smoothScrollToPositionFromTop(i, 40);
                 return;
             }
         }
@@ -792,19 +811,36 @@ public class DownloadActivity extends SubsonicTabActivity implements OnGestureLi
 
         currentPlaying = getDownloadService().getCurrentPlaying();
         
+        scrollToCurrent();
+        
+        long totalDuration = getDownloadService().getDownloadListDuration();
+        long totalSongs = getDownloadService().getSongs().size();
+        int currentSongIndex = getDownloadService().getCurrentPlayingIndex() + 1;
+        
+        String duration = Util.formatTotalDuration(totalDuration);
+        
+        String trackFormat = String.format("%d / %d",
+        		currentSongIndex,
+        		totalSongs
+        	);
+       
         if (currentPlaying != null) {
-            currentSong = currentPlaying.getSong();
+        	currentSong = currentPlaying.getSong();
             final Drawable starDrawable = currentSong.getStarred() ? Util.getDrawableFromAttribute(SubsonicTabActivity.getInstance(), R.attr.star_full) : Util.getDrawableFromAttribute(SubsonicTabActivity.getInstance(), R.attr.star_hollow);
             starImageView.setImageDrawable(starDrawable);
             songTitleTextView.setText(currentSong.getTitle());
             albumTextView.setText(currentSong.getAlbum());
             artistTextView.setText(currentSong.getArtist());
+            downloadTrackTextView.setText(trackFormat);
+            downloadTotalDurationTextView.setText(duration);
             getImageLoader().loadImage(albumArtImageView, currentSong, true, 0, false, true);
         } else {
         	currentSong = null;
             songTitleTextView.setText(null);
             albumTextView.setText(null);
             artistTextView.setText(null);
+            downloadTrackTextView.setText(null);
+            downloadTotalDurationTextView.setText(null);
             getImageLoader().loadImage(albumArtImageView, null, true, 0, false, false);
         }
     }

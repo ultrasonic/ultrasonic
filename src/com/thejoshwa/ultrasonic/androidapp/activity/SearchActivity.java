@@ -192,17 +192,20 @@ public class SearchActivity extends SubsonicTabActivity {
 
         switch (menuItem.getItemId()) {
             case R.id.album_menu_play_now:
-                downloadRecursively(id, false, false, true, false, false, false);
+                downloadRecursively(id, false, false, true, false, false, false, false);
                 break;
             case R.id.album_menu_play_next:
-                downloadRecursively(id, false, true, false, true, false, true);
+                downloadRecursively(id, false, true, false, true, false, true, false);
                 break;                
             case R.id.album_menu_play_last:
-                downloadRecursively(id, false, true, false, false, false, false);
+                downloadRecursively(id, false, true, false, false, false, false, false);
                 break;
             case R.id.album_menu_pin:
-                downloadRecursively(id, true, true, false, false, false, false);
+                downloadRecursively(id, true, true, false, false, false, false, false);
                 break;
+            case R.id.album_menu_unpin:
+                downloadRecursively(id, false, false, false, false, false, false, true);
+                break;                
             case R.id.song_menu_play_now:
             	if (entry != null) {
             		songs = new ArrayList<MusicDirectory.Entry>(1);
@@ -392,7 +395,7 @@ public class SearchActivity extends SubsonicTabActivity {
     private void onSongSelected(MusicDirectory.Entry song, boolean save, boolean append, boolean autoplay, boolean playNext) {
         DownloadService downloadService = getDownloadService();
         if (downloadService != null) {
-            if (!append) {
+            if (!append && !playNext) {
                 downloadService.clear();
             }
             

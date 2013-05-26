@@ -70,6 +70,8 @@ public interface DownloadService {
 
     void remove(DownloadFile downloadFile);
     
+    long getDownloadListDuration();
+    
 	List<DownloadFile> getSongs();
 
     List<DownloadFile> getDownloads();

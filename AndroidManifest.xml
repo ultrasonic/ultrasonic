@@ -137,6 +137,39 @@
                 a:name="android.appwidget.provider"
                 a:resource="@xml/appwidget_info_4x1" />
         </receiver>
+        <receiver
+            a:name=".provider.UltraSonicAppWidgetProvider4x2"
+            a:label="UltraSonic (4x2)" >
+            <intent-filter>
+                <action a:name="android.appwidget.action.APPWIDGET_UPDATE" />
+            </intent-filter>
+
+            <meta-data
+                a:name="android.appwidget.provider"
+                a:resource="@xml/appwidget_info_4x2" />
+        </receiver>
+        <receiver
+            a:name=".provider.UltraSonicAppWidgetProvider4x3"
+            a:label="UltraSonic (4x3)" >
+            <intent-filter>
+                <action a:name="android.appwidget.action.APPWIDGET_UPDATE" />
+            </intent-filter>
+
+            <meta-data
+                a:name="android.appwidget.provider"
+                a:resource="@xml/appwidget_info_4x3" />
+        </receiver>
+        <receiver
+            a:name=".provider.UltraSonicAppWidgetProvider4x4"
+            a:label="UltraSonic (4x4)" >
+            <intent-filter>
+                <action a:name="android.appwidget.action.APPWIDGET_UPDATE" />
+            </intent-filter>
+
+            <meta-data
+                a:name="android.appwidget.provider"
+                a:resource="@xml/appwidget_info_4x4" />
+        </receiver>
 
         <provider
             a:name=".provider.SearchSuggestionProvider"

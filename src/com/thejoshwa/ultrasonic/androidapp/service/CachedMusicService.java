@@ -26,6 +26,7 @@ import org.apache.http.HttpResponse;
 import android.content.Context;
 import android.graphics.Bitmap;
 
+import com.thejoshwa.ultrasonic.androidapp.domain.Bookmark;
 import com.thejoshwa.ultrasonic.androidapp.domain.ChatMessage;
 import com.thejoshwa.ultrasonic.androidapp.domain.Genre;
 import com.thejoshwa.ultrasonic.androidapp.domain.Indexes;
@@ -371,5 +372,20 @@ public class CachedMusicService implements MusicService {
 	@Override
 	public void addChatMessage(String message, Context context, ProgressListener progressListener) throws Exception {
 		musicService.addChatMessage(message, context, progressListener);
+	}
+
+	@Override
+	public List<Bookmark> getBookmarks(Context context, ProgressListener progressListener) throws Exception {
+		return musicService.getBookmarks(context, progressListener);
+	}
+
+	@Override
+	public void deleteBookmark(String id, Context context, ProgressListener progressListener) throws Exception {
+		musicService.deleteBookmark(id, context, progressListener);
+	}
+
+	@Override
+	public void createBookmark(String id, Long position, Context context, ProgressListener progressListener) throws Exception {
+		musicService.createBookmark(id, position, context, progressListener);
 	}
 }

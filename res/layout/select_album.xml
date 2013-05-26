@@ -24,6 +24,7 @@
         a:layout_width="fill_parent"
         a:layout_height="0dip"
         a:layout_weight="1.0"
+        a:fastScrollEnabled="true"
         a:textFilterEnabled="true" />
 
     <include layout="@layout/album_buttons" />

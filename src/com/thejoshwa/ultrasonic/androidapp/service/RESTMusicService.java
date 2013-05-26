@@ -70,6 +70,7 @@ import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.util.Log;
 import com.thejoshwa.ultrasonic.androidapp.R;
+import com.thejoshwa.ultrasonic.androidapp.domain.Bookmark;
 import com.thejoshwa.ultrasonic.androidapp.domain.ChatMessage;
 import com.thejoshwa.ultrasonic.androidapp.domain.Genre;
 import com.thejoshwa.ultrasonic.androidapp.domain.Indexes;
@@ -85,6 +86,7 @@ import com.thejoshwa.ultrasonic.androidapp.domain.ServerInfo;
 import com.thejoshwa.ultrasonic.androidapp.domain.Share;
 import com.thejoshwa.ultrasonic.androidapp.domain.Version;
 import com.thejoshwa.ultrasonic.androidapp.service.parser.AlbumListParser;
+import com.thejoshwa.ultrasonic.androidapp.service.parser.BookmarkParser;
 import com.thejoshwa.ultrasonic.androidapp.service.parser.ChatMessageParser;
 import com.thejoshwa.ultrasonic.androidapp.service.parser.ErrorParser;
 import com.thejoshwa.ultrasonic.androidapp.service.parser.GenreParser;
@@ -1205,4 +1207,62 @@ public class RESTMusicService implements MusicService {
         }
 	}
 
+	@Override
+	public List<Bookmark> getBookmarks(Context context, ProgressListener progressListener) throws Exception {
+    	checkServerVersion(context, "1.9", "Bookmarks not supported.");
+
+        Reader reader = getReader(context, progressListener, "getBookmarks", null);
+        
+        try {
+            return new BookmarkParser(context).parse(reader, progressListener);
+        } finally {
+            Util.close(reader);
+        }
+	}
+	
+	@Override
+	public void createBookmark(String id, Long position, Context context, ProgressListener progressListener) throws Exception {
+    	checkServerVersion(context, "1.9", "Bookmarks not supported.");
+    	
+        HttpParams params = new BasicHttpParams();
+        HttpConnectionParams.setSoTimeout(params, SOCKET_READ_TIMEOUT_GET_RANDOM_SONGS);
+
+        List<String> parameterNames = new ArrayList<String>();
+        List<Object> parameterValues = new ArrayList<Object>();
+
+        parameterNames.add("id");
+        parameterValues.add(id);
+        parameterNames.add("position");
+        parameterValues.add(position);
+       
+        Reader reader = getReader(context, progressListener, "createBookmark", params, parameterNames, parameterValues);
+        
+        try {
+            new ErrorParser(context).parse(reader);
+        } finally {
+            Util.close(reader);
+        }
+	}
+	
+	@Override
+	public void deleteBookmark(String id, Context context, ProgressListener progressListener) throws Exception {
+    	checkServerVersion(context, "1.9", "Bookmarks not supported.");
+    	
+        HttpParams params = new BasicHttpParams();
+        HttpConnectionParams.setSoTimeout(params, SOCKET_READ_TIMEOUT_GET_RANDOM_SONGS);
+
+        List<String> parameterNames = new ArrayList<String>();
+        List<Object> parameterValues = new ArrayList<Object>();
+
+        parameterNames.add("id");
+        parameterValues.add(id);
+       
+        Reader reader = getReader(context, progressListener, "deleteBookmark", params, parameterNames, parameterValues);
+        
+        try {
+            new ErrorParser(context).parse(reader);
+        } finally {
+            Util.close(reader);
+        }
+	}
 }

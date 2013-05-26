@@ -25,6 +25,7 @@ import org.apache.http.HttpResponse;
 import android.content.Context;
 import android.graphics.Bitmap;
 
+import com.thejoshwa.ultrasonic.androidapp.domain.Bookmark;
 import com.thejoshwa.ultrasonic.androidapp.domain.ChatMessage;
 import com.thejoshwa.ultrasonic.androidapp.domain.Genre;
 import com.thejoshwa.ultrasonic.androidapp.domain.Indexes;
@@ -129,4 +130,10 @@ public interface MusicService {
     List<ChatMessage> getChatMessages(Long since, Context context, ProgressListener progressListener) throws Exception;
     
     void addChatMessage(String message, Context context, ProgressListener progressListener) throws Exception;
+
+	List<Bookmark> getBookmarks(Context context, ProgressListener progressListener) throws Exception;
+
+	void deleteBookmark(String id, Context context, ProgressListener progressListener) throws Exception;
+
+	void createBookmark(String id, Long position, Context context, ProgressListener progressListener) throws Exception;
 }

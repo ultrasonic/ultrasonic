@@ -3,14 +3,14 @@
     a:layout_width="fill_parent"
     a:layout_height="wrap_content"
     a:minWidth="250dp"
-    a:minHeight="40dp"
+    a:minHeight="110dp"
     a:background="@drawable/appwidget_dark_bg_trans"
     a:orientation="horizontal" >
 
     <ImageView
         a:id="@+id/appwidget_coverart"
-        a:layout_width="80dp"
-        a:layout_height="80dp"
+        a:layout_width="110dp"
+        a:layout_height="110dp"
         a:layout_gravity="center_vertical"
         a:clickable="true"
         a:focusable="true"
@@ -28,7 +28,9 @@
             a:layout_height="wrap_content"
             a:clickable="true"
             a:focusable="true"
-            a:orientation="vertical" >
+            a:orientation="vertical"
+            a:paddingTop="4dip"
+            a:paddingBottom="4dip" >
 
             <TextView
                 a:id="@+id/title"
@@ -56,7 +58,6 @@
                 a:fadingEdge="horizontal"
                 a:fadingEdgeLength="10dip"
                 a:minHeight="12sp"
-                a:paddingBottom="4dip"
                 a:paddingLeft="4dip"
                 a:paddingRight="4dip"
                 a:singleLine="true"
@@ -64,19 +65,39 @@
                 a:text="Artist"
                 a:textColor="@color/appwidget_text"
                 a:textSize="12sp" />
+            
+          <TextView
+                a:id="@+id/album"
+                a:layout_width="fill_parent"
+                a:layout_height="wrap_content"
+                a:ellipsize="none"
+                a:fadingEdge="horizontal"
+                a:fadingEdgeLength="10dip"
+                a:minHeight="12sp"
+                a:paddingBottom="4dip"
+                a:paddingLeft="4dip"
+                a:paddingRight="4dip"
+                a:singleLine="true"
+                a:gravity="center_horizontal"
+                a:text="Album"
+                a:textColor="@color/appwidget_text"
+                a:textSize="12sp" />
+          
         </LinearLayout>
 
         <LinearLayout
             a:layout_width="fill_parent"
-            a:layout_height="fill_parent"
+            a:layout_height="wrap_content"
             a:orientation="horizontal"
+            a:layout_gravity="bottom"
+            a:gravity="bottom"
             a:paddingBottom="4dip"
-            a:paddingTop="4dip"  >
+            a:paddingTop="4dip" >"
 
             <ImageButton
                 a:id="@+id/control_previous"
                 a:layout_width="0dip"
-                a:layout_height="fill_parent"
+                a:layout_height="wrap_content"
                 a:layout_weight="1"
                 a:background="@color/transparent"
                 a:scaleType="center"               
@@ -85,7 +106,7 @@
             <ImageButton
                 a:id="@+id/control_play"
                 a:layout_width="0dip"
-                a:layout_height="fill_parent"
+                a:layout_height="wrap_content"
                 a:layout_weight="1"
                 a:background="@color/transparent"
                 a:scaleType="center"              
@@ -94,7 +115,7 @@
             <ImageButton
                 a:id="@+id/control_next"
                 a:layout_width="0dip"
-                a:layout_height="fill_parent"
+                a:layout_height="wrap_content"
                 a:layout_weight="1"
                 a:background="@color/transparent"
                 a:scaleType="center"

@@ -74,8 +74,10 @@ import java.lang.reflect.Method;
 import java.security.MessageDigest;
 import java.text.DecimalFormat;
 import java.text.NumberFormat;
+import java.util.Locale;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.TimeUnit;
 
 /**
  * @author Sindre Mehus
@@ -1242,5 +1244,25 @@ public class Util extends DownloadActivity {
     
     public static boolean isNullOrWhiteSpace(String string) {
     	return string == null || string.isEmpty() || string.trim().isEmpty();
+    }
+    
+    public static String formatTotalDuration(long totalDuration) {
+        long millis = totalDuration * 1000;
+        
+        long hours = TimeUnit.MILLISECONDS.toHours(millis);
+        long minutes = TimeUnit.MILLISECONDS.toMinutes(millis) - TimeUnit.HOURS.toMinutes(hours);
+        long seconds = TimeUnit.MILLISECONDS.toSeconds(millis) - TimeUnit.MINUTES.toSeconds(hours * 60 + minutes);
+        
+        if (hours >= 10) {
+        	return String.format("%02d:%02d:%02d", hours, minutes, seconds);
+        } else if (hours > 0) {
+        	return String.format("%d:%02d:%02d", hours, minutes, seconds);
+        } else if (minutes >= 10) {
+        	return String.format("%02d:%02d", minutes, seconds);
+        } else if (minutes > 0) {
+        	return String.format("%d:%02d", minutes, seconds);
+        } else {
+        	return String.format("0:%02d", seconds);
+        }
     }
 }

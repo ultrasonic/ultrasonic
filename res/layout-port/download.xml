@@ -36,26 +36,11 @@
                 a:singleLine="true"
                 a:textAppearance="?android:attr/textAppearanceSmall" />
 
-            <TextView
-                a:id="@+id/download_song_title"
-                a:layout_width="wrap_content"
-                a:layout_height="wrap_content"
-                a:layout_above="@+id/download_status"
-                a:layout_centerHorizontal="true"
-                a:layout_gravity="center_horizontal"
-                a:layout_marginLeft="16dip"
-                a:layout_marginRight="16dip"
-                a:layout_marginTop="16dip"
-                a:ellipsize="end"
-                a:singleLine="true"
-                a:textSize="18sp"
-                a:textStyle="bold" />
-
             <LinearLayout
                 a:id="@+id/download_visualizer_view_layout"
                 a:layout_width="fill_parent"
                 a:layout_height="60dip"
-                a:layout_above="@+id/download_song_title"
+                a:layout_alignParentBottom="true"
                 a:layout_gravity="center_horizontal"
                 a:layout_marginLeft="80dip"
                 a:layout_marginRight="80dip"

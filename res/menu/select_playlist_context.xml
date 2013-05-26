@@ -14,6 +14,9 @@
         android:id="@+id/playlist_menu_pin"
         android:title="@string/common.pin"/>
     <item
+        android:id="@+id/playlist_menu_unpin"
+        android:title="@string/common.unpin"/>    
+    <item
         android:id="@+id/playlist_update_info"
         android:title="@string/playlist.update_info"/>
     <item

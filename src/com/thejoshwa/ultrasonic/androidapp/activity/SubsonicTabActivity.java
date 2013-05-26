@@ -609,13 +609,16 @@ public class SubsonicTabActivity extends Activity implements OnClickListener{
         // If service is not available, request it to start and wait for it.
         for (int i = 0; i < 5; i++) {
             DownloadService downloadService = DownloadServiceImpl.getInstance();
+        
             if (downloadService != null) {
                 return downloadService;
             }
+            
             Log.w(TAG, "DownloadService not running. Attempting to start it.");
             startService(new Intent(this, DownloadServiceImpl.class));
             Util.sleepQuietly(50L);
         }
+        
         return DownloadServiceImpl.getInstance();
     }
 
@@ -649,7 +652,7 @@ public class SubsonicTabActivity extends Activity implements OnClickListener{
         Runnable onValid = new Runnable() {
             @Override
             public void run() {
-                if (!append) {
+                if (!append && !playNext) {
                     getDownloadService().clear();
                 }
 
@@ -678,13 +681,13 @@ public class SubsonicTabActivity extends Activity implements OnClickListener{
     }
 
 
-	protected void downloadRecursively(final String id, final boolean save, final boolean append, final boolean autoplay, final boolean shuffle, final boolean background, final boolean playNext) {
-		downloadRecursively(id, "", true, save, append, autoplay, shuffle, background, playNext);
+	protected void downloadRecursively(final String id, final boolean save, final boolean append, final boolean autoplay, final boolean shuffle, final boolean background, final boolean playNext, final boolean unpin) {
+		downloadRecursively(id, "", true, save, append, autoplay, shuffle, background, playNext, unpin);
     }
-	protected void downloadPlaylist(final String id, final String name, final boolean save, final boolean append, final boolean autoplay, final boolean shuffle, final boolean background, final boolean playNext) {
-		downloadRecursively(id, name, false, save, append, autoplay, shuffle, background, playNext);
+	protected void downloadPlaylist(final String id, final String name, final boolean save, final boolean append, final boolean autoplay, final boolean shuffle, final boolean background, final boolean playNext, final boolean unpin) {
+		downloadRecursively(id, name, false, save, append, autoplay, shuffle, background, playNext, unpin);
     }
-	protected void downloadRecursively(final String id, final String name, final boolean isDirectory, final boolean save, final boolean append, final boolean autoplay, final boolean shuffle, final boolean background, final boolean playNext) {
+	protected void downloadRecursively(final String id, final String name, final boolean isDirectory, final boolean save, final boolean append, final boolean autoplay, final boolean shuffle, final boolean background, final boolean playNext, final boolean unpin) {
 		ModalBackgroundTask<List<MusicDirectory.Entry>> task = new ModalBackgroundTask<List<MusicDirectory.Entry>>(this, false) {
             private static final int MAX_SONGS = 500;
 
@@ -737,18 +740,26 @@ public class SubsonicTabActivity extends Activity implements OnClickListener{
             protected void done(List<MusicDirectory.Entry> songs) {
                 DownloadService downloadService = getDownloadService();
                 if (!songs.isEmpty() && downloadService != null) {
-                    if (!append && !playNext) {
+                    if (!append && !playNext && !unpin) {
                         downloadService.clear();
                     }
                     warnIfNetworkOrStorageUnavailable();
 					if(!background) {
-						downloadService.download(songs, save, autoplay, playNext, shuffle);
-						if (!append && Util.getShouldTransitionOnPlaybackPreference(SubsonicTabActivity.this)) {
-							Util.startActivityWithoutTransition(SubsonicTabActivity.this, DownloadActivity.class);
+						if (unpin) {
+							downloadService.unpin(songs);
+						} else {
+							downloadService.download(songs, save, autoplay, playNext, shuffle);
+							if (!append && Util.getShouldTransitionOnPlaybackPreference(SubsonicTabActivity.this)) {
+								Util.startActivityWithoutTransition(SubsonicTabActivity.this, DownloadActivity.class);
+							}
 						}
 					}
 					else {
-						downloadService.downloadBackground(songs, save);
+						if (unpin) {
+							downloadService.unpin(songs);
+						} else {
+							downloadService.downloadBackground(songs, save);
+						}
 					}
                 }
             }

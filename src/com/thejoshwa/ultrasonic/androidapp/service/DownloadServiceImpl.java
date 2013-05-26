@@ -45,9 +45,13 @@ import com.thejoshwa.ultrasonic.androidapp.activity.SubsonicTabActivity;
 import com.thejoshwa.ultrasonic.androidapp.audiofx.EqualizerController;
 import com.thejoshwa.ultrasonic.androidapp.audiofx.VisualizerController;
 import com.thejoshwa.ultrasonic.androidapp.domain.MusicDirectory;
+import com.thejoshwa.ultrasonic.androidapp.domain.MusicDirectory.Entry;
 import com.thejoshwa.ultrasonic.androidapp.domain.PlayerState;
 import com.thejoshwa.ultrasonic.androidapp.domain.RepeatMode;
 import com.thejoshwa.ultrasonic.androidapp.provider.UltraSonicAppWidgetProvider4x1;
+import com.thejoshwa.ultrasonic.androidapp.provider.UltraSonicAppWidgetProvider4x2;
+import com.thejoshwa.ultrasonic.androidapp.provider.UltraSonicAppWidgetProvider4x3;
+import com.thejoshwa.ultrasonic.androidapp.provider.UltraSonicAppWidgetProvider4x4;
 import com.thejoshwa.ultrasonic.androidapp.receiver.MediaButtonIntentReceiver;
 import com.thejoshwa.ultrasonic.androidapp.util.CancellableTask;
 import com.thejoshwa.ultrasonic.androidapp.util.Constants;
@@ -552,7 +556,10 @@ public class DownloadServiceImpl extends Service implements DownloadService {
         updateRemoteControl();
 
         // Update widget
-        UltraSonicAppWidgetProvider4x1.getInstance().notifyChange(this, this, playerState == PlayerState.STARTED);
+        UltraSonicAppWidgetProvider4x1.getInstance().notifyChange(this, this, playerState == PlayerState.STARTED, false);
+        UltraSonicAppWidgetProvider4x2.getInstance().notifyChange(this, this, playerState == PlayerState.STARTED, true);
+        UltraSonicAppWidgetProvider4x3.getInstance().notifyChange(this, this, playerState == PlayerState.STARTED, false);
+        UltraSonicAppWidgetProvider4x4.getInstance().notifyChange(this, this, playerState == PlayerState.STARTED, false);
         SubsonicTabActivity tabInstance = SubsonicTabActivity.getInstance();
 
         if (currentPlaying != null) {
@@ -623,6 +630,27 @@ public class DownloadServiceImpl extends Service implements DownloadService {
 	public List<DownloadFile> getSongs() {
 		return downloadList;
 	}
+	
+	@Override
+	public long getDownloadListDuration() {
+		long totalDuration = 0;
+		
+		for (DownloadFile downloadFile : downloadList) {
+			Entry entry = downloadFile.getSong();
+			
+			if (!entry.isDirectory()) {
+				if (entry.getArtist() != null) {
+					Integer duration = entry.getDuration();
+
+					if (duration != null) {
+						totalDuration += duration;
+					}
+				}
+			}
+		}
+
+		return totalDuration;
+	}
 
     @Override
     public synchronized List<DownloadFile> getDownloads() {
@@ -659,11 +687,13 @@ public class DownloadServiceImpl extends Service implements DownloadService {
             setCurrentPlaying(null, false);
 			lifecycleSupport.serializeDownloadQueue();
         } else {
-			if(nextPlayingTask != null) {
+			if (nextPlayingTask != null) {
 				nextPlayingTask.cancel();
 				nextPlayingTask = null;
 			}
+			
             setCurrentPlaying(index, start);
+            
             if (start) {
                 if (jukeboxEnabled) {
                     jukeboxService.skip(getCurrentPlayingIndex(), 0);
@@ -672,6 +702,7 @@ public class DownloadServiceImpl extends Service implements DownloadService {
                     bufferAndPlay();
                 }
             }
+            
 			checkDownloads();
 			setNextPlaying();
         }
@@ -894,7 +925,10 @@ public class DownloadServiceImpl extends Service implements DownloadService {
         updateRemoteControl();
         
         // Update widget
-        UltraSonicAppWidgetProvider4x1.getInstance().notifyChange(this, this, this.playerState == PlayerState.STARTED);
+        UltraSonicAppWidgetProvider4x1.getInstance().notifyChange(this, this, this.playerState == PlayerState.STARTED, false);
+        UltraSonicAppWidgetProvider4x2.getInstance().notifyChange(this, this, this.playerState == PlayerState.STARTED, true);
+        UltraSonicAppWidgetProvider4x3.getInstance().notifyChange(this, this, this.playerState == PlayerState.STARTED, false);
+        UltraSonicAppWidgetProvider4x4.getInstance().notifyChange(this, this, this.playerState == PlayerState.STARTED, false);
         SubsonicTabActivity tabInstance = SubsonicTabActivity.getInstance();
         
        	if (show) {

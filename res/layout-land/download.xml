@@ -34,24 +34,15 @@
                 a:id="@+id/download_status"
                 a:layout_width="wrap_content"
                 a:layout_height="wrap_content"
-                a:layout_above="@+id/download_song_title"
                 a:layout_centerHorizontal="true"
+                a:layout_alignParentBottom="true"
                 a:layout_marginBottom="8dip"
                 a:ellipsize="end"
                 a:gravity="center_horizontal"
                 a:singleLine="true"
                 a:textAppearance="?android:attr/textAppearanceSmall" />
 
-            <TextView
-                a:id="@+id/download_song_title"
-                a:layout_width="150dip"
-                a:layout_height="wrap_content"
-                a:layout_above="@+id/linearLayout1"
-                a:layout_centerHorizontal="true"
-                a:ellipsize="end"
-                a:gravity="center_horizontal"
-                a:maxLines="2"
-                a:textAppearance="?android:attr/textAppearanceMedium" />
+
         </RelativeLayout>
 
         <com.thejoshwa.ultrasonic.androidapp.util.MyViewFlipper

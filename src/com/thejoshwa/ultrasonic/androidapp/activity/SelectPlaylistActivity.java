@@ -142,8 +142,11 @@ public class SelectPlaylistActivity extends SubsonicTabActivity implements Adapt
 		Intent intent;
         switch (menuItem.getItemId()) {
 			case R.id.playlist_menu_pin:
-				downloadPlaylist(playlist.getId(), playlist.getName(), true, true, false, false, true, false);
+				downloadPlaylist(playlist.getId(), playlist.getName(), true, true, false, false, true, false, false);
 				break;
+			case R.id.playlist_menu_unpin:
+				downloadPlaylist(playlist.getId(), playlist.getName(), false, false, false, false, true, false, true);
+				break;				
             case R.id.playlist_menu_play_now:
                 intent = new Intent(SelectPlaylistActivity.this, SelectAlbumActivity.class);
                 intent.putExtra(Constants.INTENT_EXTRA_NAME_PLAYLIST_ID, playlist.getId());

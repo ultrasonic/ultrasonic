@@ -19,7 +19,6 @@
 package com.thejoshwa.ultrasonic.androidapp.activity;
 
 import android.content.Intent;
-import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -60,8 +59,6 @@ import com.handmark.pulltorefresh.library.PullToRefreshListView;
 
 public class SelectAlbumActivity extends SubsonicTabActivity {
 
-    private static final String TAG = SelectAlbumActivity.class.getSimpleName();
-    
     private PullToRefreshListView refreshAlbumListView;
     private ListView albumListView;
     private View header;
@@ -268,7 +265,7 @@ public class SelectAlbumActivity extends SubsonicTabActivity {
 
         String id = getIntent().getStringExtra(Constants.INTENT_EXTRA_NAME_ID);
         if (hasSubFolders && id != null) {
-            downloadRecursively(id, false, append, !append, shuffle, false, false);
+            downloadRecursively(id, false, append, !append, shuffle, false, false, false);
         } else {
             selectAll(true, false);
             download(append, false, !append, false, shuffle, getSelectedSongs(albumListView));
@@ -319,17 +316,20 @@ public class SelectAlbumActivity extends SubsonicTabActivity {
 
         switch (menuItem.getItemId()) {
             case R.id.album_menu_play_now:
-                downloadRecursively(entry.getId(), false, false, true, false, false, false);
+                downloadRecursively(entry.getId(), false, false, true, false, false, false, false);
                 break;
             case R.id.album_menu_play_next:
-                downloadRecursively(entry.getId(), false, false, false, false, false, true);
+                downloadRecursively(entry.getId(), false, false, false, false, false, true, false);
                 break;                
             case R.id.album_menu_play_last:
-                downloadRecursively(entry.getId(), false, true, false, false, false, false);
+                downloadRecursively(entry.getId(), false, true, false, false, false, false, false);
                 break;
             case R.id.album_menu_pin:
-                downloadRecursively(entry.getId(), true, true, false, false, false, false);
+                downloadRecursively(entry.getId(), true, true, false, false, false, false, false);
                 break;
+            case R.id.album_menu_unpin:
+                downloadRecursively(entry.getId(), false, false, false, false, false, false, true);
+                break;                
             case R.id.select_album_play_all:
             	playAll();
             	break;
@@ -816,15 +816,7 @@ public class SelectAlbumActivity extends SubsonicTabActivity {
             String songs = getResources().getQuantityString(R.plurals.select_album_n_songs, songCount, songCount);
             songCountView.setText(songs);
             
-            long millis = totalDuration * 1000;
-            
-            String duration = String.format("%02d:%02d:%02d",
-            		TimeUnit.MILLISECONDS.toHours(millis),
-            		TimeUnit.MILLISECONDS.toMinutes(millis) -
-            		TimeUnit.HOURS.toMinutes(TimeUnit.MILLISECONDS.toHours(millis)),
-            	    TimeUnit.MILLISECONDS.toSeconds(millis) - 
-            	    TimeUnit.MINUTES.toSeconds(TimeUnit.MILLISECONDS.toMinutes(millis))
-            	);
+            String duration = Util.formatTotalDuration(totalDuration);
             
             TextView durationView = (TextView) header.findViewById(R.id.select_album_duration);
             durationView.setText(duration);

@@ -19,25 +19,25 @@
 package com.thejoshwa.ultrasonic.androidapp.view;
 
 import java.util.List;
-
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import com.thejoshwa.ultrasonic.androidapp.activity.SubsonicTabActivity;
-import com.thejoshwa.ultrasonic.androidapp.domain.MusicDirectory;
+import com.thejoshwa.ultrasonic.androidapp.domain.MusicDirectory.Entry;
 import com.thejoshwa.ultrasonic.androidapp.util.ImageLoader;
 
 /**
  * @author Sindre Mehus
  */
-public class EntryAdapter extends ArrayAdapter<MusicDirectory.Entry> {
+public class EntryAdapter extends ArrayAdapter<Entry> {
 
     private final SubsonicTabActivity activity;
     private final ImageLoader imageLoader;
     private final boolean checkable;
 
-    public EntryAdapter(SubsonicTabActivity activity, ImageLoader imageLoader, List<MusicDirectory.Entry> entries, boolean checkable) {
+    public EntryAdapter(SubsonicTabActivity activity, ImageLoader imageLoader, List<Entry> entries, boolean checkable) {
         super(activity, android.R.layout.simple_list_item_1, entries);
+        
         this.activity = activity;
         this.imageLoader = imageLoader;
         this.checkable = checkable;
@@ -45,7 +45,7 @@ public class EntryAdapter extends ArrayAdapter<MusicDirectory.Entry> {
 
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
-        MusicDirectory.Entry entry = getItem(position);
+        Entry entry = getItem(position);
 
         if (entry.isDirectory()) {
             AlbumView view;

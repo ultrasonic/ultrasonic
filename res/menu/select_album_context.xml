@@ -20,5 +20,10 @@
         a:id="@+id/album_menu_pin"
         a:title="@string/common.pin"
         />
+    
+    <item 
+        a:id="@+id/album_menu_unpin"
+        a:title="@string/common.unpin"
+        />    
         
 </menu>
