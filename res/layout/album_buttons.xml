@@ -53,6 +53,14 @@
         android:layout_weight="1"
         android:src="?attr/unpin"
         android:visibility="gone" />
+    
+    <ImageView
+        android:id="@+id/select_album_download"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        android:src="?attr/downloaded"
+        android:visibility="gone" />    
 
     <ImageView
         android:id="@+id/select_album_delete"

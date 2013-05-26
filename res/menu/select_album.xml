@@ -1,14 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
-<menu xmlns:a="http://schemas.android.com/apk/res/android">
+<menu xmlns:a="http://schemas.android.com/apk/res/android" >
 
-     <item
-                a:id="@+id/select_album_play_all"
-                a:showAsAction="ifRoom|withText"
-                a:icon="?attr/media_play"
-                a:title="@string/select_album.play_all"
-            />
+    <item
+        a:id="@+id/select_album_play_all"
+        a:icon="?attr/media_play"
+        a:showAsAction="ifRoom|withText"
+        a:title="@string/select_album.play_all"/>
 
-    
 </menu>
-
-

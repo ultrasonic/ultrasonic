@@ -1,39 +1,29 @@
 <?xml version="1.0" encoding="utf-8"?>
-<menu xmlns:a="http://schemas.android.com/apk/res/android">
+<menu xmlns:a="http://schemas.android.com/apk/res/android" >
 
     <item
         a:id="@+id/download_equalizer"
         a:showAsAction="ifRoom|withText"
-        a:title="@string/download.menu_equalizer"
-        />
-    
+        a:title="@string/download.menu_equalizer"/>
     <item
         a:id="@+id/download_visualizer"
         a:showAsAction="ifRoom|withText"
-        a:title="@string/download.menu_visualizer"
-        />
-    
+        a:title="@string/download.menu_visualizer"/>
     <item
         a:id="@+id/download_jukebox"
         a:showAsAction="ifRoom|withText"
-        a:title="@string/download.menu_jukebox"
-        />  
-    
+        a:title="@string/download.menu_jukebox"/>
     <item
-        a:id="@+id/menu_save_playlist" 
+        a:id="@+id/menu_save_playlist"
         a:icon="?attr/save"
-        a:title="@string/download.menu_save"
-        />
-
+        a:title="@string/download.menu_save"/>
     <item
         a:id="@+id/menu_remove_all"
         a:icon="?attr/remove_all"
-        a:title="@string/download.menu_remove_all"
-        />
-
+        a:title="@string/download.menu_remove_all"/>
     <item
         a:id="@+id/menu_screen_on_off"
         a:icon="?attr/screen_on_off"
-        a:title="@string/download.menu_screen_on"
-        />
+        a:title="@string/download.menu_screen_on"/>
+
 </menu>

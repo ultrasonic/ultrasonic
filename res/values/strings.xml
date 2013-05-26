@@ -9,6 +9,7 @@
     <string name="common.play_last">Play Last</string>
     <string name="common.pin">Pin</string>
     <string name="common.unpin">Unpin</string>
+    <string name="common.download">Download</string>
     <string name="common.delete">Delete</string>
     <string name="common.various_artists">Various Artists</string>
     <string name="common.multiple_genres">Multiple Genres</string>
@@ -343,9 +344,13 @@
         <item quantity="one">1 song</item>
         <item quantity="other">%d songs</item>
     </plurals>
-    <plurals name="select_album_n_songs_downloading">
+    <plurals name="select_album_n_songs_pinned">
         <item quantity="one">1 song selected to be pinned.</item>
         <item quantity="other">%d songs selected to be pinned.</item>
+    </plurals>    
+    <plurals name="select_album_n_songs_downloaded">
+        <item quantity="one">1 song selected to be downloaded.</item>
+        <item quantity="other">%d songs selected to be downloaded.</item>
     </plurals>
     <plurals name="select_album_n_songs_unpinned">
         <item quantity="one">1 song selected to be unpinned.</item>

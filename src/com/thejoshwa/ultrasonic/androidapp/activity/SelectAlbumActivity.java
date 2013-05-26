@@ -70,6 +70,7 @@ public class SelectAlbumActivity extends SubsonicTabActivity {
     private ImageView playLastButton;
     private ImageView pinButton;
     private ImageView unpinButton;
+    private ImageView downloadButton;
     private ImageView deleteButton;
     private ImageView moreButton;
     private boolean playAllButtonVisible;
@@ -126,6 +127,7 @@ public class SelectAlbumActivity extends SubsonicTabActivity {
         playLastButton = (ImageView) findViewById(R.id.select_album_play_last);
         pinButton = (ImageView) findViewById(R.id.select_album_pin);
         unpinButton = (ImageView) findViewById(R.id.select_album_unpin);
+        downloadButton = (ImageView) findViewById(R.id.select_album_download);
         deleteButton = (ImageView) findViewById(R.id.select_album_delete);
         moreButton = (ImageView) findViewById(R.id.select_album_more);
 		emptyView = findViewById(R.id.select_album_empty);
@@ -166,6 +168,13 @@ public class SelectAlbumActivity extends SubsonicTabActivity {
             @Override
             public void onClick(View view) {
                 unpin();
+                selectAll(false, false);
+            }
+        });
+        downloadButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+            	downloadBackground(false);
                 selectAll(false, false);
             }
         });
@@ -329,7 +338,10 @@ public class SelectAlbumActivity extends SubsonicTabActivity {
                 break;
             case R.id.album_menu_unpin:
                 downloadRecursively(entry.getId(), false, false, false, false, false, false, true);
-                break;                
+                break;
+            case R.id.album_menu_download:
+                downloadRecursively(entry.getId(), false, false, false, false, true, false, false);
+                break;                  
             case R.id.select_album_play_all:
             	playAll();
             	break;
@@ -489,6 +501,7 @@ public class SelectAlbumActivity extends SubsonicTabActivity {
                 if (!result.getFirst().getChildren().isEmpty()) {
                     pinButton.setVisibility(View.GONE);
                     unpinButton.setVisibility(View.GONE);
+                    downloadButton.setVisibility(View.GONE);
                     deleteButton.setVisibility(View.GONE);
                     
                     // Hide more button when results are less than album list size
@@ -566,11 +579,13 @@ public class SelectAlbumActivity extends SubsonicTabActivity {
         boolean deleteEnabled = false;
 
         int pinnedCount = 0;
+        
         for (MusicDirectory.Entry song : selection) {
             DownloadFile downloadFile = getDownloadService().forSong(song);
             if (downloadFile.isCompleteFileAvailable()) {
                 deleteEnabled = true;
             }
+            
             if (downloadFile.isSaved()) {
             	pinnedCount++;
                 unpinEnabled = true;
@@ -581,8 +596,9 @@ public class SelectAlbumActivity extends SubsonicTabActivity {
         playNextButton.setVisibility(enabled ? View.VISIBLE : View.GONE);
         playLastButton.setVisibility(enabled ? View.VISIBLE : View.GONE);
         pinButton.setVisibility((enabled && !Util.isOffline(this) && selection.size() > pinnedCount) ? View.VISIBLE : View.GONE);
-        unpinButton.setVisibility(unpinEnabled ? View.VISIBLE : View.GONE);
-        deleteButton.setVisibility(deleteEnabled ? View.VISIBLE : View.GONE);
+        unpinButton.setVisibility(enabled && unpinEnabled ? View.VISIBLE : View.GONE);
+        downloadButton.setVisibility(enabled && !deleteEnabled && !Util.isOffline(this) ? View.VISIBLE : View.GONE);
+        deleteButton.setVisibility(enabled && deleteEnabled ? View.VISIBLE : View.GONE);
     }
 
     private void downloadBackground(final boolean save) {
@@ -605,8 +621,11 @@ public class SelectAlbumActivity extends SubsonicTabActivity {
 				warnIfNetworkOrStorageUnavailable();
 				getDownloadService().downloadBackground(songs, save);
 
-				Util.toast(SelectAlbumActivity.this,
-					getResources().getQuantityString(R.plurals.select_album_n_songs_downloading, songs.size(), songs.size()));
+				if (save) {
+					Util.toast(SelectAlbumActivity.this, getResources().getQuantityString(R.plurals.select_album_n_songs_pinned, songs.size(), songs.size()));
+				} else {
+					Util.toast(SelectAlbumActivity.this, getResources().getQuantityString(R.plurals.select_album_n_songs_downloaded, songs.size(), songs.size()));
+				}
 			}
 		};
 
@@ -687,6 +706,7 @@ public class SelectAlbumActivity extends SubsonicTabActivity {
 
                 pinButton.setVisibility(View.VISIBLE);
                 unpinButton.setVisibility(View.VISIBLE);
+                downloadButton.setVisibility(View.VISIBLE);
                 deleteButton.setVisibility(View.VISIBLE);
                 selectButton.setVisibility(View.VISIBLE);
                 playNowButton.setVisibility(View.VISIBLE);
@@ -716,6 +736,7 @@ public class SelectAlbumActivity extends SubsonicTabActivity {
             } else {
                 pinButton.setVisibility(View.GONE);
                 unpinButton.setVisibility(View.GONE);
+                downloadButton.setVisibility(View.GONE);
                 deleteButton.setVisibility(View.GONE);
                 selectButton.setVisibility(View.GONE);
                 playNowButton.setVisibility(View.GONE);

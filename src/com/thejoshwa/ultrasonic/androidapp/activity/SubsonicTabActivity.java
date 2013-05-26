@@ -668,7 +668,7 @@ public class SubsonicTabActivity extends Activity implements OnClickListener{
                 		Util.startActivityWithoutTransition(SubsonicTabActivity.this, DownloadActivity.class);
                 	}
                 } else if (save) {
-                    Util.toast(SubsonicTabActivity.this, getResources().getQuantityString(R.plurals.select_album_n_songs_downloading, songs.size(), songs.size()));
+                    Util.toast(SubsonicTabActivity.this, getResources().getQuantityString(R.plurals.select_album_n_songs_pinned, songs.size(), songs.size()));
                 } else if (playNext) {
                 	Util.toast(SubsonicTabActivity.this, getResources().getQuantityString(R.plurals.select_album_n_songs_play_next, songs.size(), songs.size()));
                 } else if (append) {
@@ -740,7 +740,7 @@ public class SubsonicTabActivity extends Activity implements OnClickListener{
             protected void done(List<MusicDirectory.Entry> songs) {
                 DownloadService downloadService = getDownloadService();
                 if (!songs.isEmpty() && downloadService != null) {
-                    if (!append && !playNext && !unpin) {
+                    if (!append && !playNext && !unpin && !background) {
                         downloadService.clear();
                     }
                     warnIfNetworkOrStorageUnavailable();

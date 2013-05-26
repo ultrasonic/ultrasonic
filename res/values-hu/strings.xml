@@ -323,7 +323,7 @@
         <item quantity="one">1 dal</item>
         <item quantity="other">%d dal</item>
     </plurals>
-    <plurals name="select_album_n_songs_downloading">
+    <plurals name="select_album_n_songs_pinned">
         <item quantity="one">1 dal kijelölve tárolásra.</item>
         <item quantity="other">%d dal kijelölve tárolásra.</item>
     </plurals>

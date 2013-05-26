@@ -290,7 +290,7 @@
         <item quantity="one">Un titre</item>
         <item quantity="other">%d titres</item>
     </plurals>
-    <plurals name="select_album_n_songs_downloading">
+    <plurals name="select_album_n_songs_pinned">
         <item quantity="one">Un titre sélectionnée pour être épinglé.</item>
         <item quantity="other">%d titres sélectionnée pour être épinglé.</item>
     </plurals>    

@@ -205,7 +205,10 @@ public class SearchActivity extends SubsonicTabActivity {
                 break;
             case R.id.album_menu_unpin:
                 downloadRecursively(id, false, false, false, false, false, false, true);
-                break;                
+                break;   
+            case R.id.album_menu_download:
+                downloadRecursively(id, false, false, false, false, true, false, false);
+                break;                  
             case R.id.song_menu_play_now:
             	if (entry != null) {
             		songs = new ArrayList<MusicDirectory.Entry>(1);
@@ -230,10 +233,17 @@ public class SearchActivity extends SubsonicTabActivity {
             case R.id.song_menu_pin:
             	if (entry != null) {
             		songs.add(entry);
-            		Util.toast(SearchActivity.this, getResources().getQuantityString(R.plurals.select_album_n_songs_downloading, songs.size(), songs.size()));
+            		Util.toast(SearchActivity.this, getResources().getQuantityString(R.plurals.select_album_n_songs_pinned, songs.size(), songs.size()));
             		downloadBackground(true, songs);
             	}
                 break;
+            case R.id.song_menu_download:
+            	if (entry != null) {
+            		songs.add(entry);
+            		Util.toast(SearchActivity.this, getResources().getQuantityString(R.plurals.select_album_n_songs_downloaded, songs.size(), songs.size()));
+            		downloadBackground(false, songs);
+            	}
+                break;                
             case R.id.song_menu_unpin:
             	if (entry != null) {
             		songs.add(entry);
@@ -258,8 +268,6 @@ public class SearchActivity extends SubsonicTabActivity {
 			public void run() {
 				warnIfNetworkOrStorageUnavailable();
 				getDownloadService().downloadBackground(songs, save);
-
-				Util.toast(SearchActivity.this, getResources().getQuantityString(R.plurals.select_album_n_songs_downloading, songs.size(), songs.size()));
 			}
 		};
 		

@@ -237,6 +237,9 @@ public class SelectArtistActivity extends SubsonicTabActivity implements Adapter
                 case R.id.artist_menu_unpin:
                     downloadRecursively(artist.getId(), false, false, false, false, false, false, true);
                     break;
+                case R.id.artist_menu_download:
+                    downloadRecursively(artist.getId(), false, false, false, false, true, false, false);
+                    break;                    
                 default:
                     return super.onContextItemSelected(menuItem);
             }
