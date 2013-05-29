@@ -62,6 +62,7 @@ public final class Constants {
     // Preferences keys.
     public static final String PREFERENCES_KEY_SERVER = "server";
     public static final String PREFERENCES_KEY_SERVER_ENABLED = "serverEnabled";
+    public static final String PREFERENCES_KEY_JUKEBOX_BY_DEFAULT = "jukeboxEnabled";
     public static final String PREFERENCES_KEY_SERVER_INSTANCE = "serverInstanceId";
     public static final String PREFERENCES_KEY_SERVER_NAME = "serverName";
     public static final String PREFERENCES_KEY_SERVER_URL = "serverUrl";
@@ -118,6 +119,9 @@ public final class Constants {
 	public static final String PREFERENCES_KEY_TEMP_LOSS = "tempLoss";
 	public static final String PREFERENCES_KEY_CHAT_REFRESH_INTERVAL = "chatRefreshInterval";
 	public static final String PREFERENCES_KEY_DIRECTORY_CACHE_TIME = "directoryCacheTime";
+	public static final String PREFERENCES_KEY_CLEAR_PLAYLIST = "clearPlaylist";
+	public static final String PREFERENCES_KEY_CLEAR_BOOKMARK = "clearBookmark";
+	public static final String PREFERENCES_KEY_DISC_SORT = "discAndTrackSort";
     
     // Name of the preferences file.
     public static final String PREFERENCES_FILE_NAME = "com.thejoshwa.ultrasonic.androidapp_preferences";

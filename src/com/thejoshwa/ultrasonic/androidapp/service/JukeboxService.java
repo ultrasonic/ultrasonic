@@ -164,9 +164,11 @@ public class JukeboxService {
         tasks.remove(Start.class);
 
         startStatusUpdate();
+        
         if (jukeboxStatus != null) {
             jukeboxStatus.setPositionSeconds(offsetSeconds);
         }
+        
         tasks.add(new Skip(index, offsetSeconds));
         downloadService.setPlayerState(PlayerState.STARTED);
     }

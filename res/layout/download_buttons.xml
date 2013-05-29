@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:a="http://schemas.android.com/apk/res/android"
+    a:layout_width="fill_parent"
+    a:layout_height="wrap_content"
+    a:orientation="horizontal"
+    a:paddingBottom="8dip"
+    a:paddingTop="8dip" >
+
+    <ImageButton
+        a:id="@+id/download_toggle_list"
+        a:layout_width="0dip"
+        a:layout_height="wrap_content"
+        a:layout_weight="1"
+        a:background="@color/transparent"        
+        a:src="?attr/media_toggle" />
+
+    <ImageButton
+        a:id="@+id/download_bookmark"
+        a:layout_width="0dip"
+        a:layout_height="wrap_content"
+        a:layout_weight="1"
+        a:background="@color/transparent"
+        a:src="?attr/bookmark" />
+    
+    <ImageButton
+        a:id="@+id/download_remove_all"
+        a:layout_width="0dip"
+        a:layout_height="wrap_content"
+        a:layout_weight="1"
+        a:background="@color/transparent"
+        a:src="?attr/remove_all" />
+
+    <ImageButton
+        a:id="@+id/download_save_playlist"
+        a:layout_width="0dip"
+        a:layout_height="wrap_content"
+        a:layout_weight="1"
+        a:background="@color/transparent"
+        a:src="?attr/save" />
+
+    <ImageButton
+        a:id="@+id/download_star"
+        a:layout_width="0dip"
+        a:layout_height="wrap_content"
+        a:layout_weight="1"
+        a:background="@color/transparent"        
+        a:src="?attr/star_hollow" />
+
+</LinearLayout>

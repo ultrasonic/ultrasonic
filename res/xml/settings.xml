@@ -33,6 +33,11 @@
             a:summary="@string/settings.show_track_number_summary"
             a:title="@string/settings.show_track_number" />
         <CheckBoxPreference
+            a:defaultValue="false"
+            a:key="discAndTrackSort"
+            a:summary="@string/settings.disc_sort_summary"
+            a:title="@string/settings.disc_sort" />
+        <CheckBoxPreference
             a:defaultValue="true"
             a:key="showNowPlaying"
             a:summary="@string/settings.show_now_playing_summary"
@@ -79,6 +84,16 @@
             a:key="gaplessPlayback"
             a:summary="@string/settings.gapless_playback_summary"
             a:title="@string/settings.gapless_playback" />
+        <CheckBoxPreference
+            a:defaultValue="false"
+            a:key="clearPlaylist"
+            a:summary="@string/settings.clear_playlist_summary"
+            a:title="@string/settings.clear_playlist" />
+        <CheckBoxPreference
+            a:defaultValue="false"
+            a:key="clearBookmark"
+            a:summary="@string/settings.clear_bookmark_summary"
+            a:title="@string/settings.clear_bookmark" />               
         <ListPreference
             a:defaultValue="5000"
             a:entries="@array/bufferLengthNames"

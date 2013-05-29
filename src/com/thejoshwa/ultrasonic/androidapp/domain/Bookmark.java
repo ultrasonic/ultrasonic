@@ -14,18 +14,18 @@ public class Bookmark implements Serializable {
 	 * 
 	 */
 	private static final long serialVersionUID = 8988990025189807803L;
-	private Long position;
+	private int position;
 	private String username;
     private String comment;
     private Date created;
     private Date changed;
-    private List<Entry> entries;
+    private Entry entry;
 	
-    public Long getPosition() {
+    public int getPosition() {
         return position;
     }
 
-    public void setPosition(Long position) {
+    public void setPosition(int position) {
         this.position = position;
     }
     
@@ -77,11 +77,11 @@ public class Bookmark implements Serializable {
     	}
     }
     
-    public List<Entry> getEntries() {
-    	return this.entries;
+    public Entry getEntry() {
+    	return this.entry;
     }
     
-    public void addEntry(Entry entry) {
-    	entries.add(entry);
+    public void setEntry(Entry entry) {
+    	this.entry = entry;
     }
 }

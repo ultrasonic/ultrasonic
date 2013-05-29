@@ -57,9 +57,9 @@ public class SearchResult2Parser extends MusicDirectoryEntryParser {
                     artist.setName(get("name"));
                     artists.add(artist);
                 } else if ("album".equals(name)) {
-                    albums.add(parseEntry("", useId3));
+                    albums.add(parseEntry("", useId3, 0));
                 } else if ("song".equals(name)) {
-                    songs.add(parseEntry("", false));
+                    songs.add(parseEntry("", false, 0));
                 } else if ("error".equals(name)) {
                     handleError();
                 }

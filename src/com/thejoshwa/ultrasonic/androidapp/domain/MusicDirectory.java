@@ -99,6 +99,7 @@ public class MusicDirectory {
         private String type;
         private Date created;
         private int closeness;
+        private int bookmarkPosition;
         
         public Integer getDiscNumber() {
         	return discNumber;
@@ -326,6 +327,14 @@ public class MusicDirectory {
 
 		public void setCloseness(int closeness) {
 			this.closeness = closeness;
+		}
+		
+    	public int getBookmarkPosition() {
+    		return bookmarkPosition;
+    	}
+
+		public void setBookmarkPosition(int bookmarkPosition) {
+			this.bookmarkPosition = bookmarkPosition;
 		}
 
         @Override

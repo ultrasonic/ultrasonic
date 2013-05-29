@@ -22,7 +22,7 @@ import java.util.List;
 
 import com.thejoshwa.ultrasonic.androidapp.audiofx.EqualizerController;
 import com.thejoshwa.ultrasonic.androidapp.audiofx.VisualizerController;
-import com.thejoshwa.ultrasonic.androidapp.domain.MusicDirectory;
+import com.thejoshwa.ultrasonic.androidapp.domain.MusicDirectory.Entry;
 import com.thejoshwa.ultrasonic.androidapp.domain.PlayerState;
 import com.thejoshwa.ultrasonic.androidapp.domain.RepeatMode;
 
@@ -32,9 +32,9 @@ import com.thejoshwa.ultrasonic.androidapp.domain.RepeatMode;
  */
 public interface DownloadService {
 
-	void download(List<MusicDirectory.Entry> songs, boolean save, boolean autoplay, boolean playNext, boolean shuffle);
+	void download(List<Entry> songs, boolean save, boolean autoplay, boolean playNext, boolean shuffle, boolean newPlaylist);
 	  
-    void downloadBackground(List<MusicDirectory.Entry> songs, boolean save);
+    void downloadBackground(List<Entry> songs, boolean save);
 
     void setShufflePlayEnabled(boolean enabled);
 
@@ -106,11 +106,11 @@ public interface DownloadService {
 
     int getPlayerDuration();
 
-    void delete(List<MusicDirectory.Entry> songs);
+    void delete(List<Entry> songs);
 
-    void unpin(List<MusicDirectory.Entry> songs);
+    void unpin(List<Entry> songs);
 
-    DownloadFile forSong(MusicDirectory.Entry song);
+    DownloadFile forSong(Entry song);
 
     long getDownloadListUpdateRevision();
 
@@ -133,4 +133,6 @@ public interface DownloadService {
     void setVolume(float volume);
     
     void swap(boolean mainList, int from, int to);
+    
+    void restore(List<Entry> songs, int currentPlayingIndex, int currentPlayingPosition, boolean autoPlay, boolean newPlaylist);
 }

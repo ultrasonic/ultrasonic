@@ -31,7 +31,7 @@ public class MusicDirectoryEntryParser extends AbstractParser {
         super(context);
     }
 
-    protected MusicDirectory.Entry parseEntry(String artist, boolean isAlbum) {
+    protected MusicDirectory.Entry parseEntry(String artist, boolean isAlbum, int bookmarkPosition) {
         MusicDirectory.Entry entry = new MusicDirectory.Entry();
         entry.setId(get("id"));
         entry.setParent(get("parent"));
@@ -60,6 +60,7 @@ public class MusicDirectoryEntryParser extends AbstractParser {
             entry.setIsVideo(getBoolean("isVideo"));
             entry.setDiscNumber(getInteger("discNumber"));
             entry.setType(get("type"));
+            entry.setBookmarkPosition(bookmarkPosition);
         } else if(!"".equals(artist)) {
 			entry.setPath(artist + "/" + entry.getTitle());
 		}

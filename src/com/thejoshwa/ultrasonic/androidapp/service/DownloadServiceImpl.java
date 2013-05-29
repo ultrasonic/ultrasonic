@@ -296,30 +296,39 @@ public class DownloadServiceImpl extends Service implements DownloadService {
     }
 
     @Override
-    public synchronized void download(List<MusicDirectory.Entry> songs, boolean save, boolean autoplay, boolean playNext, boolean shuffle) {
+    public synchronized void download(List<MusicDirectory.Entry> songs, boolean save, boolean autoplay, boolean playNext, boolean shuffle, boolean newPlaylist) {
         shufflePlay = false;
         int offset = 1;
 
         if (songs.isEmpty()) {
             return;
         }
+        
+        if (newPlaylist) {
+        	downloadList.clear();
+        }
+        
         if (playNext) {
             if (autoplay && getCurrentPlayingIndex() >= 0) {
                 offset = 0;
             }
+            
             for (MusicDirectory.Entry song : songs) {
                 DownloadFile downloadFile = new DownloadFile(this, song, save);
                 downloadList.add(getCurrentPlayingIndex() + offset, downloadFile);
                 offset++;
             }
+            
             revision++;
         } else {
             for (MusicDirectory.Entry song : songs) {
                 DownloadFile downloadFile = new DownloadFile(this, song, save);
                 downloadList.add(downloadFile);
             }
+            
             revision++;
         }
+        
         updateJukeboxPlaylist();
 
 		if(shuffle)
@@ -332,8 +341,10 @@ public class DownloadServiceImpl extends Service implements DownloadService {
                 currentPlaying = downloadList.get(0);
 				currentPlaying.setPlaying(true);
             }
+            
             checkDownloads();
         }
+        
         lifecycleSupport.serializeDownloadQueue();
     }
     
@@ -353,13 +364,23 @@ public class DownloadServiceImpl extends Service implements DownloadService {
         }
     }
 
-    public void restore(List<MusicDirectory.Entry> songs, int currentPlayingIndex, int currentPlayingPosition) {
-        download(songs, false, false, false, false);
+    @Override
+    public void restore(List<MusicDirectory.Entry> songs, int currentPlayingIndex, int currentPlayingPosition, boolean autoPlay, boolean newPlaylist) {
+        download(songs, false, false, false, false, newPlaylist);
+        
         if (currentPlayingIndex != -1) {
             play(currentPlayingIndex, autoPlayStart);
-            if (currentPlaying != null && currentPlaying.isCompleteFileAvailable()) {
-                doPlay(currentPlaying, currentPlayingPosition, autoPlayStart);
+            
+            if (currentPlaying != null) {
+                if (autoPlay && jukeboxEnabled) {
+                    jukeboxService.skip(getCurrentPlayingIndex(), currentPlayingPosition / 1000);
+                } else {
+                	if (currentPlaying.isCompleteFileAvailable()) {
+                		doPlay(currentPlaying, currentPlayingPosition, autoPlay);
+                	}
+                }
             }
+            
 			autoPlayStart = false;
         }
     }
@@ -683,9 +704,7 @@ public class DownloadServiceImpl extends Service implements DownloadService {
 
     private synchronized void play(int index, boolean start) {
         if (index < 0 || index >= size()) {
-            reset();
-            setCurrentPlaying(null, false);
-			lifecycleSupport.serializeDownloadQueue();
+        	resetPlayback();
         } else {
 			if (nextPlayingTask != null) {
 				nextPlayingTask.cancel();
@@ -708,13 +727,20 @@ public class DownloadServiceImpl extends Service implements DownloadService {
         }
     }
     
+    private synchronized void resetPlayback() {
+        reset();
+        setCurrentPlaying(null, false);
+		lifecycleSupport.serializeDownloadQueue();
+    }
+    
     private synchronized void playNext(boolean start) {
 		// Swap the media players since nextMediaPlayer is ready to play
-		if(start) {
+		if (start) {
 			nextMediaPlayer.start();
 		} else {
 			Log.i(TAG, "nextMediaPlayer already playing");
 		}
+		
 		MediaPlayer tmp = mediaPlayer;
 		mediaPlayer = nextMediaPlayer;
 		nextMediaPlayer = tmp;
@@ -724,7 +750,7 @@ public class DownloadServiceImpl extends Service implements DownloadService {
 		setNextPlaying();
 		
 		// Proxy should not be being used here since the next player was already setup to play
-		if(proxy != null) {
+		if (proxy != null) {
 			proxy.stop();
 			proxy = null;
 		}
@@ -781,9 +807,32 @@ public class DownloadServiceImpl extends Service implements DownloadService {
 
     private void onSongCompleted() {
         int index = getCurrentPlayingIndex();
+        
+        if (currentPlaying != null) {
+        	final Entry song = currentPlaying.getSong();
+        	
+        	if (song != null && song.getBookmarkPosition() > 0 && Util.getShouldClearBookmark(this)) {
+        		MusicService musicService = MusicServiceFactory.getMusicService(DownloadServiceImpl.this);
+        		try {
+					musicService.deleteBookmark(song.getId(), DownloadServiceImpl.this, null);
+				} catch (Exception e) {
+
+				}
+        	}
+        }
+        
         if (index != -1) {
             switch (getRepeatMode()) {
                 case OFF:
+                	if (index + 1 < 0 || index + 1 >= size()) {
+                		if (Util.getShouldClearPlaylist(this)) {
+                			clear();
+                		}
+                		
+                		resetPlayback();
+                		break;
+                	}
+                	
                     play(index + 1);
                     break;
                 case ALL:
@@ -969,10 +1018,12 @@ public class DownloadServiceImpl extends Service implements DownloadService {
 	private void setPlayerStateCompleted() {
 		Log.i(TAG, this.playerState.name() + " -> " + PlayerState.COMPLETED + " (" + currentPlaying + ")");
 		this.playerState = PlayerState.COMPLETED;
+		
 		if(positionCache != null) {
 			positionCache.stop();
 			positionCache = null;
 		}
+		
 		scrobbler.scrobble(this, currentPlaying, true);
 	}
     
@@ -1201,7 +1252,7 @@ public class DownloadServiceImpl extends Service implements DownloadService {
 					
 					SeekBar progressBar = DownloadActivity.getProgressBar();
 					
-					if (progressBar != null && downloadFile.isCompleteFileAvailable()) {
+					if (progressBar != null && downloadFile.isWorkDone()) {
 						// Populate seek bar secondary progress if we have a complete file for consistency
 						DownloadActivity.getProgressBar().setSecondaryProgress(100 * progressBar.getMax());
 					}
@@ -1236,18 +1287,22 @@ public class DownloadServiceImpl extends Service implements DownloadService {
     private synchronized void setupNext(final DownloadFile downloadFile) {
 		try {
             final File file = downloadFile.isCompleteFileAvailable() ? downloadFile.getCompleteFile() : downloadFile.getPartialFile();
+            
             if(nextMediaPlayer != null) {
             	nextMediaPlayer.setOnCompletionListener(null);
             	nextMediaPlayer.release();
             	nextMediaPlayer = null;
             }
+            
             nextMediaPlayer = new MediaPlayer();
 			nextMediaPlayer.setWakeMode(DownloadServiceImpl.this, PowerManager.PARTIAL_WAKE_LOCK);
+			
 			try {
             	nextMediaPlayer.setAudioSessionId(mediaPlayer.getAudioSessionId());
 			} catch(Throwable e) {
 				nextMediaPlayer.setAudioStreamType(AudioManager.STREAM_MUSIC);
 			}
+			
             nextMediaPlayer.setDataSource(file.getPath());
             setNextPlayerState(PREPARING);
 			
@@ -1308,6 +1363,7 @@ public class DownloadServiceImpl extends Service implements DownloadService {
 
 				int pos = cachedPosition;
 				Log.i(TAG, "Ending position " + pos + " of " + duration);
+				
 				if (!isPartial || (downloadFile.isWorkDone() && (Math.abs(duration - pos) < 10000))) {
 					if(nextPlaying != null && nextPlayerState == PlayerState.PREPARED) {
 						if(!nextSetup) {
@@ -1319,6 +1375,7 @@ public class DownloadServiceImpl extends Service implements DownloadService {
 					} else {
 						onSongCompleted();
 					}
+					
 					return;
 				}
 

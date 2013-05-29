@@ -84,5 +84,7 @@
 	<attr name="media_toggle" format="reference"/>
 	<attr name="chat" format="reference"/>
 	<attr name="chat_send" format="reference" />
-    
+	<attr name="bookmark" format="reference" />
+	
 </resources>
+

@@ -3,6 +3,8 @@
     a:layout_width="fill_parent"
     a:layout_height="fill_parent"
     a:orientation="vertical" >
+    
+    <include layout="@layout/download_buttons" />
 
     <com.thejoshwa.ultrasonic.androidapp.util.MyViewFlipper
         a:id="@+id/download_playlist_flipper"
@@ -26,22 +28,13 @@
                 a:layout_centerHorizontal="true"
                 a:scaleType="fitCenter" />
 
-            <TextView
-                a:id="@+id/download_status"
-                a:layout_width="wrap_content"
-                a:layout_height="wrap_content"
-                a:layout_alignParentBottom="true"
-                a:layout_centerHorizontal="true"
-                a:ellipsize="end"
-                a:singleLine="true"
-                a:textAppearance="?android:attr/textAppearanceSmall" />
-
             <LinearLayout
                 a:id="@+id/download_visualizer_view_layout"
                 a:layout_width="fill_parent"
                 a:layout_height="60dip"
                 a:layout_alignParentBottom="true"
                 a:layout_gravity="center_horizontal"
+                a:background="@color/translucent"
                 a:layout_marginLeft="80dip"
                 a:layout_marginRight="80dip"
                 a:orientation="vertical" />

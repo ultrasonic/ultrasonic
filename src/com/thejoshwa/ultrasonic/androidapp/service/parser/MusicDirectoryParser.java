@@ -51,9 +51,9 @@ public class MusicDirectoryParser extends MusicDirectoryEntryParser {
                 String name = getElementName();
                 
                 if ("child".equals(name) || "song".equals(name)) {
-                    dir.addChild(parseEntry(artist, false));
+                    dir.addChild(parseEntry(artist, false, 0));
                 } else if ("album".equals(name) && !isAlbum) {
-                	dir.addChild(parseEntry(artist, true));
+                	dir.addChild(parseEntry(artist, true, 0));
                 } else if ("directory".equals(name) || "artist".equals(name)) {
                     dir.setName(get("name"));
                 } else if ("error".equals(name)) {

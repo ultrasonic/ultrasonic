@@ -385,7 +385,7 @@ public class CachedMusicService implements MusicService {
 	}
 
 	@Override
-	public void createBookmark(String id, Long position, Context context, ProgressListener progressListener) throws Exception {
+	public void createBookmark(String id, int position, Context context, ProgressListener progressListener) throws Exception {
 		musicService.createBookmark(id, position, context, progressListener);
 	}
 }

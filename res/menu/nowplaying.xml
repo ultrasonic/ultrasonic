@@ -12,15 +12,7 @@
     <item
         a:id="@+id/download_jukebox"
         a:showAsAction="ifRoom|withText"
-        a:title="@string/download.menu_jukebox"/>
-    <item
-        a:id="@+id/menu_save_playlist"
-        a:icon="?attr/save"
-        a:title="@string/download.menu_save"/>
-    <item
-        a:id="@+id/menu_remove_all"
-        a:icon="?attr/remove_all"
-        a:title="@string/download.menu_remove_all"/>
+        a:title="@string/download.menu_jukebox_on"/>
     <item
         a:id="@+id/menu_screen_on_off"
         a:icon="?attr/screen_on_off"

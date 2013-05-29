@@ -93,8 +93,8 @@ public class SettingsActivity extends PreferenceActivity implements SharedPrefer
     private int activePosition = 1;
     private int menuActiveViewId;
     private int activeServers = 3;
-    View searchMenuItem = null;
-    View playlistsMenuItem = null;
+    View chatMenuItem = null;
+    View bookmarksMenuItem = null;
     View menuMain = null;
     PreferenceCategory serversCategory;
     Preference addServerPreference;
@@ -114,14 +114,15 @@ public class SettingsActivity extends PreferenceActivity implements SharedPrefer
         menuDrawer = MenuDrawer.attach(this, MenuDrawer.MENU_DRAG_WINDOW, Position.LEFT);
         menuDrawer.setMenuView(R.layout.menu_main);
         
-        searchMenuItem = findViewById(R.id.menu_search);
-        playlistsMenuItem = findViewById(R.id.menu_playlists);
+        chatMenuItem = findViewById(R.id.menu_chat);
+        bookmarksMenuItem = findViewById(R.id.menu_bookmarks);
         
         findViewById(R.id.menu_home).setOnClickListener(this);
         findViewById(R.id.menu_browse).setOnClickListener(this);
-        searchMenuItem.setOnClickListener(this);
-        playlistsMenuItem.setOnClickListener(this);
-        findViewById(R.id.menu_chat).setOnClickListener(this);
+        findViewById(R.id.menu_search).setOnClickListener(this);
+        findViewById(R.id.menu_playlists).setOnClickListener(this);
+        chatMenuItem.setOnClickListener(this);
+        bookmarksMenuItem.setOnClickListener(this);
         findViewById(R.id.menu_now_playing).setOnClickListener(this);
         findViewById(R.id.menu_settings).setOnClickListener(this);
         findViewById(R.id.menu_about).setOnClickListener(this);
@@ -169,7 +170,7 @@ public class SettingsActivity extends PreferenceActivity implements SharedPrefer
             }
         });
         
-        if (Build.VERSION.SDK_INT < 14) {
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.JELLY_BEAN) {
         	gaplessPlaybackEnabled.setChecked(false);
         	gaplessPlaybackEnabled.setEnabled(false);
         }
@@ -184,6 +185,7 @@ public class SettingsActivity extends PreferenceActivity implements SharedPrefer
         addServerPreference.setPersistent(false);
         addServerPreference.setTitle(getResources().getString(R.string.settings_server_add_server));
         addServerPreference.setEnabled(activeServers < maxServerCount);
+        
         serversCategory.addPreference(addServerPreference);
 
         for (int i = 1; i <= activeServers; i++) {
@@ -194,7 +196,6 @@ public class SettingsActivity extends PreferenceActivity implements SharedPrefer
             findPreference(Constants.PREFERENCES_KEY_TEST_CONNECTION + i).setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
                 @Override
                 public boolean onPreferenceClick(Preference preference) {
-
                     testConnection(instanceValue);
                     return false;
                 }
@@ -239,6 +240,15 @@ public class SettingsActivity extends PreferenceActivity implements SharedPrefer
 
         update();
     }
+    
+	@Override
+	protected void onPostCreate(Bundle bundle) {
+		super.onPostCreate(bundle);
+        
+        int visibility = Util.isOffline(this) ? View.GONE : View.VISIBLE;
+        chatMenuItem.setVisibility(visibility);
+        bookmarksMenuItem.setVisibility(visibility);
+	}
     
     private PreferenceScreen addServer(final int instance) {
     	final PreferenceScreen screen = getPreferenceManager().createPreferenceScreen(this);
@@ -285,6 +295,11 @@ public class SettingsActivity extends PreferenceActivity implements SharedPrefer
     	serverEnabledPreference.setKey(Constants.PREFERENCES_KEY_SERVER_ENABLED + instance);
     	serverEnabledPreference.setTitle(R.string.equalizer_enabled);
     	
+    	final CheckBoxPreference jukeboxEnabledPreference = new CheckBoxPreference(this);
+    	jukeboxEnabledPreference.setDefaultValue(false);
+    	jukeboxEnabledPreference.setKey(Constants.PREFERENCES_KEY_JUKEBOX_BY_DEFAULT + instance);
+    	jukeboxEnabledPreference.setTitle(R.string.jukebox_is_default);
+    	
     	Preference serverRemoveServerPreference = new Preference(this);
     	serverRemoveServerPreference.setKey(Constants.PREFERENCES_KEY_REMOVE_SERVER + instance);
     	serverRemoveServerPreference.setPersistent(false);
@@ -304,6 +319,7 @@ public class SettingsActivity extends PreferenceActivity implements SharedPrefer
             	serverUsernamePreference.setText(null);
             	serverPasswordPreference.setText(null);
             	serverEnabledPreference.setChecked(true);
+            	jukeboxEnabledPreference.setChecked(false);
             	
             	if (instance < activeServers) {
             		
@@ -332,10 +348,10 @@ public class SettingsActivity extends PreferenceActivity implements SharedPrefer
     	serverTestConnectionPreference.setKey(Constants.PREFERENCES_KEY_TEST_CONNECTION + instance);
     	serverTestConnectionPreference.setPersistent(false);
     	serverTestConnectionPreference.setTitle(R.string.settings_test_connection_title);
+    	
     	serverTestConnectionPreference.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
             @Override
             public boolean onPreferenceClick(Preference preference) {
-
                 testConnection(instance);
                 return false;
             }
@@ -346,6 +362,7 @@ public class SettingsActivity extends PreferenceActivity implements SharedPrefer
     	screen.addPreference(serverUsernamePreference);
     	screen.addPreference(serverPasswordPreference);
     	screen.addPreference(serverEnabledPreference);
+    	screen.addPreference(jukeboxEnabledPreference);
     	screen.addPreference(serverRemoveServerPreference);
     	screen.addPreference(serverTestConnectionPreference);
     	
@@ -516,7 +533,6 @@ public class SettingsActivity extends PreferenceActivity implements SharedPrefer
         private EditTextPreference serverName;
         private EditTextPreference serverUrl;
         private EditTextPreference username;
-        private CheckBoxPreference enabled;
         private PreferenceScreen screen;
 
         private ServerSettings(String instance) {
@@ -525,7 +541,6 @@ public class SettingsActivity extends PreferenceActivity implements SharedPrefer
             serverName = (EditTextPreference) findPreference(Constants.PREFERENCES_KEY_SERVER_NAME + instance);
             serverUrl = (EditTextPreference) findPreference(Constants.PREFERENCES_KEY_SERVER_URL + instance);
             username = (EditTextPreference) findPreference(Constants.PREFERENCES_KEY_USERNAME + instance);
-            enabled = (CheckBoxPreference) findPreference(Constants.PREFERENCES_KEY_SERVER_ENABLED + instance);
 
             serverUrl.setOnPreferenceChangeListener(new Preference.OnPreferenceChangeListener() {
                 @Override
@@ -633,6 +648,9 @@ public class SettingsActivity extends PreferenceActivity implements SharedPrefer
     		case R.id.menu_chat:
     			Util.startActivityWithoutTransition(this, ChatActivity.class);
     			break;
+    		case R.id.menu_bookmarks:
+    			Util.startActivityWithoutTransition(this, BookmarkActivity.class);
+    			break;    			
     		case R.id.menu_now_playing:
     			Util.startActivityWithoutTransition(this, DownloadActivity.class);
     			break;

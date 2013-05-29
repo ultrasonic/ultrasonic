@@ -40,6 +40,8 @@
         <item name="media_toggle">@drawable/media_toggle_list_normal_dark</item>
         <item name="chat">@drawable/ic_menu_chat_dark</item>
         <item name="chat_send">@drawable/ic_menu_chat_send_dark</item>
+        <item name="chat_send">@drawable/ic_menu_chat_send_dark</item>
+        <item name="bookmark">@drawable/ic_menu_bookmark_dark</item>
     </style>
 
     <style name="UltraSonicTheme.Light" parent="@android:style/Theme.Holo.Light">
@@ -81,6 +83,7 @@
         <item name="media_toggle">@drawable/media_toggle_list_normal_light</item>
         <item name="chat">@drawable/ic_menu_chat_light</item>
         <item name="chat_send">@drawable/ic_menu_chat_send_light</item>
-    </style>
+        <item name="bookmark">@drawable/ic_menu_bookmark_light</item>
+s    </style>
 
 </resources>

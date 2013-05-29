@@ -17,31 +17,30 @@
             a:layout_alignParentRight="true" >
 
             <LinearLayout
+                a:id="@+id/linearLayout2"
+                a:layout_width="wrap_content"
+                a:layout_height="wrap_content"
+                a:layout_alignParentTop="true"
+                a:layout_centerHorizontal="true"
+                a:orientation="vertical"
+                a:paddingBottom="8dip"
+                a:paddingTop="8dip" >
+
+                <include layout="@layout/download_buttons" />
+            </LinearLayout>
+
+            <LinearLayout
                 a:id="@+id/linearLayout1"
                 a:layout_width="wrap_content"
                 a:layout_height="wrap_content"
                 a:layout_alignParentBottom="true"
                 a:layout_alignParentLeft="true"
-                a:orientation="horizontal"
-                a:paddingBottom="12dip"
-                a:paddingTop="12dip" >
+                a:orientation="vertical"
+                a:paddingBottom="8dip"
+                a:paddingTop="8dip" >
 
-             	<include layout="@layout/media_buttons" />
-
+                <include layout="@layout/media_buttons" />
             </LinearLayout>
-
-            <TextView
-                a:id="@+id/download_status"
-                a:layout_width="wrap_content"
-                a:layout_height="wrap_content"
-                a:layout_centerHorizontal="true"
-                a:layout_alignParentBottom="true"
-                a:layout_marginBottom="8dip"
-                a:ellipsize="end"
-                a:gravity="center_horizontal"
-                a:singleLine="true"
-                a:textAppearance="?android:attr/textAppearanceSmall" />
-
 
         </RelativeLayout>
 
@@ -73,6 +72,7 @@
                     a:layout_gravity="bottom|center_horizontal"
                     a:layout_marginLeft="60dip"
                     a:layout_marginRight="60dip"
+                    a:background="@color/translucent"
                     a:orientation="vertical" />
             </FrameLayout>
 

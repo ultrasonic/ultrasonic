@@ -48,6 +48,7 @@ import android.widget.Toast;
 import com.thejoshwa.ultrasonic.androidapp.R;
 import com.thejoshwa.ultrasonic.androidapp.activity.DownloadActivity;
 import com.thejoshwa.ultrasonic.androidapp.activity.MainActivity;
+import com.thejoshwa.ultrasonic.androidapp.domain.Bookmark;
 import com.thejoshwa.ultrasonic.androidapp.domain.MusicDirectory;
 import com.thejoshwa.ultrasonic.androidapp.domain.PlayerState;
 import com.thejoshwa.ultrasonic.androidapp.domain.RepeatMode;
@@ -74,7 +75,7 @@ import java.lang.reflect.Method;
 import java.security.MessageDigest;
 import java.text.DecimalFormat;
 import java.text.NumberFormat;
-import java.util.Locale;
+import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.TimeUnit;
@@ -220,6 +221,14 @@ public class Util extends DownloadActivity {
         SharedPreferences prefs = getPreferences(context);
         return prefs.getBoolean(Constants.PREFERENCES_KEY_SERVER_ENABLED + instance, true);
     }
+    
+    public static boolean getJukeboxEnabled(Context context, int instance) {
+        if (instance == 0) {
+            return false;
+        }
+        SharedPreferences prefs = getPreferences(context);
+        return prefs.getBoolean(Constants.PREFERENCES_KEY_JUKEBOX_BY_DEFAULT + instance, false);
+    }
 
     public static void setServerRestVersion(Context context, Version version) {
         SERVER_REST_VERSIONS.put(getActiveServer(context), version);
@@ -241,6 +250,7 @@ public class Util extends DownloadActivity {
         String userName = prefs.getString(Constants.PREFERENCES_KEY_USERNAME + newInstance, null);
         String password = prefs.getString(Constants.PREFERENCES_KEY_PASSWORD + newInstance, null);
         boolean serverEnabled = prefs.getBoolean(Constants.PREFERENCES_KEY_SERVER_ENABLED + newInstance, true);
+        boolean jukeboxEnabled = prefs.getBoolean(Constants.PREFERENCES_KEY_JUKEBOX_BY_DEFAULT + newInstance, true);
         
 		editor.putString(Constants.PREFERENCES_KEY_SERVER + instance, server);
 		editor.putString(Constants.PREFERENCES_KEY_SERVER_NAME + instance, serverName);
@@ -248,6 +258,7 @@ public class Util extends DownloadActivity {
 		editor.putString(Constants.PREFERENCES_KEY_USERNAME + instance, userName);
 		editor.putString(Constants.PREFERENCES_KEY_PASSWORD + instance, password);
 		editor.putBoolean(Constants.PREFERENCES_KEY_SERVER_ENABLED + instance, serverEnabled);
+		editor.putBoolean(Constants.PREFERENCES_KEY_JUKEBOX_BY_DEFAULT + instance, jukeboxEnabled);
 		
 		editor.putString(Constants.PREFERENCES_KEY_SERVER + newInstance, null);
 		editor.putString(Constants.PREFERENCES_KEY_SERVER_NAME + newInstance, null);
@@ -255,6 +266,7 @@ public class Util extends DownloadActivity {
 		editor.putString(Constants.PREFERENCES_KEY_USERNAME + newInstance, null);
 		editor.putString(Constants.PREFERENCES_KEY_PASSWORD + newInstance, null);
 		editor.putBoolean(Constants.PREFERENCES_KEY_SERVER_ENABLED + newInstance, true);
+		editor.putBoolean(Constants.PREFERENCES_KEY_JUKEBOX_BY_DEFAULT + newInstance, false);
 		editor.commit();
 		
 		if (instance == activeInstance) {
@@ -818,6 +830,16 @@ public class Util extends DownloadActivity {
     	
     	return musicDirectory;
     }
+    
+    public static MusicDirectory getSongsFromBookmarks(List<Bookmark> bookmarks) {
+    	MusicDirectory musicDirectory = new MusicDirectory();
+    	
+    	for (Bookmark bookmark : bookmarks) {
+    		musicDirectory.addChild(bookmark.getEntry());	
+    	}
+    	
+    	return musicDirectory;
+    }
 
     /**
      * <p>Broadcasts the given song info as the new song being played.</p>
@@ -1252,7 +1274,30 @@ public class Util extends DownloadActivity {
     }
     
     public static String formatTotalDuration(long totalDuration) {
-        long millis = totalDuration * 1000;
+    	return formatTotalDuration(totalDuration, false);
+    }
+    
+    public static boolean getShouldClearPlaylist(Context context) {
+        SharedPreferences prefs = getPreferences(context);
+        return prefs.getBoolean(Constants.PREFERENCES_KEY_CLEAR_PLAYLIST, false);
+    }
+    
+    public static boolean getShouldSortByDisc(Context context) {
+        SharedPreferences prefs = getPreferences(context);
+        return prefs.getBoolean(Constants.PREFERENCES_KEY_DISC_SORT, false);
+    }
+    
+    public static boolean getShouldClearBookmark(Context context) {
+        SharedPreferences prefs = getPreferences(context);
+        return prefs.getBoolean(Constants.PREFERENCES_KEY_CLEAR_BOOKMARK, false);
+    }
+    
+    public static String formatTotalDuration(long totalDuration, boolean inMilliseconds) {
+    	long millis = totalDuration;
+    
+    	if (!inMilliseconds) {
+    		millis = totalDuration * 1000;
+    	}
         
         long hours = TimeUnit.MILLISECONDS.toHours(millis);
         long minutes = TimeUnit.MILLISECONDS.toMinutes(millis) - TimeUnit.HOURS.toMinutes(hours);

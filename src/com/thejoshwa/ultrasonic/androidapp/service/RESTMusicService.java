@@ -1221,7 +1221,7 @@ public class RESTMusicService implements MusicService {
 	}
 	
 	@Override
-	public void createBookmark(String id, Long position, Context context, ProgressListener progressListener) throws Exception {
+	public void createBookmark(String id, int position, Context context, ProgressListener progressListener) throws Exception {
     	checkServerVersion(context, "1.9", "Bookmarks not supported.");
     	
         HttpParams params = new BasicHttpParams();

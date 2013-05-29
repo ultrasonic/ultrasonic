@@ -2,8 +2,8 @@
 <manifest xmlns:a="http://schemas.android.com/apk/res/android"
     package="com.thejoshwa.ultrasonic.androidapp"
     a:installLocation="auto"
-    a:versionCode="24"
-    a:versionName="1.1.0.20" >
+    a:versionCode="26"
+    a:versionName="1.1.0.22" >
 
     <uses-permission a:name="android.permission.INTERNET" />
     <uses-permission a:name="android.permission.READ_PHONE_STATE" />
@@ -55,6 +55,9 @@
             a:configChanges="orientation|keyboardHidden"
             a:label="@string/playlist.label"
             a:launchMode="standard" />
+        <activity
+            a:name=".activity.BookmarkActivity"
+            a:configChanges="orientation|keyboardHidden"  />         
         <activity
             a:name=".activity.ChatActivity"
             a:configChanges="orientation|keyboardHidden"  />        

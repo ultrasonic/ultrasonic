@@ -59,8 +59,9 @@ public class ChatAdapter extends ArrayAdapter<ChatMessage> {
 		if (convertView == null)
 		{
 			holder = new ViewHolder();
+			holder.layout = layout;
 			
-			convertView = LayoutInflater.from(activity).inflate(layout, parent, false);
+			convertView = LayoutInflater.from(activity).inflate(holder.layout, parent, false);
 			
 	        TextView usernameView = (TextView) convertView.findViewById(R.id.chat_username);
 	        TextView timeView = (TextView) convertView.findViewById(R.id.chat_time);
@@ -94,6 +95,7 @@ public class ChatAdapter extends ArrayAdapter<ChatMessage> {
     
 	private static class ViewHolder
 	{
+		int layout;
 		TextView message;
 		TextView username;
 		TextView time;

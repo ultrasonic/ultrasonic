@@ -152,6 +152,9 @@ public class DownloadServiceLifecycleSupport {
         commandFilter.addAction(DownloadServiceImpl.CMD_PREVIOUS);
         commandFilter.addAction(DownloadServiceImpl.CMD_NEXT);
         downloadService.registerReceiver(intentReceiver, commandFilter);
+                
+        int instance = Util.getActiveServer(downloadService);
+        downloadService.setJukeboxEnabled(Util.getJukeboxEnabled(downloadService, instance));
 
         deserializeDownloadQueue();
 
@@ -209,7 +212,7 @@ public class DownloadServiceLifecycleSupport {
             return;
         }
         Log.i(TAG, "Deserialized currentPlayingIndex: " + state.currentPlayingIndex + ", currentPlayingPosition: " + state.currentPlayingPosition);
-        downloadService.restore(state.songs, state.currentPlayingIndex, state.currentPlayingPosition);
+        downloadService.restore(state.songs, state.currentPlayingIndex, state.currentPlayingPosition, false, false);
 
         // Work-around: Serialize again, as the restore() method creates a serialization without current playing info.
         serializeDownloadQueue();

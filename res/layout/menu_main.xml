@@ -49,6 +49,14 @@
             android:text="@string/button_bar.playlists" />
         
         <TextView
+            android:id="@+id/menu_bookmarks"
+            style="@style/MenuDrawer.Widget.Title"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:drawableLeft="?attr/bookmark"
+            android:text="@string/button_bar.bookmarks" />        
+        
+        <TextView
             android:id="@+id/menu_chat"
             style="@style/MenuDrawer.Widget.Title"
             android:layout_width="wrap_content"

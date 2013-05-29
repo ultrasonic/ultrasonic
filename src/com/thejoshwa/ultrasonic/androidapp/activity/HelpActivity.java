@@ -59,8 +59,8 @@ public final class HelpActivity extends Activity implements OnClickListener {
     public MenuDrawer menuDrawer;    
     private int activePosition = 1;
     private int menuActiveViewId;
-    View searchMenuItem = null;
-    View playlistsMenuItem = null;
+    View chatMenuItem = null;
+    View bookmarksMenuItem = null;
     View menuMain = null;
 
     @Override
@@ -79,14 +79,15 @@ public final class HelpActivity extends Activity implements OnClickListener {
         menuDrawer = MenuDrawer.attach(this, MenuDrawer.MENU_DRAG_WINDOW, Position.LEFT);
         menuDrawer.setMenuView(R.layout.menu_main);
         
-        searchMenuItem = findViewById(R.id.menu_search);
-        playlistsMenuItem = findViewById(R.id.menu_playlists);
+        chatMenuItem = findViewById(R.id.menu_chat);
+        bookmarksMenuItem = findViewById(R.id.menu_bookmarks);
         
         findViewById(R.id.menu_home).setOnClickListener(this);
         findViewById(R.id.menu_browse).setOnClickListener(this);
-        searchMenuItem.setOnClickListener(this);
-        playlistsMenuItem.setOnClickListener(this);
-        findViewById(R.id.menu_chat).setOnClickListener(this);
+        findViewById(R.id.menu_search).setOnClickListener(this);
+        findViewById(R.id.menu_playlists).setOnClickListener(this);
+        chatMenuItem.setOnClickListener(this);
+        bookmarksMenuItem.setOnClickListener(this);
         findViewById(R.id.menu_now_playing).setOnClickListener(this);
         findViewById(R.id.menu_settings).setOnClickListener(this);
         findViewById(R.id.menu_about).setOnClickListener(this);
@@ -132,6 +133,15 @@ public final class HelpActivity extends Activity implements OnClickListener {
             }
         });        
     }
+    
+	@Override
+	protected void onPostCreate(Bundle bundle) {
+		super.onPostCreate(bundle);
+        
+        int visibility = Util.isOffline(this) ? View.GONE : View.VISIBLE;
+        chatMenuItem.setVisibility(visibility);
+        bookmarksMenuItem.setVisibility(visibility);
+	}
 
     @Override
     public void onResume() {
@@ -229,6 +239,9 @@ public final class HelpActivity extends Activity implements OnClickListener {
     		case R.id.menu_chat:
     			Util.startActivityWithoutTransition(this, ChatActivity.class);
     			break;
+    		case R.id.menu_bookmarks:
+    			Util.startActivityWithoutTransition(this, BookmarkActivity.class);
+    			break;     			
     		case R.id.menu_now_playing:
     			Util.startActivityWithoutTransition(this, DownloadActivity.class);
     			break;

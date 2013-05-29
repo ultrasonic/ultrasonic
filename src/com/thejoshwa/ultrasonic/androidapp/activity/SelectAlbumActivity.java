@@ -47,12 +47,12 @@ import com.thejoshwa.ultrasonic.androidapp.view.EntryAdapter;
 
 import java.io.File;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Random;
 import java.util.Set;
-import java.util.concurrent.TimeUnit;
-
 import com.handmark.pulltorefresh.library.PullToRefreshBase;
 import com.handmark.pulltorefresh.library.PullToRefreshBase.OnRefreshListener;
 import com.handmark.pulltorefresh.library.PullToRefreshListView;
@@ -310,7 +310,6 @@ public class SelectAlbumActivity extends SubsonicTabActivity {
         AdapterView.AdapterContextMenuInfo info = (AdapterView.AdapterContextMenuInfo) menuInfo;
 
         MusicDirectory.Entry entry = (MusicDirectory.Entry) albumListView.getItemAtPosition(info.position);
-
         
         if (entry.isDirectory()) {
             MenuInflater inflater = getMenuInflater();
@@ -451,7 +450,7 @@ public class SelectAlbumActivity extends SubsonicTabActivity {
             @Override
             protected MusicDirectory load(MusicService service) throws Exception {
             	if (Util.getShouldUseId3Tags(SelectAlbumActivity.this)) {
-            		return Util.getSongsFromSearchResult(service.getStarred(SelectAlbumActivity.this, this));
+            		return Util.getSongsFromSearchResult(service.getStarred2(SelectAlbumActivity.this, this));
             	} else {
             		return Util.getSongsFromSearchResult(service.getStarred(SelectAlbumActivity.this, this));
             	}
@@ -582,7 +581,7 @@ public class SelectAlbumActivity extends SubsonicTabActivity {
         
         for (MusicDirectory.Entry song : selection) {
             DownloadFile downloadFile = getDownloadService().forSong(song);
-            if (downloadFile.isCompleteFileAvailable()) {
+            if (downloadFile.isWorkDone()) {
                 deleteEnabled = true;
             }
             
@@ -603,10 +602,12 @@ public class SelectAlbumActivity extends SubsonicTabActivity {
 
     private void downloadBackground(final boolean save) {
 		List<MusicDirectory.Entry> songs = getSelectedSongs(albumListView);
+		
 		if(songs.isEmpty()) {
 			selectAll(true, false);
 			songs = getSelectedSongs(albumListView);
 		}
+		
 		downloadBackground(save, songs);
 	}
     
@@ -688,6 +689,11 @@ public class SelectAlbumActivity extends SubsonicTabActivity {
         protected void done(Pair<MusicDirectory, Boolean> result) {
         	MusicDirectory musicDirectory = result.getFirst();
             List<MusicDirectory.Entry> entries = musicDirectory.getChildren();
+            
+            if (Util.getShouldSortByDisc(SelectAlbumActivity.this)){
+            	Collections.sort(entries, new EntryByDiscAndTrackComparer());
+            }
+            
             String directoryName = musicDirectory.getName();
 
             int songCount = 0;
@@ -740,7 +746,7 @@ public class SelectAlbumActivity extends SubsonicTabActivity {
                 deleteButton.setVisibility(View.GONE);
                 selectButton.setVisibility(View.GONE);
                 playNowButton.setVisibility(View.GONE);
-                playNextButton.setVisibility(View.VISIBLE);
+                playNextButton.setVisibility(View.GONE);
                 playLastButton.setVisibility(View.GONE);
                 
                 if (listSize == 0 || result.getFirst().getChildren().size() < listSize) {
@@ -859,4 +865,23 @@ public class SelectAlbumActivity extends SubsonicTabActivity {
 			return null;
 		}
     }
+    
+    public class EntryByDiscAndTrackComparer implements Comparator<MusicDirectory.Entry> {
+    	  @Override
+    	  public int compare(MusicDirectory.Entry x, MusicDirectory.Entry y) {
+    		Integer discX = x.getDiscNumber();
+    		Integer discY = y.getDiscNumber();
+    		Integer trackX = x.getTrack();
+    		Integer trackY = y.getTrack();
+    		
+    	    int startComparison = compare(discX == null ? 0 : discX, discY == null ? 0 : discY);
+    	    return startComparison != 0 ? startComparison : compare(trackX == null ? 0 : trackX, trackY == null ? 0 : trackY);
+    	  }
+
+    	  private int compare(long a, long b) {
+    	    return a < b ? -1
+    	         : a > b ? 1
+    	         : 0;
+    	  }
+    	}
 }

@@ -94,6 +94,7 @@ public class SubsonicTabActivity extends Activity implements OnClickListener{
     private int menuActiveViewId;
     private View nowPlayingView = null;
     View chatMenuItem = null;
+    View bookmarksMenuItem = null;
     View menuMain = null;
     public static boolean nowPlayingHidden = false;
     private static Entry currentSong;
@@ -118,12 +119,14 @@ public class SubsonicTabActivity extends Activity implements OnClickListener{
         menuDrawer.setMenuView(R.layout.menu_main);
 
         chatMenuItem = findViewById(R.id.menu_chat);
+        bookmarksMenuItem = findViewById(R.id.menu_bookmarks);
         
         findViewById(R.id.menu_home).setOnClickListener(this);
         findViewById(R.id.menu_browse).setOnClickListener(this);
         findViewById(R.id.menu_search).setOnClickListener(this);
         findViewById(R.id.menu_playlists).setOnClickListener(this);
         chatMenuItem.setOnClickListener(this);
+        bookmarksMenuItem.setOnClickListener(this);
         findViewById(R.id.menu_now_playing).setOnClickListener(this);
         findViewById(R.id.menu_settings).setOnClickListener(this);
         findViewById(R.id.menu_about).setOnClickListener(this);
@@ -145,6 +148,7 @@ public class SubsonicTabActivity extends Activity implements OnClickListener{
         
         int visibility = Util.isOffline(this) ? View.GONE : View.VISIBLE;
         chatMenuItem.setVisibility(visibility);
+        bookmarksMenuItem.setVisibility(visibility);
 	}
 
     @Override
@@ -657,8 +661,9 @@ public class SubsonicTabActivity extends Activity implements OnClickListener{
                 }
 
                 warnIfNetworkOrStorageUnavailable();
-                getDownloadService().download(songs, save, autoplay, playNext, shuffle);
+                getDownloadService().download(songs, save, autoplay, playNext, shuffle, false);
                 String playlistName = getIntent().getStringExtra(Constants.INTENT_EXTRA_NAME_PLAYLIST_NAME);
+                
                 if (playlistName != null) {
                     getDownloadService().setSuggestedPlaylistName(playlistName);
                 }
@@ -748,7 +753,7 @@ public class SubsonicTabActivity extends Activity implements OnClickListener{
 						if (unpin) {
 							downloadService.unpin(songs);
 						} else {
-							downloadService.download(songs, save, autoplay, playNext, shuffle);
+							downloadService.download(songs, save, autoplay, playNext, shuffle, false);
 							if (!append && Util.getShouldTransitionOnPlaybackPreference(SubsonicTabActivity.this)) {
 								Util.startActivityWithoutTransition(SubsonicTabActivity.this, DownloadActivity.class);
 							}
@@ -973,6 +978,9 @@ public class SubsonicTabActivity extends Activity implements OnClickListener{
     		case R.id.menu_chat:
     			Util.startActivityWithoutTransition(SubsonicTabActivity.this, ChatActivity.class);
     			break;
+    		case R.id.menu_bookmarks:
+    			Util.startActivityWithoutTransition(this, BookmarkActivity.class);
+    			break;     			
     		case R.id.menu_now_playing:
     			Util.startActivityWithoutTransition(SubsonicTabActivity.this, DownloadActivity.class);
     			break;

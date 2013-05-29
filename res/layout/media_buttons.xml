@@ -3,16 +3,8 @@
               a:orientation="horizontal"
               a:layout_width="fill_parent"
               a:layout_height="wrap_content"
-              a:paddingBottom="12dip"
-        	  a:paddingTop="12dip" >
-    
-        <ImageView
-            a:id="@+id/download_toggle_list"
-            a:layout_width="0dip"
-            a:layout_height="wrap_content"
-            a:layout_weight="1"
-            a:focusable="true"
-            a:src="?attr/media_toggle" />
+              a:paddingBottom="8dip"
+        	  a:paddingTop="8dip" >
         
         <ImageView
             a:id="@+id/download_shuffle"
@@ -70,12 +62,4 @@
             a:focusable="true"
             a:src="?attr/media_repeat_off" />
 
-        <ImageView
-            a:id="@+id/download_star"
-            a:layout_width="0dip"
-            a:layout_height="wrap_content"
-            a:layout_weight="1"
-            a:focusable="true"
-            a:src="?attr/star_hollow" />
-   
 </LinearLayout>

@@ -32,7 +32,6 @@ import com.thejoshwa.ultrasonic.androidapp.domain.Indexes;
 import com.thejoshwa.ultrasonic.androidapp.domain.JukeboxStatus;
 import com.thejoshwa.ultrasonic.androidapp.domain.Lyrics;
 import com.thejoshwa.ultrasonic.androidapp.domain.MusicDirectory;
-import com.thejoshwa.ultrasonic.androidapp.domain.MusicDirectory.Entry;
 import com.thejoshwa.ultrasonic.androidapp.domain.MusicFolder;
 import com.thejoshwa.ultrasonic.androidapp.domain.Playlist;
 import com.thejoshwa.ultrasonic.androidapp.domain.SearchCritera;
@@ -135,5 +134,5 @@ public interface MusicService {
 
 	void deleteBookmark(String id, Context context, ProgressListener progressListener) throws Exception;
 
-	void createBookmark(String id, Long position, Context context, ProgressListener progressListener) throws Exception;
+	void createBookmark(String id, int position, Context context, ProgressListener progressListener) throws Exception;
 }

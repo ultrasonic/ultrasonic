@@ -190,6 +190,7 @@ public class MainActivity extends SubsonicTabActivity {
     private void loadSettings() {
         PreferenceManager.setDefaultValues(this, R.xml.settings, false);
         final SharedPreferences preferences = Util.getPreferences(this);
+        
         if (!preferences.contains(Constants.PREFERENCES_KEY_CACHE_LOCATION)) {
             final SharedPreferences.Editor editor = preferences.edit();
             editor.putString(Constants.PREFERENCES_KEY_CACHE_LOCATION, FileUtil.getDefaultMusicDirectory().getPath());
@@ -359,12 +360,18 @@ public class MainActivity extends SubsonicTabActivity {
     }
     
     private void setActiveServer(final int instance) {
+        final DownloadService service = getDownloadService();
+    	
         if (Util.getActiveServer(this) != instance) {
-            final DownloadService service = getDownloadService();
             if (service != null) {
                 service.clearIncomplete();
             }
-            Util.setActiveServer(this, instance);
+        }
+        
+        Util.setActiveServer(this, instance);
+        
+        if (service != null) {
+        	service.setJukeboxEnabled(Util.getJukeboxEnabled(this, instance));
         }
     }
 

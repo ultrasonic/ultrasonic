@@ -407,7 +407,7 @@ public class SearchActivity extends SubsonicTabActivity {
                 downloadService.clear();
             }
             
-            downloadService.download(Arrays.asList(song), save, false, playNext, false);
+            downloadService.download(Arrays.asList(song), save, false, playNext, false, false);
             
             if (autoplay) {
                 downloadService.play(downloadService.size() - 1);
