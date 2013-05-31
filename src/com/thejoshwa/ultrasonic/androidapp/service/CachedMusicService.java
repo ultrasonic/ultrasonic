@@ -278,11 +278,11 @@ public class CachedMusicService implements MusicService {
         return musicService.getLatestVersion(context, progressListener);
     }
 
-    @Override
-    public String getVideoUrl(int maxBitrate, Context context, String id) {
-        return musicService.getVideoUrl(maxBitrate, context, id);
-    }
-    
+	@Override
+	public String getVideoUrl(Context context, String id, boolean useFlash) throws Exception {
+		return musicService.getVideoUrl(context, id, useFlash);
+	}
+
 	@Override
     public String getVideoStreamUrl(int maxBitrate, Context context, String id) {
         return musicService.getVideoStreamUrl(maxBitrate, context, id);

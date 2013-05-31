@@ -126,6 +126,9 @@
         </receiver>
         <receiver a:name=".receiver.BluetoothIntentReceiver" >
             <intent-filter>
+                <action a:name="android.bluetooth.device.action.ACL_CONNETED" />
+                <action a:name="android.bluetooth.device.action.ACL_DISCONNETED" />
+                <action a:name="android.bluetooth.device.action.ACL_DISCONNECT_REQUESTED" />
                 <action a:name="android.bluetooth.a2dp.action.SINK_STATE_CHANGED" />
             </intent-filter>
         </receiver>

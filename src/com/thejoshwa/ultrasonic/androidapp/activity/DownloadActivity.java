@@ -961,8 +961,8 @@ public class DownloadActivity extends SubsonicTabActivity implements OnGestureLi
 				if (currentPlaying != null) {
 					final int millisTotal = duration == null ? 0 : duration;
 
-					positionTextView.setText(Util.formatDuration(millisPlayed / 1000));
-					durationTextView.setText(Util.formatDuration(millisTotal / 1000));
+					positionTextView.setText(Util.formatTotalDuration(millisPlayed, true));
+					durationTextView.setText(Util.formatTotalDuration(millisTotal, true));
 					progressBar.setMax(millisTotal == 0 ? 100 : millisTotal); // Work-around for apparent bug.
 					progressBar.setProgress(millisPlayed);
 					progressBar.setEnabled(currentPlaying.isWorkDone() || isJukeboxEnabled);

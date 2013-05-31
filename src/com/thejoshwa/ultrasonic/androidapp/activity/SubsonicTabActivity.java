@@ -71,6 +71,8 @@ import com.thejoshwa.ultrasonic.androidapp.util.LoadingTask;
 import com.thejoshwa.ultrasonic.androidapp.util.ModalBackgroundTask;
 import com.thejoshwa.ultrasonic.androidapp.util.SilentBackgroundTask;
 import com.thejoshwa.ultrasonic.androidapp.util.Util;
+import com.thejoshwa.ultrasonic.androidapp.util.VideoPlayerType;
+
 import net.simonvt.menudrawer.MenuDrawer;
 import net.simonvt.menudrawer.Position;
 
@@ -772,6 +774,21 @@ public class SubsonicTabActivity extends Activity implements OnClickListener{
 
         task.execute();
     }
+	
+	protected void playVideo(MusicDirectory.Entry entry) {
+		if (!Util.isNetworkConnected(this)) {
+			Util.toast(this, R.string.select_album_no_network);
+			return;
+		}
+		
+		VideoPlayerType player = Util.getVideoPlayerType(this);
+
+		try {
+			player.playVideo(this, entry);
+		} catch (Exception e) {
+			Util.toast(this, e.getMessage(), false);
+		}
+	}
 	
 	protected void addToPlaylist(final List<MusicDirectory.Entry> songs) {
 		if(songs.isEmpty()) {

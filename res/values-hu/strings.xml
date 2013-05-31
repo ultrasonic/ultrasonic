@@ -128,8 +128,6 @@
     <string name="parser.reading_done">Olvasás a kiszolgálóról&#8230; Kész!</string>
     <string name="parser.upgrade_client">Nem kompatibilis verzió. Kérjük, frissítse az UltraSonic Android alkalmazást!</string>
     <string name="parser.upgrade_server">Nem kompatibilis verzió. Kérjük, frissítse a Subsonic kiszolgálót!</string>
-    <string name="play_video.loading">Videó betöltése&#8230;</string>
-    <string name="play_video.noplugin">Kérjük, telepítse az Adobe Flash Player-t a Play Áruházból!</string>
     <string name="playlist.label">Lejátszási listák</string>
     <string name="playlist.update_info">Módosítás</string>
     <string name="playlist.updated_info">Módosított lejátszási lista %s</string>
@@ -321,6 +319,8 @@
     <string name="settings.use_id3_summary">ID3 Tag módszer használata a fájlredszer alapú mód helyett.</string>
     <string name="settings.use_stream_proxy">Stream Proxy használata</string>
     <string name="settings.use_stream_proxy_summary">Média lejátszása stream proxy-n keresztül (akadozások elkerülése érdekében).</string>
+    <string name="settings.video_title">Video</string>
+    <string name="settings.video_player">Video player</string>
     <string name="settings.wifi_required_summary">Streaming, csak ha rendelkezésre áll Wi-Fi kapcsolat.</string>
     <string name="settings.wifi_required_title">Csak Wi-Fi streaming</string>
     <string name="shuffle.endYear">Utolsó év:</string>
@@ -336,6 +336,8 @@
     <string name="util.bytes_format.megabyte">0.00 MB</string>
     <string name="util.no_time">-:--</string>
     <string name="util.zero_time">0:00</string>
+    <string name="video.get_mx_player_text">MX Player is not installed. Get it for free on Play Store, or change video settings.</string>
+    <string name="video.get_mx_player_button">Get MX Player</string>
     <string name="widget.initial_text">Érintse meg a zene kiválasztásához</string>
     <string name="widget.sdcard_busy">Az SD kártya nem elérhető!</string>
     <string name="widget.sdcard_missing">Nincs SD kártya!</string>

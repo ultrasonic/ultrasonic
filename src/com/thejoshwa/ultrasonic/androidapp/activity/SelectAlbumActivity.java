@@ -651,15 +651,6 @@ public class SelectAlbumActivity extends SubsonicTabActivity {
             getDownloadService().unpin(songs);
         }
     }
-
-    private void playVideo(MusicDirectory.Entry entry) {
-    	int maxBitrate = Util.getMaxVideoBitrate(this);
-    	
-        Intent intent = new Intent(Intent.ACTION_VIEW);
-        intent.setData(Uri.parse(MusicServiceFactory.getMusicService(this).getVideoUrl(maxBitrate, this, entry.getId())));
-
-        startActivity(intent);
-    }
     
     public void deleteRecursively(MusicDirectory.Entry album) {
 		File dir = FileUtil.getAlbumDirectory(this, album);

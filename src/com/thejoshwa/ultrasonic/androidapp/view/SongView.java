@@ -35,6 +35,7 @@ import com.thejoshwa.ultrasonic.androidapp.service.DownloadFile;
 import com.thejoshwa.ultrasonic.androidapp.service.MusicService;
 import com.thejoshwa.ultrasonic.androidapp.service.MusicServiceFactory;
 import com.thejoshwa.ultrasonic.androidapp.util.Util;
+import com.thejoshwa.ultrasonic.androidapp.util.VideoPlayerType;
 
 import java.io.File;
 
@@ -79,20 +80,26 @@ public class SongView extends UpdateView implements Checkable {
         	bitRate = String.format(getContext().getString(R.string.song_details_kbps), song.getBitRate());
         }
         
+        VideoPlayerType videoPlayer = Util.getVideoPlayerType(getContext());
+        
         String fileFormat = null;
-        if (song.getTranscodedSuffix() != null && !song.getTranscodedSuffix().equals(song.getSuffix())) {
+        if (song.getTranscodedSuffix() == null || song.getTranscodedSuffix().equals(song.getSuffix()) || (song.isVideo() && videoPlayer != VideoPlayerType.FLASH)) {
+        	fileFormat = song.getSuffix();
+        } else {
         	fileFormat = String.format("%s > %s", song.getSuffix(), song.getTranscodedSuffix());
-    	} else {
-            fileFormat = song.getSuffix();
-        }
+    	}
+        
+        String artistName = song.getArtist();
 
-        if (Util.shouldDisplayBitrateWithArtist(getContext())) {
-        	artist.append(song.getArtist()).append(" (")
-        		.append(String.format(getContext().getString(R.string.song_details_all), bitRate == null ? "" : bitRate + " ", fileFormat))
-        		.append(")");
-        } else { 
-        	artist.append(song.getArtist());
-        }
+    	if (artistName != null) {
+    		if (Util.shouldDisplayBitrateWithArtist(getContext())) {
+    			artist.append(artistName).append(" (")
+        			.append(String.format(getContext().getString(R.string.song_details_all), bitRate == null ? "" : bitRate + " ", fileFormat))
+        			.append(")");
+    		} else { 
+    			artist.append(artistName);
+    		}
+    	}
 
         int trackNumber = song.getTrack();
         
@@ -104,7 +111,7 @@ public class SongView extends UpdateView implements Checkable {
 
         titleTextView.setText(song.getTitle());
         artistTextView.setText(artist);
-        durationTextView.setText(Util.formatDuration(song.getDuration()));
+        durationTextView.setText(Util.formatTotalDuration(song.getDuration()));
         starImageView.setImageDrawable(song.getStarred() ? Util.getDrawableFromAttribute(getContext(), R.attr.star_full) : Util.getDrawableFromAttribute(getContext(), R.attr.star_hollow));
         checkedTextView.setVisibility(checkable && !song.isVideo() ? View.VISIBLE : View.GONE);
 

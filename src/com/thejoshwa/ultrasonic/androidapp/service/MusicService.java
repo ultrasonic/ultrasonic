@@ -108,7 +108,7 @@ public interface MusicService {
 
     Version getLatestVersion(Context context, ProgressListener progressListener) throws Exception;
 
-    String getVideoUrl(int maxBitrate, Context context, String id);
+    String getVideoUrl(Context context, String id, boolean useFlash) throws Exception;
 
 	String getVideoStreamUrl(int Bitrate, Context context, String id);
 

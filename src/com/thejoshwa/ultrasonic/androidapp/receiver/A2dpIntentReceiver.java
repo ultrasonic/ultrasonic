@@ -64,5 +64,7 @@ public class A2dpIntentReceiver extends BroadcastReceiver {
 		default:
 			return;
 		}
+		
+		context.sendBroadcast(avrcpIntent);
 	}
 }

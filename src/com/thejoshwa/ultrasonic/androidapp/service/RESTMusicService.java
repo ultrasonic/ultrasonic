@@ -729,7 +729,7 @@ public class RESTMusicService implements MusicService {
         boolean ok = serverVersion == null || serverVersion.compareTo(requiredVersion) >= 0;
 
         if (!ok) {
-            throw new ServerTooOldException(text, serverVersion, requiredVersion);
+            throw new ServerTooOldException(text);
         }
     }
 
@@ -839,17 +839,25 @@ public class RESTMusicService implements MusicService {
         return response;
     }
 
-    @Override
-    public String getVideoUrl(int maxBitrate, Context context, String id) {
-        StringBuilder builder = new StringBuilder(Util.getRestUrl(context, "videoPlayer"));
-        builder.append("&id=").append(id);
-        builder.append("&maxBitRate=").append(maxBitrate);
-        builder.append("&autoplay=true");
+	@Override
+	public String getVideoUrl(Context context, String id, boolean useFlash) throws Exception {
+		StringBuilder builder = new StringBuilder();
+		if (useFlash) {
+			builder.append(Util.getRestUrl(context, "videoPlayer"));
+			builder.append("&id=").append(id);
+			builder.append("&maxBitRate=500");
+			builder.append("&autoplay=true");
+		} else {
+			checkServerVersion(context, "1.9", "Video streaming not supported.");
+			builder.append(Util.getRestUrl(context, "stream"));
+			builder.append("&id=").append(id);
+			builder.append("&format=raw");
+		}
 
-        String url = rewriteUrlWithRedirect(context, builder.toString());
-        Log.i(TAG, "Using video URL: " + url);
-        return url;
-    }
+		String url = rewriteUrlWithRedirect(context, builder.toString());
+		Log.i(TAG, "Using video URL: " + url);
+		return url;
+	}
     
 	@Override
 	public String getVideoStreamUrl(int maxBitrate, Context context, String id) {

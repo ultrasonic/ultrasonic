@@ -83,7 +83,7 @@ public class SelectArtistActivity extends SubsonicTabActivity implements Adapter
         folderButton = LayoutInflater.from(this).inflate(R.layout.select_artist_header, artistListView, false);
         folderName = (TextView) folderButton.findViewById(R.id.select_artist_folder_2);
 
-        if (!Util.isOffline(this)) {
+        if (!Util.isOffline(this) && !Util.getShouldUseId3Tags(this)) {
             artistListView.addHeaderView(folderButton);
         }
 
@@ -128,6 +128,7 @@ public class SelectArtistActivity extends SubsonicTabActivity implements Adapter
             protected Indexes doInBackground() throws Throwable {
                 boolean refresh = getIntent().getBooleanExtra(Constants.INTENT_EXTRA_NAME_REFRESH, false);
                 MusicService musicService = MusicServiceFactory.getMusicService(SelectArtistActivity.this);
+                
                 boolean isOffline = Util.isOffline(SelectArtistActivity.this);
                 boolean useId3Tags = Util.getShouldUseId3Tags(SelectArtistActivity.this);
                 

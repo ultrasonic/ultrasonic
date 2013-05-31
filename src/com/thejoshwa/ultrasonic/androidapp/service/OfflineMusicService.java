@@ -494,7 +494,7 @@ public class OfflineMusicService extends RESTMusicService {
     }
 
     @Override
-    public String getVideoUrl(int maxBitrate, Context context, String id) {
+    public String getVideoUrl(Context context, String id, boolean useFlash) {
         return null;
     }
 

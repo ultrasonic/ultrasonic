@@ -204,5 +204,15 @@
         <item>@string/settings.search_250</item>
         <item>@string/settings.search_500</item>
     </string-array>
+    <string-array name="videoPlayerValues">
+        <item>mx</item>
+        <item>default</item>
+        <item>flash</item>
+    </string-array>
+    <string-array name="videoPlayerNames">
+        <item>MX Player</item>
+        <item>Default</item>
+        <item>Flash</item>
+    </string-array>
 
 </resources>

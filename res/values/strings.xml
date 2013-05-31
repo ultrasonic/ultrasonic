@@ -128,8 +128,6 @@
     <string name="parser.reading_done">Reading from server. Done!</string>
     <string name="parser.upgrade_client">Incompatible versions. Please upgrade UltraSonic Android app.</string>
     <string name="parser.upgrade_server">Incompatible versions. Please upgrade Subsonic server.</string>
-    <string name="play_video.loading">Loading video&#8230;</string>
-    <string name="play_video.noplugin">Please install Adobe Flash Player from Android Market.</string>
     <string name="playlist.label">Playlists</string>
     <string name="playlist.update_info">Update Information</string>
     <string name="playlist.updated_info">Updated playlist information for %s</string>
@@ -321,6 +319,8 @@
     <string name="settings.use_id3_summary">Use ID3 tag methods instead of file system based methods</string>
     <string name="settings.use_stream_proxy">Use Stream Proxy</string>
     <string name="settings.use_stream_proxy_summary">Stream media playback through a proxy (may help stutter)</string>
+	<string name="settings.video_title">Video</string>
+	<string name="settings.video_player">Video player</string>	    
     <string name="settings.wifi_required_summary">Only stream media if connected to Wi-Fi</string>
     <string name="settings.wifi_required_title">Wi-Fi Streaming Only</string>
     <string name="shuffle.endYear">End Year:</string>
@@ -336,6 +336,8 @@
     <string name="util.bytes_format.megabyte">0.00 MB</string>
     <string name="util.no_time">-:--</string>
     <string name="util.zero_time">0:00</string>
+	<string name="video.get_mx_player_text">MX Player is not installed. Get it for free on Play Store, or change video settings.</string>
+	<string name="video.get_mx_player_button">Get MX Player</string>    
     <string name="widget.initial_text">Touch to select music</string>
     <string name="widget.sdcard_busy">SD card unavailable</string>
     <string name="widget.sdcard_missing">No SD card</string>

@@ -26,6 +26,8 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.content.pm.ApplicationInfo;
+import android.content.pm.PackageManager;
 import android.content.res.Resources;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -1315,4 +1317,22 @@ public class Util extends DownloadActivity {
         	return String.format("0:%02d", seconds);
         }
     }
+    
+	public static VideoPlayerType getVideoPlayerType(Context context) {
+		SharedPreferences prefs = getPreferences(context);
+		return VideoPlayerType.forKey(prefs.getString(Constants.PREFERENCES_KEY_VIDEO_PLAYER, VideoPlayerType.MX.getKey()));
+	}
+	
+	public static boolean isPackageInstalled(Context context, String packageName) {
+		PackageManager pm = context.getPackageManager();
+		List<ApplicationInfo> packages = pm.getInstalledApplications(0);
+		
+		for (ApplicationInfo packageInfo : packages) {
+			if (packageInfo.packageName.equals(packageName)) {
+				return true;
+			}
+		}
+		
+		return false;
+	}
 }

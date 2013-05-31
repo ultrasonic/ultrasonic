@@ -122,6 +122,7 @@ public final class Constants {
 	public static final String PREFERENCES_KEY_CLEAR_PLAYLIST = "clearPlaylist";
 	public static final String PREFERENCES_KEY_CLEAR_BOOKMARK = "clearBookmark";
 	public static final String PREFERENCES_KEY_DISC_SORT = "discAndTrackSort";
+	public static final String PREFERENCES_KEY_VIDEO_PLAYER = "videoPlayer";
     
     // Name of the preferences file.
     public static final String PREFERENCES_FILE_NAME = "com.thejoshwa.ultrasonic.androidapp_preferences";
