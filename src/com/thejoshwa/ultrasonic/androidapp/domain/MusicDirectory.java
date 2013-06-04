@@ -254,7 +254,7 @@ public class MusicDirectory {
         }
 
         public Integer getDuration() {
-            return duration;
+            return duration == null ? 0 : duration;
         }
 
         public void setDuration(Integer duration) {
