@@ -40,6 +40,7 @@ import com.thejoshwa.ultrasonic.androidapp.domain.SearchResult;
 import com.thejoshwa.ultrasonic.androidapp.domain.Share;
 import com.thejoshwa.ultrasonic.androidapp.domain.Version;
 import com.thejoshwa.ultrasonic.androidapp.util.CancellableTask;
+import com.thejoshwa.ultrasonic.androidapp.util.Constants;
 import com.thejoshwa.ultrasonic.androidapp.util.LRUCache;
 import com.thejoshwa.ultrasonic.androidapp.util.ProgressListener;
 import com.thejoshwa.ultrasonic.androidapp.util.TimeLimitedCache;
@@ -392,15 +393,19 @@ public class CachedMusicService implements MusicService {
 	}
 
 	@Override
-	public MusicDirectory getVideos(Context context, ProgressListener progressListener) throws Exception {
-        checkSettingsChanged(context);
-        MusicDirectory result = cachedVideos.get();
-        
-        if (result == null) {
-            result = musicService.getVideos(context, progressListener);
-            cachedVideos.set(result);
-        }
-        
-        return result;
+	public MusicDirectory getVideos(boolean refresh, Context context, ProgressListener progressListener) throws Exception {
+		checkSettingsChanged(context);
+		TimeLimitedCache<MusicDirectory> cache = refresh ? null : cachedMusicDirectories.get(Constants.INTENT_EXTRA_NAME_VIDEOS);
+
+		MusicDirectory dir = cache == null ? null : cache.get();
+
+		if (dir == null) {
+			dir = musicService.getVideos(refresh, context, progressListener);
+			cache = new TimeLimitedCache<MusicDirectory>(Util.getDirectoryCacheTime(context), TimeUnit.SECONDS);
+			cache.set(dir);
+			cachedMusicDirectories.put(Constants.INTENT_EXTRA_NAME_VIDEOS, cache);
+		}
+
+		return dir;
 	}
 }

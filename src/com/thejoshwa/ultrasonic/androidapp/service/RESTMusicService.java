@@ -1274,7 +1274,7 @@ public class RESTMusicService implements MusicService {
 	}
 
 	@Override
-	public MusicDirectory getVideos(Context context, ProgressListener progressListener) throws Exception {
+	public MusicDirectory getVideos(boolean refresh, Context context, ProgressListener progressListener) throws Exception {
     	checkServerVersion(context, "1.8", "Videos not supported.");
     	
         Reader reader = getReader(context, progressListener, "getVideos", null);

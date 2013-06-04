@@ -468,7 +468,8 @@ public class SelectAlbumActivity extends SubsonicTabActivity {
         new LoadTask() {
             @Override
             protected MusicDirectory load(MusicService service) throws Exception {
-            	return service.getVideos(SelectAlbumActivity.this,  this);
+            	boolean refresh = getIntent().getBooleanExtra(Constants.INTENT_EXTRA_NAME_REFRESH, false);
+            	return service.getVideos(refresh, SelectAlbumActivity.this,  this);
             }
         }.execute();
     }

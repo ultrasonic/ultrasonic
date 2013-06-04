@@ -39,11 +39,6 @@
             a:key="discAndTrackSort"
             a:summary="@string/settings.disc_sort_summary"
             a:title="@string/settings.disc_sort" />
-        <CheckBoxPreference
-            a:defaultValue="true"
-            a:key="showNowPlaying"
-            a:summary="@string/settings.show_now_playing_summary"
-            a:title="@string/settings.show_now_playing" />
     </PreferenceCategory>
     <PreferenceCategory a:title="@string/settings.playback_control_title" >
         <CheckBoxPreference
@@ -89,6 +84,11 @@
             a:title="@string/settings.increment_time" />
     </PreferenceCategory>
 	<PreferenceCategory a:title="@string/settings.notifications_title" >
+        <CheckBoxPreference
+            a:defaultValue="true"
+            a:key="showNowPlaying"
+            a:summary="@string/settings.show_now_playing_summary"
+            a:title="@string/settings.show_now_playing" />	    
 	    <CheckBoxPreference
             a:defaultValue="true"
             a:key="showNotification"
