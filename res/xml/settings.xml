@@ -57,21 +57,6 @@
             a:summary="@string/settings.media_button_summary"
             a:title="@string/settings.media_button_title" />
         <CheckBoxPreference
-            a:defaultValue="true"
-            a:key="showNotification"
-            a:summary="@string/settings.show_notification_summary"
-            a:title="@string/settings.show_notification" />
-        <CheckBoxPreference
-            a:defaultValue="true"
-            a:key="alwaysShowNotification"
-            a:summary="@string/settings.show_notification_always_summary"
-            a:title="@string/settings.show_notification_always" />
-        <CheckBoxPreference
-            a:defaultValue="true"
-            a:key="showLockScreen"
-            a:summary="@string/settings.show_lockscreen_controls_summary"
-            a:title="@string/settings.show_lockscreen_controls" />
-        <CheckBoxPreference
             a:defaultValue="false"
             a:key="useStreamProxy"
             a:summary="@string/settings.use_stream_proxy_summary"
@@ -96,7 +81,6 @@
             a:key="clearBookmark"
             a:summary="@string/settings.clear_bookmark_summary"
             a:title="@string/settings.clear_bookmark" />
-
         <ListPreference
             a:defaultValue="5000"
             a:entries="@array/bufferLengthNames"
@@ -104,6 +88,33 @@
             a:key="incrementTime"
             a:title="@string/settings.increment_time" />
     </PreferenceCategory>
+	<PreferenceCategory a:title="@string/settings.notifications_title" >
+	    <CheckBoxPreference
+            a:defaultValue="true"
+            a:key="showNotification"
+            a:summary="@string/settings.show_notification_summary"
+            a:title="@string/settings.show_notification" />
+        <CheckBoxPreference
+            a:defaultValue="true"
+            a:key="alwaysShowNotification"
+            a:summary="@string/settings.show_notification_always_summary"
+            a:title="@string/settings.show_notification_always" />
+        <CheckBoxPreference
+            a:defaultValue="true"
+            a:key="showLockScreen"
+            a:summary="@string/settings.show_lockscreen_controls_summary"
+            a:title="@string/settings.show_lockscreen_controls" />
+        <CheckBoxPreference
+            a:defaultValue="true"
+            a:key="sendBluetoothNotifications"
+            a:summary="@string/settings.send_bluetooth_notification_summary"
+            a:title="@string/settings.send_bluetooth_notification" />
+        <CheckBoxPreference
+            a:defaultValue="false"
+            a:key="sendBluetoothAlbumArt"
+            a:summary="@string/settings.send_bluetooth_album_art_summary"
+            a:title="@string/settings.send_bluetooth_album_art" />
+    </PreferenceCategory>    
     <PreferenceCategory a:title="@string/settings.video_title" >
         <ListPreference
             a:defaultValue="default"

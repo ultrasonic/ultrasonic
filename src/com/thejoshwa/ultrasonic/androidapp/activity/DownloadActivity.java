@@ -22,6 +22,7 @@ import android.app.AlertDialog;
 import android.app.Dialog;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.graphics.Point;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.os.Handler;
@@ -44,7 +45,7 @@ import com.thejoshwa.ultrasonic.androidapp.util.Constants;
 import com.thejoshwa.ultrasonic.androidapp.util.SilentBackgroundTask;
 import com.thejoshwa.ultrasonic.androidapp.util.Util;
 import com.thejoshwa.ultrasonic.androidapp.view.AutoRepeatButton;
-import com.thejoshwa.ultrasonic.androidapp.view.SongView;
+import com.thejoshwa.ultrasonic.androidapp.view.SongListAdapter;
 import com.thejoshwa.ultrasonic.androidapp.view.VisualizerView;
 
 import java.text.DateFormat;
@@ -52,6 +53,7 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Locale;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
@@ -107,9 +109,14 @@ public class DownloadActivity extends SubsonicTabActivity implements OnGestureLi
 
         final WindowManager windowManager = getWindowManager();
         final Display display = windowManager.getDefaultDisplay();
-        swipeDistance = (display.getWidth() + display.getHeight()) * PERCENTAGE_OF_SCREEN_FOR_SWIPE / 100;
-        swipeVelocity = (display.getWidth() + display.getHeight()) * PERCENTAGE_OF_SCREEN_FOR_SWIPE / 100;
-        gestureScanner = new GestureDetector(this);
+        Point size = new Point();
+        display.getSize(size);
+        int width = size.x;
+        int height = size.y;
+        
+        swipeDistance = (width + height) * PERCENTAGE_OF_SCREEN_FOR_SWIPE / 100;
+        swipeVelocity = swipeDistance;
+        gestureScanner = new GestureDetector(this, this);
 
         playlistFlipper = (ViewFlipper) findViewById(R.id.download_playlist_flipper);
         emptyTextView = (TextView) findViewById(R.id.download_empty);
@@ -137,6 +144,15 @@ public class DownloadActivity extends SubsonicTabActivity implements OnGestureLi
         visualizerViewLayout = (LinearLayout) findViewById(R.id.download_visualizer_view_layout);
 
         final ImageButton toggleListButton = (ImageButton) findViewById(R.id.download_toggle_list);
+        
+        View.OnTouchListener touchListener = new View.OnTouchListener() {
+            @Override
+            public boolean onTouch(View view, MotionEvent me) {
+                return gestureScanner.onTouchEvent(me);
+            }
+        };
+        
+        albumArtImageView.setOnTouchListener(touchListener);
 
         albumArtImageView.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -628,7 +644,7 @@ public class DownloadActivity extends SubsonicTabActivity implements OnGestureLi
             if (playlistName != null) {
                 playlistNameView.setText(playlistName);
             } else {
-                final DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
+                final DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd", Locale.getDefault());
                 playlistNameView.setText(dateFormat.format(new Date()));
             }
         }
@@ -874,7 +890,7 @@ public class DownloadActivity extends SubsonicTabActivity implements OnGestureLi
 		final List<DownloadFile> list = downloadService.getSongs();
 
 		emptyTextView.setText(R.string.download_empty);
-		playlistView.setAdapter(new SongListAdapter(list));
+		playlistView.setAdapter(new SongListAdapter(this, list));
         emptyTextView.setVisibility(list.isEmpty() ? View.VISIBLE : View.GONE);
         currentRevision = downloadService.getDownloadListUpdateRevision();
 
@@ -908,10 +924,7 @@ public class DownloadActivity extends SubsonicTabActivity implements OnGestureLi
         
         String duration = Util.formatTotalDuration(totalDuration);
         
-        String trackFormat = String.format("%d / %d",
-        		currentSongIndex,
-        		totalSongs
-        	);
+        String trackFormat = String.format(Locale.getDefault(), "%d / %d", currentSongIndex, totalSongs);
        
         if (currentPlaying != null) {
         	currentSong = currentPlaying.getSong();
@@ -977,10 +990,7 @@ public class DownloadActivity extends SubsonicTabActivity implements OnGestureLi
                 switch (playerState) {
                     case DOWNLOADING:
                         final long bytes = currentPlaying != null ? currentPlaying.getPartialFile().length() : 0;
-                        getActionBar().setSubtitle(getResources().getString(
-                                R.string.download_playerstate_downloading,
-                                Util.formatLocalizedBytes(bytes,
-                                        DownloadActivity.this)));
+                        getActionBar().setSubtitle(getResources().getString(R.string.download_playerstate_downloading, Util.formatLocalizedBytes(bytes, DownloadActivity.this)));
                         break;
                     case PREPARING:
                     	getActionBar().setSubtitle(R.string.download_playerstate_buffering);
@@ -1063,21 +1073,6 @@ public class DownloadActivity extends SubsonicTabActivity implements OnGestureLi
 		}.execute();
 	}
     
-    private class SongListAdapter extends ArrayAdapter<DownloadFile> {
-        public SongListAdapter(final List<DownloadFile> entries) {
-            super(DownloadActivity.this, android.R.layout.simple_list_item_1, entries);
-        }
-
-        @Override
-        public View getView(final int position, final View convertView, final ViewGroup parent) {
-            final SongView view;
-            view = convertView != null && convertView instanceof SongView ? (SongView) convertView : new SongView(DownloadActivity.this);
-            final DownloadFile downloadFile = getItem(position);
-            view.setSong(downloadFile.getSong(), false);
-            return view;
-        }
-    }
-
     @Override
     public boolean onTouchEvent(final MotionEvent me) {
         return gestureScanner.onTouchEvent(me);
@@ -1092,6 +1087,7 @@ public class DownloadActivity extends SubsonicTabActivity implements OnGestureLi
 	public boolean onFling(final MotionEvent e1, final MotionEvent e2, final float velocityX, final float velocityY) {
 
         final DownloadService downloadService = getDownloadService();
+        
         if (downloadService == null) {
             return false;
         }

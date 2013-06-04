@@ -28,7 +28,7 @@ import android.widget.CheckedTextView;
 import android.widget.ImageView;
 import android.widget.TextView;
 import com.thejoshwa.ultrasonic.androidapp.R;
-import com.thejoshwa.ultrasonic.androidapp.domain.MusicDirectory;
+import com.thejoshwa.ultrasonic.androidapp.domain.MusicDirectory.Entry;
 import com.thejoshwa.ultrasonic.androidapp.service.DownloadService;
 import com.thejoshwa.ultrasonic.androidapp.service.DownloadServiceImpl;
 import com.thejoshwa.ultrasonic.androidapp.service.DownloadFile;
@@ -54,13 +54,24 @@ public class SongView extends UpdateView implements Checkable {
     private TextView artistTextView;
     private TextView durationTextView;
     private TextView statusTextView;
-    private MusicDirectory.Entry song;
+    private Entry song;
+    private Context context;
     
 	private DownloadService downloadService;
 	
 	public SongView(Context context) {
         super(context);
-        LayoutInflater.from(context).inflate(R.layout.song_list_item, this, true);
+        this.context = context;
+    }
+
+    public void setSong(final Entry song, boolean checkable) {
+        this.song = song;
+        
+        if (song.isVideo()) {
+        	LayoutInflater.from(this.context).inflate(R.layout.video_list_item, this, true);
+        } else {
+            LayoutInflater.from(this.context).inflate(R.layout.song_list_item, this, true);
+        }
 
         checkedTextView = (CheckedTextView) findViewById(R.id.song_check);
         starImageView = (ImageView) findViewById(R.id.song_star);
@@ -69,10 +80,8 @@ public class SongView extends UpdateView implements Checkable {
         artistTextView = (TextView) findViewById(R.id.song_artist);
         durationTextView = (TextView) findViewById(R.id.song_duration);
         statusTextView = (TextView) findViewById(R.id.song_status);
-    }
 
-    public void setSong(final MusicDirectory.Entry song, boolean checkable) {
-        this.song = song;
+        
         StringBuilder artist = new StringBuilder(60);
 
         String bitRate = null;
@@ -103,14 +112,20 @@ public class SongView extends UpdateView implements Checkable {
 
         int trackNumber = song.getTrack();
         
-        if (Util.shouldShowTrackNumber(getContext()) && trackNumber != 0) {
-            trackTextView.setText(String.format("%02d.", trackNumber));	
-        } else {
-        	trackTextView.setVisibility(View.GONE);
+        if (trackTextView != null) {
+        	if (Util.shouldShowTrackNumber(getContext()) && trackNumber != 0) {
+        		trackTextView.setText(String.format("%02d.", trackNumber));	
+        	} else {
+        		trackTextView.setVisibility(View.GONE);
+        	}
         }
 
         titleTextView.setText(song.getTitle());
-        artistTextView.setText(artist);
+        
+        if (artistTextView != null) {
+        	artistTextView.setText(artist);
+        }
+        
         durationTextView.setText(Util.formatTotalDuration(song.getDuration()));
         starImageView.setImageDrawable(song.getStarred() ? Util.getDrawableFromAttribute(getContext(), R.attr.star_full) : Util.getDrawableFromAttribute(getContext(), R.attr.star_hollow));
         checkedTextView.setVisibility(checkable && !song.isVideo() ? View.VISIBLE : View.GONE);
@@ -186,14 +201,16 @@ public class SongView extends UpdateView implements Checkable {
             leftImage = downloadFile.isSaved() ? Util.getDrawableFromAttribute(getContext(), R.attr.unpin) : Util.getDrawableFromAttribute(getContext(), R.attr.downloaded);
         }
 
-        if (downloadFile.isDownloading() && !downloadFile.isDownloadCancelled() && partialFile.exists()) {
-            statusTextView.setText(Util.formatLocalizedBytes(partialFile.length(), getContext()));
-            rightImage = Util.getDrawableFromAttribute(getContext(), R.attr.downloading);
-        } else {
-            statusTextView.setText(null);
+        if (statusTextView != null) {
+        	if (downloadFile.isDownloading() && !downloadFile.isDownloadCancelled() && partialFile.exists()) {
+        		statusTextView.setText(Util.formatLocalizedBytes(partialFile.length(), getContext()));
+        		rightImage = Util.getDrawableFromAttribute(getContext(), R.attr.downloading);
+        	} else {
+        		statusTextView.setText(null);
+        	}
+        	
+        	statusTextView.setCompoundDrawablesWithIntrinsicBounds(leftImage, null, rightImage, null);
         }
-
-        statusTextView.setCompoundDrawablesWithIntrinsicBounds(leftImage, null, rightImage, null);
         
     	if (!song.getStarred()) {
 			starImageView.setImageDrawable(Util.getDrawableFromAttribute(getContext(), R.attr.star_hollow));

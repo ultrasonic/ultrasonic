@@ -19,7 +19,6 @@
 package com.thejoshwa.ultrasonic.androidapp.activity;
 
 import android.content.Intent;
-import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.view.MenuItem;

@@ -135,4 +135,6 @@ public interface MusicService {
 	void deleteBookmark(String id, Context context, ProgressListener progressListener) throws Exception;
 
 	void createBookmark(String id, int position, Context context, ProgressListener progressListener) throws Exception;
+	
+	MusicDirectory getVideos(Context context, ProgressListener progressListener) throws Exception;
 }

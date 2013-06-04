@@ -27,7 +27,6 @@ import java.io.OutputStream;
 import android.content.Context;
 import android.net.wifi.WifiManager;
 import android.os.PowerManager;
-import android.util.DisplayMetrics;
 import android.util.Log;
 
 import com.thejoshwa.ultrasonic.androidapp.domain.MusicDirectory;

@@ -25,8 +25,6 @@ import com.thejoshwa.ultrasonic.androidapp.domain.MusicDirectory;
 import com.thejoshwa.ultrasonic.androidapp.service.DownloadFile;
 import com.thejoshwa.ultrasonic.androidapp.service.DownloadService;
 
-import android.os.AsyncTask;
-import android.os.Looper;
 import android.util.Log;
 
 public class StreamProxy implements Runnable {

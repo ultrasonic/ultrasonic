@@ -107,7 +107,17 @@
 		a:layout_height="wrap_content" a:gravity="center_vertical"
 		a:minHeight="40dip" a:paddingLeft="6dip" a:paddingRight="6dip"
 		a:text="@string/main.albums_alphaByArtist" a:textAppearance="?android:attr/textAppearanceMedium" />
+
+	<TextView a:id="@+id/main_videos_title" a:text="@string/main.videos"
+		a:layout_width="fill_parent" a:layout_height="wrap_content"
+		a:textAppearance="?android:attr/textAppearanceSmall" a:textColor="@color/cyan"
+		a:gravity="center_vertical" a:paddingLeft="6dp" a:textAllCaps="true"
+		a:textStyle="bold" />		
 		
+	<TextView a:id="@+id/main_videos" a:layout_width="fill_parent"
+		a:layout_height="wrap_content" a:gravity="center_vertical"
+		a:minHeight="40dip" a:paddingLeft="6dip" a:paddingRight="6dip"
+		a:text="@string/main.videos" a:textAppearance="?android:attr/textAppearanceMedium" />	
 			
 </LinearLayout>
 

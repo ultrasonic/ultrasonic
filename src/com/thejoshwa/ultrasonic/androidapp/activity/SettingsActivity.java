@@ -54,6 +54,7 @@ import java.io.File;
 import java.net.URL;
 import java.util.LinkedHashMap;
 import java.util.Map;
+
 import net.simonvt.menudrawer.MenuDrawer;
 import net.simonvt.menudrawer.Position;
 
@@ -83,6 +84,8 @@ public class SettingsActivity extends PreferenceActivity implements SharedPrefer
     private CheckBoxPreference mediaButtonsEnabled;
     private CheckBoxPreference lockScreenEnabled;
     private CheckBoxPreference gaplessPlaybackEnabled;    
+    private CheckBoxPreference sendBluetoothNotifications;
+    private CheckBoxPreference sendBluetoothAlbumArt;
     private int maxServerCount = 10;
     private int minServerCount = 0;
     
@@ -161,6 +164,8 @@ public class SettingsActivity extends PreferenceActivity implements SharedPrefer
         mediaButtonsEnabled = (CheckBoxPreference) findPreference(Constants.PREFERENCES_KEY_MEDIA_BUTTONS);
         lockScreenEnabled = (CheckBoxPreference) findPreference(Constants.PREFERENCES_KEY_SHOW_LOCK_SCREEN_CONTROLS);
         gaplessPlaybackEnabled = (CheckBoxPreference) findPreference(Constants.PREFERENCES_KEY_GAPLESS_PLAYBACK);
+        sendBluetoothAlbumArt = (CheckBoxPreference) findPreference(Constants.PREFERENCES_KEY_SEND_BLUETOOTH_ALBUM_ART);
+        sendBluetoothNotifications = (CheckBoxPreference) findPreference(Constants.PREFERENCES_KEY_SEND_BLUETOOTH_NOTIFICATIONS);
 
         findPreference(Constants.PREFERENCES_KEY_CLEAR_SEARCH_HISTORY).setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
             @Override
@@ -404,6 +409,9 @@ public class SettingsActivity extends PreferenceActivity implements SharedPrefer
         else if (Constants.PREFERENCES_KEY_CACHE_LOCATION.equals(key)) {
             setCacheLocation(sharedPreferences.getString(key, ""));
         }
+        else if (Constants.PREFERENCES_KEY_SEND_BLUETOOTH_NOTIFICATIONS.equals(key)) {
+            setBluetoothPreferences(sharedPreferences.getBoolean(key, true));
+        }
     }
 
     private void update() {
@@ -435,6 +443,11 @@ public class SettingsActivity extends PreferenceActivity implements SharedPrefer
         	lockScreenEnabled.setEnabled(false);
         }
         
+        if (!sendBluetoothNotifications.isChecked()) {
+        	sendBluetoothAlbumArt.setChecked(false);
+        	sendBluetoothAlbumArt.setEnabled(false);
+        }
+        
         for (ServerSettings ss : serverSettings.values()) {
             ss.update();
         }
@@ -464,8 +477,17 @@ public class SettingsActivity extends PreferenceActivity implements SharedPrefer
         }
     }
     
+    private void setBluetoothPreferences(boolean enabled) {
+        if (enabled) {
+        	sendBluetoothAlbumArt.setEnabled(true);
+        } else {
+        	sendBluetoothAlbumArt.setEnabled(false);
+        }
+    }
+    
     private void setCacheLocation(String path) {
         File dir = new File(path);
+        
         if (!FileUtil.ensureDirectoryExistsAndIsReadWritable(dir)) {
             Util.toast(this, R.string.settings_cache_location_error, false);
 

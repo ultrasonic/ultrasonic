@@ -105,6 +105,7 @@
     <string name="main.songs_random">Random</string>
     <string name="main.songs_starred">Starred</string>
     <string name="main.songs_title">Songs</string>
+    <string name="main.videos">Videos</string>
     <string name="main.welcome_text">Welcome to UltraSonic! The app is currently not configured. After you\'ve set up your personal server (available from <b>subsonic.org</b>), please go to <b>Settings</b> and change the configuration to connect to it.</string>
     <string name="main.welcome_title">Welcome!</string>
     <string name="menu.about">About</string>
@@ -251,6 +252,7 @@
     <string name="settings.network_timeout_60000">60 seconds</string>
     <string name="settings.network_timeout_75000">75 seconds</string>
     <string name="settings.network_timeout_90000">90 seconds</string>
+    <string name="settings.notifications_title">Notifications</string>
     <string name="settings.network_title">Network</string>
     <string name="settings.other_title">Other Settings</string>
     <string name="settings.playback_control_title">Playback Control Settings</string>
@@ -281,6 +283,10 @@
     <string name="settings.search_75">75</string>
     <string name="settings.search_history_cleared">Search history cleared</string>
     <string name="settings.search_title">Search Settings</string>
+    <string name="settings.send_bluetooth_album_art_summary">Send album art over Bluetooth (May cause Bluetooth notifications to fail)</string>
+    <string name="settings.send_bluetooth_album_art">Album Art Over Bluetooth</string>
+    <string name="settings.send_bluetooth_notification_summary">Send playback notifications via Bluetooth</string>
+    <string name="settings.send_bluetooth_notification">Send Bluetooth Notification</string>
     <string name="settings.server_add_server">Add Server</string>
     <string name="settings.server_address">Server Address</string>
     <string name="settings.server_name">Name</string>
@@ -319,8 +325,8 @@
     <string name="settings.use_id3_summary">Use ID3 tag methods instead of file system based methods</string>
     <string name="settings.use_stream_proxy">Use Stream Proxy</string>
     <string name="settings.use_stream_proxy_summary">Stream media playback through a proxy (may help stutter)</string>
-	<string name="settings.video_title">Video</string>
-	<string name="settings.video_player">Video player</string>	    
+    <string name="settings.video_title">Video</string>
+    <string name="settings.video_player">Video player</string>
     <string name="settings.wifi_required_summary">Only stream media if connected to Wi-Fi</string>
     <string name="settings.wifi_required_title">Wi-Fi Streaming Only</string>
     <string name="shuffle.endYear">End Year:</string>
@@ -336,8 +342,8 @@
     <string name="util.bytes_format.megabyte">0.00 MB</string>
     <string name="util.no_time">-:--</string>
     <string name="util.zero_time">0:00</string>
-	<string name="video.get_mx_player_text">MX Player is not installed. Get it for free on Play Store, or change video settings.</string>
-	<string name="video.get_mx_player_button">Get MX Player</string>    
+    <string name="video.get_mx_player_text">MX Player is not installed. Get it for free on Play Store, or change video settings.</string>
+    <string name="video.get_mx_player_button">Get MX Player</string>
     <string name="widget.initial_text">Touch to select music</string>
     <string name="widget.sdcard_busy">SD card unavailable</string>
     <string name="widget.sdcard_missing">No SD card</string>

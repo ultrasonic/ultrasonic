@@ -58,10 +58,12 @@ public class CachedMusicService implements MusicService {
     private final LRUCache<String, TimeLimitedCache<MusicDirectory>> cachedAlbum;
     private final TimeLimitedCache<Boolean> cachedLicenseValid = new TimeLimitedCache<Boolean>(120, TimeUnit.SECONDS);
     private final TimeLimitedCache<Indexes> cachedIndexes = new TimeLimitedCache<Indexes>(60 * 60, TimeUnit.SECONDS);
-    private final TimeLimitedCache<Indexes> cachedArtists = new TimeLimitedCache<Indexes>(60 * 60, TimeUnit.SECONDS);
+    private final TimeLimitedCache<Indexes> cachedArtists = new TimeLimitedCache<Indexes>(60 * 60, TimeUnit.SECONDS);    
+    private final TimeLimitedCache<MusicDirectory> cachedVideos = new TimeLimitedCache<MusicDirectory>(60 * 60, TimeUnit.SECONDS);    
     private final TimeLimitedCache<List<Playlist>> cachedPlaylists = new TimeLimitedCache<List<Playlist>>(3600, TimeUnit.SECONDS);
     private final TimeLimitedCache<List<MusicFolder>> cachedMusicFolders = new TimeLimitedCache<List<MusicFolder>>(10 * 3600, TimeUnit.SECONDS);
     private final TimeLimitedCache<List<Genre>> cachedGenres = new TimeLimitedCache<List<Genre>>(10 * 3600, TimeUnit.SECONDS);
+    
     private String restUrl;
 
     public CachedMusicService(MusicService musicService) {
@@ -387,5 +389,18 @@ public class CachedMusicService implements MusicService {
 	@Override
 	public void createBookmark(String id, int position, Context context, ProgressListener progressListener) throws Exception {
 		musicService.createBookmark(id, position, context, progressListener);
+	}
+
+	@Override
+	public MusicDirectory getVideos(Context context, ProgressListener progressListener) throws Exception {
+        checkSettingsChanged(context);
+        MusicDirectory result = cachedVideos.get();
+        
+        if (result == null) {
+            result = musicService.getVideos(context, progressListener);
+            cachedVideos.set(result);
+        }
+        
+        return result;
 	}
 }

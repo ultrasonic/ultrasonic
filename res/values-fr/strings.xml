@@ -85,7 +85,7 @@
     <string name="lyrics.nomatch">Aucunes paroles trouvées</string>
     <string name="main.albums_alphaByArtist">Alphabétique par artiste</string>
     <string name="main.albums_alphaByName">Alphabétique par nom</string>
-    <string name="main.albums_frequent">Récemment écoutés</string>
+    <string name="main.albums_frequent">Plus écoutés</string>
     <string name="main.albums_highest">Mieux notés</string>
     <string name="main.albums_newest">Plus récents</string>
     <string name="main.albums_random">Aléatoire</string>
@@ -105,6 +105,7 @@
     <string name="main.songs_random">Aléatoire</string>
     <string name="main.songs_starred">Favoris</string>
     <string name="main.songs_title">Titres</string>
+    <string name="main.videos">Videos</string>    
     <string name="main.welcome_text">Bienvenue dans UltraSonic ! L\'application n\'est pas configurée. Après avoir configuré votre serveur personnel (disponible à partir de <b>subsonic.org</b>), veuillez accéder aux <b>Paramètres</b> et modifier la configuration pour vous y connecter.</string>
     <string name="main.welcome_title">Bienvenue!</string>
     <string name="menu.about">À propos</string>
@@ -252,6 +253,7 @@
     <string name="settings.network_timeout_75000">75 secondes</string>
     <string name="settings.network_timeout_90000">90 secondes</string>
     <string name="settings.network_title">Réseau</string>
+    <string name="settings.notifications_title">Notifications</string>
     <string name="settings.other_title">Autres paramètres</string>
     <string name="settings.playback_control_title">Paramètres de contrôle de lecture</string>
     <string name="settings.preload">Titres à pré-charger</string>
@@ -281,6 +283,10 @@
     <string name="settings.search_75">75</string>
     <string name="settings.search_history_cleared">Historique des recherches effacé</string>
     <string name="settings.search_title">Paramètres de recherche</string>
+    <string name="settings.send_bluetooth_album_art_summary">Send album art over Bluetooth (May cause Bluetooth notifications to fail)</string>
+    <string name="settings.send_bluetooth_album_art">Album Art Over Bluetooth</string>
+    <string name="settings.send_bluetooth_notification_summary">Send playback notifications via Bluetooth</string>
+    <string name="settings.send_bluetooth_notification">Send Bluetooth Notification</string>
     <string name="settings.server_add_server">Ajouter un serveur</string>
     <string name="settings.server_address">Adresse du serveur</string>
     <string name="settings.server_name">Nom</string>

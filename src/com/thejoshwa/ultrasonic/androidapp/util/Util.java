@@ -39,7 +39,6 @@ import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.net.wifi.WifiManager;
 import android.os.Environment;
-import android.os.Parcelable;
 import android.preference.PreferenceManager;
 import android.util.DisplayMetrics;
 import android.util.Log;
@@ -105,7 +104,7 @@ public class Util extends DownloadActivity {
     public static final String CM_AVRCP_PLAYSTATE_CHANGED = "com.android.music.playstatechanged";
     public static final String CM_AVRCP_METADATA_CHANGED = "com.android.music.metachanged";
     
-    public final static int bluetoothImagesize = 500;
+    public final static int albumArtImageSize = 300;
     
 	private static boolean hasFocus = false;
 	private static boolean pauseFocus = false;
@@ -117,7 +116,7 @@ public class Util extends DownloadActivity {
     private static final char[] HEX_DIGITS = {'0', '1', '2', '3', '4', '5', '6', '7', '8', '9', 'a', 'b', 'c', 'd', 'e', 'f'};
     private static Toast toast;
     
-    public static Bitmap bluetoothBitmap;
+    public static Bitmap albumArtBitmap;
     private static Entry currentSong;
 
     private Util() {
@@ -867,6 +866,10 @@ public class Util extends DownloadActivity {
     }
     
 	public static void broadcastA2dpMetaDataChange(Context context,	DownloadService downloadService) {
+		if (!Util.getShouldSendBluetoothNotifications(context)) {
+			return;
+		}
+		
 		Entry song = null;
 		Intent avrcpIntent = new Intent(CM_AVRCP_METADATA_CHANGED);
 		
@@ -885,17 +888,24 @@ public class Util extends DownloadActivity {
 			avrcpIntent.putExtra("artist_name", "");
 			avrcpIntent.putExtra("album", "");
 			avrcpIntent.putExtra("album_name", "");
-			avrcpIntent.putExtra("cover", (Parcelable) null);
-			avrcpIntent.putExtra("coverart", (Parcelable) null);
+		
+			if (Util.getShouldSendBluetoothAlbumArt(context)) {
+				albumArtBitmap = Bitmap.createBitmap(albumArtImageSize, albumArtImageSize, Bitmap.Config.ARGB_8888);
+				avrcpIntent.putExtra("cover", albumArtBitmap);
+				avrcpIntent.putExtra("coverart", albumArtBitmap);
+			}
+			
 			avrcpIntent.putExtra("ListSize", (long) 0);
 			avrcpIntent.putExtra("id", (long) 0);
 			avrcpIntent.putExtra("duration", (long) 0);
 			avrcpIntent.putExtra("position", (long) 0);
-			bluetoothBitmap = null;
 		} else {
 			if (song != currentSong) {
 				currentSong = song;
-				bluetoothBitmap = FileUtil.getAlbumArtBitmap(context, song, bluetoothImagesize, true);		
+				
+				if (Util.getShouldSendBluetoothAlbumArt(context)) {
+					albumArtBitmap = FileUtil.getAlbumArtBitmap(context, song, albumArtImageSize, false);
+				}
 			}
 
 			String title = song.getTitle();
@@ -912,8 +922,11 @@ public class Util extends DownloadActivity {
 			avrcpIntent.putExtra("artist_name", artist);
 			avrcpIntent.putExtra("album", album);
 			avrcpIntent.putExtra("album_name", album);
-			avrcpIntent.putExtra("cover", (Parcelable) bluetoothBitmap);
-			avrcpIntent.putExtra("coverart", (Parcelable) bluetoothBitmap);
+			
+			if (Util.getShouldSendBluetoothAlbumArt(context)) {
+				avrcpIntent.putExtra("cover", albumArtBitmap);
+				avrcpIntent.putExtra("coverart", albumArtBitmap);
+			}
 			
 			if (playerPosition != null) {
 				avrcpIntent.putExtra("position", (long) playerPosition);
@@ -936,7 +949,10 @@ public class Util extends DownloadActivity {
 	}
 
 	public static void broadcastA2dpPlayStatusChange(Context context, PlayerState state, DownloadService downloadService) {
-
+		if (!Util.getShouldSendBluetoothNotifications(context)) {
+			return;
+		}
+		
 		if (downloadService.getCurrentPlaying() != null) {
 			Intent avrcpIntent = new Intent(CM_AVRCP_PLAYSTATE_CHANGED);
 
@@ -948,7 +964,9 @@ public class Util extends DownloadActivity {
 			
 			if (song != currentSong) {
 				currentSong = song;
-				bluetoothBitmap = FileUtil.getAlbumArtBitmap(context, song, bluetoothImagesize, true);
+				if (Util.getShouldSendBluetoothAlbumArt(context)) {
+					albumArtBitmap = FileUtil.getAlbumArtBitmap(context, song, albumArtImageSize, false);
+				}
 			}
 			
 			String title = song.getTitle();
@@ -965,8 +983,11 @@ public class Util extends DownloadActivity {
 			avrcpIntent.putExtra("artist_name", artist);
 			avrcpIntent.putExtra("album", album);
 			avrcpIntent.putExtra("album_name", album);
-			avrcpIntent.putExtra("cover", (Parcelable) bluetoothBitmap);
-			avrcpIntent.putExtra("coverart", (Parcelable) bluetoothBitmap);
+			
+			if (Util.getShouldSendBluetoothAlbumArt(context)) {
+				avrcpIntent.putExtra("cover", albumArtBitmap);
+				avrcpIntent.putExtra("coverart", albumArtBitmap);
+			}
 			
 			if (playerPosition != null) {
 				avrcpIntent.putExtra("position", (long) playerPosition);
@@ -1335,4 +1356,14 @@ public class Util extends DownloadActivity {
 		
 		return false;
 	}
+	
+    public static boolean getShouldSendBluetoothNotifications(Context context) {
+        SharedPreferences prefs = getPreferences(context);
+        return prefs.getBoolean(Constants.PREFERENCES_KEY_SEND_BLUETOOTH_NOTIFICATIONS, true);
+    }
+    
+    public static boolean getShouldSendBluetoothAlbumArt(Context context) {
+        SharedPreferences prefs = getPreferences(context);
+        return prefs.getBoolean(Constants.PREFERENCES_KEY_SEND_BLUETOOTH_ALBUM_ART, true);
+    }
 }

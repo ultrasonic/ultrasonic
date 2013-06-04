@@ -54,6 +54,7 @@ public final class Constants {
     public static final String INTENT_EXTRA_NAME_RANDOM = "subsonic.random";
     public static final String INTENT_EXTRA_NAME_GENRE_NAME = "subsonic.genre";
     public static final String INTENT_EXTRA_NAME_IS_ALBUM = "subsonic.isalbum";
+    public static final String INTENT_EXTRA_NAME_VIDEOS= "subsonic.videos";
 
     // Notification IDs.
     public static final int NOTIFICATION_ID_PLAYING = 100;
@@ -123,6 +124,8 @@ public final class Constants {
 	public static final String PREFERENCES_KEY_CLEAR_BOOKMARK = "clearBookmark";
 	public static final String PREFERENCES_KEY_DISC_SORT = "discAndTrackSort";
 	public static final String PREFERENCES_KEY_VIDEO_PLAYER = "videoPlayer";
+	public static final String PREFERENCES_KEY_SEND_BLUETOOTH_NOTIFICATIONS = "sendBluetoothNotifications";
+	public static final String PREFERENCES_KEY_SEND_BLUETOOTH_ALBUM_ART = "sendBluetoothAlbumArt";
     
     // Name of the preferences file.
     public static final String PREFERENCES_FILE_NAME = "com.thejoshwa.ultrasonic.androidapp_preferences";

@@ -19,7 +19,6 @@
 package com.thejoshwa.ultrasonic.androidapp.activity;
 
 import android.content.Intent;
-import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.view.ContextMenu;
@@ -200,6 +199,7 @@ public class SelectAlbumActivity extends SubsonicTabActivity {
         String genreName = getIntent().getStringExtra(Constants.INTENT_EXTRA_NAME_GENRE_NAME);
         int albumListTitle = getIntent().getIntExtra(Constants.INTENT_EXTRA_NAME_ALBUM_LIST_TITLE, 0);
         int getStarredTracks = getIntent().getIntExtra(Constants.INTENT_EXTRA_NAME_STARRED, 0);
+        int getVideos = getIntent().getIntExtra(Constants.INTENT_EXTRA_NAME_VIDEOS, 0);
         int getRandomTracks = getIntent().getIntExtra(Constants.INTENT_EXTRA_NAME_RANDOM, 0);
         int albumListSize = getIntent().getIntExtra(Constants.INTENT_EXTRA_NAME_ALBUM_LIST_SIZE, 0);
         int albumListOffset = getIntent().getIntExtra(Constants.INTENT_EXTRA_NAME_ALBUM_LIST_OFFSET, 0);
@@ -215,6 +215,8 @@ public class SelectAlbumActivity extends SubsonicTabActivity {
         	getSongsForGenre(genreName, albumListSize, albumListOffset);
         } else if (getStarredTracks != 0) {
         	getStarred();
+        } else if (getVideos != 0) {
+        	getVideos();
         } else if (getRandomTracks != 0) {
         	getRandom(albumListSize);        	
         } else {
@@ -458,6 +460,19 @@ public class SelectAlbumActivity extends SubsonicTabActivity {
         }.execute();
     }
     
+    private void getVideos() {
+    	showHeader = false;
+    	
+    	getActionBar().setSubtitle(R.string.main_videos);
+
+        new LoadTask() {
+            @Override
+            protected MusicDirectory load(MusicService service) throws Exception {
+            	return service.getVideos(SelectAlbumActivity.this,  this);
+            }
+        }.execute();
+    }
+    
     private void getRandom(final int size) {
     	getActionBar().setSubtitle(R.string.main_songs_random);
 
@@ -687,8 +702,14 @@ public class SelectAlbumActivity extends SubsonicTabActivity {
             
             String directoryName = musicDirectory.getName();
 
+            boolean allVideos = true;
             int songCount = 0;
+            
             for (MusicDirectory.Entry entry : entries) {
+            	if (!entry.isVideo()) {
+            		allVideos = false;
+            	}
+            	
                 if (!entry.isDirectory()) {
                     songCount++;
                 }
@@ -698,14 +719,18 @@ public class SelectAlbumActivity extends SubsonicTabActivity {
             
             if (songCount > 0) {
 				if(showHeader) {
-					albumListView.addHeaderView(createHeader(entries, directoryName, songCount), null, false);
+					View header = createHeader(entries, directoryName, songCount);
+					
+					if (header != null) {
+						albumListView.addHeaderView(header, null, false);
+					}
 				}
 
                 pinButton.setVisibility(View.VISIBLE);
                 unpinButton.setVisibility(View.VISIBLE);
                 downloadButton.setVisibility(View.VISIBLE);
                 deleteButton.setVisibility(View.VISIBLE);
-                selectButton.setVisibility(View.VISIBLE);
+                selectButton.setVisibility(allVideos ? View.GONE : View.VISIBLE);
                 playNowButton.setVisibility(View.VISIBLE);
                 playNextButton.setVisibility(View.VISIBLE);
                 playLastButton.setVisibility(View.VISIBLE);
@@ -778,9 +803,14 @@ public class SelectAlbumActivity extends SubsonicTabActivity {
             Set<String> artists = new HashSet<String>();
             Set<String> grandParents = new HashSet<String>();
             Set<String> genres = new HashSet<String>();
+            boolean allVideo = true;
             
             long totalDuration = 0;
             for (MusicDirectory.Entry entry : entries) {
+            	if (!entry.isVideo()) {
+            		allVideo = false;
+            	}
+            	
                 if (!entry.isDirectory()) {
                 	if (Util.shouldUseFolderForArtistName(getBaseContext())) {
                 		String grandParent = Util.getGrandparent(entry.getPath());
@@ -804,6 +834,11 @@ public class SelectAlbumActivity extends SubsonicTabActivity {
                     	genres.add(entry.getGenre());
                 	}
                 }
+            }
+            
+            // Don't show a header if all entries are videos
+            if (allVideo) {
+            	return null;
             }
             
             TextView artistView = (TextView) header.findViewById(R.id.select_album_artist);

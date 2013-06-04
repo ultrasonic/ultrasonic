@@ -18,7 +18,6 @@
  */
 package com.thejoshwa.ultrasonic.androidapp.domain;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.io.Serializable;
 

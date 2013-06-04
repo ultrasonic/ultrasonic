@@ -33,7 +33,6 @@ import android.webkit.WebView;
 import android.webkit.WebViewClient;
 import android.widget.Button;
 import android.widget.ImageView;
-import android.widget.TextView;
 import com.thejoshwa.ultrasonic.androidapp.R;
 import com.thejoshwa.ultrasonic.androidapp.util.Constants;
 import com.thejoshwa.ultrasonic.androidapp.util.Util;

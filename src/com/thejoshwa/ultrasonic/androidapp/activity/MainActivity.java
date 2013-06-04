@@ -80,6 +80,7 @@ public class MainActivity extends SubsonicTabActivity {
         final View artistsButton = buttons.findViewById(R.id.main_artists_button);
         final View albumsButton = buttons.findViewById(R.id.main_albums_button);
         final View genresButton = buttons.findViewById(R.id.main_genres_button);
+        final View videosTitle = buttons.findViewById(R.id.main_videos_title);
 
         final View songsTitle = buttons.findViewById(R.id.main_songs);
         final View randomSongsButton = buttons.findViewById(R.id.main_songs_button);
@@ -93,7 +94,7 @@ public class MainActivity extends SubsonicTabActivity {
         final View albumsFrequentButton = buttons.findViewById(R.id.main_albums_frequent);
         final View albumsAlphaByNameButton = buttons.findViewById(R.id.main_albums_alphaByName);
         final View albumsAlphaByArtistButton = buttons.findViewById(R.id.main_albums_alphaByArtist);
-        
+        final View videosButton = buttons.findViewById(R.id.main_videos);
                 
         final View dummyView = findViewById(R.id.main_dummy);
 
@@ -135,6 +136,9 @@ public class MainActivity extends SubsonicTabActivity {
             	shouldUseId3 = false;
             	adapter.addViews(Arrays.asList(albumsNewestButton, albumsRecentButton, albumsFrequentButton, albumsHighestButton, albumsRandomButton, albumsStarredButton, albumsAlphaByNameButton, albumsAlphaByArtistButton), true);
             }
+            
+            adapter.addView(videosTitle, false);
+            adapter.addViews(Arrays.asList(videosButton), true);
         }
         
         list.setAdapter(adapter);
@@ -171,6 +175,8 @@ public class MainActivity extends SubsonicTabActivity {
                 	showRandomSongs();
                 } else if (view == genresButton) {
                 	showGenres();
+                } else if (view == videosButton) {
+                	showVideos();
                 }
             }
         });
@@ -423,6 +429,12 @@ public class MainActivity extends SubsonicTabActivity {
     private void showGenres() {
     	final Intent intent = new Intent(this, SelectGenreActivity.class);
         intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+    	Util.startActivityWithoutTransition(this, intent);
+    }
+    
+    private void showVideos() {
+    	final Intent intent = new Intent(this, SelectAlbumActivity.class);
+    	intent.putExtra(Constants.INTENT_EXTRA_NAME_VIDEOS, 1);
     	Util.startActivityWithoutTransition(this, intent);
     }
 }

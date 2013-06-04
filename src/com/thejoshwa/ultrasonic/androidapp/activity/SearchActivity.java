@@ -34,7 +34,6 @@ import android.widget.AdapterView;
 import android.widget.ListAdapter;
 import android.widget.ListView;
 import android.widget.TextView;
-import android.net.Uri;
 import com.thejoshwa.ultrasonic.androidapp.R;
 import com.thejoshwa.ultrasonic.androidapp.domain.Artist;
 import com.thejoshwa.ultrasonic.androidapp.domain.MusicDirectory;

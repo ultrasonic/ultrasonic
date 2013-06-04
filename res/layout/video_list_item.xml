@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:a="http://schemas.android.com/apk/res/android"
+    a:layout_width="fill_parent"
+    a:layout_height="wrap_content"
+    a:minHeight="?android:attr/listPreferredItemHeight"
+    a:orientation="horizontal" >
+
+    <CheckedTextView
+        a:id="@+id/song_check"
+        a:layout_width="wrap_content"
+        a:layout_height="fill_parent"
+        a:checkMark="@drawable/btn_check_custom"
+        a:gravity="center_vertical"
+        a:paddingLeft="1dip"
+        a:visibility="gone" />"
+
+    <include layout="@layout/video_details"
+        a:layout_gravity="center_vertical" />
+
+    <ImageView
+        a:id="@+id/song_star"
+        a:layout_width="wrap_content"
+        a:layout_height="fill_parent"
+        a:background="@android:color/transparent"
+        a:focusable="false"
+        a:gravity="center_vertical"
+        a:paddingRight="3dip"
+        a:src="?attr/star_hollow" />
+
+</LinearLayout>

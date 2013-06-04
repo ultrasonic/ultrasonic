@@ -77,7 +77,6 @@ import com.thejoshwa.ultrasonic.androidapp.domain.Indexes;
 import com.thejoshwa.ultrasonic.androidapp.domain.JukeboxStatus;
 import com.thejoshwa.ultrasonic.androidapp.domain.Lyrics;
 import com.thejoshwa.ultrasonic.androidapp.domain.MusicDirectory;
-import com.thejoshwa.ultrasonic.androidapp.domain.MusicDirectory.Entry;
 import com.thejoshwa.ultrasonic.androidapp.domain.MusicFolder;
 import com.thejoshwa.ultrasonic.androidapp.domain.Playlist;
 import com.thejoshwa.ultrasonic.androidapp.domain.SearchCritera;
@@ -1269,6 +1268,19 @@ public class RESTMusicService implements MusicService {
         
         try {
             new ErrorParser(context).parse(reader);
+        } finally {
+            Util.close(reader);
+        }
+	}
+
+	@Override
+	public MusicDirectory getVideos(Context context, ProgressListener progressListener) throws Exception {
+    	checkServerVersion(context, "1.8", "Videos not supported.");
+    	
+        Reader reader = getReader(context, progressListener, "getVideos", null);
+        
+        try {
+            return new MusicDirectoryParser(context).parse("", reader, progressListener, false);
         } finally {
             Util.close(reader);
         }

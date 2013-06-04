@@ -1151,9 +1151,9 @@ public class DownloadServiceImpl extends Service implements DownloadService {
 					String title = artist + " - " + currentSong.getTitle();
 					Integer duration = currentSong.getDuration();
 
-					// Always get the album art from disk
-					if (Util.bluetoothBitmap == null) {
-						Util.bluetoothBitmap = FileUtil.getAlbumArtBitmap(this, currentSong, Util.bluetoothImagesize, true);
+					// Reuse albumArt for lockscreen and Bluetooth
+					if (Util.albumArtBitmap == null) {
+						Util.albumArtBitmap = FileUtil.getAlbumArtBitmap(this, currentSong, Util.albumArtImageSize, true);
 					}
 
 					// Update the remote controls
@@ -1171,10 +1171,10 @@ public class DownloadServiceImpl extends Service implements DownloadService {
 						.apply();
 					}
 					
-					if (Util.bluetoothBitmap != null) {
+					if (Util.albumArtBitmap != null) {
 							remoteControlClient
 								.editMetadata(false)
-								.putBitmap(RemoteControlClient.MetadataEditor.BITMAP_KEY_ARTWORK, Util.bluetoothBitmap)
+								.putBitmap(RemoteControlClient.MetadataEditor.BITMAP_KEY_ARTWORK, Util.albumArtBitmap)
 								.apply();
 					}
 				}

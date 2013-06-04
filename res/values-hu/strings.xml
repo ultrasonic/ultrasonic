@@ -105,6 +105,7 @@
     <string name="main.songs_random">Véletlenszerű</string>
     <string name="main.songs_starred">Csillagozott</string>
     <string name="main.songs_title">Dalok</string>
+    <string name="main.videos">Videos</string>    
     <string name="main.welcome_text">Üdvözli az UltraSonic! Az alkalmazás még nincs beállítva. Miután konfigurálta saját kiszolgálóját (elérhető: <b>subsonic.org</b>), húzza jobbra a képernyőt, lépjen be a <b>Beállítások</b> menüpontba, és adja meg csatlakozási adatokat!</string>
     <string name="main.welcome_title">Üdvözlet!</string>
     <string name="menu.about">Névjegy</string>
@@ -252,6 +253,7 @@
     <string name="settings.network_timeout_75000">75 másodperc</string>
     <string name="settings.network_timeout_90000">90 másodperc</string>
     <string name="settings.network_title">Hálózat</string>
+    <string name="settings.notifications_title">Notifications</string>
     <string name="settings.other_title">Egyéb beállítások</string>
     <string name="settings.playback_control_title">Lejátszás-vezérlés beállításai</string>
     <string name="settings.preload">Dalok előolvasása</string>
@@ -281,6 +283,10 @@
     <string name="settings.search_75">75</string>
     <string name="settings.search_history_cleared">Keresési előzmények törölve.</string>
     <string name="settings.search_title">Keresés beállításai</string>
+    <string name="settings.send_bluetooth_album_art_summary">Send album art over Bluetooth (May cause Bluetooth notifications to fail)</string>
+    <string name="settings.send_bluetooth_album_art">Album Art Over Bluetooth</string>
+    <string name="settings.send_bluetooth_notification_summary">Send playback notifications via Bluetooth</string>
+    <string name="settings.send_bluetooth_notification">Send Bluetooth Notification</string>
     <string name="settings.server_add_server">Kiszolgáló hozzáadása</string>
     <string name="settings.server_address">Kiszolgáló címe</string>
     <string name="settings.server_name">Név</string>
