@@ -39,6 +39,7 @@ import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.net.wifi.WifiManager;
 import android.os.Environment;
+import android.os.Parcelable;
 import android.preference.PreferenceManager;
 import android.util.DisplayMetrics;
 import android.util.Log;
@@ -104,7 +105,7 @@ public class Util extends DownloadActivity {
     public static final String CM_AVRCP_PLAYSTATE_CHANGED = "com.android.music.playstatechanged";
     public static final String CM_AVRCP_METADATA_CHANGED = "com.android.music.metachanged";
     
-    public final static int albumArtImageSize = 300;
+    //public final static int albumArtImageSize = 300;
     
 	private static boolean hasFocus = false;
 	private static boolean pauseFocus = false;
@@ -116,32 +117,29 @@ public class Util extends DownloadActivity {
     private static final char[] HEX_DIGITS = {'0', '1', '2', '3', '4', '5', '6', '7', '8', '9', 'a', 'b', 'c', 'd', 'e', 'f'};
     private static Toast toast;
     
-    public static Bitmap albumArtBitmap;
+    //public static Bitmap albumArtBitmap;
     private static Entry currentSong;
 
     private Util() {
     }
 
     public static boolean isOffline(Context context) {
-        if (context == null)
-        	return false;
-        else
-        	return  getActiveServer(context) == 0;
+        return context != null && getActiveServer(context) == 0;
     }
 
     public static boolean isScreenLitOnDownload(Context context) {
-        SharedPreferences prefs = getPreferences(context);
-        return prefs.getBoolean(Constants.PREFERENCES_KEY_SCREEN_LIT_ON_DOWNLOAD, false);
+        SharedPreferences preferences = getPreferences(context);
+        return preferences.getBoolean(Constants.PREFERENCES_KEY_SCREEN_LIT_ON_DOWNLOAD, false);
     }
 
     public static RepeatMode getRepeatMode(Context context) {
-        SharedPreferences prefs = getPreferences(context);
-        return RepeatMode.valueOf(prefs.getString(Constants.PREFERENCES_KEY_REPEAT_MODE, RepeatMode.OFF.name()));
+        SharedPreferences preferences = getPreferences(context);
+        return RepeatMode.valueOf(preferences.getString(Constants.PREFERENCES_KEY_REPEAT_MODE, RepeatMode.OFF.name()));
     }
 
     public static void setRepeatMode(Context context, RepeatMode repeatMode) {
-        SharedPreferences prefs = getPreferences(context);
-        SharedPreferences.Editor editor = prefs.edit();
+        SharedPreferences preferences = getPreferences(context);
+        SharedPreferences.Editor editor = preferences.edit();
         editor.putString(Constants.PREFERENCES_KEY_REPEAT_MODE, repeatMode.name());
         editor.commit();
     }
@@ -150,48 +148,43 @@ public class Util extends DownloadActivity {
         if (isOffline(context)) {
             return false;
         }
-        SharedPreferences prefs = getPreferences(context);
-        return prefs.getBoolean(Constants.PREFERENCES_KEY_SCROBBLE, false);
+        SharedPreferences preferences = getPreferences(context);
+        return preferences.getBoolean(Constants.PREFERENCES_KEY_SCROBBLE, false);
     }
     
     public static boolean isServerScalingEnabled(Context context) {
         if (isOffline(context)) {
             return false;
         }
-        SharedPreferences prefs = getPreferences(context);
-        return prefs.getBoolean(Constants.PREFERENCES_KEY_SERVER_SCALING, false);
+        SharedPreferences preferences = getPreferences(context);
+        return preferences.getBoolean(Constants.PREFERENCES_KEY_SERVER_SCALING, false);
     }
     
     public static boolean isNotificationEnabled(Context context) {
-        SharedPreferences prefs = getPreferences(context);
-        return prefs.getBoolean(Constants.PREFERENCES_KEY_SHOW_NOTIFICATION, false);
+        SharedPreferences preferences = getPreferences(context);
+        return preferences.getBoolean(Constants.PREFERENCES_KEY_SHOW_NOTIFICATION, false);
     }
     
     public static boolean isNotificationAlwaysEnabled(Context context) {
-        SharedPreferences prefs = getPreferences(context);
-        return prefs.getBoolean(Constants.PREFERENCES_KEY_ALWAYS_SHOW_NOTIFICATION, false);
+        SharedPreferences preferences = getPreferences(context);
+        return preferences.getBoolean(Constants.PREFERENCES_KEY_ALWAYS_SHOW_NOTIFICATION, false);
     }
     
     public static boolean isLockScreenEnabled(Context context) {
-        SharedPreferences prefs = getPreferences(context);
-        return prefs.getBoolean(Constants.PREFERENCES_KEY_SHOW_LOCK_SCREEN_CONTROLS, false);
-    }
-    
-    public static boolean isStreamProxyEnabled(Context context) {
-        SharedPreferences prefs = getPreferences(context);
-        return prefs.getBoolean(Constants.PREFERENCES_KEY_USE_STREAM_PROXY, false);
+        SharedPreferences preferences = getPreferences(context);
+        return preferences.getBoolean(Constants.PREFERENCES_KEY_SHOW_LOCK_SCREEN_CONTROLS, false);
     }
 
     public static void setActiveServer(Context context, int instance) {
-        SharedPreferences prefs = getPreferences(context);
-        SharedPreferences.Editor editor = prefs.edit();
+        SharedPreferences preferences = getPreferences(context);
+        SharedPreferences.Editor editor = preferences.edit();
         editor.putInt(Constants.PREFERENCES_KEY_SERVER_INSTANCE, instance);
         editor.commit();
     }
 
     public static int getActiveServer(Context context) {
-        SharedPreferences prefs = getPreferences(context);
-        return prefs.getInt(Constants.PREFERENCES_KEY_SERVER_INSTANCE, 1);
+        SharedPreferences preferences = getPreferences(context);
+        return preferences.getInt(Constants.PREFERENCES_KEY_SERVER_INSTANCE, 1);
     }
     
     public static int getActiveServers(Context context) {
@@ -203,32 +196,32 @@ public class Util extends DownloadActivity {
         if (instance == 0) {
             return context.getResources().getString(R.string.main_offline);
         }
-        SharedPreferences prefs = getPreferences(context);
-        return prefs.getString(Constants.PREFERENCES_KEY_SERVER_NAME + instance, null);
+        SharedPreferences preferences = getPreferences(context);
+        return preferences.getString(Constants.PREFERENCES_KEY_SERVER_NAME + instance, null);
     }
     
     public static String getUserName(Context context, int instance) {
         if (instance == 0) {
             return context.getResources().getString(R.string.main_offline);
         }
-        SharedPreferences prefs = getPreferences(context);
-        return prefs.getString(Constants.PREFERENCES_KEY_USERNAME + instance, null);
+        SharedPreferences preferences = getPreferences(context);
+        return preferences.getString(Constants.PREFERENCES_KEY_USERNAME + instance, null);
     }
     
     public static boolean getServerEnabled(Context context, int instance) {
         if (instance == 0) {
             return true;
         }
-        SharedPreferences prefs = getPreferences(context);
-        return prefs.getBoolean(Constants.PREFERENCES_KEY_SERVER_ENABLED + instance, true);
+        SharedPreferences preferences = getPreferences(context);
+        return preferences.getBoolean(Constants.PREFERENCES_KEY_SERVER_ENABLED + instance, true);
     }
     
     public static boolean getJukeboxEnabled(Context context, int instance) {
         if (instance == 0) {
             return false;
         }
-        SharedPreferences prefs = getPreferences(context);
-        return prefs.getBoolean(Constants.PREFERENCES_KEY_JUKEBOX_BY_DEFAULT + instance, false);
+        SharedPreferences preferences = getPreferences(context);
+        return preferences.getBoolean(Constants.PREFERENCES_KEY_JUKEBOX_BY_DEFAULT + instance, false);
     }
 
     public static void setServerRestVersion(Context context, Version version) {
@@ -240,18 +233,18 @@ public class Util extends DownloadActivity {
     }
     
     public static void removeInstanceName(Context context, int instance, int activeInstance) {
-        SharedPreferences prefs = getPreferences(context);
-        SharedPreferences.Editor editor = prefs.edit();
+        SharedPreferences preferences = getPreferences(context);
+        SharedPreferences.Editor editor = preferences.edit();
         
         int newInstance = instance + 1;
         
-        String server = prefs.getString(Constants.PREFERENCES_KEY_SERVER + newInstance, null);
-        String serverName = prefs.getString(Constants.PREFERENCES_KEY_SERVER_NAME + newInstance, null);
-        String serverUrl = prefs.getString(Constants.PREFERENCES_KEY_SERVER_URL + newInstance, null);
-        String userName = prefs.getString(Constants.PREFERENCES_KEY_USERNAME + newInstance, null);
-        String password = prefs.getString(Constants.PREFERENCES_KEY_PASSWORD + newInstance, null);
-        boolean serverEnabled = prefs.getBoolean(Constants.PREFERENCES_KEY_SERVER_ENABLED + newInstance, true);
-        boolean jukeboxEnabled = prefs.getBoolean(Constants.PREFERENCES_KEY_JUKEBOX_BY_DEFAULT + newInstance, true);
+        String server = preferences.getString(Constants.PREFERENCES_KEY_SERVER + newInstance, null);
+        String serverName = preferences.getString(Constants.PREFERENCES_KEY_SERVER_NAME + newInstance, null);
+        String serverUrl = preferences.getString(Constants.PREFERENCES_KEY_SERVER_URL + newInstance, null);
+        String userName = preferences.getString(Constants.PREFERENCES_KEY_USERNAME + newInstance, null);
+        String password = preferences.getString(Constants.PREFERENCES_KEY_PASSWORD + newInstance, null);
+        boolean serverEnabled = preferences.getBoolean(Constants.PREFERENCES_KEY_SERVER_ENABLED + newInstance, true);
+        boolean jukeboxEnabled = preferences.getBoolean(Constants.PREFERENCES_KEY_JUKEBOX_BY_DEFAULT + newInstance, true);
         
 		editor.putString(Constants.PREFERENCES_KEY_SERVER + instance, server);
 		editor.putString(Constants.PREFERENCES_KEY_SERVER_NAME + instance, serverName);
@@ -281,56 +274,58 @@ public class Util extends DownloadActivity {
 
     public static void setSelectedMusicFolderId(Context context, String musicFolderId) {
         int instance = getActiveServer(context);
-        SharedPreferences prefs = getPreferences(context);
-        SharedPreferences.Editor editor = prefs.edit();
+        SharedPreferences preferences = getPreferences(context);
+        SharedPreferences.Editor editor = preferences.edit();
         editor.putString(Constants.PREFERENCES_KEY_MUSIC_FOLDER_ID + instance, musicFolderId);
         editor.commit();
     }
 
     public static String getSelectedMusicFolderId(Context context) {
-        SharedPreferences prefs = getPreferences(context);
+        SharedPreferences preferences = getPreferences(context);
         int instance = getActiveServer(context);
-        return prefs.getString(Constants.PREFERENCES_KEY_MUSIC_FOLDER_ID + instance, null);
+        return preferences.getString(Constants.PREFERENCES_KEY_MUSIC_FOLDER_ID + instance, null);
     }
 
     public static String getTheme(Context context) {
-        SharedPreferences prefs = getPreferences(context);
-        return prefs.getString(Constants.PREFERENCES_KEY_THEME, "dark");
+        SharedPreferences preferences = getPreferences(context);
+        return preferences.getString(Constants.PREFERENCES_KEY_THEME, "dark");
     }
 
-    public static int getMaxBitrate(Context context) {
+    public static int getMaxBitRate(Context context) {
         ConnectivityManager manager = (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
+
         NetworkInfo networkInfo = manager.getActiveNetworkInfo();
+
         if (networkInfo == null) {
             return 0;
         }
 
         boolean wifi = networkInfo.getType() == ConnectivityManager.TYPE_WIFI;
-        SharedPreferences prefs = getPreferences(context);
-        return Integer.parseInt(prefs.getString(wifi ? Constants.PREFERENCES_KEY_MAX_BITRATE_WIFI : Constants.PREFERENCES_KEY_MAX_BITRATE_MOBILE, "0"));
+        SharedPreferences preferences = getPreferences(context);
+        return Integer.parseInt(preferences.getString(wifi ? Constants.PREFERENCES_KEY_MAX_BITRATE_WIFI : Constants.PREFERENCES_KEY_MAX_BITRATE_MOBILE, "0"));
     }
 
     public static int getPreloadCount(Context context) {
-        SharedPreferences prefs = getPreferences(context);
-        int preloadCount = Integer.parseInt(prefs.getString(Constants.PREFERENCES_KEY_PRELOAD_COUNT, "-1"));
+        SharedPreferences preferences = getPreferences(context);
+        int preloadCount = Integer.parseInt(preferences.getString(Constants.PREFERENCES_KEY_PRELOAD_COUNT, "-1"));
         return preloadCount == -1 ? Integer.MAX_VALUE : preloadCount;
     }
 
     public static int getCacheSizeMB(Context context) {
-        SharedPreferences prefs = getPreferences(context);
-        int cacheSize = Integer.parseInt(prefs.getString(Constants.PREFERENCES_KEY_CACHE_SIZE, "-1"));
+        SharedPreferences preferences = getPreferences(context);
+        int cacheSize = Integer.parseInt(preferences.getString(Constants.PREFERENCES_KEY_CACHE_SIZE, "-1"));
         return cacheSize == -1 ? Integer.MAX_VALUE : cacheSize;
     }
 
     public static String getRestUrl(Context context, String method) {
         StringBuilder builder = new StringBuilder();
 
-        SharedPreferences prefs = getPreferences(context);
+        SharedPreferences preferences = getPreferences(context);
 
-        int instance = prefs.getInt(Constants.PREFERENCES_KEY_SERVER_INSTANCE, 1);
-        String serverUrl = prefs.getString(Constants.PREFERENCES_KEY_SERVER_URL + instance, null);
-        String username = prefs.getString(Constants.PREFERENCES_KEY_USERNAME + instance, null);
-        String password = prefs.getString(Constants.PREFERENCES_KEY_PASSWORD + instance, null);
+        int instance = preferences.getInt(Constants.PREFERENCES_KEY_SERVER_INSTANCE, 1);
+        String serverUrl = preferences.getString(Constants.PREFERENCES_KEY_SERVER_URL + instance, null);
+        String username = preferences.getString(Constants.PREFERENCES_KEY_USERNAME + instance, null);
+        String password = preferences.getString(Constants.PREFERENCES_KEY_PASSWORD + instance, null);
 
         // Slightly obfuscate password
         password = "enc:" + Util.utf8HexEncode(password);
@@ -360,12 +355,12 @@ public class Util extends DownloadActivity {
     }
 
     public static int getRemainingTrialDays(Context context) {
-        SharedPreferences prefs = getPreferences(context);
-        long installTime = prefs.getLong(Constants.PREFERENCES_KEY_INSTALL_TIME, 0L);
+        SharedPreferences preferences = getPreferences(context);
+        long installTime = preferences.getLong(Constants.PREFERENCES_KEY_INSTALL_TIME, 0L);
 
         if (installTime == 0L) {
             installTime = System.currentTimeMillis();
-            SharedPreferences.Editor editor = prefs.edit();
+            SharedPreferences.Editor editor = preferences.edit();
             editor.putLong(Constants.PREFERENCES_KEY_INSTALL_TIME, installTime);
             editor.commit();
         }
@@ -398,10 +393,12 @@ public class Util extends DownloadActivity {
         byte[] buffer = new byte[1024 * 4];
         long count = 0;
         int n;
+
         while (-1 != (n = input.read(buffer))) {
             output.write(buffer, 0, n);
             count += n;
         }
+
         return count;
     }
 
@@ -409,6 +406,7 @@ public class Util extends DownloadActivity {
         FileInputStream in = null;
         FileOutputStream out = null;
         File tmp = null;
+
         try {
             tmp = new File(to.getPath() + ".tmp");
             in = new FileInputStream(from);
@@ -458,24 +456,6 @@ public class Util extends DownloadActivity {
         }
         return true;
     }
-    
-    public static boolean recursiveDelete(File dir) {
-		if (dir != null && dir.exists()) {
-			for(File file: dir.listFiles()) {
-				if(file.isDirectory()) {
-					if(!recursiveDelete(file)) {
-						return false;
-					}
-				} else if(file.exists()) {
-					if(!file.delete()) {
-						return false;
-					}
-				}
-			}
-			return dir.delete();
-		}
-		return false;
-	}
 
     public static void toast(Context context, int messageId) {
         toast(context, messageId, true);
@@ -587,32 +567,8 @@ public class Util extends DownloadActivity {
         return BYTE_LOCALIZED_FORMAT.format((double) byteCount);
     }
 
-    public static String formatDuration(Integer seconds) {
-        if (seconds == null) {
-            return null;
-        }
-
-        int minutes = seconds / 60;
-        int secs = seconds % 60;
-
-        StringBuilder builder = new StringBuilder(6);
-        builder.append(minutes).append(":");
-        if (secs < 10) {
-            builder.append("0");
-        }
-        builder.append(secs);
-        return builder.toString();
-    }
-
     public static boolean equals(Object object1, Object object2) {
-        if (object1 == object2) {
-            return true;
-        }
-        if (object1 == null || object2 == null) {
-            return false;
-        }
-        return object1.equals(object2);
-
+        return object1 == object2 || !(object1 == null || object2 == null) && object1.equals(object2);
     }
 
     /**
@@ -625,12 +581,15 @@ public class Util extends DownloadActivity {
         if (s == null) {
             return null;
         }
+
         byte[] utf8;
+
         try {
             utf8 = s.getBytes(Constants.UTF_8);
         } catch (UnsupportedEncodingException x) {
             throw new RuntimeException(x);
         }
+
         return hexEncode(utf8);
     }
 
@@ -645,11 +604,13 @@ public class Util extends DownloadActivity {
     public static String hexEncode(byte[] data) {
         int length = data.length;
         char[] out = new char[length << 1];
+
         // two characters form the hex value.
         for (int i = 0, j = 0; i < length; i++) {
             out[j++] = HEX_DIGITS[(0xF0 & data[i]) >>> 4];
             out[j++] = HEX_DIGITS[0x0F & data[i]];
         }
+
         return new String(out);
     }
 
@@ -700,23 +661,23 @@ public class Util extends DownloadActivity {
     }
 
     private static boolean isWifiRequiredForDownload(Context context) {
-        SharedPreferences prefs = getPreferences(context);
-        return prefs.getBoolean(Constants.PREFERENCES_KEY_WIFI_REQUIRED_FOR_DOWNLOAD, false);
+        SharedPreferences preferences = getPreferences(context);
+        return preferences.getBoolean(Constants.PREFERENCES_KEY_WIFI_REQUIRED_FOR_DOWNLOAD, false);
     }
     
     public static boolean shouldDisplayBitrateWithArtist(Context context) {
-        SharedPreferences prefs = getPreferences(context);
-        return prefs.getBoolean(Constants.PREFERENCES_KEY_DISPLAY_BITRATE_WITH_ARTIST, true);
+        SharedPreferences preferences = getPreferences(context);
+        return preferences.getBoolean(Constants.PREFERENCES_KEY_DISPLAY_BITRATE_WITH_ARTIST, true);
     }
     
     public static boolean shouldUseFolderForArtistName(Context context) {
-        SharedPreferences prefs = getPreferences(context);
-        return prefs.getBoolean(Constants.PREFERENCES_KEY_USE_FOLDER_FOR_ALBUM_ARTIST, false);
+        SharedPreferences preferences = getPreferences(context);
+        return preferences.getBoolean(Constants.PREFERENCES_KEY_USE_FOLDER_FOR_ALBUM_ARTIST, false);
     }
     
     public static boolean shouldShowTrackNumber(Context context) {
-        SharedPreferences prefs = getPreferences(context);
-        return prefs.getBoolean(Constants.PREFERENCES_KEY_SHOW_TRACK_NUMBER, false);
+        SharedPreferences preferences = getPreferences(context);
+        return preferences.getBoolean(Constants.PREFERENCES_KEY_SHOW_TRACK_NUMBER, false);
     }
     
     public static void info(Context context, int titleId, int messageId) {
@@ -770,9 +731,13 @@ public class Util extends DownloadActivity {
     public static Drawable getDrawableFromAttribute(Context context, int attr) {
     	int[] attrs = new int[] { attr };
     	android.content.res.TypedArray ta = context.obtainStyledAttributes(attrs);
-    	Drawable drawableFromTheme = ta.getDrawable(0);
-    	ta.recycle();
-    	
+        Drawable drawableFromTheme = null;
+
+        if (ta != null) {
+            drawableFromTheme = ta.getDrawable(0);
+            ta.recycle();
+        }
+
     	return drawableFromTheme;
     }
 
@@ -890,9 +855,12 @@ public class Util extends DownloadActivity {
 			avrcpIntent.putExtra("album_name", "");
 		
 			if (Util.getShouldSendBluetoothAlbumArt(context)) {
-				albumArtBitmap = Bitmap.createBitmap(albumArtImageSize, albumArtImageSize, Bitmap.Config.ARGB_8888);
-				avrcpIntent.putExtra("cover", albumArtBitmap);
-				avrcpIntent.putExtra("coverart", albumArtBitmap);
+                avrcpIntent.putExtra("coverart", (Parcelable) null);
+                avrcpIntent.putExtra("cover", (Parcelable) null);
+
+			    //albumArtBitmap = Bitmap.createBitmap(albumArtImageSize, albumArtImageSize, Bitmap.Config.ARGB_8888);
+				//avrcpIntent.putExtra("cover", albumArtBitmap);
+				//avrcpIntent.putExtra("coverart", albumArtBitmap);
 			}
 			
 			avrcpIntent.putExtra("ListSize", (long) 0);
@@ -904,7 +872,7 @@ public class Util extends DownloadActivity {
 				currentSong = song;
 				
 				if (Util.getShouldSendBluetoothAlbumArt(context)) {
-					albumArtBitmap = FileUtil.getAlbumArtBitmap(context, song, albumArtImageSize, false);
+					//albumArtBitmap = FileUtil.getAlbumArtBitmap(context, song, albumArtImageSize, false);
 				}
 			}
 
@@ -924,8 +892,12 @@ public class Util extends DownloadActivity {
 			avrcpIntent.putExtra("album_name", album);
 			
 			if (Util.getShouldSendBluetoothAlbumArt(context)) {
-				avrcpIntent.putExtra("cover", albumArtBitmap);
-				avrcpIntent.putExtra("coverart", albumArtBitmap);
+                File albumArtFile = FileUtil.getAlbumArtFile(context, song);
+                avrcpIntent.putExtra("coverart", albumArtFile.getAbsolutePath());
+                avrcpIntent.putExtra("cover", albumArtFile.getAbsolutePath());
+
+				//avrcpIntent.putExtra("cover", albumArtBitmap);
+				//avrcpIntent.putExtra("coverart", albumArtBitmap);
 			}
 			
 			if (playerPosition != null) {
@@ -965,7 +937,7 @@ public class Util extends DownloadActivity {
 			if (song != currentSong) {
 				currentSong = song;
 				if (Util.getShouldSendBluetoothAlbumArt(context)) {
-					albumArtBitmap = FileUtil.getAlbumArtBitmap(context, song, albumArtImageSize, false);
+					//albumArtBitmap = FileUtil.getAlbumArtBitmap(context, song, albumArtImageSize, false);
 				}
 			}
 			
@@ -985,8 +957,12 @@ public class Util extends DownloadActivity {
 			avrcpIntent.putExtra("album_name", album);
 			
 			if (Util.getShouldSendBluetoothAlbumArt(context)) {
-				avrcpIntent.putExtra("cover", albumArtBitmap);
-				avrcpIntent.putExtra("coverart", albumArtBitmap);
+                File albumArtFile = FileUtil.getAlbumArtFile(context, song);
+                avrcpIntent.putExtra("coverart", albumArtFile.getAbsolutePath());
+                avrcpIntent.putExtra("cover", albumArtFile.getAbsolutePath());
+                
+				//avrcpIntent.putExtra("cover", albumArtBitmap);
+				//avrcpIntent.putExtra("coverart", albumArtBitmap);
 			}
 			
 			if (playerPosition != null) {
@@ -1054,10 +1030,10 @@ public class Util extends DownloadActivity {
     
     public static int getNotificationImageSize(Context context) {
         DisplayMetrics metrics = context.getResources().getDisplayMetrics();
-        int imageSizeLarge = (int) Math.round(Math.min(metrics.widthPixels, metrics.heightPixels));
+        int imageSizeLarge = Math.round(Math.min(metrics.widthPixels, metrics.heightPixels));
 		
-        int size = 64;
-        
+        int size;
+
         if (imageSizeLarge <= 480) {
         	size = 64;
         } else if (imageSizeLarge <= 768) {
@@ -1071,9 +1047,9 @@ public class Util extends DownloadActivity {
     
     public static int getAlbumImageSize(Context context) {
         DisplayMetrics metrics = context.getResources().getDisplayMetrics();
-        int imageSizeLarge = (int) Math.round(Math.min(metrics.widthPixels, metrics.heightPixels));
+        int imageSizeLarge = Math.round(Math.min(metrics.widthPixels, metrics.heightPixels));
 		
-        int size = 128;
+        int size;
         
         if (imageSizeLarge <= 480) {
         	size = 128;
@@ -1095,8 +1071,8 @@ public class Util extends DownloadActivity {
 					DownloadServiceImpl downloadService = (DownloadServiceImpl)context;
 					if((focusChange == AudioManager.AUDIOFOCUS_LOSS_TRANSIENT || focusChange == AudioManager.AUDIOFOCUS_LOSS_TRANSIENT_CAN_DUCK) && !downloadService.isJukeboxEnabled()) {
 						if(downloadService.getPlayerState() == PlayerState.STARTED) {							
-							SharedPreferences prefs = getPreferences(context);
-							int lossPref = Integer.parseInt(prefs.getString(Constants.PREFERENCES_KEY_TEMP_LOSS, "1"));
+							SharedPreferences preferences = getPreferences(context);
+							int lossPref = Integer.parseInt(preferences.getString(Constants.PREFERENCES_KEY_TEMP_LOSS, "1"));
 							if(lossPref == 2 || (lossPref == 1 && focusChange == AudioManager.AUDIOFOCUS_LOSS_TRANSIENT_CAN_DUCK)) {
 								lowerFocus = true;
 								downloadService.setVolume(0.1f);
@@ -1152,21 +1128,6 @@ public class Util extends DownloadActivity {
 		return inSampleSize;
 	}
 
-	public static Bitmap decodeSampledBitmapFromFile(String path, int reqWidth, int reqHeight) {
-
-		// First decode with inJustDecodeBounds=true to check dimensions
-		final BitmapFactory.Options options = new BitmapFactory.Options();
-		options.inJustDecodeBounds = true;
-		BitmapFactory.decodeFile(path, options);
-
-		// Calculate inSampleSize
-		options.inSampleSize = calculateInSampleSize(options, reqWidth, reqHeight);
-
-		// Decode bitmap with inSampleSize set
-		options.inJustDecodeBounds = false;
-		return BitmapFactory.decodeFile(path, options);
-	}
-    
     public static void linkButtons(Context context, RemoteViews views, boolean playerActive) {
 
         Intent intent = new Intent(context, playerActive ? DownloadActivity.class : MainActivity.class);
@@ -1199,97 +1160,85 @@ public class Util extends DownloadActivity {
         pendingIntent = PendingIntent.getService(context, 0, intent, 0);
         views.setOnClickPendingIntent(R.id.control_stop, pendingIntent);
     }
-    
-	public static int getMaxVideoBitrate(Context context) {
-        ConnectivityManager manager = (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
-        NetworkInfo networkInfo = manager.getActiveNetworkInfo();
-        if (networkInfo == null) {
-            return 0;
-        }
 
-        boolean wifi = networkInfo.getType() == ConnectivityManager.TYPE_WIFI;
-        SharedPreferences prefs = getPreferences(context);
-        return Integer.parseInt(prefs.getString(wifi ? Constants.PREFERENCES_KEY_MAX_VIDEO_BITRATE_WIFI : Constants.PREFERENCES_KEY_MAX_VIDEO_BITRATE_MOBILE, "0"));
-    }
-    
     public static int getNetworkTimeout(Context context) {
-        SharedPreferences prefs = getPreferences(context);
-        return Integer.parseInt(prefs.getString(Constants.PREFERENCES_KEY_NETWORK_TIMEOUT, "15000"));
+        SharedPreferences preferences = getPreferences(context);
+        return Integer.parseInt(preferences.getString(Constants.PREFERENCES_KEY_NETWORK_TIMEOUT, "15000"));
     }
-    
+
     public static int getDefaultAlbums(Context context) {
-        SharedPreferences prefs = getPreferences(context);
-        return Integer.parseInt(prefs.getString(Constants.PREFERENCES_KEY_DEFAULT_ALBUMS, "5"));
+        SharedPreferences preferences = getPreferences(context);
+        return Integer.parseInt(preferences.getString(Constants.PREFERENCES_KEY_DEFAULT_ALBUMS, "5"));
     }
     
     public static int getMaxAlbums(Context context) {
-        SharedPreferences prefs = getPreferences(context);
-        return Integer.parseInt(prefs.getString(Constants.PREFERENCES_KEY_MAX_ALBUMS, "20"));
+        SharedPreferences preferences = getPreferences(context);
+        return Integer.parseInt(preferences.getString(Constants.PREFERENCES_KEY_MAX_ALBUMS, "20"));
     }
 
     public static int getDefaultSongs(Context context) {
-        SharedPreferences prefs = getPreferences(context);
-        return Integer.parseInt(prefs.getString(Constants.PREFERENCES_KEY_DEFAULT_SONGS, "10"));
+        SharedPreferences preferences = getPreferences(context);
+        return Integer.parseInt(preferences.getString(Constants.PREFERENCES_KEY_DEFAULT_SONGS, "10"));
     }
     
     public static int getMaxSongs(Context context) {
-        SharedPreferences prefs = getPreferences(context);
-        return Integer.parseInt(prefs.getString(Constants.PREFERENCES_KEY_MAX_SONGS, "25"));
+        SharedPreferences preferences = getPreferences(context);
+        return Integer.parseInt(preferences.getString(Constants.PREFERENCES_KEY_MAX_SONGS, "25"));
     }
     
     public static int getMaxArtists(Context context) {
-        SharedPreferences prefs = getPreferences(context);
-        return Integer.parseInt(prefs.getString(Constants.PREFERENCES_KEY_MAX_ARTISTS, "10"));
+        SharedPreferences preferences = getPreferences(context);
+        return Integer.parseInt(preferences.getString(Constants.PREFERENCES_KEY_MAX_ARTISTS, "10"));
     }
     
     public static int getDefaultArtists(Context context) {
-        SharedPreferences prefs = getPreferences(context);
-        return Integer.parseInt(prefs.getString(Constants.PREFERENCES_KEY_DEFAULT_ARTISTS, "3"));
+        SharedPreferences preferences = getPreferences(context);
+        return Integer.parseInt(preferences.getString(Constants.PREFERENCES_KEY_DEFAULT_ARTISTS, "3"));
     }
     
     public static int getBufferLength(Context context) {
-        SharedPreferences prefs = getPreferences(context);
-        return Integer.parseInt(prefs.getString(Constants.PREFERENCES_KEY_BUFFER_LENGTH, "5"));
+        SharedPreferences preferences = getPreferences(context);
+        return Integer.parseInt(preferences.getString(Constants.PREFERENCES_KEY_BUFFER_LENGTH, "5"));
     }
     
     public static int getIncrementTime(Context context) {
-        SharedPreferences prefs = getPreferences(context);
-        return Integer.parseInt(prefs.getString(Constants.PREFERENCES_KEY_INCREMENT_TIME, "5"));
+        SharedPreferences preferences = getPreferences(context);
+        return Integer.parseInt(preferences.getString(Constants.PREFERENCES_KEY_INCREMENT_TIME, "5"));
     }
     
     public static boolean getMediaButtonsPreference(Context context) {
-        SharedPreferences prefs = getPreferences(context);
-        return prefs.getBoolean(Constants.PREFERENCES_KEY_MEDIA_BUTTONS, true);
+        SharedPreferences preferences = getPreferences(context);
+        return preferences.getBoolean(Constants.PREFERENCES_KEY_MEDIA_BUTTONS, true);
     }
     
     public static boolean getShowNowPlayingPreference(Context context) {
-        SharedPreferences prefs = getPreferences(context);
-        return prefs.getBoolean(Constants.PREFERENCES_KEY_SHOW_NOW_PLAYING, true);
+        SharedPreferences preferences = getPreferences(context);
+        return preferences.getBoolean(Constants.PREFERENCES_KEY_SHOW_NOW_PLAYING, true);
     }
     
     public static boolean getGaplessPlaybackPreference(Context context) {
-        SharedPreferences prefs = getPreferences(context);
-        return prefs.getBoolean(Constants.PREFERENCES_KEY_GAPLESS_PLAYBACK, true);
+        SharedPreferences preferences = getPreferences(context);
+        return preferences.getBoolean(Constants.PREFERENCES_KEY_GAPLESS_PLAYBACK, true);
     }
     
     public static boolean getShouldTransitionOnPlaybackPreference(Context context) {
-        SharedPreferences prefs = getPreferences(context);
-        return prefs.getBoolean(Constants.PREFERENCES_KEY_DOWNLOAD_TRANSITION, true);
+        SharedPreferences preferences = getPreferences(context);
+        return preferences.getBoolean(Constants.PREFERENCES_KEY_DOWNLOAD_TRANSITION, true);
     }
     
     public static boolean getShouldUseId3Tags(Context context) {
-        SharedPreferences prefs = getPreferences(context);
-        return prefs.getBoolean(Constants.PREFERENCES_KEY_ID3_TAGS, false);
+        SharedPreferences preferences = getPreferences(context);
+        return preferences.getBoolean(Constants.PREFERENCES_KEY_ID3_TAGS, false);
     }
     
     public static int getChatRefreshInterval(Context context) {
-        SharedPreferences prefs = getPreferences(context);
-        return Integer.parseInt(prefs.getString(Constants.PREFERENCES_KEY_CHAT_REFRESH_INTERVAL, "5000"));
+        SharedPreferences preferences = getPreferences(context);
+        return Integer.parseInt(preferences.getString(Constants.PREFERENCES_KEY_CHAT_REFRESH_INTERVAL, "5000"));
     }
     
     public static int getDirectoryCacheTime(Context context) {
-        SharedPreferences prefs = getPreferences(context);
-        return Integer.parseInt(prefs.getString(Constants.PREFERENCES_KEY_DIRECTORY_CACHE_TIME, "300"));
+        SharedPreferences preferences = getPreferences(context);
+        return Integer.parseInt(preferences.getString(Constants.PREFERENCES_KEY_DIRECTORY_CACHE_TIME, "300"));
     }
     
     public static boolean isNullOrWhiteSpace(String string) {
@@ -1301,18 +1250,18 @@ public class Util extends DownloadActivity {
     }
     
     public static boolean getShouldClearPlaylist(Context context) {
-        SharedPreferences prefs = getPreferences(context);
-        return prefs.getBoolean(Constants.PREFERENCES_KEY_CLEAR_PLAYLIST, false);
+        SharedPreferences preferences = getPreferences(context);
+        return preferences.getBoolean(Constants.PREFERENCES_KEY_CLEAR_PLAYLIST, false);
     }
     
     public static boolean getShouldSortByDisc(Context context) {
-        SharedPreferences prefs = getPreferences(context);
-        return prefs.getBoolean(Constants.PREFERENCES_KEY_DISC_SORT, false);
+        SharedPreferences preferences = getPreferences(context);
+        return preferences.getBoolean(Constants.PREFERENCES_KEY_DISC_SORT, false);
     }
     
     public static boolean getShouldClearBookmark(Context context) {
-        SharedPreferences prefs = getPreferences(context);
-        return prefs.getBoolean(Constants.PREFERENCES_KEY_CLEAR_BOOKMARK, false);
+        SharedPreferences preferences = getPreferences(context);
+        return preferences.getBoolean(Constants.PREFERENCES_KEY_CLEAR_BOOKMARK, false);
     }
     
     public static String formatTotalDuration(long totalDuration, boolean inMilliseconds) {
@@ -1340,30 +1289,72 @@ public class Util extends DownloadActivity {
     }
     
 	public static VideoPlayerType getVideoPlayerType(Context context) {
-		SharedPreferences prefs = getPreferences(context);
-		return VideoPlayerType.forKey(prefs.getString(Constants.PREFERENCES_KEY_VIDEO_PLAYER, VideoPlayerType.MX.getKey()));
+		SharedPreferences preferences = getPreferences(context);
+		return VideoPlayerType.forKey(preferences.getString(Constants.PREFERENCES_KEY_VIDEO_PLAYER, VideoPlayerType.MX.getKey()));
 	}
 	
 	public static boolean isPackageInstalled(Context context, String packageName) {
 		PackageManager pm = context.getPackageManager();
-		List<ApplicationInfo> packages = pm.getInstalledApplications(0);
-		
-		for (ApplicationInfo packageInfo : packages) {
-			if (packageInfo.packageName.equals(packageName)) {
-				return true;
-			}
-		}
-		
-		return false;
+        List<ApplicationInfo> packages = null;
+
+        if (pm != null) {
+            packages = pm.getInstalledApplications(0);
+        }
+
+        if (packages != null) {
+            for (ApplicationInfo packageInfo : packages) {
+                if (packageInfo.packageName.equals(packageName)) {
+                    return true;
+                }
+            }
+        }
+
+        return false;
 	}
+
+    public static String getVersionName(Context context) {
+        String versionName = null;
+
+        PackageManager pm = context.getPackageManager();
+
+        if (pm != null) {
+            String packageName = context.getPackageName();
+
+            try {
+                versionName = pm.getPackageInfo(packageName, 0).versionName;
+            } catch (PackageManager.NameNotFoundException ignored) {
+
+            }
+        }
+
+        return versionName;
+    }
+
+    public static int getVersionCode(Context context) {
+        int versionCode = 0;
+
+        PackageManager pm = context.getPackageManager();
+
+        if (pm != null) {
+            String packageName = context.getPackageName();
+
+            try {
+                versionCode = pm.getPackageInfo(packageName, 0).versionCode;
+            } catch (PackageManager.NameNotFoundException ignored) {
+
+            }
+        }
+
+        return versionCode;
+    }
 	
     public static boolean getShouldSendBluetoothNotifications(Context context) {
-        SharedPreferences prefs = getPreferences(context);
-        return prefs.getBoolean(Constants.PREFERENCES_KEY_SEND_BLUETOOTH_NOTIFICATIONS, true);
+        SharedPreferences preferences = getPreferences(context);
+        return preferences.getBoolean(Constants.PREFERENCES_KEY_SEND_BLUETOOTH_NOTIFICATIONS, true);
     }
     
     public static boolean getShouldSendBluetoothAlbumArt(Context context) {
-        SharedPreferences prefs = getPreferences(context);
-        return prefs.getBoolean(Constants.PREFERENCES_KEY_SEND_BLUETOOTH_ALBUM_ART, true);
+        SharedPreferences preferences = getPreferences(context);
+        return preferences.getBoolean(Constants.PREFERENCES_KEY_SEND_BLUETOOTH_ALBUM_ART, true);
     }
 }

@@ -21,6 +21,7 @@ package com.thejoshwa.ultrasonic.androidapp.receiver;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
+import android.os.Bundle;
 import android.util.Log;
 import android.view.KeyEvent;
 import com.thejoshwa.ultrasonic.androidapp.service.DownloadServiceImpl;
@@ -35,26 +36,32 @@ public class MediaButtonIntentReceiver extends BroadcastReceiver {
 
     @Override
     public void onReceive(Context context, Intent intent) {
-    	if (Util.getMediaButtonsPreference(context)) {
-    		String intentAction = intent.getAction();
-    		
-    		if (!Intent.ACTION_MEDIA_BUTTON.equals(intentAction))
-    			return;
-    		
-    		KeyEvent event = (KeyEvent) intent.getExtras().get(Intent.EXTRA_KEY_EVENT);
-    		Log.i(TAG, "Got MEDIA_BUTTON key event: " + event);
+        if (Util.getMediaButtonsPreference(context)) {
+            String intentAction = intent.getAction();
 
-    		Intent serviceIntent = new Intent(context, DownloadServiceImpl.class);
-    		serviceIntent.putExtra(Intent.EXTRA_KEY_EVENT, event);
-    		context.startService(serviceIntent);
+            if (!Intent.ACTION_MEDIA_BUTTON.equals(intentAction))
+                return;
 
-    		try {
-    			if (isOrderedBroadcast()) {
-    				abortBroadcast();
-    			}
-    		} catch (Exception x) {
-    			// Ignored.
-    		}
-    	}
+            Bundle extras = intent.getExtras();
+
+            if (extras == null) {
+                return;
+            }
+
+            KeyEvent event = (KeyEvent) extras.get(Intent.EXTRA_KEY_EVENT);
+            Log.i(TAG, "Got MEDIA_BUTTON key event: " + event);
+
+            Intent serviceIntent = new Intent(context, DownloadServiceImpl.class);
+            serviceIntent.putExtra(Intent.EXTRA_KEY_EVENT, event);
+            context.startService(serviceIntent);
+
+            try {
+                if (isOrderedBroadcast()) {
+                    abortBroadcast();
+                }
+            } catch (Exception x) {
+                // Ignored.
+            }
+        }
     }
 }

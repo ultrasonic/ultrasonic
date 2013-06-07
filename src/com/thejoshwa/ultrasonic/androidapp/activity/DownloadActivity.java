@@ -82,8 +82,6 @@ public class DownloadActivity extends SubsonicTabActivity implements OnGestureLi
     private View startButton;
     private ImageView repeatButton;
     private ImageButton starImageButton;
-    private ImageButton bookmarkImageButton;
-    private ImageButton removeAllImageButton;
     private ImageButton saveImageButton;
     private ScheduledExecutorService executorService;
     private DownloadFile currentPlaying;
@@ -138,8 +136,8 @@ public class DownloadActivity extends SubsonicTabActivity implements OnGestureLi
         final View shuffleButton = findViewById(R.id.download_shuffle);
         repeatButton = (ImageView) findViewById(R.id.download_repeat);
         starImageButton = (ImageButton) findViewById(R.id.download_star);
-        bookmarkImageButton = (ImageButton) findViewById(R.id.download_bookmark);
-        removeAllImageButton = (ImageButton) findViewById(R.id.download_remove_all);
+        ImageButton bookmarkImageButton = (ImageButton) findViewById(R.id.download_bookmark);
+        ImageButton removeAllImageButton = (ImageButton) findViewById(R.id.download_remove_all);
         saveImageButton = (ImageButton) findViewById(R.id.download_save_playlist);
         visualizerViewLayout = (LinearLayout) findViewById(R.id.download_visualizer_view_layout);
 
@@ -420,63 +418,63 @@ public class DownloadActivity extends SubsonicTabActivity implements OnGestureLi
         });
         
 		bookmarkImageButton.setOnClickListener(new View.OnClickListener() {
-			@Override
-			public void onClick(final View view) {
-				if (currentSong == null) {
-					return;
-				}
+            @Override
+            public void onClick(final View view) {
+                if (currentSong == null) {
+                    return;
+                }
 
-				final String id = currentSong.getId();
-				final int playerPosition = getDownloadService()
-						.getPlayerPosition();
+                final String id = currentSong.getId();
+                final int playerPosition = getDownloadService()
+                        .getPlayerPosition();
 
-				currentSong.setBookmarkPosition(playerPosition);
-				
-				String bookmarkTime = Util.formatTotalDuration(playerPosition, true);
+                currentSong.setBookmarkPosition(playerPosition);
 
-				new Thread(new Runnable() {
-					public void run() {
-						final MusicService musicService = MusicServiceFactory.getMusicService(DownloadActivity.this);
+                String bookmarkTime = Util.formatTotalDuration(playerPosition, true);
 
-						try {
-							musicService.createBookmark(id, playerPosition, DownloadActivity.this, null);
-						} catch (Exception e) {
-							Log.e(TAG, e.getMessage(), e);
-						}
-					}
-				}).start();
+                new Thread(new Runnable() {
+                    public void run() {
+                        final MusicService musicService = MusicServiceFactory.getMusicService(DownloadActivity.this);
 
-				String msg = getResources().getString(R.string.download_bookmark_set_at_position, bookmarkTime);
+                        try {
+                            musicService.createBookmark(id, playerPosition, DownloadActivity.this, null);
+                        } catch (Exception e) {
+                            Log.e(TAG, e.getMessage(), e);
+                        }
+                    }
+                }).start();
 
-				Util.toast(DownloadActivity.this, msg);
-			}
-		});
+                String msg = getResources().getString(R.string.download_bookmark_set_at_position, bookmarkTime);
+
+                Util.toast(DownloadActivity.this, msg);
+            }
+        });
         
         bookmarkImageButton.setOnLongClickListener(new View.OnLongClickListener() {
             @Override
             public boolean onLongClick(final View view) {
-            	if (currentSong == null) {
-            		return true;
-            	}
-            	
-            	final String id = currentSong.getId();
-            	currentSong.setBookmarkPosition(0);
-            	
-            	new Thread(new Runnable() {
-            	    public void run() {
-                    	final MusicService musicService = MusicServiceFactory.getMusicService(DownloadActivity.this);
-                    	
-            			try {
-            				musicService.deleteBookmark(id, DownloadActivity.this, null);
-            			} catch (Exception e) {
-							Log.e(TAG, e.getMessage(), e);
-						}
-            	    }
-            	}).start();
-    			
-            	Util.toast(DownloadActivity.this, R.string.download_bookmark_removed);
-            	
-            	return true;
+                if (currentSong == null) {
+                    return true;
+                }
+
+                final String id = currentSong.getId();
+                currentSong.setBookmarkPosition(0);
+
+                new Thread(new Runnable() {
+                    public void run() {
+                        final MusicService musicService = MusicServiceFactory.getMusicService(DownloadActivity.this);
+
+                        try {
+                            musicService.deleteBookmark(id, DownloadActivity.this, null);
+                        } catch (Exception e) {
+                            Log.e(TAG, e.getMessage(), e);
+                        }
+                    }
+                }).start();
+
+                Util.toast(DownloadActivity.this, R.string.download_bookmark_removed);
+
+                return true;
             }
         });
         
@@ -611,7 +609,10 @@ public class DownloadActivity extends SubsonicTabActivity implements OnGestureLi
 
             final LayoutInflater layoutInflater = (LayoutInflater) getSystemService(LAYOUT_INFLATER_SERVICE);
             final View layout = layoutInflater.inflate(R.layout.save_playlist, (ViewGroup) findViewById(R.id.save_playlist_root));
-            playlistNameView = (EditText) layout.findViewById(R.id.save_playlist_name);
+
+            if (layout != null) {
+                playlistNameView = (EditText) layout.findViewById(R.id.save_playlist_name);
+            }
 
             builder = new AlertDialog.Builder(this);
             builder.setTitle(R.string.download_playlist_title);
@@ -721,10 +722,18 @@ public class DownloadActivity extends SubsonicTabActivity implements OnGestureLi
             }
 
             if (song != null && song.getParent() == null) {
-            	menu.findItem(R.id.menu_show_album).setVisible(false);
+                MenuItem menuItem = menu.findItem(R.id.menu_show_album);
+
+                if (menuItem != null) {
+                    menuItem.setVisible(false);
+                }
             }
             if (Util.isOffline(this)) {
-                menu.findItem(R.id.menu_lyrics).setVisible(false);
+                MenuItem menuItem = menu.findItem(R.id.menu_lyrics);
+
+                if (menuItem != null) {
+                    menuItem.setVisible(false);
+                }
             }
         }
     }
@@ -990,22 +999,23 @@ public class DownloadActivity extends SubsonicTabActivity implements OnGestureLi
                 switch (playerState) {
                     case DOWNLOADING:
                         final long bytes = currentPlaying != null ? currentPlaying.getPartialFile().length() : 0;
-                        getActionBar().setSubtitle(getResources().getString(R.string.download_playerstate_downloading, Util.formatLocalizedBytes(bytes, DownloadActivity.this)));
+                        String downloadStatus = getResources().getString(R.string.download_playerstate_downloading, Util.formatLocalizedBytes(bytes, DownloadActivity.this));
+                        setActionBarSubtitle(downloadStatus);
                         break;
                     case PREPARING:
-                    	getActionBar().setSubtitle(R.string.download_playerstate_buffering);
+                        setActionBarSubtitle(R.string.download_playerstate_buffering);
                         break;
                     case STARTED:
                     	final DownloadService downloadService = getDownloadService();
                     	
                         if (downloadService != null && downloadService.isShufflePlayEnabled()) {
-                        	getActionBar().setSubtitle(R.string.download_playerstate_playing_shuffle);
+                            setActionBarSubtitle(R.string.download_playerstate_playing_shuffle);
                         } else {
-                        	getActionBar().setSubtitle(null);
+                            setActionBarSubtitle(null);
                         }
                         break;
                     default:
-                    	getActionBar().setSubtitle(null);
+                        setActionBarSubtitle(null);
                         break;
                     case IDLE:
                         break;

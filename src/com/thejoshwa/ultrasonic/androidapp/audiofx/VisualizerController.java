@@ -18,7 +18,6 @@
  */
 package com.thejoshwa.ultrasonic.androidapp.audiofx;
 
-import android.content.Context;
 import android.media.MediaPlayer;
 import android.media.audiofx.Visualizer;
 import android.util.Log;
@@ -54,7 +53,7 @@ public class VisualizerController {
         // Calling here forces class initialization.
     }
 
-    public VisualizerController(Context context, MediaPlayer mediaPlayer) {
+    public VisualizerController(MediaPlayer mediaPlayer) {
         try {
 			audioSessionId = mediaPlayer.getAudioSessionId();
             visualizer = new Visualizer(audioSessionId);
@@ -72,10 +71,6 @@ public class VisualizerController {
 
     public boolean isAvailable() {
         return visualizer != null;
-    }
-
-    public boolean isEnabled() {
-        return isAvailable() && visualizer.getEnabled();
     }
 
     public void release() {

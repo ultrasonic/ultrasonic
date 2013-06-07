@@ -35,7 +35,7 @@ import com.thejoshwa.ultrasonic.androidapp.domain.Lyrics;
 import com.thejoshwa.ultrasonic.androidapp.domain.MusicDirectory;
 import com.thejoshwa.ultrasonic.androidapp.domain.MusicFolder;
 import com.thejoshwa.ultrasonic.androidapp.domain.Playlist;
-import com.thejoshwa.ultrasonic.androidapp.domain.SearchCritera;
+import com.thejoshwa.ultrasonic.androidapp.domain.SearchCriteria;
 import com.thejoshwa.ultrasonic.androidapp.domain.SearchResult;
 import com.thejoshwa.ultrasonic.androidapp.domain.Share;
 import com.thejoshwa.ultrasonic.androidapp.domain.Version;
@@ -59,8 +59,7 @@ public class CachedMusicService implements MusicService {
     private final LRUCache<String, TimeLimitedCache<MusicDirectory>> cachedAlbum;
     private final TimeLimitedCache<Boolean> cachedLicenseValid = new TimeLimitedCache<Boolean>(120, TimeUnit.SECONDS);
     private final TimeLimitedCache<Indexes> cachedIndexes = new TimeLimitedCache<Indexes>(60 * 60, TimeUnit.SECONDS);
-    private final TimeLimitedCache<Indexes> cachedArtists = new TimeLimitedCache<Indexes>(60 * 60, TimeUnit.SECONDS);    
-    private final TimeLimitedCache<MusicDirectory> cachedVideos = new TimeLimitedCache<MusicDirectory>(60 * 60, TimeUnit.SECONDS);    
+    private final TimeLimitedCache<Indexes> cachedArtists = new TimeLimitedCache<Indexes>(60 * 60, TimeUnit.SECONDS);
     private final TimeLimitedCache<List<Playlist>> cachedPlaylists = new TimeLimitedCache<List<Playlist>>(3600, TimeUnit.SECONDS);
     private final TimeLimitedCache<List<MusicFolder>> cachedMusicFolders = new TimeLimitedCache<List<MusicFolder>>(10 * 3600, TimeUnit.SECONDS);
     private final TimeLimitedCache<List<Genre>> cachedGenres = new TimeLimitedCache<List<Genre>>(10 * 3600, TimeUnit.SECONDS);
@@ -180,7 +179,7 @@ public class CachedMusicService implements MusicService {
     }
 
     @Override
-    public SearchResult search(SearchCritera criteria, Context context, ProgressListener progressListener) throws Exception {
+    public SearchResult search(SearchCriteria criteria, Context context, ProgressListener progressListener) throws Exception {
         return musicService.search(criteria, context, progressListener);
     }
 

@@ -11,7 +11,7 @@
         <item name="exit">@drawable/ic_menu_exit_dark</item>
         <item name="backward">@drawable/ic_menu_backward_dark</item>
         <item name="forward">@drawable/ic_menu_forward_dark</item>
-		<item name="stop">@drawable/ic_menu_exit_dark</item>        
+        <item name="stop">@drawable/ic_menu_exit_dark</item>
         <item name="help">@drawable/ic_menu_help_dark</item>
         <item name="home">@drawable/ic_menu_home_dark</item>
         <item name="pin">@drawable/ic_menu_pin</item>
@@ -25,7 +25,7 @@
         <item name="settings">@drawable/ic_menu_settings_dark</item>
         <item name="share">@drawable/ic_menu_share_dark</item>
         <item name="downloaded">@drawable/ic_stat_downloaded_dark</item>
-        <item name="downloading">@drawable/ic_stat_downloading_dark</item>        
+        <item name="downloading">@drawable/ic_stat_downloading_dark</item>
         <item name="media_previous">@drawable/media_backward_normal_dark</item>
         <item name="media_next">@drawable/media_forward_normal_dark</item>
         <item name="media_pause">@drawable/media_pause_normal_dark</item>
@@ -35,11 +35,10 @@
         <item name="media_shuffle">@drawable/media_shuffle_normal_dark</item>
         <item name="media_play">@drawable/media_start_normal_dark</item>
         <item name="media_play_next">@drawable/media_play_next</item>
-        <item name="media_play_small">@drawable/ic_stat_play_dark</item>        
+        <item name="media_play_small">@drawable/ic_stat_play_dark</item>
         <item name="media_stop">@drawable/media_stop_normal_dark</item>
         <item name="media_toggle">@drawable/media_toggle_list_normal_dark</item>
         <item name="chat">@drawable/ic_menu_chat_dark</item>
-        <item name="chat_send">@drawable/ic_menu_chat_send_dark</item>
         <item name="chat_send">@drawable/ic_menu_chat_send_dark</item>
         <item name="bookmark">@drawable/ic_menu_bookmark_dark</item>
     </style>
@@ -54,7 +53,7 @@
         <item name="exit">@drawable/ic_menu_exit_light</item>
         <item name="backward">@drawable/ic_menu_backward_light</item>
         <item name="forward">@drawable/ic_menu_forward_light</item>
-		<item name="stop">@drawable/ic_menu_exit_light</item>        
+        <item name="stop">@drawable/ic_menu_exit_light</item>
         <item name="help">@drawable/ic_menu_help_light</item>
         <item name="home">@drawable/ic_menu_home_light</item>
         <item name="pin">@drawable/ic_menu_pin</item>
@@ -68,7 +67,7 @@
         <item name="settings">@drawable/ic_menu_settings_light</item>
         <item name="share">@drawable/ic_menu_share_light</item>
         <item name="downloaded">@drawable/ic_stat_downloaded_light</item>
-        <item name="downloading">@drawable/ic_stat_downloading_light</item>        
+        <item name="downloading">@drawable/ic_stat_downloading_light</item>
         <item name="media_previous">@drawable/media_backward_normal_light</item>
         <item name="media_next">@drawable/media_forward_normal_light</item>
         <item name="media_pause">@drawable/media_pause_normal_light</item>
@@ -77,13 +76,13 @@
         <item name="media_repeat_single">@drawable/media_repeat_single</item>
         <item name="media_shuffle">@drawable/media_shuffle_normal_light</item>
         <item name="media_play">@drawable/media_start_normal_light</item>
-        <item name="media_play_next">@drawable/media_play_next</item>        
-        <item name="media_play_small">@drawable/ic_stat_play_light</item>        
+        <item name="media_play_next">@drawable/media_play_next</item>
+        <item name="media_play_small">@drawable/ic_stat_play_light</item>
         <item name="media_stop">@drawable/media_stop_normal_light</item>
         <item name="media_toggle">@drawable/media_toggle_list_normal_light</item>
         <item name="chat">@drawable/ic_menu_chat_light</item>
         <item name="chat_send">@drawable/ic_menu_chat_send_light</item>
         <item name="bookmark">@drawable/ic_menu_bookmark_light</item>
-s    </style>
+    </style>
 
 </resources>

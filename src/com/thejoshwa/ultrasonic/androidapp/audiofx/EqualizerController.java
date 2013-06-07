@@ -97,10 +97,6 @@ public class EqualizerController {
         return equalizer != null;
     }
 
-    public boolean isEnabled() {
-        return isAvailable() && equalizer.getEnabled();
-    }
-
     public void release() {
         if (isAvailable()) {
 			released = true;

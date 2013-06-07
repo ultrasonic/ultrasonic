@@ -34,7 +34,7 @@ import com.thejoshwa.ultrasonic.androidapp.domain.Lyrics;
 import com.thejoshwa.ultrasonic.androidapp.domain.MusicDirectory;
 import com.thejoshwa.ultrasonic.androidapp.domain.MusicFolder;
 import com.thejoshwa.ultrasonic.androidapp.domain.Playlist;
-import com.thejoshwa.ultrasonic.androidapp.domain.SearchCritera;
+import com.thejoshwa.ultrasonic.androidapp.domain.SearchCriteria;
 import com.thejoshwa.ultrasonic.androidapp.domain.SearchResult;
 import com.thejoshwa.ultrasonic.androidapp.domain.Share;
 import com.thejoshwa.ultrasonic.androidapp.domain.Version;
@@ -68,7 +68,7 @@ public interface MusicService {
     
     MusicDirectory getAlbum(String id, String name, boolean refresh, Context context, ProgressListener progressListener) throws Exception;
 
-    SearchResult search(SearchCritera criteria, Context context, ProgressListener progressListener) throws Exception;
+    SearchResult search(SearchCriteria criteria, Context context, ProgressListener progressListener) throws Exception;
 
     MusicDirectory getPlaylist(String id, String name, Context context, ProgressListener progressListener) throws Exception;
     

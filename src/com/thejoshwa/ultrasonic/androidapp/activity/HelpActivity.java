@@ -19,11 +19,10 @@
 
 package com.thejoshwa.ultrasonic.androidapp.activity;
 
+import android.app.ActionBar;
 import android.app.Activity;
 import android.content.Intent;
-import android.content.pm.PackageManager.NameNotFoundException;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.KeyEvent;
 import android.view.MenuItem;
 import android.view.View;
@@ -33,9 +32,11 @@ import android.webkit.WebView;
 import android.webkit.WebViewClient;
 import android.widget.Button;
 import android.widget.ImageView;
+
 import com.thejoshwa.ultrasonic.androidapp.R;
 import com.thejoshwa.ultrasonic.androidapp.util.Constants;
 import com.thejoshwa.ultrasonic.androidapp.util.Util;
+
 import net.simonvt.menudrawer.MenuDrawer;
 import net.simonvt.menudrawer.Position;
 
@@ -45,10 +46,8 @@ import net.simonvt.menudrawer.Position;
  * @author Sindre Mehus
  */
 public final class HelpActivity extends Activity implements OnClickListener {
-	private static final String TAG = HelpActivity.class.getSimpleName();
     private WebView webView;
     private ImageView backButton;
-    private ImageView stopButton;
     private ImageView forwardButton;
     
     private static final String STATE_MENUDRAWER = "com.thejoshwa.ultrasonic.androidapp.menuDrawer";
@@ -60,7 +59,6 @@ public final class HelpActivity extends Activity implements OnClickListener {
     private int menuActiveViewId;
     View chatMenuItem = null;
     View bookmarksMenuItem = null;
-    View menuMain = null;
 
     @Override
     protected void onCreate(Bundle bundle) {
@@ -92,7 +90,11 @@ public final class HelpActivity extends Activity implements OnClickListener {
         findViewById(R.id.menu_about).setOnClickListener(this);
         findViewById(R.id.menu_exit).setOnClickListener(this);
 
-        getActionBar().setDisplayHomeAsUpEnabled(true);
+        ActionBar actionBar = getActionBar();
+
+        if (actionBar != null) {
+            actionBar.setDisplayHomeAsUpEnabled(true);
+        }
         
         View aboutMenuItem = findViewById(R.id.menu_about);
         menuDrawer.setActiveView(aboutMenuItem);
@@ -114,8 +116,8 @@ public final class HelpActivity extends Activity implements OnClickListener {
                 webView.goBack();
             }
         });
-        
-        stopButton = (ImageView) findViewById(R.id.help_stop);
+
+        ImageView stopButton = (ImageView) findViewById(R.id.help_stop);
         stopButton.setOnClickListener(new Button.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -271,17 +273,14 @@ public final class HelpActivity extends Activity implements OnClickListener {
         @Override
         public void onPageFinished(WebView view, String url) {
             setProgressBarIndeterminateVisibility(false);
-            String versionName = null;
-            
-    		try {
-    			versionName = getPackageManager().getPackageInfo(getPackageName(), 0).versionName;
-    		} catch (NameNotFoundException e) {
-    			Log.e(TAG, e.getMessage(), e);
-    		}
-    		
-    		String title = view.getTitle() + " (" + versionName + ")";
-    		getActionBar().setSubtitle(title);
-    		
+            String versionName = Util.getVersionName(HelpActivity.this);
+       		String title = view.getTitle() + " (" + versionName + ")";
+            ActionBar actionBar = getActionBar();
+
+            if (actionBar != null) {
+                actionBar.setSubtitle(title);
+            }
+
             backButton.setEnabled(view.canGoBack());
             forwardButton.setEnabled(view.canGoForward());
         }

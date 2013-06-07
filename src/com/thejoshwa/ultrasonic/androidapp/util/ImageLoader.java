@@ -19,6 +19,7 @@
 package com.thejoshwa.ultrasonic.androidapp.util;
 
 import android.content.Context;
+import android.content.res.Resources;
 import android.graphics.Bitmap;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
@@ -60,10 +61,13 @@ public class ImageLoader implements Runnable {
     	this.context = context;
     	queue = new LinkedBlockingQueue<Task>(500);
 
+        Resources resources = context.getResources();
+        Drawable drawable = resources.getDrawable(R.drawable.unknown_album);
+
         // Determine the density-dependent image sizes.
-        imageSizeDefault = context.getResources().getDrawable(R.drawable.unknown_album).getIntrinsicHeight();
+        imageSizeDefault = drawable.getIntrinsicHeight();
         DisplayMetrics metrics = context.getResources().getDisplayMetrics();
-        imageSizeLarge = (int) Math.round(Math.min(metrics.widthPixels, metrics.heightPixels));
+        imageSizeLarge = Math.round(Math.min(metrics.widthPixels, metrics.heightPixels));
 
         for (int i = 0; i < CONCURRENCY; i++) {
             new Thread(this, "ImageLoader").start();
@@ -75,10 +79,13 @@ public class ImageLoader implements Runnable {
     private void createLargeUnknownImage(Context context) {
         BitmapDrawable drawable = (BitmapDrawable) context.getResources().getDrawable(R.drawable.unknown_album_large);
         Log.i(TAG, "createLargeUnknownImage");
-        largeUnknownImage = Util.scaleBitmap(drawable.getBitmap(), imageSizeLarge);
+
+        if (drawable != null) {
+            largeUnknownImage = Util.scaleBitmap(drawable.getBitmap(), imageSizeLarge);
+        }
     }
 
-    public void loadImage(View view, MusicDirectory.Entry entry, boolean large, int size, boolean crossfade, boolean highQuality) {
+    public void loadImage(View view, MusicDirectory.Entry entry, boolean large, int size, boolean crossFade, boolean highQuality) {
     	if (entry == null) {
             setUnknownImage(view, large);
             return;
@@ -106,18 +113,18 @@ public class ImageLoader implements Runnable {
             setUnknownImage(view, large);
         }
         
-        queue.offer(new Task(view, entry, size, large, large, crossfade, highQuality));
+        queue.offer(new Task(view, entry, size, large, crossFade, highQuality));
     }
     
     private String getKey(String coverArtId, int size) {
         return coverArtId + size;
     }
 
-    private void setImageBitmap(View view, Bitmap bitmap, boolean crossfade) {
+    private void setImageBitmap(View view, Bitmap bitmap, boolean crossFade) {
        if (view instanceof ImageView) {
             ImageView imageView = (ImageView) view;
-            if (crossfade) {
 
+            if (crossFade) {
                 Drawable existingDrawable = imageView.getDrawable();
                 Drawable newDrawable = Util.createDrawableFromBitmap(this.context, bitmap);
                 
@@ -174,12 +181,12 @@ public class ImageLoader implements Runnable {
         private final boolean crossfade;
         private final boolean highQuality;
 
-        public Task(View view, MusicDirectory.Entry entry, int size, boolean reflection, boolean saveToFile, boolean crossfade, boolean highQuality) {
+        public Task(View view, MusicDirectory.Entry entry, int size, boolean saveToFile, boolean crossFade, boolean highQuality) {
             this.view = view;
             this.entry = entry;
             this.size = size;
             this.saveToFile = saveToFile;
-            this.crossfade = crossfade;
+            this.crossfade = crossFade;
             this.highQuality = highQuality;
             handler = new Handler();
         }

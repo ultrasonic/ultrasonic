@@ -44,7 +44,9 @@ public class ShareParser extends MusicDirectoryEntryParser {
                 	share.setUsername(get("username"));
                 	share.setVisitCount(getLong("visitCount"));
                 } else if ("entry".equals(name)) {
-                	share.addEntry(parseEntry(null, false, 0));
+                    if (share != null) {
+                	    share.addEntry(parseEntry(null, false, 0));
+                    }
                 } else if ("error".equals(name)) {
                     handleError();
                 }

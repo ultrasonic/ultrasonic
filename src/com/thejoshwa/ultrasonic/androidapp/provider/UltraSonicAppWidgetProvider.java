@@ -16,6 +16,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.res.Resources;
 import android.graphics.Bitmap;
+import android.graphics.drawable.Drawable;
 import android.os.Environment;
 import android.util.Log;
 import android.view.KeyEvent;
@@ -48,10 +49,13 @@ public class UltraSonicAppWidgetProvider extends AppWidgetProvider {
     private void pushUpdate(Context context, int[] appWidgetIds, RemoteViews views) {
         // Update specific list of appWidgetIds if given, otherwise default to all
         final AppWidgetManager manager = AppWidgetManager.getInstance(context);
-        if (appWidgetIds != null) {
-            manager.updateAppWidget(appWidgetIds, views);
-        } else {
-            manager.updateAppWidget(new ComponentName(context, this.getClass()), views);
+
+        if (manager != null) {
+            if (appWidgetIds != null) {
+                manager.updateAppWidget(appWidgetIds, views);
+            } else {
+                manager.updateAppWidget(new ComponentName(context, this.getClass()), views);
+            }
         }
     }
     
@@ -69,7 +73,12 @@ public class UltraSonicAppWidgetProvider extends AppWidgetProvider {
      */
     private boolean hasInstances(Context context) {
         AppWidgetManager manager = AppWidgetManager.getInstance(context);
-        int[] appWidgetIds = manager.getAppWidgetIds(new ComponentName(context, getClass()));
+        int[] appWidgetIds = new int[0];
+
+        if (manager != null) {
+            appWidgetIds = manager.getAppWidgetIds(new ComponentName(context, getClass()));
+        }
+
         return (appWidgetIds.length > 0);
     }
     
@@ -123,7 +132,11 @@ public class UltraSonicAppWidgetProvider extends AppWidgetProvider {
 
         // Set the cover art
         try {
-            int size = context.getResources().getDrawable(R.drawable.appwidget_art_default).getIntrinsicHeight();
+            int size;
+            Resources resources = context.getResources();
+            Drawable drawable = resources.getDrawable(R.drawable.appwidget_art_default);
+            size = drawable != null ? drawable.getIntrinsicHeight() : 0;
+
             Bitmap bitmap = currentPlaying == null ? null : FileUtil.getAlbumArtBitmap(context, currentPlaying, size, true);
 
             if (bitmap == null) {

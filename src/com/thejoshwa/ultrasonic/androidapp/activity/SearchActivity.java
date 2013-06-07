@@ -38,7 +38,7 @@ import com.thejoshwa.ultrasonic.androidapp.R;
 import com.thejoshwa.ultrasonic.androidapp.domain.Artist;
 import com.thejoshwa.ultrasonic.androidapp.domain.MusicDirectory;
 import com.thejoshwa.ultrasonic.androidapp.domain.MusicDirectory.Entry;
-import com.thejoshwa.ultrasonic.androidapp.domain.SearchCritera;
+import com.thejoshwa.ultrasonic.androidapp.domain.SearchCriteria;
 import com.thejoshwa.ultrasonic.androidapp.domain.SearchResult;
 import com.thejoshwa.ultrasonic.androidapp.service.MusicService;
 import com.thejoshwa.ultrasonic.androidapp.service.MusicServiceFactory;
@@ -182,12 +182,29 @@ public class SearchActivity extends SubsonicTabActivity {
     @Override
     public boolean onContextItemSelected(MenuItem menuItem) {
         AdapterView.AdapterContextMenuInfo info = (AdapterView.AdapterContextMenuInfo) menuItem.getMenuInfo();
+
+        if (info == null) {
+            return true;
+        }
+
         Object selectedItem = list.getItemAtPosition(info.position);
 
         Artist artist = selectedItem instanceof Artist ? (Artist) selectedItem : null;
         Entry entry = selectedItem instanceof Entry ? (Entry) selectedItem : null;
-        String id = artist != null ? artist.getId() : entry.getId();
-    	List<Entry> songs = new ArrayList<Entry>(1);
+
+        String entryId = null;
+
+        if (entry != null) {
+            entryId = entry.getId();
+        }
+
+        String id = artist != null ? artist.getId() : entryId;
+
+        if (id == null ){
+            return true;
+        }
+
+        List<Entry> songs = new ArrayList<Entry>(1);
 
         switch (menuItem.getItemId()) {
             case R.id.album_menu_play_now:
@@ -195,7 +212,7 @@ public class SearchActivity extends SubsonicTabActivity {
                 break;
             case R.id.album_menu_play_next:
                 downloadRecursively(id, false, true, false, true, false, true, false);
-                break;                
+                break;
             case R.id.album_menu_play_last:
                 downloadRecursively(id, false, true, false, false, false, false, false);
                 break;
@@ -204,10 +221,10 @@ public class SearchActivity extends SubsonicTabActivity {
                 break;
             case R.id.album_menu_unpin:
                 downloadRecursively(id, false, false, false, false, false, false, true);
-                break;   
+                break;
             case R.id.album_menu_download:
                 downloadRecursively(id, false, false, false, false, true, false, false);
-                break;                  
+                break;
             case R.id.song_menu_play_now:
             	if (entry != null) {
             		songs = new ArrayList<MusicDirectory.Entry>(1);
@@ -221,7 +238,7 @@ public class SearchActivity extends SubsonicTabActivity {
             		songs.add(entry);
             		download(true, false, false, true, false, songs);
             	}
-                break;                
+                break;
             case R.id.song_menu_play_last:
             	if (entry != null) {
             		songs = new ArrayList<MusicDirectory.Entry>(1);
@@ -242,14 +259,14 @@ public class SearchActivity extends SubsonicTabActivity {
             		Util.toast(SearchActivity.this, getResources().getQuantityString(R.plurals.select_album_n_songs_downloaded, songs.size(), songs.size()));
             		downloadBackground(false, songs);
             	}
-                break;                
+                break;
             case R.id.song_menu_unpin:
             	if (entry != null) {
             		songs.add(entry);
             		Util.toast(SearchActivity.this, getResources().getQuantityString(R.plurals.select_album_n_songs_unpinned, songs.size(), songs.size()));
             		getDownloadService().unpin(songs);
             	}
-                break;                 
+                break;
             default:
                 return super.onContextItemSelected(menuItem);
         }
@@ -281,7 +298,7 @@ public class SearchActivity extends SubsonicTabActivity {
         BackgroundTask<SearchResult> task = new TabActivityBackgroundTask<SearchResult>(this, true) {
             @Override
             protected SearchResult doInBackground() throws Throwable {
-                SearchCritera criteria = new SearchCritera(query, maxArtists, maxAlbums, maxSongs);
+                SearchCriteria criteria = new SearchCriteria(query, maxArtists, maxAlbums, maxSongs);
                 MusicService service = MusicServiceFactory.getMusicService(SearchActivity.this);
                 licenseValid = service.isLicenseValid(SearchActivity.this, this);
                 return service.search(criteria, SearchActivity.this, this);

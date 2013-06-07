@@ -70,18 +70,21 @@ public class SelectArtistActivity extends SubsonicTabActivity implements Adapter
 
         refreshArtistListView = (PullToRefreshListView) findViewById(R.id.select_artist_list);
         artistListView = refreshArtistListView.getRefreshableView();
-        
+
         refreshArtistListView.setOnRefreshListener(new OnRefreshListener<ListView>() {
             @Override
             public void onRefresh(PullToRefreshBase<ListView> refreshView) {
                 new GetDataTask().execute();
             }
         });
-        
+
         artistListView.setOnItemClickListener(this);
 
         folderButton = LayoutInflater.from(this).inflate(R.layout.select_artist_header, artistListView, false);
-        folderName = (TextView) folderButton.findViewById(R.id.select_artist_folder_2);
+
+        if (folderButton != null) {
+            folderName = (TextView) folderButton.findViewById(R.id.select_artist_folder_2);
+        }
 
         if (!Util.isOffline(this) && !Util.getShouldUseId3Tags(this)) {
             artistListView.addHeaderView(folderButton);
@@ -91,22 +94,22 @@ public class SelectArtistActivity extends SubsonicTabActivity implements Adapter
 
         String title = getIntent().getStringExtra(Constants.INTENT_EXTRA_NAME_ALBUM_LIST_TITLE);
         if (title == null) {
-        	getActionBar().setSubtitle(Util.isOffline(this) ? R.string.music_library_label_offline : R.string.music_library_label);
+            setActionBarSubtitle(Util.isOffline(this) ? R.string.music_library_label_offline : R.string.music_library_label);
         } else {
-        	getActionBar().setSubtitle(title);
+            setActionBarSubtitle(title);
         }
-        
+
         View browseMenuItem = findViewById(R.id.menu_browse);
         menuDrawer.setActiveView(browseMenuItem);
 
         musicFolders = null;
         load();
     }
-    
+
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-    	super.onCreateOptionsMenu(menu);
-    	return true;
+        super.onCreateOptionsMenu(menu);
+        return true;
     }
 
     private void refresh() {
@@ -128,41 +131,46 @@ public class SelectArtistActivity extends SubsonicTabActivity implements Adapter
             protected Indexes doInBackground() throws Throwable {
                 boolean refresh = getIntent().getBooleanExtra(Constants.INTENT_EXTRA_NAME_REFRESH, false);
                 MusicService musicService = MusicServiceFactory.getMusicService(SelectArtistActivity.this);
-                
+
                 boolean isOffline = Util.isOffline(SelectArtistActivity.this);
                 boolean useId3Tags = Util.getShouldUseId3Tags(SelectArtistActivity.this);
-                
+
                 if (!isOffline && !useId3Tags) {
                     musicFolders = musicService.getMusicFolders(refresh, SelectArtistActivity.this, this);
                 }
-                
+
                 String musicFolderId = Util.getSelectedMusicFolderId(SelectArtistActivity.this);
-                
+
                 if (!isOffline && useId3Tags) {
-                	return musicService.getArtists(refresh, SelectArtistActivity.this, this);	
+                    return musicService.getArtists(refresh, SelectArtistActivity.this, this);
                 } else {
-                	return musicService.getIndexes(musicFolderId, refresh, SelectArtistActivity.this, this);
+                    return musicService.getIndexes(musicFolderId, refresh, SelectArtistActivity.this, this);
                 }
             }
 
             @Override
             protected void done(Indexes result) {
-            	if (result != null) {
-            		List<Artist> artists = new ArrayList<Artist>(result.getShortcuts().size() + result.getArtists().size());
-            		artists.addAll(result.getShortcuts());
-            		artists.addAll(result.getArtists());
-            		artistListView.setAdapter(new ArtistAdapter(SelectArtistActivity.this, artists));
-            	}
+                if (result != null) {
+                    List<Artist> artists = new ArrayList<Artist>(result.getShortcuts().size() + result.getArtists().size());
+                    artists.addAll(result.getShortcuts());
+                    artists.addAll(result.getArtists());
+                    artistListView.setAdapter(new ArtistAdapter(SelectArtistActivity.this, artists));
+                }
 
                 // Display selected music folder
                 if (musicFolders != null) {
                     String musicFolderId = Util.getSelectedMusicFolderId(SelectArtistActivity.this);
                     if (musicFolderId == null) {
-                        folderName.setText(R.string.select_artist_all_folders);
+                        if (folderName != null) {
+                            folderName.setText(R.string.select_artist_all_folders);
+                        }
                     } else {
                         for (MusicFolder musicFolder : musicFolders) {
                             if (musicFolder.getId().equals(musicFolderId)) {
-                                folderName.setText(musicFolder.getName());
+                                if (folderName != null) {
+                                    folderName.setText(musicFolder.getName());
+                                }
+
                                 break;
                             }
                         }
@@ -179,10 +187,13 @@ public class SelectArtistActivity extends SubsonicTabActivity implements Adapter
             selectFolder();
         } else {
             Artist artist = (Artist) parent.getItemAtPosition(position);
-            Intent intent = new Intent(this, SelectAlbumActivity.class);
-            intent.putExtra(Constants.INTENT_EXTRA_NAME_ID, artist.getId());
-            intent.putExtra(Constants.INTENT_EXTRA_NAME_NAME, artist.getName());
-            Util.startActivityWithoutTransition(this, intent);
+
+            if (artist != null) {
+                Intent intent = new Intent(this, SelectAlbumActivity.class);
+                intent.putExtra(Constants.INTENT_EXTRA_NAME_ID, artist.getId());
+                intent.putExtra(Constants.INTENT_EXTRA_NAME_NAME, artist.getName());
+                Util.startActivityWithoutTransition(this, intent);
+            }
         }
     }
 
@@ -210,7 +221,7 @@ public class SelectArtistActivity extends SubsonicTabActivity implements Adapter
                     }
                 }
             }
-            
+
             menu.setGroupCheckable(MENU_GROUP_MUSIC_FOLDER, true, true);
         }
     }
@@ -218,6 +229,10 @@ public class SelectArtistActivity extends SubsonicTabActivity implements Adapter
     @Override
     public boolean onContextItemSelected(MenuItem menuItem) {
         AdapterView.AdapterContextMenuInfo info = (AdapterView.AdapterContextMenuInfo) menuItem.getMenuInfo();
+
+        if (info == null) {
+            return true;
+        }
 
         Artist artist = (Artist) artistListView.getItemAtPosition(info.position);
 
@@ -240,15 +255,14 @@ public class SelectArtistActivity extends SubsonicTabActivity implements Adapter
                     break;
                 case R.id.artist_menu_download:
                     downloadRecursively(artist.getId(), false, false, false, false, true, false, false);
-                    break;                    
+                    break;
                 default:
                     return super.onContextItemSelected(menuItem);
             }
         } else if (info.position == 1) {
             MusicFolder selectedFolder = menuItem.getItemId() == -1 ? null : musicFolders.get(menuItem.getItemId());
             String musicFolderId = selectedFolder == null ? null : selectedFolder.getId();
-            String musicFolderName = selectedFolder == null ? getString(R.string.select_artist_all_folders)
-                                                            : selectedFolder.getName();
+            String musicFolderName = selectedFolder == null ? getString(R.string.select_artist_all_folders) : selectedFolder.getName();
             Util.setSelectedMusicFolderId(this, musicFolderId);
             folderName.setText(musicFolderName);
             refresh();
@@ -256,23 +270,23 @@ public class SelectArtistActivity extends SubsonicTabActivity implements Adapter
 
         return true;
     }
-    
+
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
-			case android.R.id.home:
-				menuDrawer.toggleMenu();
-				return true; 
+            case android.R.id.home:
+                menuDrawer.toggleMenu();
+                return true;
             case R.id.main_shuffle:
                 Intent intent = new Intent(this, DownloadActivity.class);
                 intent.putExtra(Constants.INTENT_EXTRA_NAME_SHUFFLE, true);
                 Util.startActivityWithoutTransition(this, intent);
-                return true;              
+                return true;
         }
 
         return false;
     }
-    
+
     private class GetDataTask extends AsyncTask<Void, Void, String[]> {
         @Override
         protected void onPostExecute(String[] result) {
@@ -280,10 +294,10 @@ public class SelectArtistActivity extends SubsonicTabActivity implements Adapter
             super.onPostExecute(result);
         }
 
-		@Override
-		protected String[] doInBackground(Void... params) {
-			refresh();
-			return null;
-		}
+        @Override
+        protected String[] doInBackground(Void... params) {
+            refresh();
+            return null;
+        }
     }
 }

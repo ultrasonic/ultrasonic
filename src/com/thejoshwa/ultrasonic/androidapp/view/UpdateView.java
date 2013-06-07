@@ -22,12 +22,11 @@ public class UpdateView extends LinearLayout {
 	public UpdateView(Context context) {
 		super(context);
 		
-		setLayoutParams(new AbsListView.LayoutParams(
-			ViewGroup.LayoutParams.FILL_PARENT,
-			ViewGroup.LayoutParams.WRAP_CONTENT));
+		setLayoutParams(new AbsListView.LayoutParams(ViewGroup.LayoutParams.FILL_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT));
 		
 		INSTANCES.put(this, null);
         int instanceCount = INSTANCES.size();
+
         if (instanceCount > 50) {
             Log.w(TAG, instanceCount + " live UpdateView instances");
         }
@@ -65,12 +64,14 @@ public class UpdateView extends LinearLayout {
 
     private static void updateAll() {
         try {
-			List<UpdateView> views = new ArrayList<UpdateView>();;
+			List<UpdateView> views = new ArrayList<UpdateView>();
+
             for (UpdateView view : INSTANCES.keySet()) {
                 if (view.isShown()) {
 					views.add(view);
                 }
             }
+
 			updateAllLive(views);
         } catch (Throwable x) {
             Log.w(TAG, "Error when updating song views.", x);
@@ -95,7 +96,7 @@ public class UpdateView extends LinearLayout {
 			@Override
             public void run() {
 				try {
-					for(UpdateView view: views) {
+					for (UpdateView view: views) {
 						view.updateBackground();
 					}
 					uiHandler.post(runnable);

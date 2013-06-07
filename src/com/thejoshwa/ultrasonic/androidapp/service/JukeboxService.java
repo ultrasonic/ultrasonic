@@ -103,9 +103,11 @@ public class JukeboxService {
         while (true) {
             JukeboxTask task = null;
             try {
-                task = tasks.take();
-                JukeboxStatus status = task.execute();
-                onStatusUpdate(status);
+                if (!Util.isOffline(downloadService)) {
+                    task = tasks.take();
+                	JukeboxStatus status = task.execute();
+                	onStatusUpdate(status);
+                }
             } catch (Throwable x) {
                 onError(task, x);
             }
@@ -119,7 +121,7 @@ public class JukeboxService {
         // Track change?
         Integer index = jukeboxStatus.getCurrentPlayingIndex();
         if (index != null && index != -1 && index != downloadService.getCurrentPlayingIndex()) {
-            downloadService.setCurrentPlaying(index, true);
+            downloadService.setCurrentPlaying(index);
         }
     }
 

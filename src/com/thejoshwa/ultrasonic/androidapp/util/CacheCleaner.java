@@ -54,16 +54,18 @@ public class CacheCleaner {
             }
 
             File[] children = dir.listFiles();
-			
-			// No songs left in the folder
-			if(children.length == 1 && children[0].getPath().equals(FileUtil.getAlbumArtFile(dir).getPath())) {
-				Util.delete(FileUtil.getAlbumArtFile(dir));
-				children = dir.listFiles();
-			}
 
-            // Delete empty directory
-            if (children.length == 0) {
-                Util.delete(dir);
+            if (children != null) {
+                // No songs left in the folder
+                if (children.length == 1 && children[0].getPath().equals(FileUtil.getAlbumArtFile(dir).getPath())) {
+                    Util.delete(FileUtil.getAlbumArtFile(dir));
+                    children = dir.listFiles();
+                }
+
+                // Delete empty directory
+                if (children != null && children.length == 0) {
+                    Util.delete(dir);
+                }
             }
         }
     }

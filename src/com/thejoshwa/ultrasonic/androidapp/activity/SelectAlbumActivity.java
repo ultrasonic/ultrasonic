@@ -32,29 +32,26 @@ import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
 
+import com.handmark.pulltorefresh.library.PullToRefreshBase;
+import com.handmark.pulltorefresh.library.PullToRefreshBase.OnRefreshListener;
+import com.handmark.pulltorefresh.library.PullToRefreshListView;
 import com.thejoshwa.ultrasonic.androidapp.R;
 import com.thejoshwa.ultrasonic.androidapp.domain.MusicDirectory;
 import com.thejoshwa.ultrasonic.androidapp.service.DownloadFile;
 import com.thejoshwa.ultrasonic.androidapp.service.MusicService;
 import com.thejoshwa.ultrasonic.androidapp.service.MusicServiceFactory;
+import com.thejoshwa.ultrasonic.androidapp.util.AlbumHeader;
 import com.thejoshwa.ultrasonic.androidapp.util.Constants;
-import com.thejoshwa.ultrasonic.androidapp.util.FileUtil;
+import com.thejoshwa.ultrasonic.androidapp.util.EntryByDiscAndTrackComparator;
 import com.thejoshwa.ultrasonic.androidapp.util.Pair;
 import com.thejoshwa.ultrasonic.androidapp.util.TabActivityBackgroundTask;
 import com.thejoshwa.ultrasonic.androidapp.util.Util;
 import com.thejoshwa.ultrasonic.androidapp.view.EntryAdapter;
 
-import java.io.File;
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.Comparator;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Random;
-import java.util.Set;
-import com.handmark.pulltorefresh.library.PullToRefreshBase;
-import com.handmark.pulltorefresh.library.PullToRefreshBase.OnRefreshListener;
-import com.handmark.pulltorefresh.library.PullToRefreshListView;
 
 public class SelectAlbumActivity extends SubsonicTabActivity {
 
@@ -105,13 +102,13 @@ public class SelectAlbumActivity extends SubsonicTabActivity {
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 if (position >= 0) {
                     MusicDirectory.Entry entry = (MusicDirectory.Entry) parent.getItemAtPosition(position);
-                    if (entry.isDirectory()) {
+                    if (entry != null && entry.isDirectory()) {
                         Intent intent = new Intent(SelectAlbumActivity.this, SelectAlbumActivity.class);
                         intent.putExtra(Constants.INTENT_EXTRA_NAME_ID, entry.getId());
                         intent.putExtra(Constants.INTENT_EXTRA_NAME_IS_ALBUM, entry.isDirectory());
                         intent.putExtra(Constants.INTENT_EXTRA_NAME_NAME, entry.getTitle());
                         Util.startActivityWithoutTransition(SelectAlbumActivity.this, intent);
-                    } else if (entry.isVideo()) {
+                    } else if (entry != null && entry.isVideo()) {
                         playVideo(entry);
                     } else {
                         enableButtons();
@@ -236,7 +233,10 @@ public class SelectAlbumActivity extends SubsonicTabActivity {
     public boolean onPrepareOptionsMenu(Menu menu) {
         super.onPrepareOptionsMenu(menu);
         playAllButton = menu.findItem(R.id.select_album_play_all);
-        playAllButton.setVisible(playAllButtonVisible);
+
+        if (playAllButton != null) {
+            playAllButton.setVisible(playAllButtonVisible);
+        }
 
         return true;
     }
@@ -312,8 +312,8 @@ public class SelectAlbumActivity extends SubsonicTabActivity {
         AdapterView.AdapterContextMenuInfo info = (AdapterView.AdapterContextMenuInfo) menuInfo;
 
         MusicDirectory.Entry entry = (MusicDirectory.Entry) albumListView.getItemAtPosition(info.position);
-        
-        if (entry.isDirectory()) {
+
+        if (entry != null && entry.isDirectory()) {
             MenuInflater inflater = getMenuInflater();
             inflater.inflate(R.menu.select_album_context, menu);
         }
@@ -322,7 +322,16 @@ public class SelectAlbumActivity extends SubsonicTabActivity {
     @Override
     public boolean onContextItemSelected(MenuItem menuItem) {
         AdapterView.AdapterContextMenuInfo info = (AdapterView.AdapterContextMenuInfo) menuItem.getMenuInfo();
+
+        if (info == null) {
+            return true;
+        }
+
         MusicDirectory.Entry entry = (MusicDirectory.Entry) albumListView.getItemAtPosition(info.position);
+
+        if (entry == null) {
+            return true;
+        }
 
         switch (menuItem.getItemId()) {
             case R.id.album_menu_play_now:
@@ -372,7 +381,7 @@ public class SelectAlbumActivity extends SubsonicTabActivity {
     }
 
     private void getMusicDirectory(final String id, final String name) {
-        getActionBar().setSubtitle(name);
+        setActionBarSubtitle(name);
 
         new LoadTask() {
             @Override
@@ -384,7 +393,7 @@ public class SelectAlbumActivity extends SubsonicTabActivity {
     }
     
     private void getArtist(final String id, final String name) {
-        getActionBar().setSubtitle(name);
+        setActionBarSubtitle(name);
 
         new LoadTask() {
             @Override
@@ -396,7 +405,7 @@ public class SelectAlbumActivity extends SubsonicTabActivity {
     }
     
     private void getAlbum(final String id, final String name) {
-        getActionBar().setSubtitle(name);
+        setActionBarSubtitle(name);
 
         new LoadTask() {
             @Override
@@ -408,7 +417,7 @@ public class SelectAlbumActivity extends SubsonicTabActivity {
     }
     
     private void getSongsForGenre(final String genre, final int count, final int offset) {
-    	getActionBar().setSubtitle(genre);
+        setActionBarSubtitle(genre);
 
         new LoadTask() {
             @Override
@@ -446,7 +455,7 @@ public class SelectAlbumActivity extends SubsonicTabActivity {
     }
     
     private void getStarred() {
-    	getActionBar().setSubtitle(R.string.main_songs_starred);
+        setActionBarSubtitle(R.string.main_songs_starred);
 
         new LoadTask() {
             @Override
@@ -462,8 +471,8 @@ public class SelectAlbumActivity extends SubsonicTabActivity {
     
     private void getVideos() {
     	showHeader = false;
-    	
-    	getActionBar().setSubtitle(R.string.main_videos);
+
+        setActionBarSubtitle(R.string.main_videos);
 
         new LoadTask() {
             @Override
@@ -475,7 +484,7 @@ public class SelectAlbumActivity extends SubsonicTabActivity {
     }
     
     private void getRandom(final int size) {
-    	getActionBar().setSubtitle(R.string.main_songs_random);
+        setActionBarSubtitle(R.string.main_songs_random);
 
         new LoadTask() {
             @Override
@@ -486,7 +495,7 @@ public class SelectAlbumActivity extends SubsonicTabActivity {
     }
 
     private void getPlaylist(final String playlistId, final String playlistName) {
-        getActionBar().setSubtitle(playlistName);
+        setActionBarSubtitle(playlistName);
 
         new LoadTask() {
             @Override
@@ -498,8 +507,8 @@ public class SelectAlbumActivity extends SubsonicTabActivity {
 
     private void getAlbumList(final String albumListType, final int albumListTitle, final int size, final int offset) {
     	showHeader = false;
-    	
-    	getActionBar().setSubtitle(albumListTitle);
+
+        setActionBarSubtitle(albumListTitle);
 
         new LoadTask() {
             @Override
@@ -667,15 +676,7 @@ public class SelectAlbumActivity extends SubsonicTabActivity {
             getDownloadService().unpin(songs);
         }
     }
-    
-    public void deleteRecursively(MusicDirectory.Entry album) {
-		File dir = FileUtil.getAlbumDirectory(this, album);
-		Util.recursiveDelete(dir);
-		if(Util.isOffline(this)) {
-			refresh();
-		}
-	}
-   
+
     private abstract class LoadTask extends TabActivityBackgroundTask<Pair<MusicDirectory, Boolean>> {
 
         public LoadTask() {
@@ -698,7 +699,7 @@ public class SelectAlbumActivity extends SubsonicTabActivity {
             List<MusicDirectory.Entry> entries = musicDirectory.getChildren();
             
             if (Util.getShouldSortByDisc(SelectAlbumActivity.this)){
-            	Collections.sort(entries, new EntryByDiscAndTrackComparer());
+            	Collections.sort(entries, new EntryByDiscAndTrackComparator());
             }
             
             String directoryName = musicDirectory.getName();
@@ -776,7 +777,7 @@ public class SelectAlbumActivity extends SubsonicTabActivity {
             enableButtons();
 
             boolean isAlbumList = getIntent().hasExtra(Constants.INTENT_EXTRA_NAME_ALBUM_LIST_TYPE);
-            playAllButtonVisible = !(isAlbumList || entries.isEmpty());
+            playAllButtonVisible = !(isAlbumList || entries.isEmpty()) && !allVideos;
 
             emptyView.setVisibility(entries.isEmpty() ? View.VISIBLE : View.GONE);
             
@@ -793,62 +794,28 @@ public class SelectAlbumActivity extends SubsonicTabActivity {
             }
         }
         
-        private View createHeader(List<MusicDirectory.Entry> entries, String name, int songCount) {
+        protected View createHeader(List<MusicDirectory.Entry> entries, String name, int songCount) {
             ImageView coverArtView = (ImageView) header.findViewById(R.id.select_album_art);
             int artworkSelection = random.nextInt(entries.size());
             getImageLoader().loadImage(coverArtView, entries.get(artworkSelection), true, Util.getAlbumImageSize(SelectAlbumActivity.this), false, true);
 
             TextView titleView = (TextView) header.findViewById(R.id.select_album_title);
-            titleView.setText(name != null ? name : getActionBar().getSubtitle());
+            titleView.setText(name != null ? name : getActionBarSubtitle());
 
-            Set<String> artists = new HashSet<String>();
-            Set<String> grandParents = new HashSet<String>();
-            Set<String> genres = new HashSet<String>();
-            boolean allVideo = true;
-            
-            long totalDuration = 0;
-            for (MusicDirectory.Entry entry : entries) {
-            	if (!entry.isVideo()) {
-            		allVideo = false;
-            	}
-            	
-                if (!entry.isDirectory()) {
-                	if (Util.shouldUseFolderForArtistName(getBaseContext())) {
-                		String grandParent = Util.getGrandparent(entry.getPath());
-                		
-                		if (grandParent != null) {
-                			grandParents.add(grandParent);
-                		}
-                	}
-                	
-                    if (entry.getArtist() != null) {
-                    	Integer duration = entry.getDuration();
+            AlbumHeader albumHeader = AlbumHeader.processEntries(SelectAlbumActivity.this, entries);
 
-                    	if (duration != null) {
-                    		totalDuration += duration;	
-                    	}
-                   	
-                        artists.add(entry.getArtist());
-                    }
-                    
-                	if (entry.getGenre() != null) {
-                    	genres.add(entry.getGenre());
-                	}
-                }
-            }
-            
             // Don't show a header if all entries are videos
-            if (allVideo) {
+            if (albumHeader.getIsAllVideo()) {
             	return null;
             }
             
             TextView artistView = (TextView) header.findViewById(R.id.select_album_artist);
-            String artist = null;
+            String artist;
             
-            if (artists.size() == 1) {
-            	artist = artists.iterator().next();
-            } else if (grandParents.size() == 1) {
-            	artist = grandParents.iterator().next();	
+            if (albumHeader.getArtists().size() == 1) {
+            	artist = albumHeader.getArtists().iterator().next();
+            } else if (albumHeader.getGrandParents().size() == 1) {
+            	artist = albumHeader.getGrandParents().iterator().next();
             } else {
             	artist = getResources().getString(R.string.common_various_artists);
             }
@@ -856,10 +823,10 @@ public class SelectAlbumActivity extends SubsonicTabActivity {
             artistView.setText(artist);
             
             TextView genreView = (TextView) header.findViewById(R.id.select_album_genre);
-            String genre = null;
+            String genre;
             
-            if (genres.size() == 1) {
-            	genre = genres.iterator().next();
+            if (albumHeader.getGenres().size() == 1) {
+            	genre = albumHeader.getGenres().iterator().next();
             } else {
             	genre = getResources().getString(R.string.common_multiple_genres);
             }
@@ -870,7 +837,7 @@ public class SelectAlbumActivity extends SubsonicTabActivity {
             String songs = getResources().getQuantityString(R.plurals.select_album_n_songs, songCount, songCount);
             songCountView.setText(songs);
             
-            String duration = Util.formatTotalDuration(totalDuration);
+            String duration = Util.formatTotalDuration(albumHeader.getTotalDuration());
             
             TextView durationView = (TextView) header.findViewById(R.id.select_album_duration);
             durationView.setText(duration);
@@ -892,23 +859,4 @@ public class SelectAlbumActivity extends SubsonicTabActivity {
 			return null;
 		}
     }
-    
-    public class EntryByDiscAndTrackComparer implements Comparator<MusicDirectory.Entry> {
-    	  @Override
-    	  public int compare(MusicDirectory.Entry x, MusicDirectory.Entry y) {
-    		Integer discX = x.getDiscNumber();
-    		Integer discY = y.getDiscNumber();
-    		Integer trackX = x.getTrack();
-    		Integer trackY = y.getTrack();
-    		
-    	    int startComparison = compare(discX == null ? 0 : discX, discY == null ? 0 : discY);
-    	    return startComparison != 0 ? startComparison : compare(trackX == null ? 0 : trackX, trackY == null ? 0 : trackY);
-    	  }
-
-    	  private int compare(long a, long b) {
-    	    return a < b ? -1
-    	         : a > b ? 1
-    	         : 0;
-    	  }
-    	}
 }

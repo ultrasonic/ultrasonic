@@ -44,7 +44,7 @@ import com.thejoshwa.ultrasonic.androidapp.domain.Lyrics;
 import com.thejoshwa.ultrasonic.androidapp.domain.MusicDirectory;
 import com.thejoshwa.ultrasonic.androidapp.domain.MusicFolder;
 import com.thejoshwa.ultrasonic.androidapp.domain.Playlist;
-import com.thejoshwa.ultrasonic.androidapp.domain.SearchCritera;
+import com.thejoshwa.ultrasonic.androidapp.domain.SearchCriteria;
 import com.thejoshwa.ultrasonic.androidapp.domain.SearchResult;
 import com.thejoshwa.ultrasonic.androidapp.util.Constants;
 import com.thejoshwa.ultrasonic.androidapp.util.FileUtil;
@@ -77,7 +77,7 @@ public class OfflineMusicService extends RESTMusicService {
                 try {
                 	artistIndex = file.getName().substring(0, 1);
                 }
-                catch (Exception ex) { }
+                catch (Exception ignored) { }
                 
                 artist.setIndex(artistIndex);
                 
@@ -156,7 +156,7 @@ public class OfflineMusicService extends RESTMusicService {
                 duration = mmr.extractMetadata(MediaMetadataRetriever.METADATA_KEY_DURATION);
                 hasVideo = mmr.extractMetadata(MediaMetadataRetriever.METADATA_KEY_HAS_VIDEO);
                 mmr.release();
-        	} catch (Exception ex) { }
+        	} catch (Exception ignored) { }
         	
             entry.setArtist(artist != null ? artist : file.getParentFile().getParentFile().getName());
             entry.setAlbum(album != null ? album : file.getParentFile().getName());
@@ -201,7 +201,7 @@ public class OfflineMusicService extends RESTMusicService {
           		
           			discValue = Integer.parseInt(disc);
           		} 
-          		catch(Exception ex) { }
+          		catch(Exception ignored) { }
             	
       			entry.setDiscNumber(discValue);
             }
@@ -211,7 +211,7 @@ public class OfflineMusicService extends RESTMusicService {
             	
           		try {
           			yearValue = Integer.parseInt(year);
-          		} catch(Exception ex) { }
+          		} catch(Exception ignored) { }
           		
       			entry.setYear(yearValue);            		
             }
@@ -236,7 +236,7 @@ public class OfflineMusicService extends RESTMusicService {
           		try {
           			durationValue = Long.parseLong(duration);
           			durationValue = TimeUnit.MILLISECONDS.toSeconds(durationValue);
-          		} catch(Exception ex) { }
+          		} catch(Exception ignored) { }
           		
             	entry.setDuration(durationValue);
             }
@@ -278,16 +278,17 @@ public class OfflineMusicService extends RESTMusicService {
     }
 
     @Override
-    public SearchResult search(SearchCritera criteria, Context context, ProgressListener progressListener) throws Exception {
+    public SearchResult search(SearchCriteria criteria, Context context, ProgressListener progressListener) throws Exception {
 		List<Artist> artists = new ArrayList<Artist>();
 		List<MusicDirectory.Entry> albums = new ArrayList<MusicDirectory.Entry>();
 		List<MusicDirectory.Entry> songs = new ArrayList<MusicDirectory.Entry>();
         File root = FileUtil.getMusicDirectory(context);
-		int closeness = 0;
+		int closeness;
+
         for (File artistFile : FileUtil.listFiles(root)) {
 			String artistName = artistFile.getName();
             if (artistFile.isDirectory()) {
-				if((closeness = matchCriteria(criteria, artistName)) > 0) {
+				if ((closeness = matchCriteria(criteria, artistName)) > 0) {
 					Artist artist = new Artist();
 					artist.setId(artistFile.getPath());
 					artist.setIndex(artistFile.getName().substring(0, 1));
@@ -343,7 +344,7 @@ public class OfflineMusicService extends RESTMusicService {
 		return new SearchResult(artists, albums, songs);
     }
 	
-	private void recursiveAlbumSearch(String artistName, File file, SearchCritera criteria, Context context, List<MusicDirectory.Entry> albums, List<MusicDirectory.Entry> songs) {
+	private void recursiveAlbumSearch(String artistName, File file, SearchCriteria criteria, Context context, List<MusicDirectory.Entry> albums, List<MusicDirectory.Entry> songs) {
 		int closeness;
 		for(File albumFile : FileUtil.listMediaFiles(file)) {
 			if(albumFile.isDirectory()) {
@@ -381,7 +382,7 @@ public class OfflineMusicService extends RESTMusicService {
 			}
 		}
 	}
-	private int matchCriteria(SearchCritera criteria, String name) {
+	private int matchCriteria(SearchCriteria criteria, String name) {
 		String query = criteria.getQuery().toLowerCase();
 		String[] queryParts = query.split(" ");
 		String[] nameParts = name.toLowerCase().split(" ");

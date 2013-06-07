@@ -38,7 +38,6 @@ public final class Constants {
     public static final String INTENT_EXTRA_NAME_ARTIST = "subsonic.artist";
     public static final String INTENT_EXTRA_NAME_TITLE = "subsonic.title";
     public static final String INTENT_EXTRA_NAME_AUTOPLAY = "subsonic.playall";
-    public static final String INTENT_EXTRA_NAME_ERROR = "subsonic.error";
     public static final String INTENT_EXTRA_NAME_QUERY = "subsonic.query";
     public static final String INTENT_EXTRA_NAME_PLAYLIST_ID = "subsonic.playlist.id";
     public static final String INTENT_EXTRA_NAME_PLAYLIST_NAME = "subsonic.playlist.name";
@@ -58,7 +57,6 @@ public final class Constants {
 
     // Notification IDs.
     public static final int NOTIFICATION_ID_PLAYING = 100;
-    public static final int NOTIFICATION_ID_ERROR = 101;
 
     // Preferences keys.
     public static final String PREFERENCES_KEY_SERVER = "server";
@@ -93,9 +91,6 @@ public final class Constants {
     public static final String PREFERENCES_KEY_SERVER_SCALING = "serverScaling";
     public static final String PREFERENCES_KEY_REPEAT_MODE = "repeatMode";
     public static final String PREFERENCES_KEY_WIFI_REQUIRED_FOR_DOWNLOAD = "wifiRequiredForDownload";
-	public static final String PREFERENCES_KEY_SHUFFLE_START_YEAR = "startYear";
-	public static final String PREFERENCES_KEY_SHUFFLE_END_YEAR = "endYear";
-	public static final String PREFERENCES_KEY_SHUFFLE_GENRE = "genre";
     public static final String PREFERENCES_KEY_BUFFER_LENGTH = "bufferLength";
     public static final String PREFERENCES_KEY_NETWORK_TIMEOUT = "networkTimeout";
     public static final String PREFERENCES_KEY_SHOW_NOTIFICATION = "showNotification";
@@ -107,14 +102,11 @@ public final class Constants {
     public static final String PREFERENCES_KEY_DEFAULT_ALBUMS = "defaultAlbums";
     public static final String PREFERENCES_KEY_DEFAULT_SONGS = "defaultSongs";
     public static final String PREFERENCES_KEY_DEFAULT_ARTISTS = "defaultArtists";
-    public static final String PREFERENCES_KEY_USE_STREAM_PROXY = "useStreamProxy";
     public static final String PREFERENCES_KEY_SHOW_NOW_PLAYING = "showNowPlaying";
     public static final String PREFERENCES_KEY_GAPLESS_PLAYBACK = "gaplessPlayback";
     public static final String PREFERENCES_KEY_CLEAR_SEARCH_HISTORY = "clearSearchHistory";
     public static final String PREFERENCES_KEY_TEST_CONNECTION = "testConnection";
-    public static final String PREFERENCES_EQUALIZER_ON = "equalizerOn";
-	public static final String PREFERENCES_EQUALIZER_SETTINGS = "equalizerSettings";
-	public static final String PREFERENCES_KEY_DOWNLOAD_TRANSITION = "transitionToDownloadOnPlay";
+    public static final String PREFERENCES_KEY_DOWNLOAD_TRANSITION = "transitionToDownloadOnPlay";
 	public static final String PREFERENCES_KEY_INCREMENT_TIME = "incrementTime";
 	public static final String PREFERENCES_KEY_ID3_TAGS = "useId3Tags";
 	public static final String PREFERENCES_KEY_TEMP_LOSS = "tempLoss";

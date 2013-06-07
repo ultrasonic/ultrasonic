@@ -42,8 +42,20 @@ public class BluetoothIntentReceiver extends BroadcastReceiver {
 		Log.d(TAG, "Bluetooth Sink State: " + state);
 		Log.d(TAG, "Bluetooth Action: " + action);
 
-		boolean connected = state == android.bluetooth.BluetoothA2dp.STATE_CONNECTED || action.equals(android.bluetooth.BluetoothDevice.ACTION_ACL_CONNECTED);
-		boolean disconnected = state == android.bluetooth.BluetoothA2dp.STATE_DISCONNECTED || (action.equals(android.bluetooth.BluetoothDevice.ACTION_ACL_DISCONNECTED) || action.equals(android.bluetooth.BluetoothDevice.ACTION_ACL_DISCONNECT_REQUESTED));
+        boolean actionConnected = false;
+        boolean actionDisconnected = false;
+
+        if (action != null) {
+            if (action.equals(android.bluetooth.BluetoothDevice.ACTION_ACL_CONNECTED)) {
+                actionConnected = true;
+
+            } else if (action.equals(android.bluetooth.BluetoothDevice.ACTION_ACL_DISCONNECTED) || action.equals(android.bluetooth.BluetoothDevice.ACTION_ACL_DISCONNECT_REQUESTED)) {
+                actionDisconnected = true;
+            }
+        }
+
+		boolean connected = state == android.bluetooth.BluetoothA2dp.STATE_CONNECTED || actionConnected;
+		boolean disconnected = state == android.bluetooth.BluetoothA2dp.STATE_DISCONNECTED || actionDisconnected;
 
 		if (connected) {
 			Log.i(TAG, "Connected to Bluetooth A2DP, requesting media button focus.");

@@ -69,9 +69,9 @@ public final class ChatActivity extends SubsonicTabActivity {
         String serverName = Util.getServerName(this, Util.getActiveServer(this));
         String userName = Util.getUserName(this, Util.getActiveServer(this));
         String title = String.format("%s [%s@%s]", getResources().getString(R.string.button_bar_chat), userName, serverName); 
-        		        
-        getActionBar().setSubtitle(title);
-        
+
+        setActionBarSubtitle(title);
+
         messageEditText.setImeActionLabel("Send", KeyEvent.KEYCODE_ENTER);
         
         messageEditText.addTextChangedListener(new TextWatcher() {
@@ -164,30 +164,33 @@ public final class ChatActivity extends SubsonicTabActivity {
 				}
 			}, refreshInterval, refreshInterval);
 		}
-	}       
-    
+	}
+
     private void sendMessage() {
-		final String message = messageEditText.getText().toString();
-		
-		if (!Util.isNullOrWhiteSpace(message)) {
-			messageEditText.setText("");
+        if (messageEditText != null) {
+            final String message;
+            message = messageEditText.getText().toString();
 
-			BackgroundTask<Void> task = new TabActivityBackgroundTask<Void>(ChatActivity.this, false) {
-				@Override
-				protected Void doInBackground() throws Throwable {
-					MusicService musicService = MusicServiceFactory.getMusicService(ChatActivity.this);
-					musicService.addChatMessage(message, ChatActivity.this, this);
-					return null;
-				}
+            if (!Util.isNullOrWhiteSpace(message)) {
+                messageEditText.setText("");
 
-				@Override
-				protected void done(Void result) {
-					load();
-				}
-			};
+                BackgroundTask<Void> task = new TabActivityBackgroundTask<Void>(ChatActivity.this, false) {
+                    @Override
+                    protected Void doInBackground() throws Throwable {
+                        MusicService musicService = MusicServiceFactory.getMusicService(ChatActivity.this);
+                        musicService.addChatMessage(message, ChatActivity.this, this);
+                        return null;
+                    }
 
-			task.execute();
-		}
+                    @Override
+                    protected void done(Void result) {
+                        load();
+                    }
+                };
+
+                task.execute();
+            }
+        }
     }
     
     private synchronized void load() {

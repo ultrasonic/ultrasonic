@@ -80,7 +80,7 @@ public class SelectGenreActivity extends SubsonicTabActivity implements AdapterV
         View browseMenuItem = findViewById(R.id.menu_browse);
         menuDrawer.setActiveView(browseMenuItem);
 
-        getActionBar().setSubtitle(R.string.main_genres_title);
+        setActionBarSubtitle(R.string.main_genres_title);
 
         load();
     }
@@ -132,11 +132,14 @@ public class SelectGenreActivity extends SubsonicTabActivity implements AdapterV
     @Override
     public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
     	Genre genre = (Genre) parent.getItemAtPosition(position);
-    	Intent intent = new Intent(this, SelectAlbumActivity.class);
-    	intent.putExtra(Constants.INTENT_EXTRA_NAME_GENRE_NAME, genre.getName());
-        intent.putExtra(Constants.INTENT_EXTRA_NAME_ALBUM_LIST_SIZE, Util.getMaxSongs(this));
-        intent.putExtra(Constants.INTENT_EXTRA_NAME_ALBUM_LIST_OFFSET, 0);
-    	Util.startActivityWithoutTransition(this, intent);
+
+        if (genre != null) {
+            Intent intent = new Intent(this, SelectAlbumActivity.class);
+            intent.putExtra(Constants.INTENT_EXTRA_NAME_GENRE_NAME, genre.getName());
+            intent.putExtra(Constants.INTENT_EXTRA_NAME_ALBUM_LIST_SIZE, Util.getMaxSongs(this));
+            intent.putExtra(Constants.INTENT_EXTRA_NAME_ALBUM_LIST_OFFSET, 0);
+            Util.startActivityWithoutTransition(this, intent);
+        }
     }
 
     @Override

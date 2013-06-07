@@ -26,6 +26,10 @@ import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ImageView;
 import android.widget.ListView;
+
+import com.handmark.pulltorefresh.library.PullToRefreshBase;
+import com.handmark.pulltorefresh.library.PullToRefreshBase.OnRefreshListener;
+import com.handmark.pulltorefresh.library.PullToRefreshListView;
 import com.thejoshwa.ultrasonic.androidapp.R;
 import com.thejoshwa.ultrasonic.androidapp.domain.MusicDirectory;
 import com.thejoshwa.ultrasonic.androidapp.domain.MusicDirectory.Entry;
@@ -33,18 +37,13 @@ import com.thejoshwa.ultrasonic.androidapp.service.DownloadFile;
 import com.thejoshwa.ultrasonic.androidapp.service.MusicService;
 import com.thejoshwa.ultrasonic.androidapp.service.MusicServiceFactory;
 import com.thejoshwa.ultrasonic.androidapp.util.Constants;
-import com.thejoshwa.ultrasonic.androidapp.util.FileUtil;
 import com.thejoshwa.ultrasonic.androidapp.util.Pair;
 import com.thejoshwa.ultrasonic.androidapp.util.TabActivityBackgroundTask;
 import com.thejoshwa.ultrasonic.androidapp.util.Util;
 import com.thejoshwa.ultrasonic.androidapp.view.EntryAdapter;
 
-import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
-import com.handmark.pulltorefresh.library.PullToRefreshBase;
-import com.handmark.pulltorefresh.library.PullToRefreshBase.OnRefreshListener;
-import com.handmark.pulltorefresh.library.PullToRefreshListView;
 
 public class BookmarkActivity extends SubsonicTabActivity {
 
@@ -52,16 +51,12 @@ public class BookmarkActivity extends SubsonicTabActivity {
     private ListView albumListView;
     private View albumButtons;
     private View emptyView;
-    private ImageView selectButton;
     private ImageView playNowButton;
-    private ImageView playNextButton;    
-    private ImageView playLastButton;
     private ImageView pinButton;
     private ImageView unpinButton;
     private ImageView downloadButton;
     private ImageView deleteButton;
-    private ImageView moreButton;
-    
+
     /**
      * Called when the activity is first created.
      */
@@ -89,31 +84,33 @@ public class BookmarkActivity extends SubsonicTabActivity {
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 if (position >= 0) {
                     Entry entry = (Entry) parent.getItemAtPosition(position);
-                    
-                    if (entry.isVideo()) {
-                        playVideo(entry);
-                    } else {
-                        enableButtons();
+
+                    if (entry != null) {
+                        if (entry.isVideo()) {
+                            playVideo(entry);
+                        } else {
+                            enableButtons();
+                        }
                     }
                 }
             }
         });
 
-        selectButton = (ImageView) findViewById(R.id.select_album_select);
+        ImageView selectButton = (ImageView) findViewById(R.id.select_album_select);
         playNowButton = (ImageView) findViewById(R.id.select_album_play_now);
-        playNextButton = (ImageView) findViewById(R.id.select_album_play_next);
-        playLastButton = (ImageView) findViewById(R.id.select_album_play_last);
+        ImageView playNextButton = (ImageView) findViewById(R.id.select_album_play_next);
+        ImageView playLastButton = (ImageView) findViewById(R.id.select_album_play_last);
         pinButton = (ImageView) findViewById(R.id.select_album_pin);
         unpinButton = (ImageView) findViewById(R.id.select_album_unpin);
         downloadButton = (ImageView) findViewById(R.id.select_album_download);
         deleteButton = (ImageView) findViewById(R.id.select_album_delete);
-        moreButton = (ImageView) findViewById(R.id.select_album_more);
+        ImageView oreButton = (ImageView) findViewById(R.id.select_album_more);
 		emptyView = findViewById(R.id.select_album_empty);
 		
 		selectButton.setVisibility(View.GONE);
 		playNextButton.setVisibility(View.GONE);
 		playLastButton.setVisibility(View.GONE);
-		moreButton.setVisibility(View.GONE);
+		oreButton.setVisibility(View.GONE);
 
         playNowButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -169,7 +166,7 @@ public class BookmarkActivity extends SubsonicTabActivity {
     }
     
     private void getBookmarks() {
-    	getActionBar().setSubtitle(R.string.button_bar_bookmarks);
+        setActionBarSubtitle(R.string.button_bar_bookmarks);
 
         new LoadTask() {
             @Override
@@ -333,14 +330,6 @@ public class BookmarkActivity extends SubsonicTabActivity {
         }
     }
 
-    public void deleteRecursively(MusicDirectory.Entry album) {
-		File dir = FileUtil.getAlbumDirectory(this, album);
-		Util.recursiveDelete(dir);
-		if(Util.isOffline(this)) {
-			refresh();
-		}
-	}
-   
     private abstract class LoadTask extends TabActivityBackgroundTask<Pair<MusicDirectory, Boolean>> {
 
         public LoadTask() {

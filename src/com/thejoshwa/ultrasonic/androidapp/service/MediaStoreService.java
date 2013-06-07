@@ -64,13 +64,16 @@ public class MediaStoreService {
 
         Uri uri = contentResolver.insert(MediaStore.Audio.Media.EXTERNAL_CONTENT_URI, values);
 
-        // Look up album, and add cover art if found.
-        Cursor cursor = contentResolver.query(uri, new String[]{MediaStore.Audio.AudioColumns.ALBUM_ID}, null, null, null);
-        if (cursor.moveToFirst()) {
-            int albumId = cursor.getInt(0);
-            insertAlbumArt(albumId, downloadFile);
+        if (uri != null) {
+            // Look up album, and add cover art if found.
+            Cursor cursor = contentResolver.query(uri, new String[]{MediaStore.Audio.AudioColumns.ALBUM_ID}, null, null, null);
+
+            if (cursor != null && cursor.moveToFirst()) {
+                int albumId = cursor.getInt(0);
+                insertAlbumArt(albumId, downloadFile);
+                cursor.close();
+            }
         }
-        cursor.close();
     }
 
     public void deleteFromMediaStore(DownloadFile downloadFile) {
@@ -89,10 +92,15 @@ public class MediaStoreService {
 
     private void insertAlbumArt(int albumId, DownloadFile downloadFile) {
         ContentResolver contentResolver = context.getContentResolver();
+        Uri uri = Uri.withAppendedPath(ALBUM_ART_URI, String.valueOf(albumId));
 
-        Cursor cursor = contentResolver.query(Uri.withAppendedPath(ALBUM_ART_URI, String.valueOf(albumId)), null, null, null, null);
-        if (!cursor.moveToFirst()) {
+        if (uri == null) {
+            return;
+        }
 
+        Cursor cursor = contentResolver.query(uri, null, null, null, null);
+
+        if (cursor != null && !cursor.moveToFirst()) {
             // No album art found, add it.
             File albumArtFile = FileUtil.getAlbumArtFile(context, downloadFile.getSong());
             if (albumArtFile.exists()) {
@@ -102,8 +110,8 @@ public class MediaStoreService {
                 contentResolver.insert(ALBUM_ART_URI, values);
                 Log.i(TAG, "Added album art: " + albumArtFile);
             }
-        }
-        cursor.close();
-    }
 
+            cursor.close();
+        }
+    }
 }

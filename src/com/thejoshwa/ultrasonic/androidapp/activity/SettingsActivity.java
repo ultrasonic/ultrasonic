@@ -18,6 +18,7 @@
  */
 package com.thejoshwa.ultrasonic.androidapp.activity;
 
+import android.app.ActionBar;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Build;
@@ -83,7 +84,6 @@ public class SettingsActivity extends PreferenceActivity implements SharedPrefer
     private ListPreference directoryCacheTime;
     private CheckBoxPreference mediaButtonsEnabled;
     private CheckBoxPreference lockScreenEnabled;
-    private CheckBoxPreference gaplessPlaybackEnabled;    
     private CheckBoxPreference sendBluetoothNotifications;
     private CheckBoxPreference sendBluetoothAlbumArt;
     private int maxServerCount = 10;
@@ -99,7 +99,6 @@ public class SettingsActivity extends PreferenceActivity implements SharedPrefer
     private int activeServers = 3;
     View chatMenuItem = null;
     View bookmarksMenuItem = null;
-    View menuMain = null;
     PreferenceCategory serversCategory;
     Preference addServerPreference;
     SharedPreferences settings;
@@ -132,7 +131,11 @@ public class SettingsActivity extends PreferenceActivity implements SharedPrefer
         findViewById(R.id.menu_about).setOnClickListener(this);
         findViewById(R.id.menu_exit).setOnClickListener(this);
 
-        getActionBar().setDisplayHomeAsUpEnabled(true);
+        ActionBar actionBar = getActionBar();
+
+        if (actionBar != null) {
+            actionBar.setDisplayHomeAsUpEnabled(true);
+        }
         
         View browseMenuItem = findViewById(R.id.menu_settings);
         menuDrawer.setActiveView(browseMenuItem);
@@ -163,7 +166,7 @@ public class SettingsActivity extends PreferenceActivity implements SharedPrefer
         directoryCacheTime = (ListPreference) findPreference(Constants.PREFERENCES_KEY_DIRECTORY_CACHE_TIME);
         mediaButtonsEnabled = (CheckBoxPreference) findPreference(Constants.PREFERENCES_KEY_MEDIA_BUTTONS);
         lockScreenEnabled = (CheckBoxPreference) findPreference(Constants.PREFERENCES_KEY_SHOW_LOCK_SCREEN_CONTROLS);
-        gaplessPlaybackEnabled = (CheckBoxPreference) findPreference(Constants.PREFERENCES_KEY_GAPLESS_PLAYBACK);
+        CheckBoxPreference gaplessPlaybackEnabled = (CheckBoxPreference) findPreference(Constants.PREFERENCES_KEY_GAPLESS_PLAYBACK);
         sendBluetoothAlbumArt = (CheckBoxPreference) findPreference(Constants.PREFERENCES_KEY_SEND_BLUETOOTH_ALBUM_ART);
         sendBluetoothNotifications = (CheckBoxPreference) findPreference(Constants.PREFERENCES_KEY_SEND_BLUETOOTH_NOTIFICATIONS);
 

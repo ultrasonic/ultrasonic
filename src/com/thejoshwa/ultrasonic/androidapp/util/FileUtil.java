@@ -52,25 +52,6 @@ public class FileUtil {
 	private static final List<String> PLAYLIST_FILE_EXTENSIONS = Arrays.asList("m3u");
     private static final File DEFAULT_MUSIC_DIR = createDirectory("music");
 
-    public static File getAnySong(Context context) {
-		File dir = getMusicDirectory(context);
-		return getAnySong(context, dir);
-	}
-	private static File getAnySong(Context context, File dir) {
-		for(File file: dir.listFiles()) {
-			if(file.isDirectory()) {
-				return getAnySong(context, file);
-			}
-
-			String extension = getExtension(file.getName());
-			if(MUSIC_FILE_EXTENSIONS.contains(extension)) {
-				return file;
-			}
-		}
-
-		return null;
-	}
-    
     public static File getSongFile(Context context, MusicDirectory.Entry song) {
         File dir = getAlbumDirectory(context, song);
 
@@ -98,13 +79,8 @@ public class FileUtil {
 		File playlistDir = getPlaylistDirectory();
 		return new File(playlistDir, fileSystemSafe(name) + ".m3u");
 	}
-    
-	public static File getOldPlaylistFile(String name) {
-		File playlistDir = getPlaylistDirectory();
-		return new File(playlistDir, name);
-	}
-	
-	public static File getPlaylistDirectory() {
+
+    public static File getPlaylistDirectory() {
 		File playlistDir = new File(getUltraSonicDirectory(), "playlists");
 		ensureDirectoryExistsAndIsReadWritable(playlistDir);
 		return playlistDir;
@@ -154,22 +130,9 @@ public class FileUtil {
         
         return null;
     }
-    
-    public static Bitmap scaleDownBitmap(Bitmap photo, int newHeight, Context context) {
 
-    	 final float densityMultiplier = context.getResources().getDisplayMetrics().density;        
-
-    	 int h= (int) (newHeight*densityMultiplier);
-    	 int w= (int) (h * photo.getWidth()/((double) photo.getHeight()));
-
-    	 photo=Bitmap.createScaledBitmap(photo, w, h, true);
-
-    	 return photo;
-    	 }
-    
-	public static File getArtistDirectory(Context context, Artist artist) {
-		File dir = new File(getMusicDirectory(context).getPath() + "/" + fileSystemSafe(artist.getName()));
-		return dir;
+    public static File getArtistDirectory(Context context, Artist artist) {
+        return new File(getMusicDirectory(context).getPath() + "/" + fileSystemSafe(artist.getName()));
 	}
 
     public static File getAlbumArtDirectory() {
@@ -180,7 +143,12 @@ public class FileUtil {
     }
 
     public static File getAlbumDirectory(Context context, MusicDirectory.Entry entry) {
+        if (entry == null) {
+            return null;
+        }
+
         File dir;
+
         if (entry.getPath() != null) {
             File f = new File(fileSystemSafeDir(entry.getPath()));
             dir = new File(getMusicDirectory(context).getPath() + "/" + (entry.isDirectory() ? f.getPath() : f.getParent()));
@@ -192,6 +160,7 @@ public class FileUtil {
 			}
             dir = new File(getMusicDirectory(context).getPath() + "/" + artist + "/" + album);
         }
+
         return dir;
     }
 
@@ -324,17 +293,7 @@ public class FileUtil {
         return MUSIC_FILE_EXTENSIONS.contains(extension) || VIDEO_FILE_EXTENSIONS.contains(extension);
     }
 
-	public static boolean isMusicFile(File file) {
-		String extension = getExtension(file.getName());
-        return MUSIC_FILE_EXTENSIONS.contains(extension);
-	}
-	
-	public static boolean isVideoFile(File file) {
-		String extension = getExtension(file.getName());
-        return VIDEO_FILE_EXTENSIONS.contains(extension);
-	}
-
-	public static boolean isPlaylistFile(File file) {
+    public static boolean isPlaylistFile(File file) {
 		String extension = getExtension(file.getName());
 		return PLAYLIST_FILE_EXTENSIONS.contains(extension);
 	}
@@ -362,19 +321,6 @@ public class FileUtil {
         int index = name.lastIndexOf('.');
         return index == -1 ? name : name.substring(0, index);
     }
-    
-	public static long getUsedSize(Context context, File file) {
-		long size = 0L;
-
-		if(file.isFile()) {
-			return file.length();
-		} else {
-			for (File child : FileUtil.listFiles(file)) {
-				size += getUsedSize(context, child);
-			}
-			return size;
-		}
-	}
 
     public static <T extends Serializable> boolean serialize(Context context, T obj, String fileName) {
         File file = new File(context.getCacheDir(), fileName);

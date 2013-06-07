@@ -53,7 +53,7 @@ public class GenreParser extends AbstractParser {
         try {
         	BufferedReader br = new BufferedReader(reader);
         	String xml = null;
-        	String line = null;
+        	String line;
         
         	while ((line = br.readLine()) != null) {
         		if (xml == null) {
@@ -63,19 +63,23 @@ public class GenreParser extends AbstractParser {
         		}
         	}
         	br.close();
-        	
-        	// Replace double escaped ampersand (&amp;apos;) 
-        	xml = xml.replaceAll("(?:&amp;)(amp;|lt;|gt;|#37;|apos;)", "&$1");
-        	
-            // Replace unescaped ampersand
-            xml = xml.replaceAll("&(?!amp;|lt;|gt;|#37;|apos;)", "&amp;");
-            
-            // Replace unescaped percent symbol
+
+            // Replace possible unescaped XML characters
             // No replacements for <> at this time
-            xml = xml.replaceAll("%", "&#37;");
-            
-            xml = xml.replaceAll("'", "&apos;");
-            
+            if (xml != null) {
+                // Replace double escaped ampersand (&amp;apos;)
+                xml = xml.replaceAll("(?:&amp;)(amp;|lt;|gt;|#37;|apos;)", "&$1");
+
+                // Replace unescaped ampersand
+                xml = xml.replaceAll("&(?!amp;|lt;|gt;|#37;|apos;)", "&amp;");
+
+                // Replace unescaped percent symbol
+                xml = xml.replaceAll("%", "&#37;");
+
+                // Replace unescaped apostrophe
+                xml = xml.replaceAll("'", "&apos;");
+            }
+
             sr = new StringReader(xml);
         } catch (IOException ioe) {
         	Log.e(TAG, "Error parsing Genre XML", ioe);
@@ -104,13 +108,12 @@ public class GenreParser extends AbstractParser {
                 }
             } else if (eventType == XmlPullParser.TEXT) {
                 if (genre != null) {
-                	String value = getText();
-                	if (genre != null) {
-                		genre.setName(value);
-                		genre.setIndex(value.substring(0, 1));
-                		result.add(genre);
-                		genre = null;
-                	}
+                    String value = getText();
+
+                    genre.setName(value);
+                    genre.setIndex(value.substring(0, 1));
+                    result.add(genre);
+                    genre = null;
                 }
             }
         } while (eventType != XmlPullParser.END_DOCUMENT);

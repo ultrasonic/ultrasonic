@@ -18,20 +18,14 @@
  */
 package com.thejoshwa.ultrasonic.androidapp.activity;
 
-import java.io.File;
-import java.io.PrintWriter;
-import java.util.ArrayList;
-import java.util.LinkedList;
-import java.util.List;
-
 import android.annotation.SuppressLint;
+import android.app.ActionBar;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.Notification;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.content.pm.PackageInfo;
 import android.graphics.Bitmap;
 import android.graphics.drawable.Drawable;
 import android.media.AudioManager;
@@ -48,11 +42,11 @@ import android.view.MotionEvent;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.View.OnTouchListener;
+import android.widget.ExpandableListView;
 import android.widget.ImageView;
-import android.widget.ListAdapter;
-import android.widget.ListView;
 import android.widget.RemoteViews;
 import android.widget.TextView;
+
 import com.thejoshwa.ultrasonic.androidapp.R;
 import com.thejoshwa.ultrasonic.androidapp.domain.MusicDirectory;
 import com.thejoshwa.ultrasonic.androidapp.domain.MusicDirectory.Entry;
@@ -67,7 +61,6 @@ import com.thejoshwa.ultrasonic.androidapp.service.OfflineException;
 import com.thejoshwa.ultrasonic.androidapp.service.ServerTooOldException;
 import com.thejoshwa.ultrasonic.androidapp.util.Constants;
 import com.thejoshwa.ultrasonic.androidapp.util.ImageLoader;
-import com.thejoshwa.ultrasonic.androidapp.util.LoadingTask;
 import com.thejoshwa.ultrasonic.androidapp.util.ModalBackgroundTask;
 import com.thejoshwa.ultrasonic.androidapp.util.SilentBackgroundTask;
 import com.thejoshwa.ultrasonic.androidapp.util.Util;
@@ -75,6 +68,11 @@ import com.thejoshwa.ultrasonic.androidapp.util.VideoPlayerType;
 
 import net.simonvt.menudrawer.MenuDrawer;
 import net.simonvt.menudrawer.Position;
+
+import java.io.File;
+import java.io.PrintWriter;
+import java.util.LinkedList;
+import java.util.List;
 
 /**
  * @author Sindre Mehus
@@ -97,7 +95,6 @@ public class SubsonicTabActivity extends Activity implements OnClickListener{
     private View nowPlayingView = null;
     View chatMenuItem = null;
     View bookmarksMenuItem = null;
-    View menuMain = null;
     public static boolean nowPlayingHidden = false;
     private static Entry currentSong;
     public Bitmap nowPlayingImage;
@@ -134,8 +131,8 @@ public class SubsonicTabActivity extends Activity implements OnClickListener{
         findViewById(R.id.menu_about).setOnClickListener(this);
         findViewById(R.id.menu_exit).setOnClickListener(this);
 
-        getActionBar().setDisplayHomeAsUpEnabled(true);
-        
+        setActionBarDisplayHomeAsUp(true);
+
         TextView activeView = (TextView)findViewById(menuActiveViewId);
         
         if (activeView != null) {
@@ -264,8 +261,7 @@ public class SubsonicTabActivity extends Activity implements OnClickListener{
 
 					@Override
 					protected void done(Void result) {
-						return;
-					}
+                    }
 				}.execute();
 			}
 		});
@@ -385,7 +381,7 @@ public class SubsonicTabActivity extends Activity implements OnClickListener{
     private void showNowPlaying(final Context context, final DownloadServiceImpl downloadService, final MusicDirectory.Entry song, final PlayerState playerState) {
     	nowPlayingView = findViewById(R.id.now_playing);
     	
-    	if (!Util.getShowNowPlayingPreference(SubsonicTabActivity.this)) {
+    	if (!Util.getShowNowPlayingPreference(context)) {
     		hideNowPlaying();
     		return;
     	}
@@ -398,9 +394,9 @@ public class SubsonicTabActivity extends Activity implements OnClickListener{
 				ImageView playButton = (ImageView) nowPlayingView.findViewById(R.id.now_playing_control_play);
 
 				if (playerState == PlayerState.PAUSED) {
-					setImageDrawableOnUiThread(playButton, Util.getDrawableFromAttribute(SubsonicTabActivity.this, R.attr.media_play));
+					setImageDrawableOnUiThread(playButton, Util.getDrawableFromAttribute(context, R.attr.media_play));
 				} else if (playerState == PlayerState.STARTED) {
-					setImageDrawableOnUiThread(playButton, Util.getDrawableFromAttribute(SubsonicTabActivity.this, R.attr.media_pause));
+					setImageDrawableOnUiThread(playButton, Util.getDrawableFromAttribute(context, R.attr.media_pause));
 				}
 				
 				String title = song.getTitle();
@@ -413,13 +409,13 @@ public class SubsonicTabActivity extends Activity implements OnClickListener{
 				this.runOnUiThread( new Runnable() {
 		    		@Override 
 		    	    public void run() {
-		    			getImageLoader().loadImage(nowPlayingAlbumArtImage, song, true, Util.getNotificationImageSize(SubsonicTabActivity.this), false, true);		
+		    			getImageLoader().loadImage(nowPlayingAlbumArtImage, song, true, Util.getNotificationImageSize(context), false, true);
 		    		}
 				});
 								
-				final Intent intent = new Intent(SubsonicTabActivity.this, SelectAlbumActivity.class);
+				final Intent intent = new Intent(context, SelectAlbumActivity.class);
                 
-                if (Util.getShouldUseId3Tags(SubsonicTabActivity.this)) {
+                if (Util.getShouldUseId3Tags(context)) {
                 	intent.putExtra(Constants.INTENT_EXTRA_NAME_IS_ALBUM, true);
                 	intent.putExtra(Constants.INTENT_EXTRA_NAME_ID, song.getAlbumId());
                 } else {
@@ -500,18 +496,7 @@ public class SubsonicTabActivity extends Activity implements OnClickListener{
     		}
     	});
     }
-    
-    public void setListAdapterOnListViewOnUiThread(final ListView view, final ListAdapter adapter) {
-    	this.runOnUiThread( new Runnable() {
-    		@Override 
-    	    public void run() {
-    			if (view != null) {
-            		view.setAdapter(adapter);
-    			}
-    		}
-    	});
-    }
-    
+
     public void setOnTouchListenerOnUiThread(final View view, final View.OnTouchListener listener) {
     	this.runOnUiThread( new Runnable() {
     		@Override 
@@ -544,18 +529,7 @@ public class SubsonicTabActivity extends Activity implements OnClickListener{
     		}
     	});
     }
-    
-    public void setImageResourceOnUiThread(final ImageView view, final int resource) {
-    	this.runOnUiThread( new Runnable() {
-    		@Override 
-    	    public void run() {
-    			if (view != null && view.getVisibility() != View.GONE) {
-    				view.setImageResource(resource);
-    			}
-    		}
-    	});
-    }
-    
+
     public void setImageDrawableOnUiThread(final ImageView view, final Drawable drawable) {
     	this.runOnUiThread( new Runnable() {
     		@Override 
@@ -566,18 +540,7 @@ public class SubsonicTabActivity extends Activity implements OnClickListener{
     		}
     	});
     }
-    
-    public void setImageBitmapOnUiThread(final ImageView view, final Bitmap bitmap) {
-    	this.runOnUiThread( new Runnable() {
-    		@Override 
-    	    public void run() {
-    			if (view != null && view.getVisibility() != View.GONE) {
-    				view.setImageBitmap(bitmap);
-    			}
-    		}
-    	});
-    }
-    
+
     public void setVisibilityOnUiThread(final View view, final int visibility) {
     	this.runOnUiThread( new Runnable() {
     		@Override 
@@ -642,14 +605,7 @@ public class SubsonicTabActivity extends Activity implements OnClickListener{
         }
         return IMAGE_LOADER;
     }
-    
-	public synchronized static ImageLoader getStaticImageLoader(Context context) {
-		if (IMAGE_LOADER == null) {
-            IMAGE_LOADER = new ImageLoader(context);
-        }
-		return IMAGE_LOADER;
-	}
-	
+
     void download(final boolean append, final boolean save, final boolean autoplay, final boolean playNext, final boolean shuffle, final List<Entry> songs) {
         if (getDownloadService() == null) {
             return;
@@ -789,81 +745,8 @@ public class SubsonicTabActivity extends Activity implements OnClickListener{
 			Util.toast(this, e.getMessage(), false);
 		}
 	}
-	
-	protected void addToPlaylist(final List<MusicDirectory.Entry> songs) {
-		if(songs.isEmpty()) {
-			Util.toast(this, "No songs selected");
-			return;
-		}
-		
-		new LoadingTask<List<Playlist>>(this, true) {
-            @Override
-            protected List<Playlist> doInBackground() throws Throwable {
-                MusicService musicService = MusicServiceFactory.getMusicService(SubsonicTabActivity.this);
-				return musicService.getPlaylists(false, SubsonicTabActivity.this, this);
-            }
-            
-            @Override
-            protected void done(final List<Playlist> playlists) {
-				List<String> names = new ArrayList<String>();
-				for(Playlist playlist: playlists) {
-					names.add(playlist.getName());
-				}
-				
-				AlertDialog.Builder builder = new AlertDialog.Builder(SubsonicTabActivity.this);
-				builder.setTitle("Add to Playlist")
-					.setItems(names.toArray(new CharSequence[names.size()]), new DialogInterface.OnClickListener() {
-					public void onClick(DialogInterface dialog, int which) {
-						addToPlaylist(playlists.get(which), songs);
-					}
-				});
-				AlertDialog dialog = builder.create();
-				dialog.show();
-            }
-            
-            @Override
-            protected void error(Throwable error) {            	
-            	String msg;
-            	if (error instanceof OfflineException || error instanceof ServerTooOldException) {
-            		msg = getErrorMessage(error);
-            	} else {
-            		msg = getResources().getString(R.string.playlist_error) + " " + getErrorMessage(error);
-            	}
-            	
-        		Util.toast(SubsonicTabActivity.this, msg, false);
-            }
-        }.execute();
-	}
-	
-	private void addToPlaylist(final Playlist playlist, final List<MusicDirectory.Entry> songs) {		
-		new SilentBackgroundTask<Void>(this) {
-            @Override
-            protected Void doInBackground() throws Throwable {
-                MusicService musicService = MusicServiceFactory.getMusicService(SubsonicTabActivity.this);
-				musicService.updatePlaylist(playlist.getId(), songs, SubsonicTabActivity.this, null);
-                return null;
-            }
-            
-            @Override
-            protected void done(Void result) {
-                Util.toast(SubsonicTabActivity.this, getResources().getString(R.string.updated_playlist, songs.size(), playlist.getName()));
-            }
-            
-            @Override
-            protected void error(Throwable error) {            	
-            	String msg;
-            	if (error instanceof OfflineException || error instanceof ServerTooOldException) {
-            		msg = getErrorMessage(error);
-            	} else {
-            		msg = getResources().getString(R.string.updated_playlist_error, playlist.getName()) + " " + getErrorMessage(error);
-            	}
-            	
-        		Util.toast(SubsonicTabActivity.this, msg, false);
-            }
-        }.execute();
-	}
-	
-	protected void checkLicenseAndTrialPeriod(Runnable onValid) {
+
+    protected void checkLicenseAndTrialPeriod(Runnable onValid) {
         if (licenseValid) {
             onValid.run();
             return;
@@ -917,6 +800,68 @@ public class SubsonicTabActivity extends Activity implements OnClickListener{
         builder.create().show();
     }
 
+    protected void setActionBarDisplayHomeAsUp(boolean enabled) {
+        ActionBar actionBar = getActionBar();
+
+        if (actionBar != null) {
+            actionBar.setDisplayHomeAsUpEnabled(enabled);
+        }
+    }
+
+
+    protected void setActionBarTitle(String title) {
+        ActionBar actionBar = getActionBar();
+
+        if (actionBar != null) {
+            actionBar.setTitle(title);
+        }
+    }
+
+    protected void setActionBarTitle(int id) {
+        ActionBar actionBar = getActionBar();
+
+        if (actionBar != null) {
+            actionBar.setTitle(id);
+        }
+    }
+
+    protected CharSequence getActionBarTitle() {
+        ActionBar actionBar = getActionBar();
+        CharSequence title = null;
+
+        if (actionBar != null) {
+            title = actionBar.getTitle();
+        }
+
+        return title;
+    }
+
+    protected void setActionBarSubtitle(String title) {
+        ActionBar actionBar = getActionBar();
+
+        if (actionBar != null) {
+            actionBar.setSubtitle(title);
+        }
+    }
+
+    protected void setActionBarSubtitle(int id) {
+        ActionBar actionBar = getActionBar();
+
+        if (actionBar != null) {
+            actionBar.setSubtitle(id);
+        }
+    }
+
+    protected CharSequence getActionBarSubtitle() {
+        ActionBar actionBar = getActionBar();
+        CharSequence subtitle = null;
+
+        if (actionBar != null) {
+            subtitle = actionBar.getSubtitle();
+        }
+
+        return subtitle;
+    }
 
     private void setUncaughtExceptionHandler() {
         Thread.UncaughtExceptionHandler handler = Thread.getDefaultUncaughtExceptionHandler();
@@ -932,6 +877,7 @@ public class SubsonicTabActivity extends Activity implements OnClickListener{
 
         private final Thread.UncaughtExceptionHandler defaultHandler;
         private final Context context;
+        private static final String filename = "ultrasonic-stacktrace.txt";
 
         private SubsonicUncaughtExceptionHandler(Context context) {
             this.context = context;
@@ -942,14 +888,13 @@ public class SubsonicTabActivity extends Activity implements OnClickListener{
         public void uncaughtException(Thread thread, Throwable throwable) {
             File file = null;
             PrintWriter printWriter = null;
-            try {
 
-                PackageInfo packageInfo = context.getPackageManager().getPackageInfo("com.thejoshwa.ultrasonic.androidapp", 0);
-                file = new File(Environment.getExternalStorageDirectory(), "ultrasonic-stacktrace.txt");
+            try {
+                file = new File(Environment.getExternalStorageDirectory(), filename);
                 printWriter = new PrintWriter(file);
                 printWriter.println("Android API level: " + Build.VERSION.SDK_INT);
-                printWriter.println("UltraSonic version name: " + packageInfo.versionName);
-                printWriter.println("UltraSonic version code: " + packageInfo.versionCode);
+                printWriter.println("UltraSonic version name: " + Util.getVersionName(context));
+                printWriter.println("UltraSonic version code: " + Util.getVersionCode(context));
                 printWriter.println();
                 throwable.printStackTrace(printWriter);
                 Log.i(TAG, "Stack trace written to " + file);
@@ -960,7 +905,6 @@ public class SubsonicTabActivity extends Activity implements OnClickListener{
                 if (defaultHandler != null) {
                     defaultHandler.uncaughtException(thread, throwable);
                 }
-
             }
         }
     }
@@ -1046,16 +990,7 @@ public class SubsonicTabActivity extends Activity implements OnClickListener{
     
 	static class SwipeDetector implements OnTouchListener {
 
-		public static enum Action {
-			LeftToRight,
-			RightToLeft,
-			TopToBottom,
-			BottomToTop,
-			None,
-			Click
-		}
-
-		public static SwipeDetector Create(SubsonicTabActivity activity, final DownloadService downloadService) {
+        public static SwipeDetector Create(SubsonicTabActivity activity, final DownloadService downloadService) {
 			SwipeDetector swipeDetector = new SwipeDetector();
 			swipeDetector.downloadService = downloadService;
 			swipeDetector.activity = activity;

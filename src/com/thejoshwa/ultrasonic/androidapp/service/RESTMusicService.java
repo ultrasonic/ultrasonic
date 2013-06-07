@@ -18,57 +18,14 @@
  */
 package com.thejoshwa.ultrasonic.androidapp.service;
 
-import java.io.BufferedWriter;
-import java.io.File;
-import java.io.FileOutputStream;
-import java.io.FileWriter;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.io.OutputStream;
-import java.io.Reader;
-import java.net.URLEncoder;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.concurrent.atomic.AtomicReference;
-
-import org.apache.http.Header;
-import org.apache.http.HttpEntity;
-import org.apache.http.HttpHost;
-import org.apache.http.HttpResponse;
-import org.apache.http.NameValuePair;
-import org.apache.http.auth.AuthScope;
-import org.apache.http.auth.UsernamePasswordCredentials;
-import org.apache.http.client.entity.UrlEncodedFormEntity;
-import org.apache.http.client.methods.HttpPost;
-import org.apache.http.client.methods.HttpUriRequest;
-import org.apache.http.conn.params.ConnManagerParams;
-import org.apache.http.conn.params.ConnPerRouteBean;
-import org.apache.http.conn.scheme.PlainSocketFactory;
-import org.apache.http.conn.scheme.Scheme;
-import org.apache.http.conn.scheme.SchemeRegistry;
-import org.apache.http.conn.scheme.SocketFactory;
-import org.apache.http.impl.client.DefaultHttpClient;
-import org.apache.http.impl.conn.tsccm.ThreadSafeClientConnManager;
-import org.apache.http.message.BasicHeader;
-import org.apache.http.message.BasicNameValuePair;
-import org.apache.http.params.BasicHttpParams;
-import org.apache.http.params.HttpConnectionParams;
-import org.apache.http.params.HttpParams;
-import org.apache.http.protocol.BasicHttpContext;
-import org.apache.http.protocol.ExecutionContext;
-import org.apache.http.protocol.HttpContext;
 import android.content.Context;
 import android.content.SharedPreferences;
-import android.content.pm.PackageInfo;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.util.Log;
+
 import com.thejoshwa.ultrasonic.androidapp.R;
 import com.thejoshwa.ultrasonic.androidapp.domain.Bookmark;
 import com.thejoshwa.ultrasonic.androidapp.domain.ChatMessage;
@@ -79,7 +36,7 @@ import com.thejoshwa.ultrasonic.androidapp.domain.Lyrics;
 import com.thejoshwa.ultrasonic.androidapp.domain.MusicDirectory;
 import com.thejoshwa.ultrasonic.androidapp.domain.MusicFolder;
 import com.thejoshwa.ultrasonic.androidapp.domain.Playlist;
-import com.thejoshwa.ultrasonic.androidapp.domain.SearchCritera;
+import com.thejoshwa.ultrasonic.androidapp.domain.SearchCriteria;
 import com.thejoshwa.ultrasonic.androidapp.domain.SearchResult;
 import com.thejoshwa.ultrasonic.androidapp.domain.ServerInfo;
 import com.thejoshwa.ultrasonic.androidapp.domain.Share;
@@ -109,6 +66,50 @@ import com.thejoshwa.ultrasonic.androidapp.util.Constants;
 import com.thejoshwa.ultrasonic.androidapp.util.FileUtil;
 import com.thejoshwa.ultrasonic.androidapp.util.ProgressListener;
 import com.thejoshwa.ultrasonic.androidapp.util.Util;
+
+import org.apache.http.Header;
+import org.apache.http.HttpEntity;
+import org.apache.http.HttpHost;
+import org.apache.http.HttpResponse;
+import org.apache.http.NameValuePair;
+import org.apache.http.auth.AuthScope;
+import org.apache.http.auth.UsernamePasswordCredentials;
+import org.apache.http.client.entity.UrlEncodedFormEntity;
+import org.apache.http.client.methods.HttpPost;
+import org.apache.http.client.methods.HttpUriRequest;
+import org.apache.http.conn.params.ConnManagerParams;
+import org.apache.http.conn.params.ConnPerRouteBean;
+import org.apache.http.conn.scheme.PlainSocketFactory;
+import org.apache.http.conn.scheme.Scheme;
+import org.apache.http.conn.scheme.SchemeRegistry;
+import org.apache.http.conn.scheme.SocketFactory;
+import org.apache.http.impl.client.DefaultHttpClient;
+import org.apache.http.impl.conn.tsccm.ThreadSafeClientConnManager;
+import org.apache.http.message.BasicHeader;
+import org.apache.http.message.BasicNameValuePair;
+import org.apache.http.params.BasicHttpParams;
+import org.apache.http.params.HttpConnectionParams;
+import org.apache.http.params.HttpParams;
+import org.apache.http.protocol.BasicHttpContext;
+import org.apache.http.protocol.ExecutionContext;
+import org.apache.http.protocol.HttpContext;
+
+import java.io.BufferedWriter;
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.io.OutputStream;
+import java.io.Reader;
+import java.net.URLEncoder;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.concurrent.atomic.AtomicReference;
 
 /**
  * @author Sindre Mehus
@@ -219,15 +220,8 @@ public class RESTMusicService implements MusicService {
             return cachedIndexes;
         }
 
-        long lastModified = (cachedIndexes == null || refresh) ? 0L : cachedIndexes.getLastModified();
-
         List<String> parameterNames = new ArrayList<String>();
         List<Object> parameterValues = new ArrayList<Object>();
-
-		if(lastModified != 0L) {
-			parameterNames.add("ifModifiedSince");
-			parameterValues.add(lastModified);
-		}
 
         if (musicFolderId != null) {
             parameterNames.add("musicFolderId");
@@ -235,6 +229,7 @@ public class RESTMusicService implements MusicService {
         }
 
         Reader reader = getReader(context, progressListener, "getIndexes", null, parameterNames, parameterValues);
+
         try {
             Indexes indexes = new IndexesParser(context).parse(reader, progressListener);
             if (indexes != null) {
@@ -416,7 +411,7 @@ public class RESTMusicService implements MusicService {
     }
 
     @Override
-    public SearchResult search(SearchCritera critera, Context context, ProgressListener progressListener) throws Exception {
+    public SearchResult search(SearchCriteria critera, Context context, ProgressListener progressListener) throws Exception {
         try {
         	if (!Util.isOffline(context) && Util.getShouldUseId3Tags(context)) {
         		return search3(critera, context, progressListener);
@@ -432,7 +427,7 @@ public class RESTMusicService implements MusicService {
     /**
      * Search using the "search" REST method.
      */
-    private SearchResult searchOld(SearchCritera critera, Context context, ProgressListener progressListener) throws Exception {
+    private SearchResult searchOld(SearchCriteria critera, Context context, ProgressListener progressListener) throws Exception {
         List<String> parameterNames = Arrays.asList("any", "songCount");
         List<Object> parameterValues = Arrays.<Object>asList(critera.getQuery(), critera.getSongCount());
         Reader reader = getReader(context, progressListener, "search", null, parameterNames, parameterValues);
@@ -446,7 +441,7 @@ public class RESTMusicService implements MusicService {
     /**
      * Search using the "search2" REST method, available in 1.4.0 and later.
      */
-    private SearchResult search2(SearchCritera critera, Context context, ProgressListener progressListener) throws Exception {
+    private SearchResult search2(SearchCriteria critera, Context context, ProgressListener progressListener) throws Exception {
         checkServerVersion(context, "1.4", "Search2 not supported.");
 
         List<String> parameterNames = Arrays.asList("query", "artistCount", "albumCount", "songCount");
@@ -460,7 +455,7 @@ public class RESTMusicService implements MusicService {
         }
     }
     
-    private SearchResult search3(SearchCritera critera, Context context, ProgressListener progressListener) throws Exception {
+    private SearchResult search3(SearchCriteria critera, Context context, ProgressListener progressListener) throws Exception {
         checkServerVersion(context, "1.8", "Searching by ID3 tag not supported.");
 
         List<String> parameterNames = Arrays.asList("query", "artistCount", "albumCount", "songCount");
@@ -708,8 +703,7 @@ public class RESTMusicService implements MusicService {
 
     @Override
     public Version getLocalVersion(Context context) throws Exception {
-        PackageInfo packageInfo = context.getPackageManager().getPackageInfo("com.thejoshwa.ultrasonic.androidapp", 0);
-        return new Version(packageInfo.versionName);
+        return new Version(Util.getVersionName(context));
     }
 
     @Override
@@ -736,7 +730,11 @@ public class RESTMusicService implements MusicService {
 	public Bitmap getCoverArt(Context context, MusicDirectory.Entry entry, int size, boolean saveToFile, boolean highQuality, ProgressListener progressListener) throws Exception {
 		// Synchronize on the entry so that we don't download concurrently for
 		// the same song.
-		synchronized (entry) {
+        if (entry == null) {
+            return null;
+        }
+
+        synchronized (entry) {
 			// Use cached file, if existing.
 			Bitmap bitmap = FileUtil.getAlbumArtBitmap(context, entry, size, highQuality);
 			boolean serverScaling = Util.isServerScalingEnabled(context);
@@ -771,6 +769,7 @@ public class RESTMusicService implements MusicService {
 					byte[] bytes = Util.toByteArray(in);
 
 					File albumDir = FileUtil.getAlbumDirectory(context, entry);
+
 	                if (albumDir.exists()) {
 	                    OutputStream out = null;
 	                    try {
@@ -784,6 +783,7 @@ public class RESTMusicService implements MusicService {
 					// If we aren't allowing server-side scaling, always save the file to disk because it will be unmodified
 					if (!serverScaling || saveToFile) {
 						OutputStream out = null;
+
 						try {
 							out = new FileOutputStream(FileUtil.getAlbumArtFile(context, entry));
 							out.write(bytes);
@@ -874,9 +874,11 @@ public class RESTMusicService implements MusicService {
         int n = ids.size();
         List<String> parameterNames = new ArrayList<String>(n + 1);
         parameterNames.add("action");
-        for (int i = 0; i < n; i++) {
+
+        for (String ignored : ids) {
             parameterNames.add("id");
         }
+
         List<Object> parameterValues = new ArrayList<Object>();
         parameterValues.add("set");
         parameterValues.addAll(ids);
@@ -985,7 +987,7 @@ public class RESTMusicService implements MusicService {
 		Log.i(TAG, "Using URL " + url);
 
 		SharedPreferences prefs = Util.getPreferences(context);
-		int networkTimeout = Integer.parseInt(prefs.getString(Constants.PREFERENCES_KEY_NETWORK_TIMEOUT, "15000"));
+		int networkTimeout = Util.getNetworkTimeout(context);
 		HttpParams newParams = httpClient.getParams();
 		HttpConnectionParams.setSoTimeout(newParams, networkTimeout);
 		httpClient.setParams(newParams);

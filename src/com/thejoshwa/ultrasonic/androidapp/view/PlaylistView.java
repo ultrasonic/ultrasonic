@@ -30,9 +30,8 @@ import com.thejoshwa.ultrasonic.androidapp.domain.Playlist;
  * @author Sindre Mehus
  */
 public class PlaylistView extends UpdateView {
-	private static final String TAG = PlaylistView.class.getSimpleName();
-	
-	private TextView titleView;
+
+    private TextView titleView;
 	public PlaylistView(Context context) {
         super(context);
         LayoutInflater.from(context).inflate(R.layout.playlist_list_item, this, true);

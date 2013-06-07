@@ -83,18 +83,12 @@ public class DownloadServiceImpl extends Service implements DownloadService {
     public static final String CMD_STOP = "com.thejoshwa.ultrasonic.androidapp.CMD_STOP";
     public static final String CMD_PREVIOUS = "com.thejoshwa.ultrasonic.androidapp.CMD_PREVIOUS";
     public static final String CMD_NEXT = "com.thejoshwa.ultrasonic.androidapp.CMD_NEXT";
-    
-    public static final String PLAYSTATUS_REQUEST = "com.android.music.playstatusrequest";
-    public static final String PLAYSTATUS_RESPONSE = "com.android.music.playstatusresponse";
-    
-    public static final int lockScreenAlbumArtSize = 500;
 
     private final IBinder binder = new SimpleServiceBinder<DownloadService>(this);
 	private Looper mediaPlayerLooper;    
     private MediaPlayer mediaPlayer;
 	private MediaPlayer nextMediaPlayer;
-	private boolean nextSetup = false; 
-	private boolean isPartial = true;	
+	private boolean nextSetup = false;
     private final List<DownloadFile> downloadList = new ArrayList<DownloadFile>();
 	private final List<DownloadFile> backgroundDownloadList = new ArrayList<DownloadFile>();    
     private final Handler handler = new Handler();
@@ -136,8 +130,10 @@ public class DownloadServiceImpl extends Service implements DownloadService {
     private AudioManager audioManager;
     private int secondaryProgress = -1;
     private boolean autoPlayStart = false;
-    
-	static {
+    private static Bitmap lockScreenBitmap;
+    private final static int lockScreenBitmapSize = 500;
+
+    static {
 		try {
 			EqualizerController.checkAvailable();
 			equalizerAvailable = true;
@@ -163,6 +159,10 @@ public class DownloadServiceImpl extends Service implements DownloadService {
         new Thread(new Runnable() {
 			public void run() {
 				Looper.prepare();
+				
+				if (mediaPlayer instanceof MediaPlayer && mediaPlayer != null) {
+					mediaPlayer.release();
+				}
 				
 				mediaPlayer = new MediaPlayer();
 				mediaPlayer.setWakeMode(DownloadServiceImpl.this, PowerManager.PARTIAL_WAKE_LOCK);
@@ -191,6 +191,11 @@ public class DownloadServiceImpl extends Service implements DownloadService {
 		}).start();        
 
         audioManager = (AudioManager) this.getSystemService(Context.AUDIO_SERVICE);
+		
+        if (mediaPlayer instanceof MediaPlayer && mediaPlayer != null) {
+			mediaPlayer.release();
+		}
+		
         mediaPlayer = new MediaPlayer();
         mediaPlayer.setWakeMode(this, PowerManager.PARTIAL_WAKE_LOCK);
         mediaPlayer.setAudioStreamType(AudioManager.STREAM_MUSIC);
@@ -223,7 +228,7 @@ public class DownloadServiceImpl extends Service implements DownloadService {
             }
         }
         if (visualizerAvailable) {
-            visualizerController = new VisualizerController(this, mediaPlayer);
+            visualizerController = new VisualizerController(mediaPlayer);
             if (!visualizerController.isAvailable()) {
                 visualizerController = null;
             }
@@ -507,7 +512,7 @@ public class DownloadServiceImpl extends Service implements DownloadService {
             currentDownloading.cancelDownload();
             currentDownloading = null;
         }
-        setCurrentPlaying(null, false);
+        setCurrentPlaying(null);
 
         if (serialize) {
             lifecycleSupport.serializeDownloadQueue();
@@ -529,7 +534,7 @@ public class DownloadServiceImpl extends Service implements DownloadService {
         }
         if (downloadFile == currentPlaying) {
             reset();
-            setCurrentPlaying(null, false);
+            setCurrentPlaying(null);
         }
         downloadList.remove(downloadFile);
 		backgroundDownloadList.remove(downloadFile);
@@ -555,15 +560,15 @@ public class DownloadServiceImpl extends Service implements DownloadService {
         }
     }
 
-    synchronized void setCurrentPlaying(int currentPlayingIndex, boolean showNotification) {
+    synchronized void setCurrentPlaying(int currentPlayingIndex) {
         try {
-            setCurrentPlaying(downloadList.get(currentPlayingIndex), showNotification);
+            setCurrentPlaying(downloadList.get(currentPlayingIndex));
         } catch (IndexOutOfBoundsException x) {
             // Ignored
         }
     }
     
-    synchronized void setCurrentPlaying(DownloadFile currentPlaying, boolean showNotification) {
+    synchronized void setCurrentPlaying(DownloadFile currentPlaying) {
         this.currentPlaying = currentPlaying;
         
         if (currentPlaying != null) {
@@ -711,7 +716,7 @@ public class DownloadServiceImpl extends Service implements DownloadService {
 				nextPlayingTask = null;
 			}
 			
-            setCurrentPlaying(index, start);
+            setCurrentPlaying(index);
             
             if (start) {
                 if (jukeboxEnabled) {
@@ -729,7 +734,7 @@ public class DownloadServiceImpl extends Service implements DownloadService {
     
     private synchronized void resetPlayback() {
         reset();
-        setCurrentPlaying(null, false);
+        setCurrentPlaying(null);
 		lifecycleSupport.serializeDownloadQueue();
     }
     
@@ -744,7 +749,7 @@ public class DownloadServiceImpl extends Service implements DownloadService {
 		MediaPlayer tmp = mediaPlayer;
 		mediaPlayer = nextMediaPlayer;
 		nextMediaPlayer = tmp;
-		setCurrentPlaying(nextPlaying, true);
+		setCurrentPlaying(nextPlaying);
 		setPlayerState(PlayerState.STARTED);
 		setupHandlers(currentPlaying, false);
 		setNextPlaying();
@@ -760,7 +765,7 @@ public class DownloadServiceImpl extends Service implements DownloadService {
     public synchronized void togglePlayPause() {
         if (playerState == PAUSED || playerState == COMPLETED || playerState == STOPPED) {
             start();
-        } else if (playerState == STOPPED || playerState == IDLE) {
+        } else if (playerState == IDLE) {
 			autoPlayStart = true;
         	play();
         } else if (playerState == STARTED) {
@@ -815,7 +820,7 @@ public class DownloadServiceImpl extends Service implements DownloadService {
         		MusicService musicService = MusicServiceFactory.getMusicService(DownloadServiceImpl.this);
         		try {
 					musicService.deleteBookmark(song.getId(), DownloadServiceImpl.this, null);
-				} catch (Exception e) {
+				} catch (Exception ignored) {
 
 				}
         	}
@@ -964,9 +969,8 @@ public class DownloadServiceImpl extends Service implements DownloadService {
         }
         
         boolean showWhenPaused = (this.playerState == PlayerState.PAUSED && Util.isNotificationAlwaysEnabled(this));
-
         boolean show = this.playerState == PlayerState.STARTED || showWhenPaused;
-        boolean hide = this.playerState == PlayerState.IDLE || this.playerState == PlayerState.STOPPED || !showWhenPaused;
+
         Util.broadcastPlaybackStatusChange(this, this.playerState);
         Util.broadcastA2dpPlayStatusChange(this, this.playerState, getInstance());
 
@@ -983,15 +987,13 @@ public class DownloadServiceImpl extends Service implements DownloadService {
        	if (show) {
     		int size = Util.getNotificationImageSize(this);
     		Bitmap bitmap = FileUtil.getAlbumArtBitmap(this, currentPlaying.getSong(), size, true);
-       		
-       		if (currentPlaying != null) {
-                if (tabInstance != null) {
-                	tabInstance.nowPlayingImage = bitmap;
-                	tabInstance.showNotification(handler, currentPlaying.getSong(), this, this.notification, this.playerState);
-                	tabInstance.showNowPlaying();
-                }
-       		}
-       	} else if (hide) {
+
+            if (tabInstance != null) {
+                tabInstance.nowPlayingImage = bitmap;
+                tabInstance.showNotification(handler, currentPlaying.getSong(), this, this.notification, this.playerState);
+                tabInstance.showNowPlaying();
+            }
+        } else {
             if (tabInstance != null) {
             	tabInstance.nowPlayingImage = null;
             	tabInstance.hidePlayingNotification(handler, this);
@@ -1068,7 +1070,7 @@ public class DownloadServiceImpl extends Service implements DownloadService {
     @Override
     public VisualizerController getVisualizerController() {
 		if (visualizerAvailable && visualizerController == null) {
-			visualizerController = new VisualizerController(this, mediaPlayer);
+			visualizerController = new VisualizerController(mediaPlayer);
 			if (!visualizerController.isAvailable()) {
 				visualizerController = null;
 			}
@@ -1142,6 +1144,7 @@ public class DownloadServiceImpl extends Service implements DownloadService {
 				if (currentPlaying != null) {
 					if (currentSong != currentPlaying.getSong()) {
 						currentSong = currentPlaying.getSong();
+                        lockScreenBitmap = FileUtil.getAlbumArtBitmap(this, currentSong, lockScreenBitmapSize, true);
 					} else {
 						return;
 					}
@@ -1150,11 +1153,6 @@ public class DownloadServiceImpl extends Service implements DownloadService {
 					String album = currentSong.getAlbum();
 					String title = artist + " - " + currentSong.getTitle();
 					Integer duration = currentSong.getDuration();
-
-					// Reuse albumArt for lockscreen and Bluetooth
-					if (Util.albumArtBitmap == null) {
-						Util.albumArtBitmap = FileUtil.getAlbumArtBitmap(this, currentSong, Util.albumArtImageSize, true);
-					}
 
 					// Update the remote controls
 					remoteControlClient
@@ -1170,13 +1168,11 @@ public class DownloadServiceImpl extends Service implements DownloadService {
 						.putLong(MediaMetadataRetriever.METADATA_KEY_DURATION, duration)
 						.apply();
 					}
-					
-					if (Util.albumArtBitmap != null) {
-							remoteControlClient
-								.editMetadata(false)
-								.putBitmap(RemoteControlClient.MetadataEditor.BITMAP_KEY_ARTWORK, Util.albumArtBitmap)
-								.apply();
-					}
+
+                    remoteControlClient
+                            .editMetadata(false)
+                            .putBitmap(RemoteControlClient.MetadataEditor.BITMAP_KEY_ARTWORK, lockScreenBitmap)
+                            .apply();
 				}
 			}
         	catch (Exception e) {
@@ -1200,7 +1196,7 @@ public class DownloadServiceImpl extends Service implements DownloadService {
         try {
         	downloadFile.setPlaying(true);
             final File file = downloadFile.isCompleteFileAvailable() ? downloadFile.getCompleteFile() : downloadFile.getPartialFile();
-			isPartial = file.equals(downloadFile.getPartialFile());
+            boolean partial = file.equals(downloadFile.getPartialFile());
             downloadFile.updateModificationDate();
             
 			mediaPlayer.setOnCompletionListener(null);
@@ -1210,7 +1206,7 @@ public class DownloadServiceImpl extends Service implements DownloadService {
 			mediaPlayer.setAudioStreamType(AudioManager.STREAM_MUSIC);
 			String dataSource = file.getPath();
 			
-			if(isPartial) {
+			if(partial) {
 				if (proxy == null) {
 					proxy = new StreamProxy(this);
 					proxy.start();
@@ -1236,7 +1232,7 @@ public class DownloadServiceImpl extends Service implements DownloadService {
 					SeekBar progressBar = DownloadActivity.getProgressBar();
 					MusicDirectory.Entry song = downloadFile.getSong();
 					
-					if (progressBar != null && song.getTranscodedContentType() == null && Util.getMaxBitrate(getApplicationContext()) == 0) {
+					if (progressBar != null && song.getTranscodedContentType() == null && Util.getMaxBitRate(getApplicationContext()) == 0) {
 						secondaryProgress = (int) (((double)percent / (double)100) * progressBar.getMax());
 						progressBar.setSecondaryProgress(secondaryProgress);
 					}
@@ -1276,7 +1272,7 @@ public class DownloadServiceImpl extends Service implements DownloadService {
 				}
 			});
             
-			setupHandlers(downloadFile, isPartial);
+			setupHandlers(downloadFile, partial);
             		
             mediaPlayer.prepareAsync();
         } catch (Exception x) {
@@ -1381,7 +1377,7 @@ public class DownloadServiceImpl extends Service implements DownloadService {
 
 				// If file is not completely downloaded, restart the playback from the current position.
 				synchronized (DownloadServiceImpl.this) {
-					if(downloadFile.isWorkDone()) {
+					if (downloadFile.isWorkDone()) {
 						// Complete was called early even though file is fully buffered
 						Log.i(TAG, "Requesting restart from " + pos + " of " + duration);
 						reset();

@@ -62,21 +62,27 @@ public class ChatAdapter extends ArrayAdapter<ChatMessage> {
 			holder.layout = layout;
 			
 			convertView = LayoutInflater.from(activity).inflate(holder.layout, parent, false);
-			
-	        TextView usernameView = (TextView) convertView.findViewById(R.id.chat_username);
-	        TextView timeView = (TextView) convertView.findViewById(R.id.chat_time);
-	        TextView messageView = (TextView) convertView.findViewById(R.id.chat_message);
-	        
-	        messageView.setMovementMethod(LinkMovementMethod.getInstance());
-	        Linkify.addLinks(messageView, Linkify.EMAIL_ADDRESSES);
-	        Linkify.addLinks(messageView, Linkify.WEB_URLS);
-	        Linkify.addLinks(messageView, phoneMatcher, "tel:");
 
-	        holder.message = messageView;
-			holder.username = usernameView;
-			holder.time = timeView;
-			
-			convertView.setTag(holder);
+            TextView usernameView;
+            TextView timeView;
+            TextView messageView;
+
+            if (convertView != null) {
+                usernameView = (TextView) convertView.findViewById(R.id.chat_username);
+                timeView = (TextView) convertView.findViewById(R.id.chat_time);
+                messageView = (TextView) convertView.findViewById(R.id.chat_message);
+
+                messageView.setMovementMethod(LinkMovementMethod.getInstance());
+                Linkify.addLinks(messageView, Linkify.EMAIL_ADDRESSES);
+                Linkify.addLinks(messageView, Linkify.WEB_URLS);
+                Linkify.addLinks(messageView, phoneMatcher, "tel:");
+
+                holder.message = messageView;
+                holder.username = usernameView;
+                holder.time = timeView;
+
+                convertView.setTag(holder);
+            }
 		}
 		else
 		{

@@ -184,7 +184,7 @@ public class MainActivity extends SubsonicTabActivity {
         final View homeMenuItem = findViewById(R.id.menu_home);
         menuDrawer.setActiveView(homeMenuItem);
 
-        getActionBar().setTitle(R.string.common_appname);
+        setActionBarTitle(R.string.common_appname);
         setTitle(R.string.common_appname);
 
         // Remember the current theme.
@@ -252,7 +252,11 @@ public class MainActivity extends SubsonicTabActivity {
         }
 
 		if (!checked) {
-			menu.findItem(getMenuItem(0)).setChecked(true);	
+            MenuItem menuItem = menu.findItem(getMenuItem(0));
+
+            if (menuItem != null) {
+                menuItem.setChecked(true);
+            }
         }
         
         menu.setGroupCheckable(MENU_GROUP_SERVER, true, true);

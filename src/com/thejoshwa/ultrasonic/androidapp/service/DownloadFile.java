@@ -56,20 +56,19 @@ public class DownloadFile {
     private boolean save;
     private boolean failed;
     private int bitRate;
-	private boolean isPlaying = false;
-	private boolean saveWhenDone = false;
-	private boolean completeWhenDone = false;
+	private volatile boolean isPlaying = false;
+	private volatile boolean saveWhenDone = false;
+	private volatile boolean completeWhenDone = false;
 
     public DownloadFile(Context context, MusicDirectory.Entry song, boolean save) {
         this.context = context;
         this.song = song;
         this.save = save;
+        
         saveFile = FileUtil.getSongFile(context, song);
-        bitRate = Util.getMaxBitrate(context);
-        partialFile = new File(saveFile.getParent(), FileUtil.getBaseName(saveFile.getName()) +
-                ".partial." + FileUtil.getExtension(saveFile.getName()));
-        completeFile = new File(saveFile.getParent(), FileUtil.getBaseName(saveFile.getName()) +
-                ".complete." + FileUtil.getExtension(saveFile.getName()));
+        bitRate = Util.getMaxBitRate(context);
+        partialFile = new File(saveFile.getParent(), FileUtil.getBaseName(saveFile.getName()) + ".partial." + FileUtil.getExtension(saveFile.getName()));
+        completeFile = new File(saveFile.getParent(), FileUtil.getBaseName(saveFile.getName()) + ".complete." + FileUtil.getExtension(saveFile.getName()));
         mediaStoreService = new MediaStoreService(context);
     }
 
@@ -81,21 +80,25 @@ public class DownloadFile {
      * Returns the effective bit rate.
      */
     public int getBitRate() {
-		if(!partialFile.exists()) {
-			bitRate = Util.getMaxBitrate(context);
+		if (!partialFile.exists()) {
+			bitRate = Util.getMaxBitRate(context);
 		}
+		
         if (bitRate > 0) {
             return bitRate;
         }
+        
         return song.getBitRate() == null ? 160 : song.getBitRate();
     }
 
     public synchronized void download() {
         FileUtil.createDirectoryForParent(saveFile);
         failed = false;
-		if(!partialFile.exists()) {
-			bitRate = Util.getMaxBitrate(context);
+        
+		if (!partialFile.exists()) {
+			bitRate = Util.getMaxBitRate(context);
 		}
+		
         downloadTask = new DownloadTask();
         downloadTask.start();
     }
@@ -193,16 +196,17 @@ public class DownloadFile {
 	
 	public void setPlaying(boolean isPlaying) {
 		try {
-			if(saveWhenDone && isPlaying == false) {
+			if (saveWhenDone && !isPlaying) {
 				Util.renameFile(completeFile, saveFile);
 				saveWhenDone = false;
-			} else if(completeWhenDone && isPlaying == false) {
-				if(save) {
+			} else if(completeWhenDone && !isPlaying) {
+				if (save) {
 					Util.renameFile(partialFile, saveFile);
                     mediaStoreService.saveInMediaStore(DownloadFile.this);
 				} else {
 					Util.renameFile(partialFile, completeFile);
 				}
+				
 				completeWhenDone = false;
 			}
 		} catch(IOException ex) {
@@ -210,9 +214,6 @@ public class DownloadFile {
 		}
 		
 		this.isPlaying = isPlaying;
-	}
-	public boolean getPlaying() {
-		return isPlaying;
 	}
 
     @Override
@@ -229,8 +230,8 @@ public class DownloadFile {
             FileOutputStream out = null;
             PowerManager.WakeLock wakeLock = null;
 			WifiManager.WifiLock wifiLock = null;
-            try {
-
+            
+			try {
                 if (Util.isScreenLitOnDownload(context)) {
                     PowerManager pm = (PowerManager) context.getSystemService(Context.POWER_SERVICE);
                     wakeLock = pm.newWakeLock(PowerManager.SCREEN_DIM_WAKE_LOCK | PowerManager.ON_AFTER_RELEASE, toString());
@@ -247,7 +248,7 @@ public class DownloadFile {
                 }
                 if (completeFile.exists()) {
                     if (save) {
-						if(isPlaying) {
+						if (isPlaying) {
 							saveWhenDone = true;
 						} else {
 							Util.renameFile(completeFile, saveFile);
@@ -262,16 +263,27 @@ public class DownloadFile {
 
 				// Some devices seem to throw error on partial file which doesn't exist
 				boolean compare;
+				
+				Integer duration = song.getDuration();
+				long fileLength = 0;
+				
+				if (!partialFile.exists()) {
+					fileLength = partialFile.length();
+				}
+				
 				try {
-					compare = (bitRate == 0) || (song.getDuration() == 0) || (partialFile.length() == 0) || (bitRate * song.getDuration() * 1000 / 8) > partialFile.length();
+					compare = (bitRate == 0) || (duration == null || duration == 0) || (fileLength == 0);
+					//(bitRate * song.getDuration() * 1000 / 8) > partialFile.length();
 				} catch(Exception e) {
 					compare = true;
 				}
-				if(compare) {
+				
+				if (compare) {
 					// Attempt partial HTTP GET, appending to the file if it exists.
 					HttpResponse response = musicService.getDownloadInputStream(context, song, partialFile.length(), bitRate, DownloadTask.this);
 					in = response.getEntity().getContent();
 					boolean partial = response.getStatusLine().getStatusCode() == HttpStatus.SC_PARTIAL_CONTENT;
+					
 					if (partial) {
 						Log.i(TAG, "Executed partial HTTP GET, skipping " + partialFile.length() + " bytes");
 					}
@@ -289,10 +301,10 @@ public class DownloadFile {
 					downloadAndSaveCoverArt(musicService);
 				}
 
-				if(isPlaying) {
+				if (isPlaying) {
 					completeWhenDone = true;
 				} else {
-					if(save) {
+					if (save) {
 						Util.renameFile(partialFile, saveFile);
 						mediaStoreService.saveInMediaStore(DownloadFile.this);
 					} else {

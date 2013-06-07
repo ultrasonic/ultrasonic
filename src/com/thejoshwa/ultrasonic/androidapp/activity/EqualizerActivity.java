@@ -143,38 +143,42 @@ public class EqualizerActivity extends Activity {
                 final short band = i;
 
                 View bandBar = LayoutInflater.from(this).inflate(R.layout.equalizer_bar, null);
-                TextView freqTextView = (TextView) bandBar.findViewById(R.id.equalizer_frequency);
-                final TextView levelTextView = (TextView) bandBar.findViewById(R.id.equalizer_level);
-                SeekBar bar = (SeekBar) bandBar.findViewById(R.id.equalizer_bar);
+                TextView freqTextView;
 
-                freqTextView.setText((equalizer.getCenterFreq(band) / 1000) + " Hz");
+                if (bandBar != null) {
+                    freqTextView = (TextView) bandBar.findViewById(R.id.equalizer_frequency);
+                    final TextView levelTextView = (TextView) bandBar.findViewById(R.id.equalizer_level);
+                    SeekBar bar = (SeekBar) bandBar.findViewById(R.id.equalizer_bar);
 
-                bars.put(band, bar);
-                bar.setMax(maxEQLevel - minEQLevel);
-                short level = equalizer.getBandLevel(band);
-                bar.setProgress(level - minEQLevel);
-                bar.setEnabled(equalizer.getEnabled());
-                updateLevelText(levelTextView, level);
+                    freqTextView.setText((equalizer.getCenterFreq(band) / 1000) + " Hz");
 
-                bar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
-                    @Override
-                    public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
-                        short level = (short) (progress + minEQLevel);
-                        if (fromUser) {
-                            equalizer.setBandLevel(band, level);
+                    bars.put(band, bar);
+                    bar.setMax(maxEQLevel - minEQLevel);
+                    short level = equalizer.getBandLevel(band);
+                    bar.setProgress(level - minEQLevel);
+                    bar.setEnabled(equalizer.getEnabled());
+                    updateLevelText(levelTextView, level);
+
+                    bar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
+                        @Override
+                        public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
+                            short level = (short) (progress + minEQLevel);
+                            if (fromUser) {
+                                equalizer.setBandLevel(band, level);
+                            }
+                            updateLevelText(levelTextView, level);
                         }
-                        updateLevelText(levelTextView, level);
-                    }
 
-                    @Override
-                    public void onStartTrackingTouch(SeekBar seekBar) {
-                    }
+                        @Override
+                        public void onStartTrackingTouch(SeekBar seekBar) {
+                        }
 
-                    @Override
-                    public void onStopTrackingTouch(SeekBar seekBar) {
-                    }
-                });
-                layout.addView(bandBar);
+                        @Override
+                        public void onStopTrackingTouch(SeekBar seekBar) {
+                        }
+                    });
+                    layout.addView(bandBar);
+                }
             }
         } catch (Exception e) {
         	//TODO: Show a dialog

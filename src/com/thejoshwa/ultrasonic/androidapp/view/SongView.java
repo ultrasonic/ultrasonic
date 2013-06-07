@@ -49,10 +49,7 @@ public class SongView extends UpdateView implements Checkable {
     private static final String TAG = SongView.class.getSimpleName();
     private CheckedTextView checkedTextView;
     private ImageView starImageView;
-    private TextView trackTextView;
     private TextView titleTextView;
-    private TextView artistTextView;
-    private TextView durationTextView;
     private TextView statusTextView;
     private Entry song;
     private Context context;
@@ -75,10 +72,10 @@ public class SongView extends UpdateView implements Checkable {
 
         checkedTextView = (CheckedTextView) findViewById(R.id.song_check);
         starImageView = (ImageView) findViewById(R.id.song_star);
-        trackTextView = (TextView) findViewById(R.id.song_track);
+        TextView trackTextView = (TextView) findViewById(R.id.song_track);
         titleTextView = (TextView) findViewById(R.id.song_title);
-        artistTextView = (TextView) findViewById(R.id.song_artist);
-        durationTextView = (TextView) findViewById(R.id.song_duration);
+        TextView artistTextView = (TextView) findViewById(R.id.song_artist);
+        TextView durationTextView = (TextView) findViewById(R.id.song_duration);
         statusTextView = (TextView) findViewById(R.id.song_status);
 
         
@@ -91,7 +88,8 @@ public class SongView extends UpdateView implements Checkable {
         
         VideoPlayerType videoPlayer = Util.getVideoPlayerType(getContext());
         
-        String fileFormat = null;
+        String fileFormat;
+
         if (song.getTranscodedSuffix() == null || song.getTranscodedSuffix().equals(song.getSuffix()) || (song.isVideo() && videoPlayer != VideoPlayerType.FLASH)) {
         	fileFormat = song.getSuffix();
         } else {
