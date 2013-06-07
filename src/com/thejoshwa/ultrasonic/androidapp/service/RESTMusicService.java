@@ -968,16 +968,23 @@ public class RESTMusicService implements MusicService {
 		// received intact. Remember, HTTP POST requests are converted to GET
 		// requests during HTTP redirects, thus
 		// loosing its entity.
-		if (parameterNames != null && parameterNames.size() < 10) {
-			StringBuilder builder = new StringBuilder(url);
-			for (int i = 0; i < parameterNames.size(); i++) {
-				builder.append("&").append(parameterNames.get(i)).append("=");
-				builder.append(URLEncoder.encode(String.valueOf(parameterValues.get(i)), "UTF-8"));
-			}
-			url = builder.toString();
-			parameterNames = null;
-			parameterValues = null;
-		}
+
+        if (parameterNames != null) {
+            int parameters = parameterNames.size();
+
+            if (parameters < 10) {
+                StringBuilder builder = new StringBuilder(url);
+
+                for (int i = 0; i < parameters; i++) {
+                    builder.append("&").append(parameterNames.get(i)).append("=");
+                    builder.append(URLEncoder.encode(String.valueOf(parameterValues.get(i)), "UTF-8"));
+                }
+
+                url = builder.toString();
+                parameterNames = null;
+                parameterValues = null;
+            }
+        }
 
 		String rewrittenUrl = rewriteUrlWithRedirect(context, url);
 		return executeWithRetry(context, rewrittenUrl, url, requestParams, parameterNames, parameterValues, headers, progressListener, task);
@@ -986,15 +993,14 @@ public class RESTMusicService implements MusicService {
 	private HttpResponse executeWithRetry(Context context, String url, String originalUrl, HttpParams requestParams, List<String> parameterNames, List<Object> parameterValues, List<Header> headers, ProgressListener progressListener, CancellableTask task) throws IOException {
 		Log.i(TAG, "Using URL " + url);
 
-		SharedPreferences prefs = Util.getPreferences(context);
 		int networkTimeout = Util.getNetworkTimeout(context);
 		HttpParams newParams = httpClient.getParams();
 		HttpConnectionParams.setSoTimeout(newParams, networkTimeout);
 		httpClient.setParams(newParams);
-
 		final AtomicReference<Boolean> cancelled = new AtomicReference<Boolean>(false);
 		int attempts = 0;
-		while (true) {
+
+        while (true) {
 			attempts++;
 			HttpContext httpContext = new BasicHttpContext();
 			final HttpPost request = new HttpPost(url);
@@ -1020,9 +1026,11 @@ public class RESTMusicService implements MusicService {
 
 			if (parameterNames != null) {
 				List<NameValuePair> params = new ArrayList<NameValuePair>();
-				for (int i = 0; i < parameterNames.size(); i++) {
+
+                for (int i = 0; i < parameterNames.size(); i++) {
 					params.add(new BasicNameValuePair(parameterNames.get(i), String.valueOf(parameterValues.get(i))));
 				}
+
 				request.setEntity(new UrlEncodedFormEntity(params, Constants.UTF_8));
 			}
 
@@ -1038,11 +1046,11 @@ public class RESTMusicService implements MusicService {
 			}
 
 			// Set credentials to get through apache proxies that require authentication.
-			int instance = prefs.getInt(Constants.PREFERENCES_KEY_SERVER_INSTANCE, 1);
-			String username = prefs.getString(Constants.PREFERENCES_KEY_USERNAME + instance, null);
-			String password = prefs.getString(Constants.PREFERENCES_KEY_PASSWORD + instance, null);
-			httpClient.getCredentialsProvider().setCredentials(new AuthScope(AuthScope.ANY_HOST, AuthScope.ANY_PORT),
-					new UsernamePasswordCredentials(username, password));
+            SharedPreferences preferences = Util.getPreferences(context);
+			int instance = preferences.getInt(Constants.PREFERENCES_KEY_SERVER_INSTANCE, 1);
+			String username = preferences.getString(Constants.PREFERENCES_KEY_USERNAME + instance, null);
+			String password = preferences.getString(Constants.PREFERENCES_KEY_PASSWORD + instance, null);
+			httpClient.getCredentialsProvider().setCredentials(new AuthScope(AuthScope.ANY_HOST, AuthScope.ANY_PORT), new UsernamePasswordCredentials(username, password));
 
 			try {
 				HttpResponse response = httpClient.execute(request, httpContext);
@@ -1050,13 +1058,16 @@ public class RESTMusicService implements MusicService {
 				return response;
 			} catch (IOException x) {
 				request.abort();
+
 				if (attempts >= HTTP_REQUEST_MAX_ATTEMPTS || cancelled.get()) {
 					throw x;
 				}
+
 				if (progressListener != null) {
 					String msg = context.getResources().getString(R.string.music_service_retry, attempts, HTTP_REQUEST_MAX_ATTEMPTS - 1);
 					progressListener.updateProgress(msg);
 				}
+
 				Log.w(TAG, "Got IOException (" + attempts + "), will retry", x);
 				increaseTimeouts(requestParams);
 				Util.sleepQuietly(2000L);

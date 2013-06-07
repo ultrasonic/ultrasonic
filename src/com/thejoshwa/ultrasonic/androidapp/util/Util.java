@@ -105,8 +105,6 @@ public class Util extends DownloadActivity {
     public static final String CM_AVRCP_PLAYSTATE_CHANGED = "com.android.music.playstatechanged";
     public static final String CM_AVRCP_METADATA_CHANGED = "com.android.music.metachanged";
     
-    //public final static int albumArtImageSize = 300;
-    
 	private static boolean hasFocus = false;
 	private static boolean pauseFocus = false;
 	private static boolean lowerFocus = false;
@@ -117,7 +115,6 @@ public class Util extends DownloadActivity {
     private static final char[] HEX_DIGITS = {'0', '1', '2', '3', '4', '5', '6', '7', '8', '9', 'a', 'b', 'c', 'd', 'e', 'f'};
     private static Toast toast;
     
-    //public static Bitmap albumArtBitmap;
     private static Entry currentSong;
 
     private Util() {
