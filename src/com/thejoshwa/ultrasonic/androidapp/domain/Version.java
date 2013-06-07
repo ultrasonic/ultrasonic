@@ -69,8 +69,7 @@ public class Version implements Comparable<Version> {
 
         if (beta != version.beta) return false;
         if (bugfix != version.bugfix) return false;
-        if (major != version.major) return false;
-        return minor == version.minor;
+        return major == version.major && minor == version.minor;
     }
 
     /**

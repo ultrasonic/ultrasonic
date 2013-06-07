@@ -243,10 +243,12 @@ public class SettingsActivity extends PreferenceActivity implements SharedPrefer
             }
         });
         
-        SharedPreferences prefs = Util.getPreferences(this);
-        prefs.registerOnSharedPreferenceChangeListener(this);
+        SharedPreferences preferences = Util.getPreferences(this);
+        preferences.registerOnSharedPreferenceChangeListener(this);
         
-        getActionBar().setSubtitle(R.string.menu_settings);
+        if (actionBar != null) {
+            actionBar.setSubtitle(R.string.menu_settings);
+        }
 
         update();
     }

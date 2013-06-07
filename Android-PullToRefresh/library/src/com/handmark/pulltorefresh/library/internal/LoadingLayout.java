@@ -181,15 +181,21 @@ public abstract class LoadingLayout extends FrameLayout implements ILoadingLayou
 	}
 
 	public final void setHeight(int height) {
-		ViewGroup.LayoutParams lp = (ViewGroup.LayoutParams) getLayoutParams();
-		lp.height = height;
-		requestLayout();
+		ViewGroup.LayoutParams lp = getLayoutParams();
+
+        if (lp != null) {
+		    lp.height = height;
+		    requestLayout();
+        }
 	}
 
 	public final void setWidth(int width) {
-		ViewGroup.LayoutParams lp = (ViewGroup.LayoutParams) getLayoutParams();
-		lp.width = width;
-		requestLayout();
+		ViewGroup.LayoutParams lp = getLayoutParams();
+
+        if (lp != null) {
+		    lp.width = width;
+		    requestLayout();
+        }
 	}
 
 	public final int getContentSize() {

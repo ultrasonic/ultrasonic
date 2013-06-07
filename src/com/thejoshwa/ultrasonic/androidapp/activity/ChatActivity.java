@@ -169,7 +169,13 @@ public final class ChatActivity extends SubsonicTabActivity {
     private void sendMessage() {
         if (messageEditText != null) {
             final String message;
-            message = messageEditText.getText().toString();
+            Editable text = messageEditText.getText();
+
+            if (text == null) {
+                return;
+            }
+
+            message = text.toString();
 
             if (!Util.isNullOrWhiteSpace(message)) {
                 messageEditText.setText("");

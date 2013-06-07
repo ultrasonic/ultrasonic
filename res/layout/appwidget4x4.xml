@@ -5,7 +5,7 @@
     a:minWidth="250dp"
     a:minHeight="250dp"
     a:orientation="vertical"
-    a:background="@drawable/appwidget_dark_bg_trans" >"
+    a:background="@drawable/appwidget_dark_bg_trans" >
 
     <ImageView
         a:id="@+id/appwidget_coverart"

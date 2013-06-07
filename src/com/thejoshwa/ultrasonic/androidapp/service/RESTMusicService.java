@@ -727,7 +727,7 @@ public class RESTMusicService implements MusicService {
     }
 
     @Override
-	public Bitmap getCoverArt(Context context, MusicDirectory.Entry entry, int size, boolean saveToFile, boolean highQuality, ProgressListener progressListener) throws Exception {
+	public Bitmap getCoverArt(Context context, final MusicDirectory.Entry entry, int size, boolean saveToFile, boolean highQuality, ProgressListener progressListener) throws Exception {
 		// Synchronize on the entry so that we don't download concurrently for
 		// the same song.
         if (entry == null) {

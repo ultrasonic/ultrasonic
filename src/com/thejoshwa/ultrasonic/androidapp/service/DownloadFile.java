@@ -199,7 +199,7 @@ public class DownloadFile {
 			if (saveWhenDone && !isPlaying) {
 				Util.renameFile(completeFile, saveFile);
 				saveWhenDone = false;
-			} else if(completeWhenDone && !isPlaying) {
+			} else if (completeWhenDone && !isPlaying) {
 				if (save) {
 					Util.renameFile(partialFile, saveFile);
                     mediaStoreService.saveInMediaStore(DownloadFile.this);

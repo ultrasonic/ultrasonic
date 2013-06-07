@@ -92,7 +92,7 @@
             a:layout_gravity="bottom"
             a:gravity="bottom"
             a:paddingBottom="4dip"
-            a:paddingTop="4dip" >"
+            a:paddingTop="4dip" >
 
             <ImageButton
                 a:id="@+id/control_previous"

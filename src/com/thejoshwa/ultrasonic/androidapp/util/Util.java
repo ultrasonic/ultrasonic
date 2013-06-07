@@ -429,7 +429,7 @@ public class Util extends DownloadActivity {
     }
     
     public static void renameFile(File from, File to) throws IOException {
-		if(from.renameTo(to)) {
+		if (from.renameTo(to)) {
 			Log.i(TAG, "Renamed " + from + " to " + to);
 		} else {
 			atomicCopy(from, to);
@@ -870,10 +870,6 @@ public class Util extends DownloadActivity {
 		} else {
 			if (song != currentSong) {
 				currentSong = song;
-				
-				if (Util.getShouldSendBluetoothAlbumArt(context)) {
-					//albumArtBitmap = FileUtil.getAlbumArtBitmap(context, song, albumArtImageSize, false);
-				}
 			}
 
 			String title = song.getTitle();
@@ -895,24 +891,13 @@ public class Util extends DownloadActivity {
                 File albumArtFile = FileUtil.getAlbumArtFile(context, song);
                 avrcpIntent.putExtra("coverart", albumArtFile.getAbsolutePath());
                 avrcpIntent.putExtra("cover", albumArtFile.getAbsolutePath());
+			}
 
-				//avrcpIntent.putExtra("cover", albumArtBitmap);
-				//avrcpIntent.putExtra("coverart", albumArtBitmap);
-			}
-			
-			if (playerPosition != null) {
-				avrcpIntent.putExtra("position", (long) playerPosition);
-			}
-			
-			if (id != null) {
-				avrcpIntent.putExtra("id", (long) id);
-			}
-			
-			if (listSize != null) {
-				avrcpIntent.putExtra("ListSize", (long) listSize);
-			}
-			
-			if (duration != null) {
+            avrcpIntent.putExtra("position", (long) playerPosition);
+            avrcpIntent.putExtra("id", (long) id);
+            avrcpIntent.putExtra("ListSize", (long) listSize);
+
+            if (duration != null) {
 				avrcpIntent.putExtra("duration", (long) duration);
 			}
 		}
@@ -936,9 +921,6 @@ public class Util extends DownloadActivity {
 			
 			if (song != currentSong) {
 				currentSong = song;
-				if (Util.getShouldSendBluetoothAlbumArt(context)) {
-					//albumArtBitmap = FileUtil.getAlbumArtBitmap(context, song, albumArtImageSize, false);
-				}
 			}
 			
 			String title = song.getTitle();
@@ -960,24 +942,13 @@ public class Util extends DownloadActivity {
                 File albumArtFile = FileUtil.getAlbumArtFile(context, song);
                 avrcpIntent.putExtra("coverart", albumArtFile.getAbsolutePath());
                 avrcpIntent.putExtra("cover", albumArtFile.getAbsolutePath());
-                
-				//avrcpIntent.putExtra("cover", albumArtBitmap);
-				//avrcpIntent.putExtra("coverart", albumArtBitmap);
 			}
-			
-			if (playerPosition != null) {
-				avrcpIntent.putExtra("position", (long) playerPosition);
-			}
-			
-			if (id != null) {
-				avrcpIntent.putExtra("id", (long) id);
-			}
-			
-			if (listSize != null) {
-				avrcpIntent.putExtra("ListSize", (long) listSize);
-			}
-			
-			if (duration != null) {
+
+            avrcpIntent.putExtra("position", (long) playerPosition);
+            avrcpIntent.putExtra("id", (long) id);
+            avrcpIntent.putExtra("ListSize", (long) listSize);
+
+            if (duration != null) {
 				avrcpIntent.putExtra("duration", (long) duration);
 			}
 

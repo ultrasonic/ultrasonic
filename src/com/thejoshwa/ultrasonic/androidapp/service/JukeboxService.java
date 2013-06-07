@@ -347,7 +347,6 @@ public class JukeboxService {
             LayoutInflater inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
             View view = inflater.inflate(R.layout.jukebox_volume, null);
             progressBar = (ProgressBar) view.findViewById(R.id.jukebox_volume_progress_bar);
-
             setView(view);
             setGravity(Gravity.TOP, 0, 0);
         }

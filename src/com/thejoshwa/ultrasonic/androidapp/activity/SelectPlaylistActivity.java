@@ -81,9 +81,9 @@ public class SelectPlaylistActivity extends SubsonicTabActivity implements Adapt
 
         View playlistsMenuItem = findViewById(R.id.menu_playlists);
         menuDrawer.setActiveView(playlistsMenuItem);
-        
-        getActionBar().setTitle(R.string.common_appname);
-        getActionBar().setSubtitle(R.string.playlist_label);
+
+        setActionBarTitle(R.string.common_appname);
+        setActionBarSubtitle(R.string.playlist_label);
 
         load();
     }

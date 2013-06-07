@@ -40,15 +40,10 @@ public class A2dpIntentReceiver extends BroadcastReceiver {
 			avrcpIntent.putExtra("duration", (long) duration);
 		}
 
-		if (playerPosition != null) {
-			avrcpIntent.putExtra("position", (long) playerPosition);
-		}
+        avrcpIntent.putExtra("position", (long) playerPosition);
+        avrcpIntent.putExtra("ListSize", (long) listSize);
 
-		if (listSize != null) {
-			avrcpIntent.putExtra("ListSize", (long) listSize);
-		}
-
-		switch (downloadService.getPlayerState()) {
+        switch (downloadService.getPlayerState()) {
 		case STARTED:
 			avrcpIntent.putExtra("playing", true);
 			break;

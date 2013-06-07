@@ -3,7 +3,6 @@
     android:id="@+id/now_playing"
     android:layout_width="fill_parent"
     android:layout_height="wrap_content"
-    android:layout_alignParentBottom="true"
     android:orientation="vertical"
     android:visibility="gone" >
     

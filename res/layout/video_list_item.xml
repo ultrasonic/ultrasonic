@@ -12,7 +12,7 @@
         a:checkMark="@drawable/btn_check_custom"
         a:gravity="center_vertical"
         a:paddingLeft="1dip"
-        a:visibility="gone" />"
+        a:visibility="gone" />
 
     <include layout="@layout/video_details"
         a:layout_gravity="center_vertical" />

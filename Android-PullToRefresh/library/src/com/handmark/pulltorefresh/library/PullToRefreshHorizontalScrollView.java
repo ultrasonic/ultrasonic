@@ -68,11 +68,8 @@ public class PullToRefreshHorizontalScrollView extends PullToRefreshBase<Horizon
 	@Override
 	protected boolean isReadyForPullEnd() {
 		View scrollViewChild = mRefreshableView.getChildAt(0);
-		if (null != scrollViewChild) {
-			return mRefreshableView.getScrollX() >= (scrollViewChild.getWidth() - getWidth());
-		}
-		return false;
-	}
+        return null != scrollViewChild && mRefreshableView.getScrollX() >= (scrollViewChild.getWidth() - getWidth());
+    }
 
 	@TargetApi(9)
 	final class InternalHorizontalScrollViewSDK9 extends HorizontalScrollView {

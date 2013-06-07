@@ -85,9 +85,9 @@ public class SearchActivity extends SubsonicTabActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.search);
 
-        getActionBar().setTitle(R.string.common_appname);
-        getActionBar().setSubtitle(R.string.search_title);
-        
+        setActionBarTitle(R.string.common_appname);
+        setActionBarSubtitle(R.string.search_title);
+
         View searchMenuItem = findViewById(R.id.menu_search);
         menuDrawer.setActiveView(searchMenuItem);
 

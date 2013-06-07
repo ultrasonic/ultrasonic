@@ -230,9 +230,9 @@ public class CacheCleaner {
 					playlistFiles.remove(FileUtil.getPlaylistFile(playlist.getName()));
 				}
 				
-				for(File playlist : playlistFiles) {
-					playlist.delete();
-				}
+				for (File playlist : playlistFiles) {
+                    playlist.delete();
+                }
 			} catch (RuntimeException x) {
 				Log.e(TAG, "Error in playlist cache cleaning.", x);
 			}

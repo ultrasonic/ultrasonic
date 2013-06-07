@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="ProjectModuleManager">
+    <modules>
+      <module fileurl="file://$PROJECT_DIR$/Subsonic-Android.iml" filepath="$PROJECT_DIR$/Subsonic-Android.iml" />
+      <module fileurl="file://$PROJECT_DIR$/Android-PullToRefresh/library/library.iml" filepath="$PROJECT_DIR$/Android-PullToRefresh/library/library.iml" />
+      <module fileurl="file://$PROJECT_DIR$/android-menudrawer-master/library/library1.iml" filepath="$PROJECT_DIR$/android-menudrawer-master/library/library1.iml" />
+    </modules>
+  </component>
+</project>
+

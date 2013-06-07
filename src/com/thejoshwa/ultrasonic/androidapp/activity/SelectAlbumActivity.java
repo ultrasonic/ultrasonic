@@ -251,8 +251,10 @@ public class SelectAlbumActivity extends SubsonicTabActivity {
     }
     
     private void playNow(final boolean shuffle, final boolean append) {
-		if(getSelectedSongs(albumListView).size() > 0) {
-			download(append, false, !append, false, shuffle, getSelectedSongs(albumListView));
+        List<MusicDirectory.Entry> selectedSongs = getSelectedSongs(albumListView);
+
+        if (selectedSongs.size() > 0) {
+			download(append, false, !append, false, shuffle, selectedSongs);
 			selectAll(false, false);
 		}
 		else {

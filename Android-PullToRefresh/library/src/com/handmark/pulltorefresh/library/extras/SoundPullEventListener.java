@@ -46,7 +46,7 @@ public class SoundPullEventListener<V extends View> implements PullToRefreshBase
 	public final void onPullEvent(PullToRefreshBase<V> refreshView, State event, Mode direction) {
 		Integer soundResIdObj = mSoundMap.get(event);
 		if (null != soundResIdObj) {
-			playSound(soundResIdObj.intValue());
+			playSound(soundResIdObj);
 		}
 	}
 

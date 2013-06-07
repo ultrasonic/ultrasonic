@@ -72,16 +72,13 @@ public class MainActivity extends SubsonicTabActivity {
         loadSettings();
         
         final View buttons = LayoutInflater.from(this).inflate(R.layout.main_buttons, null);
-
         final View serverButton = buttons.findViewById(R.id.main_select_server);
         final TextView serverTextView = (TextView) serverButton.findViewById(R.id.main_select_server_2);
-
         final View musicTitle = buttons.findViewById(R.id.main_music);
         final View artistsButton = buttons.findViewById(R.id.main_artists_button);
         final View albumsButton = buttons.findViewById(R.id.main_albums_button);
         final View genresButton = buttons.findViewById(R.id.main_genres_button);
         final View videosTitle = buttons.findViewById(R.id.main_videos_title);
-
         final View songsTitle = buttons.findViewById(R.id.main_songs);
         final View randomSongsButton = buttons.findViewById(R.id.main_songs_button);
         final View songsStarredButton = buttons.findViewById(R.id.main_songs_starred);
@@ -95,7 +92,6 @@ public class MainActivity extends SubsonicTabActivity {
         final View albumsAlphaByNameButton = buttons.findViewById(R.id.main_albums_alphaByName);
         final View albumsAlphaByArtistButton = buttons.findViewById(R.id.main_albums_alphaByArtist);
         final View videosButton = buttons.findViewById(R.id.main_videos);
-                
         final View dummyView = findViewById(R.id.main_dummy);
 
         boolean shouldShowDialog = false;

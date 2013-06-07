@@ -1070,7 +1070,7 @@ public class DownloadActivity extends SubsonicTabActivity implements OnGestureLi
 				msPlayed = Math.max(0, downloadService.getPlayerPosition());
 				duration = downloadService.getPlayerDuration();
 
-				final int msTotal = duration == null ? 0 : duration;
+				final int msTotal = duration;
                 seekTo = msPlayed + ms > msTotal ? msTotal : msPlayed + ms;
 				downloadService.seekTo(seekTo);
                 return null;
