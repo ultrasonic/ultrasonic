@@ -163,3 +163,9 @@ pip-log.txt
 .DS_Store
 out/
 proguard_logs/
+
+# IDEA
+.idea/workspace.xml
+.idea/misc.xml
+.idea/tasks.xml
+.idea/*.iws
