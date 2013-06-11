@@ -114,7 +114,7 @@ public class SubsonicTabActivity extends Activity implements OnClickListener{
             menuActiveViewId = bundle.getInt(STATE_ACTIVE_VIEW_ID);
         }
 
-       	menuDrawer = MenuDrawer.attach(this, MenuDrawer.MENU_DRAG_WINDOW, Position.LEFT);
+		menuDrawer = MenuDrawer.attach(this, MenuDrawer.Type.BEHIND, Position.LEFT,  MenuDrawer.MENU_DRAG_WINDOW);
         menuDrawer.setMenuView(R.layout.menu_main);
 
         chatMenuItem = findViewById(R.id.menu_chat);
@@ -912,6 +912,7 @@ public class SubsonicTabActivity extends Activity implements OnClickListener{
     @Override
     public void onClick(View v) {
         menuActiveViewId = v.getId();
+        menuDrawer.setActiveView(v);
         
         Intent intent;
         
@@ -959,7 +960,7 @@ public class SubsonicTabActivity extends Activity implements OnClickListener{
     			break;
         }
         
-        menuDrawer.closeMenu();
+        menuDrawer.closeMenu(true);
     }
 	
     @Override
@@ -981,7 +982,7 @@ public class SubsonicTabActivity extends Activity implements OnClickListener{
         final int drawerState = menuDrawer.getDrawerState();
         
         if (drawerState == MenuDrawer.STATE_OPEN || drawerState == MenuDrawer.STATE_OPENING) {
-            menuDrawer.closeMenu();
+            menuDrawer.closeMenu(true);
             return;
         }
 

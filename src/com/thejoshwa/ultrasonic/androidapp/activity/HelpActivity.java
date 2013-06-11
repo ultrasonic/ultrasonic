@@ -73,7 +73,7 @@ public final class HelpActivity extends Activity implements OnClickListener {
             menuActiveViewId = bundle.getInt(STATE_ACTIVE_VIEW_ID);
         }
         
-        menuDrawer = MenuDrawer.attach(this, MenuDrawer.MENU_DRAG_WINDOW, Position.LEFT);
+        menuDrawer = MenuDrawer.attach(this, MenuDrawer.Type.BEHIND, Position.LEFT,  MenuDrawer.MENU_DRAG_WINDOW);
         menuDrawer.setMenuView(R.layout.menu_main);
         
         chatMenuItem = findViewById(R.id.menu_chat);
@@ -201,7 +201,7 @@ public final class HelpActivity extends Activity implements OnClickListener {
         final int drawerState = menuDrawer.getDrawerState();
         
         if (drawerState == MenuDrawer.STATE_OPEN || drawerState == MenuDrawer.STATE_OPENING) {
-            menuDrawer.closeMenu();
+            menuDrawer.closeMenu(true);
             return;
         }
         
@@ -213,11 +213,13 @@ public final class HelpActivity extends Activity implements OnClickListener {
     @Override
     public void onClick(View v) {
         menuActiveViewId = v.getId();
+        menuDrawer.setActiveView(v);
         
         Intent intent;
         
         switch (menuActiveViewId) {
     		case R.id.menu_home:
+    			
     			intent = new Intent(this, MainActivity.class);
     			intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
     			Util.startActivityWithoutTransition(this, intent);
@@ -260,7 +262,7 @@ public final class HelpActivity extends Activity implements OnClickListener {
     			break;
         }
         
-        menuDrawer.closeMenu();
+        menuDrawer.closeMenu(true);
     }
 
     private final class HelpClient extends WebViewClient {

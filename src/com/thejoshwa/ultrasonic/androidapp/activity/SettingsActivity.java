@@ -114,7 +114,7 @@ public class SettingsActivity extends PreferenceActivity implements SharedPrefer
             menuActiveViewId = savedInstanceState.getInt(STATE_ACTIVE_VIEW_ID);
         }
         
-        menuDrawer = MenuDrawer.attach(this, MenuDrawer.MENU_DRAG_WINDOW, Position.LEFT);
+        menuDrawer = MenuDrawer.attach(this, MenuDrawer.Type.BEHIND, Position.LEFT,  MenuDrawer.MENU_DRAG_WINDOW);
         menuDrawer.setMenuView(R.layout.menu_main);
         
         chatMenuItem = findViewById(R.id.menu_chat);
@@ -641,7 +641,7 @@ public class SettingsActivity extends PreferenceActivity implements SharedPrefer
         final int drawerState = menuDrawer.getDrawerState();
         
         if (drawerState == MenuDrawer.STATE_OPEN || drawerState == MenuDrawer.STATE_OPENING) {
-            menuDrawer.closeMenu();
+            menuDrawer.closeMenu(true);
             return;
         }
 
@@ -651,6 +651,7 @@ public class SettingsActivity extends PreferenceActivity implements SharedPrefer
     @Override
     public void onClick(View v) {
         menuActiveViewId = v.getId();
+        menuDrawer.setActiveView(v);
         
         Intent intent;
         
@@ -698,6 +699,6 @@ public class SettingsActivity extends PreferenceActivity implements SharedPrefer
     			break;
         }
         
-        menuDrawer.closeMenu();
+        menuDrawer.closeMenu(true);
     }
 }
