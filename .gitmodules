@@ -1,0 +1,6 @@
+[submodule "menudrawer"]
+	path = menudrawer
+	url = git://github.com/SimonVT/android-menudrawer.git
+[submodule "pulltorefresh"]
+	path = pulltorefresh
+	url = git://github.com/chrisbanes/Android-PullToRefresh.git
