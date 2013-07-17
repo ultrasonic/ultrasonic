@@ -30,6 +30,7 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Random;
 import java.util.Set;
+import java.util.SortedSet;
 import java.util.concurrent.TimeUnit;
 
 import android.content.Context;
@@ -47,6 +48,7 @@ import com.thejoshwa.ultrasonic.androidapp.domain.Playlist;
 import com.thejoshwa.ultrasonic.androidapp.domain.SearchCriteria;
 import com.thejoshwa.ultrasonic.androidapp.domain.SearchResult;
 import com.thejoshwa.ultrasonic.androidapp.util.Constants;
+import com.thejoshwa.ultrasonic.androidapp.util.EntryByDiscAndTrackComparator;
 import com.thejoshwa.ultrasonic.androidapp.util.FileUtil;
 import com.thejoshwa.ultrasonic.androidapp.util.ProgressListener;
 import com.thejoshwa.ultrasonic.androidapp.util.Util;
@@ -62,64 +64,89 @@ public class OfflineMusicService extends RESTMusicService {
         return true;
     }
 
-    @Override
-    public Indexes getIndexes(String musicFolderId, boolean refresh, Context context, ProgressListener progressListener) throws Exception {
-        List<Artist> artists = new ArrayList<Artist>();
-        File root = FileUtil.getMusicDirectory(context);
-        for (File file : FileUtil.listFiles(root)) {
-            if (file.isDirectory()) {
-                Artist artist = new Artist();
-                artist.setId(file.getPath());
-                artist.setName(file.getName());
-                
-                String artistIndex = "";
-                
-                try {
-                	artistIndex = file.getName().substring(0, 1);
-                }
-                catch (Exception ignored) { }
-                
-                artist.setIndex(artistIndex);
-                
-                artists.add(artist);
-            }
-        }
-        return new Indexes(0L, Collections.<Artist>emptyList(), artists);
-    }
+	@Override
+	public Indexes getIndexes(String musicFolderId, boolean refresh, Context context, ProgressListener progressListener) throws Exception {
+		List<Artist> artists = new ArrayList<Artist>();
+		File root = FileUtil.getMusicDirectory(context);
+		for (File file : FileUtil.listFiles(root)) {
+			if (file.isDirectory()) {
+				Artist artist = new Artist();
+				artist.setId(file.getPath());
+				artist.setIndex(file.getName().substring(0, 1));
+				artist.setName(file.getName());
+				artists.add(artist);
+			}
+		}
 
-    @Override
-    public MusicDirectory getMusicDirectory(String id, String artistName, boolean refresh, Context context, ProgressListener progressListener) throws Exception {
-        File dir = new File(id);
-        MusicDirectory result = new MusicDirectory();
-        result.setName(dir.getName());
+		String ignoredArticlesString = "The El La Los Las Le Les";
+		final String[] ignoredArticles = ignoredArticlesString.split(" ");
 
-        Set<String> names = new HashSet<String>();
+		Collections.sort(artists, new Comparator<Artist>() {
+			public int compare(Artist lhsArtist, Artist rhsArtist) {
+				String lhs = lhsArtist.getName().toLowerCase();
+				String rhs = rhsArtist.getName().toLowerCase();
 
-        for (File file : FileUtil.listMediaFiles(dir)) {
-            String name = getName(file);
-            if (name != null & !names.contains(name)) {
-                names.add(name);
-                result.addChild(createEntry(context, file, name));
-            }
-        }
-        return result;
-    }
+				char lhs1 = lhs.charAt(0);
+				char rhs1 = rhs.charAt(0);
 
-    private String getName(File file) {
-        String name = file.getName();
-        if (file.isDirectory()) {
-            return name;
-        }
+				if(Character.isDigit(lhs1) && !Character.isDigit(rhs1)) {
+					return 1;
+				} else if(Character.isDigit(rhs1) && !Character.isDigit(lhs1)) {
+					return -1;
+				}
 
-        if (name.endsWith(".partial") || name.contains(".partial.") || name.equals(Constants.ALBUM_ART_FILE)) {
-            return null;
-        }
+				for(String article: ignoredArticles) {
+					int index = lhs.indexOf(article.toLowerCase() + " ");
+					if(index == 0) {
+						lhs = lhs.substring(article.length() + 1);
+					}
+					index = rhs.indexOf(article.toLowerCase() + " ");
+					if(index == 0) {
+						rhs = rhs.substring(article.length() + 1);
+					}
+				}
 
-        name = name.replace(".complete", "");
-        return FileUtil.getBaseName(name);
-    }
+				return lhs.compareTo(rhs);
+			}
+		});
 
-    private MusicDirectory.Entry createEntry(Context context, File file, String name) {
+		return new Indexes(0L, Collections.<Artist>emptyList(), artists);
+	}
+
+	@Override
+	public MusicDirectory getMusicDirectory(String id, String artistName, boolean refresh, Context context, ProgressListener progressListener) throws Exception {
+		File dir = new File(id);
+		MusicDirectory result = new MusicDirectory();
+		result.setName(dir.getName());
+
+		Set<String> names = new HashSet<String>();
+
+		for (File file : FileUtil.listMediaFiles(dir)) {
+			String name = getName(file);
+			if (name != null & !names.contains(name)) {
+				names.add(name);
+				result.addChild(createEntry(context, file, name));
+			}
+		}
+
+		return result;
+	}
+
+	private String getName(File file) {
+		String name = file.getName();
+		if (file.isDirectory()) {
+			return name;
+		}
+
+		if (name.endsWith(".partial") || name.contains(".partial.") || name.equals(Constants.ALBUM_ART_FILE)) {
+			return null;
+		}
+
+		name = name.replace(".complete", "");
+		return FileUtil.getBaseName(name);
+	}
+
+	private MusicDirectory.Entry createEntry(Context context, File file, String name) {
         MusicDirectory.Entry entry = new MusicDirectory.Entry();
         entry.setIsDirectory(file.isDirectory());
         entry.setId(file.getPath());
@@ -277,18 +304,17 @@ public class OfflineMusicService extends RESTMusicService {
         throw new OfflineException("Music folders not available in offline mode");
     }
 
-    @Override
-    public SearchResult search(SearchCriteria criteria, Context context, ProgressListener progressListener) throws Exception {
+	@Override
+	public SearchResult search(SearchCriteria criteria, Context context, ProgressListener progressListener) throws Exception {
 		List<Artist> artists = new ArrayList<Artist>();
 		List<MusicDirectory.Entry> albums = new ArrayList<MusicDirectory.Entry>();
 		List<MusicDirectory.Entry> songs = new ArrayList<MusicDirectory.Entry>();
-        File root = FileUtil.getMusicDirectory(context);
-		int closeness;
-
-        for (File artistFile : FileUtil.listFiles(root)) {
+		File root = FileUtil.getMusicDirectory(context);
+		int closeness = 0;
+		for (File artistFile : FileUtil.listFiles(root)) {
 			String artistName = artistFile.getName();
-            if (artistFile.isDirectory()) {
-				if ((closeness = matchCriteria(criteria, artistName)) > 0) {
+			if (artistFile.isDirectory()) {
+				if((closeness = matchCriteria(criteria, artistName)) > 0) {
 					Artist artist = new Artist();
 					artist.setId(artistFile.getPath());
 					artist.setIndex(artistFile.getName().substring(0, 1));
@@ -296,11 +322,11 @@ public class OfflineMusicService extends RESTMusicService {
 					artist.setCloseness(closeness);
 					artists.add(artist);
 				}
-				
+
 				recursiveAlbumSearch(artistName, artistFile, criteria, context, albums, songs);
-            }
-        }
-		
+			}
+		}
+
 		Collections.sort(artists, new Comparator<Artist>() {
 			public int compare(Artist lhs, Artist rhs) {
 				if(lhs.getCloseness() == rhs.getCloseness()) {
@@ -340,10 +366,10 @@ public class OfflineMusicService extends RESTMusicService {
 				}
 			}
 		});
-		
+
 		return new SearchResult(artists, albums, songs);
-    }
-	
+	}
+
 	private void recursiveAlbumSearch(String artistName, File file, SearchCriteria criteria, Context context, List<MusicDirectory.Entry> albums, List<MusicDirectory.Entry> songs) {
 		int closeness;
 		for(File albumFile : FileUtil.listMediaFiles(file)) {
@@ -382,11 +408,12 @@ public class OfflineMusicService extends RESTMusicService {
 			}
 		}
 	}
+
 	private int matchCriteria(SearchCriteria criteria, String name) {
 		String query = criteria.getQuery().toLowerCase();
 		String[] queryParts = query.split(" ");
 		String[] nameParts = name.toLowerCase().split(" ");
-		
+
 		int closeness = 0;
 		for(String queryPart : queryParts) {
 			for(String namePart : nameParts) {
@@ -395,50 +422,76 @@ public class OfflineMusicService extends RESTMusicService {
 				}
 			}
 		}
-		
+
 		return closeness;
 	}
 
-    @Override
-    public List<Playlist> getPlaylists(boolean refresh, Context context, ProgressListener progressListener) throws Exception {
-        List<Playlist> playlists = new ArrayList<Playlist>();
-        File root = FileUtil.getPlaylistDirectory();
-        for (File file : FileUtil.listFiles(root)) {
-			if(FileUtil.isPlaylistFile(file)) {
-				String id = file.getName();
-				String filename = FileUtil.getBaseName(id);
-				Playlist playlist = new Playlist(id, filename);
-				playlists.add(playlist);
+	@Override
+	public List<Playlist> getPlaylists(boolean refresh, Context context, ProgressListener progressListener) throws Exception {
+		List<Playlist> playlists = new ArrayList<Playlist>();
+		File root = FileUtil.getPlaylistDirectory();
+		String lastServer = null;
+		boolean removeServer = true;
+		for (File folder : FileUtil.listFiles(root)) {
+			if(folder.isDirectory()) {
+				String server = folder.getName();
+				SortedSet<File> fileList = FileUtil.listFiles(folder);
+				for(File file: fileList) {
+					if(FileUtil.isPlaylistFile(file)) {
+						String id = file.getName();
+						String filename = server + ": " + FileUtil.getBaseName(id);
+						Playlist playlist = new Playlist(server, filename);
+						playlists.add(playlist);
+					}
+				}
+
+				if(!server.equals(lastServer) && fileList.size() > 0) {
+					if(lastServer != null) {
+						removeServer = false;
+					}
+					lastServer = server;
+				}
 			} else {
 				// Delete legacy playlist files
 				try {
-					file.delete();
+					folder.delete();
 				} catch(Exception e) {
-					Log.w(TAG, "Failed to delete old playlist file: " + file.getName());
+					Log.w(TAG, "Failed to delete old playlist file: " + folder.getName());
 				}
 			}
-        }
-        return playlists;
-    }
+		}
 
-    @Override
-    public MusicDirectory getPlaylist(String id, String name, Context context, ProgressListener progressListener) throws Exception {
+		if(removeServer) {
+			for(Playlist playlist: playlists) {
+				playlist.setName(playlist.getName().substring(playlist.getId().length() + 2));
+			}
+		}
+		return playlists;
+	}
+
+	@Override
+	public MusicDirectory getPlaylist(String id, String name, Context context, ProgressListener progressListener) throws Exception {
 		DownloadService downloadService = DownloadServiceImpl.getInstance();
-        if (downloadService == null) {
-            return new MusicDirectory();
-        }
-		
-        Reader reader = null;
+		if (downloadService == null) {
+			return new MusicDirectory();
+		}
+
+		Reader reader = null;
 		BufferedReader buffer = null;
 		try {
-			File playlistFile = FileUtil.getPlaylistFile(name);
+			int firstIndex = name.indexOf(id);
+			if(firstIndex != -1) {
+				name = name.substring(id.length() + 2);
+			}
+
+			File playlistFile = FileUtil.getPlaylistFile(id, name);
 			reader = new FileReader(playlistFile);
 			buffer = new BufferedReader(reader);
-			
+
 			MusicDirectory playlist = new MusicDirectory();
 			String line = buffer.readLine();
-	    	if(!"#EXTM3U".equals(line)) return playlist;
-			
+			if(!"#EXTM3U".equals(line)) return playlist;
+
 			while( (line = buffer.readLine()) != null ){
 				File entryFile = new File(line);
 				String entryName = getName(entryFile);
@@ -446,13 +499,13 @@ public class OfflineMusicService extends RESTMusicService {
 					playlist.addChild(createEntry(context, entryFile, entryName));
 				}
 			}
-			
+
 			return playlist;
 		} finally {
 			Util.close(buffer);
 			Util.close(reader);
 		}
-    }
+	}
 
     @Override
     public void createPlaylist(String id, String name, List<MusicDirectory.Entry> entries, Context context, ProgressListener progressListener) throws Exception {
@@ -568,13 +621,13 @@ public class OfflineMusicService extends RESTMusicService {
     	throw new OfflineException("Getting Genres not available in offline mode");
     }
 
-    private void listFilesRecursively(File parent, List<File> children) {
-        for (File file : FileUtil.listMediaFiles(parent)) {
-            if (file.isFile()) {
-                children.add(file);
-            } else {
-                listFilesRecursively(file, children);
-            }
-        }
-    }
+	private void listFilesRecursively(File parent, List<File> children) {
+		for (File file : FileUtil.listMediaFiles(parent)) {
+			if (file.isFile()) {
+				children.add(file);
+			} else {
+				listFilesRecursively(file, children);
+			}
+		}
+	}
 }

@@ -469,16 +469,16 @@ public class RESTMusicService implements MusicService {
         }
     }
 
-    @Override
-    public MusicDirectory getPlaylist(String id, String name, Context context, ProgressListener progressListener) throws Exception {
-        HttpParams params = new BasicHttpParams();
-        HttpConnectionParams.setSoTimeout(params, SOCKET_READ_TIMEOUT_GET_PLAYLIST);
+	@Override
+	public MusicDirectory getPlaylist(String id, String name, Context context, ProgressListener progressListener) throws Exception {
+		HttpParams params = new BasicHttpParams();
+		HttpConnectionParams.setSoTimeout(params, SOCKET_READ_TIMEOUT_GET_PLAYLIST);
 
-        Reader reader = getReader(context, progressListener, "getPlaylist", params, "id", id);
-        try {
+		Reader reader = getReader(context, progressListener, "getPlaylist", params, "id", id);
+		try {
 			MusicDirectory playlist = new PlaylistParser(context).parse(reader, progressListener);
-			
-			File playlistFile = FileUtil.getPlaylistFile(name);
+
+			File playlistFile = FileUtil.getPlaylistFile(Util.getServerName(context), name);
 			FileWriter fw = new FileWriter(playlistFile);
 			BufferedWriter bw = new BufferedWriter(fw);
 			try {
@@ -488,7 +488,7 @@ public class RESTMusicService implements MusicService {
 					if(! new File(filePath).exists()){
 						String ext = FileUtil.getExtension(filePath);
 						String base = FileUtil.getBaseName(filePath);
-						filePath = base + ".complete." + ext;                
+						filePath = base + ".complete." + ext;
 					}
 					fw.write(filePath + "\n");
 				}
@@ -498,67 +498,63 @@ public class RESTMusicService implements MusicService {
 				bw.close();
 				fw.close();
 			}
-			
+
 			return playlist;
-        } finally {
-            Util.close(reader);
-        }
-    }
-    
-    @Override
-    public List<Playlist> getPlaylists(boolean refresh, Context context, ProgressListener progressListener) throws Exception {
-        Reader reader = getReader(context, progressListener, "getPlaylists", null);
-        try {
-            return new PlaylistsParser(context).parse(reader, progressListener);
-        } finally {
-            Util.close(reader);
-        }
-    }
+		} finally {
+			Util.close(reader);
+		}
+	}
 
-    @Override
-    public void createPlaylist(String id, String name, List<MusicDirectory.Entry> entries, Context context, ProgressListener progressListener) throws Exception {
-    	checkServerVersion(context, "1.2", "Creating playlist not supported.");
-    	
-        List<String> parameterNames = new LinkedList<String>();
-        List<Object> parameterValues = new LinkedList<Object>();
+	@Override
+	public List<Playlist> getPlaylists(boolean refresh, Context context, ProgressListener progressListener) throws Exception {
+		Reader reader = getReader(context, progressListener, "getPlaylists", null);
+		try {
+			return new PlaylistsParser(context).parse(reader, progressListener);
+		} finally {
+			Util.close(reader);
+		}
+	}
 
-        if (id != null) {
-            parameterNames.add("playlistId");
-            parameterValues.add(id);
-        }
-        if (name != null) {
-            parameterNames.add("name");
-            parameterValues.add(name);
-        }
-        for (MusicDirectory.Entry entry : entries) {
-            parameterNames.add("songId");
-            parameterValues.add(entry.getId());
-        }
+	@Override
+	public void createPlaylist(String id, String name, List<MusicDirectory.Entry> entries, Context context, ProgressListener progressListener) throws Exception {
+		List<String> parameterNames = new LinkedList<String>();
+		List<Object> parameterValues = new LinkedList<Object>();
 
-        Reader reader = getReader(context, progressListener, "createPlaylist", null, parameterNames, parameterValues);
-        try {
-            new ErrorParser(context).parse(reader);
-        } finally {
-            Util.close(reader);
-        }
-    }
-    
+		if (id != null) {
+			parameterNames.add("playlistId");
+			parameterValues.add(id);
+		}
+		if (name != null) {
+			parameterNames.add("name");
+			parameterValues.add(name);
+		}
+		for (MusicDirectory.Entry entry : entries) {
+			parameterNames.add("songId");
+			parameterValues.add(entry.getId());
+		}
+
+		Reader reader = getReader(context, progressListener, "createPlaylist", null, parameterNames, parameterValues);
+		try {
+			new ErrorParser(context).parse(reader);
+		} finally {
+			Util.close(reader);
+		}
+	}
+
 	@Override
 	public void deletePlaylist(String id, Context context, ProgressListener progressListener) throws Exception {
-		checkServerVersion(context, "1.2", "Deleting playlist not supported.");
-		
 		Reader reader = getReader(context, progressListener, "deletePlaylist", null, "id", id);
 		try {
-            new ErrorParser(context).parse(reader);
-        } finally {
-            Util.close(reader);
-        }
+			new ErrorParser(context).parse(reader);
+		} finally {
+			Util.close(reader);
+		}
 	}
-	
+
 	@Override
 	public void updatePlaylist(String id, List<MusicDirectory.Entry> toAdd, Context context, ProgressListener progressListener) throws Exception {
 		checkServerVersion(context, "1.8", "Updating playlist not supported.");
-		
+
 		List<String> names = new ArrayList<String>();
 		List<Object> values = new ArrayList<Object>();
 		names.add("playlistId");
@@ -568,17 +564,16 @@ public class RESTMusicService implements MusicService {
 			values.add(song.getId());
 		}
 		Reader reader = getReader(context, progressListener, "updatePlaylist", null, names, values);
-    	try {
-            new ErrorParser(context).parse(reader);
-        } finally {
-            Util.close(reader);
-        }
+		try {
+			new ErrorParser(context).parse(reader);
+		} finally {
+			Util.close(reader);
+		}
 	}
-	
+
 	@Override
 	public void removeFromPlaylist(String id, List<Integer> toRemove, Context context, ProgressListener progressListener) throws Exception {
-		checkServerVersion(context, "1.8", "Removing from playlist not supported.");
-		
+		checkServerVersion(context, "1.8", "Updating playlists is not supported.");
 		List<String> names = new ArrayList<String>();
 		List<Object> values = new ArrayList<Object>();
 		names.add("playlistId");
@@ -588,16 +583,16 @@ public class RESTMusicService implements MusicService {
 			values.add(song);
 		}
 		Reader reader = getReader(context, progressListener, "updatePlaylist", null, names, values);
-    	try {
-            new ErrorParser(context).parse(reader);
-        } finally {
-            Util.close(reader);
-        }
+		try {
+			new ErrorParser(context).parse(reader);
+		} finally {
+			Util.close(reader);
+		}
 	}
-	
+
 	@Override
 	public void updatePlaylist(String id, String name, String comment, boolean pub, Context context, ProgressListener progressListener) throws Exception {
-		checkServerVersion(context, "1.8", "Updating playlist not supported.");
+		checkServerVersion(context, "1.8", "Updating playlists is not supported.");
 		Reader reader = getReader(context, progressListener, "updatePlaylist", null, Arrays.asList("playlistId", "name", "comment", "public"), Arrays.<Object>asList(id, name, comment, pub));
 		try {
 			new ErrorParser(context).parse(reader);
@@ -606,7 +601,7 @@ public class RESTMusicService implements MusicService {
 		}
 	}
 
-    @Override
+	@Override
     public Lyrics getLyrics(String artist, String title, Context context, ProgressListener progressListener) throws Exception {
     	checkServerVersion(context, "1.2", "Lyrics not supported.");
     	

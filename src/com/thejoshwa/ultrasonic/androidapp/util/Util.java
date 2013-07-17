@@ -189,6 +189,17 @@ public class Util extends DownloadActivity {
         return settings.getInt(Constants.PREFERENCES_KEY_ACTIVE_SERVERS, 3);
     }
 
+	public static String getServerName(Context context) {
+		int instance = getActiveServer(context);
+
+		if (instance == 0) {
+			return context.getResources().getString(R.string.main_offline);
+		}
+
+		SharedPreferences preferences = getPreferences(context);
+		return preferences.getString(Constants.PREFERENCES_KEY_SERVER_NAME + instance, null);
+	}
+
     public static String getServerName(Context context, int instance) {
         if (instance == 0) {
             return context.getResources().getString(R.string.main_offline);

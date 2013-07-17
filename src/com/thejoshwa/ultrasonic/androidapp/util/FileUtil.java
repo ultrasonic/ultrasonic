@@ -52,40 +52,46 @@ public class FileUtil {
 	private static final List<String> PLAYLIST_FILE_EXTENSIONS = Arrays.asList("m3u");
     private static final File DEFAULT_MUSIC_DIR = createDirectory("music");
 
-    public static File getSongFile(Context context, MusicDirectory.Entry song) {
-        File dir = getAlbumDirectory(context, song);
+	public static File getSongFile(Context context, MusicDirectory.Entry song) {
+		File dir = getAlbumDirectory(context, song);
 
-        StringBuilder fileName = new StringBuilder();
-        Integer track = song.getTrack();
-        if (track != null) {
-            if (track < 10) {
-                fileName.append("0");
-            }
-            fileName.append(track).append("-");
-        }
+		StringBuilder fileName = new StringBuilder();
+		Integer track = song.getTrack();
+		if (track != null) {
+			if (track < 10) {
+				fileName.append("0");
+			}
+			fileName.append(track).append("-");
+		}
 
-        fileName.append(fileSystemSafe(song.getTitle())).append(".");
+		fileName.append(fileSystemSafe(song.getTitle())).append(".");
 
-        if (song.getTranscodedSuffix() != null) {
-            fileName.append(song.getTranscodedSuffix());
-        } else {
-            fileName.append(song.getSuffix());
-        }
+		if (song.getTranscodedSuffix() != null) {
+			fileName.append(song.getTranscodedSuffix());
+		} else {
+			fileName.append(song.getSuffix());
+		}
 
-        return new File(dir, fileName.toString());
-    }
+		return new File(dir, fileName.toString());
+	}
 
-	public static File getPlaylistFile(String name) {
-		File playlistDir = getPlaylistDirectory();
+	public static File getPlaylistFile(String server, String name) {
+		File playlistDir = getPlaylistDirectory(server);
 		return new File(playlistDir, fileSystemSafe(name) + ".m3u");
 	}
 
-    public static File getPlaylistDirectory() {
+	public static File getPlaylistDirectory() {
 		File playlistDir = new File(getUltraSonicDirectory(), "playlists");
 		ensureDirectoryExistsAndIsReadWritable(playlistDir);
 		return playlistDir;
 	}
-	
+
+	public static File getPlaylistDirectory(String server) {
+		File playlistDir = new File(getPlaylistDirectory(), server);
+		ensureDirectoryExistsAndIsReadWritable(playlistDir);
+		return playlistDir;
+	}
+
     public static File getAlbumArtFile(Context context, MusicDirectory.Entry entry) {
         File albumDir = getAlbumDirectory(context, entry);
         return getAlbumArtFile(albumDir);

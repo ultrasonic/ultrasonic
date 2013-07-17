@@ -34,8 +34,6 @@
     </annotationProcessing>
     <bytecodeTargetLevel>
       <module name="menudrawer" target="1.6" />
-      <module name="menudrawer-parent" target="1.6" />
-      <module name="samples" target="1.6" />
     </bytecodeTargetLevel>
   </component>
 </project>

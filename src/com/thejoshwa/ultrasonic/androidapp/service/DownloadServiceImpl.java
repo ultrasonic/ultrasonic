@@ -191,21 +191,6 @@ public class DownloadServiceImpl extends Service implements DownloadService {
 
         audioManager = (AudioManager) this.getSystemService(Context.AUDIO_SERVICE);
 		
-        if (mediaPlayer != null) {
-			mediaPlayer.release();
-		}
-		
-        mediaPlayer = new MediaPlayer();
-        mediaPlayer.setWakeMode(this, PowerManager.PARTIAL_WAKE_LOCK);
-        mediaPlayer.setAudioStreamType(AudioManager.STREAM_MUSIC);
-        mediaPlayer.setOnErrorListener(new MediaPlayer.OnErrorListener() {
-            @Override
-            public boolean onError(MediaPlayer mediaPlayer, int what, int more) {
-                handleError(new Exception("MediaPlayer error: " + what + " (" + more + ")"));
-                return false;
-            }
-        });
-        
     	notification.flags |= Notification.FLAG_NO_CLEAR | Notification.FLAG_ONGOING_EVENT;
         notification.contentView = new RemoteViews(this.getPackageName(), R.layout.notification);
         Util.linkButtons(this, notification.contentView, false);
@@ -251,6 +236,8 @@ public class DownloadServiceImpl extends Service implements DownloadService {
     @Override
     public void onDestroy() {
         super.onDestroy();
+
+		instance = null;
         lifecycleSupport.onDestroy();
         mediaPlayer.release();
         
@@ -287,7 +274,6 @@ public class DownloadServiceImpl extends Service implements DownloadService {
         
     	audioManager.unregisterRemoteControlClient(remoteControlClient);
         notification = null;
-        instance = null;
     }
 
     public static DownloadService getInstance() {
@@ -321,14 +307,21 @@ public class DownloadServiceImpl extends Service implements DownloadService {
                 DownloadFile downloadFile = new DownloadFile(this, song, save);
                 downloadList.add(getCurrentPlayingIndex() + offset, downloadFile);
                 offset++;
-            }
+			}
             
             revision++;
         } else {
+			int size = size();
+			int index = getCurrentPlayingIndex();
+
             for (MusicDirectory.Entry song : songs) {
                 DownloadFile downloadFile = new DownloadFile(this, song, save);
                 downloadList.add(downloadFile);
             }
+
+			if(!autoplay && (size - 1) == index) {
+				setNextPlaying();
+			}
             
             revision++;
         }
@@ -357,6 +350,8 @@ public class DownloadServiceImpl extends Service implements DownloadService {
 			DownloadFile downloadFile = new DownloadFile(this, song, save);
 			backgroundDownloadList.add(downloadFile);
 		}
+
+		revision++;
 		
 		checkDownloads();
 		lifecycleSupport.serializeDownloadQueue();
@@ -373,6 +368,10 @@ public class DownloadServiceImpl extends Service implements DownloadService {
         download(songs, false, false, false, false, newPlaylist);
         
         if (currentPlayingIndex != -1) {
+			while (mediaPlayer == null) {
+				Util.sleepQuietly(50L);
+			}
+
             play(currentPlayingIndex, autoPlayStart);
             
             if (currentPlaying != null) {
@@ -607,6 +606,14 @@ public class DownloadServiceImpl extends Service implements DownloadService {
     }
     
     synchronized void setNextPlaying() {
+		boolean gaplessPlayback = Util.getGaplessPlaybackPreference(DownloadServiceImpl.this);
+
+		if (!gaplessPlayback) {
+			nextPlaying = null;
+			nextPlayerState = IDLE;
+			return;
+		}
+
 		int index = getCurrentPlayingIndex();
 		if (index != -1) {
             switch (getRepeatMode()) {
@@ -1312,9 +1319,7 @@ public class DownloadServiceImpl extends Service implements DownloadService {
 					try {
 						setNextPlayerState(PREPARED);
 						
-						boolean gaplessPlayback = Util.getGaplessPlaybackPreference(DownloadServiceImpl.this);
-						
-						if (gaplessPlayback && Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN && (playerState == PlayerState.STARTED || playerState == PlayerState.PAUSED)) {
+						if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN && (playerState == PlayerState.STARTED || playerState == PlayerState.PAUSED)) {
 							mediaPlayer.setNextMediaPlayer(nextMediaPlayer);
 							nextSetup = true;
 						}
@@ -1506,7 +1511,8 @@ public class DownloadServiceImpl extends Service implements DownloadService {
                     DownloadFile downloadFile = backgroundDownloadList.get(i);
                     if (downloadFile.isWorkDone() && (!downloadFile.shouldSave() || downloadFile.isSaved())) {
                         // Don't need to keep list like active song list
-                        backgroundDownloadList.remove(downloadFile);
+                        backgroundDownloadList.remove(i);
+						revision++;
                         i--;
                     } else {
                         currentDownloading = downloadFile;

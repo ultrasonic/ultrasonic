@@ -165,7 +165,7 @@ public class CacheCleaner {
         undeletable.add(FileUtil.getMusicDirectory(context));
         return undeletable;
     }
-	
+
 	private class BackgroundCleanup extends AsyncTask<Void, Void, Void> {
 		@Override
 		protected Void doInBackground(Void... params) {
@@ -188,11 +188,11 @@ public class CacheCleaner {
 			} catch (RuntimeException x) {
 				Log.e(TAG, "Error in cache cleaning.", x);
 			}
-			
+
 			return null;
 		}
 	}
-	
+
 	private class BackgroundSpaceCleanup extends AsyncTask<Void, Void, Void> {
 		@Override
 		protected Void doInBackground(Void... params) {
@@ -205,7 +205,7 @@ public class CacheCleaner {
 				List<File> files = new ArrayList<File>();
 				List<File> dirs = new ArrayList<File>();
 				findCandidatesForDeletion(FileUtil.getMusicDirectory(context), files, dirs);
-				
+
 				long bytesToDelete = getMinimumDelete(files);
 				if(bytesToDelete > 0L) {
 					sortByAscendingModificationTime(files);
@@ -215,28 +215,29 @@ public class CacheCleaner {
 			} catch (RuntimeException x) {
 				Log.e(TAG, "Error in cache cleaning.", x);
 			}
-			
+
 			return null;
 		}
 	}
-	
+
 	private class BackgroundPlaylistsCleanup extends AsyncTask<List<Playlist>, Void, Void> {
 		@Override
 		protected Void doInBackground(List<Playlist>... params) {
 			try {
-				SortedSet<File> playlistFiles = FileUtil.listFiles(FileUtil.getPlaylistDirectory());
+				String server = Util.getServerName(context);
+				SortedSet<File> playlistFiles = FileUtil.listFiles(FileUtil.getPlaylistDirectory(server));
 				List<Playlist> playlists = params[0];
 				for (Playlist playlist : playlists) {
-					playlistFiles.remove(FileUtil.getPlaylistFile(playlist.getName()));
+					playlistFiles.remove(FileUtil.getPlaylistFile(server, playlist.getName()));
 				}
-				
-				for (File playlist : playlistFiles) {
-                    playlist.delete();
-                }
+
+				for(File playlist : playlistFiles) {
+					playlist.delete();
+				}
 			} catch (RuntimeException x) {
 				Log.e(TAG, "Error in playlist cache cleaning.", x);
 			}
-			
+
 			return null;
 		}
 	}
