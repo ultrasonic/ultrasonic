@@ -1,9 +1,0 @@
-<component name="libraryTable">
-  <library name="android-support-v4-r10">
-    <CLASSES>
-      <root url="jar://$PROJECT_DIR$/android-menudrawer-master/samples/libs/android-support-v4-r10.jar!/" />
-    </CLASSES>
-    <JAVADOC />
-    <SOURCES />
-  </library>
-</component>
