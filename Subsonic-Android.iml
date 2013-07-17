@@ -19,10 +19,10 @@
       <sourceFolder url="file://$MODULE_DIR$/src" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/gen" isTestSource="false" />
     </content>
-    <orderEntry type="inheritedJdk" />
+    <orderEntry type="jdk" jdkName="Android 4.2.2" jdkType="Android SDK" />
     <orderEntry type="sourceFolder" forTests="false" />
-    <orderEntry type="module" module-name="library1" />
-    <orderEntry type="module" module-name="library" />
+    <orderEntry type="module" module-name="menudrawer" />
+    <orderEntry type="module" module-name="pulltorefresh" />
   </component>
 </module>
 

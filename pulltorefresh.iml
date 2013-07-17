@@ -3,15 +3,19 @@
   <component name="FacetManager">
     <facet type="android" name="Android">
       <configuration>
+        <option name="GEN_FOLDER_RELATIVE_PATH_APT" value="/pulltorefresh/library/gen" />
+        <option name="GEN_FOLDER_RELATIVE_PATH_AIDL" value="/pulltorefresh/library/gen" />
+        <option name="MANIFEST_FILE_RELATIVE_PATH" value="/pulltorefresh/library/AndroidManifest.xml" />
+        <option name="RES_FOLDER_RELATIVE_PATH" value="/pulltorefresh/library/res" />
         <option name="LIBRARY_PROJECT" value="true" />
       </configuration>
     </facet>
   </component>
   <component name="NewModuleRootManager" inherit-compiler-output="true">
     <exclude-output />
-    <content url="file://$MODULE_DIR$">
-      <sourceFolder url="file://$MODULE_DIR$/src" isTestSource="false" />
-      <sourceFolder url="file://$MODULE_DIR$/gen" isTestSource="false" />
+    <content url="file://$MODULE_DIR$/pulltorefresh">
+      <sourceFolder url="file://$MODULE_DIR$/pulltorefresh/library/src" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/pulltorefresh/library/gen" isTestSource="false" />
     </content>
     <orderEntry type="inheritedJdk" />
     <orderEntry type="sourceFolder" forTests="false" />
