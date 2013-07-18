@@ -2,8 +2,8 @@
 <manifest xmlns:a="http://schemas.android.com/apk/res/android"
     package="com.thejoshwa.ultrasonic.androidapp"
     a:installLocation="auto"
-    a:versionCode="32"
-    a:versionName="1.2.0.5" >
+    a:versionCode="33"
+    a:versionName="1.2.0.6" >
 
     <uses-permission a:name="android.permission.INTERNET" />
     <uses-permission a:name="android.permission.READ_PHONE_STATE" />

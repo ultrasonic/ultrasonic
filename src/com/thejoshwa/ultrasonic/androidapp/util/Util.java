@@ -914,14 +914,16 @@ public class Util extends DownloadActivity {
 	}
 
 	public static void broadcastA2dpPlayStatusChange(Context context, PlayerState state, DownloadService downloadService) {
-		if (!Util.getShouldSendBluetoothNotifications(context)) {
+		if (!Util.getShouldSendBluetoothNotifications(context) || downloadService == null) {
 			return;
 		}
-		
-		if (downloadService.getCurrentPlaying() != null) {
+
+		DownloadFile currentPlaying = downloadService.getCurrentPlaying();
+
+		if (currentPlaying != null) {
 			Intent avrcpIntent = new Intent(CM_AVRCP_PLAYSTATE_CHANGED);
 
-			Entry song = downloadService.getCurrentPlaying().getSong();
+			Entry song = currentPlaying.getSong();
 			
 			if (song == null) {
 				return;
