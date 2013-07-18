@@ -188,7 +188,7 @@ public class SelectAlbumActivity extends SubsonicTabActivity {
 
         String id = getIntent().getStringExtra(Constants.INTENT_EXTRA_NAME_ID);
         boolean isAlbum = getIntent().getBooleanExtra(Constants.INTENT_EXTRA_NAME_IS_ALBUM, false);
-        
+		boolean isArtist = getIntent().getBooleanExtra(Constants.INTENT_EXTRA_NAME_ARTIST, false);
         String name = getIntent().getStringExtra(Constants.INTENT_EXTRA_NAME_NAME);
         String playlistId = getIntent().getStringExtra(Constants.INTENT_EXTRA_NAME_PLAYLIST_ID);
         String playlistName = getIntent().getStringExtra(Constants.INTENT_EXTRA_NAME_PLAYLIST_NAME);
@@ -268,6 +268,7 @@ public class SelectAlbumActivity extends SubsonicTabActivity {
 
     private void playAll(final boolean shuffle, final boolean append) {
         boolean hasSubFolders = false;
+
         for (int i = 0; i < albumListView.getCount(); i++) {
             MusicDirectory.Entry entry = (MusicDirectory.Entry) albumListView.getItemAtPosition(i);
             if (entry != null && entry.isDirectory()) {
@@ -276,9 +277,11 @@ public class SelectAlbumActivity extends SubsonicTabActivity {
             }
         }
 
+		boolean isArtist = getIntent().getBooleanExtra(Constants.INTENT_EXTRA_NAME_ARTIST, false);
         String id = getIntent().getStringExtra(Constants.INTENT_EXTRA_NAME_ID);
+
         if (hasSubFolders && id != null) {
-            downloadRecursively(id, false, append, !append, shuffle, false, false, false, false);
+            downloadRecursively(id, false, append, !append, shuffle, false, false, false, isArtist);
         } else {
             selectAll(true, false);
             download(append, false, !append, false, shuffle, getSelectedSongs(albumListView));
@@ -565,18 +568,21 @@ public class SelectAlbumActivity extends SubsonicTabActivity {
     private void selectAllOrNone() {
         boolean someUnselected = false;
         int count = albumListView.getCount();
+
         for (int i = 0; i < count; i++) {
             if (!albumListView.isItemChecked(i) && albumListView.getItemAtPosition(i) instanceof MusicDirectory.Entry) {
                 someUnselected = true;
                 break;
             }
         }
+
         selectAll(someUnselected, true);
     }
 
     private void selectAll(boolean selected, boolean toast) {
         int count = albumListView.getCount();
         int selectedCount = 0;
+
         for (int i = 0; i < count; i++) {
             MusicDirectory.Entry entry = (MusicDirectory.Entry) albumListView.getItemAtPosition(i);
             if (entry != null && !entry.isDirectory() && !entry.isVideo()) {
@@ -630,7 +636,7 @@ public class SelectAlbumActivity extends SubsonicTabActivity {
     private void downloadBackground(final boolean save) {
 		List<MusicDirectory.Entry> songs = getSelectedSongs(albumListView);
 		
-		if(songs.isEmpty()) {
+		if (songs.isEmpty()) {
 			selectAll(true, false);
 			songs = getSelectedSongs(albumListView);
 		}
@@ -662,10 +668,12 @@ public class SelectAlbumActivity extends SubsonicTabActivity {
     
 	private void delete() {
 		List<MusicDirectory.Entry> songs = getSelectedSongs(albumListView);
-		if(songs.isEmpty()) {
+
+		if (songs.isEmpty()) {
 			selectAll(true, false);
 			songs = getSelectedSongs(albumListView);
 		}
+
         if (getDownloadService() != null) {
             getDownloadService().delete(songs);
         }

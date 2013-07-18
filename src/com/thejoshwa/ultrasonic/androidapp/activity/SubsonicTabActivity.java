@@ -60,6 +60,7 @@ import com.thejoshwa.ultrasonic.androidapp.service.MusicServiceFactory;
 import com.thejoshwa.ultrasonic.androidapp.service.OfflineException;
 import com.thejoshwa.ultrasonic.androidapp.service.ServerTooOldException;
 import com.thejoshwa.ultrasonic.androidapp.util.Constants;
+import com.thejoshwa.ultrasonic.androidapp.util.EntryByDiscAndTrackComparator;
 import com.thejoshwa.ultrasonic.androidapp.util.ImageLoader;
 import com.thejoshwa.ultrasonic.androidapp.util.ModalBackgroundTask;
 import com.thejoshwa.ultrasonic.androidapp.util.SilentBackgroundTask;
@@ -71,6 +72,7 @@ import net.simonvt.menudrawer.Position;
 
 import java.io.File;
 import java.io.PrintWriter;
+import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -659,11 +661,11 @@ public class SubsonicTabActivity extends Activity implements OnClickListener{
                 List<MusicDirectory.Entry> songs = new LinkedList<MusicDirectory.Entry>();
                 MusicDirectory root;
 
-                if (isArtist && Util.getShouldUseId3Tags(SubsonicTabActivity.this)) {
+                if (!Util.isOffline(SubsonicTabActivity.this) && isArtist && Util.getShouldUseId3Tags(SubsonicTabActivity.this)) {
                     getSongsForArtist(id, songs);
                 } else {
                     if (isDirectory) {
-                        if (Util.getShouldUseId3Tags(SubsonicTabActivity.this)) {
+                        if (!Util.isOffline(SubsonicTabActivity.this) && Util.getShouldUseId3Tags(SubsonicTabActivity.this)) {
                             root = musicService.getAlbum(id, name, false, SubsonicTabActivity.this, this);
                         } else {
                             root = musicService.getMusicDirectory(id, name, false, SubsonicTabActivity.this, this);
@@ -694,7 +696,7 @@ public class SubsonicTabActivity extends Activity implements OnClickListener{
                 for (MusicDirectory.Entry dir : parent.getChildren(true, false)) {
                     MusicDirectory root;
 
-                    if (Util.getShouldUseId3Tags(SubsonicTabActivity.this)) {
+                    if (!Util.isOffline(SubsonicTabActivity.this) && Util.getShouldUseId3Tags(SubsonicTabActivity.this)) {
                         root = musicService.getAlbum(dir.getId(), dir.getTitle(), false, SubsonicTabActivity.this, this);
                     } else {
                         root = musicService.getMusicDirectory(dir.getId(), dir.getTitle(), false, SubsonicTabActivity.this, this);
@@ -725,7 +727,11 @@ public class SubsonicTabActivity extends Activity implements OnClickListener{
 
             @Override
             protected void done(List<MusicDirectory.Entry> songs) {
-                DownloadService downloadService = getDownloadService();
+				if (Util.getShouldSortByDisc(SubsonicTabActivity.this)){
+					Collections.sort(songs, new EntryByDiscAndTrackComparator());
+				}
+
+				DownloadService downloadService = getDownloadService();
                 if (!songs.isEmpty() && downloadService != null) {
                     if (!append && !playNext && !unpin && !background) {
                         downloadService.clear();

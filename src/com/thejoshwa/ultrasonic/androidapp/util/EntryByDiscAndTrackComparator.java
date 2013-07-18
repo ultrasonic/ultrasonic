@@ -11,9 +11,30 @@ public class EntryByDiscAndTrackComparator implements Comparator<MusicDirectory.
         Integer discY = y.getDiscNumber();
         Integer trackX = x.getTrack();
         Integer trackY = y.getTrack();
+//		String parentX = x.getParent();
+//		String parentY = y.getParent();
+		String albumX = x.getAlbum();
+		String albumY = y.getAlbum();
 
-        int startComparison = compare(discX == null ? 0 : discX, discY == null ? 0 : discY);
-        return startComparison != 0 ? startComparison : compare(trackX == null ? 0 : trackX, trackY == null ? 0 : trackY);
+//		int parentComparison = compare(parentX, parentY);
+//
+//		if (parentComparison != 0) {
+//			return parentComparison;
+//		}
+
+		int albumComparison = compare(albumX, albumY);
+
+		if (albumComparison != 0) {
+			return albumComparison;
+		}
+
+        int discComparison = compare(discX == null ? 0 : discX, discY == null ? 0 : discY);
+
+		if (discComparison != 0) {
+			return discComparison;
+		}
+
+        return compare(trackX == null ? 0 : trackX, trackY == null ? 0 : trackY);
     }
 
     private int compare(long a, long b) {
@@ -21,4 +42,20 @@ public class EntryByDiscAndTrackComparator implements Comparator<MusicDirectory.
                 : a > b ? 1
                 : 0;
     }
+
+	private int compare(String a, String b) {
+		if (a == null && b == null) {
+			return 0;
+		}
+
+		if (a == null && b != null) {
+			return -1;
+		}
+
+		if (a != null && b == null) {
+			return 1;
+		}
+
+		return a.compareTo(b);
+	}
 }
