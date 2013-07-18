@@ -991,14 +991,20 @@ public class DownloadServiceImpl extends Service implements DownloadService {
         UltraSonicAppWidgetProvider4x3.getInstance().notifyChange(this, this, this.playerState == PlayerState.STARTED, false);
         UltraSonicAppWidgetProvider4x4.getInstance().notifyChange(this, this, this.playerState == PlayerState.STARTED, false);
         SubsonicTabActivity tabInstance = SubsonicTabActivity.getInstance();
-        
+
+		Entry song = null;
+
+		if (currentPlaying != null) {
+			song = currentPlaying.getSong();
+		}
+
        	if (show) {
     		int size = Util.getNotificationImageSize(this);
-    		Bitmap bitmap = FileUtil.getAlbumArtBitmap(this, currentPlaying.getSong(), size, true);
+    		Bitmap bitmap = FileUtil.getAlbumArtBitmap(this, song , size, true);
 
             if (tabInstance != null) {
                 tabInstance.nowPlayingImage = bitmap;
-                tabInstance.showNotification(handler, currentPlaying.getSong(), this, this.notification, this.playerState);
+                tabInstance.showNotification(handler, song, this, this.notification, this.playerState);
                 tabInstance.showNowPlaying();
             }
         } else {

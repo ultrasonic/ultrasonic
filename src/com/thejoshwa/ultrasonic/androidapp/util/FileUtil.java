@@ -108,7 +108,6 @@ public class FileUtil {
         if (albumArtFile.exists()) {
         	final BitmapFactory.Options opt = new BitmapFactory.Options();
 
-        	
         	if (size > 0) {
             	opt.inJustDecodeBounds = true;
             	BitmapFactory.decodeFile(albumArtFile.getPath(), opt);

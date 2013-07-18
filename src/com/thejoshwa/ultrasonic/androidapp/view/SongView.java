@@ -123,8 +123,13 @@ public class SongView extends UpdateView implements Checkable {
         if (artistTextView != null) {
         	artistTextView.setText(artist);
         }
-        
-        durationTextView.setText(Util.formatTotalDuration(song.getDuration()));
+
+		Integer duration = song.getDuration();
+
+		if (duration != null) {
+        	durationTextView.setText(Util.formatTotalDuration(duration));
+		}
+
         starImageView.setImageDrawable(song.getStarred() ? Util.getDrawableFromAttribute(getContext(), R.attr.star_full) : Util.getDrawableFromAttribute(getContext(), R.attr.star_hollow));
         checkedTextView.setVisibility(checkable && !song.isVideo() ? View.VISIBLE : View.GONE);
 
