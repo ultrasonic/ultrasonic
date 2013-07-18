@@ -643,34 +643,38 @@ public class SubsonicTabActivity extends Activity implements OnClickListener{
         checkLicenseAndTrialPeriod(onValid);
     }
 
-
-	protected void downloadRecursively(final String id, final boolean save, final boolean append, final boolean autoplay, final boolean shuffle, final boolean background, final boolean playNext, final boolean unpin) {
-		downloadRecursively(id, "", true, save, append, autoplay, shuffle, background, playNext, unpin);
+    protected void downloadRecursively(final String id, final boolean save, final boolean append, final boolean autoplay, final boolean shuffle, final boolean background, final boolean playNext, final boolean unpin, final boolean isArtist) {
+        downloadRecursively(id, "", true, save, append, autoplay, shuffle, background, playNext, unpin, isArtist);
     }
-	protected void downloadPlaylist(final String id, final String name, final boolean save, final boolean append, final boolean autoplay, final boolean shuffle, final boolean background, final boolean playNext, final boolean unpin) {
-		downloadRecursively(id, name, false, save, append, autoplay, shuffle, background, playNext, unpin);
+    protected void downloadPlaylist(final String id, final String name, final boolean save, final boolean append, final boolean autoplay, final boolean shuffle, final boolean background, final boolean playNext, final boolean unpin) {
+        downloadRecursively(id, name, false, save, append, autoplay, shuffle, background, playNext, unpin, false);
     }
-	protected void downloadRecursively(final String id, final String name, final boolean isDirectory, final boolean save, final boolean append, final boolean autoplay, final boolean shuffle, final boolean background, final boolean playNext, final boolean unpin) {
-		ModalBackgroundTask<List<MusicDirectory.Entry>> task = new ModalBackgroundTask<List<MusicDirectory.Entry>>(this, false) {
+    protected void downloadRecursively(final String id, final String name, final boolean isDirectory, final boolean save, final boolean append, final boolean autoplay, final boolean shuffle, final boolean background, final boolean playNext, final boolean unpin, final boolean isArtist) {
+        ModalBackgroundTask<List<MusicDirectory.Entry>> task = new ModalBackgroundTask<List<MusicDirectory.Entry>>(this, false) {
             private static final int MAX_SONGS = 500;
 
             @Override
             protected List<MusicDirectory.Entry> doInBackground() throws Throwable {
                 MusicService musicService = MusicServiceFactory.getMusicService(SubsonicTabActivity.this);
-				MusicDirectory root;
-				
-				if(isDirectory) {
-					if (Util.getShouldUseId3Tags(SubsonicTabActivity.this)) {
-						root = musicService.getAlbum(id, name, false, SubsonicTabActivity.this, this);
-					} else {
-						root = musicService.getMusicDirectory(id, name, false, SubsonicTabActivity.this, this);
-					}
-				} else {
-					root = musicService.getPlaylist(id, name, SubsonicTabActivity.this, this);
-				}
-				
                 List<MusicDirectory.Entry> songs = new LinkedList<MusicDirectory.Entry>();
-                getSongsRecursively(root, songs);
+                MusicDirectory root;
+
+                if (isArtist && Util.getShouldUseId3Tags(SubsonicTabActivity.this)) {
+                    getSongsForArtist(id, songs);
+                } else {
+                    if (isDirectory) {
+                        if (Util.getShouldUseId3Tags(SubsonicTabActivity.this)) {
+                            root = musicService.getAlbum(id, name, false, SubsonicTabActivity.this, this);
+                        } else {
+                            root = musicService.getMusicDirectory(id, name, false, SubsonicTabActivity.this, this);
+                        }
+                    } else {
+                        root = musicService.getPlaylist(id, name, SubsonicTabActivity.this, this);
+                    }
+
+                    getSongsRecursively(root, songs);
+                }
+
                 return songs;
             }
 
@@ -684,18 +688,38 @@ public class SubsonicTabActivity extends Activity implements OnClickListener{
                         songs.add(song);
                     }
                 }
-                
+
+                MusicService musicService = MusicServiceFactory.getMusicService(SubsonicTabActivity.this);
+
                 for (MusicDirectory.Entry dir : parent.getChildren(true, false)) {
-                    MusicService musicService = MusicServiceFactory.getMusicService(SubsonicTabActivity.this);
                     MusicDirectory root;
-                    
+
                     if (Util.getShouldUseId3Tags(SubsonicTabActivity.this)) {
-                    	root = musicService.getAlbum(dir.getId(), dir.getTitle(), false, SubsonicTabActivity.this, this);
+                        root = musicService.getAlbum(dir.getId(), dir.getTitle(), false, SubsonicTabActivity.this, this);
                     } else {
-                    	root = musicService.getMusicDirectory(dir.getId(), dir.getTitle(), false, SubsonicTabActivity.this, this);
+                        root = musicService.getMusicDirectory(dir.getId(), dir.getTitle(), false, SubsonicTabActivity.this, this);
                     }
-                    
+
                     getSongsRecursively(root, songs);
+                }
+            }
+
+            private void getSongsForArtist(String id, List<MusicDirectory.Entry> songs) throws Exception {
+                if (songs.size() > MAX_SONGS) {
+                    return;
+                }
+
+                MusicService musicService = MusicServiceFactory.getMusicService(SubsonicTabActivity.this);
+                MusicDirectory artist = musicService.getArtist(id, "", false, SubsonicTabActivity.this, this);
+
+                for (MusicDirectory.Entry album : artist.getChildren()) {
+                    MusicDirectory albumDirectory = musicService.getAlbum(album.getId(), "", false, SubsonicTabActivity.this, this);
+
+                    for (MusicDirectory.Entry song : albumDirectory.getChildren()) {
+                        if (!song.isVideo()) {
+                            songs.add(song);
+                        }
+                    }
                 }
             }
 

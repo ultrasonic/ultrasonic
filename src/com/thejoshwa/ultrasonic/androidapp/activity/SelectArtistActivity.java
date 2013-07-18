@@ -192,6 +192,7 @@ public class SelectArtistActivity extends SubsonicTabActivity implements Adapter
                 Intent intent = new Intent(this, SelectAlbumActivity.class);
                 intent.putExtra(Constants.INTENT_EXTRA_NAME_ID, artist.getId());
                 intent.putExtra(Constants.INTENT_EXTRA_NAME_NAME, artist.getName());
+                intent.putExtra(Constants.INTENT_EXTRA_NAME_ARTIST, true);
                 Util.startActivityWithoutTransition(this, intent);
             }
         }
@@ -239,22 +240,22 @@ public class SelectArtistActivity extends SubsonicTabActivity implements Adapter
         if (artist != null) {
             switch (menuItem.getItemId()) {
                 case R.id.artist_menu_play_now:
-                    downloadRecursively(artist.getId(), false, false, true, false, false, false, false);
+                    downloadRecursively(artist.getId(), false, false, true, false, false, false, false, true);
                     break;
                 case R.id.artist_menu_play_next:
-                    downloadRecursively(artist.getId(), false, false, true, true, false, true, false);
+                    downloadRecursively(artist.getId(), false, false, true, true, false, true, false, true);
                     break;
                 case R.id.artist_menu_play_last:
-                    downloadRecursively(artist.getId(), false, true, false, false, false, false, false);
+                    downloadRecursively(artist.getId(), false, true, false, false, false, false, false, true);
                     break;
                 case R.id.artist_menu_pin:
-                    downloadRecursively(artist.getId(), true, true, false, false, false, false, false);
+                    downloadRecursively(artist.getId(), true, true, false, false, false, false, false, true);
                     break;
                 case R.id.artist_menu_unpin:
-                    downloadRecursively(artist.getId(), false, false, false, false, false, false, true);
+                    downloadRecursively(artist.getId(), false, false, false, false, false, false, true, true);
                     break;
                 case R.id.artist_menu_download:
-                    downloadRecursively(artist.getId(), false, false, false, false, true, false, false);
+                    downloadRecursively(artist.getId(), false, false, false, false, true, false, false, true);
                     break;
                 default:
                     return super.onContextItemSelected(menuItem);

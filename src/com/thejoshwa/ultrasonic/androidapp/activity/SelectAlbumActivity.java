@@ -278,7 +278,7 @@ public class SelectAlbumActivity extends SubsonicTabActivity {
 
         String id = getIntent().getStringExtra(Constants.INTENT_EXTRA_NAME_ID);
         if (hasSubFolders && id != null) {
-            downloadRecursively(id, false, append, !append, shuffle, false, false, false);
+            downloadRecursively(id, false, append, !append, shuffle, false, false, false, false);
         } else {
             selectAll(true, false);
             download(append, false, !append, false, shuffle, getSelectedSongs(albumListView));
@@ -337,22 +337,22 @@ public class SelectAlbumActivity extends SubsonicTabActivity {
 
         switch (menuItem.getItemId()) {
             case R.id.album_menu_play_now:
-                downloadRecursively(entry.getId(), false, false, true, false, false, false, false);
+                downloadRecursively(entry.getId(), false, false, true, false, false, false, false, false);
                 break;
             case R.id.album_menu_play_next:
-                downloadRecursively(entry.getId(), false, false, false, false, false, true, false);
+                downloadRecursively(entry.getId(), false, false, false, false, false, true, false, false);
                 break;                
             case R.id.album_menu_play_last:
-                downloadRecursively(entry.getId(), false, true, false, false, false, false, false);
+                downloadRecursively(entry.getId(), false, true, false, false, false, false, false, false);
                 break;
             case R.id.album_menu_pin:
-                downloadRecursively(entry.getId(), true, true, false, false, false, false, false);
+                downloadRecursively(entry.getId(), true, true, false, false, false, false, false, false);
                 break;
             case R.id.album_menu_unpin:
-                downloadRecursively(entry.getId(), false, false, false, false, false, false, true);
+                downloadRecursively(entry.getId(), false, false, false, false, false, false, true, false);
                 break;
             case R.id.album_menu_download:
-                downloadRecursively(entry.getId(), false, false, false, false, true, false, false);
+                downloadRecursively(entry.getId(), false, false, false, false, true, false, false, false);
                 break;                  
             case R.id.select_album_play_all:
             	playAll();
