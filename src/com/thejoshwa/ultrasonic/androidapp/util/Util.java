@@ -1338,4 +1338,10 @@ public class Util extends DownloadActivity {
         SharedPreferences preferences = getPreferences(context);
         return preferences.getBoolean(Constants.PREFERENCES_KEY_SEND_BLUETOOTH_ALBUM_ART, true);
     }
+
+    public static int getViewRefreshInterval(Context context) {
+        SharedPreferences preferences = getPreferences(context);
+        return Integer.parseInt(preferences.getString(Constants.PREFERENCES_KEY_VIEW_REFRESH, "1000"));
+    }
+
 }

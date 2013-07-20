@@ -7,6 +7,9 @@ import android.util.Log;
 import android.view.ViewGroup;
 import android.widget.AbsListView;
 import android.widget.LinearLayout;
+
+import com.thejoshwa.ultrasonic.androidapp.util.Util;
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.WeakHashMap;
@@ -18,19 +21,14 @@ public class UpdateView extends LinearLayout {
 	private static Handler backgroundHandler;
 	private static Handler uiHandler;
 	private static Runnable updateRunnable;
+    private static Context context;
 	
 	public UpdateView(Context context) {
 		super(context);
+        this.context = context;
 		
 		setLayoutParams(new AbsListView.LayoutParams(ViewGroup.LayoutParams.FILL_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT));
-		
 		INSTANCES.put(this, null);
-        int instanceCount = INSTANCES.size();
-
-        if (instanceCount > 50) {
-            Log.w(TAG, instanceCount + " live UpdateView instances");
-        }
-		
 		startUpdater();
 	}
 	
@@ -77,6 +75,7 @@ public class UpdateView extends LinearLayout {
             Log.w(TAG, "Error when updating song views.", x);
         }
     }
+
 	private static void updateAllLive(final List<UpdateView> views) {
 		final Runnable runnable = new Runnable() {
 			@Override
@@ -88,7 +87,7 @@ public class UpdateView extends LinearLayout {
 				} catch (Throwable x) {
 					Log.w(TAG, "Error when updating song views.", x);
 				}
-				uiHandler.postDelayed(updateRunnable, 1000L);
+				uiHandler.postDelayed(updateRunnable, Util.getViewRefreshInterval(context));
 			}
 		};
 		

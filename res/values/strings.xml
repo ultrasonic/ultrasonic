@@ -327,6 +327,17 @@
     <string name="settings.use_stream_proxy_summary">Stream media playback through a proxy (may help stutter)</string>
     <string name="settings.video_title">Video</string>
     <string name="settings.video_player">Video player</string>
+    <string name="settings.view_refresh">View Refresh</string>
+    <string name="settings.view_refresh_500">.5 seconds</string>
+    <string name="settings.view_refresh_1000">1 second</string>
+    <string name="settings.view_refresh_1500">1.5 seconds</string>
+    <string name="settings.view_refresh_2000">2 seconds</string>
+    <string name="settings.view_refresh_2500">2.5 seconds</string>
+    <string name="settings.view_refresh_3000">3 seconds</string>
+    <string name="settings.view_refresh_3500">3.5 seconds</string>
+    <string name="settings.view_refresh_4000">4 seconds</string>
+    <string name="settings.view_refresh_4500">4.5 seconds</string>
+    <string name="settings.view_refresh_5000">5 seconds</string>
     <string name="settings.wifi_required_summary">Only stream media if connected to Wi-Fi</string>
     <string name="settings.wifi_required_title">Wi-Fi Streaming Only</string>
     <string name="shuffle.endYear">End Year:</string>

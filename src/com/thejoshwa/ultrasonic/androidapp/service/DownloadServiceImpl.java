@@ -241,7 +241,7 @@ public class DownloadServiceImpl extends Service implements DownloadService {
         lifecycleSupport.onDestroy();
         mediaPlayer.release();
         
-        if(nextMediaPlayer != null) {
+        if (nextMediaPlayer != null) {
 			nextMediaPlayer.release();
         }
 		
@@ -631,11 +631,12 @@ public class DownloadServiceImpl extends Service implements DownloadService {
         }
 		
 		nextSetup = false;
-		if(nextPlayingTask != null) {
+		if (nextPlayingTask != null) {
 			nextPlayingTask.cancel();
 			nextPlayingTask = null;
 		}
-		if(index < size() && index != -1) {
+
+		if (index < size() && index != -1) {
 			nextPlaying = downloadList.get(index);
 			nextPlayingTask = new CheckCompletionTask(nextPlaying);
 			nextPlayingTask.start();
@@ -749,7 +750,7 @@ public class DownloadServiceImpl extends Service implements DownloadService {
     private synchronized void playNext(boolean start) {
 		// Swap the media players since nextMediaPlayer is ready to play
 		if (start) {
-			nextMediaPlayer.start();
+			//nextMediaPlayer.start();
 		} else {
 			Log.i(TAG, "nextMediaPlayer already playing");
 		}
@@ -1362,6 +1363,7 @@ public class DownloadServiceImpl extends Service implements DownloadService {
 		});
 		
 		final int duration = downloadFile.getSong().getDuration() == null ? 0 : downloadFile.getSong().getDuration() * 1000;
+
 		mediaPlayer.setOnCompletionListener(new MediaPlayer.OnCompletionListener() {
 			@Override
 			public void onCompletion(MediaPlayer mediaPlayer) {
@@ -1411,7 +1413,7 @@ public class DownloadServiceImpl extends Service implements DownloadService {
 	
 	@Override
 	public void setVolume(float volume) {
-		if(mediaPlayer != null) {
+		if (mediaPlayer != null) {
 			mediaPlayer.setVolume(volume, volume);
 		}
 	}
@@ -1420,17 +1422,17 @@ public class DownloadServiceImpl extends Service implements DownloadService {
 	public synchronized void swap(boolean mainList, int from, int to) {
 		List<DownloadFile> list = mainList ? downloadList : backgroundDownloadList;
 		int max = list.size();
-		if(to >= max) {
+		if (to >= max) {
 			to = max - 1;
-		}
-		else if(to < 0) {
+		} else if(to < 0) {
 			to = 0;
 		}
 		
 		int currentPlayingIndex = getCurrentPlayingIndex();
 		DownloadFile movedSong = list.remove(from);
 		list.add(to, movedSong);
-		if(jukeboxEnabled && mainList) {
+
+        if (jukeboxEnabled && mainList) {
 			updateJukeboxPlaylist();
 		} else if(mainList && (movedSong == nextPlaying || (currentPlayingIndex + 1) == to)) {
 			// Moving next playing or moving a song to be next playing
@@ -1499,7 +1501,7 @@ public class DownloadServiceImpl extends Service implements DownloadService {
                             currentDownloading = downloadFile;
                             currentDownloading.download();
                             cleanupCandidates.add(currentDownloading);
-                            if(i == (start + 1)) {
+                            if (i == (start + 1)) {
                                 setNextPlayerState(DOWNLOADING);
                             }
                             break;
@@ -1675,8 +1677,10 @@ public class DownloadServiceImpl extends Service implements DownloadService {
 
         public CheckCompletionTask(DownloadFile downloadFile) {
 			setNextPlayerState(PlayerState.IDLE);
+
             this.downloadFile = downloadFile;
-			if(downloadFile != null) {
+
+            if (downloadFile != null) {
 				partialFile = downloadFile.getPartialFile();
 			} else {
 				partialFile = null;
@@ -1691,8 +1695,10 @@ public class DownloadServiceImpl extends Service implements DownloadService {
 			
 			// Do an initial sleep so this prepare can't compete with main prepare
 			Util.sleepQuietly(5000L);
+
             while (!bufferComplete()) {
                 Util.sleepQuietly(5000L);
+
                 if (isCancelled()) {
                     return;
                 }

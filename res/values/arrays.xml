@@ -214,5 +214,31 @@
         <item>Default</item>
         <item>Flash</item>
     </string-array>
+    <string-array name="viewRefreshNames">
+        <item>@string/settings.view_refresh_500</item>
+        <item>@string/settings.view_refresh_1000</item>
+        <item>@string/settings.view_refresh_1500</item>
+        <item>@string/settings.view_refresh_2000</item>
+        <item>@string/settings.view_refresh_2500</item>
+        <item>@string/settings.view_refresh_3000</item>
+        <item>@string/settings.view_refresh_3500</item>
+        <item>@string/settings.view_refresh_4000</item>
+        <item>@string/settings.view_refresh_4500</item>
+        <item>@string/settings.view_refresh_5000</item>
+    </string-array>
+    <string-array name="viewRefreshValues">
+        <item>500</item>
+        <item>1000</item>
+        <item>1500</item>
+        <item>2000</item>
+        <item>2500</item>
+        <item>3000</item>
+        <item>3500</item>
+        <item>4000</item>
+        <item>4500</item>
+        <item>5000</item>
+    </string-array>
+
+
 
 </resources>

@@ -47,23 +47,70 @@ import java.io.File;
 public class SongView extends UpdateView implements Checkable {
 
     private static final String TAG = SongView.class.getSimpleName();
+    private static Drawable starHollowDrawable;
+    private static Drawable starDrawable;
+    private static Drawable unpinImage;
+    private static Drawable downloadedImage;
+    private static Drawable downloadingImage;
+    private static Drawable playingImage;
+    private static String theme;
+
     private CheckedTextView checkedTextView;
     private ImageView starImageView;
     private TextView titleTextView;
     private TextView statusTextView;
     private Entry song;
     private Context context;
-    
+    private Drawable leftImage;
+    private ImageType previousLeftImageType;
+    private ImageType previousRightImageType;
+    private ImageType leftImageType;
+    private ImageType rightImageType;
+    private Drawable rightImage;
 	private DownloadService downloadService;
+    private DownloadFile downloadFile;
+    private boolean playing = false;
 	
 	public SongView(Context context) {
         super(context);
         this.context = context;
+
+        String theme = Util.getTheme(context);
+        boolean themesMatch = theme.equals(this.theme);
+
+        this.theme = theme;
+
+        if (starHollowDrawable == null || !themesMatch) {
+            starHollowDrawable = Util.getDrawableFromAttribute(context, R.attr.star_hollow);
+        }
+
+        if (starDrawable == null || !themesMatch) {
+            starDrawable =  Util.getDrawableFromAttribute(context, R.attr.star_full);
+        }
+
+        if (unpinImage == null || !themesMatch) {
+            unpinImage = Util.getDrawableFromAttribute(context, R.attr.unpin);
+        }
+
+        if (downloadedImage == null || !themesMatch) {
+            downloadedImage = Util.getDrawableFromAttribute(context, R.attr.downloaded);
+        }
+
+        if (downloadingImage == null || !themesMatch) {
+            downloadingImage = Util.getDrawableFromAttribute(context, R.attr.downloading);
+        }
+
+        if (playingImage == null || !themesMatch) {
+            playingImage = Util.getDrawableFromAttribute(context, R.attr.media_play_small);
+        }
     }
 
-    public void setSong(final Entry song, boolean checkable) {
+    protected void setSong(final Entry song, boolean checkable) {
+        updateBackground();
+
         this.song = song;
-        
+        this.downloadFile = downloadService.forSong(song);
+
         if (song.isVideo()) {
         	LayoutInflater.from(this.context).inflate(R.layout.video_list_item, this, true);
         } else {
@@ -78,30 +125,32 @@ public class SongView extends UpdateView implements Checkable {
         TextView durationTextView = (TextView) findViewById(R.id.song_duration);
         statusTextView = (TextView) findViewById(R.id.song_status);
 
-        
         StringBuilder artist = new StringBuilder(60);
 
         String bitRate = null;
+
         if (song.getBitRate() != null) {
-        	bitRate = String.format(getContext().getString(R.string.song_details_kbps), song.getBitRate());
+        	bitRate = String.format(this.context.getString(R.string.song_details_kbps), song.getBitRate());
         }
         
-        VideoPlayerType videoPlayer = Util.getVideoPlayerType(getContext());
+        VideoPlayerType videoPlayer = Util.getVideoPlayerType(this.context);
         
         String fileFormat;
+        String suffix = song.getSuffix();
+        String transcodedSuffix = song.getTranscodedSuffix();
 
-        if (song.getTranscodedSuffix() == null || song.getTranscodedSuffix().equals(song.getSuffix()) || (song.isVideo() && videoPlayer != VideoPlayerType.FLASH)) {
-        	fileFormat = song.getSuffix();
+        if (transcodedSuffix == null || transcodedSuffix.equals(suffix) || (song.isVideo() && videoPlayer != VideoPlayerType.FLASH)) {
+        	fileFormat = suffix;
         } else {
-        	fileFormat = String.format("%s > %s", song.getSuffix(), song.getTranscodedSuffix());
+        	fileFormat = String.format("%s > %s", suffix, transcodedSuffix);
     	}
         
         String artistName = song.getArtist();
 
     	if (artistName != null) {
-    		if (Util.shouldDisplayBitrateWithArtist(getContext())) {
+    		if (Util.shouldDisplayBitrateWithArtist(this.context)) {
     			artist.append(artistName).append(" (")
-        			.append(String.format(getContext().getString(R.string.song_details_all), bitRate == null ? "" : bitRate + " ", fileFormat))
+        			.append(String.format(this.context.getString(R.string.song_details_all), bitRate == null ? "" : bitRate + " ", fileFormat))
         			.append(")");
     		} else { 
     			artist.append(artistName);
@@ -111,7 +160,7 @@ public class SongView extends UpdateView implements Checkable {
         int trackNumber = song.getTrack();
         
         if (trackTextView != null) {
-        	if (Util.shouldShowTrackNumber(getContext()) && trackNumber != 0) {
+        	if (Util.shouldShowTrackNumber(this.context) && trackNumber != 0) {
         		trackTextView.setText(String.format("%02d.", trackNumber));	
         	} else {
         		trackTextView.setVisibility(View.GONE);
@@ -130,61 +179,58 @@ public class SongView extends UpdateView implements Checkable {
         	durationTextView.setText(Util.formatTotalDuration(duration));
 		}
 
-        starImageView.setImageDrawable(song.getStarred() ? Util.getDrawableFromAttribute(getContext(), R.attr.star_full) : Util.getDrawableFromAttribute(getContext(), R.attr.star_hollow));
         checkedTextView.setVisibility(checkable && !song.isVideo() ? View.VISIBLE : View.GONE);
 
-        if (Util.isOffline(getContext())) {
+        if (Util.isOffline(this.context)) {
         	starImageView.setVisibility(View.GONE);
+        } else {
+            starImageView.setImageDrawable(song.getStarred() ? starDrawable : starHollowDrawable);
+
+            starImageView.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    final boolean isStarred = song.getStarred();
+                    final String id = song.getId();
+
+                    if (!isStarred) {
+                        starImageView.setImageDrawable(starDrawable);
+                        song.setStarred(true);
+                    } else {
+                        starImageView.setImageDrawable(starHollowDrawable);
+                        song.setStarred(false);
+                    }
+
+                    new Thread(new Runnable() {
+                        public void run() {
+                            MusicService musicService = MusicServiceFactory.getMusicService(SongView.this.context);
+
+                            try {
+                                if (!isStarred) {
+                                    musicService.star(id, null, null, SongView.this.context, null);
+                                } else {
+                                    musicService.unstar(id, null, null, SongView.this.context, null);
+                                }
+                            } catch (Exception e) {
+                                Log.e(TAG, e.getMessage(), e);
+                            }
+                        }
+                    }).start();
+                }
+            });
         }
-        
-        starImageView.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-            	final boolean isStarred = song.getStarred();
-            	final String id = song.getId();
-            	
-            	if (!isStarred) {
-					starImageView.setImageDrawable(Util.getDrawableFromAttribute(getContext(), R.attr.star_full));
-					song.setStarred(true);
-            	} else {
-            		starImageView.setImageDrawable(Util.getDrawableFromAttribute(getContext(), R.attr.star_hollow));
-            		song.setStarred(false);
-            	}
-            	
-            	new Thread(new Runnable() {
-            	    public void run() {
-                    	MusicService musicService = MusicServiceFactory.getMusicService(null);
-                    	
-            			try {
-            				if (!isStarred) {
-            					musicService.star(id, null, null, getContext(), null);
-            				} else {
-            					musicService.unstar(id, null, null, getContext(), null);
-            				}
-            			} catch (Exception e) {
-							Log.e(TAG, e.getMessage(), e);
-						}
-            	    }
-            	  }).start();
-            }
-        });
-        
-        updateBackground();
+
         update();
     }
     
 	@Override
 	protected void updateBackground() {
         if (downloadService == null) {
-        	
 			downloadService = DownloadServiceImpl.getInstance();
 			
-			if(downloadService == null) {
+			if (downloadService == null) {
 				return;
 			}
         }
-		
-		downloadService.forSong(song);
 	}
 
 	@Override
@@ -193,39 +239,62 @@ public class SongView extends UpdateView implements Checkable {
             return;
         }
 
-        DownloadFile downloadFile = downloadService.forSong(song);
-        downloadFile.getCompleteFile();
+        downloadFile = downloadService.forSong(this.song);
         File partialFile = downloadFile.getPartialFile();
 
-        Drawable leftImage = null;
-        Drawable rightImage = null;
-
         if (downloadFile.isWorkDone()) {
-            leftImage = downloadFile.isSaved() ? Util.getDrawableFromAttribute(getContext(), R.attr.unpin) : Util.getDrawableFromAttribute(getContext(), R.attr.downloaded);
+            ImageType newLeftImageType = downloadFile.isSaved() ? ImageType.unpin : ImageType.downloaded;
+
+            if (this.leftImageType != newLeftImageType) {
+                this.leftImage = downloadFile.isSaved() ? unpinImage : downloadedImage;
+                this.leftImageType = newLeftImageType;
+            }
+        } else {
+            this.leftImageType = ImageType.none;
+            this.leftImage = null;
         }
 
-        if (statusTextView != null) {
-        	if (downloadFile.isDownloading() && !downloadFile.isDownloadCancelled() && partialFile.exists()) {
-        		statusTextView.setText(Util.formatLocalizedBytes(partialFile.length(), getContext()));
-        		rightImage = Util.getDrawableFromAttribute(getContext(), R.attr.downloading);
-        	} else {
-        		statusTextView.setText(null);
-        	}
-        	
-        	statusTextView.setCompoundDrawablesWithIntrinsicBounds(leftImage, null, rightImage, null);
+        if (downloadFile.isDownloading() && !downloadFile.isDownloadCancelled() && partialFile.exists()) {
+            this.statusTextView.setText(Util.formatLocalizedBytes(partialFile.length(), this.context));
+            this.rightImageType = ImageType.downloading;
+            this.rightImage = downloadingImage;
+        } else {
+            this.rightImageType = ImageType.none;
+            this.rightImage = null;
+
+            if (this.statusTextView.getText() != null) {
+        	    this.statusTextView.setText(null);
+            }
         }
-        
+
+        if (this.previousLeftImageType != leftImageType || this.previousRightImageType != rightImageType) {
+            this.previousLeftImageType = leftImageType;
+            this.previousRightImageType = rightImageType;
+            this.statusTextView.setCompoundDrawablesWithIntrinsicBounds(leftImage, null, rightImage, null);
+        }
+
     	if (!song.getStarred()) {
-			starImageView.setImageDrawable(Util.getDrawableFromAttribute(getContext(), R.attr.star_hollow));
+            if (starImageView.getDrawable() != starHollowDrawable) {
+			    starImageView.setImageDrawable(starHollowDrawable);
+            }
     	} else {
-    		starImageView.setImageDrawable(Util.getDrawableFromAttribute(getContext(), R.attr.star_full));
+            if (starImageView.getDrawable() != starDrawable) {
+                starImageView.setImageDrawable(starDrawable);
+            }
     	}
 
         boolean playing = downloadService.getCurrentPlaying() == downloadFile;
+
         if (playing) {
-            titleTextView.setCompoundDrawablesWithIntrinsicBounds(Util.getDrawableFromAttribute(getContext(), R.attr.media_play_small), null, null, null);
+            if (!this.playing) {
+                this.playing = true;
+                titleTextView.setCompoundDrawablesWithIntrinsicBounds(playingImage, null, null, null);
+            }
         } else {
-            titleTextView.setCompoundDrawablesWithIntrinsicBounds(0, 0, 0, 0);
+            if (this.playing) {
+                this.playing = false;
+                titleTextView.setCompoundDrawablesWithIntrinsicBounds(0, 0, 0, 0);
+            }
         }
     }
 
@@ -242,5 +311,12 @@ public class SongView extends UpdateView implements Checkable {
     @Override
     public void toggle() {
         checkedTextView.toggle();
+    }
+
+    public enum ImageType {
+        none,
+        unpin,
+        downloaded,
+        downloading
     }
 }

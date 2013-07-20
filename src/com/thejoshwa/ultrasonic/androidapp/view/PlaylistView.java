@@ -25,7 +25,7 @@ import com.thejoshwa.ultrasonic.androidapp.R;
 import com.thejoshwa.ultrasonic.androidapp.domain.Playlist;
 
 /**
- * Used to display albums in a {@code ListView}.
+ * Used to display playlists in a {@code ListView}.
  *
  * @author Sindre Mehus
  */

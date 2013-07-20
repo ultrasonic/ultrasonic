@@ -86,6 +86,7 @@ public class SettingsActivity extends PreferenceActivity implements SharedPrefer
     private CheckBoxPreference lockScreenEnabled;
     private CheckBoxPreference sendBluetoothNotifications;
     private CheckBoxPreference sendBluetoothAlbumArt;
+    private ListPreference viewRefresh;
     private int maxServerCount = 10;
     private int minServerCount = 0;
     
@@ -169,6 +170,7 @@ public class SettingsActivity extends PreferenceActivity implements SharedPrefer
         CheckBoxPreference gaplessPlaybackEnabled = (CheckBoxPreference) findPreference(Constants.PREFERENCES_KEY_GAPLESS_PLAYBACK);
         sendBluetoothAlbumArt = (CheckBoxPreference) findPreference(Constants.PREFERENCES_KEY_SEND_BLUETOOTH_ALBUM_ART);
         sendBluetoothNotifications = (CheckBoxPreference) findPreference(Constants.PREFERENCES_KEY_SEND_BLUETOOTH_NOTIFICATIONS);
+        viewRefresh = (ListPreference) findPreference(Constants.PREFERENCES_KEY_VIEW_REFRESH);
 
         findPreference(Constants.PREFERENCES_KEY_CLEAR_SEARCH_HISTORY).setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
             @Override
@@ -442,6 +444,7 @@ public class SettingsActivity extends PreferenceActivity implements SharedPrefer
         defaultSongs.setSummary(defaultSongs.getEntry());
         chatRefreshInterval.setSummary(chatRefreshInterval.getEntry());
         directoryCacheTime.setSummary(directoryCacheTime.getEntry());
+        viewRefresh.setSummary(viewRefresh.getEntry());
         
         if (!mediaButtonsEnabled.isChecked()) {
         	lockScreenEnabled.setChecked(false);

@@ -327,6 +327,17 @@
     <string name="settings.use_stream_proxy_summary">Média lejátszása stream proxy-n keresztül (akadozások elkerülése érdekében).</string>
     <string name="settings.video_title">Videó</string>
     <string name="settings.video_player">Videólejátszó</string>
+    <string name="settings.view_refresh">Megtekinté Frissítési</string>
+    <string name="settings.view_refresh_500">0,5 másodperc</string>
+    <string name="settings.view_refresh_1000">1 másodperc</string>
+    <string name="settings.view_refresh_1500">1,5 másodperc</string>
+    <string name="settings.view_refresh_2000">2 másodperc</string>
+    <string name="settings.view_refresh_2500">2,5 másodperc</string>
+    <string name="settings.view_refresh_3000">3 másodperc</string>
+    <string name="settings.view_refresh_3500">3,5 másodperc</string>
+    <string name="settings.view_refresh_4000">4 másodperc</string>
+    <string name="settings.view_refresh_4500">4,5 másodperc</string>
+    <string name="settings.view_refresh_5000">5 másodperc</string>
     <string name="settings.wifi_required_summary">Streaming, csak ha rendelkezésre áll Wi-Fi kapcsolat.</string>
     <string name="settings.wifi_required_title">Csak Wi-Fi streaming</string>
     <string name="shuffle.endYear">Utolsó év:</string>
