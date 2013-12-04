@@ -18,13 +18,14 @@
  */
 package com.thejoshwa.ultrasonic.androidapp.audiofx;
 
-import java.io.Serializable;
-
 import android.content.Context;
 import android.media.MediaPlayer;
 import android.media.audiofx.Equalizer;
 import android.util.Log;
+
 import com.thejoshwa.ultrasonic.androidapp.util.FileUtil;
+
+import java.io.Serializable;
 
 /**
  * Backward-compatible wrapper for {@link Equalizer}, which is API Level 9.
@@ -32,128 +33,166 @@ import com.thejoshwa.ultrasonic.androidapp.util.FileUtil;
  * @author Sindre Mehus
  * @version $Id$
  */
-public class EqualizerController {
+public class EqualizerController
+{
 
-    private static final String TAG = EqualizerController.class.getSimpleName();
+	private static final String TAG = EqualizerController.class.getSimpleName();
 
-    private final Context context;
-    private Equalizer equalizer;
-	private boolean released = false;
-	private int audioSessionId = 0;
+	private final Context context;
+	private Equalizer equalizer;
+	private boolean released;
+	private int audioSessionId;
 
-    // Class initialization fails when this throws an exception.
-    static {
-        try {
-            Class.forName("android.media.audiofx.Equalizer");
-        } catch (Exception ex) {
-            throw new RuntimeException(ex);
-        }
-    }
+	// Class initialization fails when this throws an exception.
+	static
+	{
+		try
+		{
+			Class.forName("android.media.audiofx.Equalizer");
+		}
+		catch (Exception ex)
+		{
+			throw new RuntimeException(ex);
+		}
+	}
 
-    /**
-     * Throws an exception if the {@link Equalizer} class is not available.
-     */
-    public static void checkAvailable() throws Throwable {
-        // Calling here forces class initialization.
-    }
+	/**
+	 * Throws an exception if the {@link Equalizer} class is not available.
+	 */
+	public static void checkAvailable() throws Throwable
+	{
+		// Calling here forces class initialization.
+	}
 
-    public EqualizerController(Context context, MediaPlayer mediaPlayer) {
-        this.context = context;
-        
-        try {
+	public EqualizerController(Context context, MediaPlayer mediaPlayer)
+	{
+		this.context = context;
+
+		try
+		{
 			audioSessionId = mediaPlayer.getAudioSessionId();
-            equalizer = new Equalizer(0, audioSessionId);
-        } catch (Throwable x) {
-        	equalizer = null;
-            Log.w(TAG, "Failed to create equalizer.", x);
-        }
-    }
+			equalizer = new Equalizer(0, audioSessionId);
+		}
+		catch (Throwable x)
+		{
+			equalizer = null;
+			Log.w(TAG, "Failed to create equalizer.", x);
+		}
+	}
 
-    public void saveSettings() {
-        try {
-            if (isAvailable()) {
-                FileUtil.serialize(context, new EqualizerSettings(equalizer), "equalizer.dat");
-            }
-        } catch (Throwable x) {
-            Log.w(TAG, "Failed to save equalizer settings.", x);
-        }
-    }
+	public void saveSettings()
+	{
+		try
+		{
+			if (isAvailable())
+			{
+				FileUtil.serialize(context, new EqualizerSettings(equalizer), "equalizer.dat");
+			}
+		}
+		catch (Throwable x)
+		{
+			Log.w(TAG, "Failed to save equalizer settings.", x);
+		}
+	}
 
-    public void loadSettings() {
-        try {
-            if (isAvailable()) {
-                EqualizerSettings settings = FileUtil.deserialize(context, "equalizer.dat");
+	public void loadSettings()
+	{
+		try
+		{
+			if (isAvailable())
+			{
+				EqualizerSettings settings = FileUtil.deserialize(context, "equalizer.dat");
 
-                if (settings != null) {
-                    settings.apply(equalizer);
-                }
-            }
-        } catch (Throwable x) {
-            Log.w(TAG, "Failed to load equalizer settings.", x);
-        }
-    }
+				if (settings != null)
+				{
+					settings.apply(equalizer);
+				}
+			}
+		}
+		catch (Throwable x)
+		{
+			Log.w(TAG, "Failed to load equalizer settings.", x);
+		}
+	}
 
-    public boolean isAvailable() {
-        return equalizer != null;
-    }
+	public boolean isAvailable()
+	{
+		return equalizer != null;
+	}
 
-    public void release() {
-        if (isAvailable()) {
+	public void release()
+	{
+		if (isAvailable())
+		{
 			released = true;
 			equalizer.release();
-        }
-    }
+		}
+	}
 
-    public Equalizer getEqualizer() {
-		if (released) {
+	public Equalizer getEqualizer()
+	{
+		if (released)
+		{
 			released = false;
-			
-			try {
+
+			try
+			{
 				equalizer = new Equalizer(0, audioSessionId);
-			} catch (Throwable x) {
+			}
+			catch (Throwable x)
+			{
 				equalizer = null;
 				Log.w(TAG, "Failed to create equalizer.", x);
 			}
 		}
-		
-        return equalizer;
-    }
 
-    private static class EqualizerSettings implements Serializable {
+		return equalizer;
+	}
 
-        /**
-		 * 
+	private static class EqualizerSettings implements Serializable
+	{
+
+		/**
+		 *
 		 */
 		private static final long serialVersionUID = 626565082425206061L;
 		private final short[] bandLevels;
-        private short preset;
-        private final boolean enabled;
+		private short preset;
+		private final boolean enabled;
 
-        public EqualizerSettings(Equalizer equalizer) {
-            enabled = equalizer.getEnabled();
-            bandLevels = new short[equalizer.getNumberOfBands()];
-            
-            for (short i = 0; i < equalizer.getNumberOfBands(); i++) {
-                bandLevels[i] = equalizer.getBandLevel(i);
-            }
-            
-            try {
-                preset = equalizer.getCurrentPreset();
-            } catch (Exception x) {
-                preset = -1;
-            }
-        }
+		public EqualizerSettings(Equalizer equalizer)
+		{
+			enabled = equalizer.getEnabled();
+			bandLevels = new short[equalizer.getNumberOfBands()];
 
-        public void apply(Equalizer equalizer) {
-            for (short i = 0; i < bandLevels.length; i++) {
-                equalizer.setBandLevel(i, bandLevels[i]);
-            }
-            
-            if (preset >= 0 && preset < equalizer.getNumberOfPresets()) {
-                equalizer.usePreset(preset);
-            }
-            
-            equalizer.setEnabled(enabled);
-        }
-    }
+			for (short i = 0; i < equalizer.getNumberOfBands(); i++)
+			{
+				bandLevels[i] = equalizer.getBandLevel(i);
+			}
+
+			try
+			{
+				preset = equalizer.getCurrentPreset();
+			}
+			catch (Exception x)
+			{
+				preset = -1;
+			}
+		}
+
+		public void apply(Equalizer equalizer)
+		{
+			for (short i = 0; i < bandLevels.length; i++)
+			{
+				equalizer.setBandLevel(i, bandLevels[i]);
+			}
+
+			if (preset >= 0 && preset < equalizer.getNumberOfPresets())
+			{
+				equalizer.usePreset(preset);
+			}
+
+			equalizer.setEnabled(enabled);
+		}
+	}
 }

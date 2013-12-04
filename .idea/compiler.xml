@@ -4,9 +4,6 @@
     <option name="DEFAULT_COMPILER" value="Javac" />
     <excludeFromCompile>
       <directory url="file://$PROJECT_DIR$/gen" includeSubdirectories="true" />
-      <directory url="file://$PROJECT_DIR$/menudrawer/library/target/generated-sources/r" includeSubdirectories="true" />
-      <directory url="file://$PROJECT_DIR$/menudrawer/samples/target/generated-sources/r" includeSubdirectories="true" />
-      <directory url="file://$PROJECT_DIR$/menudrawer/samples/gen-external-apklibs/com.actionbarsherlock_actionbarsherlock_4.3.1/gen" includeSubdirectories="true" />
       <directory url="file://$PROJECT_DIR$/menudrawer/library/gen" includeSubdirectories="true" />
       <directory url="file://$PROJECT_DIR$/pulltorefresh/library/gen" includeSubdirectories="true" />
     </excludeFromCompile>

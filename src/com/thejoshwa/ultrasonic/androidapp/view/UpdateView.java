@@ -11,105 +11,137 @@ import android.widget.LinearLayout;
 import com.thejoshwa.ultrasonic.androidapp.util.Util;
 
 import java.util.ArrayList;
-import java.util.List;
+import java.util.Collection;
 import java.util.WeakHashMap;
 
-public class UpdateView extends LinearLayout {
+public class UpdateView extends LinearLayout
+{
 	private static final String TAG = UpdateView.class.getSimpleName();
 	private static final WeakHashMap<UpdateView, ?> INSTANCES = new WeakHashMap<UpdateView, Object>();
-	
+
 	private static Handler backgroundHandler;
 	private static Handler uiHandler;
 	private static Runnable updateRunnable;
-    private static Context context;
-	
-	public UpdateView(Context context) {
+	private static Context context;
+
+	public UpdateView(Context context)
+	{
 		super(context);
-        this.context = context;
-		
+		UpdateView.context = context;
+
 		setLayoutParams(new AbsListView.LayoutParams(ViewGroup.LayoutParams.FILL_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT));
 		INSTANCES.put(this, null);
 		startUpdater();
 	}
-	
+
 	@Override
-	public void setPressed(boolean pressed) {
-		
+	public void setPressed(boolean pressed)
+	{
+
 	}
-	
-	private static synchronized void startUpdater() {
-		if(uiHandler != null) {
+
+	private static synchronized void startUpdater()
+	{
+		if (uiHandler != null)
+		{
 			return;
 		}
-		
+
 		uiHandler = new Handler();
-		updateRunnable = new Runnable() {
-            @Override
-            public void run() {
-                updateAll();
-            }
-        };
-		
-		new Thread(new Runnable() {
-			public void run() {
+		updateRunnable = new Runnable()
+		{
+			@Override
+			public void run()
+			{
+				updateAll();
+			}
+		};
+
+		new Thread(new Runnable()
+		{
+			@Override
+			public void run()
+			{
 				Looper.prepare();
 				backgroundHandler = new Handler(Looper.myLooper());
 				uiHandler.post(updateRunnable);
 				Looper.loop();
 			}
 		}).start();
-    }
+	}
 
-    private static void updateAll() {
-        try {
-			List<UpdateView> views = new ArrayList<UpdateView>();
+	private static void updateAll()
+	{
+		try
+		{
+			Collection<UpdateView> views = new ArrayList<UpdateView>();
 
-            for (UpdateView view : INSTANCES.keySet()) {
-                if (view.isShown()) {
+			for (UpdateView view : INSTANCES.keySet())
+			{
+				if (view.isShown())
+				{
 					views.add(view);
-                }
-            }
+				}
+			}
 
 			updateAllLive(views);
-        } catch (Throwable x) {
-            Log.w(TAG, "Error when updating song views.", x);
-        }
-    }
+		}
+		catch (Throwable x)
+		{
+			Log.w(TAG, "Error when updating song views.", x);
+		}
+	}
 
-	private static void updateAllLive(final List<UpdateView> views) {
-		final Runnable runnable = new Runnable() {
+	private static void updateAllLive(final Iterable<UpdateView> views)
+	{
+		final Runnable runnable = new Runnable()
+		{
 			@Override
-            public void run() {
-				try {
-					for(UpdateView view: views) {
+			public void run()
+			{
+				try
+				{
+					for (UpdateView view : views)
+					{
 						view.update();
 					}
-				} catch (Throwable x) {
+				}
+				catch (Throwable x)
+				{
 					Log.w(TAG, "Error when updating song views.", x);
 				}
 				uiHandler.postDelayed(updateRunnable, Util.getViewRefreshInterval(context));
 			}
 		};
-		
-		backgroundHandler.post(new Runnable() {
+
+		backgroundHandler.post(new Runnable()
+		{
 			@Override
-            public void run() {
-				try {
-					for (UpdateView view: views) {
+			public void run()
+			{
+				try
+				{
+					for (UpdateView view : views)
+					{
 						view.updateBackground();
 					}
 					uiHandler.post(runnable);
-				} catch (Throwable x) {
+				}
+				catch (Throwable x)
+				{
 					Log.w(TAG, "Error when updating song views.", x);
 				}
 			}
 		});
 	}
-	
-	protected void updateBackground() {
-		
+
+	protected void updateBackground()
+	{
+
 	}
-	protected void update() {
-		
+
+	protected void update()
+	{
+
 	}
 }

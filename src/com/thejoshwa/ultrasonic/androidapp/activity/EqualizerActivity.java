@@ -33,6 +33,7 @@ import android.widget.CompoundButton;
 import android.widget.LinearLayout;
 import android.widget.SeekBar;
 import android.widget.TextView;
+
 import com.thejoshwa.ultrasonic.androidapp.R;
 import com.thejoshwa.ultrasonic.androidapp.audiofx.EqualizerController;
 import com.thejoshwa.ultrasonic.androidapp.service.DownloadServiceImpl;
@@ -43,150 +44,179 @@ import com.thejoshwa.ultrasonic.androidapp.service.DownloadServiceImpl;
  * @author Sindre Mehus
  * @version $Id$
  */
-public class EqualizerActivity extends Activity {
+public class EqualizerActivity extends Activity
+{
 
-    private static final int MENU_GROUP_PRESET = 100;
+	private static final int MENU_GROUP_PRESET = 100;
 
-    private final Map<Short, SeekBar> bars = new HashMap<Short, SeekBar>();
-    private EqualizerController equalizerController;
-    private Equalizer equalizer;
+	private final Map<Short, SeekBar> bars = new HashMap<Short, SeekBar>();
+	private EqualizerController equalizerController;
+	private Equalizer equalizer;
 
-    @Override
-    public void onCreate(Bundle bundle) {
-        super.onCreate(bundle);
-        setContentView(R.layout.equalizer);
-        equalizerController = DownloadServiceImpl.getInstance().getEqualizerController();
-        equalizer = equalizerController.getEqualizer();
+	@Override
+	public void onCreate(Bundle bundle)
+	{
+		super.onCreate(bundle);
+		setContentView(R.layout.equalizer);
+		equalizerController = DownloadServiceImpl.getInstance().getEqualizerController();
+		equalizer = equalizerController.getEqualizer();
 
-        initEqualizer();
+		initEqualizer();
 
-        final View presetButton = findViewById(R.id.equalizer_preset);
-        registerForContextMenu(presetButton);
-        presetButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                presetButton.showContextMenu();
-            }
-        });
+		final View presetButton = findViewById(R.id.equalizer_preset);
+		registerForContextMenu(presetButton);
+		presetButton.setOnClickListener(new View.OnClickListener()
+		{
+			@Override
+			public void onClick(View view)
+			{
+				presetButton.showContextMenu();
+			}
+		});
 
-        CheckBox enabledCheckBox = (CheckBox) findViewById(R.id.equalizer_enabled);
-        enabledCheckBox.setChecked(equalizer.getEnabled());
-        enabledCheckBox.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
-            @Override
-            public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
-                setEqualizerEnabled(b);
-            }
-        });
-    }
+		CheckBox enabledCheckBox = (CheckBox) findViewById(R.id.equalizer_enabled);
+		enabledCheckBox.setChecked(equalizer.getEnabled());
+		enabledCheckBox.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener()
+		{
+			@Override
+			public void onCheckedChanged(CompoundButton compoundButton, boolean b)
+			{
+				setEqualizerEnabled(b);
+			}
+		});
+	}
 
-    @Override
-    protected void onPause() {
-        super.onPause();
-        equalizerController.saveSettings();
-    }
+	@Override
+	protected void onPause()
+	{
+		super.onPause();
+		equalizerController.saveSettings();
+	}
 
-    @Override
-    public void onCreateContextMenu(ContextMenu menu, View view, ContextMenu.ContextMenuInfo menuInfo) {
-        super.onCreateContextMenu(menu, view, menuInfo);
+	@Override
+	public void onCreateContextMenu(ContextMenu menu, View view, ContextMenu.ContextMenuInfo menuInfo)
+	{
+		super.onCreateContextMenu(menu, view, menuInfo);
 
-        short currentPreset;
-        try {
-            currentPreset = equalizer.getCurrentPreset();
-        } catch (Exception x) {
-            currentPreset = -1;
-        }
+		short currentPreset;
+		try
+		{
+			currentPreset = equalizer.getCurrentPreset();
+		}
+		catch (Exception x)
+		{
+			currentPreset = -1;
+		}
 
-        for (short preset = 0; preset < equalizer.getNumberOfPresets(); preset++) {
-            MenuItem menuItem = menu.add(MENU_GROUP_PRESET, preset, preset, equalizer.getPresetName(preset));
-            if (preset == currentPreset) {
-                menuItem.setChecked(true);
-            }
-        }
-        menu.setGroupCheckable(MENU_GROUP_PRESET, true, true);
-    }
+		for (short preset = 0; preset < equalizer.getNumberOfPresets(); preset++)
+		{
+			MenuItem menuItem = menu.add(MENU_GROUP_PRESET, preset, preset, equalizer.getPresetName(preset));
+			if (preset == currentPreset)
+			{
+				menuItem.setChecked(true);
+			}
+		}
+		menu.setGroupCheckable(MENU_GROUP_PRESET, true, true);
+	}
 
-    @Override
-    public boolean onContextItemSelected(MenuItem menuItem) {
-        short preset = (short) menuItem.getItemId();
-        equalizer.usePreset(preset);
-        updateBars();
-        return true;
-    }
+	@Override
+	public boolean onContextItemSelected(MenuItem menuItem)
+	{
+		short preset = (short) menuItem.getItemId();
+		equalizer.usePreset(preset);
+		updateBars();
+		return true;
+	}
 
-    private void setEqualizerEnabled(boolean enabled) {
-        equalizer.setEnabled(enabled);
-        updateBars();
-    }
+	private void setEqualizerEnabled(boolean enabled)
+	{
+		equalizer.setEnabled(enabled);
+		updateBars();
+	}
 
-    private void updateBars() {
+	private void updateBars()
+	{
 
-        for (Map.Entry<Short, SeekBar> entry : bars.entrySet()) {
-            short band = entry.getKey();
-            SeekBar bar = entry.getValue();
-            bar.setEnabled(equalizer.getEnabled());
-            short minEQLevel = equalizer.getBandLevelRange()[0];
-            bar.setProgress(equalizer.getBandLevel(band) - minEQLevel);
-        }
-    }
+		for (Map.Entry<Short, SeekBar> entry : bars.entrySet())
+		{
+			short band = entry.getKey();
+			SeekBar bar = entry.getValue();
+			bar.setEnabled(equalizer.getEnabled());
+			short minEQLevel = equalizer.getBandLevelRange()[0];
+			bar.setProgress(equalizer.getBandLevel(band) - minEQLevel);
+		}
+	}
 
-    private void initEqualizer() {
-        LinearLayout layout = (LinearLayout) findViewById(R.id.equalizer_layout);
+	private void initEqualizer()
+	{
+		LinearLayout layout = (LinearLayout) findViewById(R.id.equalizer_layout);
 
-        try {
-        	short[] bandLevelRange = equalizer.getBandLevelRange();
-        	short numberOfBands = equalizer.getNumberOfBands();
-        	
-            final short minEQLevel = bandLevelRange[0];
-            final short maxEQLevel = bandLevelRange[1];
+		try
+		{
+			short[] bandLevelRange = equalizer.getBandLevelRange();
+			short numberOfBands = equalizer.getNumberOfBands();
 
-            for (short i = 0; i < numberOfBands; i++) {
-                final short band = i;
+			final short minEQLevel = bandLevelRange[0];
+			final short maxEQLevel = bandLevelRange[1];
 
-                View bandBar = LayoutInflater.from(this).inflate(R.layout.equalizer_bar, null);
-                TextView freqTextView;
+			for (short i = 0; i < numberOfBands; i++)
+			{
+				final short band = i;
 
-                if (bandBar != null) {
-                    freqTextView = (TextView) bandBar.findViewById(R.id.equalizer_frequency);
-                    final TextView levelTextView = (TextView) bandBar.findViewById(R.id.equalizer_level);
-                    SeekBar bar = (SeekBar) bandBar.findViewById(R.id.equalizer_bar);
+				View bandBar = LayoutInflater.from(this).inflate(R.layout.equalizer_bar, null);
+				TextView freqTextView;
 
-                    freqTextView.setText((equalizer.getCenterFreq(band) / 1000) + " Hz");
+				if (bandBar != null)
+				{
+					freqTextView = (TextView) bandBar.findViewById(R.id.equalizer_frequency);
+					final TextView levelTextView = (TextView) bandBar.findViewById(R.id.equalizer_level);
+					SeekBar bar = (SeekBar) bandBar.findViewById(R.id.equalizer_bar);
 
-                    bars.put(band, bar);
-                    bar.setMax(maxEQLevel - minEQLevel);
-                    short level = equalizer.getBandLevel(band);
-                    bar.setProgress(level - minEQLevel);
-                    bar.setEnabled(equalizer.getEnabled());
-                    updateLevelText(levelTextView, level);
+					freqTextView.setText((equalizer.getCenterFreq(band) / 1000) + " Hz");
 
-                    bar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
-                        @Override
-                        public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
-                            short level = (short) (progress + minEQLevel);
-                            if (fromUser) {
-                                equalizer.setBandLevel(band, level);
-                            }
-                            updateLevelText(levelTextView, level);
-                        }
+					bars.put(band, bar);
+					bar.setMax(maxEQLevel - minEQLevel);
+					short level = equalizer.getBandLevel(band);
+					bar.setProgress(level - minEQLevel);
+					bar.setEnabled(equalizer.getEnabled());
+					updateLevelText(levelTextView, level);
 
-                        @Override
-                        public void onStartTrackingTouch(SeekBar seekBar) {
-                        }
+					bar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener()
+					{
+						@Override
+						public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser)
+						{
+							short level = (short) (progress + minEQLevel);
+							if (fromUser)
+							{
+								equalizer.setBandLevel(band, level);
+							}
+							updateLevelText(levelTextView, level);
+						}
 
-                        @Override
-                        public void onStopTrackingTouch(SeekBar seekBar) {
-                        }
-                    });
-                    layout.addView(bandBar);
-                }
-            }
-        } catch (Exception e) {
-        	//TODO: Show a dialog
-        }
-    }
+						@Override
+						public void onStartTrackingTouch(SeekBar seekBar)
+						{
+						}
 
-    private void updateLevelText(TextView levelTextView, short level) {
-        levelTextView.setText((level > 0 ? "+" : "") + level / 100 + " dB");
-    }
+						@Override
+						public void onStopTrackingTouch(SeekBar seekBar)
+						{
+						}
+					});
+					layout.addView(bandBar);
+				}
+			}
+		}
+		catch (Exception e)
+		{
+			//TODO: Show a dialog
+		}
+	}
+
+	private static void updateLevelText(TextView levelTextView, short level)
+	{
+		levelTextView.setText((level > 0 ? "+" : "") + level / 100 + " dB");
+	}
 
 }

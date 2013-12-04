@@ -30,6 +30,7 @@ import android.util.Log;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
+
 import com.thejoshwa.ultrasonic.androidapp.R;
 import com.thejoshwa.ultrasonic.androidapp.domain.MusicDirectory;
 import com.thejoshwa.ultrasonic.androidapp.service.MusicService;
@@ -45,168 +46,208 @@ import java.util.concurrent.LinkedBlockingQueue;
  *
  * @author Sindre Mehus
  */
-public class ImageLoader implements Runnable {
+public class ImageLoader implements Runnable
+{
 
-    private static final String TAG = ImageLoader.class.getSimpleName();
-    private static final int CONCURRENCY = 5;
+	private static final String TAG = ImageLoader.class.getSimpleName();
+	private static final int CONCURRENCY = 5;
 
-    private final LRUCache<String, Bitmap> cache = new LRUCache<String, Bitmap>(100);
-    private final BlockingQueue<Task> queue;
-    private final int imageSizeDefault;
-    private final int imageSizeLarge;
-    private Bitmap largeUnknownImage;
+	private final LRUCache<String, Bitmap> cache = new LRUCache<String, Bitmap>(150);
+	private final BlockingQueue<Task> queue;
+	private int imageSizeDefault;
+	private final int imageSizeLarge;
+	private Bitmap largeUnknownImage;
 	private Context context;
-	
-    public ImageLoader(Context context) {
-    	this.context = context;
-    	queue = new LinkedBlockingQueue<Task>(500);
 
-        Resources resources = context.getResources();
-        Drawable drawable = resources.getDrawable(R.drawable.unknown_album);
+	public ImageLoader(Context context)
+	{
+		this.context = context;
+		queue = new LinkedBlockingQueue<Task>(1000);
 
-        // Determine the density-dependent image sizes.
-        imageSizeDefault = drawable.getIntrinsicHeight();
-        DisplayMetrics metrics = context.getResources().getDisplayMetrics();
-        imageSizeLarge = Math.round(Math.min(metrics.widthPixels, metrics.heightPixels));
+		Resources resources = context.getResources();
+		Drawable drawable = resources.getDrawable(R.drawable.unknown_album);
 
-        for (int i = 0; i < CONCURRENCY; i++) {
-            new Thread(this, "ImageLoader").start();
-        }
+		// Determine the density-dependent image sizes.
+		if (drawable != null)
+		{
+			imageSizeDefault = drawable.getIntrinsicHeight();
+		}
 
-        createLargeUnknownImage(context);
-    }
+		DisplayMetrics metrics = context.getResources().getDisplayMetrics();
+		imageSizeLarge = Math.round(Math.min(metrics.widthPixels, metrics.heightPixels));
 
-    private void createLargeUnknownImage(Context context) {
-        BitmapDrawable drawable = (BitmapDrawable) context.getResources().getDrawable(R.drawable.unknown_album_large);
-        Log.i(TAG, "createLargeUnknownImage");
+		for (int i = 0; i < CONCURRENCY; i++)
+		{
+			new Thread(this, "ImageLoader").start();
+		}
 
-        if (drawable != null) {
-            largeUnknownImage = Util.scaleBitmap(drawable.getBitmap(), imageSizeLarge);
-        }
-    }
+		createLargeUnknownImage(context);
+	}
 
-    public void loadImage(View view, MusicDirectory.Entry entry, boolean large, int size, boolean crossFade, boolean highQuality) {
-    	if (entry == null) {
-            setUnknownImage(view, large);
-            return;
-    	}
-    	
-    	String coverArt = entry.getCoverArt();
-    	
-        if (coverArt == null) {
-            setUnknownImage(view, large);
-            return;
-        }
-        
-        if (size <= 0) {
-        	size = large ? imageSizeLarge : imageSizeDefault;
-        }
-        
-        Bitmap bitmap = cache.get(getKey(coverArt, size));
-        
-        if (bitmap != null) {
-            setImageBitmap(view, bitmap, false);
-            return;
-        }
+	private void createLargeUnknownImage(Context context)
+	{
+		BitmapDrawable drawable = (BitmapDrawable) context.getResources().getDrawable(R.drawable.unknown_album_large);
+		Log.i(TAG, "createLargeUnknownImage");
 
-        if (!large) {
-            setUnknownImage(view, large);
-        }
-        
-        queue.offer(new Task(view, entry, size, large, crossFade, highQuality));
-    }
-    
-    private String getKey(String coverArtId, int size) {
-        return coverArtId + size;
-    }
+		if (drawable != null)
+		{
+			largeUnknownImage = Util.scaleBitmap(drawable.getBitmap(), imageSizeLarge);
+		}
+	}
 
-    private void setImageBitmap(View view, Bitmap bitmap, boolean crossFade) {
-       if (view instanceof ImageView) {
-            ImageView imageView = (ImageView) view;
+	public void loadImage(View view, MusicDirectory.Entry entry, boolean large, int size, boolean crossFade, boolean highQuality)
+	{
+		if (entry == null)
+		{
+			setUnknownImage(view, large);
+			return;
+		}
 
-            if (crossFade) {
-                Drawable existingDrawable = imageView.getDrawable();
-                Drawable newDrawable = Util.createDrawableFromBitmap(this.context, bitmap);
-                
-                if (existingDrawable == null) {
-                    Bitmap emptyImage = Bitmap.createBitmap(bitmap.getWidth(), bitmap.getHeight(), Bitmap.Config.ARGB_8888);
-                    existingDrawable = new BitmapDrawable(emptyImage);
-                }
+		String coverArt = entry.getCoverArt();
 
-                Drawable[] layers = new Drawable[]{existingDrawable, newDrawable};
+		if (coverArt == null)
+		{
+			setUnknownImage(view, large);
+			return;
+		}
 
-                TransitionDrawable transitionDrawable = new TransitionDrawable(layers);
-                imageView.setImageDrawable(transitionDrawable);
-                transitionDrawable.startTransition(250);
-            } else {
-                imageView.setImageBitmap(bitmap);
-            }
-        }
-    }
+		if (size <= 0)
+		{
+			size = large ? imageSizeLarge : imageSizeDefault;
+		}
 
-    private void setUnknownImage(View view, boolean large) {
-        if (large) {
-            setImageBitmap(view, largeUnknownImage, false);
-        } else {
-            if (view instanceof TextView) {
-                ((TextView) view).setCompoundDrawablesWithIntrinsicBounds(R.drawable.unknown_album, 0, 0, 0);
-            } else if (view instanceof ImageView) {
-                ((ImageView) view).setImageResource(R.drawable.unknown_album);
-            }
-        }
-    }
+		Bitmap bitmap = cache.get(getKey(coverArt, size));
 
-    public void clear() {
-        queue.clear();
-    }
+		if (bitmap != null)
+		{
+			setImageBitmap(view, bitmap, crossFade);
+			return;
+		}
 
-    @Override
-    public void run() {
-        while (true) {
-            try {
-                Task task = queue.take();
-                task.execute();
-            } catch (Throwable x) {
-                Log.e(TAG, "Unexpected exception in ImageLoader.", x);
-            }
-        }
-    }
+		setUnknownImage(view, large);
 
-    private class Task {
-        private final View view;
-        private final MusicDirectory.Entry entry;
-        private final Handler handler;
-        private final int size;
-        private final boolean saveToFile;
-        private final boolean crossfade;
-        private final boolean highQuality;
+		queue.offer(new Task(view, entry, size, large, crossFade, highQuality));
+	}
 
-        public Task(View view, MusicDirectory.Entry entry, int size, boolean saveToFile, boolean crossFade, boolean highQuality) {
-            this.view = view;
-            this.entry = entry;
-            this.size = size;
-            this.saveToFile = saveToFile;
-            this.crossfade = crossFade;
-            this.highQuality = highQuality;
-            handler = new Handler();
-        }
-        
-        public void execute() {
-            try {
-                MusicService musicService = MusicServiceFactory.getMusicService(view.getContext());
-                final Bitmap bitmap = musicService.getCoverArt(view.getContext(), entry, size, saveToFile, highQuality, null);
+	private static String getKey(String coverArtId, int size)
+	{
+		return coverArtId + size;
+	}
 
-                cache.put(getKey(entry.getCoverArt(), size), bitmap);
+	private void setImageBitmap(View view, Bitmap bitmap, boolean crossFade)
+	{
+		if (view instanceof ImageView)
+		{
+			ImageView imageView = (ImageView) view;
 
-                handler.post(new Runnable() {
-                    @Override
-                    public void run() {
-                        setImageBitmap(view, bitmap, crossfade);
-                    }
-                });
-            } catch (Throwable x) {
-                Log.e(TAG, "Failed to download album art.", x);
-            }
-        }
-    }
+			if (crossFade)
+			{
+				Drawable existingDrawable = imageView.getDrawable();
+				Drawable newDrawable = Util.createDrawableFromBitmap(this.context, bitmap);
+
+				if (existingDrawable == null)
+				{
+					Bitmap emptyImage = Bitmap.createBitmap(bitmap.getWidth(), bitmap.getHeight(), Bitmap.Config.ARGB_8888);
+					existingDrawable = new BitmapDrawable(emptyImage);
+				}
+
+				Drawable[] layers = new Drawable[]{existingDrawable, newDrawable};
+
+				TransitionDrawable transitionDrawable = new TransitionDrawable(layers);
+				imageView.setImageDrawable(transitionDrawable);
+				transitionDrawable.startTransition(250);
+			}
+			else
+			{
+				imageView.setImageBitmap(bitmap);
+			}
+		}
+	}
+
+	private void setUnknownImage(View view, boolean large)
+	{
+		if (large)
+		{
+			setImageBitmap(view, largeUnknownImage, false);
+		}
+		else
+		{
+			if (view instanceof TextView)
+			{
+				((TextView) view).setCompoundDrawablesWithIntrinsicBounds(R.drawable.unknown_album, 0, 0, 0);
+			}
+			else if (view instanceof ImageView)
+			{
+				((ImageView) view).setImageResource(R.drawable.unknown_album);
+			}
+		}
+	}
+
+	public void clear()
+	{
+		queue.clear();
+	}
+
+	@Override
+	public void run()
+	{
+		while (true)
+		{
+			try
+			{
+				Task task = queue.take();
+				task.execute();
+			}
+			catch (Throwable x)
+			{
+				Log.e(TAG, "Unexpected exception in ImageLoader.", x);
+			}
+		}
+	}
+
+	private class Task
+	{
+		private final View view;
+		private final MusicDirectory.Entry entry;
+		private final Handler handler;
+		private final int size;
+		private final boolean saveToFile;
+		private final boolean crossFade;
+		private final boolean highQuality;
+
+		public Task(View view, MusicDirectory.Entry entry, int size, boolean saveToFile, boolean crossFade, boolean highQuality)
+		{
+			this.view = view;
+			this.entry = entry;
+			this.size = size;
+			this.saveToFile = saveToFile;
+			this.crossFade = crossFade;
+			this.highQuality = highQuality;
+			handler = new Handler();
+		}
+
+		public void execute()
+		{
+			try
+			{
+				MusicService musicService = MusicServiceFactory.getMusicService(view.getContext());
+				final Bitmap bitmap = musicService.getCoverArt(view.getContext(), entry, size, saveToFile, highQuality, null);
+
+				cache.put(getKey(entry.getCoverArt(), size), bitmap);
+
+				handler.post(new Runnable()
+				{
+					@Override
+					public void run()
+					{
+						setImageBitmap(view, bitmap, crossFade);
+					}
+				});
+			}
+			catch (Throwable x)
+			{
+				Log.e(TAG, "Failed to download album art.", x);
+			}
+		}
+	}
 }

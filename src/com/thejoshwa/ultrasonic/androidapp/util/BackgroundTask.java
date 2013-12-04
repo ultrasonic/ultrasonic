@@ -18,79 +18,92 @@
  */
 package com.thejoshwa.ultrasonic.androidapp.util;
 
-import java.io.FileNotFoundException;
-import java.io.IOException;
-
-import org.xmlpull.v1.XmlPullParserException;
-
 import android.app.Activity;
 import android.os.Handler;
 import android.util.Log;
+
 import com.thejoshwa.ultrasonic.androidapp.R;
+
+import org.xmlpull.v1.XmlPullParserException;
+
+import java.io.FileNotFoundException;
+import java.io.IOException;
 
 /**
  * @author Sindre Mehus
  */
-public abstract class BackgroundTask<T> implements ProgressListener {
+public abstract class BackgroundTask<T> implements ProgressListener
+{
 
-    private static final String TAG = BackgroundTask.class.getSimpleName();
-    private final Activity activity;
-    private final Handler handler;
+	private static final String TAG = BackgroundTask.class.getSimpleName();
+	private final Activity activity;
+	private final Handler handler;
 
-    public BackgroundTask(Activity activity) {
-        this.activity = activity;
-        handler = new Handler();
-    }
+	public BackgroundTask(Activity activity)
+	{
+		this.activity = activity;
+		handler = new Handler();
+	}
 
-    protected Activity getActivity() {
-        return activity;
-    }
+	protected Activity getActivity()
+	{
+		return activity;
+	}
 
-    protected Handler getHandler() {
-        return handler;
-    }
+	protected Handler getHandler()
+	{
+		return handler;
+	}
 
-    public abstract void execute();
+	public abstract void execute();
 
-    protected abstract T doInBackground() throws Throwable;
+	protected abstract T doInBackground() throws Throwable;
 
-    protected abstract void done(T result);
+	protected abstract void done(T result);
 
-    protected void error(Throwable error) {
-        Log.w(TAG, "Got exception: " + error, error);
-        new ErrorDialog(activity, getErrorMessage(error), true);
-    }
+	protected void error(Throwable error)
+	{
+		Log.w(TAG, String.format("Got exception: %s", error), error);
+		new ErrorDialog(activity, getErrorMessage(error), true);
+	}
 
-    protected String getErrorMessage(Throwable error) {
+	protected String getErrorMessage(Throwable error)
+	{
 
-        if (error instanceof IOException && !Util.isNetworkConnected(activity)) {
-            return activity.getResources().getString(R.string.background_task_no_network);
-        }
+		if (error instanceof IOException && !Util.isNetworkConnected(activity))
+		{
+			return activity.getResources().getString(R.string.background_task_no_network);
+		}
 
-        if (error instanceof FileNotFoundException) {
-            return activity.getResources().getString(R.string.background_task_not_found);
-        }
+		if (error instanceof FileNotFoundException)
+		{
+			return activity.getResources().getString(R.string.background_task_not_found);
+		}
 
-        if (error instanceof IOException) {
-            return activity.getResources().getString(R.string.background_task_network_error);
-        }
+		if (error instanceof IOException)
+		{
+			return activity.getResources().getString(R.string.background_task_network_error);
+		}
 
-        if (error instanceof XmlPullParserException) {
-            return activity.getResources().getString(R.string.background_task_parse_error);
-        }
+		if (error instanceof XmlPullParserException)
+		{
+			return activity.getResources().getString(R.string.background_task_parse_error);
+		}
 
-        String message = error.getMessage();
-        if (message != null) {
-            return message;
-        }
-        return error.getClass().getSimpleName();
-    }
+		String message = error.getMessage();
+		if (message != null)
+		{
+			return message;
+		}
+		return error.getClass().getSimpleName();
+	}
 
-    @Override
-    public abstract void updateProgress(final String message);
+	@Override
+	public abstract void updateProgress(final String message);
 
-    @Override
-    public void updateProgress(int messageId) {
-        updateProgress(activity.getResources().getString(messageId));
-    }
+	@Override
+	public void updateProgress(int messageId)
+	{
+		updateProgress(activity.getResources().getString(messageId));
+	}
 }

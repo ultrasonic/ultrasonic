@@ -19,6 +19,7 @@
 package com.thejoshwa.ultrasonic.androidapp.service.parser;
 
 import android.content.Context;
+
 import org.xmlpull.v1.XmlPullParser;
 
 import java.io.Reader;
@@ -29,34 +30,44 @@ import com.thejoshwa.ultrasonic.androidapp.domain.Version;
 /**
  * @author Sindre Mehus
  */
-public class LicenseParser extends AbstractParser {
+public class LicenseParser extends AbstractParser
+{
 
-    public LicenseParser(Context context) {
-        super(context);
-    }
+	public LicenseParser(Context context)
+	{
+		super(context);
+	}
 
-    public ServerInfo parse(Reader reader) throws Exception {
+	public ServerInfo parse(Reader reader) throws Exception
+	{
 
-        init(reader);
+		init(reader);
 
-        ServerInfo serverInfo = new ServerInfo();
-        int eventType;
-        do {
-            eventType = nextParseEvent();
-            if (eventType == XmlPullParser.START_TAG) {
-                String name = getElementName();
-                if ("subsonic-response".equals(name)) {
-                    serverInfo.setRestVersion(new Version(get("version")));
-                } else if ("license".equals(name)) {
-                    serverInfo.setLicenseValid(getBoolean("valid"));
-                } else if ("error".equals(name)) {
-                    handleError();
-                }
-            }
-        } while (eventType != XmlPullParser.END_DOCUMENT);
+		ServerInfo serverInfo = new ServerInfo();
+		int eventType;
+		do
+		{
+			eventType = nextParseEvent();
+			if (eventType == XmlPullParser.START_TAG)
+			{
+				String name = getElementName();
+				if ("subsonic-response".equals(name))
+				{
+					serverInfo.setRestVersion(new Version(get("version")));
+				}
+				else if ("license".equals(name))
+				{
+					serverInfo.setLicenseValid(getBoolean("valid"));
+				}
+				else if ("error".equals(name))
+				{
+					handleError();
+				}
+			}
+		} while (eventType != XmlPullParser.END_DOCUMENT);
 
-        validate();
+		validate();
 
-        return serverInfo;
-    }
+		return serverInfo;
+	}
 }

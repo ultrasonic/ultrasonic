@@ -39,6 +39,7 @@ import android.os.PowerManager;
 import android.util.Log;
 import android.widget.RemoteViews;
 import android.widget.SeekBar;
+
 import com.thejoshwa.ultrasonic.androidapp.R;
 import com.thejoshwa.ultrasonic.androidapp.activity.DownloadActivity;
 import com.thejoshwa.ultrasonic.androidapp.activity.SubsonicTabActivity;
@@ -61,623 +62,753 @@ import com.thejoshwa.ultrasonic.androidapp.util.ShufflePlayBuffer;
 import com.thejoshwa.ultrasonic.androidapp.util.SimpleServiceBinder;
 import com.thejoshwa.ultrasonic.androidapp.util.StreamProxy;
 import com.thejoshwa.ultrasonic.androidapp.util.Util;
+
 import java.io.File;
 import java.net.URLEncoder;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
+
 import static com.thejoshwa.ultrasonic.androidapp.domain.PlayerState.*;
 
 /**
  * @author Sindre Mehus, Joshua Bahnsen
  * @version $Id$
  */
-public class DownloadServiceImpl extends Service implements DownloadService {
+public class DownloadServiceImpl extends Service implements DownloadService
+{
+	private static final String TAG = DownloadServiceImpl.class.getSimpleName();
 
-    private static final String TAG = DownloadServiceImpl.class.getSimpleName();
+	public static final String CMD_PLAY = "com.thejoshwa.ultrasonic.androidapp.CMD_PLAY";
+	public static final String CMD_TOGGLEPAUSE = "com.thejoshwa.ultrasonic.androidapp.CMD_TOGGLEPAUSE";
+	public static final String CMD_PAUSE = "com.thejoshwa.ultrasonic.androidapp.CMD_PAUSE";
+	public static final String CMD_STOP = "com.thejoshwa.ultrasonic.androidapp.CMD_STOP";
+	public static final String CMD_PREVIOUS = "com.thejoshwa.ultrasonic.androidapp.CMD_PREVIOUS";
+	public static final String CMD_NEXT = "com.thejoshwa.ultrasonic.androidapp.CMD_NEXT";
 
-    public static final String CMD_PLAY = "com.thejoshwa.ultrasonic.androidapp.CMD_PLAY";
-    public static final String CMD_TOGGLEPAUSE = "com.thejoshwa.ultrasonic.androidapp.CMD_TOGGLEPAUSE";
-    public static final String CMD_PAUSE = "com.thejoshwa.ultrasonic.androidapp.CMD_PAUSE";
-    public static final String CMD_STOP = "com.thejoshwa.ultrasonic.androidapp.CMD_STOP";
-    public static final String CMD_PREVIOUS = "com.thejoshwa.ultrasonic.androidapp.CMD_PREVIOUS";
-    public static final String CMD_NEXT = "com.thejoshwa.ultrasonic.androidapp.CMD_NEXT";
-
-    private final IBinder binder = new SimpleServiceBinder<DownloadService>(this);
-	private Looper mediaPlayerLooper;    
-    private MediaPlayer mediaPlayer;
+	private final IBinder binder = new SimpleServiceBinder<DownloadService>(this);
+	private Looper mediaPlayerLooper;
+	private MediaPlayer mediaPlayer;
 	private MediaPlayer nextMediaPlayer;
-	private boolean nextSetup = false;
-    private final List<DownloadFile> downloadList = new ArrayList<DownloadFile>();
-	private final List<DownloadFile> backgroundDownloadList = new ArrayList<DownloadFile>();    
-    private final Handler handler = new Handler();
-	private Handler mediaPlayerHandler;    
-    private final DownloadServiceLifecycleSupport lifecycleSupport = new DownloadServiceLifecycleSupport(this);
-    private final ShufflePlayBuffer shufflePlayBuffer = new ShufflePlayBuffer(this);
+	private boolean nextSetup;
+	private final List<DownloadFile> downloadList = new ArrayList<DownloadFile>();
+	private final List<DownloadFile> backgroundDownloadList = new ArrayList<DownloadFile>();
+	private final Handler handler = new Handler();
+	private Handler mediaPlayerHandler;
+	private final DownloadServiceLifecycleSupport lifecycleSupport = new DownloadServiceLifecycleSupport(this);
+	private final ShufflePlayBuffer shufflePlayBuffer = new ShufflePlayBuffer(this);
 
-    private final LRUCache<MusicDirectory.Entry, DownloadFile> downloadFileCache = new LRUCache<MusicDirectory.Entry, DownloadFile>(100);
-    private final List<DownloadFile> cleanupCandidates = new ArrayList<DownloadFile>();
-    private final Scrobbler scrobbler = new Scrobbler();
-    private final JukeboxService jukeboxService = new JukeboxService(this);
-    private Notification notification = new Notification(R.drawable.ic_stat_ultrasonic, null, System.currentTimeMillis());
-    		           
-    private DownloadFile currentPlaying;
-    private DownloadFile nextPlaying;    
-    private DownloadFile currentDownloading;
-    private CancellableTask bufferTask;
-    private CancellableTask nextPlayingTask;    
-    private PlayerState playerState = IDLE;
-    private PlayerState nextPlayerState = IDLE;    
-    private boolean shufflePlay;
-    private long revision;
-    private static DownloadService instance;
-    private String suggestedPlaylistName;
-    private PowerManager.WakeLock wakeLock;
-    private boolean keepScreenOn = false;
-    private int cachedPosition = 0;    
+	private final LRUCache<MusicDirectory.Entry, DownloadFile> downloadFileCache = new LRUCache<MusicDirectory.Entry, DownloadFile>(100);
+	private final List<DownloadFile> cleanupCandidates = new ArrayList<DownloadFile>();
+	private final Scrobbler scrobbler = new Scrobbler();
+	private final JukeboxService jukeboxService = new JukeboxService(this);
+	private Notification notification = new Notification(R.drawable.ic_stat_ultrasonic, null, System.currentTimeMillis());
 
-    private static boolean equalizerAvailable;
-    private static boolean visualizerAvailable;
-    private EqualizerController equalizerController;
-    private VisualizerController visualizerController;
-    private boolean showVisualization;
-    private boolean jukeboxEnabled;
-    private PositionCache positionCache;
-    private StreamProxy proxy;
-    private static MusicDirectory.Entry currentSong;
-    private RemoteControlClient remoteControlClient;
-    private AudioManager audioManager;
-    private int secondaryProgress = -1;
-    private boolean autoPlayStart = false;
-    private final static int lockScreenBitmapSize = 500;
+	private DownloadFile currentPlaying;
+	private DownloadFile nextPlaying;
+	private DownloadFile currentDownloading;
+	private CancellableTask bufferTask;
+	private CancellableTask nextPlayingTask;
+	private PlayerState playerState = IDLE;
+	private PlayerState nextPlayerState = IDLE;
+	private boolean shufflePlay;
+	private long revision;
+	private static DownloadService instance;
+	private String suggestedPlaylistName;
+	private PowerManager.WakeLock wakeLock;
+	private boolean keepScreenOn;
+	private int cachedPosition;
 
-    static {
-		try {
+	private static boolean equalizerAvailable;
+	private static boolean visualizerAvailable;
+	private EqualizerController equalizerController;
+	private VisualizerController visualizerController;
+	private boolean showVisualization;
+	private boolean jukeboxEnabled;
+	private PositionCache positionCache;
+	private StreamProxy proxy;
+	private static MusicDirectory.Entry currentSong;
+	private RemoteControlClient remoteControlClient;
+	private AudioManager audioManager;
+	private int secondaryProgress = -1;
+	private boolean autoPlayStart;
+	private final static int lockScreenBitmapSize = 500;
+
+	static
+	{
+		try
+		{
 			EqualizerController.checkAvailable();
 			equalizerAvailable = true;
-		} catch (Throwable t) {
+		}
+		catch (Throwable t)
+		{
 			equalizerAvailable = false;
 		}
 	}
-    
-	static {
-		try {
+
+	static
+	{
+		try
+		{
 			VisualizerController.checkAvailable();
 			visualizerAvailable = true;
-		} catch (Throwable t) {
+		}
+		catch (Throwable t)
+		{
 			visualizerAvailable = false;
 		}
 	}
-	
+
 	@SuppressLint("NewApi")
 	@Override
-    public void onCreate() {
-        super.onCreate();
-        
-        new Thread(new Runnable() {
-			public void run() {
+	public void onCreate()
+	{
+		super.onCreate();
+
+		new Thread(new Runnable()
+		{
+			@Override
+			public void run()
+			{
 				Looper.prepare();
-				
-				if (mediaPlayer != null) {
+
+				if (mediaPlayer != null)
+				{
 					mediaPlayer.release();
 				}
-				
+
 				mediaPlayer = new MediaPlayer();
 				mediaPlayer.setWakeMode(DownloadServiceImpl.this, PowerManager.PARTIAL_WAKE_LOCK);
 
-				mediaPlayer.setOnErrorListener(new MediaPlayer.OnErrorListener() {
+				mediaPlayer.setOnErrorListener(new MediaPlayer.OnErrorListener()
+				{
 					@Override
-					public boolean onError(MediaPlayer mediaPlayer, int what, int more) {
-						handleError(new Exception("MediaPlayer error: " + what + " (" + more + ")"));
+					public boolean onError(MediaPlayer mediaPlayer, int what, int more)
+					{
+						handleError(new Exception(String.format("MediaPlayer error: %d (%d)", what, more)));
 						return false;
 					}
 				});
-				
-				try {
+
+				try
+				{
 					Intent i = new Intent(AudioEffect.ACTION_OPEN_AUDIO_EFFECT_CONTROL_SESSION);
 					i.putExtra(AudioEffect.EXTRA_AUDIO_SESSION, mediaPlayer.getAudioSessionId());
 					i.putExtra(AudioEffect.EXTRA_PACKAGE_NAME, getPackageName());
 					sendBroadcast(i);
-				} catch(Throwable e) {
+				}
+				catch (Throwable e)
+				{
 					// Froyo or lower
 				}
-				
+
 				mediaPlayerLooper = Looper.myLooper();
 				mediaPlayerHandler = new Handler(mediaPlayerLooper);
 				Looper.loop();
 			}
-		}).start();        
+		}).start();
 
-        audioManager = (AudioManager) this.getSystemService(Context.AUDIO_SERVICE);
-		
-    	notification.flags |= Notification.FLAG_NO_CLEAR | Notification.FLAG_ONGOING_EVENT;
-        notification.contentView = new RemoteViews(this.getPackageName(), R.layout.notification);
-        Util.linkButtons(this, notification.contentView, false);
+		audioManager = (AudioManager) this.getSystemService(Context.AUDIO_SERVICE);
 
-        if (Build.VERSION.SDK_INT>= Build.VERSION_CODES.JELLY_BEAN){
-        	notification.bigContentView = new RemoteViews(this.getPackageName(), R.layout.notification_large);
-        	Util.linkButtons(this, notification.bigContentView, false);
-        }
+		notification.flags |= Notification.FLAG_NO_CLEAR | Notification.FLAG_ONGOING_EVENT;
+		notification.contentView = new RemoteViews(this.getPackageName(), R.layout.notification);
+		Util.linkButtons(this, notification.contentView, false);
 
-        Intent notificationIntent = new Intent(this, DownloadActivity.class);
-        notification.contentIntent = PendingIntent.getActivity(this, 0, notificationIntent, 0);
-       
-        if (equalizerAvailable) {
-            equalizerController = new EqualizerController(this, mediaPlayer);
-            if (!equalizerController.isAvailable()) {
-                equalizerController = null;
-            } else {
-                equalizerController.loadSettings();
-            }
-        }
-        if (visualizerAvailable) {
-            visualizerController = new VisualizerController(mediaPlayer);
-            if (!visualizerController.isAvailable()) {
-                visualizerController = null;
-            }
-        }
-        
-        PowerManager pm = (PowerManager)getSystemService(Context.POWER_SERVICE);
-        wakeLock = pm.newWakeLock(PowerManager.PARTIAL_WAKE_LOCK, this.getClass().getName());
-        wakeLock.setReferenceCounted(false);
+		if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN)
+		{
+			notification.bigContentView = new RemoteViews(this.getPackageName(), R.layout.notification_large);
+			Util.linkButtons(this, notification.bigContentView, false);
+		}
 
-        instance = this;
-        lifecycleSupport.onCreate();
-    }
-        
-    @Override
-    public int onStartCommand(Intent intent, int flags, int startId) {
-        super.onStartCommand(intent, flags, startId);
-        lifecycleSupport.onStart(intent);
-        return START_NOT_STICKY;
-    }
+		Intent notificationIntent = new Intent(this, DownloadActivity.class);
+		notification.contentIntent = PendingIntent.getActivity(this, 0, notificationIntent, 0);
 
-    @Override
-    public void onDestroy() {
-        super.onDestroy();
+		if (equalizerAvailable)
+		{
+			equalizerController = new EqualizerController(this, mediaPlayer);
+			if (!equalizerController.isAvailable())
+			{
+				equalizerController = null;
+			}
+			else
+			{
+				equalizerController.loadSettings();
+			}
+		}
+		if (visualizerAvailable)
+		{
+			visualizerController = new VisualizerController(mediaPlayer);
+			if (!visualizerController.isAvailable())
+			{
+				visualizerController = null;
+			}
+		}
+
+		PowerManager pm = (PowerManager) getSystemService(Context.POWER_SERVICE);
+		wakeLock = pm.newWakeLock(PowerManager.PARTIAL_WAKE_LOCK, this.getClass().getName());
+		wakeLock.setReferenceCounted(false);
+
+		instance = this;
+		lifecycleSupport.onCreate();
+	}
+
+	@Override
+	public int onStartCommand(Intent intent, int flags, int startId)
+	{
+		super.onStartCommand(intent, flags, startId);
+		lifecycleSupport.onStart(intent);
+		return START_NOT_STICKY;
+	}
+
+	@Override
+	public void onDestroy()
+	{
+		super.onDestroy();
 
 		instance = null;
-        lifecycleSupport.onDestroy();
-        mediaPlayer.release();
-        
-        if (nextMediaPlayer != null) {
-			nextMediaPlayer.release();
-        }
-		
-        mediaPlayerLooper.quit();
-        shufflePlayBuffer.shutdown();
+		lifecycleSupport.onDestroy();
+		mediaPlayer.release();
 
-        if (equalizerController != null) {
-            equalizerController.release();
-        }
-        if (visualizerController != null) {
-            visualizerController.release();
-        }
-        
-        try {
+		if (nextMediaPlayer != null)
+		{
+			nextMediaPlayer.release();
+		}
+
+		mediaPlayerLooper.quit();
+		shufflePlayBuffer.shutdown();
+
+		if (equalizerController != null)
+		{
+			equalizerController.release();
+		}
+		if (visualizerController != null)
+		{
+			visualizerController.release();
+		}
+
+		try
+		{
 			Intent i = new Intent(AudioEffect.ACTION_CLOSE_AUDIO_EFFECT_CONTROL_SESSION);
 			i.putExtra(AudioEffect.EXTRA_AUDIO_SESSION, mediaPlayer.getAudioSessionId());
 			i.putExtra(AudioEffect.EXTRA_PACKAGE_NAME, getPackageName());
 			sendBroadcast(i);
-		} catch(Throwable e) {
+		}
+		catch (Throwable e)
+		{
 			// Froyo or lower
 		}
-        
-        if(bufferTask != null) {
+
+		if (bufferTask != null)
+		{
 			bufferTask.cancel();
 		}
-        
-		if(nextPlayingTask != null) {
+
+		if (nextPlayingTask != null)
+		{
 			nextPlayingTask.cancel();
 		}
-        
-    	audioManager.unregisterRemoteControlClient(remoteControlClient);
-        notification = null;
-    }
 
-    public static DownloadService getInstance() {
-        return instance;
-    }
+		audioManager.unregisterRemoteControlClient(remoteControlClient);
+		notification = null;
+	}
 
-    @Override
-    public IBinder onBind(Intent intent) {
-        return binder;
-    }
+	public static DownloadService getInstance()
+	{
+		return instance;
+	}
 
-    @Override
-    public synchronized void download(List<MusicDirectory.Entry> songs, boolean save, boolean autoplay, boolean playNext, boolean shuffle, boolean newPlaylist) {
-        shufflePlay = false;
-        int offset = 1;
+	@Override
+	public IBinder onBind(Intent intent)
+	{
+		return binder;
+	}
 
-        if (songs.isEmpty()) {
-            return;
-        }
-        
-        if (newPlaylist) {
-        	downloadList.clear();
-        }
-        
-        if (playNext) {
-            if (autoplay && getCurrentPlayingIndex() >= 0) {
-                offset = 0;
-            }
-            
-            for (MusicDirectory.Entry song : songs) {
-                DownloadFile downloadFile = new DownloadFile(this, song, save);
-                downloadList.add(getCurrentPlayingIndex() + offset, downloadFile);
-                offset++;
+	@Override
+	public synchronized void download(List<MusicDirectory.Entry> songs, boolean save, boolean autoplay, boolean playNext, boolean shuffle, boolean newPlaylist)
+	{
+		shufflePlay = false;
+		int offset = 1;
+
+		if (songs.isEmpty())
+		{
+			return;
+		}
+
+		if (newPlaylist)
+		{
+			downloadList.clear();
+		}
+
+		if (playNext)
+		{
+			if (autoplay && getCurrentPlayingIndex() >= 0)
+			{
+				offset = 0;
 			}
-            
-            revision++;
-        } else {
+
+			for (MusicDirectory.Entry song : songs)
+			{
+				DownloadFile downloadFile = new DownloadFile(this, song, save);
+				downloadList.add(getCurrentPlayingIndex() + offset, downloadFile);
+				offset++;
+			}
+
+			revision++;
+		}
+		else
+		{
 			int size = size();
 			int index = getCurrentPlayingIndex();
 
-            for (MusicDirectory.Entry song : songs) {
-                DownloadFile downloadFile = new DownloadFile(this, song, save);
-                downloadList.add(downloadFile);
-            }
+			for (MusicDirectory.Entry song : songs)
+			{
+				DownloadFile downloadFile = new DownloadFile(this, song, save);
+				downloadList.add(downloadFile);
+			}
 
-			if(!autoplay && (size - 1) == index) {
+			if (!autoplay && (size - 1) == index)
+			{
 				setNextPlaying();
 			}
-            
-            revision++;
-        }
-        
-        updateJukeboxPlaylist();
 
-		if(shuffle)
-			shuffle();
+			revision++;
+		}
 
-        if (autoplay) {
-            play(0);
-        } else {
-            if (currentPlaying == null) {
-                currentPlaying = downloadList.get(0);
+		updateJukeboxPlaylist();
+
+		if (shuffle) shuffle();
+
+		if (autoplay)
+		{
+			play(0);
+		}
+		else
+		{
+			if (currentPlaying == null)
+			{
+				currentPlaying = downloadList.get(0);
 				currentPlaying.setPlaying(true);
-            }
+			}
 
-            checkDownloads();
-        }
-        
-        lifecycleSupport.serializeDownloadQueue();
-    }
-    
-    public synchronized void downloadBackground(List<MusicDirectory.Entry> songs, boolean save) {
-		for (MusicDirectory.Entry song : songs) {
+			checkDownloads();
+		}
+
+		lifecycleSupport.serializeDownloadQueue();
+	}
+
+	@Override
+	public synchronized void downloadBackground(List<MusicDirectory.Entry> songs, boolean save)
+	{
+		for (MusicDirectory.Entry song : songs)
+		{
 			DownloadFile downloadFile = new DownloadFile(this, song, save);
 			backgroundDownloadList.add(downloadFile);
 		}
 
 		revision++;
-		
+
 		checkDownloads();
 		lifecycleSupport.serializeDownloadQueue();
-	}    
+	}
 
-    private void updateJukeboxPlaylist() {
-        if (jukeboxEnabled) {
-            jukeboxService.updatePlaylist();
-        }
-    }
+	private void updateJukeboxPlaylist()
+	{
+		if (jukeboxEnabled)
+		{
+			jukeboxService.updatePlaylist();
+		}
+	}
 
-    @Override
-    public void restore(List<MusicDirectory.Entry> songs, int currentPlayingIndex, int currentPlayingPosition, boolean autoPlay, boolean newPlaylist) {
-        download(songs, false, false, false, false, newPlaylist);
-        
-        if (currentPlayingIndex != -1) {
-			while (mediaPlayer == null) {
+	@Override
+	public void restore(List<MusicDirectory.Entry> songs, int currentPlayingIndex, int currentPlayingPosition, boolean autoPlay, boolean newPlaylist)
+	{
+		download(songs, false, false, false, false, newPlaylist);
+
+		if (currentPlayingIndex != -1)
+		{
+			while (mediaPlayer == null)
+			{
 				Util.sleepQuietly(50L);
 			}
 
-            play(currentPlayingIndex, autoPlayStart);
-            
-            if (currentPlaying != null) {
-                if (autoPlay && jukeboxEnabled) {
-                    jukeboxService.skip(getCurrentPlayingIndex(), currentPlayingPosition / 1000);
-                } else {
-                	if (currentPlaying.isCompleteFileAvailable()) {
-                		doPlay(currentPlaying, currentPlayingPosition, autoPlay);
-                	}
-                }
-            }
-            
+			play(currentPlayingIndex, autoPlayStart);
+
+			if (currentPlaying != null)
+			{
+				if (autoPlay && jukeboxEnabled)
+				{
+					jukeboxService.skip(getCurrentPlayingIndex(), currentPlayingPosition / 1000);
+				}
+				else
+				{
+					if (currentPlaying.isCompleteFileAvailable())
+					{
+						doPlay(currentPlaying, currentPlayingPosition, autoPlay);
+					}
+				}
+			}
+
 			autoPlayStart = false;
-        }
-    }
-        
-    @Override
-    public synchronized void setShufflePlayEnabled(boolean enabled) {
-        shufflePlay = enabled;
-        if (shufflePlay) {
-            clear();
-            checkDownloads();
-        }
-    }
+		}
+	}
 
-    @Override
-    public boolean isShufflePlayEnabled() {
-        return shufflePlay;
-    }
-
-    @Override
-    public synchronized void shuffle() {
-        Collections.shuffle(downloadList);
-        if (currentPlaying != null) {
-            downloadList.remove(getCurrentPlayingIndex());
-            downloadList.add(0, currentPlaying);
-        }
-        revision++;
-        lifecycleSupport.serializeDownloadQueue();
-        updateJukeboxPlaylist();
-		setNextPlaying();
-    }
-
-    @Override
-    public RepeatMode getRepeatMode() {
-        return Util.getRepeatMode(this);
-    }
-
-    @Override
-    public void setRepeatMode(RepeatMode repeatMode) {
-        Util.setRepeatMode(this, repeatMode);
-		setNextPlaying();
-    }
-
-    @Override
-    public boolean getKeepScreenOn() {
-    	return keepScreenOn;
-    }
-
-    @Override
-    public void setKeepScreenOn(boolean keepScreenOn) {
-    	this.keepScreenOn = keepScreenOn;
-    }
-
-    @Override
-    public boolean getShowVisualization() {
-        return showVisualization;
-    }
-
-    @Override
-    public void setShowVisualization(boolean showVisualization) {
-        this.showVisualization = showVisualization;
-    }
-
-    @Override
-    public synchronized DownloadFile forSong(MusicDirectory.Entry song) {
-        for (DownloadFile downloadFile : downloadList) {
-            if (downloadFile.getSong().equals(song) &&
-					((downloadFile.isDownloading() && !downloadFile.isDownloadCancelled() && downloadFile.getPartialFile().exists())
-					|| downloadFile.isWorkDone())) {
-                return downloadFile;
-            }
-        }
-		for (DownloadFile downloadFile : backgroundDownloadList) {
-            if (downloadFile.getSong().equals(song)) {
-                return downloadFile;
-            }
-        }
-
-        DownloadFile downloadFile = downloadFileCache.get(song);
-        if (downloadFile == null) {
-            downloadFile = new DownloadFile(this, song, false);
-            downloadFileCache.put(song, downloadFile);
-        }
-        return downloadFile;
-    }
-
-    @Override
-    public synchronized void clear() {
-        clear(true);
-    }
-    
 	@Override
-	public synchronized void clearBackground() {
-		if(currentDownloading != null && backgroundDownloadList.contains(currentDownloading)) {
+	public synchronized void setShufflePlayEnabled(boolean enabled)
+	{
+		shufflePlay = enabled;
+		if (shufflePlay)
+		{
+			clear();
+			checkDownloads();
+		}
+	}
+
+	@Override
+	public boolean isShufflePlayEnabled()
+	{
+		return shufflePlay;
+	}
+
+	@Override
+	public synchronized void shuffle()
+	{
+		Collections.shuffle(downloadList);
+		if (currentPlaying != null)
+		{
+			downloadList.remove(getCurrentPlayingIndex());
+			downloadList.add(0, currentPlaying);
+		}
+		revision++;
+		lifecycleSupport.serializeDownloadQueue();
+		updateJukeboxPlaylist();
+		setNextPlaying();
+	}
+
+	@Override
+	public RepeatMode getRepeatMode()
+	{
+		return Util.getRepeatMode(this);
+	}
+
+	@Override
+	public void setRepeatMode(RepeatMode repeatMode)
+	{
+		Util.setRepeatMode(this, repeatMode);
+		setNextPlaying();
+	}
+
+	@Override
+	public boolean getKeepScreenOn()
+	{
+		return keepScreenOn;
+	}
+
+	@Override
+	public void setKeepScreenOn(boolean keepScreenOn)
+	{
+		this.keepScreenOn = keepScreenOn;
+	}
+
+	@Override
+	public boolean getShowVisualization()
+	{
+		return showVisualization;
+	}
+
+	@Override
+	public void setShowVisualization(boolean showVisualization)
+	{
+		this.showVisualization = showVisualization;
+	}
+
+	@Override
+	public synchronized DownloadFile forSong(MusicDirectory.Entry song)
+	{
+		for (DownloadFile downloadFile : downloadList)
+		{
+			if (downloadFile.getSong().equals(song) && ((downloadFile.isDownloading() && !downloadFile.isDownloadCancelled() && downloadFile.getPartialFile().exists()) || downloadFile.isWorkDone()))
+			{
+				return downloadFile;
+			}
+		}
+		for (DownloadFile downloadFile : backgroundDownloadList)
+		{
+			if (downloadFile.getSong().equals(song))
+			{
+				return downloadFile;
+			}
+		}
+
+		DownloadFile downloadFile = downloadFileCache.get(song);
+		if (downloadFile == null)
+		{
+			downloadFile = new DownloadFile(this, song, false);
+			downloadFileCache.put(song, downloadFile);
+		}
+		return downloadFile;
+	}
+
+	@Override
+	public synchronized void clear()
+	{
+		clear(true);
+	}
+
+	@Override
+	public synchronized void clearBackground()
+	{
+		if (currentDownloading != null && backgroundDownloadList.contains(currentDownloading))
+		{
 			currentDownloading.cancelDownload();
 			currentDownloading = null;
 		}
 		backgroundDownloadList.clear();
 	}
-	
-    @Override
-    public synchronized void clearIncomplete() {
-        reset();
-        Iterator<DownloadFile> iterator = downloadList.iterator();
 
-        while (iterator.hasNext()) {
-            DownloadFile downloadFile = iterator.next();
-            if (!downloadFile.isCompleteFileAvailable()) {
-                iterator.remove();
-            }
-        }
-
-        lifecycleSupport.serializeDownloadQueue();
-        updateJukeboxPlaylist();
-    }
-
-    @Override
-    public synchronized int size() {
-        return downloadList.size();
-    }
-
-    public synchronized void clear(boolean serialize) {
-        reset();
-        downloadList.clear();
-        revision++;
-        if (currentDownloading != null) {
-            currentDownloading.cancelDownload();
-            currentDownloading = null;
-        }
-        setCurrentPlaying(null);
-
-        if (serialize) {
-            lifecycleSupport.serializeDownloadQueue();
-        }
-        updateJukeboxPlaylist();
-		setNextPlaying();
-    }
-    
 	@Override
-    public synchronized void remove(int which) {
+	public synchronized void clearIncomplete()
+	{
+		reset();
+		Iterator<DownloadFile> iterator = downloadList.iterator();
+
+		while (iterator.hasNext())
+		{
+			DownloadFile downloadFile = iterator.next();
+			if (!downloadFile.isCompleteFileAvailable())
+			{
+				iterator.remove();
+			}
+		}
+
+		lifecycleSupport.serializeDownloadQueue();
+		updateJukeboxPlaylist();
+	}
+
+	@Override
+	public synchronized int size()
+	{
+		return downloadList.size();
+	}
+
+	public synchronized void clear(boolean serialize)
+	{
+		reset();
+		downloadList.clear();
+		revision++;
+		if (currentDownloading != null)
+		{
+			currentDownloading.cancelDownload();
+			currentDownloading = null;
+		}
+		setCurrentPlaying(null);
+
+		if (serialize)
+		{
+			lifecycleSupport.serializeDownloadQueue();
+		}
+		updateJukeboxPlaylist();
+		setNextPlaying();
+	}
+
+	@Override
+	public synchronized void remove(int which)
+	{
 		downloadList.remove(which);
 	}
-    
-    @Override
-    public synchronized void remove(DownloadFile downloadFile) {
-        if (downloadFile == currentDownloading) {
-            currentDownloading.cancelDownload();
-            currentDownloading = null;
-        }
-        if (downloadFile == currentPlaying) {
-            reset();
-            setCurrentPlaying(null);
-        }
-        downloadList.remove(downloadFile);
+
+	@Override
+	public synchronized void remove(DownloadFile downloadFile)
+	{
+		if (downloadFile == currentDownloading)
+		{
+			currentDownloading.cancelDownload();
+			currentDownloading = null;
+		}
+		if (downloadFile == currentPlaying)
+		{
+			reset();
+			setCurrentPlaying(null);
+		}
+		downloadList.remove(downloadFile);
 		backgroundDownloadList.remove(downloadFile);
-        revision++;
-        lifecycleSupport.serializeDownloadQueue();
-        updateJukeboxPlaylist();
-		if(downloadFile == nextPlaying) {
+		revision++;
+		lifecycleSupport.serializeDownloadQueue();
+		updateJukeboxPlaylist();
+		if (downloadFile == nextPlaying)
+		{
 			setNextPlaying();
 		}
-    }
+	}
 
-    @Override
-    public synchronized void delete(List<MusicDirectory.Entry> songs) {
-        for (MusicDirectory.Entry song : songs) {
-            forSong(song).delete();
-        }
-    }
+	@Override
+	public synchronized void delete(List<MusicDirectory.Entry> songs)
+	{
+		for (MusicDirectory.Entry song : songs)
+		{
+			forSong(song).delete();
+		}
+	}
 
-    @Override
-    public synchronized void unpin(List<MusicDirectory.Entry> songs) {
-        for (MusicDirectory.Entry song : songs) {
-            forSong(song).unpin();
-        }
-    }
+	@Override
+	public synchronized void unpin(List<MusicDirectory.Entry> songs)
+	{
+		for (MusicDirectory.Entry song : songs)
+		{
+			forSong(song).unpin();
+		}
+	}
 
-    synchronized void setCurrentPlaying(int currentPlayingIndex) {
-        try {
-            setCurrentPlaying(downloadList.get(currentPlayingIndex));
-        } catch (IndexOutOfBoundsException x) {
-            // Ignored
-        }
-    }
-    
-    synchronized void setCurrentPlaying(DownloadFile currentPlaying) {
-        this.currentPlaying = currentPlaying;
-        
-        if (currentPlaying != null) {
-        	Util.broadcastNewTrackInfo(this, currentPlaying.getSong());
-        	Util.broadcastA2dpMetaDataChange(this, getInstance());
-        } else {
-            Util.broadcastNewTrackInfo(this, null);
-            Util.broadcastA2dpMetaDataChange(this, null);
-        }
-        
-        updateRemoteControl();
+	synchronized void setCurrentPlaying(int currentPlayingIndex)
+	{
+		try
+		{
+			setCurrentPlaying(downloadList.get(currentPlayingIndex));
+		}
+		catch (IndexOutOfBoundsException x)
+		{
+			// Ignored
+		}
+	}
 
-        // Update widget
-        UltraSonicAppWidgetProvider4x1.getInstance().notifyChange(this, this, playerState == PlayerState.STARTED, false);
-        UltraSonicAppWidgetProvider4x2.getInstance().notifyChange(this, this, playerState == PlayerState.STARTED, true);
-        UltraSonicAppWidgetProvider4x3.getInstance().notifyChange(this, this, playerState == PlayerState.STARTED, false);
-        UltraSonicAppWidgetProvider4x4.getInstance().notifyChange(this, this, playerState == PlayerState.STARTED, false);
-        SubsonicTabActivity tabInstance = SubsonicTabActivity.getInstance();
+	synchronized void setCurrentPlaying(DownloadFile currentPlaying)
+	{
+		this.currentPlaying = currentPlaying;
 
-        if (currentPlaying != null) {
-            if (tabInstance != null) {
-        		int size = Util.getNotificationImageSize(this);
-            	
-            	tabInstance.nowPlayingImage = FileUtil.getAlbumArtBitmap(this, currentPlaying.getSong(), size, true);
-           		tabInstance.showNotification(handler, currentPlaying.getSong(), this, this.notification, this.playerState);
-            	tabInstance.showNowPlaying();
-            }
-        } else {
-            if (tabInstance != null) {
-            	tabInstance.nowPlayingImage = null;
-            	tabInstance.hidePlayingNotification(handler, this);
-            	tabInstance.hideNowPlaying();
-            }
-        }
-    }
-    
-    synchronized void setNextPlaying() {
+		if (currentPlaying != null)
+		{
+			Util.broadcastNewTrackInfo(this, currentPlaying.getSong());
+			Util.broadcastA2dpMetaDataChange(this, instance);
+		}
+		else
+		{
+			Util.broadcastNewTrackInfo(this, null);
+			Util.broadcastA2dpMetaDataChange(this, null);
+		}
+
+		updateRemoteControl();
+
+		// Update widget
+		UltraSonicAppWidgetProvider4x1.getInstance().notifyChange(this, this, playerState == PlayerState.STARTED, false);
+		UltraSonicAppWidgetProvider4x2.getInstance().notifyChange(this, this, playerState == PlayerState.STARTED, true);
+		UltraSonicAppWidgetProvider4x3.getInstance().notifyChange(this, this, playerState == PlayerState.STARTED, false);
+		UltraSonicAppWidgetProvider4x4.getInstance().notifyChange(this, this, playerState == PlayerState.STARTED, false);
+		SubsonicTabActivity tabInstance = SubsonicTabActivity.getInstance();
+
+		if (currentPlaying != null)
+		{
+			if (tabInstance != null)
+			{
+				int size = Util.getNotificationImageSize(this);
+
+				tabInstance.nowPlayingImage = FileUtil.getAlbumArtBitmap(this, currentPlaying.getSong(), size, true);
+				tabInstance.showNotification(handler, currentPlaying.getSong(), this, this.notification, this.playerState);
+				tabInstance.showNowPlaying();
+			}
+		}
+		else
+		{
+			if (tabInstance != null)
+			{
+				tabInstance.nowPlayingImage = null;
+				tabInstance.hidePlayingNotification(handler, this);
+				tabInstance.hideNowPlaying();
+			}
+		}
+	}
+
+	synchronized void setNextPlaying()
+	{
 		boolean gaplessPlayback = Util.getGaplessPlaybackPreference(DownloadServiceImpl.this);
 
-		if (!gaplessPlayback) {
+		if (!gaplessPlayback)
+		{
 			nextPlaying = null;
 			nextPlayerState = IDLE;
 			return;
 		}
 
 		int index = getCurrentPlayingIndex();
-		if (index != -1) {
-            switch (getRepeatMode()) {
-                case OFF:
-                    index = index + 1;
-                    break;
-                case ALL:
+
+		if (index != -1)
+		{
+			switch (getRepeatMode())
+			{
+				case OFF:
+					index += 1;
+					break;
+				case ALL:
 					index = (index + 1) % size();
-                    break;
-                case SINGLE:
-                    break;
-                default:
-                    break;
-            }
-        }
-		
+					break;
+				case SINGLE:
+					break;
+				default:
+					break;
+			}
+		}
+
 		nextSetup = false;
-		if (nextPlayingTask != null) {
+		if (nextPlayingTask != null)
+		{
 			nextPlayingTask.cancel();
 			nextPlayingTask = null;
 		}
 
-		if (index < size() && index != -1) {
+		if (index < size() && index != -1)
+		{
 			nextPlaying = downloadList.get(index);
 			nextPlayingTask = new CheckCompletionTask(nextPlaying);
 			nextPlayingTask.start();
-		} else {
+		}
+		else
+		{
 			nextPlaying = null;
 			setNextPlayerState(IDLE);
 		}
 	}
 
-    @Override
-    public synchronized int getCurrentPlayingIndex() {
-        return downloadList.indexOf(currentPlaying);
-    }
-
-    @Override
-    public DownloadFile getCurrentPlaying() {
-        return currentPlaying;
-    }
-
-    @Override
-    public DownloadFile getCurrentDownloading() {
-        return currentDownloading;
-    }
-    
 	@Override
-	public List<DownloadFile> getSongs() {
+	public synchronized int getCurrentPlayingIndex()
+	{
+		return downloadList.indexOf(currentPlaying);
+	}
+
+	@Override
+	public DownloadFile getCurrentPlaying()
+	{
+		return currentPlaying;
+	}
+
+	@Override
+	public DownloadFile getCurrentDownloading()
+	{
+		return currentDownloading;
+	}
+
+	@Override
+	public List<DownloadFile> getSongs()
+	{
 		return downloadList;
 	}
-	
+
 	@Override
-	public long getDownloadListDuration() {
+	public long getDownloadListDuration()
+	{
 		long totalDuration = 0;
-		
-		for (DownloadFile downloadFile : downloadList) {
+
+		for (DownloadFile downloadFile : downloadList)
+		{
 			Entry entry = downloadFile.getSong();
-			
-			if (!entry.isDirectory()) {
-				if (entry.getArtist() != null) {
+
+			if (!entry.isDirectory())
+			{
+				if (entry.getArtist() != null)
+				{
 					Integer duration = entry.getDuration();
 
-					if (duration != null) {
+					if (duration != null)
+					{
 						totalDuration += duration;
 					}
 				}
@@ -687,74 +818,96 @@ public class DownloadServiceImpl extends Service implements DownloadService {
 		return totalDuration;
 	}
 
-    @Override
-    public synchronized List<DownloadFile> getDownloads() {
+	@Override
+	public synchronized List<DownloadFile> getDownloads()
+	{
 		List<DownloadFile> temp = new ArrayList<DownloadFile>();
 		temp.addAll(downloadList);
 		temp.addAll(backgroundDownloadList);
-        return temp;
-    }
-    
+		return temp;
+	}
+
 	@Override
-	public List<DownloadFile> getBackgroundDownloads() {
+	public List<DownloadFile> getBackgroundDownloads()
+	{
 		return backgroundDownloadList;
 	}
 
-    /** Plays either the current song (resume) or the first/next one in queue. */
-    public synchronized void play()
-    {
-        int current = getCurrentPlayingIndex();
-        if (current == -1) {
-            play(0);
-        } else {
-            play(current);
-        }
-    }
+	/**
+	 * Plays either the current song (resume) or the first/next one in queue.
+	 */
+	public synchronized void play()
+	{
+		int current = getCurrentPlayingIndex();
+		if (current == -1)
+		{
+			play(0);
+		}
+		else
+		{
+			play(current);
+		}
+	}
 
-    @Override
-    public synchronized void play(int index) {
-        play(index, true);
-    }
+	@Override
+	public synchronized void play(int index)
+	{
+		play(index, true);
+	}
 
-    private synchronized void play(int index, boolean start) {
-        if (index < 0 || index >= size()) {
-        	resetPlayback();
-        } else {
-			if (nextPlayingTask != null) {
+	private synchronized void play(int index, boolean start)
+	{
+		if (index < 0 || index >= size())
+		{
+			resetPlayback();
+		}
+		else
+		{
+			if (nextPlayingTask != null)
+			{
 				nextPlayingTask.cancel();
 				nextPlayingTask = null;
 			}
-			
-            setCurrentPlaying(index);
-            
-            if (start) {
-                if (jukeboxEnabled) {
-                    jukeboxService.skip(getCurrentPlayingIndex(), 0);
-                    setPlayerState(STARTED);
-                } else {
-                    bufferAndPlay();
-                }
-            }
-            
+
+			setCurrentPlaying(index);
+
+			if (start)
+			{
+				if (jukeboxEnabled)
+				{
+					jukeboxService.skip(getCurrentPlayingIndex(), 0);
+					setPlayerState(STARTED);
+				}
+				else
+				{
+					bufferAndPlay();
+				}
+			}
+
 			checkDownloads();
 			setNextPlaying();
-        }
-    }
-    
-    private synchronized void resetPlayback() {
-        reset();
-        setCurrentPlaying(null);
+		}
+	}
+
+	private synchronized void resetPlayback()
+	{
+		reset();
+		setCurrentPlaying(null);
 		lifecycleSupport.serializeDownloadQueue();
-    }
-    
-    private synchronized void playNext(boolean start) {
+	}
+
+	private synchronized void playNext(boolean start)
+	{
 		// Swap the media players since nextMediaPlayer is ready to play
-		if (start) {
+		if (start)
+		{
 			//nextMediaPlayer.start();
-		} else {
+		}
+		else
+		{
 			Log.i(TAG, "nextMediaPlayer already playing");
 		}
-		
+
 		MediaPlayer tmp = mediaPlayer;
 		mediaPlayer = nextMediaPlayer;
 		nextMediaPlayer = tmp;
@@ -762,597 +915,756 @@ public class DownloadServiceImpl extends Service implements DownloadService {
 		setPlayerState(PlayerState.STARTED);
 		setupHandlers(currentPlaying, false);
 		setNextPlaying();
-		
+
 		// Proxy should not be being used here since the next player was already setup to play
-		if (proxy != null) {
+		if (proxy != null)
+		{
 			proxy.stop();
 			proxy = null;
 		}
 	}
 
-    /** Plays or resumes the playback, depending on the current player state. */
-    public synchronized void togglePlayPause() {
-        if (playerState == PAUSED || playerState == COMPLETED || playerState == STOPPED) {
-            start();
-        } else if (playerState == IDLE) {
-			autoPlayStart = true;
-        	play();
-        } else if (playerState == STARTED) {
-            pause();
-        }
-    }
-
-    @Override
-    public synchronized void seekTo(int position) {
-        try {
-            if (jukeboxEnabled) {
-                jukeboxService.skip(getCurrentPlayingIndex(), position / 1000);
-            } else {
-                mediaPlayer.seekTo(position);
-				cachedPosition = position;
-            }
-        } catch (Exception x) {
-            handleError(x);
-        }
-    }
-
-    @Override
-    public synchronized void previous() {
-        int index = getCurrentPlayingIndex();
-        if (index == -1) {
-            return;
-        }
-
-        // Restart song if played more than five seconds.
-        if (getPlayerPosition() > 5000 || index == 0) {
-            play(index);
-        } else {
-            play(index - 1);
-        }
-    }
-
-    @Override
-    public synchronized void next() {
-        int index = getCurrentPlayingIndex();
-        if (index != -1) {
-            play(index + 1);
-        }
-    }
-
-    private void onSongCompleted() {
-        int index = getCurrentPlayingIndex();
-        
-        if (currentPlaying != null) {
-        	final Entry song = currentPlaying.getSong();
-        	
-        	if (song != null && song.getBookmarkPosition() > 0 && Util.getShouldClearBookmark(this)) {
-        		MusicService musicService = MusicServiceFactory.getMusicService(DownloadServiceImpl.this);
-        		try {
-					musicService.deleteBookmark(song.getId(), DownloadServiceImpl.this, null);
-				} catch (Exception ignored) {
-
-				}
-        	}
-        }
-        
-        if (index != -1) {
-            switch (getRepeatMode()) {
-                case OFF:
-                	if (index + 1 < 0 || index + 1 >= size()) {
-                		if (Util.getShouldClearPlaylist(this)) {
-                			clear();
-                		}
-                		
-                		resetPlayback();
-                		break;
-                	}
-                	
-                    play(index + 1);
-                    break;
-                case ALL:
-                    play((index + 1) % size());
-                    break;
-                case SINGLE:
-                    play(index);
-                    break;
-                default:
-                    break;
-            }
-        }
-    }
-
-    @Override
-    public synchronized void pause() {
-        try {
-            if (playerState == STARTED) {
-                if (jukeboxEnabled) {
-                    jukeboxService.stop();
-                } else {
-                    mediaPlayer.pause();
-                }
-                setPlayerState(PAUSED);
-            }
-        } catch (Exception x) {
-            handleError(x);
-        }
-    }
-    
+	/**
+	 * Plays or resumes the playback, depending on the current player state.
+	 */
 	@Override
-	public synchronized void stop() {
-		try {
-			if (playerState == STARTED) {
-                if (jukeboxEnabled) {
-                    jukeboxService.stop();
-                } else {
-                    mediaPlayer.pause();
-                }
-                setPlayerState(STOPPED);
-            } else if(playerState == PAUSED) {
-				setPlayerState(STOPPED);
+	public synchronized void togglePlayPause()
+	{
+		if (playerState == PAUSED || playerState == COMPLETED || playerState == STOPPED)
+		{
+			start();
+		}
+		else if (playerState == IDLE)
+		{
+			autoPlayStart = true;
+			play();
+		}
+		else if (playerState == STARTED)
+		{
+			pause();
+		}
+	}
+
+	@Override
+	public synchronized void seekTo(int position)
+	{
+		try
+		{
+			if (jukeboxEnabled)
+			{
+				jukeboxService.skip(getCurrentPlayingIndex(), position / 1000);
 			}
-		} catch(Exception x) {
+			else
+			{
+				mediaPlayer.seekTo(position);
+				cachedPosition = position;
+			}
+		}
+		catch (Exception x)
+		{
 			handleError(x);
 		}
 	}
 
-    @Override
-    public synchronized void start() {
-        try {
-            if (jukeboxEnabled) {
-                jukeboxService.start();
-            } else {
-                mediaPlayer.start();
-			}
-            setPlayerState(STARTED);
-        } catch (Exception x) {
-            handleError(x);
-        }
-    }
+	@Override
+	public synchronized void previous()
+	{
+		int index = getCurrentPlayingIndex();
+		if (index == -1)
+		{
+			return;
+		}
 
-    @Override
-    public synchronized void reset() {
-        if (bufferTask != null) {
-            bufferTask.cancel();
-        }
-        try {
+		// Restart song if played more than five seconds.
+		if (getPlayerPosition() > 5000 || index == 0)
+		{
+			play(index);
+		}
+		else
+		{
+			play(index - 1);
+		}
+	}
+
+	@Override
+	public synchronized void next()
+	{
+		int index = getCurrentPlayingIndex();
+		if (index != -1)
+		{
+			play(index + 1);
+		}
+	}
+
+	private void onSongCompleted()
+	{
+		int index = getCurrentPlayingIndex();
+
+		if (currentPlaying != null)
+		{
+			final Entry song = currentPlaying.getSong();
+
+			if (song != null && song.getBookmarkPosition() > 0 && Util.getShouldClearBookmark(this))
+			{
+				MusicService musicService = MusicServiceFactory.getMusicService(DownloadServiceImpl.this);
+				try
+				{
+					musicService.deleteBookmark(song.getId(), DownloadServiceImpl.this, null);
+				}
+				catch (Exception ignored)
+				{
+
+				}
+			}
+		}
+
+		if (index != -1)
+		{
+			switch (getRepeatMode())
+			{
+				case OFF:
+					if (index + 1 < 0 || index + 1 >= size())
+					{
+						if (Util.getShouldClearPlaylist(this))
+						{
+							clear();
+						}
+
+						resetPlayback();
+						break;
+					}
+
+					play(index + 1);
+					break;
+				case ALL:
+					play((index + 1) % size());
+					break;
+				case SINGLE:
+					play(index);
+					break;
+				default:
+					break;
+			}
+		}
+	}
+
+	@Override
+	public synchronized void pause()
+	{
+		try
+		{
+			if (playerState == STARTED)
+			{
+				if (jukeboxEnabled)
+				{
+					jukeboxService.stop();
+				}
+				else
+				{
+					mediaPlayer.pause();
+				}
+				setPlayerState(PAUSED);
+			}
+		}
+		catch (Exception x)
+		{
+			handleError(x);
+		}
+	}
+
+	@Override
+	public synchronized void stop()
+	{
+		try
+		{
+			if (playerState == STARTED)
+			{
+				if (jukeboxEnabled)
+				{
+					jukeboxService.stop();
+				}
+				else
+				{
+					mediaPlayer.pause();
+				}
+				setPlayerState(STOPPED);
+			}
+			else if (playerState == PAUSED)
+			{
+				setPlayerState(STOPPED);
+			}
+		}
+		catch (Exception x)
+		{
+			handleError(x);
+		}
+	}
+
+	@Override
+	public synchronized void start()
+	{
+		try
+		{
+			if (jukeboxEnabled)
+			{
+				jukeboxService.start();
+			}
+			else
+			{
+				mediaPlayer.start();
+			}
+			setPlayerState(STARTED);
+		}
+		catch (Exception x)
+		{
+			handleError(x);
+		}
+	}
+
+	@Override
+	public synchronized void reset()
+	{
+		if (bufferTask != null)
+		{
+			bufferTask.cancel();
+		}
+		try
+		{
 			setPlayerState(IDLE);
 			mediaPlayer.setOnErrorListener(null);
 			mediaPlayer.setOnCompletionListener(null);
-            mediaPlayer.reset();
-        } catch (Exception x) {
-            handleError(x);
-        }
-    }
+			mediaPlayer.reset();
+		}
+		catch (Exception x)
+		{
+			handleError(x);
+		}
+	}
 
-    @Override
-    public synchronized int getPlayerPosition() {
-        try {
-            if (playerState == IDLE || playerState == DOWNLOADING || playerState == PREPARING) {
-                return 0;
-            }
-            if (jukeboxEnabled) {
-				return jukeboxService.getPositionSeconds() * 1000;
-            } else {
-                return cachedPosition;
-            }
-        } catch (Exception x) {
-            handleError(x);
-            return 0;
-        }
-    }
+	@Override
+	public synchronized int getPlayerPosition()
+	{
+		try
+		{
+			if (playerState == IDLE || playerState == DOWNLOADING || playerState == PREPARING)
+			{
+				return 0;
+			}
 
-    @Override
-    public synchronized int getPlayerDuration() {
-        if (currentPlaying != null) {
-            Integer duration = currentPlaying.getSong().getDuration();
-            if (duration != null) {
-                return duration * 1000;
-            }
-        }
-        if (playerState != IDLE && playerState != DOWNLOADING && playerState != PlayerState.PREPARING) {
-            try {
-                return mediaPlayer.getDuration();
-            } catch (Exception x) {
-                handleError(x);
-            }
-        }
-        return 0;
-    }
+			return jukeboxEnabled ? jukeboxService.getPositionSeconds() * 1000 : cachedPosition;
+		}
+		catch (Exception x)
+		{
+			handleError(x);
+			return 0;
+		}
+	}
 
-    @Override
-    public PlayerState getPlayerState() {
-        return playerState;
-    }
-    
-    synchronized void setPlayerState(PlayerState playerState) {
-        Log.i(TAG, this.playerState.name() + " -> " + playerState.name() + " (" + currentPlaying + ")");
+	@Override
+	public synchronized int getPlayerDuration()
+	{
+		if (currentPlaying != null)
+		{
+			Integer duration = currentPlaying.getSong().getDuration();
+			if (duration != null)
+			{
+				return duration * 1000;
+			}
+		}
+		if (playerState != IDLE && playerState != DOWNLOADING && playerState != PlayerState.PREPARING)
+		{
+			try
+			{
+				return mediaPlayer.getDuration();
+			}
+			catch (Exception x)
+			{
+				handleError(x);
+			}
+		}
+		return 0;
+	}
 
-        this.playerState = playerState;
-        
-        if (this.playerState == PAUSED) {
-            lifecycleSupport.serializeDownloadQueue();
-        }
-        
-        if (this.playerState == PlayerState.STARTED) {
-    		Util.requestAudioFocus(this);
-        }
-        
-        boolean showWhenPaused = (this.playerState == PlayerState.PAUSED && Util.isNotificationAlwaysEnabled(this));
-        boolean show = this.playerState == PlayerState.STARTED || showWhenPaused;
+	@Override
+	public PlayerState getPlayerState()
+	{
+		return playerState;
+	}
 
-        Util.broadcastPlaybackStatusChange(this, this.playerState);
-        Util.broadcastA2dpPlayStatusChange(this, this.playerState, getInstance());
+	synchronized void setPlayerState(PlayerState playerState)
+	{
+		Log.i(TAG, String.format("%s -> %s (%s)", this.playerState.name(), playerState.name(), currentPlaying));
 
-        // Set remote control
-        updateRemoteControl();
-        
-        // Update widget
-        UltraSonicAppWidgetProvider4x1.getInstance().notifyChange(this, this, this.playerState == PlayerState.STARTED, false);
-        UltraSonicAppWidgetProvider4x2.getInstance().notifyChange(this, this, this.playerState == PlayerState.STARTED, true);
-        UltraSonicAppWidgetProvider4x3.getInstance().notifyChange(this, this, this.playerState == PlayerState.STARTED, false);
-        UltraSonicAppWidgetProvider4x4.getInstance().notifyChange(this, this, this.playerState == PlayerState.STARTED, false);
-        SubsonicTabActivity tabInstance = SubsonicTabActivity.getInstance();
+		this.playerState = playerState;
+
+		if (this.playerState == PAUSED)
+		{
+			lifecycleSupport.serializeDownloadQueue();
+		}
+
+		if (this.playerState == PlayerState.STARTED)
+		{
+			Util.requestAudioFocus(this);
+		}
+
+		boolean showWhenPaused = (this.playerState != PlayerState.STOPPED && Util.isNotificationAlwaysEnabled(this));
+		boolean show = this.playerState == PlayerState.STARTED || showWhenPaused;
+
+		Util.broadcastPlaybackStatusChange(this, this.playerState);
+		Util.broadcastA2dpPlayStatusChange(this, this.playerState, instance);
+
+		// Set remote control
+		updateRemoteControl();
+
+		// Update widget
+		UltraSonicAppWidgetProvider4x1.getInstance().notifyChange(this, this, this.playerState == PlayerState.STARTED, false);
+		UltraSonicAppWidgetProvider4x2.getInstance().notifyChange(this, this, this.playerState == PlayerState.STARTED, true);
+		UltraSonicAppWidgetProvider4x3.getInstance().notifyChange(this, this, this.playerState == PlayerState.STARTED, false);
+		UltraSonicAppWidgetProvider4x4.getInstance().notifyChange(this, this, this.playerState == PlayerState.STARTED, false);
+		SubsonicTabActivity tabInstance = SubsonicTabActivity.getInstance();
 
 		Entry song = null;
 
-		if (currentPlaying != null) {
+		if (currentPlaying != null)
+		{
 			song = currentPlaying.getSong();
 		}
 
-       	if (show) {
-    		int size = Util.getNotificationImageSize(this);
-    		Bitmap bitmap = FileUtil.getAlbumArtBitmap(this, song , size, true);
+		if (show)
+		{
+			if (tabInstance != null)
+			{
+				if (SubsonicTabActivity.currentSong != song)
+				{
+					int size = Util.getNotificationImageSize(this);
+					tabInstance.nowPlayingImage = FileUtil.getAlbumArtBitmap(this, song, size, true);
+				}
 
-            if (tabInstance != null) {
-                tabInstance.nowPlayingImage = bitmap;
-                tabInstance.showNotification(handler, song, this, this.notification, this.playerState);
-                tabInstance.showNowPlaying();
-            }
-        } else {
-            if (tabInstance != null) {
-            	tabInstance.nowPlayingImage = null;
-            	tabInstance.hidePlayingNotification(handler, this);
-            	tabInstance.hideNowPlaying();
-            }
-       	}
-        
-        if (this.playerState == STARTED) {
-            scrobbler.scrobble(this, currentPlaying, false);
-        } else if (this.playerState == COMPLETED) {
-            scrobbler.scrobble(this, currentPlaying, true);
-        }
-        
-		if (playerState == STARTED && positionCache == null) {
+				// Only update notification is player state is one that will change the icon
+				if (this.playerState == PlayerState.STARTED || this.playerState == PlayerState.PAUSED)
+				{
+					tabInstance.showNotification(handler, song, this, this.notification, this.playerState);
+					tabInstance.showNowPlaying();
+				}
+			}
+		}
+		else
+		{
+			if (tabInstance != null)
+			{
+				tabInstance.nowPlayingImage = null;
+				tabInstance.hidePlayingNotification(handler, this);
+				tabInstance.hideNowPlaying();
+			}
+		}
+
+		if (this.playerState == STARTED)
+		{
+			scrobbler.scrobble(this, currentPlaying, false);
+		}
+		else if (this.playerState == COMPLETED)
+		{
+			scrobbler.scrobble(this, currentPlaying, true);
+		}
+
+		if (playerState == STARTED && positionCache == null)
+		{
 			positionCache = new PositionCache();
 			Thread thread = new Thread(positionCache);
 			thread.start();
-		} else if (playerState != STARTED && positionCache != null) {
+		}
+		else if (playerState != STARTED && positionCache != null)
+		{
 			positionCache.stop();
 			positionCache = null;
 		}
-    }
-    
-	private void setPlayerStateCompleted() {
-		Log.i(TAG, this.playerState.name() + " -> " + PlayerState.COMPLETED + " (" + currentPlaying + ")");
+	}
+
+	private void setPlayerStateCompleted()
+	{
+		Log.i(TAG, String.format("%s -> %s (%s)", this.playerState.name(), PlayerState.COMPLETED, currentPlaying));
 		this.playerState = PlayerState.COMPLETED;
-		
-		if(positionCache != null) {
+
+		if (positionCache != null)
+		{
 			positionCache.stop();
 			positionCache = null;
 		}
-		
+
 		scrobbler.scrobble(this, currentPlaying, true);
 	}
-    
-    private synchronized void setNextPlayerState(PlayerState playerState) {
-        Log.i(TAG, "Next: " + this.nextPlayerState.name() + " -> " + playerState.name() + " (" + nextPlaying + ")");
-        this.nextPlayerState = playerState;
-    }
 
-    @Override
-    public void setSuggestedPlaylistName(String name) {
-        this.suggestedPlaylistName = name;
-    }
-
-    @Override
-    public String getSuggestedPlaylistName() {
-        return suggestedPlaylistName;
-    }
+	private synchronized void setNextPlayerState(PlayerState playerState)
+	{
+		Log.i(TAG, String.format("Next: %s -> %s (%s)", this.nextPlayerState.name(), playerState.name(), nextPlaying));
+		this.nextPlayerState = playerState;
+	}
 
 	@Override
-    public boolean getEqualizerAvailable() {
-        return equalizerAvailable;
-    }
+	public void setSuggestedPlaylistName(String name)
+	{
+		this.suggestedPlaylistName = name;
+	}
 
-    @Override
-    public boolean getVisualizerAvailable() {
-        return visualizerAvailable;
-    }
+	@Override
+	public String getSuggestedPlaylistName()
+	{
+		return suggestedPlaylistName;
+	}
 
-    @Override
-    public EqualizerController getEqualizerController() {
-		if (equalizerAvailable && equalizerController == null) {
+	@Override
+	public boolean getEqualizerAvailable()
+	{
+		return equalizerAvailable;
+	}
+
+	@Override
+	public boolean getVisualizerAvailable()
+	{
+		return visualizerAvailable;
+	}
+
+	@Override
+	public EqualizerController getEqualizerController()
+	{
+		if (equalizerAvailable && equalizerController == null)
+		{
 			equalizerController = new EqualizerController(this, mediaPlayer);
-			if (!equalizerController.isAvailable()) {
+			if (!equalizerController.isAvailable())
+			{
 				equalizerController = null;
-			} else {
+			}
+			else
+			{
 				equalizerController.loadSettings();
 			}
 		}
-        return equalizerController;
-    }
+		return equalizerController;
+	}
 
-    @Override
-    public VisualizerController getVisualizerController() {
-		if (visualizerAvailable && visualizerController == null) {
+	@Override
+	public VisualizerController getVisualizerController()
+	{
+		if (visualizerAvailable && visualizerController == null)
+		{
 			visualizerController = new VisualizerController(mediaPlayer);
-			if (!visualizerController.isAvailable()) {
+			if (!visualizerController.isAvailable())
+			{
 				visualizerController = null;
 			}
 		}
-        return visualizerController;
-    }
-    
-    @Override
-    public boolean isJukeboxEnabled() {
-        return jukeboxEnabled;
-    }
+		return visualizerController;
+	}
 
-    @Override
-    public void setJukeboxEnabled(boolean jukeboxEnabled) {
-        this.jukeboxEnabled = jukeboxEnabled;
-        jukeboxService.setEnabled(jukeboxEnabled);
-        if (jukeboxEnabled) {
-            reset();
-            
-            // Cancel current download, if necessary.
-            if (currentDownloading != null) {
-                currentDownloading.cancelDownload();
-            }
-        }
-    }
+	@Override
+	public boolean isJukeboxEnabled()
+	{
+		return jukeboxEnabled;
+	}
 
-    @Override
-    public void adjustJukeboxVolume(boolean up) {
-        jukeboxService.adjustVolume(up);
-    }
+	@Override
+	public void setJukeboxEnabled(boolean jukeboxEnabled)
+	{
+		this.jukeboxEnabled = jukeboxEnabled;
+		jukeboxService.setEnabled(jukeboxEnabled);
+		if (jukeboxEnabled)
+		{
+			reset();
 
-    private void updateRemoteControl() {
-    	if (Util.isLockScreenEnabled(this)) {
-        	if (remoteControlClient == null) {
-        		Intent intent = new Intent(Intent.ACTION_MEDIA_BUTTON);
-        		intent.setComponent(new ComponentName(this.getPackageName(), MediaButtonIntentReceiver.class.getName()));
-        		remoteControlClient = new RemoteControlClient(PendingIntent.getBroadcast(this, 0, intent, 0));
-        		
-        		remoteControlClient.setTransportControlFlags(
-                		RemoteControlClient.FLAG_KEY_MEDIA_PLAY |
-                		RemoteControlClient.FLAG_KEY_MEDIA_PAUSE |
-                		RemoteControlClient.FLAG_KEY_MEDIA_NEXT |
-                		RemoteControlClient.FLAG_KEY_MEDIA_PREVIOUS |
-                		RemoteControlClient.FLAG_KEY_MEDIA_PLAY_PAUSE |
-                		RemoteControlClient.FLAG_KEY_MEDIA_STOP);
-        	}
-        	
-        	audioManager.registerRemoteControlClient(remoteControlClient);
-        		
-        	switch (playerState)
-        	{
-        	case STARTED:
-        		remoteControlClient.setPlaybackState(RemoteControlClient.PLAYSTATE_PLAYING);
-        		break;
-        	case PAUSED:
-        		remoteControlClient.setPlaybackState(RemoteControlClient.PLAYSTATE_PAUSED);
-        		break;
-        	case IDLE:
-        	case COMPLETED:
-        	case STOPPED:
-        		remoteControlClient.setPlaybackState(RemoteControlClient.PLAYSTATE_STOPPED);
-        		break;
-			case DOWNLOADING:
-			case PREPARED:
-			case PREPARING:
-			default:
-				break;
-        	}	
+			// Cancel current download, if necessary.
+			if (currentDownloading != null)
+			{
+				currentDownloading.cancelDownload();
+			}
+		}
+	}
 
-        	try {
-				if (currentPlaying != null) {
-                    Bitmap lockScreenBitmap;
-                    if (currentSong != currentPlaying.getSong()) {
+	@Override
+	public void adjustJukeboxVolume(boolean up)
+	{
+		jukeboxService.adjustVolume(up);
+	}
+
+	private void updateRemoteControl()
+	{
+		if (Util.isLockScreenEnabled(this))
+		{
+			if (remoteControlClient == null)
+			{
+				Intent intent = new Intent(Intent.ACTION_MEDIA_BUTTON);
+				intent.setComponent(new ComponentName(this.getPackageName(), MediaButtonIntentReceiver.class.getName()));
+				remoteControlClient = new RemoteControlClient(PendingIntent.getBroadcast(this, 0, intent, 0));
+
+				remoteControlClient.setTransportControlFlags(RemoteControlClient.FLAG_KEY_MEDIA_PLAY |
+						RemoteControlClient.FLAG_KEY_MEDIA_PAUSE |
+						RemoteControlClient.FLAG_KEY_MEDIA_NEXT |
+						RemoteControlClient.FLAG_KEY_MEDIA_PREVIOUS |
+						RemoteControlClient.FLAG_KEY_MEDIA_PLAY_PAUSE |
+						RemoteControlClient.FLAG_KEY_MEDIA_STOP);
+			}
+
+			audioManager.registerRemoteControlClient(remoteControlClient);
+
+			switch (playerState)
+			{
+				case STARTED:
+					remoteControlClient.setPlaybackState(RemoteControlClient.PLAYSTATE_PLAYING);
+					break;
+				case PAUSED:
+					remoteControlClient.setPlaybackState(RemoteControlClient.PLAYSTATE_PAUSED);
+					break;
+				case IDLE:
+				case COMPLETED:
+				case STOPPED:
+					remoteControlClient.setPlaybackState(RemoteControlClient.PLAYSTATE_STOPPED);
+					break;
+				case DOWNLOADING:
+				case PREPARED:
+				case PREPARING:
+				default:
+					break;
+			}
+
+			try
+			{
+				if (currentPlaying != null)
+				{
+					Bitmap lockScreenBitmap;
+					if (currentSong != currentPlaying.getSong())
+					{
 						currentSong = currentPlaying.getSong();
-                        lockScreenBitmap = FileUtil.getAlbumArtBitmap(this, currentSong, lockScreenBitmapSize, true);
-					} else {
+						lockScreenBitmap = FileUtil.getAlbumArtBitmap(this, currentSong, lockScreenBitmapSize, true);
+					}
+					else
+					{
 						return;
 					}
 
 					String artist = currentSong.getArtist();
 					String album = currentSong.getAlbum();
-					String title = artist + " - " + currentSong.getTitle();
+					String title = String.format("%s - %s", artist, currentSong.getTitle());
 					Integer duration = currentSong.getDuration();
 
 					// Update the remote controls
-					remoteControlClient
-							.editMetadata(true)
-							.putString(MediaMetadataRetriever.METADATA_KEY_TITLE, title)
-							.putString(MediaMetadataRetriever.METADATA_KEY_ARTIST, artist)
-							.putString(MediaMetadataRetriever.METADATA_KEY_ALBUM, album)
-							.apply();
-					
-					if (duration != null) {
-						remoteControlClient
-						.editMetadata(false)
-						.putLong(MediaMetadataRetriever.METADATA_KEY_DURATION, duration)
-						.apply();
+					remoteControlClient.editMetadata(true).putString(MediaMetadataRetriever.METADATA_KEY_TITLE, title).putString(MediaMetadataRetriever.METADATA_KEY_ARTIST, artist).putString(MediaMetadataRetriever.METADATA_KEY_ALBUM, album).apply();
+
+					if (duration != null)
+					{
+						remoteControlClient.editMetadata(false).putLong(MediaMetadataRetriever.METADATA_KEY_DURATION, duration).apply();
 					}
 
-                    remoteControlClient
-                            .editMetadata(false)
-                            .putBitmap(RemoteControlClient.MetadataEditor.BITMAP_KEY_ARTWORK, lockScreenBitmap)
-                            .apply();
+					remoteControlClient.editMetadata(false).putBitmap(RemoteControlClient.MetadataEditor.BITMAP_KEY_ARTWORK, lockScreenBitmap).apply();
 				}
 			}
-        	catch (Exception e) {
-        		Log.e(TAG, "Exception in setRemoteControl", e);
-        	}
-        }
-    }
-    
-    private synchronized void bufferAndPlay() {
-		if(playerState != PREPARED) {
+			catch (Exception e)
+			{
+				Log.e(TAG, "Exception in setRemoteControl", e);
+			}
+		}
+	}
+
+	private synchronized void bufferAndPlay()
+	{
+		if (playerState != PREPARED)
+		{
 			reset();
 
 			bufferTask = new BufferTask(currentPlaying, 0);
 			bufferTask.start();
-		} else {
+		}
+		else
+		{
 			doPlay(currentPlaying, 0, true);
 		}
-    }
+	}
 
-    private synchronized void doPlay(final DownloadFile downloadFile, final int position, final boolean start) {
-        try {
-            downloadFile.setPlaying(false);
-        	//downloadFile.setPlaying(true);
-            final File file = downloadFile.isCompleteFileAvailable() ? downloadFile.getCompleteFile() : downloadFile.getPartialFile();
-            boolean partial = file.equals(downloadFile.getPartialFile());
-            downloadFile.updateModificationDate();
-            
+	private synchronized void doPlay(final DownloadFile downloadFile, final int position, final boolean start)
+	{
+		try
+		{
+			downloadFile.setPlaying(false);
+			//downloadFile.setPlaying(true);
+			final File file = downloadFile.isCompleteFileAvailable() ? downloadFile.getCompleteFile() : downloadFile.getPartialFile();
+			boolean partial = file.equals(downloadFile.getPartialFile());
+			downloadFile.updateModificationDate();
+
 			mediaPlayer.setOnCompletionListener(null);
-            secondaryProgress = -1; // Ensure seeking in non StreamProxy playback works
+			secondaryProgress = -1; // Ensure seeking in non StreamProxy playback works
 			mediaPlayer.reset();
 			setPlayerState(IDLE);
 			mediaPlayer.setAudioStreamType(AudioManager.STREAM_MUSIC);
 			String dataSource = file.getPath();
-			
-			if (partial) {
-				if (proxy == null) {
+
+			if (partial)
+			{
+				if (proxy == null)
+				{
 					proxy = new StreamProxy(this);
 					proxy.start();
 				}
 
 				dataSource = String.format("http://127.0.0.1:%d/%s", proxy.getPort(), URLEncoder.encode(dataSource, Constants.UTF_8));
-				Log.i(TAG, "Data Source: " + dataSource);
-			} else if (proxy != null) {
+				Log.i(TAG, String.format("Data Source: %s", dataSource));
+			}
+			else if (proxy != null)
+			{
 				proxy.stop();
 				proxy = null;
 			}
-			
-            Log.i(TAG, "Preparing media player");
+
+			Log.i(TAG, "Preparing media player");
 			mediaPlayer.setDataSource(dataSource);
 			setPlayerState(PREPARING);
-                        
-            mediaPlayer.setOnBufferingUpdateListener(new MediaPlayer.OnBufferingUpdateListener() {
+
+			mediaPlayer.setOnBufferingUpdateListener(new MediaPlayer.OnBufferingUpdateListener()
+			{
 				@Override
-				public void onBufferingUpdate(MediaPlayer mp, int percent) {
-					if (percent == 100) {
+				public void onBufferingUpdate(MediaPlayer mp, int percent)
+				{
+					if (percent == 100)
+					{
 						mediaPlayer.setOnBufferingUpdateListener(null);
 					}
-					
+
 					SeekBar progressBar = DownloadActivity.getProgressBar();
 					MusicDirectory.Entry song = downloadFile.getSong();
-					
-					if (progressBar != null && song.getTranscodedContentType() == null && Util.getMaxBitRate(getApplicationContext()) == 0) {
-						secondaryProgress = (int) (((double)percent / (double)100) * progressBar.getMax());
+
+					if (progressBar != null && song.getTranscodedContentType() == null && Util.getMaxBitRate(getApplicationContext()) == 0)
+					{
+						secondaryProgress = (int) (((double) percent / (double) 100) * progressBar.getMax());
 						progressBar.setSecondaryProgress(secondaryProgress);
 					}
 				}
 			});
-                        
-            mediaPlayer.setOnPreparedListener(new MediaPlayer.OnPreparedListener() {
+
+			mediaPlayer.setOnPreparedListener(new MediaPlayer.OnPreparedListener()
+			{
 				@Override
-				public void onPrepared(MediaPlayer mp) {
-		            Log.i(TAG, "Media player prepared");
-					
+				public void onPrepared(MediaPlayer mp)
+				{
+					Log.i(TAG, "Media player prepared");
+
 					setPlayerState(PREPARED);
-					
+
 					SeekBar progressBar = DownloadActivity.getProgressBar();
-					
-					if (progressBar != null && downloadFile.isWorkDone()) {
+
+					if (progressBar != null && downloadFile.isWorkDone())
+					{
 						// Populate seek bar secondary progress if we have a complete file for consistency
 						DownloadActivity.getProgressBar().setSecondaryProgress(100 * progressBar.getMax());
 					}
-					
-					synchronized (DownloadServiceImpl.this) {
-						if (position != 0) {
-							Log.i(TAG, "Restarting player from position " + position);
+
+					synchronized (DownloadServiceImpl.this)
+					{
+						if (position != 0)
+						{
+							Log.i(TAG, String.format("Restarting player from position %d", position));
 							mediaPlayer.seekTo(position);
 						}
 						cachedPosition = position;
 
-						if (start) {
+						if (start)
+						{
 							mediaPlayer.start();
 							setPlayerState(STARTED);
-						} else {
+						}
+						else
+						{
 							setPlayerState(PAUSED);
 						}
 					}
-		            
-		            lifecycleSupport.serializeDownloadQueue();
+
+					lifecycleSupport.serializeDownloadQueue();
 				}
 			});
-            
+
 			setupHandlers(downloadFile, partial);
-            		
-            mediaPlayer.prepareAsync();
-        } catch (Exception x) {
-            handleError(x);
-        }
-    }
-    
-    private synchronized void setupNext(final DownloadFile downloadFile) {
-		try {
-            final File file = downloadFile.isCompleteFileAvailable() ? downloadFile.getCompleteFile() : downloadFile.getPartialFile();
-            
-            if (nextMediaPlayer != null) {
-            	nextMediaPlayer.setOnCompletionListener(null);
-            	nextMediaPlayer.release();
-            	nextMediaPlayer = null;
-            }
-            
-            nextMediaPlayer = new MediaPlayer();
+
+			mediaPlayer.prepareAsync();
+		}
+		catch (Exception x)
+		{
+			handleError(x);
+		}
+	}
+
+	private synchronized void setupNext(final DownloadFile downloadFile)
+	{
+		try
+		{
+			final File file = downloadFile.isCompleteFileAvailable() ? downloadFile.getCompleteFile() : downloadFile.getPartialFile();
+
+			if (nextMediaPlayer != null)
+			{
+				nextMediaPlayer.setOnCompletionListener(null);
+				nextMediaPlayer.release();
+				nextMediaPlayer = null;
+			}
+
+			nextMediaPlayer = new MediaPlayer();
 			nextMediaPlayer.setWakeMode(DownloadServiceImpl.this, PowerManager.PARTIAL_WAKE_LOCK);
-			
-			try {
-            	nextMediaPlayer.setAudioSessionId(mediaPlayer.getAudioSessionId());
-			} catch(Throwable e) {
+
+			try
+			{
+				nextMediaPlayer.setAudioSessionId(mediaPlayer.getAudioSessionId());
+			}
+			catch (Throwable e)
+			{
 				nextMediaPlayer.setAudioStreamType(AudioManager.STREAM_MUSIC);
 			}
-			
-            nextMediaPlayer.setDataSource(file.getPath());
-            setNextPlayerState(PREPARING);
-			
-			nextMediaPlayer.setOnPreparedListener(new MediaPlayer.OnPreparedListener() {
+
+			nextMediaPlayer.setDataSource(file.getPath());
+			setNextPlayerState(PREPARING);
+
+			nextMediaPlayer.setOnPreparedListener(new MediaPlayer.OnPreparedListener()
+			{
+				@Override
 				@SuppressLint("NewApi")
-				public void onPrepared(MediaPlayer mp) {
-					try {
+				public void onPrepared(MediaPlayer mp)
+				{
+					try
+					{
 						setNextPlayerState(PREPARED);
-						
-						if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN && (playerState == PlayerState.STARTED || playerState == PlayerState.PAUSED)) {
+
+						if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN && (playerState == PlayerState.STARTED || playerState == PlayerState.PAUSED))
+						{
 							mediaPlayer.setNextMediaPlayer(nextMediaPlayer);
 							nextSetup = true;
 						}
-					} catch (Exception x) {
+					}
+					catch (Exception x)
+					{
 						handleErrorNext(x);
 					}
 				}
 			});
-			
-			nextMediaPlayer.setOnErrorListener(new MediaPlayer.OnErrorListener() {
-				public boolean onError(MediaPlayer mediaPlayer, int what, int extra) {
-					Log.w(TAG, "Error on playing next " + "(" + what + ", " + extra + "): " + downloadFile);
+
+			nextMediaPlayer.setOnErrorListener(new MediaPlayer.OnErrorListener()
+			{
+				@Override
+				public boolean onError(MediaPlayer mediaPlayer, int what, int extra)
+				{
+					Log.w(TAG, String.format("Error on playing next (%d, %d): %s", what, extra, downloadFile));
 					return true;
 				}
 			});
-			
+
 			nextMediaPlayer.prepareAsync();
-        } catch (Exception x) {
-            handleErrorNext(x);
-        }
+		}
+		catch (Exception x)
+		{
+			handleErrorNext(x);
+		}
 	}
-	
-	private void setupHandlers(final DownloadFile downloadFile, final boolean isPartial) {
-		mediaPlayer.setOnErrorListener(new MediaPlayer.OnErrorListener() {
-			public boolean onError(MediaPlayer mediaPlayer, int what, int extra) {
-				Log.w(TAG, "Error on playing file " + "(" + what + ", " + extra + "): " + downloadFile);
+
+	private void setupHandlers(final DownloadFile downloadFile, final boolean isPartial)
+	{
+		mediaPlayer.setOnErrorListener(new MediaPlayer.OnErrorListener()
+		{
+			@Override
+			public boolean onError(MediaPlayer mediaPlayer, int what, int extra)
+			{
+				Log.w(TAG, String.format("Error on playing file (%d, %d): %s", what, extra, downloadFile));
 				int pos = cachedPosition;
 				reset();
 				downloadFile.setPlaying(false);
@@ -1361,308 +1673,385 @@ public class DownloadServiceImpl extends Service implements DownloadService {
 				return true;
 			}
 		});
-		
+
 		final int duration = downloadFile.getSong().getDuration() == null ? 0 : downloadFile.getSong().getDuration() * 1000;
 
-		mediaPlayer.setOnCompletionListener(new MediaPlayer.OnCompletionListener() {
+		mediaPlayer.setOnCompletionListener(new MediaPlayer.OnCompletionListener()
+		{
 			@Override
-			public void onCompletion(MediaPlayer mediaPlayer) {
+			public void onCompletion(MediaPlayer mediaPlayer)
+			{
 				// Acquire a temporary wakelock, since when we return from
 				// this callback the MediaPlayer will release its wakelock
 				// and allow the device to go to sleep.
 				wakeLock.acquire(60000);
-				
+
 				setPlayerStateCompleted();
 
 				int pos = cachedPosition;
 				Log.i(TAG, "Ending position " + pos + " of " + duration);
-				
-				if (!isPartial || (downloadFile.isWorkDone() && (Math.abs(duration - pos) < 10000))) {
-					if (nextPlaying != null && nextPlayerState == PlayerState.PREPARED) {
-						if (!nextSetup) {
+
+				if (!isPartial || (downloadFile.isWorkDone() && (Math.abs(duration - pos) < 10000)))
+				{
+					if (nextPlaying != null && nextPlayerState == PlayerState.PREPARED)
+					{
+						if (!nextSetup)
+						{
 							playNext(true);
-						} else {
+						}
+						else
+						{
 							nextSetup = false;
 							playNext(false);
 						}
-					} else {
+					}
+					else
+					{
 						onSongCompleted();
 					}
-					
+
 					return;
 				}
 
-				synchronized (DownloadServiceImpl.this) {
-					if (downloadFile.isWorkDone()) {
+				synchronized (DownloadServiceImpl.this)
+				{
+					if (downloadFile.isWorkDone())
+					{
 						// Complete was called early even though file is fully buffered
 						Log.i(TAG, "Requesting restart from " + pos + " of " + duration);
 						reset();
 						downloadFile.setPlaying(false);
 						doPlay(downloadFile, pos, true);
 						downloadFile.setPlaying(true);
-					} else {
+					}
+					else
+					{
 						Log.i(TAG, "Requesting restart from " + pos + " of " + duration);
 						reset();
 						bufferTask = new BufferTask(downloadFile, pos);
 						bufferTask.start();
-					} 
+					}
 				}
 			}
 		});
 	}
-	
+
 	@Override
-	public void setVolume(float volume) {
-		if (mediaPlayer != null) {
+	public void setVolume(float volume)
+	{
+		if (mediaPlayer != null)
+		{
 			mediaPlayer.setVolume(volume, volume);
 		}
 	}
-	
+
 	@Override
-	public synchronized void swap(boolean mainList, int from, int to) {
+	public synchronized void swap(boolean mainList, int from, int to)
+	{
 		List<DownloadFile> list = mainList ? downloadList : backgroundDownloadList;
 		int max = list.size();
-		if (to >= max) {
+
+		if (to >= max)
+		{
 			to = max - 1;
-		} else if(to < 0) {
+		}
+		else if (to < 0)
+		{
 			to = 0;
 		}
-		
+
 		int currentPlayingIndex = getCurrentPlayingIndex();
 		DownloadFile movedSong = list.remove(from);
 		list.add(to, movedSong);
 
-        if (jukeboxEnabled && mainList) {
+		if (jukeboxEnabled && mainList)
+		{
 			updateJukeboxPlaylist();
-		} else if(mainList && (movedSong == nextPlaying || (currentPlayingIndex + 1) == to)) {
+		}
+		else if (mainList && (movedSong == nextPlaying || (currentPlayingIndex + 1) == to))
+		{
 			// Moving next playing or moving a song to be next playing
 			setNextPlaying();
 		}
 	}
-    
-    private void handleError(Exception x) {
-        Log.w(TAG, "Media player error: " + x, x);
-        mediaPlayer.reset();
-        setPlayerState(IDLE);
-    }
-    
-    private void handleErrorNext(Exception x) {
+
+	private void handleError(Exception x)
+	{
+		Log.w(TAG, "Media player error: " + x, x);
+		mediaPlayer.reset();
+		setPlayerState(IDLE);
+	}
+
+	private void handleErrorNext(Exception x)
+	{
 		Log.w(TAG, "Next Media player error: " + x, x);
-        nextMediaPlayer.reset();
+		nextMediaPlayer.reset();
 		setNextPlayerState(IDLE);
 	}
 
-    protected synchronized void checkDownloads() {
-        if (!Util.isExternalStoragePresent() || !lifecycleSupport.isExternalStorageAvailable()) {
-            return;
-        }
+	protected synchronized void checkDownloads()
+	{
+		if (!Util.isExternalStoragePresent() || !lifecycleSupport.isExternalStorageAvailable())
+		{
+			return;
+		}
 
-        if (shufflePlay) {
-            checkShufflePlay();
-        }
+		if (shufflePlay)
+		{
+			checkShufflePlay();
+		}
 
-        if (jukeboxEnabled || !Util.isNetworkConnected(this)) {
-            return;
-        }
+		if (jukeboxEnabled || !Util.isNetworkConnected(this))
+		{
+			return;
+		}
 
-        if (downloadList.isEmpty() && backgroundDownloadList.isEmpty()) {
-            return;
-        }
+		if (downloadList.isEmpty() && backgroundDownloadList.isEmpty())
+		{
+			return;
+		}
 
-        // Need to download current playing?
-        if (currentPlaying != null && currentPlaying != currentDownloading && !currentPlaying.isWorkDone()) {
-            // Cancel current download, if necessary.
-            if (currentDownloading != null) {
-                currentDownloading.cancelDownload();
-            }
+		// Need to download current playing?
+		if (currentPlaying != null && currentPlaying != currentDownloading && !currentPlaying.isWorkDone())
+		{
+			// Cancel current download, if necessary.
+			if (currentDownloading != null)
+			{
+				currentDownloading.cancelDownload();
+			}
 
-            currentDownloading = currentPlaying;
-            currentDownloading.download();
-            cleanupCandidates.add(currentDownloading);
-        }
+			currentDownloading = currentPlaying;
+			currentDownloading.download();
+			cleanupCandidates.add(currentDownloading);
+		}
 
-        // Find a suitable target for download.
-        else if (currentDownloading == null || currentDownloading.isWorkDone() || currentDownloading.isFailed() && (!downloadList.isEmpty() || !backgroundDownloadList.isEmpty())) {
-            currentDownloading = null;
-            int n = size();
+		// Find a suitable target for download.
+		else
+		{
+			if (currentDownloading == null || currentDownloading.isWorkDone() || currentDownloading.isFailed() && (!downloadList.isEmpty() || !backgroundDownloadList.isEmpty()))
+			{
+				currentDownloading = null;
+				int n = size();
 
-            int preloaded = 0;
+				int preloaded = 0;
 
-            if(n != 0) {
-                int start = currentPlaying == null ? 0 : getCurrentPlayingIndex();
-                if (start == -1) {
-                    start = 0;
-                }
-                int i = start;
-                do {
-                    DownloadFile downloadFile = downloadList.get(i);
-                    if (!downloadFile.isWorkDone()) {
-                        if (downloadFile.shouldSave() || preloaded < Util.getPreloadCount(this)) {
-                            currentDownloading = downloadFile;
-                            currentDownloading.download();
-                            cleanupCandidates.add(currentDownloading);
-                            if (i == (start + 1)) {
-                                setNextPlayerState(DOWNLOADING);
-                            }
-                            break;
-                        }
-                    } else if (currentPlaying != downloadFile) {
-                        preloaded++;
-                    }
+				if (n != 0)
+				{
+					int start = currentPlaying == null ? 0 : getCurrentPlayingIndex();
+					if (start == -1)
+					{
+						start = 0;
+					}
+					int i = start;
+					do
+					{
+						DownloadFile downloadFile = downloadList.get(i);
+						if (!downloadFile.isWorkDone())
+						{
+							if (downloadFile.shouldSave() || preloaded < Util.getPreloadCount(this))
+							{
+								currentDownloading = downloadFile;
+								currentDownloading.download();
+								cleanupCandidates.add(currentDownloading);
+								if (i == (start + 1))
+								{
+									setNextPlayerState(DOWNLOADING);
+								}
+								break;
+							}
+						}
+						else if (currentPlaying != downloadFile)
+						{
+							preloaded++;
+						}
 
-                    i = (i + 1) % n;
-                } while (i != start);
-            }
+						i = (i + 1) % n;
+					} while (i != start);
+				}
 
-            if ((preloaded + 1 == n || preloaded >= Util.getPreloadCount(this) || downloadList.isEmpty()) && !backgroundDownloadList.isEmpty()) {
-                for (int i = 0; i < backgroundDownloadList.size(); i++) {
-                    DownloadFile downloadFile = backgroundDownloadList.get(i);
-                    if (downloadFile.isWorkDone() && (!downloadFile.shouldSave() || downloadFile.isSaved())) {
-                        // Don't need to keep list like active song list
-                        backgroundDownloadList.remove(i);
-						revision++;
-                        i--;
-                    } else {
-                        currentDownloading = downloadFile;
-                        currentDownloading.download();
-                        cleanupCandidates.add(currentDownloading);
-                        break;
-                    }
-                }
-            }
-        }
+				if ((preloaded + 1 == n || preloaded >= Util.getPreloadCount(this) || downloadList.isEmpty()) && !backgroundDownloadList.isEmpty())
+				{
+					for (int i = 0; i < backgroundDownloadList.size(); i++)
+					{
+						DownloadFile downloadFile = backgroundDownloadList.get(i);
+						if (downloadFile.isWorkDone() && (!downloadFile.shouldSave() || downloadFile.isSaved()))
+						{
+							// Don't need to keep list like active song list
+							backgroundDownloadList.remove(i);
+							revision++;
+							i--;
+						}
+						else
+						{
+							currentDownloading = downloadFile;
+							currentDownloading.download();
+							cleanupCandidates.add(currentDownloading);
+							break;
+						}
+					}
+				}
+			}
+		}
 
-        // Delete obsolete .partial and .complete files.
-        cleanup();
-    }
+		// Delete obsolete .partial and .complete files.
+		cleanup();
+	}
 
-    private synchronized void checkShufflePlay() {
-        // Get users desired random playlist size
- 		int listSize = Util.getMaxSongs(this);
-         boolean wasEmpty = downloadList.isEmpty();
+	private synchronized void checkShufflePlay()
+	{
+		// Get users desired random playlist size
+		int listSize = Util.getMaxSongs(this);
+		boolean wasEmpty = downloadList.isEmpty();
 
-         long revisionBefore = revision;
+		long revisionBefore = revision;
 
-         // First, ensure that list is at least 20 songs long.
-         int size = size();
-         if (size < listSize) {
-             for (MusicDirectory.Entry song : shufflePlayBuffer.get(listSize - size)) {
-                 DownloadFile downloadFile = new DownloadFile(this, song, false);
-                 downloadList.add(downloadFile);
-                 revision++;
-             }
-         }
+		// First, ensure that list is at least 20 songs long.
+		int size = size();
+		if (size < listSize)
+		{
+			for (MusicDirectory.Entry song : shufflePlayBuffer.get(listSize - size))
+			{
+				DownloadFile downloadFile = new DownloadFile(this, song, false);
+				downloadList.add(downloadFile);
+				revision++;
+			}
+		}
 
-         int currIndex = currentPlaying == null ? 0 : getCurrentPlayingIndex();
+		int currIndex = currentPlaying == null ? 0 : getCurrentPlayingIndex();
 
-         // Only shift playlist if playing song #5 or later.
-         if (currIndex > 4) {
-             int songsToShift = currIndex - 2;
-             for (MusicDirectory.Entry song : shufflePlayBuffer.get(songsToShift)) {
-                 downloadList.add(new DownloadFile(this, song, false));
-                 downloadList.get(0).cancelDownload();
-                 downloadList.remove(0);
-                 revision++;
-             }
-         }
+		// Only shift playlist if playing song #5 or later.
+		if (currIndex > 4)
+		{
+			int songsToShift = currIndex - 2;
+			for (MusicDirectory.Entry song : shufflePlayBuffer.get(songsToShift))
+			{
+				downloadList.add(new DownloadFile(this, song, false));
+				downloadList.get(0).cancelDownload();
+				downloadList.remove(0);
+				revision++;
+			}
+		}
 
-         if (revisionBefore != revision) {
-             updateJukeboxPlaylist();
-         }
+		if (revisionBefore != revision)
+		{
+			updateJukeboxPlaylist();
+		}
 
-         if (wasEmpty && !downloadList.isEmpty()) {
-             play(0);
-         }
-     }
+		if (wasEmpty && !downloadList.isEmpty())
+		{
+			play(0);
+		}
+	}
 
-    public long getDownloadListUpdateRevision() {
-        return revision;
-    }
+	@Override
+	public long getDownloadListUpdateRevision()
+	{
+		return revision;
+	}
 
-    private synchronized void cleanup() {
-        Iterator<DownloadFile> iterator = cleanupCandidates.iterator();
-        while (iterator.hasNext()) {
-            DownloadFile downloadFile = iterator.next();
-            if (downloadFile != currentPlaying && downloadFile != currentDownloading) {
-                if (downloadFile.cleanup()) {
-                    iterator.remove();
-                }
-            }
-        }
-    }
+	private synchronized void cleanup()
+	{
+		Iterator<DownloadFile> iterator = cleanupCandidates.iterator();
+		while (iterator.hasNext())
+		{
+			DownloadFile downloadFile = iterator.next();
+			if (downloadFile != currentPlaying && downloadFile != currentDownloading)
+			{
+				if (downloadFile.cleanup())
+				{
+					iterator.remove();
+				}
+			}
+		}
+	}
 
-    private class BufferTask extends CancellableTask {
-        private final DownloadFile downloadFile;
-        private final int position;
-        private final long expectedFileSize;
-        private final File partialFile;
+	private class BufferTask extends CancellableTask
+	{
+		private final DownloadFile downloadFile;
+		private final int position;
+		private final long expectedFileSize;
+		private final File partialFile;
 
-        public BufferTask(DownloadFile downloadFile, int position) {
-            this.downloadFile = downloadFile;
-            this.position = position;
-            partialFile = downloadFile.getPartialFile();
+		public BufferTask(DownloadFile downloadFile, int position)
+		{
+			this.downloadFile = downloadFile;
+			this.position = position;
+			partialFile = downloadFile.getPartialFile();
 
-            long bufferLength = Util.getBufferLength(DownloadServiceImpl.this);
+			long bufferLength = Util.getBufferLength(DownloadServiceImpl.this);
 
-            if(bufferLength == 0) {
+			if (bufferLength == 0)
+			{
 				// Set to seconds in a day, basically infinity
 				bufferLength = 86400L;
 			}
 
-            // Calculate roughly how many bytes BUFFER_LENGTH_SECONDS corresponds to.
-            int bitRate = downloadFile.getBitRate();
-            long byteCount = Math.max(100000, bitRate * 1024L / 8L * bufferLength);
+			// Calculate roughly how many bytes BUFFER_LENGTH_SECONDS corresponds to.
+			int bitRate = downloadFile.getBitRate();
+			long byteCount = Math.max(100000, bitRate * 1024L / 8L * bufferLength);
 
-            // Find out how large the file should grow before resuming playback.
+			// Find out how large the file should grow before resuming playback.
 			Log.i(TAG, "Buffering from position " + position + " and bitrate " + bitRate);
-            expectedFileSize = (position * bitRate / 8) + byteCount;
-        }
+			expectedFileSize = (position * bitRate / 8) + byteCount;
+		}
 
-        @Override
-        public void execute() {			
-            setPlayerState(DOWNLOADING);
+		@Override
+		public void execute()
+		{
+			setPlayerState(DOWNLOADING);
 
-            while (!bufferComplete() && !Util.isOffline(DownloadServiceImpl.this)) {
-                Util.sleepQuietly(1000L);
-                if (isCancelled()) {
-                    return;
-                }
-            }
-            doPlay(downloadFile, position, true);
-        }
+			while (!bufferComplete() && !Util.isOffline(DownloadServiceImpl.this))
+			{
+				Util.sleepQuietly(1000L);
+				if (isCancelled())
+				{
+					return;
+				}
+			}
+			doPlay(downloadFile, position, true);
+		}
 
-        private boolean bufferComplete() {
-            boolean completeFileAvailable = downloadFile.isWorkDone();
-            long size = partialFile.length();
+		private boolean bufferComplete()
+		{
+			boolean completeFileAvailable = downloadFile.isWorkDone();
+			long size = partialFile.length();
 
-            Log.i(TAG, "Buffering " + partialFile + " (" + size + "/" + expectedFileSize + ", " + completeFileAvailable + ")");
-            return completeFileAvailable || size >= expectedFileSize;
-        }
+			Log.i(TAG, String.format("Buffering %s (%d/%d, %s)", partialFile, size, expectedFileSize, completeFileAvailable));
+			return completeFileAvailable || size >= expectedFileSize;
+		}
 
-        @Override
-        public String toString() {
-            return "BufferTask (" + downloadFile + ")";
-        }
-    }
-    
-	private class PositionCache implements Runnable {
+		@Override
+		public String toString()
+		{
+			return String.format("BufferTask (%s)", downloadFile);
+		}
+	}
+
+	private class PositionCache implements Runnable
+	{
 		boolean isRunning = true;
 
-		public void stop() {
+		public void stop()
+		{
 			isRunning = false;
 		}
 
 		@Override
-		public void run() {
+		public void run()
+		{
 			// Stop checking position before the song reaches completion
-			while(isRunning) {
-				try {
-					if(mediaPlayer != null && playerState == STARTED) {
+			while (isRunning)
+			{
+				try
+				{
+					if (mediaPlayer != null && playerState == STARTED)
+					{
 						cachedPosition = mediaPlayer.getCurrentPosition();
 					}
 					Thread.sleep(200L);
 				}
-				catch(Exception e) {
+				catch (Exception e)
+				{
 					Log.w(TAG, "Crashed getting current position", e);
 					isRunning = false;
 					positionCache = null;
@@ -1670,57 +2059,65 @@ public class DownloadServiceImpl extends Service implements DownloadService {
 			}
 		}
 	}
-	
-	private class CheckCompletionTask extends CancellableTask {
-        private final DownloadFile downloadFile;
-        private final File partialFile;
 
-        public CheckCompletionTask(DownloadFile downloadFile) {
+	private class CheckCompletionTask extends CancellableTask
+	{
+		private final DownloadFile downloadFile;
+		private final File partialFile;
+
+		public CheckCompletionTask(DownloadFile downloadFile)
+		{
+			super();
 			setNextPlayerState(PlayerState.IDLE);
 
-            this.downloadFile = downloadFile;
+			this.downloadFile = downloadFile;
 
-            if (downloadFile != null) {
-				partialFile = downloadFile.getPartialFile();
-			} else {
-				partialFile = null;
-			}
-        }
+			partialFile = downloadFile != null ? downloadFile.getPartialFile() : null;
+		}
 
-        @Override
-        public void execute() {
-			if(downloadFile == null) {
+		@Override
+		public void execute()
+		{
+			if (downloadFile == null)
+			{
 				return;
 			}
-			
+
 			// Do an initial sleep so this prepare can't compete with main prepare
 			Util.sleepQuietly(5000L);
 
-            while (!bufferComplete()) {
-                Util.sleepQuietly(5000L);
+			while (!bufferComplete())
+			{
+				Util.sleepQuietly(5000L);
 
-                if (isCancelled()) {
-                    return;
-                }
-            }
-            
+				if (isCancelled())
+				{
+					return;
+				}
+			}
+
 			// Start the setup of the next media player
-			mediaPlayerHandler.post(new Runnable() {
-				public void run() {
+			mediaPlayerHandler.post(new Runnable()
+			{
+				@Override
+				public void run()
+				{
 					setupNext(downloadFile);
 				}
 			});
-        }
+		}
 
-        private boolean bufferComplete() {
-            boolean completeFileAvailable = downloadFile.isWorkDone();
-            Log.i(TAG, "Buffering next " + partialFile + " (" + partialFile.length() + ")");
-            return completeFileAvailable && (playerState == PlayerState.STARTED || playerState == PlayerState.PAUSED);
-        }
+		private boolean bufferComplete()
+		{
+			boolean completeFileAvailable = downloadFile.isWorkDone();
+			Log.i(TAG, String.format("Buffering next %s (%d)", partialFile, partialFile.length()));
+			return completeFileAvailable && (playerState == PlayerState.STARTED || playerState == PlayerState.PAUSED);
+		}
 
-        @Override
-        public String toString() {
-            return "CheckCompletionTask (" + downloadFile + ")";
-        }
-    }
+		@Override
+		public String toString()
+		{
+			return String.format("CheckCompletionTask (%s)", downloadFile);
+		}
+	}
 }

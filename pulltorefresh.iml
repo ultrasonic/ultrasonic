@@ -8,6 +8,9 @@
         <option name="MANIFEST_FILE_RELATIVE_PATH" value="/pulltorefresh/library/AndroidManifest.xml" />
         <option name="RES_FOLDER_RELATIVE_PATH" value="/pulltorefresh/library/res" />
         <option name="LIBRARY_PROJECT" value="true" />
+        <proGuardCfgFiles>
+          <file>file://D:/Data/Android/adt-bundle-windows/sdk/tools/proguard/proguard-android.txt</file>
+        </proGuardCfgFiles>
       </configuration>
     </facet>
   </component>
@@ -15,7 +18,7 @@
     <exclude-output />
     <content url="file://$MODULE_DIR$/pulltorefresh">
       <sourceFolder url="file://$MODULE_DIR$/pulltorefresh/library/src" isTestSource="false" />
-      <sourceFolder url="file://$MODULE_DIR$/pulltorefresh/library/gen" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/pulltorefresh/library/gen" isTestSource="false" generated="true" />
     </content>
     <orderEntry type="inheritedJdk" />
     <orderEntry type="sourceFolder" forTests="false" />

@@ -18,281 +18,369 @@
  */
 package com.thejoshwa.ultrasonic.androidapp.service;
 
-import java.io.File;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
-
 import android.content.Context;
 import android.net.wifi.WifiManager;
 import android.os.PowerManager;
 import android.util.Log;
 
 import com.thejoshwa.ultrasonic.androidapp.domain.MusicDirectory;
+import com.thejoshwa.ultrasonic.androidapp.util.CacheCleaner;
 import com.thejoshwa.ultrasonic.androidapp.util.CancellableTask;
 import com.thejoshwa.ultrasonic.androidapp.util.FileUtil;
 import com.thejoshwa.ultrasonic.androidapp.util.Util;
-import com.thejoshwa.ultrasonic.androidapp.util.CacheCleaner;
 
+import org.apache.http.Header;
 import org.apache.http.HttpResponse;
 import org.apache.http.HttpStatus;
-import org.apache.http.Header;
+
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
+import java.io.RandomAccessFile;
+
+import static android.content.Context.POWER_SERVICE;
+import static android.os.PowerManager.ON_AFTER_RELEASE;
+import static android.os.PowerManager.SCREEN_DIM_WAKE_LOCK;
 
 /**
  * @author Sindre Mehus
  * @version $Id$
  */
-public class DownloadFile {
+public class DownloadFile
+{
 
-    private static final String TAG = DownloadFile.class.getSimpleName();
-    private final Context context;
-    private final MusicDirectory.Entry song;
-    private final File partialFile;
-    private final File completeFile;
-    private final File saveFile;
+	private static final String TAG = DownloadFile.class.getSimpleName();
+	private final Context context;
+	private final MusicDirectory.Entry song;
+	private final File partialFile;
+	private final File completeFile;
+	private final File saveFile;
 
-    private final MediaStoreService mediaStoreService;
-    private CancellableTask downloadTask;
-    private boolean save;
-    private boolean failed;
-    private int bitRate;
-	private volatile boolean isPlaying = false;
-	private volatile boolean saveWhenDone = false;
-	private volatile boolean completeWhenDone = false;
-	private Integer contentLength = null;
+	private final MediaStoreService mediaStoreService;
+	private CancellableTask downloadTask;
+	private boolean save;
+	private boolean failed;
+	private int bitRate;
+	private volatile boolean isPlaying;
+	private volatile boolean saveWhenDone;
+	private volatile boolean completeWhenDone;
+	private Integer contentLength;
 
-    public DownloadFile(Context context, MusicDirectory.Entry song, boolean save) {
-        this.context = context;
-        this.song = song;
-        this.save = save;
-        
-        saveFile = FileUtil.getSongFile(context, song);
-        bitRate = Util.getMaxBitRate(context);
-        partialFile = new File(saveFile.getParent(), FileUtil.getBaseName(saveFile.getName()) + ".partial." + FileUtil.getExtension(saveFile.getName()));
-        completeFile = new File(saveFile.getParent(), FileUtil.getBaseName(saveFile.getName()) + ".complete." + FileUtil.getExtension(saveFile.getName()));
-        mediaStoreService = new MediaStoreService(context);
-    }
+	public DownloadFile(Context context, MusicDirectory.Entry song, boolean save)
+	{
+		super();
+		this.context = context;
+		this.song = song;
+		this.save = save;
 
-    public MusicDirectory.Entry getSong() {
-        return song;
-    }
+		saveFile = FileUtil.getSongFile(context, song);
+		bitRate = Util.getMaxBitRate(context);
+		partialFile = new File(saveFile.getParent(), String.format("%s.partial.%s", FileUtil.getBaseName(saveFile.getName()), FileUtil.getExtension(saveFile.getName())));
+		completeFile = new File(saveFile.getParent(), String.format("%s.complete.%s", FileUtil.getBaseName(saveFile.getName()), FileUtil.getExtension(saveFile.getName())));
+		mediaStoreService = new MediaStoreService(context);
+	}
 
-    /**
-     * Returns the effective bit rate.
-     */
-    public int getBitRate() {
-		if (!partialFile.exists()) {
+	public MusicDirectory.Entry getSong()
+	{
+		return song;
+	}
+
+	/**
+	 * Returns the effective bit rate.
+	 */
+	public int getBitRate()
+	{
+		if (!partialFile.exists())
+		{
 			bitRate = Util.getMaxBitRate(context);
 		}
-		
-        if (bitRate > 0) {
-            return bitRate;
-        }
-        
-        return song.getBitRate() == null ? 160 : song.getBitRate();
-    }
 
-	public Integer getContentLength() {
+		if (bitRate > 0)
+		{
+			return bitRate;
+		}
+
+		return song.getBitRate() == null ? 160 : song.getBitRate();
+	}
+
+	public Integer getContentLength()
+	{
 		return contentLength;
 	}
 
-    public synchronized void download() {
-        FileUtil.createDirectoryForParent(saveFile);
-        failed = false;
-        
-		if (!partialFile.exists()) {
+	public synchronized void download()
+	{
+		FileUtil.createDirectoryForParent(saveFile);
+		failed = false;
+
+		if (!partialFile.exists())
+		{
 			bitRate = Util.getMaxBitRate(context);
 		}
-		
-        downloadTask = new DownloadTask();
-        downloadTask.start();
-    }
 
-    public synchronized void cancelDownload() {
-        if (downloadTask != null) {
-            downloadTask.cancel();
-        }
-    }
+		downloadTask = new DownloadTask();
+		downloadTask.start();
+	}
 
-    public File getCompleteFile() {
-        if (saveFile.exists()) {
-            return saveFile;
-        }
+	public synchronized void cancelDownload()
+	{
+		if (downloadTask != null)
+		{
+			downloadTask.cancel();
+		}
+	}
 
-        if (completeFile.exists()) {
-            return completeFile;
-        }
+	public File getCompleteFile()
+	{
+		if (saveFile.exists())
+		{
+			return saveFile;
+		}
 
-        return saveFile;
-    }
+		if (completeFile.exists())
+		{
+			return completeFile;
+		}
 
-    public File getPartialFile() {
-        return partialFile;
-    }
+		return saveFile;
+	}
 
-    public boolean isSaved() {
-        return saveFile.exists();
-    }
+	public File getPartialFile()
+	{
+		return partialFile;
+	}
 
-    public synchronized boolean isCompleteFileAvailable() {
-        return saveFile.exists() || completeFile.exists();
-    }
+	public boolean isSaved()
+	{
+		return saveFile.exists();
+	}
 
-    public synchronized boolean isWorkDone() {
-        return saveFile.exists() || (completeFile.exists() && !save) || saveWhenDone || completeWhenDone;
-    }
+	public synchronized boolean isCompleteFileAvailable()
+	{
+		return saveFile.exists() || completeFile.exists();
+	}
 
-    public synchronized boolean isDownloading() {
-        return downloadTask != null && downloadTask.isRunning();
-    }
+	public synchronized boolean isWorkDone()
+	{
+		return saveFile.exists() || (completeFile.exists() && !save) || saveWhenDone || completeWhenDone;
+	}
 
-    public synchronized boolean isDownloadCancelled() {
-        return downloadTask != null && downloadTask.isCancelled();
-    }
+	public synchronized boolean isDownloading()
+	{
+		return downloadTask != null && downloadTask.isRunning();
+	}
 
-    public boolean shouldSave() {
-        return save;
-    }
+	public synchronized boolean isDownloadCancelled()
+	{
+		return downloadTask != null && downloadTask.isCancelled();
+	}
 
-    public boolean isFailed() {
-        return failed;
-    }
+	public boolean shouldSave()
+	{
+		return save;
+	}
 
-    public void delete() {
-        cancelDownload();
-        Util.delete(partialFile);
-        Util.delete(completeFile);
-        Util.delete(saveFile);
-        mediaStoreService.deleteFromMediaStore(this);
-    }
+	public boolean isFailed()
+	{
+		return failed;
+	}
 
-    public void unpin() {
-        if (saveFile.exists()) {
-            saveFile.renameTo(completeFile);
-        }
-    }
+	public void delete()
+	{
+		cancelDownload();
+		Util.delete(partialFile);
+		Util.delete(completeFile);
+		Util.delete(saveFile);
+		mediaStoreService.deleteFromMediaStore(this);
+	}
 
-    public boolean cleanup() {
-        boolean ok = true;
-        if (completeFile.exists() || saveFile.exists()) {
-            ok = Util.delete(partialFile);
-        }
-        if (saveFile.exists()) {
-            ok &= Util.delete(completeFile);
-        }
-        return ok;
-    }
+	public void unpin()
+	{
+		if (saveFile.exists())
+		{
+			saveFile.renameTo(completeFile);
+		}
+	}
 
-    // In support of LRU caching.
-    public void updateModificationDate() {
-        updateModificationDate(saveFile);
-        updateModificationDate(partialFile);
-        updateModificationDate(completeFile);
-    }
+	public boolean cleanup()
+	{
+		boolean ok = true;
 
-    private void updateModificationDate(File file) {
-        if (file.exists()) {
-            boolean ok = file.setLastModified(System.currentTimeMillis());
-            if (!ok) {
-                Log.w(TAG, "Failed to set last-modified date on " + file);
-            }
-        }
-    }
-	
-	public void setPlaying(boolean isPlaying) {
-		try {
-			if (saveWhenDone && !isPlaying) {
+		if (completeFile.exists() || saveFile.exists())
+		{
+			ok = Util.delete(partialFile);
+		}
+
+		if (saveFile.exists())
+		{
+			ok &= Util.delete(completeFile);
+		}
+
+		return ok;
+	}
+
+	// In support of LRU caching.
+	public void updateModificationDate()
+	{
+		updateModificationDate(saveFile);
+		updateModificationDate(partialFile);
+		updateModificationDate(completeFile);
+	}
+
+	private static void updateModificationDate(File file)
+	{
+		if (file.exists())
+		{
+			boolean ok = file.setLastModified(System.currentTimeMillis());
+
+			if (!ok)
+			{
+				Log.i(TAG, String.format("Failed to set last-modified date on %s, trying alternate method", file));
+
+				try
+				{
+					// Try alternate method to update last modified date to current time
+					// 	Found at https://code.google.com/p/android/issues/detail?id=18624
+					RandomAccessFile raf = new RandomAccessFile(file, "rw");
+					long length = raf.length();
+					raf.setLength(length + 1);
+					raf.setLength(length);
+					raf.close();
+				}
+				catch (Exception e)
+				{
+					Log.w(TAG, String.format("Failed to set last-modified date on %s", file));
+					e.printStackTrace();
+				}
+			}
+		}
+	}
+
+	public void setPlaying(boolean isPlaying)
+	{
+		try
+		{
+			if (saveWhenDone && !isPlaying)
+			{
 				Util.renameFile(completeFile, saveFile);
 				saveWhenDone = false;
-			} else if (completeWhenDone && !isPlaying) {
-				if (save) {
+			}
+			else if (completeWhenDone && !isPlaying)
+			{
+				if (save)
+				{
 					Util.renameFile(partialFile, saveFile);
-                    mediaStoreService.saveInMediaStore(DownloadFile.this);
-				} else {
+					mediaStoreService.saveInMediaStore(DownloadFile.this);
+				}
+				else
+				{
 					Util.renameFile(partialFile, completeFile);
 				}
-				
+
 				completeWhenDone = false;
 			}
-		} catch(IOException ex) {
-			Log.w(TAG, "Failed to rename file " + completeFile + " to " + saveFile);
 		}
-		
+		catch (IOException ex)
+		{
+			Log.w(TAG, String.format("Failed to rename file %s to %s", completeFile, saveFile));
+		}
+
 		this.isPlaying = isPlaying;
 	}
 
-    @Override
-    public String toString() {
-        return "DownloadFile (" + song + ")";
-    }
+	@Override
+	public String toString()
+	{
+		return String.format("DownloadFile (%s)", song);
+	}
 
-    private class DownloadTask extends CancellableTask {
+	private class DownloadTask extends CancellableTask
+	{
 
-        @Override
-        public void execute() {
+		@Override
+		public void execute()
+		{
 
-            InputStream in = null;
-            FileOutputStream out = null;
-            PowerManager.WakeLock wakeLock = null;
+			InputStream in = null;
+			FileOutputStream out = null;
+			PowerManager.WakeLock wakeLock = null;
 			WifiManager.WifiLock wifiLock = null;
-            
-			try {
-                if (Util.isScreenLitOnDownload(context)) {
-                    PowerManager pm = (PowerManager) context.getSystemService(Context.POWER_SERVICE);
-                    wakeLock = pm.newWakeLock(PowerManager.SCREEN_DIM_WAKE_LOCK | PowerManager.ON_AFTER_RELEASE, toString());
-                    wakeLock.acquire();
-                    Log.i(TAG, "Acquired wake lock " + wakeLock);
-                }
-				
+
+			try
+			{
+				if (Util.isScreenLitOnDownload(context))
+				{
+					PowerManager pm = (PowerManager) context.getSystemService(POWER_SERVICE);
+					wakeLock = pm.newWakeLock(SCREEN_DIM_WAKE_LOCK | ON_AFTER_RELEASE, toString());
+					wakeLock.acquire();
+					Log.i(TAG, String.format("Acquired wake lock %s", wakeLock));
+				}
+
 				wifiLock = Util.createWifiLock(context, toString());
 				wifiLock.acquire();
 
-                if (saveFile.exists()) {
-                    Log.i(TAG, saveFile + " already exists. Skipping.");
-                    return;
-                }
-                if (completeFile.exists()) {
-                    if (save) {
-						if (isPlaying) {
+				if (saveFile.exists())
+				{
+					Log.i(TAG, String.format("%s already exists. Skipping.", saveFile));
+					return;
+				}
+				if (completeFile.exists())
+				{
+					if (save)
+					{
+						if (isPlaying)
+						{
 							saveWhenDone = true;
-						} else {
+						}
+						else
+						{
 							Util.renameFile(completeFile, saveFile);
 						}
-                    } else {
-                        Log.i(TAG, completeFile + " already exists. Skipping.");
-                    }
-                    return;
-                }
+					}
+					else
+					{
+						Log.i(TAG, String.format("%s already exists. Skipping.", completeFile));
+					}
+					return;
+				}
 
-                MusicService musicService = MusicServiceFactory.getMusicService(context);
+				MusicService musicService = MusicServiceFactory.getMusicService(context);
 
 				// Some devices seem to throw error on partial file which doesn't exist
 				boolean compare;
-				
+
 				Integer duration = song.getDuration();
 				long fileLength = 0;
-				
-				if (!partialFile.exists()) {
+
+				if (!partialFile.exists())
+				{
 					fileLength = partialFile.length();
 				}
-				
-				try {
+
+				try
+				{
 					compare = (bitRate == 0) || (duration == null || duration == 0) || (fileLength == 0);
 					//(bitRate * song.getDuration() * 1000 / 8) > partialFile.length();
-				} catch(Exception e) {
+				}
+				catch (Exception e)
+				{
 					compare = true;
 				}
-				
-				if (compare) {
+
+				if (compare)
+				{
 					// Attempt partial HTTP GET, appending to the file if it exists.
 					HttpResponse response = musicService.getDownloadInputStream(context, song, partialFile.length(), bitRate, DownloadTask.this);
 					Header contentLengthHeader = response.getFirstHeader("Content-Length");
 
-					if	(contentLengthHeader != null) {
+					if (contentLengthHeader != null)
+					{
 						String contentLengthString = contentLengthHeader.getValue();
 
-						if (contentLengthString != null) {
+						if (contentLengthString != null)
+						{
 							Log.i(TAG, "Content Length: " + contentLengthString);
 							contentLength = Integer.parseInt(contentLengthString);
 						}
@@ -300,113 +388,144 @@ public class DownloadFile {
 
 					in = response.getEntity().getContent();
 					boolean partial = response.getStatusLine().getStatusCode() == HttpStatus.SC_PARTIAL_CONTENT;
-					
-					if (partial) {
-						Log.i(TAG, "Executed partial HTTP GET, skipping " + partialFile.length() + " bytes");
+
+					if (partial)
+					{
+						Log.i(TAG, String.format("Executed partial HTTP GET, skipping %d bytes", partialFile.length()));
 					}
 
 					out = new FileOutputStream(partialFile, partial);
 					long n = copy(in, out);
-					Log.i(TAG, "Downloaded " + n + " bytes to " + partialFile);
+					Log.i(TAG, String.format("Downloaded %d bytes to %s", n, partialFile));
 					out.flush();
 					out.close();
 
-					if (isCancelled()) {
-						throw new Exception("Download of '" + song + "' was cancelled");
+					if (isCancelled())
+					{
+						throw new Exception(String.format("Download of '%s' was cancelled", song));
 					}
 
 					downloadAndSaveCoverArt(musicService);
 				}
 
-				if (isPlaying) {
+				if (isPlaying)
+				{
 					completeWhenDone = true;
-				} else {
-					if (save) {
+				}
+				else
+				{
+					if (save)
+					{
 						Util.renameFile(partialFile, saveFile);
 						mediaStoreService.saveInMediaStore(DownloadFile.this);
-					} else {
+					}
+					else
+					{
 						Util.renameFile(partialFile, completeFile);
 					}
 				}
 
-            } catch (Exception x) {
-                Util.close(out);
-                Util.delete(completeFile);
-                Util.delete(saveFile);
-                if (!isCancelled()) {
-                    failed = true;
-                    Log.w(TAG, "Failed to download '" + song + "'.", x);
-                }
+			}
+			catch (Exception x)
+			{
+				Util.close(out);
+				Util.delete(completeFile);
+				Util.delete(saveFile);
+				if (!isCancelled())
+				{
+					failed = true;
+					Log.w(TAG, String.format("Failed to download '%s'.", song), x);
+				}
 
-            } finally {
-                Util.close(in);
-                Util.close(out);
-                if (wakeLock != null) {
-                    wakeLock.release();
-                    Log.i(TAG, "Released wake lock " + wakeLock);
-                }
-				if (wifiLock != null) {
+			}
+			finally
+			{
+				Util.close(in);
+				Util.close(out);
+				if (wakeLock != null)
+				{
+					wakeLock.release();
+					Log.i(TAG, String.format("Released wake lock %s", wakeLock));
+				}
+				if (wifiLock != null)
+				{
 					wifiLock.release();
 				}
-                new CacheCleaner(context, DownloadServiceImpl.getInstance()).cleanSpace();
-				if(DownloadServiceImpl.getInstance() != null) {
-					((DownloadServiceImpl)DownloadServiceImpl.getInstance()).checkDownloads();
+				new CacheCleaner(context, DownloadServiceImpl.getInstance()).cleanSpace();
+				if (DownloadServiceImpl.getInstance() != null)
+				{
+					((DownloadServiceImpl) DownloadServiceImpl.getInstance()).checkDownloads();
 				}
-            }
-        }
+			}
+		}
 
-        @Override
-        public String toString() {
-            return "DownloadTask (" + song + ")";
-        }
+		@Override
+		public String toString()
+		{
+			return String.format("DownloadTask (%s)", song);
+		}
 
-        private void downloadAndSaveCoverArt(MusicService musicService) throws Exception {
-            try {
-                if (song.getCoverArt() != null) {
-                	int size = Util.getMinDisplayMetric(context);
-                    musicService.getCoverArt(context, song, size, true, true, null);
-                }
-            } catch (Exception x) {
-                Log.e(TAG, "Failed to get cover art.", x);
-            }
-        }
+		private void downloadAndSaveCoverArt(MusicService musicService) throws Exception
+		{
+			try
+			{
+				if (song.getCoverArt() != null)
+				{
+					int size = Util.getMinDisplayMetric(context);
+					musicService.getCoverArt(context, song, size, true, true, null);
+				}
+			}
+			catch (Exception x)
+			{
+				Log.e(TAG, "Failed to get cover art.", x);
+			}
+		}
 
-        private long copy(final InputStream in, OutputStream out) throws IOException, InterruptedException {
+		private long copy(final InputStream in, OutputStream out) throws IOException
+		{
+			// Start a thread that will close the input stream if the task is
+			// cancelled, thus causing the copy() method to return.
+			new Thread()
+			{
+				@Override
+				public void run()
+				{
+					while (true)
+					{
+						Util.sleepQuietly(3000L);
 
-            // Start a thread that will close the input stream if the task is
-            // cancelled, thus causing the copy() method to return.
-            new Thread() {
-                @Override
-                public void run() {
-                    while (true) {
-                        Util.sleepQuietly(3000L);
-                        if (isCancelled()) {
-                            Util.close(in);
-                            return;
-                        }
-                        if (!isRunning()) {
-                            return;
-                        }
-                    }
-                }
-            }.start();
+						if (isCancelled())
+						{
+							Util.close(in);
+							return;
+						}
 
-            byte[] buffer = new byte[1024 * 16];
-            long count = 0;
-            int n;
-            long lastLog = System.currentTimeMillis();
+						if (!isRunning())
+						{
+							return;
+						}
+					}
+				}
+			}.start();
 
-            while (!isCancelled() && (n = in.read(buffer)) != -1) {
-                out.write(buffer, 0, n);
-                count += n;
+			byte[] buffer = new byte[1024 * 16];
+			long count = 0;
+			int n;
+			long lastLog = System.currentTimeMillis();
 
-                long now = System.currentTimeMillis();
-                if (now - lastLog > 3000L) {  // Only every so often.
-                    Log.i(TAG, "Downloaded " + Util.formatBytes(count) + " of " + song);
-                    lastLog = now;
-                }
-            }
-            return count;
-        }
-    }
+			while (!isCancelled() && (n = in.read(buffer)) != -1)
+			{
+				out.write(buffer, 0, n);
+				count += n;
+
+				long now = System.currentTimeMillis();
+				if (now - lastLog > 3000L)
+				{  // Only every so often.
+					Log.i(TAG, String.format("Downloaded %s of %s", Util.formatBytes(count), song));
+					lastLog = now;
+				}
+			}
+			return count;
+		}
+	}
 }

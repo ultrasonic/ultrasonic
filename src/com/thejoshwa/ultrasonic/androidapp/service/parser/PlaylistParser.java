@@ -19,9 +19,11 @@
 package com.thejoshwa.ultrasonic.androidapp.service.parser;
 
 import android.content.Context;
+
 import com.thejoshwa.ultrasonic.androidapp.R;
 import com.thejoshwa.ultrasonic.androidapp.domain.MusicDirectory;
 import com.thejoshwa.ultrasonic.androidapp.util.ProgressListener;
+
 import org.xmlpull.v1.XmlPullParser;
 
 import java.io.Reader;
@@ -29,34 +31,42 @@ import java.io.Reader;
 /**
  * @author Sindre Mehus
  */
-public class PlaylistParser extends MusicDirectoryEntryParser {
+public class PlaylistParser extends MusicDirectoryEntryParser
+{
 
-    public PlaylistParser(Context context) {
-        super(context);
-    }
+	public PlaylistParser(Context context)
+	{
+		super(context);
+	}
 
-    public MusicDirectory parse(Reader reader, ProgressListener progressListener) throws Exception {
-        updateProgress(progressListener, R.string.parser_reading);
-        init(reader);
+	public MusicDirectory parse(Reader reader, ProgressListener progressListener) throws Exception
+	{
+		updateProgress(progressListener, R.string.parser_reading);
+		init(reader);
 
-        MusicDirectory dir = new MusicDirectory();
-        int eventType;
-        do {
-            eventType = nextParseEvent();
-            if (eventType == XmlPullParser.START_TAG) {
-                String name = getElementName();
-                if ("entry".equals(name)) {
-                    dir.addChild(parseEntry("", false, 0));
-                } else if ("error".equals(name)) {
-                    handleError();
-                }
-            }
-        } while (eventType != XmlPullParser.END_DOCUMENT);
+		MusicDirectory dir = new MusicDirectory();
+		int eventType;
+		do
+		{
+			eventType = nextParseEvent();
+			if (eventType == XmlPullParser.START_TAG)
+			{
+				String name = getElementName();
+				if ("entry".equals(name))
+				{
+					dir.addChild(parseEntry("", false, 0));
+				}
+				else if ("error".equals(name))
+				{
+					handleError();
+				}
+			}
+		} while (eventType != XmlPullParser.END_DOCUMENT);
 
-        validate();
-        updateProgress(progressListener, R.string.parser_reading_done);
+		validate();
+		updateProgress(progressListener, R.string.parser_reading_done);
 
-        return dir;
-    }
+		return dir;
+	}
 
 }

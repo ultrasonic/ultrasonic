@@ -23,15 +23,17 @@ import android.os.Binder;
 /**
  * @author Sindre Mehus
  */
-public class SimpleServiceBinder<S> extends Binder {
+public class SimpleServiceBinder<S> extends Binder
+{
+	private final S service;
 
-    private final S service;
+	public SimpleServiceBinder(S service)
+	{
+		this.service = service;
+	}
 
-    public SimpleServiceBinder(S service) {
-        this.service = service;
-    }
-
-    public S getService() {
-        return service;
-    }
+	public S getService()
+	{
+		return service;
+	}
 }

@@ -5,8 +5,8 @@
 
     <ImageView
         a:id="@+id/select_album_art"
-        a:layout_width="120dip"
-        a:layout_height="120dip"
+        a:layout_width="160dip"
+        a:layout_height="160dip"
         a:layout_alignParentLeft="true"
         a:layout_alignParentTop="true"
         a:layout_marginRight="10dip"

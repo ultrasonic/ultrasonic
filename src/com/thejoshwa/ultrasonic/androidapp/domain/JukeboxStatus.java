@@ -22,42 +22,51 @@ package com.thejoshwa.ultrasonic.androidapp.domain;
  * @author Sindre Mehus
  * @version $Id$
  */
-public class JukeboxStatus {
+public class JukeboxStatus
+{
 
-    private Integer positionSeconds;
-    private Integer currentPlayingIndex;
-    private Float gain;
-    private boolean playing;
+	private Integer positionSeconds;
+	private Integer currentPlayingIndex;
+	private Float gain;
+	private boolean playing;
 
-    public Integer getPositionSeconds() {
-        return positionSeconds;
-    }
+	public Integer getPositionSeconds()
+	{
+		return positionSeconds;
+	}
 
-    public void setPositionSeconds(Integer positionSeconds) {
-        this.positionSeconds = positionSeconds;
-    }
+	public void setPositionSeconds(Integer positionSeconds)
+	{
+		this.positionSeconds = positionSeconds;
+	}
 
-    public Integer getCurrentPlayingIndex() {
-        return currentPlayingIndex;
-    }
+	public Integer getCurrentPlayingIndex()
+	{
+		return currentPlayingIndex;
+	}
 
-    public void setCurrentIndex(Integer currentPlayingIndex) {
-        this.currentPlayingIndex = currentPlayingIndex;
-    }
+	public void setCurrentIndex(Integer currentPlayingIndex)
+	{
+		this.currentPlayingIndex = currentPlayingIndex;
+	}
 
-    public boolean isPlaying() {
-        return playing;
-    }
+	public boolean isPlaying()
+	{
+		return playing;
+	}
 
-    public void setPlaying(boolean playing) {
-        this.playing = playing;
-    }
+	public void setPlaying(boolean playing)
+	{
+		this.playing = playing;
+	}
 
-    public Float getGain() {
-        return gain;
-    }
+	public Float getGain()
+	{
+		return gain;
+	}
 
-    public void setGain(float gain) {
-        this.gain = gain;
-    }
+	public void setGain(float gain)
+	{
+		this.gain = gain;
+	}
 }

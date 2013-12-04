@@ -28,70 +28,89 @@ import android.util.Log;
  * @author Sindre Mehus
  * @version $Id$
  */
-public class VisualizerController {
+public class VisualizerController
+{
 
-    private static final String TAG = VisualizerController.class.getSimpleName();
-    private static final int PREFERRED_CAPTURE_SIZE = 128; // Must be a power of two.
+	private static final String TAG = VisualizerController.class.getSimpleName();
+	private static final int PREFERRED_CAPTURE_SIZE = 128; // Must be a power of two.
 
-    private Visualizer visualizer;
+	private Visualizer visualizer;
 	private boolean released = false;
 	private int audioSessionId = 0;
 
-    // Class initialization fails when this throws an exception.
-    static {
-        try {
-            Class.forName("android.media.audiofx.Visualizer");
-        } catch (Exception ex) {
-            throw new RuntimeException(ex);
-        }
-    }
+	// Class initialization fails when this throws an exception.
+	static
+	{
+		try
+		{
+			Class.forName("android.media.audiofx.Visualizer");
+		}
+		catch (Exception ex)
+		{
+			throw new RuntimeException(ex);
+		}
+	}
 
-    /**
-     * Throws an exception if the {@link Visualizer} class is not available.
-     */
-    public static void checkAvailable() throws Throwable {
-        // Calling here forces class initialization.
-    }
+	/**
+	 * Throws an exception if the {@link Visualizer} class is not available.
+	 */
+	public static void checkAvailable() throws Throwable
+	{
+		// Calling here forces class initialization.
+	}
 
-    public VisualizerController(MediaPlayer mediaPlayer) {
-        try {
+	public VisualizerController(MediaPlayer mediaPlayer)
+	{
+		try
+		{
 			audioSessionId = mediaPlayer.getAudioSessionId();
-            visualizer = new Visualizer(audioSessionId);
-        } catch (Throwable x) {
-            Log.w(TAG, "Failed to create visualizer.", x);
-        }
+			visualizer = new Visualizer(audioSessionId);
+		}
+		catch (Throwable x)
+		{
+			Log.w(TAG, "Failed to create visualizer.", x);
+		}
 
-        if (visualizer != null) {
-            int[] captureSizeRange = Visualizer.getCaptureSizeRange();
-            int captureSize = Math.max(PREFERRED_CAPTURE_SIZE, captureSizeRange[0]);
-            captureSize = Math.min(captureSize, captureSizeRange[1]);
-            visualizer.setCaptureSize(captureSize);
-        }
-    }
+		if (visualizer != null)
+		{
+			int[] captureSizeRange = Visualizer.getCaptureSizeRange();
+			int captureSize = Math.max(PREFERRED_CAPTURE_SIZE, captureSizeRange[0]);
+			captureSize = Math.min(captureSize, captureSizeRange[1]);
+			visualizer.setCaptureSize(captureSize);
+		}
+	}
 
-    public boolean isAvailable() {
-        return visualizer != null;
-    }
+	public boolean isAvailable()
+	{
+		return visualizer != null;
+	}
 
-    public void release() {
-        if (isAvailable()) {
-            visualizer.release();
+	public void release()
+	{
+		if (isAvailable())
+		{
+			visualizer.release();
 			released = true;
-        }
-    }
+		}
+	}
 
-    public Visualizer getVisualizer() {
-		if (released) {
+	public Visualizer getVisualizer()
+	{
+		if (released)
+		{
 			released = false;
-			
-			try {
+
+			try
+			{
 				visualizer = new Visualizer(audioSessionId);
-			} catch (Throwable x) {
+			}
+			catch (Throwable x)
+			{
 				visualizer = null;
 				Log.w(TAG, "Failed to create visualizer.", x);
 			}
 		}
 
-        return visualizer;
-    }
+		return visualizer;
+	}
 }

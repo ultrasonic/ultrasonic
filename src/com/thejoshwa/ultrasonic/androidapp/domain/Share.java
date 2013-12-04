@@ -10,115 +10,153 @@ import java.util.Locale;
 
 import com.thejoshwa.ultrasonic.androidapp.domain.MusicDirectory.Entry;
 
-public class Share implements Serializable {
+public class Share implements Serializable
+{
 	private static final long serialVersionUID = 1487561657691009668L;
 	private String id;
-    private String url;
-    private String description;
-    private String username;
-    private Date created;
-    private Date lastVisited;
-    private Date expires;
-    private Long visitCount;
-    private List<Entry> entries;
-    
-    public Share() {
-    	entries = new ArrayList<Entry>();
-    }
-	
-    public String getId() {
-        return id;
-    }
+	private String url;
+	private String description;
+	private String username;
+	private Date created;
+	private Date lastVisited;
+	private Date expires;
+	private Long visitCount;
+	private List<Entry> entries;
 
-    public void setId(String id) {
-        this.id = id;
-    }
-    
-    public String getUrl() {
-        return url;
-    }
+	public Share()
+	{
+		entries = new ArrayList<Entry>();
+	}
 
-    public void setUrl(String url) {
-        this.url = url;
-    }
-    
-    public String getDescription() {
-        return description;
-    }
+	public String getId()
+	{
+		return id;
+	}
 
-    public void setDescription(String description) {
-        this.description = description;
-    }
-    
-    public String getUsername() {
-        return username;
-    }
+	public void setId(String id)
+	{
+		this.id = id;
+	}
 
-    public void setUsername(String username) {
-        this.username = username;
-    }
-    
-    public Date getCreated() {
-        return created;
-    }
+	public String getUrl()
+	{
+		return url;
+	}
 
-    public void setCreated(String created) {
-    	if (created != null) {
-    		try {
+	public void setUrl(String url)
+	{
+		this.url = url;
+	}
+
+	public String getDescription()
+	{
+		return description;
+	}
+
+	public void setDescription(String description)
+	{
+		this.description = description;
+	}
+
+	public String getUsername()
+	{
+		return username;
+	}
+
+	public void setUsername(String username)
+	{
+		this.username = username;
+	}
+
+	public Date getCreated()
+	{
+		return created;
+	}
+
+	public void setCreated(String created)
+	{
+		if (created != null)
+		{
+			try
+			{
 				this.created = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss", Locale.ENGLISH).parse(created);
-			} catch (ParseException e) { 
+			}
+			catch (ParseException e)
+			{
 				this.created = null;
 			}
-    	} else {
-    		this.created = null;
-    	}
-    }
-    
-    public Date getLastVisited() {
-        return lastVisited;
-    }
+		}
+		else
+		{
+			this.created = null;
+		}
+	}
 
-    public void setLastVisited(String lastVisited) {
-    	if (lastVisited != null) {
-    		try {
+	public Date getLastVisited()
+	{
+		return lastVisited;
+	}
+
+	public void setLastVisited(String lastVisited)
+	{
+		if (lastVisited != null)
+		{
+			try
+			{
 				this.lastVisited = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss", Locale.ENGLISH).parse(lastVisited);
-			} catch (ParseException e) { 
+			}
+			catch (ParseException e)
+			{
 				this.lastVisited = null;
 			}
-    	} else {
-    		this.lastVisited = null;
-    	}
-    }
-    
-    public Date getExpires() {
-        return expires;
-    }
+		}
+		else
+		{
+			this.lastVisited = null;
+		}
+	}
 
-    public void setExpires(String expires) {
-    	if (expires != null) {
-    		try {
+	public Date getExpires()
+	{
+		return expires;
+	}
+
+	public void setExpires(String expires)
+	{
+		if (expires != null)
+		{
+			try
+			{
 				this.expires = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss", Locale.ENGLISH).parse(expires);
-			} catch (ParseException e) { 
+			}
+			catch (ParseException e)
+			{
 				this.expires = null;
 			}
-    	} else {
-    		this.expires = null;
-    	}
-    }
+		}
+		else
+		{
+			this.expires = null;
+		}
+	}
 
-    public Long getVisitCount() {
-    	return visitCount;
-    }
-    
-    public void setVisitCount(Long visitCount) {
-    	this.visitCount = visitCount;
-    }
-    
-    public List<Entry> getEntries() {
-    	return this.entries;
-    }
-    
-    public void addEntry(Entry entry) {
-    	entries.add(entry);
-    }
- }
+	public Long getVisitCount()
+	{
+		return visitCount;
+	}
+
+	public void setVisitCount(Long visitCount)
+	{
+		this.visitCount = visitCount;
+	}
+
+	public List<Entry> getEntries()
+	{
+		return this.entries;
+	}
+
+	public void addEntry(Entry entry)
+	{
+		entries.add(entry);
+	}
+}

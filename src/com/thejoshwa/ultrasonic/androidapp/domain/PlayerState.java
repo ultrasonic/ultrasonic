@@ -22,13 +22,14 @@ package com.thejoshwa.ultrasonic.androidapp.domain;
  * @author Sindre Mehus
  * @version $Id$
  */
-public enum PlayerState {
-    IDLE,
-    DOWNLOADING,
-    PREPARING,
-    PREPARED,
-    STARTED,
-    STOPPED,
-    PAUSED,
-    COMPLETED
+public enum PlayerState
+{
+	IDLE,
+	DOWNLOADING,
+	PREPARING,
+	PREPARED,
+	STARTED,
+	STOPPED,
+	PAUSED,
+	COMPLETED
 }

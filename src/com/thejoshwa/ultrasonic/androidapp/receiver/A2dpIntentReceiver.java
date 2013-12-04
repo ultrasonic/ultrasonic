@@ -1,32 +1,38 @@
 package com.thejoshwa.ultrasonic.androidapp.receiver;
 
-import com.thejoshwa.ultrasonic.androidapp.domain.MusicDirectory.Entry;
-import com.thejoshwa.ultrasonic.androidapp.service.DownloadService;
-import com.thejoshwa.ultrasonic.androidapp.service.DownloadServiceImpl;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 
-public class A2dpIntentReceiver extends BroadcastReceiver {
+import com.thejoshwa.ultrasonic.androidapp.domain.MusicDirectory.Entry;
+import com.thejoshwa.ultrasonic.androidapp.service.DownloadService;
+import com.thejoshwa.ultrasonic.androidapp.service.DownloadServiceImpl;
+
+public class A2dpIntentReceiver extends BroadcastReceiver
+{
 
 	private static final String PLAYSTATUS_RESPONSE = "com.android.music.playstatusresponse";
 
 	@Override
-	public void onReceive(Context context, Intent intent) {
+	public void onReceive(Context context, Intent intent)
+	{
 
 		DownloadService downloadService = DownloadServiceImpl.getInstance();
 
-		if (downloadService == null) {
+		if (downloadService == null)
+		{
 			return;
 		}
 
-		if (downloadService.getCurrentPlaying() == null) {
+		if (downloadService.getCurrentPlaying() == null)
+		{
 			return;
 		}
 
 		Entry song = downloadService.getCurrentPlaying().getSong();
 
-		if (song == null) {
+		if (song == null)
+		{
 			return;
 		}
 
@@ -36,30 +42,32 @@ public class A2dpIntentReceiver extends BroadcastReceiver {
 		Integer playerPosition = downloadService.getPlayerPosition();
 		Integer listSize = downloadService.getDownloads().size();
 
-		if (duration != null) {
+		if (duration != null)
+		{
 			avrcpIntent.putExtra("duration", (long) duration);
 		}
 
-        avrcpIntent.putExtra("position", (long) playerPosition);
-        avrcpIntent.putExtra("ListSize", (long) listSize);
+		avrcpIntent.putExtra("position", (long) playerPosition);
+		avrcpIntent.putExtra("ListSize", (long) listSize);
 
-        switch (downloadService.getPlayerState()) {
-		case STARTED:
-			avrcpIntent.putExtra("playing", true);
-			break;
-		case STOPPED:
-			avrcpIntent.putExtra("playing", false);
-			break;
-		case PAUSED:
-			avrcpIntent.putExtra("playing", false);
-			break;
-		case COMPLETED:
-			avrcpIntent.putExtra("playing", false);
-			break;
-		default:
-			return;
+		switch (downloadService.getPlayerState())
+		{
+			case STARTED:
+				avrcpIntent.putExtra("playing", true);
+				break;
+			case STOPPED:
+				avrcpIntent.putExtra("playing", false);
+				break;
+			case PAUSED:
+				avrcpIntent.putExtra("playing", false);
+				break;
+			case COMPLETED:
+				avrcpIntent.putExtra("playing", false);
+				break;
+			default:
+				return;
 		}
-		
+
 		context.sendBroadcast(avrcpIntent);
 	}
 }

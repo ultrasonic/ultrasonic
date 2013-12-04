@@ -24,31 +24,36 @@ import java.io.Serializable;
 /**
  * @author Sindre Mehus
  */
-public class Indexes implements Serializable {
+public class Indexes implements Serializable
+{
 
-    /**
-	 * 
+	/**
+	 *
 	 */
 	private static final long serialVersionUID = 8156117238598414701L;
 	private final long lastModified;
-    private final List<com.thejoshwa.ultrasonic.androidapp.domain.Artist> shortcuts;
-    private final List<com.thejoshwa.ultrasonic.androidapp.domain.Artist> artists;
+	private final List<com.thejoshwa.ultrasonic.androidapp.domain.Artist> shortcuts;
+	private final List<com.thejoshwa.ultrasonic.androidapp.domain.Artist> artists;
 
-    public Indexes(long lastModified, List<com.thejoshwa.ultrasonic.androidapp.domain.Artist> shortcuts, List<com.thejoshwa.ultrasonic.androidapp.domain.Artist> artists) {
-        this.lastModified = lastModified;
-        this.shortcuts = shortcuts;
-        this.artists = artists;
-    }
+	public Indexes(long lastModified, List<com.thejoshwa.ultrasonic.androidapp.domain.Artist> shortcuts, List<com.thejoshwa.ultrasonic.androidapp.domain.Artist> artists)
+	{
+		this.lastModified = lastModified;
+		this.shortcuts = shortcuts;
+		this.artists = artists;
+	}
 
-	public long getLastModified() {
-        return lastModified;
-    }
+	public long getLastModified()
+	{
+		return lastModified;
+	}
 
-    public List<com.thejoshwa.ultrasonic.androidapp.domain.Artist> getShortcuts() {
-        return shortcuts;
-    }
+	public List<com.thejoshwa.ultrasonic.androidapp.domain.Artist> getShortcuts()
+	{
+		return shortcuts;
+	}
 
-    public List<com.thejoshwa.ultrasonic.androidapp.domain.Artist> getArtists() {
-        return artists;
-    }
+	public List<com.thejoshwa.ultrasonic.androidapp.domain.Artist> getArtists()
+	{
+		return artists;
+	}
 }

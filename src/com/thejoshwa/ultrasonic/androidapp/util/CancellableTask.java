@@ -18,70 +18,86 @@
  */
 package com.thejoshwa.ultrasonic.androidapp.util;
 
+import android.util.Log;
+
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicReference;
-
-import android.util.Log;
 
 /**
  * @author Sindre Mehus
  * @version $Id$
  */
-public abstract class CancellableTask {
+public abstract class CancellableTask
+{
 
-    private static final String TAG = CancellableTask.class.getSimpleName();
+	private static final String TAG = CancellableTask.class.getSimpleName();
 
-    private final AtomicBoolean running = new AtomicBoolean(false);
-    private final AtomicBoolean cancelled = new AtomicBoolean(false);
-    private final AtomicReference<Thread> thread = new AtomicReference<Thread>();
-    private final AtomicReference<OnCancelListener> cancelListener = new AtomicReference<OnCancelListener>();
+	private final AtomicBoolean running = new AtomicBoolean(false);
+	private final AtomicBoolean cancelled = new AtomicBoolean(false);
+	private final AtomicReference<Thread> thread = new AtomicReference<Thread>();
+	private final AtomicReference<OnCancelListener> cancelListener = new AtomicReference<OnCancelListener>();
 
-    public void cancel() {
-        Log.i(TAG, "Cancelling " + CancellableTask.this);
-        cancelled.set(true);
+	public void cancel()
+	{
+		Log.i(TAG, String.format("Cancelling %s", CancellableTask.this));
+		cancelled.set(true);
 
-        OnCancelListener listener = cancelListener.get();
-        if (listener != null) {
-            try {
-                listener.onCancel();
-            } catch (Throwable x) {
-                Log.w(TAG, "Error when invoking OnCancelListener.", x);
-            }
-        }
-    }
+		OnCancelListener listener = cancelListener.get();
+		if (listener != null)
+		{
+			try
+			{
+				listener.onCancel();
+			}
+			catch (Throwable x)
+			{
+				Log.w(TAG, "Error when invoking OnCancelListener.", x);
+			}
+		}
+	}
 
-    public boolean isCancelled() {
-        return cancelled.get();
-    }
+	public boolean isCancelled()
+	{
+		return cancelled.get();
+	}
 
-    public void setOnCancelListener(OnCancelListener listener) {
-        cancelListener.set(listener);
-    }
+	public void setOnCancelListener(OnCancelListener listener)
+	{
+		cancelListener.set(listener);
+	}
 
-    public boolean isRunning() {
-        return running.get();
-    }
+	public boolean isRunning()
+	{
+		return running.get();
+	}
 
-    public abstract void execute();
+	public abstract void execute();
 
-    public void start() {
-        thread.set(new Thread() {
-            @Override
-            public void run() {
-                running.set(true);
-                Log.i(TAG, "Starting thread for " + CancellableTask.this);
-                try {
-                    execute();
-                } finally {
-                    running.set(false);
-                    Log.i(TAG, "Stopping thread for " + CancellableTask.this);
-                }
-            }
-        });
-        thread.get().start();
-    }
+	public void start()
+	{
+		thread.set(new Thread()
+		{
+			@Override
+			public void run()
+			{
+				running.set(true);
+				Log.i(TAG, String.format("Starting thread for %s", CancellableTask.this));
+				try
+				{
+					execute();
+				}
+				finally
+				{
+					running.set(false);
+					Log.i(TAG, String.format("Stopping thread for %s", CancellableTask.this));
+				}
+			}
+		});
+		thread.get().start();
+	}
 
-    public static interface OnCancelListener {
-        void onCancel();
-    }
+	public static interface OnCancelListener
+	{
+		void onCancel();
+	}
 }

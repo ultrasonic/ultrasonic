@@ -29,335 +29,413 @@ import java.io.Serializable;
 /**
  * @author Sindre Mehus
  */
-public class MusicDirectory {
+public class MusicDirectory
+{
 
-    private String name;
-    private final List<Entry> children = new ArrayList<Entry>();
+	private String name;
+	private final List<Entry> children = new ArrayList<Entry>();
 
-    public String getName() {
-        return name;
-    }
+	public String getName()
+	{
+		return name;
+	}
 
-    public void setName(String name) {
-        this.name = name;
-    }
+	public void setName(String name)
+	{
+		this.name = name;
+	}
 
-    public void addChild(Entry child) {
-        children.add(child);
-    }
+	public void addChild(Entry child)
+	{
+		children.add(child);
+	}
 
-    public List<Entry> getChildren() {
-        return getChildren(true, true);
-    }
+	public List<Entry> getChildren()
+	{
+		return getChildren(true, true);
+	}
 
-    public List<Entry> getChildren(boolean includeDirs, boolean includeFiles) {
-        if (includeDirs && includeFiles) {
-            return children;
-        }
+	public List<Entry> getChildren(boolean includeDirs, boolean includeFiles)
+	{
+		if (includeDirs && includeFiles)
+		{
+			return children;
+		}
 
-        List<Entry> result = new ArrayList<Entry>(children.size());
-        for (Entry child : children) {
-            if (child.isDirectory() && includeDirs || !child.isDirectory() && includeFiles) {
-                result.add(child);
-            }
-        }
-        return result;
-    }
+		List<Entry> result = new ArrayList<Entry>(children.size());
+		for (Entry child : children)
+		{
+			if (child.isDirectory() && includeDirs || !child.isDirectory() && includeFiles)
+			{
+				result.add(child);
+			}
+		}
+		return result;
+	}
 
-    public static class Entry implements Serializable {
-        /**
-		 * 
+	public static class Entry implements Serializable
+	{
+		/**
+		 *
 		 */
 		private static final long serialVersionUID = -3339106650010798108L;
 		/**
-		 * 
+		 *
 		 */
 		private String id;
-        private String parent;
-        private boolean isDirectory;
-        private String title;
-        private String album;
-        private String albumId;
-        private String artist;
-        private String artistId;
-        private Integer track;
-        private Integer year;
-        private String genre;
-        private String contentType;
-        private String suffix;
-        private String transcodedContentType;
-        private String transcodedSuffix;
-        private String coverArt;
-        private Long size;
-        private Long songCount;
-        private Integer duration;
-        private Integer bitRate;
-        private String path;
-        private boolean isVideo;
-        private boolean isStarred;
-        private Integer discNumber;
-        private String type;
-        private Date created;
-        private int closeness;
-        private int bookmarkPosition;
-        
-        public Integer getDiscNumber() {
-        	return discNumber;
-        }
-        
-        public void setDiscNumber(Integer discNumber) {
-        	this.discNumber = discNumber;
-        }
+		private String parent;
+		private boolean isDirectory;
+		private String title;
+		private String album;
+		private String albumId;
+		private String artist;
+		private String artistId;
+		private Integer track;
+		private Integer year;
+		private String genre;
+		private String contentType;
+		private String suffix;
+		private String transcodedContentType;
+		private String transcodedSuffix;
+		private String coverArt;
+		private Long size;
+		private Long songCount;
+		private Integer duration;
+		private Integer bitRate;
+		private String path;
+		private boolean isVideo;
+		private boolean isStarred;
+		private Integer discNumber;
+		private String type;
+		private Date created;
+		private int closeness;
+		private int bookmarkPosition;
 
-        public boolean getStarred() {
-        	return isStarred;
-        }
-        
-        public void setStarred(boolean starred) {
-        	this.isStarred = starred;
-        }
-        
-        public String getId() {
-            return id;
-        }
+		public Integer getDiscNumber()
+		{
+			return discNumber;
+		}
 
-        public void setId(String id) {
-            this.id = id;
-        }
+		public void setDiscNumber(Integer discNumber)
+		{
+			this.discNumber = discNumber;
+		}
 
-        public String getParent() {
-            return parent;
-        }
+		public boolean getStarred()
+		{
+			return isStarred;
+		}
 
-        public void setParent(String parent) {
-            this.parent = parent;
-        }
+		public void setStarred(boolean starred)
+		{
+			this.isStarred = starred;
+		}
 
-        public boolean isDirectory() {
-            return isDirectory;
-        }
+		public String getId()
+		{
+			return id;
+		}
 
-        public void setIsDirectory(boolean directory) {
-            this.isDirectory = directory;
-        }
+		public void setId(String id)
+		{
+			this.id = id;
+		}
 
-        public String getTitle() {
-            return title;
-        }
+		public String getParent()
+		{
+			return parent;
+		}
 
-        public void setTitle(String title) {
-            this.title = title;
-        }
+		public void setParent(String parent)
+		{
+			this.parent = parent;
+		}
 
-        public String getAlbum() {
-            return album;
-        }
+		public boolean isDirectory()
+		{
+			return isDirectory;
+		}
 
-        public void setAlbum(String album) {
-            this.album = album;
-        }
-        
-        public String getAlbumId() {
-            return albumId;
-        }
+		public void setIsDirectory(boolean directory)
+		{
+			this.isDirectory = directory;
+		}
 
-        public void setAlbumId(String albumId) {
-            this.albumId = albumId;
-        }
+		public String getTitle()
+		{
+			return title;
+		}
 
-        public String getArtist() {
-            return artist;
-        }
+		public void setTitle(String title)
+		{
+			this.title = title;
+		}
 
-        public void setArtist(String artist) {
-            this.artist = artist;
-        }
-        
-        public String getArtistId() {
-            return artistId;
-        }
+		public String getAlbum()
+		{
+			return album;
+		}
 
-        public void setArtistId(String artistId) {
-            this.artistId = artistId;
-        }
+		public void setAlbum(String album)
+		{
+			this.album = album;
+		}
 
-        public Integer getTrack() {
-            return track == null ? 0 : track;
-        }
+		public String getAlbumId()
+		{
+			return albumId;
+		}
 
-        public void setTrack(Integer track) {
-            this.track = track;
-        }
-        
-        public Long getSongcount() {
-            return songCount;
-        }
+		public void setAlbumId(String albumId)
+		{
+			this.albumId = albumId;
+		}
 
-        public void setSongCount(Long songCount) {
-            this.songCount = songCount;
-        }
+		public String getArtist()
+		{
+			return artist;
+		}
 
-        public Integer getYear() {
-            return year == null ? 0 : year;
-        }
+		public void setArtist(String artist)
+		{
+			this.artist = artist;
+		}
 
-        public void setYear(Integer year) {
-            this.year = year;
-        }
+		public String getArtistId()
+		{
+			return artistId;
+		}
 
-        public String getGenre() {
-            return genre;
-        }
+		public void setArtistId(String artistId)
+		{
+			this.artistId = artistId;
+		}
 
-        public void setGenre(String genre) {
-            this.genre = genre;
-        }
+		public Integer getTrack()
+		{
+			return track == null ? 0 : track;
+		}
 
-        public String getContentType() {
-            return contentType;
-        }
+		public void setTrack(Integer track)
+		{
+			this.track = track;
+		}
 
-        public void setContentType(String contentType) {
-            this.contentType = contentType;
-        }
+		public Long getSongCount()
+		{
+			return songCount;
+		}
 
-        public String getSuffix() {
-            return suffix;
-        }
+		public void setSongCount(Long songCount)
+		{
+			this.songCount = songCount;
+		}
 
-        public void setSuffix(String suffix) {
-            this.suffix = suffix;
-        }
+		public Integer getYear()
+		{
+			return year == null ? 0 : year;
+		}
 
-        public String getTranscodedContentType() {
-            return transcodedContentType;
-        }
+		public void setYear(Integer year)
+		{
+			this.year = year;
+		}
 
-        public void setTranscodedContentType(String transcodedContentType) {
-            this.transcodedContentType = transcodedContentType;
-        }
+		public String getGenre()
+		{
+			return genre;
+		}
 
-        public String getTranscodedSuffix() {
-            return transcodedSuffix;
-        }
+		public void setGenre(String genre)
+		{
+			this.genre = genre;
+		}
 
-        public void setTranscodedSuffix(String transcodedSuffix) {
-            this.transcodedSuffix = transcodedSuffix;
-        }
+		public String getContentType()
+		{
+			return contentType;
+		}
 
-        public Long getSize() {
-            return size;
-        }
+		public void setContentType(String contentType)
+		{
+			this.contentType = contentType;
+		}
 
-        public void setSize(Long size) {
-            this.size = size;
-        }
+		public String getSuffix()
+		{
+			return suffix;
+		}
 
-        public Integer getDuration() {
-            return duration;
-        }
+		public void setSuffix(String suffix)
+		{
+			this.suffix = suffix;
+		}
 
-        public void setDuration(Integer duration) {
-            this.duration = duration;
-        }
-        
-        public void setDuration(long duration) {
-            this.duration = (int) duration;
-        }
+		public String getTranscodedContentType()
+		{
+			return transcodedContentType;
+		}
 
-        public Integer getBitRate() {
-            return bitRate;
-        }
+		public void setTranscodedContentType(String transcodedContentType)
+		{
+			this.transcodedContentType = transcodedContentType;
+		}
 
-        public void setBitRate(Integer bitRate) {
-            this.bitRate = bitRate;
-        }
+		public String getTranscodedSuffix()
+		{
+			return transcodedSuffix;
+		}
 
-        public String getCoverArt() {
-            return coverArt;
-        }
+		public void setTranscodedSuffix(String transcodedSuffix)
+		{
+			this.transcodedSuffix = transcodedSuffix;
+		}
 
-        public void setCoverArt(String coverArt) {
-            this.coverArt = coverArt;
-        }
+		public Long getSize()
+		{
+			return size;
+		}
 
-        public String getPath() {
-            return path;
-        }
+		public void setSize(Long size)
+		{
+			this.size = size;
+		}
 
-        public void setPath(String path) {
-            this.path = path;
-        }
+		public Integer getDuration()
+		{
+			return duration;
+		}
 
-        public boolean isVideo() {
-            return isVideo;
-        }
+		public void setDuration(Integer duration)
+		{
+			this.duration = duration;
+		}
 
-        public void setIsVideo(boolean video) {
-            this.isVideo = video;
-        }
-        
-        public String getType() {
-            return type;
-        }
+		public void setDuration(long duration)
+		{
+			this.duration = (int) duration;
+		}
 
-        public void setType(String type) {
-            this.type = type;
-        }
-        
-        public Date getCreated() {
-            return created;
-        }
+		public Integer getBitRate()
+		{
+			return bitRate;
+		}
 
-        public void setCreated(String created) {
-        	if (created != null) {
-        		try {
+		public void setBitRate(Integer bitRate)
+		{
+			this.bitRate = bitRate;
+		}
+
+		public String getCoverArt()
+		{
+			return coverArt;
+		}
+
+		public void setCoverArt(String coverArt)
+		{
+			this.coverArt = coverArt;
+		}
+
+		public String getPath()
+		{
+			return path;
+		}
+
+		public void setPath(String path)
+		{
+			this.path = path;
+		}
+
+		public boolean isVideo()
+		{
+			return isVideo;
+		}
+
+		public void setIsVideo(boolean video)
+		{
+			this.isVideo = video;
+		}
+
+		public String getType()
+		{
+			return type;
+		}
+
+		public void setType(String type)
+		{
+			this.type = type;
+		}
+
+		public Date getCreated()
+		{
+			return created;
+		}
+
+		public void setCreated(String created)
+		{
+			if (created != null)
+			{
+				try
+				{
 					this.created = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss", Locale.ENGLISH).parse(created);
-				} catch (ParseException e) { 
+				}
+				catch (ParseException e)
+				{
 					this.created = null;
 				}
-        	} else {
-        		this.created = null;
-        	}
-        }
-        
-    	public int getCloseness() {
+			}
+			else
+			{
+				this.created = null;
+			}
+		}
+
+		public int getCloseness()
+		{
 			return closeness;
 		}
 
-		public void setCloseness(int closeness) {
+		public void setCloseness(int closeness)
+		{
 			this.closeness = closeness;
 		}
-		
-    	public int getBookmarkPosition() {
-    		return bookmarkPosition;
-    	}
 
-		public void setBookmarkPosition(int bookmarkPosition) {
+		public int getBookmarkPosition()
+		{
+			return bookmarkPosition;
+		}
+
+		public void setBookmarkPosition(int bookmarkPosition)
+		{
 			this.bookmarkPosition = bookmarkPosition;
 		}
 
-        @Override
-        public boolean equals(Object o) {
-            if (this == o) {
-                return true;
-            }
-            if (o == null || getClass() != o.getClass()) {
-                return false;
-            }
+		@Override
+		public boolean equals(Object o)
+		{
+			if (this == o)
+			{
+				return true;
+			}
+			if (o == null || getClass() != o.getClass())
+			{
+				return false;
+			}
 
-            Entry entry = (Entry) o;
-            return id.equals(entry.id);
-        }
+			Entry entry = (Entry) o;
+			return id.equals(entry.id);
+		}
 
-        @Override
-        public int hashCode() {
-            return id.hashCode();
-        }
+		@Override
+		public int hashCode()
+		{
+			return id.hashCode();
+		}
 
-        @Override
-        public String toString() {
-            return title;
-        }
-    }
+		@Override
+		public String toString()
+		{
+			return title;
+		}
+	}
 }

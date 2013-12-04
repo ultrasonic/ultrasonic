@@ -19,11 +19,13 @@
 package com.thejoshwa.ultrasonic.androidapp.service.parser;
 
 import android.content.Context;
+
 import com.thejoshwa.ultrasonic.androidapp.R;
 import com.thejoshwa.ultrasonic.androidapp.domain.MusicDirectory;
 import com.thejoshwa.ultrasonic.androidapp.domain.SearchResult;
 import com.thejoshwa.ultrasonic.androidapp.domain.Artist;
 import com.thejoshwa.ultrasonic.androidapp.util.ProgressListener;
+
 import org.xmlpull.v1.XmlPullParser;
 
 import java.io.Reader;
@@ -34,34 +36,42 @@ import java.util.ArrayList;
 /**
  * @author Sindre Mehus
  */
-public class SearchResultParser extends MusicDirectoryEntryParser {
+public class SearchResultParser extends MusicDirectoryEntryParser
+{
 
-    public SearchResultParser(Context context) {
-        super(context);
-    }
+	public SearchResultParser(Context context)
+	{
+		super(context);
+	}
 
-    public SearchResult parse(Reader reader, ProgressListener progressListener) throws Exception {
-        updateProgress(progressListener, R.string.parser_reading);
-        init(reader);
+	public SearchResult parse(Reader reader, ProgressListener progressListener) throws Exception
+	{
+		updateProgress(progressListener, R.string.parser_reading);
+		init(reader);
 
-        List<MusicDirectory.Entry> songs = new ArrayList<MusicDirectory.Entry>();
-        int eventType;
-        do {
-            eventType = nextParseEvent();
-            if (eventType == XmlPullParser.START_TAG) {
-                String name = getElementName();
-                if ("match".equals(name)) {
-                    songs.add(parseEntry("", false, 0));
-                } else if ("error".equals(name)) {
-                    handleError();
-                }
-            }
-        } while (eventType != XmlPullParser.END_DOCUMENT);
+		List<MusicDirectory.Entry> songs = new ArrayList<MusicDirectory.Entry>();
+		int eventType;
+		do
+		{
+			eventType = nextParseEvent();
+			if (eventType == XmlPullParser.START_TAG)
+			{
+				String name = getElementName();
+				if ("match".equals(name))
+				{
+					songs.add(parseEntry("", false, 0));
+				}
+				else if ("error".equals(name))
+				{
+					handleError();
+				}
+			}
+		} while (eventType != XmlPullParser.END_DOCUMENT);
 
-        validate();
-        updateProgress(progressListener, R.string.parser_reading_done);
+		validate();
+		updateProgress(progressListener, R.string.parser_reading_done);
 
-        return new SearchResult(Collections.<Artist>emptyList(), Collections.<MusicDirectory.Entry>emptyList(), songs);
-    }
+		return new SearchResult(Collections.<Artist>emptyList(), Collections.<MusicDirectory.Entry>emptyList(), songs);
+	}
 
 }

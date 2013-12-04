@@ -60,908 +60,1113 @@ import java.util.concurrent.TimeUnit;
 
 import static com.thejoshwa.ultrasonic.androidapp.domain.PlayerState.*;
 
-public class DownloadActivity extends SubsonicTabActivity implements OnGestureListener {
+public class DownloadActivity extends SubsonicTabActivity implements OnGestureListener
+{
 	private static final String TAG = DownloadActivity.class.getSimpleName();
-    private static final int DIALOG_SAVE_PLAYLIST = 100;
-    private static final int PERCENTAGE_OF_SCREEN_FOR_SWIPE = 5;
-    
-    private ViewFlipper playlistFlipper;
-    private TextView emptyTextView;
-    private TextView songTitleTextView;
-    private TextView albumTextView;
-    private TextView artistTextView;
-    private ImageView albumArtImageView;
-    private ListView playlistView;
-    private TextView positionTextView;
-    private TextView downloadTrackTextView;
-    private TextView downloadTotalDurationTextView;
-    private TextView durationTextView;
-    private static SeekBar progressBar;
-    private View pauseButton;
-    private View stopButton;
-    private View startButton;
-    private ImageView repeatButton;
-    private ImageButton starImageButton;
-    private ImageButton saveImageButton;
-    private ScheduledExecutorService executorService;
-    private DownloadFile currentPlaying;
-    private Entry currentSong;
-    private long currentRevision;
-    private EditText playlistNameView;
-    private GestureDetector gestureScanner;
-    private int swipeDistance;
-    private int swipeVelocity;
-    private VisualizerView visualizerView;
-    private boolean visualizerAvailable;
-    private boolean equalizerAvailable;
-    private SilentBackgroundTask<Void> onProgressChangedTask;
-    LinearLayout visualizerViewLayout;
-    
-    /**
-     * Called when the activity is first created.
-     */
-    @Override
-    public void onCreate(final Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.download);
+	private static final int DIALOG_SAVE_PLAYLIST = 100;
+	private static final int PERCENTAGE_OF_SCREEN_FOR_SWIPE = 5;
 
-        final WindowManager windowManager = getWindowManager();
-        final Display display = windowManager.getDefaultDisplay();
-        Point size = new Point();
-        display.getSize(size);
-        int width = size.x;
-        int height = size.y;
-        
-        swipeDistance = (width + height) * PERCENTAGE_OF_SCREEN_FOR_SWIPE / 100;
-        swipeVelocity = swipeDistance;
-        gestureScanner = new GestureDetector(this, this);
+	private ViewFlipper playlistFlipper;
+	private TextView emptyTextView;
+	private TextView songTitleTextView;
+	private TextView albumTextView;
+	private TextView artistTextView;
+	private ImageView albumArtImageView;
+	private ListView playlistView;
+	private TextView positionTextView;
+	private TextView downloadTrackTextView;
+	private TextView downloadTotalDurationTextView;
+	private TextView durationTextView;
+	private static SeekBar progressBar;
+	private View pauseButton;
+	private View stopButton;
+	private View startButton;
+	private ImageView repeatButton;
+	private ImageButton starImageButton;
+	private ImageButton saveImageButton;
+	private ScheduledExecutorService executorService;
+	private DownloadFile currentPlaying;
+	private Entry currentSong;
+	private long currentRevision;
+	private EditText playlistNameView;
+	private GestureDetector gestureScanner;
+	private int swipeDistance;
+	private int swipeVelocity;
+	private VisualizerView visualizerView;
+	private boolean visualizerAvailable;
+	private boolean equalizerAvailable;
+	private SilentBackgroundTask<Void> onProgressChangedTask;
+	LinearLayout visualizerViewLayout;
 
-        playlistFlipper = (ViewFlipper) findViewById(R.id.download_playlist_flipper);
-        emptyTextView = (TextView) findViewById(R.id.download_empty);
-        songTitleTextView = (TextView) findViewById(R.id.download_song_title);
-        albumTextView = (TextView) findViewById(R.id.download_album);
-        artistTextView = (TextView) findViewById(R.id.download_artist);
-        albumArtImageView = (ImageView) findViewById(R.id.download_album_art_image);
-        positionTextView = (TextView) findViewById(R.id.download_position);
-        downloadTrackTextView = (TextView) findViewById(R.id.download_track);
-        downloadTotalDurationTextView = (TextView) findViewById(R.id.download_total_duration);
-        durationTextView = (TextView) findViewById(R.id.download_duration);
-        progressBar = (SeekBar) findViewById(R.id.download_progress_bar);
-        playlistView = (ListView) findViewById(R.id.download_list);
-        final AutoRepeatButton previousButton = (AutoRepeatButton) findViewById(R.id.download_previous);
-        final AutoRepeatButton nextButton = (AutoRepeatButton) findViewById(R.id.download_next);
-        pauseButton = findViewById(R.id.download_pause);
-        stopButton = findViewById(R.id.download_stop);
-        startButton = findViewById(R.id.download_start);
-        final View shuffleButton = findViewById(R.id.download_shuffle);
-        repeatButton = (ImageView) findViewById(R.id.download_repeat);
-        starImageButton = (ImageButton) findViewById(R.id.download_star);
-        ImageButton bookmarkImageButton = (ImageButton) findViewById(R.id.download_bookmark);
-        ImageButton removeAllImageButton = (ImageButton) findViewById(R.id.download_remove_all);
-        saveImageButton = (ImageButton) findViewById(R.id.download_save_playlist);
-        visualizerViewLayout = (LinearLayout) findViewById(R.id.download_visualizer_view_layout);
+	/**
+	 * Called when the activity is first created.
+	 */
+	@Override
+	public void onCreate(final Bundle savedInstanceState)
+	{
+		super.onCreate(savedInstanceState);
+		setContentView(R.layout.download);
 
-        final ImageButton toggleListButton = (ImageButton) findViewById(R.id.download_toggle_list);
-        
-        View.OnTouchListener touchListener = new View.OnTouchListener() {
-            @Override
-            public boolean onTouch(View view, MotionEvent me) {
-                return gestureScanner.onTouchEvent(me);
-            }
-        };
-        
-        albumArtImageView.setOnTouchListener(touchListener);
+		final WindowManager windowManager = getWindowManager();
+		final Display display = windowManager.getDefaultDisplay();
+		Point size = new Point();
+		display.getSize(size);
+		int width = size.x;
+		int height = size.y;
 
-        albumArtImageView.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(final View view) {
-                toggleFullScreenAlbumArt();
-            }
-        });
+		swipeDistance = (width + height) * PERCENTAGE_OF_SCREEN_FOR_SWIPE / 100;
+		swipeVelocity = swipeDistance;
+		gestureScanner = new GestureDetector(this, this);
 
-        previousButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(final View view) {
-                warnIfNetworkOrStorageUnavailable();
+		playlistFlipper = (ViewFlipper) findViewById(R.id.download_playlist_flipper);
+		emptyTextView = (TextView) findViewById(R.id.download_empty);
+		songTitleTextView = (TextView) findViewById(R.id.download_song_title);
+		albumTextView = (TextView) findViewById(R.id.download_album);
+		artistTextView = (TextView) findViewById(R.id.download_artist);
+		albumArtImageView = (ImageView) findViewById(R.id.download_album_art_image);
+		positionTextView = (TextView) findViewById(R.id.download_position);
+		downloadTrackTextView = (TextView) findViewById(R.id.download_track);
+		downloadTotalDurationTextView = (TextView) findViewById(R.id.download_total_duration);
+		durationTextView = (TextView) findViewById(R.id.download_duration);
+		progressBar = (SeekBar) findViewById(R.id.download_progress_bar);
+		playlistView = (ListView) findViewById(R.id.download_list);
+		final AutoRepeatButton previousButton = (AutoRepeatButton) findViewById(R.id.download_previous);
+		final AutoRepeatButton nextButton = (AutoRepeatButton) findViewById(R.id.download_next);
+		pauseButton = findViewById(R.id.download_pause);
+		stopButton = findViewById(R.id.download_stop);
+		startButton = findViewById(R.id.download_start);
+		final View shuffleButton = findViewById(R.id.download_shuffle);
+		repeatButton = (ImageView) findViewById(R.id.download_repeat);
+		starImageButton = (ImageButton) findViewById(R.id.download_star);
+		ImageButton bookmarkImageButton = (ImageButton) findViewById(R.id.download_bookmark);
+		ImageButton removeAllImageButton = (ImageButton) findViewById(R.id.download_remove_all);
+		saveImageButton = (ImageButton) findViewById(R.id.download_save_playlist);
+		visualizerViewLayout = (LinearLayout) findViewById(R.id.download_visualizer_view_layout);
 
-                new SilentBackgroundTask<Void>(DownloadActivity.this) {
-                    @Override
-                    protected Void doInBackground() throws Throwable {
-                        getDownloadService().previous();
-                        return null;
-                    }
+		final ImageButton toggleListButton = (ImageButton) findViewById(R.id.download_toggle_list);
 
-                    @Override
-                    protected void done(final Void result) {
-                        onCurrentChanged();
-                        onSliderProgressChanged();
-                    }
-                }.execute();
-            }
-        });
-        
-        previousButton.setOnRepeatListener(new Runnable() {
-            public void run() {
-            	int incrementTime = Util.getIncrementTime(DownloadActivity.this);
-                changeProgress(-incrementTime);
-            }
-        });
+		View.OnTouchListener touchListener = new View.OnTouchListener()
+		{
+			@Override
+			public boolean onTouch(View view, MotionEvent me)
+			{
+				return gestureScanner.onTouchEvent(me);
+			}
+		};
 
-        nextButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(final View view) {
-                warnIfNetworkOrStorageUnavailable();
+		albumArtImageView.setOnTouchListener(touchListener);
 
-                new SilentBackgroundTask<Boolean>(DownloadActivity.this) {
-                    @Override
-                    protected Boolean doInBackground() throws Throwable {
-                        if (getDownloadService().getCurrentPlayingIndex() < getDownloadService().size() - 1) {
-                            getDownloadService().next();
-                            return true;
-                        } else {
-                            return false;
-                        }
-                    }
+		albumArtImageView.setOnClickListener(new View.OnClickListener()
+		{
+			@Override
+			public void onClick(final View view)
+			{
+				toggleFullScreenAlbumArt();
+			}
+		});
 
-                    @Override
-                    protected void done(final Boolean result) {
-                        if (result) {
-                            onCurrentChanged();
-                            onSliderProgressChanged();
-                        }
-                    }
-                }.execute();
-            }
-        });
-        
-        nextButton.setOnRepeatListener(new Runnable() {
-            public void run() {
-            	int incrementTime = Util.getIncrementTime(DownloadActivity.this);
-                changeProgress(incrementTime);
-            }
-        });
+		previousButton.setOnClickListener(new View.OnClickListener()
+		{
+			@Override
+			public void onClick(final View view)
+			{
+				warnIfNetworkOrStorageUnavailable();
 
-        pauseButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(final View view) {
-            	new SilentBackgroundTask<Void>(DownloadActivity.this) {
+				new SilentBackgroundTask<Void>(DownloadActivity.this)
+				{
 					@Override
-					protected Void doInBackground() throws Throwable {
+					protected Void doInBackground() throws Throwable
+					{
+						getDownloadService().previous();
+						return null;
+					}
+
+					@Override
+					protected void done(final Void result)
+					{
+						onCurrentChanged();
+						onSliderProgressChanged();
+					}
+				}.execute();
+			}
+		});
+
+		previousButton.setOnRepeatListener(new Runnable()
+		{
+			@Override
+			public void run()
+			{
+				int incrementTime = Util.getIncrementTime(DownloadActivity.this);
+				changeProgress(-incrementTime);
+			}
+		});
+
+		nextButton.setOnClickListener(new View.OnClickListener()
+		{
+			@Override
+			public void onClick(final View view)
+			{
+				warnIfNetworkOrStorageUnavailable();
+
+				new SilentBackgroundTask<Boolean>(DownloadActivity.this)
+				{
+					@Override
+					protected Boolean doInBackground() throws Throwable
+					{
+						if (getDownloadService().getCurrentPlayingIndex() < getDownloadService().size() - 1)
+						{
+							getDownloadService().next();
+							return true;
+						}
+						else
+						{
+							return false;
+						}
+					}
+
+					@Override
+					protected void done(final Boolean result)
+					{
+						if (result)
+						{
+							onCurrentChanged();
+							onSliderProgressChanged();
+						}
+					}
+				}.execute();
+			}
+		});
+
+		nextButton.setOnRepeatListener(new Runnable()
+		{
+			@Override
+			public void run()
+			{
+				int incrementTime = Util.getIncrementTime(DownloadActivity.this);
+				changeProgress(incrementTime);
+			}
+		});
+
+		pauseButton.setOnClickListener(new View.OnClickListener()
+		{
+			@Override
+			public void onClick(final View view)
+			{
+				new SilentBackgroundTask<Void>(DownloadActivity.this)
+				{
+					@Override
+					protected Void doInBackground() throws Throwable
+					{
 						getDownloadService().pause();
 						return null;
 					}
 
 					@Override
-					protected void done(final Void result) {
+					protected void done(final Void result)
+					{
 						onCurrentChanged();
 						onSliderProgressChanged();
 					}
 				}.execute();
-            }
-        });
+			}
+		});
 
-        stopButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(final View view) {
-				new SilentBackgroundTask<Void>(DownloadActivity.this) {
+		stopButton.setOnClickListener(new View.OnClickListener()
+		{
+			@Override
+			public void onClick(final View view)
+			{
+				new SilentBackgroundTask<Void>(DownloadActivity.this)
+				{
 					@Override
-					protected Void doInBackground() throws Throwable {
+					protected Void doInBackground() throws Throwable
+					{
 						getDownloadService().reset();
 						return null;
 					}
 
 					@Override
-					protected void done(final Void result) {
+					protected void done(final Void result)
+					{
 						onCurrentChanged();
 						onSliderProgressChanged();
 					}
 				}.execute();
-            }
-        });
+			}
+		});
 
-        startButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(final View view) {
-                warnIfNetworkOrStorageUnavailable();
-                
-				new SilentBackgroundTask<Void>(DownloadActivity.this) {
+		startButton.setOnClickListener(new View.OnClickListener()
+		{
+			@Override
+			public void onClick(final View view)
+			{
+				warnIfNetworkOrStorageUnavailable();
+
+				new SilentBackgroundTask<Void>(DownloadActivity.this)
+				{
 					@Override
-					protected Void doInBackground() throws Throwable {
+					protected Void doInBackground() throws Throwable
+					{
 						start();
 						return null;
 					}
 
 					@Override
-					protected void done(final Void result) {
+					protected void done(final Void result)
+					{
 						onCurrentChanged();
 						onSliderProgressChanged();
 					}
 				}.execute();
-            }
-        });
+			}
+		});
 
-        shuffleButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(final View view) {
-                getDownloadService().shuffle();
-                Util.toast(DownloadActivity.this, R.string.download_menu_shuffle_notification);
-            }
-        });
-
-        repeatButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(final View view) {
-                final RepeatMode repeatMode = getDownloadService().getRepeatMode().next();
-
-                getDownloadService().setRepeatMode(repeatMode);
-                onDownloadListChanged();
-
-                switch (repeatMode) {
-                    case OFF:
-                        Util.toast(DownloadActivity.this, R.string.download_repeat_off);
-                        break;
-                    case ALL:
-                        Util.toast(DownloadActivity.this, R.string.download_repeat_all);
-                        break;
-                    case SINGLE:
-                        Util.toast(DownloadActivity.this, R.string.download_repeat_single);
-                        break;
-                    default:
-                        break;
-                }
-            }
-        });
-
-        toggleListButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(final View view) {
-                toggleFullScreenAlbumArt();
-            }
-        });
-
-        progressBar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
-			
+		shuffleButton.setOnClickListener(new View.OnClickListener()
+		{
 			@Override
-			public void onStopTrackingTouch(final SeekBar seekBar) {
-				new SilentBackgroundTask<Void>(DownloadActivity.this) {
+			public void onClick(final View view)
+			{
+				getDownloadService().shuffle();
+				Util.toast(DownloadActivity.this, R.string.download_menu_shuffle_notification);
+			}
+		});
+
+		repeatButton.setOnClickListener(new View.OnClickListener()
+		{
+			@Override
+			public void onClick(final View view)
+			{
+				final RepeatMode repeatMode = getDownloadService().getRepeatMode().next();
+
+				getDownloadService().setRepeatMode(repeatMode);
+				onDownloadListChanged();
+
+				switch (repeatMode)
+				{
+					case OFF:
+						Util.toast(DownloadActivity.this, R.string.download_repeat_off);
+						break;
+					case ALL:
+						Util.toast(DownloadActivity.this, R.string.download_repeat_all);
+						break;
+					case SINGLE:
+						Util.toast(DownloadActivity.this, R.string.download_repeat_single);
+						break;
+					default:
+						break;
+				}
+			}
+		});
+
+		toggleListButton.setOnClickListener(new View.OnClickListener()
+		{
+			@Override
+			public void onClick(final View view)
+			{
+				toggleFullScreenAlbumArt();
+			}
+		});
+
+		progressBar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener()
+		{
+
+			@Override
+			public void onStopTrackingTouch(final SeekBar seekBar)
+			{
+				new SilentBackgroundTask<Void>(DownloadActivity.this)
+				{
 					@Override
-					protected Void doInBackground() throws Throwable {
+					protected Void doInBackground() throws Throwable
+					{
 						getDownloadService().seekTo(getProgressBar().getProgress());
 						return null;
 					}
 
 					@Override
-					protected void done(final Void result) {
+					protected void done(final Void result)
+					{
 						onSliderProgressChanged();
 					}
 				}.execute();
-				
+
 			}
-			
+
 			@Override
-			public void onStartTrackingTouch(final SeekBar seekBar) {
+			public void onStartTrackingTouch(final SeekBar seekBar)
+			{
 			}
-			
+
 			@Override
-			public void onProgressChanged(final SeekBar seekBar, final int progress, final boolean fromUser) {
+			public void onProgressChanged(final SeekBar seekBar, final int progress, final boolean fromUser)
+			{
 			}
 		});
-        		
-        playlistView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-            @Override
-            public void onItemClick(final AdapterView<?> parent, final View view, final int position, final long id) {
-                warnIfNetworkOrStorageUnavailable();
-                
-                new SilentBackgroundTask<Void>(DownloadActivity.this) {
+
+		playlistView.setOnItemClickListener(new AdapterView.OnItemClickListener()
+		{
+			@Override
+			public void onItemClick(final AdapterView<?> parent, final View view, final int position, final long id)
+			{
+				warnIfNetworkOrStorageUnavailable();
+
+				new SilentBackgroundTask<Void>(DownloadActivity.this)
+				{
 					@Override
-					protected Void doInBackground() throws Throwable {
+					protected Void doInBackground() throws Throwable
+					{
 						getDownloadService().play(position);
 						return null;
 					}
 
 					@Override
-					protected void done(final Void result) {
+					protected void done(final Void result)
+					{
 						onCurrentChanged();
-		                onSliderProgressChanged();
+						onSliderProgressChanged();
 					}
 				}.execute();
-            }
-        });
-        
-        registerForContextMenu(playlistView);
-        
-        final DownloadService downloadService = getDownloadService();
-        if (downloadService != null && getIntent().getBooleanExtra(Constants.INTENT_EXTRA_NAME_SHUFFLE, false)) {
-            warnIfNetworkOrStorageUnavailable();
-            downloadService.setShufflePlayEnabled(true);
-        }
-        
-        if (Util.isOffline(this)) {
-        	starImageButton.setVisibility(View.GONE);
-        	bookmarkImageButton.setVisibility(View.GONE);
-        }
-        
-        starImageButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(final View view) {
-            	if (currentSong == null) {
-            		return;
-            	}
-            	
-            	final boolean isStarred = currentSong.getStarred();
-            	final String id = currentSong.getId();
+			}
+		});
 
-                if (isStarred) {
-                    starImageButton.setImageDrawable(Util.getDrawableFromAttribute(SubsonicTabActivity.getInstance(), R.attr.star_hollow));
-                    currentSong.setStarred(false);
-                } else {
-                    starImageButton.setImageDrawable(Util.getDrawableFromAttribute(SubsonicTabActivity.getInstance(), R.attr.star_full));
-                    currentSong.setStarred(true);
-                }
-            	
-            	new Thread(new Runnable() {
-            	    public void run() {
-                    	final MusicService musicService = MusicServiceFactory.getMusicService(DownloadActivity.this);
-                    	
-            			try {
-                            if (isStarred) {
-                                musicService.unstar(id, null, null, DownloadActivity.this, null);
-                            } else {
-                                musicService.star(id, null, null, DownloadActivity.this, null);
-                            }
-            			} catch (Exception e) {
+		registerForContextMenu(playlistView);
+
+		final DownloadService downloadService = getDownloadService();
+		if (downloadService != null && getIntent().getBooleanExtra(Constants.INTENT_EXTRA_NAME_SHUFFLE, false))
+		{
+			warnIfNetworkOrStorageUnavailable();
+			downloadService.setShufflePlayEnabled(true);
+		}
+
+		if (Util.isOffline(this))
+		{
+			starImageButton.setVisibility(View.GONE);
+			bookmarkImageButton.setVisibility(View.GONE);
+		}
+
+		starImageButton.setOnClickListener(new View.OnClickListener()
+		{
+			@Override
+			public void onClick(final View view)
+			{
+				if (currentSong == null)
+				{
+					return;
+				}
+
+				final boolean isStarred = currentSong.getStarred();
+				final String id = currentSong.getId();
+
+				if (isStarred)
+				{
+					starImageButton.setImageDrawable(Util.getDrawableFromAttribute(SubsonicTabActivity.getInstance(), R.attr.star_hollow));
+					currentSong.setStarred(false);
+				}
+				else
+				{
+					starImageButton.setImageDrawable(Util.getDrawableFromAttribute(SubsonicTabActivity.getInstance(), R.attr.star_full));
+					currentSong.setStarred(true);
+				}
+
+				new Thread(new Runnable()
+				{
+					@Override
+					public void run()
+					{
+						final MusicService musicService = MusicServiceFactory.getMusicService(DownloadActivity.this);
+
+						try
+						{
+							if (isStarred)
+							{
+								musicService.unstar(id, null, null, DownloadActivity.this, null);
+							}
+							else
+							{
+								musicService.star(id, null, null, DownloadActivity.this, null);
+							}
+						}
+						catch (Exception e)
+						{
 							Log.e(TAG, e.getMessage(), e);
 						}
-            	    }
-            	  }).start();
-            }
-        });
-        
-		bookmarkImageButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(final View view) {
-                if (currentSong == null) {
-                    return;
-                }
+					}
+				}).start();
+			}
+		});
 
-                final String id = currentSong.getId();
-                final int playerPosition = getDownloadService()
-                        .getPlayerPosition();
+		bookmarkImageButton.setOnClickListener(new View.OnClickListener()
+		{
+			@Override
+			public void onClick(final View view)
+			{
+				if (currentSong == null)
+				{
+					return;
+				}
 
-                currentSong.setBookmarkPosition(playerPosition);
+				final String id = currentSong.getId();
+				final int playerPosition = getDownloadService().getPlayerPosition();
 
-                String bookmarkTime = Util.formatTotalDuration(playerPosition, true);
+				currentSong.setBookmarkPosition(playerPosition);
 
-                new Thread(new Runnable() {
-                    public void run() {
-                        final MusicService musicService = MusicServiceFactory.getMusicService(DownloadActivity.this);
+				String bookmarkTime = Util.formatTotalDuration(playerPosition, true);
 
-                        try {
-                            musicService.createBookmark(id, playerPosition, DownloadActivity.this, null);
-                        } catch (Exception e) {
-                            Log.e(TAG, e.getMessage(), e);
-                        }
-                    }
-                }).start();
+				new Thread(new Runnable()
+				{
+					@Override
+					public void run()
+					{
+						final MusicService musicService = MusicServiceFactory.getMusicService(DownloadActivity.this);
 
-                String msg = getResources().getString(R.string.download_bookmark_set_at_position, bookmarkTime);
+						try
+						{
+							musicService.createBookmark(id, playerPosition, DownloadActivity.this, null);
+						}
+						catch (Exception e)
+						{
+							Log.e(TAG, e.getMessage(), e);
+						}
+					}
+				}).start();
 
-                Util.toast(DownloadActivity.this, msg);
-            }
-        });
-        
-        bookmarkImageButton.setOnLongClickListener(new View.OnLongClickListener() {
-            @Override
-            public boolean onLongClick(final View view) {
-                if (currentSong == null) {
-                    return true;
-                }
+				String msg = getResources().getString(R.string.download_bookmark_set_at_position, bookmarkTime);
 
-                final String id = currentSong.getId();
-                currentSong.setBookmarkPosition(0);
+				Util.toast(DownloadActivity.this, msg);
+			}
+		});
 
-                new Thread(new Runnable() {
-                    public void run() {
-                        final MusicService musicService = MusicServiceFactory.getMusicService(DownloadActivity.this);
+		bookmarkImageButton.setOnLongClickListener(new View.OnLongClickListener()
+		{
+			@Override
+			public boolean onLongClick(final View view)
+			{
+				if (currentSong == null)
+				{
+					return true;
+				}
 
-                        try {
-                            musicService.deleteBookmark(id, DownloadActivity.this, null);
-                        } catch (Exception e) {
-                            Log.e(TAG, e.getMessage(), e);
-                        }
-                    }
-                }).start();
+				final String id = currentSong.getId();
+				currentSong.setBookmarkPosition(0);
 
-                Util.toast(DownloadActivity.this, R.string.download_bookmark_removed);
+				new Thread(new Runnable()
+				{
+					@Override
+					public void run()
+					{
+						final MusicService musicService = MusicServiceFactory.getMusicService(DownloadActivity.this);
 
-                return true;
-            }
-        });
-        
-        removeAllImageButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(final View view) {
-                getDownloadService().setShufflePlayEnabled(false);
-                getDownloadService().clear();
-                onDownloadListChanged();
-            }
-        });
-        
-        saveImageButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(final View view) {
-                showDialog(DIALOG_SAVE_PLAYLIST);
-            }
-        });
+						try
+						{
+							musicService.deleteBookmark(id, DownloadActivity.this, null);
+						}
+						catch (Exception e)
+						{
+							Log.e(TAG, e.getMessage(), e);
+						}
+					}
+				}).start();
 
-        visualizerAvailable = downloadService != null && downloadService.getVisualizerController() != null;
-        equalizerAvailable = downloadService != null && downloadService.getEqualizerController() != null;
+				Util.toast(DownloadActivity.this, R.string.download_bookmark_removed);
 
-        final View nowPlayingMenuItem = findViewById(R.id.menu_now_playing);
-        menuDrawer.setActiveView(nowPlayingMenuItem);
-        
-        if (visualizerAvailable) {
-            visualizerView = new VisualizerView(this);
-            visualizerViewLayout.addView(visualizerView, new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.MATCH_PARENT));
+				return true;
+			}
+		});
 
-            if (!visualizerView.isActive()) {
-            	visualizerViewLayout.setVisibility(View.GONE);
-            } else {
-            	visualizerViewLayout.setVisibility(View.VISIBLE);
-            }
-            
-            visualizerView.setOnTouchListener(new View.OnTouchListener() {
-                @Override
-                public boolean onTouch(final View view, final MotionEvent motionEvent) {
-                    visualizerView.setActive(!visualizerView.isActive());
-                    getDownloadService().setShowVisualization(visualizerView.isActive());
-                    return true;
-                }
-            });
-        } else {
-        	visualizerViewLayout.setVisibility(View.GONE);
-        }
-    }
-    
-    @Override
-    protected void onResume() {
-        super.onResume();
+		removeAllImageButton.setOnClickListener(new View.OnClickListener()
+		{
+			@Override
+			public void onClick(final View view)
+			{
+				getDownloadService().setShufflePlayEnabled(false);
+				getDownloadService().clear();
+				onDownloadListChanged();
+			}
+		});
 
-        final DownloadService downloadService = getDownloadService();
-        
-        if (downloadService == null || downloadService.getCurrentPlaying() == null) {
-            playlistFlipper.setDisplayedChild(1);
-        }
-        
-        final Handler handler = new Handler();
-        final Runnable runnable = new Runnable() {
-            @Override
-            public void run() {
-                handler.post(new Runnable() {
-                    @Override
-                    public void run() {
-                        update();
-                    }
-                });
-            }
-        };
-        
-        executorService = Executors.newSingleThreadScheduledExecutor();
-        executorService.scheduleWithFixedDelay(runnable, 0L, 500L, TimeUnit.MILLISECONDS);
+		saveImageButton.setOnClickListener(new View.OnClickListener()
+		{
+			@Override
+			public void onClick(final View view)
+			{
+				showDialog(DIALOG_SAVE_PLAYLIST);
+			}
+		});
 
-        if (downloadService != null && downloadService.getKeepScreenOn()) {
-            getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
-        } else {
-            getWindow().clearFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
-        }
+		visualizerAvailable = (downloadService != null) && (downloadService.getVisualizerController() != null);
+		equalizerAvailable = (downloadService != null) && (downloadService.getEqualizerController() != null);
 
-        if (visualizerView != null) {
-            visualizerView.setActive(downloadService != null && downloadService.getShowVisualization());
-        }
-        
-        if (Util.isOffline(this)) {
-        	saveImageButton.setVisibility(View.GONE);
-        }
-    }
-    
-    // Scroll to current playing/downloading.
-    private void scrollToCurrent() {
-        if (getDownloadService() == null) {
-            return;
-        }
-        
-        ListAdapter adapter = playlistView.getAdapter();
-        
-        if (adapter != null) {
-            int count = adapter.getCount();
-        	
-        	for (int i = 0; i < count; i++) {
-        		if (currentPlaying == playlistView.getItemAtPosition(i)) {
-        			playlistView.smoothScrollToPositionFromTop(i, 40);
-        			return;
-        		}
-        	}
-        
-        	final DownloadFile currentDownloading = getDownloadService().getCurrentDownloading();
-        	for (int i = 0; i < count; i++) {
-        		if (currentDownloading == playlistView.getItemAtPosition(i)) {
-        			playlistView.smoothScrollToPositionFromTop(i, 40);
-        			return;
-        		}
-        	}
-        }
-    }
+		final View nowPlayingMenuItem = findViewById(R.id.menu_now_playing);
+		menuDrawer.setActiveView(nowPlayingMenuItem);
 
-    @Override
-    protected void onPause() {
-        super.onPause();
-        executorService.shutdown();
-        
-        if (visualizerView != null) {
-            visualizerView.setActive(false);
-        }
-    }
+		if (visualizerAvailable)
+		{
+			visualizerView = new VisualizerView(this);
+			visualizerViewLayout.addView(visualizerView, new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.MATCH_PARENT));
 
-    @Override
-    protected Dialog onCreateDialog(final int id) {
-        if (id == DIALOG_SAVE_PLAYLIST) {
-            final AlertDialog.Builder builder;
+			if (!visualizerView.isActive())
+			{
+				visualizerViewLayout.setVisibility(View.GONE);
+			}
+			else
+			{
+				visualizerViewLayout.setVisibility(View.VISIBLE);
+			}
 
-            final LayoutInflater layoutInflater = (LayoutInflater) getSystemService(LAYOUT_INFLATER_SERVICE);
-            final View layout = layoutInflater.inflate(R.layout.save_playlist, (ViewGroup) findViewById(R.id.save_playlist_root));
-
-            if (layout != null) {
-                playlistNameView = (EditText) layout.findViewById(R.id.save_playlist_name);
-            }
-
-            builder = new AlertDialog.Builder(this);
-            builder.setTitle(R.string.download_playlist_title);
-            builder.setMessage(R.string.download_playlist_name);
-            builder.setPositiveButton(R.string.common_save, new DialogInterface.OnClickListener() {
-                @Override
-                public void onClick(final DialogInterface dialog, final int clickId) {
-                    savePlaylistInBackground(String.valueOf(playlistNameView.getText()));
-                }
-            });
-            builder.setNegativeButton(R.string.common_cancel, new DialogInterface.OnClickListener() {
-                @Override
-                public void onClick(final DialogInterface dialog, final int clickId) {
-                    dialog.cancel();
-                }
-            });
-            builder.setView(layout);
-            builder.setCancelable(true);
-
-            return builder.create();
-        } else {
-            return super.onCreateDialog(id);
-        }
-    }
-
-    @Override
-    protected void onPrepareDialog(final int id, final Dialog dialog) {
-        if (id == DIALOG_SAVE_PLAYLIST) {
-            final String playlistName = (getDownloadService() != null) ? getDownloadService().getSuggestedPlaylistName() : null;
-            if (playlistName != null) {
-                playlistNameView.setText(playlistName);
-            } else {
-                final DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd", Locale.getDefault());
-                playlistNameView.setText(dateFormat.format(new Date()));
-            }
-        }
-    }
+			visualizerView.setOnTouchListener(new View.OnTouchListener()
+			{
+				@Override
+				public boolean onTouch(final View view, final MotionEvent motionEvent)
+				{
+					visualizerView.setActive(!visualizerView.isActive());
+					getDownloadService().setShowVisualization(visualizerView.isActive());
+					return true;
+				}
+			});
+		}
+		else
+		{
+			visualizerViewLayout.setVisibility(View.GONE);
+		}
+	}
 
 	@Override
-	public boolean onCreateOptionsMenu(final Menu menu) {
+	protected void onResume()
+	{
+		super.onResume();
+
+		final DownloadService downloadService = getDownloadService();
+
+		if (downloadService == null || downloadService.getCurrentPlaying() == null)
+		{
+			playlistFlipper.setDisplayedChild(1);
+		}
+
+		final Handler handler = new Handler();
+		final Runnable runnable = new Runnable()
+		{
+			@Override
+			public void run()
+			{
+				handler.post(new Runnable()
+				{
+					@Override
+					public void run()
+					{
+						update();
+					}
+				});
+			}
+		};
+
+		executorService = Executors.newSingleThreadScheduledExecutor();
+		executorService.scheduleWithFixedDelay(runnable, 0L, 500L, TimeUnit.MILLISECONDS);
+
+		if (downloadService != null && downloadService.getKeepScreenOn())
+		{
+			getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
+		}
+		else
+		{
+			getWindow().clearFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
+		}
+
+		if (visualizerView != null)
+		{
+			visualizerView.setActive(downloadService != null && downloadService.getShowVisualization());
+		}
+
+		if (Util.isOffline(this))
+		{
+			saveImageButton.setVisibility(View.GONE);
+		}
+	}
+
+	// Scroll to current playing/downloading.
+	private void scrollToCurrent()
+	{
+		if (getDownloadService() == null)
+		{
+			return;
+		}
+
+		ListAdapter adapter = playlistView.getAdapter();
+
+		if (adapter != null)
+		{
+			int count = adapter.getCount();
+
+			for (int i = 0; i < count; i++)
+			{
+				if (currentPlaying == playlistView.getItemAtPosition(i))
+				{
+					playlistView.smoothScrollToPositionFromTop(i, 40);
+					return;
+				}
+			}
+
+			final DownloadFile currentDownloading = getDownloadService().getCurrentDownloading();
+			for (int i = 0; i < count; i++)
+			{
+				if (currentDownloading == playlistView.getItemAtPosition(i))
+				{
+					playlistView.smoothScrollToPositionFromTop(i, 40);
+					return;
+				}
+			}
+		}
+	}
+
+	@Override
+	protected void onPause()
+	{
+		super.onPause();
+		executorService.shutdown();
+
+		if (visualizerView != null)
+		{
+			visualizerView.setActive(false);
+		}
+	}
+
+	@Override
+	protected Dialog onCreateDialog(final int id)
+	{
+		if (id == DIALOG_SAVE_PLAYLIST)
+		{
+			final AlertDialog.Builder builder;
+
+			final LayoutInflater layoutInflater = (LayoutInflater) getSystemService(LAYOUT_INFLATER_SERVICE);
+			final View layout = layoutInflater.inflate(R.layout.save_playlist, (ViewGroup) findViewById(R.id.save_playlist_root));
+
+			if (layout != null)
+			{
+				playlistNameView = (EditText) layout.findViewById(R.id.save_playlist_name);
+			}
+
+			builder = new AlertDialog.Builder(this);
+			builder.setTitle(R.string.download_playlist_title);
+			builder.setMessage(R.string.download_playlist_name);
+			builder.setPositiveButton(R.string.common_save, new DialogInterface.OnClickListener()
+			{
+				@Override
+				public void onClick(final DialogInterface dialog, final int clickId)
+				{
+					savePlaylistInBackground(String.valueOf(playlistNameView.getText()));
+				}
+			});
+			builder.setNegativeButton(R.string.common_cancel, new DialogInterface.OnClickListener()
+			{
+				@Override
+				public void onClick(final DialogInterface dialog, final int clickId)
+				{
+					dialog.cancel();
+				}
+			});
+			builder.setView(layout);
+			builder.setCancelable(true);
+
+			return builder.create();
+		}
+		else
+		{
+			return super.onCreateDialog(id);
+		}
+	}
+
+	@Override
+	protected void onPrepareDialog(final int id, final Dialog dialog)
+	{
+		if (id == DIALOG_SAVE_PLAYLIST)
+		{
+			final String playlistName = (getDownloadService() != null) ? getDownloadService().getSuggestedPlaylistName() : null;
+			if (playlistName != null)
+			{
+				playlistNameView.setText(playlistName);
+			}
+			else
+			{
+				final DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd", Locale.getDefault());
+				playlistNameView.setText(dateFormat.format(new Date()));
+			}
+		}
+	}
+
+	@Override
+	public boolean onCreateOptionsMenu(final Menu menu)
+	{
 		final MenuInflater menuInflater = getMenuInflater();
 		menuInflater.inflate(R.menu.nowplaying, menu);
-    	super.onCreateOptionsMenu(menu);
+		super.onCreateOptionsMenu(menu);
 		return true;
 	}
 
-    @Override
-    public boolean onPrepareOptionsMenu(final Menu menu) {
-    	super.onPrepareOptionsMenu(menu);
-    	
-        final MenuItem screenOption = menu.findItem(R.id.menu_screen_on_off);
-        final MenuItem jukeboxOption = menu.findItem(R.id.download_jukebox);
-        final MenuItem equalizerMenuItem = menu.findItem(R.id.download_equalizer);
-        final MenuItem visualizerMenuItem = menu.findItem(R.id.download_visualizer);
+	@Override
+	public boolean onPrepareOptionsMenu(final Menu menu)
+	{
+		super.onPrepareOptionsMenu(menu);
 
-        if (equalizerMenuItem != null) {
-            equalizerMenuItem.setEnabled(equalizerAvailable);
-            equalizerMenuItem.setVisible(equalizerAvailable);
-        }
+		final MenuItem screenOption = menu.findItem(R.id.menu_screen_on_off);
+		final MenuItem jukeboxOption = menu.findItem(R.id.download_jukebox);
+		final MenuItem equalizerMenuItem = menu.findItem(R.id.download_equalizer);
+		final MenuItem visualizerMenuItem = menu.findItem(R.id.download_visualizer);
 
-        if (visualizerMenuItem != null) {
-            visualizerMenuItem.setEnabled(visualizerAvailable);
-            visualizerMenuItem.setVisible(visualizerAvailable);
-        }
+		if (equalizerMenuItem != null)
+		{
+			equalizerMenuItem.setEnabled(equalizerAvailable);
+			equalizerMenuItem.setVisible(equalizerAvailable);
+		}
 
-        final DownloadService downloadService = getDownloadService();
-        
-        if (downloadService != null) {
-        	if (downloadService.getKeepScreenOn()) {
-                if (screenOption != null) {
-                    screenOption.setTitle(R.string.download_menu_screen_off);
-                }
-            } else {
-                if (screenOption != null) {
-                    screenOption.setTitle(R.string.download_menu_screen_on);
-                }
-            }
-        	
-        	if (downloadService.isJukeboxEnabled()) {
-                if (jukeboxOption != null) {
-                	jukeboxOption.setTitle(R.string.download_menu_jukebox_off);
-                }
-            } else {
-                if (jukeboxOption != null) {
-                	jukeboxOption.setTitle(R.string.download_menu_jukebox_on);
-                }
-            }
-        }
-        
-        return true;
-    }
+		if (visualizerMenuItem != null)
+		{
+			visualizerMenuItem.setEnabled(visualizerAvailable);
+			visualizerMenuItem.setVisible(visualizerAvailable);
+		}
 
-    @Override
-    public void onCreateContextMenu(final ContextMenu menu, final View view, final ContextMenu.ContextMenuInfo menuInfo) {
-        super.onCreateContextMenu(menu, view, menuInfo);
-        if (view == playlistView) {
-            final AdapterView.AdapterContextMenuInfo info = (AdapterView.AdapterContextMenuInfo) menuInfo;
-            final DownloadFile downloadFile = (DownloadFile) playlistView.getItemAtPosition(info.position);
+		final DownloadService downloadService = getDownloadService();
 
-            final MenuInflater menuInflater = getMenuInflater();
-    		menuInflater.inflate(R.menu.nowplaying_context, menu);
+		if (downloadService != null)
+		{
+			if (downloadService.getKeepScreenOn())
+			{
+				if (screenOption != null)
+				{
+					screenOption.setTitle(R.string.download_menu_screen_off);
+				}
+			}
+			else
+			{
+				if (screenOption != null)
+				{
+					screenOption.setTitle(R.string.download_menu_screen_on);
+				}
+			}
 
-            Entry song = null;
+			if (downloadService.isJukeboxEnabled())
+			{
+				if (jukeboxOption != null)
+				{
+					jukeboxOption.setTitle(R.string.download_menu_jukebox_off);
+				}
+			}
+			else
+			{
+				if (jukeboxOption != null)
+				{
+					jukeboxOption.setTitle(R.string.download_menu_jukebox_on);
+				}
+			}
+		}
 
-            if (downloadFile != null) {
-                song = downloadFile.getSong();
-            }
+		return true;
+	}
 
-            if (song != null && song.getParent() == null) {
-                MenuItem menuItem = menu.findItem(R.id.menu_show_album);
+	@Override
+	public void onCreateContextMenu(final ContextMenu menu, final View view, final ContextMenu.ContextMenuInfo menuInfo)
+	{
+		super.onCreateContextMenu(menu, view, menuInfo);
+		if (view == playlistView)
+		{
+			final AdapterView.AdapterContextMenuInfo info = (AdapterView.AdapterContextMenuInfo) menuInfo;
+			final DownloadFile downloadFile = (DownloadFile) playlistView.getItemAtPosition(info.position);
 
-                if (menuItem != null) {
-                    menuItem.setVisible(false);
-                }
-            }
-            if (Util.isOffline(this)) {
-                MenuItem menuItem = menu.findItem(R.id.menu_lyrics);
+			final MenuInflater menuInflater = getMenuInflater();
+			menuInflater.inflate(R.menu.nowplaying_context, menu);
 
-                if (menuItem != null) {
-                    menuItem.setVisible(false);
-                }
-            }
-        }
-    }
+			Entry song = null;
 
-    @Override
-    public boolean onContextItemSelected(final MenuItem menuItem) {
-        final AdapterView.AdapterContextMenuInfo info = (AdapterView.AdapterContextMenuInfo) menuItem.getMenuInfo();
+			if (downloadFile != null)
+			{
+				song = downloadFile.getSong();
+			}
 
-        DownloadFile downloadFile = null;
+			if (song != null && song.getParent() == null)
+			{
+				MenuItem menuItem = menu.findItem(R.id.menu_show_album);
 
-        if (info != null) {
-            downloadFile = (DownloadFile) playlistView.getItemAtPosition(info.position);
-        }
+				if (menuItem != null)
+				{
+					menuItem.setVisible(false);
+				}
+			}
+			if (Util.isOffline(this))
+			{
+				MenuItem menuItem = menu.findItem(R.id.menu_lyrics);
 
-        return menuItemSelected(menuItem.getItemId(), downloadFile) || super.onContextItemSelected(menuItem);
-    }
+				if (menuItem != null)
+				{
+					menuItem.setVisible(false);
+				}
+			}
+		}
+	}
 
-    @Override
-    public boolean onOptionsItemSelected(final MenuItem menuItem) {
-        return menuItemSelected(menuItem.getItemId(), null) || super.onOptionsItemSelected(menuItem);
-    }
+	@Override
+	public boolean onContextItemSelected(final MenuItem menuItem)
+	{
+		final AdapterView.AdapterContextMenuInfo info = (AdapterView.AdapterContextMenuInfo) menuItem.getMenuInfo();
 
-    private boolean menuItemSelected(final int menuItemId, final DownloadFile song) {
-        switch (menuItemId) {
-            case R.id.menu_show_album:
-                Intent intent = new Intent(this, SelectAlbumActivity.class);
-                intent.putExtra(Constants.INTENT_EXTRA_NAME_ID, song.getSong().getParent());
-                intent.putExtra(Constants.INTENT_EXTRA_NAME_NAME, song.getSong().getAlbum());
-                Util.startActivityWithoutTransition(this, intent);
-                return true;
-            case R.id.menu_lyrics:
-                intent = new Intent(this, LyricsActivity.class);
-                intent.putExtra(Constants.INTENT_EXTRA_NAME_ARTIST, song.getSong().getArtist());
-                intent.putExtra(Constants.INTENT_EXTRA_NAME_TITLE, song.getSong().getTitle());
-                Util.startActivityWithoutTransition(this, intent);
-                return true;
-            case R.id.menu_remove:
-                getDownloadService().remove(song);
-                onDownloadListChanged();
-                return true;
-            case R.id.menu_screen_on_off:
-                if (getDownloadService().getKeepScreenOn()) {
-                    getWindow().clearFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
-            		getDownloadService().setKeepScreenOn(false);
-            	} else {
-                    getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
-            		getDownloadService().setKeepScreenOn(true);
-            	}
-                return true;
-            case R.id.menu_shuffle:
-                getDownloadService().shuffle();
-                Util.toast(this, R.string.download_menu_shuffle_notification);
-                return true;
-            case R.id.download_equalizer:
-            	startActivity(new Intent(DownloadActivity.this, EqualizerActivity.class));
-            	return true;
-            case R.id.download_visualizer:
-                final boolean active = !visualizerView.isActive();
-                visualizerView.setActive(active);
+		DownloadFile downloadFile = null;
 
-                if (!visualizerView.isActive()) {
-                	visualizerViewLayout.setVisibility(View.GONE);
-                } else {
-                	visualizerViewLayout.setVisibility(View.VISIBLE);
-                }
+		if (info != null)
+		{
+			downloadFile = (DownloadFile) playlistView.getItemAtPosition(info.position);
+		}
 
-                getDownloadService().setShowVisualization(visualizerView.isActive());
-                Util.toast(DownloadActivity.this, active ? R.string.download_visualizer_on : R.string.download_visualizer_off);
-            	return true;
-            case R.id.download_jukebox:
-                final boolean jukeboxEnabled = !getDownloadService().isJukeboxEnabled();
-                getDownloadService().setJukeboxEnabled(jukeboxEnabled);
-                Util.toast(DownloadActivity.this, jukeboxEnabled ? R.string.download_jukebox_on : R.string.download_jukebox_off, false);
-            	return true;            	
-            default:
-                return false;
-        }
-    }
+		return menuItemSelected(menuItem.getItemId(), downloadFile) || super.onContextItemSelected(menuItem);
+	}
 
-    private void update() {
-        if (getDownloadService() == null) {
-            return;
-        }
+	@Override
+	public boolean onOptionsItemSelected(final MenuItem menuItem)
+	{
+		return menuItemSelected(menuItem.getItemId(), null) || super.onOptionsItemSelected(menuItem);
+	}
 
-        if (currentRevision != getDownloadService().getDownloadListUpdateRevision()) {
-            onDownloadListChanged();
-        }
+	private boolean menuItemSelected(final int menuItemId, final DownloadFile song)
+	{
+		switch (menuItemId)
+		{
+			case R.id.menu_show_album:
+				Intent intent = new Intent(this, SelectAlbumActivity.class);
+				intent.putExtra(Constants.INTENT_EXTRA_NAME_ID, song.getSong().getParent());
+				intent.putExtra(Constants.INTENT_EXTRA_NAME_NAME, song.getSong().getAlbum());
+				Util.startActivityWithoutTransition(this, intent);
+				return true;
+			case R.id.menu_lyrics:
+				intent = new Intent(this, LyricsActivity.class);
+				intent.putExtra(Constants.INTENT_EXTRA_NAME_ARTIST, song.getSong().getArtist());
+				intent.putExtra(Constants.INTENT_EXTRA_NAME_TITLE, song.getSong().getTitle());
+				Util.startActivityWithoutTransition(this, intent);
+				return true;
+			case R.id.menu_remove:
+				getDownloadService().remove(song);
+				onDownloadListChanged();
+				return true;
+			case R.id.menu_screen_on_off:
+				if (getDownloadService().getKeepScreenOn())
+				{
+					getWindow().clearFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
+					getDownloadService().setKeepScreenOn(false);
+				}
+				else
+				{
+					getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
+					getDownloadService().setKeepScreenOn(true);
+				}
+				return true;
+			case R.id.menu_shuffle:
+				getDownloadService().shuffle();
+				Util.toast(this, R.string.download_menu_shuffle_notification);
+				return true;
+			case R.id.download_equalizer:
+				startActivity(new Intent(DownloadActivity.this, EqualizerActivity.class));
+				return true;
+			case R.id.download_visualizer:
+				final boolean active = !visualizerView.isActive();
+				visualizerView.setActive(active);
 
-        if (currentPlaying != getDownloadService().getCurrentPlaying()) {
-            onCurrentChanged();
-        }
+				if (!visualizerView.isActive())
+				{
+					visualizerViewLayout.setVisibility(View.GONE);
+				}
+				else
+				{
+					visualizerViewLayout.setVisibility(View.VISIBLE);
+				}
 
-        onSliderProgressChanged();
-    }
+				getDownloadService().setShowVisualization(visualizerView.isActive());
+				Util.toast(DownloadActivity.this, active ? R.string.download_visualizer_on : R.string.download_visualizer_off);
+				return true;
+			case R.id.download_jukebox:
+				final boolean jukeboxEnabled = !getDownloadService().isJukeboxEnabled();
+				getDownloadService().setJukeboxEnabled(jukeboxEnabled);
+				Util.toast(DownloadActivity.this, jukeboxEnabled ? R.string.download_jukebox_on : R.string.download_jukebox_off, false);
+				return true;
+			default:
+				return false;
+		}
+	}
 
-    private void savePlaylistInBackground(final String playlistName) {
-        Util.toast(DownloadActivity.this, getResources().getString(R.string.download_playlist_saving, playlistName));
-        getDownloadService().setSuggestedPlaylistName(playlistName);
-        new SilentBackgroundTask<Void>(this) {
-            @Override
-            protected Void doInBackground() throws Throwable {
-                final List<MusicDirectory.Entry> entries = new LinkedList<MusicDirectory.Entry>();
-                for (final DownloadFile downloadFile : getDownloadService().getSongs()) {
-                    entries.add(downloadFile.getSong());
-                }
-                final MusicService musicService = MusicServiceFactory.getMusicService(DownloadActivity.this);
-                musicService.createPlaylist(null, playlistName, entries, DownloadActivity.this, null);
-                return null;
-            }
+	private void update()
+	{
+		if (getDownloadService() == null)
+		{
+			return;
+		}
 
-            @Override
-            protected void done(final Void result) {
-                Util.toast(DownloadActivity.this, R.string.download_playlist_done);
-            }
+		if (currentRevision != getDownloadService().getDownloadListUpdateRevision())
+		{
+			onDownloadListChanged();
+		}
 
-            @Override
-            protected void error(final Throwable error) {
-                final String msg = getResources().getString(R.string.download_playlist_error) + " " + getErrorMessage(error);
-                Util.toast(DownloadActivity.this, msg);
-            }
-        }.execute();
-    }
+		if (currentPlaying != getDownloadService().getCurrentPlaying())
+		{
+			onCurrentChanged();
+		}
 
-    private void toggleFullScreenAlbumArt() {
-        if (playlistFlipper.getDisplayedChild() == 1) {
-            playlistFlipper.setInAnimation(AnimationUtils.loadAnimation(this, R.anim.push_down_in));
-            playlistFlipper.setOutAnimation(AnimationUtils.loadAnimation(this, R.anim.push_down_out));
-            playlistFlipper.setDisplayedChild(0);
-        } else {
-            playlistFlipper.setInAnimation(AnimationUtils.loadAnimation(this, R.anim.push_up_in));
-            playlistFlipper.setOutAnimation(AnimationUtils.loadAnimation(this, R.anim.push_up_out));
-            playlistFlipper.setDisplayedChild(1);
-        }
-        
-    	scrollToCurrent();
-    }
+		onSliderProgressChanged();
+	}
 
-    private void start() {
-        final DownloadService service = getDownloadService();
-        final PlayerState state = service.getPlayerState();
+	private void savePlaylistInBackground(final String playlistName)
+	{
+		Util.toast(DownloadActivity.this, getResources().getString(R.string.download_playlist_saving, playlistName));
+		getDownloadService().setSuggestedPlaylistName(playlistName);
+		new SilentBackgroundTask<Void>(this)
+		{
+			@Override
+			protected Void doInBackground() throws Throwable
+			{
+				final List<MusicDirectory.Entry> entries = new LinkedList<MusicDirectory.Entry>();
+				for (final DownloadFile downloadFile : getDownloadService().getSongs())
+				{
+					entries.add(downloadFile.getSong());
+				}
+				final MusicService musicService = MusicServiceFactory.getMusicService(DownloadActivity.this);
+				musicService.createPlaylist(null, playlistName, entries, DownloadActivity.this, null);
+				return null;
+			}
 
-        if (state == PAUSED || state == COMPLETED || state == STOPPED) {
-            service.start();
-        } else if (state == IDLE) {
-            warnIfNetworkOrStorageUnavailable();
+			@Override
+			protected void done(final Void result)
+			{
+				Util.toast(DownloadActivity.this, R.string.download_playlist_done);
+			}
 
-            final int current = service.getCurrentPlayingIndex();
+			@Override
+			protected void error(final Throwable error)
+			{
+				final String msg = String.format("%s %s", getResources().getString(R.string.download_playlist_error), getErrorMessage(error));
+				Util.toast(DownloadActivity.this, msg);
+			}
+		}.execute();
+	}
 
-            if (current == -1) {
-                service.play(0);
-            } else {
-                service.play(current);
-            }
-        }
-    }
-	
-    private void onDownloadListChanged() {
-        final DownloadService downloadService = getDownloadService();
-        if (downloadService == null) {
-            return;
-        }
+	private void toggleFullScreenAlbumArt()
+	{
+		if (playlistFlipper.getDisplayedChild() == 1)
+		{
+			playlistFlipper.setInAnimation(AnimationUtils.loadAnimation(this, R.anim.push_down_in));
+			playlistFlipper.setOutAnimation(AnimationUtils.loadAnimation(this, R.anim.push_down_out));
+			playlistFlipper.setDisplayedChild(0);
+		}
+		else
+		{
+			playlistFlipper.setInAnimation(AnimationUtils.loadAnimation(this, R.anim.push_up_in));
+			playlistFlipper.setOutAnimation(AnimationUtils.loadAnimation(this, R.anim.push_up_out));
+			playlistFlipper.setDisplayedChild(1);
+		}
+
+		scrollToCurrent();
+	}
+
+	private void start()
+	{
+		final DownloadService service = getDownloadService();
+		final PlayerState state = service.getPlayerState();
+
+		if (state == PAUSED || state == COMPLETED || state == STOPPED)
+		{
+			service.start();
+		}
+		else if (state == IDLE)
+		{
+			warnIfNetworkOrStorageUnavailable();
+
+			final int current = service.getCurrentPlayingIndex();
+
+			if (current == -1)
+			{
+				service.play(0);
+			}
+			else
+			{
+				service.play(current);
+			}
+		}
+	}
+
+	private void onDownloadListChanged()
+	{
+		final DownloadService downloadService = getDownloadService();
+		if (downloadService == null)
+		{
+			return;
+		}
 
 		final List<DownloadFile> list = downloadService.getSongs();
 
 		emptyTextView.setText(R.string.download_empty);
 		playlistView.setAdapter(new SongListAdapter(this, list));
-        emptyTextView.setVisibility(list.isEmpty() ? View.VISIBLE : View.GONE);
-        currentRevision = downloadService.getDownloadListUpdateRevision();
+		emptyTextView.setVisibility(list.isEmpty() ? View.VISIBLE : View.GONE);
+		currentRevision = downloadService.getDownloadListUpdateRevision();
 
-        switch (downloadService.getRepeatMode()) {
-        	case OFF:
-        		repeatButton.setImageDrawable(Util.getDrawableFromAttribute(this, R.attr.media_repeat_off));
-        		break;
-        	case ALL:
-        		repeatButton.setImageDrawable(Util.getDrawableFromAttribute(this, R.attr.media_repeat_all));
-        		break;
-        	case SINGLE:
-        		repeatButton.setImageDrawable(Util.getDrawableFromAttribute(this, R.attr.media_repeat_single));
-        		break;
-        	default:
-        		break;
-        }
-    }
+		switch (downloadService.getRepeatMode())
+		{
+			case OFF:
+				repeatButton.setImageDrawable(Util.getDrawableFromAttribute(this, R.attr.media_repeat_off));
+				break;
+			case ALL:
+				repeatButton.setImageDrawable(Util.getDrawableFromAttribute(this, R.attr.media_repeat_all));
+				break;
+			case SINGLE:
+				repeatButton.setImageDrawable(Util.getDrawableFromAttribute(this, R.attr.media_repeat_single));
+				break;
+			default:
+				break;
+		}
+	}
 
-    private void onCurrentChanged() {
-        if (getDownloadService() == null) {
-            return;
-        }
-
-        currentPlaying = getDownloadService().getCurrentPlaying();
-        
-        scrollToCurrent();
-        
-        long totalDuration = getDownloadService().getDownloadListDuration();
-        long totalSongs = getDownloadService().getSongs().size();
-        int currentSongIndex = getDownloadService().getCurrentPlayingIndex() + 1;
-        
-        String duration = Util.formatTotalDuration(totalDuration);
-        
-        String trackFormat = String.format(Locale.getDefault(), "%d / %d", currentSongIndex, totalSongs);
-       
-        if (currentPlaying != null) {
-        	currentSong = currentPlaying.getSong();
-            final Drawable starDrawable = currentSong.getStarred() ? Util.getDrawableFromAttribute(SubsonicTabActivity.getInstance(), R.attr.star_full) : Util.getDrawableFromAttribute(SubsonicTabActivity.getInstance(), R.attr.star_hollow);
-            starImageButton.setImageDrawable(starDrawable);
-            songTitleTextView.setText(currentSong.getTitle());
-            albumTextView.setText(currentSong.getAlbum());
-            artistTextView.setText(currentSong.getArtist());
-            downloadTrackTextView.setText(trackFormat);
-            downloadTotalDurationTextView.setText(duration);
-            getImageLoader().loadImage(albumArtImageView, currentSong, true, 0, false, true);
-        } else {
-        	currentSong = null;
-            songTitleTextView.setText(null);
-            albumTextView.setText(null);
-            artistTextView.setText(null);
-            downloadTrackTextView.setText(null);
-            downloadTotalDurationTextView.setText(null);
-            getImageLoader().loadImage(albumArtImageView, null, true, 0, false, false);
-        }
-    }
-
-	private void onSliderProgressChanged() {
-		if (getDownloadService() == null || onProgressChangedTask != null) {
+	private void onCurrentChanged()
+	{
+		if (getDownloadService() == null)
+		{
 			return;
 		}
 
-		onProgressChangedTask = new SilentBackgroundTask<Void>(this) {
+		currentPlaying = getDownloadService().getCurrentPlaying();
+
+		scrollToCurrent();
+
+		long totalDuration = getDownloadService().getDownloadListDuration();
+		long totalSongs = getDownloadService().getSongs().size();
+		int currentSongIndex = getDownloadService().getCurrentPlayingIndex() + 1;
+
+		String duration = Util.formatTotalDuration(totalDuration);
+
+		String trackFormat = String.format(Locale.getDefault(), "%d / %d", currentSongIndex, totalSongs);
+
+		if (currentPlaying != null)
+		{
+			currentSong = currentPlaying.getSong();
+			final Drawable starDrawable = currentSong.getStarred() ? Util.getDrawableFromAttribute(SubsonicTabActivity.getInstance(), R.attr.star_full) : Util.getDrawableFromAttribute(SubsonicTabActivity.getInstance(), R.attr.star_hollow);
+			starImageButton.setImageDrawable(starDrawable);
+			songTitleTextView.setText(currentSong.getTitle());
+			albumTextView.setText(currentSong.getAlbum());
+			artistTextView.setText(currentSong.getArtist());
+			downloadTrackTextView.setText(trackFormat);
+			downloadTotalDurationTextView.setText(duration);
+			getImageLoader().loadImage(albumArtImageView, currentSong, true, 0, false, true);
+		}
+		else
+		{
+			currentSong = null;
+			songTitleTextView.setText(null);
+			albumTextView.setText(null);
+			artistTextView.setText(null);
+			downloadTrackTextView.setText(null);
+			downloadTotalDurationTextView.setText(null);
+			getImageLoader().loadImage(albumArtImageView, null, true, 0, false, false);
+		}
+	}
+
+	private void onSliderProgressChanged()
+	{
+		if (getDownloadService() == null || onProgressChangedTask != null)
+		{
+			return;
+		}
+
+		onProgressChangedTask = new SilentBackgroundTask<Void>(this)
+		{
 			DownloadService downloadService;
 			boolean isJukeboxEnabled;
 			int millisPlayed;
@@ -969,7 +1174,8 @@ public class DownloadActivity extends SubsonicTabActivity implements OnGestureLi
 			PlayerState playerState;
 
 			@Override
-			protected Void doInBackground() throws Throwable {
+			protected Void doInBackground() throws Throwable
+			{
 				downloadService = getDownloadService();
 				isJukeboxEnabled = downloadService.isJukeboxEnabled();
 				millisPlayed = Math.max(0, downloadService.getPlayerPosition());
@@ -979,8 +1185,10 @@ public class DownloadActivity extends SubsonicTabActivity implements OnGestureLi
 			}
 
 			@Override
-			protected void done(final Void result) {
-				if (currentPlaying != null) {
+			protected void done(final Void result)
+			{
+				if (currentPlaying != null)
+				{
 					final int millisTotal = duration == null ? 0 : duration;
 
 					positionTextView.setText(Util.formatTotalDuration(millisPlayed, true));
@@ -988,7 +1196,9 @@ public class DownloadActivity extends SubsonicTabActivity implements OnGestureLi
 					progressBar.setMax(millisTotal == 0 ? 100 : millisTotal); // Work-around for apparent bug.
 					progressBar.setProgress(millisPlayed);
 					progressBar.setEnabled(currentPlaying.isWorkDone() || isJukeboxEnabled);
-				} else {
+				}
+				else
+				{
 					positionTextView.setText(R.string.util_zero_time);
 					durationTextView.setText(R.string.util_no_time);
 					progressBar.setProgress(0);
@@ -996,56 +1206,61 @@ public class DownloadActivity extends SubsonicTabActivity implements OnGestureLi
 					progressBar.setEnabled(false);
 				}
 
-                switch (playerState) {
-                    case DOWNLOADING:
-                        final long bytes = currentPlaying != null ? currentPlaying.getPartialFile().length() : 0;
-                        String downloadStatus = getResources().getString(R.string.download_playerstate_downloading, Util.formatLocalizedBytes(bytes, DownloadActivity.this));
-                        setActionBarSubtitle(downloadStatus);
-                        break;
-                    case PREPARING:
-                        setActionBarSubtitle(R.string.download_playerstate_buffering);
-                        break;
-                    case STARTED:
-                    	final DownloadService downloadService = getDownloadService();
-                    	
-                        if (downloadService != null && downloadService.isShufflePlayEnabled()) {
-                            setActionBarSubtitle(R.string.download_playerstate_playing_shuffle);
-                        } else {
-                            setActionBarSubtitle(null);
-                        }
-                        break;
-                    default:
-                        setActionBarSubtitle(null);
-                        break;
-                    case IDLE:
-                        break;
-                    case PREPARED:
-                        break;
-                    case STOPPED:
-                        break;
-                    case PAUSED:
-                        break;
-                    case COMPLETED:
-                        break;
-                }
+				switch (playerState)
+				{
+					case DOWNLOADING:
+						final long bytes = currentPlaying != null ? currentPlaying.getPartialFile().length() : 0;
+						String downloadStatus = getResources().getString(R.string.download_playerstate_downloading, Util.formatLocalizedBytes(bytes, DownloadActivity.this));
+						setActionBarSubtitle(downloadStatus);
+						break;
+					case PREPARING:
+						setActionBarSubtitle(R.string.download_playerstate_buffering);
+						break;
+					case STARTED:
+						final DownloadService downloadService = getDownloadService();
 
-				switch (playerState) {
-				case STARTED:
-					pauseButton.setVisibility(View.VISIBLE);
-					stopButton.setVisibility(View.GONE);
-					startButton.setVisibility(View.GONE);
-					break;
-				case DOWNLOADING:
-				case PREPARING:
-					pauseButton.setVisibility(View.GONE);
-					stopButton.setVisibility(View.VISIBLE);
-					startButton.setVisibility(View.GONE);
-					break;
-				default:
-					pauseButton.setVisibility(View.GONE);
-					stopButton.setVisibility(View.GONE);
-					startButton.setVisibility(View.VISIBLE);
-					break;
+						if (downloadService != null && downloadService.isShufflePlayEnabled())
+						{
+							setActionBarSubtitle(R.string.download_playerstate_playing_shuffle);
+						}
+						else
+						{
+							setActionBarSubtitle(null);
+						}
+						break;
+					default:
+						setActionBarSubtitle(null);
+						break;
+					case IDLE:
+						break;
+					case PREPARED:
+						break;
+					case STOPPED:
+						break;
+					case PAUSED:
+						break;
+					case COMPLETED:
+						break;
+				}
+
+				switch (playerState)
+				{
+					case STARTED:
+						pauseButton.setVisibility(View.VISIBLE);
+						stopButton.setVisibility(View.GONE);
+						startButton.setVisibility(View.GONE);
+						break;
+					case DOWNLOADING:
+					case PREPARING:
+						pauseButton.setVisibility(View.GONE);
+						stopButton.setVisibility(View.VISIBLE);
+						startButton.setVisibility(View.GONE);
+						break;
+					default:
+						pauseButton.setVisibility(View.GONE);
+						stopButton.setVisibility(View.GONE);
+						startButton.setVisibility(View.VISIBLE);
+						break;
 				}
 
 				onProgressChangedTask = null;
@@ -1053,113 +1268,132 @@ public class DownloadActivity extends SubsonicTabActivity implements OnGestureLi
 		};
 		onProgressChangedTask.execute();
 	}
-	
-	private void changeProgress(final int ms) {
+
+	private void changeProgress(final int ms)
+	{
 		final DownloadService downloadService = getDownloadService();
-		if(downloadService == null) {
+		if (downloadService == null)
+		{
 			return;
 		}
 
-		new SilentBackgroundTask<Void>(this) {
+		new SilentBackgroundTask<Void>(this)
+		{
 			int msPlayed;
 			Integer duration;
 			int seekTo;
 
 			@Override
-            protected Void doInBackground() throws Throwable {
+			protected Void doInBackground() throws Throwable
+			{
 				msPlayed = Math.max(0, downloadService.getPlayerPosition());
 				duration = downloadService.getPlayerDuration();
 
 				final int msTotal = duration;
-                seekTo = msPlayed + ms > msTotal ? msTotal : msPlayed + ms;
+				seekTo = msPlayed + ms > msTotal ? msTotal : msPlayed + ms;
 				downloadService.seekTo(seekTo);
-                return null;
-            }
-            
-            @Override
-            protected void done(final Void result) {
+				return null;
+			}
+
+			@Override
+			protected void done(final Void result)
+			{
 				progressBar.setProgress(seekTo);
 			}
 		}.execute();
 	}
-    
-    @Override
-    public boolean onTouchEvent(final MotionEvent me) {
-        return gestureScanner.onTouchEvent(me);
-    }
 
 	@Override
-	public boolean onDown(final MotionEvent me) {
+	public boolean onTouchEvent(final MotionEvent me)
+	{
+		return gestureScanner.onTouchEvent(me);
+	}
+
+	@Override
+	public boolean onDown(final MotionEvent me)
+	{
 		return false;
 	}
 
 	@Override
-	public boolean onFling(final MotionEvent e1, final MotionEvent e2, final float velocityX, final float velocityY) {
+	public boolean onFling(final MotionEvent e1, final MotionEvent e2, final float velocityX, final float velocityY)
+	{
 
-        final DownloadService downloadService = getDownloadService();
-        
-        if (downloadService == null) {
-            return false;
-        }
+		final DownloadService downloadService = getDownloadService();
+
+		if (downloadService == null)
+		{
+			return false;
+		}
 
 		// Right to Left swipe
-		if (e1.getX() - e2.getX() > swipeDistance && Math.abs(velocityX) > swipeVelocity) {
-            warnIfNetworkOrStorageUnavailable();
-            if (downloadService.getCurrentPlayingIndex() < downloadService.size() - 1) {
-                downloadService.next();
-                onCurrentChanged();
-                onSliderProgressChanged();
-            }
+		if (e1.getX() - e2.getX() > swipeDistance && Math.abs(velocityX) > swipeVelocity)
+		{
+			warnIfNetworkOrStorageUnavailable();
+			if (downloadService.getCurrentPlayingIndex() < downloadService.size() - 1)
+			{
+				downloadService.next();
+				onCurrentChanged();
+				onSliderProgressChanged();
+			}
 			return true;
 		}
 
 		// Left to Right swipe
-        if (e2.getX() - e1.getX() > swipeDistance && Math.abs(velocityX) > swipeVelocity) {
-            warnIfNetworkOrStorageUnavailable();
-            downloadService.previous();
-            onCurrentChanged();
-            onSliderProgressChanged();
+		if (e2.getX() - e1.getX() > swipeDistance && Math.abs(velocityX) > swipeVelocity)
+		{
+			warnIfNetworkOrStorageUnavailable();
+			downloadService.previous();
+			onCurrentChanged();
+			onSliderProgressChanged();
 			return true;
 		}
 
-        // Top to Bottom swipe
-         if (e2.getY() - e1.getY() > swipeDistance && Math.abs(velocityY) > swipeVelocity) {
-             warnIfNetworkOrStorageUnavailable();
-             downloadService.seekTo(downloadService.getPlayerPosition() + 30000);
-             onSliderProgressChanged();
-             return true;
-         }
+		// Top to Bottom swipe
+		if (e2.getY() - e1.getY() > swipeDistance && Math.abs(velocityY) > swipeVelocity)
+		{
+			warnIfNetworkOrStorageUnavailable();
+			downloadService.seekTo(downloadService.getPlayerPosition() + 30000);
+			onSliderProgressChanged();
+			return true;
+		}
 
-        // Bottom to Top swipe
-        if (e1.getY() - e2.getY() > swipeDistance && Math.abs(velocityY) > swipeVelocity) {
-            warnIfNetworkOrStorageUnavailable();
-            downloadService.seekTo(downloadService.getPlayerPosition() - 8000);
-            onSliderProgressChanged();
-            return true;
-        }
+		// Bottom to Top swipe
+		if (e1.getY() - e2.getY() > swipeDistance && Math.abs(velocityY) > swipeVelocity)
+		{
+			warnIfNetworkOrStorageUnavailable();
+			downloadService.seekTo(downloadService.getPlayerPosition() - 8000);
+			onSliderProgressChanged();
+			return true;
+		}
 
-        return false;
-    }
-
-	@Override
-	public void onLongPress(final MotionEvent e) {
-	}
-
-	@Override
-	public boolean onScroll(final MotionEvent e1, final MotionEvent e2, final float distanceX, final float distanceY) {
 		return false;
 	}
 
 	@Override
-	public void onShowPress(final MotionEvent e) {
+	public void onLongPress(final MotionEvent e)
+	{
 	}
 
 	@Override
-	public boolean onSingleTapUp(final MotionEvent e) {
+	public boolean onScroll(final MotionEvent e1, final MotionEvent e2, final float distanceX, final float distanceY)
+	{
 		return false;
 	}
-	
-	public static SeekBar getProgressBar() {
+
+	@Override
+	public void onShowPress(final MotionEvent e)
+	{
+	}
+
+	@Override
+	public boolean onSingleTapUp(final MotionEvent e)
+	{
+		return false;
+	}
+
+	public static SeekBar getProgressBar()
+	{
 		return progressBar;
 	}
 }

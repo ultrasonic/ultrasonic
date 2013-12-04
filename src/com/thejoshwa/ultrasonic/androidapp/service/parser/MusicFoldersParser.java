@@ -25,6 +25,7 @@ import java.util.List;
 import org.xmlpull.v1.XmlPullParser;
 
 import android.content.Context;
+
 import com.thejoshwa.ultrasonic.androidapp.R;
 import com.thejoshwa.ultrasonic.androidapp.domain.MusicFolder;
 import com.thejoshwa.ultrasonic.androidapp.util.ProgressListener;
@@ -32,37 +33,45 @@ import com.thejoshwa.ultrasonic.androidapp.util.ProgressListener;
 /**
  * @author Sindre Mehus
  */
-public class MusicFoldersParser extends AbstractParser {
+public class MusicFoldersParser extends AbstractParser
+{
 
-    public MusicFoldersParser(Context context) {
-        super(context);
-    }
+	public MusicFoldersParser(Context context)
+	{
+		super(context);
+	}
 
-    public List<MusicFolder> parse(Reader reader, ProgressListener progressListener) throws Exception {
+	public List<MusicFolder> parse(Reader reader, ProgressListener progressListener) throws Exception
+	{
 
-        updateProgress(progressListener, R.string.parser_reading);
-        init(reader);
+		updateProgress(progressListener, R.string.parser_reading);
+		init(reader);
 
-        List<MusicFolder> result = new ArrayList<MusicFolder>();
-        int eventType;
-        do {
-            eventType = nextParseEvent();
-            if (eventType == XmlPullParser.START_TAG) {
-                String tag = getElementName();
-                if ("musicFolder".equals(tag)) {
-                    String id = get("id");
-                    String name = get("name");
-                    result.add(new MusicFolder(id, name));
-                } else if ("error".equals(tag)) {
-                    handleError();
-                }
-            }
-        } while (eventType != XmlPullParser.END_DOCUMENT);
+		List<MusicFolder> result = new ArrayList<MusicFolder>();
+		int eventType;
+		do
+		{
+			eventType = nextParseEvent();
+			if (eventType == XmlPullParser.START_TAG)
+			{
+				String tag = getElementName();
+				if ("musicFolder".equals(tag))
+				{
+					String id = get("id");
+					String name = get("name");
+					result.add(new MusicFolder(id, name));
+				}
+				else if ("error".equals(tag))
+				{
+					handleError();
+				}
+			}
+		} while (eventType != XmlPullParser.END_DOCUMENT);
 
-        validate();
-        updateProgress(progressListener, R.string.parser_reading_done);
+		validate();
+		updateProgress(progressListener, R.string.parser_reading_done);
 
-        return result;
-    }
+		return result;
+	}
 
 }

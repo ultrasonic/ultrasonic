@@ -18,66 +18,74 @@
  */
 package com.thejoshwa.ultrasonic.androidapp.view;
 
-import com.thejoshwa.ultrasonic.androidapp.domain.Artist;
-import com.thejoshwa.ultrasonic.androidapp.R;
+import android.content.Context;
 import android.widget.ArrayAdapter;
 import android.widget.SectionIndexer;
-import android.content.Context;
 
-import java.util.List;
-import java.util.Set;
-import java.util.LinkedHashSet;
+import com.thejoshwa.ultrasonic.androidapp.R;
+import com.thejoshwa.ultrasonic.androidapp.domain.Artist;
+
 import java.util.ArrayList;
+import java.util.Collection;
+import java.util.LinkedHashSet;
+import java.util.List;
 
 /**
  * @author Sindre Mehus
-*/
-public class ArtistAdapter extends ArrayAdapter<Artist> implements SectionIndexer {
+ */
+public class ArtistAdapter extends ArrayAdapter<Artist> implements SectionIndexer
+{
 
-    // Both arrays are indexed by section ID.
-    private final Object[] sections;
-    private final Integer[] positions;
+	// Both arrays are indexed by section ID.
+	private final Object[] sections;
+	private final Integer[] positions;
 
-    public ArtistAdapter(Context context, List<Artist> artists) {
-        super(context, R.layout.artist_list_item, artists);
+	public ArtistAdapter(Context context, List<Artist> artists)
+	{
+		super(context, R.layout.artist_list_item, artists);
 
-        Set<String> sectionSet = new LinkedHashSet<String>(30);
-        List<Integer> positionList = new ArrayList<Integer>(30);
-        
-        for (int i = 0; i < artists.size(); i++) {
-            Artist artist = artists.get(i);
-            String index = artist.getIndex();
-            
-            if (!sectionSet.contains(index)) {
-                sectionSet.add(index);
-                positionList.add(i);
-            }
-        }
-        sections = sectionSet.toArray(new Object[sectionSet.size()]);
-        positions = positionList.toArray(new Integer[positionList.size()]);
-    }
+		Collection<String> sectionSet = new LinkedHashSet<String>(30);
+		List<Integer> positionList = new ArrayList<Integer>(30);
 
-    @Override
-    public Object[] getSections() {
-        return sections;
-    }
+		for (int i = 0; i < artists.size(); i++)
+		{
+			Artist artist = artists.get(i);
+			String index = artist.getIndex();
 
-    @Override
-    public int getPositionForSection(int section) {
-    	if (positions.length > section) {
-    		return positions[section];
-    	} else {
-    		return 0;
-    	}
-    }
+			if (!sectionSet.contains(index))
+			{
+				sectionSet.add(index);
+				positionList.add(i);
+			}
+		}
 
-    @Override
-    public int getSectionForPosition(int pos) {
-        for (int i = 0; i < sections.length - 1; i++) {
-            if (pos < positions[i + 1]) {
-                return i;
-            }
-        }
-        return sections.length - 1;
-    }
+		sections = sectionSet.toArray(new Object[sectionSet.size()]);
+		positions = positionList.toArray(new Integer[positionList.size()]);
+	}
+
+	@Override
+	public Object[] getSections()
+	{
+		return sections;
+	}
+
+	@Override
+	public int getPositionForSection(int section)
+	{
+		return positions.length > section ? positions[section] : 0;
+	}
+
+	@Override
+	public int getSectionForPosition(int pos)
+	{
+		for (int i = 0; i < sections.length - 1; i++)
+		{
+			if (pos < positions[i + 1])
+			{
+				return i;
+			}
+		}
+
+		return sections.length - 1;
+	}
 }

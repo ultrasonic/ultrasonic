@@ -25,12 +25,13 @@ import android.content.SearchRecentSuggestionsProvider;
  *
  * @author Sindre Mehus
  */
-public class SearchSuggestionProvider extends SearchRecentSuggestionsProvider {
+public class SearchSuggestionProvider extends SearchRecentSuggestionsProvider
+{
+	public static final String AUTHORITY = SearchSuggestionProvider.class.getName();
+	public static final int MODE = DATABASE_MODE_QUERIES;
 
-    public static final String AUTHORITY = SearchSuggestionProvider.class.getName();
-    public static final int MODE = DATABASE_MODE_QUERIES;
-
-    public SearchSuggestionProvider() {
-        setupSuggestions(AUTHORITY, MODE);
-    }
+	public SearchSuggestionProvider()
+	{
+		setupSuggestions(AUTHORITY, MODE);
+	}
 }

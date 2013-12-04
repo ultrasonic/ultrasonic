@@ -25,27 +25,32 @@ import java.util.List;
  *
  * @author Sindre Mehus
  */
-public class SearchResult {
+public class SearchResult
+{
 
-    private final List<Artist> artists;
-    private final List<MusicDirectory.Entry> albums;
-    private final List<MusicDirectory.Entry> songs;
+	private final List<Artist> artists;
+	private final List<MusicDirectory.Entry> albums;
+	private final List<MusicDirectory.Entry> songs;
 
-    public SearchResult(List<Artist> artists, List<MusicDirectory.Entry> albums, List<MusicDirectory.Entry> songs) {
-        this.artists = artists;
-        this.albums = albums;
-        this.songs = songs;
-    }
+	public SearchResult(List<Artist> artists, List<MusicDirectory.Entry> albums, List<MusicDirectory.Entry> songs)
+	{
+		this.artists = artists;
+		this.albums = albums;
+		this.songs = songs;
+	}
 
-    public List<Artist> getArtists() {
-        return artists;
-    }
+	public List<Artist> getArtists()
+	{
+		return artists;
+	}
 
-    public List<MusicDirectory.Entry> getAlbums() {
-        return albums;
-    }
+	public List<MusicDirectory.Entry> getAlbums()
+	{
+		return albums;
+	}
 
-    public List<MusicDirectory.Entry> getSongs() {
-        return songs;
-    }
+	public List<MusicDirectory.Entry> getSongs()
+	{
+		return songs;
+	}
 }

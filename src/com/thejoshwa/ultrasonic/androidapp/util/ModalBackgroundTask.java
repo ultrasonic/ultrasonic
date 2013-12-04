@@ -22,123 +22,157 @@ import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.util.Log;
+
 import com.thejoshwa.ultrasonic.androidapp.R;
 
 /**
  * @author Sindre Mehus
  */
-public abstract class ModalBackgroundTask<T> extends BackgroundTask<T> {
+public abstract class ModalBackgroundTask<T> extends BackgroundTask<T>
+{
 
-    private static final String TAG = ModalBackgroundTask.class.getSimpleName();
+	private static final String TAG = ModalBackgroundTask.class.getSimpleName();
 
-    private final AlertDialog progressDialog;
-    private Thread thread;
-    private final boolean finishActivityOnCancel;
-    private boolean cancelled;
+	private final AlertDialog progressDialog;
+	private Thread thread;
+	private final boolean finishActivityOnCancel;
+	private boolean cancelled;
 
-    public ModalBackgroundTask(Activity activity, boolean finishActivityOnCancel) {
-        super(activity);
-        this.finishActivityOnCancel = finishActivityOnCancel;
-        progressDialog = createProgressDialog();
-    }
+	public ModalBackgroundTask(Activity activity, boolean finishActivityOnCancel)
+	{
+		super(activity);
+		this.finishActivityOnCancel = finishActivityOnCancel;
+		progressDialog = createProgressDialog();
+	}
 
-    public ModalBackgroundTask(Activity activity) {
-        this(activity, true);
-    }
+	public ModalBackgroundTask(Activity activity)
+	{
+		this(activity, true);
+	}
 
-    private AlertDialog createProgressDialog() {
-        AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
-        builder.setIcon(android.R.drawable.ic_dialog_info);
-        builder.setTitle(R.string.background_task_wait);
-        builder.setMessage(R.string.background_task_loading);
-        builder.setCancelable(true);
-        builder.setOnCancelListener(new DialogInterface.OnCancelListener() {
-            @Override
-            public void onCancel(DialogInterface dialogInterface) {
-                cancel();
-            }
-        });
-        builder.setPositiveButton(R.string.common_cancel, new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialogInterface, int i) {
-                cancel();
-            }
-        });
+	private AlertDialog createProgressDialog()
+	{
+		AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
+		builder.setIcon(android.R.drawable.ic_dialog_info);
+		builder.setTitle(R.string.background_task_wait);
+		builder.setMessage(R.string.background_task_loading);
+		builder.setCancelable(true);
+		builder.setOnCancelListener(new DialogInterface.OnCancelListener()
+		{
+			@Override
+			public void onCancel(DialogInterface dialogInterface)
+			{
+				cancel();
+			}
+		});
+		builder.setPositiveButton(R.string.common_cancel, new DialogInterface.OnClickListener()
+		{
+			@Override
+			public void onClick(DialogInterface dialogInterface, int i)
+			{
+				cancel();
+			}
+		});
 
-        return builder.create();
-    }
+		return builder.create();
+	}
 
-    public void execute() {
-        cancelled = false;
-        progressDialog.show();
+	@Override
+	public void execute()
+	{
+		cancelled = false;
+		progressDialog.show();
 
-        thread = new Thread() {
-            @Override
-            public void run() {
-                try {
-                    final T result = doInBackground();
-                    if (cancelled) {
-                        progressDialog.dismiss();
-                        return;
-                    }
+		thread = new Thread()
+		{
+			@Override
+			public void run()
+			{
+				try
+				{
+					final T result = doInBackground();
+					if (cancelled)
+					{
+						progressDialog.dismiss();
+						return;
+					}
 
-                    getHandler().post(new Runnable() {
-                        @Override
-                        public void run() {
-                            progressDialog.dismiss();
-                            done(result);
-                        }
-                    });
+					getHandler().post(new Runnable()
+					{
+						@Override
+						public void run()
+						{
+							progressDialog.dismiss();
+							done(result);
+						}
+					});
 
-                } catch (final Throwable t) {
-                    if (cancelled) {
-                        return;
-                    }
-                    getHandler().post(new Runnable() {
-                        @Override
-                        public void run() {
-                        	try {
-                        		progressDialog.dismiss();
-                            } catch (Exception e) {
-                                // nothing
-                            }
+				}
+				catch (final Throwable t)
+				{
+					if (cancelled)
+					{
+						return;
+					}
+					getHandler().post(new Runnable()
+					{
+						@Override
+						public void run()
+						{
+							try
+							{
+								progressDialog.dismiss();
+							}
+							catch (Exception e)
+							{
+								// nothing
+							}
 
-                        	error(t);
-                        }
-                    });
-                }
-            }
-        };
-        thread.start();
-    }
+							error(t);
+						}
+					});
+				}
+			}
+		};
+		thread.start();
+	}
 
-    protected void cancel() {
-        cancelled = true;
-        if (thread != null) {
-            thread.interrupt();
-        }
+	protected void cancel()
+	{
+		cancelled = true;
+		if (thread != null)
+		{
+			thread.interrupt();
+		}
 
-        if (finishActivityOnCancel) {
-            getActivity().finish();
-        }
-    }
+		if (finishActivityOnCancel)
+		{
+			getActivity().finish();
+		}
+	}
 
-    protected boolean isCancelled() {
-        return cancelled;
-    }
+	protected boolean isCancelled()
+	{
+		return cancelled;
+	}
 
-    protected void error(Throwable error) {
-        Log.w(TAG, "Got exception: " + error, error);
-        new ErrorDialog(getActivity(), getErrorMessage(error), finishActivityOnCancel);
-    }
+	@Override
+	protected void error(Throwable error)
+	{
+		Log.w(TAG, String.format("Got exception: %s", error), error);
+		new ErrorDialog(getActivity(), getErrorMessage(error), finishActivityOnCancel);
+	}
 
-    @Override
-    public void updateProgress(final String message) {
-        getHandler().post(new Runnable() {
-            @Override
-            public void run() {
-                progressDialog.setMessage(message);
-            }
-        });
-    }
+	@Override
+	public void updateProgress(final String message)
+	{
+		getHandler().post(new Runnable()
+		{
+			@Override
+			public void run()
+			{
+				progressDialog.setMessage(message);
+			}
+		});
+	}
 }

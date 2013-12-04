@@ -24,6 +24,7 @@ import android.graphics.Color;
 import android.graphics.Paint;
 import android.media.audiofx.Visualizer;
 import android.view.View;
+
 import com.thejoshwa.ultrasonic.androidapp.audiofx.VisualizerController;
 import com.thejoshwa.ultrasonic.androidapp.domain.PlayerState;
 import com.thejoshwa.ultrasonic.androidapp.service.DownloadService;
@@ -36,96 +37,116 @@ import com.thejoshwa.ultrasonic.androidapp.service.DownloadServiceImpl;
  * @author Sindre Mehus
  * @version $Id$
  */
-public class VisualizerView extends View {
+public class VisualizerView extends View
+{
 
-    private static final int PREFERRED_CAPTURE_RATE_MILLIHERTZ = 20000;
+	private static final int PREFERRED_CAPTURE_RATE_MILLIHERTZ = 20000;
 
-    private final Paint paint = new Paint();
+	private final Paint paint = new Paint();
 
-    private byte[] data;
-    private float[] points;
-    private boolean active;
+	private byte[] data;
+	private float[] points;
+	private boolean active;
 
-    public VisualizerView(Context context) {
-        super(context);
+	public VisualizerView(Context context)
+	{
+		super(context);
 
-        paint.setStrokeWidth(2f);
-        paint.setAntiAlias(true);
-        paint.setColor(Color.rgb(0, 153, 204));
-    }
+		paint.setStrokeWidth(2f);
+		paint.setAntiAlias(true);
+		paint.setColor(Color.rgb(0, 153, 204));
+	}
 
-    public boolean isActive() {
-        return active;
-    }
+	public boolean isActive()
+	{
+		return active;
+	}
 
-    public void setActive(boolean active) {
-        this.active = active;
-        Visualizer visualizer = getVizualiser();
-        if (visualizer == null) {
-            return;
-        }
+	public void setActive(boolean active)
+	{
+		this.active = active;
+		Visualizer visualizer = getVizualizer();
+		if (visualizer == null)
+		{
+			return;
+		}
 
-        int captureRate = Math.min(PREFERRED_CAPTURE_RATE_MILLIHERTZ, Visualizer.getMaxCaptureRate());
-        if (active) {
-            visualizer.setDataCaptureListener(new Visualizer.OnDataCaptureListener() {
-                @Override
-                public void onWaveFormDataCapture(Visualizer visualizer, byte[] waveform, int samplingRate) {
-                    updateVisualizer(waveform);
-                }
+		int captureRate = Math.min(PREFERRED_CAPTURE_RATE_MILLIHERTZ, Visualizer.getMaxCaptureRate());
+		if (active)
+		{
+			visualizer.setDataCaptureListener(new Visualizer.OnDataCaptureListener()
+			{
+				@Override
+				public void onWaveFormDataCapture(Visualizer visualizer, byte[] waveform, int samplingRate)
+				{
+					updateVisualizer(waveform);
+				}
 
-                @Override
-                public void onFftDataCapture(Visualizer visualizer, byte[] fft, int samplingRate) {
-                }
-            }, captureRate, true, false);
-        } else {
-            visualizer.setDataCaptureListener(null, captureRate, false, false);
-        }
+				@Override
+				public void onFftDataCapture(Visualizer visualizer, byte[] fft, int samplingRate)
+				{
+				}
+			}, captureRate, true, false);
+		}
+		else
+		{
+			visualizer.setDataCaptureListener(null, captureRate, false, false);
+		}
 
-        visualizer.setEnabled(active);
-        invalidate();
-    }
+		visualizer.setEnabled(active);
+		invalidate();
+	}
 
-    private Visualizer getVizualiser() {
-        DownloadService downloadService = DownloadServiceImpl.getInstance();
-        VisualizerController visualizerController = downloadService == null ? null : downloadService.getVisualizerController();
-        return visualizerController == null ? null : visualizerController.getVisualizer();
-    }
+	private static Visualizer getVizualizer()
+	{
+		DownloadService downloadService = DownloadServiceImpl.getInstance();
+		VisualizerController visualizerController = downloadService == null ? null : downloadService.getVisualizerController();
+		return visualizerController == null ? null : visualizerController.getVisualizer();
+	}
 
-    private void updateVisualizer(byte[] waveform) {
-        this.data = waveform;
-        invalidate();
-    }
+	private void updateVisualizer(byte[] waveform)
+	{
+		this.data = waveform;
+		invalidate();
+	}
 
-    @Override
-    protected void onDraw(Canvas canvas) {
-        super.onDraw(canvas);
+	@Override
+	protected void onDraw(Canvas canvas)
+	{
+		super.onDraw(canvas);
 
-        if (!active) {
-            return;
-        }
-        DownloadService downloadService = DownloadServiceImpl.getInstance();
-        if (downloadService != null && downloadService.getPlayerState() != PlayerState.STARTED) {
-            return;
-        }
+		if (!active)
+		{
+			return;
+		}
 
-        if (data == null) {
-            return;
-        }
+		DownloadService downloadService = DownloadServiceImpl.getInstance();
+		if (downloadService != null && downloadService.getPlayerState() != PlayerState.STARTED)
+		{
+			return;
+		}
 
-        if (points == null || points.length < data.length * 4) {
-            points = new float[data.length * 4];
-        }
+		if (data == null)
+		{
+			return;
+		}
 
-        int w = getWidth();
-        int h = getHeight();
+		if (points == null || points.length < data.length * 4)
+		{
+			points = new float[data.length * 4];
+		}
 
-        for (int i = 0; i < data.length - 1; i++) {
-            points[i * 4] = w * i / (data.length - 1);
-            points[i * 4 + 1] = h / 2 + ((byte) (data[i] + 128)) * (h / 2) / 128;
-            points[i * 4 + 2] = w * (i + 1) / (data.length - 1);
-            points[i * 4 + 3] = h / 2 + ((byte) (data[i + 1] + 128)) * (h / 2) / 128;
-        }
+		int w = getWidth();
+		int h = getHeight();
 
-        canvas.drawLines(points, paint);
-    }
+		for (int i = 0; i < data.length - 1; i++)
+		{
+			points[i * 4] = w * i / (data.length - 1);
+			points[i * 4 + 1] = h / 2 + ((byte) (data[i] + 128)) * (h / 2) / 128;
+			points[i * 4 + 2] = w * (i + 1) / (data.length - 1);
+			points[i * 4 + 3] = h / 2 + ((byte) (data[i + 1] + 128)) * (h / 2) / 128;
+		}
+
+		canvas.drawLines(points, paint);
+	}
 }

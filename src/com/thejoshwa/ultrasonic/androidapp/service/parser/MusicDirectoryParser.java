@@ -20,54 +20,69 @@ package com.thejoshwa.ultrasonic.androidapp.service.parser;
 
 import android.content.Context;
 import android.util.Log;
+
 import com.thejoshwa.ultrasonic.androidapp.R;
 import com.thejoshwa.ultrasonic.androidapp.domain.MusicDirectory;
 import com.thejoshwa.ultrasonic.androidapp.util.ProgressListener;
+
 import org.xmlpull.v1.XmlPullParser;
+
 import java.io.Reader;
 
 /**
  * @author Sindre Mehus
  */
-public class MusicDirectoryParser extends MusicDirectoryEntryParser {
+public class MusicDirectoryParser extends MusicDirectoryEntryParser
+{
 
-    private static final String TAG = MusicDirectoryParser.class.getSimpleName();
+	private static final String TAG = MusicDirectoryParser.class.getSimpleName();
 
-    public MusicDirectoryParser(Context context) {
-        super(context);
-    }
+	public MusicDirectoryParser(Context context)
+	{
+		super(context);
+	}
 
-    public MusicDirectory parse(String artist, Reader reader, ProgressListener progressListener, boolean isAlbum) throws Exception {
+	public MusicDirectory parse(String artist, Reader reader, ProgressListener progressListener, boolean isAlbum) throws Exception
+	{
 
-        long t0 = System.currentTimeMillis();
-        updateProgress(progressListener, R.string.parser_reading);
-        init(reader);
+		long t0 = System.currentTimeMillis();
+		updateProgress(progressListener, R.string.parser_reading);
+		init(reader);
 
-        MusicDirectory dir = new MusicDirectory();
-        int eventType;
-        do {
-            eventType = nextParseEvent();
-            if (eventType == XmlPullParser.START_TAG) {
-                String name = getElementName();
-                
-                if ("child".equals(name) || "song".equals(name) || "video".equals(name)) {
-                    dir.addChild(parseEntry(artist, false, 0));
-                } else if ("album".equals(name) && !isAlbum) {
-                	dir.addChild(parseEntry(artist, true, 0));
-                } else if ("directory".equals(name) || "artist".equals(name)) {
-                    dir.setName(get("name"));
-                } else if ("error".equals(name)) {
-                    handleError();
-                }
-            }
-        } while (eventType != XmlPullParser.END_DOCUMENT);
+		MusicDirectory dir = new MusicDirectory();
+		int eventType;
+		do
+		{
+			eventType = nextParseEvent();
+			if (eventType == XmlPullParser.START_TAG)
+			{
+				String name = getElementName();
 
-        validate();
-        updateProgress(progressListener, R.string.parser_reading_done);
+				if ("child".equals(name) || "song".equals(name) || "video".equals(name))
+				{
+					dir.addChild(parseEntry(artist, false, 0));
+				}
+				else if ("album".equals(name) && !isAlbum)
+				{
+					dir.addChild(parseEntry(artist, true, 0));
+				}
+				else if ("directory".equals(name) || "artist".equals(name))
+				{
+					dir.setName(get("name"));
+				}
+				else if ("error".equals(name))
+				{
+					handleError();
+				}
+			}
+		} while (eventType != XmlPullParser.END_DOCUMENT);
 
-        long t1 = System.currentTimeMillis();
-        Log.d(TAG, "Got music directory in " + (t1 - t0) + "ms.");
+		validate();
+		updateProgress(progressListener, R.string.parser_reading_done);
 
-        return dir;
-    }
+		long t1 = System.currentTimeMillis();
+		Log.d(TAG, "Got music directory in " + (t1 - t0) + "ms.");
+
+		return dir;
+	}
 }

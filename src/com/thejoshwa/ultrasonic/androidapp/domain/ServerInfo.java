@@ -23,24 +23,29 @@ package com.thejoshwa.ultrasonic.androidapp.domain;
  *
  * @author Sindre Mehus
  */
-public class ServerInfo {
+public class ServerInfo
+{
 
-    private boolean isLicenseValid;
-    private Version restVersion;
+	private boolean isLicenseValid;
+	private Version restVersion;
 
-    public boolean isLicenseValid() {
-        return isLicenseValid;
-    }
+	public boolean isLicenseValid()
+	{
+		return isLicenseValid;
+	}
 
-    public void setLicenseValid(boolean licenseValid) {
-        isLicenseValid = licenseValid;
-    }
+	public void setLicenseValid(boolean licenseValid)
+	{
+		isLicenseValid = licenseValid;
+	}
 
-    public Version getRestVersion() {
-        return restVersion;
-    }
+	public Version getRestVersion()
+	{
+		return restVersion;
+	}
 
-    public void setRestVersion(Version restVersion) {
-        this.restVersion = restVersion;
-    }
+	public void setRestVersion(Version restVersion)
+	{
+		this.restVersion = restVersion;
+	}
 }

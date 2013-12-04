@@ -24,44 +24,52 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.KeyEvent;
+
 import com.thejoshwa.ultrasonic.androidapp.service.DownloadServiceImpl;
 import com.thejoshwa.ultrasonic.androidapp.util.Util;
 
 /**
  * @author Sindre Mehus
  */
-public class MediaButtonIntentReceiver extends BroadcastReceiver {
+public class MediaButtonIntentReceiver extends BroadcastReceiver
+{
 
-    private static final String TAG = MediaButtonIntentReceiver.class.getSimpleName();
+	private static final String TAG = MediaButtonIntentReceiver.class.getSimpleName();
 
-    @Override
-    public void onReceive(Context context, Intent intent) {
-        if (Util.getMediaButtonsPreference(context)) {
-            String intentAction = intent.getAction();
+	@Override
+	public void onReceive(Context context, Intent intent)
+	{
+		if (Util.getMediaButtonsPreference(context))
+		{
+			String intentAction = intent.getAction();
 
-            if (!Intent.ACTION_MEDIA_BUTTON.equals(intentAction))
-                return;
+			if (!Intent.ACTION_MEDIA_BUTTON.equals(intentAction)) return;
 
-            Bundle extras = intent.getExtras();
+			Bundle extras = intent.getExtras();
 
-            if (extras == null) {
-                return;
-            }
+			if (extras == null)
+			{
+				return;
+			}
 
-            KeyEvent event = (KeyEvent) extras.get(Intent.EXTRA_KEY_EVENT);
-            Log.i(TAG, "Got MEDIA_BUTTON key event: " + event);
+			KeyEvent event = (KeyEvent) extras.get(Intent.EXTRA_KEY_EVENT);
+			Log.i(TAG, "Got MEDIA_BUTTON key event: " + event);
 
-            Intent serviceIntent = new Intent(context, DownloadServiceImpl.class);
-            serviceIntent.putExtra(Intent.EXTRA_KEY_EVENT, event);
-            context.startService(serviceIntent);
+			Intent serviceIntent = new Intent(context, DownloadServiceImpl.class);
+			serviceIntent.putExtra(Intent.EXTRA_KEY_EVENT, event);
+			context.startService(serviceIntent);
 
-            try {
-                if (isOrderedBroadcast()) {
-                    abortBroadcast();
-                }
-            } catch (Exception x) {
-                // Ignored.
-            }
-        }
-    }
+			try
+			{
+				if (isOrderedBroadcast())
+				{
+					abortBroadcast();
+				}
+			}
+			catch (Exception x)
+			{
+				// Ignored.
+			}
+		}
+	}
 }

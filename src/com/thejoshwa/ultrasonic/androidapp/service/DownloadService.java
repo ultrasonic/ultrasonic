@@ -18,121 +18,122 @@
  */
 package com.thejoshwa.ultrasonic.androidapp.service;
 
-import java.util.List;
-
 import com.thejoshwa.ultrasonic.androidapp.audiofx.EqualizerController;
 import com.thejoshwa.ultrasonic.androidapp.audiofx.VisualizerController;
 import com.thejoshwa.ultrasonic.androidapp.domain.MusicDirectory.Entry;
 import com.thejoshwa.ultrasonic.androidapp.domain.PlayerState;
 import com.thejoshwa.ultrasonic.androidapp.domain.RepeatMode;
 
+import java.util.List;
+
 /**
  * @author Sindre Mehus
  * @version $Id$
  */
-public interface DownloadService {
+public interface DownloadService
+{
 
 	void download(List<Entry> songs, boolean save, boolean autoplay, boolean playNext, boolean shuffle, boolean newPlaylist);
-	  
-    void downloadBackground(List<Entry> songs, boolean save);
 
-    void setShufflePlayEnabled(boolean enabled);
+	void downloadBackground(List<Entry> songs, boolean save);
 
-    boolean isShufflePlayEnabled();
+	void setShufflePlayEnabled(boolean enabled);
 
-    void shuffle();
+	boolean isShufflePlayEnabled();
 
-    RepeatMode getRepeatMode();
+	void shuffle();
 
-    void setRepeatMode(RepeatMode repeatMode);
+	RepeatMode getRepeatMode();
 
-    boolean getKeepScreenOn();
+	void setRepeatMode(RepeatMode repeatMode);
 
-    void setKeepScreenOn(boolean screenOn);
+	boolean getKeepScreenOn();
 
-    boolean getShowVisualization();
-    
-    boolean getEqualizerAvailable();
-    
-    boolean getVisualizerAvailable();
+	void setKeepScreenOn(boolean screenOn);
 
-    void setShowVisualization(boolean showVisualization);
+	boolean getShowVisualization();
 
-    void clear();
+	boolean getEqualizerAvailable();
+
+	boolean getVisualizerAvailable();
+
+	void setShowVisualization(boolean showVisualization);
+
+	void clear();
 
 	void clearBackground();
 
-    void clearIncomplete();
+	void clearIncomplete();
 
-    int size();
-    
+	int size();
+
 	void remove(int which);
 
-    void remove(DownloadFile downloadFile);
-    
-    long getDownloadListDuration();
-    
+	void remove(DownloadFile downloadFile);
+
+	long getDownloadListDuration();
+
 	List<DownloadFile> getSongs();
 
-    List<DownloadFile> getDownloads();
-    
+	List<DownloadFile> getDownloads();
+
 	List<DownloadFile> getBackgroundDownloads();
 
-    int getCurrentPlayingIndex();
+	int getCurrentPlayingIndex();
 
-    DownloadFile getCurrentPlaying();
+	DownloadFile getCurrentPlaying();
 
-    DownloadFile getCurrentDownloading();
+	DownloadFile getCurrentDownloading();
 
-    void play(int index);
+	void play(int index);
 
-    void seekTo(int position);
+	void seekTo(int position);
 
-    void previous();
+	void previous();
 
-    void next();
+	void next();
 
-    void pause();
-    
-    void stop();
+	void pause();
 
-    void start();
+	void stop();
 
-    void reset();
+	void start();
 
-    PlayerState getPlayerState();
+	void reset();
 
-    int getPlayerPosition();
+	PlayerState getPlayerState();
 
-    int getPlayerDuration();
+	int getPlayerPosition();
 
-    void delete(List<Entry> songs);
+	int getPlayerDuration();
 
-    void unpin(List<Entry> songs);
+	void delete(List<Entry> songs);
 
-    DownloadFile forSong(Entry song);
+	void unpin(List<Entry> songs);
 
-    long getDownloadListUpdateRevision();
+	DownloadFile forSong(Entry song);
 
-    void setSuggestedPlaylistName(String name);
+	long getDownloadListUpdateRevision();
 
-    String getSuggestedPlaylistName();
+	void setSuggestedPlaylistName(String name);
 
-    EqualizerController getEqualizerController();
+	String getSuggestedPlaylistName();
 
-    VisualizerController getVisualizerController();
+	EqualizerController getEqualizerController();
 
-    boolean isJukeboxEnabled();
+	VisualizerController getVisualizerController();
 
-    void setJukeboxEnabled(boolean b);
+	boolean isJukeboxEnabled();
 
-    void adjustJukeboxVolume(boolean up);
-    
-    void togglePlayPause();
-    
-    void setVolume(float volume);
-    
-    void swap(boolean mainList, int from, int to);
-    
-    void restore(List<Entry> songs, int currentPlayingIndex, int currentPlayingPosition, boolean autoPlay, boolean newPlaylist);
+	void setJukeboxEnabled(boolean b);
+
+	void adjustJukeboxVolume(boolean up);
+
+	void togglePlayPause();
+
+	void setVolume(float volume);
+
+	void swap(boolean mainList, int from, int to);
+
+	void restore(List<Entry> songs, int currentPlayingIndex, int currentPlayingPosition, boolean autoPlay, boolean newPlaylist);
 }

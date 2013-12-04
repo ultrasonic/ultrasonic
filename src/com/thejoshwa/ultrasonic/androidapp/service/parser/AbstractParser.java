@@ -18,126 +18,150 @@
  */
 package com.thejoshwa.ultrasonic.androidapp.service.parser;
 
-import java.io.Reader;
-
-import org.xmlpull.v1.XmlPullParser;
-
 import android.content.Context;
 import android.util.Xml;
+
 import com.thejoshwa.ultrasonic.androidapp.R;
 import com.thejoshwa.ultrasonic.androidapp.domain.Version;
 import com.thejoshwa.ultrasonic.androidapp.util.ProgressListener;
 import com.thejoshwa.ultrasonic.androidapp.util.Util;
 
+import org.xmlpull.v1.XmlPullParser;
+
+import java.io.Reader;
+
 /**
  * @author Sindre Mehus
  */
-public abstract class AbstractParser {
+public abstract class AbstractParser
+{
 
-    private final Context context;
-    private XmlPullParser parser;
-    private boolean rootElementFound;
+	private final Context context;
+	private XmlPullParser parser;
+	private boolean rootElementFound;
 
-    public AbstractParser(Context context) {
-        this.context = context;
-    }
+	public AbstractParser(Context context)
+	{
+		this.context = context;
+	}
 
-    protected Context getContext() {
-        return context;
-    }
+	protected Context getContext()
+	{
+		return context;
+	}
 
-    protected void handleError() throws Exception {
-        int code = getInteger("code");
-        String message;
-        switch (code) {
-            case 20:
-                message = context.getResources().getString(R.string.parser_upgrade_client);
-                break;
-            case 30:
-                message = context.getResources().getString(R.string.parser_upgrade_server);
-                break;
-            case 40:
-                message = context.getResources().getString(R.string.parser_not_authenticated);
-                break;
-            case 50:
-                message = context.getResources().getString(R.string.parser_not_authorized);
-                break;
-            default:
-                message = get("message");
-                break;
-        }
-        throw new SubsonicRESTException(code, message);
-    }
+	protected void handleError() throws Exception
+	{
+		int code = getInteger("code");
+		String message;
+		switch (code)
+		{
+			case 20:
+				message = context.getResources().getString(R.string.parser_upgrade_client);
+				break;
+			case 30:
+				message = context.getResources().getString(R.string.parser_upgrade_server);
+				break;
+			case 40:
+				message = context.getResources().getString(R.string.parser_not_authenticated);
+				break;
+			case 50:
+				message = context.getResources().getString(R.string.parser_not_authorized);
+				break;
+			default:
+				message = get("message");
+				break;
+		}
+		throw new SubsonicRESTException(code, message);
+	}
 
-    protected void updateProgress(ProgressListener progressListener, int messageId) {
-        if (progressListener != null) {
-            progressListener.updateProgress(messageId);
-        }
-    }
+	protected void updateProgress(ProgressListener progressListener, int messageId)
+	{
+		if (progressListener != null)
+		{
+			progressListener.updateProgress(messageId);
+		}
+	}
 
-    protected void updateProgress(ProgressListener progressListener, String message) {
-        if (progressListener != null) {
-            progressListener.updateProgress(message);
-        }
-    }
+	protected void updateProgress(ProgressListener progressListener, String message)
+	{
+		if (progressListener != null)
+		{
+			progressListener.updateProgress(message);
+		}
+	}
 
-    protected String getText() {
-        return parser.getText();
-    }
+	protected String getText()
+	{
+		return parser.getText();
+	}
 
-    protected String get(String name) {
-        return parser.getAttributeValue(null, name);
-    }
+	protected String get(String name)
+	{
+		return parser.getAttributeValue(null, name);
+	}
 
-    protected boolean getBoolean(String name) {
-        return "true".equals(get(name));
-    }
-    
-    protected boolean getValueExists(String name) {
-    	String value = get(name);
-    	return value != null && !value.isEmpty();
-    }
+	protected boolean getBoolean(String name)
+	{
+		return "true".equals(get(name));
+	}
 
-    protected Integer getInteger(String name) {
-        String s = get(name);
-        return s == null ? null : Integer.valueOf(s);
-    }
+	protected boolean getValueExists(String name)
+	{
+		String value = get(name);
+		return value != null && !value.isEmpty();
+	}
 
-    protected Long getLong(String name) {
-        String s = get(name);
-        return s == null ? null : Long.valueOf(s);
-    }
+	protected Integer getInteger(String name)
+	{
+		String s = get(name);
+		return s == null ? null : Integer.valueOf(s);
+	}
 
-    protected Float getFloat(String name) {
-        String s = get(name);
-        return s == null ? null : Float.valueOf(s);
-    }
+	protected Long getLong(String name)
+	{
+		String s = get(name);
+		return s == null ? null : Long.valueOf(s);
+	}
 
-    protected void init(Reader reader) throws Exception {
-        parser = Xml.newPullParser();
-        parser.setInput(reader);
-        rootElementFound = false;
-    }
+	protected Float getFloat(String name)
+	{
+		String s = get(name);
+		return s == null ? null : Float.valueOf(s);
+	}
 
-    protected int nextParseEvent() throws Exception {
-        return parser.next();
-    }
+	protected void init(Reader reader) throws Exception
+	{
+		parser = Xml.newPullParser();
+		parser.setInput(reader);
+		rootElementFound = false;
+	}
 
-    protected String getElementName() {
-        String name = parser.getName();
-        if ("subsonic-response".equals(name)) {
-            rootElementFound = true;
-            String version = get("version");
-            if (version != null) {
-                Util.setServerRestVersion(context, new Version(version));
-            }
-        }
-        return name;
-    }
+	protected int nextParseEvent() throws Exception
+	{
+		return parser.next();
+	}
 
-    protected void validate() throws Exception {
-        if (!rootElementFound) {
-            throw new Exception(context.getResources().getString(R.string.background_task_parse_error));
-        }
-    }
+	protected String getElementName()
+	{
+		String name = parser.getName();
+		if ("subsonic-response".equals(name))
+		{
+			rootElementFound = true;
+			String version = get("version");
+			if (version != null)
+			{
+				Util.setServerRestVersion(context, new Version(version));
+			}
+		}
+		return name;
+	}
+
+	protected void validate() throws Exception
+	{
+		if (!rootElementFound)
+		{
+			throw new Exception(context.getResources().getString(R.string.background_task_parse_error));
+		}
+	}
 }

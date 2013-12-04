@@ -19,52 +19,59 @@
 package com.thejoshwa.ultrasonic.androidapp.service.parser;
 
 import android.content.Context;
+
 import com.thejoshwa.ultrasonic.androidapp.domain.MusicDirectory;
 import com.thejoshwa.ultrasonic.androidapp.util.Constants;
 
 /**
  * @author Sindre Mehus
  */
-public class MusicDirectoryEntryParser extends AbstractParser {
+public class MusicDirectoryEntryParser extends AbstractParser
+{
 
-    public MusicDirectoryEntryParser(Context context) {
-        super(context);
-    }
+	public MusicDirectoryEntryParser(Context context)
+	{
+		super(context);
+	}
 
-    protected MusicDirectory.Entry parseEntry(String artist, boolean isAlbum, int bookmarkPosition) {
-        MusicDirectory.Entry entry = new MusicDirectory.Entry();
-        entry.setId(get("id"));
-        entry.setParent(get("parent"));
-        entry.setTitle(isAlbum ? get("name") : get("title"));
-        entry.setIsDirectory(getBoolean("isDir") || isAlbum);
-        entry.setCoverArt(get("coverArt"));
-        entry.setArtist(get("artist"));
-        entry.setArtistId(get("artistId"));
-        entry.setYear(getInteger("year"));
-        entry.setCreated(get("created"));
-        entry.setStarred(getValueExists(Constants.STARRED));
+	protected MusicDirectory.Entry parseEntry(String artist, boolean isAlbum, int bookmarkPosition)
+	{
+		MusicDirectory.Entry entry = new MusicDirectory.Entry();
+		entry.setId(get("id"));
+		entry.setParent(get("parent"));
+		entry.setTitle(isAlbum ? get("name") : get("title"));
+		entry.setIsDirectory(getBoolean("isDir") || isAlbum);
+		entry.setCoverArt(get("coverArt"));
+		entry.setArtist(get("artist"));
+		entry.setArtistId(get("artistId"));
+		entry.setYear(getInteger("year"));
+		entry.setCreated(get("created"));
+		entry.setStarred(getValueExists(Constants.STARRED));
 
-        if (!entry.isDirectory()) {
-            entry.setAlbum(get("album"));
-            entry.setAlbumId(get("albumId"));
-            entry.setTrack(getInteger("track"));
-            entry.setGenre(get("genre"));
-            entry.setContentType(get("contentType"));
-            entry.setSuffix(get("suffix"));
-            entry.setTranscodedContentType(get("transcodedContentType"));
-            entry.setTranscodedSuffix(get("transcodedSuffix"));
-            entry.setSize(getLong("size"));
-            entry.setDuration(getInteger("duration"));
-            entry.setBitRate(getInteger("bitRate"));
-            entry.setPath(get("path"));
-            entry.setIsVideo(getBoolean("isVideo"));
-            entry.setDiscNumber(getInteger("discNumber"));
-            entry.setType(get("type"));
-            entry.setBookmarkPosition(bookmarkPosition);
-        } else if(!"".equals(artist)) {
-			entry.setPath(artist + "/" + entry.getTitle());
+		if (!entry.isDirectory())
+		{
+			entry.setAlbum(get("album"));
+			entry.setAlbumId(get("albumId"));
+			entry.setTrack(getInteger("track"));
+			entry.setGenre(get("genre"));
+			entry.setContentType(get("contentType"));
+			entry.setSuffix(get("suffix"));
+			entry.setTranscodedContentType(get("transcodedContentType"));
+			entry.setTranscodedSuffix(get("transcodedSuffix"));
+			entry.setSize(getLong("size"));
+			entry.setDuration(getInteger("duration"));
+			entry.setBitRate(getInteger("bitRate"));
+			entry.setPath(get("path"));
+			entry.setIsVideo(getBoolean("isVideo"));
+			entry.setDiscNumber(getInteger("discNumber"));
+			entry.setType(get("type"));
+			entry.setBookmarkPosition(bookmarkPosition);
 		}
-        
-        return entry;
-    }
+		else if (!"".equals(artist))
+		{
+			entry.setPath(String.format("%s/%s", artist, entry.getTitle()));
+		}
+
+		return entry;
+	}
 }

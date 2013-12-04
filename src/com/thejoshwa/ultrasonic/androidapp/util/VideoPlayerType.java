@@ -23,6 +23,7 @@ import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.net.Uri;
+
 import com.thejoshwa.ultrasonic.androidapp.R;
 import com.thejoshwa.ultrasonic.androidapp.domain.MusicDirectory;
 import com.thejoshwa.ultrasonic.androidapp.service.MusicServiceFactory;
@@ -31,80 +32,99 @@ import com.thejoshwa.ultrasonic.androidapp.service.MusicServiceFactory;
  * @author Sindre Mehus
  * @version $Id: VideoPlayerType.java 3473 2013-05-23 16:42:49Z sindre_mehus $
  */
-public enum VideoPlayerType {
+public enum VideoPlayerType
+{
 
-	MX("mx") {
-		@Override
-		public void playVideo(final Activity activity, MusicDirectory.Entry entry) throws Exception {
+	MX("mx")
+			{
+				@Override
+				public void playVideo(final Activity activity, MusicDirectory.Entry entry) throws Exception
+				{
 
-			// Check if MX Player is installed.
-			boolean installedAd = Util.isPackageInstalled(activity, PACKAGE_NAME_MX_AD);
-			boolean installedPro = Util.isPackageInstalled(activity, PACKAGE_NAME_MX_PRO);
+					// Check if MX Player is installed.
+					boolean installedAd = Util.isPackageInstalled(activity, PACKAGE_NAME_MX_AD);
+					boolean installedPro = Util.isPackageInstalled(activity, PACKAGE_NAME_MX_PRO);
 
-			if (!installedAd && !installedPro) {
-				new AlertDialog.Builder(activity)
-						.setMessage(R.string.video_get_mx_player_text)
-						.setPositiveButton(R.string.video_get_mx_player_button, new DialogInterface.OnClickListener() {
-									@Override
-									public void onClick(DialogInterface dialog, int i) {
-										try {
-											activity.startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse("market://details?id=" + PACKAGE_NAME_MX_AD)));
-										} catch (android.content.ActivityNotFoundException x) {
-											activity.startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse("http://play.google.com/store/apps/details?id=" + PACKAGE_NAME_MX_AD)));
-										}
-										
-										dialog.dismiss();
-									}
-								})
-						.setNegativeButton(R.string.common_cancel, new DialogInterface.OnClickListener() {
-									@Override
-									public void onClick(DialogInterface dialog, int i) {
-										dialog.dismiss();
-									}
-								}).show();
+					if (!installedAd && !installedPro)
+					{
+						new AlertDialog.Builder(activity).setMessage(R.string.video_get_mx_player_text).setPositiveButton(R.string.video_get_mx_player_button, new DialogInterface.OnClickListener()
+						{
+							@Override
+							public void onClick(DialogInterface dialog, int i)
+							{
+								try
+								{
+									activity.startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse(String.format("market://details?id=%s", PACKAGE_NAME_MX_AD))));
+								}
+								catch (android.content.ActivityNotFoundException x)
+								{
+									activity.startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse(String.format("http://play.google.com/store/apps/details?id=%s", PACKAGE_NAME_MX_AD))));
+								}
 
-			} else {
-				// See documentation on https://sites.google.com/site/mxvpen/api
-				Intent intent = new Intent(Intent.ACTION_VIEW);
-				intent.setPackage(installedPro ? PACKAGE_NAME_MX_PRO : PACKAGE_NAME_MX_AD);
-				intent.putExtra("title", entry.getTitle());
-				intent.setDataAndType(Uri.parse(MusicServiceFactory.getMusicService(activity).getVideoUrl(activity, entry.getId(), false)), "video/*");
-				activity.startActivity(intent);
-			}
-		}
-	},
+								dialog.dismiss();
+							}
+						}).setNegativeButton(R.string.common_cancel, new DialogInterface.OnClickListener()
+						{
+							@Override
+							public void onClick(DialogInterface dialog, int i)
+							{
+								dialog.dismiss();
+							}
+						}).show();
 
-	FLASH("flash") {
-		@Override
-		public void playVideo(Activity activity, MusicDirectory.Entry entry) throws Exception {
-			Intent intent = new Intent(Intent.ACTION_VIEW);
-			intent.setData(Uri.parse(MusicServiceFactory.getMusicService(activity).getVideoUrl(activity, entry.getId(), true)));
-			activity.startActivity(intent);
-		}
-	},
+					}
+					else
+					{
+						// See documentation on https://sites.google.com/site/mxvpen/api
+						Intent intent = new Intent(Intent.ACTION_VIEW);
+						intent.setPackage(installedPro ? PACKAGE_NAME_MX_PRO : PACKAGE_NAME_MX_AD);
+						intent.putExtra("title", entry.getTitle());
+						intent.setDataAndType(Uri.parse(MusicServiceFactory.getMusicService(activity).getVideoUrl(activity, entry.getId(), false)), "video/*");
+						activity.startActivity(intent);
+					}
+				}
+			},
 
-	DEFAULT("default") {
-		@Override
-		public void playVideo(Activity activity, MusicDirectory.Entry entry) throws Exception {
-			Intent intent = new Intent(Intent.ACTION_VIEW);
-			intent.setDataAndType(Uri.parse(MusicServiceFactory.getMusicService(activity).getVideoUrl(activity, entry.getId(), false)), "video/*");
-			activity.startActivity(intent);
-		}
-	};
+	FLASH("flash")
+			{
+				@Override
+				public void playVideo(Activity activity, MusicDirectory.Entry entry) throws Exception
+				{
+					Intent intent = new Intent(Intent.ACTION_VIEW);
+					intent.setData(Uri.parse(MusicServiceFactory.getMusicService(activity).getVideoUrl(activity, entry.getId(), true)));
+					activity.startActivity(intent);
+				}
+			},
+
+	DEFAULT("default")
+			{
+				@Override
+				public void playVideo(Activity activity, MusicDirectory.Entry entry) throws Exception
+				{
+					Intent intent = new Intent(Intent.ACTION_VIEW);
+					intent.setDataAndType(Uri.parse(MusicServiceFactory.getMusicService(activity).getVideoUrl(activity, entry.getId(), false)), "video/*");
+					activity.startActivity(intent);
+				}
+			};
 
 	private final String key;
 
-	VideoPlayerType(String key) {
+	VideoPlayerType(String key)
+	{
 		this.key = key;
 	}
 
-	public String getKey() {
+	public String getKey()
+	{
 		return key;
 	}
 
-	public static VideoPlayerType forKey(String key) {
-		for (VideoPlayerType type : VideoPlayerType.values()) {
-			if (type.key.equals(key)) {
+	public static VideoPlayerType forKey(String key)
+	{
+		for (VideoPlayerType type : VideoPlayerType.values())
+		{
+			if (type.key.equals(key))
+			{
 				return type;
 			}
 		}

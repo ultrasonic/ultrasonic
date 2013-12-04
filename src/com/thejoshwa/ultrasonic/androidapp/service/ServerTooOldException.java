@@ -24,25 +24,25 @@ package com.thejoshwa.ultrasonic.androidapp.service;
  * @author Sindre Mehus
  * @version $Id$
  */
-public class ServerTooOldException extends Exception {
-
-    /**
-	 * 
-	 */
+public class ServerTooOldException extends Exception
+{
 	private static final long serialVersionUID = -7955245839000220002L;
 
-    public ServerTooOldException(String text) {
-    	super(createMessage(text));
-    }
+	public ServerTooOldException(String text)
+	{
+		super(createMessage(text));
+	}
 
-    private static String createMessage(String text) {
-        StringBuilder builder = new StringBuilder();
-        
-        if (text != null) {
-            builder.append(text).append(" ");
-        }
+	private static String createMessage(String text)
+	{
+		StringBuilder builder = new StringBuilder();
 
-        builder.append("Subsonic server version is too old. Please upgrade.");
-        return builder.toString();
-    }
+		if (text != null)
+		{
+			builder.append(text).append(' ');
+		}
+
+		builder.append("Subsonic server version is too old. Please upgrade.");
+		return builder.toString();
+	}
 }

@@ -19,11 +19,13 @@
 package com.thejoshwa.ultrasonic.androidapp.service.parser;
 
 import android.content.Context;
+
 import com.thejoshwa.ultrasonic.androidapp.R;
 import com.thejoshwa.ultrasonic.androidapp.domain.MusicDirectory;
 import com.thejoshwa.ultrasonic.androidapp.domain.SearchResult;
 import com.thejoshwa.ultrasonic.androidapp.domain.Artist;
 import com.thejoshwa.ultrasonic.androidapp.util.ProgressListener;
+
 import org.xmlpull.v1.XmlPullParser;
 
 import java.io.Reader;
@@ -33,43 +35,55 @@ import java.util.ArrayList;
 /**
  * @author Sindre Mehus
  */
-public class SearchResult2Parser extends MusicDirectoryEntryParser {
+public class SearchResult2Parser extends MusicDirectoryEntryParser
+{
 
-    public SearchResult2Parser(Context context) {
-        super(context);
-    }
+	public SearchResult2Parser(Context context)
+	{
+		super(context);
+	}
 
-    public SearchResult parse(Reader reader, ProgressListener progressListener, boolean useId3) throws Exception {
-        updateProgress(progressListener, R.string.parser_reading);
-        init(reader);
+	public SearchResult parse(Reader reader, ProgressListener progressListener, boolean useId3) throws Exception
+	{
+		updateProgress(progressListener, R.string.parser_reading);
+		init(reader);
 
-        List<Artist> artists = new ArrayList<Artist>();
-        List<MusicDirectory.Entry> albums = new ArrayList<MusicDirectory.Entry>();
-        List<MusicDirectory.Entry> songs = new ArrayList<MusicDirectory.Entry>();
-        int eventType;
-        do {
-            eventType = nextParseEvent();
-            if (eventType == XmlPullParser.START_TAG) {
-                String name = getElementName();
-                if ("artist".equals(name)) {
-                    Artist artist = new Artist();
-                    artist.setId(get("id"));
-                    artist.setName(get("name"));
-                    artists.add(artist);
-                } else if ("album".equals(name)) {
-                    albums.add(parseEntry("", useId3, 0));
-                } else if ("song".equals(name)) {
-                    songs.add(parseEntry("", false, 0));
-                } else if ("error".equals(name)) {
-                    handleError();
-                }
-            }
-        } while (eventType != XmlPullParser.END_DOCUMENT);
+		List<Artist> artists = new ArrayList<Artist>();
+		List<MusicDirectory.Entry> albums = new ArrayList<MusicDirectory.Entry>();
+		List<MusicDirectory.Entry> songs = new ArrayList<MusicDirectory.Entry>();
+		int eventType;
+		do
+		{
+			eventType = nextParseEvent();
+			if (eventType == XmlPullParser.START_TAG)
+			{
+				String name = getElementName();
+				if ("artist".equals(name))
+				{
+					Artist artist = new Artist();
+					artist.setId(get("id"));
+					artist.setName(get("name"));
+					artists.add(artist);
+				}
+				else if ("album".equals(name))
+				{
+					albums.add(parseEntry("", useId3, 0));
+				}
+				else if ("song".equals(name))
+				{
+					songs.add(parseEntry("", false, 0));
+				}
+				else if ("error".equals(name))
+				{
+					handleError();
+				}
+			}
+		} while (eventType != XmlPullParser.END_DOCUMENT);
 
-        validate();
-        updateProgress(progressListener, R.string.parser_reading_done);
+		validate();
+		updateProgress(progressListener, R.string.parser_reading_done);
 
-        return new SearchResult(artists, albums, songs);
-    }
+		return new SearchResult(artists, albums, songs);
+	}
 
 }

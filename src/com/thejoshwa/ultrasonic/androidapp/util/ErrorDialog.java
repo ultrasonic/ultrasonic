@@ -21,41 +21,51 @@ package com.thejoshwa.ultrasonic.androidapp.util;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
+
 import com.thejoshwa.ultrasonic.androidapp.R;
 
 /**
  * @author Sindre Mehus
  */
-public class ErrorDialog {
+public class ErrorDialog
+{
 
-    public ErrorDialog(Activity activity, int messageId, boolean finishActivityOnCancel) {
-        this(activity, activity.getResources().getString(messageId), finishActivityOnCancel);
-    }
+	public ErrorDialog(Activity activity, int messageId, boolean finishActivityOnCancel)
+	{
+		this(activity, activity.getResources().getString(messageId), finishActivityOnCancel);
+	}
 
-    public ErrorDialog(final Activity activity, String message, final boolean finishActivityOnClose) {
+	public ErrorDialog(final Activity activity, CharSequence message, final boolean finishActivityOnClose)
+	{
 
-        AlertDialog.Builder builder = new AlertDialog.Builder(activity);
-        builder.setIcon(android.R.drawable.ic_dialog_alert);
-        builder.setTitle(R.string.error_label);
-        builder.setMessage(message);
-        builder.setCancelable(true);
-        builder.setOnCancelListener(new DialogInterface.OnCancelListener() {
-            @Override
-            public void onCancel(DialogInterface dialogInterface) {
-                if (finishActivityOnClose) {
-                    activity.finish();
-                }
-            }
-        });
-        builder.setPositiveButton(R.string.common_ok, new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialogInterface, int i) {
-                if (finishActivityOnClose) {
-                    activity.finish();
-                }
-            }
-        });
+		AlertDialog.Builder builder = new AlertDialog.Builder(activity);
+		builder.setIcon(android.R.drawable.ic_dialog_alert);
+		builder.setTitle(R.string.error_label);
+		builder.setMessage(message);
+		builder.setCancelable(true);
+		builder.setOnCancelListener(new DialogInterface.OnCancelListener()
+		{
+			@Override
+			public void onCancel(DialogInterface dialogInterface)
+			{
+				if (finishActivityOnClose)
+				{
+					activity.finish();
+				}
+			}
+		});
+		builder.setPositiveButton(R.string.common_ok, new DialogInterface.OnClickListener()
+		{
+			@Override
+			public void onClick(DialogInterface dialogInterface, int i)
+			{
+				if (finishActivityOnClose)
+				{
+					activity.finish();
+				}
+			}
+		});
 
-        builder.create().show();
-    }
+		builder.create().show();
+	}
 }

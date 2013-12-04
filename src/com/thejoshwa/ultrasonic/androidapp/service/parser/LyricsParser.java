@@ -19,9 +19,11 @@
 package com.thejoshwa.ultrasonic.androidapp.service.parser;
 
 import android.content.Context;
+
 import com.thejoshwa.ultrasonic.androidapp.R;
 import com.thejoshwa.ultrasonic.androidapp.domain.Lyrics;
 import com.thejoshwa.ultrasonic.androidapp.util.ProgressListener;
+
 import org.xmlpull.v1.XmlPullParser;
 
 import java.io.Reader;
@@ -29,37 +31,48 @@ import java.io.Reader;
 /**
  * @author Sindre Mehus
  */
-public class LyricsParser extends AbstractParser {
+public class LyricsParser extends AbstractParser
+{
 
-    public LyricsParser(Context context) {
-        super(context);
-    }
+	public LyricsParser(Context context)
+	{
+		super(context);
+	}
 
-    public Lyrics parse(Reader reader, ProgressListener progressListener) throws Exception {
-        updateProgress(progressListener, R.string.parser_reading);
-        init(reader);
+	public Lyrics parse(Reader reader, ProgressListener progressListener) throws Exception
+	{
+		updateProgress(progressListener, R.string.parser_reading);
+		init(reader);
 
-        Lyrics lyrics = null;
-        int eventType;
-        do {
-            eventType = nextParseEvent();
-            if (eventType == XmlPullParser.START_TAG) {
-                String name = getElementName();
-                if ("lyrics".equals(name)) {
-                    lyrics = new Lyrics();
-                    lyrics.setArtist(get("artist"));
-                    lyrics.setTitle(get("title"));
-                } else if ("error".equals(name)) {
-                    handleError();
-                }
-            } else if (eventType == XmlPullParser.TEXT) {
-                if (lyrics != null && lyrics.getText() == null) {
-                    lyrics.setText(getText());
-                }
-            }
-        } while (eventType != XmlPullParser.END_DOCUMENT);
+		Lyrics lyrics = null;
+		int eventType;
+		do
+		{
+			eventType = nextParseEvent();
+			if (eventType == XmlPullParser.START_TAG)
+			{
+				String name = getElementName();
+				if ("lyrics".equals(name))
+				{
+					lyrics = new Lyrics();
+					lyrics.setArtist(get("artist"));
+					lyrics.setTitle(get("title"));
+				}
+				else if ("error".equals(name))
+				{
+					handleError();
+				}
+			}
+			else if (eventType == XmlPullParser.TEXT)
+			{
+				if (lyrics != null && lyrics.getText() == null)
+				{
+					lyrics.setText(getText());
+				}
+			}
+		} while (eventType != XmlPullParser.END_DOCUMENT);
 
-        validate();
-        return lyrics;
-    }
+		validate();
+		return lyrics;
+	}
 }

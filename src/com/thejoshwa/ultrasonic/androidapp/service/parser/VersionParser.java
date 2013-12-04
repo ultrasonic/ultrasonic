@@ -28,20 +28,24 @@ import java.util.regex.Pattern;
 /**
  * @author Sindre Mehus
  */
-public class VersionParser {
+public class VersionParser
+{
 
-    public Version parse(Reader reader) throws Exception {
+	public static Version parse(Reader reader) throws Exception
+	{
 
-        BufferedReader bufferedReader = new BufferedReader(reader);
-        Pattern pattern = Pattern.compile("SUBSONIC_ANDROID_VERSION_BEGIN(.*)SUBSONIC_ANDROID_VERSION_END");
-        String line = bufferedReader.readLine();
-        while (line != null) {
-            Matcher finalMatcher = pattern.matcher(line);
-            if (finalMatcher.find()) {
-                return new Version(finalMatcher.group(1));
-            }
-            line = bufferedReader.readLine();
-        }
-        return null;
-    }
+		BufferedReader bufferedReader = new BufferedReader(reader);
+		Pattern pattern = Pattern.compile("SUBSONIC_ANDROID_VERSION_BEGIN(.*)SUBSONIC_ANDROID_VERSION_END");
+		String line = bufferedReader.readLine();
+		while (line != null)
+		{
+			Matcher finalMatcher = pattern.matcher(line);
+			if (finalMatcher.find())
+			{
+				return new Version(finalMatcher.group(1));
+			}
+			line = bufferedReader.readLine();
+		}
+		return null;
+	}
 }

@@ -24,14 +24,12 @@ package com.thejoshwa.ultrasonic.androidapp.service;
  * @author Sindre Mehus
  * @version $Id$
  */
-public class OfflineException extends Exception {
-
-    /**
-	 * 
-	 */
+public class OfflineException extends Exception
+{
 	private static final long serialVersionUID = -4479642294747429444L;
 
-	public OfflineException(String message) {
-        super(message);
-    }
+	public OfflineException(String message)
+	{
+		super(message);
+	}
 }

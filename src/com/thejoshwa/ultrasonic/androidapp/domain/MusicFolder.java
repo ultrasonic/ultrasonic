@@ -24,21 +24,25 @@ package com.thejoshwa.ultrasonic.androidapp.domain;
  * @author Sindre Mehus
  * @version $Id$
  */
-public class MusicFolder {
+public class MusicFolder
+{
 
-    private final String id;
-    private final String name;
+	private final String id;
+	private final String name;
 
-    public MusicFolder(String id, String name) {
-        this.id = id;
-        this.name = name;
-    }
+	public MusicFolder(String id, String name)
+	{
+		this.id = id;
+		this.name = name;
+	}
 
-    public String getId() {
-        return id;
-    }
+	public String getId()
+	{
+		return id;
+	}
 
-    public String getName() {
-        return name;
-    }
+	public String getName()
+	{
+		return name;
+	}
 }

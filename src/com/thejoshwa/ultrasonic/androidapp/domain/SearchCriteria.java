@@ -23,33 +23,39 @@ package com.thejoshwa.ultrasonic.androidapp.domain;
  *
  * @author Sindre Mehus
  */
-public class SearchCriteria {
+public class SearchCriteria
+{
 
-    private final String query;
-    private final int artistCount;
-    private final int albumCount;
-    private final int songCount;
+	private final String query;
+	private final int artistCount;
+	private final int albumCount;
+	private final int songCount;
 
-    public SearchCriteria(String query, int artistCount, int albumCount, int songCount) {
-        this.query = query;
-        this.artistCount = artistCount;
-        this.albumCount = albumCount;
-        this.songCount = songCount;
-    }
+	public SearchCriteria(String query, int artistCount, int albumCount, int songCount)
+	{
+		this.query = query;
+		this.artistCount = artistCount;
+		this.albumCount = albumCount;
+		this.songCount = songCount;
+	}
 
-    public String getQuery() {
-        return query;
-    }
+	public String getQuery()
+	{
+		return query;
+	}
 
-    public int getArtistCount() {
-        return artistCount;
-    }
+	public int getArtistCount()
+	{
+		return artistCount;
+	}
 
-    public int getAlbumCount() {
-        return albumCount;
-    }
+	public int getAlbumCount()
+	{
+		return albumCount;
+	}
 
-    public int getSongCount() {
-        return songCount;
-    }
+	public int getSongCount()
+	{
+		return songCount;
+	}
 }

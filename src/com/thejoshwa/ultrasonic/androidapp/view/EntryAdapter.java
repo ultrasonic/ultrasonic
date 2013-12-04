@@ -18,58 +18,88 @@
  */
 package com.thejoshwa.ultrasonic.androidapp.view;
 
-import java.util.List;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
+
 import com.thejoshwa.ultrasonic.androidapp.activity.SubsonicTabActivity;
 import com.thejoshwa.ultrasonic.androidapp.domain.MusicDirectory.Entry;
 import com.thejoshwa.ultrasonic.androidapp.util.ImageLoader;
 
+import java.util.List;
+
 /**
  * @author Sindre Mehus
  */
-public class EntryAdapter extends ArrayAdapter<Entry> {
+public class EntryAdapter extends ArrayAdapter<Entry>
+{
+	private final SubsonicTabActivity activity;
+	private final ImageLoader imageLoader;
+	private final boolean checkable;
 
-    private final SubsonicTabActivity activity;
-    private final ImageLoader imageLoader;
-    private final boolean checkable;
+	public EntryAdapter(SubsonicTabActivity activity, ImageLoader imageLoader, List<Entry> entries, boolean checkable)
+	{
+		super(activity, android.R.layout.simple_list_item_1, entries);
 
-    public EntryAdapter(SubsonicTabActivity activity, ImageLoader imageLoader, List<Entry> entries, boolean checkable) {
-        super(activity, android.R.layout.simple_list_item_1, entries);
-        
-        this.activity = activity;
-        this.imageLoader = imageLoader;
-        this.checkable = checkable;
-    }
+		this.activity = activity;
+		this.imageLoader = imageLoader;
+		this.checkable = checkable;
+	}
 
-    @Override
-    public View getView(int position, View convertView, ViewGroup parent) {
-        Entry entry = getItem(position);
+	@Override
+	public View getView(int position, View convertView, ViewGroup parent)
+	{
+		Entry entry = getItem(position);
 
-        if (entry.isDirectory()) {
-            AlbumView view;
+		if (entry.isDirectory())
+		{
+			AlbumView view;
 
-            if (convertView != null && convertView instanceof AlbumView) {
-                view = (AlbumView) convertView;
-            } else {
-                view = new AlbumView(activity);
-            }
-            
-            view.setAlbum(entry, imageLoader);
-            return view;
+			if (convertView != null && convertView instanceof AlbumView)
+			{
+				AlbumView currentView = (AlbumView) convertView;
+				if (currentView.getEntry().equals(entry))
+				{
+					currentView.update();
+					return currentView;
+				}
+				else
+				{
+					view = new AlbumView(activity);
+				}
+			}
+			else
+			{
+				view = new AlbumView(activity);
+			}
 
-        } else {
-            SongView view;
-            
-            if (convertView != null && convertView instanceof SongView) {
-                view = (SongView) convertView;
-            } else {
-                view = new SongView(activity);
-            }
-            
-            view.setSong(entry, checkable);
-            return view;
-        }
-    }
+			view.setAlbum(entry, imageLoader);
+			return view;
+		}
+		else
+		{
+			SongView view;
+
+			if (convertView != null && convertView instanceof SongView)
+			{
+				SongView currentView = (SongView) convertView;
+				if (currentView.getEntry().equals(entry))
+				{
+					currentView.update();
+					return currentView;
+				}
+				else
+				{
+					view = new SongView(activity);
+				}
+			}
+			else
+			{
+				view = new SongView(activity);
+			}
+
+			view.setSong(entry, checkable);
+			return view;
+		}
+	}
 }

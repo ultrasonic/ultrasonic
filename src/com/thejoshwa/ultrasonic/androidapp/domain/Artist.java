@@ -23,69 +23,83 @@ import java.io.Serializable;
 /**
  * @author Sindre Mehus
  */
-public class Artist implements Serializable {
+public class Artist implements Serializable
+{
 
-    /**
-	 * 
+	/**
+	 *
 	 */
 	private static final long serialVersionUID = -5790532593784846982L;
 	private String id;
-    private String name;
-    private String index;
-    private String coverArt;
-    private Long albumCount;
-    private int closeness;
+	private String name;
+	private String index;
+	private String coverArt;
+	private Long albumCount;
+	private int closeness;
 
-    public String getId() {
-        return id;
-    }
+	public String getId()
+	{
+		return id;
+	}
 
-    public void setId(String id) {
-        this.id = id;
-    }
+	public void setId(String id)
+	{
+		this.id = id;
+	}
 
-    public String getName() {
-        return name;
-    }
+	public String getName()
+	{
+		return name;
+	}
 
-    public void setName(String name) {
-        this.name = name;
-    }
+	public void setName(String name)
+	{
+		this.name = name;
+	}
 
-    public String getIndex() {
-        return index;
-    }
+	public String getIndex()
+	{
+		return index;
+	}
 
-    public void setIndex(String index) {
-        this.index = index;
-    }
-    
-    public String getCoverArt() {
-        return coverArt;
-    }
+	public void setIndex(String index)
+	{
+		this.index = index;
+	}
 
-    public void setCoverArt(String coverArt) {
-        this.coverArt = coverArt;
-    }
-    
-	public long getAlbumCount() {
+	public String getCoverArt()
+	{
+		return coverArt;
+	}
+
+	public void setCoverArt(String coverArt)
+	{
+		this.coverArt = coverArt;
+	}
+
+	public long getAlbumCount()
+	{
 		return albumCount;
 	}
 
-	public void setAlbumCount(Long albumCount) {
+	public void setAlbumCount(Long albumCount)
+	{
 		this.albumCount = albumCount;
 	}
-    
-	public int getCloseness() {
+
+	public int getCloseness()
+	{
 		return closeness;
 	}
 
-	public void setCloseness(int closeness) {
+	public void setCloseness(int closeness)
+	{
 		this.closeness = closeness;
 	}
 
-    @Override
-    public String toString() {
-        return name;
-    }
+	@Override
+	public String toString()
+	{
+		return name;
+	}
 }

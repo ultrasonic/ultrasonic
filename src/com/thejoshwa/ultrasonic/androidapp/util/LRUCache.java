@@ -25,77 +25,93 @@ import java.util.Map;
 /**
  * @author Sindre Mehus
  */
-public class LRUCache<K,V>{
+public class LRUCache<K, V>
+{
 
-    private final int capacity;
-    private final Map<K, TimestampedValue> map;
+	private final int capacity;
+	private final Map<K, TimestampedValue> map;
 
-    public LRUCache(int capacity) {
-        map = new HashMap<K, TimestampedValue>(capacity);
-        this.capacity = capacity;
-    }
+	public LRUCache(int capacity)
+	{
+		map = new HashMap<K, TimestampedValue>(capacity);
+		this.capacity = capacity;
+	}
 
-    public synchronized V get(K key) {
-        TimestampedValue value = map.get(key);
+	public synchronized V get(K key)
+	{
+		TimestampedValue value = map.get(key);
 
-        V result = null;
-        if (value != null) {
-            value.updateTimestamp();
-            result = value.getValue();
-        }
+		V result = null;
+		if (value != null)
+		{
+			value.updateTimestamp();
+			result = value.getValue();
+		}
 
-        return result;
-    }
+		return result;
+	}
 
-    public synchronized void put(K key, V value) {
-        if (map.size() >= capacity) {
-            removeOldest();
-        }
-        map.put(key, new TimestampedValue(value));
-    }
+	public synchronized void put(K key, V value)
+	{
+		if (map.size() >= capacity)
+		{
+			removeOldest();
+		}
+		map.put(key, new TimestampedValue(value));
+	}
 
-    public void clear() {
-        map.clear();
-    }
+	public void clear()
+	{
+		map.clear();
+	}
 
-    private void removeOldest() {
-        K oldestKey = null;
-        long oldestTimestamp = Long.MAX_VALUE;
+	private void removeOldest()
+	{
+		K oldestKey = null;
+		long oldestTimestamp = Long.MAX_VALUE;
 
-        for (Map.Entry<K, TimestampedValue> entry : map.entrySet()) {
-            K key = entry.getKey();
-            TimestampedValue value = entry.getValue();
-            if (value.getTimestamp() < oldestTimestamp) {
-                oldestTimestamp = value.getTimestamp();
-                oldestKey = key;
-            }
-        }
+		for (Map.Entry<K, TimestampedValue> entry : map.entrySet())
+		{
+			K key = entry.getKey();
+			TimestampedValue value = entry.getValue();
+			if (value.getTimestamp() < oldestTimestamp)
+			{
+				oldestTimestamp = value.getTimestamp();
+				oldestKey = key;
+			}
+		}
 
-        if (oldestKey != null) {
-            map.remove(oldestKey);
-        }
-    }
+		if (oldestKey != null)
+		{
+			map.remove(oldestKey);
+		}
+	}
 
-    private final class TimestampedValue {
+	private final class TimestampedValue
+	{
 
-        private final SoftReference<V> value;
-        private long timestamp;
+		private final SoftReference<V> value;
+		private long timestamp;
 
-        public TimestampedValue(V value) {
-            this.value = new SoftReference<V>(value);
-            updateTimestamp();
-        }
+		public TimestampedValue(V value)
+		{
+			this.value = new SoftReference<V>(value);
+			updateTimestamp();
+		}
 
-        public V getValue() {
-            return value.get();
-        }
+		public V getValue()
+		{
+			return value.get();
+		}
 
-        public long getTimestamp() {
-            return timestamp;
-        }
+		public long getTimestamp()
+		{
+			return timestamp;
+		}
 
-        public void updateTimestamp() {
-            timestamp = System.currentTimeMillis();
-        }
-    }
+		public void updateTimestamp()
+		{
+			timestamp = System.currentTimeMillis();
+		}
+	}
 }

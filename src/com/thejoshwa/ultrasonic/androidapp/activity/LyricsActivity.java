@@ -22,6 +22,7 @@ package com.thejoshwa.ultrasonic.androidapp.activity;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.TextView;
+
 import com.thejoshwa.ultrasonic.androidapp.R;
 import com.thejoshwa.ultrasonic.androidapp.domain.Lyrics;
 import com.thejoshwa.ultrasonic.androidapp.service.MusicService;
@@ -35,45 +36,54 @@ import com.thejoshwa.ultrasonic.androidapp.util.TabActivityBackgroundTask;
  *
  * @author Sindre Mehus
  */
-public final class LyricsActivity extends SubsonicTabActivity {
+public final class LyricsActivity extends SubsonicTabActivity
+{
 
-    @Override
-    protected void onCreate(Bundle bundle) {
-        super.onCreate(bundle);
-        setContentView(R.layout.lyrics);
+	@Override
+	protected void onCreate(Bundle bundle)
+	{
+		super.onCreate(bundle);
+		setContentView(R.layout.lyrics);
 
-        View nowPlayingMenuItem = findViewById(R.id.menu_now_playing);
-        menuDrawer.setActiveView(nowPlayingMenuItem);
-        
-        load();
-    }
+		View nowPlayingMenuItem = findViewById(R.id.menu_now_playing);
+		menuDrawer.setActiveView(nowPlayingMenuItem);
 
-    private void load() {
-        BackgroundTask<Lyrics> task = new TabActivityBackgroundTask<Lyrics>(this, true) {
-            @Override
-            protected Lyrics doInBackground() throws Throwable {
-                String artist = getIntent().getStringExtra(Constants.INTENT_EXTRA_NAME_ARTIST);
-                String title = getIntent().getStringExtra(Constants.INTENT_EXTRA_NAME_TITLE);
-                MusicService musicService = MusicServiceFactory.getMusicService(LyricsActivity.this);
-                return musicService.getLyrics(artist, title, LyricsActivity.this, this);
-            }
+		load();
+	}
 
-            @Override
-            protected void done(Lyrics result) {
-                TextView artistView = (TextView) findViewById(R.id.lyrics_artist);
-                TextView titleView = (TextView) findViewById(R.id.lyrics_title);
-                TextView textView = (TextView) findViewById(R.id.lyrics_text);
-                
-                if (result != null && result.getArtist() != null) {
-                    artistView.setText(result.getArtist());
-                    titleView.setText(result.getTitle());
-                    textView.setText(result.getText());
-                } else {
-                    artistView.setText(R.string.lyrics_nomatch);
-                }
-                
-            }
-        };
-        task.execute();
-    }
+	private void load()
+	{
+		BackgroundTask<Lyrics> task = new TabActivityBackgroundTask<Lyrics>(this, true)
+		{
+			@Override
+			protected Lyrics doInBackground() throws Throwable
+			{
+				String artist = getIntent().getStringExtra(Constants.INTENT_EXTRA_NAME_ARTIST);
+				String title = getIntent().getStringExtra(Constants.INTENT_EXTRA_NAME_TITLE);
+				MusicService musicService = MusicServiceFactory.getMusicService(LyricsActivity.this);
+				return musicService.getLyrics(artist, title, LyricsActivity.this, this);
+			}
+
+			@Override
+			protected void done(Lyrics result)
+			{
+				TextView artistView = (TextView) findViewById(R.id.lyrics_artist);
+				TextView titleView = (TextView) findViewById(R.id.lyrics_title);
+				TextView textView = (TextView) findViewById(R.id.lyrics_text);
+
+				if (result != null && result.getArtist() != null)
+				{
+					artistView.setText(result.getArtist());
+					titleView.setText(result.getTitle());
+					textView.setText(result.getText());
+				}
+				else
+				{
+					artistView.setText(R.string.lyrics_nomatch);
+				}
+
+			}
+		};
+		task.execute();
+	}
 }

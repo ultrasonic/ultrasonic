@@ -19,6 +19,7 @@
 package com.thejoshwa.ultrasonic.androidapp.service.parser;
 
 import android.content.Context;
+
 import com.thejoshwa.ultrasonic.androidapp.R;
 import com.thejoshwa.ultrasonic.androidapp.domain.Playlist;
 import com.thejoshwa.ultrasonic.androidapp.util.ProgressListener;
@@ -33,42 +34,50 @@ import java.util.List;
 /**
  * @author Sindre Mehus
  */
-public class PlaylistsParser extends AbstractParser {
+public class PlaylistsParser extends AbstractParser
+{
 
-    public PlaylistsParser(Context context) {
-        super(context);
-    }
+	public PlaylistsParser(Context context)
+	{
+		super(context);
+	}
 
-    public List<Playlist> parse(Reader reader, ProgressListener progressListener) throws Exception {
+	public List<Playlist> parse(Reader reader, ProgressListener progressListener) throws Exception
+	{
 
-        updateProgress(progressListener, R.string.parser_reading);
-        init(reader);
+		updateProgress(progressListener, R.string.parser_reading);
+		init(reader);
 
-        List<Playlist> result = new ArrayList<Playlist>();
-        int eventType;
-        do {
-            eventType = nextParseEvent();
-            if (eventType == XmlPullParser.START_TAG) {
-                String tag = getElementName();
-                if ("playlist".equals(tag)) {
-                    String id = get("id");
-                    String name = get("name");
+		List<Playlist> result = new ArrayList<Playlist>();
+		int eventType;
+		do
+		{
+			eventType = nextParseEvent();
+			if (eventType == XmlPullParser.START_TAG)
+			{
+				String tag = getElementName();
+				if ("playlist".equals(tag))
+				{
+					String id = get("id");
+					String name = get("name");
 					String owner = get("owner");
 					String comment = get("comment");
 					String songCount = get("songCount");
 					String created = get("created");
 					String pub = get("public");
-                    result.add(new Playlist(id, name, owner, comment, songCount, created, pub));
-                } else if ("error".equals(tag)) {
-                    handleError();
-                }
-            }
-        } while (eventType != XmlPullParser.END_DOCUMENT);
+					result.add(new Playlist(id, name, owner, comment, songCount, created, pub));
+				}
+				else if ("error".equals(tag))
+				{
+					handleError();
+				}
+			}
+		} while (eventType != XmlPullParser.END_DOCUMENT);
 
-        validate();
-        updateProgress(progressListener, R.string.parser_reading_done);
+		validate();
+		updateProgress(progressListener, R.string.parser_reading_done);
 
-        return PlaylistAdapter.PlaylistComparator.sort(result);
-    }
+		return PlaylistAdapter.PlaylistComparator.sort(result);
+	}
 
 }

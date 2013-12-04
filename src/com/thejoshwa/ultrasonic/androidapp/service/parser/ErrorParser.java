@@ -19,6 +19,7 @@
 package com.thejoshwa.ultrasonic.androidapp.service.parser;
 
 import android.content.Context;
+
 import org.xmlpull.v1.XmlPullParser;
 
 import java.io.Reader;
@@ -26,24 +27,29 @@ import java.io.Reader;
 /**
  * @author Sindre Mehus
  */
-public class ErrorParser extends AbstractParser {
+public class ErrorParser extends AbstractParser
+{
 
-    public ErrorParser(Context context) {
-        super(context);
-    }
+	public ErrorParser(Context context)
+	{
+		super(context);
+	}
 
-    public void parse(Reader reader) throws Exception {
+	public void parse(Reader reader) throws Exception
+	{
 
-        init(reader);
+		init(reader);
 
-        int eventType;
-        do {
-            eventType = nextParseEvent();
-            if (eventType == XmlPullParser.START_TAG && "error".equals(getElementName())) {
-                handleError();
-            }
-        } while (eventType != XmlPullParser.END_DOCUMENT);
+		int eventType;
+		do
+		{
+			eventType = nextParseEvent();
+			if (eventType == XmlPullParser.START_TAG && "error".equals(getElementName()))
+			{
+				handleError();
+			}
+		} while (eventType != XmlPullParser.END_DOCUMENT);
 
-        validate();
-    }
+		validate();
+	}
 }

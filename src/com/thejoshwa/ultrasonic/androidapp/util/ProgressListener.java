@@ -21,7 +21,9 @@ package com.thejoshwa.ultrasonic.androidapp.util;
 /**
  * @author Sindre Mehus
  */
-public interface ProgressListener {
-    void updateProgress(String message);
-    void updateProgress(int messageId);
+public interface ProgressListener
+{
+	void updateProgress(String message);
+
+	void updateProgress(int messageId);
 }

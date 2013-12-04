@@ -6,34 +6,39 @@ import android.view.MotionEvent;
 import android.view.View;
 import android.widget.ImageView;
 
-public class AutoRepeatButton extends ImageView {
+public class AutoRepeatButton extends ImageView
+{
 
 	private long initialRepeatDelay = 1000;
-	private long repeatIntervalInMilliseconds = 300;
 	private boolean doClick = true;
-	private Runnable repeatEvent = null;
+	private Runnable repeatEvent;
 
-	private Runnable repeatClickWhileButtonHeldRunnable = new Runnable() {
+	private Runnable repeatClickWhileButtonHeldRunnable = new Runnable()
+	{
 		@Override
-		public void run() {
+		public void run()
+		{
 			doClick = false;
 			//Perform the present repetition of the click action provided by the user
 			// in setOnClickListener().
-			if(repeatEvent != null)
-				repeatEvent.run();
+			if (repeatEvent != null) repeatEvent.run();
 
 			//Schedule the next repetitions of the click action, using a faster repeat
 			// interval than the initial repeat delay interval.
+			long repeatIntervalInMilliseconds = 300;
 			postDelayed(repeatClickWhileButtonHeldRunnable, repeatIntervalInMilliseconds);
 		}
 	};
 
-	private void commonConstructorCode() {
-		this.setOnTouchListener(new OnTouchListener() {
+	private void commonConstructorCode()
+	{
+		this.setOnTouchListener(new OnTouchListener()
+		{
 			@Override
-			public boolean onTouch(View v, MotionEvent event) {
-				int action = event.getAction(); 
-				if(action == MotionEvent.ACTION_DOWN) 
+			public boolean onTouch(View v, MotionEvent event)
+			{
+				int action = event.getAction();
+				if (action == MotionEvent.ACTION_DOWN)
 				{
 					doClick = true;
 					//Just to be sure that we removed all callbacks, 
@@ -45,11 +50,13 @@ public class AutoRepeatButton extends ImageView {
 
 					setPressed(true);
 				}
-				else if(action == MotionEvent.ACTION_UP) {
+				else if (action == MotionEvent.ACTION_UP)
+				{
 					//Cancel any repetition in progress.
 					removeCallbacks(repeatClickWhileButtonHeldRunnable);
 
-					if(doClick || repeatEvent == null) {
+					if (doClick || repeatEvent == null)
+					{
 						performClick();
 					}
 
@@ -64,22 +71,26 @@ public class AutoRepeatButton extends ImageView {
 		});
 	}
 
-	public void setOnRepeatListener(Runnable runnable) {
+	public void setOnRepeatListener(Runnable runnable)
+	{
 		repeatEvent = runnable;
 	}
 
-	public AutoRepeatButton(Context context, AttributeSet attrs, int defStyle) {
+	public AutoRepeatButton(Context context, AttributeSet attrs, int defStyle)
+	{
 		super(context, attrs, defStyle);
 		commonConstructorCode();
 	}
 
 
-	public AutoRepeatButton(Context context, AttributeSet attrs) {
+	public AutoRepeatButton(Context context, AttributeSet attrs)
+	{
 		super(context, attrs);
 		commonConstructorCode();
 	}
 
-	public AutoRepeatButton(Context context) {
+	public AutoRepeatButton(Context context)
+	{
 		super(context);
 		commonConstructorCode();
 	}

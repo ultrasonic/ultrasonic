@@ -20,19 +20,23 @@ package com.thejoshwa.ultrasonic.androidapp.provider;
 
 import com.thejoshwa.ultrasonic.androidapp.R;
 
-public class UltraSonicAppWidgetProvider4x3 extends UltraSonicAppWidgetProvider {
+public class UltraSonicAppWidgetProvider4x3 extends UltraSonicAppWidgetProvider
+{
 
-    public UltraSonicAppWidgetProvider4x3() {
+	public UltraSonicAppWidgetProvider4x3()
+	{
 		super();
 		this.layoutId = R.layout.appwidget4x3;
 	}
 
 	private static UltraSonicAppWidgetProvider4x3 instance;
 
-    public static synchronized UltraSonicAppWidgetProvider4x3 getInstance() {
-        if (instance == null) {
-            instance = new UltraSonicAppWidgetProvider4x3();
-        }
-        return instance;
-    }
+	public static synchronized UltraSonicAppWidgetProvider4x3 getInstance()
+	{
+		if (instance == null)
+		{
+			instance = new UltraSonicAppWidgetProvider4x3();
+		}
+		return instance;
+	}
 }

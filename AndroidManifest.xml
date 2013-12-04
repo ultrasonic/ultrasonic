@@ -2,20 +2,21 @@
 <manifest xmlns:a="http://schemas.android.com/apk/res/android"
     package="com.thejoshwa.ultrasonic.androidapp"
     a:installLocation="auto"
-    a:versionCode="34"
-    a:versionName="1.2.0.7" >
+    a:versionCode="35"
+    a:versionName="1.2.0.8" >
 
     <uses-permission a:name="android.permission.INTERNET" />
     <uses-permission a:name="android.permission.READ_PHONE_STATE" />
     <uses-permission a:name="android.permission.ACCESS_NETWORK_STATE" />
     <uses-permission a:name="android.permission.WAKE_LOCK" />
     <uses-permission a:name="android.permission.WRITE_EXTERNAL_STORAGE" />
+    <uses-permission a:name="android.permission.READ_EXTERNAL_STORAGE" />
     <uses-permission a:name="android.permission.RECORD_AUDIO" />
     <uses-permission a:name="android.permission.MODIFY_AUDIO_SETTINGS" />
 
     <uses-sdk
         a:minSdkVersion="14"
-        a:targetSdkVersion="17" />
+        a:targetSdkVersion="19" />
 
     <supports-screens
         a:anyDensity="true"
@@ -98,6 +99,7 @@
             a:launchMode="singleTask" >
             <intent-filter>
                 <action a:name="android.intent.action.SEARCH" />
+                <category a:name="android.intent.category.DEFAULT" />
             </intent-filter>
 
             <meta-data

@@ -24,36 +24,39 @@ import android.app.SearchManager;
 import android.content.Intent;
 import android.os.Bundle;
 import android.provider.SearchRecentSuggestions;
+
 import com.thejoshwa.ultrasonic.androidapp.util.Constants;
 import com.thejoshwa.ultrasonic.androidapp.util.Util;
 import com.thejoshwa.ultrasonic.androidapp.provider.SearchSuggestionProvider;
 
 /**
  * Receives voice search queries and forwards to the SearchActivity.
- *
+ * <p/>
  * http://android-developers.blogspot.com/2010/09/supporting-new-music-voice-action.html
  *
  * @author Sindre Mehus
  */
-public class VoiceQueryReceiverActivity extends Activity {
+public class VoiceQueryReceiverActivity extends Activity
+{
 
-    @Override
-    public void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
+	@Override
+	public void onCreate(Bundle savedInstanceState)
+	{
+		super.onCreate(savedInstanceState);
 
-        String query = getIntent().getStringExtra(SearchManager.QUERY);
+		String query = getIntent().getStringExtra(SearchManager.QUERY);
 
-        if (query != null) {
-            SearchRecentSuggestions suggestions = new SearchRecentSuggestions(this, SearchSuggestionProvider.AUTHORITY,
-                                                                              SearchSuggestionProvider.MODE);
-            suggestions.saveRecentQuery(query, null);
+		if (query != null)
+		{
+			SearchRecentSuggestions suggestions = new SearchRecentSuggestions(this, SearchSuggestionProvider.AUTHORITY, SearchSuggestionProvider.MODE);
+			suggestions.saveRecentQuery(query, null);
 
-            Intent intent = new Intent(VoiceQueryReceiverActivity.this, SearchActivity.class);
-            intent.putExtra(Constants.INTENT_EXTRA_NAME_QUERY, query);
-            intent.putExtra(Constants.INTENT_EXTRA_NAME_AUTOPLAY, true);
-            Util.startActivityWithoutTransition(VoiceQueryReceiverActivity.this, intent);
-        }
-        finish();
-        Util.disablePendingTransition(this);
-    }
+			Intent intent = new Intent(VoiceQueryReceiverActivity.this, SearchActivity.class);
+			intent.putExtra(Constants.INTENT_EXTRA_NAME_QUERY, query);
+			intent.putExtra(Constants.INTENT_EXTRA_NAME_AUTOPLAY, true);
+			Util.startActivityWithoutTransition(VoiceQueryReceiverActivity.this, intent);
+		}
+		finish();
+		Util.disablePendingTransition(this);
+	}
 }

@@ -24,6 +24,7 @@ import android.util.Log;
 import com.thejoshwa.ultrasonic.androidapp.R;
 import com.thejoshwa.ultrasonic.androidapp.domain.Genre;
 import com.thejoshwa.ultrasonic.androidapp.util.ProgressListener;
+
 import org.xmlpull.v1.XmlPullParser;
 
 import java.io.BufferedReader;
@@ -32,95 +33,122 @@ import java.io.Reader;
 import java.io.StringReader;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.regex.Pattern;
 
 /**
  * @author Joshua Bahnsen
  */
-public class GenreParser extends AbstractParser {
+public class GenreParser extends AbstractParser
+{
 
 	private static final String TAG = GenreParser.class.getSimpleName();
-	
-    public GenreParser(Context context) {
-        super(context);
-    }
+	private static final Pattern COMPILE = Pattern.compile("(?:&amp;)(amp;|lt;|gt;|#37;|apos;)");
+	private static final Pattern PATTERN = Pattern.compile("&(?!amp;|lt;|gt;|#37;|apos;)");
+	private static final Pattern COMPILE1 = Pattern.compile("%");
+	private static final Pattern COMPILE2 = Pattern.compile("'");
 
-    public List<Genre> parse(Reader reader, ProgressListener progressListener) throws Exception {
-        updateProgress(progressListener, R.string.parser_reading);
-        
-        List<Genre> result = new ArrayList<Genre>();
-        StringReader sr = null;
-        
-        try {
-        	BufferedReader br = new BufferedReader(reader);
-        	String xml = null;
-        	String line;
-        
-        	while ((line = br.readLine()) != null) {
-        		if (xml == null) {
-        			xml = line;
-        		} else {
-        			xml += line;
-        		}
-        	}
-        	br.close();
+	public GenreParser(Context context)
+	{
+		super(context);
+	}
 
-            // Replace possible unescaped XML characters
-            // No replacements for <> at this time
-            if (xml != null) {
-                // Replace double escaped ampersand (&amp;apos;)
-                xml = xml.replaceAll("(?:&amp;)(amp;|lt;|gt;|#37;|apos;)", "&$1");
+	public List<Genre> parse(Reader reader, ProgressListener progressListener) throws Exception
+	{
+		updateProgress(progressListener, R.string.parser_reading);
 
-                // Replace unescaped ampersand
-                xml = xml.replaceAll("&(?!amp;|lt;|gt;|#37;|apos;)", "&amp;");
+		List<Genre> result = new ArrayList<Genre>();
+		StringReader sr = null;
 
-                // Replace unescaped percent symbol
-                xml = xml.replaceAll("%", "&#37;");
+		try
+		{
+			BufferedReader br = new BufferedReader(reader);
+			String xml = null;
+			String line;
 
-                // Replace unescaped apostrophe
-                xml = xml.replaceAll("'", "&apos;");
-            }
+			while ((line = br.readLine()) != null)
+			{
+				if (xml == null)
+				{
+					xml = line;
+				}
+				else
+				{
+					xml += line;
+				}
+			}
+			br.close();
 
-            sr = new StringReader(xml);
-        } catch (IOException ioe) {
-        	Log.e(TAG, "Error parsing Genre XML", ioe);
-        }
+			// Replace possible unescaped XML characters
+			// No replacements for <> at this time
+			if (xml != null)
+			{
+				// Replace double escaped ampersand (&amp;apos;)
+				xml = COMPILE.matcher(xml).replaceAll("&$1");
 
-        if (sr == null) {
-        	Log.w(TAG, "Unable to parse Genre XML, returning empty list");
-        	return result;
-        }
-        
-        init(sr);
+				// Replace unescaped ampersand
+				xml = PATTERN.matcher(xml).replaceAll("&amp;");
 
-        Genre genre = null;
-        
-        int eventType;
-        do {
-            eventType = nextParseEvent();
-            if (eventType == XmlPullParser.START_TAG) {
-                String name = getElementName();
-                if ("genre".equals(name)) {
-                    genre = new Genre();
-                } else if ("error".equals(name)) {
-                    handleError();
-                } else {
-                	genre = null;
-                }
-            } else if (eventType == XmlPullParser.TEXT) {
-                if (genre != null) {
-                    String value = getText();
+				// Replace unescaped percent symbol
+				xml = COMPILE1.matcher(xml).replaceAll("&#37;");
 
-                    genre.setName(value);
-                    genre.setIndex(value.substring(0, 1));
-                    result.add(genre);
-                    genre = null;
-                }
-            }
-        } while (eventType != XmlPullParser.END_DOCUMENT);
+				// Replace unescaped apostrophe
+				xml = COMPILE2.matcher(xml).replaceAll("&apos;");
+			}
 
-        validate();
-        updateProgress(progressListener, R.string.parser_reading_done);
-        
-        return result;
-    }
+			sr = new StringReader(xml);
+		}
+		catch (IOException ioe)
+		{
+			Log.e(TAG, "Error parsing Genre XML", ioe);
+		}
+
+		if (sr == null)
+		{
+			Log.w(TAG, "Unable to parse Genre XML, returning empty list");
+			return result;
+		}
+
+		init(sr);
+
+		Genre genre = null;
+
+		int eventType;
+		do
+		{
+			eventType = nextParseEvent();
+			if (eventType == XmlPullParser.START_TAG)
+			{
+				String name = getElementName();
+				if ("genre".equals(name))
+				{
+					genre = new Genre();
+				}
+				else if ("error".equals(name))
+				{
+					handleError();
+				}
+				else
+				{
+					genre = null;
+				}
+			}
+			else if (eventType == XmlPullParser.TEXT)
+			{
+				if (genre != null)
+				{
+					String value = getText();
+
+					genre.setName(value);
+					genre.setIndex(value.substring(0, 1));
+					result.add(genre);
+					genre = null;
+				}
+			}
+		} while (eventType != XmlPullParser.END_DOCUMENT);
+
+		validate();
+		updateProgress(progressListener, R.string.parser_reading_done);
+
+		return result;
+	}
 }

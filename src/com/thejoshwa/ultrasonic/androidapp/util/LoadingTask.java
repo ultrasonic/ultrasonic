@@ -1,86 +1,102 @@
 package com.thejoshwa.ultrasonic.androidapp.util;
 
-import com.thejoshwa.ultrasonic.androidapp.activity.SubsonicTabActivity;
-
 import android.annotation.SuppressLint;
 import android.app.ProgressDialog;
 import android.content.DialogInterface;
 import android.os.Build;
 
+import com.thejoshwa.ultrasonic.androidapp.activity.SubsonicTabActivity;
+
 /**
  * @author Sindre Mehus
  * @version $Id$
  */
-public abstract class LoadingTask<T> extends BackgroundTask<T> {
-
-    private final SubsonicTabActivity tabActivity;
+public abstract class LoadingTask<T> extends BackgroundTask<T>
+{
+	private final SubsonicTabActivity tabActivity;
 	private final boolean cancellable;
-	private boolean cancelled = false;
+	private boolean cancelled;
 
-    public LoadingTask(SubsonicTabActivity activity, final boolean cancellable) {
-        super(activity);
-        tabActivity = activity;
+	public LoadingTask(SubsonicTabActivity activity, final boolean cancellable)
+	{
+		super(activity);
+		tabActivity = activity;
 		this.cancellable = cancellable;
-    }
+	}
 
-    @Override
-    public void execute() {
-        final ProgressDialog loading = ProgressDialog.show(tabActivity, "", "Loading. Please Wait...", true, cancellable, new DialogInterface.OnCancelListener() {
-			public void onCancel(DialogInterface dialog) {
+	@Override
+	public void execute()
+	{
+		final ProgressDialog loading = ProgressDialog.show(tabActivity, "", "Loading. Please Wait...", true, cancellable, new DialogInterface.OnCancelListener()
+		{
+			@Override
+			public void onCancel(DialogInterface dialog)
+			{
 				cancelled = true;
 			}
-			
+
 		});
 
-        new Thread() {
-            @Override
-            public void run() {
-                try {
-                    final T result = doInBackground();
-                    if (isCancelled()) {
-                        return;
-                    }
+		new Thread()
+		{
+			@Override
+			public void run()
+			{
+				try
+				{
+					final T result = doInBackground();
+					if (isCancelled())
+					{
+						return;
+					}
 
-                    getHandler().post(new Runnable() {
-                        @Override
-                        public void run() {
-                            loading.cancel();
-                            done(result);
-                        }
-                    });
-                } catch (final Throwable t) {
-					if (isCancelled()) {
-                        return;
-                    }
-					
-                    getHandler().post(new Runnable() {
-                        @Override
-                        public void run() {
-                            loading.cancel();
-                            error(t);
-                        }
-                    });
-                }
-            }
-        }.start();
-    }
+					getHandler().post(new Runnable()
+					{
+						@Override
+						public void run()
+						{
+							loading.cancel();
+							done(result);
+						}
+					});
+				}
+				catch (final Throwable t)
+				{
+					if (isCancelled())
+					{
+						return;
+					}
 
-    @SuppressLint("NewApi")
-	private boolean isCancelled() {
-    	if (Build.VERSION.SDK_INT >= 17) {
-    		return tabActivity.isDestroyed() || cancelled;
-    	} else {
-    		return cancelled;
-    	}
-    }
-	
+					getHandler().post(new Runnable()
+					{
+						@Override
+						public void run()
+						{
+							loading.cancel();
+							error(t);
+						}
+					});
+				}
+			}
+		}.start();
+	}
+
+	@SuppressLint("NewApi")
+	private boolean isCancelled()
+	{
+		return Build.VERSION.SDK_INT >= 17 ? tabActivity.isDestroyed() || cancelled : cancelled;
+	}
+
 	@Override
-    public void updateProgress(final String message) {
-        getHandler().post(new Runnable() {
-            @Override
-            public void run() {
-                
-            }
-        });
-    }
+	public void updateProgress(final String message)
+	{
+		getHandler().post(new Runnable()
+		{
+			@Override
+			public void run()
+			{
+
+			}
+		});
+	}
 }

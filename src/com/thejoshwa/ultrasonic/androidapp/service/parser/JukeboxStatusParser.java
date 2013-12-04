@@ -18,45 +18,54 @@
  */
 package com.thejoshwa.ultrasonic.androidapp.service.parser;
 
-import java.io.Reader;
+import android.content.Context;
+
+import com.thejoshwa.ultrasonic.androidapp.domain.JukeboxStatus;
 
 import org.xmlpull.v1.XmlPullParser;
 
-import android.content.Context;
-import com.thejoshwa.ultrasonic.androidapp.domain.JukeboxStatus;
+import java.io.Reader;
 
 /**
  * @author Sindre Mehus
  */
-public class JukeboxStatusParser extends AbstractParser {
+public class JukeboxStatusParser extends AbstractParser
+{
 
-    public JukeboxStatusParser(Context context) {
-        super(context);
-    }
+	public JukeboxStatusParser(Context context)
+	{
+		super(context);
+	}
 
-    public JukeboxStatus parse(Reader reader) throws Exception {
+	public JukeboxStatus parse(Reader reader) throws Exception
+	{
 
-        init(reader);
+		init(reader);
 
-        JukeboxStatus jukeboxStatus = new JukeboxStatus();
-        int eventType;
-        do {
-            eventType = nextParseEvent();
-            if (eventType == XmlPullParser.START_TAG) {
-                String name = getElementName();
-                if ("jukeboxPlaylist".equals(name) || "jukeboxStatus".equals(name)) {
-                    jukeboxStatus.setPositionSeconds(getInteger("position"));
-                    jukeboxStatus.setCurrentIndex(getInteger("currentIndex"));
-                    jukeboxStatus.setPlaying(getBoolean("playing"));
-                    jukeboxStatus.setGain(getFloat("gain"));
-                } else if ("error".equals(name)) {
-                    handleError();
-                }
-            }
-        } while (eventType != XmlPullParser.END_DOCUMENT);
+		JukeboxStatus jukeboxStatus = new JukeboxStatus();
+		int eventType;
+		do
+		{
+			eventType = nextParseEvent();
+			if (eventType == XmlPullParser.START_TAG)
+			{
+				String name = getElementName();
+				if ("jukeboxPlaylist".equals(name) || "jukeboxStatus".equals(name))
+				{
+					jukeboxStatus.setPositionSeconds(getInteger("position"));
+					jukeboxStatus.setCurrentIndex(getInteger("currentIndex"));
+					jukeboxStatus.setPlaying(getBoolean("playing"));
+					jukeboxStatus.setGain(getFloat("gain"));
+				}
+				else if ("error".equals(name))
+				{
+					handleError();
+				}
+			}
+		} while (eventType != XmlPullParser.END_DOCUMENT);
 
-        validate();
+		validate();
 
-        return jukeboxStatus;
-    }
+		return jukeboxStatus;
+	}
 }
