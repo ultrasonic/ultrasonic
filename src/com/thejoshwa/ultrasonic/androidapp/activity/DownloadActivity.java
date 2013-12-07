@@ -859,25 +859,23 @@ public class DownloadActivity extends SubsonicTabActivity implements OnGestureLi
 				}
 			}
 
-
 			if (jukeboxOption != null)
 			{
 				jukeboxOption.setEnabled(jukeboxAvailable);
 				jukeboxOption.setVisible(jukeboxAvailable);
 
+				if (!jukeboxAvailable)
+				{
+					downloadService.setJukeboxEnabled(false);
+				}
+
 				if (downloadService.isJukeboxEnabled())
 				{
-					if (jukeboxOption != null)
-					{
-						jukeboxOption.setTitle(R.string.download_menu_jukebox_off);
-					}
+					jukeboxOption.setTitle(R.string.download_menu_jukebox_off);
 				}
 				else
 				{
-					if (jukeboxOption != null)
-					{
-						jukeboxOption.setTitle(R.string.download_menu_jukebox_on);
-					}
+					jukeboxOption.setTitle(R.string.download_menu_jukebox_on);
 				}
 			}
 		}
