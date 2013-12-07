@@ -39,6 +39,7 @@ import com.thejoshwa.ultrasonic.androidapp.domain.SearchCriteria;
 import com.thejoshwa.ultrasonic.androidapp.domain.SearchResult;
 import com.thejoshwa.ultrasonic.androidapp.domain.ServerInfo;
 import com.thejoshwa.ultrasonic.androidapp.domain.Share;
+import com.thejoshwa.ultrasonic.androidapp.domain.UserInfo;
 import com.thejoshwa.ultrasonic.androidapp.domain.Version;
 import com.thejoshwa.ultrasonic.androidapp.service.parser.AlbumListParser;
 import com.thejoshwa.ultrasonic.androidapp.service.parser.BookmarkParser;
@@ -57,6 +58,7 @@ import com.thejoshwa.ultrasonic.androidapp.service.parser.RandomSongsParser;
 import com.thejoshwa.ultrasonic.androidapp.service.parser.SearchResult2Parser;
 import com.thejoshwa.ultrasonic.androidapp.service.parser.SearchResultParser;
 import com.thejoshwa.ultrasonic.androidapp.service.parser.ShareParser;
+import com.thejoshwa.ultrasonic.androidapp.service.parser.UserInfoParser;
 import com.thejoshwa.ultrasonic.androidapp.service.parser.VersionParser;
 import com.thejoshwa.ultrasonic.androidapp.service.ssl.SSLSocketFactory;
 import com.thejoshwa.ultrasonic.androidapp.service.ssl.TrustSelfSignedStrategy;
@@ -1404,6 +1406,32 @@ public class RESTMusicService implements MusicService
 		try
 		{
 			return new ShareParser(context).parse(reader, progressListener);
+		}
+		finally
+		{
+			Util.close(reader);
+		}
+	}
+
+	@Override
+	public UserInfo getUser(String username, Context context, ProgressListener progressListener) throws Exception
+	{
+		checkServerVersion(context, "1.3", "getUser not supported.");
+
+		HttpParams params = new BasicHttpParams();
+		HttpConnectionParams.setSoTimeout(params, SOCKET_READ_TIMEOUT_GET_RANDOM_SONGS);
+
+		List<String> parameterNames = new ArrayList<String>();
+		List<Object> parameterValues = new ArrayList<Object>();
+
+		parameterNames.add("username");
+		parameterValues.add(username);
+
+		Reader reader = getReader(context, progressListener, "getUser", params, parameterNames, parameterValues);
+
+		try
+		{
+			return new UserInfoParser(context).parse(reader, progressListener);
 		}
 		finally
 		{

@@ -33,6 +33,7 @@ import com.thejoshwa.ultrasonic.androidapp.domain.Playlist;
 import com.thejoshwa.ultrasonic.androidapp.domain.SearchCriteria;
 import com.thejoshwa.ultrasonic.androidapp.domain.SearchResult;
 import com.thejoshwa.ultrasonic.androidapp.domain.Share;
+import com.thejoshwa.ultrasonic.androidapp.domain.UserInfo;
 import com.thejoshwa.ultrasonic.androidapp.domain.Version;
 import com.thejoshwa.ultrasonic.androidapp.util.CancellableTask;
 import com.thejoshwa.ultrasonic.androidapp.util.Constants;
@@ -58,6 +59,7 @@ public class CachedMusicService implements MusicService
 	private final LRUCache<String, TimeLimitedCache<MusicDirectory>> cachedMusicDirectories;
 	private final LRUCache<String, TimeLimitedCache<MusicDirectory>> cachedArtist;
 	private final LRUCache<String, TimeLimitedCache<MusicDirectory>> cachedAlbum;
+	private final LRUCache<String, TimeLimitedCache<UserInfo>> cachedUserInfo;
 	private final TimeLimitedCache<Boolean> cachedLicenseValid = new TimeLimitedCache<Boolean>(120, TimeUnit.SECONDS);
 	private final TimeLimitedCache<Indexes> cachedIndexes = new TimeLimitedCache<Indexes>(60 * 60, TimeUnit.SECONDS);
 	private final TimeLimitedCache<Indexes> cachedArtists = new TimeLimitedCache<Indexes>(60 * 60, TimeUnit.SECONDS);
@@ -73,6 +75,7 @@ public class CachedMusicService implements MusicService
 		cachedMusicDirectories = new LRUCache<String, TimeLimitedCache<MusicDirectory>>(MUSIC_DIR_CACHE_SIZE);
 		cachedArtist = new LRUCache<String, TimeLimitedCache<MusicDirectory>>(MUSIC_DIR_CACHE_SIZE);
 		cachedAlbum = new LRUCache<String, TimeLimitedCache<MusicDirectory>>(MUSIC_DIR_CACHE_SIZE);
+		cachedUserInfo = new LRUCache<String, TimeLimitedCache<UserInfo>>(MUSIC_DIR_CACHE_SIZE);
 	}
 
 	@Override
@@ -378,6 +381,10 @@ public class CachedMusicService implements MusicService
 			cachedLicenseValid.clear();
 			cachedIndexes.clear();
 			cachedPlaylists.clear();
+			cachedGenres.clear();
+			cachedAlbum.clear();
+			cachedArtist.clear();
+			cachedUserInfo.clear();
 			restUrl = newUrl;
 		}
 	}
@@ -469,5 +476,25 @@ public class CachedMusicService implements MusicService
 		}
 
 		return dir;
+	}
+
+	@Override
+	public UserInfo getUser(String username, Context context, ProgressListener progressListener) throws Exception
+	{
+		checkSettingsChanged(context);
+
+		TimeLimitedCache<UserInfo> cache = cachedUserInfo.get(username);
+
+		UserInfo userInfo = cache == null ? null : cache.get();
+
+		if (userInfo == null)
+		{
+			userInfo = musicService.getUser(username, context, progressListener);
+			cache = new TimeLimitedCache<UserInfo>(Util.getDirectoryCacheTime(context), TimeUnit.SECONDS);
+			cache.set(userInfo);
+			cachedUserInfo.put(username, cache);
+		}
+
+		return userInfo;
 	}
 }

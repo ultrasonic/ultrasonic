@@ -33,6 +33,7 @@ import com.thejoshwa.ultrasonic.androidapp.domain.Playlist;
 import com.thejoshwa.ultrasonic.androidapp.domain.SearchCriteria;
 import com.thejoshwa.ultrasonic.androidapp.domain.SearchResult;
 import com.thejoshwa.ultrasonic.androidapp.domain.Share;
+import com.thejoshwa.ultrasonic.androidapp.domain.UserInfo;
 import com.thejoshwa.ultrasonic.androidapp.domain.Version;
 import com.thejoshwa.ultrasonic.androidapp.util.CancellableTask;
 import com.thejoshwa.ultrasonic.androidapp.util.ProgressListener;
@@ -138,4 +139,6 @@ public interface MusicService
 	void createBookmark(String id, int position, Context context, ProgressListener progressListener) throws Exception;
 
 	MusicDirectory getVideos(boolean refresh, Context context, ProgressListener progressListener) throws Exception;
+
+	UserInfo getUser(String username, Context context, ProgressListener progressListener) throws Exception;
 }

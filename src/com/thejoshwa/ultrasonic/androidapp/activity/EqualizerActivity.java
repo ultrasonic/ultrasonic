@@ -18,9 +18,6 @@
  */
 package com.thejoshwa.ultrasonic.androidapp.activity;
 
-import java.util.HashMap;
-import java.util.Map;
-
 import android.app.Activity;
 import android.media.audiofx.Equalizer;
 import android.os.Bundle;
@@ -37,6 +34,9 @@ import android.widget.TextView;
 import com.thejoshwa.ultrasonic.androidapp.R;
 import com.thejoshwa.ultrasonic.androidapp.audiofx.EqualizerController;
 import com.thejoshwa.ultrasonic.androidapp.service.DownloadServiceImpl;
+
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * Equalizer controls.
@@ -136,14 +136,20 @@ public class EqualizerActivity extends Activity
 
 	private void updateBars()
 	{
-
-		for (Map.Entry<Short, SeekBar> entry : bars.entrySet())
+		try
 		{
-			short band = entry.getKey();
-			SeekBar bar = entry.getValue();
-			bar.setEnabled(equalizer.getEnabled());
-			short minEQLevel = equalizer.getBandLevelRange()[0];
-			bar.setProgress(equalizer.getBandLevel(band) - minEQLevel);
+			for (Map.Entry<Short, SeekBar> entry : bars.entrySet())
+			{
+				short band = entry.getKey();
+				SeekBar bar = entry.getValue();
+				bar.setEnabled(equalizer.getEnabled());
+				short minEQLevel = equalizer.getBandLevelRange()[0];
+				bar.setProgress(equalizer.getBandLevel(band) - minEQLevel);
+			}
+		}
+		catch (Exception ex)
+		{
+
 		}
 	}
 
@@ -189,7 +195,13 @@ public class EqualizerActivity extends Activity
 							short level = (short) (progress + minEQLevel);
 							if (fromUser)
 							{
-								equalizer.setBandLevel(band, level);
+								try
+								{
+									equalizer.setBandLevel(band, level);
+								}
+								catch (Exception ex)
+								{
+								}
 							}
 							updateLevelText(levelTextView, level);
 						}
@@ -204,6 +216,7 @@ public class EqualizerActivity extends Activity
 						{
 						}
 					});
+
 					layout.addView(bandBar);
 				}
 			}
@@ -216,7 +229,9 @@ public class EqualizerActivity extends Activity
 
 	private static void updateLevelText(TextView levelTextView, short level)
 	{
-		levelTextView.setText((level > 0 ? "+" : "") + level / 100 + " dB");
+		if (levelTextView != null)
+		{
+			levelTextView.setText(String.format("%s%d dB", level > 0 ? "+" : "", level / 100));
+		}
 	}
-
 }

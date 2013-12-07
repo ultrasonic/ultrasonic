@@ -454,7 +454,10 @@ public class SubsonicTabActivity extends Activity implements OnClickListener
 			return;
 		}
 
-		nowPlayingView = findViewById(R.id.now_playing);
+		if (nowPlayingView == null)
+		{
+			nowPlayingView = findViewById(R.id.now_playing);
+		}
 
 		if (nowPlayingView != null)
 		{
@@ -549,8 +552,22 @@ public class SubsonicTabActivity extends Activity implements OnClickListener
 
 	public void hideNowPlaying()
 	{
-		nowPlayingView = findViewById(R.id.now_playing);
-		setVisibilityOnUiThread(nowPlayingView, View.GONE);
+		try
+		{
+			if (nowPlayingView == null)
+			{
+				nowPlayingView = findViewById(R.id.now_playing);
+			}
+
+			if (nowPlayingView != null)
+			{
+				setVisibilityOnUiThread(nowPlayingView, View.GONE);
+			}
+		}
+		catch (Exception ex)
+		{
+			Log.w(String.format("Exception in hideNowPlaying: %s", ex), ex);
+		}
 	}
 
 	public void setTextViewTextOnUiThread(final RemoteViews view, final int id, final String text)

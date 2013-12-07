@@ -129,7 +129,11 @@ public class SongView extends UpdateView implements Checkable
 		updateBackground();
 
 		this.song = song;
-		this.downloadFile = downloadService.forSong(song);
+
+		if (downloadService != null)
+		{
+			this.downloadFile = downloadService.forSong(song);
+		}
 
 		inflater.inflate(song.isVideo() ? R.layout.video_list_item : R.layout.song_list_item, this, true);
 
@@ -307,11 +311,14 @@ public class SongView extends UpdateView implements Checkable
 			this.rightImageType = ImageType.none;
 			this.rightImage = null;
 
-			CharSequence statusText = this.statusTextView.getText();
-
-			if (statusText != "" || statusText != null)
+			if (this.statusTextView != null)
 			{
-				this.statusTextView.setText(null);
+				CharSequence statusText = this.statusTextView.getText();
+
+				if (statusText != "" || statusText != null)
+				{
+					this.statusTextView.setText(null);
+				}
 			}
 		}
 

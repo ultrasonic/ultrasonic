@@ -95,6 +95,7 @@ public class DownloadActivity extends SubsonicTabActivity implements OnGestureLi
 	private VisualizerView visualizerView;
 	private boolean visualizerAvailable;
 	private boolean equalizerAvailable;
+	private boolean jukeboxAvailable;
 	private SilentBackgroundTask<Void> onProgressChangedTask;
 	LinearLayout visualizerViewLayout;
 
@@ -595,6 +596,23 @@ public class DownloadActivity extends SubsonicTabActivity implements OnGestureLi
 		visualizerAvailable = (downloadService != null) && (downloadService.getVisualizerController() != null);
 		equalizerAvailable = (downloadService != null) && (downloadService.getEqualizerController() != null);
 
+		new Thread(new Runnable()
+		{
+			@Override
+			public void run()
+			{
+				try
+				{
+					DownloadService downloadService = getDownloadService();
+					jukeboxAvailable = (downloadService != null) && (downloadService.isJukeboxAvailable());
+				}
+				catch (Exception e)
+				{
+					Log.e(TAG, e.getMessage(), e);
+				}
+			}
+		}).start();
+
 		final View nowPlayingMenuItem = findViewById(R.id.menu_now_playing);
 		menuDrawer.setActiveView(nowPlayingMenuItem);
 
@@ -841,18 +859,25 @@ public class DownloadActivity extends SubsonicTabActivity implements OnGestureLi
 				}
 			}
 
-			if (downloadService.isJukeboxEnabled())
+
+			if (jukeboxOption != null)
 			{
-				if (jukeboxOption != null)
+				jukeboxOption.setEnabled(jukeboxAvailable);
+				jukeboxOption.setVisible(jukeboxAvailable);
+
+				if (downloadService.isJukeboxEnabled())
 				{
-					jukeboxOption.setTitle(R.string.download_menu_jukebox_off);
+					if (jukeboxOption != null)
+					{
+						jukeboxOption.setTitle(R.string.download_menu_jukebox_off);
+					}
 				}
-			}
-			else
-			{
-				if (jukeboxOption != null)
+				else
 				{
-					jukeboxOption.setTitle(R.string.download_menu_jukebox_on);
+					if (jukeboxOption != null)
+					{
+						jukeboxOption.setTitle(R.string.download_menu_jukebox_on);
+					}
 				}
 			}
 		}
@@ -1321,13 +1346,20 @@ public class DownloadActivity extends SubsonicTabActivity implements OnGestureLi
 
 		final DownloadService downloadService = getDownloadService();
 
-		if (downloadService == null)
+		if (downloadService == null || e1 == null || e2 == null)
 		{
 			return false;
 		}
 
+		float e1X = e1.getX();
+		float e2X = e2.getX();
+		float e1Y = e1.getY();
+		float e2Y = e2.getY();
+		float absX = Math.abs(velocityX);
+		float absY = Math.abs(velocityY);
+
 		// Right to Left swipe
-		if (e1.getX() - e2.getX() > swipeDistance && Math.abs(velocityX) > swipeVelocity)
+		if (e1X - e2X > swipeDistance && absX > swipeVelocity)
 		{
 			warnIfNetworkOrStorageUnavailable();
 			if (downloadService.getCurrentPlayingIndex() < downloadService.size() - 1)
@@ -1340,7 +1372,7 @@ public class DownloadActivity extends SubsonicTabActivity implements OnGestureLi
 		}
 
 		// Left to Right swipe
-		if (e2.getX() - e1.getX() > swipeDistance && Math.abs(velocityX) > swipeVelocity)
+		if (e2X - e1X > swipeDistance && absX > swipeVelocity)
 		{
 			warnIfNetworkOrStorageUnavailable();
 			downloadService.previous();
@@ -1350,7 +1382,7 @@ public class DownloadActivity extends SubsonicTabActivity implements OnGestureLi
 		}
 
 		// Top to Bottom swipe
-		if (e2.getY() - e1.getY() > swipeDistance && Math.abs(velocityY) > swipeVelocity)
+		if (e2Y - e1Y > swipeDistance && absY > swipeVelocity)
 		{
 			warnIfNetworkOrStorageUnavailable();
 			downloadService.seekTo(downloadService.getPlayerPosition() + 30000);
@@ -1359,7 +1391,7 @@ public class DownloadActivity extends SubsonicTabActivity implements OnGestureLi
 		}
 
 		// Bottom to Top swipe
-		if (e1.getY() - e2.getY() > swipeDistance && Math.abs(velocityY) > swipeVelocity)
+		if (e1Y - e2Y > swipeDistance && absY > swipeVelocity)
 		{
 			warnIfNetworkOrStorageUnavailable();
 			downloadService.seekTo(downloadService.getPlayerPosition() - 8000);

@@ -33,6 +33,7 @@ import com.thejoshwa.ultrasonic.androidapp.domain.MusicFolder;
 import com.thejoshwa.ultrasonic.androidapp.domain.Playlist;
 import com.thejoshwa.ultrasonic.androidapp.domain.SearchCriteria;
 import com.thejoshwa.ultrasonic.androidapp.domain.SearchResult;
+import com.thejoshwa.ultrasonic.androidapp.domain.UserInfo;
 import com.thejoshwa.ultrasonic.androidapp.util.Constants;
 import com.thejoshwa.ultrasonic.androidapp.util.FileUtil;
 import com.thejoshwa.ultrasonic.androidapp.util.ProgressListener;
@@ -740,6 +741,12 @@ public class OfflineMusicService extends RESTMusicService
 	public List<Genre> getGenres(Context context, ProgressListener progressListener) throws Exception
 	{
 		throw new OfflineException("Getting Genres not available in offline mode");
+	}
+
+	@Override
+	public UserInfo getUser(String username, Context context, ProgressListener progressListener) throws Exception
+	{
+		throw new OfflineException("Getting user info not available in offline mode");
 	}
 
 	private static void listFilesRecursively(File parent, List<File> children)

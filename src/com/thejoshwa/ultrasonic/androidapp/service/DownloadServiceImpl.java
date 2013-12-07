@@ -49,6 +49,7 @@ import com.thejoshwa.ultrasonic.androidapp.domain.MusicDirectory;
 import com.thejoshwa.ultrasonic.androidapp.domain.MusicDirectory.Entry;
 import com.thejoshwa.ultrasonic.androidapp.domain.PlayerState;
 import com.thejoshwa.ultrasonic.androidapp.domain.RepeatMode;
+import com.thejoshwa.ultrasonic.androidapp.domain.UserInfo;
 import com.thejoshwa.ultrasonic.androidapp.provider.UltraSonicAppWidgetProvider4x1;
 import com.thejoshwa.ultrasonic.androidapp.provider.UltraSonicAppWidgetProvider4x2;
 import com.thejoshwa.ultrasonic.androidapp.provider.UltraSonicAppWidgetProvider4x3;
@@ -896,18 +897,8 @@ public class DownloadServiceImpl extends Service implements DownloadService
 		lifecycleSupport.serializeDownloadQueue();
 	}
 
-	private synchronized void playNext(boolean start)
+	private synchronized void playNext()
 	{
-		// Swap the media players since nextMediaPlayer is ready to play
-		if (start)
-		{
-			//nextMediaPlayer.start();
-		}
-		else
-		{
-			Log.i(TAG, "nextMediaPlayer already playing");
-		}
-
 		MediaPlayer tmp = mediaPlayer;
 		mediaPlayer = nextMediaPlayer;
 		nextMediaPlayer = tmp;
@@ -1363,6 +1354,25 @@ public class DownloadServiceImpl extends Service implements DownloadService
 	}
 
 	@Override
+	public boolean isJukeboxAvailable()
+	{
+		MusicService musicService = MusicServiceFactory.getMusicService(DownloadServiceImpl.this);
+
+		try
+		{
+			String username = Util.getUserName(DownloadServiceImpl.this, Util.getActiveServer(DownloadServiceImpl.this));
+			UserInfo user = musicService.getUser(username, DownloadServiceImpl.this, null);
+			return user.getJukeboxRole();
+		}
+		catch (Exception e)
+		{
+			Log.w("Error getting user information", e);
+		}
+
+		return false;
+	}
+
+	@Override
 	public void setJukeboxEnabled(boolean jukeboxEnabled)
 	{
 		this.jukeboxEnabled = jukeboxEnabled;
@@ -1689,21 +1699,13 @@ public class DownloadServiceImpl extends Service implements DownloadService
 				setPlayerStateCompleted();
 
 				int pos = cachedPosition;
-				Log.i(TAG, "Ending position " + pos + " of " + duration);
+				Log.i(TAG, String.format("Ending position %d of %d", pos, duration));
 
 				if (!isPartial || (downloadFile.isWorkDone() && (Math.abs(duration - pos) < 10000)))
 				{
 					if (nextPlaying != null && nextPlayerState == PlayerState.PREPARED)
 					{
-						if (!nextSetup)
-						{
-							playNext(true);
-						}
-						else
-						{
-							nextSetup = false;
-							playNext(false);
-						}
+						playNext();
 					}
 					else
 					{
@@ -1777,14 +1779,23 @@ public class DownloadServiceImpl extends Service implements DownloadService
 
 	private void handleError(Exception x)
 	{
-		Log.w(TAG, "Media player error: " + x, x);
-		mediaPlayer.reset();
+		Log.w(TAG, String.format("Media player error: %s", x), x);
+
+		try
+		{
+			mediaPlayer.reset();
+		}
+		catch (Exception ex)
+		{
+			Log.w(TAG, String.format("Exception encountered when resetting media player: %s", ex), ex);
+		}
+
 		setPlayerState(IDLE);
 	}
 
 	private void handleErrorNext(Exception x)
 	{
-		Log.w(TAG, "Next Media player error: " + x, x);
+		Log.w(TAG, String.format("Next Media player error: %s", x), x);
 		nextMediaPlayer.reset();
 		setNextPlayerState(IDLE);
 	}

@@ -750,7 +750,7 @@ public class Util extends DownloadActivity
 		{
 			int slashIndex = path.indexOf('/');
 
-			if (slashIndex != 0)
+			if (slashIndex > 0)
 			{
 				return path.substring(0, slashIndex);
 			}

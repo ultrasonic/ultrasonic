@@ -321,7 +321,6 @@ public class MainActivity extends SubsonicTabActivity
 
 	private boolean getActiveServerEnabled()
 	{
-
 		final int activeServer = Util.getActiveServer(this);
 		boolean activeServerEnabled = false;
 
