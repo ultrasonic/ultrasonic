@@ -5,6 +5,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 
+import com.thejoshwa.ultrasonic.androidapp.domain.MusicDirectory;
 import com.thejoshwa.ultrasonic.androidapp.service.DownloadFile;
 
 import java.util.List;
@@ -22,10 +23,30 @@ public class SongListAdapter extends ArrayAdapter<DownloadFile>
 	@Override
 	public View getView(final int position, final View convertView, final ViewGroup parent)
 	{
-		final SongView view;
-		view = convertView != null && convertView instanceof SongView ? (SongView) convertView : new SongView(this.context);
-		final DownloadFile downloadFile = getItem(position);
-		view.setSong(downloadFile.getSong(), false);
+		DownloadFile downloadFile = getItem(position);
+   	MusicDirectory.Entry entry = downloadFile.getSong();
+
+		SongView view;
+
+		if (convertView != null && convertView instanceof SongView)
+		{
+			SongView currentView = (SongView) convertView;
+			if (currentView.getEntry().equals(entry))
+			{
+				currentView.update();
+				return currentView;
+			}
+			else
+			{
+				view = new SongView(this.context);
+			}
+		}
+		else
+		{
+			view = new SongView(this.context);
+		}
+
+		view.setSong(entry, false);
 		return view;
 	}
 }

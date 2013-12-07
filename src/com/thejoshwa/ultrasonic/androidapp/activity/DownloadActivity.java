@@ -370,7 +370,6 @@ public class DownloadActivity extends SubsonicTabActivity implements OnGestureLi
 
 		progressBar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener()
 		{
-
 			@Override
 			public void onStopTrackingTouch(final SeekBar seekBar)
 			{
@@ -389,7 +388,6 @@ public class DownloadActivity extends SubsonicTabActivity implements OnGestureLi
 						onSliderProgressChanged();
 					}
 				}.execute();
-
 			}
 
 			@Override
@@ -677,7 +675,7 @@ public class DownloadActivity extends SubsonicTabActivity implements OnGestureLi
 		};
 
 		executorService = Executors.newSingleThreadScheduledExecutor();
-		executorService.scheduleWithFixedDelay(runnable, 0L, 500L, TimeUnit.MILLISECONDS);
+		executorService.scheduleWithFixedDelay(runnable, 0L, 250L, TimeUnit.MILLISECONDS);
 
 		if (downloadService != null && downloadService.getKeepScreenOn())
 		{
@@ -863,11 +861,6 @@ public class DownloadActivity extends SubsonicTabActivity implements OnGestureLi
 			{
 				jukeboxOption.setEnabled(jukeboxAvailable);
 				jukeboxOption.setVisible(jukeboxAvailable);
-
-				if (!jukeboxAvailable)
-				{
-					downloadService.setJukeboxEnabled(false);
-				}
 
 				if (downloadService.isJukeboxEnabled())
 				{
@@ -1140,18 +1133,20 @@ public class DownloadActivity extends SubsonicTabActivity implements OnGestureLi
 
 	private void onCurrentChanged()
 	{
-		if (getDownloadService() == null)
+		DownloadService downloadService = getDownloadService();
+
+		if (downloadService == null)
 		{
 			return;
 		}
 
-		currentPlaying = getDownloadService().getCurrentPlaying();
+		currentPlaying = downloadService.getCurrentPlaying();
 
 		scrollToCurrent();
 
-		long totalDuration = getDownloadService().getDownloadListDuration();
-		long totalSongs = getDownloadService().getSongs().size();
-		int currentSongIndex = getDownloadService().getCurrentPlayingIndex() + 1;
+		long totalDuration = downloadService.getDownloadListDuration();
+		long totalSongs = downloadService.getSongs().size();
+		int currentSongIndex = downloadService.getCurrentPlayingIndex() + 1;
 
 		String duration = Util.formatTotalDuration(totalDuration);
 
@@ -1183,7 +1178,9 @@ public class DownloadActivity extends SubsonicTabActivity implements OnGestureLi
 
 	private void onSliderProgressChanged()
 	{
-		if (getDownloadService() == null || onProgressChangedTask != null)
+		DownloadService downloadService = getDownloadService();
+
+		if (downloadService == null || onProgressChangedTask != null)
 		{
 			return;
 		}

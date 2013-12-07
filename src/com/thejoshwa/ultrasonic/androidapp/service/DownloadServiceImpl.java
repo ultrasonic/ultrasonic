@@ -1533,7 +1533,7 @@ public class DownloadServiceImpl extends Service implements DownloadService
 				{
 					if (percent == 100)
 					{
-						mediaPlayer.setOnBufferingUpdateListener(null);
+						mp.setOnBufferingUpdateListener(null);
 					}
 
 					SeekBar progressBar = DownloadActivity.getProgressBar();
@@ -1705,7 +1705,15 @@ public class DownloadServiceImpl extends Service implements DownloadService
 				{
 					if (nextPlaying != null && nextPlayerState == PlayerState.PREPARED)
 					{
-						playNext();
+						if (!nextSetup)
+						{
+							playNext();
+						}
+						else
+						{
+							nextSetup = false;
+							playNext();
+						}
 					}
 					else
 					{
@@ -1720,7 +1728,7 @@ public class DownloadServiceImpl extends Service implements DownloadService
 					if (downloadFile.isWorkDone())
 					{
 						// Complete was called early even though file is fully buffered
-						Log.i(TAG, "Requesting restart from " + pos + " of " + duration);
+						Log.i(TAG, String.format("Requesting restart from %d of %d", pos, duration));
 						reset();
 						downloadFile.setPlaying(false);
 						doPlay(downloadFile, pos, true);
@@ -1728,7 +1736,7 @@ public class DownloadServiceImpl extends Service implements DownloadService
 					}
 					else
 					{
-						Log.i(TAG, "Requesting restart from " + pos + " of " + duration);
+						Log.i(TAG, String.format("Requesting restart from %d of %d", pos, duration));
 						reset();
 						bufferTask = new BufferTask(downloadFile, pos);
 						bufferTask.start();
@@ -2002,7 +2010,7 @@ public class DownloadServiceImpl extends Service implements DownloadService
 			long byteCount = Math.max(100000, bitRate * 1024L / 8L * bufferLength);
 
 			// Find out how large the file should grow before resuming playback.
-			Log.i(TAG, "Buffering from position " + position + " and bitrate " + bitRate);
+			Log.i(TAG, String.format("Buffering from position %d and bitrate %d", position, bitRate));
 			expectedFileSize = (position * bitRate / 8) + byteCount;
 		}
 
