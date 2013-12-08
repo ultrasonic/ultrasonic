@@ -883,7 +883,7 @@ public class Util extends DownloadActivity
 		}
 		catch (Throwable x)
 		{
-			return new BitmapDrawable(bitmap);
+			return new BitmapDrawable(context.getResources(), bitmap);
 		}
 	}
 

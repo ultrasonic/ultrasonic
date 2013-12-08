@@ -113,13 +113,20 @@ public class FileUtil
 	public static File getAlbumArtFile(File albumDir)
 	{
 		File albumArtDir = getAlbumArtDirectory();
-		return new File(albumArtDir, String.format("%s.jpeg", Util.md5Hex(albumDir.getPath())));
+
+		if (albumArtDir == null || albumDir == null)
+		{
+				return null;
+		}
+
+		String md5Hex = Util.md5Hex(albumDir.getPath());
+		return new File(albumArtDir, String.format("%s.jpeg", md5Hex));
 	}
 
 	public static Bitmap getAlbumArtBitmap(Context context, MusicDirectory.Entry entry, int size, boolean highQuality) {
 		File albumArtFile = getAlbumArtFile(context, entry);
 
-		if (albumArtFile.exists()) {
+		if (albumArtFile != null && albumArtFile.exists()) {
 			final BitmapFactory.Options opt = new BitmapFactory.Options();
 
 			if (size > 0) {
@@ -434,6 +441,7 @@ public class FileUtil
 		}
 	}
 
+	@SuppressWarnings({"unchecked"})
 	public static <T extends Serializable> T deserialize(Context context, String fileName)
 	{
 		File file = new File(context.getCacheDir(), fileName);
@@ -448,7 +456,8 @@ public class FileUtil
 		try
 		{
 			in = new ObjectInputStream(new FileInputStream(file));
-			T result = (T) in.readObject();
+			Object object = in.readObject();
+			T result = (T) object;
 			Log.i(TAG, String.format("Deserialized object from %s", file));
 			return result;
 		}
