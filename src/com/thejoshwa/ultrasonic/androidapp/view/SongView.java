@@ -302,7 +302,11 @@ public class SongView extends UpdateView implements Checkable
 
 		if (downloadFile.isDownloading() && !downloadFile.isDownloadCancelled() && partialFile.exists())
 		{
-			this.statusTextView.setText(Util.formatLocalizedBytes(partialFile.length(), this.context));
+			if (this.statusTextView != null)
+			{
+				this.statusTextView.setText(Util.formatLocalizedBytes(partialFile.length(), this.context));
+			}
+
 			this.rightImageType = ImageType.downloading;
 			this.rightImage = downloadingImage;
 		}
@@ -326,21 +330,31 @@ public class SongView extends UpdateView implements Checkable
 		{
 			this.previousLeftImageType = leftImageType;
 			this.previousRightImageType = rightImageType;
-			this.statusTextView.setCompoundDrawablesWithIntrinsicBounds(leftImage, null, rightImage, null);
+
+			if (this.statusTextView != null)
+			{
+				this.statusTextView.setCompoundDrawablesWithIntrinsicBounds(leftImage, null, rightImage, null);
+			}
 		}
 
 		if (!song.getStarred())
 		{
-			if (starImageView.getDrawable() != starHollowDrawable)
+			if (starImageView != null)
 			{
-				starImageView.setImageDrawable(starHollowDrawable);
+				if (starImageView.getDrawable() != starHollowDrawable)
+				{
+					starImageView.setImageDrawable(starHollowDrawable);
+				}
 			}
 		}
 		else
 		{
-			if (starImageView.getDrawable() != starDrawable)
+			if (starImageView != null)
 			{
-				starImageView.setImageDrawable(starDrawable);
+				if (starImageView.getDrawable() != starDrawable)
+				{
+					starImageView.setImageDrawable(starDrawable);
+				}
 			}
 		}
 
