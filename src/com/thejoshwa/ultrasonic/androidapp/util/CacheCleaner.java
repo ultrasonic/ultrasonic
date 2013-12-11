@@ -40,17 +40,41 @@ public class CacheCleaner
 
 	public void clean()
 	{
-		new BackgroundCleanup().executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
+		try
+		{
+			new BackgroundCleanup().executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
+		}
+		catch (Exception ex)
+		{
+			// If an exception is thrown, assume we execute correctly the next time
+			Log.w("Exception in CacheCleaner.clean", ex);
+		}
 	}
 
 	public void cleanSpace()
 	{
-		new BackgroundSpaceCleanup().executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
+		try
+		{
+			new BackgroundSpaceCleanup().executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
+		}
+		catch (Exception ex)
+		{
+			// If an exception is thrown, assume we execute correctly the next time
+			Log.w("Exception in CacheCleaner.cleanSpace", ex);
+		}
 	}
 
 	public void cleanPlaylists(List<Playlist> playlists)
 	{
-		new BackgroundPlaylistsCleanup().execute(playlists);
+		try
+		{
+			new BackgroundPlaylistsCleanup().executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, playlists);
+		}
+		catch (Exception ex)
+		{
+			// If an exception is thrown, assume we execute correctly the next time
+			Log.w("Exception in CacheCleaner.cleanPlaylists", ex);
+		}
 	}
 
 	private static void deleteEmptyDirs(Iterable<File> dirs, Collection<File> undeletable)

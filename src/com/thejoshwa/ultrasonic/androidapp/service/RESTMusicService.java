@@ -922,22 +922,6 @@ public class RESTMusicService implements MusicService
 
 					byte[] bytes = Util.toByteArray(in);
 
-					File albumDir = FileUtil.getAlbumDirectory(context, entry);
-
-					if (albumDir.exists())
-					{
-						OutputStream out = null;
-						try
-						{
-							out = new FileOutputStream(FileUtil.getAlbumArtFile(albumDir));
-							out.write(bytes);
-						}
-						finally
-						{
-							Util.close(out);
-						}
-					}
-
 					// If we aren't allowing server-side scaling, always save the file to disk because it will be unmodified
 					if (!serverScaling || saveToFile)
 					{

@@ -965,7 +965,7 @@ public class SelectAlbumActivity extends SubsonicTabActivity
 		{
 			ImageView coverArtView = (ImageView) header.findViewById(R.id.select_album_art);
 			int artworkSelection = random.nextInt(entries.size());
-			getImageLoader().loadImage(coverArtView, entries.get(artworkSelection), true, Util.getAlbumImageSize(SelectAlbumActivity.this), false, true);
+			getImageLoader().loadImage(coverArtView, entries.get(artworkSelection), false, Util.getAlbumImageSize(SelectAlbumActivity.this), false, true);
 
 			TextView titleView = (TextView) header.findViewById(R.id.select_album_title);
 			titleView.setText(name != null ? name : getActionBarSubtitle());

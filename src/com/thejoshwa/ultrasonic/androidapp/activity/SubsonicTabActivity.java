@@ -489,7 +489,7 @@ public class SubsonicTabActivity extends Activity implements OnClickListener
 					@Override
 					public void run()
 					{
-						getImageLoader().loadImage(nowPlayingAlbumArtImage, song, true, Util.getNotificationImageSize(context), false, true);
+						getImageLoader().loadImage(nowPlayingAlbumArtImage, song, false, Util.getNotificationImageSize(context), false, true);
 					}
 				});
 
