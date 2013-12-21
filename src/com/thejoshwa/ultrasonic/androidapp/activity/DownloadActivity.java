@@ -27,10 +27,29 @@ import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.os.Handler;
 import android.util.Log;
-import android.view.*;
+import android.view.ContextMenu;
+import android.view.Display;
+import android.view.GestureDetector;
 import android.view.GestureDetector.OnGestureListener;
+import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
+import android.view.MotionEvent;
+import android.view.View;
+import android.view.ViewGroup;
+import android.view.WindowManager;
 import android.view.animation.AnimationUtils;
-import android.widget.*;
+import android.widget.AdapterView;
+import android.widget.EditText;
+import android.widget.ImageButton;
+import android.widget.ImageView;
+import android.widget.LinearLayout;
+import android.widget.ListAdapter;
+import android.widget.ListView;
+import android.widget.SeekBar;
+import android.widget.TextView;
+import android.widget.ViewFlipper;
 
 import com.thejoshwa.ultrasonic.androidapp.R;
 import com.thejoshwa.ultrasonic.androidapp.domain.MusicDirectory;
@@ -50,6 +69,7 @@ import com.thejoshwa.ultrasonic.androidapp.view.VisualizerView;
 
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.LinkedList;
 import java.util.List;
@@ -58,7 +78,10 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
 
-import static com.thejoshwa.ultrasonic.androidapp.domain.PlayerState.*;
+import static com.thejoshwa.ultrasonic.androidapp.domain.PlayerState.COMPLETED;
+import static com.thejoshwa.ultrasonic.androidapp.domain.PlayerState.IDLE;
+import static com.thejoshwa.ultrasonic.androidapp.domain.PlayerState.PAUSED;
+import static com.thejoshwa.ultrasonic.androidapp.domain.PlayerState.STOPPED;
 
 public class DownloadActivity extends SubsonicTabActivity implements OnGestureListener
 {
@@ -825,6 +848,7 @@ public class DownloadActivity extends SubsonicTabActivity implements OnGestureLi
 		final MenuItem jukeboxOption = menu.findItem(R.id.download_jukebox);
 		final MenuItem equalizerMenuItem = menu.findItem(R.id.download_equalizer);
 		final MenuItem visualizerMenuItem = menu.findItem(R.id.download_visualizer);
+		final MenuItem shareMenuItem = menu.findItem(R.id.menu_item_share);
 
 		if (equalizerMenuItem != null)
 		{
@@ -836,6 +860,13 @@ public class DownloadActivity extends SubsonicTabActivity implements OnGestureLi
 		{
 			visualizerMenuItem.setEnabled(visualizerAvailable);
 			visualizerMenuItem.setVisible(visualizerAvailable);
+		}
+
+		if (shareMenuItem != null)
+		{
+			boolean available = !Util.isOffline(this);
+			shareMenuItem.setEnabled(available);
+			shareMenuItem.setVisible(available);
 		}
 
 		final DownloadService downloadService = getDownloadService();
@@ -939,18 +970,25 @@ public class DownloadActivity extends SubsonicTabActivity implements OnGestureLi
 
 	private boolean menuItemSelected(final int menuItemId, final DownloadFile song)
 	{
+		Entry entry = null;
+
+		if (song != null)
+		{
+			 entry = song.getSong();
+		}
+
 		switch (menuItemId)
 		{
 			case R.id.menu_show_album:
 				Intent intent = new Intent(this, SelectAlbumActivity.class);
-				intent.putExtra(Constants.INTENT_EXTRA_NAME_ID, song.getSong().getParent());
-				intent.putExtra(Constants.INTENT_EXTRA_NAME_NAME, song.getSong().getAlbum());
+				intent.putExtra(Constants.INTENT_EXTRA_NAME_ID, entry.getParent());
+				intent.putExtra(Constants.INTENT_EXTRA_NAME_NAME, entry.getAlbum());
 				Util.startActivityWithoutTransition(this, intent);
 				return true;
 			case R.id.menu_lyrics:
 				intent = new Intent(this, LyricsActivity.class);
-				intent.putExtra(Constants.INTENT_EXTRA_NAME_ARTIST, song.getSong().getArtist());
-				intent.putExtra(Constants.INTENT_EXTRA_NAME_TITLE, song.getSong().getTitle());
+				intent.putExtra(Constants.INTENT_EXTRA_NAME_ARTIST, entry.getArtist());
+				intent.putExtra(Constants.INTENT_EXTRA_NAME_TITLE, entry.getTitle());
 				Util.startActivityWithoutTransition(this, intent);
 				return true;
 			case R.id.menu_remove:
@@ -997,6 +1035,31 @@ public class DownloadActivity extends SubsonicTabActivity implements OnGestureLi
 				getDownloadService().setJukeboxEnabled(jukeboxEnabled);
 				Util.toast(DownloadActivity.this, jukeboxEnabled ? R.string.download_jukebox_on : R.string.download_jukebox_off, false);
 				return true;
+			case R.id.menu_item_share:
+				if (entry == null)
+				{
+					DownloadService downloadService = getDownloadService();
+
+					if (downloadService != null)
+					{
+						if (currentPlaying == null)
+						{
+							currentPlaying = downloadService.getCurrentPlaying();
+						}
+
+						if (currentPlaying != null)
+						{
+							entry = currentPlaying.getSong();
+						}
+					}
+				}
+
+				if (entry != null)
+				{
+					List<Entry> entries = new ArrayList<Entry>(1);
+					entries.add(entry);
+					createShare(entries);
+				}
 			default:
 				return false;
 		}

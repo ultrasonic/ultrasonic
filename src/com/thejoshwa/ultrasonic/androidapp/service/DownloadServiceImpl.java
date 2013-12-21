@@ -1373,6 +1373,25 @@ public class DownloadServiceImpl extends Service implements DownloadService
 	}
 
 	@Override
+	public boolean isSharingAvailable()
+	{
+		MusicService musicService = MusicServiceFactory.getMusicService(DownloadServiceImpl.this);
+
+		try
+		{
+			String username = Util.getUserName(DownloadServiceImpl.this, Util.getActiveServer(DownloadServiceImpl.this));
+			UserInfo user = musicService.getUser(username, DownloadServiceImpl.this, null);
+			return user.getShareRole();
+		}
+		catch (Exception e)
+		{
+			Log.w("Error getting user information", e);
+		}
+
+		return false;
+	}
+
+	@Override
 	public void setJukeboxEnabled(boolean jukeboxEnabled)
 	{
 		this.jukeboxEnabled = jukeboxEnabled;

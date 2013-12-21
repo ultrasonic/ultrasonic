@@ -33,12 +33,12 @@
             a:textAppearance="?android:attr/textAppearanceMedium" />
 
         <TextView
-            a:id="@+id/song_status"
-            a:layout_width="wrap_content"
-            a:layout_height="wrap_content"
-            a:layout_gravity="right|center_vertical"
-            a:drawablePadding="1dip"
-            a:paddingRight="6dip" />
+        a:id="@+id/song_status"
+        a:layout_width="wrap_content"
+        a:layout_height="wrap_content"
+        a:layout_gravity="right|center_vertical"
+        a:drawablePadding="1dip"
+        a:paddingRight="6dip" />
     </LinearLayout>
 
     <LinearLayout

@@ -85,6 +85,9 @@
 	<attr name="chat" format="reference"/>
 	<attr name="chat_send" format="reference" />
 	<attr name="bookmark" format="reference" />
-	
+    <attr name="check_mark_off" format="reference" />
+    <attr name="check_mark_on" format="reference" />
+    <attr name="button_check_custom" format="reference" />
+
 </resources>
 

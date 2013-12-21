@@ -238,7 +238,20 @@
         <item>4500</item>
         <item>5000</item>
     </string-array>
-
+    <string-array name="shareExpirationNames">
+        <item>@string/settings.share_none</item>
+        <item>@string/settings.share_one_day</item>
+        <item>@string/settings.share_one_week</item>
+        <item>@string/settings.share_one_month</item>
+        <item>@string/settings.share_one_year</item>
+    </string-array>
+    <string-array name="shareExpirationValues">
+        <item>-1</item>
+        <item>86400000</item>
+        <item>604800000</item>
+        <item>2592000000</item>
+        <item>31536000000</item>
+    </string-array>
 
 
 </resources>

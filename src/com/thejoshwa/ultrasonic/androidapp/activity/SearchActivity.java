@@ -307,6 +307,13 @@ public class SearchActivity extends SubsonicTabActivity
 					getDownloadService().unpin(songs);
 				}
 				break;
+			case R.id.menu_item_share:
+				if (entry != null)
+				{
+					songs = new ArrayList<MusicDirectory.Entry>(1);
+					songs.add(entry);
+					createShare(songs);
+				}
 			default:
 				return super.onContextItemSelected(menuItem);
 		}

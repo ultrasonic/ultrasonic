@@ -214,5 +214,7 @@
         <item>Alapértelmezett</item>
         <item>Flash</item>
     </string-array>
+    <string-array name="shareExpirationNames"/>
+    <string-array name="shareExpirationValues"/>
 
 </resources>

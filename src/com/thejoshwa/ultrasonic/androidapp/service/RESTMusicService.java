@@ -1562,4 +1562,39 @@ public class RESTMusicService implements MusicService
 			Util.close(reader);
 		}
 	}
+
+	@Override
+	public List<Share> createShare(List<String> ids, String description, Long expires, Context context, ProgressListener progressListener) throws Exception
+	{
+		List<String> parameterNames = new LinkedList<String>();
+		List<Object> parameterValues = new LinkedList<Object>();
+
+		for (String id : ids)
+		{
+			parameterNames.add("id");
+			parameterValues.add(id);
+		}
+
+		if (description != null)
+		{
+			parameterNames.add("description");
+			parameterValues.add(description);
+		}
+
+		if (expires > 0)
+		{
+			parameterNames.add("expires");
+			parameterValues.add(expires);
+		}
+
+		Reader reader = getReader(context, progressListener, "createShare", null, parameterNames, parameterValues);
+		try
+		{
+			return new ShareParser(context).parse(reader, progressListener);
+		}
+		finally
+		{
+			Util.close(reader);
+		}
+	}
 }

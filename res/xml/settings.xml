@@ -13,7 +13,6 @@
             a:entryValues="@array/themeValues"
             a:key="theme"
             a:title="@string/settings.theme_title" />
-
         <CheckBoxPreference
             a:defaultValue="true"
             a:key="serverScaling"
@@ -77,7 +76,6 @@
             a:key="clearBookmark"
             a:summary="@string/settings.clear_bookmark_summary"
             a:title="@string/settings.clear_bookmark" />
-
         <ListPreference
             a:defaultValue="5000"
             a:entries="@array/bufferLengthNames"
@@ -125,6 +123,22 @@
             a:key="videoPlayer"
             a:title="@string/settings.video_player" />
     </PreferenceCategory>
+    <PreferenceCategory a:title="@string/settings.sharing_title" >
+        <EditTextPreference
+            a:key="sharingDefaultDescription"
+            a:title="@string/settings.share_description_default" />
+        <ListPreference
+            a:defaultValue="none"
+            a:entries="@array/shareExpirationNames"
+            a:entryValues="@array/shareExpirationValues"
+            a:key="sharingDefaultExpiration"
+            a:title="@string/settings.share_expiration_default" />
+        <CheckBoxPreference
+            a:defaultValue="true"
+            a:key="sharingAlwaysAskForDetails"
+            a:summary="@string/settings.sharing_always_ask_for_details_summary"
+            a:title="@string/settings.sharing_always_ask_for_details" />
+    </PreferenceCategory>
     <PreferenceCategory a:title="@string/settings.network_title" >
         <ListPreference
             a:defaultValue="0"
@@ -138,13 +152,11 @@
             a:entryValues="@array/maxBitrateValues"
             a:key="maxBitrateMobile"
             a:title="@string/settings.max_bitrate_mobile" />
-
         <CheckBoxPreference
             a:defaultValue="false"
             a:key="wifiRequiredForDownload"
             a:summary="@string/settings.wifi_required_summary"
             a:title="@string/settings.wifi_required_title" />
-
         <ListPreference
             a:defaultValue="5"
             a:entries="@array/bufferLengthNames"
@@ -171,11 +183,9 @@
             a:entryValues="@array/cacheSizeValues"
             a:key="cacheSize"
             a:title="@string/settings.cache_size" />
-
         <EditTextPreference
             a:key="cacheLocation"
             a:title="@string/settings.cache_location" />
-
         <ListPreference
             a:defaultValue="3"
             a:entries="@array/preloadCountNames"

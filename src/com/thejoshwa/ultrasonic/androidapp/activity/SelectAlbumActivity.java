@@ -72,7 +72,9 @@ public class SelectAlbumActivity extends SubsonicTabActivity
 	private ImageView deleteButton;
 	private ImageView moreButton;
 	private boolean playAllButtonVisible;
+	private boolean shareButtonVisible;
 	private MenuItem playAllButton;
+	private MenuItem shareButton;
 	private boolean showHeader = true;
 	private Random random = new Random();
 
@@ -287,6 +289,13 @@ public class SelectAlbumActivity extends SubsonicTabActivity
 			playAllButton.setVisible(playAllButtonVisible);
 		}
 
+		shareButton = menu.findItem(R.id.menu_item_share);
+
+		if (shareButton != null)
+		{
+			shareButton.setVisible(shareButtonVisible);
+		}
+
 		return true;
 	}
 
@@ -388,6 +397,8 @@ public class SelectAlbumActivity extends SubsonicTabActivity
 		{
 			MenuInflater inflater = getMenuInflater();
 			inflater.inflate(R.menu.select_album_context, menu);
+
+			shareButton = menu.findItem(R.id.menu_item_share);
 		}
 	}
 
@@ -408,29 +419,36 @@ public class SelectAlbumActivity extends SubsonicTabActivity
 			return true;
 		}
 
+		String entryId = entry.getId();
+
 		switch (menuItem.getItemId())
 		{
 			case R.id.album_menu_play_now:
-				downloadRecursively(entry.getId(), false, false, true, false, false, false, false, false);
+				downloadRecursively(entryId, false, false, true, false, false, false, false, false);
 				break;
 			case R.id.album_menu_play_next:
-				downloadRecursively(entry.getId(), false, false, false, false, false, true, false, false);
+				downloadRecursively(entryId, false, false, false, false, false, true, false, false);
 				break;
 			case R.id.album_menu_play_last:
-				downloadRecursively(entry.getId(), false, true, false, false, false, false, false, false);
+				downloadRecursively(entryId, false, true, false, false, false, false, false, false);
 				break;
 			case R.id.album_menu_pin:
-				downloadRecursively(entry.getId(), true, true, false, false, false, false, false, false);
+				downloadRecursively(entryId, true, true, false, false, false, false, false, false);
 				break;
 			case R.id.album_menu_unpin:
-				downloadRecursively(entry.getId(), false, false, false, false, false, false, true, false);
+				downloadRecursively(entryId, false, false, false, false, false, false, true, false);
 				break;
 			case R.id.album_menu_download:
-				downloadRecursively(entry.getId(), false, false, false, false, true, false, false, false);
+				downloadRecursively(entryId, false, false, false, false, true, false, false, false);
 				break;
 			case R.id.select_album_play_all:
 				playAll();
 				break;
+			case R.id.menu_item_share:
+				List<MusicDirectory.Entry> entries = new ArrayList<MusicDirectory.Entry>(1);
+				entries.add(entry);
+				createShare(entries);
+				return true;
 			default:
 				return super.onContextItemSelected(menuItem);
 		}
@@ -452,6 +470,9 @@ public class SelectAlbumActivity extends SubsonicTabActivity
 				return true;
 			case R.id.select_album_play_all:
 				playAll();
+				return true;
+			case R.id.menu_item_share:
+				createShare(getSelectedSongs(albumListView));
 				return true;
 		}
 
@@ -868,7 +889,7 @@ public class SelectAlbumActivity extends SubsonicTabActivity
 				}
 			}
 
-			final int listSize = getIntent().getIntExtra(Constants.INTENT_EXTRA_NAME_ALBUM_LIST_SIZE, 0);
+ 			final int listSize = getIntent().getIntExtra(Constants.INTENT_EXTRA_NAME_ALBUM_LIST_SIZE, 0);
 
 			if (songCount > 0)
 			{
@@ -943,12 +964,18 @@ public class SelectAlbumActivity extends SubsonicTabActivity
 
 			boolean isAlbumList = getIntent().hasExtra(Constants.INTENT_EXTRA_NAME_ALBUM_LIST_TYPE);
 			playAllButtonVisible = !(isAlbumList || entries.isEmpty()) && !allVideos;
+			shareButtonVisible = songCount > 0;
 
 			emptyView.setVisibility(entries.isEmpty() ? View.VISIBLE : View.GONE);
 
 			if (playAllButton != null)
 			{
 				playAllButton.setVisible(playAllButtonVisible);
+			}
+
+			if (shareButton != null)
+			{
+				shareButton.setVisible(shareButtonVisible);
 			}
 
 			albumListView.setAdapter(new EntryAdapter(SelectAlbumActivity.this, getImageLoader(), entries, true));

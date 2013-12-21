@@ -20,18 +20,18 @@
         <item name="remove_all">@drawable/ic_menu_remove_all_dark</item>
         <item name="save">@drawable/ic_menu_save_dark</item>
         <item name="screen_on_off">@drawable/ic_menu_screen_on_off_dark</item>
-        <item name="search">@drawable/ic_menu_search_dark</item>
+        <item name="search">@drawable/ic_menu_search_holo_dark</item>
         <item name="select_folder">@drawable/ic_menu_select_folder_dark</item>
         <item name="settings">@drawable/ic_menu_settings_dark</item>
         <item name="share">@drawable/ic_menu_share_dark</item>
-        <item name="downloaded">@drawable/ic_stat_downloaded_dark</item>
-        <item name="downloading">@drawable/ic_stat_downloading_dark</item>
+        <item name="downloaded">@drawable/stat_sys_download_anim0_dark</item>
+        <item name="downloading">@drawable/stat_sys_download_dark</item>
         <item name="media_previous">@drawable/media_backward_normal_dark</item>
         <item name="media_next">@drawable/media_forward_normal_dark</item>
         <item name="media_pause">@drawable/media_pause_normal_dark</item>
         <item name="media_repeat_all">@drawable/media_repeat_all</item>
         <item name="media_repeat_off">@drawable/media_repeat_off_dark</item>
-        <item name="media_repeat_single">@drawable/media_repeat_single</item>
+        <item name="media_repeat_single">@drawable/media_repeat_single_dark</item>
         <item name="media_shuffle">@drawable/media_shuffle_normal_dark</item>
         <item name="media_play">@drawable/media_start_normal_dark</item>
         <item name="media_play_next">@drawable/media_play_next</item>
@@ -41,6 +41,7 @@
         <item name="chat">@drawable/ic_menu_chat_dark</item>
         <item name="chat_send">@drawable/ic_menu_chat_send_dark</item>
         <item name="bookmark">@drawable/ic_menu_bookmark_dark</item>
+        <item name="button_check_custom">@drawable/btn_check_custom_dark</item>
     </style>
 
     <style name="UltraSonicTheme.Light" parent="@android:style/Theme.Holo.Light">
@@ -62,18 +63,18 @@
         <item name="remove_all">@drawable/ic_menu_remove_all_light</item>
         <item name="save">@drawable/ic_menu_save_light</item>
         <item name="screen_on_off">@drawable/ic_menu_screen_on_off_light</item>
-        <item name="search">@drawable/ic_menu_search_light</item>
+        <item name="search">@drawable/ic_menu_search_holo_light</item>
         <item name="select_folder">@drawable/ic_menu_select_folder_light</item>
         <item name="settings">@drawable/ic_menu_settings_light</item>
         <item name="share">@drawable/ic_menu_share_light</item>
-        <item name="downloaded">@drawable/ic_stat_downloaded_light</item>
-        <item name="downloading">@drawable/ic_stat_downloading_light</item>
+        <item name="downloaded">@drawable/stat_sys_download_anim0_light</item>
+        <item name="downloading">@drawable/stat_sys_download_light</item>
         <item name="media_previous">@drawable/media_backward_normal_light</item>
         <item name="media_next">@drawable/media_forward_normal_light</item>
         <item name="media_pause">@drawable/media_pause_normal_light</item>
         <item name="media_repeat_all">@drawable/media_repeat_all</item>
         <item name="media_repeat_off">@drawable/media_repeat_off_light</item>
-        <item name="media_repeat_single">@drawable/media_repeat_single</item>
+        <item name="media_repeat_single">@drawable/media_repeat_single_light</item>
         <item name="media_shuffle">@drawable/media_shuffle_normal_light</item>
         <item name="media_play">@drawable/media_start_normal_light</item>
         <item name="media_play_next">@drawable/media_play_next</item>
@@ -83,6 +84,7 @@
         <item name="chat">@drawable/ic_menu_chat_light</item>
         <item name="chat_send">@drawable/ic_menu_chat_send_light</item>
         <item name="bookmark">@drawable/ic_menu_bookmark_light</item>
+        <item name="button_check_custom">@drawable/btn_check_custom_light</item>
     </style>
 
 </resources>

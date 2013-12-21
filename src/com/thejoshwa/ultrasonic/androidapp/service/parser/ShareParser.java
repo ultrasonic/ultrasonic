@@ -29,7 +29,7 @@ public class ShareParser extends MusicDirectoryEntryParser
 		updateProgress(progressListener, R.string.parser_reading);
 		init(reader);
 
-		List<Share> dir = new ArrayList<Share>();
+		List<Share> shares = new ArrayList<Share>();
 		Share share = null;
 		int eventType;
 
@@ -52,6 +52,7 @@ public class ShareParser extends MusicDirectoryEntryParser
 					share.setUrl(get("url"));
 					share.setUsername(get("username"));
 					share.setVisitCount(getLong("visitCount"));
+					shares.add(share);
 				}
 				else if ("entry".equals(name))
 				{
@@ -70,6 +71,6 @@ public class ShareParser extends MusicDirectoryEntryParser
 		validate();
 		updateProgress(progressListener, R.string.parser_reading_done);
 
-		return dir;
+		return shares;
 	}
 }

@@ -88,6 +88,9 @@ public class SettingsActivity extends PreferenceActivity implements SharedPrefer
 	private CheckBoxPreference sendBluetoothNotifications;
 	private CheckBoxPreference sendBluetoothAlbumArt;
 	private ListPreference viewRefresh;
+	private CheckBoxPreference sharingAlwaysAskForDetails;
+	private EditTextPreference sharingDefaultDescription;
+	private ListPreference sharingDefaultExpiration;
 	private int maxServerCount = 10;
 	private int minServerCount = 0;
 
@@ -176,6 +179,9 @@ public class SettingsActivity extends PreferenceActivity implements SharedPrefer
 		sendBluetoothAlbumArt = (CheckBoxPreference) findPreference(Constants.PREFERENCES_KEY_SEND_BLUETOOTH_ALBUM_ART);
 		sendBluetoothNotifications = (CheckBoxPreference) findPreference(Constants.PREFERENCES_KEY_SEND_BLUETOOTH_NOTIFICATIONS);
 		viewRefresh = (ListPreference) findPreference(Constants.PREFERENCES_KEY_VIEW_REFRESH);
+		sharingAlwaysAskForDetails = (CheckBoxPreference) findPreference(Constants.PREFERENCES_KEY_ASK_FOR_SHARE_DETAILS);
+		sharingDefaultDescription = (EditTextPreference) findPreference(Constants.PREFERENCES_KEY_DEFAULT_SHARE_DESCRIPTION);
+		sharingDefaultExpiration = (ListPreference) findPreference(Constants.PREFERENCES_KEY_DEFAULT_SHARE_EXPIRATION);
 
 		findPreference(Constants.PREFERENCES_KEY_CLEAR_SEARCH_HISTORY).setOnPreferenceClickListener(new Preference.OnPreferenceClickListener()
 		{
@@ -490,6 +496,8 @@ public class SettingsActivity extends PreferenceActivity implements SharedPrefer
 		chatRefreshInterval.setSummary(chatRefreshInterval.getEntry());
 		directoryCacheTime.setSummary(directoryCacheTime.getEntry());
 		viewRefresh.setSummary(viewRefresh.getEntry());
+		sharingDefaultExpiration.setSummary(sharingDefaultExpiration.getEntry());
+		sharingDefaultDescription.setSummary(sharingDefaultDescription.getText());
 
 		if (!mediaButtonsEnabled.isChecked())
 		{

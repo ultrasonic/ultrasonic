@@ -358,6 +358,20 @@
     <string name="widget.initial_text">Érintse meg a zene kiválasztásához</string>
     <string name="widget.sdcard_busy">Az SD kártya nem elérhető!</string>
     <string name="widget.sdcard_missing">Nincs SD kártya!</string>
+    <string name="settings.share_description_default">Default Share Description</string>
+    <string name="settings.sharing_title">Sharing</string>
+    <string name="settings.sharing_always_ask_for_details_summary">Always ask for description and expiration when creating a share</string>
+    <string name="settings.sharing_always_ask_for_details">Always Ask For Details</string>
+    <string name="settings.share_expiration_default">Default Expiration Date</string>
+    <string name="do_not_show_dialog_again">Do not show dialog again</string>
+    <string name="share_set_share_options">Set Share Options</string>
+    <string name="share_description">Description</string>
+    <string name="settings.share_none">None</string>
+    <string name="settings.share_one_day">One Day</string>
+    <string name="settings.share_one_week">One Week</string>
+    <string name="settings.share_one_month">One Month</string>
+    <string name="settings.share_one_year">One Year</string>
+    <string name="no_expiration">No Expiration</string>
 
     <plurals name="select_album_n_songs">
         <item quantity="zero">Nincsenek dalok</item>

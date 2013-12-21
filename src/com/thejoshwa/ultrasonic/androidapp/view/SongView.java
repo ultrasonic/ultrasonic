@@ -19,6 +19,7 @@
 package com.thejoshwa.ultrasonic.androidapp.view;
 
 import android.content.Context;
+import android.graphics.drawable.AnimationDrawable;
 import android.graphics.drawable.Drawable;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -334,6 +335,12 @@ public class SongView extends UpdateView implements Checkable
 			if (this.statusTextView != null)
 			{
 				this.statusTextView.setCompoundDrawablesWithIntrinsicBounds(leftImage, null, rightImage, null);
+
+				if (rightImage == downloadingImage)
+				{
+					AnimationDrawable frameAnimation = (AnimationDrawable) rightImage;
+					frameAnimation.setVisible(true, true);
+				}
 			}
 		}
 

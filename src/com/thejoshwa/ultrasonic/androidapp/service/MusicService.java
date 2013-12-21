@@ -141,4 +141,6 @@ public interface MusicService
 	MusicDirectory getVideos(boolean refresh, Context context, ProgressListener progressListener) throws Exception;
 
 	UserInfo getUser(String username, Context context, ProgressListener progressListener) throws Exception;
+
+	List<Share> createShare(List<String> ids, String description, Long expires, Context context, ProgressListener progressListener) throws Exception;
 }

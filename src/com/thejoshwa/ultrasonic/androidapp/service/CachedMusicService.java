@@ -497,4 +497,10 @@ public class CachedMusicService implements MusicService
 
 		return userInfo;
 	}
+
+	@Override
+	public List<Share> createShare(List<String> ids, String description, Long expires, Context context, ProgressListener progressListener) throws Exception
+	{
+		return musicService.createShare(ids, description, expires, context, progressListener);
+	}
 }

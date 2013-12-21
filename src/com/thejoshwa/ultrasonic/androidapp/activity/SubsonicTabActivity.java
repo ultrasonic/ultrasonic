@@ -22,6 +22,7 @@ import android.annotation.SuppressLint;
 import android.app.ActionBar;
 import android.app.Activity;
 import android.app.AlertDialog;
+import android.app.Dialog;
 import android.app.Notification;
 import android.app.NotificationManager;
 import android.content.Context;
@@ -38,11 +39,17 @@ import android.os.Environment;
 import android.os.Handler;
 import android.util.Log;
 import android.view.KeyEvent;
+import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.View.OnTouchListener;
+import android.view.ViewGroup;
+import android.widget.CheckBox;
+import android.widget.CompoundButton;
+import android.widget.DatePicker;
+import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.RemoteViews;
 import android.widget.TextView;
@@ -51,16 +58,20 @@ import com.thejoshwa.ultrasonic.androidapp.R;
 import com.thejoshwa.ultrasonic.androidapp.domain.MusicDirectory;
 import com.thejoshwa.ultrasonic.androidapp.domain.MusicDirectory.Entry;
 import com.thejoshwa.ultrasonic.androidapp.domain.PlayerState;
+import com.thejoshwa.ultrasonic.androidapp.domain.Share;
 import com.thejoshwa.ultrasonic.androidapp.service.DownloadFile;
 import com.thejoshwa.ultrasonic.androidapp.service.DownloadService;
 import com.thejoshwa.ultrasonic.androidapp.service.DownloadServiceImpl;
 import com.thejoshwa.ultrasonic.androidapp.service.MusicService;
 import com.thejoshwa.ultrasonic.androidapp.service.MusicServiceFactory;
+import com.thejoshwa.ultrasonic.androidapp.util.BackgroundTask;
 import com.thejoshwa.ultrasonic.androidapp.util.Constants;
 import com.thejoshwa.ultrasonic.androidapp.util.EntryByDiscAndTrackComparator;
 import com.thejoshwa.ultrasonic.androidapp.util.ImageLoader;
 import com.thejoshwa.ultrasonic.androidapp.util.ModalBackgroundTask;
+import com.thejoshwa.ultrasonic.androidapp.util.ShareDetails;
 import com.thejoshwa.ultrasonic.androidapp.util.SilentBackgroundTask;
+import com.thejoshwa.ultrasonic.androidapp.util.TabActivityBackgroundTask;
 import com.thejoshwa.ultrasonic.androidapp.util.Util;
 import com.thejoshwa.ultrasonic.androidapp.util.VideoPlayerType;
 
@@ -69,6 +80,8 @@ import net.simonvt.menudrawer.Position;
 
 import java.io.File;
 import java.io.PrintWriter;
+import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.LinkedList;
@@ -89,6 +102,7 @@ public class SubsonicTabActivity extends Activity implements OnClickListener
 	private static final String STATE_MENUDRAWER = "com.thejoshwa.ultrasonic.androidapp.menuDrawer";
 	private static final String STATE_ACTIVE_VIEW_ID = "com.thejoshwa.ultrasonic.androidapp.activeViewId";
 	private static final String STATE_ACTIVE_POSITION = "com.thejoshwa.ultrasonic.androidapp.activePosition";
+	private static final int DIALOG_ASK_FOR_SHARE_DETAILS = 102;
 
 	public MenuDrawer menuDrawer;
 	private int activePosition = 1;
@@ -101,6 +115,11 @@ public class SubsonicTabActivity extends Activity implements OnClickListener
 	public Bitmap nowPlayingImage;
 	boolean licenseValid;
 	NotificationManager notificationManager;
+	private EditText shareDescription;
+	DatePicker datePicker;
+	CheckBox hideDialogCheckBox;
+	CheckBox noExpirationCheckBox;
+	ShareDetails shareDetails;
 
 	@Override
 	protected void onCreate(Bundle bundle)
@@ -568,6 +587,163 @@ public class SubsonicTabActivity extends Activity implements OnClickListener
 		{
 			Log.w(String.format("Exception in hideNowPlaying: %s", ex), ex);
 		}
+	}
+
+	@Override
+	protected Dialog onCreateDialog(final int id)
+	{
+		if (id == DIALOG_ASK_FOR_SHARE_DETAILS)
+		{
+			final LayoutInflater layoutInflater = (LayoutInflater) getSystemService(LAYOUT_INFLATER_SERVICE);
+			final View layout = layoutInflater.inflate(R.layout.share_details, (ViewGroup) findViewById(R.id.share_details));
+
+			if (layout != null)
+			{
+				shareDescription = (EditText) layout.findViewById(R.id.share_description);
+				hideDialogCheckBox = (CheckBox) layout.findViewById(R.id.hide_dialog);
+				noExpirationCheckBox = (CheckBox) layout.findViewById(R.id.no_expiration);
+				datePicker = (DatePicker) layout.findViewById(R.id.date_picker);
+			}
+
+			AlertDialog.Builder builder = new AlertDialog.Builder(this);
+			builder.setTitle(R.string.share_set_share_options);
+			builder.setMessage(R.string.share_description);
+			builder.setPositiveButton(R.string.common_save, new DialogInterface.OnClickListener()
+			{
+				@Override
+				public void onClick(final DialogInterface dialog, final int clickId)
+				{
+					if (!noExpirationCheckBox.isChecked())
+					{
+						Calendar cal = Calendar.getInstance();
+						cal.setTime(Util.getDateFromDatePicker(datePicker));
+						shareDetails.Expiration = cal;
+					}
+
+					shareDetails.Description = String.valueOf(shareDescription.getText());
+
+					if (hideDialogCheckBox.isChecked())
+					{
+						Util.setShouldAskForShareDetails(SubsonicTabActivity.this, false);
+					}
+
+					share();
+				}
+			});
+			builder.setNegativeButton(R.string.common_cancel, new DialogInterface.OnClickListener()
+			{
+				@Override
+				public void onClick(final DialogInterface dialog, final int clickId)
+				{
+					shareDetails = null;
+					dialog.cancel();
+				}
+			});
+			builder.setView(layout);
+			builder.setCancelable(true);
+
+			noExpirationCheckBox.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener()
+			{
+				@Override
+				public void onCheckedChanged(CompoundButton compoundButton, boolean b)
+				{
+					datePicker.setEnabled(!b);
+				}
+			});
+
+			return builder.create();
+		}
+		else
+		{
+			return super.onCreateDialog(id);
+		}
+	}
+
+	@Override
+	protected void onPrepareDialog(final int id, final Dialog dialog)
+	{
+		if (id == DIALOG_ASK_FOR_SHARE_DETAILS)
+		{
+			String defaultDescription = Util.getDefaultShareDescription(this);
+			Calendar cal = Util.getDefaultShareExpirationCalendar(this);
+
+			if (cal != null) {
+				noExpirationCheckBox.setChecked(false);
+				datePicker.setEnabled(true);
+				datePicker.init(cal.get(Calendar.YEAR), cal.get(Calendar.MONTH), cal.get(Calendar.DAY_OF_MONTH), null);
+			}
+			else
+			{
+				noExpirationCheckBox.setChecked(true);
+				datePicker.setEnabled(false);
+			};
+
+			shareDescription.setText(defaultDescription);
+		}
+	}
+
+	public void createShare(final List<MusicDirectory.Entry> entries)
+	{
+		boolean askForDetails = Util.getShouldAskForShareDetails(this);
+
+		shareDetails = new ShareDetails();
+		shareDetails.Entries = entries;
+
+		if (askForDetails)
+		{
+			showDialog(DIALOG_ASK_FOR_SHARE_DETAILS);
+		}
+		else
+		{
+			shareDetails.Description = Util.getDefaultShareDescription(this);
+			shareDetails.Expiration = Util.getDefaultShareExpirationCalendar(this);
+			share();
+		}
+	}
+
+	public void share()
+	{
+		BackgroundTask<Share> task = new TabActivityBackgroundTask<Share>(this, true)
+		{
+			@Override
+			protected Share doInBackground() throws Throwable
+			{
+				List<String> ids = new ArrayList<String>();
+
+				if (shareDetails.Entries.isEmpty())
+				{
+					ids.add(getIntent().getStringExtra(Constants.INTENT_EXTRA_NAME_ID));
+				}
+				else
+				{
+					for (MusicDirectory.Entry entry : shareDetails.Entries)
+					{
+						ids.add(entry.getId());
+					}
+				}
+
+				MusicService musicService = MusicServiceFactory.getMusicService(SubsonicTabActivity.this);
+
+				long timeInMillis = 0;
+
+				if (shareDetails.Expiration != null)
+					timeInMillis = shareDetails.Expiration.getTimeInMillis();
+
+				List<Share> shares = musicService.createShare(ids, shareDetails.Description, timeInMillis, SubsonicTabActivity.this, this);
+				return shares.get(0);
+			}
+
+			@Override
+			protected void done(Share result)
+			{
+				Intent intent = new Intent(Intent.ACTION_SEND);
+				intent.setType("text/plain");
+				intent.putExtra(Intent.EXTRA_TEXT, String.format("Check out this music I shared from UltraSonic\n\n%s", result.getUrl()));
+				startActivity(Intent.createChooser(intent, "Share via"));
+			}
+		};
+
+		task.execute();
 	}
 
 	public void setTextViewTextOnUiThread(final RemoteViews view, final int id, final String text)

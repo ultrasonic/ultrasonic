@@ -45,6 +45,7 @@ import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.Gravity;
 import android.view.KeyEvent;
+import android.widget.DatePicker;
 import android.widget.RemoteViews;
 import android.widget.Toast;
 
@@ -53,11 +54,11 @@ import com.thejoshwa.ultrasonic.androidapp.activity.DownloadActivity;
 import com.thejoshwa.ultrasonic.androidapp.activity.MainActivity;
 import com.thejoshwa.ultrasonic.androidapp.domain.Bookmark;
 import com.thejoshwa.ultrasonic.androidapp.domain.MusicDirectory;
+import com.thejoshwa.ultrasonic.androidapp.domain.MusicDirectory.Entry;
 import com.thejoshwa.ultrasonic.androidapp.domain.PlayerState;
 import com.thejoshwa.ultrasonic.androidapp.domain.RepeatMode;
 import com.thejoshwa.ultrasonic.androidapp.domain.SearchResult;
 import com.thejoshwa.ultrasonic.androidapp.domain.Version;
-import com.thejoshwa.ultrasonic.androidapp.domain.MusicDirectory.Entry;
 import com.thejoshwa.ultrasonic.androidapp.receiver.MediaButtonIntentReceiver;
 import com.thejoshwa.ultrasonic.androidapp.service.DownloadFile;
 import com.thejoshwa.ultrasonic.androidapp.service.DownloadService;
@@ -79,7 +80,10 @@ import java.lang.reflect.Method;
 import java.security.MessageDigest;
 import java.text.DecimalFormat;
 import java.text.NumberFormat;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.TimeUnit;
@@ -1568,4 +1572,56 @@ public class Util extends DownloadActivity
 		return Integer.parseInt(preferences.getString(Constants.PREFERENCES_KEY_VIEW_REFRESH, "1000"));
 	}
 
+	public static Date getDateFromDatePicker(DatePicker datePicker) {
+		int day = datePicker.getDayOfMonth();
+		int month = datePicker.getMonth();
+		int year = datePicker.getYear();
+
+		Calendar calendar = Calendar.getInstance();
+		calendar.set(year, month, day);
+
+		return calendar.getTime();
+	}
+
+	public static boolean getShouldAskForShareDetails(Context context)
+	{
+		SharedPreferences preferences = getPreferences(context);
+		return preferences.getBoolean(Constants.PREFERENCES_KEY_ASK_FOR_SHARE_DETAILS, true);
+	}
+
+	public static String getDefaultShareDescription(Context context)
+	{
+		SharedPreferences preferences = getPreferences(context);
+		return preferences.getString(Constants.PREFERENCES_KEY_DEFAULT_SHARE_DESCRIPTION, "");
+	}
+
+	public static long getDefaultShareExpiration(Context context)
+	{
+		SharedPreferences preferences = getPreferences(context);
+		return Long.parseLong(preferences.getString(Constants.PREFERENCES_KEY_DEFAULT_SHARE_EXPIRATION, "-1"));
+	}
+
+	public static Calendar getDefaultShareExpirationCalendar(Context context)
+	{
+		long expiration = getDefaultShareExpiration(context);
+
+		if (expiration > 0)
+		{
+			Calendar cal = Calendar.getInstance(Locale.getDefault());
+			cal.setTimeInMillis(System.currentTimeMillis() + expiration);
+			return cal;
+		}
+		else
+		{
+			return null;
+		}
+	}
+
+	public static void setShouldAskForShareDetails(Context context, boolean shouldAskForShareDetails)
+	{
+		SharedPreferences preferences = getPreferences(context);
+		SharedPreferences.Editor editor = preferences.edit();
+		editor.putBoolean(Constants.PREFERENCES_KEY_ASK_FOR_SHARE_DETAILS, shouldAskForShareDetails);
+		editor.commit();
+	}
 }

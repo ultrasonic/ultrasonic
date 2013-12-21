@@ -127,6 +127,8 @@ public interface DownloadService
 
 	boolean isJukeboxAvailable();
 
+	boolean isSharingAvailable();
+
 	void setJukeboxEnabled(boolean b);
 
 	void adjustJukeboxVolume(boolean up);

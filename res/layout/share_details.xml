@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<ScrollView xmlns:a="http://schemas.android.com/apk/res/android"
+            a:id="@+id/share_details"
+            a:layout_width="wrap_content"
+            a:layout_height="wrap_content">
+
+    <LinearLayout
+        a:orientation="vertical"
+        a:layout_width="wrap_content"
+        a:layout_height="wrap_content">
+
+        <EditText
+            a:id="@+id/share_description"
+            a:layout_width="fill_parent"
+            a:layout_height="wrap_content"
+            a:inputType="text"
+            a:singleLine="false"/>
+
+        <CheckBox
+            a:id="@+id/no_expiration"
+            a:text="@string/no_expiration"
+            a:layout_width="wrap_content"
+            a:layout_height="wrap_content"/>
+
+        <DatePicker
+            a:id="@+id/date_picker"
+            a:layout_width="wrap_content"
+            a:layout_height="wrap_content"
+            a:calendarViewShown="false"/>
+
+        <CheckBox
+            a:id="@+id/hide_dialog"
+            a:text="@string/do_not_show_dialog_again"
+            a:layout_width="wrap_content"
+            a:layout_height="wrap_content"/>
+
+    </LinearLayout>
+</ScrollView>
