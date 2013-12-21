@@ -2,6 +2,7 @@
 <resources>
 
     <style name="UltraSonicTheme" parent="@android:style/Theme.Holo">
+        <item name="color_background">@color/background_color_dark</item>
         <item name="star_hollow">@drawable/ic_star_hollow_dark</item>
         <item name="star_full">@drawable/ic_star_full_dark</item>
         <item name="about">@drawable/ic_menu_about_dark</item>
@@ -42,9 +43,11 @@
         <item name="chat_send">@drawable/ic_menu_chat_send_dark</item>
         <item name="bookmark">@drawable/ic_menu_bookmark_dark</item>
         <item name="button_check_custom">@drawable/btn_check_custom_dark</item>
+        <item name="drag_and_drop">@drawable/ic_action_import_export_dark</item>
     </style>
 
     <style name="UltraSonicTheme.Light" parent="@android:style/Theme.Holo.Light">
+        <item name="color_background">@color/background_color_light</item>
         <item name="star_hollow">@drawable/ic_star_hollow_light</item>
         <item name="star_full">@drawable/ic_star_full_light</item>
         <item name="about">@drawable/ic_menu_about_light</item>
@@ -85,6 +88,7 @@
         <item name="chat_send">@drawable/ic_menu_chat_send_light</item>
         <item name="bookmark">@drawable/ic_menu_bookmark_light</item>
         <item name="button_check_custom">@drawable/btn_check_custom_light</item>
+        <item name="drag_and_drop">@drawable/ic_action_import_export_light</item>
     </style>
 
 </resources>

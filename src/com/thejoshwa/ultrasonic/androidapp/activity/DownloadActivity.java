@@ -46,11 +46,11 @@ import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ListAdapter;
-import android.widget.ListView;
 import android.widget.SeekBar;
 import android.widget.TextView;
 import android.widget.ViewFlipper;
 
+import com.mobeta.android.dslv.DragSortListView;
 import com.thejoshwa.ultrasonic.androidapp.R;
 import com.thejoshwa.ultrasonic.androidapp.domain.MusicDirectory;
 import com.thejoshwa.ultrasonic.androidapp.domain.MusicDirectory.Entry;
@@ -95,7 +95,7 @@ public class DownloadActivity extends SubsonicTabActivity implements OnGestureLi
 	private TextView albumTextView;
 	private TextView artistTextView;
 	private ImageView albumArtImageView;
-	private ListView playlistView;
+	private DragSortListView playlistView;
 	private TextView positionTextView;
 	private TextView downloadTrackTextView;
 	private TextView downloadTotalDurationTextView;
@@ -153,7 +153,7 @@ public class DownloadActivity extends SubsonicTabActivity implements OnGestureLi
 		downloadTotalDurationTextView = (TextView) findViewById(R.id.download_total_duration);
 		durationTextView = (TextView) findViewById(R.id.download_duration);
 		progressBar = (SeekBar) findViewById(R.id.download_progress_bar);
-		playlistView = (ListView) findViewById(R.id.download_list);
+		playlistView = (DragSortListView) findViewById(R.id.download_list);
 		final AutoRepeatButton previousButton = (AutoRepeatButton) findViewById(R.id.download_previous);
 		final AutoRepeatButton nextButton = (AutoRepeatButton) findViewById(R.id.download_next);
 		pauseButton = findViewById(R.id.download_pause);
@@ -974,7 +974,7 @@ public class DownloadActivity extends SubsonicTabActivity implements OnGestureLi
 
 		if (song != null)
 		{
-			 entry = song.getSong();
+			entry = song.getSong();
 		}
 
 		switch (menuItemId)
@@ -1174,7 +1174,48 @@ public class DownloadActivity extends SubsonicTabActivity implements OnGestureLi
 		final List<DownloadFile> list = downloadService.getSongs();
 
 		emptyTextView.setText(R.string.download_empty);
-		playlistView.setAdapter(new SongListAdapter(this, list));
+		final SongListAdapter adapter = new SongListAdapter(this, list);
+		playlistView.setAdapter(adapter);
+
+		playlistView.setDragSortListener(new DragSortListView.DragSortListener()
+		{
+			@Override
+			public void drop(int from, int to)
+			{
+				if (from != to)
+				{
+					DownloadFile item = adapter.getItem(from);
+					adapter.remove(item);
+					adapter.insert(item, to);
+					onDownloadListChanged();
+					onCurrentChanged();
+				}
+			}
+
+			@Override
+			public void drag(int from, int to)
+			{
+
+			}
+
+
+			@Override
+			public void remove(int which)
+			{
+				DownloadFile item = adapter.getItem(which);
+				DownloadFile currentPlaying = getDownloadService().getCurrentPlaying();
+
+				if (currentPlaying == item)
+				{
+					getDownloadService().next();
+				}
+
+				adapter.remove(item);
+				onDownloadListChanged();
+				onCurrentChanged();
+			}
+		});
+
 		emptyTextView.setVisibility(list.isEmpty() ? View.VISIBLE : View.GONE);
 		currentRevision = downloadService.getDownloadListUpdateRevision();
 

@@ -3,6 +3,7 @@
   <component name="ProjectModuleManager">
     <modules>
       <module fileurl="file://$PROJECT_DIR$/Subsonic-Android.iml" filepath="$PROJECT_DIR$/Subsonic-Android.iml" />
+      <module fileurl="file://$PROJECT_DIR$/drag-sort-listview.iml" filepath="$PROJECT_DIR$/drag-sort-listview.iml" />
       <module fileurl="file://$PROJECT_DIR$/menudrawer.iml" filepath="$PROJECT_DIR$/menudrawer.iml" />
       <module fileurl="file://$PROJECT_DIR$/pulltorefresh.iml" filepath="$PROJECT_DIR$/pulltorefresh.iml" />
     </modules>

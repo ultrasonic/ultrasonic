@@ -98,7 +98,7 @@ public class EntryAdapter extends ArrayAdapter<Entry>
 				view = new SongView(activity);
 			}
 
-			view.setSong(entry, checkable);
+			view.setSong(entry, checkable, false);
 			return view;
 		}
 	}

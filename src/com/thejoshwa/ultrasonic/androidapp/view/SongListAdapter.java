@@ -46,7 +46,7 @@ public class SongListAdapter extends ArrayAdapter<DownloadFile>
 			view = new SongView(this.context);
 		}
 
-		view.setSong(entry, false);
+		view.setSong(entry, false, true);
 		return view;
 	}
 }

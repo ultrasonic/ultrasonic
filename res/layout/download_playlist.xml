@@ -14,12 +14,21 @@
             a:layout_height="wrap_content"
             a:padding="10dip"/>
 
-    <ListView
+    <com.mobeta.android.dslv.DragSortListView
+            xmlns:dslv="http://schemas.android.com/apk/res/com.thejoshwa.ultrasonic.androidapp"
             a:id="@+id/download_list"
             a:layout_width="fill_parent"
             a:layout_height="0dip"
             a:layout_weight="1"
             a:fastScrollEnabled="true"
-        	a:textFilterEnabled="true" />
+        	a:textFilterEnabled="true"
+            dslv:drag_handle_id="@+id/song_drag"
+            dslv:remove_enabled="true"
+            dslv:remove_mode="flingRemove"
+            dslv:fling_handle_id="@+id/song_drag"
+            dslv:drag_start_mode="onMove"
+            dslv:float_background_color="?attr/color_background"
+            dslv:float_alpha="0.7" />
+
 
 </LinearLayout>

@@ -61,6 +61,7 @@ public class SongView extends UpdateView implements Checkable
 
 	private CheckedTextView checkedTextView;
 	private ImageView starImageView;
+	private ImageView songDragImageView;
 	private TextView titleTextView;
 	private TextView statusTextView;
 	private Entry song;
@@ -125,7 +126,7 @@ public class SongView extends UpdateView implements Checkable
 		return this.song;
 	}
 
-	protected void setSong(final Entry song, boolean checkable)
+	protected void setSong(final Entry song, boolean checkable, boolean dragable)
 	{
 		updateBackground();
 
@@ -140,6 +141,7 @@ public class SongView extends UpdateView implements Checkable
 
 		checkedTextView = (CheckedTextView) findViewById(R.id.song_check);
 		starImageView = (ImageView) findViewById(R.id.song_star);
+		songDragImageView = (ImageView) findViewById(R.id.song_drag);
 		TextView trackTextView = (TextView) findViewById(R.id.song_track);
 		titleTextView = (TextView) findViewById(R.id.song_title);
 		TextView artistTextView = (TextView) findViewById(R.id.song_artist);
@@ -204,6 +206,7 @@ public class SongView extends UpdateView implements Checkable
 		}
 
 		checkedTextView.setVisibility(checkable && !song.isVideo() ? View.VISIBLE : View.GONE);
+		songDragImageView.setVisibility(dragable ? View.VISIBLE : View.GONE);
 
 		if (Util.isOffline(this.context))
 		{

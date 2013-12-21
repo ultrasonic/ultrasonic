@@ -88,6 +88,8 @@
     <attr name="check_mark_off" format="reference" />
     <attr name="check_mark_on" format="reference" />
     <attr name="button_check_custom" format="reference" />
+    <attr name="color_background" format="reference" />
+    <attr name="drag_and_drop" format="reference" />
 
 </resources>
 

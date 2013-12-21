@@ -5,3 +5,6 @@
 [submodule "pulltorefresh"]
 	path = pulltorefresh
 	url = git://github.com/chrisbanes/Android-PullToRefresh.git
+[submodule "drag-sort-listview"]
+	path = drag-sort-listview
+	url = https://github.com/bauerca/drag-sort-listview

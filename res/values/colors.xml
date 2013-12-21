@@ -18,4 +18,6 @@
     <color name="opaque">#B0000000</color>
     <color name="translucent">#80000000</color>
     <color name="md__defaultBackground">#FF555555</color>
+    <color name="background_color_dark">#ff000000</color>
+    <color name="background_color_light">#fff3f3f3</color>
 </resources>
