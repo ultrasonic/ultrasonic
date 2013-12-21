@@ -26,7 +26,6 @@
                 a:paddingBottom="8dip"
                 a:paddingTop="8dip" >
 
-                <include layout="@layout/download_buttons" />
             </LinearLayout>
 
             <LinearLayout

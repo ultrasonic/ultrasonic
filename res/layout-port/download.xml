@@ -4,8 +4,6 @@
     a:layout_height="fill_parent"
     a:orientation="vertical" >
     
-    <include layout="@layout/download_buttons" />
-
     <com.thejoshwa.ultrasonic.androidapp.util.MyViewFlipper
         a:id="@+id/download_playlist_flipper"
         a:layout_width="fill_parent"

@@ -6,7 +6,7 @@
     a:paddingBottom="8dip"
     a:paddingLeft="8dip"
     a:paddingRight="8dip" >
-    
+
     <TextView
         a:id="@+id/download_song_title"
         a:layout_width="fill_parent"

@@ -42,7 +42,6 @@ import android.view.WindowManager;
 import android.view.animation.AnimationUtils;
 import android.widget.AdapterView;
 import android.widget.EditText;
-import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ListAdapter;
@@ -105,8 +104,6 @@ public class DownloadActivity extends SubsonicTabActivity implements OnGestureLi
 	private View stopButton;
 	private View startButton;
 	private ImageView repeatButton;
-	private ImageButton starImageButton;
-	private ImageButton saveImageButton;
 	private ScheduledExecutorService executorService;
 	private DownloadFile currentPlaying;
 	private Entry currentSong;
@@ -121,6 +118,9 @@ public class DownloadActivity extends SubsonicTabActivity implements OnGestureLi
 	private boolean jukeboxAvailable;
 	private SilentBackgroundTask<Void> onProgressChangedTask;
 	LinearLayout visualizerViewLayout;
+	private MenuItem starMenuItem;
+	private MenuItem bookmarkMenuItem;
+	private MenuItem bookmarkRemoveMenuItem;
 
 	/**
 	 * Called when the activity is first created.
@@ -161,13 +161,8 @@ public class DownloadActivity extends SubsonicTabActivity implements OnGestureLi
 		startButton = findViewById(R.id.download_start);
 		final View shuffleButton = findViewById(R.id.download_shuffle);
 		repeatButton = (ImageView) findViewById(R.id.download_repeat);
-		starImageButton = (ImageButton) findViewById(R.id.download_star);
-		ImageButton bookmarkImageButton = (ImageButton) findViewById(R.id.download_bookmark);
-		ImageButton removeAllImageButton = (ImageButton) findViewById(R.id.download_remove_all);
-		saveImageButton = (ImageButton) findViewById(R.id.download_save_playlist);
-		visualizerViewLayout = (LinearLayout) findViewById(R.id.download_visualizer_view_layout);
 
-		final ImageButton toggleListButton = (ImageButton) findViewById(R.id.download_toggle_list);
+		visualizerViewLayout = (LinearLayout) findViewById(R.id.download_visualizer_view_layout);
 
 		View.OnTouchListener touchListener = new View.OnTouchListener()
 		{
@@ -382,15 +377,6 @@ public class DownloadActivity extends SubsonicTabActivity implements OnGestureLi
 			}
 		});
 
-		toggleListButton.setOnClickListener(new View.OnClickListener()
-		{
-			@Override
-			public void onClick(final View view)
-			{
-				toggleFullScreenAlbumArt();
-			}
-		});
-
 		progressBar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener()
 		{
 			@Override
@@ -461,158 +447,21 @@ public class DownloadActivity extends SubsonicTabActivity implements OnGestureLi
 
 		if (Util.isOffline(this))
 		{
-			starImageButton.setVisibility(View.GONE);
-			bookmarkImageButton.setVisibility(View.GONE);
+			if (starMenuItem != null)
+			{
+				starMenuItem.setEnabled(false);
+			}
+
+			if (bookmarkMenuItem != null)
+			{
+				bookmarkMenuItem.setEnabled(false);
+			}
+
+			if (bookmarkRemoveMenuItem != null)
+			{
+				bookmarkRemoveMenuItem.setEnabled(false);
+			}
 		}
-
-		starImageButton.setOnClickListener(new View.OnClickListener()
-		{
-			@Override
-			public void onClick(final View view)
-			{
-				if (currentSong == null)
-				{
-					return;
-				}
-
-				final boolean isStarred = currentSong.getStarred();
-				final String id = currentSong.getId();
-
-				if (isStarred)
-				{
-					starImageButton.setImageDrawable(Util.getDrawableFromAttribute(SubsonicTabActivity.getInstance(), R.attr.star_hollow));
-					currentSong.setStarred(false);
-				}
-				else
-				{
-					starImageButton.setImageDrawable(Util.getDrawableFromAttribute(SubsonicTabActivity.getInstance(), R.attr.star_full));
-					currentSong.setStarred(true);
-				}
-
-				new Thread(new Runnable()
-				{
-					@Override
-					public void run()
-					{
-						final MusicService musicService = MusicServiceFactory.getMusicService(DownloadActivity.this);
-
-						try
-						{
-							if (isStarred)
-							{
-								musicService.unstar(id, null, null, DownloadActivity.this, null);
-							}
-							else
-							{
-								musicService.star(id, null, null, DownloadActivity.this, null);
-							}
-						}
-						catch (Exception e)
-						{
-							Log.e(TAG, e.getMessage(), e);
-						}
-					}
-				}).start();
-			}
-		});
-
-		bookmarkImageButton.setOnClickListener(new View.OnClickListener()
-		{
-			@Override
-			public void onClick(final View view)
-			{
-				if (currentSong == null)
-				{
-					return;
-				}
-
-				final String id = currentSong.getId();
-				final int playerPosition = getDownloadService().getPlayerPosition();
-
-				currentSong.setBookmarkPosition(playerPosition);
-
-				String bookmarkTime = Util.formatTotalDuration(playerPosition, true);
-
-				new Thread(new Runnable()
-				{
-					@Override
-					public void run()
-					{
-						final MusicService musicService = MusicServiceFactory.getMusicService(DownloadActivity.this);
-
-						try
-						{
-							musicService.createBookmark(id, playerPosition, DownloadActivity.this, null);
-						}
-						catch (Exception e)
-						{
-							Log.e(TAG, e.getMessage(), e);
-						}
-					}
-				}).start();
-
-				String msg = getResources().getString(R.string.download_bookmark_set_at_position, bookmarkTime);
-
-				Util.toast(DownloadActivity.this, msg);
-			}
-		});
-
-		bookmarkImageButton.setOnLongClickListener(new View.OnLongClickListener()
-		{
-			@Override
-			public boolean onLongClick(final View view)
-			{
-				if (currentSong == null)
-				{
-					return true;
-				}
-
-				final String id = currentSong.getId();
-				currentSong.setBookmarkPosition(0);
-
-				new Thread(new Runnable()
-				{
-					@Override
-					public void run()
-					{
-						final MusicService musicService = MusicServiceFactory.getMusicService(DownloadActivity.this);
-
-						try
-						{
-							musicService.deleteBookmark(id, DownloadActivity.this, null);
-						}
-						catch (Exception e)
-						{
-							Log.e(TAG, e.getMessage(), e);
-						}
-					}
-				}).start();
-
-				Util.toast(DownloadActivity.this, R.string.download_bookmark_removed);
-
-				return true;
-			}
-		});
-
-		removeAllImageButton.setOnClickListener(new View.OnClickListener()
-		{
-			@Override
-			public void onClick(final View view)
-			{
-				getDownloadService().setShufflePlayEnabled(false);
-				getDownloadService().clear();
-				onDownloadListChanged();
-			}
-		});
-
-		saveImageButton.setOnClickListener(new View.OnClickListener()
-		{
-			@Override
-			public void onClick(final View view)
-			{
-				showDialog(DIALOG_SAVE_PLAYLIST);
-			}
-		});
 
 		visualizerAvailable = (downloadService != null) && (downloadService.getVisualizerController() != null);
 		equalizerAvailable = (downloadService != null) && (downloadService.getEqualizerController() != null);
@@ -714,10 +563,7 @@ public class DownloadActivity extends SubsonicTabActivity implements OnGestureLi
 			visualizerView.setActive(downloadService != null && downloadService.getShowVisualization());
 		}
 
-		if (Util.isOffline(this))
-		{
-			saveImageButton.setVisibility(View.GONE);
-		}
+		invalidateOptionsMenu();
 	}
 
 	// Scroll to current playing/downloading.
@@ -844,11 +690,20 @@ public class DownloadActivity extends SubsonicTabActivity implements OnGestureLi
 	{
 		super.onPrepareOptionsMenu(menu);
 
-		final MenuItem screenOption = menu.findItem(R.id.menu_screen_on_off);
-		final MenuItem jukeboxOption = menu.findItem(R.id.download_jukebox);
-		final MenuItem equalizerMenuItem = menu.findItem(R.id.download_equalizer);
-		final MenuItem visualizerMenuItem = menu.findItem(R.id.download_visualizer);
+		final MenuItem screenOption = menu.findItem(R.id.menu_item_screen_on_off);
+		final MenuItem jukeboxOption = menu.findItem(R.id.menu_item_jukebox);
+		final MenuItem equalizerMenuItem = menu.findItem(R.id.menu_item_equalizer);
+		final MenuItem visualizerMenuItem = menu.findItem(R.id.menu_item_visualizer);
 		final MenuItem shareMenuItem = menu.findItem(R.id.menu_item_share);
+		final MenuItem savePlaylistMenuItem = menu.findItem(R.id.menu_item_save_playlist);
+		starMenuItem = menu.findItem(R.id.menu_item_star);
+		bookmarkMenuItem = menu.findItem(R.id.menu_item_bookmark_set);
+		bookmarkRemoveMenuItem = menu.findItem(R.id.menu_item_bookmark_delete);
+
+		if (Util.isOffline(this))
+		{
+			savePlaylistMenuItem.setEnabled(false);
+		}
 
 		if (equalizerMenuItem != null)
 		{
@@ -873,6 +728,33 @@ public class DownloadActivity extends SubsonicTabActivity implements OnGestureLi
 
 		if (downloadService != null)
 		{
+			DownloadFile downloadFile = downloadService.getCurrentPlaying();
+
+			if (downloadFile != null)
+			{
+				currentSong = downloadFile.getSong();
+			}
+
+			if (currentSong != null)
+			{
+				final Drawable starDrawable = currentSong.getStarred() ? Util.getDrawableFromAttribute(SubsonicTabActivity.getInstance(), R.attr.star_full) : Util.getDrawableFromAttribute(SubsonicTabActivity.getInstance(), R.attr.star_hollow);
+
+				if (starMenuItem != null)
+				{
+					starMenuItem.setIcon(starDrawable);
+				}
+			}
+			else
+			{
+				final Drawable starDrawable = Util.getDrawableFromAttribute(SubsonicTabActivity.getInstance(), R.attr.star_hollow);
+
+				if (starMenuItem != null)
+				{
+					starMenuItem.setIcon(starDrawable);
+				}
+			}
+
+
 			if (downloadService.getKeepScreenOn())
 			{
 				if (screenOption != null)
@@ -995,7 +877,7 @@ public class DownloadActivity extends SubsonicTabActivity implements OnGestureLi
 				getDownloadService().remove(song);
 				onDownloadListChanged();
 				return true;
-			case R.id.menu_screen_on_off:
+			case R.id.menu_item_screen_on_off:
 				if (getDownloadService().getKeepScreenOn())
 				{
 					getWindow().clearFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
@@ -1011,10 +893,10 @@ public class DownloadActivity extends SubsonicTabActivity implements OnGestureLi
 				getDownloadService().shuffle();
 				Util.toast(this, R.string.download_menu_shuffle_notification);
 				return true;
-			case R.id.download_equalizer:
+			case R.id.menu_item_equalizer:
 				startActivity(new Intent(DownloadActivity.this, EqualizerActivity.class));
 				return true;
-			case R.id.download_visualizer:
+			case R.id.menu_item_visualizer:
 				final boolean active = !visualizerView.isActive();
 				visualizerView.setActive(active);
 
@@ -1030,10 +912,136 @@ public class DownloadActivity extends SubsonicTabActivity implements OnGestureLi
 				getDownloadService().setShowVisualization(visualizerView.isActive());
 				Util.toast(DownloadActivity.this, active ? R.string.download_visualizer_on : R.string.download_visualizer_off);
 				return true;
-			case R.id.download_jukebox:
+			case R.id.menu_item_jukebox:
 				final boolean jukeboxEnabled = !getDownloadService().isJukeboxEnabled();
 				getDownloadService().setJukeboxEnabled(jukeboxEnabled);
 				Util.toast(DownloadActivity.this, jukeboxEnabled ? R.string.download_jukebox_on : R.string.download_jukebox_off, false);
+				return true;
+			case R.id.menu_item_toggle_list:
+				toggleFullScreenAlbumArt();
+				return true;
+			case R.id.menu_item_clear_playlist:
+				getDownloadService().setShufflePlayEnabled(false);
+				getDownloadService().clear();
+				onDownloadListChanged();
+				return true;
+			case R.id.menu_item_save_playlist:
+				if (getDownloadService().getSongs().size() > 0)
+				{
+					showDialog(DIALOG_SAVE_PLAYLIST);
+				}
+				return true;
+			case R.id.menu_item_star:
+				if (currentSong == null)
+				{
+					return true;
+				}
+
+				final boolean isStarred = currentSong.getStarred();
+				final String id = currentSong.getId();
+
+				if (isStarred)
+				{
+					starMenuItem.setIcon(Util.getDrawableFromAttribute(SubsonicTabActivity.getInstance(), R.attr.star_hollow));
+					currentSong.setStarred(false);
+				}
+				else
+				{
+					starMenuItem.setIcon(Util.getDrawableFromAttribute(SubsonicTabActivity.getInstance(), R.attr.star_full));
+					currentSong.setStarred(true);
+				}
+
+				new Thread(new Runnable()
+				{
+					@Override
+					public void run()
+					{
+						final MusicService musicService = MusicServiceFactory.getMusicService(DownloadActivity.this);
+
+						try
+						{
+							if (isStarred)
+							{
+								musicService.unstar(id, null, null, DownloadActivity.this, null);
+							}
+							else
+							{
+								musicService.star(id, null, null, DownloadActivity.this, null);
+							}
+						}
+						catch (Exception e)
+						{
+							Log.e(TAG, e.getMessage(), e);
+						}
+					}
+				}).start();
+
+				return true;
+			case R.id.menu_item_bookmark_set:
+				if (currentSong == null)
+				{
+					return true;
+				}
+
+				final String songId = currentSong.getId();
+				final int playerPosition = getDownloadService().getPlayerPosition();
+
+				currentSong.setBookmarkPosition(playerPosition);
+
+				String bookmarkTime = Util.formatTotalDuration(playerPosition, true);
+
+				new Thread(new Runnable()
+				{
+					@Override
+					public void run()
+					{
+						final MusicService musicService = MusicServiceFactory.getMusicService(DownloadActivity.this);
+
+						try
+						{
+							musicService.createBookmark(songId, playerPosition, DownloadActivity.this, null);
+						}
+						catch (Exception e)
+						{
+							Log.e(TAG, e.getMessage(), e);
+						}
+					}
+				}).start();
+
+				String msg = getResources().getString(R.string.download_bookmark_set_at_position, bookmarkTime);
+
+				Util.toast(DownloadActivity.this, msg);
+
+				return true;
+			case R.id.menu_item_bookmark_delete:
+				if (currentSong == null)
+				{
+					return true;
+				}
+
+				final String bookmarkSongId = currentSong.getId();
+				currentSong.setBookmarkPosition(0);
+
+				new Thread(new Runnable()
+				{
+					@Override
+					public void run()
+					{
+						final MusicService musicService = MusicServiceFactory.getMusicService(DownloadActivity.this);
+
+						try
+						{
+							musicService.deleteBookmark(bookmarkSongId, DownloadActivity.this, null);
+						}
+						catch (Exception e)
+						{
+							Log.e(TAG, e.getMessage(), e);
+						}
+					}
+				}).start();
+
+				Util.toast(DownloadActivity.this, R.string.download_bookmark_removed);
+
 				return true;
 			case R.id.menu_item_share:
 				if (entry == null)
@@ -1083,6 +1091,7 @@ public class DownloadActivity extends SubsonicTabActivity implements OnGestureLi
 		}
 
 		onSliderProgressChanged();
+		invalidateOptionsMenu();
 	}
 
 	private void savePlaylistInBackground(final String playlistName)
@@ -1259,8 +1268,6 @@ public class DownloadActivity extends SubsonicTabActivity implements OnGestureLi
 		if (currentPlaying != null)
 		{
 			currentSong = currentPlaying.getSong();
-			final Drawable starDrawable = currentSong.getStarred() ? Util.getDrawableFromAttribute(SubsonicTabActivity.getInstance(), R.attr.star_full) : Util.getDrawableFromAttribute(SubsonicTabActivity.getInstance(), R.attr.star_hollow);
-			starImageButton.setImageDrawable(starDrawable);
 			songTitleTextView.setText(currentSong.getTitle());
 			albumTextView.setText(currentSong.getAlbum());
 			artistTextView.setText(currentSong.getArtist());

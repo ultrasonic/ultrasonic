@@ -372,6 +372,12 @@
     <string name="settings.share_one_month">One Month</string>
     <string name="settings.share_one_year">One Year</string>
     <string name="no_expiration">No Expiration</string>
+    <string name="download.share">Share</string>
+    <string name="download.toggle_playlist">Toggle Playlist</string>
+    <string name="download.bookmark_set">Set Bookmark</string>
+    <string name="download.bookmark_delete">Delete Bookmark</string>
+    <string name="download.menu_star">Star</string>
+    <string name="download.menu_clear_playlist">Clear Playlist</string>
 
     <plurals name="select_album_n_songs">
         <item quantity="zero">Aucun titre</item>
