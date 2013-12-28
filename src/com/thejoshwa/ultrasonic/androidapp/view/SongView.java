@@ -205,8 +205,15 @@ public class SongView extends UpdateView implements Checkable
 			durationTextView.setText(Util.formatTotalDuration(duration));
 		}
 
-		checkedTextView.setVisibility(checkable && !song.isVideo() ? View.VISIBLE : View.GONE);
-		songDragImageView.setVisibility(dragable ? View.VISIBLE : View.GONE);
+		if (checkedTextView != null)
+		{
+			checkedTextView.setVisibility(checkable && !song.isVideo() ? View.VISIBLE : View.GONE);
+		}
+
+		if (songDragImageView != null)
+		{
+			songDragImageView.setVisibility(dragable ? View.VISIBLE : View.GONE);
+		}
 
 		if (Util.isOffline(this.context))
 		{
