@@ -41,8 +41,10 @@ import com.thejoshwa.ultrasonic.androidapp.util.ProgressListener;
 import com.thejoshwa.ultrasonic.androidapp.util.Util;
 
 import java.io.BufferedReader;
+import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileReader;
+import java.io.FileWriter;
 import java.io.Reader;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -610,7 +612,33 @@ public class OfflineMusicService extends RESTMusicService
 	@Override
 	public void createPlaylist(String id, String name, List<MusicDirectory.Entry> entries, Context context, ProgressListener progressListener) throws Exception
 	{
-		throw new OfflineException("Playlists not available in offline mode");
+		File playlistFile = FileUtil.getPlaylistFile(Util.getServerName(context), name);
+		FileWriter fw = new FileWriter(playlistFile);
+		BufferedWriter bw = new BufferedWriter(fw);
+		try
+		{
+			fw.write("#EXTM3U\n");
+			for (MusicDirectory.Entry e : entries)
+			{
+				String filePath = FileUtil.getSongFile(context, e).getAbsolutePath();
+				if (!new File(filePath).exists())
+				{
+					String ext = FileUtil.getExtension(filePath);
+					String base = FileUtil.getBaseName(filePath);
+					filePath = base + ".complete." + ext;
+				}
+				fw.write(filePath + '\n');
+			}
+		}
+		catch (Exception e)
+		{
+			Log.w(TAG, "Failed to save playlist: " + name);
+		}
+		finally
+		{
+			bw.close();
+			fw.close();
+		}
 	}
 
 	@Override
@@ -754,6 +782,24 @@ public class OfflineMusicService extends RESTMusicService
 	public List<Share> createShare(List<String> ids, String description, Long expires, Context context, ProgressListener progressListener) throws Exception
 	{
 		throw new OfflineException("Creating shares not available in offline mode");
+	}
+
+	@Override
+	public List<Share> getShares(boolean refresh, Context context, ProgressListener progressListener) throws Exception
+	{
+		throw new OfflineException("Getting shares not available in offline mode");
+	}
+
+	@Override
+	public void deleteShare(String id, Context context, ProgressListener progressListener) throws Exception
+	{
+		throw new OfflineException("Deleting shares not available in offline mode");
+	}
+
+	@Override
+	public void updateShare(String id, String description, Long expires, Context context, ProgressListener progressListener) throws Exception
+	{
+		throw new OfflineException("Updating shares not available in offline mode");
 	}
 
 	private static void listFilesRecursively(File parent, List<File> children)

@@ -4,6 +4,6 @@
                     a:minHeight="110dp"
                     a:updatePeriodMillis="0"
                     a:resizeMode="none"
-                    a:previewImage="@drawable/preview"
+                    a:previewImage="@drawable/preview4x2"
                     a:widgetCategory="home_screen|keyguard"
                     a:initialLayout="@layout/appwidget4x2"/>

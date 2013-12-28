@@ -445,24 +445,6 @@ public class DownloadActivity extends SubsonicTabActivity implements OnGestureLi
 			downloadService.setShufflePlayEnabled(true);
 		}
 
-		if (Util.isOffline(this))
-		{
-			if (starMenuItem != null)
-			{
-				starMenuItem.setEnabled(false);
-			}
-
-			if (bookmarkMenuItem != null)
-			{
-				bookmarkMenuItem.setEnabled(false);
-			}
-
-			if (bookmarkRemoveMenuItem != null)
-			{
-				bookmarkRemoveMenuItem.setEnabled(false);
-			}
-		}
-
 		visualizerAvailable = (downloadService != null) && (downloadService.getVisualizerController() != null);
 		equalizerAvailable = (downloadService != null) && (downloadService.getEqualizerController() != null);
 
@@ -700,9 +682,28 @@ public class DownloadActivity extends SubsonicTabActivity implements OnGestureLi
 		bookmarkMenuItem = menu.findItem(R.id.menu_item_bookmark_set);
 		bookmarkRemoveMenuItem = menu.findItem(R.id.menu_item_bookmark_delete);
 
+
 		if (Util.isOffline(this))
 		{
-			savePlaylistMenuItem.setEnabled(false);
+			if (shareMenuItem != null)
+			{
+				shareMenuItem.setVisible(false);
+			}
+
+			if (starMenuItem != null)
+			{
+				starMenuItem.setVisible(false);
+			}
+
+			if (bookmarkMenuItem != null)
+			{
+				bookmarkMenuItem.setVisible(false);
+			}
+
+			if (bookmarkRemoveMenuItem != null)
+			{
+				bookmarkRemoveMenuItem.setVisible(false);
+			}
 		}
 
 		if (equalizerMenuItem != null)
@@ -715,13 +716,6 @@ public class DownloadActivity extends SubsonicTabActivity implements OnGestureLi
 		{
 			visualizerMenuItem.setEnabled(visualizerAvailable);
 			visualizerMenuItem.setVisible(visualizerAvailable);
-		}
-
-		if (shareMenuItem != null)
-		{
-			boolean available = !Util.isOffline(this);
-			shareMenuItem.setEnabled(available);
-			shareMenuItem.setVisible(available);
 		}
 
 		final DownloadService downloadService = getDownloadService();
@@ -1044,30 +1038,32 @@ public class DownloadActivity extends SubsonicTabActivity implements OnGestureLi
 
 				return true;
 			case R.id.menu_item_share:
-				if (entry == null)
+				DownloadService downloadService = getDownloadService();
+				List<Entry> entries = new ArrayList<Entry>();
+
+				if (downloadService != null)
 				{
-					DownloadService downloadService = getDownloadService();
+					List<DownloadFile> downloadServiceSongs = downloadService.getSongs();
 
-					if (downloadService != null)
+					if (downloadServiceSongs != null)
 					{
-						if (currentPlaying == null)
+						for (DownloadFile downloadFile : downloadServiceSongs)
 						{
-							currentPlaying = downloadService.getCurrentPlaying();
-						}
+							if (downloadFile != null)
+							{
+								Entry playlistEntry = downloadFile.getSong();
 
-						if (currentPlaying != null)
-						{
-							entry = currentPlaying.getSong();
+								if (playlistEntry != null)
+								{
+									entries.add(playlistEntry);
+								}
+							}
 						}
 					}
 				}
 
-				if (entry != null)
-				{
-					List<Entry> entries = new ArrayList<Entry>(1);
-					entries.add(entry);
-					createShare(entries);
-				}
+				createShare(entries);
+				return true;
 			default:
 				return false;
 		}
@@ -1196,8 +1192,8 @@ public class DownloadActivity extends SubsonicTabActivity implements OnGestureLi
 					DownloadFile item = adapter.getItem(from);
 					adapter.remove(item);
 					adapter.insert(item, to);
-					onDownloadListChanged();
-					onCurrentChanged();
+					//onDownloadListChanged();
+					//onCurrentChanged();
 				}
 			}
 
@@ -1212,7 +1208,14 @@ public class DownloadActivity extends SubsonicTabActivity implements OnGestureLi
 			public void remove(int which)
 			{
 				DownloadFile item = adapter.getItem(which);
-				DownloadFile currentPlaying = getDownloadService().getCurrentPlaying();
+				DownloadService downloadService = getDownloadService();
+
+				if (item == null || downloadService == null)
+				{
+					return;
+				}
+
+				DownloadFile currentPlaying = downloadService.getCurrentPlaying();
 
 				if (currentPlaying == item)
 				{
@@ -1220,6 +1223,11 @@ public class DownloadActivity extends SubsonicTabActivity implements OnGestureLi
 				}
 
 				adapter.remove(item);
+
+				String songRemoved = String.format(getResources().getString(R.string.download_song_removed), item.getSong().getTitle());
+
+				Util.toast(DownloadActivity.this, songRemoved);
+
 				onDownloadListChanged();
 				onCurrentChanged();
 			}

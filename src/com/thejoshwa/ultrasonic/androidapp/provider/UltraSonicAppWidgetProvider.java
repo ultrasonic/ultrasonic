@@ -163,7 +163,7 @@ public class UltraSonicAppWidgetProvider extends AppWidgetProvider
 			Drawable drawable = resources.getDrawable(R.drawable.appwidget_art_default);
 			size = drawable != null ? drawable.getIntrinsicHeight() : 0;
 
-			Bitmap bitmap = currentPlaying == null ? null : FileUtil.getAlbumArtBitmap(context, currentPlaying, size, true);
+			Bitmap bitmap = currentPlaying == null ? null : FileUtil.getAlbumArtBitmap(context, currentPlaying, 240, true);
 
 			if (bitmap == null)
 			{
@@ -172,7 +172,6 @@ public class UltraSonicAppWidgetProvider extends AppWidgetProvider
 			}
 			else
 			{
-				//bitmap = getRoundedCornerBitmap(bitmap);
 				views.setImageViewBitmap(R.id.appwidget_coverart, bitmap);
 			}
 		}

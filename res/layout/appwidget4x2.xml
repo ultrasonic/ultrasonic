@@ -14,7 +14,7 @@
         a:layout_gravity="center_vertical"
         a:clickable="true"
         a:focusable="true"
-        a:src="@drawable/ic_launcher" />
+        a:src="@drawable/unknown_album_large" />
 
     <LinearLayout
         a:id="@+id/linearLayout1"

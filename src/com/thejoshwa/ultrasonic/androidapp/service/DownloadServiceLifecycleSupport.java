@@ -230,7 +230,7 @@ public class DownloadServiceLifecycleSupport
 			return;
 		}
 
-		new SerializeTask().executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
+		new SerializeTask().execute();
 	}
 
 	public void serializeDownloadQueueNow()
@@ -244,7 +244,7 @@ public class DownloadServiceLifecycleSupport
 		state.currentPlayingIndex = downloadService.getCurrentPlayingIndex();
 		state.currentPlayingPosition = downloadService.getPlayerPosition();
 
-		Log.i(TAG, "Serialized currentPlayingIndex: " + state.currentPlayingIndex + ", currentPlayingPosition: " + state.currentPlayingPosition);
+		Log.i(TAG, String.format("Serialized currentPlayingIndex: %d, currentPlayingPosition: %d", state.currentPlayingIndex, state.currentPlayingPosition));
 		FileUtil.serialize(downloadService, state, FILENAME_DOWNLOADS_SER);
 	}
 

@@ -22,9 +22,9 @@
                 a:id="@+id/download_album_art_image"
                 a:layout_width="wrap_content"
                 a:layout_height="wrap_content"
+                a:scaleType="fitCenter"
                 a:layout_alignParentTop="true"
-                a:layout_centerHorizontal="true"
-                a:scaleType="fitCenter" />
+                a:layout_centerInParent="true"/>
 
             <LinearLayout
                 a:id="@+id/download_visualizer_view_layout"

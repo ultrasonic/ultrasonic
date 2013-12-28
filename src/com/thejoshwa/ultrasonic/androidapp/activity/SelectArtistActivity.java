@@ -33,8 +33,8 @@ import android.widget.ListView;
 import android.widget.TextView;
 
 import com.handmark.pulltorefresh.library.PullToRefreshBase;
-import com.handmark.pulltorefresh.library.PullToRefreshListView;
 import com.handmark.pulltorefresh.library.PullToRefreshBase.OnRefreshListener;
+import com.handmark.pulltorefresh.library.PullToRefreshListView;
 import com.thejoshwa.ultrasonic.androidapp.R;
 import com.thejoshwa.ultrasonic.androidapp.domain.Artist;
 import com.thejoshwa.ultrasonic.androidapp.domain.Indexes;
@@ -262,6 +262,13 @@ public class SelectArtistActivity extends SubsonicTabActivity implements Adapter
 			}
 
 			menu.setGroupCheckable(MENU_GROUP_MUSIC_FOLDER, true, true);
+		}
+
+		MenuItem downloadMenuItem = menu.findItem(R.id.artist_menu_download);
+
+		if (downloadMenuItem != null)
+		{
+			downloadMenuItem.setVisible(!Util.isOffline(this));
 		}
 	}
 

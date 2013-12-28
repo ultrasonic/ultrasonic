@@ -17,7 +17,7 @@
         a:layout_margin="6dip"
         a:paddingTop="6dip"
         a:paddingBottom="6dip"
-        a:src="@drawable/ic_launcher" />
+        a:src="@drawable/unknown_album_large" />
 
     <LinearLayout
         a:id="@+id/linearLayout1"

@@ -21,6 +21,6 @@
         a:title="@string/common.download"/>
     <item
         a:id="@+id/menu_item_share"
-        a:title="Share"/>
+        a:title="@string/menu.share"/>
 
 </menu>

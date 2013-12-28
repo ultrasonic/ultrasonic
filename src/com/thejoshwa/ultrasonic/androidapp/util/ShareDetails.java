@@ -2,7 +2,6 @@ package com.thejoshwa.ultrasonic.androidapp.util;
 
 import com.thejoshwa.ultrasonic.androidapp.domain.MusicDirectory;
 
-import java.util.Calendar;
 import java.util.List;
 
 /**
@@ -11,6 +10,6 @@ import java.util.List;
 public class ShareDetails
 {
 	public String Description;
-	public Calendar Expiration;
+	public long Expiration;
 	public List<MusicDirectory.Entry> Entries;
 }

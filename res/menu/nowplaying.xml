@@ -15,7 +15,7 @@
         a:id="@+id/menu_item_share"
         a:icon="?attr/share"
         a:showAsAction="ifRoom|withText"
-        a:title="@string/download.share"/>
+        a:title="@string/download.share_playlist"/>
     <item
         a:id="@+id/menu_item_save_playlist"
         a:icon="?attr/save"

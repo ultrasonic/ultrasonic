@@ -29,6 +29,7 @@ import android.content.SharedPreferences;
 import android.content.pm.ApplicationInfo;
 import android.content.pm.PackageManager;
 import android.content.res.Resources;
+import android.content.res.TypedArray;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.drawable.BitmapDrawable;
@@ -83,10 +84,10 @@ import java.text.NumberFormat;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
-import java.util.Locale;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.TimeUnit;
+import java.util.regex.Pattern;
 
 /**
  * @author Sindre Mehus
@@ -100,6 +101,7 @@ public class Util extends DownloadActivity
 	private static final DecimalFormat GIGA_BYTE_FORMAT = new DecimalFormat("0.00 GB");
 	private static final DecimalFormat MEGA_BYTE_FORMAT = new DecimalFormat("0.00 MB");
 	private static final DecimalFormat KILO_BYTE_FORMAT = new DecimalFormat("0 KB");
+	private static final Pattern PATTERN = Pattern.compile(":");
 
 	private static DecimalFormat GIGA_BYTE_LOCALIZED_FORMAT;
 	private static DecimalFormat MEGA_BYTE_LOCALIZED_FORMAT;
@@ -440,7 +442,7 @@ public class Util extends DownloadActivity
 	 * @param input the <code>InputStream</code> to read from
 	 * @return the requested byte array
 	 * @throws NullPointerException if the input is null
-	 * @throws IOException          if an I/O error occurs
+	 * @throws java.io.IOException          if an I/O error occurs
 	 */
 	public static byte[] toByteArray(InputStream input) throws IOException
 	{
@@ -864,7 +866,7 @@ public class Util extends DownloadActivity
 	public static Drawable getDrawableFromAttribute(Context context, int attr)
 	{
 		int[] attrs = new int[]{attr};
-		android.content.res.TypedArray ta = context.obtainStyledAttributes(attrs);
+		TypedArray ta = context.obtainStyledAttributes(attrs);
 		Drawable drawableFromTheme = null;
 
 		if (ta != null)
@@ -960,7 +962,7 @@ public class Util extends DownloadActivity
 	/**
 	 * <p>Broadcasts the given song info as the new song being played.</p>
 	 */
-	public static void broadcastNewTrackInfo(Context context, MusicDirectory.Entry song)
+	public static void broadcastNewTrackInfo(Context context, Entry song)
 	{
 		Intent intent = new Intent(EVENT_META_CHANGED);
 
@@ -1595,26 +1597,36 @@ public class Util extends DownloadActivity
 		return preferences.getString(Constants.PREFERENCES_KEY_DEFAULT_SHARE_DESCRIPTION, "");
 	}
 
-	public static long getDefaultShareExpiration(Context context)
+	public static String getShareGreeting(Context context)
 	{
 		SharedPreferences preferences = getPreferences(context);
-		return Long.parseLong(preferences.getString(Constants.PREFERENCES_KEY_DEFAULT_SHARE_EXPIRATION, "-1"));
+		return preferences.getString(Constants.PREFERENCES_KEY_DEFAULT_SHARE_GREETING, String.format(context.getResources().getString(R.string.share_default_greeting), context.getResources().getString(R.string.common_appname)));
 	}
 
-	public static Calendar getDefaultShareExpirationCalendar(Context context)
+	public static String getDefaultShareExpiration(Context context)
 	{
-		long expiration = getDefaultShareExpiration(context);
+		SharedPreferences preferences = getPreferences(context);
+		return preferences.getString(Constants.PREFERENCES_KEY_DEFAULT_SHARE_EXPIRATION, "0");
+  }
 
-		if (expiration > 0)
+	public static long getDefaultShareExpirationInMillis(Context context)
+	{
+		SharedPreferences preferences = getPreferences(context);
+		String preference = preferences.getString(Constants.PREFERENCES_KEY_DEFAULT_SHARE_EXPIRATION, "0");
+
+		String[] split = PATTERN.split(preference);
+
+		if (split.length == 2)
 		{
-			Calendar cal = Calendar.getInstance(Locale.getDefault());
-			cal.setTimeInMillis(System.currentTimeMillis() + expiration);
-			return cal;
+			int timeSpanAmount = Integer.parseInt(split[0]);
+			String timeSpanType = split[1];
+
+			TimeSpan timeSpan = TimeSpanPicker.calculateTimeSpan(context, timeSpanType, timeSpanAmount);
+
+			return timeSpan.getTotalMilliseconds();
 		}
-		else
-		{
-			return null;
-		}
+
+		return 0;
 	}
 
 	public static void setShouldAskForShareDetails(Context context, boolean shouldAskForShareDetails)
@@ -1622,6 +1634,22 @@ public class Util extends DownloadActivity
 		SharedPreferences preferences = getPreferences(context);
 		SharedPreferences.Editor editor = preferences.edit();
 		editor.putBoolean(Constants.PREFERENCES_KEY_ASK_FOR_SHARE_DETAILS, shouldAskForShareDetails);
+		editor.commit();
+	}
+
+	public static void setDefaultShareExpiration(Context context, String defaultShareExpiration)
+	{
+		SharedPreferences preferences = getPreferences(context);
+		SharedPreferences.Editor editor = preferences.edit();
+		editor.putString(Constants.PREFERENCES_KEY_DEFAULT_SHARE_EXPIRATION, defaultShareExpiration);
+		editor.commit();
+	}
+
+	public static void setDefaultShareDescription(Context context, String defaultShareDescription)
+	{
+		SharedPreferences preferences = getPreferences(context);
+		SharedPreferences.Editor editor = preferences.edit();
+		editor.putString(Constants.PREFERENCES_KEY_DEFAULT_SHARE_DESCRIPTION, defaultShareDescription);
 		editor.commit();
 	}
 }

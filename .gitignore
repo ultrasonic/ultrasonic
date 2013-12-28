@@ -170,3 +170,4 @@ proguard_logs/
 .idea/misc.xml
 .idea/tasks.xml
 .idea/*.iws
+.idea/dictionaries/*.xml

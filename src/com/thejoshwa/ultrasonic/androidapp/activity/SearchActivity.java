@@ -206,6 +206,16 @@ public class SearchActivity extends SubsonicTabActivity
 			MenuInflater inflater = getMenuInflater();
 			inflater.inflate(R.menu.select_album_context, menu);
 		}
+
+		MenuItem shareButton = menu.findItem(R.id.menu_item_share);
+		MenuItem downloadMenuItem = menu.findItem(R.id.album_menu_download);
+
+		downloadMenuItem.setVisible(!Util.isOffline(this));
+
+		if (Util.isOffline(this) || isArtist)
+		{
+			shareButton.setVisible(false);
+		}
 	}
 
 	@Override

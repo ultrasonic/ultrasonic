@@ -33,6 +33,7 @@ import android.widget.TextView;
 
 import com.thejoshwa.ultrasonic.androidapp.R;
 import com.thejoshwa.ultrasonic.androidapp.audiofx.EqualizerController;
+import com.thejoshwa.ultrasonic.androidapp.service.DownloadService;
 import com.thejoshwa.ultrasonic.androidapp.service.DownloadServiceImpl;
 
 import java.util.HashMap;
@@ -46,7 +47,6 @@ import java.util.Map;
  */
 public class EqualizerActivity extends Activity
 {
-
 	private static final int MENU_GROUP_PRESET = 100;
 
 	private final Map<Short, SeekBar> bars = new HashMap<Short, SeekBar>();
@@ -58,32 +58,8 @@ public class EqualizerActivity extends Activity
 	{
 		super.onCreate(bundle);
 		setContentView(R.layout.equalizer);
-		equalizerController = DownloadServiceImpl.getInstance().getEqualizerController();
-		equalizer = equalizerController.getEqualizer();
 
-		initEqualizer();
-
-		final View presetButton = findViewById(R.id.equalizer_preset);
-		registerForContextMenu(presetButton);
-		presetButton.setOnClickListener(new View.OnClickListener()
-		{
-			@Override
-			public void onClick(View view)
-			{
-				presetButton.showContextMenu();
-			}
-		});
-
-		CheckBox enabledCheckBox = (CheckBox) findViewById(R.id.equalizer_enabled);
-		enabledCheckBox.setChecked(equalizer.getEnabled());
-		enabledCheckBox.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener()
-		{
-			@Override
-			public void onCheckedChanged(CompoundButton compoundButton, boolean b)
-			{
-				setEqualizerEnabled(b);
-			}
-		});
+		setup();
 	}
 
 	@Override
@@ -91,6 +67,16 @@ public class EqualizerActivity extends Activity
 	{
 		super.onPause();
 		equalizerController.saveSettings();
+	}
+
+	@Override
+	protected void onResume()
+	{
+		super.onResume();
+		if (equalizerController == null)
+		{
+			setup();
+		}
 	}
 
 	@Override
@@ -122,10 +108,55 @@ public class EqualizerActivity extends Activity
 	@Override
 	public boolean onContextItemSelected(MenuItem menuItem)
 	{
-		short preset = (short) menuItem.getItemId();
-		equalizer.usePreset(preset);
-		updateBars();
+		try
+		{
+			short preset = (short) menuItem.getItemId();
+			equalizer.usePreset(preset);
+			updateBars();
+		}
+		catch (Exception ex)
+		{
+			//TODO: Show a dialog
+		}
+
 		return true;
+	}
+
+	private void setup()
+	{
+		DownloadService instance = DownloadServiceImpl.getInstance();
+
+		if (instance == null)
+		{
+			return;
+		}
+
+		equalizerController = instance.getEqualizerController();
+		equalizer = equalizerController.getEqualizer();
+
+		initEqualizer();
+
+		final View presetButton = findViewById(R.id.equalizer_preset);
+		registerForContextMenu(presetButton);
+		presetButton.setOnClickListener(new View.OnClickListener()
+		{
+			@Override
+			public void onClick(View view)
+			{
+				presetButton.showContextMenu();
+			}
+		});
+
+		CheckBox enabledCheckBox = (CheckBox) findViewById(R.id.equalizer_enabled);
+		enabledCheckBox.setChecked(equalizer.getEnabled());
+		enabledCheckBox.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener()
+		{
+			@Override
+			public void onCheckedChanged(CompoundButton compoundButton, boolean b)
+			{
+				setEqualizerEnabled(b);
+			}
+		});
 	}
 
 	private void setEqualizerEnabled(boolean enabled)
@@ -149,7 +180,7 @@ public class EqualizerActivity extends Activity
 		}
 		catch (Exception ex)
 		{
-
+			//TODO: Show a dialog
 		}
 	}
 
@@ -201,6 +232,7 @@ public class EqualizerActivity extends Activity
 								}
 								catch (Exception ex)
 								{
+									//TODO: Show a dialog
 								}
 							}
 							updateLevelText(levelTextView, level);
@@ -221,7 +253,7 @@ public class EqualizerActivity extends Activity
 				}
 			}
 		}
-		catch (Exception e)
+		catch (Exception ex)
 		{
 			//TODO: Show a dialog
 		}

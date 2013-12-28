@@ -4,7 +4,7 @@
     <item
         a:id="@+id/menu_item_share"
         a:showAsAction="ifRoom|withText"
-        a:title="Share"
+        a:title="@string/menu.share"
         a:icon="?attr/share"/>
 
     <item

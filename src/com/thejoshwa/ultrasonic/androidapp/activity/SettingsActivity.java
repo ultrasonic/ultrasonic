@@ -49,6 +49,7 @@ import com.thejoshwa.ultrasonic.androidapp.util.Constants;
 import com.thejoshwa.ultrasonic.androidapp.util.ErrorDialog;
 import com.thejoshwa.ultrasonic.androidapp.util.FileUtil;
 import com.thejoshwa.ultrasonic.androidapp.util.ModalBackgroundTask;
+import com.thejoshwa.ultrasonic.androidapp.util.TimeSpanPreference;
 import com.thejoshwa.ultrasonic.androidapp.util.Util;
 
 import net.simonvt.menudrawer.MenuDrawer;
@@ -90,7 +91,8 @@ public class SettingsActivity extends PreferenceActivity implements SharedPrefer
 	private ListPreference viewRefresh;
 	private CheckBoxPreference sharingAlwaysAskForDetails;
 	private EditTextPreference sharingDefaultDescription;
-	private ListPreference sharingDefaultExpiration;
+	private EditTextPreference sharingDefaultGreeting;
+	private TimeSpanPreference sharingDefaultExpiration;
 	private int maxServerCount = 10;
 	private int minServerCount = 0;
 
@@ -104,6 +106,7 @@ public class SettingsActivity extends PreferenceActivity implements SharedPrefer
 	private int activeServers = 3;
 	View chatMenuItem;
 	View bookmarksMenuItem;
+	View sharesMenuItem;
 	PreferenceCategory serversCategory;
 	Preference addServerPreference;
 	SharedPreferences settings;
@@ -126,11 +129,13 @@ public class SettingsActivity extends PreferenceActivity implements SharedPrefer
 
 		chatMenuItem = findViewById(R.id.menu_chat);
 		bookmarksMenuItem = findViewById(R.id.menu_bookmarks);
+		sharesMenuItem = findViewById(R.id.menu_shares);
 
 		findViewById(R.id.menu_home).setOnClickListener(this);
 		findViewById(R.id.menu_browse).setOnClickListener(this);
 		findViewById(R.id.menu_search).setOnClickListener(this);
 		findViewById(R.id.menu_playlists).setOnClickListener(this);
+		sharesMenuItem.setOnClickListener(this);
 		chatMenuItem.setOnClickListener(this);
 		bookmarksMenuItem.setOnClickListener(this);
 		findViewById(R.id.menu_now_playing).setOnClickListener(this);
@@ -181,7 +186,10 @@ public class SettingsActivity extends PreferenceActivity implements SharedPrefer
 		viewRefresh = (ListPreference) findPreference(Constants.PREFERENCES_KEY_VIEW_REFRESH);
 		sharingAlwaysAskForDetails = (CheckBoxPreference) findPreference(Constants.PREFERENCES_KEY_ASK_FOR_SHARE_DETAILS);
 		sharingDefaultDescription = (EditTextPreference) findPreference(Constants.PREFERENCES_KEY_DEFAULT_SHARE_DESCRIPTION);
-		sharingDefaultExpiration = (ListPreference) findPreference(Constants.PREFERENCES_KEY_DEFAULT_SHARE_EXPIRATION);
+		sharingDefaultGreeting = (EditTextPreference) findPreference(Constants.PREFERENCES_KEY_DEFAULT_SHARE_GREETING);
+		sharingDefaultExpiration = (TimeSpanPreference) findPreference(Constants.PREFERENCES_KEY_DEFAULT_SHARE_EXPIRATION);
+
+		sharingDefaultGreeting.setText(Util.getShareGreeting(this));
 
 		findPreference(Constants.PREFERENCES_KEY_CLEAR_SEARCH_HISTORY).setOnPreferenceClickListener(new Preference.OnPreferenceClickListener()
 		{
@@ -287,6 +295,7 @@ public class SettingsActivity extends PreferenceActivity implements SharedPrefer
 		int visibility = Util.isOffline(this) ? View.GONE : View.VISIBLE;
 		chatMenuItem.setVisibility(visibility);
 		bookmarksMenuItem.setVisibility(visibility);
+		sharesMenuItem.setVisibility(visibility);
 	}
 
 	private PreferenceScreen addServer(final int instance)
@@ -496,8 +505,9 @@ public class SettingsActivity extends PreferenceActivity implements SharedPrefer
 		chatRefreshInterval.setSummary(chatRefreshInterval.getEntry());
 		directoryCacheTime.setSummary(directoryCacheTime.getEntry());
 		viewRefresh.setSummary(viewRefresh.getEntry());
-		sharingDefaultExpiration.setSummary(sharingDefaultExpiration.getEntry());
+		sharingDefaultExpiration.setSummary(sharingDefaultExpiration.getText());
 		sharingDefaultDescription.setSummary(sharingDefaultDescription.getText());
+		sharingDefaultGreeting.setSummary(sharingDefaultGreeting.getText());
 
 		if (!mediaButtonsEnabled.isChecked())
 		{
@@ -780,6 +790,11 @@ public class SettingsActivity extends PreferenceActivity implements SharedPrefer
 				break;
 			case R.id.menu_playlists:
 				intent = new Intent(this, SelectPlaylistActivity.class);
+				intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+				Util.startActivityWithoutTransition(this, intent);
+				break;
+			case R.id.menu_shares:
+				intent = new Intent(this, ShareActivity.class);
 				intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
 				Util.startActivityWithoutTransition(this, intent);
 				break;

@@ -127,10 +127,11 @@
         <EditTextPreference
             a:key="sharingDefaultDescription"
             a:title="@string/settings.share_description_default" />
-        <ListPreference
-            a:defaultValue="none"
-            a:entries="@array/shareExpirationNames"
-            a:entryValues="@array/shareExpirationValues"
+        <EditTextPreference
+            a:key="sharingDefaultGreeting"
+            a:title="@string/settings.share_greeting_default" />
+        <com.thejoshwa.ultrasonic.androidapp.util.TimeSpanPreference
+            a:defaultValue="0"
             a:key="sharingDefaultExpiration"
             a:title="@string/settings.share_expiration_default" />
         <CheckBoxPreference

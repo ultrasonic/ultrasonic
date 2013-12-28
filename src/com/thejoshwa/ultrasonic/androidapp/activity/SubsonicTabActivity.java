@@ -48,7 +48,6 @@ import android.view.View.OnTouchListener;
 import android.view.ViewGroup;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
-import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.RemoteViews;
@@ -72,6 +71,8 @@ import com.thejoshwa.ultrasonic.androidapp.util.ModalBackgroundTask;
 import com.thejoshwa.ultrasonic.androidapp.util.ShareDetails;
 import com.thejoshwa.ultrasonic.androidapp.util.SilentBackgroundTask;
 import com.thejoshwa.ultrasonic.androidapp.util.TabActivityBackgroundTask;
+import com.thejoshwa.ultrasonic.androidapp.util.TimeSpan;
+import com.thejoshwa.ultrasonic.androidapp.util.TimeSpanPicker;
 import com.thejoshwa.ultrasonic.androidapp.util.Util;
 import com.thejoshwa.ultrasonic.androidapp.util.VideoPlayerType;
 
@@ -81,11 +82,11 @@ import net.simonvt.menudrawer.Position;
 import java.io.File;
 import java.io.PrintWriter;
 import java.util.ArrayList;
-import java.util.Calendar;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.regex.Pattern;
 
 /**
  * @author Sindre Mehus
@@ -93,6 +94,7 @@ import java.util.List;
 public class SubsonicTabActivity extends Activity implements OnClickListener
 {
 	private static final String TAG = SubsonicTabActivity.class.getSimpleName();
+	private static final Pattern COMPILE = Pattern.compile(":");
 	private static ImageLoader IMAGE_LOADER;
 	protected static String theme;
 	private static SubsonicTabActivity instance;
@@ -110,15 +112,17 @@ public class SubsonicTabActivity extends Activity implements OnClickListener
 	private View nowPlayingView;
 	View chatMenuItem;
 	View bookmarksMenuItem;
+	View sharesMenuItem;
 	public static boolean nowPlayingHidden;
 	public static Entry currentSong;
 	public Bitmap nowPlayingImage;
 	boolean licenseValid;
 	NotificationManager notificationManager;
 	private EditText shareDescription;
-	DatePicker datePicker;
+	TimeSpanPicker timeSpanPicker;
 	CheckBox hideDialogCheckBox;
 	CheckBox noExpirationCheckBox;
+	CheckBox saveAsDefaultsCheckBox;
 	ShareDetails shareDetails;
 
 	@Override
@@ -142,11 +146,13 @@ public class SubsonicTabActivity extends Activity implements OnClickListener
 
 		chatMenuItem = findViewById(R.id.menu_chat);
 		bookmarksMenuItem = findViewById(R.id.menu_bookmarks);
+		sharesMenuItem = findViewById(R.id.menu_shares);
 
 		findViewById(R.id.menu_home).setOnClickListener(this);
 		findViewById(R.id.menu_browse).setOnClickListener(this);
 		findViewById(R.id.menu_search).setOnClickListener(this);
 		findViewById(R.id.menu_playlists).setOnClickListener(this);
+		sharesMenuItem.setOnClickListener(this);
 		chatMenuItem.setOnClickListener(this);
 		bookmarksMenuItem.setOnClickListener(this);
 		findViewById(R.id.menu_now_playing).setOnClickListener(this);
@@ -174,6 +180,7 @@ public class SubsonicTabActivity extends Activity implements OnClickListener
 		int visibility = Util.isOffline(this) ? View.GONE : View.VISIBLE;
 		chatMenuItem.setVisibility(visibility);
 		bookmarksMenuItem.setVisibility(visibility);
+		sharesMenuItem.setVisibility(visibility);
 	}
 
 	@Override
@@ -334,7 +341,7 @@ public class SubsonicTabActivity extends Activity implements OnClickListener
 		}
 	}
 
-	public void showNotification(final Handler handler, final MusicDirectory.Entry song, final DownloadServiceImpl downloadService, final Notification notification, final PlayerState playerState)
+	public void showNotification(final Handler handler, final Entry song, final DownloadServiceImpl downloadService, final Notification notification, final PlayerState playerState)
 	{
 		if (!Util.isNotificationEnabled(this))
 		{
@@ -460,7 +467,7 @@ public class SubsonicTabActivity extends Activity implements OnClickListener
 		});
 	}
 
-	private void showNowPlaying(final Context context, final DownloadService downloadService, final MusicDirectory.Entry song, final PlayerState playerState)
+	private void showNowPlaying(final Context context, final DownloadService downloadService, final Entry song, final PlayerState playerState)
 	{
 		if (context == null || downloadService == null || song == null || playerState == null)
 		{
@@ -527,7 +534,7 @@ public class SubsonicTabActivity extends Activity implements OnClickListener
 
 				intent.putExtra(Constants.INTENT_EXTRA_NAME_NAME, song.getAlbum());
 
-				setOnClickListenerOnUiThread(nowPlayingAlbumArtImage, new View.OnClickListener()
+				setOnClickListenerOnUiThread(nowPlayingAlbumArtImage, new OnClickListener()
 				{
 					@Override
 					public void onClick(View view)
@@ -544,7 +551,7 @@ public class SubsonicTabActivity extends Activity implements OnClickListener
 				SwipeDetector swipeDetector = SwipeDetector.Create(SubsonicTabActivity.this, downloadService);
 				setOnTouchListenerOnUiThread(nowPlayingView, swipeDetector);
 
-				setOnClickListenerOnUiThread(nowPlayingView, new View.OnClickListener()
+				setOnClickListenerOnUiThread(nowPlayingView, new OnClickListener()
 				{
 					@Override
 					public void onClick(View v)
@@ -552,7 +559,7 @@ public class SubsonicTabActivity extends Activity implements OnClickListener
 					}
 				});
 
-				setOnClickListenerOnUiThread(nowPlayingControlPlay, new View.OnClickListener()
+				setOnClickListenerOnUiThread(nowPlayingControlPlay, new OnClickListener()
 				{
 					@Override
 					public void onClick(View view)
@@ -601,13 +608,14 @@ public class SubsonicTabActivity extends Activity implements OnClickListener
 			{
 				shareDescription = (EditText) layout.findViewById(R.id.share_description);
 				hideDialogCheckBox = (CheckBox) layout.findViewById(R.id.hide_dialog);
-				noExpirationCheckBox = (CheckBox) layout.findViewById(R.id.no_expiration);
-				datePicker = (DatePicker) layout.findViewById(R.id.date_picker);
+				noExpirationCheckBox = (CheckBox) layout.findViewById(R.id.timeSpanDisableCheckBox);
+				saveAsDefaultsCheckBox = (CheckBox) layout.findViewById(R.id.save_as_defaults);
+				timeSpanPicker = (TimeSpanPicker) layout.findViewById(R.id.date_picker);
 			}
 
 			AlertDialog.Builder builder = new AlertDialog.Builder(this);
 			builder.setTitle(R.string.share_set_share_options);
-			builder.setMessage(R.string.share_description);
+
 			builder.setPositiveButton(R.string.common_save, new DialogInterface.OnClickListener()
 			{
 				@Override
@@ -615,9 +623,9 @@ public class SubsonicTabActivity extends Activity implements OnClickListener
 				{
 					if (!noExpirationCheckBox.isChecked())
 					{
-						Calendar cal = Calendar.getInstance();
-						cal.setTime(Util.getDateFromDatePicker(datePicker));
-						shareDetails.Expiration = cal;
+						TimeSpan timeSpan = timeSpanPicker.getTimeSpan();
+						TimeSpan now = TimeSpan.getCurrentTime();
+						shareDetails.Expiration = now.add(timeSpan).getTotalMilliseconds();
 					}
 
 					shareDetails.Description = String.valueOf(shareDescription.getText());
@@ -627,9 +635,18 @@ public class SubsonicTabActivity extends Activity implements OnClickListener
 						Util.setShouldAskForShareDetails(SubsonicTabActivity.this, false);
 					}
 
+					if (saveAsDefaultsCheckBox.isChecked())
+					{
+						String timeSpanType =	timeSpanPicker.getTimeSpanType();
+						int timeSpanAmount = timeSpanPicker.getTimeSpanAmount();
+						Util.setDefaultShareExpiration(SubsonicTabActivity.this, !noExpirationCheckBox.isChecked() && timeSpanAmount > 0 ? String.format("%d:%s", timeSpanAmount, timeSpanType) : "");
+						Util.setDefaultShareDescription(SubsonicTabActivity.this, shareDetails.Description);
+					}
+
 					share();
 				}
 			});
+
 			builder.setNegativeButton(R.string.common_cancel, new DialogInterface.OnClickListener()
 			{
 				@Override
@@ -642,14 +659,47 @@ public class SubsonicTabActivity extends Activity implements OnClickListener
 			builder.setView(layout);
 			builder.setCancelable(true);
 
+			timeSpanPicker.setTimeSpanDisableText(getResources().getString(R.string.no_expiration));
+
 			noExpirationCheckBox.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener()
 			{
 				@Override
 				public void onCheckedChanged(CompoundButton compoundButton, boolean b)
 				{
-					datePicker.setEnabled(!b);
+					timeSpanPicker.setEnabled(!b);
 				}
 			});
+
+			String defaultDescription = Util.getDefaultShareDescription(this);
+			String timeSpan = Util.getDefaultShareExpiration(this);
+
+			String[] split = COMPILE.split(timeSpan);
+
+			if (split.length == 2)
+			{
+				int timeSpanAmount = Integer.parseInt(split[0]);
+				String timeSpanType = split[1];
+
+				if (timeSpanAmount > 0)
+				{
+					noExpirationCheckBox.setChecked(false);
+					timeSpanPicker.setEnabled(true);
+					timeSpanPicker.setTimeSpanAmount(String.valueOf(timeSpanAmount));
+					timeSpanPicker.setTimeSpanType(timeSpanType);
+				}
+				else
+				{
+					noExpirationCheckBox.setChecked(true);
+					timeSpanPicker.setEnabled(false);
+				}
+			}
+			else
+			{
+				noExpirationCheckBox.setChecked(true);
+				timeSpanPicker.setEnabled(false);
+			}
+
+			shareDescription.setText(defaultDescription);
 
 			return builder.create();
 		}
@@ -659,30 +709,7 @@ public class SubsonicTabActivity extends Activity implements OnClickListener
 		}
 	}
 
-	@Override
-	protected void onPrepareDialog(final int id, final Dialog dialog)
-	{
-		if (id == DIALOG_ASK_FOR_SHARE_DETAILS)
-		{
-			String defaultDescription = Util.getDefaultShareDescription(this);
-			Calendar cal = Util.getDefaultShareExpirationCalendar(this);
-
-			if (cal != null) {
-				noExpirationCheckBox.setChecked(false);
-				datePicker.setEnabled(true);
-				datePicker.init(cal.get(Calendar.YEAR), cal.get(Calendar.MONTH), cal.get(Calendar.DAY_OF_MONTH), null);
-			}
-			else
-			{
-				noExpirationCheckBox.setChecked(true);
-				datePicker.setEnabled(false);
-			};
-
-			shareDescription.setText(defaultDescription);
-		}
-	}
-
-	public void createShare(final List<MusicDirectory.Entry> entries)
+	public void createShare(final List<Entry> entries)
 	{
 		boolean askForDetails = Util.getShouldAskForShareDetails(this);
 
@@ -696,7 +723,7 @@ public class SubsonicTabActivity extends Activity implements OnClickListener
 		else
 		{
 			shareDetails.Description = Util.getDefaultShareDescription(this);
-			shareDetails.Expiration = Util.getDefaultShareExpirationCalendar(this);
+			shareDetails.Expiration = TimeSpan.getCurrentTime().add(Util.getDefaultShareExpirationInMillis(this)).getTotalMilliseconds();
 			share();
 		}
 	}
@@ -716,7 +743,7 @@ public class SubsonicTabActivity extends Activity implements OnClickListener
 				}
 				else
 				{
-					for (MusicDirectory.Entry entry : shareDetails.Entries)
+					for (Entry entry : shareDetails.Entries)
 					{
 						ids.add(entry.getId());
 					}
@@ -726,8 +753,10 @@ public class SubsonicTabActivity extends Activity implements OnClickListener
 
 				long timeInMillis = 0;
 
-				if (shareDetails.Expiration != null)
-					timeInMillis = shareDetails.Expiration.getTimeInMillis();
+				if (shareDetails.Expiration != 0)
+				{
+					timeInMillis = shareDetails.Expiration;
+				}
 
 				List<Share> shares = musicService.createShare(ids, shareDetails.Description, timeInMillis, SubsonicTabActivity.this, this);
 				return shares.get(0);
@@ -738,8 +767,8 @@ public class SubsonicTabActivity extends Activity implements OnClickListener
 			{
 				Intent intent = new Intent(Intent.ACTION_SEND);
 				intent.setType("text/plain");
-				intent.putExtra(Intent.EXTRA_TEXT, String.format("Check out this music I shared from UltraSonic\n\n%s", result.getUrl()));
-				startActivity(Intent.createChooser(intent, "Share via"));
+				intent.putExtra(Intent.EXTRA_TEXT, String.format("%s\n\n%s", Util.getShareGreeting(SubsonicTabActivity.this), result.getUrl()));
+				startActivity(Intent.createChooser(intent, getResources().getString(R.string.share_via)));
 			}
 		};
 
@@ -791,7 +820,7 @@ public class SubsonicTabActivity extends Activity implements OnClickListener
 		});
 	}
 
-	public void setOnTouchListenerOnUiThread(final View view, final View.OnTouchListener listener)
+	public void setOnTouchListenerOnUiThread(final View view, final OnTouchListener listener)
 	{
 		this.runOnUiThread(new Runnable()
 		{
@@ -806,7 +835,7 @@ public class SubsonicTabActivity extends Activity implements OnClickListener
 		});
 	}
 
-	public void setOnClickListenerOnUiThread(final View view, final View.OnClickListener listener)
+	public void setOnClickListenerOnUiThread(final View view, final OnClickListener listener)
 	{
 		this.runOnUiThread(new Runnable()
 		{
@@ -988,25 +1017,30 @@ public class SubsonicTabActivity extends Activity implements OnClickListener
 
 	protected void downloadRecursively(final String id, final boolean save, final boolean append, final boolean autoplay, final boolean shuffle, final boolean background, final boolean playNext, final boolean unpin, final boolean isArtist)
 	{
-		downloadRecursively(id, "", true, save, append, autoplay, shuffle, background, playNext, unpin, isArtist);
+		downloadRecursively(id, "", false, true, save, append, autoplay, shuffle, background, playNext, unpin, isArtist);
+	}
+
+	protected void downloadShare(final String id, final String name, final boolean save, final boolean append, final boolean autoplay, final boolean shuffle, final boolean background, final boolean playNext, final boolean unpin)
+	{
+		downloadRecursively(id, name, true, false, save, append, autoplay, shuffle, background, playNext, unpin, false);
 	}
 
 	protected void downloadPlaylist(final String id, final String name, final boolean save, final boolean append, final boolean autoplay, final boolean shuffle, final boolean background, final boolean playNext, final boolean unpin)
 	{
-		downloadRecursively(id, name, false, save, append, autoplay, shuffle, background, playNext, unpin, false);
+		downloadRecursively(id, name, false, false, save, append, autoplay, shuffle, background, playNext, unpin, false);
 	}
 
-	protected void downloadRecursively(final String id, final String name, final boolean isDirectory, final boolean save, final boolean append, final boolean autoplay, final boolean shuffle, final boolean background, final boolean playNext, final boolean unpin, final boolean isArtist)
+	protected void downloadRecursively(final String id, final String name, final boolean isShare, final boolean isDirectory, final boolean save, final boolean append, final boolean autoplay, final boolean shuffle, final boolean background, final boolean playNext, final boolean unpin, final boolean isArtist)
 	{
-		ModalBackgroundTask<List<MusicDirectory.Entry>> task = new ModalBackgroundTask<List<MusicDirectory.Entry>>(this, false)
+		ModalBackgroundTask<List<Entry>> task = new ModalBackgroundTask<List<Entry>>(this, false)
 		{
 			private static final int MAX_SONGS = 500;
 
 			@Override
-			protected List<MusicDirectory.Entry> doInBackground() throws Throwable
+			protected List<Entry> doInBackground() throws Throwable
 			{
 				MusicService musicService = MusicServiceFactory.getMusicService(SubsonicTabActivity.this);
-				List<MusicDirectory.Entry> songs = new LinkedList<MusicDirectory.Entry>();
+				List<Entry> songs = new LinkedList<Entry>();
 				MusicDirectory root;
 
 				if (!Util.isOffline(SubsonicTabActivity.this) && isArtist && Util.getShouldUseId3Tags(SubsonicTabActivity.this))
@@ -1019,6 +1053,25 @@ public class SubsonicTabActivity extends Activity implements OnClickListener
 					{
 						root = !Util.isOffline(SubsonicTabActivity.this) && Util.getShouldUseId3Tags(SubsonicTabActivity.this) ? musicService.getAlbum(id, name, false, SubsonicTabActivity.this, this) : musicService.getMusicDirectory(id, name, false, SubsonicTabActivity.this, this);
 					}
+					else if (isShare)
+					{
+						root = new MusicDirectory();
+
+						List<Share> shares = musicService.getShares(true, SubsonicTabActivity.this, this);
+
+						for (Share share : shares)
+						{
+							if (share.getId().equals(id))
+							{
+								for (Entry entry : share.getEntries())
+								{
+									root.addChild(entry);
+								}
+
+								break;
+							}
+						}
+					}
 					else
 					{
 						root = musicService.getPlaylist(id, name, SubsonicTabActivity.this, this);
@@ -1030,14 +1083,14 @@ public class SubsonicTabActivity extends Activity implements OnClickListener
 				return songs;
 			}
 
-			private void getSongsRecursively(MusicDirectory parent, List<MusicDirectory.Entry> songs) throws Exception
+			private void getSongsRecursively(MusicDirectory parent, List<Entry> songs) throws Exception
 			{
 				if (songs.size() > MAX_SONGS)
 				{
 					return;
 				}
 
-				for (MusicDirectory.Entry song : parent.getChildren(false, true))
+				for (Entry song : parent.getChildren(false, true))
 				{
 					if (!song.isVideo())
 					{
@@ -1047,7 +1100,7 @@ public class SubsonicTabActivity extends Activity implements OnClickListener
 
 				MusicService musicService = MusicServiceFactory.getMusicService(SubsonicTabActivity.this);
 
-				for (MusicDirectory.Entry dir : parent.getChildren(true, false))
+				for (Entry dir : parent.getChildren(true, false))
 				{
 					MusicDirectory root;
 
@@ -1067,11 +1120,11 @@ public class SubsonicTabActivity extends Activity implements OnClickListener
 				MusicService musicService = MusicServiceFactory.getMusicService(SubsonicTabActivity.this);
 				MusicDirectory artist = musicService.getArtist(id, "", false, SubsonicTabActivity.this, this);
 
-				for (MusicDirectory.Entry album : artist.getChildren())
+				for (Entry album : artist.getChildren())
 				{
 					MusicDirectory albumDirectory = musicService.getAlbum(album.getId(), "", false, SubsonicTabActivity.this, this);
 
-					for (MusicDirectory.Entry song : albumDirectory.getChildren())
+					for (Entry song : albumDirectory.getChildren())
 					{
 						if (!song.isVideo())
 						{
@@ -1082,7 +1135,7 @@ public class SubsonicTabActivity extends Activity implements OnClickListener
 			}
 
 			@Override
-			protected void done(List<MusicDirectory.Entry> songs)
+			protected void done(List<Entry> songs)
 			{
 				if (Util.getShouldSortByDisc(SubsonicTabActivity.this))
 				{
@@ -1130,7 +1183,7 @@ public class SubsonicTabActivity extends Activity implements OnClickListener
 		task.execute();
 	}
 
-	protected void playVideo(MusicDirectory.Entry entry)
+	protected void playVideo(Entry entry)
 	{
 		if (!Util.isNetworkConnected(this))
 		{
@@ -1377,6 +1430,11 @@ public class SubsonicTabActivity extends Activity implements OnClickListener
 				break;
 			case R.id.menu_playlists:
 				intent = new Intent(SubsonicTabActivity.this, SelectPlaylistActivity.class);
+				intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+				Util.startActivityWithoutTransition(SubsonicTabActivity.this, intent);
+				break;
+			case R.id.menu_shares:
+				intent = new Intent(SubsonicTabActivity.this, ShareActivity.class);
 				intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
 				Util.startActivityWithoutTransition(SubsonicTabActivity.this, intent);
 				break;

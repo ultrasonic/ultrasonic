@@ -36,6 +36,7 @@ import com.handmark.pulltorefresh.library.PullToRefreshBase;
 import com.handmark.pulltorefresh.library.PullToRefreshListView;
 import com.thejoshwa.ultrasonic.androidapp.R;
 import com.thejoshwa.ultrasonic.androidapp.domain.MusicDirectory;
+import com.thejoshwa.ultrasonic.androidapp.domain.Share;
 import com.thejoshwa.ultrasonic.androidapp.service.DownloadFile;
 import com.thejoshwa.ultrasonic.androidapp.service.MusicService;
 import com.thejoshwa.ultrasonic.androidapp.service.MusicServiceFactory;
@@ -222,6 +223,8 @@ public class SelectAlbumActivity extends SubsonicTabActivity
 		String name = getIntent().getStringExtra(Constants.INTENT_EXTRA_NAME_NAME);
 		String playlistId = getIntent().getStringExtra(Constants.INTENT_EXTRA_NAME_PLAYLIST_ID);
 		String playlistName = getIntent().getStringExtra(Constants.INTENT_EXTRA_NAME_PLAYLIST_NAME);
+		String shareId = getIntent().getStringExtra(Constants.INTENT_EXTRA_NAME_SHARE_ID);
+		String shareName = getIntent().getStringExtra(Constants.INTENT_EXTRA_NAME_SHARE_NAME);
 		String albumListType = getIntent().getStringExtra(Constants.INTENT_EXTRA_NAME_ALBUM_LIST_TYPE);
 		String genreName = getIntent().getStringExtra(Constants.INTENT_EXTRA_NAME_GENRE_NAME);
 		int albumListTitle = getIntent().getIntExtra(Constants.INTENT_EXTRA_NAME_ALBUM_LIST_TITLE, 0);
@@ -237,6 +240,10 @@ public class SelectAlbumActivity extends SubsonicTabActivity
 		if (playlistId != null)
 		{
 			getPlaylist(playlistId, playlistName);
+		}
+		else if (shareId != null)
+		{
+			getShare(shareId, shareName);
 		}
 		else if (albumListType != null)
 		{
@@ -397,8 +404,20 @@ public class SelectAlbumActivity extends SubsonicTabActivity
 		{
 			MenuInflater inflater = getMenuInflater();
 			inflater.inflate(R.menu.select_album_context, menu);
+		}
 
-			shareButton = menu.findItem(R.id.menu_item_share);
+		shareButton = menu.findItem(R.id.menu_item_share);
+
+		if (shareButton != null)
+		{
+			shareButton.setVisible(!Util.isOffline(this));
+		}
+
+		MenuItem downloadMenuItem = menu.findItem(R.id.album_menu_download);
+
+		if (downloadMenuItem != null)
+		{
+			downloadMenuItem.setVisible(!Util.isOffline(this));
 		}
 	}
 
@@ -626,6 +645,37 @@ public class SelectAlbumActivity extends SubsonicTabActivity
 			protected MusicDirectory load(MusicService service) throws Exception
 			{
 				return service.getPlaylist(playlistId, playlistName, SelectAlbumActivity.this, this);
+			}
+		}.execute();
+	}
+
+	private void getShare(final String shareId, final String shareName)
+	{
+		setActionBarSubtitle(shareName);
+
+		new LoadTask()
+		{
+			@Override
+			protected MusicDirectory load(MusicService service) throws Exception
+			{
+				List<Share> shares = service.getShares(true, SelectAlbumActivity.this, this);
+
+				MusicDirectory md = new MusicDirectory();
+
+				for (Share share : shares)
+				{
+					if (share.getId().equals(shareId))
+					{
+						for (MusicDirectory.Entry entry : share.getEntries())
+						{
+							md.addChild(entry);
+						}
+
+						break;
+					}
+				}
+
+				return md;
 			}
 		}.execute();
 	}
@@ -964,7 +1014,7 @@ public class SelectAlbumActivity extends SubsonicTabActivity
 
 			boolean isAlbumList = getIntent().hasExtra(Constants.INTENT_EXTRA_NAME_ALBUM_LIST_TYPE);
 			playAllButtonVisible = !(isAlbumList || entries.isEmpty()) && !allVideos;
-			shareButtonVisible = songCount > 0;
+			shareButtonVisible = !Util.isOffline(SelectAlbumActivity.this) && songCount > 0;
 
 			emptyView.setVisibility(entries.isEmpty() ? View.VISIBLE : View.GONE);
 

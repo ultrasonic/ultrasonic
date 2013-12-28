@@ -42,6 +42,8 @@ public final class Constants
 	public static final String INTENT_EXTRA_NAME_QUERY = "subsonic.query";
 	public static final String INTENT_EXTRA_NAME_PLAYLIST_ID = "subsonic.playlist.id";
 	public static final String INTENT_EXTRA_NAME_PLAYLIST_NAME = "subsonic.playlist.name";
+	public static final String INTENT_EXTRA_NAME_SHARE_ID = "subsonic.share.id";
+	public static final String INTENT_EXTRA_NAME_SHARE_NAME = "subsonic.share.name";
 	public static final String INTENT_EXTRA_NAME_ALBUM_LIST_TYPE = "subsonic.albumlisttype";
 	public static final String INTENT_EXTRA_NAME_ALBUM_LIST_TITLE = "subsonic.albumlisttitle";
 	public static final String INTENT_EXTRA_NAME_ALBUM_LIST_SIZE = "subsonic.albumlistsize";
@@ -120,6 +122,7 @@ public final class Constants
 	public static final String PREFERENCES_KEY_VIEW_REFRESH = "viewRefresh";
 	public static final String PREFERENCES_KEY_ASK_FOR_SHARE_DETAILS = "sharingAlwaysAskForDetails";
 	public static final String PREFERENCES_KEY_DEFAULT_SHARE_DESCRIPTION = "sharingDefaultDescription";
+	public static final String PREFERENCES_KEY_DEFAULT_SHARE_GREETING = "sharingDefaultGreeting";
 	public static final String PREFERENCES_KEY_DEFAULT_SHARE_EXPIRATION = "sharingDefaultExpiration";
 
 	// Name of the preferences file.

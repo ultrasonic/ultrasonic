@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+              android:layout_height="wrap_content"
+              android:layout_width="wrap_content"
+              android:orientation="vertical">
+
+    <RelativeLayout
+        android:id="@+id/top"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_above="@+id/bottom">
+
+        <CheckBox
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/timeSpanDisableCheckBox"
+            android:text="@string/time_span_disable"
+            android:layout_alignParentTop="true"
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentStart="true"/>
+    </RelativeLayout>
+
+    <RelativeLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/bottom"
+        android:layout_below="@+id/top">
+
+        <EditText
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:inputType="numberSigned"
+            android:id="@+id/timeSpanEditText"
+            android:layout_alignParentTop="true"
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentStart="true"
+            android:gravity="left"
+            android:ems="5"
+            android:layout_alignParentEnd="false"/>
+
+        <Spinner
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/timeSpanSpinner"
+            android:layout_alignBottom="@+id/timeSpanEditText"
+            android:layout_toRightOf="@+id/timeSpanEditText"/>
+    </RelativeLayout>
+
+</LinearLayout>

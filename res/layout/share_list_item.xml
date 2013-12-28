@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:a="http://schemas.android.com/apk/res/android"
+              a:layout_width="0dip"
+              a:layout_height="wrap_content"
+              a:layout_gravity="center_vertical"
+              a:layout_weight="1"
+              a:paddingLeft="6dip"
+              a:paddingRight="6dip"
+              a:minHeight="44dip"
+              a:orientation="vertical">
+
+    <LinearLayout
+        a:layout_width="fill_parent"
+        a:layout_height="wrap_content"
+        a:layout_gravity="center_vertical"
+        a:orientation="horizontal">
+
+        <TextView
+            a:id="@+id/share_url"
+            a:layout_width="wrap_content"
+            a:layout_height="wrap_content"
+            a:layout_gravity="left|center_vertical"
+            a:textAppearance="?android:attr/textAppearanceMedium"/>
+
+    </LinearLayout>
+
+    <LinearLayout
+        a:layout_width="fill_parent"
+        a:layout_height="wrap_content"
+        a:layout_gravity="center_vertical"
+        a:layout_marginTop="3dip"
+        a:orientation="horizontal">
+
+        <TextView
+            a:id="@+id/share_description"
+            a:layout_width="0dip"
+            a:layout_height="wrap_content"
+            a:layout_gravity="left|center_vertical"
+            a:layout_weight="1"
+            a:ellipsize="middle"
+            a:paddingLeft="4dip"
+            a:singleLine="true"
+            a:textAppearance="?android:attr/textAppearanceSmall"/>
+
+    </LinearLayout>
+
+</LinearLayout>

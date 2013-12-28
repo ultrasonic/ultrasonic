@@ -32,7 +32,7 @@
         <item name="media_pause">@drawable/media_pause_normal_dark</item>
         <item name="media_repeat_all">@drawable/media_repeat_all</item>
         <item name="media_repeat_off">@drawable/media_repeat_off_dark</item>
-        <item name="media_repeat_single">@drawable/media_repeat_single_dark</item>
+        <item name="media_repeat_single">@drawable/media_repeat_single</item>
         <item name="media_shuffle">@drawable/media_shuffle_normal_dark</item>
         <item name="media_play">@drawable/media_start_normal_dark</item>
         <item name="media_play_next">@drawable/media_play_next</item>
@@ -43,7 +43,6 @@
         <item name="chat_send">@drawable/ic_menu_chat_send_dark</item>
         <item name="bookmark">@drawable/ic_menu_bookmark_dark</item>
         <item name="button_check_custom">@drawable/btn_check_custom_dark</item>
-        <item name="drag_and_drop">@drawable/ic_action_import_export_dark</item>
     </style>
 
     <style name="UltraSonicTheme.Light" parent="@android:style/Theme.Holo.Light">
@@ -77,7 +76,7 @@
         <item name="media_pause">@drawable/media_pause_normal_light</item>
         <item name="media_repeat_all">@drawable/media_repeat_all</item>
         <item name="media_repeat_off">@drawable/media_repeat_off_light</item>
-        <item name="media_repeat_single">@drawable/media_repeat_single_light</item>
+        <item name="media_repeat_single">@drawable/media_repeat_single</item>
         <item name="media_shuffle">@drawable/media_shuffle_normal_light</item>
         <item name="media_play">@drawable/media_start_normal_light</item>
         <item name="media_play_next">@drawable/media_play_next</item>
@@ -88,7 +87,6 @@
         <item name="chat_send">@drawable/ic_menu_chat_send_light</item>
         <item name="bookmark">@drawable/ic_menu_bookmark_light</item>
         <item name="button_check_custom">@drawable/btn_check_custom_light</item>
-        <item name="drag_and_drop">@drawable/ic_action_import_export_light</item>
     </style>
 
 </resources>

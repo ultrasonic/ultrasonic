@@ -1,14 +1,10 @@
 package com.thejoshwa.ultrasonic.androidapp.domain;
 
-import java.io.Serializable;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
-import java.util.Locale;
-
 import com.thejoshwa.ultrasonic.androidapp.domain.MusicDirectory.Entry;
+
+import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.List;
 
 public class Share implements Serializable
 {
@@ -17,15 +13,20 @@ public class Share implements Serializable
 	private String url;
 	private String description;
 	private String username;
-	private Date created;
-	private Date lastVisited;
-	private Date expires;
+	private String created;
+	private String lastVisited;
+	private String expires;
 	private Long visitCount;
 	private List<Entry> entries;
 
 	public Share()
 	{
 		entries = new ArrayList<Entry>();
+	}
+
+	public String getName()
+	{
+		return url.replaceFirst(".*/([^/?]+).*", "$1");
 	}
 
 	public String getId()
@@ -68,76 +69,34 @@ public class Share implements Serializable
 		this.username = username;
 	}
 
-	public Date getCreated()
+	public String getCreated()
 	{
-		return created;
+		return this.created;
 	}
 
 	public void setCreated(String created)
 	{
-		if (created != null)
-		{
-			try
-			{
-				this.created = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss", Locale.ENGLISH).parse(created);
-			}
-			catch (ParseException e)
-			{
-				this.created = null;
-			}
-		}
-		else
-		{
-			this.created = null;
-		}
+		this.created = created;
 	}
 
-	public Date getLastVisited()
+	public String getLastVisited()
 	{
 		return lastVisited;
 	}
 
 	public void setLastVisited(String lastVisited)
 	{
-		if (lastVisited != null)
-		{
-			try
-			{
-				this.lastVisited = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss", Locale.ENGLISH).parse(lastVisited);
-			}
-			catch (ParseException e)
-			{
-				this.lastVisited = null;
-			}
-		}
-		else
-		{
-			this.lastVisited = null;
-		}
+		this.lastVisited = lastVisited;
 	}
 
-	public Date getExpires()
+	public String getExpires()
 	{
 		return expires;
 	}
 
 	public void setExpires(String expires)
 	{
-		if (expires != null)
-		{
-			try
-			{
-				this.expires = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss", Locale.ENGLISH).parse(expires);
-			}
-			catch (ParseException e)
-			{
-				this.expires = null;
-			}
-		}
-		else
-		{
-			this.expires = null;
-		}
+		this.expires = expires;
 	}
 
 	public Long getVisitCount()

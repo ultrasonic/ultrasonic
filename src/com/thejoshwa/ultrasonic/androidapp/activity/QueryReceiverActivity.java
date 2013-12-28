@@ -25,9 +25,9 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.provider.SearchRecentSuggestions;
 
+import com.thejoshwa.ultrasonic.androidapp.provider.SearchSuggestionProvider;
 import com.thejoshwa.ultrasonic.androidapp.util.Constants;
 import com.thejoshwa.ultrasonic.androidapp.util.Util;
-import com.thejoshwa.ultrasonic.androidapp.provider.SearchSuggestionProvider;
 
 /**
  * Receives search queries and forwards to the SelectAlbumActivity.

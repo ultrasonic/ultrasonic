@@ -33,6 +33,6 @@
         a:focusable="false"
         a:gravity="center_vertical"
         a:paddingRight="3dip"
-        a:src="?attr/drag_and_drop" />
+        a:src="@drawable/ic_drag_queue" />
 
 </LinearLayout>

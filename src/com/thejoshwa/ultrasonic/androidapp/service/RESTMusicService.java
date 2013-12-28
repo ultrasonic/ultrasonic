@@ -1079,6 +1079,21 @@ public class RESTMusicService implements MusicService
 		return executeJukeboxCommand(context, progressListener, parameterNames, parameterValues);
 	}
 
+	@Override
+	public List<Share> getShares(boolean refresh, Context context, ProgressListener progressListener) throws Exception
+	{
+		checkServerVersion(context, "1.6", "Shares not supported.");
+		Reader reader = getReader(context, progressListener, "getShares", null);
+		try
+		{
+			return new ShareParser(context).parse(reader, progressListener);
+		}
+		finally
+		{
+			Util.close(reader);
+		}
+	}
+
 	private JukeboxStatus executeJukeboxCommand(Context context, ProgressListener progressListener, List<String> parameterNames, List<Object> parameterValues) throws Exception
 	{
 		checkServerVersion(context, "1.7", "Jukebox not supported.");
@@ -1382,22 +1397,6 @@ public class RESTMusicService implements MusicService
 	}
 
 	@Override
-	public List<Share> getShares(Context context, ProgressListener progressListener) throws Exception
-	{
-		checkServerVersion(context, "1.6", "Shares not supported.");
-
-		Reader reader = getReader(context, progressListener, "getShares", null);
-		try
-		{
-			return new ShareParser(context).parse(reader, progressListener);
-		}
-		finally
-		{
-			Util.close(reader);
-		}
-	}
-
-	@Override
 	public UserInfo getUser(String username, Context context, ProgressListener progressListener) throws Exception
 	{
 		checkServerVersion(context, "1.3", "getUser not supported.");
@@ -1591,6 +1590,69 @@ public class RESTMusicService implements MusicService
 		try
 		{
 			return new ShareParser(context).parse(reader, progressListener);
+		}
+		finally
+		{
+			Util.close(reader);
+		}
+	}
+
+	@Override
+	public void deleteShare(String id, Context context, ProgressListener progressListener) throws Exception
+	{
+		checkServerVersion(context, "1.6", "Shares not supported.");
+
+		HttpParams params = new BasicHttpParams();
+		HttpConnectionParams.setSoTimeout(params, SOCKET_READ_TIMEOUT_GET_RANDOM_SONGS);
+
+		List<String> parameterNames = new ArrayList<String>();
+		List<Object> parameterValues = new ArrayList<Object>();
+
+		parameterNames.add("id");
+		parameterValues.add(id);
+
+		Reader reader = getReader(context, progressListener, "deleteShare", params, parameterNames, parameterValues);
+
+		try
+		{
+			new ErrorParser(context).parse(reader);
+		}
+		finally
+		{
+			Util.close(reader);
+		}
+	}
+
+	@Override
+	public void updateShare(String id, String description, Long expires, Context context, ProgressListener progressListener) throws Exception
+	{
+		checkServerVersion(context, "1.6", "Updating share not supported.");
+
+  	HttpParams params = new BasicHttpParams();
+		HttpConnectionParams.setSoTimeout(params, SOCKET_READ_TIMEOUT_GET_RANDOM_SONGS);
+
+		List<String> parameterNames = new ArrayList<String>();
+		List<Object> parameterValues = new ArrayList<Object>();
+
+		parameterNames.add("id");
+		parameterValues.add(id);
+
+		if (description != null)
+		{
+			parameterNames.add("description");
+			parameterValues.add(description);
+		}
+
+		if (expires > 0)
+		{
+			parameterNames.add("expires");
+			parameterValues.add(expires);
+		}
+
+		Reader reader = getReader(context, progressListener, "updateShare", params, parameterNames, parameterValues);
+		try
+		{
+			new ErrorParser(context).parse(reader);
 		}
 		finally
 		{

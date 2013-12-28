@@ -35,12 +35,12 @@ import android.widget.EditText;
 import android.widget.ListView;
 
 import com.handmark.pulltorefresh.library.PullToRefreshBase;
-import com.handmark.pulltorefresh.library.PullToRefreshListView;
 import com.handmark.pulltorefresh.library.PullToRefreshBase.OnRefreshListener;
+import com.handmark.pulltorefresh.library.PullToRefreshListView;
 import com.thejoshwa.ultrasonic.androidapp.R;
 import com.thejoshwa.ultrasonic.androidapp.domain.Playlist;
-import com.thejoshwa.ultrasonic.androidapp.service.MusicServiceFactory;
 import com.thejoshwa.ultrasonic.androidapp.service.MusicService;
+import com.thejoshwa.ultrasonic.androidapp.service.MusicServiceFactory;
 import com.thejoshwa.ultrasonic.androidapp.service.OfflineException;
 import com.thejoshwa.ultrasonic.androidapp.service.ServerTooOldException;
 import com.thejoshwa.ultrasonic.androidapp.util.BackgroundTask;
@@ -141,6 +141,13 @@ public class SelectPlaylistActivity extends SubsonicTabActivity implements Adapt
 		MenuInflater inflater = getMenuInflater();
 		if (Util.isOffline(this)) inflater.inflate(R.menu.select_playlist_context_offline, menu);
 		else inflater.inflate(R.menu.select_playlist_context, menu);
+
+		MenuItem downloadMenuItem = menu.findItem(R.id.album_menu_download);
+
+		if (downloadMenuItem != null)
+		{
+			downloadMenuItem.setVisible(!Util.isOffline(this));
+		}
 	}
 
 	@Override
@@ -290,10 +297,12 @@ public class SelectPlaylistActivity extends SubsonicTabActivity implements Adapt
 			publicBox.setChecked(pub);
 		}
 
-		new AlertDialog.Builder(this).setIcon(android.R.drawable.ic_dialog_alert);
-		new AlertDialog.Builder(this).setTitle(R.string.playlist_update_info);
-		new AlertDialog.Builder(this).setView(dialogView);
-		new AlertDialog.Builder(this).setPositiveButton(R.string.common_ok, new DialogInterface.OnClickListener()
+		AlertDialog.Builder alertDialog = new AlertDialog.Builder(this);
+
+		alertDialog.setIcon(android.R.drawable.ic_dialog_alert);
+		alertDialog.setTitle(R.string.playlist_update_info);
+		alertDialog.setView(dialogView);
+		alertDialog.setPositiveButton(R.string.common_ok, new DialogInterface.OnClickListener()
 		{
 			@Override
 			public void onClick(DialogInterface dialog, int which)
@@ -327,8 +336,8 @@ public class SelectPlaylistActivity extends SubsonicTabActivity implements Adapt
 			}
 
 		});
-		new AlertDialog.Builder(this).setNegativeButton(R.string.common_cancel, null);
-		new AlertDialog.Builder(this).show();
+		alertDialog.setNegativeButton(R.string.common_cancel, null);
+		alertDialog.show();
 	}
 
 	private class GetDataTask extends AsyncTask<Void, Void, String[]>

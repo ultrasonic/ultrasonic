@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:a="http://schemas.android.com/apk/res/android"
+              a:layout_width="fill_parent"
+              a:layout_height="fill_parent"
+              a:orientation="vertical" >
+
+    <include layout="@layout/tab_progress" />
+
+    <TextView
+        a:id="@+id/select_share_empty"
+        a:layout_width="fill_parent"
+        a:layout_height="wrap_content"
+        a:padding="10dip"
+        a:text="@string/select_share.empty"
+        a:visibility="gone" />
+
+    <com.handmark.pulltorefresh.library.PullToRefreshListView
+        a:id="@+id/select_share_list"
+        a:layout_width="fill_parent"
+        a:layout_height="0dip"
+        a:layout_weight="1.0"
+        a:fastScrollEnabled="true"
+        a:textFilterEnabled="true" />
+
+    <include layout="@layout/now_playing" />
+
+</LinearLayout>

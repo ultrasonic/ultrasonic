@@ -60,6 +60,7 @@ public final class HelpActivity extends Activity implements OnClickListener
 	private int menuActiveViewId;
 	View chatMenuItem;
 	View bookmarksMenuItem;
+	View sharesMenuItem;
 
 	@Override
 	protected void onCreate(Bundle bundle)
@@ -81,12 +82,14 @@ public final class HelpActivity extends Activity implements OnClickListener
 
 		chatMenuItem = findViewById(R.id.menu_chat);
 		bookmarksMenuItem = findViewById(R.id.menu_bookmarks);
+		sharesMenuItem = findViewById(R.id.menu_shares);
 		View aboutMenuItem = findViewById(R.id.menu_about);
 
 		findViewById(R.id.menu_home).setOnClickListener(this);
 		findViewById(R.id.menu_browse).setOnClickListener(this);
 		findViewById(R.id.menu_search).setOnClickListener(this);
 		findViewById(R.id.menu_playlists).setOnClickListener(this);
+		sharesMenuItem.setOnClickListener(this);
 		chatMenuItem.setOnClickListener(this);
 		bookmarksMenuItem.setOnClickListener(this);
 		findViewById(R.id.menu_now_playing).setOnClickListener(this);
@@ -156,6 +159,7 @@ public final class HelpActivity extends Activity implements OnClickListener
 		int visibility = Util.isOffline(this) ? View.GONE : View.VISIBLE;
 		chatMenuItem.setVisibility(visibility);
 		bookmarksMenuItem.setVisibility(visibility);
+		sharesMenuItem.setVisibility(visibility);
 	}
 
 	@Override
@@ -266,6 +270,11 @@ public final class HelpActivity extends Activity implements OnClickListener
 				break;
 			case R.id.menu_playlists:
 				intent = new Intent(this, SelectPlaylistActivity.class);
+				intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+				Util.startActivityWithoutTransition(this, intent);
+				break;
+			case R.id.menu_shares:
+				intent = new Intent(this, ShareActivity.class);
 				intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
 				Util.startActivityWithoutTransition(this, intent);
 				break;

@@ -210,9 +210,9 @@
         <item>flash</item>
     </string-array>
     <string-array name="videoPlayerNames">
-        <item>MX Player</item>
-        <item>Default</item>
-        <item>Flash</item>
+        <item>@string/settings.video_mx_player</item>
+        <item>@string/settings.video_default</item>
+        <item>@string/settings.video_flash</item>
     </string-array>
     <string-array name="viewRefreshNames">
         <item>@string/settings.view_refresh_500</item>
@@ -239,19 +239,11 @@
         <item>5000</item>
     </string-array>
     <string-array name="shareExpirationNames">
-        <item>@string/settings.share_none</item>
-        <item>@string/settings.share_one_day</item>
-        <item>@string/settings.share_one_week</item>
-        <item>@string/settings.share_one_month</item>
-        <item>@string/settings.share_one_year</item>
+        <item>@string/settings.share_milliseconds</item>
+        <item>@string/settings.share_seconds</item>
+        <item>@string/settings.share_minutes</item>
+        <item>@string/settings.share_hours</item>
+        <item>@string/settings.share_days</item>
     </string-array>
-    <string-array name="shareExpirationValues">
-        <item>-1</item>
-        <item>86400000</item>
-        <item>604800000</item>
-        <item>2592000000</item>
-        <item>31536000000</item>
-    </string-array>
-
 
 </resources>

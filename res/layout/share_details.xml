@@ -10,30 +10,55 @@
         a:layout_width="wrap_content"
         a:layout_height="wrap_content">
 
+        <TextView
+            a:layout_width="wrap_content"
+            a:layout_height="wrap_content"
+            a:text="@string/share_comment"
+            a:textAllCaps="true"
+            a:textColor="@color/cyan"
+            a:id="@+id/textViewComment"
+            a:layout_gravity="center_horizontal"/>
+
         <EditText
             a:id="@+id/share_description"
             a:layout_width="fill_parent"
             a:layout_height="wrap_content"
             a:inputType="text"
-            a:singleLine="false"/>
+            a:singleLine="false"
+            a:layout_marginTop="4dip"
+            a:layout_marginBottom="4dip" />
 
-        <CheckBox
-            a:id="@+id/no_expiration"
-            a:text="@string/no_expiration"
+        <TextView
             a:layout_width="wrap_content"
-            a:layout_height="wrap_content"/>
+            a:layout_height="wrap_content"
+            a:text="@string/settings.share_expiration"
+            a:textAllCaps="true"
+            a:textColor="@color/cyan"
+            a:id="@+id/textViewExpiration"
+            a:layout_gravity="center_horizontal"/>
 
-        <DatePicker
+        <com.thejoshwa.ultrasonic.androidapp.util.TimeSpanPicker
             a:id="@+id/date_picker"
             a:layout_width="wrap_content"
             a:layout_height="wrap_content"
-            a:calendarViewShown="false"/>
+            a:layout_marginTop="4dip"
+            a:layout_marginBottom="4dip" />
 
         <CheckBox
             a:id="@+id/hide_dialog"
             a:text="@string/do_not_show_dialog_again"
             a:layout_width="wrap_content"
-            a:layout_height="wrap_content"/>
+            a:layout_height="wrap_content"
+            a:layout_marginTop="4dip"
+            a:layout_marginBottom="4dip" />
+
+        <CheckBox
+            a:id="@+id/save_as_defaults"
+            a:text="@string/save_as_defaults"
+            a:layout_width="wrap_content"
+            a:layout_height="wrap_content"
+            a:layout_marginTop="4dip"
+            a:layout_marginBottom="4dip" />
 
     </LinearLayout>
 </ScrollView>
