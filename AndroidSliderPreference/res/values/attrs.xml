@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+Copyright 2012 Jay Weisskopf
+
+Licensed under the MIT License (see LICENSE.txt)
+-->
+<resources>
+
+    <declare-styleable name="SliderPreference">
+        <attr name="android:summary" />
+    </declare-styleable>
+
+</resources>
