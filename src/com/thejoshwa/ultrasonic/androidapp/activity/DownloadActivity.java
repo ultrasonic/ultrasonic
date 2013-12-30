@@ -808,6 +808,17 @@ public class DownloadActivity extends SubsonicTabActivity implements OnGestureLi
 					menuItem.setVisible(false);
 				}
 			}
+
+			if (Util.isOffline(this) || !Util.getShouldUseId3Tags(this))
+			{
+				MenuItem menuItem = menu.findItem(R.id.menu_show_artist);
+
+				if (menuItem != null)
+				{
+					menuItem.setVisible(false);
+				}
+			}
+
 			if (Util.isOffline(this))
 			{
 				MenuItem menuItem = menu.findItem(R.id.menu_lyrics);
@@ -852,6 +863,23 @@ public class DownloadActivity extends SubsonicTabActivity implements OnGestureLi
 
 		switch (menuItemId)
 		{
+			case R.id.menu_show_artist:
+				if (entry == null)
+				{
+					return false;
+				}
+
+				if (Util.getShouldUseId3Tags(DownloadActivity.this))
+				{
+					Intent intent = new Intent(DownloadActivity.this, SelectAlbumActivity.class);
+					intent.putExtra(Constants.INTENT_EXTRA_NAME_ID, entry.getArtistId());
+					intent.putExtra(Constants.INTENT_EXTRA_NAME_NAME, entry.getArtist());
+					intent.putExtra(Constants.INTENT_EXTRA_NAME_PARENT_ID, entry.getArtistId());
+					intent.putExtra(Constants.INTENT_EXTRA_NAME_ARTIST, true);
+					Util.startActivityWithoutTransition(DownloadActivity.this, intent);
+				}
+
+				return true;
 			case R.id.menu_show_album:
 				if (entry == null)
 				{

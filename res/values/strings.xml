@@ -371,6 +371,7 @@
     <string name="select_album_all_songs">All Songs by %s</string>
     <string name="settings.show_all_songs_by_artist">Show All Songs By Artist</string>
     <string name="settings.show_all_songs_by_artist_summary">Add new entry in artist view to access all songs for an artist</string>
+    <string name="download.menu_show_artist">Show Artist</string>
 
     <plurals name="select_album_n_songs">
         <item quantity="zero">No songs</item>

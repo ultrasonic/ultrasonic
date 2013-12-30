@@ -44,6 +44,8 @@ import com.thejoshwa.ultrasonic.androidapp.util.Util;
 
 import org.apache.http.HttpResponse;
 
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 
@@ -413,6 +415,15 @@ public class CachedMusicService implements MusicService
 			result = musicService.getGenres(context, progressListener);
 			cachedGenres.set(result);
 		}
+
+		Collections.sort(result, new Comparator<Genre>()
+		{
+			@Override
+			public int compare(Genre genre, Genre genre2)
+			{
+				return genre.getName().compareToIgnoreCase(genre2.getName());
+			}
+		});
 
 		return result;
 	}
