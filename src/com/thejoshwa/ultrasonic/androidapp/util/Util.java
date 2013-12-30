@@ -46,7 +46,6 @@ import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.Gravity;
 import android.view.KeyEvent;
-import android.widget.DatePicker;
 import android.widget.RemoteViews;
 import android.widget.Toast;
 
@@ -81,8 +80,6 @@ import java.lang.reflect.Method;
 import java.security.MessageDigest;
 import java.text.DecimalFormat;
 import java.text.NumberFormat;
-import java.util.Calendar;
-import java.util.Date;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
@@ -468,21 +465,20 @@ public class Util extends DownloadActivity
 
 	public static void atomicCopy(File from, File to) throws IOException
 	{
-		FileInputStream in = null;
-		FileOutputStream out = null;
-		File tmp = null;
+		File tmp = new File(String.format("%s.tmp", to.getPath()));
+		FileInputStream in = new FileInputStream(from);
+		FileOutputStream out = new FileOutputStream(tmp);
 
 		try
 		{
-			tmp = new File(String.format("%s.tmp", to.getPath()));
-			in = new FileInputStream(from);
-			out = new FileOutputStream(tmp);
 			in.getChannel().transferTo(0, from.length(), out.getChannel());
 			out.close();
+
 			if (!tmp.renameTo(to))
 			{
 				throw new IOException(String.format("Failed to rename %s to %s", tmp, to));
 			}
+
 			Log.i(TAG, String.format("Copied %s to %s", from, to));
 		}
 		catch (IOException x)
@@ -714,12 +710,13 @@ public class Util extends DownloadActivity
 	{
 		int length = data.length;
 		char[] out = new char[length << 1];
+		int j = 0;
 
 		// two characters form the hex value.
-		for (int i = 0, j = 0; i < length; i++)
+		for (byte aData : data)
 		{
-			out[j++] = HEX_DIGITS[(0xF0 & data[i]) >>> 4];
-			out[j++] = HEX_DIGITS[0x0F & data[i]];
+			out[j++] = HEX_DIGITS[(0xF0 & aData) >>> 4];
+			out[j++] = HEX_DIGITS[0x0F & aData];
 		}
 
 		return new String(out);
@@ -1574,17 +1571,6 @@ public class Util extends DownloadActivity
 		return Integer.parseInt(preferences.getString(Constants.PREFERENCES_KEY_VIEW_REFRESH, "1000"));
 	}
 
-	public static Date getDateFromDatePicker(DatePicker datePicker) {
-		int day = datePicker.getDayOfMonth();
-		int month = datePicker.getMonth();
-		int year = datePicker.getYear();
-
-		Calendar calendar = Calendar.getInstance();
-		calendar.set(year, month, day);
-
-		return calendar.getTime();
-	}
-
 	public static boolean getShouldAskForShareDetails(Context context)
 	{
 		SharedPreferences preferences = getPreferences(context);
@@ -1651,5 +1637,11 @@ public class Util extends DownloadActivity
 		SharedPreferences.Editor editor = preferences.edit();
 		editor.putString(Constants.PREFERENCES_KEY_DEFAULT_SHARE_DESCRIPTION, defaultShareDescription);
 		editor.commit();
+	}
+
+	public static boolean getShouldShowAllSongsByArtist(Context context)
+	{
+		SharedPreferences preferences = getPreferences(context);
+		return preferences.getBoolean(Constants.PREFERENCES_KEY_SHOW_ALL_SONGS_BY_ARTIST, false);
 	}
 }

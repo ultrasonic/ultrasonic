@@ -49,7 +49,9 @@ import com.thejoshwa.ultrasonic.androidapp.util.Util;
 import com.thejoshwa.ultrasonic.androidapp.view.EntryAdapter;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Collections;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Random;
 
@@ -58,6 +60,7 @@ import static com.handmark.pulltorefresh.library.PullToRefreshBase.OnRefreshList
 public class SelectAlbumActivity extends SubsonicTabActivity
 {
 
+	public static final String allSongsId = "-1";
 	private PullToRefreshListView refreshAlbumListView;
 	private ListView albumListView;
 	private View header;
@@ -77,7 +80,7 @@ public class SelectAlbumActivity extends SubsonicTabActivity
 	private MenuItem playAllButton;
 	private MenuItem shareButton;
 	private boolean showHeader = true;
-	private Random random = new Random();
+	private Random random = new java.security.SecureRandom();
 
 	/**
 	 * Called when the activity is first created.
@@ -119,6 +122,7 @@ public class SelectAlbumActivity extends SubsonicTabActivity
 						intent.putExtra(Constants.INTENT_EXTRA_NAME_ID, entry.getId());
 						intent.putExtra(Constants.INTENT_EXTRA_NAME_IS_ALBUM, entry.isDirectory());
 						intent.putExtra(Constants.INTENT_EXTRA_NAME_NAME, entry.getTitle());
+						intent.putExtra(Constants.INTENT_EXTRA_NAME_PARENT_ID, entry.getParent());
 						Util.startActivityWithoutTransition(SelectAlbumActivity.this, intent);
 					}
 					else if (entry != null && entry.isVideo())
@@ -221,6 +225,7 @@ public class SelectAlbumActivity extends SubsonicTabActivity
 		String id = getIntent().getStringExtra(Constants.INTENT_EXTRA_NAME_ID);
 		boolean isAlbum = getIntent().getBooleanExtra(Constants.INTENT_EXTRA_NAME_IS_ALBUM, false);
 		String name = getIntent().getStringExtra(Constants.INTENT_EXTRA_NAME_NAME);
+		String parentId = getIntent().getStringExtra(Constants.INTENT_EXTRA_NAME_PARENT_ID);
 		String playlistId = getIntent().getStringExtra(Constants.INTENT_EXTRA_NAME_PLAYLIST_ID);
 		String playlistName = getIntent().getStringExtra(Constants.INTENT_EXTRA_NAME_PLAYLIST_NAME);
 		String shareId = getIntent().getStringExtra(Constants.INTENT_EXTRA_NAME_SHARE_ID);
@@ -271,7 +276,7 @@ public class SelectAlbumActivity extends SubsonicTabActivity
 			{
 				if (isAlbum)
 				{
-					getAlbum(id, name);
+					getAlbum(id, name, parentId);
 				}
 				else
 				{
@@ -280,7 +285,7 @@ public class SelectAlbumActivity extends SubsonicTabActivity
 			}
 			else
 			{
-				getMusicDirectory(id, name);
+				getMusicDirectory(id, name, parentId);
 			}
 		}
 	}
@@ -320,7 +325,7 @@ public class SelectAlbumActivity extends SubsonicTabActivity
 	{
 		List<MusicDirectory.Entry> selectedSongs = getSelectedSongs(albumListView);
 
-		if (selectedSongs.size() > 0)
+		if (!selectedSongs.isEmpty())
 		{
 			download(append, false, !append, false, shuffle, selectedSongs);
 			selectAll(false, false);
@@ -498,7 +503,7 @@ public class SelectAlbumActivity extends SubsonicTabActivity
 		return false;
 	}
 
-	private void getMusicDirectory(final String id, final String name)
+	private void getMusicDirectory(final String id, final String name, final String parentId)
 	{
 		setActionBarSubtitle(name);
 
@@ -507,8 +512,80 @@ public class SelectAlbumActivity extends SubsonicTabActivity
 			@Override
 			protected MusicDirectory load(MusicService service) throws Exception
 			{
-				boolean refresh = getIntent().getBooleanExtra(Constants.INTENT_EXTRA_NAME_REFRESH, false);
-				return service.getMusicDirectory(id, name, refresh, SelectAlbumActivity.this, this);
+				MusicDirectory root = new MusicDirectory();
+
+				if (allSongsId.equals(id))
+				{
+					boolean refresh = getIntent().getBooleanExtra(Constants.INTENT_EXTRA_NAME_REFRESH, false);
+					MusicDirectory musicDirectory = service.getMusicDirectory(parentId, name, refresh, SelectAlbumActivity.this, this);
+
+					List<MusicDirectory.Entry> songs = new LinkedList<MusicDirectory.Entry>();
+					getSongsRecursively(musicDirectory, songs);
+
+					for (MusicDirectory.Entry song : songs)
+					{
+						if (!song.isDirectory())
+						{
+							root.addChild(song);
+						}
+					}
+				}
+				else
+				{
+					boolean refresh = getIntent().getBooleanExtra(Constants.INTENT_EXTRA_NAME_REFRESH, false);
+					MusicDirectory musicDirectory = service.getMusicDirectory(id, name, refresh, SelectAlbumActivity.this, this);
+
+					if (Util.getShouldShowAllSongsByArtist(SelectAlbumActivity.this) && musicDirectory.findChild(allSongsId) == null && musicDirectory.getChildren(true, false).size() == musicDirectory.getChildren(true, true).size())
+					{
+						MusicDirectory.Entry allSongs = new MusicDirectory.Entry();
+
+						allSongs.setIsDirectory(true);
+						allSongs.setArtist(name);
+						allSongs.setParent(id);
+						allSongs.setId(allSongsId);
+						allSongs.setTitle(String.format(getResources().getString(R.string.select_album_all_songs), name));
+
+						root.addChild(allSongs);
+
+						List<MusicDirectory.Entry> children = musicDirectory.getChildren();
+
+						if (children != null)
+						{
+							root.addAll(children);
+						}
+					}
+					else
+					{
+						root = musicDirectory;
+					}
+				}
+
+				return root;
+			}
+
+			private void getSongsRecursively(MusicDirectory parent, List<MusicDirectory.Entry> songs) throws Exception
+			{
+				for (MusicDirectory.Entry song : parent.getChildren(false, true))
+				{
+					if (!song.isVideo() && !song.isDirectory())
+					{
+						songs.add(song);
+					}
+				}
+
+				MusicService musicService = MusicServiceFactory.getMusicService(SelectAlbumActivity.this);
+
+				for (MusicDirectory.Entry dir : parent.getChildren(true, false))
+				{
+					MusicDirectory root;
+
+					if (!allSongsId.equals(dir.getId()))
+					{
+						root = musicService.getMusicDirectory(dir.getId(), dir.getTitle(), false, SelectAlbumActivity.this, this);
+
+						getSongsRecursively(root, songs);
+					}
+				}
 			}
 		}.execute();
 	}
@@ -522,13 +599,41 @@ public class SelectAlbumActivity extends SubsonicTabActivity
 			@Override
 			protected MusicDirectory load(MusicService service) throws Exception
 			{
+				MusicDirectory root = new MusicDirectory();
+
 				boolean refresh = getIntent().getBooleanExtra(Constants.INTENT_EXTRA_NAME_REFRESH, false);
-				return service.getArtist(id, name, refresh, SelectAlbumActivity.this, this);
+				MusicDirectory musicDirectory = service.getArtist(id, name, refresh, SelectAlbumActivity.this, this);
+
+				if (Util.getShouldShowAllSongsByArtist(SelectAlbumActivity.this) && musicDirectory.findChild(allSongsId) == null && musicDirectory.getChildren(true, false).size() == musicDirectory.getChildren(true, true).size())
+				{
+					MusicDirectory.Entry allSongs = new MusicDirectory.Entry();
+
+					allSongs.setIsDirectory(true);
+					allSongs.setArtist(name);
+					allSongs.setParent(id);
+					allSongs.setId(allSongsId);
+					allSongs.setTitle(String.format(getResources().getString(R.string.select_album_all_songs), name));
+
+					root.addFirst(allSongs);
+
+					List<MusicDirectory.Entry> children = musicDirectory.getChildren();
+
+					if (children != null)
+					{
+						root.addAll(children);
+					}
+				}
+				else
+				{
+					root = musicDirectory;
+				}
+
+				return root;
 			}
 		}.execute();
 	}
 
-	private void getAlbum(final String id, final String name)
+	private void getAlbum(final String id, final String name, final String parentId)
 	{
 		setActionBarSubtitle(name);
 
@@ -537,8 +642,55 @@ public class SelectAlbumActivity extends SubsonicTabActivity
 			@Override
 			protected MusicDirectory load(MusicService service) throws Exception
 			{
+				MusicDirectory musicDirectory;
+
 				boolean refresh = getIntent().getBooleanExtra(Constants.INTENT_EXTRA_NAME_REFRESH, false);
-				return service.getAlbum(id, name, refresh, SelectAlbumActivity.this, this);
+
+				if (allSongsId.equals(id))
+				{
+					MusicDirectory root = new MusicDirectory();
+
+					Collection<MusicDirectory.Entry> songs = new LinkedList<MusicDirectory.Entry>();
+					getSongsForArtist(parentId, songs);
+
+					for (MusicDirectory.Entry song : songs)
+					{
+						if (!song.isDirectory())
+						{
+							root.addChild(song);
+						}
+					}
+
+					musicDirectory = root;
+				}
+				else
+				{
+					musicDirectory = service.getAlbum(id, name, refresh, SelectAlbumActivity.this, this);
+				}
+
+				return musicDirectory;
+			}
+
+			private void getSongsForArtist(String id, Collection<MusicDirectory.Entry> songs) throws Exception
+			{
+				MusicService musicService = MusicServiceFactory.getMusicService(SelectAlbumActivity.this);
+				MusicDirectory artist = musicService.getArtist(id, "", false, SelectAlbumActivity.this, this);
+
+				for (MusicDirectory.Entry album : artist.getChildren())
+				{
+					if (!allSongsId.equals(album.getId()))
+					{
+						MusicDirectory albumDirectory = musicService.getAlbum(album.getId(), "", false, SelectAlbumActivity.this, this);
+
+						for (MusicDirectory.Entry song : albumDirectory.getChildren())
+						{
+							if (!song.isVideo())
+							{
+								songs.add(song);
+							}
+						}
+					}
+				}
 			}
 		}.execute();
 	}
@@ -649,7 +801,7 @@ public class SelectAlbumActivity extends SubsonicTabActivity
 		}.execute();
 	}
 
-	private void getShare(final String shareId, final String shareName)
+	private void getShare(final String shareId, final CharSequence shareName)
 	{
 		setActionBarSubtitle(shareName);
 

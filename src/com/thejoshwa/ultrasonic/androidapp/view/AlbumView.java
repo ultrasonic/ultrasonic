@@ -99,7 +99,7 @@ public class AlbumView extends UpdateView
 		starImageView.setImageDrawable(starred ? starDrawable : starHollowDrawable);
 		imageLoader.loadImage(this.coverArtView, album, false, 0, false, true);
 
-		if (Util.isOffline(this.context))
+		if (Util.isOffline(this.context) || "-1".equals(album.getId()))
 		{
 			starImageView.setVisibility(View.GONE);
 		}

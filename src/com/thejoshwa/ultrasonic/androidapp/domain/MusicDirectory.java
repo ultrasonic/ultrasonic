@@ -18,13 +18,14 @@
  */
 package com.thejoshwa.ultrasonic.androidapp.domain;
 
+import java.io.Serializable;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Date;
 import java.util.List;
 import java.util.Locale;
-import java.io.Serializable;
 
 /**
  * @author Sindre Mehus
@@ -45,6 +46,16 @@ public class MusicDirectory
 		this.name = name;
 	}
 
+	public void addAll(Collection<Entry> entries)
+	{
+		children.addAll(entries);
+	}
+
+	public void addFirst(Entry child)
+	{
+		children.add(0, child);
+	}
+
 	public void addChild(Entry child)
 	{
 		children.add(child);
@@ -53,6 +64,21 @@ public class MusicDirectory
 	public List<Entry> getChildren()
 	{
 		return getChildren(true, true);
+	}
+
+	public Entry findChild(String id)
+	{
+		Entry entry = null;
+
+		for (Entry song : getChildren())
+		{
+			if (song.getId().equals(id))
+			{
+				entry = song;
+			}
+		}
+
+		return entry;
 	}
 
 	public List<Entry> getChildren(boolean includeDirs, boolean includeFiles)

@@ -219,6 +219,7 @@ public class SelectArtistActivity extends SubsonicTabActivity implements Adapter
 				Intent intent = new Intent(this, SelectAlbumActivity.class);
 				intent.putExtra(Constants.INTENT_EXTRA_NAME_ID, artist.getId());
 				intent.putExtra(Constants.INTENT_EXTRA_NAME_NAME, artist.getName());
+				intent.putExtra(Constants.INTENT_EXTRA_NAME_PARENT_ID, artist.getId());
 				intent.putExtra(Constants.INTENT_EXTRA_NAME_ARTIST, true);
 				Util.startActivityWithoutTransition(this, intent);
 			}

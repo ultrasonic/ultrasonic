@@ -41,6 +41,7 @@ public final class Constants
 	public static final String INTENT_EXTRA_NAME_AUTOPLAY = "subsonic.playall";
 	public static final String INTENT_EXTRA_NAME_QUERY = "subsonic.query";
 	public static final String INTENT_EXTRA_NAME_PLAYLIST_ID = "subsonic.playlist.id";
+	public static final String INTENT_EXTRA_NAME_PARENT_ID = "subsonic.parent.id";
 	public static final String INTENT_EXTRA_NAME_PLAYLIST_NAME = "subsonic.playlist.name";
 	public static final String INTENT_EXTRA_NAME_SHARE_ID = "subsonic.share.id";
 	public static final String INTENT_EXTRA_NAME_SHARE_NAME = "subsonic.share.name";
@@ -124,6 +125,7 @@ public final class Constants
 	public static final String PREFERENCES_KEY_DEFAULT_SHARE_DESCRIPTION = "sharingDefaultDescription";
 	public static final String PREFERENCES_KEY_DEFAULT_SHARE_GREETING = "sharingDefaultGreeting";
 	public static final String PREFERENCES_KEY_DEFAULT_SHARE_EXPIRATION = "sharingDefaultExpiration";
+	public static final String PREFERENCES_KEY_SHOW_ALL_SONGS_BY_ARTIST = "showAllSongsByArtist";
 
 	// Name of the preferences file.
 	public static final String PREFERENCES_FILE_NAME = "com.thejoshwa.ultrasonic.androidapp_preferences";
