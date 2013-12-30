@@ -14,7 +14,9 @@
         a:layout_height="wrap_content"
         a:layout_weight="1"
         a:focusable="true"
-        a:src="?attr/media_shuffle"/>
+        a:src="?attr/media_shuffle"
+        a:paddingLeft="2dip"
+        a:paddingRight="8dip"/>
 
     <com.thejoshwa.ultrasonic.androidapp.view.AutoRepeatButton
         a:id="@+id/download_previous"
@@ -22,7 +24,9 @@
         a:layout_height="wrap_content"
         a:layout_weight="1"
         a:focusable="true"
-        a:src="?attr/media_previous"/>
+        a:src="?attr/media_previous"
+        a:paddingLeft="8dip"
+        a:paddingRight="8dip"/>
 
     <ImageView
         a:id="@+id/download_start"
@@ -30,7 +34,9 @@
         a:layout_height="wrap_content"
         a:layout_weight="1"
         a:focusable="true"
-        a:src="?attr/media_play"/>
+        a:src="?attr/media_play"
+        a:paddingRight="8dip"
+        a:paddingLeft="8dip"/>
 
     <ImageView
         a:id="@+id/download_pause"
@@ -38,7 +44,9 @@
         a:layout_height="wrap_content"
         a:layout_weight="1"
         a:focusable="true"
-        a:src="?attr/media_pause"/>
+        a:src="?attr/media_pause"
+        a:paddingLeft="8dip"
+        a:paddingRight="8dip"/>
 
     <ImageView
         a:id="@+id/download_stop"
@@ -46,7 +54,9 @@
         a:layout_height="wrap_content"
         a:layout_weight="1"
         a:focusable="true"
-        a:src="?attr/media_stop"/>
+        a:src="?attr/media_stop"
+        a:paddingLeft="8dip"
+        a:paddingRight="8dip"/>
 
     <com.thejoshwa.ultrasonic.androidapp.view.AutoRepeatButton
         a:id="@+id/download_next"
@@ -54,7 +64,9 @@
         a:layout_height="wrap_content"
         a:layout_weight="1"
         a:focusable="true"
-        a:src="?attr/media_next"/>
+        a:src="?attr/media_next"
+        a:paddingLeft="8dip"
+        a:paddingRight="8dip"/>
 
     <ImageView
         a:id="@+id/download_repeat"
@@ -62,6 +74,8 @@
         a:layout_height="wrap_content"
         a:layout_weight="1"
         a:focusable="true"
-        a:src="?attr/media_repeat_off"/>
+        a:src="?attr/media_repeat_off"
+        a:paddingLeft="8dip"
+        a:paddingRight="2dip"/>
 
 </LinearLayout>
