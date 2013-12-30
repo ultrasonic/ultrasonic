@@ -25,6 +25,10 @@ import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.text.Editable;
+import android.text.Spannable;
+import android.text.SpannableString;
+import android.text.method.LinkMovementMethod;
+import android.text.util.Linkify;
 import android.view.ContextMenu;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -34,6 +38,7 @@ import android.widget.AdapterView;
 import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.ListView;
+import android.widget.TextView;
 
 import com.handmark.pulltorefresh.library.PullToRefreshBase;
 import com.handmark.pulltorefresh.library.PullToRefreshBase.OnRefreshListener;
@@ -278,11 +283,19 @@ public class SelectPlaylistActivity extends SubsonicTabActivity implements Adapt
 
 	private void displayPlaylistInfo(final Playlist playlist)
 	{
-		String message = "Owner: " + playlist.getOwner() + "\nComments: " +
+		final TextView textView = new TextView(this);
+		textView.setPadding(5, 5, 5, 5);
+
+		final Spannable message = new SpannableString("Owner: " + playlist.getOwner() + "\nComments: " +
 				((playlist.getComment() == null) ? "" : playlist.getComment()) +
 				"\nSong Count: " + playlist.getSongCount() +
-				((playlist.getPublic() == null) ? "" : ("\nPublic: " + playlist.getPublic()) + ((playlist.getCreated() == null) ? "" : ("\nCreation Date: " + playlist.getCreated().replace('T', ' '))));
-		new AlertDialog.Builder(this).setIcon(android.R.drawable.ic_dialog_alert).setTitle(playlist.getName()).setMessage(message).show();
+				((playlist.getPublic() == null) ? "" : ("\nPublic: " + playlist.getPublic()) + ((playlist.getCreated() == null) ? "" : ("\nCreation Date: " + playlist.getCreated().replace('T', ' ')))));
+
+		Linkify.addLinks(message, Linkify.WEB_URLS);
+		textView.setText(message);
+		textView.setMovementMethod(LinkMovementMethod.getInstance());
+
+		new AlertDialog.Builder(this).setTitle(playlist.getName()).setCancelable(true).setIcon(android.R.drawable.ic_dialog_info).setView(textView).show();
 	}
 
 	private void updatePlaylistInfo(final Playlist playlist)

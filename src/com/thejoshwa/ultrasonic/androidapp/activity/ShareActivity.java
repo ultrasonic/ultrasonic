@@ -264,7 +264,7 @@ public class ShareActivity extends SubsonicTabActivity implements AdapterView.On
 	private void displayShareInfo(final Share share)
 	{
 		final TextView textView = new TextView(this);
-		textView.setPadding(3, 3, 3, 3);
+		textView.setPadding(5, 5, 5, 5);
 
 		final Spannable message = new SpannableString("Owner: " + share.getUsername() +
 				"\nComments: " + ((share.getDescription() == null) ? "" : share.getDescription()) +
@@ -307,6 +307,8 @@ public class ShareActivity extends SubsonicTabActivity implements AdapterView.On
 				timeSpanPicker.setEnabled(!b);
 			}
 		});
+
+		noExpirationCheckBox.setChecked(true);
 
 		timeSpanPicker.setTimeSpanDisableText(getResources().getText(R.string.no_expiration));
 
