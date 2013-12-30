@@ -134,7 +134,7 @@ public class OfflineMusicService extends RESTMusicService
 			}
 		});
 
-		return new Indexes(0L, Collections.<Artist>emptyList(), artists);
+		return new Indexes(0L, ignoredArticlesString, Collections.<Artist>emptyList(), artists);
 	}
 
 	@Override
@@ -528,7 +528,7 @@ public class OfflineMusicService extends RESTMusicService
 					}
 				}
 
-				if (!server.equals(lastServer) && fileList.size() > 0)
+				if (!server.equals(lastServer) && !fileList.isEmpty())
 				{
 					if (lastServer != null)
 					{
@@ -750,7 +750,7 @@ public class OfflineMusicService extends RESTMusicService
 			return result;
 		}
 
-		Random random = new Random();
+		Random random = new java.security.SecureRandom();
 		for (int i = 0; i < size; i++)
 		{
 			File file = children.get(random.nextInt(children.size()));

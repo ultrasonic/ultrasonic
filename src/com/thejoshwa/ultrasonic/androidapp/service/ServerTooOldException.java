@@ -35,7 +35,7 @@ public class ServerTooOldException extends Exception
 
 	private static String createMessage(String text)
 	{
-		StringBuilder builder = new StringBuilder();
+		StringBuilder builder = new StringBuilder(25);
 
 		if (text != null)
 		{

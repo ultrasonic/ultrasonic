@@ -22,8 +22,8 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.Parcelable;
 import android.util.Log;
-import android.view.KeyEvent;
 
 import com.thejoshwa.ultrasonic.androidapp.service.DownloadServiceImpl;
 import com.thejoshwa.ultrasonic.androidapp.util.Util;
@@ -52,7 +52,7 @@ public class MediaButtonIntentReceiver extends BroadcastReceiver
 				return;
 			}
 
-			KeyEvent event = (KeyEvent) extras.get(Intent.EXTRA_KEY_EVENT);
+			Parcelable event = (Parcelable) extras.get(Intent.EXTRA_KEY_EVENT);
 			Log.i(TAG, "Got MEDIA_BUTTON key event: " + event);
 
 			Intent serviceIntent = new Intent(context, DownloadServiceImpl.class);

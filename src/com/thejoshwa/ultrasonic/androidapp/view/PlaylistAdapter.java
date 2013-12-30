@@ -8,6 +8,7 @@ import com.thejoshwa.ultrasonic.androidapp.R;
 import com.thejoshwa.ultrasonic.androidapp.activity.SubsonicTabActivity;
 import com.thejoshwa.ultrasonic.androidapp.domain.Playlist;
 
+import java.io.Serializable;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
@@ -36,8 +37,10 @@ public class PlaylistAdapter extends ArrayAdapter<Playlist>
 		return view;
 	}
 
-	public static class PlaylistComparator implements Comparator<Playlist>
+	public static class PlaylistComparator implements Comparator<Playlist>, Serializable
 	{
+		private static final long serialVersionUID = -6201663557439120008L;
+
 		@Override
 		public int compare(Playlist playlist1, Playlist playlist2)
 		{

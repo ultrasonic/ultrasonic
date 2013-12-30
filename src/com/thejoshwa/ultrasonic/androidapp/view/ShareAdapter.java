@@ -8,6 +8,7 @@ import com.thejoshwa.ultrasonic.androidapp.R;
 import com.thejoshwa.ultrasonic.androidapp.activity.SubsonicTabActivity;
 import com.thejoshwa.ultrasonic.androidapp.domain.Share;
 
+import java.io.Serializable;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
@@ -36,8 +37,10 @@ public class ShareAdapter extends ArrayAdapter<Share>
 		return view;
 	}
 
-	public static class ShareComparator implements Comparator<Share>
+	public static class ShareComparator implements Comparator<Share>, Serializable
 	{
+		private static final long serialVersionUID = -7169409928471418921L;
+
 		@Override
 		public int compare(Share share1, Share share2)
 		{

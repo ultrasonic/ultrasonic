@@ -38,7 +38,7 @@ public class TimeSpanPreference extends DialogPreference
 			return persisted.replace(':', ' ');
 		}
 
-		return this.context.getResources().getString(R.string.time_span_disabled) ;
+		return this.context.getResources().getString(R.string.time_span_disabled);
 	}
 
 	@Override
@@ -49,7 +49,7 @@ public class TimeSpanPreference extends DialogPreference
 
 		String persisted = getPersistedString("");
 
-		if (!persisted.equals(""))
+		if (!"".equals(persisted))
 		{
 			String[] split = COMPILE.split(persisted);
 
@@ -75,7 +75,8 @@ public class TimeSpanPreference extends DialogPreference
 	}
 
 	@Override
-	protected void onDialogClosed(boolean positiveResult) {
+	protected void onDialogClosed(boolean positiveResult)
+	{
 		super.onDialogClosed(positiveResult);
 
 		String persisted = "";

@@ -24,6 +24,7 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.text.Editable;
 import android.view.ContextMenu;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -154,7 +155,16 @@ public class SelectPlaylistActivity extends SubsonicTabActivity implements Adapt
 	public boolean onContextItemSelected(MenuItem menuItem)
 	{
 		AdapterView.AdapterContextMenuInfo info = (AdapterView.AdapterContextMenuInfo) menuItem.getMenuInfo();
+		if (info == null)
+		{
+			return false;
+		}
+
 		Playlist playlist = (Playlist) playlistsListView.getItemAtPosition(info.position);
+		if (playlist == null)
+		{
+			return false;
+		}
 
 		Intent intent;
 		switch (menuItem.getItemId())
@@ -214,8 +224,12 @@ public class SelectPlaylistActivity extends SubsonicTabActivity implements Adapt
 	@Override
 	public void onItemClick(AdapterView<?> parent, View view, int position, long id)
 	{
-
 		Playlist playlist = (Playlist) parent.getItemAtPosition(position);
+
+		if (playlist == null)
+		{
+			return;
+		}
 
 		Intent intent = new Intent(SelectPlaylistActivity.this, SelectAlbumActivity.class);
 		intent.putExtra(Constants.INTENT_EXTRA_NAME_PLAYLIST_ID, playlist.getId());
@@ -252,14 +266,7 @@ public class SelectPlaylistActivity extends SubsonicTabActivity implements Adapt
 					protected void error(Throwable error)
 					{
 						String msg;
-						if (error instanceof OfflineException || error instanceof ServerTooOldException)
-						{
-							msg = getErrorMessage(error);
-						}
-						else
-						{
-							msg = String.format("%s %s", getResources().getString(R.string.menu_deleted_playlist_error, playlist.getName()), getErrorMessage(error));
-						}
+						msg = error instanceof OfflineException || error instanceof ServerTooOldException ? getErrorMessage(error) : String.format("%s %s", getResources().getString(R.string.menu_deleted_playlist_error, playlist.getName()), getErrorMessage(error));
 
 						Util.toast(SelectPlaylistActivity.this, msg, false);
 					}
@@ -281,6 +288,12 @@ public class SelectPlaylistActivity extends SubsonicTabActivity implements Adapt
 	private void updatePlaylistInfo(final Playlist playlist)
 	{
 		View dialogView = getLayoutInflater().inflate(R.layout.update_playlist, null);
+
+		if (dialogView == null)
+		{
+			return;
+		}
+
 		final EditText nameBox = (EditText) dialogView.findViewById(R.id.get_playlist_name);
 		final EditText commentBox = (EditText) dialogView.findViewById(R.id.get_playlist_comment);
 		final CheckBox publicBox = (CheckBox) dialogView.findViewById(R.id.get_playlist_public);
@@ -288,6 +301,7 @@ public class SelectPlaylistActivity extends SubsonicTabActivity implements Adapt
 		nameBox.setText(playlist.getName());
 		commentBox.setText(playlist.getComment());
 		Boolean pub = playlist.getPublic();
+
 		if (pub == null)
 		{
 			publicBox.setEnabled(false);
@@ -312,8 +326,13 @@ public class SelectPlaylistActivity extends SubsonicTabActivity implements Adapt
 					@Override
 					protected Void doInBackground() throws Throwable
 					{
+						Editable nameBoxText = nameBox.getText();
+						Editable commentBoxText = commentBox.getText();
+						String name = nameBoxText != null ? nameBoxText.toString() : null;
+						String comment = commentBoxText != null ? commentBoxText.toString() : null;
+
 						MusicService musicService = MusicServiceFactory.getMusicService(SelectPlaylistActivity.this);
-						musicService.updatePlaylist(playlist.getId(), nameBox.getText().toString(), commentBox.getText().toString(), publicBox.isChecked(), SelectPlaylistActivity.this, null);
+						musicService.updatePlaylist(playlist.getId(), name, comment, publicBox.isChecked(), SelectPlaylistActivity.this, null);
 						return null;
 					}
 

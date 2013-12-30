@@ -100,14 +100,16 @@ public class SearchActivity extends SubsonicTabActivity
 
 		View buttons = LayoutInflater.from(this).inflate(R.layout.search_buttons, null);
 
-		artistsHeading = buttons.findViewById(R.id.search_artists);
-		albumsHeading = buttons.findViewById(R.id.search_albums);
-		songsHeading = buttons.findViewById(R.id.search_songs);
-
-		searchButton = (TextView) buttons.findViewById(R.id.search_search);
-		moreArtistsButton = buttons.findViewById(R.id.search_more_artists);
-		moreAlbumsButton = buttons.findViewById(R.id.search_more_albums);
-		moreSongsButton = buttons.findViewById(R.id.search_more_songs);
+		if (buttons != null)
+		{
+			artistsHeading = buttons.findViewById(R.id.search_artists);
+			albumsHeading = buttons.findViewById(R.id.search_albums);
+			songsHeading = buttons.findViewById(R.id.search_songs);
+			searchButton = (TextView) buttons.findViewById(R.id.search_search);
+			moreArtistsButton = buttons.findViewById(R.id.search_more_artists);
+			moreAlbumsButton = buttons.findViewById(R.id.search_more_albums);
+			moreSongsButton = buttons.findViewById(R.id.search_more_songs);
+		}
 
 		list = (ListView) findViewById(R.id.search_list);
 
@@ -210,11 +212,17 @@ public class SearchActivity extends SubsonicTabActivity
 		MenuItem shareButton = menu.findItem(R.id.menu_item_share);
 		MenuItem downloadMenuItem = menu.findItem(R.id.album_menu_download);
 
-		downloadMenuItem.setVisible(!Util.isOffline(this));
+		if (downloadMenuItem != null)
+		{
+			downloadMenuItem.setVisible(!Util.isOffline(this));
+		}
 
 		if (Util.isOffline(this) || isArtist)
 		{
-			shareButton.setVisible(false);
+			if (shareButton != null)
+			{
+				shareButton.setVisible(false);
+			}
 		}
 	}
 

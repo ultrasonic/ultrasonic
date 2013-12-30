@@ -116,24 +116,28 @@ public class FileUtil
 
 		if (albumArtDir == null || albumDir == null)
 		{
-				return null;
+			return null;
 		}
 
 		String md5Hex = Util.md5Hex(albumDir.getPath());
 		return new File(albumArtDir, String.format("%s.jpeg", md5Hex));
 	}
 
-	public static Bitmap getAlbumArtBitmap(Context context, MusicDirectory.Entry entry, int size, boolean highQuality) {
+	public static Bitmap getAlbumArtBitmap(Context context, MusicDirectory.Entry entry, int size, boolean highQuality)
+	{
 		File albumArtFile = getAlbumArtFile(context, entry);
 
-		if (albumArtFile != null && albumArtFile.exists()) {
+		if (albumArtFile != null && albumArtFile.exists())
+		{
 			final BitmapFactory.Options opt = new BitmapFactory.Options();
 
-			if (size > 0) {
+			if (size > 0)
+			{
 				opt.inJustDecodeBounds = true;
 				BitmapFactory.decodeFile(albumArtFile.getPath(), opt);
 
-				if (highQuality) {
+				if (highQuality)
+				{
 					opt.inDither = true;
 					opt.inPreferQualityOverSpeed = true;
 				}
@@ -156,11 +160,13 @@ public class FileUtil
 	{
 		final BitmapFactory.Options opt = new BitmapFactory.Options();
 
-		if (size > 0) {
+		if (size > 0)
+		{
 			opt.inJustDecodeBounds = true;
 			BitmapFactory.decodeByteArray(bytes, 0, bytes.length, opt);
 
-			if (highQuality) {
+			if (highQuality)
+			{
 				opt.inDither = true;
 				opt.inPreferQualityOverSpeed = true;
 			}
@@ -171,7 +177,7 @@ public class FileUtil
 		}
 
 		Log.i("getSampledBitmap", String.valueOf(size));
- 		return BitmapFactory.decodeByteArray(bytes, 0, bytes.length, opt);
+		return BitmapFactory.decodeByteArray(bytes, 0, bytes.length, opt);
 	}
 
 	public static File getArtistDirectory(Context context, Artist artist)
@@ -310,7 +316,7 @@ public class FileUtil
 	 */
 	private static String fileSystemSafe(String filename)
 	{
-		if (filename == null || filename.trim().length() == 0)
+		if (filename == null || filename.trim().isEmpty())
 		{
 			return "unnamed";
 		}
@@ -332,7 +338,7 @@ public class FileUtil
 	 */
 	private static String fileSystemSafeDir(String path)
 	{
-		if (path == null || path.trim().length() == 0)
+		if (path == null || path.trim().isEmpty())
 		{
 			return "";
 		}

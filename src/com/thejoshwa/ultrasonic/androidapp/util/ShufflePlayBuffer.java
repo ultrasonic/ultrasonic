@@ -44,7 +44,7 @@ public class ShufflePlayBuffer
 
 	private final ScheduledExecutorService executorService;
 	private final List<MusicDirectory.Entry> buffer = new ArrayList<MusicDirectory.Entry>();
-	private Context context;
+	private final Context context;
 	private int currentServer;
 
 	public ShufflePlayBuffer(Context context)

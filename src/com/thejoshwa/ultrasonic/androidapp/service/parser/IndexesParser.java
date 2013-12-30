@@ -18,20 +18,19 @@
  */
 package com.thejoshwa.ultrasonic.androidapp.service.parser;
 
-import java.io.Reader;
-import java.util.List;
-import java.util.ArrayList;
-
-import org.xmlpull.v1.XmlPullParser;
-
 import android.content.Context;
+import android.util.Log;
 
 import com.thejoshwa.ultrasonic.androidapp.R;
 import com.thejoshwa.ultrasonic.androidapp.domain.Artist;
 import com.thejoshwa.ultrasonic.androidapp.domain.Indexes;
 import com.thejoshwa.ultrasonic.androidapp.util.ProgressListener;
 
-import android.util.Log;
+import org.xmlpull.v1.XmlPullParser;
+
+import java.io.Reader;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * @author Sindre Mehus
@@ -75,7 +74,6 @@ public class IndexesParser extends AbstractParser
 				else if ("index".equals(name))
 				{
 					index = get("name");
-
 				}
 				else if ("artist".equals(name))
 				{
@@ -121,6 +119,6 @@ public class IndexesParser extends AbstractParser
 		String msg = getContext().getResources().getString(R.string.parser_artist_count, artists.size());
 		updateProgress(progressListener, msg);
 
-		return new Indexes(lastModified == null ? 0L : lastModified, shortcuts, artists);
+		return new Indexes(lastModified == null ? 0L : lastModified, ignoredArticles, shortcuts, artists);
 	}
 }

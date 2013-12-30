@@ -52,7 +52,7 @@ public class Playlist implements Serializable
 		this.comment = (comment == null) ? "" : comment;
 		this.songCount = (songCount == null) ? "" : songCount;
 		this.created = (created == null) ? "" : created;
-		this.pub = (pub == null) ? null : (pub.equals("true"));
+		this.pub = (pub == null) ? null : ("true".equals(pub));
 	}
 
 	public String getId()

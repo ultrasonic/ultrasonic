@@ -71,7 +71,14 @@ import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
 
-import static com.thejoshwa.ultrasonic.androidapp.domain.PlayerState.*;
+import static com.thejoshwa.ultrasonic.androidapp.domain.PlayerState.COMPLETED;
+import static com.thejoshwa.ultrasonic.androidapp.domain.PlayerState.DOWNLOADING;
+import static com.thejoshwa.ultrasonic.androidapp.domain.PlayerState.IDLE;
+import static com.thejoshwa.ultrasonic.androidapp.domain.PlayerState.PAUSED;
+import static com.thejoshwa.ultrasonic.androidapp.domain.PlayerState.PREPARED;
+import static com.thejoshwa.ultrasonic.androidapp.domain.PlayerState.PREPARING;
+import static com.thejoshwa.ultrasonic.androidapp.domain.PlayerState.STARTED;
+import static com.thejoshwa.ultrasonic.androidapp.domain.PlayerState.STOPPED;
 
 /**
  * @author Sindre Mehus, Joshua Bahnsen
@@ -1655,7 +1662,7 @@ public class DownloadServiceImpl extends Service implements DownloadService
 					{
 						setNextPlayerState(PREPARED);
 
-						if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN && (playerState == PlayerState.STARTED || playerState == PlayerState.PAUSED))
+						if (Util.getGaplessPlaybackPreference(DownloadServiceImpl.this) && Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN && (playerState == PlayerState.STARTED || playerState == PlayerState.PAUSED))
 						{
 							mediaPlayer.setNextMediaPlayer(nextMediaPlayer);
 							nextSetup = true;

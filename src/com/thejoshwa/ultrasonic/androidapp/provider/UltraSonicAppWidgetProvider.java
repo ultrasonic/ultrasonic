@@ -8,7 +8,6 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.res.Resources;
 import android.graphics.Bitmap;
-import android.graphics.drawable.Drawable;
 import android.os.Environment;
 import android.util.Log;
 import android.view.KeyEvent;
@@ -84,14 +83,14 @@ public class UltraSonicAppWidgetProvider extends AppWidgetProvider
 	private boolean hasInstances(Context context)
 	{
 		AppWidgetManager manager = AppWidgetManager.getInstance(context);
-		int[] appWidgetIds = new int[0];
 
 		if (manager != null)
 		{
-			appWidgetIds = manager.getAppWidgetIds(new ComponentName(context, getClass()));
+			int[] appWidgetIds = manager.getAppWidgetIds(new ComponentName(context, getClass()));
+			return (appWidgetIds.length > 0);
 		}
 
-		return (appWidgetIds.length > 0);
+		return false;
 	}
 
 	/**
@@ -158,11 +157,6 @@ public class UltraSonicAppWidgetProvider extends AppWidgetProvider
 		// Set the cover art
 		try
 		{
-			int size;
-			Resources resources = context.getResources();
-			Drawable drawable = resources.getDrawable(R.drawable.appwidget_art_default);
-			size = drawable != null ? drawable.getIntrinsicHeight() : 0;
-
 			Bitmap bitmap = currentPlaying == null ? null : FileUtil.getAlbumArtBitmap(context, currentPlaying, 240, true);
 
 			if (bitmap == null)

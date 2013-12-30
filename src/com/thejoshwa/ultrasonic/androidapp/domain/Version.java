@@ -32,14 +32,14 @@ public class Version implements Comparable<Version>
 	private int major;
 	private int minor;
 	private int beta;
-	private int bugfix;
+	private int bugFix;
 
 	/**
 	 * Creates a new version instance by parsing the given string.
 	 *
 	 * @param version A string of the format "1.27", "1.27.2" or "1.27.beta3".
 	 */
-	public Version(String version)
+	public Version(CharSequence version)
 	{
 		String[] s = COMPILE.split(version);
 		major = Integer.valueOf(s[0]);
@@ -53,7 +53,7 @@ public class Version implements Comparable<Version>
 			}
 			else
 			{
-				bugfix = Integer.valueOf(s[2]);
+				bugFix = Integer.valueOf(s[2]);
 			}
 		}
 	}
@@ -81,9 +81,7 @@ public class Version implements Comparable<Version>
 
 		final Version version = (Version) o;
 
-		if (beta != version.beta) return false;
-		if (bugfix != version.bugfix) return false;
-		return major == version.major && minor == version.minor;
+		return beta == version.beta && bugFix == version.bugFix && major == version.major && minor == version.minor;
 	}
 
 	/**
@@ -97,7 +95,7 @@ public class Version implements Comparable<Version>
 		result = major;
 		result = 29 * result + minor;
 		result = 29 * result + beta;
-		result = 29 * result + bugfix;
+		result = 29 * result + bugFix;
 		return result;
 	}
 
@@ -108,15 +106,15 @@ public class Version implements Comparable<Version>
 	 */
 	public String toString()
 	{
-		StringBuffer buf = new StringBuffer();
+		StringBuilder buf = new StringBuilder(3);
 		buf.append(major).append('.').append(minor);
 		if (beta != 0)
 		{
 			buf.append(".beta").append(beta);
 		}
-		else if (bugfix != 0)
+		else if (bugFix != 0)
 		{
-			buf.append('.').append(bugfix);
+			buf.append('.').append(bugFix);
 		}
 
 		return buf.toString();
@@ -136,7 +134,8 @@ public class Version implements Comparable<Version>
 		{
 			return -1;
 		}
-		else if (major > version.major)
+
+		if (major > version.major)
 		{
 			return 1;
 		}
@@ -145,16 +144,18 @@ public class Version implements Comparable<Version>
 		{
 			return -1;
 		}
-		else if (minor > version.minor)
+
+		if (minor > version.minor)
 		{
 			return 1;
 		}
 
-		if (bugfix < version.bugfix)
+		if (bugFix < version.bugFix)
 		{
 			return -1;
 		}
-		else if (bugfix > version.bugfix)
+
+		if (bugFix > version.bugFix)
 		{
 			return 1;
 		}
@@ -166,7 +167,8 @@ public class Version implements Comparable<Version>
 		{
 			return -1;
 		}
-		else if (thisBeta > otherBeta)
+
+		if (thisBeta > otherBeta)
 		{
 			return 1;
 		}

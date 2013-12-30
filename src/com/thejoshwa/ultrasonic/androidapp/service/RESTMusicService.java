@@ -266,7 +266,7 @@ public class RESTMusicService implements MusicService
 				return indexes;
 			}
 
-			return cachedIndexes != null ? cachedIndexes : new Indexes(0, new ArrayList<com.thejoshwa.ultrasonic.androidapp.domain.Artist>(), new ArrayList<com.thejoshwa.ultrasonic.androidapp.domain.Artist>());
+			return cachedIndexes != null ? cachedIndexes : new Indexes(0, null, new ArrayList<com.thejoshwa.ultrasonic.androidapp.domain.Artist>(), new ArrayList<com.thejoshwa.ultrasonic.androidapp.domain.Artist>());
 		}
 		finally
 		{
@@ -313,7 +313,7 @@ public class RESTMusicService implements MusicService
 				return indexes;
 			}
 
-			return cachedArtists != null ? cachedArtists : new Indexes(0, new ArrayList<com.thejoshwa.ultrasonic.androidapp.domain.Artist>(), new ArrayList<com.thejoshwa.ultrasonic.androidapp.domain.Artist>());
+			return cachedArtists != null ? cachedArtists : new Indexes(0, null, new ArrayList<com.thejoshwa.ultrasonic.androidapp.domain.Artist>(), new ArrayList<com.thejoshwa.ultrasonic.androidapp.domain.Artist>());
 		}
 		finally
 		{
@@ -852,7 +852,7 @@ public class RESTMusicService implements MusicService
 		Reader reader = getReaderForURL(context, VERSION_URL, null, null, null, progressListener);
 		try
 		{
-			return new VersionParser().parse(reader);
+			return VersionParser.parse(reader);
 		}
 		finally
 		{
@@ -997,7 +997,7 @@ public class RESTMusicService implements MusicService
 	@Override
 	public String getVideoUrl(Context context, String id, boolean useFlash) throws Exception
 	{
-		StringBuilder builder = new StringBuilder();
+		StringBuilder builder = new StringBuilder(5);
 		if (useFlash)
 		{
 			builder.append(Util.getRestUrl(context, "videoPlayer"));

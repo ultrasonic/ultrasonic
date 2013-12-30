@@ -2,10 +2,13 @@ package com.thejoshwa.ultrasonic.androidapp.util;
 
 import com.thejoshwa.ultrasonic.androidapp.domain.MusicDirectory;
 
+import java.io.Serializable;
 import java.util.Comparator;
 
-public class EntryByDiscAndTrackComparator implements Comparator<MusicDirectory.Entry>
+public class EntryByDiscAndTrackComparator implements Comparator<MusicDirectory.Entry>, Serializable
 {
+	private static final long serialVersionUID = 5540441864560835223L;
+
 	@Override
 	public int compare(MusicDirectory.Entry x, MusicDirectory.Entry y)
 	{
@@ -13,16 +16,8 @@ public class EntryByDiscAndTrackComparator implements Comparator<MusicDirectory.
 		Integer discY = y.getDiscNumber();
 		Integer trackX = x.getTrack();
 		Integer trackY = y.getTrack();
-		//		String parentX = x.getParent();
-		//		String parentY = y.getParent();
 		String albumX = x.getAlbum();
 		String albumY = y.getAlbum();
-
-		//		int parentComparison = compare(parentX, parentY);
-		//
-		//		if (parentComparison != 0) {
-		//			return parentComparison;
-		//		}
 
 		int albumComparison = compare(albumX, albumY);
 
@@ -41,24 +36,24 @@ public class EntryByDiscAndTrackComparator implements Comparator<MusicDirectory.
 		return compare(trackX == null ? 0 : trackX, trackY == null ? 0 : trackY);
 	}
 
-	private int compare(long a, long b)
+	private static int compare(long a, long b)
 	{
 		return a < b ? -1 : a > b ? 1 : 0;
 	}
 
-	private int compare(String a, String b)
+	private static int compare(String a, String b)
 	{
 		if (a == null && b == null)
 		{
 			return 0;
 		}
 
-		if (a == null && b != null)
+		if (a == null)
 		{
 			return -1;
 		}
 
-		if (a != null && b == null)
+		if (b == null)
 		{
 			return 1;
 		}

@@ -60,7 +60,7 @@ public class DownloadFile
 
 	private final MediaStoreService mediaStoreService;
 	private CancellableTask downloadTask;
-	private boolean save;
+	private final boolean save;
 	private boolean failed;
 	private int bitRate;
 	private volatile boolean isPlaying;
@@ -252,7 +252,6 @@ public class DownloadFile
 				catch (Exception e)
 				{
 					Log.w(TAG, String.format("Failed to set last-modified date on %s", file));
-					e.printStackTrace();
 				}
 			}
 		}

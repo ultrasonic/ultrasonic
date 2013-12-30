@@ -119,8 +119,6 @@ public class DownloadActivity extends SubsonicTabActivity implements OnGestureLi
 	private SilentBackgroundTask<Void> onProgressChangedTask;
 	LinearLayout visualizerViewLayout;
 	private MenuItem starMenuItem;
-	private MenuItem bookmarkMenuItem;
-	private MenuItem bookmarkRemoveMenuItem;
 
 	/**
 	 * Called when the activity is first created.
@@ -677,10 +675,9 @@ public class DownloadActivity extends SubsonicTabActivity implements OnGestureLi
 		final MenuItem equalizerMenuItem = menu.findItem(R.id.menu_item_equalizer);
 		final MenuItem visualizerMenuItem = menu.findItem(R.id.menu_item_visualizer);
 		final MenuItem shareMenuItem = menu.findItem(R.id.menu_item_share);
-		final MenuItem savePlaylistMenuItem = menu.findItem(R.id.menu_item_save_playlist);
 		starMenuItem = menu.findItem(R.id.menu_item_star);
-		bookmarkMenuItem = menu.findItem(R.id.menu_item_bookmark_set);
-		bookmarkRemoveMenuItem = menu.findItem(R.id.menu_item_bookmark_delete);
+		MenuItem bookmarkMenuItem = menu.findItem(R.id.menu_item_bookmark_set);
+		MenuItem bookmarkRemoveMenuItem = menu.findItem(R.id.menu_item_bookmark_delete);
 
 
 		if (Util.isOffline(this))
@@ -856,12 +853,22 @@ public class DownloadActivity extends SubsonicTabActivity implements OnGestureLi
 		switch (menuItemId)
 		{
 			case R.id.menu_show_album:
+				if (entry == null)
+				{
+					return false;
+				}
+
 				Intent intent = new Intent(this, SelectAlbumActivity.class);
 				intent.putExtra(Constants.INTENT_EXTRA_NAME_ID, entry.getParent());
 				intent.putExtra(Constants.INTENT_EXTRA_NAME_NAME, entry.getAlbum());
 				Util.startActivityWithoutTransition(this, intent);
 				return true;
 			case R.id.menu_lyrics:
+				if (entry == null)
+				{
+					return false;
+				}
+
 				intent = new Intent(this, LyricsActivity.class);
 				intent.putExtra(Constants.INTENT_EXTRA_NAME_ARTIST, entry.getArtist());
 				intent.putExtra(Constants.INTENT_EXTRA_NAME_TITLE, entry.getTitle());
@@ -920,7 +927,7 @@ public class DownloadActivity extends SubsonicTabActivity implements OnGestureLi
 				onDownloadListChanged();
 				return true;
 			case R.id.menu_item_save_playlist:
-				if (getDownloadService().getSongs().size() > 0)
+				if (!getDownloadService().getSongs().isEmpty())
 				{
 					showDialog(DIALOG_SAVE_PLAYLIST);
 				}

@@ -2,6 +2,7 @@ package com.thejoshwa.ultrasonic.androidapp.util;
 
 import android.content.Context;
 import android.content.res.Resources;
+import android.text.Editable;
 import android.util.AttributeSet;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -28,19 +29,22 @@ public class TimeSpanPicker extends LinearLayout implements AdapterView.OnItemSe
 	private Context context;
 	private View dialog;
 
-	public TimeSpanPicker(Context context) {
+	public TimeSpanPicker(Context context)
+	{
 		this(context, null);
 
 		this.context = context;
 	}
 
-	public TimeSpanPicker(Context context, AttributeSet attrs) {
+	public TimeSpanPicker(Context context, AttributeSet attrs)
+	{
 		this(context, attrs, 0);
 
 		this.context = context;
 	}
 
-	public TimeSpanPicker(Context context, AttributeSet attrs, int defStyle) {
+	public TimeSpanPicker(Context context, AttributeSet attrs, int defStyle)
+	{
 		super(context, attrs, defStyle);
 
 		this.context = context;
@@ -48,7 +52,7 @@ public class TimeSpanPicker extends LinearLayout implements AdapterView.OnItemSe
 		final LayoutInflater inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
 		dialog = inflater.inflate(R.layout.time_span_dialog, this, true);
 
-  	timeSpan = new TimeSpan(-1);
+		timeSpan = new TimeSpan(-1);
 
 		timeSpanEditText = (EditText) dialog.findViewById(R.id.timeSpanEditText);
 		timeSpanEditText.setText("0");
@@ -82,14 +86,7 @@ public class TimeSpanPicker extends LinearLayout implements AdapterView.OnItemSe
 
 	public TimeSpan getTimeSpan()
 	{
-		if (!timeSpanDisableCheckbox.isChecked())
-		{
-			this.timeSpan = getTimeSpanFromDialog(this.context, dialog);
-		}
-		else
-		{
-			this.timeSpan = new TimeSpan(0);
-		}
+		this.timeSpan = !timeSpanDisableCheckbox.isChecked() ? getTimeSpanFromDialog(this.context, dialog) : new TimeSpan(0);
 
 		return timeSpan;
 	}
@@ -120,7 +117,14 @@ public class TimeSpanPicker extends LinearLayout implements AdapterView.OnItemSe
 			return -1;
 		}
 
-		String timeSpanAmountString = timeSpanEditText.getText().toString();
+		Editable text = timeSpanEditText.getText();
+
+		String timeSpanAmountString = null;
+
+		if (text != null)
+		{
+			timeSpanAmountString = text.toString();
+		}
 
 		int timeSpanAmount = 0;
 
@@ -163,7 +167,14 @@ public class TimeSpanPicker extends LinearLayout implements AdapterView.OnItemSe
 		}
 
 		String timeSpanType = (String) timeSpanSpinner.getSelectedItem();
-		String timeSpanAmountString = timeSpanEditText.getText().toString();
+
+		Editable text = timeSpanEditText.getText();
+		String timeSpanAmountString = null;
+
+		if (text != null)
+		{
+			timeSpanAmountString = text.toString();
+		}
 
 		int timeSpanAmount = 0;
 
@@ -208,8 +219,14 @@ public class TimeSpanPicker extends LinearLayout implements AdapterView.OnItemSe
 	@Override
 	public void onItemSelected(AdapterView<?> parent, View view, int pos, long id)
 	{
-		String timeSpanType = (String)parent.getItemAtPosition(pos);
-		String timeSpanAmountString = timeSpanEditText.getText().toString();
+		String timeSpanType = (String) parent.getItemAtPosition(pos);
+		Editable text = timeSpanEditText.getText();
+		if (text == null)
+		{
+			return;
+		}
+
+		String timeSpanAmountString = text.toString();
 
 		int timeSpanAmount = 0;
 

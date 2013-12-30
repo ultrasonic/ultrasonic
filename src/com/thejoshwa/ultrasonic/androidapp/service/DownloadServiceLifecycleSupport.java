@@ -23,6 +23,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.os.AsyncTask;
+import android.os.Bundle;
 import android.telephony.PhoneStateListener;
 import android.telephony.TelephonyManager;
 import android.util.Log;
@@ -41,6 +42,7 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicBoolean;
+import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
 
 /**
@@ -58,7 +60,7 @@ public class DownloadServiceLifecycleSupport
 	private BroadcastReceiver ejectEventReceiver;
 	private PhoneStateListener phoneStateListener;
 	private boolean externalStorageAvailable = true;
-	private ReentrantLock lock = new ReentrantLock();
+	private Lock lock = new ReentrantLock();
 	private final AtomicBoolean setup = new AtomicBoolean(false);
 
 	/**
@@ -132,8 +134,15 @@ public class DownloadServiceLifecycleSupport
 			@Override
 			public void onReceive(Context context, Intent intent)
 			{
-				Log.i(TAG, String.format("Headset event for: %s", intent.getExtras().get("name")));
-				if (intent.getExtras().getInt("state") == 0)
+				Bundle extras = intent.getExtras();
+
+				if (extras == null)
+				{
+					return;
+				}
+
+				Log.i(TAG, String.format("Headset event for: %s", extras.get("name")));
+				if (extras.getInt("state") == 0)
 				{
 					if (!downloadService.isJukeboxEnabled())
 					{
@@ -235,7 +244,7 @@ public class DownloadServiceLifecycleSupport
 
 	public void serializeDownloadQueueNow()
 	{
-		List<DownloadFile> songs = new ArrayList<DownloadFile>(downloadService.getSongs());
+		Iterable<DownloadFile> songs = new ArrayList<DownloadFile>(downloadService.getSongs());
 		State state = new State();
 		for (DownloadFile downloadFile : songs)
 		{

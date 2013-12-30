@@ -18,8 +18,8 @@
  */
 package com.thejoshwa.ultrasonic.androidapp.domain;
 
-import java.util.List;
 import java.io.Serializable;
+import java.util.List;
 
 /**
  * @author Sindre Mehus
@@ -32,12 +32,14 @@ public class Indexes implements Serializable
 	 */
 	private static final long serialVersionUID = 8156117238598414701L;
 	private final long lastModified;
+	private final String ignoredArticles;
 	private final List<com.thejoshwa.ultrasonic.androidapp.domain.Artist> shortcuts;
 	private final List<com.thejoshwa.ultrasonic.androidapp.domain.Artist> artists;
 
-	public Indexes(long lastModified, List<com.thejoshwa.ultrasonic.androidapp.domain.Artist> shortcuts, List<com.thejoshwa.ultrasonic.androidapp.domain.Artist> artists)
+	public Indexes(long lastModified, String ignoredArticles, List<Artist> shortcuts, List<Artist> artists)
 	{
 		this.lastModified = lastModified;
+		this.ignoredArticles = ignoredArticles;
 		this.shortcuts = shortcuts;
 		this.artists = artists;
 	}
@@ -55,5 +57,10 @@ public class Indexes implements Serializable
 	public List<com.thejoshwa.ultrasonic.androidapp.domain.Artist> getArtists()
 	{
 		return artists;
+	}
+
+	public String getIgnoredArticles()
+	{
+		return ignoredArticles;
 	}
 }

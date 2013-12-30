@@ -454,14 +454,17 @@ public class SubsonicTabActivity extends Activity implements OnClickListener
 		}.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
 	}
 
-	public void hidePlayingNotification(final Handler handler, final DownloadServiceImpl downloadService) {
+	public void hidePlayingNotification(final Handler handler, final DownloadServiceImpl downloadService)
+	{
 
 		currentSong = null;
 
 		// Remove notification and remove the service from the foreground
-		handler.post(new Runnable(){
+		handler.post(new Runnable()
+		{
 			@Override
-			public void run() {
+			public void run()
+			{
 				downloadService.stopForeground(true);
 			}
 		});
@@ -637,7 +640,7 @@ public class SubsonicTabActivity extends Activity implements OnClickListener
 
 					if (saveAsDefaultsCheckBox.isChecked())
 					{
-						String timeSpanType =	timeSpanPicker.getTimeSpanType();
+						String timeSpanType = timeSpanPicker.getTimeSpanType();
 						int timeSpanAmount = timeSpanPicker.getTimeSpanAmount();
 						Util.setDefaultShareExpiration(SubsonicTabActivity.this, !noExpirationCheckBox.isChecked() && timeSpanAmount > 0 ? String.format("%d:%s", timeSpanAmount, timeSpanType) : "");
 						Util.setDefaultShareDescription(SubsonicTabActivity.this, shareDetails.Description);
@@ -775,7 +778,7 @@ public class SubsonicTabActivity extends Activity implements OnClickListener
 		task.execute();
 	}
 
-	public void setTextViewTextOnUiThread(final RemoteViews view, final int id, final String text)
+	public void setTextViewTextOnUiThread(final RemoteViews view, final int id, final CharSequence text)
 	{
 		this.runOnUiThread(new Runnable()
 		{
@@ -805,7 +808,7 @@ public class SubsonicTabActivity extends Activity implements OnClickListener
 		});
 	}
 
-	public void setImageViewResourceOnUiThread(final RemoteViews view, final int id, final int resouce)
+	public void setImageViewResourceOnUiThread(final RemoteViews view, final int id, final int resource)
 	{
 		this.runOnUiThread(new Runnable()
 		{
@@ -814,7 +817,7 @@ public class SubsonicTabActivity extends Activity implements OnClickListener
 			{
 				if (view != null)
 				{
-					view.setImageViewResource(id, resouce);
+					view.setImageViewResource(id, resource);
 				}
 			}
 		});

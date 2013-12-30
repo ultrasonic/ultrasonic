@@ -35,8 +35,8 @@ public class VisualizerController
 	private static final int PREFERRED_CAPTURE_SIZE = 128; // Must be a power of two.
 
 	private Visualizer visualizer;
-	private boolean released = false;
-	private int audioSessionId = 0;
+	private boolean released;
+	private int audioSessionId;
 
 	// Class initialization fails when this throws an exception.
 	static
@@ -63,6 +63,11 @@ public class VisualizerController
 	{
 		try
 		{
+			if (mediaPlayer == null)
+			{
+				return;
+			}
+
 			audioSessionId = mediaPlayer.getAudioSessionId();
 			visualizer = new Visualizer(audioSessionId);
 		}

@@ -28,7 +28,6 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.ApplicationInfo;
 import android.content.pm.PackageManager;
-import android.content.res.Resources;
 import android.content.res.TypedArray;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -75,8 +74,6 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.io.UnsupportedEncodingException;
-import java.lang.reflect.Constructor;
-import java.lang.reflect.Method;
 import java.security.MessageDigest;
 import java.text.DecimalFormat;
 import java.text.NumberFormat;
@@ -439,7 +436,7 @@ public class Util extends DownloadActivity
 	 * @param input the <code>InputStream</code> to read from
 	 * @return the requested byte array
 	 * @throws NullPointerException if the input is null
-	 * @throws java.io.IOException          if an I/O error occurs
+	 * @throws java.io.IOException  if an I/O error occurs
 	 */
 	public static byte[] toByteArray(InputStream input) throws IOException
 	{
@@ -833,9 +830,9 @@ public class Util extends DownloadActivity
 		}
 	}
 
-	public static void startActivityWithoutTransition(Activity currentActivity, Class<? extends Activity> newActivitiy)
+	public static void startActivityWithoutTransition(Activity currentActivity, Class<? extends Activity> newActivity)
 	{
-		startActivityWithoutTransition(currentActivity, new Intent(currentActivity, newActivitiy));
+		startActivityWithoutTransition(currentActivity, new Intent(currentActivity, newActivity));
 	}
 
 	public static void startActivityWithoutTransition(Activity currentActivity, Intent intent)
@@ -846,18 +843,7 @@ public class Util extends DownloadActivity
 
 	public static void disablePendingTransition(Activity activity)
 	{
-
-		// Activity.overridePendingTransition() was introduced in Android 2.0.  Use reflection to maintain
-		// compatibility with 1.5.
-		try
-		{
-			Method method = Activity.class.getMethod("overridePendingTransition", int.class, int.class);
-			method.invoke(activity, 0, 0);
-		}
-		catch (Throwable x)
-		{
-			// Ignored
-		}
+		activity.overridePendingTransition(0, 0);
 	}
 
 	public static Drawable getDrawableFromAttribute(Context context, int attr)
@@ -877,17 +863,7 @@ public class Util extends DownloadActivity
 
 	public static Drawable createDrawableFromBitmap(Context context, Bitmap bitmap)
 	{
-		// BitmapDrawable(Resources, Bitmap) was introduced in Android 1.6.  Use reflection to maintain
-		// compatibility with 1.5.
-		try
-		{
-			Constructor<BitmapDrawable> constructor = BitmapDrawable.class.getConstructor(Resources.class, Bitmap.class);
-			return constructor.newInstance(context.getResources(), bitmap);
-		}
-		catch (Throwable x)
-		{
-			return new BitmapDrawable(context.getResources(), bitmap);
-		}
+		return new BitmapDrawable(context.getResources(), bitmap);
 	}
 
 	public static WifiManager.WifiLock createWifiLock(Context context, String tag)
@@ -1393,7 +1369,7 @@ public class Util extends DownloadActivity
 	public static boolean getGaplessPlaybackPreference(Context context)
 	{
 		SharedPreferences preferences = getPreferences(context);
-		return preferences.getBoolean(Constants.PREFERENCES_KEY_GAPLESS_PLAYBACK, true);
+		return preferences.getBoolean(Constants.PREFERENCES_KEY_GAPLESS_PLAYBACK, false);
 	}
 
 	public static boolean getShouldTransitionOnPlaybackPreference(Context context)
@@ -1593,7 +1569,7 @@ public class Util extends DownloadActivity
 	{
 		SharedPreferences preferences = getPreferences(context);
 		return preferences.getString(Constants.PREFERENCES_KEY_DEFAULT_SHARE_EXPIRATION, "0");
-  }
+	}
 
 	public static long getDefaultShareExpirationInMillis(Context context)
 	{

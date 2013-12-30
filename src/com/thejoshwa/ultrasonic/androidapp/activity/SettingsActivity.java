@@ -19,6 +19,7 @@
 package com.thejoshwa.ultrasonic.androidapp.activity;
 
 import android.app.ActionBar;
+import android.app.Dialog;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Build;
@@ -89,12 +90,11 @@ public class SettingsActivity extends PreferenceActivity implements SharedPrefer
 	private CheckBoxPreference sendBluetoothNotifications;
 	private CheckBoxPreference sendBluetoothAlbumArt;
 	private ListPreference viewRefresh;
-	private CheckBoxPreference sharingAlwaysAskForDetails;
 	private EditTextPreference sharingDefaultDescription;
 	private EditTextPreference sharingDefaultGreeting;
 	private TimeSpanPreference sharingDefaultExpiration;
 	private int maxServerCount = 10;
-	private int minServerCount = 0;
+	private int minServerCount;
 
 	private static final String STATE_MENUDRAWER = "com.thejoshwa.ultrasonic.androidapp.menuDrawer";
 	private static final String STATE_ACTIVE_VIEW_ID = "com.thejoshwa.ultrasonic.androidapp.activeViewId";
@@ -184,24 +184,28 @@ public class SettingsActivity extends PreferenceActivity implements SharedPrefer
 		sendBluetoothAlbumArt = (CheckBoxPreference) findPreference(Constants.PREFERENCES_KEY_SEND_BLUETOOTH_ALBUM_ART);
 		sendBluetoothNotifications = (CheckBoxPreference) findPreference(Constants.PREFERENCES_KEY_SEND_BLUETOOTH_NOTIFICATIONS);
 		viewRefresh = (ListPreference) findPreference(Constants.PREFERENCES_KEY_VIEW_REFRESH);
-		sharingAlwaysAskForDetails = (CheckBoxPreference) findPreference(Constants.PREFERENCES_KEY_ASK_FOR_SHARE_DETAILS);
 		sharingDefaultDescription = (EditTextPreference) findPreference(Constants.PREFERENCES_KEY_DEFAULT_SHARE_DESCRIPTION);
 		sharingDefaultGreeting = (EditTextPreference) findPreference(Constants.PREFERENCES_KEY_DEFAULT_SHARE_GREETING);
 		sharingDefaultExpiration = (TimeSpanPreference) findPreference(Constants.PREFERENCES_KEY_DEFAULT_SHARE_EXPIRATION);
 
 		sharingDefaultGreeting.setText(Util.getShareGreeting(this));
 
-		findPreference(Constants.PREFERENCES_KEY_CLEAR_SEARCH_HISTORY).setOnPreferenceClickListener(new Preference.OnPreferenceClickListener()
+		Preference clearSearchPreference = findPreference(Constants.PREFERENCES_KEY_CLEAR_SEARCH_HISTORY);
+
+		if (clearSearchPreference != null)
 		{
-			@Override
-			public boolean onPreferenceClick(Preference preference)
+			clearSearchPreference.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener()
 			{
-				SearchRecentSuggestions suggestions = new SearchRecentSuggestions(SettingsActivity.this, SearchSuggestionProvider.AUTHORITY, SearchSuggestionProvider.MODE);
-				suggestions.clearHistory();
-				Util.toast(SettingsActivity.this, R.string.settings_search_history_cleared);
-				return false;
-			}
-		});
+				@Override
+				public boolean onPreferenceClick(Preference preference)
+				{
+					SearchRecentSuggestions suggestions = new SearchRecentSuggestions(SettingsActivity.this, SearchSuggestionProvider.AUTHORITY, SearchSuggestionProvider.MODE);
+					suggestions.clearHistory();
+					Util.toast(SettingsActivity.this, R.string.settings_search_history_cleared);
+					return false;
+				}
+			});
+		}
 
 		if (Build.VERSION.SDK_INT < Build.VERSION_CODES.JELLY_BEAN)
 		{
@@ -231,15 +235,20 @@ public class SettingsActivity extends PreferenceActivity implements SharedPrefer
 
 			serversCategory.addPreference(addServer(i));
 
-			findPreference(Constants.PREFERENCES_KEY_TEST_CONNECTION + i).setOnPreferenceClickListener(new Preference.OnPreferenceClickListener()
+			Preference testConnectionPreference = findPreference(Constants.PREFERENCES_KEY_TEST_CONNECTION + i);
+
+			if (testConnectionPreference != null)
 			{
-				@Override
-				public boolean onPreferenceClick(Preference preference)
+				testConnectionPreference.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener()
 				{
-					testConnection(instanceValue);
-					return false;
-				}
-			});
+					@Override
+					public boolean onPreferenceClick(Preference preference)
+					{
+						testConnection(instanceValue);
+						return false;
+					}
+				});
+			}
 
 			String instance = String.valueOf(i);
 			serverSettings.put(instance, new ServerSettings(instance));
@@ -262,14 +271,23 @@ public class SettingsActivity extends PreferenceActivity implements SharedPrefer
 				prefEditor.commit();
 
 				Preference addServerPreference = findPreference(Constants.PREFERENCES_KEY_ADD_SERVER);
-				serversCategory.removePreference(addServerPreference);
+
+				if (addServerPreference != null)
+				{
+					serversCategory.removePreference(addServerPreference);
+				}
+
 				serversCategory.addPreference(addServer(activeServers));
-				serversCategory.addPreference(addServerPreference);
+
+				if (addServerPreference != null)
+				{
+					serversCategory.addPreference(addServerPreference);
+					addServerPreference.setEnabled(activeServers < maxServerCount);
+				}
 
 				String instance = String.valueOf(activeServers);
 				serverSettings.put(instance, new ServerSettings(instance));
 
-				addServerPreference.setEnabled(activeServers < maxServerCount);
 				applyTheme();
 
 				return true;
@@ -333,7 +351,10 @@ public class SettingsActivity extends PreferenceActivity implements SharedPrefer
 
 		serverUrlPreference.setSummary(serverUrlPreference.getText());
 
-		screen.setSummary(serverUrlPreference.getText());
+		if (screen != null)
+		{
+			screen.setSummary(serverUrlPreference.getText());
+		}
 
 		final EditTextPreference serverUsernamePreference = new EditTextPreference(this);
 		serverUsernamePreference.setKey(Constants.PREFERENCES_KEY_USERNAME + instance);
@@ -391,14 +412,22 @@ public class SettingsActivity extends PreferenceActivity implements SharedPrefer
 
 				activeServers--;
 
-				serversCategory.removePreference(screen);
+				if (screen != null)
+				{
+					serversCategory.removePreference(screen);
+					Dialog dialog = screen.getDialog();
+
+					if (dialog != null)
+					{
+						dialog.dismiss();
+					}
+				}
 
 				SharedPreferences.Editor prefEditor = settings.edit();
 				prefEditor.putInt(Constants.PREFERENCES_KEY_ACTIVE_SERVERS, activeServers);
 				prefEditor.commit();
 
 				addServerPreference.setEnabled(activeServers < maxServerCount);
-				screen.getDialog().dismiss();
 
 				return true;
 			}
@@ -419,14 +448,17 @@ public class SettingsActivity extends PreferenceActivity implements SharedPrefer
 			}
 		});
 
-		screen.addPreference(serverNamePreference);
-		screen.addPreference(serverUrlPreference);
-		screen.addPreference(serverUsernamePreference);
-		screen.addPreference(serverPasswordPreference);
-		screen.addPreference(serverEnabledPreference);
-		screen.addPreference(jukeboxEnabledPreference);
-		screen.addPreference(serverRemoveServerPreference);
-		screen.addPreference(serverTestConnectionPreference);
+		if (screen != null)
+		{
+			screen.addPreference(serverNamePreference);
+			screen.addPreference(serverUrlPreference);
+			screen.addPreference(serverUsernamePreference);
+			screen.addPreference(serverPasswordPreference);
+			screen.addPreference(serverEnabledPreference);
+			screen.addPreference(jukeboxEnabledPreference);
+			screen.addPreference(serverRemoveServerPreference);
+			screen.addPreference(serverTestConnectionPreference);
+		}
 
 		return screen;
 	}

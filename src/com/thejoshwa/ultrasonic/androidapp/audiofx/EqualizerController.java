@@ -70,6 +70,11 @@ public class EqualizerController
 
 		try
 		{
+			if (mediaPlayer == null)
+			{
+				return;
+			}
+
 			audioSessionId = mediaPlayer.getAudioSessionId();
 			equalizer = new Equalizer(0, audioSessionId);
 		}

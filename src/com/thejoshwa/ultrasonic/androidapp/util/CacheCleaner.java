@@ -108,7 +108,7 @@ public class CacheCleaner
 
 	private long getMinimumDelete(List<File> files)
 	{
-		if (files.size() == 0)
+		if (files.isEmpty())
 		{
 			return 0L;
 		}

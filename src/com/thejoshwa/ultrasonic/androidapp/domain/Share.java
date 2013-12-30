@@ -5,10 +5,12 @@ import com.thejoshwa.ultrasonic.androidapp.domain.MusicDirectory.Entry;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.regex.Pattern;
 
 public class Share implements Serializable
 {
 	private static final long serialVersionUID = 1487561657691009668L;
+	private static final Pattern urlPattern = Pattern.compile(".*/([^/?]+).*");
 	private String id;
 	private String url;
 	private String description;
@@ -26,7 +28,7 @@ public class Share implements Serializable
 
 	public String getName()
 	{
-		return url.replaceFirst(".*/([^/?]+).*", "$1");
+		return urlPattern.matcher(url).replaceFirst("$1");
 	}
 
 	public String getId()

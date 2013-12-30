@@ -1,13 +1,12 @@
 package com.thejoshwa.ultrasonic.androidapp.domain;
 
+import com.thejoshwa.ultrasonic.androidapp.domain.MusicDirectory.Entry;
+
 import java.io.Serializable;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
-import java.util.List;
 import java.util.Locale;
-
-import com.thejoshwa.ultrasonic.androidapp.domain.MusicDirectory.Entry;
 
 public class Bookmark implements Serializable
 {
