@@ -29,6 +29,11 @@
             a:summary="@string/settings.use_folder_for_album_artist_summary"
             a:title="@string/settings.use_folder_for_album_artist" />
         <CheckBoxPreference
+            a:defaultValue="false"
+            a:key="showAllSongsByArtist"
+            a:summary="@string/settings.show_all_songs_by_artist_summary"
+            a:title="@string/settings.show_all_songs_by_artist"/>
+        <CheckBoxPreference
             a:defaultValue="true"
             a:key="showTrackNumber"
             a:summary="@string/settings.show_track_number_summary"
@@ -56,11 +61,6 @@
             a:key="mediaButtons"
             a:summary="@string/settings.media_button_summary"
             a:title="@string/settings.media_button_title" />
-        <CheckBoxPreference
-            a:defaultValue="false"
-            a:key="showAllSongsByArtist"
-            a:summary="@string/settings.show_all_songs_by_artist_summary"
-            a:title="@string/settings.show_all_songs_by_artist"/>
         <CheckBoxPreference
             a:defaultValue="true"
             a:key="transitionToDownloadOnPlay"
