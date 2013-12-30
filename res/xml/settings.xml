@@ -50,8 +50,10 @@
             a:key="viewRefresh"
             a:title="@string/settings.view_refresh" />
     </PreferenceCategory>
-    <PreferenceCategory a:title="@string/settings.playback_control_title" >
-        <CheckBoxPreference
+    <PreferenceCategory
+        a:title="@string/settings.playback_control_title"
+        a:key="playbackControlSettings">
+    <CheckBoxPreference
             a:defaultValue="false"
             a:key="useId3Tags"
             a:summary="@string/settings.use_id3_summary"

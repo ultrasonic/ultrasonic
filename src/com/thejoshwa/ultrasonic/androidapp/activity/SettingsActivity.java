@@ -180,7 +180,6 @@ public class SettingsActivity extends PreferenceActivity implements SharedPrefer
 		directoryCacheTime = (ListPreference) findPreference(Constants.PREFERENCES_KEY_DIRECTORY_CACHE_TIME);
 		mediaButtonsEnabled = (CheckBoxPreference) findPreference(Constants.PREFERENCES_KEY_MEDIA_BUTTONS);
 		lockScreenEnabled = (CheckBoxPreference) findPreference(Constants.PREFERENCES_KEY_SHOW_LOCK_SCREEN_CONTROLS);
-		CheckBoxPreference gaplessPlaybackEnabled = (CheckBoxPreference) findPreference(Constants.PREFERENCES_KEY_GAPLESS_PLAYBACK);
 		sendBluetoothAlbumArt = (CheckBoxPreference) findPreference(Constants.PREFERENCES_KEY_SEND_BLUETOOTH_ALBUM_ART);
 		sendBluetoothNotifications = (CheckBoxPreference) findPreference(Constants.PREFERENCES_KEY_SEND_BLUETOOTH_NOTIFICATIONS);
 		viewRefresh = (ListPreference) findPreference(Constants.PREFERENCES_KEY_VIEW_REFRESH);
@@ -209,10 +208,18 @@ public class SettingsActivity extends PreferenceActivity implements SharedPrefer
 
 		if (Build.VERSION.SDK_INT < Build.VERSION_CODES.JELLY_BEAN)
 		{
+			PreferenceCategory playbackControlSettings = (PreferenceCategory) findPreference(Constants.PREFERENCES_KEY_PLAYBACK_CONTROL_SETTINGS);
+			CheckBoxPreference gaplessPlaybackEnabled = (CheckBoxPreference) findPreference(Constants.PREFERENCES_KEY_GAPLESS_PLAYBACK);
+
 			if (gaplessPlaybackEnabled != null)
 			{
 				gaplessPlaybackEnabled.setChecked(false);
 				gaplessPlaybackEnabled.setEnabled(false);
+
+				if (playbackControlSettings != null)
+				{
+					playbackControlSettings.removePreference(gaplessPlaybackEnabled);
+				}
 			}
 		}
 
