@@ -31,9 +31,18 @@
         <item>500</item>
         <item>1000</item>
         <item>2000</item>
+        <item>3000</item>
+        <item>4000</item>
         <item>5000</item>
+        <item>6000</item>
+        <item>7000</item>
+        <item>8000</item>
+        <item>9000</item>
         <item>10000</item>
+        <item>15000</item>
         <item>20000</item>
+        <item>25000</item>
+        <item>30000</item>
         <item>-1</item>
     </string-array>
     <string-array name="cacheSizeNames">
@@ -42,9 +51,18 @@
         <item>@string/settings.cache_size_500</item>
         <item>@string/settings.cache_size_1000</item>
         <item>@string/settings.cache_size_2000</item>
+        <item>@string/settings.cache_size_3000</item>
+        <item>@string/settings.cache_size_4000</item>
         <item>@string/settings.cache_size_5000</item>
+        <item>@string/settings.cache_size_6000</item>
+        <item>@string/settings.cache_size_7000</item>
+        <item>@string/settings.cache_size_8000</item>
+        <item>@string/settings.cache_size_9000</item>
         <item>@string/settings.cache_size_10000</item>
+        <item>@string/settings.cache_size_15000</item>
         <item>@string/settings.cache_size_20000</item>
+        <item>@string/settings.cache_size_25000</item>
+        <item>@string/settings.cache_size_30000</item>
         <item>@string/settings.cache_size_unlimited</item>
     </string-array>
     <string-array name="maxBitrateValues">

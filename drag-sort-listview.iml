@@ -8,7 +8,6 @@
         <option name="MANIFEST_FILE_RELATIVE_PATH" value="/drag-sort-listview/library/AndroidManifest.xml" />
         <option name="RES_FOLDER_RELATIVE_PATH" value="/drag-sort-listview/library/res" />
         <option name="LIBRARY_PROJECT" value="true" />
-        <option name="UPDATE_PROPERTY_FILES" value="true" />
       </configuration>
     </facet>
   </component>
