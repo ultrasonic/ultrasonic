@@ -368,10 +368,10 @@
     <string name="settings.video_default">Alapértelmezett</string>
     <string name="settings.video_flash">Flash</string>
     <string name="menu.share">Megosztás</string>
-    <string name="select_album_all_songs">All Songs by %s</string>
-    <string name="settings.show_all_songs_by_artist">Show All Songs By Artist</string>
-    <string name="settings.show_all_songs_by_artist_summary">Add new entry in artist view to access all songs for an artist</string>
-    <string name="download.menu_show_artist">Show Artist</string>
+    <string name="select_album_all_songs">%s minden dala</string>
+    <string name="settings.show_all_songs_by_artist">Az előadó összes dalának megjelenítése</string>
+    <string name="settings.show_all_songs_by_artist_summary">Új bejegyzés hozzáadása az előadóhoz, az előadó összes dalának eléréséhez.</string>
+    <string name="download.menu_show_artist">Ugrás az előadóhoz</string>
 
     <plurals name="select_album_n_songs">
         <item quantity="zero">Nincsenek dalok</item>
