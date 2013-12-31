@@ -1450,10 +1450,24 @@ public class DownloadServiceImpl extends Service implements DownloadService
 			switch (playerState)
 			{
 				case STARTED:
-					remoteControlClient.setPlaybackState(RemoteControlClient.PLAYSTATE_PLAYING);
+					if (Build.VERSION.SDK_INT < Build.VERSION_CODES.JELLY_BEAN_MR2)
+					{
+						remoteControlClient.setPlaybackState(RemoteControlClient.PLAYSTATE_PLAYING);
+					}
+					else
+					{
+						remoteControlClient.setPlaybackState(RemoteControlClient.PLAYSTATE_PLAYING, getPlayerPosition(), 1);
+					}
 					break;
 				case PAUSED:
-					remoteControlClient.setPlaybackState(RemoteControlClient.PLAYSTATE_PAUSED);
+					if (Build.VERSION.SDK_INT < Build.VERSION_CODES.JELLY_BEAN_MR2)
+					{
+						remoteControlClient.setPlaybackState(RemoteControlClient.PLAYSTATE_PAUSED);
+					}
+					else
+					{
+						remoteControlClient.setPlaybackState(RemoteControlClient.PLAYSTATE_PAUSED, getPlayerPosition(), 1);
+					}
 					break;
 				case DOWNLOADING:
 				case PREPARING:
@@ -1463,8 +1477,10 @@ public class DownloadServiceImpl extends Service implements DownloadService
 				case COMPLETED:
 				case PREPARED:
 				case STOPPED:
-				default:
 					remoteControlClient.setPlaybackState(RemoteControlClient.PLAYSTATE_STOPPED);
+					break;
+				default:
+					remoteControlClient.setPlaybackState(RemoteControlClient.PLAYSTATE_PAUSED);
 					break;
 			}
 
@@ -1486,7 +1502,7 @@ public class DownloadServiceImpl extends Service implements DownloadService
 					String artist = currentSong.getArtist();
 					String album = currentSong.getAlbum();
 					String title = String.format("%s - %s", artist, currentSong.getTitle());
-					Integer duration = currentSong.getDuration();
+					Long duration = Long.valueOf(currentSong.getDuration() * 1000);
 
 					// Update the remote controls
 					remoteControlClient.editMetadata(true).putString(MediaMetadataRetriever.METADATA_KEY_TITLE, title).putString(MediaMetadataRetriever.METADATA_KEY_ARTIST, artist).putString(MediaMetadataRetriever.METADATA_KEY_ALBUM, album).apply();
