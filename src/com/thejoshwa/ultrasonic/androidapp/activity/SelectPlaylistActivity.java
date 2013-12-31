@@ -110,7 +110,7 @@ public class SelectPlaylistActivity extends SubsonicTabActivity implements Adapt
 		finish();
 		Intent intent = new Intent(this, SelectPlaylistActivity.class);
 		intent.putExtra(Constants.INTENT_EXTRA_NAME_REFRESH, true);
-		Util.startActivityWithoutTransition(this, intent);
+		startActivityForResultWithoutTransition(this, intent);
 	}
 
 	private void load()
@@ -188,7 +188,7 @@ public class SelectPlaylistActivity extends SubsonicTabActivity implements Adapt
 				intent.putExtra(Constants.INTENT_EXTRA_NAME_PLAYLIST_ID, playlist.getId());
 				intent.putExtra(Constants.INTENT_EXTRA_NAME_PLAYLIST_NAME, playlist.getName());
 				intent.putExtra(Constants.INTENT_EXTRA_NAME_AUTOPLAY, true);
-				Util.startActivityWithoutTransition(SelectPlaylistActivity.this, intent);
+				startActivityForResultWithoutTransition(SelectPlaylistActivity.this, intent);
 				break;
 			case R.id.playlist_menu_play_shuffled:
 				intent = new Intent(SelectPlaylistActivity.this, SelectAlbumActivity.class);
@@ -196,7 +196,7 @@ public class SelectPlaylistActivity extends SubsonicTabActivity implements Adapt
 				intent.putExtra(Constants.INTENT_EXTRA_NAME_PLAYLIST_NAME, playlist.getName());
 				intent.putExtra(Constants.INTENT_EXTRA_NAME_AUTOPLAY, true);
 				intent.putExtra(Constants.INTENT_EXTRA_NAME_SHUFFLE, true);
-				Util.startActivityWithoutTransition(SelectPlaylistActivity.this, intent);
+				startActivityForResultWithoutTransition(SelectPlaylistActivity.this, intent);
 				break;
 			case R.id.playlist_menu_delete:
 				deletePlaylist(playlist);
@@ -239,7 +239,7 @@ public class SelectPlaylistActivity extends SubsonicTabActivity implements Adapt
 		Intent intent = new Intent(SelectPlaylistActivity.this, SelectAlbumActivity.class);
 		intent.putExtra(Constants.INTENT_EXTRA_NAME_PLAYLIST_ID, playlist.getId());
 		intent.putExtra(Constants.INTENT_EXTRA_NAME_PLAYLIST_NAME, playlist.getName());
-		Util.startActivityWithoutTransition(SelectPlaylistActivity.this, intent);
+		startActivityForResultWithoutTransition(SelectPlaylistActivity.this, intent);
 	}
 
 	private void deletePlaylist(final Playlist playlist)

@@ -18,7 +18,6 @@
  */
 package com.thejoshwa.ultrasonic.androidapp.activity;
 
-import android.app.Activity;
 import android.media.audiofx.Equalizer;
 import android.os.Bundle;
 import android.view.ContextMenu;
@@ -45,7 +44,7 @@ import java.util.Map;
  * @author Sindre Mehus
  * @version $Id$
  */
-public class EqualizerActivity extends Activity
+public class EqualizerActivity extends ResultActivity
 {
 	private static final int MENU_GROUP_PRESET = 100;
 

@@ -185,7 +185,6 @@ public class BookmarkActivity extends SubsonicTabActivity
 		menuDrawer.setActiveView(browseMenuItem);
 
 		getBookmarks();
-
 	}
 
 	private void getBookmarks()
@@ -236,7 +235,7 @@ public class BookmarkActivity extends SubsonicTabActivity
 		finish();
 		Intent intent = getIntent();
 		intent.putExtra(Constants.INTENT_EXTRA_NAME_REFRESH, true);
-		Util.startActivityWithoutTransition(this, intent);
+		startActivityForResultWithoutTransition(this, intent);
 	}
 
 	@Override

@@ -112,7 +112,7 @@ public class ShareActivity extends SubsonicTabActivity implements AdapterView.On
 		finish();
 		Intent intent = new Intent(this, ShareActivity.class);
 		intent.putExtra(Constants.INTENT_EXTRA_NAME_REFRESH, true);
-		Util.startActivityWithoutTransition(this, intent);
+		startActivityForResultWithoutTransition(this, intent);
 	}
 
 	private void load()
@@ -219,7 +219,7 @@ public class ShareActivity extends SubsonicTabActivity implements AdapterView.On
 		Intent intent = new Intent(ShareActivity.this, SelectAlbumActivity.class);
 		intent.putExtra(Constants.INTENT_EXTRA_NAME_SHARE_ID, share.getId());
 		intent.putExtra(Constants.INTENT_EXTRA_NAME_SHARE_NAME, share.getName());
-		Util.startActivityWithoutTransition(ShareActivity.this, intent);
+		startActivityForResultWithoutTransition(ShareActivity.this, intent);
 	}
 
 	private void deleteShare(final Share share)

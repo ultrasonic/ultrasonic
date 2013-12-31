@@ -123,7 +123,7 @@ public class SelectAlbumActivity extends SubsonicTabActivity
 						intent.putExtra(Constants.INTENT_EXTRA_NAME_IS_ALBUM, entry.isDirectory());
 						intent.putExtra(Constants.INTENT_EXTRA_NAME_NAME, entry.getTitle());
 						intent.putExtra(Constants.INTENT_EXTRA_NAME_PARENT_ID, entry.getParent());
-						Util.startActivityWithoutTransition(SelectAlbumActivity.this, intent);
+						startActivityForResultWithoutTransition(SelectAlbumActivity.this, intent);
 					}
 					else if (entry != null && entry.isVideo())
 					{
@@ -394,7 +394,7 @@ public class SelectAlbumActivity extends SubsonicTabActivity
 		finish();
 		Intent intent = getIntent();
 		intent.putExtra(Constants.INTENT_EXTRA_NAME_REFRESH, true);
-		Util.startActivityWithoutTransition(this, intent);
+		startActivityForResultWithoutTransition(this, intent);
 	}
 
 	@Override
@@ -490,7 +490,7 @@ public class SelectAlbumActivity extends SubsonicTabActivity
 			case R.id.main_shuffle:
 				Intent intent1 = new Intent(this, DownloadActivity.class);
 				intent1.putExtra(Constants.INTENT_EXTRA_NAME_SHUFFLE, true);
-				Util.startActivityWithoutTransition(this, intent1);
+				startActivityForResultWithoutTransition(this, intent1);
 				return true;
 			case R.id.select_album_play_all:
 				playAll();
@@ -733,7 +733,7 @@ public class SelectAlbumActivity extends SubsonicTabActivity
 						intent.putExtra(Constants.INTENT_EXTRA_NAME_GENRE_NAME, genre);
 						intent.putExtra(Constants.INTENT_EXTRA_NAME_ALBUM_LIST_SIZE, size);
 						intent.putExtra(Constants.INTENT_EXTRA_NAME_ALBUM_LIST_OFFSET, offset);
-						Util.startActivityWithoutTransition(SelectAlbumActivity.this, intent);
+						startActivityForResultWithoutTransition(SelectAlbumActivity.this, intent);
 					}
 				});
 
@@ -880,7 +880,7 @@ public class SelectAlbumActivity extends SubsonicTabActivity
 								intent.putExtra(Constants.INTENT_EXTRA_NAME_ALBUM_LIST_TYPE, type);
 								intent.putExtra(Constants.INTENT_EXTRA_NAME_ALBUM_LIST_SIZE, size);
 								intent.putExtra(Constants.INTENT_EXTRA_NAME_ALBUM_LIST_OFFSET, offset);
-								Util.startActivityWithoutTransition(SelectAlbumActivity.this, intent);
+								startActivityForResultWithoutTransition(SelectAlbumActivity.this, intent);
 							}
 						});
 					}
@@ -1091,7 +1091,7 @@ public class SelectAlbumActivity extends SubsonicTabActivity
 				}
 			}
 
- 			final int listSize = getIntent().getIntExtra(Constants.INTENT_EXTRA_NAME_ALBUM_LIST_SIZE, 0);
+			final int listSize = getIntent().getIntExtra(Constants.INTENT_EXTRA_NAME_ALBUM_LIST_SIZE, 0);
 
 			if (songCount > 0)
 			{
@@ -1135,7 +1135,7 @@ public class SelectAlbumActivity extends SubsonicTabActivity
 								intent.putExtra(Constants.INTENT_EXTRA_NAME_RANDOM, 1);
 								intent.putExtra(Constants.INTENT_EXTRA_NAME_ALBUM_LIST_SIZE, listSize);
 								intent.putExtra(Constants.INTENT_EXTRA_NAME_ALBUM_LIST_OFFSET, offset);
-								Util.startActivityWithoutTransition(SelectAlbumActivity.this, intent);
+								startActivityForResultWithoutTransition(SelectAlbumActivity.this, intent);
 							}
 						});
 					}

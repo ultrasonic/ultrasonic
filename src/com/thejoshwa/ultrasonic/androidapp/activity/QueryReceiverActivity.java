@@ -19,7 +19,6 @@
 
 package com.thejoshwa.ultrasonic.androidapp.activity;
 
-import android.app.Activity;
 import android.app.SearchManager;
 import android.content.Intent;
 import android.os.Bundle;
@@ -34,7 +33,7 @@ import com.thejoshwa.ultrasonic.androidapp.util.Util;
  *
  * @author Sindre Mehus
  */
-public class QueryReceiverActivity extends Activity
+public class QueryReceiverActivity extends ResultActivity
 {
 
 	@Override
@@ -51,7 +50,7 @@ public class QueryReceiverActivity extends Activity
 
 			Intent intent = new Intent(QueryReceiverActivity.this, SearchActivity.class);
 			intent.putExtra(Constants.INTENT_EXTRA_NAME_QUERY, query);
-			Util.startActivityWithoutTransition(QueryReceiverActivity.this, intent);
+			startActivityForResultWithoutTransition(QueryReceiverActivity.this, intent);
 		}
 		finish();
 		Util.disablePendingTransition(this);

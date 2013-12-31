@@ -876,7 +876,7 @@ public class DownloadActivity extends SubsonicTabActivity implements OnGestureLi
 					intent.putExtra(Constants.INTENT_EXTRA_NAME_NAME, entry.getArtist());
 					intent.putExtra(Constants.INTENT_EXTRA_NAME_PARENT_ID, entry.getArtistId());
 					intent.putExtra(Constants.INTENT_EXTRA_NAME_ARTIST, true);
-					Util.startActivityWithoutTransition(DownloadActivity.this, intent);
+					startActivityForResultWithoutTransition(DownloadActivity.this, intent);
 				}
 
 				return true;
@@ -889,7 +889,7 @@ public class DownloadActivity extends SubsonicTabActivity implements OnGestureLi
 				Intent intent = new Intent(this, SelectAlbumActivity.class);
 				intent.putExtra(Constants.INTENT_EXTRA_NAME_ID, entry.getParent());
 				intent.putExtra(Constants.INTENT_EXTRA_NAME_NAME, entry.getAlbum());
-				Util.startActivityWithoutTransition(this, intent);
+				startActivityForResultWithoutTransition(this, intent);
 				return true;
 			case R.id.menu_lyrics:
 				if (entry == null)
@@ -900,7 +900,7 @@ public class DownloadActivity extends SubsonicTabActivity implements OnGestureLi
 				intent = new Intent(this, LyricsActivity.class);
 				intent.putExtra(Constants.INTENT_EXTRA_NAME_ARTIST, entry.getArtist());
 				intent.putExtra(Constants.INTENT_EXTRA_NAME_TITLE, entry.getTitle());
-				Util.startActivityWithoutTransition(this, intent);
+				startActivityForResultWithoutTransition(this, intent);
 				return true;
 			case R.id.menu_remove:
 				getDownloadService().remove(song);
@@ -1237,7 +1237,6 @@ public class DownloadActivity extends SubsonicTabActivity implements OnGestureLi
 			{
 
 			}
-
 
 			@Override
 			public void remove(int which)

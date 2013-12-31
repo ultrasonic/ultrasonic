@@ -20,7 +20,6 @@ package com.thejoshwa.ultrasonic.androidapp.activity;
 
 import android.annotation.SuppressLint;
 import android.app.ActionBar;
-import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.Dialog;
 import android.app.Notification;
@@ -91,7 +90,7 @@ import java.util.regex.Pattern;
 /**
  * @author Sindre Mehus
  */
-public class SubsonicTabActivity extends Activity implements OnClickListener
+public class SubsonicTabActivity extends ResultActivity implements OnClickListener
 {
 	private static final String TAG = SubsonicTabActivity.class.getSimpleName();
 	private static final Pattern COMPILE = Pattern.compile(":");
@@ -254,7 +253,7 @@ public class SubsonicTabActivity extends Activity implements OnClickListener
 		Intent intent = new Intent(this, this.getClass());
 		intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
 		intent.putExtras(getIntent());
-		Util.startActivityWithoutTransition(this, intent);
+		startActivityForResultWithoutTransition(this, intent);
 	}
 
 	@Override
@@ -542,7 +541,7 @@ public class SubsonicTabActivity extends Activity implements OnClickListener
 					@Override
 					public void onClick(View view)
 					{
-						Util.startActivityWithoutTransition(SubsonicTabActivity.this, intent);
+						startActivityForResultWithoutTransition(SubsonicTabActivity.this, intent);
 					}
 				});
 
@@ -551,7 +550,7 @@ public class SubsonicTabActivity extends Activity implements OnClickListener
 
 				ImageView nowPlayingControlPlay = (ImageView) nowPlayingView.findViewById(R.id.now_playing_control_play);
 
-				SwipeDetector swipeDetector = SwipeDetector.Create(SubsonicTabActivity.this, downloadService);
+				SwipeDetector swipeDetector = new SwipeDetector(SubsonicTabActivity.this, downloadService);
 				setOnTouchListenerOnUiThread(nowPlayingView, swipeDetector);
 
 				setOnClickListenerOnUiThread(nowPlayingView, new OnClickListener()
@@ -997,7 +996,7 @@ public class SubsonicTabActivity extends Activity implements OnClickListener
 				{
 					if (Util.getShouldTransitionOnPlaybackPreference(SubsonicTabActivity.this))
 					{
-						Util.startActivityWithoutTransition(SubsonicTabActivity.this, DownloadActivity.class);
+						startActivityForResultWithoutTransition(SubsonicTabActivity.this, DownloadActivity.class);
 					}
 				}
 				else if (save)
@@ -1164,7 +1163,7 @@ public class SubsonicTabActivity extends Activity implements OnClickListener
 							downloadService.download(songs, save, autoplay, playNext, shuffle, false);
 							if (!append && Util.getShouldTransitionOnPlaybackPreference(SubsonicTabActivity.this))
 							{
-								Util.startActivityWithoutTransition(SubsonicTabActivity.this, DownloadActivity.class);
+								startActivityForResultWithoutTransition(SubsonicTabActivity.this, DownloadActivity.class);
 							}
 						}
 					}
@@ -1419,48 +1418,48 @@ public class SubsonicTabActivity extends Activity implements OnClickListener
 			case R.id.menu_home:
 				intent = new Intent(SubsonicTabActivity.this, MainActivity.class);
 				intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-				Util.startActivityWithoutTransition(SubsonicTabActivity.this, intent);
+				startActivityForResultWithoutTransition(SubsonicTabActivity.this, intent);
 				break;
 			case R.id.menu_browse:
 				intent = new Intent(SubsonicTabActivity.this, SelectArtistActivity.class);
 				intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-				Util.startActivityWithoutTransition(SubsonicTabActivity.this, intent);
+				startActivityForResultWithoutTransition(SubsonicTabActivity.this, intent);
 				break;
 			case R.id.menu_search:
 				intent = new Intent(SubsonicTabActivity.this, SearchActivity.class);
 				intent.putExtra(Constants.INTENT_EXTRA_REQUEST_SEARCH, true);
-				Util.startActivityWithoutTransition(SubsonicTabActivity.this, intent);
+				startActivityForResultWithoutTransition(SubsonicTabActivity.this, intent);
 				break;
 			case R.id.menu_playlists:
 				intent = new Intent(SubsonicTabActivity.this, SelectPlaylistActivity.class);
 				intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-				Util.startActivityWithoutTransition(SubsonicTabActivity.this, intent);
+				startActivityForResultWithoutTransition(SubsonicTabActivity.this, intent);
 				break;
 			case R.id.menu_shares:
 				intent = new Intent(SubsonicTabActivity.this, ShareActivity.class);
 				intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-				Util.startActivityWithoutTransition(SubsonicTabActivity.this, intent);
+				startActivityForResultWithoutTransition(SubsonicTabActivity.this, intent);
 				break;
 			case R.id.menu_chat:
-				Util.startActivityWithoutTransition(SubsonicTabActivity.this, ChatActivity.class);
+				startActivityForResultWithoutTransition(SubsonicTabActivity.this, ChatActivity.class);
 				break;
 			case R.id.menu_bookmarks:
-				Util.startActivityWithoutTransition(this, BookmarkActivity.class);
+				startActivityForResultWithoutTransition(this, BookmarkActivity.class);
 				break;
 			case R.id.menu_now_playing:
-				Util.startActivityWithoutTransition(SubsonicTabActivity.this, DownloadActivity.class);
+				startActivityForResultWithoutTransition(SubsonicTabActivity.this, DownloadActivity.class);
 				break;
 			case R.id.menu_settings:
-				Util.startActivityWithoutTransition(SubsonicTabActivity.this, SettingsActivity.class);
+				startActivityForResultWithoutTransition(SubsonicTabActivity.this, SettingsActivity.class);
 				break;
 			case R.id.menu_about:
-				Util.startActivityWithoutTransition(SubsonicTabActivity.this, HelpActivity.class);
+				startActivityForResultWithoutTransition(SubsonicTabActivity.this, HelpActivity.class);
 				break;
 			case R.id.menu_exit:
 				intent = new Intent(SubsonicTabActivity.this, MainActivity.class);
 				intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
 				intent.putExtra(Constants.INTENT_EXTRA_NAME_EXIT, true);
-				Util.startActivityWithoutTransition(SubsonicTabActivity.this, intent);
+				startActivityForResultWithoutTransition(SubsonicTabActivity.this, intent);
 				break;
 		}
 
@@ -1497,15 +1496,12 @@ public class SubsonicTabActivity extends Activity implements OnClickListener
 		super.onBackPressed();
 	}
 
-	static class SwipeDetector implements OnTouchListener
+	protected class SwipeDetector implements OnTouchListener
 	{
-
-		public static SwipeDetector Create(SubsonicTabActivity activity, final DownloadService downloadService)
+		public SwipeDetector(SubsonicTabActivity activity, final DownloadService downloadService)
 		{
-			SwipeDetector swipeDetector = new SwipeDetector();
-			swipeDetector.downloadService = downloadService;
-			swipeDetector.activity = activity;
-			return swipeDetector;
+			this.downloadService = downloadService;
+			this.activity = activity;
 		}
 
 		private static final int MIN_DISTANCE = 30;
@@ -1560,7 +1556,7 @@ public class SubsonicTabActivity extends Activity implements OnClickListener
 						}
 					}
 
-					Util.startActivityWithoutTransition(activity, DownloadActivity.class);
+					SubsonicTabActivity.this.startActivityForResultWithoutTransition(activity, DownloadActivity.class);
 					return false;
 				}
 			}

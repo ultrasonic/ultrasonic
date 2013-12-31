@@ -172,19 +172,19 @@ public class SearchActivity extends SubsonicTabActivity
 	{
 		super.onNewIntent(intent);
 		String query = intent.getStringExtra(Constants.INTENT_EXTRA_NAME_QUERY);
-		boolean autoplay = intent.getBooleanExtra(Constants.INTENT_EXTRA_NAME_AUTOPLAY, false);
-		boolean requestsearch = intent.getBooleanExtra(Constants.INTENT_EXTRA_REQUEST_SEARCH, false);
+		boolean autoPlay = intent.getBooleanExtra(Constants.INTENT_EXTRA_NAME_AUTOPLAY, false);
+		boolean requestSearch = intent.getBooleanExtra(Constants.INTENT_EXTRA_REQUEST_SEARCH, false);
 
 		if (query != null)
 		{
 			mergeAdapter = new MergeAdapter();
 			list.setAdapter(mergeAdapter);
-			search(query, autoplay);
+			search(query, autoPlay);
 		}
 		else
 		{
 			populateList();
-			if (requestsearch) onSearchRequested();
+			if (requestSearch) onSearchRequested();
 		}
 	}
 
@@ -493,7 +493,7 @@ public class SearchActivity extends SubsonicTabActivity
 		Intent intent = new Intent(this, SelectAlbumActivity.class);
 		intent.putExtra(Constants.INTENT_EXTRA_NAME_ID, artist.getId());
 		intent.putExtra(Constants.INTENT_EXTRA_NAME_NAME, artist.getName());
-		Util.startActivityWithoutTransition(this, intent);
+		startActivityForResultWithoutTransition(this, intent);
 	}
 
 	private void onAlbumSelected(MusicDirectory.Entry album, boolean autoplay)
@@ -503,7 +503,7 @@ public class SearchActivity extends SubsonicTabActivity
 		intent.putExtra(Constants.INTENT_EXTRA_NAME_NAME, album.getTitle());
 		intent.putExtra(Constants.INTENT_EXTRA_NAME_IS_ALBUM, album.isDirectory());
 		intent.putExtra(Constants.INTENT_EXTRA_NAME_AUTOPLAY, autoplay);
-		Util.startActivityWithoutTransition(SearchActivity.this, intent);
+		startActivityForResultWithoutTransition(SearchActivity.this, intent);
 	}
 
 	private void onSongSelected(MusicDirectory.Entry song, boolean save, boolean append, boolean autoplay, boolean playNext)

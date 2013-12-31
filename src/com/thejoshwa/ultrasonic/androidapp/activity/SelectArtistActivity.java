@@ -129,7 +129,7 @@ public class SelectArtistActivity extends SubsonicTabActivity implements Adapter
 		String title = getIntent().getStringExtra(Constants.INTENT_EXTRA_NAME_ALBUM_LIST_TITLE);
 		intent.putExtra(Constants.INTENT_EXTRA_NAME_ALBUM_LIST_TITLE, title);
 		intent.putExtra(Constants.INTENT_EXTRA_NAME_REFRESH, true);
-		Util.startActivityWithoutTransition(this, intent);
+		startActivityForResultWithoutTransition(this, intent);
 	}
 
 	private void selectFolder()
@@ -221,7 +221,7 @@ public class SelectArtistActivity extends SubsonicTabActivity implements Adapter
 				intent.putExtra(Constants.INTENT_EXTRA_NAME_NAME, artist.getName());
 				intent.putExtra(Constants.INTENT_EXTRA_NAME_PARENT_ID, artist.getId());
 				intent.putExtra(Constants.INTENT_EXTRA_NAME_ARTIST, true);
-				Util.startActivityWithoutTransition(this, intent);
+				startActivityForResultWithoutTransition(this, intent);
 			}
 		}
 	}
@@ -335,7 +335,7 @@ public class SelectArtistActivity extends SubsonicTabActivity implements Adapter
 			case R.id.main_shuffle:
 				Intent intent = new Intent(this, DownloadActivity.class);
 				intent.putExtra(Constants.INTENT_EXTRA_NAME_SHUFFLE, true);
-				Util.startActivityWithoutTransition(this, intent);
+				startActivityForResultWithoutTransition(this, intent);
 				return true;
 		}
 

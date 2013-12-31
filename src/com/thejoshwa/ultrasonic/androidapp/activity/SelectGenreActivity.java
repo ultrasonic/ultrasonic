@@ -102,7 +102,7 @@ public class SelectGenreActivity extends SubsonicTabActivity implements AdapterV
 		finish();
 		Intent intent = getIntent();
 		intent.putExtra(Constants.INTENT_EXTRA_NAME_REFRESH, true);
-		Util.startActivityWithoutTransition(this, intent);
+		startActivityForResultWithoutTransition(this, intent);
 	}
 
 	private void load()
@@ -154,7 +154,7 @@ public class SelectGenreActivity extends SubsonicTabActivity implements AdapterV
 			intent.putExtra(Constants.INTENT_EXTRA_NAME_GENRE_NAME, genre.getName());
 			intent.putExtra(Constants.INTENT_EXTRA_NAME_ALBUM_LIST_SIZE, Util.getMaxSongs(this));
 			intent.putExtra(Constants.INTENT_EXTRA_NAME_ALBUM_LIST_OFFSET, 0);
-			Util.startActivityWithoutTransition(this, intent);
+			startActivityForResultWithoutTransition(this, intent);
 		}
 	}
 
@@ -169,7 +169,7 @@ public class SelectGenreActivity extends SubsonicTabActivity implements AdapterV
 			case R.id.main_shuffle:
 				Intent intent = new Intent(this, DownloadActivity.class);
 				intent.putExtra(Constants.INTENT_EXTRA_NAME_SHUFFLE, true);
-				Util.startActivityWithoutTransition(this, intent);
+				startActivityForResultWithoutTransition(this, intent);
 				return true;
 		}
 

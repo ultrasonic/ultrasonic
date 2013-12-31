@@ -830,17 +830,6 @@ public class Util extends DownloadActivity
 		}
 	}
 
-	public static void startActivityWithoutTransition(Activity currentActivity, Class<? extends Activity> newActivity)
-	{
-		startActivityWithoutTransition(currentActivity, new Intent(currentActivity, newActivity));
-	}
-
-	public static void startActivityWithoutTransition(Activity currentActivity, Intent intent)
-	{
-		currentActivity.startActivity(intent);
-		disablePendingTransition(currentActivity);
-	}
-
 	public static void disablePendingTransition(Activity activity)
 	{
 		activity.overridePendingTransition(0, 0);

@@ -20,7 +20,6 @@
 package com.thejoshwa.ultrasonic.androidapp.activity;
 
 import android.app.ActionBar;
-import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.KeyEvent;
@@ -45,7 +44,7 @@ import net.simonvt.menudrawer.Position;
  *
  * @author Sindre Mehus
  */
-public final class HelpActivity extends Activity implements OnClickListener
+public final class HelpActivity extends ResultActivity implements OnClickListener
 {
 	private WebView webView;
 	private ImageView backButton;
@@ -256,48 +255,48 @@ public final class HelpActivity extends Activity implements OnClickListener
 
 				intent = new Intent(this, MainActivity.class);
 				intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-				Util.startActivityWithoutTransition(this, intent);
+				startActivityForResultWithoutTransition(this, intent);
 				break;
 			case R.id.menu_browse:
 				intent = new Intent(this, SelectArtistActivity.class);
 				intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-				Util.startActivityWithoutTransition(this, intent);
+				startActivityForResultWithoutTransition(this, intent);
 				break;
 			case R.id.menu_search:
 				intent = new Intent(this, SearchActivity.class);
 				intent.putExtra(Constants.INTENT_EXTRA_REQUEST_SEARCH, true);
-				Util.startActivityWithoutTransition(this, intent);
+				startActivityForResultWithoutTransition(this, intent);
 				break;
 			case R.id.menu_playlists:
 				intent = new Intent(this, SelectPlaylistActivity.class);
 				intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-				Util.startActivityWithoutTransition(this, intent);
+				startActivityForResultWithoutTransition(this, intent);
 				break;
 			case R.id.menu_shares:
 				intent = new Intent(this, ShareActivity.class);
 				intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-				Util.startActivityWithoutTransition(this, intent);
+				startActivityForResultWithoutTransition(this, intent);
 				break;
 			case R.id.menu_chat:
-				Util.startActivityWithoutTransition(this, ChatActivity.class);
+				startActivityForResultWithoutTransition(this, ChatActivity.class);
 				break;
 			case R.id.menu_bookmarks:
-				Util.startActivityWithoutTransition(this, BookmarkActivity.class);
+				startActivityForResultWithoutTransition(this, BookmarkActivity.class);
 				break;
 			case R.id.menu_now_playing:
-				Util.startActivityWithoutTransition(this, DownloadActivity.class);
+				startActivityForResultWithoutTransition(this, DownloadActivity.class);
 				break;
 			case R.id.menu_settings:
-				Util.startActivityWithoutTransition(this, SettingsActivity.class);
+				startActivityForResultWithoutTransition(this, SettingsActivity.class);
 				break;
 			case R.id.menu_about:
-				Util.startActivityWithoutTransition(this, HelpActivity.class);
+				startActivityForResultWithoutTransition(this, HelpActivity.class);
 				break;
 			case R.id.menu_exit:
 				intent = new Intent(this, MainActivity.class);
 				intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
 				intent.putExtra(Constants.INTENT_EXTRA_NAME_EXIT, true);
-				Util.startActivityWithoutTransition(this, intent);
+				startActivityForResultWithoutTransition(this, intent);
 				break;
 		}
 

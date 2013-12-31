@@ -140,6 +140,7 @@ public final class Constants
 	public static final String ALBUM_ART_FILE = "folder.jpeg";
 	public static final String STARRED = "starred";
 	public static final String ALPHABETICAL_BY_NAME = "alphabeticalByName";
+	public static final int RESULT_CLOSE_ALL = 1337;
 
 	private Constants()
 	{
