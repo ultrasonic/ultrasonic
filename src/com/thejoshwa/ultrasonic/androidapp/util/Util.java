@@ -1259,7 +1259,9 @@ public class Util extends DownloadActivity
 	{
 
 		Intent intent = new Intent(context, playerActive ? DownloadActivity.class : MainActivity.class);
-		PendingIntent pendingIntent = PendingIntent.getActivity(context, 0, intent, 0);
+		intent.setAction("android.intent.action.MAIN");
+		intent.addCategory("android.intent.category.LAUNCHER");
+		PendingIntent pendingIntent = PendingIntent.getActivity(context, 0, intent, PendingIntent.FLAG_UPDATE_CURRENT);
 		views.setOnClickPendingIntent(R.id.appwidget_coverart, pendingIntent);
 		views.setOnClickPendingIntent(R.id.appwidget_top, pendingIntent);
 
