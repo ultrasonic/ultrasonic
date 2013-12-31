@@ -131,7 +131,7 @@ public class UltraSonicAppWidgetProvider extends AppWidgetProvider
 			{
 				views.setTextViewText(R.id.album, null);
 			}
-			views.setImageViewResource(R.id.appwidget_coverart, R.drawable.appwidget_art_default);
+			views.setImageViewResource(R.id.appwidget_coverart, R.drawable.unknown_album_large);
 		}
 		else
 		{
@@ -162,7 +162,7 @@ public class UltraSonicAppWidgetProvider extends AppWidgetProvider
 			if (bitmap == null)
 			{
 				// Set default cover art
-				views.setImageViewResource(R.id.appwidget_coverart, R.drawable.appwidget_art_default);
+				views.setImageViewResource(R.id.appwidget_coverart, R.drawable.unknown_album_large);
 			}
 			else
 			{
@@ -172,7 +172,7 @@ public class UltraSonicAppWidgetProvider extends AppWidgetProvider
 		catch (Exception x)
 		{
 			Log.e(TAG, "Failed to load cover art", x);
-			views.setImageViewResource(R.id.appwidget_coverart, R.drawable.appwidget_art_default);
+			views.setImageViewResource(R.id.appwidget_coverart, R.drawable.unknown_album_large);
 		}
 
 		// Link actions buttons to intents
