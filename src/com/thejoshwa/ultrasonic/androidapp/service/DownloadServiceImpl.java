@@ -865,6 +865,8 @@ public class DownloadServiceImpl extends Service implements DownloadService
 
 	private synchronized void play(int index, boolean start)
 	{
+		updateRemoteControl();
+
 		if (index < 0 || index >= size())
 		{
 			resetPlayback();
