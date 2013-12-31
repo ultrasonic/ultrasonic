@@ -1444,7 +1444,7 @@ public class DownloadServiceImpl extends Service implements DownloadService
 				audioManager.registerRemoteControlClient(remoteControlClient);
 			}
 
-			Log.i(TAG, String.format("In updateRemoteControl, playerState: %s", playerState));
+			Log.i(TAG, String.format("In updateRemoteControl, playerState: %s [%d]", playerState, getPlayerPosition()));
 
 			switch (playerState)
 			{
@@ -1512,6 +1512,15 @@ public class DownloadServiceImpl extends Service implements DownloadService
 			catch (Exception e)
 			{
 				Log.e(TAG, "Exception in updateRemoteControl", e);
+			}
+		}
+		else
+		{
+			if (remoteControlClient != null)
+			{
+				remoteControlClient.setPlaybackState(RemoteControlClient.PLAYSTATE_STOPPED);
+				audioManager.unregisterRemoteControlClient(remoteControlClient);
+				remoteControlClient = null;
 			}
 		}
 	}
