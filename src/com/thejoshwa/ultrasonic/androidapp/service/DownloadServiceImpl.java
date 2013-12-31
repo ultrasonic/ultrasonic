@@ -1429,10 +1429,9 @@ public class DownloadServiceImpl extends Service implements DownloadService
 		{
 			if (remoteControlClient == null)
 			{
-				Log.i(TAG, "In updateRemoteControl, setting up remote control");
 
 				Intent intent = new Intent(Intent.ACTION_MEDIA_BUTTON);
-				intent.setComponent(new ComponentName(this.getPackageName(), MediaButtonIntentReceiver.class.getName()));
+				intent.setComponent(new ComponentName(getPackageName(), MediaButtonIntentReceiver.class.getName()));
 				remoteControlClient = new RemoteControlClient(PendingIntent.getBroadcast(this, 0, intent, 0));
 
 				remoteControlClient.setTransportControlFlags(RemoteControlClient.FLAG_KEY_MEDIA_PLAY |
@@ -1502,22 +1501,17 @@ public class DownloadServiceImpl extends Service implements DownloadService
 					String artist = currentSong.getArtist();
 					String album = currentSong.getAlbum();
 					String title = String.format("%s - %s", artist, currentSong.getTitle());
-					Long duration = Long.valueOf(currentSong.getDuration() * 1000);
+					Long duration = (long) currentSong.getDuration() * 1000;
 
 					// Update the remote controls
 					remoteControlClient.editMetadata(true).putString(MediaMetadataRetriever.METADATA_KEY_TITLE, title).putString(MediaMetadataRetriever.METADATA_KEY_ARTIST, artist).putString(MediaMetadataRetriever.METADATA_KEY_ALBUM, album).apply();
-
-					if (duration != null)
-					{
-						remoteControlClient.editMetadata(false).putLong(MediaMetadataRetriever.METADATA_KEY_DURATION, duration).apply();
-					}
-
 					remoteControlClient.editMetadata(false).putBitmap(RemoteControlClient.MetadataEditor.BITMAP_KEY_ARTWORK, lockScreenBitmap).apply();
+					remoteControlClient.editMetadata(false).putLong(MediaMetadataRetriever.METADATA_KEY_DURATION, duration).apply();
 				}
 			}
 			catch (Exception e)
 			{
-				Log.e(TAG, "Exception in setRemoteControl", e);
+				Log.e(TAG, "Exception in updateRemoteControl", e);
 			}
 		}
 	}
