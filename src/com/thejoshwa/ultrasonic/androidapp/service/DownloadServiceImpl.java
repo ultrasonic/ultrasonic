@@ -1429,6 +1429,8 @@ public class DownloadServiceImpl extends Service implements DownloadService
 		{
 			if (remoteControlClient == null)
 			{
+				Log.i(TAG, "In updateRemoteControl, setting up remote control");
+
 				Intent intent = new Intent(Intent.ACTION_MEDIA_BUTTON);
 				intent.setComponent(new ComponentName(this.getPackageName(), MediaButtonIntentReceiver.class.getName()));
 				remoteControlClient = new RemoteControlClient(PendingIntent.getBroadcast(this, 0, intent, 0));
@@ -1439,9 +1441,11 @@ public class DownloadServiceImpl extends Service implements DownloadService
 						RemoteControlClient.FLAG_KEY_MEDIA_PREVIOUS |
 						RemoteControlClient.FLAG_KEY_MEDIA_PLAY_PAUSE |
 						RemoteControlClient.FLAG_KEY_MEDIA_STOP);
+
+				audioManager.registerRemoteControlClient(remoteControlClient);
 			}
 
-			audioManager.registerRemoteControlClient(remoteControlClient);
+			Log.i(TAG, String.format("In updateRemoteControl, playerState: %s", playerState));
 
 			switch (playerState)
 			{
@@ -1451,15 +1455,16 @@ public class DownloadServiceImpl extends Service implements DownloadService
 				case PAUSED:
 					remoteControlClient.setPlaybackState(RemoteControlClient.PLAYSTATE_PAUSED);
 					break;
+				case DOWNLOADING:
+				case PREPARING:
+					remoteControlClient.setPlaybackState(RemoteControlClient.PLAYSTATE_BUFFERING);
+					break;
 				case IDLE:
 				case COMPLETED:
-				case STOPPED:
-					remoteControlClient.setPlaybackState(RemoteControlClient.PLAYSTATE_STOPPED);
-					break;
-				case DOWNLOADING:
 				case PREPARED:
-				case PREPARING:
+				case STOPPED:
 				default:
+					remoteControlClient.setPlaybackState(RemoteControlClient.PLAYSTATE_STOPPED);
 					break;
 			}
 
@@ -1731,7 +1736,7 @@ public class DownloadServiceImpl extends Service implements DownloadService
 
 				if (!isPartial || (downloadFile.isWorkDone() && (Math.abs(duration - pos) < 10000)))
 				{
-					if (nextPlaying != null && nextPlayerState == PlayerState.PREPARED)
+					if (Util.getGaplessPlaybackPreference(DownloadServiceImpl.this) && nextPlaying != null && nextPlayerState == PlayerState.PREPARED)
 					{
 						if (!nextSetup)
 						{
