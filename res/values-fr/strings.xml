@@ -363,15 +363,15 @@
     <string name="download.share_playlist">Partager playlist</string>
     <string name="settings.share_greeting_default">Partage par défaut voeux</string>
     <string name="share_default_greeting">Consultez cette musique j\'ai partagé de %s</string>
-    <string name="share_via">De partager des chansons via</string>
+    <string name="share_via">De partager des titres via</string>
     <string name="settings.video_mx_player">MX Player</string>
     <string name="settings.video_default">Défaut</string>
     <string name="settings.video_flash">Flash</string>
     <string name="menu.share">Partager</string>
-    <string name="select_album_all_songs">All Songs by %s</string>
-    <string name="settings.show_all_songs_by_artist">Show All Songs By Artist</string>
-    <string name="settings.show_all_songs_by_artist_summary">Add new entry in artist view to access all songs for an artist</string>
-    <string name="download.menu_show_artist">Show Artist</string>
+    <string name="select_album_all_songs">Toutes les titres de %s</string>
+    <string name="settings.show_all_songs_by_artist">Voir toutes les titres par artiste</string>
+    <string name="settings.show_all_songs_by_artist_summary">Ajouter une nouvelle entrée de l\'affichage de l\'artiste pour accéder à toutes les titres pour un artiste</string>
+    <string name="download.menu_show_artist">Afficher l\'artiste</string>
 
     <plurals name="select_album_n_songs">
         <item quantity="zero">Aucun titre</item>
