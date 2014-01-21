@@ -196,13 +196,13 @@ public class StreamProxy implements Runnable
 			// Create HTTP header
 			String headers = "HTTP/1.0 200 OK\r\n";
 			headers += "Content-Type: application/octet-stream\r\n";
-
 			headers += "Connection: close\r\n";
 			headers += "\r\n";
 
 			long cbToSend = fileSize - cbSkip;
 			OutputStream output = null;
 			byte[] buff = new byte[64 * 1024];
+
 			try
 			{
 				output = new BufferedOutputStream(client.getOutputStream(), 32 * 1024);
@@ -213,37 +213,47 @@ public class StreamProxy implements Runnable
 					// Loop as long as there's stuff to send
 					while (isRunning && !client.isClosed())
 					{
-
 						// See if there's more to send
-						File file = new File(localPath);
+						File file = downloadFile.isCompleteFileAvailable() ? downloadFile.getCompleteFile() : downloadFile.getPartialFile();
 						int cbSentThisBatch = 0;
+
 						if (file.exists())
 						{
 							FileInputStream input = new FileInputStream(file);
-							input.skip(cbSkip);
-							int cbToSendThisBatch = input.available();
-							while (cbToSendThisBatch > 0)
-							{
-								int cbToRead = Math.min(cbToSendThisBatch, buff.length);
-								int cbRead = input.read(buff, 0, cbToRead);
-								if (cbRead == -1)
-								{
-									break;
-								}
-								cbToSendThisBatch -= cbRead;
-								cbToSend -= cbRead;
-								output.write(buff, 0, cbRead);
-								output.flush();
-								cbSkip += cbRead;
-								cbSentThisBatch += cbRead;
-							}
-							input.close();
-						}
 
-						// Done regardless of whether or not it thinks it is
-						if (downloadFile.isWorkDone() && cbSkip >= file.length())
-						{
-							break;
+							try
+							{
+								long skip = input.skip(cbSkip);
+								int cbToSendThisBatch = input.available();
+
+								while (cbToSendThisBatch > 0)
+								{
+									int cbToRead = Math.min(cbToSendThisBatch, buff.length);
+									int cbRead = input.read(buff, 0, cbToRead);
+
+									if (cbRead == -1)
+									{
+										break;
+									}
+
+									cbToSendThisBatch -= cbRead;
+									cbToSend -= cbRead;
+									output.write(buff, 0, cbRead);
+									output.flush();
+									cbSkip += cbRead;
+									cbSentThisBatch += cbRead;
+								}
+							}
+							finally
+							{
+								input.close();
+							}
+
+							// Done regardless of whether or not it thinks it is
+							if (downloadFile.isWorkDone() && cbSkip >= file.length())
+							{
+								break;
+							}
 						}
 
 						// If we did nothing this batch, block for a second

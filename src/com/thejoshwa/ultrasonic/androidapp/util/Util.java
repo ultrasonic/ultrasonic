@@ -888,7 +888,6 @@ public class Util extends DownloadActivity
 		{
 			AudioManager audioManager = (AudioManager) context.getSystemService(Context.AUDIO_SERVICE);
 			audioManager.registerMediaButtonEventReceiver(new ComponentName(context.getPackageName(), MediaButtonIntentReceiver.class.getName()));
-
 		}
 	}
 
@@ -977,6 +976,8 @@ public class Util extends DownloadActivity
 			avrcpIntent.putExtra("artist_name", "");
 			avrcpIntent.putExtra("album", "");
 			avrcpIntent.putExtra("album_name", "");
+			avrcpIntent.putExtra("album_artist", "");
+			avrcpIntent.putExtra("album_artist_name", "");
 
 			if (Util.getShouldSendBluetoothAlbumArt(context))
 			{
@@ -1010,6 +1011,9 @@ public class Util extends DownloadActivity
 			avrcpIntent.putExtra("artist_name", artist);
 			avrcpIntent.putExtra("album", album);
 			avrcpIntent.putExtra("album_name", album);
+			avrcpIntent.putExtra("album_artist", artist);
+			avrcpIntent.putExtra("album_artist_name", artist);
+
 
 			if (Util.getShouldSendBluetoothAlbumArt(context))
 			{
@@ -1070,6 +1074,8 @@ public class Util extends DownloadActivity
 			avrcpIntent.putExtra("artist_name", artist);
 			avrcpIntent.putExtra("album", album);
 			avrcpIntent.putExtra("album_name", album);
+			avrcpIntent.putExtra("album_artist", artist);
+			avrcpIntent.putExtra("album_artist_name", artist);
 
 			if (Util.getShouldSendBluetoothAlbumArt(context))
 			{

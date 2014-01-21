@@ -136,7 +136,7 @@ public class DownloadServiceImpl extends Service implements DownloadService
 	private boolean jukeboxEnabled;
 	private PositionCache positionCache;
 	private StreamProxy proxy;
-	private RemoteControlClient remoteControlClient;
+	public RemoteControlClient remoteControlClient;
 	private AudioManager audioManager;
 	private int secondaryProgress = -1;
 	private boolean autoPlayStart;
@@ -218,11 +218,7 @@ public class DownloadServiceImpl extends Service implements DownloadService
 		}).start();
 
 		audioManager = (AudioManager) this.getSystemService(Context.AUDIO_SERVICE);
-
-		if (Util.isLockScreenEnabled(this))
-		{
-			setUpRemoteControlClient();
-		}
+		setUpRemoteControlClient();
 
 		notification.flags |= Notification.FLAG_NO_CLEAR | Notification.FLAG_ONGOING_EVENT;
 		notification.contentView = new RemoteViews(this.getPackageName(), R.layout.notification);
@@ -321,6 +317,7 @@ public class DownloadServiceImpl extends Service implements DownloadService
 			sendBroadcast(i);
 
 			audioManager.unregisterRemoteControlClient(remoteControlClient);
+			clearRemoteControl();
 
 			wakeLock.release();
 		}
@@ -1436,58 +1433,79 @@ public class DownloadServiceImpl extends Service implements DownloadService
 	}
 
 	@SuppressLint("NewApi")
-	private void setUpRemoteControlClient()
+	public void setUpRemoteControlClient()
 	{
-		final Intent mediaButtonIntent = new Intent(Intent.ACTION_MEDIA_BUTTON);
-		mediaButtonIntent.setComponent(new ComponentName(getPackageName(), MediaButtonIntentReceiver.class.getName()));
-		remoteControlClient = new RemoteControlClient(PendingIntent.getBroadcast(this, 0, mediaButtonIntent, PendingIntent.FLAG_UPDATE_CURRENT));
-		audioManager.registerRemoteControlClient(remoteControlClient);
+		if (!Util.isLockScreenEnabled(this)) return;
 
-		// Flags for the media transport control that this client supports.
-		int flags = RemoteControlClient.FLAG_KEY_MEDIA_PREVIOUS | RemoteControlClient.FLAG_KEY_MEDIA_NEXT | RemoteControlClient.FLAG_KEY_MEDIA_PLAY | RemoteControlClient.FLAG_KEY_MEDIA_PAUSE | RemoteControlClient.FLAG_KEY_MEDIA_PLAY_PAUSE | RemoteControlClient.FLAG_KEY_MEDIA_STOP;
+		ComponentName componentName = new ComponentName(getPackageName(), MediaButtonIntentReceiver.class.getName());
 
-		if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR2)
+		if (remoteControlClient == null)
 		{
-			flags |= RemoteControlClient.FLAG_KEY_MEDIA_POSITION_UPDATE;
+			final Intent mediaButtonIntent = new Intent(Intent.ACTION_MEDIA_BUTTON);
+			mediaButtonIntent.setComponent(componentName);
+			PendingIntent broadcast = PendingIntent.getBroadcast(this, 0, mediaButtonIntent, PendingIntent.FLAG_UPDATE_CURRENT);
+			remoteControlClient = new RemoteControlClient(broadcast);
+			audioManager.registerRemoteControlClient(remoteControlClient);
 
-			remoteControlClient.setOnGetPlaybackPositionListener(new RemoteControlClient.OnGetPlaybackPositionListener()
-			{
-				@Override
-				public long onGetPlaybackPosition()
-				{
-					return mediaPlayer.getCurrentPosition();
-				}
-			});
+			// Flags for the media transport control that this client supports.
+			int flags = RemoteControlClient.FLAG_KEY_MEDIA_PREVIOUS |
+					RemoteControlClient.FLAG_KEY_MEDIA_NEXT |
+					RemoteControlClient.FLAG_KEY_MEDIA_PLAY |
+					RemoteControlClient.FLAG_KEY_MEDIA_PAUSE |
+					RemoteControlClient.FLAG_KEY_MEDIA_PLAY_PAUSE |
+					RemoteControlClient.FLAG_KEY_MEDIA_STOP;
 
-			remoteControlClient.setPlaybackPositionUpdateListener(new RemoteControlClient.OnPlaybackPositionUpdateListener()
+			if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR2)
 			{
-				@Override
-				public void onPlaybackPositionUpdate(long newPositionMs)
+				flags |= RemoteControlClient.FLAG_KEY_MEDIA_POSITION_UPDATE;
+
+				remoteControlClient.setOnGetPlaybackPositionListener(new RemoteControlClient.OnGetPlaybackPositionListener()
 				{
-					seekTo((int) newPositionMs);
-				}
-			});
+					@Override
+					public long onGetPlaybackPosition()
+					{
+						return mediaPlayer.getCurrentPosition();
+					}
+				});
+
+				remoteControlClient.setPlaybackPositionUpdateListener(new RemoteControlClient.OnPlaybackPositionUpdateListener()
+				{
+					@Override
+					public void onPlaybackPositionUpdate(long newPositionMs)
+					{
+						seekTo((int) newPositionMs);
+					}
+				});
+			}
+
+			remoteControlClient.setTransportControlFlags(flags);
 		}
+	}
 
-		remoteControlClient.setTransportControlFlags(flags);
+	private void clearRemoteControl()
+	{
+		if (remoteControlClient != null)
+		{
+			remoteControlClient.setPlaybackState(RemoteControlClient.PLAYSTATE_STOPPED);
+			audioManager.unregisterRemoteControlClient(remoteControlClient);
+			remoteControlClient = null;
+		}
 	}
 
 	private void updateRemoteControl()
 	{
 		if (!Util.isLockScreenEnabled(this))
 		{
-			if (remoteControlClient != null)
-			{
-				remoteControlClient.setPlaybackState(RemoteControlClient.PLAYSTATE_STOPPED);
-				audioManager.unregisterRemoteControlClient(remoteControlClient);
-				remoteControlClient = null;
-			}
-
+			clearRemoteControl();
 			return;
 		}
 
-		//try
-		//{
+		if (remoteControlClient != null)
+		{
+			audioManager.unregisterRemoteControlClient(remoteControlClient);
+			audioManager.registerRemoteControlClient(remoteControlClient);
+		}
+
 		Log.i(TAG, String.format("In updateRemoteControl, playerState: %s [%d]", playerState, getPlayerPosition()));
 
 		switch (playerState)
@@ -1512,47 +1530,24 @@ public class DownloadServiceImpl extends Service implements DownloadService
 					remoteControlClient.setPlaybackState(RemoteControlClient.PLAYSTATE_PAUSED, getPlayerPosition(), 1.0f);
 				}
 				break;
-			//					case DOWNLOADING:
-			//					case PREPARING:
-			//						remoteControlClient.setPlaybackState(RemoteControlClient.PLAYSTATE_BUFFERING);
-			//						break;
-			//					case IDLE:
-			//					case COMPLETED:
-			//					case PREPARED:
-			//					case STOPPED:
-			//						remoteControlClient.setPlaybackState(RemoteControlClient.PLAYSTATE_STOPPED);
-			//						break;
-			//					default:
-			//						remoteControlClient.setPlaybackState(RemoteControlClient.PLAYSTATE_PAUSED);
-			//						break;
 		}
 
 		if (currentPlaying != null)
-				{
-					MusicDirectory.Entry currentSong = currentPlaying.getSong();
+		{
+			MusicDirectory.Entry currentSong = currentPlaying.getSong();
 
-					Bitmap lockScreenBitmap = FileUtil.getAlbumArtBitmap(this, currentSong, 0, true);
+			Bitmap lockScreenBitmap = FileUtil.getAlbumArtBitmap(this, currentSong, 0, true);
 
-					String artist = currentSong.getArtist();
-					String album = currentSong.getAlbum();
-					String title = currentSong.getTitle();
-					Long duration = (long) currentSong.getDuration() * 1000;
+			String artist = currentSong.getArtist();
+			String album = currentSong.getAlbum();
+			String title = currentSong.getTitle();
+			String genre = currentSong.getGenre();
+			Integer track = currentSong.getTrack();
+			Integer disc = currentSong.getDiscNumber();
+			Long duration = (long) currentSong.getDuration() * 1000;
 
-
-					remoteControlClient.editMetadata(true).putString(MediaMetadataRetriever.METADATA_KEY_ARTIST, artist).putString(MediaMetadataRetriever.METADATA_KEY_ALBUMARTIST, artist).putString(MediaMetadataRetriever.METADATA_KEY_ALBUM, album).putString(MediaMetadataRetriever.METADATA_KEY_TITLE, title).putLong(MediaMetadataRetriever.METADATA_KEY_DURATION, duration).putBitmap(RemoteControlClient.MetadataEditor.BITMAP_KEY_ARTWORK, lockScreenBitmap).apply();
-
-
-					// Update the remote controls
-					//remoteControlClient.editMetadata(true).putString(MediaMetadataRetriever.METADATA_KEY_TITLE, title).putString(MediaMetadataRetriever.METADATA_KEY_ARTIST, artist).putString(MediaMetadataRetriever.METADATA_KEY_ALBUMARTIST, artist).putString(MediaMetadataRetriever.METADATA_KEY_ALBUM, album).apply();
-					//remoteControlClient.editMetadata(false).putBitmap(RemoteControlClient.MetadataEditor.BITMAP_KEY_ARTWORK, lockScreenBitmap).apply();
-					//remoteControlClient.editMetadata(false).putLong(MediaMetadataRetriever.METADATA_KEY_DURATION, duration).apply();
-				}
-		//}
-		//catch (Exception e)
-		//{
-
-		//Log.e(TAG, "Exception in updateRemoteControl", e);
-		//}
+			remoteControlClient.editMetadata(true).putString(MediaMetadataRetriever.METADATA_KEY_ARTIST, artist).putString(MediaMetadataRetriever.METADATA_KEY_ALBUMARTIST, artist).putString(MediaMetadataRetriever.METADATA_KEY_ALBUM, album).putString(MediaMetadataRetriever.METADATA_KEY_TITLE, title).putString(MediaMetadataRetriever.METADATA_KEY_GENRE, genre).putLong(MediaMetadataRetriever.METADATA_KEY_DURATION, duration).putLong(MediaMetadataRetriever.METADATA_KEY_CD_TRACK_NUMBER, track).putLong(MediaMetadataRetriever.METADATA_KEY_DISC_NUMBER, disc).putBitmap(RemoteControlClient.MetadataEditor.BITMAP_KEY_ARTWORK, lockScreenBitmap).apply();
+		}
 	}
 
 	private synchronized void bufferAndPlay()
@@ -1613,15 +1608,19 @@ public class DownloadServiceImpl extends Service implements DownloadService
 				@Override
 				public void onBufferingUpdate(MediaPlayer mp, int percent)
 				{
-					if (percent == 100)
-					{
-						mp.setOnBufferingUpdateListener(null);
-					}
-
 					SeekBar progressBar = DownloadActivity.getProgressBar();
 					MusicDirectory.Entry song = downloadFile.getSong();
 
-					if (progressBar != null && song.getTranscodedContentType() == null && Util.getMaxBitRate(DownloadServiceImpl.this) == 0)
+					if (percent == 100)
+					{
+						if (progressBar != null)
+						{
+							progressBar.setSecondaryProgress(100 * progressBar.getMax());
+						}
+
+						mp.setOnBufferingUpdateListener(null);
+					}
+					else if (progressBar != null && song.getTranscodedContentType() == null && Util.getMaxBitRate(DownloadServiceImpl.this) == 0)
 					{
 						secondaryProgress = (int) (((double) percent / (double) 100) * progressBar.getMax());
 						progressBar.setSecondaryProgress(secondaryProgress);
@@ -1778,13 +1777,13 @@ public class DownloadServiceImpl extends Service implements DownloadService
 				// and allow the device to go to sleep.
 				wakeLock.acquire(60000);
 
-				setPlayerStateCompleted();
-
 				int pos = cachedPosition;
 				Log.i(TAG, String.format("Ending position %d of %d", pos, duration));
 
-				if (!isPartial || (downloadFile.isWorkDone() && (Math.abs(duration - pos) < 10000)))
+				if (!isPartial || (downloadFile.isWorkDone() && (Math.abs(duration - pos) < 1000)))
 				{
+					setPlayerStateCompleted();
+
 					if (Util.getGaplessPlaybackPreference(DownloadServiceImpl.this) && nextPlaying != null && nextPlayerState == PlayerState.PREPARED)
 					{
 						if (!nextSetup)
