@@ -38,10 +38,12 @@ import java.util.List;
 public class IndexesParser extends AbstractParser
 {
 	private static final String TAG = IndexesParser.class.getSimpleName();
+	private Context context;
 
 	public IndexesParser(Context context)
 	{
 		super(context);
+		this.context = context;
 	}
 
 	public Indexes parse(Reader reader, ProgressListener progressListener) throws Exception
@@ -87,7 +89,7 @@ public class IndexesParser extends AbstractParser
 
 					if (artists.size() % 10 == 0)
 					{
-						String msg = getContext().getResources().getString(R.string.parser_artist_count, artists.size());
+						String msg = this.context.getResources().getString(R.string.parser_artist_count, artists.size());
 						updateProgress(progressListener, msg);
 					}
 				}
@@ -116,7 +118,7 @@ public class IndexesParser extends AbstractParser
 		long t1 = System.currentTimeMillis();
 		Log.d(TAG, "Got " + artists.size() + " artist(s) in " + (t1 - t0) + "ms.");
 
-		String msg = getContext().getResources().getString(R.string.parser_artist_count, artists.size());
+		String msg = this.context.getResources().getString(R.string.parser_artist_count, artists.size());
 		updateProgress(progressListener, msg);
 
 		return new Indexes(lastModified == null ? 0L : lastModified, ignoredArticles, shortcuts, artists);

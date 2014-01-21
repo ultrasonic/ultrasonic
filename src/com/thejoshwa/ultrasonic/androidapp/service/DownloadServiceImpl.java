@@ -136,7 +136,6 @@ public class DownloadServiceImpl extends Service implements DownloadService
 	private boolean jukeboxEnabled;
 	private PositionCache positionCache;
 	private StreamProxy proxy;
-	private static MusicDirectory.Entry currentSong;
 	private RemoteControlClient remoteControlClient;
 	private AudioManager audioManager;
 	private int secondaryProgress = -1;
@@ -220,6 +219,11 @@ public class DownloadServiceImpl extends Service implements DownloadService
 
 		audioManager = (AudioManager) this.getSystemService(Context.AUDIO_SERVICE);
 
+		if (Util.isLockScreenEnabled(this))
+		{
+			setUpRemoteControlClient();
+		}
+
 		notification.flags |= Notification.FLAG_NO_CLEAR | Notification.FLAG_ONGOING_EVENT;
 		notification.contentView = new RemoteViews(this.getPackageName(), R.layout.notification);
 		Util.linkButtons(this, notification.contentView, false);
@@ -275,51 +279,54 @@ public class DownloadServiceImpl extends Service implements DownloadService
 	{
 		super.onDestroy();
 
-		instance = null;
-		lifecycleSupport.onDestroy();
-		mediaPlayer.release();
-
-		if (nextMediaPlayer != null)
-		{
-			nextMediaPlayer.release();
-		}
-
-		mediaPlayerLooper.quit();
-		shufflePlayBuffer.shutdown();
-
-		if (equalizerController != null)
-		{
-			equalizerController.release();
-		}
-		if (visualizerController != null)
-		{
-			visualizerController.release();
-		}
-
 		try
 		{
+			instance = null;
+			lifecycleSupport.onDestroy();
+			mediaPlayer.release();
+
+			if (nextMediaPlayer != null)
+			{
+				nextMediaPlayer.release();
+			}
+
+			mediaPlayerLooper.quit();
+			shufflePlayBuffer.shutdown();
+
+			if (equalizerController != null)
+			{
+				equalizerController.release();
+			}
+
+			if (visualizerController != null)
+			{
+				visualizerController.release();
+			}
+
+			if (bufferTask != null)
+			{
+				bufferTask.cancel();
+			}
+
+			if (nextPlayingTask != null)
+			{
+				nextPlayingTask.cancel();
+			}
+
+			notification = null;
+
 			Intent i = new Intent(AudioEffect.ACTION_CLOSE_AUDIO_EFFECT_CONTROL_SESSION);
 			i.putExtra(AudioEffect.EXTRA_AUDIO_SESSION, mediaPlayer.getAudioSessionId());
 			i.putExtra(AudioEffect.EXTRA_PACKAGE_NAME, getPackageName());
 			sendBroadcast(i);
-		}
-		catch (Throwable e)
-		{
-			// Froyo or lower
-		}
 
-		if (bufferTask != null)
-		{
-			bufferTask.cancel();
-		}
+			audioManager.unregisterRemoteControlClient(remoteControlClient);
 
-		if (nextPlayingTask != null)
-		{
-			nextPlayingTask.cancel();
+			wakeLock.release();
 		}
-
-		audioManager.unregisterRemoteControlClient(remoteControlClient);
-		notification = null;
+		catch (Throwable ignored)
+		{
+		}
 	}
 
 	public static DownloadService getInstance()
@@ -958,6 +965,8 @@ public class DownloadServiceImpl extends Service implements DownloadService
 			{
 				mediaPlayer.seekTo(position);
 				cachedPosition = position;
+
+				updateRemoteControl();
 			}
 		}
 		catch (Exception x)
@@ -1213,8 +1222,11 @@ public class DownloadServiceImpl extends Service implements DownloadService
 		Util.broadcastPlaybackStatusChange(this, this.playerState);
 		Util.broadcastA2dpPlayStatusChange(this, this.playerState, instance);
 
-		// Set remote control
-		updateRemoteControl();
+		if (this.playerState == PlayerState.STARTED || this.playerState == PlayerState.PAUSED)
+		{
+			// Set remote control
+			updateRemoteControl();
+		}
 
 		// Update widget
 		UltraSonicAppWidgetProvider4x1.getInstance().notifyChange(this, this, this.playerState == PlayerState.STARTED, false);
@@ -1423,98 +1435,46 @@ public class DownloadServiceImpl extends Service implements DownloadService
 		jukeboxService.adjustVolume(up);
 	}
 
+	@SuppressLint("NewApi")
+	private void setUpRemoteControlClient()
+	{
+		final Intent mediaButtonIntent = new Intent(Intent.ACTION_MEDIA_BUTTON);
+		mediaButtonIntent.setComponent(new ComponentName(getPackageName(), MediaButtonIntentReceiver.class.getName()));
+		remoteControlClient = new RemoteControlClient(PendingIntent.getBroadcast(this, 0, mediaButtonIntent, PendingIntent.FLAG_UPDATE_CURRENT));
+		audioManager.registerRemoteControlClient(remoteControlClient);
+
+		// Flags for the media transport control that this client supports.
+		int flags = RemoteControlClient.FLAG_KEY_MEDIA_PREVIOUS | RemoteControlClient.FLAG_KEY_MEDIA_NEXT | RemoteControlClient.FLAG_KEY_MEDIA_PLAY | RemoteControlClient.FLAG_KEY_MEDIA_PAUSE | RemoteControlClient.FLAG_KEY_MEDIA_PLAY_PAUSE | RemoteControlClient.FLAG_KEY_MEDIA_STOP;
+
+		if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR2)
+		{
+			flags |= RemoteControlClient.FLAG_KEY_MEDIA_POSITION_UPDATE;
+
+			remoteControlClient.setOnGetPlaybackPositionListener(new RemoteControlClient.OnGetPlaybackPositionListener()
+			{
+				@Override
+				public long onGetPlaybackPosition()
+				{
+					return mediaPlayer.getCurrentPosition();
+				}
+			});
+
+			remoteControlClient.setPlaybackPositionUpdateListener(new RemoteControlClient.OnPlaybackPositionUpdateListener()
+			{
+				@Override
+				public void onPlaybackPositionUpdate(long newPositionMs)
+				{
+					seekTo((int) newPositionMs);
+				}
+			});
+		}
+
+		remoteControlClient.setTransportControlFlags(flags);
+	}
+
 	private void updateRemoteControl()
 	{
-		if (Util.isLockScreenEnabled(this))
-		{
-			if (remoteControlClient == null)
-			{
-
-				Intent intent = new Intent(Intent.ACTION_MEDIA_BUTTON);
-				intent.setComponent(new ComponentName(getPackageName(), MediaButtonIntentReceiver.class.getName()));
-				remoteControlClient = new RemoteControlClient(PendingIntent.getBroadcast(this, 0, intent, 0));
-
-				remoteControlClient.setTransportControlFlags(RemoteControlClient.FLAG_KEY_MEDIA_PLAY |
-						RemoteControlClient.FLAG_KEY_MEDIA_PAUSE |
-						RemoteControlClient.FLAG_KEY_MEDIA_NEXT |
-						RemoteControlClient.FLAG_KEY_MEDIA_PREVIOUS |
-						RemoteControlClient.FLAG_KEY_MEDIA_PLAY_PAUSE |
-						RemoteControlClient.FLAG_KEY_MEDIA_STOP);
-
-				audioManager.registerRemoteControlClient(remoteControlClient);
-			}
-
-			Log.i(TAG, String.format("In updateRemoteControl, playerState: %s [%d]", playerState, getPlayerPosition()));
-
-			switch (playerState)
-			{
-				case STARTED:
-					if (Build.VERSION.SDK_INT < Build.VERSION_CODES.JELLY_BEAN_MR2)
-					{
-						remoteControlClient.setPlaybackState(RemoteControlClient.PLAYSTATE_PLAYING);
-					}
-					else
-					{
-						remoteControlClient.setPlaybackState(RemoteControlClient.PLAYSTATE_PLAYING, getPlayerPosition(), 1);
-					}
-					break;
-				case PAUSED:
-					if (Build.VERSION.SDK_INT < Build.VERSION_CODES.JELLY_BEAN_MR2)
-					{
-						remoteControlClient.setPlaybackState(RemoteControlClient.PLAYSTATE_PAUSED);
-					}
-					else
-					{
-						remoteControlClient.setPlaybackState(RemoteControlClient.PLAYSTATE_PAUSED, getPlayerPosition(), 1);
-					}
-					break;
-				case DOWNLOADING:
-				case PREPARING:
-					remoteControlClient.setPlaybackState(RemoteControlClient.PLAYSTATE_BUFFERING);
-					break;
-				case IDLE:
-				case COMPLETED:
-				case PREPARED:
-				case STOPPED:
-					remoteControlClient.setPlaybackState(RemoteControlClient.PLAYSTATE_STOPPED);
-					break;
-				default:
-					remoteControlClient.setPlaybackState(RemoteControlClient.PLAYSTATE_PAUSED);
-					break;
-			}
-
-			try
-			{
-				if (currentPlaying != null)
-				{
-					Bitmap lockScreenBitmap;
-					if (currentSong != currentPlaying.getSong())
-					{
-						currentSong = currentPlaying.getSong();
-						lockScreenBitmap = FileUtil.getAlbumArtBitmap(this, currentSong, lockScreenBitmapSize, true);
-					}
-					else
-					{
-						return;
-					}
-
-					String artist = currentSong.getArtist();
-					String album = currentSong.getAlbum();
-					String title = String.format("%s - %s", artist, currentSong.getTitle());
-					Long duration = (long) currentSong.getDuration() * 1000;
-
-					// Update the remote controls
-					remoteControlClient.editMetadata(true).putString(MediaMetadataRetriever.METADATA_KEY_TITLE, title).putString(MediaMetadataRetriever.METADATA_KEY_ARTIST, artist).putString(MediaMetadataRetriever.METADATA_KEY_ALBUM, album).apply();
-					remoteControlClient.editMetadata(false).putBitmap(RemoteControlClient.MetadataEditor.BITMAP_KEY_ARTWORK, lockScreenBitmap).apply();
-					remoteControlClient.editMetadata(false).putLong(MediaMetadataRetriever.METADATA_KEY_DURATION, duration).apply();
-				}
-			}
-			catch (Exception e)
-			{
-				Log.e(TAG, "Exception in updateRemoteControl", e);
-			}
-		}
-		else
+		if (!Util.isLockScreenEnabled(this))
 		{
 			if (remoteControlClient != null)
 			{
@@ -1522,7 +1482,77 @@ public class DownloadServiceImpl extends Service implements DownloadService
 				audioManager.unregisterRemoteControlClient(remoteControlClient);
 				remoteControlClient = null;
 			}
+
+			return;
 		}
+
+		//try
+		//{
+		Log.i(TAG, String.format("In updateRemoteControl, playerState: %s [%d]", playerState, getPlayerPosition()));
+
+		switch (playerState)
+		{
+			case STARTED:
+				if (Build.VERSION.SDK_INT < Build.VERSION_CODES.JELLY_BEAN_MR2)
+				{
+					remoteControlClient.setPlaybackState(RemoteControlClient.PLAYSTATE_PLAYING);
+				}
+				else
+				{
+					remoteControlClient.setPlaybackState(RemoteControlClient.PLAYSTATE_PLAYING, getPlayerPosition(), 1.0f);
+				}
+				break;
+			default:
+				if (Build.VERSION.SDK_INT < Build.VERSION_CODES.JELLY_BEAN_MR2)
+				{
+					remoteControlClient.setPlaybackState(RemoteControlClient.PLAYSTATE_PAUSED);
+				}
+				else
+				{
+					remoteControlClient.setPlaybackState(RemoteControlClient.PLAYSTATE_PAUSED, getPlayerPosition(), 1.0f);
+				}
+				break;
+			//					case DOWNLOADING:
+			//					case PREPARING:
+			//						remoteControlClient.setPlaybackState(RemoteControlClient.PLAYSTATE_BUFFERING);
+			//						break;
+			//					case IDLE:
+			//					case COMPLETED:
+			//					case PREPARED:
+			//					case STOPPED:
+			//						remoteControlClient.setPlaybackState(RemoteControlClient.PLAYSTATE_STOPPED);
+			//						break;
+			//					default:
+			//						remoteControlClient.setPlaybackState(RemoteControlClient.PLAYSTATE_PAUSED);
+			//						break;
+		}
+
+		if (currentPlaying != null)
+				{
+					MusicDirectory.Entry currentSong = currentPlaying.getSong();
+
+					Bitmap lockScreenBitmap = FileUtil.getAlbumArtBitmap(this, currentSong, 0, true);
+
+					String artist = currentSong.getArtist();
+					String album = currentSong.getAlbum();
+					String title = currentSong.getTitle();
+					Long duration = (long) currentSong.getDuration() * 1000;
+
+
+					remoteControlClient.editMetadata(true).putString(MediaMetadataRetriever.METADATA_KEY_ARTIST, artist).putString(MediaMetadataRetriever.METADATA_KEY_ALBUMARTIST, artist).putString(MediaMetadataRetriever.METADATA_KEY_ALBUM, album).putString(MediaMetadataRetriever.METADATA_KEY_TITLE, title).putLong(MediaMetadataRetriever.METADATA_KEY_DURATION, duration).putBitmap(RemoteControlClient.MetadataEditor.BITMAP_KEY_ARTWORK, lockScreenBitmap).apply();
+
+
+					// Update the remote controls
+					//remoteControlClient.editMetadata(true).putString(MediaMetadataRetriever.METADATA_KEY_TITLE, title).putString(MediaMetadataRetriever.METADATA_KEY_ARTIST, artist).putString(MediaMetadataRetriever.METADATA_KEY_ALBUMARTIST, artist).putString(MediaMetadataRetriever.METADATA_KEY_ALBUM, album).apply();
+					//remoteControlClient.editMetadata(false).putBitmap(RemoteControlClient.MetadataEditor.BITMAP_KEY_ARTWORK, lockScreenBitmap).apply();
+					//remoteControlClient.editMetadata(false).putLong(MediaMetadataRetriever.METADATA_KEY_DURATION, duration).apply();
+				}
+		//}
+		//catch (Exception e)
+		//{
+
+		//Log.e(TAG, "Exception in updateRemoteControl", e);
+		//}
 	}
 
 	private synchronized void bufferAndPlay()
@@ -1591,7 +1621,7 @@ public class DownloadServiceImpl extends Service implements DownloadService
 					SeekBar progressBar = DownloadActivity.getProgressBar();
 					MusicDirectory.Entry song = downloadFile.getSong();
 
-					if (progressBar != null && song.getTranscodedContentType() == null && Util.getMaxBitRate(getApplicationContext()) == 0)
+					if (progressBar != null && song.getTranscodedContentType() == null && Util.getMaxBitRate(DownloadServiceImpl.this) == 0)
 					{
 						secondaryProgress = (int) (((double) percent / (double) 100) * progressBar.getMax());
 						progressBar.setSecondaryProgress(secondaryProgress);
@@ -1621,7 +1651,7 @@ public class DownloadServiceImpl extends Service implements DownloadService
 						if (position != 0)
 						{
 							Log.i(TAG, String.format("Restarting player from position %d", position));
-							mediaPlayer.seekTo(position);
+							seekTo(position);
 						}
 						cachedPosition = position;
 
@@ -1947,6 +1977,11 @@ public class DownloadServiceImpl extends Service implements DownloadService
 						DownloadFile downloadFile = backgroundDownloadList.get(i);
 						if (downloadFile.isWorkDone() && (!downloadFile.shouldSave() || downloadFile.isSaved()))
 						{
+							if (Util.getShouldScanMedia(this))
+							{
+								Util.scanMedia(this, downloadFile.getCompleteFile());
+							}
+
 							// Don't need to keep list like active song list
 							backgroundDownloadList.remove(i);
 							revision++;

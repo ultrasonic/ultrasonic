@@ -24,6 +24,7 @@ import android.graphics.BitmapFactory;
 import android.os.Environment;
 import android.util.Log;
 
+import com.thejoshwa.ultrasonic.androidapp.activity.SubsonicTabActivity;
 import com.thejoshwa.ultrasonic.androidapp.domain.Artist;
 import com.thejoshwa.ultrasonic.androidapp.domain.MusicDirectory;
 
@@ -125,7 +126,16 @@ public class FileUtil
 
 	public static Bitmap getAlbumArtBitmap(Context context, MusicDirectory.Entry entry, int size, boolean highQuality)
 	{
+		if (entry == null) return null;
+
 		File albumArtFile = getAlbumArtFile(context, entry);
+
+		Bitmap bitmap = SubsonicTabActivity.getInstance().getImageLoader().getImageBitmap(entry, true, size);
+
+		if (bitmap != null)
+		{
+			return bitmap.copy(bitmap.getConfig(), false);
+		}
 
 		if (albumArtFile != null && albumArtFile.exists())
 		{
@@ -147,8 +157,13 @@ public class FileUtil
 				opt.inJustDecodeBounds = false;
 			}
 
-			Bitmap bitmap = BitmapFactory.decodeFile(albumArtFile.getPath(), opt);
+			bitmap = BitmapFactory.decodeFile(albumArtFile.getPath(), opt);
 			Log.i("getAlbumArtBitmap", String.valueOf(size));
+
+			if (bitmap != null)
+			{
+				SubsonicTabActivity.getInstance().getImageLoader().addImageToCache(bitmap, entry, size);
+			}
 
 			return bitmap == null ? null : bitmap;
 		}

@@ -957,7 +957,7 @@ public class SubsonicTabActivity extends ResultActivity implements OnClickListen
 		}
 	}
 
-	protected synchronized ImageLoader getImageLoader()
+	public synchronized ImageLoader getImageLoader()
 	{
 		if (IMAGE_LOADER == null)
 		{

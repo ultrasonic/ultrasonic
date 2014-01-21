@@ -297,11 +297,9 @@ public class DownloadFile
 
 	private class DownloadTask extends CancellableTask
 	{
-
 		@Override
 		public void execute()
 		{
-
 			InputStream in = null;
 			FileOutputStream out = null;
 			PowerManager.WakeLock wakeLock = null;
@@ -417,19 +415,29 @@ public class DownloadFile
 					{
 						Util.renameFile(partialFile, saveFile);
 						mediaStoreService.saveInMediaStore(DownloadFile.this);
+
+						if (Util.getShouldScanMedia(context))
+						{
+							Util.scanMedia(context, saveFile);
+						}
 					}
 					else
 					{
 						Util.renameFile(partialFile, completeFile);
+
+						if (Util.getShouldScanMedia(context))
+						{
+							Util.scanMedia(context, completeFile);
+						}
 					}
 				}
-
 			}
 			catch (Exception x)
 			{
 				Util.close(out);
 				Util.delete(completeFile);
 				Util.delete(saveFile);
+
 				if (!isCancelled())
 				{
 					failed = true;
@@ -450,7 +458,9 @@ public class DownloadFile
 				{
 					wifiLock.release();
 				}
+
 				new CacheCleaner(context, DownloadServiceImpl.getInstance()).cleanSpace();
+
 				if (DownloadServiceImpl.getInstance() != null)
 				{
 					((DownloadServiceImpl) DownloadServiceImpl.getInstance()).checkDownloads();

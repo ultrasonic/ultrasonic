@@ -37,6 +37,7 @@ import android.media.AudioManager;
 import android.media.AudioManager.OnAudioFocusChangeListener;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
+import android.net.Uri;
 import android.net.wifi.WifiManager;
 import android.os.Environment;
 import android.os.Parcelable;
@@ -1610,5 +1611,18 @@ public class Util extends DownloadActivity
 	{
 		SharedPreferences preferences = getPreferences(context);
 		return preferences.getBoolean(Constants.PREFERENCES_KEY_SHOW_ALL_SONGS_BY_ARTIST, false);
+	}
+
+	public static boolean getShouldScanMedia(Context context)
+	{
+		SharedPreferences preferences = getPreferences(context);
+		return preferences.getBoolean(Constants.PREFERENCES_KEY_SCAN_MEDIA, false);
+	}
+
+	public static void scanMedia(Context context, File file)
+	{
+		Uri uri = Uri.fromFile(file);
+		Intent scanFileIntent = new Intent(Intent.ACTION_MEDIA_SCANNER_SCAN_FILE, uri);
+		context.sendBroadcast(scanFileIntent);
 	}
 }

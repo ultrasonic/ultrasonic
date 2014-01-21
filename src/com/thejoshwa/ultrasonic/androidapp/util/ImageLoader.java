@@ -131,7 +131,37 @@ public class ImageLoader implements Runnable
 
 	private static String getKey(String coverArtId, int size)
 	{
-		return coverArtId + size;
+		return coverArtId + ":" + size;
+	}
+
+	public Bitmap getImageBitmap(MusicDirectory.Entry entry, boolean large, int size)
+	{
+		if (entry == null)
+		{
+			return null;
+		}
+
+		String coverArt = entry.getCoverArt();
+
+		if (coverArt == null)
+		{
+			return null;
+		}
+
+		if (size <= 0)
+		{
+			size = large ? imageSizeLarge : imageSizeDefault;
+		}
+
+		Bitmap bitmap = cache.get(getKey(coverArt, size));
+
+		if (bitmap != null)
+		{
+			Bitmap.Config config = bitmap.getConfig();
+			return bitmap.copy(config, false);
+		}
+
+		return null;
 	}
 
 	private void setImageBitmap(View view, Bitmap bitmap, boolean crossFade)
@@ -181,6 +211,11 @@ public class ImageLoader implements Runnable
 				((ImageView) view).setImageResource(R.drawable.unknown_album);
 			}
 		}
+	}
+
+	public void addImageToCache(Bitmap bitmap, MusicDirectory.Entry entry, int size)
+	{
+		cache.put(getKey(entry.getCoverArt(), size), bitmap);
 	}
 
 	public void clear()
@@ -233,7 +268,7 @@ public class ImageLoader implements Runnable
 				MusicService musicService = MusicServiceFactory.getMusicService(view.getContext());
 				final Bitmap bitmap = musicService.getCoverArt(view.getContext(), entry, size, saveToFile, highQuality, null);
 
-				cache.put(getKey(entry.getCoverArt(), size), bitmap);
+				addImageToCache(bitmap, entry, size);
 
 				handler.post(new Runnable()
 				{
