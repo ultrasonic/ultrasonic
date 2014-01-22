@@ -374,6 +374,19 @@
     <string name="download.menu_show_artist">Afficher l\'artiste</string>
     <string name="settings.scan_media">Scan Media After Download</string>
     <string name="settings.scan_media_summary">Automatically scan media after download</string>
+    <string name="settings.image_loader_concurrency">Image Loader Concurrency</string>
+    <string name="settings.image_loader_concurrency_1">1</string>
+    <string name="settings.image_loader_concurrency_2">2</string>
+    <string name="settings.image_loader_concurrency_3">3</string>
+    <string name="settings.image_loader_concurrency_4">4</string>
+    <string name="settings.image_loader_concurrency_5">5</string>
+    <string name="settings.image_loader_concurrency_6">6</string>
+    <string name="settings.image_loader_concurrency_7">7</string>
+    <string name="settings.image_loader_concurrency_8">8</string>
+    <string name="settings.image_loader_concurrency_9">9</string>
+    <string name="settings.image_loader_concurrency_10">10</string>
+    <string name="settings.image_loader_concurrency_11">11</string>
+    <string name="settings.image_loader_concurrency_12">12</string>
 
     <plurals name="select_album_n_songs">
         <item quantity="zero">Aucun titre</item>

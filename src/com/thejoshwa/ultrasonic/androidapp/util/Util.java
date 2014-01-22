@@ -52,6 +52,7 @@ import android.widget.Toast;
 import com.thejoshwa.ultrasonic.androidapp.R;
 import com.thejoshwa.ultrasonic.androidapp.activity.DownloadActivity;
 import com.thejoshwa.ultrasonic.androidapp.activity.MainActivity;
+import com.thejoshwa.ultrasonic.androidapp.activity.SettingsActivity;
 import com.thejoshwa.ultrasonic.androidapp.domain.Bookmark;
 import com.thejoshwa.ultrasonic.androidapp.domain.MusicDirectory;
 import com.thejoshwa.ultrasonic.androidapp.domain.MusicDirectory.Entry;
@@ -127,7 +128,7 @@ public class Util extends DownloadActivity
 
 	public static boolean isOffline(Context context)
 	{
-		return context != null && getActiveServer(context) == 0;
+		return context == null || getActiveServer(context) == 0;
 	}
 
 	public static boolean isScreenLitOnDownload(Context context)
@@ -257,6 +258,7 @@ public class Util extends DownloadActivity
 		{
 			return false;
 		}
+
 		SharedPreferences preferences = getPreferences(context);
 		return preferences.getBoolean(Constants.PREFERENCES_KEY_JUKEBOX_BY_DEFAULT + instance, false);
 	}
@@ -804,6 +806,19 @@ public class Util extends DownloadActivity
 	public static void info(Context context, int titleId, int messageId)
 	{
 		showDialog(context, android.R.drawable.ic_dialog_info, titleId, messageId);
+	}
+
+	public static void showWelcomeDialog(final Context context, final MainActivity activity, int titleId, int messageId)
+	{
+		new AlertDialog.Builder(context).setIcon(android.R.drawable.ic_dialog_info).setTitle(titleId).setMessage(messageId).setPositiveButton(R.string.common_ok, new DialogInterface.OnClickListener()
+		{
+			@Override
+			public void onClick(DialogInterface dialog, int i)
+			{
+				dialog.dismiss();
+				activity.startActivityForResultWithoutTransition(activity, SettingsActivity.class);
+			}
+		}).show();
 	}
 
 	private static void showDialog(Context context, int icon, int titleId, int messageId)
@@ -1630,5 +1645,11 @@ public class Util extends DownloadActivity
 		Uri uri = Uri.fromFile(file);
 		Intent scanFileIntent = new Intent(Intent.ACTION_MEDIA_SCANNER_SCAN_FILE, uri);
 		context.sendBroadcast(scanFileIntent);
+	}
+
+	public static int getImageLoaderConcurrency(Context context)
+	{
+		SharedPreferences preferences = getPreferences(context);
+		return Integer.parseInt(preferences.getString(Constants.PREFERENCES_KEY_IMAGE_LOADER_CONCURRENCY, "5"));
 	}
 }

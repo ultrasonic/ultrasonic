@@ -140,4 +140,8 @@ public interface DownloadService
 	void swap(boolean mainList, int from, int to);
 
 	void restore(List<Entry> songs, int currentPlayingIndex, int currentPlayingPosition, boolean autoPlay, boolean newPlaylist);
+
+	void stopJukeboxService();
+
+	void startJukeboxService();
 }

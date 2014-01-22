@@ -88,6 +88,7 @@ public class SettingsActivity extends PreferenceResultActivity implements Shared
 	private CheckBoxPreference sendBluetoothNotifications;
 	private CheckBoxPreference sendBluetoothAlbumArt;
 	private ListPreference viewRefresh;
+	private ListPreference imageLoaderConcurrency;
 	private EditTextPreference sharingDefaultDescription;
 	private EditTextPreference sharingDefaultGreeting;
 	private TimeSpanPreference sharingDefaultExpiration;
@@ -181,6 +182,7 @@ public class SettingsActivity extends PreferenceResultActivity implements Shared
 		sendBluetoothAlbumArt = (CheckBoxPreference) findPreference(Constants.PREFERENCES_KEY_SEND_BLUETOOTH_ALBUM_ART);
 		sendBluetoothNotifications = (CheckBoxPreference) findPreference(Constants.PREFERENCES_KEY_SEND_BLUETOOTH_NOTIFICATIONS);
 		viewRefresh = (ListPreference) findPreference(Constants.PREFERENCES_KEY_VIEW_REFRESH);
+		imageLoaderConcurrency = (ListPreference) findPreference(Constants.PREFERENCES_KEY_IMAGE_LOADER_CONCURRENCY);
 		sharingDefaultDescription = (EditTextPreference) findPreference(Constants.PREFERENCES_KEY_DEFAULT_SHARE_DESCRIPTION);
 		sharingDefaultGreeting = (EditTextPreference) findPreference(Constants.PREFERENCES_KEY_DEFAULT_SHARE_GREETING);
 		sharingDefaultExpiration = (TimeSpanPreference) findPreference(Constants.PREFERENCES_KEY_DEFAULT_SHARE_EXPIRATION);
@@ -542,6 +544,7 @@ public class SettingsActivity extends PreferenceResultActivity implements Shared
 		chatRefreshInterval.setSummary(chatRefreshInterval.getEntry());
 		directoryCacheTime.setSummary(directoryCacheTime.getEntry());
 		viewRefresh.setSummary(viewRefresh.getEntry());
+		imageLoaderConcurrency.setSummary(imageLoaderConcurrency.getEntry());
 		sharingDefaultExpiration.setSummary(sharingDefaultExpiration.getText());
 		sharingDefaultDescription.setSummary(sharingDefaultDescription.getText());
 		sharingDefaultGreeting.setSummary(sharingDefaultGreeting.getText());

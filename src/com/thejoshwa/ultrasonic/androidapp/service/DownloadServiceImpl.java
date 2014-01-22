@@ -467,6 +467,18 @@ public class DownloadServiceImpl extends Service implements DownloadService
 	}
 
 	@Override
+	public void stopJukeboxService()
+	{
+		jukeboxService.stopJukeboxService();
+	}
+
+	@Override
+	public void startJukeboxService()
+	{
+		jukeboxService.startJukeboxService();
+	}
+
+	@Override
 	public synchronized void setShufflePlayEnabled(boolean enabled)
 	{
 		shufflePlay = enabled;
@@ -1414,8 +1426,11 @@ public class DownloadServiceImpl extends Service implements DownloadService
 	{
 		this.jukeboxEnabled = jukeboxEnabled;
 		jukeboxService.setEnabled(jukeboxEnabled);
+
 		if (jukeboxEnabled)
 		{
+			jukeboxService.startJukeboxService();
+
 			reset();
 
 			// Cancel current download, if necessary.
@@ -1423,6 +1438,10 @@ public class DownloadServiceImpl extends Service implements DownloadService
 			{
 				currentDownloading.cancelDownload();
 			}
+		}
+		else
+		{
+			jukeboxService.stopJukeboxService();
 		}
 	}
 
@@ -1504,6 +1523,10 @@ public class DownloadServiceImpl extends Service implements DownloadService
 		{
 			audioManager.unregisterRemoteControlClient(remoteControlClient);
 			audioManager.registerRemoteControlClient(remoteControlClient);
+		}
+		else
+		{
+			setUpRemoteControlClient();
 		}
 
 		Log.i(TAG, String.format("In updateRemoteControl, playerState: %s [%d]", playerState, getPlayerPosition()));

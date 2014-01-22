@@ -263,5 +263,33 @@
         <item>@string/settings.share_hours</item>
         <item>@string/settings.share_days</item>
     </string-array>
+    <string-array name="imageConcurrencyNames">
+        <item>@string/settings.image_loader_concurrency_1</item>
+        <item>@string/settings.image_loader_concurrency_2</item>
+        <item>@string/settings.image_loader_concurrency_3</item>
+        <item>@string/settings.image_loader_concurrency_4</item>
+        <item>@string/settings.image_loader_concurrency_5</item>
+        <item>@string/settings.image_loader_concurrency_6</item>
+        <item>@string/settings.image_loader_concurrency_7</item>
+        <item>@string/settings.image_loader_concurrency_8</item>
+        <item>@string/settings.image_loader_concurrency_9</item>
+        <item>@string/settings.image_loader_concurrency_10</item>
+        <item>@string/settings.image_loader_concurrency_11</item>
+        <item>@string/settings.image_loader_concurrency_12</item>
+    </string-array>
+    <string-array name="imageConcurrencyValues">
+        <item>1</item>
+        <item>2</item>
+        <item>3</item>
+        <item>4</item>
+        <item>5</item>
+        <item>6</item>
+        <item>7</item>
+        <item>8</item>
+        <item>9</item>
+        <item>10</item>
+        <item>11</item>
+        <item>12</item>
+    </string-array>
 
 </resources>

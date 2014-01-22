@@ -49,6 +49,12 @@
             a:entryValues="@array/viewRefreshValues"
             a:key="viewRefresh"
             a:title="@string/settings.view_refresh"/>
+        <ListPreference
+            a:defaultValue="5"
+            a:entries="@array/imageConcurrencyNames"
+            a:entryValues="@array/imageConcurrencyValues"
+            a:key="imageLoaderConcurrency"
+            a:title="@string/settings.image_loader_concurrency"/>
     </PreferenceCategory>
     <PreferenceCategory
         a:title="@string/settings.playback_control_title"

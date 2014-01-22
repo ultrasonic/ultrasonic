@@ -64,6 +64,8 @@ public class JukeboxService
 	private JukeboxStatus jukeboxStatus;
 	private float gain = 0.5f;
 	private VolumeToast volumeToast;
+	private boolean running = false;
+	private Thread serviceThread;
 
 	// TODO: Report warning if queue fills up.
 	// TODO: Create shutdown method?
@@ -74,19 +76,42 @@ public class JukeboxService
 	public JukeboxService(DownloadServiceImpl downloadService)
 	{
 		this.downloadService = downloadService;
-		new Thread()
+	}
+
+	public void startJukeboxService()
+	{
+		if (running) return;
+
+		running = true;
+		startProcessTasks();
+	}
+
+	public void stopJukeboxService()
+	{
+		running = false;
+		Util.sleepQuietly(1000);
+
+		if (serviceThread != null) serviceThread.interrupt();
+	}
+
+	private void startProcessTasks()
+	{
+		serviceThread = new Thread()
 		{
 			@Override
 			public void run()
 			{
 				processTasks();
 			}
-		}.start();
+		};
+
+		serviceThread.start();
 	}
 
 	private synchronized void startStatusUpdate()
 	{
 		stopStatusUpdate();
+
 		Runnable updateTask = new Runnable()
 		{
 			@Override
@@ -96,6 +121,7 @@ public class JukeboxService
 				tasks.add(new GetStatus());
 			}
 		};
+
 		statusUpdateFuture = executorService.scheduleWithFixedDelay(updateTask, STATUS_UPDATE_INTERVAL_SECONDS, STATUS_UPDATE_INTERVAL_SECONDS, TimeUnit.SECONDS);
 	}
 
@@ -110,9 +136,10 @@ public class JukeboxService
 
 	private void processTasks()
 	{
-		while (true)
+		while (running)
 		{
 			JukeboxTask task = null;
+
 			try
 			{
 				if (!Util.isOffline(downloadService))
@@ -122,10 +149,16 @@ public class JukeboxService
 					onStatusUpdate(status);
 				}
 			}
+			catch (InterruptedException ignored)
+			{
+
+			}
 			catch (Throwable x)
 			{
 				onError(task, x);
 			}
+
+			Util.sleepQuietly(1);
 		}
 	}
 
@@ -136,6 +169,7 @@ public class JukeboxService
 
 		// Track change?
 		Integer index = jukeboxStatus.getCurrentPlayingIndex();
+
 		if (index != null && index != -1 && index != downloadService.getCurrentPlayingIndex())
 		{
 			downloadService.setCurrentPlaying(index);
@@ -165,6 +199,7 @@ public class JukeboxService
 	private void disableJukeboxOnError(Throwable x, final int resourceId)
 	{
 		Log.w(TAG, x.toString());
+
 		handler.post(new Runnable()
 		{
 			@Override
@@ -173,6 +208,7 @@ public class JukeboxService
 				Util.toast(downloadService, resourceId, false);
 			}
 		});
+
 		downloadService.setJukeboxEnabled(false);
 	}
 
@@ -187,6 +223,7 @@ public class JukeboxService
 		{
 			ids.add(file.getSong().getId());
 		}
+
 		tasks.add(new SetPlaylist(ids));
 	}
 
@@ -213,6 +250,7 @@ public class JukeboxService
 		tasks.remove(Start.class);
 
 		stopStatusUpdate();
+
 		tasks.add(new Stop());
 	}
 
@@ -266,17 +304,19 @@ public class JukeboxService
 	public void setEnabled(boolean enabled)
 	{
 		tasks.clear();
+
 		if (enabled)
 		{
 			updatePlaylist();
 		}
+
 		stop();
+
 		downloadService.setPlayerState(PlayerState.IDLE);
 	}
 
 	private static class TaskQueue
 	{
-
 		private final LinkedBlockingQueue<JukeboxTask> queue = new LinkedBlockingQueue<JukeboxTask>();
 
 		void add(JukeboxTask jukeboxTask)
@@ -289,15 +329,17 @@ public class JukeboxService
 			return queue.take();
 		}
 
-		void remove(Class<? extends JukeboxTask> clazz)
+		void remove(Class<? extends JukeboxTask> taskClass)
 		{
 			try
 			{
 				Iterator<JukeboxTask> iterator = queue.iterator();
+
 				while (iterator.hasNext())
 				{
 					JukeboxTask task = iterator.next();
-					if (clazz.equals(task.getClass()))
+
+					if (taskClass.equals(task.getClass()))
 					{
 						iterator.remove();
 					}
@@ -317,7 +359,6 @@ public class JukeboxService
 
 	private abstract class JukeboxTask
 	{
-
 		abstract JukeboxStatus execute() throws Exception;
 
 		@Override
@@ -338,7 +379,6 @@ public class JukeboxService
 
 	private class SetPlaylist extends JukeboxTask
 	{
-
 		private final List<String> ids;
 
 		SetPlaylist(List<String> ids)

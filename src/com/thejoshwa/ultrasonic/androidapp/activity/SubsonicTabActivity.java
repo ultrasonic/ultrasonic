@@ -94,7 +94,7 @@ public class SubsonicTabActivity extends ResultActivity implements OnClickListen
 {
 	private static final String TAG = SubsonicTabActivity.class.getSimpleName();
 	private static final Pattern COMPILE = Pattern.compile(":");
-	private static ImageLoader IMAGE_LOADER;
+	protected static ImageLoader IMAGE_LOADER;
 	protected static String theme;
 	private static SubsonicTabActivity instance;
 
@@ -228,7 +228,7 @@ public class SubsonicTabActivity extends ResultActivity implements OnClickListen
 		super.onDestroy();
 		destroyed = true;
 		nowPlayingView = null;
-		getImageLoader().clear();
+		clearImageLoader();
 	}
 
 	@Override
@@ -957,12 +957,19 @@ public class SubsonicTabActivity extends ResultActivity implements OnClickListen
 		}
 	}
 
+	public synchronized void clearImageLoader()
+	{
+		if (IMAGE_LOADER != null && IMAGE_LOADER.isRunning()) IMAGE_LOADER.clear();
+	}
+
 	public synchronized ImageLoader getImageLoader()
 	{
-		if (IMAGE_LOADER == null)
+		if (IMAGE_LOADER == null || !IMAGE_LOADER.isRunning())
 		{
-			IMAGE_LOADER = new ImageLoader(this);
+			IMAGE_LOADER = new ImageLoader(this, Util.getImageLoaderConcurrency(this));
+			IMAGE_LOADER.startImageLoader();
 		}
+
 		return IMAGE_LOADER;
 	}
 

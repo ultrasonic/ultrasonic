@@ -23,12 +23,12 @@ public class ResultActivity extends Activity
 		super.onActivityResult(requestCode, resultCode, data);
 	}
 
-	protected void startActivityForResultWithoutTransition(Activity currentActivity, Class<? extends Activity> newActivity)
+	public void startActivityForResultWithoutTransition(Activity currentActivity, Class<? extends Activity> newActivity)
 	{
 		startActivityForResultWithoutTransition(currentActivity, new Intent(currentActivity, newActivity));
 	}
 
-	protected void startActivityForResultWithoutTransition(Activity currentActivity, Intent intent)
+	public void startActivityForResultWithoutTransition(Activity currentActivity, Intent intent)
 	{
 		startActivityForResult(intent, 0);
 		Util.disablePendingTransition(currentActivity);

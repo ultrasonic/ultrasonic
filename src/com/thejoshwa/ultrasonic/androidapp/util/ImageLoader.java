@@ -36,6 +36,8 @@ import com.thejoshwa.ultrasonic.androidapp.domain.MusicDirectory;
 import com.thejoshwa.ultrasonic.androidapp.service.MusicService;
 import com.thejoshwa.ultrasonic.androidapp.service.MusicServiceFactory;
 
+import java.util.ArrayList;
+import java.util.Collection;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.LinkedBlockingQueue;
 
@@ -50,7 +52,6 @@ public class ImageLoader implements Runnable
 {
 
 	private static final String TAG = ImageLoader.class.getSimpleName();
-	private static final int CONCURRENCY = 5;
 
 	private final LRUCache<String, Bitmap> cache = new LRUCache<String, Bitmap>(150);
 	private final BlockingQueue<Task> queue;
@@ -58,10 +59,14 @@ public class ImageLoader implements Runnable
 	private final int imageSizeLarge;
 	private Bitmap largeUnknownImage;
 	private Context context;
+	private Collection<Thread> threads = new ArrayList<Thread>();
+	private boolean running = false;
+	private int concurrency;
 
-	public ImageLoader(Context context)
+	public ImageLoader(Context context, int concurrency)
 	{
 		this.context = context;
+		this.concurrency = concurrency;
 		queue = new LinkedBlockingQueue<Task>(1000);
 
 		Resources resources = context.getResources();
@@ -76,12 +81,36 @@ public class ImageLoader implements Runnable
 		DisplayMetrics metrics = context.getResources().getDisplayMetrics();
 		imageSizeLarge = Math.round(Math.min(metrics.widthPixels, metrics.heightPixels));
 
-		for (int i = 0; i < CONCURRENCY; i++)
+		createLargeUnknownImage(context);
+	}
+
+	public synchronized boolean isRunning()
+	{
+		return running && !threads.isEmpty();
+	}
+
+	public void startImageLoader()
+	{
+		running = true;
+
+		for (int i = 0; i < this.concurrency; i++)
 		{
-			new Thread(this, "ImageLoader").start();
+			Thread thread = new Thread(this, "ImageLoader");
+			threads.add(thread);
+			thread.start();
+		}
+	}
+
+	public synchronized void stopImageLoader()
+	{
+		clear();
+
+		for (Thread thread : threads)
+		{
+			thread.interrupt();
 		}
 
-		createLargeUnknownImage(context);
+		running = false;
 	}
 
 	private void createLargeUnknownImage(Context context)
@@ -131,7 +160,7 @@ public class ImageLoader implements Runnable
 
 	private static String getKey(String coverArtId, int size)
 	{
-		return coverArtId + ":" + size;
+		return String.format("%s:%d", coverArtId, size);
 	}
 
 	public Bitmap getImageBitmap(MusicDirectory.Entry entry, boolean large, int size)
@@ -226,12 +255,16 @@ public class ImageLoader implements Runnable
 	@Override
 	public void run()
 	{
-		while (true)
+		while (running)
 		{
 			try
 			{
 				Task task = queue.take();
 				task.execute();
+			}
+			catch (InterruptedException ignored)
+			{
+
 			}
 			catch (Throwable x)
 			{
