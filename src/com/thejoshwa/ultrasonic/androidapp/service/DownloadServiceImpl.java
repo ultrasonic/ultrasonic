@@ -1564,12 +1564,17 @@ public class DownloadServiceImpl extends Service implements DownloadService
 			String artist = currentSong.getArtist();
 			String album = currentSong.getAlbum();
 			String title = currentSong.getTitle();
-			String genre = currentSong.getGenre();
-			Integer track = currentSong.getTrack();
-			Integer disc = currentSong.getDiscNumber();
+			//String genre = currentSong.getGenre();
+			//Integer track = currentSong.getTrack();
+			//Integer disc = currentSong.getDiscNumber();
 			Long duration = (long) currentSong.getDuration() * 1000;
 
-			remoteControlClient.editMetadata(true).putString(MediaMetadataRetriever.METADATA_KEY_ARTIST, artist).putString(MediaMetadataRetriever.METADATA_KEY_ALBUMARTIST, artist).putString(MediaMetadataRetriever.METADATA_KEY_ALBUM, album).putString(MediaMetadataRetriever.METADATA_KEY_TITLE, title).putString(MediaMetadataRetriever.METADATA_KEY_GENRE, genre).putLong(MediaMetadataRetriever.METADATA_KEY_DURATION, duration).putLong(MediaMetadataRetriever.METADATA_KEY_CD_TRACK_NUMBER, track).putLong(MediaMetadataRetriever.METADATA_KEY_DISC_NUMBER, disc).putBitmap(RemoteControlClient.MetadataEditor.BITMAP_KEY_ARTWORK, lockScreenBitmap).apply();
+			remoteControlClient.editMetadata(true).putString(MediaMetadataRetriever.METADATA_KEY_ARTIST, artist).putString(MediaMetadataRetriever.METADATA_KEY_ALBUMARTIST, artist).putString(MediaMetadataRetriever.METADATA_KEY_ALBUM, album).putString(MediaMetadataRetriever.METADATA_KEY_TITLE, title)
+					//.putString(MediaMetadataRetriever.METADATA_KEY_GENRE, genre)
+					.putLong(MediaMetadataRetriever.METADATA_KEY_DURATION, duration)
+							//.putLong(MediaMetadataRetriever.METADATA_KEY_CD_TRACK_NUMBER, track)
+							//.putLong(MediaMetadataRetriever.METADATA_KEY_DISC_NUMBER, disc)
+					.putBitmap(RemoteControlClient.MetadataEditor.BITMAP_KEY_ARTWORK, lockScreenBitmap).apply();
 		}
 	}
 
