@@ -21,6 +21,9 @@ package com.thejoshwa.ultrasonic.androidapp.view;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
+import android.widget.CheckedTextView;
+import android.widget.ImageView;
+import android.widget.TextView;
 
 import com.thejoshwa.ultrasonic.androidapp.activity.SubsonicTabActivity;
 import com.thejoshwa.ultrasonic.androidapp.domain.MusicDirectory.Entry;
@@ -58,22 +61,25 @@ public class EntryAdapter extends ArrayAdapter<Entry>
 			if (convertView != null && convertView instanceof AlbumView)
 			{
 				AlbumView currentView = (AlbumView) convertView;
+
 				if (currentView.getEntry().equals(entry))
 				{
-					currentView.update();
 					return currentView;
 				}
 				else
 				{
-					view = new AlbumView(activity);
+					AlbumViewHolder viewHolder = (AlbumViewHolder) currentView.getTag();
+					view = currentView;
+					view.setViewHolder(viewHolder);
 				}
 			}
 			else
 			{
-				view = new AlbumView(activity);
+				view = new AlbumView(activity, imageLoader);
+				view.setLayout();
 			}
 
-			view.setAlbum(entry, imageLoader);
+			view.setAlbum(entry);
 			return view;
 		}
 		else
@@ -83,6 +89,7 @@ public class EntryAdapter extends ArrayAdapter<Entry>
 			if (convertView != null && convertView instanceof SongView)
 			{
 				SongView currentView = (SongView) convertView;
+
 				if (currentView.getEntry().equals(entry))
 				{
 					currentView.update();
@@ -90,16 +97,39 @@ public class EntryAdapter extends ArrayAdapter<Entry>
 				}
 				else
 				{
-					view = new SongView(activity);
+					SongViewHolder viewHolder = (SongViewHolder) convertView.getTag();
+					view = currentView;
+					view.setViewHolder(viewHolder);
 				}
 			}
 			else
 			{
 				view = new SongView(activity);
+				view.setLayout(entry);
 			}
 
 			view.setSong(entry, checkable, false);
 			return view;
 		}
+	}
+
+	public static class SongViewHolder
+	{
+		CheckedTextView check;
+		TextView track;
+		TextView title;
+		TextView status;
+		TextView artist;
+		TextView duration;
+		ImageView star;
+		ImageView drag;
+	}
+
+	public static class AlbumViewHolder
+	{
+		TextView artist;
+		ImageView cover_art;
+		ImageView star;
+		TextView title;
 	}
 }

@@ -32,19 +32,32 @@ import com.thejoshwa.ultrasonic.androidapp.domain.Playlist;
  */
 public class PlaylistView extends UpdateView
 {
-	private TextView titleView;
+	private Context context;
+	private PlaylistAdapter.ViewHolder viewHolder;
 
 	public PlaylistView(Context context)
 	{
 		super(context);
-		LayoutInflater.from(context).inflate(R.layout.playlist_list_item, this, true);
+		this.context = context;
+	}
 
-		titleView = (TextView) findViewById(R.id.playlist_name);
+	public void setLayout()
+	{
+		LayoutInflater.from(context).inflate(R.layout.playlist_list_item, this, true);
+		viewHolder = new PlaylistAdapter.ViewHolder();
+		viewHolder.name = (TextView) findViewById(R.id.playlist_name);
+		setTag(viewHolder);
+	}
+
+	public void setViewHolder(PlaylistAdapter.ViewHolder viewHolder)
+	{
+		this.viewHolder = viewHolder;
+		setTag(this.viewHolder);
 	}
 
 	public void setPlaylist(Playlist playlist)
 	{
-		titleView.setText(playlist.getName());
+		viewHolder.name.setText(playlist.getName());
 		update();
 	}
 }

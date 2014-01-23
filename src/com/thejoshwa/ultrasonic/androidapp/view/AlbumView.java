@@ -40,25 +40,21 @@ import com.thejoshwa.ultrasonic.androidapp.util.Util;
  */
 public class AlbumView extends UpdateView
 {
-
 	private static final String TAG = AlbumView.class.getSimpleName();
 	private static Drawable starDrawable;
 	private static Drawable starHollowDrawable;
 	private static String theme;
 
-	private TextView titleView;
-	private TextView artistView;
-	private View coverArtView;
-	private ImageView starImageView;
 	private Context context;
 	private MusicDirectory.Entry entry;
+	private EntryAdapter.AlbumViewHolder viewHolder;
+	private ImageLoader imageLoader;
 
-	public AlbumView(Context context)
+	public AlbumView(Context context, ImageLoader imageLoader)
 	{
 		super(context);
 		this.context = context;
-
-		LayoutInflater.from(context).inflate(R.layout.album_list_item, this, true);
+		this.imageLoader = imageLoader;
 
 		String theme = Util.getTheme(context);
 		boolean themesMatch = theme.equals(AlbumView.theme);
@@ -73,11 +69,24 @@ public class AlbumView extends UpdateView
 		{
 			starDrawable = Util.getDrawableFromAttribute(context, R.attr.star_full);
 		}
+	}
 
-		titleView = (TextView) findViewById(R.id.album_title);
-		artistView = (TextView) findViewById(R.id.album_artist);
-		coverArtView = findViewById(R.id.album_coverart);
-		starImageView = (ImageView) findViewById(R.id.album_star);
+	public void setLayout()
+	{
+		LayoutInflater.from(context).inflate(R.layout.album_list_item, this, true);
+		viewHolder = new EntryAdapter.AlbumViewHolder();
+		viewHolder.title = (TextView) findViewById(R.id.album_title);
+		viewHolder.artist = (TextView) findViewById(R.id.album_artist);
+		viewHolder.cover_art = (ImageView) findViewById(R.id.album_coverart);
+		viewHolder.star = (ImageView) findViewById(R.id.album_star);
+		setTag(viewHolder);
+	}
+
+	public void setViewHolder(EntryAdapter.AlbumViewHolder viewHolder)
+	{
+		this.viewHolder = viewHolder;
+		this.viewHolder.cover_art.invalidate();
+		setTag(this.viewHolder);
 	}
 
 	public MusicDirectory.Entry getEntry()
@@ -85,7 +94,7 @@ public class AlbumView extends UpdateView
 		return this.entry;
 	}
 
-	public void setAlbum(final MusicDirectory.Entry album, ImageLoader imageLoader)
+	public void setAlbum(final MusicDirectory.Entry album)
 	{
 		this.entry = album;
 
@@ -93,19 +102,19 @@ public class AlbumView extends UpdateView
 		String artist = album.getArtist();
 		boolean starred = album.getStarred();
 
-		titleView.setText(title);
-		artistView.setText(artist);
-		artistView.setVisibility(artist == null ? View.GONE : View.VISIBLE);
-		starImageView.setImageDrawable(starred ? starDrawable : starHollowDrawable);
-		imageLoader.loadImage(this.coverArtView, album, false, 0, false, true);
+		viewHolder.title.setText(title);
+		viewHolder.artist.setText(artist);
+		viewHolder.artist.setVisibility(artist == null ? View.GONE : View.VISIBLE);
+		viewHolder.star.setImageDrawable(starred ? starDrawable : starHollowDrawable);
+		imageLoader.loadImage(viewHolder.cover_art, album, false, 0, false, true);
 
 		if (Util.isOffline(this.context) || "-1".equals(album.getId()))
 		{
-			starImageView.setVisibility(View.GONE);
+			viewHolder.star.setVisibility(View.GONE);
 		}
 		else
 		{
-			starImageView.setOnClickListener(new View.OnClickListener()
+			viewHolder.star.setOnClickListener(new View.OnClickListener()
 			{
 				@Override
 				public void onClick(View view)
@@ -115,12 +124,12 @@ public class AlbumView extends UpdateView
 
 					if (!isStarred)
 					{
-						starImageView.setImageDrawable(starDrawable);
+						viewHolder.star.setImageDrawable(starDrawable);
 						album.setStarred(true);
 					}
 					else
 					{
-						starImageView.setImageDrawable(starHollowDrawable);
+						viewHolder.star.setImageDrawable(starHollowDrawable);
 						album.setStarred(false);
 					}
 

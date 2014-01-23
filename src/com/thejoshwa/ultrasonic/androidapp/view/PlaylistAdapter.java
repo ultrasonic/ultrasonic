@@ -3,6 +3,7 @@ package com.thejoshwa.ultrasonic.androidapp.view;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
+import android.widget.TextView;
 
 import com.thejoshwa.ultrasonic.androidapp.R;
 import com.thejoshwa.ultrasonic.androidapp.activity.SubsonicTabActivity;
@@ -32,7 +33,21 @@ public class PlaylistAdapter extends ArrayAdapter<Playlist>
 	{
 		Playlist entry = getItem(position);
 		PlaylistView view;
-		view = convertView != null && convertView instanceof PlaylistView ? (PlaylistView) convertView : new PlaylistView(activity);
+
+		if (convertView != null && convertView instanceof PlaylistView)
+		{
+			PlaylistView currentView = (PlaylistView) convertView;
+
+			ViewHolder viewHolder = (ViewHolder) convertView.getTag();
+			view = currentView;
+			view.setViewHolder(viewHolder);
+		}
+		else
+		{
+			view = new PlaylistView(activity);
+			view.setLayout();
+		}
+
 		view.setPlaylist(entry);
 		return view;
 	}
@@ -52,6 +67,10 @@ public class PlaylistAdapter extends ArrayAdapter<Playlist>
 			Collections.sort(playlists, new PlaylistComparator());
 			return playlists;
 		}
+	}
 
+	static class ViewHolder
+	{
+		TextView name;
 	}
 }

@@ -28,26 +28,38 @@ import com.thejoshwa.ultrasonic.androidapp.domain.Share;
 /**
  * Used to display playlists in a {@code ListView}.
  *
- * @author Sindre Mehus
+ * @author Joshua Bahnsen
  */
 public class ShareView extends UpdateView
 {
-	private TextView titleView;
-	private TextView descriptionView;
+	private Context context;
+	private ShareAdapter.ViewHolder viewHolder;
 
 	public ShareView(Context context)
 	{
 		super(context);
-		LayoutInflater.from(context).inflate(R.layout.share_list_item, this, true);
+		this.context = context;
+	}
 
-		titleView = (TextView) findViewById(R.id.share_url);
-		descriptionView = (TextView) findViewById(R.id.share_description);
+	public void setLayout()
+	{
+		LayoutInflater.from(context).inflate(R.layout.share_list_item, this, true);
+		viewHolder = new ShareAdapter.ViewHolder();
+		viewHolder.url = (TextView) findViewById(R.id.share_url);
+		viewHolder.description = (TextView) findViewById(R.id.share_description);
+		setTag(viewHolder);
+	}
+
+	public void setViewHolder(ShareAdapter.ViewHolder viewHolder)
+	{
+		this.viewHolder = viewHolder;
+		setTag(this.viewHolder);
 	}
 
 	public void setShare(Share share)
 	{
-		titleView.setText(share.getName());
-		descriptionView.setText(share.getDescription());
+		viewHolder.url.setText(share.getName());
+		viewHolder.description.setText(share.getDescription());
 		update();
 	}
 }

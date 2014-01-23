@@ -223,7 +223,7 @@ public class ImageLoader implements Runnable
 		}
 	}
 
-	private void setUnknownImage(View view, boolean large)
+	public void setUnknownImage(View view, boolean large)
 	{
 		if (large)
 		{

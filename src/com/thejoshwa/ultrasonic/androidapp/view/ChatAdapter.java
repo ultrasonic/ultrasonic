@@ -58,36 +58,18 @@ public class ChatAdapter extends ArrayAdapter<ChatMessage>
 
 		if (convertView == null)
 		{
-			holder = new ViewHolder();
-			holder.layout = layout;
-
-			convertView = LayoutInflater.from(activity).inflate(holder.layout, parent, false);
-
-			TextView usernameView;
-			TextView timeView;
-			TextView messageView;
-
-			if (convertView != null)
-			{
-				usernameView = (TextView) convertView.findViewById(R.id.chat_username);
-				timeView = (TextView) convertView.findViewById(R.id.chat_time);
-				messageView = (TextView) convertView.findViewById(R.id.chat_message);
-
-				messageView.setMovementMethod(LinkMovementMethod.getInstance());
-				Linkify.addLinks(messageView, Linkify.EMAIL_ADDRESSES);
-				Linkify.addLinks(messageView, Linkify.WEB_URLS);
-				Linkify.addLinks(messageView, phoneMatcher, "tel:");
-
-				holder.message = messageView;
-				holder.username = usernameView;
-				holder.time = timeView;
-
-				convertView.setTag(holder);
-			}
+			convertView = inflateView(layout, parent);
+			holder = createViewHolder(layout, convertView);
 		}
 		else
 		{
 			holder = (ViewHolder) convertView.getTag();
+
+			if (holder.layout != layout)
+			{
+				convertView = inflateView(layout, parent);
+				holder = createViewHolder(layout, convertView);
+			}
 		}
 
 		DateFormat timeFormat = android.text.format.DateFormat.getTimeFormat(activity);
@@ -98,6 +80,41 @@ public class ChatAdapter extends ArrayAdapter<ChatMessage>
 		holder.time.setText(messageTimeFormatted);
 
 		return convertView;
+	}
+
+	private View inflateView(int layout, ViewGroup parent)
+	{
+		return LayoutInflater.from(activity).inflate(layout, parent, false);
+	}
+
+	private static ViewHolder createViewHolder(int layout, View convertView)
+	{
+		ViewHolder holder = new ViewHolder();
+		holder.layout = layout;
+
+		TextView usernameView;
+		TextView timeView;
+		TextView messageView;
+
+		if (convertView != null)
+		{
+			usernameView = (TextView) convertView.findViewById(R.id.chat_username);
+			timeView = (TextView) convertView.findViewById(R.id.chat_time);
+			messageView = (TextView) convertView.findViewById(R.id.chat_message);
+
+			messageView.setMovementMethod(LinkMovementMethod.getInstance());
+			Linkify.addLinks(messageView, Linkify.EMAIL_ADDRESSES);
+			Linkify.addLinks(messageView, Linkify.WEB_URLS);
+			Linkify.addLinks(messageView, phoneMatcher, "tel:");
+
+			holder.message = messageView;
+			holder.username = usernameView;
+			holder.time = timeView;
+
+			convertView.setTag(holder);
+		}
+
+		return holder;
 	}
 
 	private static class ViewHolder

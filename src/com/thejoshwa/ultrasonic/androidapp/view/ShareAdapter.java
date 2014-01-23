@@ -3,6 +3,7 @@ package com.thejoshwa.ultrasonic.androidapp.view;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
+import android.widget.TextView;
 
 import com.thejoshwa.ultrasonic.androidapp.R;
 import com.thejoshwa.ultrasonic.androidapp.activity.SubsonicTabActivity;
@@ -32,7 +33,21 @@ public class ShareAdapter extends ArrayAdapter<Share>
 	{
 		Share entry = getItem(position);
 		ShareView view;
-		view = convertView != null && convertView instanceof ShareView ? (ShareView) convertView : new ShareView(activity);
+
+		if (convertView != null && convertView instanceof ShareView)
+		{
+			ShareView currentView = (ShareView) convertView;
+
+			ViewHolder viewHolder = (ViewHolder) convertView.getTag();
+			view = currentView;
+			view.setViewHolder(viewHolder);
+		}
+		else
+		{
+			view = new ShareView(activity);
+			view.setLayout();
+		}
+
 		view.setShare(entry);
 		return view;
 	}
@@ -52,6 +67,11 @@ public class ShareAdapter extends ArrayAdapter<Share>
 			Collections.sort(shares, new ShareComparator());
 			return shares;
 		}
+	}
 
+	static class ViewHolder
+	{
+		TextView url;
+		TextView description;
 	}
 }

@@ -38,12 +38,15 @@ public class SongListAdapter extends ArrayAdapter<DownloadFile>
 			}
 			else
 			{
-				view = new SongView(this.context);
+				EntryAdapter.SongViewHolder viewHolder = (EntryAdapter.SongViewHolder) convertView.getTag();
+				view = currentView;
+				view.setViewHolder(viewHolder);
 			}
 		}
 		else
 		{
 			view = new SongView(this.context);
+			view.setLayout(entry);
 		}
 
 		view.setSong(entry, false, true);

@@ -59,10 +59,6 @@ public class SongView extends UpdateView implements Checkable
 	private static String theme;
 	private static LayoutInflater inflater;
 
-	private CheckedTextView checkedTextView;
-	private ImageView starImageView;
-	private TextView titleTextView;
-	private TextView statusTextView;
 	private Entry song;
 	private Context context;
 	private Drawable leftImage;
@@ -74,6 +70,7 @@ public class SongView extends UpdateView implements Checkable
 	private DownloadService downloadService;
 	private DownloadFile downloadFile;
 	private boolean playing;
+	private EntryAdapter.SongViewHolder viewHolder;
 
 	public SongView(Context context)
 	{
@@ -120,12 +117,33 @@ public class SongView extends UpdateView implements Checkable
 		}
 	}
 
+	public void setLayout(final Entry song)
+	{
+		inflater.inflate(song.isVideo() ? R.layout.video_list_item : R.layout.song_list_item, this, true);
+		viewHolder = new EntryAdapter.SongViewHolder();
+		viewHolder.check = (CheckedTextView) findViewById(R.id.song_check);
+		viewHolder.star = (ImageView) findViewById(R.id.song_star);
+		viewHolder.drag = (ImageView) findViewById(R.id.song_drag);
+		viewHolder.track = (TextView) findViewById(R.id.song_track);
+		viewHolder.title = (TextView) findViewById(R.id.song_title);
+		viewHolder.artist = (TextView) findViewById(R.id.song_artist);
+		viewHolder.duration = (TextView) findViewById(R.id.song_duration);
+		viewHolder.status = (TextView) findViewById(R.id.song_status);
+		setTag(viewHolder);
+	}
+
+	public void setViewHolder(EntryAdapter.SongViewHolder viewHolder)
+	{
+		this.viewHolder = viewHolder;
+		setTag(this.viewHolder);
+	}
+
 	public Entry getEntry()
 	{
 		return this.song;
 	}
 
-	protected void setSong(final Entry song, boolean checkable, boolean dragable)
+	protected void setSong(final Entry song, boolean checkable, boolean draggable)
 	{
 		updateBackground();
 
@@ -135,17 +153,6 @@ public class SongView extends UpdateView implements Checkable
 		{
 			this.downloadFile = downloadService.forSong(song);
 		}
-
-		inflater.inflate(song.isVideo() ? R.layout.video_list_item : R.layout.song_list_item, this, true);
-
-		checkedTextView = (CheckedTextView) findViewById(R.id.song_check);
-		starImageView = (ImageView) findViewById(R.id.song_star);
-		ImageView songDragImageView = (ImageView) findViewById(R.id.song_drag);
-		TextView trackTextView = (TextView) findViewById(R.id.song_track);
-		titleTextView = (TextView) findViewById(R.id.song_title);
-		TextView artistTextView = (TextView) findViewById(R.id.song_artist);
-		TextView durationTextView = (TextView) findViewById(R.id.song_duration);
-		statusTextView = (TextView) findViewById(R.id.song_status);
 
 		StringBuilder artist = new StringBuilder(60);
 
@@ -178,51 +185,51 @@ public class SongView extends UpdateView implements Checkable
 
 		int trackNumber = song.getTrack();
 
-		if (trackTextView != null)
+		if (viewHolder.track != null)
 		{
 			if (Util.shouldShowTrackNumber(this.context) && trackNumber != 0)
 			{
-				trackTextView.setText(String.format("%02d.", trackNumber));
+				viewHolder.track.setText(String.format("%02d.", trackNumber));
 			}
 			else
 			{
-				trackTextView.setVisibility(View.GONE);
+				viewHolder.track.setVisibility(View.GONE);
 			}
 		}
 
-		titleTextView.setText(song.getTitle());
+		viewHolder.title.setText(song.getTitle());
 
-		if (artistTextView != null)
+		if (viewHolder.artist != null)
 		{
-			artistTextView.setText(artist);
+			viewHolder.artist.setText(artist);
 		}
 
 		Integer duration = song.getDuration();
 
 		if (duration != null)
 		{
-			durationTextView.setText(Util.formatTotalDuration(duration));
+			viewHolder.duration.setText(Util.formatTotalDuration(duration));
 		}
 
-		if (checkedTextView != null)
+		if (viewHolder.check != null)
 		{
-			checkedTextView.setVisibility(checkable && !song.isVideo() ? View.VISIBLE : View.GONE);
+			viewHolder.check.setVisibility(checkable && !song.isVideo() ? View.VISIBLE : View.GONE);
 		}
 
-		if (songDragImageView != null)
+		if (viewHolder.drag != null)
 		{
-			songDragImageView.setVisibility(dragable ? View.VISIBLE : View.GONE);
+			viewHolder.drag.setVisibility(draggable ? View.VISIBLE : View.GONE);
 		}
 
 		if (Util.isOffline(this.context))
 		{
-			starImageView.setVisibility(View.GONE);
+			viewHolder.star.setVisibility(View.GONE);
 		}
 		else
 		{
-			starImageView.setImageDrawable(song.getStarred() ? starDrawable : starHollowDrawable);
+			viewHolder.star.setImageDrawable(song.getStarred() ? starDrawable : starHollowDrawable);
 
-			starImageView.setOnClickListener(new View.OnClickListener()
+			viewHolder.star.setOnClickListener(new View.OnClickListener()
 			{
 				@Override
 				public void onClick(View view)
@@ -232,12 +239,12 @@ public class SongView extends UpdateView implements Checkable
 
 					if (!isStarred)
 					{
-						starImageView.setImageDrawable(starDrawable);
+						viewHolder.star.setImageDrawable(starDrawable);
 						song.setStarred(true);
 					}
 					else
 					{
-						starImageView.setImageDrawable(starHollowDrawable);
+						viewHolder.star.setImageDrawable(starHollowDrawable);
 						song.setStarred(false);
 					}
 
@@ -312,9 +319,9 @@ public class SongView extends UpdateView implements Checkable
 
 		if (downloadFile.isDownloading() && !downloadFile.isDownloadCancelled() && partialFile.exists())
 		{
-			if (this.statusTextView != null)
+			if (this.viewHolder.status != null)
 			{
-				this.statusTextView.setText(Util.formatLocalizedBytes(partialFile.length(), this.context));
+				this.viewHolder.status.setText(Util.formatLocalizedBytes(partialFile.length(), this.context));
 			}
 
 			this.rightImageType = ImageType.downloading;
@@ -325,13 +332,13 @@ public class SongView extends UpdateView implements Checkable
 			this.rightImageType = ImageType.none;
 			this.rightImage = null;
 
-			if (this.statusTextView != null)
+			if (this.viewHolder.status != null)
 			{
-				CharSequence statusText = this.statusTextView.getText();
+				CharSequence statusText = this.viewHolder.status.getText();
 
 				if (statusText != "" || statusText != null)
 				{
-					this.statusTextView.setText(null);
+					this.viewHolder.status.setText(null);
 				}
 			}
 		}
@@ -341,9 +348,9 @@ public class SongView extends UpdateView implements Checkable
 			this.previousLeftImageType = leftImageType;
 			this.previousRightImageType = rightImageType;
 
-			if (this.statusTextView != null)
+			if (this.viewHolder.status != null)
 			{
-				this.statusTextView.setCompoundDrawablesWithIntrinsicBounds(leftImage, null, rightImage, null);
+				this.viewHolder.status.setCompoundDrawablesWithIntrinsicBounds(leftImage, null, rightImage, null);
 
 				if (rightImage == downloadingImage)
 				{
@@ -355,21 +362,21 @@ public class SongView extends UpdateView implements Checkable
 
 		if (!song.getStarred())
 		{
-			if (starImageView != null)
+			if (viewHolder.star != null)
 			{
-				if (starImageView.getDrawable() != starHollowDrawable)
+				if (viewHolder.star.getDrawable() != starHollowDrawable)
 				{
-					starImageView.setImageDrawable(starHollowDrawable);
+					viewHolder.star.setImageDrawable(starHollowDrawable);
 				}
 			}
 		}
 		else
 		{
-			if (starImageView != null)
+			if (viewHolder.star != null)
 			{
-				if (starImageView.getDrawable() != starDrawable)
+				if (viewHolder.star.getDrawable() != starDrawable)
 				{
-					starImageView.setImageDrawable(starDrawable);
+					viewHolder.star.setImageDrawable(starDrawable);
 				}
 			}
 		}
@@ -381,7 +388,7 @@ public class SongView extends UpdateView implements Checkable
 			if (!this.playing)
 			{
 				this.playing = true;
-				titleTextView.setCompoundDrawablesWithIntrinsicBounds(playingImage, null, null, null);
+				viewHolder.title.setCompoundDrawablesWithIntrinsicBounds(playingImage, null, null, null);
 			}
 		}
 		else
@@ -389,7 +396,7 @@ public class SongView extends UpdateView implements Checkable
 			if (this.playing)
 			{
 				this.playing = false;
-				titleTextView.setCompoundDrawablesWithIntrinsicBounds(0, 0, 0, 0);
+				viewHolder.title.setCompoundDrawablesWithIntrinsicBounds(0, 0, 0, 0);
 			}
 		}
 	}
@@ -397,19 +404,19 @@ public class SongView extends UpdateView implements Checkable
 	@Override
 	public void setChecked(boolean b)
 	{
-		checkedTextView.setChecked(b);
+		viewHolder.check.setChecked(b);
 	}
 
 	@Override
 	public boolean isChecked()
 	{
-		return checkedTextView.isChecked();
+		return viewHolder.check.isChecked();
 	}
 
 	@Override
 	public void toggle()
 	{
-		checkedTextView.toggle();
+		viewHolder.check.toggle();
 	}
 
 	public enum ImageType
