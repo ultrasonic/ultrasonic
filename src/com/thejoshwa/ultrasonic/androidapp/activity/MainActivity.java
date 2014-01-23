@@ -75,7 +75,11 @@ public class MainActivity extends SubsonicTabActivity
 		if (getIntent().hasExtra(Constants.INTENT_EXTRA_NAME_EXIT))
 		{
 			setResult(Constants.RESULT_CLOSE_ALL);
-			getDownloadService().stopJukeboxService();
+
+			if (getDownloadService() != null)
+			{
+				getDownloadService().stopJukeboxService();
+			}
 
 			if (getImageLoader() != null)
 			{
