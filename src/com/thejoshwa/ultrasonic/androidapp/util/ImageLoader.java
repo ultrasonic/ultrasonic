@@ -149,7 +149,7 @@ public class ImageLoader implements Runnable
 
 		if (bitmap != null)
 		{
-			setImageBitmap(view, bitmap, crossFade);
+			setImageBitmap(view, entry, bitmap, crossFade);
 			return;
 		}
 
@@ -193,11 +193,19 @@ public class ImageLoader implements Runnable
 		return null;
 	}
 
-	private void setImageBitmap(View view, Bitmap bitmap, boolean crossFade)
+	private void setImageBitmap(View view, MusicDirectory.Entry entry, Bitmap bitmap, boolean crossFade)
 	{
 		if (view instanceof ImageView)
 		{
 			ImageView imageView = (ImageView) view;
+
+			MusicDirectory.Entry tagEntry = (MusicDirectory.Entry) view.getTag();
+
+			if (entry != null && tagEntry != null && !entry.equals(tagEntry))
+			{
+				Log.i(TAG, "Skipping entry");
+				return;
+			}
 
 			if (crossFade)
 			{
@@ -227,7 +235,7 @@ public class ImageLoader implements Runnable
 	{
 		if (large)
 		{
-			setImageBitmap(view, largeUnknownImage, false);
+			setImageBitmap(view, null, largeUnknownImage, false);
 		}
 		else
 		{
@@ -308,7 +316,7 @@ public class ImageLoader implements Runnable
 					@Override
 					public void run()
 					{
-						setImageBitmap(view, bitmap, crossFade);
+						setImageBitmap(view, entry, bitmap, crossFade);
 					}
 				});
 			}

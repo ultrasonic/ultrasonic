@@ -96,6 +96,8 @@ public class AlbumView extends UpdateView
 
 	public void setAlbum(final MusicDirectory.Entry album)
 	{
+		viewHolder.cover_art.setTag(album);
+		imageLoader.loadImage(viewHolder.cover_art, album, false, 0, false, true);
 		this.entry = album;
 
 		String title = album.getTitle();
@@ -106,7 +108,6 @@ public class AlbumView extends UpdateView
 		viewHolder.artist.setText(artist);
 		viewHolder.artist.setVisibility(artist == null ? View.GONE : View.VISIBLE);
 		viewHolder.star.setImageDrawable(starred ? starDrawable : starHollowDrawable);
-		imageLoader.loadImage(viewHolder.cover_art, album, false, 0, false, true);
 
 		if (Util.isOffline(this.context) || "-1".equals(album.getId()))
 		{
