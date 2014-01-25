@@ -41,6 +41,7 @@ import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.ScheduledFuture;
 import java.util.concurrent.TimeUnit;
+import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicLong;
 
 /**
@@ -64,7 +65,7 @@ public class JukeboxService
 	private JukeboxStatus jukeboxStatus;
 	private float gain = 0.5f;
 	private VolumeToast volumeToast;
-	private boolean running = false;
+	private AtomicBoolean running = new AtomicBoolean();
 	private Thread serviceThread;
 
 	// TODO: Report warning if queue fills up.
@@ -80,18 +81,24 @@ public class JukeboxService
 
 	public void startJukeboxService()
 	{
-		if (running) return;
+		if (running.get())
+		{
+			return;
+		}
 
-		running = true;
+		running.set(true);
 		startProcessTasks();
 	}
 
 	public void stopJukeboxService()
 	{
-		running = false;
+		running.set(false);
 		Util.sleepQuietly(1000);
 
-		if (serviceThread != null) serviceThread.interrupt();
+		if (serviceThread != null)
+		{
+			serviceThread.interrupt();
+		}
 	}
 
 	private void startProcessTasks()
@@ -136,7 +143,7 @@ public class JukeboxService
 
 	private void processTasks()
 	{
-		while (running)
+		while (running.get())
 		{
 			JukeboxTask task = null;
 

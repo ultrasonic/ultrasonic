@@ -197,7 +197,15 @@ public class SongView extends UpdateView implements Checkable
 			}
 		}
 
-		viewHolder.title.setText(song.getTitle());
+		StringBuilder title = new StringBuilder(60);
+		title.append(song.getTitle());
+
+		if (song.isVideo() && Util.shouldDisplayBitrateWithArtist(this.context))
+		{
+			title.append(" (").append(String.format(this.context.getString(R.string.song_details_all), bitRate == null ? "" : String.format("%s ", bitRate), fileFormat)).append(')');
+		}
+
+		viewHolder.title.setText(title);
 
 		if (viewHolder.artist != null)
 		{

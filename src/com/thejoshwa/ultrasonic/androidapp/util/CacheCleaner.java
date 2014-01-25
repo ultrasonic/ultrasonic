@@ -239,6 +239,7 @@ public class CacheCleaner
 
 			try
 			{
+				Thread.currentThread().setName("BackgroundCleanup");
 				List<File> files = new ArrayList<File>();
 				List<File> dirs = new ArrayList<File>();
 
@@ -272,6 +273,7 @@ public class CacheCleaner
 
 			try
 			{
+				Thread.currentThread().setName("BackgroundSpaceCleanup");
 				List<File> files = new ArrayList<File>();
 				List<File> dirs = new ArrayList<File>();
 				findCandidatesForDeletion(FileUtil.getMusicDirectory(context), files, dirs);
@@ -300,6 +302,7 @@ public class CacheCleaner
 		{
 			try
 			{
+				Thread.currentThread().setName("BackgroundPlaylistsCleanup");
 				String server = Util.getServerName(context);
 				SortedSet<File> playlistFiles = FileUtil.listFiles(FileUtil.getPlaylistDirectory(server));
 				List<Playlist> playlists = params[0];

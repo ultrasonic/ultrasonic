@@ -367,6 +367,7 @@ public class DownloadServiceLifecycleSupport
 			{
 				try
 				{
+					Thread.currentThread().setName("SerializeTask");
 					serializeDownloadQueueNow();
 				}
 				finally
@@ -385,6 +386,7 @@ public class DownloadServiceLifecycleSupport
 		{
 			try
 			{
+				Thread.currentThread().setName("DeserializeTask");
 				lock.lock();
 				deserializeDownloadQueueNow();
 				setup.set(true);
@@ -393,6 +395,7 @@ public class DownloadServiceLifecycleSupport
 			{
 				lock.unlock();
 			}
+
 			return null;
 		}
 	}

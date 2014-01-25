@@ -95,7 +95,7 @@
     <string name="main.songs_starred">Starred</string>
     <string name="main.songs_title">Songs</string>
     <string name="main.videos">Videos</string>
-    <string name="main.welcome_text">Welcome to UltraSonic! The app is currently not configured. After you\'ve set up your personal server (available from <b>subsonic.org</b>), please go to <b>Settings</b> and change the configuration to connect to it.</string>
+    <string name="main.welcome_text">Welcome to UltraSonic! The app is currently not configured. After you\'ve set up your personal server (available from <b>subsonic.org</b>), please click <i>Add Server</i> in <b>Settings</b> to connect to it.</string>
     <string name="main.welcome_title">Welcome!</string>
     <string name="menu.about">About</string>
     <string name="menu.common">Common</string>

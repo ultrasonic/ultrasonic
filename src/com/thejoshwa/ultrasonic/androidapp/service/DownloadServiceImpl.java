@@ -179,6 +179,8 @@ public class DownloadServiceImpl extends Service implements DownloadService
 			@Override
 			public void run()
 			{
+				Thread.currentThread().setName("DownloadServiceImpl");
+
 				Looper.prepare();
 
 				if (mediaPlayer != null)
@@ -2172,6 +2174,8 @@ public class DownloadServiceImpl extends Service implements DownloadService
 		@Override
 		public void run()
 		{
+			Thread.currentThread().setName("PositionCache");
+
 			// Stop checking position before the song reaches completion
 			while (isRunning)
 			{
@@ -2181,7 +2185,8 @@ public class DownloadServiceImpl extends Service implements DownloadService
 					{
 						cachedPosition = mediaPlayer.getCurrentPosition();
 					}
-					Thread.sleep(200L);
+
+					Thread.sleep(50L);
 				}
 				catch (Exception e)
 				{
@@ -2211,6 +2216,8 @@ public class DownloadServiceImpl extends Service implements DownloadService
 		@Override
 		public void execute()
 		{
+			Thread.currentThread().setName("CheckCompletionTask");
+
 			if (downloadFile == null)
 			{
 				return;

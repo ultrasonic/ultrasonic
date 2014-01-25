@@ -1,29 +1,31 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+
     <style name="listselect" parent="android:style/Widget.ListView">
         <item name="android:listSelector">@drawable/list_selector_holo_dark</item>
     </style>
-    
+
     <style name="listselectlight" parent="android:style/Widget.ListView.White">
         <item name="android:listSelector">@drawable/list_selector_holo_light</item>
     </style>
-     
+
     <style name="customprogress" parent="android:style/Widget.ProgressBar.Horizontal">
         <item name="android:progressDrawable">@drawable/progress_horizontal_holo_dark</item>
     </style>
-    
+
     <style name="Widget.MenuDrawer">
-		<item name="mdMenuBackground">@color/md__transparent</item>
+        <item name="mdMenuBackground">?android:attr/windowBackground</item>
         <item name="mdContentBackground">?android:attr/windowBackground</item>
         <item name="mdActiveIndicator">@drawable/menu_arrow</item>
-        <item name="mdMenuSize">250dp</item>
-        <item name="mdAllowIndicatorAnimation">true</item>        
+        <item name="mdDropShadowSize">5dip</item>
+        <item name="mdDropShadowColor">@color/translucent</item>
+        <item name="mdAllowIndicatorAnimation">true</item>
     </style>
-    
-    <style name="MenuDrawer" />
 
-    <style name="MenuDrawer.Widget" />
-        
+    <style name="MenuDrawer"/>
+
+    <style name="MenuDrawer.Widget"/>
+
     <style name="MenuDrawer.Widget.Category">
         <item name="android:textStyle">bold</item>
         <item name="android:textColor">@color/cyan</item>
@@ -34,7 +36,7 @@
         <item name="android:singleLine">true</item>
         <item name="android:ellipsize">end</item>
     </style>
-    
+
     <style name="MenuDrawer.Widget.Title">
         <item name="android:textAppearance">?android:attr/textAppearance</item>
         <item name="android:textSize">18sp</item>
@@ -45,8 +47,8 @@
         <item name="android:drawablePadding">16dp</item>
         <item name="android:gravity">center_vertical</item>
     </style>
-    
-   	<attr name="star_hollow" format="reference"/>
+
+    <attr name="star_hollow" format="reference"/>
     <attr name="star_full" format="reference"/>
     <attr name="about" format="reference"/>
     <attr name="select_all" format="reference"/>
@@ -64,31 +66,31 @@
     <attr name="remove_all" format="reference"/>
     <attr name="save" format="reference"/>
     <attr name="screen_on_off" format="reference"/>
-	<attr name="search" format="reference"/>    
-	<attr name="select_folder" format="reference"/>
-	<attr name="settings" format="reference"/>	
-	<attr name="share" format="reference"/>
-	<attr name="downloaded" format="reference"/>
-	<attr name="downloading" format="reference"/>
-	<attr name="media_previous" format="reference"/>
-	<attr name="media_next" format="reference"/>
-	<attr name="media_pause" format="reference"/>
-	<attr name="media_repeat_all" format="reference"/>
-	<attr name="media_repeat_off" format="reference"/>
-	<attr name="media_repeat_single" format="reference"/>
-	<attr name="media_shuffle" format="reference"/>
-	<attr name="media_play" format="reference"/>
-	<attr name="media_play_next" format="reference"/>
-	<attr name="media_play_small" format="reference"/>
-	<attr name="media_stop" format="reference"/>
-	<attr name="media_toggle" format="reference"/>
-	<attr name="chat" format="reference"/>
-	<attr name="chat_send" format="reference" />
-	<attr name="bookmark" format="reference" />
-    <attr name="check_mark_off" format="reference" />
-    <attr name="check_mark_on" format="reference" />
-    <attr name="button_check_custom" format="reference" />
-    <attr name="color_background" format="reference" />
+    <attr name="search" format="reference"/>
+    <attr name="select_folder" format="reference"/>
+    <attr name="settings" format="reference"/>
+    <attr name="share" format="reference"/>
+    <attr name="downloaded" format="reference"/>
+    <attr name="downloading" format="reference"/>
+    <attr name="media_previous" format="reference"/>
+    <attr name="media_next" format="reference"/>
+    <attr name="media_pause" format="reference"/>
+    <attr name="media_repeat_all" format="reference"/>
+    <attr name="media_repeat_off" format="reference"/>
+    <attr name="media_repeat_single" format="reference"/>
+    <attr name="media_shuffle" format="reference"/>
+    <attr name="media_play" format="reference"/>
+    <attr name="media_play_next" format="reference"/>
+    <attr name="media_play_small" format="reference"/>
+    <attr name="media_stop" format="reference"/>
+    <attr name="media_toggle" format="reference"/>
+    <attr name="chat" format="reference"/>
+    <attr name="chat_send" format="reference"/>
+    <attr name="bookmark" format="reference"/>
+    <attr name="check_mark_off" format="reference"/>
+    <attr name="check_mark_on" format="reference"/>
+    <attr name="button_check_custom" format="reference"/>
+    <attr name="color_background" format="reference"/>
 
 </resources>
 

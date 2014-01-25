@@ -26,9 +26,9 @@
             a:layout_gravity="left|center_vertical"
             a:layout_weight="1"
             a:drawablePadding="6dip"
-            a:ellipsize="marquee"
+            a:ellipsize="end"
             a:paddingLeft="4dip"
-            a:paddingRight="6dip"
+            a:paddingRight="2dip"
             a:singleLine="true"
             a:textAppearance="?android:attr/textAppearanceMedium"/>
 

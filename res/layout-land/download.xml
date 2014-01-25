@@ -22,7 +22,7 @@
                 a:id="@+id/download_album_art_image"
                 a:layout_width="wrap_content"
                 a:layout_height="wrap_content"
-                a:scaleType="center"
+                a:scaleType="centerCrop"
                 a:contentDescription="@string/albumArt"/>
 
             <LinearLayout

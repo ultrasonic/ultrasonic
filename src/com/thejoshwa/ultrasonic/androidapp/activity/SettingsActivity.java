@@ -48,6 +48,7 @@ import com.thejoshwa.ultrasonic.androidapp.service.MusicServiceFactory;
 import com.thejoshwa.ultrasonic.androidapp.util.Constants;
 import com.thejoshwa.ultrasonic.androidapp.util.ErrorDialog;
 import com.thejoshwa.ultrasonic.androidapp.util.FileUtil;
+import com.thejoshwa.ultrasonic.androidapp.util.ImageLoader;
 import com.thejoshwa.ultrasonic.androidapp.util.ModalBackgroundTask;
 import com.thejoshwa.ultrasonic.androidapp.util.TimeSpanPreference;
 import com.thejoshwa.ultrasonic.androidapp.util.Util;
@@ -102,7 +103,7 @@ public class SettingsActivity extends PreferenceResultActivity implements Shared
 	public MenuDrawer menuDrawer;
 	private int activePosition = 1;
 	private int menuActiveViewId;
-	private int activeServers = 3;
+	private int activeServers;
 	View chatMenuItem;
 	View bookmarksMenuItem;
 	View sharesMenuItem;
@@ -224,7 +225,7 @@ public class SettingsActivity extends PreferenceResultActivity implements Shared
 		}
 
 		settings = PreferenceManager.getDefaultSharedPreferences(this);
-		activeServers = settings.getInt(Constants.PREFERENCES_KEY_ACTIVE_SERVERS, 3);
+		activeServers = settings.getInt(Constants.PREFERENCES_KEY_ACTIVE_SERVERS, 0);
 
 		serversCategory = (PreferenceCategory) findPreference(Constants.PREFERENCES_KEY_SERVERS_KEY);
 
@@ -516,6 +517,10 @@ public class SettingsActivity extends PreferenceResultActivity implements Shared
 		{
 			setBluetoothPreferences(sharedPreferences.getBoolean(key, true));
 		}
+		else if (Constants.PREFERENCES_KEY_IMAGE_LOADER_CONCURRENCY.equals(key))
+		{
+			setImageLoaderConcurrency(Integer.parseInt(sharedPreferences.getString(key, "5")));
+		}
 	}
 
 	private void update()
@@ -564,6 +569,22 @@ public class SettingsActivity extends PreferenceResultActivity implements Shared
 		for (ServerSettings ss : serverSettings.values())
 		{
 			ss.update();
+		}
+	}
+
+	private static void setImageLoaderConcurrency(int concurrency)
+	{
+		SubsonicTabActivity instance = SubsonicTabActivity.getInstance();
+
+		if (instance != null)
+		{
+			ImageLoader imageLoader = instance.getImageLoader();
+
+			if (imageLoader != null)
+			{
+				imageLoader.stopImageLoader();
+				imageLoader.setConcurrency(concurrency);
+			}
 		}
 	}
 

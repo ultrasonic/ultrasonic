@@ -40,6 +40,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.LinkedBlockingQueue;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 /**
  * Asynchronous loading of images, with caching.
@@ -50,7 +51,6 @@ import java.util.concurrent.LinkedBlockingQueue;
  */
 public class ImageLoader implements Runnable
 {
-
 	private static final String TAG = ImageLoader.class.getSimpleName();
 
 	private final LRUCache<String, Bitmap> cache = new LRUCache<String, Bitmap>(150);
@@ -59,8 +59,8 @@ public class ImageLoader implements Runnable
 	private final int imageSizeLarge;
 	private Bitmap largeUnknownImage;
 	private Context context;
-	private Collection<Thread> threads = new ArrayList<Thread>();
-	private boolean running = false;
+	private Collection<Thread> threads;
+	private AtomicBoolean running = new AtomicBoolean();
 	private int concurrency;
 
 	public ImageLoader(Context context, int concurrency)
@@ -86,16 +86,23 @@ public class ImageLoader implements Runnable
 
 	public synchronized boolean isRunning()
 	{
-		return running && !threads.isEmpty();
+		return running.get() && !threads.isEmpty();
+	}
+
+	public void setConcurrency(int concurrency)
+	{
+		this.concurrency = concurrency;
 	}
 
 	public void startImageLoader()
 	{
-		running = true;
+		running.set(true);
+
+		threads = new ArrayList<Thread>(this.concurrency);
 
 		for (int i = 0; i < this.concurrency; i++)
 		{
-			Thread thread = new Thread(this, "ImageLoader");
+			Thread thread = new Thread(this, String.format("ImageLoader [%d]", i));
 			threads.add(thread);
 			thread.start();
 		}
@@ -110,7 +117,8 @@ public class ImageLoader implements Runnable
 			thread.interrupt();
 		}
 
-		running = false;
+		running.set(false);
+		threads.clear();
 	}
 
 	private void createLargeUnknownImage(Context context)
@@ -263,7 +271,7 @@ public class ImageLoader implements Runnable
 	@Override
 	public void run()
 	{
-		while (running)
+		while (running.get())
 		{
 			try
 			{
@@ -272,7 +280,8 @@ public class ImageLoader implements Runnable
 			}
 			catch (InterruptedException ignored)
 			{
-
+				running.set(false);
+				break;
 			}
 			catch (Throwable x)
 			{

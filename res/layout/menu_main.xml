@@ -1,20 +1,21 @@
 <?xml version="1.0" encoding="utf-8"?>
 <ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
-    android:id="@+id/menu_main"
-    android:layout_width="wrap_content"
-    android:layout_height="wrap_content" >
+            android:id="@+id/menu_main"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content">
 
     <LinearLayout
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:orientation="vertical" >
+        android:orientation="vertical"
+        android:alpha="1">
 
         <TextView
             android:id="@+id/menu_navigation"
             style="@style/MenuDrawer.Widget.Category"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="@string/menu.navigation" />
+            android:text="@string/menu.navigation"/>
 
         <TextView
             android:id="@+id/menu_home"
@@ -22,7 +23,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:drawableLeft="?attr/home"
-            android:text="@string/button_bar.home" />
+            android:text="@string/button_bar.home"/>
 
         <TextView
             android:id="@+id/menu_browse"
@@ -30,7 +31,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:drawableLeft="?attr/browse"
-            android:text="@string/button_bar.browse" />
+            android:text="@string/button_bar.browse"/>
 
         <TextView
             android:id="@+id/menu_search"
@@ -38,7 +39,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:drawableLeft="?attr/search"
-            android:text="@string/button_bar.search" />
+            android:text="@string/button_bar.search"/>
 
         <TextView
             android:id="@+id/menu_playlists"
@@ -46,7 +47,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:drawableLeft="?attr/playlists"
-            android:text="@string/button_bar.playlists" />
+            android:text="@string/button_bar.playlists"/>
 
         <TextView
             android:id="@+id/menu_shares"
@@ -54,7 +55,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:drawableLeft="?attr/share"
-            android:text="@string/button_bar.shares" />
+            android:text="@string/button_bar.shares"/>
 
         <TextView
             android:id="@+id/menu_bookmarks"
@@ -62,15 +63,15 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:drawableLeft="?attr/bookmark"
-            android:text="@string/button_bar.bookmarks" />        
-        
+            android:text="@string/button_bar.bookmarks"/>
+
         <TextView
             android:id="@+id/menu_chat"
             style="@style/MenuDrawer.Widget.Title"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:drawableLeft="?attr/chat"
-            android:text="@string/button_bar.chat" />
+            android:text="@string/button_bar.chat"/>
 
         <TextView
             android:id="@+id/menu_now_playing"
@@ -78,14 +79,14 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:drawableLeft="?attr/media_play"
-            android:text="@string/button_bar.now_playing" />
+            android:text="@string/button_bar.now_playing"/>
 
         <TextView
             android:id="@+id/menu_common"
             style="@style/MenuDrawer.Widget.Category"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="@string/menu.common" />
+            android:text="@string/menu.common"/>
 
         <TextView
             android:id="@+id/menu_settings"
@@ -93,7 +94,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:drawableLeft="?attr/settings"
-            android:text="@string/menu.settings" />
+            android:text="@string/menu.settings"/>
 
         <TextView
             android:id="@+id/menu_about"
@@ -101,7 +102,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:drawableLeft="?attr/about"
-            android:text="@string/menu.about" />
+            android:text="@string/menu.about"/>
 
         <TextView
             android:id="@+id/menu_exit"
@@ -109,7 +110,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:drawableLeft="?attr/exit"
-            android:text="@string/menu.exit" />
+            android:text="@string/menu.exit"/>
     </LinearLayout>
 
 </ScrollView>

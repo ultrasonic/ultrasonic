@@ -349,16 +349,11 @@ public class SubsonicTabActivity extends ResultActivity implements OnClickListen
 
 		new AsyncTask<Void, Void, String[]>()
 		{
-			@Override
-			protected void onPostExecute(String[] result)
-			{
-				super.onPostExecute(result);
-			}
-
 			@SuppressLint("NewApi")
 			@Override
 			protected String[] doInBackground(Void... params)
 			{
+				Thread.currentThread().setName("showNotification");
 				RemoteViews notificationView = notification.contentView;
 				RemoteViews bigNotificationView = null;
 
@@ -455,7 +450,6 @@ public class SubsonicTabActivity extends ResultActivity implements OnClickListen
 
 	public void hidePlayingNotification(final Handler handler, final DownloadServiceImpl downloadService)
 	{
-
 		currentSong = null;
 
 		// Remove notification and remove the service from the foreground

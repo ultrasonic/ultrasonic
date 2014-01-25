@@ -1,16 +1,16 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:a="http://schemas.android.com/apk/res/android"
-    a:layout_width="0dip"
-    a:layout_height="wrap_content"
-    a:layout_gravity="center_vertical"
-    a:layout_weight="1"
-    a:orientation="vertical" >
+              a:layout_width="0dip"
+              a:layout_height="wrap_content"
+              a:layout_gravity="center_vertical"
+              a:layout_weight="1"
+              a:orientation="vertical">
 
     <LinearLayout
         a:layout_width="fill_parent"
         a:layout_height="wrap_content"
         a:layout_gravity="center_vertical"
-        a:orientation="horizontal" >
+        a:orientation="horizontal">
 
         <TextView
             a:id="@+id/song_title"
@@ -18,23 +18,21 @@
             a:layout_height="wrap_content"
             a:layout_gravity="left|center_vertical"
             a:layout_weight="1"
-            a:drawablePadding="6dip"
-            a:ellipsize="marquee"
+            a:ellipsize="end"
             a:paddingLeft="4dip"
-            a:paddingRight="6dip"
+            a:paddingRight="2dip"
             a:singleLine="true"
-            a:text="Video Title"
-            a:textAppearance="?android:attr/textAppearanceMedium" />
+            a:textAppearance="?android:attr/textAppearanceMedium"/>
 
         <TextView
             a:id="@+id/song_duration"
             a:layout_width="wrap_content"
             a:layout_height="wrap_content"
             a:layout_gravity="right|center_vertical"
-            a:paddingLeft="3dip"
-            a:paddingRight="9dip"
+            a:paddingLeft="2dip"
+            a:paddingRight="6dip"
             a:singleLine="true"
-            a:textAppearance="?android:attr/textAppearanceSmall" />
+            a:textAppearance="?android:attr/textAppearanceSmall"/>
     </LinearLayout>
 
 </LinearLayout>

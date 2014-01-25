@@ -62,6 +62,7 @@ public class UpdateView extends LinearLayout
 			@Override
 			public void run()
 			{
+				Thread.currentThread().setName("startUpdater");
 				Looper.prepare();
 				backgroundHandler = new Handler(Looper.myLooper());
 				uiHandler.post(updateRunnable);
@@ -110,6 +111,7 @@ public class UpdateView extends LinearLayout
 				{
 					Log.w(TAG, "Error when updating song views.", x);
 				}
+
 				uiHandler.postDelayed(updateRunnable, Util.getViewRefreshInterval(context));
 			}
 		};
@@ -121,6 +123,8 @@ public class UpdateView extends LinearLayout
 			{
 				try
 				{
+					Thread.currentThread().setName("updateAllLive-Background");
+
 					for (UpdateView view : views)
 					{
 						view.updateBackground();
