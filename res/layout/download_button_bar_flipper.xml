@@ -16,9 +16,8 @@
         a:gravity="center"
         a:ellipsize="end"
         a:singleLine="true"
-        a:textAppearance="?android:attr/textAppearanceMedium"
-        a:text="Title" />
-    
+        a:textAppearance="?android:attr/textAppearanceMedium"/>
+
     <RelativeLayout
         a:id="@+id/download_items"    
         a:layout_width="fill_parent"

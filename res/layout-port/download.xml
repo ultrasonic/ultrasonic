@@ -21,10 +21,11 @@
             <ImageView
                 a:id="@+id/download_album_art_image"
                 a:layout_width="wrap_content"
-                a:layout_height="wrap_content"
-                a:scaleType="fitCenter"
+                a:layout_height="fill_parent"
+                a:scaleType="centerCrop"
                 a:layout_alignParentTop="true"
-                a:layout_centerInParent="true"/>
+                a:layout_centerInParent="true"
+                a:contentDescription="@string/albumArt"/>
 
             <LinearLayout
                 a:id="@+id/download_visualizer_view_layout"
@@ -35,7 +36,8 @@
                 a:background="@color/translucent"
                 a:layout_marginLeft="80dip"
                 a:layout_marginRight="80dip"
-                a:orientation="vertical" />
+                a:orientation="vertical"
+                />
         </RelativeLayout>
 
         <include layout="@layout/download_playlist" />

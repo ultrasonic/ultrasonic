@@ -1,86 +1,79 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:a="http://schemas.android.com/apk/res/android"
-    a:layout_width="fill_parent"
-    a:layout_height="fill_parent"
-    a:orientation="vertical" >
+              a:layout_width="fill_parent"
+              a:layout_height="fill_parent"
+              a:orientation="horizontal">
+
+    <com.thejoshwa.ultrasonic.androidapp.util.MyViewFlipper
+        a:id="@+id/download_playlist_flipper"
+        a:layout_width="fill_parent"
+        a:layout_height="fill_parent"
+        a:layout_weight="1">
+
+        <FrameLayout
+            a:id="@+id/download_album_art_layout"
+            a:layout_width="fill_parent"
+            a:layout_height="fill_parent"
+            a:layout_weight="1"
+            a:gravity="left"
+            a:orientation="horizontal">
+
+            <ImageView
+                a:id="@+id/download_album_art_image"
+                a:layout_width="wrap_content"
+                a:layout_height="wrap_content"
+                a:scaleType="center"
+                a:contentDescription="@string/albumArt"/>
+
+            <LinearLayout
+                a:id="@+id/download_visualizer_view_layout"
+                a:layout_width="fill_parent"
+                a:layout_height="60dip"
+                a:layout_gravity="bottom|center_horizontal"
+                a:layout_marginLeft="60dip"
+                a:layout_marginRight="60dip"
+                a:background="@color/translucent"
+                a:orientation="vertical"/>
+
+        </FrameLayout>
+
+        <include layout="@layout/download_playlist"/>
+    </com.thejoshwa.ultrasonic.androidapp.util.MyViewFlipper>
 
     <RelativeLayout
+        a:id="@+id/download_control_layout"
         a:layout_width="fill_parent"
-        a:layout_height="0dip"
+        a:layout_height="fill_parent"
         a:layout_weight="1"
-        a:orientation="horizontal" >
+        a:orientation="vertical">
 
-        <RelativeLayout
-            a:id="@+id/download_control_layout"
-            a:layout_width="wrap_content"
-            a:layout_height="fill_parent"
-            a:layout_alignParentRight="true" >
+        <LinearLayout
+            a:layout_height="wrap_content"
+            a:layout_width="fill_parent"
+            a:id="@+id/buttons"
+            a:layout_above="@+id/slider">
 
-            <LinearLayout
-                a:id="@+id/linearLayout2"
-                a:layout_width="wrap_content"
-                a:layout_height="wrap_content"
-                a:layout_alignParentTop="true"
-                a:layout_centerHorizontal="true"
-                a:orientation="vertical"
-                a:paddingBottom="8dip"
-                a:paddingTop="8dip" >
+            <include layout="@layout/media_buttons"/>
+        </LinearLayout>
 
-            </LinearLayout>
+        <LinearLayout
+            a:layout_height="wrap_content"
+            a:layout_width="fill_parent"
+            a:id="@+id/slider"
+            a:layout_above="@+id/playback_text">
 
-            <LinearLayout
-                a:id="@+id/linearLayout1"
-                a:layout_width="wrap_content"
-                a:layout_height="wrap_content"
-                a:layout_alignParentBottom="true"
-                a:layout_alignParentLeft="true"
-                a:orientation="vertical"
-                a:paddingBottom="8dip"
-                a:paddingTop="8dip" >
+            <include layout="@layout/download_slider"/>
+        </LinearLayout>
 
-                <include layout="@layout/media_buttons" />
-            </LinearLayout>
+        <LinearLayout
+            a:layout_height="wrap_content"
+            a:layout_width="fill_parent"
+            a:layout_alignParentBottom="true"
+            a:id="@+id/playback_text">
 
-        </RelativeLayout>
+            <include layout="@layout/download_button_bar_flipper"/>
+        </LinearLayout>
 
-        <com.thejoshwa.ultrasonic.androidapp.util.MyViewFlipper
-            a:id="@+id/download_playlist_flipper"
-            a:layout_width="wrap_content"
-            a:layout_height="fill_parent"
-            a:layout_alignParentLeft="true"
-            a:layout_toLeftOf="@+id/download_control_layout" >
-
-            <FrameLayout
-                a:id="@+id/download_album_art_layout"
-                a:layout_width="fill_parent"
-                a:layout_height="fill_parent"
-                a:layout_weight="1"
-                a:gravity="left"
-                a:orientation="horizontal" >
-
-                <ImageView
-                    a:id="@+id/download_album_art_image"
-                    a:layout_width="wrap_content"
-                    a:layout_height="wrap_content"
-                    a:scaleType="fitCenter" />
-
-                <LinearLayout
-                    a:id="@+id/download_visualizer_view_layout"
-                    a:layout_width="fill_parent"
-                    a:layout_height="60dip"
-                    a:layout_gravity="bottom|center_horizontal"
-                    a:layout_marginLeft="60dip"
-                    a:layout_marginRight="60dip"
-                    a:background="@color/translucent"
-                    a:orientation="vertical" />
-            </FrameLayout>
-
-            <include layout="@layout/download_playlist" />
-        </com.thejoshwa.ultrasonic.androidapp.util.MyViewFlipper>
     </RelativeLayout>
-
-    <include layout="@layout/download_slider" />
-
-    <include layout="@layout/download_button_bar_flipper" />
 
 </LinearLayout>

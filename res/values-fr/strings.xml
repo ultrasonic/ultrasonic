@@ -387,6 +387,7 @@
     <string name="settings.image_loader_concurrency_10">10</string>
     <string name="settings.image_loader_concurrency_11">11</string>
     <string name="settings.image_loader_concurrency_12">12</string>
+    <string name="albumArt">albumArt</string>
 
     <plurals name="select_album_n_songs">
         <item quantity="zero">Aucun titre</item>
