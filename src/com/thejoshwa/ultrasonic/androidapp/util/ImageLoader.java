@@ -38,6 +38,7 @@ import com.thejoshwa.ultrasonic.androidapp.service.MusicServiceFactory;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.atomic.AtomicBoolean;
@@ -98,7 +99,7 @@ public class ImageLoader implements Runnable
 	{
 		running.set(true);
 
-		threads = new ArrayList<Thread>(this.concurrency);
+		threads = Collections.synchronizedCollection(new ArrayList<Thread>(this.concurrency));
 
 		for (int i = 0; i < this.concurrency; i++)
 		{
@@ -209,9 +210,10 @@ public class ImageLoader implements Runnable
 
 			MusicDirectory.Entry tagEntry = (MusicDirectory.Entry) view.getTag();
 
+			// Only apply image to the view if the view is intended for this entry
 			if (entry != null && tagEntry != null && !entry.equals(tagEntry))
 			{
-				Log.i(TAG, "Skipping entry");
+				Log.i(TAG, "View is no longer valid, not setting ImageBitmap");
 				return;
 			}
 

@@ -14,6 +14,8 @@ public class AlbumHeader
 	private Set<String> artists;
 	private Set<String> grandParents;
 	private Set<String> genres;
+	private Set<String> albumNames;
+	private Set<Integer> years;
 
 	public boolean getIsAllVideo()
 	{
@@ -40,11 +42,24 @@ public class AlbumHeader
 		return this.genres;
 	}
 
+	public Set<String> getAlbumNames()
+	{
+		return this.albumNames;
+	}
+
+	public Set<Integer> getYears()
+	{
+		return this.years;
+	}
+
 	public AlbumHeader()
 	{
 		this.artists = new HashSet<String>();
 		this.grandParents = new HashSet<String>();
 		this.genres = new HashSet<String>();
+		this.albumNames = new HashSet<String>();
+		this.years = new HashSet<Integer>();
+
 		this.isAllVideo = true;
 		this.totalDuration = 0;
 	}
@@ -82,6 +97,16 @@ public class AlbumHeader
 				if (entry.getGenre() != null)
 				{
 					albumHeader.genres.add(entry.getGenre());
+				}
+
+				if (entry.getAlbum() != null)
+				{
+					albumHeader.albumNames.add(entry.getAlbum());
+				}
+
+				if (entry.getYear() != null)
+				{
+					albumHeader.years.add(entry.getYear());
 				}
 			}
 		}

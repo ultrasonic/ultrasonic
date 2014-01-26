@@ -1196,10 +1196,11 @@ public class SelectAlbumActivity extends SubsonicTabActivity
 			int artworkSelection = random.nextInt(entries.size());
 			getImageLoader().loadImage(coverArtView, entries.get(artworkSelection), false, Util.getAlbumImageSize(SelectAlbumActivity.this), false, true);
 
-			TextView titleView = (TextView) header.findViewById(R.id.select_album_title);
-			titleView.setText(name != null ? name : getActionBarSubtitle());
-
 			AlbumHeader albumHeader = AlbumHeader.processEntries(SelectAlbumActivity.this, entries);
+
+			TextView titleView = (TextView) header.findViewById(R.id.select_album_title);
+			name = albumHeader.getAlbumNames().size() == 1 ? albumHeader.getAlbumNames().iterator().next() : name;
+			titleView.setText(name != null ? name : getActionBarSubtitle());
 
 			// Don't show a header if all entries are videos
 			if (albumHeader.getIsAllVideo())
@@ -1220,6 +1221,13 @@ public class SelectAlbumActivity extends SubsonicTabActivity
 			genre = albumHeader.getGenres().size() == 1 ? albumHeader.getGenres().iterator().next() : getResources().getString(R.string.common_multiple_genres);
 
 			genreView.setText(genre);
+
+			TextView yearView = (TextView) header.findViewById(R.id.select_album_year);
+			String year;
+
+			year = albumHeader.getYears().size() == 1 ? albumHeader.getYears().iterator().next().toString() : getResources().getString(R.string.common_multiple_years);
+
+			yearView.setText(year);
 
 			TextView songCountView = (TextView) header.findViewById(R.id.select_album_song_count);
 			String songs = getResources().getQuantityString(R.plurals.select_album_n_songs, songCount, songCount);

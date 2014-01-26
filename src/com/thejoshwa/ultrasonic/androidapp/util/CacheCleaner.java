@@ -77,11 +77,11 @@ public class CacheCleaner
 		}
 	}
 
-	private static void deleteEmptyDirs(Iterable<File> dirs, Collection<File> undeletable)
+	private static void deleteEmptyDirs(Iterable<File> dirs, Collection<File> doNotDelete)
 	{
 		for (File dir : dirs)
 		{
-			if (undeletable.contains(dir))
+			if (doNotDelete.contains(dir))
 			{
 				continue;
 			}
@@ -114,8 +114,8 @@ public class CacheCleaner
 		}
 
 		long cacheSizeBytes = Util.getCacheSizeMB(context) * 1024L * 1024L;
-
 		long bytesUsedBySubsonic = 0L;
+
 		for (File file : files)
 		{
 			bytesUsedBySubsonic += file.length();
@@ -140,7 +140,7 @@ public class CacheCleaner
 		return bytesToDelete;
 	}
 
-	private static void deleteFiles(Collection<File> files, Collection<File> undeletable, long bytesToDelete, boolean deletePartials)
+	private static void deleteFiles(Collection<File> files, Collection<File> doNotDelete, long bytesToDelete, boolean deletePartials)
 	{
 		if (files.isEmpty())
 		{
@@ -154,9 +154,10 @@ public class CacheCleaner
 
 			if (bytesToDelete > bytesDeleted || (deletePartials && (file.getName().endsWith(".partial") || file.getName().contains(".partial."))))
 			{
-				if (!undeletable.contains(file) && !file.getName().equals(Constants.ALBUM_ART_FILE))
+				if (!doNotDelete.contains(file) && !file.getName().equals(Constants.ALBUM_ART_FILE))
 				{
 					long size = file.length();
+
 					if (Util.delete(file))
 					{
 						bytesDeleted += size;
@@ -174,6 +175,7 @@ public class CacheCleaner
 		{
 			String name = file.getName();
 			boolean isCacheFile = name.endsWith(".partial") || name.contains(".partial.") || name.endsWith(".complete") || name.contains(".complete.");
+
 			if (isCacheFile)
 			{
 				files.add(file);
@@ -186,6 +188,7 @@ public class CacheCleaner
 			{
 				findCandidatesForDeletion(child, files, dirs);
 			}
+
 			dirs.add(file);
 		}
 	}
@@ -212,18 +215,18 @@ public class CacheCleaner
 		});
 	}
 
-	private Set<File> findUndeletableFiles()
+	private Set<File> findFilesToNotDelete()
 	{
-		Set<File> undeletable = new HashSet<File>(5);
+		Set<File> filesToNotDelete = new HashSet<File>(5);
 
 		for (DownloadFile downloadFile : downloadService.getDownloads())
 		{
-			undeletable.add(downloadFile.getPartialFile());
-			undeletable.add(downloadFile.getCompleteFile());
+			filesToNotDelete.add(downloadFile.getPartialFile());
+			filesToNotDelete.add(downloadFile.getCompleteFile());
 		}
 
-		undeletable.add(FileUtil.getMusicDirectory(context));
-		return undeletable;
+		filesToNotDelete.add(FileUtil.getMusicDirectory(context));
+		return filesToNotDelete;
 	}
 
 	private class BackgroundCleanup extends AsyncTask<Void, Void, Void>
@@ -246,10 +249,10 @@ public class CacheCleaner
 				findCandidatesForDeletion(FileUtil.getMusicDirectory(context), files, dirs);
 				sortByAscendingModificationTime(files);
 
-				Set<File> undeletable = findUndeletableFiles();
+				Set<File> filesToNotDelete = findFilesToNotDelete();
 
-				deleteFiles(files, undeletable, getMinimumDelete(files), true);
-				deleteEmptyDirs(dirs, undeletable);
+				deleteFiles(files, filesToNotDelete, getMinimumDelete(files), true);
+				deleteEmptyDirs(dirs, filesToNotDelete);
 			}
 			catch (RuntimeException x)
 			{
@@ -282,8 +285,8 @@ public class CacheCleaner
 				if (bytesToDelete > 0L)
 				{
 					sortByAscendingModificationTime(files);
-					Set<File> undeletable = findUndeletableFiles();
-					deleteFiles(files, undeletable, bytesToDelete, false);
+					Set<File> filesToNotDelete = findFilesToNotDelete();
+					deleteFiles(files, filesToNotDelete, bytesToDelete, false);
 				}
 			}
 			catch (RuntimeException x)
