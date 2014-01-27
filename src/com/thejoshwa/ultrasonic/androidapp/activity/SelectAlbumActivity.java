@@ -1073,8 +1073,6 @@ public class SelectAlbumActivity extends SubsonicTabActivity
 				Collections.sort(entries, new EntryByDiscAndTrackComparator());
 			}
 
-			String directoryName = musicDirectory.getName();
-
 			boolean allVideos = true;
 			int songCount = 0;
 
@@ -1097,7 +1095,9 @@ public class SelectAlbumActivity extends SubsonicTabActivity
 			{
 				if (showHeader)
 				{
-					View header = createHeader(entries, directoryName, songCount);
+					String intentAlbumName = getIntent().getStringExtra(Constants.INTENT_EXTRA_NAME_NAME);
+					String directoryName = musicDirectory.getName();
+					View header = createHeader(entries, intentAlbumName != null ? intentAlbumName : directoryName, songCount);
 
 					if (header != null)
 					{
@@ -1199,7 +1199,6 @@ public class SelectAlbumActivity extends SubsonicTabActivity
 			AlbumHeader albumHeader = AlbumHeader.processEntries(SelectAlbumActivity.this, entries);
 
 			TextView titleView = (TextView) header.findViewById(R.id.select_album_title);
-			name = albumHeader.getAlbumNames().size() == 1 ? albumHeader.getAlbumNames().iterator().next() : name;
 			titleView.setText(name != null ? name : getActionBarSubtitle());
 
 			// Don't show a header if all entries are videos
