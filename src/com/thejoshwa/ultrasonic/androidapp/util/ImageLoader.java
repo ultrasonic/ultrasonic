@@ -135,6 +135,8 @@ public class ImageLoader implements Runnable
 
 	public void loadImage(View view, MusicDirectory.Entry entry, boolean large, int size, boolean crossFade, boolean highQuality)
 	{
+		view.invalidate();
+
 		if (entry == null)
 		{
 			setUnknownImage(view, large);

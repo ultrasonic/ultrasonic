@@ -130,7 +130,19 @@ public class FileUtil
 
 		File albumArtFile = getAlbumArtFile(context, entry);
 
-		Bitmap bitmap = SubsonicTabActivity.getInstance().getImageLoader().getImageBitmap(entry, true, size);
+		SubsonicTabActivity subsonicTabActivity = SubsonicTabActivity.getInstance();
+		Bitmap bitmap = null;
+		ImageLoader imageLoader = null;
+
+		if (subsonicTabActivity != null)
+		{
+			imageLoader = subsonicTabActivity.getImageLoader();
+
+			if (imageLoader != null)
+			{
+				bitmap = imageLoader.getImageBitmap(entry, true, size);
+			}
+		}
 
 		if (bitmap != null)
 		{
@@ -162,7 +174,10 @@ public class FileUtil
 
 			if (bitmap != null)
 			{
-				SubsonicTabActivity.getInstance().getImageLoader().addImageToCache(bitmap, entry, size);
+				if (imageLoader != null)
+				{
+					imageLoader.addImageToCache(bitmap, entry, size);
+				}
 			}
 
 			return bitmap == null ? null : bitmap;
