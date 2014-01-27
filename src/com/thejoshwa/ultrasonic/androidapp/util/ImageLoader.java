@@ -25,7 +25,6 @@ import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.graphics.drawable.TransitionDrawable;
 import android.os.Handler;
-import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.View;
 import android.widget.ImageView;
@@ -79,9 +78,7 @@ public class ImageLoader implements Runnable
 			imageSizeDefault = drawable.getIntrinsicHeight();
 		}
 
-		DisplayMetrics metrics = context.getResources().getDisplayMetrics();
-		imageSizeLarge = Math.round(Math.min(metrics.widthPixels, metrics.heightPixels));
-
+		imageSizeLarge = Util.getMaxDisplayMetric(context);
 		createLargeUnknownImage(context);
 	}
 
@@ -195,7 +192,7 @@ public class ImageLoader implements Runnable
 
 		Bitmap bitmap = cache.get(getKey(coverArt, size));
 
-		if (bitmap != null)
+		if (bitmap != null && !bitmap.isRecycled())
 		{
 			Bitmap.Config config = bitmap.getConfig();
 			return bitmap.copy(config, false);

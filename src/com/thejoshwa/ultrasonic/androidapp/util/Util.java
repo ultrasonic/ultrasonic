@@ -1252,6 +1252,12 @@ public class Util extends DownloadActivity
 		return Math.min(metrics.widthPixels, metrics.heightPixels);
 	}
 
+	public static int getMaxDisplayMetric(Context context)
+	{
+		DisplayMetrics metrics = context.getResources().getDisplayMetrics();
+		return Math.max(metrics.widthPixels, metrics.heightPixels);
+	}
+
 	public static int calculateInSampleSize(BitmapFactory.Options options, int reqWidth, int reqHeight)
 	{
 		// Raw height and width of image

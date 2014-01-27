@@ -44,7 +44,7 @@
         a:id="@+id/download_control_layout"
         a:layout_width="fill_parent"
         a:layout_height="fill_parent"
-        a:layout_weight="1"
+        a:layout_weight="1.2"
         a:orientation="vertical">
 
         <LinearLayout

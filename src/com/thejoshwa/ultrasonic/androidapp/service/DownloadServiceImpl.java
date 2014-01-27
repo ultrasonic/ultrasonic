@@ -1561,7 +1561,7 @@ public class DownloadServiceImpl extends Service implements DownloadService
 		{
 			MusicDirectory.Entry currentSong = currentPlaying.getSong();
 
-			Bitmap lockScreenBitmap = FileUtil.getAlbumArtBitmap(this, currentSong, 0, true);
+			Bitmap lockScreenBitmap = FileUtil.getAlbumArtBitmap(this, currentSong, Util.getMinDisplayMetric(this), true);
 
 			String artist = currentSong.getArtist();
 			String album = currentSong.getAlbum();

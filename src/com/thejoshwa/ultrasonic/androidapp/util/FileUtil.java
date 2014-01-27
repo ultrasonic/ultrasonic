@@ -169,7 +169,15 @@ public class FileUtil
 				opt.inJustDecodeBounds = false;
 			}
 
-			bitmap = BitmapFactory.decodeFile(albumArtFile.getPath(), opt);
+			try
+			{
+				bitmap = BitmapFactory.decodeFile(albumArtFile.getPath(), opt);
+			}
+			catch (Exception ex)
+			{
+				Log.e(TAG, "Exception in BitmapFactory.decodeFile()", ex);
+			}
+
 			Log.i("getAlbumArtBitmap", String.valueOf(size));
 
 			if (bitmap != null)
