@@ -1226,9 +1226,9 @@ public class DownloadActivity extends SubsonicTabActivity implements OnGestureLi
 				{
 					DownloadFile item = adapter.getItem(from);
 					adapter.remove(item);
+					adapter.notifyDataSetChanged();
 					adapter.insert(item, to);
-					//onDownloadListChanged();
-					//onCurrentChanged();
+					adapter.notifyDataSetChanged();
 				}
 			}
 
@@ -1257,6 +1257,7 @@ public class DownloadActivity extends SubsonicTabActivity implements OnGestureLi
 				}
 
 				adapter.remove(item);
+				adapter.notifyDataSetChanged();
 
 				String songRemoved = String.format(getResources().getString(R.string.download_song_removed), item.getSong().getTitle());
 
