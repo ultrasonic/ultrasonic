@@ -147,4 +147,6 @@ public interface MusicService
 	void deleteShare(String id, Context context, ProgressListener progressListener) throws Exception;
 
 	void updateShare(String id, String description, Long expires, Context context, ProgressListener progressListener) throws Exception;
+
+	Bitmap getAvatar(Context context, String username, int size, boolean saveToFile, boolean highQuality, ProgressListener progressListener) throws Exception;
 }

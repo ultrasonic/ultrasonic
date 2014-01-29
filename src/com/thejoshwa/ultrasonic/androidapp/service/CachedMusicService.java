@@ -526,4 +526,10 @@ public class CachedMusicService implements MusicService
 	{
 		musicService.updateShare(id, description, expires, context, progressListener);
 	}
+
+	@Override
+	public Bitmap getAvatar(Context context, String username, int size, boolean saveToFile, boolean highQuality, ProgressListener progressListener) throws Exception
+	{
+		return musicService.getAvatar(context, username, size, saveToFile, highQuality, progressListener);
+	}
 }

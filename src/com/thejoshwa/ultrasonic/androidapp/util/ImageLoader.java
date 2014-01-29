@@ -58,6 +58,7 @@ public class ImageLoader implements Runnable
 	private int imageSizeDefault;
 	private final int imageSizeLarge;
 	private Bitmap largeUnknownImage;
+	private Bitmap unknownAvatarImage;
 	private Context context;
 	private Collection<Thread> threads;
 	private AtomicBoolean running = new AtomicBoolean();
@@ -80,6 +81,7 @@ public class ImageLoader implements Runnable
 
 		imageSizeLarge = Util.getMaxDisplayMetric(context);
 		createLargeUnknownImage(context);
+		createUnknownAvatarImage(context);
 	}
 
 	public synchronized boolean isRunning()
@@ -130,6 +132,41 @@ public class ImageLoader implements Runnable
 		}
 	}
 
+	private void createUnknownAvatarImage(Context context)
+	{
+		Resources res = context.getResources();
+		Drawable contact = res.getDrawable(R.drawable.ic_contact_picture);
+		unknownAvatarImage = Util.createBitmapFromDrawable(contact);
+	}
+
+	public void loadAvatarImage(View view, String username, boolean large, int size, boolean crossFade, boolean highQuality)
+	{
+		view.invalidate();
+
+		if (username == null)
+		{
+			setUnknownAvatarImage(view);
+			return;
+		}
+
+		if (size <= 0)
+		{
+			size = large ? imageSizeLarge : imageSizeDefault;
+		}
+
+		Bitmap bitmap = cache.get(getKey(username, size));
+
+		if (bitmap != null)
+		{
+			setAvatarImageBitmap(view, username, bitmap, crossFade);
+			return;
+		}
+
+		setUnknownAvatarImage(view);
+
+		queue.offer(new Task(view, username, size, large, crossFade, highQuality));
+	}
+
 	public void loadImage(View view, MusicDirectory.Entry entry, boolean large, int size, boolean crossFade, boolean highQuality)
 	{
 		view.invalidate();
@@ -169,6 +206,19 @@ public class ImageLoader implements Runnable
 	private static String getKey(String coverArtId, int size)
 	{
 		return String.format("%s:%d", coverArtId, size);
+	}
+
+	public Bitmap getImageBitmap(String username, int size)
+	{
+		Bitmap bitmap = cache.get(getKey(username, size));
+
+		if (bitmap != null && !bitmap.isRecycled())
+		{
+			Bitmap.Config config = bitmap.getConfig();
+			return bitmap.copy(config, false);
+		}
+
+		return null;
 	}
 
 	public Bitmap getImageBitmap(MusicDirectory.Entry entry, boolean large, int size)
@@ -224,7 +274,7 @@ public class ImageLoader implements Runnable
 				if (existingDrawable == null)
 				{
 					Bitmap emptyImage = Bitmap.createBitmap(bitmap.getWidth(), bitmap.getHeight(), Bitmap.Config.ARGB_8888);
-					existingDrawable = new BitmapDrawable(emptyImage);
+					existingDrawable = new BitmapDrawable(context.getResources(), emptyImage);
 				}
 
 				Drawable[] layers = new Drawable[]{existingDrawable, newDrawable};
@@ -238,6 +288,50 @@ public class ImageLoader implements Runnable
 				imageView.setImageBitmap(bitmap);
 			}
 		}
+	}
+
+	private void setAvatarImageBitmap(View view, String username, Bitmap bitmap, boolean crossFade)
+	{
+		if (view instanceof ImageView)
+		{
+			ImageView imageView = (ImageView) view;
+
+			String tagEntry = (String) view.getTag();
+
+			// Only apply image to the view if the view is intended for this entry
+			if (username != null && tagEntry != null && !username.equals(tagEntry))
+			{
+				Log.i(TAG, "View is no longer valid, not setting ImageBitmap");
+				return;
+			}
+
+			if (crossFade)
+			{
+				Drawable existingDrawable = imageView.getDrawable();
+				Drawable newDrawable = Util.createDrawableFromBitmap(this.context, bitmap);
+
+				if (existingDrawable == null)
+				{
+					Bitmap emptyImage = Bitmap.createBitmap(bitmap.getWidth(), bitmap.getHeight(), Bitmap.Config.ARGB_8888);
+					existingDrawable = new BitmapDrawable(context.getResources(), emptyImage);
+				}
+
+				Drawable[] layers = new Drawable[]{existingDrawable, newDrawable};
+
+				TransitionDrawable transitionDrawable = new TransitionDrawable(layers);
+				imageView.setImageDrawable(transitionDrawable);
+				transitionDrawable.startTransition(250);
+			}
+			else
+			{
+				imageView.setImageBitmap(bitmap);
+			}
+		}
+	}
+
+	public void setUnknownAvatarImage(View view)
+	{
+		setAvatarImageBitmap(view, null, unknownAvatarImage, false);
 	}
 
 	public void setUnknownImage(View view, boolean large)
@@ -262,6 +356,11 @@ public class ImageLoader implements Runnable
 	public void addImageToCache(Bitmap bitmap, MusicDirectory.Entry entry, int size)
 	{
 		cache.put(getKey(entry.getCoverArt(), size), bitmap);
+	}
+
+	public void addImageToCache(Bitmap bitmap, String username, int size)
+	{
+		cache.put(getKey(username, size), bitmap);
 	}
 
 	public void clear()
@@ -295,6 +394,7 @@ public class ImageLoader implements Runnable
 	{
 		private final View view;
 		private final MusicDirectory.Entry entry;
+		private final String username;
 		private final Handler handler;
 		private final int size;
 		private final boolean saveToFile;
@@ -305,6 +405,19 @@ public class ImageLoader implements Runnable
 		{
 			this.view = view;
 			this.entry = entry;
+			this.username = null;
+			this.size = size;
+			this.saveToFile = saveToFile;
+			this.crossFade = crossFade;
+			this.highQuality = highQuality;
+			handler = new Handler();
+		}
+
+		public Task(View view, String username, int size, boolean saveToFile, boolean crossFade, boolean highQuality)
+		{
+			this.view = view;
+			this.entry = null;
+			this.username = username;
 			this.size = size;
 			this.saveToFile = saveToFile;
 			this.crossFade = crossFade;
@@ -317,16 +430,27 @@ public class ImageLoader implements Runnable
 			try
 			{
 				MusicService musicService = MusicServiceFactory.getMusicService(view.getContext());
-				final Bitmap bitmap = musicService.getCoverArt(view.getContext(), entry, size, saveToFile, highQuality, null);
+				final boolean isAvatar = this.username != null && this.entry == null;
+				final Bitmap bitmap = this.entry != null ? musicService.getCoverArt(view.getContext(), entry, size, saveToFile, highQuality, null) : musicService.getAvatar(view.getContext(), username, size, saveToFile, highQuality, null);
 
-				addImageToCache(bitmap, entry, size);
+				if (isAvatar)
+					addImageToCache(bitmap, username, size);
+				else
+					addImageToCache(bitmap, entry, size);
 
 				handler.post(new Runnable()
 				{
 					@Override
 					public void run()
 					{
-						setImageBitmap(view, entry, bitmap, crossFade);
+						if (isAvatar)
+						{
+							setAvatarImageBitmap(view, username, bitmap, crossFade);
+						}
+						else
+						{
+							setImageBitmap(view, entry, bitmap, crossFade);
+						}
 					}
 				});
 			}

@@ -39,8 +39,9 @@
         
         <ImageButton
             a:id="@+id/chat_send"
-            a:layout_width="60dip"
+            a:layout_width="55dip"
             a:layout_height="40dip"
+            a:background="@color/transparent"
             a:src="?attr/chat_send" />
         
     </LinearLayout>

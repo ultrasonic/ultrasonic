@@ -111,6 +111,19 @@ public class FileUtil
 		return getAlbumArtFile(albumDir);
 	}
 
+	public static File getAvatarFile(String username)
+	{
+		File albumArtDir = getAlbumArtDirectory();
+
+		if (albumArtDir == null || username == null)
+		{
+			return null;
+		}
+
+		String md5Hex = Util.md5Hex(username);
+		return new File(albumArtDir, String.format("%s.jpeg", md5Hex));
+	}
+
 	public static File getAlbumArtFile(File albumDir)
 	{
 		File albumArtDir = getAlbumArtDirectory();
@@ -122,6 +135,76 @@ public class FileUtil
 
 		String md5Hex = Util.md5Hex(albumDir.getPath());
 		return new File(albumArtDir, String.format("%s.jpeg", md5Hex));
+	}
+
+	public static Bitmap getAvatarBitmap(String username, int size, boolean highQuality)
+	{
+		if (username == null) return null;
+
+		File avatarFile = getAvatarFile(username);
+
+		SubsonicTabActivity subsonicTabActivity = SubsonicTabActivity.getInstance();
+		Bitmap bitmap = null;
+		ImageLoader imageLoader = null;
+
+		if (subsonicTabActivity != null)
+		{
+			imageLoader = subsonicTabActivity.getImageLoader();
+
+			if (imageLoader != null)
+			{
+				bitmap = imageLoader.getImageBitmap(username, size);
+			}
+		}
+
+		if (bitmap != null)
+		{
+			return bitmap.copy(bitmap.getConfig(), false);
+		}
+
+		if (avatarFile != null && avatarFile.exists())
+		{
+			final BitmapFactory.Options opt = new BitmapFactory.Options();
+
+			if (size > 0)
+			{
+				opt.inJustDecodeBounds = true;
+				BitmapFactory.decodeFile(avatarFile.getPath(), opt);
+
+				if (highQuality)
+				{
+					opt.inDither = true;
+					opt.inPreferQualityOverSpeed = true;
+				}
+
+				opt.inPurgeable = true;
+				opt.inSampleSize = Util.calculateInSampleSize(opt, size, Util.getScaledHeight(opt.outHeight, opt.outWidth, size));
+				opt.inJustDecodeBounds = false;
+			}
+
+			try
+			{
+				bitmap = BitmapFactory.decodeFile(avatarFile.getPath(), opt);
+			}
+			catch (Exception ex)
+			{
+				Log.e(TAG, "Exception in BitmapFactory.decodeFile()", ex);
+			}
+
+			Log.i("getAvatarBitmap", String.valueOf(size));
+
+			if (bitmap != null)
+			{
+				if (imageLoader != null)
+				{
+					imageLoader.addImageToCache(bitmap, username, size);
+				}
+			}
+
+			return bitmap == null ? null : bitmap;
+		}
+
+		return null;
 	}
 
 	public static Bitmap getAlbumArtBitmap(Context context, MusicDirectory.Entry entry, int size, boolean highQuality)

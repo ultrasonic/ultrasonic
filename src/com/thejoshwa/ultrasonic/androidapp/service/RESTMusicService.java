@@ -872,6 +872,13 @@ public class RESTMusicService implements MusicService
 		}
 	}
 
+	private static boolean checkServerVersion(Context context, String version)
+	{
+		Version serverVersion = Util.getServerRestVersion(context);
+		Version requiredVersion = new Version(version);
+		return serverVersion == null || serverVersion.compareTo(requiredVersion) >= 0;
+	}
+
 	@Override
 	public Bitmap getCoverArt(Context context, final MusicDirectory.Entry entry, int size, boolean saveToFile, boolean highQuality, ProgressListener progressListener) throws Exception
 	{
@@ -1657,6 +1664,81 @@ public class RESTMusicService implements MusicService
 		finally
 		{
 			Util.close(reader);
+		}
+	}
+
+	@Override
+	public Bitmap getAvatar(Context context, String username, int size, boolean saveToFile, boolean highQuality, ProgressListener progressListener) throws Exception
+	{
+		// Return silently if server is too old
+		if (!checkServerVersion(context, "1.8"))
+			return null;
+
+		// Synchronize on the username so that we don't download concurrently for
+		// the same user.
+		if (username == null)
+		{
+			return null;
+		}
+
+		synchronized (username)
+		{
+			// Use cached file, if existing.
+			Bitmap bitmap = FileUtil.getAvatarBitmap(username, size, highQuality);
+
+			if (bitmap == null)
+			{
+				String url = Util.getRestUrl(context, "getAvatar");
+
+				InputStream in = null;
+
+				try
+				{
+					List<String> parameterNames;
+					List<Object> parameterValues;
+
+					parameterNames = Collections.singletonList("username");
+					parameterValues = Arrays.<Object>asList(username);
+
+					HttpEntity entity = getEntityForURL(context, url, null, parameterNames, parameterValues, progressListener);
+					in = entity.getContent();
+
+					// If content type is XML, an error occurred. Get it.
+					String contentType = Util.getContentType(entity);
+					if (contentType != null && contentType.startsWith("text/xml"))
+					{
+						new ErrorParser(context).parse(new InputStreamReader(in, Constants.UTF_8));
+						return null; // Never reached.
+					}
+
+					byte[] bytes = Util.toByteArray(in);
+
+					// If we aren't allowing server-side scaling, always save the file to disk because it will be unmodified
+					if (saveToFile)
+					{
+						OutputStream out = null;
+
+						try
+						{
+							out = new FileOutputStream(FileUtil.getAvatarFile(username));
+							out.write(bytes);
+						}
+						finally
+						{
+							Util.close(out);
+						}
+					}
+
+					bitmap = FileUtil.getSampledBitmap(bytes, size, highQuality);
+				}
+				finally
+				{
+					Util.close(in);
+				}
+			}
+
+			// Return scaled bitmap
+			return Util.scaleBitmap(bitmap, size);
 		}
 	}
 }

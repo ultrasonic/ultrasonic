@@ -1,51 +1,71 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:a="http://schemas.android.com/apk/res/android"
-    a:layout_width="fill_parent"
-    a:layout_height="wrap_content"
-    a:orientation="vertical" >
-
-    <TextView
-        a:id="@+id/chat_username"
-        a:layout_width="wrap_content"
-        a:layout_height="wrap_content"
-        a:layout_marginRight="6dip"
-        a:gravity="right"
-        a:layout_gravity="right"
-        a:ellipsize="marquee"
-        a:singleLine="true"
-        a:text="User"
-        a:textAppearance="?android:attr/textAppearanceMedium"
-        a:textStyle="bold" />
+<RelativeLayout xmlns:a="http://schemas.android.com/apk/res/android"
+              a:layout_width="fill_parent"
+              a:layout_height="wrap_content"
+              a:orientation="horizontal">
 
     <LinearLayout
-        a:layout_width="wrap_content"
+        a:layout_width="fill_parent"
         a:layout_height="wrap_content"
-        a:layout_marginTop="2dip"
-        a:orientation="horizontal"
-        a:layout_gravity="right" >
+        a:orientation="vertical"
+        a:layout_gravity="right"
+        a:layout_alignParentEnd="false"
+        a:layout_toStartOf="@id/chat_avatar"
+        a:gravity="center_vertical|right">
 
         <TextView
-            a:id="@+id/chat_time"
+            a:id="@+id/chat_username"
             a:layout_width="wrap_content"
             a:layout_height="wrap_content"
-            a:layout_marginLeft="6dip"
-            a:singleLine="true"
-            a:gravity="right"
-            a:text="00:00"
-            a:textAppearance="?android:attr/textAppearanceMedium" />
-
-        <TextView
-            a:id="@+id/chat_message"
-            a:layout_width="wrap_content"
-            a:layout_height="wrap_content"
-            a:layout_marginLeft="6dip"
             a:layout_marginRight="6dip"
-            a:autoLink="all"
-            a:linksClickable="true"
-            a:singleLine="false"
-            a:gravity="right"
-            a:text="Chat message"
-            a:textAppearance="?android:attr/textAppearanceMedium" />
+            a:gravity="center_vertical|right"
+            a:layout_gravity="right"
+            a:ellipsize="marquee"
+            a:singleLine="true"
+            a:textIsSelectable="true"
+            a:textAppearance="?android:attr/textAppearanceMedium"
+            a:textStyle="bold"/>
+
+        <LinearLayout
+            a:layout_width="wrap_content"
+            a:layout_height="wrap_content"
+            a:layout_marginTop="2dip"
+            a:orientation="horizontal"
+            a:layout_gravity="right|end"
+            a:gravity="center_vertical|right">
+
+            <TextView
+                a:id="@+id/chat_time"
+                a:layout_width="wrap_content"
+                a:layout_height="wrap_content"
+                a:layout_marginLeft="6dip"
+                a:singleLine="true"
+                a:gravity="center_vertical|right"
+                a:textIsSelectable="true"
+                a:textAppearance="?android:attr/textAppearanceMedium"
+                a:layout_gravity="right"/>
+
+            <TextView
+                a:id="@+id/chat_message"
+                a:layout_width="wrap_content"
+                a:layout_height="wrap_content"
+                a:layout_marginLeft="6dip"
+                a:layout_marginRight="6dip"
+                a:linksClickable="true"
+                a:singleLine="false"
+                a:autoLink="all"
+                a:textIsSelectable="true"
+                a:textAppearance="?android:attr/textAppearanceMedium"
+                a:gravity="center_vertical|right"
+                a:layout_gravity="right"/>
+        </LinearLayout>
     </LinearLayout>
 
-</LinearLayout>
+    <ImageView
+        a:layout_width="50dip"
+        a:layout_height="50dip"
+        a:id="@+id/chat_avatar"
+        a:layout_alignParentEnd="true"
+        a:layout_toStartOf="@id/chat_avatar"/>
+
+</RelativeLayout>
