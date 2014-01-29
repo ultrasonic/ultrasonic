@@ -3,6 +3,7 @@
             a:label="@string/common.appname"
             a:hint="@string/search.title"
             a:voiceSearchMode="showVoiceSearchButton|launchRecognizer"
+            a:queryAfterZeroResults="true"
             a:voiceLanguageModel="web_search"
             a:searchSuggestAuthority="com.thejoshwa.ultrasonic.androidapp.provider.SearchSuggestionProvider"
             a:searchSuggestSelection=" ?" >
