@@ -102,7 +102,7 @@ public class ImageLoader implements Runnable
 
 		for (int i = 0; i < this.concurrency; i++)
 		{
-			Thread thread = new Thread(this, String.format("ImageLoader [%d]", i));
+			Thread thread = new Thread(this, String.format("ImageLoader_%d", i));
 			threads.add(thread);
 			thread.start();
 		}
