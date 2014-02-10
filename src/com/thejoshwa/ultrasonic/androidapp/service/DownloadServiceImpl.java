@@ -2182,7 +2182,7 @@ public class DownloadServiceImpl extends Service implements DownloadService
 						cachedPosition = mediaPlayer.getCurrentPosition();
 					}
 
-					Thread.sleep(50L);
+					Util.sleepQuietly(25L);
 				}
 				catch (Exception e)
 				{

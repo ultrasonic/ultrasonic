@@ -260,7 +260,7 @@ public class StreamProxy implements Runnable
 						if (cbSentThisBatch == 0)
 						{
 							Log.d(TAG, String.format("Blocking until more data appears (%d)", cbToSend));
-							Thread.sleep(1000);
+							Util.sleepQuietly(1000L);
 						}
 					}
 				}
