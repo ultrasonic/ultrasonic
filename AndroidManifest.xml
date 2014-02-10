@@ -5,7 +5,7 @@
           a:versionCode="47"
           a:versionName="1.3.0.7">
 
-<uses-permission a:name="android.permission.INTERNET"/>
+    <uses-permission a:name="android.permission.INTERNET"/>
     <uses-permission a:name="android.permission.READ_PHONE_STATE"/>
     <uses-permission a:name="android.permission.ACCESS_NETWORK_STATE"/>
     <uses-permission a:name="android.permission.WAKE_LOCK"/>
@@ -13,6 +13,7 @@
     <uses-permission a:name="android.permission.READ_EXTERNAL_STORAGE"/>
     <uses-permission a:name="android.permission.RECORD_AUDIO"/>
     <uses-permission a:name="android.permission.MODIFY_AUDIO_SETTINGS"/>
+    <uses-permission a:name="android.permission.BLUETOOTH"/>
 
     <uses-sdk
         a:minSdkVersion="14"
@@ -68,7 +69,8 @@
         <activity
             a:name=".activity.DownloadActivity"
             a:configChanges="keyboardHidden"
-            a:launchMode="singleTask"/>
+            a:launchMode="singleTask"
+            a:exported="true" />
         <activity
             a:name=".activity.SettingsActivity"
             a:configChanges="orientation|keyboardHidden"
@@ -132,8 +134,8 @@
         </receiver>
         <receiver a:name=".receiver.BluetoothIntentReceiver">
             <intent-filter>
-                <action a:name="android.bluetooth.device.action.ACL_CONNETED"/>
-                <action a:name="android.bluetooth.device.action.ACL_DISCONNETED"/>
+                <action a:name="android.bluetooth.device.action.ACL_CONNECTED"/>
+                <action a:name="android.bluetooth.device.action.ACL_DISCONNECTED"/>
                 <action a:name="android.bluetooth.device.action.ACL_DISCONNECT_REQUESTED"/>
                 <action a:name="android.bluetooth.a2dp.action.SINK_STATE_CHANGED"/>
             </intent-filter>
