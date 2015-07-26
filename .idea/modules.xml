@@ -6,7 +6,7 @@
       <module fileurl="file://$PROJECT_DIR$/library/library.iml" filepath="$PROJECT_DIR$/library/library.iml" />
       <module fileurl="file://$PROJECT_DIR$/menudrawer/menudrawer.iml" filepath="$PROJECT_DIR$/menudrawer/menudrawer.iml" />
       <module fileurl="file://$PROJECT_DIR$/pulltorefresh/pulltorefresh.iml" filepath="$PROJECT_DIR$/pulltorefresh/pulltorefresh.iml" />
-      <module fileurl="file://$PROJECT_DIR$/ultraSonic/ultraSonic.iml" filepath="$PROJECT_DIR$/ultraSonic/ultraSonic.iml" />
+      <module fileurl="file://$PROJECT_DIR$/ultrasonic/ultrasonic.iml" filepath="$PROJECT_DIR$/ultrasonic/ultrasonic.iml" />
     </modules>
   </component>
 </project>
