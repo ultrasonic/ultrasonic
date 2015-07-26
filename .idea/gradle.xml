@@ -12,7 +12,7 @@
             <option value="$PROJECT_DIR$/library" />
             <option value="$PROJECT_DIR$/menudrawer" />
             <option value="$PROJECT_DIR$/pulltorefresh" />
-            <option value="$PROJECT_DIR$/ultraSonic" />
+            <option value="$PROJECT_DIR$/ultrasonic" />
           </set>
         </option>
       </GradleProjectSettings>
