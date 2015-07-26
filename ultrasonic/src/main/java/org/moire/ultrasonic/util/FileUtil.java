@@ -370,7 +370,7 @@ public class FileUtil
 
 	public static File getUltraSonicDirectory()
 	{
-		return new File(Environment.getExternalStorageDirectory(), "ultrasonic");
+		return new File(Environment.getExternalStorageDirectory(), "Android/data/org.moire.ultrasonic");
 	}
 
 	public static File getDefaultMusicDirectory()
