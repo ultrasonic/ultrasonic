@@ -15,7 +15,7 @@
             a:padding="10dip"/>
 
     <com.mobeta.android.dslv.DragSortListView
-            xmlns:dslv="http://schemas.android.com/apk/res/com.thejoshwa.ultrasonic.androidapp"
+            xmlns:dslv="http://schemas.android.com/apk/res/org.moire.ultrasonic"
             a:id="@+id/download_list"
             a:layout_width="fill_parent"
             a:layout_height="0dip"

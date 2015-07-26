@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:a="http://schemas.android.com/apk/res/android"
-          package="com.thejoshwa.ultrasonic.androidapp"
+          package="org.moire.ultrasonic"
           a:installLocation="auto"
           a:versionCode="48"
           a:versionName="1.3.0.8">
@@ -118,12 +118,12 @@
             a:label="UltraSonic Download Service"
             a:exported="false">
             <intent-filter>
-                <action a:name="com.thejoshwa.ultrasonic.androidapp.CMD_TOGGLEPAUSE"/>
-                <action a:name="com.thejoshwa.ultrasonic.androidapp.CMD_PLAY"/>
-                <action a:name="com.thejoshwa.ultrasonic.androidapp.CMD_PAUSE"/>
-                <action a:name="com.thejoshwa.ultrasonic.androidapp.CMD_NEXT"/>
-                <action a:name="com.thejoshwa.ultrasonic.androidapp.CMD_PREVIOUS"/>
-                <action a:name="com.thejoshwa.ultrasonic.androidapp.CMD_STOP"/>
+                <action a:name="org.moire.ultrasonic.CMD_TOGGLEPAUSE"/>
+                <action a:name="org.moire.ultrasonic.CMD_PLAY"/>
+                <action a:name="org.moire.ultrasonic.CMD_PAUSE"/>
+                <action a:name="org.moire.ultrasonic.CMD_NEXT"/>
+                <action a:name="org.moire.ultrasonic.CMD_PREVIOUS"/>
+                <action a:name="org.moire.ultrasonic.CMD_STOP"/>
             </intent-filter>
         </service>
 
@@ -187,11 +187,11 @@
 
         <provider
             a:name=".provider.SearchSuggestionProvider"
-            a:authorities="com.thejoshwa.ultrasonic.androidapp.provider.SearchSuggestionProvider"/>
+            a:authorities="org.moire.ultrasonic.provider.SearchSuggestionProvider"/>
 
         <meta-data
             a:name="android.app.default_searchable"
-            a:value="com.thejoshwa.ultrasonic.androidapp.activity.QueryReceiverActivity"/>
+            a:value="org.moire.ultrasonic.activity.QueryReceiverActivity"/>
 
         <receiver
             a:name=".receiver.A2dpIntentReceiver"

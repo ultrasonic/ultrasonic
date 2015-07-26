@@ -4,7 +4,7 @@
               a:layout_height="fill_parent"
               a:orientation="horizontal">
 
-    <com.thejoshwa.ultrasonic.androidapp.util.MyViewFlipper
+    <org.moire.ultrasonic.util.MyViewFlipper
         a:id="@+id/download_playlist_flipper"
         a:layout_width="fill_parent"
         a:layout_height="fill_parent"
@@ -38,7 +38,7 @@
         </FrameLayout>
 
         <include layout="@layout/download_playlist"/>
-    </com.thejoshwa.ultrasonic.androidapp.util.MyViewFlipper>
+    </org.moire.ultrasonic.util.MyViewFlipper>
 
     <RelativeLayout
         a:id="@+id/download_control_layout"

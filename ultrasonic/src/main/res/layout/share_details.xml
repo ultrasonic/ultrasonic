@@ -37,7 +37,7 @@
             a:id="@+id/textViewExpiration"
             a:layout_gravity="center_horizontal"/>
 
-        <com.thejoshwa.ultrasonic.androidapp.util.TimeSpanPicker
+        <org.moire.ultrasonic.util.TimeSpanPicker
             a:id="@+id/date_picker"
             a:layout_width="wrap_content"
             a:layout_height="wrap_content"

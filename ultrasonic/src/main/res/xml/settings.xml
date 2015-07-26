@@ -148,7 +148,7 @@
         <EditTextPreference
             a:key="sharingDefaultGreeting"
             a:title="@string/settings.share_greeting_default"/>
-        <com.thejoshwa.ultrasonic.androidapp.util.TimeSpanPreference
+        <org.moire.ultrasonic.util.TimeSpanPreference
             a:defaultValue="0"
             a:key="sharingDefaultExpiration"
             a:title="@string/settings.share_expiration_default"/>

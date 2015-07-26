@@ -19,7 +19,7 @@
         a:paddingLeft="2dip"
         a:paddingRight="8dip"/>
 
-    <com.thejoshwa.ultrasonic.androidapp.view.AutoRepeatButton
+    <org.moire.ultrasonic.view.AutoRepeatButton
         a:id="@+id/download_previous"
         a:layout_width="0dip"
         a:layout_height="wrap_content"
@@ -59,7 +59,7 @@
         a:paddingLeft="8dip"
         a:paddingRight="8dip"/>
 
-    <com.thejoshwa.ultrasonic.androidapp.view.AutoRepeatButton
+    <org.moire.ultrasonic.view.AutoRepeatButton
         a:id="@+id/download_next"
         a:layout_width="0dip"
         a:layout_height="wrap_content"

@@ -5,6 +5,6 @@
             a:voiceSearchMode="showVoiceSearchButton|launchRecognizer"
             a:queryAfterZeroResults="true"
             a:voiceLanguageModel="web_search"
-            a:searchSuggestAuthority="com.thejoshwa.ultrasonic.androidapp.provider.SearchSuggestionProvider"
+            a:searchSuggestAuthority="org.moire.ultrasonic.provider.SearchSuggestionProvider"
             a:searchSuggestSelection=" ?" >
 </searchable>
