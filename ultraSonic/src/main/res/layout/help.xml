@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:a="http://schemas.android.com/apk/res/android"
+                a:layout_width="fill_parent"
+                a:layout_height="fill_parent">
+
+    <LinearLayout a:id="@+id/help_buttons"
+                  a:layout_width="fill_parent"
+                  a:layout_height="wrap_content"
+                  a:padding="4dip"
+                  a:gravity="center_horizontal" >
+
+        <ImageView a:id="@+id/help_back"
+                a:layout_width="wrap_content"
+                a:layout_height="fill_parent"
+                a:src="?attr/backward"
+                a:layout_weight="1" />
+        
+        <ImageView a:id="@+id/help_stop"
+                a:layout_width="wrap_content"
+                a:layout_height="fill_parent"
+                a:src="?attr/stop"
+                a:layout_weight="1" />
+
+        <ImageView a:id="@+id/help_forward"
+                a:layout_width="wrap_content"
+                a:layout_height="fill_parent" 
+                a:src="?attr/forward"
+                a:layout_weight="1" />
+                
+    </LinearLayout>
+
+    <WebView
+        a:id="@+id/help_contents"
+        a:layout_width="fill_parent"
+        a:layout_height="match_parent"
+        a:layout_below="@id/help_buttons"
+        a:fadingEdge="vertical"
+        a:fadingEdgeLength="12dip" />
+
+  </RelativeLayout>
