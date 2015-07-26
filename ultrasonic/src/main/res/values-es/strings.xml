@@ -349,8 +349,8 @@
     <string name="select_share.empty">No hay compartidos disponibles en el servidor</string>
     <string name="menu_deleted_share">Eliminar compartido %s</string>
     <string name="menu_deleted_share_error">Fallo al eliminar compartido %s</string>
-    <string name="settings.share_millisegundos">Millisegundos</string>
-    <string name="settings.share_segundos">segundos</string>
+    <string name="settings.share_milliseconds">Milisegundos</string>
+    <string name="settings.share_seconds">segundos</string>
     <string name="settings.share_minutes">Minutos</string>
     <string name="settings.share_hours">Horas</string>
     <string name="settings.share_days">Días</string>
