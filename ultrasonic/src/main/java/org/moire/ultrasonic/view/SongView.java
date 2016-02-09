@@ -71,6 +71,7 @@ public class SongView extends UpdateView implements Checkable
 	private DownloadFile downloadFile;
 	private boolean playing;
 	private EntryAdapter.SongViewHolder viewHolder;
+	private boolean maximized = false;
 
 	public SongView(Context context)
 	{
@@ -425,6 +426,20 @@ public class SongView extends UpdateView implements Checkable
 	public void toggle()
 	{
 		viewHolder.check.toggle();
+	}
+
+	public void maximizeOrMinimize() {
+		if (maximized) {
+			maximized = false;
+		} else {
+			maximized = true;
+		}
+		if (this.viewHolder.title != null) {
+			this.viewHolder.title.setSingleLine(!maximized);
+		}
+		if (this.viewHolder.artist != null) {
+			this.viewHolder.artist.setSingleLine(!maximized);
+		}
 	}
 
 	public enum ImageType

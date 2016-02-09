@@ -46,7 +46,9 @@ import org.moire.ultrasonic.util.EntryByDiscAndTrackComparator;
 import org.moire.ultrasonic.util.Pair;
 import org.moire.ultrasonic.util.TabActivityBackgroundTask;
 import org.moire.ultrasonic.util.Util;
+import org.moire.ultrasonic.view.AlbumView;
 import org.moire.ultrasonic.view.EntryAdapter;
+import org.moire.ultrasonic.view.SongView;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -134,6 +136,22 @@ public class SelectAlbumActivity extends SubsonicTabActivity
 						enableButtons();
 					}
 				}
+			}
+		});
+
+		albumListView.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener(){
+
+			@Override
+			public boolean onItemLongClick(AdapterView<?> parent, View view, int position, long id) {
+				if (view instanceof AlbumView) {
+					AlbumView albumView = (AlbumView) view;
+					albumView.maximizeOrMinimize();
+				}
+				if (view instanceof SongView) {
+					SongView songView = (SongView) view;
+					songView.maximizeOrMinimize();
+				}
+				return true;
 			}
 		});
 

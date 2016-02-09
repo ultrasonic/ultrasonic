@@ -49,6 +49,7 @@ public class AlbumView extends UpdateView
 	private MusicDirectory.Entry entry;
 	private EntryAdapter.AlbumViewHolder viewHolder;
 	private ImageLoader imageLoader;
+	private boolean maximized = false;
 
 	public AlbumView(Context context, ImageLoader imageLoader)
 	{
@@ -92,6 +93,20 @@ public class AlbumView extends UpdateView
 	public MusicDirectory.Entry getEntry()
 	{
 		return this.entry;
+	}
+
+	public void maximizeOrMinimize() {
+		if (maximized) {
+			maximized = false;
+		} else {
+			maximized = true;
+		}
+		if (this.viewHolder.title != null) {
+			this.viewHolder.title.setSingleLine(!maximized);
+		}
+		if (this.viewHolder.artist != null) {
+			this.viewHolder.artist.setSingleLine(!maximized);
+		}
 	}
 
 	public void setAlbum(final MusicDirectory.Entry album)
