@@ -145,15 +145,22 @@ public class SelectAlbumActivity extends SubsonicTabActivity
 			public boolean onItemLongClick(AdapterView<?> parent, View view, int position, long id) {
 				if (view instanceof AlbumView) {
 					AlbumView albumView = (AlbumView) view;
-					albumView.maximizeOrMinimize();
+					if (!albumView.isMaximized()) {
+						albumView.maximizeOrMinimize();
+						return true;
+					} else {
+						return false;
+					}
 				}
 				if (view instanceof SongView) {
 					SongView songView = (SongView) view;
 					songView.maximizeOrMinimize();
+					return true;
 				}
-				return true;
+				return false;
 			}
 		});
+
 
 		selectButton = (ImageView) findViewById(R.id.select_album_select);
 		playNowButton = (ImageView) findViewById(R.id.select_album_play_now);

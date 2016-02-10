@@ -95,6 +95,10 @@ public class AlbumView extends UpdateView
 		return this.entry;
 	}
 
+	public boolean isMaximized() {
+		return maximized;
+	}
+
 	public void maximizeOrMinimize() {
 		if (maximized) {
 			maximized = false;
