@@ -428,6 +428,10 @@ public class SongView extends UpdateView implements Checkable
 		viewHolder.check.toggle();
 	}
 
+	public boolean isMaximized() {
+		return maximized;
+	}
+
 	public void maximizeOrMinimize() {
 		if (maximized) {
 			maximized = false;

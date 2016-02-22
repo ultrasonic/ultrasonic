@@ -27,6 +27,7 @@ import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.AbsListView;
 import android.widget.AdapterView;
 import android.widget.ImageView;
 import android.widget.ListView;
@@ -104,6 +105,31 @@ public class SelectAlbumActivity extends SubsonicTabActivity
 			public void onRefresh(PullToRefreshBase<ListView> refreshView)
 			{
 				new GetDataTask().executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
+			}
+		});
+
+		refreshAlbumListView.setOnScrollListener(new AbsListView.OnScrollListener() {
+			@Override
+			public void onScrollStateChanged(AbsListView view, int scrollState) {
+				for (int i=0;i<albumListView.getChildCount();i++) {
+					Object child = albumListView.getChildAt(i);
+					if (child instanceof AlbumView) {
+						AlbumView albumView = (AlbumView) child;
+						if (albumView.isMaximized()) {
+							albumView.maximizeOrMinimize();
+						}
+					}
+					if (child instanceof SongView) {
+						SongView songView = (SongView) child;
+                        if (songView.isMaximized()) {
+                            songView.maximizeOrMinimize();
+                        }
+					}
+				}
+			}
+
+			@Override
+			public void onScroll(AbsListView view, int firstVisibleItem, int visibleItemCount, int totalItemCount) {
 			}
 		});
 
