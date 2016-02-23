@@ -27,6 +27,7 @@ import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.AbsListView;
 import android.widget.AdapterView;
 import android.widget.ImageView;
 import android.widget.ListView;
@@ -46,7 +47,9 @@ import org.moire.ultrasonic.util.EntryByDiscAndTrackComparator;
 import org.moire.ultrasonic.util.Pair;
 import org.moire.ultrasonic.util.TabActivityBackgroundTask;
 import org.moire.ultrasonic.util.Util;
+import org.moire.ultrasonic.view.AlbumView;
 import org.moire.ultrasonic.view.EntryAdapter;
+import org.moire.ultrasonic.view.SongView;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -105,6 +108,31 @@ public class SelectAlbumActivity extends SubsonicTabActivity
 			}
 		});
 
+		refreshAlbumListView.setOnScrollListener(new AbsListView.OnScrollListener() {
+			@Override
+			public void onScrollStateChanged(AbsListView view, int scrollState) {
+				for (int i=0;i<albumListView.getChildCount();i++) {
+					Object child = albumListView.getChildAt(i);
+					if (child instanceof AlbumView) {
+						AlbumView albumView = (AlbumView) child;
+						if (albumView.isMaximized()) {
+							albumView.maximizeOrMinimize();
+						}
+					}
+					if (child instanceof SongView) {
+						SongView songView = (SongView) child;
+                        if (songView.isMaximized()) {
+                            songView.maximizeOrMinimize();
+                        }
+					}
+				}
+			}
+
+			@Override
+			public void onScroll(AbsListView view, int firstVisibleItem, int visibleItemCount, int totalItemCount) {
+			}
+		});
+
 		header = LayoutInflater.from(this).inflate(R.layout.select_album_header, albumListView, false);
 
 		albumListView.setChoiceMode(ListView.CHOICE_MODE_MULTIPLE);
@@ -136,6 +164,29 @@ public class SelectAlbumActivity extends SubsonicTabActivity
 				}
 			}
 		});
+
+		albumListView.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener(){
+
+			@Override
+			public boolean onItemLongClick(AdapterView<?> parent, View view, int position, long id) {
+				if (view instanceof AlbumView) {
+					AlbumView albumView = (AlbumView) view;
+					if (!albumView.isMaximized()) {
+						albumView.maximizeOrMinimize();
+						return true;
+					} else {
+						return false;
+					}
+				}
+				if (view instanceof SongView) {
+					SongView songView = (SongView) view;
+					songView.maximizeOrMinimize();
+					return true;
+				}
+				return false;
+			}
+		});
+
 
 		selectButton = (ImageView) findViewById(R.id.select_album_select);
 		playNowButton = (ImageView) findViewById(R.id.select_album_play_now);
