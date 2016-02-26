@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+    <TextView xmlns:a="http://schemas.android.com/apk/res/android"
+        a:id="@+id/podcast_channel_item"
+        a:layout_width="fill_parent"
+        a:layout_height="wrap_content"
+        a:padding="10dip"
+        a:visibility="visible" />
+

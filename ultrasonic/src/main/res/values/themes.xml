@@ -35,6 +35,7 @@
         <item name="media_repeat_single">@drawable/media_repeat_single</item>
         <item name="media_shuffle">@drawable/media_shuffle_normal_dark</item>
         <item name="media_play">@drawable/media_start_normal_dark</item>
+        <item name="podcasts">@drawable/ic_menu_podcasts_dark</item>
         <item name="media_play_next">@drawable/media_play_next</item>
         <item name="media_play_small">@drawable/ic_stat_play_dark</item>
         <item name="media_stop">@drawable/media_stop_normal_dark</item>
@@ -79,6 +80,7 @@
         <item name="media_repeat_single">@drawable/media_repeat_single</item>
         <item name="media_shuffle">@drawable/media_shuffle_normal_light</item>
         <item name="media_play">@drawable/media_start_normal_light</item>
+        <item name="podcasts">@drawable/ic_menu_podcasts_light</item>
         <item name="media_play_next">@drawable/media_play_next</item>
         <item name="media_play_small">@drawable/ic_stat_play_light</item>
         <item name="media_stop">@drawable/media_stop_normal_light</item>

@@ -278,6 +278,7 @@ public class SelectAlbumActivity extends SubsonicTabActivity
 		String name = getIntent().getStringExtra(Constants.INTENT_EXTRA_NAME_NAME);
 		String parentId = getIntent().getStringExtra(Constants.INTENT_EXTRA_NAME_PARENT_ID);
 		String playlistId = getIntent().getStringExtra(Constants.INTENT_EXTRA_NAME_PLAYLIST_ID);
+		String podcastChannelId = getIntent().getStringExtra(Constants.INTENT_EXTRA_NAME_PODCAST_CHANNEL_ID);
 		String playlistName = getIntent().getStringExtra(Constants.INTENT_EXTRA_NAME_PLAYLIST_NAME);
 		String shareId = getIntent().getStringExtra(Constants.INTENT_EXTRA_NAME_SHARE_ID);
 		String shareName = getIntent().getStringExtra(Constants.INTENT_EXTRA_NAME_SHARE_NAME);
@@ -296,6 +297,9 @@ public class SelectAlbumActivity extends SubsonicTabActivity
 		if (playlistId != null)
 		{
 			getPlaylist(playlistId, playlistName);
+		}
+		else if (podcastChannelId != null) {
+			getPodcastEpisodes(podcastChannelId);
 		}
 		else if (shareId != null)
 		{
@@ -848,6 +852,21 @@ public class SelectAlbumActivity extends SubsonicTabActivity
 			protected MusicDirectory load(MusicService service) throws Exception
 			{
 				return service.getPlaylist(playlistId, playlistName, SelectAlbumActivity.this, this);
+			}
+		}.execute();
+	}
+
+	private void getPodcastEpisodes(final String podcastChannelId)
+	{
+		// TODO on fait quoi là ?
+		//setActionBarSubtitle(playlistName);
+
+		new LoadTask()
+		{
+			@Override
+			protected MusicDirectory load(MusicService service) throws Exception
+			{
+				return service.getPodcastEpisodes(podcastChannelId, SelectAlbumActivity.this, this);
 			}
 		}.execute();
 	}

@@ -30,6 +30,7 @@ import org.moire.ultrasonic.domain.Lyrics;
 import org.moire.ultrasonic.domain.MusicDirectory;
 import org.moire.ultrasonic.domain.MusicFolder;
 import org.moire.ultrasonic.domain.Playlist;
+import org.moire.ultrasonic.domain.PodcastsChannel;
 import org.moire.ultrasonic.domain.SearchCriteria;
 import org.moire.ultrasonic.domain.SearchResult;
 import org.moire.ultrasonic.domain.Share;
@@ -66,6 +67,7 @@ public class CachedMusicService implements MusicService
 	private final TimeLimitedCache<Indexes> cachedIndexes = new TimeLimitedCache<Indexes>(60 * 60, TimeUnit.SECONDS);
 	private final TimeLimitedCache<Indexes> cachedArtists = new TimeLimitedCache<Indexes>(60 * 60, TimeUnit.SECONDS);
 	private final TimeLimitedCache<List<Playlist>> cachedPlaylists = new TimeLimitedCache<List<Playlist>>(3600, TimeUnit.SECONDS);
+	private final TimeLimitedCache<List<PodcastsChannel>> cachedPodcastsChannels = new TimeLimitedCache<List<PodcastsChannel>>(3600, TimeUnit.SECONDS);
 	private final TimeLimitedCache<List<MusicFolder>> cachedMusicFolders = new TimeLimitedCache<List<MusicFolder>>(10 * 3600, TimeUnit.SECONDS);
 	private final TimeLimitedCache<List<Genre>> cachedGenres = new TimeLimitedCache<List<Genre>>(10 * 3600, TimeUnit.SECONDS);
 
@@ -214,6 +216,24 @@ public class CachedMusicService implements MusicService
 	{
 		return musicService.getPlaylist(id, name, context, progressListener);
 	}
+
+	@Override
+	public List<PodcastsChannel> getPodcastsChannels(boolean refresh, Context context, ProgressListener progressListener) throws Exception {
+		checkSettingsChanged(context);
+		List<PodcastsChannel> result = refresh ? null : cachedPodcastsChannels.get();
+		if (result == null)
+		{
+			result = musicService.getPodcastsChannels(refresh, context, progressListener);
+			cachedPodcastsChannels.set(result);
+		}
+		return result;
+	}
+
+	@Override
+	public MusicDirectory getPodcastEpisodes(String podcastChannelId, Context context, ProgressListener progressListener) throws Exception {
+		return musicService.getPodcastEpisodes(podcastChannelId,context,progressListener);
+	}
+
 
 	@Override
 	public List<Playlist> getPlaylists(boolean refresh, Context context, ProgressListener progressListener) throws Exception
@@ -532,4 +552,5 @@ public class CachedMusicService implements MusicService
 	{
 		return musicService.getAvatar(context, username, size, saveToFile, highQuality, progressListener);
 	}
+
 }

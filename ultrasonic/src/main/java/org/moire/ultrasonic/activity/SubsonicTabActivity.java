@@ -151,6 +151,7 @@ public class SubsonicTabActivity extends ResultActivity implements OnClickListen
 		findViewById(R.id.menu_browse).setOnClickListener(this);
 		findViewById(R.id.menu_search).setOnClickListener(this);
 		findViewById(R.id.menu_playlists).setOnClickListener(this);
+		findViewById(R.id.menu_podcasts).setOnClickListener(this);
 		sharesMenuItem.setOnClickListener(this);
 		chatMenuItem.setOnClickListener(this);
 		bookmarksMenuItem.setOnClickListener(this);
@@ -1433,6 +1434,11 @@ public class SubsonicTabActivity extends ResultActivity implements OnClickListen
 				break;
 			case R.id.menu_playlists:
 				intent = new Intent(SubsonicTabActivity.this, SelectPlaylistActivity.class);
+				intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+				startActivityForResultWithoutTransition(SubsonicTabActivity.this, intent);
+				break;
+			case R.id.menu_podcasts:
+				intent = new Intent(SubsonicTabActivity.this, PodcastsActivity.class);
 				intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
 				startActivityForResultWithoutTransition(SubsonicTabActivity.this, intent);
 				break;

@@ -21,6 +21,7 @@ package org.moire.ultrasonic.service;
 import android.content.Context;
 import android.graphics.Bitmap;
 
+import org.moire.ultrasonic.activity.SelectAlbumActivity;
 import org.moire.ultrasonic.domain.Bookmark;
 import org.moire.ultrasonic.domain.ChatMessage;
 import org.moire.ultrasonic.domain.Genre;
@@ -30,6 +31,8 @@ import org.moire.ultrasonic.domain.Lyrics;
 import org.moire.ultrasonic.domain.MusicDirectory;
 import org.moire.ultrasonic.domain.MusicFolder;
 import org.moire.ultrasonic.domain.Playlist;
+import org.moire.ultrasonic.domain.PodcastEpisode;
+import org.moire.ultrasonic.domain.PodcastsChannel;
 import org.moire.ultrasonic.domain.SearchCriteria;
 import org.moire.ultrasonic.domain.SearchResult;
 import org.moire.ultrasonic.domain.Share;
@@ -73,6 +76,8 @@ public interface MusicService
 	SearchResult search(SearchCriteria criteria, Context context, ProgressListener progressListener) throws Exception;
 
 	MusicDirectory getPlaylist(String id, String name, Context context, ProgressListener progressListener) throws Exception;
+
+	List<PodcastsChannel> getPodcastsChannels(boolean refresh, Context context, ProgressListener progressListener) throws Exception;
 
 	List<Playlist> getPlaylists(boolean refresh, Context context, ProgressListener progressListener) throws Exception;
 
@@ -149,4 +154,6 @@ public interface MusicService
 	void updateShare(String id, String description, Long expires, Context context, ProgressListener progressListener) throws Exception;
 
 	Bitmap getAvatar(Context context, String username, int size, boolean saveToFile, boolean highQuality, ProgressListener progressListener) throws Exception;
+
+	MusicDirectory getPodcastEpisodes(String podcastChannelId, Context context, ProgressListener progressListener) throws Exception;
 }
