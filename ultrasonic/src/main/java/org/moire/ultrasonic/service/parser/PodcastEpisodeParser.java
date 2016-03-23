@@ -79,7 +79,7 @@ public class PodcastEpisodeParser extends AbstractParser
 				if ("episode".equals(tag))
 				{
                     String status = get("status");
-                    if (!"skipped".equals(status)) {
+                    if (!"skipped".equals(status) && !"error".equals(status)) {
                         MusicDirectory.Entry entry = new MusicDirectory.Entry();
                         String streamId = get("streamId");
                         entry.setId(streamId);
