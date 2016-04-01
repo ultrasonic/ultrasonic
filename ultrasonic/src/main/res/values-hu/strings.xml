@@ -419,5 +419,8 @@
         <item quantity="one">1 nap van hátra a próba időszakból.</item>
         <item quantity="other">%d nap van hátra a próba időszakból.</item>
     </plurals>
+    <string name="button_bar.podcasts">Podcast</string>
+    <string name="podcasts.label">Podcast</string>
+    <string name="podcasts_channels.empty">No podcasts channels registered</string>
 
 </resources>

@@ -419,5 +419,8 @@
         <item quantity="one">Un jour restant à la période d\'essai</item>
         <item quantity="other">%d jours restant à la période d\'essai</item>
     </plurals>
+    <string name="button_bar.podcasts">Podcast</string>
+    <string name="podcasts.label">Podcast</string>
+    <string name="podcasts_channels.empty">No podcasts channels registered</string>
 
 </resources>
