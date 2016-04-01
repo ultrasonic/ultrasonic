@@ -26,6 +26,7 @@ import android.net.NetworkInfo;
 import android.util.Log;
 
 import org.moire.ultrasonic.R;
+import org.moire.ultrasonic.Test.service.GetPodcastEpisodesTestReaderProvider;
 import org.moire.ultrasonic.domain.Bookmark;
 import org.moire.ultrasonic.domain.ChatMessage;
 import org.moire.ultrasonic.domain.Genre;
@@ -35,6 +36,8 @@ import org.moire.ultrasonic.domain.Lyrics;
 import org.moire.ultrasonic.domain.MusicDirectory;
 import org.moire.ultrasonic.domain.MusicFolder;
 import org.moire.ultrasonic.domain.Playlist;
+import org.moire.ultrasonic.domain.PodcastEpisode;
+import org.moire.ultrasonic.domain.PodcastsChannel;
 import org.moire.ultrasonic.domain.SearchCriteria;
 import org.moire.ultrasonic.domain.SearchResult;
 import org.moire.ultrasonic.domain.ServerInfo;
@@ -54,6 +57,8 @@ import org.moire.ultrasonic.service.parser.MusicDirectoryParser;
 import org.moire.ultrasonic.service.parser.MusicFoldersParser;
 import org.moire.ultrasonic.service.parser.PlaylistParser;
 import org.moire.ultrasonic.service.parser.PlaylistsParser;
+import org.moire.ultrasonic.service.parser.PodcastEpisodeParser;
+import org.moire.ultrasonic.service.parser.PodcastsChannelsParser;
 import org.moire.ultrasonic.service.parser.RandomSongsParser;
 import org.moire.ultrasonic.service.parser.SearchResult2Parser;
 import org.moire.ultrasonic.service.parser.SearchResultParser;
@@ -66,6 +71,7 @@ import org.moire.ultrasonic.util.CancellableTask;
 import org.moire.ultrasonic.util.Constants;
 import org.moire.ultrasonic.util.FileUtil;
 import org.moire.ultrasonic.util.ProgressListener;
+import org.moire.ultrasonic.util.StreamProxy;
 import org.moire.ultrasonic.util.Util;
 
 import org.apache.http.Header;
@@ -104,6 +110,8 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.io.Reader;
+import java.io.StringReader;
+import java.lang.reflect.Array;
 import java.net.URLEncoder;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -111,6 +119,7 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Objects;
 import java.util.concurrent.atomic.AtomicReference;
 
 import static java.util.Arrays.asList;
@@ -593,6 +602,43 @@ public class RESTMusicService implements MusicService
 			Util.close(reader);
 		}
 	}
+
+	@Override
+	public List<PodcastsChannel> getPodcastsChannels(boolean refresh, Context context, ProgressListener progressListener) throws Exception
+	{
+		Reader reader = getReader(context, progressListener, "getPodcasts", null,"includeEpisodes", "false");
+		try {
+			return new PodcastsChannelsParser(context).parse(reader, progressListener);
+		}
+		finally
+		{
+			Util.close(reader);
+		}
+	}
+
+	@Override
+	public MusicDirectory getPodcastEpisodes(String podcastChannelId, Context context, ProgressListener progressListener) throws Exception {
+
+		List<String> names = new ArrayList<String>();
+		names.add("id");
+		names.add("includeEpisodes");
+		List<Object> values = new ArrayList<Object>();
+		values.add(podcastChannelId);
+		values.add("true");
+
+		// TODO
+		Reader reader = getReader(context, progressListener, "getPodcasts", null, names,values);
+		//Reader reader = GetPodcastEpisodesTestReaderProvider.getReader();
+		try {
+			return new PodcastEpisodeParser(context).parse(reader, progressListener);
+		}
+		finally
+		{
+			Util.close(reader);
+		}
+	}
+
+
 
 	@Override
 	public List<Playlist> getPlaylists(boolean refresh, Context context, ProgressListener progressListener) throws Exception
@@ -1741,4 +1787,5 @@ public class RESTMusicService implements MusicService
 			return Util.scaleBitmap(bitmap, size);
 		}
 	}
+
 }

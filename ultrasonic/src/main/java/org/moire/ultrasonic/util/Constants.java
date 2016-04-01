@@ -41,6 +41,7 @@ public final class Constants
 	public static final String INTENT_EXTRA_NAME_AUTOPLAY = "subsonic.playall";
 	public static final String INTENT_EXTRA_NAME_QUERY = "subsonic.query";
 	public static final String INTENT_EXTRA_NAME_PLAYLIST_ID = "subsonic.playlist.id";
+	public static final String INTENT_EXTRA_NAME_PODCAST_CHANNEL_ID = "subsonic.podcastChannel.id";
 	public static final String INTENT_EXTRA_NAME_PARENT_ID = "subsonic.parent.id";
 	public static final String INTENT_EXTRA_NAME_PLAYLIST_NAME = "subsonic.playlist.name";
 	public static final String INTENT_EXTRA_NAME_SHARE_ID = "subsonic.share.id";

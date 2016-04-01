@@ -82,6 +82,14 @@
             android:text="@string/button_bar.now_playing"/>
 
         <TextView
+            android:id="@+id/menu_podcasts"
+            style="@style/MenuDrawer.Widget.Title"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:drawableLeft="?attr/podcasts"
+            android:text="@string/button_bar.podcasts"/>
+
+        <TextView
             android:id="@+id/menu_common"
             style="@style/MenuDrawer.Widget.Category"
             android:layout_width="wrap_content"
