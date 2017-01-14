@@ -4,7 +4,7 @@ ext.versions = [
         compileSdk           : 19,
 
         buildTools           : "23.0.3",
-        androidTools         : "1.2.3",
+        androidTools         : "2.2.0",
 
         androidSupport       : "18.0.0",
 ]
