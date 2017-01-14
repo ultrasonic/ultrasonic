@@ -1,7 +1,7 @@
 ext.versions = [
         minSdk               : 14,
-        targetSdk            : 19,
-        compileSdk           : 19,
+        targetSdk            : 22,
+        compileSdk           : 22,
 
         buildTools           : "23.0.3",
         androidTools         : "2.2.0",
