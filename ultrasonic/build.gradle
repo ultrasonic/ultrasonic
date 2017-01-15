@@ -1,13 +1,13 @@
 apply plugin: 'com.android.application'
 
 android {
-    compileSdkVersion 19
-    buildToolsVersion "23.0.3"
+    compileSdkVersion versions.compileSdk
+    buildToolsVersion versions.buildTools
 
     defaultConfig {
         applicationId "org.moire.ultrasonic"
-        minSdkVersion 14
-        targetSdkVersion 19
+        minSdkVersion versions.minSdk
+        targetSdkVersion versions.targetSdk
     }
 
     buildTypes {

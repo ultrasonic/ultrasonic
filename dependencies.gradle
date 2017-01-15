@@ -1,0 +1,18 @@
+ext.versions = [
+        minSdk               : 14,
+        targetSdk            : 22,
+        compileSdk           : 22,
+
+        buildTools           : "23.0.3",
+        androidTools         : "2.2.0",
+
+        androidSupport       : "18.0.0",
+]
+
+ext.gradlePlugins = [
+        androidTools : "com.android.tools.build:gradle:$versions.androidTools"
+]
+
+ext.androidSupport = [
+        support : "com.android.support:support-v4:$versions.androidSupport"
+]
