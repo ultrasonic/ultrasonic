@@ -19,9 +19,9 @@
 
 package org.moire.ultrasonic.activity;
 
-import android.app.ActionBar;
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.v7.app.ActionBar;
 import android.view.KeyEvent;
 import android.view.MenuItem;
 import android.view.View;
@@ -32,12 +32,12 @@ import android.webkit.WebViewClient;
 import android.widget.Button;
 import android.widget.ImageView;
 
+import net.simonvt.menudrawer.MenuDrawer;
+import net.simonvt.menudrawer.Position;
+
 import org.moire.ultrasonic.R;
 import org.moire.ultrasonic.util.Constants;
 import org.moire.ultrasonic.util.Util;
-
-import net.simonvt.menudrawer.MenuDrawer;
-import net.simonvt.menudrawer.Position;
 
 /**
  * An HTML-based help screen with Back and Done buttons at the bottom.
@@ -65,8 +65,8 @@ public final class HelpActivity extends ResultActivity implements OnClickListene
 	protected void onCreate(Bundle bundle)
 	{
 		applyTheme();
+        getWindow().requestFeature(Window.FEATURE_INDETERMINATE_PROGRESS);
 		super.onCreate(bundle);
-		getWindow().requestFeature(Window.FEATURE_INDETERMINATE_PROGRESS);
 
 		setContentView(R.layout.help);
 
@@ -96,7 +96,7 @@ public final class HelpActivity extends ResultActivity implements OnClickListene
 		aboutMenuItem.setOnClickListener(this);
 		findViewById(R.id.menu_exit).setOnClickListener(this);
 
-		ActionBar actionBar = getActionBar();
+		ActionBar actionBar = getSupportActionBar();
 
 		if (actionBar != null)
 		{
@@ -318,7 +318,7 @@ public final class HelpActivity extends ResultActivity implements OnClickListene
 			setProgressBarIndeterminateVisibility(false);
 			String versionName = Util.getVersionName(HelpActivity.this);
 			String title = String.format("%s (%s)", view.getTitle(), versionName);
-			ActionBar actionBar = getActionBar();
+			ActionBar actionBar = getSupportActionBar();
 
 			if (actionBar != null)
 			{

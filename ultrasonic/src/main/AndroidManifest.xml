@@ -15,10 +15,6 @@
     <uses-permission a:name="android.permission.MODIFY_AUDIO_SETTINGS"/>
     <uses-permission a:name="android.permission.BLUETOOTH"/>
 
-    <uses-sdk
-        a:minSdkVersion="14"
-        a:targetSdkVersion="19"/>
-
     <supports-screens
         a:anyDensity="true"
         a:largeScreens="true"
@@ -29,6 +25,7 @@
     <application
         a:allowBackup="false"
         a:icon="@drawable/ic_launcher"
+        a:theme="@style/Theme.AppCompat"
         a:label="@string/common.appname">
         <activity
             a:name=".activity.MainActivity"

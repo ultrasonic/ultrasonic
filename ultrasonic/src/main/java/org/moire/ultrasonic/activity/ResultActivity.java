@@ -2,6 +2,7 @@ package org.moire.ultrasonic.activity;
 
 import android.app.Activity;
 import android.content.Intent;
+import android.support.v7.app.AppCompatActivity;
 
 import org.moire.ultrasonic.util.Constants;
 import org.moire.ultrasonic.util.Util;
@@ -9,7 +10,7 @@ import org.moire.ultrasonic.util.Util;
 /**
  * Created by Joshua Bahnsen on 12/30/13.
  */
-public class ResultActivity extends Activity
+public class ResultActivity extends AppCompatActivity
 {
 	@Override
 	protected void onActivityResult(int requestCode, int resultCode, Intent data)
