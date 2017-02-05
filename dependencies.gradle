@@ -14,6 +14,6 @@ ext.gradlePlugins = [
 ]
 
 ext.androidSupport = [
-        support : "com.android.support:support-v4:$versions.androidSupport",
-        design  : "com.android.support:design:$versions.androidSupport"
+        support     : "com.android.support:support-v4:$versions.androidSupport",
+        design      : "com.android.support:design:$versions.androidSupport",
 ]
