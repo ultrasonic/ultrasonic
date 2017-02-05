@@ -115,6 +115,8 @@
                 a:resource="@xml/searchable"/>
         </activity>
 
+        <activity a:name=".activity.ServerSettingsActivity" />
+
         <service
             a:name=".service.DownloadServiceImpl"
             a:label="UltraSonic Download Service"
