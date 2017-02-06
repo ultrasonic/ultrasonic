@@ -3,7 +3,8 @@
     android:id="@+id/statusbar"
     android:layout_width="fill_parent"
     android:layout_height="fill_parent"
-    android:orientation="horizontal" >
+    android:orientation="horizontal"
+    android:background="@color/background_color_dark" >
 
     <ImageView
         android:id="@+id/notification_image"
