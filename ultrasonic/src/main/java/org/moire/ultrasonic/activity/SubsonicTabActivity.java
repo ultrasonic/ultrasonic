@@ -19,7 +19,6 @@
 package org.moire.ultrasonic.activity;
 
 import android.annotation.SuppressLint;
-import android.app.ActionBar;
 import android.app.AlertDialog;
 import android.app.Dialog;
 import android.app.Notification;
@@ -36,6 +35,7 @@ import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
 import android.os.Handler;
+import android.support.v7.app.ActionBar;
 import android.util.Log;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
@@ -51,6 +51,9 @@ import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.RemoteViews;
 import android.widget.TextView;
+
+import net.simonvt.menudrawer.MenuDrawer;
+import net.simonvt.menudrawer.Position;
 
 import org.moire.ultrasonic.R;
 import org.moire.ultrasonic.domain.MusicDirectory;
@@ -74,9 +77,6 @@ import org.moire.ultrasonic.util.TimeSpan;
 import org.moire.ultrasonic.util.TimeSpanPicker;
 import org.moire.ultrasonic.util.Util;
 import org.moire.ultrasonic.util.VideoPlayerType;
-
-import net.simonvt.menudrawer.MenuDrawer;
-import net.simonvt.menudrawer.Position;
 
 import java.io.File;
 import java.io.PrintWriter;
@@ -1276,7 +1276,7 @@ public class SubsonicTabActivity extends ResultActivity implements OnClickListen
 
 	protected void setActionBarDisplayHomeAsUp(boolean enabled)
 	{
-		ActionBar actionBar = getActionBar();
+		ActionBar actionBar = getSupportActionBar();
 
 		if (actionBar != null)
 		{
@@ -1286,7 +1286,7 @@ public class SubsonicTabActivity extends ResultActivity implements OnClickListen
 
 	protected void setActionBarTitle(CharSequence title)
 	{
-		ActionBar actionBar = getActionBar();
+		ActionBar actionBar = getSupportActionBar();
 
 		if (actionBar != null)
 		{
@@ -1296,7 +1296,7 @@ public class SubsonicTabActivity extends ResultActivity implements OnClickListen
 
 	protected void setActionBarTitle(int id)
 	{
-		ActionBar actionBar = getActionBar();
+		ActionBar actionBar = getSupportActionBar();
 
 		if (actionBar != null)
 		{
@@ -1306,7 +1306,7 @@ public class SubsonicTabActivity extends ResultActivity implements OnClickListen
 
 	protected CharSequence getActionBarTitle()
 	{
-		ActionBar actionBar = getActionBar();
+		ActionBar actionBar = getSupportActionBar();
 		CharSequence title = null;
 
 		if (actionBar != null)
@@ -1319,7 +1319,7 @@ public class SubsonicTabActivity extends ResultActivity implements OnClickListen
 
 	protected void setActionBarSubtitle(CharSequence title)
 	{
-		ActionBar actionBar = getActionBar();
+		ActionBar actionBar = getSupportActionBar();
 
 		if (actionBar != null)
 		{
@@ -1329,7 +1329,7 @@ public class SubsonicTabActivity extends ResultActivity implements OnClickListen
 
 	protected void setActionBarSubtitle(int id)
 	{
-		ActionBar actionBar = getActionBar();
+		ActionBar actionBar = getSupportActionBar();
 
 		if (actionBar != null)
 		{
@@ -1339,7 +1339,7 @@ public class SubsonicTabActivity extends ResultActivity implements OnClickListen
 
 	protected CharSequence getActionBarSubtitle()
 	{
-		ActionBar actionBar = getActionBar();
+		ActionBar actionBar = getSupportActionBar();
 		CharSequence subtitle = null;
 
 		if (actionBar != null)

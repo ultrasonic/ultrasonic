@@ -3,10 +3,10 @@ ext.versions = [
         targetSdk            : 22,
         compileSdk           : 22,
 
-        buildTools           : "25.0.2",
+        buildTools           : "22.0.1",
         androidTools         : "2.2.3",
 
-        androidSupport       : "25.1.0",
+        androidSupport       : "22.2.1",
 ]
 
 ext.gradlePlugins = [
@@ -14,5 +14,6 @@ ext.gradlePlugins = [
 ]
 
 ext.androidSupport = [
-        support : "com.android.support:support-v4:$versions.androidSupport"
+        support     : "com.android.support:support-v4:$versions.androidSupport",
+        design      : "com.android.support:design:$versions.androidSupport",
 ]

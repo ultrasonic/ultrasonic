@@ -22,4 +22,7 @@ dependencies {
     compile project(':menudrawer')
     compile project(':pulltorefresh')
     compile project(':library')
+
+    compile androidSupport.support
+    compile androidSupport.design
 }

@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
-    <style name="UltraSonicTheme" parent="@android:style/Theme.Holo">
+    <style name="UltraSonicTheme" parent="Theme.AppCompat">
         <item name="color_background">@color/background_color_dark</item>
         <item name="star_hollow">@drawable/ic_star_hollow_dark</item>
         <item name="star_full">@drawable/ic_star_full_dark</item>
@@ -46,7 +46,7 @@
         <item name="button_check_custom">@drawable/btn_check_custom_dark</item>
     </style>
 
-    <style name="UltraSonicTheme.Light" parent="@android:style/Theme.Holo.Light">
+    <style name="UltraSonicTheme.Light" parent="Theme.AppCompat.Light">
         <item name="color_background">@color/background_color_light</item>
         <item name="star_hollow">@drawable/ic_star_hollow_light</item>
         <item name="star_full">@drawable/ic_star_full_light</item>

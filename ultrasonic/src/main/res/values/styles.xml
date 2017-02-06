@@ -1,15 +1,15 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
-    <style name="listselect" parent="android:style/Widget.ListView">
+    <style name="listselect" parent="Widget.AppCompat.ListView">
         <item name="android:listSelector">@drawable/list_selector_holo_dark</item>
     </style>
 
-    <style name="listselectlight" parent="android:style/Widget.ListView.White">
+    <style name="listselectlight" parent="Widget.AppCompat.ListView">
         <item name="android:listSelector">@drawable/list_selector_holo_light</item>
     </style>
 
-    <style name="customprogress" parent="android:style/Widget.ProgressBar.Horizontal">
+    <style name="customprogress" parent="Widget.AppCompat.ProgressBar.Horizontal">
         <item name="android:progressDrawable">@drawable/progress_horizontal_holo_dark</item>
     </style>
 
