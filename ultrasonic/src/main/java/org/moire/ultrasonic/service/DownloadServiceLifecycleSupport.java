@@ -180,9 +180,9 @@ public class DownloadServiceLifecycleSupport
 		Util.registerMediaButtonEventReceiver(downloadService);
 
 		// Pause temporarily on incoming phone calls.
-		phoneStateListener = new MyPhoneStateListener();
-		TelephonyManager telephonyManager = (TelephonyManager) downloadService.getSystemService(Context.TELEPHONY_SERVICE);
-		telephonyManager.listen(phoneStateListener, PhoneStateListener.LISTEN_CALL_STATE);
+		//phoneStateListener = new MyPhoneStateListener();
+		//TelephonyManager telephonyManager = (TelephonyManager) downloadService.getSystemService(Context.TELEPHONY_SERVICE);
+		//telephonyManager.listen(phoneStateListener, PhoneStateListener.LISTEN_CALL_STATE);
 
 		// Register the handler for outside intents.
 		IntentFilter commandFilter = new IntentFilter();
@@ -223,8 +223,8 @@ public class DownloadServiceLifecycleSupport
 		downloadService.unregisterReceiver(headsetEventReceiver);
 		downloadService.unregisterReceiver(intentReceiver);
 
-		TelephonyManager telephonyManager = (TelephonyManager) downloadService.getSystemService(Context.TELEPHONY_SERVICE);
-		telephonyManager.listen(phoneStateListener, PhoneStateListener.LISTEN_NONE);
+		//TelephonyManager telephonyManager = (TelephonyManager) downloadService.getSystemService(Context.TELEPHONY_SERVICE);
+		//telephonyManager.listen(phoneStateListener, PhoneStateListener.LISTEN_NONE);
 	}
 
 	public boolean isExternalStorageAvailable()
