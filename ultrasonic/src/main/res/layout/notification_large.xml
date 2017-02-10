@@ -1,8 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/statusbar"
-    android:layout_width="fill_parent"
-    android:layout_height="fill_parent"
+    android:layout_width="match_parent"
+    android:layout_height="128dp"
     android:orientation="horizontal"
     android:background="@color/background_color_dark" >
 
@@ -10,20 +12,23 @@
         android:id="@+id/notification_image"
         android:layout_width="128dp"
         android:layout_height="128dp"
-        android:gravity="center" />
+        android:gravity="center"
+        tools:background="#ff00ff"
+        />
 
     <LinearLayout
-        android:layout_width="fill_parent"
-        android:layout_height="wrap_content"
-        android:layout_weight="0"
+        android:layout_width="0dp"
+        android:layout_height="match_parent"
+        android:layout_weight="1"
         android:orientation="vertical"
         android:paddingLeft="8dip"
         android:paddingTop="8dip"
         android:paddingRight="8dip"
-        android:paddingBottom="8dip" >
+        android:paddingBottom="8dip"
+        >
         
         <LinearLayout
-            android:layout_width="fill_parent"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="horizontal" >
 
@@ -32,21 +37,24 @@
                 style="@android:style/TextAppearance.StatusBar.EventContent.Title"
                 android:layout_width="0dip"
                 android:layout_height="wrap_content"
-                android:layout_gravity="center|left"
+                android:layout_gravity="center|start"
                 android:layout_weight="1"
                 android:ellipsize="marquee"
                 android:focusable="true"
-                android:singleLine="true" />
+                android:maxLines="1"
+                tools:text="Track name"
+                />
 
             <ImageButton
                 android:id="@+id/control_stop"
                 android:layout_width="22dip"
                 android:layout_height="22dip"
-                android:layout_gravity="center|right"
+                android:layout_gravity="center|end"
                 android:gravity="center_vertical"
                 android:background="@drawable/btn_bg"
                 android:scaleType="fitXY"
-                android:src="@drawable/ic_menu_exit_dark" />
+                android:src="@drawable/ic_menu_exit_dark"
+                />
         </LinearLayout>
 
 		<TextView
@@ -54,30 +62,35 @@
             style="@android:style/TextAppearance.StatusBar.EventContent"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_gravity="left"
+            android:layout_gravity="start"
             android:ellipsize="end"
             android:scrollHorizontally="true"
-            android:singleLine="true" />
+            android:maxLines="1"
+            tools:text="Artist"
+            />
 
         <TextView
             android:id="@+id/album"
             style="@android:style/TextAppearance.StatusBar.EventContent"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_gravity="left"
+            android:layout_gravity="start"
             android:ellipsize="end"
             android:scrollHorizontally="true"
-            android:singleLine="true" />
+            android:maxLines="1"
+            tools:text="Album"
+            />
         
-        <TextView
-    		android:layout_width="fill_parent"
-    		android:layout_height="1dp"
-    		android:layout_marginTop="10dip"
-    		android:layout_marginBottom="10dip"
-    		android:background="#DD696969" />
+        <FrameLayout
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:layout_marginTop="10dip"
+            android:layout_marginBottom="10dip"
+            android:background="#DD696969"
+            />
         
         <LinearLayout
-            android:layout_width="fill_parent"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_gravity="center|bottom"
             android:gravity="center_horizontal"

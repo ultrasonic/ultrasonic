@@ -36,6 +36,8 @@ import android.os.Handler;
 import android.os.IBinder;
 import android.os.Looper;
 import android.os.PowerManager;
+import android.support.v4.app.NotificationCompat;
+import android.support.v4.app.NotificationManagerCompat;
 import android.util.Log;
 import android.widget.RemoteViews;
 import android.widget.SeekBar;
@@ -95,6 +97,8 @@ public class DownloadServiceImpl extends Service implements DownloadService
 	public static final String CMD_PREVIOUS = "org.moire.ultrasonic.CMD_PREVIOUS";
 	public static final String CMD_NEXT = "org.moire.ultrasonic.CMD_NEXT";
 
+    private static final int NOTIFICATION_ID = 3033;
+
 	private final IBinder binder = new SimpleServiceBinder<DownloadService>(this);
 	private Looper mediaPlayerLooper;
 	private MediaPlayer mediaPlayer;
@@ -111,7 +115,6 @@ public class DownloadServiceImpl extends Service implements DownloadService
 	private final List<DownloadFile> cleanupCandidates = new ArrayList<DownloadFile>();
 	private final Scrobbler scrobbler = new Scrobbler();
 	private final JukeboxService jukeboxService = new JukeboxService(this);
-	private Notification notification = new Notification(R.drawable.ic_stat_ultrasonic, null, System.currentTimeMillis());
 
 	private DownloadFile currentPlaying;
 	private DownloadFile nextPlaying;
@@ -222,19 +225,6 @@ public class DownloadServiceImpl extends Service implements DownloadService
 		audioManager = (AudioManager) this.getSystemService(Context.AUDIO_SERVICE);
 		setUpRemoteControlClient();
 
-		notification.flags |= Notification.FLAG_NO_CLEAR | Notification.FLAG_ONGOING_EVENT;
-		notification.contentView = new RemoteViews(this.getPackageName(), R.layout.notification);
-		Util.linkButtons(this, notification.contentView, false);
-
-		if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN)
-		{
-			notification.bigContentView = new RemoteViews(this.getPackageName(), R.layout.notification_large);
-			Util.linkButtons(this, notification.bigContentView, false);
-		}
-
-		Intent notificationIntent = new Intent(this, DownloadActivity.class);
-		notification.contentIntent = PendingIntent.getActivity(this, 0, notificationIntent, 0);
-
 		if (equalizerAvailable)
 		{
 			equalizerController = new EqualizerController(this, mediaPlayer);
@@ -310,8 +300,6 @@ public class DownloadServiceImpl extends Service implements DownloadService
 			{
 				nextPlayingTask.cancel();
 			}
-
-			notification = null;
 
 			Intent i = new Intent(AudioEffect.ACTION_CLOSE_AUDIO_EFFECT_CONTROL_SESSION);
 			i.putExtra(AudioEffect.EXTRA_AUDIO_SESSION, mediaPlayer.getAudioSessionId());
@@ -724,12 +712,10 @@ public class DownloadServiceImpl extends Service implements DownloadService
 
 		if (currentPlaying != null)
 		{
-			if (tabInstance != null)
-			{
-				int size = Util.getNotificationImageSize(this);
-
-				tabInstance.nowPlayingImage = FileUtil.getAlbumArtBitmap(this, currentPlaying.getSong(), size, true);
-				tabInstance.showNotification(handler, currentPlaying.getSong(), this, this.notification, this.playerState);
+			if (tabInstance != null) {
+                if (Util.isNotificationEnabled(this)) {
+                    startForeground(NOTIFICATION_ID, buildForegroundNotification());
+                }
 				tabInstance.showNowPlaying();
 			}
 		}
@@ -737,8 +723,7 @@ public class DownloadServiceImpl extends Service implements DownloadService
 		{
 			if (tabInstance != null)
 			{
-				tabInstance.nowPlayingImage = null;
-				tabInstance.hidePlayingNotification(handler, this);
+				stopForeground(true);
 				tabInstance.hideNowPlaying();
 			}
 		}
@@ -1246,27 +1231,18 @@ public class DownloadServiceImpl extends Service implements DownloadService
 		UltraSonicAppWidgetProvider4x4.getInstance().notifyChange(this, this, this.playerState == PlayerState.STARTED, false);
 		SubsonicTabActivity tabInstance = SubsonicTabActivity.getInstance();
 
-		Entry song = null;
-
-		if (currentPlaying != null)
-		{
-			song = currentPlaying.getSong();
-		}
-
 		if (show)
 		{
 			if (tabInstance != null)
 			{
-				if (SubsonicTabActivity.currentSong != song)
-				{
-					int size = Util.getNotificationImageSize(this);
-					tabInstance.nowPlayingImage = FileUtil.getAlbumArtBitmap(this, song, size, true);
-				}
-
 				// Only update notification is player state is one that will change the icon
 				if (this.playerState == PlayerState.STARTED || this.playerState == PlayerState.PAUSED)
 				{
-					tabInstance.showNotification(handler, song, this, this.notification, this.playerState);
+                    if (Util.isNotificationEnabled(this)) {
+                        final NotificationManagerCompat notificationManager =
+                                NotificationManagerCompat.from(this);
+                        notificationManager.notify(NOTIFICATION_ID, buildForegroundNotification());
+                    }
 					tabInstance.showNowPlaying();
 				}
 			}
@@ -1275,8 +1251,7 @@ public class DownloadServiceImpl extends Service implements DownloadService
 		{
 			if (tabInstance != null)
 			{
-				tabInstance.nowPlayingImage = null;
-				tabInstance.hidePlayingNotification(handler, this);
+				stopForeground(true);
 				tabInstance.hideNowPlaying();
 			}
 		}
@@ -1398,7 +1373,7 @@ public class DownloadServiceImpl extends Service implements DownloadService
 		}
 		catch (Exception e)
 		{
-			Log.w("Error getting user information", e);
+			Log.w(TAG, "Error getting user information", e);
 		}
 
 		return false;
@@ -1417,7 +1392,7 @@ public class DownloadServiceImpl extends Service implements DownloadService
 		}
 		catch (Exception e)
 		{
-			Log.w("Error getting user information", e);
+			Log.w(TAG, "Error getting user information", e);
 		}
 
 		return false;
@@ -2095,6 +2070,68 @@ public class DownloadServiceImpl extends Service implements DownloadService
 			}
 		}
 	}
+
+    private Notification buildForegroundNotification() {
+        NotificationCompat.Builder builder = new NotificationCompat.Builder(this);
+        builder.setSmallIcon(R.drawable.ic_stat_ultrasonic);
+
+        builder.setAutoCancel(false);
+        builder.setOngoing(true);
+        builder.setWhen(System.currentTimeMillis());
+
+        RemoteViews contentView = new RemoteViews(this.getPackageName(), R.layout.notification);
+        Util.linkButtons(this, contentView, false);
+        RemoteViews bigView = new RemoteViews(this.getPackageName(), R.layout.notification_large);
+        Util.linkButtons(this, bigView, false);
+
+        builder.setContent(contentView);
+
+        Intent notificationIntent = new Intent(this, DownloadActivity.class);
+        builder.setContentIntent(PendingIntent.getActivity(this, 0, notificationIntent, 0));
+
+        if (playerState == PlayerState.PAUSED || playerState == PlayerState.IDLE) {
+            contentView.setImageViewResource(R.id.control_play, R.drawable.media_start_normal_dark);
+            bigView.setImageViewResource(R.id.control_play, R.drawable.media_start_normal_dark);
+        } else if (playerState == PlayerState.STARTED) {
+            contentView.setImageViewResource(R.id.control_play, R.drawable.media_pause_normal_dark);
+            bigView.setImageViewResource(R.id.control_play, R.drawable.media_pause_normal_dark);
+        }
+
+        final Entry song = currentPlaying.getSong();
+        final String title = song.getTitle();
+        final String text = song.getArtist();
+        final String album = song.getAlbum();
+        final int imageSize = Util.getNotificationImageSize(this);
+
+        try {
+            final Bitmap nowPlayingImage = FileUtil.getAlbumArtBitmap(this, currentPlaying.getSong(), imageSize, true);
+            if (nowPlayingImage == null) {
+                contentView.setImageViewResource(R.id.notification_image, R.drawable.unknown_album);
+                bigView.setImageViewResource(R.id.notification_image, R.drawable.unknown_album);
+            } else {
+                contentView.setImageViewBitmap(R.id.notification_image, nowPlayingImage);
+                bigView.setImageViewBitmap(R.id.notification_image, nowPlayingImage);
+            }
+        } catch (Exception x) {
+            Log.w(TAG, "Failed to get notification cover art", x);
+            contentView.setImageViewResource(R.id.notification_image, R.drawable.unknown_album);
+            bigView.setImageViewResource(R.id.notification_image, R.drawable.unknown_album);
+        }
+
+        contentView.setTextViewText(R.id.trackname, title);
+        bigView.setTextViewText(R.id.trackname, title);
+        contentView.setTextViewText(R.id.artist, text);
+        bigView.setTextViewText(R.id.artist, text);
+        contentView.setTextViewText(R.id.album, album);
+        bigView.setTextViewText(R.id.album, album);
+
+        Notification notification = builder.build();
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
+            notification.bigContentView = bigView;
+        }
+
+        return notification;
+    }
 
 	private class BufferTask extends CancellableTask
 	{
