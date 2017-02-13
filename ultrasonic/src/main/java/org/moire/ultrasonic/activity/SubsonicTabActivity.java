@@ -18,10 +18,8 @@
  */
 package org.moire.ultrasonic.activity;
 
-import android.annotation.SuppressLint;
 import android.app.AlertDialog;
 import android.app.Dialog;
-import android.app.Notification;
 import android.app.NotificationManager;
 import android.content.Context;
 import android.content.DialogInterface;
@@ -30,11 +28,9 @@ import android.graphics.Bitmap;
 import android.graphics.drawable.Drawable;
 import android.media.AudioManager;
 import android.net.Uri;
-import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
-import android.os.Handler;
 import android.support.v7.app.ActionBar;
 import android.util.Log;
 import android.view.KeyEvent;
@@ -113,10 +109,7 @@ public class SubsonicTabActivity extends ResultActivity implements OnClickListen
 	View bookmarksMenuItem;
 	View sharesMenuItem;
 	public static boolean nowPlayingHidden;
-	public static Entry currentSong;
-	public Bitmap nowPlayingImage;
 	boolean licenseValid;
-	NotificationManager notificationManager;
 	private EditText shareDescription;
 	TimeSpanPicker timeSpanPicker;
 	CheckBox hideDialogCheckBox;
@@ -167,8 +160,6 @@ public class SubsonicTabActivity extends ResultActivity implements OnClickListen
 		{
 			menuDrawer.setActiveView(activeView);
 		}
-
-		notificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
 	}
 
 	@Override
@@ -339,129 +330,6 @@ public class SubsonicTabActivity extends ResultActivity implements OnClickListen
 		{
 			setTheme(R.style.UltraSonicTheme_Light);
 		}
-	}
-
-	public void showNotification(final Handler handler, final Entry song, final DownloadServiceImpl downloadService, final Notification notification, final PlayerState playerState)
-	{
-		if (!Util.isNotificationEnabled(this))
-		{
-			return;
-		}
-
-		new AsyncTask<Void, Void, String[]>()
-		{
-			@SuppressLint("NewApi")
-			@Override
-			protected String[] doInBackground(Void... params)
-			{
-				Thread.currentThread().setName("showNotification");
-				RemoteViews notificationView = notification.contentView;
-				RemoteViews bigNotificationView = null;
-
-				if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN)
-				{
-					bigNotificationView = notification.bigContentView;
-				}
-
-				if (playerState == PlayerState.PAUSED)
-				{
-					setImageViewResourceOnUiThread(notificationView, R.id.control_play, R.drawable.media_start_normal_dark);
-
-					if (bigNotificationView != null)
-					{
-						setImageViewResourceOnUiThread(bigNotificationView, R.id.control_play, R.drawable.media_start_normal_dark);
-					}
-				}
-				else if (playerState == PlayerState.STARTED)
-				{
-					setImageViewResourceOnUiThread(notificationView, R.id.control_play, R.drawable.media_pause_normal_dark);
-
-					if (bigNotificationView != null)
-					{
-						setImageViewResourceOnUiThread(bigNotificationView, R.id.control_play, R.drawable.media_pause_normal_dark);
-					}
-				}
-
-				if (currentSong != song)
-				{
-					currentSong = song;
-
-					String title = song.getTitle();
-					String text = song.getArtist();
-					String album = song.getAlbum();
-
-					try
-					{
-						if (nowPlayingImage == null)
-						{
-							setImageViewResourceOnUiThread(notificationView, R.id.notification_image, R.drawable.unknown_album);
-
-							if (bigNotificationView != null)
-							{
-								setImageViewResourceOnUiThread(bigNotificationView, R.id.notification_image, R.drawable.unknown_album);
-							}
-						}
-						else
-						{
-							setImageViewBitmapOnUiThread(notificationView, R.id.notification_image, nowPlayingImage);
-
-							if (bigNotificationView != null)
-							{
-								setImageViewBitmapOnUiThread(bigNotificationView, R.id.notification_image, nowPlayingImage);
-							}
-						}
-					}
-					catch (Exception x)
-					{
-						Log.w(TAG, "Failed to get notification cover art", x);
-						setImageViewResourceOnUiThread(notificationView, R.id.notification_image, R.drawable.unknown_album);
-
-						if (bigNotificationView != null)
-						{
-							setImageViewResourceOnUiThread(bigNotificationView, R.id.notification_image, R.drawable.unknown_album);
-						}
-					}
-
-					setTextViewTextOnUiThread(notificationView, R.id.trackname, title);
-					setTextViewTextOnUiThread(notificationView, R.id.artist, text);
-					setTextViewTextOnUiThread(notificationView, R.id.album, album);
-
-					if (bigNotificationView != null)
-					{
-						setTextViewTextOnUiThread(bigNotificationView, R.id.trackname, title);
-						setTextViewTextOnUiThread(bigNotificationView, R.id.artist, text);
-						setTextViewTextOnUiThread(bigNotificationView, R.id.album, album);
-					}
-				}
-
-				// Send the notification and put the service in the foreground.
-				handler.post(new Runnable()
-				{
-					@Override
-					public void run()
-					{
-						downloadService.startForeground(Constants.NOTIFICATION_ID_PLAYING, notification);
-					}
-				});
-
-				return null;
-			}
-		}.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
-	}
-
-	public void hidePlayingNotification(final Handler handler, final DownloadServiceImpl downloadService)
-	{
-		currentSong = null;
-
-		// Remove notification and remove the service from the foreground
-		handler.post(new Runnable()
-		{
-			@Override
-			public void run()
-			{
-				downloadService.stopForeground(true);
-			}
-		});
 	}
 
 	private void showNowPlaying(final Context context, final DownloadService downloadService, final Entry song, final PlayerState playerState)
