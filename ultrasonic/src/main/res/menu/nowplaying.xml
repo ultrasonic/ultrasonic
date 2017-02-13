@@ -1,56 +1,59 @@
 <?xml version="1.0" encoding="utf-8"?>
-<menu xmlns:a="http://schemas.android.com/apk/res/android" >
+<menu
+    xmlns:a="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    >
 
     <item
         a:id="@+id/menu_item_toggle_list"
         a:icon="?attr/media_toggle"
-        a:showAsAction="always"
+        app:showAsAction="always"
         a:title="@string/download.toggle_playlist"/>
     <item
         a:id="@+id/menu_item_star"
         a:icon="?attr/star_hollow"
-        a:showAsAction="ifRoom|withText"
+        app:showAsAction="ifRoom|withText"
         a:title="@string/download.menu_star"/>
     <item
         a:id="@+id/menu_item_share"
         a:icon="?attr/share"
-        a:showAsAction="ifRoom|withText"
+        app:showAsAction="ifRoom|withText"
         a:title="@string/download.share_playlist"/>
     <item
         a:id="@+id/menu_item_save_playlist"
         a:icon="?attr/save"
-        a:showAsAction="ifRoom|withText"
+        app:showAsAction="ifRoom|withText"
         a:title="@string/download.menu_save"/>
     <item
         a:id="@+id/menu_item_clear_playlist"
         a:icon="?attr/remove_all"
-        a:showAsAction="ifRoom|withText"
+        app:showAsAction="ifRoom|withText"
         a:title="@string/download.menu_clear_playlist"/>
     <item
         a:id="@+id/menu_item_bookmark_set"
         a:icon="?attr/bookmark"
-        a:showAsAction="ifRoom|withText"
+        app:showAsAction="ifRoom|withText"
         a:title="@string/download.bookmark_set"/>
     <item
         a:id="@+id/menu_item_bookmark_delete"
         a:icon="?attr/bookmark"
-        a:showAsAction="ifRoom|withText"
+        app:showAsAction="ifRoom|withText"
         a:title="@string/download.bookmark_delete"/>
     <item
         a:id="@+id/menu_item_equalizer"
-        a:showAsAction="never"
+        app:showAsAction="never"
         a:title="@string/download.menu_equalizer"/>
     <item
         a:id="@+id/menu_item_visualizer"
-        a:showAsAction="never"
+        app:showAsAction="never"
         a:title="@string/download.menu_visualizer"/>
     <item
         a:id="@+id/menu_item_jukebox"
-        a:showAsAction="never"
+        app:showAsAction="never"
         a:title="@string/download.menu_jukebox_on"/>
     <item
         a:id="@+id/menu_item_screen_on_off"
-        a:showAsAction="never"
+        app:showAsAction="never"
         a:title="@string/download.menu_screen_on"/>
 
 </menu>
