@@ -1,14 +1,21 @@
-apply plugin: 'java'
 apply plugin: 'kotlin'
 
+sourceSets {
+    main.java.srcDirs += 'src/main/kotlin'
+    test.java.srcDirs += 'src/integrationTest/kotlin'
+    test.resources.srcDirs += 'src/integrationTest/resources'
+    test.output.resourcesDir = test.output.classesDir
+}
+
 dependencies {
-    compile other.okhttp
+    compile kotlin.stdlib
+
+    compile other.retrofit
+    compile other.gsonConverter
 
     testCompile testing.junit
     testCompile testing.kotlinJunit
     testCompile testing.mockitoKotlin
     testCompile testing.kluent
+    testCompile testing.mockWebServer
 }
-
-sourceCompatibility = "1.7"
-targetCompatibility = "1.7"

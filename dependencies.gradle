@@ -7,13 +7,41 @@ ext.versions = [
         androidTools         : "2.2.3",
 
         androidSupport       : "22.2.1",
+
+        kotlin               : "1.0.6",
+
+        retrofit             : "2.1.0",
+
+        junit                : "4.12",
+        mockitoKotlin        : "1.3.0",
+        kluent               : "1.14",
+        okhttp               : "3.6.0",
 ]
 
 ext.gradlePlugins = [
-        androidTools : "com.android.tools.build:gradle:$versions.androidTools"
+        androidTools : "com.android.tools.build:gradle:$versions.androidTools",
+        kotlin       : "org.jetbrains.kotlin:kotlin-gradle-plugin:$versions.kotlin",
 ]
 
 ext.androidSupport = [
         support     : "com.android.support:support-v4:$versions.androidSupport",
         design      : "com.android.support:design:$versions.androidSupport",
+]
+
+ext.kotlin = [
+        stdlib  : "org.jetbrains.kotlin:kotlin-stdlib:$versions.kotlin"
+]
+
+ext.other = [
+        retrofit           : "com.squareup.retrofit2:retrofit:$versions.retrofit",
+        gsonConverter      : "com.squareup.retrofit2:converter-gson:$versions.retrofit",
+        simpleXmlConverter : "com.squareup.retrofit2:converter-simplexml:$versions.retrofit",
+]
+
+ext.testing = [
+        junit         : "junit:junit:$versions.junit",
+        kotlinJunit   : "org.jetbrains.kotlin:kotlin-test-junit:$versions.kotlin",
+        mockitoKotlin : "com.nhaarman:mockito-kotlin:$versions.mockitoKotlin",
+        kluent        : "org.amshove.kluent:kluent:$versions.kluent",
+        mockWebServer : "com.squareup.okhttp3:mockwebserver:$versions.okhttp"
 ]

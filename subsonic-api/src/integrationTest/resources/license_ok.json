@@ -1,0 +1,10 @@
+{
+  "subsonic-response" : {
+    "status" : "ok",
+    "version" : "1.13.0",
+    "license" : {
+      "valid" : true,
+      "trialExpires" : "2016-11-23T20:17:15.206Z"
+    }
+  }
+}

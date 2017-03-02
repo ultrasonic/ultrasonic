@@ -1,4 +1,5 @@
 apply plugin: 'com.android.application'
+apply plugin: 'kotlin-android'
 
 android {
     compileSdkVersion versions.compileSdk
@@ -16,13 +17,25 @@ android {
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.txt'
         }
     }
+
+    sourceSets {
+        test.java.srcDirs += 'src/test/kotlin'
+    }
 }
 
 dependencies {
     compile project(':menudrawer')
     compile project(':pulltorefresh')
     compile project(':library')
+    compile project(':subsonic-api')
 
     compile androidSupport.support
     compile androidSupport.design
+
+    compile kotlin.stdlib
+
+    testCompile testing.junit
+    testCompile testing.kotlinJunit
+    testCompile testing.mockitoKotlin
+    testCompile testing.kluent
 }
