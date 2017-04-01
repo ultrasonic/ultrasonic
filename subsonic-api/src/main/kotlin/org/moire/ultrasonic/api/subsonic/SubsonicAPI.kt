@@ -1,10 +1,11 @@
 package org.moire.ultrasonic.api.subsonic
 
-import com.google.gson.GsonBuilder
+import com.fasterxml.jackson.databind.DeserializationFeature
+import com.fasterxml.jackson.databind.ObjectMapper
+import com.fasterxml.jackson.module.kotlin.KotlinModule
 import okhttp3.OkHttpClient
-import org.moire.ultrasonic.api.subsonic.models.SubsonicResponse
 import retrofit2.Retrofit
-import retrofit2.converter.gson.GsonConverterFactory
+import retrofit2.converter.jackson.JacksonConverterFactory
 import java.math.BigInteger
 
 /**
@@ -31,15 +32,14 @@ class SubsonicAPI(baseUrl: String,
                 chain.proceed(originalRequest.newBuilder().url(newUrl).build())
             }.build()
 
-    private val gson = GsonBuilder()
-            .registerTypeAdapter(SubsonicResponse::class.javaObjectType,
-                    SubsonicResponse.Companion.ClassTypeAdapter())
-            .create()
+    private val jacksonMapper = ObjectMapper()
+            .configure(DeserializationFeature.UNWRAP_ROOT_VALUE, true)
+            .registerModule(KotlinModule())
 
     private val retrofit = Retrofit.Builder()
             .baseUrl(baseUrl)
             .client(okHttpClient)
-            .addConverterFactory(GsonConverterFactory.create(gson))
+            .addConverterFactory(JacksonConverterFactory.create(jacksonMapper))
             .build()
 
     private val subsonicAPI = retrofit.create(SubsonicAPIDefinition::class.java)

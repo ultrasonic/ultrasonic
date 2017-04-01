@@ -8,10 +8,10 @@ sourceSets {
 }
 
 dependencies {
-    compile kotlin.stdlib
-
+    compile other.kotlinStdlib
     compile other.retrofit
-    compile other.gsonConverter
+    compile other.jacksonConverter
+    compile other.jacksonKotlin
 
     testCompile testing.junit
     testCompile testing.kotlinJunit

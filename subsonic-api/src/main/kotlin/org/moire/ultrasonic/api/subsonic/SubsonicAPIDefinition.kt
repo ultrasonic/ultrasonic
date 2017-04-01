@@ -1,6 +1,7 @@
 package org.moire.ultrasonic.api.subsonic
 
-import org.moire.ultrasonic.api.subsonic.models.SubsonicResponse
+import org.moire.ultrasonic.api.subsonic.response.LicenseResponse
+import org.moire.ultrasonic.api.subsonic.response.SubsonicResponse
 import retrofit2.Call
 import retrofit2.http.GET
 
@@ -12,5 +13,5 @@ interface SubsonicAPIDefinition {
     fun ping(): Call<SubsonicResponse>
 
     @GET("getLicense.view")
-    fun getLicense(): Call<SubsonicResponse>
+    fun getLicense(): Call<LicenseResponse>
 }

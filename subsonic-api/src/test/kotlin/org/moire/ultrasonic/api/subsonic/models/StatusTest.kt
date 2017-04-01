@@ -4,6 +4,7 @@ import org.amshove.kluent.`should equal`
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.junit.runners.Parameterized
+import org.moire.ultrasonic.api.subsonic.response.SubsonicResponse
 
 /**
  * Unit test for [SubsonicResponse.Status] class

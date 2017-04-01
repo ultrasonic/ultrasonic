@@ -32,10 +32,16 @@ dependencies {
     compile androidSupport.support
     compile androidSupport.design
 
-    compile kotlin.stdlib
+    compile other.kotlinStdlib
 
     testCompile testing.junit
-    testCompile testing.kotlinJunit
-    testCompile testing.mockitoKotlin
-    testCompile testing.kluent
+    testCompile(testing.kotlinJunit) {
+        exclude module: "kotlin-stdlib"
+    }
+    testCompile(testing.mockitoKotlin) {
+        exclude module: "kotlin-stdlib"
+    }
+    testCompile(testing.kluent) {
+        exclude module: "kotlin-stdlib"
+    }
 }

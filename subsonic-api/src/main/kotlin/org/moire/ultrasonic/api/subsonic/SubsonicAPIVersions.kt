@@ -1,8 +1,15 @@
 package org.moire.ultrasonic.api.subsonic
 
+import com.fasterxml.jackson.core.JsonParseException
+import com.fasterxml.jackson.core.JsonParser
+import com.fasterxml.jackson.databind.DeserializationContext
+import com.fasterxml.jackson.databind.JsonDeserializer
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize
+
 /**
  * Subsonic REST API versions.
  */
+@JsonDeserialize(using = SubsonicAPIVersions.Companion.SubsonicAPIVersionsDeserializer::class)
 enum class SubsonicAPIVersions(val subsonicVersions: String, val restApiVersion: String) {
     V1_1_0("3.8", "1.1.0"),
     V1_1_1("3.9", "1.1.1"),
@@ -40,6 +47,15 @@ enum class SubsonicAPIVersions(val subsonicVersions: String, val restApiVersion:
                 "1.14.0" -> return V1_14_0
             }
             throw IllegalArgumentException("Unknown api version $apiVersion")
+        }
+
+        class SubsonicAPIVersionsDeserializer: JsonDeserializer<SubsonicAPIVersions>() {
+            override fun deserialize(p: JsonParser?, ctxt: DeserializationContext?): SubsonicAPIVersions {
+                if (p!!.currentName != "version") {
+                    throw JsonParseException(p, "Not valid token for API version!")
+                }
+                return fromApiVersion(p.text)
+            }
         }
     }
 }

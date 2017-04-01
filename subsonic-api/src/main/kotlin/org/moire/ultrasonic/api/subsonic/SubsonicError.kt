@@ -1,8 +1,14 @@
 package org.moire.ultrasonic.api.subsonic
 
+import com.fasterxml.jackson.core.JsonParser
+import com.fasterxml.jackson.databind.DeserializationContext
+import com.fasterxml.jackson.databind.JsonDeserializer
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize
+
 /**
  * Common API errors.
  */
+@JsonDeserialize(using = SubsonicError.Companion.SubsonicErrorDeserializer::class)
 enum class SubsonicError(val code: Int) {
     GENERIC(0),
     REQUIRED_PARAM_MISSING(10),
@@ -18,5 +24,15 @@ enum class SubsonicError(val code: Int) {
         fun parseErrorFromJson(jsonErrorCode: Int) = SubsonicError.values()
                 .filter { it.code == jsonErrorCode }.firstOrNull()
                 ?: throw IllegalArgumentException("Unknown code $jsonErrorCode")
+
+        class SubsonicErrorDeserializer: JsonDeserializer<SubsonicError>() {
+            override fun deserialize(p: JsonParser?, ctxt: DeserializationContext?): SubsonicError {
+                p!!.nextToken() // "code"
+                val error = parseErrorFromJson(p.valueAsInt)
+                p.nextToken() // "message"
+                p.nextToken() // end of error object
+                return error
+            }
+        }
     }
 }

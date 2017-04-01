@@ -4,17 +4,18 @@ ext.versions = [
         compileSdk           : 22,
 
         buildTools           : "25.0.2",
-        androidTools         : "2.2.3",
+        androidTools         : "2.3.0",
 
         androidSupport       : "22.2.1",
 
-        kotlin               : "1.0.6",
+        kotlin               : "1.1.0",
 
         retrofit             : "2.1.0",
+        jackson              : "2.8.7",
 
         junit                : "4.12",
         mockitoKotlin        : "1.3.0",
-        kluent               : "1.14",
+        kluent               : "1.15",
         okhttp               : "3.6.0",
 ]
 
@@ -28,14 +29,12 @@ ext.androidSupport = [
         design      : "com.android.support:design:$versions.androidSupport",
 ]
 
-ext.kotlin = [
-        stdlib  : "org.jetbrains.kotlin:kotlin-stdlib:$versions.kotlin"
-]
-
 ext.other = [
+        kotlinStdlib  : "org.jetbrains.kotlin:kotlin-stdlib-common:$versions.kotlin",
         retrofit           : "com.squareup.retrofit2:retrofit:$versions.retrofit",
         gsonConverter      : "com.squareup.retrofit2:converter-gson:$versions.retrofit",
-        simpleXmlConverter : "com.squareup.retrofit2:converter-simplexml:$versions.retrofit",
+        jacksonConverter   : "com.squareup.retrofit2:converter-jackson:$versions.retrofit",
+        jacksonKotlin      : "com.fasterxml.jackson.module:jackson-module-kotlin:$versions.jackson",
 ]
 
 ext.testing = [
