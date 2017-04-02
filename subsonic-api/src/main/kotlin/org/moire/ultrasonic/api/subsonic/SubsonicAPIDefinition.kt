@@ -1,6 +1,7 @@
 package org.moire.ultrasonic.api.subsonic
 
 import org.moire.ultrasonic.api.subsonic.response.LicenseResponse
+import org.moire.ultrasonic.api.subsonic.response.MusicFoldersResponse
 import org.moire.ultrasonic.api.subsonic.response.SubsonicResponse
 import retrofit2.Call
 import retrofit2.http.GET
@@ -14,4 +15,7 @@ interface SubsonicAPIDefinition {
 
     @GET("getLicense.view")
     fun getLicense(): Call<LicenseResponse>
+
+    @GET("getMusicFolders.view")
+    fun getMusicFolders(): Call<MusicFoldersResponse>
 }

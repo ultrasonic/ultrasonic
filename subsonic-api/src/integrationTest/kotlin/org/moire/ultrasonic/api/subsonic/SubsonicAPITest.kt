@@ -9,6 +9,7 @@ import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
 import org.moire.ultrasonic.api.subsonic.models.License
+import org.moire.ultrasonic.api.subsonic.models.MusicFolder
 import org.moire.ultrasonic.api.subsonic.response.SubsonicResponse
 import org.moire.ultrasonic.api.subsonic.rules.MockWebServerRule
 import retrofit2.Response
@@ -47,8 +48,7 @@ class SubsonicAPITest {
 
         assertResponseSuccessful(response)
         with(response.body()) {
-            status `should be` SubsonicResponse.Status.OK
-            version `should be` SubsonicAPIVersions.V1_13_0
+            assertBaseResponseOk()
         }
     }
 
@@ -65,8 +65,7 @@ class SubsonicAPITest {
 
         assertResponseSuccessful(response)
         with(response.body()) {
-            status `should be` SubsonicResponse.Status.OK
-            version `should be` SubsonicAPIVersions.V1_13_0
+            assertBaseResponseOk()
             license `should equal` License(true, parseDate("2016-11-23T20:17:15.206Z"))
         }
     }
@@ -76,6 +75,26 @@ class SubsonicAPITest {
         val response = checkErrorCallParsed { api.getApi().getLicense().execute() }
 
         response.license `should be` null
+    }
+
+    @Test
+    fun `Should parse get music folders ok response`() {
+        enqueueResponse("get_music_directories_ok.json")
+
+        val response = api.getApi().getMusicFolders().execute()
+
+        assertResponseSuccessful(response)
+        with(response.body()) {
+            assertBaseResponseOk()
+            musicFolders `should equal` listOf(MusicFolder(0, "Music"), MusicFolder(2, "Test"))
+        }
+    }
+
+    @Test
+    fun `Should parse get music folders error response`() {
+        val response = checkErrorCallParsed { api.getApi().getMusicFolders().execute() }
+
+        response.musicFolders `should be` null
     }
 
     private fun enqueueResponse(resourceName: String) {
@@ -112,5 +131,11 @@ class SubsonicAPITest {
             error `should be` SubsonicError.GENERIC
         }
         return response.body()
+    }
+
+    private fun SubsonicResponse.assertBaseResponseOk() {
+        status `should be` SubsonicResponse.Status.OK
+        version `should be` SubsonicAPIVersions.V1_13_0
+        error `should be` null
     }
 }

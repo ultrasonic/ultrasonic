@@ -6,6 +6,9 @@
       "musicFolder" : [ {
         "id" : 0,
         "name" : "Music"
+      }, {
+        "id" : 2,
+        "name" : "Test"
       } ]
     }
   }
