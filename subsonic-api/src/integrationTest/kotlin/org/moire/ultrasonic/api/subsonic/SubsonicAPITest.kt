@@ -53,21 +53,12 @@ class SubsonicAPITest {
     }
 
     @Test
-    fun `Should parse error response`() {
-        enqueueResponse("generic_error_response.json")
-
-        val response = api.getApi().ping().execute()
-
-        assertResponseSuccessful(response)
-        with(response.body()) {
-            status `should be` SubsonicResponse.Status.ERROR
-            version `should be` SubsonicAPIVersions.V1_13_0
-            error `should be` SubsonicError.GENERIC
-        }
+    fun `Should parse ping error response`() {
+        checkErrorCallParsed { api.getApi().ping().execute() }
     }
 
     @Test
-    fun `Should parse get license response`() {
+    fun `Should parse get license ok response`() {
         enqueueResponse("license_ok.json")
 
         val response = api.getApi().getLicense().execute()
@@ -81,17 +72,10 @@ class SubsonicAPITest {
     }
 
     @Test
-    fun `Should parse error get license response`() {
-        enqueueResponse("generic_error_response.json")
+    fun `Should parse get license error response`() {
+        val response = checkErrorCallParsed { api.getApi().getLicense().execute() }
 
-        val response = api.getApi().getLicense().execute()
-
-        assertResponseSuccessful(response)
-        with(response.body()) {
-            status `should be` SubsonicResponse.Status.ERROR
-            error `should be` SubsonicError.GENERIC
-            license `should be` null
-        }
+        response.license `should be` null
     }
 
     private fun enqueueResponse(resourceName: String) {
@@ -115,5 +99,18 @@ class SubsonicAPITest {
         result.time = dateFormat.parse(dateAsString.replace("Z$".toRegex(), "+0000"))
 
         return result
+    }
+
+    private fun <T: SubsonicResponse> checkErrorCallParsed(apiRequest: () -> Response<T>): T {
+        enqueueResponse("generic_error_response.json")
+
+        val response = apiRequest()
+
+        assertResponseSuccessful(response)
+        with(response.body()) {
+            status `should be` SubsonicResponse.Status.ERROR
+            error `should be` SubsonicError.GENERIC
+        }
+        return response.body()
     }
 }
