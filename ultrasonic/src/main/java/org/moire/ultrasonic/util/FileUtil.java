@@ -40,6 +40,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.SortedSet;
 import java.util.TreeSet;
+import java.util.regex.Pattern;
 
 /**
  * @author Sindre Mehus
@@ -53,6 +54,7 @@ public class FileUtil
 	private static final List<String> VIDEO_FILE_EXTENSIONS = Arrays.asList("flv", "mp4", "m4v", "wmv", "avi", "mov", "mpg", "mkv");
 	private static final List<String> PLAYLIST_FILE_EXTENSIONS = Collections.singletonList("m3u");
 	private static final File DEFAULT_MUSIC_DIR = createDirectory("music");
+	private static final Pattern TITLE_WITH_TRACK = Pattern.compile("^\\d\\d-.*");
 
 	public static File getSongFile(Context context, MusicDirectory.Entry song)
 	{
@@ -61,16 +63,15 @@ public class FileUtil
 		StringBuilder fileName = new StringBuilder(256);
 		Integer track = song.getTrack();
 
-		if (track != null)
-		{
-			if (track < 10)
-			{
-				fileName.append('0');
+		if (!TITLE_WITH_TRACK.matcher(song.getTitle()).matches()) {//check if filename already had track number
+			if (track != null) {
+				if (track < 10) {
+					fileName.append('0');
+				}
+
+				fileName.append(track).append('-');
 			}
-
-			fileName.append(track).append('-');
 		}
-
 		fileName.append(fileSystemSafe(song.getTitle())).append('.');
 
 		if (song.getTranscodedSuffix() != null)
