@@ -1,6 +1,7 @@
 package org.moire.ultrasonic.api.subsonic
 
 import org.moire.ultrasonic.api.subsonic.response.GetIndexesResponse
+import org.moire.ultrasonic.api.subsonic.response.GetMusicDirectoryResponse
 import org.moire.ultrasonic.api.subsonic.response.LicenseResponse
 import org.moire.ultrasonic.api.subsonic.response.MusicFoldersResponse
 import org.moire.ultrasonic.api.subsonic.response.SubsonicResponse
@@ -26,4 +27,7 @@ interface SubsonicAPIDefinition {
     @GET("getIndexes.view")
     fun getIndexes(@Query("musicFolderId") musicFolderId: Long?,
                    @Query("ifModifiedSince") ifModifiedSince: Long?): Call<GetIndexesResponse>
+
+    @GET("getMusicDirectory.view")
+    fun getMusicDirectory(@Query("id") id: Long): Call<GetMusicDirectoryResponse>
 }

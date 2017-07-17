@@ -9,10 +9,7 @@ import org.amshove.kluent.`should not be`
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
-import org.moire.ultrasonic.api.subsonic.models.Artist
-import org.moire.ultrasonic.api.subsonic.models.Index
-import org.moire.ultrasonic.api.subsonic.models.License
-import org.moire.ultrasonic.api.subsonic.models.MusicFolder
+import org.moire.ultrasonic.api.subsonic.models.*
 import org.moire.ultrasonic.api.subsonic.response.SubsonicResponse
 import org.moire.ultrasonic.api.subsonic.rules.MockWebServerRule
 import retrofit2.Response
@@ -25,15 +22,13 @@ import java.util.*
  */
 class SubsonicAPITest {
     companion object {
-        val USERNAME = "some-user"
-        val PASSWORD = "some-password"
+        const val USERNAME = "some-user"
+        const val PASSWORD = "some-password"
         val CLIENT_VERSION = SubsonicAPIVersions.V1_13_0
-        val CLIENT_ID = "test-client"
+        const val CLIENT_ID = "test-client"
     }
 
-    @JvmField
-    @Rule
-    val mockWebServerRule = MockWebServerRule()
+    @JvmField @Rule val mockWebServerRule = MockWebServerRule()
 
     private lateinit var api: SubsonicAPI
 
@@ -82,7 +77,7 @@ class SubsonicAPITest {
 
     @Test
     fun `Should parse get music folders ok response`() {
-        enqueueResponse("get_music_directories_ok.json")
+        enqueueResponse("get_music_folders_ok.json")
 
         val response = api.getApi().getMusicFolders().execute()
 
@@ -169,6 +164,46 @@ class SubsonicAPITest {
         val response = checkErrorCallParsed { api.getApi().getIndexes(null, null).execute() }
 
         response.indexes `should be` null
+    }
+
+    @Test
+    fun `Should parse getMusicDirectory error response`() {
+        val response = checkErrorCallParsed { api.getApi().getMusicDirectory(1).execute() }
+
+        response.musicDirectory `should be` null
+    }
+
+    @Test
+    fun `GetMusicDirectory should add directory id to query params`() {
+        enqueueResponse("get_music_directory_ok.json")
+        val directoryId = 124L
+
+        api.getApi().getMusicDirectory(directoryId).execute()
+
+        mockWebServerRule.mockWebServer.takeRequest().requestLine `should contain` "id=$directoryId"
+    }
+
+    @Test
+    fun `Should parse get music directory ok response`() {
+        enqueueResponse("get_music_directory_ok.json")
+
+        val response = api.getApi().getMusicDirectory(1).execute()
+
+        assertResponseSuccessful(response)
+
+        response.body().musicDirectory `should not be` null
+        with(response.body().musicDirectory!!) {
+            id `should equal` 382L
+            name `should equal` "AC_DC"
+            starred `should equal` parseDate("2017-04-02T20:16:29.815Z")
+            childList.size `should be` 2
+            childList[0] `should equal` MusicDirectoryChild(583L, 382L, true, "Black Ice",
+                    "Black Ice", "AC/DC", 2008, "Hard Rock", 583L,
+                    parseDate("2016-10-23T15:31:22.000Z"), parseDate("2017-04-02T20:16:15.724Z"))
+            childList[1] `should equal` MusicDirectoryChild(582L, 382L, true, "Rock or Bust",
+                    "Rock or Bust", "AC/DC", 2014, "Hard Rock", 582L,
+                    parseDate("2016-10-23T15:31:24.000Z"), null)
+        }
     }
 
     private fun enqueueResponse(resourceName: String) {
