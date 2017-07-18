@@ -188,7 +188,7 @@
     <string name="settings.clear_playlist">Limpar Playlist</string>
     <string name="settings.clear_playlist_summary">Limpar a playlist após terminar de tocar todas as músicas</string>
     <string name="settings.clear_search_history">Limpar Histórico de Pesquisas</string>
-    <string name="settings.connection_failure">Falha na conexão</string>
+    <string name="settings.connection_failure">Falha na conexão.</string>
     <string name="settings.default_albums">Álbuns Padrões</string>
     <string name="settings.default_artists">Artistas Padrões</string>
     <string name="settings.default_songs">Músicas Padrões</string>
