@@ -30,11 +30,12 @@ ext.androidSupport = [
 ]
 
 ext.other = [
-        kotlinStdlib  : "org.jetbrains.kotlin:kotlin-stdlib-common:$versions.kotlin",
+        kotlinStdlib       : "org.jetbrains.kotlin:kotlin-stdlib-common:$versions.kotlin",
         retrofit           : "com.squareup.retrofit2:retrofit:$versions.retrofit",
         gsonConverter      : "com.squareup.retrofit2:converter-gson:$versions.retrofit",
         jacksonConverter   : "com.squareup.retrofit2:converter-jackson:$versions.retrofit",
         jacksonKotlin      : "com.fasterxml.jackson.module:jackson-module-kotlin:$versions.jackson",
+        okhttpLogging      : "com.squareup.okhttp3:logging-interceptor:$versions.okhttp",
 ]
 
 ext.testing = [

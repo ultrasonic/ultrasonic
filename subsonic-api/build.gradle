@@ -12,6 +12,7 @@ dependencies {
     compile other.retrofit
     compile other.jacksonConverter
     compile other.jacksonKotlin
+    compile other.okhttpLogging
 
     testCompile testing.junit
     testCompile testing.kotlinJunit

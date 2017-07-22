@@ -4,6 +4,7 @@ import com.fasterxml.jackson.databind.DeserializationFeature
 import com.fasterxml.jackson.databind.ObjectMapper
 import com.fasterxml.jackson.module.kotlin.KotlinModule
 import okhttp3.OkHttpClient
+import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.Retrofit
 import retrofit2.converter.jackson.JacksonConverterFactory
 import java.math.BigInteger
@@ -17,7 +18,8 @@ class SubsonicAPI(baseUrl: String,
                   username: String,
                   private val password: String,
                   clientProtocolVersion: SubsonicAPIVersions,
-                  clientID: String) {
+                  clientID: String,
+                  debug: Boolean = false) {
     private val okHttpClient = OkHttpClient.Builder()
             .addInterceptor { chain ->
                 // Adds default request params
@@ -30,6 +32,13 @@ class SubsonicAPI(baseUrl: String,
                         .addQueryParameter("f", "json")
                         .build()
                 chain.proceed(originalRequest.newBuilder().url(newUrl).build())
+            }
+            .apply {
+                if (debug) {
+                    val loggingInterceptor = HttpLoggingInterceptor()
+                    loggingInterceptor.level = HttpLoggingInterceptor.Level.BASIC
+                    this.addInterceptor(loggingInterceptor)
+                }
             }.build()
 
     private val jacksonMapper = ObjectMapper()
@@ -49,7 +58,7 @@ class SubsonicAPI(baseUrl: String,
      *
      * @return initialized API instance
      */
-    fun getApi() = subsonicAPI
+    fun getApi(): SubsonicAPIDefinition = subsonicAPI
 
     private fun passwordHex() = "enc:${password.toHexBytes()}"
 
