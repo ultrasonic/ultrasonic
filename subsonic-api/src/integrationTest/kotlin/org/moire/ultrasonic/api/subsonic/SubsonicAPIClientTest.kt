@@ -6,21 +6,28 @@ import org.amshove.kluent.`should be`
 import org.amshove.kluent.`should contain`
 import org.amshove.kluent.`should equal`
 import org.amshove.kluent.`should not be`
+import org.amshove.kluent.`should not contain`
+import org.apache.commons.codec.binary.Hex
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
-import org.moire.ultrasonic.api.subsonic.models.*
+import org.moire.ultrasonic.api.subsonic.models.Artist
+import org.moire.ultrasonic.api.subsonic.models.Index
+import org.moire.ultrasonic.api.subsonic.models.License
+import org.moire.ultrasonic.api.subsonic.models.MusicDirectoryChild
+import org.moire.ultrasonic.api.subsonic.models.MusicFolder
 import org.moire.ultrasonic.api.subsonic.response.SubsonicResponse
 import org.moire.ultrasonic.api.subsonic.rules.MockWebServerRule
 import retrofit2.Response
 import java.nio.charset.Charset
+import java.security.MessageDigest
 import java.text.SimpleDateFormat
 import java.util.*
 
 /**
- * Integration test for [SubsonicAPI] class.
+ * Integration test for [SubsonicAPIClient] class.
  */
-class SubsonicAPITest {
+class SubsonicAPIClientTest {
     companion object {
         const val USERNAME = "some-user"
         const val PASSWORD = "some-password"
@@ -30,19 +37,58 @@ class SubsonicAPITest {
 
     @JvmField @Rule val mockWebServerRule = MockWebServerRule()
 
-    private lateinit var api: SubsonicAPI
+    private lateinit var client: SubsonicAPIClient
 
     @Before
     fun setUp() {
-        api = SubsonicAPI(mockWebServerRule.mockWebServer.url("/").toString(), USERNAME, PASSWORD,
+        client = SubsonicAPIClient(mockWebServerRule.mockWebServer.url("/").toString(), USERNAME, PASSWORD,
                 CLIENT_VERSION, CLIENT_ID)
+    }
+
+    @Test
+    fun `Should pass password hash and salt in query params for api version 1_13_0`() {
+        val clientV12 = SubsonicAPIClient(mockWebServerRule.mockWebServer.url("/").toString(), USERNAME,
+                PASSWORD, SubsonicAPIVersions.V1_14_0, CLIENT_ID)
+        enqueueResponse("ping_ok.json")
+
+        clientV12.api.ping().execute()
+
+        with(mockWebServerRule.mockWebServer.takeRequest()) {
+            requestLine `should contain` "&s="
+            requestLine `should contain` "&t="
+            requestLine `should not contain` "&p=enc:"
+
+            val salt = requestLine.split('&').find { it.startsWith("s=") }?.substringAfter('=')
+            val token = requestLine.split('&').find { it.startsWith("t=") }?.substringAfter('=')
+            val expectedToken = String(Hex.encodeHex(MessageDigest.getInstance("MD5")
+                    .digest("$PASSWORD$salt".toByteArray()), false))
+            token!! `should equal` expectedToken
+        }
+    }
+
+    @Test
+    fun `Should pass  hex encoded password in query params for api version 1_12_0`() {
+        val clientV11 = SubsonicAPIClient(mockWebServerRule.mockWebServer.url("/").toString(), USERNAME,
+                PASSWORD, SubsonicAPIVersions.V1_12_0, CLIENT_ID)
+        enqueueResponse("ping_ok.json")
+
+        clientV11.api.ping().execute()
+
+        with(mockWebServerRule.mockWebServer.takeRequest()) {
+            requestLine `should not contain` "&s="
+            requestLine `should not contain` "&t="
+            requestLine `should contain` "&p=enc:"
+            val passParam = requestLine.split('&').find { it.startsWith("p=enc:") }
+            val encodedPassword = String(Hex.encodeHex(PASSWORD.toByteArray(), false))
+            passParam `should equal` "p=enc:$encodedPassword"
+        }
     }
 
     @Test
     fun `Should parse ping ok response`() {
         enqueueResponse("ping_ok.json")
 
-        val response = api.getApi().ping().execute()
+        val response = client.api.ping().execute()
 
         assertResponseSuccessful(response)
         with(response.body()) {
@@ -52,14 +98,14 @@ class SubsonicAPITest {
 
     @Test
     fun `Should parse ping error response`() {
-        checkErrorCallParsed { api.getApi().ping().execute() }
+        checkErrorCallParsed { client.api.ping().execute() }
     }
 
     @Test
     fun `Should parse get license ok response`() {
         enqueueResponse("license_ok.json")
 
-        val response = api.getApi().getLicense().execute()
+        val response = client.api.getLicense().execute()
 
         assertResponseSuccessful(response)
         with(response.body()) {
@@ -70,7 +116,7 @@ class SubsonicAPITest {
 
     @Test
     fun `Should parse get license error response`() {
-        val response = checkErrorCallParsed { api.getApi().getLicense().execute() }
+        val response = checkErrorCallParsed { client.api.getLicense().execute() }
 
         response.license `should be` null
     }
@@ -79,7 +125,7 @@ class SubsonicAPITest {
     fun `Should parse get music folders ok response`() {
         enqueueResponse("get_music_folders_ok.json")
 
-        val response = api.getApi().getMusicFolders().execute()
+        val response = client.api.getMusicFolders().execute()
 
         assertResponseSuccessful(response)
         with(response.body()) {
@@ -90,7 +136,7 @@ class SubsonicAPITest {
 
     @Test
     fun `Should parse get music folders error response`() {
-        val response = checkErrorCallParsed { api.getApi().getMusicFolders().execute() }
+        val response = checkErrorCallParsed { client.api.getMusicFolders().execute() }
 
         response.musicFolders `should be` null
     }
@@ -100,7 +146,7 @@ class SubsonicAPITest {
         // TODO: check for shortcut parsing
         enqueueResponse("get_indexes_ok.json")
 
-        val response = api.getApi().getIndexes(null, null).execute()
+        val response = client.api.getIndexes(null, null).execute()
 
         assertResponseSuccessful(response)
         response.body().indexes `should not be` null
@@ -126,7 +172,7 @@ class SubsonicAPITest {
         enqueueResponse("get_indexes_ok.json")
         val musicFolderId = 9L
 
-        api.getApi().getIndexes(musicFolderId, null).execute()
+        client.api.getIndexes(musicFolderId, null).execute()
 
         with(mockWebServerRule.mockWebServer.takeRequest()) {
             requestLine `should contain` "musicFolderId=$musicFolderId"
@@ -138,7 +184,7 @@ class SubsonicAPITest {
         enqueueResponse("get_indexes_ok.json")
         val ifModifiedSince = System.currentTimeMillis()
 
-        api.getApi().getIndexes(null, ifModifiedSince).execute()
+        client.api.getIndexes(null, ifModifiedSince).execute()
 
         with(mockWebServerRule.mockWebServer.takeRequest()) {
             requestLine `should contain` "ifModifiedSince=$ifModifiedSince"
@@ -151,7 +197,7 @@ class SubsonicAPITest {
         val musicFolderId = 110L
         val ifModifiedSince = System.currentTimeMillis()
 
-        api.getApi().getIndexes(musicFolderId, ifModifiedSince).execute()
+        client.api.getIndexes(musicFolderId, ifModifiedSince).execute()
 
         with(mockWebServerRule.mockWebServer.takeRequest()) {
             requestLine `should contain` "musicFolderId=$musicFolderId"
@@ -161,14 +207,14 @@ class SubsonicAPITest {
 
     @Test
     fun `Should parse get indexes error response`() {
-        val response = checkErrorCallParsed { api.getApi().getIndexes(null, null).execute() }
+        val response = checkErrorCallParsed { client.api.getIndexes(null, null).execute() }
 
         response.indexes `should be` null
     }
 
     @Test
     fun `Should parse getMusicDirectory error response`() {
-        val response = checkErrorCallParsed { api.getApi().getMusicDirectory(1).execute() }
+        val response = checkErrorCallParsed { client.api.getMusicDirectory(1).execute() }
 
         response.musicDirectory `should be` null
     }
@@ -178,7 +224,7 @@ class SubsonicAPITest {
         enqueueResponse("get_music_directory_ok.json")
         val directoryId = 124L
 
-        api.getApi().getMusicDirectory(directoryId).execute()
+        client.api.getMusicDirectory(directoryId).execute()
 
         mockWebServerRule.mockWebServer.takeRequest().requestLine `should contain` "id=$directoryId"
     }
@@ -187,7 +233,7 @@ class SubsonicAPITest {
     fun `Should parse get music directory ok response`() {
         enqueueResponse("get_music_directory_ok.json")
 
-        val response = api.getApi().getMusicDirectory(1).execute()
+        val response = client.api.getMusicDirectory(1).execute()
 
         assertResponseSuccessful(response)
 

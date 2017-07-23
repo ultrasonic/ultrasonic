@@ -16,7 +16,9 @@ dependencies {
 
     testCompile testing.junit
     testCompile testing.kotlinJunit
+    testCompile testing.kotlinReflect
     testCompile testing.mockitoKotlin
     testCompile testing.kluent
     testCompile testing.mockWebServer
+    testCompile testing.apacheCodecs
 }

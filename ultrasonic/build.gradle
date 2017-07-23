@@ -40,8 +40,10 @@ dependencies {
     }
     testCompile(testing.mockitoKotlin) {
         exclude module: "kotlin-stdlib"
+        exclude module: "kotlin-reflect"
     }
     testCompile(testing.kluent) {
         exclude module: "kotlin-stdlib"
+        exclude module: "kotlin-reflect"
     }
 }

@@ -12,11 +12,12 @@ ext.versions = [
 
         retrofit             : "2.1.0",
         jackson              : "2.8.7",
+        okhttp               : "3.6.0",
 
         junit                : "4.12",
-        mockitoKotlin        : "1.3.0",
-        kluent               : "1.15",
-        okhttp               : "3.6.0",
+        mockitoKotlin        : "1.5.0",
+        kluent               : "1.26",
+        apacheCodecs         : "1.10",
 ]
 
 ext.gradlePlugins = [
@@ -30,7 +31,7 @@ ext.androidSupport = [
 ]
 
 ext.other = [
-        kotlinStdlib       : "org.jetbrains.kotlin:kotlin-stdlib-common:$versions.kotlin",
+        kotlinStdlib       : "org.jetbrains.kotlin:kotlin-stdlib:$versions.kotlin",
         retrofit           : "com.squareup.retrofit2:retrofit:$versions.retrofit",
         gsonConverter      : "com.squareup.retrofit2:converter-gson:$versions.retrofit",
         jacksonConverter   : "com.squareup.retrofit2:converter-jackson:$versions.retrofit",
@@ -41,7 +42,9 @@ ext.other = [
 ext.testing = [
         junit         : "junit:junit:$versions.junit",
         kotlinJunit   : "org.jetbrains.kotlin:kotlin-test-junit:$versions.kotlin",
+        kotlinReflect      : "org.jetbrains.kotlin:kotlin-reflect:$versions.kotlin",
         mockitoKotlin : "com.nhaarman:mockito-kotlin:$versions.mockitoKotlin",
         kluent        : "org.amshove.kluent:kluent:$versions.kluent",
-        mockWebServer : "com.squareup.okhttp3:mockwebserver:$versions.okhttp"
+        mockWebServer : "com.squareup.okhttp3:mockwebserver:$versions.okhttp",
+        apacheCodecs  : "commons-codec:commons-codec:$versions.apacheCodecs",
 ]
