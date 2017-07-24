@@ -57,7 +57,7 @@ class SubsonicAPIClient(baseUrl: String,
             .registerModule(KotlinModule())
 
     private val retrofit = Retrofit.Builder()
-            .baseUrl(baseUrl)
+            .baseUrl("$baseUrl/rest/")
             .client(okHttpClient)
             .addConverterFactory(JacksonConverterFactory.create(jacksonMapper))
             .build()
