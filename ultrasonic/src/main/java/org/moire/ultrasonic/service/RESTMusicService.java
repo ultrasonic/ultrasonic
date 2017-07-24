@@ -23,10 +23,38 @@ import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
+import android.support.annotation.Nullable;
 import android.util.Log;
 
+import org.apache.http.Header;
+import org.apache.http.HttpEntity;
+import org.apache.http.HttpHost;
+import org.apache.http.HttpResponse;
+import org.apache.http.NameValuePair;
+import org.apache.http.auth.AuthScope;
+import org.apache.http.auth.UsernamePasswordCredentials;
+import org.apache.http.client.entity.UrlEncodedFormEntity;
+import org.apache.http.client.methods.HttpPost;
+import org.apache.http.client.methods.HttpUriRequest;
+import org.apache.http.conn.params.ConnManagerParams;
+import org.apache.http.conn.params.ConnPerRouteBean;
+import org.apache.http.conn.scheme.PlainSocketFactory;
+import org.apache.http.conn.scheme.Scheme;
+import org.apache.http.conn.scheme.SchemeRegistry;
+import org.apache.http.conn.scheme.SocketFactory;
+import org.apache.http.impl.client.DefaultHttpClient;
+import org.apache.http.impl.conn.tsccm.ThreadSafeClientConnManager;
+import org.apache.http.message.BasicHeader;
+import org.apache.http.message.BasicNameValuePair;
+import org.apache.http.params.BasicHttpParams;
+import org.apache.http.params.HttpConnectionParams;
+import org.apache.http.params.HttpParams;
+import org.apache.http.protocol.BasicHttpContext;
+import org.apache.http.protocol.ExecutionContext;
+import org.apache.http.protocol.HttpContext;
 import org.moire.ultrasonic.R;
-import org.moire.ultrasonic.Test.service.GetPodcastEpisodesTestReaderProvider;
+import org.moire.ultrasonic.api.subsonic.SubsonicAPIClient;
+import org.moire.ultrasonic.api.subsonic.response.SubsonicResponse;
 import org.moire.ultrasonic.domain.Bookmark;
 import org.moire.ultrasonic.domain.ChatMessage;
 import org.moire.ultrasonic.domain.Genre;
@@ -36,7 +64,6 @@ import org.moire.ultrasonic.domain.Lyrics;
 import org.moire.ultrasonic.domain.MusicDirectory;
 import org.moire.ultrasonic.domain.MusicFolder;
 import org.moire.ultrasonic.domain.Playlist;
-import org.moire.ultrasonic.domain.PodcastEpisode;
 import org.moire.ultrasonic.domain.PodcastsChannel;
 import org.moire.ultrasonic.domain.SearchCriteria;
 import org.moire.ultrasonic.domain.SearchResult;
@@ -71,35 +98,7 @@ import org.moire.ultrasonic.util.CancellableTask;
 import org.moire.ultrasonic.util.Constants;
 import org.moire.ultrasonic.util.FileUtil;
 import org.moire.ultrasonic.util.ProgressListener;
-import org.moire.ultrasonic.util.StreamProxy;
 import org.moire.ultrasonic.util.Util;
-
-import org.apache.http.Header;
-import org.apache.http.HttpEntity;
-import org.apache.http.HttpHost;
-import org.apache.http.HttpResponse;
-import org.apache.http.NameValuePair;
-import org.apache.http.auth.AuthScope;
-import org.apache.http.auth.UsernamePasswordCredentials;
-import org.apache.http.client.entity.UrlEncodedFormEntity;
-import org.apache.http.client.methods.HttpPost;
-import org.apache.http.client.methods.HttpUriRequest;
-import org.apache.http.conn.params.ConnManagerParams;
-import org.apache.http.conn.params.ConnPerRouteBean;
-import org.apache.http.conn.scheme.PlainSocketFactory;
-import org.apache.http.conn.scheme.Scheme;
-import org.apache.http.conn.scheme.SchemeRegistry;
-import org.apache.http.conn.scheme.SocketFactory;
-import org.apache.http.impl.client.DefaultHttpClient;
-import org.apache.http.impl.conn.tsccm.ThreadSafeClientConnManager;
-import org.apache.http.message.BasicHeader;
-import org.apache.http.message.BasicNameValuePair;
-import org.apache.http.params.BasicHttpParams;
-import org.apache.http.params.HttpConnectionParams;
-import org.apache.http.params.HttpParams;
-import org.apache.http.protocol.BasicHttpContext;
-import org.apache.http.protocol.ExecutionContext;
-import org.apache.http.protocol.HttpContext;
 
 import java.io.BufferedWriter;
 import java.io.File;
@@ -110,8 +109,6 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.io.Reader;
-import java.io.StringReader;
-import java.lang.reflect.Array;
 import java.net.URLEncoder;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -119,8 +116,9 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.Objects;
 import java.util.concurrent.atomic.AtomicReference;
+
+import retrofit2.Response;
 
 import static java.util.Arrays.asList;
 
@@ -155,11 +153,12 @@ public class RESTMusicService implements MusicService
 	private String redirectFrom;
 	private String redirectTo;
 	private final ThreadSafeClientConnManager connManager;
+    private SubsonicAPIClient subsonicAPIClient;
 
-	public RESTMusicService()
-	{
+    public RESTMusicService(SubsonicAPIClient subsonicAPIClient) {
+        this.subsonicAPIClient = subsonicAPIClient;
 
-		// Create and initialize default HTTP parameters
+        // Create and initialize default HTTP parameters
 		HttpParams params = new BasicHttpParams();
 		ConnManagerParams.setMaxTotalConnections(params, 20);
 		ConnManagerParams.setMaxConnectionsPerRoute(params, new ConnPerRouteBean(20));
@@ -195,19 +194,16 @@ public class RESTMusicService implements MusicService
 		}
 	}
 
-	@Override
-	public void ping(Context context, ProgressListener progressListener) throws Exception
-	{
-		Reader reader = getReader(context, progressListener, "ping", null);
-		try
-		{
-			new ErrorParser(context).parse(reader);
-		}
-		finally
-		{
-			Util.close(reader);
-		}
-	}
+    @Override
+    public void ping(Context context, ProgressListener progressListener) throws Exception {
+        updateProgressListener(progressListener);
+
+        final Response<SubsonicResponse> response = subsonicAPIClient.getApi().ping().execute();
+        if (!response.isSuccessful() ||
+                response.body().getStatus() == SubsonicResponse.Status.ERROR) {
+            throw new IOException("Ping request failed");
+        }
+    }
 
 	@Override
 	public boolean isLicenseValid(Context context, ProgressListener progressListener) throws Exception
@@ -1788,4 +1784,9 @@ public class RESTMusicService implements MusicService
 		}
 	}
 
+    private void updateProgressListener(@Nullable final ProgressListener progressListener) {
+        if (progressListener != null) {
+            progressListener.updateProgress(R.string.service_connecting);
+        }
+    }
 }

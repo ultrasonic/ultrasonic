@@ -21,6 +21,10 @@ android {
     sourceSets {
         test.java.srcDirs += 'src/test/kotlin'
     }
+
+    packagingOptions {
+        exclude 'META-INF/LICENSE'
+    }
 }
 
 dependencies {
