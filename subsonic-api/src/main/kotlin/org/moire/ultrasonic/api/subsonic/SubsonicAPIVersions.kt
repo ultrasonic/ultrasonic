@@ -25,9 +25,11 @@ enum class SubsonicAPIVersions(val subsonicVersions: String, val restApiVersion:
     V1_11_0("5.1", "1.11.0"),
     V1_12_0("5.2", "1.12.0"),
     V1_13_0("5.3", "1.13.0"),
-    V1_14_0("6.0", "1.14.0");
+    V1_14_0("6.0", "1.14.0"),
+    V1_15_0("6.1", "1.15.0");
 
     companion object {
+        @JvmStatic
         fun fromApiVersion(apiVersion: String): SubsonicAPIVersions {
             when (apiVersion) {
                 "1.1.0" -> return V1_1_0
@@ -45,6 +47,7 @@ enum class SubsonicAPIVersions(val subsonicVersions: String, val restApiVersion:
                 "1.12.0" -> return V1_12_0
                 "1.13.0" -> return V1_13_0
                 "1.14.0" -> return V1_14_0
+                "1.15.0" -> return V1_15_0
             }
             throw IllegalArgumentException("Unknown api version $apiVersion")
         }
