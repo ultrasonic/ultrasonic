@@ -4,6 +4,7 @@ import okhttp3.mockwebserver.MockResponse
 import okio.Okio
 import org.amshove.kluent.`should be`
 import org.amshove.kluent.`should contain`
+import org.amshove.kluent.`should equal to`
 import org.amshove.kluent.`should equal`
 import org.amshove.kluent.`should not be`
 import org.amshove.kluent.`should not contain`
@@ -110,7 +111,10 @@ class SubsonicAPIClientTest {
         assertResponseSuccessful(response)
         with(response.body()) {
             assertBaseResponseOk()
-            license `should equal` License(true, parseDate("2016-11-23T20:17:15.206Z"))
+            license `should equal` License(valid = true,
+                    trialExpires = parseDate("2016-11-23T20:17:15.206Z"),
+                    email = "someone@example.net",
+                    licenseExpires = parseDate("8994-08-17T07:12:55.807Z"))
         }
     }
 
@@ -118,7 +122,11 @@ class SubsonicAPIClientTest {
     fun `Should parse get license error response`() {
         val response = checkErrorCallParsed { client.api.getLicense().execute() }
 
-        response.license `should be` null
+        response.license `should not be` null
+        with(response.license) {
+            email `should equal to` ""
+            valid `should equal to` false
+        }
     }
 
     @Test
