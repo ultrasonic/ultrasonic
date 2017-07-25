@@ -23,6 +23,7 @@ import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
+import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.util.Log;
 
@@ -54,6 +55,7 @@ import org.apache.http.protocol.ExecutionContext;
 import org.apache.http.protocol.HttpContext;
 import org.moire.ultrasonic.R;
 import org.moire.ultrasonic.api.subsonic.SubsonicAPIClient;
+import org.moire.ultrasonic.api.subsonic.response.LicenseResponse;
 import org.moire.ultrasonic.api.subsonic.response.SubsonicResponse;
 import org.moire.ultrasonic.domain.Bookmark;
 import org.moire.ultrasonic.domain.ChatMessage;
@@ -67,7 +69,6 @@ import org.moire.ultrasonic.domain.Playlist;
 import org.moire.ultrasonic.domain.PodcastsChannel;
 import org.moire.ultrasonic.domain.SearchCriteria;
 import org.moire.ultrasonic.domain.SearchResult;
-import org.moire.ultrasonic.domain.ServerInfo;
 import org.moire.ultrasonic.domain.Share;
 import org.moire.ultrasonic.domain.UserInfo;
 import org.moire.ultrasonic.domain.Version;
@@ -78,7 +79,6 @@ import org.moire.ultrasonic.service.parser.ErrorParser;
 import org.moire.ultrasonic.service.parser.GenreParser;
 import org.moire.ultrasonic.service.parser.IndexesParser;
 import org.moire.ultrasonic.service.parser.JukeboxStatusParser;
-import org.moire.ultrasonic.service.parser.LicenseParser;
 import org.moire.ultrasonic.service.parser.LyricsParser;
 import org.moire.ultrasonic.service.parser.MusicDirectoryParser;
 import org.moire.ultrasonic.service.parser.MusicFoldersParser;
@@ -199,26 +199,19 @@ public class RESTMusicService implements MusicService
         updateProgressListener(progressListener);
 
         final Response<SubsonicResponse> response = subsonicAPIClient.getApi().ping().execute();
-        if (!response.isSuccessful() ||
-                response.body().getStatus() == SubsonicResponse.Status.ERROR) {
-            throw new IOException("Ping request failed");
-        }
+        checkResponseSuccessful(response);
     }
 
-	@Override
-	public boolean isLicenseValid(Context context, ProgressListener progressListener) throws Exception
-	{
-		Reader reader = getReader(context, progressListener, "getLicense", null);
-		try
-		{
-			ServerInfo serverInfo = new LicenseParser(context).parse(reader);
-			return serverInfo.isLicenseValid();
-		}
-		finally
-		{
-			Util.close(reader);
-		}
-	}
+    @Override
+    public boolean isLicenseValid(Context context, ProgressListener progressListener)
+            throws Exception {
+        updateProgressListener(progressListener);
+
+        final Response<LicenseResponse> response = subsonicAPIClient.getApi().getLicense().execute();
+
+        checkResponseSuccessful(response);
+        return response.body().getLicense().getValid();
+    }
 
 	@Override
 	public List<MusicFolder> getMusicFolders(boolean refresh, Context context, ProgressListener progressListener) throws Exception
@@ -1787,6 +1780,21 @@ public class RESTMusicService implements MusicService
     private void updateProgressListener(@Nullable final ProgressListener progressListener) {
         if (progressListener != null) {
             progressListener.updateProgress(R.string.service_connecting);
+        }
+    }
+
+    private void checkResponseSuccessful(@NonNull final Response<? extends SubsonicResponse> response)
+            throws IOException {
+        if (response.isSuccessful() &&
+                response.body().getStatus() == SubsonicResponse.Status.OK) {
+            return;
+        }
+
+        if (response.body().getStatus() == SubsonicResponse.Status.ERROR &&
+                response.body().getError() != null) {
+            throw new IOException("Server error: " + response.body().getError().getCode());
+        } else {
+            throw new IOException("Failed to perform request: " + response.code());
         }
     }
 }
