@@ -56,7 +56,9 @@ import org.apache.http.protocol.HttpContext;
 import org.moire.ultrasonic.R;
 import org.moire.ultrasonic.api.subsonic.SubsonicAPIClient;
 import org.moire.ultrasonic.api.subsonic.response.LicenseResponse;
+import org.moire.ultrasonic.api.subsonic.response.MusicFoldersResponse;
 import org.moire.ultrasonic.api.subsonic.response.SubsonicResponse;
+import org.moire.ultrasonic.data.APIConverter;
 import org.moire.ultrasonic.domain.Bookmark;
 import org.moire.ultrasonic.domain.ChatMessage;
 import org.moire.ultrasonic.domain.Genre;
@@ -81,7 +83,6 @@ import org.moire.ultrasonic.service.parser.IndexesParser;
 import org.moire.ultrasonic.service.parser.JukeboxStatusParser;
 import org.moire.ultrasonic.service.parser.LyricsParser;
 import org.moire.ultrasonic.service.parser.MusicDirectoryParser;
-import org.moire.ultrasonic.service.parser.MusicFoldersParser;
 import org.moire.ultrasonic.service.parser.PlaylistParser;
 import org.moire.ultrasonic.service.parser.PlaylistsParser;
 import org.moire.ultrasonic.service.parser.PodcastEpisodeParser;
@@ -213,27 +214,24 @@ public class RESTMusicService implements MusicService
         return response.body().getLicense().getValid();
     }
 
-	@Override
-	public List<MusicFolder> getMusicFolders(boolean refresh, Context context, ProgressListener progressListener) throws Exception
-	{
-		List<MusicFolder> cachedMusicFolders = readCachedMusicFolders(context);
-		if (cachedMusicFolders != null && !refresh)
-		{
-			return cachedMusicFolders;
-		}
+    @Override
+    public List<MusicFolder> getMusicFolders(boolean refresh,
+                                             Context context,
+                                             ProgressListener progressListener) throws Exception {
+        List<MusicFolder> cachedMusicFolders = readCachedMusicFolders(context);
+        if (cachedMusicFolders != null && !refresh) {
+            return cachedMusicFolders;
+        }
 
-		Reader reader = getReader(context, progressListener, "getMusicFolders", null);
-		try
-		{
-			List<MusicFolder> musicFolders = new MusicFoldersParser(context).parse(reader, progressListener);
-			writeCachedMusicFolders(context, musicFolders);
-			return musicFolders;
-		}
-		finally
-		{
-			Util.close(reader);
-		}
-	}
+        updateProgressListener(progressListener);
+        Response<MusicFoldersResponse> response = subsonicAPIClient.getApi().getMusicFolders().execute();
+        checkResponseSuccessful(response);
+
+        List<MusicFolder> musicFolders = APIConverter
+                .convertMusicFolderList(response.body().getMusicFolders());
+        writeCachedMusicFolders(context, musicFolders);
+        return musicFolders;
+    }
 
 	@Override
 	public Indexes getIndexes(String musicFolderId, boolean refresh, Context context, ProgressListener progressListener) throws Exception
@@ -337,17 +335,15 @@ public class RESTMusicService implements MusicService
 		return String.format("indexes-%d.ser", Math.abs(s.hashCode()));
 	}
 
-	private static ArrayList<MusicFolder> readCachedMusicFolders(Context context)
-	{
-		String filename = getCachedMusicFoldersFilename(context);
-		return FileUtil.deserialize(context, filename);
-	}
+    private static List<MusicFolder> readCachedMusicFolders(Context context) {
+        String filename = getCachedMusicFoldersFilename(context);
+        return FileUtil.deserialize(context, filename);
+    }
 
-	private static void writeCachedMusicFolders(Context context, List<MusicFolder> musicFolders)
-	{
-		String filename = getCachedMusicFoldersFilename(context);
-		FileUtil.serialize(context, new ArrayList<MusicFolder>(musicFolders), filename);
-	}
+    private static void writeCachedMusicFolders(Context context, List<MusicFolder> musicFolders) {
+        String filename = getCachedMusicFoldersFilename(context);
+        FileUtil.serialize(context, new ArrayList<>(musicFolders), filename);
+    }
 
 	private static String getCachedMusicFoldersFilename(Context context)
 	{
