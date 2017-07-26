@@ -25,6 +25,7 @@ import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.annotation.StringRes;
 import android.util.Log;
 
 import org.apache.http.Header;
@@ -197,7 +198,7 @@ public class RESTMusicService implements MusicService
 
     @Override
     public void ping(Context context, ProgressListener progressListener) throws Exception {
-        updateProgressListener(progressListener);
+        updateProgressListener(progressListener, R.string.service_connecting);
 
         final Response<SubsonicResponse> response = subsonicAPIClient.getApi().ping().execute();
         checkResponseSuccessful(response);
@@ -206,7 +207,7 @@ public class RESTMusicService implements MusicService
     @Override
     public boolean isLicenseValid(Context context, ProgressListener progressListener)
             throws Exception {
-        updateProgressListener(progressListener);
+        updateProgressListener(progressListener, R.string.service_connecting);
 
         final Response<LicenseResponse> response = subsonicAPIClient.getApi().getLicense().execute();
 
@@ -223,7 +224,7 @@ public class RESTMusicService implements MusicService
             return cachedMusicFolders;
         }
 
-        updateProgressListener(progressListener);
+        updateProgressListener(progressListener, R.string.parser_reading);
         Response<MusicFoldersResponse> response = subsonicAPIClient.getApi().getMusicFolders().execute();
         checkResponseSuccessful(response);
 
@@ -1773,9 +1774,10 @@ public class RESTMusicService implements MusicService
 		}
 	}
 
-    private void updateProgressListener(@Nullable final ProgressListener progressListener) {
+    private void updateProgressListener(@Nullable final ProgressListener progressListener,
+                                        @StringRes final int messageId) {
         if (progressListener != null) {
-            progressListener.updateProgress(R.string.service_connecting);
+            progressListener.updateProgress(messageId);
         }
     }
 
