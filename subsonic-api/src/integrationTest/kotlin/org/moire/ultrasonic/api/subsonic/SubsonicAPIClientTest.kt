@@ -146,7 +146,7 @@ class SubsonicAPIClientTest {
     fun `Should parse get music folders error response`() {
         val response = checkErrorCallParsed { client.api.getMusicFolders().execute() }
 
-        response.musicFolders `should be` null
+        response.musicFolders `should equal` emptyList()
     }
 
     @Test
