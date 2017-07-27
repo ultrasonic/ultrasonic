@@ -23,6 +23,7 @@ import android.graphics.Bitmap;
 import android.media.MediaMetadataRetriever;
 import android.util.Log;
 
+import org.moire.ultrasonic.api.subsonic.SubsonicAPIClient;
 import org.moire.ultrasonic.domain.Artist;
 import org.moire.ultrasonic.domain.Genre;
 import org.moire.ultrasonic.domain.Indexes;
@@ -66,7 +67,11 @@ public class OfflineMusicService extends RESTMusicService
 	private static final String TAG = OfflineMusicService.class.getSimpleName();
 	private static final Pattern COMPILE = Pattern.compile(" ");
 
-	@Override
+    public OfflineMusicService(SubsonicAPIClient subsonicAPIClient) {
+        super(subsonicAPIClient);
+    }
+
+    @Override
 	public boolean isLicenseValid(Context context, ProgressListener progressListener) throws Exception
 	{
 		return true;

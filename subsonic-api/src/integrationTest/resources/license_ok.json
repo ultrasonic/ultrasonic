@@ -4,6 +4,8 @@
     "version" : "1.13.0",
     "license" : {
       "valid" : true,
+      "email" : "someone@example.net",
+      "licenseExpires" : "8994-08-17T07:12:55.807Z",
       "trialExpires" : "2016-11-23T20:17:15.206Z"
     }
   }

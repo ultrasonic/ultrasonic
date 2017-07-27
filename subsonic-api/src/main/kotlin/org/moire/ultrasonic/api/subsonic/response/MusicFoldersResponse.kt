@@ -14,7 +14,7 @@ class MusicFoldersResponse(status: Status,
                            version: SubsonicAPIVersions,
                            error: SubsonicError?,
                            @JsonDeserialize(using = MusicFoldersDeserializer::class)
-                           val musicFolders: List<MusicFolder>?):
+                           val musicFolders: List<MusicFolder> = emptyList()):
         SubsonicResponse(status, version, error) {
     companion object {
         class MusicFoldersDeserializer(): JsonDeserializer<List<MusicFolder>>() {

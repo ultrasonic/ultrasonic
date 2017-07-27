@@ -23,56 +23,10 @@ import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
+import android.support.annotation.StringRes;
 import android.util.Log;
-
-import org.moire.ultrasonic.R;
-import org.moire.ultrasonic.Test.service.GetPodcastEpisodesTestReaderProvider;
-import org.moire.ultrasonic.domain.Bookmark;
-import org.moire.ultrasonic.domain.ChatMessage;
-import org.moire.ultrasonic.domain.Genre;
-import org.moire.ultrasonic.domain.Indexes;
-import org.moire.ultrasonic.domain.JukeboxStatus;
-import org.moire.ultrasonic.domain.Lyrics;
-import org.moire.ultrasonic.domain.MusicDirectory;
-import org.moire.ultrasonic.domain.MusicFolder;
-import org.moire.ultrasonic.domain.Playlist;
-import org.moire.ultrasonic.domain.PodcastEpisode;
-import org.moire.ultrasonic.domain.PodcastsChannel;
-import org.moire.ultrasonic.domain.SearchCriteria;
-import org.moire.ultrasonic.domain.SearchResult;
-import org.moire.ultrasonic.domain.ServerInfo;
-import org.moire.ultrasonic.domain.Share;
-import org.moire.ultrasonic.domain.UserInfo;
-import org.moire.ultrasonic.domain.Version;
-import org.moire.ultrasonic.service.parser.AlbumListParser;
-import org.moire.ultrasonic.service.parser.BookmarkParser;
-import org.moire.ultrasonic.service.parser.ChatMessageParser;
-import org.moire.ultrasonic.service.parser.ErrorParser;
-import org.moire.ultrasonic.service.parser.GenreParser;
-import org.moire.ultrasonic.service.parser.IndexesParser;
-import org.moire.ultrasonic.service.parser.JukeboxStatusParser;
-import org.moire.ultrasonic.service.parser.LicenseParser;
-import org.moire.ultrasonic.service.parser.LyricsParser;
-import org.moire.ultrasonic.service.parser.MusicDirectoryParser;
-import org.moire.ultrasonic.service.parser.MusicFoldersParser;
-import org.moire.ultrasonic.service.parser.PlaylistParser;
-import org.moire.ultrasonic.service.parser.PlaylistsParser;
-import org.moire.ultrasonic.service.parser.PodcastEpisodeParser;
-import org.moire.ultrasonic.service.parser.PodcastsChannelsParser;
-import org.moire.ultrasonic.service.parser.RandomSongsParser;
-import org.moire.ultrasonic.service.parser.SearchResult2Parser;
-import org.moire.ultrasonic.service.parser.SearchResultParser;
-import org.moire.ultrasonic.service.parser.ShareParser;
-import org.moire.ultrasonic.service.parser.UserInfoParser;
-import org.moire.ultrasonic.service.parser.VersionParser;
-import org.moire.ultrasonic.service.ssl.SSLSocketFactory;
-import org.moire.ultrasonic.service.ssl.TrustSelfSignedStrategy;
-import org.moire.ultrasonic.util.CancellableTask;
-import org.moire.ultrasonic.util.Constants;
-import org.moire.ultrasonic.util.FileUtil;
-import org.moire.ultrasonic.util.ProgressListener;
-import org.moire.ultrasonic.util.StreamProxy;
-import org.moire.ultrasonic.util.Util;
 
 import org.apache.http.Header;
 import org.apache.http.HttpEntity;
@@ -100,6 +54,53 @@ import org.apache.http.params.HttpParams;
 import org.apache.http.protocol.BasicHttpContext;
 import org.apache.http.protocol.ExecutionContext;
 import org.apache.http.protocol.HttpContext;
+import org.moire.ultrasonic.R;
+import org.moire.ultrasonic.api.subsonic.SubsonicAPIClient;
+import org.moire.ultrasonic.api.subsonic.response.LicenseResponse;
+import org.moire.ultrasonic.api.subsonic.response.MusicFoldersResponse;
+import org.moire.ultrasonic.api.subsonic.response.SubsonicResponse;
+import org.moire.ultrasonic.data.APIConverter;
+import org.moire.ultrasonic.domain.Bookmark;
+import org.moire.ultrasonic.domain.ChatMessage;
+import org.moire.ultrasonic.domain.Genre;
+import org.moire.ultrasonic.domain.Indexes;
+import org.moire.ultrasonic.domain.JukeboxStatus;
+import org.moire.ultrasonic.domain.Lyrics;
+import org.moire.ultrasonic.domain.MusicDirectory;
+import org.moire.ultrasonic.domain.MusicFolder;
+import org.moire.ultrasonic.domain.Playlist;
+import org.moire.ultrasonic.domain.PodcastsChannel;
+import org.moire.ultrasonic.domain.SearchCriteria;
+import org.moire.ultrasonic.domain.SearchResult;
+import org.moire.ultrasonic.domain.Share;
+import org.moire.ultrasonic.domain.UserInfo;
+import org.moire.ultrasonic.domain.Version;
+import org.moire.ultrasonic.service.parser.AlbumListParser;
+import org.moire.ultrasonic.service.parser.BookmarkParser;
+import org.moire.ultrasonic.service.parser.ChatMessageParser;
+import org.moire.ultrasonic.service.parser.ErrorParser;
+import org.moire.ultrasonic.service.parser.GenreParser;
+import org.moire.ultrasonic.service.parser.IndexesParser;
+import org.moire.ultrasonic.service.parser.JukeboxStatusParser;
+import org.moire.ultrasonic.service.parser.LyricsParser;
+import org.moire.ultrasonic.service.parser.MusicDirectoryParser;
+import org.moire.ultrasonic.service.parser.PlaylistParser;
+import org.moire.ultrasonic.service.parser.PlaylistsParser;
+import org.moire.ultrasonic.service.parser.PodcastEpisodeParser;
+import org.moire.ultrasonic.service.parser.PodcastsChannelsParser;
+import org.moire.ultrasonic.service.parser.RandomSongsParser;
+import org.moire.ultrasonic.service.parser.SearchResult2Parser;
+import org.moire.ultrasonic.service.parser.SearchResultParser;
+import org.moire.ultrasonic.service.parser.ShareParser;
+import org.moire.ultrasonic.service.parser.UserInfoParser;
+import org.moire.ultrasonic.service.parser.VersionParser;
+import org.moire.ultrasonic.service.ssl.SSLSocketFactory;
+import org.moire.ultrasonic.service.ssl.TrustSelfSignedStrategy;
+import org.moire.ultrasonic.util.CancellableTask;
+import org.moire.ultrasonic.util.Constants;
+import org.moire.ultrasonic.util.FileUtil;
+import org.moire.ultrasonic.util.ProgressListener;
+import org.moire.ultrasonic.util.Util;
 
 import java.io.BufferedWriter;
 import java.io.File;
@@ -110,8 +111,6 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.io.Reader;
-import java.io.StringReader;
-import java.lang.reflect.Array;
 import java.net.URLEncoder;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -119,8 +118,9 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.Objects;
 import java.util.concurrent.atomic.AtomicReference;
+
+import retrofit2.Response;
 
 import static java.util.Arrays.asList;
 
@@ -155,11 +155,12 @@ public class RESTMusicService implements MusicService
 	private String redirectFrom;
 	private String redirectTo;
 	private final ThreadSafeClientConnManager connManager;
+    private SubsonicAPIClient subsonicAPIClient;
 
-	public RESTMusicService()
-	{
+    public RESTMusicService(SubsonicAPIClient subsonicAPIClient) {
+        this.subsonicAPIClient = subsonicAPIClient;
 
-		// Create and initialize default HTTP parameters
+        // Create and initialize default HTTP parameters
 		HttpParams params = new BasicHttpParams();
 		ConnManagerParams.setMaxTotalConnections(params, 20);
 		ConnManagerParams.setMaxConnectionsPerRoute(params, new ConnPerRouteBean(20));
@@ -195,56 +196,43 @@ public class RESTMusicService implements MusicService
 		}
 	}
 
-	@Override
-	public void ping(Context context, ProgressListener progressListener) throws Exception
-	{
-		Reader reader = getReader(context, progressListener, "ping", null);
-		try
-		{
-			new ErrorParser(context).parse(reader);
-		}
-		finally
-		{
-			Util.close(reader);
-		}
-	}
+    @Override
+    public void ping(Context context, ProgressListener progressListener) throws Exception {
+        updateProgressListener(progressListener, R.string.service_connecting);
 
-	@Override
-	public boolean isLicenseValid(Context context, ProgressListener progressListener) throws Exception
-	{
-		Reader reader = getReader(context, progressListener, "getLicense", null);
-		try
-		{
-			ServerInfo serverInfo = new LicenseParser(context).parse(reader);
-			return serverInfo.isLicenseValid();
-		}
-		finally
-		{
-			Util.close(reader);
-		}
-	}
+        final Response<SubsonicResponse> response = subsonicAPIClient.getApi().ping().execute();
+        checkResponseSuccessful(response);
+    }
 
-	@Override
-	public List<MusicFolder> getMusicFolders(boolean refresh, Context context, ProgressListener progressListener) throws Exception
-	{
-		List<MusicFolder> cachedMusicFolders = readCachedMusicFolders(context);
-		if (cachedMusicFolders != null && !refresh)
-		{
-			return cachedMusicFolders;
-		}
+    @Override
+    public boolean isLicenseValid(Context context, ProgressListener progressListener)
+            throws Exception {
+        updateProgressListener(progressListener, R.string.service_connecting);
 
-		Reader reader = getReader(context, progressListener, "getMusicFolders", null);
-		try
-		{
-			List<MusicFolder> musicFolders = new MusicFoldersParser(context).parse(reader, progressListener);
-			writeCachedMusicFolders(context, musicFolders);
-			return musicFolders;
-		}
-		finally
-		{
-			Util.close(reader);
-		}
-	}
+        final Response<LicenseResponse> response = subsonicAPIClient.getApi().getLicense().execute();
+
+        checkResponseSuccessful(response);
+        return response.body().getLicense().getValid();
+    }
+
+    @Override
+    public List<MusicFolder> getMusicFolders(boolean refresh,
+                                             Context context,
+                                             ProgressListener progressListener) throws Exception {
+        List<MusicFolder> cachedMusicFolders = readCachedMusicFolders(context);
+        if (cachedMusicFolders != null && !refresh) {
+            return cachedMusicFolders;
+        }
+
+        updateProgressListener(progressListener, R.string.parser_reading);
+        Response<MusicFoldersResponse> response = subsonicAPIClient.getApi().getMusicFolders().execute();
+        checkResponseSuccessful(response);
+
+        List<MusicFolder> musicFolders = APIConverter
+                .convertMusicFolderList(response.body().getMusicFolders());
+        writeCachedMusicFolders(context, musicFolders);
+        return musicFolders;
+    }
 
 	@Override
 	public Indexes getIndexes(String musicFolderId, boolean refresh, Context context, ProgressListener progressListener) throws Exception
@@ -348,17 +336,15 @@ public class RESTMusicService implements MusicService
 		return String.format("indexes-%d.ser", Math.abs(s.hashCode()));
 	}
 
-	private static ArrayList<MusicFolder> readCachedMusicFolders(Context context)
-	{
-		String filename = getCachedMusicFoldersFilename(context);
-		return FileUtil.deserialize(context, filename);
-	}
+    private static List<MusicFolder> readCachedMusicFolders(Context context) {
+        String filename = getCachedMusicFoldersFilename(context);
+        return FileUtil.deserialize(context, filename);
+    }
 
-	private static void writeCachedMusicFolders(Context context, List<MusicFolder> musicFolders)
-	{
-		String filename = getCachedMusicFoldersFilename(context);
-		FileUtil.serialize(context, new ArrayList<MusicFolder>(musicFolders), filename);
-	}
+    private static void writeCachedMusicFolders(Context context, List<MusicFolder> musicFolders) {
+        String filename = getCachedMusicFoldersFilename(context);
+        FileUtil.serialize(context, new ArrayList<>(musicFolders), filename);
+    }
 
 	private static String getCachedMusicFoldersFilename(Context context)
 	{
@@ -1788,4 +1774,25 @@ public class RESTMusicService implements MusicService
 		}
 	}
 
+    private void updateProgressListener(@Nullable final ProgressListener progressListener,
+                                        @StringRes final int messageId) {
+        if (progressListener != null) {
+            progressListener.updateProgress(messageId);
+        }
+    }
+
+    private void checkResponseSuccessful(@NonNull final Response<? extends SubsonicResponse> response)
+            throws IOException {
+        if (response.isSuccessful() &&
+                response.body().getStatus() == SubsonicResponse.Status.OK) {
+            return;
+        }
+
+        if (response.body().getStatus() == SubsonicResponse.Status.ERROR &&
+                response.body().getError() != null) {
+            throw new IOException("Server error: " + response.body().getError().getCode());
+        } else {
+            throw new IOException("Failed to perform request: " + response.code());
+        }
+    }
 }
