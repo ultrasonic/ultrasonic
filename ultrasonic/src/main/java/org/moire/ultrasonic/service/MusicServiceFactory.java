@@ -20,7 +20,9 @@ package org.moire.ultrasonic.service;
 
 import android.content.Context;
 import android.content.SharedPreferences;
+import android.util.Log;
 
+import org.moire.ultrasonic.BuildConfig;
 import org.moire.ultrasonic.api.subsonic.SubsonicAPIClient;
 import org.moire.ultrasonic.api.subsonic.SubsonicAPIVersions;
 import org.moire.ultrasonic.util.Constants;
@@ -31,11 +33,13 @@ import org.moire.ultrasonic.util.Util;
  * @version $Id$
  */
 public class MusicServiceFactory {
+    private static final String LOG_TAG = MusicServiceFactory.class.getSimpleName();
     private static MusicService REST_MUSIC_SERVICE = null;
     private static MusicService OFFLINE_MUSIC_SERVICE = null;
 
     public static MusicService getMusicService(Context context) {
         if (Util.isOffline(context)) {
+            Log.d(LOG_TAG, "App is offline, returning offline music service.");
             if (OFFLINE_MUSIC_SERVICE == null) {
                 synchronized (MusicServiceFactory.class) {
                     if (OFFLINE_MUSIC_SERVICE == null) {
@@ -46,6 +50,7 @@ public class MusicServiceFactory {
 
             return OFFLINE_MUSIC_SERVICE;
         } else {
+            Log.d(LOG_TAG, "Returning rest music service");
             if (REST_MUSIC_SERVICE == null) {
                 synchronized (MusicServiceFactory.class) {
                     if (REST_MUSIC_SERVICE == null) {
@@ -59,6 +64,18 @@ public class MusicServiceFactory {
         }
     }
 
+    /**
+     * Resets {@link MusicService} to initial state, so on next call to {@link #getMusicService(Context)}
+     * it will return updated instance of it.
+     */
+    public static void resetMusicService() {
+        Log.d(LOG_TAG, "Resetting music service");
+        synchronized (MusicServiceFactory.class) {
+            REST_MUSIC_SERVICE = null;
+            OFFLINE_MUSIC_SERVICE = null;
+        }
+    }
+
     private static SubsonicAPIClient createSubsonicApiClient(final Context context) {
         final SharedPreferences preferences = Util.getPreferences(context);
         int instance = preferences.getInt(Constants.PREFERENCES_KEY_SERVER_INSTANCE, 1);
@@ -69,11 +86,14 @@ public class MusicServiceFactory {
         if (serverUrl == null ||
                 username == null ||
                 password == null) {
-            throw new IllegalStateException("Server connection data is not available!");
+            Log.i("MusicServiceFactory", "Server credentials is not available");
+            return new SubsonicAPIClient("http://localhost", "", "",
+                    SubsonicAPIVersions.fromApiVersion(Constants.REST_PROTOCOL_VERSION),
+                    Constants.REST_CLIENT_ID, BuildConfig.DEBUG);
         }
 
         return new SubsonicAPIClient(serverUrl, username, password,
                 SubsonicAPIVersions.fromApiVersion(Constants.REST_PROTOCOL_VERSION),
-                Constants.REST_CLIENT_ID, true);
+                Constants.REST_CLIENT_ID, BuildConfig.DEBUG);
     }
 }
