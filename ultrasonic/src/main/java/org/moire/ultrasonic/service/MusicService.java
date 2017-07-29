@@ -21,7 +21,7 @@ package org.moire.ultrasonic.service;
 import android.content.Context;
 import android.graphics.Bitmap;
 
-import org.moire.ultrasonic.activity.SelectAlbumActivity;
+import org.apache.http.HttpResponse;
 import org.moire.ultrasonic.domain.Bookmark;
 import org.moire.ultrasonic.domain.ChatMessage;
 import org.moire.ultrasonic.domain.Genre;
@@ -31,17 +31,13 @@ import org.moire.ultrasonic.domain.Lyrics;
 import org.moire.ultrasonic.domain.MusicDirectory;
 import org.moire.ultrasonic.domain.MusicFolder;
 import org.moire.ultrasonic.domain.Playlist;
-import org.moire.ultrasonic.domain.PodcastEpisode;
 import org.moire.ultrasonic.domain.PodcastsChannel;
 import org.moire.ultrasonic.domain.SearchCriteria;
 import org.moire.ultrasonic.domain.SearchResult;
 import org.moire.ultrasonic.domain.Share;
 import org.moire.ultrasonic.domain.UserInfo;
-import org.moire.ultrasonic.domain.Version;
 import org.moire.ultrasonic.util.CancellableTask;
 import org.moire.ultrasonic.util.ProgressListener;
-
-import org.apache.http.HttpResponse;
 
 import java.util.List;
 
@@ -85,10 +81,6 @@ public interface MusicService
 
 	void deletePlaylist(String id, Context context, ProgressListener progressListener) throws Exception;
 
-	void updatePlaylist(String id, List<MusicDirectory.Entry> toAdd, Context context, ProgressListener progressListener) throws Exception;
-
-	void removeFromPlaylist(String id, List<Integer> toRemove, Context context, ProgressListener progressListener) throws Exception;
-
 	void updatePlaylist(String id, String name, String comment, boolean pub, Context context, ProgressListener progressListener) throws Exception;
 
 	Lyrics getLyrics(String artist, String title, Context context, ProgressListener progressListener) throws Exception;
@@ -111,13 +103,7 @@ public interface MusicService
 
 	HttpResponse getDownloadInputStream(Context context, MusicDirectory.Entry song, long offset, int maxBitrate, CancellableTask task) throws Exception;
 
-	Version getLocalVersion(Context context) throws Exception;
-
-	Version getLatestVersion(Context context, ProgressListener progressListener) throws Exception;
-
 	String getVideoUrl(Context context, String id, boolean useFlash) throws Exception;
-
-	String getVideoStreamUrl(int Bitrate, Context context, String id);
 
 	JukeboxStatus updateJukeboxPlaylist(List<String> ids, Context context, ProgressListener progressListener) throws Exception;
 

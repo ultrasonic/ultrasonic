@@ -93,7 +93,6 @@ import org.moire.ultrasonic.service.parser.SearchResult2Parser;
 import org.moire.ultrasonic.service.parser.SearchResultParser;
 import org.moire.ultrasonic.service.parser.ShareParser;
 import org.moire.ultrasonic.service.parser.UserInfoParser;
-import org.moire.ultrasonic.service.parser.VersionParser;
 import org.moire.ultrasonic.service.ssl.SSLSocketFactory;
 import org.moire.ultrasonic.service.ssl.TrustSelfSignedStrategy;
 import org.moire.ultrasonic.util.CancellableTask;
@@ -688,55 +687,6 @@ public class RESTMusicService implements MusicService
 	}
 
 	@Override
-	public void updatePlaylist(String id, List<MusicDirectory.Entry> toAdd, Context context, ProgressListener progressListener) throws Exception
-	{
-		checkServerVersion(context, "1.8", "Updating playlist not supported.");
-
-		List<String> names = new ArrayList<String>();
-		List<Object> values = new ArrayList<Object>();
-		names.add("playlistId");
-		values.add(id);
-		for (MusicDirectory.Entry song : toAdd)
-		{
-			names.add("songIdToAdd");
-			values.add(song.getId());
-		}
-		Reader reader = getReader(context, progressListener, "updatePlaylist", null, names, values);
-		try
-		{
-			new ErrorParser(context).parse(reader);
-		}
-		finally
-		{
-			Util.close(reader);
-		}
-	}
-
-	@Override
-	public void removeFromPlaylist(String id, List<Integer> toRemove, Context context, ProgressListener progressListener) throws Exception
-	{
-		checkServerVersion(context, "1.8", "Updating playlists is not supported.");
-		List<String> names = new ArrayList<String>();
-		List<Object> values = new ArrayList<Object>();
-		names.add("playlistId");
-		values.add(id);
-		for (Integer song : toRemove)
-		{
-			names.add("songIndexToRemove");
-			values.add(song);
-		}
-		Reader reader = getReader(context, progressListener, "updatePlaylist", null, names, values);
-		try
-		{
-			new ErrorParser(context).parse(reader);
-		}
-		finally
-		{
-			Util.close(reader);
-		}
-	}
-
-	@Override
 	public void updatePlaylist(String id, String name, String comment, boolean pub, Context context, ProgressListener progressListener) throws Exception
 	{
 		checkServerVersion(context, "1.8", "Updating playlists is not supported.");
@@ -865,26 +815,6 @@ public class RESTMusicService implements MusicService
 		try
 		{
 			return new SearchResult2Parser(context).parse(reader, progressListener, true);
-		}
-		finally
-		{
-			Util.close(reader);
-		}
-	}
-
-	@Override
-	public Version getLocalVersion(Context context) throws Exception
-	{
-		return new Version(Util.getVersionName(context));
-	}
-
-	@Override
-	public Version getLatestVersion(Context context, ProgressListener progressListener) throws Exception
-	{
-		Reader reader = getReaderForURL(context, VERSION_URL, null, null, null, progressListener);
-		try
-		{
-			return VersionParser.parse(reader);
 		}
 		finally
 		{
@@ -1053,14 +983,6 @@ public class RESTMusicService implements MusicService
 		}
 
 		String url = rewriteUrlWithRedirect(context, builder.toString());
-		Log.i(TAG, String.format("Using video URL: %s", url));
-		return url;
-	}
-
-	@Override
-	public String getVideoStreamUrl(int maxBitrate, Context context, String id)
-	{
-		String url = rewriteUrlWithRedirect(context, Util.getRestUrl(context, "stream") + "&id=" + id + "&maxBitRate=" + maxBitrate);
 		Log.i(TAG, String.format("Using video URL: %s", url));
 		return url;
 	}
