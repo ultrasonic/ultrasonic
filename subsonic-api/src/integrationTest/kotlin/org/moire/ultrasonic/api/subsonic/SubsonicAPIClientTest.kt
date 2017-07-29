@@ -23,7 +23,9 @@ import retrofit2.Response
 import java.nio.charset.Charset
 import java.security.MessageDigest
 import java.text.SimpleDateFormat
-import java.util.*
+import java.util.Calendar
+import java.util.Locale
+import java.util.TimeZone
 
 /**
  * Integration test for [SubsonicAPIClient] class.

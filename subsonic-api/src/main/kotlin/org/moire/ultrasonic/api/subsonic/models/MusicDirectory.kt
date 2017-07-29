@@ -1,7 +1,7 @@
 package org.moire.ultrasonic.api.subsonic.models
 
 import com.fasterxml.jackson.annotation.JsonProperty
-import java.util.*
+import java.util.Calendar
 
 data class MusicDirectory(val id: Long,
                           val name: String,

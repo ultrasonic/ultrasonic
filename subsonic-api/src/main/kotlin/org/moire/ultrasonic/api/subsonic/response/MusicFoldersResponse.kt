@@ -14,12 +14,12 @@ class MusicFoldersResponse(status: Status,
                            version: SubsonicAPIVersions,
                            error: SubsonicError?,
                            @JsonDeserialize(using = MusicFoldersDeserializer::class)
-                           val musicFolders: List<MusicFolder> = emptyList()):
+                           val musicFolders: List<MusicFolder> = emptyList()) :
         SubsonicResponse(status, version, error) {
     companion object {
-        class MusicFoldersDeserializer(): JsonDeserializer<List<MusicFolder>>() {
-            override fun deserialize(p: JsonParser?, ctxt: DeserializationContext?): List<MusicFolder> {
-                p!!.nextToken()
+        class MusicFoldersDeserializer() : JsonDeserializer<List<MusicFolder>>() {
+            override fun deserialize(p: JsonParser, ctxt: DeserializationContext?): List<MusicFolder> {
+                p.nextToken()
                 if (p.currentName == "musicFolder" && p.nextToken() == JsonToken.START_ARRAY) {
                     val mfJavaType = ctxt!!.typeFactory
                             .constructCollectionType(List::class.java, MusicFolder::class.java)
