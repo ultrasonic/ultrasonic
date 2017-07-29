@@ -5,6 +5,8 @@ ext.versions = [
 
         buildTools           : "25.0.3",
         androidTools         : "2.3.3",
+        ktlint               : "0.9.0",
+        ktlintGradle         : "2.1.0",
 
         androidSupport       : "22.2.1",
 
@@ -23,6 +25,7 @@ ext.versions = [
 ext.gradlePlugins = [
         androidTools : "com.android.tools.build:gradle:$versions.androidTools",
         kotlin       : "org.jetbrains.kotlin:kotlin-gradle-plugin:$versions.kotlin",
+        ktlintGradle : "gradle.plugin.org.jlleitschuh.gradle:ktlint-gradle:$versions.ktlintGradle",
 ]
 
 ext.androidSupport = [
