@@ -25,9 +25,9 @@ enum class SubsonicError(val code: Int) {
                 .filter { it.code == jsonErrorCode }.firstOrNull()
                 ?: throw IllegalArgumentException("Unknown code $jsonErrorCode")
 
-        class SubsonicErrorDeserializer: JsonDeserializer<SubsonicError>() {
-            override fun deserialize(p: JsonParser?, ctxt: DeserializationContext?): SubsonicError {
-                p!!.nextToken() // "code"
+        class SubsonicErrorDeserializer : JsonDeserializer<SubsonicError>() {
+            override fun deserialize(p: JsonParser, ctxt: DeserializationContext?): SubsonicError {
+                p.nextToken() // "code"
                 val error = parseErrorFromJson(p.valueAsInt)
                 p.nextToken() // "message"
                 p.nextToken() // end of error object
