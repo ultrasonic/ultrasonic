@@ -21,6 +21,7 @@ package org.moire.ultrasonic.service;
 import android.content.Context;
 import android.graphics.Bitmap;
 
+import org.apache.http.HttpResponse;
 import org.moire.ultrasonic.domain.Bookmark;
 import org.moire.ultrasonic.domain.ChatMessage;
 import org.moire.ultrasonic.domain.Genre;
@@ -35,15 +36,12 @@ import org.moire.ultrasonic.domain.SearchCriteria;
 import org.moire.ultrasonic.domain.SearchResult;
 import org.moire.ultrasonic.domain.Share;
 import org.moire.ultrasonic.domain.UserInfo;
-import org.moire.ultrasonic.domain.Version;
 import org.moire.ultrasonic.util.CancellableTask;
 import org.moire.ultrasonic.util.Constants;
 import org.moire.ultrasonic.util.LRUCache;
 import org.moire.ultrasonic.util.ProgressListener;
 import org.moire.ultrasonic.util.TimeLimitedCache;
 import org.moire.ultrasonic.util.Util;
-
-import org.apache.http.HttpResponse;
 
 import java.util.Collections;
 import java.util.Comparator;
@@ -262,18 +260,6 @@ public class CachedMusicService implements MusicService
 	}
 
 	@Override
-	public void updatePlaylist(String id, List<MusicDirectory.Entry> toAdd, Context context, ProgressListener progressListener) throws Exception
-	{
-		musicService.updatePlaylist(id, toAdd, context, progressListener);
-	}
-
-	@Override
-	public void removeFromPlaylist(String id, List<Integer> toRemove, Context context, ProgressListener progressListener) throws Exception
-	{
-		musicService.removeFromPlaylist(id, toRemove, context, progressListener);
-	}
-
-	@Override
 	public void updatePlaylist(String id, String name, String comment, boolean pub, Context context, ProgressListener progressListener) throws Exception
 	{
 		musicService.updatePlaylist(id, name, comment, pub, context, progressListener);
@@ -334,27 +320,9 @@ public class CachedMusicService implements MusicService
 	}
 
 	@Override
-	public Version getLocalVersion(Context context) throws Exception
-	{
-		return musicService.getLocalVersion(context);
-	}
-
-	@Override
-	public Version getLatestVersion(Context context, ProgressListener progressListener) throws Exception
-	{
-		return musicService.getLatestVersion(context, progressListener);
-	}
-
-	@Override
 	public String getVideoUrl(Context context, String id, boolean useFlash) throws Exception
 	{
 		return musicService.getVideoUrl(context, id, useFlash);
-	}
-
-	@Override
-	public String getVideoStreamUrl(int maxBitrate, Context context, String id)
-	{
-		return musicService.getVideoStreamUrl(maxBitrate, context, id);
 	}
 
 	@Override

@@ -667,18 +667,6 @@ public class OfflineMusicService extends RESTMusicService
 	}
 
 	@Override
-	public void updatePlaylist(String id, List<MusicDirectory.Entry> toAdd, Context context, ProgressListener progressListener) throws Exception
-	{
-		throw new OfflineException("Updating playlist not available in offline mode");
-	}
-
-	@Override
-	public void removeFromPlaylist(String id, List<Integer> toRemove, Context context, ProgressListener progressListener) throws Exception
-	{
-		throw new OfflineException("Removing from playlist not available in offline mode");
-	}
-
-	@Override
 	public void updatePlaylist(String id, String name, String comment, boolean pub, Context context, ProgressListener progressListener) throws Exception
 	{
 		throw new OfflineException("Updating playlist not available in offline mode");
@@ -704,12 +692,6 @@ public class OfflineMusicService extends RESTMusicService
 
 	@Override
 	public String getVideoUrl(Context context, String id, boolean useFlash)
-	{
-		return null;
-	}
-
-	@Override
-	public String getVideoStreamUrl(int maxBitrate, Context context, String id)
 	{
 		return null;
 	}
