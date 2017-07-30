@@ -30,6 +30,7 @@ import java.util.TimeZone
 /**
  * Integration test for [SubsonicAPIClient] class.
  */
+@Suppress("TooManyFunctions")
 class SubsonicAPIClientTest {
     companion object {
         const val USERNAME = "some-user"
@@ -49,7 +50,7 @@ class SubsonicAPIClientTest {
     }
 
     @Test
-    fun `Should pass password hash and salt in query params for api version 1_13_0`() {
+    fun `Should pass password hash and salt in query params for api version 1 13 0`() {
         val clientV12 = SubsonicAPIClient(mockWebServerRule.mockWebServer.url("/").toString(), USERNAME,
                 PASSWORD, SubsonicAPIVersions.V1_14_0, CLIENT_ID)
         enqueueResponse("ping_ok.json")
@@ -70,7 +71,7 @@ class SubsonicAPIClientTest {
     }
 
     @Test
-    fun `Should pass  hex encoded password in query params for api version 1_12_0`() {
+    fun `Should pass  hex encoded password in query params for api version 1 12 0`() {
         val clientV11 = SubsonicAPIClient(mockWebServerRule.mockWebServer.url("/").toString(), USERNAME,
                 PASSWORD, SubsonicAPIVersions.V1_12_0, CLIENT_ID)
         enqueueResponse("ping_ok.json")
@@ -153,7 +154,7 @@ class SubsonicAPIClientTest {
 
     @Test
     fun `Should parse get indexes ok response`() {
-        // TODO: check for shortcut parsing
+        // check for shortcut parsing
         enqueueResponse("get_indexes_ok.json")
 
         val response = client.api.getIndexes(null, null).execute()
