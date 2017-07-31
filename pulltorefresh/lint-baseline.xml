@@ -1,0 +1,326 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<issues format="4" by="lint 2.3.3">
+
+    <issue
+        id="LocaleFolder"
+        message="The locale folder &quot;`he`&quot; should be called &quot;`iw`&quot; instead; see the `java.util.Locale` documentation">
+        <location
+            file="src/main/res/values-he"/>
+    </issue>
+
+    <issue
+        id="OldTargetApi"
+        message="Not targeting the latest versions of Android; compatibility modes apply. Consider testing and updating this version. Consult the `android.os.Build.VERSION_CODES` javadoc for details."
+        errorLine1="    &lt;uses-sdk android:minSdkVersion=&quot;4&quot; android:targetSdkVersion=&quot;16&quot; />"
+        errorLine2="                                        ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
+        <location
+            file="src/main/AndroidManifest.xml"
+            line="7"
+            column="41"/>
+    </issue>
+
+    <issue
+        id="GradleOverrides"
+        message="This `minSdkVersion` value (`4`) is not used; it is always overridden by the value specified in the Gradle build script (`14`)"
+        errorLine1="    &lt;uses-sdk android:minSdkVersion=&quot;4&quot; android:targetSdkVersion=&quot;16&quot; />"
+        errorLine2="              ~~~~~~~~~~~~~~~~~~~~~~~~~">
+        <location
+            file="src/main/AndroidManifest.xml"
+            line="7"
+            column="15"/>
+    </issue>
+
+    <issue
+        id="GradleOverrides"
+        message="This `targetSdkVersion` value (`16`) is not used; it is always overridden by the value specified in the Gradle build script (`22`)"
+        errorLine1="    &lt;uses-sdk android:minSdkVersion=&quot;4&quot; android:targetSdkVersion=&quot;16&quot; />"
+        errorLine2="                                        ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
+        <location
+            file="src/main/AndroidManifest.xml"
+            line="7"
+            column="41"/>
+    </issue>
+
+    <issue
+        id="Deprecated"
+        message="`android:singleLine` is deprecated: Use `maxLines=&quot;1&quot;` instead"
+        errorLine1="                android:singleLine=&quot;true&quot;"
+        errorLine2="                ~~~~~~~~~~~~~~~~~~~~~~~~~">
+        <location
+            file="src/main/res/layout/pull_to_refresh_header_vertical.xml"
+            line="45"
+            column="17"/>
+    </issue>
+
+    <issue
+        id="Deprecated"
+        message="`android:singleLine` is deprecated: Use `maxLines=&quot;1&quot;` instead"
+        errorLine1="                android:singleLine=&quot;true&quot;"
+        errorLine2="                ~~~~~~~~~~~~~~~~~~~~~~~~~">
+        <location
+            file="src/main/res/layout/pull_to_refresh_header_vertical.xml"
+            line="53"
+            column="17"/>
+    </issue>
+
+    <issue
+        id="MissingTranslation"
+        message="&quot;`pull_to_refresh_from_bottom_pull_label`&quot; is not translated in &quot;es&quot; (Spanish), &quot;fr&quot; (French), &quot;pt&quot; (Portuguese), &quot;pt-BR&quot; (Portuguese: Brazil)"
+        errorLine1="    &lt;string name=&quot;pull_to_refresh_from_bottom_pull_label&quot;>@string/pull_to_refresh_pull_label&lt;/string>"
+        errorLine2="            ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
+        <location
+            file="src/main/res/values/pull_refresh_strings.xml"
+            line="9"
+            column="13"/>
+    </issue>
+
+    <issue
+        id="MissingTranslation"
+        message="&quot;`pull_to_refresh_from_bottom_release_label`&quot; is not translated in &quot;es&quot; (Spanish), &quot;fr&quot; (French), &quot;pt&quot; (Portuguese), &quot;pt-BR&quot; (Portuguese: Brazil)"
+        errorLine1="    &lt;string name=&quot;pull_to_refresh_from_bottom_release_label&quot;>@string/pull_to_refresh_release_label&lt;/string>"
+        errorLine2="            ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
+        <location
+            file="src/main/res/values/pull_refresh_strings.xml"
+            line="10"
+            column="13"/>
+    </issue>
+
+    <issue
+        id="MissingTranslation"
+        message="&quot;`pull_to_refresh_from_bottom_refreshing_label`&quot; is not translated in &quot;es&quot; (Spanish), &quot;fr&quot; (French), &quot;pt&quot; (Portuguese), &quot;pt-BR&quot; (Portuguese: Brazil)"
+        errorLine1="    &lt;string name=&quot;pull_to_refresh_from_bottom_refreshing_label&quot;>@string/pull_to_refresh_refreshing_label&lt;/string>"
+        errorLine2="            ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
+        <location
+            file="src/main/res/values/pull_refresh_strings.xml"
+            line="11"
+            column="13"/>
+    </issue>
+
+    <issue
+        id="AddJavascriptInterface"
+        message="`WebView.addJavascriptInterface` should not be called with minSdkVersion &lt; 17 for security reasons: JavaScript can use reflection to manipulate application"
+        errorLine1="  webView.addJavascriptInterface(mJsCallback, JS_INTERFACE_PKG);"
+        errorLine2="          ~~~~~~~~~~~~~~~~~~~~~~">
+        <location
+            file="src/main/java/com/handmark/pulltorefresh/library/extras/PullToRefreshWebView2.java"
+            line="90"
+            column="11"/>
+    </issue>
+
+    <issue
+        id="JavascriptInterface"
+        message="None of the methods in the added interface (JsValueCallback) have been annotated with `@android.webkit.JavascriptInterface`; they will not be visible in API 17"
+        errorLine1="  webView.addJavascriptInterface(mJsCallback, JS_INTERFACE_PKG);"
+        errorLine2="          ~~~~~~~~~~~~~~~~~~~~~~">
+        <location
+            file="src/main/java/com/handmark/pulltorefresh/library/extras/PullToRefreshWebView2.java"
+            line="90"
+            column="11"/>
+    </issue>
+
+    <issue
+        id="ObsoleteSdkInt"
+        message="Unnecessary; SDK_INT is always >= 14"
+        errorLine1="  return VERSION.SDK_INT >= VERSION_CODES.GINGERBREAD &amp;&amp; mOverScrollEnabled"
+        errorLine2="         ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
+        <location
+            file="src/main/java/com/handmark/pulltorefresh/library/PullToRefreshBase.java"
+            line="211"
+            column="10"/>
+    </issue>
+
+    <issue
+        id="ObsoleteSdkInt"
+        message="Unnecessary; SDK_INT is always >= 14"
+        errorLine1="  if (VERSION.SDK_INT >= VERSION_CODES.GINGERBREAD) {"
+        errorLine2="      ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
+        <location
+            file="src/main/java/com/handmark/pulltorefresh/library/PullToRefreshExpandableListView.java"
+            line="54"
+            column="7"/>
+    </issue>
+
+    <issue
+        id="ObsoleteSdkInt"
+        message="Unnecessary; SDK_INT is always >= 14"
+        errorLine1="  if (VERSION.SDK_INT >= VERSION_CODES.GINGERBREAD) {"
+        errorLine2="      ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
+        <location
+            file="src/main/java/com/handmark/pulltorefresh/library/PullToRefreshGridView.java"
+            line="54"
+            column="7"/>
+    </issue>
+
+    <issue
+        id="ObsoleteSdkInt"
+        message="Unnecessary; SDK_INT is always >= 14"
+        errorLine1="  if (VERSION.SDK_INT >= VERSION_CODES.GINGERBREAD) {"
+        errorLine2="      ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
+        <location
+            file="src/main/java/com/handmark/pulltorefresh/library/PullToRefreshHorizontalScrollView.java"
+            line="53"
+            column="7"/>
+    </issue>
+
+    <issue
+        id="ObsoleteSdkInt"
+        message="Unnecessary; SDK_INT is always >= 14"
+        errorLine1="  if (VERSION.SDK_INT >= VERSION_CODES.GINGERBREAD) {"
+        errorLine2="      ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
+        <location
+            file="src/main/java/com/handmark/pulltorefresh/library/PullToRefreshListView.java"
+            line="207"
+            column="7"/>
+    </issue>
+
+    <issue
+        id="ObsoleteSdkInt"
+        message="Unnecessary; SDK_INT is always >= 14"
+        errorLine1="  if (VERSION.SDK_INT >= VERSION_CODES.GINGERBREAD) {"
+        errorLine2="      ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
+        <location
+            file="src/main/java/com/handmark/pulltorefresh/library/PullToRefreshScrollView.java"
+            line="52"
+            column="7"/>
+    </issue>
+
+    <issue
+        id="ObsoleteSdkInt"
+        message="Unnecessary; SDK_INT is always >= 14"
+        errorLine1="  if (VERSION.SDK_INT >= VERSION_CODES.GINGERBREAD) {"
+        errorLine2="      ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
+        <location
+            file="src/main/java/com/handmark/pulltorefresh/library/PullToRefreshWebView.java"
+            line="98"
+            column="7"/>
+    </issue>
+
+    <issue
+        id="ObsoleteSdkInt"
+        message="Unnecessary; SDK_INT is always >= 14"
+        errorLine1="  if (VERSION.SDK_INT >= VERSION_CODES.HONEYCOMB) {"
+        errorLine2="      ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
+        <location
+            file="src/main/java/com/handmark/pulltorefresh/library/internal/ViewCompat.java"
+            line="44"
+            column="7"/>
+    </issue>
+
+    <issue
+        id="FloatMath"
+        message="Use `java.lang.Math#floor` instead of `android.util.FloatMath#floor()` since it is faster as of API 8"
+        errorLine1="  float exactContentHeight = FloatMath.floor(mRefreshableView.getContentHeight() * mRefreshableView.getScale());"
+        errorLine2="                             ~~~~~~~~~~~~~~~">
+        <location
+            file="src/main/java/com/handmark/pulltorefresh/library/PullToRefreshWebView.java"
+            line="115"
+            column="30"/>
+    </issue>
+
+    <issue
+        id="FloatMath"
+        message="Use `java.lang.Math#floor` instead of `android.util.FloatMath#floor()` since it is faster as of API 8"
+        errorLine1="   return (int) Math.max(0, FloatMath.floor(mRefreshableView.getContentHeight() * mRefreshableView.getScale())"
+        errorLine2="                            ~~~~~~~~~~~~~~~">
+        <location
+            file="src/main/java/com/handmark/pulltorefresh/library/PullToRefreshWebView.java"
+            line="161"
+            column="29"/>
+    </issue>
+
+    <issue
+        id="IconMissingDensityFolder"
+        message="Missing density variation folders in `src/main/res`: drawable-xxhdpi">
+        <location
+            file="src/main/res"/>
+    </issue>
+
+    <issue
+        id="ViewConstructor"
+        message="Custom view `RotateLoadingLayout` is missing constructor used by tools: `(Context)` or `(Context,AttributeSet)` or `(Context,AttributeSet,int)`"
+        errorLine1="public class RotateLoadingLayout extends LoadingLayout {"
+        errorLine2="             ~~~~~~~~~~~~~~~~~~~">
+        <location
+            file="src/main/java/com/handmark/pulltorefresh/library/internal/RotateLoadingLayout.java"
+            line="30"
+            column="14"/>
+    </issue>
+
+    <issue
+        id="ContentDescription"
+        message="[Accessibility] Missing `contentDescription` attribute on image"
+        errorLine1="        &lt;ImageView"
+        errorLine2="        ^">
+        <location
+            file="src/main/res/layout/pull_to_refresh_header_horizontal.xml"
+            line="13"
+            column="9"/>
+    </issue>
+
+    <issue
+        id="ContentDescription"
+        message="[Accessibility] Missing `contentDescription` attribute on image"
+        errorLine1="            &lt;ImageView"
+        errorLine2="            ^">
+        <location
+            file="src/main/res/layout/pull_to_refresh_header_vertical.xml"
+            line="18"
+            column="13"/>
+    </issue>
+
+    <issue
+        id="RtlHardcoded"
+        message="Use &quot;`Gravity.START`&quot; instead of &quot;`Gravity.LEFT`&quot; to ensure correct behavior in right-to-left locales"
+        errorLine1="    lp.gravity = scrollDirection == Orientation.VERTICAL ? Gravity.TOP : Gravity.LEFT;"
+        errorLine2="                                                                                 ~~~~">
+        <location
+            file="src/main/java/com/handmark/pulltorefresh/library/internal/LoadingLayout.java"
+            line="92"
+            column="82"/>
+    </issue>
+
+    <issue
+        id="RtlHardcoded"
+        message="Use &quot;`Gravity.END`&quot; instead of &quot;`Gravity.RIGHT`&quot; to ensure correct behavior in right-to-left locales"
+        errorLine1="    lp.gravity = scrollDirection == Orientation.VERTICAL ? Gravity.BOTTOM : Gravity.RIGHT;"
+        errorLine2="                                                                                    ~~~~~">
+        <location
+            file="src/main/java/com/handmark/pulltorefresh/library/internal/LoadingLayout.java"
+            line="102"
+            column="85"/>
+    </issue>
+
+    <issue
+        id="RtlHardcoded"
+        message="Use &quot;`Gravity.END`&quot; instead of &quot;`Gravity.RIGHT`&quot; to ensure correct behavior in right-to-left locales"
+        errorLine1="   params.gravity = Gravity.TOP | Gravity.RIGHT;"
+        errorLine2="                                          ~~~~~">
+        <location
+            file="src/main/java/com/handmark/pulltorefresh/library/PullToRefreshAdapterViewBase.java"
+            line="344"
+            column="43"/>
+    </issue>
+
+    <issue
+        id="RtlHardcoded"
+        message="Use &quot;`Gravity.END`&quot; instead of &quot;`Gravity.RIGHT`&quot; to ensure correct behavior in right-to-left locales"
+        errorLine1="   params.gravity = Gravity.BOTTOM | Gravity.RIGHT;"
+        errorLine2="                                             ~~~~~">
+        <location
+            file="src/main/java/com/handmark/pulltorefresh/library/PullToRefreshAdapterViewBase.java"
+            line="359"
+            column="46"/>
+    </issue>
+
+    <issue
+        id="RtlHardcoded"
+        message="Use &quot;`start`&quot; instead of &quot;`left`&quot; to ensure correct behavior in right-to-left locales"
+        errorLine1="            android:layout_gravity=&quot;left|center_vertical&quot; >"
+        errorLine2="                                    ~~~~~~~~~~~~~~~~~~~~">
+        <location
+            file="src/main/res/layout/pull_to_refresh_header_vertical.xml"
+            line="16"
+            column="37"/>
+    </issue>
+
+</issues>

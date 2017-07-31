@@ -27,6 +27,11 @@ android {
     packagingOptions {
         exclude 'META-INF/LICENSE'
     }
+
+    lintOptions {
+        baselineFile file("lint-baseline.xml")
+        abortOnError true
+    }
 }
 
 dependencies {
