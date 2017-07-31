@@ -20,9 +20,15 @@ jobs:
           name: unit-tests
           command: ./gradlew test
       - run:
+          name: lint
+          command: ./gradlew lint
+      - run:
           name: static analysis
           command: ./gradlew -Pqc detektCheck
       - save_cache:
           paths:
             - ~/.gradle
           key: gradle-cache-{{ checksum "dependencies.gradle" }}
+      - store_artifacts:
+          path: ultrasonic/build/reports
+          destination: reports
