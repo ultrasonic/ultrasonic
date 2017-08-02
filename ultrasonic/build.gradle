@@ -10,6 +10,8 @@ android {
         applicationId "org.moire.ultrasonic"
         minSdkVersion versions.minSdk
         targetSdkVersion versions.targetSdk
+
+        resConfigs "en", "es", "fr", "hu", "pt", "pt-rBR"
     }
 
     buildTypes {
