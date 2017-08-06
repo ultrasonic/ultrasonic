@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
-<resources>
+<resources xmlns:tools="http://schemas.android.com/tools">
 
-    <string name="md__drawerOpenIndicatorDesc">Close drawer</string>
+    <string name="md__drawerOpenIndicatorDesc" tools:ignore="MissingTranslation">Close drawer</string>
 
-    <string name="md__drawerClosedIndicatorDesc">Open drawer</string>
+    <string name="md__drawerClosedIndicatorDesc" tools:ignore="MissingTranslation">Open drawer</string>
 
 </resources>
