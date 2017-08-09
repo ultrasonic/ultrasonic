@@ -1,5 +1,6 @@
 apply plugin: 'com.android.application'
 apply plugin: 'kotlin-android'
+apply plugin: 'jacoco-android'
 apply from: "../gradle_scripts/code_quality.gradle"
 
 android {
@@ -19,11 +20,15 @@ android {
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.txt'
         }
+        debug {
+            minifyEnabled false
+            testCoverageEnabled true
+        }
     }
 
     sourceSets {
-        main.java.srcDirs += 'src/main/kotlin'
-        test.java.srcDirs += 'src/test/kotlin'
+        main.java.srcDirs += "${projectDir}/src/main/kotlin"
+        test.java.srcDirs += "${projectDir}/src/test/kotlin"
     }
 
     packagingOptions {
@@ -59,4 +64,30 @@ dependencies {
         exclude module: "kotlin-stdlib"
         exclude module: "kotlin-reflect"
     }
+}
+
+// Excluding all non-kotlin classes
+ext {
+    jacocoExclude = [
+            '**/activity/**',
+            '**/audiofx/**',
+            '**/domain/**',
+            '**/fragment/**',
+            '**/provider/**',
+            '**/receiver/**',
+            '**/service/**',
+            '**/Test/**',
+            '**/util/**',
+            '**/view/**',
+            '**/R$*.class',
+            '**/R.class',
+            '**/BuildConfig.class'
+    ]
+}
+jacocoAndroidUnitTestReport {
+    excludes += jacocoExclude
+}
+
+afterEvaluate {
+    testDebugUnitTest.finalizedBy jacocoTestDebugUnitTestReport
 }
