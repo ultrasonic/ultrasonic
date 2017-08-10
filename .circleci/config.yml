@@ -18,7 +18,9 @@ jobs:
           command: ./gradlew assembleDebug
       - run:
           name: unit-tests
-          command: ./gradlew test
+          command: |
+            ./gradlew :subsonic-api:test :ultrasonic:testDebugUnitTest
+            ./gradlew jacocoFullReport
       - run:
           name: lint
           command: ./gradlew lint
@@ -32,3 +34,6 @@ jobs:
       - store_artifacts:
           path: ultrasonic/build/reports
           destination: reports
+      - store_artifacts:
+          path: build/reports/jacoco/jacocoFullReport/
+

@@ -1,10 +1,11 @@
 apply plugin: 'kotlin'
+apply plugin: 'jacoco'
 apply from: '../gradle_scripts/code_quality.gradle'
 
 sourceSets {
-    main.java.srcDirs += 'src/main/kotlin'
-    test.java.srcDirs += 'src/integrationTest/kotlin'
-    test.resources.srcDirs += 'src/integrationTest/resources'
+    main.java.srcDirs += "${projectDir}/src/main/kotlin"
+    test.java.srcDirs += "${projectDir}/src/integrationTest/kotlin"
+    test.resources.srcDirs += "${projectDir}/src/integrationTest/resources"
     test.output.resourcesDir = test.output.classesDir
 }
 
@@ -22,4 +23,36 @@ dependencies {
     testCompile testing.kluent
     testCompile testing.mockWebServer
     testCompile testing.apacheCodecs
+}
+
+jacoco {
+    toolVersion = versions.jacoco
+}
+
+ext {
+    // Excluding data classes
+    jacocoExclude = [
+            '**/models/**'
+    ]
+}
+
+jacocoTestReport {
+    reports {
+        html.enabled true
+        csv.enabled false
+        xml.enabled true
+    }
+
+    afterEvaluate {
+        classDirectories = files(classDirectories.files.collect {
+            fileTree(dir: it, excludes: jacocoExclude)
+        })
+    }
+}
+
+test.finalizedBy jacocoTestReport
+test {
+    jacoco {
+        excludes += jacocoExclude
+    }
 }
