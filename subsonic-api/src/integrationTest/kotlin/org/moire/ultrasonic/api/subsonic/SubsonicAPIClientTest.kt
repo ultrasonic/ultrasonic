@@ -161,10 +161,10 @@ class SubsonicAPIClientTest {
 
         assertResponseSuccessful(response)
         response.body().indexes `should not be` null
-        with(response.body().indexes!!) {
+        with(response.body().indexes) {
             lastModified `should equal` 1491069027523
             ignoredArticles `should equal` "The El La Los Las Le Les"
-            shortcuts `should be` null
+            shortcuts `should be` emptyList<Index>()
             indexList `should equal` mutableListOf(
                     Index("A", listOf(
                             Artist(50L, "Ace Of Base", parseDate("2017-04-02T20:16:29.815Z")),
@@ -220,7 +220,13 @@ class SubsonicAPIClientTest {
     fun `Should parse get indexes error response`() {
         val response = checkErrorCallParsed { client.api.getIndexes(null, null).execute() }
 
-        response.indexes `should be` null
+        response.indexes `should not be` null
+        with(response.indexes) {
+            lastModified `should equal to` 0
+            ignoredArticles `should equal to` ""
+            indexList.size `should equal to` 0
+            shortcuts.size `should equal to` 0
+        }
     }
 
     @Test
