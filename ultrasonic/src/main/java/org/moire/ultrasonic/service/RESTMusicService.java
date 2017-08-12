@@ -227,8 +227,7 @@ public class RESTMusicService implements MusicService
         Response<MusicFoldersResponse> response = subsonicAPIClient.getApi().getMusicFolders().execute();
         checkResponseSuccessful(response);
 
-        List<MusicFolder> musicFolders = APIConverter
-                .convertMusicFolderList(response.body().getMusicFolders());
+        List<MusicFolder> musicFolders = APIConverter.toDomainEntityList(response.body().getMusicFolders());
         writeCachedMusicFolders(context, musicFolders);
         return musicFolders;
     }

@@ -3,12 +3,12 @@
 package org.moire.ultrasonic.data
 
 import org.moire.ultrasonic.domain.MusicFolder
+import org.moire.ultrasonic.api.subsonic.models.MusicFolder as APIMusicFolder
 
-typealias APIMusicFolder = org.moire.ultrasonic.api.subsonic.models.MusicFolder
+fun APIMusicFolder.toDomainEntity(): MusicFolder = MusicFolder(this.id.toString(), this.name)
 
-fun convertMusicFolder(entity: APIMusicFolder): MusicFolder {
-    return MusicFolder(entity.id.toString(), entity.name)
-}
+fun List<APIMusicFolder>.toDomainEntityList(): List<MusicFolder>
+        = this.map { it.toDomainEntity() }
 
 fun convertMusicFolderList(entitiesList: List<APIMusicFolder>): List<MusicFolder> {
     return entitiesList.map { convertMusicFolder(it) }

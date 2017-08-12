@@ -16,7 +16,7 @@ class APIConverterTest {
     fun `Should convert MusicFolder entity`() {
         val entity = createMusicFolder(10, "some-name")
 
-        val convertedEntity = convertMusicFolder(entity)
+        val convertedEntity = entity.toDomainEntity()
 
         convertedEntity.name `should equal to` "some-name"
         convertedEntity.id `should equal to` 10.toString()
@@ -29,7 +29,7 @@ class APIConverterTest {
                 createMusicFolder(4, "some-name-4")
         )
 
-        val convertedList = convertMusicFolderList(entityList)
+        val convertedList = entityList.toDomainEntityList()
 
         convertedList.size `should equal to` 2
         convertedList[0].id `should equal to` 3.toString()
