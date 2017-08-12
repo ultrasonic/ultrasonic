@@ -30,7 +30,7 @@ import java.util.TimeZone
 /**
  * Integration test for [SubsonicAPIClient] class.
  */
-@Suppress("TooManyFunctions")
+@Suppress("TooManyFunctions", "LargeClass")
 class SubsonicAPIClientTest {
     companion object {
         const val USERNAME = "some-user"
@@ -154,17 +154,19 @@ class SubsonicAPIClientTest {
 
     @Test
     fun `Should parse get indexes ok response`() {
-        // check for shortcut parsing
         enqueueResponse("get_indexes_ok.json")
 
         val response = client.api.getIndexes(null, null).execute()
 
         assertResponseSuccessful(response)
         response.body().indexes `should not be` null
-        with(response.body().indexes!!) {
+        with(response.body().indexes) {
             lastModified `should equal` 1491069027523
             ignoredArticles `should equal` "The El La Los Las Le Les"
-            shortcuts `should be` null
+            shortcutList `should equal` listOf(
+                    Artist(889L, "podcasts", null),
+                    Artist(890L, "audiobooks", null)
+            )
             indexList `should equal` mutableListOf(
                     Index("A", listOf(
                             Artist(50L, "Ace Of Base", parseDate("2017-04-02T20:16:29.815Z")),
@@ -220,7 +222,13 @@ class SubsonicAPIClientTest {
     fun `Should parse get indexes error response`() {
         val response = checkErrorCallParsed { client.api.getIndexes(null, null).execute() }
 
-        response.indexes `should be` null
+        response.indexes `should not be` null
+        with(response.indexes) {
+            lastModified `should equal to` 0
+            ignoredArticles `should equal to` ""
+            indexList.size `should equal to` 0
+            shortcutList.size `should equal to` 0
+        }
     }
 
     @Test

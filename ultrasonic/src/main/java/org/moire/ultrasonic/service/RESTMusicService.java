@@ -56,6 +56,7 @@ import org.apache.http.protocol.ExecutionContext;
 import org.apache.http.protocol.HttpContext;
 import org.moire.ultrasonic.R;
 import org.moire.ultrasonic.api.subsonic.SubsonicAPIClient;
+import org.moire.ultrasonic.api.subsonic.response.GetIndexesResponse;
 import org.moire.ultrasonic.api.subsonic.response.LicenseResponse;
 import org.moire.ultrasonic.api.subsonic.response.MusicFoldersResponse;
 import org.moire.ultrasonic.api.subsonic.response.SubsonicResponse;
@@ -117,6 +118,7 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Locale;
 import java.util.concurrent.atomic.AtomicReference;
 
 import retrofit2.Response;
@@ -227,66 +229,45 @@ public class RESTMusicService implements MusicService
         Response<MusicFoldersResponse> response = subsonicAPIClient.getApi().getMusicFolders().execute();
         checkResponseSuccessful(response);
 
-        List<MusicFolder> musicFolders = APIConverter
-                .convertMusicFolderList(response.body().getMusicFolders());
+        List<MusicFolder> musicFolders = APIConverter.toDomainEntityList(response.body().getMusicFolders());
         writeCachedMusicFolders(context, musicFolders);
         return musicFolders;
     }
 
-	@Override
-	public Indexes getIndexes(String musicFolderId, boolean refresh, Context context, ProgressListener progressListener) throws Exception
-	{
-		Indexes cachedIndexes = readCachedIndexes(context, musicFolderId);
-		if (cachedIndexes != null && !refresh)
-		{
-			return cachedIndexes;
-		}
+    @Override
+    public Indexes getIndexes(String musicFolderId,
+                              boolean refresh,
+                              Context context,
+                              ProgressListener progressListener) throws Exception {
+        Indexes cachedIndexes = readCachedIndexes(context, musicFolderId);
+        if (cachedIndexes != null && !refresh) {
+            return cachedIndexes;
+        }
 
-		List<String> parameterNames = new ArrayList<String>();
-		List<Object> parameterValues = new ArrayList<Object>();
+        updateProgressListener(progressListener, R.string.parser_reading);
+        Response<GetIndexesResponse> response = subsonicAPIClient.getApi()
+                .getIndexes(musicFolderId == null ? null : Long.valueOf(musicFolderId), null).execute();
+        checkResponseSuccessful(response);
 
-		if (musicFolderId != null)
-		{
-			parameterNames.add("musicFolderId");
-			parameterValues.add(musicFolderId);
-		}
+        Indexes indexes = APIConverter.toDomainEntity(response.body().getIndexes());
+        writeCachedIndexes(context, indexes, musicFolderId);
+        return indexes;
+    }
 
-		Reader reader = getReader(context, progressListener, "getIndexes", null, parameterNames, parameterValues);
+    private static Indexes readCachedIndexes(Context context, String musicFolderId) {
+        String filename = getCachedIndexesFilename(context, musicFolderId);
+        return FileUtil.deserialize(context, filename);
+    }
 
-		try
-		{
-			Indexes indexes = new IndexesParser(context).parse(reader, progressListener);
-			if (indexes != null)
-			{
-				writeCachedIndexes(context, indexes, musicFolderId);
-				return indexes;
-			}
+    private static void writeCachedIndexes(Context context, Indexes indexes, String musicFolderId) {
+        String filename = getCachedIndexesFilename(context, musicFolderId);
+        FileUtil.serialize(context, indexes, filename);
+    }
 
-			return cachedIndexes != null ? cachedIndexes : new Indexes(0, null, new ArrayList<org.moire.ultrasonic.domain.Artist>(), new ArrayList<org.moire.ultrasonic.domain.Artist>());
-		}
-		finally
-		{
-			Util.close(reader);
-		}
-	}
-
-	private static Indexes readCachedIndexes(Context context, String musicFolderId)
-	{
-		String filename = getCachedIndexesFilename(context, musicFolderId);
-		return FileUtil.deserialize(context, filename);
-	}
-
-	private static void writeCachedIndexes(Context context, Indexes indexes, String musicFolderId)
-	{
-		String filename = getCachedIndexesFilename(context, musicFolderId);
-		FileUtil.serialize(context, indexes, filename);
-	}
-
-	private static String getCachedIndexesFilename(Context context, String musicFolderId)
-	{
-		String s = Util.getRestUrl(context, null) + musicFolderId;
-		return String.format("indexes-%d.ser", Math.abs(s.hashCode()));
-	}
+    private static String getCachedIndexesFilename(Context context, String musicFolderId) {
+        String s = Util.getRestUrl(context, null) + musicFolderId;
+        return String.format(Locale.US, "indexes-%d.ser", Math.abs(s.hashCode()));
+    }
 
 	@Override
 	public Indexes getArtists(boolean refresh, Context context, ProgressListener progressListener) throws Exception

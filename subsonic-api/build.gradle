@@ -13,12 +13,14 @@ dependencies {
     compile other.kotlinStdlib
     compile other.retrofit
     compile other.jacksonConverter
-    compile other.jacksonKotlin
+    compile(other.jacksonKotlin) {
+        exclude module: 'kotlin-reflect'
+    }
+    compile other.kotlinReflect // for jackson kotlin, but to use the same version
     compile other.okhttpLogging
 
     testCompile testing.junit
     testCompile testing.kotlinJunit
-    testCompile testing.kotlinReflect
     testCompile testing.mockitoKotlin
     testCompile testing.kluent
     testCompile testing.mockWebServer

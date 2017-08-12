@@ -7,5 +7,5 @@ import org.moire.ultrasonic.api.subsonic.models.Indexes
 class GetIndexesResponse(status: Status,
                          version: SubsonicAPIVersions,
                          error: SubsonicError?,
-                         val indexes: Indexes?) :
+                         val indexes: Indexes = Indexes()) :
         SubsonicResponse(status, version, error)

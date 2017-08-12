@@ -98,7 +98,7 @@ class SubsonicAPIClient(baseUrl: String,
 
     private fun OkHttpClient.Builder.addLogging() {
         val loggingInterceptor = HttpLoggingInterceptor()
-        loggingInterceptor.level = HttpLoggingInterceptor.Level.BASIC
+        loggingInterceptor.level = HttpLoggingInterceptor.Level.BODY
         this.addInterceptor(loggingInterceptor)
     }
 

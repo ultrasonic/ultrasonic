@@ -102,4 +102,31 @@ public class Artist implements Serializable
 	{
 		return name;
 	}
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        Artist artist = (Artist) o;
+
+        if (closeness != artist.closeness) return false;
+        if (id != null ? !id.equals(artist.id) : artist.id != null) return false;
+        if (name != null ? !name.equals(artist.name) : artist.name != null) return false;
+        if (index != null ? !index.equals(artist.index) : artist.index != null) return false;
+        if (coverArt != null ? !coverArt.equals(artist.coverArt) : artist.coverArt != null)
+            return false;
+        return albumCount != null ? albumCount.equals(artist.albumCount) : artist.albumCount == null;
+    }
+
+    @Override
+    public int hashCode() {
+        int result = id != null ? id.hashCode() : 0;
+        result = 31 * result + (name != null ? name.hashCode() : 0);
+        result = 31 * result + (index != null ? index.hashCode() : 0);
+        result = 31 * result + (coverArt != null ? coverArt.hashCode() : 0);
+        result = 31 * result + (albumCount != null ? albumCount.hashCode() : 0);
+        result = 31 * result + closeness;
+        return result;
+    }
 }

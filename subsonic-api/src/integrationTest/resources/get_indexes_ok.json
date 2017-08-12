@@ -5,6 +5,14 @@
     "indexes" : {
       "lastModified" : 1491069027523,
       "ignoredArticles" : "The El La Los Las Le Les",
+      "shortcut" : [ {
+        "id" : "889",
+        "name" : "podcasts"
+      },
+      {
+        "id" : "890",
+        "name" : "audiobooks"
+      } ],
       "index" : [ {
         "name" : "A",
         "artist" : [ {
