@@ -16,7 +16,7 @@ fun List<APIMusicFolder>.toDomainEntityList(): List<MusicFolder>
         = this.map { it.toDomainEntity() }
 
 fun APIIndexes.toDomainEntity(): Indexes = Indexes(this.lastModified, this.ignoredArticles,
-        this.shortcuts.foldIndexToArtistList(), this.indexList.foldIndexToArtistList())
+        this.shortcutList.map { it.toDomainEntity() }, this.indexList.foldIndexToArtistList())
 
 private fun List<Index>.foldIndexToArtistList(): List<Artist> = this.fold(listOf(), {
     acc, index -> acc + index.artists.map { it.toDomainEntity() }

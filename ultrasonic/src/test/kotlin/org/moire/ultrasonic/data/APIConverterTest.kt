@@ -64,7 +64,7 @@ class APIConverterTest {
         val entity = createIndexes(154, "Le Tre Ze", listOf(
                 createIndex("A", artistsA),
                 createIndex("T", artistsT)
-        ), emptyList())
+        ), artistsA)
 
         val convertedEntity = entity.toDomainEntity()
 
@@ -74,7 +74,7 @@ class APIConverterTest {
             ignoredArticles `should equal to` entity.ignoredArticles
             artists.size `should equal to` expectedArtists.size
             artists `should equal` expectedArtists
-            shortcuts `should equal` emptyList()
+            shortcuts `should equal` artistsA.map { it.toDomainEntity() }.toMutableList()
         }
     }
 
@@ -91,6 +91,6 @@ class APIConverterTest {
             lastModified: Long = 0,
             ignoredArticles: String,
             indexList: List<Index> = emptyList(),
-            shortcuts: List<Index> = emptyList()): Indexes
+            shortcuts: List<Artist> = emptyList()): Indexes
             = Indexes(lastModified, ignoredArticles, indexList, shortcuts)
 }
