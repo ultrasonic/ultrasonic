@@ -82,7 +82,7 @@ class APIConverterTest {
             MusicFolder(id, name)
 
     private fun createArtist(id: Long = -1, name: String = "", starred: Calendar? = null): Artist
-            = Artist(id, name, starred)
+            = Artist(id = id, name = name, starred = starred)
 
     private fun createIndex(name: String = "", artistList: List<Artist> = emptyList()): Index
             = Index(name, artistList)
