@@ -1,6 +1,7 @@
 # Ultrasonic
 [![Build Status](https://circleci.com/gh/ultrasonic/ultrasonic/tree/develop.svg?style=shield&circle-token=:circle-token)](https://circleci.com/gh/ultrasonic)
 [![Codecov branch](https://img.shields.io/codecov/c/github/ultrasonic/ultrasonic/develop.svg)]()
+[![ktlint](https://img.shields.io/badge/code%20style-%E2%9D%A4-FF4081.svg)](https://ktlint.github.io/)
 
 Subsonic Music Streamer Android client
 
