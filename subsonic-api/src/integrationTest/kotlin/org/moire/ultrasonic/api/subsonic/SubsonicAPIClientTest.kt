@@ -164,17 +164,18 @@ class SubsonicAPIClientTest {
             lastModified `should equal` 1491069027523
             ignoredArticles `should equal` "The El La Los Las Le Les"
             shortcutList `should equal` listOf(
-                    Artist(889L, "podcasts", null),
-                    Artist(890L, "audiobooks", null)
+                    Artist(id = 889L, name = "podcasts"),
+                    Artist(id = 890L, name = "audiobooks")
             )
             indexList `should equal` mutableListOf(
                     Index("A", listOf(
-                            Artist(50L, "Ace Of Base", parseDate("2017-04-02T20:16:29.815Z")),
-                            Artist(379L, "A Perfect Circle", null)
+                            Artist(id = 50L, name = "Ace Of Base",
+                                    starred = parseDate("2017-04-02T20:16:29.815Z")),
+                            Artist(id = 379L, name = "A Perfect Circle")
                     )),
                     Index("H", listOf(
-                            Artist(299, "Haddaway", null),
-                            Artist(297, "Halestorm", null)
+                            Artist(id = 299, name = "Haddaway"),
+                            Artist(id = 297, name = "Halestorm")
                     ))
             )
         }
@@ -269,6 +270,55 @@ class SubsonicAPIClientTest {
                     "Rock or Bust", "AC/DC", 2014, "Hard Rock", 582L,
                     parseDate("2016-10-23T15:31:24.000Z"), null)
         }
+    }
+
+    @Test
+    fun `Should parse get artists error response`() {
+        val response = checkErrorCallParsed { client.api.getArtists(null).execute() }
+
+        response.indexes `should not be` null
+        with(response.indexes) {
+            lastModified `should equal to` 0
+            ignoredArticles `should equal to` ""
+            indexList.size `should equal to` 0
+            shortcutList.size `should equal to` 0
+        }
+    }
+
+    @Test
+    fun `Should parse get artists ok reponse`() {
+        enqueueResponse("get_artists_ok.json")
+
+        val response = client.api.getArtists(null).execute()
+
+        assertResponseSuccessful(response)
+        with(response.body().indexes) {
+            lastModified `should equal to` 0L
+            ignoredArticles `should equal to` "The El La Los Las Le Les"
+            shortcutList `should equal` emptyList()
+            indexList.size `should equal to` 2
+            indexList `should equal` listOf(
+                    Index(name = "A", artists = listOf(
+                            Artist(id = 362L, name = "AC/DC", coverArt = "ar-362", albumCount = 2),
+                            Artist(id = 254L, name = "Acceptance", coverArt = "ar-254", albumCount = 1)
+                    )),
+                    Index(name = "T", artists = listOf(
+                            Artist(id = 516L, name = "Tangerine Dream", coverArt = "ar-516", albumCount = 1),
+                            Artist(id = 242L, name = "Taproot", coverArt = "ar-242", albumCount = 2)
+                    ))
+            )
+        }
+    }
+
+    @Test
+    fun `Should pass param on query for get artists call`() {
+        enqueueResponse("get_artists_ok.json")
+        val musicFolderId = 101L
+        client.api.getArtists(musicFolderId).execute()
+
+        val request = mockWebServerRule.mockWebServer.takeRequest()
+
+        request.requestLine `should contain` "musicFolderId=$musicFolderId"
     }
 
     private fun enqueueResponse(resourceName: String) {

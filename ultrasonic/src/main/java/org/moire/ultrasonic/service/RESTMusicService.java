@@ -56,6 +56,7 @@ import org.apache.http.protocol.ExecutionContext;
 import org.apache.http.protocol.HttpContext;
 import org.moire.ultrasonic.R;
 import org.moire.ultrasonic.api.subsonic.SubsonicAPIClient;
+import org.moire.ultrasonic.api.subsonic.response.GetArtistsResponse;
 import org.moire.ultrasonic.api.subsonic.response.GetIndexesResponse;
 import org.moire.ultrasonic.api.subsonic.response.LicenseResponse;
 import org.moire.ultrasonic.api.subsonic.response.MusicFoldersResponse;
@@ -81,7 +82,6 @@ import org.moire.ultrasonic.service.parser.BookmarkParser;
 import org.moire.ultrasonic.service.parser.ChatMessageParser;
 import org.moire.ultrasonic.service.parser.ErrorParser;
 import org.moire.ultrasonic.service.parser.GenreParser;
-import org.moire.ultrasonic.service.parser.IndexesParser;
 import org.moire.ultrasonic.service.parser.JukeboxStatusParser;
 import org.moire.ultrasonic.service.parser.LyricsParser;
 import org.moire.ultrasonic.service.parser.MusicDirectoryParser;
@@ -234,6 +234,21 @@ public class RESTMusicService implements MusicService
         return musicFolders;
     }
 
+    private static List<MusicFolder> readCachedMusicFolders(Context context) {
+        String filename = getCachedMusicFoldersFilename(context);
+        return FileUtil.deserialize(context, filename);
+    }
+
+    private static void writeCachedMusicFolders(Context context, List<MusicFolder> musicFolders) {
+        String filename = getCachedMusicFoldersFilename(context);
+        FileUtil.serialize(context, new ArrayList<>(musicFolders), filename);
+    }
+
+    private static String getCachedMusicFoldersFilename(Context context) {
+        String s = Util.getRestUrl(context, null);
+        return String.format(Locale.US, "musicFolders-%d.ser", Math.abs(s.hashCode()));
+    }
+
     @Override
     public Indexes getIndexes(String musicFolderId,
                               boolean refresh,
@@ -269,68 +284,38 @@ public class RESTMusicService implements MusicService
         return String.format(Locale.US, "indexes-%d.ser", Math.abs(s.hashCode()));
     }
 
-	@Override
-	public Indexes getArtists(boolean refresh, Context context, ProgressListener progressListener) throws Exception
-	{
-		checkServerVersion(context, "1.8", "Artists by ID3 tag not supported.");
+    @Override
+    public Indexes getArtists(boolean refresh,
+                              Context context,
+                              ProgressListener progressListener) throws Exception {
+        Indexes cachedArtists = readCachedArtists(context);
+        if (cachedArtists != null &&
+                !refresh) {
+            return cachedArtists;
+        }
 
-		Indexes cachedArtists = readCachedArtists(context);
-		if (cachedArtists != null && !refresh)
-		{
-			return cachedArtists;
-		}
+        Response<GetArtistsResponse> response = subsonicAPIClient.getApi().getArtists(null).execute();
+        checkResponseSuccessful(response);
 
-		Reader reader = getReader(context, progressListener, "getArtists", null);
-		try
-		{
-			Indexes indexes = new IndexesParser(context).parse(reader, progressListener);
-			if (indexes != null)
-			{
-				writeCachedArtists(context, indexes);
-				return indexes;
-			}
+        Indexes indexes = APIConverter.toDomainEntity(response.body().getIndexes());
+        writeCachedArtists(context, indexes);
+        return indexes;
+    }
 
-			return cachedArtists != null ? cachedArtists : new Indexes(0, null, new ArrayList<org.moire.ultrasonic.domain.Artist>(), new ArrayList<org.moire.ultrasonic.domain.Artist>());
-		}
-		finally
-		{
-			Util.close(reader);
-		}
-	}
-
-	private static Indexes readCachedArtists(Context context)
-	{
-		String filename = getCachedArtistsFilename(context);
-		return FileUtil.deserialize(context, filename);
-	}
-
-	private static void writeCachedArtists(Context context, Indexes artists)
-	{
-		String filename = getCachedArtistsFilename(context);
-		FileUtil.serialize(context, artists, filename);
-	}
-
-	private static String getCachedArtistsFilename(Context context)
-	{
-		String s = Util.getRestUrl(context, null);
-		return String.format("indexes-%d.ser", Math.abs(s.hashCode()));
-	}
-
-    private static List<MusicFolder> readCachedMusicFolders(Context context) {
-        String filename = getCachedMusicFoldersFilename(context);
+    private static Indexes readCachedArtists(Context context) {
+        String filename = getCachedArtistsFilename(context);
         return FileUtil.deserialize(context, filename);
     }
 
-    private static void writeCachedMusicFolders(Context context, List<MusicFolder> musicFolders) {
-        String filename = getCachedMusicFoldersFilename(context);
-        FileUtil.serialize(context, new ArrayList<>(musicFolders), filename);
+    private static void writeCachedArtists(Context context, Indexes artists) {
+        String filename = getCachedArtistsFilename(context);
+        FileUtil.serialize(context, artists, filename);
     }
 
-	private static String getCachedMusicFoldersFilename(Context context)
-	{
-		String s = Util.getRestUrl(context, null);
-		return String.format("musicFolders-%d.ser", Math.abs(s.hashCode()));
-	}
+    private static String getCachedArtistsFilename(Context context) {
+        String s = Util.getRestUrl(context, null);
+        return String.format(Locale.US, "indexes-%d.ser", Math.abs(s.hashCode()));
+    }
 
 	@Override
 	public void star(String id, String albumId, String artistId, Context context, ProgressListener progressListener) throws Exception
