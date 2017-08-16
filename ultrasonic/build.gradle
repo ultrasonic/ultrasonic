@@ -52,6 +52,7 @@ dependencies {
 
     compile other.kotlinStdlib
 
+    testCompile other.kotlinReflect
     testCompile testing.junit
     testCompile testing.kotlinJunit
     testCompile testing.mockitoKotlin
