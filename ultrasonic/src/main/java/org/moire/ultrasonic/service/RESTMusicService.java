@@ -294,6 +294,7 @@ public class RESTMusicService implements MusicService
             return cachedArtists;
         }
 
+        updateProgressListener(progressListener, R.string.parser_reading);
         Response<GetArtistsResponse> response = subsonicAPIClient.getApi().getArtists(null).execute();
         checkResponseSuccessful(response);
 
