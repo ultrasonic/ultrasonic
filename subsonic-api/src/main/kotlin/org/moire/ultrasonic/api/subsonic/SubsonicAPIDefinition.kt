@@ -34,4 +34,9 @@ interface SubsonicAPIDefinition {
 
     @GET("getArtists.view")
     fun getArtists(@Query("musicFolderId") musicFolderId: Long?): Call<GetArtistsResponse>
+
+    @GET("star.view")
+    fun star(@Query("id") id: Long? = null,
+             @Query("albumId") albumId: Long? = null,
+             @Query("artistId") artistId: Long? = null): Call<SubsonicResponse>
 }
