@@ -334,43 +334,21 @@ public class RESTMusicService implements MusicService
         checkResponseSuccessful(response);
     }
 
-	@Override
-	public void unstar(String id, String albumId, String artistId, Context context, ProgressListener progressListener) throws Exception
-	{
-		checkServerVersion(context, "1.8", "Unstarring not supported.");
+    @Override
+    public void unstar(String id,
+                       String albumId,
+                       String artistId,
+                       Context context,
+                       ProgressListener progressListener) throws Exception {
+        Long apiId = id == null ? null : Long.valueOf(id);
+        Long apiAlbumId = albumId == null ? null : Long.valueOf(albumId);
+        Long apiArtistId = artistId == null ? null : Long.valueOf(artistId);
 
-		List<String> parameterNames = new LinkedList<String>();
-		List<Object> parameterValues = new LinkedList<Object>();
-
-		if (id != null)
-		{
-			parameterNames.add("id");
-			parameterValues.add(id);
-		}
-
-		if (albumId != null)
-		{
-			parameterNames.add("albumId");
-			parameterValues.add(albumId);
-		}
-
-		if (artistId != null)
-		{
-			parameterNames.add("artistId");
-			parameterValues.add(artistId);
-		}
-
-
-		Reader reader = getReader(context, progressListener, "unstar", null, parameterNames, parameterValues);
-		try
-		{
-			new ErrorParser(context).parse(reader);
-		}
-		finally
-		{
-			Util.close(reader);
-		}
-	}
+        updateProgressListener(progressListener, R.string.parser_reading);
+        Response<SubsonicResponse> response = subsonicAPIClient.getApi()
+                .unstar(apiId, apiAlbumId, apiArtistId).execute();
+        checkResponseSuccessful(response);
+    }
 
 	@Override
 	public MusicDirectory getMusicDirectory(String id, String name, boolean refresh, Context context, ProgressListener progressListener) throws Exception
