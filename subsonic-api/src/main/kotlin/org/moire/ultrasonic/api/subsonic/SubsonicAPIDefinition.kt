@@ -39,4 +39,9 @@ interface SubsonicAPIDefinition {
     fun star(@Query("id") id: Long? = null,
              @Query("albumId") albumId: Long? = null,
              @Query("artistId") artistId: Long? = null): Call<SubsonicResponse>
+
+    @GET("unstar.view")
+    fun unstar(@Query("id") id: Long? = null,
+               @Query("albumId") albumId: Long? = null,
+               @Query("artistId") artistId: Long? = null): Call<SubsonicResponse>
 }
