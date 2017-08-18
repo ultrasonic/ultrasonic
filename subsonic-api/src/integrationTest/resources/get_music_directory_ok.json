@@ -1,35 +1,63 @@
 {
-  "subsonic-response" : {
-    "status" : "ok",
-    "version" : "1.13.0",
-    "directory" : {
-      "id" : "382",
-      "name" : "AC_DC",
-      "starred" : "2017-04-02T20:16:29.815Z",
-      "child" : [ {
-        "id" : "583",
-        "parent" : "382",
-        "isDir" : true,
-        "title" : "Black Ice",
-        "album" : "Black Ice",
-        "artist" : "AC/DC",
-        "year" : 2008,
-        "genre" : "Hard Rock",
-        "coverArt" : "583",
-        "created" : "2016-10-23T15:31:22.000Z",
-        "starred" : "2017-04-02T20:16:15.724Z"
-      }, {
-        "id" : "582",
-        "parent" : "382",
-        "isDir" : true,
-        "title" : "Rock or Bust",
-        "album" : "Rock or Bust",
-        "artist" : "AC/DC",
-        "year" : 2014,
-        "genre" : "Hard Rock",
-        "coverArt" : "582",
-        "created" : "2016-10-23T15:31:24.000Z"
-      } ]
-    }
-  }
+    "subsonic-response" : {
+        "status" : "ok",
+        "version" : "1.15.0",
+        "directory" : {
+           "id" : "4836",
+           "parent" : "300",
+           "name" : "12 Stones",
+           "userRating" : 5,
+           "averageRating" : 5.0,
+           "playCount" : 1,
+           "child" : [ {
+              "id" : "4844",
+              "parent" : "4836",
+              "isDir" : false,
+              "title" : "Crash",
+              "album" : "12 Stones",
+              "artist" : "12 Stones",
+              "track" : 1,
+              "year" : 2002,
+              "genre" : "Alternative Rock",
+              "coverArt" : "4836",
+              "size" : 5348318,
+              "contentType" : "audio/mpeg",
+              "suffix" : "mp3",
+              "duration" : 222,
+              "bitRate" : 192,
+              "path" : "12 Stones/12 Stones/01 Crash.mp3",
+              "isVideo" : false,
+              "playCount" : 0,
+              "discNumber" : 1,
+              "created" : "2016-10-23T15:19:10.000Z",
+              "albumId" : "454",
+              "artistId" : "288",
+              "type" : "music"
+           }, {
+              "id" : "4845",
+              "parent" : "4836",
+              "isDir" : false,
+              "title" : "Broken",
+              "album" : "12 Stones",
+              "artist" : "12 Stones",
+              "track" : 2,
+              "year" : 2002,
+              "genre" : "Alternative Rock",
+              "coverArt" : "4836",
+              "size" : 4309043,
+              "contentType" : "audio/mpeg",
+              "suffix" : "mp3",
+              "duration" : 179,
+              "bitRate" : 192,
+              "path" : "12 Stones/12 Stones/02 Broken.mp3",
+              "isVideo" : false,
+              "playCount" : 0,
+              "discNumber" : 1,
+              "created" : "2016-10-23T15:19:09.000Z",
+              "albumId" : "454",
+              "artistId" : "288",
+              "type" : "music"
+           } ]
+        }
+     }
 }

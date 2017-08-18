@@ -2,6 +2,7 @@ package org.moire.ultrasonic.api.subsonic
 
 import org.amshove.kluent.`should be`
 import org.amshove.kluent.`should contain`
+import org.amshove.kluent.`should equal to`
 import org.amshove.kluent.`should equal`
 import org.amshove.kluent.`should not be`
 import org.junit.Test
@@ -17,7 +18,17 @@ class SubsonicApiGetMusicDirectoryTest : SubsonicAPIClientTest() {
             client.api.getMusicDirectory(1).execute()
         })
 
-        response.musicDirectory `should be` null
+        with(response.musicDirectory) {
+            this `should not be` null
+            id `should equal to` -1L
+            parent `should equal to` -1L
+            name `should equal to` ""
+            userRating `should equal to` 0
+            averageRating `should equal to` 0.0f
+            starred `should be` null
+            playCount `should equal to` 0
+            childList `should be` emptyList<MusicDirectoryChild>()
+        }
     }
 
     @Test
@@ -39,17 +50,29 @@ class SubsonicApiGetMusicDirectoryTest : SubsonicAPIClientTest() {
         assertResponseSuccessful(response)
 
         response.body().musicDirectory `should not be` null
-        with(response.body().musicDirectory!!) {
-            id `should equal` 382L
-            name `should equal` "AC_DC"
-            starred `should equal` parseDate("2017-04-02T20:16:29.815Z")
+        with(response.body().musicDirectory) {
+            id `should equal to` 4836L
+            parent `should equal to` 300L
+            name `should equal` "12 Stones"
+            userRating `should equal to` 5
+            averageRating `should equal to` 5.0f
+            starred `should equal` null
+            playCount `should equal to` 1
             childList.size `should be` 2
-            childList[0] `should equal` MusicDirectoryChild(583L, 382L, true, "Black Ice",
-                    "Black Ice", "AC/DC", 2008, "Hard Rock", 583L,
-                    parseDate("2016-10-23T15:31:22.000Z"), parseDate("2017-04-02T20:16:15.724Z"))
-            childList[1] `should equal` MusicDirectoryChild(582L, 382L, true, "Rock or Bust",
-                    "Rock or Bust", "AC/DC", 2014, "Hard Rock", 582L,
-                    parseDate("2016-10-23T15:31:24.000Z"), null)
+            childList[0] `should equal` MusicDirectoryChild(id = 4844L, parent = 4836L, isDir = false,
+                    title = "Crash", album = "12 Stones", artist = "12 Stones", track = 1, year = 2002,
+                    genre = "Alternative Rock", coverArt = 4836L, size = 5348318L,
+                    contentType = "audio/mpeg", suffix = "mp3", duration = 222, bitRate = 192,
+                    path = "12 Stones/12 Stones/01 Crash.mp3", isVideo = false, playCount = 0,
+                    discNumber = 1, created = parseDate("2016-10-23T15:19:10.000Z"),
+                    albumId = 454L, artistId = 288L, type = "music")
+            childList[1] `should equal` MusicDirectoryChild(id = 4845L, parent = 4836L, isDir = false,
+                    title = "Broken", album = "12 Stones", artist = "12 Stones", track = 2, year = 2002,
+                    genre = "Alternative Rock", coverArt = 4836L, size = 4309043L,
+                    contentType = "audio/mpeg", suffix = "mp3", duration = 179, bitRate = 192,
+                    path = "12 Stones/12 Stones/02 Broken.mp3", isVideo = false, playCount = 0,
+                    discNumber = 1, created = parseDate("2016-10-23T15:19:09.000Z"),
+                    albumId = 454L, artistId = 288L, type = "music")
         }
     }
 }

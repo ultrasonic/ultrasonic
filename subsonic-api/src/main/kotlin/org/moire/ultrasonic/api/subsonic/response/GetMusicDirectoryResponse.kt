@@ -9,5 +9,5 @@ class GetMusicDirectoryResponse(status: Status,
                                 version: SubsonicAPIVersions,
                                 error: SubsonicError?,
                                 @JsonProperty("directory")
-                                val musicDirectory: MusicDirectory?) :
+                                val musicDirectory: MusicDirectory = MusicDirectory()) :
         SubsonicResponse(status, version, error)
