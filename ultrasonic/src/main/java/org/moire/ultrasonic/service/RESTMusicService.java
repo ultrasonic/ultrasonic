@@ -56,6 +56,7 @@ import org.apache.http.protocol.ExecutionContext;
 import org.apache.http.protocol.HttpContext;
 import org.moire.ultrasonic.R;
 import org.moire.ultrasonic.api.subsonic.SubsonicAPIClient;
+import org.moire.ultrasonic.api.subsonic.response.GetArtistResponse;
 import org.moire.ultrasonic.api.subsonic.response.GetArtistsResponse;
 import org.moire.ultrasonic.api.subsonic.response.GetIndexesResponse;
 import org.moire.ultrasonic.api.subsonic.response.GetMusicDirectoryResponse;
@@ -369,21 +370,23 @@ public class RESTMusicService implements MusicService
         return APIConverter.toDomainEntity(response.body().getMusicDirectory());
     }
 
-	@Override
-	public MusicDirectory getArtist(String id, String name, boolean refresh, Context context, ProgressListener progressListener) throws Exception
-	{
-		checkServerVersion(context, "1.8", "Artist by ID3 tag not supported.");
+    @Override
+    public MusicDirectory getArtist(String id,
+                                    String name,
+                                    boolean refresh,
+                                    Context context,
+                                    ProgressListener progressListener) throws Exception {
+        if (id == null) {
+            throw new IllegalArgumentException("Id can't be null!");
+        }
 
-		Reader reader = getReader(context, progressListener, "getArtist", null, "id", id);
-		try
-		{
-			return new MusicDirectoryParser(context).parse(name, reader, progressListener, false);
-		}
-		finally
-		{
-			Util.close(reader);
-		}
-	}
+        updateProgressListener(progressListener, R.string.parser_reading);
+        Response<GetArtistResponse> response = subsonicAPIClient.getApi()
+                .getArtist(Long.valueOf(id)).execute();
+        checkResponseSuccessful(response);
+
+        return APIConverter.toMusicDirectoryDomainEntity(response.body().getArtist());
+    }
 
 	@Override
 	public MusicDirectory getAlbum(String id, String name, boolean refresh, Context context, ProgressListener progressListener) throws Exception
