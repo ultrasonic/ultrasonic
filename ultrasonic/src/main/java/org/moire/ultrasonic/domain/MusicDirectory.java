@@ -416,6 +416,10 @@ public class MusicDirectory
 			}
 		}
 
+		public void setCreated(Date created) {
+		    this.created = created;
+        }
+
 		public int getCloseness()
 		{
 			return closeness;
