@@ -101,7 +101,7 @@ class APIConverterTest {
     fun `Should convert MusicDirectoryChild entity`() {
         val entity = MusicDirectoryChild(id = 929L, parent = 11L, title = "some-title",
                 album = "some-album", albumId = 231L, artist = "some-artist", artistId = 1233L,
-                track = 12, year = 2002, genre = "some-genre", coverArt = 952L, size = 9418123L,
+                track = 12, year = 2002, genre = "some-genre", coverArt = "952", size = 9418123L,
                 contentType = "some-content-type", suffix = "some-suffix",
                 transcodedContentType = "some-transcoded-content-type",
                 transcodedSuffix = "some-transcoded-suffix", duration = 11, bitRate = 256,
@@ -126,7 +126,7 @@ class APIConverterTest {
             suffix `should equal to` entity.suffix
             transcodedContentType `should equal to` entity.transcodedContentType
             transcodedSuffix `should equal to` entity.transcodedSuffix
-            coverArt `should equal to` entity.coverArt.toString()
+            coverArt `should equal to` entity.coverArt
             size `should equal to` entity.size
             duration `should equal to` entity.duration
             bitRate `should equal to` entity.bitRate
