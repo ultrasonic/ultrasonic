@@ -58,6 +58,7 @@ import org.moire.ultrasonic.R;
 import org.moire.ultrasonic.api.subsonic.SubsonicAPIClient;
 import org.moire.ultrasonic.api.subsonic.response.GetArtistsResponse;
 import org.moire.ultrasonic.api.subsonic.response.GetIndexesResponse;
+import org.moire.ultrasonic.api.subsonic.response.GetMusicDirectoryResponse;
 import org.moire.ultrasonic.api.subsonic.response.LicenseResponse;
 import org.moire.ultrasonic.api.subsonic.response.MusicFoldersResponse;
 import org.moire.ultrasonic.api.subsonic.response.SubsonicResponse;
@@ -350,19 +351,23 @@ public class RESTMusicService implements MusicService
         checkResponseSuccessful(response);
     }
 
-	@Override
-	public MusicDirectory getMusicDirectory(String id, String name, boolean refresh, Context context, ProgressListener progressListener) throws Exception
-	{
-		Reader reader = getReader(context, progressListener, "getMusicDirectory", null, "id", id);
-		try
-		{
-			return new MusicDirectoryParser(context).parse(name, reader, progressListener, false);
-		}
-		finally
-		{
-			Util.close(reader);
-		}
-	}
+    @Override
+    public MusicDirectory getMusicDirectory(String id,
+                                            String name,
+                                            boolean refresh,
+                                            Context context,
+                                            ProgressListener progressListener) throws Exception {
+        if (id == null) {
+            throw new IllegalArgumentException("Id should not be null!");
+        }
+
+        updateProgressListener(progressListener, R.string.parser_reading);
+        Response<GetMusicDirectoryResponse> response = subsonicAPIClient.getApi()
+                .getMusicDirectory(Long.valueOf(id)).execute();
+        checkResponseSuccessful(response);
+
+        return APIConverter.toDomainEntity(response.body().getMusicDirectory());
+    }
 
 	@Override
 	public MusicDirectory getArtist(String id, String name, boolean refresh, Context context, ProgressListener progressListener) throws Exception
