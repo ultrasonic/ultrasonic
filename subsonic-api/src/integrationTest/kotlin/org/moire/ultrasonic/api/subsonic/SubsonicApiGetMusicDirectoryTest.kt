@@ -61,14 +61,14 @@ class SubsonicApiGetMusicDirectoryTest : SubsonicAPIClientTest() {
             childList.size `should be` 2
             childList[0] `should equal` MusicDirectoryChild(id = 4844L, parent = 4836L, isDir = false,
                     title = "Crash", album = "12 Stones", artist = "12 Stones", track = 1, year = 2002,
-                    genre = "Alternative Rock", coverArt = 4836L, size = 5348318L,
+                    genre = "Alternative Rock", coverArt = "4836", size = 5348318L,
                     contentType = "audio/mpeg", suffix = "mp3", duration = 222, bitRate = 192,
                     path = "12 Stones/12 Stones/01 Crash.mp3", isVideo = false, playCount = 0,
                     discNumber = 1, created = parseDate("2016-10-23T15:19:10.000Z"),
                     albumId = 454L, artistId = 288L, type = "music")
             childList[1] `should equal` MusicDirectoryChild(id = 4845L, parent = 4836L, isDir = false,
                     title = "Broken", album = "12 Stones", artist = "12 Stones", track = 2, year = 2002,
-                    genre = "Alternative Rock", coverArt = 4836L, size = 4309043L,
+                    genre = "Alternative Rock", coverArt = "4836", size = 4309043L,
                     contentType = "audio/mpeg", suffix = "mp3", duration = 179, bitRate = 192,
                     path = "12 Stones/12 Stones/02 Broken.mp3", isVideo = false, playCount = 0,
                     discNumber = 1, created = parseDate("2016-10-23T15:19:09.000Z"),
