@@ -2,6 +2,7 @@
 @file:JvmName("APIConverter")
 package org.moire.ultrasonic.data
 
+import org.moire.ultrasonic.api.subsonic.models.Album
 import org.moire.ultrasonic.api.subsonic.models.Index
 import org.moire.ultrasonic.api.subsonic.models.MusicDirectoryChild
 import org.moire.ultrasonic.domain.Artist
@@ -28,6 +29,24 @@ private fun List<Index>.foldIndexToArtistList(): List<Artist> = this.fold(listOf
 fun APIArtist.toDomainEntity(): Artist = Artist().apply {
     id = this@toDomainEntity.id.toString()
     name = this@toDomainEntity.name
+}
+
+fun APIArtist.toMusicDirectoryDomainEntity(): MusicDirectory = MusicDirectory().apply {
+    name = this@toMusicDirectoryDomainEntity.name
+    addAll(this@toMusicDirectoryDomainEntity.albumsList.map { it.toDomainEntity() })
+}
+
+fun Album.toDomainEntity(): MusicDirectory.Entry = MusicDirectory.Entry().apply {
+    id = this@toDomainEntity.id.toString()
+    title = this@toDomainEntity.name
+    coverArt = this@toDomainEntity.coverArt
+    artist = this@toDomainEntity.artist
+    artistId = this@toDomainEntity.artistId.toString()
+    songCount = this@toDomainEntity.songCount.toLong()
+    duration = this@toDomainEntity.duration
+    created = this@toDomainEntity.created?.time
+    year = this@toDomainEntity.year
+    genre = this@toDomainEntity.genre
 }
 
 fun MusicDirectoryChild.toDomainEntity(): MusicDirectory.Entry = MusicDirectory.Entry().apply {
