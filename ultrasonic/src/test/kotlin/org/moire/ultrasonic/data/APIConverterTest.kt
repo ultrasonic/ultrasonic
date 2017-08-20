@@ -5,6 +5,7 @@ package org.moire.ultrasonic.data
 import org.amshove.kluent.`should equal to`
 import org.amshove.kluent.`should equal`
 import org.junit.Test
+import org.moire.ultrasonic.api.subsonic.models.Album
 import org.moire.ultrasonic.api.subsonic.models.Artist
 import org.moire.ultrasonic.api.subsonic.models.Index
 import org.moire.ultrasonic.api.subsonic.models.Indexes
@@ -18,6 +19,7 @@ import java.util.Calendar
  *
  * @author Yahor Berdnikau
  */
+@Suppress("TooManyFunctions")
 class APIConverterTest {
     @Test
     fun `Should convert MusicFolder entity`() {
@@ -134,6 +136,43 @@ class APIConverterTest {
             starred `should equal to` (entity.starred != null)
             discNumber `should equal to` entity.discNumber
             type `should equal to` entity.type
+        }
+    }
+
+    @Test
+    fun `Should convert Artist entity to domain MusicDirectory entity`() {
+        val entity = Artist(id = 101L, name = "artist-name", coverArt = "some-art", albumCount = 10,
+                albumsList = listOf(Album(id = 562L, name = "some-name", coverArt = "zzz",
+                        artist = "artist-name", artistId = 256L, songCount = 10, duration = 345,
+                        created = Calendar.getInstance(), year = 2011, genre = "Math Rock")))
+
+        val convertedEntity = entity.toMusicDirectoryDomainEntity()
+
+        with(convertedEntity) {
+            name `should equal to` entity.name
+            children `should equal` entity.albumsList.map { it.toDomainEntity() }.toMutableList()
+        }
+    }
+
+    @Test
+    fun `Should convert Album to domain entity`() {
+        val entity = Album(id = 387L, name = "some-name", coverArt = "asdas", artist = "some-artist",
+                artistId = 390L, songCount = 12, duration = 841, created = Calendar.getInstance(),
+                year = 2017, genre = "some-genre")
+
+        val convertedEntity = entity.toDomainEntity()
+
+        with(convertedEntity) {
+            id `should equal to` entity.id.toString()
+            title `should equal to` entity.name
+            coverArt `should equal to` entity.coverArt
+            artist `should equal to` entity.artist
+            artistId `should equal to` entity.artistId.toString()
+            songCount `should equal to` entity.songCount.toLong()
+            duration `should equal to` entity.duration
+            created `should equal` entity.created?.time
+            year `should equal to` entity.year
+            genre `should equal to` entity.genre
         }
     }
 
