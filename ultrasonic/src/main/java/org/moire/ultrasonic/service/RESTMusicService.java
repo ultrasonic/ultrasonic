@@ -56,6 +56,7 @@ import org.apache.http.protocol.ExecutionContext;
 import org.apache.http.protocol.HttpContext;
 import org.moire.ultrasonic.R;
 import org.moire.ultrasonic.api.subsonic.SubsonicAPIClient;
+import org.moire.ultrasonic.api.subsonic.response.GetAlbumResponse;
 import org.moire.ultrasonic.api.subsonic.response.GetArtistResponse;
 import org.moire.ultrasonic.api.subsonic.response.GetArtistsResponse;
 import org.moire.ultrasonic.api.subsonic.response.GetIndexesResponse;
@@ -388,21 +389,23 @@ public class RESTMusicService implements MusicService
         return APIConverter.toMusicDirectoryDomainEntity(response.body().getArtist());
     }
 
-	@Override
-	public MusicDirectory getAlbum(String id, String name, boolean refresh, Context context, ProgressListener progressListener) throws Exception
-	{
-		checkServerVersion(context, "1.8", "Album by ID3 tag not supported.");
+    @Override
+    public MusicDirectory getAlbum(String id,
+                                   String name,
+                                   boolean refresh,
+                                   Context context,
+                                   ProgressListener progressListener) throws Exception {
+        if (id == null) {
+            throw new IllegalArgumentException("Id argument is null!");
+        }
 
-		Reader reader = getReader(context, progressListener, "getAlbum", null, "id", id);
-		try
-		{
-			return new MusicDirectoryParser(context).parse(name, reader, progressListener, true);
-		}
-		finally
-		{
-			Util.close(reader);
-		}
-	}
+        updateProgressListener(progressListener, R.string.parser_reading);
+        Response<GetAlbumResponse> response = subsonicAPIClient.getApi()
+                .getAlbum(Long.valueOf(id)).execute();
+        checkResponseSuccessful(response);
+
+        return APIConverter.toMusicDirectoryDomainEntity(response.body().getAlbum());
+    }
 
 	@Override
 	public SearchResult search(SearchCriteria criteria, Context context, ProgressListener progressListener) throws Exception
