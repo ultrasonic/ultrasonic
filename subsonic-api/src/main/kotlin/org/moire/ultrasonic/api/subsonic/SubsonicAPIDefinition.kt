@@ -1,5 +1,6 @@
 package org.moire.ultrasonic.api.subsonic
 
+import org.moire.ultrasonic.api.subsonic.response.GetAlbumResponse
 import org.moire.ultrasonic.api.subsonic.response.GetArtistResponse
 import org.moire.ultrasonic.api.subsonic.response.GetArtistsResponse
 import org.moire.ultrasonic.api.subsonic.response.GetIndexesResponse
@@ -48,4 +49,7 @@ interface SubsonicAPIDefinition {
 
     @GET("getArtist.view")
     fun getArtist(@Query("id") id: Long): Call<GetArtistResponse>
+
+    @GET("getAlbum.view")
+    fun getAlbum(@Query("id") id: Long): Call<GetAlbumResponse>
 }

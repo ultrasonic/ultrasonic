@@ -1,5 +1,6 @@
 package org.moire.ultrasonic.api.subsonic.models
 
+import com.fasterxml.jackson.annotation.JsonProperty
 import java.util.Calendar
 
 data class Album(
@@ -12,4 +13,5 @@ data class Album(
         val duration: Int = 0,
         val created: Calendar? = null,
         val year: Int = 0,
-        val genre: String = "")
+        val genre: String = "",
+        @JsonProperty("song") val songList: List<MusicDirectoryChild> = emptyList())

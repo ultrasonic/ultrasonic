@@ -176,6 +176,22 @@ class APIConverterTest {
         }
     }
 
+    @Test
+    fun `Should convert to MusicDirectory domain entity`() {
+        val entity = Album(id = 101L, name = "some-album", artist = "some-artist", artistId = 54L,
+                coverArt = "some-id", songCount = 10, duration = 456,
+                created = Calendar.getInstance(), year = 2022, genre = "Hard Rock",
+                songList = listOf(MusicDirectoryChild()))
+
+        val convertedEntity = entity.toMusicDirectoryDomainEntity()
+
+        with(convertedEntity) {
+            name `should equal` null
+            children.size `should equal to` entity.songList.size
+            children[0] `should equal` entity.songList[0].toDomainEntity()
+        }
+    }
+
     private fun createMusicFolder(id: Long = 0, name: String = ""): MusicFolder =
             MusicFolder(id, name)
 

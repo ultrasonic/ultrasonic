@@ -49,6 +49,10 @@ fun Album.toDomainEntity(): MusicDirectory.Entry = MusicDirectory.Entry().apply 
     genre = this@toDomainEntity.genre
 }
 
+fun Album.toMusicDirectoryDomainEntity(): MusicDirectory = MusicDirectory().apply {
+    addAll(this@toMusicDirectoryDomainEntity.songList.map { it.toDomainEntity() })
+}
+
 fun MusicDirectoryChild.toDomainEntity(): MusicDirectory.Entry = MusicDirectory.Entry().apply {
     id = this@toDomainEntity.id.toString()
     parent = this@toDomainEntity.parent.toString()
@@ -65,13 +69,13 @@ fun MusicDirectoryChild.toDomainEntity(): MusicDirectory.Entry = MusicDirectory.
     suffix = this@toDomainEntity.suffix
     transcodedContentType = this@toDomainEntity.transcodedContentType
     transcodedSuffix = this@toDomainEntity.transcodedSuffix
-    coverArt = this@toDomainEntity.coverArt.toString()
+    coverArt = this@toDomainEntity.coverArt
     size = this@toDomainEntity.size
     duration = this@toDomainEntity.duration
     bitRate = this@toDomainEntity.bitRate
     path = this@toDomainEntity.path
     setIsVideo(this@toDomainEntity.isVideo)
-    setCreated(this@toDomainEntity.created?.time)
+    created = this@toDomainEntity.created?.time
     starred = this@toDomainEntity.starred != null
     discNumber = this@toDomainEntity.discNumber
     type = this@toDomainEntity.type
