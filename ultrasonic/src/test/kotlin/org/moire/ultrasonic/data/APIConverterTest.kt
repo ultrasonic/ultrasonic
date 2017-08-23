@@ -4,6 +4,7 @@ package org.moire.ultrasonic.data
 
 import org.amshove.kluent.`should equal to`
 import org.amshove.kluent.`should equal`
+import org.amshove.kluent.`should not equal`
 import org.junit.Test
 import org.moire.ultrasonic.api.subsonic.models.Album
 import org.moire.ultrasonic.api.subsonic.models.Artist
@@ -12,6 +13,7 @@ import org.moire.ultrasonic.api.subsonic.models.Indexes
 import org.moire.ultrasonic.api.subsonic.models.MusicDirectory
 import org.moire.ultrasonic.api.subsonic.models.MusicDirectoryChild
 import org.moire.ultrasonic.api.subsonic.models.MusicFolder
+import org.moire.ultrasonic.api.subsonic.models.SearchResult
 import java.util.Calendar
 
 /**
@@ -189,6 +191,24 @@ class APIConverterTest {
             name `should equal` null
             children.size `should equal to` entity.songList.size
             children[0] `should equal` entity.songList[0].toDomainEntity()
+        }
+    }
+
+    @Test
+    fun `Should convert SearchResult to domain entity`() {
+        val entity = SearchResult(offset = 10, totalHits = 3, matchList = listOf(
+                MusicDirectoryChild(id = 101L)
+        ))
+
+        val convertedEntity = entity.toDomainEntity()
+
+        with(convertedEntity) {
+            albums `should not equal` null
+            albums.size `should equal to` 0
+            artists `should not equal` null
+            artists.size `should equal to` 0
+            songs.size `should equal to` entity.matchList.size
+            songs[0] `should equal` entity.matchList[0].toDomainEntity()
         }
     }
 
