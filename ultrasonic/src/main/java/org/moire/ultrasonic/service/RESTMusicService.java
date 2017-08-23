@@ -63,6 +63,7 @@ import org.moire.ultrasonic.api.subsonic.response.GetIndexesResponse;
 import org.moire.ultrasonic.api.subsonic.response.GetMusicDirectoryResponse;
 import org.moire.ultrasonic.api.subsonic.response.LicenseResponse;
 import org.moire.ultrasonic.api.subsonic.response.MusicFoldersResponse;
+import org.moire.ultrasonic.api.subsonic.response.SearchResponse;
 import org.moire.ultrasonic.api.subsonic.response.SubsonicResponse;
 import org.moire.ultrasonic.data.APIConverter;
 import org.moire.ultrasonic.domain.Bookmark;
@@ -94,7 +95,6 @@ import org.moire.ultrasonic.service.parser.PodcastEpisodeParser;
 import org.moire.ultrasonic.service.parser.PodcastsChannelsParser;
 import org.moire.ultrasonic.service.parser.RandomSongsParser;
 import org.moire.ultrasonic.service.parser.SearchResult2Parser;
-import org.moire.ultrasonic.service.parser.SearchResultParser;
 import org.moire.ultrasonic.service.parser.ShareParser;
 import org.moire.ultrasonic.service.parser.UserInfoParser;
 import org.moire.ultrasonic.service.ssl.SSLSocketFactory;
@@ -407,39 +407,36 @@ public class RESTMusicService implements MusicService
         return APIConverter.toMusicDirectoryDomainEntity(response.body().getAlbum());
     }
 
-	@Override
-	public SearchResult search(SearchCriteria criteria, Context context, ProgressListener progressListener) throws Exception
-	{
-		try
-		{
-			return !Util.isOffline(context) && Util.getShouldUseId3Tags(context) ? search3(criteria, context, progressListener) : search2(criteria, context, progressListener);
-		}
-		catch (ServerTooOldException x)
-		{
-			// Ensure backward compatibility with REST 1.3.
-			return searchOld(criteria, context, progressListener);
-		}
-	}
+    @Override
+    public SearchResult search(SearchCriteria criteria,
+                               Context context,
+                               ProgressListener progressListener) throws Exception {
+        try {
+            return !Util.isOffline(context) &&
+                    Util.getShouldUseId3Tags(context) ?
+                    search3(criteria, context, progressListener) :
+                    search2(criteria, context, progressListener);
+        } catch (ServerTooOldException x) {
+            // Ensure backward compatibility with REST 1.3.
+            return searchOld(criteria, context, progressListener);
+        }
+    }
 
-	/**
-	 * Search using the "search" REST method.
-	 */
-	private SearchResult searchOld(SearchCriteria criteria, Context context, ProgressListener progressListener) throws Exception
-	{
-		List<String> parameterNames = asList("any", "songCount");
-		List<Object> parameterValues = Arrays.<Object>asList(criteria.getQuery(), criteria.getSongCount());
-		Reader reader = getReader(context, progressListener, "search", null, parameterNames, parameterValues);
-		try
-		{
-			return new SearchResultParser(context).parse(reader, progressListener);
-		}
-		finally
-		{
-			Util.close(reader);
-		}
-	}
+    /**
+     * Search using the "search" REST method.
+     */
+    private SearchResult searchOld(SearchCriteria criteria,
+                                   Context context,
+                                   ProgressListener progressListener) throws Exception {
+        updateProgressListener(progressListener, R.string.parser_reading);
+        Response<SearchResponse> response = subsonicAPIClient.getApi().search(null, null, null, criteria.getQuery(),
+                criteria.getSongCount(), null, null).execute();
+        checkResponseSuccessful(response);
 
-	/**
+        return APIConverter.toDomainEntity(response.body().getSearchResult());
+    }
+
+    /**
 	 * Search using the "search2" REST method, available in 1.4.0 and later.
 	 */
 	private SearchResult search2(SearchCriteria criteria, Context context, ProgressListener progressListener) throws Exception
