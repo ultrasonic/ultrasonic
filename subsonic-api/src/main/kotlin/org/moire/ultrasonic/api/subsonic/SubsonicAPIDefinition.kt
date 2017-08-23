@@ -7,6 +7,7 @@ import org.moire.ultrasonic.api.subsonic.response.GetIndexesResponse
 import org.moire.ultrasonic.api.subsonic.response.GetMusicDirectoryResponse
 import org.moire.ultrasonic.api.subsonic.response.LicenseResponse
 import org.moire.ultrasonic.api.subsonic.response.MusicFoldersResponse
+import org.moire.ultrasonic.api.subsonic.response.SearchResponse
 import org.moire.ultrasonic.api.subsonic.response.SubsonicResponse
 import retrofit2.Call
 import retrofit2.http.GET
@@ -17,6 +18,7 @@ import retrofit2.http.Query
  *
  * For methods description see [http://www.subsonic.org/pages/api.jsp].
  */
+@Suppress("TooManyFunctions", "LongParameterList")
 interface SubsonicAPIDefinition {
     @GET("ping.view")
     fun ping(): Call<SubsonicResponse>
@@ -52,4 +54,13 @@ interface SubsonicAPIDefinition {
 
     @GET("getAlbum.view")
     fun getAlbum(@Query("id") id: Long): Call<GetAlbumResponse>
+
+    @GET("search.view")
+    fun search(@Query("artist") artist: String? = null,
+               @Query("album") album: String? = null,
+               @Query("title") title: String? = null,
+               @Query("any") any: String? = null,
+               @Query("count") count: Int? = null,
+               @Query("offset") offset: Int? = null,
+               @Query("newerThan") newerThan: Long? = null): Call<SearchResponse>
 }
