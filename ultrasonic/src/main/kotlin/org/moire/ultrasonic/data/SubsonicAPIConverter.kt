@@ -9,10 +9,12 @@ import org.moire.ultrasonic.domain.Artist
 import org.moire.ultrasonic.domain.Indexes
 import org.moire.ultrasonic.domain.MusicDirectory
 import org.moire.ultrasonic.domain.MusicFolder
+import org.moire.ultrasonic.domain.SearchResult
 import org.moire.ultrasonic.api.subsonic.models.Artist as APIArtist
 import org.moire.ultrasonic.api.subsonic.models.Indexes as APIIndexes
 import org.moire.ultrasonic.api.subsonic.models.MusicDirectory as APIMusicDirectory
 import org.moire.ultrasonic.api.subsonic.models.MusicFolder as APIMusicFolder
+import org.moire.ultrasonic.api.subsonic.models.SearchResult as APISearchResult
 
 fun APIMusicFolder.toDomainEntity(): MusicFolder = MusicFolder(this.id.toString(), this.name)
 
@@ -85,3 +87,6 @@ fun APIMusicDirectory.toDomainEntity(): MusicDirectory = MusicDirectory().apply 
     name = this@toDomainEntity.name
     addAll(this@toDomainEntity.childList.map { it.toDomainEntity() })
 }
+
+fun APISearchResult.toDomainEntity(): SearchResult = SearchResult(emptyList(), emptyList(),
+        this.matchList.map { it.toDomainEntity() })

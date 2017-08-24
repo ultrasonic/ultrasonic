@@ -1,0 +1,35 @@
+{
+  "subsonic-response" : {
+    "status" : "ok",
+    "version" : "1.15.0",
+    "searchResult" : {
+      "offset" : 10,
+      "totalHits" : 53,
+      "match" : [ {
+        "id" : "5831",
+        "parent" : "5766",
+        "isDir" : false,
+        "title" : "You'll Be Under My Wheels",
+        "album" : "Need for Speed Most Wanted",
+        "artist" : "The Prodigy",
+        "track" : 17,
+        "year" : 2005,
+        "genre" : "Rap",
+        "coverArt" : "5766",
+        "size" : 5607024,
+        "contentType" : "audio/mpeg",
+        "suffix" : "mp3",
+        "duration" : 233,
+        "bitRate" : 192,
+        "path" : "Compilations/Need for Speed Most Wanted/17 You'll Be Under My Wheels.mp3",
+        "isVideo" : false,
+        "playCount" : 0,
+        "discNumber" : 1,
+        "created" : "2016-10-23T20:09:02.000Z",
+        "albumId" : "568",
+        "artistId" : "505",
+        "type" : "music"
+      } ]
+    }
+  }
+}

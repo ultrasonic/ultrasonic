@@ -49,7 +49,7 @@ complexity:
   ComplexMethod:
     threshold: 10
   TooManyFunctions:
-    threshold: 10
+    threshold: 20
   ComplexCondition:
     threshold: 3
   LabeledExpression:
