@@ -14,6 +14,7 @@ import org.moire.ultrasonic.api.subsonic.models.MusicDirectory
 import org.moire.ultrasonic.api.subsonic.models.MusicDirectoryChild
 import org.moire.ultrasonic.api.subsonic.models.MusicFolder
 import org.moire.ultrasonic.api.subsonic.models.SearchResult
+import org.moire.ultrasonic.api.subsonic.models.SearchTwoResult
 import java.util.Calendar
 
 /**
@@ -209,6 +210,28 @@ class APIConverterTest {
             artists.size `should equal to` 0
             songs.size `should equal to` entity.matchList.size
             songs[0] `should equal` entity.matchList[0].toDomainEntity()
+        }
+    }
+
+    @Test
+    fun `Should convert SearchTwoResult to domain entity`() {
+        val entity = SearchTwoResult(listOf(
+                Artist(id = 82, name = "great-artist-name")
+        ), listOf(
+                MusicDirectoryChild(id = 762, artist = "bzz")
+        ), listOf(
+                MusicDirectoryChild(id = 9118, parent = 112)
+        ))
+
+        val convertedEntity = entity.toDomainEntity()
+
+        with(convertedEntity) {
+            artists.size `should equal to` entity.artistList.size
+            artists[0] `should equal` entity.artistList[0].toDomainEntity()
+            albums.size `should equal to` entity.albumList.size
+            albums[0] `should equal` entity.albumList[0].toDomainEntity()
+            songs.size `should equal to` entity.songList.size
+            songs[0] `should equal` entity.songList[0].toDomainEntity()
         }
     }
 
