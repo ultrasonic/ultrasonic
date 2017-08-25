@@ -3,6 +3,7 @@ package org.moire.ultrasonic.api.subsonic
 import okhttp3.mockwebserver.MockResponse
 import okio.Okio
 import org.amshove.kluent.`should be`
+import org.amshove.kluent.`should contain`
 import org.amshove.kluent.`should not be`
 import org.moire.ultrasonic.api.subsonic.response.SubsonicResponse
 import org.moire.ultrasonic.api.subsonic.rules.MockWebServerRule
@@ -62,4 +63,15 @@ fun SubsonicResponse.assertBaseResponseOk() {
     status `should be` SubsonicResponse.Status.OK
     version `should be` SubsonicAPIVersions.V1_13_0
     error `should be` null
+}
+
+fun MockWebServerRule.assertRequestParam(responseResourceName: String,
+                                         apiRequest: () -> Response<out SubsonicResponse>,
+                                         expectedParam: String) {
+    this.enqueueResponse(responseResourceName)
+    apiRequest()
+
+    val request = this.mockWebServer.takeRequest()
+
+    request.requestLine `should contain` expectedParam
 }
