@@ -64,6 +64,7 @@ import org.moire.ultrasonic.api.subsonic.response.GetMusicDirectoryResponse;
 import org.moire.ultrasonic.api.subsonic.response.LicenseResponse;
 import org.moire.ultrasonic.api.subsonic.response.MusicFoldersResponse;
 import org.moire.ultrasonic.api.subsonic.response.SearchResponse;
+import org.moire.ultrasonic.api.subsonic.response.SearchTwoResponse;
 import org.moire.ultrasonic.api.subsonic.response.SubsonicResponse;
 import org.moire.ultrasonic.data.APIConverter;
 import org.moire.ultrasonic.domain.Bookmark;
@@ -437,24 +438,23 @@ public class RESTMusicService implements MusicService
     }
 
     /**
-	 * Search using the "search2" REST method, available in 1.4.0 and later.
-	 */
-	private SearchResult search2(SearchCriteria criteria, Context context, ProgressListener progressListener) throws Exception
-	{
-		checkServerVersion(context, "1.4", "Search2 not supported.");
+     * Search using the "search2" REST method, available in 1.4.0 and later.
+     */
+    private SearchResult search2(SearchCriteria criteria,
+                                 Context context,
+                                 ProgressListener progressListener) throws Exception {
+        if (criteria.getQuery() == null) {
+            throw new IllegalArgumentException("Query param is null");
+        }
 
-		List<String> parameterNames = asList("query", "artistCount", "albumCount", "songCount");
-		List<Object> parameterValues = Arrays.<Object>asList(criteria.getQuery(), criteria.getArtistCount(), criteria.getAlbumCount(), criteria.getSongCount());
-		Reader reader = getReader(context, progressListener, "search2", null, parameterNames, parameterValues);
-		try
-		{
-			return new SearchResult2Parser(context).parse(reader, progressListener, false);
-		}
-		finally
-		{
-			Util.close(reader);
-		}
-	}
+        updateProgressListener(progressListener, R.string.parser_reading);
+        Response<SearchTwoResponse> response = subsonicAPIClient.getApi().search2(criteria.getQuery(),
+                criteria.getArtistCount(), null, criteria.getAlbumCount(), null,
+                criteria.getSongCount(), null).execute();
+        checkResponseSuccessful(response);
+
+        return APIConverter.toDomainEntity(response.body().getSearchResult());
+    }
 
 	private SearchResult search3(SearchCriteria criteria, Context context, ProgressListener progressListener) throws Exception
 	{
