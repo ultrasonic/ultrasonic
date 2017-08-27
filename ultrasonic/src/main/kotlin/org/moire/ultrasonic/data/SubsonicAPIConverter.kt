@@ -5,6 +5,7 @@ package org.moire.ultrasonic.data
 import org.moire.ultrasonic.api.subsonic.models.Album
 import org.moire.ultrasonic.api.subsonic.models.Index
 import org.moire.ultrasonic.api.subsonic.models.MusicDirectoryChild
+import org.moire.ultrasonic.api.subsonic.models.SearchThreeResult
 import org.moire.ultrasonic.api.subsonic.models.SearchTwoResult
 import org.moire.ultrasonic.domain.Artist
 import org.moire.ultrasonic.domain.Indexes
@@ -41,6 +42,7 @@ fun APIArtist.toMusicDirectoryDomainEntity(): MusicDirectory = MusicDirectory().
 
 fun Album.toDomainEntity(): MusicDirectory.Entry = MusicDirectory.Entry().apply {
     id = this@toDomainEntity.id.toString()
+    setIsDirectory(true)
     title = this@toDomainEntity.name
     coverArt = this@toDomainEntity.coverArt
     artist = this@toDomainEntity.artist
@@ -92,5 +94,12 @@ fun APIMusicDirectory.toDomainEntity(): MusicDirectory = MusicDirectory().apply 
 fun APISearchResult.toDomainEntity(): SearchResult = SearchResult(emptyList(), emptyList(),
         this.matchList.map { it.toDomainEntity() })
 
-fun SearchTwoResult.toDomainEntity(): SearchResult = SearchResult(this.artistList.map { it.toDomainEntity() },
-        this.albumList.map { it.toDomainEntity() }, this.songList.map { it.toDomainEntity() })
+fun SearchTwoResult.toDomainEntity(): SearchResult = SearchResult(
+        this.artistList.map { it.toDomainEntity() },
+        this.albumList.map { it.toDomainEntity() },
+        this.songList.map { it.toDomainEntity() })
+
+fun SearchThreeResult.toDomainEntity(): SearchResult = SearchResult(
+        this.artistList.map { it.toDomainEntity() },
+        this.albumList.map { it.toDomainEntity() },
+        this.songList.map { it.toDomainEntity() })
