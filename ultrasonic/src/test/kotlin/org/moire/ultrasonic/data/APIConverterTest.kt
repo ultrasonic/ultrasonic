@@ -13,6 +13,7 @@ import org.moire.ultrasonic.api.subsonic.models.Indexes
 import org.moire.ultrasonic.api.subsonic.models.MusicDirectory
 import org.moire.ultrasonic.api.subsonic.models.MusicDirectoryChild
 import org.moire.ultrasonic.api.subsonic.models.MusicFolder
+import org.moire.ultrasonic.api.subsonic.models.Playlist
 import org.moire.ultrasonic.api.subsonic.models.SearchResult
 import org.moire.ultrasonic.api.subsonic.models.SearchThreeResult
 import org.moire.ultrasonic.api.subsonic.models.SearchTwoResult
@@ -254,6 +255,23 @@ class APIConverterTest {
             albums[0] `should equal` entity.albumList[0].toDomainEntity()
             songs.size `should equal to` entity.songList.size
             songs[0] `should equal` entity.songList[0].toDomainEntity()
+        }
+    }
+
+    @Test
+    fun `Should convert Playlist to MusicDirectory domain entity`() {
+        val entity = Playlist(name = "some-playlist-name", entriesList = listOf(
+                MusicDirectoryChild(id = 10L, parent = 1393),
+                MusicDirectoryChild(id = 11L, parent = 1393)
+        ))
+
+        val convertedEntity = entity.toMusicDirectoryDomainEntity()
+
+        with(convertedEntity) {
+            name `should equal to` entity.name
+            children.size `should equal to` entity.entriesList.size
+            children[0] `should equal` entity.entriesList[0].toDomainEntity()
+            children[1] `should equal` entity.entriesList[1].toDomainEntity()
         }
     }
 

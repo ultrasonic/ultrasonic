@@ -16,6 +16,7 @@ import org.moire.ultrasonic.api.subsonic.models.Artist as APIArtist
 import org.moire.ultrasonic.api.subsonic.models.Indexes as APIIndexes
 import org.moire.ultrasonic.api.subsonic.models.MusicDirectory as APIMusicDirectory
 import org.moire.ultrasonic.api.subsonic.models.MusicFolder as APIMusicFolder
+import org.moire.ultrasonic.api.subsonic.models.Playlist as APIPlaylist
 import org.moire.ultrasonic.api.subsonic.models.SearchResult as APISearchResult
 
 fun APIMusicFolder.toDomainEntity(): MusicFolder = MusicFolder(this.id.toString(), this.name)
@@ -103,3 +104,8 @@ fun SearchThreeResult.toDomainEntity(): SearchResult = SearchResult(
         this.artistList.map { it.toDomainEntity() },
         this.albumList.map { it.toDomainEntity() },
         this.songList.map { it.toDomainEntity() })
+
+fun APIPlaylist.toMusicDirectoryDomainEntity(): MusicDirectory = MusicDirectory().apply {
+    name = this@toMusicDirectoryDomainEntity.name
+    addAll(this@toMusicDirectoryDomainEntity.entriesList.map { it.toDomainEntity() })
+}
