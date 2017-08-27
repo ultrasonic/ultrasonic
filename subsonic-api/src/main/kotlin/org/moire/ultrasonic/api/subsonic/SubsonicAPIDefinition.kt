@@ -5,11 +5,12 @@ import org.moire.ultrasonic.api.subsonic.response.GetArtistResponse
 import org.moire.ultrasonic.api.subsonic.response.GetArtistsResponse
 import org.moire.ultrasonic.api.subsonic.response.GetIndexesResponse
 import org.moire.ultrasonic.api.subsonic.response.GetMusicDirectoryResponse
+import org.moire.ultrasonic.api.subsonic.response.GetPlaylistResponse
 import org.moire.ultrasonic.api.subsonic.response.LicenseResponse
 import org.moire.ultrasonic.api.subsonic.response.MusicFoldersResponse
-import org.moire.ultrasonic.api.subsonic.response.SearchTwoResponse
 import org.moire.ultrasonic.api.subsonic.response.SearchResponse
 import org.moire.ultrasonic.api.subsonic.response.SearchThreeResponse
+import org.moire.ultrasonic.api.subsonic.response.SearchTwoResponse
 import org.moire.ultrasonic.api.subsonic.response.SubsonicResponse
 import retrofit2.Call
 import retrofit2.http.GET
@@ -83,4 +84,7 @@ interface SubsonicAPIDefinition {
                 @Query("albumOffset") albumOffset: Int? = null,
                 @Query("songCount") songCount: Int? = null,
                 @Query("musicFolderId") musicFolderId: Long? = null): Call<SearchThreeResponse>
+
+    @GET("getPlaylist.view")
+    fun getPlaylist(@Query("id") id: Long): Call<GetPlaylistResponse>
 }
