@@ -64,6 +64,7 @@ import org.moire.ultrasonic.api.subsonic.response.GetMusicDirectoryResponse;
 import org.moire.ultrasonic.api.subsonic.response.LicenseResponse;
 import org.moire.ultrasonic.api.subsonic.response.MusicFoldersResponse;
 import org.moire.ultrasonic.api.subsonic.response.SearchResponse;
+import org.moire.ultrasonic.api.subsonic.response.SearchThreeResponse;
 import org.moire.ultrasonic.api.subsonic.response.SearchTwoResponse;
 import org.moire.ultrasonic.api.subsonic.response.SubsonicResponse;
 import org.moire.ultrasonic.data.APIConverter;
@@ -456,22 +457,21 @@ public class RESTMusicService implements MusicService
         return APIConverter.toDomainEntity(response.body().getSearchResult());
     }
 
-	private SearchResult search3(SearchCriteria criteria, Context context, ProgressListener progressListener) throws Exception
-	{
-		checkServerVersion(context, "1.8", "Searching by ID3 tag not supported.");
+    private SearchResult search3(SearchCriteria criteria,
+                                 Context context,
+                                 ProgressListener progressListener) throws Exception {
+        if (criteria.getQuery() == null) {
+            throw new IllegalArgumentException("Query param is null");
+        }
 
-		List<String> parameterNames = asList("query", "artistCount", "albumCount", "songCount");
-		List<Object> parameterValues = Arrays.<Object>asList(criteria.getQuery(), criteria.getArtistCount(), criteria.getAlbumCount(), criteria.getSongCount());
-		Reader reader = getReader(context, progressListener, "search3", null, parameterNames, parameterValues);
-		try
-		{
-			return new SearchResult2Parser(context).parse(reader, progressListener, true);
-		}
-		finally
-		{
-			Util.close(reader);
-		}
-	}
+        updateProgressListener(progressListener, R.string.parser_reading);
+        Response<SearchThreeResponse> response = subsonicAPIClient.getApi().search3(criteria.getQuery(),
+                criteria.getArtistCount(), null, criteria.getAlbumCount(), null,
+                criteria.getSongCount(), null).execute();
+        checkResponseSuccessful(response);
+
+        return APIConverter.toDomainEntity(response.body().getSearchResult());
+    }
 
 	@Override
 	public MusicDirectory getPlaylist(String id, String name, Context context, ProgressListener progressListener) throws Exception
