@@ -61,6 +61,7 @@ import org.moire.ultrasonic.api.subsonic.response.GetArtistResponse;
 import org.moire.ultrasonic.api.subsonic.response.GetArtistsResponse;
 import org.moire.ultrasonic.api.subsonic.response.GetIndexesResponse;
 import org.moire.ultrasonic.api.subsonic.response.GetMusicDirectoryResponse;
+import org.moire.ultrasonic.api.subsonic.response.GetPlaylistResponse;
 import org.moire.ultrasonic.api.subsonic.response.LicenseResponse;
 import org.moire.ultrasonic.api.subsonic.response.MusicFoldersResponse;
 import org.moire.ultrasonic.api.subsonic.response.SearchResponse;
@@ -91,7 +92,6 @@ import org.moire.ultrasonic.service.parser.GenreParser;
 import org.moire.ultrasonic.service.parser.JukeboxStatusParser;
 import org.moire.ultrasonic.service.parser.LyricsParser;
 import org.moire.ultrasonic.service.parser.MusicDirectoryParser;
-import org.moire.ultrasonic.service.parser.PlaylistParser;
 import org.moire.ultrasonic.service.parser.PlaylistsParser;
 import org.moire.ultrasonic.service.parser.PodcastEpisodeParser;
 import org.moire.ultrasonic.service.parser.PodcastsChannelsParser;
@@ -473,54 +473,53 @@ public class RESTMusicService implements MusicService
         return APIConverter.toDomainEntity(response.body().getSearchResult());
     }
 
-	@Override
-	public MusicDirectory getPlaylist(String id, String name, Context context, ProgressListener progressListener) throws Exception
-	{
-		HttpParams params = new BasicHttpParams();
-		HttpConnectionParams.setSoTimeout(params, SOCKET_READ_TIMEOUT_GET_PLAYLIST);
+    @Override
+    public MusicDirectory getPlaylist(String id,
+                                      String name,
+                                      Context context,
+                                      ProgressListener progressListener) throws Exception {
+        if (id == null) {
+            throw new IllegalArgumentException("id param is null!");
+        }
 
-		Reader reader = getReader(context, progressListener, "getPlaylist", params, "id", id);
-		try
-		{
-			MusicDirectory playlist = new PlaylistParser(context).parse(reader, progressListener);
+        updateProgressListener(progressListener, R.string.parser_reading);
+        Response<GetPlaylistResponse> response = subsonicAPIClient.getApi()
+                .getPlaylist(Long.valueOf(id)).execute();
+        checkResponseSuccessful(response);
 
-			File playlistFile = FileUtil.getPlaylistFile(Util.getServerName(context), name);
-			FileWriter fw = new FileWriter(playlistFile);
-			BufferedWriter bw = new BufferedWriter(fw);
-			try
-			{
-				fw.write("#EXTM3U\n");
-				for (MusicDirectory.Entry e : playlist.getChildren())
-				{
-					String filePath = FileUtil.getSongFile(context, e).getAbsolutePath();
-					if (!new File(filePath).exists())
-					{
-						String ext = FileUtil.getExtension(filePath);
-						String base = FileUtil.getBaseName(filePath);
-						filePath = base + ".complete." + ext;
-					}
-					fw.write(filePath + '\n');
-				}
-			}
-			catch (Exception e)
-			{
-				Log.w(TAG, "Failed to save playlist: " + name);
-			}
-			finally
-			{
-				bw.close();
-				fw.close();
-			}
+        MusicDirectory playlist = APIConverter
+                .toMusicDirectoryDomainEntity(response.body().getPlaylist());
+        savePlaylist(name, context, playlist);
+        return playlist;
+    }
 
-			return playlist;
-		}
-		finally
-		{
-			Util.close(reader);
-		}
-	}
+    private void savePlaylist(String name,
+                              Context context,
+                              MusicDirectory playlist) throws IOException {
+        File playlistFile = FileUtil.getPlaylistFile(Util.getServerName(context), name);
+        FileWriter fw = new FileWriter(playlistFile);
+        BufferedWriter bw = new BufferedWriter(fw);
+        try {
+            fw.write("#EXTM3U\n");
+            for (MusicDirectory.Entry e : playlist.getChildren()) {
+                String filePath = FileUtil.getSongFile(context, e).getAbsolutePath();
+                if (!new File(filePath).exists()) {
+                    String ext = FileUtil.getExtension(filePath);
+                    String base = FileUtil.getBaseName(filePath);
+                    filePath = base + ".complete." + ext;
+                }
+                fw.write(filePath + '\n');
+            }
+        } catch (IOException e) {
+            Log.w(TAG, "Failed to save playlist: " + name);
+            throw e;
+        } finally {
+            bw.close();
+            fw.close();
+        }
+    }
 
-	@Override
+    @Override
 	public List<PodcastsChannel> getPodcastsChannels(boolean refresh, Context context, ProgressListener progressListener) throws Exception
 	{
 		Reader reader = getReader(context, progressListener, "getPodcasts", null,"includeEpisodes", "false");
