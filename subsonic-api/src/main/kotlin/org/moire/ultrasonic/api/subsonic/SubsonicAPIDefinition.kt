@@ -9,6 +9,7 @@ import org.moire.ultrasonic.api.subsonic.response.LicenseResponse
 import org.moire.ultrasonic.api.subsonic.response.MusicFoldersResponse
 import org.moire.ultrasonic.api.subsonic.response.SearchTwoResponse
 import org.moire.ultrasonic.api.subsonic.response.SearchResponse
+import org.moire.ultrasonic.api.subsonic.response.SearchThreeResponse
 import org.moire.ultrasonic.api.subsonic.response.SubsonicResponse
 import retrofit2.Call
 import retrofit2.http.GET
@@ -73,4 +74,13 @@ interface SubsonicAPIDefinition {
                 @Query("albumOffset") albumOffset: Int? = null,
                 @Query("songCount") songCount: Int? = null,
                 @Query("musicFolderId") musicFolderId: Long? = null): Call<SearchTwoResponse>
+
+    @GET("search3.view")
+    fun search3(@Query("query") query: String,
+                @Query("artistCount") artistCount: Int? = null,
+                @Query("artistOffset") artistOffset: Int? = null,
+                @Query("albumCount") albumCount: Int? = null,
+                @Query("albumOffset") albumOffset: Int? = null,
+                @Query("songCount") songCount: Int? = null,
+                @Query("musicFolderId") musicFolderId: Long? = null): Call<SearchThreeResponse>
 }
