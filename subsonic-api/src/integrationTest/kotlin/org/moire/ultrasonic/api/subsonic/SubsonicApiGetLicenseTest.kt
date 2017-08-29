@@ -1,6 +1,5 @@
 package org.moire.ultrasonic.api.subsonic
 
-import org.amshove.kluent.`should equal to`
 import org.amshove.kluent.`should equal`
 import org.amshove.kluent.`should not be`
 import org.junit.Test
@@ -28,14 +27,12 @@ class SubsonicApiGetLicenseTest : SubsonicAPIClientTest() {
 
     @Test
     fun `Should parse get license error response`() {
-        val response = checkErrorCallParsed(mockWebServerRule, {
+        val response = checkErrorCallParsed(mockWebServerRule) {
             client.api.getLicense().execute()
-        })
+        }
 
         response.license `should not be` null
-        with(response.license) {
-            email `should equal to` ""
-            valid `should equal to` false
-        }
+        response.license.email `should equal` License().email
+        response.license.valid `should equal` License().valid
     }
 }

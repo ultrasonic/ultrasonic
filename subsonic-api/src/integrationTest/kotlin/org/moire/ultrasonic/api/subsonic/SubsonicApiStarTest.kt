@@ -1,7 +1,6 @@
 package org.moire.ultrasonic.api.subsonic
 
 import org.amshove.kluent.`should be`
-import org.amshove.kluent.`should contain`
 import org.junit.Test
 import org.moire.ultrasonic.api.subsonic.response.SubsonicResponse
 
@@ -21,41 +20,38 @@ class SubsonicApiStarTest : SubsonicAPIClientTest() {
 
     @Test
     fun `Should parse star error response`() {
-        checkErrorCallParsed(mockWebServerRule, {
+        checkErrorCallParsed(mockWebServerRule) {
             client.api.star().execute()
-        })
+        }
     }
 
     @Test
     fun `Should pass id param`() {
-        mockWebServerRule.enqueueResponse("ping_ok.json")
         val id = 110L
-        client.api.star(id = id).execute()
 
-        val request = mockWebServerRule.mockWebServer.takeRequest()
-
-        request.requestLine `should contain` "id=$id"
+        mockWebServerRule.assertRequestParam(responseResourceName = "ping_ok.json",
+                expectedParam = "id=$id") {
+            client.api.star(id = id).execute()
+        }
     }
 
     @Test
     fun `Should pass artist id param`() {
-        mockWebServerRule.enqueueResponse("ping_ok.json")
         val artistId = 123L
-        client.api.star(artistId = artistId).execute()
 
-        val request = mockWebServerRule.mockWebServer.takeRequest()
-
-        request.requestLine `should contain` "artistId=$artistId"
+        mockWebServerRule.assertRequestParam(responseResourceName = "ping_ok.json",
+                expectedParam = "artistId=$artistId") {
+            client.api.star(artistId = artistId).execute()
+        }
     }
 
     @Test
-    fun `Should pass albom id param`() {
-        mockWebServerRule.enqueueResponse("ping_ok.json")
+    fun `Should pass album id param`() {
         val albumId = 1001L
-        client.api.star(albumId = albumId).execute()
 
-        val request = mockWebServerRule.mockWebServer.takeRequest()
-
-        request.requestLine `should contain` "albumId=$albumId"
+        mockWebServerRule.assertRequestParam(responseResourceName = "ping_ok.json",
+                expectedParam = "albumId=$albumId") {
+            client.api.star(albumId = albumId).execute()
+        }
     }
 }

@@ -1,9 +1,10 @@
 package org.moire.ultrasonic.api.subsonic
 
-import org.amshove.kluent.`should contain`
 import org.amshove.kluent.`should equal to`
 import org.amshove.kluent.`should equal`
+import org.amshove.kluent.`should not be`
 import org.junit.Test
+import org.moire.ultrasonic.api.subsonic.models.Album
 import org.moire.ultrasonic.api.subsonic.models.MusicDirectoryChild
 
 /**
@@ -12,20 +13,22 @@ import org.moire.ultrasonic.api.subsonic.models.MusicDirectoryChild
 class SubsonicApiGetAlbumTest : SubsonicAPIClientTest() {
     @Test
     fun `Should parse error responce`() {
-        checkErrorCallParsed(mockWebServerRule, {
+        val response = checkErrorCallParsed(mockWebServerRule) {
             client.api.getAlbum(56L).execute()
-        })
+        }
+
+        response.album `should not be` null
+        response.album `should equal` Album()
     }
 
     @Test
     fun `Should add id to request params`() {
-        mockWebServerRule.enqueueResponse("get_album_ok.json")
         val id = 76L
-        client.api.getAlbum(id).execute()
 
-        val request = mockWebServerRule.mockWebServer.takeRequest()
-
-        request.requestLine `should contain` "id=$id"
+        mockWebServerRule.assertRequestParam(responseResourceName = "get_album_ok.json",
+                expectedParam = "id=$id") {
+            client.api.getAlbum(id).execute()
+        }
     }
 
     @Test

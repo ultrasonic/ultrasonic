@@ -2,10 +2,12 @@ package org.moire.ultrasonic.api.subsonic
 
 import org.amshove.kluent.`should equal to`
 import org.amshove.kluent.`should equal`
+import org.amshove.kluent.`should not be`
 import org.junit.Test
 import org.moire.ultrasonic.api.subsonic.models.Album
 import org.moire.ultrasonic.api.subsonic.models.Artist
 import org.moire.ultrasonic.api.subsonic.models.MusicDirectoryChild
+import org.moire.ultrasonic.api.subsonic.models.SearchThreeResult
 
 /**
  * Integration test for [SubsonicAPIClient] for search3 call.
@@ -13,9 +15,12 @@ import org.moire.ultrasonic.api.subsonic.models.MusicDirectoryChild
 class SubsonicApiSearchThreeTest : SubsonicAPIClientTest() {
     @Test
     fun `Should parse error response`() {
-        checkErrorCallParsed(mockWebServerRule, {
+        val response = checkErrorCallParsed(mockWebServerRule) {
             client.api.search3("some-query").execute()
-        })
+        }
+
+        response.searchResult `should not be` null
+        response.searchResult `should equal` SearchThreeResult()
     }
 
     @Test
@@ -60,53 +65,59 @@ class SubsonicApiSearchThreeTest : SubsonicAPIClientTest() {
     fun `Should pass artist count as request param`() {
         val artistCount = 67
 
-        mockWebServerRule.assertRequestParam(responseResourceName = "search3_ok.json", apiRequest = {
+        mockWebServerRule.assertRequestParam(responseResourceName = "search3_ok.json",
+                expectedParam = "artistCount=$artistCount") {
             client.api.search3("some", artistCount = artistCount).execute()
-        }, expectedParam = "artistCount=$artistCount")
+        }
     }
 
     @Test
     fun `Should pass artist offset as request param`() {
         val artistOffset = 34
 
-        mockWebServerRule.assertRequestParam(responseResourceName = "search3_ok.json", apiRequest = {
+        mockWebServerRule.assertRequestParam(responseResourceName = "search3_ok.json",
+                expectedParam = "artistOffset=$artistOffset") {
             client.api.search3("some", artistOffset = artistOffset).execute()
-        }, expectedParam = "artistOffset=$artistOffset")
+        }
     }
 
     @Test
     fun `Should pass album count as request param`() {
         val albumCount = 21
 
-        mockWebServerRule.assertRequestParam(responseResourceName = "search3_ok.json", apiRequest = {
+        mockWebServerRule.assertRequestParam(responseResourceName = "search3_ok.json",
+                expectedParam = "albumCount=$albumCount") {
             client.api.search3("some", albumCount = albumCount).execute()
-        }, expectedParam = "albumCount=$albumCount")
+        }
     }
 
     @Test
     fun `Should pass album offset as request param`() {
         val albumOffset = 43
 
-        mockWebServerRule.assertRequestParam(responseResourceName = "search3_ok.json", apiRequest = {
+        mockWebServerRule.assertRequestParam(responseResourceName = "search3_ok.json",
+                expectedParam = "albumOffset=$albumOffset") {
             client.api.search3("some", albumOffset = albumOffset).execute()
-        }, expectedParam = "albumOffset=$albumOffset")
+        }
     }
 
     @Test
     fun `Should pass song count as request param`() {
         val songCount = 15
 
-        mockWebServerRule.assertRequestParam(responseResourceName = "search3_ok.json", apiRequest = {
+        mockWebServerRule.assertRequestParam(responseResourceName = "search3_ok.json",
+                expectedParam = "songCount=$songCount") {
             client.api.search3("some", songCount = songCount).execute()
-        }, expectedParam = "songCount=$songCount")
+        }
     }
 
     @Test
     fun `Should pass music folder id as request param`() {
         val musicFolderId = 43L
 
-        mockWebServerRule.assertRequestParam(responseResourceName = "search3_ok.json", apiRequest = {
+        mockWebServerRule.assertRequestParam(responseResourceName = "search3_ok.json",
+                expectedParam = "musicFolderId=$musicFolderId") {
             client.api.search3("some", musicFolderId = musicFolderId).execute()
-        }, expectedParam = "musicFolderId=$musicFolderId")
+        }
     }
 }

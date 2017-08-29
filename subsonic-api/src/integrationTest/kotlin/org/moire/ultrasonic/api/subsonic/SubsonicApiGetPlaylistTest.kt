@@ -2,8 +2,10 @@ package org.moire.ultrasonic.api.subsonic
 
 import org.amshove.kluent.`should equal to`
 import org.amshove.kluent.`should equal`
+import org.amshove.kluent.`should not be`
 import org.junit.Test
 import org.moire.ultrasonic.api.subsonic.models.MusicDirectoryChild
+import org.moire.ultrasonic.api.subsonic.models.Playlist
 
 /**
  * Integration test for [SubsonicAPIClient] for getPlaylist call.
@@ -11,9 +13,12 @@ import org.moire.ultrasonic.api.subsonic.models.MusicDirectoryChild
 class SubsonicApiGetPlaylistTest : SubsonicAPIClientTest() {
     @Test
     fun `Should parse error response`() {
-        checkErrorCallParsed(mockWebServerRule) {
+        val response = checkErrorCallParsed(mockWebServerRule) {
             client.api.getPlaylist(10).execute()
         }
+
+        response.playlist `should not be` null
+        response.playlist `should equal` Playlist()
     }
 
     @Test
@@ -49,9 +54,10 @@ class SubsonicApiGetPlaylistTest : SubsonicAPIClientTest() {
     @Test
     fun `Should pass id as request param`() {
         val playlistId = 453L
+
         mockWebServerRule.assertRequestParam(responseResourceName = "get_playlist_ok.json",
-                apiRequest = {
-                    client.api.getPlaylist(playlistId).execute()
-                }, expectedParam = "id=$playlistId")
+                expectedParam = "id=$playlistId") {
+            client.api.getPlaylist(playlistId).execute()
+        }
     }
 }

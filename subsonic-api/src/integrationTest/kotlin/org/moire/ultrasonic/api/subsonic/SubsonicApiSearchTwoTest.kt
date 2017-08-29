@@ -2,9 +2,11 @@ package org.moire.ultrasonic.api.subsonic
 
 import org.amshove.kluent.`should equal to`
 import org.amshove.kluent.`should equal`
+import org.amshove.kluent.`should not be`
 import org.junit.Test
 import org.moire.ultrasonic.api.subsonic.models.Artist
 import org.moire.ultrasonic.api.subsonic.models.MusicDirectoryChild
+import org.moire.ultrasonic.api.subsonic.models.SearchTwoResult
 
 /**
  * Integration test for [SubsonicAPIClient] for search2 call.
@@ -12,9 +14,12 @@ import org.moire.ultrasonic.api.subsonic.models.MusicDirectoryChild
 class SubsonicApiSearchTwoTest : SubsonicAPIClientTest() {
     @Test
     fun `Should handle error response`() {
-        checkErrorCallParsed(mockWebServerRule, {
+        val response = checkErrorCallParsed(mockWebServerRule) {
             client.api.search2("some-query").execute()
-        })
+        }
+
+        response.searchResult `should not be` null
+        response.searchResult `should equal` SearchTwoResult()
     }
 
     @Test
@@ -50,62 +55,69 @@ class SubsonicApiSearchTwoTest : SubsonicAPIClientTest() {
     fun `Should pass query id in request param`() {
         val query = "some"
 
-        mockWebServerRule.assertRequestParam(responseResourceName = "search2_ok.json", apiRequest = {
+        mockWebServerRule.assertRequestParam(responseResourceName = "search2_ok.json",
+                expectedParam = "query=$query") {
             client.api.search2(query).execute()
-        }, expectedParam = "query=$query")
+        }
     }
 
     @Test
     fun `Should pass artist count in request param`() {
         val artistCount = 45
 
-        mockWebServerRule.assertRequestParam(responseResourceName = "search2_ok.json", apiRequest = {
+        mockWebServerRule.assertRequestParam(responseResourceName = "search2_ok.json",
+                expectedParam = "artistCount=$artistCount") {
             client.api.search2("some", artistCount = artistCount).execute()
-        }, expectedParam = "artistCount=$artistCount")
+        }
     }
 
     @Test
     fun `Should pass artist offset in request param`() {
         val artistOffset = 13
 
-        mockWebServerRule.assertRequestParam(responseResourceName = "search2_ok.json", apiRequest = {
+        mockWebServerRule.assertRequestParam(responseResourceName = "search2_ok.json",
+                expectedParam = "artistOffset=$artistOffset") {
             client.api.search2("some", artistOffset = artistOffset).execute()
-        }, expectedParam = "artistOffset=$artistOffset")
+        }
     }
 
     @Test
     fun `Should pass album count in request param`() {
         val albumCount = 30
 
-        mockWebServerRule.assertRequestParam(responseResourceName = "search2_ok.json", apiRequest = {
+        mockWebServerRule.assertRequestParam(responseResourceName = "search2_ok.json",
+                expectedParam = "albumCount=$albumCount") {
             client.api.search2("some", albumCount = albumCount).execute()
-        }, expectedParam = "albumCount=$albumCount")
+        }
     }
 
     @Test
     fun `Should pass album offset in request param`() {
         val albumOffset = 91
 
-        mockWebServerRule.assertRequestParam(responseResourceName = "search2_ok.json", apiRequest = {
+        mockWebServerRule.assertRequestParam(responseResourceName = "search2_ok.json",
+                expectedParam = "albumOffset=$albumOffset") {
             client.api.search2("some", albumOffset = albumOffset).execute()
-        }, expectedParam = "albumOffset=$albumOffset")
+        }
     }
 
     @Test
     fun `Should pass song count in request param`() {
         val songCount = 22
 
-        mockWebServerRule.assertRequestParam(responseResourceName = "search2_ok.json", apiRequest = {
+        mockWebServerRule.assertRequestParam(responseResourceName = "search2_ok.json",
+                expectedParam = "songCount=$songCount") {
             client.api.search2("some", songCount = songCount).execute()
-        }, expectedParam = "songCount=$songCount")
+        }
     }
 
     @Test
     fun `Should pass music folder id in request param`() {
         val musicFolderId = 565L
 
-        mockWebServerRule.assertRequestParam(responseResourceName = "search2_ok.json", apiRequest = {
+        mockWebServerRule.assertRequestParam(responseResourceName = "search2_ok.json",
+                expectedParam = "musicFolderId=$musicFolderId") {
             client.api.search2("some", musicFolderId = musicFolderId).execute()
-        }, expectedParam = "musicFolderId=$musicFolderId")
+        }
     }
 }

@@ -23,9 +23,9 @@ class SubsonicApiGetMusicFoldersTest : SubsonicAPIClientTest() {
 
     @Test
     fun `Should parse get music folders error response`() {
-        val response = checkErrorCallParsed(mockWebServerRule, {
+        val response = checkErrorCallParsed(mockWebServerRule) {
             client.api.getMusicFolders().execute()
-        })
+        }
 
         response.musicFolders `should equal` emptyList()
     }
