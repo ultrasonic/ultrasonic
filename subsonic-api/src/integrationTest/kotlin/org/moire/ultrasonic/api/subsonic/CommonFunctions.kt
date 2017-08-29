@@ -66,8 +66,8 @@ fun SubsonicResponse.assertBaseResponseOk() {
 }
 
 fun MockWebServerRule.assertRequestParam(responseResourceName: String,
-                                         apiRequest: () -> Response<out SubsonicResponse>,
-                                         expectedParam: String) {
+                                         expectedParam: String,
+                                         apiRequest: () -> Response<out SubsonicResponse>) {
     this.enqueueResponse(responseResourceName)
     apiRequest()
 

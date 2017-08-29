@@ -20,8 +20,8 @@ class SubsonicApiPingRequestTest : SubsonicAPIClientTest() {
 
     @Test
     fun `Should parse ping error response`() {
-        checkErrorCallParsed(mockWebServerRule, {
+        checkErrorCallParsed(mockWebServerRule) {
             client.api.ping().execute()
-        })
+        }
     }
 }

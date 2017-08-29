@@ -1,10 +1,11 @@
 package org.moire.ultrasonic.api.subsonic
 
-import org.amshove.kluent.`should contain`
 import org.amshove.kluent.`should equal to`
 import org.amshove.kluent.`should equal`
+import org.amshove.kluent.`should not be`
 import org.junit.Test
 import org.moire.ultrasonic.api.subsonic.models.Album
+import org.moire.ultrasonic.api.subsonic.models.Artist
 
 /**
  * Integration test for [SubsonicAPIClient] for getArtist call.
@@ -12,20 +13,22 @@ import org.moire.ultrasonic.api.subsonic.models.Album
 class SubsonicApiGetArtistTest : SubsonicAPIClientTest() {
     @Test
     fun `Should parse error call`() {
-        checkErrorCallParsed(mockWebServerRule, {
+        val response = checkErrorCallParsed(mockWebServerRule) {
             client.api.getArtist(101L).execute()
-        })
+        }
+
+        response.artist `should not be` null
+        response.artist `should equal` Artist()
     }
 
     @Test
     fun `Should pass id param in request`() {
         val id = 929L
-        mockWebServerRule.enqueueResponse("get_artist_ok.json")
-        client.api.getArtist(id).execute()
 
-        val request = mockWebServerRule.mockWebServer.takeRequest()
-
-        request.requestLine `should contain` "id=$id"
+        mockWebServerRule.assertRequestParam(responseResourceName = "get_artist_ok.json",
+                expectedParam = "id=$id") {
+            client.api.getArtist(id).execute()
+        }
     }
 
     @Test

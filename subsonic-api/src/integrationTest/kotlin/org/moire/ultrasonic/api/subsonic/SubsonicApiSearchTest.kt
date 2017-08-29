@@ -1,10 +1,11 @@
 package org.moire.ultrasonic.api.subsonic
 
-import org.amshove.kluent.`should contain`
 import org.amshove.kluent.`should equal to`
 import org.amshove.kluent.`should equal`
+import org.amshove.kluent.`should not be`
 import org.junit.Test
 import org.moire.ultrasonic.api.subsonic.models.MusicDirectoryChild
+import org.moire.ultrasonic.api.subsonic.models.SearchResult
 import java.util.Calendar
 
 /**
@@ -13,14 +14,17 @@ import java.util.Calendar
 class SubsonicApiSearchTest : SubsonicAPIClientTest() {
     @Test
     fun `Should parse error response`() {
-        checkErrorCallParsed(mockWebServerRule, {
+        val response = checkErrorCallParsed(mockWebServerRule) {
             client.api.search().execute()
-        })
+        }
+
+        response.searchResult `should not be` null
+        response.searchResult `should equal` SearchResult()
     }
 
     @Test
     fun `Should parse ok response`() {
-        enqueueOkResponse()
+        mockWebServerRule.enqueueResponse("search_ok.json")
 
         val response = client.api.search().execute()
 
@@ -44,82 +48,71 @@ class SubsonicApiSearchTest : SubsonicAPIClientTest() {
 
     @Test
     fun `Should pass artist param`() {
-        enqueueOkResponse()
         val artist = "some-artist"
-        client.api.search(artist = artist).execute()
 
-        val request = mockWebServerRule.mockWebServer.takeRequest()
-
-        request.requestLine `should contain` "artist=$artist"
+        mockWebServerRule.assertRequestParam(responseResourceName = "search_ok.json",
+                expectedParam = "artist=$artist") {
+            client.api.search(artist = artist).execute()
+        }
     }
 
     @Test
     fun `Should pass album param`() {
-        enqueueOkResponse()
         val album = "some-album"
-        client.api.search(album = album).execute()
 
-        val request = mockWebServerRule.mockWebServer.takeRequest()
-
-        request.requestLine `should contain` "album=$album"
+        mockWebServerRule.assertRequestParam(responseResourceName = "search_ok.json",
+                expectedParam = "album=$album") {
+            client.api.search(album = album).execute()
+        }
     }
 
     @Test
     fun `Should pass title param`() {
-        enqueueOkResponse()
         val title = "some-title"
-        client.api.search(title = title).execute()
 
-        val request = mockWebServerRule.mockWebServer.takeRequest()
-
-        request.requestLine `should contain` "title=$title"
+        mockWebServerRule.assertRequestParam(responseResourceName = "search_ok.json",
+                expectedParam = "title=$title") {
+            client.api.search(title = title).execute()
+        }
     }
 
     @Test
     fun `Should contain any param`() {
-        enqueueOkResponse()
         val any = "AnyString"
-        client.api.search(any = any).execute()
 
-        val request = mockWebServerRule.mockWebServer.takeRequest()
-
-        request.requestLine `should contain` "any=$any"
+        mockWebServerRule.assertRequestParam(responseResourceName = "search_ok.json",
+                expectedParam = "any=$any") {
+            client.api.search(any = any).execute()
+        }
     }
 
     @Test
     fun `Should contain count param`() {
-        enqueueOkResponse()
         val count = 11
-        client.api.search(count = count).execute()
 
-        val request = mockWebServerRule.mockWebServer.takeRequest()
-
-        request.requestLine `should contain` "count=$count"
+        mockWebServerRule.assertRequestParam(responseResourceName = "search_ok.json",
+                expectedParam = "count=$count") {
+            client.api.search(count = count).execute()
+        }
     }
 
     @Test
     fun `Should contain offset param`() {
-        enqueueOkResponse()
         val offset = 54
-        client.api.search(offset = offset).execute()
 
-        val request = mockWebServerRule.mockWebServer.takeRequest()
-
-        request.requestLine `should contain` "offset=$offset"
+        mockWebServerRule.assertRequestParam(responseResourceName = "search_ok.json",
+                expectedParam = "offset=$offset") {
+            client.api.search(offset = offset).execute()
+        }
     }
 
     @Test
     fun `Should contain newerThan param`() {
-        enqueueOkResponse()
         val newerThan = Calendar.getInstance()
-        client.api.search(newerThan = newerThan.time.time).execute()
 
-        val request = mockWebServerRule.mockWebServer.takeRequest()
-
-        request.requestLine `should contain` "newerThan=${newerThan.time.time}"
-    }
-
-    private fun enqueueOkResponse() {
-        mockWebServerRule.enqueueResponse("search_ok.json")
+        mockWebServerRule.assertRequestParam(responseResourceName = "search_ok.json",
+                expectedParam = "newerThan=${newerThan.time.time}") {
+            client.api.search(newerThan = newerThan.time.time).execute()
+        }
     }
 }

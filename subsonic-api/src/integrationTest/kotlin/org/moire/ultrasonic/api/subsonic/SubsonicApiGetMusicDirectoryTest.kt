@@ -1,11 +1,11 @@
 package org.moire.ultrasonic.api.subsonic
 
 import org.amshove.kluent.`should be`
-import org.amshove.kluent.`should contain`
 import org.amshove.kluent.`should equal to`
 import org.amshove.kluent.`should equal`
 import org.amshove.kluent.`should not be`
 import org.junit.Test
+import org.moire.ultrasonic.api.subsonic.models.MusicDirectory
 import org.moire.ultrasonic.api.subsonic.models.MusicDirectoryChild
 
 /**
@@ -14,31 +14,22 @@ import org.moire.ultrasonic.api.subsonic.models.MusicDirectoryChild
 class SubsonicApiGetMusicDirectoryTest : SubsonicAPIClientTest() {
     @Test
     fun `Should parse getMusicDirectory error response`() {
-        val response = checkErrorCallParsed(mockWebServerRule, {
+        val response = checkErrorCallParsed(mockWebServerRule) {
             client.api.getMusicDirectory(1).execute()
-        })
-
-        with(response.musicDirectory) {
-            this `should not be` null
-            id `should equal to` -1L
-            parent `should equal to` -1L
-            name `should equal to` ""
-            userRating `should equal to` 0
-            averageRating `should equal to` 0.0f
-            starred `should be` null
-            playCount `should equal to` 0
-            childList `should be` emptyList<MusicDirectoryChild>()
         }
+
+        response.musicDirectory `should not be` null
+        response.musicDirectory `should equal` MusicDirectory()
     }
 
     @Test
     fun `GetMusicDirectory should add directory id to query params`() {
-        mockWebServerRule.enqueueResponse("get_music_directory_ok.json")
         val directoryId = 124L
 
-        client.api.getMusicDirectory(directoryId).execute()
-
-        mockWebServerRule.mockWebServer.takeRequest().requestLine `should contain` "id=$directoryId"
+        mockWebServerRule.assertRequestParam(responseResourceName = "get_music_directory_ok.json",
+                expectedParam = "id=$directoryId") {
+            client.api.getMusicDirectory(directoryId).execute()
+        }
     }
 
     @Test
