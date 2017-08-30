@@ -7,6 +7,7 @@ data class Playlist(
         val id: Long = -1,
         val name: String = "",
         val owner: String = "",
+        val comment: String = "",
         val public: Boolean = false,
         val songCount: Int = 0,
         val duration: Long = 0,
