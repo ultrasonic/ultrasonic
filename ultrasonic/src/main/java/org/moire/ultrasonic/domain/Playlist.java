@@ -125,9 +125,47 @@ public class Playlist implements Serializable
 		this.pub = pub;
 	}
 
-	@Override
-	public String toString()
-	{
-		return name;
-	}
+    @Override
+    public String toString() {
+        return "Playlist{" +
+                "id='" + id + '\'' +
+                ", name='" + name + '\'' +
+                ", owner='" + owner + '\'' +
+                ", comment='" + comment + '\'' +
+                ", songCount='" + songCount + '\'' +
+                ", created='" + created + '\'' +
+                ", pub=" + pub +
+                '}';
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        Playlist playlist = (Playlist) o;
+
+        if (id != null ? !id.equals(playlist.id) : playlist.id != null) return false;
+        if (name != null ? !name.equals(playlist.name) : playlist.name != null) return false;
+        if (owner != null ? !owner.equals(playlist.owner) : playlist.owner != null) return false;
+        if (comment != null ? !comment.equals(playlist.comment) : playlist.comment != null)
+            return false;
+        if (songCount != null ? !songCount.equals(playlist.songCount) : playlist.songCount != null)
+            return false;
+        if (created != null ? !created.equals(playlist.created) : playlist.created != null)
+            return false;
+        return pub != null ? pub.equals(playlist.pub) : playlist.pub == null;
+    }
+
+    @Override
+    public int hashCode() {
+        int result = id != null ? id.hashCode() : 0;
+        result = 31 * result + (name != null ? name.hashCode() : 0);
+        result = 31 * result + (owner != null ? owner.hashCode() : 0);
+        result = 31 * result + (comment != null ? comment.hashCode() : 0);
+        result = 31 * result + (songCount != null ? songCount.hashCode() : 0);
+        result = 31 * result + (created != null ? created.hashCode() : 0);
+        result = 31 * result + (pub != null ? pub.hashCode() : 0);
+        return result;
+    }
 }
