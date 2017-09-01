@@ -6,6 +6,7 @@ import org.moire.ultrasonic.api.subsonic.response.GetArtistsResponse
 import org.moire.ultrasonic.api.subsonic.response.GetIndexesResponse
 import org.moire.ultrasonic.api.subsonic.response.GetMusicDirectoryResponse
 import org.moire.ultrasonic.api.subsonic.response.GetPlaylistResponse
+import org.moire.ultrasonic.api.subsonic.response.GetPlaylistsResponse
 import org.moire.ultrasonic.api.subsonic.response.LicenseResponse
 import org.moire.ultrasonic.api.subsonic.response.MusicFoldersResponse
 import org.moire.ultrasonic.api.subsonic.response.SearchResponse
@@ -87,4 +88,7 @@ interface SubsonicAPIDefinition {
 
     @GET("getPlaylist.view")
     fun getPlaylist(@Query("id") id: Long): Call<GetPlaylistResponse>
+
+    @GET("getPlaylists.view")
+    fun getPlaylists(@Query("username") username: String? = null): Call<GetPlaylistsResponse>
 }

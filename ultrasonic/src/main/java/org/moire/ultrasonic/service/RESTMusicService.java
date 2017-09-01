@@ -62,6 +62,7 @@ import org.moire.ultrasonic.api.subsonic.response.GetArtistsResponse;
 import org.moire.ultrasonic.api.subsonic.response.GetIndexesResponse;
 import org.moire.ultrasonic.api.subsonic.response.GetMusicDirectoryResponse;
 import org.moire.ultrasonic.api.subsonic.response.GetPlaylistResponse;
+import org.moire.ultrasonic.api.subsonic.response.GetPlaylistsResponse;
 import org.moire.ultrasonic.api.subsonic.response.LicenseResponse;
 import org.moire.ultrasonic.api.subsonic.response.MusicFoldersResponse;
 import org.moire.ultrasonic.api.subsonic.response.SearchResponse;
@@ -92,7 +93,6 @@ import org.moire.ultrasonic.service.parser.GenreParser;
 import org.moire.ultrasonic.service.parser.JukeboxStatusParser;
 import org.moire.ultrasonic.service.parser.LyricsParser;
 import org.moire.ultrasonic.service.parser.MusicDirectoryParser;
-import org.moire.ultrasonic.service.parser.PlaylistsParser;
 import org.moire.ultrasonic.service.parser.PodcastEpisodeParser;
 import org.moire.ultrasonic.service.parser.PodcastsChannelsParser;
 import org.moire.ultrasonic.service.parser.RandomSongsParser;
@@ -554,21 +554,17 @@ public class RESTMusicService implements MusicService
 		}
 	}
 
+    @Override
+    public List<Playlist> getPlaylists(boolean refresh,
+                                       Context context,
+                                       ProgressListener progressListener) throws Exception {
+        updateProgressListener(progressListener, R.string.parser_reading);
+        Response<GetPlaylistsResponse> response = subsonicAPIClient.getApi()
+                .getPlaylists(null).execute();
+        checkResponseSuccessful(response);
 
-
-	@Override
-	public List<Playlist> getPlaylists(boolean refresh, Context context, ProgressListener progressListener) throws Exception
-	{
-		Reader reader = getReader(context, progressListener, "getPlaylists", null);
-		try
-		{
-			return new PlaylistsParser(context).parse(reader, progressListener);
-		}
-		finally
-		{
-			Util.close(reader);
-		}
-	}
+        return APIConverter.toDomainEntitiesList(response.body().getPlaylists());
+    }
 
 	@Override
 	public void createPlaylist(String id, String name, List<MusicDirectory.Entry> entries, Context context, ProgressListener progressListener) throws Exception

@@ -1,0 +1,20 @@
+{
+  "subsonic-response" : {
+    "status" : "ok",
+    "version" : "1.15.0",
+    "playlists" : {
+      "playlist" : [ {
+        "id" : "0",
+        "name" : "Aug 27, 2017 11:17 AM",
+        "comment" : "Some comment",
+        "owner" : "admin",
+        "public" : false,
+        "songCount" : 16,
+        "duration" : 3573,
+        "created" : "2017-08-27T11:17:26.216Z",
+        "changed" : "2017-08-27T11:17:26.218Z",
+        "coverArt" : "pl-0"
+      } ]
+    }
+  }
+}
