@@ -573,38 +573,25 @@ public class RESTMusicService implements MusicService
         return APIPlaylistConverter.toDomainEntitiesList(response.body().getPlaylists());
     }
 
-	@Override
-	public void createPlaylist(String id, String name, List<MusicDirectory.Entry> entries, Context context, ProgressListener progressListener) throws Exception
-	{
-		List<String> parameterNames = new LinkedList<String>();
-		List<Object> parameterValues = new LinkedList<Object>();
+    @Override
+    public void createPlaylist(String id,
+                               String name,
+                               List<MusicDirectory.Entry> entries,
+                               Context context,
+                               ProgressListener progressListener) throws Exception {
+        Long pId = id == null ? null : Long.valueOf(id);
+        List<Long> pSongIds = new ArrayList<>(entries.size());
+        for (MusicDirectory.Entry entry : entries) {
+            if (entry.getId() != null) {
+                pSongIds.add(Long.valueOf(entry.getId()));
+            }
+        }
 
-		if (id != null)
-		{
-			parameterNames.add("playlistId");
-			parameterValues.add(id);
-		}
-		if (name != null)
-		{
-			parameterNames.add("name");
-			parameterValues.add(name);
-		}
-		for (MusicDirectory.Entry entry : entries)
-		{
-			parameterNames.add("songId");
-			parameterValues.add(entry.getId());
-		}
-
-		Reader reader = getReader(context, progressListener, "createPlaylist", null, parameterNames, parameterValues);
-		try
-		{
-			new ErrorParser(context).parse(reader);
-		}
-		finally
-		{
-			Util.close(reader);
-		}
-	}
+        updateProgressListener(progressListener, R.string.parser_reading);
+        Response<SubsonicResponse> response = subsonicAPIClient.getApi()
+                .createPlaylist(pId, name, pSongIds).execute();
+        checkResponseSuccessful(response);
+    }
 
 	@Override
 	public void deletePlaylist(String id, Context context, ProgressListener progressListener) throws Exception
