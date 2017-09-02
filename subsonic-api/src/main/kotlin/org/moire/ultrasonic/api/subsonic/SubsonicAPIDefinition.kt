@@ -91,4 +91,9 @@ interface SubsonicAPIDefinition {
 
     @GET("getPlaylists.view")
     fun getPlaylists(@Query("username") username: String? = null): Call<GetPlaylistsResponse>
+
+    @GET("createPlaylist.view")
+    fun createPlaylist(@Query("playlistId") id: Long? = null,
+                       @Query("name") name: String? = null,
+                       @Query("songId") songIds: List<Long>? = null): Call<SubsonicResponse>
 }
