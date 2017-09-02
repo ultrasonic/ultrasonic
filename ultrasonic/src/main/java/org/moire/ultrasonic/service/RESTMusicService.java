@@ -593,19 +593,17 @@ public class RESTMusicService implements MusicService
         checkResponseSuccessful(response);
     }
 
-	@Override
-	public void deletePlaylist(String id, Context context, ProgressListener progressListener) throws Exception
-	{
-		Reader reader = getReader(context, progressListener, "deletePlaylist", null, "id", id);
-		try
-		{
-			new ErrorParser(context).parse(reader);
-		}
-		finally
-		{
-			Util.close(reader);
-		}
-	}
+    @Override
+    public void deletePlaylist(String id,
+                               Context context,
+                               ProgressListener progressListener) throws Exception {
+        Long pId = id == null ? null : Long.valueOf(id);
+
+        updateProgressListener(progressListener, R.string.parser_reading);
+        Response<SubsonicResponse> response = subsonicAPIClient.getApi()
+                .deletePlaylist(pId).execute();
+        checkResponseSuccessful(response);
+    }
 
 	@Override
 	public void updatePlaylist(String id, String name, String comment, boolean pub, Context context, ProgressListener progressListener) throws Exception
