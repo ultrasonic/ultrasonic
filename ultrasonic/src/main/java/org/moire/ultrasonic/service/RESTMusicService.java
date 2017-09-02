@@ -69,7 +69,13 @@ import org.moire.ultrasonic.api.subsonic.response.SearchResponse;
 import org.moire.ultrasonic.api.subsonic.response.SearchThreeResponse;
 import org.moire.ultrasonic.api.subsonic.response.SearchTwoResponse;
 import org.moire.ultrasonic.api.subsonic.response.SubsonicResponse;
-import org.moire.ultrasonic.data.APIConverter;
+import org.moire.ultrasonic.data.APIAlbumConverter;
+import org.moire.ultrasonic.data.APIArtistConverter;
+import org.moire.ultrasonic.data.APIIndexesConverter;
+import org.moire.ultrasonic.data.APIMusicDirectoryConverter;
+import org.moire.ultrasonic.data.APIMusicFolderConverter;
+import org.moire.ultrasonic.data.APIPlaylistConverter;
+import org.moire.ultrasonic.data.APISearchConverter;
 import org.moire.ultrasonic.domain.Bookmark;
 import org.moire.ultrasonic.domain.ChatMessage;
 import org.moire.ultrasonic.domain.Genre;
@@ -234,7 +240,8 @@ public class RESTMusicService implements MusicService
         Response<MusicFoldersResponse> response = subsonicAPIClient.getApi().getMusicFolders().execute();
         checkResponseSuccessful(response);
 
-        List<MusicFolder> musicFolders = APIConverter.toDomainEntityList(response.body().getMusicFolders());
+        List<MusicFolder> musicFolders = APIMusicFolderConverter
+                .toDomainEntityList(response.body().getMusicFolders());
         writeCachedMusicFolders(context, musicFolders);
         return musicFolders;
     }
@@ -269,7 +276,7 @@ public class RESTMusicService implements MusicService
                 .getIndexes(musicFolderId == null ? null : Long.valueOf(musicFolderId), null).execute();
         checkResponseSuccessful(response);
 
-        Indexes indexes = APIConverter.toDomainEntity(response.body().getIndexes());
+        Indexes indexes = APIIndexesConverter.toDomainEntity(response.body().getIndexes());
         writeCachedIndexes(context, indexes, musicFolderId);
         return indexes;
     }
@@ -303,7 +310,7 @@ public class RESTMusicService implements MusicService
         Response<GetArtistsResponse> response = subsonicAPIClient.getApi().getArtists(null).execute();
         checkResponseSuccessful(response);
 
-        Indexes indexes = APIConverter.toDomainEntity(response.body().getIndexes());
+        Indexes indexes = APIIndexesConverter.toDomainEntity(response.body().getIndexes());
         writeCachedArtists(context, indexes);
         return indexes;
     }
@@ -370,7 +377,7 @@ public class RESTMusicService implements MusicService
                 .getMusicDirectory(Long.valueOf(id)).execute();
         checkResponseSuccessful(response);
 
-        return APIConverter.toDomainEntity(response.body().getMusicDirectory());
+        return APIMusicDirectoryConverter.toDomainEntity(response.body().getMusicDirectory());
     }
 
     @Override
@@ -388,7 +395,7 @@ public class RESTMusicService implements MusicService
                 .getArtist(Long.valueOf(id)).execute();
         checkResponseSuccessful(response);
 
-        return APIConverter.toMusicDirectoryDomainEntity(response.body().getArtist());
+        return APIArtistConverter.toMusicDirectoryDomainEntity(response.body().getArtist());
     }
 
     @Override
@@ -406,7 +413,7 @@ public class RESTMusicService implements MusicService
                 .getAlbum(Long.valueOf(id)).execute();
         checkResponseSuccessful(response);
 
-        return APIConverter.toMusicDirectoryDomainEntity(response.body().getAlbum());
+        return APIAlbumConverter.toMusicDirectoryDomainEntity(response.body().getAlbum());
     }
 
     @Override
@@ -435,7 +442,7 @@ public class RESTMusicService implements MusicService
                 criteria.getSongCount(), null, null).execute();
         checkResponseSuccessful(response);
 
-        return APIConverter.toDomainEntity(response.body().getSearchResult());
+        return APISearchConverter.toDomainEntity(response.body().getSearchResult());
     }
 
     /**
@@ -454,7 +461,7 @@ public class RESTMusicService implements MusicService
                 criteria.getSongCount(), null).execute();
         checkResponseSuccessful(response);
 
-        return APIConverter.toDomainEntity(response.body().getSearchResult());
+        return APISearchConverter.toDomainEntity(response.body().getSearchResult());
     }
 
     private SearchResult search3(SearchCriteria criteria,
@@ -470,7 +477,7 @@ public class RESTMusicService implements MusicService
                 criteria.getSongCount(), null).execute();
         checkResponseSuccessful(response);
 
-        return APIConverter.toDomainEntity(response.body().getSearchResult());
+        return APISearchConverter.toDomainEntity(response.body().getSearchResult());
     }
 
     @Override
@@ -487,7 +494,7 @@ public class RESTMusicService implements MusicService
                 .getPlaylist(Long.valueOf(id)).execute();
         checkResponseSuccessful(response);
 
-        MusicDirectory playlist = APIConverter
+        MusicDirectory playlist = APIPlaylistConverter
                 .toMusicDirectoryDomainEntity(response.body().getPlaylist());
         savePlaylist(name, context, playlist);
         return playlist;
@@ -563,7 +570,7 @@ public class RESTMusicService implements MusicService
                 .getPlaylists(null).execute();
         checkResponseSuccessful(response);
 
-        return APIConverter.toDomainEntitiesList(response.body().getPlaylists());
+        return APIPlaylistConverter.toDomainEntitiesList(response.body().getPlaylists());
     }
 
 	@Override
