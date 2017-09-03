@@ -4,6 +4,7 @@ import org.moire.ultrasonic.api.subsonic.response.GetAlbumResponse
 import org.moire.ultrasonic.api.subsonic.response.GetArtistResponse
 import org.moire.ultrasonic.api.subsonic.response.GetArtistsResponse
 import org.moire.ultrasonic.api.subsonic.response.GetIndexesResponse
+import org.moire.ultrasonic.api.subsonic.response.GetLyricsResponse
 import org.moire.ultrasonic.api.subsonic.response.GetMusicDirectoryResponse
 import org.moire.ultrasonic.api.subsonic.response.GetPlaylistResponse
 import org.moire.ultrasonic.api.subsonic.response.GetPlaylistsResponse
@@ -108,9 +109,13 @@ interface SubsonicAPIDefinition {
             @Query("comment") comment: String? = null,
             @Query("public") public: Boolean? = null,
             @Query("songIdToAdd") songIdsToAdd: List<Long>? = null,
-            @Query("songIndexToRemove") songIndexesToRemove: List<Int>? = null) : Call<SubsonicResponse>
+            @Query("songIndexToRemove") songIndexesToRemove: List<Int>? = null): Call<SubsonicResponse>
 
     @GET("getPodcasts.view")
     fun getPodcasts(@Query("includeEpisodes") includeEpisodes: Boolean? = null,
-                    @Query("id") id: Long? = null) : Call<GetPodcastsResponse>
+                    @Query("id") id: Long? = null): Call<GetPodcastsResponse>
+
+    @GET("getLyrics.view")
+    fun getLyrics(@Query("artist") artist: String? = null,
+                  @Query("title") title: String? = null): Call<GetLyricsResponse>
 }
