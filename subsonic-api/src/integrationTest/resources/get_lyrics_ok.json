@@ -1,0 +1,11 @@
+{
+  "subsonic-response" : {
+    "status" : "ok",
+    "version" : "1.15.0",
+    "lyrics" : {
+      "artist" : "Amorphis",
+      "title" : "Alone",
+      "value" : "Tear dimmed rememberance\nIn a womb of time\nBreath upon me\nPossessed by the"
+    }
+  }
+}
