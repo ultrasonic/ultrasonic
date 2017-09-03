@@ -69,4 +69,17 @@ class APIMusicDirectoryConverterTest {
             type `should equal to` entity.type
         }
     }
+
+    @Test
+    fun `Should convert MusicDirectoryChild podact entity`() {
+        val entity = MusicDirectoryChild(id = 584, streamId = 394,
+                artist = "some-artist", publishDate = Calendar.getInstance())
+
+        val convertedEntity = entity.toDomainEntity()
+
+        with(convertedEntity) {
+            id `should equal to` entity.streamId.toString()
+            artist `should equal to` dateFormat.format(entity.publishDate?.time)
+        }
+    }
 }

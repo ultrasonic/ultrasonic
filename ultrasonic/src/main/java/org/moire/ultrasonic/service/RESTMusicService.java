@@ -56,6 +56,7 @@ import org.apache.http.protocol.ExecutionContext;
 import org.apache.http.protocol.HttpContext;
 import org.moire.ultrasonic.R;
 import org.moire.ultrasonic.api.subsonic.SubsonicAPIClient;
+import org.moire.ultrasonic.api.subsonic.models.MusicDirectoryChild;
 import org.moire.ultrasonic.api.subsonic.response.GetAlbumResponse;
 import org.moire.ultrasonic.api.subsonic.response.GetArtistResponse;
 import org.moire.ultrasonic.api.subsonic.response.GetArtistsResponse;
@@ -63,6 +64,7 @@ import org.moire.ultrasonic.api.subsonic.response.GetIndexesResponse;
 import org.moire.ultrasonic.api.subsonic.response.GetMusicDirectoryResponse;
 import org.moire.ultrasonic.api.subsonic.response.GetPlaylistResponse;
 import org.moire.ultrasonic.api.subsonic.response.GetPlaylistsResponse;
+import org.moire.ultrasonic.api.subsonic.response.GetPodcastsResponse;
 import org.moire.ultrasonic.api.subsonic.response.LicenseResponse;
 import org.moire.ultrasonic.api.subsonic.response.MusicFoldersResponse;
 import org.moire.ultrasonic.api.subsonic.response.SearchResponse;
@@ -75,6 +77,7 @@ import org.moire.ultrasonic.data.APIIndexesConverter;
 import org.moire.ultrasonic.data.APIMusicDirectoryConverter;
 import org.moire.ultrasonic.data.APIMusicFolderConverter;
 import org.moire.ultrasonic.data.APIPlaylistConverter;
+import org.moire.ultrasonic.data.APIPodcastConverter;
 import org.moire.ultrasonic.data.APISearchConverter;
 import org.moire.ultrasonic.domain.Bookmark;
 import org.moire.ultrasonic.domain.ChatMessage;
@@ -99,8 +102,6 @@ import org.moire.ultrasonic.service.parser.GenreParser;
 import org.moire.ultrasonic.service.parser.JukeboxStatusParser;
 import org.moire.ultrasonic.service.parser.LyricsParser;
 import org.moire.ultrasonic.service.parser.MusicDirectoryParser;
-import org.moire.ultrasonic.service.parser.PodcastEpisodeParser;
-import org.moire.ultrasonic.service.parser.PodcastsChannelsParser;
 import org.moire.ultrasonic.service.parser.RandomSongsParser;
 import org.moire.ultrasonic.service.parser.SearchResult2Parser;
 import org.moire.ultrasonic.service.parser.ShareParser;
@@ -527,41 +528,6 @@ public class RESTMusicService implements MusicService
     }
 
     @Override
-	public List<PodcastsChannel> getPodcastsChannels(boolean refresh, Context context, ProgressListener progressListener) throws Exception
-	{
-		Reader reader = getReader(context, progressListener, "getPodcasts", null,"includeEpisodes", "false");
-		try {
-			return new PodcastsChannelsParser(context).parse(reader, progressListener);
-		}
-		finally
-		{
-			Util.close(reader);
-		}
-	}
-
-	@Override
-	public MusicDirectory getPodcastEpisodes(String podcastChannelId, Context context, ProgressListener progressListener) throws Exception {
-
-		List<String> names = new ArrayList<String>();
-		names.add("id");
-		names.add("includeEpisodes");
-		List<Object> values = new ArrayList<Object>();
-		values.add(podcastChannelId);
-		values.add("true");
-
-		// TODO
-		Reader reader = getReader(context, progressListener, "getPodcasts", null, names,values);
-		//Reader reader = GetPodcastEpisodesTestReaderProvider.getReader();
-		try {
-			return new PodcastEpisodeParser(context).parse(reader, progressListener);
-		}
-		finally
-		{
-			Util.close(reader);
-		}
-	}
-
-    @Override
     public List<Playlist> getPlaylists(boolean refresh,
                                        Context context,
                                        ProgressListener progressListener) throws Exception {
@@ -618,7 +584,47 @@ public class RESTMusicService implements MusicService
         checkResponseSuccessful(response);
     }
 
-	@Override
+    @Override
+    public List<PodcastsChannel> getPodcastsChannels(boolean refresh,
+                                                     Context context,
+                                                     ProgressListener progressListener)
+            throws Exception {
+        updateProgressListener(progressListener, R.string.parser_reading);
+        Response<GetPodcastsResponse> response = subsonicAPIClient.getApi()
+                .getPodcasts(false, null).execute();
+        checkResponseSuccessful(response);
+
+        return APIPodcastConverter.toDomainEntitiesList(response.body().getPodcastChannels());
+    }
+
+    @Override
+    public MusicDirectory getPodcastEpisodes(String podcastChannelId,
+                                             Context context,
+                                             ProgressListener progressListener) throws Exception {
+        if (podcastChannelId == null) {
+            throw new IllegalArgumentException("Podcast channel id is null!");
+        }
+
+        updateProgressListener(progressListener, R.string.parser_reading);
+        Response<GetPodcastsResponse> response = subsonicAPIClient.getApi()
+                .getPodcasts(true, Long.valueOf(podcastChannelId)).execute();
+        checkResponseSuccessful(response);
+
+        List<MusicDirectoryChild> podcastEntries = response.body().getPodcastChannels().get(0)
+                .getEpisodeList();
+        MusicDirectory musicDirectory = new MusicDirectory();
+        for (MusicDirectoryChild podcastEntry : podcastEntries) {
+            if (!"skipped".equals(podcastEntry.getStatus()) &&
+                    !"error".equals(podcastEntry.getStatus())) {
+                MusicDirectory.Entry entry = APIMusicDirectoryConverter.toDomainEntity(podcastEntry);
+                entry.setTrack(null);
+                musicDirectory.addChild(entry);
+            }
+        }
+        return musicDirectory;
+    }
+
+    @Override
 	public Lyrics getLyrics(String artist, String title, Context context, ProgressListener progressListener) throws Exception
 	{
 		checkServerVersion(context, "1.2", "Lyrics not supported.");

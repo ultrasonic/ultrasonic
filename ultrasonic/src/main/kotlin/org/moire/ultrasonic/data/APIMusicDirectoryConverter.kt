@@ -5,7 +5,14 @@ package org.moire.ultrasonic.data
 
 import org.moire.ultrasonic.api.subsonic.models.MusicDirectoryChild
 import org.moire.ultrasonic.domain.MusicDirectory
+import java.text.DateFormat
+import java.text.SimpleDateFormat
+import java.util.Locale
 import org.moire.ultrasonic.api.subsonic.models.MusicDirectory as APIMusicDirectory
+
+internal val dateFormat: DateFormat by lazy {
+    SimpleDateFormat.getDateTimeInstance(DateFormat.SHORT, DateFormat.SHORT, Locale.getDefault())
+}
 
 fun MusicDirectoryChild.toDomainEntity(): MusicDirectory.Entry = MusicDirectory.Entry().apply {
     id = this@toDomainEntity.id.toString()
@@ -33,6 +40,12 @@ fun MusicDirectoryChild.toDomainEntity(): MusicDirectory.Entry = MusicDirectory.
     starred = this@toDomainEntity.starred != null
     discNumber = this@toDomainEntity.discNumber
     type = this@toDomainEntity.type
+    if (this@toDomainEntity.streamId >= 0) {
+        id = this@toDomainEntity.streamId.toString()
+    }
+    if (this@toDomainEntity.publishDate != null) {
+        artist = dateFormat.format(this@toDomainEntity.publishDate!!.time)
+    }
 }
 
 fun APIMusicDirectory.toDomainEntity(): MusicDirectory = MusicDirectory().apply {
