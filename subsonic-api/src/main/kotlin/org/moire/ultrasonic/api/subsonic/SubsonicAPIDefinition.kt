@@ -7,6 +7,7 @@ import org.moire.ultrasonic.api.subsonic.response.GetIndexesResponse
 import org.moire.ultrasonic.api.subsonic.response.GetMusicDirectoryResponse
 import org.moire.ultrasonic.api.subsonic.response.GetPlaylistResponse
 import org.moire.ultrasonic.api.subsonic.response.GetPlaylistsResponse
+import org.moire.ultrasonic.api.subsonic.response.GetPodcastsResponse
 import org.moire.ultrasonic.api.subsonic.response.LicenseResponse
 import org.moire.ultrasonic.api.subsonic.response.MusicFoldersResponse
 import org.moire.ultrasonic.api.subsonic.response.SearchResponse
@@ -108,4 +109,8 @@ interface SubsonicAPIDefinition {
             @Query("public") public: Boolean? = null,
             @Query("songIdToAdd") songIdsToAdd: List<Long>? = null,
             @Query("songIndexToRemove") songIndexesToRemove: List<Int>? = null) : Call<SubsonicResponse>
+
+    @GET("getPodcasts.view")
+    fun getPodcasts(@Query("includeEpisodes") includeEpisodes: Boolean? = null,
+                    @Query("id") id: Long? = null) : Call<GetPodcastsResponse>
 }

@@ -91,4 +91,29 @@ public class PodcastsChannel implements Serializable
     public String toString() {
         return getTitle();
     }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        PodcastsChannel that = (PodcastsChannel) o;
+
+        if (id != null ? !id.equals(that.id) : that.id != null) return false;
+        if (title != null ? !title.equals(that.title) : that.title != null) return false;
+        if (url != null ? !url.equals(that.url) : that.url != null) return false;
+        if (description != null ? !description.equals(that.description) : that.description != null)
+            return false;
+        return status != null ? status.equals(that.status) : that.status == null;
+    }
+
+    @Override
+    public int hashCode() {
+        int result = id != null ? id.hashCode() : 0;
+        result = 31 * result + (title != null ? title.hashCode() : 0);
+        result = 31 * result + (url != null ? url.hashCode() : 0);
+        result = 31 * result + (description != null ? description.hashCode() : 0);
+        result = 31 * result + (status != null ? status.hashCode() : 0);
+        return result;
+    }
 }
