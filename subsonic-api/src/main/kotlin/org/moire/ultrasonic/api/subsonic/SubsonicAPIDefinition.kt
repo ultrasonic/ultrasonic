@@ -99,4 +99,13 @@ interface SubsonicAPIDefinition {
 
     @GET("deletePlaylist.view")
     fun deletePlaylist(@Query("id") id: Long): Call<SubsonicResponse>
+
+    @GET("updatePlaylist.view")
+    fun updatePlaylist(
+            @Query("playlistId") id: Long,
+            @Query("name") name: String? = null,
+            @Query("comment") comment: String? = null,
+            @Query("public") public: Boolean? = null,
+            @Query("songIdToAdd") songIdsToAdd: List<Long>? = null,
+            @Query("songIndexToRemove") songIndexesToRemove: List<Int>? = null) : Call<SubsonicResponse>
 }
