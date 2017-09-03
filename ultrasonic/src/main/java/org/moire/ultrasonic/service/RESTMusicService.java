@@ -61,6 +61,7 @@ import org.moire.ultrasonic.api.subsonic.response.GetAlbumResponse;
 import org.moire.ultrasonic.api.subsonic.response.GetArtistResponse;
 import org.moire.ultrasonic.api.subsonic.response.GetArtistsResponse;
 import org.moire.ultrasonic.api.subsonic.response.GetIndexesResponse;
+import org.moire.ultrasonic.api.subsonic.response.GetLyricsResponse;
 import org.moire.ultrasonic.api.subsonic.response.GetMusicDirectoryResponse;
 import org.moire.ultrasonic.api.subsonic.response.GetPlaylistResponse;
 import org.moire.ultrasonic.api.subsonic.response.GetPlaylistsResponse;
@@ -74,6 +75,7 @@ import org.moire.ultrasonic.api.subsonic.response.SubsonicResponse;
 import org.moire.ultrasonic.data.APIAlbumConverter;
 import org.moire.ultrasonic.data.APIArtistConverter;
 import org.moire.ultrasonic.data.APIIndexesConverter;
+import org.moire.ultrasonic.data.APILyricsConverter;
 import org.moire.ultrasonic.data.APIMusicDirectoryConverter;
 import org.moire.ultrasonic.data.APIMusicFolderConverter;
 import org.moire.ultrasonic.data.APIPlaylistConverter;
@@ -100,7 +102,6 @@ import org.moire.ultrasonic.service.parser.ChatMessageParser;
 import org.moire.ultrasonic.service.parser.ErrorParser;
 import org.moire.ultrasonic.service.parser.GenreParser;
 import org.moire.ultrasonic.service.parser.JukeboxStatusParser;
-import org.moire.ultrasonic.service.parser.LyricsParser;
 import org.moire.ultrasonic.service.parser.MusicDirectoryParser;
 import org.moire.ultrasonic.service.parser.RandomSongsParser;
 import org.moire.ultrasonic.service.parser.SearchResult2Parser;
@@ -625,20 +626,17 @@ public class RESTMusicService implements MusicService
     }
 
     @Override
-	public Lyrics getLyrics(String artist, String title, Context context, ProgressListener progressListener) throws Exception
-	{
-		checkServerVersion(context, "1.2", "Lyrics not supported.");
+    public Lyrics getLyrics(String artist,
+                            String title,
+                            Context context,
+                            ProgressListener progressListener) throws Exception {
+        updateProgressListener(progressListener, R.string.parser_reading);
+        Response<GetLyricsResponse> response = subsonicAPIClient.getApi()
+                .getLyrics(artist, title).execute();
+        checkResponseSuccessful(response);
 
-		Reader reader = getReader(context, progressListener, "getLyrics", null, asList("artist", "title"), Arrays.<Object>asList(artist, title));
-		try
-		{
-			return new LyricsParser(context).parse(reader, progressListener);
-		}
-		finally
-		{
-			Util.close(reader);
-		}
-	}
+        return APILyricsConverter.toDomainEntity(response.body().getLyrics());
+    }
 
 	@Override
 	public void scrobble(String id, boolean submission, Context context, ProgressListener progressListener) throws Exception
