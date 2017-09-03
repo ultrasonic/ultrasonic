@@ -605,20 +605,18 @@ public class RESTMusicService implements MusicService
         checkResponseSuccessful(response);
     }
 
-	@Override
-	public void updatePlaylist(String id, String name, String comment, boolean pub, Context context, ProgressListener progressListener) throws Exception
-	{
-		checkServerVersion(context, "1.8", "Updating playlists is not supported.");
-		Reader reader = getReader(context, progressListener, "updatePlaylist", null, asList("playlistId", "name", "comment", "public"), Arrays.<Object>asList(id, name, comment, pub));
-		try
-		{
-			new ErrorParser(context).parse(reader);
-		}
-		finally
-		{
-			Util.close(reader);
-		}
-	}
+    @Override
+    public void updatePlaylist(String id,
+                               String name,
+                               String comment,
+                               boolean pub,
+                               Context context,
+                               ProgressListener progressListener) throws Exception {
+        updateProgressListener(progressListener, R.string.parser_reading);
+        Response<SubsonicResponse> response = subsonicAPIClient.getApi()
+                .updatePlaylist(Long.valueOf(id), name, comment, pub, null, null).execute();
+        checkResponseSuccessful(response);
+    }
 
 	@Override
 	public Lyrics getLyrics(String artist, String title, Context context, ProgressListener progressListener) throws Exception
