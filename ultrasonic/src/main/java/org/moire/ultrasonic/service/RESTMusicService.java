@@ -638,21 +638,20 @@ public class RESTMusicService implements MusicService
         return APILyricsConverter.toDomainEntity(response.body().getLyrics());
     }
 
-	@Override
-	public void scrobble(String id, boolean submission, Context context, ProgressListener progressListener) throws Exception
-	{
-		checkServerVersion(context, "1.5", "Scrobbling not supported.");
+    @Override
+    public void scrobble(String id,
+                         boolean submission,
+                         Context context,
+                         ProgressListener progressListener) throws Exception {
+        if (id == null) {
+            throw new IllegalArgumentException("Scrobble id is null");
+        }
 
-		Reader reader = getReader(context, progressListener, "scrobble", null, asList("id", "submission"), Arrays.<Object>asList(id, submission));
-		try
-		{
-			new ErrorParser(context).parse(reader);
-		}
-		finally
-		{
-			Util.close(reader);
-		}
-	}
+        updateProgressListener(progressListener, R.string.parser_reading);
+        Response<SubsonicResponse> response = subsonicAPIClient.getApi()
+                .scrobble(id, null, submission).execute();
+        checkResponseSuccessful(response);
+    }
 
 	@Override
 	public MusicDirectory getAlbumList(String type, int size, int offset, Context context, ProgressListener progressListener) throws Exception
