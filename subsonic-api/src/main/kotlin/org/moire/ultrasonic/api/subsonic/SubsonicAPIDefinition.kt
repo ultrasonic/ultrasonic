@@ -118,4 +118,9 @@ interface SubsonicAPIDefinition {
     @GET("getLyrics.view")
     fun getLyrics(@Query("artist") artist: String? = null,
                   @Query("title") title: String? = null): Call<GetLyricsResponse>
+
+    @GET("scrobble.view")
+    fun scrobble(@Query("id") id: String,
+                 @Query("time") time: Long? = null,
+                 @Query("submission") submission: Boolean? = null): Call<SubsonicResponse>
 }
