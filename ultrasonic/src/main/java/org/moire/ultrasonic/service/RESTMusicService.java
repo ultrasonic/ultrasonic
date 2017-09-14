@@ -56,7 +56,9 @@ import org.apache.http.protocol.ExecutionContext;
 import org.apache.http.protocol.HttpContext;
 import org.moire.ultrasonic.R;
 import org.moire.ultrasonic.api.subsonic.SubsonicAPIClient;
+import org.moire.ultrasonic.api.subsonic.models.AlbumListType;
 import org.moire.ultrasonic.api.subsonic.models.MusicDirectoryChild;
+import org.moire.ultrasonic.api.subsonic.response.GetAlbumListResponse;
 import org.moire.ultrasonic.api.subsonic.response.GetAlbumResponse;
 import org.moire.ultrasonic.api.subsonic.response.GetArtistResponse;
 import org.moire.ultrasonic.api.subsonic.response.GetArtistsResponse;
@@ -653,21 +655,28 @@ public class RESTMusicService implements MusicService
         checkResponseSuccessful(response);
     }
 
-	@Override
-	public MusicDirectory getAlbumList(String type, int size, int offset, Context context, ProgressListener progressListener) throws Exception
-	{
-		checkServerVersion(context, "1.2", "Album list not supported.");
+    @Override
+    public MusicDirectory getAlbumList(String type,
+                                       int size,
+                                       int offset,
+                                       Context context,
+                                       ProgressListener progressListener) throws Exception {
+        if (type == null) {
+            throw new IllegalArgumentException("Type is null!");
+        }
 
-		Reader reader = getReader(context, progressListener, "getAlbumList", null, asList("type", "size", "offset"), Arrays.<Object>asList(type, size, offset));
-		try
-		{
-			return new AlbumListParser(context).parse(reader, progressListener, false);
-		}
-		finally
-		{
-			Util.close(reader);
-		}
-	}
+        updateProgressListener(progressListener, R.string.parser_reading);
+        Response<GetAlbumListResponse> response = subsonicAPIClient.getApi()
+                .getAlbumList(AlbumListType.fromName(type), size, offset, null,
+                        null, null, null).execute();
+        checkResponseSuccessful(response);
+
+        List<MusicDirectory.Entry> childList = APIMusicDirectoryConverter
+                .toDomainEntityList(response.body().getAlbumList());
+        MusicDirectory result = new MusicDirectory();
+        result.addAll(childList);
+        return result;
+    }
 
 	@Override
 	public MusicDirectory getAlbumList2(String type, int size, int offset, Context context, ProgressListener progressListener) throws Exception
