@@ -71,7 +71,7 @@ class APIMusicDirectoryConverterTest {
     }
 
     @Test
-    fun `Should convert MusicDirectoryChild podact entity`() {
+    fun `Should convert MusicDirectoryChild podcast entity`() {
         val entity = MusicDirectoryChild(id = 584, streamId = 394,
                 artist = "some-artist", publishDate = Calendar.getInstance())
 
@@ -80,6 +80,18 @@ class APIMusicDirectoryConverterTest {
         with(convertedEntity) {
             id `should equal to` entity.streamId.toString()
             artist `should equal to` dateFormat.format(entity.publishDate?.time)
+        }
+    }
+
+    @Test
+    fun `Should convert list of MusicDirectoryChild to domain entity list`() {
+        val entitiesList = listOf(MusicDirectoryChild(id = 45), MusicDirectoryChild(id = 34))
+
+        val domainList = entitiesList.toDomainEntityList()
+
+        domainList.size `should equal to` entitiesList.size
+        domainList.forEachIndexed { index, entry ->
+            entry `should equal` entitiesList[index].toDomainEntity()
         }
     }
 }

@@ -48,6 +48,8 @@ fun MusicDirectoryChild.toDomainEntity(): MusicDirectory.Entry = MusicDirectory.
     }
 }
 
+fun List<MusicDirectoryChild>.toDomainEntityList() = this.map { it.toDomainEntity() }
+
 fun APIMusicDirectory.toDomainEntity(): MusicDirectory = MusicDirectory().apply {
     name = this@toDomainEntity.name
     addAll(this@toDomainEntity.childList.map { it.toDomainEntity() })
