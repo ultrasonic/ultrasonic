@@ -32,4 +32,6 @@ data class MusicDirectoryChild(val id: Long = -1L,
                                val channelId: Long = -1,
                                val description: String = "",
                                val status: String = "",
-                               val publishDate: Calendar? = null)
+                               val publishDate: Calendar? = null,
+                               val userRating: Int? = null,
+                               val averageRating: Float? = null)
