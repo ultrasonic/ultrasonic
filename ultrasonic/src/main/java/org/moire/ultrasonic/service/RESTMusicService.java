@@ -69,6 +69,7 @@ import org.moire.ultrasonic.api.subsonic.response.GetMusicDirectoryResponse;
 import org.moire.ultrasonic.api.subsonic.response.GetPlaylistResponse;
 import org.moire.ultrasonic.api.subsonic.response.GetPlaylistsResponse;
 import org.moire.ultrasonic.api.subsonic.response.GetPodcastsResponse;
+import org.moire.ultrasonic.api.subsonic.response.GetRandomSongsResponse;
 import org.moire.ultrasonic.api.subsonic.response.LicenseResponse;
 import org.moire.ultrasonic.api.subsonic.response.MusicFoldersResponse;
 import org.moire.ultrasonic.api.subsonic.response.SearchResponse;
@@ -699,30 +700,19 @@ public class RESTMusicService implements MusicService
         return result;
     }
 
-	@Override
-	public MusicDirectory getRandomSongs(int size, Context context, ProgressListener progressListener) throws Exception
-	{
-		checkServerVersion(context, "1.2", "Random songs not supported.");
+    @Override
+    public MusicDirectory getRandomSongs(int size,
+                                         Context context,
+                                         ProgressListener progressListener) throws Exception {
+        updateProgressListener(progressListener, R.string.parser_reading);
+        Response<GetRandomSongsResponse> response = subsonicAPIClient.getApi()
+                .getRandomSongs(size, null, null, null, null).execute();
+        checkResponseSuccessful(response);
 
-		HttpParams params = new BasicHttpParams();
-		HttpConnectionParams.setSoTimeout(params, SOCKET_READ_TIMEOUT_GET_RANDOM_SONGS);
-
-		List<String> names = new ArrayList<String>();
-		List<Object> values = new ArrayList<Object>();
-
-		names.add("size");
-		values.add(size);
-
-		Reader reader = getReader(context, progressListener, "getRandomSongs", params, names, values);
-		try
-		{
-			return new RandomSongsParser(context).parse(reader, progressListener);
-		}
-		finally
-		{
-			Util.close(reader);
-		}
-	}
+        MusicDirectory result = new MusicDirectory();
+        result.addAll(APIMusicDirectoryConverter.toDomainEntityList(response.body().getSongsList()));
+        return result;
+    }
 
 	@Override
 	public SearchResult getStarred(Context context, ProgressListener progressListener) throws Exception
