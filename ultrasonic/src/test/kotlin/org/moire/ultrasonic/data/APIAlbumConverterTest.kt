@@ -51,4 +51,18 @@ class APIAlbumConverterTest {
             children[0] `should equal` entity.songList[0].toDomainEntity()
         }
     }
+
+    @Test
+    fun `Should convert list of Album entities to domain list entities`() {
+        val entityList = listOf(Album(id = 455), Album(id = 1), Album(id = 1000))
+
+        val convertedList = entityList.toDomainEntityList()
+
+        with(convertedList) {
+            size `should equal to` entityList.size
+            forEachIndexed { index, entry ->
+                entry `should equal` entityList[index].toDomainEntity()
+            }
+        }
+    }
 }
