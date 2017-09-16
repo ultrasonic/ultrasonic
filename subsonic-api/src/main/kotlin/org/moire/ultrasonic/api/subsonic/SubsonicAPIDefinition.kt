@@ -12,6 +12,7 @@ import org.moire.ultrasonic.api.subsonic.response.GetMusicDirectoryResponse
 import org.moire.ultrasonic.api.subsonic.response.GetPlaylistResponse
 import org.moire.ultrasonic.api.subsonic.response.GetPlaylistsResponse
 import org.moire.ultrasonic.api.subsonic.response.GetPodcastsResponse
+import org.moire.ultrasonic.api.subsonic.response.GetRandomSongsResponse
 import org.moire.ultrasonic.api.subsonic.response.LicenseResponse
 import org.moire.ultrasonic.api.subsonic.response.MusicFoldersResponse
 import org.moire.ultrasonic.api.subsonic.response.SearchResponse
@@ -144,4 +145,11 @@ interface SubsonicAPIDefinition {
                       @Query("toYear") toYear: Int? = null,
                       @Query("genre") genre: String? = null,
                       @Query("musicFolderId") musicFolderId: Long? = null): Call<GetAlbumList2Response>
+
+    @GET("getRandomSongs.view")
+    fun getRandomSongs(@Query("size") size: Int? = null,
+                       @Query("genre") genre: String? = null,
+                       @Query("fromYear") fromYear: Int? = null,
+                       @Query("toYear") toYear: Int? = null,
+                       @Query("musicFolderId") musicFolderId: Long? = null): Call<GetRandomSongsResponse>
 }
