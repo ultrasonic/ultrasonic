@@ -1,6 +1,7 @@
 package org.moire.ultrasonic.api.subsonic
 
 import org.moire.ultrasonic.api.subsonic.models.AlbumListType
+import org.moire.ultrasonic.api.subsonic.response.GetAlbumList2Response
 import org.moire.ultrasonic.api.subsonic.response.GetAlbumListResponse
 import org.moire.ultrasonic.api.subsonic.response.GetAlbumResponse
 import org.moire.ultrasonic.api.subsonic.response.GetArtistResponse
@@ -134,4 +135,13 @@ interface SubsonicAPIDefinition {
                      @Query("toYear") toYear: Int? = null,
                      @Query("genre") genre: String? = null,
                      @Query("musicFolderId") musicFolderId: Long? = null): Call<GetAlbumListResponse>
+
+    @GET("getAlbumList2.view")
+    fun getAlbumList2(@Query("type") type: AlbumListType,
+                      @Query("size") size: Int? = null,
+                      @Query("offset") offset: Int? = null,
+                      @Query("fromYear") fromYear: Int? = null,
+                      @Query("toYear") toYear: Int? = null,
+                      @Query("genre") genre: String? = null,
+                      @Query("musicFolderId") musicFolderId: Long? = null): Call<GetAlbumList2Response>
 }
