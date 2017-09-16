@@ -58,6 +58,7 @@ import org.moire.ultrasonic.R;
 import org.moire.ultrasonic.api.subsonic.SubsonicAPIClient;
 import org.moire.ultrasonic.api.subsonic.models.AlbumListType;
 import org.moire.ultrasonic.api.subsonic.models.MusicDirectoryChild;
+import org.moire.ultrasonic.api.subsonic.response.GetAlbumList2Response;
 import org.moire.ultrasonic.api.subsonic.response.GetAlbumListResponse;
 import org.moire.ultrasonic.api.subsonic.response.GetAlbumResponse;
 import org.moire.ultrasonic.api.subsonic.response.GetArtistResponse;
@@ -98,7 +99,6 @@ import org.moire.ultrasonic.domain.SearchResult;
 import org.moire.ultrasonic.domain.Share;
 import org.moire.ultrasonic.domain.UserInfo;
 import org.moire.ultrasonic.domain.Version;
-import org.moire.ultrasonic.service.parser.AlbumListParser;
 import org.moire.ultrasonic.service.parser.BookmarkParser;
 import org.moire.ultrasonic.service.parser.ChatMessageParser;
 import org.moire.ultrasonic.service.parser.ErrorParser;
@@ -678,21 +678,26 @@ public class RESTMusicService implements MusicService
         return result;
     }
 
-	@Override
-	public MusicDirectory getAlbumList2(String type, int size, int offset, Context context, ProgressListener progressListener) throws Exception
-	{
-		checkServerVersion(context, "1.8", "Album list by ID3 tag not supported.");
+    @Override
+    public MusicDirectory getAlbumList2(String type,
+                                        int size,
+                                        int offset,
+                                        Context context,
+                                        ProgressListener progressListener) throws Exception {
+        if (type == null) {
+            throw new IllegalArgumentException("Type is null!");
+        }
 
-		Reader reader = getReader(context, progressListener, "getAlbumList2", null, asList("type", "size", "offset"), Arrays.<Object>asList(type, size, offset));
-		try
-		{
-			return new AlbumListParser(context).parse(reader, progressListener, true);
-		}
-		finally
-		{
-			Util.close(reader);
-		}
-	}
+        updateProgressListener(progressListener, R.string.parser_reading);
+        Response<GetAlbumList2Response> response = subsonicAPIClient.getApi()
+                .getAlbumList2(AlbumListType.fromName(type), size, offset, null, null,
+                        null, null).execute();
+        checkResponseSuccessful(response);
+
+        MusicDirectory result = new MusicDirectory();
+        result.addAll(APIAlbumConverter.toDomainEntityList(response.body().getAlbumList()));
+        return result;
+    }
 
 	@Override
 	public MusicDirectory getRandomSongs(int size, Context context, ProgressListener progressListener) throws Exception
