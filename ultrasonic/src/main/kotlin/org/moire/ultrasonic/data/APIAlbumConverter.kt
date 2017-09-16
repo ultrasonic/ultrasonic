@@ -23,3 +23,5 @@ fun Album.toDomainEntity(): MusicDirectory.Entry = MusicDirectory.Entry().apply 
 fun Album.toMusicDirectoryDomainEntity(): MusicDirectory = MusicDirectory().apply {
     addAll(this@toMusicDirectoryDomainEntity.songList.map { it.toDomainEntity() })
 }
+
+fun List<Album>.toDomainEntityList(): List<MusicDirectory.Entry> = this.map { it.toDomainEntity() }
