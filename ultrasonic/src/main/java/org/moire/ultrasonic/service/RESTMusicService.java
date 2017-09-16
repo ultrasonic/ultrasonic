@@ -70,6 +70,7 @@ import org.moire.ultrasonic.api.subsonic.response.GetPlaylistResponse;
 import org.moire.ultrasonic.api.subsonic.response.GetPlaylistsResponse;
 import org.moire.ultrasonic.api.subsonic.response.GetPodcastsResponse;
 import org.moire.ultrasonic.api.subsonic.response.GetRandomSongsResponse;
+import org.moire.ultrasonic.api.subsonic.response.GetStarredResponse;
 import org.moire.ultrasonic.api.subsonic.response.LicenseResponse;
 import org.moire.ultrasonic.api.subsonic.response.MusicFoldersResponse;
 import org.moire.ultrasonic.api.subsonic.response.SearchResponse;
@@ -714,21 +715,16 @@ public class RESTMusicService implements MusicService
         return result;
     }
 
-	@Override
-	public SearchResult getStarred(Context context, ProgressListener progressListener) throws Exception
-	{
-		checkServerVersion(context, "1.8", "Starred albums not supported.");
+    @Override
+    public SearchResult getStarred(Context context,
+                                   ProgressListener progressListener) throws Exception {
+        updateProgressListener(progressListener, R.string.parser_reading);
+        Response<GetStarredResponse> response = subsonicAPIClient.getApi()
+                .getStarred(null).execute();
+        checkResponseSuccessful(response);
 
-		Reader reader = getReader(context, progressListener, "getStarred", null);
-		try
-		{
-			return new SearchResult2Parser(context).parse(reader, progressListener, false);
-		}
-		finally
-		{
-			Util.close(reader);
-		}
-	}
+        return APISearchConverter.toDomainEntity(response.body().getStarred());
+    }
 
 	@Override
 	public SearchResult getStarred2(Context context, ProgressListener progressListener) throws Exception
