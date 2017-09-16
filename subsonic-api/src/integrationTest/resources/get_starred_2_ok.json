@@ -1,0 +1,13 @@
+{
+  "subsonic-response" : {
+    "status" : "ok",
+    "version" : "1.15.0",
+    "starred2" : {
+      "artist" : [ {
+        "id" : "364",
+        "name" : "Parov Stelar",
+        "starred" : "2017-08-12T18:32:58.768Z"
+      } ]
+    }
+  }
+}

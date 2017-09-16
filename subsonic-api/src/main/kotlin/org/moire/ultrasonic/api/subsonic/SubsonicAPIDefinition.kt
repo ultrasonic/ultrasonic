@@ -14,6 +14,7 @@ import org.moire.ultrasonic.api.subsonic.response.GetPlaylistsResponse
 import org.moire.ultrasonic.api.subsonic.response.GetPodcastsResponse
 import org.moire.ultrasonic.api.subsonic.response.GetRandomSongsResponse
 import org.moire.ultrasonic.api.subsonic.response.GetStarredResponse
+import org.moire.ultrasonic.api.subsonic.response.GetStarredTwoResponse
 import org.moire.ultrasonic.api.subsonic.response.LicenseResponse
 import org.moire.ultrasonic.api.subsonic.response.MusicFoldersResponse
 import org.moire.ultrasonic.api.subsonic.response.SearchResponse
@@ -156,4 +157,7 @@ interface SubsonicAPIDefinition {
 
     @GET("getStarred.view")
     fun getStarred(@Query("musicFolderId") musicFolderId: Long? = null): Call<GetStarredResponse>
+
+    @GET("getStarred2.view")
+    fun getStarred2(@Query("musicFolderId") musicFolderId: Long? = null): Call<GetStarredTwoResponse>
 }

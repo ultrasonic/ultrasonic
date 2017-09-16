@@ -71,6 +71,7 @@ import org.moire.ultrasonic.api.subsonic.response.GetPlaylistsResponse;
 import org.moire.ultrasonic.api.subsonic.response.GetPodcastsResponse;
 import org.moire.ultrasonic.api.subsonic.response.GetRandomSongsResponse;
 import org.moire.ultrasonic.api.subsonic.response.GetStarredResponse;
+import org.moire.ultrasonic.api.subsonic.response.GetStarredTwoResponse;
 import org.moire.ultrasonic.api.subsonic.response.LicenseResponse;
 import org.moire.ultrasonic.api.subsonic.response.MusicFoldersResponse;
 import org.moire.ultrasonic.api.subsonic.response.SearchResponse;
@@ -108,7 +109,6 @@ import org.moire.ultrasonic.service.parser.GenreParser;
 import org.moire.ultrasonic.service.parser.JukeboxStatusParser;
 import org.moire.ultrasonic.service.parser.MusicDirectoryParser;
 import org.moire.ultrasonic.service.parser.RandomSongsParser;
-import org.moire.ultrasonic.service.parser.SearchResult2Parser;
 import org.moire.ultrasonic.service.parser.ShareParser;
 import org.moire.ultrasonic.service.parser.UserInfoParser;
 import org.moire.ultrasonic.service.ssl.SSLSocketFactory;
@@ -726,21 +726,16 @@ public class RESTMusicService implements MusicService
         return APISearchConverter.toDomainEntity(response.body().getStarred());
     }
 
-	@Override
-	public SearchResult getStarred2(Context context, ProgressListener progressListener) throws Exception
-	{
-		checkServerVersion(context, "1.8", "Starred albums by ID3 tag not supported.");
+    @Override
+    public SearchResult getStarred2(Context context,
+                                    ProgressListener progressListener) throws Exception {
+        updateProgressListener(progressListener, R.string.parser_reading);
+        Response<GetStarredTwoResponse> response = subsonicAPIClient.getApi()
+                .getStarred2(null).execute();
+        checkResponseSuccessful(response);
 
-		Reader reader = getReader(context, progressListener, "getStarred2", null);
-		try
-		{
-			return new SearchResult2Parser(context).parse(reader, progressListener, true);
-		}
-		finally
-		{
-			Util.close(reader);
-		}
-	}
+        return APISearchConverter.toDomainEntity(response.body().getStarred2());
+    }
 
 	private static void checkServerVersion(Context context, String version, String text) throws ServerTooOldException
 	{
