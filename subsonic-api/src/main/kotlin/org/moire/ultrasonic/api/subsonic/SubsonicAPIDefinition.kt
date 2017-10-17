@@ -1,5 +1,6 @@
 package org.moire.ultrasonic.api.subsonic
 
+import okhttp3.ResponseBody
 import org.moire.ultrasonic.api.subsonic.models.AlbumListType
 import org.moire.ultrasonic.api.subsonic.response.GetAlbumList2Response
 import org.moire.ultrasonic.api.subsonic.response.GetAlbumListResponse
@@ -24,6 +25,7 @@ import org.moire.ultrasonic.api.subsonic.response.SubsonicResponse
 import retrofit2.Call
 import retrofit2.http.GET
 import retrofit2.http.Query
+import retrofit2.http.Streaming
 
 /**
  * Subsonic API calls.
@@ -160,4 +162,9 @@ interface SubsonicAPIDefinition {
 
     @GET("getStarred2.view")
     fun getStarred2(@Query("musicFolderId") musicFolderId: Long? = null): Call<GetStarredTwoResponse>
+
+    @Streaming
+    @GET("getCoverArt.view")
+    fun getCoverArt(@Query("id") id: String,
+                    @Query("size") size: Long? = null): Call<ResponseBody>
 }

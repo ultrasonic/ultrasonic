@@ -3,9 +3,14 @@ package org.moire.ultrasonic.api.subsonic
 import com.fasterxml.jackson.databind.DeserializationFeature
 import com.fasterxml.jackson.databind.ObjectMapper
 import com.fasterxml.jackson.module.kotlin.KotlinModule
+import com.fasterxml.jackson.module.kotlin.readValue
 import okhttp3.HttpUrl
 import okhttp3.OkHttpClient
+import okhttp3.ResponseBody
 import okhttp3.logging.HttpLoggingInterceptor
+import org.moire.ultrasonic.api.subsonic.response.StreamResponse
+import org.moire.ultrasonic.api.subsonic.response.SubsonicResponse
+import retrofit2.Response
 import retrofit2.Retrofit
 import retrofit2.converter.jackson.JacksonConverterFactory
 import java.lang.IllegalStateException
@@ -64,6 +69,35 @@ class SubsonicAPIClient(baseUrl: String,
             .build()
 
     val api: SubsonicAPIDefinition = retrofit.create(SubsonicAPIDefinition::class.java)
+
+    /**
+     * Convenient method to get cover art from api using item [id] and optional maximum [size].
+     *
+     * It detects the response `Content-Type` and tries to parse subsonic error if there is one.
+     *
+     * Prefer this method over [SubsonicAPIDefinition.getCoverArt] as this handles error cases.
+     */
+    fun getCoverArt(id: String, size: Long? = null): StreamResponse = handleStreamResponse {
+        api.getCoverArt(id, size).execute()
+    }
+
+    private inline fun handleStreamResponse(apiCall: () -> Response<ResponseBody>): StreamResponse {
+        val response = apiCall()
+        return if (response.isSuccessful) {
+            val responseBody = response.body()
+            val contentType = responseBody.contentType()
+            if (contentType != null &&
+                    contentType.type().equals("application", true) &&
+                    contentType.subtype().equals("json", true)) {
+                val error = jacksonMapper.readValue<SubsonicResponse>(responseBody.byteStream())
+                StreamResponse(apiError = error.error)
+            } else {
+                StreamResponse(stream = responseBody.byteStream())
+            }
+        } else {
+            StreamResponse(requestErrorCode = response.code())
+        }
+    }
 
     private val salt: String by lazy {
         val secureRandom = SecureRandom()
