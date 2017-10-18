@@ -25,11 +25,12 @@ val dateFormat by lazy(LazyThreadSafetyMode.NONE, {
 
 fun MockWebServerRule.enqueueResponse(resourceName: String) {
     this.mockWebServer.enqueue(MockResponse()
-            .setBody(loadJsonResponse(this, resourceName)))
+            .setBody(loadJsonResponse(resourceName))
+            .setHeader("Content-Type", "application/json;charset=UTF-8"))
 }
 
-private fun loadJsonResponse(rule: MockWebServerRule, name: String): String {
-    val source = Okio.buffer(Okio.source(rule.javaClass.classLoader.getResourceAsStream(name)))
+fun MockWebServerRule.loadJsonResponse(name: String): String {
+    val source = Okio.buffer(Okio.source(javaClass.classLoader.getResourceAsStream(name)))
     return source.readString(Charset.forName("UTF-8"))
 }
 
@@ -67,7 +68,7 @@ fun SubsonicResponse.assertBaseResponseOk() {
 
 fun MockWebServerRule.assertRequestParam(responseResourceName: String,
                                          expectedParam: String,
-                                         apiRequest: () -> Response<out SubsonicResponse>) {
+                                         apiRequest: () -> Response<out Any>) {
     this.enqueueResponse(responseResourceName)
     apiRequest()
 
