@@ -5,15 +5,15 @@ import java.io.InputStream
 
 /**
  * Special response that contains either [stream] of data from api, or [apiError],
- * or [requestErrorCode].
+ * or [responseHttpCode].
  *
- * [requestErrorCode] will be only if there problem on http level.
+ * [responseHttpCode] will be there always.
  */
 class StreamResponse(val stream: InputStream? = null,
                      val apiError: SubsonicError? = null,
-                     val requestErrorCode: Int? = null) {
+                     val responseHttpCode: Int) {
     /**
      * Check if this response has error.
      */
-    fun hasError(): Boolean = apiError != null || requestErrorCode != null
+    fun hasError(): Boolean = apiError != null || responseHttpCode !in 200..300
 }

@@ -19,7 +19,7 @@ class SubsonicApiGetCoverArtTest : SubsonicAPIClientTest() {
 
         with(response) {
             stream `should be` null
-            requestErrorCode `should be` null
+            responseHttpCode `should equal to` 200
             apiError `should equal` SubsonicError.GENERIC
         }
     }
@@ -33,7 +33,7 @@ class SubsonicApiGetCoverArtTest : SubsonicAPIClientTest() {
 
         with(response) {
             stream `should be` null
-            requestErrorCode `should equal` 404
+            responseHttpCode `should equal` 404
             apiError `should be` null
         }
     }
@@ -46,7 +46,7 @@ class SubsonicApiGetCoverArtTest : SubsonicAPIClientTest() {
         val response = client.getCoverArt("some-id")
 
         with(response) {
-            requestErrorCode `should be` null
+            responseHttpCode `should equal to` 200
             apiError `should be` null
             stream `should not be` null
             val expectedContent = mockWebServerRule.loadJsonResponse("ping_ok.json")

@@ -24,6 +24,7 @@ import org.moire.ultrasonic.api.subsonic.response.SearchTwoResponse
 import org.moire.ultrasonic.api.subsonic.response.SubsonicResponse
 import retrofit2.Call
 import retrofit2.http.GET
+import retrofit2.http.Header
 import retrofit2.http.Query
 import retrofit2.http.Streaming
 
@@ -167,4 +168,15 @@ interface SubsonicAPIDefinition {
     @GET("getCoverArt.view")
     fun getCoverArt(@Query("id") id: String,
                     @Query("size") size: Long? = null): Call<ResponseBody>
+
+    @Streaming
+    @GET("stream.view")
+    fun stream(@Query("id") id: String,
+               @Query("maxBitRate") maxBitRate: Int? = null,
+               @Query("format") format: String? = null,
+               @Query("timeOffset") timeOffset: Int? = null,
+               @Query("size") videoSize: String? = null,
+               @Query("estimateContentLength") estimateContentLength: Boolean? = null,
+               @Query("converted") converted: Boolean? = null,
+               @Header("Range") offset: Long? = null): Call<ResponseBody>
 }
