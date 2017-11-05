@@ -8,6 +8,7 @@ import okhttp3.HttpUrl
 import okhttp3.OkHttpClient
 import okhttp3.ResponseBody
 import okhttp3.logging.HttpLoggingInterceptor
+import org.moire.ultrasonic.api.subsonic.interceptors.RangeHeaderInterceptor
 import org.moire.ultrasonic.api.subsonic.response.StreamResponse
 import org.moire.ultrasonic.api.subsonic.response.SubsonicResponse
 import retrofit2.Response
@@ -51,6 +52,7 @@ class SubsonicAPIClient(baseUrl: String,
                         .build()
                 chain.proceed(originalRequest.newBuilder().url(newUrl).build())
             }
+            .addInterceptor(RangeHeaderInterceptor())
             .also {
                 if (debug) {
                     it.addLogging()
