@@ -46,7 +46,6 @@ import org.apache.http.conn.scheme.SchemeRegistry;
 import org.apache.http.conn.scheme.SocketFactory;
 import org.apache.http.impl.client.DefaultHttpClient;
 import org.apache.http.impl.conn.tsccm.ThreadSafeClientConnManager;
-import org.apache.http.message.BasicHeader;
 import org.apache.http.message.BasicNameValuePair;
 import org.apache.http.params.BasicHttpParams;
 import org.apache.http.params.HttpConnectionParams;
@@ -133,13 +132,13 @@ import java.io.Reader;
 import java.net.URLEncoder;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collection;
 import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Locale;
 import java.util.concurrent.atomic.AtomicReference;
 
+import kotlin.Pair;
 import retrofit2.Response;
 
 import static java.util.Arrays.asList;
@@ -154,12 +153,8 @@ public class RESTMusicService implements MusicService
 
 	private static final int SOCKET_CONNECT_TIMEOUT = 10 * 1000;
 	private static final int SOCKET_READ_TIMEOUT_DEFAULT = 10 * 1000;
-	private static final int SOCKET_READ_TIMEOUT_DOWNLOAD = 30 * 1000;
-	private static final int SOCKET_READ_TIMEOUT_GET_RANDOM_SONGS = 60 * 1000;
-	private static final int SOCKET_READ_TIMEOUT_GET_PLAYLIST = 60 * 1000;
 
-	// Allow 20 seconds extra timeout per MB offset.
-	private static final double TIMEOUT_MILLIS_PER_OFFSET_BYTE = 20000.0 / 1000000.0;
+	private static final int SOCKET_READ_TIMEOUT_GET_RANDOM_SONGS = 60 * 1000;
 
 	/**
 	 * URL from which to fetch latest versions.
@@ -785,14 +780,7 @@ public class RESTMusicService implements MusicService
                 }
 
                 StreamResponse response = subsonicAPIClient.getCoverArt(id, (long) size);
-                if (response.hasError() || response.getStream() == null) {
-                    if (response.getApiError() != null) {
-                        throw new SubsonicRESTException(response.getApiError().getCode(), "rest error");
-                    } else {
-                        throw new IOException("Failed to make endpoint request, code: " +
-                                response.getRequestErrorCode());
-                    }
-                }
+                checkStreamResponseError(response);
 
                 if (response.getStream() == null) {
                     return null; // Failed to load
@@ -826,48 +814,39 @@ public class RESTMusicService implements MusicService
         }
     }
 
-	@Override
-	public HttpResponse getDownloadInputStream(Context context, MusicDirectory.Entry song, long offset, int maxBitrate, CancellableTask task) throws Exception
-	{
+    private void checkStreamResponseError(StreamResponse response)
+            throws SubsonicRESTException, IOException {
+        if (response.hasError() || response.getStream() == null) {
+            if (response.getApiError() != null) {
+                throw new SubsonicRESTException(response.getApiError().getCode(), "rest error");
+            } else {
+                throw new IOException("Failed to make endpoint request, code: " +
+                        response.getResponseHttpCode());
+            }
+        }
+    }
 
-		String url = Util.getRestUrl(context, "stream");
+    @Override
+    public Pair<InputStream, Boolean> getDownloadInputStream(final Context context,
+                                                             final MusicDirectory.Entry song,
+                                                             final long offset,
+                                                             final int maxBitrate,
+                                                             final CancellableTask task)
+            throws Exception {
+        if (song == null) {
+            throw new IllegalArgumentException("Song for download is null!");
+        }
+        long songOffset = offset < 0 ? 0 : offset;
 
-		// Set socket read timeout. Note: The timeout increases as the offset gets larger. This is
-		// to avoid the thrashing effect seen when offset is combined with transcoding/downsampling on the server.
-		// In that case, the server uses a long time before sending any data, causing the client to time out.
-		HttpParams params = new BasicHttpParams();
-		int timeout = (int) (SOCKET_READ_TIMEOUT_DOWNLOAD + offset * TIMEOUT_MILLIS_PER_OFFSET_BYTE);
-		HttpConnectionParams.setSoTimeout(params, timeout);
+        StreamResponse response = subsonicAPIClient.stream(song.getId(), maxBitrate, songOffset);
+        checkStreamResponseError(response);
+        if (response.getStream() == null) {
+            throw new IOException("Null stream response");
+        }
+        Boolean partial = response.getResponseHttpCode() == 206;
 
-		// Add "Range" header if offset is given.
-		Collection<Header> headers = new ArrayList<Header>();
-
-		if (offset > 0)
-		{
-			headers.add(new BasicHeader("Range", String.format("bytes=%d-", offset)));
-		}
-
-		List<String> parameterNames = asList("id", "maxBitRate");
-		List<Object> parameterValues = Arrays.<Object>asList(song.getId(), maxBitrate);
-		HttpResponse response = getResponseForURL(context, url, params, parameterNames, parameterValues, headers, null, task);
-
-		// If content type is XML, an error occurred.  Get it.
-		String contentType = Util.getContentType(response.getEntity());
-		if (contentType != null && contentType.startsWith("text/xml"))
-		{
-			InputStream in = response.getEntity().getContent();
-			try
-			{
-				new ErrorParser(context).parse(new InputStreamReader(in, Constants.UTF_8));
-			}
-			finally
-			{
-				Util.close(in);
-			}
-		}
-
-		return response;
-	}
+        return new Pair<>(response.getStream(), partial);
+    }
 
 	@Override
 	public String getVideoUrl(Context context, String id, boolean useFlash) throws Exception
@@ -978,11 +957,6 @@ public class RESTMusicService implements MusicService
 	private Reader getReader(Context context, ProgressListener progressListener, String method, HttpParams requestParams) throws Exception
 	{
 		return getReader(context, progressListener, method, requestParams, Collections.<String>emptyList(), Collections.emptyList());
-	}
-
-	private Reader getReader(Context context, ProgressListener progressListener, String method, HttpParams requestParams, String parameterName, Object parameterValue) throws Exception
-	{
-		return getReader(context, progressListener, method, requestParams, Collections.singletonList(parameterName), Collections.singletonList(parameterValue));
 	}
 
 	private Reader getReader(Context context, ProgressListener progressListener, String method, HttpParams requestParams, List<String> parameterNames, List<Object> parameterValues) throws Exception

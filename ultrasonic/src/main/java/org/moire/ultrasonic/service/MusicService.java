@@ -39,7 +39,10 @@ import org.moire.ultrasonic.domain.UserInfo;
 import org.moire.ultrasonic.util.CancellableTask;
 import org.moire.ultrasonic.util.ProgressListener;
 
+import java.io.InputStream;
 import java.util.List;
+
+import kotlin.Pair;
 
 /**
  * @author Sindre Mehus
@@ -101,7 +104,11 @@ public interface MusicService
 
 	Bitmap getCoverArt(Context context, MusicDirectory.Entry entry, int size, boolean saveToFile, boolean highQuality, ProgressListener progressListener) throws Exception;
 
-	HttpResponse getDownloadInputStream(Context context, MusicDirectory.Entry song, long offset, int maxBitrate, CancellableTask task) throws Exception;
+	/**
+	 * Return response {@link InputStream} and a {@link Boolean} that indicates if this response is
+	 * partial.
+	 */
+	Pair<InputStream, Boolean> getDownloadInputStream(Context context, MusicDirectory.Entry song, long offset, int maxBitrate, CancellableTask task) throws Exception;
 
 	String getVideoUrl(Context context, String id, boolean useFlash) throws Exception;
 
