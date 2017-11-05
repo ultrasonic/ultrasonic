@@ -31,7 +31,7 @@ class RangeHeaderInterceptorTest : BaseInterceptorTest() {
     }
 
     @Test
-    fun `Should not add range header if request doens't contain it`() {
+    fun `Should not add range header if request doesnt contain it`() {
         mockWebServerRule.mockWebServer.enqueue(MockResponse())
         val request = createRequest { }
 
