@@ -21,7 +21,6 @@ package org.moire.ultrasonic.service;
 import android.content.Context;
 import android.graphics.Bitmap;
 
-import org.apache.http.HttpResponse;
 import org.moire.ultrasonic.domain.Bookmark;
 import org.moire.ultrasonic.domain.ChatMessage;
 import org.moire.ultrasonic.domain.Genre;
@@ -43,10 +42,13 @@ import org.moire.ultrasonic.util.ProgressListener;
 import org.moire.ultrasonic.util.TimeLimitedCache;
 import org.moire.ultrasonic.util.Util;
 
+import java.io.InputStream;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
+
+import kotlin.Pair;
 
 /**
  * @author Sindre Mehus
@@ -314,7 +316,7 @@ public class CachedMusicService implements MusicService
 	}
 
 	@Override
-	public HttpResponse getDownloadInputStream(Context context, MusicDirectory.Entry song, long offset, int maxBitrate, CancellableTask task) throws Exception
+	public Pair<InputStream, Boolean> getDownloadInputStream(Context context, MusicDirectory.Entry song, long offset, int maxBitrate, CancellableTask task) throws Exception
 	{
 		return musicService.getDownloadInputStream(context, song, offset, maxBitrate, task);
 	}

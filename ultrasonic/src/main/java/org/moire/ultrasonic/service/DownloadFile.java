@@ -29,16 +29,14 @@ import org.moire.ultrasonic.util.CancellableTask;
 import org.moire.ultrasonic.util.FileUtil;
 import org.moire.ultrasonic.util.Util;
 
-import org.apache.http.Header;
-import org.apache.http.HttpResponse;
-import org.apache.http.HttpStatus;
-
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.io.RandomAccessFile;
+
+import kotlin.Pair;
 
 import static android.content.Context.POWER_SERVICE;
 import static android.os.PowerManager.ON_AFTER_RELEASE;
@@ -66,7 +64,6 @@ public class DownloadFile
 	private volatile boolean isPlaying;
 	private volatile boolean saveWhenDone;
 	private volatile boolean completeWhenDone;
-	private Integer contentLength;
 
 	public DownloadFile(Context context, MusicDirectory.Entry song, boolean save)
 	{
@@ -103,11 +100,6 @@ public class DownloadFile
 		}
 
 		return song.getBitRate() == null ? 160 : song.getBitRate();
-	}
-
-	public Integer getContentLength()
-	{
-		return contentLength;
 	}
 
 	public synchronized void download()
@@ -369,30 +361,17 @@ public class DownloadFile
 				if (compare)
 				{
 					// Attempt partial HTTP GET, appending to the file if it exists.
-					HttpResponse response = musicService.getDownloadInputStream(context, song, partialFile.length(), bitRate, DownloadTask.this);
-					Header contentLengthHeader = response.getFirstHeader("Content-Length");
+					Pair<InputStream, Boolean> response = musicService
+							.getDownloadInputStream(context, song, partialFile.length(), bitRate,
+									DownloadTask.this);
 
-					if (contentLengthHeader != null)
-					{
-						String contentLengthString = contentLengthHeader.getValue();
-
-						if (contentLengthString != null)
-						{
-							Log.i(TAG, "Content Length: " + contentLengthString);
-							contentLength = Integer.parseInt(contentLengthString);
-						}
-					}
-
-					in = response.getEntity().getContent();
-					boolean partial = response.getStatusLine().getStatusCode() == HttpStatus.SC_PARTIAL_CONTENT;
-
-					if (partial)
+					if (response.getSecond())
 					{
 						Log.i(TAG, String.format("Executed partial HTTP GET, skipping %d bytes", partialFile.length()));
 					}
 
-					out = new FileOutputStream(partialFile, partial);
-					long n = copy(in, out);
+					out = new FileOutputStream(partialFile, response.getSecond());
+					long n = copy(response.getFirst(), out);
 					Log.i(TAG, String.format("Downloaded %d bytes to %s", n, partialFile));
 					out.flush();
 					out.close();

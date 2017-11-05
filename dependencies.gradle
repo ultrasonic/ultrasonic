@@ -18,7 +18,7 @@ ext.versions = [
 
         retrofit             : "2.1.0",
         jackson              : "2.9.0",
-        okhttp               : "3.6.0",
+        okhttp               : "3.9.0",
 
         junit                : "4.12",
         mockitoKotlin        : "1.5.0",

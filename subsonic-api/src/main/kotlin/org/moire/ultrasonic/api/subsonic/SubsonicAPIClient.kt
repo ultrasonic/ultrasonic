@@ -8,6 +8,7 @@ import okhttp3.HttpUrl
 import okhttp3.OkHttpClient
 import okhttp3.ResponseBody
 import okhttp3.logging.HttpLoggingInterceptor
+import org.moire.ultrasonic.api.subsonic.interceptors.RangeHeaderInterceptor
 import org.moire.ultrasonic.api.subsonic.response.StreamResponse
 import org.moire.ultrasonic.api.subsonic.response.SubsonicResponse
 import retrofit2.Response
@@ -51,6 +52,7 @@ class SubsonicAPIClient(baseUrl: String,
                         .build()
                 chain.proceed(originalRequest.newBuilder().url(newUrl).build())
             }
+            .addInterceptor(RangeHeaderInterceptor())
             .also {
                 if (debug) {
                     it.addLogging()
@@ -81,6 +83,20 @@ class SubsonicAPIClient(baseUrl: String,
         api.getCoverArt(id, size).execute()
     }
 
+    /**
+     * Convenient method to get media stream from api using item [id] and optional [maxBitrate].
+     *
+     * Optionally also you can provide [offset] that stream should start from.
+     *
+     * It detects the response `Content-Type` and tries to parse subsonic error if there is one.
+     *
+     * Prefer this method over [SubsonicAPIDefinition.stream] as this handles error cases.
+     */
+    fun stream(id: String, maxBitrate: Int? = null, offset: Long? = null): StreamResponse =
+            handleStreamResponse {
+                api.stream(id, maxBitrate, offset = offset).execute()
+            }
+
     private inline fun handleStreamResponse(apiCall: () -> Response<ResponseBody>): StreamResponse {
         val response = apiCall()
         return if (response.isSuccessful) {
@@ -90,12 +106,13 @@ class SubsonicAPIClient(baseUrl: String,
                     contentType.type().equals("application", true) &&
                     contentType.subtype().equals("json", true)) {
                 val error = jacksonMapper.readValue<SubsonicResponse>(responseBody.byteStream())
-                StreamResponse(apiError = error.error)
+                StreamResponse(apiError = error.error, responseHttpCode = response.code())
             } else {
-                StreamResponse(stream = responseBody.byteStream())
+                StreamResponse(stream = responseBody.byteStream(),
+                        responseHttpCode = response.code())
             }
         } else {
-            StreamResponse(requestErrorCode = response.code())
+            StreamResponse(responseHttpCode = response.code())
         }
     }
 
