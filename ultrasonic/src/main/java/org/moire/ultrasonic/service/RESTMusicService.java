@@ -56,6 +56,7 @@ import org.apache.http.protocol.HttpContext;
 import org.moire.ultrasonic.R;
 import org.moire.ultrasonic.api.subsonic.SubsonicAPIClient;
 import org.moire.ultrasonic.api.subsonic.models.AlbumListType;
+import org.moire.ultrasonic.api.subsonic.models.JukeboxAction;
 import org.moire.ultrasonic.api.subsonic.models.MusicDirectoryChild;
 import org.moire.ultrasonic.api.subsonic.response.GetAlbumList2Response;
 import org.moire.ultrasonic.api.subsonic.response.GetAlbumListResponse;
@@ -71,6 +72,7 @@ import org.moire.ultrasonic.api.subsonic.response.GetPodcastsResponse;
 import org.moire.ultrasonic.api.subsonic.response.GetRandomSongsResponse;
 import org.moire.ultrasonic.api.subsonic.response.GetStarredResponse;
 import org.moire.ultrasonic.api.subsonic.response.GetStarredTwoResponse;
+import org.moire.ultrasonic.api.subsonic.response.JukeboxResponse;
 import org.moire.ultrasonic.api.subsonic.response.LicenseResponse;
 import org.moire.ultrasonic.api.subsonic.response.MusicFoldersResponse;
 import org.moire.ultrasonic.api.subsonic.response.SearchResponse;
@@ -81,6 +83,7 @@ import org.moire.ultrasonic.api.subsonic.response.SubsonicResponse;
 import org.moire.ultrasonic.data.APIAlbumConverter;
 import org.moire.ultrasonic.data.APIArtistConverter;
 import org.moire.ultrasonic.data.APIIndexesConverter;
+import org.moire.ultrasonic.data.APIJukeboxConverter;
 import org.moire.ultrasonic.data.APILyricsConverter;
 import org.moire.ultrasonic.data.APIMusicDirectoryConverter;
 import org.moire.ultrasonic.data.APIMusicFolderConverter;
@@ -106,7 +109,6 @@ import org.moire.ultrasonic.service.parser.BookmarkParser;
 import org.moire.ultrasonic.service.parser.ChatMessageParser;
 import org.moire.ultrasonic.service.parser.ErrorParser;
 import org.moire.ultrasonic.service.parser.GenreParser;
-import org.moire.ultrasonic.service.parser.JukeboxStatusParser;
 import org.moire.ultrasonic.service.parser.MusicDirectoryParser;
 import org.moire.ultrasonic.service.parser.RandomSongsParser;
 import org.moire.ultrasonic.service.parser.ShareParser;
@@ -140,8 +142,6 @@ import java.util.concurrent.atomic.AtomicReference;
 
 import kotlin.Pair;
 import retrofit2.Response;
-
-import static java.util.Arrays.asList;
 
 /**
  * @author Sindre Mehus
@@ -872,58 +872,80 @@ public class RESTMusicService implements MusicService
 		return url;
 	}
 
-	@Override
-	public JukeboxStatus updateJukeboxPlaylist(List<String> ids, Context context, ProgressListener progressListener) throws Exception
-	{
-		int n = ids.size();
-		List<String> parameterNames = new ArrayList<String>(n + 1);
-		parameterNames.add("action");
+    @Override
+    public JukeboxStatus updateJukeboxPlaylist(List<String> ids,
+                                               Context context,
+                                               ProgressListener progressListener) throws Exception {
+        updateProgressListener(progressListener, R.string.parser_reading);
+        Response<JukeboxResponse> response = subsonicAPIClient.getApi()
+                .jukeboxControl(JukeboxAction.SET, null, null, ids, null)
+                .execute();
+        checkResponseSuccessful(response);
 
-		for (String ignored : ids)
-		{
-			parameterNames.add("id");
-		}
+        return APIJukeboxConverter.toDomainEntity(response.body().getJukebox());
+    }
 
-		List<Object> parameterValues = new ArrayList<Object>();
-		parameterValues.add("set");
-		parameterValues.addAll(ids);
+    @Override
+    public JukeboxStatus skipJukebox(int index,
+                                     int offsetSeconds,
+                                     Context context,
+                                     ProgressListener progressListener) throws Exception {
+        updateProgressListener(progressListener, R.string.parser_reading);
+        Response<JukeboxResponse> response = subsonicAPIClient.getApi()
+                .jukeboxControl(JukeboxAction.SKIP, index, offsetSeconds, null, null)
+                .execute();
+        checkResponseSuccessful(response);
 
-		return executeJukeboxCommand(context, progressListener, parameterNames, parameterValues);
-	}
+        return APIJukeboxConverter.toDomainEntity(response.body().getJukebox());
+    }
 
-	@Override
-	public JukeboxStatus skipJukebox(int index, int offsetSeconds, Context context, ProgressListener progressListener) throws Exception
-	{
-		List<String> parameterNames = asList("action", "index", "offset");
-		List<Object> parameterValues = Arrays.<Object>asList("skip", index, offsetSeconds);
-		return executeJukeboxCommand(context, progressListener, parameterNames, parameterValues);
-	}
+    @Override
+    public JukeboxStatus stopJukebox(Context context,
+                                     ProgressListener progressListener) throws Exception {
+        updateProgressListener(progressListener, R.string.parser_reading);
+        Response<JukeboxResponse> response = subsonicAPIClient.getApi()
+                .jukeboxControl(JukeboxAction.STOP, null, null, null, null)
+                .execute();
+        checkResponseSuccessful(response);
 
-	@Override
-	public JukeboxStatus stopJukebox(Context context, ProgressListener progressListener) throws Exception
-	{
-		return executeJukeboxCommand(context, progressListener, Collections.singletonList("action"), Arrays.<Object>asList("stop"));
-	}
+        return APIJukeboxConverter.toDomainEntity(response.body().getJukebox());
+    }
 
-	@Override
-	public JukeboxStatus startJukebox(Context context, ProgressListener progressListener) throws Exception
-	{
-		return executeJukeboxCommand(context, progressListener, Collections.singletonList("action"), Arrays.<Object>asList("start"));
-	}
+    @Override
+    public JukeboxStatus startJukebox(Context context,
+                                      ProgressListener progressListener) throws Exception {
+        updateProgressListener(progressListener, R.string.parser_reading);
+        Response<JukeboxResponse> response = subsonicAPIClient.getApi()
+                .jukeboxControl(JukeboxAction.START, null, null, null, null)
+                .execute();
+        checkResponseSuccessful(response);
 
-	@Override
-	public JukeboxStatus getJukeboxStatus(Context context, ProgressListener progressListener) throws Exception
-	{
-		return executeJukeboxCommand(context, progressListener, Collections.singletonList("action"), Arrays.<Object>asList("status"));
-	}
+        return APIJukeboxConverter.toDomainEntity(response.body().getJukebox());
+    }
 
-	@Override
-	public JukeboxStatus setJukeboxGain(float gain, Context context, ProgressListener progressListener) throws Exception
-	{
-		List<String> parameterNames = asList("action", "gain");
-		List<Object> parameterValues = Arrays.<Object>asList("setGain", gain);
-		return executeJukeboxCommand(context, progressListener, parameterNames, parameterValues);
-	}
+    @Override
+    public JukeboxStatus getJukeboxStatus(Context context,
+                                          ProgressListener progressListener) throws Exception {
+        updateProgressListener(progressListener, R.string.parser_reading);
+        Response<JukeboxResponse> response = subsonicAPIClient.getApi()
+                .jukeboxControl(JukeboxAction.STATUS, null, null, null, null)
+                .execute();
+        checkResponseSuccessful(response);
+
+        return APIJukeboxConverter.toDomainEntity(response.body().getJukebox());
+    }
+
+    @Override
+    public JukeboxStatus setJukeboxGain(float gain, Context context,
+                                        ProgressListener progressListener) throws Exception {
+        updateProgressListener(progressListener, R.string.parser_reading);
+        Response<JukeboxResponse> response = subsonicAPIClient.getApi()
+                .jukeboxControl(JukeboxAction.SET_GAIN, null, null, null, gain)
+                .execute();
+        checkResponseSuccessful(response);
+
+        return APIJukeboxConverter.toDomainEntity(response.body().getJukebox());
+    }
 
 	@Override
 	public List<Share> getShares(boolean refresh, Context context, ProgressListener progressListener) throws Exception
@@ -933,20 +955,6 @@ public class RESTMusicService implements MusicService
 		try
 		{
 			return new ShareParser(context).parse(reader, progressListener);
-		}
-		finally
-		{
-			Util.close(reader);
-		}
-	}
-
-	private JukeboxStatus executeJukeboxCommand(Context context, ProgressListener progressListener, List<String> parameterNames, List<Object> parameterValues) throws Exception
-	{
-		checkServerVersion(context, "1.7", "Jukebox not supported.");
-		Reader reader = getReader(context, progressListener, "jukeboxControl", null, parameterNames, parameterValues);
-		try
-		{
-			return new JukeboxStatusParser(context).parse(reader);
 		}
 		finally
 		{

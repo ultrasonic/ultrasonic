@@ -2,6 +2,7 @@ package org.moire.ultrasonic.api.subsonic
 
 import okhttp3.ResponseBody
 import org.moire.ultrasonic.api.subsonic.models.AlbumListType
+import org.moire.ultrasonic.api.subsonic.models.JukeboxAction
 import org.moire.ultrasonic.api.subsonic.response.GetAlbumList2Response
 import org.moire.ultrasonic.api.subsonic.response.GetAlbumListResponse
 import org.moire.ultrasonic.api.subsonic.response.GetAlbumResponse
@@ -16,6 +17,7 @@ import org.moire.ultrasonic.api.subsonic.response.GetPodcastsResponse
 import org.moire.ultrasonic.api.subsonic.response.GetRandomSongsResponse
 import org.moire.ultrasonic.api.subsonic.response.GetStarredResponse
 import org.moire.ultrasonic.api.subsonic.response.GetStarredTwoResponse
+import org.moire.ultrasonic.api.subsonic.response.JukeboxResponse
 import org.moire.ultrasonic.api.subsonic.response.LicenseResponse
 import org.moire.ultrasonic.api.subsonic.response.MusicFoldersResponse
 import org.moire.ultrasonic.api.subsonic.response.SearchResponse
@@ -179,4 +181,11 @@ interface SubsonicAPIDefinition {
                @Query("estimateContentLength") estimateContentLength: Boolean? = null,
                @Query("converted") converted: Boolean? = null,
                @Header("Range") offset: Long? = null): Call<ResponseBody>
+
+    @GET("jukeboxControl.view")
+    fun jukeboxControl(@Query("action") action: JukeboxAction,
+                       @Query("index") index: Int? = null,
+                       @Query("offset") offset: Int? = null,
+                       @Query("id") ids: List<String>? = null,
+                       @Query("gain") gain: Float? = null): Call<JukeboxResponse>
 }
