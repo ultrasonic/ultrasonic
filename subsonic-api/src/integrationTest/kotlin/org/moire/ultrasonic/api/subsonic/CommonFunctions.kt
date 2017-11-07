@@ -66,7 +66,7 @@ fun SubsonicResponse.assertBaseResponseOk() {
     error `should be` null
 }
 
-fun MockWebServerRule.assertRequestParam(responseResourceName: String,
+fun MockWebServerRule.assertRequestParam(responseResourceName: String = "ping_ok.json",
                                          expectedParam: String,
                                          apiRequest: () -> Response<out Any>) {
     this.enqueueResponse(responseResourceName)
