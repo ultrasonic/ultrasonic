@@ -78,6 +78,7 @@ import org.moire.ultrasonic.api.subsonic.response.MusicFoldersResponse;
 import org.moire.ultrasonic.api.subsonic.response.SearchResponse;
 import org.moire.ultrasonic.api.subsonic.response.SearchThreeResponse;
 import org.moire.ultrasonic.api.subsonic.response.SearchTwoResponse;
+import org.moire.ultrasonic.api.subsonic.response.SharesResponse;
 import org.moire.ultrasonic.api.subsonic.response.StreamResponse;
 import org.moire.ultrasonic.api.subsonic.response.SubsonicResponse;
 import org.moire.ultrasonic.data.APIAlbumConverter;
@@ -90,6 +91,7 @@ import org.moire.ultrasonic.data.APIMusicFolderConverter;
 import org.moire.ultrasonic.data.APIPlaylistConverter;
 import org.moire.ultrasonic.data.APIPodcastConverter;
 import org.moire.ultrasonic.data.APISearchConverter;
+import org.moire.ultrasonic.data.APIShareConverter;
 import org.moire.ultrasonic.domain.Bookmark;
 import org.moire.ultrasonic.domain.ChatMessage;
 import org.moire.ultrasonic.domain.Genre;
@@ -947,20 +949,17 @@ public class RESTMusicService implements MusicService
         return APIJukeboxConverter.toDomainEntity(response.body().getJukebox());
     }
 
-	@Override
-	public List<Share> getShares(boolean refresh, Context context, ProgressListener progressListener) throws Exception
-	{
-		checkServerVersion(context, "1.6", "Shares not supported.");
-		Reader reader = getReader(context, progressListener, "getShares", null);
-		try
-		{
-			return new ShareParser(context).parse(reader, progressListener);
-		}
-		finally
-		{
-			Util.close(reader);
-		}
-	}
+    @Override
+    public List<Share> getShares(boolean refresh,
+                                 Context context,
+                                 ProgressListener progressListener) throws Exception {
+        updateProgressListener(progressListener, R.string.parser_reading);
+
+        Response<SharesResponse> response = subsonicAPIClient.getApi().getShares().execute();
+        checkResponseSuccessful(response);
+
+        return APIShareConverter.toDomainEntitiesList(response.body().getShares());
+    }
 
 	private Reader getReader(Context context, ProgressListener progressListener, String method, HttpParams requestParams) throws Exception
 	{
