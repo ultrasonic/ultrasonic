@@ -23,6 +23,7 @@ import org.moire.ultrasonic.api.subsonic.response.MusicFoldersResponse
 import org.moire.ultrasonic.api.subsonic.response.SearchResponse
 import org.moire.ultrasonic.api.subsonic.response.SearchThreeResponse
 import org.moire.ultrasonic.api.subsonic.response.SearchTwoResponse
+import org.moire.ultrasonic.api.subsonic.response.SharesResponse
 import org.moire.ultrasonic.api.subsonic.response.SubsonicResponse
 import retrofit2.Call
 import retrofit2.http.GET
@@ -188,4 +189,7 @@ interface SubsonicAPIDefinition {
                        @Query("offset") offset: Int? = null,
                        @Query("id") ids: List<String>? = null,
                        @Query("gain") gain: Float? = null): Call<JukeboxResponse>
+
+    @GET("getShares.view")
+    fun getShares(): Call<SharesResponse>
 }
