@@ -5,7 +5,7 @@
     "shares" : {
       "share" : [ {
         "id" : "0",
-        "url" : "https://airsonic.egorr.by/ext/share/awdwo?jwt=eyJhbGciOiJIUzI1NiJ9.eyJwYXRoIjoiL2V4dC9zaGFyZS9hd2R3byIsImV4cCI6MTU0MTYyNjQzMX0.iy8dkt_ZZc8hJ692UxorHdHWFU2RB-fMCmCA4IJ_dTw",
+        "url" : "https://subsonic.com/ext/share/awdwo?jwt=eyJhbGciOiJIUzI1NiJ9.eyJwYXRoIjoiL2V4dC9zaGFyZS9hd2R3byIsImV4cCI6MTU0MTYyNjQzMX0.iy8dkt_ZZc8hJ692UxorHdHWFU2RB-fMCmCA4IJ_dTw",
         "username" : "admin",
         "created" : "2017-11-07T21:33:51.748Z",
         "expires" : "2018-11-07T21:33:51.748Z",

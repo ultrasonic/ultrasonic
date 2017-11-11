@@ -192,4 +192,9 @@ interface SubsonicAPIDefinition {
 
     @GET("getShares.view")
     fun getShares(): Call<SharesResponse>
+
+    @GET("createShare.view")
+    fun createShare(@Query("id") idsToShare: List<String>,
+                    @Query("description") description: String? = null,
+                    @Query("expires") expires: Long? = null): Call<SharesResponse>
 }
