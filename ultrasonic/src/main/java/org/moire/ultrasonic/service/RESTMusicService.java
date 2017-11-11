@@ -113,7 +113,6 @@ import org.moire.ultrasonic.service.parser.ErrorParser;
 import org.moire.ultrasonic.service.parser.GenreParser;
 import org.moire.ultrasonic.service.parser.MusicDirectoryParser;
 import org.moire.ultrasonic.service.parser.RandomSongsParser;
-import org.moire.ultrasonic.service.parser.ShareParser;
 import org.moire.ultrasonic.service.parser.SubsonicRESTException;
 import org.moire.ultrasonic.service.parser.UserInfoParser;
 import org.moire.ultrasonic.service.ssl.SSLSocketFactory;
@@ -137,7 +136,6 @@ import java.net.URLEncoder;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
-import java.util.LinkedList;
 import java.util.List;
 import java.util.Locale;
 import java.util.concurrent.atomic.AtomicReference;
@@ -1410,40 +1408,19 @@ public class RESTMusicService implements MusicService
 		}
 	}
 
-	@Override
-	public List<Share> createShare(List<String> ids, String description, Long expires, Context context, ProgressListener progressListener) throws Exception
-	{
-		List<String> parameterNames = new LinkedList<String>();
-		List<Object> parameterValues = new LinkedList<Object>();
+    @Override
+    public List<Share> createShare(List<String> ids,
+                                   String description,
+                                   Long expires,
+                                   Context context,
+                                   ProgressListener progressListener) throws Exception {
+        updateProgressListener(progressListener, R.string.parser_reading);
+        Response<SharesResponse> response = subsonicAPIClient.getApi()
+                .createShare(ids, description, expires).execute();
+         checkResponseSuccessful(response);
 
-		for (String id : ids)
-		{
-			parameterNames.add("id");
-			parameterValues.add(id);
-		}
-
-		if (description != null)
-		{
-			parameterNames.add("description");
-			parameterValues.add(description);
-		}
-
-		if (expires > 0)
-		{
-			parameterNames.add("expires");
-			parameterValues.add(expires);
-		}
-
-		Reader reader = getReader(context, progressListener, "createShare", null, parameterNames, parameterValues);
-		try
-		{
-			return new ShareParser(context).parse(reader, progressListener);
-		}
-		finally
-		{
-			Util.close(reader);
-		}
-	}
+         return APIShareConverter.toDomainEntitiesList(response.body().getShares());
+    }
 
 	@Override
 	public void deleteShare(String id, Context context, ProgressListener progressListener) throws Exception
