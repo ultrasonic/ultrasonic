@@ -58,6 +58,7 @@ import org.moire.ultrasonic.api.subsonic.SubsonicAPIClient;
 import org.moire.ultrasonic.api.subsonic.models.AlbumListType;
 import org.moire.ultrasonic.api.subsonic.models.JukeboxAction;
 import org.moire.ultrasonic.api.subsonic.models.MusicDirectoryChild;
+import org.moire.ultrasonic.api.subsonic.response.GenresResponse;
 import org.moire.ultrasonic.api.subsonic.response.GetAlbumList2Response;
 import org.moire.ultrasonic.api.subsonic.response.GetAlbumListResponse;
 import org.moire.ultrasonic.api.subsonic.response.GetAlbumResponse;
@@ -92,6 +93,7 @@ import org.moire.ultrasonic.data.APIPlaylistConverter;
 import org.moire.ultrasonic.data.APIPodcastConverter;
 import org.moire.ultrasonic.data.APISearchConverter;
 import org.moire.ultrasonic.data.APIShareConverter;
+import org.moire.ultrasonic.data.ApiGenreConverter;
 import org.moire.ultrasonic.domain.Bookmark;
 import org.moire.ultrasonic.domain.ChatMessage;
 import org.moire.ultrasonic.domain.Genre;
@@ -110,7 +112,6 @@ import org.moire.ultrasonic.domain.Version;
 import org.moire.ultrasonic.service.parser.BookmarkParser;
 import org.moire.ultrasonic.service.parser.ChatMessageParser;
 import org.moire.ultrasonic.service.parser.ErrorParser;
-import org.moire.ultrasonic.service.parser.GenreParser;
 import org.moire.ultrasonic.service.parser.MusicDirectoryParser;
 import org.moire.ultrasonic.service.parser.RandomSongsParser;
 import org.moire.ultrasonic.service.parser.SubsonicRESTException;
@@ -1196,21 +1197,15 @@ public class RESTMusicService implements MusicService
 		return networkInfo == null ? -1 : networkInfo.getType();
 	}
 
-	@Override
-	public List<Genre> getGenres(Context context, ProgressListener progressListener) throws Exception
-	{
-		checkServerVersion(context, "1.9", "Genres not supported.");
+    @Override
+    public List<Genre> getGenres(Context context,
+                                 ProgressListener progressListener) throws Exception {
+        updateProgressListener(progressListener, R.string.parser_reading);
+        Response<GenresResponse> response = subsonicAPIClient.getApi().getGenres().execute();
+        checkResponseSuccessful(response);
 
-		Reader reader = getReader(context, progressListener, "getGenres", null);
-		try
-		{
-			return new GenreParser(context).parse(reader, progressListener);
-		}
-		finally
-		{
-			Util.close(reader);
-		}
-	}
+        return ApiGenreConverter.toDomainEntityList(response.body().getGenresList());
+    }
 
 	@Override
 	public MusicDirectory getSongsByGenre(String genre, int count, int offset, Context context, ProgressListener progressListener) throws Exception
