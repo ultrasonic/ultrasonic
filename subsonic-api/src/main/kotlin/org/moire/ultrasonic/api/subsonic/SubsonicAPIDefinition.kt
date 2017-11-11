@@ -3,6 +3,7 @@ package org.moire.ultrasonic.api.subsonic
 import okhttp3.ResponseBody
 import org.moire.ultrasonic.api.subsonic.models.AlbumListType
 import org.moire.ultrasonic.api.subsonic.models.JukeboxAction
+import org.moire.ultrasonic.api.subsonic.response.GenresResponse
 import org.moire.ultrasonic.api.subsonic.response.GetAlbumList2Response
 import org.moire.ultrasonic.api.subsonic.response.GetAlbumListResponse
 import org.moire.ultrasonic.api.subsonic.response.GetAlbumResponse
@@ -197,4 +198,7 @@ interface SubsonicAPIDefinition {
     fun createShare(@Query("id") idsToShare: List<String>,
                     @Query("description") description: String? = null,
                     @Query("expires") expires: Long? = null): Call<SharesResponse>
+
+    @GET("getGenres.view")
+    fun getGenres(): Call<GenresResponse>
 }
