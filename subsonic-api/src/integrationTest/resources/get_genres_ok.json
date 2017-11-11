@@ -1,0 +1,29 @@
+{
+  "subsonic-response" : {
+    "status" : "ok",
+    "version" : "1.15.0",
+    "genres" : {
+      "genre" : [ {
+        "songCount" : 1186,
+        "albumCount" : 103,
+        "value" : "Rock"
+      }, {
+        "songCount" : 896,
+        "albumCount" : 72,
+        "value" : "Electronic"
+      }, {
+        "songCount" : 790,
+        "albumCount" : 59,
+        "value" : "Alternative Rock"
+      }, {
+        "songCount" : 622,
+        "albumCount" : 97,
+        "value" : "Trance"
+      }, {
+        "songCount" : 476,
+        "albumCount" : 36,
+        "value" : "Hard Rock"
+      } ]
+    }
+  }
+}
