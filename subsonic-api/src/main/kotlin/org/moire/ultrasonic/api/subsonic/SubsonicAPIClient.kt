@@ -19,6 +19,9 @@ import java.math.BigInteger
 import java.security.MessageDigest
 import java.security.NoSuchAlgorithmException
 import java.security.SecureRandom
+import java.util.concurrent.TimeUnit.MILLISECONDS
+
+private const val READ_TIMEOUT = 60_000L
 
 /**
  * Subsonic API client that provides api access.
@@ -38,6 +41,7 @@ class SubsonicAPIClient(baseUrl: String,
     }
 
     private val okHttpClient = OkHttpClient.Builder()
+            .readTimeout(READ_TIMEOUT, MILLISECONDS)
             .addInterceptor { chain ->
                 // Adds default request params
                 val originalRequest = chain.request()
