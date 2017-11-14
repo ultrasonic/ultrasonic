@@ -71,6 +71,7 @@ import org.moire.ultrasonic.api.subsonic.response.GetPlaylistResponse;
 import org.moire.ultrasonic.api.subsonic.response.GetPlaylistsResponse;
 import org.moire.ultrasonic.api.subsonic.response.GetPodcastsResponse;
 import org.moire.ultrasonic.api.subsonic.response.GetRandomSongsResponse;
+import org.moire.ultrasonic.api.subsonic.response.GetSongsByGenreResponse;
 import org.moire.ultrasonic.api.subsonic.response.GetStarredResponse;
 import org.moire.ultrasonic.api.subsonic.response.GetStarredTwoResponse;
 import org.moire.ultrasonic.api.subsonic.response.JukeboxResponse;
@@ -113,7 +114,6 @@ import org.moire.ultrasonic.service.parser.BookmarkParser;
 import org.moire.ultrasonic.service.parser.ChatMessageParser;
 import org.moire.ultrasonic.service.parser.ErrorParser;
 import org.moire.ultrasonic.service.parser.MusicDirectoryParser;
-import org.moire.ultrasonic.service.parser.RandomSongsParser;
 import org.moire.ultrasonic.service.parser.SubsonicRESTException;
 import org.moire.ultrasonic.service.parser.UserInfoParser;
 import org.moire.ultrasonic.service.ssl.SSLSocketFactory;
@@ -1207,35 +1207,26 @@ public class RESTMusicService implements MusicService
         return ApiGenreConverter.toDomainEntityList(response.body().getGenresList());
     }
 
-	@Override
-	public MusicDirectory getSongsByGenre(String genre, int count, int offset, Context context, ProgressListener progressListener) throws Exception
-	{
-		checkServerVersion(context, "1.9", "Genres not supported.");
+    @Override
+    public MusicDirectory getSongsByGenre(String genre,
+                                          int count,
+                                          int offset,
+                                          Context context,
+                                          ProgressListener progressListener) throws Exception {
+        if (genre == null) {
+            throw new IllegalArgumentException("Genre is null");
+        }
 
-		HttpParams params = new BasicHttpParams();
-		HttpConnectionParams.setSoTimeout(params, SOCKET_READ_TIMEOUT_GET_RANDOM_SONGS);
+        updateProgressListener(progressListener, R.string.parser_reading);
+        Response<GetSongsByGenreResponse> response = subsonicAPIClient.getApi()
+                .getSongsByGenre(genre, count, offset, null)
+                .execute();
+        checkResponseSuccessful(response);
 
-		List<String> parameterNames = new ArrayList<String>();
-		List<Object> parameterValues = new ArrayList<Object>();
-
-		parameterNames.add("genre");
-		parameterValues.add(genre);
-		parameterNames.add("count");
-		parameterValues.add(count);
-		parameterNames.add("offset");
-		parameterValues.add(offset);
-
-		Reader reader = getReader(context, progressListener, "getSongsByGenre", params, parameterNames, parameterValues);
-
-		try
-		{
-			return new RandomSongsParser(context).parse(reader, progressListener);
-		}
-		finally
-		{
-			Util.close(reader);
-		}
-	}
+        MusicDirectory result = new MusicDirectory();
+        result.addAll(APIMusicDirectoryConverter.toDomainEntityList(response.body().getSongsList()));
+        return result;
+    }
 
 	@Override
 	public UserInfo getUser(String username, Context context, ProgressListener progressListener) throws Exception

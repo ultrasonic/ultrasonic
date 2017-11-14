@@ -16,6 +16,7 @@ import org.moire.ultrasonic.api.subsonic.response.GetPlaylistResponse
 import org.moire.ultrasonic.api.subsonic.response.GetPlaylistsResponse
 import org.moire.ultrasonic.api.subsonic.response.GetPodcastsResponse
 import org.moire.ultrasonic.api.subsonic.response.GetRandomSongsResponse
+import org.moire.ultrasonic.api.subsonic.response.GetSongsByGenreResponse
 import org.moire.ultrasonic.api.subsonic.response.GetStarredResponse
 import org.moire.ultrasonic.api.subsonic.response.GetStarredTwoResponse
 import org.moire.ultrasonic.api.subsonic.response.JukeboxResponse
@@ -201,4 +202,11 @@ interface SubsonicAPIDefinition {
 
     @GET("getGenres.view")
     fun getGenres(): Call<GenresResponse>
+
+    @GET("getSongsByGenre.view")
+    fun getSongsByGenre(
+            @Query("genre") genre: String,
+            @Query("count") count: Int = 10,
+            @Query("offset") offset: Int = 0,
+            @Query("musicFolderId") musicFolderId: Long? = null): Call<GetSongsByGenreResponse>
 }
