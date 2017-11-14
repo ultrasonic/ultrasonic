@@ -19,6 +19,7 @@ import org.moire.ultrasonic.api.subsonic.response.GetRandomSongsResponse
 import org.moire.ultrasonic.api.subsonic.response.GetSongsByGenreResponse
 import org.moire.ultrasonic.api.subsonic.response.GetStarredResponse
 import org.moire.ultrasonic.api.subsonic.response.GetStarredTwoResponse
+import org.moire.ultrasonic.api.subsonic.response.GetUserResponse
 import org.moire.ultrasonic.api.subsonic.response.JukeboxResponse
 import org.moire.ultrasonic.api.subsonic.response.LicenseResponse
 import org.moire.ultrasonic.api.subsonic.response.MusicFoldersResponse
@@ -209,4 +210,8 @@ interface SubsonicAPIDefinition {
             @Query("count") count: Int = 10,
             @Query("offset") offset: Int = 0,
             @Query("musicFolderId") musicFolderId: Long? = null): Call<GetSongsByGenreResponse>
+
+    @GET("getUser.view")
+    fun getUser(
+            @Query("username") username: String): Call<GetUserResponse>
 }
