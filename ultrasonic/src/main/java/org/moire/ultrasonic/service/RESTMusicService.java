@@ -74,6 +74,7 @@ import org.moire.ultrasonic.api.subsonic.response.GetRandomSongsResponse;
 import org.moire.ultrasonic.api.subsonic.response.GetSongsByGenreResponse;
 import org.moire.ultrasonic.api.subsonic.response.GetStarredResponse;
 import org.moire.ultrasonic.api.subsonic.response.GetStarredTwoResponse;
+import org.moire.ultrasonic.api.subsonic.response.GetUserResponse;
 import org.moire.ultrasonic.api.subsonic.response.JukeboxResponse;
 import org.moire.ultrasonic.api.subsonic.response.LicenseResponse;
 import org.moire.ultrasonic.api.subsonic.response.MusicFoldersResponse;
@@ -94,6 +95,7 @@ import org.moire.ultrasonic.data.APIPlaylistConverter;
 import org.moire.ultrasonic.data.APIPodcastConverter;
 import org.moire.ultrasonic.data.APISearchConverter;
 import org.moire.ultrasonic.data.APIShareConverter;
+import org.moire.ultrasonic.data.APIUserConverter;
 import org.moire.ultrasonic.data.ApiGenreConverter;
 import org.moire.ultrasonic.domain.Bookmark;
 import org.moire.ultrasonic.domain.ChatMessage;
@@ -115,7 +117,6 @@ import org.moire.ultrasonic.service.parser.ChatMessageParser;
 import org.moire.ultrasonic.service.parser.ErrorParser;
 import org.moire.ultrasonic.service.parser.MusicDirectoryParser;
 import org.moire.ultrasonic.service.parser.SubsonicRESTException;
-import org.moire.ultrasonic.service.parser.UserInfoParser;
 import org.moire.ultrasonic.service.ssl.SSLSocketFactory;
 import org.moire.ultrasonic.service.ssl.TrustSelfSignedStrategy;
 import org.moire.ultrasonic.util.CancellableTask;
@@ -1228,31 +1229,21 @@ public class RESTMusicService implements MusicService
         return result;
     }
 
-	@Override
-	public UserInfo getUser(String username, Context context, ProgressListener progressListener) throws Exception
-	{
-		checkServerVersion(context, "1.3", "getUser not supported.");
+    @Override
+    public UserInfo getUser(String username,
+                            Context context,
+                            ProgressListener progressListener) throws Exception {
+        if (username == null) {
+            throw new IllegalArgumentException("Username is null");
+        }
 
-		HttpParams params = new BasicHttpParams();
-		HttpConnectionParams.setSoTimeout(params, SOCKET_READ_TIMEOUT_GET_RANDOM_SONGS);
+        updateProgressListener(progressListener, R.string.parser_reading);
+        Response<GetUserResponse> response = subsonicAPIClient.getApi()
+                .getUser(username).execute();
+        checkResponseSuccessful(response);
 
-		List<String> parameterNames = new ArrayList<String>();
-		List<Object> parameterValues = new ArrayList<Object>();
-
-		parameterNames.add("username");
-		parameterValues.add(username);
-
-		Reader reader = getReader(context, progressListener, "getUser", params, parameterNames, parameterValues);
-
-		try
-		{
-			return new UserInfoParser(context).parse(reader, progressListener);
-		}
-		finally
-		{
-			Util.close(reader);
-		}
-	}
+        return APIUserConverter.toDomainEntity(response.body().getUser());
+    }
 
 	@Override
 	public List<ChatMessage> getChatMessages(Long since, Context context, ProgressListener progressListener) throws Exception
