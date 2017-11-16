@@ -46,8 +46,8 @@ fun parseDate(dateAsString: String): Calendar {
     return result
 }
 
-fun <T: SubsonicResponse> checkErrorCallParsed(mockWebServerRule : MockWebServerRule,
-                                               apiRequest: () -> Response<T>): T {
+fun <T : SubsonicResponse> checkErrorCallParsed(mockWebServerRule: MockWebServerRule,
+                                                apiRequest: () -> Response<T>): T {
     mockWebServerRule.enqueueResponse("generic_error_response.json")
 
     val response = apiRequest()
