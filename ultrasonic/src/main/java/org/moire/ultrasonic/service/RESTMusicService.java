@@ -1258,31 +1258,19 @@ public class RESTMusicService implements MusicService
         return APIChatMessageConverter.toDomainEntitiesList(response.body().getChatMessages());
     }
 
-	@Override
-	public void addChatMessage(String message, Context context, ProgressListener progressListener) throws Exception
-	{
-		checkServerVersion(context, "1.2", "Chat not supported.");
+    @Override
+    public void addChatMessage(String message,
+                               Context context,
+                               ProgressListener progressListener) throws Exception {
+        if (message == null) {
+            throw new IllegalArgumentException("Message is null");
+        }
 
-		HttpParams params = new BasicHttpParams();
-		HttpConnectionParams.setSoTimeout(params, SOCKET_READ_TIMEOUT_GET_RANDOM_SONGS);
-
-		List<String> parameterNames = new ArrayList<String>();
-		List<Object> parameterValues = new ArrayList<Object>();
-
-		parameterNames.add("message");
-		parameterValues.add(message);
-
-		Reader reader = getReader(context, progressListener, "addChatMessage", params, parameterNames, parameterValues);
-
-		try
-		{
-			new ErrorParser(context).parse(reader);
-		}
-		finally
-		{
-			Util.close(reader);
-		}
-	}
+        updateProgressListener(progressListener, R.string.parser_reading);
+        Response<SubsonicResponse> response = subsonicAPIClient.getApi()
+                .addChatMessage(message).execute();
+        checkResponseSuccessful(response);
+    }
 
 	@Override
 	public List<Bookmark> getBookmarks(Context context, ProgressListener progressListener) throws Exception
