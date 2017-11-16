@@ -3,6 +3,7 @@ package org.moire.ultrasonic.api.subsonic
 import okhttp3.ResponseBody
 import org.moire.ultrasonic.api.subsonic.models.AlbumListType
 import org.moire.ultrasonic.api.subsonic.models.JukeboxAction
+import org.moire.ultrasonic.api.subsonic.response.ChatMessagesResponse
 import org.moire.ultrasonic.api.subsonic.response.GenresResponse
 import org.moire.ultrasonic.api.subsonic.response.GetAlbumList2Response
 import org.moire.ultrasonic.api.subsonic.response.GetAlbumListResponse
@@ -212,6 +213,8 @@ interface SubsonicAPIDefinition {
             @Query("musicFolderId") musicFolderId: Long? = null): Call<GetSongsByGenreResponse>
 
     @GET("getUser.view")
-    fun getUser(
-            @Query("username") username: String): Call<GetUserResponse>
+    fun getUser(@Query("username") username: String): Call<GetUserResponse>
+
+    @GET("getChatMessages.view")
+    fun getChatMessages(@Query("since") since: Long? = null): Call<ChatMessagesResponse>
 }

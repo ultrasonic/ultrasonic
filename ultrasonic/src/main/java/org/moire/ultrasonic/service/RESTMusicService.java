@@ -58,6 +58,7 @@ import org.moire.ultrasonic.api.subsonic.SubsonicAPIClient;
 import org.moire.ultrasonic.api.subsonic.models.AlbumListType;
 import org.moire.ultrasonic.api.subsonic.models.JukeboxAction;
 import org.moire.ultrasonic.api.subsonic.models.MusicDirectoryChild;
+import org.moire.ultrasonic.api.subsonic.response.ChatMessagesResponse;
 import org.moire.ultrasonic.api.subsonic.response.GenresResponse;
 import org.moire.ultrasonic.api.subsonic.response.GetAlbumList2Response;
 import org.moire.ultrasonic.api.subsonic.response.GetAlbumListResponse;
@@ -86,6 +87,7 @@ import org.moire.ultrasonic.api.subsonic.response.StreamResponse;
 import org.moire.ultrasonic.api.subsonic.response.SubsonicResponse;
 import org.moire.ultrasonic.data.APIAlbumConverter;
 import org.moire.ultrasonic.data.APIArtistConverter;
+import org.moire.ultrasonic.data.APIChatMessageConverter;
 import org.moire.ultrasonic.data.APIIndexesConverter;
 import org.moire.ultrasonic.data.APIJukeboxConverter;
 import org.moire.ultrasonic.data.APILyricsConverter;
@@ -113,7 +115,6 @@ import org.moire.ultrasonic.domain.Share;
 import org.moire.ultrasonic.domain.UserInfo;
 import org.moire.ultrasonic.domain.Version;
 import org.moire.ultrasonic.service.parser.BookmarkParser;
-import org.moire.ultrasonic.service.parser.ChatMessageParser;
 import org.moire.ultrasonic.service.parser.ErrorParser;
 import org.moire.ultrasonic.service.parser.MusicDirectoryParser;
 import org.moire.ultrasonic.service.parser.SubsonicRESTException;
@@ -1245,31 +1246,17 @@ public class RESTMusicService implements MusicService
         return APIUserConverter.toDomainEntity(response.body().getUser());
     }
 
-	@Override
-	public List<ChatMessage> getChatMessages(Long since, Context context, ProgressListener progressListener) throws Exception
-	{
-		checkServerVersion(context, "1.2", "Chat not supported.");
+    @Override
+    public List<ChatMessage> getChatMessages(Long since,
+                                             Context context,
+                                             ProgressListener progressListener) throws Exception {
+        updateProgressListener(progressListener, R.string.parser_reading);
+        Response<ChatMessagesResponse> response = subsonicAPIClient.getApi()
+                .getChatMessages(since).execute();
+        checkResponseSuccessful(response);
 
-		HttpParams params = new BasicHttpParams();
-		HttpConnectionParams.setSoTimeout(params, SOCKET_READ_TIMEOUT_GET_RANDOM_SONGS);
-
-		List<String> parameterNames = new ArrayList<String>();
-		List<Object> parameterValues = new ArrayList<Object>();
-
-		parameterNames.add("since");
-		parameterValues.add(since);
-
-		Reader reader = getReader(context, progressListener, "getChatMessages", params, parameterNames, parameterValues);
-
-		try
-		{
-			return new ChatMessageParser(context).parse(reader, progressListener);
-		}
-		finally
-		{
-			Util.close(reader);
-		}
-	}
+        return APIChatMessageConverter.toDomainEntitiesList(response.body().getChatMessages());
+    }
 
 	@Override
 	public void addChatMessage(String message, Context context, ProgressListener progressListener) throws Exception
