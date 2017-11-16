@@ -1,0 +1,17 @@
+{
+  "subsonic-response" : {
+    "status" : "ok",
+    "version" : "1.15.0",
+    "chatMessages" : {
+      "chatMessage" : [ {
+        "username" : "sindre",
+        "time" : 1269771845310,
+        "message" : "Sindre was here"
+      }, {
+        "username" : "ben",
+        "time" : 1269771842504,
+        "message" : "Ben too"
+      } ]
+    }
+  }
+}
