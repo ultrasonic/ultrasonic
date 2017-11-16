@@ -217,4 +217,7 @@ interface SubsonicAPIDefinition {
 
     @GET("getChatMessages.view")
     fun getChatMessages(@Query("since") since: Long? = null): Call<ChatMessagesResponse>
+
+    @GET("addChatMessage.view")
+    fun addChatMessage(@Query("message") message: String): Call<SubsonicResponse>
 }
