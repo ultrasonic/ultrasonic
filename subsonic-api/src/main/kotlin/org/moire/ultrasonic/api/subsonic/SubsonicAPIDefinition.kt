@@ -224,4 +224,10 @@ interface SubsonicAPIDefinition {
 
     @GET("getBookmarks.view")
     fun getBookmarks(): Call<BookmarksResponse>
+
+    @GET("createBookmark.view")
+    fun createBookmark(
+            @Query("id") id: Int,
+            @Query("position") position: Long,
+            @Query("comment") comment: String? = null): Call<SubsonicResponse>
 }
