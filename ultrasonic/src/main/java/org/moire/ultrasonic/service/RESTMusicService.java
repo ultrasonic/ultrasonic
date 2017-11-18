@@ -1299,31 +1299,20 @@ public class RESTMusicService implements MusicService
         checkResponseSuccessful(response);
     }
 
-	@Override
-	public void deleteBookmark(String id, Context context, ProgressListener progressListener) throws Exception
-	{
-		checkServerVersion(context, "1.9", "Bookmarks not supported.");
+    @Override
+    public void deleteBookmark(String id,
+                               Context context,
+                               ProgressListener progressListener) throws Exception {
+        if (id == null) {
+            throw new IllegalArgumentException("Id is null");
+        }
+        Integer itemId = Integer.parseInt(id);
 
-		HttpParams params = new BasicHttpParams();
-		HttpConnectionParams.setSoTimeout(params, SOCKET_READ_TIMEOUT_GET_RANDOM_SONGS);
-
-		List<String> parameterNames = new ArrayList<String>();
-		List<Object> parameterValues = new ArrayList<Object>();
-
-		parameterNames.add("id");
-		parameterValues.add(id);
-
-		Reader reader = getReader(context, progressListener, "deleteBookmark", params, parameterNames, parameterValues);
-
-		try
-		{
-			new ErrorParser(context).parse(reader);
-		}
-		finally
-		{
-			Util.close(reader);
-		}
-	}
+        updateProgressListener(progressListener, R.string.parser_reading);
+        Response<SubsonicResponse> response = subsonicAPIClient.getApi()
+                .deleteBookmark(itemId).execute();
+        checkResponseSuccessful(response);
+    }
 
 	@Override
 	public MusicDirectory getVideos(boolean refresh, Context context, ProgressListener progressListener) throws Exception

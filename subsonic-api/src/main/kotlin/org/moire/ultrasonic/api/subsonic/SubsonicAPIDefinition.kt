@@ -230,4 +230,7 @@ interface SubsonicAPIDefinition {
             @Query("id") id: Int,
             @Query("position") position: Long,
             @Query("comment") comment: String? = null): Call<SubsonicResponse>
+
+    @GET("deleteBookmark.view")
+    fun deleteBookmark(@Query("id") id: Int): Call<SubsonicResponse>
 }
