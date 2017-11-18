@@ -3,10 +3,7 @@ package org.moire.ultrasonic.domain;
 import org.moire.ultrasonic.domain.MusicDirectory.Entry;
 
 import java.io.Serializable;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
 import java.util.Date;
-import java.util.Locale;
 
 public class Bookmark implements Serializable
 {
@@ -51,53 +48,21 @@ public class Bookmark implements Serializable
 		this.comment = comment;
 	}
 
-	public Date getCreated()
-	{
-		return created;
-	}
+    public Date getCreated() {
+        return created;
+    }
 
-	public void setCreated(String created)
-	{
-		if (created != null)
-		{
-			try
-			{
-				this.created = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss", Locale.ENGLISH).parse(created);
-			}
-			catch (ParseException e)
-			{
-				this.created = null;
-			}
-		}
-		else
-		{
-			this.created = null;
-		}
-	}
+    public void setCreated(Date created) {
+        this.created = created;
+    }
 
-	public Date getChanged()
-	{
-		return changed;
-	}
+    public Date getChanged() {
+        return changed;
+    }
 
-	public void setChanged(String changed)
-	{
-		if (changed != null)
-		{
-			try
-			{
-				this.changed = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss", Locale.ENGLISH).parse(changed);
-			}
-			catch (ParseException e)
-			{
-				this.changed = null;
-			}
-		}
-		else
-		{
-			this.changed = null;
-		}
-	}
+    public void setChanged(Date changed) {
+        this.changed = changed;
+    }
 
 	public Entry getEntry()
 	{
@@ -108,4 +73,34 @@ public class Bookmark implements Serializable
 	{
 		this.entry = entry;
 	}
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        Bookmark bookmark = (Bookmark) o;
+
+        if (position != bookmark.position) return false;
+        if (username != null ? !username.equals(bookmark.username) : bookmark.username != null)
+            return false;
+        if (comment != null ? !comment.equals(bookmark.comment) : bookmark.comment != null)
+            return false;
+        if (created != null ? !created.equals(bookmark.created) : bookmark.created != null)
+            return false;
+        if (changed != null ? !changed.equals(bookmark.changed) : bookmark.changed != null)
+            return false;
+        return entry != null ? entry.equals(bookmark.entry) : bookmark.entry == null;
+    }
+
+    @Override
+    public int hashCode() {
+        int result = position;
+        result = 31 * result + (username != null ? username.hashCode() : 0);
+        result = 31 * result + (comment != null ? comment.hashCode() : 0);
+        result = 31 * result + (created != null ? created.hashCode() : 0);
+        result = 31 * result + (changed != null ? changed.hashCode() : 0);
+        result = 31 * result + (entry != null ? entry.hashCode() : 0);
+        return result;
+    }
 }

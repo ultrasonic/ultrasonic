@@ -3,6 +3,7 @@ package org.moire.ultrasonic.api.subsonic
 import okhttp3.ResponseBody
 import org.moire.ultrasonic.api.subsonic.models.AlbumListType
 import org.moire.ultrasonic.api.subsonic.models.JukeboxAction
+import org.moire.ultrasonic.api.subsonic.response.BookmarksResponse
 import org.moire.ultrasonic.api.subsonic.response.ChatMessagesResponse
 import org.moire.ultrasonic.api.subsonic.response.GenresResponse
 import org.moire.ultrasonic.api.subsonic.response.GetAlbumList2Response
@@ -220,4 +221,7 @@ interface SubsonicAPIDefinition {
 
     @GET("addChatMessage.view")
     fun addChatMessage(@Query("message") message: String): Call<SubsonicResponse>
+
+    @GET("getBookmarks.view")
+    fun getBookmarks(): Call<BookmarksResponse>
 }
