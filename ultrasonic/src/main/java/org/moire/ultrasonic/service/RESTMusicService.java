@@ -1284,33 +1284,20 @@ public class RESTMusicService implements MusicService
         return APIBookmarkConverter.toDomainEntitiesList(response.body().getBookmarkList());
     }
 
-	@Override
-	public void createBookmark(String id, int position, Context context, ProgressListener progressListener) throws Exception
-	{
-		checkServerVersion(context, "1.9", "Bookmarks not supported.");
-
-		HttpParams params = new BasicHttpParams();
-		HttpConnectionParams.setSoTimeout(params, SOCKET_READ_TIMEOUT_GET_RANDOM_SONGS);
-
-		List<String> parameterNames = new ArrayList<String>();
-		List<Object> parameterValues = new ArrayList<Object>();
-
-		parameterNames.add("id");
-		parameterValues.add(id);
-		parameterNames.add("position");
-		parameterValues.add(position);
-
-		Reader reader = getReader(context, progressListener, "createBookmark", params, parameterNames, parameterValues);
-
-		try
-		{
-			new ErrorParser(context).parse(reader);
-		}
-		finally
-		{
-			Util.close(reader);
-		}
-	}
+    @Override
+    public void createBookmark(String id,
+                               int position,
+                               Context context,
+                               ProgressListener progressListener) throws Exception {
+        if (id == null) {
+            throw new IllegalArgumentException("Item id should not be null");
+        }
+        Integer itemId = Integer.valueOf(id);
+        updateProgressListener(progressListener, R.string.parser_reading);
+        Response<SubsonicResponse> response = subsonicAPIClient.getApi()
+                .createBookmark(itemId, position, null).execute();
+        checkResponseSuccessful(response);
+    }
 
 	@Override
 	public void deleteBookmark(String id, Context context, ProgressListener progressListener) throws Exception
