@@ -58,6 +58,7 @@ import org.moire.ultrasonic.api.subsonic.SubsonicAPIClient;
 import org.moire.ultrasonic.api.subsonic.models.AlbumListType;
 import org.moire.ultrasonic.api.subsonic.models.JukeboxAction;
 import org.moire.ultrasonic.api.subsonic.models.MusicDirectoryChild;
+import org.moire.ultrasonic.api.subsonic.response.BookmarksResponse;
 import org.moire.ultrasonic.api.subsonic.response.ChatMessagesResponse;
 import org.moire.ultrasonic.api.subsonic.response.GenresResponse;
 import org.moire.ultrasonic.api.subsonic.response.GetAlbumList2Response;
@@ -87,6 +88,7 @@ import org.moire.ultrasonic.api.subsonic.response.StreamResponse;
 import org.moire.ultrasonic.api.subsonic.response.SubsonicResponse;
 import org.moire.ultrasonic.data.APIAlbumConverter;
 import org.moire.ultrasonic.data.APIArtistConverter;
+import org.moire.ultrasonic.data.APIBookmarkConverter;
 import org.moire.ultrasonic.data.APIChatMessageConverter;
 import org.moire.ultrasonic.data.APIIndexesConverter;
 import org.moire.ultrasonic.data.APIJukeboxConverter;
@@ -114,7 +116,6 @@ import org.moire.ultrasonic.domain.SearchResult;
 import org.moire.ultrasonic.domain.Share;
 import org.moire.ultrasonic.domain.UserInfo;
 import org.moire.ultrasonic.domain.Version;
-import org.moire.ultrasonic.service.parser.BookmarkParser;
 import org.moire.ultrasonic.service.parser.ErrorParser;
 import org.moire.ultrasonic.service.parser.MusicDirectoryParser;
 import org.moire.ultrasonic.service.parser.SubsonicRESTException;
@@ -1272,22 +1273,16 @@ public class RESTMusicService implements MusicService
         checkResponseSuccessful(response);
     }
 
-	@Override
-	public List<Bookmark> getBookmarks(Context context, ProgressListener progressListener) throws Exception
-	{
-		checkServerVersion(context, "1.9", "Bookmarks not supported.");
+    @Override
+    public List<Bookmark> getBookmarks(Context context,
+                                       ProgressListener progressListener) throws Exception {
+        updateProgressListener(progressListener, R.string.parser_reading);
+        Response<BookmarksResponse> response = subsonicAPIClient.getApi()
+                .getBookmarks().execute();
+        checkResponseSuccessful(response);
 
-		Reader reader = getReader(context, progressListener, "getBookmarks", null);
-
-		try
-		{
-			return new BookmarkParser(context).parse(reader, progressListener);
-		}
-		finally
-		{
-			Util.close(reader);
-		}
-	}
+        return APIBookmarkConverter.toDomainEntitiesList(response.body().getBookmarkList());
+    }
 
 	@Override
 	public void createBookmark(String id, int position, Context context, ProgressListener progressListener) throws Exception
