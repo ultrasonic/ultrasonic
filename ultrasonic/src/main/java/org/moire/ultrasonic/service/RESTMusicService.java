@@ -117,7 +117,6 @@ import org.moire.ultrasonic.domain.SearchResult;
 import org.moire.ultrasonic.domain.Share;
 import org.moire.ultrasonic.domain.UserInfo;
 import org.moire.ultrasonic.domain.Version;
-import org.moire.ultrasonic.service.parser.ErrorParser;
 import org.moire.ultrasonic.service.parser.SubsonicRESTException;
 import org.moire.ultrasonic.service.ssl.SSLSocketFactory;
 import org.moire.ultrasonic.service.ssl.TrustSelfSignedStrategy;
@@ -138,8 +137,6 @@ import java.io.OutputStream;
 import java.io.Reader;
 import java.net.URLEncoder;
 import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
 import java.util.List;
 import java.util.Locale;
 import java.util.concurrent.atomic.AtomicReference;
@@ -1373,80 +1370,56 @@ public class RESTMusicService implements MusicService
         checkResponseSuccessful(response);
     }
 
-	@Override
-	public Bitmap getAvatar(Context context, String username, int size, boolean saveToFile, boolean highQuality, ProgressListener progressListener) throws Exception
-	{
-		// Return silently if server is too old
-		if (!checkServerVersion(context, "1.8"))
-			return null;
+    @Override
+    public Bitmap getAvatar(final Context context,
+                            final String username,
+                            final int size,
+                            final boolean saveToFile,
+                            final boolean highQuality,
+                            final ProgressListener progressListener) throws Exception {
+        // Synchronize on the username so that we don't download concurrently for
+        // the same user.
+        if (username == null) {
+            return null;
+        }
 
-		// Synchronize on the username so that we don't download concurrently for
-		// the same user.
-		if (username == null)
-		{
-			return null;
-		}
+        synchronized (username) {
+            // Use cached file, if existing.
+            Bitmap bitmap = FileUtil.getAvatarBitmap(username, size, highQuality);
 
-		synchronized (username)
-		{
-			// Use cached file, if existing.
-			Bitmap bitmap = FileUtil.getAvatarBitmap(username, size, highQuality);
+            if (bitmap == null) {
+                InputStream in = null;
+                try {
+                    updateProgressListener(progressListener, R.string.parser_reading);
+                    StreamResponse response = subsonicAPIClient.getAvatar(username);
+                    if (response.hasError()) {
+                        return null;
+                    }
+                    in = response.getStream();
+                    byte[] bytes = Util.toByteArray(in);
 
-			if (bitmap == null)
-			{
-				String url = Util.getRestUrl(context, "getAvatar");
+                    // If we aren't allowing server-side scaling, always save the file to disk because it will be unmodified
+                    if (saveToFile) {
+                        OutputStream out = null;
 
-				InputStream in = null;
+                        try {
+                            out = new FileOutputStream(FileUtil.getAvatarFile(username));
+                            out.write(bytes);
+                        } finally {
+                            Util.close(out);
+                        }
+                    }
 
-				try
-				{
-					List<String> parameterNames;
-					List<Object> parameterValues;
+                    bitmap = FileUtil.getSampledBitmap(bytes, size, highQuality);
+                } finally {
+                    Util.close(in);
+                }
+            }
 
-					parameterNames = Collections.singletonList("username");
-					parameterValues = Arrays.<Object>asList(username);
-
-					HttpEntity entity = getEntityForURL(context, url, null, parameterNames, parameterValues, progressListener);
-					in = entity.getContent();
-
-					// If content type is XML, an error occurred. Get it.
-					String contentType = Util.getContentType(entity);
-					if (contentType != null && contentType.startsWith("text/xml"))
-					{
-						new ErrorParser(context).parse(new InputStreamReader(in, Constants.UTF_8));
-						return null; // Never reached.
-					}
-
-					byte[] bytes = Util.toByteArray(in);
-
-					// If we aren't allowing server-side scaling, always save the file to disk because it will be unmodified
-					if (saveToFile)
-					{
-						OutputStream out = null;
-
-						try
-						{
-							out = new FileOutputStream(FileUtil.getAvatarFile(username));
-							out.write(bytes);
-						}
-						finally
-						{
-							Util.close(out);
-						}
-					}
-
-					bitmap = FileUtil.getSampledBitmap(bytes, size, highQuality);
-				}
-				finally
-				{
-					Util.close(in);
-				}
-			}
-
-			// Return scaled bitmap
-			return Util.scaleBitmap(bitmap, size);
-		}
-	}
+            // Return scaled bitmap
+            return Util.scaleBitmap(bitmap, size);
+        }
+    }
 
     private void updateProgressListener(@Nullable final ProgressListener progressListener,
                                         @StringRes final int messageId) {
