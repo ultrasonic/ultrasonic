@@ -812,29 +812,14 @@ public class RESTMusicService implements MusicService {
         return new Pair<>(response.getStream(), partial);
     }
 
-	@Override
-	public String getVideoUrl(Context context, String id, boolean useFlash) throws Exception
-	{
-		StringBuilder builder = new StringBuilder(5);
-		if (useFlash)
-		{
-			builder.append(Util.getRestUrl(context, "videoPlayer"));
-			builder.append("&id=").append(id);
-			builder.append("&maxBitRate=500");
-			builder.append("&autoplay=true");
-		}
-		else
-		{
-			checkServerVersion(context, "1.9", "Video streaming not supported.");
-			builder.append(Util.getRestUrl(context, "stream"));
-			builder.append("&id=").append(id);
-			builder.append("&format=raw");
-		}
-
-		String url = rewriteUrlWithRedirect(context, builder.toString());
-		Log.i(TAG, String.format("Using video URL: %s", url));
-		return url;
-	}
+    @Override
+    public String getVideoUrl(Context context, String id, boolean useFlash) throws Exception {
+        // This method should not exists as video should be loaded using stream method
+        // Previous method implementation uses assumption that video will be available
+        // by videoPlayer.view?id=<id>&maxBitRate=500&autoplay=true, but this url is not
+        // official Subsonic API call.
+        throw new UnsupportedOperationException("This method is not longer supported");
+    }
 
     @Override
     public JukeboxStatus updateJukeboxPlaylist(List<String> ids,
