@@ -19,7 +19,6 @@
 package org.moire.ultrasonic.service;
 
 import android.content.Context;
-import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
@@ -28,16 +27,6 @@ import android.support.annotation.Nullable;
 import android.support.annotation.StringRes;
 import android.util.Log;
 
-import org.apache.http.Header;
-import org.apache.http.HttpEntity;
-import org.apache.http.HttpHost;
-import org.apache.http.HttpResponse;
-import org.apache.http.NameValuePair;
-import org.apache.http.auth.AuthScope;
-import org.apache.http.auth.UsernamePasswordCredentials;
-import org.apache.http.client.entity.UrlEncodedFormEntity;
-import org.apache.http.client.methods.HttpPost;
-import org.apache.http.client.methods.HttpUriRequest;
 import org.apache.http.conn.params.ConnManagerParams;
 import org.apache.http.conn.params.ConnPerRouteBean;
 import org.apache.http.conn.scheme.PlainSocketFactory;
@@ -46,13 +35,9 @@ import org.apache.http.conn.scheme.SchemeRegistry;
 import org.apache.http.conn.scheme.SocketFactory;
 import org.apache.http.impl.client.DefaultHttpClient;
 import org.apache.http.impl.conn.tsccm.ThreadSafeClientConnManager;
-import org.apache.http.message.BasicNameValuePair;
 import org.apache.http.params.BasicHttpParams;
 import org.apache.http.params.HttpConnectionParams;
 import org.apache.http.params.HttpParams;
-import org.apache.http.protocol.BasicHttpContext;
-import org.apache.http.protocol.ExecutionContext;
-import org.apache.http.protocol.HttpContext;
 import org.moire.ultrasonic.R;
 import org.moire.ultrasonic.api.subsonic.SubsonicAPIClient;
 import org.moire.ultrasonic.api.subsonic.models.AlbumListType;
@@ -121,7 +106,6 @@ import org.moire.ultrasonic.service.parser.SubsonicRESTException;
 import org.moire.ultrasonic.service.ssl.SSLSocketFactory;
 import org.moire.ultrasonic.service.ssl.TrustSelfSignedStrategy;
 import org.moire.ultrasonic.util.CancellableTask;
-import org.moire.ultrasonic.util.Constants;
 import org.moire.ultrasonic.util.FileUtil;
 import org.moire.ultrasonic.util.ProgressListener;
 import org.moire.ultrasonic.util.Util;
@@ -132,14 +116,10 @@ import java.io.FileOutputStream;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.InputStreamReader;
 import java.io.OutputStream;
-import java.io.Reader;
-import java.net.URLEncoder;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
-import java.util.concurrent.atomic.AtomicReference;
 
 import kotlin.Pair;
 import retrofit2.Response;
@@ -147,20 +127,12 @@ import retrofit2.Response;
 /**
  * @author Sindre Mehus
  */
-public class RESTMusicService implements MusicService
-{
-
+public class RESTMusicService implements MusicService {
 	private static final String TAG = RESTMusicService.class.getSimpleName();
 
 	private static final int SOCKET_CONNECT_TIMEOUT = 10 * 1000;
 	private static final int SOCKET_READ_TIMEOUT_DEFAULT = 10 * 1000;
 
-	/**
-	 * URL from which to fetch latest versions.
-	 */
-	private static final String VERSION_URL = "http://subsonic.org/backend/version.view";
-
-	private static final int HTTP_REQUEST_MAX_ATTEMPTS = 5;
 	private static final long REDIRECTION_CHECK_INTERVAL_MILLIS = 60L * 60L * 1000L;
 
 	private final DefaultHttpClient httpClient;
@@ -745,13 +717,6 @@ public class RESTMusicService implements MusicService
 		}
 	}
 
-	private static boolean checkServerVersion(Context context, String version)
-	{
-		Version serverVersion = Util.getServerRestVersion(context);
-		Version requiredVersion = new Version(version);
-		return serverVersion == null || serverVersion.compareTo(requiredVersion) >= 0;
-	}
-
     @Override
     public Bitmap getCoverArt(Context context,
                               final MusicDirectory.Entry entry,
@@ -957,209 +922,6 @@ public class RESTMusicService implements MusicService
 
         return APIShareConverter.toDomainEntitiesList(response.body().getShares());
     }
-
-	private Reader getReader(Context context, ProgressListener progressListener, String method, HttpParams requestParams, List<String> parameterNames, List<Object> parameterValues) throws Exception
-	{
-
-		if (progressListener != null)
-		{
-			progressListener.updateProgress(R.string.service_connecting);
-		}
-
-		String url = Util.getRestUrl(context, method);
-		return getReaderForURL(context, url, requestParams, parameterNames, parameterValues, progressListener);
-	}
-
-	private Reader getReaderForURL(Context context, String url, HttpParams requestParams, List<String> parameterNames, List<Object> parameterValues, ProgressListener progressListener) throws Exception
-	{
-		HttpEntity entity = getEntityForURL(context, url, requestParams, parameterNames, parameterValues, progressListener);
-		if (entity == null)
-		{
-			throw new RuntimeException(String.format("No entity received for URL %s", url));
-		}
-
-		InputStream in = entity.getContent();
-		return new InputStreamReader(in, Constants.UTF_8);
-	}
-
-	private HttpEntity getEntityForURL(Context context, String url, HttpParams requestParams, List<String> parameterNames, List<Object> parameterValues, ProgressListener progressListener) throws Exception
-	{
-		return getResponseForURL(context, url, requestParams, parameterNames, parameterValues, null, progressListener, null).getEntity();
-	}
-
-	private HttpResponse getResponseForURL(Context context, String url, HttpParams requestParams, List<String> parameterNames, List<Object> parameterValues, Iterable<Header> headers, ProgressListener progressListener, CancellableTask task) throws Exception
-	{
-		Log.d(TAG, String.format("Connections in pool: %d", connManager.getConnectionsInPool()));
-
-		// If not too many parameters, extract them to the URL rather than
-		// relying on the HTTP POST request being
-		// received intact. Remember, HTTP POST requests are converted to GET
-		// requests during HTTP redirects, thus
-		// loosing its entity.
-
-		if (parameterNames != null)
-		{
-			int parameters = parameterNames.size();
-
-			if (parameters < 10)
-			{
-				StringBuilder builder = new StringBuilder(url);
-
-				for (int i = 0; i < parameters; i++)
-				{
-					builder.append('&').append(parameterNames.get(i)).append('=');
-					builder.append(URLEncoder.encode(String.valueOf(parameterValues.get(i)), "UTF-8"));
-				}
-
-				url = builder.toString();
-				parameterNames = null;
-				parameterValues = null;
-			}
-		}
-
-		String rewrittenUrl = rewriteUrlWithRedirect(context, url);
-		return executeWithRetry(context, rewrittenUrl, url, requestParams, parameterNames, parameterValues, headers, progressListener, task);
-	}
-
-	private HttpResponse executeWithRetry(Context context, String url, String originalUrl, HttpParams requestParams, List<String> parameterNames, List<Object> parameterValues, Iterable<Header> headers, ProgressListener progressListener, CancellableTask task) throws IOException
-	{
-		Log.i(TAG, String.format("Using URL %s", url));
-
-		int networkTimeout = Util.getNetworkTimeout(context);
-		HttpParams newParams = httpClient.getParams();
-		HttpConnectionParams.setSoTimeout(newParams, networkTimeout);
-		httpClient.setParams(newParams);
-		final AtomicReference<Boolean> cancelled = new AtomicReference<Boolean>(false);
-		int attempts = 0;
-
-		while (true)
-		{
-			attempts++;
-			HttpContext httpContext = new BasicHttpContext();
-			final HttpPost request = new HttpPost(url);
-
-			if (task != null)
-			{
-				// Attempt to abort the HTTP request if the task is cancelled.
-				task.setOnCancelListener(new CancellableTask.OnCancelListener()
-				{
-					@Override
-					public void onCancel()
-					{
-						new Thread(new Runnable()
-						{
-							@Override
-							public void run()
-							{
-								try
-								{
-									cancelled.set(true);
-									request.abort();
-								}
-								catch (Exception e)
-								{
-									Log.e(TAG, "Failed to stop http task");
-								}
-							}
-						}).start();
-					}
-				});
-			}
-
-			if (parameterNames != null)
-			{
-				List<NameValuePair> params = new ArrayList<NameValuePair>();
-
-				for (int i = 0; i < parameterNames.size(); i++)
-				{
-					params.add(new BasicNameValuePair(parameterNames.get(i), String.valueOf(parameterValues.get(i))));
-				}
-
-				request.setEntity(new UrlEncodedFormEntity(params, Constants.UTF_8));
-			}
-
-			if (requestParams != null)
-			{
-				request.setParams(requestParams);
-				Log.d(TAG, String.format("Socket read timeout: %d ms.", HttpConnectionParams.getSoTimeout(requestParams)));
-			}
-
-			if (headers != null)
-			{
-				for (Header header : headers)
-				{
-					request.addHeader(header);
-				}
-			}
-
-			// Set credentials to get through apache proxies that require authentication.
-			SharedPreferences preferences = Util.getPreferences(context);
-			int instance = preferences.getInt(Constants.PREFERENCES_KEY_SERVER_INSTANCE, 1);
-			String username = preferences.getString(Constants.PREFERENCES_KEY_USERNAME + instance, null);
-			String password = preferences.getString(Constants.PREFERENCES_KEY_PASSWORD + instance, null);
-			httpClient.getCredentialsProvider().setCredentials(new AuthScope(AuthScope.ANY_HOST, AuthScope.ANY_PORT), new UsernamePasswordCredentials(username, password));
-
-			try
-			{
-				HttpResponse response = httpClient.execute(request, httpContext);
-				detectRedirect(originalUrl, context, httpContext);
-				return response;
-			}
-			catch (IOException x)
-			{
-				request.abort();
-
-				if (attempts >= HTTP_REQUEST_MAX_ATTEMPTS || cancelled.get())
-				{
-					throw x;
-				}
-
-				if (progressListener != null)
-				{
-					String msg = context.getResources().getString(R.string.music_service_retry, attempts, HTTP_REQUEST_MAX_ATTEMPTS - 1);
-					progressListener.updateProgress(msg);
-				}
-
-				Log.w(TAG, String.format("Got IOException (%d), will retry", attempts), x);
-				increaseTimeouts(requestParams);
-				Util.sleepQuietly(2000L);
-			}
-		}
-	}
-
-	private static void increaseTimeouts(HttpParams requestParams)
-	{
-		if (requestParams != null)
-		{
-			int connectTimeout = HttpConnectionParams.getConnectionTimeout(requestParams);
-			if (connectTimeout != 0)
-			{
-				HttpConnectionParams.setConnectionTimeout(requestParams, (int) (connectTimeout * 1.3F));
-			}
-			int readTimeout = HttpConnectionParams.getSoTimeout(requestParams);
-			if (readTimeout != 0)
-			{
-				HttpConnectionParams.setSoTimeout(requestParams, (int) (readTimeout * 1.5F));
-			}
-		}
-	}
-
-	private void detectRedirect(String originalUrl, Context context, HttpContext httpContext)
-	{
-		HttpUriRequest request = (HttpUriRequest) httpContext.getAttribute(ExecutionContext.HTTP_REQUEST);
-		HttpHost host = (HttpHost) httpContext.getAttribute(ExecutionContext.HTTP_TARGET_HOST);
-
-		// Sometimes the request doesn't contain the "http://host" part
-		String redirectedUrl;
-		redirectedUrl = request.getURI().getScheme() == null ? host.toURI() + request.getURI() : request.getURI().toString();
-
-		redirectFrom = originalUrl.substring(0, originalUrl.indexOf("/rest/"));
-		redirectTo = redirectedUrl.substring(0, redirectedUrl.indexOf("/rest/"));
-
-		Log.i(TAG, String.format("%s redirects to %s", redirectFrom, redirectTo));
-		redirectionLastChecked = System.currentTimeMillis();
-		redirectionNetworkType = getCurrentNetworkType(context);
-	}
 
 	private String rewriteUrlWithRedirect(Context context, String url)
 	{
