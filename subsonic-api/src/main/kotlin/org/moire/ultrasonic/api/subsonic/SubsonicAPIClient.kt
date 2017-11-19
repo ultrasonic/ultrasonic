@@ -101,6 +101,17 @@ class SubsonicAPIClient(baseUrl: String,
                 api.stream(id, maxBitrate, offset = offset).execute()
             }
 
+    /**
+     * Convenient method to get user avatar using [username].
+     *
+     * It detects the response `Content-Type` and tries to parse subsonic error if there is one.
+     *
+     * Prefer this method over [SubsonicAPIDefinition.getAvatar] as this handles error cases.
+     */
+    fun getAvatar(username: String): StreamResponse = handleStreamResponse {
+        api.getAvatar(username).execute()
+    }
+
     private inline fun handleStreamResponse(apiCall: () -> Response<ResponseBody>): StreamResponse {
         val response = apiCall()
         return if (response.isSuccessful) {

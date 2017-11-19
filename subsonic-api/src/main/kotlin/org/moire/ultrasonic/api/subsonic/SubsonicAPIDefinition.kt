@@ -245,4 +245,7 @@ interface SubsonicAPIDefinition {
 
     @GET("getVideos.view")
     fun getVideos(): Call<VideosResponse>
+
+    @GET("getAvatar.view")
+    fun getAvatar(@Query("username") username: String): Call<ResponseBody>
 }
