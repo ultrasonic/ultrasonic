@@ -1462,7 +1462,9 @@ public class RESTMusicService implements MusicService
             return;
         }
 
-        if (response.body().getStatus() == SubsonicResponse.Status.ERROR &&
+        if (!response.isSuccessful()) {
+            throw new IOException("Server error, code: " + response.code());
+        } else if (response.body().getStatus() == SubsonicResponse.Status.ERROR &&
                 response.body().getError() != null) {
             throw new IOException("Server error: " + response.body().getError().getCode());
         } else {
