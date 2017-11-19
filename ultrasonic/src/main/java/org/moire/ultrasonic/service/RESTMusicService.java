@@ -20,24 +20,11 @@ package org.moire.ultrasonic.service;
 
 import android.content.Context;
 import android.graphics.Bitmap;
-import android.net.ConnectivityManager;
-import android.net.NetworkInfo;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.annotation.StringRes;
 import android.util.Log;
 
-import org.apache.http.conn.params.ConnManagerParams;
-import org.apache.http.conn.params.ConnPerRouteBean;
-import org.apache.http.conn.scheme.PlainSocketFactory;
-import org.apache.http.conn.scheme.Scheme;
-import org.apache.http.conn.scheme.SchemeRegistry;
-import org.apache.http.conn.scheme.SocketFactory;
-import org.apache.http.impl.client.DefaultHttpClient;
-import org.apache.http.impl.conn.tsccm.ThreadSafeClientConnManager;
-import org.apache.http.params.BasicHttpParams;
-import org.apache.http.params.HttpConnectionParams;
-import org.apache.http.params.HttpParams;
 import org.moire.ultrasonic.R;
 import org.moire.ultrasonic.api.subsonic.SubsonicAPIClient;
 import org.moire.ultrasonic.api.subsonic.models.AlbumListType;
@@ -101,10 +88,7 @@ import org.moire.ultrasonic.domain.SearchCriteria;
 import org.moire.ultrasonic.domain.SearchResult;
 import org.moire.ultrasonic.domain.Share;
 import org.moire.ultrasonic.domain.UserInfo;
-import org.moire.ultrasonic.domain.Version;
 import org.moire.ultrasonic.service.parser.SubsonicRESTException;
-import org.moire.ultrasonic.service.ssl.SSLSocketFactory;
-import org.moire.ultrasonic.service.ssl.TrustSelfSignedStrategy;
 import org.moire.ultrasonic.util.CancellableTask;
 import org.moire.ultrasonic.util.FileUtil;
 import org.moire.ultrasonic.util.ProgressListener;
@@ -128,59 +112,13 @@ import retrofit2.Response;
  * @author Sindre Mehus
  */
 public class RESTMusicService implements MusicService {
-	private static final String TAG = RESTMusicService.class.getSimpleName();
+    private static final String TAG = RESTMusicService.class.getSimpleName();
 
-	private static final int SOCKET_CONNECT_TIMEOUT = 10 * 1000;
-	private static final int SOCKET_READ_TIMEOUT_DEFAULT = 10 * 1000;
-
-	private static final long REDIRECTION_CHECK_INTERVAL_MILLIS = 60L * 60L * 1000L;
-
-	private final DefaultHttpClient httpClient;
-	private long redirectionLastChecked;
-	private int redirectionNetworkType = -1;
-	private String redirectFrom;
-	private String redirectTo;
-	private final ThreadSafeClientConnManager connManager;
-    private SubsonicAPIClient subsonicAPIClient;
+    private final SubsonicAPIClient subsonicAPIClient;
 
     public RESTMusicService(SubsonicAPIClient subsonicAPIClient) {
         this.subsonicAPIClient = subsonicAPIClient;
-
-        // Create and initialize default HTTP parameters
-		HttpParams params = new BasicHttpParams();
-		ConnManagerParams.setMaxTotalConnections(params, 20);
-		ConnManagerParams.setMaxConnectionsPerRoute(params, new ConnPerRouteBean(20));
-		HttpConnectionParams.setConnectionTimeout(params, SOCKET_CONNECT_TIMEOUT);
-		HttpConnectionParams.setSoTimeout(params, SOCKET_READ_TIMEOUT_DEFAULT);
-
-		// Turn off stale checking.  Our connections break all the time anyway,
-		// and it's not worth it to pay the penalty of checking every time.
-		HttpConnectionParams.setStaleCheckingEnabled(params, false);
-
-		// Create and initialize scheme registry
-		SchemeRegistry schemeRegistry = new SchemeRegistry();
-		schemeRegistry.register(new Scheme("http", PlainSocketFactory.getSocketFactory(), 80));
-		schemeRegistry.register(new Scheme("https", createSSLSocketFactory(), 443));
-
-		// Create an HttpClient with the ThreadSafeClientConnManager.
-		// This connection manager must be used if more than one thread will
-		// be using the HttpClient.
-		connManager = new ThreadSafeClientConnManager(params, schemeRegistry);
-		httpClient = new DefaultHttpClient(connManager, params);
-	}
-
-	private static SocketFactory createSSLSocketFactory()
-	{
-		try
-		{
-			return new SSLSocketFactory(new TrustSelfSignedStrategy(), SSLSocketFactory.ALLOW_ALL_HOSTNAME_VERIFIER);
-		}
-		catch (Throwable x)
-		{
-			Log.e(TAG, "Failed to create custom SSL socket factory, using default.", x);
-			return org.apache.http.conn.ssl.SSLSocketFactory.getSocketFactory();
-		}
-	}
+    }
 
     @Override
     public void ping(Context context, ProgressListener progressListener) throws Exception {
@@ -705,18 +643,6 @@ public class RESTMusicService implements MusicService {
         return APISearchConverter.toDomainEntity(response.body().getStarred2());
     }
 
-	private static void checkServerVersion(Context context, String version, String text) throws ServerTooOldException
-	{
-		Version serverVersion = Util.getServerRestVersion(context);
-		Version requiredVersion = new Version(version);
-		boolean ok = serverVersion == null || serverVersion.compareTo(requiredVersion) >= 0;
-
-		if (!ok)
-		{
-			throw new ServerTooOldException(text);
-		}
-	}
-
     @Override
     public Bitmap getCoverArt(Context context,
                               final MusicDirectory.Entry entry,
@@ -812,29 +738,14 @@ public class RESTMusicService implements MusicService {
         return new Pair<>(response.getStream(), partial);
     }
 
-	@Override
-	public String getVideoUrl(Context context, String id, boolean useFlash) throws Exception
-	{
-		StringBuilder builder = new StringBuilder(5);
-		if (useFlash)
-		{
-			builder.append(Util.getRestUrl(context, "videoPlayer"));
-			builder.append("&id=").append(id);
-			builder.append("&maxBitRate=500");
-			builder.append("&autoplay=true");
-		}
-		else
-		{
-			checkServerVersion(context, "1.9", "Video streaming not supported.");
-			builder.append(Util.getRestUrl(context, "stream"));
-			builder.append("&id=").append(id);
-			builder.append("&format=raw");
-		}
-
-		String url = rewriteUrlWithRedirect(context, builder.toString());
-		Log.i(TAG, String.format("Using video URL: %s", url));
-		return url;
-	}
+    @Override
+    public String getVideoUrl(Context context, String id, boolean useFlash) throws Exception {
+        // This method should not exists as video should be loaded using stream method
+        // Previous method implementation uses assumption that video will be available
+        // by videoPlayer.view?id=<id>&maxBitRate=500&autoplay=true, but this url is not
+        // official Subsonic API call.
+        throw new UnsupportedOperationException("This method is not longer supported");
+    }
 
     @Override
     public JukeboxStatus updateJukeboxPlaylist(List<String> ids,
@@ -922,35 +833,6 @@ public class RESTMusicService implements MusicService {
 
         return APIShareConverter.toDomainEntitiesList(response.body().getShares());
     }
-
-	private String rewriteUrlWithRedirect(Context context, String url)
-	{
-		// Only cache for a certain time.
-		if (System.currentTimeMillis() - redirectionLastChecked > REDIRECTION_CHECK_INTERVAL_MILLIS)
-		{
-			return url;
-		}
-
-		// Ignore cache if network type has changed.
-		if (redirectionNetworkType != getCurrentNetworkType(context))
-		{
-			return url;
-		}
-
-		if (redirectFrom == null || redirectTo == null)
-		{
-			return url;
-		}
-
-		return url.replace(redirectFrom, redirectTo);
-	}
-
-	private static int getCurrentNetworkType(Context context)
-	{
-		ConnectivityManager manager = (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
-		NetworkInfo networkInfo = manager.getActiveNetworkInfo();
-		return networkInfo == null ? -1 : networkInfo.getType();
-	}
 
     @Override
     public List<Genre> getGenres(Context context,

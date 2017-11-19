@@ -110,7 +110,7 @@ public interface MusicService
 	 */
 	Pair<InputStream, Boolean> getDownloadInputStream(Context context, MusicDirectory.Entry song, long offset, int maxBitrate, CancellableTask task) throws Exception;
 
-	String getVideoUrl(Context context, String id, boolean useFlash) throws Exception;
+	@Deprecated String getVideoUrl(Context context, String id, boolean useFlash) throws Exception;
 
 	JukeboxStatus updateJukeboxPlaylist(List<String> ids, Context context, ProgressListener progressListener) throws Exception;
 
