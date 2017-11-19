@@ -204,6 +204,9 @@ interface SubsonicAPIDefinition {
                     @Query("description") description: String? = null,
                     @Query("expires") expires: Long? = null): Call<SharesResponse>
 
+    @GET("deleteShare.view")
+    fun deleteShare(@Query("id") id: Long): Call<SubsonicResponse>
+
     @GET("getGenres.view")
     fun getGenres(): Call<GenresResponse>
 

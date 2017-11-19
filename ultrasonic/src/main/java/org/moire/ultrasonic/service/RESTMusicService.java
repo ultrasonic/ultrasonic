@@ -1343,31 +1343,20 @@ public class RESTMusicService implements MusicService
          return APIShareConverter.toDomainEntitiesList(response.body().getShares());
     }
 
-	@Override
-	public void deleteShare(String id, Context context, ProgressListener progressListener) throws Exception
-	{
-		checkServerVersion(context, "1.6", "Shares not supported.");
+    @Override
+    public void deleteShare(String id,
+                            Context context,
+                            ProgressListener progressListener) throws Exception {
+        if (id == null) {
+            throw new IllegalArgumentException("Id is null!");
+        }
+        Long shareId = Long.valueOf(id);
 
-		HttpParams params = new BasicHttpParams();
-		HttpConnectionParams.setSoTimeout(params, SOCKET_READ_TIMEOUT_GET_RANDOM_SONGS);
-
-		List<String> parameterNames = new ArrayList<String>();
-		List<Object> parameterValues = new ArrayList<Object>();
-
-		parameterNames.add("id");
-		parameterValues.add(id);
-
-		Reader reader = getReader(context, progressListener, "deleteShare", params, parameterNames, parameterValues);
-
-		try
-		{
-			new ErrorParser(context).parse(reader);
-		}
-		finally
-		{
-			Util.close(reader);
-		}
-	}
+        updateProgressListener(progressListener, R.string.parser_reading);
+        Response<SubsonicResponse> response = subsonicAPIClient.getApi()
+                .deleteShare(shareId).execute();
+        checkResponseSuccessful(response);
+    }
 
 	@Override
 	public void updateShare(String id, String description, Long expires, Context context, ProgressListener progressListener) throws Exception
