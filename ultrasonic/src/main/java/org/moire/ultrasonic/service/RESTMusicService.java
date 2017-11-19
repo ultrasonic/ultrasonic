@@ -86,6 +86,7 @@ import org.moire.ultrasonic.api.subsonic.response.SearchTwoResponse;
 import org.moire.ultrasonic.api.subsonic.response.SharesResponse;
 import org.moire.ultrasonic.api.subsonic.response.StreamResponse;
 import org.moire.ultrasonic.api.subsonic.response.SubsonicResponse;
+import org.moire.ultrasonic.api.subsonic.response.VideosResponse;
 import org.moire.ultrasonic.data.APIAlbumConverter;
 import org.moire.ultrasonic.data.APIArtistConverter;
 import org.moire.ultrasonic.data.APIBookmarkConverter;
@@ -117,7 +118,6 @@ import org.moire.ultrasonic.domain.Share;
 import org.moire.ultrasonic.domain.UserInfo;
 import org.moire.ultrasonic.domain.Version;
 import org.moire.ultrasonic.service.parser.ErrorParser;
-import org.moire.ultrasonic.service.parser.MusicDirectoryParser;
 import org.moire.ultrasonic.service.parser.SubsonicRESTException;
 import org.moire.ultrasonic.service.ssl.SSLSocketFactory;
 import org.moire.ultrasonic.service.ssl.TrustSelfSignedStrategy;
@@ -1314,22 +1314,20 @@ public class RESTMusicService implements MusicService
         checkResponseSuccessful(response);
     }
 
-	@Override
-	public MusicDirectory getVideos(boolean refresh, Context context, ProgressListener progressListener) throws Exception
-	{
-		checkServerVersion(context, "1.8", "Videos not supported.");
+    @Override
+    public MusicDirectory getVideos(boolean refresh,
+                                    Context context,
+                                    ProgressListener progressListener) throws Exception {
+        updateProgressListener(progressListener, R.string.parser_reading);
+        Response<VideosResponse> response = subsonicAPIClient.getApi()
+                .getVideos().execute();
+        checkResponseSuccessful(response);
 
-		Reader reader = getReader(context, progressListener, "getVideos", null);
-
-		try
-		{
-			return new MusicDirectoryParser(context).parse("", reader, progressListener, false);
-		}
-		finally
-		{
-			Util.close(reader);
-		}
-	}
+        MusicDirectory musicDirectory = new MusicDirectory();
+        musicDirectory.addAll(APIMusicDirectoryConverter
+                .toDomainEntityList(response.body().getVideosList()));
+        return musicDirectory;
+    }
 
     @Override
     public List<Share> createShare(List<String> ids,
