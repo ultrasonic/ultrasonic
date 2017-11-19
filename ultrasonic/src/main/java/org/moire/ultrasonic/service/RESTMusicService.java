@@ -158,8 +158,6 @@ public class RESTMusicService implements MusicService
 	private static final int SOCKET_CONNECT_TIMEOUT = 10 * 1000;
 	private static final int SOCKET_READ_TIMEOUT_DEFAULT = 10 * 1000;
 
-	private static final int SOCKET_READ_TIMEOUT_GET_RANDOM_SONGS = 60 * 1000;
-
 	/**
 	 * URL from which to fetch latest versions.
 	 */
@@ -963,11 +961,6 @@ public class RESTMusicService implements MusicService
         return APIShareConverter.toDomainEntitiesList(response.body().getShares());
     }
 
-	private Reader getReader(Context context, ProgressListener progressListener, String method, HttpParams requestParams) throws Exception
-	{
-		return getReader(context, progressListener, method, requestParams, Collections.<String>emptyList(), Collections.emptyList());
-	}
-
 	private Reader getReader(Context context, ProgressListener progressListener, String method, HttpParams requestParams, List<String> parameterNames, List<Object> parameterValues) throws Exception
 	{
 
@@ -1358,42 +1351,27 @@ public class RESTMusicService implements MusicService
         checkResponseSuccessful(response);
     }
 
-	@Override
-	public void updateShare(String id, String description, Long expires, Context context, ProgressListener progressListener) throws Exception
-	{
-		checkServerVersion(context, "1.6", "Updating share not supported.");
+    @Override
+    public void updateShare(String id,
+                            String description,
+                            Long expires,
+                            Context context,
+                            ProgressListener progressListener) throws Exception {
+        if (id == null) {
+            throw new IllegalArgumentException("Id is null");
+        }
+        if (expires != null &&
+                expires == 0) {
+            expires = null;
+        }
 
-  	HttpParams params = new BasicHttpParams();
-		HttpConnectionParams.setSoTimeout(params, SOCKET_READ_TIMEOUT_GET_RANDOM_SONGS);
+        Long shareId = Long.valueOf(id);
 
-		List<String> parameterNames = new ArrayList<String>();
-		List<Object> parameterValues = new ArrayList<Object>();
-
-		parameterNames.add("id");
-		parameterValues.add(id);
-
-		if (description != null)
-		{
-			parameterNames.add("description");
-			parameterValues.add(description);
-		}
-
-		if (expires > 0)
-		{
-			parameterNames.add("expires");
-			parameterValues.add(expires);
-		}
-
-		Reader reader = getReader(context, progressListener, "updateShare", params, parameterNames, parameterValues);
-		try
-		{
-			new ErrorParser(context).parse(reader);
-		}
-		finally
-		{
-			Util.close(reader);
-		}
-	}
+        updateProgressListener(progressListener, R.string.parser_reading);
+        Response<SubsonicResponse> response = subsonicAPIClient.getApi()
+                .updateShare(shareId, description, expires).execute();
+        checkResponseSuccessful(response);
+    }
 
 	@Override
 	public Bitmap getAvatar(Context context, String username, int size, boolean saveToFile, boolean highQuality, ProgressListener progressListener) throws Exception
