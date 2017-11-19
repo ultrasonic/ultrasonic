@@ -30,6 +30,7 @@ import org.moire.ultrasonic.api.subsonic.response.SearchThreeResponse
 import org.moire.ultrasonic.api.subsonic.response.SearchTwoResponse
 import org.moire.ultrasonic.api.subsonic.response.SharesResponse
 import org.moire.ultrasonic.api.subsonic.response.SubsonicResponse
+import org.moire.ultrasonic.api.subsonic.response.VideosResponse
 import retrofit2.Call
 import retrofit2.http.GET
 import retrofit2.http.Header
@@ -233,4 +234,7 @@ interface SubsonicAPIDefinition {
 
     @GET("deleteBookmark.view")
     fun deleteBookmark(@Query("id") id: Int): Call<SubsonicResponse>
+
+    @GET("getVideos.view")
+    fun getVideos(): Call<VideosResponse>
 }
