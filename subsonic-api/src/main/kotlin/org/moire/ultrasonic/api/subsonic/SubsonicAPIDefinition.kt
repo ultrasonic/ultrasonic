@@ -207,6 +207,11 @@ interface SubsonicAPIDefinition {
     @GET("deleteShare.view")
     fun deleteShare(@Query("id") id: Long): Call<SubsonicResponse>
 
+    @GET("updateShare.view")
+    fun updateShare(@Query("id") id: Long,
+                    @Query("description") description: String? = null,
+                    @Query("expires") expires: Long? = null): Call<SubsonicResponse>
+
     @GET("getGenres.view")
     fun getGenres(): Call<GenresResponse>
 
