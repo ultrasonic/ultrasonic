@@ -104,6 +104,8 @@ import java.io.OutputStream;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
+import java.util.concurrent.CountDownLatch;
+import java.util.concurrent.TimeUnit;
 
 import kotlin.Pair;
 import retrofit2.Response;
@@ -739,12 +741,30 @@ public class RESTMusicService implements MusicService {
     }
 
     @Override
-    public String getVideoUrl(Context context, String id, boolean useFlash) throws Exception {
+    public String getVideoUrl(final Context context,
+                              final String id,
+                              final boolean useFlash) throws Exception {
         // This method should not exists as video should be loaded using stream method
         // Previous method implementation uses assumption that video will be available
         // by videoPlayer.view?id=<id>&maxBitRate=500&autoplay=true, but this url is not
         // official Subsonic API call.
-        throw new UnsupportedOperationException("This method is not longer supported");
+        if (id == null) {
+            throw new IllegalArgumentException("Id is null");
+        }
+        final String[] expectedResult = new String[1];
+        expectedResult[0] = null;
+        final CountDownLatch latch = new CountDownLatch(1);
+
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                expectedResult[0] = subsonicAPIClient.getStreamUrl(id) + "&format=raw";
+                latch.countDown();
+            }
+        }, "Get-Video-Url").start();
+
+        latch.await(3, TimeUnit.SECONDS);
+        return expectedResult[0];
     }
 
     @Override
