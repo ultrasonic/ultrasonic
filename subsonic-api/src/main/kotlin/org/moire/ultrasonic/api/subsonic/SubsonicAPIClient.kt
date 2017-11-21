@@ -131,6 +131,22 @@ class SubsonicAPIClient(baseUrl: String,
         }
     }
 
+    /**
+     * Get stream url.
+     *
+     * Calling this method do actual connection to the backend, though not downloading all content.
+     *
+     * Consider do not use this method, but [stream] call.
+     */
+    fun getStreamUrl(id: String): String {
+        val request = api.stream(id).execute()
+        val url = request.raw().request().url().toString()
+        if (request.isSuccessful) {
+            request.body().close()
+        }
+        return url
+    }
+
     private val salt: String by lazy {
         val secureRandom = SecureRandom()
         BigInteger(130, secureRandom).toString(32)
@@ -145,7 +161,7 @@ class SubsonicAPIClient(baseUrl: String,
         }
     }
 
-    private val passwordHex: String by lazy {
+    internal val passwordHex: String by lazy {
         "enc:${password.toHexBytes()}"
     }
 
