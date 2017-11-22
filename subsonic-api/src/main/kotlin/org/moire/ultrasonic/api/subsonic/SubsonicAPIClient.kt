@@ -4,21 +4,17 @@ import com.fasterxml.jackson.databind.DeserializationFeature
 import com.fasterxml.jackson.databind.ObjectMapper
 import com.fasterxml.jackson.module.kotlin.KotlinModule
 import com.fasterxml.jackson.module.kotlin.readValue
-import okhttp3.HttpUrl
 import okhttp3.OkHttpClient
 import okhttp3.ResponseBody
 import okhttp3.logging.HttpLoggingInterceptor
+import org.moire.ultrasonic.api.subsonic.interceptors.PasswordHexInterceptor
+import org.moire.ultrasonic.api.subsonic.interceptors.PasswordMD5Interceptor
 import org.moire.ultrasonic.api.subsonic.interceptors.RangeHeaderInterceptor
 import org.moire.ultrasonic.api.subsonic.response.StreamResponse
 import org.moire.ultrasonic.api.subsonic.response.SubsonicResponse
 import retrofit2.Response
 import retrofit2.Retrofit
 import retrofit2.converter.jackson.JacksonConverterFactory
-import java.lang.IllegalStateException
-import java.math.BigInteger
-import java.security.MessageDigest
-import java.security.NoSuchAlgorithmException
-import java.security.SecureRandom
 import java.util.concurrent.TimeUnit.MILLISECONDS
 
 private const val READ_TIMEOUT = 60_000L
@@ -36,10 +32,6 @@ class SubsonicAPIClient(baseUrl: String,
                         clientProtocolVersion: SubsonicAPIVersions,
                         clientID: String,
                         debug: Boolean = false) {
-    companion object {
-        internal val HEX_ARRAY = "0123456789ABCDEF".toCharArray()
-    }
-
     private val okHttpClient = OkHttpClient.Builder()
             .readTimeout(READ_TIMEOUT, MILLISECONDS)
             .addInterceptor { chain ->
@@ -47,9 +39,6 @@ class SubsonicAPIClient(baseUrl: String,
                 val originalRequest = chain.request()
                 val newUrl = originalRequest.url().newBuilder()
                         .addQueryParameter("u", username)
-                        .also {
-                            it.addPasswordQueryParam(clientProtocolVersion)
-                        }
                         .addQueryParameter("v", clientProtocolVersion.restApiVersion)
                         .addQueryParameter("c", clientID)
                         .addQueryParameter("f", "json")
@@ -57,11 +46,9 @@ class SubsonicAPIClient(baseUrl: String,
                 chain.proceed(originalRequest.newBuilder().url(newUrl).build())
             }
             .addInterceptor(RangeHeaderInterceptor())
-            .also {
-                if (debug) {
-                    it.addLogging()
-                }
-            }.build()
+            .apply { if (debug) addLogging() }
+            .addPasswordQueryParam(clientProtocolVersion)
+            .build()
 
     private val jacksonMapper = ObjectMapper()
             .configure(DeserializationFeature.UNWRAP_ROOT_VALUE, true)
@@ -147,50 +134,19 @@ class SubsonicAPIClient(baseUrl: String,
         return url
     }
 
-    private val salt: String by lazy {
-        val secureRandom = SecureRandom()
-        BigInteger(130, secureRandom).toString(32)
-    }
-
-    private val passwordMD5Hash: String by lazy {
-        try {
-            val md5Digest = MessageDigest.getInstance("MD5")
-            md5Digest.digest("$password$salt".toByteArray()).toHexBytes()
-        } catch (e: NoSuchAlgorithmException) {
-            throw IllegalStateException(e)
-        }
-    }
-
-    internal val passwordHex: String by lazy {
-        "enc:${password.toHexBytes()}"
-    }
-
-    private fun String.toHexBytes(): String {
-        return this.toByteArray().toHexBytes()
-    }
-
-    private fun ByteArray.toHexBytes(): String {
-        val hexChars = CharArray(this.size * 2)
-        for (j in 0..this.lastIndex) {
-            val v = this[j].toInt().and(0xFF)
-            hexChars[j * 2] = HEX_ARRAY[v.ushr(4)]
-            hexChars[j * 2 + 1] = HEX_ARRAY[v.and(0x0F)]
-        }
-        return String(hexChars)
-    }
-
     private fun OkHttpClient.Builder.addLogging() {
         val loggingInterceptor = HttpLoggingInterceptor()
         loggingInterceptor.level = HttpLoggingInterceptor.Level.BODY
         this.addInterceptor(loggingInterceptor)
     }
 
-    private fun HttpUrl.Builder.addPasswordQueryParam(clientProtocolVersion: SubsonicAPIVersions) {
+    private fun OkHttpClient.Builder.addPasswordQueryParam(
+            clientProtocolVersion: SubsonicAPIVersions): OkHttpClient.Builder {
         if (clientProtocolVersion < SubsonicAPIVersions.V1_13_0) {
-            this.addQueryParameter("p", passwordHex)
+            this.addInterceptor(PasswordHexInterceptor(password))
         } else {
-            this.addQueryParameter("t", passwordMD5Hash)
-            this.addQueryParameter("s", salt)
+            this.addInterceptor(PasswordMD5Interceptor(password))
         }
+        return this
     }
 }

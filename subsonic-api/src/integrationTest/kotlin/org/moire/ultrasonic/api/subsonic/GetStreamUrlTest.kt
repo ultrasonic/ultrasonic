@@ -6,6 +6,7 @@ import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
 import org.moire.ultrasonic.api.subsonic.SubsonicAPIVersions.V1_6_0
+import org.moire.ultrasonic.api.subsonic.interceptors.toHexBytes
 import org.moire.ultrasonic.api.subsonic.rules.MockWebServerRule
 
 /**
@@ -24,7 +25,7 @@ class GetStreamUrlTest {
                 USERNAME, PASSWORD, V1_6_0, CLIENT_ID)
         val baseExpectedUrl = mockWebServerRule.mockWebServer.url("").toString()
         expectedUrl = "$baseExpectedUrl/rest/stream.view?id=$id&u=$USERNAME" +
-                "&p=${client.passwordHex}&v=${V1_6_0.restApiVersion}&c=$CLIENT_ID&f=json"
+                "&v=${V1_6_0.restApiVersion}&c=$CLIENT_ID&f=json&p=enc:${PASSWORD.toHexBytes()}"
     }
 
     @Test
