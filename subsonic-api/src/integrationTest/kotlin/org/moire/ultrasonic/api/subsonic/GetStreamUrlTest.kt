@@ -25,7 +25,7 @@ class GetStreamUrlTest {
                 USERNAME, PASSWORD, V1_6_0, CLIENT_ID)
         val baseExpectedUrl = mockWebServerRule.mockWebServer.url("").toString()
         expectedUrl = "$baseExpectedUrl/rest/stream.view?id=$id&u=$USERNAME" +
-                "&v=${V1_6_0.restApiVersion}&c=$CLIENT_ID&f=json&p=enc:${PASSWORD.toHexBytes()}"
+                "&c=$CLIENT_ID&f=json&v=${V1_6_0.restApiVersion}&p=enc:${PASSWORD.toHexBytes()}"
     }
 
     @Test
