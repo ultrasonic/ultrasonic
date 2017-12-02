@@ -9,7 +9,9 @@ import okhttp3.ResponseBody
 import okhttp3.logging.HttpLoggingInterceptor
 import org.moire.ultrasonic.api.subsonic.interceptors.PasswordHexInterceptor
 import org.moire.ultrasonic.api.subsonic.interceptors.PasswordMD5Interceptor
+import org.moire.ultrasonic.api.subsonic.interceptors.ProxyPasswordInterceptor
 import org.moire.ultrasonic.api.subsonic.interceptors.RangeHeaderInterceptor
+import org.moire.ultrasonic.api.subsonic.interceptors.VersionInterceptor
 import org.moire.ultrasonic.api.subsonic.response.StreamResponse
 import org.moire.ultrasonic.api.subsonic.response.SubsonicResponse
 import retrofit2.Response
@@ -28,10 +30,25 @@ private const val READ_TIMEOUT = 60_000L
  */
 class SubsonicAPIClient(baseUrl: String,
                         username: String,
-                        private val password: String,
-                        clientProtocolVersion: SubsonicAPIVersions,
+                        password: String,
+                        minimalProtocolVersion: SubsonicAPIVersions,
                         clientID: String,
                         debug: Boolean = false) {
+    private val versionInterceptor = VersionInterceptor(minimalProtocolVersion) {
+        protocolVersion = it
+    }
+    private val proxyPasswordInterceptor = ProxyPasswordInterceptor(minimalProtocolVersion,
+            PasswordHexInterceptor(password), PasswordMD5Interceptor(password))
+
+    /**
+     * Get currently used protocol version.
+     */
+    var protocolVersion = minimalProtocolVersion
+        private set(value) {
+            field = value
+            proxyPasswordInterceptor.apiVersion = field
+        }
+
     private val okHttpClient = OkHttpClient.Builder()
             .readTimeout(READ_TIMEOUT, MILLISECONDS)
             .addInterceptor { chain ->
@@ -39,15 +56,15 @@ class SubsonicAPIClient(baseUrl: String,
                 val originalRequest = chain.request()
                 val newUrl = originalRequest.url().newBuilder()
                         .addQueryParameter("u", username)
-                        .addQueryParameter("v", clientProtocolVersion.restApiVersion)
                         .addQueryParameter("c", clientID)
                         .addQueryParameter("f", "json")
                         .build()
                 chain.proceed(originalRequest.newBuilder().url(newUrl).build())
             }
+            .addInterceptor(versionInterceptor)
+            .addInterceptor(proxyPasswordInterceptor)
             .addInterceptor(RangeHeaderInterceptor())
             .apply { if (debug) addLogging() }
-            .addPasswordQueryParam(clientProtocolVersion)
             .build()
 
     private val jacksonMapper = ObjectMapper()
@@ -138,15 +155,5 @@ class SubsonicAPIClient(baseUrl: String,
         val loggingInterceptor = HttpLoggingInterceptor()
         loggingInterceptor.level = HttpLoggingInterceptor.Level.BODY
         this.addInterceptor(loggingInterceptor)
-    }
-
-    private fun OkHttpClient.Builder.addPasswordQueryParam(
-            clientProtocolVersion: SubsonicAPIVersions): OkHttpClient.Builder {
-        if (clientProtocolVersion < SubsonicAPIVersions.V1_13_0) {
-            this.addInterceptor(PasswordHexInterceptor(password))
-        } else {
-            this.addInterceptor(PasswordMD5Interceptor(password))
-        }
-        return this
     }
 }

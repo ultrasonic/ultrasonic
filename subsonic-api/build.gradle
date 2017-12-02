@@ -21,6 +21,8 @@ dependencies {
 
     testImplementation testing.junit
     testImplementation testing.kotlinJunit
+    testImplementation testing.mockito
+    testImplementation testing.mockitoInline
     testImplementation testing.mockitoKotlin
     testImplementation testing.kluent
     testImplementation testing.mockWebServer

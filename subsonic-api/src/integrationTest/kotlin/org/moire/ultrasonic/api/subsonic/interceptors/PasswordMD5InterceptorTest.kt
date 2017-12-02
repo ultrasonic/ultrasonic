@@ -30,7 +30,7 @@ class PasswordMD5InterceptorTest : BaseInterceptorTest() {
             val salt = requestLine.split('&').find { it.startsWith("s=") }
                     ?.substringAfter('=')?.substringBefore(" ")
             val expectedToken = String(Hex.encodeHex(MessageDigest.getInstance("MD5")
-                    .digest("$password$salt".toByteArray()), false))
+                    .digest("$password$salt".toByteArray()), true))
             requestLine `should contain` "t=$expectedToken"
         }
     }
