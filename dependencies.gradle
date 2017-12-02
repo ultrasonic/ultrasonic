@@ -21,6 +21,7 @@ ext.versions = [
         okhttp               : "3.9.0",
 
         junit                : "4.12",
+        mockito              : "2.12.0",
         mockitoKotlin        : "1.5.0",
         kluent               : "1.26",
         apacheCodecs         : "1.10",
@@ -53,6 +54,8 @@ ext.testing = [
         junit         : "junit:junit:$versions.junit",
         kotlinJunit   : "org.jetbrains.kotlin:kotlin-test-junit:$versions.kotlin",
         mockitoKotlin : "com.nhaarman:mockito-kotlin:$versions.mockitoKotlin",
+        mockito       : "org.mockito:mockito-core:$versions.mockito",
+        mockitoInline : "org.mockito:mockito-inline:$versions.mockito",
         kluent        : "org.amshove.kluent:kluent:$versions.kluent",
         mockWebServer : "com.squareup.okhttp3:mockwebserver:$versions.okhttp",
         apacheCodecs  : "commons-codec:commons-codec:$versions.apacheCodecs",
