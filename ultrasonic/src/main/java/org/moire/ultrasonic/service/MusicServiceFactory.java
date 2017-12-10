@@ -43,6 +43,7 @@ public class MusicServiceFactory {
             if (OFFLINE_MUSIC_SERVICE == null) {
                 synchronized (MusicServiceFactory.class) {
                     if (OFFLINE_MUSIC_SERVICE == null) {
+                        Log.d(LOG_TAG, "Creating new offline music service");
                         OFFLINE_MUSIC_SERVICE = new OfflineMusicService(createSubsonicApiClient(context));
                     }
                 }
@@ -54,6 +55,7 @@ public class MusicServiceFactory {
             if (REST_MUSIC_SERVICE == null) {
                 synchronized (MusicServiceFactory.class) {
                     if (REST_MUSIC_SERVICE == null) {
+                        Log.d(LOG_TAG, "Creating new rest music service");
                         REST_MUSIC_SERVICE = new CachedMusicService(new RESTMusicService(
                                 createSubsonicApiClient(context)));
                     }
