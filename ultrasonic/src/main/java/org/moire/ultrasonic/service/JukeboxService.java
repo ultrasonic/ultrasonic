@@ -28,6 +28,7 @@ import android.widget.ProgressBar;
 import android.widget.Toast;
 
 import org.moire.ultrasonic.R;
+import org.moire.ultrasonic.api.subsonic.ApiNotSupportedException;
 import org.moire.ultrasonic.domain.JukeboxStatus;
 import org.moire.ultrasonic.domain.PlayerState;
 import org.moire.ultrasonic.service.parser.SubsonicRESTException;
@@ -185,7 +186,7 @@ public class JukeboxService
 
 	private void onError(JukeboxTask task, Throwable x)
 	{
-		if (x instanceof ServerTooOldException && !(task instanceof Stop))
+		if (x instanceof ApiNotSupportedException && !(task instanceof Stop))
 		{
 			disableJukeboxOnError(x, R.string.download_jukebox_server_too_old);
 		}

@@ -43,12 +43,13 @@ import android.widget.TextView;
 import com.handmark.pulltorefresh.library.PullToRefreshBase;
 import com.handmark.pulltorefresh.library.PullToRefreshBase.OnRefreshListener;
 import com.handmark.pulltorefresh.library.PullToRefreshListView;
+
 import org.moire.ultrasonic.R;
+import org.moire.ultrasonic.api.subsonic.ApiNotSupportedException;
 import org.moire.ultrasonic.domain.Playlist;
 import org.moire.ultrasonic.service.MusicService;
 import org.moire.ultrasonic.service.MusicServiceFactory;
 import org.moire.ultrasonic.service.OfflineException;
-import org.moire.ultrasonic.service.ServerTooOldException;
 import org.moire.ultrasonic.util.BackgroundTask;
 import org.moire.ultrasonic.util.CacheCleaner;
 import org.moire.ultrasonic.util.Constants;
@@ -271,7 +272,7 @@ public class SelectPlaylistActivity extends SubsonicTabActivity implements Adapt
 					protected void error(Throwable error)
 					{
 						String msg;
-						msg = error instanceof OfflineException || error instanceof ServerTooOldException ? getErrorMessage(error) : String.format("%s %s", getResources().getString(R.string.menu_deleted_playlist_error, playlist.getName()), getErrorMessage(error));
+						msg = error instanceof OfflineException || error instanceof ApiNotSupportedException ? getErrorMessage(error) : String.format("%s %s", getResources().getString(R.string.menu_deleted_playlist_error, playlist.getName()), getErrorMessage(error));
 
 						Util.toast(SelectPlaylistActivity.this, msg, false);
 					}
@@ -360,7 +361,7 @@ public class SelectPlaylistActivity extends SubsonicTabActivity implements Adapt
 					protected void error(Throwable error)
 					{
 						String msg;
-						msg = error instanceof OfflineException || error instanceof ServerTooOldException ? getErrorMessage(error) : String.format("%s %s", getResources().getString(R.string.playlist_updated_info_error, playlist.getName()), getErrorMessage(error));
+						msg = error instanceof OfflineException || error instanceof ApiNotSupportedException ? getErrorMessage(error) : String.format("%s %s", getResources().getString(R.string.playlist_updated_info_error, playlist.getName()), getErrorMessage(error));
 
 						Util.toast(SelectPlaylistActivity.this, msg, false);
 					}

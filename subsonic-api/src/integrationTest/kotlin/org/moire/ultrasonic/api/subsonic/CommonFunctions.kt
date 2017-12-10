@@ -16,7 +16,7 @@ import java.util.TimeZone
 
 const val USERNAME = "some-user"
 const val PASSWORD = "some-password"
-val CLIENT_VERSION = SubsonicAPIVersions.V1_13_0
+val CLIENT_VERSION = SubsonicAPIVersions.V1_16_0
 const val CLIENT_ID = "test-client"
 
 val dateFormat by lazy(LazyThreadSafetyMode.NONE, {

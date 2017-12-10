@@ -26,6 +26,9 @@ private const val READ_TIMEOUT = 60_000L
  *
  * For supported API calls see [SubsonicAPIDefinition].
  *
+ * Client will automatically adjust [protocolVersion] to the current server version on
+ * doing successful requests.
+ *
  * @author Yahor Berdnikau
  */
 class SubsonicAPIClient(baseUrl: String,
@@ -37,6 +40,7 @@ class SubsonicAPIClient(baseUrl: String,
     private val versionInterceptor = VersionInterceptor(minimalProtocolVersion) {
         protocolVersion = it
     }
+
     private val proxyPasswordInterceptor = ProxyPasswordInterceptor(minimalProtocolVersion,
             PasswordHexInterceptor(password), PasswordMD5Interceptor(password))
 
@@ -47,6 +51,7 @@ class SubsonicAPIClient(baseUrl: String,
         private set(value) {
             field = value
             proxyPasswordInterceptor.apiVersion = field
+            wrappedApi.currentApiVersion = field
         }
 
     private val okHttpClient = OkHttpClient.Builder()
@@ -78,7 +83,11 @@ class SubsonicAPIClient(baseUrl: String,
             .addConverterFactory(JacksonConverterFactory.create(jacksonMapper))
             .build()
 
-    val api: SubsonicAPIDefinition = retrofit.create(SubsonicAPIDefinition::class.java)
+    private val wrappedApi = ApiVersionCheckWrapper(
+            retrofit.create(SubsonicAPIDefinition::class.java),
+            minimalProtocolVersion)
+
+    val api: SubsonicAPIDefinition get() = wrappedApi
 
     /**
      * Convenient method to get cover art from api using item [id] and optional maximum [size].

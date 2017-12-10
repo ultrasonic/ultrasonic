@@ -26,6 +26,7 @@ import android.support.annotation.StringRes;
 import android.util.Log;
 
 import org.moire.ultrasonic.R;
+import org.moire.ultrasonic.api.subsonic.ApiNotSupportedException;
 import org.moire.ultrasonic.api.subsonic.SubsonicAPIClient;
 import org.moire.ultrasonic.api.subsonic.models.AlbumListType;
 import org.moire.ultrasonic.api.subsonic.models.JukeboxAction;
@@ -339,7 +340,7 @@ public class RESTMusicService implements MusicService {
                     Util.getShouldUseId3Tags(context) ?
                     search3(criteria, context, progressListener) :
                     search2(criteria, context, progressListener);
-        } catch (ServerTooOldException x) {
+        } catch (ApiNotSupportedException ignored) {
             // Ensure backward compatibility with REST 1.3.
             return searchOld(criteria, context, progressListener);
         }
