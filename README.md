@@ -3,14 +3,25 @@
 [![Codecov branch](https://img.shields.io/codecov/c/github/ultrasonic/ultrasonic/develop.svg)]()
 [![ktlint](https://img.shields.io/badge/code%20style-%E2%9D%A4-FF4081.svg)](https://ktlint.github.io/)
 
-Subsonic Music Streamer Android client
+Ultrasonic is free, open-source [Subsonic](http://www.subsonic.org/) [API](http://www.subsonic.org/pages/api.jsp) compatible music streaming Android client.
 
-## About project status
+## Download
 
-WARNING: This project is **STALLED**
+App is available to download at following stores: 
+ - [Google play store](https://play.google.com/store/apps/details?id=org.moire.ultrasonic)
+ - [F-Droid](https://f-droid.org) - coming soon...
+ 
+## Bugs and issue
 
-This means that I don't have time to fix bugs or add new features, but you can send me **Pull Requests** and I **promise** that I shall merge and upload to Play Store.
+First, see if your issue haven’t been yet reported [here](https://github.com/ultrasonic/ultrasonic/issues),
+otherwise open [a new issue](https://github.com/ultrasonic/ultrasonic/issues/new).
 
-If you want contribute at project you can see the [issues](https://github.com/ogarcia/ultrasonic/issues) page and try to fix the discovered bugs or implement the enhancements that users report there.
+## Contributing
 
-If you want give more active development, please contact with me cause I can give you access to repository to do work faster.
+See [CONTRIBUTING](CONTRIBUTING.md).
+
+## License
+
+This software is licensed under the terms of the GNU General Public License version 3 (GPLv3). 
+
+Full text of the license is available in the [LICENSE](LICENSE) file and [online](https://opensource.org/licenses/gpl-3.0.html).
