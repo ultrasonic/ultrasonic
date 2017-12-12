@@ -1,3 +1,3 @@
 package org.moire.ultrasonic.api.subsonic.models
 
-data class MusicFolder(val id: Long = -1, val name: String = "")
+data class MusicFolder(val id: String = "", val name: String = "")

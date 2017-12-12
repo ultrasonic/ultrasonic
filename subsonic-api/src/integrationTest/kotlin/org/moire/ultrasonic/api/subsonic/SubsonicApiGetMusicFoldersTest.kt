@@ -17,7 +17,9 @@ class SubsonicApiGetMusicFoldersTest : SubsonicAPIClientTest() {
         assertResponseSuccessful(response)
         with(response.body()) {
             assertBaseResponseOk()
-            musicFolders `should equal` listOf(MusicFolder(0, "Music"), MusicFolder(2, "Test"))
+            musicFolders `should equal` listOf(
+                    MusicFolder("0", "Music"),
+                    MusicFolder("2", "Test"))
         }
     }
 
