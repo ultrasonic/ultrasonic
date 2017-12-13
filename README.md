@@ -1,6 +1,13 @@
 # Ultrasonic
 Subsonic Music Streamer Android client
 
+[<img src="https://f-droid.org/badge/get-it-on.png"
+      alt="Get it on F-Droid"
+      height="90">](https://f-droid.org/packages/org.moire.ultrasonic/)
+[<img src="https://play.google.com/intl/en_us/badges/images/generic/en-play-badge.png"
+      alt="Get it on Google Play"
+      height="90">](https://play.google.com/store/apps/details?id=org.moire.ultrasonic)
+
 ## About project status
 
 WARNING: This project is **STALLED**
