@@ -16,8 +16,8 @@ class APIPlaylistConverterTest {
     @Test
     fun `Should convert Playlist to MusicDirectory domain entity`() {
         val entity = Playlist(name = "some-playlist-name", entriesList = listOf(
-                MusicDirectoryChild(id = 10L, parent = 1393),
-                MusicDirectoryChild(id = 11L, parent = 1393)
+                MusicDirectoryChild(id = "10", parent = "1393"),
+                MusicDirectoryChild(id = "11", parent = "1393")
         ))
 
         val convertedEntity = entity.toMusicDirectoryDomainEntity()

@@ -39,13 +39,13 @@ class SubsonicApiGetPodcastsTest : SubsonicAPIClientTest() {
             status `should equal to` "completed"
             errorMessage `should equal to` ""
             episodeList.size `should equal to` 10
-            episodeList[0] `should equal` MusicDirectoryChild(id = 148, parent = 9959, isDir = false,
+            episodeList[0] `should equal` MusicDirectoryChild(id = "148", parent = "9959", isDir = false,
                     title = "S1:EP3 – How to teach yourself computer science (Vaidehi Joshi)",
                     album = "CodeNewbie", artist = "podcasts", coverArt = "9959",
                     size = 38274221, contentType = "audio/mpeg", suffix = "mp3",
                     duration = 2397, bitRate = 128, isVideo = false, playCount = 0,
                     created = parseDate("2017-08-30T09:33:39.000Z"), type = "podcast",
-                    streamId = 9982, channelId = 2,
+                    streamId = "9982", channelId = "2",
                     description = "Vaidehi decided to take on a year-long challenge. " +
                             "She'd pick a computer science topic every week, do tons of research " +
                             "and write a technical blog post explaining it in simple terms and " +

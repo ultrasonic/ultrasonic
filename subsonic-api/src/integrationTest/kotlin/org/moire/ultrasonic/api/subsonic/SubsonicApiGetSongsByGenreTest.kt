@@ -27,21 +27,21 @@ class SubsonicApiGetSongsByGenreTest : SubsonicAPIClientTest() {
         assertResponseSuccessful(response)
         response.body().songsList.size `should equal to` 2
         with(response.body().songsList) {
-            this[0] `should equal` MusicDirectoryChild(id = 575, parent = 576, isDir = false,
+            this[0] `should equal` MusicDirectoryChild(id = "575", parent = "576", isDir = false,
                     title = "Time Machine (Vadim Zhukov Remix)", album = "668",
                     artist = "Tasadi", year = 2008, genre = "Trance", size = 22467672,
                     contentType = "audio/mpeg", suffix = "mp3", duration = 561, bitRate = 320,
                     path = "Tasadi/668/00 Time Machine (Vadim Zhukov Remix).mp3",
                     isVideo = false, playCount = 0, created = parseDate("2016-10-23T21:58:29.000Z"),
-                    albumId = 0, artistId = 0, type = "music")
-            this[1] `should equal` MusicDirectoryChild(id = 621, parent = 622, isDir = false,
+                    albumId = "0", artistId = "0", type = "music")
+            this[1] `should equal` MusicDirectoryChild(id = "621", parent = "622", isDir = false,
                     title = "My Heart (Vadim Zhukov Remix)", album = "668",
                     artist = "DJ Polyakov PPK Feat Kate Cameron", year = 2009, genre = "Trance",
                     size = 26805932, contentType = "audio/mpeg", suffix = "mp3", duration = 670,
                     bitRate = 320,
                     path = "DJ Polyakov PPK Feat Kate Cameron/668/00 My Heart (Vadim Zhukov Remix).mp3",
                     isVideo = false, playCount = 2, created = parseDate("2016-10-23T21:58:29.000Z"),
-                    albumId = 5, artistId = 4, type = "music")
+                    albumId = "5", artistId = "4", type = "music")
         }
     }
 

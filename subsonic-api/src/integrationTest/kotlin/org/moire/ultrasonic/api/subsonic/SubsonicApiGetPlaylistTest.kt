@@ -39,7 +39,7 @@ class SubsonicApiGetPlaylistTest : SubsonicAPIClientTest() {
             changed `should equal` parseDate("2017-08-27T11:17:26.218Z")
             coverArt `should equal to` "pl-0"
             entriesList.size `should equal to` 2
-            entriesList[1] `should equal` MusicDirectoryChild(id = 4215, parent = 4186,
+            entriesList[1] `should equal` MusicDirectoryChild(id = "4215", parent = "4186",
                     isDir = false, title = "Going to Hell", album = "Going to Hell",
                     artist = "The Pretty Reckless", track = 2, year = 2014,
                     genre = "Hard Rock", coverArt = "4186", size = 11089627,
@@ -47,7 +47,7 @@ class SubsonicApiGetPlaylistTest : SubsonicAPIClientTest() {
                     path = "The Pretty Reckless/Going to Hell/02 Going to Hell.mp3",
                     isVideo = false, playCount = 0, discNumber = 1,
                     created = parseDate("2016-10-23T21:30:41.000Z"),
-                    albumId = 388, artistId = 238, type = "music")
+                    albumId = "388", artistId = "238", type = "music")
         }
     }
 

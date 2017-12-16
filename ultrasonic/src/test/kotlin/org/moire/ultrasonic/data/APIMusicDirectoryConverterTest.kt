@@ -17,7 +17,7 @@ class APIMusicDirectoryConverterTest {
     fun `Should convert MusicDirectory entity`() {
         val entity = MusicDirectory(id = "1982", parent = "345", name = "some-name", userRating = 3,
                 averageRating = 3.4f, starred = Calendar.getInstance(), playCount = 10,
-                childList = listOf(MusicDirectoryChild(1L), MusicDirectoryChild(2L)))
+                childList = listOf(MusicDirectoryChild("1"), MusicDirectoryChild("2")))
 
         val convertedEntity = entity.toDomainEntity()
 
@@ -30,8 +30,8 @@ class APIMusicDirectoryConverterTest {
 
     @Test
     fun `Should convert MusicDirectoryChild entity`() {
-        val entity = MusicDirectoryChild(id = 929L, parent = 11L, title = "some-title",
-                album = "some-album", albumId = 231L, artist = "some-artist", artistId = 1233L,
+        val entity = MusicDirectoryChild(id = "929", parent = "11", title = "some-title",
+                album = "some-album", albumId = "231", artist = "some-artist", artistId = "1233",
                 track = 12, year = 2002, genre = "some-genre", coverArt = "952", size = 9418123L,
                 contentType = "some-content-type", suffix = "some-suffix",
                 transcodedContentType = "some-transcoded-content-type",
@@ -42,14 +42,14 @@ class APIMusicDirectoryConverterTest {
         val convertedEntity = entity.toDomainEntity()
 
         with(convertedEntity) {
-            id `should equal to` entity.id.toString()
-            parent `should equal to` entity.parent.toString()
+            id `should equal to` entity.id
+            parent `should equal to` entity.parent
             isDirectory `should equal to` entity.isDir
             title `should equal` entity.title
             album `should equal` entity.album
-            albumId `should equal to` entity.albumId.toString()
+            albumId `should equal to` entity.albumId
             artist `should equal to` entity.artist
-            artistId `should equal to` entity.artistId.toString()
+            artistId `should equal to` entity.artistId
             track `should equal to` entity.track
             year `should equal to` entity.year!!
             genre `should equal to` entity.genre
@@ -72,20 +72,20 @@ class APIMusicDirectoryConverterTest {
 
     @Test
     fun `Should convert MusicDirectoryChild podcast entity`() {
-        val entity = MusicDirectoryChild(id = 584, streamId = 394,
+        val entity = MusicDirectoryChild(id = "584", streamId = "394",
                 artist = "some-artist", publishDate = Calendar.getInstance())
 
         val convertedEntity = entity.toDomainEntity()
 
         with(convertedEntity) {
-            id `should equal to` entity.streamId.toString()
+            id `should equal to` entity.streamId
             artist `should equal to` dateFormat.format(entity.publishDate?.time)
         }
     }
 
     @Test
     fun `Should convert list of MusicDirectoryChild to domain entity list`() {
-        val entitiesList = listOf(MusicDirectoryChild(id = 45), MusicDirectoryChild(id = 34))
+        val entitiesList = listOf(MusicDirectoryChild(id = "45"), MusicDirectoryChild(id = "34"))
 
         val domainList = entitiesList.toDomainEntityList()
 

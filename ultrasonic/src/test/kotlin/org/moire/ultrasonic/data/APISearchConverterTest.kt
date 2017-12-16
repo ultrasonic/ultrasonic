@@ -20,7 +20,7 @@ class APISearchConverterTest {
     @Test
     fun `Should convert SearchResult to domain entity`() {
         val entity = SearchResult(offset = 10, totalHits = 3, matchList = listOf(
-                MusicDirectoryChild(id = 101L)
+                MusicDirectoryChild(id = "101")
         ))
 
         val convertedEntity = entity.toDomainEntity()
@@ -40,9 +40,9 @@ class APISearchConverterTest {
         val entity = SearchTwoResult(listOf(
                 Artist(id = "82", name = "great-artist-name")
         ), listOf(
-                MusicDirectoryChild(id = 762, artist = "bzz")
+                MusicDirectoryChild(id = "762", artist = "bzz")
         ), listOf(
-                MusicDirectoryChild(id = 9118, parent = 112)
+                MusicDirectoryChild(id = "9118", parent = "112")
         ))
 
         val convertedEntity = entity.toDomainEntity()
@@ -62,7 +62,7 @@ class APISearchConverterTest {
         val entity = SearchThreeResult(
                 artistList = listOf(Artist(id = "612", name = "artist1")),
                 albumList = listOf(Album(id = "221", name = "album1")),
-                songList = listOf(MusicDirectoryChild(id = 7123, title = "song1"))
+                songList = listOf(MusicDirectoryChild(id = "7123", title = "song1"))
         )
 
         val convertedEntity = entity.toDomainEntity()
