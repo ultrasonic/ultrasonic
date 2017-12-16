@@ -30,7 +30,7 @@ class SubsonicApiGetPodcastsTest : SubsonicAPIClientTest() {
         val podcastChannelsList = response.body().podcastChannels
         podcastChannelsList.size `should equal to` 1
         with(podcastChannelsList[0]) {
-            id `should equal to` 2
+            id `should equal to` "2"
             url `should equal to` "http://feeds.codenewbie.org/cnpodcast.xml"
             title `should equal to` "CodeNewbie"
             description `should equal to` "Stories and interviews from people on their coding journey."

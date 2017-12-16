@@ -3,7 +3,7 @@ package org.moire.ultrasonic.api.subsonic.models
 import com.fasterxml.jackson.annotation.JsonProperty
 
 data class PodcastChannel(
-        val id: Long = -1,
+        val id: String = "",
         val url: String = "",
         val title: String = "",
         val description: String = "",

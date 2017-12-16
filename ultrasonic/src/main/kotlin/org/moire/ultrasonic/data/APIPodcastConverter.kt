@@ -7,7 +7,7 @@ import org.moire.ultrasonic.api.subsonic.models.PodcastChannel
 import org.moire.ultrasonic.domain.PodcastsChannel
 
 fun PodcastChannel.toDomainEntity(): PodcastsChannel = PodcastsChannel(
-        this.id.toString(), this.title, this.url, this.description, this.status)
+        this.id, this.title, this.url, this.description, this.status)
 
 fun List<PodcastChannel>.toDomainEntitiesList(): List<PodcastsChannel> = this
         .map { it.toDomainEntity() }
