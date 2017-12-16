@@ -5,6 +5,9 @@ Ultrasonic development is a community project, and contributions are welcomed.
 First, see if your issue haven’t been yet reported [here](https://github.com/ultrasonic/ultrasonic/issues),
 then, please, first discuss the change you wish to make via [a new issue](https://github.com/ultrasonic/ultrasonic/issues/new).
 
+By default Pull Request should be opened against **develop** branch, PR against **master** branch should be used only
+ for critical bugfixes.
+
 ### Here are a few guidelines you should follow before submitting:
 1. **License Acceptance:** All contributions must be licensed as [GNU GPLv3](LICENSE) to be accepted. 
 Use `git commit --signoff` to acknowledge this.
