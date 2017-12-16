@@ -29,7 +29,7 @@ class SubsonicApiGetPlaylistTest : SubsonicAPIClientTest() {
 
         assertResponseSuccessful(response)
         with(response.body().playlist) {
-            id `should equal to` 0
+            id `should equal to` "0"
             name `should equal to` "Aug 27, 2017 11:17 AM"
             owner `should equal to` "admin"
             public `should equal to` false

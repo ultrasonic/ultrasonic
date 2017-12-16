@@ -29,7 +29,7 @@ class SubsonicApiGetPlaylistsTest : SubsonicAPIClientTest() {
         assertResponseSuccessful(response)
         with(response.body().playlists) {
             size `should equal to` 1
-            this[0] `should equal` Playlist(id = 0, name = "Aug 27, 2017 11:17 AM",
+            this[0] `should equal` Playlist(id = "0", name = "Aug 27, 2017 11:17 AM",
                     owner = "admin", public = false, songCount = 16, duration = 3573,
                     comment = "Some comment",
                     created = parseDate("2017-08-27T11:17:26.216Z"),
