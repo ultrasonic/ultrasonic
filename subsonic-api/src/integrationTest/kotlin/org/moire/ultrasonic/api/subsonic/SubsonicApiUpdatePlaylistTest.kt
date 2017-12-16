@@ -9,7 +9,7 @@ class SubsonicApiUpdatePlaylistTest : SubsonicAPIClientTest() {
     @Test
     fun `Should handle error response`() {
         checkErrorCallParsed(mockWebServerRule) {
-            client.api.updatePlaylist(10).execute()
+            client.api.updatePlaylist("10").execute()
         }
     }
 
@@ -17,14 +17,14 @@ class SubsonicApiUpdatePlaylistTest : SubsonicAPIClientTest() {
     fun `Should handle ok response`() {
         mockWebServerRule.enqueueResponse("ping_ok.json")
 
-        val response = client.api.updatePlaylist(15).execute()
+        val response = client.api.updatePlaylist("15").execute()
 
         assertResponseSuccessful(response)
     }
 
     @Test
     fun `Should pass playlist id param in request`() {
-        val id = 5453L
+        val id = "5453"
 
         mockWebServerRule.assertRequestParam(responseResourceName = "ping_ok.json",
                 expectedParam = "playlistId=$id") {
@@ -38,7 +38,7 @@ class SubsonicApiUpdatePlaylistTest : SubsonicAPIClientTest() {
 
         mockWebServerRule.assertRequestParam(responseResourceName = "ping_ok.json",
                 expectedParam = "name=$name") {
-            client.api.updatePlaylist(22, name = name).execute()
+            client.api.updatePlaylist("22", name = name).execute()
         }
     }
 
@@ -48,7 +48,7 @@ class SubsonicApiUpdatePlaylistTest : SubsonicAPIClientTest() {
 
         mockWebServerRule.assertRequestParam(responseResourceName = "ping_ok.json",
                 expectedParam = "comment=$comment") {
-            client.api.updatePlaylist(42, comment = comment).execute()
+            client.api.updatePlaylist("42", comment = comment).execute()
         }
     }
 
@@ -58,17 +58,17 @@ class SubsonicApiUpdatePlaylistTest : SubsonicAPIClientTest() {
 
         mockWebServerRule.assertRequestParam(responseResourceName = "ping_ok.json",
                 expectedParam = "public=$public") {
-            client.api.updatePlaylist(53, public = public).execute()
+            client.api.updatePlaylist("53", public = public).execute()
         }
     }
 
     @Test
     fun `Should pass song ids to update in request`() {
-        val songIds = listOf(45L, 81L)
+        val songIds = listOf("45", "81")
 
         mockWebServerRule.assertRequestParam(responseResourceName = "ping_ok.json",
                 expectedParam = "songIdToAdd=${songIds[0]}&songIdToAdd=${songIds[1]}") {
-            client.api.updatePlaylist(25, songIdsToAdd = songIds).execute()
+            client.api.updatePlaylist("25", songIdsToAdd = songIds).execute()
         }
     }
 
@@ -79,7 +79,7 @@ class SubsonicApiUpdatePlaylistTest : SubsonicAPIClientTest() {
         mockWebServerRule.assertRequestParam(responseResourceName = "ping_ok.json",
                 expectedParam = "songIndexToRemove=${songIndexesToRemove[0]}&" +
                         "songIndexToRemove=${songIndexesToRemove[1]}") {
-            client.api.updatePlaylist(49, songIndexesToRemove = songIndexesToRemove).execute()
+            client.api.updatePlaylist("49", songIndexesToRemove = songIndexesToRemove).execute()
         }
     }
 }

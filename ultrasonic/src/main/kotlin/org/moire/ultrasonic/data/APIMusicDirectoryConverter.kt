@@ -15,14 +15,14 @@ internal val dateFormat: DateFormat by lazy {
 }
 
 fun MusicDirectoryChild.toDomainEntity(): MusicDirectory.Entry = MusicDirectory.Entry().apply {
-    id = this@toDomainEntity.id.toString()
-    parent = this@toDomainEntity.parent.toString()
+    id = this@toDomainEntity.id
+    parent = this@toDomainEntity.parent
     setIsDirectory(this@toDomainEntity.isDir)
     title = this@toDomainEntity.title
     album = this@toDomainEntity.album
-    albumId = this@toDomainEntity.albumId.toString()
+    albumId = this@toDomainEntity.albumId
     artist = this@toDomainEntity.artist
-    artistId = this@toDomainEntity.artistId.toString()
+    artistId = this@toDomainEntity.artistId
     track = this@toDomainEntity.track
     year = this@toDomainEntity.year
     genre = this@toDomainEntity.genre
@@ -40,8 +40,8 @@ fun MusicDirectoryChild.toDomainEntity(): MusicDirectory.Entry = MusicDirectory.
     starred = this@toDomainEntity.starred != null
     discNumber = this@toDomainEntity.discNumber
     type = this@toDomainEntity.type
-    if (this@toDomainEntity.streamId >= 0) {
-        id = this@toDomainEntity.streamId.toString()
+    if (this@toDomainEntity.streamId.isNotBlank()) {
+        id = this@toDomainEntity.streamId
     }
     if (this@toDomainEntity.publishDate != null) {
         artist = dateFormat.format(this@toDomainEntity.publishDate!!.time)

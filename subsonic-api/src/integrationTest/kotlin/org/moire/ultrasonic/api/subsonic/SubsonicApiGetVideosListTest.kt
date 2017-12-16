@@ -27,7 +27,7 @@ class SubsonicApiGetVideosListTest : SubsonicAPIClientTest() {
         assertResponseSuccessful(response)
         with(response.body().videosList) {
             size `should equal to` 1
-            this[0] `should equal` MusicDirectoryChild(id = 10402, parent = 10401, isDir = false,
+            this[0] `should equal` MusicDirectoryChild(id = "10402", parent = "10401", isDir = false,
                     title = "MVI_0512", album = "Incoming", size = 21889646,
                     contentType = "video/avi", suffix = "avi", transcodedContentType = "video/x-flv",
                     transcodedSuffix = "flv", path = "Incoming/MVI_0512.avi", isVideo = true,

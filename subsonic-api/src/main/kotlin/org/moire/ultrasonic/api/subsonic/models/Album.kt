@@ -4,11 +4,11 @@ import com.fasterxml.jackson.annotation.JsonProperty
 import java.util.Calendar
 
 data class Album(
-        val id: Long = -1L,
+        val id: String = "",
         val name: String = "",
         val coverArt: String = "",
         val artist: String = "",
-        val artistId: Long = -1L,
+        val artistId: String = "",
         val songCount: Int = 0,
         val duration: Int = 0,
         val created: Calendar? = null,

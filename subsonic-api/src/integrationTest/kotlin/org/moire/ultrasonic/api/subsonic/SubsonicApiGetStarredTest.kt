@@ -29,7 +29,7 @@ class SubsonicApiGetStarredTest : SubsonicAPIClientTest() {
         with(response.body().starred) {
             albumList `should equal` emptyList()
             artistList.size `should equal to` 1
-            artistList[0] `should equal` Artist(id = 364, name = "Parov Stelar",
+            artistList[0] `should equal` Artist(id = "364", name = "Parov Stelar",
                     starred = parseDate("2017-08-12T18:32:58.768Z"))
             songList `should equal` emptyList()
         }
@@ -37,7 +37,7 @@ class SubsonicApiGetStarredTest : SubsonicAPIClientTest() {
 
     @Test
     fun `Should pass music folder id in request param`() {
-        val musicFolderId = 441L
+        val musicFolderId = "441"
 
         mockWebServerRule.assertRequestParam(responseResourceName = "get_starred_ok.json",
                 expectedParam = "musicFolderId=$musicFolderId") {

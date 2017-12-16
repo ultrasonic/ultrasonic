@@ -27,14 +27,14 @@ class SubsonicApiGetRandomSongsTest : SubsonicAPIClientTest() {
         assertResponseSuccessful(response)
         with(response.body().songsList) {
             size `should equal to` 3
-            this[1] `should equal` MusicDirectoryChild(id = 3061, parent = 3050, isDir = false,
+            this[1] `should equal` MusicDirectoryChild(id = "3061", parent = "3050", isDir = false,
                     title = "Sure as Hell", album = "Who Are You Now?", artist = "This Providence",
                     track = 1, year = 2009, genre = "Indie Rock", coverArt = "3050",
                     size = 1969692, contentType = "audio/mpeg", suffix = "mp3", duration = 110,
                     bitRate = 142, path = "This Providence/Who Are You Now_/01 Sure as Hell.mp3",
                     isVideo = false, playCount = 0, discNumber = 1,
-                    created = parseDate("2016-10-23T21:32:46.000Z"), albumId = 272,
-                    artistId = 152, type = "music")
+                    created = parseDate("2016-10-23T21:32:46.000Z"), albumId = "272",
+                    artistId = "152", type = "music")
         }
     }
 
@@ -80,7 +80,7 @@ class SubsonicApiGetRandomSongsTest : SubsonicAPIClientTest() {
 
     @Test
     fun `Should pass music folder id in request param`() {
-        val musicFolderId = 4919L
+        val musicFolderId = "4919"
 
         mockWebServerRule.assertRequestParam(responseResourceName = "get_random_songs_ok.json",
                 expectedParam = "musicFolderId=$musicFolderId") {

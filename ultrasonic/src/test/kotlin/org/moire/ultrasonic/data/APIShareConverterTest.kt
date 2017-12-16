@@ -20,7 +20,7 @@ class APIShareConverterTest {
         val domainEntity = entity.toDomainEntity()
 
         with(domainEntity) {
-            id `should equal to` entity.id.toString()
+            id `should equal to` entity.id
             url `should equal to` entity.url
             description `should equal to` entity.description
             username `should equal to` entity.username
@@ -33,7 +33,7 @@ class APIShareConverterTest {
     }
 
     private fun createFakeShare(): Share {
-        return Share(id = 45L, url = "some-long-url", username = "Bender",
+        return Share(id = "45", url = "some-long-url", username = "Bender",
                 created = Calendar.getInstance(), expires = Calendar.getInstance(), visitCount = 24,
                 description = "Kiss my shiny metal ass", lastVisited = Calendar.getInstance(),
                 items = listOf(MusicDirectoryChild()))
@@ -43,7 +43,7 @@ class APIShareConverterTest {
     fun `Should parse list of shares into domain entity list`() {
         val entityList = listOf(
                 createFakeShare(),
-                createFakeShare().copy(id = 554L, lastVisited = null))
+                createFakeShare().copy(id = "554", lastVisited = null))
 
         val domainEntityList = entityList.toDomainEntitiesList()
 

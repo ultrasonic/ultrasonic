@@ -3,8 +3,8 @@ package org.moire.ultrasonic.api.subsonic.models
 import com.fasterxml.jackson.annotation.JsonProperty
 import java.util.Calendar
 
-data class MusicDirectory(val id: Long = -1L,
-                          val parent: Long = -1L,
+data class MusicDirectory(val id: String = "",
+                          val parent: String = "",
                           val name: String = "",
                           val userRating: Int = 0,
                           val averageRating: Float = 0.0f,

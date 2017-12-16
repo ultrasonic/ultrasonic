@@ -188,7 +188,7 @@ public class RESTMusicService implements MusicService {
 
         updateProgressListener(progressListener, R.string.parser_reading);
         Response<GetIndexesResponse> response = subsonicAPIClient.getApi()
-                .getIndexes(musicFolderId == null ? null : Long.valueOf(musicFolderId), null).execute();
+                .getIndexes(musicFolderId, null).execute();
         checkResponseSuccessful(response);
 
         Indexes indexes = APIIndexesConverter.toDomainEntity(response.body().getIndexes());
@@ -251,13 +251,9 @@ public class RESTMusicService implements MusicService {
                      String artistId,
                      Context context,
                      ProgressListener progressListener) throws Exception {
-        Long apiId = id == null ? null : Long.valueOf(id);
-        Long apiAlbumId = albumId == null ? null : Long.valueOf(albumId);
-        Long apiArtistId = artistId == null ? null : Long.valueOf(artistId);
-
         updateProgressListener(progressListener, R.string.parser_reading);
         Response<SubsonicResponse> response = subsonicAPIClient.getApi()
-                .star(apiId, apiAlbumId, apiArtistId).execute();
+                .star(id, albumId, artistId).execute();
         checkResponseSuccessful(response);
     }
 
@@ -267,13 +263,9 @@ public class RESTMusicService implements MusicService {
                        String artistId,
                        Context context,
                        ProgressListener progressListener) throws Exception {
-        Long apiId = id == null ? null : Long.valueOf(id);
-        Long apiAlbumId = albumId == null ? null : Long.valueOf(albumId);
-        Long apiArtistId = artistId == null ? null : Long.valueOf(artistId);
-
         updateProgressListener(progressListener, R.string.parser_reading);
         Response<SubsonicResponse> response = subsonicAPIClient.getApi()
-                .unstar(apiId, apiAlbumId, apiArtistId).execute();
+                .unstar(id, albumId, artistId).execute();
         checkResponseSuccessful(response);
     }
 
@@ -289,7 +281,7 @@ public class RESTMusicService implements MusicService {
 
         updateProgressListener(progressListener, R.string.parser_reading);
         Response<GetMusicDirectoryResponse> response = subsonicAPIClient.getApi()
-                .getMusicDirectory(Long.valueOf(id)).execute();
+                .getMusicDirectory(id).execute();
         checkResponseSuccessful(response);
 
         return APIMusicDirectoryConverter.toDomainEntity(response.body().getMusicDirectory());
@@ -306,8 +298,7 @@ public class RESTMusicService implements MusicService {
         }
 
         updateProgressListener(progressListener, R.string.parser_reading);
-        Response<GetArtistResponse> response = subsonicAPIClient.getApi()
-                .getArtist(Long.valueOf(id)).execute();
+        Response<GetArtistResponse> response = subsonicAPIClient.getApi().getArtist(id).execute();
         checkResponseSuccessful(response);
 
         return APIArtistConverter.toMusicDirectoryDomainEntity(response.body().getArtist());
@@ -324,8 +315,7 @@ public class RESTMusicService implements MusicService {
         }
 
         updateProgressListener(progressListener, R.string.parser_reading);
-        Response<GetAlbumResponse> response = subsonicAPIClient.getApi()
-                .getAlbum(Long.valueOf(id)).execute();
+        Response<GetAlbumResponse> response = subsonicAPIClient.getApi().getAlbum(id).execute();
         checkResponseSuccessful(response);
 
         return APIAlbumConverter.toMusicDirectoryDomainEntity(response.body().getAlbum());
@@ -406,7 +396,7 @@ public class RESTMusicService implements MusicService {
 
         updateProgressListener(progressListener, R.string.parser_reading);
         Response<GetPlaylistResponse> response = subsonicAPIClient.getApi()
-                .getPlaylist(Long.valueOf(id)).execute();
+                .getPlaylist(id).execute();
         checkResponseSuccessful(response);
 
         MusicDirectory playlist = APIPlaylistConverter
@@ -459,17 +449,16 @@ public class RESTMusicService implements MusicService {
                                List<MusicDirectory.Entry> entries,
                                Context context,
                                ProgressListener progressListener) throws Exception {
-        Long pId = id == null ? null : Long.valueOf(id);
-        List<Long> pSongIds = new ArrayList<>(entries.size());
+        List<String> pSongIds = new ArrayList<>(entries.size());
         for (MusicDirectory.Entry entry : entries) {
             if (entry.getId() != null) {
-                pSongIds.add(Long.valueOf(entry.getId()));
+                pSongIds.add(entry.getId());
             }
         }
 
         updateProgressListener(progressListener, R.string.parser_reading);
         Response<SubsonicResponse> response = subsonicAPIClient.getApi()
-                .createPlaylist(pId, name, pSongIds).execute();
+                .createPlaylist(id, name, pSongIds).execute();
         checkResponseSuccessful(response);
     }
 
@@ -477,11 +466,9 @@ public class RESTMusicService implements MusicService {
     public void deletePlaylist(String id,
                                Context context,
                                ProgressListener progressListener) throws Exception {
-        Long pId = id == null ? null : Long.valueOf(id);
-
         updateProgressListener(progressListener, R.string.parser_reading);
         Response<SubsonicResponse> response = subsonicAPIClient.getApi()
-                .deletePlaylist(pId).execute();
+                .deletePlaylist(id).execute();
         checkResponseSuccessful(response);
     }
 
@@ -494,7 +481,7 @@ public class RESTMusicService implements MusicService {
                                ProgressListener progressListener) throws Exception {
         updateProgressListener(progressListener, R.string.parser_reading);
         Response<SubsonicResponse> response = subsonicAPIClient.getApi()
-                .updatePlaylist(Long.valueOf(id), name, comment, pub, null, null).execute();
+                .updatePlaylist(id, name, comment, pub, null, null).execute();
         checkResponseSuccessful(response);
     }
 
@@ -521,7 +508,7 @@ public class RESTMusicService implements MusicService {
 
         updateProgressListener(progressListener, R.string.parser_reading);
         Response<GetPodcastsResponse> response = subsonicAPIClient.getApi()
-                .getPodcasts(true, Long.valueOf(podcastChannelId)).execute();
+                .getPodcasts(true, podcastChannelId).execute();
         checkResponseSuccessful(response);
 
         List<MusicDirectoryChild> podcastEntries = response.body().getPodcastChannels().get(0)
@@ -668,7 +655,7 @@ public class RESTMusicService implements MusicService {
                 Log.d(TAG, "Loading cover art for: " + entry);
 
                 final String id = entry.getCoverArt();
-                if (id == null) {
+                if (id == null || id.isEmpty()) {
                     return null; // Can't load
                 }
 
@@ -947,10 +934,9 @@ public class RESTMusicService implements MusicService {
         if (id == null) {
             throw new IllegalArgumentException("Item id should not be null");
         }
-        Integer itemId = Integer.valueOf(id);
         updateProgressListener(progressListener, R.string.parser_reading);
         Response<SubsonicResponse> response = subsonicAPIClient.getApi()
-                .createBookmark(itemId, position, null).execute();
+                .createBookmark(id, position, null).execute();
         checkResponseSuccessful(response);
     }
 
@@ -965,7 +951,7 @@ public class RESTMusicService implements MusicService {
 
         updateProgressListener(progressListener, R.string.parser_reading);
         Response<SubsonicResponse> response = subsonicAPIClient.getApi()
-                .deleteBookmark(itemId).execute();
+                .deleteBookmark(id).execute();
         checkResponseSuccessful(response);
     }
 
@@ -1008,8 +994,7 @@ public class RESTMusicService implements MusicService {
         Long shareId = Long.valueOf(id);
 
         updateProgressListener(progressListener, R.string.parser_reading);
-        Response<SubsonicResponse> response = subsonicAPIClient.getApi()
-                .deleteShare(shareId).execute();
+        Response<SubsonicResponse> response = subsonicAPIClient.getApi().deleteShare(id).execute();
         checkResponseSuccessful(response);
     }
 
@@ -1027,11 +1012,9 @@ public class RESTMusicService implements MusicService {
             expires = null;
         }
 
-        Long shareId = Long.valueOf(id);
-
         updateProgressListener(progressListener, R.string.parser_reading);
         Response<SubsonicResponse> response = subsonicAPIClient.getApi()
-                .updateShare(shareId, description, expires).execute();
+                .updateShare(id, description, expires).execute();
         checkResponseSuccessful(response);
     }
 

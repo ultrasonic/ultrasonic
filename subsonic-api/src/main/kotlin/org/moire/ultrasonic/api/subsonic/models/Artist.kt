@@ -3,7 +3,7 @@ package org.moire.ultrasonic.api.subsonic.models
 import com.fasterxml.jackson.annotation.JsonProperty
 import java.util.Calendar
 
-data class Artist(val id: Long = -1,
+data class Artist(val id: String = "",
                   val name: String = "",
                   val coverArt: String = "",
                   val albumCount: Int = 0,

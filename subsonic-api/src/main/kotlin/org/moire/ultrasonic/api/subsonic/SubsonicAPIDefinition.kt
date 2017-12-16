@@ -54,30 +54,30 @@ interface SubsonicAPIDefinition {
     fun getMusicFolders(): Call<MusicFoldersResponse>
 
     @GET("getIndexes.view")
-    fun getIndexes(@Query("musicFolderId") musicFolderId: Long?,
+    fun getIndexes(@Query("musicFolderId") musicFolderId: String?,
                    @Query("ifModifiedSince") ifModifiedSince: Long?): Call<GetIndexesResponse>
 
     @GET("getMusicDirectory.view")
-    fun getMusicDirectory(@Query("id") id: Long): Call<GetMusicDirectoryResponse>
+    fun getMusicDirectory(@Query("id") id: String): Call<GetMusicDirectoryResponse>
 
     @GET("getArtists.view")
-    fun getArtists(@Query("musicFolderId") musicFolderId: Long?): Call<GetArtistsResponse>
+    fun getArtists(@Query("musicFolderId") musicFolderId: String?): Call<GetArtistsResponse>
 
     @GET("star.view")
-    fun star(@Query("id") id: Long? = null,
-             @Query("albumId") albumId: Long? = null,
-             @Query("artistId") artistId: Long? = null): Call<SubsonicResponse>
+    fun star(@Query("id") id: String? = null,
+             @Query("albumId") albumId: String? = null,
+             @Query("artistId") artistId: String? = null): Call<SubsonicResponse>
 
     @GET("unstar.view")
-    fun unstar(@Query("id") id: Long? = null,
-               @Query("albumId") albumId: Long? = null,
-               @Query("artistId") artistId: Long? = null): Call<SubsonicResponse>
+    fun unstar(@Query("id") id: String? = null,
+               @Query("albumId") albumId: String? = null,
+               @Query("artistId") artistId: String? = null): Call<SubsonicResponse>
 
     @GET("getArtist.view")
-    fun getArtist(@Query("id") id: Long): Call<GetArtistResponse>
+    fun getArtist(@Query("id") id: String): Call<GetArtistResponse>
 
     @GET("getAlbum.view")
-    fun getAlbum(@Query("id") id: Long): Call<GetAlbumResponse>
+    fun getAlbum(@Query("id") id: String): Call<GetAlbumResponse>
 
     @GET("search.view")
     fun search(@Query("artist") artist: String? = null,
@@ -95,7 +95,7 @@ interface SubsonicAPIDefinition {
                 @Query("albumCount") albumCount: Int? = null,
                 @Query("albumOffset") albumOffset: Int? = null,
                 @Query("songCount") songCount: Int? = null,
-                @Query("musicFolderId") musicFolderId: Long? = null): Call<SearchTwoResponse>
+                @Query("musicFolderId") musicFolderId: String? = null): Call<SearchTwoResponse>
 
     @GET("search3.view")
     fun search3(@Query("query") query: String,
@@ -104,34 +104,34 @@ interface SubsonicAPIDefinition {
                 @Query("albumCount") albumCount: Int? = null,
                 @Query("albumOffset") albumOffset: Int? = null,
                 @Query("songCount") songCount: Int? = null,
-                @Query("musicFolderId") musicFolderId: Long? = null): Call<SearchThreeResponse>
+                @Query("musicFolderId") musicFolderId: String? = null): Call<SearchThreeResponse>
 
     @GET("getPlaylist.view")
-    fun getPlaylist(@Query("id") id: Long): Call<GetPlaylistResponse>
+    fun getPlaylist(@Query("id") id: String): Call<GetPlaylistResponse>
 
     @GET("getPlaylists.view")
     fun getPlaylists(@Query("username") username: String? = null): Call<GetPlaylistsResponse>
 
     @GET("createPlaylist.view")
-    fun createPlaylist(@Query("playlistId") id: Long? = null,
+    fun createPlaylist(@Query("playlistId") id: String? = null,
                        @Query("name") name: String? = null,
-                       @Query("songId") songIds: List<Long>? = null): Call<SubsonicResponse>
+                       @Query("songId") songIds: List<String>? = null): Call<SubsonicResponse>
 
     @GET("deletePlaylist.view")
-    fun deletePlaylist(@Query("id") id: Long): Call<SubsonicResponse>
+    fun deletePlaylist(@Query("id") id: String): Call<SubsonicResponse>
 
     @GET("updatePlaylist.view")
     fun updatePlaylist(
-            @Query("playlistId") id: Long,
+            @Query("playlistId") id: String,
             @Query("name") name: String? = null,
             @Query("comment") comment: String? = null,
             @Query("public") public: Boolean? = null,
-            @Query("songIdToAdd") songIdsToAdd: List<Long>? = null,
+            @Query("songIdToAdd") songIdsToAdd: List<String>? = null,
             @Query("songIndexToRemove") songIndexesToRemove: List<Int>? = null): Call<SubsonicResponse>
 
     @GET("getPodcasts.view")
     fun getPodcasts(@Query("includeEpisodes") includeEpisodes: Boolean? = null,
-                    @Query("id") id: Long? = null): Call<GetPodcastsResponse>
+                    @Query("id") id: String? = null): Call<GetPodcastsResponse>
 
     @GET("getLyrics.view")
     fun getLyrics(@Query("artist") artist: String? = null,
@@ -149,7 +149,7 @@ interface SubsonicAPIDefinition {
                      @Query("fromYear") fromYear: Int? = null,
                      @Query("toYear") toYear: Int? = null,
                      @Query("genre") genre: String? = null,
-                     @Query("musicFolderId") musicFolderId: Long? = null): Call<GetAlbumListResponse>
+                     @Query("musicFolderId") musicFolderId: String? = null): Call<GetAlbumListResponse>
 
     @GET("getAlbumList2.view")
     fun getAlbumList2(@Query("type") type: AlbumListType,
@@ -158,20 +158,20 @@ interface SubsonicAPIDefinition {
                       @Query("fromYear") fromYear: Int? = null,
                       @Query("toYear") toYear: Int? = null,
                       @Query("genre") genre: String? = null,
-                      @Query("musicFolderId") musicFolderId: Long? = null): Call<GetAlbumList2Response>
+                      @Query("musicFolderId") musicFolderId: String? = null): Call<GetAlbumList2Response>
 
     @GET("getRandomSongs.view")
     fun getRandomSongs(@Query("size") size: Int? = null,
                        @Query("genre") genre: String? = null,
                        @Query("fromYear") fromYear: Int? = null,
                        @Query("toYear") toYear: Int? = null,
-                       @Query("musicFolderId") musicFolderId: Long? = null): Call<GetRandomSongsResponse>
+                       @Query("musicFolderId") musicFolderId: String? = null): Call<GetRandomSongsResponse>
 
     @GET("getStarred.view")
-    fun getStarred(@Query("musicFolderId") musicFolderId: Long? = null): Call<GetStarredResponse>
+    fun getStarred(@Query("musicFolderId") musicFolderId: String? = null): Call<GetStarredResponse>
 
     @GET("getStarred2.view")
-    fun getStarred2(@Query("musicFolderId") musicFolderId: Long? = null): Call<GetStarredTwoResponse>
+    fun getStarred2(@Query("musicFolderId") musicFolderId: String? = null): Call<GetStarredTwoResponse>
 
     @Streaming
     @GET("getCoverArt.view")
@@ -205,10 +205,10 @@ interface SubsonicAPIDefinition {
                     @Query("expires") expires: Long? = null): Call<SharesResponse>
 
     @GET("deleteShare.view")
-    fun deleteShare(@Query("id") id: Long): Call<SubsonicResponse>
+    fun deleteShare(@Query("id") id: String): Call<SubsonicResponse>
 
     @GET("updateShare.view")
-    fun updateShare(@Query("id") id: Long,
+    fun updateShare(@Query("id") id: String,
                     @Query("description") description: String? = null,
                     @Query("expires") expires: Long? = null): Call<SubsonicResponse>
 
@@ -220,7 +220,7 @@ interface SubsonicAPIDefinition {
             @Query("genre") genre: String,
             @Query("count") count: Int = 10,
             @Query("offset") offset: Int = 0,
-            @Query("musicFolderId") musicFolderId: Long? = null): Call<GetSongsByGenreResponse>
+            @Query("musicFolderId") musicFolderId: String? = null): Call<GetSongsByGenreResponse>
 
     @GET("getUser.view")
     fun getUser(@Query("username") username: String): Call<GetUserResponse>
@@ -236,12 +236,12 @@ interface SubsonicAPIDefinition {
 
     @GET("createBookmark.view")
     fun createBookmark(
-            @Query("id") id: Int,
+            @Query("id") id: String,
             @Query("position") position: Long,
             @Query("comment") comment: String? = null): Call<SubsonicResponse>
 
     @GET("deleteBookmark.view")
-    fun deleteBookmark(@Query("id") id: Int): Call<SubsonicResponse>
+    fun deleteBookmark(@Query("id") id: String): Call<SubsonicResponse>
 
     @GET("getVideos.view")
     fun getVideos(): Call<VideosResponse>

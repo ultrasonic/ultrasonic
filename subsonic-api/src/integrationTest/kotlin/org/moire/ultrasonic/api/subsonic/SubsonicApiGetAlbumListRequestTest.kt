@@ -29,7 +29,7 @@ class SubsonicApiGetAlbumListRequestTest : SubsonicAPIClientTest() {
         assertResponseSuccessful(response)
         with(response.body().albumList) {
             size `should equal to` 2
-            this[1] `should equal` MusicDirectoryChild(id = 9997, parent = 9996, isDir = true,
+            this[1] `should equal` MusicDirectoryChild(id = "9997", parent = "9996", isDir = true,
                     title = "Endless Forms Most Beautiful", album = "Endless Forms Most Beautiful",
                     artist = "Nightwish", year = 2015, genre = "Symphonic Metal",
                     coverArt = "9997", playCount = 11,
@@ -99,7 +99,7 @@ class SubsonicApiGetAlbumListRequestTest : SubsonicAPIClientTest() {
 
     @Test
     fun `Should pass music folder id in request params`() {
-        val folderId = 545L
+        val folderId = "545"
 
         mockWebServerRule.assertRequestParam(responseResourceName = "get_album_list_ok.json",
                 expectedParam = "musicFolderId=$folderId") {

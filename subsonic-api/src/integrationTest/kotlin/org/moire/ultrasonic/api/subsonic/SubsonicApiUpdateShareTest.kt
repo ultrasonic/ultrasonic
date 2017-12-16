@@ -9,7 +9,7 @@ class SubsonicApiUpdateShareTest : SubsonicAPIClientTest() {
     @Test
     fun `Should handle error response`() {
         checkErrorCallParsed(mockWebServerRule) {
-            client.api.updateShare(11).execute()
+            client.api.updateShare("11").execute()
         }
     }
 
@@ -17,14 +17,14 @@ class SubsonicApiUpdateShareTest : SubsonicAPIClientTest() {
     fun `Should handle ok response`() {
         mockWebServerRule.enqueueResponse("ping_ok.json")
 
-        val response = client.api.updateShare(12).execute()
+        val response = client.api.updateShare("12").execute()
 
         assertResponseSuccessful(response)
     }
 
     @Test
     fun `Should pass id in request params`() {
-        val id = 4432L
+        val id = "4432"
 
         mockWebServerRule.assertRequestParam(expectedParam = "id=$id") {
             client.api.updateShare(id = id).execute()
@@ -36,7 +36,7 @@ class SubsonicApiUpdateShareTest : SubsonicAPIClientTest() {
         val description = "some-description"
 
         mockWebServerRule.assertRequestParam(expectedParam = "description=$description") {
-            client.api.updateShare(123, description = description).execute()
+            client.api.updateShare("123", description = description).execute()
         }
     }
 
@@ -45,7 +45,7 @@ class SubsonicApiUpdateShareTest : SubsonicAPIClientTest() {
         val expires = 223123123L
 
         mockWebServerRule.assertRequestParam(expectedParam = "expires=$expires") {
-            client.api.updateShare(12, expires = expires).execute()
+            client.api.updateShare("12", expires = expires).execute()
         }
     }
 }

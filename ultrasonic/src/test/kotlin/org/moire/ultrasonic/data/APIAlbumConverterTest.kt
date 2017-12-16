@@ -15,19 +15,19 @@ import java.util.Calendar
 class APIAlbumConverterTest {
     @Test
     fun `Should convert Album to domain entity`() {
-        val entity = Album(id = 387L, name = "some-name", coverArt = "asdas", artist = "some-artist",
-                artistId = 390L, songCount = 12, duration = 841, created = Calendar.getInstance(),
+        val entity = Album(id = "387", name = "some-name", coverArt = "asdas", artist = "some-artist",
+                artistId = "390", songCount = 12, duration = 841, created = Calendar.getInstance(),
                 year = 2017, genre = "some-genre")
 
         val convertedEntity = entity.toDomainEntity()
 
         with(convertedEntity) {
-            id `should equal to` entity.id.toString()
+            id `should equal to` entity.id
             title `should equal to` entity.name
             isDirectory `should equal to` true
             coverArt `should equal to` entity.coverArt
             artist `should equal to` entity.artist
-            artistId `should equal to` entity.artistId.toString()
+            artistId `should equal to` entity.artistId
             songCount `should equal to` entity.songCount.toLong()
             duration `should equal to` entity.duration
             created `should equal` entity.created?.time
@@ -38,7 +38,7 @@ class APIAlbumConverterTest {
 
     @Test
     fun `Should convert to MusicDirectory domain entity`() {
-        val entity = Album(id = 101L, name = "some-album", artist = "some-artist", artistId = 54L,
+        val entity = Album(id = "101", name = "some-album", artist = "some-artist", artistId = "54",
                 coverArt = "some-id", songCount = 10, duration = 456,
                 created = Calendar.getInstance(), year = 2022, genre = "Hard Rock",
                 songList = listOf(MusicDirectoryChild()))
@@ -54,7 +54,7 @@ class APIAlbumConverterTest {
 
     @Test
     fun `Should convert list of Album entities to domain list entities`() {
-        val entityList = listOf(Album(id = 455), Album(id = 1), Album(id = 1000))
+        val entityList = listOf(Album(id = "455"), Album(id = "1"), Album(id = "1000"))
 
         val convertedList = entityList.toDomainEntityList()
 

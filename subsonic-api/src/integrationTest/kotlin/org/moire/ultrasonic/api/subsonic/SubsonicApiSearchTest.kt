@@ -33,7 +33,7 @@ class SubsonicApiSearchTest : SubsonicAPIClientTest() {
             offset `should equal to` 10
             totalHits `should equal to` 53
             matchList.size `should equal to` 1
-            matchList[0] `should equal` MusicDirectoryChild(id = 5831L, parent = 5766L,
+            matchList[0] `should equal` MusicDirectoryChild(id = "5831", parent = "5766",
                     isDir = false, title = "You'll Be Under My Wheels",
                     album = "Need for Speed Most Wanted", artist = "The Prodigy",
                     track = 17, year = 2005, genre = "Rap", coverArt = "5766",
@@ -41,8 +41,8 @@ class SubsonicApiSearchTest : SubsonicAPIClientTest() {
                     bitRate = 192,
                     path = "Compilations/Need for Speed Most Wanted/17 You'll Be Under My Wheels.mp3",
                     isVideo = false, playCount = 0, discNumber = 1,
-                    created = parseDate("2016-10-23T20:09:02.000Z"), albumId = 568,
-                    artistId = 505, type = "music")
+                    created = parseDate("2016-10-23T20:09:02.000Z"), albumId = "568",
+                    artistId = "505", type = "music")
         }
     }
 

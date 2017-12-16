@@ -7,12 +7,12 @@ import org.moire.ultrasonic.api.subsonic.models.Album
 import org.moire.ultrasonic.domain.MusicDirectory
 
 fun Album.toDomainEntity(): MusicDirectory.Entry = MusicDirectory.Entry().apply {
-    id = this@toDomainEntity.id.toString()
+    id = this@toDomainEntity.id
     setIsDirectory(true)
     title = this@toDomainEntity.name
     coverArt = this@toDomainEntity.coverArt
     artist = this@toDomainEntity.artist
-    artistId = this@toDomainEntity.artistId.toString()
+    artistId = this@toDomainEntity.artistId
     songCount = this@toDomainEntity.songCount.toLong()
     duration = this@toDomainEntity.duration
     created = this@toDomainEntity.created?.time

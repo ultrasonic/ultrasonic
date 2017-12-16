@@ -32,7 +32,7 @@ class SubsonicApiGetBookmarksTest : SubsonicAPIClientTest() {
             comment `should equal to` "Look at this"
             created `should equal` parseDate("2017-11-18T15:22:22.144Z")
             changed `should equal` parseDate("2017-11-18T15:22:22.144Z")
-            entry `should equal` MusicDirectoryChild(id = 10349, parent = 10342,
+            entry `should equal` MusicDirectoryChild(id = "10349", parent = "10342",
                     isDir = false, title = "Amerika", album = "Home of the Strange",
                     artist = "Young the Giant", track = 1, year = 2016, genre = "Indie Rock",
                     coverArt = "10342", size = 9628673, contentType = "audio/mpeg",
@@ -40,7 +40,7 @@ class SubsonicApiGetBookmarksTest : SubsonicAPIClientTest() {
                     path = "Young the Giant/Home of the Strange/01 Amerika.mp3",
                     isVideo = false, playCount = 2, discNumber = 1,
                     created = parseDate("2017-11-01T17:46:52.000Z"),
-                    albumId = 984, artistId = 571, type = "music")
+                    albumId = "984", artistId = "571", type = "music")
         }
     }
 }

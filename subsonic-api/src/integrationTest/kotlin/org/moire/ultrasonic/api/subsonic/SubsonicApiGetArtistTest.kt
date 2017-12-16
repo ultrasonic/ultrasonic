@@ -14,7 +14,7 @@ class SubsonicApiGetArtistTest : SubsonicAPIClientTest() {
     @Test
     fun `Should parse error call`() {
         val response = checkErrorCallParsed(mockWebServerRule) {
-            client.api.getArtist(101L).execute()
+            client.api.getArtist("101").execute()
         }
 
         response.artist `should not be` null
@@ -23,7 +23,7 @@ class SubsonicApiGetArtistTest : SubsonicAPIClientTest() {
 
     @Test
     fun `Should pass id param in request`() {
-        val id = 929L
+        val id = "929"
 
         mockWebServerRule.assertRequestParam(responseResourceName = "get_artist_ok.json",
                 expectedParam = "id=$id") {
@@ -35,21 +35,21 @@ class SubsonicApiGetArtistTest : SubsonicAPIClientTest() {
     fun `Should parse ok response`() {
         mockWebServerRule.enqueueResponse("get_artist_ok.json")
 
-        val response = client.api.getArtist(100L).execute()
+        val response = client.api.getArtist("100").execute()
 
         assertResponseSuccessful(response)
         with(response.body().artist) {
-            id `should equal to` 362L
+            id `should equal to` "362"
             name `should equal to` "AC/DC"
             coverArt `should equal to` "ar-362"
             albumCount `should equal to` 2
             albumsList.size `should equal to` 2
-            albumsList[0] `should equal` Album(id = 618L, name = "Black Ice", artist = "AC/DC",
-                    artistId = 362L, coverArt = "al-618", songCount = 15, duration = 3331,
+            albumsList[0] `should equal` Album(id = "618", name = "Black Ice", artist = "AC/DC",
+                    artistId = "362", coverArt = "al-618", songCount = 15, duration = 3331,
                     created = parseDate("2016-10-23T15:31:22.000Z"),
                     year = 2008, genre = "Hard Rock")
-            albumsList[1] `should equal` Album(id = 617L, name = "Rock or Bust", artist = "AC/DC",
-                    artistId = 362L, coverArt = "al-617", songCount = 11, duration = 2095,
+            albumsList[1] `should equal` Album(id = "617", name = "Rock or Bust", artist = "AC/DC",
+                    artistId = "362", coverArt = "al-617", songCount = 11, duration = 2095,
                     created = parseDate("2016-10-23T15:31:23.000Z"),
                     year = 2014, genre = "Hard Rock")
         }

@@ -28,7 +28,7 @@ class SubsonicApiCreateShareTest : SubsonicAPIClientTest() {
         assertResponseSuccessful(response)
         response.body().shares.size `should equal to` 1
         with(response.body().shares[0]) {
-            id `should equal to` 0
+            id `should equal to` "0"
             url `should equal to` "https://subsonic.com/ext/share/awdwo?jwt=eyJhbGciOiJIUzI1NiJ9." +
                     "eyJwYXRoIjoiL2V4dC9zaGFyZS9hd2R3byIsImV4cCI6MTU0MTYyNjQzMX0.iy8dkt_ZZc8hJ692" +
                     "UxorHdHWFU2RB-fMCmCA4IJ_dTw"
@@ -39,13 +39,13 @@ class SubsonicApiCreateShareTest : SubsonicAPIClientTest() {
             description `should equal to` "Awesome link!"
             visitCount `should equal to` 0
             items.size `should equal to` 1
-            items[0] `should equal` MusicDirectoryChild(id = 4212, parent = 4186, isDir = false,
+            items[0] `should equal` MusicDirectoryChild(id = "4212", parent = "4186", isDir = false,
                     title = "Heaven Knows", album = "Going to Hell", artist = "The Pretty Reckless",
                     track = 3, year = 2014, genre = "Hard Rock", coverArt = "4186", size = 9025090,
                     contentType = "audio/mpeg", suffix = "mp3", duration = 225, bitRate = 320,
                     path = "The Pretty Reckless/Going to Hell/03 Heaven Knows.mp3", isVideo = false,
                     playCount = 2, discNumber = 1, created = parseDate("2016-10-23T21:30:40.000Z"),
-                    albumId = 388, artistId = 238, type = "music")
+                    albumId = "388", artistId = "238", type = "music")
         }
     }
 

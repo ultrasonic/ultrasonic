@@ -36,12 +36,12 @@ class SubsonicApiGetArtistsTest : SubsonicAPIClientTest() {
             indexList.size `should equal to` 2
             indexList `should equal` listOf(
                     Index(name = "A", artists = listOf(
-                            Artist(id = 362L, name = "AC/DC", coverArt = "ar-362", albumCount = 2),
-                            Artist(id = 254L, name = "Acceptance", coverArt = "ar-254", albumCount = 1)
+                            Artist(id = "362", name = "AC/DC", coverArt = "ar-362", albumCount = 2),
+                            Artist(id = "254", name = "Acceptance", coverArt = "ar-254", albumCount = 1)
                     )),
                     Index(name = "T", artists = listOf(
-                            Artist(id = 516L, name = "Tangerine Dream", coverArt = "ar-516", albumCount = 1),
-                            Artist(id = 242L, name = "Taproot", coverArt = "ar-242", albumCount = 2)
+                            Artist(id = "516", name = "Tangerine Dream", coverArt = "ar-516", albumCount = 1),
+                            Artist(id = "242", name = "Taproot", coverArt = "ar-242", albumCount = 2)
                     ))
             )
         }
@@ -50,7 +50,7 @@ class SubsonicApiGetArtistsTest : SubsonicAPIClientTest() {
     @Test
     fun `Should pass param on query for get artists call`() {
         mockWebServerRule.enqueueResponse("get_artists_ok.json")
-        val musicFolderId = 101L
+        val musicFolderId = "101"
 
         mockWebServerRule.assertRequestParam(responseResourceName = "get_artists_ok.json",
                 expectedParam = "musicFolderId=$musicFolderId") {

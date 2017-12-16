@@ -4,7 +4,7 @@ import com.fasterxml.jackson.annotation.JsonProperty
 import java.util.Calendar
 
 data class Playlist(
-        val id: Long = -1,
+        val id: String = "",
         val name: String = "",
         val owner: String = "",
         val comment: String = "",

@@ -23,18 +23,18 @@ class SubsonicApiGetIndexesTest : SubsonicAPIClientTest() {
             lastModified `should equal` 1491069027523
             ignoredArticles `should equal` "The El La Los Las Le Les"
             shortcutList `should equal` listOf(
-                    Artist(id = 889L, name = "podcasts"),
-                    Artist(id = 890L, name = "audiobooks")
+                    Artist(id = "889", name = "podcasts"),
+                    Artist(id = "890", name = "audiobooks")
             )
             indexList `should equal` mutableListOf(
                     Index("A", listOf(
-                            Artist(id = 50L, name = "Ace Of Base",
+                            Artist(id = "50", name = "Ace Of Base",
                                     starred = parseDate("2017-04-02T20:16:29.815Z")),
-                            Artist(id = 379L, name = "A Perfect Circle")
+                            Artist(id = "379", name = "A Perfect Circle")
                     )),
                     Index("H", listOf(
-                            Artist(id = 299, name = "Haddaway"),
-                            Artist(id = 297, name = "Halestorm")
+                            Artist(id = "299", name = "Haddaway"),
+                            Artist(id = "297", name = "Halestorm")
                     ))
             )
         }
@@ -42,7 +42,7 @@ class SubsonicApiGetIndexesTest : SubsonicAPIClientTest() {
 
     @Test
     fun `Should add music folder id as a query param for getIndexes api call`() {
-        val musicFolderId = 9L
+        val musicFolderId = "9"
 
         mockWebServerRule.assertRequestParam(responseResourceName = "get_indexes_ok.json",
                 expectedParam = "musicFolderId=$musicFolderId") {
