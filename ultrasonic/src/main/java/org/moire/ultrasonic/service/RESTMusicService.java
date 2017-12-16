@@ -655,7 +655,7 @@ public class RESTMusicService implements MusicService {
                 Log.d(TAG, "Loading cover art for: " + entry);
 
                 final String id = entry.getCoverArt();
-                if (id == null) {
+                if (id == null || id.isEmpty()) {
                     return null; // Can't load
                 }
 
