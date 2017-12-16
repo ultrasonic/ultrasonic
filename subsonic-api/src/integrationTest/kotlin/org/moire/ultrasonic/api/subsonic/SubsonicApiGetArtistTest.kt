@@ -39,7 +39,7 @@ class SubsonicApiGetArtistTest : SubsonicAPIClientTest() {
 
         assertResponseSuccessful(response)
         with(response.body().artist) {
-            id `should equal to` 362L
+            id `should equal to` "362"
             name `should equal to` "AC/DC"
             coverArt `should equal to` "ar-362"
             albumCount `should equal to` 2

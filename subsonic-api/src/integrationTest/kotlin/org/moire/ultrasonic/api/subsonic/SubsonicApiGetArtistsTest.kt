@@ -36,12 +36,12 @@ class SubsonicApiGetArtistsTest : SubsonicAPIClientTest() {
             indexList.size `should equal to` 2
             indexList `should equal` listOf(
                     Index(name = "A", artists = listOf(
-                            Artist(id = 362L, name = "AC/DC", coverArt = "ar-362", albumCount = 2),
-                            Artist(id = 254L, name = "Acceptance", coverArt = "ar-254", albumCount = 1)
+                            Artist(id = "362", name = "AC/DC", coverArt = "ar-362", albumCount = 2),
+                            Artist(id = "254", name = "Acceptance", coverArt = "ar-254", albumCount = 1)
                     )),
                     Index(name = "T", artists = listOf(
-                            Artist(id = 516L, name = "Tangerine Dream", coverArt = "ar-516", albumCount = 1),
-                            Artist(id = 242L, name = "Taproot", coverArt = "ar-242", albumCount = 2)
+                            Artist(id = "516", name = "Tangerine Dream", coverArt = "ar-516", albumCount = 1),
+                            Artist(id = "242", name = "Taproot", coverArt = "ar-242", albumCount = 2)
                     ))
             )
         }

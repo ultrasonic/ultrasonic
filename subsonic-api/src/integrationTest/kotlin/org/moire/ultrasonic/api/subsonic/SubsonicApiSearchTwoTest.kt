@@ -31,7 +31,7 @@ class SubsonicApiSearchTwoTest : SubsonicAPIClientTest() {
         assertResponseSuccessful(response)
         with(response.body().searchResult) {
             artistList.size `should equal to` 1
-            artistList[0] `should equal` Artist(id = 522, name = "The Prodigy")
+            artistList[0] `should equal` Artist(id = "522", name = "The Prodigy")
             albumList.size `should equal to` 1
             albumList[0] `should equal` MusicDirectoryChild(id = 8867, parent = 522, isDir = true,
                     title = "Always Outnumbered, Never Outgunned",

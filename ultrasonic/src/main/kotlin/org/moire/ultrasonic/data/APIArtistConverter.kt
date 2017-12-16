@@ -8,7 +8,7 @@ import org.moire.ultrasonic.domain.MusicDirectory
 import org.moire.ultrasonic.api.subsonic.models.Artist as APIArtist
 
 fun APIArtist.toDomainEntity(): Artist = Artist().apply {
-    id = this@toDomainEntity.id.toString()
+    id = this@toDomainEntity.id
     name = this@toDomainEntity.name
 }
 

@@ -15,7 +15,7 @@ import java.util.Calendar
 class APIArtistConverterTest {
     @Test
     fun `Should convert artist entity`() {
-        val entity = Artist(id = 10, name = "artist-name", starred = Calendar.getInstance())
+        val entity = Artist(id = "10", name = "artist-name", starred = Calendar.getInstance())
 
         val convertedEntity = entity.toDomainEntity()
 
@@ -27,7 +27,7 @@ class APIArtistConverterTest {
 
     @Test
     fun `Should convert Artist entity to domain MusicDirectory entity`() {
-        val entity = Artist(id = 101L, name = "artist-name", coverArt = "some-art", albumCount = 10,
+        val entity = Artist(id = "101", name = "artist-name", coverArt = "some-art", albumCount = 10,
                 albumsList = listOf(Album(id = 562L, name = "some-name", coverArt = "zzz",
                         artist = "artist-name", artistId = 256L, songCount = 10, duration = 345,
                         created = Calendar.getInstance(), year = 2011, genre = "Math Rock")))
