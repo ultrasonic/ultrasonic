@@ -8,8 +8,9 @@ Ultrasonic is free, open-source [Subsonic](http://www.subsonic.org/) [API](http:
 ## Download
 
 App is available to download at following stores: 
- - [Google play store](https://play.google.com/store/apps/details?id=org.moire.ultrasonic)
- - [F-Droid](https://f-droid.org) - coming soon...
+
+[<img src="https://play.google.com/intl/en_us/badges/images/generic/en-play-badge.png" alt="Get it on Google Play" height="70">](https://play.google.com/store/apps/details?id=org.moire.ultrasonic)
+[<img src="https://f-droid.org/badge/get-it-on.png" alt="Get it on F-Droid" height="70">](https://f-droid.org/packages/org.moire.ultrasonic/)
  
 ## Bugs and issue
 
