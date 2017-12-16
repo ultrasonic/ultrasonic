@@ -28,7 +28,7 @@ class SubsonicApiCreateShareTest : SubsonicAPIClientTest() {
         assertResponseSuccessful(response)
         response.body().shares.size `should equal to` 1
         with(response.body().shares[0]) {
-            id `should equal to` 0
+            id `should equal to` "0"
             url `should equal to` "https://subsonic.com/ext/share/awdwo?jwt=eyJhbGciOiJIUzI1NiJ9." +
                     "eyJwYXRoIjoiL2V4dC9zaGFyZS9hd2R3byIsImV4cCI6MTU0MTYyNjQzMX0.iy8dkt_ZZc8hJ692" +
                     "UxorHdHWFU2RB-fMCmCA4IJ_dTw"

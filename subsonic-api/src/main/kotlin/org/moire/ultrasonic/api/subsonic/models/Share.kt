@@ -4,7 +4,7 @@ import com.fasterxml.jackson.annotation.JsonProperty
 import java.util.Calendar
 
 data class Share(
-        val id: Long = -1L,
+        val id: String = "",
         val url: String = "",
         val username: String = "",
         val created: Calendar? = null,
