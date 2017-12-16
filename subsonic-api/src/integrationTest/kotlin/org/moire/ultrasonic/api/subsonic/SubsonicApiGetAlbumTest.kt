@@ -14,7 +14,7 @@ class SubsonicApiGetAlbumTest : SubsonicAPIClientTest() {
     @Test
     fun `Should parse error responce`() {
         val response = checkErrorCallParsed(mockWebServerRule) {
-            client.api.getAlbum(56L).execute()
+            client.api.getAlbum("56").execute()
         }
 
         response.album `should not be` null
@@ -23,7 +23,7 @@ class SubsonicApiGetAlbumTest : SubsonicAPIClientTest() {
 
     @Test
     fun `Should add id to request params`() {
-        val id = 76L
+        val id = "76"
 
         mockWebServerRule.assertRequestParam(responseResourceName = "get_album_ok.json",
                 expectedParam = "id=$id") {
@@ -35,7 +35,7 @@ class SubsonicApiGetAlbumTest : SubsonicAPIClientTest() {
     fun `Should parse ok response`() {
         mockWebServerRule.enqueueResponse("get_album_ok.json")
 
-        val response = client.api.getAlbum(512L).execute()
+        val response = client.api.getAlbum("512").execute()
 
         assertResponseSuccessful(response)
         with(response.body().album) {

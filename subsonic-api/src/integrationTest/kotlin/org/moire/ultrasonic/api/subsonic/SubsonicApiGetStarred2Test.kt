@@ -38,7 +38,7 @@ class SubsonicApiGetStarred2Test : SubsonicAPIClientTest() {
 
     @Test
     fun `Should pass music folder id in request param`() {
-        val musicFolderId = 441L
+        val musicFolderId = "441"
 
         mockWebServerRule.assertRequestParam(responseResourceName = "get_starred_2_ok.json",
                 expectedParam = "musicFolderId=$musicFolderId") {

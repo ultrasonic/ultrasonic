@@ -14,7 +14,7 @@ class SubsonicApiGetArtistTest : SubsonicAPIClientTest() {
     @Test
     fun `Should parse error call`() {
         val response = checkErrorCallParsed(mockWebServerRule) {
-            client.api.getArtist(101L).execute()
+            client.api.getArtist("101").execute()
         }
 
         response.artist `should not be` null
@@ -23,7 +23,7 @@ class SubsonicApiGetArtistTest : SubsonicAPIClientTest() {
 
     @Test
     fun `Should pass id param in request`() {
-        val id = 929L
+        val id = "929"
 
         mockWebServerRule.assertRequestParam(responseResourceName = "get_artist_ok.json",
                 expectedParam = "id=$id") {
@@ -35,7 +35,7 @@ class SubsonicApiGetArtistTest : SubsonicAPIClientTest() {
     fun `Should parse ok response`() {
         mockWebServerRule.enqueueResponse("get_artist_ok.json")
 
-        val response = client.api.getArtist(100L).execute()
+        val response = client.api.getArtist("100").execute()
 
         assertResponseSuccessful(response)
         with(response.body().artist) {

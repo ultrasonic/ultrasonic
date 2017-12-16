@@ -9,7 +9,7 @@ class SubsonicApiDeleteShareTest : SubsonicAPIClientTest() {
     @Test
     fun `Should handle error response`() {
         checkErrorCallParsed(mockWebServerRule) {
-            client.api.deleteShare(123).execute()
+            client.api.deleteShare("123").execute()
         }
     }
 
@@ -17,14 +17,14 @@ class SubsonicApiDeleteShareTest : SubsonicAPIClientTest() {
     fun `Should handle ok response`() {
         mockWebServerRule.enqueueResponse("ping_ok.json")
 
-        val response = client.api.deleteShare(12).execute()
+        val response = client.api.deleteShare("12").execute()
 
         assertResponseSuccessful(response)
     }
 
     @Test
     fun `Should pass id in request params`() {
-        val id = 224L
+        val id = "224"
 
         mockWebServerRule.assertRequestParam(expectedParam = "id=$id") {
             client.api.deleteShare(id).execute()

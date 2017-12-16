@@ -9,7 +9,7 @@ class SubsonicApiDeletePlaylistTest : SubsonicAPIClientTest() {
     @Test
     fun `Should handle error response`() {
         checkErrorCallParsed(mockWebServerRule) {
-            client.api.deletePlaylist(10).execute()
+            client.api.deletePlaylist("10").execute()
         }
     }
 
@@ -17,14 +17,14 @@ class SubsonicApiDeletePlaylistTest : SubsonicAPIClientTest() {
     fun `Should handle ok response`() {
         mockWebServerRule.enqueueResponse("ping_ok.json")
 
-        val response = client.api.deletePlaylist(10).execute()
+        val response = client.api.deletePlaylist("10").execute()
 
         assertResponseSuccessful(response)
     }
 
     @Test
     fun `Should pass id param in request`() {
-        val id = 534L
+        val id = "534"
 
         mockWebServerRule.assertRequestParam(responseResourceName = "ping_ok.json",
                 expectedParam = "id=$id") {

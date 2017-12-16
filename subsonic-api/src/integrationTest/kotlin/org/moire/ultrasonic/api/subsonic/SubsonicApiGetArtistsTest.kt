@@ -50,7 +50,7 @@ class SubsonicApiGetArtistsTest : SubsonicAPIClientTest() {
     @Test
     fun `Should pass param on query for get artists call`() {
         mockWebServerRule.enqueueResponse("get_artists_ok.json")
-        val musicFolderId = 101L
+        val musicFolderId = "101"
 
         mockWebServerRule.assertRequestParam(responseResourceName = "get_artists_ok.json",
                 expectedParam = "musicFolderId=$musicFolderId") {

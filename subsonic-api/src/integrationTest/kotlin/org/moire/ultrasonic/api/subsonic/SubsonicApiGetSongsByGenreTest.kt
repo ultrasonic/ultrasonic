@@ -73,7 +73,7 @@ class SubsonicApiGetSongsByGenreTest : SubsonicAPIClientTest() {
 
     @Test
     fun `Should pass music folder id in request param`() {
-        val musicFolderId = 1010L
+        val musicFolderId = "1010"
 
         mockWebServerRule.assertRequestParam(expectedParam = "musicFolderId=$musicFolderId") {
             client.api.getSongsByGenre("Trance", musicFolderId = musicFolderId).execute()

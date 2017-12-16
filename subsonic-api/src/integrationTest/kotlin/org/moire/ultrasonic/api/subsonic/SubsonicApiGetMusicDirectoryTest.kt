@@ -15,7 +15,7 @@ class SubsonicApiGetMusicDirectoryTest : SubsonicAPIClientTest() {
     @Test
     fun `Should parse getMusicDirectory error response`() {
         val response = checkErrorCallParsed(mockWebServerRule) {
-            client.api.getMusicDirectory(1).execute()
+            client.api.getMusicDirectory("1").execute()
         }
 
         response.musicDirectory `should not be` null
@@ -24,7 +24,7 @@ class SubsonicApiGetMusicDirectoryTest : SubsonicAPIClientTest() {
 
     @Test
     fun `GetMusicDirectory should add directory id to query params`() {
-        val directoryId = 124L
+        val directoryId = "124"
 
         mockWebServerRule.assertRequestParam(responseResourceName = "get_music_directory_ok.json",
                 expectedParam = "id=$directoryId") {
@@ -36,7 +36,7 @@ class SubsonicApiGetMusicDirectoryTest : SubsonicAPIClientTest() {
     fun `Should parse get music directory ok response`() {
         mockWebServerRule.enqueueResponse("get_music_directory_ok.json")
 
-        val response = client.api.getMusicDirectory(1).execute()
+        val response = client.api.getMusicDirectory("1").execute()
 
         assertResponseSuccessful(response)
 

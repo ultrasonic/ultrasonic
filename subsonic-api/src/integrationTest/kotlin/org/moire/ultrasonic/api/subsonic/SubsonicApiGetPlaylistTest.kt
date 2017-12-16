@@ -14,7 +14,7 @@ class SubsonicApiGetPlaylistTest : SubsonicAPIClientTest() {
     @Test
     fun `Should parse error response`() {
         val response = checkErrorCallParsed(mockWebServerRule) {
-            client.api.getPlaylist(10).execute()
+            client.api.getPlaylist("10").execute()
         }
 
         response.playlist `should not be` null
@@ -25,7 +25,7 @@ class SubsonicApiGetPlaylistTest : SubsonicAPIClientTest() {
     fun `Should parse ok response`() {
         mockWebServerRule.enqueueResponse("get_playlist_ok.json")
 
-        val response = client.api.getPlaylist(4).execute()
+        val response = client.api.getPlaylist("4").execute()
 
         assertResponseSuccessful(response)
         with(response.body().playlist) {
@@ -53,7 +53,7 @@ class SubsonicApiGetPlaylistTest : SubsonicAPIClientTest() {
 
     @Test
     fun `Should pass id as request param`() {
-        val playlistId = 453L
+        val playlistId = "453"
 
         mockWebServerRule.assertRequestParam(responseResourceName = "get_playlist_ok.json",
                 expectedParam = "id=$playlistId") {

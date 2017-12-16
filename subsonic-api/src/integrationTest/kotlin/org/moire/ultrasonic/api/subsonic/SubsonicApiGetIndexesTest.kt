@@ -42,7 +42,7 @@ class SubsonicApiGetIndexesTest : SubsonicAPIClientTest() {
 
     @Test
     fun `Should add music folder id as a query param for getIndexes api call`() {
-        val musicFolderId = 9L
+        val musicFolderId = "9"
 
         mockWebServerRule.assertRequestParam(responseResourceName = "get_indexes_ok.json",
                 expectedParam = "musicFolderId=$musicFolderId") {

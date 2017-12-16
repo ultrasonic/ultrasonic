@@ -37,10 +37,10 @@ class ApiVersionCheckWrapperTest {
 
         wrapper.getAlbumList(BY_GENRE)
 
-        val throwCall = { wrapper.getAlbumList(BY_GENRE, musicFolderId = 12L) }
+        val throwCall = { wrapper.getAlbumList(BY_GENRE, musicFolderId = "12") }
 
         throwCall `should throw` ApiNotSupportedException::class
         verify(apiMock).getAlbumList(BY_GENRE)
-        verify(apiMock, never()).getAlbumList(BY_GENRE, musicFolderId = 12L)
+        verify(apiMock, never()).getAlbumList(BY_GENRE, musicFolderId = "12")
     }
 }

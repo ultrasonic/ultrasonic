@@ -72,7 +72,7 @@ class SubsonicApiGetPodcastsTest : SubsonicAPIClientTest() {
 
     @Test
     fun `Should pass id in request param`() {
-        val id = 249L
+        val id = "249"
 
         mockWebServerRule.assertRequestParam(responseResourceName = "get_podcasts_ok.json",
                 expectedParam = "id=$id") {

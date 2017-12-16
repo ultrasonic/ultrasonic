@@ -113,7 +113,7 @@ class SubsonicApiSearchThreeTest : SubsonicAPIClientTest() {
 
     @Test
     fun `Should pass music folder id as request param`() {
-        val musicFolderId = 43L
+        val musicFolderId = "43"
 
         mockWebServerRule.assertRequestParam(responseResourceName = "search3_ok.json",
                 expectedParam = "musicFolderId=$musicFolderId") {

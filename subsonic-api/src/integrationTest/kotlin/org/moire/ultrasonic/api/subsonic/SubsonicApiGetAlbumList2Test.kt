@@ -103,7 +103,7 @@ class SubsonicApiGetAlbumList2Test : SubsonicAPIClientTest() {
 
     @Test
     fun `Should pass music folder id in request param`() {
-        val musicFolderId = 9422L
+        val musicFolderId = "9422"
 
         mockWebServerRule.assertRequestParam(responseResourceName = "get_album_list_2_ok.json",
                 expectedParam = "musicFolderId=$musicFolderId") {
