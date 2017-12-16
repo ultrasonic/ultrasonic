@@ -10,12 +10,12 @@ import org.moire.ultrasonic.api.subsonic.models.MusicDirectoryChild
 import java.util.Calendar
 
 /**
- * Unit test for extension functions in [APIMusicDirectoryConverter.kt] file.
+ * Unit test for extension functions in APIMusicDirectoryConverter.kt file.
  */
 class APIMusicDirectoryConverterTest {
     @Test
     fun `Should convert MusicDirectory entity`() {
-        val entity = MusicDirectory(id = 1982L, parent = 345L, name = "some-name", userRating = 3,
+        val entity = MusicDirectory(id = "1982", parent = "345", name = "some-name", userRating = 3,
                 averageRating = 3.4f, starred = Calendar.getInstance(), playCount = 10,
                 childList = listOf(MusicDirectoryChild(1L), MusicDirectoryChild(2L)))
 
