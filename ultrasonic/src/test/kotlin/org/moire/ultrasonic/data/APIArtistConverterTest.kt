@@ -10,7 +10,7 @@ import org.moire.ultrasonic.api.subsonic.models.Artist
 import java.util.Calendar
 
 /**
- * Unit test for extension functions in [APIArtistConverter.kt] file.
+ * Unit test for extension functions in APIArtistConverter.kt file.
  */
 class APIArtistConverterTest {
     @Test
@@ -20,7 +20,7 @@ class APIArtistConverterTest {
         val convertedEntity = entity.toDomainEntity()
 
         with(convertedEntity) {
-            id `should equal to` entity.id.toString()
+            id `should equal to` entity.id
             name `should equal to` entity.name
         }
     }
@@ -28,8 +28,8 @@ class APIArtistConverterTest {
     @Test
     fun `Should convert Artist entity to domain MusicDirectory entity`() {
         val entity = Artist(id = "101", name = "artist-name", coverArt = "some-art", albumCount = 10,
-                albumsList = listOf(Album(id = 562L, name = "some-name", coverArt = "zzz",
-                        artist = "artist-name", artistId = 256L, songCount = 10, duration = 345,
+                albumsList = listOf(Album(id = "562", name = "some-name", coverArt = "zzz",
+                        artist = "artist-name", artistId = "256", songCount = 10, duration = 345,
                         created = Calendar.getInstance(), year = 2011, genre = "Math Rock")))
 
         val convertedEntity = entity.toMusicDirectoryDomainEntity()

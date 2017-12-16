@@ -44,12 +44,12 @@ class SubsonicApiGetArtistTest : SubsonicAPIClientTest() {
             coverArt `should equal to` "ar-362"
             albumCount `should equal to` 2
             albumsList.size `should equal to` 2
-            albumsList[0] `should equal` Album(id = 618L, name = "Black Ice", artist = "AC/DC",
-                    artistId = 362L, coverArt = "al-618", songCount = 15, duration = 3331,
+            albumsList[0] `should equal` Album(id = "618", name = "Black Ice", artist = "AC/DC",
+                    artistId = "362", coverArt = "al-618", songCount = 15, duration = 3331,
                     created = parseDate("2016-10-23T15:31:22.000Z"),
                     year = 2008, genre = "Hard Rock")
-            albumsList[1] `should equal` Album(id = 617L, name = "Rock or Bust", artist = "AC/DC",
-                    artistId = 362L, coverArt = "al-617", songCount = 11, duration = 2095,
+            albumsList[1] `should equal` Album(id = "617", name = "Rock or Bust", artist = "AC/DC",
+                    artistId = "362", coverArt = "al-617", songCount = 11, duration = 2095,
                     created = parseDate("2016-10-23T15:31:23.000Z"),
                     year = 2014, genre = "Hard Rock")
         }

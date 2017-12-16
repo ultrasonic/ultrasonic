@@ -14,7 +14,7 @@ import org.moire.ultrasonic.api.subsonic.models.SearchThreeResult
 import org.moire.ultrasonic.api.subsonic.models.SearchTwoResult
 
 /**
- * Unit test for extension function in [APISearchConverter.kt] file.
+ * Unit test for extension function in APISearchConverter.kt file.
  */
 class APISearchConverterTest {
     @Test
@@ -61,7 +61,7 @@ class APISearchConverterTest {
     fun `Should convert SearchThreeResult to domain entity`() {
         val entity = SearchThreeResult(
                 artistList = listOf(Artist(id = "612", name = "artist1")),
-                albumList = listOf(Album(id = 221, name = "album1")),
+                albumList = listOf(Album(id = "221", name = "album1")),
                 songList = listOf(MusicDirectoryChild(id = 7123, title = "song1"))
         )
 

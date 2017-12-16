@@ -39,10 +39,10 @@ class SubsonicApiGetAlbumTest : SubsonicAPIClientTest() {
 
         assertResponseSuccessful(response)
         with(response.body().album) {
-            id `should equal to` 618L
+            id `should equal to` "618"
             name `should equal to` "Black Ice"
             artist `should equal to` "AC/DC"
-            artistId `should equal to` 362L
+            artistId `should equal to` "362"
             coverArt `should equal to` "al-618"
             songCount `should equal to` 15
             duration `should equal to` 3331
