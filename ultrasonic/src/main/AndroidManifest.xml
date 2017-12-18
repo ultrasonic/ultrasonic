@@ -2,8 +2,8 @@
 <manifest xmlns:a="http://schemas.android.com/apk/res/android"
           package="org.moire.ultrasonic"
           a:installLocation="auto"
-          a:versionCode="58"
-          a:versionName="1.8">
+          a:versionCode="59"
+          a:versionName="2.0.0">
 
     <uses-permission a:name="android.permission.INTERNET"/>
     <uses-permission a:name="android.permission.ACCESS_NETWORK_STATE"/>
