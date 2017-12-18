@@ -2,18 +2,61 @@ ext.versions = [
         minSdk               : 14,
         targetSdk            : 22,
         compileSdk           : 22,
+        gradle               : '4.3.1',
 
-        buildTools           : "25.0.2",
-        androidTools         : "2.2.3",
+        buildTools           : "25.0.3",
+        androidTools         : "2.3.3",
+        ktlint               : "0.12.1",
+        ktlintGradle         : "2.3.0",
+        detekt               : "1.0.0.RC5-4",
+        jacoco               : "0.7.9",
+        jacocoAndroid        : "0.1.2",
 
         androidSupport       : "22.2.1",
+
+        kotlin               : "1.1.60",
+
+        retrofit             : "2.1.0",
+        jackson              : "2.9.0",
+        okhttp               : "3.9.0",
+
+        junit                : "4.12",
+        mockito              : "2.12.0",
+        mockitoKotlin        : "1.5.0",
+        kluent               : "1.26",
+        apacheCodecs         : "1.10",
 ]
 
 ext.gradlePlugins = [
-        androidTools : "com.android.tools.build:gradle:$versions.androidTools"
+        androidTools  : "com.android.tools.build:gradle:$versions.androidTools",
+        kotlin        : "org.jetbrains.kotlin:kotlin-gradle-plugin:$versions.kotlin",
+        ktlintGradle  : "gradle.plugin.org.jlleitschuh.gradle:ktlint-gradle:$versions.ktlintGradle",
+        detekt        : "gradle.plugin.io.gitlab.arturbosch.detekt:detekt-gradle-plugin:$versions.detekt",
+        jacocoAndroid : "com.dicedmelon.gradle:jacoco-android:$versions.jacocoAndroid"
 ]
 
 ext.androidSupport = [
         support     : "com.android.support:support-v4:$versions.androidSupport",
         design      : "com.android.support:design:$versions.androidSupport",
+]
+
+ext.other = [
+        kotlinStdlib       : "org.jetbrains.kotlin:kotlin-stdlib:$versions.kotlin",
+        kotlinReflect : "org.jetbrains.kotlin:kotlin-reflect:$versions.kotlin",
+        retrofit           : "com.squareup.retrofit2:retrofit:$versions.retrofit",
+        gsonConverter      : "com.squareup.retrofit2:converter-gson:$versions.retrofit",
+        jacksonConverter   : "com.squareup.retrofit2:converter-jackson:$versions.retrofit",
+        jacksonKotlin      : "com.fasterxml.jackson.module:jackson-module-kotlin:$versions.jackson",
+        okhttpLogging      : "com.squareup.okhttp3:logging-interceptor:$versions.okhttp",
+]
+
+ext.testing = [
+        junit         : "junit:junit:$versions.junit",
+        kotlinJunit   : "org.jetbrains.kotlin:kotlin-test-junit:$versions.kotlin",
+        mockitoKotlin : "com.nhaarman:mockito-kotlin:$versions.mockitoKotlin",
+        mockito       : "org.mockito:mockito-core:$versions.mockito",
+        mockitoInline : "org.mockito:mockito-inline:$versions.mockito",
+        kluent        : "org.amshove.kluent:kluent:$versions.kluent",
+        mockWebServer : "com.squareup.okhttp3:mockwebserver:$versions.okhttp",
+        apacheCodecs  : "commons-codec:commons-codec:$versions.apacheCodecs",
 ]

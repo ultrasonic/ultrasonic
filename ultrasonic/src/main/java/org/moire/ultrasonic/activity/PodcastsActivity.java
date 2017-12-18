@@ -19,47 +19,20 @@
 
 package org.moire.ultrasonic.activity;
 
-import android.app.AlertDialog;
-import android.app.ListActivity;
 import android.content.Context;
-import android.content.DialogInterface;
 import android.content.Intent;
-import android.os.AsyncTask;
 import android.os.Bundle;
-import android.text.Editable;
-import android.text.Spannable;
-import android.text.SpannableString;
-import android.text.method.LinkMovementMethod;
-import android.text.util.Linkify;
-import android.view.ContextMenu;
-import android.view.Menu;
-import android.view.MenuInflater;
-import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
-import android.widget.CheckBox;
-import android.widget.EditText;
 import android.widget.ListView;
-import android.widget.TextView;
-
-import com.handmark.pulltorefresh.library.PullToRefreshBase;
-import com.handmark.pulltorefresh.library.PullToRefreshBase.OnRefreshListener;
-import com.handmark.pulltorefresh.library.PullToRefreshListView;
 
 import org.moire.ultrasonic.R;
-import org.moire.ultrasonic.domain.Playlist;
 import org.moire.ultrasonic.domain.PodcastsChannel;
 import org.moire.ultrasonic.service.MusicService;
 import org.moire.ultrasonic.service.MusicServiceFactory;
-import org.moire.ultrasonic.service.OfflineException;
-import org.moire.ultrasonic.service.ServerTooOldException;
 import org.moire.ultrasonic.util.BackgroundTask;
-import org.moire.ultrasonic.util.CacheCleaner;
 import org.moire.ultrasonic.util.Constants;
-import org.moire.ultrasonic.util.LoadingTask;
 import org.moire.ultrasonic.util.TabActivityBackgroundTask;
-import org.moire.ultrasonic.util.Util;
-import org.moire.ultrasonic.view.PlaylistAdapter;
 import org.moire.ultrasonic.view.PodcastsChannelsAdapter;
 
 import java.util.List;

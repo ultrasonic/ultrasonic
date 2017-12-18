@@ -15,4 +15,9 @@ android {
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.txt'
         }
     }
+
+    lintOptions {
+        baselineFile file("lint-baseline.xml")
+        abortOnError true
+    }
 }

@@ -67,6 +67,7 @@ import org.moire.ultrasonic.service.DownloadService;
 import org.moire.ultrasonic.service.DownloadServiceImpl;
 
 import org.apache.http.HttpEntity;
+import org.moire.ultrasonic.service.MusicServiceFactory;
 
 import java.io.ByteArrayOutputStream;
 import java.io.Closeable;
@@ -192,6 +193,7 @@ public class Util extends DownloadActivity
 
 	public static void setActiveServer(Context context, int instance)
 	{
+        MusicServiceFactory.resetMusicService();
 		SharedPreferences preferences = getPreferences(context);
 		SharedPreferences.Editor editor = preferences.edit();
 		editor.putInt(Constants.PREFERENCES_KEY_SERVER_INSTANCE, instance);

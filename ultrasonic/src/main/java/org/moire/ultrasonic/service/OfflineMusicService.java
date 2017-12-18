@@ -23,6 +23,7 @@ import android.graphics.Bitmap;
 import android.media.MediaMetadataRetriever;
 import android.util.Log;
 
+import org.moire.ultrasonic.api.subsonic.SubsonicAPIClient;
 import org.moire.ultrasonic.domain.Artist;
 import org.moire.ultrasonic.domain.Genre;
 import org.moire.ultrasonic.domain.Indexes;
@@ -66,7 +67,11 @@ public class OfflineMusicService extends RESTMusicService
 	private static final String TAG = OfflineMusicService.class.getSimpleName();
 	private static final Pattern COMPILE = Pattern.compile(" ");
 
-	@Override
+    public OfflineMusicService(SubsonicAPIClient subsonicAPIClient) {
+        super(subsonicAPIClient);
+    }
+
+    @Override
 	public boolean isLicenseValid(Context context, ProgressListener progressListener) throws Exception
 	{
 		return true;
@@ -662,18 +667,6 @@ public class OfflineMusicService extends RESTMusicService
 	}
 
 	@Override
-	public void updatePlaylist(String id, List<MusicDirectory.Entry> toAdd, Context context, ProgressListener progressListener) throws Exception
-	{
-		throw new OfflineException("Updating playlist not available in offline mode");
-	}
-
-	@Override
-	public void removeFromPlaylist(String id, List<Integer> toRemove, Context context, ProgressListener progressListener) throws Exception
-	{
-		throw new OfflineException("Removing from playlist not available in offline mode");
-	}
-
-	@Override
 	public void updatePlaylist(String id, String name, String comment, boolean pub, Context context, ProgressListener progressListener) throws Exception
 	{
 		throw new OfflineException("Updating playlist not available in offline mode");
@@ -699,12 +692,6 @@ public class OfflineMusicService extends RESTMusicService
 
 	@Override
 	public String getVideoUrl(Context context, String id, boolean useFlash)
-	{
-		return null;
-	}
-
-	@Override
-	public String getVideoStreamUrl(int maxBitrate, Context context, String id)
 	{
 		return null;
 	}

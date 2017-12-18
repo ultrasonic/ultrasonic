@@ -1,0 +1,65 @@
+package org.moire.ultrasonic.api.subsonic
+
+import okhttp3.mockwebserver.MockResponse
+import org.amshove.kluent.`should be`
+import org.amshove.kluent.`should equal to`
+import org.amshove.kluent.`should equal`
+import org.amshove.kluent.`should not be`
+import org.junit.Test
+
+/**
+ * Integration test for [SubsonicAPIClient.getAvatar] call.
+ */
+class SubsonicApiGetAvatarTest : SubsonicAPIClientTest() {
+    @Test
+    fun `Should handle api error response`() {
+        mockWebServerRule.enqueueResponse("generic_error_response.json")
+
+        val response = client.getAvatar("some")
+
+        with(response) {
+            stream `should be` null
+            responseHttpCode `should equal to` 200
+            apiError `should equal` SubsonicError.GENERIC
+        }
+    }
+
+    @Test
+    fun `Should handle server error`() {
+        val httpErrorCode = 500
+        mockWebServerRule.mockWebServer.enqueue(MockResponse().setResponseCode(httpErrorCode))
+
+        val response = client.getAvatar("some")
+
+        with(response) {
+            stream `should equal` null
+            responseHttpCode `should equal to` httpErrorCode
+            apiError `should be` null
+        }
+    }
+
+    @Test
+    fun `Should return successful call stream`() {
+        mockWebServerRule.mockWebServer.enqueue(MockResponse()
+                .setBody(mockWebServerRule.loadJsonResponse("ping_ok.json")))
+
+        val response = client.stream("some")
+
+        with(response) {
+            responseHttpCode `should equal to` 200
+            apiError `should be` null
+            stream `should not be` null
+            val expectedContent = mockWebServerRule.loadJsonResponse("ping_ok.json")
+            stream!!.bufferedReader().readText() `should equal to` expectedContent
+        }
+    }
+
+    @Test
+    fun `Should pass username as param`() {
+        val username = "Guardian"
+
+        mockWebServerRule.assertRequestParam(expectedParam = "username=$username") {
+            client.api.getAvatar(username).execute()
+        }
+    }
+}

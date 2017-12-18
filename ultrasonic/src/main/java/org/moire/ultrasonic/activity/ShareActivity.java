@@ -44,12 +44,13 @@ import android.widget.TextView;
 import com.handmark.pulltorefresh.library.PullToRefreshBase;
 import com.handmark.pulltorefresh.library.PullToRefreshBase.OnRefreshListener;
 import com.handmark.pulltorefresh.library.PullToRefreshListView;
+
 import org.moire.ultrasonic.R;
+import org.moire.ultrasonic.api.subsonic.ApiNotSupportedException;
 import org.moire.ultrasonic.domain.Share;
 import org.moire.ultrasonic.service.MusicService;
 import org.moire.ultrasonic.service.MusicServiceFactory;
 import org.moire.ultrasonic.service.OfflineException;
-import org.moire.ultrasonic.service.ServerTooOldException;
 import org.moire.ultrasonic.util.BackgroundTask;
 import org.moire.ultrasonic.util.Constants;
 import org.moire.ultrasonic.util.LoadingTask;
@@ -251,7 +252,7 @@ public class ShareActivity extends SubsonicTabActivity implements AdapterView.On
 					protected void error(Throwable error)
 					{
 						String msg;
-						msg = error instanceof OfflineException || error instanceof ServerTooOldException ? getErrorMessage(error) : String.format("%s %s", getResources().getString(R.string.menu_deleted_share_error, share.getName()), getErrorMessage(error));
+						msg = error instanceof OfflineException || error instanceof ApiNotSupportedException ? getErrorMessage(error) : String.format("%s %s", getResources().getString(R.string.menu_deleted_share_error, share.getName()), getErrorMessage(error));
 
 						Util.toast(ShareActivity.this, msg, false);
 					}
@@ -356,7 +357,7 @@ public class ShareActivity extends SubsonicTabActivity implements AdapterView.On
 					protected void error(Throwable error)
 					{
 						String msg;
-						msg = error instanceof OfflineException || error instanceof ServerTooOldException ? getErrorMessage(error) : String.format("%s %s", getResources().getString(R.string.playlist_updated_info_error, share.getName()), getErrorMessage(error));
+						msg = error instanceof OfflineException || error instanceof ApiNotSupportedException ? getErrorMessage(error) : String.format("%s %s", getResources().getString(R.string.playlist_updated_info_error, share.getName()), getErrorMessage(error));
 
 						Util.toast(ShareActivity.this, msg, false);
 					}

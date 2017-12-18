@@ -153,12 +153,12 @@ public class AlbumView extends UpdateView
 						album.setStarred(false);
 					}
 
+                    final MusicService musicService = MusicServiceFactory.getMusicService(view.getContext());
 					new Thread(new Runnable()
 					{
 						@Override
 						public void run()
 						{
-							MusicService musicService = MusicServiceFactory.getMusicService(null);
 							boolean useId3 = Util.getShouldUseId3Tags(getContext());
 
 							try

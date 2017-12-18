@@ -1,0 +1,38 @@
+{
+  "subsonic-response" : {
+    "status" : "ok",
+    "version" : "1.13.0",
+    "indexes" : {
+      "lastModified" : 1491069027523,
+      "ignoredArticles" : "The El La Los Las Le Les",
+      "shortcut" : [ {
+        "id" : "889",
+        "name" : "podcasts"
+      },
+      {
+        "id" : "890",
+        "name" : "audiobooks"
+      } ],
+      "index" : [ {
+        "name" : "A",
+        "artist" : [ {
+          "id" : "50",
+          "name" : "Ace Of Base",
+          "starred" : "2017-04-02T20:16:29.815Z"
+        }, {
+          "id" : "379",
+          "name" : "A Perfect Circle"
+        } ]
+      }, {
+        "name" : "H",
+        "artist" : [ {
+          "id" : "299",
+          "name" : "Haddaway"
+        }, {
+          "id" : "297",
+          "name" : "Halestorm"
+        } ]
+      } ]
+    }
+  }
+}

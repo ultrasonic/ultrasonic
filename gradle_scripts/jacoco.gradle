@@ -1,0 +1,57 @@
+apply plugin: 'jacoco'
+
+task jacocoMergeReports(type: JacocoMerge) {
+    group = "Reporting"
+    description = "Merge all jacoco reports from projects into one."
+
+    def subsonicApi = project.findProject("subsonic-api")
+    def ultrasonicApp = project.findProject("ultrasonic")
+    executionData(
+            "${subsonicApi.buildDir}/jacoco/test.exec",
+            "${ultrasonicApp.buildDir}/jacoco/testDebugUnitTest.exec",
+    )
+    destinationFile(file("${project.buildDir}/jacoco/jacoco.exec"))
+}
+
+def createJacocoFullReportTask() {
+    tasks.create(name: 'jacocoFullReport', type: JacocoReport, dependsOn: 'jacocoMergeReports') {
+        group = "Reporting"
+        description = "Generate full Jacoco coverage report including all modules."
+
+        def subsonicApi = project.findProject("subsonic-api")
+        def ultrasonicApp = project.findProject("ultrasonic")
+
+        classDirectories = files(
+                fileTree(
+                        dir: "${subsonicApi.buildDir}/classes/main",
+                        excludes: subsonicApi.jacocoExclude
+                ),
+                fileTree(
+                        dir: "${ultrasonicApp.buildDir}/intermediates/classes/debug/org",
+                        excludes: ultrasonicApp.jacocoExclude
+                )
+        )
+        sourceDirectories = files(subsonicApi.sourceSets.main.getAllSource(),
+                ultrasonicApp.extensions.getByName('android').sourceSets.main.java.sourceFiles)
+        executionData = files("${buildDir}/jacoco/jacoco.exec")
+
+        reports {
+            xml.enabled = true
+            html.enabled = true
+            csv.enabled = false
+        }
+    }
+}
+
+// We need to wait to all subprojects configuration finish or we don't get sources and exclusions
+def subprojectsCount = allprojects.size()
+allprojects {
+    afterEvaluate { subproject ->
+        subprojectsCount--
+        if (subprojectsCount == 0) {
+            apply {
+                createJacocoFullReportTask()
+            }
+        }
+    }
+}

@@ -1,12 +1,28 @@
 # Ultrasonic
-Subsonic Music Streamer Android client
+[![Build Status](https://circleci.com/gh/ultrasonic/ultrasonic/tree/develop.svg?style=shield&circle-token=:circle-token)](https://circleci.com/gh/ultrasonic)
+[![Codecov branch](https://img.shields.io/codecov/c/github/ultrasonic/ultrasonic/develop.svg)]()
+[![ktlint](https://img.shields.io/badge/code%20style-%E2%9D%A4-FF4081.svg)](https://ktlint.github.io/)
 
-## About project status
+Ultrasonic is free, open-source [Subsonic](http://www.subsonic.org/) [API](http://www.subsonic.org/pages/api.jsp) compatible music streaming Android client.
 
-WARNING: This project is **STALLED**
+## Download
 
-This means that I don't have time to fix bugs or add new features, but you can send me **Pull Requests** and I **promise** that I shall merge and upload to Play Store.
+App is available to download at following stores: 
 
-If you want contribute at project you can see the [issues](https://github.com/ogarcia/ultrasonic/issues) page and try to fix the discovered bugs or implement the enhancements that users report there.
+[<img src="https://play.google.com/intl/en_us/badges/images/generic/en-play-badge.png" alt="Get it on Google Play" height="70">](https://play.google.com/store/apps/details?id=org.moire.ultrasonic)
+[<img src="https://f-droid.org/badge/get-it-on.png" alt="Get it on F-Droid" height="70">](https://f-droid.org/packages/org.moire.ultrasonic/)
+ 
+## Bugs and issue
 
-If you want give more active development, please contact with me cause I can give you access to repository to do work faster.
+First, see if your issue haven’t been yet reported [here](https://github.com/ultrasonic/ultrasonic/issues),
+otherwise open [a new issue](https://github.com/ultrasonic/ultrasonic/issues/new).
+
+## Contributing
+
+See [CONTRIBUTING](CONTRIBUTING.md).
+
+## License
+
+This software is licensed under the terms of the GNU General Public License version 3 (GPLv3). 
+
+Full text of the license is available in the [LICENSE](LICENSE) file and [online](https://opensource.org/licenses/gpl-3.0.html).

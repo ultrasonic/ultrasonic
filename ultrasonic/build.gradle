@@ -1,4 +1,7 @@
 apply plugin: 'com.android.application'
+apply plugin: 'kotlin-android'
+apply plugin: 'jacoco-android'
+apply from: "../gradle_scripts/code_quality.gradle"
 
 android {
     compileSdkVersion versions.compileSdk
@@ -8,6 +11,8 @@ android {
         applicationId "org.moire.ultrasonic"
         minSdkVersion versions.minSdk
         targetSdkVersion versions.targetSdk
+
+        resConfigs "en", "es", "fr", "hu", "pt", "pt-rBR"
     }
 
     buildTypes {
@@ -15,6 +20,24 @@ android {
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.txt'
         }
+        debug {
+            minifyEnabled false
+            testCoverageEnabled true
+        }
+    }
+
+    sourceSets {
+        main.java.srcDirs += "${projectDir}/src/main/kotlin"
+        test.java.srcDirs += "${projectDir}/src/test/kotlin"
+    }
+
+    packagingOptions {
+        exclude 'META-INF/LICENSE'
+    }
+
+    lintOptions {
+        baselineFile file("lint-baseline.xml")
+        abortOnError true
     }
 }
 
@@ -22,7 +45,42 @@ dependencies {
     compile project(':menudrawer')
     compile project(':pulltorefresh')
     compile project(':library')
+    compile project(':subsonic-api')
 
     compile androidSupport.support
     compile androidSupport.design
+
+    compile other.kotlinStdlib
+
+    testCompile other.kotlinReflect
+    testCompile testing.junit
+    testCompile testing.kotlinJunit
+    testCompile testing.mockitoKotlin
+    testCompile testing.kluent
+}
+
+// Excluding all non-kotlin classes
+ext {
+    jacocoExclude = [
+            '**/activity/**',
+            '**/audiofx/**',
+            '**/domain/**',
+            '**/fragment/**',
+            '**/provider/**',
+            '**/receiver/**',
+            '**/service/**',
+            '**/Test/**',
+            '**/util/**',
+            '**/view/**',
+            '**/R$*.class',
+            '**/R.class',
+            '**/BuildConfig.class'
+    ]
+}
+jacocoAndroidUnitTestReport {
+    excludes += jacocoExclude
+}
+
+afterEvaluate {
+    testDebugUnitTest.finalizedBy jacocoTestDebugUnitTestReport
 }
