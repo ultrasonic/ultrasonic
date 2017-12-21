@@ -13,7 +13,7 @@ ext.versions = [
 
         androidSupport       : "23.4.0",
 
-        kotlin               : "1.1.60",
+        kotlin               : "1.2.10",
 
         retrofit             : "2.1.0",
         jackson              : "2.9.0",
@@ -41,7 +41,7 @@ ext.androidSupport = [
 
 ext.other = [
         kotlinStdlib       : "org.jetbrains.kotlin:kotlin-stdlib:$versions.kotlin",
-        kotlinReflect : "org.jetbrains.kotlin:kotlin-reflect:$versions.kotlin",
+        kotlinReflect      : "org.jetbrains.kotlin:kotlin-reflect:$versions.kotlin",
         retrofit           : "com.squareup.retrofit2:retrofit:$versions.retrofit",
         gsonConverter      : "com.squareup.retrofit2:converter-gson:$versions.retrofit",
         jacksonConverter   : "com.squareup.retrofit2:converter-jackson:$versions.retrofit",
