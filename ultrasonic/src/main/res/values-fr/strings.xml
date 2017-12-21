@@ -325,7 +325,7 @@
     <string name="util.bytes_format.gigabyte">0.00 Go</string>
     <string name="util.bytes_format.kilobyte">0 Ko</string>
     <string name="util.bytes_format.megabyte">0.00 Mo</string>
-    <string name="util.no_time">-:--</string>
+    <string name="util.no_time">&#8212;:&#8212;&#8212;</string>
     <string name="util.zero_time">0:00</string>
     <string name="video.get_mx_player_text">MX Player n\'est pas installé. Recevez gratuitement sur Play Store, ou modifier les paramètres vidéo.</string>
     <string name="video.get_mx_player_button">Obtenez MX Player</string>

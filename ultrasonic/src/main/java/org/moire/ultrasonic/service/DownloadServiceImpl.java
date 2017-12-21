@@ -2071,6 +2071,7 @@ public class DownloadServiceImpl extends Service implements DownloadService
 		}
 	}
 
+    @SuppressWarnings("IconColors")
     private Notification buildForegroundNotification() {
         NotificationCompat.Builder builder = new NotificationCompat.Builder(this);
         builder.setSmallIcon(R.drawable.ic_stat_ultrasonic);
