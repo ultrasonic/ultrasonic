@@ -40,7 +40,8 @@ class VersionInterceptorTest : BaseInterceptorTest() {
 
         client.newCall(createRequest {}).execute()
 
-        (interceptor as VersionInterceptor).protocolVersion `should equal` SubsonicAPIVersions.V1_13_0
+        (interceptor as VersionInterceptor)
+                .protocolVersion `should equal` SubsonicAPIVersions.V1_13_0
     }
 
     @Test

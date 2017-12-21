@@ -50,16 +50,18 @@ class SubsonicApiGetAlbumTest : SubsonicAPIClientTest() {
             year `should equal to` 2008
             genre `should equal to` "Hard Rock"
             songList.size `should equal to` 15
-            songList[0] `should equal` MusicDirectoryChild(id = "6491", parent = "6475", isDir = false,
-                    title = "Rock 'n' Roll Train", album = "Black Ice", artist = "AC/DC",
-                    track = 1, year = 2008, genre = "Hard Rock", coverArt = "6475", size = 7205451,
-                    contentType = "audio/mpeg", suffix = "mp3", duration = 261, bitRate = 219,
-                    path = "AC_DC/Black Ice/01 Rock 'n' Roll Train.mp3", isVideo = false,
-                    playCount = 0, discNumber = 1, created = parseDate("2016-10-23T15:31:20.000Z"),
+            songList[0] `should equal` MusicDirectoryChild(id = "6491", parent = "6475",
+                    isDir = false, title = "Rock 'n' Roll Train", album = "Black Ice",
+                    artist = "AC/DC", track = 1, year = 2008, genre = "Hard Rock",
+                    coverArt = "6475", size = 7205451, contentType = "audio/mpeg", suffix = "mp3",
+                    duration = 261, bitRate = 219,
+                    path = "AC_DC/Black Ice/01 Rock 'n' Roll Train.mp3",
+                    isVideo = false, playCount = 0, discNumber = 1,
+                    created = parseDate("2016-10-23T15:31:20.000Z"),
                     albumId = "618", artistId = "362", type = "music")
-            songList[5] `should equal` MusicDirectoryChild(id = "6492", parent = "6475", isDir = false,
-                    title = "Smash 'n' Grab", album = "Black Ice", artist = "AC/DC", track = 6,
-                    year = 2008, genre = "Hard Rock", coverArt = "6475", size = 6697204,
+            songList[5] `should equal` MusicDirectoryChild(id = "6492", parent = "6475",
+                    isDir = false, title = "Smash 'n' Grab", album = "Black Ice", artist = "AC/DC",
+                    track = 6, year = 2008, genre = "Hard Rock", coverArt = "6475", size = 6697204,
                     contentType = "audio/mpeg", suffix = "mp3", duration = 246, bitRate = 216,
                     path = "AC_DC/Black Ice/06 Smash 'n' Grab.mp3", isVideo = false, playCount = 0,
                     discNumber = 1, created = parseDate("2016-10-23T15:31:20.000Z"),

@@ -127,7 +127,8 @@ interface SubsonicAPIDefinition {
             @Query("comment") comment: String? = null,
             @Query("public") public: Boolean? = null,
             @Query("songIdToAdd") songIdsToAdd: List<String>? = null,
-            @Query("songIndexToRemove") songIndexesToRemove: List<Int>? = null): Call<SubsonicResponse>
+            @Query("songIndexToRemove") songIndexesToRemove: List<Int>? = null):
+            Call<SubsonicResponse>
 
     @GET("getPodcasts.view")
     fun getPodcasts(@Query("includeEpisodes") includeEpisodes: Boolean? = null,
@@ -143,35 +144,39 @@ interface SubsonicAPIDefinition {
                  @Query("submission") submission: Boolean? = null): Call<SubsonicResponse>
 
     @GET("getAlbumList.view")
-    fun getAlbumList(@Query("type") type: AlbumListType,
-                     @Query("size") size: Int? = null,
-                     @Query("offset") offset: Int? = null,
-                     @Query("fromYear") fromYear: Int? = null,
-                     @Query("toYear") toYear: Int? = null,
-                     @Query("genre") genre: String? = null,
-                     @Query("musicFolderId") musicFolderId: String? = null): Call<GetAlbumListResponse>
+    fun getAlbumList(
+            @Query("type") type: AlbumListType,
+            @Query("size") size: Int? = null,
+            @Query("offset") offset: Int? = null,
+            @Query("fromYear") fromYear: Int? = null,
+            @Query("toYear") toYear: Int? = null,
+            @Query("genre") genre: String? = null,
+            @Query("musicFolderId") musicFolderId: String? = null): Call<GetAlbumListResponse>
 
     @GET("getAlbumList2.view")
-    fun getAlbumList2(@Query("type") type: AlbumListType,
-                      @Query("size") size: Int? = null,
-                      @Query("offset") offset: Int? = null,
-                      @Query("fromYear") fromYear: Int? = null,
-                      @Query("toYear") toYear: Int? = null,
-                      @Query("genre") genre: String? = null,
-                      @Query("musicFolderId") musicFolderId: String? = null): Call<GetAlbumList2Response>
+    fun getAlbumList2(
+            @Query("type") type: AlbumListType,
+            @Query("size") size: Int? = null,
+            @Query("offset") offset: Int? = null,
+            @Query("fromYear") fromYear: Int? = null,
+            @Query("toYear") toYear: Int? = null,
+            @Query("genre") genre: String? = null,
+            @Query("musicFolderId") musicFolderId: String? = null): Call<GetAlbumList2Response>
 
     @GET("getRandomSongs.view")
-    fun getRandomSongs(@Query("size") size: Int? = null,
-                       @Query("genre") genre: String? = null,
-                       @Query("fromYear") fromYear: Int? = null,
-                       @Query("toYear") toYear: Int? = null,
-                       @Query("musicFolderId") musicFolderId: String? = null): Call<GetRandomSongsResponse>
+    fun getRandomSongs(
+            @Query("size") size: Int? = null,
+            @Query("genre") genre: String? = null,
+            @Query("fromYear") fromYear: Int? = null,
+            @Query("toYear") toYear: Int? = null,
+            @Query("musicFolderId") musicFolderId: String? = null): Call<GetRandomSongsResponse>
 
     @GET("getStarred.view")
     fun getStarred(@Query("musicFolderId") musicFolderId: String? = null): Call<GetStarredResponse>
 
     @GET("getStarred2.view")
-    fun getStarred2(@Query("musicFolderId") musicFolderId: String? = null): Call<GetStarredTwoResponse>
+    fun getStarred2(
+            @Query("musicFolderId") musicFolderId: String? = null): Call<GetStarredTwoResponse>
 
     @Streaming
     @GET("getCoverArt.view")

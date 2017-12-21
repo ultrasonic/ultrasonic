@@ -27,11 +27,13 @@ class SubsonicApiGetVideosListTest : SubsonicAPIClientTest() {
         assertResponseSuccessful(response)
         with(response.body().videosList) {
             size `should equal to` 1
-            this[0] `should equal` MusicDirectoryChild(id = "10402", parent = "10401", isDir = false,
-                    title = "MVI_0512", album = "Incoming", size = 21889646,
-                    contentType = "video/avi", suffix = "avi", transcodedContentType = "video/x-flv",
-                    transcodedSuffix = "flv", path = "Incoming/MVI_0512.avi", isVideo = true,
-                    playCount = 0, created = parseDate("2017-11-19T12:34:33.000Z"), type = "video")
+            this[0] `should equal` MusicDirectoryChild(id = "10402", parent = "10401",
+                    isDir = false, title = "MVI_0512", album = "Incoming", size = 21889646,
+                    contentType = "video/avi", suffix = "avi",
+                    transcodedContentType = "video/x-flv", transcodedSuffix = "flv",
+                    path = "Incoming/MVI_0512.avi", isVideo = true,
+                    playCount = 0, created = parseDate("2017-11-19T12:34:33.000Z"),
+                    type = "video")
         }
     }
 }
