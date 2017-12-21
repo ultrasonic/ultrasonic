@@ -14,7 +14,7 @@ abstract class SubsonicAPIClientTest {
 
     @Before
     fun setUp() {
-        client = SubsonicAPIClient(mockWebServerRule.mockWebServer.url("/").toString(), USERNAME, PASSWORD,
-                CLIENT_VERSION, CLIENT_ID)
+        client = SubsonicAPIClient(mockWebServerRule.mockWebServer.url("/").toString(),
+                USERNAME, PASSWORD, CLIENT_VERSION, CLIENT_ID)
     }
 }

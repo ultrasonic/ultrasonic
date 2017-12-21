@@ -56,8 +56,8 @@ class SubsonicApiJukeboxControlTest : SubsonicAPIClientTest() {
                     artist = "The Pretty Reckless", track = 2, year = 2014, genre = "Hard Rock",
                     coverArt = "4186", size = 11089627, contentType = "audio/mpeg",
                     suffix = "mp3", duration = 277, bitRate = 320,
-                    path = "The Pretty Reckless/Going to Hell/02 Going to Hell.mp3", isVideo = false,
-                    playCount = 0, discNumber = 1,
+                    path = "The Pretty Reckless/Going to Hell/02 Going to Hell.mp3",
+                    isVideo = false, playCount = 0, discNumber = 1,
                     created = parseDate("2016-10-23T21:30:41.000Z"), albumId = "388",
                     artistId = "238", type = "music")
         }

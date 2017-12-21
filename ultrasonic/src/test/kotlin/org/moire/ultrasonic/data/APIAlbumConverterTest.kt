@@ -15,9 +15,9 @@ import java.util.Calendar
 class APIAlbumConverterTest {
     @Test
     fun `Should convert Album to domain entity`() {
-        val entity = Album(id = "387", name = "some-name", coverArt = "asdas", artist = "some-artist",
-                artistId = "390", songCount = 12, duration = 841, created = Calendar.getInstance(),
-                year = 2017, genre = "some-genre")
+        val entity = Album(id = "387", name = "some-name", coverArt = "asdas",
+                artist = "some-artist", artistId = "390", songCount = 12, duration = 841,
+                created = Calendar.getInstance(), year = 2017, genre = "some-genre")
 
         val convertedEntity = entity.toDomainEntity()
 

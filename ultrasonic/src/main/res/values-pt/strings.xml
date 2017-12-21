@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<resources>
+<resources xmlns:tools="http://schemas.android.com/tools">
 
     <string name="background_task.loading">Carregando&#8230;</string>
     <string name="background_task.network_error">Ocorreu um erro de rede. Verifique o endereço do servidor ou tente mais tarde.</string>
@@ -328,7 +328,7 @@
     <string name="util.bytes_format.gigabyte">0.00 GB</string>
     <string name="util.bytes_format.kilobyte">0 KB</string>
     <string name="util.bytes_format.megabyte">0.00 MB</string>
-    <string name="util.no_time">-:--</string>
+    <string name="util.no_time">&#8212;:&#8212;&#8212;</string>
     <string name="util.zero_time">0:00</string>
     <string name="video.get_mx_player_text">O player MX não está instalado. Descarregue da graça pela Play Store ou modifique as configurações de vídeo.</string>
     <string name="video.get_mx_player_button">Descarregar Player MX</string>
@@ -393,33 +393,33 @@
     <string name="albumArt">albumArt</string>
     <string name="common_multiple_years">Múltiplos Anos</string>
 
-    <plurals name="select_album_n_songs">
+    <plurals name="select_album_n_songs" tools:ignore="UnusedQuantity">
         <item quantity="zero">Nenhuma música</item>
-        <item quantity="one">1 música</item>
+        <item quantity="one">%d música</item>
         <item quantity="other">%d músicas</item>
     </plurals>
     <plurals name="select_album_n_songs_pinned">
-        <item quantity="one">1 música selecionada para ser fixada.</item>
+        <item quantity="one">%d música selecionada para ser fixada.</item>
         <item quantity="other">%d músicas selecionadas para serem fixadas.</item>
     </plurals>
     <plurals name="select_album_n_songs_downloaded">
-        <item quantity="one">1 música selecionada para descarregar.</item>
+        <item quantity="one">%d música selecionada para descarregar.</item>
         <item quantity="other">%d músicas selecionadas para serem descarregadas.</item>
     </plurals>
     <plurals name="select_album_n_songs_unpinned">
-        <item quantity="one">1 música selecionada para ser desafixada.</item>
+        <item quantity="one">%d música selecionada para ser desafixada.</item>
         <item quantity="other">%d músicas selecionadas para serem desfixadas.</item>
     </plurals>
     <plurals name="select_album_n_songs_added">
-        <item quantity="one">1 música adicionada ao fim da fila.</item>
+        <item quantity="one">%d música adicionada ao fim da fila.</item>
         <item quantity="other">%d músicas adicionadas ao fim da fila.</item>
     </plurals>
     <plurals name="select_album_n_songs_play_next">
-        <item quantity="one">1 música inserida após a atual.</item>
+        <item quantity="one">%d música inserida após a atual.</item>
         <item quantity="other">%d músicas inseridas após a atual.</item>
     </plurals>
     <plurals name="select_album_donate_dialog_n_trial_days_left">
-        <item quantity="one">Resta 1 dia para o fim do período de teste</item>
+        <item quantity="one">Resta %d dia para o fim do período de teste</item>
         <item quantity="other">Restam %d dias para o fim do período de teste</item>
     </plurals>
 

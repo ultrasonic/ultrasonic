@@ -5,7 +5,6 @@ apply from: "../gradle_scripts/code_quality.gradle"
 
 android {
     compileSdkVersion versions.compileSdk
-    buildToolsVersion versions.buildTools
 
     defaultConfig {
         applicationId "org.moire.ultrasonic"
@@ -42,21 +41,21 @@ android {
 }
 
 dependencies {
-    compile project(':menudrawer')
-    compile project(':pulltorefresh')
-    compile project(':library')
-    compile project(':subsonic-api')
+    implementation project(':menudrawer')
+    implementation project(':pulltorefresh')
+    implementation project(':library')
+    implementation project(':subsonic-api')
 
-    compile androidSupport.support
-    compile androidSupport.design
+    implementation androidSupport.support
+    implementation androidSupport.design
 
-    compile other.kotlinStdlib
+    implementation other.kotlinStdlib
 
-    testCompile other.kotlinReflect
-    testCompile testing.junit
-    testCompile testing.kotlinJunit
-    testCompile testing.mockitoKotlin
-    testCompile testing.kluent
+    testImplementation other.kotlinReflect
+    testImplementation testing.junit
+    testImplementation testing.kotlinJunit
+    testImplementation testing.mockitoKotlin
+    testImplementation testing.kluent
 }
 
 // Excluding all non-kotlin classes

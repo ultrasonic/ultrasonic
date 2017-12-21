@@ -55,7 +55,8 @@ enum class SubsonicAPIVersions(val subsonicVersions: String, val restApiVersion:
         }
 
         class SubsonicAPIVersionsDeserializer : JsonDeserializer<SubsonicAPIVersions>() {
-            override fun deserialize(p: JsonParser, ctxt: DeserializationContext?): SubsonicAPIVersions {
+            override fun deserialize(p: JsonParser,
+                                     ctxt: DeserializationContext?): SubsonicAPIVersions {
                 if (p.currentName != "version") {
                     throw JsonParseException(p, "Not valid token for API version!")
                 }
