@@ -37,6 +37,7 @@ public class ServerSettingsFragment extends PreferenceFragment
     private EditTextPreference serverPasswordPref;
     private CheckBoxPreference equalizerPref;
     private CheckBoxPreference jukeboxPref;
+    private CheckBoxPreference allowSelfSignedCertificatePref;
     private Preference removeServerPref;
     private Preference testConnectionPref;
 
@@ -74,6 +75,8 @@ public class ServerSettingsFragment extends PreferenceFragment
         jukeboxPref = (CheckBoxPreference) findPreference(getString(R.string.jukebox_is_default));
         removeServerPref = findPreference(getString(R.string.settings_server_remove_server));
         testConnectionPref = findPreference(getString(R.string.settings_test_connection_title));
+        allowSelfSignedCertificatePref = (CheckBoxPreference) findPreference(
+                getString(R.string.settings_allow_self_signed_certificate));
 
         setupPreferencesValues();
         setupPreferencesListeners();
@@ -132,6 +135,11 @@ public class ServerSettingsFragment extends PreferenceFragment
                     .putBoolean(Constants.PREFERENCES_KEY_JUKEBOX_BY_DEFAULT + serverId, (Boolean) newValue)
                     .apply();
             return true;
+        } else if (preference == allowSelfSignedCertificatePref) {
+            sharedPreferences.edit()
+                    .putBoolean(Constants.PREFERENCES_KEY_ALLOW_SELF_SIGNED_CERTIFICATE + serverId, (Boolean) newValue)
+                    .apply();
+            return true;
         }
         return false;
     }
@@ -164,6 +172,9 @@ public class ServerSettingsFragment extends PreferenceFragment
 
         jukeboxPref.setChecked(sharedPreferences
                 .getBoolean(Constants.PREFERENCES_KEY_JUKEBOX_BY_DEFAULT + serverId, false));
+
+        allowSelfSignedCertificatePref.setChecked(sharedPreferences
+                .getBoolean(Constants.PREFERENCES_KEY_ALLOW_SELF_SIGNED_CERTIFICATE + serverId, false));
     }
 
     private void updatePassword() {
@@ -201,6 +212,7 @@ public class ServerSettingsFragment extends PreferenceFragment
         serverPasswordPref.setOnPreferenceChangeListener(this);
         equalizerPref.setOnPreferenceChangeListener(this);
         jukeboxPref.setOnPreferenceChangeListener(this);
+        allowSelfSignedCertificatePref.setOnPreferenceChangeListener(this);
 
         removeServerPref.setOnPreferenceClickListener(this);
         testConnectionPref.setOnPreferenceClickListener(this);
@@ -262,6 +274,7 @@ public class ServerSettingsFragment extends PreferenceFragment
                 .remove(Constants.PREFERENCES_KEY_PASSWORD + serverId)
                 .remove(Constants.PREFERENCES_KEY_SERVER_ENABLED + serverId)
                 .remove(Constants.PREFERENCES_KEY_JUKEBOX_BY_DEFAULT + serverId)
+                .remove(Constants.PREFERENCES_KEY_ALLOW_SELF_SIGNED_CERTIFICATE + serverId)
                 .apply();
 
         if (serverId < activeServers) {
