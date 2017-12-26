@@ -17,7 +17,11 @@ import org.moire.ultrasonic.api.subsonic.response.SubsonicResponse
 import retrofit2.Response
 import retrofit2.Retrofit
 import retrofit2.converter.jackson.JacksonConverterFactory
+import java.security.SecureRandom
+import java.security.cert.X509Certificate
 import java.util.concurrent.TimeUnit.MILLISECONDS
+import javax.net.ssl.SSLContext
+import javax.net.ssl.X509TrustManager
 
 private const val READ_TIMEOUT = 60_000L
 
@@ -36,6 +40,7 @@ class SubsonicAPIClient(baseUrl: String,
                         password: String,
                         minimalProtocolVersion: SubsonicAPIVersions,
                         clientID: String,
+                        allowSelfSignedCertificate: Boolean = false,
                         debug: Boolean = false) {
     private val versionInterceptor = VersionInterceptor(minimalProtocolVersion) {
         protocolVersion = it
@@ -56,6 +61,7 @@ class SubsonicAPIClient(baseUrl: String,
 
     private val okHttpClient = OkHttpClient.Builder()
             .readTimeout(READ_TIMEOUT, MILLISECONDS)
+            .apply { if (allowSelfSignedCertificate) allowSelfSignedCertificates() }
             .addInterceptor { chain ->
                 // Adds default request params
                 val originalRequest = chain.request()
@@ -164,5 +170,21 @@ class SubsonicAPIClient(baseUrl: String,
         val loggingInterceptor = HttpLoggingInterceptor()
         loggingInterceptor.level = HttpLoggingInterceptor.Level.BODY
         this.addInterceptor(loggingInterceptor)
+    }
+
+    @SuppressWarnings("TrustAllX509TrustManager")
+    private fun OkHttpClient.Builder.allowSelfSignedCertificates() {
+        val trustManager = object : X509TrustManager {
+            override fun checkClientTrusted(p0: Array<out X509Certificate>?, p1: String?) {}
+            override fun checkServerTrusted(p0: Array<out X509Certificate>?, p1: String?) {}
+            override fun getAcceptedIssuers(): Array<X509Certificate> = emptyArray()
+        }
+
+        val sslContext = SSLContext.getInstance("SSL")
+        sslContext.init(null, arrayOf(trustManager), SecureRandom())
+
+        sslSocketFactory(sslContext.socketFactory, trustManager)
+
+        hostnameVerifier { _, _ -> true }
     }
 }

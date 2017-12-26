@@ -300,6 +300,7 @@
     <string name="settings.theme_dark">Sötét</string>
     <string name="settings.theme_light">Világos</string>
     <string name="settings.theme_title">Téma</string>
+    <string name="settings.title.allow_self_signed_certificate">Engedélyezze az önaláírt HTTPS tanúsítványt</string>
     <string name="settings.use_folder_for_album_artist">Mappanevek használata az előadók neveként</string>
     <string name="settings.use_folder_for_album_artist_summary">Feltételezi, hogy a legfelső szintű mappa az előadó neve.</string>
     <string name="settings.use_id3">Böngészés ID3 Tag használatával</string>

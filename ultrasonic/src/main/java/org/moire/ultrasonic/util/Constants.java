@@ -72,11 +72,11 @@ public final class Constants
 	public static final String PREFERENCES_KEY_SERVER_URL = "serverUrl";
 	public static final String PREFERENCES_KEY_SERVERS_KEY = "serversKey";
 	public static final String PREFERENCES_KEY_ADD_SERVER = "addServer";
-	public static final String PREFERENCES_KEY_REMOVE_SERVER = "removeServer";
 	public static final String PREFERENCES_KEY_ACTIVE_SERVERS = "activeServers";
 	public static final String PREFERENCES_KEY_MUSIC_FOLDER_ID = "musicFolderId";
 	public static final String PREFERENCES_KEY_USERNAME = "username";
 	public static final String PREFERENCES_KEY_PASSWORD = "password";
+	public static final String PREFERENCES_KEY_ALLOW_SELF_SIGNED_CERTIFICATE = "allowSSCertificate";
 	public static final String PREFERENCES_KEY_INSTALL_TIME = "installTime";
 	public static final String PREFERENCES_KEY_THEME = "theme";
 	public static final String PREFERENCES_KEY_DISPLAY_BITRATE_WITH_ARTIST = "displayBitrateWithArtist";
@@ -109,7 +109,6 @@ public final class Constants
 	public static final String PREFERENCES_KEY_GAPLESS_PLAYBACK = "gaplessPlayback";
 	public static final String PREFERENCES_KEY_PLAYBACK_CONTROL_SETTINGS = "playbackControlSettings";
 	public static final String PREFERENCES_KEY_CLEAR_SEARCH_HISTORY = "clearSearchHistory";
-	public static final String PREFERENCES_KEY_TEST_CONNECTION = "testConnection";
 	public static final String PREFERENCES_KEY_DOWNLOAD_TRANSITION = "transitionToDownloadOnPlay";
 	public static final String PREFERENCES_KEY_INCREMENT_TIME = "incrementTime";
 	public static final String PREFERENCES_KEY_ID3_TAGS = "useId3Tags";
