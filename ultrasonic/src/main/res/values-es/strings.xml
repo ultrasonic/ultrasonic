@@ -300,7 +300,7 @@
     <string name="settings.theme_dark">Oscuro</string>
     <string name="settings.theme_light">Claro</string>
     <string name="settings.theme_title">Tema</string>
-    <string name="settings.title.allow_self_signed_certificate">Permita el certificado HTTPS autofirmado</string>
+    <string name="settings.title.allow_self_signed_certificate">Permir certificado HTTPS autofirmado</string>
     <string name="settings.use_folder_for_album_artist">Usar carpetas para el nombre del artista</string>
     <string name="settings.use_folder_for_album_artist_summary">Se asume que la carpeta en el nivel mal alto es el nombre del artista del álbum</string>
     <string name="settings.use_id3">Navegar usando las etiquetas ID3</string>
