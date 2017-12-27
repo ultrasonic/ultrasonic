@@ -7,7 +7,7 @@ apply from: "../gradle_scripts/code_quality.gradle"
 advancedVersioning {
     nameOptions {
         versionMajor 2
-        versionMinor 0
+        versionMinor 2
         versionPatch 0
     }
     codeOptions {

@@ -1,6 +1,7 @@
 package org.moire.ultrasonic.api.subsonic
 
 import okhttp3.mockwebserver.MockResponse
+import okhttp3.mockwebserver.MockWebServer
 import okio.Okio
 import org.amshove.kluent.`should be`
 import org.amshove.kluent.`should contain`
@@ -8,6 +9,7 @@ import org.amshove.kluent.`should not be`
 import org.moire.ultrasonic.api.subsonic.response.SubsonicResponse
 import org.moire.ultrasonic.api.subsonic.rules.MockWebServerRule
 import retrofit2.Response
+import java.io.InputStream
 import java.nio.charset.Charset
 import java.text.SimpleDateFormat
 import java.util.Calendar
@@ -24,14 +26,23 @@ val dateFormat by lazy(LazyThreadSafetyMode.NONE, {
 })
 
 fun MockWebServerRule.enqueueResponse(resourceName: String) {
-    this.mockWebServer.enqueue(MockResponse()
+    mockWebServer.enqueueResponse(resourceName)
+}
+
+fun MockWebServer.enqueueResponse(resourceName: String) {
+    enqueue(MockResponse()
             .setBody(loadJsonResponse(resourceName))
             .setHeader("Content-Type", "application/json;charset=UTF-8"))
 }
 
-fun MockWebServerRule.loadJsonResponse(name: String): String {
+fun Any.loadJsonResponse(name: String): String {
     val source = Okio.buffer(Okio.source(javaClass.classLoader.getResourceAsStream(name)))
     return source.readString(Charset.forName("UTF-8"))
+}
+
+fun Any.loadResourceStream(name: String): InputStream {
+    val source = Okio.buffer(Okio.source(javaClass.classLoader.getResourceAsStream(name)))
+    return source.inputStream()
 }
 
 fun <T> assertResponseSuccessful(response: Response<T>) {

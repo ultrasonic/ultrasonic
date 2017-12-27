@@ -303,6 +303,7 @@
     <string name="settings.theme_dark">Escuro</string>
     <string name="settings.theme_light">Claro</string>
     <string name="settings.theme_title">Tema</string>
+    <string name="settings.title.allow_self_signed_certificate">Permitir o certificado HTTPS auto-assinado</string>
     <string name="settings.use_folder_for_album_artist">Pasta para Nome do Artista</string>
     <string name="settings.use_folder_for_album_artist_summary">Assume que a pasta mais acima é o nome do artista</string>
     <string name="settings.use_id3">Navegar Usando Etiquetas ID3</string>

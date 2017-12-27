@@ -39,6 +39,12 @@
         android:title="@string/equalizer.enabled"
         />
     <CheckBoxPreference
+        android:key="@string/settings.allow_self_signed_certificate"
+        android:persistent="false"
+        android:defaultValue="false"
+        android:title="@string/settings.title.allow_self_signed_certificate"
+        />
+    <CheckBoxPreference
         android:key="@string/jukebox.is_default"
         android:persistent="false"
         android:defaultValue="false"
