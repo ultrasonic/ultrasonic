@@ -21,6 +21,15 @@ otherwise open [a new issue](https://github.com/ultrasonic/ultrasonic/issues/new
 
 See [CONTRIBUTING](CONTRIBUTING.md).
 
+## Supported (tested) Subsonic API implementations
+
+- [Subsonic](http://www.subsonic.org/pages/index.jsp)
+- [Airsonic](https://github.com/airsonic/airsonic)
+- [Supysonic](https://github.com/spl0k/supysonic)
+
+Other *Subsonic API* implementations should work as well as long as they follow API 
+[documentation](http://www.subsonic.org/pages/api.jsp).
+
 ## License
 
 This software is licensed under the terms of the GNU General Public License version 3 (GPLv3).
