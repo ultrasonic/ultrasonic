@@ -253,6 +253,8 @@
     <string name="settings.preload_3">3 songs</string>
     <string name="settings.preload_5">5 songs</string>
     <string name="settings.preload_unlimited">Unlimited</string>
+    <string name="settings.playback.resume_play_on_headphones_plug.title">Resume on headphones insertion</string>
+    <string name="settings.playback.resume_play_on_headphones_plug.summary">App will resume paused playback on headphones insertion into device.</string>
     <string name="settings.screen_lit_summary">Keeping the screen on while downloading improves download speed.</string>
     <string name="settings.screen_lit_title">Keep Screen On</string>
     <string name="settings.scrobble_summary">Remember to set up your Last.fm user and password on the Subsonic server</string>

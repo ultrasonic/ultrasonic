@@ -249,6 +249,8 @@
     <string name="settings.preload_3">3 morceaux</string>
     <string name="settings.preload_5">5 morceaux</string>
     <string name="settings.preload_unlimited">Illimité</string>
+    <string name="settings.playback.resume_play_on_headphones_plug.title">Reprise de l\'insertion des écouteurs</string>
+    <string name="settings.playback.resume_play_on_headphones_plug.summary">L\'application reprendra la lecture en pause lors de l\'insertion du casque dans l\'appareil.</string>
     <string name="settings.screen_lit_summary">Garder l\'écran allumé pendant le téléchargement permet d\'améliorer la vitesse de téléchargement.</string>
     <string name="settings.screen_lit_title">Garder écran allumé</string>
     <string name="settings.scrobble_summary">N\'oubliez pas de définir votre nom d\'utilisateur et mot de passe Last.fm sur le serveur Subsonic</string>
