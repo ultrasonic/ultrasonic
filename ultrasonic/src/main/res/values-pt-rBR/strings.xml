@@ -252,6 +252,8 @@
     <string name="settings.preload_3">3 músicas</string>
     <string name="settings.preload_5">5 músicas</string>
     <string name="settings.preload_unlimited">Ilimitado</string>
+    <string name="settings.playback.resume_play_on_headphones_plug.title">Currículo na inserção de fone de ouvido</string>
+    <string name="settings.playback.resume_play_on_headphones_plug.summary">O aplicativo retomará a reprodução em pausa na inserção dos fones de ouvido no dispositivo.</string>
     <string name="settings.screen_lit_summary">Manter a tela ligada enquanto baixando aumenta a velocidade de download.</string>
     <string name="settings.screen_lit_title">Manter a Tela Ligada</string>
     <string name="settings.scrobble_summary">Lembre-se de definir seu usuário e senha do Last.fm no servidor Subsonic</string>

@@ -249,6 +249,8 @@
     <string name="settings.preload_3">3 dal</string>
     <string name="settings.preload_5">5 dal</string>
     <string name="settings.preload_unlimited">Korlátlan</string>
+    <string name="settings.playback.resume_play_on_headphones_plug.title">Folytatás a fejhallgató behelyezésekor</string>
+    <string name="settings.playback.resume_play_on_headphones_plug.summary">Az alkalmazás folytatja a szüneteltetett lejátszást a fejhallgató behelyezésekor a készülékbe.</string>
     <string name="settings.screen_lit_summary">Képernyő ébrentartása a letöltés alatt, a magasabb letöltési sebesség érdekében.</string>
     <string name="settings.screen_lit_title">Képernyő ébrentartása</string>
     <string name="settings.scrobble_summary">A Last.fm felhasználónevet és jelszót be kell állítani a Subsonic kiszolgálón!</string>
