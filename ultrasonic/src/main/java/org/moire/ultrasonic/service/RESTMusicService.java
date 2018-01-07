@@ -698,7 +698,7 @@ public class RESTMusicService implements MusicService {
             throws SubsonicRESTException, IOException {
         if (response.hasError() || response.getStream() == null) {
             if (response.getApiError() != null) {
-                throw new SubsonicRESTException(response.getApiError().getCode(), "rest error");
+                throw new SubsonicRESTException(response.getApiError());
             } else {
                 throw new IOException("Failed to make endpoint request, code: " +
                         response.getResponseHttpCode());

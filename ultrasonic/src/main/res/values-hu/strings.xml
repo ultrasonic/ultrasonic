@@ -108,12 +108,8 @@
     <string name="music_library.label_offline">Kapcsolat nélküli médiák</string>
     <string name="music_service.retry">Hálózati hiba történt! Újrapróbálkozás %1$d - %2$d.</string>
     <string name="parser.artist_count">%d előadó található a médiakönyvtárban.</string>
-    <string name="parser.not_authenticated">Hibás felhasználónév vagy jelszó!</string>
-    <string name="parser.not_authorized">Nem engedélyezett! Ellenőrizze a felhasználó jogosultságait a Subsonic kiszolgálón!</string>
     <string name="parser.reading">Olvasás a kiszolgálóról&#8230;</string>
     <string name="parser.reading_done">Olvasás a kiszolgálóról&#8230; Kész!</string>
-    <string name="parser.upgrade_client">Nem kompatibilis verzió. Kérjük, frissítse az UltraSonic Android alkalmazást!</string>
-    <string name="parser.upgrade_server">Nem kompatibilis verzió. Kérjük, frissítse a Subsonic kiszolgálót!</string>
     <string name="playlist.label">Lejátszási listák</string>
     <string name="playlist.update_info">Módosítás</string>
     <string name="playlist.updated_info">Módosított lejátszási lista %s</string>
@@ -425,5 +421,17 @@
     <string name="button_bar.podcasts">Podcast</string>
     <string name="podcasts.label">Podcast</string>
     <string name="podcasts_channels.empty">No podcasts channels registered</string>
+
+    <!-- Subsonic api errors -->
+    <string name="api.subsonic.generic">Általános api hiba.</string>
+    <string name="api.subsonic.token_auth_not_supported_for_ldap">Az LDAP-felhasználók számára nem támogatott a token-hitelesítés.</string>
+    <string name="api.subsonic.not_authenticated">Hibás felhasználónév vagy jelszó!</string>
+    <string name="api.subsonic.not_authorized">Nem engedélyezett! Ellenőrizze a felhasználó jogosultságait a Subsonic kiszolgálón!</string>
+    <string name="api.subsonic.param_missing">A szükséges param hiányzik.</string>
+    <string name="api.subsonic.requested_data_was_not_found">A keresett adatokat nem találtuk.</string>
+    <string name="api.subsonic.trial_period_is_over">A próbaidő vége.</string>
+    <string name="api.subsonic.unknown_api_error">Ismeretlen api hiba.</string>
+    <string name="api.subsonic.upgrade_client">Nem kompatibilis verzió. Kérjük, frissítse az UltraSonic Android alkalmazást!</string>
+    <string name="api.subsonic.upgrade_server">Nem kompatibilis verzió. Kérjük, frissítse a Subsonic kiszolgálót!</string>
 
 </resources>

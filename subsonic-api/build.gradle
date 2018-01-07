@@ -12,7 +12,7 @@ sourceSets {
 dependencies {
     api other.kotlinStdlib
     api other.retrofit
-    implementation other.jacksonConverter
+    api other.jacksonConverter
     implementation(other.jacksonKotlin) {
         exclude module: 'kotlin-reflect'
     }

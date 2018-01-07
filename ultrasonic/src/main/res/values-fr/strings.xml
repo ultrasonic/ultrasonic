@@ -108,12 +108,8 @@
     <string name="music_library.label_offline">Musique hors-ligne</string>
     <string name="music_service.retry">Une erreur de réseau s\'est produite. Essai %1$d de %2$d.</string>
     <string name="parser.artist_count">%d artistes récupérés.</string>
-    <string name="parser.not_authenticated">Mauvais nom d\'usager ou mot de passe.</string>
-    <string name="parser.not_authorized">Non autorisé. Vérifiez les permissions de l\'utilisateur dans le serveur Subsonic.</string>
     <string name="parser.reading">Lecture du serveur.</string>
     <string name="parser.reading_done">Lecture du serveur. Terminé!</string>
-    <string name="parser.upgrade_client">Versions incompatible. Veuillez mette à jour l\'application Android UltraSonic.</string>
-    <string name="parser.upgrade_server">Versions incompatible. Veuillez mette à jour le serveur Subsonic.</string>
     <string name="playlist.label">Playlists</string>
     <string name="playlist.update_info">Mise à jour des informations</string>
     <string name="playlist.updated_info">Informations de la playlist %s mises à jour</string>
@@ -425,5 +421,17 @@
     <string name="button_bar.podcasts">Podcast</string>
     <string name="podcasts.label">Podcast</string>
     <string name="podcasts_channels.empty">No podcasts channels registered</string>
+
+    <!-- Subsonic api errors -->
+    <string name="api.subsonic.generic">Erreur api générique.</string>
+    <string name="api.subsonic.token_auth_not_supported_for_ldap">L\'authentification par jeton n\'est pas prise en charge pour les utilisateurs LDAP.</string>
+    <string name="api.subsonic.not_authenticated">Mauvais nom d\'usager ou mot de passe.</string>
+    <string name="api.subsonic.not_authorized">Non autorisé. Vérifiez les permissions de l\'utilisateur dans le serveur Subsonic.</string>
+    <string name="api.subsonic.param_missing">Param nécessaire manquant.</string>
+    <string name="api.subsonic.requested_data_was_not_found">Les données demandées n\'ont pas été trouvées.</string>
+    <string name="api.subsonic.trial_period_is_over">La période d\'essai est terminée.</string>
+    <string name="api.subsonic.unknown_api_error">Erreur d\'api inconnue.</string>
+    <string name="api.subsonic.upgrade_client">Versions incompatible. Veuillez mette à jour l\'application Android UltraSonic.</string>
+    <string name="api.subsonic.upgrade_server">Versions incompatible. Veuillez mette à jour le serveur Subsonic.</string>
 
 </resources>
