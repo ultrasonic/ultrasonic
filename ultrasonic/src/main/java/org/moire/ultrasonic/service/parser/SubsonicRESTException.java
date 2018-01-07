@@ -1,26 +1,27 @@
 package org.moire.ultrasonic.service.parser;
 
+import org.moire.ultrasonic.api.subsonic.SubsonicError;
+
 /**
+ * Exception returned by API with given {@code code}.
+ *
  * @author Sindre Mehus
  * @version $Id$
  */
-public class SubsonicRESTException extends Exception
-{
+public class SubsonicRESTException extends Exception {
+    private final SubsonicError error;
 
-	/**
-	 *
-	 */
-	private static final long serialVersionUID = 859440717343258203L;
-	private final int code;
+    public SubsonicRESTException(final SubsonicError error) {
+        super("Api error: " + error.name());
+        this.error = error;
+    }
 
-	public SubsonicRESTException(int code, String message)
-	{
-		super(message);
-		this.code = code;
-	}
+    public int getCode()
+    {
+        return error.getCode();
+    }
 
-	public int getCode()
-	{
-		return code;
-	}
+    public SubsonicError getError() {
+        return error;
+    }
 }

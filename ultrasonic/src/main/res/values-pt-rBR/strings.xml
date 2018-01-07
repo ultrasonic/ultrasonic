@@ -111,12 +111,8 @@
     <string name="music_library.label_offline">Mídia Offline</string>
     <string name="music_service.retry">Ocorreu um erro de rede. Tentativa %1$d de %2$d.</string>
     <string name="parser.artist_count">Obtive %d Artistas.</string>
-    <string name="parser.not_authenticated">Login ou senha errada.</string>
-    <string name="parser.not_authorized">Não autorizado. Verifique as permissões do usuário no servidor Subsonic.</string>
     <string name="parser.reading">Lendo do servidor.</string>
     <string name="parser.reading_done">Lendo do servidor. Pronto!</string>
-    <string name="parser.upgrade_client">Versões incompativeis. Atualize o aplicativo UltraSonic para Android.</string>
-    <string name="parser.upgrade_server">Versões incompativeis. Atualize o servidor UltraSonic.</string>
     <string name="playlist.label">Playlists</string>
     <string name="playlist.update_info">Atualizar Informação</string>
     <string name="playlist.updated_info">Informação da playlist atualizada para %s</string>
@@ -425,5 +421,17 @@
         <item quantity="one">Resta 1 dia para o fim do período de teste</item>
         <item quantity="other">Restam %d dias para o fim do período de teste</item>
     </plurals>
+
+    <!-- Subsonic api errors -->
+    <string name="api.subsonic.generic">Erro de api genérico.</string>
+    <string name="api.subsonic.token_auth_not_supported_for_ldap">A autenticação por token não é suportada para usuários LDAP.</string>
+    <string name="api.subsonic.not_authenticated">Login ou senha errada.</string>
+    <string name="api.subsonic.not_authorized">Não autorizado. Verifique as permissões do usuário no servidor Subsonic.</string>
+    <string name="api.subsonic.param_missing">O parâmetro requerido está faltando.</string>
+    <string name="api.subsonic.requested_data_was_not_found">Os dados solicitados não foram encontrados.</string>
+    <string name="api.subsonic.trial_period_is_over">O período de avaliação acabou.</string>
+    <string name="api.subsonic.unknown_api_error">Erro de api desconhecido.</string>
+    <string name="api.subsonic.upgrade_client">Versões incompativeis. Atualize o aplicativo UltraSonic para Android.</string>
+    <string name="api.subsonic.upgrade_server">Versões incompativeis. Atualize o servidor UltraSonic.</string>
 
 </resources>

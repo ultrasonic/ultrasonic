@@ -24,6 +24,8 @@ import android.util.Log;
 
 import org.moire.ultrasonic.R;
 
+import org.moire.ultrasonic.service.parser.SubsonicRESTException;
+import org.moire.ultrasonic.subsonic.RestErrorMapper;
 import org.xmlpull.v1.XmlPullParserException;
 
 import java.io.FileNotFoundException;
@@ -89,6 +91,10 @@ public abstract class BackgroundTask<T> implements ProgressListener
 		{
 			return activity.getResources().getString(R.string.background_task_parse_error);
 		}
+
+        if (error instanceof SubsonicRESTException) {
+            return RestErrorMapper.getLocalizedErrorMessage((SubsonicRESTException) error, activity);
+        }
 
 		String message = error.getMessage();
 		if (message != null)
