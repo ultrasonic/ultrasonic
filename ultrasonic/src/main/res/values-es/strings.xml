@@ -423,7 +423,7 @@
     <string name="podcasts_channels.empty">No hay canales de Podcasts registrados</string>
 
     <!-- Subsonic api errors -->
-    <string name="api.subsonic.generic">Error genérico de api.</string>
+    <string name="api.subsonic.generic">Error genérico de api: %1$s</string>
     <string name="api.subsonic.token_auth_not_supported_for_ldap">La autenticación por token no es compatible con usuarios LDAP.</string>
     <string name="api.subsonic.not_authenticated">Nombre de usuario o contraseña incorrectos.</string>
     <string name="api.subsonic.not_authorized">No autorizado. Comprueba los permisos de usuario en el servidor de Subsonic.</string>

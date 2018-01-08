@@ -425,7 +425,7 @@
     </plurals>
 
     <!-- Subsonic api errors -->
-    <string name="api.subsonic.generic">Generic api error.</string>
+    <string name="api.subsonic.generic">Generic api error: %1$s</string>
     <string name="api.subsonic.token_auth_not_supported_for_ldap">Authentication by token is not supported for LDAP users.</string>
     <string name="api.subsonic.not_authenticated">Wrong username or password.</string>
     <string name="api.subsonic.not_authorized">Not authorized. Check user permissions in Subsonic server.</string>
