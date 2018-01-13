@@ -31,7 +31,6 @@ import org.moire.ultrasonic.R;
 import org.moire.ultrasonic.api.subsonic.ApiNotSupportedException;
 import org.moire.ultrasonic.domain.JukeboxStatus;
 import org.moire.ultrasonic.domain.PlayerState;
-import org.moire.ultrasonic.service.parser.SubsonicRESTException;
 import org.moire.ultrasonic.util.Util;
 
 import java.util.ArrayList;

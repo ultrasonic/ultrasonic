@@ -3,16 +3,16 @@ package org.moire.ultrasonic.subsonic
 
 import android.content.Context
 import org.moire.ultrasonic.R
-import org.moire.ultrasonic.api.subsonic.SubsonicError.GENERIC
-import org.moire.ultrasonic.api.subsonic.SubsonicError.INCOMPATIBLE_CLIENT_PROTOCOL_VERSION
-import org.moire.ultrasonic.api.subsonic.SubsonicError.INCOMPATIBLE_SERVER_PROTOCOL_VERSION
-import org.moire.ultrasonic.api.subsonic.SubsonicError.REQUESTED_DATA_WAS_NOT_FOUND
-import org.moire.ultrasonic.api.subsonic.SubsonicError.REQUIRED_PARAM_MISSING
-import org.moire.ultrasonic.api.subsonic.SubsonicError.TOKEN_AUTH_NOT_SUPPORTED_FOR_LDAP
-import org.moire.ultrasonic.api.subsonic.SubsonicError.TRIAL_PERIOD_IS_OVER
-import org.moire.ultrasonic.api.subsonic.SubsonicError.USER_NOT_AUTHORIZED_FOR_OPERATION
-import org.moire.ultrasonic.api.subsonic.SubsonicError.WRONG_USERNAME_OR_PASSWORD
-import org.moire.ultrasonic.service.parser.SubsonicRESTException
+import org.moire.ultrasonic.api.subsonic.SubsonicError.Generic
+import org.moire.ultrasonic.api.subsonic.SubsonicError.IncompatibleClientProtocolVersion
+import org.moire.ultrasonic.api.subsonic.SubsonicError.IncompatibleServerProtocolVersion
+import org.moire.ultrasonic.api.subsonic.SubsonicError.RequestedDataWasNotFound
+import org.moire.ultrasonic.api.subsonic.SubsonicError.RequiredParamMissing
+import org.moire.ultrasonic.api.subsonic.SubsonicError.TokenAuthNotSupportedForLDAP
+import org.moire.ultrasonic.api.subsonic.SubsonicError.TrialPeriodIsOver
+import org.moire.ultrasonic.api.subsonic.SubsonicError.UserNotAuthorizedForOperation
+import org.moire.ultrasonic.api.subsonic.SubsonicError.WrongUsernameOrPassword
+import org.moire.ultrasonic.service.SubsonicRESTException
 
 /**
  * Extension for [SubsonicRESTException] that returns localized error string, that can used to
@@ -20,19 +20,19 @@ import org.moire.ultrasonic.service.parser.SubsonicRESTException
  */
 fun SubsonicRESTException.getLocalizedErrorMessage(context: Context): String =
         when (error) {
-            GENERIC -> context.getString(R.string.api_subsonic_generic, message)
-            REQUIRED_PARAM_MISSING -> context.getString(R.string.api_subsonic_param_missing)
-            INCOMPATIBLE_CLIENT_PROTOCOL_VERSION -> context
+            is Generic -> context
+                    .getString(R.string.api_subsonic_generic, (error as Generic).message)
+            RequiredParamMissing -> context.getString(R.string.api_subsonic_param_missing)
+            IncompatibleClientProtocolVersion -> context
                     .getString(R.string.api_subsonic_upgrade_client)
-            INCOMPATIBLE_SERVER_PROTOCOL_VERSION -> context
+            IncompatibleServerProtocolVersion -> context
                     .getString(R.string.api_subsonic_upgrade_server)
-            WRONG_USERNAME_OR_PASSWORD -> context.getString(R.string.api_subsonic_not_authenticated)
-            TOKEN_AUTH_NOT_SUPPORTED_FOR_LDAP -> context
+            WrongUsernameOrPassword -> context.getString(R.string.api_subsonic_not_authenticated)
+            TokenAuthNotSupportedForLDAP -> context
                     .getString(R.string.api_subsonic_token_auth_not_supported_for_ldap)
-            USER_NOT_AUTHORIZED_FOR_OPERATION -> context
+            UserNotAuthorizedForOperation -> context
                     .getString(R.string.api_subsonic_not_authorized)
-            TRIAL_PERIOD_IS_OVER -> context.getString(R.string.api_subsonic_trial_period_is_over)
-            REQUESTED_DATA_WAS_NOT_FOUND -> context
+            TrialPeriodIsOver -> context.getString(R.string.api_subsonic_trial_period_is_over)
+            RequestedDataWasNotFound -> context
                     .getString(R.string.api_subsonic_requested_data_was_not_found)
-            else -> context.getString(R.string.api_subsonic_unknown_api_error)
         }

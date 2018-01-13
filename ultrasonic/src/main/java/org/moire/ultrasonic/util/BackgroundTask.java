@@ -25,7 +25,7 @@ import android.util.Log;
 import com.fasterxml.jackson.core.JsonParseException;
 
 import org.moire.ultrasonic.R;
-import org.moire.ultrasonic.service.parser.SubsonicRESTException;
+import org.moire.ultrasonic.service.SubsonicRESTException;
 import org.moire.ultrasonic.subsonic.RestErrorMapper;
 
 import java.io.FileNotFoundException;

@@ -430,7 +430,6 @@
     <string name="api.subsonic.param_missing">O parâmetro requerido está faltando.</string>
     <string name="api.subsonic.requested_data_was_not_found">Os dados solicitados não foram encontrados.</string>
     <string name="api.subsonic.trial_period_is_over">O período de avaliação acabou.</string>
-    <string name="api.subsonic.unknown_api_error">Erro de api desconhecido.</string>
     <string name="api.subsonic.upgrade_client">Versões incompativeis. Atualize o aplicativo UltraSonic para Android.</string>
     <string name="api.subsonic.upgrade_server">Versões incompativeis. Atualize o servidor UltraSonic.</string>
 

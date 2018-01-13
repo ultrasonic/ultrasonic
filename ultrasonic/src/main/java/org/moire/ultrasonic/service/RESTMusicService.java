@@ -89,7 +89,6 @@ import org.moire.ultrasonic.domain.SearchCriteria;
 import org.moire.ultrasonic.domain.SearchResult;
 import org.moire.ultrasonic.domain.Share;
 import org.moire.ultrasonic.domain.UserInfo;
-import org.moire.ultrasonic.service.parser.SubsonicRESTException;
 import org.moire.ultrasonic.util.CancellableTask;
 import org.moire.ultrasonic.util.FileUtil;
 import org.moire.ultrasonic.util.ProgressListener;
@@ -1077,7 +1076,7 @@ public class RESTMusicService implements MusicService {
     }
 
     private void checkResponseSuccessful(@NonNull final Response<? extends SubsonicResponse> response)
-            throws IOException {
+            throws SubsonicRESTException, IOException {
         if (response.isSuccessful() &&
                 response.body().getStatus() == SubsonicResponse.Status.OK) {
             return;
@@ -1087,7 +1086,7 @@ public class RESTMusicService implements MusicService {
             throw new IOException("Server error, code: " + response.code());
         } else if (response.body().getStatus() == SubsonicResponse.Status.ERROR &&
                 response.body().getError() != null) {
-            throw new IOException("Server error: " + response.body().getError().getCode());
+            throw new SubsonicRESTException(response.body().getError());
         } else {
             throw new IOException("Failed to perform request: " + response.code());
         }
