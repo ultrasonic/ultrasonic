@@ -1,0 +1,10 @@
+{
+  "subsonic-response": {
+    "status": "failed",
+    "version": "1.15.0",
+    "error": {
+      "code": 20,
+      "message": "Client protocol version 1.17.0 is not supported."
+    }
+  }
+}
