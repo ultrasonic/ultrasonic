@@ -2,7 +2,7 @@ package org.moire.ultrasonic.api.subsonic.response
 
 import org.amshove.kluent.`should equal to`
 import org.junit.Test
-import org.moire.ultrasonic.api.subsonic.SubsonicError.GENERIC
+import org.moire.ultrasonic.api.subsonic.SubsonicError.RequestedDataWasNotFound
 
 /**
  * Unit test for [StreamResponse].
@@ -10,7 +10,8 @@ import org.moire.ultrasonic.api.subsonic.SubsonicError.GENERIC
 class StreamResponseTest {
     @Test
     fun `Should have error if subsonic error is not null`() {
-        StreamResponse(apiError = GENERIC, responseHttpCode = 200).hasError() `should equal to` true
+        StreamResponse(apiError = RequestedDataWasNotFound, responseHttpCode = 200)
+                .hasError() `should equal to` true
     }
 
     @Test

@@ -1,0 +1,10 @@
+{
+  "subsonic-response": {
+    "status": "failed",
+    "version": "1.15.0",
+    "error": {
+      "code": 50,
+      "message": "User is not authorized for this operation."
+    }
+  }
+}

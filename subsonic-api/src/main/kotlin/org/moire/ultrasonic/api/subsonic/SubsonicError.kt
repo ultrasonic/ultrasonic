@@ -9,29 +9,41 @@ import com.fasterxml.jackson.databind.annotation.JsonDeserialize
  * Common API errors.
  */
 @JsonDeserialize(using = SubsonicError.Companion.SubsonicErrorDeserializer::class)
-enum class SubsonicError(val code: Int) {
-    GENERIC(0),
-    REQUIRED_PARAM_MISSING(10),
-    INCOMPATIBLE_CLIENT_PROTOCOL_VERSION(20),
-    INCOMPATIBLE_SERVER_PROTOCOL_VERSION(30),
-    WRONG_USERNAME_OR_PASSWORD(40),
-    TOKEN_AUTH_NOT_SUPPORTED_FOR_LDAP(41),
-    USER_NOT_AUTHORIZED_FOR_OPERATION(50),
-    TRIAL_PERIOD_IS_OVER(60),
-    REQUESTED_DATA_WAS_NOT_FOUND(70);
+sealed class SubsonicError(val code: Int) {
+    data class Generic(val message: String) : SubsonicError(0)
+    object RequiredParamMissing : SubsonicError(10)
+    object IncompatibleClientProtocolVersion : SubsonicError(20)
+    object IncompatibleServerProtocolVersion : SubsonicError(30)
+    object WrongUsernameOrPassword : SubsonicError(40)
+    object TokenAuthNotSupportedForLDAP : SubsonicError(41)
+    object UserNotAuthorizedForOperation : SubsonicError(50)
+    object TrialPeriodIsOver : SubsonicError(60)
+    object RequestedDataWasNotFound : SubsonicError(70)
 
     companion object {
-        fun parseErrorFromJson(jsonErrorCode: Int) = SubsonicError.values()
-                .filter { it.code == jsonErrorCode }.firstOrNull()
-                ?: throw IllegalArgumentException("Unknown code $jsonErrorCode")
+        fun getError(code: Int, message: String) = when (code) {
+            0 -> Generic(message)
+            10 -> RequiredParamMissing
+            20 -> IncompatibleClientProtocolVersion
+            30 -> IncompatibleServerProtocolVersion
+            40 -> WrongUsernameOrPassword
+            41 -> TokenAuthNotSupportedForLDAP
+            50 -> UserNotAuthorizedForOperation
+            60 -> TrialPeriodIsOver
+            70 -> RequestedDataWasNotFound
+            else -> throw IllegalArgumentException("Unknown code $code")
+        }
 
         class SubsonicErrorDeserializer : JsonDeserializer<SubsonicError>() {
             override fun deserialize(p: JsonParser, ctxt: DeserializationContext?): SubsonicError {
-                p.nextToken() // "code"
-                val error = parseErrorFromJson(p.valueAsInt)
-                p.nextToken() // "message"
-                p.nextToken() // end of error object
-                return error
+                p.nextToken() // { -> "code"
+                p.nextToken() // "code" -> codeValue
+                val code = p.valueAsInt
+                p.nextToken() // codeValue -> "message"
+                p.nextToken() // "message" -> messageValue
+                val message = p.text
+                p.nextToken() // value -> }
+                return getError(code, message)
             }
         }
     }

@@ -432,7 +432,6 @@
     <string name="api.subsonic.param_missing">Required param is missing.</string>
     <string name="api.subsonic.requested_data_was_not_found">Requested data was not found.</string>
     <string name="api.subsonic.trial_period_is_over">Trial period is over.</string>
-    <string name="api.subsonic.unknown_api_error">Unknown api error.</string>
     <string name="api.subsonic.upgrade_client">Incompatible versions. Please upgrade UltraSonic Android app.</string>
     <string name="api.subsonic.upgrade_server">Incompatible versions. Please upgrade Subsonic server.</string>
 

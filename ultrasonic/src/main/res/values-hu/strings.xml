@@ -430,7 +430,6 @@
     <string name="api.subsonic.param_missing">A szükséges param hiányzik.</string>
     <string name="api.subsonic.requested_data_was_not_found">A keresett adatokat nem találtuk.</string>
     <string name="api.subsonic.trial_period_is_over">A próbaidő vége.</string>
-    <string name="api.subsonic.unknown_api_error">Ismeretlen api hiba.</string>
     <string name="api.subsonic.upgrade_client">Nem kompatibilis verzió. Kérjük, frissítse az UltraSonic Android alkalmazást!</string>
     <string name="api.subsonic.upgrade_server">Nem kompatibilis verzió. Kérjük, frissítse a Subsonic kiszolgálót!</string>
 
