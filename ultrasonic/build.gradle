@@ -7,8 +7,8 @@ apply from: "../gradle_scripts/code_quality.gradle"
 advancedVersioning {
     nameOptions {
         versionMajor 2
-        versionMinor 2
-        versionPatch 0
+        versionMinor 1
+        versionPatch 1
     }
     codeOptions {
         versionCodeType org.moallemi.gradle.internal.VersionCodeType.AUTO_INCREMENT_ONE_STEP
