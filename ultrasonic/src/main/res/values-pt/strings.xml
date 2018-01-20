@@ -424,6 +424,7 @@
 
     <!-- Subsonic api errors -->
     <string name="api.subsonic.generic">Erro de api genérico: %1$s</string>
+    <string name="api.subsonic.generic.no.message">nenhuma mensagem fornecida pelo servidor</string>
     <string name="api.subsonic.token_auth_not_supported_for_ldap">A autenticação por token não é suportada para usuários LDAP.</string>
     <string name="api.subsonic.not_authenticated">Login ou senha errada.</string>
     <string name="api.subsonic.not_authorized">Não autorizado. Verifique as permissões do usuário no servidor Subsonic.</string>

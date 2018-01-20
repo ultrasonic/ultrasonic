@@ -424,6 +424,7 @@
 
     <!-- Subsonic api errors -->
     <string name="api.subsonic.generic">Általános api hiba: %1$s</string>
+    <string name="api.subsonic.generic.no.message">nincs üzenet a szerverről</string>
     <string name="api.subsonic.token_auth_not_supported_for_ldap">Az LDAP-felhasználók számára nem támogatott a token-hitelesítés.</string>
     <string name="api.subsonic.not_authenticated">Hibás felhasználónév vagy jelszó!</string>
     <string name="api.subsonic.not_authorized">Nem engedélyezett! Ellenőrizze a felhasználó jogosultságait a Subsonic kiszolgálón!</string>

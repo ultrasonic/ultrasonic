@@ -20,8 +20,15 @@ import org.moire.ultrasonic.service.SubsonicRESTException
  */
 fun SubsonicRESTException.getLocalizedErrorMessage(context: Context): String =
         when (error) {
-            is Generic -> context
-                    .getString(R.string.api_subsonic_generic, (error as Generic).message)
+            is Generic -> {
+                val message = (error as Generic).message
+                val errorMessage = if (message == "") {
+                    context.getString(R.string.api_subsonic_generic_no_message)
+                } else {
+                    message
+                }
+                context.getString(R.string.api_subsonic_generic, errorMessage)
+            }
             RequiredParamMissing -> context.getString(R.string.api_subsonic_param_missing)
             IncompatibleClientProtocolVersion -> context
                     .getString(R.string.api_subsonic_upgrade_client)

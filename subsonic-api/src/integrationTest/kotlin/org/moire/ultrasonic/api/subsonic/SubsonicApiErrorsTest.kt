@@ -113,6 +113,42 @@ class SubsonicApiErrorsTest : SubsonicAPIClientTest() {
         response.assertError(RequestedDataWasNotFound)
     }
 
+    @Test
+    fun `Should parse error with reversed tokens order`() {
+        mockWebServerRule.enqueueResponse("reversed_tokens_generic_error.json")
+
+        val response = client.api.ping().execute()
+
+        response.assertError(Generic("Video streaming not supported"))
+    }
+
+    @Test
+    fun `Should parse error if json contains error first before other fields`() {
+        mockWebServerRule.enqueueResponse("error_first_generic_error.json")
+
+        val response = client.api.ping().execute()
+
+        response.assertError(Generic("Video streaming not supported"))
+    }
+
+    @Test
+    fun `Should parse error if json doesn't contain message field`() {
+        mockWebServerRule.enqueueResponse("without_message_generic_error.json")
+
+        val response = client.api.ping().execute()
+
+        response.assertError(Generic(""))
+    }
+
+    @Test
+    fun `Should parse error if error json contains additional object`() {
+        mockWebServerRule.enqueueResponse("with_additional_json_object_generic_error.json")
+
+        val response = client.api.ping().execute()
+
+        response.assertError(Generic(""))
+    }
+
     private fun Response<SubsonicResponse>.assertError(expectedError: SubsonicError) =
             with(body()) {
                 error `should not be` null
