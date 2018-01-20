@@ -1,6 +1,8 @@
 package org.moire.ultrasonic.api.subsonic
 
 import com.fasterxml.jackson.core.JsonParser
+import com.fasterxml.jackson.core.JsonToken.END_OBJECT
+import com.fasterxml.jackson.core.JsonToken.START_OBJECT
 import com.fasterxml.jackson.databind.DeserializationContext
 import com.fasterxml.jackson.databind.JsonDeserializer
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize
@@ -36,13 +38,17 @@ sealed class SubsonicError(val code: Int) {
 
         class SubsonicErrorDeserializer : JsonDeserializer<SubsonicError>() {
             override fun deserialize(p: JsonParser, ctxt: DeserializationContext?): SubsonicError {
-                p.nextToken() // { -> "code"
-                p.nextToken() // "code" -> codeValue
-                val code = p.valueAsInt
-                p.nextToken() // codeValue -> "message"
-                p.nextToken() // "message" -> messageValue
-                val message = p.text
-                p.nextToken() // value -> }
+                var code = -1
+                var message = ""
+                while (p.nextToken() != END_OBJECT) {
+                    when {
+                        p.currentToken == START_OBJECT -> p.skipChildren()
+                        "code".equals(p.currentName, ignoreCase = true) ->
+                            code = p.nextIntValue(-1)
+                        "message".equals(p.currentName, ignoreCase = true) ->
+                            message = p.nextTextValue()
+                    }
+                }
                 return getError(code, message)
             }
         }
