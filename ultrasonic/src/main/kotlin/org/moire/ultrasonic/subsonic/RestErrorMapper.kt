@@ -21,7 +21,7 @@ import org.moire.ultrasonic.service.SubsonicRESTException
 fun SubsonicRESTException.getLocalizedErrorMessage(context: Context): String =
         when (error) {
             is Generic -> {
-                val message = (error as Generic).message
+                val message = error.message
                 val errorMessage = if (message == "") {
                     context.getString(R.string.api_subsonic_generic_no_message)
                 } else {
