@@ -111,12 +111,8 @@
     <string name="music_library.label_offline">Offline Media</string>
     <string name="music_service.retry">A network error occurred. Retrying %1$d of %2$d.</string>
     <string name="parser.artist_count">Got %d Artists.</string>
-    <string name="parser.not_authenticated">Wrong username or password.</string>
-    <string name="parser.not_authorized">Not authorized. Check user permissions in Subsonic server.</string>
     <string name="parser.reading">Reading from server.</string>
     <string name="parser.reading_done">Reading from server. Done!</string>
-    <string name="parser.upgrade_client">Incompatible versions. Please upgrade UltraSonic Android app.</string>
-    <string name="parser.upgrade_server">Incompatible versions. Please upgrade Subsonic server.</string>
     <string name="playlist.label">Playlists</string>
     <string name="playlist.update_info">Update Information</string>
     <string name="playlist.updated_info">Updated playlist information for %s</string>
@@ -253,6 +249,8 @@
     <string name="settings.preload_3">3 songs</string>
     <string name="settings.preload_5">5 songs</string>
     <string name="settings.preload_unlimited">Unlimited</string>
+    <string name="settings.playback.resume_play_on_headphones_plug.title">Resume on headphones insertion</string>
+    <string name="settings.playback.resume_play_on_headphones_plug.summary">App will resume paused playback on headphones insertion into device.</string>
     <string name="settings.screen_lit_summary">Keeping the screen on while downloading improves download speed.</string>
     <string name="settings.screen_lit_title">Keep Screen On</string>
     <string name="settings.scrobble_summary">Remember to set up your Last.fm user and password on the Subsonic server</string>
@@ -425,5 +423,17 @@
         <item quantity="one">1 day left of trial period</item>
         <item quantity="other">%d days left of trial period</item>
     </plurals>
+
+    <!-- Subsonic api errors -->
+    <string name="api.subsonic.generic">Generic api error: %1$s</string>
+    <string name="api.subsonic.generic.no.message">no message given from server</string>
+    <string name="api.subsonic.token_auth_not_supported_for_ldap">Authentication by token is not supported for LDAP users.</string>
+    <string name="api.subsonic.not_authenticated">Wrong username or password.</string>
+    <string name="api.subsonic.not_authorized">Not authorized. Check user permissions in Subsonic server.</string>
+    <string name="api.subsonic.param_missing">Required param is missing.</string>
+    <string name="api.subsonic.requested_data_was_not_found">Requested data was not found.</string>
+    <string name="api.subsonic.trial_period_is_over">Trial period is over.</string>
+    <string name="api.subsonic.upgrade_client">Incompatible versions. Please upgrade UltraSonic Android app.</string>
+    <string name="api.subsonic.upgrade_server">Incompatible versions. Please upgrade Subsonic server.</string>
 
 </resources>

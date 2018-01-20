@@ -8,5 +8,5 @@ import org.moire.ultrasonic.api.subsonic.models.MusicFolder as APIMusicFolder
 
 fun APIMusicFolder.toDomainEntity(): MusicFolder = MusicFolder(this.id, this.name)
 
-fun List<APIMusicFolder>.toDomainEntityList(): List<MusicFolder>
-        = this.map { it.toDomainEntity() }
+fun List<APIMusicFolder>.toDomainEntityList(): List<MusicFolder> =
+        this.map { it.toDomainEntity() }

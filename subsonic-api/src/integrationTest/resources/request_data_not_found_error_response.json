@@ -3,8 +3,8 @@
     "status" : "failed",
     "version" : "1.13.0",
     "error" : {
-      "code" : 0,
-      "message" : "Generic error."
+      "code" : 70,
+      "message" : "Requested data was not found."
     }
   }
 }

@@ -18,17 +18,22 @@
  */
 package org.moire.ultrasonic.service;
 
+import android.annotation.SuppressLint;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.content.SharedPreferences;
+import android.media.AudioManager;
 import android.os.AsyncTask;
+import android.os.Build;
 import android.os.Bundle;
 import android.telephony.PhoneStateListener;
 import android.telephony.TelephonyManager;
 import android.util.Log;
 import android.view.KeyEvent;
 
+import org.moire.ultrasonic.R;
 import org.moire.ultrasonic.domain.MusicDirectory;
 import org.moire.ultrasonic.domain.PlayerState;
 import org.moire.ultrasonic.util.CacheCleaner;
@@ -128,32 +133,9 @@ public class DownloadServiceLifecycleSupport
 		executorService = Executors.newSingleThreadScheduledExecutor();
 		executorService.scheduleWithFixedDelay(downloadChecker, 5, 5, TimeUnit.SECONDS);
 
-		// Pause when headset is unplugged.
-		headsetEventReceiver = new BroadcastReceiver()
-		{
-			@Override
-			public void onReceive(Context context, Intent intent)
-			{
-				Bundle extras = intent.getExtras();
+        registerHeadsetReceiver();
 
-				if (extras == null)
-				{
-					return;
-				}
-
-				Log.i(TAG, String.format("Headset event for: %s", extras.get("name")));
-				if (extras.getInt("state") == 0)
-				{
-					if (!downloadService.isJukeboxEnabled())
-					{
-						downloadService.pause();
-					}
-				}
-			}
-		};
-		downloadService.registerReceiver(headsetEventReceiver, new IntentFilter(Intent.ACTION_HEADSET_PLUG));
-
-		// Stop when SD card is ejected.
+        // Stop when SD card is ejected.
 		ejectEventReceiver = new BroadcastReceiver()
 		{
 			@Override
@@ -202,7 +184,44 @@ public class DownloadServiceLifecycleSupport
 		new CacheCleaner(downloadService, downloadService).clean();
 	}
 
-	public void onStart(Intent intent)
+    private void registerHeadsetReceiver() {
+        // Pause when headset is unplugged.
+        final SharedPreferences sp = Util.getPreferences(downloadService);
+        final String spKey = downloadService
+                .getString(R.string.settings_playback_resume_play_on_headphones_plug);
+
+        headsetEventReceiver = new BroadcastReceiver() {
+            @Override
+            public void onReceive(Context context, Intent intent) {
+                final Bundle extras = intent.getExtras();
+
+                if (extras == null) {
+                    return;
+                }
+
+                Log.i(TAG, String.format("Headset event for: %s", extras.get("name")));
+                final int state = extras.getInt("state");
+                if (state == 0) {
+                    if (!downloadService.isJukeboxEnabled()) {
+                        downloadService.pause();
+                    }
+                } else if (state == 1) {
+                    if (!downloadService.isJukeboxEnabled() &&
+                            sp.getBoolean(spKey, false) &&
+                            downloadService.getPlayerState() == PlayerState.PAUSED) {
+                        downloadService.start();
+                    }
+                }
+            }
+        };
+        @SuppressLint("InlinedApi")
+        IntentFilter headsetIntentFilter = (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) ?
+                new IntentFilter(AudioManager.ACTION_HEADSET_PLUG) :
+                new IntentFilter(Intent.ACTION_HEADSET_PLUG);
+        downloadService.registerReceiver(headsetEventReceiver, headsetIntentFilter);
+    }
+
+    public void onStart(Intent intent)
 	{
 		if (intent != null && intent.getExtras() != null)
 		{

@@ -33,13 +33,16 @@ class SubsonicApiGetPodcastsTest : SubsonicAPIClientTest() {
             id `should equal to` "2"
             url `should equal to` "http://feeds.codenewbie.org/cnpodcast.xml"
             title `should equal to` "CodeNewbie"
-            description `should equal to` "Stories and interviews from people on their coding journey."
+            description `should equal to` "Stories and interviews from people on their coding " +
+                    "journey."
             coverArt `should equal to` "pod-2"
-            originalImageUrl `should equal to` "http://codenewbie.blubrry.com/wp-content/uploads/powerpress/220808.jpg"
+            originalImageUrl `should equal to` "http://codenewbie.blubrry.com/wp-content/uploads/" +
+                    "powerpress/220808.jpg"
             status `should equal to` "completed"
             errorMessage `should equal to` ""
             episodeList.size `should equal to` 10
-            episodeList[0] `should equal` MusicDirectoryChild(id = "148", parent = "9959", isDir = false,
+            episodeList[0] `should equal` MusicDirectoryChild(id = "148", parent = "9959",
+                    isDir = false,
                     title = "S1:EP3 – How to teach yourself computer science (Vaidehi Joshi)",
                     album = "CodeNewbie", artist = "podcasts", coverArt = "9959",
                     size = 38274221, contentType = "audio/mpeg", suffix = "mp3",
@@ -56,7 +59,8 @@ class SubsonicApiGetPodcastsTest : SubsonicAPIClientTest() {
                             "CodeNewbie basecs 100 Days of Code Conway's Game of Life Hexes and " +
                             "Other Magical Numbers (Vaidehi's blog post) Bits, Bytes, Building " +
                             "With Binary (Vaidehi's blog post) Rust",
-                    status = "completed", publishDate = parseDate("2017-08-29T00:01:01.000Z"))
+                    status = "completed",
+                    publishDate = parseDate("2017-08-29T00:01:01.000Z"))
         }
     }
 

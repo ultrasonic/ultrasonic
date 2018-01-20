@@ -108,12 +108,8 @@
     <string name="music_library.label_offline">Medios sin conexión</string>
     <string name="music_service.retry">Se ha producido un error de red. Reintento %1$d de %2$d.</string>
     <string name="parser.artist_count">Obtenido(s) %d artista(s).</string>
-    <string name="parser.not_authenticated">Nombre de usuario o contraseña incorrectos.</string>
-    <string name="parser.not_authorized">No autorizado. Comprueba los permisos de usuario en el servidor de Subsonic.</string>
     <string name="parser.reading">Leyendo del servidor.</string>
     <string name="parser.reading_done">Leyendo del servidor. ¡Hecho!</string>
-    <string name="parser.upgrade_client">Versiones incompatibles. Por favor actualiza la aplicación de Android UltraSonic.</string>
-    <string name="parser.upgrade_server">Versiones incompatibles. Por favor actualiza el servidor de Subsonic.</string>
     <string name="playlist.label">Listas de reproducción</string>
     <string name="playlist.update_info">Actualizar Información</string>
     <string name="playlist.updated_info">Actualizada la información de la lista de reproducción para %s</string>
@@ -249,6 +245,8 @@
     <string name="settings.preload_3">3 canciónes</string>
     <string name="settings.preload_5">5 canciónes</string>
     <string name="settings.preload_unlimited">Ilimitado</string>
+    <string name="settings.playback.resume_play_on_headphones_plug.title">Reanudación de la inserción de auriculares</string>
+    <string name="settings.playback.resume_play_on_headphones_plug.summary">La aplicación reanudará la reproducción en pausa al insertar los auriculares en el dispositivo.</string>
     <string name="settings.screen_lit_summary">Mantener la pantalla encendida mientras descarga mejora la velocidad de la misma.</string>
     <string name="settings.screen_lit_title">Mantener la pantalla encendida</string>
     <string name="settings.scrobble_summary">Recuerda configurar tu nombre de usuario y contraseña de Last.fm en el servidor de Subsonic</string>
@@ -423,5 +421,17 @@
     <string name="button_bar.podcasts">Podcast</string>
     <string name="podcasts.label">Podcast</string>
     <string name="podcasts_channels.empty">No hay canales de Podcasts registrados</string>
+
+    <!-- Subsonic api errors -->
+    <string name="api.subsonic.generic">Error genérico de api: %1$s</string>
+    <string name="api.subsonic.generic.no.message">ningún mensaje dado desde el servidor</string>
+    <string name="api.subsonic.token_auth_not_supported_for_ldap">La autenticación por token no es compatible con usuarios LDAP.</string>
+    <string name="api.subsonic.not_authenticated">Nombre de usuario o contraseña incorrectos.</string>
+    <string name="api.subsonic.not_authorized">No autorizado. Comprueba los permisos de usuario en el servidor de Subsonic.</string>
+    <string name="api.subsonic.param_missing">Falta el parámetro requerido.</string>
+    <string name="api.subsonic.requested_data_was_not_found">No se encontraron los datos solicitados.</string>
+    <string name="api.subsonic.trial_period_is_over">El período de prueba ha terminado.</string>
+    <string name="api.subsonic.upgrade_client">Versiones incompatibles. Por favor actualiza la aplicación de Android UltraSonic.</string>
+    <string name="api.subsonic.upgrade_server">Versiones incompatibles. Por favor actualiza el servidor de Subsonic.</string>
 
 </resources>

@@ -271,7 +271,9 @@ internal class ApiVersionCheckWrapper(
         return api.getBookmarks()
     }
 
-    override fun createBookmark(id: String, position: Long, comment: String?): Call<SubsonicResponse> {
+    override fun createBookmark(id: String,
+                                position: Long,
+                                comment: String?): Call<SubsonicResponse> {
         checkVersion(V1_9_0)
         return api.createBookmark(id, position, comment)
     }

@@ -36,6 +36,6 @@ internal class RangeHeaderInterceptor : Interceptor {
     // to avoid the thrashing effect seen when offset is combined with transcoding/downsampling
     // on the server. In that case, the server uses a long time before sending any data,
     // causing the client to time out.
-    private fun getReadTimeout(offset: Int)
-            = (SOCKET_READ_TIMEOUT_DOWNLOAD + offset * TIMEOUT_MILLIS_PER_OFFSET_BYTE).toInt()
+    private fun getReadTimeout(offset: Int) =
+            (SOCKET_READ_TIMEOUT_DOWNLOAD + offset * TIMEOUT_MILLIS_PER_OFFSET_BYTE).toInt()
 }

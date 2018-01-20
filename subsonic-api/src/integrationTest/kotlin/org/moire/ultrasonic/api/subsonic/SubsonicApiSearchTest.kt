@@ -39,7 +39,8 @@ class SubsonicApiSearchTest : SubsonicAPIClientTest() {
                     track = 17, year = 2005, genre = "Rap", coverArt = "5766",
                     size = 5607024, contentType = "audio/mpeg", suffix = "mp3", duration = 233,
                     bitRate = 192,
-                    path = "Compilations/Need for Speed Most Wanted/17 You'll Be Under My Wheels.mp3",
+                    path = "Compilations/Need for Speed Most Wanted/17 You'll Be Under My Wheels" +
+                            ".mp3",
                     isVideo = false, playCount = 0, discNumber = 1,
                     created = parseDate("2016-10-23T20:09:02.000Z"), albumId = "568",
                     artistId = "505", type = "music")

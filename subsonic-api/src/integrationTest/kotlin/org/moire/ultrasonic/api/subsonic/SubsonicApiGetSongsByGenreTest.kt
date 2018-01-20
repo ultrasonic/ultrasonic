@@ -39,8 +39,10 @@ class SubsonicApiGetSongsByGenreTest : SubsonicAPIClientTest() {
                     artist = "DJ Polyakov PPK Feat Kate Cameron", year = 2009, genre = "Trance",
                     size = 26805932, contentType = "audio/mpeg", suffix = "mp3", duration = 670,
                     bitRate = 320,
-                    path = "DJ Polyakov PPK Feat Kate Cameron/668/00 My Heart (Vadim Zhukov Remix).mp3",
-                    isVideo = false, playCount = 2, created = parseDate("2016-10-23T21:58:29.000Z"),
+                    path = "DJ Polyakov PPK Feat Kate Cameron/668/00 My Heart (Vadim Zhukov " +
+                            "Remix).mp3",
+                    isVideo = false, playCount = 2,
+                    created = parseDate("2016-10-23T21:58:29.000Z"),
                     albumId = "5", artistId = "4", type = "music")
         }
     }

@@ -1,20 +1,20 @@
 ext.versions = [
         minSdk               : 14,
         targetSdk            : 22,
-        compileSdk           : 22,
-        gradle               : '4.3.1',
+        compileSdk           : 27,
+        gradle               : '4.4.1',
 
-        buildTools           : "25.0.3",
-        androidTools         : "2.3.3",
-        ktlint               : "0.12.1",
+        androidTools         : "3.0.1",
+        ktlint               : "0.14.0",
         ktlintGradle         : "2.3.0",
-        detekt               : "1.0.0.RC5-4",
+        detekt               : "1.0.0.RC6",
         jacoco               : "0.7.9",
         jacocoAndroid        : "0.1.2",
+        buildVersioning      : "1.6.0",
 
         androidSupport       : "22.2.1",
 
-        kotlin               : "1.1.60",
+        kotlin               : "1.2.10",
 
         retrofit             : "2.1.0",
         jackson              : "2.9.0",
@@ -28,11 +28,12 @@ ext.versions = [
 ]
 
 ext.gradlePlugins = [
-        androidTools  : "com.android.tools.build:gradle:$versions.androidTools",
-        kotlin        : "org.jetbrains.kotlin:kotlin-gradle-plugin:$versions.kotlin",
-        ktlintGradle  : "gradle.plugin.org.jlleitschuh.gradle:ktlint-gradle:$versions.ktlintGradle",
-        detekt        : "gradle.plugin.io.gitlab.arturbosch.detekt:detekt-gradle-plugin:$versions.detekt",
-        jacocoAndroid : "com.dicedmelon.gradle:jacoco-android:$versions.jacocoAndroid"
+        androidTools    : "com.android.tools.build:gradle:$versions.androidTools",
+        kotlin          : "org.jetbrains.kotlin:kotlin-gradle-plugin:$versions.kotlin",
+        ktlintGradle    : "gradle.plugin.org.jlleitschuh.gradle:ktlint-gradle:$versions.ktlintGradle",
+        detekt          : "gradle.plugin.io.gitlab.arturbosch.detekt:detekt-gradle-plugin:$versions.detekt",
+        jacocoAndroid   : "com.dicedmelon.gradle:jacoco-android:$versions.jacocoAndroid",
+        buildVersioning : "org.moallemi.gradle.advanced-build-version:gradle-plugin:$versions.buildVersioning",
 ]
 
 ext.androidSupport = [
@@ -42,7 +43,7 @@ ext.androidSupport = [
 
 ext.other = [
         kotlinStdlib       : "org.jetbrains.kotlin:kotlin-stdlib:$versions.kotlin",
-        kotlinReflect : "org.jetbrains.kotlin:kotlin-reflect:$versions.kotlin",
+        kotlinReflect      : "org.jetbrains.kotlin:kotlin-reflect:$versions.kotlin",
         retrofit           : "com.squareup.retrofit2:retrofit:$versions.retrofit",
         gsonConverter      : "com.squareup.retrofit2:converter-gson:$versions.retrofit",
         jacksonConverter   : "com.squareup.retrofit2:converter-jackson:$versions.retrofit",

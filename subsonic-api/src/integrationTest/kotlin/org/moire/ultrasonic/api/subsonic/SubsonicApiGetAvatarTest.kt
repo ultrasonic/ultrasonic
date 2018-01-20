@@ -13,14 +13,14 @@ import org.junit.Test
 class SubsonicApiGetAvatarTest : SubsonicAPIClientTest() {
     @Test
     fun `Should handle api error response`() {
-        mockWebServerRule.enqueueResponse("generic_error_response.json")
+        mockWebServerRule.enqueueResponse("request_data_not_found_error_response.json")
 
         val response = client.getAvatar("some")
 
         with(response) {
             stream `should be` null
             responseHttpCode `should equal to` 200
-            apiError `should equal` SubsonicError.GENERIC
+            apiError `should equal` SubsonicError.RequestedDataWasNotFound
         }
     }
 
