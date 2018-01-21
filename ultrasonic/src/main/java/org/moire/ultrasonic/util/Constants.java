@@ -77,6 +77,7 @@ public final class Constants
 	public static final String PREFERENCES_KEY_USERNAME = "username";
 	public static final String PREFERENCES_KEY_PASSWORD = "password";
 	public static final String PREFERENCES_KEY_ALLOW_SELF_SIGNED_CERTIFICATE = "allowSSCertificate";
+	public static final String PREFERENCES_KEY_LDAP_SUPPORT = "enableLdapSupport";
 	public static final String PREFERENCES_KEY_INSTALL_TIME = "installTime";
 	public static final String PREFERENCES_KEY_THEME = "theme";
 	public static final String PREFERENCES_KEY_DISPLAY_BITRATE_WITH_ARTIST = "displayBitrateWithArtist";

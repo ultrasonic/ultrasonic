@@ -299,6 +299,9 @@
     <string name="settings.theme_light">Clair</string>
     <string name="settings.theme_title">Thème</string>
     <string name="settings.title.allow_self_signed_certificate">Autoriser le certificat HTTPS auto-signé</string>
+    <string name="settings.title.enable_ldap_users_support">Activer la prise en charge des utilisateurs LDAP</string>
+    <string name="settings.summary.enable_ldap_users_support">Cela force l\'application à toujours envoyer le mot de passe à l\'ancienne,
+        parce que Subsonic api ne supporte pas les nouvelles autorisations pour les utilisateurs LDAP.</string>
     <string name="settings.use_folder_for_album_artist">Utilisez des dossiers pour les noms d\'artistes</string>
     <string name="settings.use_folder_for_album_artist_summary">Dossier de niveau supérieur devient le nom de l\'artiste de l\'album</string>
     <string name="settings.use_id3">Naviguer en utilisant ID3 Tags</string>
