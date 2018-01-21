@@ -6,6 +6,8 @@
     <string name="background_task.no_network">This program requires network access. Please turn on Wi-Fi or mobile network.</string>
     <string name="background_task.not_found">Resource not found. Please check the server address.</string>
     <string name="background_task.parse_error">Didn\'t understand the reply. Please check the server address.</string>
+    <string name="background_task.ssl_cert_error">HTTPS certificate error: %1$s.</string>
+    <string name="background_task.ssl_error">SSL connection exception. Please check server certificate.</string>
     <string name="background_task.wait">Please wait&#8230;</string>
     <string name="button_bar.bookmarks">Bookmarks</string>
     <string name="button_bar.browse">Media Library</string>
