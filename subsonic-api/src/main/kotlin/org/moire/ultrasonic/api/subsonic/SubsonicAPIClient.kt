@@ -41,13 +41,17 @@ class SubsonicAPIClient(baseUrl: String,
                         minimalProtocolVersion: SubsonicAPIVersions,
                         clientID: String,
                         allowSelfSignedCertificate: Boolean = false,
+                        enableLdapUserSupport: Boolean = false,
                         debug: Boolean = false) {
     private val versionInterceptor = VersionInterceptor(minimalProtocolVersion) {
         protocolVersion = it
     }
 
-    private val proxyPasswordInterceptor = ProxyPasswordInterceptor(minimalProtocolVersion,
-            PasswordHexInterceptor(password), PasswordMD5Interceptor(password))
+    private val proxyPasswordInterceptor = ProxyPasswordInterceptor(
+            minimalProtocolVersion,
+            PasswordHexInterceptor(password),
+            PasswordMD5Interceptor(password),
+            enableLdapUserSupport)
 
     /**
      * Get currently used protocol version.

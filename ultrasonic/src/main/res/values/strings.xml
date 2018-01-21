@@ -143,6 +143,7 @@
     <string name="select_playlist.empty">No saved playlists on server</string>
     <string name="service.connecting">Contacting server, please wait.</string>
     <string name="settings.allow_self_signed_certificate" translatable="false">allowSelfSignedCertificate</string>
+    <string name="settings.enable_ldap_user_support" translatable="false">enableLdapUserSupport</string>
     <string name="settings.appearance_title">Appearance</string>
     <string name="settings.buffer_length">Buffer Length</string>
     <string name="settings.buffer_length_0">Disabled</string>
@@ -303,6 +304,9 @@
     <string name="settings.theme_light">Light</string>
     <string name="settings.theme_title">Theme</string>
     <string name="settings.title.allow_self_signed_certificate">Allow self-signed HTTPS certificate</string>
+    <string name="settings.title.enable_ldap_users_support">Enable support for LDAP users</string>
+    <string name="settings.summary.enable_ldap_users_support">This forces app to always send password in old-way,
+        because Subsonic api does not support new authorization for LDAP users.</string>
     <string name="settings.use_folder_for_album_artist">Use Folders For Artist Name</string>
     <string name="settings.use_folder_for_album_artist_summary">Assume top-level folder is the name of the album artist</string>
     <string name="settings.use_id3">Browse Using ID3 Tags</string>

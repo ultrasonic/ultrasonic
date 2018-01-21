@@ -45,6 +45,13 @@
         android:title="@string/settings.title.allow_self_signed_certificate"
         />
     <CheckBoxPreference
+        android:key="@string/settings.enable_ldap_user_support"
+        android:persistent="false"
+        android:defaultValue="false"
+        android:title="@string/settings.title.enable_ldap_users_support"
+        android:summary="@string/settings.summary.enable_ldap_users_support"
+        />
+    <CheckBoxPreference
         android:key="@string/jukebox.is_default"
         android:persistent="false"
         android:defaultValue="false"

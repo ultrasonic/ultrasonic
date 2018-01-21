@@ -86,6 +86,8 @@ public class MusicServiceFactory {
         String password = preferences.getString(Constants.PREFERENCES_KEY_PASSWORD + instance, null);
         boolean allowSelfSignedCertificate = preferences
                 .getBoolean(Constants.PREFERENCES_KEY_ALLOW_SELF_SIGNED_CERTIFICATE + instance, false);
+        boolean enableLdapUserSupport = preferences
+                .getBoolean(Constants.PREFERENCES_KEY_LDAP_SUPPORT + instance , false);
 
         if (serverUrl == null ||
                 username == null ||
@@ -93,11 +95,13 @@ public class MusicServiceFactory {
             Log.i("MusicServiceFactory", "Server credentials is not available");
             return new SubsonicAPIClient("http://localhost", "", "",
                     SubsonicAPIVersions.fromApiVersion(Constants.REST_PROTOCOL_VERSION),
-                    Constants.REST_CLIENT_ID, allowSelfSignedCertificate, BuildConfig.DEBUG);
+                    Constants.REST_CLIENT_ID, allowSelfSignedCertificate,
+                    enableLdapUserSupport, BuildConfig.DEBUG);
         }
 
         return new SubsonicAPIClient(serverUrl, username, password,
                 SubsonicAPIVersions.fromApiVersion(Constants.REST_PROTOCOL_VERSION),
-                Constants.REST_CLIENT_ID, allowSelfSignedCertificate, BuildConfig.DEBUG);
+                Constants.REST_CLIENT_ID, allowSelfSignedCertificate,
+                enableLdapUserSupport, BuildConfig.DEBUG);
     }
 }
