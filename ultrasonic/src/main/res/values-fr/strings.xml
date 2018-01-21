@@ -6,6 +6,8 @@
     <string name="background_task.no_network">Cette application requiert un accès au réseau. Veuillez activer le Wi-Fi ou le réseau mobile.</string>
     <string name="background_task.not_found">Ressources introuvables. Veuillez vérifier l\'adresse du serveur.</string>
     <string name="background_task.parse_error">Réponse incorrecte. Veuillez vérifier l\'adresse du serveur.</string>
+    <string name="background_task.ssl_cert_error">Erreur de certificat HTTPS: %1$s.</string>
+    <string name="background_task.ssl_error">Exception de connexion SSL. Veuillez vérifier le certificat du serveur.</string>
     <string name="background_task.wait">Veuillez patienter&#8230;</string>
     <string name="button_bar.bookmarks">Signets</string>
     <string name="button_bar.browse">Bibliothèque musicale</string>
