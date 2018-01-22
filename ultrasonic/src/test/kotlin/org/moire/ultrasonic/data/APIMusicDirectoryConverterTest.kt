@@ -37,7 +37,8 @@ class APIMusicDirectoryConverterTest {
                 transcodedContentType = "some-transcoded-content-type",
                 transcodedSuffix = "some-transcoded-suffix", duration = 11, bitRate = 256,
                 path = "some-path", isDir = true, isVideo = true, playCount = 323, discNumber = 2,
-                created = Calendar.getInstance(), type = "some-type", starred = Calendar.getInstance())
+                created = Calendar.getInstance(), type = "some-type",
+                starred = Calendar.getInstance())
 
         val convertedEntity = entity.toDomainEntity()
 

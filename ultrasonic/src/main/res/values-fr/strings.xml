@@ -6,6 +6,8 @@
     <string name="background_task.no_network">Cette application requiert un accès au réseau. Veuillez activer le Wi-Fi ou le réseau mobile.</string>
     <string name="background_task.not_found">Ressources introuvables. Veuillez vérifier l\'adresse du serveur.</string>
     <string name="background_task.parse_error">Réponse incorrecte. Veuillez vérifier l\'adresse du serveur.</string>
+    <string name="background_task.ssl_cert_error">Erreur de certificat HTTPS: %1$s.</string>
+    <string name="background_task.ssl_error">Exception de connexion SSL. Veuillez vérifier le certificat du serveur.</string>
     <string name="background_task.wait">Veuillez patienter&#8230;</string>
     <string name="button_bar.bookmarks">Signets</string>
     <string name="button_bar.browse">Bibliothèque musicale</string>
@@ -108,12 +110,8 @@
     <string name="music_library.label_offline">Musique hors-ligne</string>
     <string name="music_service.retry">Une erreur de réseau s\'est produite. Essai %1$d de %2$d.</string>
     <string name="parser.artist_count">%d artistes récupérés.</string>
-    <string name="parser.not_authenticated">Mauvais nom d\'usager ou mot de passe.</string>
-    <string name="parser.not_authorized">Non autorisé. Vérifiez les permissions de l\'utilisateur dans le serveur Subsonic.</string>
     <string name="parser.reading">Lecture du serveur.</string>
     <string name="parser.reading_done">Lecture du serveur. Terminé!</string>
-    <string name="parser.upgrade_client">Versions incompatible. Veuillez mette à jour l\'application Android UltraSonic.</string>
-    <string name="parser.upgrade_server">Versions incompatible. Veuillez mette à jour le serveur Subsonic.</string>
     <string name="playlist.label">Playlists</string>
     <string name="playlist.update_info">Mise à jour des informations</string>
     <string name="playlist.updated_info">Informations de la playlist %s mises à jour</string>
@@ -249,6 +247,8 @@
     <string name="settings.preload_3">3 morceaux</string>
     <string name="settings.preload_5">5 morceaux</string>
     <string name="settings.preload_unlimited">Illimité</string>
+    <string name="settings.playback.resume_play_on_headphones_plug.title">Reprise de l\'insertion des écouteurs</string>
+    <string name="settings.playback.resume_play_on_headphones_plug.summary">L\'application reprendra la lecture en pause lors de l\'insertion du casque dans l\'appareil.</string>
     <string name="settings.screen_lit_summary">Garder l\'écran allumé pendant le téléchargement permet d\'améliorer la vitesse de téléchargement.</string>
     <string name="settings.screen_lit_title">Garder écran allumé</string>
     <string name="settings.scrobble_summary">N\'oubliez pas de définir votre nom d\'utilisateur et mot de passe Last.fm sur le serveur Subsonic</string>
@@ -301,6 +301,9 @@
     <string name="settings.theme_light">Clair</string>
     <string name="settings.theme_title">Thème</string>
     <string name="settings.title.allow_self_signed_certificate">Autoriser le certificat HTTPS auto-signé</string>
+    <string name="settings.title.enable_ldap_users_support">Activer la prise en charge des utilisateurs LDAP</string>
+    <string name="settings.summary.enable_ldap_users_support">Cela force l\'application à toujours envoyer le mot de passe à l\'ancienne,
+        parce que Subsonic api ne supporte pas les nouvelles autorisations pour les utilisateurs LDAP.</string>
     <string name="settings.use_folder_for_album_artist">Utilisez des dossiers pour les noms d\'artistes</string>
     <string name="settings.use_folder_for_album_artist_summary">Dossier de niveau supérieur devient le nom de l\'artiste de l\'album</string>
     <string name="settings.use_id3">Naviguer en utilisant ID3 Tags</string>
@@ -326,7 +329,7 @@
     <string name="util.bytes_format.gigabyte">0.00 Go</string>
     <string name="util.bytes_format.kilobyte">0 Ko</string>
     <string name="util.bytes_format.megabyte">0.00 Mo</string>
-    <string name="util.no_time">-:--</string>
+    <string name="util.no_time">&#8212;:&#8212;&#8212;</string>
     <string name="util.zero_time">0:00</string>
     <string name="video.get_mx_player_text">MX Player n\'est pas installé. Recevez gratuitement sur Play Store, ou modifier les paramètres vidéo.</string>
     <string name="video.get_mx_player_button">Obtenez MX Player</string>
@@ -423,5 +426,17 @@
     <string name="button_bar.podcasts">Podcast</string>
     <string name="podcasts.label">Podcast</string>
     <string name="podcasts_channels.empty">No podcasts channels registered</string>
+
+    <!-- Subsonic api errors -->
+    <string name="api.subsonic.generic">Erreur api générique: %1$s</string>
+    <string name="api.subsonic.generic.no.message">aucun message donné par le serveur</string>
+    <string name="api.subsonic.token_auth_not_supported_for_ldap">L\'authentification par jeton n\'est pas prise en charge pour les utilisateurs LDAP.</string>
+    <string name="api.subsonic.not_authenticated">Mauvais nom d\'usager ou mot de passe.</string>
+    <string name="api.subsonic.not_authorized">Non autorisé. Vérifiez les permissions de l\'utilisateur dans le serveur Subsonic.</string>
+    <string name="api.subsonic.param_missing">Param nécessaire manquant.</string>
+    <string name="api.subsonic.requested_data_was_not_found">Les données demandées n\'ont pas été trouvées.</string>
+    <string name="api.subsonic.trial_period_is_over">La période d\'essai est terminée.</string>
+    <string name="api.subsonic.upgrade_client">Versions incompatible. Veuillez mette à jour l\'application Android UltraSonic.</string>
+    <string name="api.subsonic.upgrade_server">Versions incompatible. Veuillez mette à jour le serveur Subsonic.</string>
 
 </resources>

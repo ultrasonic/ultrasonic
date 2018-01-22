@@ -15,7 +15,7 @@
             a:layout_width="fill_parent"
             a:layout_height="fill_parent"
             a:layout_weight="1"
-            a:gravity="left"
+            a:gravity="start"
             a:orientation="vertical" >
 
             <ImageView

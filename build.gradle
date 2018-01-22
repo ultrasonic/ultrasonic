@@ -4,17 +4,16 @@ buildscript {
 
     repositories {
         jcenter()
+        google()
         maven { url "https://plugins.gradle.org/m2/" }
     }
     dependencies {
         classpath gradlePlugins.androidTools
         classpath gradlePlugins.kotlin
         classpath gradlePlugins.ktlintGradle
-        classpath(gradlePlugins.detekt) {
-            exclude module: 'kotlin-compiler-embeddable'
-            exclude module: 'kotlin-stdlib'
-        }
+        classpath gradlePlugins.detekt
         classpath gradlePlugins.jacocoAndroid
+        classpath gradlePlugins.buildVersioning
     }
 }
 
@@ -23,6 +22,7 @@ allprojects {
     buildscript {
         repositories {
             jcenter()
+            google()
         }
     }
 

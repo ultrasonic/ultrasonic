@@ -38,6 +38,7 @@ public class ServerSettingsFragment extends PreferenceFragment
     private CheckBoxPreference equalizerPref;
     private CheckBoxPreference jukeboxPref;
     private CheckBoxPreference allowSelfSignedCertificatePref;
+    private CheckBoxPreference enableLdapUserSupportPref;
     private Preference removeServerPref;
     private Preference testConnectionPref;
 
@@ -77,6 +78,9 @@ public class ServerSettingsFragment extends PreferenceFragment
         testConnectionPref = findPreference(getString(R.string.settings_test_connection_title));
         allowSelfSignedCertificatePref = (CheckBoxPreference) findPreference(
                 getString(R.string.settings_allow_self_signed_certificate));
+        enableLdapUserSupportPref = (CheckBoxPreference) findPreference(
+                getString(R.string.settings_enable_ldap_user_support)
+        );
 
         setupPreferencesValues();
         setupPreferencesListeners();
@@ -140,6 +144,11 @@ public class ServerSettingsFragment extends PreferenceFragment
                     .putBoolean(Constants.PREFERENCES_KEY_ALLOW_SELF_SIGNED_CERTIFICATE + serverId, (Boolean) newValue)
                     .apply();
             return true;
+        } else if (preference == enableLdapUserSupportPref) {
+            sharedPreferences.edit()
+                    .putBoolean(Constants.PREFERENCES_KEY_LDAP_SUPPORT + serverId, (Boolean) newValue)
+                    .apply();
+            return true;
         }
         return false;
     }
@@ -175,6 +184,9 @@ public class ServerSettingsFragment extends PreferenceFragment
 
         allowSelfSignedCertificatePref.setChecked(sharedPreferences
                 .getBoolean(Constants.PREFERENCES_KEY_ALLOW_SELF_SIGNED_CERTIFICATE + serverId, false));
+
+        enableLdapUserSupportPref.setChecked(sharedPreferences
+                .getBoolean(Constants.PREFERENCES_KEY_LDAP_SUPPORT + serverId, false));
     }
 
     private void updatePassword() {
@@ -213,6 +225,7 @@ public class ServerSettingsFragment extends PreferenceFragment
         equalizerPref.setOnPreferenceChangeListener(this);
         jukeboxPref.setOnPreferenceChangeListener(this);
         allowSelfSignedCertificatePref.setOnPreferenceChangeListener(this);
+        enableLdapUserSupportPref.setOnPreferenceChangeListener(this);
 
         removeServerPref.setOnPreferenceClickListener(this);
         testConnectionPref.setOnPreferenceClickListener(this);

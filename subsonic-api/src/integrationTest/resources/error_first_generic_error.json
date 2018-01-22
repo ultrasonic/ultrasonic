@@ -1,0 +1,10 @@
+{
+  "subsonic-response": {
+    "error": {
+      "message": "Video streaming not supported",
+      "code": 0
+    },
+    "version": "1.8.0",
+    "status": "failed"
+  }
+}

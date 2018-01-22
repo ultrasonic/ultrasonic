@@ -65,8 +65,6 @@ import org.moire.ultrasonic.receiver.MediaButtonIntentReceiver;
 import org.moire.ultrasonic.service.DownloadFile;
 import org.moire.ultrasonic.service.DownloadService;
 import org.moire.ultrasonic.service.DownloadServiceImpl;
-
-import org.apache.http.HttpEntity;
 import org.moire.ultrasonic.service.MusicServiceFactory;
 
 import java.io.ByteArrayOutputStream;
@@ -403,15 +401,6 @@ public class Util extends DownloadActivity
 	public static SharedPreferences getPreferences(Context context)
 	{
 		return context.getSharedPreferences(Constants.PREFERENCES_FILE_NAME, 0);
-	}
-
-	public static String getContentType(HttpEntity entity)
-	{
-		if (entity == null || entity.getContentType() == null)
-		{
-			return null;
-		}
-		return entity.getContentType().getValue();
 	}
 
 	public static int getRemainingTrialDays(Context context)

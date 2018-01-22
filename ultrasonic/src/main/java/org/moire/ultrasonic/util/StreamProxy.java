@@ -6,9 +6,6 @@ import org.moire.ultrasonic.domain.MusicDirectory;
 import org.moire.ultrasonic.service.DownloadFile;
 import org.moire.ultrasonic.service.DownloadService;
 
-import org.apache.http.HttpRequest;
-import org.apache.http.message.BasicHttpRequest;
-
 import java.io.BufferedOutputStream;
 import java.io.BufferedReader;
 import java.io.File;
@@ -108,81 +105,66 @@ public class StreamProxy implements Runnable
 		Log.i(TAG, "Proxy interrupted. Shutting down.");
 	}
 
-	private class StreamToMediaPlayerTask implements Runnable
-	{
+    private class StreamToMediaPlayerTask implements Runnable {
+        String localPath;
+        Socket client;
+        int cbSkip;
 
-		String localPath;
-		Socket client;
-		int cbSkip;
+        StreamToMediaPlayerTask(Socket client) {
+            this.client = client;
+        }
 
-		public StreamToMediaPlayerTask(Socket client)
-		{
-			this.client = client;
-		}
+        private String readRequest() {
+            InputStream is;
+            String firstLine;
+            try {
+                is = client.getInputStream();
+                BufferedReader reader = new BufferedReader(new InputStreamReader(is), 8192);
+                firstLine = reader.readLine();
+            } catch (IOException e) {
+                Log.e(TAG, "Error parsing request", e);
+                return null;
+            }
 
-		private HttpRequest readRequest()
-		{
-			HttpRequest request;
-			InputStream is;
-			String firstLine;
-			try
-			{
-				is = client.getInputStream();
-				BufferedReader reader = new BufferedReader(new InputStreamReader(is), 8192);
-				firstLine = reader.readLine();
-			}
-			catch (IOException e)
-			{
-				Log.e(TAG, "Error parsing request", e);
-				return null;
-			}
+            if (firstLine == null) {
+                Log.i(TAG, "Proxy client closed connection without a request.");
+                return null;
+            }
 
-			if (firstLine == null)
-			{
-				Log.i(TAG, "Proxy client closed connection without a request.");
-				return null;
-			}
+            StringTokenizer st = new StringTokenizer(firstLine);
+            st.nextToken(); // method
+            String uri = st.nextToken();
+            String realUri = uri.substring(1);
+            Log.i(TAG, realUri);
 
-			StringTokenizer st = new StringTokenizer(firstLine);
-			String method = st.nextToken();
-			String uri = st.nextToken();
-			String realUri = uri.substring(1);
-			Log.i(TAG, realUri);
-			request = new BasicHttpRequest(method, realUri);
-			return request;
-		}
+            return realUri;
+        }
 
-		public boolean processRequest()
-		{
-			HttpRequest request = readRequest();
-			if (request == null)
-			{
-				return false;
-			}
+        boolean processRequest() {
+            final String uri = readRequest();
+            if (uri == null || uri.isEmpty()) {
+                return false;
+            }
 
-			// Read HTTP headers
-			Log.i(TAG, "Processing request");
+            // Read HTTP headers
+            Log.i(TAG, "Processing request: " + uri);
 
-			try
-			{
-				localPath = URLDecoder.decode(request.getRequestLine().getUri(), Constants.UTF_8);
-			}
-			catch (UnsupportedEncodingException e)
-			{
-				Log.e(TAG, "Unsupported encoding", e);
-				return false;
-			}
+            try {
+                localPath = URLDecoder.decode(uri, Constants.UTF_8);
+            } catch (UnsupportedEncodingException e) {
+                Log.e(TAG, "Unsupported encoding", e);
+                return false;
+            }
 
-			Log.i(TAG, String.format("Processing request for file %s", localPath));
-			File file = new File(localPath);
-			if (!file.exists())
-			{
-				Log.e(TAG, String.format("File %s does not exist", localPath));
-				return false;
-			}
+            Log.i(TAG, String.format("Processing request for file %s", localPath));
+            File file = new File(localPath);
+            if (!file.exists()) {
+                Log.e(TAG, String.format("File %s does not exist", localPath));
+                return false;
+            }
 
-			return true;
-		}
+            return true;
+        }
 
 		@Override
 		public void run()

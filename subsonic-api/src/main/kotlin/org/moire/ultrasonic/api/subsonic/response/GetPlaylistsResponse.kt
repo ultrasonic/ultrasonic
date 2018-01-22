@@ -16,4 +16,5 @@ class GetPlaylistsResponse(status: Status,
         get() = playlistsWrapper.playlistList
 }
 
-private class PlaylistsWrapper(@JsonProperty("playlist") val playlistList: List<Playlist> = emptyList())
+private class PlaylistsWrapper(
+        @JsonProperty("playlist") val playlistList: List<Playlist> = emptyList())

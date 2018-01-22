@@ -1,0 +1,10 @@
+{
+  "subsonic-response": {
+    "status": "failed",
+    "version": "1.15.0",
+    "error": {
+      "code": 1000000,
+      "message": "New funky error message."
+    }
+  }
+}

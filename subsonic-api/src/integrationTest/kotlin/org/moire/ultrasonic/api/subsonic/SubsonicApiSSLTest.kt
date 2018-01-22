@@ -48,8 +48,8 @@ class SubsonicApiSSLTest {
             cert = (CertificateFactory.getInstance("X.509")
                     .generateCertificate(certificatePemStream)) as X509Certificate
         }
-        val alias = cert?.subjectX500Principal?.name ?:
-                throw IllegalStateException("Failed to load certificate")
+        val alias = cert?.subjectX500Principal?.name
+                ?: throw IllegalStateException("Failed to load certificate")
         trustStore.setCertificateEntry(alias, cert)
 
         val tmf = TrustManagerFactory.getInstance("X509")
