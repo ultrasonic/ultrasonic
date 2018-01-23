@@ -1,0 +1,35 @@
+language: android
+env:
+  global:
+  - ANDROID_API=27
+  - ANDROID_BUILD_TOOLS=26.0.2
+  - secure: ERXeXRFq3rHW6hpi6O6kMJbf9lesdia0Rl0Wqicxo8r+NFJX+aBSbbx/1TRmLWBHYXcPzIgpCLrK4nxbTTud6027ujs9V7La0QRZKN6uCLOj2xbjCXF9ZWi4fZBD+Y23XXf/TkKIwA5tV+wJ+0+HzvBILlas9JXnLK+12jl/4JU8nkWqMv8DGi/OU8dRXKV4WZ/HPemJV5euWUH+C8YtdUWAwNOHGB7Rj6c59iOUmU0Fv2TBpoUgwCkfRY/upw7TsmSJawsOy2Kg5v58/++kCEM0x7Orn0BCHZoAcIJSzkzjzrkEQP4qmcfxQrUgv0sI1ZANDHa4h9zEEnwLKlM6ApbEsFjH1PpUGg+yKZq35ZDQO5dMJCRTvxqqYlldc+jjn6fZeAfiunADzWs95KlquVodwt2ADQm8ti4E6Lw9B+mO3FPdPchtlxmK2Vpeozbh8IpkgutDrXSEqdABVhV3aUem/K8hk7OKXDI5QNJ+M9r8JabfGYYK6mY+gKFZfYCx3E+fT8aMFY+H+CC4WOkDvdjJ2VwdV+aEPf0ppoZ0o2oSn5wu7ORKsAuVT0c20+iNlcEjhzFTa7fPEW502AzQDoRmxNkGl9iLzG6RhHrwmP29hNjZFMPEPXEp11d0v08rzDuE+wsARSFll925ayix8d2LvkU4kxEg2CerEEdkB8A=
+  - secure: C/yeTIQShHmje9PrqQ3f/rL9C43vErmi7xnRKyrdc+g3iur/crtf12+sgIvtLNpTM5oQ2NIQcdxS4I7IvrjMzb0KC7INZJV5Pkk5sTuBDybNJKCWLHotRLoat/Dveed7MUWqBSxb+ceDqZjIu8ToCObMTTtkRD4sGhXDyyjz0f2tMkOgg9wGZEYLVeUGLgcwvtULAbfglZr5ZaKZ39swvXs382bCeIg3ybScL1hZZBKvJ7TtTCmFSMXA1Mp9PuJhKfv1uoyuR1uA6xej5yWDrLmCHYhpCs0tjdk7PeNIajNH4RFndnt1NQGo8icwE2NfAD4U3jRSi71sGOVrB63lGgr9ckr/cP+lP9oV5NA0MnaP3OvlcCNuhBb3fOfqLBWZ6ulwAPZcy4SVWjGZ2J2ytQXOcwes6ukMDogeKALN+0/MnqI6rT+PCNjscCI0Uq1mX92V98pi1qxpsiZY7J0lAE7MrFCZZKL6d8feEN0QUPl80dSgIK7BEt5+RtivRIP/FkRiue/X52mxN4jWYo631Wk5b1cod0ibFpDSjhoKsU5Pv8yplLZfhTNNX0ZRZ6znrhlc5QBmAMF7oR5hNkKdzIeVGR2Ld2PIzLObd982jKZb5jcSb7zv6w5nfYh7CuUbh2R/RHO9Q2x1aRbRxUoKAEh8QZkk/ehgwda7rC4x74s=
+android:
+  components:
+  - tools
+  - platform-tools
+  - build-tools-${ANDROID_BUILD_TOOLS}
+  - android-${ANDROID_API}
+before_install:
+- openssl aes-256-cbc -K $encrypted_62e811dce000_key -iv $encrypted_62e811dce000_iv
+  -in ultrasonic-keystore.enc -out ultrasonic-keystore -d
+script:
+- "./gradlew build assembleRelease"
+before_deploy:
+- cp ${TRAVIS_BUILD_DIR}/ultrasonic-keystore ${HOME}/.keystore
+- cd ultrasonic/build/outputs/apk/release/
+- for apk in *.apk; do jarsigner -verbose -sigalg SHA1withRSA -digestalg SHA1 -keystore
+  ${HOME}/.keystore -storepass ${storepass} -keypass ${keypass} ${apk} ultrasonic;
+  jarsigner -verify ${apk}; ${ANDROID_HOME}/build-tools/${ANDROID_BUILD_TOOLS}/zipalign
+  -v 4 ${apk} ${HOME}/${apk/-release/}; done
+deploy:
+  provider: releases
+  api_key:
+    secure: KqF26scnGylGLoeg4CfSoaXm9KdDNyLGlMUuvsavupJ1yPbTMUQXtdPw+NU7p1eizRnrtPsMQ+JTkoZpLKZa8RskFb+hCEJD21w0XER915UuAl/la7TWV4Unp41H7Y+V6bM9CDJWHedqSxZ/nQfM9S785ASsp2O+tQrxYFNuBRcQxtv4OmqC39J9y2I1KFNBeQBIl5ZBTldvFUNXHRBV7ZrslguTGv9bm/TfZlAgeClgHSBJdUDIQl8hPq8PlYVdzp7+OBwyGYKnKDdGAYgtM5G95N9J3zUOIwQTlULUE5AL/zp1GaAdjruMnqzVnjYmdBJBNZjBeXC1eBMsIRXYnIiFF4xL+H9yh+5PCciR9HSEIBHR+6Owo1sL02g+LpZG+2bYhMZEUaVftQv9GKDfsN5VJKf3duK2++TXGmXmoCfTHgE7OZIvekny/8zLrNTjbQxBC5Et2X45UJbhF/OgBrYWHvavYMAaXlI47z0JFOzYnY+HHJBrB8paOQqAgM0IP/gHS/iRXBxPuYKOPEyycmXAqRF3dWcRnAab5I91KPdwxuda8bfD+or0wyt91eEoPnlXpL6qcv0Yx5D4un4EIMUsJDzrZfogkErJBnFv5JkVkJ3Mg3m5dggYxEVyYXczLcTNCWDrbTn+sJ9ZSFOFckzC9EUiQs1NfFxg5mhdO6s=
+  file_glob: true
+  file: "${HOME}/ultrasonic-*.apk"
+  skip_cleanup: true
+  on:
+    repo: ultrasonic/ultrasonic
+    tags: true
