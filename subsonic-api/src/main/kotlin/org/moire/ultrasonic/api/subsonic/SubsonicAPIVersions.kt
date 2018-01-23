@@ -44,6 +44,7 @@ enum class SubsonicAPIVersions(val subsonicVersions: String, val restApiVersion:
                 "1.8.0" -> return V1_8_0
                 "1.9.0" -> return V1_9_0
                 "1.10.2" -> return V1_10_2
+                "1.10.5" -> return V1_10_2 // Non standard version of Madsonic Server 5.1
                 "1.11.0" -> return V1_11_0
                 "1.12.0" -> return V1_12_0
                 "1.13.0" -> return V1_13_0
