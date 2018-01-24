@@ -14,6 +14,9 @@
     <string name="button_bar.chat">Csevegés (Chat)</string>
     <string name="button_bar.home">UltraSonic főoldal</string>
     <string name="button_bar.now_playing">Lejátszó</string>
+    <string name="podcasts.label">Podcast</string>
+    <string name="podcasts_channels.empty">No podcasts channels registered</string>
+    <string name="button_bar.podcasts">Podcast</string>
     <string name="button_bar.playlists">Lejátszási listák</string>
     <string name="button_bar.search">Keresés</string>
     <string name="chat.send_a_message">Üzenet küldése</string>
@@ -393,9 +396,7 @@
     <string name="settings.image_loader_concurrency_12">12</string>
     <string name="albumArt">albumArt</string>
     <string name="common_multiple_years">Multiple Years</string>
-
     <plurals name="select_album_n_songs">
-        <item quantity="zero">Nincsenek dalok</item>
         <item quantity="one">1 dal</item>
         <item quantity="other">%d dal</item>
     </plurals>
@@ -423,9 +424,6 @@
         <item quantity="one">1 nap van hátra a próba időszakból.</item>
         <item quantity="other">%d nap van hátra a próba időszakból.</item>
     </plurals>
-    <string name="button_bar.podcasts">Podcast</string>
-    <string name="podcasts.label">Podcast</string>
-    <string name="podcasts_channels.empty">No podcasts channels registered</string>
 
     <!-- Subsonic api errors -->
     <string name="api.subsonic.generic">Általános api hiba: %1$s</string>

@@ -2,6 +2,7 @@
 [![Build Status](https://circleci.com/gh/ultrasonic/ultrasonic/tree/develop.svg?style=shield&circle-token=:circle-token)](https://circleci.com/gh/ultrasonic)
 [![Codecov branch](https://img.shields.io/codecov/c/github/ultrasonic/ultrasonic/develop.svg)]()
 [![ktlint](https://img.shields.io/badge/code%20style-%E2%9D%A4-FF4081.svg)](https://ktlint.github.io/)
+[![Build Status](https://travis-ci.org/ultrasonic/ultrasonic.svg?branch=master)](https://travis-ci.org/ultrasonic/ultrasonic)
 
 Ultrasonic is free and open-source music streaming Android client for [Subsonic](http://www.subsonic.org/) [API](http://www.subsonic.org/pages/api.jsp) (version 1.7.0 or higher) compatible servers.
 
