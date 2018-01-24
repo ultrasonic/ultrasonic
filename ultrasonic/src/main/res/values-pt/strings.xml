@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<resources xmlns:tools="http://schemas.android.com/tools">
+<resources>
 
     <string name="background_task.loading">Carregando&#8230;</string>
     <string name="background_task.network_error">Ocorreu um erro de rede. Verifique o endereço do servidor ou tente mais tarde.</string>
@@ -396,9 +396,7 @@
     <string name="settings.image_loader_concurrency_12">12</string>
     <string name="albumArt">albumArt</string>
     <string name="common_multiple_years">Múltiplos Anos</string>
-
-    <plurals name="select_album_n_songs" tools:ignore="UnusedQuantity">
-        <item quantity="zero">Nenhuma música</item>
+    <plurals name="select_album_n_songs">
         <item quantity="one">%d música</item>
         <item quantity="other">%d músicas</item>
     </plurals>

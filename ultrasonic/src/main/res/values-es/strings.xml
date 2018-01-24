@@ -14,6 +14,9 @@
     <string name="button_bar.chat">Chat</string>
     <string name="button_bar.home">Inicio de UltraSonic</string>
     <string name="button_bar.now_playing">Reproduciendo ahora</string>
+    <string name="podcasts.label">Podcast</string>
+    <string name="podcasts_channels.empty">No hay canales de Podcasts registrados</string>
+    <string name="button_bar.podcasts">Podcast</string>
     <string name="button_bar.playlists">Listas de reproducción</string>
     <string name="button_bar.search">Buscar</string>
     <string name="chat.send_a_message">Enviar un mensaje</string>
@@ -393,9 +396,7 @@
     <string name="settings.image_loader_concurrency_12">12</string>
     <string name="albumArt">Caratula del Álbum</string>
     <string name="common_multiple_years">Múltiples años</string>
-
     <plurals name="select_album_n_songs">
-        <item quantity="zero">Ninguna canción</item>
         <item quantity="one">1 canción</item>
         <item quantity="other">%d canciones</item>
     </plurals>
@@ -423,9 +424,6 @@
         <item quantity="one">Queda un día de periodo de prueba</item>
         <item quantity="other">Quedan %d días de periodo de prueba</item>
     </plurals>
-    <string name="button_bar.podcasts">Podcast</string>
-    <string name="podcasts.label">Podcast</string>
-    <string name="podcasts_channels.empty">No hay canales de Podcasts registrados</string>
 
     <!-- Subsonic api errors -->
     <string name="api.subsonic.generic">Error genérico de api: %1$s</string>
