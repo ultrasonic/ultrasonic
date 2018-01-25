@@ -63,7 +63,7 @@ jobs:
       - image: circleci/android:api-27-alpha
     working_directory: ~/ultrasonic
     envoronment:
-      JVM_OPTS: -Xmx3200m
+      JAVA_TOOL_OPTIONS: "-XX:+UnlockExperimentalVMOptions -XX:+UseCGroupMemoryLimitForHeap"
     steps:
       - checkout
       - restore_cache:
@@ -88,7 +88,7 @@ jobs:
           root: /tmp/ultrasonic-release
           paths:
             - ultrasonic-*.apk
-  publish_signed_apk:
+  publish_github_signed_apk:
     docker:
       - image: circleci/golang
     steps:
@@ -98,7 +98,7 @@ jobs:
           name: install ghr
           command: go get -v github.com/tcnksm/ghr
       - run:
-          name: publish release on tag
+          name: publish release on github tag
           command: ghr -u ${CIRCLE_PROJECT_USERNAME} -r ${CIRCLE_PROJECT_REPONAME} ${CIRCLE_TAG} /tmp/ultrasonic-release
 workflows:
   version: 2
@@ -119,7 +119,7 @@ workflows:
               only: /^[0-9]+(\.[0-9]+)*/
             branches:
               ignore: /.*/
-      - publish_signed_apk:
+      - publish_github_signed_apk:
           requires:
             - generate_signed_apk
           filters:
