@@ -38,4 +38,37 @@ jobs:
           destination: reports
       - store_artifacts:
           path: build/reports/jacoco/jacocoFullReport/
+  push_translations:
+    docker:
+      - image: circleci/python:3.6
+    working_directory: ~/ultrasonic
+    steps:
+      - checkout
+      - run:
+          name: install transifex client
+          command: |
+            python -m venv ~/venv
+            . ~/venv/bin/activate
+            pip install transifex-client
+      - run:
+          name: configure transifex client
+          command: echo $'[https://www.transifex.com]\nhostname = https://www.transifex.com\nusername = api\npassword = '"${TRANSIFEX_PASSWORD}"$'\n' > ~/.transifexrc
+      - run:
+          name: push changes in translation files
+          command: |
+            . ~/venv/bin/activate
+            tx push -st
+workflows:
+  version: 2
+  build_and_push_translations:
+    jobs:
+      - build
+      - push_translations:
+          requires:
+            - build
+          filters:
+            branches:
+              only:
+                - develop
+                - master
 
