@@ -66,4 +66,9 @@ workflows:
       - push_translations:
           requires:
             - build
+          filters:
+            branches:
+              only:
+                - develop
+                - master
 
