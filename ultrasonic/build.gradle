@@ -8,6 +8,9 @@ android {
 
     defaultConfig {
         applicationId "org.moire.ultrasonic"
+        versionCode versions.versionCode
+        versionName versions.versionName
+
         minSdkVersion versions.minSdk
         targetSdkVersion versions.targetSdk
 
