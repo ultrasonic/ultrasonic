@@ -1,31 +1,13 @@
 apply plugin: 'com.android.application'
 apply plugin: 'kotlin-android'
 apply plugin: 'jacoco-android'
-apply plugin: 'org.moallemi.advanced-build-version'
 apply from: "../gradle_scripts/code_quality.gradle"
-
-advancedVersioning {
-    nameOptions {
-        versionMajor 2
-        versionMinor 2
-        versionPatch 1
-    }
-    codeOptions {
-        versionCodeType org.moallemi.gradle.internal.VersionCodeType.AUTO_INCREMENT_ONE_STEP
-    }
-    outputOptions {
-        renameOutput true
-    }
-}
 
 android {
     compileSdkVersion versions.compileSdk
 
     defaultConfig {
         applicationId "org.moire.ultrasonic"
-        versionCode advancedVersioning.versionCode
-        versionName advancedVersioning.versionName
-
         minSdkVersion versions.minSdk
         targetSdkVersion versions.targetSdk
 

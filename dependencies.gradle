@@ -10,7 +10,6 @@ ext.versions = [
         detekt               : "1.0.0.RC6",
         jacoco               : "0.7.9",
         jacocoAndroid        : "0.1.2",
-        buildVersioning      : "1.6.0",
 
         androidSupport       : "22.2.1",
 
@@ -28,12 +27,11 @@ ext.versions = [
 ]
 
 ext.gradlePlugins = [
-        androidTools    : "com.android.tools.build:gradle:$versions.androidTools",
-        kotlin          : "org.jetbrains.kotlin:kotlin-gradle-plugin:$versions.kotlin",
-        ktlintGradle    : "gradle.plugin.org.jlleitschuh.gradle:ktlint-gradle:$versions.ktlintGradle",
-        detekt          : "gradle.plugin.io.gitlab.arturbosch.detekt:detekt-gradle-plugin:$versions.detekt",
-        jacocoAndroid   : "com.dicedmelon.gradle:jacoco-android:$versions.jacocoAndroid",
-        buildVersioning : "org.moallemi.gradle.advanced-build-version:gradle-plugin:$versions.buildVersioning",
+        androidTools  : "com.android.tools.build:gradle:$versions.androidTools",
+        kotlin        : "org.jetbrains.kotlin:kotlin-gradle-plugin:$versions.kotlin",
+        ktlintGradle  : "gradle.plugin.org.jlleitschuh.gradle:ktlint-gradle:$versions.ktlintGradle",
+        detekt        : "gradle.plugin.io.gitlab.arturbosch.detekt:detekt-gradle-plugin:$versions.detekt",
+        jacocoAndroid : "com.dicedmelon.gradle:jacoco-android:$versions.jacocoAndroid"
 ]
 
 ext.androidSupport = [
