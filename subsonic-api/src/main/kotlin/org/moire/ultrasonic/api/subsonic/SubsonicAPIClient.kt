@@ -4,9 +4,11 @@ import com.fasterxml.jackson.databind.DeserializationFeature
 import com.fasterxml.jackson.databind.ObjectMapper
 import com.fasterxml.jackson.module.kotlin.KotlinModule
 import com.fasterxml.jackson.module.kotlin.readValue
+import okhttp3.Cache
 import okhttp3.OkHttpClient
 import okhttp3.ResponseBody
 import okhttp3.logging.HttpLoggingInterceptor
+import org.moire.ultrasonic.api.subsonic.interceptors.OfflineCacheInterceptor
 import org.moire.ultrasonic.api.subsonic.interceptors.PasswordHexInterceptor
 import org.moire.ultrasonic.api.subsonic.interceptors.PasswordMD5Interceptor
 import org.moire.ultrasonic.api.subsonic.interceptors.ProxyPasswordInterceptor
@@ -17,6 +19,8 @@ import org.moire.ultrasonic.api.subsonic.response.SubsonicResponse
 import retrofit2.Response
 import retrofit2.Retrofit
 import retrofit2.converter.jackson.JacksonConverterFactory
+import java.io.File
+import java.io.IOException
 import java.security.SecureRandom
 import java.security.cert.X509Certificate
 import java.util.concurrent.TimeUnit.MILLISECONDS
@@ -24,6 +28,7 @@ import javax.net.ssl.SSLContext
 import javax.net.ssl.X509TrustManager
 
 private const val READ_TIMEOUT = 60_000L
+private const val DEFAULT_CACHE_SIZE = 20 * 1024 * 1024L // 20Mb
 
 /**
  * Subsonic API client that provides api access.
@@ -33,16 +38,24 @@ private const val READ_TIMEOUT = 60_000L
  * Client will automatically adjust [protocolVersion] to the current server version on
  * doing successful requests.
  *
+ * To support offline mode pass non-null [cacheDir] to client. When network is not available it will
+ * try to return stored response from cache.
+ *
  * @author Yahor Berdnikau
  */
-class SubsonicAPIClient(baseUrl: String,
-                        username: String,
-                        password: String,
-                        minimalProtocolVersion: SubsonicAPIVersions,
-                        clientID: String,
-                        allowSelfSignedCertificate: Boolean = false,
-                        enableLdapUserSupport: Boolean = false,
-                        debug: Boolean = false) {
+class SubsonicAPIClient(
+        baseUrl: String,
+        username: String,
+        password: String,
+        minimalProtocolVersion: SubsonicAPIVersions,
+        clientID: String,
+        cacheDir: File? = null,
+        networkStateIndicator: NetworkStateIndicator = object : NetworkStateIndicator {},
+        cacheSize:Long = DEFAULT_CACHE_SIZE,
+        allowSelfSignedCertificate: Boolean = false,
+        enableLdapUserSupport: Boolean = false,
+        debug: Boolean = false
+) {
     private val versionInterceptor = VersionInterceptor(minimalProtocolVersion) {
         protocolVersion = it
     }
@@ -66,6 +79,7 @@ class SubsonicAPIClient(baseUrl: String,
     private val okHttpClient = OkHttpClient.Builder()
             .readTimeout(READ_TIMEOUT, MILLISECONDS)
             .apply { if (allowSelfSignedCertificate) allowSelfSignedCertificates() }
+            .addCache(cacheDir, cacheSize)
             .addInterceptor { chain ->
                 // Adds default request params
                 val originalRequest = chain.request()
@@ -79,6 +93,7 @@ class SubsonicAPIClient(baseUrl: String,
             .addInterceptor(versionInterceptor)
             .addInterceptor(proxyPasswordInterceptor)
             .addInterceptor(RangeHeaderInterceptor())
+            .addInterceptor(OfflineCacheInterceptor(networkStateIndicator))
             .apply { if (debug) addLogging() }
             .build()
 
@@ -190,5 +205,18 @@ class SubsonicAPIClient(baseUrl: String,
         sslSocketFactory(sslContext.socketFactory, trustManager)
 
         hostnameVerifier { _, _ -> true }
+    }
+
+    private fun OkHttpClient.Builder.addCache(
+            cacheDir: File?,
+            cacheSize: Long
+    ): OkHttpClient.Builder {
+        if (cacheDir != null) {
+            if (!cacheDir.exists() && cacheDir.mkdirs()) throw IOException("Failed to create cache dir")
+
+            val cache = Cache(cacheDir, cacheSize)
+            cache(cache)
+        }
+        return this
     }
 }
