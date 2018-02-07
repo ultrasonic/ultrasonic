@@ -8,6 +8,7 @@ import okhttp3.Cache
 import okhttp3.OkHttpClient
 import okhttp3.ResponseBody
 import okhttp3.logging.HttpLoggingInterceptor
+import org.moire.ultrasonic.api.subsonic.interceptors.EnableCachingNetworkInterceptor
 import org.moire.ultrasonic.api.subsonic.interceptors.OfflineCacheInterceptor
 import org.moire.ultrasonic.api.subsonic.interceptors.PasswordHexInterceptor
 import org.moire.ultrasonic.api.subsonic.interceptors.PasswordMD5Interceptor
@@ -38,8 +39,8 @@ private const val DEFAULT_CACHE_SIZE = 20 * 1024 * 1024L // 20Mb
  * Client will automatically adjust [protocolVersion] to the current server version on
  * doing successful requests.
  *
- * To support offline mode pass non-null [cacheDir] to client. When network is not available it will
- * try to return stored response from cache.
+ * To support offline mode pass non-null `cacheDir` to client. When `networkStateIndicator` will
+ * indicate that network is not available it will try to return stored response from cache.
  *
  * @author Yahor Berdnikau
  */
@@ -51,7 +52,7 @@ class SubsonicAPIClient(
         clientID: String,
         cacheDir: File? = null,
         networkStateIndicator: NetworkStateIndicator = object : NetworkStateIndicator {},
-        cacheSize:Long = DEFAULT_CACHE_SIZE,
+        cacheSize: Long = DEFAULT_CACHE_SIZE,
         allowSelfSignedCertificate: Boolean = false,
         enableLdapUserSupport: Boolean = false,
         debug: Boolean = false
@@ -79,7 +80,6 @@ class SubsonicAPIClient(
     private val okHttpClient = OkHttpClient.Builder()
             .readTimeout(READ_TIMEOUT, MILLISECONDS)
             .apply { if (allowSelfSignedCertificate) allowSelfSignedCertificates() }
-            .addCache(cacheDir, cacheSize)
             .addInterceptor { chain ->
                 // Adds default request params
                 val originalRequest = chain.request()
@@ -93,7 +93,7 @@ class SubsonicAPIClient(
             .addInterceptor(versionInterceptor)
             .addInterceptor(proxyPasswordInterceptor)
             .addInterceptor(RangeHeaderInterceptor())
-            .addInterceptor(OfflineCacheInterceptor(networkStateIndicator))
+            .addOfflineSupport(cacheDir, cacheSize, networkStateIndicator)
             .apply { if (debug) addLogging() }
             .build()
 
@@ -207,16 +207,27 @@ class SubsonicAPIClient(
         hostnameVerifier { _, _ -> true }
     }
 
-    private fun OkHttpClient.Builder.addCache(
+    private fun OkHttpClient.Builder.addOfflineSupport(
             cacheDir: File?,
-            cacheSize: Long
+            cacheSize: Long,
+            networkStateIndicator: NetworkStateIndicator
     ): OkHttpClient.Builder {
         if (cacheDir != null) {
-            if (!cacheDir.exists() && cacheDir.mkdirs()) throw IOException("Failed to create cache dir")
-
-            val cache = Cache(cacheDir, cacheSize)
-            cache(cache)
+            addCache(cacheDir, cacheSize)
+            addInterceptor(OfflineCacheInterceptor(networkStateIndicator))
+            addNetworkInterceptor(EnableCachingNetworkInterceptor())
         }
+        return this
+    }
+
+    private fun OkHttpClient.Builder.addCache(
+            cacheDir: File,
+            cacheSize: Long
+    ): OkHttpClient.Builder {
+        if (!cacheDir.exists() && cacheDir.mkdirs()) throw IOException("Failed to create cache dir")
+
+        val cache = Cache(cacheDir, cacheSize)
+        cache(cache)
         return this
     }
 }
