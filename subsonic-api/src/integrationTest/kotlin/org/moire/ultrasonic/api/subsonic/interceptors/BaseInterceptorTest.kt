@@ -1,13 +1,11 @@
 package org.moire.ultrasonic.api.subsonic.interceptors
 
-import okhttp3.Cache
 import okhttp3.Interceptor
 import okhttp3.OkHttpClient
 import okhttp3.Request
 import org.junit.Before
 import org.junit.Rule
 import org.moire.ultrasonic.api.subsonic.rules.MockWebServerRule
-import kotlin.LazyThreadSafetyMode.NONE
 
 /**
  * Base class for testing [okhttp3.Interceptor] implementations.

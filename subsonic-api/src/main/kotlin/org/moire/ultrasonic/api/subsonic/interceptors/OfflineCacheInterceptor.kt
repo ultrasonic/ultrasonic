@@ -42,7 +42,7 @@ class OfflineCacheInterceptor(
  *
  * Only do rewrite for `Content-Type: application/json` responses.
  */
-class EnableCachingNetworkInterceptor: Interceptor {
+class EnableCachingNetworkInterceptor : Interceptor {
     override fun intercept(chain: Chain): Response {
         val response = chain.proceed(chain.request())
         return if (response.isSuccessful) {

@@ -17,7 +17,6 @@ import org.junit.Test
 import org.junit.rules.TemporaryFolder
 import org.moire.ultrasonic.api.subsonic.NetworkStateIndicator
 import org.moire.ultrasonic.api.subsonic.rules.MockWebServerRule
-import java.util.concurrent.TimeUnit
 
 /**
  * Integration test for [OfflineCacheInterceptor].
