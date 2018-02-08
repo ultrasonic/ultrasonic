@@ -21,6 +21,7 @@ package org.moire.ultrasonic.view;
 import android.content.Context;
 import android.graphics.drawable.AnimationDrawable;
 import android.graphics.drawable.Drawable;
+import android.text.TextUtils;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -168,7 +169,10 @@ public class SongView extends UpdateView implements Checkable
 		String suffix = song.getSuffix();
 		String transcodedSuffix = song.getTranscodedSuffix();
 
-		fileFormat = transcodedSuffix == null || transcodedSuffix.equals(suffix) || (song.isVideo() && Util.getVideoPlayerType(this.context) != VideoPlayerType.FLASH) ? suffix : String.format("%s > %s", suffix, transcodedSuffix);
+        fileFormat = TextUtils.isEmpty(transcodedSuffix) ||
+                transcodedSuffix.equals(suffix) ||
+                (song.isVideo() && Util.getVideoPlayerType(this.context) != VideoPlayerType.FLASH) ?
+                suffix : String.format("%s > %s", suffix, transcodedSuffix);
 
 		String artistName = song.getArtist();
 
