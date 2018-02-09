@@ -103,7 +103,6 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Locale;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.TimeUnit;
 
@@ -145,34 +144,12 @@ public class RESTMusicService implements MusicService {
     public List<MusicFolder> getMusicFolders(boolean refresh,
                                              Context context,
                                              ProgressListener progressListener) throws Exception {
-        List<MusicFolder> cachedMusicFolders = readCachedMusicFolders(context);
-        if (cachedMusicFolders != null && !refresh) {
-            return cachedMusicFolders;
-        }
-
         updateProgressListener(progressListener, R.string.parser_reading);
         Response<MusicFoldersResponse> response = subsonicAPIClient.getApi().getMusicFolders().execute();
         checkResponseSuccessful(response);
 
-        List<MusicFolder> musicFolders = APIMusicFolderConverter
+        return APIMusicFolderConverter
                 .toDomainEntityList(response.body().getMusicFolders());
-        writeCachedMusicFolders(context, musicFolders);
-        return musicFolders;
-    }
-
-    private static List<MusicFolder> readCachedMusicFolders(Context context) {
-        String filename = getCachedMusicFoldersFilename(context);
-        return FileUtil.deserialize(context, filename);
-    }
-
-    private static void writeCachedMusicFolders(Context context, List<MusicFolder> musicFolders) {
-        String filename = getCachedMusicFoldersFilename(context);
-        FileUtil.serialize(context, new ArrayList<>(musicFolders), filename);
-    }
-
-    private static String getCachedMusicFoldersFilename(Context context) {
-        String s = Util.getRestUrl(context, null);
-        return String.format(Locale.US, "musicFolders-%d.ser", Math.abs(s.hashCode()));
     }
 
     @Override
@@ -180,68 +157,23 @@ public class RESTMusicService implements MusicService {
                               boolean refresh,
                               Context context,
                               ProgressListener progressListener) throws Exception {
-        Indexes cachedIndexes = readCachedIndexes(context, musicFolderId);
-        if (cachedIndexes != null && !refresh) {
-            return cachedIndexes;
-        }
-
         updateProgressListener(progressListener, R.string.parser_reading);
         Response<GetIndexesResponse> response = subsonicAPIClient.getApi()
                 .getIndexes(musicFolderId, null).execute();
         checkResponseSuccessful(response);
 
-        Indexes indexes = APIIndexesConverter.toDomainEntity(response.body().getIndexes());
-        writeCachedIndexes(context, indexes, musicFolderId);
-        return indexes;
-    }
-
-    private static Indexes readCachedIndexes(Context context, String musicFolderId) {
-        String filename = getCachedIndexesFilename(context, musicFolderId);
-        return FileUtil.deserialize(context, filename);
-    }
-
-    private static void writeCachedIndexes(Context context, Indexes indexes, String musicFolderId) {
-        String filename = getCachedIndexesFilename(context, musicFolderId);
-        FileUtil.serialize(context, indexes, filename);
-    }
-
-    private static String getCachedIndexesFilename(Context context, String musicFolderId) {
-        String s = Util.getRestUrl(context, null) + musicFolderId;
-        return String.format(Locale.US, "indexes-%d.ser", Math.abs(s.hashCode()));
+        return APIIndexesConverter.toDomainEntity(response.body().getIndexes());
     }
 
     @Override
     public Indexes getArtists(boolean refresh,
                               Context context,
                               ProgressListener progressListener) throws Exception {
-        Indexes cachedArtists = readCachedArtists(context);
-        if (cachedArtists != null &&
-                !refresh) {
-            return cachedArtists;
-        }
-
         updateProgressListener(progressListener, R.string.parser_reading);
         Response<GetArtistsResponse> response = subsonicAPIClient.getApi().getArtists(null).execute();
         checkResponseSuccessful(response);
 
-        Indexes indexes = APIIndexesConverter.toDomainEntity(response.body().getIndexes());
-        writeCachedArtists(context, indexes);
-        return indexes;
-    }
-
-    private static Indexes readCachedArtists(Context context) {
-        String filename = getCachedArtistsFilename(context);
-        return FileUtil.deserialize(context, filename);
-    }
-
-    private static void writeCachedArtists(Context context, Indexes artists) {
-        String filename = getCachedArtistsFilename(context);
-        FileUtil.serialize(context, artists, filename);
-    }
-
-    private static String getCachedArtistsFilename(Context context) {
-        String s = Util.getRestUrl(context, null);
-        return String.format(Locale.US, "indexes-%d.ser", Math.abs(s.hashCode()));
+        return APIIndexesConverter.toDomainEntity(response.body().getIndexes());
     }
 
     @Override
@@ -946,7 +878,6 @@ public class RESTMusicService implements MusicService {
         if (id == null) {
             throw new IllegalArgumentException("Id is null");
         }
-        Integer itemId = Integer.parseInt(id);
 
         updateProgressListener(progressListener, R.string.parser_reading);
         Response<SubsonicResponse> response = subsonicAPIClient.getApi()
@@ -990,7 +921,6 @@ public class RESTMusicService implements MusicService {
         if (id == null) {
             throw new IllegalArgumentException("Id is null!");
         }
-        Long shareId = Long.valueOf(id);
 
         updateProgressListener(progressListener, R.string.parser_reading);
         Response<SubsonicResponse> response = subsonicAPIClient.getApi().deleteShare(id).execute();

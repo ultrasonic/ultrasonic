@@ -23,10 +23,13 @@ import android.content.SharedPreferences;
 import android.util.Log;
 
 import org.moire.ultrasonic.BuildConfig;
+import org.moire.ultrasonic.api.subsonic.NetworkStateIndicator;
 import org.moire.ultrasonic.api.subsonic.SubsonicAPIClient;
 import org.moire.ultrasonic.api.subsonic.SubsonicAPIVersions;
 import org.moire.ultrasonic.util.Constants;
 import org.moire.ultrasonic.util.Util;
+
+import java.io.File;
 
 /**
  * @author Sindre Mehus
@@ -34,6 +37,8 @@ import org.moire.ultrasonic.util.Util;
  */
 public class MusicServiceFactory {
     private static final String LOG_TAG = MusicServiceFactory.class.getSimpleName();
+    private static final long CACHE_SIZE = 20 * 1024 * 1024;
+    private static final String MAIN_CACHE_DIR_NAME = "requests_cache";
     private static MusicService REST_MUSIC_SERVICE = null;
     private static MusicService OFFLINE_MUSIC_SERVICE = null;
 
@@ -88,6 +93,8 @@ public class MusicServiceFactory {
                 .getBoolean(Constants.PREFERENCES_KEY_ALLOW_SELF_SIGNED_CERTIFICATE + instance, false);
         boolean enableLdapUserSupport = preferences
                 .getBoolean(Constants.PREFERENCES_KEY_LDAP_SUPPORT + instance , false);
+        final File requestsCacheDir = getCacheDirectory(context, instance);
+        final NetworkStateIndicator networkStateIndicator = createNetworkStateIndicator(context);
 
         if (serverUrl == null ||
                 username == null ||
@@ -95,13 +102,32 @@ public class MusicServiceFactory {
             Log.i("MusicServiceFactory", "Server credentials is not available");
             return new SubsonicAPIClient("http://localhost", "", "",
                     SubsonicAPIVersions.fromApiVersion(Constants.REST_PROTOCOL_VERSION),
-                    Constants.REST_CLIENT_ID, allowSelfSignedCertificate,
+                    Constants.REST_CLIENT_ID, requestsCacheDir, networkStateIndicator, CACHE_SIZE,
+                    allowSelfSignedCertificate,
                     enableLdapUserSupport, BuildConfig.DEBUG);
         }
 
         return new SubsonicAPIClient(serverUrl, username, password,
                 SubsonicAPIVersions.fromApiVersion(Constants.REST_PROTOCOL_VERSION),
-                Constants.REST_CLIENT_ID, allowSelfSignedCertificate,
-                enableLdapUserSupport, BuildConfig.DEBUG);
+                Constants.REST_CLIENT_ID, requestsCacheDir, networkStateIndicator, CACHE_SIZE,
+                allowSelfSignedCertificate, enableLdapUserSupport, BuildConfig.DEBUG);
+    }
+
+    private static File getCacheDirectory(
+            final Context context,
+            final int instance
+    ) {
+        final File appInternalDir = context.getFilesDir();
+        final File mainCacheDir = new File(appInternalDir, MAIN_CACHE_DIR_NAME);
+        final File instanceCacheDir = new File(mainCacheDir, String.valueOf(instance));
+        if (!instanceCacheDir.exists() &&
+                instanceCacheDir.mkdirs()) {
+            throw new RuntimeException("Failed to create requests cache");
+        }
+        return instanceCacheDir;
+    }
+
+    private static NetworkStateIndicator createNetworkStateIndicator(final Context context) {
+        return new NetworkStateIndicatorImpl(context);
     }
 }
