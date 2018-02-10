@@ -18,6 +18,8 @@
  */
 package org.moire.ultrasonic.domain;
 
+import android.support.annotation.NonNull;
+
 import java.io.Serializable;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -352,6 +354,7 @@ public class MusicDirectory
 			this.bitRate = bitRate;
 		}
 
+		@NonNull
 		public String getCoverArt()
 		{
 			return coverArt;

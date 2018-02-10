@@ -25,6 +25,7 @@ import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.graphics.drawable.TransitionDrawable;
 import android.os.Handler;
+import android.text.TextUtils;
 import android.util.Log;
 import android.view.View;
 import android.widget.ImageView;
@@ -179,8 +180,7 @@ public class ImageLoader implements Runnable
 
 		String coverArt = entry.getCoverArt();
 
-		if (coverArt == null)
-		{
+		if (TextUtils.isEmpty(coverArt)) {
 			setUnknownImage(view, large);
 			return;
 		}
@@ -230,8 +230,7 @@ public class ImageLoader implements Runnable
 
 		String coverArt = entry.getCoverArt();
 
-		if (coverArt == null)
-		{
+		if (TextUtils.isEmpty(coverArt)) {
 			return null;
 		}
 
