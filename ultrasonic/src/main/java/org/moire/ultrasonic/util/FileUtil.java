@@ -75,12 +75,9 @@ public class FileUtil
 		}
 		fileName.append(fileSystemSafe(song.getTitle())).append('.');
 
-		if (song.getTranscodedSuffix() != null)
-		{
+		if (!TextUtils.isEmpty(song.getTranscodedSuffix())) {
 			fileName.append(song.getTranscodedSuffix());
-		}
-		else
-		{
+		} else {
 			fileName.append(song.getSuffix());
 		}
 
