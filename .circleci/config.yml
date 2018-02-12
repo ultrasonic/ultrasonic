@@ -38,4 +38,90 @@ jobs:
           destination: reports
       - store_artifacts:
           path: build/reports/jacoco/jacocoFullReport/
+  push_translations:
+    docker:
+      - image: circleci/python:3.6
+    working_directory: ~/ultrasonic
+    steps:
+      - checkout
+      - run:
+          name: install transifex client
+          command: |
+            python -m venv ~/venv
+            . ~/venv/bin/activate
+            pip install transifex-client
+      - run:
+          name: configure transifex client
+          command: echo $'[https://www.transifex.com]\nhostname = https://www.transifex.com\nusername = api\npassword = '"${TRANSIFEX_PASSWORD}"$'\n' > ~/.transifexrc
+      - run:
+          name: push changes in translation files
+          command: |
+            . ~/venv/bin/activate
+            tx push -st
+  generate_signed_apk:
+    docker:
+      - image: circleci/android:api-27-alpha
+    working_directory: ~/ultrasonic
+    envoronment:
+      JAVA_TOOL_OPTIONS: "-XX:+UnlockExperimentalVMOptions -XX:+UseCGroupMemoryLimitForHeap"
+    steps:
+      - checkout
+      - restore_cache:
+          key: gradle-cache-{{ checksum "dependencies.gradle" }}
+      - run:
+          name: decrypt ultrasonic-keystore
+          command: openssl aes-256-cbc -K ${ULTRASONIC_KEYSTORE_KEY} -iv ${ULTRASONIC_KEYSTORE_IV} -in ultrasonic-keystore.enc -out ultrasonic-keystore -d
+      - run:
+          name: build release apk
+          command: ./gradlew build assembleRelease
+      - run:
+          name: sign release apk
+          command: |
+            mkdir -p /tmp/ultrasonic-release
+            jarsigner -verbose -sigalg SHA1withRSA -digestalg SHA1 -keystore ~/ultrasonic/ultrasonic-keystore -storepass ${ULTRASONIC_KEYSTORE_STOREPASS} -keypass ${ULTRASONIC_KEYSTORE_KEYPASS} ultrasonic/build/outputs/apk/release/ultrasonic-release-unsigned.apk ultrasonic
+            jarsigner -verify ultrasonic/build/outputs/apk/release/ultrasonic-release-unsigned.apk
+            ${ANDROID_HOME}/build-tools/27.0.0/zipalign -v 4 ultrasonic/build/outputs/apk/release/ultrasonic-release-unsigned.apk /tmp/ultrasonic-release/ultrasonic-${CIRCLE_TAG}.apk
+      - persist_to_workspace:
+          root: /tmp/ultrasonic-release
+          paths:
+            - ultrasonic-*.apk
+  publish_github_signed_apk:
+    docker:
+      - image: circleci/golang
+    steps:
+      - attach_workspace:
+          at: /tmp/ultrasonic-release
+      - run:
+          name: install ghr
+          command: go get -v github.com/tcnksm/ghr
+      - run:
+          name: publish release on github tag
+          command: ghr -u ${CIRCLE_PROJECT_USERNAME} -r ${CIRCLE_PROJECT_REPONAME} ${CIRCLE_TAG} /tmp/ultrasonic-release
+workflows:
+  version: 2
+  build_and_push_translations:
+    jobs:
+      - build
+      - push_translations:
+          requires:
+            - build
+          filters:
+            branches:
+              only:
+                - develop
+                - master
+      - generate_signed_apk:
+          filters:
+            tags:
+              only: /^[0-9]+(\.[0-9]+)*/
+            branches:
+              ignore: /.*/
+      - publish_github_signed_apk:
+          requires:
+            - generate_signed_apk
+          filters:
+            tags:
+              only: /^[0-9]+(\.[0-9]+)*/
+            branches:
+              ignore: /.*/
 

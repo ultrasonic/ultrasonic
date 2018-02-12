@@ -23,6 +23,7 @@ import android.graphics.Bitmap;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.annotation.StringRes;
+import android.text.TextUtils;
 import android.util.Log;
 
 import org.moire.ultrasonic.R;
@@ -654,7 +655,7 @@ public class RESTMusicService implements MusicService {
                 Log.d(TAG, "Loading cover art for: " + entry);
 
                 final String id = entry.getCoverArt();
-                if (id == null || id.isEmpty()) {
+                if (TextUtils.isEmpty(id)) {
                     return null; // Can't load
                 }
 

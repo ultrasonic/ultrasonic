@@ -13,7 +13,6 @@ buildscript {
         classpath gradlePlugins.ktlintGradle
         classpath gradlePlugins.detekt
         classpath gradlePlugins.jacocoAndroid
-        classpath gradlePlugins.buildVersioning
     }
 }
 

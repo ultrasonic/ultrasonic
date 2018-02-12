@@ -22,6 +22,7 @@ import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.Environment;
+import android.text.TextUtils;
 import android.util.Log;
 
 import org.moire.ultrasonic.activity.SubsonicTabActivity;
@@ -74,12 +75,9 @@ public class FileUtil
 		}
 		fileName.append(fileSystemSafe(song.getTitle())).append('.');
 
-		if (song.getTranscodedSuffix() != null)
-		{
+		if (!TextUtils.isEmpty(song.getTranscodedSuffix())) {
 			fileName.append(song.getTranscodedSuffix());
-		}
-		else
-		{
+		} else {
 			fileName.append(song.getSuffix());
 		}
 
@@ -324,13 +322,10 @@ public class FileUtil
 
 		File dir;
 
-		if (entry.getPath() != null)
-		{
+		if (!TextUtils.isEmpty(entry.getPath())) {
 			File f = new File(fileSystemSafeDir(entry.getPath()));
 			dir = new File(String.format("%s/%s", getMusicDirectory(context).getPath(), entry.isDirectory() ? f.getPath() : f.getParent()));
-		}
-		else
-		{
+		} else {
 			String artist = fileSystemSafe(entry.getArtist());
 			String album = fileSystemSafe(entry.getAlbum());
 

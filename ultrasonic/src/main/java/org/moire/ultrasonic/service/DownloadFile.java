@@ -21,6 +21,7 @@ package org.moire.ultrasonic.service;
 import android.content.Context;
 import android.net.wifi.WifiManager;
 import android.os.PowerManager;
+import android.text.TextUtils;
 import android.util.Log;
 
 import org.moire.ultrasonic.domain.MusicDirectory;
@@ -457,8 +458,7 @@ public class DownloadFile
 		{
 			try
 			{
-				if (song.getCoverArt() != null)
-				{
+				if (!TextUtils.isEmpty(song.getCoverArt())) {
 					int size = Util.getMinDisplayMetric(context);
 					musicService.getCoverArt(context, song, size, true, true, null);
 				}
