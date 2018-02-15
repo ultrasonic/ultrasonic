@@ -12,10 +12,16 @@ App is available to download at following stores:
 [<img src="https://play.google.com/intl/en_us/badges/images/generic/en-play-badge.png" alt="Get it on Google Play" height="70">](https://play.google.com/store/apps/details?id=org.moire.ultrasonic)
 [<img src="https://f-droid.org/badge/get-it-on.png" alt="Get it on F-Droid" height="70">](https://f-droid.org/packages/org.moire.ultrasonic/)
 
-## Bugs and issue
+## Bugs and issues
 
 First, see if your issue haven’t been yet reported [here](https://github.com/ultrasonic/ultrasonic/issues),
 otherwise open [a new issue](https://github.com/ultrasonic/ultrasonic/issues/new).
+
+### Known (not our) bugs
+
+If you are using *Madsonic 5.1.X* several sections of Ultrasonic will not
+work. This is caused by bad implementation of Subsonic API by Madsonic. For
+more info about this you can read [this bug](https://github.com/ultrasonic/ultrasonic/issues/129).
 
 ## Contributing
 
@@ -27,7 +33,7 @@ See [CONTRIBUTING](CONTRIBUTING.md).
 - [Airsonic](https://github.com/airsonic/airsonic)
 - [Supysonic](https://github.com/spl0k/supysonic)
 
-Other *Subsonic API* implementations should work as well as long as they follow API 
+Other *Subsonic API* implementations should work as well as long as they follow API
 [documentation](http://www.subsonic.org/pages/api.jsp).
 
 ## License
