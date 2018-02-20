@@ -54,6 +54,8 @@ dependencies {
 
     implementation other.kotlinStdlib
 
+    implementation other.semver
+
     testImplementation other.kotlinReflect
     testImplementation testing.junit
     testImplementation testing.kotlinJunit
