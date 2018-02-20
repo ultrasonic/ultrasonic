@@ -3,6 +3,7 @@
 package org.moire.ultrasonic.domain
 
 import org.amshove.kluent.`should equal to`
+import org.amshove.kluent.`should equal`
 import org.junit.Test
 import org.moire.ultrasonic.api.subsonic.models.User
 
@@ -22,7 +23,7 @@ class APIUserConverterTest {
             commentRole `should equal to` entity.commentRole
             coverArtRole `should equal to` entity.coverArtRole
             downloadRole `should equal to` entity.downloadRole
-            email `should equal to` entity.email
+            email `should equal` entity.email
             jukeboxRole `should equal to` entity.jukeboxRole
             playlistRole `should equal to` entity.playlistRole
             podcastRole `should equal to` entity.podcastRole
@@ -31,7 +32,7 @@ class APIUserConverterTest {
             shareRole `should equal to` entity.shareRole
             streamRole `should equal to` entity.streamRole
             uploadRole `should equal to` entity.uploadRole
-            userName `should equal to` entity.username
+            userName `should equal` entity.username
         }
     }
 }
