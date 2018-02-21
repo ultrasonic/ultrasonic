@@ -20,15 +20,15 @@ class APIShareConverterTest {
         val domainEntity = entity.toDomainEntity()
 
         with(domainEntity) {
-            id `should equal to` entity.id
-            url `should equal to` entity.url
-            description `should equal to` entity.description
-            username `should equal to` entity.username
-            created `should equal to` shareTimeFormat.format(entity.created?.time)
-            lastVisited `should equal to` shareTimeFormat.format(entity.lastVisited?.time)
-            expires `should equal to` shareTimeFormat.format(entity.expires?.time)
-            visitCount `should equal to` entity.visitCount.toLong()
-            entries `should equal` entity.items.toDomainEntityList()
+            id `should equal` entity.id
+            url `should equal` entity.url
+            description `should equal` entity.description
+            username `should equal` entity.username
+            created `should equal` shareTimeFormat.format(entity.created?.time)
+            lastVisited `should equal` shareTimeFormat.format(entity.lastVisited?.time)
+            expires `should equal` shareTimeFormat.format(entity.expires?.time)
+            visitCount `should equal` entity.visitCount.toLong()
+            this.getEntries() `should equal` entity.items.toDomainEntityList()
         }
     }
 

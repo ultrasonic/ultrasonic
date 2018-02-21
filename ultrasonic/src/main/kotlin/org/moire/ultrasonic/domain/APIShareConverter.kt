@@ -12,14 +12,14 @@ fun List<APIShare>.toDomainEntitiesList(): List<Share> = this.map {
     it.toDomainEntity()
 }
 
-fun APIShare.toDomainEntity(): Share = Share().apply {
-    created = this@toDomainEntity.created?.let { shareTimeFormat.format(it.time) }
-    description = this@toDomainEntity.description
-    expires = this@toDomainEntity.expires?.let { shareTimeFormat.format(it.time) }
-    id = this@toDomainEntity.id
-    lastVisited = this@toDomainEntity.lastVisited?.let { shareTimeFormat.format(it.time) }
-    url = this@toDomainEntity.url
-    username = this@toDomainEntity.username
-    visitCount = this@toDomainEntity.visitCount.toLong()
-    entries.addAll(this@toDomainEntity.items.toDomainEntityList())
-}
+fun APIShare.toDomainEntity(): Share = Share(
+    created = this@toDomainEntity.created?.let { shareTimeFormat.format(it.time) },
+    description = this@toDomainEntity.description,
+    expires = this@toDomainEntity.expires?.let { shareTimeFormat.format(it.time) },
+    id = this@toDomainEntity.id,
+    lastVisited = this@toDomainEntity.lastVisited?.let { shareTimeFormat.format(it.time) },
+    url = this@toDomainEntity.url,
+    username = this@toDomainEntity.username,
+    visitCount = this@toDomainEntity.visitCount.toLong(),
+    entries = this@toDomainEntity.items.toDomainEntityList().toMutableList()
+)
