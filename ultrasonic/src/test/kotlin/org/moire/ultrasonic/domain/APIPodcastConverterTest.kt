@@ -20,11 +20,11 @@ class APIPodcastConverterTest {
         val converterEntity = entity.toDomainEntity()
 
         with(converterEntity) {
-            id = entity.id
-            description = entity.description
-            status = entity.status
-            title = entity.title
-            url = entity.url
+            id `should equal` entity.id
+            description `should equal` entity.description
+            status `should equal` entity.status
+            title `should equal` entity.title
+            url `should equal` entity.url
         }
     }
 
