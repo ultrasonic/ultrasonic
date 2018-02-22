@@ -5,10 +5,10 @@ package org.moire.ultrasonic.domain
 
 import org.moire.ultrasonic.api.subsonic.models.Artist as APIArtist
 
-fun APIArtist.toDomainEntity(): Artist = Artist().apply {
-    id = this@toDomainEntity.id
+fun APIArtist.toDomainEntity(): Artist = Artist(
+    id = this@toDomainEntity.id,
     name = this@toDomainEntity.name
-}
+)
 
 fun APIArtist.toMusicDirectoryDomainEntity(): MusicDirectory = MusicDirectory().apply {
     name = this@toMusicDirectoryDomainEntity.name

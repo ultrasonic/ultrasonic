@@ -20,8 +20,8 @@ class APIArtistConverterTest {
         val convertedEntity = entity.toDomainEntity()
 
         with(convertedEntity) {
-            id `should equal to` entity.id
-            name `should equal to` entity.name
+            id `should equal` entity.id
+            name `should equal` entity.name
         }
     }
 
