@@ -2,7 +2,7 @@
 
 package org.moire.ultrasonic.domain
 
-import org.amshove.kluent.`should equal to`
+import org.amshove.kluent.`should equal`
 import org.junit.Test
 import org.moire.ultrasonic.api.subsonic.models.Lyrics
 
@@ -17,9 +17,9 @@ class APILyricsConverterTest {
         val convertedEntity = entity.toDomainEntity()
 
         with(convertedEntity) {
-            artist `should equal to` entity.artist
-            title `should equal to` entity.title
-            text `should equal to` entity.text
+            artist `should equal` entity.artist
+            title `should equal` entity.title
+            text `should equal` entity.text
         }
     }
 }
