@@ -22,8 +22,8 @@ class APIBookmarkConverterTest {
 
         with(domainEntity) {
             position `should equal to` entity.position.toInt()
-            username `should equal to` entity.username
-            comment `should equal to` entity.comment
+            username `should equal` entity.username
+            comment `should equal` entity.comment
             created `should equal` entity.created?.time
             changed `should equal` entity.changed?.time
             entry `should equal` entity.entry.toDomainEntity()
