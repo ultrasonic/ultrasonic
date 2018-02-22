@@ -18,9 +18,9 @@ class APIChatMessageConverterTest {
         val domainEntity = entity.toDomainEntity()
 
         with(domainEntity) {
-            username `should equal to` entity.username
-            time `should equal to` entity.time
-            message `should equal to` entity.message
+            username `should equal` entity.username
+            time `should equal` entity.time
+            message `should equal` entity.message
         }
     }
 
