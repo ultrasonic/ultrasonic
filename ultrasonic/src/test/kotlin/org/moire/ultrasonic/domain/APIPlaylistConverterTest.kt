@@ -44,7 +44,7 @@ class APIPlaylistConverterTest {
             name `should equal to` entity.name
             comment `should equal to` entity.comment
             owner `should equal to` entity.owner
-            public `should equal to` entity.public
+            public `should equal` entity.public
             songCount `should equal to` entity.songCount.toString()
             created `should equal to` playlistDateFormat.format(entity.created?.time)
         }
