@@ -16,7 +16,7 @@ internal val dateFormat: DateFormat by lazy {
 fun MusicDirectoryChild.toDomainEntity(): MusicDirectory.Entry = MusicDirectory.Entry().apply {
     id = this@toDomainEntity.id
     parent = this@toDomainEntity.parent
-    setIsDirectory(this@toDomainEntity.isDir)
+    isDirectory = this@toDomainEntity.isDir
     title = this@toDomainEntity.title
     album = this@toDomainEntity.album
     albumId = this@toDomainEntity.albumId
@@ -34,7 +34,7 @@ fun MusicDirectoryChild.toDomainEntity(): MusicDirectory.Entry = MusicDirectory.
     duration = this@toDomainEntity.duration
     bitRate = this@toDomainEntity.bitRate
     path = this@toDomainEntity.path
-    setIsVideo(this@toDomainEntity.isVideo)
+    isVideo = this@toDomainEntity.isVideo
     created = this@toDomainEntity.created?.time
     starred = this@toDomainEntity.starred != null
     discNumber = this@toDomainEntity.discNumber

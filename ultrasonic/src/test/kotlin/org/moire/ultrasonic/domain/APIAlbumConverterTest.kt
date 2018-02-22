@@ -22,17 +22,17 @@ class APIAlbumConverterTest {
         val convertedEntity = entity.toDomainEntity()
 
         with(convertedEntity) {
-            id `should equal to` entity.id
-            title `should equal to` entity.name
-            isDirectory `should equal to` true
-            coverArt `should equal to` entity.coverArt
-            artist `should equal to` entity.artist
-            artistId `should equal to` entity.artistId
-            songCount `should equal to` entity.songCount.toLong()
-            duration `should equal to` entity.duration
+            id `should equal` entity.id
+            title `should equal` entity.name
+            isDirectory `should equal` true
+            coverArt `should equal` entity.coverArt
+            artist `should equal` entity.artist
+            artistId `should equal` entity.artistId
+            songCount `should equal` entity.songCount.toLong()
+            duration `should equal` entity.duration
             created `should equal` entity.created?.time
-            year `should equal to` entity.year
-            genre `should equal to` entity.genre
+            year `should equal` entity.year
+            genre `should equal` entity.genre
         }
     }
 
@@ -47,8 +47,8 @@ class APIAlbumConverterTest {
 
         with(convertedEntity) {
             name `should equal` null
-            children.size `should equal to` entity.songList.size
-            children[0] `should equal` entity.songList[0].toDomainEntity()
+            getChildren().size `should equal to` entity.songList.size
+            getChildren()[0] `should equal` entity.songList[0].toDomainEntity()
         }
     }
 
