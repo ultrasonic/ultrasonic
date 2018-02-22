@@ -18,8 +18,8 @@ class ApiGenreConverterTest {
         val domainEntity = entity.toDomainEntity()
 
         with(domainEntity) {
-            name `should equal to` entity.name
-            index `should equal to` "s"
+            name `should equal` entity.name
+            index `should equal` "s"
         }
     }
 
