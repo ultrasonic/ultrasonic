@@ -2,7 +2,6 @@
 
 package org.moire.ultrasonic.domain
 
-import org.amshove.kluent.`should equal to`
 import org.amshove.kluent.`should equal`
 import org.junit.Test
 import org.moire.ultrasonic.api.subsonic.models.Album
@@ -36,8 +35,9 @@ class APIArtistConverterTest {
         val convertedEntity = entity.toMusicDirectoryDomainEntity()
 
         with(convertedEntity) {
-            name `should equal to` entity.name
-            children `should equal` entity.albumsList.map { it.toDomainEntity() }.toMutableList()
+            name `should equal` entity.name
+            getAllChild() `should equal` entity.albumsList
+                    .map { it.toDomainEntity() }.toMutableList()
         }
     }
 }

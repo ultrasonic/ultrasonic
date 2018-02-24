@@ -21,6 +21,8 @@ class MusicDirectory {
 
     fun findChild(id: String): Entry? = children.lastOrNull { it.id == id }
 
+    fun getAllChild(): List<Entry> = children.toList()
+
     @JvmOverloads
     fun getChildren(
             includeDirs: Boolean = true,

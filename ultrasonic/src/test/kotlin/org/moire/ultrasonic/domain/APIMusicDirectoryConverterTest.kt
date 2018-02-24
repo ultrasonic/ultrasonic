@@ -22,9 +22,10 @@ class APIMusicDirectoryConverterTest {
         val convertedEntity = entity.toDomainEntity()
 
         with(convertedEntity) {
-            name `should equal to` entity.name
-            children.size `should equal to` entity.childList.size
-            children `should equal` entity.childList.map { it.toDomainEntity() }.toMutableList()
+            name `should equal` entity.name
+            getAllChild().size `should equal to` entity.childList.size
+            getAllChild() `should equal` entity.childList
+                    .map { it.toDomainEntity() }.toMutableList()
         }
     }
 
@@ -43,31 +44,31 @@ class APIMusicDirectoryConverterTest {
         val convertedEntity = entity.toDomainEntity()
 
         with(convertedEntity) {
-            id `should equal to` entity.id
-            parent `should equal to` entity.parent
+            id `should equal` entity.id
+            parent `should equal` entity.parent
             isDirectory `should equal to` entity.isDir
             title `should equal` entity.title
             album `should equal` entity.album
-            albumId `should equal to` entity.albumId
-            artist `should equal to` entity.artist
-            artistId `should equal to` entity.artistId
-            track `should equal to` entity.track
-            year `should equal to` entity.year!!
-            genre `should equal to` entity.genre
-            contentType `should equal to` entity.contentType
-            suffix `should equal to` entity.suffix
-            transcodedContentType `should equal to` entity.transcodedContentType
-            transcodedSuffix `should equal to` entity.transcodedSuffix
-            coverArt `should equal to` entity.coverArt
-            size `should equal to` entity.size
-            duration `should equal to` entity.duration
-            bitRate `should equal to` entity.bitRate
-            path `should equal to` entity.path
+            albumId `should equal` entity.albumId
+            artist `should equal` entity.artist
+            artistId `should equal` entity.artistId
+            track `should equal` entity.track
+            year `should equal` entity.year!!
+            genre `should equal` entity.genre
+            contentType `should equal` entity.contentType
+            suffix `should equal` entity.suffix
+            transcodedContentType `should equal` entity.transcodedContentType
+            transcodedSuffix `should equal` entity.transcodedSuffix
+            coverArt `should equal` entity.coverArt
+            size `should equal` entity.size
+            duration `should equal` entity.duration
+            bitRate `should equal` entity.bitRate
+            path `should equal` entity.path
             isVideo `should equal to` entity.isVideo
             created `should equal` entity.created?.time
             starred `should equal to` (entity.starred != null)
-            discNumber `should equal to` entity.discNumber
-            type `should equal to` entity.type
+            discNumber `should equal` entity.discNumber
+            type `should equal` entity.type
         }
     }
 
@@ -79,8 +80,8 @@ class APIMusicDirectoryConverterTest {
         val convertedEntity = entity.toDomainEntity()
 
         with(convertedEntity) {
-            id `should equal to` entity.streamId
-            artist `should equal to` dateFormat.format(entity.publishDate?.time)
+            id `should equal` entity.streamId
+            artist `should equal` dateFormat.format(entity.publishDate?.time)
         }
     }
 

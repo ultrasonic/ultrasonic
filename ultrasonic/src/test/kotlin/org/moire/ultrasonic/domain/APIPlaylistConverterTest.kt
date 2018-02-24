@@ -23,10 +23,10 @@ class APIPlaylistConverterTest {
         val convertedEntity = entity.toMusicDirectoryDomainEntity()
 
         with(convertedEntity) {
-            name `should equal to` entity.name
-            children.size `should equal to` entity.entriesList.size
-            children[0] `should equal` entity.entriesList[0].toDomainEntity()
-            children[1] `should equal` entity.entriesList[1].toDomainEntity()
+            name `should equal` entity.name
+            getAllChild().size `should equal to` entity.entriesList.size
+            getAllChild()[0] `should equal` entity.entriesList[0].toDomainEntity()
+            getAllChild()[1] `should equal` entity.entriesList[1].toDomainEntity()
         }
     }
 
