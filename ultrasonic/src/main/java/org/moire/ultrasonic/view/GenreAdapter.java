@@ -19,8 +19,14 @@
 package org.moire.ultrasonic.view;
 
 import android.content.Context;
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.SectionIndexer;
+import android.widget.TextView;
 
 import org.moire.ultrasonic.R;
 import org.moire.ultrasonic.domain.Genre;
@@ -35,7 +41,7 @@ import java.util.List;
  */
 public class GenreAdapter extends ArrayAdapter<Genre> implements SectionIndexer
 {
-
+    private final LayoutInflater layoutInflater;
 	// Both arrays are indexed by section ID.
 	private final Object[] sections;
 	private final Integer[] positions;
@@ -43,6 +49,8 @@ public class GenreAdapter extends ArrayAdapter<Genre> implements SectionIndexer
 	public GenreAdapter(Context context, List<Genre> genres)
 	{
 		super(context, R.layout.artist_list_item, genres);
+
+        layoutInflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
 
 		Collection<String> sectionSet = new LinkedHashSet<String>(30);
 		List<Integer> positionList = new ArrayList<Integer>(30);
@@ -62,7 +70,20 @@ public class GenreAdapter extends ArrayAdapter<Genre> implements SectionIndexer
 		positions = positionList.toArray(new Integer[positionList.size()]);
 	}
 
-	@Override
+    @NonNull
+    @Override
+    public View getView(int position, @Nullable View convertView, @NonNull ViewGroup parent) {
+        View rowView = convertView;
+        if (rowView == null) {
+            rowView = layoutInflater.inflate(R.layout.artist_list_item, parent, false);
+        }
+
+        ((TextView) rowView).setText(getItem(position).getName());
+
+        return rowView;
+    }
+
+    @Override
 	public Object[] getSections()
 	{
 		return sections;
