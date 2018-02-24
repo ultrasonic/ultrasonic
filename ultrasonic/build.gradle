@@ -68,7 +68,6 @@ ext {
     jacocoExclude = [
             '**/activity/**',
             '**/audiofx/**',
-            '**/domain/**',
             '**/fragment/**',
             '**/provider/**',
             '**/receiver/**',
