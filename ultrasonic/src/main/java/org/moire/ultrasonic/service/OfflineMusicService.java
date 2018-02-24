@@ -185,7 +185,7 @@ public class OfflineMusicService extends RESTMusicService
 	private static MusicDirectory.Entry createEntry(Context context, File file, String name)
 	{
 		MusicDirectory.Entry entry = new MusicDirectory.Entry();
-		entry.setIsDirectory(file.isDirectory());
+		entry.setDirectory(file.isDirectory());
 		entry.setId(file.getPath());
 		entry.setParent(file.getParent());
 		entry.setSize(file.length());
@@ -232,7 +232,7 @@ public class OfflineMusicService extends RESTMusicService
 				entry.setTitle(title);
 			}
 
-			entry.setIsVideo(hasVideo != null);
+			entry.setVideo(hasVideo != null);
 
 			Log.i("OfflineMusicService", String.format("Offline Stuff: %s", track));
 

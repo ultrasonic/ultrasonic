@@ -21,6 +21,7 @@ ext.versions = [
         retrofit             : "2.1.0",
         jackson              : "2.9.0",
         okhttp               : "3.9.0",
+        semver               : "1.0.0",
 
         junit                : "4.12",
         mockito              : "2.12.0",
@@ -50,6 +51,7 @@ ext.other = [
         jacksonConverter   : "com.squareup.retrofit2:converter-jackson:$versions.retrofit",
         jacksonKotlin      : "com.fasterxml.jackson.module:jackson-module-kotlin:$versions.jackson",
         okhttpLogging      : "com.squareup.okhttp3:logging-interceptor:$versions.okhttp",
+        semver             : "net.swiftzer.semver:semver:$versions.semver",
 ]
 
 ext.testing = [

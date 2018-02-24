@@ -188,7 +188,7 @@ public class SongView extends UpdateView implements Checkable
 			}
 		}
 
-		int trackNumber = song.getTrack();
+		int trackNumber = (song.getTrack() == null) ? 0 : song.getTrack();
 
 		if (viewHolder.track != null)
 		{
