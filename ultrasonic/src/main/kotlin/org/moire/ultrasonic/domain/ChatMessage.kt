@@ -2,7 +2,7 @@ package org.moire.ultrasonic.domain
 
 import java.io.Serializable
 
-class ChatMessage(
+data class ChatMessage(
         val username: String,
         val time: Long,
         val message: String
