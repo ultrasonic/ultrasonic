@@ -16,7 +16,7 @@ ext.versions = [
 
         androidSupport       : "22.2.1",
 
-        kotlin               : "1.2.10",
+        kotlin               : "1.2.21",
 
         retrofit             : "2.1.0",
         jackson              : "2.9.0",
