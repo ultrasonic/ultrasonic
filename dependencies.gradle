@@ -5,7 +5,7 @@ ext.versions = [
         minSdk               : 14,
         targetSdk            : 22,
         compileSdk           : 27,
-        gradle               : '4.4.1',
+        gradle               : '4.5.1',
 
         androidTools         : "3.0.1",
         ktlint               : "0.14.0",
