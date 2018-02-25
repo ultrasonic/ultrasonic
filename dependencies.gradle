@@ -5,18 +5,18 @@ ext.versions = [
         minSdk               : 14,
         targetSdk            : 22,
         compileSdk           : 27,
-        gradle               : '4.4.1',
+        gradle               : '4.5.1',
 
         androidTools         : "3.0.1",
-        ktlint               : "0.14.0",
-        ktlintGradle         : "2.3.0",
-        detekt               : "1.0.0.RC6",
+        ktlint               : "0.15.1",
+        ktlintGradle         : "3.0.1",
+        detekt               : "1.0.0.RC6-3",
         jacoco               : "0.7.9",
         jacocoAndroid        : "0.1.2",
 
         androidSupport       : "22.2.1",
 
-        kotlin               : "1.2.10",
+        kotlin               : "1.2.21",
 
         retrofit             : "2.1.0",
         jackson              : "2.9.0",
