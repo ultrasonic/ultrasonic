@@ -11,6 +11,9 @@ jobs:
       - restore_cache:
           key: gradle-cache-{{ checksum "dependencies.gradle" }}
       - run:
+          name: clean gradle.properties
+          command: echo "" > gradle.properties
+      - run:
           name: checkstyle
           command: ./gradlew -Pqc ktlintCheck
       - run:
