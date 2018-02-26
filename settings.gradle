@@ -1,4 +1,4 @@
-include ':library', ':subsonic-api'
+include ':library', ':subsonic-api', ':cache'
 include ':menudrawer'
 include ':pulltorefresh'
 include ':ultrasonic'

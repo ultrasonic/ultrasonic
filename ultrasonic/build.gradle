@@ -48,6 +48,7 @@ dependencies {
     implementation project(':pulltorefresh')
     implementation project(':library')
     implementation project(':subsonic-api')
+    implementation project(':cache')
 
     implementation androidSupport.support
     implementation androidSupport.design
