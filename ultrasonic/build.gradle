@@ -47,6 +47,7 @@ dependencies {
     implementation project(':menudrawer')
     implementation project(':pulltorefresh')
     implementation project(':library')
+    implementation project(':domain')
     implementation project(':subsonic-api')
     implementation project(':cache')
 
@@ -54,8 +55,6 @@ dependencies {
     implementation androidSupport.design
 
     implementation other.kotlinStdlib
-
-    implementation other.semver
 
     testImplementation other.kotlinReflect
     testImplementation testing.junit
