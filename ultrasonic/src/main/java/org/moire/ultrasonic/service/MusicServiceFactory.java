@@ -22,11 +22,16 @@ import android.content.Context;
 import android.content.SharedPreferences;
 import android.util.Log;
 
+import org.jetbrains.annotations.NotNull;
 import org.moire.ultrasonic.BuildConfig;
 import org.moire.ultrasonic.api.subsonic.SubsonicAPIClient;
 import org.moire.ultrasonic.api.subsonic.SubsonicAPIVersions;
+import org.moire.ultrasonic.cache.Directories;
+import org.moire.ultrasonic.cache.PermanentFileStorage;
 import org.moire.ultrasonic.util.Constants;
 import org.moire.ultrasonic.util.Util;
+
+import java.io.File;
 
 /**
  * @author Sindre Mehus
@@ -44,7 +49,9 @@ public class MusicServiceFactory {
                 synchronized (MusicServiceFactory.class) {
                     if (OFFLINE_MUSIC_SERVICE == null) {
                         Log.d(LOG_TAG, "Creating new offline music service");
-                        OFFLINE_MUSIC_SERVICE = new OfflineMusicService(createSubsonicApiClient(context));
+                        OFFLINE_MUSIC_SERVICE = new OfflineMusicService(
+                                createSubsonicApiClient(context),
+                                getPermanentFileStorage(context));
                     }
                 }
             }
@@ -57,7 +64,8 @@ public class MusicServiceFactory {
                     if (REST_MUSIC_SERVICE == null) {
                         Log.d(LOG_TAG, "Creating new rest music service");
                         REST_MUSIC_SERVICE = new CachedMusicService(new RESTMusicService(
-                                createSubsonicApiClient(context)));
+                                createSubsonicApiClient(context),
+                                getPermanentFileStorage(context)));
                     }
                 }
             }
@@ -103,5 +111,30 @@ public class MusicServiceFactory {
                 SubsonicAPIVersions.fromApiVersion(Constants.REST_PROTOCOL_VERSION),
                 Constants.REST_CLIENT_ID, allowSelfSignedCertificate,
                 enableLdapUserSupport, BuildConfig.DEBUG);
+    }
+
+    private static PermanentFileStorage getPermanentFileStorage(final Context context) {
+        return new PermanentFileStorage(getDirectories(context), BuildConfig.DEBUG);
+    }
+
+    private static Directories getDirectories(final Context context) {
+        return new Directories() {
+            @NotNull
+            @Override
+            public File getInternalCacheDir() {
+                return context.getCacheDir();
+            }
+
+            @NotNull
+            @Override
+            public File getInternalDataDir() {
+                return context.getFilesDir();
+            }
+
+            @Override
+            public File getExternalCacheDir() {
+                return context.getExternalCacheDir();
+            }
+        };
     }
 }

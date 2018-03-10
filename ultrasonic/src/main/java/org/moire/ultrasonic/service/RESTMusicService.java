@@ -61,6 +61,8 @@ import org.moire.ultrasonic.api.subsonic.response.SharesResponse;
 import org.moire.ultrasonic.api.subsonic.response.StreamResponse;
 import org.moire.ultrasonic.api.subsonic.response.SubsonicResponse;
 import org.moire.ultrasonic.api.subsonic.response.VideosResponse;
+import org.moire.ultrasonic.cache.PermanentFileStorage;
+import org.moire.ultrasonic.cache.serializers.DomainSerializers;
 import org.moire.ultrasonic.domain.APIAlbumConverter;
 import org.moire.ultrasonic.domain.APIArtistConverter;
 import org.moire.ultrasonic.domain.APIBookmarkConverter;
@@ -117,10 +119,17 @@ import retrofit2.Response;
 public class RESTMusicService implements MusicService {
     private static final String TAG = RESTMusicService.class.getSimpleName();
 
-    private final SubsonicAPIClient subsonicAPIClient;
+    private static final String MUSIC_FOLDER_STORAGE_NAME = "music_folder";
 
-    public RESTMusicService(SubsonicAPIClient subsonicAPIClient) {
+    private final SubsonicAPIClient subsonicAPIClient;
+    private final PermanentFileStorage fileStorage;
+
+    public RESTMusicService(
+            final SubsonicAPIClient subsonicAPIClient,
+            final PermanentFileStorage fileStorage
+    ) {
         this.subsonicAPIClient = subsonicAPIClient;
+        this.fileStorage = fileStorage;
     }
 
     @Override
@@ -146,7 +155,8 @@ public class RESTMusicService implements MusicService {
     public List<MusicFolder> getMusicFolders(boolean refresh,
                                              Context context,
                                              ProgressListener progressListener) throws Exception {
-        List<MusicFolder> cachedMusicFolders = readCachedMusicFolders(context);
+        List<MusicFolder> cachedMusicFolders = fileStorage
+                .load(MUSIC_FOLDER_STORAGE_NAME, DomainSerializers.getMusicFolderListSerializer());
         if (cachedMusicFolders != null && !refresh) {
             return cachedMusicFolders;
         }
@@ -157,23 +167,9 @@ public class RESTMusicService implements MusicService {
 
         List<MusicFolder> musicFolders = APIMusicFolderConverter
                 .toDomainEntityList(response.body().getMusicFolders());
-        writeCachedMusicFolders(context, musicFolders);
+        fileStorage.store(MUSIC_FOLDER_STORAGE_NAME, musicFolders,
+                DomainSerializers.getMusicFolderListSerializer());
         return musicFolders;
-    }
-
-    private static List<MusicFolder> readCachedMusicFolders(Context context) {
-        String filename = getCachedMusicFoldersFilename(context);
-        return FileUtil.deserialize(context, filename);
-    }
-
-    private static void writeCachedMusicFolders(Context context, List<MusicFolder> musicFolders) {
-        String filename = getCachedMusicFoldersFilename(context);
-        FileUtil.serialize(context, new ArrayList<>(musicFolders), filename);
-    }
-
-    private static String getCachedMusicFoldersFilename(Context context) {
-        String s = Util.getRestUrl(context, null);
-        return String.format(Locale.US, "musicFolders-%d.ser", Math.abs(s.hashCode()));
     }
 
     @Override

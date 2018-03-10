@@ -6,4 +6,6 @@ package org.moire.ultrasonic.domain
 data class MusicFolder(
         val id: String,
         val name: String
-)
+) {
+    companion object
+}
