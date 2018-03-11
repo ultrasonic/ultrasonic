@@ -55,9 +55,7 @@ class PermanentFileStorage(
      */
     fun clearAll() {
         val storageDir = getStorageDir()
-        if (storageDir.exists()) {
-            storageDir.listFiles().forEach { if (it.isFile) it.delete() }
-        }
+        storageDir.listFiles().forEach { it.deleteRecursively() }
     }
 
     private fun getFile(name: String) = File(getStorageDir(), "$name.ser")

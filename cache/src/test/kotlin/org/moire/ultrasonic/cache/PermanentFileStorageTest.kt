@@ -64,4 +64,11 @@ class PermanentFileStorageTest : BaseStorageTest() {
 
         storageDir.listFiles().size `should equal to` 0
     }
+
+    @Test
+    fun `Should return null if serialized file not available`() {
+        val loadedItem = storage.load("some-name", musicFolderSerializer)
+
+        loadedItem `should equal` null
+    }
 }
