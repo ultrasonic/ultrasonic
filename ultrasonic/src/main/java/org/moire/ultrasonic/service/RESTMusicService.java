@@ -120,6 +120,7 @@ public class RESTMusicService implements MusicService {
     private static final String TAG = RESTMusicService.class.getSimpleName();
 
     private static final String MUSIC_FOLDER_STORAGE_NAME = "music_folder";
+    private static final String INDEXES_STORAGE_NAME = "indexes";
 
     private final SubsonicAPIClient subsonicAPIClient;
     private final PermanentFileStorage fileStorage;
@@ -155,8 +156,8 @@ public class RESTMusicService implements MusicService {
     public List<MusicFolder> getMusicFolders(boolean refresh,
                                              Context context,
                                              ProgressListener progressListener) throws Exception {
-        List<MusicFolder> cachedMusicFolders = fileStorage
-                .load(MUSIC_FOLDER_STORAGE_NAME, DomainSerializers.getMusicFolderListSerializer());
+        List<MusicFolder> cachedMusicFolders = fileStorage.load(MUSIC_FOLDER_STORAGE_NAME,
+                DomainSerializers.getMusicFolderListSerializer());
         if (cachedMusicFolders != null && !refresh) {
             return cachedMusicFolders;
         }
@@ -177,7 +178,8 @@ public class RESTMusicService implements MusicService {
                               boolean refresh,
                               Context context,
                               ProgressListener progressListener) throws Exception {
-        Indexes cachedIndexes = readCachedIndexes(context, musicFolderId);
+        Indexes cachedIndexes = fileStorage.load(INDEXES_STORAGE_NAME,
+                DomainSerializers.getIndexesSerializer());
         if (cachedIndexes != null && !refresh) {
             return cachedIndexes;
         }
@@ -188,23 +190,8 @@ public class RESTMusicService implements MusicService {
         checkResponseSuccessful(response);
 
         Indexes indexes = APIIndexesConverter.toDomainEntity(response.body().getIndexes());
-        writeCachedIndexes(context, indexes, musicFolderId);
+        fileStorage.store(INDEXES_STORAGE_NAME, indexes, DomainSerializers.getIndexesSerializer());
         return indexes;
-    }
-
-    private static Indexes readCachedIndexes(Context context, String musicFolderId) {
-        String filename = getCachedIndexesFilename(context, musicFolderId);
-        return FileUtil.deserialize(context, filename);
-    }
-
-    private static void writeCachedIndexes(Context context, Indexes indexes, String musicFolderId) {
-        String filename = getCachedIndexesFilename(context, musicFolderId);
-        FileUtil.serialize(context, indexes, filename);
-    }
-
-    private static String getCachedIndexesFilename(Context context, String musicFolderId) {
-        String s = Util.getRestUrl(context, null) + musicFolderId;
-        return String.format(Locale.US, "indexes-%d.ser", Math.abs(s.hashCode()));
     }
 
     @Override

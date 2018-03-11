@@ -1,6 +1,7 @@
 package org.moire.ultrasonic.cache
 
 import com.nhaarman.mockito_kotlin.mock
+import com.twitter.serial.util.SerializationUtils
 import org.amshove.kluent.`it returns`
 import org.junit.Before
 import org.junit.Rule
@@ -31,4 +32,9 @@ abstract class BaseStorageTest {
     }
 
     protected val storageDir get() = File(mockDirectories.getInternalDataDir(), STORAGE_DIR_NAME)
+
+    protected fun validateSerializedData(index: Int = 0) {
+        val serializedFileBytes = storageDir.listFiles()[index].readBytes()
+        SerializationUtils.validateSerializedData(serializedFileBytes)
+    }
 }

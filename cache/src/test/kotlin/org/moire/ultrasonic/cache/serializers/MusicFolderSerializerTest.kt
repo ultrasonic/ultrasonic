@@ -1,6 +1,5 @@
 package org.moire.ultrasonic.cache.serializers
 
-import com.twitter.serial.util.SerializationUtils
 import org.amshove.kluent.`should equal`
 import org.junit.Test
 import org.moire.ultrasonic.cache.BaseStorageTest
@@ -16,8 +15,7 @@ class MusicFolderSerializerTest : BaseStorageTest() {
 
         storage.store("some-name", item, musicFolderSerializer)
 
-        val serializedFileBytes = storageDir.listFiles()[0].readBytes()
-        SerializationUtils.validateSerializedData(serializedFileBytes)
+        validateSerializedData()
     }
 
     @Test
@@ -40,8 +38,7 @@ class MusicFolderSerializerTest : BaseStorageTest() {
 
         storage.store("some-name", itemsList, musicFolderListSerializer)
 
-        val serializedFileBytes = storageDir.listFiles()[0].readBytes()
-        SerializationUtils.validateSerializedData(serializedFileBytes)
+        validateSerializedData()
     }
 
     @Test
