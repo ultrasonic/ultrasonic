@@ -21,6 +21,8 @@ abstract class BaseStorageTest {
     protected lateinit var mockDirectories: Directories
     protected lateinit var storage: PermanentFileStorage
 
+    open val serverId: String = ""
+
     @Before
     fun setUp() {
         mockDirectories = mock<Directories> {
@@ -28,7 +30,7 @@ abstract class BaseStorageTest {
             on { getInternalCacheDir() } `it returns` tempFileRule.newFolder(INTERNAL_CACHE_FOLDER)
             on { getExternalCacheDir() } `it returns` tempFileRule.newFolder(EXTERNAL_CACHE_FOLDER)
         }
-        storage = PermanentFileStorage(mockDirectories, true)
+        storage = PermanentFileStorage(mockDirectories, serverId, true)
     }
 
     protected val storageDir get() = File(mockDirectories.getInternalDataDir(), STORAGE_DIR_NAME)

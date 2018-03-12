@@ -6,17 +6,22 @@ import org.amshove.kluent.`should equal`
 import org.junit.Test
 import org.moire.ultrasonic.cache.serializers.musicFolderSerializer
 import org.moire.ultrasonic.domain.MusicFolder
+import java.io.File
 
 /**
  * Integration test for [PermanentFileStorage].
  */
 class PermanentFileStorageTest : BaseStorageTest() {
+    override val serverId: String
+        get() = "some-server-id"
+
     @Test
     fun `Should create storage dir if it is not exist`() {
         val item = MusicFolder("1", "2")
         storage.store("test", item, musicFolderSerializer)
 
         storageDir.exists() `should equal to` true
+        getServerStorageDir().exists() `should equal to` true
     }
 
     @Test
@@ -26,7 +31,7 @@ class PermanentFileStorageTest : BaseStorageTest() {
 
         storage.store(name, item, musicFolderSerializer)
 
-        val storageFiles = storageDir.listFiles()
+        val storageFiles = getServerStorageDir().listFiles()
         storageFiles.size `should equal to` 1
         storageFiles[0].name `should contain` name
     }
@@ -62,7 +67,7 @@ class PermanentFileStorageTest : BaseStorageTest() {
 
         storage.clearAll()
 
-        storageDir.listFiles().size `should equal to` 0
+        getServerStorageDir().listFiles().size `should equal to` 0
     }
 
     @Test
@@ -71,4 +76,6 @@ class PermanentFileStorageTest : BaseStorageTest() {
 
         loadedItem `should equal` null
     }
+
+    private fun getServerStorageDir() = File(storageDir, serverId)
 }

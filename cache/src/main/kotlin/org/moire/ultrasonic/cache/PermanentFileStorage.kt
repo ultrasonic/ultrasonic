@@ -11,10 +11,14 @@ internal const val STORAGE_DIR_NAME = "persistent_storage"
 /**
  * Provides access to permanent file based storage.
  *
+ * [serverId] is currently active server. Should be unique per server so stored data will not
+ * interfere with other server data.
+ *
  * Look at [org.moire.ultrasonic.cache.serializers] package for available [Serializer]s.
  */
 class PermanentFileStorage(
         private val directories: Directories,
+        private val serverId: String,
         private val debug: Boolean = false
 ) {
     private val serializationContext = object : SerializationContext {
@@ -60,7 +64,10 @@ class PermanentFileStorage(
 
     private fun getFile(name: String) = File(getStorageDir(), "$name.ser")
 
-    private fun getStorageDir() = File(directories.getInternalDataDir(), STORAGE_DIR_NAME).apply {
-        if (!exists()) mkdirs()
+    private fun getStorageDir(): File {
+        val mainDir = File(directories.getInternalDataDir(), STORAGE_DIR_NAME)
+        val serverDir = File(mainDir, serverId)
+        if (!serverDir.exists()) serverDir.mkdirs()
+        return serverDir
     }
 }
