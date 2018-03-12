@@ -106,7 +106,6 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Locale;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.TimeUnit;
 
@@ -121,6 +120,7 @@ public class RESTMusicService implements MusicService {
 
     private static final String MUSIC_FOLDER_STORAGE_NAME = "music_folder";
     private static final String INDEXES_STORAGE_NAME = "indexes";
+    private static final String ARTISTS_STORAGE_NAME = "artists";
 
     private final SubsonicAPIClient subsonicAPIClient;
     private final PermanentFileStorage fileStorage;
@@ -198,34 +198,20 @@ public class RESTMusicService implements MusicService {
     public Indexes getArtists(boolean refresh,
                               Context context,
                               ProgressListener progressListener) throws Exception {
-        Indexes cachedArtists = readCachedArtists(context);
-        if (cachedArtists != null &&
-                !refresh) {
+        Indexes cachedArtists = fileStorage
+                .load(ARTISTS_STORAGE_NAME, DomainSerializers.getIndexesSerializer());
+        if (cachedArtists != null && !refresh) {
             return cachedArtists;
         }
 
         updateProgressListener(progressListener, R.string.parser_reading);
-        Response<GetArtistsResponse> response = subsonicAPIClient.getApi().getArtists(null).execute();
+        Response<GetArtistsResponse> response = subsonicAPIClient.getApi()
+                .getArtists(null).execute();
         checkResponseSuccessful(response);
 
         Indexes indexes = APIIndexesConverter.toDomainEntity(response.body().getIndexes());
-        writeCachedArtists(context, indexes);
+        fileStorage.store(ARTISTS_STORAGE_NAME, indexes, DomainSerializers.getIndexesSerializer());
         return indexes;
-    }
-
-    private static Indexes readCachedArtists(Context context) {
-        String filename = getCachedArtistsFilename(context);
-        return FileUtil.deserialize(context, filename);
-    }
-
-    private static void writeCachedArtists(Context context, Indexes artists) {
-        String filename = getCachedArtistsFilename(context);
-        FileUtil.serialize(context, artists, filename);
-    }
-
-    private static String getCachedArtistsFilename(Context context) {
-        String s = Util.getRestUrl(context, null);
-        return String.format(Locale.US, "indexes-%d.ser", Math.abs(s.hashCode()));
     }
 
     @Override
