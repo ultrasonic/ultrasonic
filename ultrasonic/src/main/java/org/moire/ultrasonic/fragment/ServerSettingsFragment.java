@@ -12,7 +12,9 @@ import android.support.annotation.Nullable;
 import android.util.Log;
 import android.view.View;
 
+import org.moire.ultrasonic.BuildConfig;
 import org.moire.ultrasonic.R;
+import org.moire.ultrasonic.cache.PermanentFileStorage;
 import org.moire.ultrasonic.service.MusicService;
 import org.moire.ultrasonic.service.MusicServiceFactory;
 import org.moire.ultrasonic.util.Constants;
@@ -278,6 +280,15 @@ public class ServerSettingsFragment extends PreferenceFragment
     private void removeServer() {
         int activeServers = sharedPreferences
                 .getInt(Constants.PREFERENCES_KEY_ACTIVE_SERVERS, 0);
+
+        // Clear permanent storage
+        final String storageServerId = MusicServiceFactory.getServerId(sharedPreferences, serverId);
+        final PermanentFileStorage fileStorage = new PermanentFileStorage(
+                MusicServiceFactory.getDirectories(getActivity()),
+                storageServerId,
+                BuildConfig.DEBUG
+        );
+        fileStorage.clearAll();
 
         // Reset values to null so when we ask for them again they are new
         sharedPreferences.edit()

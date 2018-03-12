@@ -116,14 +116,18 @@ public class MusicServiceFactory {
     private static PermanentFileStorage getPermanentFileStorage(final Context context) {
         final SharedPreferences preferences = Util.getPreferences(context);
         int instance = preferences.getInt(Constants.PREFERENCES_KEY_SERVER_INSTANCE, 1);
-        String serverUrl = preferences.getString(
-                Constants.PREFERENCES_KEY_SERVER_URL + instance, null);
-        String serverId = String.valueOf(Math.abs((serverUrl + instance).hashCode()));
+        final String serverId = getServerId(preferences, instance);
 
         return new PermanentFileStorage(getDirectories(context), serverId, BuildConfig.DEBUG);
     }
 
-    private static Directories getDirectories(final Context context) {
+    public static String getServerId(final SharedPreferences sp, final int instance) {
+        String serverUrl = sp.getString(
+                Constants.PREFERENCES_KEY_SERVER_URL + instance, null);
+        return String.valueOf(Math.abs((serverUrl + instance).hashCode()));
+    }
+
+    public static Directories getDirectories(final Context context) {
         return new Directories() {
             @NotNull
             @Override
