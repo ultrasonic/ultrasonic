@@ -9,7 +9,7 @@ import okhttp3.Response
 import org.moire.ultrasonic.api.subsonic.SubsonicAPIVersions
 import java.io.IOException
 
-private const val DEFAULT_PEEK_BYTE_COUNT = 100L
+private const val DEFAULT_PEEK_BYTE_COUNT = 1000L
 
 /**
  * Special [Interceptor] that adds client supported version to request and tries to update it
