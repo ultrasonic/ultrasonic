@@ -22,7 +22,7 @@ ext.versions = [
         jackson              : "2.9.0",
         okhttp               : "3.9.0",
         semver               : "1.0.0",
-        twitterSerial        : "0.1.5",
+        twitterSerial        : "0.1.6",
 
         junit                : "4.12",
         mockito              : "2.12.0",
