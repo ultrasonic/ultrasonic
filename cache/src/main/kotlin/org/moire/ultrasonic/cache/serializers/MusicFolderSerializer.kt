@@ -7,14 +7,12 @@ import com.twitter.serial.serializer.ObjectSerializer
 import com.twitter.serial.serializer.SerializationContext
 import com.twitter.serial.stream.SerializerInput
 import com.twitter.serial.stream.SerializerOutput
+import org.moire.ultrasonic.cache.DomainEntitySerializer
 import org.moire.ultrasonic.domain.MusicFolder
 
 private const val SERIALIZATION_VERSION = 1
 
-/**
- * Serializer/deserializer for [MusicFolder] domain entity.
- */
-val musicFolderSerializer = object : ObjectSerializer<MusicFolder>(SERIALIZATION_VERSION) {
+private val musicFolderSerializer = object : ObjectSerializer<MusicFolder>(SERIALIZATION_VERSION) {
 
     override fun serializeObject(
             context: SerializationContext,
@@ -38,6 +36,15 @@ val musicFolderSerializer = object : ObjectSerializer<MusicFolder>(SERIALIZATION
 }
 
 /**
+ * Serializer/deserializer for [MusicFolder] domain entity.
+ */
+fun getMusicFolderSerializer(): DomainEntitySerializer<MusicFolder> = musicFolderSerializer
+
+private val musicFolderListSerializer =
+        CollectionSerializers.getListSerializer(musicFolderSerializer)
+
+/**
  * Serializer/deserializer for [List] of [MusicFolder] items.
  */
-val musicFolderListSerializer = CollectionSerializers.getListSerializer(musicFolderSerializer)
+fun getMusicFolderListSerializer(): DomainEntitySerializer<List<MusicFolder>> =
+        musicFolderListSerializer

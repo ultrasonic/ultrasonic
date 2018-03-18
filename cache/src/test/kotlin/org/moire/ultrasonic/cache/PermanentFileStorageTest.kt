@@ -4,7 +4,7 @@ import org.amshove.kluent.`should contain`
 import org.amshove.kluent.`should equal to`
 import org.amshove.kluent.`should equal`
 import org.junit.Test
-import org.moire.ultrasonic.cache.serializers.musicFolderSerializer
+import org.moire.ultrasonic.cache.serializers.getMusicFolderSerializer
 import org.moire.ultrasonic.domain.MusicFolder
 import java.io.File
 
@@ -18,7 +18,7 @@ class PermanentFileStorageTest : BaseStorageTest() {
     @Test
     fun `Should create storage dir if it is not exist`() {
         val item = MusicFolder("1", "2")
-        storage.store("test", item, musicFolderSerializer)
+        storage.store("test", item, getMusicFolderSerializer())
 
         storageDir.exists() `should equal to` true
         getServerStorageDir().exists() `should equal to` true
@@ -29,7 +29,7 @@ class PermanentFileStorageTest : BaseStorageTest() {
         val item = MusicFolder("1", "23")
         val name = "some-name"
 
-        storage.store(name, item, musicFolderSerializer)
+        storage.store(name, item, getMusicFolderSerializer())
 
         val storageFiles = getServerStorageDir().listFiles()
         storageFiles.size `should equal to` 1
@@ -40,9 +40,9 @@ class PermanentFileStorageTest : BaseStorageTest() {
     fun `Should deserialize stored object`() {
         val item = MusicFolder("some", "nice")
         val name = "some-name"
-        storage.store(name, item, musicFolderSerializer)
+        storage.store(name, item, getMusicFolderSerializer())
 
-        val loadedItem = storage.load(name, musicFolderSerializer)
+        val loadedItem = storage.load(name, getMusicFolderSerializer())
 
         loadedItem `should equal` item
     }
@@ -52,18 +52,18 @@ class PermanentFileStorageTest : BaseStorageTest() {
         val name = "some-nice-name"
         val item1 = MusicFolder("1", "1")
         val item2 = MusicFolder("2", "2")
-        storage.store(name, item1, musicFolderSerializer)
-        storage.store(name, item2, musicFolderSerializer)
+        storage.store(name, item1, getMusicFolderSerializer())
+        storage.store(name, item2, getMusicFolderSerializer())
 
-        val loadedItem = storage.load(name, musicFolderSerializer)
+        val loadedItem = storage.load(name, getMusicFolderSerializer())
 
         loadedItem `should equal` item2
     }
 
     @Test
     fun `Should clear all files when clearAll is called`() {
-        storage.store("name1", MusicFolder("1", "1"), musicFolderSerializer)
-        storage.store("name2", MusicFolder("2", "2"), musicFolderSerializer)
+        storage.store("name1", MusicFolder("1", "1"), getMusicFolderSerializer())
+        storage.store("name2", MusicFolder("2", "2"), getMusicFolderSerializer())
 
         storage.clearAll()
 
@@ -72,7 +72,7 @@ class PermanentFileStorageTest : BaseStorageTest() {
 
     @Test
     fun `Should return null if serialized file not available`() {
-        val loadedItem = storage.load("some-name", musicFolderSerializer)
+        val loadedItem = storage.load("some-name", getMusicFolderSerializer())
 
         loadedItem `should equal` null
     }

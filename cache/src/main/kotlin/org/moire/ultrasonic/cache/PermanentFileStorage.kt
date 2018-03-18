@@ -6,6 +6,8 @@ import com.twitter.serial.stream.Serial
 import com.twitter.serial.stream.bytebuffer.ByteBufferSerial
 import java.io.File
 
+typealias DomainEntitySerializer<T> = Serializer<T>
+
 internal const val STORAGE_DIR_NAME = "persistent_storage"
 
 /**
@@ -14,7 +16,7 @@ internal const val STORAGE_DIR_NAME = "persistent_storage"
  * [serverId] is currently active server. Should be unique per server so stored data will not
  * interfere with other server data.
  *
- * Look at [org.moire.ultrasonic.cache.serializers] package for available [Serializer]s.
+ * Look at [org.moire.ultrasonic.cache.serializers] package for available [DomainEntitySerializer]s.
  */
 class PermanentFileStorage(
         private val directories: Directories,
@@ -34,7 +36,7 @@ class PermanentFileStorage(
     fun <T> store(
             name: String,
             objectToStore: T,
-            objectSerializer: Serializer<T>
+            objectSerializer: DomainEntitySerializer<T>
     ) {
         val storeFile = getFile(name)
         if (!storeFile.exists()) storeFile.createNewFile()
@@ -46,7 +48,7 @@ class PermanentFileStorage(
      */
     fun <T> load(
             name: String,
-            objectDeserializer: Serializer<T>
+            objectDeserializer: DomainEntitySerializer<T>
     ): T? {
         val storeFile = getFile(name)
         if (!storeFile.exists()) return null

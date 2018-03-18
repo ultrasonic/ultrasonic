@@ -13,7 +13,7 @@ class MusicFolderSerializerTest : BaseStorageTest() {
     fun `Should correctly serialize MusicFolder object`() {
         val item = MusicFolder("Music", "Folder")
 
-        storage.store("some-name", item, musicFolderSerializer)
+        storage.store("some-name", item, getMusicFolderSerializer())
 
         validateSerializedData()
     }
@@ -22,9 +22,9 @@ class MusicFolderSerializerTest : BaseStorageTest() {
     fun `Should correctly deserialize MusicFolder object`() {
         val name = "name"
         val item = MusicFolder("some", "none")
-        storage.store(name, item, musicFolderSerializer)
+        storage.store(name, item, getMusicFolderSerializer())
 
-        val loadedItem = storage.load(name, musicFolderSerializer)
+        val loadedItem = storage.load(name, getMusicFolderSerializer())
 
         loadedItem `should equal` item
     }
@@ -36,7 +36,7 @@ class MusicFolderSerializerTest : BaseStorageTest() {
                 MusicFolder("2", "2")
         )
 
-        storage.store("some-name", itemsList, musicFolderListSerializer)
+        storage.store("some-name", itemsList, getMusicFolderListSerializer())
 
         validateSerializedData()
     }
@@ -48,9 +48,9 @@ class MusicFolderSerializerTest : BaseStorageTest() {
                 MusicFolder("1", "1"),
                 MusicFolder("2", "2")
         )
-        storage.store(name, itemsList, musicFolderListSerializer)
+        storage.store(name, itemsList, getMusicFolderListSerializer())
 
-        val loadedItem = storage.load(name, musicFolderListSerializer)
+        val loadedItem = storage.load(name, getMusicFolderListSerializer())
 
         loadedItem `should equal` itemsList
     }

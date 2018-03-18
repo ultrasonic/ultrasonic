@@ -8,14 +8,12 @@ import com.twitter.serial.serializer.SerializationContext
 import com.twitter.serial.stream.SerializerDefs
 import com.twitter.serial.stream.SerializerInput
 import com.twitter.serial.stream.SerializerOutput
+import org.moire.ultrasonic.cache.DomainEntitySerializer
 import org.moire.ultrasonic.domain.Artist
 
 private const val SERIALIZER_VERSION = 1
 
-/**
- * Serializer/deserializer for [Artist] domain entity.
- */
-val artistSerializer get() = object : ObjectSerializer<Artist>(SERIALIZER_VERSION) {
+private val artistSerializer get() = object : ObjectSerializer<Artist>(SERIALIZER_VERSION) {
     override fun serializeObject(
             context: SerializationContext,
             output: SerializerOutput<out SerializerOutput<*>>,
@@ -55,6 +53,13 @@ val artistSerializer get() = object : ObjectSerializer<Artist>(SERIALIZER_VERSIO
 }
 
 /**
+ * Serializer/deserializer for [Artist] domain entity.
+ */
+fun getArtistsSerializer(): DomainEntitySerializer<Artist> = artistSerializer
+
+private val artistListSerializer = CollectionSerializers.getListSerializer(artistSerializer)
+
+/**
  * Serializer/deserializer for list of [Artist] domain entities.
  */
-val artistListSerializer = CollectionSerializers.getListSerializer(artistSerializer)
+fun getArtistListSerializer(): DomainEntitySerializer<List<Artist>> = artistListSerializer

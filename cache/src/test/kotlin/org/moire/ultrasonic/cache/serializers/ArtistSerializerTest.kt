@@ -13,7 +13,7 @@ class ArtistSerializerTest : BaseStorageTest() {
     fun `Should correctly serialize Artist object`() {
         val item = Artist("id", "name", "index", "coverArt", 1, 0)
 
-        storage.store("some-name", item, artistSerializer)
+        storage.store("some-name", item, getArtistsSerializer())
 
         validateSerializedData()
     }
@@ -22,9 +22,9 @@ class ArtistSerializerTest : BaseStorageTest() {
     fun `Should correctly deserialize Artist object`() {
         val itemName = "some-name"
         val item = Artist("id", "name", "index", "coverArt", null, 0)
-        storage.store(itemName, item, artistSerializer)
+        storage.store(itemName, item, getArtistsSerializer())
 
-        val loadedItem = storage.load(itemName, artistSerializer)
+        val loadedItem = storage.load(itemName, getArtistsSerializer())
 
         loadedItem `should equal` item
     }
@@ -36,7 +36,7 @@ class ArtistSerializerTest : BaseStorageTest() {
                 Artist(id = "2", name = "some")
         )
 
-        storage.store("some-name", itemsList, artistListSerializer)
+        storage.store("some-name", itemsList, getArtistListSerializer())
 
         validateSerializedData()
     }
@@ -48,9 +48,9 @@ class ArtistSerializerTest : BaseStorageTest() {
                 Artist(id = "1"),
                 Artist(id = "2", name = "some")
         )
-        storage.store(name, itemsList, artistListSerializer)
+        storage.store(name, itemsList, getArtistListSerializer())
 
-        val loadedItems = storage.load(name, artistListSerializer)
+        val loadedItems = storage.load(name, getArtistListSerializer())
 
         loadedItems `should equal` itemsList
     }

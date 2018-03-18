@@ -18,7 +18,7 @@ class IndexesSerializerTest : BaseStorageTest() {
                 Artist("233", "some")
         ))
 
-        storage.store("some-name", item, indexesSerializer)
+        storage.store("some-name", item, getIndexesSerializer())
 
         validateSerializedData()
     }
@@ -31,9 +31,9 @@ class IndexesSerializerTest : BaseStorageTest() {
         ), mutableListOf(
                 Artist("233", "some")
         ))
-        storage.store(name, item, indexesSerializer)
+        storage.store(name, item, getIndexesSerializer())
 
-        val loadedItem = storage.load(name, indexesSerializer)
+        val loadedItem = storage.load(name, getIndexesSerializer())
 
         loadedItem `should equal` item
     }
