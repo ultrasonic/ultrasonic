@@ -6,9 +6,11 @@ task jacocoMergeReports(type: JacocoMerge) {
 
     def subsonicApi = project.findProject("subsonic-api")
     def ultrasonicApp = project.findProject("ultrasonic")
+    def cache = project.findProject("cache")
     executionData(
             "${subsonicApi.buildDir}/jacoco/test.exec",
             "${ultrasonicApp.buildDir}/jacoco/testDebugUnitTest.exec",
+            "${cache.buildDir}/jacoco/test.exec"
     )
     destinationFile(file("${project.buildDir}/jacoco/jacoco.exec"))
 }
@@ -20,6 +22,7 @@ def createJacocoFullReportTask() {
 
         def subsonicApi = project.findProject("subsonic-api")
         def ultrasonicApp = project.findProject("ultrasonic")
+        def cache = project.findProject("cache")
 
         classDirectories = files(
                 fileTree(
@@ -29,6 +32,10 @@ def createJacocoFullReportTask() {
                 fileTree(
                         dir: "${ultrasonicApp.buildDir}/intermediates/classes/debug/org",
                         excludes: ultrasonicApp.jacocoExclude
+                ),
+                fileTree(
+                        dir: "${cache.buildDir}/classes/kotlin/main",
+                        excludes: cache.jacocoExclude
                 )
         )
         sourceDirectories = files(subsonicApi.sourceSets.main.getAllSource(),

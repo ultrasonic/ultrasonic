@@ -26,7 +26,6 @@ import android.text.TextUtils;
 import android.util.Log;
 
 import org.moire.ultrasonic.activity.SubsonicTabActivity;
-import org.moire.ultrasonic.domain.Artist;
 import org.moire.ultrasonic.domain.MusicDirectory;
 
 import java.io.File;
@@ -298,11 +297,6 @@ public class FileUtil
 
 		Log.i("getSampledBitmap", String.valueOf(size));
 		return BitmapFactory.decodeByteArray(bytes, 0, bytes.length, opt);
-	}
-
-	public static File getArtistDirectory(Context context, Artist artist)
-	{
-		return new File(String.format("%s/%s", getMusicDirectory(context).getPath(), fileSystemSafe(artist.getName())));
 	}
 
 	public static File getAlbumArtDirectory()
