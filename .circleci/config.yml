@@ -17,6 +17,9 @@ jobs:
           name: checkstyle
           command: ./gradlew -Pqc ktlintCheck
       - run:
+          name: static analysis
+          command: ./gradlew -Pqc detektCheck
+      - run:
           name: build
           command: ./gradlew assembleDebug
       - run:
@@ -29,8 +32,8 @@ jobs:
           name: lint
           command: ./gradlew lint
       - run:
-          name: static analysis
-          command: ./gradlew -Pqc detektCheck
+          name: assemble release build
+          command: ./gradlew assembleRelease
       - save_cache:
           paths:
             - ~/.gradle
