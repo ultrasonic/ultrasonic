@@ -250,7 +250,7 @@
     <string name="settings.preload_3">3 músicas</string>
     <string name="settings.preload_5">5 músicas</string>
     <string name="settings.preload_unlimited">Ilimitado</string>
-    <string name="settings.playback.resume_play_on_headphones_plug.title">Currículo na inserção de fone de ouvido</string>
+    <string name="settings.playback.resume_play_on_headphones_plug.title">Retomar ao Inserir Fone de Ouvido</string>
     <string name="settings.playback.resume_play_on_headphones_plug.summary">O aplicativo retomará a reprodução em pausa na inserção dos fones de ouvido no dispositivo.</string>
     <string name="settings.screen_lit_summary">Manter a tela ligada enquanto baixando aumenta a velocidade de download.</string>
     <string name="settings.screen_lit_title">Manter a Tela Ligada</string>
@@ -282,7 +282,7 @@
     <string name="settings.server_password">Senha</string>
     <string name="settings.server_remove_server">Excluir Servidor</string>
     <string name="settings.server_scaling_summary">Baixa imagens reduzidas do servidor ao invés do tamanho completo (economiza banda)</string>
-    <string name="settings.server_scaling_title">Reduzir Arte dos álbuns</string>
+    <string name="settings.server_scaling_title">Reduzir Arte dos Álbuns</string>
     <string name="settings.server_unused">Não usado</string>
     <string name="settings.server_username">Login</string>
     <string name="settings.servers_title">Servidores</string>
@@ -306,9 +306,9 @@
     <string name="settings.title.allow_self_signed_certificate">Permitir o certificado HTTPS auto-assinado</string>
     <string name="settings.title.enable_ldap_users_support">Ative o suporte para usuários LDAP</string>
     <string name="settings.summary.enable_ldap_users_support">Isso força o aplicativo a enviar sempre a senha de forma antiga,
-         porque o Subsonic api não suporta nova autorização para usuários LDAP.</string>
-    <string name="settings.use_folder_for_album_artist">Pasta para Nome do Artista</string>
-    <string name="settings.use_folder_for_album_artist_summary">Assume que a pasta mais acima é o nome do artista</string>
+         porque a api Subsonic não suporta a nova autorização para usuários LDAP.</string>
+    <string name="settings.use_folder_for_album_artist">Usar Pasta para Nome do Artista</string>
+    <string name="settings.use_folder_for_album_artist_summary">Assumir que a pasta mais acima é o nome do artista</string>
     <string name="settings.use_id3">Navegar Usando Etiquetas ID3</string>
     <string name="settings.use_id3_summary">Usa as etiquetas ID3 ao invés do sistema de arquivos</string>
     <string name="settings.video_title">Vídeo</string>
@@ -324,7 +324,7 @@
     <string name="settings.view_refresh_4000">4 segundos</string>
     <string name="settings.view_refresh_4500">4.5 segundos</string>
     <string name="settings.view_refresh_5000">5 segundos</string>
-    <string name="settings.wifi_required_summary">Somente faz stream de mídia se estiver conectado ao Wi-Fi</string>
+    <string name="settings.wifi_required_summary">Somente fazer stream de mídia se conectado por Wi-Fi</string>
     <string name="settings.wifi_required_title">Streaming Somente por Wi-Fi</string>
     <string name="song_details.all">%1$s%2$s</string>
     <string name="song_details.kbps">%d kbps</string>
