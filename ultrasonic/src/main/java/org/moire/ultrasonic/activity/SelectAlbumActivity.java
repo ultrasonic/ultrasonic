@@ -35,6 +35,7 @@ import android.widget.TextView;
 
 import com.handmark.pulltorefresh.library.PullToRefreshBase;
 import com.handmark.pulltorefresh.library.PullToRefreshListView;
+
 import org.moire.ultrasonic.R;
 import org.moire.ultrasonic.domain.MusicDirectory;
 import org.moire.ultrasonic.domain.Share;
@@ -594,7 +595,7 @@ public class SelectAlbumActivity extends SubsonicTabActivity
 					{
 						MusicDirectory.Entry allSongs = new MusicDirectory.Entry();
 
-						allSongs.setIsDirectory(true);
+						allSongs.setDirectory(true);
 						allSongs.setArtist(name);
 						allSongs.setParent(id);
 						allSongs.setId(allSongsId);
@@ -663,7 +664,7 @@ public class SelectAlbumActivity extends SubsonicTabActivity
 				{
 					MusicDirectory.Entry allSongs = new MusicDirectory.Entry();
 
-					allSongs.setIsDirectory(true);
+					allSongs.setDirectory(true);
 					allSongs.setArtist(name);
 					allSongs.setParent(id);
 					allSongs.setId(allSongsId);

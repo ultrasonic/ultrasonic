@@ -19,8 +19,11 @@ android {
 
     buildTypes {
         release {
-            minifyEnabled false
-            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.txt'
+            minifyEnabled true
+            proguardFiles getDefaultProguardFile('proguard-android.txt'),
+                    'minify/proguard-okhttp.pro',
+                    'minify/proguard-retrofit.pro',
+                    'minify/proguard-jackson.pro'
         }
         debug {
             minifyEnabled false
@@ -47,7 +50,9 @@ dependencies {
     implementation project(':menudrawer')
     implementation project(':pulltorefresh')
     implementation project(':library')
+    implementation project(':domain')
     implementation project(':subsonic-api')
+    implementation project(':cache')
 
     implementation androidSupport.support
     implementation androidSupport.design
@@ -66,7 +71,6 @@ ext {
     jacocoExclude = [
             '**/activity/**',
             '**/audiofx/**',
-            '**/domain/**',
             '**/fragment/**',
             '**/provider/**',
             '**/receiver/**',

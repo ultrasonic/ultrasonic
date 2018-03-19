@@ -31,7 +31,7 @@ public final class Constants
 	// REST protocol version and client ID.
 	// Note: Keep it as low as possible to maintain compatibility with older servers.
 	public static final String REST_PROTOCOL_VERSION = "1.7.0";
-	public static final String REST_CLIENT_ID = "UltraSonic%20for%20Android";
+	public static final String REST_CLIENT_ID = "Ultrasonic";
 
 	// Names for intent extras.
 	public static final String INTENT_EXTRA_NAME_ID = "subsonic.id";

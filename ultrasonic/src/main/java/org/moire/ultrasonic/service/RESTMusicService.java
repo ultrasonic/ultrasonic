@@ -61,21 +61,23 @@ import org.moire.ultrasonic.api.subsonic.response.SharesResponse;
 import org.moire.ultrasonic.api.subsonic.response.StreamResponse;
 import org.moire.ultrasonic.api.subsonic.response.SubsonicResponse;
 import org.moire.ultrasonic.api.subsonic.response.VideosResponse;
-import org.moire.ultrasonic.data.APIAlbumConverter;
-import org.moire.ultrasonic.data.APIArtistConverter;
-import org.moire.ultrasonic.data.APIBookmarkConverter;
-import org.moire.ultrasonic.data.APIChatMessageConverter;
-import org.moire.ultrasonic.data.APIIndexesConverter;
-import org.moire.ultrasonic.data.APIJukeboxConverter;
-import org.moire.ultrasonic.data.APILyricsConverter;
-import org.moire.ultrasonic.data.APIMusicDirectoryConverter;
-import org.moire.ultrasonic.data.APIMusicFolderConverter;
-import org.moire.ultrasonic.data.APIPlaylistConverter;
-import org.moire.ultrasonic.data.APIPodcastConverter;
-import org.moire.ultrasonic.data.APISearchConverter;
-import org.moire.ultrasonic.data.APIShareConverter;
-import org.moire.ultrasonic.data.APIUserConverter;
-import org.moire.ultrasonic.data.ApiGenreConverter;
+import org.moire.ultrasonic.cache.PermanentFileStorage;
+import org.moire.ultrasonic.cache.serializers.DomainSerializers;
+import org.moire.ultrasonic.domain.APIAlbumConverter;
+import org.moire.ultrasonic.domain.APIArtistConverter;
+import org.moire.ultrasonic.domain.APIBookmarkConverter;
+import org.moire.ultrasonic.domain.APIChatMessageConverter;
+import org.moire.ultrasonic.domain.APIIndexesConverter;
+import org.moire.ultrasonic.domain.APIJukeboxConverter;
+import org.moire.ultrasonic.domain.APILyricsConverter;
+import org.moire.ultrasonic.domain.APIMusicDirectoryConverter;
+import org.moire.ultrasonic.domain.APIMusicFolderConverter;
+import org.moire.ultrasonic.domain.APIPlaylistConverter;
+import org.moire.ultrasonic.domain.APIPodcastConverter;
+import org.moire.ultrasonic.domain.APISearchConverter;
+import org.moire.ultrasonic.domain.APIShareConverter;
+import org.moire.ultrasonic.domain.APIUserConverter;
+import org.moire.ultrasonic.domain.ApiGenreConverter;
 import org.moire.ultrasonic.domain.Bookmark;
 import org.moire.ultrasonic.domain.ChatMessage;
 import org.moire.ultrasonic.domain.Genre;
@@ -104,7 +106,6 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Locale;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.TimeUnit;
 
@@ -117,10 +118,19 @@ import retrofit2.Response;
 public class RESTMusicService implements MusicService {
     private static final String TAG = RESTMusicService.class.getSimpleName();
 
-    private final SubsonicAPIClient subsonicAPIClient;
+    private static final String MUSIC_FOLDER_STORAGE_NAME = "music_folder";
+    private static final String INDEXES_STORAGE_NAME = "indexes";
+    private static final String ARTISTS_STORAGE_NAME = "artists";
 
-    public RESTMusicService(SubsonicAPIClient subsonicAPIClient) {
+    private final SubsonicAPIClient subsonicAPIClient;
+    private final PermanentFileStorage fileStorage;
+
+    public RESTMusicService(
+            final SubsonicAPIClient subsonicAPIClient,
+            final PermanentFileStorage fileStorage
+    ) {
         this.subsonicAPIClient = subsonicAPIClient;
+        this.fileStorage = fileStorage;
     }
 
     @Override
@@ -146,7 +156,8 @@ public class RESTMusicService implements MusicService {
     public List<MusicFolder> getMusicFolders(boolean refresh,
                                              Context context,
                                              ProgressListener progressListener) throws Exception {
-        List<MusicFolder> cachedMusicFolders = readCachedMusicFolders(context);
+        List<MusicFolder> cachedMusicFolders = fileStorage.load(MUSIC_FOLDER_STORAGE_NAME,
+                DomainSerializers.getMusicFolderListSerializer());
         if (cachedMusicFolders != null && !refresh) {
             return cachedMusicFolders;
         }
@@ -157,23 +168,9 @@ public class RESTMusicService implements MusicService {
 
         List<MusicFolder> musicFolders = APIMusicFolderConverter
                 .toDomainEntityList(response.body().getMusicFolders());
-        writeCachedMusicFolders(context, musicFolders);
+        fileStorage.store(MUSIC_FOLDER_STORAGE_NAME, musicFolders,
+                DomainSerializers.getMusicFolderListSerializer());
         return musicFolders;
-    }
-
-    private static List<MusicFolder> readCachedMusicFolders(Context context) {
-        String filename = getCachedMusicFoldersFilename(context);
-        return FileUtil.deserialize(context, filename);
-    }
-
-    private static void writeCachedMusicFolders(Context context, List<MusicFolder> musicFolders) {
-        String filename = getCachedMusicFoldersFilename(context);
-        FileUtil.serialize(context, new ArrayList<>(musicFolders), filename);
-    }
-
-    private static String getCachedMusicFoldersFilename(Context context) {
-        String s = Util.getRestUrl(context, null);
-        return String.format(Locale.US, "musicFolders-%d.ser", Math.abs(s.hashCode()));
     }
 
     @Override
@@ -181,7 +178,8 @@ public class RESTMusicService implements MusicService {
                               boolean refresh,
                               Context context,
                               ProgressListener progressListener) throws Exception {
-        Indexes cachedIndexes = readCachedIndexes(context, musicFolderId);
+        Indexes cachedIndexes = fileStorage.load(INDEXES_STORAGE_NAME,
+                DomainSerializers.getIndexesSerializer());
         if (cachedIndexes != null && !refresh) {
             return cachedIndexes;
         }
@@ -192,57 +190,28 @@ public class RESTMusicService implements MusicService {
         checkResponseSuccessful(response);
 
         Indexes indexes = APIIndexesConverter.toDomainEntity(response.body().getIndexes());
-        writeCachedIndexes(context, indexes, musicFolderId);
+        fileStorage.store(INDEXES_STORAGE_NAME, indexes, DomainSerializers.getIndexesSerializer());
         return indexes;
-    }
-
-    private static Indexes readCachedIndexes(Context context, String musicFolderId) {
-        String filename = getCachedIndexesFilename(context, musicFolderId);
-        return FileUtil.deserialize(context, filename);
-    }
-
-    private static void writeCachedIndexes(Context context, Indexes indexes, String musicFolderId) {
-        String filename = getCachedIndexesFilename(context, musicFolderId);
-        FileUtil.serialize(context, indexes, filename);
-    }
-
-    private static String getCachedIndexesFilename(Context context, String musicFolderId) {
-        String s = Util.getRestUrl(context, null) + musicFolderId;
-        return String.format(Locale.US, "indexes-%d.ser", Math.abs(s.hashCode()));
     }
 
     @Override
     public Indexes getArtists(boolean refresh,
                               Context context,
                               ProgressListener progressListener) throws Exception {
-        Indexes cachedArtists = readCachedArtists(context);
-        if (cachedArtists != null &&
-                !refresh) {
+        Indexes cachedArtists = fileStorage
+                .load(ARTISTS_STORAGE_NAME, DomainSerializers.getIndexesSerializer());
+        if (cachedArtists != null && !refresh) {
             return cachedArtists;
         }
 
         updateProgressListener(progressListener, R.string.parser_reading);
-        Response<GetArtistsResponse> response = subsonicAPIClient.getApi().getArtists(null).execute();
+        Response<GetArtistsResponse> response = subsonicAPIClient.getApi()
+                .getArtists(null).execute();
         checkResponseSuccessful(response);
 
         Indexes indexes = APIIndexesConverter.toDomainEntity(response.body().getIndexes());
-        writeCachedArtists(context, indexes);
+        fileStorage.store(ARTISTS_STORAGE_NAME, indexes, DomainSerializers.getIndexesSerializer());
         return indexes;
-    }
-
-    private static Indexes readCachedArtists(Context context) {
-        String filename = getCachedArtistsFilename(context);
-        return FileUtil.deserialize(context, filename);
-    }
-
-    private static void writeCachedArtists(Context context, Indexes artists) {
-        String filename = getCachedArtistsFilename(context);
-        FileUtil.serialize(context, artists, filename);
-    }
-
-    private static String getCachedArtistsFilename(Context context) {
-        String s = Util.getRestUrl(context, null);
-        return String.format(Locale.US, "indexes-%d.ser", Math.abs(s.hashCode()));
     }
 
     @Override

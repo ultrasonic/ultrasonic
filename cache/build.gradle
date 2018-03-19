@@ -1,0 +1,46 @@
+apply plugin: 'java-library'
+apply plugin: 'kotlin'
+apply plugin: 'jacoco'
+apply from: '../gradle_scripts/code_quality.gradle'
+
+dependencies {
+    api project(':domain')
+    api other.kotlinStdlib
+    api other.twitterSerial
+
+    testImplementation testing.junit
+    testImplementation testing.kotlinJunit
+    testImplementation testing.mockito
+    testImplementation testing.mockitoInline
+    testImplementation testing.mockitoKotlin
+    testImplementation testing.kluent
+}
+
+jacoco {
+    toolVersion(versions.jacoco)
+}
+
+ext {
+    jacocoExclude = []
+}
+
+jacocoTestReport {
+    reports {
+        html.enabled true
+        csv.enabled false
+        xml.enabled true
+    }
+
+    afterEvaluate {
+        classDirectories = files(classDirectories.files.collect {
+            fileTree(dir: it, excludes: jacocoExclude)
+        })
+    }
+}
+
+test.finalizedBy jacocoTestReport
+test {
+    jacoco {
+        excludes += jacocoExclude
+    }
+}

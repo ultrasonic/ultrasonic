@@ -1,26 +1,28 @@
 ext.versions = [
-        versionCode          : 63,
-        versionName          : "2.2.2",
+        versionCode          : 64,
+        versionName          : "2.3.0",
 
         minSdk               : 14,
         targetSdk            : 22,
         compileSdk           : 27,
-        gradle               : '4.4.1',
+        gradle               : '4.5.1',
 
         androidTools         : "3.0.1",
-        ktlint               : "0.14.0",
-        ktlintGradle         : "2.3.0",
-        detekt               : "1.0.0.RC6",
+        ktlint               : "0.15.1",
+        ktlintGradle         : "3.0.1",
+        detekt               : "1.0.0.RC6-3",
         jacoco               : "0.7.9",
         jacocoAndroid        : "0.1.2",
 
         androidSupport       : "22.2.1",
 
-        kotlin               : "1.2.10",
+        kotlin               : "1.2.21",
 
         retrofit             : "2.1.0",
         jackson              : "2.9.0",
         okhttp               : "3.9.0",
+        semver               : "1.0.0",
+        twitterSerial        : "0.1.6",
 
         junit                : "4.12",
         mockito              : "2.12.0",
@@ -50,6 +52,8 @@ ext.other = [
         jacksonConverter   : "com.squareup.retrofit2:converter-jackson:$versions.retrofit",
         jacksonKotlin      : "com.fasterxml.jackson.module:jackson-module-kotlin:$versions.jackson",
         okhttpLogging      : "com.squareup.okhttp3:logging-interceptor:$versions.okhttp",
+        semver             : "net.swiftzer.semver:semver:$versions.semver",
+        twitterSerial      : "com.twitter.serial:serial:$versions.twitterSerial",
 ]
 
 ext.testing = [
