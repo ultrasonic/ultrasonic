@@ -21,16 +21,19 @@ android {
         release {
             minifyEnabled true
             proguardFiles getDefaultProguardFile('proguard-android.txt'),
+                    'minify/proguard-main.pro',
                     'minify/proguard-okhttp.pro',
                     'minify/proguard-retrofit.pro',
-                    'minify/proguard-jackson.pro'
+                    'minify/proguard-jackson.pro',
+                    'minify/proguard-kotlin-reflect.pro',
+                    'minify/proguard-kotlin.pro'
         }
         debug {
             minifyEnabled false
             testCoverageEnabled true
+            applicationIdSuffix ".debug"
         }
     }
-
     sourceSets {
         main.java.srcDirs += "${projectDir}/src/main/kotlin"
         test.java.srcDirs += "${projectDir}/src/test/kotlin"
