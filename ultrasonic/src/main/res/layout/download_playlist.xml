@@ -2,6 +2,7 @@
 
 <LinearLayout
         xmlns:a="http://schemas.android.com/apk/res/android"
+        xmlns:app="http://schemas.android.com/apk/res-auto"
         a:orientation="vertical"
         a:layout_width="fill_parent"
         a:layout_height="fill_parent"
@@ -15,20 +16,19 @@
             a:padding="10dip"/>
 
     <com.mobeta.android.dslv.DragSortListView
-            xmlns:dslv="http://schemas.android.com/apk/res/org.moire.ultrasonic"
             a:id="@+id/download_list"
             a:layout_width="fill_parent"
             a:layout_height="0dip"
             a:layout_weight="1"
             a:fastScrollEnabled="true"
         	a:textFilterEnabled="true"
-            dslv:drag_handle_id="@+id/song_drag"
-            dslv:remove_enabled="true"
-            dslv:remove_mode="flingRemove"
-            dslv:fling_handle_id="@+id/song_drag"
-            dslv:drag_start_mode="onMove"
-            dslv:float_background_color="?attr/color_background"
-            dslv:float_alpha="0.7" />
+            app:drag_handle_id="@+id/song_drag"
+            app:remove_enabled="true"
+            app:remove_mode="flingRemove"
+            app:fling_handle_id="@+id/song_drag"
+            app:drag_start_mode="onMove"
+            app:float_background_color="?attr/color_background"
+            app:float_alpha="0.7" />
 
 
 </LinearLayout>
