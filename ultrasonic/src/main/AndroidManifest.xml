@@ -20,7 +20,8 @@
 
     <application
         a:allowBackup="false"
-        a:icon="@drawable/ic_launcher"
+        a:icon="@mipmap/ic_launcher"
+        a:roundIcon="@mipmap/ic_launcher_round"
         a:theme="@style/Theme.AppCompat"
         a:label="@string/common.appname">
         <activity
