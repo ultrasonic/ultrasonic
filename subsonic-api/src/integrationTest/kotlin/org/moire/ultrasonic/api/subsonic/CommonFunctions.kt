@@ -57,8 +57,10 @@ fun parseDate(dateAsString: String): Calendar {
     return result
 }
 
-fun <T : SubsonicResponse> checkErrorCallParsed(mockWebServerRule: MockWebServerRule,
-                                                apiRequest: () -> Response<T>): T {
+fun <T : SubsonicResponse> checkErrorCallParsed(
+    mockWebServerRule: MockWebServerRule,
+    apiRequest: () -> Response<T>
+): T {
     mockWebServerRule.enqueueResponse("request_data_not_found_error_response.json")
 
     val response = apiRequest()
@@ -77,9 +79,11 @@ fun SubsonicResponse.assertBaseResponseOk() {
     error `should be` null
 }
 
-fun MockWebServerRule.assertRequestParam(responseResourceName: String = "ping_ok.json",
-                                         expectedParam: String,
-                                         apiRequest: () -> Response<out Any>) {
+fun MockWebServerRule.assertRequestParam(
+    responseResourceName: String = "ping_ok.json",
+    expectedParam: String,
+    apiRequest: () -> Response<out Any>
+) {
     this.enqueueResponse(responseResourceName)
     apiRequest()
 

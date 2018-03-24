@@ -5,9 +5,10 @@ import org.moire.ultrasonic.api.subsonic.SubsonicAPIVersions
 import org.moire.ultrasonic.api.subsonic.SubsonicError
 import org.moire.ultrasonic.api.subsonic.models.MusicDirectory
 
-class GetMusicDirectoryResponse(status: Status,
-                                version: SubsonicAPIVersions,
-                                error: SubsonicError?,
-                                @JsonProperty("directory")
-                                val musicDirectory: MusicDirectory = MusicDirectory()) :
-        SubsonicResponse(status, version, error)
+class GetMusicDirectoryResponse(
+    status: Status,
+    version: SubsonicAPIVersions,
+    error: SubsonicError?,
+    @JsonProperty("directory")
+    val musicDirectory: MusicDirectory = MusicDirectory()
+) : SubsonicResponse(status, version, error)

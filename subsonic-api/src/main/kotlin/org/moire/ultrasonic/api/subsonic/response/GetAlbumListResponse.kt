@@ -5,10 +5,11 @@ import org.moire.ultrasonic.api.subsonic.SubsonicAPIVersions
 import org.moire.ultrasonic.api.subsonic.SubsonicError
 import org.moire.ultrasonic.api.subsonic.models.MusicDirectoryChild
 
-class GetAlbumListResponse(status: Status,
-                           version: SubsonicAPIVersions,
-                           error: SubsonicError?)
-    : SubsonicResponse(status, version, error) {
+class GetAlbumListResponse(
+    status: Status,
+    version: SubsonicAPIVersions,
+    error: SubsonicError?
+) : SubsonicResponse(status, version, error) {
     @JsonProperty("albumList") private val albumWrapper = AlbumWrapper()
 
     val albumList: List<MusicDirectoryChild>
@@ -16,4 +17,5 @@ class GetAlbumListResponse(status: Status,
 }
 
 private class AlbumWrapper(
-        @JsonProperty("album") val albumList: List<MusicDirectoryChild> = emptyList())
+    @JsonProperty("album") val albumList: List<MusicDirectoryChild> = emptyList()
+)

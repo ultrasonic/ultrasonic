@@ -5,10 +5,11 @@ import org.moire.ultrasonic.api.subsonic.SubsonicAPIVersions
 import org.moire.ultrasonic.api.subsonic.SubsonicError
 import org.moire.ultrasonic.api.subsonic.models.MusicDirectoryChild
 
-class GetRandomSongsResponse(status: Status,
-                             version: SubsonicAPIVersions,
-                             error: SubsonicError?)
-    : SubsonicResponse(status, version, error) {
+class GetRandomSongsResponse(
+    status: Status,
+    version: SubsonicAPIVersions,
+    error: SubsonicError?
+) : SubsonicResponse(status, version, error) {
     @JsonProperty("randomSongs") private val songsWrapper = RandomSongsWrapper()
 
     val songsList
@@ -16,4 +17,5 @@ class GetRandomSongsResponse(status: Status,
 }
 
 private class RandomSongsWrapper(
-        @JsonProperty("song") val songsList: List<MusicDirectoryChild> = emptyList())
+    @JsonProperty("song") val songsList: List<MusicDirectoryChild> = emptyList()
+)

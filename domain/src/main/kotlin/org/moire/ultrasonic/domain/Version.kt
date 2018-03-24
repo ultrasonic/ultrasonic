@@ -6,7 +6,7 @@ import net.swiftzer.semver.SemVer
  * Represents the version number of the Subsonic Android app.
  */
 data class Version(
-        val version: SemVer
+    val version: SemVer
 ) : Comparable<Version> {
 
     override fun compareTo(other: Version): Int {

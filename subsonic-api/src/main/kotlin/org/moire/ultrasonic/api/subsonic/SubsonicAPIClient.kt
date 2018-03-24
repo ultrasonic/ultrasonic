@@ -35,14 +35,16 @@ private const val READ_TIMEOUT = 60_000L
  *
  * @author Yahor Berdnikau
  */
-class SubsonicAPIClient(baseUrl: String,
-                        username: String,
-                        password: String,
-                        minimalProtocolVersion: SubsonicAPIVersions,
-                        clientID: String,
-                        allowSelfSignedCertificate: Boolean = false,
-                        enableLdapUserSupport: Boolean = false,
-                        debug: Boolean = false) {
+class SubsonicAPIClient(
+    baseUrl: String,
+    username: String,
+    password: String,
+    minimalProtocolVersion: SubsonicAPIVersions,
+    clientID: String,
+    allowSelfSignedCertificate: Boolean = false,
+    enableLdapUserSupport: Boolean = false,
+    debug: Boolean = false
+) {
     private val versionInterceptor = VersionInterceptor(minimalProtocolVersion) {
         protocolVersion = it
     }

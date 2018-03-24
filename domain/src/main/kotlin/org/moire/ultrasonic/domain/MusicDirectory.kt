@@ -25,8 +25,9 @@ class MusicDirectory {
 
     @JvmOverloads
     fun getChildren(
-            includeDirs: Boolean = true,
-            includeFiles: Boolean = true): List<Entry> {
+        includeDirs: Boolean = true,
+        includeFiles: Boolean = true
+    ): List<Entry> {
         if (includeDirs && includeFiles) {
             return children
         }
@@ -35,34 +36,34 @@ class MusicDirectory {
     }
 
     data class Entry(
-            var id: String? = null,
-            var parent: String? = null,
-            var isDirectory: Boolean = false,
-            var title: String? = null,
-            var album: String? = null,
-            var albumId: String? = null,
-            var artist: String? = null,
-            var artistId: String? = null,
-            var track: Int? = 0,
-            var year: Int? = 0,
-            var genre: String? = null,
-            var contentType: String? = null,
-            var suffix: String? = null,
-            var transcodedContentType: String? = null,
-            var transcodedSuffix: String? = null,
-            var coverArt: String? = null,
-            var size: Long? = null,
-            var songCount: Long? = null,
-            var duration: Int? = null,
-            var bitRate: Int? = null,
-            var path: String? = null,
-            var isVideo: Boolean = false,
-            var starred: Boolean = false,
-            var discNumber: Int? = null,
-            var type: String? = null,
-            var created: Date? = null,
-            var closeness: Int = 0,
-            var bookmarkPosition: Int = 0
+        var id: String? = null,
+        var parent: String? = null,
+        var isDirectory: Boolean = false,
+        var title: String? = null,
+        var album: String? = null,
+        var albumId: String? = null,
+        var artist: String? = null,
+        var artistId: String? = null,
+        var track: Int? = 0,
+        var year: Int? = 0,
+        var genre: String? = null,
+        var contentType: String? = null,
+        var suffix: String? = null,
+        var transcodedContentType: String? = null,
+        var transcodedSuffix: String? = null,
+        var coverArt: String? = null,
+        var size: Long? = null,
+        var songCount: Long? = null,
+        var duration: Int? = null,
+        var bitRate: Int? = null,
+        var path: String? = null,
+        var isVideo: Boolean = false,
+        var starred: Boolean = false,
+        var discNumber: Int? = null,
+        var type: String? = null,
+        var created: Date? = null,
+        var closeness: Int = 0,
+        var bookmarkPosition: Int = 0
     ) : Serializable {
         fun setDuration(duration: Long) {
             this.duration = duration.toInt()
