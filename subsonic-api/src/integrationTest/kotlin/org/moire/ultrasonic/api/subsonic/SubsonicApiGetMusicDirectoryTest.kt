@@ -40,8 +40,8 @@ class SubsonicApiGetMusicDirectoryTest : SubsonicAPIClientTest() {
 
         assertResponseSuccessful(response)
 
-        response.body().musicDirectory `should not be` null
-        with(response.body().musicDirectory) {
+        response.body()!!.musicDirectory `should not be` null
+        with(response.body()!!.musicDirectory) {
             id `should equal to` "4836"
             parent `should equal to` "300"
             name `should equal` "12 Stones"

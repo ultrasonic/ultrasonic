@@ -27,7 +27,7 @@ class SubsonicApiGetStarred2Test : SubsonicAPIClientTest() {
         val response = client.api.getStarred2().execute()
 
         assertResponseSuccessful(response)
-        with(response.body().starred2) {
+        with(response.body()!!.starred2) {
             albumList `should equal` emptyList()
             artistList.size `should equal to` 1
             artistList[0] `should equal` Artist(id = "364", name = "Parov Stelar",

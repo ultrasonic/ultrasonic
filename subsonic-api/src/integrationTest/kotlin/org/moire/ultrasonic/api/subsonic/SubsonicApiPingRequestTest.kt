@@ -13,7 +13,7 @@ class SubsonicApiPingRequestTest : SubsonicAPIClientTest() {
         val response = client.api.ping().execute()
 
         assertResponseSuccessful(response)
-        with(response.body()) {
+        with(response.body()!!) {
             assertBaseResponseOk()
         }
     }

@@ -38,7 +38,7 @@ class SubsonicApiGetAlbumTest : SubsonicAPIClientTest() {
         val response = client.api.getAlbum("512").execute()
 
         assertResponseSuccessful(response)
-        with(response.body().album) {
+        with(response.body()!!.album) {
             id `should equal to` "618"
             name `should equal to` "Black Ice"
             artist `should equal to` "AC/DC"

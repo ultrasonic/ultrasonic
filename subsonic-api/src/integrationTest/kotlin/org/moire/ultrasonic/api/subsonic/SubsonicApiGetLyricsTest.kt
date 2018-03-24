@@ -21,7 +21,7 @@ class SubsonicApiGetLyricsTest : SubsonicAPIClientTest() {
         val response = client.api.getLyrics().execute()
 
         assertResponseSuccessful(response)
-        with(response.body().lyrics) {
+        with(response.body()!!.lyrics) {
             artist `should equal to` "Amorphis"
             title `should equal to` "Alone"
             text `should equal to` "Tear dimmed rememberance\nIn a womb of time\nBreath upon " +

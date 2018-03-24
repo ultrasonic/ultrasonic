@@ -64,11 +64,11 @@ fun <T : SubsonicResponse> checkErrorCallParsed(mockWebServerRule: MockWebServer
     val response = apiRequest()
 
     assertResponseSuccessful(response)
-    with(response.body()) {
+    with(response.body()!!) {
         status `should be` SubsonicResponse.Status.ERROR
         error `should be` SubsonicError.RequestedDataWasNotFound
     }
-    return response.body()
+    return response.body()!!
 }
 
 fun SubsonicResponse.assertBaseResponseOk() {

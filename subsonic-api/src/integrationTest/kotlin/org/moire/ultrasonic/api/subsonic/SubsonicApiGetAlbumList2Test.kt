@@ -28,7 +28,7 @@ class SubsonicApiGetAlbumList2Test : SubsonicAPIClientTest() {
         val response = client.api.getAlbumList2(STARRED).execute()
 
         assertResponseSuccessful(response)
-        with(response.body().albumList) {
+        with(response.body()!!.albumList) {
             this.size `should equal to` 2
             this[0] `should equal` Album(id = "962", name = "Fury", artist = "Sick Puppies",
                     artistId = "473", coverArt = "al-962", songCount = 13, duration = 2591,

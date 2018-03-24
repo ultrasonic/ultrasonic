@@ -25,7 +25,7 @@ class SubsonicApiGetRandomSongsTest : SubsonicAPIClientTest() {
         val response = client.api.getRandomSongs().execute()
 
         assertResponseSuccessful(response)
-        with(response.body().songsList) {
+        with(response.body()!!.songsList) {
             size `should equal to` 3
             this[1] `should equal` MusicDirectoryChild(id = "3061", parent = "3050", isDir = false,
                     title = "Sure as Hell", album = "Who Are You Now?", artist = "This Providence",

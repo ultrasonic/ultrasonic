@@ -25,7 +25,7 @@ class SubsonicApiGetChatMessagesTest : SubsonicAPIClientTest() {
         val response = client.api.getChatMessages().execute()
 
         assertResponseSuccessful(response)
-        with(response.body().chatMessages) {
+        with(response.body()!!.chatMessages) {
             size `should equal to` 2
             this[0] `should equal` ChatMessage(username = "sindre", time = 1269771845310,
                     message = "Sindre was here")

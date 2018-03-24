@@ -38,7 +38,7 @@ class SubsonicApiGetArtistTest : SubsonicAPIClientTest() {
         val response = client.api.getArtist("100").execute()
 
         assertResponseSuccessful(response)
-        with(response.body().artist) {
+        with(response.body()!!.artist) {
             id `should equal to` "362"
             name `should equal to` "AC/DC"
             coverArt `should equal to` "ar-362"

@@ -25,8 +25,8 @@ class SubsonicApiGetBookmarksTest : SubsonicAPIClientTest() {
         val response = client.api.getBookmarks().execute()
 
         assertResponseSuccessful(response)
-        response.body().bookmarkList.size `should equal to` 1
-        with(response.body().bookmarkList[0]) {
+        response.body()!!.bookmarkList.size `should equal to` 1
+        with(response.body()!!.bookmarkList[0]) {
             position `should equal to` 107914
             username `should equal to` "CaptainEurope"
             comment `should equal to` "Look at this"

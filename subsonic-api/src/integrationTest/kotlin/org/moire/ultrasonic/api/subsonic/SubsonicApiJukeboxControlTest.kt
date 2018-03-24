@@ -29,7 +29,7 @@ class SubsonicApiJukeboxControlTest : SubsonicAPIClientTest() {
         val response = client.api.jukeboxControl(STATUS).execute()
 
         assertResponseSuccessful(response)
-        with(response.body().jukebox) {
+        with(response.body()!!.jukebox) {
             currentIndex `should equal to` 94
             playing `should equal to` true
             gain `should equal to` 0.32f
@@ -45,7 +45,7 @@ class SubsonicApiJukeboxControlTest : SubsonicAPIClientTest() {
         val response = client.api.jukeboxControl(GET).execute()
 
         assertResponseSuccessful(response)
-        with(response.body().jukebox) {
+        with(response.body()!!.jukebox) {
             currentIndex `should equal to` 887
             playing `should equal to` false
             gain `should equal to` 0.88f

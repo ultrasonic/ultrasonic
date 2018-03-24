@@ -16,7 +16,7 @@ class SubsonicApiGetLicenseTest : SubsonicAPIClientTest() {
         val response = client.api.getLicense().execute()
 
         assertResponseSuccessful(response)
-        with(response.body()) {
+        with(response.body()!!) {
             assertBaseResponseOk()
             license `should equal` License(valid = true,
                     trialExpires = parseDate("2016-11-23T20:17:15.206Z"),

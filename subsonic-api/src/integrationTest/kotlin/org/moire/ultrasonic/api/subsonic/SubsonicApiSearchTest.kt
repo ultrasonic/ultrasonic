@@ -29,7 +29,7 @@ class SubsonicApiSearchTest : SubsonicAPIClientTest() {
         val response = client.api.search().execute()
 
         assertResponseSuccessful(response)
-        with(response.body().searchResult) {
+        with(response.body()!!.searchResult) {
             offset `should equal to` 10
             totalHits `should equal to` 53
             matchList.size `should equal to` 1

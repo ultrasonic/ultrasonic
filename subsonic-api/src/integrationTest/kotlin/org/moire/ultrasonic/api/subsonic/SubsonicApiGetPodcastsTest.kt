@@ -27,7 +27,7 @@ class SubsonicApiGetPodcastsTest : SubsonicAPIClientTest() {
         val response = client.api.getPodcasts().execute()
 
         assertResponseSuccessful(response)
-        val podcastChannelsList = response.body().podcastChannels
+        val podcastChannelsList = response.body()!!.podcastChannels
         podcastChannelsList.size `should equal to` 1
         with(podcastChannelsList[0]) {
             id `should equal to` "2"

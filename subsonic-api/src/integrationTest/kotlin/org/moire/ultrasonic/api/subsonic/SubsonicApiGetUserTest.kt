@@ -25,7 +25,7 @@ class SubsonicApiGetUserTest : SubsonicAPIClientTest() {
         val response = client.api.getUser("some").execute()
 
         assertResponseSuccessful(response)
-        with(response.body().user) {
+        with(response.body()!!.user) {
             username `should equal to` "GodOfUniverse"
             email `should equal to` "some.mail@example.com"
             scrobblingEnabled `should equal to` false

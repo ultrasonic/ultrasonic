@@ -15,7 +15,7 @@ class SubsonicApiUnstarTest : SubsonicAPIClientTest() {
         val response = client.api.unstar().execute()
 
         assertResponseSuccessful(response)
-        response.body().status `should be` SubsonicResponse.Status.OK
+        response.body()?.status `should be` SubsonicResponse.Status.OK
     }
 
     @Test

@@ -29,7 +29,7 @@ class SubsonicApiGetArtistsTest : SubsonicAPIClientTest() {
         val response = client.api.getArtists(null).execute()
 
         assertResponseSuccessful(response)
-        with(response.body().indexes) {
+        with(response.body()!!.indexes) {
             lastModified `should equal to` 0L
             ignoredArticles `should equal to` "The El La Los Las Le Les"
             shortcutList `should equal` emptyList()

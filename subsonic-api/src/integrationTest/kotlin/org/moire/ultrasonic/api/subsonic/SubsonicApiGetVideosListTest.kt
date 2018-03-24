@@ -25,7 +25,7 @@ class SubsonicApiGetVideosListTest : SubsonicAPIClientTest() {
         val response = client.api.getVideos().execute()
 
         assertResponseSuccessful(response)
-        with(response.body().videosList) {
+        with(response.body()!!.videosList) {
             size `should equal to` 1
             this[0] `should equal` MusicDirectoryChild(id = "10402", parent = "10401",
                     isDir = false, title = "MVI_0512", album = "Incoming", size = 21889646,

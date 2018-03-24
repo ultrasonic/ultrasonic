@@ -27,7 +27,7 @@ class SubsonicApiGetAlbumListRequestTest : SubsonicAPIClientTest() {
         val response = client.api.getAlbumList(BY_GENRE).execute()
 
         assertResponseSuccessful(response)
-        with(response.body().albumList) {
+        with(response.body()!!.albumList) {
             size `should equal to` 2
             this[1] `should equal` MusicDirectoryChild(id = "9997", parent = "9996", isDir = true,
                     title = "Endless Forms Most Beautiful", album = "Endless Forms Most Beautiful",

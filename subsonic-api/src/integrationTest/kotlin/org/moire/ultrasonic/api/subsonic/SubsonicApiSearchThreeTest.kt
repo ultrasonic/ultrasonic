@@ -30,7 +30,7 @@ class SubsonicApiSearchThreeTest : SubsonicAPIClientTest() {
         val response = client.api.search3("some-query").execute()
 
         assertResponseSuccessful(response)
-        with(response.body().searchResult) {
+        with(response.body()!!.searchResult) {
             artistList.size `should equal to` 1
             artistList[0] `should equal` Artist(id = "505", name = "The Prodigy",
                     coverArt = "ar-505", albumCount = 5)

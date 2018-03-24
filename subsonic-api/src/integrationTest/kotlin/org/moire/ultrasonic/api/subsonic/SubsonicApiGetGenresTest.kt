@@ -25,7 +25,7 @@ class SubsonicApiGetGenresTest : SubsonicAPIClientTest() {
         val response = client.api.getGenres().execute()
 
         assertResponseSuccessful(response)
-        with(response.body().genresList) {
+        with(response.body()!!.genresList) {
             size `should equal to` 5
             this[0] `should equal` Genre(1186, 103, "Rock")
             this[1] `should equal` Genre(896, 72, "Electronic")
