@@ -1,6 +1,6 @@
 package org.moire.ultrasonic.api.subsonic
 
-import org.amshove.kluent.`should equal to`
+import org.amshove.kluent.`should be equal to`
 import org.amshove.kluent.`should equal`
 import org.amshove.kluent.`should not be`
 import org.junit.Test
@@ -38,12 +38,12 @@ class SubsonicApiGetArtistTest : SubsonicAPIClientTest() {
         val response = client.api.getArtist("100").execute()
 
         assertResponseSuccessful(response)
-        with(response.body().artist) {
-            id `should equal to` "362"
-            name `should equal to` "AC/DC"
-            coverArt `should equal to` "ar-362"
-            albumCount `should equal to` 2
-            albumsList.size `should equal to` 2
+        with(response.body()!!.artist) {
+            id `should be equal to` "362"
+            name `should be equal to` "AC/DC"
+            coverArt `should be equal to` "ar-362"
+            albumCount `should be equal to` 2
+            albumsList.size `should be equal to` 2
             albumsList[0] `should equal` Album(id = "618", name = "Black Ice", artist = "AC/DC",
                     artistId = "362", coverArt = "al-618", songCount = 15, duration = 3331,
                     created = parseDate("2016-10-23T15:31:22.000Z"),

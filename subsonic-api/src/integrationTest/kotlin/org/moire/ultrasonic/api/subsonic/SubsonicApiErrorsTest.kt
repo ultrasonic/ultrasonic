@@ -150,7 +150,7 @@ class SubsonicApiErrorsTest : SubsonicAPIClientTest() {
     }
 
     private fun Response<SubsonicResponse>.assertError(expectedError: SubsonicError) =
-            with(body()) {
+            with(body()!!) {
                 error `should not be` null
                 error `should equal` expectedError
             }

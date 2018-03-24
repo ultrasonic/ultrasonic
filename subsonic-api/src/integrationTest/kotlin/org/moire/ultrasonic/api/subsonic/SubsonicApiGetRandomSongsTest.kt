@@ -1,6 +1,6 @@
 package org.moire.ultrasonic.api.subsonic
 
-import org.amshove.kluent.`should equal to`
+import org.amshove.kluent.`should be equal to`
 import org.amshove.kluent.`should equal`
 import org.junit.Test
 import org.moire.ultrasonic.api.subsonic.models.MusicDirectoryChild
@@ -25,8 +25,8 @@ class SubsonicApiGetRandomSongsTest : SubsonicAPIClientTest() {
         val response = client.api.getRandomSongs().execute()
 
         assertResponseSuccessful(response)
-        with(response.body().songsList) {
-            size `should equal to` 3
+        with(response.body()!!.songsList) {
+            size `should be equal to` 3
             this[1] `should equal` MusicDirectoryChild(id = "3061", parent = "3050", isDir = false,
                     title = "Sure as Hell", album = "Who Are You Now?", artist = "This Providence",
                     track = 1, year = 2009, genre = "Indie Rock", coverArt = "3050",

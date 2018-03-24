@@ -1,6 +1,6 @@
 package org.moire.ultrasonic.api.subsonic
 
-import org.amshove.kluent.`should equal to`
+import org.amshove.kluent.`should be equal to`
 import org.amshove.kluent.`should equal`
 import org.amshove.kluent.`should not be`
 import org.junit.Test
@@ -28,17 +28,17 @@ class SubsonicApiGetPlaylistTest : SubsonicAPIClientTest() {
         val response = client.api.getPlaylist("4").execute()
 
         assertResponseSuccessful(response)
-        with(response.body().playlist) {
-            id `should equal to` "0"
-            name `should equal to` "Aug 27, 2017 11:17 AM"
-            owner `should equal to` "admin"
-            public `should equal to` false
-            songCount `should equal to` 16
-            duration `should equal to` 3573
+        with(response.body()!!.playlist) {
+            id `should be equal to` "0"
+            name `should be equal to` "Aug 27, 2017 11:17 AM"
+            owner `should be equal to` "admin"
+            public `should be equal to` false
+            songCount `should be equal to` 16
+            duration `should be equal to` 3573
             created `should equal` parseDate("2017-08-27T11:17:26.216Z")
             changed `should equal` parseDate("2017-08-27T11:17:26.218Z")
-            coverArt `should equal to` "pl-0"
-            entriesList.size `should equal to` 2
+            coverArt `should be equal to` "pl-0"
+            entriesList.size `should be equal to` 2
             entriesList[1] `should equal` MusicDirectoryChild(id = "4215", parent = "4186",
                     isDir = false, title = "Going to Hell", album = "Going to Hell",
                     artist = "The Pretty Reckless", track = 2, year = 2014,

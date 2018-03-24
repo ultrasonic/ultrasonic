@@ -2,8 +2,8 @@ package org.moire.ultrasonic.api.subsonic.interceptors
 
 import okhttp3.Interceptor
 import okhttp3.mockwebserver.MockResponse
+import org.amshove.kluent.`should be equal to`
 import org.amshove.kluent.`should contain`
-import org.amshove.kluent.`should equal to`
 import org.amshove.kluent.`should not contain`
 import org.junit.Test
 
@@ -27,7 +27,7 @@ class RangeHeaderInterceptorTest : BaseInterceptorTest() {
 
         val executedRequest = mockWebServerRule.mockWebServer.takeRequest()
         executedRequest.headers.names() `should contain` "Range"
-        executedRequest.headers["Range"]!! `should equal to` "bytes=$offset-"
+        executedRequest.headers["Range"]!! `should be equal to` "bytes=$offset-"
     }
 
     @Test
@@ -54,6 +54,6 @@ class RangeHeaderInterceptorTest : BaseInterceptorTest() {
 
         val executedRequest = mockWebServerRule.mockWebServer.takeRequest()
         executedRequest.headers.names() `should contain` "Range"
-        executedRequest.headers["Range"]!! `should equal to` "bytes=$offset-"
+        executedRequest.headers["Range"]!! `should be equal to` "bytes=$offset-"
     }
 }

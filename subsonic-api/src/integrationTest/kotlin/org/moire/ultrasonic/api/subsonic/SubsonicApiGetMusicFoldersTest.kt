@@ -15,7 +15,7 @@ class SubsonicApiGetMusicFoldersTest : SubsonicAPIClientTest() {
         val response = client.api.getMusicFolders().execute()
 
         assertResponseSuccessful(response)
-        with(response.body()) {
+        with(response.body()!!) {
             assertBaseResponseOk()
             musicFolders `should equal` listOf(
                     MusicFolder("0", "Music"),

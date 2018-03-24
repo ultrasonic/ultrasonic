@@ -1,6 +1,6 @@
 package org.moire.ultrasonic.api.subsonic
 
-import org.amshove.kluent.`should equal to`
+import org.amshove.kluent.`should be equal to`
 import org.amshove.kluent.`should equal`
 import org.amshove.kluent.`should not be`
 import org.junit.Test
@@ -38,18 +38,18 @@ class SubsonicApiGetAlbumTest : SubsonicAPIClientTest() {
         val response = client.api.getAlbum("512").execute()
 
         assertResponseSuccessful(response)
-        with(response.body().album) {
-            id `should equal to` "618"
-            name `should equal to` "Black Ice"
-            artist `should equal to` "AC/DC"
-            artistId `should equal to` "362"
-            coverArt `should equal to` "al-618"
-            songCount `should equal to` 15
-            duration `should equal to` 3331
+        with(response.body()!!.album) {
+            id `should be equal to` "618"
+            name `should be equal to` "Black Ice"
+            artist `should be equal to` "AC/DC"
+            artistId `should be equal to` "362"
+            coverArt `should be equal to` "al-618"
+            songCount `should be equal to` 15
+            duration `should be equal to` 3331
             created `should equal` parseDate("2016-10-23T15:31:22.000Z")
-            year `should equal to` 2008
-            genre `should equal to` "Hard Rock"
-            songList.size `should equal to` 15
+            year `should be equal to` 2008
+            genre `should be equal to` "Hard Rock"
+            songList.size `should be equal to` 15
             songList[0] `should equal` MusicDirectoryChild(id = "6491", parent = "6475",
                     isDir = false, title = "Rock 'n' Roll Train", album = "Black Ice",
                     artist = "AC/DC", track = 1, year = 2008, genre = "Hard Rock",

@@ -2,7 +2,7 @@
 
 package org.moire.ultrasonic.domain
 
-import org.amshove.kluent.`should equal to`
+import org.amshove.kluent.`should be equal to`
 import org.amshove.kluent.`should equal`
 import org.junit.Test
 import org.moire.ultrasonic.api.subsonic.models.JukeboxStatus
@@ -20,7 +20,7 @@ class APIJukeboxConverterTest {
         with(convertedEntity) {
             currentPlayingIndex `should equal` entity.currentIndex
             gain `should equal` entity.gain
-            isPlaying `should equal to` entity.playing
+            isPlaying `should be equal to` entity.playing
             positionSeconds `should equal` entity.position
         }
     }

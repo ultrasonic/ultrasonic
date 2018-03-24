@@ -1,7 +1,7 @@
 package org.moire.ultrasonic.cache
 
+import org.amshove.kluent.`should be equal to`
 import org.amshove.kluent.`should contain`
-import org.amshove.kluent.`should equal to`
 import org.amshove.kluent.`should equal`
 import org.junit.Test
 import org.moire.ultrasonic.cache.serializers.getMusicFolderSerializer
@@ -20,8 +20,8 @@ class PermanentFileStorageTest : BaseStorageTest() {
         val item = MusicFolder("1", "2")
         storage.store("test", item, getMusicFolderSerializer())
 
-        storageDir.exists() `should equal to` true
-        getServerStorageDir().exists() `should equal to` true
+        storageDir.exists() `should be equal to` true
+        getServerStorageDir().exists() `should be equal to` true
     }
 
     @Test
@@ -32,7 +32,7 @@ class PermanentFileStorageTest : BaseStorageTest() {
         storage.store(name, item, getMusicFolderSerializer())
 
         val storageFiles = getServerStorageDir().listFiles()
-        storageFiles.size `should equal to` 1
+        storageFiles.size `should be equal to` 1
         storageFiles[0].name `should contain` name
     }
 
@@ -67,7 +67,7 @@ class PermanentFileStorageTest : BaseStorageTest() {
 
         storage.clearAll()
 
-        getServerStorageDir().listFiles().size `should equal to` 0
+        getServerStorageDir().listFiles().size `should be equal to` 0
     }
 
     @Test

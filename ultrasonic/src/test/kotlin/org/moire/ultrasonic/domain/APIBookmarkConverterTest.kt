@@ -2,7 +2,7 @@
 
 package org.moire.ultrasonic.domain
 
-import org.amshove.kluent.`should equal to`
+import org.amshove.kluent.`should be equal to`
 import org.amshove.kluent.`should equal`
 import org.junit.Test
 import org.moire.ultrasonic.api.subsonic.models.Bookmark
@@ -21,7 +21,7 @@ class APIBookmarkConverterTest {
         val domainEntity = entity.toDomainEntity()
 
         with(domainEntity) {
-            position `should equal to` entity.position.toInt()
+            position `should be equal to` entity.position.toInt()
             username `should equal` entity.username
             comment `should equal` entity.comment
             created `should equal` entity.created?.time
@@ -36,7 +36,7 @@ class APIBookmarkConverterTest {
 
         val domainEntitiesList = entitiesList.toDomainEntitiesList()
 
-        domainEntitiesList.size `should equal to` entitiesList.size
+        domainEntitiesList.size `should be equal to` entitiesList.size
         domainEntitiesList.forEachIndexed({ index, bookmark ->
             bookmark `should equal` entitiesList[index].toDomainEntity()
         })

@@ -2,7 +2,7 @@
 
 package org.moire.ultrasonic.domain
 
-import org.amshove.kluent.`should equal to`
+import org.amshove.kluent.`should be equal to`
 import org.amshove.kluent.`should equal`
 import org.junit.Test
 import org.moire.ultrasonic.api.subsonic.models.Artist
@@ -30,9 +30,9 @@ class APIIndexesConverterTest {
 
         val expectedArtists = (artistsA + artistsT).map { it.toDomainEntity() }.toMutableList()
         with(convertedEntity) {
-            lastModified `should equal to` entity.lastModified
-            ignoredArticles `should equal to` entity.ignoredArticles
-            artists.size `should equal to` expectedArtists.size
+            lastModified `should be equal to` entity.lastModified
+            ignoredArticles `should be equal to` entity.ignoredArticles
+            artists.size `should be equal to` expectedArtists.size
             artists `should equal` expectedArtists
             shortcuts `should equal` artistsA.map { it.toDomainEntity() }.toMutableList()
         }

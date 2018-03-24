@@ -2,7 +2,7 @@
 
 package org.moire.ultrasonic.domain
 
-import org.amshove.kluent.`should equal to`
+import org.amshove.kluent.`should be equal to`
 import org.amshove.kluent.`should equal`
 import org.junit.Test
 import org.moire.ultrasonic.api.subsonic.models.MusicDirectoryChild
@@ -47,7 +47,7 @@ class APIShareConverterTest {
 
         val domainEntityList = entityList.toDomainEntitiesList()
 
-        domainEntityList.size `should equal to` entityList.size
+        domainEntityList.size `should be equal to` entityList.size
         domainEntityList[0] `should equal` entityList[0].toDomainEntity()
         domainEntityList[1] `should equal` entityList[1].toDomainEntity()
     }

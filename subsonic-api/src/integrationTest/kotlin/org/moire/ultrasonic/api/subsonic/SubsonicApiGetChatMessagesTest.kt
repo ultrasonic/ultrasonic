@@ -1,6 +1,6 @@
 package org.moire.ultrasonic.api.subsonic
 
-import org.amshove.kluent.`should equal to`
+import org.amshove.kluent.`should be equal to`
 import org.amshove.kluent.`should equal`
 import org.junit.Test
 import org.moire.ultrasonic.api.subsonic.models.ChatMessage
@@ -25,8 +25,8 @@ class SubsonicApiGetChatMessagesTest : SubsonicAPIClientTest() {
         val response = client.api.getChatMessages().execute()
 
         assertResponseSuccessful(response)
-        with(response.body().chatMessages) {
-            size `should equal to` 2
+        with(response.body()!!.chatMessages) {
+            size `should be equal to` 2
             this[0] `should equal` ChatMessage(username = "sindre", time = 1269771845310,
                     message = "Sindre was here")
             this[1] `should equal` ChatMessage(username = "ben", time = 1269771842504,
