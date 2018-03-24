@@ -25,7 +25,7 @@ ext.versions = [
         twitterSerial        : "0.1.6",
 
         junit                : "4.12",
-        mockito              : "2.12.0",
+        mockito              : "2.16.0",
         mockitoKotlin        : "1.5.0",
         kluent               : "1.26",
         apacheCodecs         : "1.10",
