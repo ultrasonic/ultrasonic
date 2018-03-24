@@ -1,6 +1,6 @@
 package org.moire.ultrasonic.api.subsonic
 
-import org.amshove.kluent.`should equal to`
+import org.amshove.kluent.`should be equal to`
 import org.junit.Test
 
 /**
@@ -22,9 +22,9 @@ class SubsonicApiGetLyricsTest : SubsonicAPIClientTest() {
 
         assertResponseSuccessful(response)
         with(response.body()!!.lyrics) {
-            artist `should equal to` "Amorphis"
-            title `should equal to` "Alone"
-            text `should equal to` "Tear dimmed rememberance\nIn a womb of time\nBreath upon " +
+            artist `should be equal to` "Amorphis"
+            title `should be equal to` "Alone"
+            text `should be equal to` "Tear dimmed rememberance\nIn a womb of time\nBreath upon " +
                     "me\nPossessed by the"
         }
     }

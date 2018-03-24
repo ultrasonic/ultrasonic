@@ -1,6 +1,6 @@
 package org.moire.ultrasonic.api.subsonic
 
-import org.amshove.kluent.`should equal to`
+import org.amshove.kluent.`should be equal to`
 import org.amshove.kluent.`should equal`
 import org.junit.Test
 import org.moire.ultrasonic.api.subsonic.models.MusicDirectoryChild
@@ -25,11 +25,11 @@ class SubsonicApiGetBookmarksTest : SubsonicAPIClientTest() {
         val response = client.api.getBookmarks().execute()
 
         assertResponseSuccessful(response)
-        response.body()!!.bookmarkList.size `should equal to` 1
+        response.body()!!.bookmarkList.size `should be equal to` 1
         with(response.body()!!.bookmarkList[0]) {
-            position `should equal to` 107914
-            username `should equal to` "CaptainEurope"
-            comment `should equal to` "Look at this"
+            position `should be equal to` 107914
+            username `should be equal to` "CaptainEurope"
+            comment `should be equal to` "Look at this"
             created `should equal` parseDate("2017-11-18T15:22:22.144Z")
             changed `should equal` parseDate("2017-11-18T15:22:22.144Z")
             entry `should equal` MusicDirectoryChild(id = "10349", parent = "10342",

@@ -1,7 +1,7 @@
 package org.moire.ultrasonic.api.subsonic
 
 import okhttp3.mockwebserver.MockResponse
-import org.amshove.kluent.`should equal to`
+import org.amshove.kluent.`should be equal to`
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
@@ -34,7 +34,7 @@ class GetStreamUrlTest {
 
         val streamUrl = client.getStreamUrl(id)
 
-        streamUrl `should equal to` expectedUrl
+        streamUrl `should be equal to` expectedUrl
     }
 
     @Test
@@ -43,6 +43,6 @@ class GetStreamUrlTest {
 
         val streamUrl = client.getStreamUrl(id)
 
-        streamUrl `should equal to` expectedUrl
+        streamUrl `should be equal to` expectedUrl
     }
 }

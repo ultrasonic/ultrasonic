@@ -1,6 +1,6 @@
 package org.moire.ultrasonic.api.subsonic
 
-import org.amshove.kluent.`should equal to`
+import org.amshove.kluent.`should be equal to`
 import org.amshove.kluent.`should equal`
 import org.junit.Test
 import org.moire.ultrasonic.api.subsonic.models.Artist
@@ -29,7 +29,7 @@ class SubsonicApiGetStarred2Test : SubsonicAPIClientTest() {
         assertResponseSuccessful(response)
         with(response.body()!!.starred2) {
             albumList `should equal` emptyList()
-            artistList.size `should equal to` 1
+            artistList.size `should be equal to` 1
             artistList[0] `should equal` Artist(id = "364", name = "Parov Stelar",
                     starred = parseDate("2017-08-12T18:32:58.768Z"))
             songList `should equal` emptyList()

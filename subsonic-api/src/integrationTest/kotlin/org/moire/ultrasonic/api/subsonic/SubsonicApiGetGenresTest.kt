@@ -1,6 +1,6 @@
 package org.moire.ultrasonic.api.subsonic
 
-import org.amshove.kluent.`should equal to`
+import org.amshove.kluent.`should be equal to`
 import org.amshove.kluent.`should equal`
 import org.junit.Test
 import org.moire.ultrasonic.api.subsonic.models.Genre
@@ -26,7 +26,7 @@ class SubsonicApiGetGenresTest : SubsonicAPIClientTest() {
 
         assertResponseSuccessful(response)
         with(response.body()!!.genresList) {
-            size `should equal to` 5
+            size `should be equal to` 5
             this[0] `should equal` Genre(1186, 103, "Rock")
             this[1] `should equal` Genre(896, 72, "Electronic")
             this[2] `should equal` Genre(790, 59, "Alternative Rock")

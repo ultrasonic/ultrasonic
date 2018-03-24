@@ -1,6 +1,6 @@
 package org.moire.ultrasonic.api.subsonic
 
-import org.amshove.kluent.`should equal to`
+import org.amshove.kluent.`should be equal to`
 import org.amshove.kluent.`should equal`
 import org.junit.Test
 import org.moire.ultrasonic.api.subsonic.models.MusicDirectoryChild
@@ -26,7 +26,7 @@ class SubsonicApiGetVideosListTest : SubsonicAPIClientTest() {
 
         assertResponseSuccessful(response)
         with(response.body()!!.videosList) {
-            size `should equal to` 1
+            size `should be equal to` 1
             this[0] `should equal` MusicDirectoryChild(id = "10402", parent = "10401",
                     isDir = false, title = "MVI_0512", album = "Incoming", size = 21889646,
                     contentType = "video/avi", suffix = "avi",

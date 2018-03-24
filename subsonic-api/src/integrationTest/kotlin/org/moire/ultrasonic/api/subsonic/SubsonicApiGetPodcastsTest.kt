@@ -1,6 +1,6 @@
 package org.moire.ultrasonic.api.subsonic
 
-import org.amshove.kluent.`should equal to`
+import org.amshove.kluent.`should be equal to`
 import org.amshove.kluent.`should equal`
 import org.amshove.kluent.`should not be`
 import org.junit.Test
@@ -28,19 +28,19 @@ class SubsonicApiGetPodcastsTest : SubsonicAPIClientTest() {
 
         assertResponseSuccessful(response)
         val podcastChannelsList = response.body()!!.podcastChannels
-        podcastChannelsList.size `should equal to` 1
+        podcastChannelsList.size `should be equal to` 1
         with(podcastChannelsList[0]) {
-            id `should equal to` "2"
-            url `should equal to` "http://feeds.codenewbie.org/cnpodcast.xml"
-            title `should equal to` "CodeNewbie"
-            description `should equal to` "Stories and interviews from people on their coding " +
+            id `should be equal to` "2"
+            url `should be equal to` "http://feeds.codenewbie.org/cnpodcast.xml"
+            title `should be equal to` "CodeNewbie"
+            description `should be equal to` "Stories and interviews from people on their coding " +
                     "journey."
-            coverArt `should equal to` "pod-2"
-            originalImageUrl `should equal to` "http://codenewbie.blubrry.com/wp-content/uploads/" +
-                    "powerpress/220808.jpg"
-            status `should equal to` "completed"
-            errorMessage `should equal to` ""
-            episodeList.size `should equal to` 10
+            coverArt `should be equal to` "pod-2"
+            originalImageUrl `should be equal to` "http://codenewbie.blubrry.com/wp-content/" +
+                    "uploads/powerpress/220808.jpg"
+            status `should be equal to` "completed"
+            errorMessage `should be equal to` ""
+            episodeList.size `should be equal to` 10
             episodeList[0] `should equal` MusicDirectoryChild(id = "148", parent = "9959",
                     isDir = false,
                     title = "S1:EP3 – How to teach yourself computer science (Vaidehi Joshi)",

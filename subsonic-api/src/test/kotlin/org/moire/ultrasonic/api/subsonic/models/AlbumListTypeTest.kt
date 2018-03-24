@@ -1,6 +1,6 @@
 package org.moire.ultrasonic.api.subsonic.models
 
-import org.amshove.kluent.`should equal to`
+import org.amshove.kluent.`should be equal to`
 import org.amshove.kluent.`should equal`
 import org.amshove.kluent.`should throw`
 import org.junit.Test
@@ -36,6 +36,6 @@ class AlbumListTypeTest {
 
     @Test
     fun `Should return type name for toString call`() {
-        AlbumListType.STARRED.typeName `should equal to` AlbumListType.STARRED.toString()
+        AlbumListType.STARRED.typeName `should be equal to` AlbumListType.STARRED.toString()
     }
 }

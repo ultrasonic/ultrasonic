@@ -1,6 +1,6 @@
 package org.moire.ultrasonic.api.subsonic
 
-import org.amshove.kluent.`should equal to`
+import org.amshove.kluent.`should be equal to`
 import org.amshove.kluent.`should equal`
 import org.junit.Test
 import org.moire.ultrasonic.api.subsonic.models.MusicDirectoryChild
@@ -25,7 +25,7 @@ class SubsonicApiGetSongsByGenreTest : SubsonicAPIClientTest() {
         val response = client.api.getSongsByGenre("Trance").execute()
 
         assertResponseSuccessful(response)
-        response.body()!!.songsList.size `should equal to` 2
+        response.body()!!.songsList.size `should be equal to` 2
         with(response.body()!!.songsList) {
             this[0] `should equal` MusicDirectoryChild(id = "575", parent = "576", isDir = false,
                     title = "Time Machine (Vadim Zhukov Remix)", album = "668",

@@ -1,8 +1,8 @@
 package org.moire.ultrasonic.api.subsonic
 
 import okhttp3.mockwebserver.MockResponse
+import org.amshove.kluent.`should be equal to`
 import org.amshove.kluent.`should be`
-import org.amshove.kluent.`should equal to`
 import org.amshove.kluent.`should equal`
 import org.amshove.kluent.`should not be`
 import org.junit.Test
@@ -19,7 +19,7 @@ class SubsonicApiGetAvatarTest : SubsonicAPIClientTest() {
 
         with(response) {
             stream `should be` null
-            responseHttpCode `should equal to` 200
+            responseHttpCode `should be equal to` 200
             apiError `should equal` SubsonicError.RequestedDataWasNotFound
         }
     }
@@ -33,7 +33,7 @@ class SubsonicApiGetAvatarTest : SubsonicAPIClientTest() {
 
         with(response) {
             stream `should equal` null
-            responseHttpCode `should equal to` httpErrorCode
+            responseHttpCode `should be equal to` httpErrorCode
             apiError `should be` null
         }
     }
@@ -46,11 +46,11 @@ class SubsonicApiGetAvatarTest : SubsonicAPIClientTest() {
         val response = client.stream("some")
 
         with(response) {
-            responseHttpCode `should equal to` 200
+            responseHttpCode `should be equal to` 200
             apiError `should be` null
             stream `should not be` null
             val expectedContent = mockWebServerRule.loadJsonResponse("ping_ok.json")
-            stream!!.bufferedReader().readText() `should equal to` expectedContent
+            stream!!.bufferedReader().readText() `should be equal to` expectedContent
         }
     }
 

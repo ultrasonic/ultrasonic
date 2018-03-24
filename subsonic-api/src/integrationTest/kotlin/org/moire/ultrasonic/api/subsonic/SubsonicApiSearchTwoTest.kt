@@ -1,6 +1,6 @@
 package org.moire.ultrasonic.api.subsonic
 
-import org.amshove.kluent.`should equal to`
+import org.amshove.kluent.`should be equal to`
 import org.amshove.kluent.`should equal`
 import org.amshove.kluent.`should not be`
 import org.junit.Test
@@ -30,15 +30,15 @@ class SubsonicApiSearchTwoTest : SubsonicAPIClientTest() {
 
         assertResponseSuccessful(response)
         with(response.body()!!.searchResult) {
-            artistList.size `should equal to` 1
+            artistList.size `should be equal to` 1
             artistList[0] `should equal` Artist(id = "522", name = "The Prodigy")
-            albumList.size `should equal to` 1
+            albumList.size `should be equal to` 1
             albumList[0] `should equal` MusicDirectoryChild(id = "8867", parent = "522",
                     isDir = true, title = "Always Outnumbered, Never Outgunned",
                     album = "Always Outnumbered, Never Outgunned", artist = "The Prodigy",
                     year = 2004, genre = "Electronic", coverArt = "8867", playCount = 0,
                     created = parseDate("2016-10-23T20:57:27.000Z"))
-            songList.size `should equal to` 1
+            songList.size `should be equal to` 1
             songList[0] `should equal` MusicDirectoryChild(id = "5831", parent = "5766",
                     isDir = false,
                     title = "You'll Be Under My Wheels", album = "Need for Speed Most Wanted",

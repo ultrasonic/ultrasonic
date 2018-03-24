@@ -27,7 +27,7 @@ ext.versions = [
         junit                : "4.12",
         mockito              : "2.16.0",
         mockitoKotlin        : "1.5.0",
-        kluent               : "1.26",
+        kluent               : "1.35",
         apacheCodecs         : "1.10",
 ]
 
