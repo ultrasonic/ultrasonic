@@ -15,9 +15,9 @@ private const val SERIALIZER_VERSION = 1
 
 private val artistSerializer get() = object : ObjectSerializer<Artist>(SERIALIZER_VERSION) {
     override fun serializeObject(
-            context: SerializationContext,
-            output: SerializerOutput<out SerializerOutput<*>>,
-            item: Artist
+        context: SerializationContext,
+        output: SerializerOutput<out SerializerOutput<*>>,
+        item: Artist
     ) {
         output.writeString(item.id)
                 .writeString(item.name)
@@ -31,9 +31,9 @@ private val artistSerializer get() = object : ObjectSerializer<Artist>(SERIALIZE
     }
 
     override fun deserializeObject(
-            context: SerializationContext,
-            input: SerializerInput,
-            versionNumber: Int
+        context: SerializationContext,
+        input: SerializerInput,
+        versionNumber: Int
     ): Artist? {
         if (versionNumber != SERIALIZER_VERSION) return null
 

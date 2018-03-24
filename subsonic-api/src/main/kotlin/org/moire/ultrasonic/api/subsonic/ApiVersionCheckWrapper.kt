@@ -43,8 +43,9 @@ import retrofit2.Call
  * for this call.
  */
 internal class ApiVersionCheckWrapper(
-        val api: SubsonicAPIDefinition,
-        var currentApiVersion: SubsonicAPIVersions) : SubsonicAPIDefinition by api {
+    val api: SubsonicAPIDefinition,
+    var currentApiVersion: SubsonicAPIVersions
+) : SubsonicAPIDefinition by api {
     override fun getArtists(musicFolderId: String?): Call<GetArtistsResponse> {
         checkVersion(V1_8_0)
         return api.getArtists(musicFolderId)
@@ -70,26 +71,30 @@ internal class ApiVersionCheckWrapper(
         return api.getAlbum(id)
     }
 
-    override fun search2(query: String,
-                         artistCount: Int?,
-                         artistOffset: Int?,
-                         albumCount: Int?,
-                         albumOffset: Int?,
-                         songCount: Int?,
-                         musicFolderId: String?): Call<SearchTwoResponse> {
+    override fun search2(
+        query: String,
+        artistCount: Int?,
+        artistOffset: Int?,
+        albumCount: Int?,
+        albumOffset: Int?,
+        songCount: Int?,
+        musicFolderId: String?
+    ): Call<SearchTwoResponse> {
         checkVersion(V1_4_0)
         checkParamVersion(musicFolderId, V1_12_0)
         return api.search2(query, artistCount, artistOffset, albumCount, albumOffset, songCount,
                 musicFolderId)
     }
 
-    override fun search3(query: String,
-                         artistCount: Int?,
-                         artistOffset: Int?,
-                         albumCount: Int?,
-                         albumOffset: Int?,
-                         songCount: Int?,
-                         musicFolderId: String?): Call<SearchThreeResponse> {
+    override fun search3(
+        query: String,
+        artistCount: Int?,
+        artistOffset: Int?,
+        albumCount: Int?,
+        albumOffset: Int?,
+        songCount: Int?,
+        musicFolderId: String?
+    ): Call<SearchThreeResponse> {
         checkVersion(V1_8_0)
         checkParamVersion(musicFolderId, V1_12_0)
         return api.search3(query, artistCount, artistOffset, albumCount, albumOffset,
@@ -101,9 +106,11 @@ internal class ApiVersionCheckWrapper(
         return api.getPlaylists(username)
     }
 
-    override fun createPlaylist(id: String?,
-                                name: String?,
-                                songIds: List<String>?): Call<SubsonicResponse> {
+    override fun createPlaylist(
+        id: String?,
+        name: String?,
+        songIds: List<String>?
+    ): Call<SubsonicResponse> {
         checkVersion(V1_2_0)
         return api.createPlaylist(id, name, songIds)
     }
@@ -113,12 +120,14 @@ internal class ApiVersionCheckWrapper(
         return api.deletePlaylist(id)
     }
 
-    override fun updatePlaylist(id: String,
-                                name: String?,
-                                comment: String?,
-                                public: Boolean?,
-                                songIdsToAdd: List<String>?,
-                                songIndexesToRemove: List<Int>?): Call<SubsonicResponse> {
+    override fun updatePlaylist(
+        id: String,
+        name: String?,
+        comment: String?,
+        public: Boolean?,
+        songIdsToAdd: List<String>?,
+        songIndexesToRemove: List<Int>?
+    ): Call<SubsonicResponse> {
         checkVersion(V1_8_0)
         return api.updatePlaylist(id, name, comment, public, songIdsToAdd, songIndexesToRemove)
     }
@@ -141,35 +150,41 @@ internal class ApiVersionCheckWrapper(
         return api.scrobble(id, time, submission)
     }
 
-    override fun getAlbumList(type: AlbumListType,
-                              size: Int?,
-                              offset: Int?,
-                              fromYear: Int?,
-                              toYear: Int?,
-                              genre: String?,
-                              musicFolderId: String?): Call<GetAlbumListResponse> {
+    override fun getAlbumList(
+        type: AlbumListType,
+        size: Int?,
+        offset: Int?,
+        fromYear: Int?,
+        toYear: Int?,
+        genre: String?,
+        musicFolderId: String?
+    ): Call<GetAlbumListResponse> {
         checkVersion(V1_2_0)
         checkParamVersion(musicFolderId, V1_11_0)
         return api.getAlbumList(type, size, offset, fromYear, toYear, genre, musicFolderId)
     }
 
-    override fun getAlbumList2(type: AlbumListType,
-                               size: Int?,
-                               offset: Int?,
-                               fromYear: Int?,
-                               toYear: Int?,
-                               genre: String?,
-                               musicFolderId: String?): Call<GetAlbumList2Response> {
+    override fun getAlbumList2(
+        type: AlbumListType,
+        size: Int?,
+        offset: Int?,
+        fromYear: Int?,
+        toYear: Int?,
+        genre: String?,
+        musicFolderId: String?
+    ): Call<GetAlbumList2Response> {
         checkVersion(V1_8_0)
         checkParamVersion(musicFolderId, V1_12_0)
         return api.getAlbumList2(type, size, offset, fromYear, toYear, genre, musicFolderId)
     }
 
-    override fun getRandomSongs(size: Int?,
-                                genre: String?,
-                                fromYear: Int?,
-                                toYear: Int?,
-                                musicFolderId: String?): Call<GetRandomSongsResponse> {
+    override fun getRandomSongs(
+        size: Int?,
+        genre: String?,
+        fromYear: Int?,
+        toYear: Int?,
+        musicFolderId: String?
+    ): Call<GetRandomSongsResponse> {
         checkVersion(V1_2_0)
         return api.getRandomSongs(size, genre, fromYear, toYear, musicFolderId)
     }
@@ -186,14 +201,16 @@ internal class ApiVersionCheckWrapper(
         return api.getStarred2(musicFolderId)
     }
 
-    override fun stream(id: String,
-                        maxBitRate: Int?,
-                        format: String?,
-                        timeOffset: Int?,
-                        videoSize: String?,
-                        estimateContentLength: Boolean?,
-                        converted: Boolean?,
-                        offset: Long?): Call<ResponseBody> {
+    override fun stream(
+        id: String,
+        maxBitRate: Int?,
+        format: String?,
+        timeOffset: Int?,
+        videoSize: String?,
+        estimateContentLength: Boolean?,
+        converted: Boolean?,
+        offset: Long?
+    ): Call<ResponseBody> {
         checkParamVersion(maxBitRate, V1_2_0)
         checkParamVersion(format, V1_6_0)
         checkParamVersion(videoSize, V1_6_0)
@@ -203,11 +220,13 @@ internal class ApiVersionCheckWrapper(
                 estimateContentLength, converted)
     }
 
-    override fun jukeboxControl(action: JukeboxAction,
-                                index: Int?,
-                                offset: Int?,
-                                ids: List<String>?,
-                                gain: Float?): Call<JukeboxResponse> {
+    override fun jukeboxControl(
+        action: JukeboxAction,
+        index: Int?,
+        offset: Int?,
+        ids: List<String>?,
+        gain: Float?
+    ): Call<JukeboxResponse> {
         checkVersion(V1_2_0)
         checkParamVersion(offset, V1_7_0)
         return api.jukeboxControl(action, index, offset, ids, gain)
@@ -218,9 +237,11 @@ internal class ApiVersionCheckWrapper(
         return api.getShares()
     }
 
-    override fun createShare(idsToShare: List<String>,
-                             description: String?,
-                             expires: Long?): Call<SharesResponse> {
+    override fun createShare(
+        idsToShare: List<String>,
+        description: String?,
+        expires: Long?
+    ): Call<SharesResponse> {
         checkVersion(V1_6_0)
         return api.createShare(idsToShare, description, expires)
     }
@@ -230,9 +251,11 @@ internal class ApiVersionCheckWrapper(
         return api.deleteShare(id)
     }
 
-    override fun updateShare(id: String,
-                             description: String?,
-                             expires: Long?): Call<SubsonicResponse> {
+    override fun updateShare(
+        id: String,
+        description: String?,
+        expires: Long?
+    ): Call<SubsonicResponse> {
         checkVersion(V1_6_0)
         return api.updateShare(id, description, expires)
     }
@@ -242,10 +265,12 @@ internal class ApiVersionCheckWrapper(
         return api.getGenres()
     }
 
-    override fun getSongsByGenre(genre: String,
-                                 count: Int,
-                                 offset: Int,
-                                 musicFolderId: String?): Call<GetSongsByGenreResponse> {
+    override fun getSongsByGenre(
+        genre: String,
+        count: Int,
+        offset: Int,
+        musicFolderId: String?
+    ): Call<GetSongsByGenreResponse> {
         checkVersion(V1_9_0)
         checkParamVersion(musicFolderId, V1_12_0)
         return api.getSongsByGenre(genre, count, offset, musicFolderId)
@@ -271,9 +296,11 @@ internal class ApiVersionCheckWrapper(
         return api.getBookmarks()
     }
 
-    override fun createBookmark(id: String,
-                                position: Long,
-                                comment: String?): Call<SubsonicResponse> {
+    override fun createBookmark(
+        id: String,
+        position: Long,
+        comment: String?
+    ): Call<SubsonicResponse> {
         checkVersion(V1_9_0)
         return api.createBookmark(id, position, comment)
     }

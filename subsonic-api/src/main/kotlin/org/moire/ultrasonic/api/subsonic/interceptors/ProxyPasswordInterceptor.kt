@@ -12,10 +12,10 @@ import org.moire.ultrasonic.api.subsonic.SubsonicAPIVersions
  * ldap users.
  */
 internal class ProxyPasswordInterceptor(
-        initialAPIVersions: SubsonicAPIVersions,
-        private val hexInterceptor: PasswordHexInterceptor,
-        private val mD5Interceptor: PasswordMD5Interceptor,
-        private val forceHexPassword: Boolean = false
+    initialAPIVersions: SubsonicAPIVersions,
+    private val hexInterceptor: PasswordHexInterceptor,
+    private val mD5Interceptor: PasswordMD5Interceptor,
+    private val forceHexPassword: Boolean = false
 ) : Interceptor {
     var apiVersion: SubsonicAPIVersions = initialAPIVersions
 

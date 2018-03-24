@@ -7,5 +7,5 @@ import java.io.IOException
  * by current server api version.
  */
 class ApiNotSupportedException(
-        serverApiVersion: SubsonicAPIVersions)
-    : IOException("Server api $serverApiVersion does not support this call")
+    serverApiVersion: SubsonicAPIVersions
+) : IOException("Server api $serverApiVersion does not support this call")

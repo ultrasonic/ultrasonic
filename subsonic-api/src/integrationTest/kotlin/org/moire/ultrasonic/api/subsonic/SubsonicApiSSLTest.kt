@@ -37,9 +37,11 @@ class SubsonicApiSSLTest {
         mockWebServer.shutdown()
     }
 
-    private fun createSSLContext(certificatePemStream: InputStream,
-                                 certificatePkcs12Stream: InputStream,
-                                 password: String): SSLContext {
+    private fun createSSLContext(
+        certificatePemStream: InputStream,
+        certificatePkcs12Stream: InputStream,
+        password: String
+    ): SSLContext {
         var cert: X509Certificate? = null
         val trustStore = KeyStore.getInstance(KeyStore.getDefaultType())
         trustStore.load(null)
