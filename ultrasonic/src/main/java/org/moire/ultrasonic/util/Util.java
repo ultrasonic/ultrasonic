@@ -398,10 +398,9 @@ public class Util extends DownloadActivity
 		return builder.toString();
 	}
 
-	public static SharedPreferences getPreferences(Context context)
-	{
-		return context.getSharedPreferences(Constants.PREFERENCES_FILE_NAME, 0);
-	}
+    public static SharedPreferences getPreferences(Context context) {
+        return PreferenceManager.getDefaultSharedPreferences(context);
+    }
 
 	public static int getRemainingTrialDays(Context context)
 	{
