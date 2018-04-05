@@ -12,7 +12,9 @@ buildscript {
         classpath gradlePlugins.kotlin
         classpath gradlePlugins.ktlintGradle
         classpath gradlePlugins.detekt
-        classpath gradlePlugins.jacocoAndroid
+        classpath(gradlePlugins.jacocoAndroid) {
+            exclude group: 'org.codehaus.groovy', module: 'groovy-all'
+        }
     }
 }
 
