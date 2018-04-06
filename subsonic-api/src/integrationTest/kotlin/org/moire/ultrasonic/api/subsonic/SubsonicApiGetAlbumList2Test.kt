@@ -1,6 +1,6 @@
 package org.moire.ultrasonic.api.subsonic
 
-import org.amshove.kluent.`should equal to`
+import org.amshove.kluent.`should be equal to`
 import org.amshove.kluent.`should equal`
 import org.junit.Test
 import org.moire.ultrasonic.api.subsonic.models.Album
@@ -28,8 +28,8 @@ class SubsonicApiGetAlbumList2Test : SubsonicAPIClientTest() {
         val response = client.api.getAlbumList2(STARRED).execute()
 
         assertResponseSuccessful(response)
-        with(response.body().albumList) {
-            this.size `should equal to` 2
+        with(response.body()!!.albumList) {
+            this.size `should be equal to` 2
             this[0] `should equal` Album(id = "962", name = "Fury", artist = "Sick Puppies",
                     artistId = "473", coverArt = "al-962", songCount = 13, duration = 2591,
                     created = parseDate("2017-09-02T17:34:51.000Z"), year = 2016,

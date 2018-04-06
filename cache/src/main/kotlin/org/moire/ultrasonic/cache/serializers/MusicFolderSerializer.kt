@@ -15,17 +15,17 @@ private const val SERIALIZATION_VERSION = 1
 private val musicFolderSerializer = object : ObjectSerializer<MusicFolder>(SERIALIZATION_VERSION) {
 
     override fun serializeObject(
-            context: SerializationContext,
-            output: SerializerOutput<out SerializerOutput<*>>,
-            item: MusicFolder
+        context: SerializationContext,
+        output: SerializerOutput<out SerializerOutput<*>>,
+        item: MusicFolder
     ) {
         output.writeString(item.id).writeString(item.name)
     }
 
     override fun deserializeObject(
-            context: SerializationContext,
-            input: SerializerInput,
-            versionNumber: Int
+        context: SerializationContext,
+        input: SerializerInput,
+        versionNumber: Int
     ): MusicFolder? {
         if (versionNumber != SERIALIZATION_VERSION) return null
 

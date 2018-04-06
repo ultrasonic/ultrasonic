@@ -2,7 +2,7 @@
 
 package org.moire.ultrasonic.domain
 
-import org.amshove.kluent.`should equal to`
+import org.amshove.kluent.`should be equal to`
 import org.amshove.kluent.`should equal`
 import org.junit.Test
 import org.moire.ultrasonic.api.subsonic.models.ChatMessage
@@ -31,7 +31,7 @@ class APIChatMessageConverterTest {
         val domainEntitiesList = entitiesList.toDomainEntitiesList()
 
         with(domainEntitiesList) {
-            size `should equal to` entitiesList.size
+            size `should be equal to` entitiesList.size
             forEachIndexed { index, chatMessage ->
                 chatMessage `should equal` entitiesList[index].toDomainEntity()
             }

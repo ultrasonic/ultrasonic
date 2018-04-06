@@ -9,9 +9,11 @@ import java.io.InputStream
  *
  * [responseHttpCode] will be there always.
  */
-class StreamResponse(val stream: InputStream? = null,
-                     val apiError: SubsonicError? = null,
-                     val responseHttpCode: Int) {
+class StreamResponse(
+    val stream: InputStream? = null,
+    val apiError: SubsonicError? = null,
+    val responseHttpCode: Int
+) {
     /**
      * Check if this response has error.
      */

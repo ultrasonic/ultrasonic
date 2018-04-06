@@ -1,7 +1,7 @@
 package org.moire.ultrasonic.api.subsonic
 
+import org.amshove.kluent.`should be equal to`
 import org.amshove.kluent.`should be`
-import org.amshove.kluent.`should equal to`
 import org.amshove.kluent.`should equal`
 import org.amshove.kluent.`should not be`
 import org.junit.Test
@@ -40,15 +40,15 @@ class SubsonicApiGetMusicDirectoryTest : SubsonicAPIClientTest() {
 
         assertResponseSuccessful(response)
 
-        response.body().musicDirectory `should not be` null
-        with(response.body().musicDirectory) {
-            id `should equal to` "4836"
-            parent `should equal to` "300"
+        response.body()!!.musicDirectory `should not be` null
+        with(response.body()!!.musicDirectory) {
+            id `should be equal to` "4836"
+            parent `should be equal to` "300"
             name `should equal` "12 Stones"
-            userRating `should equal to` 5
-            averageRating `should equal to` 5.0f
+            userRating `should be equal to` 5
+            averageRating `should be equal to` 5.0f
             starred `should equal` null
-            playCount `should equal to` 1
+            playCount `should be equal to` 1
             childList.size `should be` 2
             childList[0] `should equal` MusicDirectoryChild(id = "4844", parent = "4836",
                     isDir = false, title = "Crash", album = "12 Stones", artist = "12 Stones",

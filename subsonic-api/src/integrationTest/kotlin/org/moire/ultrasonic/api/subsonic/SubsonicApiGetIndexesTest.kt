@@ -18,8 +18,8 @@ class SubsonicApiGetIndexesTest : SubsonicAPIClientTest() {
         val response = client.api.getIndexes(null, null).execute()
 
         assertResponseSuccessful(response)
-        response.body().indexes `should not be` null
-        with(response.body().indexes) {
+        response.body()!!.indexes `should not be` null
+        with(response.body()!!.indexes) {
             lastModified `should equal` 1491069027523
             ignoredArticles `should equal` "The El La Los Las Le Les"
             shortcutList `should equal` listOf(

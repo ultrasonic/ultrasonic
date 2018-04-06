@@ -13,9 +13,11 @@ import org.moire.ultrasonic.api.subsonic.SubsonicError
  * Base Subsonic API response.
  */
 @JsonRootName(value = "subsonic-response")
-open class SubsonicResponse(val status: Status,
-                            val version: SubsonicAPIVersions,
-                            val error: SubsonicError?) {
+open class SubsonicResponse(
+    val status: Status,
+    val version: SubsonicAPIVersions,
+    val error: SubsonicError?
+) {
     @JsonDeserialize(using = Status.Companion.StatusJsonDeserializer::class)
     enum class Status(val jsonValue: String) {
         OK("ok"), ERROR("failed");

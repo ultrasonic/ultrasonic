@@ -19,9 +19,9 @@ internal const val STORAGE_DIR_NAME = "persistent_storage"
  * Look at [org.moire.ultrasonic.cache.serializers] package for available [DomainEntitySerializer]s.
  */
 class PermanentFileStorage(
-        private val directories: Directories,
-        private val serverId: String,
-        private val debug: Boolean = false
+    private val directories: Directories,
+    private val serverId: String,
+    private val debug: Boolean = false
 ) {
     private val serializationContext = object : SerializationContext {
         override fun isDebug(): Boolean = debug
@@ -34,9 +34,9 @@ class PermanentFileStorage(
      * Stores given [objectToStore] using [name] as a key and [objectSerializer] as serializer.
      */
     fun <T> store(
-            name: String,
-            objectToStore: T,
-            objectSerializer: DomainEntitySerializer<T>
+        name: String,
+        objectToStore: T,
+        objectSerializer: DomainEntitySerializer<T>
     ) {
         val storeFile = getFile(name)
         if (!storeFile.exists()) storeFile.createNewFile()
@@ -47,8 +47,8 @@ class PermanentFileStorage(
      * Loads object with [name] key using [objectDeserializer] deserializer.
      */
     fun <T> load(
-            name: String,
-            objectDeserializer: DomainEntitySerializer<T>
+        name: String,
+        objectDeserializer: DomainEntitySerializer<T>
     ): T? {
         val storeFile = getFile(name)
         if (!storeFile.exists()) return null

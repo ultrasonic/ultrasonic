@@ -6,13 +6,15 @@ import org.moire.ultrasonic.api.subsonic.SubsonicError
 import org.moire.ultrasonic.api.subsonic.models.MusicDirectoryChild
 
 class VideosResponse(
-        status: Status,
-        version: SubsonicAPIVersions,
-        error: SubsonicError?) : SubsonicResponse(status, version, error) {
+    status: Status,
+    version: SubsonicAPIVersions,
+    error: SubsonicError?
+) : SubsonicResponse(status, version, error) {
     @JsonProperty("videos") private val videosWrapper = VideosWrapper()
 
     val videosList: List<MusicDirectoryChild> get() = videosWrapper.videosList
 }
 
 internal class VideosWrapper(
-        @JsonProperty("video") val videosList: List<MusicDirectoryChild> = emptyList())
+    @JsonProperty("video") val videosList: List<MusicDirectoryChild> = emptyList()
+)

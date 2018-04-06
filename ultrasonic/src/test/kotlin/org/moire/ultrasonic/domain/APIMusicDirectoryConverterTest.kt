@@ -2,7 +2,7 @@
 
 package org.moire.ultrasonic.domain
 
-import org.amshove.kluent.`should equal to`
+import org.amshove.kluent.`should be equal to`
 import org.amshove.kluent.`should equal`
 import org.junit.Test
 import org.moire.ultrasonic.api.subsonic.models.MusicDirectory
@@ -23,7 +23,7 @@ class APIMusicDirectoryConverterTest {
 
         with(convertedEntity) {
             name `should equal` entity.name
-            getAllChild().size `should equal to` entity.childList.size
+            getAllChild().size `should be equal to` entity.childList.size
             getAllChild() `should equal` entity.childList
                     .map { it.toDomainEntity() }.toMutableList()
         }
@@ -46,7 +46,7 @@ class APIMusicDirectoryConverterTest {
         with(convertedEntity) {
             id `should equal` entity.id
             parent `should equal` entity.parent
-            isDirectory `should equal to` entity.isDir
+            isDirectory `should be equal to` entity.isDir
             title `should equal` entity.title
             album `should equal` entity.album
             albumId `should equal` entity.albumId
@@ -64,9 +64,9 @@ class APIMusicDirectoryConverterTest {
             duration `should equal` entity.duration
             bitRate `should equal` entity.bitRate
             path `should equal` entity.path
-            isVideo `should equal to` entity.isVideo
+            isVideo `should be equal to` entity.isVideo
             created `should equal` entity.created?.time
-            starred `should equal to` (entity.starred != null)
+            starred `should be equal to` (entity.starred != null)
             discNumber `should equal` entity.discNumber
             type `should equal` entity.type
         }
@@ -91,7 +91,7 @@ class APIMusicDirectoryConverterTest {
 
         val domainList = entitiesList.toDomainEntityList()
 
-        domainList.size `should equal to` entitiesList.size
+        domainList.size `should be equal to` entitiesList.size
         domainList.forEachIndexed { index, entry ->
             entry `should equal` entitiesList[index].toDomainEntity()
         }

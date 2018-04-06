@@ -14,9 +14,9 @@ private const val SERIALIZATION_VERSION = 1
 
 private val indexesSerializer get() = object : ObjectSerializer<Indexes>(SERIALIZATION_VERSION) {
     override fun serializeObject(
-            context: SerializationContext,
-            output: SerializerOutput<out SerializerOutput<*>>,
-            item: Indexes
+        context: SerializationContext,
+        output: SerializerOutput<out SerializerOutput<*>>,
+        item: Indexes
     ) {
         val artistListSerializer = getArtistListSerializer()
         output.writeLong(item.lastModified)
@@ -26,9 +26,9 @@ private val indexesSerializer get() = object : ObjectSerializer<Indexes>(SERIALI
     }
 
     override fun deserializeObject(
-            context: SerializationContext,
-            input: SerializerInput,
-            versionNumber: Int
+        context: SerializationContext,
+        input: SerializerInput,
+        versionNumber: Int
     ): Indexes? {
         if (versionNumber != SERIALIZATION_VERSION) return null
 

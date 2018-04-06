@@ -20,8 +20,9 @@ private const val DEFAULT_PEEK_BYTE_COUNT = 1000L
  * @author Yahor Berdnikau
  */
 internal class VersionInterceptor(
-        internal var protocolVersion: SubsonicAPIVersions,
-        private val notifier: (SubsonicAPIVersions) -> Unit = {}) : Interceptor {
+    internal var protocolVersion: SubsonicAPIVersions,
+    private val notifier: (SubsonicAPIVersions) -> Unit = {}
+) : Interceptor {
     private val jsonFactory = JsonFactory()
 
     override fun intercept(chain: Chain): okhttp3.Response {

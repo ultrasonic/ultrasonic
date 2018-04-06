@@ -6,9 +6,10 @@ import org.moire.ultrasonic.api.subsonic.SubsonicError
 import org.moire.ultrasonic.api.subsonic.models.PodcastChannel
 
 class GetPodcastsResponse(
-        status: Status,
-        version: SubsonicAPIVersions,
-        error: SubsonicError?) : SubsonicResponse(status, version, error) {
+    status: Status,
+    version: SubsonicAPIVersions,
+    error: SubsonicError?
+) : SubsonicResponse(status, version, error) {
     @JsonProperty("podcasts") private val channelsWrapper = PodcastChannelWrapper()
 
     val podcastChannels: List<PodcastChannel>
@@ -16,4 +17,5 @@ class GetPodcastsResponse(
 }
 
 private class PodcastChannelWrapper(
-        @JsonProperty("channel") val channelsList: List<PodcastChannel> = emptyList())
+    @JsonProperty("channel") val channelsList: List<PodcastChannel> = emptyList()
+)

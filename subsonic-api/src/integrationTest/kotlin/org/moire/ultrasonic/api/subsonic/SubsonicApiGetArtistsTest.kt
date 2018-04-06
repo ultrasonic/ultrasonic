@@ -1,6 +1,6 @@
 package org.moire.ultrasonic.api.subsonic
 
-import org.amshove.kluent.`should equal to`
+import org.amshove.kluent.`should be equal to`
 import org.amshove.kluent.`should equal`
 import org.amshove.kluent.`should not be`
 import org.junit.Test
@@ -29,11 +29,11 @@ class SubsonicApiGetArtistsTest : SubsonicAPIClientTest() {
         val response = client.api.getArtists(null).execute()
 
         assertResponseSuccessful(response)
-        with(response.body().indexes) {
-            lastModified `should equal to` 0L
-            ignoredArticles `should equal to` "The El La Los Las Le Les"
+        with(response.body()!!.indexes) {
+            lastModified `should be equal to` 0L
+            ignoredArticles `should be equal to` "The El La Los Las Le Les"
             shortcutList `should equal` emptyList()
-            indexList.size `should equal to` 2
+            indexList.size `should be equal to` 2
             indexList `should equal` listOf(
                     Index(name = "A", artists = listOf(
                             Artist(id = "362", name = "AC/DC", coverArt = "ar-362", albumCount = 2),

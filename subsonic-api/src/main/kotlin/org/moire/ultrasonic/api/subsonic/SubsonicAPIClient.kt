@@ -35,14 +35,16 @@ private const val READ_TIMEOUT = 60_000L
  *
  * @author Yahor Berdnikau
  */
-class SubsonicAPIClient(baseUrl: String,
-                        username: String,
-                        password: String,
-                        minimalProtocolVersion: SubsonicAPIVersions,
-                        clientID: String,
-                        allowSelfSignedCertificate: Boolean = false,
-                        enableLdapUserSupport: Boolean = false,
-                        debug: Boolean = false) {
+class SubsonicAPIClient(
+    baseUrl: String,
+    username: String,
+    password: String,
+    minimalProtocolVersion: SubsonicAPIVersions,
+    clientID: String,
+    allowSelfSignedCertificate: Boolean = false,
+    enableLdapUserSupport: Boolean = false,
+    debug: Boolean = false
+) {
     private val versionInterceptor = VersionInterceptor(minimalProtocolVersion) {
         protocolVersion = it
     }
@@ -139,14 +141,14 @@ class SubsonicAPIClient(baseUrl: String,
         val response = apiCall()
         return if (response.isSuccessful) {
             val responseBody = response.body()
-            val contentType = responseBody.contentType()
+            val contentType = responseBody?.contentType()
             if (contentType != null &&
                     contentType.type().equals("application", true) &&
                     contentType.subtype().equals("json", true)) {
                 val error = jacksonMapper.readValue<SubsonicResponse>(responseBody.byteStream())
                 StreamResponse(apiError = error.error, responseHttpCode = response.code())
             } else {
-                StreamResponse(stream = responseBody.byteStream(),
+                StreamResponse(stream = responseBody?.byteStream(),
                         responseHttpCode = response.code())
             }
         } else {
@@ -165,7 +167,7 @@ class SubsonicAPIClient(baseUrl: String,
         val request = api.stream(id).execute()
         val url = request.raw().request().url().toString()
         if (request.isSuccessful) {
-            request.body().close()
+            request.body()?.close()
         }
         return url
     }

@@ -2,7 +2,7 @@
 
 package org.moire.ultrasonic.domain
 
-import org.amshove.kluent.`should equal to`
+import org.amshove.kluent.`should be equal to`
 import org.amshove.kluent.`should equal`
 import org.junit.Test
 import org.moire.ultrasonic.api.subsonic.models.Genre
@@ -31,7 +31,7 @@ class ApiGenreConverterTest {
 
         val domainEntitiesList = entitiesList.toDomainEntityList()
 
-        domainEntitiesList.size `should equal to` entitiesList.size
+        domainEntitiesList.size `should be equal to` entitiesList.size
         domainEntitiesList[0] `should equal` entitiesList[0].toDomainEntity()
         domainEntitiesList[1] `should equal` entitiesList[1].toDomainEntity()
     }
