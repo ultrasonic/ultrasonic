@@ -1094,7 +1094,7 @@ public class DownloadServiceImpl extends Service implements DownloadService
 				}
 				setPlayerState(STOPPED);
 			}
-			else if (playerState == PAUSED)
+			else
 			{
 				setPlayerState(STOPPED);
 			}
