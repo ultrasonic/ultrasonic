@@ -193,20 +193,20 @@ public class ServerSettingsFragment extends PreferenceFragment
 
     private void updatePassword() {
         serverPasswordPref.setText(sharedPreferences
-                .getString(Constants.PREFERENCES_KEY_PASSWORD + serverId, "***"));
-        serverPasswordPref.setSummary("***");
+                .getString(Constants.PREFERENCES_KEY_PASSWORD + serverId,
+                        ""));
     }
 
     private void updateUsername() {
         serverUsernamePref.setText(sharedPreferences
                 .getString(Constants.PREFERENCES_KEY_USERNAME + serverId,
-                        getString(R.string.settings_server_username)));
+                        ""));
     }
 
     private void updateUrl() {
         final String serverUrl = sharedPreferences
                 .getString(Constants.PREFERENCES_KEY_SERVER_URL + serverId,
-                        getString(R.string.settings_server_address_unset));
+                        "http://");
         serverUrlPref.setText(serverUrl);
         serverUrlPref.setSummary(serverUrl);
     }
@@ -214,7 +214,7 @@ public class ServerSettingsFragment extends PreferenceFragment
     private void updateName() {
         final String serverName = sharedPreferences
                 .getString(Constants.PREFERENCES_KEY_SERVER_NAME + serverId,
-                        getString(R.string.settings_server_unused));
+                        "");
         serverNamePref.setText(serverName);
         serverNamePref.setSummary(serverName);
     }
