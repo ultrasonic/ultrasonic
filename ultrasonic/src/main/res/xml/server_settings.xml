@@ -29,7 +29,6 @@
         android:key="@string/settings.server_password"
         android:persistent="false"
         android:inputType="textPassword"
-        android:summary="***"
         android:title="@string/settings.server_password"
         />
     <CheckBoxPreference
