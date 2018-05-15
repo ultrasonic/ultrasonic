@@ -19,7 +19,7 @@ ext.versions = [
         kotlin               : "1.2.31",
 
         retrofit             : "2.4.0",
-        jackson              : "2.9.0",
+        jackson              : "2.9.5",
         okhttp               : "3.10.0",
         semver               : "1.0.0",
         twitterSerial        : "0.1.6",
