@@ -21,11 +21,7 @@ package org.moire.ultrasonic.util;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.PendingIntent;
-import android.content.ComponentName;
-import android.content.Context;
-import android.content.DialogInterface;
-import android.content.Intent;
-import android.content.SharedPreferences;
+import android.content.*;
 import android.content.pm.ApplicationInfo;
 import android.content.pm.PackageManager;
 import android.content.res.TypedArray;
@@ -49,33 +45,19 @@ import android.view.Gravity;
 import android.view.KeyEvent;
 import android.widget.RemoteViews;
 import android.widget.Toast;
-
 import org.moire.ultrasonic.R;
 import org.moire.ultrasonic.activity.DownloadActivity;
 import org.moire.ultrasonic.activity.MainActivity;
 import org.moire.ultrasonic.activity.SettingsActivity;
-import org.moire.ultrasonic.domain.Bookmark;
-import org.moire.ultrasonic.domain.MusicDirectory;
+import org.moire.ultrasonic.domain.*;
 import org.moire.ultrasonic.domain.MusicDirectory.Entry;
-import org.moire.ultrasonic.domain.PlayerState;
-import org.moire.ultrasonic.domain.RepeatMode;
-import org.moire.ultrasonic.domain.SearchResult;
-import org.moire.ultrasonic.domain.Version;
 import org.moire.ultrasonic.receiver.MediaButtonIntentReceiver;
 import org.moire.ultrasonic.service.DownloadFile;
 import org.moire.ultrasonic.service.DownloadService;
 import org.moire.ultrasonic.service.DownloadServiceImpl;
 import org.moire.ultrasonic.service.MusicServiceFactory;
 
-import java.io.ByteArrayOutputStream;
-import java.io.Closeable;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
-import java.io.UnsupportedEncodingException;
+import java.io.*;
 import java.security.MessageDigest;
 import java.text.DecimalFormat;
 import java.text.NumberFormat;
@@ -928,17 +910,18 @@ public class Util extends DownloadActivity
 		return musicDirectory;
 	}
 
-	public static MusicDirectory getSongsFromBookmarks(Iterable<Bookmark> bookmarks)
-	{
-		MusicDirectory musicDirectory = new MusicDirectory();
+    public static MusicDirectory getSongsFromBookmarks(Iterable<Bookmark> bookmarks) {
+        MusicDirectory musicDirectory = new MusicDirectory();
 
-		for (Bookmark bookmark : bookmarks)
-		{
-			musicDirectory.addChild(bookmark.getEntry());
-		}
+        MusicDirectory.Entry song;
+        for (Bookmark bookmark : bookmarks) {
+            song = bookmark.getEntry();
+            song.setBookmarkPosition(bookmark.getPosition());
+            musicDirectory.addChild(song);
+        }
 
-		return musicDirectory;
-	}
+        return musicDirectory;
+    }
 
 	/**
 	 * <p>Broadcasts the given song info as the new song being played.</p>

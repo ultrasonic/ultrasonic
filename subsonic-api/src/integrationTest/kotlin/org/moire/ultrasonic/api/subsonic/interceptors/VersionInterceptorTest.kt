@@ -45,6 +45,16 @@ class VersionInterceptorTest : BaseInterceptorTest() {
     }
 
     @Test
+    fun `Should update version from response with utf-8 bom`() {
+        mockWebServerRule.enqueueResponse("ping_ok_utf8_bom.json")
+
+        client.newCall(createRequest {}).execute()
+
+        (interceptor as VersionInterceptor)
+                .protocolVersion `should equal` SubsonicAPIVersions.V1_16_0
+    }
+
+    @Test
     fun `Should not update version if response json doesn't contain version`() {
         mockWebServerRule.enqueueResponse("non_subsonic_response.json")
 
