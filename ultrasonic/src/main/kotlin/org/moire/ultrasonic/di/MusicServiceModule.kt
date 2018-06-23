@@ -7,6 +7,7 @@ import org.koin.dsl.module.applicationContext
 import org.moire.ultrasonic.BuildConfig
 import org.moire.ultrasonic.api.subsonic.SubsonicAPIClient
 import org.moire.ultrasonic.api.subsonic.SubsonicAPIVersions
+import org.moire.ultrasonic.api.subsonic.SubsonicClientConfiguration
 import org.moire.ultrasonic.cache.PermanentFileStorage
 import org.moire.ultrasonic.service.CachedMusicService
 import org.moire.ultrasonic.service.MusicService
@@ -68,7 +69,7 @@ fun musicServiceModule(sp: SharedPreferences) = applicationContext {
                 password == null
             ) {
                 Log.i(LOG_TAG, "Server credentials is not available")
-                return@bean SubsonicAPIClient(
+                return@bean SubsonicClientConfiguration(
                     baseUrl = "http://localhost",
                     username = "",
                     password = "",
@@ -81,7 +82,7 @@ fun musicServiceModule(sp: SharedPreferences) = applicationContext {
                     debug = BuildConfig.DEBUG
                 )
             } else {
-                return@bean SubsonicAPIClient(
+                return@bean SubsonicClientConfiguration(
                     baseUrl = serverUrl,
                     username = username,
                     password = password,
@@ -95,6 +96,8 @@ fun musicServiceModule(sp: SharedPreferences) = applicationContext {
                 )
             }
         }
+
+        bean { return@bean SubsonicAPIClient(get()) }
 
         bean<MusicService>(name = ONLINE_MUSIC_SERVICE) {
             return@bean CachedMusicService(RESTMusicService(get(), get()))
