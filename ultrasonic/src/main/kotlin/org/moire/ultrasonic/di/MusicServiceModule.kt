@@ -8,6 +8,7 @@ import org.moire.ultrasonic.BuildConfig
 import org.moire.ultrasonic.api.subsonic.SubsonicAPIClient
 import org.moire.ultrasonic.api.subsonic.SubsonicAPIVersions
 import org.moire.ultrasonic.api.subsonic.SubsonicClientConfiguration
+import org.moire.ultrasonic.api.subsonic.di.subsonicApiModule
 import org.moire.ultrasonic.cache.PermanentFileStorage
 import org.moire.ultrasonic.service.CachedMusicService
 import org.moire.ultrasonic.service.MusicService
@@ -25,6 +26,8 @@ private const val LOG_TAG = "MusicServiceModule"
 
 fun musicServiceModule(sp: SharedPreferences) = applicationContext {
     context(MUSIC_SERVICE_CONTEXT) {
+        subsonicApiModule()
+
         bean(name = "ServerInstance") {
             return@bean sp.getInt(
                 Constants.PREFERENCES_KEY_SERVER_INSTANCE,
