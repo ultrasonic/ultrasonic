@@ -23,6 +23,7 @@
         a:icon="@mipmap/ic_launcher"
         a:roundIcon="@mipmap/ic_launcher_round"
         a:theme="@style/Theme.AppCompat"
+        a:name=".app.UApp"
         a:label="@string/common.appname">
         <activity
             a:name=".activity.MainActivity"

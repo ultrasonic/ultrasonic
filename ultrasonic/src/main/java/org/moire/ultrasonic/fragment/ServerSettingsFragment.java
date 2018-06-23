@@ -14,6 +14,7 @@ import android.view.View;
 
 import org.moire.ultrasonic.BuildConfig;
 import org.moire.ultrasonic.R;
+import org.moire.ultrasonic.cache.Directories;
 import org.moire.ultrasonic.cache.PermanentFileStorage;
 import org.moire.ultrasonic.service.MusicService;
 import org.moire.ultrasonic.service.MusicServiceFactory;
@@ -282,9 +283,10 @@ public class ServerSettingsFragment extends PreferenceFragment
                 .getInt(Constants.PREFERENCES_KEY_ACTIVE_SERVERS, 0);
 
         // Clear permanent storage
-        final String storageServerId = MusicServiceFactory.getServerId(sharedPreferences, serverId);
+        final String storageServerId = MusicServiceFactory.getServerId();
+        final Directories directories = MusicServiceFactory.getDirectories();
         final PermanentFileStorage fileStorage = new PermanentFileStorage(
-                MusicServiceFactory.getDirectories(getActivity()),
+                directories,
                 storageServerId,
                 BuildConfig.DEBUG
         );
