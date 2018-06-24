@@ -61,6 +61,7 @@ dependencies {
     implementation androidSupport.design
 
     implementation other.kotlinStdlib
+    implementation other.koinAndroid
 
     testImplementation other.kotlinReflect
     testImplementation testing.junit
@@ -69,7 +70,7 @@ dependencies {
     testImplementation testing.kluent
 }
 
-// Excluding all non-kotlin classes
+// Excluding all java classes and stuff that should not be covered
 ext {
     jacocoExclude = [
             '**/activity/**',
@@ -83,7 +84,8 @@ ext {
             '**/view/**',
             '**/R$*.class',
             '**/R.class',
-            '**/BuildConfig.class'
+            '**/BuildConfig.class',
+            '**/di/**'
     ]
 }
 jacocoAndroidUnitTestReport {

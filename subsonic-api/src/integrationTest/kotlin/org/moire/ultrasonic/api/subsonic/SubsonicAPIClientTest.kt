@@ -10,11 +10,18 @@ import org.moire.ultrasonic.api.subsonic.rules.MockWebServerRule
 abstract class SubsonicAPIClientTest {
     @JvmField @Rule val mockWebServerRule = MockWebServerRule()
 
+    protected lateinit var config: SubsonicClientConfiguration
     protected lateinit var client: SubsonicAPIClient
 
     @Before
     fun setUp() {
-        client = SubsonicAPIClient(mockWebServerRule.mockWebServer.url("/").toString(),
-                USERNAME, PASSWORD, CLIENT_VERSION, CLIENT_ID)
+        config = SubsonicClientConfiguration(
+            mockWebServerRule.mockWebServer.url("/").toString(),
+            USERNAME,
+            PASSWORD,
+            CLIENT_VERSION,
+            CLIENT_ID
+        )
+        client = SubsonicAPIClient(config)
     }
 }

@@ -36,44 +36,39 @@ private const val READ_TIMEOUT = 60_000L
  * @author Yahor Berdnikau
  */
 class SubsonicAPIClient(
-    baseUrl: String,
-    username: String,
-    password: String,
-    minimalProtocolVersion: SubsonicAPIVersions,
-    clientID: String,
-    allowSelfSignedCertificate: Boolean = false,
-    enableLdapUserSupport: Boolean = false,
-    debug: Boolean = false
+    config: SubsonicClientConfiguration,
+    baseOkClient: OkHttpClient = OkHttpClient.Builder().build()
 ) {
-    private val versionInterceptor = VersionInterceptor(minimalProtocolVersion) {
+    private val versionInterceptor = VersionInterceptor(config.minimalProtocolVersion) {
         protocolVersion = it
     }
 
     private val proxyPasswordInterceptor = ProxyPasswordInterceptor(
-            minimalProtocolVersion,
-            PasswordHexInterceptor(password),
-            PasswordMD5Interceptor(password),
-            enableLdapUserSupport)
+            config.minimalProtocolVersion,
+            PasswordHexInterceptor(config.password),
+            PasswordMD5Interceptor(config.password),
+            config.enableLdapUserSupport
+    )
 
     /**
      * Get currently used protocol version.
      */
-    var protocolVersion = minimalProtocolVersion
+    var protocolVersion = config.minimalProtocolVersion
         private set(value) {
             field = value
             proxyPasswordInterceptor.apiVersion = field
             wrappedApi.currentApiVersion = field
         }
 
-    private val okHttpClient = OkHttpClient.Builder()
+    private val okHttpClient = baseOkClient.newBuilder()
             .readTimeout(READ_TIMEOUT, MILLISECONDS)
-            .apply { if (allowSelfSignedCertificate) allowSelfSignedCertificates() }
+            .apply { if (config.allowSelfSignedCertificate) allowSelfSignedCertificates() }
             .addInterceptor { chain ->
                 // Adds default request params
                 val originalRequest = chain.request()
                 val newUrl = originalRequest.url().newBuilder()
-                        .addQueryParameter("u", username)
-                        .addQueryParameter("c", clientID)
+                        .addQueryParameter("u", config.username)
+                        .addQueryParameter("c", config.clientID)
                         .addQueryParameter("f", "json")
                         .build()
                 chain.proceed(originalRequest.newBuilder().url(newUrl).build())
@@ -81,7 +76,7 @@ class SubsonicAPIClient(
             .addInterceptor(versionInterceptor)
             .addInterceptor(proxyPasswordInterceptor)
             .addInterceptor(RangeHeaderInterceptor())
-            .apply { if (debug) addLogging() }
+            .apply { if (config.debug) addLogging() }
             .build()
 
     private val jacksonMapper = ObjectMapper()
@@ -90,14 +85,15 @@ class SubsonicAPIClient(
             .registerModule(KotlinModule())
 
     private val retrofit = Retrofit.Builder()
-            .baseUrl("$baseUrl/rest/")
+            .baseUrl("${config.baseUrl}/rest/")
             .client(okHttpClient)
             .addConverterFactory(JacksonConverterFactory.create(jacksonMapper))
             .build()
 
     private val wrappedApi = ApiVersionCheckWrapper(
             retrofit.create(SubsonicAPIDefinition::class.java),
-            minimalProtocolVersion)
+            config.minimalProtocolVersion
+    )
 
     val api: SubsonicAPIDefinition get() = wrappedApi
 
