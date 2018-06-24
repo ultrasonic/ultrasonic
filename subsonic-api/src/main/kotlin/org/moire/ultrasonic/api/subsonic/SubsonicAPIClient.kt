@@ -36,7 +36,8 @@ private const val READ_TIMEOUT = 60_000L
  * @author Yahor Berdnikau
  */
 class SubsonicAPIClient(
-    config: SubsonicClientConfiguration
+    config: SubsonicClientConfiguration,
+    baseOkClient: OkHttpClient = OkHttpClient.Builder().build()
 ) {
     private val versionInterceptor = VersionInterceptor(config.minimalProtocolVersion) {
         protocolVersion = it
@@ -59,7 +60,7 @@ class SubsonicAPIClient(
             wrappedApi.currentApiVersion = field
         }
 
-    private val okHttpClient = OkHttpClient.Builder()
+    private val okHttpClient = baseOkClient.newBuilder()
             .readTimeout(READ_TIMEOUT, MILLISECONDS)
             .apply { if (config.allowSelfSignedCertificate) allowSelfSignedCertificates() }
             .addInterceptor { chain ->

@@ -6,5 +6,5 @@ import org.moire.ultrasonic.api.subsonic.SubsonicAPIClient
 const val SUBSONIC_API_CLIENT_CONTEXT = "SubsonicApiClientContext"
 
 fun Context.subsonicApiModule() = context(SUBSONIC_API_CLIENT_CONTEXT) {
-    bean { return@bean SubsonicAPIClient(get()) }
+    bean { return@bean SubsonicAPIClient(get(), get()) }
 }
