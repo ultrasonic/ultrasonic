@@ -39,11 +39,13 @@ import android.widget.*;
 import net.simonvt.menudrawer.MenuDrawer;
 import net.simonvt.menudrawer.Position;
 import org.moire.ultrasonic.R;
+import org.moire.ultrasonic.app.UApp;
 import org.moire.ultrasonic.domain.MusicDirectory;
 import org.moire.ultrasonic.domain.MusicDirectory.Entry;
 import org.moire.ultrasonic.domain.PlayerState;
 import org.moire.ultrasonic.domain.Share;
 import org.moire.ultrasonic.service.*;
+import org.moire.ultrasonic.subsonic.SubsonicImageLoaderProxy;
 import org.moire.ultrasonic.util.*;
 
 import java.io.File;
@@ -793,16 +795,22 @@ public class SubsonicTabActivity extends ResultActivity implements OnClickListen
 		if (IMAGE_LOADER != null && IMAGE_LOADER.isRunning()) IMAGE_LOADER.clear();
 	}
 
-	public synchronized ImageLoader getImageLoader()
-	{
-		if (IMAGE_LOADER == null || !IMAGE_LOADER.isRunning())
-		{
-			IMAGE_LOADER = new LegacyImageLoader(this, Util.getImageLoaderConcurrency(this));
-			IMAGE_LOADER.startImageLoader();
-		}
+    public synchronized ImageLoader getImageLoader() {
+        if (IMAGE_LOADER == null ||
+                !IMAGE_LOADER.isRunning()) {
+            LegacyImageLoader legacyImageLoader = new LegacyImageLoader(
+                    this,
+                    Util.getImageLoaderConcurrency(this)
+            );
+            IMAGE_LOADER = new SubsonicImageLoaderProxy(
+                    legacyImageLoader,
+                    ((UApp) getApplication()).getSubsonicImageLoader()
+            );
+            IMAGE_LOADER.startImageLoader();
+        }
 
-		return IMAGE_LOADER;
-	}
+        return IMAGE_LOADER;
+    }
 
 	void download(final boolean append, final boolean save, final boolean autoPlay, final boolean playNext, final boolean shuffle, final List<Entry> songs)
 	{

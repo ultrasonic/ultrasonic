@@ -1,6 +1,7 @@
 @file:JvmName("MusicServiceModule")
 package org.moire.ultrasonic.di
 
+import android.content.Context
 import android.content.SharedPreferences
 import android.util.Log
 import org.koin.dsl.module.applicationContext
@@ -14,6 +15,7 @@ import org.moire.ultrasonic.service.CachedMusicService
 import org.moire.ultrasonic.service.MusicService
 import org.moire.ultrasonic.service.OfflineMusicService
 import org.moire.ultrasonic.service.RESTMusicService
+import org.moire.ultrasonic.subsonic.loader.image.SubsonicImageLoader
 import org.moire.ultrasonic.util.Constants
 import kotlin.math.abs
 
@@ -24,7 +26,10 @@ private const val DEFAULT_SERVER_INSTANCE = 1
 private const val UNKNOWN_SERVER_URL = "not-exists"
 private const val LOG_TAG = "MusicServiceModule"
 
-fun musicServiceModule(sp: SharedPreferences) = applicationContext {
+fun musicServiceModule(
+    sp: SharedPreferences,
+    context: Context
+) = applicationContext {
     context(MUSIC_SERVICE_CONTEXT) {
         subsonicApiModule()
 
@@ -109,5 +114,7 @@ fun musicServiceModule(sp: SharedPreferences) = applicationContext {
         bean<MusicService>(name = OFFLINE_MUSIC_SERVICE) {
             return@bean OfflineMusicService(get(), get())
         }
+
+        bean { return@bean SubsonicImageLoader(context, get()) }
     }
 }
