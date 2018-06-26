@@ -25,7 +25,9 @@ dependencies {
     api project(':domain')
     api project(':subsonic-api')
     api other.kotlinStdlib
-    api other.picasso
+    api(other.picasso) {
+        exclude group: "com.android.support"
+    }
 
     testImplementation testing.junit
     testImplementation testing.kotlinJunit
