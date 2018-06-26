@@ -1,6 +1,6 @@
 apply plugin: 'com.android.library'
 apply plugin: 'kotlin-android'
-//apply plugin: 'jacoco'
+apply plugin: 'jacoco-android'
 apply from: '../gradle_scripts/code_quality.gradle'
 
 android {
@@ -40,27 +40,14 @@ jacoco {
     toolVersion(versions.jacoco)
 }
 
-//ext {
-//    jacocoExclude = []
-//}
+ext {
+    jacocoExclude = []
+}
 
-//jacocoTestReport {
-//    reports {
-//        html.enabled true
-//        csv.enabled false
-//        xml.enabled true
-//    }
-//
-//    afterEvaluate {
-//        classDirectories = files(classDirectories.files.collect {
-//            fileTree(dir: it, excludes: jacocoExclude)
-//        })
-//    }
-//}
-//
-//test.finalizedBy jacocoTestReport
-//test {
-//    jacoco {
-//        excludes += jacocoExclude
-//    }
-//}
+jacocoAndroidUnitTestReport {
+    excludes += jacocoExclude
+}
+
+afterEvaluate {
+    testDebugUnitTest.finalizedBy jacocoTestDebugUnitTestReport
+}

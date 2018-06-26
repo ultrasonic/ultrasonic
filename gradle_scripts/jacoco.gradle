@@ -21,6 +21,7 @@ def createJacocoFullReportTask() {
         description = "Generate full Jacoco coverage report including all modules."
 
         def subsonicApi = project.findProject("subsonic-api")
+        def subsonicApiImageLoader = project.findProject("subsonic-api-image-loader")
         def ultrasonicApp = project.findProject("ultrasonic")
         def cache = project.findProject("cache")
 
@@ -28,6 +29,10 @@ def createJacocoFullReportTask() {
                 fileTree(
                         dir: "${subsonicApi.buildDir}/classes/main",
                         excludes: subsonicApi.jacocoExclude
+                ),
+                fileTree(
+                        dir: "${subsonicApiImageLoader.buildDir}/intermediates/classes/debug/org",
+                        excludes: subsonicApiImageLoader.jacocoExclude
                 ),
                 fileTree(
                         dir: "${ultrasonicApp.buildDir}/intermediates/classes/debug/org",
@@ -38,8 +43,12 @@ def createJacocoFullReportTask() {
                         excludes: cache.jacocoExclude
                 )
         )
-        sourceDirectories = files(subsonicApi.sourceSets.main.getAllSource(),
-                ultrasonicApp.extensions.getByName('android').sourceSets.main.java.sourceFiles)
+        sourceDirectories = files(
+                subsonicApi.sourceSets.main.getAllSource(),
+                subsonicApiImageLoader.extensions.getByName('android').sourceSets.main.java.sourceFiles,
+                ultrasonicApp.extensions.getByName('android').sourceSets.main.java.sourceFiles,
+                cache.sourceSets.main.getAllSource(),
+        )
         executionData = files("${buildDir}/jacoco/jacoco.exec")
 
         reports {
