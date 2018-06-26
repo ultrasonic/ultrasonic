@@ -8,8 +8,8 @@
 
     <ImageView
             a:id="@+id/album_coverart"
-            a:layout_width="wrap_content"
-            a:layout_height="wrap_content"
+            a:layout_width="64dp"
+            a:layout_height="64dp"
             a:layout_gravity="left|center_vertical"
             a:paddingLeft="3dip"/>
 
