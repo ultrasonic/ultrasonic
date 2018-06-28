@@ -2,7 +2,9 @@ package org.moire.ultrasonic.subsonic
 
 import android.view.View
 import android.widget.ImageView
+import org.moire.ultrasonic.R
 import org.moire.ultrasonic.domain.MusicDirectory
+import org.moire.ultrasonic.subsonic.loader.image.ImageRequest
 import org.moire.ultrasonic.subsonic.loader.image.SubsonicImageLoader
 import org.moire.ultrasonic.util.ImageLoader
 import org.moire.ultrasonic.util.LegacyImageLoader
@@ -30,10 +32,13 @@ class SubsonicImageLoaderProxy(
         if (id != null &&
             view != null &&
             view is ImageView) {
-            subsonicImageLoader.loadCoverArt(
-                entityId = id,
-                view = view
+            val request = ImageRequest.CoverArt(
+                id,
+                view,
+                placeHolderDrawableRes = R.drawable.unknown_album,
+                errorDrawableRes = R.drawable.unknown_album
             )
+            subsonicImageLoader.load(request)
         }
     }
 }
