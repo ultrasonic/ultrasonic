@@ -4,29 +4,21 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Build;
 import android.os.Bundle;
-import android.preference.CheckBoxPreference;
-import android.preference.EditTextPreference;
-import android.preference.ListPreference;
-import android.preference.Preference;
-import android.preference.PreferenceCategory;
-import android.preference.PreferenceFragment;
-import android.preference.PreferenceManager;
+import android.preference.*;
 import android.provider.SearchRecentSuggestions;
 import android.support.annotation.Nullable;
 import android.util.Log;
 import android.view.View;
-
 import org.moire.ultrasonic.R;
 import org.moire.ultrasonic.activity.ServerSettingsActivity;
 import org.moire.ultrasonic.activity.SubsonicTabActivity;
+import org.moire.ultrasonic.app.UApp;
+import org.moire.ultrasonic.featureflags.Feature;
+import org.moire.ultrasonic.featureflags.FeatureStorage;
 import org.moire.ultrasonic.provider.SearchSuggestionProvider;
 import org.moire.ultrasonic.service.DownloadService;
 import org.moire.ultrasonic.service.DownloadServiceImpl;
-import org.moire.ultrasonic.util.Constants;
-import org.moire.ultrasonic.util.FileUtil;
-import org.moire.ultrasonic.util.ImageLoader;
-import org.moire.ultrasonic.util.TimeSpanPreference;
-import org.moire.ultrasonic.util.Util;
+import org.moire.ultrasonic.util.*;
 
 import java.io.File;
 
@@ -115,6 +107,7 @@ public class SettingsFragment extends PreferenceFragment
         sharingDefaultGreeting.setText(Util.getShareGreeting(getActivity()));
         setupClearSearchPreference();
         setupGaplessControlSettingsV14();
+        setupFeatureFlagsPreferences();
     }
 
     @Override
@@ -173,6 +166,24 @@ public class SettingsFragment extends PreferenceFragment
                     suggestions.clearHistory();
                     Util.toast(getActivity(), R.string.settings_search_history_cleared);
                     return false;
+                }
+            });
+        }
+    }
+
+    private void setupFeatureFlagsPreferences() {
+        CheckBoxPreference ffImageLoader = (CheckBoxPreference) findPreference(
+                Constants.PREFERENCES_KEY_FF_IMAGE_LOADER);
+
+        final FeatureStorage featureStorage = ((UApp) getActivity().getApplication()).getFeaturesStorage();
+        if (ffImageLoader != null) {
+            ffImageLoader.setChecked(featureStorage.isFeatureEnabled(Feature.NEW_IMAGE_DOWNLOADER));
+            ffImageLoader.setOnPreferenceChangeListener(new Preference.OnPreferenceChangeListener() {
+                @Override
+                public boolean onPreferenceChange(Preference preference, Object o) {
+                    featureStorage.changeFeatureFlag(Feature.NEW_IMAGE_DOWNLOADER, (Boolean) o);
+                    ((SubsonicTabActivity) getActivity()).clearImageLoader();
+                    return true;
                 }
             });
         }

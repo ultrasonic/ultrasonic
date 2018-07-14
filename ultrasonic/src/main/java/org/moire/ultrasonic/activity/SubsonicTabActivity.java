@@ -44,6 +44,7 @@ import org.moire.ultrasonic.domain.MusicDirectory;
 import org.moire.ultrasonic.domain.MusicDirectory.Entry;
 import org.moire.ultrasonic.domain.PlayerState;
 import org.moire.ultrasonic.domain.Share;
+import org.moire.ultrasonic.featureflags.Feature;
 import org.moire.ultrasonic.service.*;
 import org.moire.ultrasonic.subsonic.SubsonicImageLoaderProxy;
 import org.moire.ultrasonic.util.*;
@@ -790,10 +791,14 @@ public class SubsonicTabActivity extends ResultActivity implements OnClickListen
 		}
 	}
 
-	public synchronized void clearImageLoader()
-	{
-		if (IMAGE_LOADER != null && IMAGE_LOADER.isRunning()) IMAGE_LOADER.clear();
-	}
+    public synchronized void clearImageLoader() {
+        if (IMAGE_LOADER != null &&
+                IMAGE_LOADER.isRunning()) {
+            IMAGE_LOADER.clear();
+        }
+
+        IMAGE_LOADER = null;
+    }
 
     public synchronized ImageLoader getImageLoader() {
         if (IMAGE_LOADER == null ||
@@ -802,10 +807,18 @@ public class SubsonicTabActivity extends ResultActivity implements OnClickListen
                     this,
                     Util.getImageLoaderConcurrency(this)
             );
-            IMAGE_LOADER = new SubsonicImageLoaderProxy(
-                    legacyImageLoader,
-                    ((UApp) getApplication()).getSubsonicImageLoader()
-            );
+
+            boolean isNewImageLoaderEnabled = ((UApp) getApplication()).getFeaturesStorage()
+                    .isFeatureEnabled(Feature.NEW_IMAGE_DOWNLOADER);
+            if (isNewImageLoaderEnabled) {
+                IMAGE_LOADER = new SubsonicImageLoaderProxy(
+                        legacyImageLoader,
+                        ((UApp) getApplication()).getSubsonicImageLoader()
+                );
+            } else {
+                IMAGE_LOADER = legacyImageLoader;
+            }
+
             IMAGE_LOADER.startImageLoader();
         }
 

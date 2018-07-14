@@ -436,5 +436,10 @@
     <string name="api.subsonic.trial_period_is_over">A próbaidő vége.</string>
     <string name="api.subsonic.upgrade_client">Nem kompatibilis verzió. Kérjük, frissítse az UltraSonic Android alkalmazást!</string>
     <string name="api.subsonic.upgrade_server">Nem kompatibilis verzió. Kérjük, frissítse a Subsonic kiszolgálót!</string>
+    <string name="feature_flags_image_loader_description">Engedélyezi az új képbetöltő megvalósítását. Jelenleg nem
+        tárolja a képet az eszköz tárolójában, és csak a memóriában tárolja a gyorsítótárat.
+    </string>
+    <string name="feature_flags_category_title">Jellemzők Zászlók</string>
+    <string name="feature_flags_image_loader_title">Engedélyezzen új képbetöltőt</string>
 
 </resources>

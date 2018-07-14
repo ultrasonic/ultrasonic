@@ -441,4 +441,10 @@
     <string name="api.subsonic.upgrade_client">Incompatible versions. Please upgrade UltraSonic Android app.</string>
     <string name="api.subsonic.upgrade_server">Incompatible versions. Please upgrade Subsonic server.</string>
 
+    <string name="feature_flags_image_loader_title">Enable new image loader</string>
+    <string name="feature_flags_image_loader_description">Enables new image loader implementation.
+        Currently it doesn\'t save image in device storage and uses only cache in memory.
+    </string>
+    <string name="feature_flags_category_title">Feature Flags</string>
+
 </resources>

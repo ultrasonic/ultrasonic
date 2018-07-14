@@ -436,5 +436,11 @@
     <string name="api.subsonic.trial_period_is_over">La période d\'essai est terminée.</string>
     <string name="api.subsonic.upgrade_client">Versions incompatible. Veuillez mette à jour l\'application Android UltraSonic.</string>
     <string name="api.subsonic.upgrade_server">Versions incompatible. Veuillez mette à jour le serveur Subsonic.</string>
+    <string name="feature_flags_category_title">Drapeaux des fonctionnalités</string>
+    <string name="feature_flags_image_loader_description">Permet l\'implémentation d\'un nouveau chargeur d\'images.
+        Actuellement, il n\'enregistre pas l\'image dans le stockage de l\'appareil et n\'utilise que le cache en
+        mémoire.
+    </string>
+    <string name="feature_flags_image_loader_title">Activer le nouveau chargeur d\'images</string>
 
 </resources>

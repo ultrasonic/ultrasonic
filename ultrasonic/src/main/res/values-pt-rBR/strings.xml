@@ -436,5 +436,10 @@
     <string name="api.subsonic.trial_period_is_over">O período de avaliação acabou.</string>
     <string name="api.subsonic.upgrade_client">Versões incompativeis. Atualize o aplicativo UltraSonic para Android.</string>
     <string name="api.subsonic.upgrade_server">Versões incompativeis. Atualize o servidor UltraSonic.</string>
+    <string name="feature_flags_image_loader_description">Permite nova implementação do carregador de imagens.
+        Atualmente, ele não salva a imagem no armazenamento do dispositivo e usa apenas o cache na memória.
+    </string>
+    <string name="feature_flags_category_title">Bandeiras de recursos</string>
+    <string name="feature_flags_image_loader_title">Ativar novo carregador de imagens</string>
 
 </resources>
