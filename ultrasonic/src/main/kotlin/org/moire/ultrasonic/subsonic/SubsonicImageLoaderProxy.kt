@@ -41,4 +41,25 @@ class SubsonicImageLoaderProxy(
             subsonicImageLoader.load(request)
         }
     }
+
+    override fun loadAvatarImage(
+        view: View?,
+        username: String?,
+        large: Boolean,
+        size: Int,
+        crossFade: Boolean,
+        highQuality: Boolean
+    ) {
+        if (username != null &&
+            view != null &&
+            view is ImageView) {
+            val request = ImageRequest.Avatar(
+                username,
+                view,
+                placeHolderDrawableRes = R.drawable.ic_contact_picture,
+                errorDrawableRes = R.drawable.ic_contact_picture
+            )
+            subsonicImageLoader.load(request)
+        }
+    }
 }
