@@ -55,6 +55,7 @@ dependencies {
     implementation project(':library')
     implementation project(':domain')
     implementation project(':subsonic-api')
+    implementation project(':subsonic-api-image-loader')
     implementation project(':cache')
 
     implementation androidSupport.support

@@ -1,205 +1,205 @@
 <?xml version="1.0" encoding="utf-8"?>
-<manifest xmlns:a="http://schemas.android.com/apk/res/android"
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
           package="org.moire.ultrasonic"
-          a:installLocation="auto">
+          android:installLocation="auto">
 
-    <uses-permission a:name="android.permission.INTERNET"/>
-    <uses-permission a:name="android.permission.ACCESS_NETWORK_STATE"/>
-    <uses-permission a:name="android.permission.WAKE_LOCK"/>
-    <uses-permission a:name="android.permission.WRITE_EXTERNAL_STORAGE"/>
-    <uses-permission a:name="android.permission.READ_EXTERNAL_STORAGE"/>
-    <uses-permission a:name="android.permission.MODIFY_AUDIO_SETTINGS"/>
-    <uses-permission a:name="android.permission.BLUETOOTH"/>
+    <uses-permission android:name="android.permission.INTERNET"/>
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE"/>
+    <uses-permission android:name="android.permission.WAKE_LOCK"/>
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"/>
+    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE"/>
+    <uses-permission android:name="android.permission.MODIFY_AUDIO_SETTINGS"/>
+    <uses-permission android:name="android.permission.BLUETOOTH"/>
 
     <supports-screens
-        a:anyDensity="true"
-        a:largeScreens="true"
-        a:normalScreens="true"
-        a:smallScreens="true"
-        a:xlargeScreens="true"/>
+        android:anyDensity="true"
+        android:largeScreens="true"
+        android:normalScreens="true"
+        android:smallScreens="true"
+        android:xlargeScreens="true"/>
 
     <application
-        a:allowBackup="false"
-        a:icon="@mipmap/ic_launcher"
-        a:roundIcon="@mipmap/ic_launcher_round"
-        a:theme="@style/Theme.AppCompat"
-        a:name=".app.UApp"
-        a:label="@string/common.appname">
+        android:allowBackup="false"
+        android:icon="@mipmap/ic_launcher"
+        android:roundIcon="@mipmap/ic_launcher_round"
+        android:theme="@style/Theme.AppCompat"
+        android:name=".app.UApp"
+        android:label="@string/common.appname">
         <activity
-            a:name=".activity.MainActivity"
-            a:configChanges="orientation|keyboardHidden"
-            a:label="UltraSonic"
-            a:launchMode="standard">
+            android:name=".activity.MainActivity"
+            android:configChanges="orientation|keyboardHidden"
+            android:label="UltraSonic"
+            android:launchMode="standard">
             <intent-filter>
-                <action a:name="android.intent.action.MAIN"/>
-                <category a:name="android.intent.category.LAUNCHER"/>
+                <action android:name="android.intent.action.MAIN"/>
+                <category android:name="android.intent.category.LAUNCHER"/>
             </intent-filter>
         </activity>
         <activity
-            a:name=".activity.SelectArtistActivity"
-            a:configChanges="orientation|keyboardHidden"
-            a:launchMode="standard"/>
+            android:name=".activity.SelectArtistActivity"
+            android:configChanges="orientation|keyboardHidden"
+            android:launchMode="standard"/>
         <activity
-            a:name=".activity.SelectAlbumActivity"
-            a:configChanges="orientation|keyboardHidden"/>
+            android:name=".activity.SelectAlbumActivity"
+            android:configChanges="orientation|keyboardHidden"/>
         <activity
-            a:name=".activity.SearchActivity"
-            a:configChanges="orientation|keyboardHidden"
-            a:label="@string/search.label"
-            a:launchMode="singleTask"/>
+            android:name=".activity.SearchActivity"
+            android:configChanges="orientation|keyboardHidden"
+            android:label="@string/search.label"
+            android:launchMode="singleTask"/>
         <activity
-            a:name=".activity.SelectPlaylistActivity"
-            a:configChanges="orientation|keyboardHidden"
-            a:label="@string/playlist.label"
-            a:launchMode="standard"/>
+            android:name=".activity.SelectPlaylistActivity"
+            android:configChanges="orientation|keyboardHidden"
+            android:label="@string/playlist.label"
+            android:launchMode="standard"/>
         <activity
-            a:name=".activity.PodcastsActivity"
-            a:configChanges="orientation|keyboardHidden"
-            a:label="@string/podcasts.label"
-            a:launchMode="standard"/>
+            android:name=".activity.PodcastsActivity"
+            android:configChanges="orientation|keyboardHidden"
+            android:label="@string/podcasts.label"
+            android:launchMode="standard"/>
         <activity
-            a:name=".activity.BookmarkActivity"
-            a:configChanges="orientation|keyboardHidden"/>
+            android:name=".activity.BookmarkActivity"
+            android:configChanges="orientation|keyboardHidden"/>
         <activity
-            a:name=".activity.ShareActivity"
-            a:configChanges="orientation|keyboardHidden"/>
+            android:name=".activity.ShareActivity"
+            android:configChanges="orientation|keyboardHidden"/>
         <activity
-            a:name=".activity.ChatActivity"
-            a:configChanges="orientation|keyboardHidden"/>
+            android:name=".activity.ChatActivity"
+            android:configChanges="orientation|keyboardHidden"/>
         <activity
-            a:name=".activity.DownloadActivity"
-            a:configChanges="keyboardHidden"
-            a:launchMode="singleTask"
-            a:exported="true" />
+            android:name=".activity.DownloadActivity"
+            android:configChanges="keyboardHidden"
+            android:launchMode="singleTask"
+            android:exported="true" />
         <activity
-            a:name=".activity.SettingsActivity"
-            a:configChanges="orientation|keyboardHidden"
-            a:launchMode="singleTask"/>
+            android:name=".activity.SettingsActivity"
+            android:configChanges="orientation|keyboardHidden"
+            android:launchMode="singleTask"/>
         <activity
-            a:name=".activity.HelpActivity"
-            a:configChanges="orientation|keyboardHidden"
-            a:launchMode="singleTask"/>
+            android:name=".activity.HelpActivity"
+            android:configChanges="orientation|keyboardHidden"
+            android:launchMode="singleTask"/>
         <activity
-            a:name=".activity.LyricsActivity"
-            a:configChanges="orientation|keyboardHidden"
-            a:launchMode="singleTask"/>
+            android:name=".activity.LyricsActivity"
+            android:configChanges="orientation|keyboardHidden"
+            android:launchMode="singleTask"/>
         <activity
-            a:name=".activity.EqualizerActivity"
-            a:configChanges="orientation|keyboardHidden"
-            a:label="@string/equalizer.label"
-            a:launchMode="singleTask"/>
+            android:name=".activity.EqualizerActivity"
+            android:configChanges="orientation|keyboardHidden"
+            android:label="@string/equalizer.label"
+            android:launchMode="singleTask"/>
         <activity
-            a:name=".activity.SelectGenreActivity"
-            a:configChanges="orientation|keyboardHidden"
-            a:launchMode="standard"/>
+            android:name=".activity.SelectGenreActivity"
+            android:configChanges="orientation|keyboardHidden"
+            android:launchMode="standard"/>
         <activity
-            a:name=".activity.VoiceQueryReceiverActivity"
-            a:launchMode="singleTask">
+            android:name=".activity.VoiceQueryReceiverActivity"
+            android:launchMode="singleTask">
             <intent-filter>
-                <action a:name="android.media.action.MEDIA_PLAY_FROM_SEARCH"/>
-                <category a:name="android.intent.category.DEFAULT"/>
+                <action android:name="android.media.action.MEDIA_PLAY_FROM_SEARCH"/>
+                <category android:name="android.intent.category.DEFAULT"/>
             </intent-filter>
         </activity>
         <activity
-            a:name=".activity.QueryReceiverActivity"
-            a:launchMode="singleTask">
+            android:name=".activity.QueryReceiverActivity"
+            android:launchMode="singleTask">
             <intent-filter>
-                <action a:name="android.intent.action.SEARCH"/>
-                <category a:name="android.intent.category.DEFAULT"/>
+                <action android:name="android.intent.action.SEARCH"/>
+                <category android:name="android.intent.category.DEFAULT"/>
             </intent-filter>
 
             <meta-data
-                a:name="android.app.searchable"
-                a:resource="@xml/searchable"/>
+                android:name="android.app.searchable"
+                android:resource="@xml/searchable"/>
         </activity>
 
-        <activity a:name=".activity.ServerSettingsActivity" />
+        <activity android:name=".activity.ServerSettingsActivity" />
 
         <service
-            a:name=".service.DownloadServiceImpl"
-            a:label="UltraSonic Download Service"
-            a:exported="false">
+            android:name=".service.DownloadServiceImpl"
+            android:label="UltraSonic Download Service"
+            android:exported="false">
             <intent-filter>
-                <action a:name="org.moire.ultrasonic.CMD_TOGGLEPAUSE"/>
-                <action a:name="org.moire.ultrasonic.CMD_PLAY"/>
-                <action a:name="org.moire.ultrasonic.CMD_PAUSE"/>
-                <action a:name="org.moire.ultrasonic.CMD_NEXT"/>
-                <action a:name="org.moire.ultrasonic.CMD_PREVIOUS"/>
-                <action a:name="org.moire.ultrasonic.CMD_STOP"/>
+                <action android:name="org.moire.ultrasonic.CMD_TOGGLEPAUSE"/>
+                <action android:name="org.moire.ultrasonic.CMD_PLAY"/>
+                <action android:name="org.moire.ultrasonic.CMD_PAUSE"/>
+                <action android:name="org.moire.ultrasonic.CMD_NEXT"/>
+                <action android:name="org.moire.ultrasonic.CMD_PREVIOUS"/>
+                <action android:name="org.moire.ultrasonic.CMD_STOP"/>
             </intent-filter>
         </service>
 
-        <receiver a:name=".receiver.MediaButtonIntentReceiver">
-            <intent-filter a:priority="2147483647">
-                <action a:name="android.intent.action.MEDIA_BUTTON"/>
+        <receiver android:name=".receiver.MediaButtonIntentReceiver">
+            <intent-filter android:priority="2147483647">
+                <action android:name="android.intent.action.MEDIA_BUTTON"/>
             </intent-filter>
         </receiver>
-        <receiver a:name=".receiver.BluetoothIntentReceiver">
+        <receiver android:name=".receiver.BluetoothIntentReceiver">
             <intent-filter>
-                <action a:name="android.bluetooth.device.action.ACL_CONNECTED"/>
-                <action a:name="android.bluetooth.device.action.ACL_DISCONNECTED"/>
-                <action a:name="android.bluetooth.device.action.ACL_DISCONNECT_REQUESTED"/>
-                <action a:name="android.bluetooth.a2dp.action.SINK_STATE_CHANGED"/>
+                <action android:name="android.bluetooth.device.action.ACL_CONNECTED"/>
+                <action android:name="android.bluetooth.device.action.ACL_DISCONNECTED"/>
+                <action android:name="android.bluetooth.device.action.ACL_DISCONNECT_REQUESTED"/>
+                <action android:name="android.bluetooth.a2dp.action.SINK_STATE_CHANGED"/>
             </intent-filter>
         </receiver>
         <receiver
-            a:name=".provider.UltraSonicAppWidgetProvider4x1"
-            a:label="UltraSonic (4x1)">
+            android:name=".provider.UltraSonicAppWidgetProvider4x1"
+            android:label="UltraSonic (4x1)">
             <intent-filter>
-                <action a:name="android.appwidget.action.APPWIDGET_UPDATE"/>
+                <action android:name="android.appwidget.action.APPWIDGET_UPDATE"/>
             </intent-filter>
 
             <meta-data
-                a:name="android.appwidget.provider"
-                a:resource="@xml/appwidget_info_4x1"/>
+                android:name="android.appwidget.provider"
+                android:resource="@xml/appwidget_info_4x1"/>
         </receiver>
         <receiver
-            a:name=".provider.UltraSonicAppWidgetProvider4x2"
-            a:label="UltraSonic (4x2)">
+            android:name=".provider.UltraSonicAppWidgetProvider4x2"
+            android:label="UltraSonic (4x2)">
             <intent-filter>
-                <action a:name="android.appwidget.action.APPWIDGET_UPDATE"/>
+                <action android:name="android.appwidget.action.APPWIDGET_UPDATE"/>
             </intent-filter>
 
             <meta-data
-                a:name="android.appwidget.provider"
-                a:resource="@xml/appwidget_info_4x2"/>
+                android:name="android.appwidget.provider"
+                android:resource="@xml/appwidget_info_4x2"/>
         </receiver>
         <receiver
-            a:name=".provider.UltraSonicAppWidgetProvider4x3"
-            a:label="UltraSonic (4x3)">
+            android:name=".provider.UltraSonicAppWidgetProvider4x3"
+            android:label="UltraSonic (4x3)">
             <intent-filter>
-                <action a:name="android.appwidget.action.APPWIDGET_UPDATE"/>
+                <action android:name="android.appwidget.action.APPWIDGET_UPDATE"/>
             </intent-filter>
 
             <meta-data
-                a:name="android.appwidget.provider"
-                a:resource="@xml/appwidget_info_4x3"/>
+                android:name="android.appwidget.provider"
+                android:resource="@xml/appwidget_info_4x3"/>
         </receiver>
         <receiver
-            a:name=".provider.UltraSonicAppWidgetProvider4x4"
-            a:label="UltraSonic (4x4)">
+            android:name=".provider.UltraSonicAppWidgetProvider4x4"
+            android:label="UltraSonic (4x4)">
             <intent-filter>
-                <action a:name="android.appwidget.action.APPWIDGET_UPDATE"/>
+                <action android:name="android.appwidget.action.APPWIDGET_UPDATE"/>
             </intent-filter>
 
             <meta-data
-                a:name="android.appwidget.provider"
-                a:resource="@xml/appwidget_info_4x4"/>
+                android:name="android.appwidget.provider"
+                android:resource="@xml/appwidget_info_4x4"/>
         </receiver>
 
         <provider
-            a:name=".provider.SearchSuggestionProvider"
-            a:authorities="org.moire.ultrasonic.provider.SearchSuggestionProvider"/>
+            android:name=".provider.SearchSuggestionProvider"
+            android:authorities="org.moire.ultrasonic.provider.SearchSuggestionProvider"/>
 
         <meta-data
-            a:name="android.app.default_searchable"
-            a:value="org.moire.ultrasonic.activity.QueryReceiverActivity"/>
+            android:name="android.app.default_searchable"
+            android:value="org.moire.ultrasonic.activity.QueryReceiverActivity"/>
 
         <receiver
-            a:name=".receiver.A2dpIntentReceiver"
-            a:exported="false">
+            android:name=".receiver.A2dpIntentReceiver"
+            android:exported="false">
             <intent-filter>
-                <action a:name="com.android.music.playstatusrequest"/>
+                <action android:name="com.android.music.playstatusrequest"/>
             </intent-filter>
         </receiver>
     </application>
