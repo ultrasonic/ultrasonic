@@ -20,8 +20,8 @@
 
             <ImageView
                 a:id="@+id/download_album_art_image"
-                a:layout_width="wrap_content"
-                a:layout_height="fill_parent"
+                a:layout_width="match_parent"
+                a:layout_height="match_parent"
                 a:scaleType="centerCrop"
                 a:layout_alignParentTop="true"
                 a:layout_centerInParent="true"
