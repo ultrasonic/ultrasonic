@@ -887,8 +887,11 @@ public class DownloadActivity extends SubsonicTabActivity implements OnGestureLi
 				}
 
 				Intent intent = new Intent(this, SelectAlbumActivity.class);
-				intent.putExtra(Constants.INTENT_EXTRA_NAME_ID, entry.getParent());
+				String albumId = Util.getShouldUseId3Tags(this) ? entry.getAlbumId() : entry.getParent();
+				intent.putExtra(Constants.INTENT_EXTRA_NAME_ID, albumId);
 				intent.putExtra(Constants.INTENT_EXTRA_NAME_NAME, entry.getAlbum());
+				intent.putExtra(Constants.INTENT_EXTRA_NAME_IS_ALBUM, true);
+				intent.putExtra(Constants.INTENT_EXTRA_NAME_PARENT_ID, entry.getParent());
 				startActivityForResultWithoutTransition(this, intent);
 				return true;
 			case R.id.menu_lyrics:
