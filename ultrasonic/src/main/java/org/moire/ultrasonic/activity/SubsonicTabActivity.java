@@ -20,7 +20,6 @@ package org.moire.ultrasonic.activity;
 
 import android.app.AlertDialog;
 import android.app.Dialog;
-import android.app.NotificationManager;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -33,54 +32,26 @@ import android.os.Bundle;
 import android.os.Environment;
 import android.support.v7.app.ActionBar;
 import android.util.Log;
-import android.view.KeyEvent;
-import android.view.LayoutInflater;
-import android.view.MenuItem;
-import android.view.MotionEvent;
-import android.view.View;
+import android.view.*;
 import android.view.View.OnClickListener;
 import android.view.View.OnTouchListener;
-import android.view.ViewGroup;
-import android.widget.CheckBox;
-import android.widget.CompoundButton;
-import android.widget.EditText;
-import android.widget.ImageView;
-import android.widget.RemoteViews;
-import android.widget.TextView;
-
+import android.widget.*;
 import net.simonvt.menudrawer.MenuDrawer;
 import net.simonvt.menudrawer.Position;
-
 import org.moire.ultrasonic.R;
+import org.moire.ultrasonic.app.UApp;
 import org.moire.ultrasonic.domain.MusicDirectory;
 import org.moire.ultrasonic.domain.MusicDirectory.Entry;
 import org.moire.ultrasonic.domain.PlayerState;
 import org.moire.ultrasonic.domain.Share;
-import org.moire.ultrasonic.service.DownloadFile;
-import org.moire.ultrasonic.service.DownloadService;
-import org.moire.ultrasonic.service.DownloadServiceImpl;
-import org.moire.ultrasonic.service.MusicService;
-import org.moire.ultrasonic.service.MusicServiceFactory;
-import org.moire.ultrasonic.util.BackgroundTask;
-import org.moire.ultrasonic.util.Constants;
-import org.moire.ultrasonic.util.EntryByDiscAndTrackComparator;
-import org.moire.ultrasonic.util.ImageLoader;
-import org.moire.ultrasonic.util.ModalBackgroundTask;
-import org.moire.ultrasonic.util.ShareDetails;
-import org.moire.ultrasonic.util.SilentBackgroundTask;
-import org.moire.ultrasonic.util.TabActivityBackgroundTask;
-import org.moire.ultrasonic.util.TimeSpan;
-import org.moire.ultrasonic.util.TimeSpanPicker;
-import org.moire.ultrasonic.util.Util;
-import org.moire.ultrasonic.util.VideoPlayerType;
+import org.moire.ultrasonic.featureflags.Feature;
+import org.moire.ultrasonic.service.*;
+import org.moire.ultrasonic.subsonic.SubsonicImageLoaderProxy;
+import org.moire.ultrasonic.util.*;
 
 import java.io.File;
 import java.io.PrintWriter;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.LinkedList;
-import java.util.List;
+import java.util.*;
 import java.util.regex.Pattern;
 
 /**
@@ -820,21 +791,39 @@ public class SubsonicTabActivity extends ResultActivity implements OnClickListen
 		}
 	}
 
-	public synchronized void clearImageLoader()
-	{
-		if (IMAGE_LOADER != null && IMAGE_LOADER.isRunning()) IMAGE_LOADER.clear();
-	}
+    public synchronized void clearImageLoader() {
+        if (IMAGE_LOADER != null &&
+                IMAGE_LOADER.isRunning()) {
+            IMAGE_LOADER.clear();
+        }
 
-	public synchronized ImageLoader getImageLoader()
-	{
-		if (IMAGE_LOADER == null || !IMAGE_LOADER.isRunning())
-		{
-			IMAGE_LOADER = new ImageLoader(this, Util.getImageLoaderConcurrency(this));
-			IMAGE_LOADER.startImageLoader();
-		}
+        IMAGE_LOADER = null;
+    }
 
-		return IMAGE_LOADER;
-	}
+    public synchronized ImageLoader getImageLoader() {
+        if (IMAGE_LOADER == null ||
+                !IMAGE_LOADER.isRunning()) {
+            LegacyImageLoader legacyImageLoader = new LegacyImageLoader(
+                    this,
+                    Util.getImageLoaderConcurrency(this)
+            );
+
+            boolean isNewImageLoaderEnabled = ((UApp) getApplication()).getFeaturesStorage()
+                    .isFeatureEnabled(Feature.NEW_IMAGE_DOWNLOADER);
+            if (isNewImageLoaderEnabled) {
+                IMAGE_LOADER = new SubsonicImageLoaderProxy(
+                        legacyImageLoader,
+                        ((UApp) getApplication()).getSubsonicImageLoader()
+                );
+            } else {
+                IMAGE_LOADER = legacyImageLoader;
+            }
+
+            IMAGE_LOADER.startImageLoader();
+        }
+
+        return IMAGE_LOADER;
+    }
 
 	void download(final boolean append, final boolean save, final boolean autoPlay, final boolean playNext, final boolean shuffle, final List<Entry> songs)
 	{

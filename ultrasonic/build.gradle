@@ -8,8 +8,8 @@ android {
 
     defaultConfig {
         applicationId "org.moire.ultrasonic"
-        versionCode 68
-        versionName "2.5.0"
+        versionCode 69
+        versionName "2.6.0"
 
         minSdkVersion versions.minSdk
         targetSdkVersion versions.targetSdk
@@ -55,12 +55,14 @@ dependencies {
     implementation project(':library')
     implementation project(':domain')
     implementation project(':subsonic-api')
+    implementation project(':subsonic-api-image-loader')
     implementation project(':cache')
 
     implementation androidSupport.support
     implementation androidSupport.design
 
     implementation other.kotlinStdlib
+    implementation other.koinAndroid
 
     testImplementation other.kotlinReflect
     testImplementation testing.junit
@@ -69,7 +71,7 @@ dependencies {
     testImplementation testing.kluent
 }
 
-// Excluding all non-kotlin classes
+// Excluding all java classes and stuff that should not be covered
 ext {
     jacocoExclude = [
             '**/activity/**',
@@ -83,7 +85,8 @@ ext {
             '**/view/**',
             '**/R$*.class',
             '**/R.class',
-            '**/BuildConfig.class'
+            '**/BuildConfig.class',
+            '**/di/**'
     ]
 }
 jacocoAndroidUnitTestReport {

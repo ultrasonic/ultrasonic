@@ -1,6 +1,7 @@
 include ':library'
 include ':domain'
 include ':subsonic-api'
+include ':subsonic-api-image-loader'
 include ':cache'
 include ':menudrawer'
 include ':pulltorefresh'

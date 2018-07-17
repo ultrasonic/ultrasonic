@@ -284,5 +284,14 @@
             a:summary="@string/settings.screen_lit_summary"
             a:title="@string/settings.screen_lit_title"/>
     </PreferenceCategory>
+    <PreferenceCategory a:title="@string/feature_flags_category_title">
+        <CheckBoxPreference
+            a:key="ff_new_image_loader"
+            a:persistent="false"
+            a:title="@string/feature_flags_image_loader_title"
+            a:summary="@string/feature_flags_image_loader_description"
+        />
+
+    </PreferenceCategory>
 
 </PreferenceScreen>

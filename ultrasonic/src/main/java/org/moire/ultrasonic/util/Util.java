@@ -171,14 +171,16 @@ public class Util extends DownloadActivity
 		return preferences.getBoolean(Constants.PREFERENCES_KEY_SHOW_LOCK_SCREEN_CONTROLS, false);
 	}
 
-	public static void setActiveServer(Context context, int instance)
-	{
+    public static void setActiveServer(
+            Context context,
+            int instance
+    ) {
         MusicServiceFactory.resetMusicService();
-		SharedPreferences preferences = getPreferences(context);
-		SharedPreferences.Editor editor = preferences.edit();
-		editor.putInt(Constants.PREFERENCES_KEY_SERVER_INSTANCE, instance);
-		editor.commit();
-	}
+        SharedPreferences preferences = getPreferences(context);
+        SharedPreferences.Editor editor = preferences.edit();
+        editor.putInt(Constants.PREFERENCES_KEY_SERVER_INSTANCE, instance);
+        editor.apply();
+    }
 
 	public static int getActiveServer(Context context)
 	{

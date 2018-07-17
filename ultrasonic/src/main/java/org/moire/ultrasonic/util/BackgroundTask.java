@@ -21,19 +21,16 @@ package org.moire.ultrasonic.util;
 import android.app.Activity;
 import android.os.Handler;
 import android.util.Log;
-
 import com.fasterxml.jackson.core.JsonParseException;
-
 import org.moire.ultrasonic.R;
 import org.moire.ultrasonic.service.SubsonicRESTException;
 import org.moire.ultrasonic.subsonic.RestErrorMapper;
 
+import javax.net.ssl.SSLException;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.security.cert.CertPathValidatorException;
 import java.security.cert.CertificateException;
-
-import javax.net.ssl.SSLException;
 
 /**
  * @author Sindre Mehus
@@ -70,7 +67,7 @@ public abstract class BackgroundTask<T> implements ProgressListener
 	protected void error(Throwable error)
 	{
 		Log.w(TAG, String.format("Got exception: %s", error), error);
-		new ErrorDialog(activity, getErrorMessage(error), true);
+		new ErrorDialog(activity, getErrorMessage(error), false);
 	}
 
     protected String getErrorMessage(Throwable error) {
