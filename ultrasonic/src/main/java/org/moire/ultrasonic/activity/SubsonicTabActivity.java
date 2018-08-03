@@ -38,15 +38,17 @@ import android.view.View.OnTouchListener;
 import android.widget.*;
 import net.simonvt.menudrawer.MenuDrawer;
 import net.simonvt.menudrawer.Position;
+import org.koin.java.standalone.KoinJavaComponent;
 import org.moire.ultrasonic.R;
-import org.moire.ultrasonic.app.UApp;
 import org.moire.ultrasonic.domain.MusicDirectory;
 import org.moire.ultrasonic.domain.MusicDirectory.Entry;
 import org.moire.ultrasonic.domain.PlayerState;
 import org.moire.ultrasonic.domain.Share;
 import org.moire.ultrasonic.featureflags.Feature;
+import org.moire.ultrasonic.featureflags.FeatureStorage;
 import org.moire.ultrasonic.service.*;
 import org.moire.ultrasonic.subsonic.SubsonicImageLoaderProxy;
+import org.moire.ultrasonic.subsonic.loader.image.SubsonicImageLoader;
 import org.moire.ultrasonic.util.*;
 
 import java.io.File;
@@ -808,12 +810,12 @@ public class SubsonicTabActivity extends ResultActivity implements OnClickListen
                     Util.getImageLoaderConcurrency(this)
             );
 
-            boolean isNewImageLoaderEnabled = ((UApp) getApplication()).getFeaturesStorage()
+            boolean isNewImageLoaderEnabled = KoinJavaComponent.get(FeatureStorage.class)
                     .isFeatureEnabled(Feature.NEW_IMAGE_DOWNLOADER);
             if (isNewImageLoaderEnabled) {
                 IMAGE_LOADER = new SubsonicImageLoaderProxy(
                         legacyImageLoader,
-                        ((UApp) getApplication()).getSubsonicImageLoader()
+                        KoinJavaComponent.get(SubsonicImageLoader.class)
                 );
             } else {
                 IMAGE_LOADER = legacyImageLoader;

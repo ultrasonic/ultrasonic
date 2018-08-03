@@ -63,6 +63,7 @@ dependencies {
 
     implementation other.kotlinStdlib
     implementation other.koinAndroid
+    implementation other.koinJava
 
     testImplementation other.kotlinReflect
     testImplementation testing.junit

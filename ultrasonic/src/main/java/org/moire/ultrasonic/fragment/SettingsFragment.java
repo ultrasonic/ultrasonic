@@ -9,10 +9,10 @@ import android.provider.SearchRecentSuggestions;
 import android.support.annotation.Nullable;
 import android.util.Log;
 import android.view.View;
+import org.koin.java.standalone.KoinJavaComponent;
 import org.moire.ultrasonic.R;
 import org.moire.ultrasonic.activity.ServerSettingsActivity;
 import org.moire.ultrasonic.activity.SubsonicTabActivity;
-import org.moire.ultrasonic.app.UApp;
 import org.moire.ultrasonic.featureflags.Feature;
 import org.moire.ultrasonic.featureflags.FeatureStorage;
 import org.moire.ultrasonic.provider.SearchSuggestionProvider;
@@ -175,7 +175,7 @@ public class SettingsFragment extends PreferenceFragment
         CheckBoxPreference ffImageLoader = (CheckBoxPreference) findPreference(
                 Constants.PREFERENCES_KEY_FF_IMAGE_LOADER);
 
-        final FeatureStorage featureStorage = ((UApp) getActivity().getApplication()).getFeaturesStorage();
+        final FeatureStorage featureStorage = KoinJavaComponent.get(FeatureStorage.class);
         if (ffImageLoader != null) {
             ffImageLoader.setChecked(featureStorage.isFeatureEnabled(Feature.NEW_IMAGE_DOWNLOADER));
             ffImageLoader.setOnPreferenceChangeListener(new Preference.OnPreferenceChangeListener() {
