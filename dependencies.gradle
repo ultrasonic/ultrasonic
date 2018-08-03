@@ -20,7 +20,7 @@ ext.versions = [
         okhttp               : "3.10.0",
         semver               : "1.0.0",
         twitterSerial        : "0.1.6",
-        koin                 : "0.9.3",
+        koin                 : "1.0.0-beta-3",
         picasso              : "2.71828",
 
         junit                : "4.12",
@@ -57,6 +57,7 @@ ext.other = [
         semver             : "net.swiftzer.semver:semver:$versions.semver",
         twitterSerial      : "com.twitter.serial:serial:$versions.twitterSerial",
         koinCore           : "org.koin:koin-core:$versions.koin",
+        koinJava           : "org.koin:koin-java:$versions.koin",
         koinAndroid        : "org.koin:koin-android:$versions.koin",
         picasso            : "com.squareup.picasso:picasso:$versions.picasso",
 ]
@@ -73,4 +74,5 @@ ext.testing = [
         apacheCodecs  : "commons-codec:commons-codec:$versions.apacheCodecs",
         testRunner    : "com.android.support.test:runner:$versions.testRunner",
         robolectric   : "org.robolectric:robolectric:$versions.robolectric",
+        koinTest      : "org.koin:koin-test:$versions.koin"
 ]

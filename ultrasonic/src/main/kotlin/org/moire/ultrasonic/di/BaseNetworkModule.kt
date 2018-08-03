@@ -1,11 +1,11 @@
 package org.moire.ultrasonic.di
 
 import okhttp3.OkHttpClient
-import org.koin.dsl.module.applicationContext
+import org.koin.dsl.module.module
 
 /**
  * Provides base network dependencies.
  */
-val baseNetworkModule = applicationContext {
-    bean { OkHttpClient.Builder().build() }
+val baseNetworkModule = module {
+    single { OkHttpClient.Builder().build() }
 }
