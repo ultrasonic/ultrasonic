@@ -25,7 +25,7 @@ jobs:
       - run:
           name: unit-tests
           command: |
-            ./gradlew :subsonic-api:test :cache:test :ultrasonic:testDebugUnitTest
+            ./gradlew :subsonic-api:test :cache:test :subsonic-api-image-loader:testDebugUnitTest :ultrasonic:testDebugUnitTest
             ./gradlew jacocoFullReport
             bash <(curl -s https://codecov.io/bash)
       - run:
