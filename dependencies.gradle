@@ -8,7 +8,7 @@ ext.versions = [
         ktlint               : "0.24.0",
         ktlintGradle         : "4.1.0",
         detekt               : "1.0.0.RC6-4",
-        jacoco               : "0.8.1",
+        jacoco               : "0.8.2",
 
         androidSupport       : "22.2.1",
 
