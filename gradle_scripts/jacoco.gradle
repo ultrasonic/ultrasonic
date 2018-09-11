@@ -1,17 +1,21 @@
 apply plugin: 'jacoco'
 
+jacoco {
+    toolVersion(versions.jacoco)
+}
+
 task jacocoMergeReports(type: JacocoMerge) {
     group = "Reporting"
     description = "Merge all jacoco reports from projects into one."
 
-    def subsonicApi = project.findProject("subsonic-api")
-    def ultrasonicApp = project.findProject("ultrasonic")
-    def cache = project.findProject("cache")
-    executionData(
-            "${subsonicApi.buildDir}/jacoco/test.exec",
-            "${ultrasonicApp.buildDir}/jacoco/testDebugUnitTest.exec",
-            "${cache.buildDir}/jacoco/test.exec"
-    )
+    List<File> jacocoFiles = new ArrayList<>()
+    project.subprojects { subproject ->
+        File commonModuleReport = new File(subproject.buildDir, "/jacoco/test.exec")
+        if (commonModuleReport.exists()) jacocoFiles.add(commonModuleReport)
+        File androidModuleReport = new File(subproject.buildDir, "/jacoco/testDebugUnitTest.exec")
+        if (androidModuleReport.exists()) jacocoFiles.add(androidModuleReport)
+    }
+    executionData(jacocoFiles.toArray())
     destinationFile(file("${project.buildDir}/jacoco/jacoco.exec"))
 }
 
@@ -20,35 +24,33 @@ def createJacocoFullReportTask() {
         group = "Reporting"
         description = "Generate full Jacoco coverage report including all modules."
 
-        def subsonicApi = project.findProject("subsonic-api")
-        def subsonicApiImageLoader = project.findProject("subsonic-api-image-loader")
-        def ultrasonicApp = project.findProject("ultrasonic")
-        def cache = project.findProject("cache")
-
-        classDirectories = files(
-                fileTree(
-                        dir: "${subsonicApi.buildDir}/classes/main",
-                        excludes: subsonicApi.jacocoExclude
-                ),
-                fileTree(
-                        dir: "${subsonicApiImageLoader.buildDir}/intermediates/classes/debug/org",
-                        excludes: subsonicApiImageLoader.jacocoExclude
-                ),
-                fileTree(
-                        dir: "${ultrasonicApp.buildDir}/intermediates/classes/debug/org",
-                        excludes: ultrasonicApp.jacocoExclude
-                ),
-                fileTree(
-                        dir: "${cache.buildDir}/classes/kotlin/main",
-                        excludes: cache.jacocoExclude
+        List<FileTree> classFileTreeList = new ArrayList<>()
+        List<FileTree> sourceFileTreeList = new ArrayList<>()
+        project.subprojects { subproject ->
+            if (subproject.plugins.hasPlugin("kotlin-android") &&
+                    subproject.hasProperty("jacocoExclude")) {
+                classFileTreeList.add(
+                        fileTree(
+                                dir: "${subproject.buildDir}/tmp/kotlin-classes/debug",
+                                excludes: subproject.jacocoExclude
+                        )
                 )
-        )
-        sourceDirectories = files(
-                subsonicApi.sourceSets.main.getAllSource(),
-                subsonicApiImageLoader.extensions.getByName('android').sourceSets.main.java.sourceFiles,
-                ultrasonicApp.extensions.getByName('android').sourceSets.main.java.sourceFiles,
-                cache.sourceSets.main.getAllSource(),
-        )
+                sourceFileTreeList.add(
+                        subproject.extensions.getByName('android').sourceSets.main.java.sourceFiles
+                )
+            } else if (subproject.hasProperty("jacocoExclude")) {
+                classFileTreeList.add(
+                        fileTree(
+                                dir: "${subproject.buildDir}/classes/kotlin/main",
+                                excludes: subproject.jacocoExclude
+                        )
+                )
+                sourceFileTreeList.add(subproject.sourceSets.main.getAllSource())
+            }
+        }
+
+        classDirectories = files(classFileTreeList.toArray())
+        sourceDirectories = files(sourceFileTreeList.toArray())
         executionData = files("${buildDir}/jacoco/jacoco.exec")
 
         reports {

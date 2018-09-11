@@ -1,6 +1,6 @@
 apply plugin: 'com.android.application'
 apply plugin: 'kotlin-android'
-apply plugin: 'jacoco-android'
+apply plugin: 'jacoco'
 apply from: "../gradle_scripts/code_quality.gradle"
 
 android {
@@ -90,10 +90,11 @@ ext {
             '**/di/**'
     ]
 }
-jacocoAndroidUnitTestReport {
-    excludes += jacocoExclude
+
+jacoco {
+    toolVersion(versions.jacoco)
 }
 
-afterEvaluate {
-    testDebugUnitTest.finalizedBy jacocoTestDebugUnitTestReport
+tasks.withType(Test) {
+    jacoco.includeNoLocationClasses = true
 }

@@ -1,7 +1,20 @@
 apply plugin: 'com.android.library'
 apply plugin: 'kotlin-android'
-apply plugin: 'jacoco-android'
 apply from: '../gradle_scripts/code_quality.gradle'
+apply plugin: 'jacoco'
+
+
+ext {
+    jacocoExclude = []
+}
+
+jacoco {
+    toolVersion(versions.jacoco)
+}
+
+tasks.withType(Test) {
+    jacoco.includeNoLocationClasses = true
+}
 
 android {
     compileSdkVersion(versions.compileSdk)
@@ -36,20 +49,4 @@ dependencies {
     testImplementation testing.mockitoKotlin
     testImplementation testing.kluent
     testImplementation testing.robolectric
-}
-
-jacoco {
-    toolVersion(versions.jacoco)
-}
-
-ext {
-    jacocoExclude = []
-}
-
-jacocoAndroidUnitTestReport {
-    excludes += jacocoExclude
-}
-
-afterEvaluate {
-    testDebugUnitTest.finalizedBy jacocoTestDebugUnitTestReport
 }
