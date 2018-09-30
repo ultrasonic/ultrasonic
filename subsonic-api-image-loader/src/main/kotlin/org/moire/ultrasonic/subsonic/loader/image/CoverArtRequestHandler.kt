@@ -20,7 +20,7 @@ class CoverArtRequestHandler(private val apiClient: SubsonicAPIClient) : Request
     }
 
     override fun load(request: Request, networkPolicy: Int): Result {
-        val id = request.uri.getQueryParameter(QUERY_ID)
+        val id = request.uri.getQueryParameter(QUERY_ID) ?: throw IllegalArgumentException("Nullable id")
 
         val response = apiClient.getCoverArt(id)
         if (response.hasError()) {

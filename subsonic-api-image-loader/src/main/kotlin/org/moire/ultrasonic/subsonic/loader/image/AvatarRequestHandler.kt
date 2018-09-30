@@ -23,6 +23,7 @@ class AvatarRequestHandler(
 
     override fun load(request: Request, networkPolicy: Int): Result {
         val username = request.uri.getQueryParameter(QUERY_USERNAME)
+            ?: throw IllegalArgumentException("Nullable username")
 
         val response = apiClient.getAvatar(username)
         if (response.hasError()) {
