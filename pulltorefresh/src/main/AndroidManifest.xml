@@ -3,6 +3,4 @@
     package="com.handmark.pulltorefresh.library"
     android:versionCode="2110"
     android:versionName="2.1.1">
-
-    <uses-sdk android:minSdkVersion="4" android:targetSdkVersion="16" />
 </manifest>

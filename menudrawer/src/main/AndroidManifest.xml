@@ -3,6 +3,4 @@
       package="net.simonvt.menudrawer"
       android:versionCode="6"
       android:versionName="3.0.2">
-
-    <uses-sdk android:minSdkVersion="7" android:targetSdkVersion="16" />
 </manifest>
