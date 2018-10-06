@@ -22,7 +22,8 @@ ext.versions = [
         koin                 : "1.0.0-beta-3",
         picasso              : "2.71828",
 
-        junit                : "4.12",
+        junit4               : "4.12",
+        junit5               : "5.3.1",
         mockito              : "2.16.0",
         mockitoKotlin        : "1.5.0",
         kluent               : "1.35",
@@ -62,7 +63,8 @@ ext.other = [
 ]
 
 ext.testing = [
-        junit         : "junit:junit:$versions.junit",
+        junit         : "junit:junit:$versions.junit4",
+        junitVintage  : "org.junit.vintage:junit-vintage-engine:$versions.junit5",
         kotlinJunit   : "org.jetbrains.kotlin:kotlin-test-junit:$versions.kotlin",
         mockitoKotlin : "com.nhaarman:mockito-kotlin:$versions.mockitoKotlin",
         mockito       : "org.mockito:mockito-core:$versions.mockito",

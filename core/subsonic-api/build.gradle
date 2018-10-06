@@ -11,7 +11,6 @@ dependencies {
     implementation other.kotlinReflect // for jackson kotlin, but to use the same version
     implementation other.okhttpLogging
 
-    testImplementation testing.junit
     testImplementation testing.kotlinJunit
     testImplementation testing.mockito
     testImplementation testing.mockitoInline

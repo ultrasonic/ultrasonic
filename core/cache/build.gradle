@@ -4,7 +4,6 @@ dependencies {
     api project(':core:domain')
     api other.twitterSerial
 
-    testImplementation testing.junit
     testImplementation testing.kotlinJunit
     testImplementation testing.mockito
     testImplementation testing.mockitoInline
