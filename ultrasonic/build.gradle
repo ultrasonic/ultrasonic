@@ -53,7 +53,7 @@ dependencies {
     implementation project(':menudrawer')
     implementation project(':pulltorefresh')
     implementation project(':library')
-    implementation project(':domain')
+    implementation project(':core:domain')
     implementation project(':subsonic-api')
     implementation project(':subsonic-api-image-loader')
     implementation project(':core:cache')

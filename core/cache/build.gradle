@@ -1,7 +1,7 @@
 apply from: bootstrap.kotlinModule
 
 dependencies {
-    api project(':domain')
+    api project(':core:domain')
     api other.twitterSerial
 
     testImplementation testing.junit

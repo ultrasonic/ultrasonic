@@ -7,7 +7,7 @@ android {
 }
 
 dependencies {
-    api project(':domain')
+    api project(':core:domain')
     api project(':subsonic-api')
     api(other.picasso) {
         exclude group: "com.android.support"

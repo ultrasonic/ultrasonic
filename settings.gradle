@@ -1,5 +1,5 @@
 include ':library'
-include ':domain'
+include ':core:domain'
 include ':subsonic-api'
 include ':subsonic-api-image-loader'
 include ':core:cache'
