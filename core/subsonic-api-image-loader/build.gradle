@@ -13,7 +13,6 @@ dependencies {
         exclude group: "com.android.support"
     }
 
-    testImplementation testing.junit
     testImplementation testing.kotlinJunit
     testImplementation testing.mockito
     testImplementation testing.mockitoInline

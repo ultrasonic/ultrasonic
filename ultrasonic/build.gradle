@@ -49,6 +49,10 @@ android {
     }
 }
 
+tasks.withType(Test) {
+    useJUnitPlatform()
+}
+
 dependencies {
     implementation project(':core:menudrawer')
     implementation project(':core:pulltorefresh')
@@ -67,6 +71,7 @@ dependencies {
 
     testImplementation other.kotlinReflect
     testImplementation testing.junit
+    testRuntimeOnly testing.junitVintage
     testImplementation testing.kotlinJunit
     testImplementation testing.mockitoKotlin
     testImplementation testing.kluent
