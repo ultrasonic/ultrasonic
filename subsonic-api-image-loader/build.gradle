@@ -1,43 +1,14 @@
-apply plugin: 'com.android.library'
-apply plugin: 'kotlin-android'
-apply from: '../gradle_scripts/code_quality.gradle'
-apply plugin: 'jacoco'
-
-
-ext {
-    jacocoExclude = []
-}
-
-jacoco {
-    toolVersion(versions.jacoco)
-}
-
-tasks.withType(Test) {
-    jacoco.includeNoLocationClasses = true
-}
+apply from: bootstrap.androidModule
 
 android {
-    compileSdkVersion(versions.compileSdk)
-
-    defaultConfig {
-        minSdkVersion(versions.minSdk)
-        targetSdkVersion(versions.targetSdk)
-
-        testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
-    }
-
-    sourceSets {
-        main.java.srcDirs += 'src/main/kotlin'
-        test.java.srcDirs += 'src/test/kotlin'
-        test.java.srcDirs += "${projectDir}/src/integrationTest/kotlin"
-        test.resources.srcDirs += "${projectDir}/src/integrationTest/resources"
+    libraryVariants.all {
+        generateBuildConfig.enabled = true
     }
 }
 
 dependencies {
     api project(':domain')
     api project(':subsonic-api')
-    api other.kotlinStdlib
     api(other.picasso) {
         exclude group: "com.android.support"
     }

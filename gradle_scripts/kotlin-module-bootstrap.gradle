@@ -44,6 +44,7 @@ test.finalizedBy jacocoTestReport
 test {
     jacoco {
         excludes += jacocoExclude
+        includeNoLocationClasses = true
     }
 }
 

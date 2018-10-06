@@ -1,0 +1,70 @@
+apply plugin: 'com.android.library'
+apply plugin: 'kotlin-android'
+apply plugin: 'kotlin-android-extensions'
+apply plugin: 'jacoco-android'
+apply from: "${project.rootDir}/gradle_scripts/code_quality.gradle"
+
+androidExtensions {
+    experimental = true
+}
+
+android {
+    compileSdkVersion versions.compileSdk
+
+    defaultConfig {
+        testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
+        minSdkVersion versions.minSdk
+        targetSdkVersion versions.targetSdk
+    }
+
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_1_8
+        targetCompatibility JavaVersion.VERSION_1_8
+    }
+
+    sourceSets {
+        main.java.srcDirs += "${projectDir}/src/main/kotlin"
+        test.java.srcDirs += "${projectDir}/src/test/kotlin"
+        test.java.srcDirs += "${projectDir}/src/integrationTest/kotlin"
+        test.resources.srcDirs += "${projectDir}/src/integrationTest/resources"
+    }
+
+    buildTypes {
+        debug {
+            minifyEnabled false
+            debuggable true
+        }
+        release {
+            minifyEnabled false
+        }
+    }
+
+    // Disable generating BuildConfig class by default
+    // Replace it with https://issuetracker.google.com/issues/72050365 once released.
+    libraryVariants.all {
+        generateBuildConfig.enabled = false
+    }
+}
+
+sourceCompatibility = JavaVersion.VERSION_1_8
+targetCompatibility = JavaVersion.VERSION_1_8
+
+dependencies {
+    api other.kotlinStdlib
+}
+
+jacoco {
+    toolVersion(versions.jacoco)
+}
+
+ext {
+    jacocoExclude = []
+}
+
+jacocoAndroidUnitTestReport {
+    excludes += jacocoExclude
+}
+
+afterEvaluate {
+    testDebugUnitTest.finalizedBy jacocoTestDebugUnitTestReport
+}
