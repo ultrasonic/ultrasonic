@@ -50,7 +50,7 @@ class CoverArtRequestHandlerTest {
             handler.load(requestUri.buildRequest(), 0)
         }
 
-        fail `should throw` IllegalStateException::class
+        fail `should throw` IllegalArgumentException::class
     }
 
     @Test
