@@ -2,6 +2,10 @@
 buildscript {
     apply from: 'dependencies.gradle'
 
+    ext.bootstrap = [
+            kotlinModule : "${project.rootDir}/gradle_scripts/kotlin-module-bootstrap.gradle",
+    ]
+
     repositories {
         jcenter()
         google()

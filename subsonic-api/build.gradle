@@ -1,16 +1,6 @@
-apply plugin: 'kotlin'
-apply plugin: 'java-library'
-apply plugin: 'jacoco'
-apply from: '../gradle_scripts/code_quality.gradle'
-
-sourceSets {
-    main.java.srcDirs += "${projectDir}/src/main/kotlin"
-    test.java.srcDirs += "${projectDir}/src/integrationTest/kotlin"
-    test.resources.srcDirs += "${projectDir}/src/integrationTest/resources"
-}
+apply from: bootstrap.kotlinModule
 
 dependencies {
-    api other.kotlinStdlib
     api other.retrofit
     api other.jacksonConverter
     api other.koinCore
@@ -31,35 +21,10 @@ dependencies {
     testImplementation testing.apacheCodecs
 }
 
-jacoco {
-    toolVersion(versions.jacoco)
-}
-
 ext {
     // Excluding data classes
     jacocoExclude = [
             '**/models/**',
             '**/di/**'
     ]
-}
-
-jacocoTestReport {
-    reports {
-        html.enabled true
-        csv.enabled false
-        xml.enabled true
-    }
-
-    afterEvaluate {
-        classDirectories = files(classDirectories.files.collect {
-            fileTree(dir: it, excludes: jacocoExclude)
-        })
-    }
-}
-
-test.finalizedBy jacocoTestReport
-test {
-    jacoco {
-        excludes += jacocoExclude
-    }
 }
