@@ -50,7 +50,7 @@ android {
 }
 
 dependencies {
-    implementation project(':menudrawer')
+    implementation project(':core:menudrawer')
     implementation project(':pulltorefresh')
     implementation project(':core:library')
     implementation project(':core:domain')
