@@ -52,7 +52,7 @@ android {
 dependencies {
     implementation project(':menudrawer')
     implementation project(':pulltorefresh')
-    implementation project(':library')
+    implementation project(':core:library')
     implementation project(':core:domain')
     implementation project(':subsonic-api')
     implementation project(':subsonic-api-image-loader')
