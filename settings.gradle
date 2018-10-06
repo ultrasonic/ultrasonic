@@ -1,6 +1,6 @@
 include ':core:library'
 include ':core:domain'
-include ':subsonic-api'
+include ':core:subsonic-api'
 include ':core:subsonic-api-image-loader'
 include ':core:cache'
 include ':core:menudrawer'

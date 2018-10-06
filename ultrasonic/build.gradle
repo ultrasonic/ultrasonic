@@ -54,7 +54,7 @@ dependencies {
     implementation project(':core:pulltorefresh')
     implementation project(':core:library')
     implementation project(':core:domain')
-    implementation project(':subsonic-api')
+    implementation project(':core:subsonic-api')
     implementation project(':core:subsonic-api-image-loader')
     implementation project(':core:cache')
 
