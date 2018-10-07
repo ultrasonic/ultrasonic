@@ -30,7 +30,7 @@ jobs:
             bash <(curl -s https://codecov.io/bash)
       - run:
           name: lint
-          command: ./gradlew lint
+          command: ./gradlew :ultrasonic:lintRelease
       - run:
           name: assemble release build
           command: ./gradlew assembleRelease
