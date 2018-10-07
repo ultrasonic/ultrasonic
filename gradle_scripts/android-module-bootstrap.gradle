@@ -1,7 +1,7 @@
 apply plugin: 'com.android.library'
 apply plugin: 'kotlin-android'
 apply plugin: 'kotlin-android-extensions'
-apply plugin: 'jacoco-android'
+apply plugin: 'jacoco'
 apply from: "${project.rootDir}/gradle_scripts/code_quality.gradle"
 
 androidExtensions {
@@ -51,6 +51,10 @@ targetCompatibility = JavaVersion.VERSION_1_8
 
 tasks.withType(Test) {
     useJUnitPlatform()
+    jacoco {
+        includeNoLocationClasses = true
+        excludes += jacocoExclude
+    }
 }
 
 dependencies {
@@ -68,10 +72,3 @@ ext {
     jacocoExclude = []
 }
 
-jacocoAndroidUnitTestReport {
-    excludes += jacocoExclude
-}
-
-afterEvaluate {
-    testDebugUnitTest.finalizedBy jacocoTestDebugUnitTestReport
-}
