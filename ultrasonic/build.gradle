@@ -77,6 +77,10 @@ dependencies {
     testImplementation testing.kluent
 }
 
+jacoco {
+    toolVersion(versions.jacoco)
+}
+
 // Excluding all java classes and stuff that should not be covered
 ext {
     jacocoExclude = [

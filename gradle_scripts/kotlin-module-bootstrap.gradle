@@ -55,7 +55,7 @@ test {
     }
 }
 
-task("ciTest", dependsOn: "test") {
+tasks.create(name: "ciTest", dependsOn: "test") {
     group = "Verification"
     description = "Special task for CI that calls all tests in pure kotlin modules"
 }
