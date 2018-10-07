@@ -1,0 +1,22 @@
+apply from: bootstrap.androidModule
+
+android {
+    libraryVariants.all {
+        generateBuildConfig.enabled = true
+    }
+}
+
+dependencies {
+    api project(':core:domain')
+    api project(':core:subsonic-api')
+    api(other.picasso) {
+        exclude group: "com.android.support"
+    }
+
+    testImplementation testing.kotlinJunit
+    testImplementation testing.mockito
+    testImplementation testing.mockitoInline
+    testImplementation testing.mockitoKotlin
+    testImplementation testing.kluent
+    testImplementation testing.robolectric
+}

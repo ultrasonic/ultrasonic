@@ -1,0 +1,10 @@
+apply from: bootstrap.kotlinModule
+
+ext {
+    jacocoExclude = [
+            '**/domain/**'
+    ]
+}
+dependencies {
+    api other.semver
+}

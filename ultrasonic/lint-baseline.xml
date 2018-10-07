@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<issues format="4" by="lint 3.0.1">
+<issues format="4" by="lint 3.2.0" client="gradle" variant="release" version="3.2.0">
 
     <issue
         id="ScrollViewSize"
@@ -19,7 +19,7 @@
         errorLine2="   ~~~~~~~~~~~~~~~">
         <location
             file="src/main/java/org/moire/ultrasonic/activity/MainActivity.java"
-            line="262"
+            line="269"
             column="4"/>
     </issue>
 
@@ -30,7 +30,7 @@
         errorLine2="  ~~~~~~~~~~~~~~~">
         <location
             file="src/main/java/org/moire/ultrasonic/util/Util.java"
-            line="151"
+            line="133"
             column="3"/>
     </issue>
 
@@ -41,7 +41,7 @@
         errorLine2="  ~~~~~~~~~~~~~~~">
         <location
             file="src/main/java/org/moire/ultrasonic/util/Util.java"
-            line="198"
+            line="291"
             column="3"/>
     </issue>
 
@@ -52,18 +52,7 @@
         errorLine2="  ~~~~~~~~~~~~~~~">
         <location
             file="src/main/java/org/moire/ultrasonic/util/Util.java"
-            line="307"
-            column="3"/>
-    </issue>
-
-    <issue
-        id="ApplySharedPref"
-        message="Consider using `apply()` instead; `commit` writes its data to persistent storage immediately, whereas `apply` will handle it in the background"
-        errorLine1="  editor.commit();"
-        errorLine2="  ~~~~~~~~~~~~~~~">
-        <location
-            file="src/main/java/org/moire/ultrasonic/util/Util.java"
-            line="326"
+            line="310"
             column="3"/>
     </issue>
 
@@ -74,8 +63,30 @@
         errorLine2="   ~~~~~~~~~~~~~~~">
         <location
             file="src/main/java/org/moire/ultrasonic/util/Util.java"
-            line="416"
+            line="399"
             column="4"/>
+    </issue>
+
+    <issue
+        id="ApplySharedPref"
+        message="Consider using `apply()` instead; `commit` writes its data to persistent storage immediately, whereas `apply` will handle it in the background"
+        errorLine1="  editor.commit();"
+        errorLine2="  ~~~~~~~~~~~~~~~">
+        <location
+            file="src/main/java/org/moire/ultrasonic/util/Util.java"
+            line="1607"
+            column="3"/>
+    </issue>
+
+    <issue
+        id="ApplySharedPref"
+        message="Consider using `apply()` instead; `commit` writes its data to persistent storage immediately, whereas `apply` will handle it in the background"
+        errorLine1="  editor.commit();"
+        errorLine2="  ~~~~~~~~~~~~~~~">
+        <location
+            file="src/main/java/org/moire/ultrasonic/util/Util.java"
+            line="1615"
+            column="3"/>
     </issue>
 
     <issue
@@ -90,39 +101,17 @@
     </issue>
 
     <issue
-        id="ApplySharedPref"
-        message="Consider using `apply()` instead; `commit` writes its data to persistent storage immediately, whereas `apply` will handle it in the background"
-        errorLine1="  editor.commit();"
-        errorLine2="  ~~~~~~~~~~~~~~~">
-        <location
-            file="src/main/java/org/moire/ultrasonic/util/Util.java"
-            line="1631"
-            column="3"/>
-    </issue>
-
-    <issue
-        id="ApplySharedPref"
-        message="Consider using `apply()` instead; `commit` writes its data to persistent storage immediately, whereas `apply` will handle it in the background"
-        errorLine1="  editor.commit();"
-        errorLine2="  ~~~~~~~~~~~~~~~">
-        <location
-            file="src/main/java/org/moire/ultrasonic/util/Util.java"
-            line="1639"
-            column="3"/>
-    </issue>
-
-    <issue
         id="CutPasteId"
         message="The id `R.id.now_playing_control_play` has already been looked up in this method; possible cut &amp; paste error?"
         errorLine1="    ImageView nowPlayingControlPlay = (ImageView) nowPlayingView.findViewById(R.id.now_playing_control_play);"
         errorLine2="                                                  ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
         <location
             file="src/main/java/org/moire/ultrasonic/activity/SubsonicTabActivity.java"
-            line="414"
+            line="387"
             column="51"/>
         <location
             file="src/main/java/org/moire/ultrasonic/activity/SubsonicTabActivity.java"
-            line="360"
+            line="333"
             column="40"/>
     </issue>
 
@@ -166,47 +155,36 @@
         errorLine2="                                                      ~~~~~~~~~~~">
         <location
             file="src/main/java/org/moire/ultrasonic/util/FileUtil.java"
-            line="533"
+            line="522"
             column="55"/>
     </issue>
 
     <issue
         id="DefaultLocale"
         message="Implicitly using the default locale is a common source of bugs: Use `String.format(Locale, ...)` instead"
-        errorLine1="   Thread thread = new Thread(this, String.format(&quot;ImageLoader_%d&quot;, i));"
-        errorLine2="                                    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
+        errorLine1="            Thread thread = new Thread(this, String.format(&quot;ImageLoader_%d&quot;, i));"
+        errorLine2="                                             ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
         <location
-            file="src/main/java/org/moire/ultrasonic/util/ImageLoader.java"
-            line="105"
-            column="37"/>
+            file="src/main/java/org/moire/ultrasonic/util/LegacyImageLoader.java"
+            line="104"
+            column="46"/>
     </issue>
 
     <issue
         id="DefaultLocale"
         message="Implicitly using the default locale is a common source of bugs: Use `String.format(Locale, ...)` instead"
-        errorLine1="  return String.format(&quot;%s:%d&quot;, coverArtId, size);"
-        errorLine2="         ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
+        errorLine1="        return String.format(&quot;%s:%d&quot;, coverArtId, size);"
+        errorLine2="               ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
         <location
-            file="src/main/java/org/moire/ultrasonic/util/ImageLoader.java"
-            line="208"
-            column="10"/>
+            file="src/main/java/org/moire/ultrasonic/util/LegacyImageLoader.java"
+            line="209"
+            column="16"/>
     </issue>
 
     <issue
         id="DefaultLocale"
         message="Implicitly using the default locale is a common source of bugs: Use `toLowerCase(Locale)` instead. For strings meant to be internal use `Locale.ROOT`, otherwise `Locale.getDefault()`."
         errorLine1="    String lhs = lhsArtist.getName().toLowerCase();"
-        errorLine2="                                     ~~~~~~~~~~~">
-        <location
-            file="src/main/java/org/moire/ultrasonic/service/OfflineMusicService.java"
-            line="105"
-            column="38"/>
-    </issue>
-
-    <issue
-        id="DefaultLocale"
-        message="Implicitly using the default locale is a common source of bugs: Use `toLowerCase(Locale)` instead. For strings meant to be internal use `Locale.ROOT`, otherwise `Locale.getDefault()`."
-        errorLine1="    String rhs = rhsArtist.getName().toLowerCase();"
         errorLine2="                                     ~~~~~~~~~~~">
         <location
             file="src/main/java/org/moire/ultrasonic/service/OfflineMusicService.java"
@@ -217,11 +195,22 @@
     <issue
         id="DefaultLocale"
         message="Implicitly using the default locale is a common source of bugs: Use `toLowerCase(Locale)` instead. For strings meant to be internal use `Locale.ROOT`, otherwise `Locale.getDefault()`."
+        errorLine1="    String rhs = rhsArtist.getName().toLowerCase();"
+        errorLine2="                                     ~~~~~~~~~~~">
+        <location
+            file="src/main/java/org/moire/ultrasonic/service/OfflineMusicService.java"
+            line="107"
+            column="38"/>
+    </issue>
+
+    <issue
+        id="DefaultLocale"
+        message="Implicitly using the default locale is a common source of bugs: Use `toLowerCase(Locale)` instead. For strings meant to be internal use `Locale.ROOT`, otherwise `Locale.getDefault()`."
         errorLine1="     int index = lhs.indexOf(String.format(&quot;%s &quot;, article.toLowerCase()));"
         errorLine2="                                                          ~~~~~~~~~~~">
         <location
             file="src/main/java/org/moire/ultrasonic/service/OfflineMusicService.java"
-            line="123"
+            line="124"
             column="59"/>
     </issue>
 
@@ -232,7 +221,7 @@
         errorLine2="                                                      ~~~~~~~~~~~">
         <location
             file="src/main/java/org/moire/ultrasonic/service/OfflineMusicService.java"
-            line="130"
+            line="131"
             column="55"/>
     </issue>
 
@@ -243,7 +232,7 @@
         errorLine2="                                     ~~~~~~~~~~~">
         <location
             file="src/main/java/org/moire/ultrasonic/service/OfflineMusicService.java"
-            line="506"
+            line="507"
             column="38"/>
     </issue>
 
@@ -254,7 +243,7 @@
         errorLine2="                                          ~~~~~~~~~~~">
         <location
             file="src/main/java/org/moire/ultrasonic/service/OfflineMusicService.java"
-            line="508"
+            line="509"
             column="43"/>
     </issue>
 
@@ -265,7 +254,7 @@
         errorLine2="                             ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
         <location
             file="src/main/java/org/moire/ultrasonic/view/SongView.java"
-            line="193"
+            line="197"
             column="30"/>
     </issue>
 
@@ -276,7 +265,7 @@
         errorLine2="                                                                                                                         ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
         <location
             file="src/main/java/org/moire/ultrasonic/activity/SubsonicTabActivity.java"
-            line="507"
+            line="480"
             column="122"/>
     </issue>
 
@@ -298,7 +287,7 @@
         errorLine2="          ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
         <location
             file="src/main/java/org/moire/ultrasonic/util/Util.java"
-            line="1466"
+            line="1450"
             column="11"/>
     </issue>
 
@@ -309,7 +298,7 @@
         errorLine2="          ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
         <location
             file="src/main/java/org/moire/ultrasonic/util/Util.java"
-            line="1470"
+            line="1454"
             column="11"/>
     </issue>
 
@@ -320,7 +309,7 @@
         errorLine2="          ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
         <location
             file="src/main/java/org/moire/ultrasonic/util/Util.java"
-            line="1474"
+            line="1458"
             column="11"/>
     </issue>
 
@@ -331,8 +320,41 @@
         errorLine2="                            ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
         <location
             file="src/main/java/org/moire/ultrasonic/util/Util.java"
-            line="1477"
+            line="1461"
             column="29"/>
+    </issue>
+
+    <issue
+        id="DefaultLocale"
+        message="Implicitly using the default locale is a common source of bugs: Use `String.format(Locale, ...)` instead"
+        errorLine1="  else return minutes > 0 ? String.format(&quot;%d:%02d&quot;, minutes, seconds) : String.format(&quot;0:%02d&quot;, seconds);"
+        errorLine2="                                                                         ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
+        <location
+            file="src/main/java/org/moire/ultrasonic/util/Util.java"
+            line="1461"
+            column="74"/>
+    </issue>
+
+    <issue
+        id="MissingDefaultResource"
+        message="The layout &quot;download&quot; in layout-land has no declaration in the base `layout` folder; this can lead to crashes when the resource is queried in a configuration that does not match this qualifier"
+        errorLine1="&lt;LinearLayout xmlns:a=&quot;http://schemas.android.com/apk/res/android&quot;"
+        errorLine2=" ~~~~~~~~~~~~">
+        <location
+            file="src/main/res/layout-land/download.xml"
+            line="2"
+            column="2"/>
+    </issue>
+
+    <issue
+        id="MissingDefaultResource"
+        message="The layout &quot;download&quot; in layout-port has no declaration in the base `layout` folder; this can lead to crashes when the resource is queried in a configuration that does not match this qualifier"
+        errorLine1="&lt;LinearLayout xmlns:a=&quot;http://schemas.android.com/apk/res/android&quot;"
+        errorLine2=" ~~~~~~~~~~~~">
+        <location
+            file="src/main/res/layout-port/download.xml"
+            line="2"
+            column="2"/>
     </issue>
 
     <issue
@@ -342,7 +364,7 @@
         errorLine2="           ~~~~~~~~~~~~~~">
         <location
             file="src/main/java/org/moire/ultrasonic/util/Util.java"
-            line="551"
+            line="534"
             column="12"/>
     </issue>
 
@@ -397,7 +419,7 @@
         errorLine2="                                 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
         <location
             file="src/main/java/org/moire/ultrasonic/util/Util.java"
-            line="881"
+            line="864"
             column="34"/>
     </issue>
 
@@ -430,7 +452,7 @@
         errorLine2="                                                         ~~~~">
         <location
             file="src/main/java/org/moire/ultrasonic/service/JukeboxService.java"
-            line="467"
+            line="466"
             column="58"/>
     </issue>
 
@@ -441,7 +463,7 @@
         errorLine2="                                                                                ~~~~">
         <location
             file="src/main/java/org/moire/ultrasonic/activity/MainActivity.java"
-            line="98"
+            line="101"
             column="81"/>
     </issue>
 
@@ -559,7 +581,7 @@
         errorLine2="                                                                                                                         ^">
         <location
             file="src/main/res/values-es/strings.xml"
-            line="98"
+            line="103"
             column="122"/>
     </issue>
 
@@ -570,7 +592,7 @@
         errorLine2="                                                                              ^">
         <location
             file="src/main/res/values-es/strings.xml"
-            line="139"
+            line="140"
             column="79"/>
     </issue>
 
@@ -581,7 +603,7 @@
         errorLine2="        ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
         <location
             file="src/main/res/values-fr/strings.xml"
-            line="395"
+            line="400"
             column="9"/>
     </issue>
 
@@ -592,7 +614,7 @@
         errorLine2="        ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
         <location
             file="src/main/res/values-pt-rBR/strings.xml"
-            line="398"
+            line="400"
             column="9"/>
     </issue>
 
@@ -603,7 +625,7 @@
         errorLine2="        ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
         <location
             file="src/main/res/values-fr/strings.xml"
-            line="399"
+            line="404"
             column="9"/>
     </issue>
 
@@ -614,7 +636,7 @@
         errorLine2="        ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
         <location
             file="src/main/res/values-pt-rBR/strings.xml"
-            line="402"
+            line="404"
             column="9"/>
     </issue>
 
@@ -625,7 +647,7 @@
         errorLine2="        ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
         <location
             file="src/main/res/values-fr/strings.xml"
-            line="403"
+            line="408"
             column="9"/>
     </issue>
 
@@ -636,7 +658,7 @@
         errorLine2="        ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
         <location
             file="src/main/res/values-pt-rBR/strings.xml"
-            line="406"
+            line="408"
             column="9"/>
     </issue>
 
@@ -647,7 +669,7 @@
         errorLine2="        ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
         <location
             file="src/main/res/values-fr/strings.xml"
-            line="407"
+            line="412"
             column="9"/>
     </issue>
 
@@ -658,7 +680,7 @@
         errorLine2="        ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
         <location
             file="src/main/res/values-pt-rBR/strings.xml"
-            line="410"
+            line="412"
             column="9"/>
     </issue>
 
@@ -669,7 +691,7 @@
         errorLine2="        ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
         <location
             file="src/main/res/values-fr/strings.xml"
-            line="411"
+            line="416"
             column="9"/>
     </issue>
 
@@ -680,7 +702,7 @@
         errorLine2="        ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
         <location
             file="src/main/res/values-pt-rBR/strings.xml"
-            line="414"
+            line="416"
             column="9"/>
     </issue>
 
@@ -691,7 +713,7 @@
         errorLine2="        ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
         <location
             file="src/main/res/values-fr/strings.xml"
-            line="415"
+            line="420"
             column="9"/>
     </issue>
 
@@ -702,7 +724,7 @@
         errorLine2="        ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
         <location
             file="src/main/res/values-pt-rBR/strings.xml"
-            line="418"
+            line="420"
             column="9"/>
     </issue>
 
@@ -713,7 +735,7 @@
         errorLine2="        ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
         <location
             file="src/main/res/values-fr/strings.xml"
-            line="419"
+            line="424"
             column="9"/>
     </issue>
 
@@ -724,7 +746,7 @@
         errorLine2="        ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
         <location
             file="src/main/res/values-pt-rBR/strings.xml"
-            line="422"
+            line="424"
             column="9"/>
     </issue>
 
@@ -735,7 +757,7 @@
         errorLine2="    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
         <location
             file="src/main/res/values/strings.xml"
-            line="113"
+            line="115"
             column="5"/>
     </issue>
 
@@ -746,7 +768,7 @@
         errorLine2="    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
         <location
             file="src/main/res/values/strings.xml"
-            line="138"
+            line="136"
             column="5"/>
     </issue>
 
@@ -757,7 +779,7 @@
         errorLine2="    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
         <location
             file="src/main/res/values/strings.xml"
-            line="139"
+            line="137"
             column="5"/>
     </issue>
 
@@ -768,51 +790,7 @@
         errorLine2="    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
         <location
             file="src/main/res/values/strings.xml"
-            line="142"
-            column="5"/>
-    </issue>
-
-    <issue
-        id="UnusedQuantity"
-        message="For language &quot;es&quot; (Spanish) the following quantities are not relevant: `zero`"
-        errorLine1="    &lt;plurals name=&quot;select_album_n_songs&quot;>"
-        errorLine2="    ^">
-        <location
-            file="src/main/res/values-es/strings.xml"
-            line="393"
-            column="5"/>
-    </issue>
-
-    <issue
-        id="UnusedQuantity"
-        message="For language &quot;fr&quot; (French) the following quantities are not relevant: `zero`"
-        errorLine1="    &lt;plurals name=&quot;select_album_n_songs&quot;>"
-        errorLine2="    ^">
-        <location
-            file="src/main/res/values-fr/strings.xml"
-            line="393"
-            column="5"/>
-    </issue>
-
-    <issue
-        id="UnusedQuantity"
-        message="For language &quot;hu&quot; (Hungarian) the following quantities are not relevant: `zero`"
-        errorLine1="    &lt;plurals name=&quot;select_album_n_songs&quot;>"
-        errorLine2="    ^">
-        <location
-            file="src/main/res/values-hu/strings.xml"
-            line="393"
-            column="5"/>
-    </issue>
-
-    <issue
-        id="UnusedQuantity"
-        message="For language &quot;pt&quot; (Portuguese) the following quantities are not relevant: `zero`"
-        errorLine1="    &lt;plurals name=&quot;select_album_n_songs&quot;>"
-        errorLine2="    ^">
-        <location
-            file="src/main/res/values-pt-rBR/strings.xml"
-            line="396"
+            line="140"
             column="5"/>
     </issue>
 
@@ -823,7 +801,7 @@
         errorLine2="                                           ~~~~~~~~~~~~">
         <location
             file="src/main/java/org/moire/ultrasonic/activity/SelectAlbumActivity.java"
-            line="86"
+            line="87"
             column="44"/>
     </issue>
 
@@ -853,11 +831,11 @@
         id="ExportedContentProvider"
         message="Exported content providers can provide access to potentially sensitive data"
         errorLine1="        &lt;provider"
-        errorLine2="        ^">
+        errorLine2="         ~~~~~~~~">
         <location
             file="src/main/AndroidManifest.xml"
             line="190"
-            column="9"/>
+            column="10"/>
     </issue>
 
     <issue
@@ -867,7 +845,7 @@
         errorLine2="     ~~~~~~~~~~~~~~~~~~">
         <location
             file="src/main/java/org/moire/ultrasonic/service/DownloadFile.java"
-            line="306"
+            line="307"
             column="6"/>
     </issue>
 
@@ -987,7 +965,7 @@
         errorLine2="               ~~~~~~~~~~~~~">
         <location
             file="src/main/java/org/moire/ultrasonic/service/DownloadServiceLifecycleSupport.java"
-            line="361"
+            line="380"
             column="16"/>
     </issue>
 
@@ -998,7 +976,7 @@
         errorLine2="               ~~~~~~~~~~~~~~~">
         <location
             file="src/main/java/org/moire/ultrasonic/service/DownloadServiceLifecycleSupport.java"
-            line="382"
+            line="401"
             column="16"/>
     </issue>
 
@@ -1009,7 +987,7 @@
         errorLine2="               ~~~~~~~~~~~">
         <location
             file="src/main/java/org/moire/ultrasonic/activity/SelectAlbumActivity.java"
-            line="1314"
+            line="1315"
             column="16"/>
     </issue>
 
@@ -1059,23 +1037,12 @@
 
     <issue
         id="StaticFieldLeak"
-        message="Do not place Android context classes in static fields (static reference to `ImageLoader` which has field `context` pointing to `Context`); this is a memory leak (and also breaks Instant Run)"
-        errorLine1=" protected static ImageLoader IMAGE_LOADER;"
-        errorLine2="           ~~~~~~">
-        <location
-            file="src/main/java/org/moire/ultrasonic/activity/SubsonicTabActivity.java"
-            line="93"
-            column="12"/>
-    </issue>
-
-    <issue
-        id="StaticFieldLeak"
         message="Do not place Android context classes in static fields (static reference to `SubsonicTabActivity` which has field `nowPlayingView` pointing to `View`); this is a memory leak (and also breaks Instant Run)"
         errorLine1=" private static SubsonicTabActivity instance;"
         errorLine2="         ~~~~~~">
         <location
             file="src/main/java/org/moire/ultrasonic/activity/SubsonicTabActivity.java"
-            line="95"
+            line="68"
             column="10"/>
     </issue>
 
@@ -1359,27 +1326,27 @@
         errorLine2="            ~~~~~~~~~~~~~~~~~~~~~~~~~~">
         <location
             file="src/main/res/values/strings.xml"
-            line="112"
+            line="114"
             column="13"/>
         <location
             file="src/main/res/values-es/strings.xml"
-            line="109"
+            line="114"
             column="13"/>
         <location
             file="src/main/res/values-fr/strings.xml"
-            line="109"
+            line="114"
             column="13"/>
         <location
             file="src/main/res/values-hu/strings.xml"
-            line="109"
+            line="114"
             column="13"/>
         <location
             file="src/main/res/values-pt/strings.xml"
-            line="112"
+            line="114"
             column="13"/>
         <location
             file="src/main/res/values-pt-rBR/strings.xml"
-            line="112"
+            line="114"
             column="13"/>
     </issue>
 
@@ -1390,81 +1357,19 @@
         errorLine2="            ~~~~~~~~~~~~~~~~~~~~~~~~~~">
         <location
             file="src/main/res/values/strings.xml"
-            line="113"
-            column="13"/>
-        <location
-            file="src/main/res/values-es/strings.xml"
-            line="110"
-            column="13"/>
-        <location
-            file="src/main/res/values-fr/strings.xml"
-            line="110"
-            column="13"/>
-        <location
-            file="src/main/res/values-hu/strings.xml"
-            line="110"
-            column="13"/>
-        <location
-            file="src/main/res/values-pt/strings.xml"
-            line="113"
-            column="13"/>
-        <location
-            file="src/main/res/values-pt-rBR/strings.xml"
-            line="113"
-            column="13"/>
-    </issue>
-
-    <issue
-        id="UnusedResources"
-        message="The resource `R.string.parser_not_authenticated` appears to be unused"
-        errorLine1="    &lt;string name=&quot;parser.not_authenticated&quot;>Wrong username or password.&lt;/string>"
-        errorLine2="            ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
-        <location
-            file="src/main/res/values/strings.xml"
-            line="114"
-            column="13"/>
-        <location
-            file="src/main/res/values-es/strings.xml"
-            line="111"
-            column="13"/>
-        <location
-            file="src/main/res/values-fr/strings.xml"
-            line="111"
-            column="13"/>
-        <location
-            file="src/main/res/values-hu/strings.xml"
-            line="111"
-            column="13"/>
-        <location
-            file="src/main/res/values-pt/strings.xml"
-            line="114"
-            column="13"/>
-        <location
-            file="src/main/res/values-pt-rBR/strings.xml"
-            line="114"
-            column="13"/>
-    </issue>
-
-    <issue
-        id="UnusedResources"
-        message="The resource `R.string.parser_not_authorized` appears to be unused"
-        errorLine1="    &lt;string name=&quot;parser.not_authorized&quot;>Not authorized. Check user permissions in Subsonic server.&lt;/string>"
-        errorLine2="            ~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
-        <location
-            file="src/main/res/values/strings.xml"
             line="115"
             column="13"/>
         <location
             file="src/main/res/values-es/strings.xml"
-            line="112"
+            line="115"
             column="13"/>
         <location
             file="src/main/res/values-fr/strings.xml"
-            line="112"
+            line="115"
             column="13"/>
         <location
             file="src/main/res/values-hu/strings.xml"
-            line="112"
+            line="115"
             column="13"/>
         <location
             file="src/main/res/values-pt/strings.xml"
@@ -1487,15 +1392,15 @@
             column="13"/>
         <location
             file="src/main/res/values-es/strings.xml"
-            line="114"
+            line="117"
             column="13"/>
         <location
             file="src/main/res/values-fr/strings.xml"
-            line="114"
+            line="117"
             column="13"/>
         <location
             file="src/main/res/values-hu/strings.xml"
-            line="114"
+            line="117"
             column="13"/>
         <location
             file="src/main/res/values-pt/strings.xml"
@@ -1504,68 +1409,6 @@
         <location
             file="src/main/res/values-pt-rBR/strings.xml"
             line="117"
-            column="13"/>
-    </issue>
-
-    <issue
-        id="UnusedResources"
-        message="The resource `R.string.parser_upgrade_client` appears to be unused"
-        errorLine1="    &lt;string name=&quot;parser.upgrade_client&quot;>Incompatible versions. Please upgrade UltraSonic Android app.&lt;/string>"
-        errorLine2="            ~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
-        <location
-            file="src/main/res/values/strings.xml"
-            line="118"
-            column="13"/>
-        <location
-            file="src/main/res/values-es/strings.xml"
-            line="115"
-            column="13"/>
-        <location
-            file="src/main/res/values-fr/strings.xml"
-            line="115"
-            column="13"/>
-        <location
-            file="src/main/res/values-hu/strings.xml"
-            line="115"
-            column="13"/>
-        <location
-            file="src/main/res/values-pt/strings.xml"
-            line="118"
-            column="13"/>
-        <location
-            file="src/main/res/values-pt-rBR/strings.xml"
-            line="118"
-            column="13"/>
-    </issue>
-
-    <issue
-        id="UnusedResources"
-        message="The resource `R.string.parser_upgrade_server` appears to be unused"
-        errorLine1="    &lt;string name=&quot;parser.upgrade_server&quot;>Incompatible versions. Please upgrade Subsonic server.&lt;/string>"
-        errorLine2="            ~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
-        <location
-            file="src/main/res/values/strings.xml"
-            line="119"
-            column="13"/>
-        <location
-            file="src/main/res/values-es/strings.xml"
-            line="116"
-            column="13"/>
-        <location
-            file="src/main/res/values-fr/strings.xml"
-            line="116"
-            column="13"/>
-        <location
-            file="src/main/res/values-hu/strings.xml"
-            line="116"
-            column="13"/>
-        <location
-            file="src/main/res/values-pt/strings.xml"
-            line="119"
-            column="13"/>
-        <location
-            file="src/main/res/values-pt-rBR/strings.xml"
-            line="119"
             column="13"/>
     </issue>
 
@@ -1617,11 +1460,11 @@
         id="UselessParent"
         message="This `LinearLayout` layout or its `LinearLayout` parent is useless"
         errorLine1="    &lt;LinearLayout"
-        errorLine2="    ^">
+        errorLine2="     ~~~~~~~~~~~~">
         <location
             file="src/main/res/layout/video_details.xml"
             line="9"
-            column="5"/>
+            column="6"/>
     </issue>
 
     <issue
@@ -1631,7 +1474,18 @@
         errorLine2="                                ^">
         <location
             file="src/main/res/values-es/strings.xml"
-            line="328"
+            line="335"
+            column="33"/>
+    </issue>
+
+    <issue
+        id="TypographyDashes"
+        message="Replace &quot;--&quot; with an &quot;em dash&quot; character (—, &amp;#8212;) ?"
+        errorLine1="    &lt;string name=&quot;util.no_time&quot;>-:--&lt;/string>"
+        errorLine2="                                ^">
+        <location
+            file="src/main/res/values-hu/strings.xml"
+            line="335"
             column="33"/>
     </issue>
 
@@ -1642,7 +1496,18 @@
         errorLine2="                                ^">
         <location
             file="src/main/res/values-pt-rBR/strings.xml"
-            line="331"
+            line="335"
+            column="33"/>
+    </issue>
+
+    <issue
+        id="TypographyDashes"
+        message="Replace &quot;--&quot; with an &quot;em dash&quot; character (—, &amp;#8212;) ?"
+        errorLine1="    &lt;string name=&quot;util.no_time&quot;>-:--&lt;/string>"
+        errorLine2="                                ^">
+        <location
+            file="src/main/res/values/strings.xml"
+            line="337"
             column="33"/>
     </issue>
 
@@ -1667,7 +1532,40 @@
             file="src/main/res/drawable-hdpi/ic_stat_ultrasonic.png"/>
         <location
             file="src/main/java/org/moire/ultrasonic/service/DownloadServiceImpl.java"
-            line="2076"
+            line="2077"
+            column="30"/>
+    </issue>
+
+    <issue
+        id="IconColors"
+        message="Notification icons must be entirely white">
+        <location
+            file="src/main/res/drawable-ldpi/ic_stat_ultrasonic.png"/>
+        <location
+            file="src/main/java/org/moire/ultrasonic/service/DownloadServiceImpl.java"
+            line="2077"
+            column="30"/>
+    </issue>
+
+    <issue
+        id="IconColors"
+        message="Notification icons must be entirely white">
+        <location
+            file="src/main/res/drawable-mdpi/ic_stat_ultrasonic.png"/>
+        <location
+            file="src/main/java/org/moire/ultrasonic/service/DownloadServiceImpl.java"
+            line="2077"
+            column="30"/>
+    </issue>
+
+    <issue
+        id="IconColors"
+        message="Notification icons must be entirely white">
+        <location
+            file="src/main/res/drawable-xhdpi/ic_stat_ultrasonic.png"/>
+        <location
+            file="src/main/java/org/moire/ultrasonic/service/DownloadServiceImpl.java"
+            line="2077"
             column="30"/>
     </issue>
 
@@ -1726,7 +1624,7 @@
         errorLine2="    ^">
         <location
             file="src/main/AndroidManifest.xml"
-            line="23"
+            line="21"
             column="5"/>
     </issue>
 
@@ -1737,7 +1635,7 @@
         errorLine2="             ~~~~~~~~~">
         <location
             file="src/main/java/org/moire/ultrasonic/view/AlbumView.java"
-            line="41"
+            line="40"
             column="14"/>
     </issue>
 
@@ -1803,7 +1701,7 @@
         errorLine2="                 ~~~~~~~">
         <location
             file="src/main/java/org/moire/ultrasonic/activity/SubsonicTabActivity.java"
-            line="1388"
+            line="1379"
             column="18"/>
     </issue>
 
@@ -1811,605 +1709,649 @@
         id="ContentDescription"
         message="Missing `contentDescription` attribute on image"
         errorLine1="    &lt;ImageView"
-        errorLine2="    ^">
+        errorLine2="     ~~~~~~~~~">
         <location
             file="src/main/res/layout/album_buttons.xml"
             line="9"
-            column="5"/>
+            column="6"/>
     </issue>
 
     <issue
         id="ContentDescription"
         message="Missing `contentDescription` attribute on image"
         errorLine1="    &lt;ImageView"
-        errorLine2="    ^">
+        errorLine2="     ~~~~~~~~~">
         <location
             file="src/main/res/layout/album_buttons.xml"
             line="17"
-            column="5"/>
+            column="6"/>
     </issue>
 
     <issue
         id="ContentDescription"
         message="Missing `contentDescription` attribute on image"
         errorLine1="    &lt;ImageView"
-        errorLine2="    ^">
+        errorLine2="     ~~~~~~~~~">
         <location
             file="src/main/res/layout/album_buttons.xml"
             line="25"
-            column="5"/>
+            column="6"/>
     </issue>
 
     <issue
         id="ContentDescription"
         message="Missing `contentDescription` attribute on image"
         errorLine1="    &lt;ImageView"
-        errorLine2="    ^">
+        errorLine2="     ~~~~~~~~~">
         <location
             file="src/main/res/layout/album_buttons.xml"
             line="33"
-            column="5"/>
+            column="6"/>
     </issue>
 
     <issue
         id="ContentDescription"
         message="Missing `contentDescription` attribute on image"
         errorLine1="    &lt;ImageView"
-        errorLine2="    ^">
+        errorLine2="     ~~~~~~~~~">
         <location
             file="src/main/res/layout/album_buttons.xml"
             line="41"
-            column="5"/>
+            column="6"/>
     </issue>
 
     <issue
         id="ContentDescription"
         message="Missing `contentDescription` attribute on image"
         errorLine1="    &lt;ImageView"
-        errorLine2="    ^">
+        errorLine2="     ~~~~~~~~~">
         <location
             file="src/main/res/layout/album_buttons.xml"
             line="49"
-            column="5"/>
+            column="6"/>
     </issue>
 
     <issue
         id="ContentDescription"
         message="Missing `contentDescription` attribute on image"
         errorLine1="    &lt;ImageView"
-        errorLine2="    ^">
+        errorLine2="     ~~~~~~~~~">
         <location
             file="src/main/res/layout/album_buttons.xml"
             line="57"
-            column="5"/>
+            column="6"/>
     </issue>
 
     <issue
         id="ContentDescription"
         message="Missing `contentDescription` attribute on image"
         errorLine1="    &lt;ImageView"
-        errorLine2="    ^">
+        errorLine2="     ~~~~~~~~~">
         <location
             file="src/main/res/layout/album_buttons.xml"
             line="65"
-            column="5"/>
+            column="6"/>
     </issue>
 
     <issue
         id="ContentDescription"
         message="Missing `contentDescription` attribute on image"
         errorLine1="    &lt;ImageView"
-        errorLine2="    ^">
+        errorLine2="     ~~~~~~~~~">
         <location
             file="src/main/res/layout/album_buttons.xml"
             line="73"
-            column="5"/>
+            column="6"/>
     </issue>
 
     <issue
         id="ContentDescription"
         message="Missing `contentDescription` attribute on image"
         errorLine1="    &lt;ImageView"
-        errorLine2="    ^">
+        errorLine2="     ~~~~~~~~~">
         <location
             file="src/main/res/layout/album_list_item.xml"
             line="9"
-            column="5"/>
+            column="6"/>
     </issue>
 
     <issue
         id="ContentDescription"
         message="Missing `contentDescription` attribute on image"
         errorLine1="    &lt;ImageView"
-        errorLine2="    ^">
+        errorLine2="     ~~~~~~~~~">
         <location
             file="src/main/res/layout/album_list_item.xml"
             line="42"
-            column="5"/>
+            column="6"/>
     </issue>
 
     <issue
         id="ContentDescription"
         message="Missing `contentDescription` attribute on image"
         errorLine1="    &lt;ImageView"
-        errorLine2="    ^">
+        errorLine2="     ~~~~~~~~~">
         <location
             file="src/main/res/layout/appwidget4x1.xml"
             line="10"
-            column="5"/>
+            column="6"/>
     </issue>
 
     <issue
         id="ContentDescription"
         message="Missing `contentDescription` attribute on image"
         errorLine1="            &lt;ImageButton"
-        errorLine2="            ^">
+        errorLine2="             ~~~~~~~~~~~">
         <location
             file="src/main/res/layout/appwidget4x1.xml"
             line="76"
-            column="13"/>
+            column="14"/>
     </issue>
 
     <issue
         id="ContentDescription"
         message="Missing `contentDescription` attribute on image"
         errorLine1="            &lt;ImageButton"
-        errorLine2="            ^">
+        errorLine2="             ~~~~~~~~~~~">
         <location
             file="src/main/res/layout/appwidget4x1.xml"
             line="85"
-            column="13"/>
+            column="14"/>
     </issue>
 
     <issue
         id="ContentDescription"
         message="Missing `contentDescription` attribute on image"
         errorLine1="            &lt;ImageButton"
-        errorLine2="            ^">
+        errorLine2="             ~~~~~~~~~~~">
         <location
             file="src/main/res/layout/appwidget4x1.xml"
             line="94"
-            column="13"/>
+            column="14"/>
     </issue>
 
     <issue
         id="ContentDescription"
         message="Missing `contentDescription` attribute on image"
         errorLine1="    &lt;ImageView"
-        errorLine2="    ^">
+        errorLine2="     ~~~~~~~~~">
         <location
             file="src/main/res/layout/appwidget4x2.xml"
             line="10"
-            column="5"/>
+            column="6"/>
     </issue>
 
     <issue
         id="ContentDescription"
         message="Missing `contentDescription` attribute on image"
         errorLine1="            &lt;ImageButton"
-        errorLine2="            ^">
+        errorLine2="             ~~~~~~~~~~~">
         <location
             file="src/main/res/layout/appwidget4x2.xml"
             line="97"
-            column="13"/>
+            column="14"/>
     </issue>
 
     <issue
         id="ContentDescription"
         message="Missing `contentDescription` attribute on image"
         errorLine1="            &lt;ImageButton"
-        errorLine2="            ^">
+        errorLine2="             ~~~~~~~~~~~">
         <location
             file="src/main/res/layout/appwidget4x2.xml"
             line="106"
-            column="13"/>
+            column="14"/>
     </issue>
 
     <issue
         id="ContentDescription"
         message="Missing `contentDescription` attribute on image"
         errorLine1="            &lt;ImageButton"
-        errorLine2="            ^">
+        errorLine2="             ~~~~~~~~~~~">
         <location
             file="src/main/res/layout/appwidget4x2.xml"
             line="115"
-            column="13"/>
+            column="14"/>
     </issue>
 
     <issue
         id="ContentDescription"
         message="Missing `contentDescription` attribute on image"
         errorLine1="    &lt;ImageView"
-        errorLine2="    ^">
+        errorLine2="     ~~~~~~~~~">
         <location
             file="src/main/res/layout/appwidget4x3.xml"
             line="10"
-            column="5"/>
+            column="6"/>
     </issue>
 
     <issue
         id="ContentDescription"
         message="Missing `contentDescription` attribute on image"
         errorLine1="            &lt;ImageButton"
-        errorLine2="            ^">
+        errorLine2="             ~~~~~~~~~~~">
         <location
             file="src/main/res/layout/appwidget4x3.xml"
             line="82"
-            column="13"/>
+            column="14"/>
     </issue>
 
     <issue
         id="ContentDescription"
         message="Missing `contentDescription` attribute on image"
         errorLine1="            &lt;ImageButton"
-        errorLine2="            ^">
+        errorLine2="             ~~~~~~~~~~~">
         <location
             file="src/main/res/layout/appwidget4x3.xml"
             line="91"
-            column="13"/>
+            column="14"/>
     </issue>
 
     <issue
         id="ContentDescription"
         message="Missing `contentDescription` attribute on image"
         errorLine1="            &lt;ImageButton"
-        errorLine2="            ^">
+        errorLine2="             ~~~~~~~~~~~">
         <location
             file="src/main/res/layout/appwidget4x3.xml"
             line="100"
-            column="13"/>
+            column="14"/>
     </issue>
 
     <issue
         id="ContentDescription"
         message="Missing `contentDescription` attribute on image"
         errorLine1="    &lt;ImageView"
-        errorLine2="    ^">
+        errorLine2="     ~~~~~~~~~">
         <location
             file="src/main/res/layout/appwidget4x4.xml"
             line="10"
-            column="5"/>
+            column="6"/>
     </issue>
 
     <issue
         id="ContentDescription"
         message="Missing `contentDescription` attribute on image"
         errorLine1="            &lt;ImageButton"
-        errorLine2="            ^">
+        errorLine2="             ~~~~~~~~~~~">
         <location
             file="src/main/res/layout/appwidget4x4.xml"
             line="83"
-            column="13"/>
+            column="14"/>
     </issue>
 
     <issue
         id="ContentDescription"
         message="Missing `contentDescription` attribute on image"
         errorLine1="            &lt;ImageButton"
-        errorLine2="            ^">
+        errorLine2="             ~~~~~~~~~~~">
         <location
             file="src/main/res/layout/appwidget4x4.xml"
             line="92"
-            column="13"/>
+            column="14"/>
     </issue>
 
     <issue
         id="ContentDescription"
         message="Missing `contentDescription` attribute on image"
         errorLine1="            &lt;ImageButton"
-        errorLine2="            ^">
+        errorLine2="             ~~~~~~~~~~~">
         <location
             file="src/main/res/layout/appwidget4x4.xml"
             line="101"
-            column="13"/>
+            column="14"/>
     </issue>
 
     <issue
         id="ContentDescription"
         message="Missing `contentDescription` attribute on image"
         errorLine1="        &lt;ImageButton"
-        errorLine2="        ^">
+        errorLine2="         ~~~~~~~~~~~">
         <location
             file="src/main/res/layout/chat.xml"
             line="40"
-            column="9"/>
+            column="10"/>
     </issue>
 
     <issue
         id="ContentDescription"
         message="Missing `contentDescription` attribute on image"
         errorLine1="    &lt;ImageView"
-        errorLine2="    ^">
+        errorLine2="     ~~~~~~~~~">
         <location
             file="src/main/res/layout/chat_item.xml"
             line="7"
-            column="5"/>
+            column="6"/>
     </issue>
 
     <issue
         id="ContentDescription"
         message="Missing `contentDescription` attribute on image"
         errorLine1="    &lt;ImageView"
-        errorLine2="    ^">
+        errorLine2="     ~~~~~~~~~">
         <location
             file="src/main/res/layout/chat_item_reverse.xml"
             line="64"
-            column="5"/>
+            column="6"/>
     </issue>
 
     <issue
         id="ContentDescription"
         message="Missing `contentDescription` attribute on image"
         errorLine1="        &lt;ImageView a:id=&quot;@+id/help_back&quot;"
-        errorLine2="        ^">
+        errorLine2="         ~~~~~~~~~">
         <location
             file="src/main/res/layout/help.xml"
             line="12"
-            column="9"/>
+            column="10"/>
     </issue>
 
     <issue
         id="ContentDescription"
         message="Missing `contentDescription` attribute on image"
         errorLine1="        &lt;ImageView a:id=&quot;@+id/help_stop&quot;"
-        errorLine2="        ^">
+        errorLine2="         ~~~~~~~~~">
         <location
             file="src/main/res/layout/help.xml"
             line="18"
-            column="9"/>
+            column="10"/>
     </issue>
 
     <issue
         id="ContentDescription"
         message="Missing `contentDescription` attribute on image"
         errorLine1="        &lt;ImageView a:id=&quot;@+id/help_forward&quot;"
-        errorLine2="        ^">
+        errorLine2="         ~~~~~~~~~">
         <location
             file="src/main/res/layout/help.xml"
             line="24"
-            column="9"/>
+            column="10"/>
     </issue>
 
     <issue
         id="ContentDescription"
         message="Missing `contentDescription` attribute on image"
         errorLine1="  &lt;ImageView a:layout_width=&quot;wrap_content&quot; a:layout_height=&quot;wrap_content&quot;"
-        errorLine2="  ^">
+        errorLine2="   ~~~~~~~~~">
         <location
             file="src/main/res/layout/main_buttons.xml"
             line="10"
-            column="3"/>
+            column="4"/>
     </issue>
 
     <issue
         id="ContentDescription"
         message="Missing `contentDescription` attribute on image"
         errorLine1="&lt;ImageView"
-        errorLine2="^">
+        errorLine2=" ~~~~~~~~~">
         <location
             file="src/main/res/layout/media_buttons.xml"
             line="12"
-            column="1"/>
+            column="2"/>
     </issue>
 
     <issue
         id="ContentDescription"
         message="Missing `contentDescription` attribute on image"
         errorLine1="    &lt;ImageView"
-        errorLine2="    ^">
+        errorLine2="     ~~~~~~~~~">
         <location
             file="src/main/res/layout/media_buttons.xml"
             line="32"
-            column="5"/>
+            column="6"/>
     </issue>
 
     <issue
         id="ContentDescription"
         message="Missing `contentDescription` attribute on image"
         errorLine1="    &lt;ImageView"
-        errorLine2="    ^">
+        errorLine2="     ~~~~~~~~~">
         <location
             file="src/main/res/layout/media_buttons.xml"
             line="42"
-            column="5"/>
+            column="6"/>
     </issue>
 
     <issue
         id="ContentDescription"
         message="Missing `contentDescription` attribute on image"
         errorLine1="    &lt;ImageView"
-        errorLine2="    ^">
+        errorLine2="     ~~~~~~~~~">
         <location
             file="src/main/res/layout/media_buttons.xml"
             line="52"
-            column="5"/>
+            column="6"/>
     </issue>
 
     <issue
         id="ContentDescription"
         message="Missing `contentDescription` attribute on image"
         errorLine1="    &lt;ImageView"
-        errorLine2="    ^">
+        errorLine2="     ~~~~~~~~~">
         <location
             file="src/main/res/layout/media_buttons.xml"
             line="72"
-            column="5"/>
+            column="6"/>
     </issue>
 
     <issue
         id="ContentDescription"
         message="Missing `contentDescription` attribute on image"
         errorLine1="    &lt;ImageView"
-        errorLine2="    ^">
+        errorLine2="     ~~~~~~~~~">
         <location
             file="src/main/res/layout/notification.xml"
             line="12"
-            column="5"/>
+            column="6"/>
     </issue>
 
     <issue
         id="ContentDescription"
         message="Missing `contentDescription` attribute on image"
         errorLine1="        &lt;ImageButton"
-        errorLine2="        ^">
+        errorLine2="         ~~~~~~~~~~~">
         <location
             file="src/main/res/layout/notification.xml"
             line="75"
-            column="9"/>
+            column="10"/>
     </issue>
 
     <issue
         id="ContentDescription"
         message="Missing `contentDescription` attribute on image"
         errorLine1="        &lt;ImageButton"
-        errorLine2="        ^">
+        errorLine2="         ~~~~~~~~~~~">
         <location
             file="src/main/res/layout/notification.xml"
             line="85"
-            column="9"/>
+            column="10"/>
     </issue>
 
     <issue
         id="ContentDescription"
         message="Missing `contentDescription` attribute on image"
         errorLine1="        &lt;ImageButton"
-        errorLine2="        ^">
+        errorLine2="         ~~~~~~~~~~~">
         <location
             file="src/main/res/layout/notification.xml"
             line="95"
-            column="9"/>
+            column="10"/>
     </issue>
 
     <issue
         id="ContentDescription"
         message="Missing `contentDescription` attribute on image"
         errorLine1="        &lt;ImageButton"
-        errorLine2="        ^">
+        errorLine2="         ~~~~~~~~~~~">
         <location
             file="src/main/res/layout/notification.xml"
             line="105"
-            column="9"/>
+            column="10"/>
     </issue>
 
     <issue
         id="ContentDescription"
         message="Missing `contentDescription` attribute on image"
         errorLine1="    &lt;ImageView"
-        errorLine2="    ^">
+        errorLine2="     ~~~~~~~~~">
         <location
             file="src/main/res/layout/notification_large.xml"
             line="11"
-            column="5"/>
+            column="6"/>
     </issue>
 
     <issue
         id="ContentDescription"
         message="Missing `contentDescription` attribute on image"
         errorLine1="            &lt;ImageButton"
-        errorLine2="            ^">
+        errorLine2="             ~~~~~~~~~~~">
         <location
             file="src/main/res/layout/notification_large.xml"
             line="48"
-            column="13"/>
+            column="14"/>
     </issue>
 
     <issue
         id="ContentDescription"
         message="Missing `contentDescription` attribute on image"
         errorLine1="            &lt;ImageButton"
-        errorLine2="            ^">
+        errorLine2="             ~~~~~~~~~~~">
         <location
             file="src/main/res/layout/notification_large.xml"
             line="99"
-            column="13"/>
+            column="14"/>
     </issue>
 
     <issue
         id="ContentDescription"
         message="Missing `contentDescription` attribute on image"
         errorLine1="            &lt;ImageButton"
-        errorLine2="            ^">
+        errorLine2="             ~~~~~~~~~~~">
         <location
             file="src/main/res/layout/notification_large.xml"
             line="108"
-            column="13"/>
+            column="14"/>
     </issue>
 
     <issue
         id="ContentDescription"
         message="Missing `contentDescription` attribute on image"
         errorLine1="            &lt;ImageButton"
-        errorLine2="            ^">
+        errorLine2="             ~~~~~~~~~~~">
         <location
             file="src/main/res/layout/notification_large.xml"
             line="117"
-            column="13"/>
+            column="14"/>
     </issue>
 
     <issue
         id="ContentDescription"
         message="Missing `contentDescription` attribute on image"
         errorLine1="    &lt;ImageView"
-        errorLine2="    ^">
+        errorLine2="     ~~~~~~~~~">
         <location
             file="src/main/res/layout/now_playing.xml"
             line="20"
-            column="5"/>
+            column="6"/>
     </issue>
 
     <issue
         id="ContentDescription"
         message="Missing `contentDescription` attribute on image"
         errorLine1="    &lt;ImageView"
-        errorLine2="    ^">
+        errorLine2="     ~~~~~~~~~">
         <location
             file="src/main/res/layout/now_playing.xml"
             line="56"
-            column="5"/>
+            column="6"/>
     </issue>
 
     <issue
         id="ContentDescription"
         message="Missing `contentDescription` attribute on image"
         errorLine1="    &lt;ImageView"
-        errorLine2="    ^">
+        errorLine2="     ~~~~~~~~~">
         <location
             file="src/main/res/layout/select_artist_header.xml"
             line="12"
-            column="5"/>
+            column="6"/>
     </issue>
 
     <issue
         id="ContentDescription"
         message="Missing `contentDescription` attribute on image"
         errorLine1="    &lt;ImageView"
-        errorLine2="    ^">
+        errorLine2="     ~~~~~~~~~">
         <location
             file="src/main/res/layout/song_list_item.xml"
             line="18"
-            column="5"/>
+            column="6"/>
     </issue>
 
     <issue
         id="ContentDescription"
         message="Missing `contentDescription` attribute on image"
         errorLine1="    &lt;ImageView"
-        errorLine2="    ^">
+        errorLine2="     ~~~~~~~~~">
         <location
             file="src/main/res/layout/song_list_item.xml"
             line="28"
-            column="5"/>
+            column="6"/>
     </issue>
 
     <issue
         id="ContentDescription"
         message="Missing `contentDescription` attribute on image"
         errorLine1="    &lt;ImageView"
-        errorLine2="    ^">
+        errorLine2="     ~~~~~~~~~">
         <location
             file="src/main/res/layout/video_list_item.xml"
             line="19"
-            column="5"/>
+            column="6"/>
+    </issue>
+
+    <issue
+        id="LabelFor"
+        message="Missing accessibility label: where minSdk &lt; 17, you should provide an `android:hint`"
+        errorLine1="    &lt;EditText"
+        errorLine2="     ~~~~~~~~">
+        <location
+            file="src/main/res/layout/save_playlist.xml"
+            line="9"
+            column="6"/>
+    </issue>
+
+    <issue
+        id="LabelFor"
+        message="Missing accessibility label: where minSdk &lt; 17, you should provide an `android:hint`"
+        errorLine1="        &lt;EditText"
+        errorLine2="         ~~~~~~~~">
+        <location
+            file="src/main/res/layout/share_details.xml"
+            line="22"
+            column="10"/>
+    </issue>
+
+    <issue
+        id="LabelFor"
+        message="Missing accessibility label: where minSdk &lt; 17, you should provide an `android:hint`"
+        errorLine1="        &lt;EditText"
+        errorLine2="         ~~~~~~~~">
+        <location
+            file="src/main/res/layout/time_span_dialog.xml"
+            line="30"
+            column="10"/>
+    </issue>
+
+    <issue
+        id="ConstantLocale"
+        message="Assigning `Locale.getDefault()` to a final static field is suspicious; this code will not work correctly if the user changes locale while the app is running"
+        errorLine1="    SimpleDateFormat.getDateTimeInstance(DateFormat.SHORT, DateFormat.SHORT, Locale.getDefault())"
+        errorLine2="                                                                             ~~~~~~~~~~~~~~~~~~~">
+        <location
+            file="src/main/kotlin/org/moire/ultrasonic/domain/APIMusicDirectoryConverter.kt"
+            line="13"
+            column="78"/>
     </issue>
 
     <issue
@@ -2547,7 +2489,7 @@
     <issue
         id="HardcodedText"
         message="Hardcoded string &quot;0 dB&quot;, should use `@string` resource"
-        errorLine1="            a:text=&quot;0 dB&quot;"
+        errorLine1="            a:text=&quot;0 dB&quot;"
         errorLine2="            ~~~~~~~~~~~~~">
         <location
             file="src/main/res/layout/equalizer_bar.xml"
@@ -3383,7 +3325,7 @@
     <issue
         id="RtlHardcoded"
         message="Consider adding `a:layout_alignParentStart=&quot;true&quot;` to better support right-to-left layouts"
-        errorLine1="            a:layout_alignParentLeft=&quot;true&quot;"
+        errorLine1="            a:layout_alignParentLeft=&quot;true&quot;"
         errorLine2="            ~~~~~~~~~~~~~~~~~~~~~~~~">
         <location
             file="src/main/res/layout/equalizer_bar.xml"
@@ -3394,7 +3336,7 @@
     <issue
         id="RtlHardcoded"
         message="Use &quot;`end`&quot; instead of &quot;`right`&quot; to ensure correct behavior in right-to-left locales"
-        errorLine1="            a:gravity=&quot;right&quot;"
+        errorLine1="            a:gravity=&quot;right&quot;"
         errorLine2="                       ~~~~~">
         <location
             file="src/main/res/layout/equalizer_bar.xml"
@@ -3405,7 +3347,7 @@
     <issue
         id="RtlHardcoded"
         message="Consider adding `a:layout_alignParentEnd=&quot;true&quot;` to better support right-to-left layouts"
-        errorLine1="            a:layout_alignParentRight=&quot;true&quot;"
+        errorLine1="            a:layout_alignParentRight=&quot;true&quot;"
         errorLine2="            ~~~~~~~~~~~~~~~~~~~~~~~~~">
         <location
             file="src/main/res/layout/equalizer_bar.xml"
@@ -3416,7 +3358,7 @@
     <issue
         id="RtlHardcoded"
         message="Consider adding `a:layout_toEndOf=&quot;@+id/equalizer.frequency&quot;` to better support right-to-left layouts"
-        errorLine1="            a:layout_toRightOf=&quot;@+id/equalizer.frequency&quot;"
+        errorLine1="            a:layout_toRightOf=&quot;@+id/equalizer.frequency&quot;"
         errorLine2="            ~~~~~~~~~~~~~~~~~~">
         <location
             file="src/main/res/layout/equalizer_bar.xml"
@@ -3735,7 +3677,7 @@
     <issue
         id="RtlHardcoded"
         message="Use &quot;`start`&quot; instead of &quot;`left`&quot; to ensure correct behavior in right-to-left locales"
-        errorLine1="  android:gravity=&quot;left|center_vertical&quot;"
+        errorLine1="  android:gravity=&quot;left|center_vertical&quot;"
         errorLine2="                   ~~~~~~~~~~~~~~~~~~~~">
         <location
             file="src/main/res/layout/playlist_list_item.xml"

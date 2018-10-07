@@ -1,0 +1,29 @@
+apply from: bootstrap.kotlinModule
+
+dependencies {
+    api other.retrofit
+    api other.jacksonConverter
+    api other.koinCore
+
+    implementation(other.jacksonKotlin) {
+        exclude module: 'kotlin-reflect'
+    }
+    implementation other.kotlinReflect // for jackson kotlin, but to use the same version
+    implementation other.okhttpLogging
+
+    testImplementation testing.kotlinJunit
+    testImplementation testing.mockito
+    testImplementation testing.mockitoInline
+    testImplementation testing.mockitoKotlin
+    testImplementation testing.kluent
+    testImplementation testing.mockWebServer
+    testImplementation testing.apacheCodecs
+}
+
+ext {
+    // Excluding data classes
+    jacocoExclude = [
+            '**/models/**',
+            '**/di/**'
+    ]
+}

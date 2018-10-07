@@ -4,71 +4,88 @@ jacoco {
     toolVersion(versions.jacoco)
 }
 
-task jacocoMergeReports(type: JacocoMerge) {
+def mergedJacocoExec = file("${project.buildDir}/jacoco/jacocoMerged.exec")
+
+tasks.create(name: 'jacocoMergeReports', type: JacocoMerge) {
     group = "Reporting"
     description = "Merge all jacoco reports from projects into one."
 
-    List<File> jacocoFiles = new ArrayList<>()
+    ListProperty<File> jacocoFiles = project.objects.listProperty(File.class)
     project.subprojects { subproject ->
-        File commonModuleReport = new File(subproject.buildDir, "/jacoco/test.exec")
-        if (commonModuleReport.exists()) jacocoFiles.add(commonModuleReport)
-        File androidModuleReport = new File(subproject.buildDir, "/jacoco/testDebugUnitTest.exec")
-        if (androidModuleReport.exists()) jacocoFiles.add(androidModuleReport)
-    }
-    executionData(jacocoFiles.toArray())
-    destinationFile(file("${project.buildDir}/jacoco/jacoco.exec"))
-}
-
-def createJacocoFullReportTask() {
-    tasks.create(name: 'jacocoFullReport', type: JacocoReport, dependsOn: 'jacocoMergeReports') {
-        group = "Reporting"
-        description = "Generate full Jacoco coverage report including all modules."
-
-        List<FileTree> classFileTreeList = new ArrayList<>()
-        List<FileTree> sourceFileTreeList = new ArrayList<>()
-        project.subprojects { subproject ->
-            if (subproject.plugins.hasPlugin("kotlin-android") &&
-                    subproject.hasProperty("jacocoExclude")) {
-                classFileTreeList.add(
-                        fileTree(
-                                dir: "${subproject.buildDir}/tmp/kotlin-classes/debug",
-                                excludes: subproject.jacocoExclude
-                        )
-                )
-                sourceFileTreeList.add(
-                        subproject.extensions.getByName('android').sourceSets.main.java.sourceFiles
-                )
-            } else if (subproject.hasProperty("jacocoExclude")) {
-                classFileTreeList.add(
-                        fileTree(
-                                dir: "${subproject.buildDir}/classes/kotlin/main",
-                                excludes: subproject.jacocoExclude
-                        )
-                )
-                sourceFileTreeList.add(subproject.sourceSets.main.getAllSource())
+        subproject.plugins.withId("jacoco") {
+            project.logger.info("${subproject.name} has Jacoco plugin applied")
+            subproject.tasks.withType(Test) { task ->
+                File destFile = task.extensions.getByType(JacocoTaskExtension.class).destinationFile
+                if (destFile.exists() && !task.name.contains("Release")) {
+                    jacocoFiles.add(destFile)
+                }
             }
         }
-
-        classDirectories = files(classFileTreeList.toArray())
-        sourceDirectories = files(sourceFileTreeList.toArray())
-        executionData = files("${buildDir}/jacoco/jacoco.exec")
-
-        reports {
-            xml.enabled = true
-            html.enabled = true
-            csv.enabled = false
-        }
     }
+
+    executionData(jacocoFiles)
+    destinationFile(mergedJacocoExec)
 }
 
-// We need to wait to all subprojects configuration finish or we don't get sources and exclusions
-def subprojectsCount = allprojects.size()
-allprojects {
-    afterEvaluate { subproject ->
-        subprojectsCount--
-        if (subprojectsCount == 0) {
-            apply {
-                createJacocoFullReportTask()
+tasks.create(name: 'jacocoFullReport', type: JacocoReport, dependsOn: 'jacocoMergeReports') {
+    group = "Reporting"
+    description = "Generate full Jacoco coverage report including all modules."
+
+    classDirectories = files()
+    sourceDirectories = files()
+    executionData = files()
+
+    reports {
+        xml.enabled = true
+        html.enabled = true
+        csv.enabled = false
+    }
+
+    // Always run merging, as all input calculation is done in doFirst {}
+    outputs.upToDateWhen { false }
+    // Task will run anyway even if initial inputs are empty
+    onlyIf = { true }
+
+    doFirst {
+        project.subprojects { subproject ->
+            subproject.plugins.withId("jacoco") {
+                project.logger.info("${subproject.name} has Jacoco plugin applied")
+                subproject.plugins.withId("kotlin-android") {
+                    project.logger.info("${subproject.name} is android project")
+                    def mainSources = subproject.extensions.findByName("android").sourceSets['main']
+                    project.logger.info("Android sources: ${mainSources.java.srcDirs}")
+                    mainSources.java.srcDirs.forEach {
+                        additionalSourceDirs(it)
+                    }
+                    project.logger.info("Subproject exclude: ${subproject.jacocoExclude}")
+                    additionalClassDirs(fileTree(
+                            dir: "${subproject.buildDir}/tmp/kotlin-classes/debug",
+                            excludes: subproject.jacocoExclude
+                    ))
+                }
+                subproject.plugins.withId("kotlin") { plugin ->
+                    project.logger.info("${subproject.name} is common kotlin project")
+                    SourceDirectorySet mainSources = subproject.extensions.getByName("kotlin")
+                            .sourceSets[SourceSet.MAIN_SOURCE_SET_NAME]
+                            .kotlin
+                    mainSources.srcDirs.forEach {
+                        project.logger.debug("Adding sources: $it")
+                        additionalSourceDirs(it)
+                    }
+                    project.logger.info("Subproject exclude: ${subproject.jacocoExclude}")
+                    additionalClassDirs(fileTree(
+                            dir: "${subproject.buildDir}/classes/kotlin/main",
+                            excludes: subproject.jacocoExclude
+                    ))
+                }
+
+                subproject.tasks.withType(Test) { task ->
+                    File destFile = task.extensions.getByType(JacocoTaskExtension.class).destinationFile
+                    if (destFile.exists() && !task.name.contains("Release")) {
+                        project.logger.info("Adding execution data: $destFile")
+                        executionData(destFile)
+                    }
+                }
             }
         }
     }

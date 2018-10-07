@@ -1,0 +1,8 @@
+apply from: bootstrap.androidModule
+
+android {
+    lintOptions {
+        baselineFile file("lint-baseline.xml")
+        abortOnError true
+    }
+}

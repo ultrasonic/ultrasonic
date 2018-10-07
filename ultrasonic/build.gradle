@@ -49,14 +49,18 @@ android {
     }
 }
 
+tasks.withType(Test) {
+    useJUnitPlatform()
+}
+
 dependencies {
-    implementation project(':menudrawer')
-    implementation project(':pulltorefresh')
-    implementation project(':library')
-    implementation project(':domain')
-    implementation project(':subsonic-api')
-    implementation project(':subsonic-api-image-loader')
-    implementation project(':cache')
+    implementation project(':core:menudrawer')
+    implementation project(':core:pulltorefresh')
+    implementation project(':core:library')
+    implementation project(':core:domain')
+    implementation project(':core:subsonic-api')
+    implementation project(':core:subsonic-api-image-loader')
+    implementation project(':core:cache')
 
     implementation androidSupport.support
     implementation androidSupport.design
@@ -67,9 +71,14 @@ dependencies {
 
     testImplementation other.kotlinReflect
     testImplementation testing.junit
+    testRuntimeOnly testing.junitVintage
     testImplementation testing.kotlinJunit
     testImplementation testing.mockitoKotlin
     testImplementation testing.kluent
+}
+
+jacoco {
+    toolVersion(versions.jacoco)
 }
 
 // Excluding all java classes and stuff that should not be covered
