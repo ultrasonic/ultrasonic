@@ -51,6 +51,7 @@ enum class SubsonicAPIVersions(val subsonicVersions: String, val restApiVersion:
                 "1.14.0" -> return V1_14_0
                 "1.15.0" -> return V1_15_0
                 "1.16.0" -> return V1_16_0
+                "1.16.1" -> return V1_16_0 // Fast and dirty fix to Subsonic 6.1.4
                 else -> throw IllegalArgumentException("Unknown api version $apiVersion")
             }
         }
