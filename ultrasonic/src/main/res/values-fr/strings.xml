@@ -41,17 +41,17 @@
     <string name="common.various_artists">Artistes divers</string>
     <string name="delete_playlist">Voulez-vous supprimer %1$s</string>
     <string name="download.bookmark_removed" formatted="false">Signet supprimé.</string>
-    <string name="download.bookmark_set_at_position" formatted="false">Bookmark défini sur %s.</string>
-    <string name="download.empty">Playlist vide</string>
+    <string name="download.bookmark_set_at_position" formatted="false">Signet ajouté à %s.</string>
+    <string name="download.empty">La playlist est vide</string>
     <string name="download.jukebox_not_authorized">La télécommande n\'est pas autorisée. Veuillez activer le mode jukebox dans <b>Utilisateurs &gt; Paramètres</b> à partir de votre serveur Subsonic.</string>
-    <string name="download.jukebox_off">Télécommande désactivée. La musique est jouée sur le téléphone.</string>
-    <string name="download.jukebox_offline">La télécommande n\'est pas disponible en mode déconnecté.</string>
-    <string name="download.jukebox_on">Télécommande activée. La musique est jouée sur le serveur</string>
-    <string name="download.jukebox_server_too_old">La télécommande n\'est pas pris en charge. Mise à jour du serveur Subsonic requise.</string>
-    <string name="download.jukebox_volume">Volume de la télécommande</string>
+    <string name="download.jukebox_off">Mode jukebox désactivée. La musique est jouée sur le téléphone.</string>
+    <string name="download.jukebox_offline">Le mode jukebox n\'est pas disponible en mode déconnecté.</string>
+    <string name="download.jukebox_on">Mode jukebox activé. La musique est jouée sur le serveur</string>
+    <string name="download.jukebox_server_too_old">Le mode jukebox n\'est pas pris en charge. Mise à jour du serveur Subsonic requise.</string>
+    <string name="download.jukebox_volume">Volume sur serveur distant</string>
     <string name="download.menu_equalizer">Égaliseur</string>
-    <string name="download.menu_jukebox_off">Jukebox éteintes</string>
-    <string name="download.menu_jukebox_on">Jukebox sur</string>
+    <string name="download.menu_jukebox_off">Désactiver le mode jukebox</string>
+    <string name="download.menu_jukebox_on">Activer le mode jukebox</string>
     <string name="download.menu_lyrics">Paroles</string>
     <string name="download.menu_remove">Retirer le morceau</string>
     <string name="download.menu_save">Enregistrer la playlist</string>
@@ -79,7 +79,7 @@
     <string name="equalizer.preset">Sélection prédéfinie</string>
     <string name="error.label">Erreur</string>
     <string name="help.url">file:///android_asset/html/en/index.html</string>
-    <string name="jukebox.is_default">Jukebox par défaut</string>
+    <string name="jukebox.is_default">Jukebox actif par défaut</string>
     <string name="lyrics.nomatch">Aucunes paroles trouvées</string>
     <string name="main.albums_alphaByArtist">Alphabétique par artiste</string>
     <string name="main.albums_alphaByName">Alphabétique par nom</string>
@@ -159,7 +159,7 @@
     <string name="settings.buffer_length_60">1 minute</string>
     <string name="settings.buffer_length_8">8 secondes</string>
     <string name="settings.cache_location">Emplacement du cache</string>
-    <string name="settings.cache_location_error">Emplacement du cache invalide. Utilisation par défaut.</string>
+    <string name="settings.cache_location_error">Emplacement du cache invalide. Utilisation du cache par défaut.</string>
     <string name="settings.cache_size">Taille du cache</string>
     <string name="settings.cache_size_100">100 Mo</string>
     <string name="settings.cache_size_1000">1 Go</string>
@@ -368,7 +368,7 @@
     <string name="settings.share_expiration">Temps à expiration</string>
     <string name="download_song_removed">\"%s\" retiré de la playlist</string>
     <string name="download.share_playlist">Partager playlist</string>
-    <string name="settings.share_greeting_default">Partage par défaut voeux</string>
+    <string name="settings.share_greeting_default">Texte par défaut lors d\'un partage</string>
     <string name="share_default_greeting">Consultez cette musique j\'ai partagé de %s</string>
     <string name="share_via">De partager des titres via</string>
     <string name="settings.video_mx_player">MX Player</string>
@@ -436,11 +436,12 @@
     <string name="api.subsonic.trial_period_is_over">La période d\'essai est terminée.</string>
     <string name="api.subsonic.upgrade_client">Versions incompatible. Veuillez mette à jour l\'application Android UltraSonic.</string>
     <string name="api.subsonic.upgrade_server">Versions incompatible. Veuillez mette à jour le serveur Subsonic.</string>
-    <string name="feature_flags_category_title">Drapeaux des fonctionnalités</string>
+
+    <string name="feature_flags_image_loader_title">Activer le nouveau chargeur d\'images</string>
     <string name="feature_flags_image_loader_description">Permet l\'implémentation d\'un nouveau chargeur d\'images.
         Actuellement, il n\'enregistre pas l\'image dans le stockage de l\'appareil et n\'utilise que le cache en
         mémoire.
     </string>
-    <string name="feature_flags_image_loader_title">Activer le nouveau chargeur d\'images</string>
+    <string name="feature_flags_category_title">Drapeaux des fonctionnalités</string>
 
 </resources>
