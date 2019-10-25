@@ -2079,6 +2079,7 @@ public class DownloadServiceImpl extends Service implements DownloadService
         builder.setAutoCancel(false);
         builder.setOngoing(true);
         builder.setWhen(System.currentTimeMillis());
+        builder.setVisibility(NotificationCompat.VISIBILITY_PUBLIC);
 
         RemoteViews contentView = new RemoteViews(this.getPackageName(), R.layout.notification);
         Util.linkButtons(this, contentView, false);
