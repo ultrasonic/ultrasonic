@@ -51,10 +51,13 @@ import android.widget.ViewFlipper;
 
 import com.mobeta.android.dslv.DragSortListView;
 import org.moire.ultrasonic.R;
+import org.moire.ultrasonic.app.UApp;
 import org.moire.ultrasonic.domain.MusicDirectory;
 import org.moire.ultrasonic.domain.MusicDirectory.Entry;
 import org.moire.ultrasonic.domain.PlayerState;
 import org.moire.ultrasonic.domain.RepeatMode;
+import org.moire.ultrasonic.featureflags.Feature;
+import org.moire.ultrasonic.featureflags.FeatureStorage;
 import org.moire.ultrasonic.service.DownloadFile;
 import org.moire.ultrasonic.service.DownloadService;
 import org.moire.ultrasonic.service.MusicService;
@@ -119,6 +122,15 @@ public class DownloadActivity extends SubsonicTabActivity implements OnGestureLi
 	private SilentBackgroundTask<Void> onProgressChangedTask;
 	LinearLayout visualizerViewLayout;
 	private MenuItem starMenuItem;
+	private LinearLayout ratingLinearLayout;
+	private ImageView fiveStar1ImageView;
+	private ImageView fiveStar2ImageView;
+	private ImageView fiveStar3ImageView;
+	private ImageView fiveStar4ImageView;
+	private ImageView fiveStar5ImageView;
+	private boolean useFiveStarRating;
+	private Drawable hollowStar;
+	private Drawable fullStar;
 
 	/**
 	 * Called when the activity is first created.
@@ -135,6 +147,8 @@ public class DownloadActivity extends SubsonicTabActivity implements OnGestureLi
 		display.getSize(size);
 		int width = size.x;
 		int height = size.y;
+
+		useFiveStarRating = ((UApp) getApplication()).getFeaturesStorage().isFeatureEnabled(Feature.FIVE_STAR_RATING);
 
 		swipeDistance = (width + height) * PERCENTAGE_OF_SCREEN_FOR_SWIPE / 100;
 		swipeVelocity = swipeDistance;
@@ -161,6 +175,54 @@ public class DownloadActivity extends SubsonicTabActivity implements OnGestureLi
 		repeatButton = (ImageView) findViewById(R.id.download_repeat);
 
 		visualizerViewLayout = (LinearLayout) findViewById(R.id.download_visualizer_view_layout);
+
+		ratingLinearLayout = findViewById(R.id.song_rating);
+		fiveStar1ImageView = findViewById(R.id.song_five_star_1);
+		fiveStar2ImageView = findViewById(R.id.song_five_star_2);
+		fiveStar3ImageView = findViewById(R.id.song_five_star_3);
+		fiveStar4ImageView = findViewById(R.id.song_five_star_4);
+		fiveStar5ImageView = findViewById(R.id.song_five_star_5);
+
+		if (!useFiveStarRating) ratingLinearLayout.setVisibility(View.GONE);
+
+		hollowStar = Util.getDrawableFromAttribute(SubsonicTabActivity.getInstance(), R.attr.star_hollow);
+		fullStar = Util.getDrawableFromAttribute(SubsonicTabActivity.getInstance(), R.attr.star_full);
+
+		fiveStar1ImageView.setOnClickListener(new View.OnClickListener()
+		{
+			@Override
+			public void onClick(final View view) {
+				SetSongRating(1);
+			}
+		});
+		fiveStar2ImageView.setOnClickListener(new View.OnClickListener()
+		{
+			@Override
+			public void onClick(final View view) {
+				SetSongRating(2);
+			}
+		});
+		fiveStar3ImageView.setOnClickListener(new View.OnClickListener()
+		{
+			@Override
+			public void onClick(final View view) {
+				SetSongRating(3);
+			}
+		});
+		fiveStar4ImageView.setOnClickListener(new View.OnClickListener()
+		{
+			@Override
+			public void onClick(final View view) {
+				SetSongRating(4);
+			}
+		});
+		fiveStar5ImageView.setOnClickListener(new View.OnClickListener()
+		{
+			@Override
+			public void onClick(final View view) {
+				SetSongRating(5);
+			}
+		});
 
 		View.OnTouchListener touchListener = new View.OnTouchListener()
 		{
@@ -726,22 +788,20 @@ public class DownloadActivity extends SubsonicTabActivity implements OnGestureLi
 				currentSong = downloadFile.getSong();
 			}
 
+			if (useFiveStarRating) starMenuItem.setVisible(false);
+
 			if (currentSong != null)
 			{
-				final Drawable starDrawable = currentSong.getStarred() ? Util.getDrawableFromAttribute(SubsonicTabActivity.getInstance(), R.attr.star_full) : Util.getDrawableFromAttribute(SubsonicTabActivity.getInstance(), R.attr.star_hollow);
-
 				if (starMenuItem != null)
 				{
-					starMenuItem.setIcon(starDrawable);
+					starMenuItem.setIcon(currentSong.getStarred() ? fullStar : hollowStar);
 				}
 			}
 			else
 			{
-				final Drawable starDrawable = Util.getDrawableFromAttribute(SubsonicTabActivity.getInstance(), R.attr.star_hollow);
-
 				if (starMenuItem != null)
 				{
-					starMenuItem.setIcon(starDrawable);
+					starMenuItem.setIcon(hollowStar);
 				}
 			}
 
@@ -974,12 +1034,12 @@ public class DownloadActivity extends SubsonicTabActivity implements OnGestureLi
 
 				if (isStarred)
 				{
-					starMenuItem.setIcon(Util.getDrawableFromAttribute(SubsonicTabActivity.getInstance(), R.attr.star_hollow));
+					starMenuItem.setIcon(hollowStar);
 					currentSong.setStarred(false);
 				}
 				else
 				{
-					starMenuItem.setIcon(Util.getDrawableFromAttribute(SubsonicTabActivity.getInstance(), R.attr.star_full));
+					starMenuItem.setIcon(fullStar);
 					currentSong.setStarred(true);
 				}
 
@@ -1320,6 +1380,8 @@ public class DownloadActivity extends SubsonicTabActivity implements OnGestureLi
 			downloadTrackTextView.setText(trackFormat);
 			downloadTotalDurationTextView.setText(duration);
 			getImageLoader().loadImage(albumArtImageView, currentSong, true, 0, false, true);
+
+			DisplaySongRating();
 		}
 		else
 		{
@@ -1579,5 +1641,46 @@ public class DownloadActivity extends SubsonicTabActivity implements OnGestureLi
 	public static SeekBar getProgressBar()
 	{
 		return progressBar;
+	}
+
+	private void DisplaySongRating()
+	{
+		int rating = currentSong.getUserRating() == null ? 0 : currentSong.getUserRating();
+		fiveStar1ImageView.setImageDrawable(rating > 0 ? fullStar : hollowStar);
+		fiveStar2ImageView.setImageDrawable(rating > 1 ? fullStar : hollowStar);
+		fiveStar3ImageView.setImageDrawable(rating > 2 ? fullStar : hollowStar);
+		fiveStar4ImageView.setImageDrawable(rating > 3 ? fullStar : hollowStar);
+		fiveStar5ImageView.setImageDrawable(rating > 4 ? fullStar : hollowStar);
+	}
+
+	private void SetSongRating(final int rating)
+	{
+		if (currentSong == null)
+		{
+			return;
+		}
+
+		final String id = currentSong.getId();
+
+		currentSong.setUserRating(rating);
+		DisplaySongRating();
+
+		new Thread(new Runnable()
+		{
+			@Override
+			public void run()
+			{
+				final MusicService musicService = MusicServiceFactory.getMusicService(DownloadActivity.this);
+
+				try
+				{
+					musicService.setRating(id, rating, DownloadActivity.this, null);
+				}
+				catch (Exception e)
+				{
+					Log.e(TAG, e.getMessage(), e);
+				}
+			}
+		}).start();
 	}
 }

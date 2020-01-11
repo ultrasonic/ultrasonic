@@ -26,15 +26,93 @@
                 a:contentDescription="@string/albumArt"/>
 
             <LinearLayout
-                a:id="@+id/download_visualizer_view_layout"
+                a:id="@+id/album_art_inside"
                 a:layout_width="fill_parent"
-                a:layout_height="60dip"
-                a:layout_gravity="bottom|center_horizontal"
-                a:layout_marginLeft="60dip"
-                a:layout_marginRight="60dip"
-                a:background="@color/translucent"
-                a:orientation="vertical"/>
+                a:layout_height="fill_parent"
+                a:gravity="bottom"
+                a:orientation="vertical" >
 
+                <LinearLayout
+                    a:id="@+id/song_rating"
+                    a:layout_width="match_parent"
+                    a:layout_height="60dip"
+                    a:layout_gravity="center"
+                    a:layout_margin="40dip"
+                    a:orientation="horizontal">
+
+                    <ImageView
+                        a:id="@+id/song_five_star_1"
+                        a:layout_width="0dip"
+                        a:layout_height="fill_parent"
+                        a:layout_weight="1"
+                        a:padding="10dip"
+                        a:background="@android:color/transparent"
+                        a:focusable="false"
+                        a:gravity="center_vertical"
+                        a:scaleType="fitCenter"
+                        a:src="?attr/star_hollow" />
+
+                    <ImageView
+                        a:id="@+id/song_five_star_2"
+                        a:layout_width="0dip"
+                        a:layout_height="fill_parent"
+                        a:layout_weight="1"
+                        a:padding="10dip"
+                        a:background="@android:color/transparent"
+                        a:focusable="false"
+                        a:gravity="center_vertical"
+                        a:scaleType="fitCenter"
+                        a:src="?attr/star_hollow" />
+
+                    <ImageView
+                        a:id="@+id/song_five_star_3"
+                        a:layout_width="0dip"
+                        a:layout_height="fill_parent"
+                        a:layout_weight="1"
+                        a:padding="10dip"
+                        a:background="@android:color/transparent"
+                        a:focusable="false"
+                        a:gravity="center_vertical"
+                        a:scaleType="fitCenter"
+                        a:src="?attr/star_hollow" />
+
+                    <ImageView
+                        a:id="@+id/song_five_star_4"
+                        a:layout_width="0dip"
+                        a:layout_height="fill_parent"
+                        a:layout_weight="1"
+                        a:padding="10dip"
+                        a:background="@android:color/transparent"
+                        a:focusable="false"
+                        a:gravity="center_vertical"
+                        a:scaleType="fitCenter"
+                        a:src="?attr/star_hollow" />
+
+                    <ImageView
+                        a:id="@+id/song_five_star_5"
+                        a:layout_width="0dip"
+                        a:layout_height="fill_parent"
+                        a:layout_weight="1"
+                        a:padding="10dip"
+                        a:background="@android:color/transparent"
+                        a:focusable="false"
+                        a:gravity="center_vertical"
+                        a:scaleType="fitCenter"
+                        a:src="?attr/star_hollow" />
+
+                </LinearLayout>
+
+                <LinearLayout
+                    a:id="@+id/download_visualizer_view_layout"
+                    a:layout_width="fill_parent"
+                    a:layout_height="60dip"
+                    a:layout_gravity="bottom|center_horizontal"
+                    a:layout_marginLeft="60dip"
+                    a:layout_marginRight="60dip"
+                    a:background="@color/translucent"
+                    a:orientation="vertical"/>
+
+            </LinearLayout>
         </FrameLayout>
 
         <include layout="@layout/download_playlist"/>

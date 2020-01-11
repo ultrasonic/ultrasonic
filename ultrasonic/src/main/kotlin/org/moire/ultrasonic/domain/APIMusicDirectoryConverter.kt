@@ -45,6 +45,8 @@ fun MusicDirectoryChild.toDomainEntity(): MusicDirectory.Entry = MusicDirectory.
     if (this@toDomainEntity.publishDate != null) {
         artist = dateFormat.format(this@toDomainEntity.publishDate!!.time)
     }
+    userRating = this@toDomainEntity.userRating
+    averageRating = this@toDomainEntity.averageRating
 }
 
 fun List<MusicDirectoryChild>.toDomainEntityList() = this.map { it.toDomainEntity() }

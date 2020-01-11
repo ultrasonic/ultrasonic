@@ -28,10 +28,14 @@ import android.view.View;
 import android.widget.Checkable;
 import android.widget.CheckedTextView;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import org.moire.ultrasonic.R;
+import org.moire.ultrasonic.app.UApp;
 import org.moire.ultrasonic.domain.MusicDirectory.Entry;
+import org.moire.ultrasonic.featureflags.Feature;
+import org.moire.ultrasonic.featureflags.FeatureStorage;
 import org.moire.ultrasonic.service.DownloadFile;
 import org.moire.ultrasonic.service.DownloadService;
 import org.moire.ultrasonic.service.DownloadServiceImpl;
@@ -73,11 +77,14 @@ public class SongView extends UpdateView implements Checkable
 	private boolean playing;
 	private EntryAdapter.SongViewHolder viewHolder;
 	private boolean maximized = false;
+	private boolean useFiveStarRating;
 
 	public SongView(Context context)
 	{
 		super(context);
 		this.context = context;
+
+		useFiveStarRating = new FeatureStorage(context).isFeatureEnabled(Feature.FIVE_STAR_RATING);
 
 		String theme = Util.getTheme(context);
 		boolean themesMatch = theme.equals(SongView.theme);
@@ -124,6 +131,12 @@ public class SongView extends UpdateView implements Checkable
 		inflater.inflate(song.isVideo() ? R.layout.video_list_item : R.layout.song_list_item, this, true);
 		viewHolder = new EntryAdapter.SongViewHolder();
 		viewHolder.check = (CheckedTextView) findViewById(R.id.song_check);
+		viewHolder.rating = (LinearLayout) findViewById(R.id.song_rating);
+		viewHolder.fiveStar1 = (ImageView) findViewById(R.id.song_five_star_1);
+		viewHolder.fiveStar2 = (ImageView) findViewById(R.id.song_five_star_2);
+		viewHolder.fiveStar3 = (ImageView) findViewById(R.id.song_five_star_3);
+		viewHolder.fiveStar4 = (ImageView) findViewById(R.id.song_five_star_4);
+		viewHolder.fiveStar5 = (ImageView) findViewById(R.id.song_five_star_5);
 		viewHolder.star = (ImageView) findViewById(R.id.song_star);
 		viewHolder.drag = (ImageView) findViewById(R.id.song_drag);
 		viewHolder.track = (TextView) findViewById(R.id.song_track);
@@ -237,56 +250,59 @@ public class SongView extends UpdateView implements Checkable
 		if (Util.isOffline(this.context))
 		{
 			viewHolder.star.setVisibility(View.GONE);
+			viewHolder.rating.setVisibility(View.GONE);
 		}
 		else
 		{
-			viewHolder.star.setImageDrawable(song.getStarred() ? starDrawable : starHollowDrawable);
-
-			viewHolder.star.setOnClickListener(new View.OnClickListener()
+			if (useFiveStarRating)
 			{
-				@Override
-				public void onClick(View view)
-				{
-					final boolean isStarred = song.getStarred();
-					final String id = song.getId();
+				viewHolder.star.setVisibility(View.GONE);
 
-					if (!isStarred)
-					{
-						viewHolder.star.setImageDrawable(starDrawable);
-						song.setStarred(true);
-					}
-					else
-					{
-						viewHolder.star.setImageDrawable(starHollowDrawable);
-						song.setStarred(false);
-					}
+				int rating = song.getUserRating() == null ? 0 : song.getUserRating();
+				viewHolder.fiveStar1.setImageDrawable(rating > 0 ? starDrawable : starHollowDrawable);
+				viewHolder.fiveStar2.setImageDrawable(rating > 1 ? starDrawable : starHollowDrawable);
+				viewHolder.fiveStar3.setImageDrawable(rating > 2 ? starDrawable : starHollowDrawable);
+				viewHolder.fiveStar4.setImageDrawable(rating > 3 ? starDrawable : starHollowDrawable);
+				viewHolder.fiveStar5.setImageDrawable(rating > 4 ? starDrawable : starHollowDrawable);
 
-					new Thread(new Runnable()
-					{
-						@Override
-						public void run()
-						{
-							MusicService musicService = MusicServiceFactory.getMusicService(SongView.this.context);
+			}
+			else {
+				viewHolder.rating.setVisibility(View.GONE);
+				viewHolder.star.setImageDrawable(song.getStarred() ? starDrawable : starHollowDrawable);
 
-							try
-							{
-								if (!isStarred)
-								{
-									musicService.star(id, null, null, SongView.this.context, null);
-								}
-								else
-								{
-									musicService.unstar(id, null, null, SongView.this.context, null);
-								}
-							}
-							catch (Exception e)
-							{
-								Log.e(TAG, e.getMessage(), e);
-							}
+				viewHolder.star.setOnClickListener(new View.OnClickListener() {
+					@Override
+					public void onClick(View view) {
+						final boolean isStarred = song.getStarred();
+						final String id = song.getId();
+
+						if (!isStarred) {
+							viewHolder.star.setImageDrawable(starDrawable);
+							song.setStarred(true);
+						} else {
+							viewHolder.star.setImageDrawable(starHollowDrawable);
+							song.setStarred(false);
 						}
-					}).start();
-				}
-			});
+
+						new Thread(new Runnable() {
+							@Override
+							public void run() {
+								MusicService musicService = MusicServiceFactory.getMusicService(SongView.this.context);
+
+								try {
+									if (!isStarred) {
+										musicService.star(id, null, null, SongView.this.context, null);
+									} else {
+										musicService.unstar(id, null, null, SongView.this.context, null);
+									}
+								} catch (Exception e) {
+									Log.e(TAG, e.getMessage(), e);
+								}
+							}
+						}).start();
+					}
+				});
+			}
 		}
 
 		update();
@@ -393,6 +409,13 @@ public class SongView extends UpdateView implements Checkable
 				}
 			}
 		}
+
+		int rating = song.getUserRating() == null ? 0 : song.getUserRating();
+		viewHolder.fiveStar1.setImageDrawable(rating > 0 ? starDrawable : starHollowDrawable);
+		viewHolder.fiveStar2.setImageDrawable(rating > 1 ? starDrawable : starHollowDrawable);
+		viewHolder.fiveStar3.setImageDrawable(rating > 2 ? starDrawable : starHollowDrawable);
+		viewHolder.fiveStar4.setImageDrawable(rating > 3 ? starDrawable : starHollowDrawable);
+		viewHolder.fiveStar5.setImageDrawable(rating > 4 ? starDrawable : starHollowDrawable);
 
 		boolean playing = downloadService.getCurrentPlaying() == downloadFile;
 
