@@ -57,7 +57,6 @@ import org.moire.ultrasonic.domain.MusicDirectory.Entry;
 import org.moire.ultrasonic.domain.PlayerState;
 import org.moire.ultrasonic.domain.RepeatMode;
 import org.moire.ultrasonic.featureflags.Feature;
-import org.moire.ultrasonic.featureflags.FeatureStorage;
 import org.moire.ultrasonic.service.DownloadFile;
 import org.moire.ultrasonic.service.DownloadService;
 import org.moire.ultrasonic.service.MusicService;
@@ -192,35 +191,35 @@ public class DownloadActivity extends SubsonicTabActivity implements OnGestureLi
 		{
 			@Override
 			public void onClick(final View view) {
-				SetSongRating(1);
+				setSongRating(1);
 			}
 		});
 		fiveStar2ImageView.setOnClickListener(new View.OnClickListener()
 		{
 			@Override
 			public void onClick(final View view) {
-				SetSongRating(2);
+				setSongRating(2);
 			}
 		});
 		fiveStar3ImageView.setOnClickListener(new View.OnClickListener()
 		{
 			@Override
 			public void onClick(final View view) {
-				SetSongRating(3);
+				setSongRating(3);
 			}
 		});
 		fiveStar4ImageView.setOnClickListener(new View.OnClickListener()
 		{
 			@Override
 			public void onClick(final View view) {
-				SetSongRating(4);
+				setSongRating(4);
 			}
 		});
 		fiveStar5ImageView.setOnClickListener(new View.OnClickListener()
 		{
 			@Override
 			public void onClick(final View view) {
-				SetSongRating(5);
+				setSongRating(5);
 			}
 		});
 
@@ -1381,7 +1380,7 @@ public class DownloadActivity extends SubsonicTabActivity implements OnGestureLi
 			downloadTotalDurationTextView.setText(duration);
 			getImageLoader().loadImage(albumArtImageView, currentSong, true, 0, false, true);
 
-			DisplaySongRating();
+			displaySongRating();
 		}
 		else
 		{
@@ -1501,6 +1500,9 @@ public class DownloadActivity extends SubsonicTabActivity implements OnGestureLi
 						startButton.setVisibility(View.VISIBLE);
 						break;
 				}
+
+				// TODO: It would be a lot nicer if DownloadService would send an event when this is necessary instead of updating every time
+				displaySongRating();
 
 				onProgressChangedTask = null;
 			}
@@ -1643,7 +1645,7 @@ public class DownloadActivity extends SubsonicTabActivity implements OnGestureLi
 		return progressBar;
 	}
 
-	private void DisplaySongRating()
+	private void displaySongRating()
 	{
 		int rating = currentSong.getUserRating() == null ? 0 : currentSong.getUserRating();
 		fiveStar1ImageView.setImageDrawable(rating > 0 ? fullStar : hollowStar);
@@ -1653,7 +1655,7 @@ public class DownloadActivity extends SubsonicTabActivity implements OnGestureLi
 		fiveStar5ImageView.setImageDrawable(rating > 4 ? fullStar : hollowStar);
 	}
 
-	private void SetSongRating(final int rating)
+	private void setSongRating(final int rating)
 	{
 		if (currentSong == null)
 		{
@@ -1663,7 +1665,7 @@ public class DownloadActivity extends SubsonicTabActivity implements OnGestureLi
 		final String id = currentSong.getId();
 
 		currentSong.setUserRating(rating);
-		DisplaySongRating();
+		displaySongRating();
 
 		new Thread(new Runnable()
 		{
