@@ -50,6 +50,8 @@ import android.widget.TextView;
 import android.widget.ViewFlipper;
 
 import com.mobeta.android.dslv.DragSortListView;
+
+import org.koin.java.standalone.KoinJavaComponent;
 import org.moire.ultrasonic.R;
 import org.moire.ultrasonic.app.UApp;
 import org.moire.ultrasonic.domain.MusicDirectory;
@@ -57,6 +59,7 @@ import org.moire.ultrasonic.domain.MusicDirectory.Entry;
 import org.moire.ultrasonic.domain.PlayerState;
 import org.moire.ultrasonic.domain.RepeatMode;
 import org.moire.ultrasonic.featureflags.Feature;
+import org.moire.ultrasonic.featureflags.FeatureStorage;
 import org.moire.ultrasonic.service.DownloadFile;
 import org.moire.ultrasonic.service.DownloadService;
 import org.moire.ultrasonic.service.MusicService;
@@ -147,7 +150,7 @@ public class DownloadActivity extends SubsonicTabActivity implements OnGestureLi
 		int width = size.x;
 		int height = size.y;
 
-		useFiveStarRating = ((UApp) getApplication()).getFeaturesStorage().isFeatureEnabled(Feature.FIVE_STAR_RATING);
+		useFiveStarRating = KoinJavaComponent.get(FeatureStorage.class).isFeatureEnabled(Feature.FIVE_STAR_RATING);
 
 		swipeDistance = (width + height) * PERCENTAGE_OF_SCREEN_FOR_SWIPE / 100;
 		swipeVelocity = swipeDistance;

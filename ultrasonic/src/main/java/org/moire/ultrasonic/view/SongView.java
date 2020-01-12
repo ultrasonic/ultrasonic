@@ -31,6 +31,7 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import org.koin.java.standalone.KoinJavaComponent;
 import org.moire.ultrasonic.R;
 import org.moire.ultrasonic.app.UApp;
 import org.moire.ultrasonic.domain.MusicDirectory.Entry;
@@ -84,7 +85,7 @@ public class SongView extends UpdateView implements Checkable
 		super(context);
 		this.context = context;
 
-		useFiveStarRating = new FeatureStorage(context).isFeatureEnabled(Feature.FIVE_STAR_RATING);
+		useFiveStarRating = KoinJavaComponent.get(FeatureStorage.class).isFeatureEnabled(Feature.FIVE_STAR_RATING);
 
 		String theme = Util.getTheme(context);
 		boolean themesMatch = theme.equals(SongView.theme);

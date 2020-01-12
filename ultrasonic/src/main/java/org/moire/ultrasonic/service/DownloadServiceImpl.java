@@ -44,6 +44,7 @@ import android.view.View;
 import android.widget.RemoteViews;
 import android.widget.SeekBar;
 
+import org.koin.java.standalone.KoinJavaComponent;
 import org.moire.ultrasonic.R;
 import org.moire.ultrasonic.activity.DownloadActivity;
 import org.moire.ultrasonic.activity.SubsonicTabActivity;
@@ -2132,7 +2133,7 @@ public class DownloadServiceImpl extends Service implements DownloadService
         contentView.setTextViewText(R.id.album, album);
         bigView.setTextViewText(R.id.album, album);
 
-		boolean useFiveStarRating = new FeatureStorage(this).isFeatureEnabled(Feature.FIVE_STAR_RATING);
+		boolean useFiveStarRating = KoinJavaComponent.get(FeatureStorage.class).isFeatureEnabled(Feature.FIVE_STAR_RATING);
 		if (!useFiveStarRating)	bigView.setViewVisibility(R.id.notification_rating, View.INVISIBLE);
 		else
 		{
