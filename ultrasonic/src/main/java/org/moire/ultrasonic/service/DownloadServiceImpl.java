@@ -1243,11 +1243,7 @@ public class DownloadServiceImpl extends Service implements DownloadService
 				// Only update notification is player state is one that will change the icon
 				if (this.playerState == PlayerState.STARTED || this.playerState == PlayerState.PAUSED)
 				{
-                    if (Util.isNotificationEnabled(this)) {
-                        final NotificationManagerCompat notificationManager =
-                                NotificationManagerCompat.from(this);
-                        notificationManager.notify(NOTIFICATION_ID, buildForegroundNotification());
-                    }
+					updateNotification();
 					tabInstance.showNowPlaying();
 				}
 			}
@@ -2076,6 +2072,16 @@ public class DownloadServiceImpl extends Service implements DownloadService
 		}
 	}
 
+	@Override
+	public void updateNotification()
+	{
+		if (Util.isNotificationEnabled(this)) {
+			final NotificationManagerCompat notificationManager =
+					NotificationManagerCompat.from(this);
+			notificationManager.notify(NOTIFICATION_ID, buildForegroundNotification());
+		}
+	}
+
     @SuppressWarnings("IconColors")
     private Notification buildForegroundNotification() {
         NotificationCompat.Builder builder = new NotificationCompat.Builder(this);
@@ -2160,11 +2166,7 @@ public class DownloadServiceImpl extends Service implements DownloadService
 		final Entry song = currentPlaying.getSong();
 		song.setUserRating(rating);
 
-		if (Util.isNotificationEnabled(this)) {
-			final NotificationManagerCompat notificationManager =
-					NotificationManagerCompat.from(this);
-			notificationManager.notify(NOTIFICATION_ID, buildForegroundNotification());
-		}
+		updateNotification();
 	}
 
 	private class BufferTask extends CancellableTask

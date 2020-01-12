@@ -144,4 +144,6 @@ public interface DownloadService
 	void stopJukeboxService();
 
 	void startJukeboxService();
+
+	void updateNotification();
 }

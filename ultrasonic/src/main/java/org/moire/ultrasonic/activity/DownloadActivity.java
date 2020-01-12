@@ -1669,6 +1669,7 @@ public class DownloadActivity extends SubsonicTabActivity implements OnGestureLi
 
 		currentSong.setUserRating(rating);
 		displaySongRating();
+		getDownloadService().updateNotification();
 
 		new Thread(new Runnable()
 		{
