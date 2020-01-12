@@ -26,7 +26,6 @@ import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
-import android.graphics.drawable.Drawable;
 import android.media.AudioManager;
 import android.media.MediaMetadataRetriever;
 import android.media.MediaPlayer;

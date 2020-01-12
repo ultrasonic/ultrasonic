@@ -33,7 +33,6 @@ import android.widget.TextView;
 
 import org.koin.java.standalone.KoinJavaComponent;
 import org.moire.ultrasonic.R;
-import org.moire.ultrasonic.app.UApp;
 import org.moire.ultrasonic.domain.MusicDirectory.Entry;
 import org.moire.ultrasonic.featureflags.Feature;
 import org.moire.ultrasonic.featureflags.FeatureStorage;

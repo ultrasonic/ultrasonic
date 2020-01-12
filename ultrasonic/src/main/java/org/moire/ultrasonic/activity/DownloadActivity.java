@@ -53,7 +53,6 @@ import com.mobeta.android.dslv.DragSortListView;
 
 import org.koin.java.standalone.KoinJavaComponent;
 import org.moire.ultrasonic.R;
-import org.moire.ultrasonic.app.UApp;
 import org.moire.ultrasonic.domain.MusicDirectory;
 import org.moire.ultrasonic.domain.MusicDirectory.Entry;
 import org.moire.ultrasonic.domain.PlayerState;
