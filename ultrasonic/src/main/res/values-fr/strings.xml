@@ -442,6 +442,10 @@
         Actuellement, il n\'enregistre pas l\'image dans le stockage de l\'appareil et n\'utilise que le cache en
         mémoire.
     </string>
+    <string name="feature_flags_five_star_rating_title">Utiliser une note de cinq étoiles pour les chansons</string>
+    <string name="feature_flags_five_star_rating_description">Utiliser un système de notation à cinq étoiles pour les chansons
+         au lieu de simplement mettre en vedette / désactiver les éléments.
+    </string>
     <string name="feature_flags_category_title">Drapeaux des fonctionnalités</string>
 
 </resources>

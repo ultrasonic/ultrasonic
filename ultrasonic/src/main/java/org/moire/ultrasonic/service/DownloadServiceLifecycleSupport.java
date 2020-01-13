@@ -329,6 +329,21 @@ public class DownloadServiceLifecycleSupport
 			case KeyEvent.KEYCODE_MEDIA_PAUSE:
 				downloadService.pause();
 				break;
+			case KeyEvent.KEYCODE_1:
+				downloadService.setSongRating(1);
+				break;
+			case KeyEvent.KEYCODE_2:
+				downloadService.setSongRating(2);
+				break;
+			case KeyEvent.KEYCODE_3:
+				downloadService.setSongRating(3);
+				break;
+			case KeyEvent.KEYCODE_4:
+				downloadService.setSongRating(4);
+				break;
+			case KeyEvent.KEYCODE_5:
+				downloadService.setSongRating(5);
+				break;
 			default:
 				break;
 		}

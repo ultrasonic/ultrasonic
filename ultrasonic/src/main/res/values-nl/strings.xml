@@ -442,5 +442,9 @@
         Momenteel slaat het geen afbeeldingen op op de apparaatopslag en wordt alleen geheugencache gebruikt.
     </string>
     <string name="feature_flags_category_title">Experimentele functies</string>
+    <string name="feature_flags_five_star_rating_title">Gebruik vijf sterren voor nummers</string>
+    <string name="feature_flags_five_star_rating_description">Gebruik vijf sterren ratingsysteem voor liedjes
+         in plaats van items simpelweg in de hoofdrol te zetten / niet te verwijderen.
+    </string>
 
 </resources>

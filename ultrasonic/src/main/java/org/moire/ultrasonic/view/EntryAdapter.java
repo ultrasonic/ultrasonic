@@ -23,6 +23,7 @@ import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.CheckedTextView;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 import org.moire.ultrasonic.activity.SubsonicTabActivity;
 import org.moire.ultrasonic.domain.MusicDirectory.Entry;
@@ -120,6 +121,12 @@ public class EntryAdapter extends ArrayAdapter<Entry>
 		TextView status;
 		TextView artist;
 		TextView duration;
+		LinearLayout rating;
+		ImageView fiveStar1;
+		ImageView fiveStar2;
+		ImageView fiveStar3;
+		ImageView fiveStar4;
+		ImageView fiveStar5;
 		ImageView star;
 		ImageView drag;
 	}
