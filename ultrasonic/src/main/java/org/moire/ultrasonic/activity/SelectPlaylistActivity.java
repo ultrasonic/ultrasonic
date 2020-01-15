@@ -238,6 +238,7 @@ public class SelectPlaylistActivity extends SubsonicTabActivity implements Adapt
 		}
 
 		Intent intent = new Intent(SelectPlaylistActivity.this, SelectAlbumActivity.class);
+		intent.putExtra(Constants.INTENT_EXTRA_NAME_ID, playlist.getId());
 		intent.putExtra(Constants.INTENT_EXTRA_NAME_PLAYLIST_ID, playlist.getId());
 		intent.putExtra(Constants.INTENT_EXTRA_NAME_PLAYLIST_NAME, playlist.getName());
 		startActivityForResultWithoutTransition(SelectPlaylistActivity.this, intent);
