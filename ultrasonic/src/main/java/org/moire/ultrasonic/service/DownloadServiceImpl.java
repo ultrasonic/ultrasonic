@@ -37,6 +37,7 @@ import android.os.IBinder;
 import android.os.Looper;
 import android.os.PowerManager;
 import android.support.v4.app.NotificationCompat;
+import android.support.v4.app.NotificationManagerCompat;
 import android.util.Log;
 import android.view.View;
 import android.widget.RemoteViews;
@@ -147,6 +148,8 @@ public class DownloadServiceImpl extends Service implements DownloadService
 	private int secondaryProgress = -1;
 	private boolean autoPlayStart;
 	private final static int lockScreenBitmapSize = 500;
+
+	private boolean isInForeground = false;
 
 	static
 	{
@@ -718,6 +721,7 @@ public class DownloadServiceImpl extends Service implements DownloadService
 			if (tabInstance != null) {
                 if (Util.isNotificationEnabled(this)) {
                     startForeground(NOTIFICATION_ID, buildForegroundNotification());
+                    isInForeground = true;
                 }
 				tabInstance.showNowPlaying();
 			}
@@ -727,6 +731,7 @@ public class DownloadServiceImpl extends Service implements DownloadService
 			if (tabInstance != null)
 			{
 				stopForeground(true);
+				isInForeground = false;
 				tabInstance.hideNowPlaying();
 			}
 		}
@@ -1251,6 +1256,7 @@ public class DownloadServiceImpl extends Service implements DownloadService
 			if (tabInstance != null)
 			{
 				stopForeground(true);
+				isInForeground = false;
 				tabInstance.hideNowPlaying();
 			}
 		}
@@ -2074,9 +2080,17 @@ public class DownloadServiceImpl extends Service implements DownloadService
 	public void updateNotification()
 	{
 		if (Util.isNotificationEnabled(this)) {
-			final NotificationManagerCompat notificationManager =
-					NotificationManagerCompat.from(this);
-			notificationManager.notify(NOTIFICATION_ID, buildForegroundNotification());
+			if (isInForeground == true) {
+				final NotificationManagerCompat notificationManager =
+						NotificationManagerCompat.from(this);
+				notificationManager.notify(NOTIFICATION_ID, buildForegroundNotification());
+				Log.w(TAG, "--- Updated notification");
+			}
+			else {
+				startForeground(NOTIFICATION_ID, buildForegroundNotification());
+				isInForeground = true;
+				Log.w(TAG, "--- Created Foreground notification");
+			}
 		}
 	}
 
