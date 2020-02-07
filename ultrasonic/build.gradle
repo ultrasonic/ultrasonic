@@ -14,7 +14,7 @@ android {
         minSdkVersion versions.minSdk
         targetSdkVersion versions.targetSdk
 
-        resConfigs "en", "es", "fr", "hu", "nl", "pl", "pt", "pt-rBR"
+        resConfigs "de", "en", "es", "fr", "hu", "nl", "pl", "pt", "pt-rBR"
     }
 
     buildTypes {
