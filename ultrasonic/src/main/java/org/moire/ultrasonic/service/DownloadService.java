@@ -146,4 +146,6 @@ public interface DownloadService
 	void startJukeboxService();
 
 	void updateNotification();
+
+	void setSongRating(final int rating);
 }

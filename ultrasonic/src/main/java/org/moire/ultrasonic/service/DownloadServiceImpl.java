@@ -2159,11 +2159,32 @@ public class DownloadServiceImpl extends Service implements DownloadService
 
     public void setSongRating(final int rating)
 	{
-		if (!new FeatureStorage(this).isFeatureEnabled(Feature.FIVE_STAR_RATING))
+		if (!KoinJavaComponent.get(FeatureStorage.class).isFeatureEnabled(Feature.FIVE_STAR_RATING))
+			return;
+
+		if (currentPlaying == null)
 			return;
 
 		final Entry song = currentPlaying.getSong();
 		song.setUserRating(rating);
+
+		new Thread(new Runnable()
+		{
+			@Override
+			public void run()
+			{
+				final MusicService musicService = MusicServiceFactory.getMusicService(DownloadServiceImpl.this);
+
+				try
+				{
+					musicService.setRating(song.getId(), rating, DownloadServiceImpl.this, null);
+				}
+				catch (Exception e)
+				{
+					Log.e(TAG, e.getMessage(), e);
+				}
+			}
+		}).start();
 
 		updateNotification();
 	}

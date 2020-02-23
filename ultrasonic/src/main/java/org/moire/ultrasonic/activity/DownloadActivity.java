@@ -1660,32 +1660,9 @@ public class DownloadActivity extends SubsonicTabActivity implements OnGestureLi
 	private void setSongRating(final int rating)
 	{
 		if (currentSong == null)
-		{
 			return;
-		}
 
-		final String id = currentSong.getId();
-
-		currentSong.setUserRating(rating);
 		displaySongRating();
-		getDownloadService().updateNotification();
-
-		new Thread(new Runnable()
-		{
-			@Override
-			public void run()
-			{
-				final MusicService musicService = MusicServiceFactory.getMusicService(DownloadActivity.this);
-
-				try
-				{
-					musicService.setRating(id, rating, DownloadActivity.this, null);
-				}
-				catch (Exception e)
-				{
-					Log.e(TAG, e.getMessage(), e);
-				}
-			}
-		}).start();
+		getDownloadService().setSongRating(rating);
 	}
 }
