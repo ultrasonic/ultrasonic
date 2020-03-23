@@ -12,9 +12,11 @@ contributions or active developers are always welcomed.
 
 ### BIG FAT WARNING
 
-At this moment all new features and enhancements are blocked by #79, this
-means that no new PR will be accepted until this issue is closed. Obviously
-any PR to fix #79 are welcomed and celebrated.
+At this moment all new features and enhancements are blocked by [#79][i79],
+this means that no new PR will be accepted until this issue is closed.
+Obviously any PR to fix [#79][i79] are welcomed and celebrated.
+
+[i79]: https://github.com/ultrasonic/ultrasonic/issues/79
 
 ## Download
 
