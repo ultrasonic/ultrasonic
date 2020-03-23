@@ -40,6 +40,8 @@ jobs:
           key: gradle-cache-{{ checksum "dependencies.gradle" }}
       - store_artifacts:
           path: ultrasonic/build/reports
+          destination: reports
+      - store_artifacts:
           path: subsonic-api/build/reports
           destination: reports
       - store_artifacts:
