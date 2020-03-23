@@ -21,7 +21,7 @@ package org.moire.ultrasonic.service
 import android.content.Context
 import org.koin.standalone.KoinComponent
 import org.koin.standalone.get
-import org.koin.standalone.releaseContext
+import org.koin.standalone.release
 import org.moire.ultrasonic.cache.Directories
 import org.moire.ultrasonic.di.MUSIC_SERVICE_CONTEXT
 import org.moire.ultrasonic.di.OFFLINE_MUSIC_SERVICE
@@ -45,7 +45,7 @@ object MusicServiceFactory : KoinComponent {
      */
     @JvmStatic
     fun resetMusicService() {
-        releaseContext(MUSIC_SERVICE_CONTEXT)
+        release(MUSIC_SERVICE_CONTEXT)
     }
 
     @JvmStatic

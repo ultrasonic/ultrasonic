@@ -2,6 +2,11 @@
 buildscript {
     apply from: 'dependencies.gradle'
 
+    ext.bootstrap = [
+            kotlinModule : "${project.rootDir}/gradle_scripts/kotlin-module-bootstrap.gradle",
+            androidModule : "${project.rootDir}/gradle_scripts/android-module-bootstrap.gradle"
+    ]
+
     repositories {
         jcenter()
         google()
@@ -12,9 +17,7 @@ buildscript {
         classpath gradlePlugins.kotlin
         classpath gradlePlugins.ktlintGradle
         classpath gradlePlugins.detekt
-        classpath(gradlePlugins.jacocoAndroid) {
-            exclude group: 'org.codehaus.groovy', module: 'groovy-all'
-        }
+        classpath gradlePlugins.jacoco
     }
 }
 

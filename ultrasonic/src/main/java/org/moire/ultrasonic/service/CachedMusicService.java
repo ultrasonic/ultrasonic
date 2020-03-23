@@ -385,13 +385,18 @@ public class CachedMusicService implements MusicService
 	public void star(String id, String albumId, String artistId, Context context, ProgressListener progressListener) throws Exception
 	{
 		musicService.star(id, albumId, artistId, context, progressListener);
-
 	}
 
 	@Override
 	public void unstar(String id, String albumId, String artistId, Context context, ProgressListener progressListener) throws Exception
 	{
 		musicService.unstar(id, albumId, artistId, context, progressListener);
+	}
+
+	@Override
+	public void setRating(String id, int rating, Context context, ProgressListener progressListener) throws Exception
+	{
+		musicService.setRating(id, rating, context, progressListener);
 	}
 
 	@Override

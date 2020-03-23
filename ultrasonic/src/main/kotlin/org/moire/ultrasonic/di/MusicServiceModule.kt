@@ -1,10 +1,9 @@
 @file:JvmName("MusicServiceModule")
 package org.moire.ultrasonic.di
 
-import android.content.Context
 import android.content.SharedPreferences
 import android.util.Log
-import org.koin.dsl.module.applicationContext
+import org.koin.dsl.module.module
 import org.moire.ultrasonic.BuildConfig
 import org.moire.ultrasonic.api.subsonic.SubsonicAPIClient
 import org.moire.ultrasonic.api.subsonic.SubsonicAPIVersions
@@ -26,40 +25,38 @@ private const val DEFAULT_SERVER_INSTANCE = 1
 private const val UNKNOWN_SERVER_URL = "not-exists"
 private const val LOG_TAG = "MusicServiceModule"
 
-fun musicServiceModule(
-    sp: SharedPreferences,
-    context: Context
-) = applicationContext {
-    context(MUSIC_SERVICE_CONTEXT) {
+val musicServiceModule = module(MUSIC_SERVICE_CONTEXT) {
         subsonicApiModule()
 
-        bean(name = "ServerInstance") {
-            return@bean sp.getInt(
+        single(name = "ServerInstance") {
+            return@single get<SharedPreferences>(SP_NAME).getInt(
                 Constants.PREFERENCES_KEY_SERVER_INSTANCE,
                 DEFAULT_SERVER_INSTANCE
             )
         }
 
-        bean(name = "ServerID") {
+        single(name = "ServerID") {
             val serverInstance = get<Int>(name = "ServerInstance")
+            val sp: SharedPreferences = get(SP_NAME)
             val serverUrl = sp.getString(
                 Constants.PREFERENCES_KEY_SERVER_URL + serverInstance,
                 null
             )
-            return@bean if (serverUrl == null) {
+            return@single if (serverUrl == null) {
                 UNKNOWN_SERVER_URL
             } else {
                 abs("$serverUrl$serverInstance".hashCode()).toString()
             }
         }
 
-        bean {
+        single {
             val serverId = get<String>(name = "ServerID")
-            return@bean PermanentFileStorage(get(), serverId, BuildConfig.DEBUG)
+            return@single PermanentFileStorage(get(), serverId, BuildConfig.DEBUG)
         }
 
-        bean {
+        single {
             val instance = get<Int>(name = "ServerInstance")
+            val sp: SharedPreferences = get(SP_NAME)
             val serverUrl = sp.getString(Constants.PREFERENCES_KEY_SERVER_URL + instance, null)
             val username = sp.getString(Constants.PREFERENCES_KEY_USERNAME + instance, null)
             val password = sp.getString(Constants.PREFERENCES_KEY_PASSWORD + instance, null)
@@ -77,7 +74,7 @@ fun musicServiceModule(
                 password == null
             ) {
                 Log.i(LOG_TAG, "Server credentials is not available")
-                return@bean SubsonicClientConfiguration(
+                return@single SubsonicClientConfiguration(
                     baseUrl = "http://localhost",
                     username = "",
                     password = "",
@@ -90,7 +87,7 @@ fun musicServiceModule(
                     debug = BuildConfig.DEBUG
                 )
             } else {
-                return@bean SubsonicClientConfiguration(
+                return@single SubsonicClientConfiguration(
                     baseUrl = serverUrl,
                     username = username,
                     password = password,
@@ -105,16 +102,15 @@ fun musicServiceModule(
             }
         }
 
-        bean { return@bean SubsonicAPIClient(get()) }
+        single { SubsonicAPIClient(get()) }
 
-        bean<MusicService>(name = ONLINE_MUSIC_SERVICE) {
-            return@bean CachedMusicService(RESTMusicService(get(), get()))
+        single<MusicService>(name = ONLINE_MUSIC_SERVICE) {
+            CachedMusicService(RESTMusicService(get(), get()))
         }
 
-        bean<MusicService>(name = OFFLINE_MUSIC_SERVICE) {
-            return@bean OfflineMusicService(get(), get())
+        single<MusicService>(name = OFFLINE_MUSIC_SERVICE) {
+            OfflineMusicService(get(), get())
         }
 
-        bean { return@bean SubsonicImageLoader(context, get()) }
+        single { SubsonicImageLoader(getProperty(DiProperties.APP_CONTEXT), get()) }
     }
-}

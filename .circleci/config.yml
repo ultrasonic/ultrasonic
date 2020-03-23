@@ -2,7 +2,7 @@ version: 2
 jobs:
   build:
     docker:
-      - image: circleci/android:api-27-alpha
+      - image: circleci/android:api-28
     working_directory: ~/ultrasonic
     envoronment:
       JVM_OPTS: -Xmx3200m
@@ -25,12 +25,12 @@ jobs:
       - run:
           name: unit-tests
           command: |
-            ./gradlew :subsonic-api:test :cache:test :ultrasonic:testDebugUnitTest
+            ./gradlew ciTest testDebugUnitTest
             ./gradlew jacocoFullReport
             bash <(curl -s https://codecov.io/bash)
       - run:
           name: lint
-          command: ./gradlew lint
+          command: ./gradlew :ultrasonic:lintRelease
       - run:
           name: assemble release build
           command: ./gradlew assembleRelease
@@ -40,6 +40,8 @@ jobs:
           key: gradle-cache-{{ checksum "dependencies.gradle" }}
       - store_artifacts:
           path: ultrasonic/build/reports
+          destination: reports
+      - store_artifacts:
           path: subsonic-api/build/reports
           destination: reports
       - store_artifacts:

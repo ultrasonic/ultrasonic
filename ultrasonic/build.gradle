@@ -1,6 +1,6 @@
 apply plugin: 'com.android.application'
 apply plugin: 'kotlin-android'
-apply plugin: 'jacoco-android'
+apply plugin: 'jacoco'
 apply from: "../gradle_scripts/code_quality.gradle"
 
 android {
@@ -8,13 +8,13 @@ android {
 
     defaultConfig {
         applicationId "org.moire.ultrasonic"
-        versionCode 71
-        versionName "2.6.2"
+        versionCode 72
+        versionName "2.7.0"
 
         minSdkVersion versions.minSdk
         targetSdkVersion versions.targetSdk
 
-        resConfigs "en", "es", "fr", "hu", "pt", "pt-rBR"
+        resConfigs "de", "en", "es", "fr", "hu", "nl", "pl", "pt", "pt-rBR"
     }
 
     buildTypes {
@@ -49,26 +49,36 @@ android {
     }
 }
 
+tasks.withType(Test) {
+    useJUnitPlatform()
+}
+
 dependencies {
-    implementation project(':menudrawer')
-    implementation project(':pulltorefresh')
-    implementation project(':library')
-    implementation project(':domain')
-    implementation project(':subsonic-api')
-    implementation project(':subsonic-api-image-loader')
-    implementation project(':cache')
+    implementation project(':core:menudrawer')
+    implementation project(':core:pulltorefresh')
+    implementation project(':core:library')
+    implementation project(':core:domain')
+    implementation project(':core:subsonic-api')
+    implementation project(':core:subsonic-api-image-loader')
+    implementation project(':core:cache')
 
     implementation androidSupport.support
     implementation androidSupport.design
 
     implementation other.kotlinStdlib
     implementation other.koinAndroid
+    implementation other.koinJava
 
     testImplementation other.kotlinReflect
     testImplementation testing.junit
+    testRuntimeOnly testing.junitVintage
     testImplementation testing.kotlinJunit
     testImplementation testing.mockitoKotlin
     testImplementation testing.kluent
+}
+
+jacoco {
+    toolVersion(versions.jacoco)
 }
 
 // Excluding all java classes and stuff that should not be covered
@@ -89,10 +99,11 @@ ext {
             '**/di/**'
     ]
 }
-jacocoAndroidUnitTestReport {
-    excludes += jacocoExclude
+
+jacoco {
+    toolVersion(versions.jacoco)
 }
 
-afterEvaluate {
-    testDebugUnitTest.finalizedBy jacocoTestDebugUnitTestReport
+tasks.withType(Test) {
+    jacoco.includeNoLocationClasses = true
 }

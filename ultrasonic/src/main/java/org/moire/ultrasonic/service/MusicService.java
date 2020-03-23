@@ -59,6 +59,8 @@ public interface MusicService
 
 	void unstar(String id, String albumId, String artistId, Context context, ProgressListener progressListener) throws Exception;
 
+	void setRating(String id, int rating, Context context, ProgressListener progressListener) throws Exception;
+
 	List<MusicFolder> getMusicFolders(boolean refresh, Context context, ProgressListener progressListener) throws Exception;
 
 	Indexes getIndexes(String musicFolderId, boolean refresh, Context context, ProgressListener progressListener) throws Exception;

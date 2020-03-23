@@ -1,11 +1,8 @@
 package org.moire.ultrasonic.di
 
-import android.content.Context
-import org.koin.dsl.module.applicationContext
+import org.koin.dsl.module.module
 import org.moire.ultrasonic.featureflags.FeatureStorage
 
-fun featureFlagsModule(
-    context: Context
-) = applicationContext {
-    factory { FeatureStorage(context) }
+val featureFlagsModule = module {
+    factory { FeatureStorage(getProperty(DiProperties.APP_CONTEXT)) }
 }

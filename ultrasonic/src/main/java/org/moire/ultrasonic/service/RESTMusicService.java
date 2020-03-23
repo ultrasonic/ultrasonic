@@ -239,6 +239,17 @@ public class RESTMusicService implements MusicService {
     }
 
     @Override
+    public void setRating(String id,
+                     int rating,
+                     Context context,
+                     ProgressListener progressListener) throws Exception {
+        updateProgressListener(progressListener, R.string.parser_reading);
+        Response<SubsonicResponse> response = subsonicAPIClient.getApi()
+                .setRating(id, rating).execute();
+        checkResponseSuccessful(response);
+    }
+
+    @Override
     public MusicDirectory getMusicDirectory(String id,
                                             String name,
                                             boolean refresh,
