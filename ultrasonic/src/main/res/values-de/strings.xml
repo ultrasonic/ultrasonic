@@ -438,6 +438,10 @@
 
     <string name="feature_flags_image_loader_title">Neuen Bild-Lader aktivieren</string>
     <string name="feature_flags_image_loader_description">Neuen Bild-Lader aktivieren. Bilder werden derzeit nur im Chache gespeichert.</string>
+    <string name="feature_flags_five_star_rating_title">Verwenden Sie Fünf-Sterne-Bewertung für Songs</string>
+    <string name="feature_flags_five_star_rating_description">Verwenden Sie Fünf-Sterne-Bewertungssystem für Songs
+         anstatt einfach Elemente zu markieren / zu entfernen.
+    </string>
     <string name="feature_flags_category_title">Funktionseinstellungem</string>
 
 </resources>
