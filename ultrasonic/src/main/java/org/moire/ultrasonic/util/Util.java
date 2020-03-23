@@ -1306,6 +1306,36 @@ public class Util extends DownloadActivity
 		intent.putExtra(Intent.EXTRA_KEY_EVENT, new KeyEvent(KeyEvent.ACTION_DOWN, KeyEvent.KEYCODE_MEDIA_STOP));
 		pendingIntent = PendingIntent.getService(context, 0, intent, 0);
 		views.setOnClickPendingIntent(R.id.control_stop, pendingIntent);
+
+		intent = new Intent("RATE_1");
+		intent.setComponent(new ComponentName(context, DownloadServiceImpl.class));
+		intent.putExtra(Intent.EXTRA_KEY_EVENT, new KeyEvent(KeyEvent.ACTION_DOWN, KeyEvent.KEYCODE_1));
+		pendingIntent = PendingIntent.getService(context, 0, intent, 0);
+		views.setOnClickPendingIntent(R.id.notification_five_star_1, pendingIntent);
+
+		intent = new Intent("RATE_2");
+		intent.setComponent(new ComponentName(context, DownloadServiceImpl.class));
+		intent.putExtra(Intent.EXTRA_KEY_EVENT, new KeyEvent(KeyEvent.ACTION_DOWN, KeyEvent.KEYCODE_2));
+		pendingIntent = PendingIntent.getService(context, 0, intent, 0);
+		views.setOnClickPendingIntent(R.id.notification_five_star_2, pendingIntent);
+
+		intent = new Intent("RATE_3");
+		intent.setComponent(new ComponentName(context, DownloadServiceImpl.class));
+		intent.putExtra(Intent.EXTRA_KEY_EVENT, new KeyEvent(KeyEvent.ACTION_DOWN, KeyEvent.KEYCODE_3));
+		pendingIntent = PendingIntent.getService(context, 0, intent, 0);
+		views.setOnClickPendingIntent(R.id.notification_five_star_3, pendingIntent);
+
+		intent = new Intent("RATE_4");
+		intent.setComponent(new ComponentName(context, DownloadServiceImpl.class));
+		intent.putExtra(Intent.EXTRA_KEY_EVENT, new KeyEvent(KeyEvent.ACTION_DOWN, KeyEvent.KEYCODE_4));
+		pendingIntent = PendingIntent.getService(context, 0, intent, 0);
+		views.setOnClickPendingIntent(R.id.notification_five_star_4, pendingIntent);
+
+		intent = new Intent("RATE_5");
+		intent.setComponent(new ComponentName(context, DownloadServiceImpl.class));
+		intent.putExtra(Intent.EXTRA_KEY_EVENT, new KeyEvent(KeyEvent.ACTION_DOWN, KeyEvent.KEYCODE_5));
+		pendingIntent = PendingIntent.getService(context, 0, intent, 0);
+		views.setOnClickPendingIntent(R.id.notification_five_star_5, pendingIntent);
 	}
 
 	public static int getNetworkTimeout(Context context)

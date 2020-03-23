@@ -39,7 +39,7 @@ class APIMusicDirectoryConverterTest {
                 transcodedSuffix = "some-transcoded-suffix", duration = 11, bitRate = 256,
                 path = "some-path", isDir = true, isVideo = true, playCount = 323, discNumber = 2,
                 created = Calendar.getInstance(), type = "some-type",
-                starred = Calendar.getInstance())
+                starred = Calendar.getInstance(), userRating = 3, averageRating = 2.99F)
 
         val convertedEntity = entity.toDomainEntity()
 
@@ -69,6 +69,8 @@ class APIMusicDirectoryConverterTest {
             starred `should be equal to` (entity.starred != null)
             discNumber `should equal` entity.discNumber
             type `should equal` entity.type
+            userRating `should equal` entity.userRating
+            averageRating `should equal` entity.averageRating
         }
     }
 

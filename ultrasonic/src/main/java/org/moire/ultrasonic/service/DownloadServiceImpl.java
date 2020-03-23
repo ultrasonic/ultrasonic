@@ -39,9 +39,11 @@ import android.os.PowerManager;
 import android.support.v4.app.NotificationCompat;
 import android.support.v4.app.NotificationManagerCompat;
 import android.util.Log;
+import android.view.View;
 import android.widget.RemoteViews;
 import android.widget.SeekBar;
 
+import org.koin.java.standalone.KoinJavaComponent;
 import org.moire.ultrasonic.R;
 import org.moire.ultrasonic.activity.DownloadActivity;
 import org.moire.ultrasonic.activity.SubsonicTabActivity;
@@ -52,6 +54,8 @@ import org.moire.ultrasonic.domain.MusicDirectory.Entry;
 import org.moire.ultrasonic.domain.PlayerState;
 import org.moire.ultrasonic.domain.RepeatMode;
 import org.moire.ultrasonic.domain.UserInfo;
+import org.moire.ultrasonic.featureflags.Feature;
+import org.moire.ultrasonic.featureflags.FeatureStorage;
 import org.moire.ultrasonic.provider.UltraSonicAppWidgetProvider4x1;
 import org.moire.ultrasonic.provider.UltraSonicAppWidgetProvider4x2;
 import org.moire.ultrasonic.provider.UltraSonicAppWidgetProvider4x3;
@@ -1238,11 +1242,7 @@ public class DownloadServiceImpl extends Service implements DownloadService
 				// Only update notification is player state is one that will change the icon
 				if (this.playerState == PlayerState.STARTED || this.playerState == PlayerState.PAUSED)
 				{
-                    if (Util.isNotificationEnabled(this)) {
-                        final NotificationManagerCompat notificationManager =
-                                NotificationManagerCompat.from(this);
-                        notificationManager.notify(NOTIFICATION_ID, buildForegroundNotification());
-                    }
+					updateNotification();
 					tabInstance.showNowPlaying();
 				}
 			}
@@ -2071,6 +2071,16 @@ public class DownloadServiceImpl extends Service implements DownloadService
 		}
 	}
 
+	@Override
+	public void updateNotification()
+	{
+		if (Util.isNotificationEnabled(this)) {
+			final NotificationManagerCompat notificationManager =
+					NotificationManagerCompat.from(this);
+			notificationManager.notify(NOTIFICATION_ID, buildForegroundNotification());
+		}
+	}
+
     @SuppressWarnings("IconColors")
     private Notification buildForegroundNotification() {
         NotificationCompat.Builder builder = new NotificationCompat.Builder(this);
@@ -2103,6 +2113,7 @@ public class DownloadServiceImpl extends Service implements DownloadService
         final String title = song.getTitle();
         final String text = song.getArtist();
         final String album = song.getAlbum();
+		final int rating = song.getUserRating() == null ? 0 : song.getUserRating();
         final int imageSize = Util.getNotificationImageSize(this);
 
         try {
@@ -2127,6 +2138,17 @@ public class DownloadServiceImpl extends Service implements DownloadService
         contentView.setTextViewText(R.id.album, album);
         bigView.setTextViewText(R.id.album, album);
 
+		boolean useFiveStarRating = KoinJavaComponent.get(FeatureStorage.class).isFeatureEnabled(Feature.FIVE_STAR_RATING);
+		if (!useFiveStarRating)	bigView.setViewVisibility(R.id.notification_rating, View.INVISIBLE);
+		else
+		{
+			bigView.setImageViewResource(R.id.notification_five_star_1, rating > 0 ? R.drawable.ic_star_full_dark : R.drawable.ic_star_hollow_dark);
+			bigView.setImageViewResource(R.id.notification_five_star_2, rating > 1 ? R.drawable.ic_star_full_dark : R.drawable.ic_star_hollow_dark);
+			bigView.setImageViewResource(R.id.notification_five_star_3, rating > 2 ? R.drawable.ic_star_full_dark : R.drawable.ic_star_hollow_dark);
+			bigView.setImageViewResource(R.id.notification_five_star_4, rating > 3 ? R.drawable.ic_star_full_dark : R.drawable.ic_star_hollow_dark);
+			bigView.setImageViewResource(R.id.notification_five_star_5, rating > 4 ? R.drawable.ic_star_full_dark : R.drawable.ic_star_hollow_dark);
+		}
+
         Notification notification = builder.build();
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
             notification.bigContentView = bigView;
@@ -2134,6 +2156,38 @@ public class DownloadServiceImpl extends Service implements DownloadService
 
         return notification;
     }
+
+    public void setSongRating(final int rating)
+	{
+		if (!KoinJavaComponent.get(FeatureStorage.class).isFeatureEnabled(Feature.FIVE_STAR_RATING))
+			return;
+
+		if (currentPlaying == null)
+			return;
+
+		final Entry song = currentPlaying.getSong();
+		song.setUserRating(rating);
+
+		new Thread(new Runnable()
+		{
+			@Override
+			public void run()
+			{
+				final MusicService musicService = MusicServiceFactory.getMusicService(DownloadServiceImpl.this);
+
+				try
+				{
+					musicService.setRating(song.getId(), rating, DownloadServiceImpl.this, null);
+				}
+				catch (Exception e)
+				{
+					Log.e(TAG, e.getMessage(), e);
+				}
+			}
+		}).start();
+
+		updateNotification();
+	}
 
 	private class BufferTask extends CancellableTask
 	{

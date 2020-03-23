@@ -10,5 +10,9 @@ enum class Feature(
     /**
      * Enables new image downloader implementation.
      */
-    NEW_IMAGE_DOWNLOADER(false)
+    NEW_IMAGE_DOWNLOADER(false),
+    /**
+     * Enables five star rating system.
+     */
+    FIVE_STAR_RATING(false)
 }

@@ -445,6 +445,10 @@
     <string name="feature_flags_image_loader_description">Enables new image loader implementation.
         Currently it doesn\'t save image in device storage and uses only cache in memory.
     </string>
+    <string name="feature_flags_five_star_rating_title">Use five star rating for songs</string>
+    <string name="feature_flags_five_star_rating_description">Use five star rating system for songs
+        instead of simply starring/unstarring items.
+    </string>
     <string name="feature_flags_category_title">Feature Flags</string>
 
 </resources>

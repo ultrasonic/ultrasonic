@@ -441,5 +441,9 @@
     </string>
     <string name="feature_flags_category_title">Jellemzők Zászlók</string>
     <string name="feature_flags_image_loader_title">Engedélyezzen új képbetöltőt</string>
+    <string name="feature_flags_five_star_rating_title">Öt csillagos értékelés használata a dalokhoz</string>
+    <string name="feature_flags_five_star_rating_description">Öt csillag használata az értékeléshez az egyszerű
+        csillaggal jelölés helyett.
+    </string>
 
 </resources>

@@ -455,5 +455,9 @@ ponieważ api Subsonic nie wspiera nowego sposobu autoryzacji dla użytkowników
     <string name="feature_flags_image_loader_description">Włącza implementację modułu ładującego nowe obrazy.
 Obecnie nie zapisuje obrazów w pamięci urządzenia, tylko wykorzystuje tylko pamięć podręczną.</string>
     <string name="feature_flags_category_title">Flagi funkcji</string>
+    <string name="feature_flags_five_star_rating_title">Użyj pięciu gwiazdek dla utworów</string>
+    <string name="feature_flags_five_star_rating_description">W przypadku utworów użyj systemu pięciu gwiazdek
+         zamiast po prostu grać gwiazdkami / bez gwiazd.
+    </string>
 
 </resources>

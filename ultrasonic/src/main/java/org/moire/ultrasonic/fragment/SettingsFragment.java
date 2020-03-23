@@ -172,10 +172,11 @@ public class SettingsFragment extends PreferenceFragment
     }
 
     private void setupFeatureFlagsPreferences() {
+        final FeatureStorage featureStorage = KoinJavaComponent.get(FeatureStorage.class);
+
         CheckBoxPreference ffImageLoader = (CheckBoxPreference) findPreference(
                 Constants.PREFERENCES_KEY_FF_IMAGE_LOADER);
 
-        final FeatureStorage featureStorage = KoinJavaComponent.get(FeatureStorage.class);
         if (ffImageLoader != null) {
             ffImageLoader.setChecked(featureStorage.isFeatureEnabled(Feature.NEW_IMAGE_DOWNLOADER));
             ffImageLoader.setOnPreferenceChangeListener(new Preference.OnPreferenceChangeListener() {
@@ -187,6 +188,21 @@ public class SettingsFragment extends PreferenceFragment
                 }
             });
         }
+
+        CheckBoxPreference useFiveStarRating = (CheckBoxPreference) findPreference(
+                Constants.PREFERENCES_KEY_USE_FIVE_STAR_RATING);
+
+        if (useFiveStarRating != null) {
+            useFiveStarRating.setChecked(featureStorage.isFeatureEnabled(Feature.FIVE_STAR_RATING));
+            useFiveStarRating.setOnPreferenceChangeListener(new Preference.OnPreferenceChangeListener() {
+                @Override
+                public boolean onPreferenceChange(Preference preference, Object o) {
+                    featureStorage.changeFeatureFlag(Feature.FIVE_STAR_RATING, (Boolean) o);
+                    return true;
+                }
+            });
+        }
+
     }
 
     private void setupGaplessControlSettingsV14() {
