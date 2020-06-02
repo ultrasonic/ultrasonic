@@ -64,7 +64,7 @@ public class PermissionUtil {
             requestPermission(mainContext, currentCachePath, callback);
         } else {
             setCacheLocation(context, FileUtil.getDefaultMusicDirectory().getPath());
-            showWarning(mainContext,"Warning", context.getString(R.string.permissions_access_error), null);
+            showWarning(mainContext, context.getString(R.string.permissions_message_box_title), context.getString(R.string.permissions_access_error), null);
             callback.onPermissionRequestFinished();
         }
     }
