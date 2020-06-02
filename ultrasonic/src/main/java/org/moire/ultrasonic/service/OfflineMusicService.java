@@ -339,7 +339,7 @@ public class OfflineMusicService extends RESTMusicService
 	{
 		try
 		{
-			Bitmap bitmap = FileUtil.getAvatarBitmap(username, size, highQuality);
+			Bitmap bitmap = FileUtil.getAvatarBitmap(context, username, size, highQuality);
 			return Util.scaleBitmap(bitmap, size);
 		}
 		catch (Exception e)

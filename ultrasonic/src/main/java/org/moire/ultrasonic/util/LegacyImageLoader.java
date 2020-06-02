@@ -427,6 +427,11 @@ public class LegacyImageLoader implements Runnable, ImageLoader {
                         ? musicService.getCoverArt(view.getContext(), entry, size, saveToFile, highQuality, null)
                         : musicService.getAvatar(view.getContext(), username, size, saveToFile, highQuality, null);
 
+                if (bitmap == null) {
+                    Log.d(TAG, "Found empty album art.");
+                    return;
+                }
+
                 if (isAvatar)
                     addImageToCache(bitmap, username, size);
                 else

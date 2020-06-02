@@ -47,7 +47,7 @@ public class CacheCleaner
 		catch (Exception ex)
 		{
 			// If an exception is thrown, assume we execute correctly the next time
-			Log.w("Exception in CacheCleaner.clean", ex);
+			Log.w(TAG, "Exception in CacheCleaner.clean", ex);
 		}
 	}
 
@@ -60,7 +60,7 @@ public class CacheCleaner
 		catch (Exception ex)
 		{
 			// If an exception is thrown, assume we execute correctly the next time
-			Log.w("Exception in CacheCleaner.cleanSpace", ex);
+			Log.w(TAG,"Exception in CacheCleaner.cleanSpace", ex);
 		}
 	}
 
@@ -73,11 +73,11 @@ public class CacheCleaner
 		catch (Exception ex)
 		{
 			// If an exception is thrown, assume we execute correctly the next time
-			Log.w("Exception in CacheCleaner.cleanPlaylists", ex);
+			Log.w(TAG, "Exception in CacheCleaner.cleanPlaylists", ex);
 		}
 	}
 
-	private static void deleteEmptyDirs(Iterable<File> dirs, Collection<File> doNotDelete)
+	private void deleteEmptyDirs(Iterable<File> dirs, Collection<File> doNotDelete)
 	{
 		for (File dir : dirs)
 		{
@@ -91,9 +91,9 @@ public class CacheCleaner
 			if (children != null)
 			{
 				// No songs left in the folder
-				if (children.length == 1 && children[0].getPath().equals(FileUtil.getAlbumArtFile(dir).getPath()))
+				if (children.length == 1 && children[0].getPath().equals(FileUtil.getAlbumArtFile(context, dir).getPath()))
 				{
-					Util.delete(FileUtil.getAlbumArtFile(dir));
+					Util.delete(FileUtil.getAlbumArtFile(context, dir));
 					children = dir.listFiles();
 				}
 

@@ -21,10 +21,12 @@ package org.moire.ultrasonic.util;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.os.Build;
 import android.os.Environment;
 import android.text.TextUtils;
 import android.util.Log;
 
+import org.moire.ultrasonic.activity.MainActivity;
 import org.moire.ultrasonic.activity.SubsonicTabActivity;
 import org.moire.ultrasonic.domain.MusicDirectory;
 
@@ -106,12 +108,12 @@ public class FileUtil
 	public static File getAlbumArtFile(Context context, MusicDirectory.Entry entry)
 	{
 		File albumDir = getAlbumDirectory(context, entry);
-		return getAlbumArtFile(albumDir);
+		return getAlbumArtFile(context, albumDir);
 	}
 
-	public static File getAvatarFile(String username)
+	public static File getAvatarFile(Context context, String username)
 	{
-		File albumArtDir = getAlbumArtDirectory();
+		File albumArtDir = getAlbumArtDirectory(context);
 
 		if (albumArtDir == null || username == null)
 		{
@@ -122,9 +124,9 @@ public class FileUtil
 		return new File(albumArtDir, String.format("%s.jpeg", md5Hex));
 	}
 
-	public static File getAlbumArtFile(File albumDir)
+	public static File getAlbumArtFile(Context context, File albumDir)
 	{
-		File albumArtDir = getAlbumArtDirectory();
+		File albumArtDir = getAlbumArtDirectory(context);
 
 		if (albumArtDir == null || albumDir == null)
 		{
@@ -135,11 +137,11 @@ public class FileUtil
 		return new File(albumArtDir, String.format("%s.jpeg", md5Hex));
 	}
 
-	public static Bitmap getAvatarBitmap(String username, int size, boolean highQuality)
+	public static Bitmap getAvatarBitmap(Context context, String username, int size, boolean highQuality)
 	{
 		if (username == null) return null;
 
-		File avatarFile = getAvatarFile(username);
+		File avatarFile = getAvatarFile(context, username);
 
 		SubsonicTabActivity subsonicTabActivity = SubsonicTabActivity.getInstance();
 		Bitmap bitmap = null;
@@ -299,7 +301,7 @@ public class FileUtil
 		return BitmapFactory.decodeByteArray(bytes, 0, bytes.length, opt);
 	}
 
-	public static File getAlbumArtDirectory()
+	public static File getAlbumArtDirectory(Context context)
 	{
 		File albumArtDir = new File(getUltraSonicDirectory(), "artwork");
 		ensureDirectoryExistsAndIsReadWritable(albumArtDir);
@@ -316,10 +318,13 @@ public class FileUtil
 
 		File dir;
 
-		if (!TextUtils.isEmpty(entry.getPath())) {
+		if (!TextUtils.isEmpty(entry.getPath()))
+		{
 			File f = new File(fileSystemSafeDir(entry.getPath()));
 			dir = new File(String.format("%s/%s", getMusicDirectory(context).getPath(), entry.isDirectory() ? f.getPath() : f.getParent()));
-		} else {
+		}
+		else
+		{
 			String artist = fileSystemSafe(entry.getArtist());
 			String album = fileSystemSafe(entry.getAlbum());
 
@@ -360,7 +365,11 @@ public class FileUtil
 
 	public static File getUltraSonicDirectory()
 	{
-		return new File(Environment.getExternalStorageDirectory(), "Android/data/org.moire.ultrasonic");
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.M)
+            return new File(Environment.getExternalStorageDirectory(), "Android/data/org.moire.ultrasonic");
+
+        // After Android M, the location of the files must be queried differently. GetExternalFilesDir will always return a directory which Ultrasonic can access without any extra privileges.
+        return MainActivity.getInstance().getExternalFilesDir(null);
 	}
 
 	public static File getDefaultMusicDirectory()
@@ -372,7 +381,11 @@ public class FileUtil
 	{
 		String path = Util.getPreferences(context).getString(Constants.PREFERENCES_KEY_CACHE_LOCATION, DEFAULT_MUSIC_DIR.getPath());
 		File dir = new File(path);
-		return ensureDirectoryExistsAndIsReadWritable(dir) ? dir : DEFAULT_MUSIC_DIR;
+
+		boolean hasAccess = ensureDirectoryExistsAndIsReadWritable(dir);
+		if (hasAccess == false) PermissionUtil.handlePermissionFailed(context, null);
+
+		return  hasAccess ? dir : DEFAULT_MUSIC_DIR;
 	}
 
 	public static boolean ensureDirectoryExistsAndIsReadWritable(File dir)
@@ -406,13 +419,13 @@ public class FileUtil
 		if (!dir.canRead())
 		{
 			Log.w(TAG, String.format("No read permission for directory %s", dir));
-			return false;
+            return false;
 		}
 
 		if (!dir.canWrite())
 		{
 			Log.w(TAG, String.format("No write permission for directory %s", dir));
-			return false;
+            return false;
 		}
 
 		return true;

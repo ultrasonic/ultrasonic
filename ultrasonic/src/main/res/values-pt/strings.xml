@@ -396,6 +396,16 @@
     <string name="settings.image_loader_concurrency_12">12</string>
     <string name="albumArt">albumArt</string>
     <string name="common_multiple_years">Múltiplos Anos</string>
+
+    <string name="permissions.access_error">Ultrasonic can\'t access the music file cache. Cache location was reset to the default path.</string>
+    <string name="permissions.message_box_title">Warning</string>
+    <string name="permissions.permission_missing">Ultrasonic needs read/write permission to the music cache directory. Cache directory was reset to its default value.</string>
+    <string name="permissions.rationale_title">Permission request</string>
+    <string name="permissions.rationale_description">Ultrasonic needs read/write permission to the music cache directory.\nPlease allow Ultrasonic to access the filesystem.</string>
+    <string name="permissions.permanent_denial_title">Permissions permanently denied</string>
+    <string name="permissions.permanent_denial_description">Ultrasonic needs Read/Write access to the cache location. You can grant them in app settings. If you reject this request, the cache location will be reset to its default value.</string>
+    <string name="permissions.open_settings">Open settings</string>
+
     <plurals name="select_album_n_songs">
         <item quantity="one">%d música</item>
         <item quantity="other">%d músicas</item>

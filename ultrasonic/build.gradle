@@ -79,6 +79,7 @@ dependencies {
     testImplementation testing.kotlinJunit
     testImplementation testing.mockitoKotlin
     testImplementation testing.kluent
+    implementation 'com.karumi:dexter:6.1.2'
 }
 
 jacoco {

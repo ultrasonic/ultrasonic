@@ -382,21 +382,18 @@ public class SettingsFragment extends PreferenceFragment
         File dir = new File(path);
 
         if (!FileUtil.ensureDirectoryExistsAndIsReadWritable(dir)) {
-            Util.toast(getActivity(), R.string.settings_cache_location_error, false);
-
-            // Reset it to the default.
-            String defaultPath = FileUtil.getDefaultMusicDirectory().getPath();
-            if (!defaultPath.equals(path)) {
-                Util.getPreferences(getActivity()).edit()
-                        .putString(Constants.PREFERENCES_KEY_CACHE_LOCATION, defaultPath)
-                        .apply();
-                cacheLocation.setSummary(defaultPath);
-                cacheLocation.setText(defaultPath);
-            }
-
-            // Clear download queue.
-            DownloadService downloadService = DownloadServiceImpl.getInstance();
-            downloadService.clear();
+            PermissionUtil.handlePermissionFailed(getActivity(), new PermissionUtil.PermissionRequestFinishedCallback() {
+                @Override
+                public void onPermissionRequestFinished() {
+                    String currentPath = settings.getString(Constants.PREFERENCES_KEY_CACHE_LOCATION, FileUtil.getDefaultMusicDirectory().getPath());
+                    cacheLocation.setSummary(currentPath);
+                    cacheLocation.setText(currentPath);
+                }
+            });
         }
+
+        // Clear download queue.
+        DownloadService downloadService = DownloadServiceImpl.getInstance();
+        downloadService.clear();
     }
 }
