@@ -13,7 +13,6 @@ android {
 
         minSdkVersion versions.minSdk
         targetSdkVersion versions.targetSdk
-        multiDexEnabled true
 
         resConfigs "de", "en", "es", "fr", "hu", "nl", "pl", "pt", "pt-rBR"
     }
@@ -31,6 +30,7 @@ android {
         }
         debug {
             minifyEnabled false
+            multiDexEnabled true
             testCoverageEnabled true
             applicationIdSuffix ".debug"
         }
@@ -55,9 +55,6 @@ tasks.withType(Test) {
 }
 
 dependencies {
-    def multidex_version = "2.0.1"
-    implementation "androidx.multidex:multidex:$multidex_version"
-
     implementation project(':core:menudrawer')
     implementation project(':core:pulltorefresh')
     implementation project(':core:library')
@@ -68,6 +65,7 @@ dependencies {
 
     implementation androidSupport.support
     implementation androidSupport.design
+    implementation androidSupport.multidex
 
     implementation other.kotlinStdlib
     implementation other.koinAndroid
@@ -79,7 +77,7 @@ dependencies {
     testImplementation testing.kotlinJunit
     testImplementation testing.mockitoKotlin
     testImplementation testing.kluent
-    implementation 'com.karumi:dexter:6.1.2'
+    implementation other.dexter
 }
 
 jacoco {

@@ -1,6 +1,5 @@
 package org.moire.ultrasonic.app
 
-import android.app.Application
 import androidx.multidex.MultiDexApplication
 import org.koin.android.ext.android.startKoin
 import org.moire.ultrasonic.di.DiProperties

@@ -11,6 +11,9 @@ ext.versions = [
         jacoco               : "0.8.2",
 
         androidSupport       : "22.2.1",
+        androidLegacySupport : "1.0.0",
+        androidSupportDesign : "1.0.0",
+        multidex             : "2.0.1",
 
         kotlin               : "1.3.72",
 
@@ -30,6 +33,7 @@ ext.versions = [
         apacheCodecs         : "1.10",
         testRunner           : "1.0.1",
         robolectric          : "3.8",
+        dexter               : "6.1.2",
 ]
 
 ext.gradlePlugins = [
@@ -41,9 +45,10 @@ ext.gradlePlugins = [
 ]
 
 ext.androidSupport = [
-        support    : 'androidx.legacy:legacy-support-v4:1.0.0',
-        design     : 'com.google.android.material:material:1.0.0',
-        annotations: "com.android.support:support-annotations:$versions.androidSupport"
+        support    : "androidx.legacy:legacy-support-v4:$versions.androidLegacySupport",
+        design     : "com.google.android.material:material:$versions.androidSupportDesign",
+        annotations: "com.android.support:support-annotations:$versions.androidSupport",
+        multidex   : "androidx.multidex:multidex:$versions.multidex",
 ]
 
 ext.other = [
@@ -60,6 +65,7 @@ ext.other = [
         koinJava           : "org.koin:koin-java:$versions.koin",
         koinAndroid        : "org.koin:koin-android:$versions.koin",
         picasso            : "com.squareup.picasso:picasso:$versions.picasso",
+        dexter             : "com.karumi:dexter:$versions.dexter",
 ]
 
 ext.testing = [
