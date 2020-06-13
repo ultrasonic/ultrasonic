@@ -25,7 +25,7 @@ class SubsonicApiGetLyricsTest : SubsonicAPIClientTest() {
             artist `should be equal to` "Amorphis"
             title `should be equal to` "Alone"
             text `should be equal to` "Tear dimmed rememberance\nIn a womb of time\nBreath upon " +
-                    "me\nPossessed by the"
+                "me\nPossessed by the"
         }
     }
 
@@ -33,8 +33,10 @@ class SubsonicApiGetLyricsTest : SubsonicAPIClientTest() {
     fun `Should pass artist param in request`() {
         val artist = "some-artist"
 
-        mockWebServerRule.assertRequestParam(responseResourceName = "get_lyrics_ok.json",
-                expectedParam = "artist=$artist") {
+        mockWebServerRule.assertRequestParam(
+            responseResourceName = "get_lyrics_ok.json",
+            expectedParam = "artist=$artist"
+        ) {
             client.api.getLyrics(artist = artist).execute()
         }
     }
@@ -43,8 +45,10 @@ class SubsonicApiGetLyricsTest : SubsonicAPIClientTest() {
     fun `Should pass title param in request`() {
         val title = "some-title"
 
-        mockWebServerRule.assertRequestParam(responseResourceName = "get_lyrics_ok.json",
-                expectedParam = "title=$title") {
+        mockWebServerRule.assertRequestParam(
+            responseResourceName = "get_lyrics_ok.json",
+            expectedParam = "title=$title"
+        ) {
             client.api.getLyrics(title = title).execute()
         }
     }

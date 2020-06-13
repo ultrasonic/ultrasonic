@@ -3,11 +3,11 @@
 @file:JvmName("APIMusicDirectoryConverter")
 package org.moire.ultrasonic.domain
 
-import org.moire.ultrasonic.api.subsonic.models.MusicDirectoryChild
 import java.text.DateFormat
 import java.text.SimpleDateFormat
 import java.util.Locale
 import org.moire.ultrasonic.api.subsonic.models.MusicDirectory as APIMusicDirectory
+import org.moire.ultrasonic.api.subsonic.models.MusicDirectoryChild
 
 internal val dateFormat: DateFormat by lazy {
     SimpleDateFormat.getDateTimeInstance(DateFormat.SHORT, DateFormat.SHORT, Locale.getDefault())

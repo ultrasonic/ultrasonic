@@ -41,10 +41,10 @@ private val musicFolderSerializer = object : ObjectSerializer<MusicFolder>(SERIA
 fun getMusicFolderSerializer(): DomainEntitySerializer<MusicFolder> = musicFolderSerializer
 
 private val musicFolderListSerializer =
-        CollectionSerializers.getListSerializer(musicFolderSerializer)
+    CollectionSerializers.getListSerializer(musicFolderSerializer)
 
 /**
  * Serializer/deserializer for [List] of [MusicFolder] items.
  */
 fun getMusicFolderListSerializer(): DomainEntitySerializer<List<MusicFolder>> =
-        musicFolderListSerializer
+    musicFolderListSerializer

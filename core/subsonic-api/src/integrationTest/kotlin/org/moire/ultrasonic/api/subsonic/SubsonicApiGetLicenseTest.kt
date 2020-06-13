@@ -18,10 +18,12 @@ class SubsonicApiGetLicenseTest : SubsonicAPIClientTest() {
         assertResponseSuccessful(response)
         with(response.body()!!) {
             assertBaseResponseOk()
-            license `should equal` License(valid = true,
-                    trialExpires = parseDate("2016-11-23T20:17:15.206Z"),
-                    email = "someone@example.net",
-                    licenseExpires = parseDate("8994-08-17T07:12:55.807Z"))
+            license `should equal` License(
+                valid = true,
+                trialExpires = parseDate("2016-11-23T20:17:15.206Z"),
+                email = "someone@example.net",
+                licenseExpires = parseDate("8994-08-17T07:12:55.807Z")
+            )
         }
     }
 

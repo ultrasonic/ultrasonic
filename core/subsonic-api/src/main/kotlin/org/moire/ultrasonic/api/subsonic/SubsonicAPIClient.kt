@@ -4,6 +4,11 @@ import com.fasterxml.jackson.databind.DeserializationFeature
 import com.fasterxml.jackson.databind.ObjectMapper
 import com.fasterxml.jackson.module.kotlin.KotlinModule
 import com.fasterxml.jackson.module.kotlin.readValue
+import java.security.SecureRandom
+import java.security.cert.X509Certificate
+import java.util.concurrent.TimeUnit.MILLISECONDS
+import javax.net.ssl.SSLContext
+import javax.net.ssl.X509TrustManager
 import okhttp3.OkHttpClient
 import okhttp3.ResponseBody
 import okhttp3.logging.HttpLoggingInterceptor
@@ -17,11 +22,6 @@ import org.moire.ultrasonic.api.subsonic.response.SubsonicResponse
 import retrofit2.Response
 import retrofit2.Retrofit
 import retrofit2.converter.jackson.JacksonConverterFactory
-import java.security.SecureRandom
-import java.security.cert.X509Certificate
-import java.util.concurrent.TimeUnit.MILLISECONDS
-import javax.net.ssl.SSLContext
-import javax.net.ssl.X509TrustManager
 
 private const val READ_TIMEOUT = 60_000L
 
@@ -44,10 +44,10 @@ class SubsonicAPIClient(
     }
 
     private val proxyPasswordInterceptor = ProxyPasswordInterceptor(
-            config.minimalProtocolVersion,
-            PasswordHexInterceptor(config.password),
-            PasswordMD5Interceptor(config.password),
-            config.enableLdapUserSupport
+        config.minimalProtocolVersion,
+        PasswordHexInterceptor(config.password),
+        PasswordMD5Interceptor(config.password),
+        config.enableLdapUserSupport
     )
 
     /**
@@ -61,38 +61,38 @@ class SubsonicAPIClient(
         }
 
     private val okHttpClient = baseOkClient.newBuilder()
-            .readTimeout(READ_TIMEOUT, MILLISECONDS)
-            .apply { if (config.allowSelfSignedCertificate) allowSelfSignedCertificates() }
-            .addInterceptor { chain ->
-                // Adds default request params
-                val originalRequest = chain.request()
-                val newUrl = originalRequest.url().newBuilder()
-                        .addQueryParameter("u", config.username)
-                        .addQueryParameter("c", config.clientID)
-                        .addQueryParameter("f", "json")
-                        .build()
-                chain.proceed(originalRequest.newBuilder().url(newUrl).build())
-            }
-            .addInterceptor(versionInterceptor)
-            .addInterceptor(proxyPasswordInterceptor)
-            .addInterceptor(RangeHeaderInterceptor())
-            .apply { if (config.debug) addLogging() }
-            .build()
+        .readTimeout(READ_TIMEOUT, MILLISECONDS)
+        .apply { if (config.allowSelfSignedCertificate) allowSelfSignedCertificates() }
+        .addInterceptor { chain ->
+            // Adds default request params
+            val originalRequest = chain.request()
+            val newUrl = originalRequest.url().newBuilder()
+                .addQueryParameter("u", config.username)
+                .addQueryParameter("c", config.clientID)
+                .addQueryParameter("f", "json")
+                .build()
+            chain.proceed(originalRequest.newBuilder().url(newUrl).build())
+        }
+        .addInterceptor(versionInterceptor)
+        .addInterceptor(proxyPasswordInterceptor)
+        .addInterceptor(RangeHeaderInterceptor())
+        .apply { if (config.debug) addLogging() }
+        .build()
 
     private val jacksonMapper = ObjectMapper()
-            .configure(DeserializationFeature.UNWRAP_ROOT_VALUE, true)
-            .configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false)
-            .registerModule(KotlinModule())
+        .configure(DeserializationFeature.UNWRAP_ROOT_VALUE, true)
+        .configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false)
+        .registerModule(KotlinModule())
 
     private val retrofit = Retrofit.Builder()
-            .baseUrl("${config.baseUrl}/rest/")
-            .client(okHttpClient)
-            .addConverterFactory(JacksonConverterFactory.create(jacksonMapper))
-            .build()
+        .baseUrl("${config.baseUrl}/rest/")
+        .client(okHttpClient)
+        .addConverterFactory(JacksonConverterFactory.create(jacksonMapper))
+        .build()
 
     private val wrappedApi = ApiVersionCheckWrapper(
-            retrofit.create(SubsonicAPIDefinition::class.java),
-            config.minimalProtocolVersion
+        retrofit.create(SubsonicAPIDefinition::class.java),
+        config.minimalProtocolVersion
     )
 
     val api: SubsonicAPIDefinition get() = wrappedApi
@@ -118,9 +118,9 @@ class SubsonicAPIClient(
      * Prefer this method over [SubsonicAPIDefinition.stream] as this handles error cases.
      */
     fun stream(id: String, maxBitrate: Int? = null, offset: Long? = null): StreamResponse =
-            handleStreamResponse {
-                api.stream(id, maxBitrate, offset = offset).execute()
-            }
+        handleStreamResponse {
+            api.stream(id, maxBitrate, offset = offset).execute()
+        }
 
     /**
      * Convenient method to get user avatar using [username].
@@ -138,14 +138,18 @@ class SubsonicAPIClient(
         return if (response.isSuccessful) {
             val responseBody = response.body()
             val contentType = responseBody?.contentType()
-            if (contentType != null &&
-                    contentType.type().equals("application", true) &&
-                    contentType.subtype().equals("json", true)) {
+            if (
+                contentType != null &&
+                contentType.type().equals("application", true) &&
+                contentType.subtype().equals("json", true)
+            ) {
                 val error = jacksonMapper.readValue<SubsonicResponse>(responseBody.byteStream())
                 StreamResponse(apiError = error.error, responseHttpCode = response.code())
             } else {
-                StreamResponse(stream = responseBody?.byteStream(),
-                        responseHttpCode = response.code())
+                StreamResponse(
+                    stream = responseBody?.byteStream(),
+                    responseHttpCode = response.code()
+                )
             }
         } else {
             StreamResponse(responseHttpCode = response.code())

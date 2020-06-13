@@ -1,12 +1,12 @@
 package org.moire.ultrasonic.api.subsonic.interceptors
 
-import okhttp3.Interceptor
-import okhttp3.Interceptor.Chain
-import okhttp3.Response
 import java.math.BigInteger
 import java.security.MessageDigest
 import java.security.NoSuchAlgorithmException
 import java.security.SecureRandom
+import okhttp3.Interceptor
+import okhttp3.Interceptor.Chain
+import okhttp3.Response
 
 /**
  * Adds password param as MD5 hash with random salt. Salt is also added as a param.
@@ -32,9 +32,9 @@ class PasswordMD5Interceptor(private val password: String) : Interceptor {
     override fun intercept(chain: Chain): Response {
         val originalRequest = chain.request()
         val updatedUrl = originalRequest.url().newBuilder()
-                .addQueryParameter("t", passwordMD5Hash)
-                .addQueryParameter("s", salt)
-                .build()
+            .addQueryParameter("t", passwordMD5Hash)
+            .addQueryParameter("s", salt)
+            .build()
 
         return chain.proceed(originalRequest.newBuilder().url(updatedUrl).build())
     }

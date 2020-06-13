@@ -1,9 +1,9 @@
 package org.moire.ultrasonic.api.subsonic.interceptors
 
+import java.util.concurrent.TimeUnit.MILLISECONDS
 import okhttp3.Interceptor
 import okhttp3.Interceptor.Chain
 import okhttp3.Response
-import java.util.concurrent.TimeUnit.MILLISECONDS
 
 internal const val SOCKET_READ_TIMEOUT_DOWNLOAD = 30 * 1000
 // Allow 20 seconds extra timeout pear MB offset.
@@ -24,9 +24,11 @@ internal class RangeHeaderInterceptor : Interceptor {
             val offsetValue = headers["Range"] ?: "0"
             val offset = "bytes=$offsetValue-"
             chain.withReadTimeout(getReadTimeout(offsetValue.toInt()), MILLISECONDS)
-                    .proceed(originalRequest.newBuilder()
-                    .removeHeader("Range").addHeader("Range", offset)
-                    .build())
+                .proceed(
+                    originalRequest.newBuilder()
+                        .removeHeader("Range").addHeader("Range", offset)
+                        .build()
+                )
         } else {
             chain.proceed(originalRequest)
         }
@@ -37,5 +39,5 @@ internal class RangeHeaderInterceptor : Interceptor {
     // on the server. In that case, the server uses a long time before sending any data,
     // causing the client to time out.
     private fun getReadTimeout(offset: Int) =
-            (SOCKET_READ_TIMEOUT_DOWNLOAD + offset * TIMEOUT_MILLIS_PER_OFFSET_BYTE).toInt()
+        (SOCKET_READ_TIMEOUT_DOWNLOAD + offset * TIMEOUT_MILLIS_PER_OFFSET_BYTE).toInt()
 }

@@ -82,8 +82,9 @@ internal class ApiVersionCheckWrapper(
     ): Call<SearchTwoResponse> {
         checkVersion(V1_4_0)
         checkParamVersion(musicFolderId, V1_12_0)
-        return api.search2(query, artistCount, artistOffset, albumCount, albumOffset, songCount,
-                musicFolderId)
+        return api.search2(
+            query, artistCount, artistOffset, albumCount, albumOffset, songCount, musicFolderId
+        )
     }
 
     override fun search3(
@@ -97,8 +98,9 @@ internal class ApiVersionCheckWrapper(
     ): Call<SearchThreeResponse> {
         checkVersion(V1_8_0)
         checkParamVersion(musicFolderId, V1_12_0)
-        return api.search3(query, artistCount, artistOffset, albumCount, albumOffset,
-                songCount, musicFolderId)
+        return api.search3(
+            query, artistCount, artistOffset, albumCount, albumOffset, songCount, musicFolderId
+        )
     }
 
     override fun getPlaylists(username: String?): Call<GetPlaylistsResponse> {
@@ -216,8 +218,9 @@ internal class ApiVersionCheckWrapper(
         checkParamVersion(videoSize, V1_6_0)
         checkParamVersion(estimateContentLength, V1_8_0)
         checkParamVersion(converted, V1_14_0)
-        return api.stream(id, maxBitRate, format, timeOffset, videoSize,
-                estimateContentLength, converted)
+        return api.stream(
+            id, maxBitRate, format, timeOffset, videoSize, estimateContentLength, converted
+        )
     }
 
     override fun jukeboxControl(

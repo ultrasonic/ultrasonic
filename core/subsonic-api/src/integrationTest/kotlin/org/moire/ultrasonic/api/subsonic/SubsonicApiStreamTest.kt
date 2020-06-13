@@ -40,8 +40,10 @@ class SubsonicApiStreamTest : SubsonicAPIClientTest() {
 
     @Test
     fun `Should return successfull call stream`() {
-        mockWebServerRule.mockWebServer.enqueue(MockResponse()
-                .setBody(mockWebServerRule.loadJsonResponse("ping_ok.json")))
+        mockWebServerRule.mockWebServer.enqueue(
+            MockResponse()
+                .setBody(mockWebServerRule.loadJsonResponse("ping_ok.json"))
+        )
 
         val response = client.stream("some-id")
 
@@ -67,8 +69,10 @@ class SubsonicApiStreamTest : SubsonicAPIClientTest() {
     fun `Should pass max bit rate as param`() {
         val maxBitRate = 360
 
-        mockWebServerRule.assertRequestParam("ping_ok.json",
-                "maxBitRate=$maxBitRate") {
+        mockWebServerRule.assertRequestParam(
+            "ping_ok.json",
+            "maxBitRate=$maxBitRate"
+        ) {
             client.api.stream("some-id", maxBitRate = maxBitRate).execute()
         }
     }
@@ -77,8 +81,10 @@ class SubsonicApiStreamTest : SubsonicAPIClientTest() {
     fun `Should pass format as param`() {
         val format = "aac"
 
-        mockWebServerRule.assertRequestParam("ping_ok.json",
-                "format=$format") {
+        mockWebServerRule.assertRequestParam(
+            "ping_ok.json",
+            "format=$format"
+        ) {
             client.api.stream("some-id", format = format).execute()
         }
     }
@@ -87,8 +93,10 @@ class SubsonicApiStreamTest : SubsonicAPIClientTest() {
     fun `Should pass time offset as param`() {
         val timeOffset = 155
 
-        mockWebServerRule.assertRequestParam("ping_ok.json",
-                "timeOffset=$timeOffset") {
+        mockWebServerRule.assertRequestParam(
+            "ping_ok.json",
+            "timeOffset=$timeOffset"
+        ) {
             client.api.stream("some-id", timeOffset = timeOffset).execute()
         }
     }
@@ -97,8 +105,10 @@ class SubsonicApiStreamTest : SubsonicAPIClientTest() {
     fun `Should pass video size as param`() {
         val videoSize = "44144"
 
-        mockWebServerRule.assertRequestParam("ping_ok.json",
-                "size=$videoSize") {
+        mockWebServerRule.assertRequestParam(
+            "ping_ok.json",
+            "size=$videoSize"
+        ) {
             client.api.stream("some-id", videoSize = videoSize).execute()
         }
     }
@@ -107,8 +117,10 @@ class SubsonicApiStreamTest : SubsonicAPIClientTest() {
     fun `Should pass estimate content length as param`() {
         val estimateContentLength = true
 
-        mockWebServerRule.assertRequestParam("ping_ok.json",
-                "estimateContentLength=$estimateContentLength") {
+        mockWebServerRule.assertRequestParam(
+            "ping_ok.json",
+            "estimateContentLength=$estimateContentLength"
+        ) {
             client.api.stream("some-id", estimateContentLength = estimateContentLength).execute()
         }
     }
@@ -117,8 +129,10 @@ class SubsonicApiStreamTest : SubsonicAPIClientTest() {
     fun `Should pass converted as param`() {
         val converted = false
 
-        mockWebServerRule.assertRequestParam("ping_ok.json",
-                "converted=$converted") {
+        mockWebServerRule.assertRequestParam(
+            "ping_ok.json",
+            "converted=$converted"
+        ) {
             client.api.stream("some-id", converted = converted).execute()
         }
     }

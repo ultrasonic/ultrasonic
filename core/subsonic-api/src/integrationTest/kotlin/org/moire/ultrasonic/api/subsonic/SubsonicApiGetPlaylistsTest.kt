@@ -29,12 +29,14 @@ class SubsonicApiGetPlaylistsTest : SubsonicAPIClientTest() {
         assertResponseSuccessful(response)
         with(response.body()!!.playlists) {
             size `should be equal to` 1
-            this[0] `should equal` Playlist(id = "0", name = "Aug 27, 2017 11:17 AM",
-                    owner = "admin", public = false, songCount = 16, duration = 3573,
-                    comment = "Some comment",
-                    created = parseDate("2017-08-27T11:17:26.216Z"),
-                    changed = parseDate("2017-08-27T11:17:26.218Z"),
-                    coverArt = "pl-0")
+            this[0] `should equal` Playlist(
+                id = "0", name = "Aug 27, 2017 11:17 AM",
+                owner = "admin", public = false, songCount = 16, duration = 3573,
+                comment = "Some comment",
+                created = parseDate("2017-08-27T11:17:26.216Z"),
+                changed = parseDate("2017-08-27T11:17:26.218Z"),
+                coverArt = "pl-0"
+            )
         }
     }
 
@@ -42,8 +44,10 @@ class SubsonicApiGetPlaylistsTest : SubsonicAPIClientTest() {
     fun `Should pass username as a parameter`() {
         val username = "SomeUsername"
 
-        mockWebServerRule.assertRequestParam(responseResourceName = "get_playlists_ok.json",
-                expectedParam = "username=$username") {
+        mockWebServerRule.assertRequestParam(
+            responseResourceName = "get_playlists_ok.json",
+            expectedParam = "username=$username"
+        ) {
             client.api.getPlaylists(username = username).execute()
         }
     }

@@ -149,7 +149,7 @@ interface SubsonicAPIDefinition {
         @Query("songIdToAdd") songIdsToAdd: List<String>? = null,
         @Query("songIndexToRemove") songIndexesToRemove: List<Int>? = null
     ):
-            Call<SubsonicResponse>
+        Call<SubsonicResponse>
 
     @GET("getPodcasts.view")
     fun getPodcasts(

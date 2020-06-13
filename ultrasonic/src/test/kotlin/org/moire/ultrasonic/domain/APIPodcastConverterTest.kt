@@ -13,9 +13,11 @@ import org.moire.ultrasonic.api.subsonic.models.PodcastChannel
 class APIPodcastConverterTest {
     @Test
     fun `Should convert podcast channel entity to domain entity`() {
-        val entity = PodcastChannel(id = "452", url = "some-url", title = "some-title",
-                description = "some-description", coverArt = "cA", originalImageUrl = "image-url",
-                status = "podcast-status", errorMessage = "some-error-message")
+        val entity = PodcastChannel(
+            id = "452", url = "some-url", title = "some-title",
+            description = "some-description", coverArt = "cA", originalImageUrl = "image-url",
+            status = "podcast-status", errorMessage = "some-error-message"
+        )
 
         val converterEntity = entity.toDomainEntity()
 
@@ -31,8 +33,9 @@ class APIPodcastConverterTest {
     @Test
     fun `Should convert list of podcasts channels to domain entites list`() {
         val entitiesList = listOf(
-                PodcastChannel(id = "932", title = "title1"),
-                PodcastChannel(id = "12", title = "title2"))
+            PodcastChannel(id = "932", title = "title1"),
+            PodcastChannel(id = "12", title = "title2")
+        )
 
         val converted = entitiesList.toDomainEntitiesList()
 

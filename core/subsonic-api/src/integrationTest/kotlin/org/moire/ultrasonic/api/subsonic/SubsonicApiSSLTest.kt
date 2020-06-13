@@ -1,10 +1,5 @@
 package org.moire.ultrasonic.api.subsonic
 
-import okhttp3.mockwebserver.MockWebServer
-import org.amshove.kluent.`should throw`
-import org.junit.After
-import org.junit.Before
-import org.junit.Test
 import java.io.InputStream
 import java.net.InetAddress
 import java.security.KeyStore
@@ -14,6 +9,11 @@ import javax.net.ssl.KeyManagerFactory
 import javax.net.ssl.SSLContext
 import javax.net.ssl.SSLHandshakeException
 import javax.net.ssl.TrustManagerFactory
+import okhttp3.mockwebserver.MockWebServer
+import org.amshove.kluent.`should throw`
+import org.junit.After
+import org.junit.Before
+import org.junit.Test
 
 private const val PORT = 8443
 private const val HOST = "localhost"
@@ -26,8 +26,11 @@ class SubsonicApiSSLTest {
 
     @Before
     fun setUp() {
-        val sslContext = createSSLContext(loadResourceStream("self-signed.pem"),
-                loadResourceStream("self-signed.p12"), "")
+        val sslContext = createSSLContext(
+            loadResourceStream("self-signed.pem"),
+            loadResourceStream("self-signed.p12"),
+            ""
+        )
         mockWebServer.useHttps(sslContext.socketFactory, false)
         mockWebServer.start(InetAddress.getByName(HOST), PORT)
     }
@@ -47,11 +50,13 @@ class SubsonicApiSSLTest {
         trustStore.load(null)
 
         certificatePemStream.use {
-            cert = (CertificateFactory.getInstance("X.509")
-                    .generateCertificate(certificatePemStream)) as X509Certificate
+            cert = (
+                CertificateFactory.getInstance("X.509")
+                    .generateCertificate(certificatePemStream)
+                ) as X509Certificate
         }
         val alias = cert?.subjectX500Principal?.name
-                ?: throw IllegalStateException("Failed to load certificate")
+            ?: throw IllegalStateException("Failed to load certificate")
         trustStore.setCertificateEntry(alias, cert)
 
         val tmf = TrustManagerFactory.getInstance("X509")

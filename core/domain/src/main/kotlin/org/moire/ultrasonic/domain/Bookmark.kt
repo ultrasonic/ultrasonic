@@ -1,9 +1,8 @@
 package org.moire.ultrasonic.domain
 
-import org.moire.ultrasonic.domain.MusicDirectory.Entry
-
 import java.io.Serializable
 import java.util.Date
+import org.moire.ultrasonic.domain.MusicDirectory.Entry
 
 data class Bookmark(
     val position: Int = 0,

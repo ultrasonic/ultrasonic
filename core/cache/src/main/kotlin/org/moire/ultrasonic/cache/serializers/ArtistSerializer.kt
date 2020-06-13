@@ -20,14 +20,14 @@ private val artistSerializer get() = object : ObjectSerializer<Artist>(SERIALIZE
         item: Artist
     ) {
         output.writeString(item.id)
-                .writeString(item.name)
-                .writeString(item.index)
-                .writeString(item.coverArt)
-                .apply {
-                    val albumCount = item.albumCount
-                    if (albumCount != null) writeLong(albumCount) else writeNull()
-                }
-                .writeInt(item.closeness)
+            .writeString(item.name)
+            .writeString(item.index)
+            .writeString(item.coverArt)
+            .apply {
+                val albumCount = item.albumCount
+                if (albumCount != null) writeLong(albumCount) else writeNull()
+            }
+            .writeInt(item.closeness)
     }
 
     override fun deserializeObject(

@@ -1,7 +1,7 @@
 package org.moire.ultrasonic.domain
 
-import org.moire.ultrasonic.domain.MusicDirectory.Entry
 import java.io.Serializable
+import org.moire.ultrasonic.domain.MusicDirectory.Entry
 
 data class Share(
     var id: String? = null,

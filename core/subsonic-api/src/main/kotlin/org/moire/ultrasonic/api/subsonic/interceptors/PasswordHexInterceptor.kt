@@ -1,9 +1,9 @@
 package org.moire.ultrasonic.api.subsonic.interceptors
 
+import kotlin.LazyThreadSafetyMode.NONE
 import okhttp3.Interceptor
 import okhttp3.Interceptor.Chain
 import okhttp3.Response
-import kotlin.LazyThreadSafetyMode.NONE
 
 /**
  * Adds password param converted to hex string in request url.
@@ -19,7 +19,7 @@ class PasswordHexInterceptor(private val password: String) : Interceptor {
     override fun intercept(chain: Chain): Response {
         val originalRequest = chain.request()
         val updatedUrl = originalRequest.url().newBuilder()
-                .addEncodedQueryParameter("p", passwordHex).build()
+            .addEncodedQueryParameter("p", passwordHex).build()
         return chain.proceed(originalRequest.newBuilder().url(updatedUrl).build())
     }
 }

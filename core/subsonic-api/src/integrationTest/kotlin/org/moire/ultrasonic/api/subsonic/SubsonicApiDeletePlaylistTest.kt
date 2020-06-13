@@ -26,8 +26,10 @@ class SubsonicApiDeletePlaylistTest : SubsonicAPIClientTest() {
     fun `Should pass id param in request`() {
         val id = "534"
 
-        mockWebServerRule.assertRequestParam(responseResourceName = "ping_ok.json",
-                expectedParam = "id=$id") {
+        mockWebServerRule.assertRequestParam(
+            responseResourceName = "ping_ok.json",
+            expectedParam = "id=$id"
+        ) {
             client.api.deletePlaylist(id).execute()
         }
     }

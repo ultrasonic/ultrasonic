@@ -20,10 +20,9 @@ internal class ProxyPasswordInterceptor(
     var apiVersion: SubsonicAPIVersions = initialAPIVersions
 
     override fun intercept(chain: Chain): Response =
-            if (apiVersion < SubsonicAPIVersions.V1_13_0 ||
-                    forceHexPassword) {
-                hexInterceptor.intercept(chain)
-            } else {
-                mD5Interceptor.intercept(chain)
-            }
+        if (apiVersion < SubsonicAPIVersions.V1_13_0 || forceHexPassword) {
+            hexInterceptor.intercept(chain)
+        } else {
+            mD5Interceptor.intercept(chain)
+        }
 }

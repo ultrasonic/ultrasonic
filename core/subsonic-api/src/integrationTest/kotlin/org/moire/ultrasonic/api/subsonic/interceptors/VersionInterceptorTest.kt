@@ -1,5 +1,6 @@
 package org.moire.ultrasonic.api.subsonic.interceptors
 
+import kotlin.LazyThreadSafetyMode.NONE
 import okhttp3.Interceptor
 import okhttp3.mockwebserver.MockResponse
 import org.amshove.kluent.`should contain`
@@ -7,7 +8,6 @@ import org.amshove.kluent.`should equal`
 import org.junit.Test
 import org.moire.ultrasonic.api.subsonic.SubsonicAPIVersions
 import org.moire.ultrasonic.api.subsonic.enqueueResponse
-import kotlin.LazyThreadSafetyMode.NONE
 
 /**
  * Integration test for [VersionInterceptor].
@@ -41,7 +41,7 @@ class VersionInterceptorTest : BaseInterceptorTest() {
         client.newCall(createRequest {}).execute()
 
         (interceptor as VersionInterceptor)
-                .protocolVersion `should equal` SubsonicAPIVersions.V1_13_0
+            .protocolVersion `should equal` SubsonicAPIVersions.V1_13_0
     }
 
     @Test
@@ -51,7 +51,7 @@ class VersionInterceptorTest : BaseInterceptorTest() {
         client.newCall(createRequest {}).execute()
 
         (interceptor as VersionInterceptor)
-                .protocolVersion `should equal` SubsonicAPIVersions.V1_16_0
+            .protocolVersion `should equal` SubsonicAPIVersions.V1_16_0
     }
 
     @Test
@@ -65,9 +65,11 @@ class VersionInterceptorTest : BaseInterceptorTest() {
 
     @Test
     fun `Should not update version on non-json response`() {
-        mockWebServerRule.mockWebServer.enqueue(MockResponse()
+        mockWebServerRule.mockWebServer.enqueue(
+            MockResponse()
                 .setBody("asdqwnekjnqwkjen")
-                .setHeader("Content-Type", "application/octet-stream"))
+                .setHeader("Content-Type", "application/octet-stream")
+        )
 
         client.newCall(createRequest {}).execute()
 

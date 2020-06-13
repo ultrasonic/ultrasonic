@@ -1,5 +1,6 @@
 package org.moire.ultrasonic.api.subsonic
 
+import java.io.IOException
 import org.amshove.kluent.`should equal`
 import org.amshove.kluent.`should not be`
 import org.amshove.kluent.`should throw`
@@ -15,7 +16,6 @@ import org.moire.ultrasonic.api.subsonic.SubsonicError.UserNotAuthorizedForOpera
 import org.moire.ultrasonic.api.subsonic.SubsonicError.WrongUsernameOrPassword
 import org.moire.ultrasonic.api.subsonic.response.SubsonicResponse
 import retrofit2.Response
-import java.io.IOException
 
 /**
  * Integration test that checks validity of api errors parsing.
@@ -150,8 +150,8 @@ class SubsonicApiErrorsTest : SubsonicAPIClientTest() {
     }
 
     private fun Response<SubsonicResponse>.assertError(expectedError: SubsonicError) =
-            with(body()!!) {
-                error `should not be` null
-                error `should equal` expectedError
-            }
+        with(body()!!) {
+            error `should not be` null
+            error `should equal` expectedError
+        }
 }

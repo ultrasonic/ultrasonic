@@ -32,8 +32,8 @@ class MusicFolderSerializerTest : BaseStorageTest() {
     @Test
     fun `Should correctly serialize list of MusicFolders objects`() {
         val itemsList = listOf(
-                MusicFolder("1", "1"),
-                MusicFolder("2", "2")
+            MusicFolder("1", "1"),
+            MusicFolder("2", "2")
         )
 
         storage.store("some-name", itemsList, getMusicFolderListSerializer())
@@ -45,8 +45,8 @@ class MusicFolderSerializerTest : BaseStorageTest() {
     fun `Should correctly deserialize list of MusicFolder objects`() {
         val name = "some-name"
         val itemsList = listOf(
-                MusicFolder("1", "1"),
-                MusicFolder("2", "2")
+            MusicFolder("1", "1"),
+            MusicFolder("2", "2")
         )
         storage.store(name, itemsList, getMusicFolderListSerializer())
 

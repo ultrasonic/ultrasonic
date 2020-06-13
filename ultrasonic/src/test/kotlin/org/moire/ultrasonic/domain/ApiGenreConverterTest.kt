@@ -26,8 +26,9 @@ class ApiGenreConverterTest {
     @Test
     fun `Should convert a list entites to domain entities`() {
         val entitiesList = listOf(
-                Genre(41, 2, "some-name"),
-                Genre(12, 3, "other-name"))
+            Genre(41, 2, "some-name"),
+            Genre(12, 3, "other-name")
+        )
 
         val domainEntitiesList = entitiesList.toDomainEntityList()
 

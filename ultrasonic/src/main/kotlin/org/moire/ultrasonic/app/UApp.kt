@@ -13,7 +13,8 @@ class UApp : MultiDexApplication() {
     override fun onCreate() {
         super.onCreate()
 
-        startKoin(this,
+        startKoin(
+            this,
             listOf(
                 directoriesModule,
                 appPermanentStorage,

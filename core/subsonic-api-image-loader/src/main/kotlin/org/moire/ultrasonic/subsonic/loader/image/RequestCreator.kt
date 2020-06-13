@@ -3,7 +3,7 @@ package org.moire.ultrasonic.subsonic.loader.image
 import android.net.Uri
 
 internal const val SCHEME = "subsonic_api"
-internal const val AUTHORITY = BuildConfig.APPLICATION_ID
+internal const val AUTHORITY = BuildConfig.LIBRARY_PACKAGE_NAME
 internal const val COVER_ART_PATH = "cover_art"
 internal const val AVATAR_PATH = "avatar"
 internal const val QUERY_ID = "id"

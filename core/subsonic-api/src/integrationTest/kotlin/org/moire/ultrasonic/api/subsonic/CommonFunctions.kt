@@ -1,5 +1,11 @@
 package org.moire.ultrasonic.api.subsonic
 
+import java.io.InputStream
+import java.nio.charset.Charset
+import java.text.SimpleDateFormat
+import java.util.Calendar
+import java.util.Locale
+import java.util.TimeZone
 import okhttp3.mockwebserver.MockResponse
 import okhttp3.mockwebserver.MockWebServer
 import okio.Okio
@@ -9,30 +15,29 @@ import org.amshove.kluent.`should not be`
 import org.moire.ultrasonic.api.subsonic.response.SubsonicResponse
 import org.moire.ultrasonic.api.subsonic.rules.MockWebServerRule
 import retrofit2.Response
-import java.io.InputStream
-import java.nio.charset.Charset
-import java.text.SimpleDateFormat
-import java.util.Calendar
-import java.util.Locale
-import java.util.TimeZone
 
 const val USERNAME = "some-user"
 const val PASSWORD = "some-password"
 val CLIENT_VERSION = SubsonicAPIVersions.V1_16_0
 const val CLIENT_ID = "test-client"
 
-val dateFormat by lazy(LazyThreadSafetyMode.NONE, {
-    SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSZ", Locale.US)
-})
+val dateFormat by lazy(
+    LazyThreadSafetyMode.NONE,
+    {
+        SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSZ", Locale.US)
+    }
+)
 
 fun MockWebServerRule.enqueueResponse(resourceName: String) {
     mockWebServer.enqueueResponse(resourceName)
 }
 
 fun MockWebServer.enqueueResponse(resourceName: String) {
-    enqueue(MockResponse()
+    enqueue(
+        MockResponse()
             .setBody(loadJsonResponse(resourceName))
-            .setHeader("Content-Type", "application/json;charset=UTF-8"))
+            .setHeader("Content-Type", "application/json;charset=UTF-8")
+    )
 }
 
 fun Any.loadJsonResponse(name: String): String {

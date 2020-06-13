@@ -32,8 +32,8 @@ class ArtistSerializerTest : BaseStorageTest() {
     @Test
     fun `Should correctly serialize list of Artists`() {
         val itemsList = listOf(
-                Artist(id = "1"),
-                Artist(id = "2", name = "some")
+            Artist(id = "1"),
+            Artist(id = "2", name = "some")
         )
 
         storage.store("some-name", itemsList, getArtistListSerializer())
@@ -45,8 +45,8 @@ class ArtistSerializerTest : BaseStorageTest() {
     fun `Should correctly deserialize list of Artists`() {
         val name = "some-name"
         val itemsList = listOf(
-                Artist(id = "1"),
-                Artist(id = "2", name = "some")
+            Artist(id = "1"),
+            Artist(id = "2", name = "some")
         )
         storage.store(name, itemsList, getArtistListSerializer())
 

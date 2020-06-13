@@ -1,7 +1,7 @@
 package org.moire.ultrasonic.api.subsonic.response
 
-import org.moire.ultrasonic.api.subsonic.SubsonicError
 import java.io.InputStream
+import org.moire.ultrasonic.api.subsonic.SubsonicError
 
 /**
  * Special response that contains either [stream] of data from api, or [apiError],

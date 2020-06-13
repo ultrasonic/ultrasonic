@@ -1,12 +1,12 @@
 package org.moire.ultrasonic.cache
 
+import java.io.File
 import org.amshove.kluent.`should be equal to`
 import org.amshove.kluent.`should contain`
 import org.amshove.kluent.`should equal`
 import org.junit.Test
 import org.moire.ultrasonic.cache.serializers.getMusicFolderSerializer
 import org.moire.ultrasonic.domain.MusicFolder
-import java.io.File
 
 /**
  * Integration test for [PermanentFileStorage].

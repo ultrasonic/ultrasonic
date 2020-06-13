@@ -20,17 +20,22 @@ class SubsonicApiUnstarTest : SubsonicAPIClientTest() {
 
     @Test
     fun `Should parse error response`() {
-        checkErrorCallParsed(mockWebServerRule, {
-            client.api.unstar().execute()
-        })
+        checkErrorCallParsed(
+            mockWebServerRule,
+            {
+                client.api.unstar().execute()
+            }
+        )
     }
 
     @Test
     fun `Should pass id param`() {
         val id = "545"
 
-        mockWebServerRule.assertRequestParam(responseResourceName = "ping_ok.json",
-                expectedParam = "id=$id") {
+        mockWebServerRule.assertRequestParam(
+            responseResourceName = "ping_ok.json",
+            expectedParam = "id=$id"
+        ) {
             client.api.unstar(id = id).execute()
         }
     }
@@ -39,8 +44,10 @@ class SubsonicApiUnstarTest : SubsonicAPIClientTest() {
     fun `Should pass artistId param`() {
         val artistId = "644"
 
-        mockWebServerRule.assertRequestParam(responseResourceName = "ping_ok.json",
-                expectedParam = "artistId=$artistId") {
+        mockWebServerRule.assertRequestParam(
+            responseResourceName = "ping_ok.json",
+            expectedParam = "artistId=$artistId"
+        ) {
             client.api.unstar(artistId = artistId).execute()
         }
     }
@@ -49,8 +56,10 @@ class SubsonicApiUnstarTest : SubsonicAPIClientTest() {
     fun `Should pass albumId param`() {
         val albumId = "3344"
 
-        mockWebServerRule.assertRequestParam(responseResourceName = "ping_ok.json",
-                expectedParam = "albumId=$albumId") {
+        mockWebServerRule.assertRequestParam(
+            responseResourceName = "ping_ok.json",
+            expectedParam = "albumId=$albumId"
+        ) {
             client.api.unstar(albumId = albumId).execute()
         }
     }

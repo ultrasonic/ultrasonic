@@ -93,7 +93,7 @@ final class ActionBarHelperCompat {
                 Class supportActivity = activity.getClass();
                 Method getActionBar = supportActivity.getMethod("getSupportActionBar");
 
-                mActionBar = getActionBar.invoke(activity, null);
+                mActionBar = getActionBar.invoke(activity, (Object)null);
                 Class supportActionBar = mActionBar.getClass();
                 mHomeAsUpEnabled = supportActionBar.getMethod("setDisplayHomeAsUpEnabled", Boolean.TYPE);
 

@@ -31,7 +31,7 @@ class GetStreamUrlTest {
         client = SubsonicAPIClient(config)
         val baseExpectedUrl = mockWebServerRule.mockWebServer.url("").toString()
         expectedUrl = "$baseExpectedUrl/rest/stream.view?id=$id&u=$USERNAME" +
-                "&c=$CLIENT_ID&f=json&v=${V1_6_0.restApiVersion}&p=enc:${PASSWORD.toHexBytes()}"
+            "&c=$CLIENT_ID&f=json&v=${V1_6_0.restApiVersion}&p=enc:${PASSWORD.toHexBytes()}"
     }
 
     @Test

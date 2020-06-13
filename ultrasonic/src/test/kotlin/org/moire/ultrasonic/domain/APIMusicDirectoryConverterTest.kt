@@ -2,12 +2,12 @@
 
 package org.moire.ultrasonic.domain
 
+import java.util.Calendar
 import org.amshove.kluent.`should be equal to`
 import org.amshove.kluent.`should equal`
 import org.junit.Test
 import org.moire.ultrasonic.api.subsonic.models.MusicDirectory
 import org.moire.ultrasonic.api.subsonic.models.MusicDirectoryChild
-import java.util.Calendar
 
 /**
  * Unit test for extension functions in APIMusicDirectoryConverter.kt file.
@@ -15,9 +15,11 @@ import java.util.Calendar
 class APIMusicDirectoryConverterTest {
     @Test
     fun `Should convert MusicDirectory entity`() {
-        val entity = MusicDirectory(id = "1982", parent = "345", name = "some-name", userRating = 3,
-                averageRating = 3.4f, starred = Calendar.getInstance(), playCount = 10,
-                childList = listOf(MusicDirectoryChild("1"), MusicDirectoryChild("2")))
+        val entity = MusicDirectory(
+            id = "1982", parent = "345", name = "some-name", userRating = 3,
+            averageRating = 3.4f, starred = Calendar.getInstance(), playCount = 10,
+            childList = listOf(MusicDirectoryChild("1"), MusicDirectoryChild("2"))
+        )
 
         val convertedEntity = entity.toDomainEntity()
 
@@ -25,21 +27,23 @@ class APIMusicDirectoryConverterTest {
             name `should equal` entity.name
             getAllChild().size `should be equal to` entity.childList.size
             getAllChild() `should equal` entity.childList
-                    .map { it.toDomainEntity() }.toMutableList()
+                .map { it.toDomainEntity() }.toMutableList()
         }
     }
 
     @Test
     fun `Should convert MusicDirectoryChild entity`() {
-        val entity = MusicDirectoryChild(id = "929", parent = "11", title = "some-title",
-                album = "some-album", albumId = "231", artist = "some-artist", artistId = "1233",
-                track = 12, year = 2002, genre = "some-genre", coverArt = "952", size = 9418123L,
-                contentType = "some-content-type", suffix = "some-suffix",
-                transcodedContentType = "some-transcoded-content-type",
-                transcodedSuffix = "some-transcoded-suffix", duration = 11, bitRate = 256,
-                path = "some-path", isDir = true, isVideo = true, playCount = 323, discNumber = 2,
-                created = Calendar.getInstance(), type = "some-type",
-                starred = Calendar.getInstance(), userRating = 3, averageRating = 2.99F)
+        val entity = MusicDirectoryChild(
+            id = "929", parent = "11", title = "some-title",
+            album = "some-album", albumId = "231", artist = "some-artist", artistId = "1233",
+            track = 12, year = 2002, genre = "some-genre", coverArt = "952", size = 9418123L,
+            contentType = "some-content-type", suffix = "some-suffix",
+            transcodedContentType = "some-transcoded-content-type",
+            transcodedSuffix = "some-transcoded-suffix", duration = 11, bitRate = 256,
+            path = "some-path", isDir = true, isVideo = true, playCount = 323, discNumber = 2,
+            created = Calendar.getInstance(), type = "some-type",
+            starred = Calendar.getInstance(), userRating = 3, averageRating = 2.99F
+        )
 
         val convertedEntity = entity.toDomainEntity()
 
@@ -76,8 +80,10 @@ class APIMusicDirectoryConverterTest {
 
     @Test
     fun `Should convert MusicDirectoryChild podcast entity`() {
-        val entity = MusicDirectoryChild(id = "584", streamId = "394",
-                artist = "some-artist", publishDate = Calendar.getInstance())
+        val entity = MusicDirectoryChild(
+            id = "584", streamId = "394",
+            artist = "some-artist", publishDate = Calendar.getInstance()
+        )
 
         val convertedEntity = entity.toDomainEntity()
 
