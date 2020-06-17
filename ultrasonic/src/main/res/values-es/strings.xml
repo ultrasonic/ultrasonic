@@ -397,14 +397,14 @@
     <string name="albumArt">Caratula del Álbum</string>
     <string name="common_multiple_years">Múltiples años</string>
 
-    <string name="permissions.access_error">Ultrasonic can\'t access the music file cache. Cache location was reset to the default path.</string>
-    <string name="permissions.message_box_title">Warning</string>
-    <string name="permissions.permission_missing">Ultrasonic needs read/write permission to the music cache directory. Cache directory was reset to its default value.</string>
-    <string name="permissions.rationale_title">Permission request</string>
-    <string name="permissions.rationale_description">Ultrasonic needs read/write permission to the music cache directory.\nPlease allow Ultrasonic to access the filesystem.</string>
-    <string name="permissions.permanent_denial_title">Permissions permanently denied</string>
-    <string name="permissions.permanent_denial_description">Ultrasonic needs Read/Write access to the cache location. You can grant them in app settings. If you reject this request, the cache location will be reset to its default value.</string>
-    <string name="permissions.open_settings">Open settings</string>
+    <string name="permissions.access_error">Ultrasonic no puede acceder a la caché de los ficheros de música. La ubicación de la caché se restableció a la ruta predeterminada.</string>
+    <string name="permissions.message_box_title">Atención</string>
+    <string name="permissions.permission_missing">Ultrasonic necesita permiso de lectura / escritura para el directorio caché de música. El directorio caché se restableció a su valor predeterminado.</string>
+    <string name="permissions.rationale_title">Solicitud de permisos</string>
+    <string name="permissions.rationale_description">Ultrasonic necesita permiso de lectura / escritura para el directorio caché de música. Por favor permite a Ultrasonic acceder al sistema de ficheros.</string>
+    <string name="permissions.permanent_denial_title">Permisos denegados permanentemente</string>
+    <string name="permissions.permanent_denial_description">Ultrasonic necesita acceso de lectura / escritura a la ubicación de la caché. Puedes otorgarlos en la configuración de la aplicación. Si rechazas esta solicitud, la ubicación de la caché se restablecerá a su valor predeterminado.</string>
+    <string name="permissions.open_settings">Abrir configuración</string>
 
     <plurals name="select_album_n_songs">
         <item quantity="one">1 canción</item>
