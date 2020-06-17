@@ -97,7 +97,11 @@ public class SubsonicTabActivity extends ResultActivity implements OnClickListen
 		applyTheme();
 		super.onCreate(bundle);
 
-		startService(new Intent(this, DownloadServiceImpl.class));
+		if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+			startForegroundService(new Intent(this, DownloadServiceImpl.class));
+		} else {
+			startService(new Intent(this, DownloadServiceImpl.class));
+		}
 		setVolumeControlStream(AudioManager.STREAM_MUSIC);
 
 		if (bundle != null)
@@ -774,7 +778,11 @@ public class SubsonicTabActivity extends ResultActivity implements OnClickListen
 			}
 
 			Log.w(TAG, "DownloadService not running. Attempting to start it.");
-			startService(new Intent(this, DownloadServiceImpl.class));
+			if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+				startForegroundService(new Intent(this, DownloadServiceImpl.class));
+			} else {
+				startService(new Intent(this, DownloadServiceImpl.class));
+			}
 			Util.sleepQuietly(50L);
 		}
 
@@ -1240,7 +1248,7 @@ public class SubsonicTabActivity extends ResultActivity implements OnClickListen
 			File file = null;
 			PrintWriter printWriter = null;
 
-			try
+			/*try
 			{
 				file = new File(Environment.getExternalStorageDirectory(), filename);
 				printWriter = new PrintWriter(file);
@@ -1262,7 +1270,7 @@ public class SubsonicTabActivity extends ResultActivity implements OnClickListen
 				{
 					defaultHandler.uncaughtException(thread, throwable);
 				}
-			}
+			}*/
 		}
 	}
 

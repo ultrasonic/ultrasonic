@@ -20,6 +20,8 @@ package org.moire.ultrasonic.service;
 
 import android.annotation.SuppressLint;
 import android.app.Notification;
+import android.app.NotificationChannel;
+import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.app.Service;
 import android.content.ComponentName;
@@ -101,6 +103,8 @@ public class DownloadServiceImpl extends Service implements DownloadService
 	public static final String CMD_PREVIOUS = "org.moire.ultrasonic.CMD_PREVIOUS";
 	public static final String CMD_NEXT = "org.moire.ultrasonic.CMD_NEXT";
 
+	private static final String NOTIFICATION_CHANNEL_ID = "org.moire.ultrasonic";
+	private static final String NOTIFICATION_CHANNEL_NAME = "Ultrasonic background service";
     private static final int NOTIFICATION_ID = 3033;
 
 	private final IBinder binder = new SimpleServiceBinder<DownloadService>(this);
@@ -2096,7 +2100,15 @@ public class DownloadServiceImpl extends Service implements DownloadService
 
     @SuppressWarnings("IconColors")
     private Notification buildForegroundNotification() {
-        NotificationCompat.Builder builder = new NotificationCompat.Builder(this);
+		if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+			NotificationChannel channel = new NotificationChannel(NOTIFICATION_CHANNEL_ID, NOTIFICATION_CHANNEL_NAME, NotificationManager.IMPORTANCE_NONE);
+			channel.setLightColor(android.R.color.holo_blue_dark);
+			channel.setLockscreenVisibility(Notification.VISIBILITY_PUBLIC);
+			NotificationManager manager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
+			manager.createNotificationChannel(channel);
+
+		}
+		NotificationCompat.Builder builder = new NotificationCompat.Builder(this, NOTIFICATION_CHANNEL_ID);
         builder.setSmallIcon(R.drawable.ic_stat_ultrasonic);
 
         builder.setAutoCancel(false);
