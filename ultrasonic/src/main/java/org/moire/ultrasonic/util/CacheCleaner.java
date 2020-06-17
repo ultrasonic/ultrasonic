@@ -307,11 +307,11 @@ public class CacheCleaner
 			{
 				Thread.currentThread().setName("BackgroundPlaylistsCleanup");
 				String server = Util.getServerName(context);
-				SortedSet<File> playlistFiles = FileUtil.listFiles(FileUtil.getPlaylistDirectory(server));
+				SortedSet<File> playlistFiles = FileUtil.listFiles(FileUtil.getPlaylistDirectory(context, server));
 				List<Playlist> playlists = params[0];
 				for (Playlist playlist : playlists)
 				{
-					playlistFiles.remove(FileUtil.getPlaylistFile(server, playlist.getName()));
+					playlistFiles.remove(FileUtil.getPlaylistFile(context, server, playlist.getName()));
 				}
 
 				for (File playlist : playlistFiles)

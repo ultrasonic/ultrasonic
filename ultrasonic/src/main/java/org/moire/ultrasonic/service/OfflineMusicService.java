@@ -528,7 +528,7 @@ public class OfflineMusicService extends RESTMusicService
 	public List<Playlist> getPlaylists(boolean refresh, Context context, ProgressListener progressListener) throws Exception
 	{
 		List<Playlist> playlists = new ArrayList<Playlist>();
-		File root = FileUtil.getPlaylistDirectory();
+		File root = FileUtil.getPlaylistDirectory(context);
 		String lastServer = null;
 		boolean removeServer = true;
 		for (File folder : FileUtil.listFiles(root))
@@ -601,7 +601,7 @@ public class OfflineMusicService extends RESTMusicService
 				name = name.substring(id.length() + 2);
 			}
 
-			File playlistFile = FileUtil.getPlaylistFile(id, name);
+			File playlistFile = FileUtil.getPlaylistFile(context, id, name);
 			reader = new FileReader(playlistFile);
 			buffer = new BufferedReader(reader);
 
@@ -632,7 +632,7 @@ public class OfflineMusicService extends RESTMusicService
 	@Override
 	public void createPlaylist(String id, String name, List<MusicDirectory.Entry> entries, Context context, ProgressListener progressListener) throws Exception
 	{
-		File playlistFile = FileUtil.getPlaylistFile(Util.getServerName(context), name);
+		File playlistFile = FileUtil.getPlaylistFile(context, Util.getServerName(context), name);
 		FileWriter fw = new FileWriter(playlistFile);
 		BufferedWriter bw = new BufferedWriter(fw);
 		try

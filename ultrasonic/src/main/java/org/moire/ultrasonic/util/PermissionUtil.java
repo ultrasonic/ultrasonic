@@ -48,8 +48,8 @@ public class PermissionUtil {
      */
     public static void handlePermissionFailed(final Context context, final PermissionRequestFinishedCallback callback) {
 
-        String currentCachePath = Util.getPreferences(context).getString(Constants.PREFERENCES_KEY_CACHE_LOCATION, FileUtil.getDefaultMusicDirectory().getPath());
-        String defaultCachePath = FileUtil.getDefaultMusicDirectory().getPath();
+        String currentCachePath = Util.getPreferences(context).getString(Constants.PREFERENCES_KEY_CACHE_LOCATION, FileUtil.getDefaultMusicDirectory(context).getPath());
+        String defaultCachePath = FileUtil.getDefaultMusicDirectory(context).getPath();
 
         // Ultrasonic can do nothing about this error when the Music Directory is already set to the default.
         if (currentCachePath.compareTo(defaultCachePath) == 0) return;
@@ -60,10 +60,10 @@ public class PermissionUtil {
         if ((PermissionChecker.checkSelfPermission(context, Manifest.permission.WRITE_EXTERNAL_STORAGE) == PERMISSION_DENIED) ||
                 (PermissionChecker.checkSelfPermission(context, Manifest.permission.READ_EXTERNAL_STORAGE) == PERMISSION_DENIED)) {
             // While we request permission, the Music Directory is temporarily reset to its default location
-            setCacheLocation(context, FileUtil.getDefaultMusicDirectory().getPath());
+            setCacheLocation(context, FileUtil.getDefaultMusicDirectory(context).getPath());
             requestPermission(mainContext, currentCachePath, callback);
         } else {
-            setCacheLocation(context, FileUtil.getDefaultMusicDirectory().getPath());
+            setCacheLocation(context, FileUtil.getDefaultMusicDirectory(context).getPath());
             showWarning(mainContext, context.getString(R.string.permissions_message_box_title), context.getString(R.string.permissions_access_error), null);
             callback.onPermissionRequestFinished();
         }
@@ -98,7 +98,7 @@ public class PermissionUtil {
                         }
 
                         Log.i(TAG, String.format("At least one permission is missing to use directory %s ", cacheLocation));
-                        setCacheLocation(context, FileUtil.getDefaultMusicDirectory().getPath());
+                        setCacheLocation(context, FileUtil.getDefaultMusicDirectory(context).getPath());
                         showWarning(context, context.getString(R.string.permissions_message_box_title),
                                 context.getString(R.string.permissions_permission_missing), null);
                         if (callback != null) callback.onPermissionRequestFinished();
@@ -135,7 +135,7 @@ public class PermissionUtil {
         builder.setNegativeButton(context.getString(R.string.common_cancel), new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
-                setCacheLocation(context, FileUtil.getDefaultMusicDirectory().getPath());
+                setCacheLocation(context, FileUtil.getDefaultMusicDirectory(context).getPath());
                 dialog.cancel();
             }
         });

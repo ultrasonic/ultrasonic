@@ -25,7 +25,8 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:theme="@style/Theme.AppCompat"
         android:name=".app.UApp"
-        android:label="@string/common.appname">
+        android:label="@string/common.appname"
+        android:usesCleartextTraffic="true">
         <activity
             android:name=".activity.MainActivity"
             android:configChanges="orientation|keyboardHidden"
