@@ -19,27 +19,27 @@ import org.moire.ultrasonic.service.SubsonicRESTException
  * display error reason for user.
  */
 fun SubsonicRESTException.getLocalizedErrorMessage(context: Context): String =
-        when (error) {
-            is Generic -> {
-                val message = error.message
-                val errorMessage = if (message == "") {
-                    context.getString(R.string.api_subsonic_generic_no_message)
-                } else {
-                    message
-                }
-                context.getString(R.string.api_subsonic_generic, errorMessage)
+    when (error) {
+        is Generic -> {
+            val message = error.message
+            val errorMessage = if (message == "") {
+                context.getString(R.string.api_subsonic_generic_no_message)
+            } else {
+                message
             }
-            RequiredParamMissing -> context.getString(R.string.api_subsonic_param_missing)
-            IncompatibleClientProtocolVersion -> context
-                    .getString(R.string.api_subsonic_upgrade_client)
-            IncompatibleServerProtocolVersion -> context
-                    .getString(R.string.api_subsonic_upgrade_server)
-            WrongUsernameOrPassword -> context.getString(R.string.api_subsonic_not_authenticated)
-            TokenAuthNotSupportedForLDAP -> context
-                    .getString(R.string.api_subsonic_token_auth_not_supported_for_ldap)
-            UserNotAuthorizedForOperation -> context
-                    .getString(R.string.api_subsonic_not_authorized)
-            TrialPeriodIsOver -> context.getString(R.string.api_subsonic_trial_period_is_over)
-            RequestedDataWasNotFound -> context
-                    .getString(R.string.api_subsonic_requested_data_was_not_found)
+            context.getString(R.string.api_subsonic_generic, errorMessage)
         }
+        RequiredParamMissing -> context.getString(R.string.api_subsonic_param_missing)
+        IncompatibleClientProtocolVersion ->
+            context.getString(R.string.api_subsonic_upgrade_client)
+        IncompatibleServerProtocolVersion ->
+            context.getString(R.string.api_subsonic_upgrade_server)
+        WrongUsernameOrPassword -> context.getString(R.string.api_subsonic_not_authenticated)
+        TokenAuthNotSupportedForLDAP ->
+            context.getString(R.string.api_subsonic_token_auth_not_supported_for_ldap)
+        UserNotAuthorizedForOperation ->
+            context.getString(R.string.api_subsonic_not_authorized)
+        TrialPeriodIsOver -> context.getString(R.string.api_subsonic_trial_period_is_over)
+        RequestedDataWasNotFound ->
+            context.getString(R.string.api_subsonic_requested_data_was_not_found)
+    }

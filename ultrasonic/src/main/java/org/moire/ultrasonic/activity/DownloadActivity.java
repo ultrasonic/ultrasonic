@@ -1649,7 +1649,7 @@ public class DownloadActivity extends SubsonicTabActivity implements OnGestureLi
 
 	private void displaySongRating()
 	{
-		int rating = currentSong.getUserRating() == null ? 0 : currentSong.getUserRating();
+		int rating = currentSong == null || currentSong.getUserRating() == null ? 0 : currentSong.getUserRating();
 		fiveStar1ImageView.setImageDrawable(rating > 0 ? fullStar : hollowStar);
 		fiveStar2ImageView.setImageDrawable(rating > 1 ? fullStar : hollowStar);
 		fiveStar3ImageView.setImageDrawable(rating > 2 ? fullStar : hollowStar);

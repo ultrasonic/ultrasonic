@@ -29,8 +29,10 @@ class SubsonicApiStarTest : SubsonicAPIClientTest() {
     fun `Should pass id param`() {
         val id = "110"
 
-        mockWebServerRule.assertRequestParam(responseResourceName = "ping_ok.json",
-                expectedParam = "id=$id") {
+        mockWebServerRule.assertRequestParam(
+            responseResourceName = "ping_ok.json",
+            expectedParam = "id=$id"
+        ) {
             client.api.star(id = id).execute()
         }
     }
@@ -39,8 +41,10 @@ class SubsonicApiStarTest : SubsonicAPIClientTest() {
     fun `Should pass artist id param`() {
         val artistId = "123"
 
-        mockWebServerRule.assertRequestParam(responseResourceName = "ping_ok.json",
-                expectedParam = "artistId=$artistId") {
+        mockWebServerRule.assertRequestParam(
+            responseResourceName = "ping_ok.json",
+            expectedParam = "artistId=$artistId"
+        ) {
             client.api.star(artistId = artistId).execute()
         }
     }
@@ -49,8 +53,10 @@ class SubsonicApiStarTest : SubsonicAPIClientTest() {
     fun `Should pass album id param`() {
         val albumId = "1001"
 
-        mockWebServerRule.assertRequestParam(responseResourceName = "ping_ok.json",
-                expectedParam = "albumId=$albumId") {
+        mockWebServerRule.assertRequestParam(
+            responseResourceName = "ping_ok.json",
+            expectedParam = "albumId=$albumId"
+        ) {
             client.api.star(albumId = albumId).execute()
         }
     }

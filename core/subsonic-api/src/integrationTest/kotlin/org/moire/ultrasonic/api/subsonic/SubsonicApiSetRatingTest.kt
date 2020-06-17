@@ -36,8 +36,10 @@ class SubsonicApiSetRatingTest : SubsonicAPIClientTest() {
         val id = "110"
         val rating = 5
 
-        mockWebServerRule.assertRequestParam(responseResourceName = "ping_ok.json",
-                expectedParam = "id=$id") {
+        mockWebServerRule.assertRequestParam(
+            responseResourceName = "ping_ok.json",
+            expectedParam = "id=$id"
+        ) {
             client.api.setRating(id, rating).execute()
         }
     }
@@ -47,8 +49,10 @@ class SubsonicApiSetRatingTest : SubsonicAPIClientTest() {
         val id = "110"
         val rating = 5
 
-        mockWebServerRule.assertRequestParam(responseResourceName = "ping_ok.json",
-                expectedParam = "rating=$rating") {
+        mockWebServerRule.assertRequestParam(
+            responseResourceName = "ping_ok.json",
+            expectedParam = "rating=$rating"
+        ) {
             client.api.setRating(id, rating).execute()
         }
     }

@@ -11,4 +11,4 @@ fun ApiChatMessage.toDomainEntity(): ChatMessage = ChatMessage(
 )
 
 fun List<ApiChatMessage>.toDomainEntitiesList(): List<ChatMessage> = this
-        .map { it.toDomainEntity() }
+    .map { it.toDomainEntity() }

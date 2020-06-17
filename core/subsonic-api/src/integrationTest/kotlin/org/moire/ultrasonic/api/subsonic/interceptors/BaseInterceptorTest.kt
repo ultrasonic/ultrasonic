@@ -29,7 +29,7 @@ abstract class BaseInterceptorTest {
      * params to the [Request].
      */
     fun createRequest(additionalParams: (Request.Builder) -> Unit): Request = Request.Builder()
-            .url(mockWebServerRule.mockWebServer.url("/"))
-            .also { additionalParams(it) }
-            .build()
+        .url(mockWebServerRule.mockWebServer.url("/"))
+        .also { additionalParams(it) }
+        .build()
 }

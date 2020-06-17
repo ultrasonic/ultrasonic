@@ -7,6 +7,7 @@ import com.nhaarman.mockito_kotlin.mock
 import com.nhaarman.mockito_kotlin.whenever
 import com.squareup.picasso.Picasso
 import com.squareup.picasso.Request
+import java.io.IOException
 import org.amshove.kluent.`should equal`
 import org.amshove.kluent.`should not be`
 import org.amshove.kluent.`should throw`
@@ -16,7 +17,6 @@ import org.junit.runner.RunWith
 import org.moire.ultrasonic.api.subsonic.SubsonicAPIClient
 import org.moire.ultrasonic.api.subsonic.response.StreamResponse
 import org.robolectric.RobolectricTestRunner
-import java.io.IOException
 
 @RunWith(RobolectricTestRunner::class)
 class CoverArtRequestHandlerTest {

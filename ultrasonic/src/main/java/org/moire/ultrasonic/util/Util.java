@@ -882,6 +882,7 @@ public class Util extends DownloadActivity
 
 	public static Bitmap scaleBitmap(Bitmap bitmap, int size)
 	{
+		if (bitmap == null) return null;
 		return Bitmap.createScaledBitmap(bitmap, size, getScaledHeight(bitmap, size), true);
 	}
 

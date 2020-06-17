@@ -6,7 +6,9 @@ import android.view.MotionEvent;
 import android.view.View;
 import android.widget.ImageView;
 
-public class AutoRepeatButton extends ImageView
+import androidx.appcompat.widget.AppCompatImageView;
+
+public class AutoRepeatButton extends AppCompatImageView
 {
 
 	private long initialRepeatDelay = 1000;

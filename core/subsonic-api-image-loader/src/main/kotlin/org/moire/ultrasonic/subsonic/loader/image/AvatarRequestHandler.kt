@@ -3,9 +3,9 @@ package org.moire.ultrasonic.subsonic.loader.image
 import com.squareup.picasso.Picasso
 import com.squareup.picasso.Request
 import com.squareup.picasso.RequestHandler
+import java.io.IOException
 import okio.Okio
 import org.moire.ultrasonic.api.subsonic.SubsonicAPIClient
-import java.io.IOException
 
 /**
  * Loads avatars from subsonic api.

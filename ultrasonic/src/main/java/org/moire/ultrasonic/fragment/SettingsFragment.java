@@ -6,7 +6,7 @@ import android.os.Build;
 import android.os.Bundle;
 import android.preference.*;
 import android.provider.SearchRecentSuggestions;
-import android.support.annotation.Nullable;
+import androidx.annotation.Nullable;
 import android.util.Log;
 import android.view.View;
 import org.koin.java.standalone.KoinJavaComponent;
@@ -382,21 +382,18 @@ public class SettingsFragment extends PreferenceFragment
         File dir = new File(path);
 
         if (!FileUtil.ensureDirectoryExistsAndIsReadWritable(dir)) {
-            Util.toast(getActivity(), R.string.settings_cache_location_error, false);
-
-            // Reset it to the default.
-            String defaultPath = FileUtil.getDefaultMusicDirectory().getPath();
-            if (!defaultPath.equals(path)) {
-                Util.getPreferences(getActivity()).edit()
-                        .putString(Constants.PREFERENCES_KEY_CACHE_LOCATION, defaultPath)
-                        .apply();
-                cacheLocation.setSummary(defaultPath);
-                cacheLocation.setText(defaultPath);
-            }
-
-            // Clear download queue.
-            DownloadService downloadService = DownloadServiceImpl.getInstance();
-            downloadService.clear();
+            PermissionUtil.handlePermissionFailed(getActivity(), new PermissionUtil.PermissionRequestFinishedCallback() {
+                @Override
+                public void onPermissionRequestFinished() {
+                    String currentPath = settings.getString(Constants.PREFERENCES_KEY_CACHE_LOCATION, FileUtil.getDefaultMusicDirectory().getPath());
+                    cacheLocation.setSummary(currentPath);
+                    cacheLocation.setText(currentPath);
+                }
+            });
         }
+
+        // Clear download queue.
+        DownloadService downloadService = DownloadServiceImpl.getInstance();
+        downloadService.clear();
     }
 }

@@ -16,8 +16,10 @@ class ProxyPasswordInterceptorTest {
     private val mockPasswordMd5Interceptor = mock<PasswordMD5Interceptor>()
     private val mockChain = mock<Chain>()
 
-    private val proxyInterceptor = ProxyPasswordInterceptor(V1_12_0,
-            mockPasswordHexInterceptor, mockPasswordMd5Interceptor, false)
+    private val proxyInterceptor = ProxyPasswordInterceptor(
+        V1_12_0,
+        mockPasswordHexInterceptor, mockPasswordMd5Interceptor, false
+    )
 
     @Test
     fun `Should use hex password on versions less then 1 13 0`() {
@@ -37,8 +39,10 @@ class ProxyPasswordInterceptorTest {
 
     @Test
     fun `Should use hex password if forceHex is true`() {
-        val interceptor = ProxyPasswordInterceptor(V1_16_0, mockPasswordHexInterceptor,
-                mockPasswordMd5Interceptor, true)
+        val interceptor = ProxyPasswordInterceptor(
+            V1_16_0, mockPasswordHexInterceptor,
+            mockPasswordMd5Interceptor, true
+        )
 
         interceptor.intercept(mockChain)
 

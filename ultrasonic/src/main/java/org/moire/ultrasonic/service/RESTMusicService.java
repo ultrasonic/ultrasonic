@@ -20,9 +20,9 @@ package org.moire.ultrasonic.service;
 
 import android.content.Context;
 import android.graphics.Bitmap;
-import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
-import android.support.annotation.StringRes;
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.annotation.StringRes;
 import android.text.TextUtils;
 import android.util.Log;
 
@@ -1013,7 +1013,7 @@ public class RESTMusicService implements MusicService {
 
         synchronized (username) {
             // Use cached file, if existing.
-            Bitmap bitmap = FileUtil.getAvatarBitmap(username, size, highQuality);
+            Bitmap bitmap = FileUtil.getAvatarBitmap(context, username, size, highQuality);
 
             if (bitmap == null) {
                 InputStream in = null;
@@ -1031,7 +1031,7 @@ public class RESTMusicService implements MusicService {
                         OutputStream out = null;
 
                         try {
-                            out = new FileOutputStream(FileUtil.getAvatarFile(username));
+                            out = new FileOutputStream(FileUtil.getAvatarFile(context, username));
                             out.write(bytes);
                         } finally {
                             Util.close(out);

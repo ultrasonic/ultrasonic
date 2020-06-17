@@ -11,7 +11,7 @@ class StreamResponseTest {
     @Test
     fun `Should have error if subsonic error is not null`() {
         StreamResponse(apiError = RequestedDataWasNotFound, responseHttpCode = 200)
-                .hasError() `should be equal to` true
+            .hasError() `should be equal to` true
     }
 
     @Test

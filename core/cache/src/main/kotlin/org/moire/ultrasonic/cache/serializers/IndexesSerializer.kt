@@ -20,9 +20,9 @@ private val indexesSerializer get() = object : ObjectSerializer<Indexes>(SERIALI
     ) {
         val artistListSerializer = getArtistListSerializer()
         output.writeLong(item.lastModified)
-                .writeString(item.ignoredArticles)
-                .writeObject<MutableList<Artist>>(context, item.shortcuts, artistListSerializer)
-                .writeObject<MutableList<Artist>>(context, item.artists, artistListSerializer)
+            .writeString(item.ignoredArticles)
+            .writeObject<MutableList<Artist>>(context, item.shortcuts, artistListSerializer)
+            .writeObject<MutableList<Artist>>(context, item.artists, artistListSerializer)
     }
 
     override fun deserializeObject(
@@ -37,8 +37,10 @@ private val indexesSerializer get() = object : ObjectSerializer<Indexes>(SERIALI
         val ignoredArticles = input.readString() ?: return null
         val shortcutsList = input.readObject(context, artistListDeserializer) ?: return null
         val artistsList = input.readObject(context, artistListDeserializer) ?: return null
-        return Indexes(lastModified, ignoredArticles, shortcutsList.toMutableList(),
-                artistsList.toMutableList())
+        return Indexes(
+            lastModified, ignoredArticles, shortcutsList.toMutableList(),
+            artistsList.toMutableList()
+        )
     }
 }
 

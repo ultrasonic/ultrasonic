@@ -12,7 +12,7 @@ jobs:
           key: gradle-cache-{{ checksum "dependencies.gradle" }}
       - run:
           name: clean gradle.properties
-          command: echo "" > gradle.properties
+          command: echo -e "android.useAndroidX=true\nandroid.enableJetifier=true\n" > gradle.properties
       - run:
           name: checkstyle
           command: ./gradlew -Pqc ktlintCheck

@@ -1,7 +1,7 @@
 package org.moire.ultrasonic.api.subsonic
 
-import org.junit.Test
 import java.util.Calendar
+import org.junit.Test
 
 /**
  * Integration test for [SubsonicAPIClient] for scrobble call.
@@ -27,8 +27,10 @@ class SubsonicApiScrobbleTest : SubsonicAPIClientTest() {
     fun `Should pass id param in request`() {
         val id = "some-id"
 
-        mockWebServerRule.assertRequestParam(responseResourceName = "ping_ok.json",
-                expectedParam = "id=$id") {
+        mockWebServerRule.assertRequestParam(
+            responseResourceName = "ping_ok.json",
+            expectedParam = "id=$id"
+        ) {
             client.api.scrobble(id = id).execute()
         }
     }
@@ -37,8 +39,10 @@ class SubsonicApiScrobbleTest : SubsonicAPIClientTest() {
     fun `Should pass time param in request`() {
         val time = Calendar.getInstance().timeInMillis
 
-        mockWebServerRule.assertRequestParam(responseResourceName = "ping_ok.json",
-                expectedParam = "time=$time") {
+        mockWebServerRule.assertRequestParam(
+            responseResourceName = "ping_ok.json",
+            expectedParam = "time=$time"
+        ) {
             client.api.scrobble(id = "some-id", time = time).execute()
         }
     }
@@ -47,8 +51,10 @@ class SubsonicApiScrobbleTest : SubsonicAPIClientTest() {
     fun `Should pass submission param in request`() {
         val submission = false
 
-        mockWebServerRule.assertRequestParam(responseResourceName = "ping_ok.json",
-                expectedParam = "submission=$submission") {
+        mockWebServerRule.assertRequestParam(
+            responseResourceName = "ping_ok.json",
+            expectedParam = "submission=$submission"
+        ) {
             client.api.scrobble(id = "some-id", submission = submission).execute()
         }
     }

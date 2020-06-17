@@ -14,9 +14,11 @@ fun APIPlaylist.toMusicDirectoryDomainEntity(): MusicDirectory = MusicDirectory(
     addAll(this@toMusicDirectoryDomainEntity.entriesList.map { it.toDomainEntity() })
 }
 
-fun APIPlaylist.toDomainEntity(): Playlist = Playlist(this.id, this.name, this.owner,
-        this.comment, this.songCount.toString(),
-        this.created?.let { playlistDateFormat.format(it.time) } ?: "",
-        public)
+fun APIPlaylist.toDomainEntity(): Playlist = Playlist(
+    this.id, this.name, this.owner,
+    this.comment, this.songCount.toString(),
+    this.created?.let { playlistDateFormat.format(it.time) } ?: "",
+    public
+)
 
 fun List<APIPlaylist>.toDomainEntitiesList(): List<Playlist> = this.map { it.toDomainEntity() }

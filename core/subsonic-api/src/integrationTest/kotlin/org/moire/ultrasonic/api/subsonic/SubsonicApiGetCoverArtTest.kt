@@ -40,8 +40,10 @@ class SubsonicApiGetCoverArtTest : SubsonicAPIClientTest() {
 
     @Test
     fun `Should return successful call stream`() {
-        mockWebServerRule.mockWebServer.enqueue(MockResponse()
-                .setBody(mockWebServerRule.loadJsonResponse("ping_ok.json")))
+        mockWebServerRule.mockWebServer.enqueue(
+            MockResponse()
+                .setBody(mockWebServerRule.loadJsonResponse("ping_ok.json"))
+        )
 
         val response = client.getCoverArt("some-id")
 

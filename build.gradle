@@ -38,7 +38,7 @@ allprojects {
 
 apply from: 'gradle_scripts/jacoco.gradle'
 
-task wrapper(type: Wrapper) {
+wrapper {
     gradleVersion(versions.gradle)
     distributionType("all")
 }

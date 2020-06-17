@@ -19,7 +19,7 @@
 package org.moire.ultrasonic.activity;
 
 import android.os.Bundle;
-import android.support.v7.app.ActionBar;
+import androidx.appcompat.app.ActionBar;
 
 import org.moire.ultrasonic.R;
 import org.moire.ultrasonic.fragment.SettingsFragment;

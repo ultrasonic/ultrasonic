@@ -3,11 +3,11 @@ package org.moire.ultrasonic.api.subsonic.interceptors
 import com.fasterxml.jackson.core.JsonFactory
 import com.fasterxml.jackson.core.JsonParseException
 import com.fasterxml.jackson.core.JsonToken
+import java.io.IOException
 import okhttp3.Interceptor
 import okhttp3.Interceptor.Chain
 import okhttp3.Response
 import org.moire.ultrasonic.api.subsonic.SubsonicAPIVersions
-import java.io.IOException
 
 private const val DEFAULT_PEEK_BYTE_COUNT = 1000L
 
@@ -29,12 +29,14 @@ internal class VersionInterceptor(
         val originalRequest = chain.request()
 
         val newRequest = originalRequest.newBuilder()
-                .url(originalRequest
-                        .url()
-                        .newBuilder()
-                        .addQueryParameter("v", protocolVersion.restApiVersion)
-                        .build())
-                .build()
+            .url(
+                originalRequest
+                    .url()
+                    .newBuilder()
+                    .addQueryParameter("v", protocolVersion.restApiVersion)
+                    .build()
+            )
+            .build()
 
         val response = chain.proceed(newRequest)
         if (response.isSuccessful) {
@@ -54,8 +56,10 @@ internal class VersionInterceptor(
             val jsonReader = jsonFactory.createParser(content)
             jsonReader.nextToken()
             if (jsonReader.currentToken == JsonToken.START_OBJECT) {
-                while (jsonReader.currentName != "version" &&
-                        jsonReader.currentToken != null) {
+                while (
+                    jsonReader.currentName != "version" &&
+                    jsonReader.currentToken != null
+                ) {
                     jsonReader.nextToken()
                 }
                 val versionStr = jsonReader.nextTextValue()

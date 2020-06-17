@@ -2,12 +2,12 @@
 
 package org.moire.ultrasonic.domain
 
+import java.util.Calendar
 import org.amshove.kluent.`should be equal to`
 import org.amshove.kluent.`should equal`
 import org.junit.Test
 import org.moire.ultrasonic.api.subsonic.models.MusicDirectoryChild
 import org.moire.ultrasonic.api.subsonic.models.Playlist
-import java.util.Calendar
 
 /**
  * Unit test for extension functions that converts api playlist entity to domain.
@@ -15,10 +15,13 @@ import java.util.Calendar
 class APIPlaylistConverterTest {
     @Test
     fun `Should convert Playlist to MusicDirectory domain entity`() {
-        val entity = Playlist(name = "some-playlist-name", entriesList = listOf(
+        val entity = Playlist(
+            name = "some-playlist-name",
+            entriesList = listOf(
                 MusicDirectoryChild(id = "10", parent = "1393"),
                 MusicDirectoryChild(id = "11", parent = "1393")
-        ))
+            )
+        )
 
         val convertedEntity = entity.toMusicDirectoryDomainEntity()
 
@@ -32,10 +35,12 @@ class APIPlaylistConverterTest {
 
     @Test
     fun `Should convert playlist to domain entity`() {
-        val entity = Playlist(id = "634", name = "some-name", owner = "some-owner",
-                comment = "some-comment", public = false, songCount = 256, duration = 1150,
-                created = Calendar.getInstance(), changed = Calendar.getInstance(),
-                coverArt = "some-art")
+        val entity = Playlist(
+            id = "634", name = "some-name", owner = "some-owner",
+            comment = "some-comment", public = false, songCount = 256, duration = 1150,
+            created = Calendar.getInstance(), changed = Calendar.getInstance(),
+            coverArt = "some-art"
+        )
 
         val convertedEntity = entity.toDomainEntity()
 

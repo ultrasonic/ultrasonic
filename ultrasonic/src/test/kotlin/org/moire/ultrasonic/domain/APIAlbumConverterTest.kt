@@ -2,12 +2,12 @@
 
 package org.moire.ultrasonic.domain
 
+import java.util.Calendar
 import org.amshove.kluent.`should be equal to`
 import org.amshove.kluent.`should equal`
 import org.junit.Test
 import org.moire.ultrasonic.api.subsonic.models.Album
 import org.moire.ultrasonic.api.subsonic.models.MusicDirectoryChild
-import java.util.Calendar
 
 /**
  * Unit test for extension functions in [APIAlbumConverter.kt] file.
@@ -15,9 +15,11 @@ import java.util.Calendar
 class APIAlbumConverterTest {
     @Test
     fun `Should convert Album to domain entity`() {
-        val entity = Album(id = "387", name = "some-name", coverArt = "asdas",
-                artist = "some-artist", artistId = "390", songCount = 12, duration = 841,
-                created = Calendar.getInstance(), year = 2017, genre = "some-genre")
+        val entity = Album(
+            id = "387", name = "some-name", coverArt = "asdas",
+            artist = "some-artist", artistId = "390", songCount = 12, duration = 841,
+            created = Calendar.getInstance(), year = 2017, genre = "some-genre"
+        )
 
         val convertedEntity = entity.toDomainEntity()
 
@@ -38,10 +40,12 @@ class APIAlbumConverterTest {
 
     @Test
     fun `Should convert to MusicDirectory domain entity`() {
-        val entity = Album(id = "101", name = "some-album", artist = "some-artist", artistId = "54",
-                coverArt = "some-id", songCount = 10, duration = 456,
-                created = Calendar.getInstance(), year = 2022, genre = "Hard Rock",
-                songList = listOf(MusicDirectoryChild()))
+        val entity = Album(
+            id = "101", name = "some-album", artist = "some-artist", artistId = "54",
+            coverArt = "some-id", songCount = 10, duration = 456,
+            created = Calendar.getInstance(), year = 2022, genre = "Hard Rock",
+            songList = listOf(MusicDirectoryChild())
+        )
 
         val convertedEntity = entity.toMusicDirectoryDomainEntity()
 

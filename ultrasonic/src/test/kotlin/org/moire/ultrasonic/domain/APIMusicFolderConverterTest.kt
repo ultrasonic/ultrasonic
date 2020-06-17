@@ -23,8 +23,9 @@ class APIMusicFolderConverterTest {
     @Test
     fun `Should convert list of MusicFolder entities`() {
         val entityList = listOf(
-                MusicFolder(id = "3", name = "some-name-3"),
-                MusicFolder(id = "4", name = "some-name-4"))
+            MusicFolder(id = "3", name = "some-name-3"),
+            MusicFolder(id = "4", name = "some-name-4")
+        )
 
         val convertedList = entityList.toDomainEntityList()
 

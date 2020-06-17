@@ -24,14 +24,16 @@ open class SubsonicResponse(
 
         companion object {
             fun getStatusFromJson(jsonValue: String) = values()
-                    .filter { it.jsonValue == jsonValue }.firstOrNull()
-                    ?: throw IllegalArgumentException("Unknown status value: $jsonValue")
+                .filter { it.jsonValue == jsonValue }.firstOrNull()
+                ?: throw IllegalArgumentException("Unknown status value: $jsonValue")
 
             class StatusJsonDeserializer : JsonDeserializer<Status>() {
                 override fun deserialize(p: JsonParser, ctxt: DeserializationContext?): Status {
                     if (p.currentName != "status") {
-                        throw JsonParseException(p,
-                                "Current token is not status. Current token name ${p.currentName}.")
+                        throw JsonParseException(
+                            p,
+                            "Current token is not status. Current token name ${p.currentName}."
+                        )
                     }
                     return getStatusFromJson(p.text)
                 }

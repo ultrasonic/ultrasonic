@@ -396,6 +396,16 @@
     <string name="settings.image_loader_concurrency_12">12</string>
     <string name="albumArt">albumArt</string>
     <string name="common_multiple_years">Multiple Years</string>
+
+    <string name="permissions.access_error">Az Ultrasonic nem éri el a zenei fájl gyorsítótárat. A gyorsítótár helye visszaállítva az alapbeállításra.</string>
+    <string name="permissions.message_box_title">Figyelem</string>
+    <string name="permissions.permission_missing">Az Ultrasonic működéséhez írás/olvasás hozzáférés szükséges a zenei fájl gyorsítótárhoz. A gyorsítótár helye visszaállítva az alapbeállításra.</string>
+    <string name="permissions.rationale_title">Jogosultság kérés</string>
+    <string name="permissions.rationale_description">Az Ultrasonic működéséhez írás/olvasás hozzáférés szükséges a zenei fájl gyorsítótárhoz.\nKérjük, engedélyezd a hozzáférést a fájlrendszerhez.</string>
+    <string name="permissions.permanent_denial_title">A jogosultság visszautasítva</string>
+    <string name="permissions.permanent_denial_description">Az Ultrasonic működéséhez írás/olvasás hozzáférés szükséges a zenei fájl gyorsítótárhoz. Ez a beállítás az alkalmazásbeállítások között módosítható. Ha elutasítod ezt a kérést, a gyorsítótár helye visszaáll az alapbeállításra.</string>
+    <string name="permissions.open_settings">Beállítások megnyitása</string>
+
     <plurals name="select_album_n_songs">
         <item quantity="one">1 dal</item>
         <item quantity="other">%d dal</item>

@@ -31,7 +31,8 @@ class SubsonicImageLoaderProxy(
 
         if (id != null &&
             view != null &&
-            view is ImageView) {
+            view is ImageView
+        ) {
             val request = ImageRequest.CoverArt(
                 id,
                 view,
@@ -52,7 +53,8 @@ class SubsonicImageLoaderProxy(
     ) {
         if (username != null &&
             view != null &&
-            view is ImageView) {
+            view is ImageView
+        ) {
             val request = ImageRequest.Avatar(
                 username,
                 view,

@@ -26,8 +26,10 @@ class SubsonicApiCreatePlaylistTest : SubsonicAPIClientTest() {
     fun `Should pass id param in request`() {
         val id = "56"
 
-        mockWebServerRule.assertRequestParam(responseResourceName = "ping_ok.json",
-                expectedParam = "playlistId=$id") {
+        mockWebServerRule.assertRequestParam(
+            responseResourceName = "ping_ok.json",
+            expectedParam = "playlistId=$id"
+        ) {
             client.api.createPlaylist(id = id).execute()
         }
     }
@@ -36,8 +38,10 @@ class SubsonicApiCreatePlaylistTest : SubsonicAPIClientTest() {
     fun `Should pass name param in request`() {
         val name = "some-name"
 
-        mockWebServerRule.assertRequestParam(responseResourceName = "ping_ok.json",
-                expectedParam = "name=$name") {
+        mockWebServerRule.assertRequestParam(
+            responseResourceName = "ping_ok.json",
+            expectedParam = "name=$name"
+        ) {
             client.api.createPlaylist(name = name).execute()
         }
     }
@@ -46,8 +50,10 @@ class SubsonicApiCreatePlaylistTest : SubsonicAPIClientTest() {
     fun `Should pass song id param in request`() {
         val songId = listOf("4410", "852")
 
-        mockWebServerRule.assertRequestParam(responseResourceName = "ping_ok.json",
-                expectedParam = "songId=${songId[0]}&songId=${songId[1]}") {
+        mockWebServerRule.assertRequestParam(
+            responseResourceName = "ping_ok.json",
+            expectedParam = "songId=${songId[0]}&songId=${songId[1]}"
+        ) {
             client.api.createPlaylist(songIds = songId).execute()
         }
     }

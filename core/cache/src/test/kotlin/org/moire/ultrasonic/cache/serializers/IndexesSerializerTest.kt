@@ -12,11 +12,10 @@ import org.moire.ultrasonic.domain.Indexes
 class IndexesSerializerTest : BaseStorageTest() {
     @Test
     fun `Should correctly serialize Indexes object`() {
-        val item = Indexes(220L, "", mutableListOf(
-                Artist("12")
-        ), mutableListOf(
-                Artist("233", "some")
-        ))
+        val item = Indexes(
+            220L, "", mutableListOf(Artist("12")),
+            mutableListOf(Artist("233", "some"))
+        )
 
         storage.store("some-name", item, getIndexesSerializer())
 
@@ -26,11 +25,10 @@ class IndexesSerializerTest : BaseStorageTest() {
     @Test
     fun `Should correctly deserialize Indexes object`() {
         val name = "some-name"
-        val item = Indexes(220L, "", mutableListOf(
-                Artist("12")
-        ), mutableListOf(
-                Artist("233", "some")
-        ))
+        val item = Indexes(
+            220L, "", mutableListOf(Artist("12")),
+            mutableListOf(Artist("233", "some"))
+        )
         storage.store(name, item, getIndexesSerializer())
 
         val loadedItem = storage.load(name, getIndexesSerializer())

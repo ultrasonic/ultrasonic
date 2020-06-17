@@ -21,7 +21,7 @@ package org.moire.ultrasonic.activity;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.support.v7.app.ActionBar;
+import androidx.appcompat.app.ActionBar;
 import android.view.KeyEvent;
 import android.view.MenuItem;
 import android.view.View;

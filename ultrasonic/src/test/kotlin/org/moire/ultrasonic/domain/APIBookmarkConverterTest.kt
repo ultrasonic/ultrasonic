@@ -2,12 +2,12 @@
 
 package org.moire.ultrasonic.domain
 
+import java.util.Calendar
 import org.amshove.kluent.`should be equal to`
 import org.amshove.kluent.`should equal`
 import org.junit.Test
 import org.moire.ultrasonic.api.subsonic.models.Bookmark
 import org.moire.ultrasonic.api.subsonic.models.MusicDirectoryChild
-import java.util.Calendar
 
 /**
  * Unit test for function that converts [Bookmark] api entity to domain.
@@ -15,8 +15,10 @@ import java.util.Calendar
 class APIBookmarkConverterTest {
     @Test
     fun `Should convert to domain entity`() {
-        val entity = Bookmark(412313L, "Awesemo", "Nice", Calendar.getInstance(),
-                Calendar.getInstance(), MusicDirectoryChild(id = "12333"))
+        val entity = Bookmark(
+            412313L, "Awesemo", "Nice", Calendar.getInstance(),
+            Calendar.getInstance(), MusicDirectoryChild(id = "12333")
+        )
 
         val domainEntity = entity.toDomainEntity()
 
