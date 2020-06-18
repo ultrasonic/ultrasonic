@@ -97,7 +97,11 @@ public class SubsonicTabActivity extends ResultActivity implements OnClickListen
 		applyTheme();
 		super.onCreate(bundle);
 
-		startService(new Intent(this, DownloadServiceImpl.class));
+		if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+			startForegroundService(new Intent(this, DownloadServiceImpl.class));
+		} else {
+			startService(new Intent(this, DownloadServiceImpl.class));
+		}
 		setVolumeControlStream(AudioManager.STREAM_MUSIC);
 
 		if (bundle != null)
@@ -774,7 +778,11 @@ public class SubsonicTabActivity extends ResultActivity implements OnClickListen
 			}
 
 			Log.w(TAG, "DownloadService not running. Attempting to start it.");
-			startService(new Intent(this, DownloadServiceImpl.class));
+			if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+				startForegroundService(new Intent(this, DownloadServiceImpl.class));
+			} else {
+				startService(new Intent(this, DownloadServiceImpl.class));
+			}
 			Util.sleepQuietly(50L);
 		}
 
@@ -1242,7 +1250,7 @@ public class SubsonicTabActivity extends ResultActivity implements OnClickListen
 
 			try
 			{
-				file = new File(Environment.getExternalStorageDirectory(), filename);
+				file = new File(FileUtil.getUltraSonicDirectory(context), filename);
 				printWriter = new PrintWriter(file);
 				printWriter.println("Android API level: " + Build.VERSION.SDK_INT);
 				printWriter.println("UltraSonic version name: " + Util.getVersionName(context));

@@ -265,7 +265,7 @@ public class MainActivity extends SubsonicTabActivity
 		if (!preferences.contains(Constants.PREFERENCES_KEY_CACHE_LOCATION))
 		{
 			final SharedPreferences.Editor editor = preferences.edit();
-			editor.putString(Constants.PREFERENCES_KEY_CACHE_LOCATION, FileUtil.getDefaultMusicDirectory().getPath());
+			editor.putString(Constants.PREFERENCES_KEY_CACHE_LOCATION, FileUtil.getDefaultMusicDirectory(this).getPath());
 			editor.commit();
 		}
 	}

@@ -26,7 +26,6 @@ import android.os.Environment;
 import android.text.TextUtils;
 import android.util.Log;
 
-import org.moire.ultrasonic.activity.MainActivity;
 import org.moire.ultrasonic.activity.SubsonicTabActivity;
 import org.moire.ultrasonic.domain.MusicDirectory;
 
@@ -55,7 +54,6 @@ public class FileUtil
 	private static final List<String> MUSIC_FILE_EXTENSIONS = Arrays.asList("mp3", "ogg", "aac", "flac", "m4a", "wav", "wma");
 	private static final List<String> VIDEO_FILE_EXTENSIONS = Arrays.asList("flv", "mp4", "m4v", "wmv", "avi", "mov", "mpg", "mkv");
 	private static final List<String> PLAYLIST_FILE_EXTENSIONS = Collections.singletonList("m3u");
-	private static final File DEFAULT_MUSIC_DIR = createDirectory("music");
 	private static final Pattern TITLE_WITH_TRACK = Pattern.compile("^\\d\\d-.*");
 
 	public static File getSongFile(Context context, MusicDirectory.Entry song)
@@ -85,22 +83,22 @@ public class FileUtil
 		return new File(dir, fileName.toString());
 	}
 
-	public static File getPlaylistFile(String server, String name)
+	public static File getPlaylistFile(Context context, String server, String name)
 	{
-		File playlistDir = getPlaylistDirectory(server);
+		File playlistDir = getPlaylistDirectory(context, server);
 		return new File(playlistDir, String.format("%s.m3u", fileSystemSafe(name)));
 	}
 
-	public static File getPlaylistDirectory()
+	public static File getPlaylistDirectory(Context context)
 	{
-		File playlistDir = new File(getUltraSonicDirectory(), "playlists");
+		File playlistDir = new File(getUltraSonicDirectory(context), "playlists");
 		ensureDirectoryExistsAndIsReadWritable(playlistDir);
 		return playlistDir;
 	}
 
-	public static File getPlaylistDirectory(String server)
+	public static File getPlaylistDirectory(Context context, String server)
 	{
-		File playlistDir = new File(getPlaylistDirectory(), server);
+		File playlistDir = new File(getPlaylistDirectory(context), server);
 		ensureDirectoryExistsAndIsReadWritable(playlistDir);
 		return playlistDir;
 	}
@@ -303,7 +301,7 @@ public class FileUtil
 
 	public static File getAlbumArtDirectory(Context context)
 	{
-		File albumArtDir = new File(getUltraSonicDirectory(), "artwork");
+		File albumArtDir = new File(getUltraSonicDirectory(context), "artwork");
 		ensureDirectoryExistsAndIsReadWritable(albumArtDir);
 		ensureDirectoryExistsAndIsReadWritable(new File(albumArtDir, ".nomedia"));
 		return albumArtDir;
@@ -351,9 +349,9 @@ public class FileUtil
 		}
 	}
 
-	private static File createDirectory(String name)
+	private static File getOrCreateDirectory(Context context, String name)
 	{
-		File dir = new File(getUltraSonicDirectory(), name);
+		File dir = new File(getUltraSonicDirectory(context), name);
 
 		if (!dir.exists() && !dir.mkdirs())
 		{
@@ -363,29 +361,30 @@ public class FileUtil
 		return dir;
 	}
 
-	public static File getUltraSonicDirectory()
+	public static File getUltraSonicDirectory(Context context)
 	{
         if (Build.VERSION.SDK_INT < Build.VERSION_CODES.M)
             return new File(Environment.getExternalStorageDirectory(), "Android/data/org.moire.ultrasonic");
 
         // After Android M, the location of the files must be queried differently. GetExternalFilesDir will always return a directory which Ultrasonic can access without any extra privileges.
-        return MainActivity.getInstance().getExternalFilesDir(null);
+        return context.getExternalFilesDir(null);
 	}
 
-	public static File getDefaultMusicDirectory()
+	public static File getDefaultMusicDirectory(Context context)
 	{
-		return DEFAULT_MUSIC_DIR;
+		return getOrCreateDirectory(context, "music");
 	}
 
 	public static File getMusicDirectory(Context context)
 	{
-		String path = Util.getPreferences(context).getString(Constants.PREFERENCES_KEY_CACHE_LOCATION, DEFAULT_MUSIC_DIR.getPath());
+		File defaultMusicDirectory = getDefaultMusicDirectory(context);
+		String path = Util.getPreferences(context).getString(Constants.PREFERENCES_KEY_CACHE_LOCATION, defaultMusicDirectory.getPath());
 		File dir = new File(path);
 
 		boolean hasAccess = ensureDirectoryExistsAndIsReadWritable(dir);
 		if (hasAccess == false) PermissionUtil.handlePermissionFailed(context, null);
 
-		return  hasAccess ? dir : DEFAULT_MUSIC_DIR;
+		return  hasAccess ? dir : defaultMusicDirectory;
 	}
 
 	public static boolean ensureDirectoryExistsAndIsReadWritable(File dir)
