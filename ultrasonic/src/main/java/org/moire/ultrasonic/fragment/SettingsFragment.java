@@ -347,7 +347,7 @@ public class SettingsFragment extends PreferenceFragment
     }
 
     private void setHideMedia(boolean hide) {
-        File nomediaDir = new File(FileUtil.getUltraSonicDirectory(), ".nomedia");
+        File nomediaDir = new File(FileUtil.getUltraSonicDirectory(getActivity()), ".nomedia");
         if (hide && !nomediaDir.exists()) {
             if (!nomediaDir.mkdir()) {
                 Log.w(LOG_TAG, "Failed to create " + nomediaDir);
@@ -385,7 +385,8 @@ public class SettingsFragment extends PreferenceFragment
             PermissionUtil.handlePermissionFailed(getActivity(), new PermissionUtil.PermissionRequestFinishedCallback() {
                 @Override
                 public void onPermissionRequestFinished() {
-                    String currentPath = settings.getString(Constants.PREFERENCES_KEY_CACHE_LOCATION, FileUtil.getDefaultMusicDirectory().getPath());
+                    String currentPath = settings.getString(Constants.PREFERENCES_KEY_CACHE_LOCATION,
+                            FileUtil.getDefaultMusicDirectory(getActivity()).getPath());
                     cacheLocation.setSummary(currentPath);
                     cacheLocation.setText(currentPath);
                 }

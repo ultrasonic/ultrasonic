@@ -388,7 +388,7 @@ public class RESTMusicService implements MusicService {
     private void savePlaylist(String name,
                               Context context,
                               MusicDirectory playlist) throws IOException {
-        File playlistFile = FileUtil.getPlaylistFile(Util.getServerName(context), name);
+        File playlistFile = FileUtil.getPlaylistFile(context, Util.getServerName(context), name);
         FileWriter fw = new FileWriter(playlistFile);
         BufferedWriter bw = new BufferedWriter(fw);
         try {
