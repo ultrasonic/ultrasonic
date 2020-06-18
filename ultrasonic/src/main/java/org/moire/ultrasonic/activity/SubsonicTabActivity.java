@@ -1248,9 +1248,9 @@ public class SubsonicTabActivity extends ResultActivity implements OnClickListen
 			File file = null;
 			PrintWriter printWriter = null;
 
-			/*try
+			try
 			{
-				file = new File(Environment.getExternalStorageDirectory(), filename);
+				file = new File(FileUtil.getUltraSonicDirectory(context), filename);
 				printWriter = new PrintWriter(file);
 				printWriter.println("Android API level: " + Build.VERSION.SDK_INT);
 				printWriter.println("UltraSonic version name: " + Util.getVersionName(context));
@@ -1270,7 +1270,7 @@ public class SubsonicTabActivity extends ResultActivity implements OnClickListen
 				{
 					defaultHandler.uncaughtException(thread, throwable);
 				}
-			}*/
+			}
 		}
 	}
 
