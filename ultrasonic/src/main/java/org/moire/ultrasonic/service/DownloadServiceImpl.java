@@ -264,8 +264,10 @@ public class DownloadServiceImpl extends Service implements DownloadService
 		instance = this;
 		lifecycleSupport.onCreate();
 
+		// Create Notification Channel
 		if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-			NotificationChannel channel = new NotificationChannel(NOTIFICATION_CHANNEL_ID, NOTIFICATION_CHANNEL_NAME, NotificationManager.IMPORTANCE_NONE);
+			//The suggested importance of a startForeground service notification is IMPORTANCE_LOW
+			NotificationChannel channel = new NotificationChannel(NOTIFICATION_CHANNEL_ID, NOTIFICATION_CHANNEL_NAME, NotificationManager.IMPORTANCE_LOW);
 			channel.setLightColor(android.R.color.holo_blue_dark);
 			channel.setLockscreenVisibility(Notification.VISIBILITY_PUBLIC);
 			NotificationManager manager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
@@ -2122,6 +2124,7 @@ public class DownloadServiceImpl extends Service implements DownloadService
         notificationBuilder.setOnlyAlertOnce(true);
         notificationBuilder.setWhen(System.currentTimeMillis());
         notificationBuilder.setVisibility(NotificationCompat.VISIBILITY_PUBLIC);
+		notificationBuilder.setPriority(NotificationCompat.PRIORITY_LOW);
 
         RemoteViews contentView = new RemoteViews(this.getPackageName(), R.layout.notification);
         Util.linkButtons(this, contentView, false);
