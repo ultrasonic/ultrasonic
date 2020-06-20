@@ -276,13 +276,17 @@ public class DownloadServiceImpl extends Service implements DownloadService
 
 		// We should use a single notification builder, otherwise the notification may not be updated
 		notificationBuilder = new NotificationCompat.Builder(this, NOTIFICATION_CHANNEL_ID);
+
+		Log.i(TAG, "DownloadServiceImpl created");
 	}
 
 	@Override
 	public int onStartCommand(Intent intent, int flags, int startId)
 	{
 		super.onStartCommand(intent, flags, startId);
+
 		lifecycleSupport.onStart(intent);
+		Log.i(TAG, "DownloadServiceImpl started with intent");
 		return START_NOT_STICKY;
 	}
 
@@ -338,6 +342,8 @@ public class DownloadServiceImpl extends Service implements DownloadService
 		catch (Throwable ignored)
 		{
 		}
+
+		Log.i(TAG, "DownloadServiceImpl stopped");
 	}
 
 	public static DownloadService getInstance()
@@ -2144,44 +2150,47 @@ public class DownloadServiceImpl extends Service implements DownloadService
             bigView.setImageViewResource(R.id.control_play, R.drawable.media_pause_normal_dark);
         }
 
-        final Entry song = currentPlaying.getSong();
-        final String title = song.getTitle();
-        final String text = song.getArtist();
-        final String album = song.getAlbum();
-		final int rating = song.getUserRating() == null ? 0 : song.getUserRating();
-        final int imageSize = Util.getNotificationImageSize(this);
+        if (currentPlaying != null) {
+			final Entry song = currentPlaying.getSong();
+			final String title = song.getTitle();
+			final String text = song.getArtist();
+			final String album = song.getAlbum();
+			final int rating = song.getUserRating() == null ? 0 : song.getUserRating();
+			final int imageSize = Util.getNotificationImageSize(this);
 
-        try {
-            final Bitmap nowPlayingImage = FileUtil.getAlbumArtBitmap(this, currentPlaying.getSong(), imageSize, true);
-            if (nowPlayingImage == null) {
-                contentView.setImageViewResource(R.id.notification_image, R.drawable.unknown_album);
-                bigView.setImageViewResource(R.id.notification_image, R.drawable.unknown_album);
-            } else {
-                contentView.setImageViewBitmap(R.id.notification_image, nowPlayingImage);
-                bigView.setImageViewBitmap(R.id.notification_image, nowPlayingImage);
-            }
-        } catch (Exception x) {
-            Log.w(TAG, "Failed to get notification cover art", x);
-            contentView.setImageViewResource(R.id.notification_image, R.drawable.unknown_album);
-            bigView.setImageViewResource(R.id.notification_image, R.drawable.unknown_album);
-        }
+			try {
+				final Bitmap nowPlayingImage = FileUtil.getAlbumArtBitmap(this, currentPlaying.getSong(), imageSize, true);
+				if (nowPlayingImage == null) {
+					contentView.setImageViewResource(R.id.notification_image, R.drawable.unknown_album);
+					bigView.setImageViewResource(R.id.notification_image, R.drawable.unknown_album);
+				} else {
+					contentView.setImageViewBitmap(R.id.notification_image, nowPlayingImage);
+					bigView.setImageViewBitmap(R.id.notification_image, nowPlayingImage);
+				}
+			} catch (Exception x) {
+				Log.w(TAG, "Failed to get notification cover art", x);
+				contentView.setImageViewResource(R.id.notification_image, R.drawable.unknown_album);
+				bigView.setImageViewResource(R.id.notification_image, R.drawable.unknown_album);
+			}
 
-        contentView.setTextViewText(R.id.trackname, title);
-        bigView.setTextViewText(R.id.trackname, title);
-        contentView.setTextViewText(R.id.artist, text);
-        bigView.setTextViewText(R.id.artist, text);
-        contentView.setTextViewText(R.id.album, album);
-        bigView.setTextViewText(R.id.album, album);
 
-		boolean useFiveStarRating = KoinJavaComponent.get(FeatureStorage.class).isFeatureEnabled(Feature.FIVE_STAR_RATING);
-		if (!useFiveStarRating)	bigView.setViewVisibility(R.id.notification_rating, View.INVISIBLE);
-		else
-		{
-			bigView.setImageViewResource(R.id.notification_five_star_1, rating > 0 ? R.drawable.ic_star_full_dark : R.drawable.ic_star_hollow_dark);
-			bigView.setImageViewResource(R.id.notification_five_star_2, rating > 1 ? R.drawable.ic_star_full_dark : R.drawable.ic_star_hollow_dark);
-			bigView.setImageViewResource(R.id.notification_five_star_3, rating > 2 ? R.drawable.ic_star_full_dark : R.drawable.ic_star_hollow_dark);
-			bigView.setImageViewResource(R.id.notification_five_star_4, rating > 3 ? R.drawable.ic_star_full_dark : R.drawable.ic_star_hollow_dark);
-			bigView.setImageViewResource(R.id.notification_five_star_5, rating > 4 ? R.drawable.ic_star_full_dark : R.drawable.ic_star_hollow_dark);
+			contentView.setTextViewText(R.id.trackname, title);
+			bigView.setTextViewText(R.id.trackname, title);
+			contentView.setTextViewText(R.id.artist, text);
+			bigView.setTextViewText(R.id.artist, text);
+			contentView.setTextViewText(R.id.album, album);
+			bigView.setTextViewText(R.id.album, album);
+
+			boolean useFiveStarRating = KoinJavaComponent.get(FeatureStorage.class).isFeatureEnabled(Feature.FIVE_STAR_RATING);
+			if (!useFiveStarRating)
+				bigView.setViewVisibility(R.id.notification_rating, View.INVISIBLE);
+			else {
+				bigView.setImageViewResource(R.id.notification_five_star_1, rating > 0 ? R.drawable.ic_star_full_dark : R.drawable.ic_star_hollow_dark);
+				bigView.setImageViewResource(R.id.notification_five_star_2, rating > 1 ? R.drawable.ic_star_full_dark : R.drawable.ic_star_hollow_dark);
+				bigView.setImageViewResource(R.id.notification_five_star_3, rating > 2 ? R.drawable.ic_star_full_dark : R.drawable.ic_star_hollow_dark);
+				bigView.setImageViewResource(R.id.notification_five_star_4, rating > 3 ? R.drawable.ic_star_full_dark : R.drawable.ic_star_hollow_dark);
+				bigView.setImageViewResource(R.id.notification_five_star_5, rating > 4 ? R.drawable.ic_star_full_dark : R.drawable.ic_star_hollow_dark);
+			}
 		}
 
         Notification notification = notificationBuilder.build();

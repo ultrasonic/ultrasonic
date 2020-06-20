@@ -107,7 +107,9 @@
             a:summary="@string/settings.playback.resume_play_on_headphones_plug.summary"
             />
     </PreferenceCategory>
-    <PreferenceCategory a:title="@string/settings.notifications_title">
+    <PreferenceCategory
+        a:title="@string/settings.notifications_title"
+        a:key="notificationsCategory">
         <CheckBoxPreference
             a:defaultValue="true"
             a:key="showNowPlaying"

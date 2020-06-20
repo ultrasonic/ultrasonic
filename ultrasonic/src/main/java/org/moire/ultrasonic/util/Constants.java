@@ -132,6 +132,7 @@ public final class Constants
 	public static final String PREFERENCES_KEY_IMAGE_LOADER_CONCURRENCY = "imageLoaderConcurrency";
 	public static final String PREFERENCES_KEY_FF_IMAGE_LOADER = "ff_new_image_loader";
 	public static final String PREFERENCES_KEY_USE_FIVE_STAR_RATING = "use_five_star_rating";
+	public static final String PREFERENCES_KEY_CATEGORY_NOTIFICATIONS = "notificationsCategory";
 
 	// Number of free trial days for non-licensed servers.
 	public static final int FREE_TRIAL_DAYS = 30;

@@ -58,18 +58,19 @@ public class MediaButtonIntentReceiver extends BroadcastReceiver
 
 			Intent serviceIntent = new Intent(context, DownloadServiceImpl.class);
 			serviceIntent.putExtra(Intent.EXTRA_KEY_EVENT, event);
-			if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-				context.startForegroundService(serviceIntent);
-			} else {
-				context.startService(serviceIntent);
-			}
 
 			try
 			{
+				context.startService(serviceIntent);
+
 				if (isOrderedBroadcast())
 				{
 					abortBroadcast();
 				}
+			}
+			catch (IllegalStateException exception)
+			{
+				Log.w(TAG, "MediaButtonIntentReceiver couldn't start DownloadServiceImpl because the application was in the background.");
 			}
 			catch (Exception x)
 			{

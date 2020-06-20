@@ -108,6 +108,13 @@ public class SettingsFragment extends PreferenceFragment
         setupClearSearchPreference();
         setupGaplessControlSettingsV14();
         setupFeatureFlagsPreferences();
+
+        // After API26 foreground services must be used for music playback, and they must have a notification
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            PreferenceCategory notificationsCategory = (PreferenceCategory) findPreference(Constants.PREFERENCES_KEY_CATEGORY_NOTIFICATIONS);
+            notificationsCategory.removePreference(findPreference(Constants.PREFERENCES_KEY_SHOW_NOTIFICATION));
+            notificationsCategory.removePreference(findPreference(Constants.PREFERENCES_KEY_ALWAYS_SHOW_NOTIFICATION));
+        }
     }
 
     @Override
