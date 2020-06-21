@@ -36,6 +36,7 @@ import android.widget.TextView;
 import org.moire.ultrasonic.R;
 import org.moire.ultrasonic.service.DownloadService;
 import org.moire.ultrasonic.service.DownloadServiceImpl;
+import org.moire.ultrasonic.service.MediaPlayerService;
 import org.moire.ultrasonic.service.MusicService;
 import org.moire.ultrasonic.service.MusicServiceFactory;
 import org.moire.ultrasonic.util.Constants;
@@ -476,7 +477,7 @@ public class MainActivity extends SubsonicTabActivity
 
 	private void exit()
 	{
-		stopService(new Intent(this, DownloadServiceImpl.class));
+		DownloadServiceImpl.getInstance().onCommand(new Intent(this, MediaPlayerService.class));
 		Util.unregisterMediaButtonEventReceiver(this);
 		finish();
 	}

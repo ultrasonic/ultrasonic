@@ -118,7 +118,7 @@
         <activity android:name=".activity.ServerSettingsActivity" />
 
         <service
-            android:name=".service.DownloadServiceImpl"
+            android:name=".service.MediaPlayerService"
             android:label="UltraSonic Download Service"
             android:exported="false">
             <intent-filter>

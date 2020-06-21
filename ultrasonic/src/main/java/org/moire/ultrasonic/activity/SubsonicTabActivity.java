@@ -97,8 +97,7 @@ public class SubsonicTabActivity extends ResultActivity implements OnClickListen
 		applyTheme();
 		super.onCreate(bundle);
 
-		// This should always succeed as it is called when Ultrasonic is in the foreground
-		startService(new Intent(this, DownloadServiceImpl.class));
+		if (DownloadServiceImpl.getInstance() == null) new DownloadServiceImpl(getApplicationContext());
 		setVolumeControlStream(AudioManager.STREAM_MUSIC);
 
 		if (bundle != null)
@@ -764,29 +763,16 @@ public class SubsonicTabActivity extends ResultActivity implements OnClickListen
 
 	public DownloadService getDownloadService()
 	{
-		// If service is not available, request it to start and wait for it.
-		for (int i = 0; i < 5; i++)
+		DownloadService downloadService = DownloadServiceImpl.getInstance();
+
+		if (downloadService != null)
 		{
-			DownloadService downloadService = DownloadServiceImpl.getInstance();
-
-			if (downloadService != null)
-			{
-				return downloadService;
-			}
-
-			Log.w(TAG, "DownloadService not running. Attempting to start it.");
-
-			try
-			{
-				startService(new Intent(this, DownloadServiceImpl.class));
-			}
-			catch (IllegalStateException exception)
-			{
-				Log.w(TAG, "getDownloadService couldn't start DownloadServiceImpl because the application was in the background.");
-				return null;
-			}
-			Util.sleepQuietly(50L);
+			return downloadService;
 		}
+
+		Log.w(TAG, "DownloadService not running. Attempting to start it.");
+
+		new DownloadServiceImpl(getApplicationContext());
 
 		return DownloadServiceImpl.getInstance();
 	}

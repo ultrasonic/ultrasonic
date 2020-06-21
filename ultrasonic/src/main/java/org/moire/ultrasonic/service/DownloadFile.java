@@ -441,10 +441,7 @@ public class DownloadFile
 
 				new CacheCleaner(context, DownloadServiceImpl.getInstance()).cleanSpace();
 
-				if (DownloadServiceImpl.getInstance() != null)
-				{
-					((DownloadServiceImpl) DownloadServiceImpl.getInstance()).checkDownloads();
-				}
+				MediaPlayerService.checkDownloads(context);
 			}
 		}
 

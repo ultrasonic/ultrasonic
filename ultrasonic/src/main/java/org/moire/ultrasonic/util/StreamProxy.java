@@ -4,7 +4,7 @@ import android.util.Log;
 
 import org.moire.ultrasonic.domain.MusicDirectory;
 import org.moire.ultrasonic.service.DownloadFile;
-import org.moire.ultrasonic.service.DownloadService;
+import org.moire.ultrasonic.service.Supplier;
 
 import java.io.BufferedOutputStream;
 import java.io.BufferedReader;
@@ -32,9 +32,9 @@ public class StreamProxy implements Runnable
 	private boolean isRunning;
 	private ServerSocket socket;
 	private int port;
-	private DownloadService downloadService;
+	private Supplier<DownloadFile> currentPlaying;
 
-	public StreamProxy(DownloadService downloadService)
+	public StreamProxy(Supplier<DownloadFile> currentPlaying)
 	{
 
 		// Create listening socket
@@ -43,7 +43,7 @@ public class StreamProxy implements Runnable
 			socket = new ServerSocket(0, 0, InetAddress.getByAddress(new byte[]{127, 0, 0, 1}));
 			socket.setSoTimeout(5000);
 			port = socket.getLocalPort();
-			this.downloadService = downloadService;
+			this.currentPlaying = currentPlaying;
 		}
 		catch (UnknownHostException e)
 		{ // impossible
@@ -170,7 +170,7 @@ public class StreamProxy implements Runnable
 		public void run()
 		{
 			Log.i(TAG, "Streaming song in background");
-			DownloadFile downloadFile = downloadService.getCurrentPlaying();
+			DownloadFile downloadFile = currentPlaying.get();
 			MusicDirectory.Entry song = downloadFile.getSong();
 			long fileSize = downloadFile.getBitRate() * ((song.getDuration() != null) ? song.getDuration() : 0) * 1000 / 8;
 			Log.i(TAG, String.format("Streaming fileSize: %d", fileSize));

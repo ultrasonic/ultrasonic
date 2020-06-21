@@ -56,6 +56,7 @@ import org.moire.ultrasonic.receiver.MediaButtonIntentReceiver;
 import org.moire.ultrasonic.service.DownloadFile;
 import org.moire.ultrasonic.service.DownloadService;
 import org.moire.ultrasonic.service.DownloadServiceImpl;
+import org.moire.ultrasonic.service.MediaPlayerService;
 import org.moire.ultrasonic.service.MusicServiceFactory;
 
 import java.io.*;
@@ -1045,38 +1046,31 @@ public class Util extends DownloadActivity
 		context.sendBroadcast(avrcpIntent);
 	}
 
-	public static void broadcastA2dpPlayStatusChange(Context context, PlayerState state, DownloadService downloadService)
+	public static void broadcastA2dpPlayStatusChange(Context context, PlayerState state, Entry currentSong, Integer listSize, Integer id, Integer playerPosition)
 	{
-		if (!Util.getShouldSendBluetoothNotifications(context) || downloadService == null)
+		if (!Util.getShouldSendBluetoothNotifications(context))
 		{
 			return;
 		}
 
-		DownloadFile currentPlaying = downloadService.getCurrentPlaying();
-
-		if (currentPlaying != null)
+		if (currentSong != null)
 		{
 			Intent avrcpIntent = new Intent(CM_AVRCP_PLAYSTATE_CHANGED);
 
-			Entry song = currentPlaying.getSong();
-
-			if (song == null)
+			if (currentSong == null)
 			{
 				return;
 			}
 
-			if (song != currentSong)
+			if (currentSong != currentSong)
 			{
-				currentSong = song;
+				Util.currentSong = currentSong;
 			}
 
-			String title = song.getTitle();
-			String artist = song.getArtist();
-			String album = song.getAlbum();
-			Integer duration = song.getDuration();
-			Integer listSize = downloadService.getDownloads().size();
-			Integer id = downloadService.getCurrentPlayingIndex() + 1;
-			Integer playerPosition = downloadService.getPlayerPosition();
+			String title = currentSong.getTitle();
+			String artist = currentSong.getArtist();
+			String album = currentSong.getAlbum();
+			Integer duration = currentSong.getDuration();
 
 			avrcpIntent.putExtra("track", title);
 			avrcpIntent.putExtra("track_name", title);
@@ -1089,7 +1083,7 @@ public class Util extends DownloadActivity
 
 			if (Util.getShouldSendBluetoothAlbumArt(context))
 			{
-				File albumArtFile = FileUtil.getAlbumArtFile(context, song);
+				File albumArtFile = FileUtil.getAlbumArtFile(context, currentSong);
 				avrcpIntent.putExtra("coverart", albumArtFile.getAbsolutePath());
 				avrcpIntent.putExtra("cover", albumArtFile.getAbsolutePath());
 			}
@@ -1290,55 +1284,55 @@ public class Util extends DownloadActivity
 
 		// Emulate media button clicks.
 		intent = new Intent("1");
-		intent.setComponent(new ComponentName(context, DownloadServiceImpl.class));
+		intent.setComponent(new ComponentName(context, MediaPlayerService.class));
 		intent.putExtra(Intent.EXTRA_KEY_EVENT, new KeyEvent(KeyEvent.ACTION_DOWN, KeyEvent.KEYCODE_MEDIA_PLAY_PAUSE));
 		pendingIntent = PendingIntent.getService(context, 0, intent, 0);
 		views.setOnClickPendingIntent(R.id.control_play, pendingIntent);
 
 		intent = new Intent("2");
-		intent.setComponent(new ComponentName(context, DownloadServiceImpl.class));
+		intent.setComponent(new ComponentName(context, MediaPlayerService.class));
 		intent.putExtra(Intent.EXTRA_KEY_EVENT, new KeyEvent(KeyEvent.ACTION_DOWN, KeyEvent.KEYCODE_MEDIA_NEXT));
 		pendingIntent = PendingIntent.getService(context, 0, intent, 0);
 		views.setOnClickPendingIntent(R.id.control_next, pendingIntent);
 
 		intent = new Intent("3");
-		intent.setComponent(new ComponentName(context, DownloadServiceImpl.class));
+		intent.setComponent(new ComponentName(context, MediaPlayerService.class));
 		intent.putExtra(Intent.EXTRA_KEY_EVENT, new KeyEvent(KeyEvent.ACTION_DOWN, KeyEvent.KEYCODE_MEDIA_PREVIOUS));
 		pendingIntent = PendingIntent.getService(context, 0, intent, 0);
 		views.setOnClickPendingIntent(R.id.control_previous, pendingIntent);
 
 		intent = new Intent("4");
-		intent.setComponent(new ComponentName(context, DownloadServiceImpl.class));
+		intent.setComponent(new ComponentName(context, MediaPlayerService.class));
 		intent.putExtra(Intent.EXTRA_KEY_EVENT, new KeyEvent(KeyEvent.ACTION_DOWN, KeyEvent.KEYCODE_MEDIA_STOP));
 		pendingIntent = PendingIntent.getService(context, 0, intent, 0);
 		views.setOnClickPendingIntent(R.id.control_stop, pendingIntent);
 
 		intent = new Intent("RATE_1");
-		intent.setComponent(new ComponentName(context, DownloadServiceImpl.class));
+		intent.setComponent(new ComponentName(context, MediaPlayerService.class));
 		intent.putExtra(Intent.EXTRA_KEY_EVENT, new KeyEvent(KeyEvent.ACTION_DOWN, KeyEvent.KEYCODE_1));
 		pendingIntent = PendingIntent.getService(context, 0, intent, 0);
 		views.setOnClickPendingIntent(R.id.notification_five_star_1, pendingIntent);
 
 		intent = new Intent("RATE_2");
-		intent.setComponent(new ComponentName(context, DownloadServiceImpl.class));
+		intent.setComponent(new ComponentName(context, MediaPlayerService.class));
 		intent.putExtra(Intent.EXTRA_KEY_EVENT, new KeyEvent(KeyEvent.ACTION_DOWN, KeyEvent.KEYCODE_2));
 		pendingIntent = PendingIntent.getService(context, 0, intent, 0);
 		views.setOnClickPendingIntent(R.id.notification_five_star_2, pendingIntent);
 
 		intent = new Intent("RATE_3");
-		intent.setComponent(new ComponentName(context, DownloadServiceImpl.class));
+		intent.setComponent(new ComponentName(context, MediaPlayerService.class));
 		intent.putExtra(Intent.EXTRA_KEY_EVENT, new KeyEvent(KeyEvent.ACTION_DOWN, KeyEvent.KEYCODE_3));
 		pendingIntent = PendingIntent.getService(context, 0, intent, 0);
 		views.setOnClickPendingIntent(R.id.notification_five_star_3, pendingIntent);
 
 		intent = new Intent("RATE_4");
-		intent.setComponent(new ComponentName(context, DownloadServiceImpl.class));
+		intent.setComponent(new ComponentName(context, MediaPlayerService.class));
 		intent.putExtra(Intent.EXTRA_KEY_EVENT, new KeyEvent(KeyEvent.ACTION_DOWN, KeyEvent.KEYCODE_4));
 		pendingIntent = PendingIntent.getService(context, 0, intent, 0);
 		views.setOnClickPendingIntent(R.id.notification_five_star_4, pendingIntent);
 
 		intent = new Intent("RATE_5");
-		intent.setComponent(new ComponentName(context, DownloadServiceImpl.class));
+		intent.setComponent(new ComponentName(context, MediaPlayerService.class));
 		intent.putExtra(Intent.EXTRA_KEY_EVENT, new KeyEvent(KeyEvent.ACTION_DOWN, KeyEvent.KEYCODE_5));
 		pendingIntent = PendingIntent.getService(context, 0, intent, 0);
 		views.setOnClickPendingIntent(R.id.notification_five_star_5, pendingIntent);

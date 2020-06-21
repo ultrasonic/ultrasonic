@@ -67,6 +67,7 @@ public class JukeboxService
 	private VolumeToast volumeToast;
 	private AtomicBoolean running = new AtomicBoolean();
 	private Thread serviceThread;
+	private Context context;
 
 	// TODO: Report warning if queue fills up.
 	// TODO: Create shutdown method?
@@ -74,8 +75,9 @@ public class JukeboxService
 	// TODO: Persist RC state?
 	// TODO: Minimize status updates.
 
-	public JukeboxService(DownloadServiceImpl downloadService)
+	public JukeboxService(Context context, DownloadServiceImpl downloadService)
 	{
+		this.context = context;
 		this.downloadService = downloadService;
 	}
 
@@ -149,7 +151,7 @@ public class JukeboxService
 
 			try
 			{
-				if (!Util.isOffline(downloadService))
+				if (!Util.isOffline(context))
 				{
 					task = tasks.take();
 					JukeboxStatus status = task.execute();
@@ -212,7 +214,7 @@ public class JukeboxService
 			@Override
 			public void run()
 			{
-				Util.toast(downloadService, resourceId, false);
+				Util.toast(context, resourceId, false);
 			}
 		});
 
@@ -282,14 +284,14 @@ public class JukeboxService
 
 		if (volumeToast == null)
 		{
-			volumeToast = new VolumeToast(downloadService);
+			volumeToast = new VolumeToast(context);
 		}
 		volumeToast.setVolume(gain);
 	}
 
 	private MusicService getMusicService()
 	{
-		return MusicServiceFactory.getMusicService(downloadService);
+		return MusicServiceFactory.getMusicService(context);
 	}
 
 	public int getPositionSeconds()
@@ -380,7 +382,7 @@ public class JukeboxService
 		@Override
 		JukeboxStatus execute() throws Exception
 		{
-			return getMusicService().getJukeboxStatus(downloadService, null);
+			return getMusicService().getJukeboxStatus(context, null);
 		}
 	}
 
@@ -396,7 +398,7 @@ public class JukeboxService
 		@Override
 		JukeboxStatus execute() throws Exception
 		{
-			return getMusicService().updateJukeboxPlaylist(ids, downloadService, null);
+			return getMusicService().updateJukeboxPlaylist(ids, context, null);
 		}
 	}
 
@@ -414,7 +416,7 @@ public class JukeboxService
 		@Override
 		JukeboxStatus execute() throws Exception
 		{
-			return getMusicService().skipJukebox(index, offsetSeconds, downloadService, null);
+			return getMusicService().skipJukebox(index, offsetSeconds, context, null);
 		}
 	}
 
@@ -423,7 +425,7 @@ public class JukeboxService
 		@Override
 		JukeboxStatus execute() throws Exception
 		{
-			return getMusicService().stopJukebox(downloadService, null);
+			return getMusicService().stopJukebox(context, null);
 		}
 	}
 
@@ -432,7 +434,7 @@ public class JukeboxService
 		@Override
 		JukeboxStatus execute() throws Exception
 		{
-			return getMusicService().startJukebox(downloadService, null);
+			return getMusicService().startJukebox(context, null);
 		}
 	}
 
@@ -449,7 +451,7 @@ public class JukeboxService
 		@Override
 		JukeboxStatus execute() throws Exception
 		{
-			return getMusicService().setJukeboxGain(gain, downloadService, null);
+			return getMusicService().setJukeboxGain(gain, context, null);
 		}
 	}
 

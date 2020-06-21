@@ -67,6 +67,7 @@ public class DownloadServiceLifecycleSupport
 	private boolean externalStorageAvailable = true;
 	private Lock lock = new ReentrantLock();
 	private final AtomicBoolean setup = new AtomicBoolean(false);
+	private Context context;
 
 	/**
 	 * This receiver manages the intent that could come from other applications.
@@ -107,9 +108,10 @@ public class DownloadServiceLifecycleSupport
 	};
 
 
-	public DownloadServiceLifecycleSupport(DownloadServiceImpl downloadService)
+	public DownloadServiceLifecycleSupport(Context context, DownloadServiceImpl downloadService)
 	{
 		this.downloadService = downloadService;
+		this.context = context;
 	}
 
 	public void onCreate()
@@ -121,7 +123,7 @@ public class DownloadServiceLifecycleSupport
 			{
 				try
 				{
-					downloadService.checkDownloads();
+					MediaPlayerService.checkDownloads(context);
 				}
 				catch (Throwable x)
 				{
@@ -156,10 +158,10 @@ public class DownloadServiceLifecycleSupport
 		IntentFilter ejectFilter = new IntentFilter(Intent.ACTION_MEDIA_EJECT);
 		ejectFilter.addAction(Intent.ACTION_MEDIA_MOUNTED);
 		ejectFilter.addDataScheme("file");
-		downloadService.registerReceiver(ejectEventReceiver, ejectFilter);
+		context.registerReceiver(ejectEventReceiver, ejectFilter);
 
 		// React to media buttons.
-		Util.registerMediaButtonEventReceiver(downloadService);
+		Util.registerMediaButtonEventReceiver(context);
 
 		// Pause temporarily on incoming phone calls.
 		//phoneStateListener = new MyPhoneStateListener();
@@ -174,20 +176,20 @@ public class DownloadServiceLifecycleSupport
 		commandFilter.addAction(DownloadServiceImpl.CMD_STOP);
 		commandFilter.addAction(DownloadServiceImpl.CMD_PREVIOUS);
 		commandFilter.addAction(DownloadServiceImpl.CMD_NEXT);
-		downloadService.registerReceiver(intentReceiver, commandFilter);
+		context.registerReceiver(intentReceiver, commandFilter);
 
-		int instance = Util.getActiveServer(downloadService);
-		downloadService.setJukeboxEnabled(Util.getJukeboxEnabled(downloadService, instance));
+		int instance = Util.getActiveServer(context);
+		downloadService.setJukeboxEnabled(Util.getJukeboxEnabled(context, instance));
 
 		deserializeDownloadQueue();
 
-		new CacheCleaner(downloadService, downloadService).clean();
+		new CacheCleaner(context, downloadService).clean();
 	}
 
     private void registerHeadsetReceiver() {
         // Pause when headset is unplugged.
-        final SharedPreferences sp = Util.getPreferences(downloadService);
-        final String spKey = downloadService
+        final SharedPreferences sp = Util.getPreferences(context);
+        final String spKey = context
                 .getString(R.string.settings_playback_resume_play_on_headphones_plug);
 
         headsetEventReceiver = new BroadcastReceiver() {
@@ -218,7 +220,7 @@ public class DownloadServiceLifecycleSupport
         IntentFilter headsetIntentFilter = (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) ?
                 new IntentFilter(AudioManager.ACTION_HEADSET_PLUG) :
                 new IntentFilter(Intent.ACTION_HEADSET_PLUG);
-        downloadService.registerReceiver(headsetEventReceiver, headsetIntentFilter);
+        context.registerReceiver(headsetEventReceiver, headsetIntentFilter);
     }
 
     public void onStart(Intent intent)
@@ -238,12 +240,9 @@ public class DownloadServiceLifecycleSupport
 		executorService.shutdown();
 		serializeDownloadQueueNow();
 		downloadService.clear(false);
-		downloadService.unregisterReceiver(ejectEventReceiver);
-		downloadService.unregisterReceiver(headsetEventReceiver);
-		downloadService.unregisterReceiver(intentReceiver);
-
-		//TelephonyManager telephonyManager = (TelephonyManager) downloadService.getSystemService(Context.TELEPHONY_SERVICE);
-		//telephonyManager.listen(phoneStateListener, PhoneStateListener.LISTEN_NONE);
+		context.unregisterReceiver(ejectEventReceiver);
+		context.unregisterReceiver(headsetEventReceiver);
+		context.unregisterReceiver(intentReceiver);
 	}
 
 	public boolean isExternalStorageAvailable()
@@ -273,7 +272,7 @@ public class DownloadServiceLifecycleSupport
 		state.currentPlayingPosition = downloadService.getPlayerPosition();
 
 		Log.i(TAG, String.format("Serialized currentPlayingIndex: %d, currentPlayingPosition: %d", state.currentPlayingIndex, state.currentPlayingPosition));
-		FileUtil.serialize(downloadService, state, FILENAME_DOWNLOADS_SER);
+		FileUtil.serialize(context, state, FILENAME_DOWNLOADS_SER);
 	}
 
 	private void deserializeDownloadQueue()
@@ -283,7 +282,7 @@ public class DownloadServiceLifecycleSupport
 
 	private void deserializeDownloadQueueNow()
 	{
-		State state = FileUtil.deserialize(downloadService, FILENAME_DOWNLOADS_SER);
+		State state = FileUtil.deserialize(context, FILENAME_DOWNLOADS_SER);
 		if (state == null)
 		{
 			return;
