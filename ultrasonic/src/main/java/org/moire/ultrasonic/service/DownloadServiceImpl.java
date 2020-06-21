@@ -752,6 +752,7 @@ public class DownloadServiceImpl extends Service implements DownloadService
 			if (tabInstance != null)
 			{
 				stopForeground(true);
+				clearRemoteControl();
 				isInForeground = false;
 				tabInstance.hideNowPlaying();
 			}
@@ -1277,6 +1278,7 @@ public class DownloadServiceImpl extends Service implements DownloadService
 			if (tabInstance != null)
 			{
 				stopForeground(true);
+				clearRemoteControl();
 				isInForeground = false;
 				tabInstance.hideNowPlaying();
 			}

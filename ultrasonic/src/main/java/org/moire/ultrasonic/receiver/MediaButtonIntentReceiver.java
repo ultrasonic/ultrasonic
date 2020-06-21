@@ -25,6 +25,7 @@ import android.os.Build;
 import android.os.Bundle;
 import android.os.Parcelable;
 import android.util.Log;
+import android.view.KeyEvent;
 
 import org.moire.ultrasonic.service.DownloadServiceImpl;
 import org.moire.ultrasonic.util.Util;
@@ -62,15 +63,35 @@ public class MediaButtonIntentReceiver extends BroadcastReceiver
 			try
 			{
 				context.startService(serviceIntent);
+			}
+			catch (IllegalStateException exception)
+			{
+				Log.i(TAG, "MediaButtonIntentReceiver couldn't start DownloadServiceImpl because the application was in the background.");
+				if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O)
+				{
+					KeyEvent keyEvent = (KeyEvent) event;
+					if (keyEvent.getAction() == KeyEvent.ACTION_DOWN && keyEvent.getRepeatCount() == 0)
+					{
+						int keyCode = keyEvent.getKeyCode();
+						if (keyCode == KeyEvent.KEYCODE_MEDIA_PLAY_PAUSE ||
+								keyCode == KeyEvent.KEYCODE_HEADSETHOOK ||
+								keyCode == KeyEvent.KEYCODE_MEDIA_PLAY)
+						{
+							// TODO: The only time it is OK to start DownloadServiceImpl as a foreground service is when we now it will display its notification.
+							// When DownloadServiceImpl is refactored to a proper foreground service, this can be removed.
+							context.startForegroundService(serviceIntent);
+							Log.i(TAG, "MediaButtonIntentReceiver started DownloadServiceImpl as foreground service");
+						}
+					}
+				}
+			}
 
+			try
+			{
 				if (isOrderedBroadcast())
 				{
 					abortBroadcast();
 				}
-			}
-			catch (IllegalStateException exception)
-			{
-				Log.w(TAG, "MediaButtonIntentReceiver couldn't start DownloadServiceImpl because the application was in the background.");
 			}
 			catch (Exception x)
 			{
