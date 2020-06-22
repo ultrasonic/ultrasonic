@@ -56,6 +56,7 @@ import org.moire.ultrasonic.receiver.MediaButtonIntentReceiver;
 import org.moire.ultrasonic.service.DownloadFile;
 import org.moire.ultrasonic.service.DownloadService;
 import org.moire.ultrasonic.service.DownloadServiceImpl;
+import org.moire.ultrasonic.service.DownloadServiceLifecycleSupport;
 import org.moire.ultrasonic.service.MediaPlayerService;
 import org.moire.ultrasonic.service.MusicServiceFactory;
 
@@ -1283,58 +1284,58 @@ public class Util extends DownloadActivity
 		views.setOnClickPendingIntent(R.id.appwidget_top, pendingIntent);
 
 		// Emulate media button clicks.
-		intent = new Intent("1");
-		intent.setComponent(new ComponentName(context, MediaPlayerService.class));
+		intent = new Intent(Constants.CMD_PROCESS_KEYCODE);
+		intent.setPackage(context.getPackageName());
 		intent.putExtra(Intent.EXTRA_KEY_EVENT, new KeyEvent(KeyEvent.ACTION_DOWN, KeyEvent.KEYCODE_MEDIA_PLAY_PAUSE));
-		pendingIntent = PendingIntent.getService(context, 0, intent, 0);
+		pendingIntent = PendingIntent.getBroadcast(context, 1, intent, 0);
 		views.setOnClickPendingIntent(R.id.control_play, pendingIntent);
 
-		intent = new Intent("2");
-		intent.setComponent(new ComponentName(context, MediaPlayerService.class));
+		intent = new Intent(Constants.CMD_PROCESS_KEYCODE);
+		intent.setPackage(context.getPackageName());
 		intent.putExtra(Intent.EXTRA_KEY_EVENT, new KeyEvent(KeyEvent.ACTION_DOWN, KeyEvent.KEYCODE_MEDIA_NEXT));
-		pendingIntent = PendingIntent.getService(context, 0, intent, 0);
+		pendingIntent = PendingIntent.getBroadcast(context, 2, intent, 0);
 		views.setOnClickPendingIntent(R.id.control_next, pendingIntent);
 
-		intent = new Intent("3");
-		intent.setComponent(new ComponentName(context, MediaPlayerService.class));
+		intent = new Intent(Constants.CMD_PROCESS_KEYCODE);
+		intent.setPackage(context.getPackageName());
 		intent.putExtra(Intent.EXTRA_KEY_EVENT, new KeyEvent(KeyEvent.ACTION_DOWN, KeyEvent.KEYCODE_MEDIA_PREVIOUS));
-		pendingIntent = PendingIntent.getService(context, 0, intent, 0);
+		pendingIntent = PendingIntent.getBroadcast(context, 3, intent, 0);
 		views.setOnClickPendingIntent(R.id.control_previous, pendingIntent);
 
-		intent = new Intent("4");
-		intent.setComponent(new ComponentName(context, MediaPlayerService.class));
+		intent = new Intent(Constants.CMD_PROCESS_KEYCODE);
+		intent.setPackage(context.getPackageName());
 		intent.putExtra(Intent.EXTRA_KEY_EVENT, new KeyEvent(KeyEvent.ACTION_DOWN, KeyEvent.KEYCODE_MEDIA_STOP));
-		pendingIntent = PendingIntent.getService(context, 0, intent, 0);
+		pendingIntent = PendingIntent.getBroadcast(context, 4, intent, 0);
 		views.setOnClickPendingIntent(R.id.control_stop, pendingIntent);
 
-		intent = new Intent("RATE_1");
-		intent.setComponent(new ComponentName(context, MediaPlayerService.class));
+		intent = new Intent(Constants.CMD_PROCESS_KEYCODE);
+		intent.setPackage(context.getPackageName());
 		intent.putExtra(Intent.EXTRA_KEY_EVENT, new KeyEvent(KeyEvent.ACTION_DOWN, KeyEvent.KEYCODE_1));
-		pendingIntent = PendingIntent.getService(context, 0, intent, 0);
+		pendingIntent = PendingIntent.getBroadcast(context, 5, intent, 0);
 		views.setOnClickPendingIntent(R.id.notification_five_star_1, pendingIntent);
 
-		intent = new Intent("RATE_2");
-		intent.setComponent(new ComponentName(context, MediaPlayerService.class));
+		intent = new Intent(Constants.CMD_PROCESS_KEYCODE);
+		intent.setPackage(context.getPackageName());
 		intent.putExtra(Intent.EXTRA_KEY_EVENT, new KeyEvent(KeyEvent.ACTION_DOWN, KeyEvent.KEYCODE_2));
-		pendingIntent = PendingIntent.getService(context, 0, intent, 0);
+		pendingIntent = PendingIntent.getBroadcast(context, 6, intent, 0);
 		views.setOnClickPendingIntent(R.id.notification_five_star_2, pendingIntent);
 
-		intent = new Intent("RATE_3");
-		intent.setComponent(new ComponentName(context, MediaPlayerService.class));
+		intent = new Intent(Constants.CMD_PROCESS_KEYCODE);
+		intent.setPackage(context.getPackageName());
 		intent.putExtra(Intent.EXTRA_KEY_EVENT, new KeyEvent(KeyEvent.ACTION_DOWN, KeyEvent.KEYCODE_3));
-		pendingIntent = PendingIntent.getService(context, 0, intent, 0);
+		pendingIntent = PendingIntent.getBroadcast(context, 7, intent, 0);
 		views.setOnClickPendingIntent(R.id.notification_five_star_3, pendingIntent);
 
-		intent = new Intent("RATE_4");
-		intent.setComponent(new ComponentName(context, MediaPlayerService.class));
+		intent = new Intent(Constants.CMD_PROCESS_KEYCODE);
+		intent.setPackage(context.getPackageName());
 		intent.putExtra(Intent.EXTRA_KEY_EVENT, new KeyEvent(KeyEvent.ACTION_DOWN, KeyEvent.KEYCODE_4));
-		pendingIntent = PendingIntent.getService(context, 0, intent, 0);
+		pendingIntent = PendingIntent.getBroadcast(context, 8, intent, 0);
 		views.setOnClickPendingIntent(R.id.notification_five_star_4, pendingIntent);
 
-		intent = new Intent("RATE_5");
-		intent.setComponent(new ComponentName(context, MediaPlayerService.class));
+		intent = new Intent(Constants.CMD_PROCESS_KEYCODE);
+		intent.setPackage(context.getPackageName());
 		intent.putExtra(Intent.EXTRA_KEY_EVENT, new KeyEvent(KeyEvent.ACTION_DOWN, KeyEvent.KEYCODE_5));
-		pendingIntent = PendingIntent.getService(context, 0, intent, 0);
+		pendingIntent = PendingIntent.getBroadcast(context, 9, intent, 0);
 		views.setOnClickPendingIntent(R.id.notification_five_star_5, pendingIntent);
 	}
 

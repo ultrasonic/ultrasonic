@@ -22,6 +22,10 @@ import org.moire.ultrasonic.util.*;
 
 import java.io.File;
 
+import kotlin.Lazy;
+
+import static org.koin.java.standalone.KoinJavaComponent.inject;
+
 /**
  * Shows main app settings.
  */
@@ -61,6 +65,8 @@ public class SettingsFragment extends PreferenceFragment
     private int maxServerCount = 10;
     private SharedPreferences settings;
     private int activeServers;
+
+    private Lazy<DownloadServiceImpl> downloadServiceImpl = inject(DownloadServiceImpl.class);
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
@@ -401,7 +407,6 @@ public class SettingsFragment extends PreferenceFragment
         }
 
         // Clear download queue.
-        DownloadService downloadService = DownloadServiceImpl.getInstance();
-        downloadService.clear();
+        downloadServiceImpl.getValue().clear();
     }
 }

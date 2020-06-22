@@ -8,28 +8,24 @@ import org.moire.ultrasonic.domain.MusicDirectory.Entry;
 import org.moire.ultrasonic.service.DownloadService;
 import org.moire.ultrasonic.service.DownloadServiceImpl;
 
+import kotlin.Lazy;
+
+import static org.koin.java.standalone.KoinJavaComponent.inject;
+
 public class A2dpIntentReceiver extends BroadcastReceiver
 {
-
 	private static final String PLAYSTATUS_RESPONSE = "com.android.music.playstatusresponse";
+	private Lazy<DownloadServiceImpl> downloadServiceImpl = inject(DownloadServiceImpl.class);
 
 	@Override
 	public void onReceive(Context context, Intent intent)
 	{
-
-		DownloadService downloadService = DownloadServiceImpl.getInstance();
-
-		if (downloadService == null)
+		if (downloadServiceImpl.getValue().getCurrentPlaying() == null)
 		{
 			return;
 		}
 
-		if (downloadService.getCurrentPlaying() == null)
-		{
-			return;
-		}
-
-		Entry song = downloadService.getCurrentPlaying().getSong();
+		Entry song = downloadServiceImpl.getValue().getCurrentPlaying().getSong();
 
 		if (song == null)
 		{
@@ -39,8 +35,8 @@ public class A2dpIntentReceiver extends BroadcastReceiver
 		Intent avrcpIntent = new Intent(PLAYSTATUS_RESPONSE);
 
 		Integer duration = song.getDuration();
-		Integer playerPosition = downloadService.getPlayerPosition();
-		Integer listSize = downloadService.getDownloads().size();
+		Integer playerPosition = downloadServiceImpl.getValue().getPlayerPosition();
+		Integer listSize = downloadServiceImpl.getValue().getDownloads().size();
 
 		if (duration != null)
 		{
@@ -50,7 +46,7 @@ public class A2dpIntentReceiver extends BroadcastReceiver
 		avrcpIntent.putExtra("position", (long) playerPosition);
 		avrcpIntent.putExtra("ListSize", (long) listSize);
 
-		switch (downloadService.getPlayerState())
+		switch (downloadServiceImpl.getValue().getPlayerState())
 		{
 			case STARTED:
 				avrcpIntent.putExtra("playing", true);

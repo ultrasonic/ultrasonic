@@ -44,6 +44,10 @@ import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicLong;
 
+import kotlin.Lazy;
+
+import static org.koin.java.standalone.KoinJavaComponent.inject;
+
 /**
  * Provides an asynchronous interface to the remote jukebox on the Subsonic server.
  *
@@ -52,13 +56,10 @@ import java.util.concurrent.atomic.AtomicLong;
  */
 public class JukeboxService
 {
-
 	private static final String TAG = JukeboxService.class.getSimpleName();
 	private static final long STATUS_UPDATE_INTERVAL_SECONDS = 5L;
 
-	private final Handler handler = new Handler();
 	private final TaskQueue tasks = new TaskQueue();
-	private final DownloadServiceImpl downloadService;
 	private final ScheduledExecutorService executorService = Executors.newSingleThreadScheduledExecutor();
 	private ScheduledFuture<?> statusUpdateFuture;
 	private final AtomicLong timeOfLastUpdate = new AtomicLong();
@@ -67,7 +68,10 @@ public class JukeboxService
 	private VolumeToast volumeToast;
 	private AtomicBoolean running = new AtomicBoolean();
 	private Thread serviceThread;
+	private boolean enabled = false;
 	private Context context;
+
+	private Lazy<DownloadServiceImpl> downloadServiceImpl = inject(DownloadServiceImpl.class);
 
 	// TODO: Report warning if queue fills up.
 	// TODO: Create shutdown method?
@@ -75,10 +79,9 @@ public class JukeboxService
 	// TODO: Persist RC state?
 	// TODO: Minimize status updates.
 
-	public JukeboxService(Context context, DownloadServiceImpl downloadService)
+	public JukeboxService(Context context)
 	{
 		this.context = context;
-		this.downloadService = downloadService;
 	}
 
 	public void startJukeboxService()
@@ -179,9 +182,9 @@ public class JukeboxService
 		// Track change?
 		Integer index = jukeboxStatus.getCurrentPlayingIndex();
 
-		if (index != null && index != -1 && index != downloadService.getCurrentPlayingIndex())
+		if (index != null && index != -1 && index != downloadServiceImpl.getValue().getCurrentPlayingIndex())
 		{
-			downloadService.setCurrentPlaying(index);
+			downloadServiceImpl.getValue().setCurrentPlaying(index);
 		}
 	}
 
@@ -209,7 +212,7 @@ public class JukeboxService
 	{
 		Log.w(TAG, x.toString());
 
-		handler.post(new Runnable()
+		new Handler().post(new Runnable()
 		{
 			@Override
 			public void run()
@@ -218,17 +221,19 @@ public class JukeboxService
 			}
 		});
 
-		downloadService.setJukeboxEnabled(false);
+		downloadServiceImpl.getValue().setJukeboxEnabled(false);
 	}
 
 	public void updatePlaylist()
 	{
+		if (!enabled) return;
+
 		tasks.remove(Skip.class);
 		tasks.remove(Stop.class);
 		tasks.remove(Start.class);
 
 		List<String> ids = new ArrayList<String>();
-		for (DownloadFile file : downloadService.getDownloads())
+		for (DownloadFile file : downloadServiceImpl.getValue().getDownloads())
 		{
 			ids.add(file.getSong().getId());
 		}
@@ -250,7 +255,7 @@ public class JukeboxService
 		}
 
 		tasks.add(new Skip(index, offsetSeconds));
-		downloadService.setPlayerState(PlayerState.STARTED);
+		downloadServiceImpl.getValue().setPlayerState(PlayerState.STARTED);
 	}
 
 	public void stop()
@@ -320,8 +325,11 @@ public class JukeboxService
 		}
 
 		stop();
+	}
 
-		downloadService.setPlayerState(PlayerState.IDLE);
+	public boolean isEnabled()
+	{
+		return enabled;
 	}
 
 	private static class TaskQueue

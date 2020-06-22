@@ -36,6 +36,8 @@ import android.widget.TextView;
 import org.moire.ultrasonic.R;
 import org.moire.ultrasonic.service.DownloadService;
 import org.moire.ultrasonic.service.DownloadServiceImpl;
+import org.moire.ultrasonic.service.DownloadServiceLifecycleSupport;
+import org.moire.ultrasonic.service.ExternalStorageMonitor;
 import org.moire.ultrasonic.service.MediaPlayerService;
 import org.moire.ultrasonic.service.MusicService;
 import org.moire.ultrasonic.service.MusicServiceFactory;
@@ -47,7 +49,10 @@ import org.moire.ultrasonic.util.Util;
 
 import java.util.Collections;
 
+import kotlin.Lazy;
+
 import static java.util.Arrays.asList;
+import static org.koin.java.standalone.KoinJavaComponent.inject;
 
 public class MainActivity extends SubsonicTabActivity
 {
@@ -67,6 +72,8 @@ public class MainActivity extends SubsonicTabActivity
 
 	private static boolean infoDialogDisplayed;
 	private static boolean shouldUseId3;
+
+	private Lazy<DownloadServiceLifecycleSupport> lifecycleSupport = inject(DownloadServiceLifecycleSupport.class);
 
 	/**
 	 * Called when the activity is first created.
@@ -477,7 +484,7 @@ public class MainActivity extends SubsonicTabActivity
 
 	private void exit()
 	{
-		DownloadServiceImpl.getInstance().onCommand(new Intent(this, MediaPlayerService.class));
+		lifecycleSupport.getValue().onDestroy();
 		Util.unregisterMediaButtonEventReceiver(this);
 		finish();
 	}

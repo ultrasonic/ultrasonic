@@ -37,11 +37,13 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.io.RandomAccessFile;
 
+import kotlin.Lazy;
 import kotlin.Pair;
 
 import static android.content.Context.POWER_SERVICE;
 import static android.os.PowerManager.ON_AFTER_RELEASE;
 import static android.os.PowerManager.SCREEN_DIM_WAKE_LOCK;
+import static org.koin.java.standalone.KoinJavaComponent.inject;
 
 /**
  * @author Sindre Mehus
@@ -439,7 +441,7 @@ public class DownloadFile
 					wifiLock.release();
 				}
 
-				new CacheCleaner(context, DownloadServiceImpl.getInstance()).cleanSpace();
+				new CacheCleaner(context).cleanSpace();
 
 				MediaPlayerService.checkDownloads(context);
 			}

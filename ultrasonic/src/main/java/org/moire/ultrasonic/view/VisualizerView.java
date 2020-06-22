@@ -30,6 +30,10 @@ import org.moire.ultrasonic.domain.PlayerState;
 import org.moire.ultrasonic.service.DownloadService;
 import org.moire.ultrasonic.service.DownloadServiceImpl;
 
+import kotlin.Lazy;
+
+import static org.koin.java.standalone.KoinJavaComponent.inject;
+
 /**
  * A simple class that draws waveform data received from a
  * {@link Visualizer.OnDataCaptureListener#onWaveFormDataCapture}
@@ -39,7 +43,6 @@ import org.moire.ultrasonic.service.DownloadServiceImpl;
  */
 public class VisualizerView extends View
 {
-
 	private static final int PREFERRED_CAPTURE_RATE_MILLIHERTZ = 20000;
 
 	private final Paint paint = new Paint();
@@ -47,6 +50,8 @@ public class VisualizerView extends View
 	private byte[] data;
 	private float[] points;
 	private boolean active;
+
+	private Lazy<DownloadServiceImpl> downloadServiceImpl = inject(DownloadServiceImpl.class);
 
 	public VisualizerView(Context context)
 	{
@@ -97,10 +102,9 @@ public class VisualizerView extends View
 		invalidate();
 	}
 
-	private static Visualizer getVizualizer()
+	private Visualizer getVizualizer()
 	{
-		DownloadService downloadService = DownloadServiceImpl.getInstance();
-		VisualizerController visualizerController = downloadService == null ? null : downloadService.getVisualizerController();
+		VisualizerController visualizerController = downloadServiceImpl.getValue().getVisualizerController();
 		return visualizerController == null ? null : visualizerController.getVisualizer();
 	}
 
@@ -120,8 +124,7 @@ public class VisualizerView extends View
 			return;
 		}
 
-		DownloadService downloadService = DownloadServiceImpl.getInstance();
-		if (downloadService != null && downloadService.getPlayerState() != PlayerState.STARTED)
+		if (downloadServiceImpl.getValue().getPlayerState() != PlayerState.STARTED)
 		{
 			return;
 		}

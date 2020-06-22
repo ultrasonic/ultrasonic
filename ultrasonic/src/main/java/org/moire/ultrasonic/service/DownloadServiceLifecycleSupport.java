@@ -25,168 +25,80 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.SharedPreferences;
 import android.media.AudioManager;
-import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
-import android.telephony.PhoneStateListener;
-import android.telephony.TelephonyManager;
 import android.util.Log;
 import android.view.KeyEvent;
 
 import org.moire.ultrasonic.R;
-import org.moire.ultrasonic.domain.MusicDirectory;
 import org.moire.ultrasonic.domain.PlayerState;
 import org.moire.ultrasonic.util.CacheCleaner;
-import org.moire.ultrasonic.util.FileUtil;
+import org.moire.ultrasonic.util.Constants;
 import org.moire.ultrasonic.util.Util;
 
-import java.io.Serializable;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.concurrent.Executors;
-import java.util.concurrent.ScheduledExecutorService;
-import java.util.concurrent.TimeUnit;
-import java.util.concurrent.atomic.AtomicBoolean;
-import java.util.concurrent.locks.Lock;
-import java.util.concurrent.locks.ReentrantLock;
+import kotlin.Lazy;
+
+import static org.koin.java.standalone.KoinJavaComponent.inject;
 
 /**
  * @author Sindre Mehus
  */
 public class DownloadServiceLifecycleSupport
 {
-
 	private static final String TAG = DownloadServiceLifecycleSupport.class.getSimpleName();
-	private static final String FILENAME_DOWNLOADS_SER = "downloadstate.ser";
 
-	private final DownloadServiceImpl downloadService;
-	private ScheduledExecutorService executorService;
+	private Lazy<DownloadQueueSerializer> downloadQueueSerializer = inject(DownloadQueueSerializer.class);
+	private final DownloadServiceImpl downloadService; // From DI
+
 	private BroadcastReceiver headsetEventReceiver;
-	private BroadcastReceiver ejectEventReceiver;
-	private PhoneStateListener phoneStateListener;
-	private boolean externalStorageAvailable = true;
-	private Lock lock = new ReentrantLock();
-	private final AtomicBoolean setup = new AtomicBoolean(false);
 	private Context context;
 
-	/**
-	 * This receiver manages the intent that could come from other applications.
-	 */
-	private BroadcastReceiver intentReceiver = new BroadcastReceiver()
-	{
-		@Override
-		public void onReceive(Context context, Intent intent)
-		{
-			String action = intent.getAction();
-			Log.i(TAG, "intentReceiver.onReceive: " + action);
-			if (DownloadServiceImpl.CMD_PLAY.equals(action))
-			{
-				downloadService.play();
-			}
-			else if (DownloadServiceImpl.CMD_NEXT.equals(action))
-			{
-				downloadService.next();
-			}
-			else if (DownloadServiceImpl.CMD_PREVIOUS.equals(action))
-			{
-				downloadService.previous();
-			}
-			else if (DownloadServiceImpl.CMD_TOGGLEPAUSE.equals(action))
-			{
-				downloadService.togglePlayPause();
-			}
-			else if (DownloadServiceImpl.CMD_PAUSE.equals(action))
-			{
-				downloadService.pause();
-			}
-			else if (DownloadServiceImpl.CMD_STOP.equals(action))
-			{
-				downloadService.pause();
-				downloadService.seekTo(0);
-			}
-		}
-	};
-
-
-	public DownloadServiceLifecycleSupport(Context context, DownloadServiceImpl downloadService)
+	public DownloadServiceLifecycleSupport(Context context, final DownloadServiceImpl downloadService)
 	{
 		this.downloadService = downloadService;
 		this.context = context;
-	}
 
-	public void onCreate()
-	{
-		Runnable downloadChecker = new Runnable()
-		{
-			@Override
-			public void run()
-			{
-				try
-				{
-					MediaPlayerService.checkDownloads(context);
-				}
-				catch (Throwable x)
-				{
-					Log.e(TAG, "checkDownloads() failed.", x);
-				}
-			}
-		};
-
-		executorService = Executors.newSingleThreadScheduledExecutor();
-		executorService.scheduleWithFixedDelay(downloadChecker, 5, 5, TimeUnit.SECONDS);
-
-        registerHeadsetReceiver();
-
-        // Stop when SD card is ejected.
-		ejectEventReceiver = new BroadcastReceiver()
-		{
-			@Override
-			public void onReceive(Context context, Intent intent)
-			{
-				externalStorageAvailable = Intent.ACTION_MEDIA_MOUNTED.equals(intent.getAction());
-				if (!externalStorageAvailable)
-				{
-					Log.i(TAG, "External media is ejecting. Stopping playback.");
-					downloadService.reset();
-				}
-				else
-				{
-					Log.i(TAG, "External media is available.");
-				}
-			}
-		};
-		IntentFilter ejectFilter = new IntentFilter(Intent.ACTION_MEDIA_EJECT);
-		ejectFilter.addAction(Intent.ACTION_MEDIA_MOUNTED);
-		ejectFilter.addDataScheme("file");
-		context.registerReceiver(ejectEventReceiver, ejectFilter);
+		registerHeadsetReceiver();
 
 		// React to media buttons.
 		Util.registerMediaButtonEventReceiver(context);
 
-		// Pause temporarily on incoming phone calls.
-		//phoneStateListener = new MyPhoneStateListener();
-		//TelephonyManager telephonyManager = (TelephonyManager) downloadService.getSystemService(Context.TELEPHONY_SERVICE);
-		//telephonyManager.listen(phoneStateListener, PhoneStateListener.LISTEN_CALL_STATE);
-
 		// Register the handler for outside intents.
 		IntentFilter commandFilter = new IntentFilter();
-		commandFilter.addAction(DownloadServiceImpl.CMD_PLAY);
-		commandFilter.addAction(DownloadServiceImpl.CMD_TOGGLEPAUSE);
-		commandFilter.addAction(DownloadServiceImpl.CMD_PAUSE);
-		commandFilter.addAction(DownloadServiceImpl.CMD_STOP);
-		commandFilter.addAction(DownloadServiceImpl.CMD_PREVIOUS);
-		commandFilter.addAction(DownloadServiceImpl.CMD_NEXT);
+		commandFilter.addAction(Constants.CMD_PLAY);
+		commandFilter.addAction(Constants.CMD_TOGGLEPAUSE);
+		commandFilter.addAction(Constants.CMD_PAUSE);
+		commandFilter.addAction(Constants.CMD_STOP);
+		commandFilter.addAction(Constants.CMD_PREVIOUS);
+		commandFilter.addAction(Constants.CMD_NEXT);
+		commandFilter.addAction(Constants.CMD_PROCESS_KEYCODE);
 		context.registerReceiver(intentReceiver, commandFilter);
 
-		int instance = Util.getActiveServer(context);
-		downloadService.setJukeboxEnabled(Util.getJukeboxEnabled(context, instance));
+		downloadQueueSerializer.getValue().deserializeDownloadQueue(new Consumer<State>() {
+			@Override
+			public void accept(State state) {
+				downloadService.restore(state.songs, state.currentPlayingIndex, state.currentPlayingPosition, false, false);
 
-		deserializeDownloadQueue();
+				// Work-around: Serialize again, as the restore() method creates a serialization without current playing info.
+				downloadQueueSerializer.getValue().serializeDownloadQueue(downloadService.getSongs(),
+						downloadService.getCurrentPlayingIndex(), downloadService.getPlayerPosition());
+			}
+		});
 
-		new CacheCleaner(context, downloadService).clean();
+		new CacheCleaner(context).clean();
+		Log.i(TAG, "LifecycleSupport created");
 	}
 
-    private void registerHeadsetReceiver() {
+	public void onDestroy()
+	{
+		downloadService.clear(false);
+		context.unregisterReceiver(headsetEventReceiver);
+		context.unregisterReceiver(intentReceiver);
+		downloadService.onDestroy();
+		Log.i(TAG, "LifecycleSupport destroyed");
+	}
+
+	private void registerHeadsetReceiver() {
         // Pause when headset is unplugged.
         final SharedPreferences sp = Util.getPreferences(context);
         final String spKey = context
@@ -223,8 +135,9 @@ public class DownloadServiceLifecycleSupport
         context.registerReceiver(headsetEventReceiver, headsetIntentFilter);
     }
 
-    public void onStart(Intent intent)
+    public void receiveIntent(Intent intent)
 	{
+		Log.i(TAG, "Received intent");
 		if (intent != null && intent.getExtras() != null)
 		{
 			KeyEvent event = (KeyEvent) intent.getExtras().get(Intent.EXTRA_KEY_EVENT);
@@ -233,66 +146,6 @@ public class DownloadServiceLifecycleSupport
 				handleKeyEvent(event);
 			}
 		}
-	}
-
-	public void onDestroy()
-	{
-		executorService.shutdown();
-		serializeDownloadQueueNow();
-		downloadService.clear(false);
-		context.unregisterReceiver(ejectEventReceiver);
-		context.unregisterReceiver(headsetEventReceiver);
-		context.unregisterReceiver(intentReceiver);
-	}
-
-	public boolean isExternalStorageAvailable()
-	{
-		return externalStorageAvailable;
-	}
-
-	public void serializeDownloadQueue()
-	{
-		if (!setup.get())
-		{
-			return;
-		}
-
-		new SerializeTask().execute();
-	}
-
-	public void serializeDownloadQueueNow()
-	{
-		Iterable<DownloadFile> songs = new ArrayList<DownloadFile>(downloadService.getSongs());
-		State state = new State();
-		for (DownloadFile downloadFile : songs)
-		{
-			state.songs.add(downloadFile.getSong());
-		}
-		state.currentPlayingIndex = downloadService.getCurrentPlayingIndex();
-		state.currentPlayingPosition = downloadService.getPlayerPosition();
-
-		Log.i(TAG, String.format("Serialized currentPlayingIndex: %d, currentPlayingPosition: %d", state.currentPlayingIndex, state.currentPlayingPosition));
-		FileUtil.serialize(context, state, FILENAME_DOWNLOADS_SER);
-	}
-
-	private void deserializeDownloadQueue()
-	{
-		new DeserializeTask().executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
-	}
-
-	private void deserializeDownloadQueueNow()
-	{
-		State state = FileUtil.deserialize(context, FILENAME_DOWNLOADS_SER);
-		if (state == null)
-		{
-			return;
-		}
-		Log.i(TAG, "Deserialized currentPlayingIndex: " + state.currentPlayingIndex + ", currentPlayingPosition: " + state.currentPlayingPosition);
-		// TODO: here the autoPlay = false creates problems when Ultrasonic is started by a Play MediaButton as the player won't start this way.
-		downloadService.restore(state.songs, state.currentPlayingIndex, state.currentPlayingPosition, false, false);
-
-		// Work-around: Serialize again, as the restore() method creates a serialization without current playing info.
-		serializeDownloadQueue();
 	}
 
 	private void handleKeyEvent(KeyEvent event)
@@ -321,11 +174,7 @@ public class DownloadServiceLifecycleSupport
 				downloadService.stop();
 				break;
 			case KeyEvent.KEYCODE_MEDIA_PLAY:
-				if (downloadService.getPlayerState() == PlayerState.IDLE)
-				{
-					downloadService.play();
-				}
-				else if (downloadService.getPlayerState() != PlayerState.STARTED)
+				if (downloadService.getPlayerState() != PlayerState.STARTED)
 				{
 					downloadService.start();
 				}
@@ -354,87 +203,39 @@ public class DownloadServiceLifecycleSupport
 	}
 
 	/**
-	 * Logic taken from packages/apps/Music.  Will pause when an incoming
-	 * call rings or if a call (incoming or outgoing) is connected.
+	 * This receiver manages the intent that could come from other applications.
 	 */
-	private class MyPhoneStateListener extends PhoneStateListener
+	private BroadcastReceiver intentReceiver = new BroadcastReceiver()
 	{
-		private boolean resumeAfterCall;
-
 		@Override
-		public void onCallStateChanged(int state, String incomingNumber)
+		public void onReceive(Context context, Intent intent)
 		{
-			switch (state)
+			String action = intent.getAction();
+			if (action == null) return;
+			Log.i(TAG, "intentReceiver.onReceive: " + action);
+
+			switch(action)
 			{
-				case TelephonyManager.CALL_STATE_RINGING:
-				case TelephonyManager.CALL_STATE_OFFHOOK:
-					if (downloadService.getPlayerState() == PlayerState.STARTED && !downloadService.isJukeboxEnabled())
-					{
-						resumeAfterCall = true;
-						downloadService.pause();
-					}
+				case Constants.CMD_PLAY:
+					downloadService.play();
 					break;
-				case TelephonyManager.CALL_STATE_IDLE:
-					if (resumeAfterCall)
-					{
-						resumeAfterCall = false;
-						downloadService.start();
-					}
+				case Constants.CMD_NEXT:
+					downloadService.next();
 					break;
-				default:
+				case Constants.CMD_PREVIOUS:
+					downloadService.previous();
+					break;
+				case Constants.CMD_TOGGLEPAUSE:
+					downloadService.togglePlayPause();
+					break;
+				case Constants.CMD_STOP:
+					downloadService.pause();
+					downloadService.seekTo(0);
+					break;
+				case Constants.CMD_PROCESS_KEYCODE:
+					receiveIntent(intent);
 					break;
 			}
 		}
-	}
-
-	private static class State implements Serializable
-	{
-		private static final long serialVersionUID = -6346438781062572270L;
-
-		private List<MusicDirectory.Entry> songs = new ArrayList<MusicDirectory.Entry>();
-		private int currentPlayingIndex;
-		private int currentPlayingPosition;
-	}
-
-	private class SerializeTask extends AsyncTask<Void, Void, Void>
-	{
-		@Override
-		protected Void doInBackground(Void... params)
-		{
-			if (lock.tryLock())
-			{
-				try
-				{
-					Thread.currentThread().setName("SerializeTask");
-					serializeDownloadQueueNow();
-				}
-				finally
-				{
-					lock.unlock();
-				}
-			}
-			return null;
-		}
-	}
-
-	private class DeserializeTask extends AsyncTask<Void, Void, Void>
-	{
-		@Override
-		protected Void doInBackground(Void... params)
-		{
-			try
-			{
-				Thread.currentThread().setName("DeserializeTask");
-				lock.lock();
-				deserializeDownloadQueueNow();
-				setup.set(true);
-			}
-			finally
-			{
-				lock.unlock();
-			}
-
-			return null;
-		}
-	}
+	};
 }

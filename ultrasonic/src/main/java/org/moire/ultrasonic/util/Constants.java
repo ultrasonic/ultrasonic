@@ -60,6 +60,15 @@ public final class Constants
 	public static final String INTENT_EXTRA_NAME_IS_ALBUM = "subsonic.isalbum";
 	public static final String INTENT_EXTRA_NAME_VIDEOS = "subsonic.videos";
 
+	// Names for Intent Actions
+	public static final String CMD_PROCESS_KEYCODE = "org.moire.ultrasonic.CMD_PROCESS_KEYCODE";
+	public static final String CMD_PLAY = "org.moire.ultrasonic.CMD_PLAY";
+	public static final String CMD_TOGGLEPAUSE = "org.moire.ultrasonic.CMD_TOGGLEPAUSE";
+	public static final String CMD_PAUSE = "org.moire.ultrasonic.CMD_PAUSE";
+	public static final String CMD_STOP = "org.moire.ultrasonic.CMD_STOP";
+	public static final String CMD_PREVIOUS = "org.moire.ultrasonic.CMD_PREVIOUS";
+	public static final String CMD_NEXT = "org.moire.ultrasonic.CMD_NEXT";
+
 	// Notification IDs.
 	public static final int NOTIFICATION_ID_PLAYING = 100;
 
@@ -139,6 +148,8 @@ public final class Constants
 
 	// URL for project donations.
 	public static final String DONATION_URL = "http://www.subsonic.org/pages/premium.jsp";
+
+	public static final String FILENAME_DOWNLOADS_SER = "downloadstate.ser";
 
 	public static final String ALBUM_ART_FILE = "folder.jpeg";
 	public static final String STARRED = "starred";

@@ -18,8 +18,7 @@ import org.moire.ultrasonic.activity.DownloadActivity;
 import org.moire.ultrasonic.activity.MainActivity;
 import org.moire.ultrasonic.domain.MusicDirectory;
 import org.moire.ultrasonic.service.DownloadService;
-import org.moire.ultrasonic.service.DownloadServiceImpl;
-import org.moire.ultrasonic.service.MediaPlayerService;
+import org.moire.ultrasonic.util.Constants;
 import org.moire.ultrasonic.util.FileUtil;
 
 public class UltraSonicAppWidgetProvider extends AppWidgetProvider
@@ -194,27 +193,27 @@ public class UltraSonicAppWidgetProvider extends AppWidgetProvider
 		Intent intent = new Intent(context, playerActive ? DownloadActivity.class : MainActivity.class);
 		intent.setAction("android.intent.action.MAIN");
 		intent.addCategory("android.intent.category.LAUNCHER");
-		PendingIntent pendingIntent = PendingIntent.getActivity(context, 0, intent, PendingIntent.FLAG_UPDATE_CURRENT);
+		PendingIntent pendingIntent = PendingIntent.getActivity(context, 10, intent, PendingIntent.FLAG_UPDATE_CURRENT);
 		views.setOnClickPendingIntent(R.id.appwidget_coverart, pendingIntent);
 		views.setOnClickPendingIntent(R.id.appwidget_top, pendingIntent);
 
 		// Emulate media button clicks.
-		intent = new Intent("1");
-		intent.setComponent(new ComponentName(context, MediaPlayerService.class));
+		intent = new Intent(Constants.CMD_PROCESS_KEYCODE);
+		intent.setPackage(context.getPackageName());
 		intent.putExtra(Intent.EXTRA_KEY_EVENT, new KeyEvent(KeyEvent.ACTION_DOWN, KeyEvent.KEYCODE_MEDIA_PLAY_PAUSE));
-		pendingIntent = PendingIntent.getService(context, 0, intent, 0);
+		pendingIntent = PendingIntent.getBroadcast(context, 11, intent, 0);
 		views.setOnClickPendingIntent(R.id.control_play, pendingIntent);
 
-		intent = new Intent("2");  // Use a unique action name to ensure a different PendingIntent to be created.
-		intent.setComponent(new ComponentName(context, MediaPlayerService.class));
+		intent = new Intent(Constants.CMD_PROCESS_KEYCODE);
+		intent.setPackage(context.getPackageName());
 		intent.putExtra(Intent.EXTRA_KEY_EVENT, new KeyEvent(KeyEvent.ACTION_DOWN, KeyEvent.KEYCODE_MEDIA_NEXT));
-		pendingIntent = PendingIntent.getService(context, 0, intent, 0);
+		pendingIntent = PendingIntent.getBroadcast(context, 12, intent, 0);
 		views.setOnClickPendingIntent(R.id.control_next, pendingIntent);
 
-		intent = new Intent("3");  // Use a unique action name to ensure a different PendingIntent to be created.
-		intent.setComponent(new ComponentName(context, MediaPlayerService.class));
+		intent = new Intent(Constants.CMD_PROCESS_KEYCODE);
+		intent.setPackage(context.getPackageName());
 		intent.putExtra(Intent.EXTRA_KEY_EVENT, new KeyEvent(KeyEvent.ACTION_DOWN, KeyEvent.KEYCODE_MEDIA_PREVIOUS));
-		pendingIntent = PendingIntent.getService(context, 0, intent, 0);
+		pendingIntent = PendingIntent.getBroadcast(context, 13, intent, 0);
 		views.setOnClickPendingIntent(R.id.control_previous, pendingIntent);
 	}
 }

@@ -29,7 +29,6 @@ import android.media.AudioManager;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
-import android.os.Environment;
 import androidx.appcompat.app.ActionBar;
 import android.util.Log;
 import android.view.*;
@@ -39,6 +38,7 @@ import android.widget.*;
 import net.simonvt.menudrawer.MenuDrawer;
 import net.simonvt.menudrawer.Position;
 import org.koin.java.standalone.KoinJavaComponent;
+import static org.koin.java.standalone.KoinJavaComponent.inject;
 import org.moire.ultrasonic.R;
 import org.moire.ultrasonic.domain.MusicDirectory;
 import org.moire.ultrasonic.domain.MusicDirectory.Entry;
@@ -55,6 +55,8 @@ import java.io.File;
 import java.io.PrintWriter;
 import java.util.*;
 import java.util.regex.Pattern;
+
+import kotlin.Lazy;
 
 /**
  * @author Sindre Mehus
@@ -73,6 +75,9 @@ public class SubsonicTabActivity extends ResultActivity implements OnClickListen
 	private static final String STATE_ACTIVE_VIEW_ID = "org.moire.ultrasonic.activeViewId";
 	private static final String STATE_ACTIVE_POSITION = "org.moire.ultrasonic.activePosition";
 	private static final int DIALOG_ASK_FOR_SHARE_DETAILS = 102;
+
+	private Lazy<DownloadServiceImpl> downloadServiceImpl = inject(DownloadServiceImpl.class);
+	private Lazy<DownloadServiceLifecycleSupport> lifecycleSupport = inject(DownloadServiceLifecycleSupport.class);
 
 	public MenuDrawer menuDrawer;
 	private int activePosition = 1;
@@ -97,7 +102,6 @@ public class SubsonicTabActivity extends ResultActivity implements OnClickListen
 		applyTheme();
 		super.onCreate(bundle);
 
-		if (DownloadServiceImpl.getInstance() == null) new DownloadServiceImpl(getApplicationContext());
 		setVolumeControlStream(AudioManager.STREAM_MUSIC);
 
 		if (bundle != null)
@@ -155,6 +159,8 @@ public class SubsonicTabActivity extends ResultActivity implements OnClickListen
 		instance = this;
 
 		Util.registerMediaButtonEventReceiver(this);
+		// Lifecycle support's constructor registers some event receivers so it should be created early
+		lifecycleSupport.getValue();
 
 		// Make sure to update theme
 		if (theme != null && !theme.equals(Util.getTheme(this)))
@@ -256,26 +262,21 @@ public class SubsonicTabActivity extends ResultActivity implements OnClickListen
 
 						if (nowPlayingView != null)
 						{
-							final DownloadService downloadService = DownloadServiceImpl.getInstance();
+							PlayerState playerState = downloadServiceImpl.getValue().getPlayerState();
 
-							if (downloadService != null)
+							if (playerState.equals(PlayerState.PAUSED) || playerState.equals(PlayerState.STARTED))
 							{
-								PlayerState playerState = downloadService.getPlayerState();
+								DownloadFile file = downloadServiceImpl.getValue().getCurrentPlaying();
 
-								if (playerState.equals(PlayerState.PAUSED) || playerState.equals(PlayerState.STARTED))
+								if (file != null)
 								{
-									DownloadFile file = downloadService.getCurrentPlaying();
-
-									if (file != null)
-									{
-										final Entry song = file.getSong();
-										showNowPlaying(SubsonicTabActivity.this, downloadService, song, playerState);
-									}
+									final Entry song = file.getSong();
+									showNowPlaying(SubsonicTabActivity.this, downloadServiceImpl.getValue(), song, playerState);
 								}
-								else
-								{
-									hideNowPlaying();
-								}
+							}
+							else
+							{
+								hideNowPlaying();
 							}
 						}
 
@@ -763,18 +764,7 @@ public class SubsonicTabActivity extends ResultActivity implements OnClickListen
 
 	public DownloadService getDownloadService()
 	{
-		DownloadService downloadService = DownloadServiceImpl.getInstance();
-
-		if (downloadService != null)
-		{
-			return downloadService;
-		}
-
-		Log.w(TAG, "DownloadService not running. Attempting to start it.");
-
-		new DownloadServiceImpl(getApplicationContext());
-
-		return DownloadServiceImpl.getInstance();
+		return downloadServiceImpl.getValue();
 	}
 
 	protected void warnIfNetworkOrStorageUnavailable()

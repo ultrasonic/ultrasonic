@@ -32,6 +32,7 @@ import androidx.core.app.NotificationManagerCompat;
 import org.koin.java.standalone.KoinJavaComponent;
 import org.moire.ultrasonic.R;
 import org.moire.ultrasonic.activity.DownloadActivity;
+import org.moire.ultrasonic.activity.MainActivity;
 import org.moire.ultrasonic.activity.SubsonicTabActivity;
 import org.moire.ultrasonic.audiofx.EqualizerController;
 import org.moire.ultrasonic.audiofx.VisualizerController;
@@ -58,7 +59,13 @@ import java.net.URLEncoder;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.TimeUnit;
 
+import kotlin.Lazy;
+
+import static org.koin.java.standalone.KoinJavaComponent.inject;
 import static org.moire.ultrasonic.domain.PlayerState.COMPLETED;
 import static org.moire.ultrasonic.domain.PlayerState.DOWNLOADING;
 import static org.moire.ultrasonic.domain.PlayerState.IDLE;
@@ -101,9 +108,11 @@ public class MediaPlayerService extends Service
     public static DownloadFile currentDownloading;
     public static DownloadFile nextPlaying;
 
-    public static boolean jukeboxEnabled;
-    public static JukeboxService jukeboxService;
-    public static DownloadServiceLifecycleSupport lifecycleSupport;
+    public Lazy<JukeboxService> jukeboxService = inject(JukeboxService.class);
+    private Lazy<DownloadQueueSerializer> downloadQueueSerializer = inject(DownloadQueueSerializer.class);
+    private Lazy<ExternalStorageMonitor> externalStorageMonitor = inject(ExternalStorageMonitor.class);
+
+    private ScheduledExecutorService executorService;
 
     public static int cachedPosition;
     private PositionCache positionCache;
@@ -233,6 +242,25 @@ public class MediaPlayerService extends Service
             }
         }).start();
 
+        Runnable downloadChecker = new Runnable()
+        {
+            @Override
+            public void run()
+            {
+                try
+                {
+                    MediaPlayerService.checkDownloads(MediaPlayerService.this);
+                }
+                catch (Throwable x)
+                {
+                    Log.e(TAG, "checkDownloads() failed.", x);
+                }
+            }
+        };
+
+        executorService = Executors.newSingleThreadScheduledExecutor();
+        executorService.scheduleWithFixedDelay(downloadChecker, 5, 5, TimeUnit.SECONDS);
+
         audioManager = (AudioManager) this.getSystemService(Context.AUDIO_SERVICE);
         setUpRemoteControlClient();
 
@@ -274,7 +302,8 @@ public class MediaPlayerService extends Service
 
         // We should use a single notification builder, otherwise the notification may not be updated
         notificationBuilder = new NotificationCompat.Builder(this, NOTIFICATION_CHANNEL_ID);
-
+        // Update notification early. It is better to show an empty one temporarily than waiting too long and letting Android kill the app
+        updateNotification();
         instance = this;
 
         Log.i(TAG, "MediaPlayerService created");
@@ -284,7 +313,6 @@ public class MediaPlayerService extends Service
     public int onStartCommand(Intent intent, int flags, int startId)
     {
         super.onStartCommand(intent, flags, startId);
-        lifecycleSupport.onStart(intent);
         return START_NOT_STICKY;
     }
 
@@ -296,6 +324,8 @@ public class MediaPlayerService extends Service
         instance = null;
 
         reset();
+        executorService.shutdown();
+
         try
         {
             mediaPlayer.release();
@@ -501,9 +531,9 @@ public class MediaPlayerService extends Service
     {
         try
         {
-            if (jukeboxEnabled)
+            if (jukeboxService.getValue().isEnabled())
             {
-                jukeboxService.skip(getCurrentPlayingIndex(), position / 1000);
+                jukeboxService.getValue().skip(getCurrentPlayingIndex(), position / 1000);
             }
             else
             {
@@ -528,7 +558,7 @@ public class MediaPlayerService extends Service
                 return 0;
             }
 
-            return jukeboxEnabled ? jukeboxService.getPositionSeconds() * 1000 : cachedPosition;
+            return jukeboxService.getValue().isEnabled() ? jukeboxService.getValue().getPositionSeconds() * 1000 : cachedPosition;
         }
         catch (Exception x)
         {
@@ -736,9 +766,9 @@ public class MediaPlayerService extends Service
 
             if (start)
             {
-                if (jukeboxEnabled)
+                if (jukeboxService.getValue().isEnabled())
                 {
-                    jukeboxService.skip(getCurrentPlayingIndex(), 0);
+                    jukeboxService.getValue().skip(getCurrentPlayingIndex(), 0);
                     setPlayerState(STARTED);
                 }
                 else
@@ -756,7 +786,7 @@ public class MediaPlayerService extends Service
     {
         reset();
         setCurrentPlaying(null);
-        lifecycleSupport.serializeDownloadQueue();
+        downloadQueueSerializer.getValue().serializeDownloadQueue(downloadList, getCurrentPlayingIndex(), getPlayerPosition());
     }
 
     public synchronized void reset()
@@ -802,9 +832,9 @@ public class MediaPlayerService extends Service
         {
             if (playerState == STARTED)
             {
-                if (jukeboxEnabled)
+                if (jukeboxService.getValue().isEnabled())
                 {
-                    jukeboxService.stop();
+                    jukeboxService.getValue().stop();
                 }
                 else
                 {
@@ -825,9 +855,9 @@ public class MediaPlayerService extends Service
         {
             if (playerState == STARTED)
             {
-                if (jukeboxEnabled)
+                if (jukeboxService.getValue().isEnabled())
                 {
-                    jukeboxService.stop();
+                    jukeboxService.getValue().stop();
                 }
                 else
                 {
@@ -846,9 +876,9 @@ public class MediaPlayerService extends Service
     {
         try
         {
-            if (jukeboxEnabled)
+            if (jukeboxService.getValue().isEnabled())
             {
-                jukeboxService.start();
+                jukeboxService.getValue().start();
             }
             else
             {
@@ -885,7 +915,7 @@ public class MediaPlayerService extends Service
 
         if (playerState == PAUSED)
         {
-            lifecycleSupport.serializeDownloadQueue();
+            downloadQueueSerializer.getValue().serializeDownloadQueue(downloadList, getCurrentPlayingIndex(), getPlayerPosition());
         }
 
         if (playerState == PlayerState.STARTED)
@@ -1080,7 +1110,7 @@ public class MediaPlayerService extends Service
                         }
                     }
 
-                    lifecycleSupport.serializeDownloadQueue();
+                    downloadQueueSerializer.getValue().serializeDownloadQueue(downloadList, getCurrentPlayingIndex(), getPlayerPosition());
                 }
             });
 
@@ -1274,6 +1304,8 @@ public class MediaPlayerService extends Service
                         if (Util.getShouldClearPlaylist(this))
                         {
                             clear(true);
+                            jukeboxService.getValue().updatePlaylist();
+                            downloadQueueSerializer.getValue().serializeDownloadQueue(downloadList, getCurrentPlayingIndex(), getPlayerPosition());
                         }
 
                         resetPlayback();
@@ -1294,6 +1326,8 @@ public class MediaPlayerService extends Service
         }
     }
 
+    // TODO: Serialization was originally here, removed for static. refactor this and but back
+    //  downloadQueueSerializer.getValue().serializeDownloadQueue(downloadList, getCurrentPlayingIndex(), getPlayerPosition());
     public static synchronized void clear(boolean serialize)
     {
         MediaPlayerService mediaPlayerService = getRunningInstance();
@@ -1309,19 +1343,14 @@ public class MediaPlayerService extends Service
         if (mediaPlayerService != null)
         {
             mediaPlayerService.setCurrentPlaying(null);
-            updateJukeboxPlaylist();
             mediaPlayerService.setNextPlaying();
-        }
-
-        if (serialize)
-        {
-            lifecycleSupport.serializeDownloadQueue();
         }
     }
 
     protected static synchronized void checkDownloads(Context context)
     {
-        if (!Util.isExternalStoragePresent() || !lifecycleSupport.isExternalStorageAvailable())
+        // TODO: refactor inject
+        if (!Util.isExternalStoragePresent() || !inject(ExternalStorageMonitor.class).getValue().isExternalStorageAvailable())
         {
             return;
         }
@@ -1331,7 +1360,8 @@ public class MediaPlayerService extends Service
             checkShufflePlay(context);
         }
 
-        if (jukeboxEnabled || !Util.isNetworkConnected(context))
+        // TODO: This inject is ugly, refactor
+        if (inject(JukeboxService.class).getValue().isEnabled() || !Util.isNetworkConnected(context))
         {
             return;
         }
@@ -1472,20 +1502,12 @@ public class MediaPlayerService extends Service
 
         if (revisionBefore != revision)
         {
-            getInstance(context).updateJukeboxPlaylist();
+            getInstance(context).jukeboxService.getValue().updatePlaylist();
         }
 
         if (wasEmpty && !MediaPlayerService.downloadList.isEmpty())
         {
             getInstance(context).play(0);
-        }
-    }
-
-    public static void updateJukeboxPlaylist()
-    {
-        if (jukeboxEnabled)
-        {
-            jukeboxService.updatePlaylist();
         }
     }
 

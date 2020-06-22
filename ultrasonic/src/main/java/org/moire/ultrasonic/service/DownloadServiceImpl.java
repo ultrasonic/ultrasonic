@@ -20,7 +20,6 @@ package org.moire.ultrasonic.service;
 
 import android.content.Context;
 import android.content.Intent;
-import android.os.PowerManager;
 import android.util.Log;
 
 import org.koin.java.standalone.KoinJavaComponent;
@@ -42,6 +41,9 @@ import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
 
+import kotlin.Lazy;
+
+import static org.koin.java.standalone.KoinJavaComponent.inject;
 import static org.moire.ultrasonic.service.MediaPlayerService.playerState;
 
 /**
@@ -52,26 +54,18 @@ public class DownloadServiceImpl implements DownloadService
 {
 	private static final String TAG = DownloadServiceImpl.class.getSimpleName();
 
-	public static final String CMD_PLAY = "org.moire.ultrasonic.CMD_PLAY";
-	public static final String CMD_TOGGLEPAUSE = "org.moire.ultrasonic.CMD_TOGGLEPAUSE";
-	public static final String CMD_PAUSE = "org.moire.ultrasonic.CMD_PAUSE";
-	public static final String CMD_STOP = "org.moire.ultrasonic.CMD_STOP";
-	public static final String CMD_PREVIOUS = "org.moire.ultrasonic.CMD_PREVIOUS";
-	public static final String CMD_NEXT = "org.moire.ultrasonic.CMD_NEXT";
+	private final LRUCache<MusicDirectory.Entry, DownloadFile> downloadFileCache = new LRUCache<>(100);
 
-	private DownloadServiceLifecycleSupport lifecycleSupport;
-
-	private final LRUCache<MusicDirectory.Entry, DownloadFile> downloadFileCache = new LRUCache<MusicDirectory.Entry, DownloadFile>(100);
-
-	private static DownloadServiceImpl instance;
 	private String suggestedPlaylistName;
 	private boolean keepScreenOn;
 
 	private boolean showVisualization;
-	private boolean jukeboxEnabled;
 	private boolean autoPlayStart;
 
 	private Context context;
+	public Lazy<JukeboxService> jukeboxService = inject(JukeboxService.class);
+	private Lazy<DownloadQueueSerializer> downloadQueueSerializer = inject(DownloadQueueSerializer.class);
+	private Lazy<ExternalStorageMonitor> externalStorageMonitor = inject(ExternalStorageMonitor.class);
 
 	public DownloadServiceImpl(Context context)
 	{
@@ -79,25 +73,152 @@ public class DownloadServiceImpl implements DownloadService
 
 		// TODO: refactor
 		MediaPlayerService.shufflePlayBuffer = new ShufflePlayBuffer(context);
-		MediaPlayerService.jukeboxService = new JukeboxService(context, this);
+		externalStorageMonitor.getValue().onCreate(new Runnable() {
+			@Override
+			public void run() {
+				reset();
+			}
+		});
 
-		instance = this;
-		lifecycleSupport = new DownloadServiceLifecycleSupport(context,this);
-		lifecycleSupport.onCreate();
-		MediaPlayerService.lifecycleSupport = lifecycleSupport;
+		int instance = Util.getActiveServer(context);
+		setJukeboxEnabled(Util.getJukeboxEnabled(context, instance));
 
 		Log.i(TAG, "DownloadServiceImpl created");
 	}
 
-	public void onCommand(Intent intent)
+	public void onDestroy()
 	{
-		lifecycleSupport.onStart(intent);
-		Log.i(TAG, "DownloadServiceImpl received intent");
+		externalStorageMonitor.getValue().onDestroy();
+		context.stopService(new Intent(context, MediaPlayerService.class));
+		Log.i(TAG, "DownloadServiceImpl destroyed");
 	}
 
-	public static DownloadServiceImpl getInstance()
+	private void executeOnStartedMediaPlayerService(final Consumer<MediaPlayerService> taskToExecute)
 	{
-		return instance;
+		Thread t = new Thread()
+		{
+			public void run()
+			{
+				MediaPlayerService instance = MediaPlayerService.getInstance(context);
+				taskToExecute.accept(instance);
+			}
+		};
+		t.start();
+	}
+
+	@Override
+	public void restore(List<MusicDirectory.Entry> songs, final int currentPlayingIndex, final int currentPlayingPosition, final boolean autoPlay, boolean newPlaylist)
+	{
+		download(songs, false, false, false, false, newPlaylist);
+
+		if (currentPlayingIndex != -1)
+		{
+			executeOnStartedMediaPlayerService(new Consumer<MediaPlayerService>() {
+				@Override
+				public void accept(MediaPlayerService mediaPlayerService) {
+					mediaPlayerService.play(currentPlayingIndex, autoPlayStart);
+				}
+			});
+
+			if (MediaPlayerService.currentPlaying != null)
+			{
+				if (autoPlay && jukeboxService.getValue().isEnabled())
+				{
+					jukeboxService.getValue().skip(getCurrentPlayingIndex(), currentPlayingPosition / 1000);
+				}
+				else
+				{
+					if (MediaPlayerService.currentPlaying.isCompleteFileAvailable())
+					{
+						executeOnStartedMediaPlayerService(new Consumer<MediaPlayerService>() {
+							@Override
+							public void accept(MediaPlayerService mediaPlayerService) {
+								mediaPlayerService.doPlay(MediaPlayerService.currentPlaying, currentPlayingPosition, autoPlay);
+							}
+						});
+					}
+				}
+			}
+
+			autoPlayStart = false;
+		}
+	}
+
+	@Override
+	public synchronized void play(final int index)
+	{
+		executeOnStartedMediaPlayerService(new Consumer<MediaPlayerService>() {
+			@Override
+			public void accept(MediaPlayerService mediaPlayerService) {
+				mediaPlayerService.play(index, true);
+			}
+		});
+	}
+
+	public synchronized void play()
+	{
+		executeOnStartedMediaPlayerService(new Consumer<MediaPlayerService>() {
+			@Override
+			public void accept(MediaPlayerService mediaPlayerService) {
+				mediaPlayerService.play();
+			}
+		});
+	}
+
+	@Override
+	public synchronized void togglePlayPause()
+	{
+		if (playerState == PlayerState.IDLE) autoPlayStart = true;
+		executeOnStartedMediaPlayerService(new Consumer<MediaPlayerService>() {
+			@Override
+			public void accept(MediaPlayerService mediaPlayerService) {
+				mediaPlayerService.togglePlayPause();
+			}
+		});
+	}
+
+	@Override
+	public synchronized void seekTo(final int position)
+	{
+		executeOnStartedMediaPlayerService(new Consumer<MediaPlayerService>() {
+			@Override
+			public void accept(MediaPlayerService mediaPlayerService) {
+				mediaPlayerService.seekTo(position);
+			}
+		});
+	}
+
+	@Override
+	public synchronized void pause()
+	{
+		executeOnStartedMediaPlayerService(new Consumer<MediaPlayerService>() {
+			@Override
+			public void accept(MediaPlayerService mediaPlayerService) {
+				mediaPlayerService.pause();
+			}
+		});
+	}
+
+	@Override
+	public synchronized void start()
+	{
+		executeOnStartedMediaPlayerService(new Consumer<MediaPlayerService>() {
+			@Override
+			public void accept(MediaPlayerService mediaPlayerService) {
+				mediaPlayerService.start();
+			}
+		});
+	}
+
+	@Override
+	public synchronized void stop()
+	{
+		executeOnStartedMediaPlayerService(new Consumer<MediaPlayerService>() {
+			@Override
+			public void accept(MediaPlayerService mediaPlayerService) {
+				mediaPlayerService.stop();
+			}
+		});
 	}
 
 	@Override
@@ -129,8 +250,6 @@ public class DownloadServiceImpl implements DownloadService
 				MediaPlayerService.downloadList.add(getCurrentPlayingIndex() + offset, downloadFile);
 				offset++;
 			}
-
-			MediaPlayerService.revision++;
 		}
 		else
 		{
@@ -149,10 +268,10 @@ public class DownloadServiceImpl implements DownloadService
 				if (mediaPlayerService != null) mediaPlayerService.setNextPlaying();
 			}
 
-			MediaPlayerService.revision++;
 		}
+		MediaPlayerService.revision++;
 
-		MediaPlayerService.updateJukeboxPlaylist();
+		jukeboxService.getValue().updatePlaylist();
 
 		if (shuffle) shuffle();
 
@@ -171,7 +290,7 @@ public class DownloadServiceImpl implements DownloadService
 			MediaPlayerService.checkDownloads(context);
 		}
 
-		lifecycleSupport.serializeDownloadQueue();
+		downloadQueueSerializer.getValue().serializeDownloadQueue(getSongs(), getCurrentPlayingIndex(), getPlayerPosition());
 	}
 
 	@Override
@@ -186,35 +305,7 @@ public class DownloadServiceImpl implements DownloadService
 		MediaPlayerService.revision++;
 
 		MediaPlayerService.checkDownloads(context);
-		lifecycleSupport.serializeDownloadQueue();
-	}
-
-	@Override
-	public void restore(List<MusicDirectory.Entry> songs, int currentPlayingIndex, int currentPlayingPosition, boolean autoPlay, boolean newPlaylist)
-	{
-		download(songs, false, false, false, false, newPlaylist);
-
-		if (currentPlayingIndex != -1)
-		{
-			MediaPlayerService.getInstance(context).play(currentPlayingIndex, autoPlayStart);
-
-			if (MediaPlayerService.currentPlaying != null)
-			{
-				if (autoPlay && jukeboxEnabled)
-				{
-					MediaPlayerService.jukeboxService.skip(getCurrentPlayingIndex(), currentPlayingPosition / 1000);
-				}
-				else
-				{
-					if (MediaPlayerService.currentPlaying.isCompleteFileAvailable())
-					{
-						MediaPlayerService.getInstance(context).doPlay(MediaPlayerService.currentPlaying, currentPlayingPosition, autoPlay);
-					}
-				}
-			}
-
-			autoPlayStart = false;
-		}
+		downloadQueueSerializer.getValue().serializeDownloadQueue(getSongs(), getCurrentPlayingIndex(), getPlayerPosition());
 	}
 
 	public synchronized void setCurrentPlaying(DownloadFile currentPlaying)
@@ -238,13 +329,13 @@ public class DownloadServiceImpl implements DownloadService
 	@Override
 	public void stopJukeboxService()
 	{
-		MediaPlayerService.jukeboxService.stopJukeboxService();
+		jukeboxService.getValue().stopJukeboxService();
 	}
 
 	@Override
 	public void startJukeboxService()
 	{
-		MediaPlayerService.jukeboxService.startJukeboxService();
+		jukeboxService.getValue().startJukeboxService();
 	}
 
 	@Override
@@ -274,8 +365,8 @@ public class DownloadServiceImpl implements DownloadService
 			MediaPlayerService.downloadList.add(0, MediaPlayerService.currentPlaying);
 		}
 		MediaPlayerService.revision++;
-		lifecycleSupport.serializeDownloadQueue();
-		MediaPlayerService.updateJukeboxPlaylist();
+		downloadQueueSerializer.getValue().serializeDownloadQueue(getSongs(), getCurrentPlayingIndex(), getPlayerPosition());
+		jukeboxService.getValue().updatePlaylist();
 
 		MediaPlayerService mediaPlayerService = MediaPlayerService.getRunningInstance();
 		if (mediaPlayerService != null) mediaPlayerService.setNextPlaying();
@@ -349,12 +440,17 @@ public class DownloadServiceImpl implements DownloadService
 	@Override
 	public synchronized void clear()
 	{
-		MediaPlayerService.clear(true);
+		clear(true);
 	}
 
 	public synchronized void clear(boolean serialize)
 	{
 		MediaPlayerService.clear(serialize);
+		jukeboxService.getValue().updatePlaylist();
+		if (serialize)
+		{
+			downloadQueueSerializer.getValue().serializeDownloadQueue(getSongs(), getCurrentPlayingIndex(), getPlayerPosition());
+		}
 	}
 
 	@Override
@@ -383,8 +479,8 @@ public class DownloadServiceImpl implements DownloadService
 			}
 		}
 
-		lifecycleSupport.serializeDownloadQueue();
-		MediaPlayerService.updateJukeboxPlaylist();
+		downloadQueueSerializer.getValue().serializeDownloadQueue(getSongs(), getCurrentPlayingIndex(), getPlayerPosition());
+		jukeboxService.getValue().updatePlaylist();
 	}
 
 	@Override
@@ -415,8 +511,8 @@ public class DownloadServiceImpl implements DownloadService
 		MediaPlayerService.downloadList.remove(downloadFile);
 		MediaPlayerService.backgroundDownloadList.remove(downloadFile);
 		MediaPlayerService.revision++;
-		lifecycleSupport.serializeDownloadQueue();
-		MediaPlayerService.updateJukeboxPlaylist();
+		downloadQueueSerializer.getValue().serializeDownloadQueue(getSongs(), getCurrentPlayingIndex(), getPlayerPosition());
+		jukeboxService.getValue().updatePlaylist();
 		if (downloadFile == MediaPlayerService.nextPlaying)
 		{
 			MediaPlayerService mediaPlayerService = MediaPlayerService.getRunningInstance();
@@ -461,10 +557,7 @@ public class DownloadServiceImpl implements DownloadService
 	}
 
 	@Override
-	public List<DownloadFile> getSongs()
-	{
-		return MediaPlayerService.downloadList;
-	}
+	public List<DownloadFile> getSongs() { return MediaPlayerService.downloadList; }
 
 	@Override
 	public long getDownloadListDuration()
@@ -495,7 +588,7 @@ public class DownloadServiceImpl implements DownloadService
 	@Override
 	public synchronized List<DownloadFile> getDownloads()
 	{
-		List<DownloadFile> temp = new ArrayList<DownloadFile>();
+		List<DownloadFile> temp = new ArrayList<>();
 		temp.addAll(MediaPlayerService.downloadList);
 		temp.addAll(MediaPlayerService.backgroundDownloadList);
 		return temp;
@@ -505,33 +598,6 @@ public class DownloadServiceImpl implements DownloadService
 	public List<DownloadFile> getBackgroundDownloads()
 	{
 		return MediaPlayerService.backgroundDownloadList;
-	}
-
-	@Override
-	public synchronized void play(int index)
-	{
-		MediaPlayerService.getInstance(context).play(index, true);
-	}
-
-	public synchronized void play()
-	{
-		MediaPlayerService.getInstance(context).play();
-	}
-
-	/**
-	 * Plays or resumes the playback, depending on the current player state.
-	 */
-	@Override
-	public synchronized void togglePlayPause()
-	{
-		if (playerState == PlayerState.IDLE) autoPlayStart = true;
-		MediaPlayerService.getInstance(context).togglePlayPause();
-	}
-
-	@Override
-	public synchronized void seekTo(int position)
-	{
-		MediaPlayerService.getInstance(context).seekTo(position);
 	}
 
 	@Override
@@ -562,24 +628,6 @@ public class DownloadServiceImpl implements DownloadService
 		{
 			play(index + 1);
 		}
-	}
-
-	@Override
-	public synchronized void pause()
-	{
-		MediaPlayerService.getInstance(context).pause();
-	}
-
-	@Override
-	public synchronized void stop()
-	{
-		MediaPlayerService.getInstance(context).stop();
-	}
-
-	@Override
-	public synchronized void start()
-	{
-		MediaPlayerService.getInstance(context).start();
 	}
 
 	@Override
@@ -659,18 +707,16 @@ public class DownloadServiceImpl implements DownloadService
 	@Override
 	public boolean isJukeboxEnabled()
 	{
-		return jukeboxEnabled;
+		return jukeboxService.getValue().isEnabled();
 	}
 
 	@Override
 	public boolean isJukeboxAvailable()
 	{
-		MusicService musicService = MusicServiceFactory.getMusicService(context);
-
 		try
 		{
 			String username = Util.getUserName(context, Util.getActiveServer(context));
-			UserInfo user = musicService.getUser(username, context, null);
+			UserInfo user = MusicServiceFactory.getMusicService(context).getUser(username, context, null);
 			return user.getJukeboxRole();
 		}
 		catch (Exception e)
@@ -684,12 +730,10 @@ public class DownloadServiceImpl implements DownloadService
 	@Override
 	public boolean isSharingAvailable()
 	{
-		MusicService musicService = MusicServiceFactory.getMusicService(context);
-
 		try
 		{
 			String username = Util.getUserName(context, Util.getActiveServer(context));
-			UserInfo user = musicService.getUser(username, context, null);
+			UserInfo user = MusicServiceFactory.getMusicService(context).getUser(username, context, null);
 			return user.getShareRole();
 		}
 		catch (Exception e)
@@ -703,12 +747,12 @@ public class DownloadServiceImpl implements DownloadService
 	@Override
 	public void setJukeboxEnabled(boolean jukeboxEnabled)
 	{
-		this.jukeboxEnabled = jukeboxEnabled;
-		MediaPlayerService.jukeboxService.setEnabled(jukeboxEnabled);
+		jukeboxService.getValue().setEnabled(jukeboxEnabled);
+		setPlayerState(PlayerState.IDLE);
 
 		if (jukeboxEnabled)
 		{
-			MediaPlayerService.jukeboxService.startJukeboxService();
+			jukeboxService.getValue().startJukeboxService();
 
 			reset();
 
@@ -720,14 +764,14 @@ public class DownloadServiceImpl implements DownloadService
 		}
 		else
 		{
-			MediaPlayerService.jukeboxService.stopJukeboxService();
+			jukeboxService.getValue().stopJukeboxService();
 		}
 	}
 
 	@Override
 	public void adjustJukeboxVolume(boolean up)
 	{
-		MediaPlayerService.jukeboxService.adjustVolume(up);
+		jukeboxService.getValue().adjustVolume(up);
 	}
 
 	@Override
@@ -756,9 +800,9 @@ public class DownloadServiceImpl implements DownloadService
 		DownloadFile movedSong = list.remove(from);
 		list.add(to, movedSong);
 
-		if (jukeboxEnabled && mainList)
+		if (jukeboxService.getValue().isEnabled() && mainList)
 		{
-			MediaPlayerService.updateJukeboxPlaylist();
+			jukeboxService.getValue().updatePlaylist();
 		}
 		else if (mainList && (movedSong == MediaPlayerService.nextPlaying || (currentPlayingIndex + 1) == to))
 		{
@@ -797,11 +841,9 @@ public class DownloadServiceImpl implements DownloadService
 			@Override
 			public void run()
 			{
-				final MusicService musicService = MusicServiceFactory.getMusicService(context);
-
 				try
 				{
-					musicService.setRating(song.getId(), rating, context, null);
+					MusicServiceFactory.getMusicService(context).setRating(song.getId(), rating, context, null);
 				}
 				catch (Exception e)
 				{
@@ -811,10 +853,5 @@ public class DownloadServiceImpl implements DownloadService
 		}).start();
 
 		updateNotification();
-	}
-
-	private void handleError(Exception x)
-	{
-		Log.w(TAG, String.format("Media player error: %s", x), x);
 	}
 }

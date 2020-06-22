@@ -21,22 +21,25 @@ package org.moire.ultrasonic.receiver;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
-import android.os.Build;
 import android.os.Bundle;
 import android.os.Parcelable;
 import android.util.Log;
 
-import org.moire.ultrasonic.service.DownloadServiceImpl;
-import org.moire.ultrasonic.service.MediaPlayerService;
+import org.moire.ultrasonic.service.DownloadServiceLifecycleSupport;
+import org.moire.ultrasonic.util.Constants;
 import org.moire.ultrasonic.util.Util;
+
+import kotlin.Lazy;
+
+import static org.koin.java.standalone.KoinJavaComponent.inject;
 
 /**
  * @author Sindre Mehus
  */
 public class MediaButtonIntentReceiver extends BroadcastReceiver
 {
-
 	private static final String TAG = MediaButtonIntentReceiver.class.getSimpleName();
+	private Lazy<DownloadServiceLifecycleSupport> lifecycleSupport = inject(DownloadServiceLifecycleSupport.class);
 
 	@Override
 	public void onReceive(Context context, Intent intent)
@@ -57,22 +60,16 @@ public class MediaButtonIntentReceiver extends BroadcastReceiver
 			Parcelable event = (Parcelable) extras.get(Intent.EXTRA_KEY_EVENT);
 			Log.i(TAG, "Got MEDIA_BUTTON key event: " + event);
 
-			Intent serviceIntent = new Intent(context, MediaPlayerService.class);
-			serviceIntent.putExtra(Intent.EXTRA_KEY_EVENT, event);
-
 			try
 			{
-				if (DownloadServiceImpl.getInstance() == null) new DownloadServiceImpl(context);
-				DownloadServiceImpl.getInstance().onCommand(serviceIntent);
+				Intent serviceIntent = new Intent(Constants.CMD_PROCESS_KEYCODE);
+				serviceIntent.putExtra(Intent.EXTRA_KEY_EVENT, event);
+				lifecycleSupport.getValue().receiveIntent(serviceIntent);
 
 				if (isOrderedBroadcast())
 				{
 					abortBroadcast();
 				}
-			}
-			catch (IllegalStateException exception)
-			{
-				Log.w(TAG, "MediaButtonIntentReceiver couldn't start DownloadServiceImpl because the application was in the background.");
 			}
 			catch (Exception x)
 			{

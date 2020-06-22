@@ -46,6 +46,10 @@ import org.moire.ultrasonic.util.VideoPlayerType;
 
 import java.io.File;
 
+import kotlin.Lazy;
+
+import static org.koin.java.standalone.KoinJavaComponent.inject;
+
 /**
  * Used to display songs in a {@code ListView}.
  *
@@ -72,12 +76,13 @@ public class SongView extends UpdateView implements Checkable
 	private ImageType leftImageType;
 	private ImageType rightImageType;
 	private Drawable rightImage;
-	private DownloadService downloadService;
 	private DownloadFile downloadFile;
 	private boolean playing;
 	private EntryAdapter.SongViewHolder viewHolder;
 	private boolean maximized = false;
 	private boolean useFiveStarRating;
+
+	private Lazy<DownloadServiceImpl> downloadServiceImpl = inject(DownloadServiceImpl.class);
 
 	public SongView(Context context)
 	{
@@ -164,10 +169,7 @@ public class SongView extends UpdateView implements Checkable
 
 		this.song = song;
 
-		if (downloadService != null)
-		{
-			this.downloadFile = downloadService.forSong(song);
-		}
+		this.downloadFile = downloadServiceImpl.getValue().forSong(song);
 
 		StringBuilder artist = new StringBuilder(60);
 
@@ -311,10 +313,6 @@ public class SongView extends UpdateView implements Checkable
 	@Override
 	protected void updateBackground()
 	{
-		if (downloadService == null)
-		{
-			downloadService = DownloadServiceImpl.getInstance();
-		}
 	}
 
 	@Override
@@ -322,12 +320,7 @@ public class SongView extends UpdateView implements Checkable
 	{
 		updateBackground();
 
-		if (downloadService == null)
-		{
-			return;
-		}
-
-		downloadFile = downloadService.forSong(this.song);
+		downloadFile = downloadServiceImpl.getValue().forSong(this.song);
 		File partialFile = downloadFile.getPartialFile();
 
 		if (downloadFile.isWorkDone())
@@ -417,7 +410,7 @@ public class SongView extends UpdateView implements Checkable
 		viewHolder.fiveStar4.setImageDrawable(rating > 3 ? starDrawable : starHollowDrawable);
 		viewHolder.fiveStar5.setImageDrawable(rating > 4 ? starDrawable : starHollowDrawable);
 
-		boolean playing = downloadService.getCurrentPlaying() == downloadFile;
+		boolean playing = downloadServiceImpl.getValue().getCurrentPlaying() == downloadFile;
 
 		if (playing)
 		{
