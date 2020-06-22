@@ -396,7 +396,6 @@
     <string name="settings.image_loader_concurrency_12">12</string>
     <string name="albumArt">albumArt</string>
     <string name="common_multiple_years">Multiple Years</string>
-
     <string name="permissions.access_error">Az Ultrasonic nem éri el a zenei fájl gyorsítótárat. A gyorsítótár helye visszaállítva az alapbeállításra.</string>
     <string name="permissions.message_box_title">Figyelem</string>
     <string name="permissions.permission_missing">Az Ultrasonic működéséhez írás/olvasás hozzáférés szükséges a zenei fájl gyorsítótárhoz. A gyorsítótár helye visszaállítva az alapbeállításra.</string>
@@ -446,14 +445,15 @@
     <string name="api.subsonic.trial_period_is_over">A próbaidő vége.</string>
     <string name="api.subsonic.upgrade_client">Nem kompatibilis verzió. Kérjük, frissítse az UltraSonic Android alkalmazást!</string>
     <string name="api.subsonic.upgrade_server">Nem kompatibilis verzió. Kérjük, frissítse a Subsonic kiszolgálót!</string>
+
+    <string name="feature_flags_image_loader_title">Engedélyezzen új képbetöltőt</string>
     <string name="feature_flags_image_loader_description">Engedélyezi az új képbetöltő megvalósítását. Jelenleg nem
         tárolja a képet az eszköz tárolójában, és csak a memóriában tárolja a gyorsítótárat.
     </string>
-    <string name="feature_flags_category_title">Jellemzők Zászlók</string>
-    <string name="feature_flags_image_loader_title">Engedélyezzen új képbetöltőt</string>
     <string name="feature_flags_five_star_rating_title">Öt csillagos értékelés használata a dalokhoz</string>
     <string name="feature_flags_five_star_rating_description">Öt csillag használata az értékeléshez az egyszerű
         csillaggal jelölés helyett.
     </string>
+    <string name="feature_flags_category_title">Jellemzők Zászlók</string>
 
 </resources>

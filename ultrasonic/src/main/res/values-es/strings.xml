@@ -396,7 +396,6 @@
     <string name="settings.image_loader_concurrency_12">12</string>
     <string name="albumArt">Caratula del Álbum</string>
     <string name="common_multiple_years">Múltiples años</string>
-
     <string name="permissions.access_error">Ultrasonic no puede acceder a la caché de los ficheros de música. La ubicación de la caché se restableció a la ruta predeterminada.</string>
     <string name="permissions.message_box_title">Atención</string>
     <string name="permissions.permission_missing">Ultrasonic necesita permiso de lectura / escritura para el directorio caché de música. El directorio caché se restableció a su valor predeterminado.</string>
@@ -446,14 +445,15 @@
     <string name="api.subsonic.trial_period_is_over">El período de prueba ha terminado.</string>
     <string name="api.subsonic.upgrade_client">Versiones incompatibles. Por favor actualiza la aplicación de Android UltraSonic.</string>
     <string name="api.subsonic.upgrade_server">Versiones incompatibles. Por favor actualiza el servidor de Subsonic.</string>
-    <string name="feature_flags_category_title">Banderas de características</string>
+
+    <string name="feature_flags_image_loader_title">Habilitar nuevo cargador de imágenes</string>
     <string name="feature_flags_image_loader_description">Permite la implementación de un nuevo cargador de imágenes.
         Actualmente no guarda la imagen en el almacenamiento del dispositivo y sólo utiliza caché en la memoria.
     </string>
-    <string name="feature_flags_image_loader_title">Habilitar nuevo cargador de imágenes</string>
     <string name="feature_flags_five_star_rating_title">Use cinco estrellas para las canciones.</string>
     <string name="feature_flags_five_star_rating_description">Utilice el sistema de calificación de cinco estrellas para canciones
          en lugar de simplemente destacar / desestimar elementos.
     </string>
+    <string name="feature_flags_category_title">Banderas de características</string>
 
 </resources>

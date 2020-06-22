@@ -396,7 +396,6 @@
     <string name="settings.image_loader_concurrency_12">12</string>
     <string name="albumArt">Albumhoes</string>
     <string name="common_multiple_years">Meerdere jaren</string>
-
     <string name="permissions.access_error">Ultrasonic can\'t access the music file cache. Cache location was reset to the default path.</string>
     <string name="permissions.message_box_title">Warning</string>
     <string name="permissions.permission_missing">Ultrasonic needs read/write permission to the music cache directory. Cache directory was reset to its default value.</string>
@@ -451,10 +450,10 @@
     <string name="feature_flags_image_loader_description">Schakelt de nieuwe methode voor het laden van afbeeldingen in.
         Momenteel slaat het geen afbeeldingen op op de apparaatopslag en wordt alleen geheugencache gebruikt.
     </string>
-    <string name="feature_flags_category_title">Experimentele functies</string>
     <string name="feature_flags_five_star_rating_title">Gebruik vijf sterren voor nummers</string>
     <string name="feature_flags_five_star_rating_description">Gebruik vijf sterren ratingsysteem voor liedjes
          in plaats van items simpelweg in de hoofdrol te zetten / niet te verwijderen.
     </string>
+    <string name="feature_flags_category_title">Experimentele functies</string>
 
 </resources>
