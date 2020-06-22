@@ -206,6 +206,7 @@ public class BookmarkActivity extends SubsonicTabActivity
 		if (!getSelectedSongs(albumListView).isEmpty())
 		{
 			int position = songs.get(0).getBookmarkPosition();
+			if (getDownloadService() == null) return;
 			getDownloadService().restore(songs, 0, position, true, true);
 			selectAll(false, false);
 		}

@@ -36,6 +36,7 @@ import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.net.Uri;
 import android.net.wifi.WifiManager;
+import android.os.Build;
 import android.os.Environment;
 import android.os.Parcelable;
 import android.preference.PreferenceManager;
@@ -155,12 +156,16 @@ public class Util extends DownloadActivity
 
 	public static boolean isNotificationEnabled(Context context)
 	{
+		// After API26 foreground services must be used for music playback, and they must have a notification
+		if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) return true;
 		SharedPreferences preferences = getPreferences(context);
 		return preferences.getBoolean(Constants.PREFERENCES_KEY_SHOW_NOTIFICATION, false);
 	}
 
 	public static boolean isNotificationAlwaysEnabled(Context context)
 	{
+		// After API26 foreground services must be used for music playback, and they must have a notification
+		if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) return true;
 		SharedPreferences preferences = getPreferences(context);
 		return preferences.getBoolean(Constants.PREFERENCES_KEY_ALWAYS_SHOW_NOTIFICATION, false);
 	}

@@ -154,6 +154,7 @@ public class DownloadServiceImpl extends Service implements DownloadService
 	private final static int lockScreenBitmapSize = 500;
 
 	private boolean isInForeground = false;
+	private NotificationCompat.Builder notificationBuilder;
 
 	static
 	{
@@ -262,13 +263,30 @@ public class DownloadServiceImpl extends Service implements DownloadService
 
 		instance = this;
 		lifecycleSupport.onCreate();
+
+		// Create Notification Channel
+		if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+			//The suggested importance of a startForeground service notification is IMPORTANCE_LOW
+			NotificationChannel channel = new NotificationChannel(NOTIFICATION_CHANNEL_ID, NOTIFICATION_CHANNEL_NAME, NotificationManager.IMPORTANCE_LOW);
+			channel.setLightColor(android.R.color.holo_blue_dark);
+			channel.setLockscreenVisibility(Notification.VISIBILITY_PUBLIC);
+			NotificationManager manager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
+			manager.createNotificationChannel(channel);
+		}
+
+		// We should use a single notification builder, otherwise the notification may not be updated
+		notificationBuilder = new NotificationCompat.Builder(this, NOTIFICATION_CHANNEL_ID);
+
+		Log.i(TAG, "DownloadServiceImpl created");
 	}
 
 	@Override
 	public int onStartCommand(Intent intent, int flags, int startId)
 	{
 		super.onStartCommand(intent, flags, startId);
+
 		lifecycleSupport.onStart(intent);
+		Log.i(TAG, "DownloadServiceImpl started with intent");
 		return START_NOT_STICKY;
 	}
 
@@ -324,6 +342,8 @@ public class DownloadServiceImpl extends Service implements DownloadService
 		catch (Throwable ignored)
 		{
 		}
+
+		Log.i(TAG, "DownloadServiceImpl stopped");
 	}
 
 	public static DownloadService getInstance()
@@ -723,10 +743,7 @@ public class DownloadServiceImpl extends Service implements DownloadService
 		if (currentPlaying != null)
 		{
 			if (tabInstance != null) {
-                if (Util.isNotificationEnabled(this)) {
-                    startForeground(NOTIFICATION_ID, buildForegroundNotification());
-                    isInForeground = true;
-                }
+                updateNotification();
 				tabInstance.showNowPlaying();
 			}
 		}
@@ -735,6 +752,7 @@ public class DownloadServiceImpl extends Service implements DownloadService
 			if (tabInstance != null)
 			{
 				stopForeground(true);
+				clearRemoteControl();
 				isInForeground = false;
 				tabInstance.hideNowPlaying();
 			}
@@ -1260,6 +1278,7 @@ public class DownloadServiceImpl extends Service implements DownloadService
 			if (tabInstance != null)
 			{
 				stopForeground(true);
+				clearRemoteControl();
 				isInForeground = false;
 				tabInstance.hideNowPlaying();
 			}
@@ -2085,9 +2104,15 @@ public class DownloadServiceImpl extends Service implements DownloadService
 	{
 		if (Util.isNotificationEnabled(this)) {
 			if (isInForeground == true) {
-				final NotificationManagerCompat notificationManager =
+				if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+					NotificationManager notificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
+					notificationManager.notify(NOTIFICATION_ID, buildForegroundNotification());
+				}
+				else {
+					final NotificationManagerCompat notificationManager =
 						NotificationManagerCompat.from(this);
-				notificationManager.notify(NOTIFICATION_ID, buildForegroundNotification());
+					notificationManager.notify(NOTIFICATION_ID, buildForegroundNotification());
+				}
 				Log.w(TAG, "--- Updated notification");
 			}
 			else {
@@ -2100,31 +2125,24 @@ public class DownloadServiceImpl extends Service implements DownloadService
 
     @SuppressWarnings("IconColors")
     private Notification buildForegroundNotification() {
-		if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-			NotificationChannel channel = new NotificationChannel(NOTIFICATION_CHANNEL_ID, NOTIFICATION_CHANNEL_NAME, NotificationManager.IMPORTANCE_NONE);
-			channel.setLightColor(android.R.color.holo_blue_dark);
-			channel.setLockscreenVisibility(Notification.VISIBILITY_PUBLIC);
-			NotificationManager manager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
-			manager.createNotificationChannel(channel);
+        notificationBuilder.setSmallIcon(R.drawable.ic_stat_ultrasonic);
 
-		}
-		NotificationCompat.Builder builder = new NotificationCompat.Builder(this, NOTIFICATION_CHANNEL_ID);
-        builder.setSmallIcon(R.drawable.ic_stat_ultrasonic);
-
-        builder.setAutoCancel(false);
-        builder.setOngoing(true);
-        builder.setWhen(System.currentTimeMillis());
-        builder.setVisibility(NotificationCompat.VISIBILITY_PUBLIC);
+        notificationBuilder.setAutoCancel(false);
+        notificationBuilder.setOngoing(true);
+        notificationBuilder.setOnlyAlertOnce(true);
+        notificationBuilder.setWhen(System.currentTimeMillis());
+        notificationBuilder.setVisibility(NotificationCompat.VISIBILITY_PUBLIC);
+		notificationBuilder.setPriority(NotificationCompat.PRIORITY_LOW);
 
         RemoteViews contentView = new RemoteViews(this.getPackageName(), R.layout.notification);
         Util.linkButtons(this, contentView, false);
         RemoteViews bigView = new RemoteViews(this.getPackageName(), R.layout.notification_large);
         Util.linkButtons(this, bigView, false);
 
-        builder.setContent(contentView);
+        notificationBuilder.setContent(contentView);
 
         Intent notificationIntent = new Intent(this, DownloadActivity.class);
-        builder.setContentIntent(PendingIntent.getActivity(this, 0, notificationIntent, 0));
+        notificationBuilder.setContentIntent(PendingIntent.getActivity(this, 0, notificationIntent, 0));
 
         if (playerState == PlayerState.PAUSED || playerState == PlayerState.IDLE) {
             contentView.setImageViewResource(R.id.control_play, R.drawable.media_start_normal_dark);
@@ -2134,47 +2152,50 @@ public class DownloadServiceImpl extends Service implements DownloadService
             bigView.setImageViewResource(R.id.control_play, R.drawable.media_pause_normal_dark);
         }
 
-        final Entry song = currentPlaying.getSong();
-        final String title = song.getTitle();
-        final String text = song.getArtist();
-        final String album = song.getAlbum();
-		final int rating = song.getUserRating() == null ? 0 : song.getUserRating();
-        final int imageSize = Util.getNotificationImageSize(this);
+        if (currentPlaying != null) {
+			final Entry song = currentPlaying.getSong();
+			final String title = song.getTitle();
+			final String text = song.getArtist();
+			final String album = song.getAlbum();
+			final int rating = song.getUserRating() == null ? 0 : song.getUserRating();
+			final int imageSize = Util.getNotificationImageSize(this);
 
-        try {
-            final Bitmap nowPlayingImage = FileUtil.getAlbumArtBitmap(this, currentPlaying.getSong(), imageSize, true);
-            if (nowPlayingImage == null) {
-                contentView.setImageViewResource(R.id.notification_image, R.drawable.unknown_album);
-                bigView.setImageViewResource(R.id.notification_image, R.drawable.unknown_album);
-            } else {
-                contentView.setImageViewBitmap(R.id.notification_image, nowPlayingImage);
-                bigView.setImageViewBitmap(R.id.notification_image, nowPlayingImage);
-            }
-        } catch (Exception x) {
-            Log.w(TAG, "Failed to get notification cover art", x);
-            contentView.setImageViewResource(R.id.notification_image, R.drawable.unknown_album);
-            bigView.setImageViewResource(R.id.notification_image, R.drawable.unknown_album);
-        }
+			try {
+				final Bitmap nowPlayingImage = FileUtil.getAlbumArtBitmap(this, currentPlaying.getSong(), imageSize, true);
+				if (nowPlayingImage == null) {
+					contentView.setImageViewResource(R.id.notification_image, R.drawable.unknown_album);
+					bigView.setImageViewResource(R.id.notification_image, R.drawable.unknown_album);
+				} else {
+					contentView.setImageViewBitmap(R.id.notification_image, nowPlayingImage);
+					bigView.setImageViewBitmap(R.id.notification_image, nowPlayingImage);
+				}
+			} catch (Exception x) {
+				Log.w(TAG, "Failed to get notification cover art", x);
+				contentView.setImageViewResource(R.id.notification_image, R.drawable.unknown_album);
+				bigView.setImageViewResource(R.id.notification_image, R.drawable.unknown_album);
+			}
 
-        contentView.setTextViewText(R.id.trackname, title);
-        bigView.setTextViewText(R.id.trackname, title);
-        contentView.setTextViewText(R.id.artist, text);
-        bigView.setTextViewText(R.id.artist, text);
-        contentView.setTextViewText(R.id.album, album);
-        bigView.setTextViewText(R.id.album, album);
 
-		boolean useFiveStarRating = KoinJavaComponent.get(FeatureStorage.class).isFeatureEnabled(Feature.FIVE_STAR_RATING);
-		if (!useFiveStarRating)	bigView.setViewVisibility(R.id.notification_rating, View.INVISIBLE);
-		else
-		{
-			bigView.setImageViewResource(R.id.notification_five_star_1, rating > 0 ? R.drawable.ic_star_full_dark : R.drawable.ic_star_hollow_dark);
-			bigView.setImageViewResource(R.id.notification_five_star_2, rating > 1 ? R.drawable.ic_star_full_dark : R.drawable.ic_star_hollow_dark);
-			bigView.setImageViewResource(R.id.notification_five_star_3, rating > 2 ? R.drawable.ic_star_full_dark : R.drawable.ic_star_hollow_dark);
-			bigView.setImageViewResource(R.id.notification_five_star_4, rating > 3 ? R.drawable.ic_star_full_dark : R.drawable.ic_star_hollow_dark);
-			bigView.setImageViewResource(R.id.notification_five_star_5, rating > 4 ? R.drawable.ic_star_full_dark : R.drawable.ic_star_hollow_dark);
+			contentView.setTextViewText(R.id.trackname, title);
+			bigView.setTextViewText(R.id.trackname, title);
+			contentView.setTextViewText(R.id.artist, text);
+			bigView.setTextViewText(R.id.artist, text);
+			contentView.setTextViewText(R.id.album, album);
+			bigView.setTextViewText(R.id.album, album);
+
+			boolean useFiveStarRating = KoinJavaComponent.get(FeatureStorage.class).isFeatureEnabled(Feature.FIVE_STAR_RATING);
+			if (!useFiveStarRating)
+				bigView.setViewVisibility(R.id.notification_rating, View.INVISIBLE);
+			else {
+				bigView.setImageViewResource(R.id.notification_five_star_1, rating > 0 ? R.drawable.ic_star_full_dark : R.drawable.ic_star_hollow_dark);
+				bigView.setImageViewResource(R.id.notification_five_star_2, rating > 1 ? R.drawable.ic_star_full_dark : R.drawable.ic_star_hollow_dark);
+				bigView.setImageViewResource(R.id.notification_five_star_3, rating > 2 ? R.drawable.ic_star_full_dark : R.drawable.ic_star_hollow_dark);
+				bigView.setImageViewResource(R.id.notification_five_star_4, rating > 3 ? R.drawable.ic_star_full_dark : R.drawable.ic_star_hollow_dark);
+				bigView.setImageViewResource(R.id.notification_five_star_5, rating > 4 ? R.drawable.ic_star_full_dark : R.drawable.ic_star_hollow_dark);
+			}
 		}
 
-        Notification notification = builder.build();
+        Notification notification = notificationBuilder.build();
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
             notification.bigContentView = bigView;
         }
