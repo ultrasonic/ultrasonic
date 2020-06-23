@@ -257,6 +257,7 @@ public class MediaPlayerService extends Service
                     {
                         tabInstance.hideNowPlaying();
                         stopForeground(true);
+                        player.getValue().clearRemoteControl();
                         isInForeground = false;
                         stopSelf();
                     }
@@ -465,6 +466,7 @@ public class MediaPlayerService extends Service
                     if (tabInstance != null)
                     {
                         stopForeground(true);
+                        player.getValue().clearRemoteControl();
                         isInForeground = false;
                         tabInstance.hideNowPlaying();
                         stopSelf();

@@ -79,6 +79,7 @@ public class DownloadServiceLifecycleSupport
 		downloadQueueSerializer.getValue().deserializeDownloadQueue(new Consumer<State>() {
 			@Override
 			public void accept(State state) {
+				// TODO: here the autoPlay = false creates problems when Ultrasonic is started by a Play MediaButton as the player won't start this way.
 				downloadService.restore(state.songs, state.currentPlayingIndex, state.currentPlayingPosition, false, false);
 
 				// Work-around: Serialize again, as the restore() method creates a serialization without current playing info.
@@ -176,7 +177,11 @@ public class DownloadServiceLifecycleSupport
 				downloadService.stop();
 				break;
 			case KeyEvent.KEYCODE_MEDIA_PLAY:
-				if (downloadService.getPlayerState() != PlayerState.STARTED)
+				if (downloadService.getPlayerState() == PlayerState.IDLE)
+				{
+					downloadService.play();
+				}
+				else if (downloadService.getPlayerState() != PlayerState.STARTED)
 				{
 					downloadService.start();
 				}

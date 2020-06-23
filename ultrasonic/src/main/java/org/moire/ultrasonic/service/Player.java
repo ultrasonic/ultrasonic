@@ -478,7 +478,7 @@ public class Player
         }
     }
 
-    private void clearRemoteControl()
+    public void clearRemoteControl()
     {
         if (remoteControlClient != null)
         {
