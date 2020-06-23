@@ -61,29 +61,9 @@ public interface DownloadService
 
 	void clear();
 
-	void clearBackground();
-
 	void clearIncomplete();
 
-	int size();
-
-	void remove(int which);
-
 	void remove(DownloadFile downloadFile);
-
-	long getDownloadListDuration();
-
-	List<DownloadFile> getSongs();
-
-	List<DownloadFile> getDownloads();
-
-	List<DownloadFile> getBackgroundDownloads();
-
-	int getCurrentPlayingIndex();
-
-	DownloadFile getCurrentPlaying();
-
-	DownloadFile getCurrentDownloading();
 
 	void play(int index);
 
@@ -110,10 +90,6 @@ public interface DownloadService
 	void delete(List<Entry> songs);
 
 	void unpin(List<Entry> songs);
-
-	DownloadFile forSong(Entry song);
-
-	long getDownloadListUpdateRevision();
 
 	void setSuggestedPlaylistName(String name);
 

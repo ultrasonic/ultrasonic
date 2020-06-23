@@ -310,7 +310,7 @@ public class BookmarkActivity extends SubsonicTabActivity
 
 		for (MusicDirectory.Entry song : selection)
 		{
-			DownloadFile downloadFile = getDownloadService().forSong(song);
+			DownloadFile downloadFile = downloader.getValue().getDownloadFileForSong(song);
 			if (downloadFile.isWorkDone())
 			{
 				deleteEnabled = true;

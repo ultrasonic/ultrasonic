@@ -49,14 +49,16 @@ public class DownloadServiceLifecycleSupport
 
 	private Lazy<DownloadQueueSerializer> downloadQueueSerializer = inject(DownloadQueueSerializer.class);
 	private final DownloadServiceImpl downloadService; // From DI
+	private final Downloader downloader; // From DI
 
 	private BroadcastReceiver headsetEventReceiver;
 	private Context context;
 
-	public DownloadServiceLifecycleSupport(Context context, final DownloadServiceImpl downloadService)
+	public DownloadServiceLifecycleSupport(Context context, final DownloadServiceImpl downloadService, final Downloader downloader)
 	{
 		this.downloadService = downloadService;
 		this.context = context;
+		this.downloader = downloader;
 
 		registerHeadsetReceiver();
 
@@ -80,8 +82,8 @@ public class DownloadServiceLifecycleSupport
 				downloadService.restore(state.songs, state.currentPlayingIndex, state.currentPlayingPosition, false, false);
 
 				// Work-around: Serialize again, as the restore() method creates a serialization without current playing info.
-				downloadQueueSerializer.getValue().serializeDownloadQueue(downloadService.getSongs(),
-						downloadService.getCurrentPlayingIndex(), downloadService.getPlayerPosition());
+				downloadQueueSerializer.getValue().serializeDownloadQueue(downloader.downloadList,
+						downloader.getCurrentPlayingIndex(), downloadService.getPlayerPosition());
 			}
 		});
 
@@ -165,7 +167,7 @@ public class DownloadServiceLifecycleSupport
 				downloadService.previous();
 				break;
 			case KeyEvent.KEYCODE_MEDIA_NEXT:
-				if (downloadService.getCurrentPlayingIndex() < downloadService.size() - 1)
+				if (downloader.getCurrentPlayingIndex() < downloader.downloadList.size() - 1)
 				{
 					downloadService.next();
 				}

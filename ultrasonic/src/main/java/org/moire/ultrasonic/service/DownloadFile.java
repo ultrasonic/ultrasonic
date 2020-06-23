@@ -68,6 +68,9 @@ public class DownloadFile
 	private volatile boolean saveWhenDone;
 	private volatile boolean completeWhenDone;
 
+	private Lazy<Downloader> downloader = inject(Downloader.class);
+
+
 	public DownloadFile(Context context, MusicDirectory.Entry song, boolean save)
 	{
 		super();
@@ -443,7 +446,7 @@ public class DownloadFile
 
 				new CacheCleaner(context).cleanSpace();
 
-				MediaPlayerService.checkDownloads(context);
+				downloader.getValue().checkDownloads();
 			}
 		}
 

@@ -7,8 +7,7 @@ import android.util.Log;
 
 import org.moire.ultrasonic.domain.Playlist;
 import org.moire.ultrasonic.service.DownloadFile;
-import org.moire.ultrasonic.service.DownloadService;
-import org.moire.ultrasonic.service.DownloadServiceImpl;
+import org.moire.ultrasonic.service.Downloader;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -35,7 +34,7 @@ public class CacheCleaner
 	private static final long MIN_FREE_SPACE = 500 * 1024L * 1024L;
 
 	private final Context context;
-	private Lazy<DownloadServiceImpl> downloadServiceImpl = inject(DownloadServiceImpl.class);
+	private Lazy<Downloader> downloader = inject(Downloader.class);
 
 	public CacheCleaner(Context context)
 	{
@@ -223,7 +222,7 @@ public class CacheCleaner
 	{
 		Set<File> filesToNotDelete = new HashSet<File>(5);
 
-		for (DownloadFile downloadFile : downloadServiceImpl.getValue().getDownloads())
+		for (DownloadFile downloadFile : downloader.getValue().getDownloads())
 		{
 			filesToNotDelete.add(downloadFile.getPartialFile());
 			filesToNotDelete.add(downloadFile.getCompleteFile());

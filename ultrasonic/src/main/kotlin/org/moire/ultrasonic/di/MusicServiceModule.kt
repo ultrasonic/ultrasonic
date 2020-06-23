@@ -15,6 +15,7 @@ import org.moire.ultrasonic.cache.PermanentFileStorage
 import org.moire.ultrasonic.service.*
 import org.moire.ultrasonic.subsonic.loader.image.SubsonicImageLoader
 import org.moire.ultrasonic.util.Constants
+import org.moire.ultrasonic.util.ShufflePlayBuffer
 
 internal const val MUSIC_SERVICE_CONTEXT = "CurrentMusicService"
 internal const val ONLINE_MUSIC_SERVICE = "OnlineMusicService"
@@ -112,9 +113,12 @@ val musicServiceModule = module(MUSIC_SERVICE_CONTEXT) {
 
     single { SubsonicImageLoader(getProperty(DiProperties.APP_CONTEXT), get()) }
 
-    single { DownloadServiceImpl(androidContext()) }
-    single { JukeboxService(androidContext()) }
-    single { DownloadServiceLifecycleSupport(androidContext(), get())}
-    single { DownloadQueueSerializer(androidContext())}
-    single { ExternalStorageMonitor(androidContext())}
+    single { DownloadServiceImpl(androidContext(), get(), get(), get()) }
+    single { JukeboxService(androidContext(), get()) }
+    single { DownloadServiceLifecycleSupport(androidContext(), get(), get()) }
+    single { DownloadQueueSerializer(androidContext()) }
+    single { ExternalStorageMonitor(androidContext()) }
+    single { ShufflePlayBuffer(androidContext()) }
+    single { Downloader(androidContext(), get(), get(), get()) }
+    single { Player(androidContext()) }
 }

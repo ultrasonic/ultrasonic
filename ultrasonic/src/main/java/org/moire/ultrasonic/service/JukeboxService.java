@@ -71,7 +71,9 @@ public class JukeboxService
 	private boolean enabled = false;
 	private Context context;
 
+	// TODO: These create circular references, try to refactor
 	private Lazy<DownloadServiceImpl> downloadServiceImpl = inject(DownloadServiceImpl.class);
+	private final Downloader downloader;
 
 	// TODO: Report warning if queue fills up.
 	// TODO: Create shutdown method?
@@ -79,9 +81,10 @@ public class JukeboxService
 	// TODO: Persist RC state?
 	// TODO: Minimize status updates.
 
-	public JukeboxService(Context context)
+	public JukeboxService(Context context, Downloader downloader)
 	{
 		this.context = context;
+		this.downloader = downloader;
 	}
 
 	public void startJukeboxService()
@@ -182,7 +185,7 @@ public class JukeboxService
 		// Track change?
 		Integer index = jukeboxStatus.getCurrentPlayingIndex();
 
-		if (index != null && index != -1 && index != downloadServiceImpl.getValue().getCurrentPlayingIndex())
+		if (index != null && index != -1 && index != downloader.getCurrentPlayingIndex())
 		{
 			downloadServiceImpl.getValue().setCurrentPlaying(index);
 		}
@@ -232,8 +235,8 @@ public class JukeboxService
 		tasks.remove(Stop.class);
 		tasks.remove(Start.class);
 
-		List<String> ids = new ArrayList<String>();
-		for (DownloadFile file : downloadServiceImpl.getValue().getDownloads())
+		List<String> ids = new ArrayList<>();
+		for (DownloadFile file : downloader.getDownloads())
 		{
 			ids.add(file.getSong().getId());
 		}
@@ -334,7 +337,7 @@ public class JukeboxService
 
 	private static class TaskQueue
 	{
-		private final LinkedBlockingQueue<JukeboxTask> queue = new LinkedBlockingQueue<JukeboxTask>();
+		private final LinkedBlockingQueue<JukeboxTask> queue = new LinkedBlockingQueue<>();
 
 		void add(JukeboxTask jukeboxTask)
 		{

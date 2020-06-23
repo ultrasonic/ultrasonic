@@ -5,8 +5,9 @@ import android.content.Context;
 import android.content.Intent;
 
 import org.moire.ultrasonic.domain.MusicDirectory.Entry;
-import org.moire.ultrasonic.service.DownloadService;
 import org.moire.ultrasonic.service.DownloadServiceImpl;
+import org.moire.ultrasonic.service.Downloader;
+import org.moire.ultrasonic.service.Player;
 
 import kotlin.Lazy;
 
@@ -16,16 +17,18 @@ public class A2dpIntentReceiver extends BroadcastReceiver
 {
 	private static final String PLAYSTATUS_RESPONSE = "com.android.music.playstatusresponse";
 	private Lazy<DownloadServiceImpl> downloadServiceImpl = inject(DownloadServiceImpl.class);
+	private Lazy<Downloader> downloader = inject(Downloader.class);
+	protected Lazy<Player> player = inject(Player.class);
 
 	@Override
 	public void onReceive(Context context, Intent intent)
 	{
-		if (downloadServiceImpl.getValue().getCurrentPlaying() == null)
+		if (player.getValue().currentPlaying == null)
 		{
 			return;
 		}
 
-		Entry song = downloadServiceImpl.getValue().getCurrentPlaying().getSong();
+		Entry song = player.getValue().currentPlaying.getSong();
 
 		if (song == null)
 		{
@@ -35,8 +38,8 @@ public class A2dpIntentReceiver extends BroadcastReceiver
 		Intent avrcpIntent = new Intent(PLAYSTATUS_RESPONSE);
 
 		Integer duration = song.getDuration();
-		Integer playerPosition = downloadServiceImpl.getValue().getPlayerPosition();
-		Integer listSize = downloadServiceImpl.getValue().getDownloads().size();
+		int playerPosition = downloadServiceImpl.getValue().getPlayerPosition();
+		int listSize = downloader.getValue().getDownloads().size();
 
 		if (duration != null)
 		{
@@ -52,11 +55,7 @@ public class A2dpIntentReceiver extends BroadcastReceiver
 				avrcpIntent.putExtra("playing", true);
 				break;
 			case STOPPED:
-				avrcpIntent.putExtra("playing", false);
-				break;
 			case PAUSED:
-				avrcpIntent.putExtra("playing", false);
-				break;
 			case COMPLETED:
 				avrcpIntent.putExtra("playing", false);
 				break;

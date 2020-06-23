@@ -57,6 +57,7 @@ import org.moire.ultrasonic.service.DownloadFile;
 import org.moire.ultrasonic.service.DownloadService;
 import org.moire.ultrasonic.service.DownloadServiceImpl;
 import org.moire.ultrasonic.service.DownloadServiceLifecycleSupport;
+import org.moire.ultrasonic.service.Downloader;
 import org.moire.ultrasonic.service.MediaPlayerService;
 import org.moire.ultrasonic.service.MusicServiceFactory;
 
@@ -960,7 +961,7 @@ public class Util extends DownloadActivity
 		context.sendBroadcast(intent);
 	}
 
-	public static void broadcastA2dpMetaDataChange(Context context, DownloadService downloadService)
+	public static void broadcastA2dpMetaDataChange(Context context, int playerPosition, DownloadFile currentPlaying, int listSize, int id)
 	{
 		if (!Util.getShouldSendBluetoothNotifications(context))
 		{
@@ -970,17 +971,9 @@ public class Util extends DownloadActivity
 		Entry song = null;
 		Intent avrcpIntent = new Intent(CM_AVRCP_METADATA_CHANGED);
 
-		if (downloadService != null)
-		{
-			DownloadFile entry = downloadService.getCurrentPlaying();
+		if (currentPlaying != null) song = currentPlaying.getSong();
 
-			if (entry != null)
-			{
-				song = entry.getSong();
-			}
-		}
-
-		if (downloadService == null || song == null)
+		if (song == null)
 		{
 			avrcpIntent.putExtra("track", "");
 			avrcpIntent.putExtra("track_name", "");
@@ -1013,9 +1006,6 @@ public class Util extends DownloadActivity
 			String artist = song.getArtist();
 			String album = song.getAlbum();
 			Integer duration = song.getDuration();
-			Integer listSize = downloadService.getDownloads().size();
-			Integer id = downloadService.getCurrentPlayingIndex() + 1;
-			Integer playerPosition = downloadService.getPlayerPosition();
 
 			avrcpIntent.putExtra("track", title);
 			avrcpIntent.putExtra("track_name", title);

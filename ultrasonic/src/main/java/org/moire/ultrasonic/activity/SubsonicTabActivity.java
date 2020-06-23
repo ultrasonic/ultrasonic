@@ -78,6 +78,9 @@ public class SubsonicTabActivity extends ResultActivity implements OnClickListen
 
 	private Lazy<DownloadServiceImpl> downloadServiceImpl = inject(DownloadServiceImpl.class);
 	private Lazy<DownloadServiceLifecycleSupport> lifecycleSupport = inject(DownloadServiceLifecycleSupport.class);
+	protected Lazy<Downloader> downloader = inject(Downloader.class);
+	protected Lazy<Player> player = inject(Player.class);
+
 
 	public MenuDrawer menuDrawer;
 	private int activePosition = 1;
@@ -266,7 +269,7 @@ public class SubsonicTabActivity extends ResultActivity implements OnClickListen
 
 							if (playerState.equals(PlayerState.PAUSED) || playerState.equals(PlayerState.STARTED))
 							{
-								DownloadFile file = downloadServiceImpl.getValue().getCurrentPlaying();
+								DownloadFile file = player.getValue().currentPlaying;
 
 								if (file != null)
 								{
