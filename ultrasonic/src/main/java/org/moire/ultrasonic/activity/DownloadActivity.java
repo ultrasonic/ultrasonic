@@ -60,7 +60,7 @@ import org.moire.ultrasonic.domain.RepeatMode;
 import org.moire.ultrasonic.featureflags.Feature;
 import org.moire.ultrasonic.featureflags.FeatureStorage;
 import org.moire.ultrasonic.service.DownloadFile;
-import org.moire.ultrasonic.service.DownloadService;
+import org.moire.ultrasonic.service.MediaPlayerController;
 import org.moire.ultrasonic.service.MusicService;
 import org.moire.ultrasonic.service.MusicServiceFactory;
 import org.moire.ultrasonic.util.Constants;
@@ -257,7 +257,7 @@ public class DownloadActivity extends SubsonicTabActivity implements OnGestureLi
 					@Override
 					protected Void doInBackground() throws Throwable
 					{
-						getDownloadService().previous();
+						getMediaPlayerController().previous();
 						return null;
 					}
 
@@ -295,7 +295,7 @@ public class DownloadActivity extends SubsonicTabActivity implements OnGestureLi
 					{
 						if (downloader.getValue().getCurrentPlayingIndex() < downloader.getValue().downloadList.size() - 1)
 						{
-							getDownloadService().next();
+							getMediaPlayerController().next();
 							return true;
 						}
 						else
@@ -337,7 +337,7 @@ public class DownloadActivity extends SubsonicTabActivity implements OnGestureLi
 					@Override
 					protected Void doInBackground() throws Throwable
 					{
-						getDownloadService().pause();
+						getMediaPlayerController().pause();
 						return null;
 					}
 
@@ -361,7 +361,7 @@ public class DownloadActivity extends SubsonicTabActivity implements OnGestureLi
 					@Override
 					protected Void doInBackground() throws Throwable
 					{
-						getDownloadService().reset();
+						getMediaPlayerController().reset();
 						return null;
 					}
 
@@ -406,7 +406,7 @@ public class DownloadActivity extends SubsonicTabActivity implements OnGestureLi
 			@Override
 			public void onClick(final View view)
 			{
-				getDownloadService().shuffle();
+				getMediaPlayerController().shuffle();
 				Util.toast(DownloadActivity.this, R.string.download_menu_shuffle_notification);
 			}
 		});
@@ -416,9 +416,9 @@ public class DownloadActivity extends SubsonicTabActivity implements OnGestureLi
 			@Override
 			public void onClick(final View view)
 			{
-				final RepeatMode repeatMode = getDownloadService().getRepeatMode().next();
+				final RepeatMode repeatMode = getMediaPlayerController().getRepeatMode().next();
 
-				getDownloadService().setRepeatMode(repeatMode);
+				getMediaPlayerController().setRepeatMode(repeatMode);
 				onDownloadListChanged();
 
 				switch (repeatMode)
@@ -448,7 +448,7 @@ public class DownloadActivity extends SubsonicTabActivity implements OnGestureLi
 					@Override
 					protected Void doInBackground() throws Throwable
 					{
-						getDownloadService().seekTo(getProgressBar().getProgress());
+						getMediaPlayerController().seekTo(getProgressBar().getProgress());
 						return null;
 					}
 
@@ -483,7 +483,7 @@ public class DownloadActivity extends SubsonicTabActivity implements OnGestureLi
 					@Override
 					protected Void doInBackground() throws Throwable
 					{
-						getDownloadService().play(position);
+						getMediaPlayerController().play(position);
 						return null;
 					}
 
@@ -499,15 +499,15 @@ public class DownloadActivity extends SubsonicTabActivity implements OnGestureLi
 
 		registerForContextMenu(playlistView);
 
-		final DownloadService downloadService = getDownloadService();
-		if (downloadService != null && getIntent().getBooleanExtra(Constants.INTENT_EXTRA_NAME_SHUFFLE, false))
+		final MediaPlayerController mediaPlayerController = getMediaPlayerController();
+		if (mediaPlayerController != null && getIntent().getBooleanExtra(Constants.INTENT_EXTRA_NAME_SHUFFLE, false))
 		{
 			warnIfNetworkOrStorageUnavailable();
-			downloadService.setShufflePlayEnabled(true);
+			mediaPlayerController.setShufflePlayEnabled(true);
 		}
 
-		visualizerAvailable = (downloadService != null) && (downloadService.getVisualizerController() != null);
-		equalizerAvailable = (downloadService != null) && (downloadService.getEqualizerController() != null);
+		visualizerAvailable = (mediaPlayerController != null) && (mediaPlayerController.getVisualizerController() != null);
+		equalizerAvailable = (mediaPlayerController != null) && (mediaPlayerController.getEqualizerController() != null);
 
 		new Thread(new Runnable()
 		{
@@ -516,8 +516,8 @@ public class DownloadActivity extends SubsonicTabActivity implements OnGestureLi
 			{
 				try
 				{
-					DownloadService downloadService = getDownloadService();
-					jukeboxAvailable = (downloadService != null) && (downloadService.isJukeboxAvailable());
+					MediaPlayerController mediaPlayerController = getMediaPlayerController();
+					jukeboxAvailable = (mediaPlayerController != null) && (mediaPlayerController.isJukeboxAvailable());
 				}
 				catch (Exception e)
 				{
@@ -549,7 +549,7 @@ public class DownloadActivity extends SubsonicTabActivity implements OnGestureLi
 				public boolean onTouch(final View view, final MotionEvent motionEvent)
 				{
 					visualizerView.setActive(!visualizerView.isActive());
-					getDownloadService().setShowVisualization(visualizerView.isActive());
+					getMediaPlayerController().setShowVisualization(visualizerView.isActive());
 					return true;
 				}
 			});
@@ -565,9 +565,9 @@ public class DownloadActivity extends SubsonicTabActivity implements OnGestureLi
 	{
 		super.onResume();
 
-		final DownloadService downloadService = getDownloadService();
+		final MediaPlayerController mediaPlayerController = getMediaPlayerController();
 
-		if (downloadService == null || player.getValue().currentPlaying == null)
+		if (mediaPlayerController == null || localMediaPlayer.getValue().currentPlaying == null)
 		{
 			playlistFlipper.setDisplayedChild(1);
 		}
@@ -592,7 +592,7 @@ public class DownloadActivity extends SubsonicTabActivity implements OnGestureLi
 		executorService = Executors.newSingleThreadScheduledExecutor();
 		executorService.scheduleWithFixedDelay(runnable, 0L, 250L, TimeUnit.MILLISECONDS);
 
-		if (downloadService != null && downloadService.getKeepScreenOn())
+		if (mediaPlayerController != null && mediaPlayerController.getKeepScreenOn())
 		{
 			getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
 		}
@@ -603,7 +603,7 @@ public class DownloadActivity extends SubsonicTabActivity implements OnGestureLi
 
 		if (visualizerView != null)
 		{
-			visualizerView.setActive(downloadService != null && downloadService.getShowVisualization());
+			visualizerView.setActive(mediaPlayerController != null && mediaPlayerController.getShowVisualization());
 		}
 
 		invalidateOptionsMenu();
@@ -612,7 +612,7 @@ public class DownloadActivity extends SubsonicTabActivity implements OnGestureLi
 	// Scroll to current playing/downloading.
 	private void scrollToCurrent()
 	{
-		if (getDownloadService() == null)
+		if (getMediaPlayerController() == null)
 		{
 			return;
 		}
@@ -706,7 +706,7 @@ public class DownloadActivity extends SubsonicTabActivity implements OnGestureLi
 	{
 		if (id == DIALOG_SAVE_PLAYLIST)
 		{
-			final String playlistName = (getDownloadService() != null) ? getDownloadService().getSuggestedPlaylistName() : null;
+			final String playlistName = (getMediaPlayerController() != null) ? getMediaPlayerController().getSuggestedPlaylistName() : null;
 			if (playlistName != null)
 			{
 				playlistNameView.setText(playlistName);
@@ -778,11 +778,11 @@ public class DownloadActivity extends SubsonicTabActivity implements OnGestureLi
 			visualizerMenuItem.setVisible(visualizerAvailable);
 		}
 
-		final DownloadService downloadService = getDownloadService();
+		final MediaPlayerController mediaPlayerController = getMediaPlayerController();
 
-		if (downloadService != null)
+		if (mediaPlayerController != null)
 		{
-			DownloadFile downloadFile = player.getValue().currentPlaying;
+			DownloadFile downloadFile = localMediaPlayer.getValue().currentPlaying;
 
 			if (downloadFile != null)
 			{
@@ -807,7 +807,7 @@ public class DownloadActivity extends SubsonicTabActivity implements OnGestureLi
 			}
 
 
-			if (downloadService.getKeepScreenOn())
+			if (mediaPlayerController.getKeepScreenOn())
 			{
 				if (screenOption != null)
 				{
@@ -827,7 +827,7 @@ public class DownloadActivity extends SubsonicTabActivity implements OnGestureLi
 				jukeboxOption.setEnabled(jukeboxAvailable);
 				jukeboxOption.setVisible(jukeboxAvailable);
 
-				if (downloadService.isJukeboxEnabled())
+				if (mediaPlayerController.isJukeboxEnabled())
 				{
 					jukeboxOption.setTitle(R.string.download_menu_jukebox_off);
 				}
@@ -967,23 +967,23 @@ public class DownloadActivity extends SubsonicTabActivity implements OnGestureLi
 				startActivityForResultWithoutTransition(this, intent);
 				return true;
 			case R.id.menu_remove:
-				getDownloadService().remove(song);
+				getMediaPlayerController().remove(song);
 				onDownloadListChanged();
 				return true;
 			case R.id.menu_item_screen_on_off:
-				if (getDownloadService().getKeepScreenOn())
+				if (getMediaPlayerController().getKeepScreenOn())
 				{
 					getWindow().clearFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
-					getDownloadService().setKeepScreenOn(false);
+					getMediaPlayerController().setKeepScreenOn(false);
 				}
 				else
 				{
 					getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
-					getDownloadService().setKeepScreenOn(true);
+					getMediaPlayerController().setKeepScreenOn(true);
 				}
 				return true;
 			case R.id.menu_shuffle:
-				getDownloadService().shuffle();
+				getMediaPlayerController().shuffle();
 				Util.toast(this, R.string.download_menu_shuffle_notification);
 				return true;
 			case R.id.menu_item_equalizer:
@@ -1002,20 +1002,20 @@ public class DownloadActivity extends SubsonicTabActivity implements OnGestureLi
 					visualizerViewLayout.setVisibility(View.VISIBLE);
 				}
 
-				getDownloadService().setShowVisualization(visualizerView.isActive());
+				getMediaPlayerController().setShowVisualization(visualizerView.isActive());
 				Util.toast(DownloadActivity.this, active ? R.string.download_visualizer_on : R.string.download_visualizer_off);
 				return true;
 			case R.id.menu_item_jukebox:
-				final boolean jukeboxEnabled = !getDownloadService().isJukeboxEnabled();
-				getDownloadService().setJukeboxEnabled(jukeboxEnabled);
+				final boolean jukeboxEnabled = !getMediaPlayerController().isJukeboxEnabled();
+				getMediaPlayerController().setJukeboxEnabled(jukeboxEnabled);
 				Util.toast(DownloadActivity.this, jukeboxEnabled ? R.string.download_jukebox_on : R.string.download_jukebox_off, false);
 				return true;
 			case R.id.menu_item_toggle_list:
 				toggleFullScreenAlbumArt();
 				return true;
 			case R.id.menu_item_clear_playlist:
-				getDownloadService().setShufflePlayEnabled(false);
-				getDownloadService().clear();
+				getMediaPlayerController().setShufflePlayEnabled(false);
+				getMediaPlayerController().clear();
 				onDownloadListChanged();
 				return true;
 			case R.id.menu_item_save_playlist:
@@ -1077,7 +1077,7 @@ public class DownloadActivity extends SubsonicTabActivity implements OnGestureLi
 				}
 
 				final String songId = currentSong.getId();
-				final int playerPosition = getDownloadService().getPlayerPosition();
+				final int playerPosition = getMediaPlayerController().getPlayerPosition();
 
 				currentSong.setBookmarkPosition(playerPosition);
 
@@ -1137,10 +1137,10 @@ public class DownloadActivity extends SubsonicTabActivity implements OnGestureLi
 
 				return true;
 			case R.id.menu_item_share:
-				DownloadService downloadService = getDownloadService();
+				MediaPlayerController mediaPlayerController = getMediaPlayerController();
 				List<Entry> entries = new ArrayList<Entry>();
 
-				if (downloadService != null)
+				if (mediaPlayerController != null)
 				{
 					List<DownloadFile> downloadServiceSongs = downloader.getValue().downloadList;
 
@@ -1170,7 +1170,7 @@ public class DownloadActivity extends SubsonicTabActivity implements OnGestureLi
 
 	private void update()
 	{
-		if (getDownloadService() == null)
+		if (getMediaPlayerController() == null)
 		{
 			return;
 		}
@@ -1180,7 +1180,7 @@ public class DownloadActivity extends SubsonicTabActivity implements OnGestureLi
 			onDownloadListChanged();
 		}
 
-		if (currentPlaying != player.getValue().currentPlaying)
+		if (currentPlaying != localMediaPlayer.getValue().currentPlaying)
 		{
 			onCurrentChanged();
 		}
@@ -1192,7 +1192,7 @@ public class DownloadActivity extends SubsonicTabActivity implements OnGestureLi
 	private void savePlaylistInBackground(final String playlistName)
 	{
 		Util.toast(DownloadActivity.this, getResources().getString(R.string.download_playlist_saving, playlistName));
-		getDownloadService().setSuggestedPlaylistName(playlistName);
+		getMediaPlayerController().setSuggestedPlaylistName(playlistName);
 		new SilentBackgroundTask<Void>(this)
 		{
 			@Override
@@ -1243,7 +1243,7 @@ public class DownloadActivity extends SubsonicTabActivity implements OnGestureLi
 
 	private void start()
 	{
-		final DownloadService service = getDownloadService();
+		final MediaPlayerController service = getMediaPlayerController();
 		final PlayerState state = service.getPlayerState();
 
 		if (state == PAUSED || state == COMPLETED || state == STOPPED)
@@ -1269,8 +1269,8 @@ public class DownloadActivity extends SubsonicTabActivity implements OnGestureLi
 
 	private void onDownloadListChanged()
 	{
-		final DownloadService downloadService = getDownloadService();
-		if (downloadService == null)
+		final MediaPlayerController mediaPlayerController = getMediaPlayerController();
+		if (mediaPlayerController == null)
 		{
 			return;
 		}
@@ -1306,18 +1306,18 @@ public class DownloadActivity extends SubsonicTabActivity implements OnGestureLi
 			public void remove(int which)
 			{
 				DownloadFile item = adapter.getItem(which);
-				DownloadService downloadService = getDownloadService();
+				MediaPlayerController mediaPlayerController = getMediaPlayerController();
 
-				if (item == null || downloadService == null)
+				if (item == null || mediaPlayerController == null)
 				{
 					return;
 				}
 
-				DownloadFile currentPlaying = player.getValue().currentPlaying;
+				DownloadFile currentPlaying = localMediaPlayer.getValue().currentPlaying;
 
 				if (currentPlaying == item)
 				{
-					getDownloadService().next();
+					getMediaPlayerController().next();
 				}
 
 				adapter.remove(item);
@@ -1335,7 +1335,7 @@ public class DownloadActivity extends SubsonicTabActivity implements OnGestureLi
 		emptyTextView.setVisibility(list.isEmpty() ? View.VISIBLE : View.GONE);
 		currentRevision = downloader.getValue().getDownloadListUpdateRevision();
 
-		switch (downloadService.getRepeatMode())
+		switch (mediaPlayerController.getRepeatMode())
 		{
 			case OFF:
 				repeatButton.setImageDrawable(Util.getDrawableFromAttribute(this, R.attr.media_repeat_off));
@@ -1353,14 +1353,14 @@ public class DownloadActivity extends SubsonicTabActivity implements OnGestureLi
 
 	private void onCurrentChanged()
 	{
-		DownloadService downloadService = getDownloadService();
+		MediaPlayerController mediaPlayerController = getMediaPlayerController();
 
-		if (downloadService == null)
+		if (mediaPlayerController == null)
 		{
 			return;
 		}
 
-		currentPlaying = player.getValue().currentPlaying;
+		currentPlaying = localMediaPlayer.getValue().currentPlaying;
 
 		scrollToCurrent();
 
@@ -1398,16 +1398,16 @@ public class DownloadActivity extends SubsonicTabActivity implements OnGestureLi
 
 	private void onSliderProgressChanged()
 	{
-		DownloadService downloadService = getDownloadService();
+		MediaPlayerController mediaPlayerController = getMediaPlayerController();
 
-		if (downloadService == null || onProgressChangedTask != null)
+		if (mediaPlayerController == null || onProgressChangedTask != null)
 		{
 			return;
 		}
 
 		onProgressChangedTask = new SilentBackgroundTask<Void>(this)
 		{
-			DownloadService downloadService;
+			MediaPlayerController mediaPlayerController;
 			boolean isJukeboxEnabled;
 			int millisPlayed;
 			Integer duration;
@@ -1416,11 +1416,11 @@ public class DownloadActivity extends SubsonicTabActivity implements OnGestureLi
 			@Override
 			protected Void doInBackground() throws Throwable
 			{
-				downloadService = getDownloadService();
-				isJukeboxEnabled = downloadService.isJukeboxEnabled();
-				millisPlayed = Math.max(0, downloadService.getPlayerPosition());
-				duration = downloadService.getPlayerDuration();
-				playerState = getDownloadService().getPlayerState();
+				this.mediaPlayerController = getMediaPlayerController();
+				isJukeboxEnabled = this.mediaPlayerController.isJukeboxEnabled();
+				millisPlayed = Math.max(0, this.mediaPlayerController.getPlayerPosition());
+				duration = this.mediaPlayerController.getPlayerDuration();
+				playerState = getMediaPlayerController().getPlayerState();
 				return null;
 			}
 
@@ -1457,9 +1457,9 @@ public class DownloadActivity extends SubsonicTabActivity implements OnGestureLi
 						setActionBarSubtitle(R.string.download_playerstate_buffering);
 						break;
 					case STARTED:
-						final DownloadService downloadService = getDownloadService();
+						final MediaPlayerController mediaPlayerController = getMediaPlayerController();
 
-						if (downloadService != null && downloadService.isShufflePlayEnabled())
+						if (mediaPlayerController != null && mediaPlayerController.isShufflePlayEnabled())
 						{
 							setActionBarSubtitle(R.string.download_playerstate_playing_shuffle);
 						}
@@ -1503,7 +1503,7 @@ public class DownloadActivity extends SubsonicTabActivity implements OnGestureLi
 						break;
 				}
 
-				// TODO: It would be a lot nicer if DownloadService would send an event when this is necessary instead of updating every time
+				// TODO: It would be a lot nicer if MediaPlayerController would send an event when this is necessary instead of updating every time
 				displaySongRating();
 
 				onProgressChangedTask = null;
@@ -1514,8 +1514,8 @@ public class DownloadActivity extends SubsonicTabActivity implements OnGestureLi
 
 	private void changeProgress(final int ms)
 	{
-		final DownloadService downloadService = getDownloadService();
-		if (downloadService == null)
+		final MediaPlayerController mediaPlayerController = getMediaPlayerController();
+		if (mediaPlayerController == null)
 		{
 			return;
 		}
@@ -1529,12 +1529,12 @@ public class DownloadActivity extends SubsonicTabActivity implements OnGestureLi
 			@Override
 			protected Void doInBackground() throws Throwable
 			{
-				msPlayed = Math.max(0, downloadService.getPlayerPosition());
-				duration = downloadService.getPlayerDuration();
+				msPlayed = Math.max(0, mediaPlayerController.getPlayerPosition());
+				duration = mediaPlayerController.getPlayerDuration();
 
 				final int msTotal = duration;
 				seekTo = msPlayed + ms > msTotal ? msTotal : msPlayed + ms;
-				downloadService.seekTo(seekTo);
+				mediaPlayerController.seekTo(seekTo);
 				return null;
 			}
 
@@ -1562,9 +1562,9 @@ public class DownloadActivity extends SubsonicTabActivity implements OnGestureLi
 	public boolean onFling(final MotionEvent e1, final MotionEvent e2, final float velocityX, final float velocityY)
 	{
 
-		final DownloadService downloadService = getDownloadService();
+		final MediaPlayerController mediaPlayerController = getMediaPlayerController();
 
-		if (downloadService == null || e1 == null || e2 == null)
+		if (mediaPlayerController == null || e1 == null || e2 == null)
 		{
 			return false;
 		}
@@ -1582,7 +1582,7 @@ public class DownloadActivity extends SubsonicTabActivity implements OnGestureLi
 			warnIfNetworkOrStorageUnavailable();
 			if (downloader.getValue().getCurrentPlayingIndex() < downloader.getValue().downloadList.size() - 1)
 			{
-				downloadService.next();
+				mediaPlayerController.next();
 				onCurrentChanged();
 				onSliderProgressChanged();
 			}
@@ -1593,7 +1593,7 @@ public class DownloadActivity extends SubsonicTabActivity implements OnGestureLi
 		if (e2X - e1X > swipeDistance && absX > swipeVelocity)
 		{
 			warnIfNetworkOrStorageUnavailable();
-			downloadService.previous();
+			mediaPlayerController.previous();
 			onCurrentChanged();
 			onSliderProgressChanged();
 			return true;
@@ -1603,7 +1603,7 @@ public class DownloadActivity extends SubsonicTabActivity implements OnGestureLi
 		if (e2Y - e1Y > swipeDistance && absY > swipeVelocity)
 		{
 			warnIfNetworkOrStorageUnavailable();
-			downloadService.seekTo(downloadService.getPlayerPosition() + 30000);
+			mediaPlayerController.seekTo(mediaPlayerController.getPlayerPosition() + 30000);
 			onSliderProgressChanged();
 			return true;
 		}
@@ -1612,7 +1612,7 @@ public class DownloadActivity extends SubsonicTabActivity implements OnGestureLi
 		if (e1Y - e2Y > swipeDistance && absY > swipeVelocity)
 		{
 			warnIfNetworkOrStorageUnavailable();
-			downloadService.seekTo(downloadService.getPlayerPosition() - 8000);
+			mediaPlayerController.seekTo(mediaPlayerController.getPlayerPosition() - 8000);
 			onSliderProgressChanged();
 			return true;
 		}
@@ -1663,6 +1663,6 @@ public class DownloadActivity extends SubsonicTabActivity implements OnGestureLi
 			return;
 
 		displaySongRating();
-		getDownloadService().setSongRating(rating);
+		getMediaPlayerController().setSongRating(rating);
 	}
 }

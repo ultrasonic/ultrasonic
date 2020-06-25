@@ -76,10 +76,10 @@ public class SubsonicTabActivity extends ResultActivity implements OnClickListen
 	private static final String STATE_ACTIVE_POSITION = "org.moire.ultrasonic.activePosition";
 	private static final int DIALOG_ASK_FOR_SHARE_DETAILS = 102;
 
-	private Lazy<DownloadServiceImpl> downloadServiceImpl = inject(DownloadServiceImpl.class);
-	private Lazy<DownloadServiceLifecycleSupport> lifecycleSupport = inject(DownloadServiceLifecycleSupport.class);
+	private Lazy<MediaPlayerController> mediaPlayerControllerLazy = inject(MediaPlayerController.class);
+	private Lazy<MediaPlayerLifecycleSupport> lifecycleSupport = inject(MediaPlayerLifecycleSupport.class);
 	protected Lazy<Downloader> downloader = inject(Downloader.class);
-	protected Lazy<Player> player = inject(Player.class);
+	protected Lazy<LocalMediaPlayer> localMediaPlayer = inject(LocalMediaPlayer.class);
 
 
 	public MenuDrawer menuDrawer;
@@ -211,11 +211,11 @@ public class SubsonicTabActivity extends ResultActivity implements OnClickListen
 		boolean isVolumeDown = keyCode == KeyEvent.KEYCODE_VOLUME_DOWN;
 		boolean isVolumeUp = keyCode == KeyEvent.KEYCODE_VOLUME_UP;
 		boolean isVolumeAdjust = isVolumeDown || isVolumeUp;
-		boolean isJukebox = getDownloadService() != null && getDownloadService().isJukeboxEnabled();
+		boolean isJukebox = getMediaPlayerController() != null && getMediaPlayerController().isJukeboxEnabled();
 
 		if (isVolumeAdjust && isJukebox)
 		{
-			getDownloadService().adjustJukeboxVolume(isVolumeUp);
+			getMediaPlayerController().adjustJukeboxVolume(isVolumeUp);
 			return true;
 		}
 
@@ -265,16 +265,16 @@ public class SubsonicTabActivity extends ResultActivity implements OnClickListen
 
 						if (nowPlayingView != null)
 						{
-							PlayerState playerState = downloadServiceImpl.getValue().getPlayerState();
+							PlayerState playerState = mediaPlayerControllerLazy.getValue().getPlayerState();
 
 							if (playerState.equals(PlayerState.PAUSED) || playerState.equals(PlayerState.STARTED))
 							{
-								DownloadFile file = player.getValue().currentPlaying;
+								DownloadFile file = localMediaPlayer.getValue().currentPlaying;
 
 								if (file != null)
 								{
 									final Entry song = file.getSong();
-									showNowPlaying(SubsonicTabActivity.this, downloadServiceImpl.getValue(), song, playerState);
+									showNowPlaying(SubsonicTabActivity.this, mediaPlayerControllerLazy.getValue(), song, playerState);
 								}
 							}
 							else
@@ -309,9 +309,9 @@ public class SubsonicTabActivity extends ResultActivity implements OnClickListen
 		}
 	}
 
-	private void showNowPlaying(final Context context, final DownloadService downloadService, final Entry song, final PlayerState playerState)
+	private void showNowPlaying(final Context context, final MediaPlayerController mediaPlayerController, final Entry song, final PlayerState playerState)
 	{
-		if (context == null || downloadService == null || song == null || playerState == null)
+		if (context == null || mediaPlayerController == null || song == null || playerState == null)
 		{
 			return;
 		}
@@ -390,7 +390,7 @@ public class SubsonicTabActivity extends ResultActivity implements OnClickListen
 
 				ImageView nowPlayingControlPlay = (ImageView) nowPlayingView.findViewById(R.id.now_playing_control_play);
 
-				SwipeDetector swipeDetector = new SwipeDetector(SubsonicTabActivity.this, downloadService);
+				SwipeDetector swipeDetector = new SwipeDetector(SubsonicTabActivity.this, mediaPlayerController);
 				setOnTouchListenerOnUiThread(nowPlayingView, swipeDetector);
 
 				setOnClickListenerOnUiThread(nowPlayingView, new OnClickListener()
@@ -406,7 +406,7 @@ public class SubsonicTabActivity extends ResultActivity implements OnClickListen
 					@Override
 					public void onClick(View view)
 					{
-						downloadService.togglePlayPause();
+						mediaPlayerController.togglePlayPause();
 					}
 				});
 
@@ -765,9 +765,9 @@ public class SubsonicTabActivity extends ResultActivity implements OnClickListen
 		}
 	}
 
-	public DownloadService getDownloadService()
+	public MediaPlayerController getMediaPlayerController()
 	{
-		return downloadServiceImpl.getValue();
+		return mediaPlayerControllerLazy.getValue();
 	}
 
 	protected void warnIfNetworkOrStorageUnavailable()
@@ -818,7 +818,7 @@ public class SubsonicTabActivity extends ResultActivity implements OnClickListen
 
 	void download(final boolean append, final boolean save, final boolean autoPlay, final boolean playNext, final boolean shuffle, final List<Entry> songs)
 	{
-		if (getDownloadService() == null)
+		if (getMediaPlayerController() == null)
 		{
 			return;
 		}
@@ -830,16 +830,16 @@ public class SubsonicTabActivity extends ResultActivity implements OnClickListen
 			{
 				if (!append && !playNext)
 				{
-					getDownloadService().clear();
+					getMediaPlayerController().clear();
 				}
 
 				warnIfNetworkOrStorageUnavailable();
-				getDownloadService().download(songs, save, autoPlay, playNext, shuffle, false);
+				getMediaPlayerController().download(songs, save, autoPlay, playNext, shuffle, false);
 				String playlistName = getIntent().getStringExtra(Constants.INTENT_EXTRA_NAME_PLAYLIST_NAME);
 
 				if (playlistName != null)
 				{
-					getDownloadService().setSuggestedPlaylistName(playlistName);
+					getMediaPlayerController().setSuggestedPlaylistName(playlistName);
 				}
 
 				if (autoPlay)
@@ -994,23 +994,23 @@ public class SubsonicTabActivity extends ResultActivity implements OnClickListen
 					Collections.sort(songs, new EntryByDiscAndTrackComparator());
 				}
 
-				DownloadService downloadService = getDownloadService();
-				if (!songs.isEmpty() && downloadService != null)
+				MediaPlayerController mediaPlayerController = getMediaPlayerController();
+				if (!songs.isEmpty() && mediaPlayerController != null)
 				{
 					if (!append && !playNext && !unpin && !background)
 					{
-						downloadService.clear();
+						mediaPlayerController.clear();
 					}
 					warnIfNetworkOrStorageUnavailable();
 					if (!background)
 					{
 						if (unpin)
 						{
-							downloadService.unpin(songs);
+							mediaPlayerController.unpin(songs);
 						}
 						else
 						{
-							downloadService.download(songs, save, autoplay, playNext, shuffle, false);
+							mediaPlayerController.download(songs, save, autoplay, playNext, shuffle, false);
 							if (!append && Util.getShouldTransitionOnPlaybackPreference(SubsonicTabActivity.this))
 							{
 								startActivityForResultWithoutTransition(SubsonicTabActivity.this, DownloadActivity.class);
@@ -1021,11 +1021,11 @@ public class SubsonicTabActivity extends ResultActivity implements OnClickListen
 					{
 						if (unpin)
 						{
-							downloadService.unpin(songs);
+							mediaPlayerController.unpin(songs);
 						}
 						else
 						{
-							downloadService.downloadBackground(songs, save);
+							mediaPlayerController.downloadBackground(songs, save);
 						}
 					}
 				}
@@ -1353,15 +1353,15 @@ public class SubsonicTabActivity extends ResultActivity implements OnClickListen
 
 	protected class SwipeDetector implements OnTouchListener
 	{
-		public SwipeDetector(SubsonicTabActivity activity, final DownloadService downloadService)
+		public SwipeDetector(SubsonicTabActivity activity, final MediaPlayerController mediaPlayerController)
 		{
-			this.downloadService = downloadService;
+			this.mediaPlayerController = mediaPlayerController;
 			this.activity = activity;
 		}
 
 		private static final int MIN_DISTANCE = 30;
 		private float downX, downY, upX, upY;
-		private DownloadService downloadService;
+		private MediaPlayerController mediaPlayerController;
 		private SubsonicTabActivity activity;
 
 		@Override
@@ -1388,12 +1388,12 @@ public class SubsonicTabActivity extends ResultActivity implements OnClickListen
 						// left or right
 						if (deltaX < 0)
 						{
-							downloadService.previous();
+							mediaPlayerController.previous();
 							return false;
 						}
 						if (deltaX > 0)
 						{
-							downloadService.next();
+							mediaPlayerController.next();
 							return false;
 						}
 					}

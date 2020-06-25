@@ -17,7 +17,7 @@ import org.moire.ultrasonic.R;
 import org.moire.ultrasonic.activity.DownloadActivity;
 import org.moire.ultrasonic.activity.MainActivity;
 import org.moire.ultrasonic.domain.MusicDirectory;
-import org.moire.ultrasonic.service.DownloadService;
+import org.moire.ultrasonic.service.MediaPlayerController;
 import org.moire.ultrasonic.util.Constants;
 import org.moire.ultrasonic.util.FileUtil;
 
@@ -67,7 +67,7 @@ public class UltraSonicAppWidgetProvider extends AppWidgetProvider
 	}
 
 	/**
-	 * Handle a change notification coming over from {@link DownloadService}
+	 * Handle a change notification coming over from {@link MediaPlayerController}
 	 */
 	public void notifyChange(Context context, MusicDirectory.Entry currentSong, boolean playing, boolean setAlbum)
 	{

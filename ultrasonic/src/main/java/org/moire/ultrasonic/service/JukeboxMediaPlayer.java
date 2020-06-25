@@ -27,6 +27,7 @@ import android.view.View;
 import android.widget.ProgressBar;
 import android.widget.Toast;
 
+import org.jetbrains.annotations.NotNull;
 import org.moire.ultrasonic.R;
 import org.moire.ultrasonic.api.subsonic.ApiNotSupportedException;
 import org.moire.ultrasonic.domain.JukeboxStatus;
@@ -54,9 +55,9 @@ import static org.koin.java.standalone.KoinJavaComponent.inject;
  * @author Sindre Mehus
  * @version $Id$
  */
-public class JukeboxService
+public class JukeboxMediaPlayer
 {
-	private static final String TAG = JukeboxService.class.getSimpleName();
+	private static final String TAG = JukeboxMediaPlayer.class.getSimpleName();
 	private static final long STATUS_UPDATE_INTERVAL_SECONDS = 5L;
 
 	private final TaskQueue tasks = new TaskQueue();
@@ -72,7 +73,7 @@ public class JukeboxService
 	private Context context;
 
 	// TODO: These create circular references, try to refactor
-	private Lazy<DownloadServiceImpl> downloadServiceImpl = inject(DownloadServiceImpl.class);
+	private Lazy<MediaPlayerControllerImpl> mediaPlayerControllerLazy = inject(MediaPlayerControllerImpl.class);
 	private final Downloader downloader;
 
 	// TODO: Report warning if queue fills up.
@@ -81,7 +82,7 @@ public class JukeboxService
 	// TODO: Persist RC state?
 	// TODO: Minimize status updates.
 
-	public JukeboxService(Context context, Downloader downloader)
+	public JukeboxMediaPlayer(Context context, Downloader downloader)
 	{
 		this.context = context;
 		this.downloader = downloader;
@@ -187,7 +188,7 @@ public class JukeboxService
 
 		if (index != null && index != -1 && index != downloader.getCurrentPlayingIndex())
 		{
-			downloadServiceImpl.getValue().setCurrentPlaying(index);
+			mediaPlayerControllerLazy.getValue().setCurrentPlaying(index);
 		}
 	}
 
@@ -224,7 +225,7 @@ public class JukeboxService
 			}
 		});
 
-		downloadServiceImpl.getValue().setJukeboxEnabled(false);
+		mediaPlayerControllerLazy.getValue().setJukeboxEnabled(false);
 	}
 
 	public void updatePlaylist()
@@ -258,7 +259,7 @@ public class JukeboxService
 		}
 
 		tasks.add(new Skip(index, offsetSeconds));
-		downloadServiceImpl.getValue().setPlayerState(PlayerState.STARTED);
+		mediaPlayerControllerLazy.getValue().setPlayerState(PlayerState.STARTED);
 	}
 
 	public void stop()
@@ -290,10 +291,8 @@ public class JukeboxService
 		tasks.remove(SetGain.class);
 		tasks.add(new SetGain(gain));
 
-		if (volumeToast == null)
-		{
-			volumeToast = new VolumeToast(context);
-		}
+		if (volumeToast == null) volumeToast = new VolumeToast(context);
+
 		volumeToast.setVolume(gain);
 	}
 
@@ -377,10 +376,11 @@ public class JukeboxService
 		}
 	}
 
-	private abstract class JukeboxTask
+	private abstract static class JukeboxTask
 	{
 		abstract JukeboxStatus execute() throws Exception;
 
+		@NotNull
 		@Override
 		public String toString()
 		{

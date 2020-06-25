@@ -26,29 +26,31 @@ public class Downloader
 {
     private static final String TAG = Downloader.class.getSimpleName();
 
-    private final ShufflePlayBuffer shufflePlayBuffer;
-    private final ExternalStorageMonitor externalStorageMonitor;
-    private final Player player;
-    public Lazy<JukeboxService> jukeboxService = inject(JukeboxService.class);
-
     public final List<DownloadFile> downloadList = new ArrayList<>();
     public final List<DownloadFile> backgroundDownloadList = new ArrayList<>();
+    public DownloadFile currentDownloading;
+
+    private final ShufflePlayBuffer shufflePlayBuffer;
+    private final ExternalStorageMonitor externalStorageMonitor;
+    private final LocalMediaPlayer localMediaPlayer;
+    private final Context context;
+
+    // TODO: This is a circular reference, try to remove
+    private Lazy<JukeboxMediaPlayer> jukeboxMediaPlayer = inject(JukeboxMediaPlayer.class);
+
     private final List<DownloadFile> cleanupCandidates = new ArrayList<>();
     private final LRUCache<MusicDirectory.Entry, DownloadFile> downloadFileCache = new LRUCache<>(100);
-
-    public DownloadFile currentDownloading;
-    public static long revision;
-
     private ScheduledExecutorService executorService;
-    private Context context;
+    private long revision;
+
 
     public Downloader(Context context, ShufflePlayBuffer shufflePlayBuffer, ExternalStorageMonitor externalStorageMonitor,
-                      Player player)
+                      LocalMediaPlayer localMediaPlayer)
     {
         this.context = context;
         this.shufflePlayBuffer = shufflePlayBuffer;
         this.externalStorageMonitor = externalStorageMonitor;
-        this.player = player;
+        this.localMediaPlayer = localMediaPlayer;
     }
 
     public void onCreate()
@@ -78,6 +80,8 @@ public class Downloader
     public void onDestroy()
     {
         executorService.shutdown();
+        clear();
+        clearBackground();
         Log.i(TAG, "Downloader destroyed");
     }
 
@@ -93,7 +97,7 @@ public class Downloader
             checkShufflePlay(context);
         }
 
-        if (jukeboxService.getValue().isEnabled() || !Util.isNetworkConnected(context))
+        if (jukeboxMediaPlayer.getValue().isEnabled() || !Util.isNetworkConnected(context))
         {
             return;
         }
@@ -104,7 +108,7 @@ public class Downloader
         }
 
         // Need to download current playing?
-        if (player.currentPlaying != null && player.currentPlaying != currentDownloading && !player.currentPlaying.isWorkDone())
+        if (localMediaPlayer.currentPlaying != null && localMediaPlayer.currentPlaying != currentDownloading && !localMediaPlayer.currentPlaying.isWorkDone())
         {
             // Cancel current download, if necessary.
             if (currentDownloading != null)
@@ -112,7 +116,7 @@ public class Downloader
                 currentDownloading.cancelDownload();
             }
 
-            currentDownloading = player.currentPlaying;
+            currentDownloading = localMediaPlayer.currentPlaying;
             currentDownloading.download();
             cleanupCandidates.add(currentDownloading);
 
@@ -138,7 +142,7 @@ public class Downloader
 
         if (n != 0)
         {
-            int start = player.currentPlaying == null ? 0 : getCurrentPlayingIndex();
+            int start = localMediaPlayer.currentPlaying == null ? 0 : getCurrentPlayingIndex();
             if (start == -1) start = 0;
 
             int i = start;
@@ -154,12 +158,12 @@ public class Downloader
                         cleanupCandidates.add(currentDownloading);
                         if (i == (start + 1))
                         {
-                            player.setNextPlayerState(DOWNLOADING);
+                            localMediaPlayer.setNextPlayerState(DOWNLOADING);
                         }
                         break;
                     }
                 }
-                else if (player.currentPlaying != downloadFile)
+                else if (localMediaPlayer.currentPlaying != downloadFile)
                 {
                     preloaded++;
                 }
@@ -201,7 +205,7 @@ public class Downloader
 
     public synchronized int getCurrentPlayingIndex()
     {
-        return downloadList.indexOf(player.currentPlaying);
+        return downloadList.indexOf(localMediaPlayer.currentPlaying);
     }
 
     public long getDownloadListDuration()
@@ -237,11 +241,6 @@ public class Downloader
         return temp;
     }
 
-    public List<DownloadFile> getBackgroundDownloads()
-    {
-        return backgroundDownloadList;
-    }
-
     public long getDownloadListUpdateRevision()
     {
         return revision;
@@ -258,7 +257,7 @@ public class Downloader
         }
     }
 
-    public synchronized void clearBackground()
+    private void clearBackground()
     {
         if (currentDownloading != null && backgroundDownloadList.contains(currentDownloading))
         {
@@ -337,23 +336,12 @@ public class Downloader
     public synchronized void shuffle()
     {
         Collections.shuffle(downloadList);
-        if (player.currentPlaying != null)
+        if (localMediaPlayer.currentPlaying != null)
         {
             downloadList.remove(getCurrentPlayingIndex());
-            downloadList.add(0, player.currentPlaying);
+            downloadList.add(0, localMediaPlayer.currentPlaying);
         }
         revision++;
-    }
-
-    public synchronized void setFirstPlaying()
-    {
-        if (player.currentPlaying == null && downloadList.size() > 0)
-        {
-            player.currentPlaying = downloadList.get(0);
-            player.currentPlaying.setPlaying(true);
-        }
-
-        checkDownloads();
     }
 
     public synchronized DownloadFile getDownloadFileForSong(MusicDirectory.Entry song)
@@ -388,7 +376,7 @@ public class Downloader
         while (iterator.hasNext())
         {
             DownloadFile downloadFile = iterator.next();
-            if (downloadFile != player.currentPlaying && downloadFile != currentDownloading)
+            if (downloadFile != localMediaPlayer.currentPlaying && downloadFile != currentDownloading)
             {
                 if (downloadFile.cleanup())
                 {
@@ -418,7 +406,7 @@ public class Downloader
             }
         }
 
-        int currIndex = player.currentPlaying == null ? 0 : getCurrentPlayingIndex();
+        int currIndex = localMediaPlayer.currentPlaying == null ? 0 : getCurrentPlayingIndex();
 
         // Only shift playlist if playing song #5 or later.
         if (currIndex > 4)
@@ -435,19 +423,19 @@ public class Downloader
 
         if (revisionBefore != revision)
         {
-            jukeboxService.getValue().updatePlaylist();
+            jukeboxMediaPlayer.getValue().updatePlaylist();
         }
 
         if (wasEmpty && !downloadList.isEmpty())
         {
-            if (jukeboxService.getValue().isEnabled())
+            if (jukeboxMediaPlayer.getValue().isEnabled())
             {
-                jukeboxService.getValue().skip(0, 0);
-                player.setPlayerState(STARTED);
+                jukeboxMediaPlayer.getValue().skip(0, 0);
+                localMediaPlayer.setPlayerState(STARTED);
             }
             else
             {
-                player.play(downloadList.get(0));
+                localMediaPlayer.play(downloadList.get(0));
             }
         }
     }

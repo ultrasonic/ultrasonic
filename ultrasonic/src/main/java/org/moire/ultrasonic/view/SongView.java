@@ -37,12 +37,10 @@ import org.moire.ultrasonic.domain.MusicDirectory.Entry;
 import org.moire.ultrasonic.featureflags.Feature;
 import org.moire.ultrasonic.featureflags.FeatureStorage;
 import org.moire.ultrasonic.service.DownloadFile;
-import org.moire.ultrasonic.service.DownloadService;
-import org.moire.ultrasonic.service.DownloadServiceImpl;
 import org.moire.ultrasonic.service.Downloader;
 import org.moire.ultrasonic.service.MusicService;
 import org.moire.ultrasonic.service.MusicServiceFactory;
-import org.moire.ultrasonic.service.Player;
+import org.moire.ultrasonic.service.LocalMediaPlayer;
 import org.moire.ultrasonic.util.Util;
 import org.moire.ultrasonic.util.VideoPlayerType;
 
@@ -85,7 +83,7 @@ public class SongView extends UpdateView implements Checkable
 	private boolean useFiveStarRating;
 
 	private Lazy<Downloader> downloader = inject(Downloader.class);
-	protected Lazy<Player> player = inject(Player.class);
+	protected Lazy<LocalMediaPlayer> localMediaPlayer = inject(LocalMediaPlayer.class);
 
 	public SongView(Context context)
 	{
@@ -413,7 +411,7 @@ public class SongView extends UpdateView implements Checkable
 		viewHolder.fiveStar4.setImageDrawable(rating > 3 ? starDrawable : starHollowDrawable);
 		viewHolder.fiveStar5.setImageDrawable(rating > 4 ? starDrawable : starHollowDrawable);
 
-		boolean playing = player.getValue().currentPlaying == downloadFile;
+		boolean playing = localMediaPlayer.getValue().currentPlaying == downloadFile;
 
 		if (playing)
 		{

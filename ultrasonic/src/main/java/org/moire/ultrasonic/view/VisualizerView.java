@@ -27,8 +27,7 @@ import android.view.View;
 
 import org.moire.ultrasonic.audiofx.VisualizerController;
 import org.moire.ultrasonic.domain.PlayerState;
-import org.moire.ultrasonic.service.DownloadService;
-import org.moire.ultrasonic.service.DownloadServiceImpl;
+import org.moire.ultrasonic.service.MediaPlayerController;
 
 import kotlin.Lazy;
 
@@ -51,7 +50,7 @@ public class VisualizerView extends View
 	private float[] points;
 	private boolean active;
 
-	private Lazy<DownloadServiceImpl> downloadServiceImpl = inject(DownloadServiceImpl.class);
+	private Lazy<MediaPlayerController> mediaPlayerControllerLazy = inject(MediaPlayerController.class);
 
 	public VisualizerView(Context context)
 	{
@@ -104,7 +103,7 @@ public class VisualizerView extends View
 
 	private Visualizer getVizualizer()
 	{
-		VisualizerController visualizerController = downloadServiceImpl.getValue().getVisualizerController();
+		VisualizerController visualizerController = mediaPlayerControllerLazy.getValue().getVisualizerController();
 		return visualizerController == null ? null : visualizerController.getVisualizer();
 	}
 
@@ -124,7 +123,7 @@ public class VisualizerView extends View
 			return;
 		}
 
-		if (downloadServiceImpl.getValue().getPlayerState() != PlayerState.STARTED)
+		if (mediaPlayerControllerLazy.getValue().getPlayerState() != PlayerState.STARTED)
 		{
 			return;
 		}

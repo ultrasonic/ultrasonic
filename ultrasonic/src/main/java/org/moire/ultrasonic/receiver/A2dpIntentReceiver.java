@@ -5,9 +5,9 @@ import android.content.Context;
 import android.content.Intent;
 
 import org.moire.ultrasonic.domain.MusicDirectory.Entry;
-import org.moire.ultrasonic.service.DownloadServiceImpl;
+import org.moire.ultrasonic.service.MediaPlayerController;
 import org.moire.ultrasonic.service.Downloader;
-import org.moire.ultrasonic.service.Player;
+import org.moire.ultrasonic.service.LocalMediaPlayer;
 
 import kotlin.Lazy;
 
@@ -16,19 +16,19 @@ import static org.koin.java.standalone.KoinJavaComponent.inject;
 public class A2dpIntentReceiver extends BroadcastReceiver
 {
 	private static final String PLAYSTATUS_RESPONSE = "com.android.music.playstatusresponse";
-	private Lazy<DownloadServiceImpl> downloadServiceImpl = inject(DownloadServiceImpl.class);
+	private Lazy<MediaPlayerController> mediaPlayerControllerLazy = inject(MediaPlayerController.class);
 	private Lazy<Downloader> downloader = inject(Downloader.class);
-	protected Lazy<Player> player = inject(Player.class);
+	protected Lazy<LocalMediaPlayer> localMediaPlayer = inject(LocalMediaPlayer.class);
 
 	@Override
 	public void onReceive(Context context, Intent intent)
 	{
-		if (player.getValue().currentPlaying == null)
+		if (localMediaPlayer.getValue().currentPlaying == null)
 		{
 			return;
 		}
 
-		Entry song = player.getValue().currentPlaying.getSong();
+		Entry song = localMediaPlayer.getValue().currentPlaying.getSong();
 
 		if (song == null)
 		{
@@ -38,7 +38,7 @@ public class A2dpIntentReceiver extends BroadcastReceiver
 		Intent avrcpIntent = new Intent(PLAYSTATUS_RESPONSE);
 
 		Integer duration = song.getDuration();
-		int playerPosition = downloadServiceImpl.getValue().getPlayerPosition();
+		int playerPosition = mediaPlayerControllerLazy.getValue().getPlayerPosition();
 		int listSize = downloader.getValue().getDownloads().size();
 
 		if (duration != null)
@@ -49,7 +49,7 @@ public class A2dpIntentReceiver extends BroadcastReceiver
 		avrcpIntent.putExtra("position", (long) playerPosition);
 		avrcpIntent.putExtra("ListSize", (long) listSize);
 
-		switch (downloadServiceImpl.getValue().getPlayerState())
+		switch (mediaPlayerControllerLazy.getValue().getPlayerState())
 		{
 			case STARTED:
 				avrcpIntent.putExtra("playing", true);

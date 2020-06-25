@@ -25,7 +25,7 @@ import android.os.Bundle;
 import android.os.Parcelable;
 import android.util.Log;
 
-import org.moire.ultrasonic.service.DownloadServiceLifecycleSupport;
+import org.moire.ultrasonic.service.MediaPlayerLifecycleSupport;
 import org.moire.ultrasonic.util.Constants;
 import org.moire.ultrasonic.util.Util;
 
@@ -39,7 +39,7 @@ import static org.koin.java.standalone.KoinJavaComponent.inject;
 public class MediaButtonIntentReceiver extends BroadcastReceiver
 {
 	private static final String TAG = MediaButtonIntentReceiver.class.getSimpleName();
-	private Lazy<DownloadServiceLifecycleSupport> lifecycleSupport = inject(DownloadServiceLifecycleSupport.class);
+	private Lazy<MediaPlayerLifecycleSupport> lifecycleSupport = inject(MediaPlayerLifecycleSupport.class);
 
 	@Override
 	public void onReceive(Context context, Intent intent)

@@ -113,12 +113,13 @@ val musicServiceModule = module(MUSIC_SERVICE_CONTEXT) {
 
     single { SubsonicImageLoader(getProperty(DiProperties.APP_CONTEXT), get()) }
 
-    single { DownloadServiceImpl(androidContext(), get(), get(), get()) }
-    single { JukeboxService(androidContext(), get()) }
-    single { DownloadServiceLifecycleSupport(androidContext(), get(), get()) }
+    single<MediaPlayerController> { MediaPlayerControllerImpl(androidContext(), get(), get(), get()) }
+    single { MediaPlayerControllerImpl(androidContext(), get(), get(), get()) }
+    single { JukeboxMediaPlayer(androidContext(), get()) }
+    single { MediaPlayerLifecycleSupport(androidContext(), get(), get()) }
     single { DownloadQueueSerializer(androidContext()) }
     single { ExternalStorageMonitor(androidContext()) }
     single { ShufflePlayBuffer(androidContext()) }
     single { Downloader(androidContext(), get(), get(), get()) }
-    single { Player(androidContext()) }
+    single { LocalMediaPlayer(androidContext()) }
 }

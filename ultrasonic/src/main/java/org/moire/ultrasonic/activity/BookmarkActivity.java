@@ -206,8 +206,8 @@ public class BookmarkActivity extends SubsonicTabActivity
 		if (!getSelectedSongs(albumListView).isEmpty())
 		{
 			int position = songs.get(0).getBookmarkPosition();
-			if (getDownloadService() == null) return;
-			getDownloadService().restore(songs, 0, position, true, true);
+			if (getMediaPlayerController() == null) return;
+			getMediaPlayerController().restore(songs, 0, position, true, true);
 			selectAll(false, false);
 		}
 	}
@@ -296,7 +296,7 @@ public class BookmarkActivity extends SubsonicTabActivity
 
 	private void enableButtons()
 	{
-		if (getDownloadService() == null)
+		if (getMediaPlayerController() == null)
 		{
 			return;
 		}
@@ -345,7 +345,7 @@ public class BookmarkActivity extends SubsonicTabActivity
 
 	private void downloadBackground(final boolean save, final List<MusicDirectory.Entry> songs)
 	{
-		if (getDownloadService() == null)
+		if (getMediaPlayerController() == null)
 		{
 			return;
 		}
@@ -356,7 +356,7 @@ public class BookmarkActivity extends SubsonicTabActivity
 			public void run()
 			{
 				warnIfNetworkOrStorageUnavailable();
-				getDownloadService().downloadBackground(songs, save);
+				getMediaPlayerController().downloadBackground(songs, save);
 
 				if (save)
 				{
@@ -382,19 +382,19 @@ public class BookmarkActivity extends SubsonicTabActivity
 			songs = getSelectedSongs(albumListView);
 		}
 
-		if (getDownloadService() != null)
+		if (getMediaPlayerController() != null)
 		{
-			getDownloadService().delete(songs);
+			getMediaPlayerController().delete(songs);
 		}
 	}
 
 	private void unpin()
 	{
-		if (getDownloadService() != null)
+		if (getMediaPlayerController() != null)
 		{
 			List<MusicDirectory.Entry> songs = getSelectedSongs(albumListView);
 			Util.toast(BookmarkActivity.this, getResources().getQuantityString(R.plurals.select_album_n_songs_unpinned, songs.size(), songs.size()));
-			getDownloadService().unpin(songs);
+			getMediaPlayerController().unpin(songs);
 		}
 	}
 

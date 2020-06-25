@@ -30,7 +30,7 @@ import java.util.List;
  * @author Sindre Mehus
  * @version $Id$
  */
-public interface DownloadService
+public interface MediaPlayerController
 {
 
 	void download(List<Entry> songs, boolean save, boolean autoplay, boolean playNext, boolean shuffle, boolean newPlaylist);
@@ -52,10 +52,6 @@ public interface DownloadService
 	void setKeepScreenOn(boolean screenOn);
 
 	boolean getShowVisualization();
-
-	boolean getEqualizerAvailable();
-
-	boolean getVisualizerAvailable();
 
 	void setShowVisualization(boolean showVisualization);
 
@@ -103,8 +99,6 @@ public interface DownloadService
 
 	boolean isJukeboxAvailable();
 
-	boolean isSharingAvailable();
-
 	void setJukeboxEnabled(boolean b);
 
 	void adjustJukeboxVolume(boolean up);
@@ -113,13 +107,9 @@ public interface DownloadService
 
 	void setVolume(float volume);
 
-	void swap(boolean mainList, int from, int to);
-
 	void restore(List<Entry> songs, int currentPlayingIndex, int currentPlayingPosition, boolean autoPlay, boolean newPlaylist);
 
 	void stopJukeboxService();
-
-	void startJukeboxService();
 
 	void updateNotification();
 

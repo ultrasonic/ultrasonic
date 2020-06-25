@@ -54,11 +54,7 @@ import org.moire.ultrasonic.domain.*;
 import org.moire.ultrasonic.domain.MusicDirectory.Entry;
 import org.moire.ultrasonic.receiver.MediaButtonIntentReceiver;
 import org.moire.ultrasonic.service.DownloadFile;
-import org.moire.ultrasonic.service.DownloadService;
-import org.moire.ultrasonic.service.DownloadServiceImpl;
-import org.moire.ultrasonic.service.DownloadServiceLifecycleSupport;
-import org.moire.ultrasonic.service.Downloader;
-import org.moire.ultrasonic.service.MediaPlayerService;
+import org.moire.ultrasonic.service.MediaPlayerController;
 import org.moire.ultrasonic.service.MusicServiceFactory;
 
 import java.io.*;
@@ -1183,22 +1179,22 @@ public class Util extends DownloadActivity
 				@Override
 				public void onAudioFocusChange(int focusChange)
 				{
-					DownloadService downloadService = (DownloadService) context;
-					if ((focusChange == AudioManager.AUDIOFOCUS_LOSS_TRANSIENT || focusChange == AudioManager.AUDIOFOCUS_LOSS_TRANSIENT_CAN_DUCK) && !downloadService.isJukeboxEnabled())
+					MediaPlayerController mediaPlayerController = (MediaPlayerController) context;
+					if ((focusChange == AudioManager.AUDIOFOCUS_LOSS_TRANSIENT || focusChange == AudioManager.AUDIOFOCUS_LOSS_TRANSIENT_CAN_DUCK) && !mediaPlayerController.isJukeboxEnabled())
 					{
-						if (downloadService.getPlayerState() == PlayerState.STARTED)
+						if (mediaPlayerController.getPlayerState() == PlayerState.STARTED)
 						{
 							SharedPreferences preferences = getPreferences(context);
 							int lossPref = Integer.parseInt(preferences.getString(Constants.PREFERENCES_KEY_TEMP_LOSS, "1"));
 							if (lossPref == 2 || (lossPref == 1 && focusChange == AudioManager.AUDIOFOCUS_LOSS_TRANSIENT_CAN_DUCK))
 							{
 								lowerFocus = true;
-								downloadService.setVolume(0.1f);
+								mediaPlayerController.setVolume(0.1f);
 							}
 							else if (lossPref == 0 || (lossPref == 1))
 							{
 								pauseFocus = true;
-								downloadService.pause();
+								mediaPlayerController.pause();
 							}
 						}
 					}
@@ -1207,18 +1203,18 @@ public class Util extends DownloadActivity
 						if (pauseFocus)
 						{
 							pauseFocus = false;
-							downloadService.start();
+							mediaPlayerController.start();
 						}
 						else if (lowerFocus)
 						{
 							lowerFocus = false;
-							downloadService.setVolume(1.0f);
+							mediaPlayerController.setVolume(1.0f);
 						}
 					}
-					else if (focusChange == AudioManager.AUDIOFOCUS_LOSS && !downloadService.isJukeboxEnabled())
+					else if (focusChange == AudioManager.AUDIOFOCUS_LOSS && !mediaPlayerController.isJukeboxEnabled())
 					{
 						hasFocus = false;
-						downloadService.pause();
+						mediaPlayerController.pause();
 						audioManager.abandonAudioFocus(this);
 					}
 				}

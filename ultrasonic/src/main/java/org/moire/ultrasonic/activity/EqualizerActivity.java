@@ -32,8 +32,7 @@ import android.widget.TextView;
 
 import org.moire.ultrasonic.R;
 import org.moire.ultrasonic.audiofx.EqualizerController;
-import org.moire.ultrasonic.service.DownloadService;
-import org.moire.ultrasonic.service.DownloadServiceImpl;
+import org.moire.ultrasonic.service.MediaPlayerController;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -56,7 +55,7 @@ public class EqualizerActivity extends ResultActivity
 	private EqualizerController equalizerController;
 	private Equalizer equalizer;
 
-	private Lazy<DownloadServiceImpl> downloadServiceImpl = inject(DownloadServiceImpl.class);
+	private Lazy<MediaPlayerController> mediaPlayerControllerLazy = inject(MediaPlayerController.class);
 
 	@Override
 	public void onCreate(Bundle bundle)
@@ -129,7 +128,7 @@ public class EqualizerActivity extends ResultActivity
 
 	private void setup()
 	{
-		equalizerController = downloadServiceImpl.getValue().getEqualizerController();
+		equalizerController = mediaPlayerControllerLazy.getValue().getEqualizerController();
 		equalizer = equalizerController.getEqualizer();
 
 		initEqualizer();

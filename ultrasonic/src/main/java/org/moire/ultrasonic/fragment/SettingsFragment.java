@@ -16,8 +16,7 @@ import org.moire.ultrasonic.activity.SubsonicTabActivity;
 import org.moire.ultrasonic.featureflags.Feature;
 import org.moire.ultrasonic.featureflags.FeatureStorage;
 import org.moire.ultrasonic.provider.SearchSuggestionProvider;
-import org.moire.ultrasonic.service.DownloadService;
-import org.moire.ultrasonic.service.DownloadServiceImpl;
+import org.moire.ultrasonic.service.MediaPlayerController;
 import org.moire.ultrasonic.util.*;
 
 import java.io.File;
@@ -66,7 +65,7 @@ public class SettingsFragment extends PreferenceFragment
     private SharedPreferences settings;
     private int activeServers;
 
-    private Lazy<DownloadServiceImpl> downloadServiceImpl = inject(DownloadServiceImpl.class);
+    private Lazy<MediaPlayerController> mediaPlayerControllerLazy = inject(MediaPlayerController.class);
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
@@ -407,6 +406,6 @@ public class SettingsFragment extends PreferenceFragment
         }
 
         // Clear download queue.
-        downloadServiceImpl.getValue().clear();
+        mediaPlayerControllerLazy.getValue().clear();
     }
 }

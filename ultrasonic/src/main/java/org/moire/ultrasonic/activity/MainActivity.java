@@ -34,11 +34,8 @@ import android.widget.ListView;
 import android.widget.TextView;
 
 import org.moire.ultrasonic.R;
-import org.moire.ultrasonic.service.DownloadService;
-import org.moire.ultrasonic.service.DownloadServiceImpl;
-import org.moire.ultrasonic.service.DownloadServiceLifecycleSupport;
-import org.moire.ultrasonic.service.ExternalStorageMonitor;
-import org.moire.ultrasonic.service.MediaPlayerService;
+import org.moire.ultrasonic.service.MediaPlayerController;
+import org.moire.ultrasonic.service.MediaPlayerLifecycleSupport;
 import org.moire.ultrasonic.service.MusicService;
 import org.moire.ultrasonic.service.MusicServiceFactory;
 import org.moire.ultrasonic.util.Constants;
@@ -73,7 +70,7 @@ public class MainActivity extends SubsonicTabActivity
 	private static boolean infoDialogDisplayed;
 	private static boolean shouldUseId3;
 
-	private Lazy<DownloadServiceLifecycleSupport> lifecycleSupport = inject(DownloadServiceLifecycleSupport.class);
+	private Lazy<MediaPlayerLifecycleSupport> lifecycleSupport = inject(MediaPlayerLifecycleSupport.class);
 
 	/**
 	 * Called when the activity is first created.
@@ -87,9 +84,9 @@ public class MainActivity extends SubsonicTabActivity
 		{
 			setResult(Constants.RESULT_CLOSE_ALL);
 
-			if (getDownloadService() != null)
+			if (getMediaPlayerController() != null)
 			{
-				getDownloadService().stopJukeboxService();
+				getMediaPlayerController().stopJukeboxService();
 			}
 
 			if (getImageLoader() != null)
@@ -464,7 +461,7 @@ public class MainActivity extends SubsonicTabActivity
 
 	private void setActiveServer(final int instance)
 	{
-		final DownloadService service = getDownloadService();
+		final MediaPlayerController service = getMediaPlayerController();
 
 		if (Util.getActiveServer(this) != instance)
 		{

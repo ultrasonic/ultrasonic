@@ -41,7 +41,7 @@ public enum VideoPlayerType
 				public void playVideo(final Activity activity, MusicDirectory.Entry entry) throws Exception
 				{
 
-					// Check if MX Player is installed.
+					// Check if MX LocalMediaPlayer is installed.
 					boolean installedAd = Util.isPackageInstalled(activity, PACKAGE_NAME_MX_AD);
 					boolean installedPro = Util.isPackageInstalled(activity, PACKAGE_NAME_MX_PRO);
 

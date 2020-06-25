@@ -18,7 +18,6 @@
  */
 package org.moire.ultrasonic.service;
 
-import android.annotation.SuppressLint;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
@@ -43,20 +42,20 @@ import static org.koin.java.standalone.KoinJavaComponent.inject;
 /**
  * @author Sindre Mehus
  */
-public class DownloadServiceLifecycleSupport
+public class MediaPlayerLifecycleSupport
 {
-	private static final String TAG = DownloadServiceLifecycleSupport.class.getSimpleName();
+	private static final String TAG = MediaPlayerLifecycleSupport.class.getSimpleName();
 
 	private Lazy<DownloadQueueSerializer> downloadQueueSerializer = inject(DownloadQueueSerializer.class);
-	private final DownloadServiceImpl downloadService; // From DI
+	private final MediaPlayerControllerImpl mediaPlayerController; // From DI
 	private final Downloader downloader; // From DI
-
-	private BroadcastReceiver headsetEventReceiver;
 	private Context context;
 
-	public DownloadServiceLifecycleSupport(Context context, final DownloadServiceImpl downloadService, final Downloader downloader)
+	private BroadcastReceiver headsetEventReceiver;
+
+	public MediaPlayerLifecycleSupport(Context context, final MediaPlayerControllerImpl mediaPlayerController, final Downloader downloader)
 	{
-		this.downloadService = downloadService;
+		this.mediaPlayerController = mediaPlayerController;
 		this.context = context;
 		this.downloader = downloader;
 
@@ -80,11 +79,11 @@ public class DownloadServiceLifecycleSupport
 			@Override
 			public void accept(State state) {
 				// TODO: here the autoPlay = false creates problems when Ultrasonic is started by a Play MediaButton as the player won't start this way.
-				downloadService.restore(state.songs, state.currentPlayingIndex, state.currentPlayingPosition, false, false);
+				mediaPlayerController.restore(state.songs, state.currentPlayingIndex, state.currentPlayingPosition, false, false);
 
 				// Work-around: Serialize again, as the restore() method creates a serialization without current playing info.
 				downloadQueueSerializer.getValue().serializeDownloadQueue(downloader.downloadList,
-						downloader.getCurrentPlayingIndex(), downloadService.getPlayerPosition());
+						downloader.getCurrentPlayingIndex(), mediaPlayerController.getPlayerPosition());
 			}
 		});
 
@@ -94,11 +93,24 @@ public class DownloadServiceLifecycleSupport
 
 	public void onDestroy()
 	{
-		downloadService.clear(false);
+		mediaPlayerController.clear(false);
 		context.unregisterReceiver(headsetEventReceiver);
 		context.unregisterReceiver(intentReceiver);
-		downloadService.onDestroy();
+		mediaPlayerController.onDestroy();
 		Log.i(TAG, "LifecycleSupport destroyed");
+	}
+
+	public void receiveIntent(Intent intent)
+	{
+		Log.i(TAG, "Received intent");
+		if (intent != null && intent.getExtras() != null)
+		{
+			KeyEvent event = (KeyEvent) intent.getExtras().get(Intent.EXTRA_KEY_EVENT);
+			if (event != null)
+			{
+				handleKeyEvent(event);
+			}
+		}
 	}
 
 	private void registerHeadsetReceiver() {
@@ -119,37 +131,31 @@ public class DownloadServiceLifecycleSupport
                 Log.i(TAG, String.format("Headset event for: %s", extras.get("name")));
                 final int state = extras.getInt("state");
                 if (state == 0) {
-                    if (!downloadService.isJukeboxEnabled()) {
-                        downloadService.pause();
+                    if (!mediaPlayerController.isJukeboxEnabled()) {
+                        mediaPlayerController.pause();
                     }
                 } else if (state == 1) {
-                    if (!downloadService.isJukeboxEnabled() &&
+                    if (!mediaPlayerController.isJukeboxEnabled() &&
                             sp.getBoolean(spKey, false) &&
-                            downloadService.getPlayerState() == PlayerState.PAUSED) {
-                        downloadService.start();
+                            mediaPlayerController.getPlayerState() == PlayerState.PAUSED) {
+                        mediaPlayerController.start();
                     }
                 }
             }
         };
-        @SuppressLint("InlinedApi")
-        IntentFilter headsetIntentFilter = (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) ?
-                new IntentFilter(AudioManager.ACTION_HEADSET_PLUG) :
-                new IntentFilter(Intent.ACTION_HEADSET_PLUG);
+
+
+		IntentFilter headsetIntentFilter;
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP)
+		{
+			headsetIntentFilter = new IntentFilter(AudioManager.ACTION_HEADSET_PLUG);
+		}
+        else
+		{
+			headsetIntentFilter = new IntentFilter(Intent.ACTION_HEADSET_PLUG);
+		}
         context.registerReceiver(headsetEventReceiver, headsetIntentFilter);
     }
-
-    public void receiveIntent(Intent intent)
-	{
-		Log.i(TAG, "Received intent");
-		if (intent != null && intent.getExtras() != null)
-		{
-			KeyEvent event = (KeyEvent) intent.getExtras().get(Intent.EXTRA_KEY_EVENT);
-			if (event != null)
-			{
-				handleKeyEvent(event);
-			}
-		}
-	}
 
 	private void handleKeyEvent(KeyEvent event)
 	{
@@ -162,47 +168,47 @@ public class DownloadServiceLifecycleSupport
 		{
 			case KeyEvent.KEYCODE_MEDIA_PLAY_PAUSE:
 			case KeyEvent.KEYCODE_HEADSETHOOK:
-				downloadService.togglePlayPause();
+				mediaPlayerController.togglePlayPause();
 				break;
 			case KeyEvent.KEYCODE_MEDIA_PREVIOUS:
-				downloadService.previous();
+				mediaPlayerController.previous();
 				break;
 			case KeyEvent.KEYCODE_MEDIA_NEXT:
 				if (downloader.getCurrentPlayingIndex() < downloader.downloadList.size() - 1)
 				{
-					downloadService.next();
+					mediaPlayerController.next();
 				}
 				break;
 			case KeyEvent.KEYCODE_MEDIA_STOP:
-				downloadService.stop();
+				mediaPlayerController.stop();
 				break;
 			case KeyEvent.KEYCODE_MEDIA_PLAY:
-				if (downloadService.getPlayerState() == PlayerState.IDLE)
+				if (mediaPlayerController.getPlayerState() == PlayerState.IDLE)
 				{
-					downloadService.play();
+					mediaPlayerController.play();
 				}
-				else if (downloadService.getPlayerState() != PlayerState.STARTED)
+				else if (mediaPlayerController.getPlayerState() != PlayerState.STARTED)
 				{
-					downloadService.start();
+					mediaPlayerController.start();
 				}
 				break;
 			case KeyEvent.KEYCODE_MEDIA_PAUSE:
-				downloadService.pause();
+				mediaPlayerController.pause();
 				break;
 			case KeyEvent.KEYCODE_1:
-				downloadService.setSongRating(1);
+				mediaPlayerController.setSongRating(1);
 				break;
 			case KeyEvent.KEYCODE_2:
-				downloadService.setSongRating(2);
+				mediaPlayerController.setSongRating(2);
 				break;
 			case KeyEvent.KEYCODE_3:
-				downloadService.setSongRating(3);
+				mediaPlayerController.setSongRating(3);
 				break;
 			case KeyEvent.KEYCODE_4:
-				downloadService.setSongRating(4);
+				mediaPlayerController.setSongRating(4);
 				break;
 			case KeyEvent.KEYCODE_5:
-				downloadService.setSongRating(5);
+				mediaPlayerController.setSongRating(5);
 				break;
 			default:
 				break;
@@ -224,20 +230,20 @@ public class DownloadServiceLifecycleSupport
 			switch(action)
 			{
 				case Constants.CMD_PLAY:
-					downloadService.play();
+					mediaPlayerController.play();
 					break;
 				case Constants.CMD_NEXT:
-					downloadService.next();
+					mediaPlayerController.next();
 					break;
 				case Constants.CMD_PREVIOUS:
-					downloadService.previous();
+					mediaPlayerController.previous();
 					break;
 				case Constants.CMD_TOGGLEPAUSE:
-					downloadService.togglePlayPause();
+					mediaPlayerController.togglePlayPause();
 					break;
 				case Constants.CMD_STOP:
-					downloadService.pause();
-					downloadService.seekTo(0);
+					mediaPlayerController.pause();
+					mediaPlayerController.seekTo(0);
 					break;
 				case Constants.CMD_PROCESS_KEYCODE:
 					receiveIntent(intent);

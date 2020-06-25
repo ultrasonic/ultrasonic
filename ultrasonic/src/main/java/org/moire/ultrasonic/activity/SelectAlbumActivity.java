@@ -1010,7 +1010,7 @@ public class SelectAlbumActivity extends SubsonicTabActivity
 
 	private void enableButtons()
 	{
-		if (getDownloadService() == null)
+		if (getMediaPlayerController() == null)
 		{
 			return;
 		}
@@ -1061,7 +1061,7 @@ public class SelectAlbumActivity extends SubsonicTabActivity
 
 	private void downloadBackground(final boolean save, final List<MusicDirectory.Entry> songs)
 	{
-		if (getDownloadService() == null)
+		if (getMediaPlayerController() == null)
 		{
 			return;
 		}
@@ -1072,7 +1072,7 @@ public class SelectAlbumActivity extends SubsonicTabActivity
 			public void run()
 			{
 				warnIfNetworkOrStorageUnavailable();
-				getDownloadService().downloadBackground(songs, save);
+				getMediaPlayerController().downloadBackground(songs, save);
 
 				if (save)
 				{
@@ -1098,19 +1098,19 @@ public class SelectAlbumActivity extends SubsonicTabActivity
 			songs = getSelectedSongs(albumListView);
 		}
 
-		if (getDownloadService() != null)
+		if (getMediaPlayerController() != null)
 		{
-			getDownloadService().delete(songs);
+			getMediaPlayerController().delete(songs);
 		}
 	}
 
 	private void unpin()
 	{
-		if (getDownloadService() != null)
+		if (getMediaPlayerController() != null)
 		{
 			List<MusicDirectory.Entry> songs = getSelectedSongs(albumListView);
 			Util.toast(SelectAlbumActivity.this, getResources().getQuantityString(R.plurals.select_album_n_songs_unpinned, songs.size(), songs.size()));
-			getDownloadService().unpin(songs);
+			getMediaPlayerController().unpin(songs);
 		}
 	}
 

@@ -18,6 +18,7 @@ import android.os.PowerManager;
 import android.util.Log;
 import android.widget.SeekBar;
 
+import org.jetbrains.annotations.NotNull;
 import org.moire.ultrasonic.activity.DownloadActivity;
 import org.moire.ultrasonic.audiofx.EqualizerController;
 import org.moire.ultrasonic.audiofx.VisualizerController;
@@ -32,6 +33,7 @@ import org.moire.ultrasonic.util.Util;
 
 import java.io.File;
 import java.net.URLEncoder;
+import java.util.Locale;
 
 import static org.moire.ultrasonic.domain.PlayerState.COMPLETED;
 import static org.moire.ultrasonic.domain.PlayerState.DOWNLOADING;
@@ -41,43 +43,44 @@ import static org.moire.ultrasonic.domain.PlayerState.PREPARED;
 import static org.moire.ultrasonic.domain.PlayerState.PREPARING;
 import static org.moire.ultrasonic.domain.PlayerState.STARTED;
 
-public class Player
+public class LocalMediaPlayer
 {
-    private static final String TAG = Player.class.getSimpleName();
-    private final Context context;
-
-    private PowerManager.WakeLock wakeLock;
-    public DownloadFile currentPlaying;
-    public DownloadFile nextPlaying;
-    private static boolean nextSetup;
-    private static CancellableTask nextPlayingTask;
-    private MediaPlayer mediaPlayer;
-
-    private MediaPlayer nextMediaPlayer;
-    private Looper mediaPlayerLooper;
-    private Handler mediaPlayerHandler;
-    public static int cachedPosition;
-    private StreamProxy proxy;
-
-    public PlayerState playerState = IDLE;
-    public PlayerState nextPlayerState = IDLE;
-
-    private AudioManager audioManager;
-    public RemoteControlClient remoteControlClient;
-
-    public static boolean equalizerAvailable;
-    public static boolean visualizerAvailable;
-    private EqualizerController equalizerController;
-    private VisualizerController visualizerController;
-    private CancellableTask bufferTask;
-    private PositionCache positionCache;
-    private int secondaryProgress = -1;
+    private static final String TAG = LocalMediaPlayer.class.getSimpleName();
 
     public Consumer<DownloadFile> onCurrentPlayingChanged;
     public Consumer<DownloadFile> onSongCompleted;
     public BiConsumer<PlayerState, DownloadFile> onPlayerStateChanged;
     public Runnable onPrepared;
     public Runnable onNextSongRequested;
+
+    public static boolean equalizerAvailable;
+    public static boolean visualizerAvailable;
+
+    public PlayerState playerState = IDLE;
+    public DownloadFile currentPlaying;
+    public DownloadFile nextPlaying;
+    private PlayerState nextPlayerState = IDLE;
+    private boolean nextSetup;
+    private CancellableTask nextPlayingTask;
+    private PowerManager.WakeLock wakeLock;
+
+    private MediaPlayer mediaPlayer;
+    private MediaPlayer nextMediaPlayer;
+    private Looper mediaPlayerLooper;
+    private Handler mediaPlayerHandler;
+    private int cachedPosition;
+    private StreamProxy proxy;
+
+    private AudioManager audioManager;
+    private RemoteControlClient remoteControlClient;
+
+    private EqualizerController equalizerController;
+    private VisualizerController visualizerController;
+    private CancellableTask bufferTask;
+    private PositionCache positionCache;
+    private int secondaryProgress = -1;
+
+    private final Context context;
 
     static
     {
@@ -105,7 +108,7 @@ public class Player
         }
     }
 
-    public Player(Context context)
+    public LocalMediaPlayer(Context context)
     {
         this.context = context;
     }
@@ -134,7 +137,7 @@ public class Player
                     @Override
                     public boolean onError(MediaPlayer mediaPlayer, int what, int more)
                     {
-                        handleError(new Exception(String.format("MediaPlayer error: %d (%d)", what, more)));
+                        handleError(new Exception(String.format(Locale.getDefault(), "MediaPlayer error: %d (%d)", what, more)));
                         return false;
                     }
                 });
@@ -187,7 +190,7 @@ public class Player
             }
         }
 
-        Log.i(TAG, "Player created");
+        Log.i(TAG, "LocalMediaPlayer created");
     }
 
     public void onDestroy()
@@ -237,7 +240,7 @@ public class Player
         {
         }
 
-        Log.i(TAG, "Player destroyed");
+        Log.i(TAG, "LocalMediaPlayer destroyed");
     }
 
     public EqualizerController getEqualizerController()
@@ -452,28 +455,18 @@ public class Player
 
         Log.i(TAG, String.format("In updateRemoteControl, playerState: %s [%d]", playerState, getPlayerPosition()));
 
-        switch (playerState)
-        {
-            case STARTED:
-                if (Build.VERSION.SDK_INT < Build.VERSION_CODES.JELLY_BEAN_MR2)
-                {
-                    remoteControlClient.setPlaybackState(RemoteControlClient.PLAYSTATE_PLAYING);
-                }
-                else
-                {
-                    remoteControlClient.setPlaybackState(RemoteControlClient.PLAYSTATE_PLAYING, getPlayerPosition(), 1.0f);
-                }
-                break;
-            default:
-                if (Build.VERSION.SDK_INT < Build.VERSION_CODES.JELLY_BEAN_MR2)
-                {
-                    remoteControlClient.setPlaybackState(RemoteControlClient.PLAYSTATE_PAUSED);
-                }
-                else
-                {
-                    remoteControlClient.setPlaybackState(RemoteControlClient.PLAYSTATE_PAUSED, getPlayerPosition(), 1.0f);
-                }
-                break;
+        if (playerState == STARTED) {
+            if (Build.VERSION.SDK_INT < Build.VERSION_CODES.JELLY_BEAN_MR2) {
+                remoteControlClient.setPlaybackState(RemoteControlClient.PLAYSTATE_PLAYING);
+            } else {
+                remoteControlClient.setPlaybackState(RemoteControlClient.PLAYSTATE_PLAYING, getPlayerPosition(), 1.0f);
+            }
+        } else {
+            if (Build.VERSION.SDK_INT < Build.VERSION_CODES.JELLY_BEAN_MR2) {
+                remoteControlClient.setPlaybackState(RemoteControlClient.PLAYSTATE_PAUSED);
+            } else {
+                remoteControlClient.setPlaybackState(RemoteControlClient.PLAYSTATE_PAUSED, getPlayerPosition(), 1.0f);
+            }
         }
 
         if (currentPlaying != null)
@@ -486,7 +479,7 @@ public class Player
             String album = currentSong.getAlbum();
             String title = currentSong.getTitle();
             Integer currentSongDuration = currentSong.getDuration();
-            Long duration = 0L;
+            long duration = 0L;
 
             if (currentSongDuration != null) duration = (long) currentSongDuration * 1000;
 
@@ -653,7 +646,8 @@ public class Player
                     proxy.start();
                 }
 
-                dataSource = String.format("http://127.0.0.1:%d/%s", proxy.getPort(), URLEncoder.encode(dataSource, Constants.UTF_8));
+                dataSource = String.format(Locale.getDefault(), "http://127.0.0.1:%d/%s",
+                        proxy.getPort(), URLEncoder.encode(dataSource, Constants.UTF_8));
                 Log.i(TAG, String.format("Data Source: %s", dataSource));
             }
             else if (proxy != null)
@@ -708,7 +702,7 @@ public class Player
                         DownloadActivity.getProgressBar().setSecondaryProgress(100 * progressBar.getMax());
                     }
 
-                    synchronized (Player.this)
+                    synchronized (LocalMediaPlayer.this)
                     {
                         if (position != 0)
                         {
@@ -856,15 +850,11 @@ public class Player
 
                     if (Util.getGaplessPlaybackPreference(context) && nextPlaying != null && nextPlayerState == PlayerState.PREPARED)
                     {
-                        if (!nextSetup)
-                        {
-                            playNext();
-                        }
-                        else
+                        if (nextSetup)
                         {
                             nextSetup = false;
-                            playNext();
                         }
+                        playNext();
                     }
                     else
                     {
@@ -978,6 +968,7 @@ public class Player
             return completeFileAvailable || size >= expectedFileSize;
         }
 
+        @NotNull
         @Override
         public String toString()
         {
@@ -1041,6 +1032,7 @@ public class Player
             return completeFileAvailable && (playerState == PlayerState.STARTED || playerState == PlayerState.PAUSED);
         }
 
+        @NotNull
         @Override
         public String toString()
         {

@@ -59,12 +59,12 @@ public class MediaPlayerService extends Service
     private final IBinder binder = new SimpleServiceBinder<>(this);
     private final Scrobbler scrobbler = new Scrobbler();
 
-    public Lazy<JukeboxService> jukeboxService = inject(JukeboxService.class);
+    public Lazy<JukeboxMediaPlayer> jukeboxMediaPlayer = inject(JukeboxMediaPlayer.class);
     private Lazy<DownloadQueueSerializer> downloadQueueSerializer = inject(DownloadQueueSerializer.class);
     private Lazy<ShufflePlayBuffer> shufflePlayBufferLazy = inject(ShufflePlayBuffer.class);
     private Lazy<Downloader> downloaderLazy = inject(Downloader.class);
-    private Lazy<Player> playerLazy = inject(Player.class);
-    private Player player;
+    private Lazy<LocalMediaPlayer> localMediaPlayerLazy = inject(LocalMediaPlayer.class);
+    private LocalMediaPlayer localMediaPlayer;
     private Downloader downloader;
     private ShufflePlayBuffer shufflePlayBuffer;
 
@@ -112,24 +112,24 @@ public class MediaPlayerService extends Service
         super.onCreate();
 
         downloader = downloaderLazy.getValue();
-        player = playerLazy.getValue();
+        localMediaPlayer = localMediaPlayerLazy.getValue();
         shufflePlayBuffer = shufflePlayBufferLazy.getValue();
 
         downloader.onCreate();
         shufflePlayBuffer.onCreate();
 
-        player.onCreate();
+        localMediaPlayer.onCreate();
         setupOnCurrentPlayingChangedHandler();
         setupOnPlayerStateChangedHandler();
         setupOnSongCompletedHandler();
-        player.onPrepared = new Runnable() {
+        localMediaPlayer.onPrepared = new Runnable() {
             @Override
             public void run() {
                 downloadQueueSerializer.getValue().serializeDownloadQueue(downloader.downloadList,
                         downloader.getCurrentPlayingIndex(), getPlayerPosition());
             }
         };
-        player.onNextSongRequested = new Runnable() {
+        localMediaPlayer.onNextSongRequested = new Runnable() {
             @Override
             public void run() {
                 setNextPlaying();
@@ -171,7 +171,7 @@ public class MediaPlayerService extends Service
 
         try
         {
-            player.onDestroy();
+            localMediaPlayer.onDestroy();
             shufflePlayBuffer.onDestroy();
             downloader.onDestroy();
         }
@@ -184,37 +184,37 @@ public class MediaPlayerService extends Service
 
     public synchronized void seekTo(int position)
     {
-        if (jukeboxService.getValue().isEnabled())
+        if (jukeboxMediaPlayer.getValue().isEnabled())
         {
-            jukeboxService.getValue().skip(downloader.getCurrentPlayingIndex(), position / 1000);
+            jukeboxMediaPlayer.getValue().skip(downloader.getCurrentPlayingIndex(), position / 1000);
         }
         else
         {
-            player.seekTo(position);
+            localMediaPlayer.seekTo(position);
         }
     }
 
     public synchronized int getPlayerPosition()
     {
-        if (player.playerState == IDLE || player.playerState == DOWNLOADING || player.playerState == PREPARING)
+        if (localMediaPlayer.playerState == IDLE || localMediaPlayer.playerState == DOWNLOADING || localMediaPlayer.playerState == PREPARING)
         {
             return 0;
         }
 
-        return jukeboxService.getValue().isEnabled() ? jukeboxService.getValue().getPositionSeconds() * 1000 :
-                player.getPlayerPosition();
+        return jukeboxMediaPlayer.getValue().isEnabled() ? jukeboxMediaPlayer.getValue().getPositionSeconds() * 1000 :
+                localMediaPlayer.getPlayerPosition();
     }
 
     public synchronized int getPlayerDuration()
     {
-        return player.getPlayerDuration();
+        return localMediaPlayer.getPlayerDuration();
     }
 
     public synchronized void setCurrentPlaying(int currentPlayingIndex)
     {
         try
         {
-            player.setCurrentPlaying(downloader.downloadList.get(currentPlayingIndex));
+            localMediaPlayer.setCurrentPlaying(downloader.downloadList.get(currentPlayingIndex));
         }
         catch (IndexOutOfBoundsException x)
         {
@@ -224,7 +224,7 @@ public class MediaPlayerService extends Service
 
     public void setupOnCurrentPlayingChangedHandler()
     {
-        player.onCurrentPlayingChanged = new Consumer<DownloadFile>() {
+        localMediaPlayer.onCurrentPlayingChanged = new Consumer<DownloadFile>() {
             @Override
             public void accept(DownloadFile currentPlaying) {
                 if (currentPlaying != null)
@@ -241,7 +241,7 @@ public class MediaPlayerService extends Service
                 }
 
                 // Update widget
-                PlayerState playerState = player.playerState;
+                PlayerState playerState = localMediaPlayer.playerState;
                 MusicDirectory.Entry song = currentPlaying == null? null : currentPlaying.getSong();
                 UltraSonicAppWidgetProvider4x1.getInstance().notifyChange(MediaPlayerService.this, song, playerState == PlayerState.STARTED, false);
                 UltraSonicAppWidgetProvider4x2.getInstance().notifyChange(MediaPlayerService.this, song, playerState == PlayerState.STARTED, true);
@@ -253,7 +253,7 @@ public class MediaPlayerService extends Service
                 if (currentPlaying != null)
                 {
                     if (tabInstance != null) {
-                        updateNotification(player.playerState, currentPlaying);
+                        updateNotification(localMediaPlayer.playerState, currentPlaying);
                         tabInstance.showNowPlaying();
                     }
                 }
@@ -263,7 +263,7 @@ public class MediaPlayerService extends Service
                     {
                         tabInstance.hideNowPlaying();
                         stopForeground(true);
-                        player.clearRemoteControl();
+                        localMediaPlayer.clearRemoteControl();
                         isInForeground = false;
                         stopSelf();
                     }
@@ -278,7 +278,7 @@ public class MediaPlayerService extends Service
 
         if (!gaplessPlayback)
         {
-            player.setNextPlaying(null);
+            localMediaPlayer.setNextPlaying(null);
             return;
         }
 
@@ -295,35 +295,34 @@ public class MediaPlayerService extends Service
                     index = (index + 1) % downloader.downloadList.size();
                     break;
                 case SINGLE:
-                    break;
                 default:
                     break;
             }
         }
 
-        player.clearNextPlaying();
+        localMediaPlayer.clearNextPlaying();
 
         if (index < downloader.downloadList.size() && index != -1)
         {
-            player.setNextPlaying(downloader.downloadList.get(index));
+            localMediaPlayer.setNextPlaying(downloader.downloadList.get(index));
         }
         else
         {
-            player.setNextPlaying(null);
+            localMediaPlayer.setNextPlaying(null);
         }
     }
 
     public synchronized void togglePlayPause()
     {
-        if (player.playerState == PAUSED || player.playerState == COMPLETED || player.playerState == STOPPED)
+        if (localMediaPlayer.playerState == PAUSED || localMediaPlayer.playerState == COMPLETED || localMediaPlayer.playerState == STOPPED)
         {
             start();
         }
-        else if (player.playerState == IDLE)
+        else if (localMediaPlayer.playerState == IDLE)
         {
             play();
         }
-        else if (player.playerState == STARTED)
+        else if (localMediaPlayer.playerState == STARTED)
         {
             pause();
         }
@@ -361,14 +360,14 @@ public class MediaPlayerService extends Service
         {
             if (start)
             {
-                if (jukeboxService.getValue().isEnabled())
+                if (jukeboxMediaPlayer.getValue().isEnabled())
                 {
-                    jukeboxService.getValue().skip(index, 0);
-                    player.setPlayerState(STARTED);
+                    jukeboxMediaPlayer.getValue().skip(index, 0);
+                    localMediaPlayer.setPlayerState(STARTED);
                 }
                 else
                 {
-                    player.play(downloader.downloadList.get(index));
+                    localMediaPlayer.play(downloader.downloadList.get(index));
                 }
             }
 
@@ -379,60 +378,60 @@ public class MediaPlayerService extends Service
 
     private synchronized void resetPlayback()
     {
-        player.reset();
-        player.setCurrentPlaying(null);
+        localMediaPlayer.reset();
+        localMediaPlayer.setCurrentPlaying(null);
         downloadQueueSerializer.getValue().serializeDownloadQueue(downloader.downloadList,
                 downloader.getCurrentPlayingIndex(), getPlayerPosition());
     }
 
     public synchronized void pause()
     {
-        if (player.playerState == STARTED)
+        if (localMediaPlayer.playerState == STARTED)
         {
-            if (jukeboxService.getValue().isEnabled())
+            if (jukeboxMediaPlayer.getValue().isEnabled())
             {
-                jukeboxService.getValue().stop();
+                jukeboxMediaPlayer.getValue().stop();
             }
             else
             {
-                player.pause();
+                localMediaPlayer.pause();
             }
-            player.setPlayerState(PAUSED);
+            localMediaPlayer.setPlayerState(PAUSED);
         }
     }
 
     public synchronized void stop()
     {
-        if (player.playerState == STARTED)
+        if (localMediaPlayer.playerState == STARTED)
         {
-            if (jukeboxService.getValue().isEnabled())
+            if (jukeboxMediaPlayer.getValue().isEnabled())
             {
-                jukeboxService.getValue().stop();
+                jukeboxMediaPlayer.getValue().stop();
             }
             else
             {
-                player.pause();
+                localMediaPlayer.pause();
             }
         }
-        player.setPlayerState(STOPPED);
+        localMediaPlayer.setPlayerState(STOPPED);
     }
 
     public synchronized void start()
     {
-        if (jukeboxService.getValue().isEnabled())
+        if (jukeboxMediaPlayer.getValue().isEnabled())
         {
-            jukeboxService.getValue().start();
+            jukeboxMediaPlayer.getValue().start();
         }
         else
         {
-            player.start();
+            localMediaPlayer.start();
         }
-        player.setPlayerState(STARTED);
+        localMediaPlayer.setPlayerState(STARTED);
     }
 
     public void setupOnPlayerStateChangedHandler()
     {
-        player.onPlayerStateChanged = new BiConsumer<PlayerState, DownloadFile>() {
+        localMediaPlayer.onPlayerStateChanged = new BiConsumer<PlayerState, DownloadFile>() {
             @Override
             public void accept(PlayerState playerState, DownloadFile currentPlaying) {
                 if (playerState == PAUSED)
@@ -442,13 +441,13 @@ public class MediaPlayerService extends Service
 
                 boolean showWhenPaused = (playerState != PlayerState.STOPPED && Util.isNotificationAlwaysEnabled(MediaPlayerService.this));
                 boolean show = playerState == PlayerState.STARTED || showWhenPaused;
+                MusicDirectory.Entry song = currentPlaying == null? null : currentPlaying.getSong();
 
                 Util.broadcastPlaybackStatusChange(MediaPlayerService.this, playerState);
-                Util.broadcastA2dpPlayStatusChange(MediaPlayerService.this, playerState, currentPlaying.getSong(),
+                Util.broadcastA2dpPlayStatusChange(MediaPlayerService.this, playerState, song,
                         downloader.downloadList.size() + downloader.backgroundDownloadList.size(),
                         downloader.downloadList.indexOf(currentPlaying) + 1, getPlayerPosition());
 
-                MusicDirectory.Entry song = currentPlaying.getSong();
                 // Update widget
                 UltraSonicAppWidgetProvider4x1.getInstance().notifyChange(MediaPlayerService.this, song, playerState == PlayerState.STARTED, false);
                 UltraSonicAppWidgetProvider4x2.getInstance().notifyChange(MediaPlayerService.this, song, playerState == PlayerState.STARTED, true);
@@ -460,7 +459,7 @@ public class MediaPlayerService extends Service
                 {
                     if (tabInstance != null)
                     {
-                        // Only update notification is player state is one that will change the icon
+                        // Only update notification is localMediaPlayer state is one that will change the icon
                         if (playerState == PlayerState.STARTED || playerState == PlayerState.PAUSED)
                         {
                             updateNotification(playerState, currentPlaying);
@@ -473,7 +472,7 @@ public class MediaPlayerService extends Service
                     if (tabInstance != null)
                     {
                         stopForeground(true);
-                        player.clearRemoteControl();
+                        localMediaPlayer.clearRemoteControl();
                         isInForeground = false;
                         tabInstance.hideNowPlaying();
                         stopSelf();
@@ -494,7 +493,7 @@ public class MediaPlayerService extends Service
 
     private void setupOnSongCompletedHandler()
     {
-        player.onSongCompleted = new Consumer<DownloadFile>() {
+        localMediaPlayer.onSongCompleted = new Consumer<DownloadFile>() {
             @Override
             public void accept(DownloadFile currentPlaying) {
                 int index = downloader.getCurrentPlayingIndex();
@@ -527,7 +526,7 @@ public class MediaPlayerService extends Service
                                 if (Util.getShouldClearPlaylist(MediaPlayerService.this))
                                 {
                                     clear(true);
-                                    jukeboxService.getValue().updatePlaylist();
+                                    jukeboxMediaPlayer.getValue().updatePlaylist();
                                 }
 
                                 resetPlayback();
@@ -552,9 +551,9 @@ public class MediaPlayerService extends Service
 
     public synchronized void clear(boolean serialize)
     {
-        player.reset();
+        localMediaPlayer.reset();
         downloader.clear();
-        player.setCurrentPlaying(null);
+        localMediaPlayer.setCurrentPlaying(null);
 
         setNextPlaying();
 
@@ -567,7 +566,7 @@ public class MediaPlayerService extends Service
     public void updateNotification(PlayerState playerState, DownloadFile currentPlaying)
     {
         if (Util.isNotificationEnabled(this)) {
-            if (isInForeground == true) {
+            if (isInForeground) {
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
                     NotificationManager notificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
                     notificationManager.notify(NOTIFICATION_ID, buildForegroundNotification(playerState, currentPlaying));
