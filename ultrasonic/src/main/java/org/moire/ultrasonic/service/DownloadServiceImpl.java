@@ -20,6 +20,7 @@ package org.moire.ultrasonic.service;
 
 import android.content.Context;
 import android.content.Intent;
+import android.os.Handler;
 import android.util.Log;
 
 import org.koin.java.standalone.KoinJavaComponent;
@@ -106,7 +107,7 @@ public class DownloadServiceImpl implements DownloadService
 	}
 
 	@Override
-	public void restore(List<MusicDirectory.Entry> songs, final int currentPlayingIndex, final int currentPlayingPosition, final boolean autoPlay, boolean newPlaylist)
+	public synchronized void restore(List<MusicDirectory.Entry> songs, final int currentPlayingIndex, final int currentPlayingPosition, final boolean autoPlay, boolean newPlaylist)
 	{
 		download(songs, false, false, false, false, newPlaylist);
 
@@ -318,7 +319,7 @@ public class DownloadServiceImpl implements DownloadService
 	}
 
 	@Override
-	public void setRepeatMode(RepeatMode repeatMode)
+	public synchronized void setRepeatMode(RepeatMode repeatMode)
 	{
 		Util.setRepeatMode(context, repeatMode);
 		MediaPlayerService mediaPlayerService = MediaPlayerService.getRunningInstance();

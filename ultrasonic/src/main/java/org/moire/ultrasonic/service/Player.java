@@ -117,7 +117,7 @@ public class Player
             @Override
             public void run()
             {
-                Thread.currentThread().setName("MediaPlayerService");
+                Thread.currentThread().setName("MediaPlayerThread");
 
                 Looper.prepare();
 
@@ -270,9 +270,9 @@ public class Player
         return visualizerController;
     }
 
-    public synchronized void setPlayerState(PlayerState playerState)
+    public synchronized void setPlayerState(final PlayerState playerState)
     {
-        Log.i(TAG, String.format("%s -> %s (%s)", playerState.name(), playerState.name(), currentPlaying));
+        Log.i(TAG, String.format("%s -> %s (%s)", this.playerState.name(), playerState.name(), currentPlaying));
 
         this.playerState = playerState;
 
@@ -286,7 +286,14 @@ public class Player
             updateRemoteControl();
         }
 
-        onPlayerStateChanged.accept(playerState, currentPlaying);
+        Handler mainHandler = new Handler(context.getMainLooper());
+        Runnable myRunnable = new Runnable() {
+            @Override
+            public void run() {
+                onPlayerStateChanged.accept(playerState, currentPlaying);
+            }
+        };
+        mainHandler.post(myRunnable);
 
         if (playerState == STARTED && positionCache == null)
         {
@@ -301,11 +308,20 @@ public class Player
         }
     }
 
-    public synchronized void setCurrentPlaying(DownloadFile currentPlaying)
+    public synchronized void setCurrentPlaying(final DownloadFile currentPlaying)
     {
+        Log.v(TAG, String.format("setCurrentPlaying %s", currentPlaying));
         this.currentPlaying = currentPlaying;
         updateRemoteControl();
-        onCurrentPlayingChanged.accept(currentPlaying);
+
+        Handler mainHandler = new Handler(context.getMainLooper());
+        Runnable myRunnable = new Runnable() {
+            @Override
+            public void run() {
+                onCurrentPlayingChanged.accept(currentPlaying);
+            }
+        };
+        mainHandler.post(myRunnable);
     }
 
     public synchronized void setNextPlaying(DownloadFile nextToPlay)
@@ -362,7 +378,6 @@ public class Player
             nextPlayingTask = null;
         }
 
-        updateRemoteControl();
         setCurrentPlaying(fileToPlay);
         bufferAndPlay();
     }
@@ -375,7 +390,15 @@ public class Player
         setCurrentPlaying(nextPlaying);
         setPlayerState(PlayerState.STARTED);
         setupHandlers(currentPlaying, false);
-        onNextSongRequested.run();
+
+        Handler mainHandler = new Handler(context.getMainLooper());
+        Runnable myRunnable = new Runnable() {
+            @Override
+            public void run() {
+                onNextSongRequested.run();
+            }
+        };
+        mainHandler.post(myRunnable);
 
         // Proxy should not be being used here since the next player was already setup to play
         if (proxy != null)
@@ -409,7 +432,7 @@ public class Player
         }
     }
 
-    public void updateRemoteControl()
+    private void updateRemoteControl()
     {
         if (!Util.isLockScreenEnabled(context))
         {
@@ -488,7 +511,7 @@ public class Player
         }
     }
 
-    public void setUpRemoteControlClient()
+    private void setUpRemoteControlClient()
     {
         if (!Util.isLockScreenEnabled(context)) return;
 
@@ -705,7 +728,14 @@ public class Player
                         }
                     }
 
-                    onPrepared.run();
+                    Handler mainHandler = new Handler(context.getMainLooper());
+                    Runnable myRunnable = new Runnable() {
+                        @Override
+                        public void run() {
+                            onPrepared.run();
+                        }
+                    };
+                    mainHandler.post(myRunnable);
                 }
             });
 
@@ -838,7 +868,14 @@ public class Player
                     }
                     else
                     {
-                        onSongCompleted.accept(currentPlaying);
+                        Handler mainHandler = new Handler(context.getMainLooper());
+                        Runnable myRunnable = new Runnable() {
+                            @Override
+                            public void run() {
+                                onSongCompleted.accept(currentPlaying);
+                            }
+                        };
+                        mainHandler.post(myRunnable);
                     }
 
                     return;

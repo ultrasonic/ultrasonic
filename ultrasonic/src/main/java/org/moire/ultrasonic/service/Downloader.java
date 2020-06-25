@@ -347,7 +347,7 @@ public class Downloader
 
     public synchronized void setFirstPlaying()
     {
-        if (player.currentPlaying == null)
+        if (player.currentPlaying == null && downloadList.size() > 0)
         {
             player.currentPlaying = downloadList.get(0);
             player.currentPlaying.setPlaying(true);
