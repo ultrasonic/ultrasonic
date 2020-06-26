@@ -34,6 +34,7 @@ import org.moire.ultrasonic.R;
 import org.moire.ultrasonic.domain.MusicDirectory;
 import org.moire.ultrasonic.domain.MusicDirectory.Entry;
 import org.moire.ultrasonic.service.DownloadFile;
+import org.moire.ultrasonic.service.MediaPlayerController;
 import org.moire.ultrasonic.service.MusicService;
 import org.moire.ultrasonic.service.MusicServiceFactory;
 import org.moire.ultrasonic.util.Constants;
@@ -296,7 +297,8 @@ public class BookmarkActivity extends SubsonicTabActivity
 
 	private void enableButtons()
 	{
-		if (getMediaPlayerController() == null)
+		MediaPlayerController mediaPlayerController = getMediaPlayerController();
+		if (mediaPlayerController == null)
 		{
 			return;
 		}
@@ -310,7 +312,7 @@ public class BookmarkActivity extends SubsonicTabActivity
 
 		for (MusicDirectory.Entry song : selection)
 		{
-			DownloadFile downloadFile = downloader.getValue().getDownloadFileForSong(song);
+			DownloadFile downloadFile = mediaPlayerController.getDownloadFileForSong(song);
 			if (downloadFile.isWorkDone())
 			{
 				deleteEnabled = true;

@@ -37,10 +37,9 @@ import org.moire.ultrasonic.domain.MusicDirectory.Entry;
 import org.moire.ultrasonic.featureflags.Feature;
 import org.moire.ultrasonic.featureflags.FeatureStorage;
 import org.moire.ultrasonic.service.DownloadFile;
-import org.moire.ultrasonic.service.Downloader;
+import org.moire.ultrasonic.service.MediaPlayerController;
 import org.moire.ultrasonic.service.MusicService;
 import org.moire.ultrasonic.service.MusicServiceFactory;
-import org.moire.ultrasonic.service.LocalMediaPlayer;
 import org.moire.ultrasonic.util.Util;
 import org.moire.ultrasonic.util.VideoPlayerType;
 
@@ -82,8 +81,7 @@ public class SongView extends UpdateView implements Checkable
 	private boolean maximized = false;
 	private boolean useFiveStarRating;
 
-	private Lazy<Downloader> downloader = inject(Downloader.class);
-	protected Lazy<LocalMediaPlayer> localMediaPlayer = inject(LocalMediaPlayer.class);
+	private Lazy<MediaPlayerController> mediaPlayerControllerLazy = inject(MediaPlayerController.class);
 
 	public SongView(Context context)
 	{
@@ -170,7 +168,7 @@ public class SongView extends UpdateView implements Checkable
 
 		this.song = song;
 
-		this.downloadFile = downloader.getValue().getDownloadFileForSong(song);
+		this.downloadFile = mediaPlayerControllerLazy.getValue().getDownloadFileForSong(song);
 
 		StringBuilder artist = new StringBuilder(60);
 
@@ -321,7 +319,7 @@ public class SongView extends UpdateView implements Checkable
 	{
 		updateBackground();
 
-		downloadFile = downloader.getValue().getDownloadFileForSong(this.song);
+		downloadFile = mediaPlayerControllerLazy.getValue().getDownloadFileForSong(this.song);
 		File partialFile = downloadFile.getPartialFile();
 
 		if (downloadFile.isWorkDone())
@@ -411,7 +409,7 @@ public class SongView extends UpdateView implements Checkable
 		viewHolder.fiveStar4.setImageDrawable(rating > 3 ? starDrawable : starHollowDrawable);
 		viewHolder.fiveStar5.setImageDrawable(rating > 4 ? starDrawable : starHollowDrawable);
 
-		boolean playing = localMediaPlayer.getValue().currentPlaying == downloadFile;
+		boolean playing = mediaPlayerControllerLazy.getValue().getCurrentPlaying() == downloadFile;
 
 		if (playing)
 		{

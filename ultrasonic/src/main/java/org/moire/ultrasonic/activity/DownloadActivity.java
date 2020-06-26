@@ -293,7 +293,7 @@ public class DownloadActivity extends SubsonicTabActivity implements OnGestureLi
 					@Override
 					protected Boolean doInBackground() throws Throwable
 					{
-						if (downloader.getValue().getCurrentPlayingIndex() < downloader.getValue().downloadList.size() - 1)
+						if (getMediaPlayerController().getCurrentPlayingNumberOnPlaylist() < getMediaPlayerController().getPlaylistSize() - 1)
 						{
 							getMediaPlayerController().next();
 							return true;
@@ -567,7 +567,7 @@ public class DownloadActivity extends SubsonicTabActivity implements OnGestureLi
 
 		final MediaPlayerController mediaPlayerController = getMediaPlayerController();
 
-		if (mediaPlayerController == null || localMediaPlayer.getValue().currentPlaying == null)
+		if (mediaPlayerController == null || mediaPlayerController.getCurrentPlaying() == null)
 		{
 			playlistFlipper.setDisplayedChild(1);
 		}
@@ -632,7 +632,7 @@ public class DownloadActivity extends SubsonicTabActivity implements OnGestureLi
 				}
 			}
 
-			final DownloadFile currentDownloading = downloader.getValue().currentDownloading;
+			final DownloadFile currentDownloading = getMediaPlayerController().getCurrentDownloading();
 			for (int i = 0; i < count; i++)
 			{
 				if (currentDownloading == playlistView.getItemAtPosition(i))
@@ -782,7 +782,7 @@ public class DownloadActivity extends SubsonicTabActivity implements OnGestureLi
 
 		if (mediaPlayerController != null)
 		{
-			DownloadFile downloadFile = localMediaPlayer.getValue().currentPlaying;
+			DownloadFile downloadFile = mediaPlayerController.getCurrentPlaying();
 
 			if (downloadFile != null)
 			{
@@ -1019,7 +1019,7 @@ public class DownloadActivity extends SubsonicTabActivity implements OnGestureLi
 				onDownloadListChanged();
 				return true;
 			case R.id.menu_item_save_playlist:
-				if (!downloader.getValue().downloadList.isEmpty())
+				if (getMediaPlayerController().getPlaylistSize() > 0)
 				{
 					showDialog(DIALOG_SAVE_PLAYLIST);
 				}
@@ -1142,7 +1142,7 @@ public class DownloadActivity extends SubsonicTabActivity implements OnGestureLi
 
 				if (mediaPlayerController != null)
 				{
-					List<DownloadFile> downloadServiceSongs = downloader.getValue().downloadList;
+					List<DownloadFile> downloadServiceSongs = mediaPlayerController.getPlayList();
 
 					if (downloadServiceSongs != null)
 					{
@@ -1170,17 +1170,18 @@ public class DownloadActivity extends SubsonicTabActivity implements OnGestureLi
 
 	private void update()
 	{
-		if (getMediaPlayerController() == null)
+		MediaPlayerController mediaPlayerController = getMediaPlayerController();
+		if (mediaPlayerController == null)
 		{
 			return;
 		}
 
-		if (currentRevision != downloader.getValue().getDownloadListUpdateRevision())
+		if (currentRevision != mediaPlayerController.getPlayListUpdateRevision())
 		{
 			onDownloadListChanged();
 		}
 
-		if (currentPlaying != localMediaPlayer.getValue().currentPlaying)
+		if (currentPlaying != mediaPlayerController.getCurrentPlaying())
 		{
 			onCurrentChanged();
 		}
@@ -1199,7 +1200,7 @@ public class DownloadActivity extends SubsonicTabActivity implements OnGestureLi
 			protected Void doInBackground() throws Throwable
 			{
 				final List<MusicDirectory.Entry> entries = new LinkedList<MusicDirectory.Entry>();
-				for (final DownloadFile downloadFile : downloader.getValue().downloadList)
+				for (final DownloadFile downloadFile : getMediaPlayerController().getPlayList())
 				{
 					entries.add(downloadFile.getSong());
 				}
@@ -1254,7 +1255,7 @@ public class DownloadActivity extends SubsonicTabActivity implements OnGestureLi
 		{
 			warnIfNetworkOrStorageUnavailable();
 
-			final int current = downloader.getValue().getCurrentPlayingIndex();
+			final int current = getMediaPlayerController().getCurrentPlayingNumberOnPlaylist();
 
 			if (current == -1)
 			{
@@ -1275,7 +1276,7 @@ public class DownloadActivity extends SubsonicTabActivity implements OnGestureLi
 			return;
 		}
 
-		final List<DownloadFile> list = downloader.getValue().downloadList;
+		final List<DownloadFile> list = mediaPlayerController.getPlayList();
 
 		emptyTextView.setText(R.string.download_empty);
 		final SongListAdapter adapter = new SongListAdapter(this, list);
@@ -1313,7 +1314,7 @@ public class DownloadActivity extends SubsonicTabActivity implements OnGestureLi
 					return;
 				}
 
-				DownloadFile currentPlaying = localMediaPlayer.getValue().currentPlaying;
+				DownloadFile currentPlaying = mediaPlayerController.getCurrentPlaying();
 
 				if (currentPlaying == item)
 				{
@@ -1333,7 +1334,7 @@ public class DownloadActivity extends SubsonicTabActivity implements OnGestureLi
 		});
 
 		emptyTextView.setVisibility(list.isEmpty() ? View.VISIBLE : View.GONE);
-		currentRevision = downloader.getValue().getDownloadListUpdateRevision();
+		currentRevision = mediaPlayerController.getPlayListUpdateRevision();
 
 		switch (mediaPlayerController.getRepeatMode())
 		{
@@ -1360,13 +1361,13 @@ public class DownloadActivity extends SubsonicTabActivity implements OnGestureLi
 			return;
 		}
 
-		currentPlaying = localMediaPlayer.getValue().currentPlaying;
+		currentPlaying = mediaPlayerController.getCurrentPlaying();
 
 		scrollToCurrent();
 
-		long totalDuration = downloader.getValue().getDownloadListDuration();
-		long totalSongs = downloader.getValue().downloadList.size();
-		int currentSongIndex = downloader.getValue().getCurrentPlayingIndex() + 1;
+		long totalDuration = mediaPlayerController.getPlayListDuration();
+		long totalSongs = mediaPlayerController.getPlaylistSize();
+		int currentSongIndex = mediaPlayerController.getCurrentPlayingNumberOnPlaylist() + 1;
 
 		String duration = Util.formatTotalDuration(totalDuration);
 
@@ -1580,7 +1581,7 @@ public class DownloadActivity extends SubsonicTabActivity implements OnGestureLi
 		if (e1X - e2X > swipeDistance && absX > swipeVelocity)
 		{
 			warnIfNetworkOrStorageUnavailable();
-			if (downloader.getValue().getCurrentPlayingIndex() < downloader.getValue().downloadList.size() - 1)
+			if (mediaPlayerController.getCurrentPlayingNumberOnPlaylist() < mediaPlayerController.getPlaylistSize() - 1)
 			{
 				mediaPlayerController.next();
 				onCurrentChanged();

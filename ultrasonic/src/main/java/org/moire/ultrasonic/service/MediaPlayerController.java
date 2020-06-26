@@ -27,12 +27,14 @@ import org.moire.ultrasonic.domain.RepeatMode;
 import java.util.List;
 
 /**
+ * This interface contains all functions which are necessary for the Application UI
+ * to control the Media Player implementation.
+ *
  * @author Sindre Mehus
  * @version $Id$
  */
 public interface MediaPlayerController
 {
-
 	void download(List<Entry> songs, boolean save, boolean autoplay, boolean playNext, boolean shuffle, boolean newPlaylist);
 
 	void downloadBackground(List<Entry> songs, boolean save);
@@ -114,4 +116,20 @@ public interface MediaPlayerController
 	void updateNotification();
 
 	void setSongRating(final int rating);
+
+	DownloadFile getCurrentPlaying();
+
+	int getPlaylistSize();
+
+	int getCurrentPlayingNumberOnPlaylist();
+
+	DownloadFile getCurrentDownloading();
+
+	List<DownloadFile> getPlayList();
+
+	long getPlayListUpdateRevision();
+
+	long getPlayListDuration();
+
+	DownloadFile getDownloadFileForSong(Entry song);
 }

@@ -11,6 +11,11 @@ import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
 
+/**
+ * This class is responsible for the serialization / deserialization
+ * of the DownloadQueue (playlist) to the filesystem.
+ * It also serializes the player state e.g. current playing number and play position.
+ */
 public class DownloadQueueSerializer
 {
     private static final String TAG = DownloadQueueSerializer.class.getSimpleName();

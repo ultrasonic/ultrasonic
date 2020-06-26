@@ -35,26 +35,26 @@ import org.moire.ultrasonic.util.CacheCleaner;
 import org.moire.ultrasonic.util.Constants;
 import org.moire.ultrasonic.util.Util;
 
-import kotlin.Lazy;
-
-import static org.koin.java.standalone.KoinJavaComponent.inject;
-
 /**
+ * This class is responsible for handling received events for the Media Player implementation
+ *
  * @author Sindre Mehus
  */
 public class MediaPlayerLifecycleSupport
 {
 	private static final String TAG = MediaPlayerLifecycleSupport.class.getSimpleName();
 
-	private Lazy<DownloadQueueSerializer> downloadQueueSerializer = inject(DownloadQueueSerializer.class);
+	private DownloadQueueSerializer downloadQueueSerializer; // From DI
 	private final MediaPlayerControllerImpl mediaPlayerController; // From DI
 	private final Downloader downloader; // From DI
 	private Context context;
 
 	private BroadcastReceiver headsetEventReceiver;
 
-	public MediaPlayerLifecycleSupport(Context context, final MediaPlayerControllerImpl mediaPlayerController, final Downloader downloader)
+	public MediaPlayerLifecycleSupport(Context context, DownloadQueueSerializer downloadQueueSerializer,
+									   final MediaPlayerControllerImpl mediaPlayerController, final Downloader downloader)
 	{
+		this.downloadQueueSerializer = downloadQueueSerializer;
 		this.mediaPlayerController = mediaPlayerController;
 		this.context = context;
 		this.downloader = downloader;
@@ -75,14 +75,14 @@ public class MediaPlayerLifecycleSupport
 		commandFilter.addAction(Constants.CMD_PROCESS_KEYCODE);
 		context.registerReceiver(intentReceiver, commandFilter);
 
-		downloadQueueSerializer.getValue().deserializeDownloadQueue(new Consumer<State>() {
+		this.downloadQueueSerializer.deserializeDownloadQueue(new Consumer<State>() {
 			@Override
 			public void accept(State state) {
 				// TODO: here the autoPlay = false creates problems when Ultrasonic is started by a Play MediaButton as the player won't start this way.
 				mediaPlayerController.restore(state.songs, state.currentPlayingIndex, state.currentPlayingPosition, false, false);
 
 				// Work-around: Serialize again, as the restore() method creates a serialization without current playing info.
-				downloadQueueSerializer.getValue().serializeDownloadQueue(downloader.downloadList,
+				MediaPlayerLifecycleSupport.this.downloadQueueSerializer.serializeDownloadQueue(downloader.downloadList,
 						downloader.getCurrentPlayingIndex(), mediaPlayerController.getPlayerPosition());
 			}
 		});

@@ -78,9 +78,6 @@ public class SubsonicTabActivity extends ResultActivity implements OnClickListen
 
 	private Lazy<MediaPlayerController> mediaPlayerControllerLazy = inject(MediaPlayerController.class);
 	private Lazy<MediaPlayerLifecycleSupport> lifecycleSupport = inject(MediaPlayerLifecycleSupport.class);
-	protected Lazy<Downloader> downloader = inject(Downloader.class);
-	protected Lazy<LocalMediaPlayer> localMediaPlayer = inject(LocalMediaPlayer.class);
-
 
 	public MenuDrawer menuDrawer;
 	private int activePosition = 1;
@@ -269,7 +266,7 @@ public class SubsonicTabActivity extends ResultActivity implements OnClickListen
 
 							if (playerState.equals(PlayerState.PAUSED) || playerState.equals(PlayerState.STARTED))
 							{
-								DownloadFile file = localMediaPlayer.getValue().currentPlaying;
+								DownloadFile file = mediaPlayerControllerLazy.getValue().getCurrentPlaying();
 
 								if (file != null)
 								{

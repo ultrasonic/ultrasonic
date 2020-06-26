@@ -27,6 +27,10 @@ import static org.koin.java.standalone.KoinJavaComponent.inject;
  * @author Sindre Mehus
  * @version $Id$
  */
+
+/**
+ * Responsible for cleaning up files from the offline download cache on the filesystem
+ */
 public class CacheCleaner
 {
 

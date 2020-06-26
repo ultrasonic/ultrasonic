@@ -6,6 +6,9 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * Represents the state of the Media Player implementation
+ */
 public class State implements Serializable
 {
     public static final long serialVersionUID = -6346438781062572270L;

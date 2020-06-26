@@ -113,13 +113,15 @@ val musicServiceModule = module(MUSIC_SERVICE_CONTEXT) {
 
     single { SubsonicImageLoader(getProperty(DiProperties.APP_CONTEXT), get()) }
 
-    single<MediaPlayerController> { MediaPlayerControllerImpl(androidContext(), get(), get(), get()) }
-    single { MediaPlayerControllerImpl(androidContext(), get(), get(), get()) }
+    single<MediaPlayerController> { MediaPlayerControllerImpl(androidContext(), get(), get(), get(), get(), get()) }
     single { JukeboxMediaPlayer(androidContext(), get()) }
-    single { MediaPlayerLifecycleSupport(androidContext(), get(), get()) }
+    single { MediaPlayerLifecycleSupport(androidContext(), get(), get(), get()) }
     single { DownloadQueueSerializer(androidContext()) }
     single { ExternalStorageMonitor(androidContext()) }
     single { ShufflePlayBuffer(androidContext()) }
     single { Downloader(androidContext(), get(), get(), get()) }
     single { LocalMediaPlayer(androidContext()) }
+
+    // TODO: Ideally this can be cleaned up when all circular references are removed.
+    single { MediaPlayerControllerImpl(androidContext(), get(), get(), get(), get(), get()) }
 }

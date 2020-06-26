@@ -6,6 +6,9 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.util.Log;
 
+/**
+ * Monitors the state of the mobile's external storage
+ */
 public class ExternalStorageMonitor
 {
     private static final String TAG = ExternalStorageMonitor.class.getSimpleName();

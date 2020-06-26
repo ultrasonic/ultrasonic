@@ -43,6 +43,9 @@ import static org.moire.ultrasonic.domain.PlayerState.PREPARED;
 import static org.moire.ultrasonic.domain.PlayerState.PREPARING;
 import static org.moire.ultrasonic.domain.PlayerState.STARTED;
 
+/**
+ * Represents a Media Player which uses the mobile's resources for playback
+ */
 public class LocalMediaPlayer
 {
     private static final String TAG = LocalMediaPlayer.class.getSimpleName();
@@ -59,6 +62,7 @@ public class LocalMediaPlayer
     public PlayerState playerState = IDLE;
     public DownloadFile currentPlaying;
     public DownloadFile nextPlaying;
+
     private PlayerState nextPlayerState = IDLE;
     private boolean nextSetup;
     private CancellableTask nextPlayingTask;

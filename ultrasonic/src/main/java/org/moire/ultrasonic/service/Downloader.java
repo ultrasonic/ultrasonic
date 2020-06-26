@@ -22,6 +22,10 @@ import static org.koin.java.standalone.KoinJavaComponent.inject;
 import static org.moire.ultrasonic.domain.PlayerState.DOWNLOADING;
 import static org.moire.ultrasonic.domain.PlayerState.STARTED;
 
+/**
+ * This class is responsible for maintaining the playlist and downloading
+ * its items from the network to the filesystem.
+ */
 public class Downloader
 {
     private static final String TAG = Downloader.class.getSimpleName();
@@ -85,7 +89,7 @@ public class Downloader
         Log.i(TAG, "Downloader destroyed");
     }
 
-    protected synchronized void checkDownloads()
+    public synchronized void checkDownloads()
     {
         if (!Util.isExternalStoragePresent() || !externalStorageMonitor.isExternalStorageAvailable())
         {

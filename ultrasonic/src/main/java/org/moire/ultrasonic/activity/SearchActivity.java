@@ -520,7 +520,7 @@ public class SearchActivity extends SubsonicTabActivity
 
 			if (autoplay)
 			{
-				mediaPlayerController.play(downloader.getValue().downloadList.size() - 1);
+				mediaPlayerController.play(mediaPlayerController.getPlaylistSize() - 1);
 			}
 
 			Util.toast(SearchActivity.this, getResources().getQuantityString(R.plurals.select_album_n_songs_added, 1, 1));

@@ -47,6 +47,10 @@ import static org.moire.ultrasonic.domain.PlayerState.PREPARING;
 import static org.moire.ultrasonic.domain.PlayerState.STARTED;
 import static org.moire.ultrasonic.domain.PlayerState.STOPPED;
 
+/**
+ * Android Foreground Service for playing music
+ * while the rest of the Ultrasonic App is in the background.
+ */
 public class MediaPlayerService extends Service
 {
     private static final String TAG = MediaPlayerService.class.getSimpleName();
@@ -61,13 +65,14 @@ public class MediaPlayerService extends Service
     private final Scrobbler scrobbler = new Scrobbler();
 
     public Lazy<JukeboxMediaPlayer> jukeboxMediaPlayer = inject(JukeboxMediaPlayer.class);
-    private Lazy<DownloadQueueSerializer> downloadQueueSerializer = inject(DownloadQueueSerializer.class);
+    private Lazy<DownloadQueueSerializer> downloadQueueSerializerLazy = inject(DownloadQueueSerializer.class);
     private Lazy<ShufflePlayBuffer> shufflePlayBufferLazy = inject(ShufflePlayBuffer.class);
     private Lazy<Downloader> downloaderLazy = inject(Downloader.class);
     private Lazy<LocalMediaPlayer> localMediaPlayerLazy = inject(LocalMediaPlayer.class);
     private LocalMediaPlayer localMediaPlayer;
     private Downloader downloader;
     private ShufflePlayBuffer shufflePlayBuffer;
+    private DownloadQueueSerializer downloadQueueSerializer;
 
     private boolean isInForeground = false;
     private NotificationCompat.Builder notificationBuilder;
@@ -129,6 +134,7 @@ public class MediaPlayerService extends Service
         downloader = downloaderLazy.getValue();
         localMediaPlayer = localMediaPlayerLazy.getValue();
         shufflePlayBuffer = shufflePlayBufferLazy.getValue();
+        downloadQueueSerializer = downloadQueueSerializerLazy.getValue();
 
         downloader.onCreate();
         shufflePlayBuffer.onCreate();
@@ -140,7 +146,7 @@ public class MediaPlayerService extends Service
         localMediaPlayer.onPrepared = new Runnable() {
             @Override
             public void run() {
-                downloadQueueSerializer.getValue().serializeDownloadQueue(downloader.downloadList,
+                downloadQueueSerializer.serializeDownloadQueue(downloader.downloadList,
                         downloader.getCurrentPlayingIndex(), getPlayerPosition());
             }
         };
@@ -401,7 +407,7 @@ public class MediaPlayerService extends Service
     {
         localMediaPlayer.reset();
         localMediaPlayer.setCurrentPlaying(null);
-        downloadQueueSerializer.getValue().serializeDownloadQueue(downloader.downloadList,
+        downloadQueueSerializer.serializeDownloadQueue(downloader.downloadList,
                 downloader.getCurrentPlayingIndex(), getPlayerPosition());
     }
 
@@ -457,7 +463,7 @@ public class MediaPlayerService extends Service
             public void accept(PlayerState playerState, DownloadFile currentPlaying) {
                 if (playerState == PAUSED)
                 {
-                    downloadQueueSerializer.getValue().serializeDownloadQueue(downloader.downloadList, downloader.getCurrentPlayingIndex(), getPlayerPosition());
+                    downloadQueueSerializer.serializeDownloadQueue(downloader.downloadList, downloader.getCurrentPlayingIndex(), getPlayerPosition());
                 }
 
                 boolean showWhenPaused = (playerState != PlayerState.STOPPED && Util.isNotificationAlwaysEnabled(MediaPlayerService.this));
@@ -579,7 +585,7 @@ public class MediaPlayerService extends Service
         setNextPlaying();
 
         if (serialize) {
-            downloadQueueSerializer.getValue().serializeDownloadQueue(downloader.downloadList,
+            downloadQueueSerializer.serializeDownloadQueue(downloader.downloadList,
                     downloader.getCurrentPlayingIndex(), getPlayerPosition());
         }
     }

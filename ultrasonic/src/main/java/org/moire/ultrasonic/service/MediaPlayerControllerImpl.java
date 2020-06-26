@@ -43,6 +43,10 @@ import kotlin.Lazy;
 import static org.koin.java.standalone.KoinJavaComponent.inject;
 
 /**
+ * The implementation of the Media Player Controller.
+ * This class contains everything that is necessary for the Application UI
+ * to control the Media Player implementation.
+ *
  * @author Sindre Mehus, Joshua Bahnsen
  * @version $Id$
  */
@@ -58,21 +62,24 @@ public class MediaPlayerControllerImpl implements MediaPlayerController
 
 	private Context context;
 	private Lazy<JukeboxMediaPlayer> jukeboxMediaPlayer = inject(JukeboxMediaPlayer.class);
-	private Lazy<DownloadQueueSerializer> downloadQueueSerializer = inject(DownloadQueueSerializer.class);
-	private Lazy<ExternalStorageMonitor> externalStorageMonitor = inject(ExternalStorageMonitor.class);
+	private final DownloadQueueSerializer downloadQueueSerializer;
+	private final ExternalStorageMonitor externalStorageMonitor;
 	private final Downloader downloader;
 	private final ShufflePlayBuffer shufflePlayBuffer;
 	private final LocalMediaPlayer localMediaPlayer;
 
-	public MediaPlayerControllerImpl(Context context, Downloader downloader, ShufflePlayBuffer shufflePlayBuffer,
-									 LocalMediaPlayer localMediaPlayer)
+	public MediaPlayerControllerImpl(Context context, DownloadQueueSerializer downloadQueueSerializer,
+									 ExternalStorageMonitor externalStorageMonitor, Downloader downloader,
+									 ShufflePlayBuffer shufflePlayBuffer, LocalMediaPlayer localMediaPlayer)
 	{
 		this.context = context;
+		this.downloadQueueSerializer = downloadQueueSerializer;
+		this.externalStorageMonitor = externalStorageMonitor;
 		this.downloader = downloader;
 		this.shufflePlayBuffer = shufflePlayBuffer;
 		this.localMediaPlayer = localMediaPlayer;
 
-		externalStorageMonitor.getValue().onCreate(new Runnable() {
+		this.externalStorageMonitor.onCreate(new Runnable() {
 			@Override
 			public void run() {
 				reset();
@@ -87,7 +94,7 @@ public class MediaPlayerControllerImpl implements MediaPlayerController
 
 	public void onDestroy()
 	{
-		externalStorageMonitor.getValue().onDestroy();
+		externalStorageMonitor.onDestroy();
 		context.stopService(new Intent(context, MediaPlayerService.class));
 		Log.i(TAG, "MediaPlayerControllerImpl destroyed");
 	}
@@ -235,14 +242,14 @@ public class MediaPlayerControllerImpl implements MediaPlayerController
 			downloader.checkDownloads();
 		}
 
-		downloadQueueSerializer.getValue().serializeDownloadQueue(downloader.downloadList, downloader.getCurrentPlayingIndex(), getPlayerPosition());
+		downloadQueueSerializer.serializeDownloadQueue(downloader.downloadList, downloader.getCurrentPlayingIndex(), getPlayerPosition());
 	}
 
 	@Override
 	public synchronized void downloadBackground(List<MusicDirectory.Entry> songs, boolean save)
 	{
 		downloader.downloadBackground(songs, save);
-		downloadQueueSerializer.getValue().serializeDownloadQueue(downloader.downloadList, downloader.getCurrentPlayingIndex(), getPlayerPosition());
+		downloadQueueSerializer.serializeDownloadQueue(downloader.downloadList, downloader.getCurrentPlayingIndex(), getPlayerPosition());
 	}
 
 	public synchronized void setCurrentPlaying(DownloadFile currentPlaying)
@@ -291,7 +298,7 @@ public class MediaPlayerControllerImpl implements MediaPlayerController
 	{
 		downloader.shuffle();
 
-		downloadQueueSerializer.getValue().serializeDownloadQueue(downloader.downloadList, downloader.getCurrentPlayingIndex(), getPlayerPosition());
+		downloadQueueSerializer.serializeDownloadQueue(downloader.downloadList, downloader.getCurrentPlayingIndex(), getPlayerPosition());
 		jukeboxMediaPlayer.getValue().updatePlaylist();
 
 		MediaPlayerService mediaPlayerService = MediaPlayerService.getRunningInstance();
@@ -365,7 +372,7 @@ public class MediaPlayerControllerImpl implements MediaPlayerController
 			}
 		}
 
-		downloadQueueSerializer.getValue().serializeDownloadQueue(downloader.downloadList, downloader.getCurrentPlayingIndex(), getPlayerPosition());
+		downloadQueueSerializer.serializeDownloadQueue(downloader.downloadList, downloader.getCurrentPlayingIndex(), getPlayerPosition());
 		jukeboxMediaPlayer.getValue().updatePlaylist();
 	}
 
@@ -380,7 +387,7 @@ public class MediaPlayerControllerImpl implements MediaPlayerController
 
 		downloader.removeDownloadFile(downloadFile);
 
-		downloadQueueSerializer.getValue().serializeDownloadQueue(downloader.downloadList, downloader.getCurrentPlayingIndex(), getPlayerPosition());
+		downloadQueueSerializer.serializeDownloadQueue(downloader.downloadList, downloader.getCurrentPlayingIndex(), getPlayerPosition());
 		jukeboxMediaPlayer.getValue().updatePlaylist();
 
 		if (downloadFile == localMediaPlayer.nextPlaying)
@@ -596,5 +603,45 @@ public class MediaPlayerControllerImpl implements MediaPlayerController
 		}).start();
 
 		updateNotification();
+	}
+
+	@Override
+	public DownloadFile getCurrentPlaying() {
+		return localMediaPlayer.currentPlaying;
+	}
+
+	@Override
+	public int getPlaylistSize() {
+		return downloader.downloadList.size();
+	}
+
+	@Override
+	public int getCurrentPlayingNumberOnPlaylist() {
+		return downloader.getCurrentPlayingIndex();
+	}
+
+	@Override
+	public DownloadFile getCurrentDownloading() {
+		return downloader.currentDownloading;
+	}
+
+	@Override
+	public List<DownloadFile> getPlayList() {
+		return downloader.downloadList;
+	}
+
+	@Override
+	public long getPlayListUpdateRevision() {
+		return downloader.getDownloadListUpdateRevision();
+	}
+
+	@Override
+	public long getPlayListDuration() {
+		return downloader.getDownloadListDuration();
+	}
+
+	@Override
+	public DownloadFile getDownloadFileForSong(Entry song) {
+		return downloader.getDownloadFileForSong(song);
 	}
 }

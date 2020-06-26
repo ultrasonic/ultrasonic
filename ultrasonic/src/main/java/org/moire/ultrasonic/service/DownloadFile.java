@@ -24,6 +24,7 @@ import android.os.PowerManager;
 import android.text.TextUtils;
 import android.util.Log;
 
+import org.jetbrains.annotations.NotNull;
 import org.moire.ultrasonic.domain.MusicDirectory;
 import org.moire.ultrasonic.util.CacheCleaner;
 import org.moire.ultrasonic.util.CancellableTask;
@@ -51,7 +52,6 @@ import static org.koin.java.standalone.KoinJavaComponent.inject;
  */
 public class DownloadFile
 {
-
 	private static final String TAG = DownloadFile.class.getSimpleName();
 	private final Context context;
 	private final MusicDirectory.Entry song;
@@ -69,7 +69,6 @@ public class DownloadFile
 	private volatile boolean completeWhenDone;
 
 	private Lazy<Downloader> downloader = inject(Downloader.class);
-
 
 	public DownloadFile(Context context, MusicDirectory.Entry song, boolean save)
 	{
@@ -287,6 +286,7 @@ public class DownloadFile
 		this.isPlaying = isPlaying;
 	}
 
+	@NotNull
 	@Override
 	public String toString()
 	{
@@ -309,7 +309,7 @@ public class DownloadFile
 				{
 					PowerManager pm = (PowerManager) context.getSystemService(POWER_SERVICE);
 					wakeLock = pm.newWakeLock(SCREEN_DIM_WAKE_LOCK | ON_AFTER_RELEASE, toString());
-					wakeLock.acquire();
+					wakeLock.acquire(10*60*1000L /*10 minutes*/);
 					Log.i(TAG, String.format("Acquired wake lock %s", wakeLock));
 				}
 
@@ -450,6 +450,7 @@ public class DownloadFile
 			}
 		}
 
+		@NotNull
 		@Override
 		public String toString()
 		{

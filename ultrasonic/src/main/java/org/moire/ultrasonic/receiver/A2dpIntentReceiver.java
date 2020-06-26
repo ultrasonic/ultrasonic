@@ -6,8 +6,6 @@ import android.content.Intent;
 
 import org.moire.ultrasonic.domain.MusicDirectory.Entry;
 import org.moire.ultrasonic.service.MediaPlayerController;
-import org.moire.ultrasonic.service.Downloader;
-import org.moire.ultrasonic.service.LocalMediaPlayer;
 
 import kotlin.Lazy;
 
@@ -17,18 +15,16 @@ public class A2dpIntentReceiver extends BroadcastReceiver
 {
 	private static final String PLAYSTATUS_RESPONSE = "com.android.music.playstatusresponse";
 	private Lazy<MediaPlayerController> mediaPlayerControllerLazy = inject(MediaPlayerController.class);
-	private Lazy<Downloader> downloader = inject(Downloader.class);
-	protected Lazy<LocalMediaPlayer> localMediaPlayer = inject(LocalMediaPlayer.class);
 
 	@Override
 	public void onReceive(Context context, Intent intent)
 	{
-		if (localMediaPlayer.getValue().currentPlaying == null)
+		if (mediaPlayerControllerLazy.getValue().getCurrentPlaying() == null)
 		{
 			return;
 		}
 
-		Entry song = localMediaPlayer.getValue().currentPlaying.getSong();
+		Entry song = mediaPlayerControllerLazy.getValue().getCurrentPlaying().getSong();
 
 		if (song == null)
 		{
@@ -39,7 +35,7 @@ public class A2dpIntentReceiver extends BroadcastReceiver
 
 		Integer duration = song.getDuration();
 		int playerPosition = mediaPlayerControllerLazy.getValue().getPlayerPosition();
-		int listSize = downloader.getValue().getDownloads().size();
+		int listSize = mediaPlayerControllerLazy.getValue().getPlaylistSize();
 
 		if (duration != null)
 		{
