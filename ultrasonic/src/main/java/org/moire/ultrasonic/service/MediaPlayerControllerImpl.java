@@ -92,19 +92,6 @@ public class MediaPlayerControllerImpl implements MediaPlayerController
 		Log.i(TAG, "MediaPlayerControllerImpl destroyed");
 	}
 
-	private void executeOnStartedMediaPlayerService(final Consumer<MediaPlayerService> taskToExecute)
-	{
-		Thread t = new Thread()
-		{
-			public void run()
-			{
-				MediaPlayerService instance = MediaPlayerService.getInstance(context);
-				taskToExecute.accept(instance);
-			}
-		};
-		t.start();
-	}
-
 	@Override
 	public synchronized void restore(List<MusicDirectory.Entry> songs, final int currentPlayingIndex, final int currentPlayingPosition, final boolean autoPlay, boolean newPlaylist)
 	{
@@ -112,7 +99,7 @@ public class MediaPlayerControllerImpl implements MediaPlayerController
 
 		if (currentPlayingIndex != -1)
 		{
-			executeOnStartedMediaPlayerService(new Consumer<MediaPlayerService>() {
+			MediaPlayerService.executeOnStartedMediaPlayerService(context, new Consumer<MediaPlayerService>() {
 				@Override
 				public void accept(MediaPlayerService mediaPlayerService) {
 					mediaPlayerService.play(currentPlayingIndex, autoPlayStart);
@@ -129,7 +116,7 @@ public class MediaPlayerControllerImpl implements MediaPlayerController
 				{
 					if (localMediaPlayer.currentPlaying.isCompleteFileAvailable())
 					{
-						executeOnStartedMediaPlayerService(new Consumer<MediaPlayerService>() {
+						MediaPlayerService.executeOnStartedMediaPlayerService(context, new Consumer<MediaPlayerService>() {
 							@Override
 							public void accept(MediaPlayerService mediaPlayerService) {
 								localMediaPlayer.doPlay(localMediaPlayer.currentPlaying, currentPlayingPosition, autoPlay);
@@ -145,7 +132,7 @@ public class MediaPlayerControllerImpl implements MediaPlayerController
 	@Override
 	public synchronized void play(final int index)
 	{
-		executeOnStartedMediaPlayerService(new Consumer<MediaPlayerService>() {
+		MediaPlayerService.executeOnStartedMediaPlayerService(context,new Consumer<MediaPlayerService>() {
 			@Override
 			public void accept(MediaPlayerService mediaPlayerService) {
 				mediaPlayerService.play(index, true);
@@ -155,7 +142,7 @@ public class MediaPlayerControllerImpl implements MediaPlayerController
 
 	public synchronized void play()
 	{
-		executeOnStartedMediaPlayerService(new Consumer<MediaPlayerService>() {
+		MediaPlayerService.executeOnStartedMediaPlayerService(context, new Consumer<MediaPlayerService>() {
 			@Override
 			public void accept(MediaPlayerService mediaPlayerService) {
 				mediaPlayerService.play();
@@ -167,7 +154,7 @@ public class MediaPlayerControllerImpl implements MediaPlayerController
 	public synchronized void togglePlayPause()
 	{
 		if (localMediaPlayer.playerState == PlayerState.IDLE) autoPlayStart = true;
-		executeOnStartedMediaPlayerService(new Consumer<MediaPlayerService>() {
+		MediaPlayerService.executeOnStartedMediaPlayerService(context,new Consumer<MediaPlayerService>() {
 			@Override
 			public void accept(MediaPlayerService mediaPlayerService) {
 				mediaPlayerService.togglePlayPause();
@@ -178,7 +165,7 @@ public class MediaPlayerControllerImpl implements MediaPlayerController
 	@Override
 	public synchronized void seekTo(final int position)
 	{
-		executeOnStartedMediaPlayerService(new Consumer<MediaPlayerService>() {
+		MediaPlayerService.executeOnStartedMediaPlayerService(context, new Consumer<MediaPlayerService>() {
 			@Override
 			public void accept(MediaPlayerService mediaPlayerService) {
 				mediaPlayerService.seekTo(position);
@@ -189,7 +176,7 @@ public class MediaPlayerControllerImpl implements MediaPlayerController
 	@Override
 	public synchronized void pause()
 	{
-		executeOnStartedMediaPlayerService(new Consumer<MediaPlayerService>() {
+		MediaPlayerService.executeOnStartedMediaPlayerService(context, new Consumer<MediaPlayerService>() {
 			@Override
 			public void accept(MediaPlayerService mediaPlayerService) {
 				mediaPlayerService.pause();
@@ -200,7 +187,7 @@ public class MediaPlayerControllerImpl implements MediaPlayerController
 	@Override
 	public synchronized void start()
 	{
-		executeOnStartedMediaPlayerService(new Consumer<MediaPlayerService>() {
+		MediaPlayerService.executeOnStartedMediaPlayerService(context, new Consumer<MediaPlayerService>() {
 			@Override
 			public void accept(MediaPlayerService mediaPlayerService) {
 				mediaPlayerService.start();
@@ -211,7 +198,7 @@ public class MediaPlayerControllerImpl implements MediaPlayerController
 	@Override
 	public synchronized void stop()
 	{
-		executeOnStartedMediaPlayerService(new Consumer<MediaPlayerService>() {
+		MediaPlayerService.executeOnStartedMediaPlayerService(context, new Consumer<MediaPlayerService>() {
 			@Override
 			public void accept(MediaPlayerService mediaPlayerService) {
 				mediaPlayerService.stop();

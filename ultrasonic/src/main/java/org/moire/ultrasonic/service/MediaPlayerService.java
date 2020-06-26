@@ -55,6 +55,7 @@ public class MediaPlayerService extends Service
     private static final int NOTIFICATION_ID = 3033;
 
     private static MediaPlayerService instance = null;
+    private static final Object instanceLock = new Object();
 
     private final IBinder binder = new SimpleServiceBinder<>(this);
     private final Scrobbler scrobbler = new Scrobbler();
@@ -75,28 +76,42 @@ public class MediaPlayerService extends Service
 
     public static MediaPlayerService getInstance(Context context)
     {
-        for (int i = 0; i < 5; i++)
-        {
-            if (instance != null) return instance;
+        synchronized (instanceLock) {
+            for (int i = 0; i < 5; i++) {
+                if (instance != null) return instance;
 
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O)
-            {
-                context.startForegroundService(new Intent(context, MediaPlayerService.class));
-            }
-            else
-            {
-                context.startService(new Intent(context, MediaPlayerService.class));
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+                    context.startForegroundService(new Intent(context, MediaPlayerService.class));
+                } else {
+                    context.startService(new Intent(context, MediaPlayerService.class));
+                }
+
+                Util.sleepQuietly(50L);
             }
 
-            Util.sleepQuietly(50L);
+            return instance;
         }
-
-		return instance;
     }
 
     public static MediaPlayerService getRunningInstance()
     {
-        return instance;
+        synchronized (instanceLock)
+        {
+            return instance;
+        }
+    }
+
+    public static void executeOnStartedMediaPlayerService(final Context context, final Consumer<MediaPlayerService> taskToExecute)
+    {
+        Thread t = new Thread()
+        {
+            public void run()
+            {
+                MediaPlayerService instance = getInstance(context);
+                taskToExecute.accept(instance);
+            }
+        };
+        t.start();
     }
 
     @Nullable
@@ -169,17 +184,23 @@ public class MediaPlayerService extends Service
 
         instance = null;
 
-        try
-        {
+        try {
             localMediaPlayer.onDestroy();
             shufflePlayBuffer.onDestroy();
             downloader.onDestroy();
-        }
-        catch (Throwable ignored)
-        {
+        } catch (Throwable ignored) {
         }
 
         Log.i(TAG, "MediaPlayerService stopped");
+    }
+
+    private void stopIfIdle()
+    {
+        synchronized (instanceLock)
+        {
+            // currentPlaying could be changed from another thread in the meantime, so check again before stopping for good
+            if (localMediaPlayer.currentPlaying == null) stopSelf();
+        }
     }
 
     public synchronized void seekTo(int position)
@@ -252,8 +273,8 @@ public class MediaPlayerService extends Service
 
                 if (currentPlaying != null)
                 {
+                    updateNotification(localMediaPlayer.playerState, currentPlaying);
                     if (tabInstance != null) {
-                        updateNotification(localMediaPlayer.playerState, currentPlaying);
                         tabInstance.showNowPlaying();
                     }
                 }
@@ -262,11 +283,11 @@ public class MediaPlayerService extends Service
                     if (tabInstance != null)
                     {
                         tabInstance.hideNowPlaying();
-                        stopForeground(true);
-                        localMediaPlayer.clearRemoteControl();
-                        isInForeground = false;
-                        stopSelf();
                     }
+                    stopForeground(true);
+                    localMediaPlayer.clearRemoteControl();
+                    isInForeground = false;
+                    stopIfIdle();
                 }
             }
         };
@@ -457,12 +478,12 @@ public class MediaPlayerService extends Service
 
                 if (show)
                 {
-                    if (tabInstance != null)
+                    // Only update notification if localMediaPlayer state is one that will change the icon
+                    if (playerState == PlayerState.STARTED || playerState == PlayerState.PAUSED)
                     {
-                        // Only update notification is localMediaPlayer state is one that will change the icon
-                        if (playerState == PlayerState.STARTED || playerState == PlayerState.PAUSED)
+                        updateNotification(playerState, currentPlaying);
+                        if (tabInstance != null)
                         {
-                            updateNotification(playerState, currentPlaying);
                             tabInstance.showNowPlaying();
                         }
                     }
@@ -471,12 +492,12 @@ public class MediaPlayerService extends Service
                 {
                     if (tabInstance != null)
                     {
-                        stopForeground(true);
-                        localMediaPlayer.clearRemoteControl();
-                        isInForeground = false;
                         tabInstance.hideNowPlaying();
-                        stopSelf();
                     }
+                    stopForeground(true);
+                    localMediaPlayer.clearRemoteControl();
+                    isInForeground = false;
+                    stopIfIdle();
                 }
 
                 if (playerState == STARTED)
