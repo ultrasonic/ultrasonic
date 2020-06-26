@@ -293,14 +293,17 @@ public class LocalMediaPlayer
             updateRemoteControl();
         }
 
-        Handler mainHandler = new Handler(context.getMainLooper());
-        Runnable myRunnable = new Runnable() {
-            @Override
-            public void run() {
-                onPlayerStateChanged.accept(playerState, currentPlaying);
-            }
-        };
-        mainHandler.post(myRunnable);
+        if (onPlayerStateChanged != null)
+        {
+            Handler mainHandler = new Handler(context.getMainLooper());
+            Runnable myRunnable = new Runnable() {
+                @Override
+                public void run() {
+                    onPlayerStateChanged.accept(playerState, currentPlaying);
+                }
+            };
+            mainHandler.post(myRunnable);
+        }
 
         if (playerState == STARTED && positionCache == null)
         {
@@ -321,14 +324,17 @@ public class LocalMediaPlayer
         this.currentPlaying = currentPlaying;
         updateRemoteControl();
 
-        Handler mainHandler = new Handler(context.getMainLooper());
-        Runnable myRunnable = new Runnable() {
-            @Override
-            public void run() {
-                onCurrentPlayingChanged.accept(currentPlaying);
-            }
-        };
-        mainHandler.post(myRunnable);
+        if (onCurrentPlayingChanged != null)
+        {
+            Handler mainHandler = new Handler(context.getMainLooper());
+            Runnable myRunnable = new Runnable() {
+                @Override
+                public void run() {
+                    onCurrentPlayingChanged.accept(currentPlaying);
+                }
+            };
+            mainHandler.post(myRunnable);
+        }
     }
 
     public synchronized void setNextPlaying(DownloadFile nextToPlay)
@@ -398,14 +404,16 @@ public class LocalMediaPlayer
         setPlayerState(PlayerState.STARTED);
         setupHandlers(currentPlaying, false);
 
-        Handler mainHandler = new Handler(context.getMainLooper());
-        Runnable myRunnable = new Runnable() {
-            @Override
-            public void run() {
-                onNextSongRequested.run();
-            }
-        };
-        mainHandler.post(myRunnable);
+        if (onNextSongRequested != null) {
+            Handler mainHandler = new Handler(context.getMainLooper());
+            Runnable myRunnable = new Runnable() {
+                @Override
+                public void run() {
+                    onNextSongRequested.run();
+                }
+            };
+            mainHandler.post(myRunnable);
+        }
 
         // Proxy should not be being used here since the next player was already setup to play
         if (proxy != null)
@@ -726,14 +734,16 @@ public class LocalMediaPlayer
                         }
                     }
 
-                    Handler mainHandler = new Handler(context.getMainLooper());
-                    Runnable myRunnable = new Runnable() {
-                        @Override
-                        public void run() {
-                            onPrepared.run();
-                        }
-                    };
-                    mainHandler.post(myRunnable);
+                    if (onPrepared != null) {
+                        Handler mainHandler = new Handler(context.getMainLooper());
+                        Runnable myRunnable = new Runnable() {
+                            @Override
+                            public void run() {
+                                onPrepared.run();
+                            }
+                        };
+                        mainHandler.post(myRunnable);
+                    }
                 }
             });
 
@@ -862,14 +872,17 @@ public class LocalMediaPlayer
                     }
                     else
                     {
-                        Handler mainHandler = new Handler(context.getMainLooper());
-                        Runnable myRunnable = new Runnable() {
-                            @Override
-                            public void run() {
-                                onSongCompleted.accept(currentPlaying);
-                            }
-                        };
-                        mainHandler.post(myRunnable);
+                        if (onSongCompleted != null)
+                        {
+                            Handler mainHandler = new Handler(context.getMainLooper());
+                            Runnable myRunnable = new Runnable() {
+                                @Override
+                                public void run() {
+                                    onSongCompleted.accept(currentPlaying);
+                                }
+                            };
+                            mainHandler.post(myRunnable);
+                        }
                     }
 
                     return;

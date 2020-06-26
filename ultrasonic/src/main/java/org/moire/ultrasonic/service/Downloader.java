@@ -47,7 +47,6 @@ public class Downloader
     private ScheduledExecutorService executorService;
     private long revision;
 
-
     public Downloader(Context context, ShufflePlayBuffer shufflePlayBuffer, ExternalStorageMonitor externalStorageMonitor,
                       LocalMediaPlayer localMediaPlayer)
     {
@@ -150,6 +149,7 @@ public class Downloader
             if (start == -1) start = 0;
 
             int i = start;
+            // Check all DownloadFiles on the playlist
             do
             {
                 DownloadFile downloadFile = downloadList.get(i);
@@ -162,6 +162,7 @@ public class Downloader
                         cleanupCandidates.add(currentDownloading);
                         if (i == (start + 1))
                         {
+                            // The next file on the playlist is currently downloading
                             localMediaPlayer.setNextPlayerState(DOWNLOADING);
                         }
                         break;
@@ -176,6 +177,7 @@ public class Downloader
             } while (i != start);
         }
 
+        // If the downloadList contains no work, check the backgroundDownloadList
         if ((preloaded + 1 == n || preloaded >= Util.getPreloadCount(context) || downloadList.isEmpty()) && !backgroundDownloadList.isEmpty())
         {
             for (int i = 0; i < backgroundDownloadList.size(); i++)

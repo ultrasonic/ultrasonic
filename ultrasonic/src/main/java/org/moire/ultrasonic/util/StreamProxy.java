@@ -170,7 +170,7 @@ public class StreamProxy implements Runnable
 		public void run()
 		{
 			Log.i(TAG, "Streaming song in background");
-			DownloadFile downloadFile = currentPlaying.get();
+			DownloadFile downloadFile = currentPlaying == null? null : currentPlaying.get();
 			MusicDirectory.Entry song = downloadFile.getSong();
 			long fileSize = downloadFile.getBitRate() * ((song.getDuration() != null) ? song.getDuration() : 0) * 1000 / 8;
 			Log.i(TAG, String.format("Streaming fileSize: %d", fileSize));
