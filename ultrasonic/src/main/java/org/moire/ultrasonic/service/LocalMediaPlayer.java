@@ -119,21 +119,20 @@ public class LocalMediaPlayer
 
     public void onCreate()
     {
+        if (mediaPlayer != null)
+        {
+            mediaPlayer.release();
+        }
+
+        mediaPlayer = new MediaPlayer();
+
         new Thread(new Runnable()
         {
             @Override
             public void run()
             {
                 Thread.currentThread().setName("MediaPlayerThread");
-
                 Looper.prepare();
-
-                if (mediaPlayer != null)
-                {
-                    mediaPlayer.release();
-                }
-
-                mediaPlayer = new MediaPlayer();
                 mediaPlayer.setWakeMode(context, PowerManager.PARTIAL_WAKE_LOCK);
 
                 mediaPlayer.setOnErrorListener(new MediaPlayer.OnErrorListener()

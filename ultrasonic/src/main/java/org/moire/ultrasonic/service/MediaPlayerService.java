@@ -191,9 +191,9 @@ public class MediaPlayerService extends Service
         instance = null;
 
         try {
+            downloadQueueSerializer.serializeDownloadQueueNow(downloader.downloadList,
+                    downloader.getCurrentPlayingIndex(), getPlayerPosition());
             localMediaPlayer.onDestroy();
-            shufflePlayBuffer.onDestroy();
-            downloader.onDestroy();
         } catch (Throwable ignored) {
         }
 
@@ -205,7 +205,7 @@ public class MediaPlayerService extends Service
         synchronized (instanceLock)
         {
             // currentPlaying could be changed from another thread in the meantime, so check again before stopping for good
-            if (localMediaPlayer.currentPlaying == null) stopSelf();
+            if (localMediaPlayer.currentPlaying == null || localMediaPlayer.playerState == STOPPED) stopSelf();
         }
     }
 
@@ -385,6 +385,8 @@ public class MediaPlayerService extends Service
         }
         else
         {
+            setCurrentPlaying(index);
+
             if (start)
             {
                 if (jukeboxMediaPlayer.getValue().isEnabled())

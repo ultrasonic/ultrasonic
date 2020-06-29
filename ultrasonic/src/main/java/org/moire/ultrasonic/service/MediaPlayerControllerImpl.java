@@ -96,6 +96,9 @@ public class MediaPlayerControllerImpl implements MediaPlayerController
 	{
 		externalStorageMonitor.onDestroy();
 		context.stopService(new Intent(context, MediaPlayerService.class));
+		shufflePlayBuffer.onDestroy();
+		downloader.onDestroy();
+
 		Log.i(TAG, "MediaPlayerControllerImpl destroyed");
 	}
 
@@ -110,29 +113,24 @@ public class MediaPlayerControllerImpl implements MediaPlayerController
 				@Override
 				public void accept(MediaPlayerService mediaPlayerService) {
 					mediaPlayerService.play(currentPlayingIndex, autoPlayStart);
-				}
-			});
 
-			if (localMediaPlayer.currentPlaying != null)
-			{
-				if (autoPlay && jukeboxMediaPlayer.getValue().isEnabled())
-				{
-					jukeboxMediaPlayer.getValue().skip(downloader.getCurrentPlayingIndex(), currentPlayingPosition / 1000);
-				}
-				else
-				{
-					if (localMediaPlayer.currentPlaying.isCompleteFileAvailable())
+					if (localMediaPlayer.currentPlaying != null)
 					{
-						MediaPlayerService.executeOnStartedMediaPlayerService(context, new Consumer<MediaPlayerService>() {
-							@Override
-							public void accept(MediaPlayerService mediaPlayerService) {
+						if (autoPlay && jukeboxMediaPlayer.getValue().isEnabled())
+						{
+							jukeboxMediaPlayer.getValue().skip(downloader.getCurrentPlayingIndex(), currentPlayingPosition / 1000);
+						}
+						else
+						{
+							if (localMediaPlayer.currentPlaying.isCompleteFileAvailable())
+							{
 								localMediaPlayer.doPlay(localMediaPlayer.currentPlaying, currentPlayingPosition, autoPlay);
 							}
-						});
+						}
 					}
+					autoPlayStart = false;
 				}
-			}
-			autoPlayStart = false;
+			});
 		}
 	}
 
