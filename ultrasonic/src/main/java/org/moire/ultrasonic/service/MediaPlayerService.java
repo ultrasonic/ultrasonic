@@ -194,6 +194,8 @@ public class MediaPlayerService extends Service
             downloadQueueSerializer.serializeDownloadQueueNow(downloader.downloadList,
                     downloader.getCurrentPlayingIndex(), getPlayerPosition());
             localMediaPlayer.onDestroy();
+            downloader.stop();
+            shufflePlayBuffer.onDestroy();
         } catch (Throwable ignored) {
         }
 

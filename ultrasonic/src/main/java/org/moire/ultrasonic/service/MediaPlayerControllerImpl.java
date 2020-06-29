@@ -96,7 +96,6 @@ public class MediaPlayerControllerImpl implements MediaPlayerController
 	{
 		externalStorageMonitor.onDestroy();
 		context.stopService(new Intent(context, MediaPlayerService.class));
-		shufflePlayBuffer.onDestroy();
 		downloader.onDestroy();
 
 		Log.i(TAG, "MediaPlayerControllerImpl destroyed");

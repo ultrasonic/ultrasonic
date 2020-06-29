@@ -65,11 +65,13 @@ public class ShufflePlayBuffer
 			}
 		};
 		executorService.scheduleWithFixedDelay(runnable, 1, 10, TimeUnit.SECONDS);
+		Log.i(TAG, "ShufflePlayBuffer created");
 	}
 
 	public void onDestroy()
 	{
 		executorService.shutdown();
+		Log.i(TAG, "ShufflePlayBuffer destroyed");
 	}
 
 	public List<MusicDirectory.Entry> get(int size)

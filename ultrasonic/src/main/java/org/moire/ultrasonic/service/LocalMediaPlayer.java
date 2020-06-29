@@ -1081,7 +1081,7 @@ public class LocalMediaPlayer
                         cachedPosition = mediaPlayer.getCurrentPosition();
                     }
 
-                    Util.sleepQuietly(25L);
+                    Util.sleepQuietly(50L);
                 }
                 catch (Exception e)
                 {

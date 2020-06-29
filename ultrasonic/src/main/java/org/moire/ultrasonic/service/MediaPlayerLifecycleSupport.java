@@ -245,6 +245,9 @@ public class MediaPlayerLifecycleSupport
 					mediaPlayerController.pause();
 					mediaPlayerController.seekTo(0);
 					break;
+				case Constants.CMD_PAUSE:
+					mediaPlayerController.pause();
+					break;
 				case Constants.CMD_PROCESS_KEYCODE:
 					receiveIntent(intent);
 					break;

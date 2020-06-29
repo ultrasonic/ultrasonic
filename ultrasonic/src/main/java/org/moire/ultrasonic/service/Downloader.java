@@ -77,15 +77,20 @@ public class Downloader
         executorService = Executors.newSingleThreadScheduledExecutor();
         executorService.scheduleWithFixedDelay(downloadChecker, 5, 5, TimeUnit.SECONDS);
         Log.i(TAG, "Downloader created");
-
     }
 
     public void onDestroy()
     {
-        executorService.shutdown();
+        stop();
         clear();
         clearBackground();
         Log.i(TAG, "Downloader destroyed");
+    }
+
+    public void stop()
+    {
+        executorService.shutdown();
+        Log.i(TAG, "Downloader stopped");
     }
 
     public synchronized void checkDownloads()
