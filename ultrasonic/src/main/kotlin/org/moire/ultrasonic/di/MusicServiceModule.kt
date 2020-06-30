@@ -3,7 +3,6 @@ package org.moire.ultrasonic.di
 
 import android.content.SharedPreferences
 import android.util.Log
-import org.koin.android.ext.koin.androidContext
 import kotlin.math.abs
 import org.koin.dsl.module.module
 import org.moire.ultrasonic.BuildConfig
@@ -12,10 +11,12 @@ import org.moire.ultrasonic.api.subsonic.SubsonicAPIVersions
 import org.moire.ultrasonic.api.subsonic.SubsonicClientConfiguration
 import org.moire.ultrasonic.api.subsonic.di.subsonicApiModule
 import org.moire.ultrasonic.cache.PermanentFileStorage
-import org.moire.ultrasonic.service.*
+import org.moire.ultrasonic.service.CachedMusicService
+import org.moire.ultrasonic.service.MusicService
+import org.moire.ultrasonic.service.OfflineMusicService
+import org.moire.ultrasonic.service.RESTMusicService
 import org.moire.ultrasonic.subsonic.loader.image.SubsonicImageLoader
 import org.moire.ultrasonic.util.Constants
-import org.moire.ultrasonic.util.ShufflePlayBuffer
 
 internal const val MUSIC_SERVICE_CONTEXT = "CurrentMusicService"
 internal const val ONLINE_MUSIC_SERVICE = "OnlineMusicService"
