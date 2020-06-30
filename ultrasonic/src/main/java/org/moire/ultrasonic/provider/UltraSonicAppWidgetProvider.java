@@ -17,6 +17,7 @@ import org.moire.ultrasonic.R;
 import org.moire.ultrasonic.activity.DownloadActivity;
 import org.moire.ultrasonic.activity.MainActivity;
 import org.moire.ultrasonic.domain.MusicDirectory;
+import org.moire.ultrasonic.receiver.MediaButtonIntentReceiver;
 import org.moire.ultrasonic.service.MediaPlayerController;
 import org.moire.ultrasonic.util.Constants;
 import org.moire.ultrasonic.util.FileUtil;
@@ -199,19 +200,22 @@ public class UltraSonicAppWidgetProvider extends AppWidgetProvider
 
 		// Emulate media button clicks.
 		intent = new Intent(Constants.CMD_PROCESS_KEYCODE);
-		intent.setPackage(context.getPackageName());
+		//intent.setPackage(context.getPackageName());
+		intent.setComponent(new ComponentName(context, MediaButtonIntentReceiver.class));
 		intent.putExtra(Intent.EXTRA_KEY_EVENT, new KeyEvent(KeyEvent.ACTION_DOWN, KeyEvent.KEYCODE_MEDIA_PLAY_PAUSE));
 		pendingIntent = PendingIntent.getBroadcast(context, 11, intent, 0);
 		views.setOnClickPendingIntent(R.id.control_play, pendingIntent);
 
 		intent = new Intent(Constants.CMD_PROCESS_KEYCODE);
-		intent.setPackage(context.getPackageName());
+		//intent.setPackage(context.getPackageName());
+		intent.setComponent(new ComponentName(context, MediaButtonIntentReceiver.class));
 		intent.putExtra(Intent.EXTRA_KEY_EVENT, new KeyEvent(KeyEvent.ACTION_DOWN, KeyEvent.KEYCODE_MEDIA_NEXT));
 		pendingIntent = PendingIntent.getBroadcast(context, 12, intent, 0);
 		views.setOnClickPendingIntent(R.id.control_next, pendingIntent);
 
 		intent = new Intent(Constants.CMD_PROCESS_KEYCODE);
-		intent.setPackage(context.getPackageName());
+		//intent.setPackage(context.getPackageName());
+		intent.setComponent(new ComponentName(context, MediaButtonIntentReceiver.class));
 		intent.putExtra(Intent.EXTRA_KEY_EVENT, new KeyEvent(KeyEvent.ACTION_DOWN, KeyEvent.KEYCODE_MEDIA_PREVIOUS));
 		pendingIntent = PendingIntent.getBroadcast(context, 13, intent, 0);
 		views.setOnClickPendingIntent(R.id.control_previous, pendingIntent);

@@ -44,37 +44,40 @@ public class MediaButtonIntentReceiver extends BroadcastReceiver
 	@Override
 	public void onReceive(Context context, Intent intent)
 	{
-		if (Util.getMediaButtonsPreference(context))
+		String intentAction = intent.getAction();
+
+		// If media button are turned off and we received a media button, exit
+		if (!Util.getMediaButtonsPreference(context) &&
+				Intent.ACTION_MEDIA_BUTTON.equals(intentAction)) return;
+
+		// Only process media buttons and CMD_PROCESS_KEYCODE, which is received from the widgets
+		if (!Intent.ACTION_MEDIA_BUTTON.equals(intentAction) &&
+				!Constants.CMD_PROCESS_KEYCODE.equals(intentAction)) return;
+
+		Bundle extras = intent.getExtras();
+
+		if (extras == null)
 		{
-			String intentAction = intent.getAction();
+			return;
+		}
 
-			if (!Intent.ACTION_MEDIA_BUTTON.equals(intentAction)) return;
+		Parcelable event = (Parcelable) extras.get(Intent.EXTRA_KEY_EVENT);
+		Log.i(TAG, "Got MEDIA_BUTTON key event: " + event);
 
-			Bundle extras = intent.getExtras();
+		try
+		{
+			Intent serviceIntent = new Intent(Constants.CMD_PROCESS_KEYCODE);
+			serviceIntent.putExtra(Intent.EXTRA_KEY_EVENT, event);
+			lifecycleSupport.getValue().receiveIntent(serviceIntent);
 
-			if (extras == null)
+			if (isOrderedBroadcast())
 			{
-				return;
+				abortBroadcast();
 			}
-
-			Parcelable event = (Parcelable) extras.get(Intent.EXTRA_KEY_EVENT);
-			Log.i(TAG, "Got MEDIA_BUTTON key event: " + event);
-
-			try
-			{
-				Intent serviceIntent = new Intent(Constants.CMD_PROCESS_KEYCODE);
-				serviceIntent.putExtra(Intent.EXTRA_KEY_EVENT, event);
-				lifecycleSupport.getValue().receiveIntent(serviceIntent);
-
-				if (isOrderedBroadcast())
-				{
-					abortBroadcast();
-				}
-			}
-			catch (Exception x)
-			{
-				// Ignored.
-			}
+		}
+		catch (Exception x)
+		{
+			// Ignored.
 		}
 	}
 }
