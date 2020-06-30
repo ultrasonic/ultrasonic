@@ -44,6 +44,7 @@ public class MediaPlayerLifecycleSupport
 {
 	private static final String TAG = MediaPlayerLifecycleSupport.class.getSimpleName();
 
+	private boolean created = false;
 	private DownloadQueueSerializer downloadQueueSerializer; // From DI
 	private final MediaPlayerControllerImpl mediaPlayerController; // From DI
 	private final Downloader downloader; // From DI
@@ -59,6 +60,12 @@ public class MediaPlayerLifecycleSupport
 		this.context = context;
 		this.downloader = downloader;
 
+		Log.i(TAG, "LifecycleSupport constructed");
+	}
+
+	public void onCreate()
+	{
+		if (created) return;
 		registerHeadsetReceiver();
 
 		// React to media buttons.
@@ -75,6 +82,7 @@ public class MediaPlayerLifecycleSupport
 		commandFilter.addAction(Constants.CMD_PROCESS_KEYCODE);
 		context.registerReceiver(intentReceiver, commandFilter);
 
+		mediaPlayerController.onCreate();
 		this.downloadQueueSerializer.deserializeDownloadQueue(new Consumer<State>() {
 			@Override
 			public void accept(State state) {
@@ -88,15 +96,20 @@ public class MediaPlayerLifecycleSupport
 		});
 
 		new CacheCleaner(context).clean();
+		created = true;
 		Log.i(TAG, "LifecycleSupport created");
 	}
 
 	public void onDestroy()
 	{
+		if (!created) return;
+		downloadQueueSerializer.serializeDownloadQueueNow(downloader.downloadList,
+				downloader.getCurrentPlayingIndex(), mediaPlayerController.getPlayerPosition());
 		mediaPlayerController.clear(false);
 		context.unregisterReceiver(headsetEventReceiver);
 		context.unregisterReceiver(intentReceiver);
 		mediaPlayerController.onDestroy();
+		created = false;
 		Log.i(TAG, "LifecycleSupport destroyed");
 	}
 

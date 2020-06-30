@@ -54,6 +54,7 @@ public class MediaPlayerControllerImpl implements MediaPlayerController
 {
 	private static final String TAG = MediaPlayerControllerImpl.class.getSimpleName();
 
+	private boolean created = false;
 	private String suggestedPlaylistName;
 	private boolean keepScreenOn;
 
@@ -79,6 +80,12 @@ public class MediaPlayerControllerImpl implements MediaPlayerController
 		this.shufflePlayBuffer = shufflePlayBuffer;
 		this.localMediaPlayer = localMediaPlayer;
 
+		Log.i(TAG, "MediaPlayerControllerImpl constructed");
+	}
+
+	public void onCreate()
+	{
+		if (created) return;
 		this.externalStorageMonitor.onCreate(new Runnable() {
 			@Override
 			public void run() {
@@ -88,15 +95,18 @@ public class MediaPlayerControllerImpl implements MediaPlayerController
 
 		int instance = Util.getActiveServer(context);
 		setJukeboxEnabled(Util.getJukeboxEnabled(context, instance));
+		created = true;
 
 		Log.i(TAG, "MediaPlayerControllerImpl created");
 	}
 
 	public void onDestroy()
 	{
+		if (!created) return;
 		externalStorageMonitor.onDestroy();
 		context.stopService(new Intent(context, MediaPlayerService.class));
 		downloader.onDestroy();
+		created = false;
 
 		Log.i(TAG, "MediaPlayerControllerImpl destroyed");
 	}

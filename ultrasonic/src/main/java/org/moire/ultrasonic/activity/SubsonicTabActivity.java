@@ -160,7 +160,7 @@ public class SubsonicTabActivity extends ResultActivity implements OnClickListen
 
 		Util.registerMediaButtonEventReceiver(this);
 		// Lifecycle support's constructor registers some event receivers so it should be created early
-		lifecycleSupport.getValue();
+		lifecycleSupport.getValue().onCreate();
 
 		// Make sure to update theme
 		if (theme != null && !theme.equals(Util.getTheme(this)))

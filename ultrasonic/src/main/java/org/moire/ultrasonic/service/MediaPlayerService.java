@@ -191,8 +191,6 @@ public class MediaPlayerService extends Service
         instance = null;
 
         try {
-            downloadQueueSerializer.serializeDownloadQueueNow(downloader.downloadList,
-                    downloader.getCurrentPlayingIndex(), getPlayerPosition());
             localMediaPlayer.onDestroy();
             downloader.stop();
             shufflePlayBuffer.onDestroy();
