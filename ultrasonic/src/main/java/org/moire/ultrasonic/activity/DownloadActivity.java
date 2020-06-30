@@ -186,8 +186,8 @@ public class DownloadActivity extends SubsonicTabActivity implements OnGestureLi
 
 		if (!useFiveStarRating) ratingLinearLayout.setVisibility(View.GONE);
 
-		hollowStar = Util.getDrawableFromAttribute(SubsonicTabActivity.getInstance(), R.attr.star_hollow);
-		fullStar = Util.getDrawableFromAttribute(SubsonicTabActivity.getInstance(), R.attr.star_full);
+		hollowStar = Util.getDrawableFromAttribute(this, R.attr.star_hollow);
+		fullStar = Util.getDrawableFromAttribute(this, R.attr.star_full);
 
 		fiveStar1ImageView.setOnClickListener(new View.OnClickListener()
 		{
