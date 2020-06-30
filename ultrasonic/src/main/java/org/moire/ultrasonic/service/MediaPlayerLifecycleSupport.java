@@ -65,6 +65,11 @@ public class MediaPlayerLifecycleSupport
 
 	public void onCreate()
 	{
+		onCreate(false);
+	}
+
+	private void onCreate(final boolean autoPlay)
+	{
 		if (created) return;
 		registerHeadsetReceiver();
 
@@ -86,8 +91,7 @@ public class MediaPlayerLifecycleSupport
 		this.downloadQueueSerializer.deserializeDownloadQueue(new Consumer<State>() {
 			@Override
 			public void accept(State state) {
-				// TODO: here the autoPlay = false creates problems when Ultrasonic is started by a Play MediaButton as the player won't start this way.
-				mediaPlayerController.restore(state.songs, state.currentPlayingIndex, state.currentPlayingPosition, false, false);
+				mediaPlayerController.restore(state.songs, state.currentPlayingIndex, state.currentPlayingPosition, autoPlay, false);
 
 				// Work-around: Serialize again, as the restore() method creates a serialization without current playing info.
 				MediaPlayerLifecycleSupport.this.downloadQueueSerializer.serializeDownloadQueue(downloader.downloadList,
@@ -177,7 +181,16 @@ public class MediaPlayerLifecycleSupport
 			return;
 		}
 
-		switch (event.getKeyCode())
+		int keyCode = event.getKeyCode();
+		boolean autoStart = (keyCode == KeyEvent.KEYCODE_MEDIA_PLAY_PAUSE ||
+				keyCode == KeyEvent.KEYCODE_MEDIA_PLAY ||
+				keyCode == KeyEvent.KEYCODE_MEDIA_PREVIOUS ||
+				keyCode == KeyEvent.KEYCODE_MEDIA_NEXT);
+
+		// We can receive intents (e.g. MediaButton) when everything is stopped, so we need to start
+		if (!created) onCreate(autoStart);
+
+		switch (keyCode)
 		{
 			case KeyEvent.KEYCODE_MEDIA_PLAY_PAUSE:
 			case KeyEvent.KEYCODE_HEADSETHOOK:
