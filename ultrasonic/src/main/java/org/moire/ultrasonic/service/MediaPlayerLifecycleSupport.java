@@ -184,6 +184,7 @@ public class MediaPlayerLifecycleSupport
 		int keyCode = event.getKeyCode();
 		boolean autoStart = (keyCode == KeyEvent.KEYCODE_MEDIA_PLAY_PAUSE ||
 				keyCode == KeyEvent.KEYCODE_MEDIA_PLAY ||
+				keyCode == KeyEvent.KEYCODE_HEADSETHOOK ||
 				keyCode == KeyEvent.KEYCODE_MEDIA_PREVIOUS ||
 				keyCode == KeyEvent.KEYCODE_MEDIA_NEXT);
 

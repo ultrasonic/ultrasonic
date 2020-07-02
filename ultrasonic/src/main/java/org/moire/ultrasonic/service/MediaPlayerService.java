@@ -82,7 +82,7 @@ public class MediaPlayerService extends Service
     public static MediaPlayerService getInstance(Context context)
     {
         synchronized (instanceLock) {
-            for (int i = 0; i < 5; i++) {
+            for (int i = 0; i < 20; i++) {
                 if (instance != null) return instance;
 
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
@@ -113,6 +113,12 @@ public class MediaPlayerService extends Service
             public void run()
             {
                 MediaPlayerService instance = getInstance(context);
+                if (instance == null)
+                {
+                    Log.e(TAG, "ExecuteOnStartedMediaPlayerService failed to get a MediaPlayerService instance!");
+                    return;
+                }
+
                 taskToExecute.accept(instance);
             }
         };
