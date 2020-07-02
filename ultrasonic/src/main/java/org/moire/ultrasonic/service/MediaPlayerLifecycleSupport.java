@@ -74,7 +74,7 @@ public class MediaPlayerLifecycleSupport
 		registerHeadsetReceiver();
 
 		// React to media buttons.
-		Util.registerMediaButtonEventReceiver(context);
+		Util.registerMediaButtonEventReceiver(context, true);
 
 		// Register the handler for outside intents.
 		IntentFilter commandFilter = new IntentFilter();

@@ -96,6 +96,9 @@ public class Util extends DownloadActivity
 	private static boolean pauseFocus;
 	private static boolean lowerFocus;
 
+	private static boolean mediaButtonsRegisteredForUI;
+	private static boolean mediaButtonsRegisteredForService;
+
 	private static final Map<Integer, Version> SERVER_REST_VERSIONS = new ConcurrentHashMap<Integer, Version>();
 
 	// Used by hexEncode()
@@ -890,19 +893,29 @@ public class Util extends DownloadActivity
 		return Bitmap.createScaledBitmap(bitmap, size, getScaledHeight(bitmap, size), true);
 	}
 
-	public static void registerMediaButtonEventReceiver(Context context)
+	public static void registerMediaButtonEventReceiver(Context context, boolean isService)
 	{
 		if (getMediaButtonsPreference(context))
 		{
+			if (isService) mediaButtonsRegisteredForService = true;
+			else mediaButtonsRegisteredForUI = true;
+
 			AudioManager audioManager = (AudioManager) context.getSystemService(Context.AUDIO_SERVICE);
 			audioManager.registerMediaButtonEventReceiver(new ComponentName(context.getPackageName(), MediaButtonIntentReceiver.class.getName()));
 		}
 	}
 
-	public static void unregisterMediaButtonEventReceiver(Context context)
+	public static void unregisterMediaButtonEventReceiver(Context context, boolean isService)
 	{
+		if (isService) mediaButtonsRegisteredForService = false;
+		else mediaButtonsRegisteredForUI = false;
+
+		// Do not unregister while there is an active part of the app which needs the control
+		if (mediaButtonsRegisteredForService || mediaButtonsRegisteredForUI) return;
+
 		AudioManager audioManager = (AudioManager) context.getSystemService(Context.AUDIO_SERVICE);
 		audioManager.unregisterMediaButtonEventReceiver(new ComponentName(context.getPackageName(), MediaButtonIntentReceiver.class.getName()));
+		Log.i(TAG, "MediaButtonEventReceiver unregistered.");
 	}
 
 	public static MusicDirectory getSongsFromSearchResult(SearchResult searchResult)

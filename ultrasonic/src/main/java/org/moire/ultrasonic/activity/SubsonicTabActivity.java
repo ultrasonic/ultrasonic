@@ -158,7 +158,7 @@ public class SubsonicTabActivity extends ResultActivity implements OnClickListen
 		applyTheme();
 		instance = this;
 
-		Util.registerMediaButtonEventReceiver(this);
+		Util.registerMediaButtonEventReceiver(this, false);
 		// Lifecycle support's constructor registers some event receivers so it should be created early
 		lifecycleSupport.getValue().onCreate();
 
@@ -195,7 +195,7 @@ public class SubsonicTabActivity extends ResultActivity implements OnClickListen
 	@Override
 	protected void onDestroy()
 	{
-		Util.unregisterMediaButtonEventReceiver(this);
+		Util.unregisterMediaButtonEventReceiver(this, false);
 		super.onDestroy();
 		destroyed = true;
 		nowPlayingView = null;

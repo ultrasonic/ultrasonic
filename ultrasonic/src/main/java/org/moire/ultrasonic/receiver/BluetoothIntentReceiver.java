@@ -65,7 +65,7 @@ public class BluetoothIntentReceiver extends BroadcastReceiver
 		if (connected)
 		{
 			Log.i(TAG, "Connected to Bluetooth device, requesting media button focus.");
-			Util.registerMediaButtonEventReceiver(context);
+			Util.registerMediaButtonEventReceiver(context, false);
 		}
 
 		if (disconnected)

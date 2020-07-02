@@ -168,7 +168,7 @@ public class LocalMediaPlayer
         wakeLock.setReferenceCounted(false);
 
         audioManager = (AudioManager) context.getSystemService(Context.AUDIO_SERVICE);
-
+        Util.registerMediaButtonEventReceiver(context, true);
         setUpRemoteControlClient();
 
         if (equalizerAvailable)
@@ -202,6 +202,11 @@ public class LocalMediaPlayer
 
         try
         {
+            Intent i = new Intent(AudioEffect.ACTION_CLOSE_AUDIO_EFFECT_CONTROL_SESSION);
+            i.putExtra(AudioEffect.EXTRA_AUDIO_SESSION, mediaPlayer.getAudioSessionId());
+            i.putExtra(AudioEffect.EXTRA_PACKAGE_NAME, context.getPackageName());
+            context.sendBroadcast(i);
+
             mediaPlayer.release();
             if (nextMediaPlayer != null)
             {
@@ -230,17 +235,14 @@ public class LocalMediaPlayer
                 nextPlayingTask.cancel();
             }
 
-            Intent i = new Intent(AudioEffect.ACTION_CLOSE_AUDIO_EFFECT_CONTROL_SESSION);
-            i.putExtra(AudioEffect.EXTRA_AUDIO_SESSION, mediaPlayer.getAudioSessionId());
-            i.putExtra(AudioEffect.EXTRA_PACKAGE_NAME, context.getPackageName());
-            context.sendBroadcast(i);
-
             audioManager.unregisterRemoteControlClient(remoteControlClient);
             clearRemoteControl();
+            Util.unregisterMediaButtonEventReceiver(context, true);
             wakeLock.release();
         }
         catch (Throwable ignored)
         {
+            Log.w(TAG, "LocalMediaPlayer onDestroy exception: ", ignored);
         }
 
         Log.i(TAG, "LocalMediaPlayer destroyed");

@@ -482,7 +482,7 @@ public class MainActivity extends SubsonicTabActivity
 	private void exit()
 	{
 		lifecycleSupport.getValue().onDestroy();
-		Util.unregisterMediaButtonEventReceiver(this);
+		Util.unregisterMediaButtonEventReceiver(this, false);
 		finish();
 	}
 

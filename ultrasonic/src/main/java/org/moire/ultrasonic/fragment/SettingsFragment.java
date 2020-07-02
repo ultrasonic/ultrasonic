@@ -375,10 +375,10 @@ public class SettingsFragment extends PreferenceFragment
     private void setMediaButtonsEnabled(boolean enabled) {
         if (enabled) {
             lockScreenEnabled.setEnabled(true);
-            Util.registerMediaButtonEventReceiver(getActivity());
+            Util.registerMediaButtonEventReceiver(getActivity(), false);
         } else {
             lockScreenEnabled.setEnabled(false);
-            Util.unregisterMediaButtonEventReceiver(getActivity());
+            Util.unregisterMediaButtonEventReceiver(getActivity(), false);
         }
     }
 
