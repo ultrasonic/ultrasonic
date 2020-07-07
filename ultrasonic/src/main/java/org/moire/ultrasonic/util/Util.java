@@ -92,10 +92,6 @@ public class Util extends DownloadActivity
 	public static final String CM_AVRCP_PLAYSTATE_CHANGED = "com.android.music.playstatechanged";
 	public static final String CM_AVRCP_METADATA_CHANGED = "com.android.music.metachanged";
 
-	private static boolean hasFocus;
-	private static boolean pauseFocus;
-	private static boolean lowerFocus;
-
 	private static boolean mediaButtonsRegisteredForUI;
 	private static boolean mediaButtonsRegisteredForService;
 
@@ -1179,60 +1175,6 @@ public class Util extends DownloadActivity
 		else size = imageSizeLarge <= 768 ? 256 : 512;
 
 		return size;
-	}
-
-	public static void requestAudioFocus(final Context context)
-	{
-		if (!hasFocus)
-		{
-			final AudioManager audioManager = (AudioManager) context.getSystemService(Context.AUDIO_SERVICE);
-			hasFocus = true;
-			audioManager.requestAudioFocus(new OnAudioFocusChangeListener()
-			{
-				@Override
-				public void onAudioFocusChange(int focusChange)
-				{
-					MediaPlayerController mediaPlayerController = (MediaPlayerController) context;
-					if ((focusChange == AudioManager.AUDIOFOCUS_LOSS_TRANSIENT || focusChange == AudioManager.AUDIOFOCUS_LOSS_TRANSIENT_CAN_DUCK) && !mediaPlayerController.isJukeboxEnabled())
-					{
-						if (mediaPlayerController.getPlayerState() == PlayerState.STARTED)
-						{
-							SharedPreferences preferences = getPreferences(context);
-							int lossPref = Integer.parseInt(preferences.getString(Constants.PREFERENCES_KEY_TEMP_LOSS, "1"));
-							if (lossPref == 2 || (lossPref == 1 && focusChange == AudioManager.AUDIOFOCUS_LOSS_TRANSIENT_CAN_DUCK))
-							{
-								lowerFocus = true;
-								mediaPlayerController.setVolume(0.1f);
-							}
-							else if (lossPref == 0 || (lossPref == 1))
-							{
-								pauseFocus = true;
-								mediaPlayerController.pause();
-							}
-						}
-					}
-					else if (focusChange == AudioManager.AUDIOFOCUS_GAIN)
-					{
-						if (pauseFocus)
-						{
-							pauseFocus = false;
-							mediaPlayerController.start();
-						}
-						else if (lowerFocus)
-						{
-							lowerFocus = false;
-							mediaPlayerController.setVolume(1.0f);
-						}
-					}
-					else if (focusChange == AudioManager.AUDIOFOCUS_LOSS && !mediaPlayerController.isJukeboxEnabled())
-					{
-						hasFocus = false;
-						mediaPlayerController.pause();
-						audioManager.abandonAudioFocus(this);
-					}
-				}
-			}, AudioManager.STREAM_MUSIC, AudioManager.AUDIOFOCUS_GAIN);
-		}
 	}
 
 	public static int getMinDisplayMetric(Context context)

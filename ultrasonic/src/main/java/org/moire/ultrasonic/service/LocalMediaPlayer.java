@@ -84,6 +84,7 @@ public class LocalMediaPlayer
     private PositionCache positionCache;
     private int secondaryProgress = -1;
 
+    private final AudioFocusHandler audioFocusHandler;
     private final Context context;
 
     static
@@ -112,8 +113,9 @@ public class LocalMediaPlayer
         }
     }
 
-    public LocalMediaPlayer(Context context)
+    public LocalMediaPlayer(AudioFocusHandler audioFocusHandler, Context context)
     {
+        this.audioFocusHandler = audioFocusHandler;
         this.context = context;
     }
 
@@ -240,9 +242,9 @@ public class LocalMediaPlayer
             Util.unregisterMediaButtonEventReceiver(context, true);
             wakeLock.release();
         }
-        catch (Throwable ignored)
+        catch (Throwable exception)
         {
-            Log.w(TAG, "LocalMediaPlayer onDestroy exception: ", ignored);
+            Log.w(TAG, "LocalMediaPlayer onDestroy exception: ", exception);
         }
 
         Log.i(TAG, "LocalMediaPlayer destroyed");
@@ -286,7 +288,7 @@ public class LocalMediaPlayer
 
         if (playerState == PlayerState.STARTED)
         {
-            Util.requestAudioFocus(context);
+            audioFocusHandler.requestAudioFocus();
         }
 
         if (playerState == PlayerState.STARTED || playerState == PlayerState.PAUSED)
