@@ -269,6 +269,7 @@ public class MediaPlayerLifecycleSupport
 					mediaPlayerController.togglePlayPause();
 					break;
 				case Constants.CMD_STOP:
+					// TODO: There is a stop() function, shouldn't we use that?
 					mediaPlayerController.pause();
 					mediaPlayerController.seekTo(0);
 					break;

@@ -177,28 +177,6 @@ public class MediaPlayerControllerImpl implements MediaPlayerController
 	}
 
 	@Override
-	public synchronized void seekTo(final int position)
-	{
-		MediaPlayerService.executeOnStartedMediaPlayerService(context, new Consumer<MediaPlayerService>() {
-			@Override
-			public void accept(MediaPlayerService mediaPlayerService) {
-				mediaPlayerService.seekTo(position);
-			}
-		});
-	}
-
-	@Override
-	public synchronized void pause()
-	{
-		MediaPlayerService.executeOnStartedMediaPlayerService(context, new Consumer<MediaPlayerService>() {
-			@Override
-			public void accept(MediaPlayerService mediaPlayerService) {
-				mediaPlayerService.pause();
-			}
-		});
-	}
-
-	@Override
 	public synchronized void start()
 	{
 		MediaPlayerService.executeOnStartedMediaPlayerService(context, new Consumer<MediaPlayerService>() {
@@ -210,14 +188,24 @@ public class MediaPlayerControllerImpl implements MediaPlayerController
 	}
 
 	@Override
+	public synchronized void seekTo(final int position)
+	{
+		MediaPlayerService mediaPlayerService = MediaPlayerService.getRunningInstance();
+		if (mediaPlayerService != null) mediaPlayerService.seekTo(position);
+	}
+
+	@Override
+	public synchronized void pause()
+	{
+		MediaPlayerService mediaPlayerService = MediaPlayerService.getRunningInstance();
+		if (mediaPlayerService != null) mediaPlayerService.pause();
+	}
+
+	@Override
 	public synchronized void stop()
 	{
-		MediaPlayerService.executeOnStartedMediaPlayerService(context, new Consumer<MediaPlayerService>() {
-			@Override
-			public void accept(MediaPlayerService mediaPlayerService) {
-				mediaPlayerService.stop();
-			}
-		});
+		MediaPlayerService mediaPlayerService = MediaPlayerService.getRunningInstance();
+		if (mediaPlayerService != null) mediaPlayerService.stop();
 	}
 
 	@Override
