@@ -2,6 +2,7 @@ package org.moire.ultrasonic.di
 
 import org.koin.android.ext.koin.androidContext
 import org.koin.dsl.module.module
+import org.moire.ultrasonic.service.AudioFocusHandler
 import org.moire.ultrasonic.service.DownloadQueueSerializer
 import org.moire.ultrasonic.service.Downloader
 import org.moire.ultrasonic.service.ExternalStorageMonitor
@@ -10,7 +11,6 @@ import org.moire.ultrasonic.service.LocalMediaPlayer
 import org.moire.ultrasonic.service.MediaPlayerController
 import org.moire.ultrasonic.service.MediaPlayerControllerImpl
 import org.moire.ultrasonic.service.MediaPlayerLifecycleSupport
-import org.moire.ultrasonic.service.AudioFocusHandler
 import org.moire.ultrasonic.util.ShufflePlayBuffer
 
 val mediaPlayerModule = module {
