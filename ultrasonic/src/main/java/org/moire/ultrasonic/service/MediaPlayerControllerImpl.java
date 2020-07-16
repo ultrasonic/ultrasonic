@@ -143,6 +143,11 @@ public class MediaPlayerControllerImpl implements MediaPlayerController
 		}
 	}
 
+	public synchronized void preload()
+	{
+		MediaPlayerService.getInstance(context);
+	}
+
 	@Override
 	public synchronized void play(final int index)
 	{

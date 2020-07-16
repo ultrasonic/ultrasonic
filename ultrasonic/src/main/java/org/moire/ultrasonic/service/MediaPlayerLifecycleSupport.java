@@ -65,12 +65,17 @@ public class MediaPlayerLifecycleSupport
 
 	public void onCreate()
 	{
-		onCreate(false);
+		onCreate(false, null);
 	}
 
-	private void onCreate(final boolean autoPlay)
+	private void onCreate(final boolean autoPlay, final Runnable afterCreated)
 	{
-		if (created) return;
+		if (created)
+		{
+			if (afterCreated != null) afterCreated.run();
+			return;
+		}
+
 		registerHeadsetReceiver();
 
 		// React to media buttons.
@@ -88,6 +93,8 @@ public class MediaPlayerLifecycleSupport
 		context.registerReceiver(intentReceiver, commandFilter);
 
 		mediaPlayerController.onCreate();
+		if (autoPlay) mediaPlayerController.preload();
+
 		this.downloadQueueSerializer.deserializeDownloadQueue(new Consumer<State>() {
 			@Override
 			public void accept(State state) {
@@ -96,6 +103,8 @@ public class MediaPlayerLifecycleSupport
 				// Work-around: Serialize again, as the restore() method creates a serialization without current playing info.
 				MediaPlayerLifecycleSupport.this.downloadQueueSerializer.serializeDownloadQueue(downloader.downloadList,
 						downloader.getCurrentPlayingIndex(), mediaPlayerController.getPlayerPosition());
+
+				if (afterCreated != null) afterCreated.run();
 			}
 		});
 
@@ -181,7 +190,7 @@ public class MediaPlayerLifecycleSupport
 			return;
 		}
 
-		int keyCode = event.getKeyCode();
+		final int keyCode = event.getKeyCode();
 		boolean autoStart = (keyCode == KeyEvent.KEYCODE_MEDIA_PLAY_PAUSE ||
 				keyCode == KeyEvent.KEYCODE_MEDIA_PLAY ||
 				keyCode == KeyEvent.KEYCODE_HEADSETHOOK ||
@@ -189,57 +198,60 @@ public class MediaPlayerLifecycleSupport
 				keyCode == KeyEvent.KEYCODE_MEDIA_NEXT);
 
 		// We can receive intents (e.g. MediaButton) when everything is stopped, so we need to start
-		if (!created) onCreate(autoStart);
-
-		switch (keyCode)
-		{
-			case KeyEvent.KEYCODE_MEDIA_PLAY_PAUSE:
-			case KeyEvent.KEYCODE_HEADSETHOOK:
-				mediaPlayerController.togglePlayPause();
-				break;
-			case KeyEvent.KEYCODE_MEDIA_PREVIOUS:
-				mediaPlayerController.previous();
-				break;
-			case KeyEvent.KEYCODE_MEDIA_NEXT:
-				if (downloader.getCurrentPlayingIndex() < downloader.downloadList.size() - 1)
+		onCreate(autoStart, new Runnable() {
+			@Override
+			public void run() {
+				switch (keyCode)
 				{
-					mediaPlayerController.next();
+					case KeyEvent.KEYCODE_MEDIA_PLAY_PAUSE:
+					case KeyEvent.KEYCODE_HEADSETHOOK:
+						mediaPlayerController.togglePlayPause();
+						break;
+					case KeyEvent.KEYCODE_MEDIA_PREVIOUS:
+						mediaPlayerController.previous();
+						break;
+					case KeyEvent.KEYCODE_MEDIA_NEXT:
+						if (downloader.getCurrentPlayingIndex() < downloader.downloadList.size() - 1)
+						{
+							mediaPlayerController.next();
+						}
+						break;
+					case KeyEvent.KEYCODE_MEDIA_STOP:
+						mediaPlayerController.stop();
+						break;
+					case KeyEvent.KEYCODE_MEDIA_PLAY:
+						if (mediaPlayerController.getPlayerState() == PlayerState.IDLE)
+						{
+							mediaPlayerController.play();
+						}
+						else if (mediaPlayerController.getPlayerState() != PlayerState.STARTED)
+						{
+							mediaPlayerController.start();
+						}
+						break;
+					case KeyEvent.KEYCODE_MEDIA_PAUSE:
+						mediaPlayerController.pause();
+						break;
+					case KeyEvent.KEYCODE_1:
+						mediaPlayerController.setSongRating(1);
+						break;
+					case KeyEvent.KEYCODE_2:
+						mediaPlayerController.setSongRating(2);
+						break;
+					case KeyEvent.KEYCODE_3:
+						mediaPlayerController.setSongRating(3);
+						break;
+					case KeyEvent.KEYCODE_4:
+						mediaPlayerController.setSongRating(4);
+						break;
+					case KeyEvent.KEYCODE_5:
+						mediaPlayerController.setSongRating(5);
+						break;
+					default:
+						break;
 				}
-				break;
-			case KeyEvent.KEYCODE_MEDIA_STOP:
-				mediaPlayerController.stop();
-				break;
-			case KeyEvent.KEYCODE_MEDIA_PLAY:
-				if (mediaPlayerController.getPlayerState() == PlayerState.IDLE)
-				{
-					mediaPlayerController.play();
-				}
-				else if (mediaPlayerController.getPlayerState() != PlayerState.STARTED)
-				{
-					mediaPlayerController.start();
-				}
-				break;
-			case KeyEvent.KEYCODE_MEDIA_PAUSE:
-				mediaPlayerController.pause();
-				break;
-			case KeyEvent.KEYCODE_1:
-				mediaPlayerController.setSongRating(1);
-				break;
-			case KeyEvent.KEYCODE_2:
-				mediaPlayerController.setSongRating(2);
-				break;
-			case KeyEvent.KEYCODE_3:
-				mediaPlayerController.setSongRating(3);
-				break;
-			case KeyEvent.KEYCODE_4:
-				mediaPlayerController.setSongRating(4);
-				break;
-			case KeyEvent.KEYCODE_5:
-				mediaPlayerController.setSongRating(5);
-				break;
-			default:
-				break;
-		}
+			}
+		});
 	}
 
 	/**
