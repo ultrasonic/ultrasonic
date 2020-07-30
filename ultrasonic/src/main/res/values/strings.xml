@@ -314,7 +314,7 @@
     <string name="settings.use_id3">Browse Using ID3 Tags</string>
     <string name="settings.use_id3_summary">Use ID3 tag methods instead of file system based methods</string>
     <string name="settings.video_title">Video</string>
-    <string name="settings.video_player">Video localMediaPlayer</string>
+    <string name="settings.video_player">Video player</string>
     <string name="settings.view_refresh">View Refresh</string>
     <string name="settings.view_refresh_500">.5 seconds</string>
     <string name="settings.view_refresh_1000">1 second</string>

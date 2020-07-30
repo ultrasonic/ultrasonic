@@ -334,7 +334,7 @@
     <string name="util.bytes_format.megabyte">0.00 MB</string>
     <string name="util.no_time">-:--</string>
     <string name="util.zero_time">0:00</string>
-    <string name="video.get_mx_player_text">O localMediaPlayer MX não está instalado. Baixe da graça pela Play Store ou modifique as configurações de vídeo.</string>
+    <string name="video.get_mx_player_text">O Player MX não está instalado. Baixe da graça pela Play Store ou modifique as configurações de vídeo.</string>
     <string name="video.get_mx_player_button">Baixar Player MX</string>
     <string name="widget.initial_text">Toque para selecionar a música</string>
     <string name="widget.sdcard_busy">Cartão SD indisponível</string>

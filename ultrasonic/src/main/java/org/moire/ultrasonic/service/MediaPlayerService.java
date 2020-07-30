@@ -492,7 +492,7 @@ public class MediaPlayerService extends Service
 
                 if (show)
                 {
-                    // Only update notification if localMediaPlayer state is one that will change the icon
+                    // Only update notification if player state is one that will change the icon
                     if (playerState == PlayerState.STARTED || playerState == PlayerState.PAUSED)
                     {
                         updateNotification(playerState, currentPlaying);
