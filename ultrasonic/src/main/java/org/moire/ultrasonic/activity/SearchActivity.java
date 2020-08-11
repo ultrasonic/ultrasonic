@@ -37,7 +37,7 @@ import org.moire.ultrasonic.domain.MusicDirectory;
 import org.moire.ultrasonic.domain.MusicDirectory.Entry;
 import org.moire.ultrasonic.domain.SearchCriteria;
 import org.moire.ultrasonic.domain.SearchResult;
-import org.moire.ultrasonic.service.DownloadService;
+import org.moire.ultrasonic.service.MediaPlayerController;
 import org.moire.ultrasonic.service.MusicService;
 import org.moire.ultrasonic.service.MusicServiceFactory;
 import org.moire.ultrasonic.util.BackgroundTask;
@@ -322,7 +322,7 @@ public class SearchActivity extends SubsonicTabActivity
 				{
 					songs.add(entry);
 					Util.toast(SearchActivity.this, getResources().getQuantityString(R.plurals.select_album_n_songs_unpinned, songs.size(), songs.size()));
-					getDownloadService().unpin(songs);
+					getMediaPlayerController().unpin(songs);
 				}
 				break;
 			case R.id.menu_item_share:
@@ -341,7 +341,7 @@ public class SearchActivity extends SubsonicTabActivity
 
 	private void downloadBackground(final boolean save, final List<MusicDirectory.Entry> songs)
 	{
-		if (getDownloadService() == null)
+		if (getMediaPlayerController() == null)
 		{
 			return;
 		}
@@ -352,7 +352,7 @@ public class SearchActivity extends SubsonicTabActivity
 			public void run()
 			{
 				warnIfNetworkOrStorageUnavailable();
-				getDownloadService().downloadBackground(songs, save);
+				getMediaPlayerController().downloadBackground(songs, save);
 			}
 		};
 
@@ -508,19 +508,19 @@ public class SearchActivity extends SubsonicTabActivity
 
 	private void onSongSelected(MusicDirectory.Entry song, boolean save, boolean append, boolean autoplay, boolean playNext)
 	{
-		DownloadService downloadService = getDownloadService();
-		if (downloadService != null)
+		MediaPlayerController mediaPlayerController = getMediaPlayerController();
+		if (mediaPlayerController != null)
 		{
 			if (!append && !playNext)
 			{
-				downloadService.clear();
+				mediaPlayerController.clear();
 			}
 
-			downloadService.download(Collections.singletonList(song), save, false, playNext, false, false);
+			mediaPlayerController.download(Collections.singletonList(song), save, false, playNext, false, false);
 
 			if (autoplay)
 			{
-				downloadService.play(downloadService.size() - 1);
+				mediaPlayerController.play(mediaPlayerController.getPlaylistSize() - 1);
 			}
 
 			Util.toast(SearchActivity.this, getResources().getQuantityString(R.plurals.select_album_n_songs_added, 1, 1));

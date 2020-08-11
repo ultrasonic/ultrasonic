@@ -584,12 +584,6 @@ public class OfflineMusicService extends RESTMusicService
 	@Override
 	public MusicDirectory getPlaylist(String id, String name, Context context, ProgressListener progressListener) throws Exception
 	{
-		DownloadService downloadService = DownloadServiceImpl.getInstance();
-		if (downloadService == null)
-		{
-			return new MusicDirectory();
-		}
-
 		Reader reader = null;
 		BufferedReader buffer = null;
 		try

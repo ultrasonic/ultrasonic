@@ -40,6 +40,7 @@ import org.moire.ultrasonic.R;
 import org.moire.ultrasonic.domain.MusicDirectory;
 import org.moire.ultrasonic.domain.Share;
 import org.moire.ultrasonic.service.DownloadFile;
+import org.moire.ultrasonic.service.MediaPlayerController;
 import org.moire.ultrasonic.service.MusicService;
 import org.moire.ultrasonic.service.MusicServiceFactory;
 import org.moire.ultrasonic.util.AlbumHeader;
@@ -1010,7 +1011,8 @@ public class SelectAlbumActivity extends SubsonicTabActivity
 
 	private void enableButtons()
 	{
-		if (getDownloadService() == null)
+		MediaPlayerController mediaPlayerController = getMediaPlayerController();
+		if (mediaPlayerController == null)
 		{
 			return;
 		}
@@ -1024,7 +1026,7 @@ public class SelectAlbumActivity extends SubsonicTabActivity
 
 		for (MusicDirectory.Entry song : selection)
 		{
-			DownloadFile downloadFile = getDownloadService().forSong(song);
+			DownloadFile downloadFile = mediaPlayerController.getDownloadFileForSong(song);
 			if (downloadFile.isWorkDone())
 			{
 				deleteEnabled = true;
@@ -1061,7 +1063,7 @@ public class SelectAlbumActivity extends SubsonicTabActivity
 
 	private void downloadBackground(final boolean save, final List<MusicDirectory.Entry> songs)
 	{
-		if (getDownloadService() == null)
+		if (getMediaPlayerController() == null)
 		{
 			return;
 		}
@@ -1072,7 +1074,7 @@ public class SelectAlbumActivity extends SubsonicTabActivity
 			public void run()
 			{
 				warnIfNetworkOrStorageUnavailable();
-				getDownloadService().downloadBackground(songs, save);
+				getMediaPlayerController().downloadBackground(songs, save);
 
 				if (save)
 				{
@@ -1098,19 +1100,19 @@ public class SelectAlbumActivity extends SubsonicTabActivity
 			songs = getSelectedSongs(albumListView);
 		}
 
-		if (getDownloadService() != null)
+		if (getMediaPlayerController() != null)
 		{
-			getDownloadService().delete(songs);
+			getMediaPlayerController().delete(songs);
 		}
 	}
 
 	private void unpin()
 	{
-		if (getDownloadService() != null)
+		if (getMediaPlayerController() != null)
 		{
 			List<MusicDirectory.Entry> songs = getSelectedSongs(albumListView);
 			Util.toast(SelectAlbumActivity.this, getResources().getQuantityString(R.plurals.select_album_n_songs_unpinned, songs.size(), songs.size()));
-			getDownloadService().unpin(songs);
+			getMediaPlayerController().unpin(songs);
 		}
 	}
 

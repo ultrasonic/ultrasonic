@@ -5,31 +5,26 @@ import android.content.Context;
 import android.content.Intent;
 
 import org.moire.ultrasonic.domain.MusicDirectory.Entry;
-import org.moire.ultrasonic.service.DownloadService;
-import org.moire.ultrasonic.service.DownloadServiceImpl;
+import org.moire.ultrasonic.service.MediaPlayerController;
+
+import kotlin.Lazy;
+
+import static org.koin.java.standalone.KoinJavaComponent.inject;
 
 public class A2dpIntentReceiver extends BroadcastReceiver
 {
-
 	private static final String PLAYSTATUS_RESPONSE = "com.android.music.playstatusresponse";
+	private Lazy<MediaPlayerController> mediaPlayerControllerLazy = inject(MediaPlayerController.class);
 
 	@Override
 	public void onReceive(Context context, Intent intent)
 	{
-
-		DownloadService downloadService = DownloadServiceImpl.getInstance();
-
-		if (downloadService == null)
+		if (mediaPlayerControllerLazy.getValue().getCurrentPlaying() == null)
 		{
 			return;
 		}
 
-		if (downloadService.getCurrentPlaying() == null)
-		{
-			return;
-		}
-
-		Entry song = downloadService.getCurrentPlaying().getSong();
+		Entry song = mediaPlayerControllerLazy.getValue().getCurrentPlaying().getSong();
 
 		if (song == null)
 		{
@@ -39,8 +34,8 @@ public class A2dpIntentReceiver extends BroadcastReceiver
 		Intent avrcpIntent = new Intent(PLAYSTATUS_RESPONSE);
 
 		Integer duration = song.getDuration();
-		Integer playerPosition = downloadService.getPlayerPosition();
-		Integer listSize = downloadService.getDownloads().size();
+		int playerPosition = mediaPlayerControllerLazy.getValue().getPlayerPosition();
+		int listSize = mediaPlayerControllerLazy.getValue().getPlaylistSize();
 
 		if (duration != null)
 		{
@@ -50,17 +45,13 @@ public class A2dpIntentReceiver extends BroadcastReceiver
 		avrcpIntent.putExtra("position", (long) playerPosition);
 		avrcpIntent.putExtra("ListSize", (long) listSize);
 
-		switch (downloadService.getPlayerState())
+		switch (mediaPlayerControllerLazy.getValue().getPlayerState())
 		{
 			case STARTED:
 				avrcpIntent.putExtra("playing", true);
 				break;
 			case STOPPED:
-				avrcpIntent.putExtra("playing", false);
-				break;
 			case PAUSED:
-				avrcpIntent.putExtra("playing", false);
-				break;
 			case COMPLETED:
 				avrcpIntent.putExtra("playing", false);
 				break;

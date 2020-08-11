@@ -24,7 +24,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.util.Log;
 
-import org.moire.ultrasonic.service.DownloadServiceImpl;
+import org.moire.ultrasonic.util.Constants;
 import org.moire.ultrasonic.util.Util;
 
 /**
@@ -65,13 +65,13 @@ public class BluetoothIntentReceiver extends BroadcastReceiver
 		if (connected)
 		{
 			Log.i(TAG, "Connected to Bluetooth device, requesting media button focus.");
-			Util.registerMediaButtonEventReceiver(context);
+			Util.registerMediaButtonEventReceiver(context, false);
 		}
 
 		if (disconnected)
 		{
 			Log.i(TAG, "Disconnected from Bluetooth device, requesting pause.");
-			context.sendBroadcast(new Intent(DownloadServiceImpl.CMD_PAUSE));
+			context.sendBroadcast(new Intent(Constants.CMD_PAUSE));
 		}
 	}
 }

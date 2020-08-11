@@ -17,8 +17,9 @@ import org.moire.ultrasonic.R;
 import org.moire.ultrasonic.activity.DownloadActivity;
 import org.moire.ultrasonic.activity.MainActivity;
 import org.moire.ultrasonic.domain.MusicDirectory;
-import org.moire.ultrasonic.service.DownloadService;
-import org.moire.ultrasonic.service.DownloadServiceImpl;
+import org.moire.ultrasonic.receiver.MediaButtonIntentReceiver;
+import org.moire.ultrasonic.service.MediaPlayerController;
+import org.moire.ultrasonic.util.Constants;
 import org.moire.ultrasonic.util.FileUtil;
 
 public class UltraSonicAppWidgetProvider extends AppWidgetProvider
@@ -67,13 +68,13 @@ public class UltraSonicAppWidgetProvider extends AppWidgetProvider
 	}
 
 	/**
-	 * Handle a change notification coming over from {@link DownloadService}
+	 * Handle a change notification coming over from {@link MediaPlayerController}
 	 */
-	public void notifyChange(Context context, DownloadService service, boolean playing, boolean setAlbum)
+	public void notifyChange(Context context, MusicDirectory.Entry currentSong, boolean playing, boolean setAlbum)
 	{
 		if (hasInstances(context))
 		{
-			performUpdate(context, service, null, playing, setAlbum);
+			performUpdate(context, currentSong, null, playing, setAlbum);
 		}
 	}
 
@@ -96,15 +97,14 @@ public class UltraSonicAppWidgetProvider extends AppWidgetProvider
 	/**
 	 * Update all active widget instances by pushing changes
 	 */
-	private void performUpdate(Context context, DownloadService service, int[] appWidgetIds, boolean playing, boolean setAlbum)
+	private void performUpdate(Context context, MusicDirectory.Entry currentSong, int[] appWidgetIds, boolean playing, boolean setAlbum)
 	{
 		final Resources res = context.getResources();
 		final RemoteViews views = new RemoteViews(context.getPackageName(), this.layoutId);
 
-		MusicDirectory.Entry currentPlaying = service.getCurrentPlaying() == null ? null : service.getCurrentPlaying().getSong();
-		String title = currentPlaying == null ? null : currentPlaying.getTitle();
-		String artist = currentPlaying == null ? null : currentPlaying.getArtist();
-		String album = currentPlaying == null ? null : currentPlaying.getAlbum();
+		String title = currentSong == null ? null : currentSong.getTitle();
+		String artist = currentSong == null ? null : currentSong.getArtist();
+		String album = currentSong == null ? null : currentSong.getAlbum();
 		CharSequence errorState = null;
 
 		// Show error message?
@@ -117,7 +117,7 @@ public class UltraSonicAppWidgetProvider extends AppWidgetProvider
 		{
 			errorState = res.getText(R.string.widget_sdcard_missing);
 		}
-		else if (currentPlaying == null)
+		else if (currentSong == null)
 		{
 			errorState = res.getText(R.string.widget_initial_text);
 		}
@@ -157,7 +157,7 @@ public class UltraSonicAppWidgetProvider extends AppWidgetProvider
 		// Set the cover art
 		try
 		{
-			Bitmap bitmap = currentPlaying == null ? null : FileUtil.getAlbumArtBitmap(context, currentPlaying, 240, true);
+			Bitmap bitmap = currentSong == null ? null : FileUtil.getAlbumArtBitmap(context, currentSong, 240, true);
 
 			if (bitmap == null)
 			{
@@ -176,7 +176,7 @@ public class UltraSonicAppWidgetProvider extends AppWidgetProvider
 		}
 
 		// Link actions buttons to intents
-		linkButtons(context, views, currentPlaying != null);
+		linkButtons(context, views, currentSong != null);
 
 		pushUpdate(context, appWidgetIds, views);
 	}
@@ -194,27 +194,30 @@ public class UltraSonicAppWidgetProvider extends AppWidgetProvider
 		Intent intent = new Intent(context, playerActive ? DownloadActivity.class : MainActivity.class);
 		intent.setAction("android.intent.action.MAIN");
 		intent.addCategory("android.intent.category.LAUNCHER");
-		PendingIntent pendingIntent = PendingIntent.getActivity(context, 0, intent, PendingIntent.FLAG_UPDATE_CURRENT);
+		PendingIntent pendingIntent = PendingIntent.getActivity(context, 10, intent, PendingIntent.FLAG_UPDATE_CURRENT);
 		views.setOnClickPendingIntent(R.id.appwidget_coverart, pendingIntent);
 		views.setOnClickPendingIntent(R.id.appwidget_top, pendingIntent);
 
 		// Emulate media button clicks.
-		intent = new Intent("1");
-		intent.setComponent(new ComponentName(context, DownloadServiceImpl.class));
+		intent = new Intent(Constants.CMD_PROCESS_KEYCODE);
+		//intent.setPackage(context.getPackageName());
+		intent.setComponent(new ComponentName(context, MediaButtonIntentReceiver.class));
 		intent.putExtra(Intent.EXTRA_KEY_EVENT, new KeyEvent(KeyEvent.ACTION_DOWN, KeyEvent.KEYCODE_MEDIA_PLAY_PAUSE));
-		pendingIntent = PendingIntent.getService(context, 0, intent, 0);
+		pendingIntent = PendingIntent.getBroadcast(context, 11, intent, 0);
 		views.setOnClickPendingIntent(R.id.control_play, pendingIntent);
 
-		intent = new Intent("2");  // Use a unique action name to ensure a different PendingIntent to be created.
-		intent.setComponent(new ComponentName(context, DownloadServiceImpl.class));
+		intent = new Intent(Constants.CMD_PROCESS_KEYCODE);
+		//intent.setPackage(context.getPackageName());
+		intent.setComponent(new ComponentName(context, MediaButtonIntentReceiver.class));
 		intent.putExtra(Intent.EXTRA_KEY_EVENT, new KeyEvent(KeyEvent.ACTION_DOWN, KeyEvent.KEYCODE_MEDIA_NEXT));
-		pendingIntent = PendingIntent.getService(context, 0, intent, 0);
+		pendingIntent = PendingIntent.getBroadcast(context, 12, intent, 0);
 		views.setOnClickPendingIntent(R.id.control_next, pendingIntent);
 
-		intent = new Intent("3");  // Use a unique action name to ensure a different PendingIntent to be created.
-		intent.setComponent(new ComponentName(context, DownloadServiceImpl.class));
+		intent = new Intent(Constants.CMD_PROCESS_KEYCODE);
+		//intent.setPackage(context.getPackageName());
+		intent.setComponent(new ComponentName(context, MediaButtonIntentReceiver.class));
 		intent.putExtra(Intent.EXTRA_KEY_EVENT, new KeyEvent(KeyEvent.ACTION_DOWN, KeyEvent.KEYCODE_MEDIA_PREVIOUS));
-		pendingIntent = PendingIntent.getService(context, 0, intent, 0);
+		pendingIntent = PendingIntent.getBroadcast(context, 13, intent, 0);
 		views.setOnClickPendingIntent(R.id.control_previous, pendingIntent);
 	}
 }

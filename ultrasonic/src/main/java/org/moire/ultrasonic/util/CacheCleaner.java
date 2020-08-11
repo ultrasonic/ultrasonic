@@ -7,7 +7,7 @@ import android.util.Log;
 
 import org.moire.ultrasonic.domain.Playlist;
 import org.moire.ultrasonic.service.DownloadFile;
-import org.moire.ultrasonic.service.DownloadService;
+import org.moire.ultrasonic.service.Downloader;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -19,9 +19,17 @@ import java.util.List;
 import java.util.Set;
 import java.util.SortedSet;
 
+import kotlin.Lazy;
+
+import static org.koin.java.standalone.KoinJavaComponent.inject;
+
 /**
  * @author Sindre Mehus
  * @version $Id$
+ */
+
+/**
+ * Responsible for cleaning up files from the offline download cache on the filesystem
  */
 public class CacheCleaner
 {
@@ -30,12 +38,11 @@ public class CacheCleaner
 	private static final long MIN_FREE_SPACE = 500 * 1024L * 1024L;
 
 	private final Context context;
-	private final DownloadService downloadService;
+	private Lazy<Downloader> downloader = inject(Downloader.class);
 
-	public CacheCleaner(Context context, DownloadService downloadService)
+	public CacheCleaner(Context context)
 	{
 		this.context = context;
-		this.downloadService = downloadService;
 	}
 
 	public void clean()
@@ -219,7 +226,7 @@ public class CacheCleaner
 	{
 		Set<File> filesToNotDelete = new HashSet<File>(5);
 
-		for (DownloadFile downloadFile : downloadService.getDownloads())
+		for (DownloadFile downloadFile : downloader.getValue().getDownloads())
 		{
 			filesToNotDelete.add(downloadFile.getPartialFile());
 			filesToNotDelete.add(downloadFile.getCompleteFile());
@@ -234,12 +241,6 @@ public class CacheCleaner
 		@Override
 		protected Void doInBackground(Void... params)
 		{
-			if (downloadService == null)
-			{
-				Log.e(TAG, "DownloadService not set. Aborting cache cleaning.");
-				return null;
-			}
-
 			try
 			{
 				Thread.currentThread().setName("BackgroundCleanup");
@@ -268,12 +269,6 @@ public class CacheCleaner
 		@Override
 		protected Void doInBackground(Void... params)
 		{
-			if (downloadService == null)
-			{
-				Log.e(TAG, "DownloadService not set. Aborting cache cleaning.");
-				return null;
-			}
-
 			try
 			{
 				Thread.currentThread().setName("BackgroundSpaceCleanup");

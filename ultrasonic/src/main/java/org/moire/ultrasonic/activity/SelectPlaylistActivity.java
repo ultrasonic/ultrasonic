@@ -126,7 +126,7 @@ public class SelectPlaylistActivity extends SubsonicTabActivity implements Adapt
 				List<Playlist> playlists = musicService.getPlaylists(refresh, SelectPlaylistActivity.this, this);
 
 				if (!Util.isOffline(SelectPlaylistActivity.this))
-					new CacheCleaner(SelectPlaylistActivity.this, getDownloadService()).cleanPlaylists(playlists);
+					new CacheCleaner(SelectPlaylistActivity.this).cleanPlaylists(playlists);
 				return playlists;
 			}
 

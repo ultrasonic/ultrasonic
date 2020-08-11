@@ -27,12 +27,14 @@ import org.moire.ultrasonic.domain.RepeatMode;
 import java.util.List;
 
 /**
+ * This interface contains all functions which are necessary for the Application UI
+ * to control the Media Player implementation.
+ *
  * @author Sindre Mehus
  * @version $Id$
  */
-public interface DownloadService
+public interface MediaPlayerController
 {
-
 	void download(List<Entry> songs, boolean save, boolean autoplay, boolean playNext, boolean shuffle, boolean newPlaylist);
 
 	void downloadBackground(List<Entry> songs, boolean save);
@@ -53,37 +55,13 @@ public interface DownloadService
 
 	boolean getShowVisualization();
 
-	boolean getEqualizerAvailable();
-
-	boolean getVisualizerAvailable();
-
 	void setShowVisualization(boolean showVisualization);
 
 	void clear();
 
-	void clearBackground();
-
 	void clearIncomplete();
 
-	int size();
-
-	void remove(int which);
-
 	void remove(DownloadFile downloadFile);
-
-	long getDownloadListDuration();
-
-	List<DownloadFile> getSongs();
-
-	List<DownloadFile> getDownloads();
-
-	List<DownloadFile> getBackgroundDownloads();
-
-	int getCurrentPlayingIndex();
-
-	DownloadFile getCurrentPlaying();
-
-	DownloadFile getCurrentDownloading();
 
 	void play(int index);
 
@@ -111,10 +89,6 @@ public interface DownloadService
 
 	void unpin(List<Entry> songs);
 
-	DownloadFile forSong(Entry song);
-
-	long getDownloadListUpdateRevision();
-
 	void setSuggestedPlaylistName(String name);
 
 	String getSuggestedPlaylistName();
@@ -127,8 +101,6 @@ public interface DownloadService
 
 	boolean isJukeboxAvailable();
 
-	boolean isSharingAvailable();
-
 	void setJukeboxEnabled(boolean b);
 
 	void adjustJukeboxVolume(boolean up);
@@ -137,15 +109,27 @@ public interface DownloadService
 
 	void setVolume(float volume);
 
-	void swap(boolean mainList, int from, int to);
-
 	void restore(List<Entry> songs, int currentPlayingIndex, int currentPlayingPosition, boolean autoPlay, boolean newPlaylist);
 
 	void stopJukeboxService();
 
-	void startJukeboxService();
-
 	void updateNotification();
 
 	void setSongRating(final int rating);
+
+	DownloadFile getCurrentPlaying();
+
+	int getPlaylistSize();
+
+	int getCurrentPlayingNumberOnPlaylist();
+
+	DownloadFile getCurrentDownloading();
+
+	List<DownloadFile> getPlayList();
+
+	long getPlayListUpdateRevision();
+
+	long getPlayListDuration();
+
+	DownloadFile getDownloadFileForSong(Entry song);
 }

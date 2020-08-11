@@ -2933,7 +2933,9 @@ public class DragSortListView extends ListView {
             // always do scroll
             mBlockLayoutRequests = true;
 
-            setSelectionFromTop(movePos, top - padTop);
+            // This cast is a workaround of an API bug, see https://issuetracker.google.com/issues/37045361
+            ((ListView)DragSortListView.this).setSelectionFromTop(movePos, top - padTop);
+
             DragSortListView.this.layoutChildren();
             invalidate();
 

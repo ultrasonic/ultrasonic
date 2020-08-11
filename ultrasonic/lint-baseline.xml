@@ -960,7 +960,7 @@
 
     <issue
         id="StaticFieldLeak"
-        message="This AsyncTask class should be static or leaks might occur (org.moire.ultrasonic.service.DownloadServiceLifecycleSupport.SerializeTask)"
+        message="This AsyncTask class should be static or leaks might occur (org.moire.ultrasonic.service.MediaPlayerLifecycleSupport.SerializeTask)"
         errorLine1=" private class SerializeTask extends AsyncTask&lt;Void, Void, Void>"
         errorLine2="               ~~~~~~~~~~~~~">
         <location
@@ -971,7 +971,7 @@
 
     <issue
         id="StaticFieldLeak"
-        message="This AsyncTask class should be static or leaks might occur (org.moire.ultrasonic.service.DownloadServiceLifecycleSupport.DeserializeTask)"
+        message="This AsyncTask class should be static or leaks might occur (org.moire.ultrasonic.service.MediaPlayerLifecycleSupport.DeserializeTask)"
         errorLine1=" private class DeserializeTask extends AsyncTask&lt;Void, Void, Void>"
         errorLine2="               ~~~~~~~~~~~~~~~">
         <location

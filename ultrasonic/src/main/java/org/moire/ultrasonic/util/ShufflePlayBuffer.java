@@ -37,19 +37,24 @@ import java.util.concurrent.TimeUnit;
  */
 public class ShufflePlayBuffer
 {
-
 	private static final String TAG = ShufflePlayBuffer.class.getSimpleName();
 	private static final int CAPACITY = 50;
 	private static final int REFILL_THRESHOLD = 40;
 
-	private final ScheduledExecutorService executorService;
 	private final List<MusicDirectory.Entry> buffer = new ArrayList<MusicDirectory.Entry>();
 	private final Context context;
+	private ScheduledExecutorService executorService;
 	private int currentServer;
+
+	public boolean isEnabled = false;
 
 	public ShufflePlayBuffer(Context context)
 	{
 		this.context = context;
+	}
+
+	public void onCreate()
+	{
 		executorService = Executors.newSingleThreadScheduledExecutor();
 		Runnable runnable = new Runnable()
 		{
@@ -60,6 +65,13 @@ public class ShufflePlayBuffer
 			}
 		};
 		executorService.scheduleWithFixedDelay(runnable, 1, 10, TimeUnit.SECONDS);
+		Log.i(TAG, "ShufflePlayBuffer created");
+	}
+
+	public void onDestroy()
+	{
+		executorService.shutdown();
+		Log.i(TAG, "ShufflePlayBuffer destroyed");
 	}
 
 	public List<MusicDirectory.Entry> get(int size)
@@ -78,13 +90,9 @@ public class ShufflePlayBuffer
 		return result;
 	}
 
-	public void shutdown()
-	{
-		executorService.shutdown();
-	}
-
 	private void refill()
 	{
+		if (!isEnabled) return;
 
 		// Check if active server has changed.
 		clearBufferIfNecessary();

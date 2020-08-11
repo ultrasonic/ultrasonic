@@ -16,11 +16,14 @@ import org.moire.ultrasonic.activity.SubsonicTabActivity;
 import org.moire.ultrasonic.featureflags.Feature;
 import org.moire.ultrasonic.featureflags.FeatureStorage;
 import org.moire.ultrasonic.provider.SearchSuggestionProvider;
-import org.moire.ultrasonic.service.DownloadService;
-import org.moire.ultrasonic.service.DownloadServiceImpl;
+import org.moire.ultrasonic.service.MediaPlayerController;
 import org.moire.ultrasonic.util.*;
 
 import java.io.File;
+
+import kotlin.Lazy;
+
+import static org.koin.java.standalone.KoinJavaComponent.inject;
 
 /**
  * Shows main app settings.
@@ -61,6 +64,8 @@ public class SettingsFragment extends PreferenceFragment
     private int maxServerCount = 10;
     private SharedPreferences settings;
     private int activeServers;
+
+    private Lazy<MediaPlayerController> mediaPlayerControllerLazy = inject(MediaPlayerController.class);
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
@@ -370,10 +375,10 @@ public class SettingsFragment extends PreferenceFragment
     private void setMediaButtonsEnabled(boolean enabled) {
         if (enabled) {
             lockScreenEnabled.setEnabled(true);
-            Util.registerMediaButtonEventReceiver(getActivity());
+            Util.registerMediaButtonEventReceiver(getActivity(), false);
         } else {
             lockScreenEnabled.setEnabled(false);
-            Util.unregisterMediaButtonEventReceiver(getActivity());
+            Util.unregisterMediaButtonEventReceiver(getActivity(), false);
         }
     }
 
@@ -401,7 +406,6 @@ public class SettingsFragment extends PreferenceFragment
         }
 
         // Clear download queue.
-        DownloadService downloadService = DownloadServiceImpl.getInstance();
-        downloadService.clear();
+        mediaPlayerControllerLazy.getValue().clear();
     }
 }
