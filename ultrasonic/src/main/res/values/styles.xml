@@ -92,6 +92,11 @@
     <attr name="check_mark_on" format="reference"/>
     <attr name="button_check_custom" format="reference"/>
     <attr name="color_background" format="reference"/>
+    <attr name="filepicker_create_new_folder" format="reference"/>
+    <attr name="filepicker_folder" format="reference"/>
+    <attr name="filepicker_subdirectory_left" format="reference"/>
+    <attr name="filepicker_subdirectory_up" format="reference"/>
+    <attr name="filepicker_sd_card" format="reference"/>
 
 </resources>
 

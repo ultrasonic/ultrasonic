@@ -15,6 +15,8 @@ import org.moire.ultrasonic.activity.ServerSettingsActivity;
 import org.moire.ultrasonic.activity.SubsonicTabActivity;
 import org.moire.ultrasonic.featureflags.Feature;
 import org.moire.ultrasonic.featureflags.FeatureStorage;
+import org.moire.ultrasonic.filepicker.FilePickerDialog;
+import org.moire.ultrasonic.filepicker.OnFileSelectedListener;
 import org.moire.ultrasonic.provider.SearchSuggestionProvider;
 import org.moire.ultrasonic.service.MediaPlayerController;
 import org.moire.ultrasonic.util.*;
@@ -37,7 +39,7 @@ public class SettingsFragment extends PreferenceFragment
     private ListPreference maxBitrateWifi;
     private ListPreference maxBitrateMobile;
     private ListPreference cacheSize;
-    private EditTextPreference cacheLocation;
+    private Preference cacheLocation;
     private ListPreference preloadCount;
     private ListPreference bufferLength;
     private ListPreference incrementTime;
@@ -85,7 +87,7 @@ public class SettingsFragment extends PreferenceFragment
         maxBitrateWifi = (ListPreference) findPreference(Constants.PREFERENCES_KEY_MAX_BITRATE_WIFI);
         maxBitrateMobile = (ListPreference) findPreference(Constants.PREFERENCES_KEY_MAX_BITRATE_MOBILE);
         cacheSize = (ListPreference) findPreference(Constants.PREFERENCES_KEY_CACHE_SIZE);
-        cacheLocation = (EditTextPreference) findPreference(Constants.PREFERENCES_KEY_CACHE_LOCATION);
+        cacheLocation = findPreference(Constants.PREFERENCES_KEY_CACHE_LOCATION);
         preloadCount = (ListPreference) findPreference(Constants.PREFERENCES_KEY_PRELOAD_COUNT);
         bufferLength = (ListPreference) findPreference(Constants.PREFERENCES_KEY_BUFFER_LENGTH);
         incrementTime = (ListPreference) findPreference(Constants.PREFERENCES_KEY_INCREMENT_TIME);
@@ -113,6 +115,7 @@ public class SettingsFragment extends PreferenceFragment
         setupClearSearchPreference();
         setupGaplessControlSettingsV14();
         setupFeatureFlagsPreferences();
+        setupCacheLocationPreference();
 
         // After API26 foreground services must be used for music playback, and they must have a notification
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
@@ -155,13 +158,45 @@ public class SettingsFragment extends PreferenceFragment
             setHideMedia(sharedPreferences.getBoolean(key, false));
         } else if (Constants.PREFERENCES_KEY_MEDIA_BUTTONS.equals(key)) {
             setMediaButtonsEnabled(sharedPreferences.getBoolean(key, true));
-        } else if (Constants.PREFERENCES_KEY_CACHE_LOCATION.equals(key)) {
-            setCacheLocation(sharedPreferences.getString(key, ""));
         } else if (Constants.PREFERENCES_KEY_SEND_BLUETOOTH_NOTIFICATIONS.equals(key)) {
             setBluetoothPreferences(sharedPreferences.getBoolean(key, true));
         } else if (Constants.PREFERENCES_KEY_IMAGE_LOADER_CONCURRENCY.equals(key)) {
             setImageLoaderConcurrency(Integer.parseInt(sharedPreferences.getString(key, "5")));
         }
+    }
+
+    private void setupCacheLocationPreference() {
+        cacheLocation.setSummary(settings.getString(Constants.PREFERENCES_KEY_CACHE_LOCATION,
+            FileUtil.getDefaultMusicDirectory(getActivity()).getPath()));
+
+        cacheLocation.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
+            @Override
+            public boolean onPreferenceClick(Preference preference) {
+            // If the user tries to change the cache location, we must first check to see if we have write access.
+            PermissionUtil.requestInitialPermission(getActivity(), new PermissionUtil.PermissionRequestFinishedCallback() {
+                    @Override
+                    public void onPermissionRequestFinished(boolean hasPermission) {
+                        if (hasPermission) {
+                            FilePickerDialog filePickerDialog = FilePickerDialog.Companion.createFilePickerDialog(getActivity());
+                            filePickerDialog.setDefaultDirectory(FileUtil.getDefaultMusicDirectory(getActivity()).getPath());
+                            filePickerDialog.setInitialDirectory(cacheLocation.getSummary().toString());
+                            filePickerDialog.setOnFileSelectedListener(new OnFileSelectedListener() {
+                                @Override
+                                public void onFileSelected(File file, String path) {
+                                    SharedPreferences.Editor editor = cacheLocation.getEditor();
+                                    editor.putString(Constants.PREFERENCES_KEY_CACHE_LOCATION, path);
+                                    editor.commit();
+
+                                    setCacheLocation(path);
+                                }
+                            });
+                            filePickerDialog.show();
+                        }
+                    }
+                });
+            return true;
+            }
+        });
     }
 
     private void setupClearSearchPreference() {
@@ -315,7 +350,6 @@ public class SettingsFragment extends PreferenceFragment
         maxBitrateWifi.setSummary(maxBitrateWifi.getEntry());
         maxBitrateMobile.setSummary(maxBitrateMobile.getEntry());
         cacheSize.setSummary(cacheSize.getEntry());
-        cacheLocation.setSummary(cacheLocation.getText());
         preloadCount.setSummary(preloadCount.getEntry());
         bufferLength.setSummary(bufferLength.getEntry());
         incrementTime.setSummary(incrementTime.getEntry());
@@ -396,13 +430,15 @@ public class SettingsFragment extends PreferenceFragment
         if (!FileUtil.ensureDirectoryExistsAndIsReadWritable(dir)) {
             PermissionUtil.handlePermissionFailed(getActivity(), new PermissionUtil.PermissionRequestFinishedCallback() {
                 @Override
-                public void onPermissionRequestFinished() {
+                public void onPermissionRequestFinished(boolean hasPermission) {
                     String currentPath = settings.getString(Constants.PREFERENCES_KEY_CACHE_LOCATION,
                             FileUtil.getDefaultMusicDirectory(getActivity()).getPath());
                     cacheLocation.setSummary(currentPath);
-                    cacheLocation.setText(currentPath);
                 }
             });
+        }
+        else {
+            cacheLocation.setSummary(path);
         }
 
         // Clear download queue.

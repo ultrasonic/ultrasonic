@@ -5,6 +5,8 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.net.Uri;
+import android.os.Handler;
+import android.os.Looper;
 import android.util.Log;
 
 import androidx.appcompat.app.AlertDialog;
@@ -34,7 +36,7 @@ public class PermissionUtil {
     private static final String TAG = FileUtil.class.getSimpleName();
 
     public interface PermissionRequestFinishedCallback {
-        void onPermissionRequestFinished();
+        void onPermissionRequestFinished(boolean hasPermission);
     }
 
     /**
@@ -55,18 +57,70 @@ public class PermissionUtil {
         if (currentCachePath.compareTo(defaultCachePath) == 0) return;
 
         // We must get the context of the Main Activity for the dialogs, as this function may be called from a background thread where displaying dialogs is not available
-        Context mainContext = MainActivity.getInstance();
+        final Context mainContext = MainActivity.getInstance();
 
         if ((PermissionChecker.checkSelfPermission(context, Manifest.permission.WRITE_EXTERNAL_STORAGE) == PERMISSION_DENIED) ||
                 (PermissionChecker.checkSelfPermission(context, Manifest.permission.READ_EXTERNAL_STORAGE) == PERMISSION_DENIED)) {
             // While we request permission, the Music Directory is temporarily reset to its default location
             setCacheLocation(context, FileUtil.getDefaultMusicDirectory(context).getPath());
-            requestPermission(mainContext, currentCachePath, callback);
+            requestFailedPermission(mainContext, currentCachePath, callback);
         } else {
             setCacheLocation(context, FileUtil.getDefaultMusicDirectory(context).getPath());
-            showWarning(mainContext, context.getString(R.string.permissions_message_box_title), context.getString(R.string.permissions_access_error), null);
-            callback.onPermissionRequestFinished();
+            new Handler(Looper.getMainLooper()).post(new Runnable() {
+                @Override
+                public void run() {
+                    showWarning(mainContext, context.getString(R.string.permissions_message_box_title), context.getString(R.string.permissions_access_error), null);
+                }
+            });
+            callback.onPermissionRequestFinished(false);
         }
+    }
+
+    /**
+     * This function requests permission to access the filesystem.
+     * It can be used to request the permission initially, e.g. when the user decides to use a non-default folder for the cache
+     * @param context context for the operation
+     * @param callback callback function to execute after the permission request is finished
+     */
+    public static void requestInitialPermission(final Context context, final PermissionRequestFinishedCallback callback) {
+        Dexter.withContext(context)
+                .withPermissions(
+                        Manifest.permission.WRITE_EXTERNAL_STORAGE,
+                        Manifest.permission.READ_EXTERNAL_STORAGE)
+                .withListener(new MultiplePermissionsListener() {
+                    @Override
+                    public void onPermissionsChecked(MultiplePermissionsReport report) {
+                        if (report.areAllPermissionsGranted()) {
+                            Log.i(TAG, "Permission granted to read / write external storage");
+                            if (callback != null) callback.onPermissionRequestFinished(true);
+                            return;
+                        }
+
+                        if (report.isAnyPermissionPermanentlyDenied()) {
+                            Log.i(TAG, "Found permanently denied permission to read / write external storage, offering settings");
+                            showSettingsDialog(context);
+                            if (callback != null) callback.onPermissionRequestFinished(false);
+                            return;
+                        }
+
+                        Log.i(TAG, "At least one permission is missing to read / write external storage");
+                        showWarning(context, context.getString(R.string.permissions_message_box_title),
+                                context.getString(R.string.permissions_rationale_description_initial), null);
+                        if (callback != null) callback.onPermissionRequestFinished(false);
+                    }
+
+                    @Override
+                    public void onPermissionRationaleShouldBeShown(List<PermissionRequest> permissions, PermissionToken token) {
+                        showWarning(context, context.getString(R.string.permissions_rationale_title),
+                                context.getString(R.string.permissions_rationale_description_initial), token);
+                    }
+                }).withErrorListener(new PermissionRequestErrorListener() {
+            @Override
+            public void onError(DexterError error) {
+                Log.e(TAG, String.format("An error has occurred during checking permissions with Dexter: %s", error.toString()));
+            }
+        })
+                .check();
     }
 
     private static void setCacheLocation(Context context, String cacheLocation) {
@@ -75,7 +129,7 @@ public class PermissionUtil {
                 .apply();
     }
 
-    private static void requestPermission(final Context context, final String cacheLocation, final PermissionRequestFinishedCallback callback) {
+    private static void requestFailedPermission(final Context context, final String cacheLocation, final PermissionRequestFinishedCallback callback) {
         Dexter.withContext(context)
                 .withPermissions(
                         Manifest.permission.WRITE_EXTERNAL_STORAGE,
@@ -86,14 +140,14 @@ public class PermissionUtil {
                         if (report.areAllPermissionsGranted()) {
                             Log.i(TAG, String.format("Permission granted to use cache directory %s", cacheLocation));
                             setCacheLocation(context, cacheLocation);
-                            if (callback != null) callback.onPermissionRequestFinished();
+                            if (callback != null) callback.onPermissionRequestFinished(true);
                             return;
                         }
 
                         if (report.isAnyPermissionPermanentlyDenied()) {
                             Log.i(TAG, String.format("Found permanently denied permission to use cache directory %s, offering settings", cacheLocation));
                             showSettingsDialog(context);
-                            if (callback != null) callback.onPermissionRequestFinished();
+                            if (callback != null) callback.onPermissionRequestFinished(false);
                             return;
                         }
 
@@ -101,13 +155,13 @@ public class PermissionUtil {
                         setCacheLocation(context, FileUtil.getDefaultMusicDirectory(context).getPath());
                         showWarning(context, context.getString(R.string.permissions_message_box_title),
                                 context.getString(R.string.permissions_permission_missing), null);
-                        if (callback != null) callback.onPermissionRequestFinished();
+                        if (callback != null) callback.onPermissionRequestFinished(false);
                     }
 
                     @Override
                     public void onPermissionRationaleShouldBeShown(List<PermissionRequest> permissions, PermissionToken token) {
                         showWarning(context, context.getString(R.string.permissions_rationale_title),
-                                context.getString(R.string.permissions_rationale_description), token);
+                                context.getString(R.string.permissions_rationale_description_failed), token);
                     }
                 }).withErrorListener(new PermissionRequestErrorListener() {
             @Override

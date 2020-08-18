@@ -210,7 +210,7 @@
             a:entryValues="@array/cacheSizeValues"
             a:key="cacheSize"
             a:title="@string/settings.cache_size"/>
-        <EditTextPreference
+        <Preference
             a:key="cacheLocation"
             a:title="@string/settings.cache_location"/>
         <ListPreference
