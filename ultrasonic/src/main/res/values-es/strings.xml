@@ -400,10 +400,24 @@
     <string name="permissions.message_box_title">Atención</string>
     <string name="permissions.permission_missing">Ultrasonic necesita permiso de lectura / escritura para el directorio caché de música. El directorio caché se restableció a su valor predeterminado.</string>
     <string name="permissions.rationale_title">Solicitud de permisos</string>
-    <string name="permissions.rationale_description">Ultrasonic necesita permiso de lectura / escritura para el directorio caché de música. Por favor permite a Ultrasonic acceder al sistema de ficheros.</string>
+    <string name="permissions.rationale_description_failed">Ultrasonic necesita permiso de lectura / escritura para el directorio caché de música. Por favor permite a Ultrasonic acceder al sistema de ficheros.</string>
     <string name="permissions.permanent_denial_title">Permisos denegados permanentemente</string>
     <string name="permissions.permanent_denial_description">Ultrasonic necesita acceso de lectura / escritura a la ubicación de la caché. Puedes otorgarlos en la configuración de la aplicación. Si rechazas esta solicitud, la ubicación de la caché se restablecerá a su valor predeterminado.</string>
     <string name="permissions.open_settings">Abrir configuración</string>
+    <string name="permissions.rationale_description_initial">To be able to change the cache location, Ultrasonic needs read/write permission to the filesystem.</string>
+
+    <string name="filepicker.select_folder">Select a folder</string>
+    <string name="filepicker.create_folder">Create new folder</string>
+    <string name="filepicker.create_folder_failed">Failed to create new folder</string>
+    <string name="filepicker.internal">%1$s (Internal)</string>
+    <string name="filepicker.default_app_folder">Default app folder on %1$s (External)</string>
+    <string name="filepicker.enter_folder_name">Enter the folder name</string>
+    <string name="filepicker.create">Create</string>
+    <string name="filepicker.name_invalid">Please enter a valid folder name</string>
+    <string name="filepicker.already_exists">This folder already exists.\nPlease provide another name for the folder</string>
+    <string name="filepicker.select">Select</string>
+    <string name="filepicker.default">Use default</string>
+    <string name="filepicker.available_drives">Available drives:</string>
 
     <plurals name="select_album_n_songs">
         <item quantity="one">1 canción</item>

@@ -30,7 +30,7 @@ jacoco {
 
 ext {
     // override it in the module
-    jacocoExclude = []
+    jacocoExclude = ['jdk.internal.*']
 }
 
 jacocoTestReport {

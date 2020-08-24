@@ -400,10 +400,24 @@
     <string name="permissions.message_box_title">Figyelem</string>
     <string name="permissions.permission_missing">Az Ultrasonic működéséhez írás/olvasás hozzáférés szükséges a zenei fájl gyorsítótárhoz. A gyorsítótár helye visszaállítva az alapbeállításra.</string>
     <string name="permissions.rationale_title">Jogosultság kérés</string>
-    <string name="permissions.rationale_description">Az Ultrasonic működéséhez írás/olvasás hozzáférés szükséges a zenei fájl gyorsítótárhoz.\nKérjük, engedélyezd a hozzáférést a fájlrendszerhez.</string>
+    <string name="permissions.rationale_description_failed">Az Ultrasonic működéséhez írás/olvasás hozzáférés szükséges a zenei fájl gyorsítótárhoz.\nKérlek, adj hozzáférést az Ultrasonicnak a fájlrendszerhez.</string>
     <string name="permissions.permanent_denial_title">A jogosultság visszautasítva</string>
     <string name="permissions.permanent_denial_description">Az Ultrasonic működéséhez írás/olvasás hozzáférés szükséges a zenei fájl gyorsítótárhoz. Ez a beállítás az alkalmazásbeállítások között módosítható. Ha elutasítod ezt a kérést, a gyorsítótár helye visszaáll az alapbeállításra.</string>
     <string name="permissions.open_settings">Beállítások megnyitása</string>
+    <string name="permissions.rationale_description_initial">A gyorsítótár helyének megváltoztatásához az Ultrasonicnak írás/olvasás hozzáférésre van szüksége a fájlrendszerhez.</string>
+
+    <string name="filepicker.select_folder">Mappa kiválasztása</string>
+    <string name="filepicker.create_folder">Új mappa létrehozása</string>
+    <string name="filepicker.create_folder_failed">Az új mappa létrehozása nem sikerült</string>
+    <string name="filepicker.internal">%1$s (Belső)</string>
+    <string name="filepicker.default_app_folder">Alapértelmezett alkalmazásmappa a %1$s tárolón (Külső)</string>
+    <string name="filepicker.enter_folder_name">A mappa neve</string>
+    <string name="filepicker.create">Létrehoz</string>
+    <string name="filepicker.name_invalid">Kérjük, adj meg egy érvényes mappanevet</string>
+    <string name="filepicker.already_exists">Ilyen nevű mappa már létezik.\nKérjük, adj meg más nevet.</string>
+    <string name="filepicker.select">Választ</string>
+    <string name="filepicker.default">Alapért.</string>
+    <string name="filepicker.available_drives">Elérhető tárolók:</string>
 
     <plurals name="select_album_n_songs">
         <item quantity="one">1 dal</item>

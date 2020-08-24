@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-
     <style name="UltraSonicTheme" parent="Theme.AppCompat">
         <item name="color_background">@color/background_color_dark</item>
         <item name="star_hollow">@drawable/ic_star_hollow_dark</item>
@@ -44,6 +43,10 @@
         <item name="chat_send">@drawable/ic_menu_chat_send_dark</item>
         <item name="bookmark">@drawable/ic_menu_bookmark_dark</item>
         <item name="button_check_custom">@drawable/btn_check_custom_dark</item>
+        <item name="filepicker_create_new_folder">@drawable/ic_create_new_folder_dark</item>
+        <item name="filepicker_folder">@drawable/ic_folder_dark</item>
+        <item name="filepicker_subdirectory_up">@drawable/ic_subdirectory_up_dark</item>
+        <item name="filepicker_sd_card">@drawable/ic_sd_storage_dark</item>
     </style>
 
     <style name="UltraSonicTheme.Light" parent="Theme.AppCompat.Light">
@@ -89,6 +92,9 @@
         <item name="chat_send">@drawable/ic_menu_chat_send_light</item>
         <item name="bookmark">@drawable/ic_menu_bookmark_light</item>
         <item name="button_check_custom">@drawable/btn_check_custom_light</item>
+        <item name="filepicker_create_new_folder">@drawable/ic_create_new_folder_light</item>
+        <item name="filepicker_folder">@drawable/ic_folder_light</item>
+        <item name="filepicker_subdirectory_up">@drawable/ic_subdirectory_up_light</item>
+        <item name="filepicker_sd_card">@drawable/ic_sd_storage_light</item>
     </style>
-
 </resources>
