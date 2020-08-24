@@ -30,7 +30,7 @@ jacoco {
 
 ext {
     // override it in the module
-    jacocoExclude = []
+    jacocoExclude = ['jdk.internal.*']
 }
 
 jacocoTestReport {
@@ -51,6 +51,7 @@ test.finalizedBy jacocoTestReport
 test {
     jacoco {
         excludes += jacocoExclude
+        includeNoLocationClasses = true
     }
 }
 

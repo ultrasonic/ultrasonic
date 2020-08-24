@@ -52,6 +52,7 @@ targetCompatibility = JavaVersion.VERSION_1_8
 tasks.withType(Test) {
     useJUnitPlatform()
     jacoco {
+        includeNoLocationClasses = true
         excludes += jacocoExclude
     }
 }
@@ -68,6 +69,6 @@ jacoco {
 }
 
 ext {
-    jacocoExclude = []
+    jacocoExclude = ['jdk.internal.*']
 }
 

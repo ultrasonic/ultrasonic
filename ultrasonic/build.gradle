@@ -99,6 +99,16 @@ ext {
             '**/R$*.class',
             '**/R.class',
             '**/BuildConfig.class',
-            '**/di/**'
+            '**/di/**',
+            'jdk.internal.*'
     ]
+}
+
+jacoco {
+    toolVersion(versions.jacoco)
+}
+
+tasks.withType(Test) {
+    jacoco.includeNoLocationClasses = true
+    jacoco.excludes += jacocoExclude
 }
