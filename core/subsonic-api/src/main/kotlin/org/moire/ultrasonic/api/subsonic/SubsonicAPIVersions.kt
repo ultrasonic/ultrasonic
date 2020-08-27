@@ -41,7 +41,7 @@ enum class SubsonicAPIVersions(val subsonicVersions: String, val restApiVersion:
                 val majorVersion = versionComponents[0].toInt()
                 val minorVersion = versionComponents[1].toInt()
                 val patchVersion = if (versionComponents.size > 2) versionComponents[2].toInt()
-                    else 0
+                else 0
 
                 when (majorVersion) {
                     1 -> when {

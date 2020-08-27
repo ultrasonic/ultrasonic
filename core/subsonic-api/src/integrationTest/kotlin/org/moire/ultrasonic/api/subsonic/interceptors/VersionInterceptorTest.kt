@@ -2,9 +2,7 @@ package org.moire.ultrasonic.api.subsonic.interceptors
 
 import kotlin.LazyThreadSafetyMode.NONE
 import okhttp3.Interceptor
-import okhttp3.mockwebserver.MockResponse
 import org.amshove.kluent.`should contain`
-import org.amshove.kluent.`should equal`
 import org.junit.Test
 import org.moire.ultrasonic.api.subsonic.SubsonicAPIVersions
 import org.moire.ultrasonic.api.subsonic.enqueueResponse
