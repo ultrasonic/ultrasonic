@@ -78,7 +78,7 @@ val musicServiceModule = module(MUSIC_SERVICE_CONTEXT) {
                 baseUrl = "http://localhost",
                 username = "",
                 password = "",
-                minimalProtocolVersion = SubsonicAPIVersions.fromApiVersion(
+                minimalProtocolVersion = SubsonicAPIVersions.getClosestKnownClientApiVersion(
                     Constants.REST_PROTOCOL_VERSION
                 ),
                 clientID = Constants.REST_CLIENT_ID,
@@ -91,7 +91,7 @@ val musicServiceModule = module(MUSIC_SERVICE_CONTEXT) {
                 baseUrl = serverUrl,
                 username = username,
                 password = password,
-                minimalProtocolVersion = SubsonicAPIVersions.fromApiVersion(
+                minimalProtocolVersion = SubsonicAPIVersions.getClosestKnownClientApiVersion(
                     Constants.REST_PROTOCOL_VERSION
                 ),
                 clientID = Constants.REST_CLIENT_ID,

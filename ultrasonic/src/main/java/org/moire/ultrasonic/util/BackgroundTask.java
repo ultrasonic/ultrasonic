@@ -23,6 +23,7 @@ import android.os.Handler;
 import android.util.Log;
 import com.fasterxml.jackson.core.JsonParseException;
 import org.moire.ultrasonic.R;
+import org.moire.ultrasonic.api.subsonic.ApiNotSupportedException;
 import org.moire.ultrasonic.service.SubsonicRESTException;
 import org.moire.ultrasonic.subsonic.RestErrorMapper;
 
@@ -86,7 +87,10 @@ public abstract class BackgroundTask<T> implements ProgressListener
             } else {
                 return activity.getResources().getString(R.string.background_task_ssl_error);
             }
-        } else if (error instanceof IOException) {
+        } else if (error instanceof ApiNotSupportedException) {
+			return activity.getResources().getString(R.string.background_task_unsupported_api,
+				((ApiNotSupportedException) error).getServerApiVersion());
+		} else if (error instanceof IOException) {
             return activity.getResources().getString(R.string.background_task_network_error);
         } else if (error instanceof SubsonicRESTException) {
             return RestErrorMapper.getLocalizedErrorMessage((SubsonicRESTException) error, activity);

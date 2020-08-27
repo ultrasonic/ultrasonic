@@ -18,11 +18,11 @@ class SubsonicAPIVersionsTest(private val apiVersion: SubsonicAPIVersions) {
 
     @Test
     fun `Should proper convert api version to enum`() {
-        SubsonicAPIVersions.fromApiVersion(apiVersion.restApiVersion) `should equal` apiVersion
+        SubsonicAPIVersions.getClosestKnownClientApiVersion(apiVersion.restApiVersion) `should equal` apiVersion
     }
 
     @Test(expected = IllegalArgumentException::class)
     fun `Should throw IllegalArgumentException for unknown api version`() {
-        SubsonicAPIVersions.fromApiVersion(apiVersion.restApiVersion.substring(0, 2))
+        SubsonicAPIVersions.getClosestKnownClientApiVersion(apiVersion.restApiVersion.substring(0, 2))
     }
 }

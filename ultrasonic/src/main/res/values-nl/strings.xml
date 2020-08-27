@@ -3,6 +3,7 @@
 
     <string name="background_task.loading">Bezig met laden&#8230;</string>
     <string name="background_task.network_error">Er is een netwerkfout opgetreden. Controleer het serveradres of probeer het later opnieuw.</string>
+    <string name="background_task.unsupported_api">Server api v%1$s does not support this function.</string>
     <string name="background_task.no_network">Deze app vereist netwerktoegang. Schakel Wi-Fi of mobiel internet in.</string>
     <string name="background_task.not_found">Bron niet gevonden. Controleer het serveradres.</string>
     <string name="background_task.parse_error">Het antwoord werd niet begrepen. Controleer het serveradres.</string>

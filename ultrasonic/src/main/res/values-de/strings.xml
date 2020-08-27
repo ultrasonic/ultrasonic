@@ -3,6 +3,7 @@
 
     <string name="background_task.loading">Lade&#8230;</string>
     <string name="background_task.network_error">Ein Netzwerkfehler ist aufgetreten. Bitte die Serveradresse prüfen oder später noch einmal versuchen.</string>
+    <string name="background_task.unsupported_api">Server api v%1$s does not support this function.</string>
     <string name="background_task.no_network">Dieses Programm benötigt eine Netzwerkverbindung. Bitte das WLAN oder Mobilfunk einschalten.</string>
     <string name="background_task.not_found">Ressource nicht gefunden. Bitte die Serveradresse überprüfen.</string>
     <string name="background_task.parse_error">Antwort nicht verstanden. Bitte die Serveradresse überprüfen.</string>
