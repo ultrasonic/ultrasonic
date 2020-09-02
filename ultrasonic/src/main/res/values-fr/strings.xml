@@ -3,6 +3,7 @@
 
     <string name="background_task.loading">Chargement&#8230;</string>
     <string name="background_task.network_error">Une erreur réseau est survenue. Veuillez vérifier l\'adresse du serveur ou réessayer plus tard.</string>
+    <string name="background_task.unsupported_api">Server api v%1$s does not support this function.</string>
     <string name="background_task.no_network">Cette application requiert un accès au réseau. Veuillez activer le Wi-Fi ou le réseau mobile.</string>
     <string name="background_task.not_found">Ressources introuvables. Veuillez vérifier l\'adresse du serveur.</string>
     <string name="background_task.parse_error">Réponse incorrecte. Veuillez vérifier l\'adresse du serveur.</string>

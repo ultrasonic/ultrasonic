@@ -21,7 +21,6 @@ import org.moire.ultrasonic.api.subsonic.response.StreamResponse
 import org.moire.ultrasonic.api.subsonic.response.SubsonicResponse
 import retrofit2.Response
 import retrofit2.Retrofit
-import retrofit2.converter.jackson.JacksonConverterFactory
 
 private const val READ_TIMEOUT = 60_000L
 
@@ -39,9 +38,7 @@ class SubsonicAPIClient(
     config: SubsonicClientConfiguration,
     baseOkClient: OkHttpClient = OkHttpClient.Builder().build()
 ) {
-    private val versionInterceptor = VersionInterceptor(config.minimalProtocolVersion) {
-        protocolVersion = it
-    }
+    private val versionInterceptor = VersionInterceptor(config.minimalProtocolVersion)
 
     private val proxyPasswordInterceptor = ProxyPasswordInterceptor(
         config.minimalProtocolVersion,
@@ -58,6 +55,7 @@ class SubsonicAPIClient(
             field = value
             proxyPasswordInterceptor.apiVersion = field
             wrappedApi.currentApiVersion = field
+            versionInterceptor.protocolVersion = field
         }
 
     private val okHttpClient = baseOkClient.newBuilder()
@@ -87,7 +85,12 @@ class SubsonicAPIClient(
     private val retrofit = Retrofit.Builder()
         .baseUrl("${config.baseUrl}/rest/")
         .client(okHttpClient)
-        .addConverterFactory(JacksonConverterFactory.create(jacksonMapper))
+        .addConverterFactory(
+            VersionAwareJacksonConverterFactory.create(
+                { protocolVersion = it },
+                jacksonMapper
+            )
+        )
         .build()
 
     private val wrappedApi = ApiVersionCheckWrapper(

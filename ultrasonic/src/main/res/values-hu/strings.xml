@@ -3,6 +3,7 @@
 
     <string name="background_task.loading">Betöltés&#8230;</string>
     <string name="background_task.network_error">Hálózati hiba történt! Kérjük, ellenőrizze a kiszolgáló címét vagy próbálja később!</string>
+    <string name="background_task.unsupported_api">A v%1$s verziójú Szerver api nem támogatja ezt a funkciót.</string>
     <string name="background_task.no_network">Az alkalmazás hálózati hozzáférést igényel. Kérjük, kapcsolja be a Wi-Fi-t vagy a mobilhálózatot!</string>
     <string name="background_task.not_found">Az erőforrás nem található! Kérjük, ellenőrizze a kiszolgáló címét!</string>
     <string name="background_task.parse_error">Értelmezhetetlen válasz! Kérjük, ellenőrizze a kiszolgáló címét!</string>

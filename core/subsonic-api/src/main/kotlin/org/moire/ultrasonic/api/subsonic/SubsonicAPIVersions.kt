@@ -5,6 +5,7 @@ import com.fasterxml.jackson.core.JsonParser
 import com.fasterxml.jackson.databind.DeserializationContext
 import com.fasterxml.jackson.databind.JsonDeserializer
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize
+import java.lang.NumberFormatException
 
 /**
  * Subsonic REST API versions.
@@ -31,28 +32,45 @@ enum class SubsonicAPIVersions(val subsonicVersions: String, val restApiVersion:
 
     companion object {
         @JvmStatic @Throws(IllegalArgumentException::class)
-        fun fromApiVersion(apiVersion: String): SubsonicAPIVersions {
-            when (apiVersion) {
-                "1.1.0" -> return V1_1_0
-                "1.1.1" -> return V1_1_1
-                "1.2.0" -> return V1_2_0
-                "1.3.0" -> return V1_3_0
-                "1.4.0" -> return V1_4_0
-                "1.5.0" -> return V1_5_0
-                "1.6.0" -> return V1_6_0
-                "1.7.0" -> return V1_7_0
-                "1.8.0" -> return V1_8_0
-                "1.9.0" -> return V1_9_0
-                "1.10.2" -> return V1_10_2
-                "1.10.5" -> return V1_10_2 // Non standard version of Madsonic Server 5.1
-                "1.11.0" -> return V1_11_0
-                "1.12.0" -> return V1_12_0
-                "1.13.0" -> return V1_13_0
-                "1.14.0" -> return V1_14_0
-                "1.15.0" -> return V1_15_0
-                "1.16.0" -> return V1_16_0
-                "1.16.1" -> return V1_16_0 // Fast and dirty fix to Subsonic 6.1.4
-                else -> throw IllegalArgumentException("Unknown api version $apiVersion")
+        fun getClosestKnownClientApiVersion(apiVersion: String): SubsonicAPIVersions {
+            val versionComponents = apiVersion.split(".")
+            if (versionComponents.size < 2)
+                throw IllegalArgumentException("Unknown api version $apiVersion")
+
+            try {
+                val majorVersion = versionComponents[0].toInt()
+                val minorVersion = versionComponents[1].toInt()
+                val patchVersion = if (versionComponents.size > 2) versionComponents[2].toInt()
+                else 0
+
+                when (majorVersion) {
+                    1 -> when {
+                        minorVersion < 1 ->
+                            throw IllegalArgumentException("Unknown api version $apiVersion")
+                        minorVersion < 2 && patchVersion < 1 -> return V1_1_0
+                        minorVersion < 2 -> return V1_1_1
+                        minorVersion < 3 -> return V1_2_0
+                        minorVersion < 4 -> return V1_3_0
+                        minorVersion < 5 -> return V1_4_0
+                        minorVersion < 6 -> return V1_5_0
+                        minorVersion < 7 -> return V1_6_0
+                        minorVersion < 8 -> return V1_7_0
+                        minorVersion < 9 -> return V1_8_0
+                        minorVersion < 10 -> return V1_9_0
+                        minorVersion < 11 -> return V1_10_2
+                        minorVersion < 12 -> return V1_11_0
+                        minorVersion < 13 -> return V1_12_0
+                        minorVersion < 14 -> return V1_13_0
+                        minorVersion < 15 -> return V1_14_0
+                        minorVersion < 16 -> return V1_15_0
+                        else -> return V1_16_0
+                    }
+                    // Subsonic API specifies that the client's and the server's major API version
+                    // must be the same
+                    else -> throw IllegalArgumentException("Unknown api version $apiVersion")
+                }
+            } catch (exception: NumberFormatException) {
+                throw IllegalArgumentException("Malformed api version $apiVersion")
             }
         }
 
@@ -64,7 +82,7 @@ enum class SubsonicAPIVersions(val subsonicVersions: String, val restApiVersion:
                 if (p.currentName != "version") {
                     throw JsonParseException(p, "Not valid token for API version!")
                 }
-                return fromApiVersion(p.text)
+                return getClosestKnownClientApiVersion(p.text)
             }
         }
     }

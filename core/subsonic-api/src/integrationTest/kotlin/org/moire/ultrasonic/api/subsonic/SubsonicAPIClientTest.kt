@@ -14,7 +14,7 @@ abstract class SubsonicAPIClientTest {
     protected lateinit var client: SubsonicAPIClient
 
     @Before
-    fun setUp() {
+    open fun setUp() {
         config = SubsonicClientConfiguration(
             mockWebServerRule.mockWebServer.url("/").toString(),
             USERNAME,
