@@ -319,8 +319,9 @@ public class JukeboxMediaPlayer
 
 	public void setEnabled(boolean enabled)
 	{
-		tasks.clear();
+		this.enabled = enabled;
 
+		tasks.clear();
 		if (enabled)
 		{
 			updatePlaylist();
