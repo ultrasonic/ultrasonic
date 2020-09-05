@@ -70,7 +70,7 @@
             a:focusable="false"
             a:gravity="center_vertical"
             a:scaleType="centerInside"
-            a:layout_marginRight="3dip"
+            a:layout_marginRight="8dip"
             a:src="?attr/star_hollow" />
 
     </LinearLayout>
@@ -82,7 +82,7 @@
         a:background="@android:color/transparent"
         a:focusable="false"
         a:gravity="center_vertical"
-        a:paddingRight="3dip"
+        a:paddingRight="8dip"
         a:src="?attr/star_hollow" />
 
     <ImageView
@@ -92,7 +92,7 @@
         a:background="@android:color/transparent"
         a:focusable="false"
         a:gravity="center_vertical"
-        a:paddingRight="3dip"
+        a:paddingRight="8dip"
         a:src="@drawable/ic_drag_queue" />
 
 </LinearLayout>
