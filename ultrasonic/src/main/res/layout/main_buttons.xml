@@ -10,16 +10,25 @@
 		<ImageView a:layout_width="wrap_content" a:layout_height="wrap_content"
 			a:layout_gravity="center_vertical" a:src="?attr/select_folder" />
 
-		<LinearLayout a:orientation="vertical" a:layout_width="wrap_content"
-			a:layout_height="fill_parent">
+		<LinearLayout
+			a:layout_width="wrap_content"
+			a:layout_height="wrap_content"
+			a:orientation="vertical">
 
-			<TextView a:id="@+id/main.select_server_1" a:text="@string/main.select_server"
-				a:layout_width="fill_parent" a:layout_height="wrap_content"
-				a:layout_marginLeft="10dip" a:layout_marginTop="6dip"
+			<TextView
+				a:id="@+id/main.select_server_1"
+				a:layout_width="fill_parent"
+				a:layout_height="wrap_content"
+				a:layout_marginLeft="10dip"
+				a:layout_marginTop="6dip"
+				a:text="@string/main.select_server"
 				a:textAppearance="?android:attr/textAppearanceLarge" />
 
-			<TextView a:id="@+id/main.select_server_2" a:layout_width="fill_parent"
-				a:layout_height="wrap_content" a:layout_marginLeft="10dip"
+			<TextView
+				a:id="@+id/main.select_server_2"
+				a:layout_width="fill_parent"
+				a:layout_height="wrap_content"
+				a:layout_marginLeft="10dip"
 				a:textAppearance="?android:attr/textAppearanceSmall" />
 
 		</LinearLayout>
