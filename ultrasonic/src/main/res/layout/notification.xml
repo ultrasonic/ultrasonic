@@ -70,7 +70,7 @@
         android:layout_gravity="center"
         android:gravity="end"
         android:orientation="horizontal"
-        >
+        android:paddingRight="4dp">
 
         <ImageButton
             android:id="@+id/control_previous"
@@ -104,12 +104,13 @@
 
         <ImageButton
             android:id="@+id/control_stop"
-            android:layout_width="22dip"
-            android:layout_height="22dip"
+            android:layout_width="32dip"
+            android:layout_height="32dip"
             android:layout_gravity="center"
+            android:layout_marginLeft="4dp"
+            android:alpha="70"
             android:background="@drawable/btn_bg"
             android:scaleType="fitXY"
-            android:alpha="70"
             android:src="@drawable/ic_menu_exit_dark" />
     </LinearLayout>
 
