@@ -13,7 +13,7 @@
     <string name="button_bar.bookmarks">Bookmarks</string>
     <string name="button_bar.browse">Media Library</string>
     <string name="button_bar.chat">Chat</string>
-    <string name="button_bar.home">UltraSonic Main</string>
+    <string name="button_bar.home">Ultrasonic Main</string>
     <string name="button_bar.now_playing">Now Playing</string>
     <string name="podcasts.label">Podcast</string>
     <string name="podcasts_channels.empty">No podcasts channels registered</string>
@@ -21,7 +21,7 @@
     <string name="button_bar.playlists">Playlists</string>
     <string name="button_bar.search">Search</string>
     <string name="chat.send_a_message">Send a message</string>
-    <string name="common.appname">UltraSonic</string>
+    <string name="common.appname">Ultrasonic</string>
     <string name="common.cancel">Cancel</string>
     <string name="common.comment">Comment</string>
     <string name="common.confirm">Confirm</string>
@@ -101,7 +101,7 @@
     <string name="main.songs_starred">Starred</string>
     <string name="main.songs_title">Songs</string>
     <string name="main.videos">Videos</string>
-    <string name="main.welcome_text">Welcome to UltraSonic! The app is currently not configured. After you\'ve set up your personal server (available from <b>subsonic.org</b>), please click <i>Add Server</i> in <b>Settings</b> to connect to it.</string>
+    <string name="main.welcome_text">Welcome to Ultrasonic! The app is currently not configured. After you\'ve set up your personal server (available from <b>subsonic.org</b>), please click <i>Add Server</i> in <b>Settings</b> to connect to it.</string>
     <string name="main.welcome_title">Welcome!</string>
     <string name="menu.about">About</string>
     <string name="menu.common">Common</string>
@@ -462,7 +462,7 @@
     <string name="api.subsonic.param_missing">Required param is missing.</string>
     <string name="api.subsonic.requested_data_was_not_found">Requested data was not found.</string>
     <string name="api.subsonic.trial_period_is_over">Trial period is over.</string>
-    <string name="api.subsonic.upgrade_client">Incompatible versions. Please upgrade UltraSonic Android app.</string>
+    <string name="api.subsonic.upgrade_client">Incompatible versions. Please upgrade Ultrasonic Android app.</string>
     <string name="api.subsonic.upgrade_server">Incompatible versions. Please upgrade Subsonic server.</string>
 
     <string name="feature_flags_image_loader_title">Enable new image loader</string>
