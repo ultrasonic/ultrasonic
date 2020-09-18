@@ -73,20 +73,8 @@ public final class Constants
 	public static final int NOTIFICATION_ID_PLAYING = 100;
 
 	// Preferences keys.
-	public static final String PREFERENCES_KEY_SERVER = "server";
-	public static final String PREFERENCES_KEY_SERVER_ENABLED = "serverEnabled";
-	public static final String PREFERENCES_KEY_JUKEBOX_BY_DEFAULT = "jukeboxEnabled";
 	public static final String PREFERENCES_KEY_SERVER_INSTANCE = "serverInstanceId";
-	public static final String PREFERENCES_KEY_SERVER_NAME = "serverName";
-	public static final String PREFERENCES_KEY_SERVER_URL = "serverUrl";
 	public static final String PREFERENCES_KEY_SERVERS_KEY = "serversKey";
-	public static final String PREFERENCES_KEY_ADD_SERVER = "addServer";
-	public static final String PREFERENCES_KEY_ACTIVE_SERVERS = "activeServers";
-	public static final String PREFERENCES_KEY_MUSIC_FOLDER_ID = "musicFolderId";
-	public static final String PREFERENCES_KEY_USERNAME = "username";
-	public static final String PREFERENCES_KEY_PASSWORD = "password";
-	public static final String PREFERENCES_KEY_ALLOW_SELF_SIGNED_CERTIFICATE = "allowSSCertificate";
-	public static final String PREFERENCES_KEY_LDAP_SUPPORT = "enableLdapSupport";
 	public static final String PREFERENCES_KEY_INSTALL_TIME = "installTime";
 	public static final String PREFERENCES_KEY_THEME = "theme";
 	public static final String PREFERENCES_KEY_DISPLAY_BITRATE_WITH_ARTIST = "displayBitrateWithArtist";
@@ -142,6 +130,7 @@ public final class Constants
 	public static final String PREFERENCES_KEY_FF_IMAGE_LOADER = "ff_new_image_loader";
 	public static final String PREFERENCES_KEY_USE_FIVE_STAR_RATING = "use_five_star_rating";
 	public static final String PREFERENCES_KEY_CATEGORY_NOTIFICATIONS = "notificationsCategory";
+	public static final String PREFERENCES_KEY_WELCOME_SCREEN_SHOWN = "welcomeScreenShown";
 
 	// Number of free trial days for non-licensed servers.
 	public static final int FREE_TRIAL_DAYS = 30;

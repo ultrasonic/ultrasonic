@@ -37,6 +37,7 @@ import com.handmark.pulltorefresh.library.PullToRefreshBase;
 import com.handmark.pulltorefresh.library.PullToRefreshListView;
 
 import org.moire.ultrasonic.R;
+import org.moire.ultrasonic.data.ActiveServerProvider;
 import org.moire.ultrasonic.domain.MusicDirectory;
 import org.moire.ultrasonic.domain.Share;
 import org.moire.ultrasonic.service.DownloadFile;
@@ -329,7 +330,7 @@ public class SelectAlbumActivity extends SubsonicTabActivity
 		}
 		else
 		{
-			if (!Util.isOffline(SelectAlbumActivity.this) && Util.getShouldUseId3Tags(SelectAlbumActivity.this))
+			if (!ActiveServerProvider.Companion.isOffline(SelectAlbumActivity.this) && Util.getShouldUseId3Tags(SelectAlbumActivity.this))
 			{
 				if (isAlbum)
 				{
@@ -472,14 +473,14 @@ public class SelectAlbumActivity extends SubsonicTabActivity
 
 		if (shareButton != null)
 		{
-			shareButton.setVisible(!Util.isOffline(this));
+			shareButton.setVisible(!ActiveServerProvider.Companion.isOffline(this));
 		}
 
 		MenuItem downloadMenuItem = menu.findItem(R.id.album_menu_download);
 
 		if (downloadMenuItem != null)
 		{
-			downloadMenuItem.setVisible(!Util.isOffline(this));
+			downloadMenuItem.setVisible(!ActiveServerProvider.Companion.isOffline(this));
 		}
 	}
 
@@ -1042,9 +1043,9 @@ public class SelectAlbumActivity extends SubsonicTabActivity
 		playNowButton.setVisibility(enabled ? View.VISIBLE : View.GONE);
 		playNextButton.setVisibility(enabled ? View.VISIBLE : View.GONE);
 		playLastButton.setVisibility(enabled ? View.VISIBLE : View.GONE);
-		pinButton.setVisibility((enabled && !Util.isOffline(this) && selection.size() > pinnedCount) ? View.VISIBLE : View.GONE);
+		pinButton.setVisibility((enabled && !ActiveServerProvider.Companion.isOffline(this) && selection.size() > pinnedCount) ? View.VISIBLE : View.GONE);
 		unpinButton.setVisibility(enabled && unpinEnabled ? View.VISIBLE : View.GONE);
-		downloadButton.setVisibility(enabled && !deleteEnabled && !Util.isOffline(this) ? View.VISIBLE : View.GONE);
+		downloadButton.setVisibility(enabled && !deleteEnabled && !ActiveServerProvider.Companion.isOffline(this) ? View.VISIBLE : View.GONE);
 		deleteButton.setVisibility(enabled && deleteEnabled ? View.VISIBLE : View.GONE);
 	}
 
@@ -1239,7 +1240,7 @@ public class SelectAlbumActivity extends SubsonicTabActivity
 
 			boolean isAlbumList = getIntent().hasExtra(Constants.INTENT_EXTRA_NAME_ALBUM_LIST_TYPE);
 			playAllButtonVisible = !(isAlbumList || entries.isEmpty()) && !allVideos;
-			shareButtonVisible = !Util.isOffline(SelectAlbumActivity.this) && songCount > 0;
+			shareButtonVisible = !ActiveServerProvider.Companion.isOffline(SelectAlbumActivity.this) && songCount > 0;
 
 			emptyView.setVisibility(entries.isEmpty() ? View.VISIBLE : View.GONE);
 

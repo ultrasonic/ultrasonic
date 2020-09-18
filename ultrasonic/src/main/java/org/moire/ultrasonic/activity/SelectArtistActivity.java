@@ -36,6 +36,8 @@ import com.handmark.pulltorefresh.library.PullToRefreshBase;
 import com.handmark.pulltorefresh.library.PullToRefreshBase.OnRefreshListener;
 import com.handmark.pulltorefresh.library.PullToRefreshListView;
 import org.moire.ultrasonic.R;
+import org.moire.ultrasonic.data.ActiveServerProvider;
+import org.moire.ultrasonic.data.ServerSetting;
 import org.moire.ultrasonic.domain.Artist;
 import org.moire.ultrasonic.domain.Indexes;
 import org.moire.ultrasonic.domain.MusicFolder;
@@ -50,8 +52,15 @@ import org.moire.ultrasonic.view.ArtistAdapter;
 import java.util.ArrayList;
 import java.util.List;
 
+import kotlin.Lazy;
+
+import static org.koin.android.viewmodel.compat.ViewModelCompat.viewModel;
+import static org.koin.java.KoinJavaComponent.inject;
+
 public class SelectArtistActivity extends SubsonicTabActivity implements AdapterView.OnItemClickListener
 {
+	private Lazy<ActiveServerProvider> activeServerProvider = inject(ActiveServerProvider.class);
+	private Lazy<ServerSettingsModel> serverSettingsModel = viewModel(this, ServerSettingsModel.class);
 
 	private static final int MENU_GROUP_MUSIC_FOLDER = 10;
 
@@ -91,7 +100,7 @@ public class SelectArtistActivity extends SubsonicTabActivity implements Adapter
 			folderName = (TextView) folderButton.findViewById(R.id.select_artist_folder_2);
 		}
 
-		if (!Util.isOffline(this) && !Util.getShouldUseId3Tags(this))
+		if (!ActiveServerProvider.Companion.isOffline(this) && !Util.getShouldUseId3Tags(this))
 		{
 			artistListView.addHeaderView(folderButton);
 		}
@@ -101,7 +110,7 @@ public class SelectArtistActivity extends SubsonicTabActivity implements Adapter
 		String title = getIntent().getStringExtra(Constants.INTENT_EXTRA_NAME_ALBUM_LIST_TITLE);
 		if (title == null)
 		{
-			setActionBarSubtitle(Util.isOffline(this) ? R.string.music_library_label_offline : R.string.music_library_label);
+			setActionBarSubtitle(ActiveServerProvider.Companion.isOffline(this) ? R.string.music_library_label_offline : R.string.music_library_label);
 		}
 		else
 		{
@@ -147,7 +156,7 @@ public class SelectArtistActivity extends SubsonicTabActivity implements Adapter
 				boolean refresh = getIntent().getBooleanExtra(Constants.INTENT_EXTRA_NAME_REFRESH, false);
 				MusicService musicService = MusicServiceFactory.getMusicService(SelectArtistActivity.this);
 
-				boolean isOffline = Util.isOffline(SelectArtistActivity.this);
+				boolean isOffline = ActiveServerProvider.Companion.isOffline(SelectArtistActivity.this);
 				boolean useId3Tags = Util.getShouldUseId3Tags(SelectArtistActivity.this);
 
 				if (!isOffline && !useId3Tags)
@@ -155,7 +164,7 @@ public class SelectArtistActivity extends SubsonicTabActivity implements Adapter
 					musicFolders = musicService.getMusicFolders(refresh, SelectArtistActivity.this, this);
 				}
 
-				String musicFolderId = Util.getSelectedMusicFolderId(SelectArtistActivity.this);
+				String musicFolderId = activeServerProvider.getValue().getActiveServer().getMusicFolderId();
 
 				return !isOffline && useId3Tags ? musicService.getArtists(refresh, SelectArtistActivity.this, this) : musicService.getIndexes(musicFolderId, refresh, SelectArtistActivity.this, this);
 			}
@@ -174,8 +183,8 @@ public class SelectArtistActivity extends SubsonicTabActivity implements Adapter
 				// Display selected music folder
 				if (musicFolders != null)
 				{
-					String musicFolderId = Util.getSelectedMusicFolderId(SelectArtistActivity.this);
-					if (musicFolderId == null)
+					String musicFolderId = activeServerProvider.getValue().getActiveServer().getMusicFolderId();
+					if (musicFolderId == null || musicFolderId.equals(""))
 					{
 						if (folderName != null)
 						{
@@ -240,7 +249,7 @@ public class SelectArtistActivity extends SubsonicTabActivity implements Adapter
 		}
 		else if (info.position == 1)
 		{
-			String musicFolderId = Util.getSelectedMusicFolderId(this);
+			String musicFolderId = activeServerProvider.getValue().getActiveServer().getMusicFolderId();
 			MenuItem menuItem = menu.add(MENU_GROUP_MUSIC_FOLDER, -1, 0, R.string.select_artist_all_folders);
 
 			if (musicFolderId == null)
@@ -269,7 +278,7 @@ public class SelectArtistActivity extends SubsonicTabActivity implements Adapter
 
 		if (downloadMenuItem != null)
 		{
-			downloadMenuItem.setVisible(!Util.isOffline(this));
+			downloadMenuItem.setVisible(!ActiveServerProvider.Companion.isOffline(this));
 		}
 	}
 
@@ -316,7 +325,13 @@ public class SelectArtistActivity extends SubsonicTabActivity implements Adapter
 			MusicFolder selectedFolder = menuItem.getItemId() == -1 ? null : musicFolders.get(menuItem.getItemId());
 			String musicFolderId = selectedFolder == null ? null : selectedFolder.getId();
 			String musicFolderName = selectedFolder == null ? getString(R.string.select_artist_all_folders) : selectedFolder.getName();
-			Util.setSelectedMusicFolderId(this, musicFolderId);
+
+			if (!ActiveServerProvider.Companion.isOffline(this)) {
+				ServerSetting currentSetting = activeServerProvider.getValue().getActiveServer();
+				currentSetting.setMusicFolderId(musicFolderId);
+				serverSettingsModel.getValue().updateItem(currentSetting);
+			}
+
 			folderName.setText(musicFolderName);
 			refresh();
 		}

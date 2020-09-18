@@ -51,8 +51,9 @@ import android.widget.ViewFlipper;
 
 import com.mobeta.android.dslv.DragSortListView;
 
-import org.koin.java.standalone.KoinJavaComponent;
+import org.koin.java.KoinJavaComponent;
 import org.moire.ultrasonic.R;
+import org.moire.ultrasonic.data.ActiveServerProvider;
 import org.moire.ultrasonic.domain.MusicDirectory;
 import org.moire.ultrasonic.domain.MusicDirectory.Entry;
 import org.moire.ultrasonic.domain.PlayerState;
@@ -743,7 +744,7 @@ public class DownloadActivity extends SubsonicTabActivity implements OnGestureLi
 		MenuItem bookmarkRemoveMenuItem = menu.findItem(R.id.menu_item_bookmark_delete);
 
 
-		if (Util.isOffline(this))
+		if (ActiveServerProvider.Companion.isOffline(this))
 		{
 			if (shareMenuItem != null)
 			{
@@ -870,7 +871,7 @@ public class DownloadActivity extends SubsonicTabActivity implements OnGestureLi
 				}
 			}
 
-			if (Util.isOffline(this) || !Util.getShouldUseId3Tags(this))
+			if (ActiveServerProvider.Companion.isOffline(this) || !Util.getShouldUseId3Tags(this))
 			{
 				MenuItem menuItem = menu.findItem(R.id.menu_show_artist);
 
@@ -880,7 +881,7 @@ public class DownloadActivity extends SubsonicTabActivity implements OnGestureLi
 				}
 			}
 
-			if (Util.isOffline(this))
+			if (ActiveServerProvider.Companion.isOffline(this))
 			{
 				MenuItem menuItem = menu.findItem(R.id.menu_lyrics);
 

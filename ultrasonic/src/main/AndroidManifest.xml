@@ -115,7 +115,12 @@
                 android:resource="@xml/searchable"/>
         </activity>
 
-        <activity android:name=".activity.ServerSettingsActivity" />
+        <activity
+            android:name=".activity.ServerSelectorActivity"
+            android:label="@string/server_selector.label" />
+        <activity
+            android:name=".activity.EditServerActivity"
+            android:label="@string/server_editor.label" />
 
         <service
             android:name=".service.MediaPlayerService"

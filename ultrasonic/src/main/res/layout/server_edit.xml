@@ -1,0 +1,225 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:a="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    a:layout_width="match_parent"
+    a:layout_height="match_parent"
+    a:fillViewport="true" >
+
+<androidx.constraintlayout.widget.ConstraintLayout
+    a:layout_width="match_parent"
+    a:layout_height="wrap_content">
+
+    <com.google.android.material.textfield.TextInputLayout
+        a:id="@+id/edit_server_name"
+        a:layout_width="match_parent"
+        a:layout_height="wrap_content"
+        a:hint="@string/settings.server_name"
+        app:layout_constraintBottom_toTopOf="@+id/edit_server_address"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <com.google.android.material.textfield.TextInputEditText
+            a:layout_width="match_parent"
+            a:layout_height="wrap_content"
+            a:inputType="text"
+            a:maxLines="1" />
+
+    </com.google.android.material.textfield.TextInputLayout>
+
+    <com.google.android.material.textfield.TextInputLayout
+        a:id="@+id/edit_server_address"
+        a:layout_width="match_parent"
+        a:layout_height="wrap_content"
+        a:layout_marginBottom="20dp"
+        a:hint="@string/settings.server_address"
+        app:layout_constraintBottom_toTopOf="@+id/edit_authentication_header"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/edit_server_name">
+
+        <com.google.android.material.textfield.TextInputEditText
+            a:layout_width="match_parent"
+            a:layout_height="wrap_content"
+            a:inputType="textWebEmailAddress" />
+
+    </com.google.android.material.textfield.TextInputLayout>
+
+    <TextView
+        a:id="@+id/edit_authentication_header"
+        style="@style/MenuDrawer.Widget.Category"
+        a:layout_width="wrap_content"
+        a:layout_height="wrap_content"
+        a:text="@string/server_editor.authentication"
+        app:layout_constraintBottom_toTopOf="@+id/edit_server_username"
+        app:layout_constraintStart_toStartOf="@+id/edit_server_username"
+        app:layout_constraintTop_toBottomOf="@+id/edit_server_address" />
+
+    <com.google.android.material.textfield.TextInputLayout
+        a:id="@+id/edit_server_username"
+        a:layout_width="match_parent"
+        a:layout_height="wrap_content"
+        a:hint="@string/settings.server_username"
+        app:layout_constraintBottom_toTopOf="@+id/edit_server_password"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/edit_authentication_header">
+
+        <com.google.android.material.textfield.TextInputEditText
+            a:layout_width="match_parent"
+            a:layout_height="wrap_content"
+            a:inputType="text"
+            a:maxLines="1" />
+
+    </com.google.android.material.textfield.TextInputLayout>
+
+    <com.google.android.material.textfield.TextInputLayout
+        a:id="@+id/edit_server_password"
+        a:layout_width="match_parent"
+        a:layout_height="wrap_content"
+        a:layout_marginBottom="21dp"
+        a:hint="@string/settings.server_password"
+        app:endIconMode="password_toggle"
+        app:layout_constraintBottom_toTopOf="@+id/edit_advanced_header"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/edit_server_username">
+
+        <com.google.android.material.textfield.TextInputEditText
+            a:layout_width="match_parent"
+            a:layout_height="wrap_content"
+            a:inputType="textPassword" />
+
+    </com.google.android.material.textfield.TextInputLayout>
+
+    <TextView
+        a:id="@+id/edit_advanced_header"
+        style="@style/MenuDrawer.Widget.Category"
+        a:layout_width="wrap_content"
+        a:layout_height="wrap_content"
+        a:layout_marginBottom="8dp"
+        a:text="@string/server_editor.advanced"
+        app:layout_constraintBottom_toTopOf="@+id/edit_self_signed"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/edit_server_password" />
+
+    <TextView
+        a:id="@+id/edit_self_signed_title"
+        style="@style/Widget.AppCompat.CompoundButton.Switch"
+        a:layout_width="0dp"
+        a:layout_height="wrap_content"
+        a:layout_marginStart="5dp"
+        a:layout_marginLeft="5dp"
+        a:text="@string/settings.title.allow_self_signed_certificate"
+        app:layout_constraintBottom_toTopOf="@+id/edit_ldap_title"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/edit_advanced_header" />
+
+    <com.google.android.material.switchmaterial.SwitchMaterial
+        a:id="@+id/edit_self_signed"
+        a:layout_width="0dp"
+        a:layout_height="wrap_content"
+        a:layout_marginStart="8dp"
+        a:layout_marginLeft="8dp"
+        a:layout_marginEnd="5dp"
+        a:layout_marginRight="5dp"
+        a:layout_marginBottom="8dp"
+        a:checked="false"
+        app:layout_constraintBottom_toTopOf="@+id/edit_ldap_title"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@id/edit_self_signed_title"
+        app:layout_constraintTop_toBottomOf="@+id/edit_advanced_header" />
+
+    <TextView
+        a:id="@+id/edit_ldap_title"
+        style="@style/Widget.AppCompat.CompoundButton.Switch"
+        a:layout_width="0dp"
+        a:layout_height="wrap_content"
+        a:layout_marginStart="5dp"
+        a:layout_marginLeft="5dp"
+        a:text="@string/settings.title.enable_ldap_users_support"
+        app:layout_constraintBottom_toTopOf="@+id/edit_ldap_description"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/edit_self_signed" />
+
+    <TextView
+        a:id="@+id/edit_ldap_description"
+        style="@style/TextAppearance.AppCompat.Small"
+        a:layout_width="0dp"
+        a:layout_height="wrap_content"
+        a:layout_marginStart="5dp"
+        a:layout_marginLeft="5dp"
+        a:text="@string/settings.summary.enable_ldap_users_support"
+        app:layout_constraintBottom_toTopOf="@+id/edit_jukebox"
+        app:layout_constraintEnd_toStartOf="@+id/edit_ldap"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/edit_ldap_title" />
+
+    <com.google.android.material.switchmaterial.SwitchMaterial
+        a:id="@+id/edit_ldap"
+        a:layout_width="wrap_content"
+        a:layout_height="wrap_content"
+        a:layout_marginEnd="5dp"
+        a:layout_marginRight="5dp"
+        a:layout_marginLeft="8dp"
+        a:layout_marginStart="8dp"
+        a:checked="false"
+        app:layout_constraintBottom_toBottomOf="@+id/edit_ldap_description"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@id/edit_ldap_description"
+        app:layout_constraintTop_toTopOf="@+id/edit_ldap_title" />
+
+    <TextView
+        a:id="@+id/edit_jukebox_title"
+        style="@style/Widget.AppCompat.CompoundButton.Switch"
+        a:layout_width="0dp"
+        a:layout_height="wrap_content"
+        a:layout_marginStart="5dp"
+        a:layout_marginLeft="5dp"
+        a:layout_marginTop="8dp"
+        a:text="@string/jukebox.is_default"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/edit_ldap_description" />
+
+    <com.google.android.material.switchmaterial.SwitchMaterial
+        a:id="@+id/edit_jukebox"
+        a:layout_width="0dp"
+        a:layout_height="wrap_content"
+        a:layout_marginStart="8dp"
+        a:layout_marginLeft="8dp"
+        a:layout_marginTop="8dp"
+        a:layout_marginEnd="5dp"
+        a:layout_marginRight="5dp"
+        a:checked="false"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@id/edit_jukebox_title"
+        app:layout_constraintTop_toBottomOf="@+id/edit_ldap_description" />
+
+    <Button
+        a:id="@+id/edit_test"
+        style="?attr/materialButtonOutlinedStyle"
+        a:layout_width="0dp"
+        a:layout_height="wrap_content"
+        a:layout_marginTop="8dp"
+        a:text="@string/settings.test_connection_title"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toStartOf="@+id/edit_save"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/edit_jukebox"
+        app:layout_constraintVertical_bias="1.0" />
+
+    <Button
+        a:id="@+id/edit_save"
+        style="?attr/materialButtonOutlinedStyle"
+        a:layout_width="0dp"
+        a:layout_height="wrap_content"
+        a:layout_marginTop="8dp"
+        a:text="@string/common.save"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/edit_test"
+        app:layout_constraintTop_toBottomOf="@id/edit_jukebox"
+        app:layout_constraintVertical_bias="1.0" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>
+</ScrollView>

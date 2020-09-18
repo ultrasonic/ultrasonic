@@ -1,7 +1,7 @@
 package org.moire.ultrasonic.di
 
 import okhttp3.OkHttpClient
-import org.koin.dsl.module.module
+import org.koin.dsl.module
 
 /**
  * Provides base network dependencies.

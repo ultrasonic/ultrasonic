@@ -9,9 +9,10 @@ import android.provider.SearchRecentSuggestions;
 import androidx.annotation.Nullable;
 import android.util.Log;
 import android.view.View;
-import org.koin.java.standalone.KoinJavaComponent;
+
+import org.koin.java.KoinJavaComponent;
 import org.moire.ultrasonic.R;
-import org.moire.ultrasonic.activity.ServerSettingsActivity;
+import org.moire.ultrasonic.activity.ServerSelectorActivity;
 import org.moire.ultrasonic.activity.SubsonicTabActivity;
 import org.moire.ultrasonic.featureflags.Feature;
 import org.moire.ultrasonic.featureflags.FeatureStorage;
@@ -25,7 +26,8 @@ import java.io.File;
 
 import kotlin.Lazy;
 
-import static org.koin.java.standalone.KoinJavaComponent.inject;
+import static org.koin.java.KoinJavaComponent.inject;
+import static org.moire.ultrasonic.activity.ServerSelectorActivity.SERVER_SELECTOR_MANAGE_MODE;
 
 /**
  * Shows main app settings.
@@ -63,9 +65,7 @@ public class SettingsFragment extends PreferenceFragment
     private TimeSpanPreference sharingDefaultExpiration;
     private PreferenceCategory serversCategory;
 
-    private int maxServerCount = 10;
     private SharedPreferences settings;
-    private int activeServers;
 
     private Lazy<MediaPlayerController> mediaPlayerControllerLazy = inject(MediaPlayerController.class);
 
@@ -271,77 +271,25 @@ public class SettingsFragment extends PreferenceFragment
     }
 
     private void setupServersCategory() {
-        activeServers = settings.getInt(Constants.PREFERENCES_KEY_ACTIVE_SERVERS, 0);
         final Preference addServerPreference = new Preference(getActivity());
-        addServerPreference.setKey(Constants.PREFERENCES_KEY_ADD_SERVER);
         addServerPreference.setPersistent(false);
-        addServerPreference.setTitle(getResources().getString(R.string.settings_server_add_server));
-        addServerPreference.setEnabled(activeServers < maxServerCount);
+        addServerPreference.setTitle(getResources().getString(R.string.settings_server_manage_servers));
+        addServerPreference.setEnabled(true);
 
+        // TODO new server management here
         serversCategory.removeAll();
         serversCategory.addPreference(addServerPreference);
-
-        for (int i = 1; i <= activeServers; i++) {
-            final int serverId = i;
-            Preference preference = new Preference(getActivity());
-            preference.setPersistent(false);
-            preference.setTitle(settings.getString(Constants.PREFERENCES_KEY_SERVER_NAME + serverId,
-                    getString(R.string.settings_server_name)));
-            preference.setSummary(settings.getString(Constants.PREFERENCES_KEY_SERVER_URL + serverId,
-                    getString(R.string.settings_server_address_unset)));
-            preference.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
-                @Override
-                public boolean onPreferenceClick(Preference preference) {
-                    final Intent intent = new Intent(getActivity(), ServerSettingsActivity.class);
-                    intent.putExtra(ServerSettingsActivity.ARG_SERVER_ID, serverId);
-                    startActivity(intent);
-                    return true;
-                }
-            });
-            serversCategory.addPreference(preference);
-        }
 
         addServerPreference.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
             @Override
             public boolean onPreferenceClick(Preference preference) {
-                if (activeServers == maxServerCount) {
-                    return false;
-                }
-
-                activeServers++;
-
-                settings.edit()
-                        .putInt(Constants.PREFERENCES_KEY_ACTIVE_SERVERS, activeServers)
-                        .apply();
-
-                Preference addServerPreference = findPreference(Constants.PREFERENCES_KEY_ADD_SERVER);
-
-                if (addServerPreference != null) {
-                    serversCategory.removePreference(addServerPreference);
-                }
-
-                Preference newServerPrefs = new Preference(getActivity());
-                newServerPrefs.setTitle(getString(R.string.settings_server_name));
-                newServerPrefs.setSummary(getString(R.string.settings_server_address_unset));
-                newServerPrefs.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
-                    @Override
-                    public boolean onPreferenceClick(Preference preference) {
-                        final Intent intent = new Intent(getActivity(), ServerSettingsActivity.class);
-                        intent.putExtra(ServerSettingsActivity.ARG_SERVER_ID, activeServers);
-                        startActivity(intent);
-                        return true;
-                    }
-                });
-                serversCategory.addPreference(newServerPrefs);
-
-                if (addServerPreference != null) {
-                    serversCategory.addPreference(addServerPreference);
-                    addServerPreference.setEnabled(activeServers < maxServerCount);
-                }
-
+                final Intent intent = new Intent(getActivity(), ServerSelectorActivity.class);
+                intent.putExtra(SERVER_SELECTOR_MANAGE_MODE, true);
+                startActivityForResult(intent, 0);
                 return true;
             }
         });
+
     }
 
     private void update() {

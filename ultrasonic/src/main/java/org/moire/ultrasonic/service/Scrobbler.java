@@ -3,6 +3,7 @@ package org.moire.ultrasonic.service;
 import android.content.Context;
 import android.util.Log;
 
+import org.moire.ultrasonic.data.ActiveServerProvider;
 import org.moire.ultrasonic.util.Util;
 
 /**
@@ -13,7 +14,6 @@ import org.moire.ultrasonic.util.Util;
  */
 public class Scrobbler
 {
-
 	private static final String TAG = Scrobbler.class.getSimpleName();
 
 	private String lastSubmission;
@@ -21,7 +21,7 @@ public class Scrobbler
 
 	public void scrobble(final Context context, final DownloadFile song, final boolean submission)
 	{
-		if (song == null || !Util.isScrobblingEnabled(context))
+		if (song == null || !ActiveServerProvider.Companion.isScrobblingEnabled(context))
 		{
 			return;
 		}

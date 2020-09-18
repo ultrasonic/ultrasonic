@@ -31,8 +31,9 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
-import org.koin.java.standalone.KoinJavaComponent;
+import org.koin.java.KoinJavaComponent;
 import org.moire.ultrasonic.R;
+import org.moire.ultrasonic.data.ActiveServerProvider;
 import org.moire.ultrasonic.domain.MusicDirectory.Entry;
 import org.moire.ultrasonic.featureflags.Feature;
 import org.moire.ultrasonic.featureflags.FeatureStorage;
@@ -47,7 +48,7 @@ import java.io.File;
 
 import kotlin.Lazy;
 
-import static org.koin.java.standalone.KoinJavaComponent.inject;
+import static org.koin.java.KoinJavaComponent.inject;
 
 /**
  * Used to display songs in a {@code ListView}.
@@ -73,8 +74,6 @@ public class SongView extends UpdateView implements Checkable
 	private ImageType previousLeftImageType;
 	private ImageType previousRightImageType;
 	private ImageType leftImageType;
-	private ImageType rightImageType;
-	private Drawable rightImage;
 	private DownloadFile downloadFile;
 	private boolean playing;
 	private EntryAdapter.SongViewHolder viewHolder;
@@ -134,20 +133,20 @@ public class SongView extends UpdateView implements Checkable
 	{
 		inflater.inflate(song.isVideo() ? R.layout.video_list_item : R.layout.song_list_item, this, true);
 		viewHolder = new EntryAdapter.SongViewHolder();
-		viewHolder.check = (CheckedTextView) findViewById(R.id.song_check);
-		viewHolder.rating = (LinearLayout) findViewById(R.id.song_rating);
-		viewHolder.fiveStar1 = (ImageView) findViewById(R.id.song_five_star_1);
-		viewHolder.fiveStar2 = (ImageView) findViewById(R.id.song_five_star_2);
-		viewHolder.fiveStar3 = (ImageView) findViewById(R.id.song_five_star_3);
-		viewHolder.fiveStar4 = (ImageView) findViewById(R.id.song_five_star_4);
-		viewHolder.fiveStar5 = (ImageView) findViewById(R.id.song_five_star_5);
-		viewHolder.star = (ImageView) findViewById(R.id.song_star);
-		viewHolder.drag = (ImageView) findViewById(R.id.song_drag);
-		viewHolder.track = (TextView) findViewById(R.id.song_track);
-		viewHolder.title = (TextView) findViewById(R.id.song_title);
-		viewHolder.artist = (TextView) findViewById(R.id.song_artist);
-		viewHolder.duration = (TextView) findViewById(R.id.song_duration);
-		viewHolder.status = (TextView) findViewById(R.id.song_status);
+		viewHolder.check = findViewById(R.id.song_check);
+		viewHolder.rating = findViewById(R.id.song_rating);
+		viewHolder.fiveStar1 = findViewById(R.id.song_five_star_1);
+		viewHolder.fiveStar2 = findViewById(R.id.song_five_star_2);
+		viewHolder.fiveStar3 = findViewById(R.id.song_five_star_3);
+		viewHolder.fiveStar4 = findViewById(R.id.song_five_star_4);
+		viewHolder.fiveStar5 = findViewById(R.id.song_five_star_5);
+		viewHolder.star = findViewById(R.id.song_star);
+		viewHolder.drag = findViewById(R.id.song_drag);
+		viewHolder.track = findViewById(R.id.song_track);
+		viewHolder.title = findViewById(R.id.song_title);
+		viewHolder.artist = findViewById(R.id.song_artist);
+		viewHolder.duration = findViewById(R.id.song_duration);
+		viewHolder.status = findViewById(R.id.song_status);
 		setTag(viewHolder);
 	}
 
@@ -248,7 +247,7 @@ public class SongView extends UpdateView implements Checkable
 			viewHolder.drag.setVisibility(draggable ? View.VISIBLE : View.GONE);
 		}
 
-		if (Util.isOffline(this.context))
+		if (ActiveServerProvider.Companion.isOffline(this.context))
 		{
 			viewHolder.star.setVisibility(View.GONE);
 			viewHolder.rating.setVisibility(View.GONE);
@@ -338,6 +337,8 @@ public class SongView extends UpdateView implements Checkable
 			this.leftImage = null;
 		}
 
+		ImageType rightImageType;
+		Drawable rightImage;
 		if (downloadFile.isDownloading() && !downloadFile.isDownloadCancelled() && partialFile.exists())
 		{
 			if (this.viewHolder.status != null)
@@ -345,13 +346,13 @@ public class SongView extends UpdateView implements Checkable
 				this.viewHolder.status.setText(Util.formatLocalizedBytes(partialFile.length(), this.context));
 			}
 
-			this.rightImageType = ImageType.downloading;
-			this.rightImage = downloadingImage;
+			rightImageType = ImageType.downloading;
+			rightImage = downloadingImage;
 		}
 		else
 		{
-			this.rightImageType = ImageType.none;
-			this.rightImage = null;
+			rightImageType = ImageType.none;
+			rightImage = null;
 
 			if (this.viewHolder.status != null)
 			{

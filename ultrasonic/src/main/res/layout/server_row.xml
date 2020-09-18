@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:a="http://schemas.android.com/apk/res/android"
+    a:id="@+id/server_layout"
+    a:layout_width="match_parent"
+    a:layout_height="wrap_content"
+    a:descendantFocusability="blocksDescendants"
+    a:orientation="horizontal">
+
+    <ImageView
+        a:id="@+id/server_image"
+        a:layout_width="wrap_content"
+        a:layout_height="match_parent"
+        a:background="@android:color/transparent"
+        a:focusable="false"
+        a:layout_centerVertical="true"
+        a:paddingHorizontal="15dp" />
+
+    <TextView
+        a:id="@+id/server_name"
+        a:layout_width="wrap_content"
+        a:layout_height="wrap_content"
+        a:textAppearance="?android:attr/textAppearanceListItem"
+        a:paddingTop="10dp"
+        a:layout_toRightOf="@id/server_image"
+        a:layout_toEndOf="@id/server_image" />
+
+    <TextView
+        a:id="@+id/server_description"
+        a:layout_width="wrap_content"
+        a:layout_height="wrap_content"
+        a:textAppearance="?android:attr/textAppearanceSmall"
+        a:layout_below="@id/server_name"
+        a:paddingBottom="10dp"
+        a:layout_toRightOf="@id/server_image"
+        a:layout_toEndOf="@id/server_image" />
+
+    <ImageButton
+        a:id="@+id/server_menu"
+        a:layout_width="wrap_content"
+        a:layout_height="match_parent"
+        a:layout_alignParentEnd="true"
+        a:layout_alignParentRight="true"
+        a:layout_centerVertical="true"
+        a:layout_gravity="end"
+        a:layout_marginEnd="15dp"
+        a:layout_marginRight="15dp"
+        a:focusable="false"
+        a:src="?attr/more_vert"
+        a:padding="5dp" />
+
+</RelativeLayout>

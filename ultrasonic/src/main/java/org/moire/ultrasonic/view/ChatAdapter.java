@@ -10,6 +10,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import org.moire.ultrasonic.R;
 import org.moire.ultrasonic.activity.SubsonicTabActivity;
+import org.moire.ultrasonic.data.ActiveServerProvider;
 import org.moire.ultrasonic.domain.ChatMessage;
 import org.moire.ultrasonic.util.ImageLoader;
 import org.moire.ultrasonic.util.Util;
@@ -19,6 +20,10 @@ import java.util.Date;
 import java.util.List;
 import java.util.regex.Pattern;
 
+import kotlin.Lazy;
+
+import static org.koin.java.KoinJavaComponent.inject;
+
 public class ChatAdapter extends ArrayAdapter<ChatMessage>
 {
 	private final SubsonicTabActivity activity;
@@ -26,6 +31,8 @@ public class ChatAdapter extends ArrayAdapter<ChatMessage>
 
 	private static final String phoneRegex = "1?\\W*([2-9][0-8][0-9])\\W*([2-9][0-9]{2})\\W*([0-9]{4})";
 	private static final Pattern phoneMatcher = Pattern.compile(phoneRegex);
+
+	private Lazy<ActiveServerProvider> activeServerProvider = inject(ActiveServerProvider.class);
 
 	public ChatAdapter(SubsonicTabActivity activity, List<ChatMessage> messages)
 	{
@@ -62,7 +69,7 @@ public class ChatAdapter extends ArrayAdapter<ChatMessage>
 		Date messageTime = new java.util.Date(message.getTime());
 		String messageText = message.getMessage();
 
-		String me = Util.getUserName(activity, Util.getActiveServer(activity));
+		String me = activeServerProvider.getValue().getActiveServer().getUserName();
 
 		layout = messageUser.equals(me) ? R.layout.chat_item_reverse : R.layout.chat_item;
 

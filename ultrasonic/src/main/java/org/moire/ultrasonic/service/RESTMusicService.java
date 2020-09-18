@@ -63,6 +63,7 @@ import org.moire.ultrasonic.api.subsonic.response.SubsonicResponse;
 import org.moire.ultrasonic.api.subsonic.response.VideosResponse;
 import org.moire.ultrasonic.cache.PermanentFileStorage;
 import org.moire.ultrasonic.cache.serializers.DomainSerializers;
+import org.moire.ultrasonic.data.ActiveServerProvider;
 import org.moire.ultrasonic.domain.APIAlbumConverter;
 import org.moire.ultrasonic.domain.APIArtistConverter;
 import org.moire.ultrasonic.domain.APIBookmarkConverter;
@@ -109,14 +110,19 @@ import java.util.List;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.TimeUnit;
 
+import kotlin.Lazy;
 import kotlin.Pair;
 import retrofit2.Response;
+
+import static org.koin.java.KoinJavaComponent.inject;
 
 /**
  * @author Sindre Mehus
  */
 public class RESTMusicService implements MusicService {
     private static final String TAG = RESTMusicService.class.getSimpleName();
+
+    private Lazy<ActiveServerProvider> activeServerProvider = inject(ActiveServerProvider.class);
 
     private static final String MUSIC_FOLDER_STORAGE_NAME = "music_folder";
     private static final String INDEXES_STORAGE_NAME = "indexes";
@@ -306,7 +312,7 @@ public class RESTMusicService implements MusicService {
                                Context context,
                                ProgressListener progressListener) throws Exception {
         try {
-            return !Util.isOffline(context) &&
+            return !ActiveServerProvider.Companion.isOffline(context) &&
                     Util.getShouldUseId3Tags(context) ?
                     search3(criteria, context, progressListener) :
                     search2(criteria, context, progressListener);
@@ -388,7 +394,7 @@ public class RESTMusicService implements MusicService {
     private void savePlaylist(String name,
                               Context context,
                               MusicDirectory playlist) throws IOException {
-        File playlistFile = FileUtil.getPlaylistFile(context, Util.getServerName(context), name);
+        File playlistFile = FileUtil.getPlaylistFile(context, activeServerProvider.getValue().getActiveServer().getName(), name);
         FileWriter fw = new FileWriter(playlistFile);
         BufferedWriter bw = new BufferedWriter(fw);
         try {
@@ -629,7 +635,7 @@ public class RESTMusicService implements MusicService {
         synchronized (entry) {
             // Use cached file, if existing.
             Bitmap bitmap = FileUtil.getAlbumArtBitmap(context, entry, size, highQuality);
-            boolean serverScaling = Util.isServerScalingEnabled(context);
+            boolean serverScaling = ActiveServerProvider.Companion.isServerScalingEnabled(context);
 
             if (bitmap == null) {
                 Log.d(TAG, "Loading cover art for: " + entry);

@@ -101,7 +101,7 @@
     <string name="main.songs_starred">Csillaggal megjelölt</string>
     <string name="main.songs_title">Dalok</string>
     <string name="main.videos">Videók</string>
-    <string name="main.welcome_text">Üdvözli az UltraSonic! Az alkalmazás még nincs beállítva. Miután konfigurálta saját kiszolgálóját (elérhető: <b>subsonic.org</b>), húzza balról jobbra az oldalsávot, lépjen be a <b>Beállítások</b> menüpontba, és adja meg csatlakozási adatokat!</string>
+    <string name="main.welcome_text_new">Üdvözli az UltraSonic! Az alkalmazás még nincs beállítva. Miután konfigurálta saját kiszolgálóját (elérhető: <b>subsonic.org</b>), húzza balról jobbra az oldalsávot, lépjen be a <b>Beállítások</b> menüpontba, és adja meg csatlakozási adatokat!</string>
     <string name="main.welcome_title">Üdvözlet!</string>
     <string name="menu.about">Névjegy</string>
     <string name="menu.common">Általános</string>
@@ -277,7 +277,7 @@
     <string name="settings.send_bluetooth_album_art">Albumborító Bluetooth-on</string>
     <string name="settings.send_bluetooth_notification_summary">Lejátszási értesítések küldése Bluetooth-on.</string>
     <string name="settings.send_bluetooth_notification">Bluetooth értesítések küldése</string>
-    <string name="settings.server_add_server">Kiszolgáló hozzáadása</string>
+    <string name="settings.server_manage_servers">Kiszolgálók kezelése</string>
     <string name="settings.server_address">Kiszolgáló címe</string>
     <string name="settings.server_name">Név</string>
     <string name="settings.server_password">Jelszó</string>
@@ -419,6 +419,19 @@
     <string name="filepicker.select">Választ</string>
     <string name="filepicker.default">Alapért.</string>
     <string name="filepicker.available_drives">Elérhető tárolók:</string>
+
+    <string name="server_selector.label">Beállított szerverek</string>
+    <string name="server_selector.delete_confirmation">Biztosan törölni szeretnéd a szervert?</string>
+    <string name="server_editor.label">Szerver szerkesztése</string>
+    <string name="server_editor.new_label">Szerver létrehozása</string>
+    <string name="server_editor.leave_confirmation">Biztosan visszalépsz és elveszíted a változtatásokat?</string>
+    <string name="server_editor.required">Kötelező mező</string>
+    <string name="server_menu.edit">Szerkeszt</string>
+    <string name="server_menu.delete">Töröl</string>
+    <string name="server_menu.move_up">Feljebb mozgat</string>
+    <string name="server_menu.move_down">Lejjebb mozgat</string>
+    <string name="server_editor.authentication">Bejelentkezés</string>
+    <string name="server_editor.advanced">Haladó beállítások</string>
 
     <plurals name="select_album_n_songs">
         <item quantity="one">1 dal</item>

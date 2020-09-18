@@ -31,6 +31,7 @@ import com.handmark.pulltorefresh.library.PullToRefreshBase;
 import com.handmark.pulltorefresh.library.PullToRefreshBase.OnRefreshListener;
 import com.handmark.pulltorefresh.library.PullToRefreshListView;
 import org.moire.ultrasonic.R;
+import org.moire.ultrasonic.data.ActiveServerProvider;
 import org.moire.ultrasonic.domain.MusicDirectory;
 import org.moire.ultrasonic.domain.MusicDirectory.Entry;
 import org.moire.ultrasonic.service.DownloadFile;
@@ -326,9 +327,9 @@ public class BookmarkActivity extends SubsonicTabActivity
 		}
 
 		playNowButton.setVisibility(enabled && deleteEnabled ? View.VISIBLE : View.GONE);
-		pinButton.setVisibility((enabled && !Util.isOffline(this) && selection.size() > pinnedCount) ? View.VISIBLE : View.GONE);
+		pinButton.setVisibility((enabled && !ActiveServerProvider.Companion.isOffline(this) && selection.size() > pinnedCount) ? View.VISIBLE : View.GONE);
 		unpinButton.setVisibility(enabled && unpinEnabled ? View.VISIBLE : View.GONE);
-		downloadButton.setVisibility(enabled && !deleteEnabled && !Util.isOffline(this) ? View.VISIBLE : View.GONE);
+		downloadButton.setVisibility(enabled && !deleteEnabled && !ActiveServerProvider.Companion.isOffline(this) ? View.VISIBLE : View.GONE);
 		deleteButton.setVisibility(enabled && deleteEnabled ? View.VISIBLE : View.GONE);
 	}
 

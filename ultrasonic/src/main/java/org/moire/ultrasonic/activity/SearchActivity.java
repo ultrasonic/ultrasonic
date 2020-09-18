@@ -32,6 +32,7 @@ import android.widget.ListView;
 import android.widget.TextView;
 
 import org.moire.ultrasonic.R;
+import org.moire.ultrasonic.data.ActiveServerProvider;
 import org.moire.ultrasonic.domain.Artist;
 import org.moire.ultrasonic.domain.MusicDirectory;
 import org.moire.ultrasonic.domain.MusicDirectory.Entry;
@@ -214,10 +215,10 @@ public class SearchActivity extends SubsonicTabActivity
 
 		if (downloadMenuItem != null)
 		{
-			downloadMenuItem.setVisible(!Util.isOffline(this));
+			downloadMenuItem.setVisible(!ActiveServerProvider.Companion.isOffline(this));
 		}
 
-		if (Util.isOffline(this) || isArtist)
+		if (ActiveServerProvider.Companion.isOffline(this) || isArtist)
 		{
 			if (shareButton != null)
 			{

@@ -30,6 +30,7 @@ import android.widget.Toast;
 import org.jetbrains.annotations.NotNull;
 import org.moire.ultrasonic.R;
 import org.moire.ultrasonic.api.subsonic.ApiNotSupportedException;
+import org.moire.ultrasonic.data.ActiveServerProvider;
 import org.moire.ultrasonic.domain.JukeboxStatus;
 import org.moire.ultrasonic.domain.PlayerState;
 import org.moire.ultrasonic.util.Util;
@@ -47,7 +48,7 @@ import java.util.concurrent.atomic.AtomicLong;
 
 import kotlin.Lazy;
 
-import static org.koin.java.standalone.KoinJavaComponent.inject;
+import static org.koin.java.KoinJavaComponent.inject;
 
 /**
  * Provides an asynchronous interface to the remote jukebox on the Subsonic server.
@@ -158,7 +159,7 @@ public class JukeboxMediaPlayer
 
 			try
 			{
-				if (!Util.isOffline(context))
+				if (!ActiveServerProvider.Companion.isOffline(context))
 				{
 					task = tasks.take();
 					JukeboxStatus status = task.execute();

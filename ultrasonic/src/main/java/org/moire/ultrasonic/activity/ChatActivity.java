@@ -18,7 +18,9 @@ import com.handmark.pulltorefresh.library.PullToRefreshBase.Mode;
 import com.handmark.pulltorefresh.library.PullToRefreshBase.OnRefreshListener;
 import com.handmark.pulltorefresh.library.PullToRefreshListView;
 import org.moire.ultrasonic.R;
+import org.moire.ultrasonic.data.ActiveServerProvider;
 import org.moire.ultrasonic.domain.ChatMessage;
+import org.moire.ultrasonic.service.JukeboxMediaPlayer;
 import org.moire.ultrasonic.service.MusicService;
 import org.moire.ultrasonic.service.MusicServiceFactory;
 import org.moire.ultrasonic.util.BackgroundTask;
@@ -32,6 +34,10 @@ import java.util.List;
 import java.util.Timer;
 import java.util.TimerTask;
 
+import kotlin.Lazy;
+
+import static org.koin.java.KoinJavaComponent.inject;
+
 /**
  * @author Joshua Bahnsen
  */
@@ -44,6 +50,7 @@ public final class ChatActivity extends SubsonicTabActivity
 	private Timer timer;
 	private volatile static Long lastChatMessageTime = (long) 0;
 	private volatile static ArrayList<ChatMessage> messageList = new ArrayList<ChatMessage>();
+	private Lazy<ActiveServerProvider> activeServerProvider = inject(ActiveServerProvider.class);
 
 	@Override
 	protected void onCreate(Bundle bundle)
@@ -71,8 +78,8 @@ public final class ChatActivity extends SubsonicTabActivity
 		chatListView.setTranscriptMode(ListView.TRANSCRIPT_MODE_ALWAYS_SCROLL);
 		chatListView.setStackFromBottom(true);
 
-		String serverName = Util.getServerName(this, Util.getActiveServer(this));
-		String userName = Util.getUserName(this, Util.getActiveServer(this));
+		String serverName = activeServerProvider.getValue().getActiveServer().getName();
+		String userName = activeServerProvider.getValue().getActiveServer().getUserName();
 		String title = String.format("%s [%s@%s]", getResources().getString(R.string.button_bar_chat), userName, serverName);
 
 		setActionBarSubtitle(title);

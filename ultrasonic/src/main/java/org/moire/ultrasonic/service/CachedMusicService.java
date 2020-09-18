@@ -21,6 +21,7 @@ package org.moire.ultrasonic.service;
 import android.content.Context;
 import android.graphics.Bitmap;
 
+import org.moire.ultrasonic.data.ActiveServerProvider;
 import org.moire.ultrasonic.domain.Bookmark;
 import org.moire.ultrasonic.domain.ChatMessage;
 import org.moire.ultrasonic.domain.Genre;
@@ -48,13 +49,17 @@ import java.util.Comparator;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 
+import kotlin.Lazy;
 import kotlin.Pair;
+
+import static org.koin.java.KoinJavaComponent.inject;
 
 /**
  * @author Sindre Mehus
  */
 public class CachedMusicService implements MusicService
 {
+	private Lazy<ActiveServerProvider> activeServerProvider = inject(ActiveServerProvider.class);
 
 	private static final int MUSIC_DIR_CACHE_SIZE = 100;
 
@@ -365,7 +370,7 @@ public class CachedMusicService implements MusicService
 
 	private void checkSettingsChanged(Context context)
 	{
-		String newUrl = Util.getRestUrl(context, null);
+		String newUrl = activeServerProvider.getValue().getRestUrl(null);
 		if (!Util.equals(newUrl, restUrl))
 		{
 			cachedMusicFolders.clear();
