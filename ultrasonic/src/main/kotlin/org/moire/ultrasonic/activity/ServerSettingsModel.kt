@@ -9,6 +9,7 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.runBlocking
 import org.moire.ultrasonic.R
 import org.moire.ultrasonic.data.ActiveServerProvider
 import org.moire.ultrasonic.data.ServerSetting
@@ -39,12 +40,13 @@ class ServerSettingsModel(
     }
 
     /**
-     * Retrieves the list of the configured servers from the database.
-     * This function will also try to convert existing settings from the Preferences
-     * This function is asynchronous, uses LiveData to provide the Setting.
+     * This function will try and convert settings from the Preferences to the Database
+     * @return True, if the migration was executed, False otherwise
      */
-    fun getServerList(): LiveData<List<ServerSetting>> {
-        viewModelScope.launch {
+    fun migrateFromPreferences(): Boolean {
+        var migrated = true
+
+        runBlocking {
             val dbServerList = repository.loadAllServerSettings().toMutableList()
 
             if (dbServerList.isEmpty()) {
@@ -55,15 +57,32 @@ class ServerSettingsModel(
                 if (serverNum != 0) {
                     for (x in 1 until serverNum + 1) {
                         val newServerSetting = loadServerSettingFromPreferences(x, settings)
-                        dbServerList.add(newServerSetting)
-                        repository.insert(newServerSetting)
-                        Log.i(
-                            TAG,
-                            "Imported server from Preferences to Database: ${newServerSetting.name}"
-                        )
+                        if (newServerSetting != null) {
+                            dbServerList.add(newServerSetting)
+                            repository.insert(newServerSetting)
+                            Log.i(
+                                TAG,
+                                "Imported server from Preferences to Database:" +
+                                    " ${newServerSetting.name}"
+                            )
+                        }
                     }
+                } else {
+                    migrated = false
                 }
             }
+        }
+
+        return migrated
+    }
+
+    /**
+     * Retrieves the list of the configured servers from the database.
+     * This function is asynchronous, uses LiveData to provide the Setting.
+     */
+    fun getServerList(): LiveData<List<ServerSetting>> {
+        viewModelScope.launch {
+            val dbServerList = repository.loadAllServerSettings().toMutableList()
 
             dbServerList.add(0, ServerSetting(context.getString(R.string.main_offline), ""))
             serverList.value = dbServerList
@@ -186,13 +205,18 @@ class ServerSettingsModel(
     private fun loadServerSettingFromPreferences(
         id: Int,
         settings: SharedPreferences
-    ): ServerSetting {
+    ): ServerSetting? {
+        val url = settings.getString(PREFERENCES_KEY_SERVER_URL + id, "")
+        val userName = settings.getString(PREFERENCES_KEY_USERNAME + id, "")
+
+        if (url.isNullOrEmpty() || userName.isNullOrEmpty()) return null
+
         return ServerSetting(
             id,
             id,
             settings.getString(PREFERENCES_KEY_SERVER_NAME + id, "")!!,
-            settings.getString(PREFERENCES_KEY_SERVER_URL + id, "")!!,
-            settings.getString(PREFERENCES_KEY_USERNAME + id, "")!!,
+            url,
+            userName,
             settings.getString(PREFERENCES_KEY_PASSWORD + id, "")!!,
             settings.getBoolean(PREFERENCES_KEY_JUKEBOX_BY_DEFAULT + id, false),
             settings.getBoolean(PREFERENCES_KEY_ALLOW_SELF_SIGNED_CERTIFICATE + id, false),

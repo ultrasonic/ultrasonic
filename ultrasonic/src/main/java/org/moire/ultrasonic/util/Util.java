@@ -1437,13 +1437,13 @@ public class Util
 		return typedValue.resourceId;
 	}
 
-	public static boolean shouldShowWelcomeScreen(Context context)
+	public static boolean isFirstRun(Context context)
 	{
 		SharedPreferences preferences = getPreferences(context);
-		boolean shown = preferences.getBoolean(Constants.PREFERENCES_KEY_WELCOME_SCREEN_SHOWN, false);
-		if (shown) return false;
+		boolean firstExecuted = preferences.getBoolean(Constants.PREFERENCES_KEY_FIRST_RUN_EXECUTED, false);
+		if (firstExecuted) return false;
 		SharedPreferences.Editor editor = preferences.edit();
-		editor.putBoolean(Constants.PREFERENCES_KEY_WELCOME_SCREEN_SHOWN, true);
+		editor.putBoolean(Constants.PREFERENCES_KEY_FIRST_RUN_EXECUTED, true);
 		editor.apply();
 		return true;
 	}

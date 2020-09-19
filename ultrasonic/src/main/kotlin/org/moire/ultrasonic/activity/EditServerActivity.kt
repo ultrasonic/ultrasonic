@@ -97,8 +97,8 @@ internal class EditServerActivity : AppCompatActivity() {
         } else {
             // Creating a new server
             setTitle(R.string.server_editor_new_label)
+            currentServerSetting = ServerSetting()
             saveButton!!.setOnClickListener {
-                currentServerSetting = ServerSetting()
                 if (getFields()) {
                     serverSettingsModel.saveNewItem(currentServerSetting)
                     finish()
@@ -115,25 +115,14 @@ internal class EditServerActivity : AppCompatActivity() {
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         if (item.itemId == android.R.id.home) {
-            if (areFieldsChanged()) {
-                AlertDialog.Builder(this)
-                    .setIcon(android.R.drawable.ic_dialog_alert)
-                    .setTitle(R.string.common_confirm)
-                    .setMessage(R.string.server_editor_leave_confirmation)
-                    .setPositiveButton(R.string.common_ok) { dialog, _ ->
-                        dialog.dismiss()
-                        finish()
-                    }
-                    .setNegativeButton(R.string.common_cancel) { dialog, _ ->
-                        dialog.dismiss()
-                    }
-                    .show()
-            } else {
-                finish()
-            }
+            finishActivity()
             return true
         }
         return super.onOptionsItemSelected(item)
+    }
+
+    override fun onBackPressed() {
+        finishActivity()
     }
 
     private fun applyTheme() {
@@ -232,7 +221,7 @@ internal class EditServerActivity : AppCompatActivity() {
     private fun areFieldsChanged(): Boolean {
         if (currentServerSetting == null) {
             return !serverNameEditText!!.editText?.text!!.isBlank() ||
-                !serverAddressEditText!!.editText?.text!!.isBlank() ||
+                serverAddressEditText!!.editText?.text.toString() != "http://" ||
                 !userNameEditText!!.editText?.text!!.isBlank() ||
                 !passwordEditText!!.editText?.text!!.isBlank()
         }
@@ -322,6 +311,28 @@ internal class EditServerActivity : AppCompatActivity() {
             throw SubsonicRESTException(response.body()!!.error!!)
         } else {
             throw IOException("Failed to perform request: " + response.code())
+        }
+    }
+
+    /**
+     * Finishes the Activity, after confirmation from the user if needed
+     */
+    private fun finishActivity() {
+        if (areFieldsChanged()) {
+            AlertDialog.Builder(this)
+                .setIcon(android.R.drawable.ic_dialog_alert)
+                .setTitle(R.string.common_confirm)
+                .setMessage(R.string.server_editor_leave_confirmation)
+                .setPositiveButton(R.string.common_ok) { dialog, _ ->
+                    dialog.dismiss()
+                    finish()
+                }
+                .setNegativeButton(R.string.common_cancel) { dialog, _ ->
+                    dialog.dismiss()
+                }
+                .show()
+        } else {
+            finish()
         }
     }
 }

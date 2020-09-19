@@ -41,6 +41,7 @@
         <com.google.android.material.textfield.TextInputEditText
             a:layout_width="match_parent"
             a:layout_height="wrap_content"
+            a:text="http://"
             a:inputType="textWebEmailAddress" />
 
     </com.google.android.material.textfield.TextInputLayout>

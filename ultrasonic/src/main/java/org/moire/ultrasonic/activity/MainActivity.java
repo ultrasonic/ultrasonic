@@ -69,6 +69,14 @@ public class MainActivity extends SubsonicTabActivity
 	{
 		super.onCreate(savedInstanceState);
 
+		// Determine first run and migrate server settings to DB as early as possible
+		boolean showWelcomeScreen = Util.isFirstRun(this);
+		if (showWelcomeScreen)
+		{
+			// If settings were migrated, do not show welcome screen
+			showWelcomeScreen = !serverSettingsModel.getValue().migrateFromPreferences();
+		}
+
 		if (getIntent().hasExtra(Constants.INTENT_EXTRA_NAME_EXIT))
 		{
 			setResult(Constants.RESULT_CLOSE_ALL);
@@ -230,10 +238,7 @@ public class MainActivity extends SubsonicTabActivity
 		// Remember the current theme.
 		theme = Util.getTheme(this);
 
-		boolean shouldShowDialog = Util.shouldShowWelcomeScreen(this);
-		// This will convert the server settings from the Preferences to the DB
-		if (shouldShowDialog) serverSettingsModel.getValue().getServerList();
-		showInfoDialog(shouldShowDialog);
+		showInfoDialog(showWelcomeScreen);
 	}
 
 	private void loadSettings()
