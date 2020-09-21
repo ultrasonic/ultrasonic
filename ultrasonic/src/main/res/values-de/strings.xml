@@ -467,5 +467,6 @@
          anstatt einfach Elemente zu markieren / zu entfernen.
     </string>
     <string name="feature_flags_category_title">Funktionseinstellungem</string>
+    <string name="menu_refresh">Aktualisierung</string>
 
 </resources>

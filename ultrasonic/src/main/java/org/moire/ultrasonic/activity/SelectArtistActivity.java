@@ -32,9 +32,8 @@ import android.widget.AdapterView;
 import android.widget.ListView;
 import android.widget.TextView;
 
-import com.handmark.pulltorefresh.library.PullToRefreshBase;
-import com.handmark.pulltorefresh.library.PullToRefreshBase.OnRefreshListener;
-import com.handmark.pulltorefresh.library.PullToRefreshListView;
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
+
 import org.moire.ultrasonic.R;
 import org.moire.ultrasonic.domain.Artist;
 import org.moire.ultrasonic.domain.Indexes;
@@ -55,7 +54,7 @@ public class SelectArtistActivity extends SubsonicTabActivity implements Adapter
 
 	private static final int MENU_GROUP_MUSIC_FOLDER = 10;
 
-	private PullToRefreshListView refreshArtistListView;
+	private SwipeRefreshLayout refreshArtistListView;
 	private ListView artistListView;
 	private View folderButton;
 	private TextView folderName;
@@ -70,13 +69,13 @@ public class SelectArtistActivity extends SubsonicTabActivity implements Adapter
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.select_artist);
 
-		refreshArtistListView = (PullToRefreshListView) findViewById(R.id.select_artist_list);
-		artistListView = refreshArtistListView.getRefreshableView();
+		refreshArtistListView = findViewById(R.id.select_artist_refresh);
+		artistListView = findViewById(R.id.select_artist_list);
 
-		refreshArtistListView.setOnRefreshListener(new OnRefreshListener<ListView>()
+		refreshArtistListView.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener()
 		{
 			@Override
-			public void onRefresh(PullToRefreshBase<ListView> refreshView)
+			public void onRefresh()
 			{
 				new GetDataTask().executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
 			}
@@ -347,7 +346,6 @@ public class SelectArtistActivity extends SubsonicTabActivity implements Adapter
 		@Override
 		protected void onPostExecute(String[] result)
 		{
-			refreshArtistListView.onRefreshComplete();
 			super.onPostExecute(result);
 		}
 

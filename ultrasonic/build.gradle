@@ -56,7 +56,6 @@ tasks.withType(Test) {
 
 dependencies {
     implementation project(':core:menudrawer')
-    implementation project(':core:pulltorefresh')
     implementation project(':core:library')
     implementation project(':core:domain')
     implementation project(':core:subsonic-api')

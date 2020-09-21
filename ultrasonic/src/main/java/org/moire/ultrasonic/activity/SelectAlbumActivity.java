@@ -27,14 +27,12 @@ import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.AbsListView;
 import android.widget.AdapterView;
 import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
 
-import com.handmark.pulltorefresh.library.PullToRefreshBase;
-import com.handmark.pulltorefresh.library.PullToRefreshListView;
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import org.moire.ultrasonic.R;
 import org.moire.ultrasonic.domain.MusicDirectory;
@@ -60,13 +58,11 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Random;
 
-import static com.handmark.pulltorefresh.library.PullToRefreshBase.OnRefreshListener;
-
 public class SelectAlbumActivity extends SubsonicTabActivity
 {
 
 	public static final String allSongsId = "-1";
-	private PullToRefreshListView refreshAlbumListView;
+	private SwipeRefreshLayout refreshAlbumListView;
 	private ListView albumListView;
 	private View header;
 	private View albumButtons;
@@ -91,47 +87,20 @@ public class SelectAlbumActivity extends SubsonicTabActivity
 	 * Called when the activity is first created.
 	 */
 	@Override
-	public void onCreate(Bundle savedInstanceState)
-	{
+	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.select_album);
 
 		albumButtons = findViewById(R.id.menu_album);
 
-		refreshAlbumListView = (PullToRefreshListView) findViewById(R.id.select_album_entries);
-		albumListView = refreshAlbumListView.getRefreshableView();
+		refreshAlbumListView = findViewById(R.id.select_album_entries_refresh);
+		albumListView = findViewById(R.id.select_album_entries_list);
 
-		refreshAlbumListView.setOnRefreshListener(new OnRefreshListener<ListView>()
+		refreshAlbumListView.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener()
 		{
 			@Override
-			public void onRefresh(PullToRefreshBase<ListView> refreshView)
-			{
+			public void onRefresh() {
 				new GetDataTask().executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
-			}
-		});
-
-		refreshAlbumListView.setOnScrollListener(new AbsListView.OnScrollListener() {
-			@Override
-			public void onScrollStateChanged(AbsListView view, int scrollState) {
-				for (int i=0;i<albumListView.getChildCount();i++) {
-					Object child = albumListView.getChildAt(i);
-					if (child instanceof AlbumView) {
-						AlbumView albumView = (AlbumView) child;
-						if (albumView.isMaximized()) {
-							albumView.maximizeOrMinimize();
-						}
-					}
-					if (child instanceof SongView) {
-						SongView songView = (SongView) child;
-                        if (songView.isMaximized()) {
-                            songView.maximizeOrMinimize();
-                        }
-					}
-				}
-			}
-
-			@Override
-			public void onScroll(AbsListView view, int firstVisibleItem, int visibleItemCount, int totalItemCount) {
 			}
 		});
 
@@ -1319,7 +1288,6 @@ public class SelectAlbumActivity extends SubsonicTabActivity
 		@Override
 		protected void onPostExecute(String[] result)
 		{
-			refreshAlbumListView.onRefreshComplete();
 			super.onPostExecute(result);
 		}
 

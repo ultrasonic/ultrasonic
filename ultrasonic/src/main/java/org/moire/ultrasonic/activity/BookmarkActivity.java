@@ -27,9 +27,8 @@ import android.widget.AdapterView;
 import android.widget.ImageView;
 import android.widget.ListView;
 
-import com.handmark.pulltorefresh.library.PullToRefreshBase;
-import com.handmark.pulltorefresh.library.PullToRefreshBase.OnRefreshListener;
-import com.handmark.pulltorefresh.library.PullToRefreshListView;
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
+
 import org.moire.ultrasonic.R;
 import org.moire.ultrasonic.domain.MusicDirectory;
 import org.moire.ultrasonic.domain.MusicDirectory.Entry;
@@ -49,7 +48,7 @@ import java.util.List;
 public class BookmarkActivity extends SubsonicTabActivity
 {
 
-	private PullToRefreshListView refreshAlbumListView;
+	private SwipeRefreshLayout refreshAlbumListView;
 	private ListView albumListView;
 	private View albumButtons;
 	private View emptyView;
@@ -70,13 +69,13 @@ public class BookmarkActivity extends SubsonicTabActivity
 
 		albumButtons = findViewById(R.id.menu_album);
 
-		refreshAlbumListView = (PullToRefreshListView) findViewById(R.id.select_album_entries);
-		albumListView = refreshAlbumListView.getRefreshableView();
+		refreshAlbumListView = findViewById(R.id.select_album_entries_refresh);
+		albumListView = findViewById(R.id.select_album_entries_list);
 
-		refreshAlbumListView.setOnRefreshListener(new OnRefreshListener<ListView>()
+		refreshAlbumListView.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener()
 		{
 			@Override
-			public void onRefresh(PullToRefreshBase<ListView> refreshView)
+			public void onRefresh()
 			{
 				new GetDataTask().executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
 			}
@@ -472,7 +471,6 @@ public class BookmarkActivity extends SubsonicTabActivity
 		@Override
 		protected void onPostExecute(String[] result)
 		{
-			refreshAlbumListView.onRefreshComplete();
 			super.onPostExecute(result);
 		}
 
