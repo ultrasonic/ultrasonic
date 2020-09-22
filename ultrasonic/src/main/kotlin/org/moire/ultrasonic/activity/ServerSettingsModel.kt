@@ -56,11 +56,13 @@ class ServerSettingsModel(
                 val serverNum = settings.getInt(PREFERENCES_KEY_ACTIVE_SERVERS, 0)
 
                 if (serverNum != 0) {
+                    var index = 1
                     for (x in 1 until serverNum + 1) {
-                        val newServerSetting = loadServerSettingFromPreferences(x, settings)
+                        val newServerSetting = loadServerSettingFromPreferences(index, settings)
                         if (newServerSetting != null) {
                             dbServerList.add(newServerSetting)
                             repository.insert(newServerSetting)
+                            index++
                             Log.i(
                                 TAG,
                                 "Imported server from Preferences to Database:" +
