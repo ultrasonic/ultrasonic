@@ -251,7 +251,7 @@ public class SelectArtistActivity extends SubsonicTabActivity implements Adapter
 			String musicFolderId = activeServerProvider.getValue().getActiveServer().getMusicFolderId();
 			MenuItem menuItem = menu.add(MENU_GROUP_MUSIC_FOLDER, -1, 0, R.string.select_artist_all_folders);
 
-			if (musicFolderId == null)
+			if (musicFolderId == null || musicFolderId.isEmpty())
 			{
 				menuItem.setChecked(true);
 			}

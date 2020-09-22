@@ -47,10 +47,11 @@ class ServerSettingsModel(
         var migrated = true
 
         runBlocking {
-            val dbServerList = repository.loadAllServerSettings().toMutableList()
+            val rowCount = repository.count()
 
-            if (dbServerList.isEmpty()) {
+            if (rowCount == null || rowCount == 0) {
                 // First time load up the server settings from the Preferences
+                val dbServerList = mutableListOf<ServerSetting>()
                 val settings = PreferenceManager.getDefaultSharedPreferences(context)
                 val serverNum = settings.getInt(PREFERENCES_KEY_ACTIVE_SERVERS, 0)
 
@@ -192,7 +193,7 @@ class ServerSettingsModel(
         if (serverSetting == null) return
 
         viewModelScope.launch {
-            serverSetting.index = (repository.getMaxIndex() ?: 0) + 1
+            serverSetting.index = (repository.count() ?: 0) + 1
             serverSetting.id = serverSetting.index
             repository.insert(serverSetting)
             Log.d(TAG, "saveNewItem saved server setting: $serverSetting")

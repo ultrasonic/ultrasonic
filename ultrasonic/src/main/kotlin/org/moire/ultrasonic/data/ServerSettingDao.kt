@@ -50,8 +50,8 @@ interface ServerSettingDao {
     suspend fun findByIndex(index: Int): ServerSetting?
 
     /**
-     * Retrieves the greatest Index in stored in the table
+     * Retrieves the count of rows in the table
      */
-    @Query("SELECT MAX([index]) FROM serverSetting")
-    suspend fun getMaxIndex(): Int?
+    @Query("SELECT COUNT(*) FROM serverSetting")
+    suspend fun count(): Int?
 }

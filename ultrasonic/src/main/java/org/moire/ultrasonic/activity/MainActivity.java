@@ -71,11 +71,10 @@ public class MainActivity extends SubsonicTabActivity
 
 		// Determine first run and migrate server settings to DB as early as possible
 		boolean showWelcomeScreen = Util.isFirstRun(this);
-		if (showWelcomeScreen)
-		{
-			// If settings were migrated, do not show welcome screen
-			showWelcomeScreen = !serverSettingsModel.getValue().migrateFromPreferences();
-		}
+		boolean areServersMigrated = serverSettingsModel.getValue().migrateFromPreferences();
+
+		// If there are any servers in the DB, do not show the welcome screen
+		showWelcomeScreen &= !areServersMigrated;
 
 		if (getIntent().hasExtra(Constants.INTENT_EXTRA_NAME_EXIT))
 		{
