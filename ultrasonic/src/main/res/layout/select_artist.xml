@@ -6,13 +6,19 @@
 
     <include layout="@layout/tab_progress" />
 
-    <com.handmark.pulltorefresh.library.PullToRefreshListView
-        a:id="@+id/select_artist_list"
-        a:layout_width="fill_parent"
-        a:layout_height="0dip"
-        a:layout_weight="1.0"
-        a:fastScrollEnabled="true"
-        a:textFilterEnabled="true" />
+    <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
+        xmlns:android="http://schemas.android.com/apk/res/android"
+        android:id="@+id/select_artist_refresh"
+        android:layout_width="fill_parent"
+        android:layout_height="0dip"
+        android:layout_weight="1.0">
+
+        <ListView
+            android:id="@+id/select_artist_list"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent" />
+
+    </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
 
     <include layout="@layout/now_playing" />
 

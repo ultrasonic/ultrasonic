@@ -471,5 +471,6 @@
          au lieu de simplement mettre en vedette / désactiver les éléments.
     </string>
     <string name="feature_flags_category_title">Drapeaux des fonctionnalités</string>
+    <string name="menu_refresh">Rafraichir</string>
 
 </resources>

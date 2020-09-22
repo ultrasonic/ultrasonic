@@ -29,9 +29,8 @@ import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ListView;
 
-import com.handmark.pulltorefresh.library.PullToRefreshBase;
-import com.handmark.pulltorefresh.library.PullToRefreshBase.OnRefreshListener;
-import com.handmark.pulltorefresh.library.PullToRefreshListView;
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
+
 import org.moire.ultrasonic.R;
 import org.moire.ultrasonic.domain.Genre;
 import org.moire.ultrasonic.service.MusicService;
@@ -50,7 +49,7 @@ public class SelectGenreActivity extends SubsonicTabActivity implements AdapterV
 
 	private static final String TAG = SelectGenreActivity.class.getSimpleName();
 
-	private PullToRefreshListView refreshGenreListView;
+	private SwipeRefreshLayout refreshGenreListView;
 	private ListView genreListView;
 	private View emptyView;
 
@@ -63,13 +62,13 @@ public class SelectGenreActivity extends SubsonicTabActivity implements AdapterV
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.select_genre);
 
-		refreshGenreListView = (PullToRefreshListView) findViewById(R.id.select_genre_list);
-		genreListView = refreshGenreListView.getRefreshableView();
+		refreshGenreListView = findViewById(R.id.select_genre_refresh);
+		genreListView = findViewById(R.id.select_genre_list);
 
-		refreshGenreListView.setOnRefreshListener(new OnRefreshListener<ListView>()
+		refreshGenreListView.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener()
 		{
 			@Override
-			public void onRefresh(PullToRefreshBase<ListView> refreshView)
+			public void onRefresh()
 			{
 				new GetDataTask().executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
 			}
@@ -181,7 +180,6 @@ public class SelectGenreActivity extends SubsonicTabActivity implements AdapterV
 		@Override
 		protected void onPostExecute(String[] result)
 		{
-			refreshGenreListView.onRefreshComplete();
 			super.onPostExecute(result);
 		}
 

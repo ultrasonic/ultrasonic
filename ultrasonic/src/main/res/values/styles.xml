@@ -81,6 +81,7 @@
     <attr name="media_shuffle" format="reference"/>
     <attr name="media_play" format="reference"/>
     <attr name="podcasts" format="reference"/>
+    <attr name="refresh" format="reference"/>
     <attr name="media_play_next" format="reference"/>
     <attr name="media_play_small" format="reference"/>
     <attr name="media_stop" format="reference"/>
