@@ -37,8 +37,11 @@ class ActiveServerProvider(
                 withContext(Dispatchers.IO) {
                     cachedServer = repository.findById(serverId)
                 }
-                Log.d(TAG, "getActiveServer retrieved from DataBase, id: $serverId; " +
-                    "cachedServer: $cachedServer")
+                Log.d(
+                    TAG,
+                    "getActiveServer retrieved from DataBase, id: $serverId; " +
+                        "cachedServer: $cachedServer"
+                )
             }
 
             if (cachedServer != null) return cachedServer!!

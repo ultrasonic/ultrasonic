@@ -223,7 +223,10 @@ class ServerSettingsModel(
             userName,
             settings.getString(PREFERENCES_KEY_PASSWORD + preferenceId, "")!!,
             settings.getBoolean(PREFERENCES_KEY_JUKEBOX_BY_DEFAULT + preferenceId, false),
-            settings.getBoolean(PREFERENCES_KEY_ALLOW_SELF_SIGNED_CERTIFICATE + preferenceId, false),
+            settings.getBoolean(
+                PREFERENCES_KEY_ALLOW_SELF_SIGNED_CERTIFICATE + preferenceId,
+                false
+            ),
             settings.getBoolean(PREFERENCES_KEY_LDAP_SUPPORT + preferenceId, false),
             settings.getString(PREFERENCES_KEY_MUSIC_FOLDER_ID + preferenceId, null)
         )
