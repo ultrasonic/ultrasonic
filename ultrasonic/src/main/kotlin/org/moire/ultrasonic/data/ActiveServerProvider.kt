@@ -34,10 +34,11 @@ class ActiveServerProvider(
 
             // Ideally this is the only call where we block the thread while using the repository
             runBlocking {
-                Log.d(TAG, "getActiveServer retrieving from DataBase, id: $serverId")
                 withContext(Dispatchers.IO) {
                     cachedServer = repository.findById(serverId)
                 }
+                Log.d(TAG, "getActiveServer retrieved from DataBase, id: $serverId; " +
+                    "cachedServer: $cachedServer")
             }
 
             if (cachedServer != null) return cachedServer!!

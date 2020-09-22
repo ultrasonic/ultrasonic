@@ -58,7 +58,7 @@ class ServerSettingsModel(
                 if (serverNum != 0) {
                     var index = 1
                     for (x in 1 until serverNum + 1) {
-                        val newServerSetting = loadServerSettingFromPreferences(index, settings)
+                        val newServerSetting = loadServerSettingFromPreferences(x, index, settings)
                         if (newServerSetting != null) {
                             dbServerList.add(newServerSetting)
                             repository.insert(newServerSetting)
@@ -206,25 +206,26 @@ class ServerSettingsModel(
      * Reads up a Server Setting stored in the obsolete Preferences
      */
     private fun loadServerSettingFromPreferences(
-        id: Int,
+        preferenceId: Int,
+        serverId: Int,
         settings: SharedPreferences
     ): ServerSetting? {
-        val url = settings.getString(PREFERENCES_KEY_SERVER_URL + id, "")
-        val userName = settings.getString(PREFERENCES_KEY_USERNAME + id, "")
+        val url = settings.getString(PREFERENCES_KEY_SERVER_URL + preferenceId, "")
+        val userName = settings.getString(PREFERENCES_KEY_USERNAME + preferenceId, "")
 
         if (url.isNullOrEmpty() || userName.isNullOrEmpty()) return null
 
         return ServerSetting(
-            id,
-            id,
-            settings.getString(PREFERENCES_KEY_SERVER_NAME + id, "")!!,
+            serverId,
+            serverId,
+            settings.getString(PREFERENCES_KEY_SERVER_NAME + preferenceId, "")!!,
             url,
             userName,
-            settings.getString(PREFERENCES_KEY_PASSWORD + id, "")!!,
-            settings.getBoolean(PREFERENCES_KEY_JUKEBOX_BY_DEFAULT + id, false),
-            settings.getBoolean(PREFERENCES_KEY_ALLOW_SELF_SIGNED_CERTIFICATE + id, false),
-            settings.getBoolean(PREFERENCES_KEY_LDAP_SUPPORT + id, false),
-            settings.getString(PREFERENCES_KEY_MUSIC_FOLDER_ID + id, "")!!
+            settings.getString(PREFERENCES_KEY_PASSWORD + preferenceId, "")!!,
+            settings.getBoolean(PREFERENCES_KEY_JUKEBOX_BY_DEFAULT + preferenceId, false),
+            settings.getBoolean(PREFERENCES_KEY_ALLOW_SELF_SIGNED_CERTIFICATE + preferenceId, false),
+            settings.getBoolean(PREFERENCES_KEY_LDAP_SUPPORT + preferenceId, false),
+            settings.getString(PREFERENCES_KEY_MUSIC_FOLDER_ID + preferenceId, null)
         )
     }
 }

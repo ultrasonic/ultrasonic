@@ -98,6 +98,7 @@ public class JukeboxMediaPlayer
 
 		running.set(true);
 		startProcessTasks();
+		Log.d(TAG, "Started Jukebox Service");
 	}
 
 	public void stopJukeboxService()
@@ -109,6 +110,7 @@ public class JukeboxMediaPlayer
 		{
 			serviceThread.interrupt();
 		}
+		Log.d(TAG, "Stopped Jukebox Service");
 	}
 
 	private void startProcessTasks()
@@ -320,6 +322,7 @@ public class JukeboxMediaPlayer
 
 	public void setEnabled(boolean enabled)
 	{
+		Log.d(TAG, String.format("Jukebox Service setting enabled to %b", enabled));
 		this.enabled = enabled;
 
 		tasks.clear();
