@@ -40,9 +40,7 @@ import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.TextView;
 
-import com.handmark.pulltorefresh.library.PullToRefreshBase;
-import com.handmark.pulltorefresh.library.PullToRefreshBase.OnRefreshListener;
-import com.handmark.pulltorefresh.library.PullToRefreshListView;
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import org.moire.ultrasonic.R;
 import org.moire.ultrasonic.api.subsonic.ApiNotSupportedException;
@@ -64,7 +62,7 @@ import java.util.List;
 public class SelectPlaylistActivity extends SubsonicTabActivity implements AdapterView.OnItemClickListener
 {
 
-	private PullToRefreshListView refreshPlaylistsListView;
+	private SwipeRefreshLayout refreshPlaylistsListView;
 	private ListView playlistsListView;
 	private View emptyTextView;
 	private PlaylistAdapter playlistAdapter;
@@ -75,13 +73,13 @@ public class SelectPlaylistActivity extends SubsonicTabActivity implements Adapt
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.select_playlist);
 
-		refreshPlaylistsListView = (PullToRefreshListView) findViewById(R.id.select_playlist_list);
-		playlistsListView = refreshPlaylistsListView.getRefreshableView();
+		refreshPlaylistsListView = findViewById(R.id.select_playlist_refresh);
+		playlistsListView = findViewById(R.id.select_playlist_list);
 
-		refreshPlaylistsListView.setOnRefreshListener(new OnRefreshListener<ListView>()
+		refreshPlaylistsListView.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener()
 		{
 			@Override
-			public void onRefresh(PullToRefreshBase<ListView> refreshView)
+			public void onRefresh()
 			{
 				new GetDataTask().executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
 			}
@@ -380,7 +378,6 @@ public class SelectPlaylistActivity extends SubsonicTabActivity implements Adapt
 		@Override
 		protected void onPostExecute(String[] result)
 		{
-			refreshPlaylistsListView.onRefreshComplete();
 			super.onPostExecute(result);
 		}
 

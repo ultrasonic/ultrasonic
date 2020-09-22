@@ -41,9 +41,7 @@ import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.TextView;
 
-import com.handmark.pulltorefresh.library.PullToRefreshBase;
-import com.handmark.pulltorefresh.library.PullToRefreshBase.OnRefreshListener;
-import com.handmark.pulltorefresh.library.PullToRefreshListView;
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import org.moire.ultrasonic.R;
 import org.moire.ultrasonic.api.subsonic.ApiNotSupportedException;
@@ -65,7 +63,7 @@ import java.util.List;
 public class ShareActivity extends SubsonicTabActivity implements AdapterView.OnItemClickListener
 {
 
-	private PullToRefreshListView refreshSharesListView;
+	private SwipeRefreshLayout refreshSharesListView;
 	private ListView sharesListView;
 	private View emptyTextView;
 	private ShareAdapter shareAdapter;
@@ -76,13 +74,13 @@ public class ShareActivity extends SubsonicTabActivity implements AdapterView.On
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.select_share);
 
-		refreshSharesListView = (PullToRefreshListView) findViewById(R.id.select_share_list);
-		sharesListView = refreshSharesListView.getRefreshableView();
+		refreshSharesListView = findViewById(R.id.select_share_refresh);
+		sharesListView = findViewById(R.id.select_share_list);
 
-		refreshSharesListView.setOnRefreshListener(new OnRefreshListener<ListView>()
+		refreshSharesListView.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener()
 		{
 			@Override
-			public void onRefresh(PullToRefreshBase<ListView> refreshView)
+			public void onRefresh()
 			{
 				new GetDataTask().executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
 			}
@@ -374,7 +372,6 @@ public class ShareActivity extends SubsonicTabActivity implements AdapterView.On
 		@Override
 		protected void onPostExecute(String[] result)
 		{
-			refreshSharesListView.onRefreshComplete();
 			super.onPostExecute(result);
 		}
 

@@ -483,5 +483,6 @@
          in plaats van items simpelweg in de hoofdrol te zetten / niet te verwijderen.
     </string>
     <string name="feature_flags_category_title">Experimentele functies</string>
+    <string name="menu_refresh">Refresh</string>
 
 </resources>

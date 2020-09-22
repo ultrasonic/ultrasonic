@@ -483,5 +483,6 @@
          em vez de simplesmente estrelar / não estrelar itens.
     </string>
     <string name="feature_flags_category_title">Bandeiras de recursos</string>
+    <string name="menu_refresh">Refresh</string>
 
 </resources>

@@ -483,5 +483,6 @@
         csillaggal jelölés helyett.
     </string>
     <string name="feature_flags_category_title">Jellemzők Zászlók</string>
+    <string name="menu_refresh">Refresh</string>
 
 </resources>

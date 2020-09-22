@@ -5,6 +5,9 @@ import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.view.KeyEvent;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.inputmethod.EditorInfo;
 import android.widget.EditText;
@@ -13,10 +16,8 @@ import android.widget.ListAdapter;
 import android.widget.ListView;
 import android.widget.TextView;
 
-import com.handmark.pulltorefresh.library.PullToRefreshBase;
-import com.handmark.pulltorefresh.library.PullToRefreshBase.Mode;
-import com.handmark.pulltorefresh.library.PullToRefreshBase.OnRefreshListener;
-import com.handmark.pulltorefresh.library.PullToRefreshListView;
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
+
 import org.moire.ultrasonic.R;
 import org.moire.ultrasonic.data.ActiveServerProvider;
 import org.moire.ultrasonic.domain.ChatMessage;
@@ -43,7 +44,6 @@ import static org.koin.java.KoinJavaComponent.inject;
  */
 public final class ChatActivity extends SubsonicTabActivity
 {
-	private PullToRefreshListView refreshChatListView;
 	private ListView chatListView;
 	private EditText messageEditText;
 	private ImageButton sendButton;
@@ -58,9 +58,6 @@ public final class ChatActivity extends SubsonicTabActivity
 		super.onCreate(bundle);
 		setContentView(R.layout.chat);
 
-		refreshChatListView = (PullToRefreshListView) findViewById(R.id.chat_entries);
-		refreshChatListView.setMode(Mode.PULL_FROM_END);
-
 		messageEditText = (EditText) findViewById(R.id.chat_edittext);
 		sendButton = (ImageButton) findViewById(R.id.chat_send);
 
@@ -74,7 +71,7 @@ public final class ChatActivity extends SubsonicTabActivity
 			}
 		});
 
-		chatListView = refreshChatListView.getRefreshableView();
+		chatListView = findViewById(R.id.chat_entries_list);
 		chatListView.setTranscriptMode(ListView.TRANSCRIPT_MODE_ALWAYS_SCROLL);
 		chatListView.setStackFromBottom(true);
 
@@ -121,15 +118,6 @@ public final class ChatActivity extends SubsonicTabActivity
 			}
 		});
 
-		refreshChatListView.setOnRefreshListener(new OnRefreshListener<ListView>()
-		{
-			@Override
-			public void onRefresh(PullToRefreshBase<ListView> refreshView)
-			{
-				new GetDataTask().executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
-			}
-		});
-
 		View chatMenuItem = findViewById(R.id.menu_chat);
 		menuDrawer.setActiveView(chatMenuItem);
 
@@ -142,6 +130,33 @@ public final class ChatActivity extends SubsonicTabActivity
 		super.onPostCreate(bundle);
 
 		timerMethod();
+	}
+
+	@Override
+	public boolean onCreateOptionsMenu(Menu menu)
+	{
+		MenuInflater inflater = getMenuInflater();
+		inflater.inflate(R.menu.chat, menu);
+		super.onCreateOptionsMenu(menu);
+
+		return true;
+	}
+
+	/*
+	 * Listen for option item selections so that we receive a notification
+	 * when the user requests a refresh by selecting the refresh action bar item.
+	 */
+	@Override
+	public boolean onOptionsItemSelected(MenuItem item) {
+		switch (item.getItemId()) {
+			// Check if user triggered a refresh:
+			case R.id.menu_refresh:
+				// Start the refresh background task.
+				new GetDataTask().executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
+				return true;
+		}
+		// User didn't trigger a refresh, let the superclass handle this action
+		return super.onOptionsItemSelected(item);
 	}
 
 	@Override
@@ -283,7 +298,6 @@ public final class ChatActivity extends SubsonicTabActivity
 		protected void onPostExecute(String[] result)
 		{
 			load();
-			refreshChatListView.onRefreshComplete();
 			super.onPostExecute(result);
 		}
 

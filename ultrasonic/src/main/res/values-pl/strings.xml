@@ -496,5 +496,6 @@ Obecnie nie zapisuje obrazów w pamięci urządzenia, tylko wykorzystuje tylko p
          zamiast po prostu grać gwiazdkami / bez gwiazd.
     </string>
     <string name="feature_flags_category_title">Flagi funkcji</string>
+    <string name="menu_refresh">Refresh</string>
 
 </resources>

@@ -487,5 +487,6 @@
         instead of simply starring/unstarring items.
     </string>
     <string name="feature_flags_category_title">Feature Flags</string>
+    <string name="menu_refresh">Refresh</string>
 
 </resources>

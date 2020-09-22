@@ -6,16 +6,16 @@
 
     <include layout="@layout/tab_progress" />
 
-    <com.handmark.pulltorefresh.library.PullToRefreshListView
-        a:id="@+id/chat_entries"
+    <ListView
+        a:id="@+id/chat_entries_list"
         a:layout_width="fill_parent"
         a:layout_height="0dip"
-        a:layout_weight="1.0"
-        a:textFilterEnabled="true" />
-    
-    <LinearLayout 
-		a:layout_height="4dip" 
-		a:layout_width="fill_parent" 
+        a:layout_weight="1.0" />
+
+
+    <LinearLayout
+		a:layout_height="4dip"
+		a:layout_width="fill_parent"
 		a:layout_marginTop="4dip"
 		a:background="@drawable/drop_shadow" />
 
@@ -32,18 +32,18 @@
             a:layout_weight="1"
             a:autoLink="all"
             a:hint="@string/chat.send_a_message"
-			a:inputType="textEmailAddress|textMultiLine"            
+			a:inputType="textEmailAddress|textMultiLine"
             a:linksClickable="true"
             a:paddingBottom="10dip"
             a:paddingTop="10dip" />
-        
+
         <ImageButton
             a:id="@+id/chat_send"
             a:layout_width="55dip"
             a:layout_height="40dip"
             a:background="@color/transparent"
             a:src="?attr/chat_send" />
-        
+
     </LinearLayout>
 
     <include layout="@layout/now_playing" />
