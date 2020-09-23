@@ -216,7 +216,7 @@ class ServerSettingsModel(
         if (url.isNullOrEmpty() || userName.isNullOrEmpty()) return null
 
         return ServerSetting(
-            serverId,
+            preferenceId,
             serverId,
             settings.getString(PREFERENCES_KEY_SERVER_NAME + preferenceId, "")!!,
             url,
