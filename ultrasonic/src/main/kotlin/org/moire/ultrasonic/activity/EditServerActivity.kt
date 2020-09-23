@@ -179,7 +179,11 @@ internal class EditServerActivity : AppCompatActivity() {
             try {
                 val urlString = serverAddressEditText!!.editText?.text.toString()
                 url = URL(urlString)
-                if (urlString != urlString.trim(' ') || urlString.contains("@")) {
+                if (
+                    urlString != urlString.trim(' ') ||
+                    urlString.contains("@") ||
+                    url.host.isNullOrBlank()
+                ) {
                     throw MalformedURLException()
                 }
                 serverAddressEditText!!.error = null
