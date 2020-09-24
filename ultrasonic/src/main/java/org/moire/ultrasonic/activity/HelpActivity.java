@@ -36,6 +36,7 @@ import net.simonvt.menudrawer.MenuDrawer;
 import net.simonvt.menudrawer.Position;
 
 import org.moire.ultrasonic.R;
+import org.moire.ultrasonic.data.ActiveServerProvider;
 import org.moire.ultrasonic.util.Constants;
 import org.moire.ultrasonic.util.Util;
 
@@ -155,7 +156,7 @@ public final class HelpActivity extends ResultActivity implements OnClickListene
 	{
 		super.onPostCreate(bundle);
 
-		int visibility = Util.isOffline(this) ? View.GONE : View.VISIBLE;
+		int visibility = ActiveServerProvider.Companion.isOffline(this) ? View.GONE : View.VISIBLE;
 		chatMenuItem.setVisibility(visibility);
 		bookmarksMenuItem.setVisibility(visibility);
 		sharesMenuItem.setVisibility(visibility);

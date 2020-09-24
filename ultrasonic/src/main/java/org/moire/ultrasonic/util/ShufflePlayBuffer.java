@@ -21,6 +21,7 @@ package org.moire.ultrasonic.util;
 import android.content.Context;
 import android.util.Log;
 
+import org.moire.ultrasonic.data.ActiveServerProvider;
 import org.moire.ultrasonic.domain.MusicDirectory;
 import org.moire.ultrasonic.service.MusicService;
 import org.moire.ultrasonic.service.MusicServiceFactory;
@@ -97,7 +98,7 @@ public class ShufflePlayBuffer
 		// Check if active server has changed.
 		clearBufferIfNecessary();
 
-		if (buffer.size() > REFILL_THRESHOLD || (!Util.isNetworkConnected(context) && !Util.isOffline(context)))
+		if (buffer.size() > REFILL_THRESHOLD || (!Util.isNetworkConnected(context) && !ActiveServerProvider.Companion.isOffline(context)))
 		{
 			return;
 		}
@@ -124,9 +125,9 @@ public class ShufflePlayBuffer
 	{
 		synchronized (buffer)
 		{
-			if (currentServer != Util.getActiveServer(context))
+			if (currentServer != ActiveServerProvider.Companion.getActiveServerId(context))
 			{
-				currentServer = Util.getActiveServer(context);
+				currentServer = ActiveServerProvider.Companion.getActiveServerId(context);
 				buffer.clear();
 			}
 		}

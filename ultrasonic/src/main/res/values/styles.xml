@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-
     <style name="listselect" parent="Widget.AppCompat.ListView">
         <item name="android:listSelector">@drawable/list_selector_holo_dark</item>
     </style>
@@ -93,11 +92,14 @@
     <attr name="check_mark_on" format="reference"/>
     <attr name="button_check_custom" format="reference"/>
     <attr name="color_background" format="reference"/>
+    <attr name="color_selected" format="reference"/>
     <attr name="filepicker_create_new_folder" format="reference"/>
     <attr name="filepicker_folder" format="reference"/>
     <attr name="filepicker_subdirectory_left" format="reference"/>
     <attr name="filepicker_subdirectory_up" format="reference"/>
     <attr name="filepicker_sd_card" format="reference"/>
-
+    <attr name="more_vert" format="reference"/>
+    <attr name="list_selector_holo" format="reference"/>
+    <attr name="list_selector_holo_selected" format="reference"/>
 </resources>
 

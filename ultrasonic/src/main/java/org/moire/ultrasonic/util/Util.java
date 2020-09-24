@@ -24,6 +24,7 @@ import android.app.PendingIntent;
 import android.content.*;
 import android.content.pm.ApplicationInfo;
 import android.content.pm.PackageManager;
+import android.content.res.Resources;
 import android.content.res.TypedArray;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -31,7 +32,6 @@ import android.graphics.Canvas;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.media.AudioManager;
-import android.media.AudioManager.OnAudioFocusChangeListener;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.net.Uri;
@@ -42,10 +42,14 @@ import android.os.Parcelable;
 import android.preference.PreferenceManager;
 import android.util.DisplayMetrics;
 import android.util.Log;
+import android.util.TypedValue;
 import android.view.Gravity;
 import android.view.KeyEvent;
 import android.widget.RemoteViews;
 import android.widget.Toast;
+
+import androidx.annotation.ColorInt;
+
 import org.moire.ultrasonic.R;
 import org.moire.ultrasonic.activity.DownloadActivity;
 import org.moire.ultrasonic.activity.MainActivity;
@@ -54,8 +58,6 @@ import org.moire.ultrasonic.domain.*;
 import org.moire.ultrasonic.domain.MusicDirectory.Entry;
 import org.moire.ultrasonic.receiver.MediaButtonIntentReceiver;
 import org.moire.ultrasonic.service.DownloadFile;
-import org.moire.ultrasonic.service.MediaPlayerController;
-import org.moire.ultrasonic.service.MusicServiceFactory;
 
 import java.io.*;
 import java.security.MessageDigest;
@@ -71,9 +73,8 @@ import java.util.regex.Pattern;
  * @author Sindre Mehus
  * @version $Id$
  */
-public class Util extends DownloadActivity
+public class Util
 {
-
 	private static final String TAG = Util.class.getSimpleName();
 
 	private static final DecimalFormat GIGA_BYTE_FORMAT = new DecimalFormat("0.00 GB");
@@ -107,11 +108,6 @@ public class Util extends DownloadActivity
 	{
 	}
 
-	public static boolean isOffline(Context context)
-	{
-		return context == null || getActiveServer(context) == 0;
-	}
-
 	public static boolean isScreenLitOnDownload(Context context)
 	{
 		SharedPreferences preferences = getPreferences(context);
@@ -130,26 +126,6 @@ public class Util extends DownloadActivity
 		SharedPreferences.Editor editor = preferences.edit();
 		editor.putString(Constants.PREFERENCES_KEY_REPEAT_MODE, repeatMode.name());
 		editor.commit();
-	}
-
-	public static boolean isScrobblingEnabled(Context context)
-	{
-		if (isOffline(context))
-		{
-			return false;
-		}
-		SharedPreferences preferences = getPreferences(context);
-		return preferences.getBoolean(Constants.PREFERENCES_KEY_SCROBBLE, false);
-	}
-
-	public static boolean isServerScalingEnabled(Context context)
-	{
-		if (isOffline(context))
-		{
-			return false;
-		}
-		SharedPreferences preferences = getPreferences(context);
-		return preferences.getBoolean(Constants.PREFERENCES_KEY_SERVER_SCALING, false);
 	}
 
 	public static boolean isNotificationEnabled(Context context)
@@ -172,152 +148,6 @@ public class Util extends DownloadActivity
 	{
 		SharedPreferences preferences = getPreferences(context);
 		return preferences.getBoolean(Constants.PREFERENCES_KEY_SHOW_LOCK_SCREEN_CONTROLS, false);
-	}
-
-    public static void setActiveServer(
-            Context context,
-            int instance
-    ) {
-        MusicServiceFactory.resetMusicService();
-        SharedPreferences preferences = getPreferences(context);
-        SharedPreferences.Editor editor = preferences.edit();
-        editor.putInt(Constants.PREFERENCES_KEY_SERVER_INSTANCE, instance);
-        editor.apply();
-    }
-
-	public static int getActiveServer(Context context)
-	{
-		SharedPreferences preferences = getPreferences(context);
-		return preferences.getInt(Constants.PREFERENCES_KEY_SERVER_INSTANCE, 1);
-	}
-
-	public static int getActiveServers(Context context)
-	{
-		SharedPreferences settings = PreferenceManager.getDefaultSharedPreferences(context);
-		return settings.getInt(Constants.PREFERENCES_KEY_ACTIVE_SERVERS, 3);
-	}
-
-	public static String getServerName(Context context)
-	{
-		int instance = getActiveServer(context);
-
-		if (instance == 0)
-		{
-			return context.getResources().getString(R.string.main_offline);
-		}
-
-		SharedPreferences preferences = getPreferences(context);
-		return preferences.getString(Constants.PREFERENCES_KEY_SERVER_NAME + instance, null);
-	}
-
-	public static String getServerName(Context context, int instance)
-	{
-		if (instance == 0)
-		{
-			return context.getResources().getString(R.string.main_offline);
-		}
-		SharedPreferences preferences = getPreferences(context);
-		return preferences.getString(Constants.PREFERENCES_KEY_SERVER_NAME + instance, null);
-	}
-
-	public static String getUserName(Context context, int instance)
-	{
-		if (instance == 0)
-		{
-			return context.getResources().getString(R.string.main_offline);
-		}
-		SharedPreferences preferences = getPreferences(context);
-		return preferences.getString(Constants.PREFERENCES_KEY_USERNAME + instance, null);
-	}
-
-	public static boolean getServerEnabled(Context context, int instance)
-	{
-		if (instance == 0)
-		{
-			return true;
-		}
-		SharedPreferences preferences = getPreferences(context);
-		return preferences.getBoolean(Constants.PREFERENCES_KEY_SERVER_ENABLED + instance, true);
-	}
-
-	public static boolean getJukeboxEnabled(Context context, int instance)
-	{
-		if (instance == 0)
-		{
-			return false;
-		}
-
-		SharedPreferences preferences = getPreferences(context);
-		return preferences.getBoolean(Constants.PREFERENCES_KEY_JUKEBOX_BY_DEFAULT + instance, false);
-	}
-
-	public static void setServerRestVersion(Context context, Version version)
-	{
-		SERVER_REST_VERSIONS.put(getActiveServer(context), version);
-	}
-
-	public static Version getServerRestVersion(Context context)
-	{
-		return SERVER_REST_VERSIONS.get(getActiveServer(context));
-	}
-
-	public static void removeInstanceName(Context context, int instance, int activeInstance)
-	{
-		SharedPreferences preferences = getPreferences(context);
-		SharedPreferences.Editor editor = preferences.edit();
-
-		int newInstance = instance + 1;
-
-		String server = preferences.getString(Constants.PREFERENCES_KEY_SERVER + newInstance, null);
-		String serverName = preferences.getString(Constants.PREFERENCES_KEY_SERVER_NAME + newInstance, null);
-		String serverUrl = preferences.getString(Constants.PREFERENCES_KEY_SERVER_URL + newInstance, null);
-		String userName = preferences.getString(Constants.PREFERENCES_KEY_USERNAME + newInstance, null);
-		String password = preferences.getString(Constants.PREFERENCES_KEY_PASSWORD + newInstance, null);
-		boolean serverEnabled = preferences.getBoolean(Constants.PREFERENCES_KEY_SERVER_ENABLED + newInstance, true);
-		boolean jukeboxEnabled = preferences.getBoolean(Constants.PREFERENCES_KEY_JUKEBOX_BY_DEFAULT + newInstance, true);
-
-		editor.putString(Constants.PREFERENCES_KEY_SERVER + instance, server);
-		editor.putString(Constants.PREFERENCES_KEY_SERVER_NAME + instance, serverName);
-		editor.putString(Constants.PREFERENCES_KEY_SERVER_URL + instance, serverUrl);
-		editor.putString(Constants.PREFERENCES_KEY_USERNAME + instance, userName);
-		editor.putString(Constants.PREFERENCES_KEY_PASSWORD + instance, password);
-		editor.putBoolean(Constants.PREFERENCES_KEY_SERVER_ENABLED + instance, serverEnabled);
-		editor.putBoolean(Constants.PREFERENCES_KEY_JUKEBOX_BY_DEFAULT + instance, jukeboxEnabled);
-
-		editor.putString(Constants.PREFERENCES_KEY_SERVER + newInstance, null);
-		editor.putString(Constants.PREFERENCES_KEY_SERVER_NAME + newInstance, null);
-		editor.putString(Constants.PREFERENCES_KEY_SERVER_URL + newInstance, null);
-		editor.putString(Constants.PREFERENCES_KEY_USERNAME + newInstance, null);
-		editor.putString(Constants.PREFERENCES_KEY_PASSWORD + newInstance, null);
-		editor.putBoolean(Constants.PREFERENCES_KEY_SERVER_ENABLED + newInstance, true);
-		editor.putBoolean(Constants.PREFERENCES_KEY_JUKEBOX_BY_DEFAULT + newInstance, false);
-		editor.commit();
-
-		if (instance == activeInstance)
-		{
-			Util.setActiveServer(context, 0);
-		}
-
-		if (newInstance == activeInstance)
-		{
-			Util.setActiveServer(context, instance);
-		}
-	}
-
-	public static void setSelectedMusicFolderId(Context context, String musicFolderId)
-	{
-		int instance = getActiveServer(context);
-		SharedPreferences preferences = getPreferences(context);
-		SharedPreferences.Editor editor = preferences.edit();
-		editor.putString(Constants.PREFERENCES_KEY_MUSIC_FOLDER_ID + instance, musicFolderId);
-		editor.commit();
-	}
-
-	public static String getSelectedMusicFolderId(Context context)
-	{
-		SharedPreferences preferences = getPreferences(context);
-		int instance = getActiveServer(context);
-		return preferences.getString(Constants.PREFERENCES_KEY_MUSIC_FOLDER_ID + instance, null);
 	}
 
 	public static String getTheme(Context context)
@@ -354,35 +184,6 @@ public class Util extends DownloadActivity
 		SharedPreferences preferences = getPreferences(context);
 		int cacheSize = Integer.parseInt(preferences.getString(Constants.PREFERENCES_KEY_CACHE_SIZE, "-1"));
 		return cacheSize == -1 ? Integer.MAX_VALUE : cacheSize;
-	}
-
-	public static String getRestUrl(Context context, String method)
-	{
-		StringBuilder builder = new StringBuilder(8192);
-
-		SharedPreferences preferences = getPreferences(context);
-
-		int instance = preferences.getInt(Constants.PREFERENCES_KEY_SERVER_INSTANCE, 1);
-		String serverUrl = preferences.getString(Constants.PREFERENCES_KEY_SERVER_URL + instance, null);
-		String username = preferences.getString(Constants.PREFERENCES_KEY_USERNAME + instance, null);
-		String password = preferences.getString(Constants.PREFERENCES_KEY_PASSWORD + instance, null);
-
-		// Slightly obfuscate password
-		password = "enc:" + Util.utf8HexEncode(password);
-
-		builder.append(serverUrl);
-		if (builder.charAt(builder.length() - 1) != '/')
-		{
-			builder.append('/');
-		}
-
-		builder.append("rest/").append(method).append(".view");
-		builder.append("?u=").append(username);
-		builder.append("&p=").append(password);
-		builder.append("&v=").append(Constants.REST_PROTOCOL_VERSION);
-		builder.append("&c=").append(Constants.REST_CLIENT_ID);
-
-		return builder.toString();
 	}
 
     public static SharedPreferences getPreferences(Context context) {
@@ -1618,5 +1419,32 @@ public class Util extends DownloadActivity
 	{
 		SharedPreferences preferences = getPreferences(context);
 		return Integer.parseInt(preferences.getString(Constants.PREFERENCES_KEY_IMAGE_LOADER_CONCURRENCY, "5"));
+	}
+
+	public static @ColorInt int getColorFromAttribute(Context context, int resId)
+	{
+		TypedValue typedValue = new TypedValue();
+		Resources.Theme theme = context.getTheme();
+		theme.resolveAttribute(resId, typedValue, true);
+		return typedValue.data;
+	}
+
+	public static int getResourceFromAttribute(Context context, int resId)
+	{
+		TypedValue typedValue = new TypedValue();
+		Resources.Theme theme = context.getTheme();
+		theme.resolveAttribute(resId, typedValue, true);
+		return typedValue.resourceId;
+	}
+
+	public static boolean isFirstRun(Context context)
+	{
+		SharedPreferences preferences = getPreferences(context);
+		boolean firstExecuted = preferences.getBoolean(Constants.PREFERENCES_KEY_FIRST_RUN_EXECUTED, false);
+		if (firstExecuted) return false;
+		SharedPreferences.Editor editor = preferences.edit();
+		editor.putBoolean(Constants.PREFERENCES_KEY_FIRST_RUN_EXECUTED, true);
+		editor.apply();
+		return true;
 	}
 }

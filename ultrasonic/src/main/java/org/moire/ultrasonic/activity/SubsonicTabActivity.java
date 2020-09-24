@@ -37,9 +37,11 @@ import android.view.View.OnTouchListener;
 import android.widget.*;
 import net.simonvt.menudrawer.MenuDrawer;
 import net.simonvt.menudrawer.Position;
-import org.koin.java.standalone.KoinJavaComponent;
-import static org.koin.java.standalone.KoinJavaComponent.inject;
+import static org.koin.java.KoinJavaComponent.inject;
+
+import org.koin.java.KoinJavaComponent;
 import org.moire.ultrasonic.R;
+import org.moire.ultrasonic.data.ActiveServerProvider;
 import org.moire.ultrasonic.domain.MusicDirectory;
 import org.moire.ultrasonic.domain.MusicDirectory.Entry;
 import org.moire.ultrasonic.domain.PlayerState;
@@ -145,7 +147,7 @@ public class SubsonicTabActivity extends ResultActivity implements OnClickListen
 		super.onPostCreate(bundle);
 		instance = this;
 
-		int visibility = Util.isOffline(this) ? View.GONE : View.VISIBLE;
+		int visibility = ActiveServerProvider.Companion.isOffline(this) ? View.GONE : View.VISIBLE;
 		chatMenuItem.setVisibility(visibility);
 		bookmarksMenuItem.setVisibility(visibility);
 		sharesMenuItem.setVisibility(visibility);
@@ -225,6 +227,7 @@ public class SubsonicTabActivity extends ResultActivity implements OnClickListen
 		intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
 		intent.putExtras(getIntent());
 		startActivityForResultWithoutTransition(this, intent);
+		Log.d(TAG, "Restarting activity...");
 	}
 
 	@Override
@@ -773,7 +776,7 @@ public class SubsonicTabActivity extends ResultActivity implements OnClickListen
 		{
 			Util.toast(this, R.string.select_album_no_sdcard);
 		}
-		else if (!Util.isOffline(this) && !Util.isNetworkConnected(this))
+		else if (!ActiveServerProvider.Companion.isOffline(this) && !Util.isNetworkConnected(this))
 		{
 			Util.toast(this, R.string.select_album_no_network);
 		}
@@ -892,7 +895,7 @@ public class SubsonicTabActivity extends ResultActivity implements OnClickListen
 				List<Entry> songs = new LinkedList<Entry>();
 				MusicDirectory root;
 
-				if (!Util.isOffline(SubsonicTabActivity.this) && isArtist && Util.getShouldUseId3Tags(SubsonicTabActivity.this))
+				if (!ActiveServerProvider.Companion.isOffline(SubsonicTabActivity.this) && isArtist && Util.getShouldUseId3Tags(SubsonicTabActivity.this))
 				{
 					getSongsForArtist(id, songs);
 				}
@@ -900,7 +903,7 @@ public class SubsonicTabActivity extends ResultActivity implements OnClickListen
 				{
 					if (isDirectory)
 					{
-						root = !Util.isOffline(SubsonicTabActivity.this) && Util.getShouldUseId3Tags(SubsonicTabActivity.this) ? musicService.getAlbum(id, name, false, SubsonicTabActivity.this, this) : musicService.getMusicDirectory(id, name, false, SubsonicTabActivity.this, this);
+						root = !ActiveServerProvider.Companion.isOffline(SubsonicTabActivity.this) && Util.getShouldUseId3Tags(SubsonicTabActivity.this) ? musicService.getAlbum(id, name, false, SubsonicTabActivity.this, this) : musicService.getMusicDirectory(id, name, false, SubsonicTabActivity.this, this);
 					}
 					else if (isShare)
 					{
@@ -953,7 +956,7 @@ public class SubsonicTabActivity extends ResultActivity implements OnClickListen
 				{
 					MusicDirectory root;
 
-					root = !Util.isOffline(SubsonicTabActivity.this) && Util.getShouldUseId3Tags(SubsonicTabActivity.this) ? musicService.getAlbum(dir.getId(), dir.getTitle(), false, SubsonicTabActivity.this, this) : musicService.getMusicDirectory(dir.getId(), dir.getTitle(), false, SubsonicTabActivity.this, this);
+					root = !ActiveServerProvider.Companion.isOffline(SubsonicTabActivity.this) && Util.getShouldUseId3Tags(SubsonicTabActivity.this) ? musicService.getAlbum(dir.getId(), dir.getTitle(), false, SubsonicTabActivity.this, this) : musicService.getMusicDirectory(dir.getId(), dir.getTitle(), false, SubsonicTabActivity.this, this);
 
 					getSongsRecursively(root, songs);
 				}

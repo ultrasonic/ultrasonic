@@ -23,7 +23,6 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
-import android.view.ContextMenu;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -34,7 +33,7 @@ import android.widget.ListView;
 import android.widget.TextView;
 
 import org.moire.ultrasonic.R;
-import org.moire.ultrasonic.service.MediaPlayerController;
+import org.moire.ultrasonic.data.ActiveServerProvider;
 import org.moire.ultrasonic.service.MediaPlayerLifecycleSupport;
 import org.moire.ultrasonic.service.MusicService;
 import org.moire.ultrasonic.service.MusicServiceFactory;
@@ -49,28 +48,18 @@ import java.util.Collections;
 import kotlin.Lazy;
 
 import static java.util.Arrays.asList;
-import static org.koin.java.standalone.KoinJavaComponent.inject;
+import static org.koin.android.viewmodel.compat.ViewModelCompat.viewModel;
+import static org.koin.java.KoinJavaComponent.inject;
 
 public class MainActivity extends SubsonicTabActivity
 {
-
-	private static final int MENU_GROUP_SERVER = 10;
-	private static final int MENU_ITEM_OFFLINE = 111;
-	private static final int MENU_ITEM_SERVER_1 = 101;
-	private static final int MENU_ITEM_SERVER_2 = 102;
-	private static final int MENU_ITEM_SERVER_3 = 103;
-	private static final int MENU_ITEM_SERVER_4 = 104;
-	private static final int MENU_ITEM_SERVER_5 = 105;
-	private static final int MENU_ITEM_SERVER_6 = 106;
-	private static final int MENU_ITEM_SERVER_7 = 107;
-	private static final int MENU_ITEM_SERVER_8 = 108;
-	private static final int MENU_ITEM_SERVER_9 = 109;
-	private static final int MENU_ITEM_SERVER_10 = 110;
-
 	private static boolean infoDialogDisplayed;
 	private static boolean shouldUseId3;
+	private static int lastActiveServer;
 
 	private Lazy<MediaPlayerLifecycleSupport> lifecycleSupport = inject(MediaPlayerLifecycleSupport.class);
+	private Lazy<ActiveServerProvider> activeServerProvider = inject(ActiveServerProvider.class);
+	private Lazy<ServerSettingsModel> serverSettingsModel = viewModel(this, ServerSettingsModel.class);
 
 	/**
 	 * Called when the activity is first created.
@@ -79,6 +68,13 @@ public class MainActivity extends SubsonicTabActivity
 	public void onCreate(final Bundle savedInstanceState)
 	{
 		super.onCreate(savedInstanceState);
+
+		// Determine first run and migrate server settings to DB as early as possible
+		boolean showWelcomeScreen = Util.isFirstRun(this);
+		boolean areServersMigrated = serverSettingsModel.getValue().migrateFromPreferences();
+
+		// If there are any servers in the DB, do not show the welcome screen
+		showWelcomeScreen &= !areServersMigrated;
 
 		if (getIntent().hasExtra(Constants.INTENT_EXTRA_NAME_EXIT))
 		{
@@ -105,7 +101,7 @@ public class MainActivity extends SubsonicTabActivity
 
 		final View buttons = LayoutInflater.from(this).inflate(R.layout.main_buttons, null);
 		final View serverButton = buttons.findViewById(R.id.main_select_server);
-		final TextView serverTextView = (TextView) serverButton.findViewById(R.id.main_select_server_2);
+		final TextView serverTextView = serverButton.findViewById(R.id.main_select_server_2);
 		final View musicTitle = buttons.findViewById(R.id.main_music);
 		final View artistsButton = buttons.findViewById(R.id.main_artists_button);
 		final View albumsButton = buttons.findViewById(R.id.main_albums_button);
@@ -124,35 +120,18 @@ public class MainActivity extends SubsonicTabActivity
 		final View albumsAlphaByNameButton = buttons.findViewById(R.id.main_albums_alphaByName);
 		final View albumsAlphaByArtistButton = buttons.findViewById(R.id.main_albums_alphaByArtist);
 		final View videosButton = buttons.findViewById(R.id.main_videos);
-		final View dummyView = findViewById(R.id.main_dummy);
 
-		boolean shouldShowDialog = false;
-
-		if (!getActiveServerEnabled())
-		{
-			shouldShowDialog = true;
-			Util.setActiveServer(this, 0);
-		}
-
-		int instance = Util.getActiveServer(this);
-		String name = Util.getServerName(this, instance);
-
-		if (name == null)
-		{
-			shouldShowDialog = true;
-			Util.setActiveServer(this, 0);
-			instance = Util.getActiveServer(this);
-			name = Util.getServerName(this, instance);
-		}
+		lastActiveServer = ActiveServerProvider.Companion.getActiveServerId(this);
+		String name = activeServerProvider.getValue().getActiveServer().getName();
 
 		serverTextView.setText(name);
 
-		final ListView list = (ListView) findViewById(R.id.main_list);
+		final ListView list = findViewById(R.id.main_list);
 
 		final MergeAdapter adapter = new MergeAdapter();
 		adapter.addViews(Collections.singletonList(serverButton), true);
 
-		if (!Util.isOffline(this))
+		if (!ActiveServerProvider.Companion.isOffline(this))
 		{
 			adapter.addView(musicTitle, false);
 			adapter.addViews(asList(artistsButton, albumsButton, genresButton), true);
@@ -180,7 +159,6 @@ public class MainActivity extends SubsonicTabActivity
 		}
 
 		list.setAdapter(adapter);
-		registerForContextMenu(dummyView);
 
 		list.setOnItemClickListener(new AdapterView.OnItemClickListener()
 		{
@@ -189,7 +167,7 @@ public class MainActivity extends SubsonicTabActivity
 			{
 				if (view == serverButton)
 				{
-					dummyView.showContextMenu();
+					showServers();
 				}
 				else if (view == albumsNewestButton)
 				{
@@ -259,7 +237,7 @@ public class MainActivity extends SubsonicTabActivity
 		// Remember the current theme.
 		theme = Util.getTheme(this);
 
-		showInfoDialog(shouldShowDialog);
+		showInfoDialog(showWelcomeScreen);
 	}
 
 	private void loadSettings()
@@ -279,14 +257,24 @@ public class MainActivity extends SubsonicTabActivity
 	protected void onResume()
 	{
 		super.onResume();
+		boolean shouldRestart = false;
 
 		boolean id3 = Util.getShouldUseId3Tags(MainActivity.this);
+		int currentActiveServer = ActiveServerProvider.Companion.getActiveServerId(MainActivity.this);
 
 		if (id3 != shouldUseId3)
 		{
 			shouldUseId3 = id3;
-			restart();
+			shouldRestart = true;
 		}
+
+		if (currentActiveServer != lastActiveServer)
+		{
+			lastActiveServer = currentActiveServer;
+			shouldRestart = true;
+		}
+
+		if (shouldRestart) restart();
 	}
 
 	@Override
@@ -296,148 +284,6 @@ public class MainActivity extends SubsonicTabActivity
 		menuInflater.inflate(R.menu.main, menu);
 		super.onCreateOptionsMenu(menu);
 
-		return true;
-	}
-
-	@Override
-	public void onCreateContextMenu(final ContextMenu menu, final View view, final ContextMenu.ContextMenuInfo menuInfo)
-	{
-		super.onCreateContextMenu(menu, view, menuInfo);
-
-		final int activeServer = Util.getActiveServer(this);
-		boolean checked = false;
-
-		for (int i = 0; i <= Util.getActiveServers(this); i++)
-		{
-			final String serverName = Util.getServerName(this, i);
-
-			if (serverName == null)
-			{
-				continue;
-			}
-
-			if (Util.getServerEnabled(this, i))
-			{
-				final int menuItemNum = getMenuItem(i);
-
-				final MenuItem menuItem = menu.add(MENU_GROUP_SERVER, menuItemNum, menuItemNum, serverName);
-
-				if (activeServer == i)
-				{
-					checked = true;
-					menuItem.setChecked(true);
-				}
-			}
-		}
-
-		if (!checked)
-		{
-			MenuItem menuItem = menu.findItem(getMenuItem(0));
-
-			if (menuItem != null)
-			{
-				menuItem.setChecked(true);
-			}
-		}
-
-		menu.setGroupCheckable(MENU_GROUP_SERVER, true, true);
-		menu.setHeaderTitle(R.string.main_select_server);
-	}
-
-	private boolean getActiveServerEnabled()
-	{
-		final int activeServer = Util.getActiveServer(this);
-		boolean activeServerEnabled = false;
-
-		for (int i = 0; i <= Util.getActiveServers(this); i++)
-		{
-			if (Util.getServerEnabled(this, i))
-			{
-				if (activeServer == i)
-				{
-					activeServerEnabled = true;
-				}
-			}
-		}
-
-		return activeServerEnabled;
-	}
-
-	private static int getMenuItem(final int serverInstance)
-	{
-		switch (serverInstance)
-		{
-			case 0:
-				return MENU_ITEM_OFFLINE;
-			case 1:
-				return MENU_ITEM_SERVER_1;
-			case 2:
-				return MENU_ITEM_SERVER_2;
-			case 3:
-				return MENU_ITEM_SERVER_3;
-			case 4:
-				return MENU_ITEM_SERVER_4;
-			case 5:
-				return MENU_ITEM_SERVER_5;
-			case 6:
-				return MENU_ITEM_SERVER_6;
-			case 7:
-				return MENU_ITEM_SERVER_7;
-			case 8:
-				return MENU_ITEM_SERVER_8;
-			case 9:
-				return MENU_ITEM_SERVER_9;
-			case 10:
-				return MENU_ITEM_SERVER_10;
-		}
-
-		return 0;
-	}
-
-	@Override
-	public boolean onContextItemSelected(final MenuItem menuItem)
-	{
-		switch (menuItem.getItemId())
-		{
-			case MENU_ITEM_OFFLINE:
-				setActiveServer(0);
-				break;
-			case MENU_ITEM_SERVER_1:
-				setActiveServer(1);
-				break;
-			case MENU_ITEM_SERVER_2:
-				setActiveServer(2);
-				break;
-			case MENU_ITEM_SERVER_3:
-				setActiveServer(3);
-				break;
-			case MENU_ITEM_SERVER_4:
-				setActiveServer(4);
-				break;
-			case MENU_ITEM_SERVER_5:
-				setActiveServer(5);
-				break;
-			case MENU_ITEM_SERVER_6:
-				setActiveServer(6);
-				break;
-			case MENU_ITEM_SERVER_7:
-				setActiveServer(7);
-				break;
-			case MENU_ITEM_SERVER_8:
-				setActiveServer(8);
-				break;
-			case MENU_ITEM_SERVER_9:
-				setActiveServer(9);
-				break;
-			case MENU_ITEM_SERVER_10:
-				setActiveServer(10);
-				break;
-			default:
-				return super.onContextItemSelected(menuItem);
-		}
-
-		// Restart activity
-		restart();
 		return true;
 	}
 
@@ -459,26 +305,6 @@ public class MainActivity extends SubsonicTabActivity
 		return false;
 	}
 
-	private void setActiveServer(final int instance)
-	{
-		final MediaPlayerController service = getMediaPlayerController();
-
-		if (Util.getActiveServer(this) != instance)
-		{
-			if (service != null)
-			{
-				service.clearIncomplete();
-			}
-		}
-
-		Util.setActiveServer(this, instance);
-
-		if (service != null)
-		{
-			service.setJukeboxEnabled(Util.getJukeboxEnabled(this, instance));
-		}
-	}
-
 	private void exit()
 	{
 		lifecycleSupport.getValue().onDestroy();
@@ -492,9 +318,9 @@ public class MainActivity extends SubsonicTabActivity
 		{
 			infoDialogDisplayed = true;
 
-			if (show || Util.getRestUrl(this, null).contains("yourhost"))
+			if (show)
 			{
-				Util.showWelcomeDialog(this, this, R.string.main_welcome_title, R.string.main_welcome_text);
+				Util.showWelcomeDialog(this, this, R.string.main_welcome_title, R.string.main_welcome_text_new);
 			}
 		}
 	}
@@ -546,7 +372,13 @@ public class MainActivity extends SubsonicTabActivity
 		startActivityForResultWithoutTransition(this, intent);
 	}
 
-    /**
+	private void showServers()
+	{
+		final Intent intent = new Intent(this, ServerSelectorActivity.class);
+		startActivityForResult(intent, 0);
+	}
+
+	/**
      * Temporary task to make a ping to server to get it supported api version.
      */
     private static class PingTask extends TabActivityBackgroundTask<Void> {

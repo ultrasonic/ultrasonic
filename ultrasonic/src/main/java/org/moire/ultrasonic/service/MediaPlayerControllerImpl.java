@@ -22,9 +22,10 @@ import android.content.Context;
 import android.content.Intent;
 import android.util.Log;
 
-import org.koin.java.standalone.KoinJavaComponent;
+import org.koin.java.KoinJavaComponent;
 import org.moire.ultrasonic.audiofx.EqualizerController;
 import org.moire.ultrasonic.audiofx.VisualizerController;
+import org.moire.ultrasonic.data.ActiveServerProvider;
 import org.moire.ultrasonic.domain.MusicDirectory;
 import org.moire.ultrasonic.domain.MusicDirectory.Entry;
 import org.moire.ultrasonic.domain.PlayerState;
@@ -40,7 +41,7 @@ import java.util.List;
 
 import kotlin.Lazy;
 
-import static org.koin.java.standalone.KoinJavaComponent.inject;
+import static org.koin.java.KoinJavaComponent.inject;
 
 /**
  * The implementation of the Media Player Controller.
@@ -63,6 +64,7 @@ public class MediaPlayerControllerImpl implements MediaPlayerController
 
 	private Context context;
 	private Lazy<JukeboxMediaPlayer> jukeboxMediaPlayer = inject(JukeboxMediaPlayer.class);
+	private Lazy<ActiveServerProvider> activeServerProvider = inject(ActiveServerProvider.class);
 	private final DownloadQueueSerializer downloadQueueSerializer;
 	private final ExternalStorageMonitor externalStorageMonitor;
 	private final Downloader downloader;
@@ -93,8 +95,7 @@ public class MediaPlayerControllerImpl implements MediaPlayerController
 			}
 		});
 
-		int instance = Util.getActiveServer(context);
-		setJukeboxEnabled(Util.getJukeboxEnabled(context, instance));
+		setJukeboxEnabled(activeServerProvider.getValue().getActiveServer().getJukeboxByDefault());
 		created = true;
 
 		Log.i(TAG, "MediaPlayerControllerImpl created");
@@ -519,7 +520,7 @@ public class MediaPlayerControllerImpl implements MediaPlayerController
 	{
 		try
 		{
-			String username = Util.getUserName(context, Util.getActiveServer(context));
+			String username = activeServerProvider.getValue().getActiveServer().getUserName();
 			UserInfo user = MusicServiceFactory.getMusicService(context).getUser(username, context, null);
 			return user.getJukeboxRole();
 		}

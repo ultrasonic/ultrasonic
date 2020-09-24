@@ -1,10 +1,31 @@
 package org.moire.ultrasonic.di
 
-import org.koin.dsl.module.module
+import androidx.room.Room
+import org.koin.android.ext.koin.androidContext
+import org.koin.android.viewmodel.dsl.viewModel
+import org.koin.core.qualifier.named
+import org.koin.dsl.module
+import org.moire.ultrasonic.activity.ServerSettingsModel
+import org.moire.ultrasonic.data.ActiveServerProvider
+import org.moire.ultrasonic.data.AppDatabase
 import org.moire.ultrasonic.util.Util
 
 const val SP_NAME = "Default_SP"
 
 val appPermanentStorage = module {
-    single(name = SP_NAME) { Util.getPreferences(getProperty(DiProperties.APP_CONTEXT)) }
+    single(named(SP_NAME)) { Util.getPreferences(androidContext()) }
+
+    single {
+        Room.databaseBuilder(
+            androidContext(),
+            AppDatabase::class.java,
+            "ultrasonic-database"
+        ).build()
+    }
+
+    single { get<AppDatabase>().serverSettingDao() }
+
+    viewModel { ServerSettingsModel(get(), get(), androidContext()) }
+
+    single { ActiveServerProvider(get(), androidContext()) }
 }

@@ -26,6 +26,7 @@ import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
 import org.moire.ultrasonic.R;
+import org.moire.ultrasonic.data.ActiveServerProvider;
 import org.moire.ultrasonic.domain.MusicDirectory;
 import org.moire.ultrasonic.service.MusicService;
 import org.moire.ultrasonic.service.MusicServiceFactory;
@@ -127,7 +128,7 @@ public class AlbumView extends UpdateView
 		viewHolder.artist.setVisibility(artist == null ? View.GONE : View.VISIBLE);
 		viewHolder.star.setImageDrawable(starred ? starDrawable : starHollowDrawable);
 
-		if (Util.isOffline(this.context) || "-1".equals(album.getId()))
+		if (ActiveServerProvider.Companion.isOffline(this.context) || "-1".equals(album.getId()))
 		{
 			viewHolder.star.setVisibility(View.GONE);
 		}

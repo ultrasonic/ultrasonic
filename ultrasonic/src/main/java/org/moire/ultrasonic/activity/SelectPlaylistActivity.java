@@ -44,6 +44,7 @@ import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import org.moire.ultrasonic.R;
 import org.moire.ultrasonic.api.subsonic.ApiNotSupportedException;
+import org.moire.ultrasonic.data.ActiveServerProvider;
 import org.moire.ultrasonic.domain.Playlist;
 import org.moire.ultrasonic.service.MusicService;
 import org.moire.ultrasonic.service.MusicServiceFactory;
@@ -123,7 +124,7 @@ public class SelectPlaylistActivity extends SubsonicTabActivity implements Adapt
 				boolean refresh = getIntent().getBooleanExtra(Constants.INTENT_EXTRA_NAME_REFRESH, false);
 				List<Playlist> playlists = musicService.getPlaylists(refresh, SelectPlaylistActivity.this, this);
 
-				if (!Util.isOffline(SelectPlaylistActivity.this))
+				if (!ActiveServerProvider.Companion.isOffline(SelectPlaylistActivity.this))
 					new CacheCleaner(SelectPlaylistActivity.this).cleanPlaylists(playlists);
 				return playlists;
 			}
@@ -144,14 +145,14 @@ public class SelectPlaylistActivity extends SubsonicTabActivity implements Adapt
 		super.onCreateContextMenu(menu, view, menuInfo);
 
 		MenuInflater inflater = getMenuInflater();
-		if (Util.isOffline(this)) inflater.inflate(R.menu.select_playlist_context_offline, menu);
+		if (ActiveServerProvider.Companion.isOffline(this)) inflater.inflate(R.menu.select_playlist_context_offline, menu);
 		else inflater.inflate(R.menu.select_playlist_context, menu);
 
 		MenuItem downloadMenuItem = menu.findItem(R.id.album_menu_download);
 
 		if (downloadMenuItem != null)
 		{
-			downloadMenuItem.setVisible(!Util.isOffline(this));
+			downloadMenuItem.setVisible(!ActiveServerProvider.Companion.isOffline(this));
 		}
 	}
 

@@ -11,7 +11,7 @@ import org.moire.ultrasonic.util.Util;
 
 import kotlin.Lazy;
 
-import static org.koin.java.standalone.KoinJavaComponent.inject;
+import static org.koin.java.KoinJavaComponent.inject;
 
 public class AudioFocusHandler
 {

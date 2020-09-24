@@ -18,7 +18,7 @@ import java.util.concurrent.TimeUnit;
 
 import kotlin.Lazy;
 
-import static org.koin.java.standalone.KoinJavaComponent.inject;
+import static org.koin.java.KoinJavaComponent.inject;
 import static org.moire.ultrasonic.domain.PlayerState.DOWNLOADING;
 import static org.moire.ultrasonic.domain.PlayerState.STARTED;
 

@@ -19,23 +19,25 @@
 package org.moire.ultrasonic.service
 
 import android.content.Context
-import org.koin.standalone.KoinComponent
-import org.koin.standalone.get
-import org.koin.standalone.release
+import org.koin.core.KoinComponent
+import org.koin.core.context.loadKoinModules
+import org.koin.core.context.unloadKoinModules
+import org.koin.core.get
+import org.koin.core.qualifier.named
 import org.moire.ultrasonic.cache.Directories
-import org.moire.ultrasonic.di.MUSIC_SERVICE_CONTEXT
+import org.moire.ultrasonic.data.ActiveServerProvider
 import org.moire.ultrasonic.di.OFFLINE_MUSIC_SERVICE
 import org.moire.ultrasonic.di.ONLINE_MUSIC_SERVICE
-import org.moire.ultrasonic.util.Util
+import org.moire.ultrasonic.di.musicServiceModule
 
 @Deprecated("Use DI way to get MusicService")
 object MusicServiceFactory : KoinComponent {
     @JvmStatic
     fun getMusicService(context: Context): MusicService {
-        return if (Util.isOffline(context)) {
-            get(OFFLINE_MUSIC_SERVICE)
+        return if (ActiveServerProvider.isOffline(context)) {
+            get(named(OFFLINE_MUSIC_SERVICE))
         } else {
-            get(ONLINE_MUSIC_SERVICE)
+            get(named(ONLINE_MUSIC_SERVICE))
         }
     }
 
@@ -45,11 +47,12 @@ object MusicServiceFactory : KoinComponent {
      */
     @JvmStatic
     fun resetMusicService() {
-        release(MUSIC_SERVICE_CONTEXT)
+        unloadKoinModules(musicServiceModule)
+        loadKoinModules(musicServiceModule)
     }
 
     @JvmStatic
-    fun getServerId() = get<String>(name = "ServerID")
+    fun getServerId() = get<String>(named("ServerID"))
 
     @JvmStatic
     fun getDirectories() = get<Directories>()

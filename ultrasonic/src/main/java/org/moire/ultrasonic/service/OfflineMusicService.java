@@ -25,6 +25,7 @@ import android.util.Log;
 
 import org.moire.ultrasonic.api.subsonic.SubsonicAPIClient;
 import org.moire.ultrasonic.cache.PermanentFileStorage;
+import org.moire.ultrasonic.data.ActiveServerProvider;
 import org.moire.ultrasonic.domain.Artist;
 import org.moire.ultrasonic.domain.Genre;
 import org.moire.ultrasonic.domain.Indexes;
@@ -60,6 +61,10 @@ import java.util.SortedSet;
 import java.util.concurrent.TimeUnit;
 import java.util.regex.Pattern;
 
+import kotlin.Lazy;
+
+import static org.koin.java.KoinJavaComponent.inject;
+
 /**
  * @author Sindre Mehus
  */
@@ -68,7 +73,9 @@ public class OfflineMusicService extends RESTMusicService
 	private static final String TAG = OfflineMusicService.class.getSimpleName();
 	private static final Pattern COMPILE = Pattern.compile(" ");
 
-    public OfflineMusicService(SubsonicAPIClient subsonicAPIClient, PermanentFileStorage storage) {
+	private Lazy<ActiveServerProvider> activeServerProvider = inject(ActiveServerProvider.class);
+
+	public OfflineMusicService(SubsonicAPIClient subsonicAPIClient, PermanentFileStorage storage) {
         super(subsonicAPIClient, storage);
     }
 
@@ -626,7 +633,7 @@ public class OfflineMusicService extends RESTMusicService
 	@Override
 	public void createPlaylist(String id, String name, List<MusicDirectory.Entry> entries, Context context, ProgressListener progressListener) throws Exception
 	{
-		File playlistFile = FileUtil.getPlaylistFile(context, Util.getServerName(context), name);
+		File playlistFile = FileUtil.getPlaylistFile(context, activeServerProvider.getValue().getActiveServer().getName(), name);
 		FileWriter fw = new FileWriter(playlistFile);
 		BufferedWriter bw = new BufferedWriter(fw);
 		try

@@ -1,5 +1,6 @@
 apply plugin: 'com.android.application'
 apply plugin: 'kotlin-android'
+apply plugin: 'kotlin-kapt'
 apply plugin: 'jacoco'
 apply from: "../gradle_scripts/code_quality.gradle"
 
@@ -65,10 +66,17 @@ dependencies {
     implementation androidSupport.support
     implementation androidSupport.design
     implementation androidSupport.multidex
+    implementation androidSupport.roomRuntime
+    implementation androidSupport.roomKtx
+    implementation androidSupport.viewModelKtx
+    implementation androidSupport.constraintLayout
 
     implementation other.kotlinStdlib
+    implementation other.kotlinxCoroutines
     implementation other.koinAndroid
-    implementation other.koinJava
+    implementation other.koinViewModel
+
+    kapt androidSupport.room
 
     testImplementation other.kotlinReflect
     testImplementation testing.junit

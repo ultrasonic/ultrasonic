@@ -39,7 +39,7 @@ import java.util.Map;
 
 import kotlin.Lazy;
 
-import static org.koin.java.standalone.KoinJavaComponent.inject;
+import static org.koin.java.KoinJavaComponent.inject;
 
 /**
  * Equalizer controls.

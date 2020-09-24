@@ -22,6 +22,7 @@ import org.jetbrains.annotations.NotNull;
 import org.moire.ultrasonic.activity.DownloadActivity;
 import org.moire.ultrasonic.audiofx.EqualizerController;
 import org.moire.ultrasonic.audiofx.VisualizerController;
+import org.moire.ultrasonic.data.ActiveServerProvider;
 import org.moire.ultrasonic.domain.MusicDirectory;
 import org.moire.ultrasonic.domain.PlayerState;
 import org.moire.ultrasonic.receiver.MediaButtonIntentReceiver;
@@ -968,7 +969,7 @@ public class LocalMediaPlayer
         {
             setPlayerState(DOWNLOADING);
 
-            while (!bufferComplete() && !Util.isOffline(context))
+            while (!bufferComplete() && !ActiveServerProvider.Companion.isOffline(context))
             {
                 Util.sleepQuietly(1000L);
                 if (isCancelled())

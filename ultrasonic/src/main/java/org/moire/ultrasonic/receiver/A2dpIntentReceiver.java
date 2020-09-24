@@ -9,7 +9,7 @@ import org.moire.ultrasonic.service.MediaPlayerController;
 
 import kotlin.Lazy;
 
-import static org.koin.java.standalone.KoinJavaComponent.inject;
+import static org.koin.java.KoinJavaComponent.inject;
 
 public class A2dpIntentReceiver extends BroadcastReceiver
 {

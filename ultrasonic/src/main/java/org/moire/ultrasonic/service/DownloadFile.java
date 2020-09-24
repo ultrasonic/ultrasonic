@@ -44,7 +44,7 @@ import kotlin.Pair;
 import static android.content.Context.POWER_SERVICE;
 import static android.os.PowerManager.ON_AFTER_RELEASE;
 import static android.os.PowerManager.SCREEN_DIM_WAKE_LOCK;
-import static org.koin.java.standalone.KoinJavaComponent.inject;
+import static org.koin.java.KoinJavaComponent.inject;
 
 /**
  * @author Sindre Mehus

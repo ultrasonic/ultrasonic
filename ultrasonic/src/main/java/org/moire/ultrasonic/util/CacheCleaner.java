@@ -5,6 +5,7 @@ import android.os.AsyncTask;
 import android.os.StatFs;
 import android.util.Log;
 
+import org.moire.ultrasonic.data.ActiveServerProvider;
 import org.moire.ultrasonic.domain.Playlist;
 import org.moire.ultrasonic.service.DownloadFile;
 import org.moire.ultrasonic.service.Downloader;
@@ -21,7 +22,7 @@ import java.util.SortedSet;
 
 import kotlin.Lazy;
 
-import static org.koin.java.standalone.KoinJavaComponent.inject;
+import static org.koin.java.KoinJavaComponent.inject;
 
 /**
  * @author Sindre Mehus
@@ -39,6 +40,7 @@ public class CacheCleaner
 
 	private final Context context;
 	private Lazy<Downloader> downloader = inject(Downloader.class);
+	private Lazy<ActiveServerProvider> activeServerProvider = inject(ActiveServerProvider.class);
 
 	public CacheCleaner(Context context)
 	{
@@ -301,7 +303,7 @@ public class CacheCleaner
 			try
 			{
 				Thread.currentThread().setName("BackgroundPlaylistsCleanup");
-				String server = Util.getServerName(context);
+				String server = activeServerProvider.getValue().getActiveServer().getName();
 				SortedSet<File> playlistFiles = FileUtil.listFiles(FileUtil.getPlaylistDirectory(context, server));
 				List<Playlist> playlists = params[0];
 				for (Playlist playlist : playlists)

@@ -101,7 +101,7 @@
     <string name="main.songs_starred">Mit Stern</string>
     <string name="main.songs_title">Titel</string>
     <string name="main.videos">Filme</string>
-    <string name="main.welcome_text">Willkommen bei UltraSonic! Die App ist zurzeit unkonfiguriert. Nachdem du deinen Server konfiguriert hast (siehe <b>subsonic.org</b>), bitte <i>Server hinzufügen</i> in den <b>Einstellungen</b> klicken um die Verbindun herzustellen.</string>
+    <string name="main.welcome_text_new">Welcome to Ultrasonic! The app is currently not configured. After you\'ve set up your personal server (available from <b>subsonic.org</b>), please click <i>Manage Servers</i> in <b>Settings</b> to connect to it.</string>
     <string name="main.welcome_title">Willkommen</string>
     <string name="menu.about">Über</string>
     <string name="menu.common">Allgemein</string>
@@ -277,7 +277,7 @@
     <string name="settings.send_bluetooth_album_art">Album Cover über Bluetooth</string>
     <string name="settings.send_bluetooth_notification_summary">Wiedergabe-Benachrichtigungen über Bluetooth senden</string>
     <string name="settings.send_bluetooth_notification">Bluetooth-Benachrichtigung</string>
-    <string name="settings.server_add_server">Server hinzufügen</string>
+    <string name="settings.server_manage_servers">Manage Servers</string>
     <string name="settings.server_address">Server Adresse</string>
     <string name="settings.server_name">Name</string>
     <string name="settings.server_password">Kennwort</string>
@@ -418,6 +418,19 @@
     <string name="filepicker.select">Select</string>
     <string name="filepicker.default">Use default</string>
     <string name="filepicker.available_drives">Available drives:</string>
+
+    <string name="server_selector.label">Configured servers</string>
+    <string name="server_selector.delete_confirmation">Are you sure you want to delete the server?</string>
+    <string name="server_editor.label">Editing server</string>
+    <string name="server_editor.new_label">Create server</string>
+    <string name="server_editor.leave_confirmation">Are you sure you want to leave and lose your changes?</string>
+    <string name="server_editor.required">This field is required</string>
+    <string name="server_menu.edit">Edit</string>
+    <string name="server_menu.delete">Delete</string>
+    <string name="server_menu.move_up">Move up</string>
+    <string name="server_menu.move_down">Move down</string>
+    <string name="server_editor.authentication">Authentication</string>
+    <string name="server_editor.advanced">Advanced settings</string>
 
     <plurals name="select_album_n_songs">
         <item quantity="one">1 Titel</item>
