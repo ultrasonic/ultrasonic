@@ -66,6 +66,7 @@
     <attr name="save" format="reference"/>
     <attr name="screen_on_off" format="reference"/>
     <attr name="search" format="reference"/>
+    <attr name="select_server" format="reference"/>
     <attr name="select_folder" format="reference"/>
     <attr name="settings" format="reference"/>
     <attr name="share" format="reference"/>
@@ -98,6 +99,7 @@
     <attr name="filepicker_subdirectory_left" format="reference"/>
     <attr name="filepicker_subdirectory_up" format="reference"/>
     <attr name="filepicker_sd_card" format="reference"/>
+    <attr name="drag_queue" format="reference"/>
     <attr name="more_vert" format="reference"/>
     <attr name="list_selector_holo" format="reference"/>
     <attr name="list_selector_holo_selected" format="reference"/>

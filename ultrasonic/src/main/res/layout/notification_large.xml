@@ -53,7 +53,7 @@
                 android:background="@drawable/btn_bg"
                 android:gravity="center_vertical"
                 android:scaleType="fitXY"
-                android:src="@drawable/ic_menu_exit_dark" />
+                android:src="@drawable/ic_menu_close_dark" />
         </LinearLayout>
 
 		<TextView
