@@ -85,7 +85,10 @@ class ServerSettingsModel(
      */
     fun getServerList(): LiveData<List<ServerSetting>> {
         viewModelScope.launch {
-            val dbServerList = repository.loadAllServerSettings().toMutableList()
+            var dbServerList = repository.loadAllServerSettings().toMutableList()
+            if (areIndexesMissing(dbServerList)) {
+                dbServerList = reindexSettings(dbServerList).toMutableList()
+            }
 
             dbServerList.add(0, ServerSetting(context.getString(R.string.main_offline), ""))
             serverList.value = dbServerList
@@ -196,7 +199,7 @@ class ServerSettingsModel(
 
         viewModelScope.launch {
             serverSetting.index = (repository.count() ?: 0) + 1
-            serverSetting.id = serverSetting.index
+            serverSetting.id = (repository.getMaxId() ?: 0) + 1
             repository.insert(serverSetting)
             Log.d(TAG, "saveNewItem saved server setting: $serverSetting")
         }
@@ -230,5 +233,32 @@ class ServerSettingsModel(
             settings.getBoolean(PREFERENCES_KEY_LDAP_SUPPORT + preferenceId, false),
             settings.getString(PREFERENCES_KEY_MUSIC_FOLDER_ID + preferenceId, null)
         )
+    }
+
+    /**
+     * Checks if there are any missing indexes in the ServerSetting list
+     * For displaying the Server Settings in a ListView, it is mandatory that their indexes
+     * are'nt missing. Ideally the indexes are continuous, but some circumstances (e.g.
+     * concurrency or migration errors) may get them out of order.
+     * This would make the List Adapter crash, so it is best to prepare and check the list.
+     */
+    private fun areIndexesMissing(settings: List<ServerSetting>): Boolean {
+        for (i in 1 until settings.size + 1) {
+            if (!settings.any { s -> s.index == i }) return true
+        }
+        return false
+    }
+
+    /**
+     * This function updates all the Server Settings in the DB so their indexing is continuous.
+     */
+    private suspend fun reindexSettings(settings: List<ServerSetting>): List<ServerSetting> {
+        val sortedSettings = settings.sortedBy { t -> t.index }
+        for (i in sortedSettings.indices) {
+            sortedSettings[i].index = i + 1
+            repository.update(sortedSettings[i])
+            Log.d(TAG, "reindexSettings saved ${sortedSettings[i]}")
+        }
+        return sortedSettings
     }
 }

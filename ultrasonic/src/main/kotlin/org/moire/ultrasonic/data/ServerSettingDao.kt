@@ -54,4 +54,10 @@ interface ServerSettingDao {
      */
     @Query("SELECT COUNT(*) FROM serverSetting")
     suspend fun count(): Int?
+
+    /**
+     * Retrieves the greatest value of the Id column in the table
+     */
+    @Query("SELECT MAX([id]) FROM serverSetting")
+    suspend fun getMaxId(): Int?
 }
