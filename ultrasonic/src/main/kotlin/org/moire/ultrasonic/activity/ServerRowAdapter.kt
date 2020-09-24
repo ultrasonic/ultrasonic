@@ -53,7 +53,7 @@ internal class ServerRowAdapter(
     }
 
     override fun getCount(): Int {
-        return if (manageMode) data.size - 1 else data.size
+        return if (manageMode) data.size else data.size + 1
     }
 
     override fun getItem(position: Int): Any {
@@ -81,8 +81,13 @@ internal class ServerRowAdapter(
         val image = vi?.findViewById<ImageView>(R.id.server_image)
         val serverMenu = vi?.findViewById<ImageButton>(R.id.server_menu)
 
-        text?.text = data.single { setting -> setting.index == index }.name
-        description?.text = data.single { setting -> setting.index == index }.url
+        if (index == 0) {
+            text?.text = context.getString(R.string.main_offline)
+            description?.text = ""
+        } else {
+            text?.text = data.singleOrNull { setting -> setting.index == index }?.name ?: ""
+            description?.text = data.singleOrNull { setting -> setting.index == index }?.url ?: ""
+        }
 
         // Provide icons for the row
         if (index == 0) {

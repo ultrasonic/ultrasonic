@@ -1,5 +1,6 @@
 package org.moire.ultrasonic.data
 
+import androidx.lifecycle.LiveData
 import androidx.room.Dao
 import androidx.room.Delete
 import androidx.room.Insert
@@ -35,7 +36,7 @@ interface ServerSettingDao {
      * Loads all Server Settings from the table
      */
     @Query("SELECT * FROM serverSetting")
-    suspend fun loadAllServerSettings(): Array<ServerSetting>
+    fun loadAllServerSettings(): LiveData<List<ServerSetting>>
 
     /**
      * Finds a Server Setting by its unique Id
@@ -50,6 +51,13 @@ interface ServerSettingDao {
     suspend fun findByIndex(index: Int): ServerSetting?
 
     /**
+     * Finds a Server Setting by its Index in the Select List
+     * @return LiveData of the ServerSetting
+     */
+    @Query("SELECT * FROM serverSetting WHERE [index] = :index")
+    fun getLiveServerSettingByIndex(index: Int): LiveData<ServerSetting?>
+
+    /**
      * Retrieves the count of rows in the table
      */
     @Query("SELECT COUNT(*) FROM serverSetting")
@@ -60,4 +68,10 @@ interface ServerSettingDao {
      */
     @Query("SELECT MAX([id]) FROM serverSetting")
     suspend fun getMaxId(): Int?
+
+    /**
+     * Retrieves the greatest value of the Index column in the table
+     */
+    @Query("SELECT MAX([index]) FROM serverSetting")
+    suspend fun getMaxIndex(): Int?
 }
