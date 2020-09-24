@@ -35,7 +35,7 @@ public class UltrasonicAppWidgetProvider extends AppWidgetProvider
 	}
 
 	/**
-	 * Initialize given widgets to default state, where we launch UltraSonic on default click
+	 * Initialize given widgets to default state, where we launch Ultrasonic on default click
 	 * and hide actions if service not running.
 	 */
 	private void defaultAppWidget(Context context, int[] appWidgetIds)
