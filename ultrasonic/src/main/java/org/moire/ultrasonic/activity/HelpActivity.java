@@ -198,11 +198,11 @@ public final class HelpActivity extends ResultActivity implements OnClickListene
 
 		if ("dark".equalsIgnoreCase(theme) || "fullscreen".equalsIgnoreCase(theme))
 		{
-			setTheme(R.style.UltraSonicTheme);
+			setTheme(R.style.UltrasonicTheme);
 		}
 		else if ("light".equalsIgnoreCase(theme) || "fullscreenlight".equalsIgnoreCase(theme))
 		{
-			setTheme(R.style.UltraSonicTheme_Light);
+			setTheme(R.style.UltrasonicTheme_Light);
 		}
 	}
 

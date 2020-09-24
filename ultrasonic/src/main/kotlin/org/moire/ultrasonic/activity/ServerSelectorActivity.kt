@@ -116,12 +116,12 @@ internal class ServerSelectorActivity : AppCompatActivity() {
             "dark".equals(theme, ignoreCase = true) ||
             "fullscreen".equals(theme, ignoreCase = true)
         ) {
-            setTheme(R.style.UltraSonicTheme)
+            setTheme(R.style.UltrasonicTheme)
         } else if (
             "light".equals(theme, ignoreCase = true) ||
             "fullscreenlight".equals(theme, ignoreCase = true)
         ) {
-            setTheme(R.style.UltraSonicTheme_Light)
+            setTheme(R.style.UltrasonicTheme_Light)
         }
     }
 

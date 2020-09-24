@@ -27,10 +27,10 @@ import org.moire.ultrasonic.domain.PlayerState;
 import org.moire.ultrasonic.domain.RepeatMode;
 import org.moire.ultrasonic.featureflags.Feature;
 import org.moire.ultrasonic.featureflags.FeatureStorage;
-import org.moire.ultrasonic.provider.UltraSonicAppWidgetProvider4x1;
-import org.moire.ultrasonic.provider.UltraSonicAppWidgetProvider4x2;
-import org.moire.ultrasonic.provider.UltraSonicAppWidgetProvider4x3;
-import org.moire.ultrasonic.provider.UltraSonicAppWidgetProvider4x4;
+import org.moire.ultrasonic.provider.UltrasonicAppWidgetProvider4X1;
+import org.moire.ultrasonic.provider.UltrasonicAppWidgetProvider4X2;
+import org.moire.ultrasonic.provider.UltrasonicAppWidgetProvider4X3;
+import org.moire.ultrasonic.provider.UltrasonicAppWidgetProvider4X4;
 import org.moire.ultrasonic.util.FileUtil;
 import org.moire.ultrasonic.util.ShufflePlayBuffer;
 import org.moire.ultrasonic.util.SimpleServiceBinder;
@@ -276,10 +276,10 @@ public class MediaPlayerService extends Service
                 // Update widget
                 PlayerState playerState = localMediaPlayer.playerState;
                 MusicDirectory.Entry song = currentPlaying == null? null : currentPlaying.getSong();
-                UltraSonicAppWidgetProvider4x1.getInstance().notifyChange(MediaPlayerService.this, song, playerState == PlayerState.STARTED, false);
-                UltraSonicAppWidgetProvider4x2.getInstance().notifyChange(MediaPlayerService.this, song, playerState == PlayerState.STARTED, true);
-                UltraSonicAppWidgetProvider4x3.getInstance().notifyChange(MediaPlayerService.this, song, playerState == PlayerState.STARTED, false);
-                UltraSonicAppWidgetProvider4x4.getInstance().notifyChange(MediaPlayerService.this, song, playerState == PlayerState.STARTED, false);
+                UltrasonicAppWidgetProvider4X1.getInstance().notifyChange(MediaPlayerService.this, song, playerState == PlayerState.STARTED, false);
+                UltrasonicAppWidgetProvider4X2.getInstance().notifyChange(MediaPlayerService.this, song, playerState == PlayerState.STARTED, true);
+                UltrasonicAppWidgetProvider4X3.getInstance().notifyChange(MediaPlayerService.this, song, playerState == PlayerState.STARTED, false);
+                UltrasonicAppWidgetProvider4X4.getInstance().notifyChange(MediaPlayerService.this, song, playerState == PlayerState.STARTED, false);
 
                 SubsonicTabActivity tabInstance = SubsonicTabActivity.getInstance();
 
@@ -484,10 +484,10 @@ public class MediaPlayerService extends Service
                         downloader.downloadList.indexOf(currentPlaying) + 1, getPlayerPosition());
 
                 // Update widget
-                UltraSonicAppWidgetProvider4x1.getInstance().notifyChange(MediaPlayerService.this, song, playerState == PlayerState.STARTED, false);
-                UltraSonicAppWidgetProvider4x2.getInstance().notifyChange(MediaPlayerService.this, song, playerState == PlayerState.STARTED, true);
-                UltraSonicAppWidgetProvider4x3.getInstance().notifyChange(MediaPlayerService.this, song, playerState == PlayerState.STARTED, false);
-                UltraSonicAppWidgetProvider4x4.getInstance().notifyChange(MediaPlayerService.this, song, playerState == PlayerState.STARTED, false);
+                UltrasonicAppWidgetProvider4X1.getInstance().notifyChange(MediaPlayerService.this, song, playerState == PlayerState.STARTED, false);
+                UltrasonicAppWidgetProvider4X2.getInstance().notifyChange(MediaPlayerService.this, song, playerState == PlayerState.STARTED, true);
+                UltrasonicAppWidgetProvider4X3.getInstance().notifyChange(MediaPlayerService.this, song, playerState == PlayerState.STARTED, false);
+                UltrasonicAppWidgetProvider4X4.getInstance().notifyChange(MediaPlayerService.this, song, playerState == PlayerState.STARTED, false);
                 SubsonicTabActivity tabInstance = SubsonicTabActivity.getInstance();
 
                 if (show)

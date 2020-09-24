@@ -20,22 +20,22 @@ package org.moire.ultrasonic.provider;
 
 import org.moire.ultrasonic.R;
 
-public class UltraSonicAppWidgetProvider4x2 extends UltraSonicAppWidgetProvider
+public class UltrasonicAppWidgetProvider4X4 extends UltrasonicAppWidgetProvider
 {
 
-	public UltraSonicAppWidgetProvider4x2()
+	public UltrasonicAppWidgetProvider4X4()
 	{
 		super();
-		this.layoutId = R.layout.appwidget4x2;
+		this.layoutId = R.layout.appwidget4x4;
 	}
 
-	private static UltraSonicAppWidgetProvider4x2 instance;
+	private static UltrasonicAppWidgetProvider4X4 instance;
 
-	public static synchronized UltraSonicAppWidgetProvider4x2 getInstance()
+	public static synchronized UltrasonicAppWidgetProvider4X4 getInstance()
 	{
 		if (instance == null)
 		{
-			instance = new UltraSonicAppWidgetProvider4x2();
+			instance = new UltrasonicAppWidgetProvider4X4();
 		}
 		return instance;
 	}

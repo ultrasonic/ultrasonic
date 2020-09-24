@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <style name="UltraSonicTheme" parent="Theme.AppCompat">
+    <style name="UltrasonicTheme" parent="Theme.AppCompat">
         <item name="color_background">@color/background_color_dark</item>
         <item name="color_selected">@color/selected_color_dark</item>
         <item name="star_hollow">@drawable/ic_star_hollow_dark</item>
@@ -54,7 +54,7 @@
         <item name="list_selector_holo_selected">@drawable/list_selector_holo_dark_selected</item>
     </style>
 
-    <style name="UltraSonicTheme.Light" parent="Theme.AppCompat.Light">
+    <style name="UltrasonicTheme.Light" parent="Theme.AppCompat.Light">
         <item name="color_background">@color/background_color_light</item>
         <item name="color_selected">@color/selected_color_light</item>
         <item name="star_hollow">@drawable/ic_star_hollow_light</item>

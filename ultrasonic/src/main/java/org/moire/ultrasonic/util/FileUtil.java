@@ -91,7 +91,7 @@ public class FileUtil
 
 	public static File getPlaylistDirectory(Context context)
 	{
-		File playlistDir = new File(getUltraSonicDirectory(context), "playlists");
+		File playlistDir = new File(getUltrasonicDirectory(context), "playlists");
 		ensureDirectoryExistsAndIsReadWritable(playlistDir);
 		return playlistDir;
 	}
@@ -301,7 +301,7 @@ public class FileUtil
 
 	public static File getAlbumArtDirectory(Context context)
 	{
-		File albumArtDir = new File(getUltraSonicDirectory(context), "artwork");
+		File albumArtDir = new File(getUltrasonicDirectory(context), "artwork");
 		ensureDirectoryExistsAndIsReadWritable(albumArtDir);
 		ensureDirectoryExistsAndIsReadWritable(new File(albumArtDir, ".nomedia"));
 		return albumArtDir;
@@ -351,7 +351,7 @@ public class FileUtil
 
 	private static File getOrCreateDirectory(Context context, String name)
 	{
-		File dir = new File(getUltraSonicDirectory(context), name);
+		File dir = new File(getUltrasonicDirectory(context), name);
 
 		if (!dir.exists() && !dir.mkdirs())
 		{
@@ -361,7 +361,7 @@ public class FileUtil
 		return dir;
 	}
 
-	public static File getUltraSonicDirectory(Context context)
+	public static File getUltrasonicDirectory(Context context)
 	{
         if (Build.VERSION.SDK_INT < Build.VERSION_CODES.M)
             return new File(Environment.getExternalStorageDirectory(), "Android/data/org.moire.ultrasonic");

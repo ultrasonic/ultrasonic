@@ -1,5 +1,5 @@
 /*
- This file is part of UltraSonic.
+ This file is part of Ultrasonic.
 
  Subsonic is free software: you can redistribute it and/or modify
  it under the terms of the GNU General Public License as published by
@@ -301,11 +301,11 @@ public class SubsonicTabActivity extends ResultActivity implements OnClickListen
 
 		if ("dark".equalsIgnoreCase(theme) || "fullscreen".equalsIgnoreCase(theme))
 		{
-			setTheme(R.style.UltraSonicTheme);
+			setTheme(R.style.UltrasonicTheme);
 		}
 		else if ("light".equalsIgnoreCase(theme) || "fullscreenlight".equalsIgnoreCase(theme))
 		{
-			setTheme(R.style.UltraSonicTheme_Light);
+			setTheme(R.style.UltrasonicTheme_Light);
 		}
 	}
 
@@ -1231,11 +1231,11 @@ public class SubsonicTabActivity extends ResultActivity implements OnClickListen
 
 			try
 			{
-				file = new File(FileUtil.getUltraSonicDirectory(context), filename);
+				file = new File(FileUtil.getUltrasonicDirectory(context), filename);
 				printWriter = new PrintWriter(file);
 				printWriter.println("Android API level: " + Build.VERSION.SDK_INT);
-				printWriter.println("UltraSonic version name: " + Util.getVersionName(context));
-				printWriter.println("UltraSonic version code: " + Util.getVersionCode(context));
+				printWriter.println("Ultrasonic version name: " + Util.getVersionName(context));
+				printWriter.println("Ultrasonic version code: " + Util.getVersionCode(context));
 				printWriter.println();
 				throwable.printStackTrace(printWriter);
 				Log.i(TAG, "Stack trace written to " + file);

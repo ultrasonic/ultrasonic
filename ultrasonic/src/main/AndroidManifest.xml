@@ -150,7 +150,7 @@
             </intent-filter>
         </receiver>
         <receiver
-            android:name=".provider.UltraSonicAppWidgetProvider4x1"
+            android:name=".provider.UltrasonicAppWidgetProvider4X1"
             android:label="Ultrasonic (4x1)">
             <intent-filter>
                 <action android:name="android.appwidget.action.APPWIDGET_UPDATE"/>
@@ -161,7 +161,7 @@
                 android:resource="@xml/appwidget_info_4x1"/>
         </receiver>
         <receiver
-            android:name=".provider.UltraSonicAppWidgetProvider4x2"
+            android:name=".provider.UltrasonicAppWidgetProvider4X2"
             android:label="Ultrasonic (4x2)">
             <intent-filter>
                 <action android:name="android.appwidget.action.APPWIDGET_UPDATE"/>
@@ -172,7 +172,7 @@
                 android:resource="@xml/appwidget_info_4x2"/>
         </receiver>
         <receiver
-            android:name=".provider.UltraSonicAppWidgetProvider4x3"
+            android:name=".provider.UltrasonicAppWidgetProvider4X3"
             android:label="Ultrasonic (4x3)">
             <intent-filter>
                 <action android:name="android.appwidget.action.APPWIDGET_UPDATE"/>
@@ -183,7 +183,7 @@
                 android:resource="@xml/appwidget_info_4x3"/>
         </receiver>
         <receiver
-            android:name=".provider.UltraSonicAppWidgetProvider4x4"
+            android:name=".provider.UltrasonicAppWidgetProvider4X4"
             android:label="Ultrasonic (4x4)">
             <intent-filter>
                 <action android:name="android.appwidget.action.APPWIDGET_UPDATE"/>

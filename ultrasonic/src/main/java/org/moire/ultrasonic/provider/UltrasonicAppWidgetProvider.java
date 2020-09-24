@@ -22,10 +22,10 @@ import org.moire.ultrasonic.service.MediaPlayerController;
 import org.moire.ultrasonic.util.Constants;
 import org.moire.ultrasonic.util.FileUtil;
 
-public class UltraSonicAppWidgetProvider extends AppWidgetProvider
+public class UltrasonicAppWidgetProvider extends AppWidgetProvider
 {
 
-	private final static String TAG = UltraSonicAppWidgetProvider.class.getSimpleName();
+	private final static String TAG = UltrasonicAppWidgetProvider.class.getSimpleName();
 	protected int layoutId;
 
 	@Override

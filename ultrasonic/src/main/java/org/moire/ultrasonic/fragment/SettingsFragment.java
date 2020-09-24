@@ -341,7 +341,7 @@ public class SettingsFragment extends PreferenceFragment
     }
 
     private void setHideMedia(boolean hide) {
-        File nomediaDir = new File(FileUtil.getUltraSonicDirectory(getActivity()), ".nomedia");
+        File nomediaDir = new File(FileUtil.getUltrasonicDirectory(getActivity()), ".nomedia");
         if (hide && !nomediaDir.exists()) {
             if (!nomediaDir.mkdir()) {
                 Log.w(LOG_TAG, "Failed to create " + nomediaDir);
