@@ -405,14 +405,18 @@ public class CachedMusicService implements MusicService
 	}
 
 	@Override
-	public List<Genre> getGenres(Context context, ProgressListener progressListener) throws Exception
+	public List<Genre> getGenres(boolean refresh, Context context, ProgressListener progressListener) throws Exception
 	{
 		checkSettingsChanged(context);
+		if (refresh)
+		{
+			cachedGenres.clear();
+		}
 		List<Genre> result = cachedGenres.get();
 
 		if (result == null)
 		{
-			result = musicService.getGenres(context, progressListener);
+			result = musicService.getGenres(refresh, context, progressListener);
 			cachedGenres.set(result);
 		}
 
