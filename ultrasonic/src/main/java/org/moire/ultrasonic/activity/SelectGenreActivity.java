@@ -111,13 +111,14 @@ public class SelectGenreActivity extends SubsonicTabActivity implements AdapterV
 			@Override
 			protected List<Genre> doInBackground() throws Throwable
 			{
+				boolean refresh = getIntent().getBooleanExtra(Constants.INTENT_EXTRA_NAME_REFRESH, false);
 				MusicService musicService = MusicServiceFactory.getMusicService(SelectGenreActivity.this);
 
 				List<Genre> genres = new ArrayList<Genre>();
 
 				try
 				{
-					genres = musicService.getGenres(SelectGenreActivity.this, this);
+					genres = musicService.getGenres(refresh, SelectGenreActivity.this, this);
 				}
 				catch (Exception x)
 				{
