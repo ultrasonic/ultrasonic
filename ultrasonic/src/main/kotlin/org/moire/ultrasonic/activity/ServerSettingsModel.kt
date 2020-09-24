@@ -24,6 +24,7 @@ class ServerSettingsModel(
 
     companion object {
         private val TAG = ServerSettingsModel::class.simpleName
+        private const val PREFERENCES_KEY_SERVER_MIGRATED = "serverMigrated"
         // These constants were removed from Constants.java as they are deprecated and only used here
         private const val PREFERENCES_KEY_JUKEBOX_BY_DEFAULT = "jukeboxEnabled"
         private const val PREFERENCES_KEY_SERVER_NAME = "serverName"
@@ -192,8 +193,10 @@ class ServerSettingsModel(
     ): ServerSetting? {
         val url = settings.getString(PREFERENCES_KEY_SERVER_URL + preferenceId, "")
         val userName = settings.getString(PREFERENCES_KEY_USERNAME + preferenceId, "")
+        val isMigrated = settings.getBoolean(PREFERENCES_KEY_SERVER_MIGRATED + preferenceId, false)
 
-        if (url.isNullOrEmpty() || userName.isNullOrEmpty()) return null
+        if (url.isNullOrEmpty() || userName.isNullOrEmpty() || isMigrated) return null
+        setServerMigrated(settings, preferenceId)
 
         return ServerSetting(
             preferenceId,
@@ -232,7 +235,7 @@ class ServerSettingsModel(
     private suspend fun reindexSettings() {
         var newIndex = 1
         for (i in 1 until getMaximumIndexToCheck() + 1) {
-            var setting = repository.findByIndex(i)
+            val setting = repository.findByIndex(i)
             if (setting != null) {
                 setting.index = newIndex
                 newIndex++
@@ -247,5 +250,11 @@ class ServerSettingsModel(
         val indexesInDatabase = repository.getMaxIndex() ?: 0
         if (rowsInDatabase > indexesInDatabase) return rowsInDatabase
         return indexesInDatabase
+    }
+
+    private fun setServerMigrated(settings: SharedPreferences, preferenceId: Int) {
+        val editor = settings.edit()
+        editor.putBoolean(PREFERENCES_KEY_SERVER_MIGRATED + preferenceId, true)
+        editor.apply()
     }
 }
