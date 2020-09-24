@@ -21,7 +21,7 @@
     <string name="button_bar.playlists">Playlists</string>
     <string name="button_bar.search">Recherche</string>
     <string name="chat.send_a_message">Envoyer un message</string>
-    <string name="common.appname">UltraSonic</string>
+    <string name="common.appname">Ultrasonic</string>
     <string name="common.cancel">Annuler</string>
     <string name="common.comment">Commenter</string>
     <string name="common.confirm">Confirmer</string>
@@ -101,7 +101,7 @@
     <string name="main.songs_starred">Favoris</string>
     <string name="main.songs_title">Titres</string>
     <string name="main.videos">Vidéos</string>
-    <string name="main.welcome_text">Bienvenue dans UltraSonic ! L\'application n\'est pas configurée. Après avoir configuré votre serveur personnel (disponible à partir de <b>subsonic.org</b>), veuillez accéder aux <b>Paramètres</b> et modifier la configuration pour vous y connecter.</string>
+    <string name="main.welcome_text">Bienvenue dans Ultrasonic ! L\'application n\'est pas configurée. Après avoir configuré votre serveur personnel (disponible à partir de <b>subsonic.org</b>), veuillez accéder aux <b>Paramètres</b> et modifier la configuration pour vous y connecter.</string>
     <string name="main.welcome_title">Bienvenue!</string>
     <string name="menu.about">À propos</string>
     <string name="menu.common">Général</string>
@@ -471,7 +471,7 @@
     <string name="api.subsonic.param_missing">Param nécessaire manquant.</string>
     <string name="api.subsonic.requested_data_was_not_found">Les données demandées n\'ont pas été trouvées.</string>
     <string name="api.subsonic.trial_period_is_over">La période d\'essai est terminée.</string>
-    <string name="api.subsonic.upgrade_client">Versions incompatible. Veuillez mette à jour l\'application Android UltraSonic.</string>
+    <string name="api.subsonic.upgrade_client">Versions incompatible. Veuillez mette à jour l\'application Android Ultrasonic.</string>
     <string name="api.subsonic.upgrade_server">Versions incompatible. Veuillez mette à jour le serveur Subsonic.</string>
 
     <string name="feature_flags_image_loader_title">Activer le nouveau chargeur d\'images</string>

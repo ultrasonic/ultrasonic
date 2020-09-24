@@ -13,7 +13,7 @@
     <string name="button_bar.bookmarks">Bladwijzers</string>
     <string name="button_bar.browse">Mediabibliotheek</string>
     <string name="button_bar.chat">Chat</string>
-    <string name="button_bar.home">UltraSonic Main</string>
+    <string name="button_bar.home">Ultrasonic Main</string>
     <string name="button_bar.now_playing">Nu aan het afspelen</string>
     <string name="podcasts.label">Podcast</string>
     <string name="podcasts_channels.empty">Geen podcastkanalen opgegeven</string>
@@ -21,7 +21,7 @@
     <string name="button_bar.playlists">Afspeellijsten</string>
     <string name="button_bar.search">Zoeken</string>
     <string name="chat.send_a_message">Bericht versturen</string>
-    <string name="common.appname">UltraSonic</string>
+    <string name="common.appname">Ultrasonic</string>
     <string name="common.cancel">Annuleren</string>
     <string name="common.comment">Reageren</string>
     <string name="common.confirm">Bevestigen</string>
@@ -101,7 +101,7 @@
     <string name="main.songs_starred">Favorieten</string>
     <string name="main.songs_title">Nummers</string>
     <string name="main.videos">Video\'s</string>
-    <string name="main.welcome_text">Welkom bij UltraSonic! De app is nog niet ingesteld. Nadat je je persoonlijke server hebt opgezet (beschikbaar op <b>subsonic.org</b>), kun je naar de <b>Instellingen</b> gaan en drukken op <i>Server toevoegen</i>.</string>
+    <string name="main.welcome_text">Welkom bij Ultrasonic! De app is nog niet ingesteld. Nadat je je persoonlijke server hebt opgezet (beschikbaar op <b>subsonic.org</b>), kun je naar de <b>Instellingen</b> gaan en drukken op <i>Server toevoegen</i>.</string>
     <string name="main.welcome_title">Welkom!</string>
     <string name="menu.about">Over</string>
     <string name="menu.common">Algemeen</string>
@@ -471,7 +471,7 @@
     <string name="api.subsonic.param_missing">Vereiste parameter ontbreekt.</string>
     <string name="api.subsonic.requested_data_was_not_found">De opgevraagde gegevens kunnen niet worden gevonden.</string>
     <string name="api.subsonic.trial_period_is_over">Proefperiode is afgelopen.</string>
-    <string name="api.subsonic.upgrade_client">Incompatibele versies. Werk de UltraSonic Android-app bij.</string>
+    <string name="api.subsonic.upgrade_client">Incompatibele versies. Werk de Ultrasonic Android-app bij.</string>
     <string name="api.subsonic.upgrade_server">Incompatibele versies. Werk je Subsonic-server bij.</string>
 
     <string name="feature_flags_image_loader_title">Nieuwe manier van afbeeldingen laden inschakelen</string>

@@ -13,7 +13,7 @@
     <string name="button_bar.bookmarks">Könyvjelzők</string>
     <string name="button_bar.browse">Médiakönyvtár</string>
     <string name="button_bar.chat">Csevegés (Chat)</string>
-    <string name="button_bar.home">UltraSonic főoldal</string>
+    <string name="button_bar.home">Ultrasonic főoldal</string>
     <string name="button_bar.now_playing">Lejátszó</string>
     <string name="podcasts.label">Podcast</string>
     <string name="podcasts_channels.empty">No podcasts channels registered</string>
@@ -21,7 +21,7 @@
     <string name="button_bar.playlists">Lejátszási listák</string>
     <string name="button_bar.search">Keresés</string>
     <string name="chat.send_a_message">Üzenet küldése</string>
-    <string name="common.appname">UltraSonic</string>
+    <string name="common.appname">Ultrasonic</string>
     <string name="common.cancel">Mégse</string>
     <string name="common.comment">Megjegyzés</string>
     <string name="common.confirm">Jóváhagyás</string>
@@ -101,7 +101,7 @@
     <string name="main.songs_starred">Csillaggal megjelölt</string>
     <string name="main.songs_title">Dalok</string>
     <string name="main.videos">Videók</string>
-    <string name="main.welcome_text">Üdvözli az UltraSonic! Az alkalmazás még nincs beállítva. Miután konfigurálta saját kiszolgálóját (elérhető: <b>subsonic.org</b>), húzza balról jobbra az oldalsávot, lépjen be a <b>Beállítások</b> menüpontba, és adja meg csatlakozási adatokat!</string>
+    <string name="main.welcome_text">Üdvözli az Ultrasonic! Az alkalmazás még nincs beállítva. Miután konfigurálta saját kiszolgálóját (elérhető: <b>subsonic.org</b>), húzza balról jobbra az oldalsávot, lépjen be a <b>Beállítások</b> menüpontba, és adja meg csatlakozási adatokat!</string>
     <string name="main.welcome_title">Üdvözlet!</string>
     <string name="menu.about">Névjegy</string>
     <string name="menu.common">Általános</string>
@@ -471,7 +471,7 @@
     <string name="api.subsonic.param_missing">A szükséges param hiányzik.</string>
     <string name="api.subsonic.requested_data_was_not_found">A keresett adatokat nem találtuk.</string>
     <string name="api.subsonic.trial_period_is_over">A próbaidő vége.</string>
-    <string name="api.subsonic.upgrade_client">Nem kompatibilis verzió. Kérjük, frissítse az UltraSonic Android alkalmazást!</string>
+    <string name="api.subsonic.upgrade_client">Nem kompatibilis verzió. Kérjük, frissítse az Ultrasonic Android alkalmazást!</string>
     <string name="api.subsonic.upgrade_server">Nem kompatibilis verzió. Kérjük, frissítse a Subsonic kiszolgálót!</string>
 
     <string name="feature_flags_image_loader_title">Engedélyezzen új képbetöltőt</string>

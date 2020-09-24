@@ -13,7 +13,7 @@
     <string name="button_bar.bookmarks">Lesezeichen</string>
     <string name="button_bar.browse">Medienbibliothek</string>
     <string name="button_bar.chat">Chat</string>
-    <string name="button_bar.home">UltraSonic Hauptseite</string>
+    <string name="button_bar.home">Ultrasonic Hauptseite</string>
     <string name="button_bar.now_playing">Aktuelle Wiedergabe</string>
     <string name="podcasts.label">Podcast</string>
     <string name="podcasts_channels.empty">Keine Podcast Kanäle registriert</string>
@@ -21,7 +21,7 @@
     <string name="button_bar.playlists">Wiedergabeliste</string>
     <string name="button_bar.search">Suche</string>
     <string name="chat.send_a_message">Nachricht senden</string>
-    <string name="common.appname">UltraSonic</string>
+    <string name="common.appname">Ultrasonic</string>
     <string name="common.cancel">Abbrechen</string>
     <string name="common.comment">Kommentar</string>
     <string name="common.confirm">Bestätigen</string>
@@ -101,7 +101,7 @@
     <string name="main.songs_starred">Mit Stern</string>
     <string name="main.songs_title">Titel</string>
     <string name="main.videos">Filme</string>
-    <string name="main.welcome_text">Willkommen bei UltraSonic! Die App ist zurzeit unkonfiguriert. Nachdem du deinen Server konfiguriert hast (siehe <b>subsonic.org</b>), bitte <i>Server hinzufügen</i> in den <b>Einstellungen</b> klicken um die Verbindun herzustellen.</string>
+    <string name="main.welcome_text">Willkommen bei Ultrasonic! Die App ist zurzeit unkonfiguriert. Nachdem du deinen Server konfiguriert hast (siehe <b>subsonic.org</b>), bitte <i>Server hinzufügen</i> in den <b>Einstellungen</b> klicken um die Verbindun herzustellen.</string>
     <string name="main.welcome_title">Willkommen</string>
     <string name="menu.about">Über</string>
     <string name="menu.common">Allgemein</string>
@@ -470,7 +470,7 @@
     <string name="api.subsonic.param_missing">Erforderlicher Parameter fehlt.</string>
     <string name="api.subsonic.requested_data_was_not_found">Angeforderte Daten nicht gefunden.</string>
     <string name="api.subsonic.trial_period_is_over">Der Testzeitraum ist abgelaufen.</string>
-    <string name="api.subsonic.upgrade_client">Inkompatible Versionen. Bitte die UltraSonic App aktualisieren.</string>
+    <string name="api.subsonic.upgrade_client">Inkompatible Versionen. Bitte die Ultrasonic App aktualisieren.</string>
     <string name="api.subsonic.upgrade_server">Inkompatible Versionen. Bitte den subsonic Server aktualisieren..</string>
 
     <string name="feature_flags_image_loader_title">Neuen Bild-Lader aktivieren</string>

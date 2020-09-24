@@ -13,7 +13,7 @@
     <string name="button_bar.bookmarks">Marcadores</string>
     <string name="button_bar.browse">Biblioteca</string>
     <string name="button_bar.chat">Chat</string>
-    <string name="button_bar.home">Inicio de UltraSonic</string>
+    <string name="button_bar.home">Inicio de Ultrasonic</string>
     <string name="button_bar.now_playing">Reproduciendo ahora</string>
     <string name="podcasts.label">Podcast</string>
     <string name="podcasts_channels.empty">No hay canales de Podcasts registrados</string>
@@ -21,7 +21,7 @@
     <string name="button_bar.playlists">Listas de reproducción</string>
     <string name="button_bar.search">Buscar</string>
     <string name="chat.send_a_message">Enviar un mensaje</string>
-    <string name="common.appname">UltraSonic</string>
+    <string name="common.appname">Ultrasonic</string>
     <string name="common.cancel">Cancelar</string>
     <string name="common.comment">Comentario</string>
     <string name="common.confirm">Confirmar</string>
@@ -101,7 +101,7 @@
     <string name="main.songs_starred">Me gusta</string>
     <string name="main.songs_title">Canciones</string>
     <string name="main.videos">Vídeos</string>
-    <string name="main.welcome_text">Te damos la bienvenida a UltraSonic! La aplicación no está configurada actualmente. Después de que hayas configurado tu servidor personal (disponible desde <b>subsonic.org</b>), por favor haz click en <i>Administrar servidores</i> en <b>Configuración</b> para conectarte con él.</string>
+    <string name="main.welcome_text">Te damos la bienvenida a Ultrasonic! La aplicación no está configurada actualmente. Después de que hayas configurado tu servidor personal (disponible desde <b>subsonic.org</b>), por favor haz click en <i>Administrar servidores</i> en <b>Configuración</b> para conectarte con él.</string>
     <string name="main.welcome_title">¡Saludos!</string>
     <string name="menu.about">Acerca de</string>
     <string name="menu.common">Común</string>
@@ -471,7 +471,7 @@
     <string name="api.subsonic.param_missing">Falta el parámetro requerido.</string>
     <string name="api.subsonic.requested_data_was_not_found">No se encontraron los datos solicitados.</string>
     <string name="api.subsonic.trial_period_is_over">El período de prueba ha terminado.</string>
-    <string name="api.subsonic.upgrade_client">Versiones incompatibles. Por favor actualiza la aplicación de Android UltraSonic.</string>
+    <string name="api.subsonic.upgrade_client">Versiones incompatibles. Por favor actualiza la aplicación de Android Ultrasonic.</string>
     <string name="api.subsonic.upgrade_server">Versiones incompatibles. Por favor actualiza el servidor de Subsonic.</string>
 
     <string name="feature_flags_image_loader_title">Habilitar nuevo cargador de imágenes</string>

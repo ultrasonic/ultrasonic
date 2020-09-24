@@ -21,7 +21,7 @@
     <string name="button_bar.playlists">Playlists</string>
     <string name="button_bar.search">Pesquisa</string>
     <string name="chat.send_a_message">Enviar uma mensagem</string>
-    <string name="common.appname">UltraSonic</string>
+    <string name="common.appname">Ultrasonic</string>
     <string name="common.cancel">Cancelar</string>
     <string name="common.comment">Comentar</string>
     <string name="common.confirm">Confirmar</string>
@@ -101,7 +101,7 @@
     <string name="main.songs_starred">Favoritas</string>
     <string name="main.songs_title">Músicas</string>
     <string name="main.videos">Vídeos</string>
-    <string name="main.welcome_text">Bem-vindo ao UltraSonic! O aplicativo ainda não está configurado. Após configurar seu servidor pessoal (disponível em <b>subsonic.org</b>), clique em <i>Adicionar Servidor</i> em <b>Configurações</b> para a conexão.</string>
+    <string name="main.welcome_text">Bem-vindo ao Ultrasonic! O aplicativo ainda não está configurado. Após configurar seu servidor pessoal (disponível em <b>subsonic.org</b>), clique em <i>Adicionar Servidor</i> em <b>Configurações</b> para a conexão.</string>
     <string name="main.welcome_title">Bem-vindo!</string>
     <string name="menu.about">Sobre</string>
     <string name="menu.common">Comum</string>
@@ -471,8 +471,8 @@
     <string name="api.subsonic.param_missing">O parâmetro requerido está faltando.</string>
     <string name="api.subsonic.requested_data_was_not_found">Os dados solicitados não foram encontrados.</string>
     <string name="api.subsonic.trial_period_is_over">O período de avaliação acabou.</string>
-    <string name="api.subsonic.upgrade_client">Versões incompativeis. Atualize o aplicativo UltraSonic para Android.</string>
-    <string name="api.subsonic.upgrade_server">Versões incompativeis. Atualize o servidor UltraSonic.</string>
+    <string name="api.subsonic.upgrade_client">Versões incompativeis. Atualize o aplicativo Ultrasonic para Android.</string>
+    <string name="api.subsonic.upgrade_server">Versões incompativeis. Atualize o servidor Ultrasonic.</string>
 
     <string name="feature_flags_image_loader_title">Ativar novo carregador de imagens</string>
     <string name="feature_flags_image_loader_description">Permite nova implementação do carregador de imagens.

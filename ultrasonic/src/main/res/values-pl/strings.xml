@@ -13,7 +13,7 @@
     <string name="button_bar.bookmarks">Zakładki</string>
     <string name="button_bar.browse">Biblioteka</string>
     <string name="button_bar.chat">Czat</string>
-    <string name="button_bar.home">UltraSonic</string>
+    <string name="button_bar.home">Ultrasonic</string>
     <string name="button_bar.now_playing">Teraz gra</string>
     <string name="podcasts.label">Podcasty</string>
     <string name="podcasts_channels.empty">Brak kanałów</string>
@@ -21,7 +21,7 @@
     <string name="button_bar.playlists">Playlisty</string>
     <string name="button_bar.search">Szukaj</string>
     <string name="chat.send_a_message">Wyślij wiadomość</string>
-    <string name="common.appname">UltraSonic</string>
+    <string name="common.appname">Ultrasonic</string>
     <string name="common.cancel">Anuluj</string>
     <string name="common.comment">Komentarz</string>
     <string name="common.confirm">Potwierdź</string>
@@ -101,7 +101,7 @@
     <string name="main.songs_starred">Ulubione</string>
     <string name="main.songs_title">Utwory</string>
     <string name="main.videos">Klipy wideo</string>
-    <string name="main.welcome_text">Witaj w UltraSonic! Obecnie aplikacja nie jest skonfigurowana. Jeśli masz uruchomiony własny serwer (dostępny na <b>subsonic.org</b>), proszę wybrać <i>Dodaj serwer</i> w <b>Ustawieniach</b> aby się z nim połączyć.</string>
+    <string name="main.welcome_text">Witaj w Ultrasonic! Obecnie aplikacja nie jest skonfigurowana. Jeśli masz uruchomiony własny serwer (dostępny na <b>subsonic.org</b>), proszę wybrać <i>Dodaj serwer</i> w <b>Ustawieniach</b> aby się z nim połączyć.</string>
     <string name="main.welcome_title">Witaj!</string>
     <string name="menu.about">O aplikacji</string>
     <string name="menu.common">Wspólne</string>
@@ -485,7 +485,7 @@ ponieważ api Subsonic nie wspiera nowego sposobu autoryzacji dla użytkowników
     <string name="api.subsonic.param_missing">Brak wymaganego parametru.</string>
     <string name="api.subsonic.requested_data_was_not_found">Brak wymaganych danych.</string>
     <string name="api.subsonic.trial_period_is_over">Okres próbny się zakończył.</string>
-    <string name="api.subsonic.upgrade_client">Brak zgodności wersji. Uaktualnij aplikację UltraSonic na Androida.</string>
+    <string name="api.subsonic.upgrade_client">Brak zgodności wersji. Uaktualnij aplikację Ultrasonic na Androida.</string>
     <string name="api.subsonic.upgrade_server">Brak zgodności wersji. Uaktualnij serwer Subsonic.</string>
 
     <string name="feature_flags_image_loader_title">Włącz program ładujący nowe obrazy</string>
