@@ -320,7 +320,7 @@ public class MainActivity extends SubsonicTabActivity
 
 			if (show)
 			{
-				Util.showWelcomeDialog(this, this, R.string.main_welcome_title, R.string.main_welcome_text_new);
+				Util.showWelcomeDialog(this, this, R.string.main_welcome_title, R.string.main_welcome_text);
 			}
 		}
 	}

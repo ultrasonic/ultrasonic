@@ -101,7 +101,7 @@
     <string name="main.songs_starred">Mit Stern</string>
     <string name="main.songs_title">Titel</string>
     <string name="main.videos">Filme</string>
-    <string name="main.welcome_text_new">Welcome to Ultrasonic! The app is currently not configured. After you\'ve set up your personal server (available from <b>subsonic.org</b>), please click <i>Manage Servers</i> in <b>Settings</b> to connect to it.</string>
+    <string name="main.welcome_text">Willkommen bei UltraSonic! Die App ist zurzeit unkonfiguriert. Nachdem du deinen Server konfiguriert hast (siehe <b>subsonic.org</b>), bitte <i>Server hinzufügen</i> in den <b>Einstellungen</b> klicken um die Verbindun herzustellen.</string>
     <string name="main.welcome_title">Willkommen</string>
     <string name="menu.about">Über</string>
     <string name="menu.common">Allgemein</string>
@@ -422,7 +422,7 @@
     <string name="server_selector.label">Configured servers</string>
     <string name="server_selector.delete_confirmation">Are you sure you want to delete the server?</string>
     <string name="server_editor.label">Editing server</string>
-    <string name="server_editor.new_label">Create server</string>
+    <string name="server_editor.new_label">Server hinzufügen</string>
     <string name="server_editor.leave_confirmation">Are you sure you want to leave and lose your changes?</string>
     <string name="server_editor.required">This field is required</string>
     <string name="server_menu.edit">Edit</string>

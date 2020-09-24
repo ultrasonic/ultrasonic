@@ -101,7 +101,7 @@
     <string name="main.songs_starred">Favoris</string>
     <string name="main.songs_title">Titres</string>
     <string name="main.videos">Vidéos</string>
-    <string name="main.welcome_text_new">Welcome to Ultrasonic! The app is currently not configured. After you\'ve set up your personal server (available from <b>subsonic.org</b>), please click <i>Manage Servers</i> in <b>Settings</b> to connect to it.</string>
+    <string name="main.welcome_text">Bienvenue dans UltraSonic ! L\'application n\'est pas configurée. Après avoir configuré votre serveur personnel (disponible à partir de <b>subsonic.org</b>), veuillez accéder aux <b>Paramètres</b> et modifier la configuration pour vous y connecter.</string>
     <string name="main.welcome_title">Bienvenue!</string>
     <string name="menu.about">À propos</string>
     <string name="menu.common">Général</string>
@@ -423,7 +423,7 @@
     <string name="server_selector.label">Configured servers</string>
     <string name="server_selector.delete_confirmation">Are you sure you want to delete the server?</string>
     <string name="server_editor.label">Editing server</string>
-    <string name="server_editor.new_label">Create server</string>
+    <string name="server_editor.new_label">Ajouter un serveur</string>
     <string name="server_editor.leave_confirmation">Are you sure you want to leave and lose your changes?</string>
     <string name="server_editor.required">This field is required</string>
     <string name="server_menu.edit">Edit</string>
@@ -434,31 +434,31 @@
     <string name="server_editor.advanced">Advanced settings</string>
 
     <plurals name="select_album_n_songs">
-        <item quantity="one">Un titre</item>
+        <item quantity="one">%d titre</item>
         <item quantity="other">%d titres</item>
     </plurals>
     <plurals name="select_album_n_songs_pinned">
-        <item quantity="one">Un titre sélectionnée pour être épinglé.</item>
+        <item quantity="one">%d titre sélectionnée pour être épinglé.</item>
         <item quantity="other">%d titres sélectionnée pour être épinglé.</item>
     </plurals>
     <plurals name="select_album_n_songs_downloaded">
-        <item quantity="one">1 song selected to be downloaded.</item>
+        <item quantity="one">%d song selected to be downloaded.</item>
         <item quantity="other">%d songs selected to be downloaded.</item>
     </plurals>
     <plurals name="select_album_n_songs_unpinned">
-        <item quantity="one">Un titre sélectionné pour être dégoupillé.</item>
+        <item quantity="one">%d titre sélectionné pour être dégoupillé.</item>
         <item quantity="other">%d titres sélectionnés pour être dégoupillé.</item>
     </plurals>
     <plurals name="select_album_n_songs_added">
-        <item quantity="one">Un titre ajouté à la fin de la file d\'attente de lecture.</item>
+        <item quantity="one">%d titre ajouté à la fin de la file d\'attente de lecture.</item>
         <item quantity="other">%d titres ajouté à la fin de la file d\'attente de lecture.</item>
     </plurals>
     <plurals name="select_album_n_songs_play_next">
-        <item quantity="one">Un titre inséré après le titre actuel.</item>
+        <item quantity="one">%d titre inséré après le titre actuel.</item>
         <item quantity="other">%d titres insérés après le titre actuel.</item>
     </plurals>
     <plurals name="select_album_donate_dialog_n_trial_days_left">
-        <item quantity="one">Un jour restant à la période d\'essai</item>
+        <item quantity="one">%d jour restant à la période d\'essai</item>
         <item quantity="other">%d jours restant à la période d\'essai</item>
     </plurals>
 

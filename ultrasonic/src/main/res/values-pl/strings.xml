@@ -101,7 +101,7 @@
     <string name="main.songs_starred">Ulubione</string>
     <string name="main.songs_title">Utwory</string>
     <string name="main.videos">Klipy wideo</string>
-    <string name="main.welcome_text_new">Welcome to Ultrasonic! The app is currently not configured. After you\'ve set up your personal server (available from <b>subsonic.org</b>), please click <i>Manage Servers</i> in <b>Settings</b> to connect to it.</string>
+    <string name="main.welcome_text">Witaj w UltraSonic! Obecnie aplikacja nie jest skonfigurowana. Jeśli masz uruchomiony własny serwer (dostępny na <b>subsonic.org</b>), proszę wybrać <i>Dodaj serwer</i> w <b>Ustawieniach</b> aby się z nim połączyć.</string>
     <string name="main.welcome_title">Witaj!</string>
     <string name="menu.about">O aplikacji</string>
     <string name="menu.common">Wspólne</string>
@@ -423,7 +423,7 @@ ponieważ api Subsonic nie wspiera nowego sposobu autoryzacji dla użytkowników
     <string name="server_selector.label">Configured servers</string>
     <string name="server_selector.delete_confirmation">Are you sure you want to delete the server?</string>
     <string name="server_editor.label">Editing server</string>
-    <string name="server_editor.new_label">Create server</string>
+    <string name="server_editor.new_label">Dodaj serwer</string>
     <string name="server_editor.leave_confirmation">Are you sure you want to leave and lose your changes?</string>
     <string name="server_editor.required">This field is required</string>
     <string name="server_menu.edit">Edit</string>

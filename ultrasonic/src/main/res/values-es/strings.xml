@@ -101,7 +101,7 @@
     <string name="main.songs_starred">Me gusta</string>
     <string name="main.songs_title">Canciones</string>
     <string name="main.videos">Vídeos</string>
-    <string name="main.welcome_text_new">Welcome to Ultrasonic! The app is currently not configured. After you\'ve set up your personal server (available from <b>subsonic.org</b>), please click <i>Manage Servers</i> in <b>Settings</b> to connect to it.</string>
+    <string name="main.welcome_text">Te damos la bienvenida a UltraSonic! La aplicación no está configurada actualmente. Después de que hayas configurado tu servidor personal (disponible desde <b>subsonic.org</b>), por favor haz click en <i>Administrar servidores</i> en <b>Configuración</b> para conectarte con él.</string>
     <string name="main.welcome_title">¡Saludos!</string>
     <string name="menu.about">Acerca de</string>
     <string name="menu.common">Común</string>
@@ -277,7 +277,7 @@
     <string name="settings.send_bluetooth_album_art">Carátula del Álbum vía Bluetooth</string>
     <string name="settings.send_bluetooth_notification_summary">Enviar notificaciones de reproducción vía Bluetooth</string>
     <string name="settings.send_bluetooth_notification">Enviar notificaciones Bluetooth</string>
-    <string name="settings.server_manage_servers">Manage Servers</string>
+    <string name="settings.server_manage_servers">Administrar servidores</string>
     <string name="settings.server_address">Dirección del servidor</string>
     <string name="settings.server_name">Nombre</string>
     <string name="settings.server_password">Contraseña</string>
@@ -420,18 +420,18 @@
     <string name="filepicker.default">Usar predeterminado</string>
     <string name="filepicker.available_drives">Unidades disponibles:</string>
 
-    <string name="server_selector.label">Configured servers</string>
-    <string name="server_selector.delete_confirmation">Are you sure you want to delete the server?</string>
-    <string name="server_editor.label">Editing server</string>
-    <string name="server_editor.new_label">Create server</string>
-    <string name="server_editor.leave_confirmation">Are you sure you want to leave and lose your changes?</string>
-    <string name="server_editor.required">This field is required</string>
-    <string name="server_menu.edit">Edit</string>
-    <string name="server_menu.delete">Delete</string>
-    <string name="server_menu.move_up">Move up</string>
-    <string name="server_menu.move_down">Move down</string>
-    <string name="server_editor.authentication">Authentication</string>
-    <string name="server_editor.advanced">Advanced settings</string>
+    <string name="server_selector.label">Servidores configurados</string>
+    <string name="server_selector.delete_confirmation">¿Seguro que deseas borrar el servidor?</string>
+    <string name="server_editor.label">Editando servidor</string>
+    <string name="server_editor.new_label">Añadir servidor</string>
+    <string name="server_editor.leave_confirmation">¿Seguro que quieres irte y perder tus cambios?</string>
+    <string name="server_editor.required">Este campo es requerido</string>
+    <string name="server_menu.edit">Editar</string>
+    <string name="server_menu.delete">Borrar</string>
+    <string name="server_menu.move_up">Subir</string>
+    <string name="server_menu.move_down">Bajar</string>
+    <string name="server_editor.authentication">Autenticación</string>
+    <string name="server_editor.advanced">Configuración avanzada</string>
 
     <plurals name="select_album_n_songs">
         <item quantity="one">1 canción</item>
