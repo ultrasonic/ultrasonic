@@ -235,7 +235,7 @@ internal class EditServerActivity : AppCompatActivity() {
      * Checks whether any value in the fields are changed according to their original values.
      */
     private fun areFieldsChanged(): Boolean {
-        if (currentServerSetting == null) {
+        if (currentServerSetting == null || currentServerSetting!!.id == -1) {
             return !serverNameEditText!!.editText?.text!!.isBlank() ||
                 serverAddressEditText!!.editText?.text.toString() != "http://" ||
                 !userNameEditText!!.editText?.text!!.isBlank() ||
