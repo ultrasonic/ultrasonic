@@ -64,6 +64,8 @@ public class SettingsFragment extends PreferenceFragment
     private EditTextPreference sharingDefaultGreeting;
     private TimeSpanPreference sharingDefaultExpiration;
     private PreferenceCategory serversCategory;
+    private Preference resumeOnBluetoothDevice;
+    private Preference pauseOnBluetoothDevice;
 
     private SharedPreferences settings;
 
@@ -110,6 +112,8 @@ public class SettingsFragment extends PreferenceFragment
         sharingDefaultGreeting = (EditTextPreference) findPreference(Constants.PREFERENCES_KEY_DEFAULT_SHARE_GREETING);
         sharingDefaultExpiration = (TimeSpanPreference) findPreference(Constants.PREFERENCES_KEY_DEFAULT_SHARE_EXPIRATION);
         serversCategory = (PreferenceCategory) findPreference(Constants.PREFERENCES_KEY_SERVERS_KEY);
+        resumeOnBluetoothDevice = findPreference(Constants.PREFERENCES_KEY_RESUME_ON_BLUETOOTH_DEVICE);
+        pauseOnBluetoothDevice = findPreference(Constants.PREFERENCES_KEY_PAUSE_ON_BLUETOOTH_DEVICE);
 
         sharingDefaultGreeting.setText(Util.getShareGreeting(getActivity()));
         setupClearSearchPreference();
@@ -195,6 +199,18 @@ public class SettingsFragment extends PreferenceFragment
                     }
                 });
             return true;
+            }
+        });
+    }
+
+    private void setupBluetoothDevicePreferences() {
+        resumeOnBluetoothDevice.setSummary(settings.getString(Constants.PREFERENCES_KEY_CACHE_LOCATION,
+                FileUtil.getDefaultMusicDirectory(getActivity()).getPath()));
+
+        resumeOnBluetoothDevice.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
+            @Override
+            public boolean onPreferenceClick(Preference preference) {
+                return true;
             }
         });
     }

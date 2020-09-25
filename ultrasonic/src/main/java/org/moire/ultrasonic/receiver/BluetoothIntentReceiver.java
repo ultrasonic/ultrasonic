@@ -34,7 +34,6 @@ import org.moire.ultrasonic.util.Util;
  */
 public class BluetoothIntentReceiver extends BroadcastReceiver
 {
-
 	private static final String TAG = BluetoothIntentReceiver.class.getSimpleName();
 
 	@Override
@@ -43,9 +42,10 @@ public class BluetoothIntentReceiver extends BroadcastReceiver
 		int state = intent.getIntExtra("android.bluetooth.a2dp.extra.SINK_STATE", -1);
 		BluetoothDevice device = intent.getParcelableExtra(BluetoothDevice.EXTRA_DEVICE);
 		String action = intent.getAction();
-		String name = device != null ? device.getName() : "None";
+		String name = device != null ? device.getName() : "Unknown";
+		String address = device != null ? device.getAddress() : "Unknown";
 
-		Log.d(TAG, String.format("Sink State: %d; Action: %s; Device: %s", state, action, name));
+		Log.d(TAG, String.format("Sink State: %d; Action: %s; Device: %s; Address: %s", state, action, name, address));
 
 		boolean actionConnected = false;
 		boolean actionDisconnected = false;
@@ -64,13 +64,13 @@ public class BluetoothIntentReceiver extends BroadcastReceiver
 
 		if (connected)
 		{
-			Log.i(TAG, "Connected to Bluetooth device, requesting media button focus.");
+			Log.i(TAG, String.format("Connected to Bluetooth device %s address %s, requesting media button focus.", name, address));
 			Util.registerMediaButtonEventReceiver(context, false);
 		}
 
 		if (disconnected)
 		{
-			Log.i(TAG, "Disconnected from Bluetooth device, requesting pause.");
+			Log.i(TAG, String.format("Disconnected from Bluetooth device %s address %s, requesting pause.", name, address));
 			context.sendBroadcast(new Intent(Constants.CMD_PAUSE));
 		}
 	}

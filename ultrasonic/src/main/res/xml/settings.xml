@@ -106,6 +106,12 @@
             a:title="@string/settings.playback.resume_play_on_headphones_plug.title"
             a:summary="@string/settings.playback.resume_play_on_headphones_plug.summary"
             />
+        <Preference
+            a:key="resumeOnBluetoothDevice"
+            a:title="@string/settings.playback.resume_on_bluetooth_device"/>
+        <Preference
+            a:key="pauseOnBluetoothDevice"
+            a:title="@string/settings.playback.pause_on_bluetooth_device"/>
     </PreferenceCategory>
     <PreferenceCategory
         a:title="@string/settings.notifications_title"

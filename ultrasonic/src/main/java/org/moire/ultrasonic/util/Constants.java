@@ -131,6 +131,12 @@ public final class Constants
 	public static final String PREFERENCES_KEY_USE_FIVE_STAR_RATING = "use_five_star_rating";
 	public static final String PREFERENCES_KEY_CATEGORY_NOTIFICATIONS = "notificationsCategory";
 	public static final String PREFERENCES_KEY_FIRST_RUN_EXECUTED = "firstRunExecuted";
+	public static final String PREFERENCES_KEY_RESUME_ON_BLUETOOTH_DEVICE = "resumeOnBluetoothDevice";
+	public static final String PREFERENCES_KEY_PAUSE_ON_BLUETOOTH_DEVICE = "pauseOnBluetoothDevice";
+
+	public static final String PREFERENCE_VALUE_ALL = "all";
+	public static final String PREFERENCE_VALUE_A2DP = "a2dp";
+	public static final String PREFERENCE_VALUE_DISABLED = "disabled";
 
 	// Number of free trial days for non-licensed servers.
 	public static final int FREE_TRIAL_DAYS = 30;
