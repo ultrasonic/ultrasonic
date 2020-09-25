@@ -13,6 +13,7 @@ import com.google.android.material.textfield.TextInputLayout
 import java.io.IOException
 import java.net.MalformedURLException
 import java.net.URL
+import org.koin.android.ext.android.inject
 import org.koin.android.viewmodel.ext.android.viewModel
 import org.moire.ultrasonic.BuildConfig
 import org.moire.ultrasonic.R
@@ -20,7 +21,9 @@ import org.moire.ultrasonic.api.subsonic.SubsonicAPIClient
 import org.moire.ultrasonic.api.subsonic.SubsonicAPIVersions
 import org.moire.ultrasonic.api.subsonic.SubsonicClientConfiguration
 import org.moire.ultrasonic.api.subsonic.response.SubsonicResponse
+import org.moire.ultrasonic.data.ActiveServerProvider
 import org.moire.ultrasonic.data.ServerSetting
+import org.moire.ultrasonic.service.MusicServiceFactory
 import org.moire.ultrasonic.service.SubsonicRESTException
 import org.moire.ultrasonic.util.Constants
 import org.moire.ultrasonic.util.ErrorDialog
@@ -41,6 +44,8 @@ internal class EditServerActivity : AppCompatActivity() {
     }
 
     private val serverSettingsModel: ServerSettingsModel by viewModel()
+    private val activeServerProvider: ActiveServerProvider by inject()
+
     private var currentServerSetting: ServerSetting? = null
 
     private var serverNameEditText: TextInputLayout? = null
@@ -90,6 +95,13 @@ internal class EditServerActivity : AppCompatActivity() {
                 if (currentServerSetting != null) {
                     if (getFields()) {
                         serverSettingsModel.updateItem(currentServerSetting)
+                        // Apply modifications if the current server was modified
+                        if (
+                            activeServerProvider.getActiveServer().id ==
+                            currentServerSetting!!.id
+                        ) {
+                            MusicServiceFactory.resetMusicService()
+                        }
                         finish()
                     }
                 }
