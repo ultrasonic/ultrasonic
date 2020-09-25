@@ -144,8 +144,9 @@ internal class ServerSelectorActivity : AppCompatActivity() {
                 if (activeServerProvider.getActiveServer().index != index) {
                     service.clearIncomplete()
                     activeServerProvider.setActiveServerByIndex(index)
+                    service.isJukeboxEnabled =
+                        activeServerProvider.getActiveServer().jukeboxByDefault
                 }
-                service.isJukeboxEnabled = activeServerProvider.getActiveServer().jukeboxByDefault
             }
         }
         Log.i(TAG, "Active server was set to: $index")
