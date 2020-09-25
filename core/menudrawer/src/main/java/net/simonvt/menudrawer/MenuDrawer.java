@@ -25,6 +25,9 @@ import android.view.ViewTreeObserver;
 import android.view.animation.AccelerateInterpolator;
 import android.view.animation.Interpolator;
 
+import androidx.appcompat.content.res.AppCompatResources;
+import androidx.core.graphics.drawable.DrawableCompat;
+
 public abstract class MenuDrawer extends ViewGroup {
 
     /**
@@ -547,6 +550,21 @@ public abstract class MenuDrawer extends ViewGroup {
         initDrawer(context, attrs, defStyle);
     }
 
+    public static Bitmap getBitmapFromVectorDrawable(Context context, int drawableId) {
+        Drawable drawable = AppCompatResources.getDrawable(context, drawableId);
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.LOLLIPOP) {
+            drawable = (DrawableCompat.wrap(drawable)).mutate();
+        }
+
+        Bitmap bitmap = Bitmap.createBitmap(drawable.getIntrinsicWidth(),
+                drawable.getIntrinsicHeight(), Bitmap.Config.ARGB_8888);
+        Canvas canvas = new Canvas(bitmap);
+        drawable.setBounds(0, 0, canvas.getWidth(), canvas.getHeight());
+        drawable.draw(canvas);
+
+        return bitmap;
+    }
+
     protected void initDrawer(Context context, AttributeSet attrs, int defStyle) {
         setWillNotDraw(false);
         setFocusable(false);
@@ -561,7 +579,8 @@ public abstract class MenuDrawer extends ViewGroup {
 
         final int indicatorResId = a.getResourceId(R.styleable.MenuDrawer_mdActiveIndicator, 0);
         if (indicatorResId != 0) {
-            mActiveIndicator = BitmapFactory.decodeResource(getResources(), indicatorResId);
+            //mActiveIndicator = BitmapFactory.decodeResource(getResources(), indicatorResId);
+            mActiveIndicator = getBitmapFromVectorDrawable(context, indicatorResId);
         }
 
         mDropShadowEnabled = a.getBoolean(R.styleable.MenuDrawer_mdDropShadowEnabled, true);

@@ -96,7 +96,7 @@ internal class ServerRowAdapter(
             serverMenu?.visibility = View.INVISIBLE
             image?.setImageDrawable(Util.getDrawableFromAttribute(context, R.attr.screen_on_off))
         } else {
-            image?.setImageDrawable(Util.getDrawableFromAttribute(context, R.attr.podcasts))
+            image?.setImageDrawable(Util.getDrawableFromAttribute(context, R.attr.server))
         }
 
         // Highlight the Active Server's row by changing its background

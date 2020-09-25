@@ -120,7 +120,7 @@ public class LegacyImageLoader implements Runnable, ImageLoader {
     }
 
     private void createLargeUnknownImage(Context context) {
-        BitmapDrawable drawable = (BitmapDrawable) context.getResources().getDrawable(R.drawable.unknown_album_large);
+        BitmapDrawable drawable = (BitmapDrawable) context.getResources().getDrawable(R.drawable.unknown_album);
         Log.i(TAG, "createLargeUnknownImage");
 
         if (drawable != null) {

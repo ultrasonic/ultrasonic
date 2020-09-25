@@ -54,10 +54,12 @@
     <attr name="save" format="reference"/>
     <attr name="screen_on_off" format="reference"/>
     <attr name="search" format="reference"/>
+    <attr name="server" format="reference"/>
     <attr name="select_server" format="reference"/>
     <attr name="select_folder" format="reference"/>
     <attr name="settings" format="reference"/>
     <attr name="share" format="reference"/>
+    <attr name="download" format="reference"/>
     <attr name="downloaded" format="reference"/>
     <attr name="downloading" format="reference"/>
     <attr name="media_previous" format="reference"/>

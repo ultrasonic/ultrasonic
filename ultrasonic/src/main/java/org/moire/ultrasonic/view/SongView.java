@@ -378,6 +378,7 @@ public class SongView extends UpdateView implements Checkable
 				{
 					AnimationDrawable frameAnimation = (AnimationDrawable) rightImage;
 					frameAnimation.setVisible(true, true);
+					frameAnimation.start();
 				}
 			}
 		}

@@ -6,3 +6,7 @@ android {
         abortOnError true
     }
 }
+
+dependencies {
+    implementation "androidx.appcompat:appcompat-resources:1.2.0"
+}
