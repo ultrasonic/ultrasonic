@@ -1,17 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <style name="listselect" parent="Widget.AppCompat.ListView">
-        <item name="android:listSelector">@drawable/list_selector_holo_dark</item>
-    </style>
-
-    <style name="listselectlight" parent="Widget.AppCompat.ListView">
-        <item name="android:listSelector">@drawable/list_selector_holo_light</item>
-    </style>
-
-    <style name="customprogress" parent="Widget.AppCompat.ProgressBar.Horizontal">
-        <item name="android:progressDrawable">@drawable/progress_horizontal_holo_dark</item>
-    </style>
-
     <style name="Widget.MenuDrawer">
         <item name="mdMenuBackground">?android:attr/windowBackground</item>
         <item name="mdContentBackground">?android:attr/windowBackground</item>
