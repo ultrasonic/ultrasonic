@@ -85,8 +85,10 @@ internal class ServerRowAdapter(
             text?.text = context.getString(R.string.main_offline)
             description?.text = ""
         } else {
-            text?.text = data.singleOrNull { setting -> setting.index == index }?.name ?: ""
-            description?.text = data.singleOrNull { setting -> setting.index == index }?.url ?: ""
+            val setting = data.singleOrNull { t -> t.index == index }
+            text?.text = setting?.name ?: ""
+            description?.text = setting?.url ?: ""
+            if (setting == null) serverMenu?.visibility = View.INVISIBLE
         }
 
         // Provide icons for the row
