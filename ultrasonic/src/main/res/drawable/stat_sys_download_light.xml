@@ -20,11 +20,13 @@
 <animation-list
         xmlns:android="http://schemas.android.com/apk/res/android"
         android:oneshot="false">
-    <item android:drawable="@drawable/stat_sys_download_anim0_light" android:duration="200" />
-    <item android:drawable="@drawable/stat_sys_download_anim1_light" android:duration="200" />
-    <item android:drawable="@drawable/stat_sys_download_anim2_light" android:duration="200" />
-    <item android:drawable="@drawable/stat_sys_download_anim3_light" android:duration="200" />
-    <item android:drawable="@drawable/stat_sys_download_anim4_light" android:duration="200" />
-    <item android:drawable="@drawable/stat_sys_download_anim5_light" android:duration="200" />
+    <item android:drawable="@drawable/stat_sys_download_anim_0_light" android:duration="200" />
+    <item android:drawable="@drawable/stat_sys_download_anim_1_light" android:duration="200" />
+    <item android:drawable="@drawable/stat_sys_download_anim_2_light" android:duration="200" />
+    <item android:drawable="@drawable/stat_sys_download_anim_3_light" android:duration="200" />
+    <item android:drawable="@drawable/stat_sys_download_anim_4_light" android:duration="200" />
+    <item android:drawable="@drawable/stat_sys_download_anim_5_light" android:duration="200" />
+    <item android:drawable="@drawable/stat_sys_download_anim_6_light" android:duration="200" />
+    <item android:drawable="@drawable/stat_sys_download_anim_7_light" android:duration="200" />
 </animation-list>
 

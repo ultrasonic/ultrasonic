@@ -61,7 +61,7 @@ public class SongView extends UpdateView implements Checkable
 	private static final String TAG = SongView.class.getSimpleName();
 	private static Drawable starHollowDrawable;
 	private static Drawable starDrawable;
-	private static Drawable unpinImage;
+	private static Drawable pinImage;
 	private static Drawable downloadedImage;
 	private static Drawable downloadingImage;
 	private static Drawable playingImage;
@@ -108,9 +108,9 @@ public class SongView extends UpdateView implements Checkable
 			starDrawable = Util.getDrawableFromAttribute(context, R.attr.star_full);
 		}
 
-		if (unpinImage == null || !themesMatch)
+		if (pinImage == null || !themesMatch)
 		{
-			unpinImage = Util.getDrawableFromAttribute(context, R.attr.unpin);
+			pinImage = Util.getDrawableFromAttribute(context, R.attr.pin);
 		}
 
 		if (downloadedImage == null || !themesMatch)
@@ -323,11 +323,11 @@ public class SongView extends UpdateView implements Checkable
 
 		if (downloadFile.isWorkDone())
 		{
-			ImageType newLeftImageType = downloadFile.isSaved() ? ImageType.unpin : ImageType.downloaded;
+			ImageType newLeftImageType = downloadFile.isSaved() ? ImageType.pin : ImageType.downloaded;
 
 			if (this.leftImageType != newLeftImageType)
 			{
-				this.leftImage = downloadFile.isSaved() ? unpinImage : downloadedImage;
+				this.leftImage = downloadFile.isSaved() ? pinImage : downloadedImage;
 				this.leftImageType = newLeftImageType;
 			}
 		}
@@ -378,6 +378,7 @@ public class SongView extends UpdateView implements Checkable
 				{
 					AnimationDrawable frameAnimation = (AnimationDrawable) rightImage;
 					frameAnimation.setVisible(true, true);
+					frameAnimation.start();
 				}
 			}
 		}
@@ -469,7 +470,7 @@ public class SongView extends UpdateView implements Checkable
 	public enum ImageType
 	{
 		none,
-		unpin,
+		pin,
 		downloaded,
 		downloading
 	}

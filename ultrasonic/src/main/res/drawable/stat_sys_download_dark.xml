@@ -20,11 +20,13 @@
 <animation-list
         xmlns:android="http://schemas.android.com/apk/res/android"
         android:oneshot="false">
-    <item android:drawable="@drawable/stat_sys_download_anim0_dark" android:duration="200" />
-    <item android:drawable="@drawable/stat_sys_download_anim1_dark" android:duration="200" />
-    <item android:drawable="@drawable/stat_sys_download_anim2_dark" android:duration="200" />
-    <item android:drawable="@drawable/stat_sys_download_anim3_dark" android:duration="200" />
-    <item android:drawable="@drawable/stat_sys_download_anim4_dark" android:duration="200" />
-    <item android:drawable="@drawable/stat_sys_download_anim5_dark" android:duration="200" />
+    <item android:drawable="@drawable/stat_sys_download_anim_0_dark" android:duration="200" />
+    <item android:drawable="@drawable/stat_sys_download_anim_1_dark" android:duration="200" />
+    <item android:drawable="@drawable/stat_sys_download_anim_2_dark" android:duration="200" />
+    <item android:drawable="@drawable/stat_sys_download_anim_3_dark" android:duration="200" />
+    <item android:drawable="@drawable/stat_sys_download_anim_4_dark" android:duration="200" />
+    <item android:drawable="@drawable/stat_sys_download_anim_5_dark" android:duration="200" />
+    <item android:drawable="@drawable/stat_sys_download_anim_6_dark" android:duration="200" />
+    <item android:drawable="@drawable/stat_sys_download_anim_7_dark" android:duration="200" />
 </animation-list>
 

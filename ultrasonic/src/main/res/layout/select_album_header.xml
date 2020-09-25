@@ -12,7 +12,7 @@
         a:layout_marginRight="10dip"
         a:contentDescription="@null"
         a:scaleType="fitCenter"
-        a:src="@drawable/unknown_album_large"/>
+        a:src="@drawable/unknown_album"/>
 
     <TextView
         a:id="@+id/select_album_title"

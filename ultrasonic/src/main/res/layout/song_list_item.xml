@@ -11,7 +11,8 @@
         a:layout_height="fill_parent"
         a:checkMark="?attr/button_check_custom"
         a:gravity="center_vertical"
-        a:paddingLeft="3dip" />
+        a:paddingLeft="3dip"
+        a:paddingRight="3dip"/>
 
     <include layout="@layout/song_details" />
 
@@ -93,6 +94,6 @@
         a:focusable="false"
         a:gravity="center_vertical"
         a:paddingRight="8dip"
-        a:src="@drawable/ic_drag_queue" />
+        a:src="?attr/drag_queue" />
 
 </LinearLayout>

@@ -4,11 +4,11 @@
 
 	<LinearLayout a:id="@+id/main_select_server"
 		a:orientation="horizontal" a:paddingTop="2dip" a:paddingBottom="2dip"
-		a:paddingLeft="6dp" a:layout_width="fill_parent" a:layout_height="wrap_content"
+		a:paddingLeft="10dp" a:layout_width="fill_parent" a:layout_height="wrap_content"
 		a:minHeight="?android:attr/listPreferredItemHeight">
 
 		<ImageView a:layout_width="wrap_content" a:layout_height="wrap_content"
-			a:layout_gravity="center_vertical" a:src="?attr/select_folder" />
+			a:layout_gravity="center_vertical" a:src="?attr/select_server" />
 
 		<LinearLayout
 			a:layout_width="wrap_content"
