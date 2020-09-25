@@ -829,7 +829,7 @@ public class RESTMusicService implements MusicService {
     }
 
     @Override
-    public List<Genre> getGenres(Context context,
+    public List<Genre> getGenres(boolean refresh, Context context,
                                  ProgressListener progressListener) throws Exception {
         updateProgressListener(progressListener, R.string.parser_reading);
         Response<GenresResponse> response = subsonicAPIClient.getApi().getGenres().execute();

@@ -53,7 +53,7 @@ public interface MusicService
 
 	boolean isLicenseValid(Context context, ProgressListener progressListener) throws Exception;
 
-	List<Genre> getGenres(Context context, ProgressListener progressListener) throws Exception;
+	List<Genre> getGenres(boolean refresh, Context context, ProgressListener progressListener) throws Exception;
 
 	void star(String id, String albumId, String artistId, Context context, ProgressListener progressListener) throws Exception;
 

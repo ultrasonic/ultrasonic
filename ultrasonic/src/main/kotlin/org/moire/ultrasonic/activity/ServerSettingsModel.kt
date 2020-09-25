@@ -5,12 +5,10 @@ import android.content.SharedPreferences
 import android.preference.PreferenceManager
 import android.util.Log
 import androidx.lifecycle.LiveData
-import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
-import org.moire.ultrasonic.R
 import org.moire.ultrasonic.data.ActiveServerProvider
 import org.moire.ultrasonic.data.ServerSetting
 import org.moire.ultrasonic.data.ServerSettingDao
@@ -23,10 +21,10 @@ class ServerSettingsModel(
     private val activeServerProvider: ActiveServerProvider,
     private val context: Context
 ) : ViewModel() {
-    private var serverList: MutableLiveData<List<ServerSetting>> = MutableLiveData()
 
     companion object {
         private val TAG = ServerSettingsModel::class.simpleName
+        private const val PREFERENCES_KEY_SERVER_MIGRATED = "serverMigrated"
         // These constants were removed from Constants.java as they are deprecated and only used here
         private const val PREFERENCES_KEY_JUKEBOX_BY_DEFAULT = "jukeboxEnabled"
         private const val PREFERENCES_KEY_SERVER_NAME = "serverName"
@@ -84,13 +82,13 @@ class ServerSettingsModel(
      * This function is asynchronous, uses LiveData to provide the Setting.
      */
     fun getServerList(): LiveData<List<ServerSetting>> {
-        viewModelScope.launch {
-            val dbServerList = repository.loadAllServerSettings().toMutableList()
-
-            dbServerList.add(0, ServerSetting(context.getString(R.string.main_offline), ""))
-            serverList.value = dbServerList
+        // This check should run before returning any result
+        runBlocking {
+            if (areIndexesMissing()) {
+                reindexSettings()
+            }
         }
-        return serverList
+        return repository.loadAllServerSettings()
     }
 
     /**
@@ -98,55 +96,47 @@ class ServerSettingsModel(
      * This function is asynchronous, uses LiveData to provide the Setting.
      */
     fun getServerSetting(index: Int): LiveData<ServerSetting?> {
-        val result = MutableLiveData<ServerSetting?>()
-        viewModelScope.launch {
-            val dbServer = repository.findByIndex(index)
-            result.value = dbServer
-            Log.d(TAG, "getServerSetting($index) returning $dbServer")
-        }
-        return result
+        return repository.getLiveServerSettingByIndex(index)
     }
 
     /**
      * Moves a Setting up in the Server List by decreasing its index
      */
     fun moveItemUp(index: Int) {
-        if (index == 1) return
-
-        val itemToBeMoved = serverList.value?.single { setting -> setting.index == index }
-        val previousItem = serverList.value?.single { setting -> setting.index == index - 1 }
-
-        itemToBeMoved?.index = previousItem!!.index
-        previousItem.index = index
+        if (index <= 1) return
 
         viewModelScope.launch {
-            repository.update(itemToBeMoved!!, previousItem)
-        }
+            val itemToBeMoved = repository.findByIndex(index)
+            val previousItem = repository.findByIndex(index - 1)
 
-        activeServerProvider.invalidateCache()
-        // Notify the observers of the changed values
-        serverList.value = serverList.value
+            if (itemToBeMoved != null && previousItem != null) {
+                itemToBeMoved.index = previousItem.index
+                previousItem.index = index
+
+                repository.update(itemToBeMoved, previousItem)
+                activeServerProvider.invalidateCache()
+            }
+        }
     }
 
     /**
      * Moves a Setting down in the Server List by increasing its index
      */
     fun moveItemDown(index: Int) {
-        if (index == (serverList.value!!.size - 1)) return
-
-        val itemToBeMoved = serverList.value?.single { setting -> setting.index == index }
-        val nextItem = serverList.value?.single { setting -> setting.index == index + 1 }
-
-        itemToBeMoved?.index = nextItem!!.index
-        nextItem.index = index
-
         viewModelScope.launch {
-            repository.update(itemToBeMoved!!, nextItem)
-        }
+            if (index < repository.getMaxIndex() ?: 0) {
+                val itemToBeMoved = repository.findByIndex(index)
+                val nextItem = repository.findByIndex(index + 1)
 
-        activeServerProvider.invalidateCache()
-        // Notify the observers of the changed values
-        serverList.value = serverList.value
+                if (itemToBeMoved != null && nextItem != null) {
+                    itemToBeMoved.index = nextItem.index
+                    nextItem.index = index
+
+                    repository.update(itemToBeMoved, nextItem)
+                    activeServerProvider.invalidateCache()
+                }
+            }
+        }
     }
 
     /**
@@ -155,24 +145,15 @@ class ServerSettingsModel(
     fun deleteItem(index: Int) {
         if (index == 0) return
 
-        val newList = serverList.value!!.toMutableList()
-        val itemToBeDeleted = newList.single { setting -> setting.index == index }
-        newList.remove(itemToBeDeleted)
-
-        for (x in index + 1 until newList.size + 1) {
-            newList.single { setting -> setting.index == x }.index--
-        }
-
         viewModelScope.launch {
-            repository.delete(itemToBeDeleted)
-            for (x in index until newList.size) {
-                repository.update(newList.single { setting -> setting.index == x })
+            val itemToBeDeleted = repository.findByIndex(index)
+            if (itemToBeDeleted != null) {
+                repository.delete(itemToBeDeleted)
+                Log.d(TAG, "deleteItem deleted index: $index")
+                reindexSettings()
+                activeServerProvider.invalidateCache()
             }
         }
-
-        activeServerProvider.invalidateCache()
-        serverList.value = newList
-        Log.d(TAG, "deleteItem deleted index: $index")
     }
 
     /**
@@ -196,7 +177,7 @@ class ServerSettingsModel(
 
         viewModelScope.launch {
             serverSetting.index = (repository.count() ?: 0) + 1
-            serverSetting.id = serverSetting.index
+            serverSetting.id = (repository.getMaxId() ?: 0) + 1
             repository.insert(serverSetting)
             Log.d(TAG, "saveNewItem saved server setting: $serverSetting")
         }
@@ -212,8 +193,10 @@ class ServerSettingsModel(
     ): ServerSetting? {
         val url = settings.getString(PREFERENCES_KEY_SERVER_URL + preferenceId, "")
         val userName = settings.getString(PREFERENCES_KEY_USERNAME + preferenceId, "")
+        val isMigrated = settings.getBoolean(PREFERENCES_KEY_SERVER_MIGRATED + preferenceId, false)
 
-        if (url.isNullOrEmpty() || userName.isNullOrEmpty()) return null
+        if (url.isNullOrEmpty() || userName.isNullOrEmpty() || isMigrated) return null
+        setServerMigrated(settings, preferenceId)
 
         return ServerSetting(
             preferenceId,
@@ -230,5 +213,48 @@ class ServerSettingsModel(
             settings.getBoolean(PREFERENCES_KEY_LDAP_SUPPORT + preferenceId, false),
             settings.getString(PREFERENCES_KEY_MUSIC_FOLDER_ID + preferenceId, null)
         )
+    }
+
+    /**
+     * Checks if there are any missing indexes in the ServerSetting list
+     * For displaying the Server Settings in a ListView, it is mandatory that their indexes
+     * are'nt missing. Ideally the indexes are continuous, but some circumstances (e.g.
+     * concurrency or migration errors) may get them out of order.
+     * This would make the List Adapter crash, so it is best to prepare and check the list.
+     */
+    private suspend fun areIndexesMissing(): Boolean {
+        for (i in 1 until getMaximumIndexToCheck() + 1) {
+            if (repository.findByIndex(i) == null) return true
+        }
+        return false
+    }
+
+    /**
+     * This function updates all the Server Settings in the DB so their indexing is continuous.
+     */
+    private suspend fun reindexSettings() {
+        var newIndex = 1
+        for (i in 1 until getMaximumIndexToCheck() + 1) {
+            val setting = repository.findByIndex(i)
+            if (setting != null) {
+                setting.index = newIndex
+                newIndex++
+                repository.update(setting)
+                Log.d(TAG, "reindexSettings saved $setting")
+            }
+        }
+    }
+
+    private suspend fun getMaximumIndexToCheck(): Int {
+        val rowsInDatabase = repository.count() ?: 0
+        val indexesInDatabase = repository.getMaxIndex() ?: 0
+        if (rowsInDatabase > indexesInDatabase) return rowsInDatabase
+        return indexesInDatabase
+    }
+
+    private fun setServerMigrated(settings: SharedPreferences, preferenceId: Int) {
+        val editor = settings.edit()
+        editor.putBoolean(PREFERENCES_KEY_SERVER_MIGRATED + preferenceId, true)
+        editor.apply()
     }
 }

@@ -75,7 +75,7 @@ class ActiveServerProvider(
         }
 
         GlobalScope.launch(Dispatchers.IO) {
-            val serverId = repository.findByIndex(index)!!.id
+            val serverId = repository.findByIndex(index)?.id ?: 0
             setActiveServerId(context, serverId)
         }
     }
