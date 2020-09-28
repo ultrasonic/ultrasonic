@@ -1,5 +1,7 @@
 package org.moire.ultrasonic.fragment;
 
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Build;
@@ -7,6 +9,8 @@ import android.os.Bundle;
 import android.preference.*;
 import android.provider.SearchRecentSuggestions;
 import androidx.annotation.Nullable;
+import androidx.annotation.StringRes;
+
 import android.util.Log;
 import android.view.View;
 
@@ -19,6 +23,7 @@ import org.moire.ultrasonic.featureflags.FeatureStorage;
 import org.moire.ultrasonic.filepicker.FilePickerDialog;
 import org.moire.ultrasonic.filepicker.OnFileSelectedListener;
 import org.moire.ultrasonic.provider.SearchSuggestionProvider;
+import org.moire.ultrasonic.service.Consumer;
 import org.moire.ultrasonic.service.MediaPlayerController;
 import org.moire.ultrasonic.util.*;
 
@@ -120,6 +125,7 @@ public class SettingsFragment extends PreferenceFragment
         setupGaplessControlSettingsV14();
         setupFeatureFlagsPreferences();
         setupCacheLocationPreference();
+        setupBluetoothDevicePreferences();
 
         // After API26 foreground services must be used for music playback, and they must have a notification
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
@@ -204,15 +210,84 @@ public class SettingsFragment extends PreferenceFragment
     }
 
     private void setupBluetoothDevicePreferences() {
-        resumeOnBluetoothDevice.setSummary(settings.getString(Constants.PREFERENCES_KEY_CACHE_LOCATION,
-                FileUtil.getDefaultMusicDirectory(getActivity()).getPath()));
+        final int resumeSetting = Util.getResumeOnBluetoothDevice(getActivity());
+        final int pauseSetting = Util.getPauseOnBluetoothDevice(getActivity());
+
+        resumeOnBluetoothDevice.setSummary(bluetoothDevicePreferenceToString(resumeSetting));
+        pauseOnBluetoothDevice.setSummary(bluetoothDevicePreferenceToString(pauseSetting));
 
         resumeOnBluetoothDevice.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
             @Override
             public boolean onPreferenceClick(Preference preference) {
-                return true;
+            showBluetoothDevicePreferenceDialog(
+                R.string.settings_playback_resume_on_bluetooth_device,
+                Util.getResumeOnBluetoothDevice(getActivity()),
+                new Consumer<Integer>() {
+                    @Override
+                    public void accept(Integer choice) {
+                        SharedPreferences.Editor editor = resumeOnBluetoothDevice.getEditor();
+                        editor.putInt(Constants.PREFERENCES_KEY_RESUME_ON_BLUETOOTH_DEVICE, choice);
+                        editor.commit();
+                        resumeOnBluetoothDevice.setSummary(bluetoothDevicePreferenceToString(choice));
+                    }
+                });
+            return true;
             }
         });
+
+        pauseOnBluetoothDevice.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
+            @Override
+            public boolean onPreferenceClick(Preference preference) {
+            showBluetoothDevicePreferenceDialog(
+                R.string.settings_playback_pause_on_bluetooth_device,
+                Util.getPauseOnBluetoothDevice(getActivity()),
+                new Consumer<Integer>() {
+                    @Override
+                    public void accept(Integer choice) {
+                        SharedPreferences.Editor editor = pauseOnBluetoothDevice.getEditor();
+                        editor.putInt(Constants.PREFERENCES_KEY_PAUSE_ON_BLUETOOTH_DEVICE, choice);
+                        editor.commit();
+                        pauseOnBluetoothDevice.setSummary(bluetoothDevicePreferenceToString(choice));
+                    }
+                });
+            return true;
+            }
+        });
+    }
+
+    private void showBluetoothDevicePreferenceDialog(@StringRes int title, int defaultChoice, final Consumer<Integer> onChosen) {
+        final int[] choice = {defaultChoice};
+        new AlertDialog.Builder(getActivity()).setTitle(title)
+            .setSingleChoiceItems(R.array.bluetoothDeviceSettingNames, defaultChoice,
+                new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialogInterface, int i) {
+                        choice[0] = i;
+                    }
+                })
+            .setNegativeButton(R.string.common_cancel, new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialogInterface, int i) {
+                    dialogInterface.cancel();
+                }
+            })
+            .setPositiveButton(R.string.common_ok, new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialogInterface, int i) {
+                    onChosen.accept(choice[0]);
+                    dialogInterface.dismiss();
+                }
+            })
+            .create().show();
+    }
+
+    private String bluetoothDevicePreferenceToString(int preferenceValue) {
+        switch (preferenceValue) {
+            case Constants.PREFERENCE_VALUE_ALL: return getString(R.string.settings_playback_bluetooth_all);
+            case Constants.PREFERENCE_VALUE_A2DP: return getString(R.string.settings_playback_bluetooth_a2dp);
+            case Constants.PREFERENCE_VALUE_DISABLED: return getString(R.string.settings_playback_bluetooth_disabled);
+            default: return "";
+        }
     }
 
     private void setupClearSearchPreference() {

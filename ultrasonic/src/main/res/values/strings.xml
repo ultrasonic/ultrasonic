@@ -400,9 +400,9 @@
     <string name="albumArt">albumArt</string>
     <string name="common_multiple_years">Multiple Years</string>
     <string name="settings.server_address_unset" translatable="false">http://example.com</string>
-    <string name="settings.playback.resume_on_bluetooth_device">Resume when a bluetooth device is connected</string>
-    <string name="settings.playback.pause_on_bluetooth_device">Pause when a bluetooth device is disconnected</string>
-    <string name="settings.playback.bluetooth_all">All bluetooth devices</string>
+    <string name="settings.playback.resume_on_bluetooth_device">Resume when a Bluetooth device is connected</string>
+    <string name="settings.playback.pause_on_bluetooth_device">Pause when a Bluetooth device is disconnected</string>
+    <string name="settings.playback.bluetooth_all">All Bluetooth devices</string>
     <string name="settings.playback.bluetooth_a2dp">Only A2dp devices</string>
     <string name="settings.playback.bluetooth_disabled">Disabled</string>
 

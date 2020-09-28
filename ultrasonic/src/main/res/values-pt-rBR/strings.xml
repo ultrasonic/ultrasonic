@@ -397,6 +397,12 @@
     <string name="settings.image_loader_concurrency_12">12</string>
     <string name="albumArt">albumArt</string>
     <string name="common_multiple_years">Múltiplos Anos</string>
+    <string name="settings.playback.resume_on_bluetooth_device">Resume when a Bluetooth device is connected</string>
+    <string name="settings.playback.pause_on_bluetooth_device">Pause when a Bluetooth device is disconnected</string>
+    <string name="settings.playback.bluetooth_all">All Bluetooth devices</string>
+    <string name="settings.playback.bluetooth_a2dp">Only A2dp devices</string>
+    <string name="settings.playback.bluetooth_disabled">Disabled</string>
+
     <string name="permissions.access_error">Ultrasonic can\'t access the music file cache. Cache location was reset to the default path.</string>
     <string name="permissions.message_box_title">Warning</string>
     <string name="permissions.permission_missing">Ultrasonic needs read/write permission to the music cache directory. Cache directory was reset to its default value.</string>

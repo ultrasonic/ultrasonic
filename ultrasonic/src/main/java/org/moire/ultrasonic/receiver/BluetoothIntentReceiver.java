@@ -19,6 +19,7 @@
 package org.moire.ultrasonic.receiver;
 
 import android.bluetooth.BluetoothDevice;
+import android.bluetooth.BluetoothProfile;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
@@ -39,28 +40,50 @@ public class BluetoothIntentReceiver extends BroadcastReceiver
 	@Override
 	public void onReceive(Context context, Intent intent)
 	{
-		int state = intent.getIntExtra("android.bluetooth.a2dp.extra.SINK_STATE", -1);
+		int state = intent.getIntExtra(BluetoothProfile.EXTRA_STATE, -1);
 		BluetoothDevice device = intent.getParcelableExtra(BluetoothDevice.EXTRA_DEVICE);
 		String action = intent.getAction();
 		String name = device != null ? device.getName() : "Unknown";
 		String address = device != null ? device.getAddress() : "Unknown";
 
-		Log.d(TAG, String.format("Sink State: %d; Action: %s; Device: %s; Address: %s", state, action, name, address));
+		Log.d(TAG, String.format("A2DP State: %d; Action: %s; Device: %s; Address: %s", state, action, name, address));
 
-		boolean actionConnected = false;
-		boolean actionDisconnected = false;
+		boolean actionBluetoothDeviceConnected = false;
+		boolean actionBluetoothDeviceDisconnected = false;
+		boolean actionA2dpConnected = false;
+		boolean actionA2dpDisconnected = false;
 
 		if (BluetoothDevice.ACTION_ACL_CONNECTED.equals(action))
 		{
-			actionConnected = true;
+			actionBluetoothDeviceConnected = true;
 		}
 		else if (BluetoothDevice.ACTION_ACL_DISCONNECTED.equals(action) || BluetoothDevice.ACTION_ACL_DISCONNECT_REQUESTED.equals(action))
 		{
-			actionDisconnected = true;
+			actionBluetoothDeviceDisconnected = true;
 		}
 
-		boolean connected = state == android.bluetooth.BluetoothA2dp.STATE_CONNECTED || actionConnected;
-		boolean disconnected = state == android.bluetooth.BluetoothA2dp.STATE_DISCONNECTED || actionDisconnected;
+		if (state == android.bluetooth.BluetoothA2dp.STATE_CONNECTED) actionA2dpConnected = true;
+		else if (state == android.bluetooth.BluetoothA2dp.STATE_DISCONNECTED) actionA2dpDisconnected = true;
+
+		boolean connected = actionA2dpConnected || actionBluetoothDeviceConnected;
+		boolean resume = false;
+		boolean pause = false;
+
+		switch (Util.getResumeOnBluetoothDevice(context))
+		{
+			case Constants.PREFERENCE_VALUE_ALL: resume = actionA2dpConnected || actionBluetoothDeviceConnected;
+				break;
+			case Constants.PREFERENCE_VALUE_A2DP: resume = actionA2dpConnected;
+				break;
+		}
+
+		switch (Util.getPauseOnBluetoothDevice(context))
+		{
+			case Constants.PREFERENCE_VALUE_ALL: pause = actionA2dpDisconnected || actionBluetoothDeviceDisconnected;
+				break;
+			case Constants.PREFERENCE_VALUE_A2DP: pause = actionA2dpDisconnected;
+				break;
+		}
 
 		if (connected)
 		{
@@ -68,7 +91,13 @@ public class BluetoothIntentReceiver extends BroadcastReceiver
 			Util.registerMediaButtonEventReceiver(context, false);
 		}
 
-		if (disconnected)
+		if (resume)
+		{
+			Log.i(TAG, String.format("Connected to Bluetooth device %s address %s, resuming playback.", name, address));
+			context.sendBroadcast(new Intent(Constants.CMD_PLAY));
+		}
+
+		if (pause)
 		{
 			Log.i(TAG, String.format("Disconnected from Bluetooth device %s address %s, requesting pause.", name, address));
 			context.sendBroadcast(new Intent(Constants.CMD_PAUSE));

@@ -134,9 +134,9 @@ public final class Constants
 	public static final String PREFERENCES_KEY_RESUME_ON_BLUETOOTH_DEVICE = "resumeOnBluetoothDevice";
 	public static final String PREFERENCES_KEY_PAUSE_ON_BLUETOOTH_DEVICE = "pauseOnBluetoothDevice";
 
-	public static final String PREFERENCE_VALUE_ALL = "all";
-	public static final String PREFERENCE_VALUE_A2DP = "a2dp";
-	public static final String PREFERENCE_VALUE_DISABLED = "disabled";
+	public static final int PREFERENCE_VALUE_ALL = 0;
+	public static final int PREFERENCE_VALUE_A2DP = 1;
+	public static final int PREFERENCE_VALUE_DISABLED = 2;
 
 	// Number of free trial days for non-licensed servers.
 	public static final int FREE_TRIAL_DAYS = 30;
