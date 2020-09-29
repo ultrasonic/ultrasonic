@@ -397,11 +397,11 @@
     <string name="settings.image_loader_concurrency_12">12</string>
     <string name="albumArt">Caratula del Álbum</string>
     <string name="common_multiple_years">Múltiples años</string>
-    <string name="settings.playback.resume_on_bluetooth_device">Resume when a Bluetooth device is connected</string>
-    <string name="settings.playback.pause_on_bluetooth_device">Pause when a Bluetooth device is disconnected</string>
-    <string name="settings.playback.bluetooth_all">All Bluetooth devices</string>
-    <string name="settings.playback.bluetooth_a2dp">Only A2dp devices</string>
-    <string name="settings.playback.bluetooth_disabled">Disabled</string>
+    <string name="settings.playback.resume_on_bluetooth_device">Reanudar al conectar un dispositivo Bluetooth</string>
+    <string name="settings.playback.pause_on_bluetooth_device">Pausar al desconectar un dispositivo Bluetooth</string>
+    <string name="settings.playback.bluetooth_all">Todos los dispositivos Bluetooth</string>
+    <string name="settings.playback.bluetooth_a2dp">Solo dispositivos de audio (A2DP)</string>
+    <string name="settings.playback.bluetooth_disabled">Deshabilitado</string>
 
     <string name="permissions.access_error">Ultrasonic no puede acceder a la caché de los ficheros de música. La ubicación de la caché se restableció a la ruta predeterminada.</string>
     <string name="permissions.message_box_title">Atención</string>

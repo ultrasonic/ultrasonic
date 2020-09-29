@@ -400,7 +400,7 @@
     <string name="settings.playback.resume_on_bluetooth_device">Folytatás Bluetooth eszköz csatlakozásakor</string>
     <string name="settings.playback.pause_on_bluetooth_device">Szünet Bluetooth eszköz kikapcsolásakor</string>
     <string name="settings.playback.bluetooth_all">Minden Bluetooth eszköz</string>
-    <string name="settings.playback.bluetooth_a2dp">Csak A2dp eszközök</string>
+    <string name="settings.playback.bluetooth_a2dp">Csak audio (A2DP) eszközök</string>
     <string name="settings.playback.bluetooth_disabled">Kikapcsolva</string>
 
     <string name="permissions.access_error">Az Ultrasonic nem éri el a zenei fájl gyorsítótárat. A gyorsítótár helye visszaállítva az alapbeállításra.</string>

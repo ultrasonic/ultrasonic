@@ -399,7 +399,7 @@
     <string name="settings.playback.resume_on_bluetooth_device">Resume when a Bluetooth device is connected</string>
     <string name="settings.playback.pause_on_bluetooth_device">Pause when a Bluetooth device is disconnected</string>
     <string name="settings.playback.bluetooth_all">All Bluetooth devices</string>
-    <string name="settings.playback.bluetooth_a2dp">Only A2dp devices</string>
+    <string name="settings.playback.bluetooth_a2dp">Only audio (A2DP) devices</string>
     <string name="settings.playback.bluetooth_disabled">Disabled</string>
 
     <string name="permissions.access_error">Ultrasonic can\'t access the music file cache. Cache location was reset to the default path.</string>
