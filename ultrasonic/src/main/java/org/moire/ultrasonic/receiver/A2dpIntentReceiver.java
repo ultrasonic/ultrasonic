@@ -19,17 +19,10 @@ public class A2dpIntentReceiver extends BroadcastReceiver
 	@Override
 	public void onReceive(Context context, Intent intent)
 	{
-		if (mediaPlayerControllerLazy.getValue().getCurrentPlaying() == null)
-		{
-			return;
-		}
+		if (mediaPlayerControllerLazy.getValue().getCurrentPlaying() == null) return;
 
 		Entry song = mediaPlayerControllerLazy.getValue().getCurrentPlaying().getSong();
-
-		if (song == null)
-		{
-			return;
-		}
+		if (song == null) return;
 
 		Intent avrcpIntent = new Intent(PLAYSTATUS_RESPONSE);
 

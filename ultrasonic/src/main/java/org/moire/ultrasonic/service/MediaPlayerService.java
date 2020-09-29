@@ -361,6 +361,18 @@ public class MediaPlayerService extends Service
         }
     }
 
+    public synchronized void resumeOrPlay()
+    {
+        if (localMediaPlayer.playerState == PAUSED || localMediaPlayer.playerState == COMPLETED || localMediaPlayer.playerState == STOPPED)
+        {
+            start();
+        }
+        else if (localMediaPlayer.playerState == IDLE)
+        {
+            play();
+        }
+    }
+
     /**
      * Plays either the current song (resume) or the first/next one in queue.
      */

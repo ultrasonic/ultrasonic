@@ -254,7 +254,7 @@
     <string name="settings.preload_5">5 songs</string>
     <string name="settings.preload_unlimited">Unlimited</string>
     <string name="settings.playback.resume_play_on_headphones_plug.title">Resume on headphones insertion</string>
-    <string name="settings.playback.resume_play_on_headphones_plug.summary">App will resume paused playback on headphones insertion into device.</string>
+    <string name="settings.playback.resume_play_on_headphones_plug.summary">App will resume paused playback on wired headphones insertion into device.</string>
     <string name="settings.screen_lit_summary">Keeping the screen on while downloading improves download speed.</string>
     <string name="settings.screen_lit_title">Keep Screen On</string>
     <string name="settings.scrobble_summary">Remember to set up your Last.fm user and password on the Subsonic server</string>
@@ -400,6 +400,11 @@
     <string name="albumArt">albumArt</string>
     <string name="common_multiple_years">Multiple Years</string>
     <string name="settings.server_address_unset" translatable="false">http://example.com</string>
+    <string name="settings.playback.resume_on_bluetooth_device">Resume when a Bluetooth device is connected</string>
+    <string name="settings.playback.pause_on_bluetooth_device">Pause when a Bluetooth device is disconnected</string>
+    <string name="settings.playback.bluetooth_all">All Bluetooth devices</string>
+    <string name="settings.playback.bluetooth_a2dp">Only audio (A2DP) devices</string>
+    <string name="settings.playback.bluetooth_disabled">Disabled</string>
 
     <string name="permissions.access_error">Ultrasonic can\'t access the music file cache. Cache location was reset to the default path.</string>
     <string name="permissions.message_box_title">Warning</string>

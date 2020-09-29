@@ -81,17 +81,6 @@ public class MediaPlayerLifecycleSupport
 		// React to media buttons.
 		Util.registerMediaButtonEventReceiver(context, true);
 
-		// Register the handler for outside intents.
-		IntentFilter commandFilter = new IntentFilter();
-		commandFilter.addAction(Constants.CMD_PLAY);
-		commandFilter.addAction(Constants.CMD_TOGGLEPAUSE);
-		commandFilter.addAction(Constants.CMD_PAUSE);
-		commandFilter.addAction(Constants.CMD_STOP);
-		commandFilter.addAction(Constants.CMD_PREVIOUS);
-		commandFilter.addAction(Constants.CMD_NEXT);
-		commandFilter.addAction(Constants.CMD_PROCESS_KEYCODE);
-		context.registerReceiver(intentReceiver, commandFilter);
-
 		mediaPlayerController.onCreate();
 		if (autoPlay) mediaPlayerController.preload();
 
@@ -120,7 +109,6 @@ public class MediaPlayerLifecycleSupport
 				downloader.getCurrentPlayingIndex(), mediaPlayerController.getPlayerPosition());
 		mediaPlayerController.clear(false);
 		context.unregisterReceiver(headsetEventReceiver);
-		context.unregisterReceiver(intentReceiver);
 		mediaPlayerController.onDestroy();
 		created = false;
 		Log.i(TAG, "LifecycleSupport destroyed");
@@ -128,19 +116,33 @@ public class MediaPlayerLifecycleSupport
 
 	public void receiveIntent(Intent intent)
 	{
-		Log.i(TAG, "Received intent");
-		if (intent != null && intent.getExtras() != null)
-		{
-			KeyEvent event = (KeyEvent) intent.getExtras().get(Intent.EXTRA_KEY_EVENT);
-			if (event != null)
-			{
-				handleKeyEvent(event);
+		if (intent == null) return;
+		String intentAction = intent.getAction();
+		if (intentAction == null || intentAction.isEmpty()) return;
+
+		Log.i(TAG, String.format("Received intent: %s", intentAction));
+
+		if (intentAction.equals(Constants.CMD_PROCESS_KEYCODE)) {
+			if (intent.getExtras() != null) {
+				KeyEvent event = (KeyEvent) intent.getExtras().get(Intent.EXTRA_KEY_EVENT);
+				if (event != null) {
+					handleKeyEvent(event);
+				}
 			}
+		}
+		else
+		{
+			handleUltrasonicIntent(intentAction);
 		}
 	}
 
+	/**
+	 * The Headset Intent Receiver is responsible for resuming playback when a headset is inserted
+	 * and pausing it when it is removed.
+	 * Unfortunately this Intent can't be registered in the AndroidManifest, so it works only
+	 * while Ultrasonic is running.
+	 */
 	private void registerHeadsetReceiver() {
-        // Pause when headset is unplugged.
         final SharedPreferences sp = Util.getPreferences(context);
         final String spKey = context
                 .getString(R.string.settings_playback_resume_play_on_headphones_plug);
@@ -255,43 +257,53 @@ public class MediaPlayerLifecycleSupport
 	}
 
 	/**
-	 * This receiver manages the intent that could come from other applications.
+	 * This function processes the intent that could come from other applications.
 	 */
-	private BroadcastReceiver intentReceiver = new BroadcastReceiver()
+	private void handleUltrasonicIntent(final String intentAction)
 	{
-		@Override
-		public void onReceive(Context context, Intent intent)
-		{
-			String action = intent.getAction();
-			if (action == null) return;
-			Log.i(TAG, "intentReceiver.onReceive: " + action);
+		final boolean isRunning = created;
+		// If Ultrasonic is not running, do nothing to stop or pause
+		if (!isRunning && (intentAction.equals(Constants.CMD_PAUSE) ||
+			intentAction.equals(Constants.CMD_STOP))) return;
 
-			switch(action)
-			{
-				case Constants.CMD_PLAY:
-					mediaPlayerController.play();
-					break;
-				case Constants.CMD_NEXT:
-					mediaPlayerController.next();
-					break;
-				case Constants.CMD_PREVIOUS:
-					mediaPlayerController.previous();
-					break;
-				case Constants.CMD_TOGGLEPAUSE:
-					mediaPlayerController.togglePlayPause();
-					break;
-				case Constants.CMD_STOP:
-					// TODO: There is a stop() function, shouldn't we use that?
-					mediaPlayerController.pause();
-					mediaPlayerController.seekTo(0);
-					break;
-				case Constants.CMD_PAUSE:
-					mediaPlayerController.pause();
-					break;
-				case Constants.CMD_PROCESS_KEYCODE:
-					receiveIntent(intent);
-					break;
+		boolean autoStart = (intentAction.equals(Constants.CMD_PLAY) ||
+			intentAction.equals(Constants.CMD_RESUME_OR_PLAY) ||
+			intentAction.equals(Constants.CMD_TOGGLEPAUSE) ||
+			intentAction.equals(Constants.CMD_PREVIOUS) ||
+			intentAction.equals(Constants.CMD_NEXT));
+
+		// We can receive intents when everything is stopped, so we need to start
+		onCreate(autoStart, new Runnable() {
+			@Override
+			public void run() {
+				switch(intentAction)
+				{
+					case Constants.CMD_PLAY:
+						mediaPlayerController.play();
+						break;
+					case Constants.CMD_RESUME_OR_PLAY:
+						// If Ultrasonic wasn't running, the autoStart is enough to resume, no need to call anything
+						if (isRunning) mediaPlayerController.resumeOrPlay();
+						break;
+					case Constants.CMD_NEXT:
+						mediaPlayerController.next();
+						break;
+					case Constants.CMD_PREVIOUS:
+						mediaPlayerController.previous();
+						break;
+					case Constants.CMD_TOGGLEPAUSE:
+						mediaPlayerController.togglePlayPause();
+						break;
+					case Constants.CMD_STOP:
+						// TODO: There is a stop() function, shouldn't we use that?
+						mediaPlayerController.pause();
+						mediaPlayerController.seekTo(0);
+						break;
+					case Constants.CMD_PAUSE:
+						mediaPlayerController.pause();
+						break;
+				}
 			}
-		}
-	};
+		});
+	}
 }

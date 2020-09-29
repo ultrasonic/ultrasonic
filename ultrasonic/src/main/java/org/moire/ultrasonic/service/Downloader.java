@@ -89,7 +89,7 @@ public class Downloader
 
     public void stop()
     {
-        executorService.shutdown();
+        if (executorService != null) executorService.shutdown();
         Log.i(TAG, "Downloader stopped");
     }
 

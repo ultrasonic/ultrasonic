@@ -229,7 +229,7 @@
     <string name="settings.max_bitrate_unlimited">Korlátlan</string>
     <string name="settings.max_bitrate_wifi">Max. bitráta - Wi-Fi kapcsolat</string>
     <string name="settings.max_songs">Dalok max. találati száma</string>
-    <string name="settings.media_button_summary">Telefon irányítása a bluetooth eszköz, vagy a fülhallgató vezérlőgombjaival.</string>
+    <string name="settings.media_button_summary">Telefon irányítása a Bluetooth eszköz, vagy a fülhallgató vezérlőgombjaival.</string>
     <string name="settings.media_button_title">Média vezérlőgombok</string>
     <string name="settings.network_timeout">Hálózati időtúllépés</string>
     <string name="settings.network_timeout_105000">105 másodperc</string>
@@ -396,7 +396,13 @@
     <string name="settings.image_loader_concurrency_11">11</string>
     <string name="settings.image_loader_concurrency_12">12</string>
     <string name="albumArt">albumArt</string>
-    <string name="common_multiple_years">Multiple Years</string>
+    <string name="common_multiple_years">Több év</string>
+    <string name="settings.playback.resume_on_bluetooth_device">Folytatás Bluetooth eszköz csatlakozásakor</string>
+    <string name="settings.playback.pause_on_bluetooth_device">Szünet Bluetooth eszköz kikapcsolásakor</string>
+    <string name="settings.playback.bluetooth_all">Minden Bluetooth eszköz</string>
+    <string name="settings.playback.bluetooth_a2dp">Csak audio (A2DP) eszközök</string>
+    <string name="settings.playback.bluetooth_disabled">Kikapcsolva</string>
+
     <string name="permissions.access_error">Az Ultrasonic nem éri el a zenei fájl gyorsítótárat. A gyorsítótár helye visszaállítva az alapbeállításra.</string>
     <string name="permissions.message_box_title">Figyelem</string>
     <string name="permissions.permission_missing">Az Ultrasonic működéséhez írás/olvasás hozzáférés szükséges a zenei fájl gyorsítótárhoz. A gyorsítótár helye visszaállítva az alapbeállításra.</string>

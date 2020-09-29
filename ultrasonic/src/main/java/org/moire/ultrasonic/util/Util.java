@@ -1447,4 +1447,16 @@ public class Util
 		editor.apply();
 		return true;
 	}
+
+	public static int getResumeOnBluetoothDevice(Context context)
+	{
+		SharedPreferences preferences = getPreferences(context);
+		return preferences.getInt(Constants.PREFERENCES_KEY_RESUME_ON_BLUETOOTH_DEVICE, Constants.PREFERENCE_VALUE_DISABLED);
+	}
+
+	public static int getPauseOnBluetoothDevice(Context context)
+	{
+		SharedPreferences preferences = getPreferences(context);
+		return preferences.getInt(Constants.PREFERENCES_KEY_PAUSE_ON_BLUETOOTH_DEVICE, Constants.PREFERENCE_VALUE_A2DP);
+	}
 }

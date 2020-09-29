@@ -63,6 +63,7 @@ public final class Constants
 	// Names for Intent Actions
 	public static final String CMD_PROCESS_KEYCODE = "org.moire.ultrasonic.CMD_PROCESS_KEYCODE";
 	public static final String CMD_PLAY = "org.moire.ultrasonic.CMD_PLAY";
+	public static final String CMD_RESUME_OR_PLAY = "org.moire.ultrasonic.CMD_RESUME_OR_PLAY";
 	public static final String CMD_TOGGLEPAUSE = "org.moire.ultrasonic.CMD_TOGGLEPAUSE";
 	public static final String CMD_PAUSE = "org.moire.ultrasonic.CMD_PAUSE";
 	public static final String CMD_STOP = "org.moire.ultrasonic.CMD_STOP";
@@ -131,6 +132,12 @@ public final class Constants
 	public static final String PREFERENCES_KEY_USE_FIVE_STAR_RATING = "use_five_star_rating";
 	public static final String PREFERENCES_KEY_CATEGORY_NOTIFICATIONS = "notificationsCategory";
 	public static final String PREFERENCES_KEY_FIRST_RUN_EXECUTED = "firstRunExecuted";
+	public static final String PREFERENCES_KEY_RESUME_ON_BLUETOOTH_DEVICE = "resumeOnBluetoothDevice";
+	public static final String PREFERENCES_KEY_PAUSE_ON_BLUETOOTH_DEVICE = "pauseOnBluetoothDevice";
+
+	public static final int PREFERENCE_VALUE_ALL = 0;
+	public static final int PREFERENCE_VALUE_A2DP = 1;
+	public static final int PREFERENCE_VALUE_DISABLED = 2;
 
 	// Number of free trial days for non-licensed servers.
 	public static final int FREE_TRIAL_DAYS = 30;
