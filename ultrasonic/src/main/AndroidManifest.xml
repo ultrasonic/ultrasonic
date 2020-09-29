@@ -126,19 +126,22 @@
             android:name=".service.MediaPlayerService"
             android:label="Ultrasonic Download Service"
             android:exported="false">
-            <intent-filter>
-                <action android:name="org.moire.ultrasonic.CMD_TOGGLEPAUSE"/>
-                <action android:name="org.moire.ultrasonic.CMD_PLAY"/>
-                <action android:name="org.moire.ultrasonic.CMD_PAUSE"/>
-                <action android:name="org.moire.ultrasonic.CMD_NEXT"/>
-                <action android:name="org.moire.ultrasonic.CMD_PREVIOUS"/>
-                <action android:name="org.moire.ultrasonic.CMD_STOP"/>
-            </intent-filter>
         </service>
 
         <receiver android:name=".receiver.MediaButtonIntentReceiver">
             <intent-filter android:priority="2147483647">
                 <action android:name="android.intent.action.MEDIA_BUTTON"/>
+            </intent-filter>
+        </receiver>
+        <receiver android:name=".receiver.UltrasonicIntentReceiver">
+            <intent-filter>
+                <action android:name="org.moire.ultrasonic.CMD_TOGGLEPAUSE"/>
+                <action android:name="org.moire.ultrasonic.CMD_PLAY"/>
+                <action android:name="org.moire.ultrasonic.CMD_RESUME_OR_PLAY"/>
+                <action android:name="org.moire.ultrasonic.CMD_PAUSE"/>
+                <action android:name="org.moire.ultrasonic.CMD_NEXT"/>
+                <action android:name="org.moire.ultrasonic.CMD_PREVIOUS"/>
+                <action android:name="org.moire.ultrasonic.CMD_STOP"/>
             </intent-filter>
         </receiver>
         <receiver android:name=".receiver.BluetoothIntentReceiver">

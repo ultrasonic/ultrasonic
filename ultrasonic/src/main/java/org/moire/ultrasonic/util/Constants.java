@@ -63,6 +63,7 @@ public final class Constants
 	// Names for Intent Actions
 	public static final String CMD_PROCESS_KEYCODE = "org.moire.ultrasonic.CMD_PROCESS_KEYCODE";
 	public static final String CMD_PLAY = "org.moire.ultrasonic.CMD_PLAY";
+	public static final String CMD_RESUME_OR_PLAY = "org.moire.ultrasonic.CMD_RESUME_OR_PLAY";
 	public static final String CMD_TOGGLEPAUSE = "org.moire.ultrasonic.CMD_TOGGLEPAUSE";
 	public static final String CMD_PAUSE = "org.moire.ultrasonic.CMD_PAUSE";
 	public static final String CMD_STOP = "org.moire.ultrasonic.CMD_STOP";

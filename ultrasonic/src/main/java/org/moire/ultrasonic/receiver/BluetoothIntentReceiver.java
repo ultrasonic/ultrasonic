@@ -94,13 +94,13 @@ public class BluetoothIntentReceiver extends BroadcastReceiver
 		if (resume)
 		{
 			Log.i(TAG, String.format("Connected to Bluetooth device %s address %s, resuming playback.", name, address));
-			context.sendBroadcast(new Intent(Constants.CMD_PLAY));
+			context.sendBroadcast(new Intent(Constants.CMD_RESUME_OR_PLAY).setPackage(context.getPackageName()));
 		}
 
 		if (pause)
 		{
 			Log.i(TAG, String.format("Disconnected from Bluetooth device %s address %s, requesting pause.", name, address));
-			context.sendBroadcast(new Intent(Constants.CMD_PAUSE));
+			context.sendBroadcast(new Intent(Constants.CMD_PAUSE).setPackage(context.getPackageName()));
 		}
 	}
 }

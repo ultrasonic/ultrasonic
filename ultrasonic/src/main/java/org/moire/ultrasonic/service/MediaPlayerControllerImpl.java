@@ -170,6 +170,16 @@ public class MediaPlayerControllerImpl implements MediaPlayerController
 		});
 	}
 
+	public synchronized void resumeOrPlay()
+	{
+		MediaPlayerService.executeOnStartedMediaPlayerService(context, new Consumer<MediaPlayerService>() {
+			@Override
+			public void accept(MediaPlayerService mediaPlayerService) {
+				mediaPlayerService.resumeOrPlay();
+			}
+		});
+	}
+
 	@Override
 	public synchronized void togglePlayPause()
 	{
