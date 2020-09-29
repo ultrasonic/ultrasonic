@@ -33,7 +33,7 @@ jobs:
           command: ./gradlew :ultrasonic:lintRelease
       - run:
           name: assemble release build
-          command: ./gradlew assembleRelease
+          command: ./gradlew build assembleRelease
       - save_cache:
           paths:
             - ~/.gradle
