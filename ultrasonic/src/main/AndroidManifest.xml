@@ -142,6 +142,7 @@
                 <action android:name="org.moire.ultrasonic.CMD_NEXT"/>
                 <action android:name="org.moire.ultrasonic.CMD_PREVIOUS"/>
                 <action android:name="org.moire.ultrasonic.CMD_STOP"/>
+                <action android:name="org.moire.ultrasonic.CMD_PROCESS_KEYCODE"/>
             </intent-filter>
         </receiver>
         <receiver android:name=".receiver.BluetoothIntentReceiver">
