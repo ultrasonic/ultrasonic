@@ -1,6 +1,7 @@
 @file:JvmName("MusicServiceModule")
 package org.moire.ultrasonic.di
 
+import okhttp3.logging.HttpLoggingInterceptor
 import kotlin.math.abs
 import org.koin.android.ext.koin.androidContext
 import org.koin.core.qualifier.named
@@ -11,6 +12,7 @@ import org.moire.ultrasonic.api.subsonic.SubsonicAPIVersions
 import org.moire.ultrasonic.api.subsonic.SubsonicClientConfiguration
 import org.moire.ultrasonic.cache.PermanentFileStorage
 import org.moire.ultrasonic.data.ActiveServerProvider
+import org.moire.ultrasonic.log.TimberOkHttpLogger
 import org.moire.ultrasonic.service.CachedMusicService
 import org.moire.ultrasonic.service.MusicService
 import org.moire.ultrasonic.service.OfflineMusicService
@@ -54,7 +56,8 @@ val musicServiceModule = module {
         )
     }
 
-    single { SubsonicAPIClient(get()) }
+    single<HttpLoggingInterceptor.Logger> { TimberOkHttpLogger() }
+    single { SubsonicAPIClient(get(), get()) }
 
     single<MusicService>(named(ONLINE_MUSIC_SERVICE)) {
         CachedMusicService(RESTMusicService(get(), get()))

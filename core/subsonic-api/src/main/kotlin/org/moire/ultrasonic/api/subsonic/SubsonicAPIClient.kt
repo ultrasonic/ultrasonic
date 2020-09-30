@@ -36,6 +36,7 @@ private const val READ_TIMEOUT = 60_000L
  */
 class SubsonicAPIClient(
     config: SubsonicClientConfiguration,
+    private val okLogger: HttpLoggingInterceptor.Logger = HttpLoggingInterceptor.Logger.DEFAULT,
     baseOkClient: OkHttpClient = OkHttpClient.Builder().build()
 ) {
     private val versionInterceptor = VersionInterceptor(config.minimalProtocolVersion)
@@ -176,7 +177,7 @@ class SubsonicAPIClient(
     }
 
     private fun OkHttpClient.Builder.addLogging() {
-        val loggingInterceptor = HttpLoggingInterceptor()
+        val loggingInterceptor = HttpLoggingInterceptor(okLogger)
         loggingInterceptor.level = HttpLoggingInterceptor.Level.BODY
         this.addInterceptor(loggingInterceptor)
     }

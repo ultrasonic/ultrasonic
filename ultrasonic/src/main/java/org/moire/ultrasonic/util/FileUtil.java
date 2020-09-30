@@ -188,7 +188,7 @@ public class FileUtil
 				Timber.e(ex, "Exception in BitmapFactory.decodeFile()");
 			}
 
-			Timber.i("getAvatarBitmap %i", String.valueOf(size));
+			Timber.i("getAvatarBitmap %s", String.valueOf(size));
 
 			if (bitmap != null)
 			{
@@ -258,7 +258,7 @@ public class FileUtil
 				Timber.e(ex, "Exception in BitmapFactory.decodeFile()");
 			}
 
-			Timber.i("getAlbumArtBitmap %i", String.valueOf(size));
+			Timber.i("getAlbumArtBitmap %s", String.valueOf(size));
 
 			if (bitmap != null)
 			{
@@ -294,7 +294,7 @@ public class FileUtil
 			opt.inJustDecodeBounds = false;
 		}
 
-		Timber.i("getSampledBitmap %i", String.valueOf(size));
+		Timber.i("getSampledBitmap %s", String.valueOf(size));
 		return BitmapFactory.decodeByteArray(bytes, 0, bytes.length, opt);
 	}
 

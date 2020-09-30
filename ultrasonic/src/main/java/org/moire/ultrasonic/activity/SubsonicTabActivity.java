@@ -1232,11 +1232,14 @@ public class SubsonicTabActivity extends ResultActivity implements OnClickListen
 			{
 				file = new File(FileUtil.getUltrasonicDirectory(context), filename);
 				printWriter = new PrintWriter(file);
-				printWriter.println("Android API level: " + Build.VERSION.SDK_INT);
-				printWriter.println("Ultrasonic version name: " + Util.getVersionName(context));
-				printWriter.println("Ultrasonic version code: " + Util.getVersionCode(context));
-				printWriter.println();
+
+				String logMessage = String.format(
+					"Android API level: %s\nUltrasonic version name: %s\nUltrasonic version code: %s\n\n",
+					Build.VERSION.SDK_INT, Util.getVersionName(context), Util.getVersionCode(context));
+
+				printWriter.println(logMessage);
 				throwable.printStackTrace(printWriter);
+				Timber.e(throwable, "Uncaught Exception! %s", logMessage);
 				Timber.i("Stack trace written to %s", file);
 			}
 			catch (Throwable x)
