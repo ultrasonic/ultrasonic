@@ -10,7 +10,7 @@ import android.content.Intent;
 import android.graphics.Bitmap;
 import android.os.Build;
 import android.os.IBinder;
-import android.util.Log;
+import timber.log.Timber;
 import android.view.View;
 import android.widget.RemoteViews;
 
@@ -53,7 +53,6 @@ import static org.moire.ultrasonic.domain.PlayerState.STOPPED;
  */
 public class MediaPlayerService extends Service
 {
-    private static final String TAG = MediaPlayerService.class.getSimpleName();
     private static final String NOTIFICATION_CHANNEL_ID = "org.moire.ultrasonic";
     private static final String NOTIFICATION_CHANNEL_NAME = "Ultrasonic background service";
     private static final int NOTIFICATION_ID = 3033;
@@ -115,7 +114,7 @@ public class MediaPlayerService extends Service
                 MediaPlayerService instance = getInstance(context);
                 if (instance == null)
                 {
-                    Log.e(TAG, "ExecuteOnStartedMediaPlayerService failed to get a MediaPlayerService instance!");
+                    Timber.e("ExecuteOnStartedMediaPlayerService failed to get a MediaPlayerService instance!");
                     return;
                 }
 
@@ -179,7 +178,7 @@ public class MediaPlayerService extends Service
         updateNotification(IDLE, null);
         instance = this;
 
-        Log.i(TAG, "MediaPlayerService created");
+        Timber.i("MediaPlayerService created");
     }
 
     @Override
@@ -203,7 +202,7 @@ public class MediaPlayerService extends Service
         } catch (Throwable ignored) {
         }
 
-        Log.i(TAG, "MediaPlayerService stopped");
+        Timber.i("MediaPlayerService stopped");
     }
 
     private void stopIfIdle()
@@ -396,7 +395,7 @@ public class MediaPlayerService extends Service
 
     public synchronized void play(int index, boolean start)
     {
-        Log.v(TAG, String.format("play requested for %d", index));
+        Timber.v("play requested for %d", index);
         if (index < 0 || index >= downloader.downloadList.size())
         {
             resetPlayback();
@@ -623,12 +622,12 @@ public class MediaPlayerService extends Service
                             NotificationManagerCompat.from(this);
                     notificationManager.notify(NOTIFICATION_ID, buildForegroundNotification(playerState, currentPlaying));
                 }
-                Log.w(TAG, "--- Updated notification");
+                Timber.w("--- Updated notification");
             }
             else {
                 startForeground(NOTIFICATION_ID, buildForegroundNotification(playerState, currentPlaying));
                 isInForeground = true;
-                Log.w(TAG, "--- Created Foreground notification");
+                Timber.w("--- Created Foreground notification");
             }
         }
     }
@@ -680,7 +679,7 @@ public class MediaPlayerService extends Service
                     bigView.setImageViewBitmap(R.id.notification_image, nowPlayingImage);
                 }
             } catch (Exception x) {
-                Log.w(TAG, "Failed to get notification cover art", x);
+                Timber.w(x, "Failed to get notification cover art");
                 contentView.setImageViewResource(R.id.notification_image, R.drawable.unknown_album);
                 bigView.setImageViewResource(R.id.notification_image, R.drawable.unknown_album);
             }

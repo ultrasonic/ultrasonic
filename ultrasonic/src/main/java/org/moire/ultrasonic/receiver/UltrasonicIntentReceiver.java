@@ -3,7 +3,7 @@ package org.moire.ultrasonic.receiver;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
-import android.util.Log;
+import timber.log.Timber;
 
 import org.moire.ultrasonic.service.MediaPlayerLifecycleSupport;
 
@@ -13,14 +13,13 @@ import static org.koin.java.KoinJavaComponent.inject;
 
 public class UltrasonicIntentReceiver extends BroadcastReceiver
 {
-	private static final String TAG = UltrasonicIntentReceiver.class.getSimpleName();
 	private Lazy<MediaPlayerLifecycleSupport> lifecycleSupport = inject(MediaPlayerLifecycleSupport.class);
 
 	@Override
 	public void onReceive(Context context, Intent intent)
 	{
 		String intentAction = intent.getAction();
-		Log.i(TAG, String.format("Received Ultrasonic Intent: %s", intentAction));
+		Timber.i("Received Ultrasonic Intent: %s", intentAction);
 
 		try
 		{

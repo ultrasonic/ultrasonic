@@ -11,7 +11,7 @@ import android.provider.SearchRecentSuggestions;
 import androidx.annotation.Nullable;
 import androidx.annotation.StringRes;
 
-import android.util.Log;
+import timber.log.Timber;
 import android.view.View;
 
 import org.koin.java.KoinJavaComponent;
@@ -39,7 +39,6 @@ import static org.moire.ultrasonic.activity.ServerSelectorActivity.SERVER_SELECT
  */
 public class SettingsFragment extends PreferenceFragment
         implements SharedPreferences.OnSharedPreferenceChangeListener {
-    private static final String LOG_TAG = SettingsFragment.class.getSimpleName();
 
     private ListPreference theme;
     private ListPreference videoPlayer;
@@ -161,7 +160,7 @@ public class SettingsFragment extends PreferenceFragment
 
     @Override
     public void onSharedPreferenceChanged(SharedPreferences sharedPreferences, String key) {
-        Log.d(LOG_TAG, "Preference changed: " + key);
+        Timber.d("Preference changed: %s", key);
         update();
 
         if (Constants.PREFERENCES_KEY_HIDE_MEDIA.equals(key)) {
@@ -435,11 +434,11 @@ public class SettingsFragment extends PreferenceFragment
         File nomediaDir = new File(FileUtil.getUltrasonicDirectory(getActivity()), ".nomedia");
         if (hide && !nomediaDir.exists()) {
             if (!nomediaDir.mkdir()) {
-                Log.w(LOG_TAG, "Failed to create " + nomediaDir);
+                Timber.w("Failed to create %s", nomediaDir);
             }
         } else if (nomediaDir.exists()) {
             if (!nomediaDir.delete()) {
-                Log.w(LOG_TAG, "Failed to delete " + nomediaDir);
+                Timber.w("Failed to delete %s", nomediaDir);
             }
         }
         Util.toast(getActivity(), R.string.settings_hide_media_toast, false);

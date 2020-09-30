@@ -22,7 +22,7 @@ import android.content.Context;
 import android.net.wifi.WifiManager;
 import android.os.PowerManager;
 import android.text.TextUtils;
-import android.util.Log;
+import timber.log.Timber;
 
 import org.jetbrains.annotations.NotNull;
 import org.moire.ultrasonic.domain.MusicDirectory;
@@ -52,7 +52,6 @@ import static org.koin.java.KoinJavaComponent.inject;
  */
 public class DownloadFile
 {
-	private static final String TAG = DownloadFile.class.getSimpleName();
 	private final Context context;
 	private final MusicDirectory.Entry song;
 	private final File partialFile;
@@ -234,7 +233,7 @@ public class DownloadFile
 
 			if (!ok)
 			{
-				Log.i(TAG, String.format("Failed to set last-modified date on %s, trying alternate method", file));
+				Timber.i("Failed to set last-modified date on %s, trying alternate method", file);
 
 				try
 				{
@@ -248,7 +247,7 @@ public class DownloadFile
 				}
 				catch (Exception e)
 				{
-					Log.w(TAG, String.format("Failed to set last-modified date on %s", file));
+					Timber.w("Failed to set last-modified date on %s", file);
 				}
 			}
 		}
@@ -280,7 +279,7 @@ public class DownloadFile
 		}
 		catch (IOException ex)
 		{
-			Log.w(TAG, String.format("Failed to rename file %s to %s", completeFile, saveFile));
+			Timber.w("Failed to rename file %s to %s", completeFile, saveFile);
 		}
 
 		this.isPlaying = isPlaying;
@@ -310,7 +309,7 @@ public class DownloadFile
 					PowerManager pm = (PowerManager) context.getSystemService(POWER_SERVICE);
 					wakeLock = pm.newWakeLock(SCREEN_DIM_WAKE_LOCK | ON_AFTER_RELEASE, toString());
 					wakeLock.acquire(10*60*1000L /*10 minutes*/);
-					Log.i(TAG, String.format("Acquired wake lock %s", wakeLock));
+					Timber.i("Acquired wake lock %s", wakeLock);
 				}
 
 				wifiLock = Util.createWifiLock(context, toString());
@@ -318,7 +317,7 @@ public class DownloadFile
 
 				if (saveFile.exists())
 				{
-					Log.i(TAG, String.format("%s already exists. Skipping.", saveFile));
+					Timber.i("%s already exists. Skipping.", saveFile);
 					return;
 				}
 				if (completeFile.exists())
@@ -336,7 +335,7 @@ public class DownloadFile
 					}
 					else
 					{
-						Log.i(TAG, String.format("%s already exists. Skipping.", completeFile));
+						Timber.i("%s already exists. Skipping.", completeFile);
 					}
 					return;
 				}
@@ -373,12 +372,12 @@ public class DownloadFile
 
 					if (response.getSecond())
 					{
-						Log.i(TAG, String.format("Executed partial HTTP GET, skipping %d bytes", partialFile.length()));
+						Timber.i("Executed partial HTTP GET, skipping %d bytes", partialFile.length());
 					}
 
 					out = new FileOutputStream(partialFile, response.getSecond());
 					long n = copy(response.getFirst(), out);
-					Log.i(TAG, String.format("Downloaded %d bytes to %s", n, partialFile));
+					Timber.i("Downloaded %d bytes to %s", n, partialFile);
 					out.flush();
 					out.close();
 
@@ -426,7 +425,7 @@ public class DownloadFile
 				if (!isCancelled())
 				{
 					failed = true;
-					Log.w(TAG, String.format("Failed to download '%s'.", song), x);
+					Timber.w(x, "Failed to download '%s'.", song);
 				}
 
 			}
@@ -437,7 +436,7 @@ public class DownloadFile
 				if (wakeLock != null)
 				{
 					wakeLock.release();
-					Log.i(TAG, String.format("Released wake lock %s", wakeLock));
+					Timber.i("Released wake lock %s", wakeLock);
 				}
 				if (wifiLock != null)
 				{
@@ -468,7 +467,7 @@ public class DownloadFile
 			}
 			catch (Exception x)
 			{
-				Log.e(TAG, "Failed to get cover art.", x);
+				Timber.e(x, "Failed to get cover art.");
 			}
 		}
 
@@ -512,7 +511,7 @@ public class DownloadFile
 				long now = System.currentTimeMillis();
 				if (now - lastLog > 3000L)
 				{  // Only every so often.
-					Log.i(TAG, String.format("Downloaded %s of %s", Util.formatBytes(count), song));
+					Timber.i("Downloaded %s of %s", Util.formatBytes(count), song);
 					lastLog = now;
 				}
 			}

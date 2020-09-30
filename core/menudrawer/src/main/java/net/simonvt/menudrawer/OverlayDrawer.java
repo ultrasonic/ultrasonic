@@ -10,9 +10,6 @@ import android.view.VelocityTracker;
 import android.view.View;
 
 public class OverlayDrawer extends DraggableDrawer {
-
-    private static final String TAG = "OverlayDrawer";
-
     private int mPeekSize;
 
     private Runnable mRevealRunnable = new Runnable() {

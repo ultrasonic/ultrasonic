@@ -3,7 +3,6 @@ package org.moire.ultrasonic.activity
 import android.content.Context
 import android.content.SharedPreferences
 import android.preference.PreferenceManager
-import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -12,6 +11,7 @@ import kotlinx.coroutines.runBlocking
 import org.moire.ultrasonic.data.ActiveServerProvider
 import org.moire.ultrasonic.data.ServerSetting
 import org.moire.ultrasonic.data.ServerSettingDao
+import timber.log.Timber
 
 /**
  * ViewModel to be used in Activities which will handle Server Settings
@@ -23,7 +23,6 @@ class ServerSettingsModel(
 ) : ViewModel() {
 
     companion object {
-        private val TAG = ServerSettingsModel::class.simpleName
         private const val PREFERENCES_KEY_SERVER_MIGRATED = "serverMigrated"
         // These constants were removed from Constants.java as they are deprecated and only used here
         private const val PREFERENCES_KEY_JUKEBOX_BY_DEFAULT = "jukeboxEnabled"
@@ -61,8 +60,7 @@ class ServerSettingsModel(
                             dbServerList.add(newServerSetting)
                             repository.insert(newServerSetting)
                             index++
-                            Log.i(
-                                TAG,
+                            Timber.i(
                                 "Imported server from Preferences to Database:" +
                                     " ${newServerSetting.name}"
                             )
@@ -149,7 +147,7 @@ class ServerSettingsModel(
             val itemToBeDeleted = repository.findByIndex(index)
             if (itemToBeDeleted != null) {
                 repository.delete(itemToBeDeleted)
-                Log.d(TAG, "deleteItem deleted index: $index")
+                Timber.d("deleteItem deleted index: $index")
                 reindexSettings()
                 activeServerProvider.invalidateCache()
             }
@@ -165,7 +163,7 @@ class ServerSettingsModel(
         viewModelScope.launch {
             repository.update(serverSetting)
             activeServerProvider.invalidateCache()
-            Log.d(TAG, "updateItem updated server setting: $serverSetting")
+            Timber.d("updateItem updated server setting: $serverSetting")
         }
     }
 
@@ -179,7 +177,7 @@ class ServerSettingsModel(
             serverSetting.index = (repository.count() ?: 0) + 1
             serverSetting.id = (repository.getMaxId() ?: 0) + 1
             repository.insert(serverSetting)
-            Log.d(TAG, "saveNewItem saved server setting: $serverSetting")
+            Timber.d("saveNewItem saved server setting: $serverSetting")
         }
     }
 
@@ -240,7 +238,7 @@ class ServerSettingsModel(
                 setting.index = newIndex
                 newIndex++
                 repository.update(setting)
-                Log.d(TAG, "reindexSettings saved $setting")
+                Timber.d("reindexSettings saved $setting")
             }
         }
     }

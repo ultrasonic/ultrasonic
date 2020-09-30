@@ -26,7 +26,7 @@ import android.content.SharedPreferences;
 import android.media.AudioManager;
 import android.os.Build;
 import android.os.Bundle;
-import android.util.Log;
+import timber.log.Timber;
 import android.view.KeyEvent;
 
 import org.moire.ultrasonic.R;
@@ -42,8 +42,6 @@ import org.moire.ultrasonic.util.Util;
  */
 public class MediaPlayerLifecycleSupport
 {
-	private static final String TAG = MediaPlayerLifecycleSupport.class.getSimpleName();
-
 	private boolean created = false;
 	private DownloadQueueSerializer downloadQueueSerializer; // From DI
 	private final MediaPlayerControllerImpl mediaPlayerController; // From DI
@@ -60,7 +58,7 @@ public class MediaPlayerLifecycleSupport
 		this.context = context;
 		this.downloader = downloader;
 
-		Log.i(TAG, "LifecycleSupport constructed");
+		Timber.i("LifecycleSupport constructed");
 	}
 
 	public void onCreate()
@@ -99,7 +97,7 @@ public class MediaPlayerLifecycleSupport
 
 		new CacheCleaner(context).clean();
 		created = true;
-		Log.i(TAG, "LifecycleSupport created");
+		Timber.i("LifecycleSupport created");
 	}
 
 	public void onDestroy()
@@ -111,7 +109,7 @@ public class MediaPlayerLifecycleSupport
 		context.unregisterReceiver(headsetEventReceiver);
 		mediaPlayerController.onDestroy();
 		created = false;
-		Log.i(TAG, "LifecycleSupport destroyed");
+		Timber.i("LifecycleSupport destroyed");
 	}
 
 	public void receiveIntent(Intent intent)
@@ -120,7 +118,7 @@ public class MediaPlayerLifecycleSupport
 		String intentAction = intent.getAction();
 		if (intentAction == null || intentAction.isEmpty()) return;
 
-		Log.i(TAG, String.format("Received intent: %s", intentAction));
+		Timber.i("Received intent: %s", intentAction);
 
 		if (intentAction.equals(Constants.CMD_PROCESS_KEYCODE)) {
 			if (intent.getExtras() != null) {
@@ -156,7 +154,7 @@ public class MediaPlayerLifecycleSupport
                     return;
                 }
 
-                Log.i(TAG, String.format("Headset event for: %s", extras.get("name")));
+                Timber.i("Headset event for: %s", extras.get("name"));
                 final int state = extras.getInt("state");
                 if (state == 0) {
                     if (!mediaPlayerController.isJukeboxEnabled()) {

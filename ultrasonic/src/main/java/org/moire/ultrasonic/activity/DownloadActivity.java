@@ -26,7 +26,7 @@ import android.graphics.Point;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.os.Handler;
-import android.util.Log;
+import timber.log.Timber;
 import android.view.ContextMenu;
 import android.view.Display;
 import android.view.GestureDetector;
@@ -89,7 +89,6 @@ import static org.moire.ultrasonic.domain.PlayerState.STOPPED;
 
 public class DownloadActivity extends SubsonicTabActivity implements OnGestureListener
 {
-	private static final String TAG = DownloadActivity.class.getSimpleName();
 	private static final int DIALOG_SAVE_PLAYLIST = 100;
 	private static final int PERCENTAGE_OF_SCREEN_FOR_SWIPE = 5;
 
@@ -522,7 +521,7 @@ public class DownloadActivity extends SubsonicTabActivity implements OnGestureLi
 				}
 				catch (Exception e)
 				{
-					Log.e(TAG, e.getMessage(), e);
+					Timber.e(e);
 				}
 			}
 		}).start();
@@ -1065,7 +1064,7 @@ public class DownloadActivity extends SubsonicTabActivity implements OnGestureLi
 						}
 						catch (Exception e)
 						{
-							Log.e(TAG, e.getMessage(), e);
+							Timber.e(e);
 						}
 					}
 				}).start();
@@ -1097,7 +1096,7 @@ public class DownloadActivity extends SubsonicTabActivity implements OnGestureLi
 						}
 						catch (Exception e)
 						{
-							Log.e(TAG, e.getMessage(), e);
+							Timber.e(e);
 						}
 					}
 				}).start();
@@ -1129,7 +1128,7 @@ public class DownloadActivity extends SubsonicTabActivity implements OnGestureLi
 						}
 						catch (Exception e)
 						{
-							Log.e(TAG, e.getMessage(), e);
+							Timber.e(e);
 						}
 					}
 				}).start();

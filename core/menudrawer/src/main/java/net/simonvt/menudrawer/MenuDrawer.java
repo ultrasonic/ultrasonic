@@ -16,7 +16,7 @@ import android.os.Bundle;
 import android.os.Parcel;
 import android.os.Parcelable;
 import android.util.AttributeSet;
-import android.util.Log;
+import timber.log.Timber;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -87,11 +87,6 @@ public abstract class MenuDrawer extends ViewGroup {
          */
         OVERLAY,
     }
-
-    /**
-     * Tag used when logging.
-     */
-    private static final String TAG = "MenuDrawer";
 
     /**
      * Indicates whether debug code should be enabled.
@@ -1520,27 +1515,27 @@ public abstract class MenuDrawer extends ViewGroup {
     protected void logDrawerState(int state) {
         switch (state) {
             case STATE_CLOSED:
-                Log.d(TAG, "[DrawerState] STATE_CLOSED");
+                Timber.d("[DrawerState] STATE_CLOSED");
                 break;
 
             case STATE_CLOSING:
-                Log.d(TAG, "[DrawerState] STATE_CLOSING");
+                Timber.d("[DrawerState] STATE_CLOSING");
                 break;
 
             case STATE_DRAGGING:
-                Log.d(TAG, "[DrawerState] STATE_DRAGGING");
+                Timber.d("[DrawerState] STATE_DRAGGING");
                 break;
 
             case STATE_OPENING:
-                Log.d(TAG, "[DrawerState] STATE_OPENING");
+                Timber.d("[DrawerState] STATE_OPENING");
                 break;
 
             case STATE_OPEN:
-                Log.d(TAG, "[DrawerState] STATE_OPEN");
+                Timber.d("[DrawerState] STATE_OPEN");
                 break;
 
             default:
-                Log.d(TAG, "[DrawerState] Unknown: " + state);
+                Timber.d("[DrawerState] Unknown: %s", state);
         }
     }
 

@@ -7,7 +7,7 @@ import android.widget.ListView;
 import android.widget.ImageView;
 import android.view.View;
 import android.view.ViewGroup;
-import android.util.Log;
+import timber.log.Timber;
 
 /**
  * Simple implementation of the FloatViewManager class. Uses list

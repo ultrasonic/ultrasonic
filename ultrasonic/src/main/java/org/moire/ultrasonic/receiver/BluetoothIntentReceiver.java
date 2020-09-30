@@ -23,7 +23,7 @@ import android.bluetooth.BluetoothProfile;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
-import android.util.Log;
+import timber.log.Timber;
 
 import org.moire.ultrasonic.util.Constants;
 import org.moire.ultrasonic.util.Util;
@@ -35,8 +35,6 @@ import org.moire.ultrasonic.util.Util;
  */
 public class BluetoothIntentReceiver extends BroadcastReceiver
 {
-	private static final String TAG = BluetoothIntentReceiver.class.getSimpleName();
-
 	@Override
 	public void onReceive(Context context, Intent intent)
 	{
@@ -46,7 +44,7 @@ public class BluetoothIntentReceiver extends BroadcastReceiver
 		String name = device != null ? device.getName() : "Unknown";
 		String address = device != null ? device.getAddress() : "Unknown";
 
-		Log.d(TAG, String.format("A2DP State: %d; Action: %s; Device: %s; Address: %s", state, action, name, address));
+		Timber.d("A2DP State: %d; Action: %s; Device: %s; Address: %s", state, action, name, address);
 
 		boolean actionBluetoothDeviceConnected = false;
 		boolean actionBluetoothDeviceDisconnected = false;
@@ -87,19 +85,19 @@ public class BluetoothIntentReceiver extends BroadcastReceiver
 
 		if (connected)
 		{
-			Log.i(TAG, String.format("Connected to Bluetooth device %s address %s, requesting media button focus.", name, address));
+			Timber.i("Connected to Bluetooth device %s address %s, requesting media button focus.", name, address);
 			Util.registerMediaButtonEventReceiver(context, false);
 		}
 
 		if (resume)
 		{
-			Log.i(TAG, String.format("Connected to Bluetooth device %s address %s, resuming playback.", name, address));
+			Timber.i("Connected to Bluetooth device %s address %s, resuming playback.", name, address);
 			context.sendBroadcast(new Intent(Constants.CMD_RESUME_OR_PLAY).setPackage(context.getPackageName()));
 		}
 
 		if (pause)
 		{
-			Log.i(TAG, String.format("Disconnected from Bluetooth device %s address %s, requesting pause.", name, address));
+			Timber.i("Disconnected from Bluetooth device %s address %s, requesting pause.", name, address);
 			context.sendBroadcast(new Intent(Constants.CMD_PAUSE).setPackage(context.getPackageName()));
 		}
 	}

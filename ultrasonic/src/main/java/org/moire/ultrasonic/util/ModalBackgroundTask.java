@@ -21,7 +21,7 @@ package org.moire.ultrasonic.util;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
-import android.util.Log;
+import timber.log.Timber;
 
 import org.moire.ultrasonic.R;
 
@@ -30,9 +30,6 @@ import org.moire.ultrasonic.R;
  */
 public abstract class ModalBackgroundTask<T> extends BackgroundTask<T>
 {
-
-	private static final String TAG = ModalBackgroundTask.class.getSimpleName();
-
 	private final AlertDialog progressDialog;
 	private Thread thread;
 	private final boolean finishActivityOnCancel;
@@ -167,7 +164,7 @@ public abstract class ModalBackgroundTask<T> extends BackgroundTask<T>
 	@Override
 	protected void error(Throwable error)
 	{
-		Log.w(TAG, String.format("Got exception: %s", error), error);
+		Timber.w(error);
 		new ErrorDialog(getActivity(), getErrorMessage(error), finishActivityOnCancel);
 	}
 

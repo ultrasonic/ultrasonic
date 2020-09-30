@@ -37,6 +37,7 @@ ext.versions = [
         testRunner           : "1.0.1",
         robolectric          : "4.4",
         dexter               : "6.1.2",
+        timber               : "4.7.1",
 ]
 
 ext.gradlePlugins = [
@@ -75,6 +76,7 @@ ext.other = [
         koinViewModel      : "org.koin:koin-android-viewmodel:$versions.koin",
         picasso            : "com.squareup.picasso:picasso:$versions.picasso",
         dexter             : "com.karumi:dexter:$versions.dexter",
+        timber             : "com.jakewharton.timber:timber:$versions.timber",
 ]
 
 ext.testing = [

@@ -19,7 +19,7 @@
 package org.moire.ultrasonic.util;
 
 import android.content.Context;
-import android.util.Log;
+import timber.log.Timber;
 
 import org.moire.ultrasonic.data.ActiveServerProvider;
 import org.moire.ultrasonic.domain.MusicDirectory;
@@ -38,7 +38,6 @@ import java.util.concurrent.TimeUnit;
  */
 public class ShufflePlayBuffer
 {
-	private static final String TAG = ShufflePlayBuffer.class.getSimpleName();
 	private static final int CAPACITY = 50;
 	private static final int REFILL_THRESHOLD = 40;
 
@@ -66,13 +65,13 @@ public class ShufflePlayBuffer
 			}
 		};
 		executorService.scheduleWithFixedDelay(runnable, 1, 10, TimeUnit.SECONDS);
-		Log.i(TAG, "ShufflePlayBuffer created");
+		Timber.i("ShufflePlayBuffer created");
 	}
 
 	public void onDestroy()
 	{
 		executorService.shutdown();
-		Log.i(TAG, "ShufflePlayBuffer destroyed");
+		Timber.i("ShufflePlayBuffer destroyed");
 	}
 
 	public List<MusicDirectory.Entry> get(int size)
@@ -87,7 +86,7 @@ public class ShufflePlayBuffer
 				result.add(buffer.remove(buffer.size() - 1));
 			}
 		}
-		Log.i(TAG, String.format("Taking %d songs from shuffle play buffer. %d remaining.", result.size(), buffer.size()));
+		Timber.i("Taking %d songs from shuffle play buffer. %d remaining.", result.size(), buffer.size());
 		return result;
 	}
 
@@ -112,12 +111,12 @@ public class ShufflePlayBuffer
 			synchronized (buffer)
 			{
 				buffer.addAll(songs.getChildren());
-				Log.i(TAG, String.format("Refilled shuffle play buffer with %d songs.", songs.getChildren().size()));
+				Timber.i("Refilled shuffle play buffer with %d songs.", songs.getChildren().size());
 			}
 		}
 		catch (Exception x)
 		{
-			Log.w(TAG, "Failed to refill shuffle play buffer.", x);
+			Timber.w(x, "Failed to refill shuffle play buffer.");
 		}
 	}
 

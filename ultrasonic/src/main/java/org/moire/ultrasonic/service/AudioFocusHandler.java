@@ -3,7 +3,7 @@ package org.moire.ultrasonic.service;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.media.AudioManager;
-import android.util.Log;
+import timber.log.Timber;
 
 import org.moire.ultrasonic.domain.PlayerState;
 import org.moire.ultrasonic.util.Constants;
@@ -15,8 +15,6 @@ import static org.koin.java.KoinJavaComponent.inject;
 
 public class AudioFocusHandler
 {
-    private static final String TAG = AudioFocusHandler.class.getSimpleName();
-
     private static boolean hasFocus;
     private static boolean pauseFocus;
     private static boolean lowerFocus;
@@ -44,7 +42,7 @@ public class AudioFocusHandler
                     MediaPlayerController mediaPlayerController = mediaPlayerControllerLazy.getValue();
                     if ((focusChange == AudioManager.AUDIOFOCUS_LOSS_TRANSIENT || focusChange == AudioManager.AUDIOFOCUS_LOSS_TRANSIENT_CAN_DUCK) && !mediaPlayerController.isJukeboxEnabled())
                     {
-                        Log.v(TAG, "Lost Audio Focus");
+                        Timber.v("Lost Audio Focus");
                         if (mediaPlayerController.getPlayerState() == PlayerState.STARTED)
                         {
                             SharedPreferences preferences = Util.getPreferences(context);
@@ -63,7 +61,7 @@ public class AudioFocusHandler
                     }
                     else if (focusChange == AudioManager.AUDIOFOCUS_GAIN)
                     {
-                        Log.v(TAG, "Regained Audio Focus");
+                        Timber.v("Regained Audio Focus");
                         if (pauseFocus)
                         {
                             pauseFocus = false;
@@ -80,11 +78,11 @@ public class AudioFocusHandler
                         hasFocus = false;
                         mediaPlayerController.pause();
                         audioManager.abandonAudioFocus(this);
-                        Log.v(TAG, "Abandoned Audio Focus");
+                        Timber.v("Abandoned Audio Focus");
                     }
                 }
             }, AudioManager.STREAM_MUSIC, AudioManager.AUDIOFOCUS_GAIN);
-            Log.v(TAG, "Got Audio Focus");
+            Timber.v("Got Audio Focus");
         }
     }
 }

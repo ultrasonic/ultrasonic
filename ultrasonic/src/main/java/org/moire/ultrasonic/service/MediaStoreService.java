@@ -26,7 +26,7 @@ import android.content.Context;
 import android.database.Cursor;
 import android.net.Uri;
 import android.provider.MediaStore;
-import android.util.Log;
+import timber.log.Timber;
 
 import org.moire.ultrasonic.domain.MusicDirectory;
 import org.moire.ultrasonic.util.FileUtil;
@@ -36,8 +36,6 @@ import org.moire.ultrasonic.util.FileUtil;
  */
 public class MediaStoreService
 {
-
-	private static final String TAG = MediaStoreService.class.getSimpleName();
 	private static final Uri ALBUM_ART_URI = Uri.parse("content://media/external/audio/albumart");
 
 	private final Context context;
@@ -92,7 +90,7 @@ public class MediaStoreService
 				MediaStore.MediaColumns.DATA + "=?", new String[]{MediaStore.Audio.keyFor(song.getTitle()), file.getAbsolutePath()});
 		if (n > 0)
 		{
-			Log.i(TAG, "Deleting media store row for " + song);
+			Timber.i("Deleting media store row for %s", song);
 		}
 	}
 
@@ -118,7 +116,7 @@ public class MediaStoreService
 				values.put(MediaStore.Audio.AlbumColumns.ALBUM_ID, albumId);
 				values.put(MediaStore.MediaColumns.DATA, albumArtFile.getPath());
 				contentResolver.insert(ALBUM_ART_URI, values);
-				Log.i(TAG, "Added album art: " + albumArtFile);
+				Timber.i("Added album art: %s", albumArtFile);
 			}
 
 			cursor.close();

@@ -4,7 +4,6 @@ import android.content.Context
 import android.graphics.drawable.Drawable
 import android.os.Environment
 import android.text.TextUtils
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -18,6 +17,7 @@ import java.util.LinkedList
 import kotlin.Comparator
 import org.moire.ultrasonic.R
 import org.moire.ultrasonic.util.Util
+import timber.log.Timber
 
 /**
  * Adapter for the RecyclerView which handles listing, navigating and picking files
@@ -281,7 +281,7 @@ internal class FilePickerAdapter : RecyclerView.Adapter<FilePickerAdapter.FileLi
             val clickedFile = data[adapterPosition]
             selectedDirectory = clickedFile.file!!
             fileLister(clickedFile.file!!)
-            Log.d("FileLister", clickedFile.file!!.absolutePath)
+            Timber.d(clickedFile.file!!.absolutePath)
         }
     }
 }

@@ -18,7 +18,7 @@
  */
 package org.moire.ultrasonic.util;
 
-import android.util.Log;
+import timber.log.Timber;
 
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicReference;
@@ -29,9 +29,6 @@ import java.util.concurrent.atomic.AtomicReference;
  */
 public abstract class CancellableTask
 {
-
-	private static final String TAG = CancellableTask.class.getSimpleName();
-
 	private final AtomicBoolean running = new AtomicBoolean(false);
 	private final AtomicBoolean cancelled = new AtomicBoolean(false);
 	private final AtomicReference<Thread> thread = new AtomicReference<Thread>();
@@ -39,7 +36,7 @@ public abstract class CancellableTask
 
 	public void cancel()
 	{
-		Log.i(TAG, String.format("Cancelling %s", CancellableTask.this));
+		Timber.i("Cancelling %s", CancellableTask.this);
 		cancelled.set(true);
 
 		OnCancelListener listener = cancelListener.get();
@@ -51,7 +48,7 @@ public abstract class CancellableTask
 			}
 			catch (Throwable x)
 			{
-				Log.w(TAG, "Error when invoking OnCancelListener.", x);
+				Timber.w(x, "Error when invoking OnCancelListener.");
 			}
 		}
 	}
@@ -81,7 +78,7 @@ public abstract class CancellableTask
 			public void run()
 			{
 				running.set(true);
-				Log.i(TAG, String.format("Starting thread for %s", CancellableTask.this));
+				Timber.i("Starting thread for %s", CancellableTask.this);
 				try
 				{
 					execute();
@@ -89,7 +86,7 @@ public abstract class CancellableTask
 				finally
 				{
 					running.set(false);
-					Log.i(TAG, String.format("Stopping thread for %s", CancellableTask.this));
+					Timber.i("Stopping thread for %s", CancellableTask.this);
 				}
 			}
 		});

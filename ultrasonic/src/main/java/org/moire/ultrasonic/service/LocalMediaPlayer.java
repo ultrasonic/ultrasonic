@@ -15,7 +15,7 @@ import android.os.Build;
 import android.os.Handler;
 import android.os.Looper;
 import android.os.PowerManager;
-import android.util.Log;
+import timber.log.Timber;
 import android.widget.SeekBar;
 
 import org.jetbrains.annotations.NotNull;
@@ -49,8 +49,6 @@ import static org.moire.ultrasonic.domain.PlayerState.STARTED;
  */
 public class LocalMediaPlayer
 {
-    private static final String TAG = LocalMediaPlayer.class.getSimpleName();
-
     public Consumer<DownloadFile> onCurrentPlayingChanged;
     public Consumer<DownloadFile> onSongCompleted;
     public BiConsumer<PlayerState, DownloadFile> onPlayerStateChanged;
@@ -196,7 +194,7 @@ public class LocalMediaPlayer
             }
         }
 
-        Log.i(TAG, "LocalMediaPlayer created");
+        Timber.i("LocalMediaPlayer created");
     }
 
     public void onDestroy()
@@ -245,10 +243,10 @@ public class LocalMediaPlayer
         }
         catch (Throwable exception)
         {
-            Log.w(TAG, "LocalMediaPlayer onDestroy exception: ", exception);
+            Timber.w(exception, "LocalMediaPlayer onDestroy exception: ");
         }
 
-        Log.i(TAG, "LocalMediaPlayer destroyed");
+        Timber.i("LocalMediaPlayer destroyed");
     }
 
     public EqualizerController getEqualizerController()
@@ -283,7 +281,7 @@ public class LocalMediaPlayer
 
     public synchronized void setPlayerState(final PlayerState playerState)
     {
-        Log.i(TAG, String.format("%s -> %s (%s)", this.playerState.name(), playerState.name(), currentPlaying));
+        Timber.i("%s -> %s (%s)", this.playerState.name(), playerState.name(), currentPlaying);
 
         this.playerState = playerState;
 
@@ -324,7 +322,7 @@ public class LocalMediaPlayer
 
     public synchronized void setCurrentPlaying(final DownloadFile currentPlaying)
     {
-        Log.v(TAG, String.format("setCurrentPlaying %s", currentPlaying));
+        Timber.v("setCurrentPlaying %s", currentPlaying);
         this.currentPlaying = currentPlaying;
         updateRemoteControl();
 
@@ -368,7 +366,7 @@ public class LocalMediaPlayer
 
     public synchronized void setNextPlayerState(PlayerState playerState)
     {
-        Log.i(TAG, String.format("Next: %s -> %s (%s)", nextPlayerState.name(), playerState.name(), nextPlaying));
+        Timber.i("Next: %s -> %s (%s)", nextPlayerState.name(), playerState.name(), nextPlaying);
         nextPlayerState = playerState;
     }
 
@@ -469,7 +467,7 @@ public class LocalMediaPlayer
             setUpRemoteControlClient();
         }
 
-        Log.i(TAG, String.format("In updateRemoteControl, playerState: %s [%d]", playerState, getPlayerPosition()));
+        Timber.i("In updateRemoteControl, playerState: %s [%d]", playerState, getPlayerPosition());
 
         if (playerState == STARTED) {
             if (Build.VERSION.SDK_INT < Build.VERSION_CODES.JELLY_BEAN_MR2) {
@@ -664,7 +662,7 @@ public class LocalMediaPlayer
 
                 dataSource = String.format(Locale.getDefault(), "http://127.0.0.1:%d/%s",
                         proxy.getPort(), URLEncoder.encode(dataSource, Constants.UTF_8));
-                Log.i(TAG, String.format("Data Source: %s", dataSource));
+                Timber.i("Data Source: %s", dataSource);
             }
             else if (proxy != null)
             {
@@ -672,7 +670,7 @@ public class LocalMediaPlayer
                 proxy = null;
             }
 
-            Log.i(TAG, "Preparing media player");
+            Timber.i("Preparing media player");
             mediaPlayer.setDataSource(dataSource);
             setPlayerState(PREPARING);
 
@@ -706,7 +704,7 @@ public class LocalMediaPlayer
                 @Override
                 public void onPrepared(MediaPlayer mp)
                 {
-                    Log.i(TAG, "Media player prepared");
+                    Timber.i("Media player prepared");
 
                     setPlayerState(PREPARED);
 
@@ -722,7 +720,7 @@ public class LocalMediaPlayer
                     {
                         if (position != 0)
                         {
-                            Log.i(TAG, String.format("Restarting player from position %d", position));
+                            Timber.i("Restarting player from position %d", position);
                             seekTo(position);
                         }
                         cachedPosition = position;
@@ -817,7 +815,7 @@ public class LocalMediaPlayer
                 @Override
                 public boolean onError(MediaPlayer mediaPlayer, int what, int extra)
                 {
-                    Log.w(TAG, String.format("Error on playing next (%d, %d): %s", what, extra, downloadFile));
+                    Timber.w("Error on playing next (%d, %d): %s", what, extra, downloadFile);
                     return true;
                 }
             });
@@ -837,7 +835,7 @@ public class LocalMediaPlayer
             @Override
             public boolean onError(MediaPlayer mediaPlayer, int what, int extra)
             {
-                Log.w(TAG, String.format("Error on playing file (%d, %d): %s", what, extra, downloadFile));
+                Timber.w("Error on playing file (%d, %d): %s", what, extra, downloadFile);
                 int pos = cachedPosition;
                 reset();
                 downloadFile.setPlaying(false);
@@ -860,7 +858,7 @@ public class LocalMediaPlayer
                 wakeLock.acquire(60000);
 
                 int pos = cachedPosition;
-                Log.i(TAG, String.format("Ending position %d of %d", pos, duration));
+                Timber.i("Ending position %d of %d", pos, duration);
 
                 if (!isPartial || (downloadFile.isWorkDone() && (Math.abs(duration - pos) < 1000)))
                 {
@@ -897,7 +895,7 @@ public class LocalMediaPlayer
                     if (downloadFile.isWorkDone())
                     {
                         // Complete was called early even though file is fully buffered
-                        Log.i(TAG, String.format("Requesting restart from %d of %d", pos, duration));
+                        Timber.i("Requesting restart from %d of %d", pos, duration);
                         reset();
                         downloadFile.setPlaying(false);
                         doPlay(downloadFile, pos, true);
@@ -905,7 +903,7 @@ public class LocalMediaPlayer
                     }
                     else
                     {
-                        Log.i(TAG, String.format("Requesting restart from %d of %d", pos, duration));
+                        Timber.i("Requesting restart from %d of %d", pos, duration);
                         reset();
                         bufferTask = new BufferTask(downloadFile, pos);
                         bufferTask.start();
@@ -960,7 +958,7 @@ public class LocalMediaPlayer
             long byteCount = Math.max(100000, bitRate * 1024L / 8L * bufferLength);
 
             // Find out how large the file should grow before resuming playback.
-            Log.i(TAG, String.format("Buffering from position %d and bitrate %d", position, bitRate));
+            Timber.i("Buffering from position %d and bitrate %d", position, bitRate);
             expectedFileSize = (position * bitRate / 8) + byteCount;
         }
 
@@ -985,7 +983,7 @@ public class LocalMediaPlayer
             boolean completeFileAvailable = downloadFile.isWorkDone();
             long size = partialFile.length();
 
-            Log.i(TAG, String.format("Buffering %s (%d/%d, %s)", partialFile, size, expectedFileSize, completeFileAvailable));
+            Timber.i("Buffering %s (%d/%d, %s)", partialFile, size, expectedFileSize, completeFileAvailable);
             return completeFileAvailable || size >= expectedFileSize;
         }
 
@@ -1049,7 +1047,7 @@ public class LocalMediaPlayer
         private boolean bufferComplete()
         {
             boolean completeFileAvailable = downloadFile.isWorkDone();
-            Log.i(TAG, String.format("Buffering next %s (%d)", partialFile, partialFile.length()));
+            Timber.i("Buffering next %s (%d)", partialFile, partialFile.length());
             return completeFileAvailable && (playerState == PlayerState.STARTED || playerState == PlayerState.PAUSED);
         }
 
@@ -1090,7 +1088,7 @@ public class LocalMediaPlayer
                 }
                 catch (Exception e)
                 {
-                    Log.w(TAG, "Crashed getting current position", e);
+                    Timber.w(e, "Crashed getting current position");
                     isRunning = false;
                     positionCache = null;
                 }
@@ -1100,7 +1098,7 @@ public class LocalMediaPlayer
 
     private void handleError(Exception x)
     {
-        Log.w(TAG, String.format("Media player error: %s", x), x);
+        Timber.w(x,"Media player error");
 
         try
         {
@@ -1108,13 +1106,13 @@ public class LocalMediaPlayer
         }
         catch (Exception ex)
         {
-            Log.w(TAG, String.format("Exception encountered when resetting media player: %s", ex), ex);
+            Timber.w(ex, "Exception encountered when resetting media player");
         }
     }
 
     private void handleErrorNext(Exception x)
     {
-        Log.w(TAG, String.format("Next Media player error: %s", x), x);
+        Timber.w(x, "Next Media player error");
         nextMediaPlayer.reset();
     }
 }

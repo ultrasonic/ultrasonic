@@ -9,4 +9,5 @@ android {
 
 dependencies {
     implementation "androidx.appcompat:appcompat-resources:1.2.0"
+    implementation other.timber
 }

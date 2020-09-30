@@ -1,6 +1,6 @@
 package org.moire.ultrasonic.util;
 
-import android.util.Log;
+import timber.log.Timber;
 
 import org.moire.ultrasonic.domain.MusicDirectory;
 import org.moire.ultrasonic.service.DownloadFile;
@@ -26,8 +26,6 @@ import java.util.StringTokenizer;
 
 public class StreamProxy implements Runnable
 {
-	private static final String TAG = StreamProxy.class.getSimpleName();
-
 	private Thread thread;
 	private boolean isRunning;
 	private ServerSocket socket;
@@ -50,7 +48,7 @@ public class StreamProxy implements Runnable
 		}
 		catch (IOException e)
 		{
-			Log.e(TAG, "IOException initializing server", e);
+			Timber.e(e, "IOException initializing server");
 		}
 	}
 
@@ -84,7 +82,7 @@ public class StreamProxy implements Runnable
 				{
 					continue;
 				}
-				Log.i(TAG, "Client connected");
+				Timber.i("Client connected");
 
 				StreamToMediaPlayerTask task = new StreamToMediaPlayerTask(client);
 				if (task.processRequest())
@@ -99,10 +97,10 @@ public class StreamProxy implements Runnable
 			}
 			catch (IOException e)
 			{
-				Log.e(TAG, "Error connecting to client", e);
+				Timber.e(e, "Error connecting to client");
 			}
 		}
-		Log.i(TAG, "Proxy interrupted. Shutting down.");
+		Timber.i("Proxy interrupted. Shutting down.");
 	}
 
     private class StreamToMediaPlayerTask implements Runnable {
@@ -122,12 +120,12 @@ public class StreamProxy implements Runnable
                 BufferedReader reader = new BufferedReader(new InputStreamReader(is), 8192);
                 firstLine = reader.readLine();
             } catch (IOException e) {
-                Log.e(TAG, "Error parsing request", e);
+                Timber.e(e, "Error parsing request");
                 return null;
             }
 
             if (firstLine == null) {
-                Log.i(TAG, "Proxy client closed connection without a request.");
+                Timber.i("Proxy client closed connection without a request.");
                 return null;
             }
 
@@ -135,7 +133,7 @@ public class StreamProxy implements Runnable
             st.nextToken(); // method
             String uri = st.nextToken();
             String realUri = uri.substring(1);
-            Log.i(TAG, realUri);
+            Timber.i(realUri);
 
             return realUri;
         }
@@ -147,19 +145,19 @@ public class StreamProxy implements Runnable
             }
 
             // Read HTTP headers
-            Log.i(TAG, "Processing request: " + uri);
+            Timber.i("Processing request: %s", uri);
 
             try {
                 localPath = URLDecoder.decode(uri, Constants.UTF_8);
             } catch (UnsupportedEncodingException e) {
-                Log.e(TAG, "Unsupported encoding", e);
+                Timber.e(e, "Unsupported encoding");
                 return false;
             }
 
-            Log.i(TAG, String.format("Processing request for file %s", localPath));
+            Timber.i("Processing request for file %s", localPath);
             File file = new File(localPath);
             if (!file.exists()) {
-                Log.e(TAG, String.format("File %s does not exist", localPath));
+                Timber.e("File %s does not exist", localPath);
                 return false;
             }
 
@@ -169,11 +167,11 @@ public class StreamProxy implements Runnable
 		@Override
 		public void run()
 		{
-			Log.i(TAG, "Streaming song in background");
+			Timber.i("Streaming song in background");
 			DownloadFile downloadFile = currentPlaying == null? null : currentPlaying.get();
 			MusicDirectory.Entry song = downloadFile.getSong();
 			long fileSize = downloadFile.getBitRate() * ((song.getDuration() != null) ? song.getDuration() : 0) * 1000 / 8;
-			Log.i(TAG, String.format("Streaming fileSize: %d", fileSize));
+			Timber.i("Streaming fileSize: %d", fileSize);
 
 			// Create HTTP header
 			String headers = "HTTP/1.0 200 OK\r\n";
@@ -241,24 +239,24 @@ public class StreamProxy implements Runnable
 						// If we did nothing this batch, block for a second
 						if (cbSentThisBatch == 0)
 						{
-							Log.d(TAG, String.format("Blocking until more data appears (%d)", cbToSend));
+							Timber.d("Blocking until more data appears (%d)", cbToSend);
 							Util.sleepQuietly(1000L);
 						}
 					}
 				}
 				else
 				{
-					Log.w(TAG, "Requesting data for completely downloaded file");
+					Timber.w("Requesting data for completely downloaded file");
 				}
 			}
 			catch (SocketException socketException)
 			{
-				Log.e(TAG, "SocketException() thrown, proxy client has probably closed. This can exit harmlessly");
+				Timber.e("SocketException() thrown, proxy client has probably closed. This can exit harmlessly");
 			}
 			catch (Exception e)
 			{
-				Log.e(TAG, "Exception thrown from streaming task:");
-				Log.e(TAG, String.format("%s : %s", e.getClass().getName(), e.getLocalizedMessage()));
+				Timber.e("Exception thrown from streaming task:");
+				Timber.e("%s : %s", e.getClass().getName(), e.getLocalizedMessage());
 			}
 
 			// Cleanup
@@ -272,8 +270,8 @@ public class StreamProxy implements Runnable
 			}
 			catch (IOException e)
 			{
-				Log.e(TAG, "IOException while cleaning up streaming task:");
-				Log.e(TAG, String.format("%s : %s", e.getClass().getName(), e.getLocalizedMessage()));
+				Timber.e("IOException while cleaning up streaming task:");
+				Timber.e("%s : %s", e.getClass().getName(), e.getLocalizedMessage());
 			}
 		}
 	}

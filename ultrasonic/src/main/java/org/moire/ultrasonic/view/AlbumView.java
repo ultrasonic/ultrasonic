@@ -20,7 +20,7 @@ package org.moire.ultrasonic.view;
 
 import android.content.Context;
 import android.graphics.drawable.Drawable;
-import android.util.Log;
+import timber.log.Timber;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.ImageView;
@@ -40,7 +40,6 @@ import org.moire.ultrasonic.util.Util;
  */
 public class AlbumView extends UpdateView
 {
-	private static final String TAG = AlbumView.class.getSimpleName();
 	private static Drawable starDrawable;
 	private static Drawable starHollowDrawable;
 	private static String theme;
@@ -174,7 +173,7 @@ public class AlbumView extends UpdateView
 							}
 							catch (Exception e)
 							{
-								Log.e(TAG, e.getMessage(), e);
+								Timber.e(e);
 							}
 						}
 					}).start();

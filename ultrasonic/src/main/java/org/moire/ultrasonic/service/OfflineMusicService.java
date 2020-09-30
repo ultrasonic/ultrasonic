@@ -21,7 +21,7 @@ package org.moire.ultrasonic.service;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.media.MediaMetadataRetriever;
-import android.util.Log;
+import timber.log.Timber;
 
 import org.moire.ultrasonic.api.subsonic.SubsonicAPIClient;
 import org.moire.ultrasonic.cache.PermanentFileStorage;
@@ -70,7 +70,6 @@ import static org.koin.java.KoinJavaComponent.inject;
  */
 public class OfflineMusicService extends RESTMusicService
 {
-	private static final String TAG = OfflineMusicService.class.getSimpleName();
 	private static final Pattern COMPILE = Pattern.compile(" ");
 
 	private Lazy<ActiveServerProvider> activeServerProvider = inject(ActiveServerProvider.class);
@@ -242,7 +241,7 @@ public class OfflineMusicService extends RESTMusicService
 
 			entry.setVideo(hasVideo != null);
 
-			Log.i("OfflineMusicService", String.format("Offline Stuff: %s", track));
+			Timber.i("Offline Stuff: %s", track);
 
 			if (track != null)
 			{
@@ -262,10 +261,10 @@ public class OfflineMusicService extends RESTMusicService
 				}
 				catch (Exception ex)
 				{
-					Log.e("OfflineMusicService", String.format("Offline Stuff: %s", ex));
+					Timber.e(ex,"Offline Stuff");
 				}
 
-				Log.i("OfflineMusicService", String.format("Offline Stuff: Setting Track: %d", trackValue));
+				Timber.i("Offline Stuff: Setting Track: %d", trackValue);
 
 				entry.setTrack(trackValue);
 			}
@@ -573,7 +572,7 @@ public class OfflineMusicService extends RESTMusicService
 				}
 				catch (Exception e)
 				{
-					Log.w(TAG, String.format("Failed to delete old playlist file: %s", folder.getName()));
+					Timber.w("Failed to delete old playlist file: %s", folder.getName());
 				}
 			}
 		}
@@ -653,7 +652,7 @@ public class OfflineMusicService extends RESTMusicService
 		}
 		catch (Exception e)
 		{
-			Log.w(TAG, "Failed to save playlist: " + name);
+			Timber.w("Failed to save playlist: %s", name);
 		}
 		finally
 		{

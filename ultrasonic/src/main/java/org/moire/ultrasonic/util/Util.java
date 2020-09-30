@@ -41,7 +41,7 @@ import android.os.Environment;
 import android.os.Parcelable;
 import android.preference.PreferenceManager;
 import android.util.DisplayMetrics;
-import android.util.Log;
+import timber.log.Timber;
 import android.util.TypedValue;
 import android.view.Gravity;
 import android.view.KeyEvent;
@@ -75,8 +75,6 @@ import java.util.regex.Pattern;
  */
 public class Util
 {
-	private static final String TAG = Util.class.getSimpleName();
-
 	private static final DecimalFormat GIGA_BYTE_FORMAT = new DecimalFormat("0.00 GB");
 	private static final DecimalFormat MEGA_BYTE_FORMAT = new DecimalFormat("0.00 MB");
 	private static final DecimalFormat KILO_BYTE_FORMAT = new DecimalFormat("0 KB");
@@ -258,7 +256,7 @@ public class Util
 				throw new IOException(String.format("Failed to rename %s to %s", tmp, to));
 			}
 
-			Log.i(TAG, String.format("Copied %s to %s", from, to));
+			Timber.i("Copied %s to %s", from, to);
 		}
 		catch (IOException x)
 		{
@@ -278,7 +276,7 @@ public class Util
 	{
 		if (from.renameTo(to))
 		{
-			Log.i(TAG, String.format("Renamed %s to %s", from, to));
+			Timber.i("Renamed %s to %s", from, to);
 		}
 		else
 		{
@@ -307,11 +305,11 @@ public class Util
 		{
 			if (!file.delete())
 			{
-				Log.w(TAG, String.format("Failed to delete file %s", file));
+				Timber.w("Failed to delete file %s", file);
 				return false;
 			}
 
-			Log.i(TAG, String.format("Deleted file %s", file));
+			Timber.i("Deleted file %s", file);
 		}
 		return true;
 	}
@@ -621,7 +619,7 @@ public class Util
 		}
 		catch (InterruptedException x)
 		{
-			Log.w(TAG, "Interrupted from sleep.", x);
+			Timber.w(x, "Interrupted from sleep.");
 		}
 	}
 
@@ -712,7 +710,7 @@ public class Util
 
 		AudioManager audioManager = (AudioManager) context.getSystemService(Context.AUDIO_SERVICE);
 		audioManager.unregisterMediaButtonEventReceiver(new ComponentName(context.getPackageName(), MediaButtonIntentReceiver.class.getName()));
-		Log.i(TAG, "MediaButtonEventReceiver unregistered.");
+		Timber.i("MediaButtonEventReceiver unregistered.");
 	}
 
 	public static MusicDirectory getSongsFromSearchResult(SearchResult searchResult)

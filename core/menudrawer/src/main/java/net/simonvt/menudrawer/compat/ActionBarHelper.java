@@ -3,14 +3,11 @@ package net.simonvt.menudrawer.compat;
 import android.app.Activity;
 import android.graphics.drawable.Drawable;
 import android.os.Build;
-import android.util.Log;
+import timber.log.Timber;
 
 import java.lang.reflect.Method;
 
 public final class ActionBarHelper {
-
-    private static final String TAG = "ActionBarHelper";
-
     static final boolean DEBUG = false;
 
     private Activity mActivity;
@@ -28,9 +25,8 @@ public final class ActionBarHelper {
             mUsesCompat = true;
         } catch (NoSuchMethodException e) {
             if (DEBUG) {
-                Log.e(TAG,
-                        "Activity " + activity.getClass().getSimpleName() + " does not use a compatibility action bar",
-                        e);
+                Timber.e(e,
+                        "Activity " + activity.getClass().getSimpleName() + " does not use a compatibility action bar");
             }
         }
 

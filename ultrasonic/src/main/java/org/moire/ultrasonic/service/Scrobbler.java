@@ -1,7 +1,7 @@
 package org.moire.ultrasonic.service;
 
 import android.content.Context;
-import android.util.Log;
+import timber.log.Timber;
 
 import org.moire.ultrasonic.data.ActiveServerProvider;
 import org.moire.ultrasonic.util.Util;
@@ -14,8 +14,6 @@ import org.moire.ultrasonic.util.Util;
  */
 public class Scrobbler
 {
-	private static final String TAG = Scrobbler.class.getSimpleName();
-
 	private String lastSubmission;
 	private String lastNowPlaying;
 
@@ -57,11 +55,11 @@ public class Scrobbler
 				try
 				{
 					service.scrobble(id, submission, context, null);
-					Log.i(TAG, String.format("Scrobbled '%s' for %s", submission ? "submission" : "now playing", song));
+					Timber.i("Scrobbled '%s' for %s", submission ? "submission" : "now playing", song);
 				}
 				catch (Exception x)
 				{
-					Log.i(TAG, String.format("Failed to scrobble'%s' for %s", submission ? "submission" : "now playing", song), x);
+					Timber.i(x, "Failed to scrobble'%s' for %s", submission ? "submission" : "now playing", song);
 				}
 			}
 		}.start();

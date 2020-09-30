@@ -24,7 +24,7 @@ import android.graphics.BitmapFactory;
 import android.os.Build;
 import android.os.Environment;
 import android.text.TextUtils;
-import android.util.Log;
+import timber.log.Timber;
 
 import org.moire.ultrasonic.activity.SubsonicTabActivity;
 import org.moire.ultrasonic.domain.MusicDirectory;
@@ -48,7 +48,6 @@ import java.util.regex.Pattern;
  */
 public class FileUtil
 {
-	private static final String TAG = FileUtil.class.getSimpleName();
 	private static final String[] FILE_SYSTEM_UNSAFE = {"/", "\\", "..", ":", "\"", "?", "*", "<", ">", "|"};
 	private static final String[] FILE_SYSTEM_UNSAFE_DIR = {"\\", "..", ":", "\"", "?", "*", "<", ">", "|"};
 	private static final List<String> MUSIC_FILE_EXTENSIONS = Arrays.asList("mp3", "ogg", "aac", "flac", "m4a", "wav", "wma");
@@ -186,10 +185,10 @@ public class FileUtil
 			}
 			catch (Exception ex)
 			{
-				Log.e(TAG, "Exception in BitmapFactory.decodeFile()", ex);
+				Timber.e(ex, "Exception in BitmapFactory.decodeFile()");
 			}
 
-			Log.i("getAvatarBitmap", String.valueOf(size));
+			Timber.i("getAvatarBitmap %i", String.valueOf(size));
 
 			if (bitmap != null)
 			{
@@ -199,7 +198,7 @@ public class FileUtil
 				}
 			}
 
-			return bitmap == null ? null : bitmap;
+			return bitmap;
 		}
 
 		return null;
@@ -256,10 +255,10 @@ public class FileUtil
 			}
 			catch (Exception ex)
 			{
-				Log.e(TAG, "Exception in BitmapFactory.decodeFile()", ex);
+				Timber.e(ex, "Exception in BitmapFactory.decodeFile()");
 			}
 
-			Log.i("getAlbumArtBitmap", String.valueOf(size));
+			Timber.i("getAlbumArtBitmap %i", String.valueOf(size));
 
 			if (bitmap != null)
 			{
@@ -269,7 +268,7 @@ public class FileUtil
 				}
 			}
 
-			return bitmap == null ? null : bitmap;
+			return bitmap;
 		}
 
 		return null;
@@ -295,7 +294,7 @@ public class FileUtil
 			opt.inJustDecodeBounds = false;
 		}
 
-		Log.i("getSampledBitmap", String.valueOf(size));
+		Timber.i("getSampledBitmap %i", String.valueOf(size));
 		return BitmapFactory.decodeByteArray(bytes, 0, bytes.length, opt);
 	}
 
@@ -344,7 +343,7 @@ public class FileUtil
 		{
 			if (!dir.mkdirs())
 			{
-				Log.e(TAG, String.format("Failed to create directory %s", dir));
+				Timber.e("Failed to create directory %s", dir);
 			}
 		}
 	}
@@ -355,7 +354,7 @@ public class FileUtil
 
 		if (!dir.exists() && !dir.mkdirs())
 		{
-			Log.e(TAG, String.format("Failed to create %s", name));
+			Timber.e("Failed to create %s", name);
 		}
 
 		return dir;
@@ -398,7 +397,7 @@ public class FileUtil
 		{
 			if (!dir.isDirectory())
 			{
-				Log.w(TAG, String.format("%s exists but is not a directory.", dir));
+				Timber.w("%s exists but is not a directory.", dir);
 				return false;
 			}
 		}
@@ -406,24 +405,24 @@ public class FileUtil
 		{
 			if (dir.mkdirs())
 			{
-				Log.i(TAG, String.format("Created directory %s", dir));
+				Timber.i("Created directory %s", dir);
 			}
 			else
 			{
-				Log.w(TAG, String.format("Failed to create directory %s", dir));
+				Timber.w("Failed to create directory %s", dir);
 				return false;
 			}
 		}
 
 		if (!dir.canRead())
 		{
-			Log.w(TAG, String.format("No read permission for directory %s", dir));
+			Timber.w("No read permission for directory %s", dir);
             return false;
 		}
 
 		if (!dir.canWrite())
 		{
-			Log.w(TAG, String.format("No write permission for directory %s", dir));
+			Timber.w("No write permission for directory %s", dir);
             return false;
 		}
 
@@ -484,7 +483,7 @@ public class FileUtil
 
 		if (files == null)
 		{
-			Log.w(TAG, String.format("Failed to list children for %s", dir.getPath()));
+			Timber.w("Failed to list children for %s", dir.getPath());
 			return new TreeSet<File>();
 		}
 
@@ -556,12 +555,12 @@ public class FileUtil
 		{
 			out = new ObjectOutputStream(new FileOutputStream(file));
 			out.writeObject(obj);
-			Log.i(TAG, String.format("Serialized object to %s", file));
+			Timber.i("Serialized object to %s", file);
 			return true;
 		}
 		catch (Throwable x)
 		{
-			Log.w(TAG, String.format("Failed to serialize object to %s", file));
+			Timber.w("Failed to serialize object to %s", file);
 			return false;
 		}
 		finally
@@ -587,12 +586,12 @@ public class FileUtil
 			in = new ObjectInputStream(new FileInputStream(file));
 			Object object = in.readObject();
 			T result = (T) object;
-			Log.i(TAG, String.format("Deserialized object from %s", file));
+			Timber.i("Deserialized object from %s", file);
 			return result;
 		}
 		catch (Throwable x)
 		{
-			Log.w(TAG, String.format("Failed to deserialize object from %s", file), x);
+			Timber.w(x,"Failed to deserialize object from %s", file);
 			return null;
 		}
 		finally

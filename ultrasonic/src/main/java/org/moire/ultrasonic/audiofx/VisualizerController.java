@@ -20,7 +20,7 @@ package org.moire.ultrasonic.audiofx;
 
 import android.media.MediaPlayer;
 import android.media.audiofx.Visualizer;
-import android.util.Log;
+import timber.log.Timber;
 
 /**
  * Backward-compatible wrapper for {@link Visualizer}, which is API Level 9.
@@ -30,8 +30,6 @@ import android.util.Log;
  */
 public class VisualizerController
 {
-
-	private static final String TAG = VisualizerController.class.getSimpleName();
 	private static final int PREFERRED_CAPTURE_SIZE = 128; // Must be a power of two.
 
 	private Visualizer visualizer;
@@ -73,7 +71,7 @@ public class VisualizerController
 		}
 		catch (Throwable x)
 		{
-			Log.w(TAG, "Failed to create visualizer.", x);
+			Timber.w(x, "Failed to create visualizer.");
 		}
 
 		if (visualizer != null)
@@ -112,7 +110,7 @@ public class VisualizerController
 			catch (Throwable x)
 			{
 				visualizer = null;
-				Log.w(TAG, "Failed to create visualizer.", x);
+				Timber.w(x, "Failed to create visualizer.");
 			}
 		}
 

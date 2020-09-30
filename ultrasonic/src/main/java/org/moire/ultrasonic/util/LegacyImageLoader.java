@@ -26,7 +26,7 @@ import android.graphics.drawable.Drawable;
 import android.graphics.drawable.TransitionDrawable;
 import android.os.Handler;
 import android.text.TextUtils;
-import android.util.Log;
+import timber.log.Timber;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -50,8 +50,6 @@ import java.util.concurrent.atomic.AtomicBoolean;
  * @author Sindre Mehus
  */
 public class LegacyImageLoader implements Runnable, ImageLoader {
-    private static final String TAG = LegacyImageLoader.class.getSimpleName();
-
     private final LRUCache<String, Bitmap> cache = new LRUCache<>(150);
     private final BlockingQueue<Task> queue;
     private int imageSizeDefault;
@@ -121,7 +119,7 @@ public class LegacyImageLoader implements Runnable, ImageLoader {
 
     private void createLargeUnknownImage(Context context) {
         Drawable drawable = context.getResources().getDrawable(R.drawable.unknown_album);
-        Log.i(TAG, "createLargeUnknownImage");
+        Timber.i("createLargeUnknownImage");
 
         if (drawable != null) {
             largeUnknownImage = Util.createBitmapFromDrawable(drawable);
@@ -260,7 +258,7 @@ public class LegacyImageLoader implements Runnable, ImageLoader {
 
             // Only apply image to the view if the view is intended for this entry
             if (entry != null && tagEntry != null && !entry.equals(tagEntry)) {
-                Log.i(TAG, "View is no longer valid, not setting ImageBitmap");
+                Timber.i("View is no longer valid, not setting ImageBitmap");
                 return;
             }
 
@@ -299,7 +297,7 @@ public class LegacyImageLoader implements Runnable, ImageLoader {
             if (username != null &&
                     tagEntry != null &&
                     !username.equals(tagEntry)) {
-                Log.i(TAG, "View is no longer valid, not setting ImageBitmap");
+                Timber.i("View is no longer valid, not setting ImageBitmap");
                 return;
             }
 
@@ -368,7 +366,7 @@ public class LegacyImageLoader implements Runnable, ImageLoader {
                 running.set(false);
                 break;
             } catch (Throwable x) {
-                Log.e(TAG, "Unexpected exception in ImageLoader.", x);
+                Timber.e(x, "Unexpected exception in ImageLoader.");
             }
         }
     }
@@ -428,7 +426,7 @@ public class LegacyImageLoader implements Runnable, ImageLoader {
                         : musicService.getAvatar(view.getContext(), username, size, saveToFile, highQuality, null);
 
                 if (bitmap == null) {
-                    Log.d(TAG, "Found empty album art.");
+                    Timber.d("Found empty album art.");
                     return;
                 }
 
@@ -448,7 +446,7 @@ public class LegacyImageLoader implements Runnable, ImageLoader {
                     }
                 });
             } catch (Throwable x) {
-                Log.e(TAG, "Failed to download album art.", x);
+                Timber.e(x, "Failed to download album art.");
             }
         }
     }

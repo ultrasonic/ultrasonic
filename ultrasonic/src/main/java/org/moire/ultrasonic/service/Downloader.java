@@ -1,7 +1,7 @@
 package org.moire.ultrasonic.service;
 
 import android.content.Context;
-import android.util.Log;
+import timber.log.Timber;
 
 import org.moire.ultrasonic.domain.MusicDirectory;
 import org.moire.ultrasonic.util.LRUCache;
@@ -28,8 +28,6 @@ import static org.moire.ultrasonic.domain.PlayerState.STARTED;
  */
 public class Downloader
 {
-    private static final String TAG = Downloader.class.getSimpleName();
-
     public final List<DownloadFile> downloadList = new ArrayList<>();
     public final List<DownloadFile> backgroundDownloadList = new ArrayList<>();
     public DownloadFile currentDownloading;
@@ -69,14 +67,14 @@ public class Downloader
                 }
                 catch (Throwable x)
                 {
-                    Log.e(TAG, "checkDownloads() failed.", x);
+                    Timber.e(x,"checkDownloads() failed.");
                 }
             }
         };
 
         executorService = Executors.newSingleThreadScheduledExecutor();
         executorService.scheduleWithFixedDelay(downloadChecker, 5, 5, TimeUnit.SECONDS);
-        Log.i(TAG, "Downloader created");
+        Timber.i("Downloader created");
     }
 
     public void onDestroy()
@@ -84,13 +82,13 @@ public class Downloader
         stop();
         clear();
         clearBackground();
-        Log.i(TAG, "Downloader destroyed");
+        Timber.i("Downloader destroyed");
     }
 
     public void stop()
     {
         if (executorService != null) executorService.shutdown();
-        Log.i(TAG, "Downloader stopped");
+        Timber.i("Downloader stopped");
     }
 
     public synchronized void checkDownloads()

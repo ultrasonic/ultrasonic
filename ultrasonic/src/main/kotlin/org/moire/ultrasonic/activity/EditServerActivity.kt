@@ -2,7 +2,6 @@ package org.moire.ultrasonic.activity
 
 import android.app.AlertDialog
 import android.os.Bundle
-import android.util.Log
 import android.view.MenuItem
 import android.widget.Button
 import androidx.appcompat.app.ActionBar
@@ -30,6 +29,7 @@ import org.moire.ultrasonic.util.ErrorDialog
 import org.moire.ultrasonic.util.ModalBackgroundTask
 import org.moire.ultrasonic.util.Util
 import retrofit2.Response
+import timber.log.Timber
 
 /**
  * This Activity provides a Form which can be used to edit the properties of a Server Setting.
@@ -39,7 +39,6 @@ import retrofit2.Response
 internal class EditServerActivity : AppCompatActivity() {
 
     companion object {
-        private val TAG = EditServerActivity::class.simpleName
         const val EDIT_SERVER_INTENT_INDEX = "index"
     }
 
@@ -293,7 +292,7 @@ internal class EditServerActivity : AppCompatActivity() {
             }
 
             override fun error(error: Throwable) {
-                Log.w(TAG, error.toString(), error)
+                Timber.w(error)
                 ErrorDialog(
                     activity,
                     String.format(

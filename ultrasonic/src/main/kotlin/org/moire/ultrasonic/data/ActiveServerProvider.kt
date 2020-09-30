@@ -1,7 +1,6 @@
 package org.moire.ultrasonic.data
 
 import android.content.Context
-import android.util.Log
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
@@ -11,6 +10,7 @@ import org.moire.ultrasonic.R
 import org.moire.ultrasonic.service.MusicServiceFactory.resetMusicService
 import org.moire.ultrasonic.util.Constants
 import org.moire.ultrasonic.util.Util
+import timber.log.Timber
 
 /**
  * This class can be used to retrieve the properties of the Active Server
@@ -37,8 +37,7 @@ class ActiveServerProvider(
                 withContext(Dispatchers.IO) {
                     cachedServer = repository.findById(serverId)
                 }
-                Log.d(
-                    TAG,
+                Timber.d(
                     "getActiveServer retrieved from DataBase, id: $serverId; " +
                         "cachedServer: $cachedServer"
                 )
@@ -67,7 +66,7 @@ class ActiveServerProvider(
      * @param index: The index of the Active Server in the Server Selector List
      */
     fun setActiveServerByIndex(index: Int) {
-        Log.d(TAG, "setActiveServerByIndex $index")
+        Timber.d("setActiveServerByIndex $index")
         if (index < 1) {
             // Offline mode is selected
             setActiveServerId(context, 0)
@@ -85,7 +84,7 @@ class ActiveServerProvider(
      * This should be called when the Active Server or one of its properties changes
      */
     fun invalidateCache() {
-        Log.d(TAG, "Cache is invalidated")
+        Timber.d("Cache is invalidated")
         cachedServer = null
     }
 
@@ -116,8 +115,6 @@ class ActiveServerProvider(
     }
 
     companion object {
-        private val TAG = ActiveServerProvider::class.simpleName
-
         /**
          * Queries if the Active Server is the "Offline" mode of Ultrasonic
          * @return True, if the "Offline" mode is selected

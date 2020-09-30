@@ -9,7 +9,7 @@ import android.content.Intent;
 import android.content.res.Resources;
 import android.graphics.Bitmap;
 import android.os.Environment;
-import android.util.Log;
+import timber.log.Timber;
 import android.view.KeyEvent;
 import android.widget.RemoteViews;
 
@@ -24,8 +24,6 @@ import org.moire.ultrasonic.util.FileUtil;
 
 public class UltrasonicAppWidgetProvider extends AppWidgetProvider
 {
-
-	private final static String TAG = UltrasonicAppWidgetProvider.class.getSimpleName();
 	protected int layoutId;
 
 	@Override
@@ -171,7 +169,7 @@ public class UltrasonicAppWidgetProvider extends AppWidgetProvider
 		}
 		catch (Exception x)
 		{
-			Log.e(TAG, "Failed to load cover art", x);
+			Timber.e(x, "Failed to load cover art");
 			views.setImageViewResource(R.id.appwidget_coverart, R.drawable.unknown_album);
 		}
 

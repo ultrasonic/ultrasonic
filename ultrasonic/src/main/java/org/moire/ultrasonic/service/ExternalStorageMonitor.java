@@ -4,15 +4,13 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
-import android.util.Log;
+import timber.log.Timber;
 
 /**
  * Monitors the state of the mobile's external storage
  */
 public class ExternalStorageMonitor
 {
-    private static final String TAG = ExternalStorageMonitor.class.getSimpleName();
-
     private Context context;
     private BroadcastReceiver ejectEventReceiver;
     private boolean externalStorageAvailable = true;
@@ -33,12 +31,12 @@ public class ExternalStorageMonitor
                 externalStorageAvailable = Intent.ACTION_MEDIA_MOUNTED.equals(intent.getAction());
                 if (!externalStorageAvailable)
                 {
-                    Log.i(TAG, "External media is ejecting. Stopping playback.");
+                    Timber.i("External media is ejecting. Stopping playback.");
                     ejectedCallback.run();
                 }
                 else
                 {
-                    Log.i(TAG, "External media is available.");
+                    Timber.i("External media is available.");
                 }
             }
         };

@@ -30,7 +30,7 @@ import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import androidx.appcompat.app.ActionBar;
-import android.util.Log;
+import timber.log.Timber;
 import android.view.*;
 import android.view.View.OnClickListener;
 import android.view.View.OnTouchListener;
@@ -65,7 +65,6 @@ import kotlin.Lazy;
  */
 public class SubsonicTabActivity extends ResultActivity implements OnClickListener
 {
-	private static final String TAG = SubsonicTabActivity.class.getSimpleName();
 	private static final Pattern COMPILE = Pattern.compile(":");
 	protected static ImageLoader IMAGE_LOADER;
 	protected static String theme;
@@ -227,7 +226,7 @@ public class SubsonicTabActivity extends ResultActivity implements OnClickListen
 		intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
 		intent.putExtras(getIntent());
 		startActivityForResultWithoutTransition(this, intent);
-		Log.d(TAG, "Restarting activity...");
+		Timber.d("Restarting activity...");
 	}
 
 	@Override
@@ -413,7 +412,7 @@ public class SubsonicTabActivity extends ResultActivity implements OnClickListen
 			}
 			catch (Exception x)
 			{
-				Log.w(TAG, "Failed to get notification cover art", x);
+				Timber.w(x, "Failed to get notification cover art");
 			}
 		}
 	}
@@ -434,7 +433,7 @@ public class SubsonicTabActivity extends ResultActivity implements OnClickListen
 		}
 		catch (Exception ex)
 		{
-			Log.w(String.format("Exception in hideNowPlaying: %s", ex), ex);
+			Timber.w(ex, "Exception in hideNowPlaying");
 		}
 	}
 
@@ -1064,7 +1063,7 @@ public class SubsonicTabActivity extends ResultActivity implements OnClickListen
 		}
 
 		int trialDaysLeft = Util.getRemainingTrialDays(this);
-		Log.i(TAG, trialDaysLeft + " trial days left.");
+		Timber.i("%s trial days left.", trialDaysLeft);
 
 		if (trialDaysLeft == 0)
 		{
@@ -1238,11 +1237,11 @@ public class SubsonicTabActivity extends ResultActivity implements OnClickListen
 				printWriter.println("Ultrasonic version code: " + Util.getVersionCode(context));
 				printWriter.println();
 				throwable.printStackTrace(printWriter);
-				Log.i(TAG, "Stack trace written to " + file);
+				Timber.i("Stack trace written to %s", file);
 			}
 			catch (Throwable x)
 			{
-				Log.e(TAG, "Failed to write stack trace to " + file, x);
+				Timber.e(x, "Failed to write stack trace to %s", file);
 			}
 			finally
 			{

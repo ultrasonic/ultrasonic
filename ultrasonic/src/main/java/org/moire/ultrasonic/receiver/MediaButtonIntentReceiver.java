@@ -23,7 +23,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Parcelable;
-import android.util.Log;
+import timber.log.Timber;
 
 import org.moire.ultrasonic.service.MediaPlayerLifecycleSupport;
 import org.moire.ultrasonic.util.Constants;
@@ -38,7 +38,6 @@ import static org.koin.java.KoinJavaComponent.inject;
  */
 public class MediaButtonIntentReceiver extends BroadcastReceiver
 {
-	private static final String TAG = MediaButtonIntentReceiver.class.getSimpleName();
 	private Lazy<MediaPlayerLifecycleSupport> lifecycleSupport = inject(MediaPlayerLifecycleSupport.class);
 
 	@Override
@@ -62,7 +61,7 @@ public class MediaButtonIntentReceiver extends BroadcastReceiver
 		}
 
 		Parcelable event = (Parcelable) extras.get(Intent.EXTRA_KEY_EVENT);
-		Log.i(TAG, "Got MEDIA_BUTTON key event: " + event);
+		Timber.i("Got MEDIA_BUTTON key event: %s", event);
 
 		try
 		{

@@ -3,7 +3,7 @@ package org.moire.ultrasonic.util;
 import android.content.Context;
 import android.os.AsyncTask;
 import android.os.StatFs;
-import android.util.Log;
+import timber.log.Timber;
 
 import org.moire.ultrasonic.data.ActiveServerProvider;
 import org.moire.ultrasonic.domain.Playlist;
@@ -34,8 +34,6 @@ import static org.koin.java.KoinJavaComponent.inject;
  */
 public class CacheCleaner
 {
-
-	private static final String TAG = CacheCleaner.class.getSimpleName();
 	private static final long MIN_FREE_SPACE = 500 * 1024L * 1024L;
 
 	private final Context context;
@@ -56,7 +54,7 @@ public class CacheCleaner
 		catch (Exception ex)
 		{
 			// If an exception is thrown, assume we execute correctly the next time
-			Log.w(TAG, "Exception in CacheCleaner.clean", ex);
+			Timber.w(ex, "Exception in CacheCleaner.clean");
 		}
 	}
 
@@ -69,7 +67,7 @@ public class CacheCleaner
 		catch (Exception ex)
 		{
 			// If an exception is thrown, assume we execute correctly the next time
-			Log.w(TAG,"Exception in CacheCleaner.cleanSpace", ex);
+			Timber.w(ex,"Exception in CacheCleaner.cleanSpace");
 		}
 	}
 
@@ -82,7 +80,7 @@ public class CacheCleaner
 		catch (Exception ex)
 		{
 			// If an exception is thrown, assume we execute correctly the next time
-			Log.w(TAG, "Exception in CacheCleaner.cleanPlaylists", ex);
+			Timber.w(ex, "Exception in CacheCleaner.cleanPlaylists");
 		}
 	}
 
@@ -141,10 +139,10 @@ public class CacheCleaner
 		long bytesToDeleteFsLimit = Math.max(bytesUsedFs - minFsAvailability, 0L);
 		long bytesToDelete = Math.max(bytesToDeleteCacheLimit, bytesToDeleteFsLimit);
 
-		Log.i(TAG, String.format("File system       : %s of %s available", Util.formatBytes(bytesAvailableFs), Util.formatBytes(bytesTotalFs)));
-		Log.i(TAG, String.format("Cache limit       : %s", Util.formatBytes(cacheSizeBytes)));
-		Log.i(TAG, String.format("Cache size before : %s", Util.formatBytes(bytesUsedBySubsonic)));
-		Log.i(TAG, String.format("Minimum to delete : %s", Util.formatBytes(bytesToDelete)));
+		Timber.i("File system       : %s of %s available", Util.formatBytes(bytesAvailableFs), Util.formatBytes(bytesTotalFs));
+		Timber.i("Cache limit       : %s", Util.formatBytes(cacheSizeBytes));
+		Timber.i("Cache size before : %s", Util.formatBytes(bytesUsedBySubsonic));
+		Timber.i("Minimum to delete : %s", Util.formatBytes(bytesToDelete));
 
 		return bytesToDelete;
 	}
@@ -175,7 +173,7 @@ public class CacheCleaner
 			}
 		}
 
-		Log.i(TAG, String.format("Deleted           : %s", Util.formatBytes(bytesDeleted)));
+		Timber.i("Deleted           : %s", Util.formatBytes(bytesDeleted));
 	}
 
 	private static void findCandidatesForDeletion(File file, List<File> files, List<File> dirs)
@@ -259,7 +257,7 @@ public class CacheCleaner
 			}
 			catch (RuntimeException x)
 			{
-				Log.e(TAG, "Error in cache cleaning.", x);
+				Timber.e(x, "Error in cache cleaning.");
 			}
 
 			return null;
@@ -288,7 +286,7 @@ public class CacheCleaner
 			}
 			catch (RuntimeException x)
 			{
-				Log.e(TAG, "Error in cache cleaning.", x);
+				Timber.e(x, "Error in cache cleaning.");
 			}
 
 			return null;
@@ -318,7 +316,7 @@ public class CacheCleaner
 			}
 			catch (RuntimeException x)
 			{
-				Log.e(TAG, "Error in playlist cache cleaning.", x);
+				Timber.e(x, "Error in playlist cache cleaning.");
 			}
 
 			return null;

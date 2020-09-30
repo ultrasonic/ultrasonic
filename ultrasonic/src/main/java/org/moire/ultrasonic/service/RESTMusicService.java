@@ -24,7 +24,7 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.annotation.StringRes;
 import android.text.TextUtils;
-import android.util.Log;
+import timber.log.Timber;
 
 import org.moire.ultrasonic.R;
 import org.moire.ultrasonic.api.subsonic.ApiNotSupportedException;
@@ -120,8 +120,6 @@ import static org.koin.java.KoinJavaComponent.inject;
  * @author Sindre Mehus
  */
 public class RESTMusicService implements MusicService {
-    private static final String TAG = RESTMusicService.class.getSimpleName();
-
     private Lazy<ActiveServerProvider> activeServerProvider = inject(ActiveServerProvider.class);
 
     private static final String MUSIC_FOLDER_STORAGE_NAME = "music_folder";
@@ -409,7 +407,7 @@ public class RESTMusicService implements MusicService {
                 fw.write(filePath + '\n');
             }
         } catch (IOException e) {
-            Log.w(TAG, "Failed to save playlist: " + name);
+            Timber.w("Failed to save playlist: %s", name);
             throw e;
         } finally {
             bw.close();
@@ -638,7 +636,7 @@ public class RESTMusicService implements MusicService {
             boolean serverScaling = ActiveServerProvider.Companion.isServerScalingEnabled(context);
 
             if (bitmap == null) {
-                Log.d(TAG, "Loading cover art for: " + entry);
+                Timber.d("Loading cover art for: %s", entry);
 
                 final String id = entry.getCoverArt();
                 if (TextUtils.isEmpty(id)) {

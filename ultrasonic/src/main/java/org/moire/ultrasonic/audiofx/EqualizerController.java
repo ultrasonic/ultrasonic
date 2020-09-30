@@ -21,7 +21,7 @@ package org.moire.ultrasonic.audiofx;
 import android.content.Context;
 import android.media.MediaPlayer;
 import android.media.audiofx.Equalizer;
-import android.util.Log;
+import timber.log.Timber;
 
 import org.moire.ultrasonic.util.FileUtil;
 
@@ -35,9 +35,6 @@ import java.io.Serializable;
  */
 public class EqualizerController
 {
-
-	private static final String TAG = EqualizerController.class.getSimpleName();
-
 	private final Context context;
 	private Equalizer equalizer;
 	private boolean released;
@@ -81,7 +78,7 @@ public class EqualizerController
 		catch (Throwable x)
 		{
 			equalizer = null;
-			Log.w(TAG, "Failed to create equalizer.", x);
+			Timber.w(x, "Failed to create equalizer.");
 		}
 	}
 
@@ -96,7 +93,7 @@ public class EqualizerController
 		}
 		catch (Throwable x)
 		{
-			Log.w(TAG, "Failed to save equalizer settings.", x);
+			Timber.w(x, "Failed to save equalizer settings.");
 		}
 	}
 
@@ -116,7 +113,7 @@ public class EqualizerController
 		}
 		catch (Throwable x)
 		{
-			Log.w(TAG, "Failed to load equalizer settings.", x);
+			Timber.w(x, "Failed to load equalizer settings.");
 		}
 	}
 
@@ -147,7 +144,7 @@ public class EqualizerController
 			catch (Throwable x)
 			{
 				equalizer = null;
-				Log.w(TAG, "Failed to create equalizer.", x);
+				Timber.w(x, "Failed to create equalizer.");
 			}
 		}
 

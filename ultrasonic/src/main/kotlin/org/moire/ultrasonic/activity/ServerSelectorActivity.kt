@@ -3,7 +3,6 @@ package org.moire.ultrasonic.activity
 import android.app.AlertDialog
 import android.content.Intent
 import android.os.Bundle
-import android.util.Log
 import android.view.MenuItem
 import android.widget.AdapterView
 import android.widget.ListView
@@ -21,6 +20,7 @@ import org.moire.ultrasonic.activity.EditServerActivity.Companion.EDIT_SERVER_IN
 import org.moire.ultrasonic.data.ActiveServerProvider
 import org.moire.ultrasonic.service.MediaPlayerController
 import org.moire.ultrasonic.util.Util
+import timber.log.Timber
 
 /**
  * This Activity can be used to display all the configured Server Setting items.
@@ -32,7 +32,6 @@ import org.moire.ultrasonic.util.Util
 internal class ServerSelectorActivity : AppCompatActivity() {
 
     companion object {
-        private val TAG = ServerSelectorActivity::class.simpleName
         const val SERVER_SELECTOR_MANAGE_MODE = "manageMode"
     }
 
@@ -149,7 +148,7 @@ internal class ServerSelectorActivity : AppCompatActivity() {
                 }
             }
         }
-        Log.i(TAG, "Active server was set to: $index")
+        Timber.i("Active server was set to: $index")
     }
 
     /**
@@ -168,7 +167,7 @@ internal class ServerSelectorActivity : AppCompatActivity() {
                 if (index == activeServerIndex) setActiveServer(-1)
 
                 serverSettingsModel.deleteItem(index)
-                Log.i(TAG, "Server deleted: $index")
+                Timber.i("Server deleted: $index")
             }
             .setNegativeButton(R.string.common_cancel) { dialog, _ ->
                 dialog.dismiss()

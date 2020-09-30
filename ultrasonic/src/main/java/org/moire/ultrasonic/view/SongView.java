@@ -22,7 +22,7 @@ import android.content.Context;
 import android.graphics.drawable.AnimationDrawable;
 import android.graphics.drawable.Drawable;
 import android.text.TextUtils;
-import android.util.Log;
+import timber.log.Timber;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.Checkable;
@@ -57,8 +57,6 @@ import static org.koin.java.KoinJavaComponent.inject;
  */
 public class SongView extends UpdateView implements Checkable
 {
-
-	private static final String TAG = SongView.class.getSimpleName();
 	private static Drawable starHollowDrawable;
 	private static Drawable starDrawable;
 	private static Drawable pinImage;
@@ -296,7 +294,7 @@ public class SongView extends UpdateView implements Checkable
 										musicService.unstar(id, null, null, SongView.this.context, null);
 									}
 								} catch (Exception e) {
-									Log.e(TAG, e.getMessage(), e);
+									Timber.e(e);
 								}
 							}
 						}).start();

@@ -2,7 +2,7 @@ package net.simonvt.menudrawer.compat;
 
 import android.app.Activity;
 import android.graphics.drawable.Drawable;
-import android.util.Log;
+import timber.log.Timber;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
@@ -10,8 +10,6 @@ import android.widget.ImageView;
 import java.lang.reflect.Method;
 
 final class ActionBarHelperCompat {
-
-    private static final String TAG = "ActionBarHelperCompat";
 
     private ActionBarHelperCompat() {
     }
@@ -52,7 +50,7 @@ final class ActionBarHelperCompat {
                 sii.mHomeAsUpEnabled.invoke(sii.mActionBar, enabled);
             } catch (Throwable t) {
                 if (ActionBarHelper.DEBUG) {
-                    Log.e(TAG, "Unable to call setHomeAsUpEnabled", t);
+                    Timber.e(t, "Unable to call setHomeAsUpEnabled");
                 }
             }
         }
@@ -77,7 +75,7 @@ final class ActionBarHelperCompat {
                     mUpIndicatorView = (ImageView) parent.findViewById(upId);
                 } catch (Throwable t) {
                     if (ActionBarHelper.DEBUG) {
-                        Log.e(TAG, "ABS action bar not found", t);
+                        Timber.e(t,"ABS action bar not found");
                     }
                 }
 
@@ -99,7 +97,7 @@ final class ActionBarHelperCompat {
 
             } catch (Throwable t) {
                 if (ActionBarHelper.DEBUG) {
-                    Log.e(TAG, "Unable to init SetIndicatorInfo for ABS", t);
+                    Timber.e(t, "Unable to init SetIndicatorInfo for ABS");
                 }
             }
         }

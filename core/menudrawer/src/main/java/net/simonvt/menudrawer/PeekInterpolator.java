@@ -3,9 +3,6 @@ package net.simonvt.menudrawer;
 import android.view.animation.Interpolator;
 
 class PeekInterpolator implements Interpolator {
-
-    private static final String TAG = "PeekInterpolator";
-
     private static final SinusoidalInterpolator SINUSOIDAL_INTERPOLATOR = new SinusoidalInterpolator();
 
     @Override

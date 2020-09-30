@@ -20,7 +20,7 @@ package org.moire.ultrasonic.service;
 
 import android.content.Context;
 import android.os.Handler;
-import android.util.Log;
+import timber.log.Timber;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -58,7 +58,6 @@ import static org.koin.java.KoinJavaComponent.inject;
  */
 public class JukeboxMediaPlayer
 {
-	private static final String TAG = JukeboxMediaPlayer.class.getSimpleName();
 	private static final long STATUS_UPDATE_INTERVAL_SECONDS = 5L;
 
 	private final TaskQueue tasks = new TaskQueue();
@@ -98,7 +97,7 @@ public class JukeboxMediaPlayer
 
 		running.set(true);
 		startProcessTasks();
-		Log.d(TAG, "Started Jukebox Service");
+		Timber.d("Started Jukebox Service");
 	}
 
 	public void stopJukeboxService()
@@ -110,7 +109,7 @@ public class JukeboxMediaPlayer
 		{
 			serviceThread.interrupt();
 		}
-		Log.d(TAG, "Stopped Jukebox Service");
+		Timber.d("Stopped Jukebox Service");
 	}
 
 	private void startProcessTasks()
@@ -211,13 +210,13 @@ public class JukeboxMediaPlayer
 		}
 		else
 		{
-			Log.e(TAG, "Failed to process jukebox task: " + x, x);
+			Timber.e(x, "Failed to process jukebox task");
 		}
 	}
 
 	private void disableJukeboxOnError(Throwable x, final int resourceId)
 	{
-		Log.w(TAG, x.toString());
+		Timber.w(x.toString());
 
 		new Handler().post(new Runnable()
 		{
@@ -322,7 +321,7 @@ public class JukeboxMediaPlayer
 
 	public void setEnabled(boolean enabled)
 	{
-		Log.d(TAG, String.format("Jukebox Service setting enabled to %b", enabled));
+		Timber.d("Jukebox Service setting enabled to %b", enabled);
 		this.enabled = enabled;
 
 		tasks.clear();
@@ -371,7 +370,7 @@ public class JukeboxMediaPlayer
 			}
 			catch (Throwable x)
 			{
-				Log.w(TAG, "Failed to clean-up task queue.", x);
+				Timber.w(x, "Failed to clean-up task queue.");
 			}
 		}
 

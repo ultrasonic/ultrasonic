@@ -22,7 +22,7 @@ package org.moire.ultrasonic.activity;
 import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
-import android.util.Log;
+import timber.log.Timber;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -46,9 +46,6 @@ import java.util.List;
 
 public class SelectGenreActivity extends SubsonicTabActivity implements AdapterView.OnItemClickListener
 {
-
-	private static final String TAG = SelectGenreActivity.class.getSimpleName();
-
 	private SwipeRefreshLayout refreshGenreListView;
 	private ListView genreListView;
 	private View emptyView;
@@ -122,7 +119,7 @@ public class SelectGenreActivity extends SubsonicTabActivity implements AdapterV
 				}
 				catch (Exception x)
 				{
-					Log.e(TAG, "Failed to load genres", x);
+					Timber.e(x, "Failed to load genres");
 				}
 
 				return genres;

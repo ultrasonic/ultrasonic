@@ -20,7 +20,7 @@ package org.moire.ultrasonic.service;
 
 import android.content.Context;
 import android.content.Intent;
-import android.util.Log;
+import timber.log.Timber;
 
 import org.koin.java.KoinJavaComponent;
 import org.moire.ultrasonic.audiofx.EqualizerController;
@@ -53,8 +53,6 @@ import static org.koin.java.KoinJavaComponent.inject;
  */
 public class MediaPlayerControllerImpl implements MediaPlayerController
 {
-	private static final String TAG = MediaPlayerControllerImpl.class.getSimpleName();
-
 	private boolean created = false;
 	private String suggestedPlaylistName;
 	private boolean keepScreenOn;
@@ -82,7 +80,7 @@ public class MediaPlayerControllerImpl implements MediaPlayerController
 		this.shufflePlayBuffer = shufflePlayBuffer;
 		this.localMediaPlayer = localMediaPlayer;
 
-		Log.i(TAG, "MediaPlayerControllerImpl constructed");
+		Timber.i("MediaPlayerControllerImpl constructed");
 	}
 
 	public void onCreate()
@@ -98,7 +96,7 @@ public class MediaPlayerControllerImpl implements MediaPlayerController
 		setJukeboxEnabled(activeServerProvider.getValue().getActiveServer().getJukeboxByDefault());
 		created = true;
 
-		Log.i(TAG, "MediaPlayerControllerImpl created");
+		Timber.i("MediaPlayerControllerImpl created");
 	}
 
 	public void onDestroy()
@@ -109,7 +107,7 @@ public class MediaPlayerControllerImpl implements MediaPlayerController
 		downloader.onDestroy();
 		created = false;
 
-		Log.i(TAG, "MediaPlayerControllerImpl destroyed");
+		Timber.i("MediaPlayerControllerImpl destroyed");
 	}
 
 	@Override
@@ -536,7 +534,7 @@ public class MediaPlayerControllerImpl implements MediaPlayerController
 		}
 		catch (Exception e)
 		{
-			Log.w(TAG, "Error getting user information", e);
+			Timber.w(e, "Error getting user information");
 		}
 
 		return false;
@@ -608,7 +606,7 @@ public class MediaPlayerControllerImpl implements MediaPlayerController
 				}
 				catch (Exception e)
 				{
-					Log.e(TAG, e.getMessage(), e);
+					Timber.e(e);
 				}
 			}
 		}).start();

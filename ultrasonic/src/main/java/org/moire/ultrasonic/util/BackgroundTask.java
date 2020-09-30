@@ -20,7 +20,7 @@ package org.moire.ultrasonic.util;
 
 import android.app.Activity;
 import android.os.Handler;
-import android.util.Log;
+import timber.log.Timber;
 import com.fasterxml.jackson.core.JsonParseException;
 import org.moire.ultrasonic.R;
 import org.moire.ultrasonic.api.subsonic.ApiNotSupportedException;
@@ -38,8 +38,6 @@ import java.security.cert.CertificateException;
  */
 public abstract class BackgroundTask<T> implements ProgressListener
 {
-
-	private static final String TAG = BackgroundTask.class.getSimpleName();
 	private final Activity activity;
 	private final Handler handler;
 
@@ -67,7 +65,7 @@ public abstract class BackgroundTask<T> implements ProgressListener
 
 	protected void error(Throwable error)
 	{
-		Log.w(TAG, String.format("Got exception: %s", error), error);
+		Timber.w(error);
 		new ErrorDialog(activity, getErrorMessage(error), false);
 	}
 

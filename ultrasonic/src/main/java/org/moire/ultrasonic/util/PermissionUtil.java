@@ -7,7 +7,7 @@ import android.content.Intent;
 import android.net.Uri;
 import android.os.Handler;
 import android.os.Looper;
-import android.util.Log;
+import timber.log.Timber;
 
 import androidx.appcompat.app.AlertDialog;
 import androidx.core.content.PermissionChecker;
@@ -32,9 +32,6 @@ import static androidx.core.content.PermissionChecker.PERMISSION_DENIED;
  * Contains static functions for Permission handling
  */
 public class PermissionUtil {
-
-    private static final String TAG = FileUtil.class.getSimpleName();
-
     public interface PermissionRequestFinishedCallback {
         void onPermissionRequestFinished(boolean hasPermission);
     }
@@ -91,19 +88,19 @@ public class PermissionUtil {
                     @Override
                     public void onPermissionsChecked(MultiplePermissionsReport report) {
                         if (report.areAllPermissionsGranted()) {
-                            Log.i(TAG, "Permission granted to read / write external storage");
+                            Timber.i("Permission granted to read / write external storage");
                             if (callback != null) callback.onPermissionRequestFinished(true);
                             return;
                         }
 
                         if (report.isAnyPermissionPermanentlyDenied()) {
-                            Log.i(TAG, "Found permanently denied permission to read / write external storage, offering settings");
+                            Timber.i("Found permanently denied permission to read / write external storage, offering settings");
                             showSettingsDialog(context);
                             if (callback != null) callback.onPermissionRequestFinished(false);
                             return;
                         }
 
-                        Log.i(TAG, "At least one permission is missing to read / write external storage");
+                        Timber.i("At least one permission is missing to read / write external storage");
                         showWarning(context, context.getString(R.string.permissions_message_box_title),
                                 context.getString(R.string.permissions_rationale_description_initial), null);
                         if (callback != null) callback.onPermissionRequestFinished(false);
@@ -117,7 +114,7 @@ public class PermissionUtil {
                 }).withErrorListener(new PermissionRequestErrorListener() {
             @Override
             public void onError(DexterError error) {
-                Log.e(TAG, String.format("An error has occurred during checking permissions with Dexter: %s", error.toString()));
+                Timber.e("An error has occurred during checking permissions with Dexter: %s", error.toString());
             }
         })
                 .check();
@@ -138,20 +135,20 @@ public class PermissionUtil {
                     @Override
                     public void onPermissionsChecked(MultiplePermissionsReport report) {
                         if (report.areAllPermissionsGranted()) {
-                            Log.i(TAG, String.format("Permission granted to use cache directory %s", cacheLocation));
+                            Timber.i("Permission granted to use cache directory %s", cacheLocation);
                             setCacheLocation(context, cacheLocation);
                             if (callback != null) callback.onPermissionRequestFinished(true);
                             return;
                         }
 
                         if (report.isAnyPermissionPermanentlyDenied()) {
-                            Log.i(TAG, String.format("Found permanently denied permission to use cache directory %s, offering settings", cacheLocation));
+                            Timber.i("Found permanently denied permission to use cache directory %s, offering settings", cacheLocation);
                             showSettingsDialog(context);
                             if (callback != null) callback.onPermissionRequestFinished(false);
                             return;
                         }
 
-                        Log.i(TAG, String.format("At least one permission is missing to use directory %s ", cacheLocation));
+                        Timber.i("At least one permission is missing to use directory %s ", cacheLocation);
                         setCacheLocation(context, FileUtil.getDefaultMusicDirectory(context).getPath());
                         showWarning(context, context.getString(R.string.permissions_message_box_title),
                                 context.getString(R.string.permissions_permission_missing), null);
@@ -166,7 +163,7 @@ public class PermissionUtil {
                 }).withErrorListener(new PermissionRequestErrorListener() {
             @Override
             public void onError(DexterError error) {
-                Log.e(TAG, String.format("An error has occurred during checking permissions with Dexter: %s", error.toString()));
+                Timber.e("An error has occurred during checking permissions with Dexter: %s", error.toString());
             }
         })
                 .check();

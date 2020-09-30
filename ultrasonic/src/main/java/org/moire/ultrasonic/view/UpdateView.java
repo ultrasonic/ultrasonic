@@ -3,7 +3,7 @@ package org.moire.ultrasonic.view;
 import android.content.Context;
 import android.os.Handler;
 import android.os.Looper;
-import android.util.Log;
+import timber.log.Timber;
 import android.view.ViewGroup;
 import android.widget.AbsListView;
 import android.widget.LinearLayout;
@@ -16,7 +16,6 @@ import java.util.WeakHashMap;
 
 public class UpdateView extends LinearLayout
 {
-	private static final String TAG = UpdateView.class.getSimpleName();
 	private static final WeakHashMap<UpdateView, ?> INSTANCES = new WeakHashMap<UpdateView, Object>();
 
 	private static Handler backgroundHandler;
@@ -89,7 +88,7 @@ public class UpdateView extends LinearLayout
 		}
 		catch (Throwable x)
 		{
-			Log.w(TAG, "Error when updating song views.", x);
+			Timber.w(x, "Error when updating song views.");
 		}
 	}
 
@@ -109,7 +108,7 @@ public class UpdateView extends LinearLayout
 				}
 				catch (Throwable x)
 				{
-					Log.w(TAG, "Error when updating song views.", x);
+					Timber.w(x, "Error when updating song views.");
 				}
 
 				uiHandler.postDelayed(updateRunnable, Util.getViewRefreshInterval(context));
@@ -133,7 +132,7 @@ public class UpdateView extends LinearLayout
 				}
 				catch (Throwable x)
 				{
-					Log.w(TAG, "Error when updating song views.", x);
+					Timber.w(x, "Error when updating song views.");
 				}
 			}
 		});
