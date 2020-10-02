@@ -1,8 +1,8 @@
 @file:JvmName("MusicServiceModule")
 package org.moire.ultrasonic.di
 
-import okhttp3.logging.HttpLoggingInterceptor
 import kotlin.math.abs
+import okhttp3.logging.HttpLoggingInterceptor
 import org.koin.android.ext.koin.androidContext
 import org.koin.core.qualifier.named
 import org.koin.dsl.module

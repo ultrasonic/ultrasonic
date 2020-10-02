@@ -134,6 +134,7 @@ public final class Constants
 	public static final String PREFERENCES_KEY_FIRST_RUN_EXECUTED = "firstRunExecuted";
 	public static final String PREFERENCES_KEY_RESUME_ON_BLUETOOTH_DEVICE = "resumeOnBluetoothDevice";
 	public static final String PREFERENCES_KEY_PAUSE_ON_BLUETOOTH_DEVICE = "pauseOnBluetoothDevice";
+	public static final String PREFERENCES_KEY_DEBUG_LOG_TO_FILE = "debugLogToFile";
 
 	public static final int PREFERENCE_VALUE_ALL = 0;
 	public static final int PREFERENCE_VALUE_A2DP = 1;

@@ -22,6 +22,7 @@ import org.moire.ultrasonic.featureflags.Feature;
 import org.moire.ultrasonic.featureflags.FeatureStorage;
 import org.moire.ultrasonic.filepicker.FilePickerDialog;
 import org.moire.ultrasonic.filepicker.OnFileSelectedListener;
+import org.moire.ultrasonic.log.FileLoggerTree;
 import org.moire.ultrasonic.provider.SearchSuggestionProvider;
 import org.moire.ultrasonic.service.Consumer;
 import org.moire.ultrasonic.service.MediaPlayerController;
@@ -70,6 +71,7 @@ public class SettingsFragment extends PreferenceFragment
     private PreferenceCategory serversCategory;
     private Preference resumeOnBluetoothDevice;
     private Preference pauseOnBluetoothDevice;
+    private CheckBoxPreference debugLogToFile;
 
     private SharedPreferences settings;
 
@@ -118,6 +120,7 @@ public class SettingsFragment extends PreferenceFragment
         serversCategory = (PreferenceCategory) findPreference(Constants.PREFERENCES_KEY_SERVERS_KEY);
         resumeOnBluetoothDevice = findPreference(Constants.PREFERENCES_KEY_RESUME_ON_BLUETOOTH_DEVICE);
         pauseOnBluetoothDevice = findPreference(Constants.PREFERENCES_KEY_PAUSE_ON_BLUETOOTH_DEVICE);
+        debugLogToFile = (CheckBoxPreference) findPreference(Constants.PREFERENCES_KEY_DEBUG_LOG_TO_FILE);
 
         sharingDefaultGreeting.setText(Util.getShareGreeting(getActivity()));
         setupClearSearchPreference();
@@ -171,6 +174,8 @@ public class SettingsFragment extends PreferenceFragment
             setBluetoothPreferences(sharedPreferences.getBoolean(key, true));
         } else if (Constants.PREFERENCES_KEY_IMAGE_LOADER_CONCURRENCY.equals(key)) {
             setImageLoaderConcurrency(Integer.parseInt(sharedPreferences.getString(key, "5")));
+        } else if (Constants.PREFERENCES_KEY_DEBUG_LOG_TO_FILE.equals(key)) {
+            setDebugLogToFile(sharedPreferences.getBoolean(key, false));
         }
     }
 
@@ -415,6 +420,13 @@ public class SettingsFragment extends PreferenceFragment
             sendBluetoothAlbumArt.setChecked(false);
             sendBluetoothAlbumArt.setEnabled(false);
         }
+
+        if (debugLogToFile.isChecked()) {
+            debugLogToFile.setSummary(getString(R.string.settings_debug_log_path,
+                FileUtil.getUltrasonicDirectory(getActivity()), FileLoggerTree.FILENAME));
+        } else {
+            debugLogToFile.setSummary("");
+        }
     }
 
     private static void setImageLoaderConcurrency(int concurrency) {
@@ -481,5 +493,48 @@ public class SettingsFragment extends PreferenceFragment
 
         // Clear download queue.
         mediaPlayerControllerLazy.getValue().clear();
+    }
+
+    private void setDebugLogToFile(boolean writeLog) {
+        if (writeLog) {
+            FileLoggerTree.Companion.plantToTimberForest(getActivity().getApplicationContext());
+            Timber.i("Enabled debug logging to file");
+        } else {
+            FileLoggerTree.Companion.uprootFromTimberForest();
+            Timber.i("Disabled debug logging to file");
+
+            int fileNum = FileLoggerTree.Companion.getLogFileNumber(getActivity());
+            long fileSize = FileLoggerTree.Companion.getLogFileSizes(getActivity());
+            String message = getString(R.string.settings_debug_log_summary,
+                String.valueOf(fileNum),
+                String.valueOf(Math.ceil(fileSize / 1000000d)),
+                FileUtil.getUltrasonicDirectory(getActivity()));
+
+            new AlertDialog.Builder(getActivity())
+                .setMessage(message)
+                .setIcon(android.R.drawable.ic_dialog_info)
+                .setNegativeButton(R.string.settings_debug_log_keep, new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialogInterface, int i) {
+                        dialogInterface.cancel();
+                    }
+                })
+                .setPositiveButton(R.string.settings_debug_log_delete, new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialogInterface, int i) {
+                        FileLoggerTree.Companion.deleteLogFiles(getActivity());
+                        Timber.i("Deleted debug log files");
+                        dialogInterface.dismiss();
+                        new AlertDialog.Builder(getActivity()).setMessage(R.string.settings_debug_log_deleted)
+                            .setPositiveButton(R.string.common_ok, new DialogInterface.OnClickListener() {
+                                @Override
+                                public void onClick(DialogInterface dialogInterface, int i) {
+                                    dialogInterface.dismiss();
+                                }
+                            }).create().show();
+                    }
+                })
+                .create().show();
+        }
     }
 }

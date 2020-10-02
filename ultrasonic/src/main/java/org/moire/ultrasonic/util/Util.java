@@ -1457,4 +1457,11 @@ public class Util
 		SharedPreferences preferences = getPreferences(context);
 		return preferences.getInt(Constants.PREFERENCES_KEY_PAUSE_ON_BLUETOOTH_DEVICE, Constants.PREFERENCE_VALUE_A2DP);
 	}
+
+	public static boolean getDebugLogToFile(Context context)
+	{
+		SharedPreferences preferences = getPreferences(context);
+		return preferences.getBoolean(Constants.PREFERENCES_KEY_DEBUG_LOG_TO_FILE, false);
+	}
+
 }

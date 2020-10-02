@@ -402,6 +402,13 @@
     <string name="settings.playback.bluetooth_all">Todos los dispositivos Bluetooth</string>
     <string name="settings.playback.bluetooth_a2dp">Solo dispositivos de audio (A2DP)</string>
     <string name="settings.playback.bluetooth_disabled">Deshabilitado</string>
+    <string name="settings.debug.title">Debug options</string>
+    <string name="settings.debug.log_to_file">Write debug log to file</string>
+    <string name="settings.debug.log_path">The log files are available at %1$s/%2$s</string>
+    <string name="settings.debug.log_summary">There are %1$s log files taking up ~%2$s MB space in the %3$s directory. Do you want to keep these?</string>
+    <string name="settings.debug.log_keep">Keep files</string>
+    <string name="settings.debug.log_delete">Delete files</string>
+    <string name="settings.debug.log_deleted">Deleted log files.</string>
 
     <string name="permissions.access_error">Ultrasonic no puede acceder a la caché de los ficheros de música. La ubicación de la caché se restableció a la ruta predeterminada.</string>
     <string name="permissions.message_box_title">Atención</string>

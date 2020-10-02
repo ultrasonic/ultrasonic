@@ -2,7 +2,6 @@ package org.moire.ultrasonic.app
 
 import androidx.multidex.MultiDexApplication
 import org.koin.android.ext.koin.androidContext
-import org.koin.android.ext.koin.androidLogger
 import org.koin.core.context.startKoin
 import org.koin.core.logger.Level
 import org.moire.ultrasonic.BuildConfig
@@ -13,8 +12,8 @@ import org.moire.ultrasonic.di.featureFlagsModule
 import org.moire.ultrasonic.di.mediaPlayerModule
 import org.moire.ultrasonic.di.musicServiceModule
 import org.moire.ultrasonic.log.FileLoggerTree
-import org.moire.ultrasonic.log.TimberKoinLogger
 import org.moire.ultrasonic.log.timberLogger
+import org.moire.ultrasonic.util.Util
 import timber.log.Timber
 import timber.log.Timber.DebugTree
 
@@ -24,7 +23,9 @@ class UApp : MultiDexApplication() {
 
         if (BuildConfig.DEBUG) {
             Timber.plant(DebugTree())
-            Timber.plant(FileLoggerTree(this))
+        }
+        if (Util.getDebugLogToFile(this)) {
+            FileLoggerTree.plantToTimberForest(this)
         }
 
         startKoin {
