@@ -52,7 +52,7 @@ class FileLoggerTree(val context: Context) : Timber.DebugTree() {
                 if (file != null) return
                 getNumberedFile(false)
                 // Using base class DebugTree here, we don't want to try to log this into file
-                super.log(4, TAG,String.format("Logging into file %s", file?.name), null)
+                super.log(4, TAG, String.format("Logging into file %s", file?.name), null)
                 return
             }
         }
