@@ -490,5 +490,6 @@
     </string>
     <string name="feature_flags_category_title">Experimentele functies</string>
     <string name="menu_refresh">Refresh</string>
+    <string name="settings.theme_black">Black</string>
 
 </resources>
