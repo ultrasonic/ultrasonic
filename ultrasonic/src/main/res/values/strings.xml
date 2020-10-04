@@ -303,8 +303,9 @@
     <string name="settings.testing_connection">Testing connection&#8230;</string>
     <string name="settings.testing_ok">Connection is OK</string>
     <string name="settings.testing_unlicensed">Connection is OK. Server unlicensed.</string>
-    <string name="settings.theme_dark">Dark</string>
     <string name="settings.theme_light">Light</string>
+    <string name="settings.theme_dark">Dark</string>
+    <string name="settings.theme_black">Black</string>
     <string name="settings.theme_title">Theme</string>
     <string name="settings.title.allow_self_signed_certificate">Allow self-signed HTTPS certificate</string>
     <string name="settings.title.enable_ldap_users_support">Enable support for LDAP users</string>

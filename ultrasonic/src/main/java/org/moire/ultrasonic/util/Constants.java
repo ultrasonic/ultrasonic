@@ -78,6 +78,9 @@ public final class Constants
 	public static final String PREFERENCES_KEY_SERVERS_KEY = "serversKey";
 	public static final String PREFERENCES_KEY_INSTALL_TIME = "installTime";
 	public static final String PREFERENCES_KEY_THEME = "theme";
+	public static final String PREFERENCES_KEY_THEME_LIGHT = "light";
+	public static final String PREFERENCES_KEY_THEME_DARK = "dark";
+	public static final String PREFERENCES_KEY_THEME_BLACK = "black";
 	public static final String PREFERENCES_KEY_DISPLAY_BITRATE_WITH_ARTIST = "displayBitrateWithArtist";
 	public static final String PREFERENCES_KEY_USE_FOLDER_FOR_ALBUM_ARTIST = "useFolderForAlbumArtist";
 	public static final String PREFERENCES_KEY_SHOW_TRACK_NUMBER = "showTrackNumber";

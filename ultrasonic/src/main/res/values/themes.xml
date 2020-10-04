@@ -1,5 +1,63 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+    <style name="UltrasonicTheme.Black" parent="Theme.MaterialComponents">
+        <item name="color_background">@color/background_color_dark</item>
+        <item name="color_selected">@color/selected_color_dark</item>
+        <item name="star_hollow">@drawable/ic_star_hollow_dark</item>
+        <item name="star_full">@drawable/ic_star_full_dark</item>
+        <item name="about">@drawable/ic_menu_about_dark</item>
+        <item name="select_all">@drawable/ic_menu_select_all_dark</item>
+        <item name="add_to_queue">@drawable/ic_menu_add_to_queue_dark</item>
+        <item name="browse">@drawable/ic_menu_browse_dark</item>
+        <item name="exit">@drawable/ic_menu_exit_dark</item>
+        <item name="backward">@drawable/ic_menu_backward_dark</item>
+        <item name="forward">@drawable/ic_menu_forward_dark</item>
+        <item name="stop">@drawable/ic_menu_close_dark</item>
+        <item name="help">@drawable/ic_menu_help_dark</item>
+        <item name="home">@drawable/ic_menu_home_dark</item>
+        <item name="pin">@drawable/ic_menu_pin_dark</item>
+        <item name="unpin">@drawable/ic_menu_unpin_dark</item>
+        <item name="playlists">@drawable/ic_menu_playlists_dark</item>
+        <item name="remove_all">@drawable/ic_menu_remove_all_dark</item>
+        <item name="save">@drawable/ic_menu_save_dark</item>
+        <item name="screen_on_off">@drawable/ic_menu_screen_on_off_dark</item>
+        <item name="search">@drawable/ic_menu_search_holo_dark</item>
+        <item name="server">@drawable/ic_menu_server_dark</item>
+        <item name="select_server">@drawable/ic_menu_select_server_dark</item>
+        <item name="select_folder">@drawable/ic_menu_select_folder_dark</item>
+        <item name="settings">@drawable/ic_menu_settings_dark</item>
+        <item name="share">@drawable/ic_menu_share_dark</item>
+        <item name="download">@drawable/ic_menu_download_dark</item>
+        <item name="downloaded">@drawable/stat_sys_download_anim_0_dark</item>
+        <item name="downloading">@drawable/stat_sys_download_dark</item>
+        <item name="media_previous">@drawable/media_backward_normal_dark</item>
+        <item name="media_next">@drawable/media_forward_normal_dark</item>
+        <item name="media_pause">@drawable/media_pause_normal_dark</item>
+        <item name="media_repeat_all">@drawable/media_repeat_all_dark</item>
+        <item name="media_repeat_off">@drawable/media_repeat_off_dark</item>
+        <item name="media_repeat_single">@drawable/media_repeat_one_dark</item>
+        <item name="media_shuffle">@drawable/media_shuffle_normal_dark</item>
+        <item name="media_play">@drawable/media_start_normal_dark</item>
+        <item name="podcasts">@drawable/ic_menu_podcasts_dark</item>
+        <item name="refresh">@drawable/ic_menu_refresh_dark</item>
+        <item name="media_play_next">@drawable/media_play_next_dark</item>
+        <item name="media_play_small">@drawable/ic_stat_play_dark</item>
+        <item name="media_stop">@drawable/media_stop_normal_dark</item>
+        <item name="media_toggle">@drawable/media_toggle_list_normal_dark</item>
+        <item name="chat">@drawable/ic_menu_chat_dark</item>
+        <item name="chat_send">@drawable/ic_menu_chat_send_dark</item>
+        <item name="bookmark">@drawable/ic_menu_bookmark_dark</item>
+        <item name="button_check_custom">@drawable/btn_check_custom_dark</item>
+        <item name="filepicker_create_new_folder">@drawable/ic_create_new_folder_dark</item>
+        <item name="filepicker_folder">@drawable/ic_folder_dark</item>
+        <item name="filepicker_subdirectory_up">@drawable/ic_subdirectory_up_dark</item>
+        <item name="filepicker_sd_card">@drawable/ic_sd_storage_dark</item>
+        <item name="drag_queue">@drawable/ic_drag_queue_dark</item>
+        <item name="more_vert">@drawable/ic_more_vert_dark</item>
+        <item name="list_selector_holo">@drawable/list_selector_holo_dark</item>
+        <item name="list_selector_holo_selected">@drawable/list_selector_holo_dark_selected</item>
+    </style>
+
     <style name="UltrasonicTheme" parent="Theme.AppCompat">
         <item name="color_background">@color/background_color_dark</item>
         <item name="color_selected">@color/selected_color_dark</item>
