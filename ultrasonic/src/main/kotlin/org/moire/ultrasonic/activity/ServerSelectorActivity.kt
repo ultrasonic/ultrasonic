@@ -20,7 +20,6 @@ import org.moire.ultrasonic.R
 import org.moire.ultrasonic.activity.EditServerActivity.Companion.EDIT_SERVER_INTENT_INDEX
 import org.moire.ultrasonic.data.ActiveServerProvider
 import org.moire.ultrasonic.service.MediaPlayerController
-import org.moire.ultrasonic.util.Constants
 import org.moire.ultrasonic.util.Util
 
 /**
