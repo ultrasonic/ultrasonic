@@ -490,6 +490,5 @@
     </string>
     <string name="feature_flags_category_title">Banderas de características</string>
     <string name="menu_refresh">Actualizar</string>
-    <string name="settings.theme_black">Black</string>
 
 </resources>

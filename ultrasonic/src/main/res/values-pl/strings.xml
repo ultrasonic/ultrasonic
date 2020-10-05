@@ -503,6 +503,5 @@ Obecnie nie zapisuje obrazów w pamięci urządzenia, tylko wykorzystuje tylko p
     </string>
     <string name="feature_flags_category_title">Flagi funkcji</string>
     <string name="menu_refresh">Refresh</string>
-    <string name="settings.theme_black">Black</string>
 
 </resources>
