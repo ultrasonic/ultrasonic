@@ -301,6 +301,7 @@
     <string name="settings.testing_connection">Connexion en cours de test&#8230;</string>
     <string name="settings.testing_ok">Connexion correcte</string>
     <string name="settings.testing_unlicensed">Connection correcte. Serveur sans licence.</string>
+    <string name="settings.theme_black">Noir</string>
     <string name="settings.theme_dark">Sombre</string>
     <string name="settings.theme_light">Clair</string>
     <string name="settings.theme_title">Thème</string>

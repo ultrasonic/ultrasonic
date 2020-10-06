@@ -45,7 +45,7 @@ internal class ServerSelectorActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        applyTheme()
+        Util.applyTheme(this)
         if (savedInstanceState == null) configureActionBar()
 
         setContentView(R.layout.server_selector)
@@ -109,20 +109,6 @@ internal class ServerSelectorActivity : AppCompatActivity() {
                 serverRowAdapter!!.setData(t.toTypedArray())
             }
         )
-    }
-    private fun applyTheme() {
-        val theme = Util.getTheme(this)
-        if (
-            "dark".equals(theme, ignoreCase = true) ||
-            "fullscreen".equals(theme, ignoreCase = true)
-        ) {
-            setTheme(R.style.UltrasonicTheme)
-        } else if (
-            "light".equals(theme, ignoreCase = true) ||
-            "fullscreenlight".equals(theme, ignoreCase = true)
-        ) {
-            setTheme(R.style.UltrasonicTheme_Light)
-        }
     }
 
     private fun configureActionBar() {
