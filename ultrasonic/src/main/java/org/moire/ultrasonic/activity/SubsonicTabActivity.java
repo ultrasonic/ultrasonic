@@ -100,7 +100,7 @@ public class SubsonicTabActivity extends ResultActivity implements OnClickListen
 	protected void onCreate(Bundle bundle)
 	{
 		setUncaughtExceptionHandler();
-		applyTheme();
+		Util.applyTheme(this);
 		super.onCreate(bundle);
 
 		setVolumeControlStream(AudioManager.STREAM_MUSIC);
@@ -156,7 +156,7 @@ public class SubsonicTabActivity extends ResultActivity implements OnClickListen
 	protected void onResume()
 	{
 		super.onResume();
-		applyTheme();
+		Util.applyTheme(this);
 		instance = this;
 
 		Util.registerMediaButtonEventReceiver(this, false);
@@ -292,20 +292,6 @@ public class SubsonicTabActivity extends ResultActivity implements OnClickListen
 				}.execute();
 			}
 		});
-	}
-
-	private void applyTheme()
-	{
-		String theme = Util.getTheme(this);
-
-		if ("dark".equalsIgnoreCase(theme) || "fullscreen".equalsIgnoreCase(theme))
-		{
-			setTheme(R.style.UltrasonicTheme);
-		}
-		else if ("light".equalsIgnoreCase(theme) || "fullscreenlight".equalsIgnoreCase(theme))
-		{
-			setTheme(R.style.UltrasonicTheme_Light);
-		}
 	}
 
 	private void showNowPlaying(final Context context, final MediaPlayerController mediaPlayerController, final Entry song, final PlayerState playerState)

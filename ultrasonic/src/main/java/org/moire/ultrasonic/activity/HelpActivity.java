@@ -65,7 +65,7 @@ public final class HelpActivity extends ResultActivity implements OnClickListene
 	@Override
 	protected void onCreate(Bundle bundle)
 	{
-		applyTheme();
+		Util.applyTheme(this);
         getWindow().requestFeature(Window.FEATURE_INDETERMINATE_PROGRESS);
 		super.onCreate(bundle);
 
@@ -190,20 +190,6 @@ public final class HelpActivity extends ResultActivity implements OnClickListene
 			}
 		}
 		return super.onKeyDown(keyCode, event);
-	}
-
-	private void applyTheme()
-	{
-		String theme = Util.getTheme(this);
-
-		if ("dark".equalsIgnoreCase(theme) || "fullscreen".equalsIgnoreCase(theme))
-		{
-			setTheme(R.style.UltrasonicTheme);
-		}
-		else if ("light".equalsIgnoreCase(theme) || "fullscreenlight".equalsIgnoreCase(theme))
-		{
-			setTheme(R.style.UltrasonicTheme_Light);
-		}
 	}
 
 	@Override

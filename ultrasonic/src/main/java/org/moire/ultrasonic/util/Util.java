@@ -151,7 +151,25 @@ public class Util
 	public static String getTheme(Context context)
 	{
 		SharedPreferences preferences = getPreferences(context);
-		return preferences.getString(Constants.PREFERENCES_KEY_THEME, "dark");
+		return preferences.getString(Constants.PREFERENCES_KEY_THEME, Constants.PREFERENCES_KEY_THEME_DARK);
+	}
+
+	public static void applyTheme(Context context)
+	{
+		String theme = Util.getTheme(context);
+
+		if (Constants.PREFERENCES_KEY_THEME_DARK.equalsIgnoreCase(theme) || "fullscreen".equalsIgnoreCase(theme))
+		{
+			context.setTheme(R.style.UltrasonicTheme);
+		}
+		else if (Constants.PREFERENCES_KEY_THEME_BLACK.equalsIgnoreCase(theme))
+		{
+			context.setTheme(R.style.UltrasonicTheme_Black);
+		}
+		else if (Constants.PREFERENCES_KEY_THEME_LIGHT.equalsIgnoreCase(theme) || "fullscreenlight".equalsIgnoreCase(theme))
+		{
+			context.setTheme(R.style.UltrasonicTheme_Light);
+		}
 	}
 
 	public static int getMaxBitRate(Context context)
