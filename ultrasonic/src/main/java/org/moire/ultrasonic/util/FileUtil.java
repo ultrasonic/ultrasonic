@@ -51,7 +51,7 @@ public class FileUtil
 	private static final String TAG = FileUtil.class.getSimpleName();
 	private static final String[] FILE_SYSTEM_UNSAFE = {"/", "\\", "..", ":", "\"", "?", "*", "<", ">", "|"};
 	private static final String[] FILE_SYSTEM_UNSAFE_DIR = {"\\", "..", ":", "\"", "?", "*", "<", ">", "|"};
-	private static final List<String> MUSIC_FILE_EXTENSIONS = Arrays.asList("mp3", "ogg", "aac", "flac", "m4a", "wav", "wma");
+	private static final List<String> MUSIC_FILE_EXTENSIONS = Arrays.asList("mp3", "ogg", "aac", "flac", "m4a", "wav", "wma", "opus");
 	private static final List<String> VIDEO_FILE_EXTENSIONS = Arrays.asList("flv", "mp4", "m4v", "wmv", "avi", "mov", "mpg", "mkv");
 	private static final List<String> PLAYLIST_FILE_EXTENSIONS = Collections.singletonList("m3u");
 	private static final Pattern TITLE_WITH_TRACK = Pattern.compile("^\\d\\d-.*");
@@ -60,10 +60,19 @@ public class FileUtil
 	{
 		File dir = getAlbumDirectory(context, song);
 
+		// If the song already exists, it isn't necessary to give it a name
+		if (!TextUtils.isEmpty(song.getPath()))
+		{
+			File songFile = new File(String.format("%s/%s", getMusicDirectory(context).getPath(), fileSystemSafeDir(song.getPath())));
+			if (songFile.exists() && songFile.isFile()) return songFile;
+		}
+
+		// Generate a file name for the song
 		StringBuilder fileName = new StringBuilder(256);
 		Integer track = song.getTrack();
 
-		if (!TITLE_WITH_TRACK.matcher(song.getTitle()).matches()) {//check if filename already had track number
+		//check if filename already had track number
+		if (!TITLE_WITH_TRACK.matcher(song.getTitle()).matches()) {
 			if (track != null) {
 				if (track < 10) {
 					fileName.append('0');
