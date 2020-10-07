@@ -50,7 +50,7 @@ public class FileUtil
 {
 	private static final String[] FILE_SYSTEM_UNSAFE = {"/", "\\", "..", ":", "\"", "?", "*", "<", ">", "|"};
 	private static final String[] FILE_SYSTEM_UNSAFE_DIR = {"\\", "..", ":", "\"", "?", "*", "<", ">", "|"};
-	private static final List<String> MUSIC_FILE_EXTENSIONS = Arrays.asList("mp3", "ogg", "aac", "flac", "m4a", "wav", "wma");
+	private static final List<String> MUSIC_FILE_EXTENSIONS = Arrays.asList("mp3", "ogg", "aac", "flac", "m4a", "wav", "wma", "opus");
 	private static final List<String> VIDEO_FILE_EXTENSIONS = Arrays.asList("flv", "mp4", "m4v", "wmv", "avi", "mov", "mpg", "mkv");
 	private static final List<String> PLAYLIST_FILE_EXTENSIONS = Collections.singletonList("m3u");
 	private static final Pattern TITLE_WITH_TRACK = Pattern.compile("^\\d\\d-.*");
@@ -59,10 +59,18 @@ public class FileUtil
 	{
 		File dir = getAlbumDirectory(context, song);
 
+		// Do not generate new name for offline files. Offline files will have their Path as their Id.
+		if (!TextUtils.isEmpty(song.getId()))
+		{
+			if (song.getId().startsWith(dir.getAbsolutePath())) return new File(song.getId());
+		}
+
+		// Generate a file name for the song
 		StringBuilder fileName = new StringBuilder(256);
 		Integer track = song.getTrack();
 
-		if (!TITLE_WITH_TRACK.matcher(song.getTitle()).matches()) {//check if filename already had track number
+		//check if filename already had track number
+		if (!TITLE_WITH_TRACK.matcher(song.getTitle()).matches()) {
 			if (track != null) {
 				if (track < 10) {
 					fileName.append('0');
