@@ -60,11 +60,10 @@ public class FileUtil
 	{
 		File dir = getAlbumDirectory(context, song);
 
-		// If the song already exists, it isn't necessary to give it a name
-		if (!TextUtils.isEmpty(song.getPath()))
+		// Do not generate new name for offline files. Offline files will have their Path as their Id.
+		if (!TextUtils.isEmpty(song.getId()))
 		{
-			File songFile = new File(String.format("%s/%s", getMusicDirectory(context).getPath(), fileSystemSafeDir(song.getPath())));
-			if (songFile.exists() && songFile.isFile()) return songFile;
+			if (song.getId().startsWith(dir.getAbsolutePath())) return new File(song.getId());
 		}
 
 		// Generate a file name for the song
