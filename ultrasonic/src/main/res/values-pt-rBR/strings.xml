@@ -3,7 +3,6 @@
 
     <string name="background_task.loading">Carregando&#8230;</string>
     <string name="background_task.network_error">Ocorreu um erro de rede. Verifique o endereço do servidor ou tente mais tarde.</string>
-    <string name="background_task.unsupported_api">Server api v%1$s does not support this function.</string>
     <string name="background_task.no_network">Este aplicativo requer acesso à rede. Ligue o Wi-Fi ou a rede de dados.</string>
     <string name="background_task.not_found">Recurso não encontrado. Verifique o endereço do servidor.</string>
     <string name="background_task.parse_error">Não entendi a resposta. Verifique o endereço do servidor.</string>
