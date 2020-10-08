@@ -397,54 +397,8 @@ ponieważ api Subsonic nie wspiera nowego sposobu autoryzacji dla użytkowników
     <string name="settings.image_loader_concurrency_12">12</string>
     <string name="albumArt">Okładka</string>
     <string name="common_multiple_years">Z różnych lat</string>
-    <string name="settings.playback.resume_on_bluetooth_device">Resume when a Bluetooth device is connected</string>
-    <string name="settings.playback.pause_on_bluetooth_device">Pause when a Bluetooth device is disconnected</string>
-    <string name="settings.playback.bluetooth_all">All Bluetooth devices</string>
-    <string name="settings.playback.bluetooth_a2dp">Only audio (A2DP) devices</string>
-    <string name="settings.playback.bluetooth_disabled">Disabled</string>
-    <string name="settings.debug.title">Debug options</string>
-    <string name="settings.debug.log_to_file">Write debug log to file</string>
-    <string name="settings.debug.log_path">The log files are available at %1$s/%2$s</string>
-    <string name="settings.debug.log_summary">There are %1$s log files taking up ~%2$s MB space in the %3$s directory. Do you want to keep these?</string>
-    <string name="settings.debug.log_keep">Keep files</string>
-    <string name="settings.debug.log_delete">Delete files</string>
-    <string name="settings.debug.log_deleted">Deleted log files.</string>
 
-    <string name="permissions.access_error">Ultrasonic can\'t access the music file cache. Cache location was reset to the default path.</string>
-    <string name="permissions.message_box_title">Warning</string>
-    <string name="permissions.permission_missing">Ultrasonic needs read/write permission to the music cache directory. Cache directory was reset to its default value.</string>
-    <string name="permissions.rationale_title">Permission request</string>
-    <string name="permissions.rationale_description_failed">Ultrasonic needs read/write permission to the music cache directory.\nPlease allow Ultrasonic to access the filesystem.</string>
-    <string name="permissions.permanent_denial_title">Permissions permanently denied</string>
-    <string name="permissions.permanent_denial_description">Ultrasonic needs Read/Write access to the cache location. You can grant them in app settings. If you reject this request, the default folder will be used as the cache location.</string>
-    <string name="permissions.open_settings">Open settings</string>
-    <string name="permissions.rationale_description_initial">To be able to change the cache location, Ultrasonic needs read/write permission to the filesystem.</string>
-
-    <string name="filepicker.select_folder">Select a folder</string>
-    <string name="filepicker.create_folder">Create new folder</string>
-    <string name="filepicker.create_folder_failed">Failed to create new folder</string>
-    <string name="filepicker.internal">%1$s (Internal)</string>
-    <string name="filepicker.default_app_folder">Default app folder on %1$s (External)</string>
-    <string name="filepicker.enter_folder_name">Enter the folder name</string>
-    <string name="filepicker.create">Create</string>
-    <string name="filepicker.name_invalid">Please enter a valid folder name</string>
-    <string name="filepicker.already_exists">This folder already exists.\nPlease provide another name for the folder</string>
-    <string name="filepicker.select">Select</string>
-    <string name="filepicker.default">Use default</string>
-    <string name="filepicker.available_drives">Available drives:</string>
-
-    <string name="server_selector.label">Configured servers</string>
-    <string name="server_selector.delete_confirmation">Are you sure you want to delete the server?</string>
-    <string name="server_editor.label">Editing server</string>
     <string name="server_editor.new_label">Dodaj serwer</string>
-    <string name="server_editor.leave_confirmation">Are you sure you want to leave and lose your changes?</string>
-    <string name="server_editor.required">This field is required</string>
-    <string name="server_menu.edit">Edit</string>
-    <string name="server_menu.delete">Delete</string>
-    <string name="server_menu.move_up">Move up</string>
-    <string name="server_menu.move_down">Move down</string>
-    <string name="server_editor.authentication">Authentication</string>
-    <string name="server_editor.advanced">Advanced settings</string>
 
     <plurals name="select_album_n_songs">
         <item quantity="one">1 utwór</item>
@@ -501,6 +455,8 @@ ponieważ api Subsonic nie wspiera nowego sposobu autoryzacji dla użytkowników
     <string name="api.subsonic.upgrade_client">Brak zgodności wersji. Uaktualnij aplikację Ultrasonic na Androida.</string>
     <string name="api.subsonic.upgrade_server">Brak zgodności wersji. Uaktualnij serwer Subsonic.</string>
 
+    <!-- Subsonic feature flags -->
+    <string name="feature_flags_category_title">Flagi funkcji</string>
     <string name="feature_flags_image_loader_title">Włącz program ładujący nowe obrazy</string>
     <string name="feature_flags_image_loader_description">Włącza implementację modułu ładującego nowe obrazy.
 Obecnie nie zapisuje obrazów w pamięci urządzenia, tylko wykorzystuje tylko pamięć podręczną.</string>
@@ -508,7 +464,5 @@ Obecnie nie zapisuje obrazów w pamięci urządzenia, tylko wykorzystuje tylko p
     <string name="feature_flags_five_star_rating_description">W przypadku utworów użyj systemu pięciu gwiazdek
          zamiast po prostu grać gwiazdkami / bez gwiazd.
     </string>
-    <string name="feature_flags_category_title">Flagi funkcji</string>
-    <string name="menu_refresh">Refresh</string>
 
 </resources>

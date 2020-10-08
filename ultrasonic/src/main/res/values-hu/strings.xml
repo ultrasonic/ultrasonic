@@ -16,7 +16,7 @@
     <string name="button_bar.home">Ultrasonic főoldal</string>
     <string name="button_bar.now_playing">Lejátszó</string>
     <string name="podcasts.label">Podcast</string>
-    <string name="podcasts_channels.empty">No podcasts channels registered</string>
+    <string name="podcasts_channels.empty">Nincsenek podcast-csatornák regisztrálva</string>
     <string name="button_bar.podcasts">Podcast</string>
     <string name="button_bar.playlists">Lejátszási listák</string>
     <string name="button_bar.search">Keresés</string>
@@ -110,6 +110,7 @@
     <string name="menu.exit">Kilépés</string>
     <string name="menu.navigation">Navigáció</string>
     <string name="menu.settings">Beállítások</string>
+    <string name="menu.refresh">Frissítés</string>
     <string name="music_library.label">Mediakönyvtár</string>
     <string name="music_library.label_offline">Kapcsolat nélküli médiák</string>
     <string name="music_service.retry">Hálózati hiba történt! Újrapróbálkozás %1$d - %2$d.</string>
@@ -487,6 +488,8 @@
     <string name="api.subsonic.upgrade_client">Nem kompatibilis verzió. Kérjük, frissítse az Ultrasonic Android alkalmazást!</string>
     <string name="api.subsonic.upgrade_server">Nem kompatibilis verzió. Kérjük, frissítse a Subsonic kiszolgálót!</string>
 
+    <!-- Subsonic feature flags -->
+    <string name="feature_flags_category_title">Jellemzők Zászlók</string>
     <string name="feature_flags_image_loader_title">Engedélyezzen új képbetöltőt</string>
     <string name="feature_flags_image_loader_description">Engedélyezi az új képbetöltő megvalósítását. Jelenleg nem
         tárolja a képet az eszköz tárolójában, és csak a memóriában tárolja a gyorsítótárat.
@@ -495,7 +498,5 @@
     <string name="feature_flags_five_star_rating_description">Öt csillag használata az értékeléshez az egyszerű
         csillaggal jelölés helyett.
     </string>
-    <string name="feature_flags_category_title">Jellemzők Zászlók</string>
-    <string name="menu_refresh">Refresh</string>
 
 </resources>

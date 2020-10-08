@@ -110,6 +110,7 @@
     <string name="menu.exit">Salir</string>
     <string name="menu.navigation">Navegación</string>
     <string name="menu.settings">Configuración</string>
+    <string name="menu.refresh">Actualizar</string>
     <string name="music_library.label">Biblioteca de medios</string>
     <string name="music_library.label_offline">Medios sin conexión</string>
     <string name="music_service.retry">Se ha producido un error de red. Reintento %1$d de %2$d.</string>
@@ -402,13 +403,13 @@
     <string name="settings.playback.bluetooth_all">Todos los dispositivos Bluetooth</string>
     <string name="settings.playback.bluetooth_a2dp">Solo dispositivos de audio (A2DP)</string>
     <string name="settings.playback.bluetooth_disabled">Deshabilitado</string>
-    <string name="settings.debug.title">Debug options</string>
-    <string name="settings.debug.log_to_file">Write debug log to file</string>
-    <string name="settings.debug.log_path">The log files are available at %1$s/%2$s</string>
-    <string name="settings.debug.log_summary">There are %1$s log files taking up ~%2$s MB space in the %3$s directory. Do you want to keep these?</string>
-    <string name="settings.debug.log_keep">Keep files</string>
-    <string name="settings.debug.log_delete">Delete files</string>
-    <string name="settings.debug.log_deleted">Deleted log files.</string>
+    <string name="settings.debug.title">Opciones de depuración</string>
+    <string name="settings.debug.log_to_file">Escribir registro de depuración en un archivo</string>
+    <string name="settings.debug.log_path">Los archivos de registro están disponibles en %1$s/%2$s</string>
+    <string name="settings.debug.log_summary">Hay %1$s archivos de registro ocupando ~%2$s MB de espacio en el directorio %3$s. ¿Quieres conservarlos?</string>
+    <string name="settings.debug.log_keep">Mantener archivos</string>
+    <string name="settings.debug.log_delete">Borrar archivos</string>
+    <string name="settings.debug.log_deleted">Archivos de registro eliminados.</string>
 
     <string name="permissions.access_error">Ultrasonic no puede acceder a la caché de los ficheros de música. La ubicación de la caché se restableció a la ruta predeterminada.</string>
     <string name="permissions.message_box_title">Atención</string>
@@ -487,15 +488,15 @@
     <string name="api.subsonic.upgrade_client">Versiones incompatibles. Por favor actualiza la aplicación de Android Ultrasonic.</string>
     <string name="api.subsonic.upgrade_server">Versiones incompatibles. Por favor actualiza el servidor de Subsonic.</string>
 
+    <!-- Subsonic feature flags -->
+    <string name="feature_flags_category_title">Funciones experimentales</string>
     <string name="feature_flags_image_loader_title">Habilitar nuevo cargador de imágenes</string>
     <string name="feature_flags_image_loader_description">Permite la implementación de un nuevo cargador de imágenes.
         Actualmente no guarda la imagen en el almacenamiento del dispositivo y sólo utiliza caché en la memoria.
     </string>
-    <string name="feature_flags_five_star_rating_title">Use cinco estrellas para las canciones.</string>
+    <string name="feature_flags_five_star_rating_title">Use cinco estrellas para las canciones</string>
     <string name="feature_flags_five_star_rating_description">Utilice el sistema de calificación de cinco estrellas para canciones
          en lugar de simplemente destacar / desestimar elementos.
     </string>
-    <string name="feature_flags_category_title">Banderas de características</string>
-    <string name="menu_refresh">Actualizar</string>
 
 </resources>
