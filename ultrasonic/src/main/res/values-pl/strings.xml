@@ -300,8 +300,8 @@
     <string name="settings.testing_connection">Trwa testowanie połączenia&#8230;</string>
     <string name="settings.testing_ok">Połączenie jest OK</string>
     <string name="settings.testing_unlicensed">Połączenie jest OK. Brak licencji na serwerze.</string>
-    <string name="settings.theme_dark">Ciemny</string>
     <string name="settings.theme_light">Jasny</string>
+    <string name="settings.theme_dark">Ciemny</string>
     <string name="settings.theme_title">Motyw</string>
     <string name="settings.title.allow_self_signed_certificate">Zezwalaj na własne certyfikaty HTTPS</string>
     <string name="settings.title.enable_ldap_users_support">Włącz wsparcie dla użytkowników LDAP</string>
@@ -396,9 +396,7 @@ ponieważ api Subsonic nie wspiera nowego sposobu autoryzacji dla użytkowników
     <string name="settings.image_loader_concurrency_12">12</string>
     <string name="albumArt">Okładka</string>
     <string name="common_multiple_years">Z różnych lat</string>
-
     <string name="server_editor.new_label">Dodaj serwer</string>
-
     <plurals name="select_album_n_songs">
         <item quantity="one">1 utwór</item>
         <item quantity="few">%d utwory</item>

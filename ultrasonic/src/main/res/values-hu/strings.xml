@@ -302,8 +302,8 @@
     <string name="settings.testing_connection">Kapcsolat tesztelése&#8230;</string>
     <string name="settings.testing_ok">Kapcsolat OK!</string>
     <string name="settings.testing_unlicensed">Kapcsolat OK! A kiszolgálónak nincs licence!</string>
-    <string name="settings.theme_dark">Sötét</string>
     <string name="settings.theme_light">Világos</string>
+    <string name="settings.theme_dark">Sötét</string>
     <string name="settings.theme_title">Téma</string>
     <string name="settings.title.allow_self_signed_certificate">Engedélyezze az önaláírt HTTPS tanúsítványt</string>
     <string name="settings.title.enable_ldap_users_support">Az LDAP-felhasználók támogatásának engedélyezése</string>

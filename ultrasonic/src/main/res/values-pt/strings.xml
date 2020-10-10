@@ -300,8 +300,8 @@
     <string name="settings.testing_connection">Testando conexão&#8230;</string>
     <string name="settings.testing_ok">Conexão OK</string>
     <string name="settings.testing_unlicensed">Conexão OK. Servidor não licenciado.</string>
-    <string name="settings.theme_dark">Escuro</string>
     <string name="settings.theme_light">Claro</string>
+    <string name="settings.theme_dark">Escuro</string>
     <string name="settings.theme_title">Tema</string>
     <string name="settings.title.allow_self_signed_certificate">Permitir o certificado HTTPS auto-assinado</string>
     <string name="settings.title.enable_ldap_users_support">Ative o suporte para usuários LDAP</string>
@@ -395,9 +395,7 @@
     <string name="settings.image_loader_concurrency_11">11</string>
     <string name="settings.image_loader_concurrency_12">12</string>
     <string name="common_multiple_years">Múltiplos Anos</string>
-
     <string name="server_editor.new_label">Adicionar Servidor</string>
-
     <plurals name="select_album_n_songs">
         <item quantity="one">%d música</item>
         <item quantity="other">%d músicas</item>
@@ -440,6 +438,7 @@
     <string name="api.subsonic.upgrade_server">Versões incompativeis. Atualize o servidor Ultrasonic.</string>
 
     <!-- Subsonic feature flags -->
+    <string name="feature_flags_category_title">Bandeiras de recursos</string>
     <string name="feature_flags_image_loader_title">Ativar novo carregador de imagens</string>
     <string name="feature_flags_image_loader_description">Permite nova implementação do carregador de imagens.
         Atualmente, ele não salva a imagem no armazenamento do dispositivo e usa apenas o cache na memória.
@@ -448,6 +447,5 @@
     <string name="feature_flags_five_star_rating_description">Use o sistema de classificação de cinco estrelas para músicas
          em vez de simplesmente estrelar / não estrelar itens.
     </string>
-    <string name="feature_flags_category_title">Bandeiras de recursos</string>
 
 </resources>

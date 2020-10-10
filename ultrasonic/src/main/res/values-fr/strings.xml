@@ -301,9 +301,9 @@
     <string name="settings.testing_connection">Connexion en cours de test&#8230;</string>
     <string name="settings.testing_ok">Connexion correcte</string>
     <string name="settings.testing_unlicensed">Connection correcte. Serveur sans licence.</string>
-    <string name="settings.theme_black">Noir</string>
-    <string name="settings.theme_dark">Sombre</string>
     <string name="settings.theme_light">Clair</string>
+    <string name="settings.theme_dark">Sombre</string>
+    <string name="settings.theme_black">Noir</string>
     <string name="settings.theme_title">Thème</string>
     <string name="settings.title.allow_self_signed_certificate">Autoriser le certificat HTTPS auto-signé</string>
     <string name="settings.title.enable_ldap_users_support">Activer la prise en charge des utilisateurs LDAP</string>
@@ -394,9 +394,7 @@
     <string name="settings.image_loader_concurrency_10">10</string>
     <string name="settings.image_loader_concurrency_11">11</string>
     <string name="settings.image_loader_concurrency_12">12</string>
-
     <string name="server_editor.new_label">Ajouter un serveur</string>
-
     <plurals name="select_album_n_songs">
         <item quantity="one">%d titre</item>
         <item quantity="other">%d titres</item>

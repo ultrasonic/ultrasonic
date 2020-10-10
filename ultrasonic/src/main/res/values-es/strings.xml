@@ -302,8 +302,9 @@
     <string name="settings.testing_connection">Comprobado conexión&#8230;</string>
     <string name="settings.testing_ok">La conexión es correcta</string>
     <string name="settings.testing_unlicensed">La conexión es correcta. Servidor sin licencia.</string>
-    <string name="settings.theme_dark">Oscuro</string>
     <string name="settings.theme_light">Claro</string>
+    <string name="settings.theme_dark">Oscuro</string>
+    <string name="settings.theme_black">Negro</string>
     <string name="settings.theme_title">Tema</string>
     <string name="settings.title.allow_self_signed_certificate">Permir certificado HTTPS autofirmado</string>
     <string name="settings.title.enable_ldap_users_support">Habilitar soporte para usuarios LDAP</string>

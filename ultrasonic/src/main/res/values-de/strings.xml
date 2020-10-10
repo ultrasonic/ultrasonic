@@ -301,8 +301,8 @@
     <string name="settings.testing_connection">Teste Verbindung&#8230;</string>
     <string name="settings.testing_ok">Verbindung OK</string>
     <string name="settings.testing_unlicensed">Verbindung OK, Server nicht lizensiert.</string>
-    <string name="settings.theme_dark">Dunkel</string>
     <string name="settings.theme_light">Hell</string>
+    <string name="settings.theme_dark">Dunkel</string>
     <string name="settings.theme_title">Thema</string>
     <string name="settings.title.allow_self_signed_certificate">Selbst-signierte HTTPS Zertifikate erlauben</string>
     <string name="settings.title.enable_ldap_users_support">LDAP Benutzeranmeldung aktivieren</string>
@@ -395,9 +395,7 @@
     <string name="settings.image_loader_concurrency_11">11</string>
     <string name="settings.image_loader_concurrency_12">12</string>
     <string name="common_multiple_years">Mehrere Jahre</string>
-
     <string name="server_editor.new_label">Server hinzufügen</string>
-
     <plurals name="select_album_n_songs">
         <item quantity="one">1 Titel</item>
         <item quantity="other">%d Titel</item>

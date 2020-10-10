@@ -9,8 +9,8 @@ android {
 
     defaultConfig {
         applicationId "org.moire.ultrasonic"
-        versionCode 80
-        versionName "2.13.0"
+        versionCode 81
+        versionName "2.14.0"
 
         minSdkVersion versions.minSdk
         targetSdkVersion versions.targetSdk
