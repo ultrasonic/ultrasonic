@@ -34,6 +34,7 @@ import android.widget.TextView;
 
 import org.moire.ultrasonic.R;
 import org.moire.ultrasonic.data.ActiveServerProvider;
+import org.moire.ultrasonic.data.ServerSetting;
 import org.moire.ultrasonic.service.MediaPlayerLifecycleSupport;
 import org.moire.ultrasonic.service.MusicService;
 import org.moire.ultrasonic.service.MusicServiceFactory;
@@ -55,7 +56,7 @@ public class MainActivity extends SubsonicTabActivity
 {
 	private static boolean infoDialogDisplayed;
 	private static boolean shouldUseId3;
-	private static int lastActiveServer;
+	private static String lastActiveServerProperties;
 
 	private Lazy<MediaPlayerLifecycleSupport> lifecycleSupport = inject(MediaPlayerLifecycleSupport.class);
 	private Lazy<ActiveServerProvider> activeServerProvider = inject(ActiveServerProvider.class);
@@ -121,7 +122,7 @@ public class MainActivity extends SubsonicTabActivity
 		final View albumsAlphaByArtistButton = buttons.findViewById(R.id.main_albums_alphaByArtist);
 		final View videosButton = buttons.findViewById(R.id.main_videos);
 
-		lastActiveServer = ActiveServerProvider.Companion.getActiveServerId(this);
+		lastActiveServerProperties = getActiveServerProperties();
 		String name = activeServerProvider.getValue().getActiveServer().getName();
 
 		serverTextView.setText(name);
@@ -260,7 +261,7 @@ public class MainActivity extends SubsonicTabActivity
 		boolean shouldRestart = false;
 
 		boolean id3 = Util.getShouldUseId3Tags(MainActivity.this);
-		int currentActiveServer = ActiveServerProvider.Companion.getActiveServerId(MainActivity.this);
+		String currentActiveServerProperties = getActiveServerProperties();
 
 		if (id3 != shouldUseId3)
 		{
@@ -268,9 +269,9 @@ public class MainActivity extends SubsonicTabActivity
 			shouldRestart = true;
 		}
 
-		if (currentActiveServer != lastActiveServer)
+		if (!currentActiveServerProperties.equals(lastActiveServerProperties))
 		{
-			lastActiveServer = currentActiveServer;
+			lastActiveServerProperties = currentActiveServerProperties;
 			shouldRestart = true;
 		}
 
@@ -376,6 +377,14 @@ public class MainActivity extends SubsonicTabActivity
 	{
 		final Intent intent = new Intent(this, ServerSelectorActivity.class);
 		startActivityForResult(intent, 0);
+	}
+
+	private String getActiveServerProperties()
+	{
+		ServerSetting currentSetting = activeServerProvider.getValue().getActiveServer();
+		return String.format("%s;%s;%s;%s;%s;%s", currentSetting.getUrl(), currentSetting.getUserName(),
+			currentSetting.getPassword(), currentSetting.getAllowSelfSignedCertificate(),
+			currentSetting.getLdapSupport(), currentSetting.getMinimumApiVersion());
 	}
 
 	/**

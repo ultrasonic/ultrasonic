@@ -46,7 +46,8 @@ val musicServiceModule = module {
             username = get<ActiveServerProvider>().getActiveServer().userName,
             password = get<ActiveServerProvider>().getActiveServer().password,
             minimalProtocolVersion = SubsonicAPIVersions.getClosestKnownClientApiVersion(
-                Constants.REST_PROTOCOL_VERSION
+                get<ActiveServerProvider>().getActiveServer().minimumApiVersion
+                    ?: Constants.REST_PROTOCOL_VERSION
             ),
             clientID = Constants.REST_CLIENT_ID,
             allowSelfSignedCertificate = get<ActiveServerProvider>()

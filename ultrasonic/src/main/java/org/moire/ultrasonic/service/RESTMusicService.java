@@ -141,6 +141,20 @@ public class RESTMusicService implements MusicService {
     public void ping(Context context, ProgressListener progressListener) throws Exception {
         updateProgressListener(progressListener, R.string.service_connecting);
 
+        if (activeServerProvider.getValue().getActiveServer().getMinimumApiVersion() == null) {
+            try {
+                final Response<SubsonicResponse> response = subsonicAPIClient.getApi().ping().execute();
+                if (response != null && response.body() != null) {
+                    String restApiVersion = response.body().getVersion().getRestApiVersion();
+                    Timber.i("Server minimum API version set to %s", restApiVersion);
+                    activeServerProvider.getValue().setMinimumApiVersion(restApiVersion);
+                }
+            } catch (Exception ignored) {
+                // This Ping is only used to get the API Version, if it fails, that's no problem.
+            }
+        }
+
+        // This Ping will be now executed with the correct API Version, so it shouldn't fail
         final Response<SubsonicResponse> response = subsonicAPIClient.getApi().ping().execute();
         checkResponseSuccessful(response);
     }

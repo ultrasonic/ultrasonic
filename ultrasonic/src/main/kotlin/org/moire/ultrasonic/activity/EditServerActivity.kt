@@ -260,7 +260,17 @@ internal class EditServerActivity : AppCompatActivity() {
                     BuildConfig.DEBUG
                 )
                 val subsonicApiClient = SubsonicAPIClient(configuration)
-                val pingResponse = subsonicApiClient.api.ping().execute()
+
+                // Execute a ping to retrieve the API version. This is accepted to fail if the authentication is incorrect yet.
+                var pingResponse = subsonicApiClient.api.ping().execute()
+                if (pingResponse?.body() != null) {
+                    val restApiVersion = pingResponse.body()!!.version.restApiVersion
+                    currentServerSetting!!.minimumApiVersion = restApiVersion
+                    Timber.i("Server minimum API version set to %s", restApiVersion)
+                }
+
+                // Execute a ping to check the authentication, now using the correct API version.
+                pingResponse = subsonicApiClient.api.ping().execute()
                 checkResponseSuccessful(pingResponse)
 
                 val licenseResponse = subsonicApiClient.api.getLicense().execute()
