@@ -1218,6 +1218,7 @@ public class DownloadActivity extends SubsonicTabActivity implements OnGestureLi
 			@Override
 			protected void error(final Throwable error)
 			{
+				Timber.e(error, "Exception has occurred in savePlaylistInBackground");
 				final String msg = String.format("%s %s", getResources().getString(R.string.download_playlist_error), getErrorMessage(error));
 				Util.toast(DownloadActivity.this, msg);
 			}

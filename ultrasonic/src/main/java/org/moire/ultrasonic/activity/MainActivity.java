@@ -36,12 +36,9 @@ import org.moire.ultrasonic.R;
 import org.moire.ultrasonic.data.ActiveServerProvider;
 import org.moire.ultrasonic.data.ServerSetting;
 import org.moire.ultrasonic.service.MediaPlayerLifecycleSupport;
-import org.moire.ultrasonic.service.MusicService;
-import org.moire.ultrasonic.service.MusicServiceFactory;
 import org.moire.ultrasonic.util.Constants;
 import org.moire.ultrasonic.util.FileUtil;
 import org.moire.ultrasonic.util.MergeAdapter;
-import org.moire.ultrasonic.util.TabActivityBackgroundTask;
 import org.moire.ultrasonic.util.Util;
 
 import java.util.Collections;
@@ -153,10 +150,6 @@ public class MainActivity extends SubsonicTabActivity
 
 			adapter.addView(videosTitle, false);
 			adapter.addViews(Collections.singletonList(videosButton), true);
-
-            if (Util.isNetworkConnected(this)) {
-                new PingTask(this, false).execute();
-            }
 		}
 
 		list.setAdapter(adapter);
@@ -250,7 +243,7 @@ public class MainActivity extends SubsonicTabActivity
 		{
 			final SharedPreferences.Editor editor = preferences.edit();
 			editor.putString(Constants.PREFERENCES_KEY_CACHE_LOCATION, FileUtil.getDefaultMusicDirectory(this).getPath());
-			editor.commit();
+			editor.apply();
 		}
 	}
 
@@ -386,23 +379,4 @@ public class MainActivity extends SubsonicTabActivity
 			currentSetting.getPassword(), currentSetting.getAllowSelfSignedCertificate(),
 			currentSetting.getLdapSupport(), currentSetting.getMinimumApiVersion());
 	}
-
-	/**
-     * Temporary task to make a ping to server to get it supported api version.
-     */
-    private static class PingTask extends TabActivityBackgroundTask<Void> {
-        PingTask(SubsonicTabActivity activity, boolean changeProgress) {
-            super(activity, changeProgress);
-        }
-
-        @Override
-        protected Void doInBackground() throws Throwable {
-            final MusicService service = MusicServiceFactory.getMusicService(getActivity());
-            service.ping(getActivity(), null);
-            return null;
-        }
-
-        @Override
-        protected void done(Void result) {}
-    }
 }

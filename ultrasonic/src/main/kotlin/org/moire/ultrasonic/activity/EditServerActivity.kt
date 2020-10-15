@@ -9,7 +9,6 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.Observer
 import com.google.android.material.switchmaterial.SwitchMaterial
 import com.google.android.material.textfield.TextInputLayout
-import java.io.IOException
 import java.net.MalformedURLException
 import java.net.URL
 import org.koin.android.ext.android.inject
@@ -19,16 +18,14 @@ import org.moire.ultrasonic.R
 import org.moire.ultrasonic.api.subsonic.SubsonicAPIClient
 import org.moire.ultrasonic.api.subsonic.SubsonicAPIVersions
 import org.moire.ultrasonic.api.subsonic.SubsonicClientConfiguration
-import org.moire.ultrasonic.api.subsonic.response.SubsonicResponse
 import org.moire.ultrasonic.data.ActiveServerProvider
 import org.moire.ultrasonic.data.ServerSetting
+import org.moire.ultrasonic.service.ApiCallResponseChecker.Companion.checkResponseSuccessful
 import org.moire.ultrasonic.service.MusicServiceFactory
-import org.moire.ultrasonic.service.SubsonicRESTException
 import org.moire.ultrasonic.util.Constants
 import org.moire.ultrasonic.util.ErrorDialog
 import org.moire.ultrasonic.util.ModalBackgroundTask
 import org.moire.ultrasonic.util.Util
-import retrofit2.Response
 import timber.log.Timber
 
 /**
@@ -87,6 +84,11 @@ internal class EditServerActivity : AppCompatActivity() {
                     if (t != null) {
                         currentServerSetting = t
                         setFields()
+                        // Remove the minimum API version so it can be detected again
+                        if (currentServerSetting?.minimumApiVersion != null) {
+                            currentServerSetting!!.minimumApiVersion = null
+                            serverSettingsModel.updateItem(currentServerSetting)
+                        }
                     }
                 }
             )
@@ -261,7 +263,8 @@ internal class EditServerActivity : AppCompatActivity() {
                 )
                 val subsonicApiClient = SubsonicAPIClient(configuration)
 
-                // Execute a ping to retrieve the API version. This is accepted to fail if the authentication is incorrect yet.
+                // Execute a ping to retrieve the API version.
+                // This is accepted to fail if the authentication is incorrect yet.
                 var pingResponse = subsonicApiClient.api.ping().execute()
                 if (pingResponse?.body() != null) {
                     val restApiVersion = pingResponse.body()!!.version.restApiVersion
@@ -300,28 +303,6 @@ internal class EditServerActivity : AppCompatActivity() {
             }
         }
         task.execute()
-    }
-
-    /**
-     * Checks the Subsonic Response for application specific errors
-     */
-    private fun checkResponseSuccessful(response: Response<out SubsonicResponse?>) {
-        if (
-            response.isSuccessful &&
-            response.body()!!.status === SubsonicResponse.Status.OK
-        ) {
-            return
-        }
-        if (!response.isSuccessful) {
-            throw IOException("Server error, code: " + response.code())
-        } else if (
-            response.body()!!.status === SubsonicResponse.Status.ERROR &&
-            response.body()!!.error != null
-        ) {
-            throw SubsonicRESTException(response.body()!!.error!!)
-        } else {
-            throw IOException("Failed to perform request: " + response.code())
-        }
     }
 
     /**
