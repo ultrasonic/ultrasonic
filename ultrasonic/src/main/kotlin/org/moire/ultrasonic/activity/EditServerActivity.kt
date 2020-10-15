@@ -88,6 +88,12 @@ internal class EditServerActivity : AppCompatActivity() {
                         if (currentServerSetting?.minimumApiVersion != null) {
                             currentServerSetting!!.minimumApiVersion = null
                             serverSettingsModel.updateItem(currentServerSetting)
+                            if (
+                                activeServerProvider.getActiveServer().id ==
+                                currentServerSetting!!.id
+                            ) {
+                                MusicServiceFactory.resetMusicService()
+                            }
                         }
                     }
                 }
