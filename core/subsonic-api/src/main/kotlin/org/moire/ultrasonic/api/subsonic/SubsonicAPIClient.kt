@@ -81,6 +81,7 @@ class SubsonicAPIClient(
     private val jacksonMapper = ObjectMapper()
         .configure(DeserializationFeature.UNWRAP_ROOT_VALUE, true)
         .configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false)
+        .configure(DeserializationFeature.ACCEPT_SINGLE_VALUE_AS_ARRAY, true)
         .registerModule(KotlinModule())
 
     private val retrofit = Retrofit.Builder()
