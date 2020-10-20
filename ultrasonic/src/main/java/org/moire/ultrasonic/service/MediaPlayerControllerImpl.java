@@ -361,7 +361,16 @@ public class MediaPlayerControllerImpl implements MediaPlayerController
 	public synchronized void clear(boolean serialize)
 	{
 		MediaPlayerService mediaPlayerService = MediaPlayerService.getRunningInstance();
-		if (mediaPlayerService != null)	mediaPlayerService.clear(serialize);
+		if (mediaPlayerService != null) {
+			mediaPlayerService.clear(serialize);
+		} else {
+			// If no MediaPlayerService is available, just empty the playlist
+			downloader.clear();
+			if (serialize) {
+				downloadQueueSerializer.serializeDownloadQueue(downloader.downloadList,
+					downloader.getCurrentPlayingIndex(), getPlayerPosition());
+			}
+		}
 
 		jukeboxMediaPlayer.getValue().updatePlaylist();
 	}
