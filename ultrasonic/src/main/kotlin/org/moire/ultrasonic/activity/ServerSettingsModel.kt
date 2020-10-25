@@ -209,7 +209,8 @@ class ServerSettingsModel(
                 false
             ),
             settings.getBoolean(PREFERENCES_KEY_LDAP_SUPPORT + preferenceId, false),
-            settings.getString(PREFERENCES_KEY_MUSIC_FOLDER_ID + preferenceId, null)
+            settings.getString(PREFERENCES_KEY_MUSIC_FOLDER_ID + preferenceId, null),
+            null
         )
     }
 
