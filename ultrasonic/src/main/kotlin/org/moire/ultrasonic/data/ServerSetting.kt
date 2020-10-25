@@ -28,12 +28,13 @@ data class ServerSetting(
     @ColumnInfo(name = "jukeboxByDefault") var jukeboxByDefault: Boolean,
     @ColumnInfo(name = "allowSelfSignedCertificate") var allowSelfSignedCertificate: Boolean,
     @ColumnInfo(name = "ldapSupport") var ldapSupport: Boolean,
-    @ColumnInfo(name = "musicFolderId") var musicFolderId: String?
+    @ColumnInfo(name = "musicFolderId") var musicFolderId: String?,
+    @ColumnInfo(name = "minimumApiVersion") var minimumApiVersion: String?
 ) {
     constructor() : this (
-        -1, 0, "", "", "", "", false, false, false, null
+        -1, 0, "", "", "", "", false, false, false, null, null
     )
     constructor(name: String, url: String) : this(
-        -1, 0, name, url, "", "", false, false, false, null
+        -1, 0, name, url, "", "", false, false, false, null, null
     )
 }

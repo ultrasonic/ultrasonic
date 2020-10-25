@@ -309,9 +309,9 @@
     <string name="settings.theme_black">Black</string>
     <string name="settings.theme_title">Theme</string>
     <string name="settings.title.allow_self_signed_certificate">Allow self-signed HTTPS certificate</string>
-    <string name="settings.title.enable_ldap_users_support">Enable support for LDAP users</string>
-    <string name="settings.summary.enable_ldap_users_support">This forces app to always send password in old-way,
-        because Subsonic api does not support new authorization for LDAP users.</string>
+    <string name="settings.title.enable_ldap_users_support">Force plain password authentication</string>
+    <string name="settings.summary.enable_ldap_users_support">This forces the app to always send the password unencrypted.
+        Useful if the Subsonic server does not support the new authentication API for the users.</string>
     <string name="settings.use_folder_for_album_artist">Use Folders For Artist Name</string>
     <string name="settings.use_folder_for_album_artist_summary">Assume top-level folder is the name of the album artist</string>
     <string name="settings.use_id3">Browse Using ID3 Tags</string>

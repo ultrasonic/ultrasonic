@@ -57,7 +57,8 @@ class ActiveServerProvider(
             jukeboxByDefault = false,
             allowSelfSignedCertificate = false,
             ldapSupport = false,
-            musicFolderId = ""
+            musicFolderId = "",
+            minimumApiVersion = null
         )
     }
 
@@ -76,6 +77,18 @@ class ActiveServerProvider(
         GlobalScope.launch(Dispatchers.IO) {
             val serverId = repository.findByIndex(index)?.id ?: 0
             setActiveServerId(context, serverId)
+        }
+    }
+
+    /**
+     * Sets the minimum Subsonic API version of the current server.
+     */
+    fun setMinimumApiVersion(apiVersion: String) {
+        GlobalScope.launch(Dispatchers.IO) {
+            if (cachedServer != null) {
+                cachedServer!!.minimumApiVersion = apiVersion
+                repository.update(cachedServer!!)
+            }
         }
     }
 

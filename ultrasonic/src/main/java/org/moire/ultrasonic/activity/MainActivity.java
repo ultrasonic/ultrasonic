@@ -34,13 +34,11 @@ import android.widget.TextView;
 
 import org.moire.ultrasonic.R;
 import org.moire.ultrasonic.data.ActiveServerProvider;
+import org.moire.ultrasonic.data.ServerSetting;
 import org.moire.ultrasonic.service.MediaPlayerLifecycleSupport;
-import org.moire.ultrasonic.service.MusicService;
-import org.moire.ultrasonic.service.MusicServiceFactory;
 import org.moire.ultrasonic.util.Constants;
 import org.moire.ultrasonic.util.FileUtil;
 import org.moire.ultrasonic.util.MergeAdapter;
-import org.moire.ultrasonic.util.TabActivityBackgroundTask;
 import org.moire.ultrasonic.util.Util;
 
 import java.util.Collections;
@@ -55,7 +53,7 @@ public class MainActivity extends SubsonicTabActivity
 {
 	private static boolean infoDialogDisplayed;
 	private static boolean shouldUseId3;
-	private static int lastActiveServer;
+	private static String lastActiveServerProperties;
 
 	private Lazy<MediaPlayerLifecycleSupport> lifecycleSupport = inject(MediaPlayerLifecycleSupport.class);
 	private Lazy<ActiveServerProvider> activeServerProvider = inject(ActiveServerProvider.class);
@@ -121,7 +119,7 @@ public class MainActivity extends SubsonicTabActivity
 		final View albumsAlphaByArtistButton = buttons.findViewById(R.id.main_albums_alphaByArtist);
 		final View videosButton = buttons.findViewById(R.id.main_videos);
 
-		lastActiveServer = ActiveServerProvider.Companion.getActiveServerId(this);
+		lastActiveServerProperties = getActiveServerProperties();
 		String name = activeServerProvider.getValue().getActiveServer().getName();
 
 		serverTextView.setText(name);
@@ -152,10 +150,6 @@ public class MainActivity extends SubsonicTabActivity
 
 			adapter.addView(videosTitle, false);
 			adapter.addViews(Collections.singletonList(videosButton), true);
-
-            if (Util.isNetworkConnected(this)) {
-                new PingTask(this, false).execute();
-            }
 		}
 
 		list.setAdapter(adapter);
@@ -249,7 +243,7 @@ public class MainActivity extends SubsonicTabActivity
 		{
 			final SharedPreferences.Editor editor = preferences.edit();
 			editor.putString(Constants.PREFERENCES_KEY_CACHE_LOCATION, FileUtil.getDefaultMusicDirectory(this).getPath());
-			editor.commit();
+			editor.apply();
 		}
 	}
 
@@ -260,7 +254,7 @@ public class MainActivity extends SubsonicTabActivity
 		boolean shouldRestart = false;
 
 		boolean id3 = Util.getShouldUseId3Tags(MainActivity.this);
-		int currentActiveServer = ActiveServerProvider.Companion.getActiveServerId(MainActivity.this);
+		String currentActiveServerProperties = getActiveServerProperties();
 
 		if (id3 != shouldUseId3)
 		{
@@ -268,9 +262,9 @@ public class MainActivity extends SubsonicTabActivity
 			shouldRestart = true;
 		}
 
-		if (currentActiveServer != lastActiveServer)
+		if (!currentActiveServerProperties.equals(lastActiveServerProperties))
 		{
-			lastActiveServer = currentActiveServer;
+			lastActiveServerProperties = currentActiveServerProperties;
 			shouldRestart = true;
 		}
 
@@ -378,22 +372,11 @@ public class MainActivity extends SubsonicTabActivity
 		startActivityForResult(intent, 0);
 	}
 
-	/**
-     * Temporary task to make a ping to server to get it supported api version.
-     */
-    private static class PingTask extends TabActivityBackgroundTask<Void> {
-        PingTask(SubsonicTabActivity activity, boolean changeProgress) {
-            super(activity, changeProgress);
-        }
-
-        @Override
-        protected Void doInBackground() throws Throwable {
-            final MusicService service = MusicServiceFactory.getMusicService(getActivity());
-            service.ping(getActivity(), null);
-            return null;
-        }
-
-        @Override
-        protected void done(Void result) {}
-    }
+	private String getActiveServerProperties()
+	{
+		ServerSetting currentSetting = activeServerProvider.getValue().getActiveServer();
+		return String.format("%s;%s;%s;%s;%s;%s", currentSetting.getUrl(), currentSetting.getUserName(),
+			currentSetting.getPassword(), currentSetting.getAllowSelfSignedCertificate(),
+			currentSetting.getLdapSupport(), currentSetting.getMinimumApiVersion());
+	}
 }
