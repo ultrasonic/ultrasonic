@@ -3,6 +3,7 @@
 
     <string name="background_task.loading">Carregando&#8230;</string>
     <string name="background_task.network_error">Ocorreu um erro de rede. Verifique o endereço do servidor ou tente mais tarde.</string>
+    <string name="background_task.unsupported_api">O servidor api v%1$s não tem suporte para esta função.</string>
     <string name="background_task.no_network">Este aplicativo requer acesso à rede. Ligue o Wi-Fi ou a rede de dados.</string>
     <string name="background_task.not_found">Recurso não encontrado. Verifique o endereço do servidor.</string>
     <string name="background_task.parse_error">Não entendi a resposta. Verifique o endereço do servidor.</string>
@@ -109,6 +110,7 @@
     <string name="menu.exit">Sair</string>
     <string name="menu.navigation">Navegação</string>
     <string name="menu.settings">Configurações</string>
+    <string name="menu.refresh">Atualizar</string>
     <string name="music_library.label">Biblioteca de Mídia</string>
     <string name="music_library.label_offline">Mídia Offline</string>
     <string name="music_service.retry">Ocorreu um erro de rede. Tentativa %1$d de %2$d.</string>
@@ -302,6 +304,7 @@
     <string name="settings.testing_unlicensed">Conexão OK. Servidor não licenciado.</string>
     <string name="settings.theme_light">Claro</string>
     <string name="settings.theme_dark">Escuro</string>
+    <string name="settings.theme_black">Voltar</string>
     <string name="settings.theme_title">Tema</string>
     <string name="settings.title.allow_self_signed_certificate">Permitir o certificado HTTPS auto-assinado</string>
     <string name="settings.title.enable_ldap_users_support">Ative o suporte para usuários LDAP</string>
@@ -394,8 +397,57 @@
     <string name="settings.image_loader_concurrency_10">10</string>
     <string name="settings.image_loader_concurrency_11">11</string>
     <string name="settings.image_loader_concurrency_12">12</string>
+    <string name="albumArt">albumArt</string>
     <string name="common_multiple_years">Múltiplos Anos</string>
+    <string name="settings.playback.resume_on_bluetooth_device">Retomar quando o dispositivo Bluetooth estiver conectado</string>
+    <string name="settings.playback.pause_on_bluetooth_device">Pausar quando o dispositivo Bluetooth for desconectado</string>
+    <string name="settings.playback.bluetooth_all">Todos os dispositivos Bluetooth</string>
+    <string name="settings.playback.bluetooth_a2dp">Somente dispositivos de áudio (A2DP)</string>
+    <string name="settings.playback.bluetooth_disabled">Desativado</string>
+    <string name="settings.debug.title">Opções de depuração</string>
+    <string name="settings.debug.log_to_file">Escrever o log de depuração em arquivo</string>
+    <string name="settings.debug.log_path">Os arquivos com log estão disponíveis em %1$s/%2$s</string>
+    <string name="settings.debug.log_summary">Existem %1$s arquivos de log ocupando ~%2$s MB de espaço no diretório %3$s. Quer mantê-los?</string>
+    <string name="settings.debug.log_keep">Manter arquivos</string>
+    <string name="settings.debug.log_delete">Excluir arquivos</string>
+    <string name="settings.debug.log_deleted">Arquivos de log excluídos.</string>
+
+    <string name="permissions.access_error">O Ultrasonic não pôde acessar o cache dos arquivos de música. O local do cache foi redefinido para o caminho padrão.</string>
+    <string name="permissions.message_box_title">Atenção</string>
+    <string name="permissions.permission_missing">O Ultrasonic precisa de permissão de leitura/escrita no diretório de cache das músicas. O diretório de cache foi redefinido para seu valor padrão.</string>
+    <string name="permissions.rationale_title">Pedido de permissão</string>
+    <string name="permissions.rationale_description_failed">O Ultrasonic precisa de permissão de leitura/escrita no diretório de cache das músicas.\nPermita que o Ultrasonic acesse o sistema de arquivos.</string>
+    <string name="permissions.permanent_denial_title">Permissões negadas permanentemente</string>
+    <string name="permissions.permanent_denial_description">O Ultrasonic precisa de acesso de leitura/escrita no local do cache. Você pode concedê-los nas configurações do aplicativo. Se você rejeitar esta solicitação, a pasta padrão será usada como local do cache.</string>
+    <string name="permissions.open_settings">Abrir configurações</string>
+    <string name="permissions.rationale_description_initial">Para poder alterar a localização do cache, o Ultrasonic precisa de permissão de leitura/escrita no sistema de arquivos.</string>
+
+    <string name="filepicker.select_folder">Selecionar uma pasta</string>
+    <string name="filepicker.create_folder">Criar uma nova pasta</string>
+    <string name="filepicker.create_folder_failed">Erro ao criar a nova pasta</string>
+    <string name="filepicker.internal">%1$s (Interno)</string>
+    <string name="filepicker.default_app_folder">Pasta padrão do aplicativo %1$s (Externo)</string>
+    <string name="filepicker.enter_folder_name">Digite o nome da pasta</string>
+    <string name="filepicker.create">Criar</string>
+    <string name="filepicker.name_invalid">Digite um nome válido para a pasta</string>
+    <string name="filepicker.already_exists">Esta pasta já existe.\nDigite outro nome para a pasta</string>
+    <string name="filepicker.select">Selecionar</string>
+    <string name="filepicker.default">Usar o padrão</string>
+    <string name="filepicker.available_drives">Unidades disponíveis:</string>
+
+    <string name="server_selector.label">Servidores configurados</string>
+    <string name="server_selector.delete_confirmation">Quer realmente excluir o servidor?</string>
+    <string name="server_editor.label">Editar o servidor</string>
     <string name="server_editor.new_label">Adicionar Servidor</string>
+    <string name="server_editor.leave_confirmation">Quer realmente sair e descartar as alterações?</string>
+    <string name="server_editor.required">Este campo é necessário</string>
+    <string name="server_menu.edit">Editar</string>
+    <string name="server_menu.delete">Excluir</string>
+    <string name="server_menu.move_up">Para cima</string>
+    <string name="server_menu.move_down">Para baixo</string>
+    <string name="server_editor.authentication">Autenticação</string>
+    <string name="server_editor.advanced">Configurações avançadas</string>
+
     <plurals name="select_album_n_songs">
         <item quantity="one">%d música</item>
         <item quantity="other">%d músicas</item>
