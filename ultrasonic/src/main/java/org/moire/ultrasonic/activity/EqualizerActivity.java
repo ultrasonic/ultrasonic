@@ -30,6 +30,8 @@ import android.widget.LinearLayout;
 import android.widget.SeekBar;
 import android.widget.TextView;
 
+import androidx.lifecycle.Observer;
+
 import org.moire.ultrasonic.R;
 import org.moire.ultrasonic.audiofx.EqualizerController;
 import org.moire.ultrasonic.service.MediaPlayerController;
@@ -38,6 +40,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import kotlin.Lazy;
+import timber.log.Timber;
 
 import static org.koin.java.KoinJavaComponent.inject;
 
@@ -55,21 +58,34 @@ public class EqualizerActivity extends ResultActivity
 	private EqualizerController equalizerController;
 	private Equalizer equalizer;
 
-	private Lazy<MediaPlayerController> mediaPlayerControllerLazy = inject(MediaPlayerController.class);
-
 	@Override
 	public void onCreate(Bundle bundle)
 	{
 		super.onCreate(bundle);
 		setContentView(R.layout.equalizer);
 
-		setup();
+		EqualizerController.get().observe(this, new Observer<EqualizerController>() {
+			@Override
+			public void onChanged(EqualizerController controller) {
+				if (controller != null) {
+					Timber.d("EqualizerController Observer.onChanged received controller");
+					equalizerController = controller;
+					equalizer = controller.equalizer;
+					setup();
+				} else {
+					Timber.d("EqualizerController Observer.onChanged has no controller");
+					equalizerController = null;
+					equalizer = null;
+				}
+			}
+		});
 	}
 
 	@Override
 	protected void onPause()
 	{
 		super.onPause();
+		if (equalizerController == null) return;
 		equalizerController.saveSettings();
 	}
 
@@ -77,16 +93,13 @@ public class EqualizerActivity extends ResultActivity
 	protected void onResume()
 	{
 		super.onResume();
-		if (equalizerController == null)
-		{
-			setup();
-		}
 	}
 
 	@Override
 	public void onCreateContextMenu(ContextMenu menu, View view, ContextMenu.ContextMenuInfo menuInfo)
 	{
 		super.onCreateContextMenu(menu, view, menuInfo);
+		if (equalizer == null) return;
 
 		short currentPreset;
 		try
@@ -112,6 +125,7 @@ public class EqualizerActivity extends ResultActivity
 	@Override
 	public boolean onContextItemSelected(MenuItem menuItem)
 	{
+		if (equalizer == null) return true;
 		try
 		{
 			short preset = (short) menuItem.getItemId();
@@ -128,9 +142,6 @@ public class EqualizerActivity extends ResultActivity
 
 	private void setup()
 	{
-		equalizerController = mediaPlayerControllerLazy.getValue().getEqualizerController();
-		equalizer = equalizerController.getEqualizer();
-
 		initEqualizer();
 
 		final View presetButton = findViewById(R.id.equalizer_preset);
@@ -158,12 +169,14 @@ public class EqualizerActivity extends ResultActivity
 
 	private void setEqualizerEnabled(boolean enabled)
 	{
+		if (equalizer == null) return;
 		equalizer.setEnabled(enabled);
 		updateBars();
 	}
 
 	private void updateBars()
 	{
+		if (equalizer == null) return;
 		try
 		{
 			for (Map.Entry<Short, SeekBar> entry : bars.entrySet())
@@ -183,6 +196,7 @@ public class EqualizerActivity extends ResultActivity
 
 	private void initEqualizer()
 	{
+		if (equalizer == null) return;
 		LinearLayout layout = (LinearLayout) findViewById(R.id.equalizer_layout);
 
 		try

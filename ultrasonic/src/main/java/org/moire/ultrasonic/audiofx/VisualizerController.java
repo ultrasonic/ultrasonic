@@ -20,6 +20,10 @@ package org.moire.ultrasonic.audiofx;
 
 import android.media.MediaPlayer;
 import android.media.audiofx.Visualizer;
+
+import androidx.lifecycle.LiveData;
+import androidx.lifecycle.MutableLiveData;
+
 import timber.log.Timber;
 
 /**
@@ -31,89 +35,76 @@ import timber.log.Timber;
 public class VisualizerController
 {
 	private static final int PREFERRED_CAPTURE_SIZE = 128; // Must be a power of two.
+	private static Boolean available = null;
+	private static MutableLiveData<VisualizerController> instance = new MutableLiveData<>();
 
-	private Visualizer visualizer;
-	private boolean released;
+	public Visualizer visualizer;
 	private int audioSessionId;
 
-	// Class initialization fails when this throws an exception.
-	static
+	/**
+	 * Retrieves the VisualizerController as LiveData
+	 */
+	public static LiveData<VisualizerController> get()
 	{
-		try
-		{
-			Class.forName("android.media.audiofx.Visualizer");
-		}
-		catch (Exception ex)
-		{
-			throw new RuntimeException(ex);
-		}
+		return instance;
 	}
 
 	/**
-	 * Throws an exception if the {@link Visualizer} class is not available.
+	 * Initializes the VisualizerController instance with a MediaPlayer
 	 */
-	public static void checkAvailable() throws Throwable
+	public static void create(MediaPlayer mediaPlayer)
 	{
-		// Calling here forces class initialization.
-	}
+		if (mediaPlayer == null) return;
+		if (!isAvailable()) return;
 
-	public VisualizerController(MediaPlayer mediaPlayer)
-	{
+		VisualizerController controller = new VisualizerController();
+
 		try
 		{
-			if (mediaPlayer == null)
-			{
-				return;
-			}
+			controller.audioSessionId = mediaPlayer.getAudioSessionId();
+			controller.visualizer = new Visualizer(controller.audioSessionId);
 
-			audioSessionId = mediaPlayer.getAudioSessionId();
-			visualizer = new Visualizer(audioSessionId);
+			int[] captureSizeRange = Visualizer.getCaptureSizeRange();
+			int captureSize = Math.max(PREFERRED_CAPTURE_SIZE, captureSizeRange[0]);
+			captureSize = Math.min(captureSize, captureSizeRange[1]);
+			controller.visualizer.setCaptureSize(captureSize);
+
+			instance.postValue(controller);
 		}
 		catch (Throwable x)
 		{
 			Timber.w(x, "Failed to create visualizer.");
 		}
-
-		if (visualizer != null)
-		{
-			int[] captureSizeRange = Visualizer.getCaptureSizeRange();
-			int captureSize = Math.max(PREFERRED_CAPTURE_SIZE, captureSizeRange[0]);
-			captureSize = Math.min(captureSize, captureSizeRange[1]);
-			visualizer.setCaptureSize(captureSize);
-		}
 	}
 
-	public boolean isAvailable()
+	/**
+	 * Releases the VisualizerController instance when the underlying MediaPlayer is no longer available
+	 */
+	public static void release()
 	{
-		return visualizer != null;
+		VisualizerController controller = instance.getValue();
+		if (controller == null) return;
+
+		controller.visualizer.release();
+		instance.postValue(null);
 	}
 
-	public void release()
+	/**
+	 * Checks if the {@link Visualizer} class is available.
+	 */
+	private static boolean isAvailable()
 	{
-		if (isAvailable())
+		if (available != null) return available;
+		try
 		{
-			visualizer.release();
-			released = true;
+			Class.forName("android.media.audiofx.Visualizer");
+			available = true;
 		}
-	}
-
-	public Visualizer getVisualizer()
-	{
-		if (released)
+		catch (Exception ex)
 		{
-			released = false;
-
-			try
-			{
-				visualizer = new Visualizer(audioSessionId);
-			}
-			catch (Throwable x)
-			{
-				visualizer = null;
-				Timber.w(x, "Failed to create visualizer.");
-			}
+			Timber.i(ex, "CheckAvailable received an exception getting class for the Visualizer");
+			available = false;
 		}
-
-		return visualizer;
+		return available;
 	}
 }

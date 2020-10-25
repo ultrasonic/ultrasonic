@@ -25,11 +25,15 @@ import android.graphics.Paint;
 import android.media.audiofx.Visualizer;
 import android.view.View;
 
+import androidx.lifecycle.LifecycleOwner;
+import androidx.lifecycle.Observer;
+
 import org.moire.ultrasonic.audiofx.VisualizerController;
 import org.moire.ultrasonic.domain.PlayerState;
 import org.moire.ultrasonic.service.MediaPlayerController;
 
 import kotlin.Lazy;
+import timber.log.Timber;
 
 import static org.koin.java.KoinJavaComponent.inject;
 
@@ -45,20 +49,35 @@ public class VisualizerView extends View
 	private static final int PREFERRED_CAPTURE_RATE_MILLIHERTZ = 20000;
 
 	private final Paint paint = new Paint();
+	private Lazy<MediaPlayerController> mediaPlayerControllerLazy = inject(MediaPlayerController.class);
 
 	private byte[] data;
 	private float[] points;
 	private boolean active;
+	private Visualizer visualizer;
 
-	private Lazy<MediaPlayerController> mediaPlayerControllerLazy = inject(MediaPlayerController.class);
-
-	public VisualizerView(Context context)
+	public VisualizerView(final Context context)
 	{
 		super(context);
 
 		paint.setStrokeWidth(2f);
 		paint.setAntiAlias(true);
 		paint.setColor(Color.rgb(0, 153, 204));
+
+		VisualizerController.get().observe((LifecycleOwner) context, new Observer<VisualizerController>() {
+			@Override
+			public void onChanged(VisualizerController controller) {
+				if (controller != null) {
+					Timber.d("VisualizerController Observer.onChanged received controller");
+					visualizer = controller.visualizer;
+					setActive(true);
+				} else {
+					Timber.d("VisualizerController Observer.onChanged has no controller");
+					visualizer = null;
+					setActive(false);
+				}
+			}
+		});
 	}
 
 	public boolean isActive()
@@ -66,15 +85,9 @@ public class VisualizerView extends View
 		return active;
 	}
 
-	public void setActive(boolean active)
+	public void setActive(boolean value)
 	{
-		this.active = active;
-		Visualizer visualizer = getVizualizer();
-		if (visualizer == null)
-		{
-			return;
-		}
-
+		active = value;
 		int captureRate = Math.min(PREFERRED_CAPTURE_RATE_MILLIHERTZ, Visualizer.getMaxCaptureRate());
 		if (active)
 		{
@@ -94,17 +107,11 @@ public class VisualizerView extends View
 		}
 		else
 		{
-			visualizer.setDataCaptureListener(null, captureRate, false, false);
+			if (visualizer != null) visualizer.setDataCaptureListener(null, captureRate, false, false);
 		}
 
-		visualizer.setEnabled(active);
+		if (visualizer != null) visualizer.setEnabled(active);
 		invalidate();
-	}
-
-	private Visualizer getVizualizer()
-	{
-		VisualizerController visualizerController = mediaPlayerControllerLazy.getValue().getVisualizerController();
-		return visualizerController == null ? null : visualizerController.getVisualizer();
 	}
 
 	private void updateVisualizer(byte[] waveform)

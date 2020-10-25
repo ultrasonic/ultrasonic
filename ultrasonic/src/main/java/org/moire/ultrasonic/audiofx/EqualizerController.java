@@ -21,6 +21,10 @@ package org.moire.ultrasonic.audiofx;
 import android.content.Context;
 import android.media.MediaPlayer;
 import android.media.audiofx.Equalizer;
+
+import androidx.lifecycle.LiveData;
+import androidx.lifecycle.MutableLiveData;
+
 import timber.log.Timber;
 
 import org.moire.ultrasonic.util.FileUtil;
@@ -35,61 +39,83 @@ import java.io.Serializable;
  */
 public class EqualizerController
 {
-	private final Context context;
-	private Equalizer equalizer;
-	private boolean released;
+	private static Boolean available = null;
+	private static MutableLiveData<EqualizerController> instance = new MutableLiveData<>();
+
+	private Context context;
+	public Equalizer equalizer;
 	private int audioSessionId;
 
-	// Class initialization fails when this throws an exception.
-	static
+	/**
+	 * Retrieves the EqualizerController as LiveData
+	 */
+	public static LiveData<EqualizerController> get()
 	{
-		try
-		{
-			Class.forName("android.media.audiofx.Equalizer");
-		}
-		catch (Exception ex)
-		{
-			throw new RuntimeException(ex);
-		}
+		return instance;
 	}
 
 	/**
-	 * Throws an exception if the {@link Equalizer} class is not available.
+	 * Initializes the EqualizerController instance with a MediaPlayer
 	 */
-	public static void checkAvailable() throws Throwable
+	public static void create(Context context, MediaPlayer mediaPlayer)
 	{
-		// Calling here forces class initialization.
-	}
+		if (mediaPlayer == null) return;
+		if (!isAvailable()) return;
 
-	public EqualizerController(Context context, MediaPlayer mediaPlayer)
-	{
-		this.context = context;
+		EqualizerController controller = new EqualizerController();
+		controller.context = context;
 
 		try
 		{
-			if (mediaPlayer == null)
-			{
-				return;
-			}
+			controller.audioSessionId = mediaPlayer.getAudioSessionId();
+			controller.equalizer = new Equalizer(0, controller.audioSessionId);
+			controller.loadSettings();
 
-			audioSessionId = mediaPlayer.getAudioSessionId();
-			equalizer = new Equalizer(0, audioSessionId);
+			instance.postValue(controller);
 		}
 		catch (Throwable x)
 		{
-			equalizer = null;
 			Timber.w(x, "Failed to create equalizer.");
 		}
 	}
 
-	public void saveSettings()
+	/**
+	 * Releases the EqualizerController instance when the underlying MediaPlayer is no longer available
+	 */
+	public static void release()
 	{
+		EqualizerController controller = instance.getValue();
+		if (controller == null) return;
+
+		controller.equalizer.release();
+		instance.postValue(null);
+	}
+
+	/**
+	 * Checks if the {@link Equalizer} class is available.
+	 */
+	private static boolean isAvailable()
+	{
+		if (available != null) return available;
 		try
 		{
-			if (isAvailable())
-			{
-				FileUtil.serialize(context, new EqualizerSettings(equalizer), "equalizer.dat");
-			}
+			Class.forName("android.media.audiofx.Equalizer");
+			available = true;
+		}
+		catch (Exception ex)
+		{
+			Timber.i(ex, "CheckAvailable received an exception getting class for the Equalizer");
+			available = false;
+		}
+		return available;
+	}
+
+	public void saveSettings()
+	{
+		if (!available) return;
+		try
+		{
+			FileUtil.serialize(context, new EqualizerSettings(equalizer), "equalizer.dat");
 		}
 		catch (Throwable x)
 		{
@@ -99,16 +125,14 @@ public class EqualizerController
 
 	public void loadSettings()
 	{
+		if (!available) return;
 		try
 		{
-			if (isAvailable())
-			{
-				EqualizerSettings settings = FileUtil.deserialize(context, "equalizer.dat");
+			EqualizerSettings settings = FileUtil.deserialize(context, "equalizer.dat");
 
-				if (settings != null)
-				{
-					settings.apply(equalizer);
-				}
+			if (settings != null)
+			{
+				settings.apply(equalizer);
 			}
 		}
 		catch (Throwable x)
@@ -117,46 +141,8 @@ public class EqualizerController
 		}
 	}
 
-	public boolean isAvailable()
-	{
-		return equalizer != null;
-	}
-
-	public void release()
-	{
-		if (isAvailable())
-		{
-			released = true;
-			equalizer.release();
-		}
-	}
-
-	public Equalizer getEqualizer()
-	{
-		if (released)
-		{
-			released = false;
-
-			try
-			{
-				equalizer = new Equalizer(0, audioSessionId);
-			}
-			catch (Throwable x)
-			{
-				equalizer = null;
-				Timber.w(x, "Failed to create equalizer.");
-			}
-		}
-
-		return equalizer;
-	}
-
 	private static class EqualizerSettings implements Serializable
 	{
-
-		/**
-		 *
-		 */
 		private static final long serialVersionUID = 626565082425206061L;
 		private final short[] bandLevels;
 		private short preset;

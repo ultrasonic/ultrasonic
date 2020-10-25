@@ -55,9 +55,6 @@ public class LocalMediaPlayer
     public Runnable onPrepared;
     public Runnable onNextSongRequested;
 
-    public static boolean equalizerAvailable;
-    public static boolean visualizerAvailable;
-
     public PlayerState playerState = IDLE;
     public DownloadFile currentPlaying;
     public DownloadFile nextPlaying;
@@ -77,40 +74,12 @@ public class LocalMediaPlayer
     private AudioManager audioManager;
     private RemoteControlClient remoteControlClient;
 
-    private EqualizerController equalizerController;
-    private VisualizerController visualizerController;
     private CancellableTask bufferTask;
     private PositionCache positionCache;
     private int secondaryProgress = -1;
 
     private final AudioFocusHandler audioFocusHandler;
     private final Context context;
-
-    static
-    {
-        try
-        {
-            EqualizerController.checkAvailable();
-            equalizerAvailable = true;
-        }
-        catch (Throwable t)
-        {
-            equalizerAvailable = false;
-        }
-    }
-
-    static
-    {
-        try
-        {
-            VisualizerController.checkAvailable();
-            visualizerAvailable = true;
-        }
-        catch (Throwable t)
-        {
-            visualizerAvailable = false;
-        }
-    }
 
     public LocalMediaPlayer(AudioFocusHandler audioFocusHandler, Context context)
     {
@@ -164,6 +133,15 @@ public class LocalMediaPlayer
             }
         }).start();
 
+        // Create Equalizer and Visualizer on a new thread as this can potentially take some time
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                EqualizerController.create(context, mediaPlayer);
+                VisualizerController.create(mediaPlayer);
+            }
+        }).start();
+
         PowerManager pm = (PowerManager) context.getSystemService(Context.POWER_SERVICE);
         wakeLock = pm.newWakeLock(PowerManager.PARTIAL_WAKE_LOCK, this.getClass().getName());
         wakeLock.setReferenceCounted(false);
@@ -171,28 +149,6 @@ public class LocalMediaPlayer
         audioManager = (AudioManager) context.getSystemService(Context.AUDIO_SERVICE);
         Util.registerMediaButtonEventReceiver(context, true);
         setUpRemoteControlClient();
-
-        if (equalizerAvailable)
-        {
-            equalizerController = new EqualizerController(context, mediaPlayer);
-            if (!equalizerController.isAvailable())
-            {
-                equalizerController = null;
-            }
-            else
-            {
-                equalizerController.loadSettings();
-            }
-        }
-
-        if (visualizerAvailable)
-        {
-            visualizerController = new VisualizerController(mediaPlayer);
-            if (!visualizerController.isAvailable())
-            {
-                visualizerController = null;
-            }
-        }
 
         Timber.i("LocalMediaPlayer created");
     }
@@ -208,6 +164,9 @@ public class LocalMediaPlayer
             i.putExtra(AudioEffect.EXTRA_PACKAGE_NAME, context.getPackageName());
             context.sendBroadcast(i);
 
+            EqualizerController.release();
+            VisualizerController.release();
+
             mediaPlayer.release();
             if (nextMediaPlayer != null)
             {
@@ -215,16 +174,6 @@ public class LocalMediaPlayer
             }
 
             mediaPlayerLooper.quit();
-
-            if (equalizerController != null)
-            {
-                equalizerController.release();
-            }
-
-            if (visualizerController != null)
-            {
-                visualizerController.release();
-            }
 
             if (bufferTask != null)
             {
@@ -247,36 +196,6 @@ public class LocalMediaPlayer
         }
 
         Timber.i("LocalMediaPlayer destroyed");
-    }
-
-    public EqualizerController getEqualizerController()
-    {
-        if (equalizerAvailable && equalizerController == null)
-        {
-            equalizerController = new EqualizerController(context, mediaPlayer);
-            if (!equalizerController.isAvailable())
-            {
-                equalizerController = null;
-            }
-            else
-            {
-                equalizerController.loadSettings();
-            }
-        }
-        return equalizerController;
-    }
-
-    public VisualizerController getVisualizerController()
-    {
-        if (visualizerAvailable && visualizerController == null)
-        {
-            visualizerController = new VisualizerController(mediaPlayer);
-            if (!visualizerController.isAvailable())
-            {
-                visualizerController = null;
-            }
-        }
-        return visualizerController;
     }
 
     public synchronized void setPlayerState(final PlayerState playerState)

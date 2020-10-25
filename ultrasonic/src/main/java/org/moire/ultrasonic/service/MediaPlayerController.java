@@ -93,10 +93,6 @@ public interface MediaPlayerController
 
 	String getSuggestedPlaylistName();
 
-	EqualizerController getEqualizerController();
-
-	VisualizerController getVisualizerController();
-
 	boolean isJukeboxEnabled();
 
 	boolean isJukeboxAvailable();

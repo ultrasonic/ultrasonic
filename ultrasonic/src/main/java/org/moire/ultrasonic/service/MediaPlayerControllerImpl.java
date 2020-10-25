@@ -511,22 +511,6 @@ public class MediaPlayerControllerImpl implements MediaPlayerController
 	}
 
 	@Override
-	public EqualizerController getEqualizerController()
-	{
-		MediaPlayerService mediaPlayerService = MediaPlayerService.getRunningInstance();
-		if (mediaPlayerService == null) return null;
-		return localMediaPlayer.getEqualizerController();
-	}
-
-	@Override
-	public VisualizerController getVisualizerController()
-	{
-		MediaPlayerService mediaPlayerService = MediaPlayerService.getRunningInstance();
-		if (mediaPlayerService == null) return null;
-		return localMediaPlayer.getVisualizerController();
-	}
-
-	@Override
 	public boolean isJukeboxEnabled()
 	{
 		return jukeboxMediaPlayer.getValue().isEnabled();

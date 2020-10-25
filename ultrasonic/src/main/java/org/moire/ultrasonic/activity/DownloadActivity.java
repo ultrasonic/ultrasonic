@@ -49,10 +49,14 @@ import android.widget.SeekBar;
 import android.widget.TextView;
 import android.widget.ViewFlipper;
 
+import androidx.lifecycle.Observer;
+
 import com.mobeta.android.dslv.DragSortListView;
 
 import org.koin.java.KoinJavaComponent;
 import org.moire.ultrasonic.R;
+import org.moire.ultrasonic.audiofx.EqualizerController;
+import org.moire.ultrasonic.audiofx.VisualizerController;
 import org.moire.ultrasonic.data.ActiveServerProvider;
 import org.moire.ultrasonic.domain.MusicDirectory;
 import org.moire.ultrasonic.domain.MusicDirectory.Entry;
@@ -117,8 +121,6 @@ public class DownloadActivity extends SubsonicTabActivity implements OnGestureLi
 	private int swipeDistance;
 	private int swipeVelocity;
 	private VisualizerView visualizerView;
-	private boolean visualizerAvailable;
-	private boolean equalizerAvailable;
 	private boolean jukeboxAvailable;
 	private SilentBackgroundTask<Void> onProgressChangedTask;
 	LinearLayout visualizerViewLayout;
@@ -132,6 +134,9 @@ public class DownloadActivity extends SubsonicTabActivity implements OnGestureLi
 	private boolean useFiveStarRating;
 	private Drawable hollowStar;
 	private Drawable fullStar;
+
+	private boolean isEqualizerAvailable;
+	private boolean isVisualizerAvailable;
 
 	/**
 	 * Called when the activity is first created.
@@ -506,8 +511,55 @@ public class DownloadActivity extends SubsonicTabActivity implements OnGestureLi
 			mediaPlayerController.setShufflePlayEnabled(true);
 		}
 
-		visualizerAvailable = (mediaPlayerController != null) && (mediaPlayerController.getVisualizerController() != null);
-		equalizerAvailable = (mediaPlayerController != null) && (mediaPlayerController.getEqualizerController() != null);
+		visualizerViewLayout.setVisibility(View.GONE);
+		VisualizerController.get().observe(this, new Observer<VisualizerController>() {
+			@Override
+			public void onChanged(VisualizerController visualizerController) {
+				if (visualizerController != null) {
+					Timber.d("VisualizerController Observer.onChanged received controller");
+					visualizerView = new VisualizerView(DownloadActivity.this);
+					visualizerViewLayout.addView(visualizerView, new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.MATCH_PARENT));
+
+					if (!visualizerView.isActive())
+					{
+						visualizerViewLayout.setVisibility(View.GONE);
+					}
+					else
+					{
+						visualizerViewLayout.setVisibility(View.VISIBLE);
+					}
+
+					visualizerView.setOnTouchListener(new View.OnTouchListener()
+					{
+						@Override
+						public boolean onTouch(final View view, final MotionEvent motionEvent)
+						{
+							visualizerView.setActive(!visualizerView.isActive());
+							getMediaPlayerController().setShowVisualization(visualizerView.isActive());
+							return true;
+						}
+					});
+					isVisualizerAvailable = true;
+				} else {
+					Timber.d("VisualizerController Observer.onChanged has no controller");
+					visualizerViewLayout.setVisibility(View.GONE);
+					isVisualizerAvailable = false;
+				}
+			}
+		});
+
+		EqualizerController.get().observe(this, new Observer<EqualizerController>() {
+			@Override
+			public void onChanged(EqualizerController equalizerController) {
+				if (equalizerController != null) {
+					Timber.d("EqualizerController Observer.onChanged received controller");
+					isEqualizerAvailable = true;
+				} else {
+					Timber.d("EqualizerController Observer.onChanged has no controller");
+					isEqualizerAvailable = false;
+				}
+			}
+		});
 
 		new Thread(new Runnable()
 		{
@@ -528,36 +580,6 @@ public class DownloadActivity extends SubsonicTabActivity implements OnGestureLi
 
 		final View nowPlayingMenuItem = findViewById(R.id.menu_now_playing);
 		menuDrawer.setActiveView(nowPlayingMenuItem);
-
-		if (visualizerAvailable)
-		{
-			visualizerView = new VisualizerView(this);
-			visualizerViewLayout.addView(visualizerView, new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.MATCH_PARENT));
-
-			if (!visualizerView.isActive())
-			{
-				visualizerViewLayout.setVisibility(View.GONE);
-			}
-			else
-			{
-				visualizerViewLayout.setVisibility(View.VISIBLE);
-			}
-
-			visualizerView.setOnTouchListener(new View.OnTouchListener()
-			{
-				@Override
-				public boolean onTouch(final View view, final MotionEvent motionEvent)
-				{
-					visualizerView.setActive(!visualizerView.isActive());
-					getMediaPlayerController().setShowVisualization(visualizerView.isActive());
-					return true;
-				}
-			});
-		}
-		else
-		{
-			visualizerViewLayout.setVisibility(View.GONE);
-		}
 	}
 
 	@Override
@@ -768,14 +790,14 @@ public class DownloadActivity extends SubsonicTabActivity implements OnGestureLi
 
 		if (equalizerMenuItem != null)
 		{
-			equalizerMenuItem.setEnabled(equalizerAvailable);
-			equalizerMenuItem.setVisible(equalizerAvailable);
+			equalizerMenuItem.setEnabled(isEqualizerAvailable);
+			equalizerMenuItem.setVisible(isEqualizerAvailable);
 		}
 
 		if (visualizerMenuItem != null)
 		{
-			visualizerMenuItem.setEnabled(visualizerAvailable);
-			visualizerMenuItem.setVisible(visualizerAvailable);
+			visualizerMenuItem.setEnabled(isVisualizerAvailable);
+			visualizerMenuItem.setVisible(isVisualizerAvailable);
 		}
 
 		final MediaPlayerController mediaPlayerController = getMediaPlayerController();
