@@ -14,7 +14,7 @@
  You should have received a copy of the GNU General Public License
  along with Subsonic.  If not, see <http://www.gnu.org/licenses/>.
 
- Copyright 2009 (C) Sindre Mehus
+ Copyright 2020 (C) Jozsef Varga
  */
 package org.moire.ultrasonic.view
 
@@ -40,9 +40,7 @@ import org.moire.ultrasonic.view.EntryAdapter.SongViewHolder
 import timber.log.Timber
 
 /**
- * Used to display songs in a `ListView`.
- *
- * @author Sindre Mehus
+ * Used to display songs and videos in a `ListView`.
  */
 class SongView(context: Context) : UpdateView(context), Checkable {
 
