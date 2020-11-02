@@ -53,6 +53,7 @@ internal class EditServerActivity : AppCompatActivity() {
     private var jukeboxSwitch: SwitchMaterial? = null
     private var saveButton: Button? = null
     private var testButton: Button? = null
+    private var isInstanceStateSaved: Boolean = false
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -83,7 +84,7 @@ internal class EditServerActivity : AppCompatActivity() {
                 Observer { t ->
                     if (t != null) {
                         currentServerSetting = t
-                        setFields()
+                        if (!isInstanceStateSaved) setFields()
                         // Remove the minimum API version so it can be detected again
                         if (currentServerSetting?.minimumApiVersion != null) {
                             currentServerSetting!!.minimumApiVersion = null
@@ -130,6 +131,56 @@ internal class EditServerActivity : AppCompatActivity() {
                 testConnection()
             }
         }
+    }
+
+    override fun onSaveInstanceState(savedInstanceState: Bundle) {
+        savedInstanceState.putString(
+            ::serverNameEditText.name, serverNameEditText!!.editText?.text.toString()
+        )
+        savedInstanceState.putString(
+            ::serverAddressEditText.name, serverAddressEditText!!.editText?.text.toString()
+        )
+        savedInstanceState.putString(
+            ::userNameEditText.name, userNameEditText!!.editText?.text.toString()
+        )
+        savedInstanceState.putString(
+            ::passwordEditText.name, passwordEditText!!.editText?.text.toString()
+        )
+        savedInstanceState.putBoolean(
+            ::selfSignedSwitch.name, selfSignedSwitch!!.isChecked
+        )
+        savedInstanceState.putBoolean(
+            ::ldapSwitch.name, ldapSwitch!!.isChecked
+        )
+        savedInstanceState.putBoolean(
+            ::jukeboxSwitch.name, jukeboxSwitch!!.isChecked
+        )
+        savedInstanceState.putBoolean(
+            ::isInstanceStateSaved.name, true
+        )
+
+        super.onSaveInstanceState(savedInstanceState)
+    }
+
+    override fun onRestoreInstanceState(savedInstanceState: Bundle) {
+        super.onRestoreInstanceState(savedInstanceState)
+
+        serverNameEditText!!.editText?.setText(
+            savedInstanceState.getString(::serverNameEditText.name)
+        )
+        serverAddressEditText!!.editText?.setText(
+            savedInstanceState.getString(::serverAddressEditText.name)
+        )
+        userNameEditText!!.editText?.setText(
+            savedInstanceState.getString(::userNameEditText.name)
+        )
+        passwordEditText!!.editText?.setText(
+            savedInstanceState.getString(::passwordEditText.name)
+        )
+        selfSignedSwitch!!.isChecked = savedInstanceState.getBoolean(::selfSignedSwitch.name)
+        ldapSwitch!!.isChecked = savedInstanceState.getBoolean(::ldapSwitch.name)
+        jukeboxSwitch!!.isChecked = savedInstanceState.getBoolean(::jukeboxSwitch.name)
+        isInstanceStateSaved = savedInstanceState.getBoolean(::isInstanceStateSaved.name)
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
