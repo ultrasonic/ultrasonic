@@ -93,7 +93,8 @@
         a:background="@android:color/transparent"
         a:focusable="false"
         a:gravity="center_vertical"
-        a:paddingRight="8dip"
-        a:src="?attr/drag_queue" />
+        a:layout_marginRight="16dip"
+        a:src="?attr/drag_queue"
+        a:layout_marginEnd="16dip" />
 
 </LinearLayout>

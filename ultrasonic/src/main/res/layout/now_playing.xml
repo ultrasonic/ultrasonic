@@ -54,13 +54,14 @@
 
         <ImageView
             android:id="@+id/now_playing_control_play"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_width="48dp"
+            android:layout_height="48dp"
             android:layout_gravity="center|right"
             android:layout_marginTop="2dip"
-            android:layout_marginRight="5dip"
+            android:layout_marginRight="16dip"
             android:layout_weight="0.0"
             android:focusable="false"
+            android:scaleType="fitCenter"
             android:src="?attr/media_pause" />
 
     </LinearLayout>
