@@ -128,28 +128,28 @@
         <LinearLayout
             a:layout_height="wrap_content"
             a:layout_width="fill_parent"
-            a:id="@+id/buttons"
-            a:layout_above="@+id/slider">
+            a:id="@+id/playback_text"
+            a:layout_above="@+id/slider" >
 
-            <include layout="@layout/media_buttons"/>
+            <include layout="@layout/player_media_info"/>
         </LinearLayout>
 
         <LinearLayout
             a:layout_height="wrap_content"
             a:layout_width="fill_parent"
             a:id="@+id/slider"
-            a:layout_above="@+id/playback_text">
+            a:layout_above="@+id/buttons">
 
-            <include layout="@layout/download_slider"/>
+            <include layout="@layout/player_slider"/>
         </LinearLayout>
 
         <LinearLayout
             a:layout_height="wrap_content"
             a:layout_width="fill_parent"
             a:layout_alignParentBottom="true"
-            a:id="@+id/playback_text">
+            a:id="@+id/buttons" >
 
-            <include layout="@layout/download_button_bar_flipper"/>
+            <include layout="@layout/media_buttons"/>
         </LinearLayout>
 
     </RelativeLayout>

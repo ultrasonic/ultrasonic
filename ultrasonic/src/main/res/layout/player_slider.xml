@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:a="http://schemas.android.com/apk/res/android"
+    a:layout_width="match_parent"
+    a:layout_height="wrap_content"
+    a:orientation="vertical"
+    a:layout_marginTop="10dp"
+    a:layout_marginLeft="12dp"
+    a:layout_marginRight="12dp" >
+    
+    <SeekBar
+        a:id="@+id/download_progress_bar"
+        a:layout_width="fill_parent"
+        a:layout_height="32dp"
+        a:indeterminate="false" />
+
+    <RelativeLayout
+        a:layout_width="match_parent"
+        a:layout_height="match_parent">
+
+        <TextView
+            a:id="@+id/download_position"
+            a:layout_width="wrap_content"
+            a:layout_height="wrap_content"
+            a:layout_alignParentLeft="true"
+            a:layout_marginLeft="12dip"
+            a:text="@string/util.no_time"
+            a:textAppearance="?android:attr/textAppearanceSmall" />
+
+        <TextView
+            a:id="@+id/download_duration"
+            a:layout_width="wrap_content"
+            a:layout_height="wrap_content"
+            a:layout_alignParentRight="true"
+            a:layout_marginRight="12dip"
+            a:text="@string/util.no_time"
+            a:textAppearance="?android:attr/textAppearanceSmall" />
+
+    </RelativeLayout>
+
+</LinearLayout>
