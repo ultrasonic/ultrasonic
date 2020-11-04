@@ -70,48 +70,52 @@
         android:layout_gravity="center"
         android:gravity="end"
         android:orientation="horizontal"
-        android:paddingRight="4dp">
+        android:paddingRight="8dp">
 
         <ImageButton
             android:id="@+id/control_previous"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_width="32dp"
+            android:layout_height="32dp"
             android:layout_gravity="center"
             android:layout_weight="1"
             android:background="@drawable/btn_bg"
             android:scaleType="fitXY"
+            android:layout_margin="2dp"
             android:src="@drawable/media_backward_normal_dark" />
 
         <ImageButton
             android:id="@+id/control_play"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_width="32dp"
+            android:layout_height="32dp"
             android:layout_gravity="center"
             android:layout_weight="1"
             android:background="@drawable/btn_bg"
             android:scaleType="fitXY"
+            android:layout_margin="2dp"
             android:src="@drawable/media_pause_normal_dark" />
 
         <ImageButton
             android:id="@+id/control_next"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_width="32dp"
+            android:layout_height="32dp"
             android:layout_gravity="center"
             android:layout_weight="1"
             android:background="@drawable/btn_bg"
             android:scaleType="fitXY"
+            android:layout_margin="2dp"
             android:src="@drawable/media_forward_normal_dark" />
 
         <ImageButton
             android:id="@+id/control_stop"
-            android:layout_width="32dip"
-            android:layout_height="32dip"
+            android:layout_width="32dp"
+            android:layout_height="32dp"
             android:layout_gravity="center"
-            android:layout_marginLeft="4dp"
             android:alpha="70"
             android:background="@drawable/btn_bg"
             android:scaleType="fitXY"
-            android:src="@drawable/ic_menu_close_dark" />
+            android:src="@drawable/ic_menu_close_dark"
+            android:layout_marginLeft="8dp"
+            android:layout_marginStart="8dp" />
     </LinearLayout>
 
 </LinearLayout>

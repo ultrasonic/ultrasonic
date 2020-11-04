@@ -82,28 +82,28 @@
             <ImageButton
                 a:id="@+id/control_previous"
                 a:layout_width="0dip"
-                a:layout_height="wrap_content"
+                a:layout_height="32dp"
                 a:layout_weight="1"
                 a:background="@color/transparent"
-                a:scaleType="center"
+                a:scaleType="fitCenter"
                 a:src="@drawable/media_backward_normal_dark" />
 
             <ImageButton
                 a:id="@+id/control_play"
                 a:layout_width="0dip"
-                a:layout_height="wrap_content"
+                a:layout_height="32dp"
                 a:layout_weight="1"
                 a:background="@color/transparent"
-                a:scaleType="center"
+                a:scaleType="fitCenter"
                 a:src="@drawable/media_start_normal_dark" />
 
             <ImageButton
                 a:id="@+id/control_next"
                 a:layout_width="0dip"
-                a:layout_height="wrap_content"
+                a:layout_height="32dp"
                 a:layout_weight="1"
                 a:background="@color/transparent"
-                a:scaleType="center"
+                a:scaleType="fitCenter"
                 a:src="@drawable/media_forward_normal_dark" />
         </LinearLayout>
 

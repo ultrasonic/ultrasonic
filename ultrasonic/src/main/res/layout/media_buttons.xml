@@ -9,20 +9,24 @@
               a:paddingRight="4dip"
     >
 
-<ImageView
+    <ImageView
         a:id="@+id/download_shuffle"
         a:layout_width="0dip"
-        a:layout_height="wrap_content"
+        a:layout_height="32dp"
+        a:layout_gravity="center"
         a:layout_weight="1"
         a:focusable="true"
-        a:src="?attr/media_shuffle"
         a:paddingLeft="2dip"
-        a:paddingRight="8dip"/>
+        a:paddingRight="8dip"
+        a:scaleType="fitCenter"
+        a:src="?attr/media_shuffle" />
 
     <org.moire.ultrasonic.view.AutoRepeatButton
         a:id="@+id/download_previous"
         a:layout_width="0dip"
-        a:layout_height="wrap_content"
+        a:layout_height="48dp"
+        a:scaleType="fitCenter"
+        a:layout_gravity="center"
         a:layout_weight="1"
         a:focusable="true"
         a:src="?attr/media_previous"
@@ -32,7 +36,8 @@
     <ImageView
         a:id="@+id/download_start"
         a:layout_width="0dip"
-        a:layout_height="wrap_content"
+        a:layout_height="56dp"
+        a:scaleType="fitCenter"
         a:layout_weight="1"
         a:focusable="true"
         a:src="?attr/media_play"
@@ -42,7 +47,8 @@
     <ImageView
         a:id="@+id/download_pause"
         a:layout_width="0dip"
-        a:layout_height="wrap_content"
+        a:layout_height="56dp"
+        a:scaleType="fitCenter"
         a:layout_weight="1"
         a:focusable="true"
         a:src="?attr/media_pause"
@@ -52,7 +58,8 @@
     <ImageView
         a:id="@+id/download_stop"
         a:layout_width="0dip"
-        a:layout_height="wrap_content"
+        a:layout_height="56dp"
+        a:scaleType="fitCenter"
         a:layout_weight="1"
         a:focusable="true"
         a:src="?attr/media_stop"
@@ -62,7 +69,9 @@
     <org.moire.ultrasonic.view.AutoRepeatButton
         a:id="@+id/download_next"
         a:layout_width="0dip"
-        a:layout_height="wrap_content"
+        a:layout_height="48dp"
+        a:scaleType="fitCenter"
+        a:layout_gravity="center"
         a:layout_weight="1"
         a:focusable="true"
         a:src="?attr/media_next"
@@ -72,7 +81,9 @@
     <ImageView
         a:id="@+id/download_repeat"
         a:layout_width="0dip"
-        a:layout_height="wrap_content"
+        a:layout_height="32dp"
+        a:scaleType="fitCenter"
+        a:layout_gravity="center"
         a:layout_weight="1"
         a:focusable="true"
         a:src="?attr/media_repeat_off"
