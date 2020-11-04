@@ -83,7 +83,7 @@
         <LinearLayout
             android:id="@+id/notification_rating"
             android:layout_width="match_parent"
-            android:layout_height="30dip"
+            android:layout_height="24dip"
             android:layout_gravity="center"
             android:orientation="horizontal"
             android:visibility="visible">
@@ -157,8 +157,8 @@
 
             <ImageButton
                 android:id="@+id/control_previous"
-                android:layout_width="32dp"
-                android:layout_height="32dp"
+                android:layout_width="48dp"
+                android:layout_height="48dp"
                 android:scaleType="fitCenter"
                 android:layout_gravity="center"
                 android:layout_weight="1"
@@ -167,8 +167,8 @@
 
             <ImageButton
                 android:id="@+id/control_play"
-                android:layout_width="32dp"
-                android:layout_height="32dp"
+                android:layout_width="48dp"
+                android:layout_height="48dp"
                 android:scaleType="fitCenter"
                 android:layout_gravity="center"
                 android:layout_weight="1"
@@ -177,8 +177,8 @@
 
             <ImageButton
                 android:id="@+id/control_next"
-                android:layout_width="32dp"
-                android:layout_height="32dp"
+                android:layout_width="48dp"
+                android:layout_height="48dp"
                 android:scaleType="fitCenter"
                 android:layout_gravity="center"
                 android:layout_weight="1"

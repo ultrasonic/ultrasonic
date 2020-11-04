@@ -54,8 +54,8 @@
 
         <ImageView
             android:id="@+id/now_playing_control_play"
-            android:layout_width="32dp"
-            android:layout_height="32dp"
+            android:layout_width="48dp"
+            android:layout_height="48dp"
             android:layout_gravity="center|right"
             android:layout_marginTop="2dip"
             android:layout_marginRight="16dip"

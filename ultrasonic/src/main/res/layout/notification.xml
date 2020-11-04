@@ -85,13 +85,13 @@
 
         <ImageButton
             android:id="@+id/control_play"
-            android:layout_width="32dp"
-            android:layout_height="32dp"
+            android:layout_width="48dp"
+            android:layout_height="48dp"
             android:layout_gravity="center"
+            android:layout_margin="2dp"
             android:layout_weight="1"
             android:background="@drawable/btn_bg"
             android:scaleType="fitXY"
-            android:layout_margin="2dp"
             android:src="@drawable/media_pause_normal_dark" />
 
         <ImageButton
