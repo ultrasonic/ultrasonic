@@ -121,10 +121,10 @@
         <include layout="@layout/download_playlist" />
     </org.moire.ultrasonic.util.MyViewFlipper>
 
-    <include layout="@layout/media_buttons" />
-    
-    <include layout="@layout/download_slider" />
+    <include layout="@layout/player_media_info" />
 
-    <include layout="@layout/download_button_bar_flipper" />
+    <include layout="@layout/player_slider" />
+
+    <include layout="@layout/media_buttons" />
 
 </LinearLayout>

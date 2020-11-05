@@ -6,7 +6,7 @@
 
     <org.moire.ultrasonic.util.MyViewFlipper
         a:id="@+id/download_playlist_flipper"
-        a:layout_width="fill_parent"
+        a:layout_width="0dp"
         a:layout_height="fill_parent"
         a:layout_weight="1">
 
@@ -22,8 +22,9 @@
                 a:id="@+id/download_album_art_image"
                 a:layout_width="wrap_content"
                 a:layout_height="wrap_content"
-                a:scaleType="centerCrop"
-                a:contentDescription="@string/albumArt"/>
+                a:alpha="0.2"
+                a:contentDescription="@string/albumArt"
+                a:scaleType="centerCrop" />
 
             <LinearLayout
                 a:id="@+id/album_art_inside"
@@ -32,12 +33,14 @@
                 a:gravity="bottom"
                 a:orientation="vertical" >
 
+                <include layout="@layout/player_media_info"/>
+
                 <LinearLayout
                     a:id="@+id/song_rating"
                     a:layout_width="match_parent"
                     a:layout_height="60dip"
                     a:layout_gravity="center"
-                    a:layout_margin="40dip"
+                    a:layout_margin="10dip"
                     a:orientation="horizontal">
 
                     <ImageView
@@ -112,46 +115,13 @@
                     a:background="@color/translucent"
                     a:orientation="vertical"/>
 
+                <include layout="@layout/player_slider"/>
+                <include layout="@layout/media_buttons"/>
+
             </LinearLayout>
         </FrameLayout>
 
         <include layout="@layout/download_playlist"/>
     </org.moire.ultrasonic.util.MyViewFlipper>
-
-    <RelativeLayout
-        a:id="@+id/download_control_layout"
-        a:layout_width="fill_parent"
-        a:layout_height="fill_parent"
-        a:layout_weight="1.2"
-        a:orientation="vertical">
-
-        <LinearLayout
-            a:layout_height="wrap_content"
-            a:layout_width="fill_parent"
-            a:id="@+id/buttons"
-            a:layout_above="@+id/slider">
-
-            <include layout="@layout/media_buttons"/>
-        </LinearLayout>
-
-        <LinearLayout
-            a:layout_height="wrap_content"
-            a:layout_width="fill_parent"
-            a:id="@+id/slider"
-            a:layout_above="@+id/playback_text">
-
-            <include layout="@layout/download_slider"/>
-        </LinearLayout>
-
-        <LinearLayout
-            a:layout_height="wrap_content"
-            a:layout_width="fill_parent"
-            a:layout_alignParentBottom="true"
-            a:id="@+id/playback_text">
-
-            <include layout="@layout/download_button_bar_flipper"/>
-        </LinearLayout>
-
-    </RelativeLayout>
 
 </LinearLayout>

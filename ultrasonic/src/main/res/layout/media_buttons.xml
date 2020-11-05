@@ -1,81 +1,87 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:a="http://schemas.android.com/apk/res/android"
-              a:orientation="horizontal"
-              a:layout_width="fill_parent"
-              a:layout_height="wrap_content"
-              a:paddingBottom="8dip"
-              a:paddingTop="8dip"
-              a:paddingLeft="4dip"
-              a:paddingRight="4dip"
-    >
+    xmlns:tools="http://schemas.android.com/tools"
+    a:layout_width="fill_parent"
+    a:layout_height="wrap_content"
+    a:orientation="horizontal"
+    a:layout_marginLeft="12dp"
+    a:layout_marginRight="12dp" >
 
     <ImageView
         a:id="@+id/download_shuffle"
         a:layout_width="0dip"
-        a:layout_height="32dp"
+        a:layout_height="26dp"
+        a:layout_alignParentLeft="true"
         a:layout_gravity="center"
         a:layout_weight="1"
+        a:adjustViewBounds="true"
         a:focusable="true"
-        a:paddingLeft="2dip"
         a:scaleType="fitCenter"
         a:src="?attr/media_shuffle" />
 
     <org.moire.ultrasonic.view.AutoRepeatButton
         a:id="@+id/download_previous"
         a:layout_width="0dip"
-        a:layout_height="48dp"
-        a:scaleType="fitCenter"
+        a:layout_height="42dp"
         a:layout_gravity="center"
-        a:layout_weight="1"
+        a:layout_weight="2"
+        a:adjustViewBounds="true"
         a:focusable="true"
+        a:scaleType="fitCenter"
         a:src="?attr/media_previous" />
 
     <ImageView
         a:id="@+id/download_start"
-        a:layout_width="48dip"
-        a:layout_height="96dp"
-        a:layout_weight="1"
+        a:layout_width="0dip"
+        a:layout_height="74dp"
+        a:layout_weight="2"
+        a:adjustViewBounds="true"
         a:focusable="true"
         a:scaleType="fitCenter"
-        a:src="?attr/media_play" />
+        a:src="?attr/media_play"
+        tools:visibility="gone" />
 
     <ImageView
         a:id="@+id/download_pause"
-        a:layout_width="48dip"
-        a:layout_height="96dp"
-        a:layout_weight="1"
+        a:layout_width="0dip"
+        a:layout_height="74dp"
+        a:layout_weight="2"
+        a:adjustViewBounds="true"
         a:focusable="true"
         a:scaleType="fitCenter"
         a:src="?attr/media_pause" />
 
     <ImageView
         a:id="@+id/download_stop"
-        a:layout_width="48dip"
-        a:layout_height="96dp"
-        a:layout_weight="1"
+        a:layout_width="0dip"
+        a:layout_height="74dp"
+        a:layout_weight="2"
+        a:adjustViewBounds="true"
         a:focusable="true"
         a:scaleType="fitCenter"
-        a:src="?attr/media_stop" />
+        a:src="?attr/media_stop"
+        tools:visibility="gone" />
 
     <org.moire.ultrasonic.view.AutoRepeatButton
         a:id="@+id/download_next"
         a:layout_width="0dip"
-        a:layout_height="48dp"
-        a:scaleType="fitCenter"
+        a:layout_height="42dp"
         a:layout_gravity="center"
-        a:layout_weight="1"
+        a:layout_weight="2"
+        a:adjustViewBounds="true"
         a:focusable="true"
+        a:scaleType="fitCenter"
         a:src="?attr/media_next" />
 
     <ImageView
         a:id="@+id/download_repeat"
         a:layout_width="0dip"
-        a:layout_height="32dp"
-        a:scaleType="fitCenter"
+        a:layout_height="26dp"
         a:layout_gravity="center"
         a:layout_weight="1"
+        a:adjustViewBounds="true"
         a:focusable="true"
-        a:src="?attr/media_repeat_off"
-        a:paddingRight="2dip"/>
+        a:scaleType="fitCenter"
+        a:src="?attr/media_repeat_off" />
 
-</LinearLayout>
+    </LinearLayout>

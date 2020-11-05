@@ -1,0 +1,79 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:a="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    a:id="@+id/download_button_bar_flipper"
+    a:layout_width="fill_parent"
+    a:layout_height="wrap_content"
+    a:layout_marginTop="10dp"
+    a:layout_marginLeft="12dp"
+    a:layout_marginRight="12dp" >
+
+    <LinearLayout
+        a:layout_width="wrap_content"
+        a:layout_height="wrap_content"
+        a:layout_alignParentLeft="true"
+        a:orientation="vertical">
+
+        <TextView
+            a:id="@+id/download_song_title"
+            a:layout_width="wrap_content"
+            a:layout_height="wrap_content"
+            a:ellipsize="start"
+            a:gravity="left"
+            a:singleLine="true"
+            a:textAppearance="?android:attr/textAppearanceLarge"
+            a:textStyle="bold"
+            tools:text="Title" />
+
+        <TextView
+            a:id="@+id/download_artist"
+            a:layout_width="wrap_content"
+            a:layout_height="wrap_content"
+            a:ellipsize="start"
+            a:gravity="left"
+            a:singleLine="true"
+            a:textAppearance="?android:attr/textAppearanceSmall"
+            tools:text="Artist" />
+
+        <TextView
+            a:id="@+id/download_album"
+            a:layout_width="wrap_content"
+            a:layout_height="wrap_content"
+            a:ellipsize="start"
+            a:gravity="right"
+            a:singleLine="true"
+            a:textAppearance="?android:attr/textAppearanceSmall"
+            tools:text="Album" />
+
+    </LinearLayout>
+
+    <LinearLayout
+        a:layout_width="wrap_content"
+        a:layout_height="wrap_content"
+        a:layout_alignParentRight="true"
+        a:layout_centerVertical="true"
+        a:gravity="right"
+        a:orientation="vertical">
+
+        <TextView
+            a:id="@+id/download_track"
+            a:layout_width="wrap_content"
+            a:layout_height="wrap_content"
+            a:ellipsize="start"
+            a:gravity="right"
+            a:text="0 / 0"
+            a:textAppearance="?android:attr/textAppearanceSmall" />
+
+        <TextView
+            a:id="@+id/download_total_duration"
+            a:layout_width="wrap_content"
+            a:layout_height="wrap_content"
+            a:ellipsize="start"
+            a:gravity="right"
+            a:text="@string/util.no_time"
+            a:textAppearance="?android:attr/textAppearanceSmall" />
+
+    </LinearLayout>
+
+
+</RelativeLayout>
