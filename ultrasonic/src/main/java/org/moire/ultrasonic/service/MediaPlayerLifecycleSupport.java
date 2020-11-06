@@ -190,7 +190,17 @@ public class MediaPlayerLifecycleSupport
 			return;
 		}
 
-		final int keyCode = event.getKeyCode();
+		final int keyCode;
+		int receivedKeyCode = event.getKeyCode();
+		// Translate PLAY and PAUSE codes to PLAY_PAUSE to improve compatibility with old Bluetooth devices
+		if (Util.getSingleButtonPlayPause(context) &&
+			(receivedKeyCode == KeyEvent.KEYCODE_MEDIA_PLAY ||
+				receivedKeyCode == KeyEvent.KEYCODE_MEDIA_PAUSE)) {
+			Timber.i("Single button Play/Pause is set, rewriting keyCode to PLAY_PAUSE");
+			keyCode = KeyEvent.KEYCODE_MEDIA_PLAY_PAUSE;
+		}
+		else keyCode = receivedKeyCode;
+
 		boolean autoStart = (keyCode == KeyEvent.KEYCODE_MEDIA_PLAY_PAUSE ||
 				keyCode == KeyEvent.KEYCODE_MEDIA_PLAY ||
 				keyCode == KeyEvent.KEYCODE_HEADSETHOOK ||

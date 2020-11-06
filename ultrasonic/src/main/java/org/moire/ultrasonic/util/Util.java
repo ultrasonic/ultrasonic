@@ -1221,6 +1221,12 @@ public class Util
 		return preferences.getBoolean(Constants.PREFERENCES_KEY_CLEAR_BOOKMARK, false);
 	}
 
+	public static boolean getSingleButtonPlayPause(Context context)
+	{
+		SharedPreferences preferences = getPreferences(context);
+		return preferences.getBoolean(Constants.PREFERENCES_KEY_SINGLE_BUTTON_PLAY_PAUSE, false);
+	}
+
 	public static String formatTotalDuration(long totalDuration, boolean inMilliseconds)
 	{
 		long millis = totalDuration;
