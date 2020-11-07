@@ -3,7 +3,8 @@
 
     <string name="background_task.loading">Bezig met laden&#8230;</string>
     <string name="background_task.network_error">Er is een netwerkfout opgetreden. Controleer het serveradres of probeer het later opnieuw.</string>
-    <string name="background_task.no_network">Deze app vereist netwerktoegang. Schakel Wi-Fi of mobiel internet in.</string>
+    <string name="background_task.unsupported_api">De server-api, v %1$s, heeft geen ondersteuning voor deze functie.</string>
+    <string name="background_task.no_network">Deze app vereist netwerktoegang. Schakel wifi of mobiel internet in.</string>
     <string name="background_task.not_found">Bron niet gevonden. Controleer het serveradres.</string>
     <string name="background_task.parse_error">Het antwoord werd niet begrepen. Controleer het serveradres.</string>
     <string name="background_task.ssl_cert_error">HTTPS-certificaatfout: %1$s.</string>
@@ -109,6 +110,7 @@
     <string name="menu.exit">Afsluiten</string>
     <string name="menu.navigation">Navigatie</string>
     <string name="menu.settings">Instellingen</string>
+    <string name="menu.refresh">Verversen</string>
     <string name="music_library.label">Mediabibliotheek</string>
     <string name="music_library.label_offline">Offline media</string>
     <string name="music_service.retry">Er is een netwerkfout opgetreden. Bezig met opnieuw proberen; poging %1$d van %2$d.</string>
@@ -226,9 +228,9 @@
     <string name="settings.max_bitrate_96">96 Kbps</string>
     <string name="settings.max_bitrate_mobile">Max. bitsnelheid over mobiel internet</string>
     <string name="settings.max_bitrate_unlimited">Ongelimiteerd</string>
-    <string name="settings.max_bitrate_wifi">Max. bitsnelheid over Wi-Fi</string>
+    <string name="settings.max_bitrate_wifi">Max. bitsnelheid via wifi</string>
     <string name="settings.max_songs">Max. aantal nummers</string>
-    <string name="settings.media_button_summary">Reageren op telefoon-, headset- en Bluetooth-mediatoetsen.</string>
+    <string name="settings.media_button_summary">Reageren op telefoon-, headset- en bluetooth-mediatoetsen.</string>
     <string name="settings.media_button_title">Mediatoetsen</string>
     <string name="settings.network_timeout">Netwerktime-out</string>
     <string name="settings.network_timeout_105000">105 seconden</string>
@@ -272,10 +274,10 @@
     <string name="settings.search_75">75</string>
     <string name="settings.search_history_cleared">Zoekgeschiedenis gewist</string>
     <string name="settings.search_title">Zoekinstellingen</string>
-    <string name="settings.send_bluetooth_album_art_summary">Albumhoezen versturen via Bluetooth (dit kan leiden tot mislukte Bluetooth-meldingen)</string>
-    <string name="settings.send_bluetooth_album_art">Albumhoezen versturen via Bluetooth</string>
-    <string name="settings.send_bluetooth_notification_summary">Afspeelmeldingen versturen via Bluetooth</string>
-    <string name="settings.send_bluetooth_notification">Bluetooth-melding versturen</string>
+    <string name="settings.send_bluetooth_album_art_summary">Albumhoezen versturen via bluetooth (dit kan leiden tot mislukte bluetoothmeldingen)</string>
+    <string name="settings.send_bluetooth_album_art">Albumhoezen versturen via bluetooth</string>
+    <string name="settings.send_bluetooth_notification_summary">Afspeelmeldingen sturen via bluetooth</string>
+    <string name="settings.send_bluetooth_notification">Bluetoothmelding sturen</string>
     <string name="settings.server_manage_servers">Manage Servers</string>
     <string name="settings.server_address">Serveradres</string>
     <string name="settings.server_name">Naam</string>
@@ -302,6 +304,7 @@
     <string name="settings.testing_unlicensed">Verbinding is goed; geen serverlicentie.</string>
     <string name="settings.theme_light">Licht</string>
     <string name="settings.theme_dark">Donker</string>
+    <string name="settings.theme_black">Zwart</string>
     <string name="settings.theme_title">Thema</string>
     <string name="settings.title.allow_self_signed_certificate">Zelf-gesigneerd HTTPS-certificaat toestaan</string>
     <string name="settings.title.enable_ldap_users_support">Ondersteuning voor LDAP-gebruikers inschakelen</string>
@@ -324,8 +327,8 @@
     <string name="settings.view_refresh_4000">4 seconden</string>
     <string name="settings.view_refresh_4500">4,5 seconden</string>
     <string name="settings.view_refresh_5000">5 seconden</string>
-    <string name="settings.wifi_required_summary">Alleen streamen over Wi-Fi-verbindingen</string>
-    <string name="settings.wifi_required_title">Alleen streamen via Wi-Fi</string>
+    <string name="settings.wifi_required_summary">Alleen streamen via wifi-verbindingen</string>
+    <string name="settings.wifi_required_title">Alleen streamen via wifi</string>
     <string name="song_details.all">%1$s%2$s</string>
     <string name="song_details.kbps">%d kbps</string>
     <string name="util.bytes_format.byte">0 B</string>
@@ -396,7 +399,57 @@
     <string name="settings.image_loader_concurrency_12">12</string>
     <string name="albumArt">Albumhoes</string>
     <string name="common_multiple_years">Meerdere jaren</string>
+    <string name="settings.playback.resume_on_bluetooth_device">Hervatten bij verbinding met bluetoothapparaat</string>
+    <string name="settings.playback.pause_on_bluetooth_device">Pauzeren als verbinding met bluetoothapparaat verbroken is</string>
+    <string name="settings.playback.bluetooth_all">Alle bluetoothapparaten</string>
+    <string name="settings.playback.bluetooth_a2dp">Alleen audio-apparaten (AD2P)</string>
+    <string name="settings.playback.bluetooth_disabled">Uitgeschakeld</string>
+    <string name="settings.playback.single_button_bluetooth_device">Eén afspeel-/pauzeerknop op bluetoothapparaat</string>
+    <string name="settings.playback.single_button_bluetooth_device_summary">Schakel dit in bij gebruik van oudere bluetoothapparaten om de afspeel- en pauzeerknop goed te laten werken</string>
+    <string name="settings.debug.title">Foutopsporingsopties</string>
+    <string name="settings.debug.log_to_file">Foutopsporingslogboek bijhouden</string>
+    <string name="settings.debug.log_path">De logboeken worden opgeslagen in %1$s/%2$s</string>
+    <string name="settings.debug.log_summary">Er staan %1$s logboeken in de map \'%3$s\' met een omvang van om en nabij de %2$s MB. Wil je deze behouden?</string>
+    <string name="settings.debug.log_keep">Behouden</string>
+    <string name="settings.debug.log_delete">Verwijderen</string>
+    <string name="settings.debug.log_deleted">De logboeken zijn verwijderd.</string>
+
+    <string name="permissions.access_error">Ultrasonic heeft geen toegang tot de muziekcache. De cachelocatie is teruggezet op de standaardlocatie.</string>
+    <string name="permissions.message_box_title">Waarschuwing</string>
+    <string name="permissions.permission_missing">Ultrasonic heeft lees- en schrijfrechten nodig op de muziekcachemap. De cachemap is teruggezet op de standaardmap.</string>
+    <string name="permissions.rationale_title">Rechtenverzoek</string>
+    <string name="permissions.rationale_description_failed">Ultrasonic heeft lees- en schrijfrechten nodig op de muziekcachemap.\nGeef Ultrasonic toegang tot het bestandssysteem.</string>
+    <string name="permissions.permanent_denial_title">De rechten zijn afgewezen</string>
+    <string name="permissions.permanent_denial_description">Ultrasonic heeft lees- en schrijfrechten nodig op de cachemap. Je kunt deze rechten verlenen in de appinstellingen. Als je dit verzoek afwijst, wordt de standaardmap gebruikt.</string>
+    <string name="permissions.open_settings">Instellingen openen</string>
+    <string name="permissions.rationale_description_initial">Ultrasonic heeft lees- en schrijfrechten nodig op het bestandssysteem om de cachemap te kunnen wijzigen.</string>
+
+    <string name="filepicker.select_folder">Kies een map</string>
+    <string name="filepicker.create_folder">Nieuwe map maken</string>
+    <string name="filepicker.create_folder_failed">De map kan niet worden aangemaakt</string>
+    <string name="filepicker.internal">%1$s (intern)</string>
+    <string name="filepicker.default_app_folder">De standaard appmap op %1$s (extern)</string>
+    <string name="filepicker.enter_folder_name">Voer een mapnaam in</string>
+    <string name="filepicker.create">Maken</string>
+    <string name="filepicker.name_invalid">Voer een geldige mapnaam in</string>
+    <string name="filepicker.already_exists">Deze map bestaat al.\nGeef de map een andere naam.</string>
+    <string name="filepicker.select">Kiezen</string>
+    <string name="filepicker.default">Standaard gebruiken</string>
+    <string name="filepicker.available_drives">Beschikbare schijven:</string>
+
+    <string name="server_selector.label">Ingestelde servers:</string>
+    <string name="server_selector.delete_confirmation">Weet je zeker dat je deze server wilt verwijderen?</string>
+    <string name="server_editor.label">Server bewerken</string>
     <string name="server_editor.new_label">Server toevoegen</string>
+    <string name="server_editor.leave_confirmation">Weet je zeker dat je terug wilt gaan en de wijzigingen wilt verwerpen?</string>
+    <string name="server_editor.required">Dit veld is vereist</string>
+    <string name="server_menu.edit">Bewerken</string>
+    <string name="server_menu.delete">Verwijderen</string>
+    <string name="server_menu.move_up">Omhoog</string>
+    <string name="server_menu.move_down">Omlaag</string>
+    <string name="server_editor.authentication">Authenticatie</string>
+    <string name="server_editor.advanced">Geavanceerde instellingen</string>
+
     <plurals name="select_album_n_songs">
         <item quantity="one">1 nummer</item>
         <item quantity="other">%d nummers</item>
