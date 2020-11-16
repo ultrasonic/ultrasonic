@@ -7,6 +7,7 @@ import org.koin.android.ext.koin.androidContext
 import org.koin.core.qualifier.named
 import org.koin.dsl.module
 import org.moire.ultrasonic.BuildConfig
+import org.moire.ultrasonic.activity.ArtistListModel
 import org.moire.ultrasonic.api.subsonic.SubsonicAPIClient
 import org.moire.ultrasonic.api.subsonic.SubsonicAPIVersions
 import org.moire.ultrasonic.api.subsonic.SubsonicClientConfiguration
@@ -71,4 +72,5 @@ val musicServiceModule = module {
     }
 
     single { SubsonicImageLoader(androidContext(), get()) }
+    single { ArtistListModel(get(), get()) }
 }

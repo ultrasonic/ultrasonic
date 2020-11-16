@@ -1,11 +1,37 @@
 <?xml version="1.0" encoding="utf-8"?>
-<TextView xmlns:a="http://schemas.android.com/apk/res/android"
-          a:id="@android:id/text1"
-          a:drawablePadding="6dip"
-          a:layout_width="fill_parent"
-          a:layout_height="wrap_content"
-          a:textAppearance="?android:attr/textAppearanceMedium"
-          a:gravity="center_vertical"
-          a:paddingLeft="3dip"
-          a:paddingRight="3dip"
-          a:minHeight="50dip"/>
+<RelativeLayout xmlns:a="http://schemas.android.com/apk/res/android"
+    a:id="@+id/row_artist_layout"
+    a:layout_height="wrap_content"
+    a:layout_width="match_parent"
+    a:background="?android:attr/selectableItemBackground"
+    a:clickable="true"
+    a:focusable="true">
+
+    <TextView
+        a:id="@+id/row_section"
+        a:layout_width="wrap_content"
+        a:layout_height="wrap_content"
+        a:gravity="center_horizontal|center_vertical"
+        a:minWidth="72dip"
+        a:minHeight="50dip"
+        a:paddingStart="16dip"
+        a:paddingLeft="16dip"
+        a:paddingEnd="32dip"
+        a:paddingRight="32dip"
+        a:text="A"
+        a:textAppearance="?android:attr/textAppearanceLarge"
+        a:textColor="@color/cyan" />
+
+    <TextView
+        a:id="@+id/row_artist_name"
+        a:layout_width="fill_parent"
+        a:layout_height="wrap_content"
+        a:layout_toEndOf="@+id/row_section"
+        a:layout_toRightOf="@+id/row_section"
+        a:drawablePadding="6dip"
+        a:gravity="center_vertical"
+        a:minHeight="50dip"
+        a:paddingLeft="3dip"
+        a:paddingRight="3dip"
+        a:textAppearance="?android:attr/textAppearanceMedium" />
+</RelativeLayout>
