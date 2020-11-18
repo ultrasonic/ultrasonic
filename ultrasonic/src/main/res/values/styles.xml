@@ -35,6 +35,11 @@
         <item name="android:gravity">center_vertical</item>
     </style>
 
+    <style name="roundedImageView" parent="">
+        <item name="cornerFamily">rounded</item>
+        <item name="cornerSize">8dp</item>
+    </style>
+
     <attr name="star_hollow" format="reference"/>
     <attr name="star_full" format="reference"/>
     <attr name="about" format="reference"/>

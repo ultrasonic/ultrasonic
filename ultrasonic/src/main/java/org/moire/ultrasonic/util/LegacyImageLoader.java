@@ -38,6 +38,8 @@ import org.moire.ultrasonic.service.MusicServiceFactory;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.List;
+import java.util.SortedSet;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.atomic.AtomicBoolean;
@@ -201,6 +203,16 @@ public class LegacyImageLoader implements Runnable, ImageLoader {
         setUnknownImage(view, large);
 
         queue.offer(new Task(view, entry, size, large, crossFade, highQuality));
+    }
+
+    public void cancel(String coverArt) {
+        for (Object taskObject : queue.toArray()) {
+            Task task = (Task)taskObject;
+            if ((task.entry.getCoverArt() != null) && (coverArt.compareTo(task.entry.getCoverArt()) == 0)) {
+                queue.remove(taskObject);
+                break;
+            }
+        }
     }
 
     private static String getKey(String coverArtId, int size) {
@@ -381,14 +393,7 @@ public class LegacyImageLoader implements Runnable, ImageLoader {
         private final boolean crossFade;
         private final boolean highQuality;
 
-        Task(
-                View view,
-                MusicDirectory.Entry entry,
-                int size,
-                boolean saveToFile,
-                boolean crossFade,
-                boolean highQuality
-        ) {
+        Task(View view, MusicDirectory.Entry entry, int size, boolean saveToFile, boolean crossFade, boolean highQuality) {
             this.view = view;
             this.entry = entry;
             this.username = null;
@@ -399,14 +404,7 @@ public class LegacyImageLoader implements Runnable, ImageLoader {
             handler = new Handler();
         }
 
-        Task(
-                View view,
-                String username,
-                int size,
-                boolean saveToFile,
-                boolean crossFade,
-                boolean highQuality
-        ) {
+        Task(View view, String username, int size, boolean saveToFile, boolean crossFade, boolean highQuality) {
             this.view = view;
             this.entry = null;
             this.username = username;
@@ -421,9 +419,9 @@ public class LegacyImageLoader implements Runnable, ImageLoader {
             try {
                 MusicService musicService = MusicServiceFactory.getMusicService(view.getContext());
                 final boolean isAvatar = this.username != null && this.entry == null;
-                final Bitmap bitmap = this.entry != null
-                        ? musicService.getCoverArt(view.getContext(), entry, size, saveToFile, highQuality, null)
-                        : musicService.getAvatar(view.getContext(), username, size, saveToFile, highQuality, null);
+                final Bitmap bitmap = this.entry != null ?
+                    musicService.getCoverArt(view.getContext(), entry, size, saveToFile, highQuality, null) :
+                    musicService.getAvatar(view.getContext(), username, size, saveToFile, highQuality, null);
 
                 if (bitmap == null) {
                     Timber.d("Found empty album art.");

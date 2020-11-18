@@ -37,6 +37,9 @@ import org.moire.ultrasonic.domain.MusicFolder
 import org.moire.ultrasonic.util.Constants
 import org.moire.ultrasonic.util.Util
 
+/**
+ * Displays the available Artists in a list
+ */
 class SelectArtistActivity : SubsonicTabActivity() {
     private val activeServerProvider: ActiveServerProvider by inject()
     private val serverSettingsModel: ServerSettingsModel by viewModel()
@@ -77,7 +80,7 @@ class SelectArtistActivity : SubsonicTabActivity() {
 
         val refresh = intent.getBooleanExtra(Constants.INTENT_EXTRA_NAME_REFRESH, false)
 
-        artistListModel.getMusicFolders(refresh, refreshArtistListView!!)
+        artistListModel.getMusicFolders()
             .observe(
                 this,
                 Observer { changedFolders ->
@@ -100,7 +103,8 @@ class SelectArtistActivity : SubsonicTabActivity() {
             shouldShowHeader,
             { artist -> onItemClick(artist) },
             { menuItem, artist -> onArtistMenuItemSelected(menuItem, artist) },
-            { view -> onFolderClick(view) }
+            { view -> onFolderClick(view) },
+            imageLoader
         )
 
         artistListView = findViewById<RecyclerView>(R.id.select_artist_list).apply {

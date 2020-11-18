@@ -36,6 +36,9 @@ import org.moire.ultrasonic.service.CommunicationErrorHandler
 import org.moire.ultrasonic.service.MusicServiceFactory
 import org.moire.ultrasonic.util.Util
 
+/**
+ * Provides ViewModel which contains the list of available Artists
+ */
 class ArtistListModel(
     private val activeServerProvider: ActiveServerProvider,
     private val context: Context
@@ -43,23 +46,31 @@ class ArtistListModel(
     private val musicFolders: MutableLiveData<List<MusicFolder>> = MutableLiveData()
     private val artists: MutableLiveData<List<Artist>> = MutableLiveData()
 
+    /**
+     * Retrieves the available Artists in a LiveData
+     */
     fun getArtists(refresh: Boolean, swipe: SwipeRefreshLayout): LiveData<List<Artist>> {
         backgroundLoadFromServer(refresh, swipe)
         return artists
     }
 
-    fun getMusicFolders(refresh: Boolean, swipe: SwipeRefreshLayout): LiveData<List<MusicFolder>> {
-        backgroundLoadFromServer(refresh, swipe)
+    /**
+     * Retrieves the available Music Folders in a LiveData
+     */
+    fun getMusicFolders(): LiveData<List<MusicFolder>> {
         return musicFolders
     }
 
+    /**
+     * Refreshes the cached Artists from the server
+     */
     fun refresh(swipe: SwipeRefreshLayout) {
         backgroundLoadFromServer(true, swipe)
     }
 
     private fun backgroundLoadFromServer(refresh: Boolean, swipe: SwipeRefreshLayout) {
-        swipe.isRefreshing = true
         viewModelScope.launch {
+            swipe.isRefreshing = true
             loadFromServer(refresh, swipe)
             swipe.isRefreshing = false
         }

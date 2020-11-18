@@ -31,6 +31,8 @@ public interface ImageLoader {
             boolean highQuality
     );
 
+    void cancel(String coverArt);
+
     Bitmap getImageBitmap(String username, int size);
 
     Bitmap getImageBitmap(MusicDirectory.Entry entry, boolean large, int size);

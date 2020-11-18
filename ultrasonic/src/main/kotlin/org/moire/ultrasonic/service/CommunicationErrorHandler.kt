@@ -32,6 +32,10 @@ import org.moire.ultrasonic.subsonic.getLocalizedErrorMessage
 import org.moire.ultrasonic.util.Util
 import timber.log.Timber
 
+/**
+ * Contains helper functions to handle the exceptions
+ * thrown during the communication with a Subsonic server
+ */
 class CommunicationErrorHandler {
     companion object {
         fun handleError(error: Throwable?, context: Context) {

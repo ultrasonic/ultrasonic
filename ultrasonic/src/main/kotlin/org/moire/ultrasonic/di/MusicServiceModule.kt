@@ -4,6 +4,7 @@ package org.moire.ultrasonic.di
 import kotlin.math.abs
 import okhttp3.logging.HttpLoggingInterceptor
 import org.koin.android.ext.koin.androidContext
+import org.koin.android.viewmodel.dsl.viewModel
 import org.koin.core.qualifier.named
 import org.koin.dsl.module
 import org.moire.ultrasonic.BuildConfig
@@ -72,5 +73,6 @@ val musicServiceModule = module {
     }
 
     single { SubsonicImageLoader(androidContext(), get()) }
-    single { ArtistListModel(get(), get()) }
+
+    viewModel { ArtistListModel(get(), androidContext()) }
 }
