@@ -30,12 +30,12 @@ import android.widget.RelativeLayout
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.simplecityapps.recyclerview_fastscroll.views.FastScrollRecyclerView.SectionedAdapter
+import java.text.Collator
 import org.moire.ultrasonic.R
 import org.moire.ultrasonic.data.ActiveServerProvider.Companion.isOffline
 import org.moire.ultrasonic.domain.Artist
 import org.moire.ultrasonic.domain.MusicDirectory
 import org.moire.ultrasonic.util.ImageLoader
-import java.text.Collator
 
 /**
  * Creates a Row in a RecyclerView which contains the details of an Artist
@@ -54,7 +54,7 @@ class ArtistRowAdapter(
      * Sets the data to be displayed in the RecyclerView
      */
     fun setData(data: List<Artist>) {
-        artistList = data.sortedWith(compareBy(Collator.getInstance()){ t -> t.name })
+        artistList = data.sortedWith(compareBy(Collator.getInstance()) { t -> t.name })
         notifyDataSetChanged()
     }
 
