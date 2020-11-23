@@ -29,11 +29,13 @@ import android.widget.PopupMenu
 import android.widget.RelativeLayout
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
+import com.simplecityapps.recyclerview_fastscroll.views.FastScrollRecyclerView.SectionedAdapter
 import org.moire.ultrasonic.R
 import org.moire.ultrasonic.data.ActiveServerProvider.Companion.isOffline
 import org.moire.ultrasonic.domain.Artist
 import org.moire.ultrasonic.domain.MusicDirectory
 import org.moire.ultrasonic.util.ImageLoader
+import java.text.Collator
 
 /**
  * Creates a Row in a RecyclerView which contains the details of an Artist
@@ -45,14 +47,14 @@ class ArtistRowAdapter(
     val onArtistClick: (Artist) -> Unit,
     val onContextMenuClick: (MenuItem, Artist) -> Boolean,
     val onFolderClick: (view: View) -> Unit,
-    val imageLoader: ImageLoader
-) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
+    private val imageLoader: ImageLoader
+) : RecyclerView.Adapter<RecyclerView.ViewHolder>(), SectionedAdapter {
 
     /**
      * Sets the data to be displayed in the RecyclerView
      */
     fun setData(data: List<Artist>) {
-        artistList = data.sortedBy { t -> t.name }
+        artistList = data.sortedWith(compareBy(Collator.getInstance()){ t -> t.name })
         notifyDataSetChanged()
     }
 
@@ -131,6 +133,11 @@ class ArtistRowAdapter(
 
     override fun getItemViewType(position: Int): Int {
         return if (position == 0 && shouldShowHeader) TYPE_HEADER else TYPE_ITEM
+    }
+
+    override fun getSectionName(position: Int): String {
+        val listPosition = if (shouldShowHeader) position - 1 else position
+        return getSectionFromName(artistList[listPosition].name ?: " ")
     }
 
     private fun getSectionForArtist(artistPosition: Int): String {

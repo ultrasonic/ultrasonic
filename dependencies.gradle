@@ -38,6 +38,7 @@ ext.versions = [
         robolectric          : "4.4",
         dexter               : "6.1.2",
         timber               : "4.7.1",
+        fastScroll           : "2.0.1",
 ]
 
 ext.gradlePlugins = [
@@ -77,6 +78,7 @@ ext.other = [
         picasso            : "com.squareup.picasso:picasso:$versions.picasso",
         dexter             : "com.karumi:dexter:$versions.dexter",
         timber             : "com.jakewharton.timber:timber:$versions.timber",
+        fastScroll         : "com.simplecityapps:recyclerview-fastscroll:$versions.fastScroll",
 ]
 
 ext.testing = [
