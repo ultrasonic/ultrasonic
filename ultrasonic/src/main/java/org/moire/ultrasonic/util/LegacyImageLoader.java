@@ -167,25 +167,24 @@ public class LegacyImageLoader implements Runnable, ImageLoader {
     }
 
     @Override
-    public void loadImage(
-            View view,
-            MusicDirectory.Entry entry,
-            boolean large,
-            int size,
-            boolean crossFade,
-            boolean highQuality
-    ) {
+    public void loadImage(View view, MusicDirectory.Entry entry, boolean large, int size,
+        boolean crossFade, boolean highQuality) {
+        loadImage(view, entry, large, size, crossFade, highQuality, -1);
+    }
+
+    public void loadImage(View view, MusicDirectory.Entry entry, boolean large, int size,
+        boolean crossFade, boolean highQuality, int defaultResourceId) {
         view.invalidate();
 
         if (entry == null) {
-            setUnknownImage(view, large);
+            setUnknownImage(view, large, defaultResourceId);
             return;
         }
 
         String coverArt = entry.getCoverArt();
 
         if (TextUtils.isEmpty(coverArt)) {
-            setUnknownImage(view, large);
+            setUnknownImage(view, large, defaultResourceId);
             return;
         }
 
@@ -200,7 +199,7 @@ public class LegacyImageLoader implements Runnable, ImageLoader {
             return;
         }
 
-        setUnknownImage(view, large);
+        setUnknownImage(view, large, defaultResourceId);
 
         queue.offer(new Task(view, entry, size, large, crossFade, highQuality));
     }
@@ -342,13 +341,18 @@ public class LegacyImageLoader implements Runnable, ImageLoader {
     }
 
     private void setUnknownImage(View view, boolean large) {
+        setUnknownImage(view, large, -1);
+    }
+
+    private void setUnknownImage(View view, boolean large, int resId) {
+        if (resId == -1) resId = R.drawable.unknown_album;
         if (large) {
             setImageBitmap(view, null, largeUnknownImage, false);
         } else {
             if (view instanceof TextView) {
-                ((TextView) view).setCompoundDrawablesWithIntrinsicBounds(R.drawable.unknown_album, 0, 0, 0);
+                ((TextView) view).setCompoundDrawablesWithIntrinsicBounds(resId, 0, 0, 0);
             } else if (view instanceof ImageView) {
-                ((ImageView) view).setImageResource(R.drawable.unknown_album);
+                ((ImageView) view).setImageResource(resId);
             }
         }
     }

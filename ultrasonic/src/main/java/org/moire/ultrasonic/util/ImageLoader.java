@@ -13,23 +13,14 @@ public interface ImageLoader {
 
     void stopImageLoader();
 
-    void loadAvatarImage(
-            View view,
-            String username,
-            boolean large,
-            int size,
-            boolean crossFade,
-            boolean highQuality
-    );
+    void loadAvatarImage(View view, String username, boolean large, int size, boolean crossFade,
+            boolean highQuality);
 
-    void loadImage(
-            View view,
-            MusicDirectory.Entry entry,
-            boolean large,
-            int size,
-            boolean crossFade,
-            boolean highQuality
-    );
+    void loadImage(View view, MusicDirectory.Entry entry, boolean large, int size,
+            boolean crossFade, boolean highQuality);
+
+    void loadImage(View view, MusicDirectory.Entry entry, boolean large, int size,
+                   boolean crossFade, boolean highQuality, int defaultResourceId);
 
     void cancel(String coverArt);
 

@@ -13,30 +13,31 @@
         a:layout_width="wrap_content"
         a:layout_height="wrap_content"
         a:gravity="center_horizontal|center_vertical"
-        a:minWidth="72dip"
+        a:minWidth="56dip"
         a:minHeight="56dip"
-        a:paddingStart="16dip"
-        a:paddingLeft="16dip"
-        a:paddingEnd="16dip"
-        a:paddingRight="16dip"
+        a:paddingStart="8dip"
+        a:paddingLeft="8dip"
+        a:paddingEnd="8dip"
+        a:paddingRight="8dip"
         a:text="A"
         a:textAppearance="?android:attr/textAppearanceLarge"
         a:textColor="@color/cyan" />
 
     <com.google.android.material.imageview.ShapeableImageView
         a:id="@+id/artist_coverart"
-        a:src="@drawable/unknown_album"
-        app:shapeAppearanceOverlay="@style/roundedImageView"
         a:layout_width="40dp"
         a:layout_height="40dp"
-        a:layout_toEndOf="@+id/row_section"
-        a:layout_toRightOf="@+id/row_section"
         a:layout_gravity="center_horizontal|center_vertical"
         a:layout_marginTop="8dp"
-        a:layout_marginLeft="8dp"
-        a:layout_marginRight="16dp"
-        a:layout_marginStart="8dp"
-        a:layout_marginEnd="16dp" />
+        a:layout_marginStart="2dp"
+        a:layout_marginLeft="2dp"
+        a:layout_marginEnd="10dp"
+        a:layout_marginRight="10dp"
+        a:layout_toEndOf="@+id/row_section"
+        a:layout_toRightOf="@+id/row_section"
+        a:scaleType="fitCenter"
+        a:src="@drawable/ic_contact_picture"
+        app:shapeAppearanceOverlay="@style/roundedImageView" />
 
     <TextView
         a:id="@+id/row_artist_name"
@@ -49,5 +50,7 @@
         a:minHeight="56dip"
         a:paddingLeft="3dip"
         a:paddingRight="3dip"
+        a:layout_marginRight="12dp"
+        a:layout_marginEnd="12dp"
         a:textAppearance="?android:attr/textAppearanceMedium" />
 </RelativeLayout>

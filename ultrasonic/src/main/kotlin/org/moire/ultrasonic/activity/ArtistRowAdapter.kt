@@ -121,7 +121,7 @@ class ArtistRowAdapter(
             imageLoader.loadImage(
                 holder.coverArt,
                 MusicDirectory.Entry().apply { coverArt = holder.coverArtId },
-                false, 0, false, true
+                false, 0, false, true, R.drawable.ic_contact_picture
             )
         } else if (holder is HeaderViewHolder) {
             holder.folderName.text = folderName

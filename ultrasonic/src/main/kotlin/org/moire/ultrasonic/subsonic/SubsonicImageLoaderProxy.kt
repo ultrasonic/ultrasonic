@@ -27,17 +27,31 @@ class SubsonicImageLoaderProxy(
         crossFade: Boolean,
         highQuality: Boolean
     ) {
+        return loadImage(view, entry, large, size, crossFade, highQuality, -1)
+    }
+
+    override fun loadImage(
+        view: View?,
+        entry: MusicDirectory.Entry?,
+        large: Boolean,
+        size: Int,
+        crossFade: Boolean,
+        highQuality: Boolean,
+        defaultResourceId: Int
+    ) {
         val id = entry?.coverArt
+        val unknownImageId =
+            if (defaultResourceId == -1) R.drawable.unknown_album
+            else defaultResourceId
 
         if (id != null &&
             view != null &&
             view is ImageView
         ) {
             val request = ImageRequest.CoverArt(
-                id,
-                view,
-                placeHolderDrawableRes = R.drawable.unknown_album,
-                errorDrawableRes = R.drawable.unknown_album
+                id, view,
+                placeHolderDrawableRes = unknownImageId,
+                errorDrawableRes = unknownImageId
             )
             subsonicImageLoader.load(request)
         }
@@ -56,8 +70,7 @@ class SubsonicImageLoaderProxy(
             view is ImageView
         ) {
             val request = ImageRequest.Avatar(
-                username,
-                view,
+                username, view,
                 placeHolderDrawableRes = R.drawable.ic_contact_picture,
                 errorDrawableRes = R.drawable.ic_contact_picture
             )
