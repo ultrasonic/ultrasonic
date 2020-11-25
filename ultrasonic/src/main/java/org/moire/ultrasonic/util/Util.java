@@ -54,6 +54,7 @@ import org.moire.ultrasonic.R;
 import org.moire.ultrasonic.activity.DownloadActivity;
 import org.moire.ultrasonic.activity.MainActivity;
 import org.moire.ultrasonic.activity.SettingsActivity;
+import org.moire.ultrasonic.data.ActiveServerProvider;
 import org.moire.ultrasonic.domain.*;
 import org.moire.ultrasonic.domain.MusicDirectory.Entry;
 import org.moire.ultrasonic.receiver.MediaButtonIntentReceiver;
@@ -1179,6 +1180,15 @@ public class Util
 	{
 		SharedPreferences preferences = getPreferences(context);
 		return preferences.getBoolean(Constants.PREFERENCES_KEY_ID3_TAGS, false);
+	}
+
+	public static boolean getShouldShowArtistPicture(Context context)
+	{
+		SharedPreferences preferences = getPreferences(context);
+		boolean isOffline = ActiveServerProvider.Companion.isOffline(context);
+		boolean isId3Enabled = preferences.getBoolean(Constants.PREFERENCES_KEY_ID3_TAGS, false);
+		boolean shouldShowArtistPicture = preferences.getBoolean(Constants.PREFERENCES_KEY_SHOW_ARTIST_PICTURE, false);
+		return (!isOffline) && isId3Enabled && shouldShowArtistPicture;
 	}
 
 	public static int getChatRefreshInterval(Context context)

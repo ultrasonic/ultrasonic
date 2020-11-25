@@ -114,6 +114,7 @@ public final class Constants
 	public static final String PREFERENCES_KEY_DOWNLOAD_TRANSITION = "transitionToDownloadOnPlay";
 	public static final String PREFERENCES_KEY_INCREMENT_TIME = "incrementTime";
 	public static final String PREFERENCES_KEY_ID3_TAGS = "useId3Tags";
+	public static final String PREFERENCES_KEY_SHOW_ARTIST_PICTURE = "showArtistPicture";
 	public static final String PREFERENCES_KEY_TEMP_LOSS = "tempLoss";
 	public static final String PREFERENCES_KEY_CHAT_REFRESH_INTERVAL = "chatRefreshInterval";
 	public static final String PREFERENCES_KEY_DIRECTORY_CACHE_TIME = "directoryCacheTime";

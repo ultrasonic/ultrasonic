@@ -316,6 +316,8 @@
     <string name="settings.use_folder_for_album_artist_summary">Assume top-level folder is the name of the album artist</string>
     <string name="settings.use_id3">Browse Using ID3 Tags</string>
     <string name="settings.use_id3_summary">Use ID3 tag methods instead of file system based methods</string>
+    <string name="settings.show_artist_picture">Show artist picture in artist list</string>
+    <string name="settings.show_artist_picture_summary">Displays the artist picture in the artist list if available</string>
     <string name="settings.video_title">Video</string>
     <string name="settings.video_player">Video player</string>
     <string name="settings.view_refresh">View Refresh</string>

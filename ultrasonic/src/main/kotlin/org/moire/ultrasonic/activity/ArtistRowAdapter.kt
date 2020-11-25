@@ -36,6 +36,7 @@ import org.moire.ultrasonic.data.ActiveServerProvider.Companion.isOffline
 import org.moire.ultrasonic.domain.Artist
 import org.moire.ultrasonic.domain.MusicDirectory
 import org.moire.ultrasonic.util.ImageLoader
+import org.moire.ultrasonic.util.Util
 
 /**
  * Creates a Row in a RecyclerView which contains the details of an Artist
@@ -118,11 +119,17 @@ class ArtistRowAdapter(
             holder.layout.setOnClickListener { onArtistClick(artistList[listPosition]) }
             holder.layout.setOnLongClickListener { view -> createPopupMenu(view, listPosition) }
             holder.coverArtId = artistList[listPosition].coverArt
-            imageLoader.loadImage(
-                holder.coverArt,
-                MusicDirectory.Entry().apply { coverArt = holder.coverArtId },
-                false, 0, false, true, R.drawable.ic_contact_picture
-            )
+
+            if (Util.getShouldShowArtistPicture(holder.coverArt.context)) {
+                holder.coverArt.visibility = View.VISIBLE
+                imageLoader.loadImage(
+                    holder.coverArt,
+                    MusicDirectory.Entry().apply { coverArt = holder.coverArtId },
+                    false, 0, false, true, R.drawable.ic_contact_picture
+                )
+            } else {
+                holder.coverArt.visibility = View.GONE
+            }
         } else if (holder is HeaderViewHolder) {
             holder.folderName.text = folderName
             holder.layout.setOnClickListener { onFolderClick(holder.layout) }
