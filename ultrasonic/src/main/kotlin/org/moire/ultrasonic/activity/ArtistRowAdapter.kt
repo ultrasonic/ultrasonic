@@ -143,7 +143,13 @@ class ArtistRowAdapter(
     }
 
     override fun getSectionName(position: Int): String {
-        return getSectionFromName(artistList[position].name ?: " ")
+        var listPosition = if (shouldShowHeader) position - 1 else position
+
+        // Show the first artist's initial in the popup when the list is
+        // scrolled up to the "Select Folder" row
+        if (listPosition < 0) listPosition = 0
+
+        return getSectionFromName(artistList[listPosition].name ?: " ")
     }
 
     private fun getSectionForArtist(artistPosition: Int): String {
