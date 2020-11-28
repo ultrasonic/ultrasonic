@@ -143,8 +143,7 @@ class ArtistRowAdapter(
     }
 
     override fun getSectionName(position: Int): String {
-        val listPosition = if (shouldShowHeader) position - 1 else position
-        return getSectionFromName(artistList[listPosition].name ?: " ")
+        return getSectionFromName(artistList[position].name ?: " ")
     }
 
     private fun getSectionForArtist(artistPosition: Int): String {
