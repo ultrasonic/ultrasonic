@@ -404,6 +404,8 @@
     <string name="settings.playback.bluetooth_all">Todos os dispositivos Bluetooth</string>
     <string name="settings.playback.bluetooth_a2dp">Somente dispositivos de áudio (A2DP)</string>
     <string name="settings.playback.bluetooth_disabled">Desativado</string>
+    <string name="settings.playback.single_button_bluetooth_device">Botão único para Reproduzir/Pausar no dispositivo Bluetooth</string>
+    <string name="settings.playback.single_button_bluetooth_device_summary">Ativar isso pode ajudar com dispositivos Bluetooth mais antigos quando Reproduzir/Pausar não funciona corretamente</string>
     <string name="settings.debug.title">Opções de depuração</string>
     <string name="settings.debug.log_to_file">Escrever o log de depuração em arquivo</string>
     <string name="settings.debug.log_path">Os arquivos com log estão disponíveis em %1$s/%2$s</string>

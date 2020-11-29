@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <string name="background_task.loading">載入中…</string>
+    <string name="button_bar.bookmarks">書籤</string>
+    <string name="button_bar.browse">媒體庫</string>
+    <string name="button_bar.now_playing">正在播放</string>
+    <string name="button_bar.search">搜尋</string>
+    <string name="common.cancel">取消</string>
+    <string name="common.comment">註記</string>
+    <string name="common.confirm">確認</string>
+    <string name="common.delete">刪除</string>
+    <string name="common.download">下載</string>
+    <string name="common.info">詳細資訊</string>
+    <string name="common.name">名稱</string>
+    <string name="common.play_last">下一首</string>
+    <string name="common.play_next">上一首</string>
+    <string name="common.public">公開</string>
+    <string name="common.save">儲存</string>
+    <string name="delete_playlist">您想刪除 %1$s 嗎？</string>
+    <string name="download.bookmark_removed" formatted="false">書籤已移除。</string>
+    <string name="download.menu_equalizer">等化器</string>
+    <string name="download.menu_lyrics">歌詞</string>
+    <string name="equalizer.enabled">已啟用</string>
+    <string name="equalizer.label">等化器</string>
+    <string name="main.albums_random">隨機</string>
+    <string name="main.albums_recent">最近播放</string>
+    <string name="main.albums_starred">已加星號</string>
+    <string name="main.albums_title">專輯</string>
+    <string name="main.artists_title">作者</string>
+    <string name="main.offline">離線</string>
+    <string name="menu.about">關於</string>
+    <string name="menu.exit">離開</string>
+    <string name="menu.settings">設定</string>
+    <string name="music_library.label">媒體庫</string>
+    <string name="playlist.label">播放清單</string>
+    <string name="search.label">搜尋</string>
+    <string name="search.title">搜尋</string>
+    <string name="settings.directory_cache_time_0">已停用</string>
+    <string name="settings.directory_cache_time_1">1 分</string>
+    <string name="settings.directory_cache_time_10">10 分</string>
+    <string name="settings.directory_cache_time_2">2 分</string>
+    <string name="settings.directory_cache_time_30">30 分</string>
+    <string name="settings.directory_cache_time_5">5 分</string>
+    <string name="settings.directory_cache_time_60">1 小時</string>
+    </resources>
