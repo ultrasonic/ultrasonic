@@ -314,6 +314,8 @@
     <string name="settings.use_folder_for_album_artist_summary">Se asume que la carpeta en el nivel mal alto es el nombre del artista del álbum</string>
     <string name="settings.use_id3">Navegar usando las etiquetas ID3</string>
     <string name="settings.use_id3_summary">Usar el método de etiquetas ID3 en lugar del método basado en el sistema de ficheros</string>
+    <string name="settings.show_artist_picture">Mostrar la imagen del artista en la lista de artistas</string>
+    <string name="settings.show_artist_picture_summary">Muestra la imagen del artista en la lista de artistas si está disponible</string>
     <string name="settings.video_title">Vídeo</string>
     <string name="settings.video_player">Reproductor de vídeo</string>
     <string name="settings.view_refresh">Refresco de la vista</string>
