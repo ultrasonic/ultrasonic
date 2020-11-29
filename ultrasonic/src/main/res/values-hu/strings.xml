@@ -313,6 +313,8 @@
     <string name="settings.use_folder_for_album_artist_summary">Feltételezi, hogy a legfelső szintű mappa az előadó neve.</string>
     <string name="settings.use_id3">Böngészés ID3 Tag használatával</string>
     <string name="settings.use_id3_summary">ID3 Tag módszer használata a fájlredszer alapú mód helyett.</string>
+    <string name="settings.show_artist_picture">Előadó képének megjelenítése</string>
+    <string name="settings.show_artist_picture_summary">Az előadó listában megjeleníti a képeket, amennyiben elérhetőek</string>
     <string name="settings.video_title">Videó</string>
     <string name="settings.video_player">Videólejátszó</string>
     <string name="settings.view_refresh">Nézet frissítési gyakorisága</string>

@@ -63,6 +63,7 @@ public class SettingsFragment extends PreferenceFragment
     private CheckBoxPreference lockScreenEnabled;
     private CheckBoxPreference sendBluetoothNotifications;
     private CheckBoxPreference sendBluetoothAlbumArt;
+    private CheckBoxPreference showArtistPicture;
     private ListPreference viewRefresh;
     private ListPreference imageLoaderConcurrency;
     private EditTextPreference sharingDefaultDescription;
@@ -121,6 +122,7 @@ public class SettingsFragment extends PreferenceFragment
         resumeOnBluetoothDevice = findPreference(Constants.PREFERENCES_KEY_RESUME_ON_BLUETOOTH_DEVICE);
         pauseOnBluetoothDevice = findPreference(Constants.PREFERENCES_KEY_PAUSE_ON_BLUETOOTH_DEVICE);
         debugLogToFile = (CheckBoxPreference) findPreference(Constants.PREFERENCES_KEY_DEBUG_LOG_TO_FILE);
+        showArtistPicture = (CheckBoxPreference) findPreference(Constants.PREFERENCES_KEY_SHOW_ARTIST_PICTURE);
 
         sharingDefaultGreeting.setText(Util.getShareGreeting(getActivity()));
         setupClearSearchPreference();
@@ -176,6 +178,9 @@ public class SettingsFragment extends PreferenceFragment
             setImageLoaderConcurrency(Integer.parseInt(sharedPreferences.getString(key, "5")));
         } else if (Constants.PREFERENCES_KEY_DEBUG_LOG_TO_FILE.equals(key)) {
             setDebugLogToFile(sharedPreferences.getBoolean(key, false));
+        } else if (Constants.PREFERENCES_KEY_ID3_TAGS.equals(key)) {
+            if (sharedPreferences.getBoolean(key, false)) showArtistPicture.setEnabled(true);
+            else showArtistPicture.setEnabled(false);
         }
     }
 
@@ -427,6 +432,9 @@ public class SettingsFragment extends PreferenceFragment
         } else {
             debugLogToFile.setSummary("");
         }
+
+        if (Util.getShouldUseId3Tags(getActivity())) showArtistPicture.setEnabled(true);
+        else showArtistPicture.setEnabled(false);
     }
 
     private static void setImageLoaderConcurrency(int concurrency) {

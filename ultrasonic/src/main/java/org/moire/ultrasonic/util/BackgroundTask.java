@@ -20,18 +20,7 @@ package org.moire.ultrasonic.util;
 
 import android.app.Activity;
 import android.os.Handler;
-import timber.log.Timber;
-import com.fasterxml.jackson.core.JsonParseException;
-import org.moire.ultrasonic.R;
-import org.moire.ultrasonic.api.subsonic.ApiNotSupportedException;
-import org.moire.ultrasonic.service.SubsonicRESTException;
-import org.moire.ultrasonic.subsonic.RestErrorMapper;
-
-import javax.net.ssl.SSLException;
-import java.io.FileNotFoundException;
-import java.io.IOException;
-import java.security.cert.CertPathValidatorException;
-import java.security.cert.CertificateException;
+import org.moire.ultrasonic.service.CommunicationErrorHandler;
 
 /**
  * @author Sindre Mehus
@@ -65,41 +54,13 @@ public abstract class BackgroundTask<T> implements ProgressListener
 
 	protected void error(Throwable error)
 	{
-		Timber.w(error);
-		new ErrorDialog(activity, getErrorMessage(error), false);
+		CommunicationErrorHandler.Companion.handleError(error, activity);
 	}
 
-    protected String getErrorMessage(Throwable error) {
-        if (error instanceof IOException && !Util.isNetworkConnected(activity)) {
-            return activity.getResources().getString(R.string.background_task_no_network);
-        } else if (error instanceof FileNotFoundException) {
-            return activity.getResources().getString(R.string.background_task_not_found);
-        } else if (error instanceof JsonParseException) {
-            return activity.getResources().getString(R.string.background_task_parse_error);
-        } else if (error instanceof SSLException) {
-            if (error.getCause() instanceof CertificateException &&
-                    error.getCause().getCause() instanceof CertPathValidatorException) {
-                return activity.getResources()
-                        .getString(R.string.background_task_ssl_cert_error,
-                                error.getCause().getCause().getMessage());
-            } else {
-                return activity.getResources().getString(R.string.background_task_ssl_error);
-            }
-        } else if (error instanceof ApiNotSupportedException) {
-			return activity.getResources().getString(R.string.background_task_unsupported_api,
-				((ApiNotSupportedException) error).getServerApiVersion());
-		} else if (error instanceof IOException) {
-            return activity.getResources().getString(R.string.background_task_network_error);
-        } else if (error instanceof SubsonicRESTException) {
-            return RestErrorMapper.getLocalizedErrorMessage((SubsonicRESTException) error, activity);
-        }
-
-        String message = error.getMessage();
-        if (message != null) {
-            return message;
-        }
-        return error.getClass().getSimpleName();
-    }
+	protected String getErrorMessage(Throwable error)
+	{
+		return CommunicationErrorHandler.Companion.getErrorMessage(error, activity);
+	}
 
 	@Override
 	public abstract void updateProgress(final String message);

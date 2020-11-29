@@ -65,6 +65,11 @@
             a:summary="@string/settings.use_id3_summary"
             a:title="@string/settings.use_id3"/>
         <CheckBoxPreference
+            a:defaultValue="false"
+            a:key="showArtistPicture"
+            a:summary="@string/settings.show_artist_picture_summary"
+            a:title="@string/settings.show_artist_picture"/>
+        <CheckBoxPreference
             a:defaultValue="true"
             a:key="mediaButtons"
             a:summary="@string/settings.media_button_summary"

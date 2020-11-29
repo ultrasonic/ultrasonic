@@ -7,6 +7,7 @@ import org.moire.ultrasonic.api.subsonic.models.Artist as APIArtist
 
 fun APIArtist.toDomainEntity(): Artist = Artist(
     id = this@toDomainEntity.id,
+    coverArt = this@toDomainEntity.coverArt,
     name = this@toDomainEntity.name
 )
 

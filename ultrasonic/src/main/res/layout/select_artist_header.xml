@@ -7,7 +7,10 @@
     a:orientation="horizontal"
     a:paddingBottom="2dip"
     a:paddingLeft="6dp"
-    a:paddingTop="2dip" >
+    a:paddingTop="2dip"
+    a:background="?android:attr/selectableItemBackground"
+    a:clickable="true"
+    a:focusable="true">
 
     <ImageView
         a:layout_width="wrap_content"
