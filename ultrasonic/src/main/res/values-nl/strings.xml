@@ -314,6 +314,8 @@
     <string name="settings.use_folder_for_album_artist_summary">Aannemen dat de naam van de bovenliggende map de naam van de albumartiest is</string>
     <string name="settings.use_id3">Navigeren met behulp van ID3-labels</string>
     <string name="settings.use_id3_summary">ID3-labels gebruiken in plaats van systeemlabels</string>
+    <string name="settings.show_artist_picture">Artiestfoto tonen op artiestenlijst</string>
+    <string name="settings.show_artist_picture_summary">Toont de artiestfoto op de artiestenlijst (indien beschikbaar)</string>
     <string name="settings.video_title">Video</string>
     <string name="settings.video_player">Videospeler</string>
     <string name="settings.view_refresh">Verversen</string>
