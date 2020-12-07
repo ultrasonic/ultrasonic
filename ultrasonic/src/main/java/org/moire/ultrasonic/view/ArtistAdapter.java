@@ -81,9 +81,8 @@ public class ArtistAdapter extends ArrayAdapter<Artist> implements SectionIndexe
     ) {
         View rowView = convertView;
         if (rowView == null) {
-            rowView = layoutInflater.inflate(R.layout.artist_list_item, parent, false);
+            rowView = layoutInflater.inflate(R.layout.artist_search_list_item, parent, false);
         }
-
         ((TextView) rowView).setText(getItem(position).getName());
 
         return rowView;
