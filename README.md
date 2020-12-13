@@ -5,6 +5,7 @@
 
 Ultrasonic is free and open-source music streaming Android client for [Subsonic](http://www.subsonic.org/) [API](http://www.subsonic.org/pages/api.jsp) (version 1.7.0 or higher) compatible servers.
 
+
 ## Help wanted
 
 We currently don't have that much time to spend developing Subsonic, so any
