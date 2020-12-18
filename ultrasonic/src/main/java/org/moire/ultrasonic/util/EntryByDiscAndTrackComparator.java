@@ -18,6 +18,8 @@ public class EntryByDiscAndTrackComparator implements Comparator<MusicDirectory.
 		Integer trackY = y.getTrack();
 		String albumX = x.getAlbum();
 		String albumY = y.getAlbum();
+		String pathX = x.getPath();
+		String pathY = y.getPath();
 
 		int albumComparison = compare(albumX, albumY);
 
@@ -33,7 +35,14 @@ public class EntryByDiscAndTrackComparator implements Comparator<MusicDirectory.
 			return discComparison;
 		}
 
-		return compare(trackX == null ? 0 : trackX, trackY == null ? 0 : trackY);
+		int trackComparison = compare(trackX == null ? 0 : trackX, trackY == null ? 0 : trackY);
+
+		if (trackComparison != 0)
+		{
+			return trackComparison;
+		}
+
+		return compare(pathX == null ? "" : pathX, pathY == null ? "" : pathY);
 	}
 
 	private static int compare(long a, long b)
