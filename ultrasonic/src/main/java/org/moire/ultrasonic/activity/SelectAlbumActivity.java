@@ -807,6 +807,11 @@ public class SelectAlbumActivity extends SubsonicTabActivity
 		new LoadTask()
 		{
 			@Override
+			protected boolean sortableCollection() {
+				return false;
+			}
+
+			@Override
 			protected MusicDirectory load(MusicService service) throws Exception
 			{
 				return service.getRandomSongs(size, SelectAlbumActivity.this, this);
@@ -882,6 +887,16 @@ public class SelectAlbumActivity extends SubsonicTabActivity
 
 		new LoadTask()
 		{
+			@Override
+			protected boolean sortableCollection() {
+				if (albumListType.equals("newest") || albumListType.equals("random") ||
+						albumListType.equals("highest") || albumListType.equals("recent") ||
+						albumListType.equals("frequent")) {
+					return false;
+				}
+				return true;
+			}
+
 			@Override
 			protected MusicDirectory load(MusicService service) throws Exception
 			{
@@ -1096,6 +1111,10 @@ public class SelectAlbumActivity extends SubsonicTabActivity
 
 		protected abstract MusicDirectory load(MusicService service) throws Exception;
 
+		protected boolean sortableCollection() {
+			return true;
+		}
+
 		@Override
 		protected Pair<MusicDirectory, Boolean> doInBackground() throws Throwable
 		{
@@ -1111,7 +1130,7 @@ public class SelectAlbumActivity extends SubsonicTabActivity
 			MusicDirectory musicDirectory = result.getFirst();
 			List<MusicDirectory.Entry> entries = musicDirectory.getChildren();
 
-			if (Util.getShouldSortByDisc(SelectAlbumActivity.this))
+			if (sortableCollection() && Util.getShouldSortByDisc(SelectAlbumActivity.this))
 			{
 				Collections.sort(entries, new EntryByDiscAndTrackComparator());
 			}
