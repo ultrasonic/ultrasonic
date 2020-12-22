@@ -70,7 +70,11 @@ class SubsonicAPIClient(
                 .addQueryParameter("c", config.clientID)
                 .addQueryParameter("f", "json")
                 .build()
-            chain.proceed(originalRequest.newBuilder().url(newUrl).build())
+            var newRequest = originalRequest.newBuilder()
+                .url(newUrl)
+                .header("Accept", "*/*")
+                .build()
+            chain.proceed(newRequest)
         }
         .addInterceptor(versionInterceptor)
         .addInterceptor(proxyPasswordInterceptor)
