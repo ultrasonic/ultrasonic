@@ -47,6 +47,8 @@
     <string name="download.menu_lyrics">歌词</string>
     <string name="download.menu_remove">删除歌曲</string>
     <string name="download.menu_save">保存播放列表</string>
+    <string name="download.menu_screen_off">关闭屏幕常亮</string>
+    <string name="download.menu_screen_on">开启屏幕常亮</string>
     <string name="download.menu_shuffle">随机</string>
     <string name="download.playerstate_downloading">下载中 - %s</string>
     <string name="download.playlist_done">已成功保存播放列表。</string>
