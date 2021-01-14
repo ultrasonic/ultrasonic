@@ -170,6 +170,9 @@ public class SubsonicTabActivity extends ResultActivity implements OnClickListen
 			restart();
 		}
 
+		// This must be filled here because onCreate is called before the derived objects would call setContentView
+		getNowPlayingView();
+
 		if (!nowPlayingHidden)
 		{
 			showNowPlaying();
@@ -242,6 +245,19 @@ public class SubsonicTabActivity extends ResultActivity implements OnClickListen
 		return destroyed;
 	}
 
+	private void getNowPlayingView()
+	{
+		if (nowPlayingView == null)
+		{
+			try {
+				nowPlayingView = findViewById(R.id.now_playing);
+			}
+			catch (Exception exception) {
+				Timber.w(exception, "An exception has occurred while trying to get the nowPlayingView by findViewById");
+			}
+		}
+	}
+
 	public void showNowPlaying()
 	{
 		this.runOnUiThread(new Runnable()
@@ -259,8 +275,6 @@ public class SubsonicTabActivity extends ResultActivity implements OnClickListen
 							hideNowPlaying();
 							return null;
 						}
-
-						nowPlayingView = findViewById(R.id.now_playing);
 
 						if (nowPlayingView != null)
 						{
@@ -305,11 +319,6 @@ public class SubsonicTabActivity extends ResultActivity implements OnClickListen
 		{
 			hideNowPlaying();
 			return;
-		}
-
-		if (nowPlayingView == null)
-		{
-			nowPlayingView = findViewById(R.id.now_playing);
 		}
 
 		if (nowPlayingView != null)
@@ -407,11 +416,6 @@ public class SubsonicTabActivity extends ResultActivity implements OnClickListen
 	{
 		try
 		{
-			if (nowPlayingView == null)
-			{
-				nowPlayingView = findViewById(R.id.now_playing);
-			}
-
 			if (nowPlayingView != null)
 			{
 				setVisibilityOnUiThread(nowPlayingView, View.GONE);
