@@ -80,7 +80,7 @@
     <string name="equalizer.preset">Selecionar Configuração Prévia</string>
     <string name="error.label">Erro</string>
     <string name="help.url">file:///android_asset/html/en/index.html</string>
-    <string name="jukebox.is_default">Jukebox por Padrão</string>
+    <string name="jukebox.is_default">Jukebox por padrão</string>
     <string name="lyrics.nomatch">Nenhuma letra encontrada</string>
     <string name="main.albums_alphaByArtist">Por Artista</string>
     <string name="main.albums_alphaByName">Por Nome</string>
@@ -148,7 +148,7 @@
     <string name="service.connecting">Contactando o servidor, por favor aguarde.</string>
     <string name="settings.appearance_title">Aparência</string>
     <string name="settings.buffer_length">Tamanho do Buffer</string>
-    <string name="settings.buffer_length_0">Disabilitando</string>
+    <string name="settings.buffer_length_0">Desativado</string>
     <string name="settings.buffer_length_1">1 segundo</string>
     <string name="settings.buffer_length_10">10 segundos</string>
     <string name="settings.buffer_length_12">12 segundos</string>
@@ -202,12 +202,12 @@
     <string name="settings.directory_cache_time_60">1 hora</string>
     <string name="settings.disc_sort">Classificar Músicas por Álbum</string>
     <string name="settings.disc_sort_summary">Classificar músicas pelo número do álbum e faixas.</string>
-    <string name="settings.display_bitrate">Taxa de Bits e Sufixo</string>
-    <string name="settings.display_bitrate_summary">Adiciona o nome do artista com a taxa de bits e sufixo do arquivo</string>
-    <string name="settings.download_transition">Downloads na Reprodução</string>
+    <string name="settings.display_bitrate">Mostrar Taxa de Bits e Sufixo de Arquivo</string>
+    <string name="settings.display_bitrate_summary">Adicionar o nome do artista com a taxa de bits e sufixo do arquivo</string>
+    <string name="settings.download_transition">Mostrar Downloads na Reprodução</string>
     <string name="settings.download_transition_summary">Transição para atividade de download quando iniciar reprodução</string>
     <string name="settings.gapless_playback">Reprodução sem Interrupção</string>
-    <string name="settings.gapless_playback_summary">Habilita reprodução sem interrupção</string>
+    <string name="settings.gapless_playback_summary">Ativar reprodução sem interrupção</string>
     <string name="settings.hide_media_summary">Esconder músicas de outros aplicativos.</string>
     <string name="settings.hide_media_title">Esconder de Outros</string>
     <string name="settings.hide_media_toast">Será efetivado na próxima vez que o Android procurar por músicas em seu celular.</string>
@@ -274,26 +274,26 @@
     <string name="settings.search_75">75</string>
     <string name="settings.search_history_cleared">Histórico de pesquisas apagado</string>
     <string name="settings.search_title">Configurações de Pesquisa</string>
-    <string name="settings.send_bluetooth_album_art_summary">Envia a arte do álbum via Bluetooth (Pode causar falhas nas notificações do Bluetooth)</string>
+    <string name="settings.send_bluetooth_album_art_summary">Enviar a arte do álbum via Bluetooth (Pode causar falhas nas notificações do Bluetooth)</string>
     <string name="settings.send_bluetooth_album_art">Arte do Álbum via Bluetooth</string>
-    <string name="settings.send_bluetooth_notification_summary">Envia notificações de reprodução via Bluetooth</string>
+    <string name="settings.send_bluetooth_notification_summary">Enviar notificações de reprodução via Bluetooth</string>
     <string name="settings.send_bluetooth_notification">Notificações via Bluetooth</string>
-    <string name="settings.server_manage_servers">Manage Servers</string>
+    <string name="settings.server_manage_servers">Gerenciar Servidores</string>
     <string name="settings.server_address">Endereço do Servidor</string>
     <string name="settings.server_name">Nome</string>
     <string name="settings.server_password">Senha</string>
     <string name="settings.server_remove_server">Excluir Servidor</string>
-    <string name="settings.server_scaling_summary">Baixa imagens reduzidas do servidor ao invés do tamanho completo (economiza banda)</string>
+    <string name="settings.server_scaling_summary">Baixar imagens reduzidas do servidor ao invés do tamanho completo (economiza banda)</string>
     <string name="settings.server_scaling_title">Reduzir Arte dos Álbuns</string>
     <string name="settings.server_unused">Não usado</string>
     <string name="settings.server_username">Login</string>
     <string name="settings.servers_title">Servidores</string>
     <string name="settings.show_lockscreen_controls">Controles na Tela de Bloqueio</string>
-    <string name="settings.show_lockscreen_controls_summary">Mostra controles de reprodução na tela de bloqueio</string>
+    <string name="settings.show_lockscreen_controls_summary">Mostrar controles de reprodução na tela de bloqueio</string>
     <string name="settings.show_notification">Mostrar Notificações</string>
     <string name="settings.show_notification_always">Sempre Mostrar Notificações</string>
     <string name="settings.show_notification_always_summary">Sempre mostrar a reprodução atual quando uma playlist é preenchida</string>
-    <string name="settings.show_notification_summary">Mostra a notificação de reprodução atual na barra de status</string>
+    <string name="settings.show_notification_summary">Mostrar a notificação de reprodução atual na barra de status</string>
     <string name="settings.show_now_playing">Mostrar Reprodução Atual</string>
     <string name="settings.show_now_playing_summary">Mostrar a faixa tocada atualmente em todas as atividades</string>
     <string name="settings.show_track_number">Mostrar o Número da Faixa</string>
@@ -304,18 +304,18 @@
     <string name="settings.testing_unlicensed">Conexão OK. Servidor não licenciado.</string>
     <string name="settings.theme_light">Claro</string>
     <string name="settings.theme_dark">Escuro</string>
-    <string name="settings.theme_black">Voltar</string>
+    <string name="settings.theme_black">Negro</string>
     <string name="settings.theme_title">Tema</string>
     <string name="settings.title.allow_self_signed_certificate">Permitir o certificado HTTPS auto-assinado</string>
-    <string name="settings.title.enable_ldap_users_support">Ative o suporte para usuários LDAP</string>
-    <string name="settings.summary.enable_ldap_users_support">Isso força o aplicativo a enviar sempre a senha de forma antiga,
+    <string name="settings.title.enable_ldap_users_support">Forçar autenticação não criptografada</string>
+    <string name="settings.summary.enable_ldap_users_support">Isso força o aplicativo a sempre enviar a senha na forma antiga,
          porque a api Subsonic não suporta a nova autorização para usuários LDAP.</string>
     <string name="settings.use_folder_for_album_artist">Usar Pasta para Nome do Artista</string>
     <string name="settings.use_folder_for_album_artist_summary">Assumir que a pasta mais acima é o nome do artista</string>
     <string name="settings.use_id3">Navegar Usando Etiquetas ID3</string>
-    <string name="settings.use_id3_summary">Usa as etiquetas ID3 ao invés do sistema de arquivos</string>
+    <string name="settings.use_id3_summary">Usar as etiquetas ID3 ao invés do sistema de arquivos</string>
     <string name="settings.show_artist_picture">Mostrar foto do artista na lista de artistas</string>
-    <string name="settings.show_artist_picture_summary">Mostra a imagem do artista na lista de artistas, se disponível</string>
+    <string name="settings.show_artist_picture_summary">Mostrar a imagem do artista na lista de artistas, se disponível</string>
     <string name="settings.video_title">Vídeo</string>
     <string name="settings.video_player">Player de Vídeo</string>
     <string name="settings.view_refresh">Atualização da Tela</string>
@@ -344,20 +344,20 @@
     <string name="widget.initial_text">Toque para selecionar a música</string>
     <string name="widget.sdcard_busy">Cartão SD indisponível</string>
     <string name="widget.sdcard_missing">Sem cartão SD</string>
-    <string name="settings.share_description_default">Texto Padrão</string>
+    <string name="settings.share_description_default">Descrição Padrão do Compartilhamento</string>
     <string name="settings.sharing_title">Compartilhamento</string>
-    <string name="settings.sharing_always_ask_for_details_summary">Sempre pergunta pela descrição e expiração ao criar um compartilhamento</string>
+    <string name="settings.sharing_always_ask_for_details_summary">Sempre perguntar pela descrição e expiração ao criar um compartilhamento</string>
     <string name="settings.sharing_always_ask_for_details">Sempre Perguntar por Detalhes</string>
     <string name="settings.share_expiration_default">Tempo Padrão para Expirar</string>
     <string name="do_not_show_dialog_again">Não mostrar este diálogo novamente</string>
     <string name="share_set_share_options">Configurações de Compartilhamento</string>
     <string name="no_expiration">Não Expira</string>
     <string name="download.toggle_playlist">Alternar Playlist</string>
-    <string name="download.bookmark_set">Defina como Favorito</string>
+    <string name="download.bookmark_set">Definir como Favorito</string>
     <string name="download.bookmark_delete">Excluir dos Favoritos</string>
-    <string name="download.menu_star">Iniciar</string>
+    <string name="download.menu_star">Estrela</string>
     <string name="download.menu_clear_playlist">Limpar Playlist</string>
-    <string name="button_bar.shares">Compartilhar</string>
+    <string name="button_bar.shares">Compartilhamentos</string>
     <string name="select_share.empty">Nenhum compartilhamento disponível no servidor</string>
     <string name="menu_deleted_share">Compartilhamento %s excluído</string>
     <string name="menu_deleted_share_error">Falha ao excluir o compartilhamento %s</string>
@@ -373,7 +373,7 @@
     <string name="settings.share_expiration">Tempo até expirar</string>
     <string name="download_song_removed">\"%s\" foi removido da playlist</string>
     <string name="download.share_playlist">Compartilhar Playlist</string>
-    <string name="settings.share_greeting_default">Saudação Padrão</string>
+    <string name="settings.share_greeting_default">Saudação Padrão do Compartilhamento</string>
     <string name="share_default_greeting">Confira esta música que compartilhei do %s</string>
     <string name="share_via">Compartilhar músicas via</string>
     <string name="settings.video_mx_player">MX Player</string>
@@ -381,8 +381,8 @@
     <string name="settings.video_flash">Flash</string>
     <string name="menu.share">Compartilhar</string>
     <string name="select_album_all_songs">Todas as Músicas de %s</string>
-    <string name="settings.show_all_songs_by_artist">Todas as Músicas do Artista</string>
-    <string name="settings.show_all_songs_by_artist_summary">Adicionar nova entrada em artista para ver todas as músicas do artista</string>
+    <string name="settings.show_all_songs_by_artist">Mostrar Todas as Músicas por Artista</string>
+    <string name="settings.show_all_songs_by_artist_summary">Adicionar nova entrada em artista para acessar todas as músicas do artista</string>
     <string name="download.menu_show_artist">Mostrar Artista</string>
     <string name="settings.scan_media">Escanear Música no Download</string>
     <string name="settings.scan_media_summary">Automaticamente escaneia música após o download</string>
@@ -400,16 +400,16 @@
     <string name="settings.image_loader_concurrency_11">11</string>
     <string name="settings.image_loader_concurrency_12">12</string>
     <string name="albumArt">albumArt</string>
-    <string name="common_multiple_years">Múltiplos Anos</string>
-    <string name="settings.playback.resume_on_bluetooth_device">Retomar quando o dispositivo Bluetooth estiver conectado</string>
-    <string name="settings.playback.pause_on_bluetooth_device">Pausar quando o dispositivo Bluetooth for desconectado</string>
+    <string name="common_multiple_years">Anos Múltiplos</string>
+    <string name="settings.playback.resume_on_bluetooth_device">Retomar ao Conectar Dispositivo Bluetooth</string>
+    <string name="settings.playback.pause_on_bluetooth_device">Pausar ao Desconectar Dispositivo Bluetooth</string>
     <string name="settings.playback.bluetooth_all">Todos os dispositivos Bluetooth</string>
     <string name="settings.playback.bluetooth_a2dp">Somente dispositivos de áudio (A2DP)</string>
     <string name="settings.playback.bluetooth_disabled">Desativado</string>
-    <string name="settings.playback.single_button_bluetooth_device">Botão único para Reproduzir/Pausar no dispositivo Bluetooth</string>
+    <string name="settings.playback.single_button_bluetooth_device">Botão Único para Reproduzir/Pausar</string>
     <string name="settings.playback.single_button_bluetooth_device_summary">Ativar isso pode ajudar com dispositivos Bluetooth mais antigos quando Reproduzir/Pausar não funciona corretamente</string>
-    <string name="settings.debug.title">Opções de depuração</string>
-    <string name="settings.debug.log_to_file">Escrever o log de depuração em arquivo</string>
+    <string name="settings.debug.title">Opções de Depuração</string>
+    <string name="settings.debug.log_to_file">Log de Depuração em Arquivo</string>
     <string name="settings.debug.log_path">Os arquivos com log estão disponíveis em %1$s/%2$s</string>
     <string name="settings.debug.log_summary">Existem %1$s arquivos de log ocupando ~%2$s MB de espaço no diretório %3$s. Quer mantê-los?</string>
     <string name="settings.debug.log_keep">Manter arquivos</string>
@@ -441,7 +441,7 @@
 
     <string name="server_selector.label">Servidores configurados</string>
     <string name="server_selector.delete_confirmation">Quer realmente excluir o servidor?</string>
-    <string name="server_editor.label">Editar o servidor</string>
+    <string name="server_editor.label">Gerenciar servidor</string>
     <string name="server_editor.new_label">Adicionar Servidor</string>
     <string name="server_editor.leave_confirmation">Quer realmente sair e descartar as alterações?</string>
     <string name="server_editor.required">Este campo é necessário</string>
@@ -494,14 +494,14 @@
     <string name="api.subsonic.upgrade_server">Versões incompativeis. Atualize o servidor Ultrasonic.</string>
 
     <!-- Subsonic feature flags -->
-    <string name="feature_flags_category_title">Bandeiras de recursos</string>
-    <string name="feature_flags_image_loader_title">Ativar novo carregador de imagens</string>
+    <string name="feature_flags_category_title">Bandeiras de Recursos</string>
+    <string name="feature_flags_image_loader_title">Ativar Novo Carregador de Imagens</string>
     <string name="feature_flags_image_loader_description">Permite nova implementação do carregador de imagens.
         Atualmente, ele não salva a imagem no armazenamento do dispositivo e usa apenas o cache na memória.
     </string>
-    <string name="feature_flags_five_star_rating_title">Use classificação de cinco estrelas para músicas</string>
-    <string name="feature_flags_five_star_rating_description">Use o sistema de classificação de cinco estrelas para músicas
-         em vez de simplesmente estrelar / não estrelar itens.
+    <string name="feature_flags_five_star_rating_title">Usar Classif. de 5 estrelas Para Músicas</string>
+    <string name="feature_flags_five_star_rating_description">Use o sistema de classificação de 5 estrelas para músicas
+         em vez de simplesmente estrelar/não estrelar itens.
     </string>
 
 </resources>
