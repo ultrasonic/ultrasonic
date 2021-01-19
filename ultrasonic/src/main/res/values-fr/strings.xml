@@ -461,7 +461,7 @@
         <item quantity="other">%d titres sélectionnée pour être épinglé.</item>
     </plurals>
     <plurals name="select_album_n_songs_downloaded">
-        <item quantity="one">1 titre sélectionné pour être téléchargé.</item>
+        <item quantity="one">%d titre sélectionné pour être téléchargé.</item>
         <item quantity="other">%d titres sélectionnés pour être téléchargés.</item>
     </plurals>
     <plurals name="select_album_n_songs_unpinned">
