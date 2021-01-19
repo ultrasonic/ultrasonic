@@ -65,7 +65,7 @@ jobs:
           name: push changes in translation files
           command: |
             . ~/venv/bin/activate
-            tx push -st
+            tx push -s
   generate_signed_apk:
     docker:
       - image: circleci/android:api-28
