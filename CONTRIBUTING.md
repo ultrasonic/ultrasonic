@@ -29,7 +29,7 @@ and test.
 
 ### Pull Request Process
 
-1. Ensure all commits are signed-off.
+1. Ensure [all commits are signed-off](https://docs.github.com/en/free-pro-team@latest/github/authenticating-to-github/about-commit-signature-verification).
 2. Check tests for the new code are added.
 3. Check code style is passing.
 4. Check code static analysis is passing.
