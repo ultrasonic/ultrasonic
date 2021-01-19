@@ -1,0 +1,1 @@
+Cliente de código abierto para servidores compatibles con la API de Subsonic

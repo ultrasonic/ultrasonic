@@ -1,0 +1,18 @@
+Ultrasonic is a Subsonic (and compatible servers) client to Android. You can use Ultrasonic to connect with your server and listen music.
+
+Main features:
+* Thin
+* Fast
+* Dark and light theme
+* Multiple server support
+* Offline Mode
+* Bookmarks
+* Playlists on server
+* Ramdom play
+* Jukebox mode
+* Server chat
+* And much more!!!
+
+The source code is available with GPL license in Github: https://github.com/ultrasonic/ultrasonic
+If you have any issue, please post in: https://github.com/ultrasonic/ultrasonic/issues
+Play store icon designed by: http://www.flaticon.com/authors/sebastien-gabriel
