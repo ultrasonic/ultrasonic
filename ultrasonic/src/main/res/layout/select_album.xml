@@ -9,8 +9,6 @@
         a:layout_height="1dp"
         a:background="@color/dividerColor" />
 
-    <include layout="@layout/tab_progress" />
-
     <TextView
         a:id="@+id/select_album_empty"
         a:layout_width="fill_parent"

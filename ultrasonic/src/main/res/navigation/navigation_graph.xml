@@ -1,0 +1,85 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto" android:id="@+id/navigation_graph"
+    app:startDestination="@id/mainFragment">
+
+    <fragment
+        android:id="@+id/mainFragment"
+        android:name="org.moire.ultrasonic.fragment.MainFragment"
+        android:label="@string/common.appname" >
+        <action
+            android:id="@+id/mainToSelectAlbum"
+            app:destination="@id/selectAlbumFragment" />
+        <action
+            android:id="@+id/mainToSelectGenre"
+            app:destination="@id/selectGenreFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/selectArtistFragment"
+        android:name="org.moire.ultrasonic.fragment.SelectArtistFragment"
+        android:label="@string/music_library.label" >
+        <action
+            android:id="@+id/selectArtistToSelectAlbum"
+            app:destination="@id/selectAlbumFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/downloadFragment"
+        android:name="org.moire.ultrasonic.fragment.DownloadFragment" />
+    <fragment
+        android:id="@+id/selectAlbumFragment"
+        android:name="org.moire.ultrasonic.fragment.SelectAlbumFragment"
+        android:label="SelectAlbumFragment" >
+    </fragment>
+    <fragment
+        android:id="@+id/searchFragment"
+        android:name="org.moire.ultrasonic.fragment.SearchFragment"
+        android:label="SearchFragment" >
+        <action
+            android:id="@+id/searchToSelectAlbum"
+            app:destination="@id/selectAlbumFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/playlistsFragment"
+        android:name="org.moire.ultrasonic.fragment.PlaylistsFragment"
+        android:label="PlaylistsFragment" >
+        <action
+            android:id="@+id/playlistsToSelectAlbum"
+            app:destination="@id/selectAlbumFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/sharesFragment"
+        android:name="org.moire.ultrasonic.fragment.SharesFragment"
+        android:label="SharesFragment" >
+        <action
+            android:id="@+id/sharesToSelectAlbum"
+            app:destination="@id/selectAlbumFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/bookmarksFragment"
+        android:name="org.moire.ultrasonic.fragment.BookmarksFragment"
+        android:label="BookmarksFragment" />
+    <fragment
+        android:id="@+id/chatFragment"
+        android:name="org.moire.ultrasonic.fragment.ChatFragment"
+        android:label="ChatFragment" />
+    <fragment
+        android:id="@+id/podcastFragment"
+        android:name="org.moire.ultrasonic.fragment.PodcastFragment"
+        android:label="PodcastFragment" >
+        <action
+            android:id="@+id/podcastToSelectAlbum"
+            app:destination="@id/selectAlbumFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/settingsFragment"
+        android:name="org.moire.ultrasonic.fragment.SettingsFragment"
+        android:label="SettingsFragment" />
+    <fragment
+        android:id="@+id/aboutFragment"
+        android:name="org.moire.ultrasonic.fragment.AboutFragment"
+        android:label="AboutFragment" />
+    <fragment
+        android:id="@+id/selectGenreFragment"
+        android:name="org.moire.ultrasonic.fragment.SelectGenreFragment"
+        android:label="SelectGenreFragment" />
+</navigation>

@@ -4,13 +4,19 @@
               a:layout_width="fill_parent"
               a:layout_height="fill_parent">
 
-    <include layout="@layout/tab_progress"/>
+    <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
+        a:id="@+id/search_entries_refresh"
+        a:layout_width="fill_parent"
+        a:layout_height="0dip"
+        a:layout_weight="1.0">
 
     <ListView
             a:id="@+id/search_list"
             a:layout_width="fill_parent"
             a:layout_height="0dip"
             a:layout_weight="1.0"/>
+
+    </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
 
     <include layout="@layout/now_playing" />
 

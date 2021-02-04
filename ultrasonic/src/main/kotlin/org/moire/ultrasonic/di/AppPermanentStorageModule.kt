@@ -9,6 +9,7 @@ import org.moire.ultrasonic.activity.ServerSettingsModel
 import org.moire.ultrasonic.data.ActiveServerProvider
 import org.moire.ultrasonic.data.AppDatabase
 import org.moire.ultrasonic.data.MIGRATION_1_2
+import org.moire.ultrasonic.subsonic.ImageLoaderProvider
 import org.moire.ultrasonic.util.Util
 
 const val SP_NAME = "Default_SP"
@@ -32,4 +33,6 @@ val appPermanentStorage = module {
     viewModel { ServerSettingsModel(get(), get(), androidContext()) }
 
     single { ActiveServerProvider(get(), androidContext()) }
+
+    single { ImageLoaderProvider(androidContext()) }
 }

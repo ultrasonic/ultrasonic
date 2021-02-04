@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:a="http://schemas.android.com/apk/res/android">
+    <group
+        a:checkableBehavior="none"
+        a:enabled="true"
+        a:visible="true">
+        <item
+            a:id="@+id/mainFragment"
+            a:checkable="true"
+            a:icon="?attr/home"
+            a:title="@string/button_bar.home" />
+        <item
+            a:id="@+id/selectArtistFragment"
+            a:checkable="true"
+            a:icon="?attr/browse"
+            a:title="@string/button_bar.browse" />
+        <item
+            a:id="@+id/searchFragment"
+            a:checkable="true"
+            a:icon="?attr/search"
+            a:title="@string/button_bar.search" />
+        <item
+            a:id="@+id/playlistsFragment"
+            a:checkable="true"
+            a:icon="?attr/playlists"
+            a:title="@string/button_bar.playlists" />
+        <item
+            a:id="@+id/sharesFragment"
+            a:checkable="true"
+            a:icon="?attr/share"
+            a:title="@string/button_bar.shares" />
+        <item
+            a:id="@+id/bookmarksFragment"
+            a:checkable="true"
+            a:icon="?attr/bookmark"
+            a:title="@string/button_bar.bookmarks" />
+        <item
+            a:id="@+id/chatFragment"
+            a:checkable="true"
+            a:icon="?attr/chat"
+            a:title="@string/button_bar.chat" />
+        <item
+            a:id="@+id/menu_now_playing"
+            a:checkable="true"
+            a:icon="?attr/media_play"
+            a:title="@string/button_bar.now_playing" />
+        <item
+            a:id="@+id/podcastFragment"
+            a:checkable="true"
+            a:icon="?attr/podcasts"
+            a:title="@string/button_bar.podcasts" />
+    </group>
+    <item a:title="@string/menu.common">
+        <menu>
+            <item
+                a:id="@+id/settingsFragment"
+                a:checkable="true"
+                a:icon="?attr/settings"
+                a:title="@string/menu.settings" />
+            <item
+                a:id="@+id/aboutFragment"
+                a:checkable="true"
+                a:icon="?attr/about"
+                a:title="@string/menu.about" />
+            <item
+                a:id="@+id/menu_exit"
+                a:checkable="true"
+                a:icon="?attr/exit"
+                a:title="@string/menu.exit" />
+        </menu>
+    </item>
+</menu>

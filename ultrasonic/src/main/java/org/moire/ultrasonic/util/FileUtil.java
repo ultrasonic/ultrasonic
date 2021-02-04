@@ -24,10 +24,13 @@ import android.graphics.BitmapFactory;
 import android.os.Build;
 import android.os.Environment;
 import android.text.TextUtils;
+
+import kotlin.Lazy;
 import timber.log.Timber;
 
 import org.moire.ultrasonic.activity.SubsonicTabActivity;
 import org.moire.ultrasonic.domain.MusicDirectory;
+import org.moire.ultrasonic.subsonic.ImageLoaderProvider;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -43,6 +46,8 @@ import java.util.SortedSet;
 import java.util.TreeSet;
 import java.util.regex.Pattern;
 
+import static org.koin.java.KoinJavaComponent.inject;
+
 /**
  * @author Sindre Mehus
  */
@@ -54,6 +59,8 @@ public class FileUtil
 	private static final List<String> VIDEO_FILE_EXTENSIONS = Arrays.asList("flv", "mp4", "m4v", "wmv", "avi", "mov", "mpg", "mkv");
 	private static final List<String> PLAYLIST_FILE_EXTENSIONS = Collections.singletonList("m3u");
 	private static final Pattern TITLE_WITH_TRACK = Pattern.compile("^\\d\\d-.*");
+
+	private static Lazy<ImageLoaderProvider> imageLoaderProvider = inject(ImageLoaderProvider.class);
 
 	public static File getSongFile(Context context, MusicDirectory.Entry song)
 	{
@@ -154,7 +161,7 @@ public class FileUtil
 
 		if (subsonicTabActivity != null)
 		{
-			imageLoader = subsonicTabActivity.getImageLoader();
+			imageLoader = imageLoaderProvider.getValue().getImageLoader();
 
 			if (imageLoader != null)
 			{
@@ -224,7 +231,7 @@ public class FileUtil
 
 		if (subsonicTabActivity != null)
 		{
-			imageLoader = subsonicTabActivity.getImageLoader();
+			imageLoader = imageLoaderProvider.getValue().getImageLoader();
 
 			if (imageLoader != null)
 			{

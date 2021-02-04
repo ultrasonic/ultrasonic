@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.drawerlayout.widget.DrawerLayout
+    xmlns:a="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    a:id="@+id/drawer_layout"
+    a:layout_width="match_parent"
+    a:layout_height="match_parent"
+    tools:context="org.moire.ultrasonic.activity.NavigationActivity">
+
+    <LinearLayout
+        a:layout_width="match_parent"
+        a:layout_height="match_parent"
+        a:orientation="vertical">
+
+        <androidx.appcompat.widget.Toolbar
+            a:id="@+id/toolbar"
+            a:layout_width="match_parent"
+            a:layout_height="wrap_content" />
+
+        <fragment
+            a:id="@+id/nav_host_fragment"
+            a:name="androidx.navigation.fragment.NavHostFragment"
+            a:layout_width="match_parent"
+            a:layout_height="match_parent"
+            app:defaultNavHost="true"
+            app:navGraph="@navigation/navigation_graph" />
+    </LinearLayout>
+
+    <com.google.android.material.navigation.NavigationView
+        a:id="@+id/nav_view"
+        a:layout_width="wrap_content"
+        a:layout_height="match_parent"
+        a:layout_gravity="start"
+        a:fitsSystemWindows="true"
+        a:theme="@style/ThemeOverlay.AppCompat.navTheme"
+        app:headerLayout="@layout/navigation_header"
+        app:menu="@menu/navigation"/>
+</androidx.drawerlayout.widget.DrawerLayout>

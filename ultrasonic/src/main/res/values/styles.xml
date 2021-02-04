@@ -9,6 +9,11 @@
         <item name="mdAllowIndicatorAnimation">true</item>
     </style>
 
+    <style name="NoActionBar" parent="@style/Theme.AppCompat">
+        <item name="windowActionBar">false</item>
+        <item name="windowNoTitle">true</item>
+    </style>
+
     <style name="MenuDrawer"/>
 
     <style name="MenuDrawer.Widget"/>
@@ -38,6 +43,11 @@
     <style name="roundedImageView" parent="">
         <item name="cornerFamily">rounded</item>
         <item name="cornerSize">8dp</item>
+    </style>
+
+    <style name="ThemeOverlay.AppCompat.navTheme">
+        <item name="colorPrimary">@color/cyan</item>
+        <item name="colorControlHighlight">?attr/color_selected</item>
     </style>
 
     <attr name="star_hollow" format="reference"/>

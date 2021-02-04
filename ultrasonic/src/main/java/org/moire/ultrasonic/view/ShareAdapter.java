@@ -1,12 +1,12 @@
 package org.moire.ultrasonic.view;
 
+import android.content.Context;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.TextView;
 
 import org.moire.ultrasonic.R;
-import org.moire.ultrasonic.activity.SubsonicTabActivity;
 import org.moire.ultrasonic.domain.Share;
 
 import java.io.Serializable;
@@ -20,12 +20,12 @@ import java.util.List;
 public class ShareAdapter extends ArrayAdapter<Share>
 {
 
-	private final SubsonicTabActivity activity;
+	private final Context context;
 
-	public ShareAdapter(SubsonicTabActivity activity, List<Share> Shares)
+	public ShareAdapter(Context context, List<Share> Shares)
 	{
-		super(activity, R.layout.share_list_item, Shares);
-		this.activity = activity;
+		super(context, R.layout.share_list_item, Shares);
+		this.context = context;
 	}
 
 	@Override
@@ -44,7 +44,7 @@ public class ShareAdapter extends ArrayAdapter<Share>
 		}
 		else
 		{
-			view = new ShareView(activity);
+			view = new ShareView(context);
 			view.setLayout();
 		}
 

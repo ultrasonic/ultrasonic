@@ -4,11 +4,14 @@ ext.versions = [
         compileSdk           : 29,
         gradle               : '6.5',
 
+        navigation           : "2.3.2",
         androidTools         : "4.0.0",
         ktlint               : "0.37.1",
         ktlintGradle         : "9.2.1",
         detekt               : "1.0.0.RC6-4",
         jacoco               : "0.8.5",
+        navigationSafeArgs   : "2.3.2",
+        preferences          : "1.1.1",
 
         androidSupport       : "28.0.0",
         androidLegacySupport : "1.0.0",
@@ -42,23 +45,30 @@ ext.versions = [
 ]
 
 ext.gradlePlugins = [
-        androidTools  : "com.android.tools.build:gradle:$versions.androidTools",
-        kotlin        : "org.jetbrains.kotlin:kotlin-gradle-plugin:$versions.kotlin",
-        ktlintGradle  : "org.jlleitschuh.gradle:ktlint-gradle:$versions.ktlintGradle",
-        detekt        : "gradle.plugin.io.gitlab.arturbosch.detekt:detekt-gradle-plugin:$versions.detekt",
-        jacoco        : "org.jacoco:org.jacoco.core:$versions.jacoco"
+        androidTools      : "com.android.tools.build:gradle:$versions.androidTools",
+        kotlin            : "org.jetbrains.kotlin:kotlin-gradle-plugin:$versions.kotlin",
+        ktlintGradle      : "org.jlleitschuh.gradle:ktlint-gradle:$versions.ktlintGradle",
+        detekt            : "gradle.plugin.io.gitlab.arturbosch.detekt:detekt-gradle-plugin:$versions.detekt",
+        jacoco            : "org.jacoco:org.jacoco.core:$versions.jacoco",
+        navigationSafeArgs: "androidx.navigation:navigation-safe-args-gradle-plugin:$versions.navigationSafeArgs"
 ]
 
 ext.androidSupport = [
-        support          : "androidx.legacy:legacy-support-v4:$versions.androidLegacySupport",
-        design           : "com.google.android.material:material:$versions.androidSupportDesign",
-        annotations      : "com.android.support:support-annotations:$versions.androidSupport",
-        multidex         : "androidx.multidex:multidex:$versions.multidex",
-        constraintLayout : "androidx.constraintlayout:constraintlayout:$versions.constraintLayout",
-        room             : "androidx.room:room-compiler:$versions.room",
-        roomRuntime      : "androidx.room:room-runtime:$versions.room",
-        roomKtx          : "androidx.room:room-ktx:$versions.room",
-        viewModelKtx     : "androidx.lifecycle:lifecycle-viewmodel-ktx:$versions.viewModelKtx"
+        support               : "androidx.legacy:legacy-support-v4:$versions.androidLegacySupport",
+        design                : "com.google.android.material:material:$versions.androidSupportDesign",
+        annotations           : "com.android.support:support-annotations:$versions.androidSupport",
+        multidex              : "androidx.multidex:multidex:$versions.multidex",
+        constraintLayout      : "androidx.constraintlayout:constraintlayout:$versions.constraintLayout",
+        room                  : "androidx.room:room-compiler:$versions.room",
+        roomRuntime           : "androidx.room:room-runtime:$versions.room",
+        roomKtx               : "androidx.room:room-ktx:$versions.room",
+        viewModelKtx          : "androidx.lifecycle:lifecycle-viewmodel-ktx:$versions.viewModelKtx",
+        navigationFragment    : "androidx.navigation:navigation-fragment:$versions.navigation",
+        navigationUi          : "androidx.navigation:navigation-ui:$versions.navigation",
+        navigationFragmentKtx : "androidx.navigation:navigation-fragment-ktx:$versions.navigation",
+        navigationUiKtx       : "androidx.navigation:navigation-ui-ktx:$versions.navigation",
+        navigationFeature     : "androidx.navigation:navigation-dynamic-features-fragment:$versions.navigation",
+        preferences           : "androidx.preference:preference:$versions.preferences",
 ]
 
 ext.other = [

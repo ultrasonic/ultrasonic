@@ -1,49 +1,38 @@
-/*
- This file is part of Subsonic.
+package org.moire.ultrasonic.fragment
 
- Subsonic is free software: you can redistribute it and/or modify
- it under the terms of the GNU General Public License as published by
- the Free Software Foundation, either version 3 of the License, or
- (at your option) any later version.
-
- Subsonic is distributed in the hope that it will be useful,
- but WITHOUT ANY WARRANTY; without even the implied warranty of
- MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- GNU General Public License for more details.
-
- You should have received a copy of the GNU General Public License
- along with Subsonic.  If not, see <http://www.gnu.org/licenses/>.
-
- Copyright 2020 (C) Jozsef Varga
- */
-package org.moire.ultrasonic.activity
-
-import android.content.Intent
 import android.os.Bundle
+import android.view.LayoutInflater
 import android.view.MenuItem
 import android.view.View
+import android.view.ViewGroup
 import android.widget.PopupMenu
+import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
+import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import org.koin.android.ext.android.inject
 import org.koin.android.viewmodel.ext.android.viewModel
 import org.moire.ultrasonic.R
+import org.moire.ultrasonic.activity.ArtistListModel
+import org.moire.ultrasonic.activity.ArtistRowAdapter
+import org.moire.ultrasonic.activity.ServerSettingsModel
 import org.moire.ultrasonic.data.ActiveServerProvider
-import org.moire.ultrasonic.data.ActiveServerProvider.Companion.isOffline
 import org.moire.ultrasonic.domain.Artist
 import org.moire.ultrasonic.domain.MusicFolder
+import org.moire.ultrasonic.fragment.FragmentTitle.Companion.setTitle
+import org.moire.ultrasonic.subsonic.DownloadHandler
+import org.moire.ultrasonic.subsonic.ImageLoaderProvider
 import org.moire.ultrasonic.util.Constants
 import org.moire.ultrasonic.util.Util
 
-/**
- * Displays the available Artists in a list
- */
-class SelectArtistActivity : SubsonicTabActivity() {
+class SelectArtistFragment : Fragment() {
     private val activeServerProvider: ActiveServerProvider by inject()
     private val serverSettingsModel: ServerSettingsModel by viewModel()
     private val artistListModel: ArtistListModel by viewModel()
+    private val imageLoaderProvider: ImageLoaderProvider by inject()
+    private val downloadHandler: DownloadHandler by inject()
 
     private var refreshArtistListView: SwipeRefreshLayout? = null
     private var artistListView: RecyclerView? = null
@@ -54,35 +43,44 @@ class SelectArtistActivity : SubsonicTabActivity() {
     /**
      * Called when the activity is first created.
      */
-    public override fun onCreate(savedInstanceState: Bundle?) {
+    @Override
+    override fun onCreate(savedInstanceState: Bundle?) {
+        Util.applyTheme(this.context)
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.select_artist)
+    }
 
-        refreshArtistListView = findViewById(R.id.select_artist_refresh)
+    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
+                              savedInstanceState: Bundle?): View? {
+        return inflater.inflate(R.layout.select_artist, container, false)
+    }
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        refreshArtistListView = view.findViewById(R.id.select_artist_refresh)
         refreshArtistListView!!.setOnRefreshListener {
             artistListModel.refresh(refreshArtistListView!!)
         }
 
-        val shouldShowHeader = (!isOffline(this) && !Util.getShouldUseId3Tags(this))
+        val shouldShowHeader = (!ActiveServerProvider.isOffline(this.context) && !Util.getShouldUseId3Tags(this.context))
 
-        val title = intent.getStringExtra(Constants.INTENT_EXTRA_NAME_ALBUM_LIST_TITLE)
+        val title = arguments?.getString(Constants.INTENT_EXTRA_NAME_ALBUM_LIST_TITLE)
+
         if (title == null) {
-            setActionBarSubtitle(
-                if (isOffline(this)) R.string.music_library_label_offline
+            setTitle(
+                this,
+                if (ActiveServerProvider.isOffline(this.context)) R.string.music_library_label_offline
                 else R.string.music_library_label
             )
         } else {
-            actionBarSubtitle = title
+            setTitle(this, title)
         }
-        val browseMenuItem = findViewById<View>(R.id.menu_browse)
-        menuDrawer.setActiveView(browseMenuItem)
+
         musicFolders = null
 
-        val refresh = intent.getBooleanExtra(Constants.INTENT_EXTRA_NAME_REFRESH, false)
+        val refresh = arguments?.getBoolean(Constants.INTENT_EXTRA_NAME_REFRESH) ?: false
 
         artistListModel.getMusicFolders()
             .observe(
-                this,
+                viewLifecycleOwner,
                 Observer { changedFolders ->
                     if (changedFolders != null) {
                         musicFolders = changedFolders
@@ -93,41 +91,26 @@ class SelectArtistActivity : SubsonicTabActivity() {
 
         val artists = artistListModel.getArtists(refresh, refreshArtistListView!!)
         artists.observe(
-            this, Observer { changedArtists -> viewAdapter.setData(changedArtists) }
+            viewLifecycleOwner, Observer { changedArtists -> viewAdapter.setData(changedArtists) }
         )
 
-        viewManager = LinearLayoutManager(this)
+        viewManager = LinearLayoutManager(this.context)
         viewAdapter = ArtistRowAdapter(
             artists.value ?: listOf(),
             getText(R.string.select_artist_all_folders).toString(),
             shouldShowHeader,
             { artist -> onItemClick(artist) },
             { menuItem, artist -> onArtistMenuItemSelected(menuItem, artist) },
-            { view -> onFolderClick(view) },
-            imageLoader
+            { onFolderClick(it) },
+            imageLoaderProvider.getImageLoader()
         )
 
-        artistListView = findViewById<RecyclerView>(R.id.select_artist_list).apply {
+        artistListView = view.findViewById<RecyclerView>(R.id.select_artist_list).apply {
             setHasFixedSize(true)
             layoutManager = viewManager
             adapter = viewAdapter
         }
-    }
-
-    override fun onOptionsItemSelected(item: MenuItem): Boolean {
-        when (item.itemId) {
-            android.R.id.home -> {
-                menuDrawer.toggleMenu()
-                return true
-            }
-            R.id.main_shuffle -> {
-                val intent = Intent(this, DownloadActivity::class.java)
-                intent.putExtra(Constants.INTENT_EXTRA_NAME_SHUFFLE, true)
-                startActivityForResultWithoutTransition(this, intent)
-                return true
-            }
-        }
-        return false
+        super.onViewCreated(view, savedInstanceState)
     }
 
     private fun getMusicFolderName(musicFolders: List<MusicFolder>): String {
@@ -143,16 +126,16 @@ class SelectArtistActivity : SubsonicTabActivity() {
     }
 
     private fun onItemClick(artist: Artist) {
-        val intent = Intent(this, SelectAlbumActivity::class.java)
-        intent.putExtra(Constants.INTENT_EXTRA_NAME_ID, artist.id)
-        intent.putExtra(Constants.INTENT_EXTRA_NAME_NAME, artist.name)
-        intent.putExtra(Constants.INTENT_EXTRA_NAME_PARENT_ID, artist.id)
-        intent.putExtra(Constants.INTENT_EXTRA_NAME_ARTIST, true)
-        startActivityForResultWithoutTransition(this, intent)
+        val bundle = Bundle()
+        bundle.putString(Constants.INTENT_EXTRA_NAME_ID, artist.id)
+        bundle.putString(Constants.INTENT_EXTRA_NAME_NAME, artist.name)
+        bundle.putString(Constants.INTENT_EXTRA_NAME_PARENT_ID, artist.id)
+        bundle.putBoolean(Constants.INTENT_EXTRA_NAME_ARTIST, true)
+        findNavController().navigate(R.id.selectArtistToSelectAlbum, bundle)
     }
 
     private fun onFolderClick(view: View) {
-        val popup = PopupMenu(this, view)
+        val popup = PopupMenu(this.context, view)
 
         val musicFolderId = activeServerProvider.getActiveServer().musicFolderId
         var menuItem = popup.menu.add(
@@ -179,17 +162,17 @@ class SelectArtistActivity : SubsonicTabActivity() {
     private fun onArtistMenuItemSelected(menuItem: MenuItem, artist: Artist): Boolean {
         when (menuItem.itemId) {
             R.id.artist_menu_play_now ->
-                downloadRecursively(artist.id, false, false, true, false, false, false, false, true)
+                downloadHandler.downloadRecursively(this, artist.id, false, false, true, false, false, false, false, true)
             R.id.artist_menu_play_next ->
-                downloadRecursively(artist.id, false, false, true, true, false, true, false, true)
+                downloadHandler.downloadRecursively(this, artist.id, false, false, true, true, false, true, false, true)
             R.id.artist_menu_play_last ->
-                downloadRecursively(artist.id, false, true, false, false, false, false, false, true)
+                downloadHandler.downloadRecursively(this, artist.id, false, true, false, false, false, false, false, true)
             R.id.artist_menu_pin ->
-                downloadRecursively(artist.id, true, true, false, false, false, false, false, true)
+                downloadHandler.downloadRecursively(this, artist.id, true, true, false, false, false, false, false, true)
             R.id.artist_menu_unpin ->
-                downloadRecursively(artist.id, false, false, false, false, false, false, true, true)
+                downloadHandler.downloadRecursively(this, artist.id, false, false, false, false, false, false, true, true)
             R.id.artist_menu_download ->
-                downloadRecursively(artist.id, false, false, false, false, true, false, false, true)
+                downloadHandler.downloadRecursively(this, artist.id, false, false, false, false, true, false, false, true)
         }
         return true
     }
@@ -199,7 +182,7 @@ class SelectArtistActivity : SubsonicTabActivity() {
         val musicFolderId = selectedFolder?.id
         val musicFolderName = selectedFolder?.name
             ?: getString(R.string.select_artist_all_folders)
-        if (!isOffline(this)) {
+        if (!ActiveServerProvider.isOffline(this.context)) {
             val currentSetting = activeServerProvider.getActiveServer()
             currentSetting.musicFolderId = musicFolderId
             serverSettingsModel.updateItem(currentSetting)

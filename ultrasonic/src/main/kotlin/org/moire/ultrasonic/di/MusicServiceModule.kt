@@ -20,6 +20,10 @@ import org.moire.ultrasonic.service.CachedMusicService
 import org.moire.ultrasonic.service.MusicService
 import org.moire.ultrasonic.service.OfflineMusicService
 import org.moire.ultrasonic.service.RESTMusicService
+import org.moire.ultrasonic.subsonic.DownloadHandler
+import org.moire.ultrasonic.subsonic.NetworkAndStorageChecker
+import org.moire.ultrasonic.subsonic.ShareHandler
+import org.moire.ultrasonic.subsonic.VideoPlayer
 import org.moire.ultrasonic.subsonic.loader.image.SubsonicImageLoader
 import org.moire.ultrasonic.util.Constants
 
@@ -75,4 +79,9 @@ val musicServiceModule = module {
     single { SubsonicImageLoader(androidContext(), get()) }
 
     viewModel { ArtistListModel(get(), androidContext()) }
+
+    single { DownloadHandler(get(), get()) }
+    single { NetworkAndStorageChecker(androidContext()) }
+    single { VideoPlayer(androidContext()) }
+    single { ShareHandler(androidContext()) }
 }

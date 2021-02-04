@@ -76,6 +76,7 @@ public final class Constants
 	// Preferences keys.
 	public static final String PREFERENCES_KEY_SERVER_INSTANCE = "serverInstanceId";
 	public static final String PREFERENCES_KEY_SERVERS_KEY = "serversKey";
+	public static final String PREFERENCES_KEY_SERVERS_EDIT = "editServers";
 	public static final String PREFERENCES_KEY_INSTALL_TIME = "installTime";
 	public static final String PREFERENCES_KEY_THEME = "theme";
 	public static final String PREFERENCES_KEY_THEME_LIGHT = "light";

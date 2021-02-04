@@ -49,6 +49,7 @@ import org.moire.ultrasonic.domain.Share;
 import org.moire.ultrasonic.featureflags.Feature;
 import org.moire.ultrasonic.featureflags.FeatureStorage;
 import org.moire.ultrasonic.service.*;
+import org.moire.ultrasonic.subsonic.ImageLoaderProvider;
 import org.moire.ultrasonic.subsonic.SubsonicImageLoaderProxy;
 import org.moire.ultrasonic.subsonic.loader.image.SubsonicImageLoader;
 import org.moire.ultrasonic.util.*;
@@ -63,10 +64,9 @@ import kotlin.Lazy;
 /**
  * @author Sindre Mehus
  */
-public class SubsonicTabActivity extends ResultActivity implements OnClickListener
+public class SubsonicTabActivity extends ResultActivity
 {
 	private static final Pattern COMPILE = Pattern.compile(":");
-	protected static ImageLoader IMAGE_LOADER;
 	protected static String theme;
 	private static SubsonicTabActivity instance;
 
@@ -79,6 +79,7 @@ public class SubsonicTabActivity extends ResultActivity implements OnClickListen
 
 	private Lazy<MediaPlayerController> mediaPlayerControllerLazy = inject(MediaPlayerController.class);
 	private Lazy<MediaPlayerLifecycleSupport> lifecycleSupport = inject(MediaPlayerLifecycleSupport.class);
+	protected Lazy<ImageLoaderProvider> imageLoader = inject(ImageLoaderProvider.class);
 
 	public MenuDrawer menuDrawer;
 	private int activePosition = 1;
@@ -118,18 +119,6 @@ public class SubsonicTabActivity extends ResultActivity implements OnClickListen
 		bookmarksMenuItem = findViewById(R.id.menu_bookmarks);
 		sharesMenuItem = findViewById(R.id.menu_shares);
 
-		findViewById(R.id.menu_home).setOnClickListener(this);
-		findViewById(R.id.menu_browse).setOnClickListener(this);
-		findViewById(R.id.menu_search).setOnClickListener(this);
-		findViewById(R.id.menu_playlists).setOnClickListener(this);
-		findViewById(R.id.menu_podcasts).setOnClickListener(this);
-		sharesMenuItem.setOnClickListener(this);
-		chatMenuItem.setOnClickListener(this);
-		bookmarksMenuItem.setOnClickListener(this);
-		findViewById(R.id.menu_now_playing).setOnClickListener(this);
-		findViewById(R.id.menu_settings).setOnClickListener(this);
-		findViewById(R.id.menu_about).setOnClickListener(this);
-		findViewById(R.id.menu_exit).setOnClickListener(this);
 		setActionBarDisplayHomeAsUp(true);
 
 		TextView activeView = (TextView) findViewById(menuActiveViewId);
@@ -203,7 +192,7 @@ public class SubsonicTabActivity extends ResultActivity implements OnClickListen
 		super.onDestroy();
 		destroyed = true;
 		nowPlayingView = null;
-		clearImageLoader();
+		imageLoader.getValue().clearImageLoader();
 	}
 
 	@Override
@@ -351,7 +340,7 @@ public class SubsonicTabActivity extends ResultActivity implements OnClickListen
 					@Override
 					public void run()
 					{
-						getImageLoader().loadImage(nowPlayingAlbumArtImage, song, false, Util.getNotificationImageSize(context), false, true);
+						imageLoader.getValue().getImageLoader().loadImage(nowPlayingAlbumArtImage, song, false, Util.getNotificationImageSize(context), false, true);
 					}
 				});
 
@@ -771,40 +760,6 @@ public class SubsonicTabActivity extends ResultActivity implements OnClickListen
 		}
 	}
 
-    public synchronized void clearImageLoader() {
-        if (IMAGE_LOADER != null &&
-                IMAGE_LOADER.isRunning()) {
-            IMAGE_LOADER.clear();
-        }
-
-        IMAGE_LOADER = null;
-    }
-
-    public synchronized ImageLoader getImageLoader() {
-        if (IMAGE_LOADER == null ||
-                !IMAGE_LOADER.isRunning()) {
-            LegacyImageLoader legacyImageLoader = new LegacyImageLoader(
-                    this,
-                    Util.getImageLoaderConcurrency(this)
-            );
-
-            boolean isNewImageLoaderEnabled = KoinJavaComponent.get(FeatureStorage.class)
-                    .isFeatureEnabled(Feature.NEW_IMAGE_DOWNLOADER);
-            if (isNewImageLoaderEnabled) {
-                IMAGE_LOADER = new SubsonicImageLoaderProxy(
-                        legacyImageLoader,
-                        KoinJavaComponent.get(SubsonicImageLoader.class)
-                );
-            } else {
-                IMAGE_LOADER = legacyImageLoader;
-            }
-
-            IMAGE_LOADER.startImageLoader();
-        }
-
-        return IMAGE_LOADER;
-    }
-
 	void download(final boolean append, final boolean save, final boolean autoPlay, final boolean playNext, final boolean shuffle, final List<Entry> songs)
 	{
 		if (getMediaPlayerController() == null)
@@ -1024,26 +979,6 @@ public class SubsonicTabActivity extends ResultActivity implements OnClickListen
 		task.execute();
 	}
 
-	protected void playVideo(Entry entry)
-	{
-		if (!Util.isNetworkConnected(this))
-		{
-			Util.toast(this, R.string.select_album_no_network);
-			return;
-		}
-
-		VideoPlayerType player = Util.getVideoPlayerType(this);
-
-		try
-		{
-			player.playVideo(this, entry);
-		}
-		catch (Exception e)
-		{
-			Util.toast(this, e.getMessage(), false);
-		}
-	}
-
 	protected void checkLicenseAndTrialPeriod(Runnable onValid)
 	{
 		if (licenseValid)
@@ -1245,72 +1180,6 @@ public class SubsonicTabActivity extends ResultActivity implements OnClickListen
 				}
 			}
 		}
-	}
-
-	@Override
-	public void onClick(View v)
-	{
-		menuActiveViewId = v.getId();
-		menuDrawer.setActiveView(v);
-
-		Intent intent;
-
-		switch (menuActiveViewId)
-		{
-			case R.id.menu_home:
-				intent = new Intent(SubsonicTabActivity.this, MainActivity.class);
-				intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-				startActivityForResultWithoutTransition(SubsonicTabActivity.this, intent);
-				break;
-			case R.id.menu_browse:
-				intent = new Intent(SubsonicTabActivity.this, SelectArtistActivity.class);
-				intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-				startActivityForResultWithoutTransition(SubsonicTabActivity.this, intent);
-				break;
-			case R.id.menu_search:
-				intent = new Intent(SubsonicTabActivity.this, SearchActivity.class);
-				intent.putExtra(Constants.INTENT_EXTRA_REQUEST_SEARCH, true);
-				startActivityForResultWithoutTransition(SubsonicTabActivity.this, intent);
-				break;
-			case R.id.menu_playlists:
-				intent = new Intent(SubsonicTabActivity.this, SelectPlaylistActivity.class);
-				intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-				startActivityForResultWithoutTransition(SubsonicTabActivity.this, intent);
-				break;
-			case R.id.menu_podcasts:
-				intent = new Intent(SubsonicTabActivity.this, PodcastsActivity.class);
-				intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-				startActivityForResultWithoutTransition(SubsonicTabActivity.this, intent);
-				break;
-			case R.id.menu_shares:
-				intent = new Intent(SubsonicTabActivity.this, ShareActivity.class);
-				intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-				startActivityForResultWithoutTransition(SubsonicTabActivity.this, intent);
-				break;
-			case R.id.menu_chat:
-				startActivityForResultWithoutTransition(SubsonicTabActivity.this, ChatActivity.class);
-				break;
-			case R.id.menu_bookmarks:
-				startActivityForResultWithoutTransition(this, BookmarkActivity.class);
-				break;
-			case R.id.menu_now_playing:
-				startActivityForResultWithoutTransition(SubsonicTabActivity.this, DownloadActivity.class);
-				break;
-			case R.id.menu_settings:
-				startActivityForResultWithoutTransition(SubsonicTabActivity.this, SettingsActivity.class);
-				break;
-			case R.id.menu_about:
-				startActivityForResultWithoutTransition(SubsonicTabActivity.this, HelpActivity.class);
-				break;
-			case R.id.menu_exit:
-				intent = new Intent(SubsonicTabActivity.this, MainActivity.class);
-				intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-				intent.putExtra(Constants.INTENT_EXTRA_NAME_EXIT, true);
-				startActivityForResultWithoutTransition(SubsonicTabActivity.this, intent);
-				break;
-		}
-
-		menuDrawer.closeMenu(true);
 	}
 
 	@Override

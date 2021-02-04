@@ -1,12 +1,12 @@
 package org.moire.ultrasonic.view;
 
+import android.content.Context;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.TextView;
 
 import org.moire.ultrasonic.R;
-import org.moire.ultrasonic.activity.SubsonicTabActivity;
 import org.moire.ultrasonic.domain.Playlist;
 
 import java.io.Serializable;
@@ -20,12 +20,12 @@ import java.util.List;
 public class PlaylistAdapter extends ArrayAdapter<Playlist>
 {
 
-	private final SubsonicTabActivity activity;
+	private final Context context;
 
-	public PlaylistAdapter(SubsonicTabActivity activity, List<Playlist> Playlists)
+	public PlaylistAdapter(Context context, List<Playlist> Playlists)
 	{
-		super(activity, R.layout.playlist_list_item, Playlists);
-		this.activity = activity;
+		super(context, R.layout.playlist_list_item, Playlists);
+		this.context = context;
 	}
 
 	@Override
@@ -44,7 +44,7 @@ public class PlaylistAdapter extends ArrayAdapter<Playlist>
 		}
 		else
 		{
-			view = new PlaylistView(activity);
+			view = new PlaylistView(context);
 			view.setLayout();
 		}
 

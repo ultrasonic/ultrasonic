@@ -1,6 +1,8 @@
 package org.moire.ultrasonic.util;
 
-import org.moire.ultrasonic.activity.SubsonicTabActivity;
+import android.app.Activity;
+
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 /**
  * @author Sindre Mehus
@@ -9,14 +11,25 @@ import org.moire.ultrasonic.activity.SubsonicTabActivity;
 public abstract class TabActivityBackgroundTask<T> extends BackgroundTask<T>
 {
 
-	private final SubsonicTabActivity tabActivity;
 	private final boolean changeProgress;
+	private final SwipeRefreshLayout swipe;
+	private CancellationToken cancel;
 
-	public TabActivityBackgroundTask(SubsonicTabActivity activity, boolean changeProgress)
+	// TODO: Try to remove this constructor
+	public TabActivityBackgroundTask(Activity activity, boolean changeProgress)
 	{
 		super(activity);
-		tabActivity = activity;
 		this.changeProgress = changeProgress;
+		this.swipe = null;
+	}
+
+	public TabActivityBackgroundTask(Activity activity, boolean changeProgress,
+									 SwipeRefreshLayout swipe, CancellationToken cancel)
+	{
+		super(activity);
+		this.changeProgress = changeProgress;
+		this.swipe = swipe;
+		this.cancel = cancel;
 	}
 
 	@Override
@@ -24,7 +37,7 @@ public abstract class TabActivityBackgroundTask<T> extends BackgroundTask<T>
 	{
 		if (changeProgress)
 		{
-			tabActivity.setProgressVisible(true);
+			if (swipe != null) swipe.setRefreshing(true);
 		}
 
 		new Thread()
@@ -35,7 +48,7 @@ public abstract class TabActivityBackgroundTask<T> extends BackgroundTask<T>
 				try
 				{
 					final T result = doInBackground();
-					if (isCancelled())
+					if (cancel.isCancellationRequested())
 					{
 						return;
 					}
@@ -47,7 +60,7 @@ public abstract class TabActivityBackgroundTask<T> extends BackgroundTask<T>
 						{
 							if (changeProgress)
 							{
-								tabActivity.setProgressVisible(false);
+								if (swipe != null) swipe.setRefreshing(false);
 							}
 
 							done(result);
@@ -56,7 +69,7 @@ public abstract class TabActivityBackgroundTask<T> extends BackgroundTask<T>
 				}
 				catch (final Throwable t)
 				{
-					if (isCancelled())
+					if (cancel.isCancellationRequested())
 					{
 						return;
 					}
@@ -67,7 +80,7 @@ public abstract class TabActivityBackgroundTask<T> extends BackgroundTask<T>
 						{
 							if (changeProgress)
 							{
-								tabActivity.setProgressVisible(false);
+								if (swipe != null) swipe.setRefreshing(false);
 							}
 
 							error(t);
@@ -78,20 +91,16 @@ public abstract class TabActivityBackgroundTask<T> extends BackgroundTask<T>
 		}.start();
 	}
 
-	private boolean isCancelled()
-	{
-		return tabActivity.getIsDestroyed();
-	}
-
 	@Override
 	public void updateProgress(final String message)
 	{
+		// TODO: Remove
 		getHandler().post(new Runnable()
 		{
 			@Override
 			public void run()
 			{
-				tabActivity.updateProgress(message);
+				//activity.updateProgress(message);
 			}
 		});
 	}

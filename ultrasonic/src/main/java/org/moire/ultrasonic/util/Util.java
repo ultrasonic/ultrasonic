@@ -53,7 +53,6 @@ import androidx.annotation.ColorInt;
 import org.moire.ultrasonic.R;
 import org.moire.ultrasonic.activity.DownloadActivity;
 import org.moire.ultrasonic.activity.MainActivity;
-import org.moire.ultrasonic.activity.SettingsActivity;
 import org.moire.ultrasonic.data.ActiveServerProvider;
 import org.moire.ultrasonic.domain.*;
 import org.moire.ultrasonic.domain.MusicDirectory.Entry;
@@ -602,19 +601,6 @@ public class Util
 	public static void info(Context context, int titleId, int messageId)
 	{
 		showDialog(context, android.R.drawable.ic_dialog_info, titleId, messageId);
-	}
-
-	public static void showWelcomeDialog(final Context context, final MainActivity activity, int titleId, int messageId)
-	{
-		new AlertDialog.Builder(context).setIcon(android.R.drawable.ic_dialog_info).setTitle(titleId).setMessage(messageId).setPositiveButton(R.string.common_ok, new DialogInterface.OnClickListener()
-		{
-			@Override
-			public void onClick(DialogInterface dialog, int i)
-			{
-				dialog.dismiss();
-				activity.startActivityForResultWithoutTransition(activity, SettingsActivity.class);
-			}
-		}).show();
 	}
 
 	private static void showDialog(Context context, int icon, int titleId, int messageId)

@@ -1,9 +1,12 @@
 package org.moire.ultrasonic.util;
 
 import android.annotation.SuppressLint;
+import android.app.Activity;
 import android.app.ProgressDialog;
 import android.content.DialogInterface;
 import android.os.Build;
+
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import org.moire.ultrasonic.activity.SubsonicTabActivity;
 
@@ -13,29 +16,23 @@ import org.moire.ultrasonic.activity.SubsonicTabActivity;
  */
 public abstract class LoadingTask<T> extends BackgroundTask<T>
 {
-	private final SubsonicTabActivity tabActivity;
+	private final Activity tabActivity;
 	private final boolean cancellable;
 	private boolean cancelled;
+	private SwipeRefreshLayout swipe;
 
-	public LoadingTask(SubsonicTabActivity activity, final boolean cancellable)
+	public LoadingTask(Activity activity, final boolean cancellable, SwipeRefreshLayout swipe)
 	{
 		super(activity);
 		tabActivity = activity;
 		this.cancellable = cancellable;
+		this.swipe = swipe;
 	}
 
 	@Override
 	public void execute()
 	{
-		final ProgressDialog loading = ProgressDialog.show(tabActivity, "", "Loading. Please Wait...", true, cancellable, new DialogInterface.OnCancelListener()
-		{
-			@Override
-			public void onCancel(DialogInterface dialog)
-			{
-				cancelled = true;
-			}
-
-		});
+		swipe.setRefreshing(true);
 
 		new Thread()
 		{
@@ -55,7 +52,7 @@ public abstract class LoadingTask<T> extends BackgroundTask<T>
 						@Override
 						public void run()
 						{
-							loading.cancel();
+							swipe.setRefreshing(false);
 							done(result);
 						}
 					});
@@ -72,7 +69,7 @@ public abstract class LoadingTask<T> extends BackgroundTask<T>
 						@Override
 						public void run()
 						{
-							loading.cancel();
+							swipe.setRefreshing(false);
 							error(t);
 						}
 					});
@@ -84,7 +81,9 @@ public abstract class LoadingTask<T> extends BackgroundTask<T>
 	@SuppressLint("NewApi")
 	private boolean isCancelled()
 	{
-		return Build.VERSION.SDK_INT >= 17 ? tabActivity.isDestroyed() || cancelled : cancelled;
+		// TODO: Implement cancelled
+		//return Build.VERSION.SDK_INT >= 17 ? tabActivity.isDestroyed() || cancelled : cancelled;
+		return cancelled;
 	}
 
 	@Override
@@ -95,7 +94,7 @@ public abstract class LoadingTask<T> extends BackgroundTask<T>
 			@Override
 			public void run()
 			{
-
+				// TODO: This seems to be NOOP, can it be removed?
 			}
 		});
 	}

@@ -23,24 +23,36 @@
         android:allowBackup="false"
         android:icon="@mipmap/ic_launcher"
         android:roundIcon="@mipmap/ic_launcher_round"
-        android:theme="@style/Theme.AppCompat"
+        android:theme="@style/NoActionBar"
         android:name=".app.UApp"
         android:label="@string/common.appname"
         android:usesCleartextTraffic="true">
+        <activity android:name=".activity.NavigationActivity"
+            android:configChanges="orientation|keyboardHidden"
+            android:label="@string/common.appname"
+            android:launchMode="standard">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+                <action android:name="android.intent.action.SEARCH"/>
+
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+            <nav-graph android:value="@navigation/navigation_graph" />
+            <meta-data
+                android:name="android.app.searchable"
+                android:resource="@xml/searchable"/>
+        </activity>
         <activity
             android:name=".activity.MainActivity"
             android:configChanges="orientation|keyboardHidden"
             android:label="@string/common.appname"
             android:launchMode="standard">
-            <intent-filter>
+            <!--<intent-filter>
                 <action android:name="android.intent.action.MAIN"/>
                 <category android:name="android.intent.category.LAUNCHER"/>
-            </intent-filter>
+            </intent-filter>-->
         </activity>
-        <activity
-            android:name=".activity.SelectArtistActivity"
-            android:configChanges="orientation|keyboardHidden"
-            android:launchMode="standard"/>
         <activity
             android:name=".activity.SelectAlbumActivity"
             android:configChanges="orientation|keyboardHidden"/>
@@ -50,37 +62,10 @@
             android:label="@string/search.label"
             android:launchMode="singleTask"/>
         <activity
-            android:name=".activity.SelectPlaylistActivity"
-            android:configChanges="orientation|keyboardHidden"
-            android:label="@string/playlist.label"
-            android:launchMode="standard"/>
-        <activity
-            android:name=".activity.PodcastsActivity"
-            android:configChanges="orientation|keyboardHidden"
-            android:label="@string/podcasts.label"
-            android:launchMode="standard"/>
-        <activity
-            android:name=".activity.BookmarkActivity"
-            android:configChanges="orientation|keyboardHidden"/>
-        <activity
-            android:name=".activity.ShareActivity"
-            android:configChanges="orientation|keyboardHidden"/>
-        <activity
-            android:name=".activity.ChatActivity"
-            android:configChanges="orientation|keyboardHidden"/>
-        <activity
             android:name=".activity.DownloadActivity"
             android:configChanges="keyboardHidden"
             android:launchMode="singleTask"
             android:exported="true" />
-        <activity
-            android:name=".activity.SettingsActivity"
-            android:configChanges="orientation|keyboardHidden"
-            android:launchMode="singleTask"/>
-        <activity
-            android:name=".activity.HelpActivity"
-            android:configChanges="orientation|keyboardHidden"
-            android:launchMode="singleTask"/>
         <activity
             android:name=".activity.LyricsActivity"
             android:configChanges="orientation|keyboardHidden"
@@ -91,10 +76,6 @@
             android:label="@string/equalizer.label"
             android:launchMode="singleTask"/>
         <activity
-            android:name=".activity.SelectGenreActivity"
-            android:configChanges="orientation|keyboardHidden"
-            android:launchMode="standard"/>
-        <activity
             android:name=".activity.VoiceQueryReceiverActivity"
             android:launchMode="singleTask">
             <intent-filter>
@@ -102,7 +83,7 @@
                 <category android:name="android.intent.category.DEFAULT"/>
             </intent-filter>
         </activity>
-        <activity
+<!--        <activity
             android:name=".activity.QueryReceiverActivity"
             android:launchMode="singleTask">
             <intent-filter>
@@ -114,7 +95,7 @@
                 android:name="android.app.searchable"
                 android:resource="@xml/searchable"/>
         </activity>
-
+-->
         <activity
             android:name=".activity.ServerSelectorActivity"
             android:label="@string/server_selector.label" />

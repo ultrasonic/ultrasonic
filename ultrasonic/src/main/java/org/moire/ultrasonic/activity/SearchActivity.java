@@ -41,6 +41,7 @@ import org.moire.ultrasonic.domain.SearchResult;
 import org.moire.ultrasonic.service.MediaPlayerController;
 import org.moire.ultrasonic.service.MusicService;
 import org.moire.ultrasonic.service.MusicServiceFactory;
+import org.moire.ultrasonic.subsonic.VideoPlayer;
 import org.moire.ultrasonic.util.BackgroundTask;
 import org.moire.ultrasonic.util.Constants;
 import org.moire.ultrasonic.util.MergeAdapter;
@@ -52,6 +53,10 @@ import org.moire.ultrasonic.view.EntryAdapter;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+
+import kotlin.Lazy;
+
+import static org.koin.java.KoinJavaComponent.inject;
 
 /**
  * Performs searches and displays the matching artists, albums and songs.
@@ -82,6 +87,8 @@ public class SearchActivity extends SubsonicTabActivity
 	private ListAdapter moreAlbumsAdapter;
 	private ListAdapter moreSongsAdapter;
 	private EntryAdapter songAdapter;
+
+	private final Lazy<VideoPlayer> videoPlayer = inject(VideoPlayer.class);
 
 	@Override
 	public void onCreate(Bundle savedInstanceState)
@@ -419,7 +426,7 @@ public class SearchActivity extends SubsonicTabActivity
 			{
 				mergeAdapter.addView(albumsHeading);
 				List<MusicDirectory.Entry> displayedAlbums = new ArrayList<MusicDirectory.Entry>(albums.subList(0, Math.min(DEFAULT_ALBUMS, albums.size())));
-				albumAdapter = new EntryAdapter(this, getImageLoader(), displayedAlbums, false);
+				albumAdapter = new EntryAdapter(this, imageLoader.getValue().getImageLoader(), displayedAlbums, false);
 				mergeAdapter.addAdapter(albumAdapter);
 				if (albums.size() > DEFAULT_ALBUMS)
 				{
@@ -432,7 +439,7 @@ public class SearchActivity extends SubsonicTabActivity
 			{
 				mergeAdapter.addView(songsHeading);
 				List<MusicDirectory.Entry> displayedSongs = new ArrayList<MusicDirectory.Entry>(songs.subList(0, Math.min(DEFAULT_SONGS, songs.size())));
-				songAdapter = new EntryAdapter(this, getImageLoader(), displayedSongs, false);
+				songAdapter = new EntryAdapter(this, imageLoader.getValue().getImageLoader(), displayedSongs, false);
 				mergeAdapter.addAdapter(songAdapter);
 				if (songs.size() > DEFAULT_SONGS)
 				{
@@ -530,7 +537,7 @@ public class SearchActivity extends SubsonicTabActivity
 
 	private void onVideoSelected(MusicDirectory.Entry entry)
 	{
-		playVideo(entry);
+		videoPlayer.getValue().playVideo(entry);
 	}
 
 	private void autoplay()

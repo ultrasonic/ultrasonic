@@ -1404,7 +1404,7 @@ public class DownloadActivity extends SubsonicTabActivity implements OnGestureLi
 			artistTextView.setText(currentSong.getArtist());
 			downloadTrackTextView.setText(trackFormat);
 			downloadTotalDurationTextView.setText(duration);
-			getImageLoader().loadImage(albumArtImageView, currentSong, true, 0, false, true);
+			imageLoader.getValue().getImageLoader().loadImage(albumArtImageView, currentSong, true, 0, false, true);
 
 			displaySongRating();
 		}
@@ -1416,7 +1416,7 @@ public class DownloadActivity extends SubsonicTabActivity implements OnGestureLi
 			artistTextView.setText(null);
 			downloadTrackTextView.setText(null);
 			downloadTotalDurationTextView.setText(null);
-			getImageLoader().loadImage(albumArtImageView, null, true, 0, false, true);
+			imageLoader.getValue().getImageLoader().loadImage(albumArtImageView, null, true, 0, false, true);
 		}
 	}
 
