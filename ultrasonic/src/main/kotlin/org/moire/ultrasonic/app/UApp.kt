@@ -6,6 +6,7 @@ import org.koin.core.context.startKoin
 import org.koin.core.logger.Level
 import org.moire.ultrasonic.BuildConfig
 import org.moire.ultrasonic.di.appPermanentStorage
+import org.moire.ultrasonic.di.applicationModule
 import org.moire.ultrasonic.di.baseNetworkModule
 import org.moire.ultrasonic.di.directoriesModule
 import org.moire.ultrasonic.di.featureFlagsModule
@@ -35,6 +36,7 @@ class UApp : MultiDexApplication() {
             androidContext(this@UApp)
             // declare modules to use
             modules(
+                applicationModule,
                 directoriesModule,
                 appPermanentStorage,
                 baseNetworkModule,

@@ -33,9 +33,8 @@ class DownloadHandler(
             }
             if (autoPlay) {
                 if (Util.getShouldTransitionOnPlaybackPreference(fragment.activity)) {
-                    fragment.findNavController().popBackStack(R.id.downloadFragment, true)
-                    fragment.findNavController().navigate(R.id.downloadFragment)
-                    //startActivityForResultWithoutTransition(this@SubsonicTabActivity, DownloadActivity::class.java)
+                    fragment.findNavController().popBackStack(R.id.playerFragment, true)
+                    fragment.findNavController().navigate(R.id.playerFragment)
                 }
             } else if (save) {
                 Util.toast(fragment.context, fragment.resources.getQuantityString(R.plurals.select_album_n_songs_pinned, songs.size, songs.size))
@@ -190,9 +189,8 @@ class DownloadHandler(
                         } else {
                             mediaPlayerController.download(songs, save, autoPlay, playNext, shuffle, false)
                             if (!append && Util.getShouldTransitionOnPlaybackPreference(activity)) {
-                                fragment.findNavController().popBackStack(R.id.downloadFragment, true)
-                                fragment.findNavController().navigate(R.id.downloadFragment)
-                                //startActivityForResultWithoutTransition(activity, DownloadActivity::class.java)
+                                fragment.findNavController().popBackStack(R.id.playerFragment, true)
+                                fragment.findNavController().navigate(R.id.playerFragment)
                             }
                         }
                     } else {

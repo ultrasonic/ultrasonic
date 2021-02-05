@@ -48,6 +48,7 @@ import org.moire.ultrasonic.domain.PlayerState;
 import org.moire.ultrasonic.domain.Share;
 import org.moire.ultrasonic.featureflags.Feature;
 import org.moire.ultrasonic.featureflags.FeatureStorage;
+import org.moire.ultrasonic.fragment.SelectAlbumFragment;
 import org.moire.ultrasonic.service.*;
 import org.moire.ultrasonic.subsonic.ImageLoaderProvider;
 import org.moire.ultrasonic.subsonic.SubsonicImageLoaderProxy;
@@ -344,7 +345,8 @@ public class SubsonicTabActivity extends ResultActivity
 					}
 				});
 
-				final Intent intent = new Intent(context, SelectAlbumActivity.class);
+				// TODO: Refactor to use navigation
+				final Intent intent = new Intent(context, SelectAlbumFragment.class);// SelectAlbumActivity.class);
 
 				if (Util.getShouldUseId3Tags(context))
 				{
@@ -595,51 +597,6 @@ public class SubsonicTabActivity extends ResultActivity
 		task.execute();
 	}
 
-	public void setTextViewTextOnUiThread(final RemoteViews view, final int id, final CharSequence text)
-	{
-		this.runOnUiThread(new Runnable()
-		{
-			@Override
-			public void run()
-			{
-				if (view != null)
-				{
-					view.setTextViewText(id, text);
-				}
-			}
-		});
-	}
-
-	public void setImageViewBitmapOnUiThread(final RemoteViews view, final int id, final Bitmap bitmap)
-	{
-		this.runOnUiThread(new Runnable()
-		{
-			@Override
-			public void run()
-			{
-				if (view != null)
-				{
-					view.setImageViewBitmap(id, bitmap);
-				}
-			}
-		});
-	}
-
-	public void setImageViewResourceOnUiThread(final RemoteViews view, final int id, final int resource)
-	{
-		this.runOnUiThread(new Runnable()
-		{
-			@Override
-			public void run()
-			{
-				if (view != null)
-				{
-					view.setImageViewResource(id, resource);
-				}
-			}
-		});
-	}
-
 	public void setOnTouchListenerOnUiThread(final View view, final OnTouchListener listener)
 	{
 		this.runOnUiThread(new Runnable()
@@ -720,29 +677,6 @@ public class SubsonicTabActivity extends ResultActivity
 		return instance;
 	}
 
-	public boolean getIsDestroyed()
-	{
-		return destroyed;
-	}
-
-	public void setProgressVisible(boolean visible)
-	{
-		View view = findViewById(R.id.tab_progress);
-		if (view != null)
-		{
-			view.setVisibility(visible ? View.VISIBLE : View.GONE);
-		}
-	}
-
-	public void updateProgress(CharSequence message)
-	{
-		TextView view = (TextView) findViewById(R.id.tab_progress_message);
-		if (view != null)
-		{
-			view.setText(message);
-		}
-	}
-
 	public MediaPlayerController getMediaPlayerController()
 	{
 		return mediaPlayerControllerLazy.getValue();
@@ -760,292 +694,6 @@ public class SubsonicTabActivity extends ResultActivity
 		}
 	}
 
-	void download(final boolean append, final boolean save, final boolean autoPlay, final boolean playNext, final boolean shuffle, final List<Entry> songs)
-	{
-		if (getMediaPlayerController() == null)
-		{
-			return;
-		}
-
-		Runnable onValid = new Runnable()
-		{
-			@Override
-			public void run()
-			{
-				if (!append && !playNext)
-				{
-					getMediaPlayerController().clear();
-				}
-
-				warnIfNetworkOrStorageUnavailable();
-				getMediaPlayerController().download(songs, save, autoPlay, playNext, shuffle, false);
-				String playlistName = getIntent().getStringExtra(Constants.INTENT_EXTRA_NAME_PLAYLIST_NAME);
-
-				if (playlistName != null)
-				{
-					getMediaPlayerController().setSuggestedPlaylistName(playlistName);
-				}
-
-				if (autoPlay)
-				{
-					if (Util.getShouldTransitionOnPlaybackPreference(SubsonicTabActivity.this))
-					{
-						startActivityForResultWithoutTransition(SubsonicTabActivity.this, DownloadActivity.class);
-					}
-				}
-				else if (save)
-				{
-					Util.toast(SubsonicTabActivity.this, getResources().getQuantityString(R.plurals.select_album_n_songs_pinned, songs.size(), songs.size()));
-				}
-				else if (playNext)
-				{
-					Util.toast(SubsonicTabActivity.this, getResources().getQuantityString(R.plurals.select_album_n_songs_play_next, songs.size(), songs.size()));
-				}
-				else if (append)
-				{
-					Util.toast(SubsonicTabActivity.this, getResources().getQuantityString(R.plurals.select_album_n_songs_added, songs.size(), songs.size()));
-				}
-			}
-		};
-
-		checkLicenseAndTrialPeriod(onValid);
-	}
-
-	protected void downloadRecursively(final String id, final boolean save, final boolean append, final boolean autoplay, final boolean shuffle, final boolean background, final boolean playNext, final boolean unpin, final boolean isArtist)
-	{
-		downloadRecursively(id, "", false, true, save, append, autoplay, shuffle, background, playNext, unpin, isArtist);
-	}
-
-	protected void downloadShare(final String id, final String name, final boolean save, final boolean append, final boolean autoplay, final boolean shuffle, final boolean background, final boolean playNext, final boolean unpin)
-	{
-		downloadRecursively(id, name, true, false, save, append, autoplay, shuffle, background, playNext, unpin, false);
-	}
-
-	protected void downloadPlaylist(final String id, final String name, final boolean save, final boolean append, final boolean autoplay, final boolean shuffle, final boolean background, final boolean playNext, final boolean unpin)
-	{
-		downloadRecursively(id, name, false, false, save, append, autoplay, shuffle, background, playNext, unpin, false);
-	}
-
-	protected void downloadRecursively(final String id, final String name, final boolean isShare, final boolean isDirectory, final boolean save, final boolean append, final boolean autoplay, final boolean shuffle, final boolean background, final boolean playNext, final boolean unpin, final boolean isArtist)
-	{
-		ModalBackgroundTask<List<Entry>> task = new ModalBackgroundTask<List<Entry>>(this, false)
-		{
-			private static final int MAX_SONGS = 500;
-
-			@Override
-			protected List<Entry> doInBackground() throws Throwable
-			{
-				MusicService musicService = MusicServiceFactory.getMusicService(SubsonicTabActivity.this);
-				List<Entry> songs = new LinkedList<Entry>();
-				MusicDirectory root;
-
-				if (!ActiveServerProvider.Companion.isOffline(SubsonicTabActivity.this) && isArtist && Util.getShouldUseId3Tags(SubsonicTabActivity.this))
-				{
-					getSongsForArtist(id, songs);
-				}
-				else
-				{
-					if (isDirectory)
-					{
-						root = !ActiveServerProvider.Companion.isOffline(SubsonicTabActivity.this) && Util.getShouldUseId3Tags(SubsonicTabActivity.this) ? musicService.getAlbum(id, name, false, SubsonicTabActivity.this, this) : musicService.getMusicDirectory(id, name, false, SubsonicTabActivity.this, this);
-					}
-					else if (isShare)
-					{
-						root = new MusicDirectory();
-
-						List<Share> shares = musicService.getShares(true, SubsonicTabActivity.this, this);
-
-						for (Share share : shares)
-						{
-							if (share.getId().equals(id))
-							{
-								for (Entry entry : share.getEntries())
-								{
-									root.addChild(entry);
-								}
-
-								break;
-							}
-						}
-					}
-					else
-					{
-						root = musicService.getPlaylist(id, name, SubsonicTabActivity.this, this);
-					}
-
-					getSongsRecursively(root, songs);
-				}
-
-				return songs;
-			}
-
-			private void getSongsRecursively(MusicDirectory parent, List<Entry> songs) throws Exception
-			{
-				if (songs.size() > MAX_SONGS)
-				{
-					return;
-				}
-
-				for (Entry song : parent.getChildren(false, true))
-				{
-					if (!song.isVideo())
-					{
-						songs.add(song);
-					}
-				}
-
-				MusicService musicService = MusicServiceFactory.getMusicService(SubsonicTabActivity.this);
-
-				for (Entry dir : parent.getChildren(true, false))
-				{
-					MusicDirectory root;
-
-					root = !ActiveServerProvider.Companion.isOffline(SubsonicTabActivity.this) && Util.getShouldUseId3Tags(SubsonicTabActivity.this) ? musicService.getAlbum(dir.getId(), dir.getTitle(), false, SubsonicTabActivity.this, this) : musicService.getMusicDirectory(dir.getId(), dir.getTitle(), false, SubsonicTabActivity.this, this);
-
-					getSongsRecursively(root, songs);
-				}
-			}
-
-			private void getSongsForArtist(String id, Collection<Entry> songs) throws Exception
-			{
-				if (songs.size() > MAX_SONGS)
-				{
-					return;
-				}
-
-				MusicService musicService = MusicServiceFactory.getMusicService(SubsonicTabActivity.this);
-				MusicDirectory artist = musicService.getArtist(id, "", false, SubsonicTabActivity.this, this);
-
-				for (Entry album : artist.getChildren())
-				{
-					MusicDirectory albumDirectory = musicService.getAlbum(album.getId(), "", false, SubsonicTabActivity.this, this);
-
-					for (Entry song : albumDirectory.getChildren())
-					{
-						if (!song.isVideo())
-						{
-							songs.add(song);
-						}
-					}
-				}
-			}
-
-			@Override
-			protected void done(List<Entry> songs)
-			{
-				if (Util.getShouldSortByDisc(SubsonicTabActivity.this))
-				{
-					Collections.sort(songs, new EntryByDiscAndTrackComparator());
-				}
-
-				MediaPlayerController mediaPlayerController = getMediaPlayerController();
-				if (!songs.isEmpty() && mediaPlayerController != null)
-				{
-					if (!append && !playNext && !unpin && !background)
-					{
-						mediaPlayerController.clear();
-					}
-					warnIfNetworkOrStorageUnavailable();
-					if (!background)
-					{
-						if (unpin)
-						{
-							mediaPlayerController.unpin(songs);
-						}
-						else
-						{
-							mediaPlayerController.download(songs, save, autoplay, playNext, shuffle, false);
-							if (!append && Util.getShouldTransitionOnPlaybackPreference(SubsonicTabActivity.this))
-							{
-								startActivityForResultWithoutTransition(SubsonicTabActivity.this, DownloadActivity.class);
-							}
-						}
-					}
-					else
-					{
-						if (unpin)
-						{
-							mediaPlayerController.unpin(songs);
-						}
-						else
-						{
-							mediaPlayerController.downloadBackground(songs, save);
-						}
-					}
-				}
-			}
-		};
-
-		task.execute();
-	}
-
-	protected void checkLicenseAndTrialPeriod(Runnable onValid)
-	{
-		if (licenseValid)
-		{
-			onValid.run();
-			return;
-		}
-
-		int trialDaysLeft = Util.getRemainingTrialDays(this);
-		Timber.i("%s trial days left.", trialDaysLeft);
-
-		if (trialDaysLeft == 0)
-		{
-			showDonationDialog(trialDaysLeft, null);
-		}
-		else if (trialDaysLeft < Constants.FREE_TRIAL_DAYS / 2)
-		{
-			showDonationDialog(trialDaysLeft, onValid);
-		}
-		else
-		{
-			Util.toast(this, getResources().getString(R.string.select_album_not_licensed, trialDaysLeft));
-			onValid.run();
-		}
-	}
-
-	private void showDonationDialog(int trialDaysLeft, final Runnable onValid)
-	{
-		AlertDialog.Builder builder = new AlertDialog.Builder(this);
-		builder.setIcon(android.R.drawable.ic_dialog_info);
-
-		if (trialDaysLeft == 0)
-		{
-			builder.setTitle(R.string.select_album_donate_dialog_0_trial_days_left);
-		}
-		else
-		{
-			builder.setTitle(getResources().getQuantityString(R.plurals.select_album_donate_dialog_n_trial_days_left, trialDaysLeft, trialDaysLeft));
-		}
-
-		builder.setMessage(R.string.select_album_donate_dialog_message);
-
-		builder.setPositiveButton(R.string.select_album_donate_dialog_now, new DialogInterface.OnClickListener()
-		{
-			@Override
-			public void onClick(DialogInterface dialogInterface, int i)
-			{
-				startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse(Constants.DONATION_URL)));
-			}
-		});
-
-		builder.setNegativeButton(R.string.select_album_donate_dialog_later, new DialogInterface.OnClickListener()
-		{
-			@Override
-			public void onClick(DialogInterface dialogInterface, int i)
-			{
-				dialogInterface.dismiss();
-				if (onValid != null)
-				{
-					onValid.run();
-				}
-			}
-		});
-
-		builder.create().show();
-	}
-
 	protected void setActionBarDisplayHomeAsUp(boolean enabled)
 	{
 		ActionBar actionBar = getSupportActionBar();
@@ -1054,39 +702,6 @@ public class SubsonicTabActivity extends ResultActivity
 		{
 			actionBar.setDisplayHomeAsUpEnabled(enabled);
 		}
-	}
-
-	protected void setActionBarTitle(CharSequence title)
-	{
-		ActionBar actionBar = getSupportActionBar();
-
-		if (actionBar != null)
-		{
-			actionBar.setTitle(title);
-		}
-	}
-
-	protected void setActionBarTitle(int id)
-	{
-		ActionBar actionBar = getSupportActionBar();
-
-		if (actionBar != null)
-		{
-			actionBar.setTitle(id);
-		}
-	}
-
-	protected CharSequence getActionBarTitle()
-	{
-		ActionBar actionBar = getSupportActionBar();
-		CharSequence title = null;
-
-		if (actionBar != null)
-		{
-			title = actionBar.getTitle();
-		}
-
-		return title;
 	}
 
 	protected void setActionBarSubtitle(CharSequence title)
@@ -1107,19 +722,6 @@ public class SubsonicTabActivity extends ResultActivity
 		{
 			actionBar.setSubtitle(id);
 		}
-	}
-
-	protected CharSequence getActionBarSubtitle()
-	{
-		ActionBar actionBar = getSupportActionBar();
-		CharSequence subtitle = null;
-
-		if (actionBar != null)
-		{
-			subtitle = actionBar.getSubtitle();
-		}
-
-		return subtitle;
 	}
 
 	private void setUncaughtExceptionHandler()
@@ -1272,7 +874,8 @@ public class SubsonicTabActivity extends ResultActivity
 						}
 					}
 
-					SubsonicTabActivity.this.startActivityForResultWithoutTransition(activity, DownloadActivity.class);
+					// TODO: Refactor this to Navigation. It should automatically go to the PlayerFragment.
+					//SubsonicTabActivity.this.startActivityForResultWithoutTransition(activity, DownloadActivity.class);
 					return false;
 				}
 			}

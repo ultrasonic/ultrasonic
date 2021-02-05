@@ -86,8 +86,9 @@ public class SettingsFragment extends PreferenceFragmentCompat
 
     private SharedPreferences settings;
 
-    private Lazy<MediaPlayerController> mediaPlayerControllerLazy = inject(MediaPlayerController.class);
-    private Lazy<ImageLoaderProvider> imageLoader = inject(ImageLoaderProvider.class);
+    private final Lazy<MediaPlayerController> mediaPlayerControllerLazy = inject(MediaPlayerController.class);
+    private final Lazy<ImageLoaderProvider> imageLoader = inject(ImageLoaderProvider.class);
+    private final Lazy<PermissionUtil> permissionUtil = inject(PermissionUtil.class);
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
@@ -517,7 +518,7 @@ public class SettingsFragment extends PreferenceFragmentCompat
         File dir = new File(path);
 
         if (!FileUtil.ensureDirectoryExistsAndIsReadWritable(dir)) {
-            PermissionUtil.handlePermissionFailed(getActivity(), new PermissionUtil.PermissionRequestFinishedCallback() {
+            permissionUtil.getValue().handlePermissionFailed(new PermissionUtil.PermissionRequestFinishedCallback() {
                 @Override
                 public void onPermissionRequestFinished(boolean hasPermission) {
                     String currentPath = settings.getString(Constants.PREFERENCES_KEY_CACHE_LOCATION,

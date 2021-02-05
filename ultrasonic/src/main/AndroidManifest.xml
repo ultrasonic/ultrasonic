@@ -30,10 +30,11 @@
         <activity android:name=".activity.NavigationActivity"
             android:configChanges="orientation|keyboardHidden"
             android:label="@string/common.appname"
-            android:launchMode="standard">
+            android:launchMode="singleTask">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <action android:name="android.intent.action.SEARCH"/>
+                <action android:name="android.media.action.MEDIA_PLAY_FROM_SEARCH"/>
 
                 <category android:name="android.intent.category.DEFAULT" />
                 <category android:name="android.intent.category.LAUNCHER" />
@@ -44,58 +45,10 @@
                 android:resource="@xml/searchable"/>
         </activity>
         <activity
-            android:name=".activity.MainActivity"
-            android:configChanges="orientation|keyboardHidden"
-            android:label="@string/common.appname"
-            android:launchMode="standard">
-            <!--<intent-filter>
-                <action android:name="android.intent.action.MAIN"/>
-                <category android:name="android.intent.category.LAUNCHER"/>
-            </intent-filter>-->
-        </activity>
-        <activity
-            android:name=".activity.SelectAlbumActivity"
-            android:configChanges="orientation|keyboardHidden"/>
-        <activity
-            android:name=".activity.SearchActivity"
-            android:configChanges="orientation|keyboardHidden"
-            android:label="@string/search.label"
-            android:launchMode="singleTask"/>
-        <activity
-            android:name=".activity.DownloadActivity"
-            android:configChanges="keyboardHidden"
-            android:launchMode="singleTask"
-            android:exported="true" />
-        <activity
-            android:name=".activity.LyricsActivity"
-            android:configChanges="orientation|keyboardHidden"
-            android:launchMode="singleTask"/>
-        <activity
             android:name=".activity.EqualizerActivity"
             android:configChanges="orientation|keyboardHidden"
             android:label="@string/equalizer.label"
             android:launchMode="singleTask"/>
-        <activity
-            android:name=".activity.VoiceQueryReceiverActivity"
-            android:launchMode="singleTask">
-            <intent-filter>
-                <action android:name="android.media.action.MEDIA_PLAY_FROM_SEARCH"/>
-                <category android:name="android.intent.category.DEFAULT"/>
-            </intent-filter>
-        </activity>
-<!--        <activity
-            android:name=".activity.QueryReceiverActivity"
-            android:launchMode="singleTask">
-            <intent-filter>
-                <action android:name="android.intent.action.SEARCH"/>
-                <category android:name="android.intent.category.DEFAULT"/>
-            </intent-filter>
-
-            <meta-data
-                android:name="android.app.searchable"
-                android:resource="@xml/searchable"/>
-        </activity>
--->
         <activity
             android:name=".activity.ServerSelectorActivity"
             android:label="@string/server_selector.label" />

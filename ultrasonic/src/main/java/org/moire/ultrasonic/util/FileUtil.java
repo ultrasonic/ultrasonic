@@ -60,7 +60,8 @@ public class FileUtil
 	private static final List<String> PLAYLIST_FILE_EXTENSIONS = Collections.singletonList("m3u");
 	private static final Pattern TITLE_WITH_TRACK = Pattern.compile("^\\d\\d-.*");
 
-	private static Lazy<ImageLoaderProvider> imageLoaderProvider = inject(ImageLoaderProvider.class);
+	private static final Lazy<ImageLoaderProvider> imageLoaderProvider = inject(ImageLoaderProvider.class);
+	private static final Lazy<PermissionUtil> permissionUtil = inject(PermissionUtil.class);
 
 	public static File getSongFile(Context context, MusicDirectory.Entry song)
 	{
@@ -396,7 +397,7 @@ public class FileUtil
 		File dir = new File(path);
 
 		boolean hasAccess = ensureDirectoryExistsAndIsReadWritable(dir);
-		if (hasAccess == false) PermissionUtil.handlePermissionFailed(context, null);
+		if (!hasAccess) permissionUtil.getValue().handlePermissionFailed(null);
 
 		return  hasAccess ? dir : defaultMusicDirectory;
 	}

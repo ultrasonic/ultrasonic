@@ -19,12 +19,12 @@ import timber.log.Timber;
 import android.widget.SeekBar;
 
 import org.jetbrains.annotations.NotNull;
-import org.moire.ultrasonic.activity.DownloadActivity;
 import org.moire.ultrasonic.audiofx.EqualizerController;
 import org.moire.ultrasonic.audiofx.VisualizerController;
 import org.moire.ultrasonic.data.ActiveServerProvider;
 import org.moire.ultrasonic.domain.MusicDirectory;
 import org.moire.ultrasonic.domain.PlayerState;
+import org.moire.ultrasonic.fragment.PlayerFragment;
 import org.moire.ultrasonic.receiver.MediaButtonIntentReceiver;
 import org.moire.ultrasonic.util.CancellableTask;
 import org.moire.ultrasonic.util.Constants;
@@ -598,7 +598,7 @@ public class LocalMediaPlayer
                 @Override
                 public void onBufferingUpdate(MediaPlayer mp, int percent)
                 {
-                    SeekBar progressBar = DownloadActivity.getProgressBar();
+                    SeekBar progressBar = PlayerFragment.getProgressBar();
                     MusicDirectory.Entry song = downloadFile.getSong();
 
                     if (percent == 100)
@@ -627,12 +627,12 @@ public class LocalMediaPlayer
 
                     setPlayerState(PREPARED);
 
-                    SeekBar progressBar = DownloadActivity.getProgressBar();
+                    SeekBar progressBar = PlayerFragment.getProgressBar();
 
                     if (progressBar != null && downloadFile.isWorkDone())
                     {
                         // Populate seek bar secondary progress if we have a complete file for consistency
-                        DownloadActivity.getProgressBar().setSecondaryProgress(100 * progressBar.getMax());
+                        PlayerFragment.getProgressBar().setSecondaryProgress(100 * progressBar.getMax());
                     }
 
                     synchronized (LocalMediaPlayer.this)

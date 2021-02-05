@@ -41,7 +41,7 @@
             a:icon="?attr/chat"
             a:title="@string/button_bar.chat" />
         <item
-            a:id="@+id/menu_now_playing"
+            a:id="@+id/playerFragment"
             a:checkable="true"
             a:icon="?attr/media_play"
             a:title="@string/button_bar.now_playing" />

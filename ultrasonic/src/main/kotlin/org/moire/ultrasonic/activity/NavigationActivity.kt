@@ -1,9 +1,13 @@
 package org.moire.ultrasonic.activity
 
 import android.app.AlertDialog
+import android.app.SearchManager
+import android.content.Intent
 import android.content.res.Resources
 import android.os.Bundle
 import android.preference.PreferenceManager
+import android.provider.MediaStore
+import android.provider.SearchRecentSuggestions
 import android.view.Menu
 import android.view.MenuItem
 import androidx.appcompat.app.AppCompatActivity
@@ -21,6 +25,7 @@ import com.google.android.material.navigation.NavigationView
 import org.koin.android.ext.android.inject
 import org.koin.android.viewmodel.ext.android.viewModel
 import org.moire.ultrasonic.R
+import org.moire.ultrasonic.provider.SearchSuggestionProvider
 import org.moire.ultrasonic.service.MediaPlayerController
 import org.moire.ultrasonic.service.MediaPlayerLifecycleSupport
 import org.moire.ultrasonic.subsonic.ImageLoaderProvider
@@ -59,7 +64,7 @@ class NavigationActivity : AppCompatActivity() {
             setOf(R.id.mainFragment, R.id.selectArtistFragment, R.id.searchFragment,
                 R.id.playlistsFragment, R.id.sharesFragment, R.id.bookmarksFragment,
                 R.id.chatFragment, R.id.podcastFragment, R.id.settingsFragment,
-                R.id.aboutFragment),
+                R.id.aboutFragment, R.id.playerFragment),
             drawerLayout)
 
         setupActionBar(navController, appBarConfiguration)
@@ -125,6 +130,25 @@ class NavigationActivity : AppCompatActivity() {
 
     override fun onSupportNavigateUp(): Boolean {
         return findNavController(R.id.nav_host_fragment).navigateUp(appBarConfiguration)
+    }
+
+    // TODO: Test if this works with external Intents
+    // android.intent.action.SEARCH and android.media.action.MEDIA_PLAY_FROM_SEARCH calls here
+    override fun onNewIntent(intent: Intent?) {
+        super.onNewIntent(intent)
+
+        val query = intent?.getStringExtra(SearchManager.QUERY)
+
+        if (query != null) {
+            val autoPlay = intent.action == MediaStore.INTENT_ACTION_MEDIA_PLAY_FROM_SEARCH
+            val suggestions = SearchRecentSuggestions(this, SearchSuggestionProvider.AUTHORITY, SearchSuggestionProvider.MODE)
+            suggestions.saveRecentQuery(query, null)
+
+            val bundle = Bundle()
+            bundle.putString(Constants.INTENT_EXTRA_NAME_QUERY, query)
+            bundle.putBoolean(Constants.INTENT_EXTRA_NAME_AUTOPLAY, autoPlay)
+            findNavController(R.id.nav_host_fragment).navigate(R.id.searchFragment, bundle)
+        }
     }
 
     private fun loadSettings() {

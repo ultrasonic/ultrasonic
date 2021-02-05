@@ -31,8 +31,4 @@ val appPermanentStorage = module {
     single { get<AppDatabase>().serverSettingDao() }
 
     viewModel { ServerSettingsModel(get(), get(), androidContext()) }
-
-    single { ActiveServerProvider(get(), androidContext()) }
-
-    single { ImageLoaderProvider(androidContext()) }
 }

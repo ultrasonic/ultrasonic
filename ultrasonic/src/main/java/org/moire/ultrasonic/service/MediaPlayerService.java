@@ -20,7 +20,7 @@ import androidx.core.app.NotificationManagerCompat;
 
 import org.koin.java.KoinJavaComponent;
 import org.moire.ultrasonic.R;
-import org.moire.ultrasonic.activity.DownloadActivity;
+import org.moire.ultrasonic.activity.NavigationActivity;
 import org.moire.ultrasonic.activity.SubsonicTabActivity;
 import org.moire.ultrasonic.domain.MusicDirectory;
 import org.moire.ultrasonic.domain.PlayerState;
@@ -650,7 +650,8 @@ public class MediaPlayerService extends Service
 
         notificationBuilder.setContent(contentView);
 
-        Intent notificationIntent = new Intent(this, DownloadActivity.class);
+        // TODO: Navigate automatically to PlayerFragment
+        Intent notificationIntent = new Intent(this, NavigationActivity.class);
         notificationBuilder.setContentIntent(PendingIntent.getActivity(this, 0, notificationIntent, 0));
 
         if (playerState == PlayerState.PAUSED || playerState == PlayerState.IDLE) {

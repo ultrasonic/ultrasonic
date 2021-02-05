@@ -21,7 +21,6 @@ import com.karumi.dexter.listener.PermissionRequestErrorListener;
 import com.karumi.dexter.listener.multi.MultiplePermissionsListener;
 
 import org.moire.ultrasonic.R;
-import org.moire.ultrasonic.activity.MainActivity;
 
 import java.util.List;
 
@@ -32,6 +31,13 @@ import static androidx.core.content.PermissionChecker.PERMISSION_DENIED;
  * Contains static functions for Permission handling
  */
 public class PermissionUtil {
+
+    private final Context context;
+
+    public PermissionUtil(Context context) {
+        this.context = context;
+    }
+
     public interface PermissionRequestFinishedCallback {
         void onPermissionRequestFinished(boolean hasPermission);
     }
@@ -42,31 +48,27 @@ public class PermissionUtil {
      * It will check if the failure is because the necessary permissions aren't available,
      * and it will request them, if necessary.
      *
-     * @param context context for the operation
      * @param callback callback function to execute after the permission request is finished
      */
-    public static void handlePermissionFailed(final Context context, final PermissionRequestFinishedCallback callback) {
-
+    public void handlePermissionFailed(final PermissionRequestFinishedCallback callback) {
+        // TODO: Test with ApplicationContext
         String currentCachePath = Util.getPreferences(context).getString(Constants.PREFERENCES_KEY_CACHE_LOCATION, FileUtil.getDefaultMusicDirectory(context).getPath());
         String defaultCachePath = FileUtil.getDefaultMusicDirectory(context).getPath();
 
         // Ultrasonic can do nothing about this error when the Music Directory is already set to the default.
         if (currentCachePath.compareTo(defaultCachePath) == 0) return;
 
-        // We must get the context of the Main Activity for the dialogs, as this function may be called from a background thread where displaying dialogs is not available
-        final Context mainContext = MainActivity.getInstance();
-
         if ((PermissionChecker.checkSelfPermission(context, Manifest.permission.WRITE_EXTERNAL_STORAGE) == PERMISSION_DENIED) ||
                 (PermissionChecker.checkSelfPermission(context, Manifest.permission.READ_EXTERNAL_STORAGE) == PERMISSION_DENIED)) {
             // While we request permission, the Music Directory is temporarily reset to its default location
             setCacheLocation(context, FileUtil.getDefaultMusicDirectory(context).getPath());
-            requestFailedPermission(mainContext, currentCachePath, callback);
+            requestFailedPermission(context, currentCachePath, callback);
         } else {
             setCacheLocation(context, FileUtil.getDefaultMusicDirectory(context).getPath());
             new Handler(Looper.getMainLooper()).post(new Runnable() {
                 @Override
                 public void run() {
-                    showWarning(mainContext, context.getString(R.string.permissions_message_box_title), context.getString(R.string.permissions_access_error), null);
+                    showWarning(context, context.getString(R.string.permissions_message_box_title), context.getString(R.string.permissions_access_error), null);
                 }
             });
             callback.onPermissionRequestFinished(false);

@@ -14,8 +14,7 @@ import android.view.KeyEvent;
 import android.widget.RemoteViews;
 
 import org.moire.ultrasonic.R;
-import org.moire.ultrasonic.activity.DownloadActivity;
-import org.moire.ultrasonic.activity.MainActivity;
+import org.moire.ultrasonic.activity.NavigationActivity;
 import org.moire.ultrasonic.domain.MusicDirectory;
 import org.moire.ultrasonic.receiver.MediaButtonIntentReceiver;
 import org.moire.ultrasonic.service.MediaPlayerController;
@@ -181,15 +180,11 @@ public class UltrasonicAppWidgetProvider extends AppWidgetProvider
 
 	/**
 	 * Link up various button actions using {@link PendingIntent}.
-	 *
-	 * @param playerActive True if player is active in background, which means
-	 *                     widget click will launch {@link DownloadActivity},
-	 *                     otherwise we launch {@link MainActivity}.
 	 */
 	private static void linkButtons(Context context, RemoteViews views, boolean playerActive)
 	{
-
-		Intent intent = new Intent(context, playerActive ? DownloadActivity.class : MainActivity.class);
+		// TODO: If playerActive = true, display the PlayerFragment automatically
+		Intent intent = new Intent(context, playerActive ? NavigationActivity.class : NavigationActivity.class);
 		intent.setAction("android.intent.action.MAIN");
 		intent.addCategory("android.intent.category.LAUNCHER");
 		PendingIntent pendingIntent = PendingIntent.getActivity(context, 10, intent, PendingIntent.FLAG_UPDATE_CURRENT);
@@ -198,21 +193,18 @@ public class UltrasonicAppWidgetProvider extends AppWidgetProvider
 
 		// Emulate media button clicks.
 		intent = new Intent(Constants.CMD_PROCESS_KEYCODE);
-		//intent.setPackage(context.getPackageName());
 		intent.setComponent(new ComponentName(context, MediaButtonIntentReceiver.class));
 		intent.putExtra(Intent.EXTRA_KEY_EVENT, new KeyEvent(KeyEvent.ACTION_DOWN, KeyEvent.KEYCODE_MEDIA_PLAY_PAUSE));
 		pendingIntent = PendingIntent.getBroadcast(context, 11, intent, 0);
 		views.setOnClickPendingIntent(R.id.control_play, pendingIntent);
 
 		intent = new Intent(Constants.CMD_PROCESS_KEYCODE);
-		//intent.setPackage(context.getPackageName());
 		intent.setComponent(new ComponentName(context, MediaButtonIntentReceiver.class));
 		intent.putExtra(Intent.EXTRA_KEY_EVENT, new KeyEvent(KeyEvent.ACTION_DOWN, KeyEvent.KEYCODE_MEDIA_NEXT));
 		pendingIntent = PendingIntent.getBroadcast(context, 12, intent, 0);
 		views.setOnClickPendingIntent(R.id.control_next, pendingIntent);
 
 		intent = new Intent(Constants.CMD_PROCESS_KEYCODE);
-		//intent.setPackage(context.getPackageName());
 		intent.setComponent(new ComponentName(context, MediaButtonIntentReceiver.class));
 		intent.putExtra(Intent.EXTRA_KEY_EVENT, new KeyEvent(KeyEvent.ACTION_DOWN, KeyEvent.KEYCODE_MEDIA_PREVIOUS));
 		pendingIntent = PendingIntent.getBroadcast(context, 13, intent, 0);

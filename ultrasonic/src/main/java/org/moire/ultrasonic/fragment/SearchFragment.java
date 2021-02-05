@@ -177,6 +177,22 @@ public class SearchFragment extends Fragment {
 
         registerForContextMenu(list);
 
+        // Fragment was started with a query, try to execute search right away
+        Bundle arguments = getArguments();
+        if (arguments != null) {
+            String query = arguments.getString(Constants.INTENT_EXTRA_NAME_QUERY);
+            boolean autoPlay = arguments.getBoolean(Constants.INTENT_EXTRA_NAME_AUTOPLAY, false);
+
+            if (query != null)
+            {
+                mergeAdapter = new MergeAdapter();
+                list.setAdapter(mergeAdapter);
+                search(query, autoPlay);
+                return;
+            }
+        }
+
+        // Fragment was started from the Menu, create empty list
         populateList();
     }
 
@@ -221,6 +237,7 @@ public class SearchFragment extends Fragment {
             @Override
             public boolean onQueryTextChange(String newText) { return true;  }
         });
+
         searchView.setIconifiedByDefault(false);
         searchItem.expandActionView();
     }

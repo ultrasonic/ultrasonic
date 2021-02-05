@@ -32,7 +32,7 @@ class ShareHandler(val context: Context) {
     private var saveAsDefaultsCheckBox: CheckBox? = null
     private val pattern = Pattern.compile(":")
 
-    fun createShare(fragment: Fragment, entries: List<MusicDirectory.Entry?>?, swipe: SwipeRefreshLayout, cancellationToken: CancellationToken) {
+    fun createShare(fragment: Fragment, entries: List<MusicDirectory.Entry?>?, swipe: SwipeRefreshLayout?, cancellationToken: CancellationToken) {
         val askForDetails = Util.getShouldAskForShareDetails(context)
         val shareDetails = ShareDetails()
         shareDetails.Entries = entries
@@ -45,7 +45,7 @@ class ShareHandler(val context: Context) {
         }
     }
 
-    fun share(fragment: Fragment, shareDetails: ShareDetails, swipe: SwipeRefreshLayout, cancellationToken: CancellationToken) {
+    fun share(fragment: Fragment, shareDetails: ShareDetails, swipe: SwipeRefreshLayout?, cancellationToken: CancellationToken) {
         val task: BackgroundTask<Share> = object : TabActivityBackgroundTask<Share>(fragment.requireActivity(), true, swipe, cancellationToken) {
             @Throws(Throwable::class)
             override fun doInBackground(): Share {
@@ -76,7 +76,7 @@ class ShareHandler(val context: Context) {
         task.execute()
     }
 
-    private fun showDialog(fragment: Fragment, shareDetails: ShareDetails, swipe: SwipeRefreshLayout, cancellationToken: CancellationToken) {
+    private fun showDialog(fragment: Fragment, shareDetails: ShareDetails, swipe: SwipeRefreshLayout?, cancellationToken: CancellationToken) {
         val layout = LayoutInflater.from(fragment.context).inflate(R.layout.share_details, null)
 
         if (layout != null) {
