@@ -4,10 +4,12 @@ import android.app.AlertDialog
 import android.app.SearchManager
 import android.content.Intent
 import android.content.res.Resources
+import android.media.AudioManager
 import android.os.Bundle
 import android.preference.PreferenceManager
 import android.provider.MediaStore
 import android.provider.SearchRecentSuggestions
+import android.view.KeyEvent
 import android.view.Menu
 import android.view.MenuItem
 import androidx.appcompat.app.AppCompatActivity
@@ -25,12 +27,14 @@ import com.google.android.material.navigation.NavigationView
 import org.koin.android.ext.android.inject
 import org.koin.android.viewmodel.ext.android.viewModel
 import org.moire.ultrasonic.R
+import org.moire.ultrasonic.data.ActiveServerProvider.Companion.isOffline
 import org.moire.ultrasonic.provider.SearchSuggestionProvider
 import org.moire.ultrasonic.service.MediaPlayerController
 import org.moire.ultrasonic.service.MediaPlayerLifecycleSupport
 import org.moire.ultrasonic.subsonic.ImageLoaderProvider
 import org.moire.ultrasonic.util.Constants
 import org.moire.ultrasonic.util.FileUtil
+import org.moire.ultrasonic.util.SubsonicUncaughtExceptionHandler
 import org.moire.ultrasonic.util.Util
 import timber.log.Timber
 
@@ -39,6 +43,11 @@ import timber.log.Timber
  * A simple activity demonstrating use of a NavHostFragment with a navigation drawer.
  */
 class NavigationActivity : AppCompatActivity() {
+    var chatMenuItem: MenuItem? = null
+    var bookmarksMenuItem: MenuItem? = null
+    var sharesMenuItem: MenuItem? = null
+    private var theme: String? = null
+
     private lateinit var appBarConfiguration : AppBarConfiguration
     private val serverSettingsModel: ServerSettingsModel by viewModel()
     private val lifecycleSupport: MediaPlayerLifecycleSupport by inject()
@@ -48,7 +57,12 @@ class NavigationActivity : AppCompatActivity() {
     private var infoDialogDisplayed = false
 
     override fun onCreate(savedInstanceState: Bundle?) {
+        setUncaughtExceptionHandler()
+        Util.applyTheme(this)
+
         super.onCreate(savedInstanceState)
+
+        volumeControlStream = AudioManager.STREAM_MUSIC
         setContentView(R.layout.navigation_activity)
 
         val toolbar = findViewById<Toolbar>(R.id.toolbar)
@@ -78,6 +92,15 @@ class NavigationActivity : AppCompatActivity() {
                 Integer.toString(destination.id)
             }
             Timber.d("Navigated to $dest")
+
+            // TODO: Maybe we can find a better place for theme change. Currently the change occures when navigating between fragments
+            // but theoretically Settings could request a Navigation Activity recreate instantly when the theme setting changes
+            // Make sure to update theme if it has changed
+            if (theme == null) theme = Util.getTheme(this)
+            else if (theme != Util.getTheme(this)) {
+                theme = Util.getTheme(this)
+                recreate()
+            }
         }
 
         // Determine first run and migrate server settings to DB as early as possible
@@ -89,6 +112,49 @@ class NavigationActivity : AppCompatActivity() {
 
         loadSettings()
         showInfoDialog(showWelcomeScreen)
+    }
+
+    override fun onResume() {
+        super.onResume()
+        val visibility = !isOffline(this)
+        chatMenuItem?.isVisible = visibility
+        bookmarksMenuItem?.isVisible = visibility
+        sharesMenuItem?.isVisible = visibility
+
+        Util.registerMediaButtonEventReceiver(this, false)
+        // Lifecycle support's constructor registers some event receivers so it should be created early
+        lifecycleSupport.onCreate()
+
+        // TODO: Implement NowPlaying as a Fragment
+        // This must be filled here because onCreate is called before the derived objects would call setContentView
+        //getNowPlayingView()
+
+        if (!SubsonicTabActivity.nowPlayingHidden) {
+            //showNowPlaying()
+        } else {
+            //hideNowPlaying()
+        }
+    }
+
+    override fun onDestroy() {
+        Util.unregisterMediaButtonEventReceiver(this, false)
+        super.onDestroy()
+
+        // TODO: Handle NowPlaying if necessary
+        //nowPlayingView = null
+        imageLoaderProvider.clearImageLoader()
+    }
+
+    override fun onKeyDown(keyCode: Int, event: KeyEvent?): Boolean {
+        val isVolumeDown = keyCode == KeyEvent.KEYCODE_VOLUME_DOWN
+        val isVolumeUp = keyCode == KeyEvent.KEYCODE_VOLUME_UP
+        val isVolumeAdjust = isVolumeDown || isVolumeUp
+        val isJukebox = mediaPlayerController.isJukeboxEnabled
+        if (isVolumeAdjust && isJukebox) {
+            mediaPlayerController.adjustJukeboxVolume(isVolumeUp)
+            return true
+        }
+        return super.onKeyDown(keyCode, event)
     }
 
     private fun setupNavigationMenu(navController: NavController) {
@@ -107,6 +173,10 @@ class NavigationActivity : AppCompatActivity() {
             }
             true
         }
+
+        chatMenuItem = sideNavView.menu.findItem(R.id.menu_chat)
+        bookmarksMenuItem = sideNavView.menu.findItem(R.id.menu_bookmarks)
+        sharesMenuItem = sideNavView.menu.findItem(R.id.menu_shares)
     }
 
     private fun setupActionBar(navController: NavController, appBarConfig: AppBarConfiguration) {
@@ -180,6 +250,13 @@ class NavigationActivity : AppCompatActivity() {
                         findNavController(R.id.nav_host_fragment).navigate(R.id.settingsFragment)
                     }.show()
             }
+        }
+    }
+
+    private fun setUncaughtExceptionHandler() {
+        val handler = Thread.getDefaultUncaughtExceptionHandler()
+        if (handler !is SubsonicUncaughtExceptionHandler) {
+            Thread.setDefaultUncaughtExceptionHandler(SubsonicUncaughtExceptionHandler(this))
         }
     }
 }
