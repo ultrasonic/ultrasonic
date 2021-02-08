@@ -31,6 +31,7 @@ import org.koin.android.viewmodel.ext.android.viewModel
 import org.moire.ultrasonic.R
 import org.moire.ultrasonic.data.ActiveServerProvider.Companion.isOffline
 import org.moire.ultrasonic.domain.PlayerState
+import org.moire.ultrasonic.fragment.ServerSettingsModel
 import org.moire.ultrasonic.provider.SearchSuggestionProvider
 import org.moire.ultrasonic.service.DownloadFile
 import org.moire.ultrasonic.service.MediaPlayerController
@@ -111,7 +112,7 @@ class NavigationActivity : AppCompatActivity() {
             if (currentFragmentId == R.id.playerFragment) {
                 hideNowPlaying()
             } else {
-                showNowPlaying()
+                if (!nowPlayingHidden) showNowPlaying()
             }
 
             // TODO: Maybe we can find a better place for theme change. Currently the change occurs when navigating between fragments
@@ -136,7 +137,6 @@ class NavigationActivity : AppCompatActivity() {
 
         nowPlayingEventListener = object : NowPlayingEventListener {
             override fun onDismissNowPlaying() {
-                // TODO: When will it be set back to false?
                 nowPlayingHidden = true;
                 hideNowPlaying();
             }
@@ -164,11 +164,8 @@ class NavigationActivity : AppCompatActivity() {
         // Lifecycle support's constructor registers some event receivers so it should be created early
         lifecycleSupport.onCreate()
 
-        if (!nowPlayingHidden) {
-            showNowPlaying()
-        } else {
-            hideNowPlaying()
-        }
+        if (!nowPlayingHidden) showNowPlaying()
+        else hideNowPlaying()
     }
 
     override fun onDestroy() {
@@ -297,11 +294,14 @@ class NavigationActivity : AppCompatActivity() {
     }
 
     private fun showNowPlaying() {
-        if (!Util.getShowNowPlayingPreference(this) || nowPlayingHidden) {
+        if (!Util.getShowNowPlayingPreference(this)) {
             hideNowPlaying()
             return
         }
 
+        // The logic for nowPlayingHidden is that the user can dismiss NowPlaying with a gesture,
+        // and when the MediaPlayerService requests that it should be shown, it returns
+        nowPlayingHidden = false;
         // Do not show for Player fragment
         if (currentFragmentId == R.id.playerFragment) {
             hideNowPlaying()

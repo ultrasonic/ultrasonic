@@ -28,7 +28,6 @@ import android.text.TextUtils;
 import kotlin.Lazy;
 import timber.log.Timber;
 
-import org.moire.ultrasonic.activity.SubsonicTabActivity;
 import org.moire.ultrasonic.domain.MusicDirectory;
 import org.moire.ultrasonic.subsonic.ImageLoaderProvider;
 
@@ -156,18 +155,14 @@ public class FileUtil
 
 		File avatarFile = getAvatarFile(context, username);
 
-		SubsonicTabActivity subsonicTabActivity = SubsonicTabActivity.getInstance();
 		Bitmap bitmap = null;
 		ImageLoader imageLoader = null;
 
-		if (subsonicTabActivity != null)
-		{
-			imageLoader = imageLoaderProvider.getValue().getImageLoader();
+		imageLoader = imageLoaderProvider.getValue().getImageLoader();
 
-			if (imageLoader != null)
-			{
-				bitmap = imageLoader.getImageBitmap(username, size);
-			}
+		if (imageLoader != null)
+		{
+			bitmap = imageLoader.getImageBitmap(username, size);
 		}
 
 		if (bitmap != null)
@@ -226,18 +221,14 @@ public class FileUtil
 
 		File albumArtFile = getAlbumArtFile(context, entry);
 
-		SubsonicTabActivity subsonicTabActivity = SubsonicTabActivity.getInstance();
 		Bitmap bitmap = null;
 		ImageLoader imageLoader = null;
 
-		if (subsonicTabActivity != null)
-		{
-			imageLoader = imageLoaderProvider.getValue().getImageLoader();
+		imageLoader = imageLoaderProvider.getValue().getImageLoader();
 
-			if (imageLoader != null)
-			{
-				bitmap = imageLoader.getImageBitmap(entry, true, size);
-			}
+		if (imageLoader != null)
+		{
+			bitmap = imageLoader.getImageBitmap(entry, true, size);
 		}
 
 		if (bitmap != null)

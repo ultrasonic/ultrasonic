@@ -1,16 +1,16 @@
-package org.moire.ultrasonic.activity
+package org.moire.ultrasonic.fragment
 
 import android.app.AlertDialog
 import android.os.Bundle
-import android.view.MenuItem
+import android.view.LayoutInflater
+import android.view.View
+import android.view.ViewGroup
 import android.widget.Button
-import androidx.appcompat.app.ActionBar
-import androidx.appcompat.app.AppCompatActivity
+import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
+import androidx.navigation.fragment.findNavController
 import com.google.android.material.switchmaterial.SwitchMaterial
 import com.google.android.material.textfield.TextInputLayout
-import java.net.MalformedURLException
-import java.net.URL
 import org.koin.android.ext.android.inject
 import org.koin.android.viewmodel.ext.android.viewModel
 import org.moire.ultrasonic.BuildConfig
@@ -20,21 +20,17 @@ import org.moire.ultrasonic.api.subsonic.SubsonicAPIVersions
 import org.moire.ultrasonic.api.subsonic.SubsonicClientConfiguration
 import org.moire.ultrasonic.data.ActiveServerProvider
 import org.moire.ultrasonic.data.ServerSetting
-import org.moire.ultrasonic.service.ApiCallResponseChecker.Companion.checkResponseSuccessful
+import org.moire.ultrasonic.service.ApiCallResponseChecker
 import org.moire.ultrasonic.service.MusicServiceFactory
 import org.moire.ultrasonic.util.Constants
 import org.moire.ultrasonic.util.ErrorDialog
 import org.moire.ultrasonic.util.ModalBackgroundTask
 import org.moire.ultrasonic.util.Util
 import timber.log.Timber
+import java.net.MalformedURLException
+import java.net.URL
 
-/**
- * This Activity provides a Form which can be used to edit the properties of a Server Setting.
- * It can also be used to create a Server Setting from scratch.
- * Contains functions for testing the configured Server Setting
- */
-internal class EditServerActivity : AppCompatActivity() {
-
+class EditServerFragment: Fragment() {
     companion object {
         const val EDIT_SERVER_INTENT_INDEX = "index"
     }
@@ -55,32 +51,41 @@ internal class EditServerActivity : AppCompatActivity() {
     private var testButton: Button? = null
     private var isInstanceStateSaved: Boolean = false
 
+    @Override
     override fun onCreate(savedInstanceState: Bundle?) {
+        Util.applyTheme(this.context)
         super.onCreate(savedInstanceState)
+    }
 
-        Util.applyTheme(this)
-        if (savedInstanceState == null) configureActionBar()
+    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
+                              savedInstanceState: Bundle?): View? {
+        return inflater.inflate(R.layout.server_edit, container, false)
+    }
 
-        setContentView(R.layout.server_edit)
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
 
-        serverNameEditText = findViewById(R.id.edit_server_name)
-        serverAddressEditText = findViewById(R.id.edit_server_address)
-        userNameEditText = findViewById(R.id.edit_server_username)
-        passwordEditText = findViewById(R.id.edit_server_password)
-        selfSignedSwitch = findViewById(R.id.edit_self_signed)
-        ldapSwitch = findViewById(R.id.edit_ldap)
-        jukeboxSwitch = findViewById(R.id.edit_jukebox)
-        saveButton = findViewById(R.id.edit_save)
-        testButton = findViewById(R.id.edit_test)
+        serverNameEditText = view.findViewById(R.id.edit_server_name)
+        serverAddressEditText = view.findViewById(R.id.edit_server_address)
+        userNameEditText = view.findViewById(R.id.edit_server_username)
+        passwordEditText = view.findViewById(R.id.edit_server_password)
+        selfSignedSwitch = view.findViewById(R.id.edit_self_signed)
+        ldapSwitch = view.findViewById(R.id.edit_ldap)
+        jukeboxSwitch = view.findViewById(R.id.edit_jukebox)
+        saveButton = view.findViewById(R.id.edit_save)
+        testButton = view.findViewById(R.id.edit_test)
 
-        val index = intent.getIntExtra(EDIT_SERVER_INTENT_INDEX, -1)
+        val index = arguments?.getInt(
+            EDIT_SERVER_INTENT_INDEX,
+            -1
+        ) ?: -1
 
         if (index != -1) {
             // Editing an existing server
-            setTitle(R.string.server_editor_label)
+            FragmentTitle.setTitle(this, R.string.server_editor_label)
             val serverSetting = serverSettingsModel.getServerSetting(index)
             serverSetting.observe(
-                this,
+                viewLifecycleOwner,
                 Observer { t ->
                     if (t != null) {
                         currentServerSetting = t
@@ -110,18 +115,18 @@ internal class EditServerActivity : AppCompatActivity() {
                         ) {
                             MusicServiceFactory.resetMusicService()
                         }
-                        finish()
+                        findNavController().navigateUp()
                     }
                 }
             }
         } else {
             // Creating a new server
-            setTitle(R.string.server_editor_new_label)
+            FragmentTitle.setTitle(this, R.string.server_editor_new_label)
             currentServerSetting = ServerSetting()
             saveButton!!.setOnClickListener {
                 if (getFields()) {
                     serverSettingsModel.saveNewItem(currentServerSetting)
-                    finish()
+                    findNavController().navigateUp()
                 }
             }
         }
@@ -162,8 +167,10 @@ internal class EditServerActivity : AppCompatActivity() {
         super.onSaveInstanceState(savedInstanceState)
     }
 
-    override fun onRestoreInstanceState(savedInstanceState: Bundle) {
-        super.onRestoreInstanceState(savedInstanceState)
+    override fun onViewStateRestored(savedInstanceState: Bundle?) {
+        super.onViewStateRestored(savedInstanceState)
+
+        if (savedInstanceState == null) return
 
         serverNameEditText!!.editText?.setText(
             savedInstanceState.getString(::serverNameEditText.name)
@@ -181,26 +188,6 @@ internal class EditServerActivity : AppCompatActivity() {
         ldapSwitch!!.isChecked = savedInstanceState.getBoolean(::ldapSwitch.name)
         jukeboxSwitch!!.isChecked = savedInstanceState.getBoolean(::jukeboxSwitch.name)
         isInstanceStateSaved = savedInstanceState.getBoolean(::isInstanceStateSaved.name)
-    }
-
-    override fun onOptionsItemSelected(item: MenuItem): Boolean {
-        if (item.itemId == android.R.id.home) {
-            finishActivity()
-            return true
-        }
-        return super.onOptionsItemSelected(item)
-    }
-
-    override fun onBackPressed() {
-        finishActivity()
-    }
-
-    private fun configureActionBar() {
-        val actionBar: ActionBar? = supportActionBar
-        if (actionBar != null) {
-            actionBar.setDisplayShowHomeEnabled(true)
-            actionBar.setDisplayHomeAsUpEnabled(true)
-        }
     }
 
     /**
@@ -299,7 +286,7 @@ internal class EditServerActivity : AppCompatActivity() {
      */
     private fun testConnection() {
         val task: ModalBackgroundTask<Boolean> = object : ModalBackgroundTask<Boolean>(
-            this,
+            activity,
             false
         ) {
 
@@ -331,10 +318,10 @@ internal class EditServerActivity : AppCompatActivity() {
 
                 // Execute a ping to check the authentication, now using the correct API version.
                 pingResponse = subsonicApiClient.api.ping().execute()
-                checkResponseSuccessful(pingResponse)
+                ApiCallResponseChecker.checkResponseSuccessful(pingResponse)
 
                 val licenseResponse = subsonicApiClient.api.getLicense().execute()
-                checkResponseSuccessful(licenseResponse)
+                ApiCallResponseChecker.checkResponseSuccessful(licenseResponse)
                 return licenseResponse.body()!!.license.valid
             }
 
@@ -367,20 +354,20 @@ internal class EditServerActivity : AppCompatActivity() {
      */
     private fun finishActivity() {
         if (areFieldsChanged()) {
-            AlertDialog.Builder(this)
+            AlertDialog.Builder(context)
                 .setIcon(android.R.drawable.ic_dialog_alert)
                 .setTitle(R.string.common_confirm)
                 .setMessage(R.string.server_editor_leave_confirmation)
                 .setPositiveButton(R.string.common_ok) { dialog, _ ->
                     dialog.dismiss()
-                    finish()
+                    findNavController().navigateUp()
                 }
                 .setNegativeButton(R.string.common_cancel) { dialog, _ ->
                     dialog.dismiss()
                 }
                 .show()
         } else {
-            finish()
+            findNavController().navigateUp()
         }
     }
 }

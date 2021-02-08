@@ -15,9 +15,6 @@ import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import org.koin.android.ext.android.inject
 import org.koin.android.viewmodel.ext.android.viewModel
 import org.moire.ultrasonic.R
-import org.moire.ultrasonic.activity.ArtistListModel
-import org.moire.ultrasonic.activity.ArtistRowAdapter
-import org.moire.ultrasonic.activity.ServerSettingsModel
 import org.moire.ultrasonic.data.ActiveServerProvider
 import org.moire.ultrasonic.domain.Artist
 import org.moire.ultrasonic.domain.MusicFolder
@@ -40,9 +37,6 @@ class SelectArtistFragment : Fragment() {
     private lateinit var viewManager: RecyclerView.LayoutManager
     private lateinit var viewAdapter: ArtistRowAdapter
 
-    /**
-     * Called when the activity is first created.
-     */
     @Override
     override fun onCreate(savedInstanceState: Bundle?) {
         Util.applyTheme(this.context)

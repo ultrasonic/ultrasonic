@@ -13,6 +13,9 @@
         <action
             android:id="@+id/mainToSelectGenre"
             app:destination="@id/selectGenreFragment" />
+        <action
+            android:id="@+id/mainToServerSelector"
+            app:destination="@id/serverSelectorFragment" />
     </fragment>
     <fragment
         android:id="@+id/selectArtistFragment"
@@ -62,7 +65,11 @@
     </fragment>
     <fragment
         android:id="@+id/settingsFragment"
-        android:name="org.moire.ultrasonic.fragment.SettingsFragment" />
+        android:name="org.moire.ultrasonic.fragment.SettingsFragment" >
+        <action
+            android:id="@+id/settingsToServerSelector"
+            app:destination="@id/serverSelectorFragment" />
+    </fragment>
     <fragment
         android:id="@+id/aboutFragment"
         android:name="org.moire.ultrasonic.fragment.AboutFragment" />
@@ -78,8 +85,24 @@
         <action
             android:id="@+id/playerToLyrics"
             app:destination="@id/lyricsFragment" />
+        <action
+            android:id="@+id/playerToEqualizer"
+            app:destination="@id/equalizerFragment" />
     </fragment>
     <fragment
         android:id="@+id/lyricsFragment"
         android:name="org.moire.ultrasonic.fragment.LyricsFragment" />
+    <fragment
+        android:id="@+id/equalizerFragment"
+        android:name="org.moire.ultrasonic.fragment.EqualizerFragment" />
+    <fragment
+        android:id="@+id/serverSelectorFragment"
+        android:name="org.moire.ultrasonic.fragment.ServerSelectorFragment" >
+        <action
+            android:id="@+id/serverSelectorToEditServer"
+            app:destination="@id/editServerFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/editServerFragment"
+        android:name="org.moire.ultrasonic.fragment.EditServerFragment" />
 </navigation>

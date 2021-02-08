@@ -16,7 +16,6 @@ import androidx.fragment.app.Fragment;
 import androidx.navigation.Navigation;
 
 import org.moire.ultrasonic.R;
-import org.moire.ultrasonic.activity.ServerSelectorActivity;
 import org.moire.ultrasonic.data.ActiveServerProvider;
 import org.moire.ultrasonic.data.ServerSetting;
 import org.moire.ultrasonic.util.Constants;
@@ -265,14 +264,7 @@ public class MainFragment extends Fragment {
 
     private void showServers()
     {
-        final Intent intent = new Intent(getContext(), ServerSelectorActivity.class);
-        startActivityForResult(intent, 0);
-    }
-
-    public void startActivityForResultWithoutTransition(Activity currentActivity, Intent intent)
-    {
-        startActivityForResult(intent, 0);
-        Util.disablePendingTransition(currentActivity);
+        Navigation.findNavController(getView()).navigate(R.id.mainToServerSelector);
     }
 }
 

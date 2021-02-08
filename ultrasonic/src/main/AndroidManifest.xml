@@ -44,17 +44,6 @@
                 android:name="android.app.searchable"
                 android:resource="@xml/searchable"/>
         </activity>
-        <activity
-            android:name=".activity.EqualizerActivity"
-            android:configChanges="orientation|keyboardHidden"
-            android:label="@string/equalizer.label"
-            android:launchMode="singleTask"/>
-        <activity
-            android:name=".activity.ServerSelectorActivity"
-            android:label="@string/server_selector.label" />
-        <activity
-            android:name=".activity.EditServerActivity"
-            android:label="@string/server_editor.label" />
 
         <service
             android:name=".service.MediaPlayerService"

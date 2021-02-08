@@ -2,13 +2,8 @@ package org.moire.ultrasonic.util;
 
 import android.annotation.SuppressLint;
 import android.app.Activity;
-import android.app.ProgressDialog;
-import android.content.DialogInterface;
-import android.os.Build;
 
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
-
-import org.moire.ultrasonic.activity.SubsonicTabActivity;
 
 /**
  * @author Sindre Mehus

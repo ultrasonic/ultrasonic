@@ -2,7 +2,6 @@ package org.moire.ultrasonic.fragment;
 
 import android.app.AlertDialog;
 import android.content.DialogInterface;
-import android.content.Intent;
 import android.graphics.Point;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
@@ -39,7 +38,6 @@ import com.mobeta.android.dslv.DragSortListView;
 import org.jetbrains.annotations.NotNull;
 import org.koin.java.KoinJavaComponent;
 import org.moire.ultrasonic.R;
-import org.moire.ultrasonic.activity.EqualizerActivity;
 import org.moire.ultrasonic.audiofx.EqualizerController;
 import org.moire.ultrasonic.audiofx.VisualizerController;
 import org.moire.ultrasonic.data.ActiveServerProvider;
@@ -960,7 +958,7 @@ public class PlayerFragment extends Fragment implements GestureDetector.OnGestur
                 Util.toast(getContext(), R.string.download_menu_shuffle_notification);
                 return true;
             case R.id.menu_item_equalizer:
-                startActivity(new Intent(getContext(), EqualizerActivity.class));
+                Navigation.findNavController(getView()).navigate(R.id.playerToEqualizer);
                 return true;
             case R.id.menu_item_visualizer:
                 final boolean active = !visualizerView.isActive();

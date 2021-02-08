@@ -5,11 +5,9 @@ import org.koin.android.ext.koin.androidContext
 import org.koin.android.viewmodel.dsl.viewModel
 import org.koin.core.qualifier.named
 import org.koin.dsl.module
-import org.moire.ultrasonic.activity.ServerSettingsModel
-import org.moire.ultrasonic.data.ActiveServerProvider
+import org.moire.ultrasonic.fragment.ServerSettingsModel
 import org.moire.ultrasonic.data.AppDatabase
 import org.moire.ultrasonic.data.MIGRATION_1_2
-import org.moire.ultrasonic.subsonic.ImageLoaderProvider
 import org.moire.ultrasonic.util.Util
 
 const val SP_NAME = "Default_SP"

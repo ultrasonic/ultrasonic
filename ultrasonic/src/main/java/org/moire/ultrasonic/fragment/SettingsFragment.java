@@ -2,7 +2,6 @@ package org.moire.ultrasonic.fragment;
 
 import android.app.AlertDialog;
 import android.content.DialogInterface;
-import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Build;
 import android.os.Bundle;
@@ -10,7 +9,7 @@ import android.provider.SearchRecentSuggestions;
 import androidx.annotation.Nullable;
 import androidx.annotation.StringRes;
 import androidx.fragment.app.DialogFragment;
-import androidx.fragment.app.Fragment;
+import androidx.navigation.Navigation;
 import androidx.preference.CheckBoxPreference;
 import androidx.preference.EditTextPreference;
 import androidx.preference.ListPreference;
@@ -24,8 +23,6 @@ import android.view.View;
 
 import org.koin.java.KoinJavaComponent;
 import org.moire.ultrasonic.R;
-import org.moire.ultrasonic.activity.ServerSelectorActivity;
-import org.moire.ultrasonic.activity.SubsonicTabActivity;
 import org.moire.ultrasonic.featureflags.Feature;
 import org.moire.ultrasonic.featureflags.FeatureStorage;
 import org.moire.ultrasonic.filepicker.FilePickerDialog;
@@ -42,7 +39,7 @@ import java.io.File;
 import kotlin.Lazy;
 
 import static org.koin.java.KoinJavaComponent.inject;
-import static org.moire.ultrasonic.activity.ServerSelectorActivity.SERVER_SELECTOR_MANAGE_MODE;
+import static org.moire.ultrasonic.fragment.ServerSelectorFragment.SERVER_SELECTOR_MANAGE_MODE;
 
 /**
  * Shows main app settings.
@@ -152,8 +149,10 @@ public class SettingsFragment extends PreferenceFragmentCompat
         // After API26 foreground services must be used for music playback, and they must have a notification
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             PreferenceCategory notificationsCategory = findPreference(Constants.PREFERENCES_KEY_CATEGORY_NOTIFICATIONS);
-            notificationsCategory.removePreference(findPreference(Constants.PREFERENCES_KEY_SHOW_NOTIFICATION));
-            notificationsCategory.removePreference(findPreference(Constants.PREFERENCES_KEY_ALWAYS_SHOW_NOTIFICATION));
+            Preference preferenceToRemove = findPreference(Constants.PREFERENCES_KEY_SHOW_NOTIFICATION);
+            if (preferenceToRemove != null) notificationsCategory.removePreference(preferenceToRemove);
+            preferenceToRemove = findPreference(Constants.PREFERENCES_KEY_ALWAYS_SHOW_NOTIFICATION);
+            if (preferenceToRemove != null) notificationsCategory.removePreference(preferenceToRemove);
         }
     }
 
@@ -416,9 +415,9 @@ public class SettingsFragment extends PreferenceFragmentCompat
         addServerPreference.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
             @Override
             public boolean onPreferenceClick(Preference preference) {
-                final Intent intent = new Intent(getActivity(), ServerSelectorActivity.class);
-                intent.putExtra(SERVER_SELECTOR_MANAGE_MODE, true);
-                startActivityForResult(intent, 0);
+                Bundle bundle = new Bundle();
+                bundle.putBoolean(SERVER_SELECTOR_MANAGE_MODE, true);
+                Navigation.findNavController(getView()).navigate(R.id.settingsToServerSelector, bundle);
                 return true;
             }
         });
@@ -470,15 +469,11 @@ public class SettingsFragment extends PreferenceFragmentCompat
     }
 
     private void setImageLoaderConcurrency(int concurrency) {
-        SubsonicTabActivity instance = SubsonicTabActivity.getInstance();
+        ImageLoader imageLoaderInstance = imageLoader.getValue().getImageLoader();
 
-        if (instance != null) {
-            ImageLoader imageLoaderInstance = imageLoader.getValue().getImageLoader();
-
-            if (imageLoaderInstance != null) {
-                imageLoaderInstance.stopImageLoader();
-                imageLoaderInstance.setConcurrency(concurrency);
-            }
+        if (imageLoaderInstance != null) {
+            imageLoaderInstance.stopImageLoader();
+            imageLoaderInstance.setConcurrency(concurrency);
         }
     }
 

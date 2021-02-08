@@ -1,4 +1,4 @@
-package org.moire.ultrasonic.activity
+package org.moire.ultrasonic.fragment
 
 import android.content.Context
 import android.graphics.Color

@@ -196,7 +196,7 @@ public class NowPlayingFragment extends Fragment {
                         return false;
                     }
                 }
-                Navigation.findNavController(getView()).navigate(R.id.playerFragment);
+                Navigation.findNavController(getActivity(), R.id.nav_host_fragment).navigate(R.id.playerFragment);
                 return false;
             }
         }
