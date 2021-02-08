@@ -33,6 +33,4 @@
 
     <include layout="@layout/album_buttons" />
 
-    <include layout="@layout/now_playing" />
-
 </LinearLayout>

@@ -10,18 +10,9 @@ import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
  */
 public abstract class TabActivityBackgroundTask<T> extends BackgroundTask<T>
 {
-
 	private final boolean changeProgress;
 	private final SwipeRefreshLayout swipe;
-	private CancellationToken cancel;
-
-	// TODO: Try to remove this constructor
-	public TabActivityBackgroundTask(Activity activity, boolean changeProgress)
-	{
-		super(activity);
-		this.changeProgress = changeProgress;
-		this.swipe = null;
-	}
+	private final CancellationToken cancel;
 
 	public TabActivityBackgroundTask(Activity activity, boolean changeProgress,
 									 SwipeRefreshLayout swipe, CancellationToken cancel)

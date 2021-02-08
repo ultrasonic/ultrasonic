@@ -28,6 +28,7 @@ import org.moire.ultrasonic.domain.ChatMessage;
 import org.moire.ultrasonic.service.MusicService;
 import org.moire.ultrasonic.service.MusicServiceFactory;
 import org.moire.ultrasonic.util.BackgroundTask;
+import org.moire.ultrasonic.util.CancellationToken;
 import org.moire.ultrasonic.util.TabActivityBackgroundTask;
 import org.moire.ultrasonic.util.Util;
 import org.moire.ultrasonic.view.ChatAdapter;
@@ -50,6 +51,7 @@ public class ChatFragment extends Fragment {
     private Timer timer;
     private volatile static Long lastChatMessageTime = (long) 0;
     private static final ArrayList<ChatMessage> messageList = new ArrayList<ChatMessage>();
+    private CancellationToken cancellationToken;
 
     private final Lazy<ActiveServerProvider> activeServerProvider = inject(ActiveServerProvider.class);
 
@@ -67,6 +69,8 @@ public class ChatFragment extends Fragment {
 
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
+        cancellationToken = new CancellationToken();
         messageEditText = view.findViewById(R.id.chat_edittext);
         sendButton = view.findViewById(R.id.chat_send);
 
@@ -184,6 +188,12 @@ public class ChatFragment extends Fragment {
         }
     }
 
+    @Override
+    public void onDestroyView() {
+        cancellationToken.cancel();
+        super.onDestroyView();
+    }
+
     private void timerMethod()
     {
         int refreshInterval = Util.getChatRefreshInterval(getContext());
@@ -228,7 +238,7 @@ public class ChatFragment extends Fragment {
             {
                 messageEditText.setText("");
 
-                BackgroundTask<Void> task = new TabActivityBackgroundTask<Void>(getActivity(), false)
+                BackgroundTask<Void> task = new TabActivityBackgroundTask<Void>(getActivity(), false, null, cancellationToken)
                 {
                     @Override
                     protected Void doInBackground() throws Throwable
@@ -252,7 +262,7 @@ public class ChatFragment extends Fragment {
 
     private synchronized void load()
     {
-        BackgroundTask<List<ChatMessage>> task = new TabActivityBackgroundTask<List<ChatMessage>>(getActivity(), false)
+        BackgroundTask<List<ChatMessage>> task = new TabActivityBackgroundTask<List<ChatMessage>>(getActivity(), false, null, cancellationToken)
         {
             @Override
             protected List<ChatMessage> doInBackground() throws Throwable

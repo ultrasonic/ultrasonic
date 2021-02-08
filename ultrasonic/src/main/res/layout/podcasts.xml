@@ -22,6 +22,4 @@
         a:fastScrollEnabled="true"
         a:textFilterEnabled="true" />
 
-    <include layout="@layout/now_playing" />
-
 </LinearLayout>

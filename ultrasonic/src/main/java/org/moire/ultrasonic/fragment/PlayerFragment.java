@@ -1404,6 +1404,7 @@ public class PlayerFragment extends Fragment implements GestureDetector.OnGestur
             @Override
             protected void done(final Void result)
             {
+                if (cancellationToken.isCancellationRequested()) return;
                 if (currentPlaying != null)
                 {
                     final int millisTotal = duration == null ? 0 : duration;

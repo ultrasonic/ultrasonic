@@ -12,9 +12,11 @@ import android.provider.SearchRecentSuggestions
 import android.view.KeyEvent
 import android.view.Menu
 import android.view.MenuItem
+import android.view.View
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
 import androidx.drawerlayout.widget.DrawerLayout
+import androidx.fragment.app.FragmentContainerView
 import androidx.navigation.NavController
 import androidx.navigation.findNavController
 import androidx.navigation.fragment.NavHostFragment
@@ -28,12 +30,16 @@ import org.koin.android.ext.android.inject
 import org.koin.android.viewmodel.ext.android.viewModel
 import org.moire.ultrasonic.R
 import org.moire.ultrasonic.data.ActiveServerProvider.Companion.isOffline
+import org.moire.ultrasonic.domain.PlayerState
 import org.moire.ultrasonic.provider.SearchSuggestionProvider
+import org.moire.ultrasonic.service.DownloadFile
 import org.moire.ultrasonic.service.MediaPlayerController
 import org.moire.ultrasonic.service.MediaPlayerLifecycleSupport
 import org.moire.ultrasonic.subsonic.ImageLoaderProvider
 import org.moire.ultrasonic.util.Constants
 import org.moire.ultrasonic.util.FileUtil
+import org.moire.ultrasonic.util.NowPlayingEventDistributor
+import org.moire.ultrasonic.util.NowPlayingEventListener
 import org.moire.ultrasonic.util.SubsonicUncaughtExceptionHandler
 import org.moire.ultrasonic.util.Util
 import timber.log.Timber
@@ -47,14 +53,20 @@ class NavigationActivity : AppCompatActivity() {
     var bookmarksMenuItem: MenuItem? = null
     var sharesMenuItem: MenuItem? = null
     private var theme: String? = null
+    var nowPlayingView: FragmentContainerView? = null
+    var nowPlayingHidden = false
 
     private lateinit var appBarConfiguration : AppBarConfiguration
+    private lateinit var nowPlayingEventListener : NowPlayingEventListener
+
     private val serverSettingsModel: ServerSettingsModel by viewModel()
     private val lifecycleSupport: MediaPlayerLifecycleSupport by inject()
     private val mediaPlayerController: MediaPlayerController by inject()
     private val imageLoaderProvider: ImageLoaderProvider by inject()
+    private val nowPlayingEventDistributor: NowPlayingEventDistributor by inject()
 
     private var infoDialogDisplayed = false
+    private var currentFragmentId: Int = 0
 
     override fun onCreate(savedInstanceState: Bundle?) {
         setUncaughtExceptionHandler()
@@ -64,6 +76,7 @@ class NavigationActivity : AppCompatActivity() {
 
         volumeControlStream = AudioManager.STREAM_MUSIC
         setContentView(R.layout.navigation_activity)
+        nowPlayingView = findViewById(R.id.now_playing_fragment)
 
         val toolbar = findViewById<Toolbar>(R.id.toolbar)
         setSupportActionBar(toolbar)
@@ -93,7 +106,15 @@ class NavigationActivity : AppCompatActivity() {
             }
             Timber.d("Navigated to $dest")
 
-            // TODO: Maybe we can find a better place for theme change. Currently the change occures when navigating between fragments
+            currentFragmentId = destination.id
+            // Handle the hiding of the NowPlaying fragment when the Player is active
+            if (currentFragmentId == R.id.playerFragment) {
+                hideNowPlaying()
+            } else {
+                showNowPlaying()
+            }
+
+            // TODO: Maybe we can find a better place for theme change. Currently the change occurs when navigating between fragments
             // but theoretically Settings could request a Navigation Activity recreate instantly when the theme setting changes
             // Make sure to update theme if it has changed
             if (theme == null) theme = Util.getTheme(this)
@@ -112,6 +133,24 @@ class NavigationActivity : AppCompatActivity() {
 
         loadSettings()
         showInfoDialog(showWelcomeScreen)
+
+        nowPlayingEventListener = object : NowPlayingEventListener {
+            override fun onDismissNowPlaying() {
+                // TODO: When will it be set back to false?
+                nowPlayingHidden = true;
+                hideNowPlaying();
+            }
+
+            override fun onHideNowPlaying() {
+                hideNowPlaying()
+            }
+
+            override fun onShowNowPlaying() {
+                showNowPlaying()
+            }
+        }
+
+        nowPlayingEventDistributor.subscribe(nowPlayingEventListener)
     }
 
     override fun onResume() {
@@ -125,19 +164,16 @@ class NavigationActivity : AppCompatActivity() {
         // Lifecycle support's constructor registers some event receivers so it should be created early
         lifecycleSupport.onCreate()
 
-        // TODO: Implement NowPlaying as a Fragment
-        // This must be filled here because onCreate is called before the derived objects would call setContentView
-        //getNowPlayingView()
-
-        if (!SubsonicTabActivity.nowPlayingHidden) {
-            //showNowPlaying()
+        if (!nowPlayingHidden) {
+            showNowPlaying()
         } else {
-            //hideNowPlaying()
+            hideNowPlaying()
         }
     }
 
     override fun onDestroy() {
         Util.unregisterMediaButtonEventReceiver(this, false)
+        nowPlayingEventDistributor.unsubscribe(nowPlayingEventListener)
         super.onDestroy()
 
         // TODO: Handle NowPlaying if necessary
@@ -258,5 +294,35 @@ class NavigationActivity : AppCompatActivity() {
         if (handler !is SubsonicUncaughtExceptionHandler) {
             Thread.setDefaultUncaughtExceptionHandler(SubsonicUncaughtExceptionHandler(this))
         }
+    }
+
+    private fun showNowPlaying() {
+        if (!Util.getShowNowPlayingPreference(this) || nowPlayingHidden) {
+            hideNowPlaying()
+            return
+        }
+
+        // Do not show for Player fragment
+        if (currentFragmentId == R.id.playerFragment) {
+            hideNowPlaying()
+            return
+        }
+
+        if (nowPlayingView != null) {
+            val playerState: PlayerState = mediaPlayerController.playerState
+            if (playerState == PlayerState.PAUSED || playerState == PlayerState.STARTED) {
+                val file: DownloadFile? = mediaPlayerController.currentPlaying
+                if (file != null) {
+                    val song = file.song
+                    nowPlayingView?.visibility = View.VISIBLE
+                }
+            } else {
+                hideNowPlaying()
+            }
+        }
+    }
+
+    private fun hideNowPlaying() {
+        nowPlayingView?.visibility = View.GONE
     }
 }

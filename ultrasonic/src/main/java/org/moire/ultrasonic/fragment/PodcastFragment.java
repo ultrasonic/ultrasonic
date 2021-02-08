@@ -17,6 +17,7 @@ import org.moire.ultrasonic.domain.PodcastsChannel;
 import org.moire.ultrasonic.service.MusicService;
 import org.moire.ultrasonic.service.MusicServiceFactory;
 import org.moire.ultrasonic.util.BackgroundTask;
+import org.moire.ultrasonic.util.CancellationToken;
 import org.moire.ultrasonic.util.Constants;
 import org.moire.ultrasonic.util.TabActivityBackgroundTask;
 import org.moire.ultrasonic.util.Util;
@@ -28,6 +29,7 @@ public class PodcastFragment extends Fragment {
 
     private View emptyTextView;
     ListView channelItemsListView = null;
+    private CancellationToken cancellationToken;
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
@@ -43,6 +45,8 @@ public class PodcastFragment extends Fragment {
 
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
+        cancellationToken = new CancellationToken();
         FragmentTitle.Companion.setTitle(this, R.string.podcasts_label);
 
         emptyTextView = view.findViewById(R.id.select_podcasts_empty);
@@ -65,9 +69,15 @@ public class PodcastFragment extends Fragment {
         load();
     }
 
+    @Override
+    public void onDestroyView() {
+        cancellationToken.cancel();
+        super.onDestroyView();
+    }
+
     private void load()
     {
-        BackgroundTask<List<PodcastsChannel>> task = new TabActivityBackgroundTask<List<PodcastsChannel>>(getActivity(), true)
+        BackgroundTask<List<PodcastsChannel>> task = new TabActivityBackgroundTask<List<PodcastsChannel>>(getActivity(), true, null, cancellationToken)
         {
             @Override
             protected List<PodcastsChannel> doInBackground() throws Throwable

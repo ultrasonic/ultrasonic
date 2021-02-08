@@ -32,6 +32,4 @@
 
     </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
 
-    <include layout="@layout/now_playing" />
-
 </LinearLayout>

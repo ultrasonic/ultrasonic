@@ -46,6 +46,4 @@
 
     </LinearLayout>
 
-    <include layout="@layout/now_playing" />
-
 </LinearLayout>
