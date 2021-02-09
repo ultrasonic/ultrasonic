@@ -1,14 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <style name="Widget.MenuDrawer">
-        <item name="mdMenuBackground">?android:attr/windowBackground</item>
-        <item name="mdContentBackground">?android:attr/windowBackground</item>
-        <item name="mdActiveIndicator">@drawable/menu_arrow</item>
-        <item name="mdDropShadowSize">5dip</item>
-        <item name="mdDropShadowColor">@color/translucent</item>
-        <item name="mdAllowIndicatorAnimation">true</item>
-    </style>
-
     <style name="NoActionBar" parent="@style/Theme.AppCompat">
         <item name="windowActionBar">false</item>
         <item name="windowNoTitle">true</item>
@@ -27,17 +18,6 @@
         <item name="android:paddingLeft">16dp</item>
         <item name="android:singleLine">true</item>
         <item name="android:ellipsize">end</item>
-    </style>
-
-    <style name="MenuDrawer.Widget.Title">
-        <item name="android:textAppearance">?android:attr/textAppearance</item>
-        <item name="android:textSize">18sp</item>
-        <item name="android:paddingLeft">16dp</item>
-        <item name="android:paddingRight">32dp</item>
-        <item name="android:paddingTop">8dp</item>
-        <item name="android:paddingBottom">8dp</item>
-        <item name="android:drawablePadding">16dp</item>
-        <item name="android:gravity">center_vertical</item>
     </style>
 
     <style name="roundedImageView" parent="">

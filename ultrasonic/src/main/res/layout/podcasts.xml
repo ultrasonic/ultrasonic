@@ -4,8 +4,6 @@
     a:layout_height="fill_parent"
     a:orientation="vertical" >
 
-    <include layout="@layout/tab_progress" />
-
     <TextView
         a:id="@+id/select_podcasts_empty"
         a:layout_width="fill_parent"

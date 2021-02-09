@@ -47,12 +47,13 @@ import timber.log.Timber
 
 
 /**
- * A simple activity demonstrating use of a NavHostFragment with a navigation drawer.
+ * The main Activity of Ultrasonic which loads all other screens as Fragments
  */
 class NavigationActivity : AppCompatActivity() {
     var chatMenuItem: MenuItem? = null
     var bookmarksMenuItem: MenuItem? = null
     var sharesMenuItem: MenuItem? = null
+    var podcastsMenuItem: MenuItem? = null
     private var theme: String? = null
     var nowPlayingView: FragmentContainerView? = null
     var nowPlayingHidden = false
@@ -115,6 +116,9 @@ class NavigationActivity : AppCompatActivity() {
                 if (!nowPlayingHidden) showNowPlaying()
             }
 
+            // Hides menu items for Offline mode
+            setMenuForServerSetting()
+
             // TODO: Maybe we can find a better place for theme change. Currently the change occurs when navigating between fragments
             // but theoretically Settings could request a Navigation Activity recreate instantly when the theme setting changes
             // Make sure to update theme if it has changed
@@ -155,11 +159,8 @@ class NavigationActivity : AppCompatActivity() {
 
     override fun onResume() {
         super.onResume()
-        val visibility = !isOffline(this)
-        chatMenuItem?.isVisible = visibility
-        bookmarksMenuItem?.isVisible = visibility
-        sharesMenuItem?.isVisible = visibility
 
+        setMenuForServerSetting()
         Util.registerMediaButtonEventReceiver(this, false)
         // Lifecycle support's constructor registers some event receivers so it should be created early
         lifecycleSupport.onCreate()
@@ -169,12 +170,9 @@ class NavigationActivity : AppCompatActivity() {
     }
 
     override fun onDestroy() {
+        super.onDestroy()
         Util.unregisterMediaButtonEventReceiver(this, false)
         nowPlayingEventDistributor.unsubscribe(nowPlayingEventListener)
-        super.onDestroy()
-
-        // TODO: Handle NowPlaying if necessary
-        //nowPlayingView = null
         imageLoaderProvider.clearImageLoader()
     }
 
@@ -207,9 +205,10 @@ class NavigationActivity : AppCompatActivity() {
             true
         }
 
-        chatMenuItem = sideNavView.menu.findItem(R.id.menu_chat)
-        bookmarksMenuItem = sideNavView.menu.findItem(R.id.menu_bookmarks)
-        sharesMenuItem = sideNavView.menu.findItem(R.id.menu_shares)
+        chatMenuItem = sideNavView.menu.findItem(R.id.chatFragment)
+        bookmarksMenuItem = sideNavView.menu.findItem(R.id.bookmarksFragment)
+        sharesMenuItem = sideNavView.menu.findItem(R.id.sharesFragment)
+        podcastsMenuItem = sideNavView.menu.findItem(R.id.podcastFragment)
     }
 
     private fun setupActionBar(navController: NavController, appBarConfig: AppBarConfiguration) {
@@ -324,5 +323,13 @@ class NavigationActivity : AppCompatActivity() {
 
     private fun hideNowPlaying() {
         nowPlayingView?.visibility = View.GONE
+    }
+
+    private fun setMenuForServerSetting() {
+        val visibility = !isOffline(this)
+        chatMenuItem?.isVisible = visibility
+        bookmarksMenuItem?.isVisible = visibility
+        sharesMenuItem?.isVisible = visibility
+        podcastsMenuItem?.isVisible = visibility
     }
 }

@@ -4,14 +4,11 @@
     a:layout_height="fill_parent"
     a:orientation="vertical" >
 
-    <include layout="@layout/tab_progress" />
-
     <ListView
         a:id="@+id/chat_entries_list"
         a:layout_width="fill_parent"
         a:layout_height="0dip"
         a:layout_weight="1.0" />
-
 
     <LinearLayout
 		a:layout_height="4dip"

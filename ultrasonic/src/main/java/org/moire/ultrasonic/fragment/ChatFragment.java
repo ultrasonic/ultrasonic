@@ -262,6 +262,7 @@ public class ChatFragment extends Fragment {
 
     private synchronized void load()
     {
+        // TODO: Do we need a SwipeToRefresh progress indicator?
         BackgroundTask<List<ChatMessage>> task = new TabActivityBackgroundTask<List<ChatMessage>>(getActivity(), false, null, cancellationToken)
         {
             @Override

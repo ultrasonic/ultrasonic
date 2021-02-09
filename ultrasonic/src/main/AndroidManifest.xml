@@ -47,7 +47,7 @@
 
         <service
             android:name=".service.MediaPlayerService"
-            android:label="Ultrasonic Download Service"
+            android:label="Ultrasonic Media Player Service"
             android:exported="false">
         </service>
 
@@ -124,10 +124,6 @@
         <provider
             android:name=".provider.SearchSuggestionProvider"
             android:authorities="org.moire.ultrasonic.provider.SearchSuggestionProvider"/>
-
-        <meta-data
-            android:name="android.app.default_searchable"
-            android:value="org.moire.ultrasonic.activity.QueryReceiverActivity"/>
 
         <receiver
             android:name=".receiver.A2dpIntentReceiver"

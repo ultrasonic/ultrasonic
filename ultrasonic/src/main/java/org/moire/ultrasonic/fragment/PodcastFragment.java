@@ -83,7 +83,7 @@ public class PodcastFragment extends Fragment {
             protected List<PodcastsChannel> doInBackground() throws Throwable
             {
                 MusicService musicService = MusicServiceFactory.getMusicService(getContext());
-                return musicService.getPodcastsChannels(false,getContext(), this);
+                return musicService.getPodcastsChannels(false, getContext(), this);
 
    			/*	 TODO Why is here a cache cleaning? (original TODO text: c'est quoi ce nettoyage de cache ?)
 				if (!Util.isOffline(PodcastsActivity.this))
