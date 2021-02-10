@@ -26,7 +26,7 @@
     </style>
 
     <style name="ThemeOverlay.AppCompat.navTheme">
-        <item name="colorPrimary">@color/cyan</item>
+        <item name="colorPrimary">?attr/color_menu_selected</item>
         <item name="colorControlHighlight">?attr/color_selected</item>
     </style>
 
@@ -79,6 +79,8 @@
     <attr name="button_check_custom" format="reference"/>
     <attr name="color_background" format="reference"/>
     <attr name="color_selected" format="reference"/>
+    <attr name="color_menu_selected" format="reference"/>
+    <attr name="color_menu_background" format="reference"/>
     <attr name="filepicker_create_new_folder" format="reference"/>
     <attr name="filepicker_folder" format="reference"/>
     <attr name="filepicker_subdirectory_left" format="reference"/>

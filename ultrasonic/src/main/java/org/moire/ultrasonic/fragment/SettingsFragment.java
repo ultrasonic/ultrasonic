@@ -86,6 +86,7 @@ public class SettingsFragment extends PreferenceFragmentCompat
     private final Lazy<MediaPlayerController> mediaPlayerControllerLazy = inject(MediaPlayerController.class);
     private final Lazy<ImageLoaderProvider> imageLoader = inject(ImageLoaderProvider.class);
     private final Lazy<PermissionUtil> permissionUtil = inject(PermissionUtil.class);
+    private final Lazy<ThemeChangedEventDistributor> themeChangedEventDistributor = inject(ThemeChangedEventDistributor.class);
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
@@ -195,6 +196,8 @@ public class SettingsFragment extends PreferenceFragmentCompat
         } else if (Constants.PREFERENCES_KEY_ID3_TAGS.equals(key)) {
             if (sharedPreferences.getBoolean(key, false)) showArtistPicture.setEnabled(true);
             else showArtistPicture.setEnabled(false);
+        } else if (Constants.PREFERENCES_KEY_THEME.equals(key)) {
+            themeChangedEventDistributor.getValue().RaiseThemeChangedEvent();
         }
     }
 

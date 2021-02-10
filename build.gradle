@@ -18,7 +18,6 @@ buildscript {
         classpath gradlePlugins.ktlintGradle
         classpath gradlePlugins.detekt
         classpath gradlePlugins.jacoco
-        classpath gradlePlugins.navigationSafeArgs
     }
 }
 

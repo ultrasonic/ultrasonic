@@ -42,6 +42,8 @@ import org.moire.ultrasonic.util.FileUtil
 import org.moire.ultrasonic.util.NowPlayingEventDistributor
 import org.moire.ultrasonic.util.NowPlayingEventListener
 import org.moire.ultrasonic.util.SubsonicUncaughtExceptionHandler
+import org.moire.ultrasonic.util.ThemeChangedEventDistributor
+import org.moire.ultrasonic.util.ThemeChangedEventListener
 import org.moire.ultrasonic.util.Util
 import timber.log.Timber
 
@@ -54,18 +56,19 @@ class NavigationActivity : AppCompatActivity() {
     var bookmarksMenuItem: MenuItem? = null
     var sharesMenuItem: MenuItem? = null
     var podcastsMenuItem: MenuItem? = null
-    private var theme: String? = null
     var nowPlayingView: FragmentContainerView? = null
     var nowPlayingHidden = false
 
     private lateinit var appBarConfiguration : AppBarConfiguration
     private lateinit var nowPlayingEventListener : NowPlayingEventListener
+    private lateinit var themeChangedEventListener : ThemeChangedEventListener
 
     private val serverSettingsModel: ServerSettingsModel by viewModel()
     private val lifecycleSupport: MediaPlayerLifecycleSupport by inject()
     private val mediaPlayerController: MediaPlayerController by inject()
     private val imageLoaderProvider: ImageLoaderProvider by inject()
     private val nowPlayingEventDistributor: NowPlayingEventDistributor by inject()
+    private val themeChangedEventDistributor: ThemeChangedEventDistributor by inject()
 
     private var infoDialogDisplayed = false
     private var currentFragmentId: Int = 0
@@ -118,15 +121,6 @@ class NavigationActivity : AppCompatActivity() {
 
             // Hides menu items for Offline mode
             setMenuForServerSetting()
-
-            // TODO: Maybe we can find a better place for theme change. Currently the change occurs when navigating between fragments
-            // but theoretically Settings could request a Navigation Activity recreate instantly when the theme setting changes
-            // Make sure to update theme if it has changed
-            if (theme == null) theme = Util.getTheme(this)
-            else if (theme != Util.getTheme(this)) {
-                theme = Util.getTheme(this)
-                recreate()
-            }
         }
 
         // Determine first run and migrate server settings to DB as early as possible
@@ -154,7 +148,12 @@ class NavigationActivity : AppCompatActivity() {
             }
         }
 
+        themeChangedEventListener = object : ThemeChangedEventListener {
+            override fun onThemeChanged() { recreate() }
+        }
+
         nowPlayingEventDistributor.subscribe(nowPlayingEventListener)
+        themeChangedEventDistributor.subscribe(themeChangedEventListener)
     }
 
     override fun onResume() {
@@ -173,6 +172,7 @@ class NavigationActivity : AppCompatActivity() {
         super.onDestroy()
         Util.unregisterMediaButtonEventReceiver(this, false)
         nowPlayingEventDistributor.unsubscribe(nowPlayingEventListener)
+        themeChangedEventDistributor.unsubscribe(themeChangedEventListener)
         imageLoaderProvider.clearImageLoader()
     }
 

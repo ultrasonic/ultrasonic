@@ -10,7 +10,6 @@ ext.versions = [
         ktlintGradle         : "9.2.1",
         detekt               : "1.0.0.RC6-4",
         jacoco               : "0.8.5",
-        navigationSafeArgs   : "2.3.2",
         preferences          : "1.1.1",
 
         androidSupport       : "28.0.0",
@@ -50,7 +49,6 @@ ext.gradlePlugins = [
         ktlintGradle      : "org.jlleitschuh.gradle:ktlint-gradle:$versions.ktlintGradle",
         detekt            : "gradle.plugin.io.gitlab.arturbosch.detekt:detekt-gradle-plugin:$versions.detekt",
         jacoco            : "org.jacoco:org.jacoco.core:$versions.jacoco",
-        navigationSafeArgs: "androidx.navigation:navigation-safe-args-gradle-plugin:$versions.navigationSafeArgs"
 ]
 
 ext.androidSupport = [
