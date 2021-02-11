@@ -52,13 +52,12 @@ public final class Constants
 	public static final String INTENT_EXTRA_NAME_ALBUM_LIST_OFFSET = "subsonic.albumlistoffset";
 	public static final String INTENT_EXTRA_NAME_SHUFFLE = "subsonic.shuffle";
 	public static final String INTENT_EXTRA_NAME_REFRESH = "subsonic.refresh";
-	public static final String INTENT_EXTRA_REQUEST_SEARCH = "subsonic.requestsearch";
-	public static final String INTENT_EXTRA_NAME_EXIT = "subsonic.exit";
 	public static final String INTENT_EXTRA_NAME_STARRED = "subsonic.starred";
 	public static final String INTENT_EXTRA_NAME_RANDOM = "subsonic.random";
 	public static final String INTENT_EXTRA_NAME_GENRE_NAME = "subsonic.genre";
 	public static final String INTENT_EXTRA_NAME_IS_ALBUM = "subsonic.isalbum";
 	public static final String INTENT_EXTRA_NAME_VIDEOS = "subsonic.videos";
+	public static final String INTENT_EXTRA_NAME_SHOW_PLAYER = "subsonic.showplayer";
 
 	// Names for Intent Actions
 	public static final String CMD_PROCESS_KEYCODE = "org.moire.ultrasonic.CMD_PROCESS_KEYCODE";

@@ -11,17 +11,14 @@ import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
  */
 public abstract class LoadingTask<T> extends BackgroundTask<T>
 {
-	private final Activity tabActivity;
-	private final boolean cancellable;
-	private boolean cancelled;
-	private SwipeRefreshLayout swipe;
+	private final SwipeRefreshLayout swipe;
+	private final CancellationToken cancel;
 
-	public LoadingTask(Activity activity, final boolean cancellable, SwipeRefreshLayout swipe)
+	public LoadingTask(Activity activity, SwipeRefreshLayout swipe, CancellationToken cancel)
 	{
 		super(activity);
-		tabActivity = activity;
-		this.cancellable = cancellable;
 		this.swipe = swipe;
+		this.cancel = cancel;
 	}
 
 	@Override
@@ -37,7 +34,7 @@ public abstract class LoadingTask<T> extends BackgroundTask<T>
 				try
 				{
 					final T result = doInBackground();
-					if (isCancelled())
+					if (cancel.isCancellationRequested())
 					{
 						return;
 					}
@@ -54,7 +51,7 @@ public abstract class LoadingTask<T> extends BackgroundTask<T>
 				}
 				catch (final Throwable t)
 				{
-					if (isCancelled())
+					if (cancel.isCancellationRequested())
 					{
 						return;
 					}
@@ -73,24 +70,8 @@ public abstract class LoadingTask<T> extends BackgroundTask<T>
 		}.start();
 	}
 
-	@SuppressLint("NewApi")
-	private boolean isCancelled()
-	{
-		// TODO: Implement cancelled
-		//return Build.VERSION.SDK_INT >= 17 ? tabActivity.isDestroyed() || cancelled : cancelled;
-		return cancelled;
-	}
-
 	@Override
 	public void updateProgress(final String message)
 	{
-		getHandler().post(new Runnable()
-		{
-			@Override
-			public void run()
-			{
-				// TODO: This seems to be NOOP, can it be removed?
-			}
-		});
 	}
 }

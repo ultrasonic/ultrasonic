@@ -19,10 +19,10 @@
 package org.moire.ultrasonic.service
 
 import android.content.Context
-import org.koin.core.KoinComponent
+import org.koin.core.component.KoinComponent
+import org.koin.core.component.get
 import org.koin.core.context.loadKoinModules
 import org.koin.core.context.unloadKoinModules
-import org.koin.core.get
 import org.koin.core.qualifier.named
 import org.moire.ultrasonic.cache.Directories
 import org.moire.ultrasonic.data.ActiveServerProvider

@@ -30,6 +30,7 @@ import org.moire.ultrasonic.provider.UltrasonicAppWidgetProvider4X1;
 import org.moire.ultrasonic.provider.UltrasonicAppWidgetProvider4X2;
 import org.moire.ultrasonic.provider.UltrasonicAppWidgetProvider4X3;
 import org.moire.ultrasonic.provider.UltrasonicAppWidgetProvider4X4;
+import org.moire.ultrasonic.util.Constants;
 import org.moire.ultrasonic.util.FileUtil;
 import org.moire.ultrasonic.util.NowPlayingEventDistributor;
 import org.moire.ultrasonic.util.ShufflePlayBuffer;
@@ -637,9 +638,10 @@ public class MediaPlayerService extends Service
 
         notificationBuilder.setContent(contentView);
 
-        // TODO: Navigate automatically to PlayerFragment
-        Intent notificationIntent = new Intent(this, NavigationActivity.class);
-        notificationBuilder.setContentIntent(PendingIntent.getActivity(this, 0, notificationIntent, 0));
+        Intent notificationIntent = new Intent(this, NavigationActivity.class)
+            .addFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
+        notificationIntent.putExtra(Constants.INTENT_EXTRA_NAME_SHOW_PLAYER, true);
+        notificationBuilder.setContentIntent(PendingIntent.getActivity(this, 0, notificationIntent, PendingIntent.FLAG_UPDATE_CURRENT));
 
         if (playerState == PlayerState.PAUSED || playerState == PlayerState.IDLE) {
             contentView.setImageViewResource(R.id.control_play, R.drawable.media_start_normal_dark);

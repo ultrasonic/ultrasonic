@@ -40,6 +40,8 @@ public class UltrasonicAppWidgetProvider extends AppWidgetProvider
 		final Resources res = context.getResources();
 		final RemoteViews views = new RemoteViews(context.getPackageName(), this.layoutId);
 
+		views.setTextViewText(R.id.title, null);
+		views.setTextViewText(R.id.album, null);
 		views.setTextViewText(R.id.artist, res.getText(R.string.widget_initial_text));
 
 		linkButtons(context, views, false);
@@ -183,8 +185,10 @@ public class UltrasonicAppWidgetProvider extends AppWidgetProvider
 	 */
 	private static void linkButtons(Context context, RemoteViews views, boolean playerActive)
 	{
-		// TODO: If playerActive = true, display the PlayerFragment automatically
-		Intent intent = new Intent(context, playerActive ? NavigationActivity.class : NavigationActivity.class);
+		Intent intent = new Intent(context, NavigationActivity.class).addFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);;
+		if (playerActive)
+			intent.putExtra(Constants.INTENT_EXTRA_NAME_SHOW_PLAYER, true);
+
 		intent.setAction("android.intent.action.MAIN");
 		intent.addCategory("android.intent.category.LAUNCHER");
 		PendingIntent pendingIntent = PendingIntent.getActivity(context, 10, intent, PendingIntent.FLAG_UPDATE_CURRENT);

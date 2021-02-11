@@ -252,7 +252,7 @@ public class PlaylistsFragment extends Fragment {
             @Override
             public void onClick(DialogInterface dialog, int which)
             {
-                new LoadingTask<Void>(getActivity(), false, refreshPlaylistsListView)
+                new LoadingTask<Void>(getActivity(), refreshPlaylistsListView, cancellationToken)
                 {
                     @Override
                     protected Void doInBackground() throws Throwable
@@ -337,7 +337,7 @@ public class PlaylistsFragment extends Fragment {
             @Override
             public void onClick(DialogInterface dialog, int which)
             {
-                new LoadingTask<Void>(getActivity(), false, refreshPlaylistsListView)
+                new LoadingTask<Void>(getActivity(), refreshPlaylistsListView, cancellationToken)
                 {
                     @Override
                     protected Void doInBackground() throws Throwable

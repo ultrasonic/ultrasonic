@@ -238,8 +238,15 @@ class NavigationActivity : AppCompatActivity() {
     // android.intent.action.SEARCH and android.media.action.MEDIA_PLAY_FROM_SEARCH calls here
     override fun onNewIntent(intent: Intent?) {
         super.onNewIntent(intent)
+        if (intent == null) return;
 
-        val query = intent?.getStringExtra(SearchManager.QUERY)
+        if (intent.getBooleanExtra(Constants.INTENT_EXTRA_NAME_SHOW_PLAYER, false))
+        {
+            findNavController(R.id.nav_host_fragment).navigate(R.id.playerFragment)
+            return
+        }
+
+        val query = intent.getStringExtra(SearchManager.QUERY)
 
         if (query != null) {
             val autoPlay = intent.action == MediaStore.INTENT_ACTION_MEDIA_PLAY_FROM_SEARCH

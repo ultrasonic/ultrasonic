@@ -107,7 +107,6 @@ class DownloadHandler(
 
             @Throws(Throwable::class)
             override fun doInBackground(): List<MusicDirectory.Entry> {
-                // TODO: Handle swipe spinner here instead of the ProgressListener
                 val musicService = getMusicService(activity)
                 val songs: MutableList<MusicDirectory.Entry> = LinkedList()
                 val root: MusicDirectory

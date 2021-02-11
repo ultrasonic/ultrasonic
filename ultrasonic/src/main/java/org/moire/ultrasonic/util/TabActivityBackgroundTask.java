@@ -85,14 +85,5 @@ public abstract class TabActivityBackgroundTask<T> extends BackgroundTask<T>
 	@Override
 	public void updateProgress(final String message)
 	{
-		// TODO: Remove
-		getHandler().post(new Runnable()
-		{
-			@Override
-			public void run()
-			{
-				//activity.updateProgress(message);
-			}
-		});
 	}
 }

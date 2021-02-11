@@ -231,7 +231,7 @@ public class SharesFragment extends Fragment {
             @Override
             public void onClick(DialogInterface dialog, int which)
             {
-                new LoadingTask<Void>(getActivity(), false, refreshSharesListView)
+                new LoadingTask<Void>(getActivity(), refreshSharesListView, cancellationToken)
                 {
                     @Override
                     protected Void doInBackground() throws Throwable
@@ -327,7 +327,7 @@ public class SharesFragment extends Fragment {
             @Override
             public void onClick(DialogInterface dialog, int which)
             {
-                new LoadingTask<Void>(getActivity(), false, refreshSharesListView)
+                new LoadingTask<Void>(getActivity(), refreshSharesListView, cancellationToken)
                 {
                     @Override
                     protected Void doInBackground() throws Throwable

@@ -76,7 +76,6 @@ public class SettingsFragment extends PreferenceFragmentCompat
     private EditTextPreference sharingDefaultDescription;
     private EditTextPreference sharingDefaultGreeting;
     private TimeSpanPreference sharingDefaultExpiration;
-    private PreferenceCategory serversCategory;
     private Preference resumeOnBluetoothDevice;
     private Preference pauseOnBluetoothDevice;
     private CheckBoxPreference debugLogToFile;
@@ -133,7 +132,6 @@ public class SettingsFragment extends PreferenceFragmentCompat
         sharingDefaultDescription = findPreference(Constants.PREFERENCES_KEY_DEFAULT_SHARE_DESCRIPTION);
         sharingDefaultGreeting = findPreference(Constants.PREFERENCES_KEY_DEFAULT_SHARE_GREETING);
         sharingDefaultExpiration = findPreference(Constants.PREFERENCES_KEY_DEFAULT_SHARE_EXPIRATION);
-        serversCategory = findPreference(Constants.PREFERENCES_KEY_SERVERS_KEY);
         resumeOnBluetoothDevice = findPreference(Constants.PREFERENCES_KEY_RESUME_ON_BLUETOOTH_DEVICE);
         pauseOnBluetoothDevice = findPreference(Constants.PREFERENCES_KEY_PAUSE_ON_BLUETOOTH_DEVICE);
         debugLogToFile = findPreference(Constants.PREFERENCES_KEY_DEBUG_LOG_TO_FILE);
@@ -236,7 +234,7 @@ public class SettingsFragment extends PreferenceFragmentCompat
                     @Override
                     public void onPermissionRequestFinished(boolean hasPermission) {
                         if (hasPermission) {
-                            FilePickerDialog filePickerDialog = FilePickerDialog.Companion.createFilePickerDialog(getActivity());
+                            FilePickerDialog filePickerDialog = FilePickerDialog.Companion.createFilePickerDialog(getContext());
                             filePickerDialog.setDefaultDirectory(FileUtil.getDefaultMusicDirectory(getActivity()).getPath());
                             filePickerDialog.setInitialDirectory(cacheLocation.getSummary().toString());
                             filePickerDialog.setOnFileSelectedListener(new OnFileSelectedListener() {

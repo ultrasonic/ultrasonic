@@ -1019,8 +1019,10 @@ public class Util
 
 	public static void linkButtons(Context context, RemoteViews views, boolean playerActive)
 	{
-		// TODO: Navigate automatically to PlayerFragment if playerActive = true
-		Intent intent = new Intent(context, playerActive ? NavigationActivity.class : NavigationActivity.class);
+		Intent intent = new Intent(context, NavigationActivity.class).addFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
+		if (playerActive)
+			intent.putExtra(Constants.INTENT_EXTRA_NAME_SHOW_PLAYER, true);
+
 		intent.setAction("android.intent.action.MAIN");
 		intent.addCategory("android.intent.category.LAUNCHER");
 		PendingIntent pendingIntent = PendingIntent.getActivity(context, 0, intent, PendingIntent.FLAG_UPDATE_CURRENT);

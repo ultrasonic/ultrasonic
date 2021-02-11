@@ -13,7 +13,7 @@ import org.moire.ultrasonic.di.featureFlagsModule
 import org.moire.ultrasonic.di.mediaPlayerModule
 import org.moire.ultrasonic.di.musicServiceModule
 import org.moire.ultrasonic.log.FileLoggerTree
-import org.moire.ultrasonic.log.timberLogger
+import org.moire.ultrasonic.log.TimberKoinLogger
 import org.moire.ultrasonic.util.Util
 import timber.log.Timber
 import timber.log.Timber.DebugTree
@@ -30,8 +30,7 @@ class UApp : MultiDexApplication() {
         }
 
         startKoin {
-            // TODO Current version of Koin has a bug, which forces the usage of Level.ERROR
-            timberLogger(Level.ERROR)
+            logger(TimberKoinLogger(Level.INFO))
             // declare Android context
             androidContext(this@UApp)
             // declare modules to use
