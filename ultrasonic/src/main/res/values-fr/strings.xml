@@ -3,6 +3,7 @@
 
     <string name="background_task.loading">Chargement&#8230;</string>
     <string name="background_task.network_error">Une erreur réseau est survenue. Veuillez vérifier l\'adresse du serveur ou réessayer plus tard.</string>
+    <string name="background_task.unsupported_api">L’API v%1$s du serveur ne supporte pas cette fonction.</string>
     <string name="background_task.no_network">Cette application requiert un accès au réseau. Veuillez activer le Wi-Fi ou le réseau mobile.</string>
     <string name="background_task.not_found">Ressources introuvables. Veuillez vérifier l\'adresse du serveur.</string>
     <string name="background_task.parse_error">Réponse incorrecte. Veuillez vérifier l\'adresse du serveur.</string>
@@ -313,6 +314,8 @@
     <string name="settings.use_folder_for_album_artist_summary">Dossier de niveau supérieur devient le nom de l\'artiste de l\'album</string>
     <string name="settings.use_id3">Naviguer en utilisant ID3 Tags</string>
     <string name="settings.use_id3_summary">Utiliser ID3 tag à la place du système de fichier basique</string>
+    <string name="settings.show_artist_picture">Afficher l’image de l’artiste dans la liste</string>
+    <string name="settings.show_artist_picture_summary">Affiche l’image de l’artiste dans la liste des artistes si celle-ci est disponible</string>
     <string name="settings.video_title">Vidéo</string>
     <string name="settings.video_player">Lecteur vidéo</string>
     <string name="settings.view_refresh">Actualisation de la vue</string>
@@ -382,6 +385,8 @@
     <string name="settings.show_all_songs_by_artist_summary">Ajouter une nouvelle entrée de l\'affichage de l\'artiste pour accéder à toutes les titres pour un artiste</string>
     <string name="download.menu_show_artist">Afficher l\'artiste</string>
     <string name="settings.scan_media">Scan Media After Download</string>
+    <string name="settings.scan_media_summary">Balayer automatiquement les médias après téléchargement</string>
+    <string name="settings.image_loader_concurrency">Chargements d’images simultanés</string>
     <string name="settings.image_loader_concurrency_1">1</string>
     <string name="settings.image_loader_concurrency_2">2</string>
     <string name="settings.image_loader_concurrency_3">3</string>
@@ -394,7 +399,59 @@
     <string name="settings.image_loader_concurrency_10">10</string>
     <string name="settings.image_loader_concurrency_11">11</string>
     <string name="settings.image_loader_concurrency_12">12</string>
+    <string name="albumArt">albumArt</string>
+    <string name="common_multiple_years">Années multiples</string>
+    <string name="settings.playback.resume_on_bluetooth_device">Reprendre lorsqu’un appareil Bluetooth se connecte</string>
+    <string name="settings.playback.pause_on_bluetooth_device">Mettre en pause lorsqu’un appareil Bluetooth se déconnecte</string>
+    <string name="settings.playback.bluetooth_all">Tous les appareils Bluetooth</string>
+    <string name="settings.playback.bluetooth_a2dp">Seulement les appareils audio (A2DP)</string>
+    <string name="settings.playback.bluetooth_disabled">Désactivé</string>
+    <string name="settings.playback.single_button_bluetooth_device">Bouton unique Lecture/Pause en Bluetooth</string>
+    <string name="settings.playback.single_button_bluetooth_device_summary">Activer cela peut aider sur les anciens appareils Bluetooth lorsque Lecture/Pause ne fonctionne pas correctement</string>
+    <string name="settings.debug.title">Paramètres de debug</string>
+    <string name="settings.debug.log_to_file">Enregistrer les logs de debug dans des fichiers</string>
+    <string name="settings.debug.log_path">Les fichiers de log sont disponibles dans %1$s/%2$s</string>
+    <string name="settings.debug.log_summary">Il y a %1$s fichiers de logs prenant %2$s MB  d’espace dans le répertoire %3$s. Souhaitez-vous les conserver ?</string>
+    <string name="settings.debug.log_keep">Conserver les fichiers</string>
+    <string name="settings.debug.log_delete">Supprimer les fichiers</string>
+    <string name="settings.debug.log_deleted">Fichiers de log supprimés</string>
+
+    <string name="permissions.access_error">Ultrasonic ne peut pas accéder au cache. Le répertoire de cache a été réinitialisé sur le chemin par défaut.</string>
+    <string name="permissions.message_box_title">Attention</string>
+    <string name="permissions.permission_missing">Ultrasonic requiert les droits de lecture/écriture sur le répertoire de cache. Le répertoire de cache a été réinitialisé sur le chemin par défaut.</string>
+    <string name="permissions.rationale_title">Demande de permission</string>
+    <string name="permissions.rationale_description_failed">Ultrasonic requiert les droits de lecture/écriture sur le répertoire de cache. Veuillez autoriser Ultrasonic à accéder au système de fichiers.</string>
+    <string name="permissions.permanent_denial_title">Permissions refusées de manière permanente</string>
+    <string name="permissions.permanent_denial_description">Ultrasonic requiert les droits de lecture/écriture sur le répertoire de cache. Vous pouvez les activer dans les paramètres Android de l’application. Si vous rejetez cette permission, le répertoire par défaut sera utilisé pour le cache.</string>
+    <string name="permissions.open_settings">Ouvrir les paramètres</string>
+    <string name="permissions.rationale_description_initial">Afin de pouvoir modifier le répertoire de cache, Ultrasonic requiert les droits de lecture/écriture sur le système de fichiers.</string>
+
+    <string name="filepicker.select_folder">Sélectionner un dossier</string>
+    <string name="filepicker.create_folder">Créer un dossier</string>
+    <string name="filepicker.create_folder_failed">Impossible de créer un dossier</string>
+    <string name="filepicker.internal">%1$s (Interne)</string>
+    <string name="filepicker.default_app_folder">Répertoire par défaut de l’application : %1$s (Mémoire externe)</string>
+    <string name="filepicker.enter_folder_name">Saisir le nom du dossier</string>
+    <string name="filepicker.create">Créer</string>
+    <string name="filepicker.name_invalid">Veuillez entrer un nom de dossier valide</string>
+    <string name="filepicker.already_exists">Ce dossier existe déjà.\nVeuillez donner un autre nom</string>
+    <string name="filepicker.select">Sélectionner</string>
+    <string name="filepicker.default">Utiliser la valeur par défaut</string>
+    <string name="filepicker.available_drives">Emplacements de stockage disponibles :</string>
+
+    <string name="server_selector.label">Serveurs configurés</string>
+    <string name="server_selector.delete_confirmation">Êtes-vous sûr de vouloir supprimer ce serveur ?</string>
+    <string name="server_editor.label">Édition du serveur</string>
     <string name="server_editor.new_label">Ajouter un serveur</string>
+    <string name="server_editor.leave_confirmation">Êtes-vous sûr de vouloir quitter et perdre vos modifications ?</string>
+    <string name="server_editor.required">Ce champ est requis</string>
+    <string name="server_menu.edit">Éditer</string>
+    <string name="server_menu.delete">Supprimer</string>
+    <string name="server_menu.move_up">Déplacer vers le haut</string>
+    <string name="server_menu.move_down">Déplacer vers le bas</string>
+    <string name="server_editor.authentication">Authentification</string>
+    <string name="server_editor.advanced">Paramètres avancés</string>
+
     <plurals name="select_album_n_songs">
         <item quantity="one">%d titre</item>
         <item quantity="other">%d titres</item>
@@ -402,6 +459,10 @@
     <plurals name="select_album_n_songs_pinned">
         <item quantity="one">%d titre sélectionnée pour être épinglé.</item>
         <item quantity="other">%d titres sélectionnée pour être épinglé.</item>
+    </plurals>
+    <plurals name="select_album_n_songs_downloaded">
+        <item quantity="one">%d titre sélectionné pour être téléchargé.</item>
+        <item quantity="other">%d titres sélectionnés pour être téléchargés.</item>
     </plurals>
     <plurals name="select_album_n_songs_unpinned">
         <item quantity="one">%d titre sélectionné pour être dégoupillé.</item>

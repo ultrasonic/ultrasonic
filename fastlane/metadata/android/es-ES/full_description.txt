@@ -1,0 +1,18 @@
+Ultrasonic es un cliente de Subsonic (y servidores compatibles) para Android. Usa Ultrasonic para conectar con tu servidor y escuchar música.
+
+Características principales:
+* Ligero
+* Rápido
+* Tema claro y oscuro
+* Soporte de múltiples servidores
+* Modo fuera de línea
+* Marcadores
+* Listas de reproducción en el servidor
+* Modo de reproducción aleatoria
+* Modo Jukebox
+* Chat del servidor
+* Y muchas mas!!!
+
+El código esta disponible con licencia GPL en Github: https://github.com/ultrasonic/ultrasonic
+Si tienes problemas puedes dejar tu petición en: https://github.com/ultrasonic/ultrasonic/issues
+Icono diseñado por Sebastien Gabriel: http://www.flaticon.com/authors/sebastien-gabriel
