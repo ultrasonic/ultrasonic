@@ -36,7 +36,6 @@ import org.moire.ultrasonic.domain.SearchResult;
 import org.moire.ultrasonic.domain.Share;
 import org.moire.ultrasonic.domain.UserInfo;
 import org.moire.ultrasonic.util.CancellableTask;
-import org.moire.ultrasonic.util.ProgressListener;
 
 import java.io.InputStream;
 import java.util.List;
@@ -49,61 +48,61 @@ import kotlin.Pair;
 public interface MusicService
 {
 
-	void ping(Context context, ProgressListener progressListener) throws Exception;
+	void ping(Context context) throws Exception;
 
-	boolean isLicenseValid(Context context, ProgressListener progressListener) throws Exception;
+	boolean isLicenseValid(Context context) throws Exception;
 
-	List<Genre> getGenres(boolean refresh, Context context, ProgressListener progressListener) throws Exception;
+	List<Genre> getGenres(boolean refresh, Context context) throws Exception;
 
-	void star(String id, String albumId, String artistId, Context context, ProgressListener progressListener) throws Exception;
+	void star(String id, String albumId, String artistId, Context context) throws Exception;
 
-	void unstar(String id, String albumId, String artistId, Context context, ProgressListener progressListener) throws Exception;
+	void unstar(String id, String albumId, String artistId, Context context) throws Exception;
 
-	void setRating(String id, int rating, Context context, ProgressListener progressListener) throws Exception;
+	void setRating(String id, int rating, Context context) throws Exception;
 
-	List<MusicFolder> getMusicFolders(boolean refresh, Context context, ProgressListener progressListener) throws Exception;
+	List<MusicFolder> getMusicFolders(boolean refresh, Context context) throws Exception;
 
-	Indexes getIndexes(String musicFolderId, boolean refresh, Context context, ProgressListener progressListener) throws Exception;
+	Indexes getIndexes(String musicFolderId, boolean refresh, Context context) throws Exception;
 
-	Indexes getArtists(boolean refresh, Context context, ProgressListener progressListener) throws Exception;
+	Indexes getArtists(boolean refresh, Context context) throws Exception;
 
-	MusicDirectory getMusicDirectory(String id, String name, boolean refresh, Context context, ProgressListener progressListener) throws Exception;
+	MusicDirectory getMusicDirectory(String id, String name, boolean refresh, Context context) throws Exception;
 
-	MusicDirectory getArtist(String id, String name, boolean refresh, Context context, ProgressListener progressListener) throws Exception;
+	MusicDirectory getArtist(String id, String name, boolean refresh, Context context) throws Exception;
 
-	MusicDirectory getAlbum(String id, String name, boolean refresh, Context context, ProgressListener progressListener) throws Exception;
+	MusicDirectory getAlbum(String id, String name, boolean refresh, Context context) throws Exception;
 
-	SearchResult search(SearchCriteria criteria, Context context, ProgressListener progressListener) throws Exception;
+	SearchResult search(SearchCriteria criteria, Context context) throws Exception;
 
-	MusicDirectory getPlaylist(String id, String name, Context context, ProgressListener progressListener) throws Exception;
+	MusicDirectory getPlaylist(String id, String name, Context context) throws Exception;
 
-	List<PodcastsChannel> getPodcastsChannels(boolean refresh, Context context, ProgressListener progressListener) throws Exception;
+	List<PodcastsChannel> getPodcastsChannels(boolean refresh, Context context) throws Exception;
 
-	List<Playlist> getPlaylists(boolean refresh, Context context, ProgressListener progressListener) throws Exception;
+	List<Playlist> getPlaylists(boolean refresh, Context context) throws Exception;
 
-	void createPlaylist(String id, String name, List<MusicDirectory.Entry> entries, Context context, ProgressListener progressListener) throws Exception;
+	void createPlaylist(String id, String name, List<MusicDirectory.Entry> entries, Context context) throws Exception;
 
-	void deletePlaylist(String id, Context context, ProgressListener progressListener) throws Exception;
+	void deletePlaylist(String id, Context context) throws Exception;
 
-	void updatePlaylist(String id, String name, String comment, boolean pub, Context context, ProgressListener progressListener) throws Exception;
+	void updatePlaylist(String id, String name, String comment, boolean pub, Context context) throws Exception;
 
-	Lyrics getLyrics(String artist, String title, Context context, ProgressListener progressListener) throws Exception;
+	Lyrics getLyrics(String artist, String title, Context context) throws Exception;
 
-	void scrobble(String id, boolean submission, Context context, ProgressListener progressListener) throws Exception;
+	void scrobble(String id, boolean submission, Context context) throws Exception;
 
-	MusicDirectory getAlbumList(String type, int size, int offset, Context context, ProgressListener progressListener) throws Exception;
+	MusicDirectory getAlbumList(String type, int size, int offset, Context context) throws Exception;
 
-	MusicDirectory getAlbumList2(String type, int size, int offset, Context context, ProgressListener progressListener) throws Exception;
+	MusicDirectory getAlbumList2(String type, int size, int offset, Context context) throws Exception;
 
-	MusicDirectory getRandomSongs(int size, Context context, ProgressListener progressListener) throws Exception;
+	MusicDirectory getRandomSongs(int size, Context context) throws Exception;
 
-	MusicDirectory getSongsByGenre(String genre, int count, int offset, Context context, ProgressListener progressListener) throws Exception;
+	MusicDirectory getSongsByGenre(String genre, int count, int offset, Context context) throws Exception;
 
-	SearchResult getStarred(Context context, ProgressListener progressListener) throws Exception;
+	SearchResult getStarred(Context context) throws Exception;
 
-	SearchResult getStarred2(Context context, ProgressListener progressListener) throws Exception;
+	SearchResult getStarred2(Context context) throws Exception;
 
-	Bitmap getCoverArt(Context context, MusicDirectory.Entry entry, int size, boolean saveToFile, boolean highQuality, ProgressListener progressListener) throws Exception;
+	Bitmap getCoverArt(Context context, MusicDirectory.Entry entry, int size, boolean saveToFile, boolean highQuality) throws Exception;
 
 	/**
 	 * Return response {@link InputStream} and a {@link Boolean} that indicates if this response is
@@ -113,41 +112,41 @@ public interface MusicService
 
 	@Deprecated String getVideoUrl(Context context, String id, boolean useFlash) throws Exception;
 
-	JukeboxStatus updateJukeboxPlaylist(List<String> ids, Context context, ProgressListener progressListener) throws Exception;
+	JukeboxStatus updateJukeboxPlaylist(List<String> ids, Context context) throws Exception;
 
-	JukeboxStatus skipJukebox(int index, int offsetSeconds, Context context, ProgressListener progressListener) throws Exception;
+	JukeboxStatus skipJukebox(int index, int offsetSeconds, Context context) throws Exception;
 
-	JukeboxStatus stopJukebox(Context context, ProgressListener progressListener) throws Exception;
+	JukeboxStatus stopJukebox(Context context) throws Exception;
 
-	JukeboxStatus startJukebox(Context context, ProgressListener progressListener) throws Exception;
+	JukeboxStatus startJukebox(Context context) throws Exception;
 
-	JukeboxStatus getJukeboxStatus(Context context, ProgressListener progressListener) throws Exception;
+	JukeboxStatus getJukeboxStatus(Context context) throws Exception;
 
-	JukeboxStatus setJukeboxGain(float gain, Context context, ProgressListener progressListener) throws Exception;
+	JukeboxStatus setJukeboxGain(float gain, Context context) throws Exception;
 
-	List<Share> getShares(boolean refresh, Context context, ProgressListener progressListener) throws Exception;
+	List<Share> getShares(boolean refresh, Context context) throws Exception;
 
-	List<ChatMessage> getChatMessages(Long since, Context context, ProgressListener progressListener) throws Exception;
+	List<ChatMessage> getChatMessages(Long since, Context context) throws Exception;
 
-	void addChatMessage(String message, Context context, ProgressListener progressListener) throws Exception;
+	void addChatMessage(String message, Context context) throws Exception;
 
-	List<Bookmark> getBookmarks(Context context, ProgressListener progressListener) throws Exception;
+	List<Bookmark> getBookmarks(Context context) throws Exception;
 
-	void deleteBookmark(String id, Context context, ProgressListener progressListener) throws Exception;
+	void deleteBookmark(String id, Context context) throws Exception;
 
-	void createBookmark(String id, int position, Context context, ProgressListener progressListener) throws Exception;
+	void createBookmark(String id, int position, Context context) throws Exception;
 
-	MusicDirectory getVideos(boolean refresh, Context context, ProgressListener progressListener) throws Exception;
+	MusicDirectory getVideos(boolean refresh, Context context) throws Exception;
 
-	UserInfo getUser(String username, Context context, ProgressListener progressListener) throws Exception;
+	UserInfo getUser(String username, Context context) throws Exception;
 
-	List<Share> createShare(List<String> ids, String description, Long expires, Context context, ProgressListener progressListener) throws Exception;
+	List<Share> createShare(List<String> ids, String description, Long expires, Context context) throws Exception;
 
-	void deleteShare(String id, Context context, ProgressListener progressListener) throws Exception;
+	void deleteShare(String id, Context context) throws Exception;
 
-	void updateShare(String id, String description, Long expires, Context context, ProgressListener progressListener) throws Exception;
+	void updateShare(String id, String description, Long expires, Context context) throws Exception;
 
-	Bitmap getAvatar(Context context, String username, int size, boolean saveToFile, boolean highQuality, ProgressListener progressListener) throws Exception;
+	Bitmap getAvatar(Context context, String username, int size, boolean saveToFile, boolean highQuality) throws Exception;
 
-	MusicDirectory getPodcastEpisodes(String podcastChannelId, Context context, ProgressListener progressListener) throws Exception;
+	MusicDirectory getPodcastEpisodes(String podcastChannelId, Context context) throws Exception;
 }

@@ -41,14 +41,13 @@ import org.moire.ultrasonic.util.CacheCleaner;
 import org.moire.ultrasonic.util.CancellationToken;
 import org.moire.ultrasonic.util.Constants;
 import org.moire.ultrasonic.util.LoadingTask;
-import org.moire.ultrasonic.util.TabActivityBackgroundTask;
+import org.moire.ultrasonic.util.FragmentBackgroundTask;
 import org.moire.ultrasonic.util.Util;
 import org.moire.ultrasonic.view.PlaylistAdapter;
 
 import java.util.List;
 
 import kotlin.Lazy;
-import timber.log.Timber;
 
 import static org.koin.java.KoinJavaComponent.inject;
 
@@ -109,10 +108,9 @@ public class PlaylistsFragment extends Fragment {
             }
         });
         registerForContextMenu(playlistsListView);
-
         FragmentTitle.Companion.setTitle(this, R.string.playlist_label);
 
-        load();
+        load(false);
     }
 
     @Override
@@ -123,38 +121,18 @@ public class PlaylistsFragment extends Fragment {
 
     private void refresh()
     {
-        // TODO: create better restart
-        getView().post(new Runnable() {
-            public void run() {
-                Timber.d("Refresh called...");
-                if (getArguments() == null) {
-                    Bundle bundle = new Bundle();
-                    bundle.putBoolean(Constants.INTENT_EXTRA_NAME_REFRESH, true);
-                    setArguments(bundle);
-                } else {
-                    getArguments().putBoolean(Constants.INTENT_EXTRA_NAME_REFRESH, true);
-                }
-                onViewCreated(getView(), null);
-            }
-        });
-
-/*        finish();
-        Intent intent = new Intent(this, SelectPlaylistActivity.class);
-        intent.putExtra(Constants.INTENT_EXTRA_NAME_REFRESH, true);
-        startActivityForResultWithoutTransition(this, intent);
- */
+        load(true);
     }
 
-    private void load()
+    private void load(final boolean refresh)
     {
-        BackgroundTask<List<Playlist>> task = new TabActivityBackgroundTask<List<Playlist>>(getActivity(), true, refreshPlaylistsListView, cancellationToken)
+        BackgroundTask<List<Playlist>> task = new FragmentBackgroundTask<List<Playlist>>(getActivity(), true, refreshPlaylistsListView, cancellationToken)
         {
             @Override
             protected List<Playlist> doInBackground() throws Throwable
             {
                 MusicService musicService = MusicServiceFactory.getMusicService(getContext());
-                boolean refresh = getArguments() != null && getArguments().getBoolean(Constants.INTENT_EXTRA_NAME_REFRESH, false);
-                List<Playlist> playlists = musicService.getPlaylists(refresh, getContext(), this);
+                List<Playlist> playlists = musicService.getPlaylists(refresh, getContext());
 
                 if (!ActiveServerProvider.Companion.isOffline(getContext()))
                     new CacheCleaner(getContext()).cleanPlaylists(playlists);
@@ -258,7 +236,7 @@ public class PlaylistsFragment extends Fragment {
                     protected Void doInBackground() throws Throwable
                     {
                         MusicService musicService = MusicServiceFactory.getMusicService(getContext());
-                        musicService.deletePlaylist(playlist.getId(), getContext(), null);
+                        musicService.deletePlaylist(playlist.getId(), getContext());
                         return null;
                     }
 
@@ -348,7 +326,7 @@ public class PlaylistsFragment extends Fragment {
                         String comment = commentBoxText != null ? commentBoxText.toString() : null;
 
                         MusicService musicService = MusicServiceFactory.getMusicService(getContext());
-                        musicService.updatePlaylist(playlist.getId(), name, comment, publicBox.isChecked(), getContext(), null);
+                        musicService.updatePlaylist(playlist.getId(), name, comment, publicBox.isChecked(), getContext());
                         return null;
                     }
 

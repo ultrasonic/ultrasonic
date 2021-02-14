@@ -18,7 +18,7 @@ import org.moire.ultrasonic.service.MusicServiceFactory;
 import org.moire.ultrasonic.util.BackgroundTask;
 import org.moire.ultrasonic.util.CancellationToken;
 import org.moire.ultrasonic.util.Constants;
-import org.moire.ultrasonic.util.TabActivityBackgroundTask;
+import org.moire.ultrasonic.util.FragmentBackgroundTask;
 import org.moire.ultrasonic.util.Util;
 
 import timber.log.Timber;
@@ -66,15 +66,17 @@ public class LyricsFragment extends Fragment {
 
     private void load()
     {
-        BackgroundTask<Lyrics> task = new TabActivityBackgroundTask<Lyrics>(getActivity(), true, swipe, cancellationToken)
+        BackgroundTask<Lyrics> task = new FragmentBackgroundTask<Lyrics>(getActivity(), true, swipe, cancellationToken)
         {
             @Override
             protected Lyrics doInBackground() throws Throwable
             {
-                String artist = getArguments().getString(Constants.INTENT_EXTRA_NAME_ARTIST);
-                String title = getArguments().getString(Constants.INTENT_EXTRA_NAME_TITLE);
+                Bundle arguments = getArguments();
+                if (arguments == null) return null;
+                String artist = arguments.getString(Constants.INTENT_EXTRA_NAME_ARTIST);
+                String title = arguments.getString(Constants.INTENT_EXTRA_NAME_TITLE);
                 MusicService musicService = MusicServiceFactory.getMusicService(getContext());
-                return musicService.getLyrics(artist, title, getContext(), this);
+                return musicService.getLyrics(artist, title, getContext());
             }
 
             @Override

@@ -541,7 +541,7 @@ public class MediaPlayerService extends Service
                         MusicService musicService = MusicServiceFactory.getMusicService(MediaPlayerService.this);
                         try
                         {
-                            musicService.deleteBookmark(song.getId(), MediaPlayerService.this, null);
+                            musicService.deleteBookmark(song.getId(), MediaPlayerService.this);
                         }
                         catch (Exception ignored)
                         {

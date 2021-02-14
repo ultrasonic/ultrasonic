@@ -8,12 +8,12 @@ import org.koin.android.viewmodel.dsl.viewModel
 import org.koin.core.qualifier.named
 import org.koin.dsl.module
 import org.moire.ultrasonic.BuildConfig
-import org.moire.ultrasonic.fragment.ArtistListModel
 import org.moire.ultrasonic.api.subsonic.SubsonicAPIClient
 import org.moire.ultrasonic.api.subsonic.SubsonicAPIVersions
 import org.moire.ultrasonic.api.subsonic.SubsonicClientConfiguration
 import org.moire.ultrasonic.cache.PermanentFileStorage
 import org.moire.ultrasonic.data.ActiveServerProvider
+import org.moire.ultrasonic.fragment.ArtistListModel
 import org.moire.ultrasonic.log.TimberOkHttpLogger
 import org.moire.ultrasonic.service.ApiCallResponseChecker
 import org.moire.ultrasonic.service.CachedMusicService

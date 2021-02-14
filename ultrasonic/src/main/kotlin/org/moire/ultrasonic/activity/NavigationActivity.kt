@@ -15,6 +15,7 @@ import android.view.MenuItem
 import android.view.View
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
+import androidx.core.view.GravityCompat
 import androidx.drawerlayout.widget.DrawerLayout
 import androidx.fragment.app.FragmentContainerView
 import androidx.navigation.NavController
@@ -41,12 +42,12 @@ import org.moire.ultrasonic.util.Constants
 import org.moire.ultrasonic.util.FileUtil
 import org.moire.ultrasonic.util.NowPlayingEventDistributor
 import org.moire.ultrasonic.util.NowPlayingEventListener
+import org.moire.ultrasonic.util.PermissionUtil
 import org.moire.ultrasonic.util.SubsonicUncaughtExceptionHandler
 import org.moire.ultrasonic.util.ThemeChangedEventDistributor
 import org.moire.ultrasonic.util.ThemeChangedEventListener
 import org.moire.ultrasonic.util.Util
 import timber.log.Timber
-
 
 /**
  * The main Activity of Ultrasonic which loads all other screens as Fragments
@@ -58,10 +59,12 @@ class NavigationActivity : AppCompatActivity() {
     var podcastsMenuItem: MenuItem? = null
     var nowPlayingView: FragmentContainerView? = null
     var nowPlayingHidden = false
+    var navigationView: NavigationView? = null
+    var drawerLayout: DrawerLayout? = null
 
-    private lateinit var appBarConfiguration : AppBarConfiguration
-    private lateinit var nowPlayingEventListener : NowPlayingEventListener
-    private lateinit var themeChangedEventListener : ThemeChangedEventListener
+    private lateinit var appBarConfiguration: AppBarConfiguration
+    private lateinit var nowPlayingEventListener: NowPlayingEventListener
+    private lateinit var themeChangedEventListener: ThemeChangedEventListener
 
     private val serverSettingsModel: ServerSettingsModel by viewModel()
     private val lifecycleSupport: MediaPlayerLifecycleSupport by inject()
@@ -69,12 +72,14 @@ class NavigationActivity : AppCompatActivity() {
     private val imageLoaderProvider: ImageLoaderProvider by inject()
     private val nowPlayingEventDistributor: NowPlayingEventDistributor by inject()
     private val themeChangedEventDistributor: ThemeChangedEventDistributor by inject()
+    private val permissionUtil: PermissionUtil by inject()
 
     private var infoDialogDisplayed = false
     private var currentFragmentId: Int = 0
 
     override fun onCreate(savedInstanceState: Bundle?) {
         setUncaughtExceptionHandler()
+        permissionUtil.ForegroundApplicationStarted(this)
         Util.applyTheme(this)
 
         super.onCreate(savedInstanceState)
@@ -82,6 +87,8 @@ class NavigationActivity : AppCompatActivity() {
         volumeControlStream = AudioManager.STREAM_MUSIC
         setContentView(R.layout.navigation_activity)
         nowPlayingView = findViewById(R.id.now_playing_fragment)
+        navigationView = findViewById(R.id.nav_view)
+        drawerLayout = findViewById(R.id.drawer_layout)
 
         val toolbar = findViewById<Toolbar>(R.id.toolbar)
         setSupportActionBar(toolbar)
@@ -91,13 +98,22 @@ class NavigationActivity : AppCompatActivity() {
 
         val navController = host.navController
 
-        val drawerLayout : DrawerLayout? = findViewById(R.id.drawer_layout)
         appBarConfiguration = AppBarConfiguration(
-            setOf(R.id.mainFragment, R.id.selectArtistFragment, R.id.searchFragment,
-                R.id.playlistsFragment, R.id.sharesFragment, R.id.bookmarksFragment,
-                R.id.chatFragment, R.id.podcastFragment, R.id.settingsFragment,
-                R.id.aboutFragment, R.id.playerFragment),
-            drawerLayout)
+            setOf(
+                R.id.mainFragment,
+                R.id.selectArtistFragment,
+                R.id.searchFragment,
+                R.id.playlistsFragment,
+                R.id.sharesFragment,
+                R.id.bookmarksFragment,
+                R.id.chatFragment,
+                R.id.podcastFragment,
+                R.id.settingsFragment,
+                R.id.aboutFragment,
+                R.id.playerFragment
+            ),
+            drawerLayout
+        )
 
         setupActionBar(navController, appBarConfiguration)
 
@@ -135,8 +151,8 @@ class NavigationActivity : AppCompatActivity() {
 
         nowPlayingEventListener = object : NowPlayingEventListener {
             override fun onDismissNowPlaying() {
-                nowPlayingHidden = true;
-                hideNowPlaying();
+                nowPlayingHidden = true
+                hideNowPlaying()
             }
 
             override fun onHideNowPlaying() {
@@ -174,6 +190,7 @@ class NavigationActivity : AppCompatActivity() {
         nowPlayingEventDistributor.unsubscribe(nowPlayingEventListener)
         themeChangedEventDistributor.unsubscribe(themeChangedEventListener)
         imageLoaderProvider.clearImageLoader()
+        permissionUtil.ForegroundApplicationStopped()
     }
 
     override fun onKeyDown(keyCode: Int, event: KeyEvent?): Boolean {
@@ -189,12 +206,11 @@ class NavigationActivity : AppCompatActivity() {
     }
 
     private fun setupNavigationMenu(navController: NavController) {
-        val sideNavView = findViewById<NavigationView>(R.id.nav_view)
-        sideNavView?.setupWithNavController(navController)
+        navigationView?.setupWithNavController(navController)
 
         // The exit menu is handled here manually
-        val exitItem: MenuItem = sideNavView.menu.findItem(R.id.menu_exit)
-        exitItem.setOnMenuItemClickListener { item ->
+        val exitItem: MenuItem? = navigationView?.menu?.findItem(R.id.menu_exit) ?: null
+        exitItem?.setOnMenuItemClickListener { item ->
             if (item.itemId == R.id.menu_exit) {
                 setResult(Constants.RESULT_CLOSE_ALL)
                 mediaPlayerController.stopJukeboxService()
@@ -205,19 +221,26 @@ class NavigationActivity : AppCompatActivity() {
             true
         }
 
-        chatMenuItem = sideNavView.menu.findItem(R.id.chatFragment)
-        bookmarksMenuItem = sideNavView.menu.findItem(R.id.bookmarksFragment)
-        sharesMenuItem = sideNavView.menu.findItem(R.id.sharesFragment)
-        podcastsMenuItem = sideNavView.menu.findItem(R.id.podcastFragment)
+        chatMenuItem = navigationView?.menu?.findItem(R.id.chatFragment)
+        bookmarksMenuItem = navigationView?.menu?.findItem(R.id.bookmarksFragment)
+        sharesMenuItem = navigationView?.menu?.findItem(R.id.sharesFragment)
+        podcastsMenuItem = navigationView?.menu?.findItem(R.id.podcastFragment)
     }
 
     private fun setupActionBar(navController: NavController, appBarConfig: AppBarConfiguration) {
         setupActionBarWithNavController(navController, appBarConfig)
     }
 
+    override fun onBackPressed() {
+        if (drawerLayout?.isDrawerVisible(GravityCompat.START) == true) {
+            this.drawerLayout?.closeDrawer(GravityCompat.START)
+        } else {
+            super.onBackPressed()
+        }
+    }
+
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
         val retValue = super.onCreateOptionsMenu(menu)
-        val navigationView = findViewById<NavigationView>(R.id.nav_view)
         if (navigationView == null) {
             menuInflater.inflate(R.menu.navigation, menu)
             return true
@@ -226,22 +249,21 @@ class NavigationActivity : AppCompatActivity() {
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
-        return item.onNavDestinationSelected(findNavController(R.id.nav_host_fragment))
-                || super.onOptionsItemSelected(item)
+        return item.onNavDestinationSelected(findNavController(R.id.nav_host_fragment)) ||
+            super.onOptionsItemSelected(item)
     }
 
     override fun onSupportNavigateUp(): Boolean {
         return findNavController(R.id.nav_host_fragment).navigateUp(appBarConfiguration)
     }
 
-    // TODO: Test if this works with external Intents
+    // TODO Test if this works with external Intents
     // android.intent.action.SEARCH and android.media.action.MEDIA_PLAY_FROM_SEARCH calls here
     override fun onNewIntent(intent: Intent?) {
         super.onNewIntent(intent)
-        if (intent == null) return;
+        if (intent == null) return
 
-        if (intent.getBooleanExtra(Constants.INTENT_EXTRA_NAME_SHOW_PLAYER, false))
-        {
+        if (intent.getBooleanExtra(Constants.INTENT_EXTRA_NAME_SHOW_PLAYER, false)) {
             findNavController(R.id.nav_host_fragment).navigate(R.id.playerFragment)
             return
         }
@@ -250,7 +272,10 @@ class NavigationActivity : AppCompatActivity() {
 
         if (query != null) {
             val autoPlay = intent.action == MediaStore.INTENT_ACTION_MEDIA_PLAY_FROM_SEARCH
-            val suggestions = SearchRecentSuggestions(this, SearchSuggestionProvider.AUTHORITY, SearchSuggestionProvider.MODE)
+            val suggestions = SearchRecentSuggestions(
+                this,
+                SearchSuggestionProvider.AUTHORITY, SearchSuggestionProvider.MODE
+            )
             suggestions.saveRecentQuery(query, null)
 
             val bundle = Bundle()
@@ -265,7 +290,10 @@ class NavigationActivity : AppCompatActivity() {
         val preferences = Util.getPreferences(this)
         if (!preferences.contains(Constants.PREFERENCES_KEY_CACHE_LOCATION)) {
             val editor = preferences.edit()
-            editor.putString(Constants.PREFERENCES_KEY_CACHE_LOCATION, FileUtil.getDefaultMusicDirectory(this).path)
+            editor.putString(
+                Constants.PREFERENCES_KEY_CACHE_LOCATION,
+                FileUtil.getDefaultMusicDirectory(this).path
+            )
             editor.apply()
         }
     }
@@ -284,7 +312,7 @@ class NavigationActivity : AppCompatActivity() {
                     .setIcon(android.R.drawable.ic_dialog_info)
                     .setTitle(R.string.main_welcome_title)
                     .setMessage(R.string.main_welcome_text)
-                    .setPositiveButton(R.string.common_ok) { dialog, i ->
+                    .setPositiveButton(R.string.common_ok) { dialog, _ ->
                         dialog.dismiss()
                         findNavController(R.id.nav_host_fragment).navigate(R.id.settingsFragment)
                     }.show()
@@ -307,7 +335,7 @@ class NavigationActivity : AppCompatActivity() {
 
         // The logic for nowPlayingHidden is that the user can dismiss NowPlaying with a gesture,
         // and when the MediaPlayerService requests that it should be shown, it returns
-        nowPlayingHidden = false;
+        nowPlayingHidden = false
         // Do not show for Player fragment
         if (currentFragmentId == R.id.playerFragment) {
             hideNowPlaying()
@@ -319,7 +347,6 @@ class NavigationActivity : AppCompatActivity() {
             if (playerState == PlayerState.PAUSED || playerState == PlayerState.STARTED) {
                 val file: DownloadFile? = mediaPlayerController.currentPlaying
                 if (file != null) {
-                    val song = file.song
                     nowPlayingView?.visibility = View.VISIBLE
                 }
             } else {

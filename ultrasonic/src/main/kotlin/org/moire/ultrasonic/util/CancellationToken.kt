@@ -28,6 +28,6 @@ class CancellationToken {
      * Requests that this token be cancelled
      */
     fun cancel() {
-        isCancellationRequested = true;
+        isCancellationRequested = true
     }
 }

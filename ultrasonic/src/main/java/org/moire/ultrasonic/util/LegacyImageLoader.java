@@ -19,7 +19,6 @@
 package org.moire.ultrasonic.util;
 
 import android.content.Context;
-import android.content.res.Resources;
 import android.graphics.Bitmap;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
@@ -30,6 +29,9 @@ import timber.log.Timber;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
+
+import androidx.core.content.res.ResourcesCompat;
+
 import org.moire.ultrasonic.R;
 import org.moire.ultrasonic.domain.MusicDirectory;
 import org.moire.ultrasonic.service.MusicService;
@@ -38,8 +40,6 @@ import org.moire.ultrasonic.service.MusicServiceFactory;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
-import java.util.List;
-import java.util.SortedSet;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.atomic.AtomicBoolean;
@@ -58,9 +58,9 @@ public class LegacyImageLoader implements Runnable, ImageLoader {
     private final int imageSizeLarge;
     private Bitmap largeUnknownImage;
     private Bitmap unknownAvatarImage;
-    private Context context;
+    private final Context context;
     private Collection<Thread> threads;
-    private AtomicBoolean running = new AtomicBoolean();
+    private final AtomicBoolean running = new AtomicBoolean();
     private int concurrency;
 
     public LegacyImageLoader(
@@ -71,8 +71,7 @@ public class LegacyImageLoader implements Runnable, ImageLoader {
         this.concurrency = concurrency;
         queue = new LinkedBlockingQueue<>(1000);
 
-        Resources resources = context.getResources();
-        Drawable drawable = resources.getDrawable(R.drawable.unknown_album);
+        Drawable drawable = ResourcesCompat.getDrawable(context.getResources(), R.drawable.unknown_album, null);
 
         // Determine the density-dependent image sizes.
         if (drawable != null) {
@@ -120,7 +119,7 @@ public class LegacyImageLoader implements Runnable, ImageLoader {
     }
 
     private void createLargeUnknownImage(Context context) {
-        Drawable drawable = context.getResources().getDrawable(R.drawable.unknown_album);
+        Drawable drawable = ResourcesCompat.getDrawable(context.getResources(), R.drawable.unknown_album, null);
         Timber.i("createLargeUnknownImage");
 
         if (drawable != null) {
@@ -129,8 +128,7 @@ public class LegacyImageLoader implements Runnable, ImageLoader {
     }
 
     private void createUnknownAvatarImage(Context context) {
-        Resources res = context.getResources();
-        Drawable contact = res.getDrawable(R.drawable.ic_contact_picture);
+        Drawable contact = ResourcesCompat.getDrawable(context.getResources(), R.drawable.ic_contact_picture, null);
         unknownAvatarImage = Util.createBitmapFromDrawable(contact);
     }
 
@@ -424,8 +422,8 @@ public class LegacyImageLoader implements Runnable, ImageLoader {
                 MusicService musicService = MusicServiceFactory.getMusicService(view.getContext());
                 final boolean isAvatar = this.username != null && this.entry == null;
                 final Bitmap bitmap = this.entry != null ?
-                    musicService.getCoverArt(view.getContext(), entry, size, saveToFile, highQuality, null) :
-                    musicService.getAvatar(view.getContext(), username, size, saveToFile, highQuality, null);
+                    musicService.getCoverArt(view.getContext(), entry, size, saveToFile, highQuality) :
+                    musicService.getAvatar(view.getContext(), username, size, saveToFile, highQuality);
 
                 if (bitmap == null) {
                     Timber.d("Found empty album art.");

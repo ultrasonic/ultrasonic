@@ -9,13 +9,15 @@ import org.moire.ultrasonic.util.ImageLoader
 import org.moire.ultrasonic.util.LegacyImageLoader
 import org.moire.ultrasonic.util.Util
 
-class ImageLoaderProvider (val context: Context) {
+class ImageLoaderProvider(val context: Context) {
     private var imageLoader: ImageLoader? = null
 
     @Synchronized
     fun clearImageLoader() {
-        if (imageLoader != null &&
-            imageLoader!!.isRunning) {
+        if (
+            imageLoader != null &&
+            imageLoader!!.isRunning
+        ) {
             imageLoader!!.clear()
         }
         imageLoader = null

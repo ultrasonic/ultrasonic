@@ -2,7 +2,6 @@ package org.moire.ultrasonic.fragment;
 
 import android.app.AlertDialog;
 import android.content.DialogInterface;
-import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.text.Editable;
@@ -40,7 +39,7 @@ import org.moire.ultrasonic.util.BackgroundTask;
 import org.moire.ultrasonic.util.CancellationToken;
 import org.moire.ultrasonic.util.Constants;
 import org.moire.ultrasonic.util.LoadingTask;
-import org.moire.ultrasonic.util.TabActivityBackgroundTask;
+import org.moire.ultrasonic.util.FragmentBackgroundTask;
 import org.moire.ultrasonic.util.TimeSpan;
 import org.moire.ultrasonic.util.TimeSpanPicker;
 import org.moire.ultrasonic.util.Util;
@@ -49,7 +48,6 @@ import org.moire.ultrasonic.view.ShareAdapter;
 import java.util.List;
 
 import kotlin.Lazy;
-import timber.log.Timber;
 
 import static org.koin.java.KoinJavaComponent.inject;
 
@@ -105,14 +103,13 @@ public class SharesFragment extends Fragment {
                 Bundle bundle = new Bundle();
                 bundle.putString(Constants.INTENT_EXTRA_NAME_SHARE_ID, share.getId());
                 bundle.putString(Constants.INTENT_EXTRA_NAME_SHARE_NAME, share.getName());
-                Navigation.findNavController(getView()).navigate(R.id.selectAlbumFragment, bundle);
+                Navigation.findNavController(view).navigate(R.id.selectAlbumFragment, bundle);
             }
         });
         registerForContextMenu(sharesListView);
-
         FragmentTitle.Companion.setTitle(this, R.string.button_bar_shares);
 
-        load();
+        load(false);
     }
 
     @Override
@@ -123,39 +120,18 @@ public class SharesFragment extends Fragment {
 
     private void refresh()
     {
-        // TODO: create better restart
-        getView().post(new Runnable() {
-            public void run() {
-                Timber.d("Refresh called...");
-                if (getArguments() == null) {
-                    Bundle bundle = new Bundle();
-                    bundle.putBoolean(Constants.INTENT_EXTRA_NAME_REFRESH, true);
-                    setArguments(bundle);
-                } else {
-                    getArguments().putBoolean(Constants.INTENT_EXTRA_NAME_REFRESH, true);
-                }
-                onViewCreated(getView(), null);
-            }
-        });
-
-/*        finish();
-        Intent intent = new Intent(this, ShareActivity.class);
-        intent.putExtra(Constants.INTENT_EXTRA_NAME_REFRESH, true);
-        startActivityForResultWithoutTransition(this, intent);
-
- */
+        load(true);
     }
 
-    private void load()
+    private void load(final boolean refresh)
     {
-        BackgroundTask<List<Share>> task = new TabActivityBackgroundTask<List<Share>>(getActivity(), true, refreshSharesListView, cancellationToken)
+        BackgroundTask<List<Share>> task = new FragmentBackgroundTask<List<Share>>(getActivity(), true, refreshSharesListView, cancellationToken)
         {
             @Override
             protected List<Share> doInBackground() throws Throwable
             {
                 MusicService musicService = MusicServiceFactory.getMusicService(getContext());
-                boolean refresh = getArguments() != null && getArguments().getBoolean(Constants.INTENT_EXTRA_NAME_REFRESH, false);
-                return musicService.getShares(refresh, getContext(), this);
+                return musicService.getShares(refresh, getContext());
             }
 
             @Override
@@ -181,45 +157,30 @@ public class SharesFragment extends Fragment {
     public boolean onContextItemSelected(MenuItem menuItem)
     {
         AdapterView.AdapterContextMenuInfo info = (AdapterView.AdapterContextMenuInfo) menuItem.getMenuInfo();
-        if (info == null)
-        {
-            return false;
-        }
+        if (info == null) return false;
 
         Share share = (Share) sharesListView.getItemAtPosition(info.position);
-        if (share == null)
-        {
-            return false;
-        }
+        if (share == null || share.getId() == null) return false;
 
-        switch (menuItem.getItemId())
-        {
-            case R.id.share_menu_pin:
-                downloadHandler.getValue().downloadShare(this, share.getId(), share.getName(), true, true, false, false, true, false, false);
-                break;
-            case R.id.share_menu_unpin:
-                downloadHandler.getValue().downloadShare(this, share.getId(), share.getName(), false, false, false, false, true, false, true);
-                break;
-            case R.id.share_menu_download:
-                downloadHandler.getValue().downloadShare(this, share.getId(), share.getName(), false, false, false, false, true, false, false);
-                break;
-            case R.id.share_menu_play_now:
-                downloadHandler.getValue().downloadShare(this, share.getId(), share.getName(), false, false, true, false, false, false, false);
-                break;
-            case R.id.share_menu_play_shuffled:
-                downloadHandler.getValue().downloadShare(this, share.getId(), share.getName(), false, false, true, true, false, false, false);
-                break;
-            case R.id.share_menu_delete:
-                deleteShare(share);
-                break;
-            case R.id.share_info:
-                displayShareInfo(share);
-                break;
-            case R.id.share_update_info:
-                updateShareInfo(share);
-                break;
-            default:
-                return super.onContextItemSelected(menuItem);
+        int itemId = menuItem.getItemId();
+        if (itemId == R.id.share_menu_pin) {
+            downloadHandler.getValue().downloadShare(this, share.getId(), share.getName(), true, true, false, false, true, false, false);
+        } else if (itemId == R.id.share_menu_unpin) {
+            downloadHandler.getValue().downloadShare(this, share.getId(), share.getName(), false, false, false, false, true, false, true);
+        } else if (itemId == R.id.share_menu_download) {
+            downloadHandler.getValue().downloadShare(this, share.getId(), share.getName(), false, false, false, false, true, false, false);
+        } else if (itemId == R.id.share_menu_play_now) {
+            downloadHandler.getValue().downloadShare(this, share.getId(), share.getName(), false, false, true, false, false, false, false);
+        } else if (itemId == R.id.share_menu_play_shuffled) {
+            downloadHandler.getValue().downloadShare(this, share.getId(), share.getName(), false, false, true, true, false, false, false);
+        } else if (itemId == R.id.share_menu_delete) {
+            deleteShare(share);
+        } else if (itemId == R.id.share_info) {
+            displayShareInfo(share);
+        } else if (itemId == R.id.share_update_info) {
+            updateShareInfo(share);
+        } else {
+            return super.onContextItemSelected(menuItem);
         }
         return true;
     }
@@ -237,7 +198,7 @@ public class SharesFragment extends Fragment {
                     protected Void doInBackground() throws Throwable
                     {
                         MusicService musicService = MusicServiceFactory.getMusicService(getContext());
-                        musicService.deleteShare(share.getId(), getContext(), null);
+                        musicService.deleteShare(share.getId(), getContext());
                         return null;
                     }
 
@@ -343,7 +304,7 @@ public class SharesFragment extends Fragment {
                         String description = shareDescriptionText != null ? shareDescriptionText.toString() : null;
 
                         MusicService musicService = MusicServiceFactory.getMusicService(getContext());
-                        musicService.updateShare(share.getId(), description, millis, getContext(), null);
+                        musicService.updateShare(share.getId(), description, millis, getContext());
                         return null;
                     }
 

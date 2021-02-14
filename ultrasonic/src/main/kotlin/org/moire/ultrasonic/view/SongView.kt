@@ -204,9 +204,9 @@ class SongView(context: Context) : UpdateView(context), Checkable {
                         val musicService = getMusicService(this@SongView.context)
                         try {
                             if (!isStarred) {
-                                musicService.star(id, null, null, this@SongView.context, null)
+                                musicService.star(id, null, null, this@SongView.context)
                             } else {
-                                musicService.unstar(id, null, null, this@SongView.context, null)
+                                musicService.unstar(id, null, null, this@SongView.context)
                             }
                         } catch (e: Exception) {
                             Timber.e(e)

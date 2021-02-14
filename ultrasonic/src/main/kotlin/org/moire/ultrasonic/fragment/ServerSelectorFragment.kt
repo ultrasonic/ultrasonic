@@ -23,7 +23,7 @@ import org.moire.ultrasonic.service.MediaPlayerController
 import org.moire.ultrasonic.util.Util
 import timber.log.Timber
 
-class ServerSelectorFragment: Fragment() {
+class ServerSelectorFragment : Fragment() {
     companion object {
         const val SERVER_SELECTOR_MANAGE_MODE = "manageMode"
     }
@@ -40,8 +40,11 @@ class ServerSelectorFragment: Fragment() {
         super.onCreate(savedInstanceState)
     }
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
-                              savedInstanceState: Bundle?): View? {
+    override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View? {
         return inflater.inflate(R.layout.server_selector, container, false)
     }
 

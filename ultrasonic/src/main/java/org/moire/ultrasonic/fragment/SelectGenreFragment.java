@@ -21,7 +21,7 @@ import org.moire.ultrasonic.service.MusicServiceFactory;
 import org.moire.ultrasonic.util.BackgroundTask;
 import org.moire.ultrasonic.util.CancellationToken;
 import org.moire.ultrasonic.util.Constants;
-import org.moire.ultrasonic.util.TabActivityBackgroundTask;
+import org.moire.ultrasonic.util.FragmentBackgroundTask;
 import org.moire.ultrasonic.util.Util;
 import org.moire.ultrasonic.view.GenreAdapter;
 
@@ -75,7 +75,7 @@ public class SelectGenreFragment extends Fragment {
                     bundle.putString(Constants.INTENT_EXTRA_NAME_GENRE_NAME, genre.getName());
                     bundle.putInt(Constants.INTENT_EXTRA_NAME_ALBUM_LIST_SIZE, Util.getMaxSongs(getContext()));
                     bundle.putInt(Constants.INTENT_EXTRA_NAME_ALBUM_LIST_OFFSET, 0);
-                    Navigation.findNavController(getView()).navigate(R.id.selectAlbumFragment, bundle);
+                    Navigation.findNavController(view).navigate(R.id.selectAlbumFragment, bundle);
                 }
             }
         });
@@ -84,8 +84,7 @@ public class SelectGenreFragment extends Fragment {
         registerForContextMenu(genreListView);
 
         FragmentTitle.Companion.setTitle(this, R.string.main_genres_title);
-
-        load();
+        load(false);
     }
 
     @Override
@@ -96,43 +95,23 @@ public class SelectGenreFragment extends Fragment {
 
     private void refresh()
     {
-        // TODO: create better restart
-        getView().post(new Runnable() {
-            public void run() {
-                Timber.d("Refresh called...");
-                if (getArguments() == null) {
-                    Bundle bundle = new Bundle();
-                    bundle.putBoolean(Constants.INTENT_EXTRA_NAME_REFRESH, true);
-                    setArguments(bundle);
-                } else {
-                    getArguments().putBoolean(Constants.INTENT_EXTRA_NAME_REFRESH, true);
-                }
-                onViewCreated(getView(), null);
-            }
-        });
-/*        finish();
-        Intent intent = getIntent();
-        intent.putExtra(Constants.INTENT_EXTRA_NAME_REFRESH, true);
-        startActivityForResultWithoutTransition(this, intent);
-
- */
+        load(true);
     }
 
-    private void load()
+    private void load(final boolean refresh)
     {
-        BackgroundTask<List<Genre>> task = new TabActivityBackgroundTask<List<Genre>>(getActivity(), true, refreshGenreListView, cancellationToken)
+        BackgroundTask<List<Genre>> task = new FragmentBackgroundTask<List<Genre>>(getActivity(), true, refreshGenreListView, cancellationToken)
         {
             @Override
             protected List<Genre> doInBackground() throws Throwable
             {
-                boolean refresh = getArguments() != null && getArguments().getBoolean(Constants.INTENT_EXTRA_NAME_REFRESH, false);
                 MusicService musicService = MusicServiceFactory.getMusicService(getContext());
 
                 List<Genre> genres = new ArrayList<Genre>();
 
                 try
                 {
-                    genres = musicService.getGenres(refresh, getContext(), this);
+                    genres = musicService.getGenres(refresh, getContext());
                 }
                 catch (Exception x)
                 {

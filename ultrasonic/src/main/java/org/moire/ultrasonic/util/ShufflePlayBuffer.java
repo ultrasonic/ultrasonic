@@ -41,7 +41,7 @@ public class ShufflePlayBuffer
 	private static final int CAPACITY = 50;
 	private static final int REFILL_THRESHOLD = 40;
 
-	private final List<MusicDirectory.Entry> buffer = new ArrayList<MusicDirectory.Entry>();
+	private final List<MusicDirectory.Entry> buffer = new ArrayList<>();
 	private final Context context;
 	private ScheduledExecutorService executorService;
 	private int currentServer;
@@ -78,7 +78,7 @@ public class ShufflePlayBuffer
 	{
 		clearBufferIfNecessary();
 
-		List<MusicDirectory.Entry> result = new ArrayList<MusicDirectory.Entry>(size);
+		List<MusicDirectory.Entry> result = new ArrayList<>(size);
 		synchronized (buffer)
 		{
 			while (!buffer.isEmpty() && result.size() < size)
@@ -106,7 +106,7 @@ public class ShufflePlayBuffer
 		{
 			MusicService service = MusicServiceFactory.getMusicService(context);
 			int n = CAPACITY - buffer.size();
-			MusicDirectory songs = service.getRandomSongs(n, context, null);
+			MusicDirectory songs = service.getRandomSongs(n, context);
 
 			synchronized (buffer)
 			{

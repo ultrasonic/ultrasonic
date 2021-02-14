@@ -115,7 +115,6 @@ public class PlayerFragment extends Fragment implements GestureDetector.OnGestur
     private SilentBackgroundTask<Void> onProgressChangedTask;
     LinearLayout visualizerViewLayout;
     private MenuItem starMenuItem;
-    private LinearLayout ratingLinearLayout;
     private ImageView fiveStar1ImageView;
     private ImageView fiveStar2ImageView;
     private ImageView fiveStar3ImageView;
@@ -188,7 +187,7 @@ public class PlayerFragment extends Fragment implements GestureDetector.OnGestur
 
         visualizerViewLayout = view.findViewById(R.id.download_visualizer_view_layout);
 
-        ratingLinearLayout = view.findViewById(R.id.song_rating);
+        LinearLayout ratingLinearLayout = view.findViewById(R.id.song_rating);
         fiveStar1ImageView = view.findViewById(R.id.song_five_star_1);
         fiveStar2ImageView = view.findViewById(R.id.song_five_star_2);
         fiveStar3ImageView = view.findViewById(R.id.song_five_star_3);
@@ -197,7 +196,7 @@ public class PlayerFragment extends Fragment implements GestureDetector.OnGestur
 
         if (!useFiveStarRating) ratingLinearLayout.setVisibility(View.GONE);
 
-        hollowStar = Util.getDrawableFromAttribute(getContext(), R.attr.star_hollow);
+        hollowStar = Util.getDrawableFromAttribute(view.getContext(), R.attr.star_hollow);
         fullStar = Util.getDrawableFromAttribute(getContext(), R.attr.star_full);
 
         fiveStar1ImageView.setOnClickListener(new View.OnClickListener()
@@ -893,250 +892,207 @@ public class PlayerFragment extends Fragment implements GestureDetector.OnGestur
             entry = song.getSong();
         }
 
-        switch (menuItemId)
-        {
-            case R.id.menu_show_artist:
-                if (entry == null)
-                {
-                    return false;
-                }
-
-                if (Util.getShouldUseId3Tags(getContext()))
-                {
-                    bundle = new Bundle();
-                    bundle.putString(Constants.INTENT_EXTRA_NAME_ID, entry.getArtistId());
-                    bundle.putString(Constants.INTENT_EXTRA_NAME_NAME, entry.getArtist());
-                    bundle.putString(Constants.INTENT_EXTRA_NAME_PARENT_ID, entry.getArtistId());
-                    bundle.putBoolean(Constants.INTENT_EXTRA_NAME_ARTIST, true);
-                    Navigation.findNavController(getView()).navigate(R.id.playerToSelectAlbum, bundle);
-                }
-
-                return true;
-            case R.id.menu_show_album:
-                if (entry == null)
-                {
-                    return false;
-                }
-
-                String albumId = Util.getShouldUseId3Tags(getContext()) ? entry.getAlbumId() : entry.getParent();
-                bundle = new Bundle();
-                bundle.putString(Constants.INTENT_EXTRA_NAME_ID, albumId);
-                bundle.putString(Constants.INTENT_EXTRA_NAME_NAME, entry.getAlbum());
-                bundle.putString(Constants.INTENT_EXTRA_NAME_PARENT_ID, entry.getParent());
-                bundle.putBoolean(Constants.INTENT_EXTRA_NAME_IS_ALBUM, true);
-                Navigation.findNavController(getView()).navigate(R.id.playerToSelectAlbum, bundle);
-                return true;
-            case R.id.menu_lyrics:
-                if (entry == null)
-                {
-                    return false;
-                }
-
-                bundle = new Bundle();
-                bundle.putString(Constants.INTENT_EXTRA_NAME_ARTIST, entry.getArtist());
-                bundle.putString(Constants.INTENT_EXTRA_NAME_TITLE, entry.getTitle());
-                Navigation.findNavController(getView()).navigate(R.id.playerToLyrics, bundle);
-                return true;
-            case R.id.menu_remove:
-                mediaPlayerControllerLazy.getValue().remove(song);
-                onDownloadListChanged();
-                return true;
-            case R.id.menu_item_screen_on_off:
-                if (mediaPlayerControllerLazy.getValue().getKeepScreenOn())
-                {
-                    getActivity().getWindow().clearFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
-                    mediaPlayerControllerLazy.getValue().setKeepScreenOn(false);
-                }
-                else
-                {
-                    getActivity().getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
-                    mediaPlayerControllerLazy.getValue().setKeepScreenOn(true);
-                }
-                return true;
-            case R.id.menu_shuffle:
-                mediaPlayerControllerLazy.getValue().shuffle();
-                Util.toast(getContext(), R.string.download_menu_shuffle_notification);
-                return true;
-            case R.id.menu_item_equalizer:
-                Navigation.findNavController(getView()).navigate(R.id.playerToEqualizer);
-                return true;
-            case R.id.menu_item_visualizer:
-                final boolean active = !visualizerView.isActive();
-                visualizerView.setActive(active);
-
-                if (!visualizerView.isActive())
-                {
-                    visualizerViewLayout.setVisibility(View.GONE);
-                }
-                else
-                {
-                    visualizerViewLayout.setVisibility(View.VISIBLE);
-                }
-
-                mediaPlayerControllerLazy.getValue().setShowVisualization(visualizerView.isActive());
-                Util.toast(getContext(), active ? R.string.download_visualizer_on : R.string.download_visualizer_off);
-                return true;
-            case R.id.menu_item_jukebox:
-                final boolean jukeboxEnabled = !mediaPlayerControllerLazy.getValue().isJukeboxEnabled();
-                mediaPlayerControllerLazy.getValue().setJukeboxEnabled(jukeboxEnabled);
-                Util.toast(getContext(), jukeboxEnabled ? R.string.download_jukebox_on : R.string.download_jukebox_off, false);
-                return true;
-            case R.id.menu_item_toggle_list:
-                toggleFullScreenAlbumArt();
-                return true;
-            case R.id.menu_item_clear_playlist:
-                mediaPlayerControllerLazy.getValue().setShufflePlayEnabled(false);
-                mediaPlayerControllerLazy.getValue().clear();
-                onDownloadListChanged();
-                return true;
-            case R.id.menu_item_save_playlist:
-                if (mediaPlayerControllerLazy.getValue().getPlaylistSize() > 0)
-                {
-                    showSavePlaylistDialog();
-                }
-                return true;
-            case R.id.menu_item_star:
-                if (currentSong == null)
-                {
-                    return true;
-                }
-
-                final boolean isStarred = currentSong.getStarred();
-                final String id = currentSong.getId();
-
-                if (isStarred)
-                {
-                    starMenuItem.setIcon(hollowStar);
-                    currentSong.setStarred(false);
-                }
-                else
-                {
-                    starMenuItem.setIcon(fullStar);
-                    currentSong.setStarred(true);
-                }
-
-                new Thread(new Runnable()
-                {
-                    @Override
-                    public void run()
-                    {
-                        final MusicService musicService = MusicServiceFactory.getMusicService(getContext());
-
-                        try
-                        {
-                            if (isStarred)
-                            {
-                                musicService.unstar(id, null, null, getContext(), null);
-                            }
-                            else
-                            {
-                                musicService.star(id, null, null, getContext(), null);
-                            }
-                        }
-                        catch (Exception e)
-                        {
-                            Timber.e(e);
-                        }
-                    }
-                }).start();
-
-                return true;
-            case R.id.menu_item_bookmark_set:
-                if (currentSong == null)
-                {
-                    return true;
-                }
-
-                final String songId = currentSong.getId();
-                final int playerPosition = mediaPlayerControllerLazy.getValue().getPlayerPosition();
-
-                currentSong.setBookmarkPosition(playerPosition);
-
-                String bookmarkTime = Util.formatTotalDuration(playerPosition, true);
-
-                new Thread(new Runnable()
-                {
-                    @Override
-                    public void run()
-                    {
-                        final MusicService musicService = MusicServiceFactory.getMusicService(getContext());
-
-                        try
-                        {
-                            musicService.createBookmark(songId, playerPosition, getContext(), null);
-                        }
-                        catch (Exception e)
-                        {
-                            Timber.e(e);
-                        }
-                    }
-                }).start();
-
-                String msg = getResources().getString(R.string.download_bookmark_set_at_position, bookmarkTime);
-
-                Util.toast(getContext(), msg);
-
-                return true;
-            case R.id.menu_item_bookmark_delete:
-                if (currentSong == null)
-                {
-                    return true;
-                }
-
-                final String bookmarkSongId = currentSong.getId();
-                currentSong.setBookmarkPosition(0);
-
-                new Thread(new Runnable()
-                {
-                    @Override
-                    public void run()
-                    {
-                        final MusicService musicService = MusicServiceFactory.getMusicService(getContext());
-
-                        try
-                        {
-                            musicService.deleteBookmark(bookmarkSongId, getContext(), null);
-                        }
-                        catch (Exception e)
-                        {
-                            Timber.e(e);
-                        }
-                    }
-                }).start();
-
-                Util.toast(getContext(), R.string.download_bookmark_removed);
-
-                return true;
-            case R.id.menu_item_share:
-                MediaPlayerController mediaPlayerController = mediaPlayerControllerLazy.getValue();
-                List<MusicDirectory.Entry> entries = new ArrayList<>();
-
-                if (mediaPlayerController != null)
-                {
-                    List<DownloadFile> downloadServiceSongs = mediaPlayerController.getPlayList();
-
-                    if (downloadServiceSongs != null)
-                    {
-                        for (DownloadFile downloadFile : downloadServiceSongs)
-                        {
-                            if (downloadFile != null)
-                            {
-                                MusicDirectory.Entry playlistEntry = downloadFile.getSong();
-
-                                if (playlistEntry != null)
-                                {
-                                    entries.add(playlistEntry);
-                                }
-                            }
-                        }
-                    }
-                }
-
-                shareHandler.getValue().createShare(this, entries, null, cancellationToken);
-                return true;
-            default:
+        if (menuItemId == R.id.menu_show_artist) {
+            if (entry == null) {
                 return false;
+            }
+
+            if (Util.getShouldUseId3Tags(getContext())) {
+                bundle = new Bundle();
+                bundle.putString(Constants.INTENT_EXTRA_NAME_ID, entry.getArtistId());
+                bundle.putString(Constants.INTENT_EXTRA_NAME_NAME, entry.getArtist());
+                bundle.putString(Constants.INTENT_EXTRA_NAME_PARENT_ID, entry.getArtistId());
+                bundle.putBoolean(Constants.INTENT_EXTRA_NAME_ARTIST, true);
+                Navigation.findNavController(getView()).navigate(R.id.playerToSelectAlbum, bundle);
+            }
+
+            return true;
+        } else if (menuItemId == R.id.menu_show_album) {
+            if (entry == null) {
+                return false;
+            }
+
+            String albumId = Util.getShouldUseId3Tags(getContext()) ? entry.getAlbumId() : entry.getParent();
+            bundle = new Bundle();
+            bundle.putString(Constants.INTENT_EXTRA_NAME_ID, albumId);
+            bundle.putString(Constants.INTENT_EXTRA_NAME_NAME, entry.getAlbum());
+            bundle.putString(Constants.INTENT_EXTRA_NAME_PARENT_ID, entry.getParent());
+            bundle.putBoolean(Constants.INTENT_EXTRA_NAME_IS_ALBUM, true);
+            Navigation.findNavController(getView()).navigate(R.id.playerToSelectAlbum, bundle);
+            return true;
+        } else if (menuItemId == R.id.menu_lyrics) {
+            if (entry == null) {
+                return false;
+            }
+
+            bundle = new Bundle();
+            bundle.putString(Constants.INTENT_EXTRA_NAME_ARTIST, entry.getArtist());
+            bundle.putString(Constants.INTENT_EXTRA_NAME_TITLE, entry.getTitle());
+            Navigation.findNavController(getView()).navigate(R.id.playerToLyrics, bundle);
+            return true;
+        } else if (menuItemId == R.id.menu_remove) {
+            mediaPlayerControllerLazy.getValue().remove(song);
+            onDownloadListChanged();
+            return true;
+        } else if (menuItemId == R.id.menu_item_screen_on_off) {
+            if (mediaPlayerControllerLazy.getValue().getKeepScreenOn()) {
+                getActivity().getWindow().clearFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
+                mediaPlayerControllerLazy.getValue().setKeepScreenOn(false);
+            } else {
+                getActivity().getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
+                mediaPlayerControllerLazy.getValue().setKeepScreenOn(true);
+            }
+            return true;
+        } else if (menuItemId == R.id.menu_shuffle) {
+            mediaPlayerControllerLazy.getValue().shuffle();
+            Util.toast(getContext(), R.string.download_menu_shuffle_notification);
+            return true;
+        } else if (menuItemId == R.id.menu_item_equalizer) {
+            Navigation.findNavController(getView()).navigate(R.id.playerToEqualizer);
+            return true;
+        } else if (menuItemId == R.id.menu_item_visualizer) {
+            final boolean active = !visualizerView.isActive();
+            visualizerView.setActive(active);
+
+            if (!visualizerView.isActive()) {
+                visualizerViewLayout.setVisibility(View.GONE);
+            } else {
+                visualizerViewLayout.setVisibility(View.VISIBLE);
+            }
+
+            mediaPlayerControllerLazy.getValue().setShowVisualization(visualizerView.isActive());
+            Util.toast(getContext(), active ? R.string.download_visualizer_on : R.string.download_visualizer_off);
+            return true;
+        } else if (menuItemId == R.id.menu_item_jukebox) {
+            final boolean jukeboxEnabled = !mediaPlayerControllerLazy.getValue().isJukeboxEnabled();
+            mediaPlayerControllerLazy.getValue().setJukeboxEnabled(jukeboxEnabled);
+            Util.toast(getContext(), jukeboxEnabled ? R.string.download_jukebox_on : R.string.download_jukebox_off, false);
+            return true;
+        } else if (menuItemId == R.id.menu_item_toggle_list) {
+            toggleFullScreenAlbumArt();
+            return true;
+        } else if (menuItemId == R.id.menu_item_clear_playlist) {
+            mediaPlayerControllerLazy.getValue().setShufflePlayEnabled(false);
+            mediaPlayerControllerLazy.getValue().clear();
+            onDownloadListChanged();
+            return true;
+        } else if (menuItemId == R.id.menu_item_save_playlist) {
+            if (mediaPlayerControllerLazy.getValue().getPlaylistSize() > 0) {
+                showSavePlaylistDialog();
+            }
+            return true;
+        } else if (menuItemId == R.id.menu_item_star) {
+            if (currentSong == null) {
+                return true;
+            }
+
+            final boolean isStarred = currentSong.getStarred();
+            final String id = currentSong.getId();
+
+            if (isStarred) {
+                starMenuItem.setIcon(hollowStar);
+                currentSong.setStarred(false);
+            } else {
+                starMenuItem.setIcon(fullStar);
+                currentSong.setStarred(true);
+            }
+
+            new Thread(new Runnable() {
+                @Override
+                public void run() {
+                    final MusicService musicService = MusicServiceFactory.getMusicService(getContext());
+
+                    try {
+                        if (isStarred) {
+                            musicService.unstar(id, null, null, getContext());
+                        } else {
+                            musicService.star(id, null, null, getContext());
+                        }
+                    } catch (Exception e) {
+                        Timber.e(e);
+                    }
+                }
+            }).start();
+
+            return true;
+        } else if (menuItemId == R.id.menu_item_bookmark_set) {
+            if (currentSong == null) {
+                return true;
+            }
+
+            final String songId = currentSong.getId();
+            final int playerPosition = mediaPlayerControllerLazy.getValue().getPlayerPosition();
+
+            currentSong.setBookmarkPosition(playerPosition);
+
+            String bookmarkTime = Util.formatTotalDuration(playerPosition, true);
+
+            new Thread(new Runnable() {
+                @Override
+                public void run() {
+                    final MusicService musicService = MusicServiceFactory.getMusicService(getContext());
+
+                    try {
+                        musicService.createBookmark(songId, playerPosition, getContext());
+                    } catch (Exception e) {
+                        Timber.e(e);
+                    }
+                }
+            }).start();
+
+            String msg = getResources().getString(R.string.download_bookmark_set_at_position, bookmarkTime);
+
+            Util.toast(getContext(), msg);
+
+            return true;
+        } else if (menuItemId == R.id.menu_item_bookmark_delete) {
+            if (currentSong == null) {
+                return true;
+            }
+
+            final String bookmarkSongId = currentSong.getId();
+            currentSong.setBookmarkPosition(0);
+
+            new Thread(new Runnable() {
+                @Override
+                public void run() {
+                    final MusicService musicService = MusicServiceFactory.getMusicService(getContext());
+
+                    try {
+                        musicService.deleteBookmark(bookmarkSongId, getContext());
+                    } catch (Exception e) {
+                        Timber.e(e);
+                    }
+                }
+            }).start();
+
+            Util.toast(getContext(), R.string.download_bookmark_removed);
+
+            return true;
+        } else if (menuItemId == R.id.menu_item_share) {
+            MediaPlayerController mediaPlayerController = mediaPlayerControllerLazy.getValue();
+            List<MusicDirectory.Entry> entries = new ArrayList<>();
+
+            if (mediaPlayerController != null) {
+                List<DownloadFile> downloadServiceSongs = mediaPlayerController.getPlayList();
+
+                if (downloadServiceSongs != null) {
+                    for (DownloadFile downloadFile : downloadServiceSongs) {
+                        if (downloadFile != null) {
+                            MusicDirectory.Entry playlistEntry = downloadFile.getSong();
+
+                            if (playlistEntry != null) {
+                                entries.add(playlistEntry);
+                            }
+                        }
+                    }
+                }
+            }
+
+            shareHandler.getValue().createShare(this, entries, null, cancellationToken);
+            return true;
         }
+        return false;
     }
 
     private void update(CancellationToken cancel)
@@ -1178,7 +1134,7 @@ public class PlayerFragment extends Fragment implements GestureDetector.OnGestur
                     entries.add(downloadFile.getSong());
                 }
                 final MusicService musicService = MusicServiceFactory.getMusicService(getContext());
-                musicService.createPlaylist(null, playlistName, entries, getContext(), null);
+                musicService.createPlaylist(null, playlistName, entries, getContext());
                 return null;
             }
 

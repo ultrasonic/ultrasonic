@@ -39,7 +39,6 @@ import org.moire.ultrasonic.domain.UserInfo;
 import org.moire.ultrasonic.util.CancellableTask;
 import org.moire.ultrasonic.util.Constants;
 import org.moire.ultrasonic.util.LRUCache;
-import org.moire.ultrasonic.util.ProgressListener;
 import org.moire.ultrasonic.util.TimeLimitedCache;
 import org.moire.ultrasonic.util.Util;
 
@@ -59,7 +58,7 @@ import static org.koin.java.KoinJavaComponent.inject;
  */
 public class CachedMusicService implements MusicService
 {
-	private Lazy<ActiveServerProvider> activeServerProvider = inject(ActiveServerProvider.class);
+	private final Lazy<ActiveServerProvider> activeServerProvider = inject(ActiveServerProvider.class);
 
 	private static final int MUSIC_DIR_CACHE_SIZE = 100;
 
@@ -81,36 +80,36 @@ public class CachedMusicService implements MusicService
 	public CachedMusicService(MusicService musicService)
 	{
 		this.musicService = musicService;
-		cachedMusicDirectories = new LRUCache<String, TimeLimitedCache<MusicDirectory>>(MUSIC_DIR_CACHE_SIZE);
-		cachedArtist = new LRUCache<String, TimeLimitedCache<MusicDirectory>>(MUSIC_DIR_CACHE_SIZE);
-		cachedAlbum = new LRUCache<String, TimeLimitedCache<MusicDirectory>>(MUSIC_DIR_CACHE_SIZE);
-		cachedUserInfo = new LRUCache<String, TimeLimitedCache<UserInfo>>(MUSIC_DIR_CACHE_SIZE);
+		cachedMusicDirectories = new LRUCache<>(MUSIC_DIR_CACHE_SIZE);
+		cachedArtist = new LRUCache<>(MUSIC_DIR_CACHE_SIZE);
+		cachedAlbum = new LRUCache<>(MUSIC_DIR_CACHE_SIZE);
+		cachedUserInfo = new LRUCache<>(MUSIC_DIR_CACHE_SIZE);
 	}
 
 	@Override
-	public void ping(Context context, ProgressListener progressListener) throws Exception
+	public void ping(Context context) throws Exception
 	{
-		checkSettingsChanged(context);
-		musicService.ping(context, progressListener);
+		checkSettingsChanged();
+		musicService.ping(context);
 	}
 
 	@Override
-	public boolean isLicenseValid(Context context, ProgressListener progressListener) throws Exception
+	public boolean isLicenseValid(Context context) throws Exception
 	{
-		checkSettingsChanged(context);
+		checkSettingsChanged();
 		Boolean result = cachedLicenseValid.get();
 		if (result == null)
 		{
-			result = musicService.isLicenseValid(context, progressListener);
+			result = musicService.isLicenseValid(context);
 			cachedLicenseValid.set(result, result ? 30L * 60L : 2L * 60L, TimeUnit.SECONDS);
 		}
 		return result;
 	}
 
 	@Override
-	public List<MusicFolder> getMusicFolders(boolean refresh, Context context, ProgressListener progressListener) throws Exception
+	public List<MusicFolder> getMusicFolders(boolean refresh, Context context) throws Exception
 	{
-		checkSettingsChanged(context);
+		checkSettingsChanged();
 		if (refresh)
 		{
 			cachedMusicFolders.clear();
@@ -118,16 +117,16 @@ public class CachedMusicService implements MusicService
 		List<MusicFolder> result = cachedMusicFolders.get();
 		if (result == null)
 		{
-			result = musicService.getMusicFolders(refresh, context, progressListener);
+			result = musicService.getMusicFolders(refresh, context);
 			cachedMusicFolders.set(result);
 		}
 		return result;
 	}
 
 	@Override
-	public Indexes getIndexes(String musicFolderId, boolean refresh, Context context, ProgressListener progressListener) throws Exception
+	public Indexes getIndexes(String musicFolderId, boolean refresh, Context context) throws Exception
 	{
-		checkSettingsChanged(context);
+		checkSettingsChanged();
 		if (refresh)
 		{
 			cachedIndexes.clear();
@@ -137,16 +136,16 @@ public class CachedMusicService implements MusicService
 		Indexes result = cachedIndexes.get();
 		if (result == null)
 		{
-			result = musicService.getIndexes(musicFolderId, refresh, context, progressListener);
+			result = musicService.getIndexes(musicFolderId, refresh, context);
 			cachedIndexes.set(result);
 		}
 		return result;
 	}
 
 	@Override
-	public Indexes getArtists(boolean refresh, Context context, ProgressListener progressListener) throws Exception
+	public Indexes getArtists(boolean refresh, Context context) throws Exception
 	{
-		checkSettingsChanged(context);
+		checkSettingsChanged();
 		if (refresh)
 		{
 			cachedArtists.clear();
@@ -154,24 +153,24 @@ public class CachedMusicService implements MusicService
 		Indexes result = cachedArtists.get();
 		if (result == null)
 		{
-			result = musicService.getArtists(refresh, context, progressListener);
+			result = musicService.getArtists(refresh, context);
 			cachedArtists.set(result);
 		}
 		return result;
 	}
 
 	@Override
-	public MusicDirectory getMusicDirectory(String id, String name, boolean refresh, Context context, ProgressListener progressListener) throws Exception
+	public MusicDirectory getMusicDirectory(String id, String name, boolean refresh, Context context) throws Exception
 	{
-		checkSettingsChanged(context);
+		checkSettingsChanged();
 		TimeLimitedCache<MusicDirectory> cache = refresh ? null : cachedMusicDirectories.get(id);
 
 		MusicDirectory dir = cache == null ? null : cache.get();
 
 		if (dir == null)
 		{
-			dir = musicService.getMusicDirectory(id, name, refresh, context, progressListener);
-			cache = new TimeLimitedCache<MusicDirectory>(Util.getDirectoryCacheTime(context), TimeUnit.SECONDS);
+			dir = musicService.getMusicDirectory(id, name, refresh, context);
+			cache = new TimeLimitedCache<>(Util.getDirectoryCacheTime(context), TimeUnit.SECONDS);
 			cache.set(dir);
 			cachedMusicDirectories.put(id, cache);
 		}
@@ -179,15 +178,15 @@ public class CachedMusicService implements MusicService
 	}
 
 	@Override
-	public MusicDirectory getArtist(String id, String name, boolean refresh, Context context, ProgressListener progressListener) throws Exception
+	public MusicDirectory getArtist(String id, String name, boolean refresh, Context context) throws Exception
 	{
-		checkSettingsChanged(context);
+		checkSettingsChanged();
 		TimeLimitedCache<MusicDirectory> cache = refresh ? null : cachedArtist.get(id);
 		MusicDirectory dir = cache == null ? null : cache.get();
 		if (dir == null)
 		{
-			dir = musicService.getArtist(id, name, refresh, context, progressListener);
-			cache = new TimeLimitedCache<MusicDirectory>(Util.getDirectoryCacheTime(context), TimeUnit.SECONDS);
+			dir = musicService.getArtist(id, name, refresh, context);
+			cache = new TimeLimitedCache<>(Util.getDirectoryCacheTime(context), TimeUnit.SECONDS);
 			cache.set(dir);
 			cachedArtist.put(id, cache);
 		}
@@ -195,15 +194,15 @@ public class CachedMusicService implements MusicService
 	}
 
 	@Override
-	public MusicDirectory getAlbum(String id, String name, boolean refresh, Context context, ProgressListener progressListener) throws Exception
+	public MusicDirectory getAlbum(String id, String name, boolean refresh, Context context) throws Exception
 	{
-		checkSettingsChanged(context);
+		checkSettingsChanged();
 		TimeLimitedCache<MusicDirectory> cache = refresh ? null : cachedAlbum.get(id);
 		MusicDirectory dir = cache == null ? null : cache.get();
 		if (dir == null)
 		{
-			dir = musicService.getAlbum(id, name, refresh, context, progressListener);
-			cache = new TimeLimitedCache<MusicDirectory>(Util.getDirectoryCacheTime(context), TimeUnit.SECONDS);
+			dir = musicService.getAlbum(id, name, refresh, context);
+			cache = new TimeLimitedCache<>(Util.getDirectoryCacheTime(context), TimeUnit.SECONDS);
 			cache.set(dir);
 			cachedAlbum.put(id, cache);
 		}
@@ -211,113 +210,113 @@ public class CachedMusicService implements MusicService
 	}
 
 	@Override
-	public SearchResult search(SearchCriteria criteria, Context context, ProgressListener progressListener) throws Exception
+	public SearchResult search(SearchCriteria criteria, Context context) throws Exception
 	{
-		return musicService.search(criteria, context, progressListener);
+		return musicService.search(criteria, context);
 	}
 
 	@Override
-	public MusicDirectory getPlaylist(String id, String name, Context context, ProgressListener progressListener) throws Exception
+	public MusicDirectory getPlaylist(String id, String name, Context context) throws Exception
 	{
-		return musicService.getPlaylist(id, name, context, progressListener);
+		return musicService.getPlaylist(id, name, context);
 	}
 
 	@Override
-	public List<PodcastsChannel> getPodcastsChannels(boolean refresh, Context context, ProgressListener progressListener) throws Exception {
-		checkSettingsChanged(context);
+	public List<PodcastsChannel> getPodcastsChannels(boolean refresh, Context context) throws Exception {
+		checkSettingsChanged();
 		List<PodcastsChannel> result = refresh ? null : cachedPodcastsChannels.get();
 		if (result == null)
 		{
-			result = musicService.getPodcastsChannels(refresh, context, progressListener);
+			result = musicService.getPodcastsChannels(refresh, context);
 			cachedPodcastsChannels.set(result);
 		}
 		return result;
 	}
 
 	@Override
-	public MusicDirectory getPodcastEpisodes(String podcastChannelId, Context context, ProgressListener progressListener) throws Exception {
-		return musicService.getPodcastEpisodes(podcastChannelId,context,progressListener);
+	public MusicDirectory getPodcastEpisodes(String podcastChannelId, Context context) throws Exception {
+		return musicService.getPodcastEpisodes(podcastChannelId,context);
 	}
 
 
 	@Override
-	public List<Playlist> getPlaylists(boolean refresh, Context context, ProgressListener progressListener) throws Exception
+	public List<Playlist> getPlaylists(boolean refresh, Context context) throws Exception
 	{
-		checkSettingsChanged(context);
+		checkSettingsChanged();
 		List<Playlist> result = refresh ? null : cachedPlaylists.get();
 		if (result == null)
 		{
-			result = musicService.getPlaylists(refresh, context, progressListener);
+			result = musicService.getPlaylists(refresh, context);
 			cachedPlaylists.set(result);
 		}
 		return result;
 	}
 
 	@Override
-	public void createPlaylist(String id, String name, List<MusicDirectory.Entry> entries, Context context, ProgressListener progressListener) throws Exception
+	public void createPlaylist(String id, String name, List<MusicDirectory.Entry> entries, Context context) throws Exception
 	{
 		cachedPlaylists.clear();
-		musicService.createPlaylist(id, name, entries, context, progressListener);
+		musicService.createPlaylist(id, name, entries, context);
 	}
 
 	@Override
-	public void deletePlaylist(String id, Context context, ProgressListener progressListener) throws Exception
+	public void deletePlaylist(String id, Context context) throws Exception
 	{
-		musicService.deletePlaylist(id, context, progressListener);
+		musicService.deletePlaylist(id, context);
 	}
 
 	@Override
-	public void updatePlaylist(String id, String name, String comment, boolean pub, Context context, ProgressListener progressListener) throws Exception
+	public void updatePlaylist(String id, String name, String comment, boolean pub, Context context) throws Exception
 	{
-		musicService.updatePlaylist(id, name, comment, pub, context, progressListener);
+		musicService.updatePlaylist(id, name, comment, pub, context);
 	}
 
 	@Override
-	public Lyrics getLyrics(String artist, String title, Context context, ProgressListener progressListener) throws Exception
+	public Lyrics getLyrics(String artist, String title, Context context) throws Exception
 	{
-		return musicService.getLyrics(artist, title, context, progressListener);
+		return musicService.getLyrics(artist, title, context);
 	}
 
 	@Override
-	public void scrobble(String id, boolean submission, Context context, ProgressListener progressListener) throws Exception
+	public void scrobble(String id, boolean submission, Context context) throws Exception
 	{
-		musicService.scrobble(id, submission, context, progressListener);
+		musicService.scrobble(id, submission, context);
 	}
 
 	@Override
-	public MusicDirectory getAlbumList(String type, int size, int offset, Context context, ProgressListener progressListener) throws Exception
+	public MusicDirectory getAlbumList(String type, int size, int offset, Context context) throws Exception
 	{
-		return musicService.getAlbumList(type, size, offset, context, progressListener);
+		return musicService.getAlbumList(type, size, offset, context);
 	}
 
 	@Override
-	public MusicDirectory getAlbumList2(String type, int size, int offset, Context context, ProgressListener progressListener) throws Exception
+	public MusicDirectory getAlbumList2(String type, int size, int offset, Context context) throws Exception
 	{
-		return musicService.getAlbumList2(type, size, offset, context, progressListener);
+		return musicService.getAlbumList2(type, size, offset, context);
 	}
 
 	@Override
-	public MusicDirectory getRandomSongs(int size, Context context, ProgressListener progressListener) throws Exception
+	public MusicDirectory getRandomSongs(int size, Context context) throws Exception
 	{
-		return musicService.getRandomSongs(size, context, progressListener);
+		return musicService.getRandomSongs(size, context);
 	}
 
 	@Override
-	public SearchResult getStarred(Context context, ProgressListener progressListener) throws Exception
+	public SearchResult getStarred(Context context) throws Exception
 	{
-		return musicService.getStarred(context, progressListener);
+		return musicService.getStarred(context);
 	}
 
 	@Override
-	public SearchResult getStarred2(Context context, ProgressListener progressListener) throws Exception
+	public SearchResult getStarred2(Context context) throws Exception
 	{
-		return musicService.getStarred2(context, progressListener);
+		return musicService.getStarred2(context);
 	}
 
 	@Override
-	public Bitmap getCoverArt(Context context, MusicDirectory.Entry entry, int size, boolean saveToFile, boolean highQuality, ProgressListener progressListener) throws Exception
+	public Bitmap getCoverArt(Context context, MusicDirectory.Entry entry, int size, boolean saveToFile, boolean highQuality) throws Exception
 	{
-		return musicService.getCoverArt(context, entry, size, saveToFile, highQuality, progressListener);
+		return musicService.getCoverArt(context, entry, size, saveToFile, highQuality);
 	}
 
 	@Override
@@ -333,42 +332,42 @@ public class CachedMusicService implements MusicService
 	}
 
 	@Override
-	public JukeboxStatus updateJukeboxPlaylist(List<String> ids, Context context, ProgressListener progressListener) throws Exception
+	public JukeboxStatus updateJukeboxPlaylist(List<String> ids, Context context) throws Exception
 	{
-		return musicService.updateJukeboxPlaylist(ids, context, progressListener);
+		return musicService.updateJukeboxPlaylist(ids, context);
 	}
 
 	@Override
-	public JukeboxStatus skipJukebox(int index, int offsetSeconds, Context context, ProgressListener progressListener) throws Exception
+	public JukeboxStatus skipJukebox(int index, int offsetSeconds, Context context) throws Exception
 	{
-		return musicService.skipJukebox(index, offsetSeconds, context, progressListener);
+		return musicService.skipJukebox(index, offsetSeconds, context);
 	}
 
 	@Override
-	public JukeboxStatus stopJukebox(Context context, ProgressListener progressListener) throws Exception
+	public JukeboxStatus stopJukebox(Context context) throws Exception
 	{
-		return musicService.stopJukebox(context, progressListener);
+		return musicService.stopJukebox(context);
 	}
 
 	@Override
-	public JukeboxStatus startJukebox(Context context, ProgressListener progressListener) throws Exception
+	public JukeboxStatus startJukebox(Context context) throws Exception
 	{
-		return musicService.startJukebox(context, progressListener);
+		return musicService.startJukebox(context);
 	}
 
 	@Override
-	public JukeboxStatus getJukeboxStatus(Context context, ProgressListener progressListener) throws Exception
+	public JukeboxStatus getJukeboxStatus(Context context) throws Exception
 	{
-		return musicService.getJukeboxStatus(context, progressListener);
+		return musicService.getJukeboxStatus(context);
 	}
 
 	@Override
-	public JukeboxStatus setJukeboxGain(float gain, Context context, ProgressListener progressListener) throws Exception
+	public JukeboxStatus setJukeboxGain(float gain, Context context) throws Exception
 	{
-		return musicService.setJukeboxGain(gain, context, progressListener);
+		return musicService.setJukeboxGain(gain, context);
 	}
 
-	private void checkSettingsChanged(Context context)
+	private void checkSettingsChanged()
 	{
 		String newUrl = activeServerProvider.getValue().getRestUrl(null);
 		if (!Util.equals(newUrl, restUrl))
@@ -387,27 +386,27 @@ public class CachedMusicService implements MusicService
 	}
 
 	@Override
-	public void star(String id, String albumId, String artistId, Context context, ProgressListener progressListener) throws Exception
+	public void star(String id, String albumId, String artistId, Context context) throws Exception
 	{
-		musicService.star(id, albumId, artistId, context, progressListener);
+		musicService.star(id, albumId, artistId, context);
 	}
 
 	@Override
-	public void unstar(String id, String albumId, String artistId, Context context, ProgressListener progressListener) throws Exception
+	public void unstar(String id, String albumId, String artistId, Context context) throws Exception
 	{
-		musicService.unstar(id, albumId, artistId, context, progressListener);
+		musicService.unstar(id, albumId, artistId, context);
 	}
 
 	@Override
-	public void setRating(String id, int rating, Context context, ProgressListener progressListener) throws Exception
+	public void setRating(String id, int rating, Context context) throws Exception
 	{
-		musicService.setRating(id, rating, context, progressListener);
+		musicService.setRating(id, rating, context);
 	}
 
 	@Override
-	public List<Genre> getGenres(boolean refresh, Context context, ProgressListener progressListener) throws Exception
+	public List<Genre> getGenres(boolean refresh, Context context) throws Exception
 	{
-		checkSettingsChanged(context);
+		checkSettingsChanged();
 		if (refresh)
 		{
 			cachedGenres.clear();
@@ -416,7 +415,7 @@ public class CachedMusicService implements MusicService
 
 		if (result == null)
 		{
-			result = musicService.getGenres(refresh, context, progressListener);
+			result = musicService.getGenres(refresh, context);
 			cachedGenres.set(result);
 		}
 
@@ -433,59 +432,59 @@ public class CachedMusicService implements MusicService
 	}
 
 	@Override
-	public MusicDirectory getSongsByGenre(String genre, int count, int offset, Context context, ProgressListener progressListener) throws Exception
+	public MusicDirectory getSongsByGenre(String genre, int count, int offset, Context context) throws Exception
 	{
-		return musicService.getSongsByGenre(genre, count, offset, context, progressListener);
+		return musicService.getSongsByGenre(genre, count, offset, context);
 	}
 
 	@Override
-	public List<Share> getShares(boolean refresh, Context context, ProgressListener progressListener) throws Exception
+	public List<Share> getShares(boolean refresh, Context context) throws Exception
 	{
-		return musicService.getShares(refresh, context, progressListener);
+		return musicService.getShares(refresh, context);
 	}
 
 	@Override
-	public List<ChatMessage> getChatMessages(Long since, Context context, ProgressListener progressListener) throws Exception
+	public List<ChatMessage> getChatMessages(Long since, Context context) throws Exception
 	{
-		return musicService.getChatMessages(since, context, progressListener);
+		return musicService.getChatMessages(since, context);
 	}
 
 	@Override
-	public void addChatMessage(String message, Context context, ProgressListener progressListener) throws Exception
+	public void addChatMessage(String message, Context context) throws Exception
 	{
-		musicService.addChatMessage(message, context, progressListener);
+		musicService.addChatMessage(message, context);
 	}
 
 	@Override
-	public List<Bookmark> getBookmarks(Context context, ProgressListener progressListener) throws Exception
+	public List<Bookmark> getBookmarks(Context context) throws Exception
 	{
-		return musicService.getBookmarks(context, progressListener);
+		return musicService.getBookmarks(context);
 	}
 
 	@Override
-	public void deleteBookmark(String id, Context context, ProgressListener progressListener) throws Exception
+	public void deleteBookmark(String id, Context context) throws Exception
 	{
-		musicService.deleteBookmark(id, context, progressListener);
+		musicService.deleteBookmark(id, context);
 	}
 
 	@Override
-	public void createBookmark(String id, int position, Context context, ProgressListener progressListener) throws Exception
+	public void createBookmark(String id, int position, Context context) throws Exception
 	{
-		musicService.createBookmark(id, position, context, progressListener);
+		musicService.createBookmark(id, position, context);
 	}
 
 	@Override
-	public MusicDirectory getVideos(boolean refresh, Context context, ProgressListener progressListener) throws Exception
+	public MusicDirectory getVideos(boolean refresh, Context context) throws Exception
 	{
-		checkSettingsChanged(context);
+		checkSettingsChanged();
 		TimeLimitedCache<MusicDirectory> cache = refresh ? null : cachedMusicDirectories.get(Constants.INTENT_EXTRA_NAME_VIDEOS);
 
 		MusicDirectory dir = cache == null ? null : cache.get();
 
 		if (dir == null)
 		{
-			dir = musicService.getVideos(refresh, context, progressListener);
-			cache = new TimeLimitedCache<MusicDirectory>(Util.getDirectoryCacheTime(context), TimeUnit.SECONDS);
+			dir = musicService.getVideos(refresh, context);
+			cache = new TimeLimitedCache<>(Util.getDirectoryCacheTime(context), TimeUnit.SECONDS);
 			cache.set(dir);
 			cachedMusicDirectories.put(Constants.INTENT_EXTRA_NAME_VIDEOS, cache);
 		}
@@ -494,9 +493,9 @@ public class CachedMusicService implements MusicService
 	}
 
 	@Override
-	public UserInfo getUser(String username, Context context, ProgressListener progressListener) throws Exception
+	public UserInfo getUser(String username, Context context) throws Exception
 	{
-		checkSettingsChanged(context);
+		checkSettingsChanged();
 
 		TimeLimitedCache<UserInfo> cache = cachedUserInfo.get(username);
 
@@ -504,8 +503,8 @@ public class CachedMusicService implements MusicService
 
 		if (userInfo == null)
 		{
-			userInfo = musicService.getUser(username, context, progressListener);
-			cache = new TimeLimitedCache<UserInfo>(Util.getDirectoryCacheTime(context), TimeUnit.SECONDS);
+			userInfo = musicService.getUser(username, context);
+			cache = new TimeLimitedCache<>(Util.getDirectoryCacheTime(context), TimeUnit.SECONDS);
 			cache.set(userInfo);
 			cachedUserInfo.put(username, cache);
 		}
@@ -514,27 +513,26 @@ public class CachedMusicService implements MusicService
 	}
 
 	@Override
-	public List<Share> createShare(List<String> ids, String description, Long expires, Context context, ProgressListener progressListener) throws Exception
+	public List<Share> createShare(List<String> ids, String description, Long expires, Context context) throws Exception
 	{
-		return musicService.createShare(ids, description, expires, context, progressListener);
+		return musicService.createShare(ids, description, expires, context);
 	}
 
 	@Override
-	public void deleteShare(String id, Context context, ProgressListener progressListener) throws Exception
+	public void deleteShare(String id, Context context) throws Exception
 	{
-		musicService.deleteShare(id, context, progressListener);
+		musicService.deleteShare(id, context);
 	}
 
 	@Override
-	public void updateShare(String id, String description, Long expires, Context context, ProgressListener progressListener) throws Exception
+	public void updateShare(String id, String description, Long expires, Context context) throws Exception
 	{
-		musicService.updateShare(id, description, expires, context, progressListener);
+		musicService.updateShare(id, description, expires, context);
 	}
 
 	@Override
-	public Bitmap getAvatar(Context context, String username, int size, boolean saveToFile, boolean highQuality, ProgressListener progressListener) throws Exception
+	public Bitmap getAvatar(Context context, String username, int size, boolean saveToFile, boolean highQuality) throws Exception
 	{
-		return musicService.getAvatar(context, username, size, saveToFile, highQuality, progressListener);
+		return musicService.getAvatar(context, username, size, saveToFile, highQuality);
 	}
-
 }

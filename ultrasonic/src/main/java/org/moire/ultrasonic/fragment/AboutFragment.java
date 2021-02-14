@@ -19,8 +19,6 @@ import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 import org.moire.ultrasonic.R;
 import org.moire.ultrasonic.util.Util;
 
-import timber.log.Timber;
-
 public class AboutFragment extends Fragment {
 
     private WebView webView;

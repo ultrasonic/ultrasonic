@@ -1,7 +1,8 @@
 package org.moire.ultrasonic.util
 
 class ThemeChangedEventDistributor {
-    var eventListenerList: MutableList<ThemeChangedEventListener> = listOf<ThemeChangedEventListener>().toMutableList()
+    var eventListenerList: MutableList<ThemeChangedEventListener> =
+        listOf<ThemeChangedEventListener>().toMutableList()
 
     fun subscribe(listener: ThemeChangedEventListener) {
         eventListenerList.add(listener)
@@ -12,6 +13,6 @@ class ThemeChangedEventDistributor {
     }
 
     fun RaiseThemeChangedEvent() {
-        eventListenerList.forEach{ listener -> listener.onThemeChanged() }
+        eventListenerList.forEach { listener -> listener.onThemeChanged() }
     }
 }

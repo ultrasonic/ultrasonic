@@ -21,6 +21,7 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import org.moire.ultrasonic.R;
 import org.moire.ultrasonic.data.ActiveServerProvider;
@@ -29,7 +30,7 @@ import org.moire.ultrasonic.service.MusicService;
 import org.moire.ultrasonic.service.MusicServiceFactory;
 import org.moire.ultrasonic.util.BackgroundTask;
 import org.moire.ultrasonic.util.CancellationToken;
-import org.moire.ultrasonic.util.TabActivityBackgroundTask;
+import org.moire.ultrasonic.util.FragmentBackgroundTask;
 import org.moire.ultrasonic.util.Util;
 import org.moire.ultrasonic.view.ChatAdapter;
 
@@ -52,6 +53,7 @@ public class ChatFragment extends Fragment {
     private volatile static Long lastChatMessageTime = (long) 0;
     private static final ArrayList<ChatMessage> messageList = new ArrayList<ChatMessage>();
     private CancellationToken cancellationToken;
+    private SwipeRefreshLayout swipeRefresh;
 
     private final Lazy<ActiveServerProvider> activeServerProvider = inject(ActiveServerProvider.class);
 
@@ -70,6 +72,9 @@ public class ChatFragment extends Fragment {
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
+        swipeRefresh = view.findViewById(R.id.chat_refresh);
+        swipeRefresh.setEnabled(false);
+
         cancellationToken = new CancellationToken();
         messageEditText = view.findViewById(R.id.chat_edittext);
         sendButton = view.findViewById(R.id.chat_send);
@@ -238,13 +243,13 @@ public class ChatFragment extends Fragment {
             {
                 messageEditText.setText("");
 
-                BackgroundTask<Void> task = new TabActivityBackgroundTask<Void>(getActivity(), false, null, cancellationToken)
+                BackgroundTask<Void> task = new FragmentBackgroundTask<Void>(getActivity(), false, swipeRefresh, cancellationToken)
                 {
                     @Override
                     protected Void doInBackground() throws Throwable
                     {
                         MusicService musicService = MusicServiceFactory.getMusicService(getContext());
-                        musicService.addChatMessage(message, getContext(), this);
+                        musicService.addChatMessage(message, getContext());
                         return null;
                     }
 
@@ -262,14 +267,13 @@ public class ChatFragment extends Fragment {
 
     private synchronized void load()
     {
-        // TODO: Do we need a SwipeToRefresh progress indicator?
-        BackgroundTask<List<ChatMessage>> task = new TabActivityBackgroundTask<List<ChatMessage>>(getActivity(), false, null, cancellationToken)
+        BackgroundTask<List<ChatMessage>> task = new FragmentBackgroundTask<List<ChatMessage>>(getActivity(), false, swipeRefresh, cancellationToken)
         {
             @Override
             protected List<ChatMessage> doInBackground() throws Throwable
             {
                 MusicService musicService = MusicServiceFactory.getMusicService(getContext());
-                return musicService.getChatMessages(lastChatMessageTime, getContext(), this);
+                return musicService.getChatMessages(lastChatMessageTime, getContext());
             }
 
             @Override

@@ -1,10 +1,7 @@
 package org.moire.ultrasonic.di
 
 import org.koin.android.ext.koin.androidContext
-import org.koin.dsl.bind
 import org.koin.dsl.module
-import org.moire.ultrasonic.cache.AndroidDirectories
-import org.moire.ultrasonic.cache.Directories
 import org.moire.ultrasonic.data.ActiveServerProvider
 import org.moire.ultrasonic.subsonic.ImageLoaderProvider
 import org.moire.ultrasonic.util.NowPlayingEventDistributor

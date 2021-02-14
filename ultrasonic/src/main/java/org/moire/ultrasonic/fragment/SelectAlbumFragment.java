@@ -39,7 +39,7 @@ import org.moire.ultrasonic.util.CancellationToken;
 import org.moire.ultrasonic.util.Constants;
 import org.moire.ultrasonic.util.EntryByDiscAndTrackComparator;
 import org.moire.ultrasonic.util.Pair;
-import org.moire.ultrasonic.util.TabActivityBackgroundTask;
+import org.moire.ultrasonic.util.FragmentBackgroundTask;
 import org.moire.ultrasonic.util.Util;
 import org.moire.ultrasonic.view.AlbumView;
 import org.moire.ultrasonic.view.EntryAdapter;
@@ -152,7 +152,7 @@ public class SelectAlbumFragment extends Fragment {
         });
 
         // TODO: Long click on an item will first try to maximize / collapse the item, even when it fits inside the TextView.
-        // The context menu is only displayed on the second long click...
+        // The context menu is only displayed on the second long click... This may be improved somehow, e.g. checking first if the texts fit
         albumListView.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener(){
             @Override
             public boolean onItemLongClick(AdapterView<?> parent, View view, int position, long id) {
@@ -258,7 +258,11 @@ public class SelectAlbumFragment extends Fragment {
         registerForContextMenu(albumListView);
         setHasOptionsMenu(true);
         enableButtons();
+        updateDisplay(false);
+    }
 
+    private void updateDisplay(boolean refresh)
+    {
         String id = getArguments().getString(Constants.INTENT_EXTRA_NAME_ID);
         boolean isAlbum = getArguments().getBoolean(Constants.INTENT_EXTRA_NAME_IS_ALBUM, false);
         String name = getArguments().getString(Constants.INTENT_EXTRA_NAME_NAME);
@@ -302,7 +306,7 @@ public class SelectAlbumFragment extends Fragment {
         }
         else if (getVideos != 0)
         {
-            getVideos();
+            getVideos(refresh);
         }
         else if (getRandomTracks != 0)
         {
@@ -314,16 +318,16 @@ public class SelectAlbumFragment extends Fragment {
             {
                 if (isAlbum)
                 {
-                    getAlbum(id, name, parentId);
+                    getAlbum(refresh, id, name, parentId);
                 }
                 else
                 {
-                    getArtist(id, name);
+                    getArtist(refresh, id, name);
                 }
             }
             else
             {
-                getMusicDirectory(id, name, parentId);
+                getMusicDirectory(refresh, id, name, parentId);
             }
         }
     }
@@ -377,36 +381,28 @@ public class SelectAlbumFragment extends Fragment {
 
         String entryId = entry.getId();
 
-        switch (menuItem.getItemId())
-        {
-            case R.id.album_menu_play_now:
-                downloadHandler.getValue().downloadRecursively(this, entryId, false, false, true, false, false, false, false, false);
-                break;
-            case R.id.album_menu_play_next:
-                downloadHandler.getValue().downloadRecursively(this, entryId, false, false, false, false, false, true, false, false);
-                break;
-            case R.id.album_menu_play_last:
-                downloadHandler.getValue().downloadRecursively(this, entryId, false, true, false, false, false, false, false, false);
-                break;
-            case R.id.album_menu_pin:
-                downloadHandler.getValue().downloadRecursively(this, entryId, true, true, false, false, false, false, false, false);
-                break;
-            case R.id.album_menu_unpin:
-                downloadHandler.getValue().downloadRecursively(this, entryId, false, false, false, false, false, false, true, false);
-                break;
-            case R.id.album_menu_download:
-                downloadHandler.getValue().downloadRecursively(this, entryId, false, false, false, false, true, false, false, false);
-                break;
-            case R.id.select_album_play_all:
-                playAll();
-                break;
-            case R.id.menu_item_share:
-                List<MusicDirectory.Entry> entries = new ArrayList<MusicDirectory.Entry>(1);
-                entries.add(entry);
-                shareHandler.getValue().createShare(this, entries, refreshAlbumListView, cancellationToken);
-                return true;
-            default:
-                return super.onContextItemSelected(menuItem);
+        int itemId = menuItem.getItemId();
+        if (itemId == R.id.album_menu_play_now) {
+            downloadHandler.getValue().downloadRecursively(this, entryId, false, false, true, false, false, false, false, false);
+        } else if (itemId == R.id.album_menu_play_next) {
+            downloadHandler.getValue().downloadRecursively(this, entryId, false, false, false, false, false, true, false, false);
+        } else if (itemId == R.id.album_menu_play_last) {
+            downloadHandler.getValue().downloadRecursively(this, entryId, false, true, false, false, false, false, false, false);
+        } else if (itemId == R.id.album_menu_pin) {
+            downloadHandler.getValue().downloadRecursively(this, entryId, true, true, false, false, false, false, false, false);
+        } else if (itemId == R.id.album_menu_unpin) {
+            downloadHandler.getValue().downloadRecursively(this, entryId, false, false, false, false, false, false, true, false);
+        } else if (itemId == R.id.album_menu_download) {
+            downloadHandler.getValue().downloadRecursively(this, entryId, false, false, false, false, true, false, false, false);
+        } else if (itemId == R.id.select_album_play_all) {
+            playAll();
+        } else if (itemId == R.id.menu_item_share) {
+            List<MusicDirectory.Entry> entries = new ArrayList<MusicDirectory.Entry>(1);
+            entries.add(entry);
+            shareHandler.getValue().createShare(this, entries, refreshAlbumListView, cancellationToken);
+            return true;
+        } else {
+            return super.onContextItemSelected(menuItem);
         }
         return true;
     }
@@ -439,14 +435,13 @@ public class SelectAlbumFragment extends Fragment {
     @Override
     public boolean onOptionsItemSelected(MenuItem item)
     {
-        switch (item.getItemId())
-        {
-            case R.id.select_album_play_all:
-                playAll();
-                return true;
-            case R.id.menu_item_share:
-                shareHandler.getValue().createShare(this, getSelectedSongs(albumListView), refreshAlbumListView, cancellationToken);
-                return true;
+        int itemId = item.getItemId();
+        if (itemId == R.id.select_album_play_all) {
+            playAll();
+            return true;
+        } else if (itemId == R.id.menu_item_share) {
+            shareHandler.getValue().createShare(this, getSelectedSongs(albumListView), refreshAlbumListView, cancellationToken);
+            return true;
         }
 
         return false;
@@ -528,25 +523,16 @@ public class SelectAlbumFragment extends Fragment {
 
     private void refresh()
     {
-        // TODO: create better restart
         getView().post(new Runnable() {
             public void run() {
-                Timber.d("Refresh called...");
-                getArguments().putBoolean(Constants.INTENT_EXTRA_NAME_REFRESH, true);
-                onViewCreated(getView(), null);
+                updateDisplay(true);
             }
         });
-
-        /*finish();
-        Intent intent = getArguments();
-        intent.putExtra(Constants.INTENT_EXTRA_NAME_REFRESH, true);
-        startActivityForResultWithoutTransition(this, intent);*/
     }
 
-    private void getMusicDirectory(final String id, final String name, final String parentId)
+    private void getMusicDirectory(final boolean refresh, final String id, final String name, final String parentId)
     {
         FragmentTitle.Companion.setTitle(this, name);
-        //setActionBarSubtitle(name);
 
         new LoadTask()
         {
@@ -557,8 +543,7 @@ public class SelectAlbumFragment extends Fragment {
 
                 if (allSongsId.equals(id))
                 {
-                    boolean refresh = getArguments().getBoolean(Constants.INTENT_EXTRA_NAME_REFRESH, false);
-                    MusicDirectory musicDirectory = service.getMusicDirectory(parentId, name, refresh, getContext(), this);
+                    MusicDirectory musicDirectory = service.getMusicDirectory(parentId, name, refresh, getContext());
 
                     List<MusicDirectory.Entry> songs = new LinkedList<MusicDirectory.Entry>();
                     getSongsRecursively(musicDirectory, songs);
@@ -573,8 +558,7 @@ public class SelectAlbumFragment extends Fragment {
                 }
                 else
                 {
-                    boolean refresh = getArguments().getBoolean(Constants.INTENT_EXTRA_NAME_REFRESH, false);
-                    MusicDirectory musicDirectory = service.getMusicDirectory(id, name, refresh, getContext(), this);
+                    MusicDirectory musicDirectory = service.getMusicDirectory(id, name, refresh, getContext());
 
                     if (Util.getShouldShowAllSongsByArtist(getContext()) && musicDirectory.findChild(allSongsId) == null && musicDirectory.getChildren(true, false).size() == musicDirectory.getChildren(true, true).size())
                     {
@@ -622,7 +606,7 @@ public class SelectAlbumFragment extends Fragment {
 
                     if (!allSongsId.equals(dir.getId()))
                     {
-                        root = musicService.getMusicDirectory(dir.getId(), dir.getTitle(), false, getContext(), this);
+                        root = musicService.getMusicDirectory(dir.getId(), dir.getTitle(), false, getContext());
 
                         getSongsRecursively(root, songs);
                     }
@@ -631,10 +615,9 @@ public class SelectAlbumFragment extends Fragment {
         }.execute();
     }
 
-    private void getArtist(final String id, final String name)
+    private void getArtist(final boolean refresh, final String id, final String name)
     {
         FragmentTitle.Companion.setTitle(this, name);
-        //setActionBarSubtitle(name);
 
         new LoadTask()
         {
@@ -643,8 +626,7 @@ public class SelectAlbumFragment extends Fragment {
             {
                 MusicDirectory root = new MusicDirectory();
 
-                boolean refresh = getArguments().getBoolean(Constants.INTENT_EXTRA_NAME_REFRESH, false);
-                MusicDirectory musicDirectory = service.getArtist(id, name, refresh, getContext(), this);
+                MusicDirectory musicDirectory = service.getArtist(id, name, refresh, getContext());
 
                 if (Util.getShouldShowAllSongsByArtist(getContext()) && musicDirectory.findChild(allSongsId) == null && musicDirectory.getChildren(true, false).size() == musicDirectory.getChildren(true, true).size())
                 {
@@ -675,10 +657,9 @@ public class SelectAlbumFragment extends Fragment {
         }.execute();
     }
 
-    private void getAlbum(final String id, final String name, final String parentId)
+    private void getAlbum(final boolean refresh, final String id, final String name, final String parentId)
     {
         FragmentTitle.Companion.setTitle(this, name);
-        //setActionBarSubtitle(name);
 
         new LoadTask()
         {
@@ -686,8 +667,6 @@ public class SelectAlbumFragment extends Fragment {
             protected MusicDirectory load(MusicService service) throws Exception
             {
                 MusicDirectory musicDirectory;
-
-                boolean refresh = getArguments().getBoolean(Constants.INTENT_EXTRA_NAME_REFRESH, false);
 
                 if (allSongsId.equals(id))
                 {
@@ -708,7 +687,7 @@ public class SelectAlbumFragment extends Fragment {
                 }
                 else
                 {
-                    musicDirectory = service.getAlbum(id, name, refresh, getContext(), this);
+                    musicDirectory = service.getAlbum(id, name, refresh, getContext());
                 }
 
                 return musicDirectory;
@@ -717,13 +696,13 @@ public class SelectAlbumFragment extends Fragment {
             private void getSongsForArtist(String id, Collection<MusicDirectory.Entry> songs) throws Exception
             {
                 MusicService musicService = MusicServiceFactory.getMusicService(getContext());
-                MusicDirectory artist = musicService.getArtist(id, "", false, getContext(), this);
+                MusicDirectory artist = musicService.getArtist(id, "", false, getContext());
 
                 for (MusicDirectory.Entry album : artist.getChildren())
                 {
                     if (!allSongsId.equals(album.getId()))
                     {
-                        MusicDirectory albumDirectory = musicService.getAlbum(album.getId(), "", false, getContext(), this);
+                        MusicDirectory albumDirectory = musicService.getAlbum(album.getId(), "", false, getContext());
 
                         for (MusicDirectory.Entry song : albumDirectory.getChildren())
                         {
@@ -741,14 +720,13 @@ public class SelectAlbumFragment extends Fragment {
     private void getSongsForGenre(final String genre, final int count, final int offset)
     {
         FragmentTitle.Companion.setTitle(this, genre);
-        //setActionBarSubtitle(genre);
 
         new LoadTask()
         {
             @Override
             protected MusicDirectory load(MusicService service) throws Exception
             {
-                return service.getSongsByGenre(genre, count, offset, getContext(), this);
+                return service.getSongsByGenre(genre, count, offset, getContext());
             }
 
             @Override
@@ -789,32 +767,29 @@ public class SelectAlbumFragment extends Fragment {
     private void getStarred()
     {
         FragmentTitle.Companion.setTitle(this, R.string.main_songs_starred);
-        //setActionBarSubtitle(R.string.main_songs_starred);
 
         new LoadTask()
         {
             @Override
             protected MusicDirectory load(MusicService service) throws Exception
             {
-                return Util.getShouldUseId3Tags(getContext()) ? Util.getSongsFromSearchResult(service.getStarred2(getContext(), this)) : Util.getSongsFromSearchResult(service.getStarred(getContext(), this));
+                return Util.getShouldUseId3Tags(getContext()) ? Util.getSongsFromSearchResult(service.getStarred2(getContext())) : Util.getSongsFromSearchResult(service.getStarred(getContext()));
             }
         }.execute();
     }
 
-    private void getVideos()
+    private void getVideos(final boolean refresh)
     {
         showHeader = false;
 
         FragmentTitle.Companion.setTitle(this, R.string.main_videos);
-        //setActionBarSubtitle(R.string.main_videos);
 
         new LoadTask()
         {
             @Override
             protected MusicDirectory load(MusicService service) throws Exception
             {
-                boolean refresh = getArguments().getBoolean(Constants.INTENT_EXTRA_NAME_REFRESH, false);
-                return service.getVideos(refresh, getContext(), this);
+                return service.getVideos(refresh, getContext());
             }
         }.execute();
     }
@@ -822,7 +797,6 @@ public class SelectAlbumFragment extends Fragment {
     private void getRandom(final int size)
     {
         FragmentTitle.Companion.setTitle(this, R.string.main_songs_random);
-        //setActionBarSubtitle(R.string.main_songs_random);
 
         new LoadTask()
         {
@@ -834,7 +808,7 @@ public class SelectAlbumFragment extends Fragment {
             @Override
             protected MusicDirectory load(MusicService service) throws Exception
             {
-                return service.getRandomSongs(size, getContext(), this);
+                return service.getRandomSongs(size, getContext());
             }
         }.execute();
     }
@@ -842,29 +816,27 @@ public class SelectAlbumFragment extends Fragment {
     private void getPlaylist(final String playlistId, final String playlistName)
     {
         FragmentTitle.Companion.setTitle(this, playlistName);
-        //setActionBarSubtitle(playlistName);
 
         new LoadTask()
         {
             @Override
             protected MusicDirectory load(MusicService service) throws Exception
             {
-                return service.getPlaylist(playlistId, playlistName, getContext(), this);
+                return service.getPlaylist(playlistId, playlistName, getContext());
             }
         }.execute();
     }
 
     private void getPodcastEpisodes(final String podcastChannelId)
     {
-        // TODO: Not sure what the title should be for a podcast episode. Maybe a constant string should be used.
-        //setActionBarSubtitle(playlistName);
+        FragmentTitle.Companion.setTitle(this, R.string.podcasts_label);
 
         new LoadTask()
         {
             @Override
             protected MusicDirectory load(MusicService service) throws Exception
             {
-                return service.getPodcastEpisodes(podcastChannelId, getContext(), this);
+                return service.getPodcastEpisodes(podcastChannelId, getContext());
             }
         }.execute();
     }
@@ -879,7 +851,7 @@ public class SelectAlbumFragment extends Fragment {
             @Override
             protected MusicDirectory load(MusicService service) throws Exception
             {
-                List<Share> shares = service.getShares(true, getContext(), this);
+                List<Share> shares = service.getShares(true, getContext());
 
                 MusicDirectory md = new MusicDirectory();
 
@@ -920,7 +892,7 @@ public class SelectAlbumFragment extends Fragment {
             @Override
             protected MusicDirectory load(MusicService service) throws Exception
             {
-                return Util.getShouldUseId3Tags(getContext()) ? service.getAlbumList2(albumListType, size, offset, getContext(), this) : service.getAlbumList(albumListType, size, offset, getContext(), this);
+                return Util.getShouldUseId3Tags(getContext()) ? service.getAlbumList2(albumListType, size, offset, getContext()) : service.getAlbumList(albumListType, size, offset, getContext());
             }
 
             @Override
@@ -1103,7 +1075,7 @@ public class SelectAlbumFragment extends Fragment {
         mediaPlayerControllerLazy.getValue().unpin(songs);
     }
 
-    private abstract class LoadTask extends TabActivityBackgroundTask<Pair<MusicDirectory, Boolean>>
+    private abstract class LoadTask extends FragmentBackgroundTask<Pair<MusicDirectory, Boolean>>
     {
 
         public LoadTask()
@@ -1122,7 +1094,7 @@ public class SelectAlbumFragment extends Fragment {
         {
             MusicService musicService = MusicServiceFactory.getMusicService(getContext());
             MusicDirectory dir = load(musicService);
-            boolean valid = musicService.isLicenseValid(getContext(), this);
+            boolean valid = musicService.isLicenseValid(getContext());
             return new Pair<MusicDirectory, Boolean>(dir, valid);
         }
 

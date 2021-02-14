@@ -24,6 +24,7 @@ import androidx.fragment.app.Fragment;
 import androidx.navigation.Navigation;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
+import org.jetbrains.annotations.NotNull;
 import org.moire.ultrasonic.R;
 import org.moire.ultrasonic.data.ActiveServerProvider;
 import org.moire.ultrasonic.domain.Artist;
@@ -42,7 +43,7 @@ import org.moire.ultrasonic.util.BackgroundTask;
 import org.moire.ultrasonic.util.CancellationToken;
 import org.moire.ultrasonic.util.Constants;
 import org.moire.ultrasonic.util.MergeAdapter;
-import org.moire.ultrasonic.util.TabActivityBackgroundTask;
+import org.moire.ultrasonic.util.FragmentBackgroundTask;
 import org.moire.ultrasonic.util.Util;
 import org.moire.ultrasonic.view.ArtistAdapter;
 import org.moire.ultrasonic.view.EntryAdapter;
@@ -128,7 +129,7 @@ public class SearchFragment extends Fragment {
 
         list = view.findViewById(R.id.search_list);
         searchRefresh = view.findViewById(R.id.search_entries_refresh);
-        searchRefresh.setEnabled(false); // TODO: Should this be enabled?
+        searchRefresh.setEnabled(false); // TODO: It should be enabled if it is a good feature to refresh search results
 
         list.setOnItemClickListener(new AdapterView.OnItemClickListener()
         {
@@ -230,6 +231,7 @@ public class SearchFragment extends Fragment {
                 Timber.d("onQueryTextSubmit: %s", query);
                 mergeAdapter = new MergeAdapter();
                 list.setAdapter(mergeAdapter);
+                searchView.clearFocus();
                 search(query, autoPlay);
                 return true;
             }
@@ -243,9 +245,11 @@ public class SearchFragment extends Fragment {
     }
 
     @Override
-    public void onCreateContextMenu(ContextMenu menu, View view, ContextMenu.ContextMenuInfo menuInfo)
+    public void onCreateContextMenu(@NotNull ContextMenu menu, @NotNull View view, ContextMenu.ContextMenuInfo menuInfo)
     {
         super.onCreateContextMenu(menu, view, menuInfo);
+        if (getActivity() == null) return;
+
         AdapterView.AdapterContextMenuInfo info = (AdapterView.AdapterContextMenuInfo) menuInfo;
         Object selectedItem = list.getItemAtPosition(info.position);
 
@@ -311,84 +315,65 @@ public class SearchFragment extends Fragment {
 
         List<MusicDirectory.Entry> songs = new ArrayList<>(1);
 
-        switch (menuItem.getItemId())
-        {
-            case R.id.album_menu_play_now:
-                downloadHandler.getValue().downloadRecursively(this, id, false, false, true, false, false, false, false, false);
-                break;
-            case R.id.album_menu_play_next:
-                downloadHandler.getValue().downloadRecursively(this, id, false, true, false, true, false, true, false, false);
-                break;
-            case R.id.album_menu_play_last:
-                downloadHandler.getValue().downloadRecursively(this, id, false, true, false, false, false, false, false, false);
-                break;
-            case R.id.album_menu_pin:
-                downloadHandler.getValue().downloadRecursively(this, id, true, true, false, false, false, false, false, false);
-                break;
-            case R.id.album_menu_unpin:
-                downloadHandler.getValue().downloadRecursively(this, id, false, false, false, false, false, false, true, false);
-                break;
-            case R.id.album_menu_download:
-                downloadHandler.getValue().downloadRecursively(this, id, false, false, false, false, true, false, false, false);
-                break;
-            case R.id.song_menu_play_now:
-                if (entry != null)
-                {
-                    songs = new ArrayList<>(1);
-                    songs.add(entry);
-                    downloadHandler.getValue().download(this, false, false, true, false, false, songs);
-                }
-                break;
-            case R.id.song_menu_play_next:
-                if (entry != null)
-                {
-                    songs = new ArrayList<>(1);
-                    songs.add(entry);
-                    downloadHandler.getValue().download(this, true, false, false, true, false, songs);
-                }
-                break;
-            case R.id.song_menu_play_last:
-                if (entry != null)
-                {
-                    songs = new ArrayList<>(1);
-                    songs.add(entry);
-                    downloadHandler.getValue().download(this, true, false, false, false, false, songs);
-                }
-                break;
-            case R.id.song_menu_pin:
-                if (entry != null)
-                {
-                    songs.add(entry);
-                    Util.toast(getContext(), getResources().getQuantityString(R.plurals.select_album_n_songs_pinned, songs.size(), songs.size()));
-                    downloadBackground(true, songs);
-                }
-                break;
-            case R.id.song_menu_download:
-                if (entry != null)
-                {
-                    songs.add(entry);
-                    Util.toast(getContext(), getResources().getQuantityString(R.plurals.select_album_n_songs_downloaded, songs.size(), songs.size()));
-                    downloadBackground(false, songs);
-                }
-                break;
-            case R.id.song_menu_unpin:
-                if (entry != null)
-                {
-                    songs.add(entry);
-                    Util.toast(getContext(), getResources().getQuantityString(R.plurals.select_album_n_songs_unpinned, songs.size(), songs.size()));
-                    mediaPlayerControllerLazy.getValue().unpin(songs);
-                }
-                break;
-            case R.id.menu_item_share:
-                if (entry != null)
-                {
-                    songs = new ArrayList<>(1);
-                    songs.add(entry);
-                    // TODO: Add SwipeRefresh spinner
-                    shareHandler.getValue().createShare(this, songs, null, cancellationToken);
-                }
-            default:
-                return super.onContextItemSelected(menuItem);
+        int itemId = menuItem.getItemId();
+        if (itemId == R.id.album_menu_play_now) {
+            downloadHandler.getValue().downloadRecursively(this, id, false, false, true, false, false, false, false, false);
+        } else if (itemId == R.id.album_menu_play_next) {
+            downloadHandler.getValue().downloadRecursively(this, id, false, true, false, true, false, true, false, false);
+        } else if (itemId == R.id.album_menu_play_last) {
+            downloadHandler.getValue().downloadRecursively(this, id, false, true, false, false, false, false, false, false);
+        } else if (itemId == R.id.album_menu_pin) {
+            downloadHandler.getValue().downloadRecursively(this, id, true, true, false, false, false, false, false, false);
+        } else if (itemId == R.id.album_menu_unpin) {
+            downloadHandler.getValue().downloadRecursively(this, id, false, false, false, false, false, false, true, false);
+        } else if (itemId == R.id.album_menu_download) {
+            downloadHandler.getValue().downloadRecursively(this, id, false, false, false, false, true, false, false, false);
+        } else if (itemId == R.id.song_menu_play_now) {
+            if (entry != null) {
+                songs = new ArrayList<>(1);
+                songs.add(entry);
+                downloadHandler.getValue().download(this, false, false, true, false, false, songs);
+            }
+        } else if (itemId == R.id.song_menu_play_next) {
+            if (entry != null) {
+                songs = new ArrayList<>(1);
+                songs.add(entry);
+                downloadHandler.getValue().download(this, true, false, false, true, false, songs);
+            }
+        } else if (itemId == R.id.song_menu_play_last) {
+            if (entry != null) {
+                songs = new ArrayList<>(1);
+                songs.add(entry);
+                downloadHandler.getValue().download(this, true, false, false, false, false, songs);
+            }
+        } else if (itemId == R.id.song_menu_pin) {
+            if (entry != null) {
+                songs.add(entry);
+                Util.toast(getContext(), getResources().getQuantityString(R.plurals.select_album_n_songs_pinned, songs.size(), songs.size()));
+                downloadBackground(true, songs);
+            }
+        } else if (itemId == R.id.song_menu_download) {
+            if (entry != null) {
+                songs.add(entry);
+                Util.toast(getContext(), getResources().getQuantityString(R.plurals.select_album_n_songs_downloaded, songs.size(), songs.size()));
+                downloadBackground(false, songs);
+            }
+        } else if (itemId == R.id.song_menu_unpin) {
+            if (entry != null) {
+                songs.add(entry);
+                Util.toast(getContext(), getResources().getQuantityString(R.plurals.select_album_n_songs_unpinned, songs.size(), songs.size()));
+                mediaPlayerControllerLazy.getValue().unpin(songs);
+            }
+        } else if (itemId == R.id.menu_item_share) {
+            if (entry != null) {
+                songs = new ArrayList<>(1);
+                songs.add(entry);
+                shareHandler.getValue().createShare(this, songs, searchRefresh, cancellationToken);
+            }
+
+            return super.onContextItemSelected(menuItem);
+        } else {
+            return super.onContextItemSelected(menuItem);
         }
 
         return true;
@@ -421,14 +406,14 @@ public class SearchFragment extends Fragment {
         final int maxAlbums = Util.getMaxAlbums(getContext());
         final int maxSongs = Util.getMaxSongs(getContext());
 
-        BackgroundTask<SearchResult> task = new TabActivityBackgroundTask<SearchResult>(getActivity(), true, searchRefresh, cancellationToken)
+        BackgroundTask<SearchResult> task = new FragmentBackgroundTask<SearchResult>(getActivity(), true, searchRefresh, cancellationToken)
         {
             @Override
             protected SearchResult doInBackground() throws Throwable
             {
                 SearchCriteria criteria = new SearchCriteria(query, maxArtists, maxAlbums, maxSongs);
                 MusicService service = MusicServiceFactory.getMusicService(getContext());
-                return service.search(criteria, getContext(), this);
+                return service.search(criteria, getContext());
             }
 
             @Override
@@ -452,16 +437,13 @@ public class SearchFragment extends Fragment {
     {
         mergeAdapter = new MergeAdapter();
 
-        // TODO: Remove this if the search widget can do the same
-        //mergeAdapter.addView(searchButton, true);
-
         if (searchResult != null)
         {
             List<Artist> artists = searchResult.getArtists();
             if (!artists.isEmpty())
             {
                 mergeAdapter.addView(artistsHeading);
-                List<Artist> displayedArtists = new ArrayList<Artist>(artists.subList(0, Math.min(DEFAULT_ARTISTS, artists.size())));
+                List<Artist> displayedArtists = new ArrayList<>(artists.subList(0, Math.min(DEFAULT_ARTISTS, artists.size())));
                 artistAdapter = new ArtistAdapter(getContext(), displayedArtists);
                 mergeAdapter.addAdapter(artistAdapter);
                 if (artists.size() > DEFAULT_ARTISTS)
@@ -474,7 +456,7 @@ public class SearchFragment extends Fragment {
             if (!albums.isEmpty())
             {
                 mergeAdapter.addView(albumsHeading);
-                List<MusicDirectory.Entry> displayedAlbums = new ArrayList<MusicDirectory.Entry>(albums.subList(0, Math.min(DEFAULT_ALBUMS, albums.size())));
+                List<MusicDirectory.Entry> displayedAlbums = new ArrayList<>(albums.subList(0, Math.min(DEFAULT_ALBUMS, albums.size())));
                 albumAdapter = new EntryAdapter(getContext(), imageLoaderProvider.getValue().getImageLoader(), displayedAlbums, false);
                 mergeAdapter.addAdapter(albumAdapter);
                 if (albums.size() > DEFAULT_ALBUMS)
@@ -487,7 +469,7 @@ public class SearchFragment extends Fragment {
             if (!songs.isEmpty())
             {
                 mergeAdapter.addView(songsHeading);
-                List<MusicDirectory.Entry> displayedSongs = new ArrayList<MusicDirectory.Entry>(songs.subList(0, Math.min(DEFAULT_SONGS, songs.size())));
+                List<MusicDirectory.Entry> displayedSongs = new ArrayList<>(songs.subList(0, Math.min(DEFAULT_SONGS, songs.size())));
                 songAdapter = new EntryAdapter(getContext(), imageLoaderProvider.getValue().getImageLoader(), displayedSongs, false);
                 mergeAdapter.addAdapter(songAdapter);
                 if (songs.size() > DEFAULT_SONGS)

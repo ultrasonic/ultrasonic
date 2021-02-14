@@ -134,7 +134,7 @@ public class NowPlayingFragment extends Fragment {
                 }
             });
 
-            // TODO: Check if this empty onClickListener is necessary
+            // This empty onClickListener is necessary for the onTouchListener to work
             getView().setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {

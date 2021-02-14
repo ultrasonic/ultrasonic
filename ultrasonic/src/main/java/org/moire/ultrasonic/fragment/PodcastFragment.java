@@ -1,5 +1,6 @@
 package org.moire.ultrasonic.fragment;
 
+import android.content.Context;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -11,6 +12,7 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.navigation.Navigation;
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import org.moire.ultrasonic.R;
 import org.moire.ultrasonic.domain.PodcastsChannel;
@@ -19,7 +21,7 @@ import org.moire.ultrasonic.service.MusicServiceFactory;
 import org.moire.ultrasonic.util.BackgroundTask;
 import org.moire.ultrasonic.util.CancellationToken;
 import org.moire.ultrasonic.util.Constants;
-import org.moire.ultrasonic.util.TabActivityBackgroundTask;
+import org.moire.ultrasonic.util.FragmentBackgroundTask;
 import org.moire.ultrasonic.util.Util;
 import org.moire.ultrasonic.view.PodcastsChannelsAdapter;
 
@@ -30,6 +32,7 @@ public class PodcastFragment extends Fragment {
     private View emptyTextView;
     ListView channelItemsListView = null;
     private CancellationToken cancellationToken;
+    private SwipeRefreshLayout swipeRefresh;
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
@@ -47,6 +50,9 @@ public class PodcastFragment extends Fragment {
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         cancellationToken = new CancellationToken();
+        swipeRefresh = view.findViewById(R.id.podcasts_refresh);
+        swipeRefresh.setEnabled(false);
+
         FragmentTitle.Companion.setTitle(this, R.string.podcasts_label);
 
         emptyTextView = view.findViewById(R.id.select_podcasts_empty);
@@ -61,12 +67,11 @@ public class PodcastFragment extends Fragment {
 
                 Bundle bundle = new Bundle();
                 bundle.putString(Constants.INTENT_EXTRA_NAME_PODCAST_CHANNEL_ID, pc.getId());
-                Navigation.findNavController(getView()).navigate(R.id.selectAlbumFragment, bundle);
+                Navigation.findNavController(view).navigate(R.id.selectAlbumFragment, bundle);
             }
         });
 
-        // TODO: Probably a swipeRefresh should be added here in the long run
-        load();
+        load(view.getContext());
     }
 
     @Override
@@ -75,26 +80,21 @@ public class PodcastFragment extends Fragment {
         super.onDestroyView();
     }
 
-    private void load()
+    private void load(final Context context)
     {
-        BackgroundTask<List<PodcastsChannel>> task = new TabActivityBackgroundTask<List<PodcastsChannel>>(getActivity(), true, null, cancellationToken)
+        BackgroundTask<List<PodcastsChannel>> task = new FragmentBackgroundTask<List<PodcastsChannel>>(getActivity(), true, swipeRefresh, cancellationToken)
         {
             @Override
             protected List<PodcastsChannel> doInBackground() throws Throwable
             {
-                MusicService musicService = MusicServiceFactory.getMusicService(getContext());
-                return musicService.getPodcastsChannels(false, getContext(), this);
-
-   			/*	 TODO Why is here a cache cleaning? (original TODO text: c'est quoi ce nettoyage de cache ?)
-				if (!Util.isOffline(PodcastsActivity.this))
-					new CacheCleaner(PodcastsActivity.this, getDownloadService()).cleanPlaylists(playlists);
-            */
+                MusicService musicService = MusicServiceFactory.getMusicService(context);
+                return musicService.getPodcastsChannels(false, context);
             }
 
             @Override
             protected void done(List<PodcastsChannel> result)
             {
-                channelItemsListView.setAdapter(new PodcastsChannelsAdapter(getContext(), result));
+                channelItemsListView.setAdapter(new PodcastsChannelsAdapter(context, result));
                 emptyTextView.setVisibility(result.isEmpty() ? View.VISIBLE : View.GONE);
             }
         };

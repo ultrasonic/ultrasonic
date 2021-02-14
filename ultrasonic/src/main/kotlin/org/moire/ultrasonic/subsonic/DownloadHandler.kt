@@ -3,6 +3,8 @@ package org.moire.ultrasonic.subsonic
 import android.app.Activity
 import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
+import java.util.Collections
+import java.util.LinkedList
 import org.moire.ultrasonic.R
 import org.moire.ultrasonic.data.ActiveServerProvider.Companion.isOffline
 import org.moire.ultrasonic.domain.MusicDirectory
@@ -12,7 +14,6 @@ import org.moire.ultrasonic.util.Constants
 import org.moire.ultrasonic.util.EntryByDiscAndTrackComparator
 import org.moire.ultrasonic.util.ModalBackgroundTask
 import org.moire.ultrasonic.util.Util
-import java.util.*
 
 class DownloadHandler(
     val mediaPlayerController: MediaPlayerController,
@@ -20,14 +21,31 @@ class DownloadHandler(
 ) {
     private val MAX_SONGS = 500
 
-    fun download(fragment: Fragment, append: Boolean, save: Boolean, autoPlay: Boolean, playNext: Boolean, shuffle: Boolean, songs: List<MusicDirectory.Entry?>) {
+    fun download(
+        fragment: Fragment,
+        append: Boolean,
+        save: Boolean,
+        autoPlay: Boolean,
+        playNext: Boolean,
+        shuffle: Boolean,
+        songs: List<MusicDirectory.Entry?>
+    ) {
         val onValid = Runnable {
             if (!append && !playNext) {
                 mediaPlayerController.clear()
             }
             networkAndStorageChecker.warnIfNetworkOrStorageUnavailable()
-            mediaPlayerController.download(songs, save, autoPlay, playNext, shuffle, false)
-            val playlistName: String? = fragment.arguments?.getString(Constants.INTENT_EXTRA_NAME_PLAYLIST_NAME)
+            mediaPlayerController.download(
+                songs,
+                save,
+                autoPlay,
+                playNext,
+                shuffle,
+                false
+            )
+            val playlistName: String? = fragment.arguments?.getString(
+                Constants.INTENT_EXTRA_NAME_PLAYLIST_NAME
+            )
             if (playlistName != null) {
                 mediaPlayerController.suggestedPlaylistName = playlistName
             }
@@ -37,22 +55,93 @@ class DownloadHandler(
                     fragment.findNavController().navigate(R.id.playerFragment)
                 }
             } else if (save) {
-                Util.toast(fragment.context, fragment.resources.getQuantityString(R.plurals.select_album_n_songs_pinned, songs.size, songs.size))
+                Util.toast(
+                    fragment.context,
+                    fragment.resources.getQuantityString(
+                        R.plurals.select_album_n_songs_pinned,
+                        songs.size,
+                        songs.size
+                    )
+                )
             } else if (playNext) {
-                Util.toast(fragment.context, fragment.resources.getQuantityString(R.plurals.select_album_n_songs_play_next, songs.size, songs.size))
+                Util.toast(
+                    fragment.context,
+                    fragment.resources.getQuantityString(
+                        R.plurals.select_album_n_songs_play_next,
+                        songs.size,
+                        songs.size
+                    )
+                )
             } else if (append) {
-                Util.toast(fragment.context, fragment.resources.getQuantityString(R.plurals.select_album_n_songs_added, songs.size, songs.size))
+                Util.toast(
+                    fragment.context,
+                    fragment.resources.getQuantityString(
+                        R.plurals.select_album_n_songs_added,
+                        songs.size,
+                        songs.size
+                    )
+                )
             }
         }
         onValid.run()
     }
 
-    fun downloadPlaylist(fragment: Fragment, id: String, name: String?, save: Boolean, append: Boolean, autoplay: Boolean, shuffle: Boolean, background: Boolean, playNext: Boolean, unpin: Boolean) {
-        downloadRecursively(fragment, id, name, false, false, save, append, autoplay, shuffle, background, playNext, unpin, false)
+    fun downloadPlaylist(
+        fragment: Fragment,
+        id: String,
+        name: String?,
+        save: Boolean,
+        append: Boolean,
+        autoplay: Boolean,
+        shuffle: Boolean,
+        background: Boolean,
+        playNext: Boolean,
+        unpin: Boolean
+    ) {
+        downloadRecursively(
+            fragment,
+            id,
+            name,
+            false,
+            false,
+            save,
+            append,
+            autoplay,
+            shuffle,
+            background,
+            playNext,
+            unpin,
+            false
+        )
     }
 
-    fun downloadShare(fragment: Fragment, id: String, name: String?, save: Boolean, append: Boolean, autoplay: Boolean, shuffle: Boolean, background: Boolean, playNext: Boolean, unpin: Boolean) {
-        downloadRecursively(fragment, id, name, true, false, save, append, autoplay, shuffle, background, playNext, unpin, false)
+    fun downloadShare(
+        fragment: Fragment,
+        id: String,
+        name: String?,
+        save: Boolean,
+        append: Boolean,
+        autoplay: Boolean,
+        shuffle: Boolean,
+        background: Boolean,
+        playNext: Boolean,
+        unpin: Boolean
+    ) {
+        downloadRecursively(
+            fragment,
+            id,
+            name,
+            true,
+            false,
+            save,
+            append,
+            autoplay,
+            shuffle,
+            background,
+            playNext,
+            unpin,
+            false
+        )
     }
 
     fun downloadRecursively(
@@ -81,7 +170,8 @@ class DownloadHandler(
             background = background,
             playNext = playNext,
             unpin = unpin,
-            isArtist = isArtist)
+            isArtist = isArtist
+        )
     }
 
     fun downloadRecursively(
@@ -100,7 +190,7 @@ class DownloadHandler(
         isArtist: Boolean
     ) {
         val activity = fragment.activity as Activity
-        val task = object: ModalBackgroundTask<List<MusicDirectory.Entry>>(
+        val task = object : ModalBackgroundTask<List<MusicDirectory.Entry>>(
             activity,
             false
         ) {
@@ -115,12 +205,12 @@ class DownloadHandler(
                 } else {
                     if (isDirectory) {
                         root = if (!isOffline(activity) && Util.getShouldUseId3Tags(activity))
-                            musicService.getAlbum(id, name, false, activity, null)
+                            musicService.getAlbum(id, name, false, activity)
                         else
-                            musicService.getMusicDirectory(id, name, false, activity, null)
+                            musicService.getMusicDirectory(id, name, false, activity)
                     } else if (isShare) {
                         root = MusicDirectory()
-                        val shares = musicService.getShares(true, activity, null)
+                        val shares = musicService.getShares(true, activity)
                         for (share in shares) {
                             if (share.id == id) {
                                 for (entry in share.getEntries()) {
@@ -130,7 +220,7 @@ class DownloadHandler(
                             }
                         }
                     } else {
-                        root = musicService.getPlaylist(id, name, activity, null)
+                        root = musicService.getPlaylist(id, name, activity)
                     }
                     getSongsRecursively(root, songs)
                 }
@@ -138,7 +228,10 @@ class DownloadHandler(
             }
 
             @Throws(Exception::class)
-            private fun getSongsRecursively(parent: MusicDirectory, songs: MutableList<MusicDirectory.Entry>) {
+            private fun getSongsRecursively(
+                parent: MusicDirectory,
+                songs: MutableList<MusicDirectory.Entry>
+            ) {
                 if (songs.size > MAX_SONGS) {
                     return
                 }
@@ -150,21 +243,32 @@ class DownloadHandler(
                 val musicService = getMusicService(activity)
                 for ((id1, _, _, title) in parent.getChildren(true, false)) {
                     var root: MusicDirectory
-                    root = if (!isOffline(activity) && Util.getShouldUseId3Tags(activity)) musicService.getAlbum(id1, title, false, activity, null)
-                    else musicService.getMusicDirectory(id1, title, false, activity, null)
+                    root = if (
+                        !isOffline(activity) &&
+                        Util.getShouldUseId3Tags(activity)
+                    ) musicService.getAlbum(id1, title, false, activity)
+                    else musicService.getMusicDirectory(id1, title, false, activity)
                     getSongsRecursively(root, songs)
                 }
             }
 
             @Throws(Exception::class)
-            private fun getSongsForArtist(id: String, songs: MutableCollection<MusicDirectory.Entry>) {
+            private fun getSongsForArtist(
+                id: String,
+                songs: MutableCollection<MusicDirectory.Entry>
+            ) {
                 if (songs.size > MAX_SONGS) {
                     return
                 }
                 val musicService = getMusicService(activity)
-                val artist = musicService.getArtist(id, "", false, activity, null)
+                val artist = musicService.getArtist(id, "", false, activity)
                 for ((id1) in artist.getChildren()) {
-                    val albumDirectory = musicService.getAlbum(id1, "", false, activity, null)
+                    val albumDirectory = musicService.getAlbum(
+                        id1,
+                        "",
+                        false,
+                        activity
+                    )
                     for (song in albumDirectory.getChildren()) {
                         if (!song.isVideo) {
                             songs.add(song)
@@ -186,9 +290,22 @@ class DownloadHandler(
                         if (unpin) {
                             mediaPlayerController.unpin(songs)
                         } else {
-                            mediaPlayerController.download(songs, save, autoPlay, playNext, shuffle, false)
-                            if (!append && Util.getShouldTransitionOnPlaybackPreference(activity)) {
-                                fragment.findNavController().popBackStack(R.id.playerFragment, true)
+                            mediaPlayerController.download(
+                                songs,
+                                save,
+                                autoPlay,
+                                playNext,
+                                shuffle,
+                                false
+                            )
+                            if (
+                                !append &&
+                                Util.getShouldTransitionOnPlaybackPreference(activity)
+                            ) {
+                                fragment.findNavController().popBackStack(
+                                    R.id.playerFragment,
+                                    true
+                                )
                                 fragment.findNavController().navigate(R.id.playerFragment)
                             }
                         }

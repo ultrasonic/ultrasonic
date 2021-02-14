@@ -85,15 +85,15 @@ class ArtistListModel(
             try {
                 if (!isOffline && !useId3Tags) {
                     musicFolders.postValue(
-                        musicService.getMusicFolders(refresh, context, null)
+                        musicService.getMusicFolders(refresh, context)
                     )
                 }
 
                 val musicFolderId = activeServerProvider.getActiveServer().musicFolderId
 
                 val result = if (!isOffline && useId3Tags)
-                    musicService.getArtists(refresh, context, null)
-                else musicService.getIndexes(musicFolderId, refresh, context, null)
+                    musicService.getArtists(refresh, context)
+                else musicService.getIndexes(musicFolderId, refresh, context)
 
                 val retrievedArtists: MutableList<Artist> =
                     ArrayList(result.shortcuts.size + result.artists.size)

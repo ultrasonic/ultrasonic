@@ -43,8 +43,11 @@ class SelectArtistFragment : Fragment() {
         super.onCreate(savedInstanceState)
     }
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
-                              savedInstanceState: Bundle?): View? {
+    override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View? {
         return inflater.inflate(R.layout.select_artist, container, false)
     }
 
@@ -54,14 +57,18 @@ class SelectArtistFragment : Fragment() {
             artistListModel.refresh(refreshArtistListView!!)
         }
 
-        val shouldShowHeader = (!ActiveServerProvider.isOffline(this.context) && !Util.getShouldUseId3Tags(this.context))
+        val shouldShowHeader = (
+            !ActiveServerProvider.isOffline(this.context) &&
+                !Util.getShouldUseId3Tags(this.context)
+            )
 
         val title = arguments?.getString(Constants.INTENT_EXTRA_NAME_ALBUM_LIST_TITLE)
 
         if (title == null) {
             setTitle(
                 this,
-                if (ActiveServerProvider.isOffline(this.context)) R.string.music_library_label_offline
+                if (ActiveServerProvider.isOffline(this.context))
+                    R.string.music_library_label_offline
                 else R.string.music_library_label
             )
         } else {
@@ -156,17 +163,83 @@ class SelectArtistFragment : Fragment() {
     private fun onArtistMenuItemSelected(menuItem: MenuItem, artist: Artist): Boolean {
         when (menuItem.itemId) {
             R.id.artist_menu_play_now ->
-                downloadHandler.downloadRecursively(this, artist.id, false, false, true, false, false, false, false, true)
+                downloadHandler.downloadRecursively(
+                    this,
+                    artist.id,
+                    false,
+                    false,
+                    true,
+                    false,
+                    false,
+                    false,
+                    false,
+                    true
+                )
             R.id.artist_menu_play_next ->
-                downloadHandler.downloadRecursively(this, artist.id, false, false, true, true, false, true, false, true)
+                downloadHandler.downloadRecursively(
+                    this,
+                    artist.id,
+                    false,
+                    false,
+                    true,
+                    true,
+                    false,
+                    true,
+                    false,
+                    true
+                )
             R.id.artist_menu_play_last ->
-                downloadHandler.downloadRecursively(this, artist.id, false, true, false, false, false, false, false, true)
+                downloadHandler.downloadRecursively(
+                    this,
+                    artist.id,
+                    false,
+                    true,
+                    false,
+                    false,
+                    false,
+                    false,
+                    false,
+                    true
+                )
             R.id.artist_menu_pin ->
-                downloadHandler.downloadRecursively(this, artist.id, true, true, false, false, false, false, false, true)
+                downloadHandler.downloadRecursively(
+                    this,
+                    artist.id,
+                    true,
+                    true,
+                    false,
+                    false,
+                    false,
+                    false,
+                    false,
+                    true
+                )
             R.id.artist_menu_unpin ->
-                downloadHandler.downloadRecursively(this, artist.id, false, false, false, false, false, false, true, true)
+                downloadHandler.downloadRecursively(
+                    this,
+                    artist.id,
+                    false,
+                    false,
+                    false,
+                    false,
+                    false,
+                    false,
+                    true,
+                    true
+                )
             R.id.artist_menu_download ->
-                downloadHandler.downloadRecursively(this, artist.id, false, false, false, false, true, false, false, true)
+                downloadHandler.downloadRecursively(
+                    this,
+                    artist.id,
+                    false,
+                    false,
+                    false,
+                    false,
+                    true,
+                    false,
+                    false,
+                    true
+                )
         }
         return true
     }

@@ -27,7 +27,7 @@ import org.moire.ultrasonic.subsonic.VideoPlayer;
 import org.moire.ultrasonic.util.CancellationToken;
 import org.moire.ultrasonic.util.Constants;
 import org.moire.ultrasonic.util.Pair;
-import org.moire.ultrasonic.util.TabActivityBackgroundTask;
+import org.moire.ultrasonic.util.FragmentBackgroundTask;
 import org.moire.ultrasonic.util.Util;
 import org.moire.ultrasonic.view.EntryAdapter;
 
@@ -35,7 +35,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import kotlin.Lazy;
-import timber.log.Timber;
 
 import static org.koin.java.KoinJavaComponent.inject;
 
@@ -73,6 +72,7 @@ public class BookmarksFragment extends Fragment {
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         cancellationToken = new CancellationToken();
         albumButtons = view.findViewById(R.id.menu_album);
+        super.onViewCreated(view, savedInstanceState);
 
         refreshAlbumListView = view.findViewById(R.id.select_album_entries_refresh);
         albumListView = view.findViewById(R.id.select_album_entries_list);
@@ -186,7 +186,6 @@ public class BookmarksFragment extends Fragment {
         FragmentTitle.Companion.setTitle(this, R.string.button_bar_bookmarks);
 
         enableButtons();
-
         getBookmarks();
     }
 
@@ -203,7 +202,7 @@ public class BookmarksFragment extends Fragment {
             @Override
             protected MusicDirectory load(MusicService service) throws Exception
             {
-                return Util.getSongsFromBookmarks(service.getBookmarks(getContext(), this));
+                return Util.getSongsFromBookmarks(service.getBookmarks(getContext()));
             }
         }.execute();
     }
@@ -239,27 +238,8 @@ public class BookmarksFragment extends Fragment {
 
     private void refresh()
     {
-        // TODO: create better restart
-        getView().post(new Runnable() {
-            public void run() {
-                Timber.d("Refresh called...");
-                if (getArguments() == null) {
-                    Bundle bundle = new Bundle();
-                    bundle.putBoolean(Constants.INTENT_EXTRA_NAME_REFRESH, true);
-                    setArguments(bundle);
-                } else {
-                    getArguments().putBoolean(Constants.INTENT_EXTRA_NAME_REFRESH, true);
-                }
-                onViewCreated(getView(), null);
-            }
-        });
-
-/*        finish();
-        Intent intent = getIntent();
-        intent.putExtra(Constants.INTENT_EXTRA_NAME_REFRESH, true);
-        startActivityForResultWithoutTransition(this, intent);
-
- */
+        enableButtons();
+        getBookmarks();
     }
 
     private void selectAllOrNone()
@@ -392,7 +372,7 @@ public class BookmarksFragment extends Fragment {
         mediaPlayerController.getValue().unpin(songs);
     }
 
-    private abstract class LoadTask extends TabActivityBackgroundTask<Pair<MusicDirectory, Boolean>>
+    private abstract class LoadTask extends FragmentBackgroundTask<Pair<MusicDirectory, Boolean>>
     {
         public LoadTask()
         {
@@ -406,7 +386,7 @@ public class BookmarksFragment extends Fragment {
         {
             MusicService musicService = MusicServiceFactory.getMusicService(getContext());
             MusicDirectory dir = load(musicService);
-            boolean valid = musicService.isLicenseValid(getContext(), this);
+            boolean valid = musicService.isLicenseValid(getContext());
             return new Pair<>(dir, valid);
         }
 

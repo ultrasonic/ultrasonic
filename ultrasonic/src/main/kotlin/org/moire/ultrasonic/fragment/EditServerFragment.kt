@@ -11,6 +11,8 @@ import androidx.lifecycle.Observer
 import androidx.navigation.fragment.findNavController
 import com.google.android.material.switchmaterial.SwitchMaterial
 import com.google.android.material.textfield.TextInputLayout
+import java.net.MalformedURLException
+import java.net.URL
 import org.koin.android.ext.android.inject
 import org.koin.android.viewmodel.ext.android.viewModel
 import org.moire.ultrasonic.BuildConfig
@@ -27,10 +29,8 @@ import org.moire.ultrasonic.util.ErrorDialog
 import org.moire.ultrasonic.util.ModalBackgroundTask
 import org.moire.ultrasonic.util.Util
 import timber.log.Timber
-import java.net.MalformedURLException
-import java.net.URL
 
-class EditServerFragment: Fragment() {
+class EditServerFragment : Fragment() {
     companion object {
         const val EDIT_SERVER_INTENT_INDEX = "index"
     }
@@ -57,8 +57,11 @@ class EditServerFragment: Fragment() {
         super.onCreate(savedInstanceState)
     }
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
-                              savedInstanceState: Bundle?): View? {
+    override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View? {
         return inflater.inflate(R.layout.server_edit, container, false)
     }
 
