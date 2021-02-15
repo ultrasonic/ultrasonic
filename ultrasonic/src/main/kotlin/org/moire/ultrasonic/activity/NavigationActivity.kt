@@ -6,7 +6,6 @@ import android.content.Intent
 import android.content.res.Resources
 import android.media.AudioManager
 import android.os.Bundle
-import android.preference.PreferenceManager
 import android.provider.MediaStore
 import android.provider.SearchRecentSuggestions
 import android.view.KeyEvent
@@ -26,6 +25,7 @@ import androidx.navigation.ui.navigateUp
 import androidx.navigation.ui.onNavDestinationSelected
 import androidx.navigation.ui.setupActionBarWithNavController
 import androidx.navigation.ui.setupWithNavController
+import androidx.preference.PreferenceManager
 import com.google.android.material.navigation.NavigationView
 import org.koin.android.ext.android.inject
 import org.koin.android.viewmodel.ext.android.viewModel

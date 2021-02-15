@@ -39,7 +39,6 @@ import android.net.wifi.WifiManager;
 import android.os.Build;
 import android.os.Environment;
 import android.os.Parcelable;
-import android.preference.PreferenceManager;
 import android.util.DisplayMetrics;
 import timber.log.Timber;
 import android.util.TypedValue;
@@ -49,6 +48,7 @@ import android.widget.RemoteViews;
 import android.widget.Toast;
 
 import androidx.annotation.ColorInt;
+import androidx.preference.PreferenceManager;
 
 import org.moire.ultrasonic.R;
 import org.moire.ultrasonic.activity.NavigationActivity;

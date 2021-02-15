@@ -2,10 +2,10 @@ package org.moire.ultrasonic.fragment
 
 import android.content.Context
 import android.content.SharedPreferences
-import android.preference.PreferenceManager
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import androidx.preference.PreferenceManager
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
 import org.moire.ultrasonic.data.ActiveServerProvider
