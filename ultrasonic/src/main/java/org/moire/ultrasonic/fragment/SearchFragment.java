@@ -178,14 +178,13 @@ public class SearchFragment extends Fragment {
 
         registerForContextMenu(list);
 
-        // Fragment was started with a query, try to execute search right away
+        // Fragment was started with a query (e.g. from voice search), try to execute search right away
         Bundle arguments = getArguments();
         if (arguments != null) {
             String query = arguments.getString(Constants.INTENT_EXTRA_NAME_QUERY);
             boolean autoPlay = arguments.getBoolean(Constants.INTENT_EXTRA_NAME_AUTOPLAY, false);
 
-            if (query != null)
-            {
+            if (query != null) {
                 mergeAdapter = new MergeAdapter();
                 list.setAdapter(mergeAdapter);
                 search(query, autoPlay);
@@ -202,13 +201,20 @@ public class SearchFragment extends Fragment {
         Activity activity = getActivity();
         if (activity == null) return;
         SearchManager searchManager = (SearchManager) activity.getSystemService(Context.SEARCH_SERVICE);
-        Bundle arguments = getArguments();
-        final boolean autoPlay = arguments != null && arguments.getBoolean(Constants.INTENT_EXTRA_NAME_AUTOPLAY, false);
 
         inflater.inflate(R.menu.search, menu);
         MenuItem searchItem = menu.findItem(R.id.search_item);
         final SearchView searchView = (SearchView) searchItem.getActionView();
         searchView.setSearchableInfo(searchManager.getSearchableInfo(getActivity().getComponentName()));
+
+        Bundle arguments = getArguments();
+        final boolean autoPlay = arguments != null && arguments.getBoolean(Constants.INTENT_EXTRA_NAME_AUTOPLAY, false);
+        String query = arguments == null? null : arguments.getString(Constants.INTENT_EXTRA_NAME_QUERY);
+        // If started with a query, enter it to the searchView
+        if (query != null) {
+            searchView.setQuery(query, false);
+            searchView.clearFocus();
+        }
 
         searchView.setOnSuggestionListener(new SearchView.OnSuggestionListener() {
             @Override
