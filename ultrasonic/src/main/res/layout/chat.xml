@@ -3,7 +3,6 @@
     a:layout_width="fill_parent"
     a:layout_height="fill_parent"
     a:orientation="vertical" >
-
     <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
         a:id="@+id/chat_refresh"
         a:layout_width="fill_parent"
@@ -14,38 +13,33 @@
             a:layout_width="fill_parent"
             a:layout_height="0dip"
             a:layout_weight="1.0" />
-
-        <LinearLayout
-            a:layout_height="4dip"
-            a:layout_width="fill_parent"
-            a:layout_marginTop="4dip"
-            a:background="@drawable/drop_shadow" />
-
-        <LinearLayout
-            a:layout_width="fill_parent"
-            a:layout_height="wrap_content"
-            a:orientation="horizontal"
-            a:gravity="bottom" >
-
-            <EditText
-                a:id="@+id/chat_edittext"
-                a:layout_width="0dip"
-                a:layout_height="40dip"
-                a:layout_weight="1"
-                a:autoLink="all"
-                a:hint="@string/chat.send_a_message"
-                a:inputType="textEmailAddress|textMultiLine"
-                a:linksClickable="true"
-                a:paddingBottom="10dip"
-                a:paddingTop="10dip" />
-
-            <ImageButton
-                a:id="@+id/chat_send"
-                a:layout_width="55dip"
-                a:layout_height="40dip"
-                a:background="@color/transparent"
-                a:src="?attr/chat_send" />
-
-        </LinearLayout>
     </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
+    <LinearLayout
+        a:layout_height="4dip"
+        a:layout_width="fill_parent"
+        a:layout_marginTop="4dip"
+        a:background="@drawable/drop_shadow" />
+    <LinearLayout
+        a:layout_width="fill_parent"
+        a:layout_height="wrap_content"
+        a:orientation="horizontal"
+        a:gravity="bottom" >
+        <EditText
+            a:id="@+id/chat_edittext"
+            a:layout_width="0dip"
+            a:layout_height="40dip"
+            a:layout_weight="1"
+            a:autoLink="all"
+            a:hint="@string/chat.send_a_message"
+            a:inputType="textEmailAddress|textMultiLine"
+            a:linksClickable="true"
+            a:paddingBottom="10dip"
+            a:paddingTop="10dip" />
+        <ImageButton
+            a:id="@+id/chat_send"
+            a:layout_width="55dip"
+            a:layout_height="40dip"
+            a:background="@color/transparent"
+            a:src="?attr/chat_send" />
+    </LinearLayout>
 </LinearLayout>
