@@ -6,6 +6,9 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.preference.PreferenceManager
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
 import org.moire.ultrasonic.data.ActiveServerProvider
@@ -35,6 +38,8 @@ class ServerSettingsModel(
         private const val PREFERENCES_KEY_LDAP_SUPPORT = "enableLdapSupport"
         private const val PREFERENCES_KEY_MUSIC_FOLDER_ID = "musicFolderId"
     }
+
+    private val appScope = CoroutineScope(SupervisorJob() + Dispatchers.IO)
 
     /**
      * This function will try and convert settings from the Preferences to the Database
@@ -160,7 +165,7 @@ class ServerSettingsModel(
     fun updateItem(serverSetting: ServerSetting?) {
         if (serverSetting == null) return
 
-        viewModelScope.launch {
+        appScope.launch {
             repository.update(serverSetting)
             activeServerProvider.invalidateCache()
             Timber.d("updateItem updated server setting: $serverSetting")
@@ -173,7 +178,7 @@ class ServerSettingsModel(
     fun saveNewItem(serverSetting: ServerSetting?) {
         if (serverSetting == null) return
 
-        viewModelScope.launch {
+        appScope.launch {
             serverSetting.index = (repository.count() ?: 0) + 1
             serverSetting.id = (repository.getMaxId() ?: 0) + 1
             repository.insert(serverSetting)
