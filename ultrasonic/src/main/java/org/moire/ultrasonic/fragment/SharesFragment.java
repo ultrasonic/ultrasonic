@@ -2,7 +2,6 @@ package org.moire.ultrasonic.fragment;
 
 import android.app.AlertDialog;
 import android.content.DialogInterface;
-import android.os.AsyncTask;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.Spannable;
@@ -28,6 +27,7 @@ import androidx.fragment.app.Fragment;
 import androidx.navigation.Navigation;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
+import org.jetbrains.annotations.NotNull;
 import org.moire.ultrasonic.R;
 import org.moire.ultrasonic.api.subsonic.ApiNotSupportedException;
 import org.moire.ultrasonic.domain.Share;
@@ -51,6 +51,9 @@ import kotlin.Lazy;
 
 import static org.koin.java.KoinJavaComponent.inject;
 
+/**
+ * Displays the shares in the media library
+ */
 public class SharesFragment extends Fragment {
 
     private SwipeRefreshLayout refreshSharesListView;
@@ -85,7 +88,7 @@ public class SharesFragment extends Fragment {
             @Override
             public void onRefresh()
             {
-                new GetDataTask().executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
+                load(true);
             }
         });
 
@@ -118,11 +121,6 @@ public class SharesFragment extends Fragment {
         super.onDestroyView();
     }
 
-    private void refresh()
-    {
-        load(true);
-    }
-
     private void load(final boolean refresh)
     {
         BackgroundTask<List<Share>> task = new FragmentBackgroundTask<List<Share>>(getActivity(), true, refreshSharesListView, cancellationToken)
@@ -145,7 +143,7 @@ public class SharesFragment extends Fragment {
     }
 
     @Override
-    public void onCreateContextMenu(ContextMenu menu, View view, ContextMenu.ContextMenuInfo menuInfo)
+    public void onCreateContextMenu(@NotNull ContextMenu menu, @NotNull View view, ContextMenu.ContextMenuInfo menuInfo)
     {
         super.onCreateContextMenu(menu, view, menuInfo);
 
@@ -311,7 +309,7 @@ public class SharesFragment extends Fragment {
                     @Override
                     protected void done(Void result)
                     {
-                        refresh();
+                        load(true);
                         Util.toast(getContext(), getResources().getString(R.string.playlist_updated_info, share.getName()));
                     }
 
@@ -329,21 +327,5 @@ public class SharesFragment extends Fragment {
 
         alertDialog.setNegativeButton(R.string.common_cancel, null);
         alertDialog.show();
-    }
-
-    private class GetDataTask extends AsyncTask<Void, Void, String[]>
-    {
-        @Override
-        protected void onPostExecute(String[] result)
-        {
-            super.onPostExecute(result);
-        }
-
-        @Override
-        protected String[] doInBackground(Void... params)
-        {
-            refresh();
-            return null;
-        }
     }
 }

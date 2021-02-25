@@ -67,13 +67,13 @@ public class CachedMusicService implements MusicService
 	private final LRUCache<String, TimeLimitedCache<MusicDirectory>> cachedArtist;
 	private final LRUCache<String, TimeLimitedCache<MusicDirectory>> cachedAlbum;
 	private final LRUCache<String, TimeLimitedCache<UserInfo>> cachedUserInfo;
-	private final TimeLimitedCache<Boolean> cachedLicenseValid = new TimeLimitedCache<Boolean>(120, TimeUnit.SECONDS);
-	private final TimeLimitedCache<Indexes> cachedIndexes = new TimeLimitedCache<Indexes>(60 * 60, TimeUnit.SECONDS);
-	private final TimeLimitedCache<Indexes> cachedArtists = new TimeLimitedCache<Indexes>(60 * 60, TimeUnit.SECONDS);
-	private final TimeLimitedCache<List<Playlist>> cachedPlaylists = new TimeLimitedCache<List<Playlist>>(3600, TimeUnit.SECONDS);
-	private final TimeLimitedCache<List<PodcastsChannel>> cachedPodcastsChannels = new TimeLimitedCache<List<PodcastsChannel>>(3600, TimeUnit.SECONDS);
-	private final TimeLimitedCache<List<MusicFolder>> cachedMusicFolders = new TimeLimitedCache<List<MusicFolder>>(10 * 3600, TimeUnit.SECONDS);
-	private final TimeLimitedCache<List<Genre>> cachedGenres = new TimeLimitedCache<List<Genre>>(10 * 3600, TimeUnit.SECONDS);
+	private final TimeLimitedCache<Boolean> cachedLicenseValid = new TimeLimitedCache<>(120, TimeUnit.SECONDS);
+	private final TimeLimitedCache<Indexes> cachedIndexes = new TimeLimitedCache<>(60 * 60, TimeUnit.SECONDS);
+	private final TimeLimitedCache<Indexes> cachedArtists = new TimeLimitedCache<>(60 * 60, TimeUnit.SECONDS);
+	private final TimeLimitedCache<List<Playlist>> cachedPlaylists = new TimeLimitedCache<>(3600, TimeUnit.SECONDS);
+	private final TimeLimitedCache<List<PodcastsChannel>> cachedPodcastsChannels = new TimeLimitedCache<>(3600, TimeUnit.SECONDS);
+	private final TimeLimitedCache<List<MusicFolder>> cachedMusicFolders = new TimeLimitedCache<>(10 * 3600, TimeUnit.SECONDS);
+	private final TimeLimitedCache<List<Genre>> cachedGenres = new TimeLimitedCache<>(10 * 3600, TimeUnit.SECONDS);
 
 	private String restUrl;
 

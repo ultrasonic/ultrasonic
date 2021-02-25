@@ -57,6 +57,9 @@ import timber.log.Timber;
 
 import static org.koin.java.KoinJavaComponent.inject;
 
+/**
+ * Initiates a search on the media library and displays the results
+ */
 public class SearchFragment extends Fragment {
 
     private static int DEFAULT_ARTISTS;
@@ -68,7 +71,7 @@ public class SearchFragment extends Fragment {
     private View artistsHeading;
     private View albumsHeading;
     private View songsHeading;
-    private TextView searchButton;
+    private TextView notFound;
     private View moreArtistsButton;
     private View moreAlbumsButton;
     private View moreSongsButton;
@@ -114,14 +117,14 @@ public class SearchFragment extends Fragment {
         DEFAULT_ALBUMS = Util.getDefaultAlbums(getContext());
         DEFAULT_SONGS = Util.getDefaultSongs(getContext());
 
-        View buttons = LayoutInflater.from(getContext()).inflate(R.layout.search_buttons, null);
+        View buttons = LayoutInflater.from(getContext()).inflate(R.layout.search_buttons, list, false);
 
         if (buttons != null)
         {
             artistsHeading = buttons.findViewById(R.id.search_artists);
             albumsHeading = buttons.findViewById(R.id.search_albums);
             songsHeading = buttons.findViewById(R.id.search_songs);
-            searchButton = buttons.findViewById(R.id.search_search);
+            notFound = buttons.findViewById(R.id.search_not_found);
             moreArtistsButton = buttons.findViewById(R.id.search_more_artists);
             moreAlbumsButton = buttons.findViewById(R.id.search_more_albums);
             moreSongsButton = buttons.findViewById(R.id.search_more_songs);
@@ -168,7 +171,7 @@ public class SearchFragment extends Fragment {
                         }
                         else
                         {
-                            onSongSelected(entry, false, true, true, false);
+                            onSongSelected(entry, true);
                         }
 
                     }
@@ -262,14 +265,13 @@ public class SearchFragment extends Fragment {
         boolean isArtist = selectedItem instanceof Artist;
         boolean isAlbum = selectedItem instanceof MusicDirectory.Entry && ((MusicDirectory.Entry) selectedItem).isDirectory();
 
+        MenuInflater inflater = getActivity().getMenuInflater();
         if (!isArtist && !isAlbum)
         {
-            MenuInflater inflater = getActivity().getMenuInflater();
             inflater.inflate(R.menu.select_song_context, menu);
         }
         else
         {
-            MenuInflater inflater = getActivity().getMenuInflater();
             inflater.inflate(R.menu.select_album_context, menu);
         }
 
@@ -485,7 +487,7 @@ public class SearchFragment extends Fragment {
             }
 
             boolean empty = searchResult.getArtists().isEmpty() && searchResult.getAlbums().isEmpty() && searchResult.getSongs().isEmpty();
-            searchButton.setText(empty ? R.string.search_no_match : R.string.search_search);
+            if (empty) mergeAdapter.addView(notFound, false);
         }
 
         list.setAdapter(mergeAdapter);
@@ -551,19 +553,19 @@ public class SearchFragment extends Fragment {
         Navigation.findNavController(getView()).navigate(R.id.searchToSelectAlbum, bundle);
     }
 
-    private void onSongSelected(MusicDirectory.Entry song, boolean save, boolean append, boolean autoplay, boolean playNext)
+    private void onSongSelected(MusicDirectory.Entry song, boolean append)
     {
         MediaPlayerController mediaPlayerController = mediaPlayerControllerLazy.getValue();
         if (mediaPlayerController != null)
         {
-            if (!append && !playNext)
+            if (!append)
             {
                 mediaPlayerController.clear();
             }
 
-            mediaPlayerController.download(Collections.singletonList(song), save, false, playNext, false, false);
+            mediaPlayerController.download(Collections.singletonList(song), false, false, false, false, false);
 
-            if (autoplay)
+            if (true)
             {
                 mediaPlayerController.play(mediaPlayerController.getPlaylistSize() - 1);
             }
@@ -581,7 +583,7 @@ public class SearchFragment extends Fragment {
     {
         if (!searchResult.getSongs().isEmpty())
         {
-            onSongSelected(searchResult.getSongs().get(0), false, false, true, false);
+            onSongSelected(searchResult.getSongs().get(0), false);
         }
         else if (!searchResult.getAlbums().isEmpty())
         {

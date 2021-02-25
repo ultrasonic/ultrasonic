@@ -196,7 +196,9 @@ public class DownloadFile
 	{
 		if (saveFile.exists())
 		{
-			saveFile.renameTo(completeFile);
+			if (!saveFile.renameTo(completeFile)){
+				Timber.w("Renaming file failed. Original file: %s; Rename to: %s", saveFile.getName(), completeFile.getName());
+			}
 		}
 	}
 

@@ -33,7 +33,7 @@ import static androidx.core.content.PermissionChecker.PERMISSION_DENIED;
 public class PermissionUtil {
 
     private Context activityContext;
-    private Context applicationContext;
+    private final Context applicationContext;
 
     public PermissionUtil(Context context) {
         applicationContext = context;

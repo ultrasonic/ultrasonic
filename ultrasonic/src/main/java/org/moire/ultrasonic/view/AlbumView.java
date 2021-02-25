@@ -97,11 +97,7 @@ public class AlbumView extends UpdateView
 	}
 
 	public void maximizeOrMinimize() {
-		if (maximized) {
-			maximized = false;
-		} else {
-			maximized = true;
-		}
+		maximized = !maximized;
 		if (this.viewHolder.title != null) {
 			this.viewHolder.title.setSingleLine(!maximized);
 		}

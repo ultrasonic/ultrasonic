@@ -2,7 +2,6 @@ package org.moire.ultrasonic.fragment;
 
 import android.app.AlertDialog;
 import android.content.DialogInterface;
-import android.os.AsyncTask;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.Spannable;
@@ -51,6 +50,9 @@ import kotlin.Lazy;
 
 import static org.koin.java.KoinJavaComponent.inject;
 
+/**
+ * Displays the playlists stored on the server
+ */
 public class PlaylistsFragment extends Fragment {
 
     private SwipeRefreshLayout refreshPlaylistsListView;
@@ -83,9 +85,8 @@ public class PlaylistsFragment extends Fragment {
         refreshPlaylistsListView.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener()
         {
             @Override
-            public void onRefresh()
-            {
-                new GetDataTask().executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
+            public void onRefresh() {
+                load(true);
             }
         });
 
@@ -117,11 +118,6 @@ public class PlaylistsFragment extends Fragment {
     public void onDestroyView() {
         cancellationToken.cancel();
         super.onDestroyView();
-    }
-
-    private void refresh()
-    {
-        load(true);
     }
 
     private void load(final boolean refresh)
@@ -182,43 +178,34 @@ public class PlaylistsFragment extends Fragment {
         }
 
         Bundle bundle;
-        switch (menuItem.getItemId())
-        {
-            case R.id.playlist_menu_pin:
-                downloadHandler.getValue().downloadPlaylist(this, playlist.getId(), playlist.getName(), true, true, false, false, true, false, false);
-                break;
-            case R.id.playlist_menu_unpin:
-                downloadHandler.getValue().downloadPlaylist(this, playlist.getId(), playlist.getName(), false, false, false, false, true, false, true);
-                break;
-            case R.id.playlist_menu_download:
-                downloadHandler.getValue().downloadPlaylist(this, playlist.getId(), playlist.getName(), false, false, false, false, true, false, false);
-                break;
-            case R.id.playlist_menu_play_now:
-                bundle = new Bundle();
-                bundle.putString(Constants.INTENT_EXTRA_NAME_PLAYLIST_ID, playlist.getId());
-                bundle.putString(Constants.INTENT_EXTRA_NAME_PLAYLIST_NAME, playlist.getName());
-                bundle.putBoolean(Constants.INTENT_EXTRA_NAME_AUTOPLAY, true);
-                Navigation.findNavController(getView()).navigate(R.id.selectAlbumFragment, bundle);
-                break;
-            case R.id.playlist_menu_play_shuffled:
-                bundle = new Bundle();
-                bundle.putString(Constants.INTENT_EXTRA_NAME_PLAYLIST_ID, playlist.getId());
-                bundle.putString(Constants.INTENT_EXTRA_NAME_PLAYLIST_NAME, playlist.getName());
-                bundle.putBoolean(Constants.INTENT_EXTRA_NAME_AUTOPLAY, true);
-                bundle.putBoolean(Constants.INTENT_EXTRA_NAME_SHUFFLE, true);
-                Navigation.findNavController(getView()).navigate(R.id.selectAlbumFragment, bundle);
-                break;
-            case R.id.playlist_menu_delete:
-                deletePlaylist(playlist);
-                break;
-            case R.id.playlist_info:
-                displayPlaylistInfo(playlist);
-                break;
-            case R.id.playlist_update_info:
-                updatePlaylistInfo(playlist);
-                break;
-            default:
-                return super.onContextItemSelected(menuItem);
+        int itemId = menuItem.getItemId();
+        if (itemId == R.id.playlist_menu_pin) {
+            downloadHandler.getValue().downloadPlaylist(this, playlist.getId(), playlist.getName(), true, true, false, false, true, false, false);
+        } else if (itemId == R.id.playlist_menu_unpin) {
+            downloadHandler.getValue().downloadPlaylist(this, playlist.getId(), playlist.getName(), false, false, false, false, true, false, true);
+        } else if (itemId == R.id.playlist_menu_download) {
+            downloadHandler.getValue().downloadPlaylist(this, playlist.getId(), playlist.getName(), false, false, false, false, true, false, false);
+        } else if (itemId == R.id.playlist_menu_play_now) {
+            bundle = new Bundle();
+            bundle.putString(Constants.INTENT_EXTRA_NAME_PLAYLIST_ID, playlist.getId());
+            bundle.putString(Constants.INTENT_EXTRA_NAME_PLAYLIST_NAME, playlist.getName());
+            bundle.putBoolean(Constants.INTENT_EXTRA_NAME_AUTOPLAY, true);
+            Navigation.findNavController(getView()).navigate(R.id.selectAlbumFragment, bundle);
+        } else if (itemId == R.id.playlist_menu_play_shuffled) {
+            bundle = new Bundle();
+            bundle.putString(Constants.INTENT_EXTRA_NAME_PLAYLIST_ID, playlist.getId());
+            bundle.putString(Constants.INTENT_EXTRA_NAME_PLAYLIST_NAME, playlist.getName());
+            bundle.putBoolean(Constants.INTENT_EXTRA_NAME_AUTOPLAY, true);
+            bundle.putBoolean(Constants.INTENT_EXTRA_NAME_SHUFFLE, true);
+            Navigation.findNavController(getView()).navigate(R.id.selectAlbumFragment, bundle);
+        } else if (itemId == R.id.playlist_menu_delete) {
+            deletePlaylist(playlist);
+        } else if (itemId == R.id.playlist_info) {
+            displayPlaylistInfo(playlist);
+        } else if (itemId == R.id.playlist_update_info) {
+            updatePlaylistInfo(playlist);
+        } else {
+            return super.onContextItemSelected(menuItem);
         }
         return true;
     }
@@ -333,7 +320,7 @@ public class PlaylistsFragment extends Fragment {
                     @Override
                     protected void done(Void result)
                     {
-                        refresh();
+                        load(true);
                         Util.toast(getContext(), getResources().getString(R.string.playlist_updated_info, playlist.getName()));
                     }
 
@@ -351,21 +338,5 @@ public class PlaylistsFragment extends Fragment {
         });
         alertDialog.setNegativeButton(R.string.common_cancel, null);
         alertDialog.show();
-    }
-
-    private class GetDataTask extends AsyncTask<Void, Void, String[]>
-    {
-        @Override
-        protected void onPostExecute(String[] result)
-        {
-            super.onPostExecute(result);
-        }
-
-        @Override
-        protected String[] doInBackground(Void... params)
-        {
-            refresh();
-            return null;
-        }
     }
 }

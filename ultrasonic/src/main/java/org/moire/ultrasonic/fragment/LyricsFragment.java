@@ -23,6 +23,9 @@ import org.moire.ultrasonic.util.Util;
 
 import timber.log.Timber;
 
+/**
+ * Displays the lyrics of a song
+ */
 public class LyricsFragment extends Fragment {
 
     private TextView artistView;

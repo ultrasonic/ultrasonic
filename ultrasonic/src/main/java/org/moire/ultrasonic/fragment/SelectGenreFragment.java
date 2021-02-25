@@ -1,6 +1,5 @@
 package org.moire.ultrasonic.fragment;
 
-import android.os.AsyncTask;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -30,6 +29,9 @@ import java.util.List;
 
 import timber.log.Timber;
 
+/**
+ * Displays the available genres in the media library
+ */
 public class SelectGenreFragment extends Fragment {
 
     private SwipeRefreshLayout refreshGenreListView;
@@ -60,7 +62,7 @@ public class SelectGenreFragment extends Fragment {
             @Override
             public void onRefresh()
             {
-                new GetDataTask().executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
+                load(true);
             }
         });
 
@@ -93,21 +95,16 @@ public class SelectGenreFragment extends Fragment {
         super.onDestroyView();
     }
 
-    private void refresh()
-    {
-        load(true);
-    }
-
     private void load(final boolean refresh)
     {
         BackgroundTask<List<Genre>> task = new FragmentBackgroundTask<List<Genre>>(getActivity(), true, refreshGenreListView, cancellationToken)
         {
             @Override
-            protected List<Genre> doInBackground() throws Throwable
+            protected List<Genre> doInBackground()
             {
                 MusicService musicService = MusicServiceFactory.getMusicService(getContext());
 
-                List<Genre> genres = new ArrayList<Genre>();
+                List<Genre> genres = new ArrayList<>();
 
                 try
                 {
@@ -133,21 +130,5 @@ public class SelectGenreFragment extends Fragment {
             }
         };
         task.execute();
-    }
-
-    private class GetDataTask extends AsyncTask<Void, Void, String[]>
-    {
-        @Override
-        protected void onPostExecute(String[] result)
-        {
-            super.onPostExecute(result);
-        }
-
-        @Override
-        protected String[] doInBackground(Void... params)
-        {
-            refresh();
-            return null;
-        }
     }
 }

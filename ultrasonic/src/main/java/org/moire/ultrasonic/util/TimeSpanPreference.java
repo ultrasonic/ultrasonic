@@ -2,13 +2,8 @@ package org.moire.ultrasonic.util;
 
 import android.content.Context;
 import android.util.AttributeSet;
-import android.view.View;
-
 import androidx.preference.DialogPreference;
-
 import org.moire.ultrasonic.R;
-
-import java.util.regex.Pattern;
 
 /**
  * Created by Joshua Bahnsen on 12/22/13.

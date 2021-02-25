@@ -29,6 +29,10 @@ import timber.log.Timber;
 
 import static org.koin.java.KoinJavaComponent.inject;
 
+
+/**
+ * Contains the mini-now playing information box displayed at the bottom of the screen
+ */
 public class NowPlayingFragment extends Fragment {
 
     private static final int MIN_DISTANCE = 30;
@@ -130,7 +134,7 @@ public class NowPlayingFragment extends Fragment {
             getView().setOnTouchListener(new View.OnTouchListener() {
                 @Override
                 public boolean onTouch(View v, MotionEvent event) {
-                    return handleOnTouch(v, event);
+                    return handleOnTouch(event);
                 }
             });
 
@@ -153,7 +157,7 @@ public class NowPlayingFragment extends Fragment {
         }
     }
 
-    private boolean handleOnTouch(View v, MotionEvent event) {
+    private boolean handleOnTouch(MotionEvent event) {
         switch (event.getAction())
         {
             case MotionEvent.ACTION_DOWN:

@@ -21,6 +21,9 @@ import org.moire.ultrasonic.service.MediaPlayerController;
 import org.moire.ultrasonic.util.Constants;
 import org.moire.ultrasonic.util.FileUtil;
 
+/**
+ * Widget Provider for the Ultrasonic Widgets
+ */
 public class UltrasonicAppWidgetProvider extends AppWidgetProvider
 {
 	protected int layoutId;
@@ -73,7 +76,7 @@ public class UltrasonicAppWidgetProvider extends AppWidgetProvider
 	{
 		if (hasInstances(context))
 		{
-			performUpdate(context, currentSong, null, playing, setAlbum);
+			performUpdate(context, currentSong, playing, setAlbum);
 		}
 	}
 
@@ -96,7 +99,7 @@ public class UltrasonicAppWidgetProvider extends AppWidgetProvider
 	/**
 	 * Update all active widget instances by pushing changes
 	 */
-	private void performUpdate(Context context, MusicDirectory.Entry currentSong, int[] appWidgetIds, boolean playing, boolean setAlbum)
+	private void performUpdate(Context context, MusicDirectory.Entry currentSong, boolean playing, boolean setAlbum)
 	{
 		final Resources res = context.getResources();
 		final RemoteViews views = new RemoteViews(context.getPackageName(), this.layoutId);
@@ -177,7 +180,7 @@ public class UltrasonicAppWidgetProvider extends AppWidgetProvider
 		// Link actions buttons to intents
 		linkButtons(context, views, currentSong != null);
 
-		pushUpdate(context, appWidgetIds, views);
+		pushUpdate(context, null, views);
 	}
 
 	/**
@@ -185,7 +188,7 @@ public class UltrasonicAppWidgetProvider extends AppWidgetProvider
 	 */
 	private static void linkButtons(Context context, RemoteViews views, boolean playerActive)
 	{
-		Intent intent = new Intent(context, NavigationActivity.class).addFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);;
+		Intent intent = new Intent(context, NavigationActivity.class).addFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
 		if (playerActive)
 			intent.putExtra(Constants.INTENT_EXTRA_NAME_SHOW_PLAYER, true);
 

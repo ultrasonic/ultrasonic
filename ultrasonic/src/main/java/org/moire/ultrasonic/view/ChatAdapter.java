@@ -27,13 +27,13 @@ import static org.koin.java.KoinJavaComponent.inject;
 public class ChatAdapter extends ArrayAdapter<ChatMessage>
 {
 	private final Context context;
-	private List<ChatMessage> messages;
+	private final List<ChatMessage> messages;
 
 	private static final String phoneRegex = "1?\\W*([2-9][0-8][0-9])\\W*([2-9][0-9]{2})\\W*([0-9]{4})";
 	private static final Pattern phoneMatcher = Pattern.compile(phoneRegex);
 
-	private Lazy<ActiveServerProvider> activeServerProvider = inject(ActiveServerProvider.class);
-	private Lazy<ImageLoaderProvider> imageLoader = inject(ImageLoaderProvider.class);
+	private final Lazy<ActiveServerProvider> activeServerProvider = inject(ActiveServerProvider.class);
+	private final Lazy<ImageLoaderProvider> imageLoader = inject(ImageLoaderProvider.class);
 
 	public ChatAdapter(Context context, List<ChatMessage> messages)
 	{

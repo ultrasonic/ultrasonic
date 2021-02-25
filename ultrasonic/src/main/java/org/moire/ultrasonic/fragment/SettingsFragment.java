@@ -21,6 +21,7 @@ import androidx.preference.PreferenceManager;
 import timber.log.Timber;
 import android.view.View;
 
+import org.jetbrains.annotations.NotNull;
 import org.koin.java.KoinJavaComponent;
 import org.moire.ultrasonic.R;
 import org.moire.ultrasonic.featureflags.Feature;
@@ -100,7 +101,7 @@ public class SettingsFragment extends PreferenceFragmentCompat
     }
 
     @Override
-    public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
+    public void onViewCreated(@NotNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         FragmentTitle.Companion.setTitle(this, R.string.menu_settings);
 
@@ -192,8 +193,7 @@ public class SettingsFragment extends PreferenceFragmentCompat
         } else if (Constants.PREFERENCES_KEY_DEBUG_LOG_TO_FILE.equals(key)) {
             setDebugLogToFile(sharedPreferences.getBoolean(key, false));
         } else if (Constants.PREFERENCES_KEY_ID3_TAGS.equals(key)) {
-            if (sharedPreferences.getBoolean(key, false)) showArtistPicture.setEnabled(true);
-            else showArtistPicture.setEnabled(false);
+            showArtistPicture.setEnabled(sharedPreferences.getBoolean(key, false));
         } else if (Constants.PREFERENCES_KEY_THEME.equals(key)) {
             themeChangedEventDistributor.getValue().RaiseThemeChangedEvent();
         }
@@ -214,7 +214,7 @@ public class SettingsFragment extends PreferenceFragmentCompat
         if (dialogFragment != null)
         {
             dialogFragment.setTargetFragment(this, 0);
-            dialogFragment.show(this.getFragmentManager(), "android.support.v7.preference.PreferenceFragment.DIALOG");
+            dialogFragment.show(this.getParentFragmentManager(), "android.support.v7.preference.PreferenceFragment.DIALOG");
         }
         else
         {
@@ -465,8 +465,7 @@ public class SettingsFragment extends PreferenceFragmentCompat
             debugLogToFile.setSummary("");
         }
 
-        if (Util.getShouldUseId3Tags(getActivity())) showArtistPicture.setEnabled(true);
-        else showArtistPicture.setEnabled(false);
+        showArtistPicture.setEnabled(Util.getShouldUseId3Tags(getActivity()));
     }
 
     private void setImageLoaderConcurrency(int concurrency) {
@@ -503,11 +502,7 @@ public class SettingsFragment extends PreferenceFragmentCompat
     }
 
     private void setBluetoothPreferences(boolean enabled) {
-        if (enabled) {
-            sendBluetoothAlbumArt.setEnabled(true);
-        } else {
-            sendBluetoothAlbumArt.setEnabled(false);
-        }
+        sendBluetoothAlbumArt.setEnabled(enabled);
     }
 
     private void setCacheLocation(String path) {

@@ -82,6 +82,9 @@ import static org.moire.ultrasonic.domain.PlayerState.IDLE;
 import static org.moire.ultrasonic.domain.PlayerState.PAUSED;
 import static org.moire.ultrasonic.domain.PlayerState.STOPPED;
 
+/**
+ * Contains the Music Player screen of Ultrasonic with playback controls and the playlist
+ */
 public class PlayerFragment extends Fragment implements GestureDetector.OnGestureListener {
 
     private static final int PERCENTAGE_OF_SCREEN_FOR_SWIPE = 5;
@@ -235,16 +238,14 @@ public class PlayerFragment extends Fragment implements GestureDetector.OnGestur
             }
         });
 
-        View.OnTouchListener touchListener = new View.OnTouchListener()
+        albumArtImageView.setOnTouchListener(new View.OnTouchListener()
         {
             @Override
             public boolean onTouch(View view, MotionEvent me)
             {
                 return gestureScanner.onTouchEvent(me);
             }
-        };
-
-        albumArtImageView.setOnTouchListener(touchListener);
+        });
 
         albumArtImageView.setOnClickListener(new View.OnClickListener()
         {
@@ -265,7 +266,7 @@ public class PlayerFragment extends Fragment implements GestureDetector.OnGestur
                 new SilentBackgroundTask<Void>(getActivity())
                 {
                     @Override
-                    protected Void doInBackground() throws Throwable
+                    protected Void doInBackground()
                     {
                         mediaPlayerControllerLazy.getValue().previous();
                         return null;
@@ -301,7 +302,7 @@ public class PlayerFragment extends Fragment implements GestureDetector.OnGestur
                 new SilentBackgroundTask<Boolean>(getActivity())
                 {
                     @Override
-                    protected Boolean doInBackground() throws Throwable
+                    protected Boolean doInBackground()
                     {
                         if (mediaPlayerControllerLazy.getValue().getCurrentPlayingNumberOnPlaylist() < mediaPlayerControllerLazy.getValue().getPlaylistSize() - 1)
                         {
@@ -345,7 +346,7 @@ public class PlayerFragment extends Fragment implements GestureDetector.OnGestur
                 new SilentBackgroundTask<Void>(getActivity())
                 {
                     @Override
-                    protected Void doInBackground() throws Throwable
+                    protected Void doInBackground()
                     {
                         mediaPlayerControllerLazy.getValue().pause();
                         return null;
@@ -369,7 +370,7 @@ public class PlayerFragment extends Fragment implements GestureDetector.OnGestur
                 new SilentBackgroundTask<Void>(getActivity())
                 {
                     @Override
-                    protected Void doInBackground() throws Throwable
+                    protected Void doInBackground()
                     {
                         mediaPlayerControllerLazy.getValue().reset();
                         return null;
@@ -395,7 +396,7 @@ public class PlayerFragment extends Fragment implements GestureDetector.OnGestur
                 new SilentBackgroundTask<Void>(getActivity())
                 {
                     @Override
-                    protected Void doInBackground() throws Throwable
+                    protected Void doInBackground()
                     {
                         start();
                         return null;
@@ -456,7 +457,7 @@ public class PlayerFragment extends Fragment implements GestureDetector.OnGestur
                 new SilentBackgroundTask<Void>(getActivity())
                 {
                     @Override
-                    protected Void doInBackground() throws Throwable
+                    protected Void doInBackground()
                     {
                         mediaPlayerControllerLazy.getValue().seekTo(getProgressBar().getProgress());
                         return null;
@@ -491,7 +492,7 @@ public class PlayerFragment extends Fragment implements GestureDetector.OnGestur
                 new SilentBackgroundTask<Void>(getActivity())
                 {
                     @Override
-                    protected Void doInBackground() throws Throwable
+                    protected Void doInBackground()
                     {
                         mediaPlayerControllerLazy.getValue().play(position);
                         return null;
@@ -812,7 +813,7 @@ public class PlayerFragment extends Fragment implements GestureDetector.OnGestur
     }
 
     @Override
-    public void onCreateContextMenu(final ContextMenu menu, final View view, final ContextMenu.ContextMenuInfo menuInfo)
+    public void onCreateContextMenu(final @NotNull ContextMenu menu, final @NotNull View view, final ContextMenu.ContextMenuInfo menuInfo)
     {
         super.onCreateContextMenu(menu, view, menuInfo);
         if (view == playlistView)
@@ -1345,7 +1346,7 @@ public class PlayerFragment extends Fragment implements GestureDetector.OnGestur
             PlayerState playerState;
 
             @Override
-            protected Void doInBackground() throws Throwable
+            protected Void doInBackground()
             {
                 this.mediaPlayerController = mediaPlayerControllerLazy.getValue();
                 isJukeboxEnabled = this.mediaPlayerController.isJukeboxEnabled();
@@ -1409,13 +1410,9 @@ public class PlayerFragment extends Fragment implements GestureDetector.OnGestur
                         FragmentTitle.Companion.setTitle(PlayerFragment.this, R.string.common_appname);
                         break;
                     case IDLE:
-                        break;
                     case PREPARED:
-                        break;
                     case STOPPED:
-                        break;
                     case PAUSED:
-                        break;
                     case COMPLETED:
                         break;
                 }
@@ -1464,13 +1461,13 @@ public class PlayerFragment extends Fragment implements GestureDetector.OnGestur
             int seekTo;
 
             @Override
-            protected Void doInBackground() throws Throwable
+            protected Void doInBackground()
             {
                 msPlayed = Math.max(0, mediaPlayerController.getPlayerPosition());
                 duration = mediaPlayerController.getPlayerDuration();
 
                 final int msTotal = duration;
-                seekTo = msPlayed + ms > msTotal ? msTotal : msPlayed + ms;
+                seekTo = Math.min(msPlayed + ms, msTotal);
                 mediaPlayerController.seekTo(seekTo);
                 return null;
             }

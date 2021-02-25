@@ -59,7 +59,7 @@ public class EntryAdapter extends ArrayAdapter<Entry>
 		{
 			AlbumView view;
 
-			if (convertView != null && convertView instanceof AlbumView)
+			if (convertView instanceof AlbumView)
 			{
 				AlbumView currentView = (AlbumView) convertView;
 
@@ -87,7 +87,7 @@ public class EntryAdapter extends ArrayAdapter<Entry>
 		{
 			SongView view;
 
-			if (convertView != null && convertView instanceof SongView)
+			if (convertView instanceof SongView)
 			{
 				SongView currentView = (SongView) convertView;
 

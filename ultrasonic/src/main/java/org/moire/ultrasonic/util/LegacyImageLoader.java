@@ -40,6 +40,7 @@ import org.moire.ultrasonic.service.MusicServiceFactory;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.Locale;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.atomic.AtomicBoolean;
@@ -100,7 +101,7 @@ public class LegacyImageLoader implements Runnable, ImageLoader {
         threads = Collections.synchronizedCollection(new ArrayList<Thread>(this.concurrency));
 
         for (int i = 0; i < this.concurrency; i++) {
-            Thread thread = new Thread(this, String.format("ImageLoader_%d", i));
+            Thread thread = new Thread(this, String.format(Locale.US, "ImageLoader_%d", i));
             threads.add(thread);
             thread.start();
         }
@@ -213,7 +214,7 @@ public class LegacyImageLoader implements Runnable, ImageLoader {
     }
 
     private static String getKey(String coverArtId, int size) {
-        return String.format("%s:%d", coverArtId, size);
+        return String.format(Locale.US, "%s:%d", coverArtId, size);
     }
 
     @Override
@@ -336,10 +337,6 @@ public class LegacyImageLoader implements Runnable, ImageLoader {
 
     private void setUnknownAvatarImage(View view) {
         setAvatarImageBitmap(view, null, unknownAvatarImage, false);
-    }
-
-    private void setUnknownImage(View view, boolean large) {
-        setUnknownImage(view, large, -1);
     }
 
     private void setUnknownImage(View view, boolean large, int resId) {

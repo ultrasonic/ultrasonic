@@ -44,7 +44,6 @@ import org.moire.ultrasonic.domain.UserInfo;
 import org.moire.ultrasonic.util.CancellableTask;
 import org.moire.ultrasonic.util.Constants;
 import org.moire.ultrasonic.util.FileUtil;
-import org.moire.ultrasonic.util.ProgressListener;
 import org.moire.ultrasonic.util.Util;
 
 import java.io.BufferedReader;
@@ -509,7 +508,7 @@ public class OfflineMusicService implements MusicService
 	@Override
 	public List<Playlist> getPlaylists(boolean refresh, Context context)
 	{
-		List<Playlist> playlists = new ArrayList<Playlist>();
+		List<Playlist> playlists = new ArrayList<>();
 		File root = FileUtil.getPlaylistDirectory(context);
 		String lastServer = null;
 		boolean removeServer = true;
@@ -544,11 +543,13 @@ public class OfflineMusicService implements MusicService
 				// Delete legacy playlist files
 				try
 				{
-					folder.delete();
+					if (!folder.delete()) {
+						Timber.w("Failed to delete old playlist file: %s", folder.getName());
+					}
 				}
 				catch (Exception e)
 				{
-					Timber.w("Failed to delete old playlist file: %s", folder.getName());
+					Timber.w(e, "Failed to delete old playlist file: %s", folder.getName());
 				}
 			}
 		}

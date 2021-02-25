@@ -27,6 +27,9 @@ import org.moire.ultrasonic.view.PodcastsChannelsAdapter;
 
 import java.util.List;
 
+/**
+ * Displays the podcasts available on the server
+ */
 public class PodcastFragment extends Fragment {
 
     private View emptyTextView;

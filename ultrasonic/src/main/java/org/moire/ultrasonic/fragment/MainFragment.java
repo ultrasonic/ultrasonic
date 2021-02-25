@@ -27,6 +27,9 @@ import kotlin.Lazy;
 import static java.util.Arrays.asList;
 import static org.koin.java.KoinJavaComponent.inject;
 
+/**
+ * Displays the Main screen of Ultrasonic, where the music library can be browsed
+ */
 public class MainFragment extends Fragment {
 
     private static boolean shouldUseId3;
@@ -84,7 +87,7 @@ public class MainFragment extends Fragment {
 
     private void setupMenuList(ListView list)
     {
-        final View buttons = getLayoutInflater().inflate(R.layout.main_buttons, null);
+        final View buttons = getLayoutInflater().inflate(R.layout.main_buttons, list, false);
         final View serverButton = buttons.findViewById(R.id.main_select_server);
         final TextView serverTextView = serverButton.findViewById(R.id.main_select_server_2);
 

@@ -24,10 +24,14 @@ import org.moire.ultrasonic.audiofx.EqualizerController;
 import org.moire.ultrasonic.util.Util;
 
 import java.util.HashMap;
+import java.util.Locale;
 import java.util.Map;
 
 import timber.log.Timber;
 
+/**
+ * Displays the Equalizer
+ */
 public class EqualizerFragment extends Fragment {
 
     private static final int MENU_GROUP_PRESET = 100;
@@ -37,7 +41,7 @@ public class EqualizerFragment extends Fragment {
     private Equalizer equalizer;
     private LinearLayout equalizerLayout;
     private View presetButton;
-    private  CheckBox enabledCheckBox;
+    private CheckBox enabledCheckBox;
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
@@ -124,7 +128,7 @@ public class EqualizerFragment extends Fragment {
         }
         catch (Exception ex)
         {
-            //TODO: Show a dialog
+            //TODO: Show a dialog?
             Timber.i(ex, "An exception has occurred in EqualizerFragment onContextItemSelected");
         }
 
@@ -179,7 +183,7 @@ public class EqualizerFragment extends Fragment {
         }
         catch (Exception ex)
         {
-            //TODO: Show a dialog
+            //TODO: Show a dialog?
             Timber.i(ex, "An exception has occurred in EqualizerFragment updateBars");
         }
     }
@@ -200,7 +204,7 @@ public class EqualizerFragment extends Fragment {
             {
                 final short band = i;
 
-                View bandBar = LayoutInflater.from(getContext()).inflate(R.layout.equalizer_bar, null);
+                View bandBar = LayoutInflater.from(getContext()).inflate(R.layout.equalizer_bar, equalizerLayout, false);
                 TextView freqTextView;
 
                 if (bandBar != null)
@@ -209,7 +213,7 @@ public class EqualizerFragment extends Fragment {
                     final TextView levelTextView = (TextView) bandBar.findViewById(R.id.equalizer_level);
                     SeekBar bar = (SeekBar) bandBar.findViewById(R.id.equalizer_bar);
 
-                    freqTextView.setText((equalizer.getCenterFreq(band) / 1000) + " Hz");
+                    freqTextView.setText(String.format(Locale.getDefault(), "%d Hz", equalizer.getCenterFreq(band) / 1000));
 
                     bars.put(band, bar);
                     bar.setMax(maxEQLevel - minEQLevel);
@@ -265,7 +269,7 @@ public class EqualizerFragment extends Fragment {
     {
         if (levelTextView != null)
         {
-            levelTextView.setText(String.format("%s%d dB", level > 0 ? "+" : "", level / 100));
+            levelTextView.setText(String.format(Locale.getDefault(), "%s%d dB", level > 0 ? "+" : "", level / 100));
         }
     }
 }

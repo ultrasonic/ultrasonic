@@ -1,8 +1,6 @@
 package org.moire.ultrasonic.util;
 
-import android.annotation.SuppressLint;
 import android.app.Activity;
-
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 /**

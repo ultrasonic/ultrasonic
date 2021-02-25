@@ -18,6 +18,10 @@ import org.moire.ultrasonic.util.Util
 import timber.log.Timber
 import timber.log.Timber.DebugTree
 
+/**
+ * The Main class of the Application
+ */
+@Suppress("unused")
 class UApp : MultiDexApplication() {
     override fun onCreate() {
         super.onCreate()

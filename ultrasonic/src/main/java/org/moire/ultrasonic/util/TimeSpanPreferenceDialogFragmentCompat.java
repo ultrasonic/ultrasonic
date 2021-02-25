@@ -1,17 +1,15 @@
 package org.moire.ultrasonic.util;
 
 import android.content.Context;
-import android.util.AttributeSet;
 import android.view.View;
-
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.preference.DialogPreference;
 import androidx.preference.Preference;
 import androidx.preference.PreferenceDialogFragmentCompat;
-
 import org.moire.ultrasonic.R;
 
+import java.util.Locale;
 import java.util.regex.Pattern;
 
 /**
@@ -72,7 +70,7 @@ public class TimeSpanPreferenceDialogFragmentCompat extends PreferenceDialogFrag
 			{
 				String tsType = picker.getTimeSpanType();
 
-				persisted = String.format("%d:%s", tsAmount, tsType);
+				persisted = String.format(Locale.US, "%d:%s", tsAmount, tsType);
 			}
 		}
 

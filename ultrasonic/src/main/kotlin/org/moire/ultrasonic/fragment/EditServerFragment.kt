@@ -30,7 +30,7 @@ import org.moire.ultrasonic.util.ModalBackgroundTask
 import org.moire.ultrasonic.util.Util
 import timber.log.Timber
 
-class EditServerFragment : Fragment() {
+class EditServerFragment : Fragment(), OnBackPressedHandler {
     companion object {
         const val EDIT_SERVER_INTENT_INDEX = "index"
     }
@@ -139,6 +139,10 @@ class EditServerFragment : Fragment() {
                 testConnection()
             }
         }
+    }
+
+    override fun onBackPressed() {
+        finishActivity()
     }
 
     override fun onSaveInstanceState(savedInstanceState: Bundle) {
@@ -269,10 +273,10 @@ class EditServerFragment : Fragment() {
      */
     private fun areFieldsChanged(): Boolean {
         if (currentServerSetting == null || currentServerSetting!!.id == -1) {
-            return !serverNameEditText!!.editText?.text!!.isBlank() ||
+            return serverNameEditText!!.editText?.text!!.isNotBlank() ||
                 serverAddressEditText!!.editText?.text.toString() != "http://" ||
-                !userNameEditText!!.editText?.text!!.isBlank() ||
-                !passwordEditText!!.editText?.text!!.isBlank()
+                userNameEditText!!.editText?.text!!.isNotBlank() ||
+                passwordEditText!!.editText?.text!!.isNotBlank()
         }
 
         return currentServerSetting!!.name != serverNameEditText!!.editText?.text.toString() ||
@@ -363,6 +367,7 @@ class EditServerFragment : Fragment() {
                 .setMessage(R.string.server_editor_leave_confirmation)
                 .setPositiveButton(R.string.common_ok) { dialog, _ ->
                     dialog.dismiss()
+                    Util.hideKeyboard(activity)
                     findNavController().navigateUp()
                 }
                 .setNegativeButton(R.string.common_cancel) { dialog, _ ->
@@ -370,6 +375,7 @@ class EditServerFragment : Fragment() {
                 }
                 .show()
         } else {
+            Util.hideKeyboard(activity)
             findNavController().navigateUp()
         }
     }

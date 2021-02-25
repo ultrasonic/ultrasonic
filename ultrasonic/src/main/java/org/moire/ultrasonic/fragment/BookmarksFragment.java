@@ -1,6 +1,5 @@
 package org.moire.ultrasonic.fragment;
 
-import android.os.AsyncTask;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -38,6 +37,9 @@ import kotlin.Lazy;
 
 import static org.koin.java.KoinJavaComponent.inject;
 
+/**
+ * Lists the Bookmarks available on the server
+ */
 public class BookmarksFragment extends Fragment {
 
     private SwipeRefreshLayout refreshAlbumListView;
@@ -82,7 +84,8 @@ public class BookmarksFragment extends Fragment {
             @Override
             public void onRefresh()
             {
-                new GetDataTask().executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
+                enableButtons();
+                getBookmarks();
             }
         });
 
@@ -219,7 +222,7 @@ public class BookmarksFragment extends Fragment {
 
     private static List<MusicDirectory.Entry> getSelectedSongs(ListView albumListView)
     {
-        List<MusicDirectory.Entry> songs = new ArrayList<MusicDirectory.Entry>(10);
+        List<MusicDirectory.Entry> songs = new ArrayList<>(10);
 
         if (albumListView != null)
         {
@@ -234,12 +237,6 @@ public class BookmarksFragment extends Fragment {
         }
 
         return songs;
-    }
-
-    private void refresh()
-    {
-        enableButtons();
-        getBookmarks();
     }
 
     private void selectAllOrNone()
@@ -434,22 +431,6 @@ public class BookmarksFragment extends Fragment {
             emptyView.setVisibility(entries.isEmpty() ? View.VISIBLE : View.GONE);
 
             albumListView.setAdapter(new EntryAdapter(getContext(), imageLoader.getValue().getImageLoader(), entries, true));
-        }
-    }
-
-    private class GetDataTask extends AsyncTask<Void, Void, String[]>
-    {
-        @Override
-        protected void onPostExecute(String[] result)
-        {
-            super.onPostExecute(result);
-        }
-
-        @Override
-        protected String[] doInBackground(Void... params)
-        {
-            refresh();
-            return null;
         }
     }
 }

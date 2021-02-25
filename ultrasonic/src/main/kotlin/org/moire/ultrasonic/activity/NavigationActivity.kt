@@ -32,6 +32,7 @@ import org.koin.android.viewmodel.ext.android.viewModel
 import org.moire.ultrasonic.R
 import org.moire.ultrasonic.data.ActiveServerProvider.Companion.isOffline
 import org.moire.ultrasonic.domain.PlayerState
+import org.moire.ultrasonic.fragment.OnBackPressedHandler
 import org.moire.ultrasonic.fragment.ServerSettingsModel
 import org.moire.ultrasonic.provider.SearchSuggestionProvider
 import org.moire.ultrasonic.service.DownloadFile
@@ -53,14 +54,15 @@ import timber.log.Timber
  * The main Activity of Ultrasonic which loads all other screens as Fragments
  */
 class NavigationActivity : AppCompatActivity() {
-    var chatMenuItem: MenuItem? = null
-    var bookmarksMenuItem: MenuItem? = null
-    var sharesMenuItem: MenuItem? = null
-    var podcastsMenuItem: MenuItem? = null
-    var nowPlayingView: FragmentContainerView? = null
-    var nowPlayingHidden = false
-    var navigationView: NavigationView? = null
-    var drawerLayout: DrawerLayout? = null
+    private var chatMenuItem: MenuItem? = null
+    private var bookmarksMenuItem: MenuItem? = null
+    private var sharesMenuItem: MenuItem? = null
+    private var podcastsMenuItem: MenuItem? = null
+    private var nowPlayingView: FragmentContainerView? = null
+    private var nowPlayingHidden = false
+    private var navigationView: NavigationView? = null
+    private var drawerLayout: DrawerLayout? = null
+    private var host: NavHostFragment? = null
 
     private lateinit var appBarConfiguration: AppBarConfiguration
     private lateinit var nowPlayingEventListener: NowPlayingEventListener
@@ -93,10 +95,10 @@ class NavigationActivity : AppCompatActivity() {
         val toolbar = findViewById<Toolbar>(R.id.toolbar)
         setSupportActionBar(toolbar)
 
-        val host: NavHostFragment = supportFragmentManager
+        host = supportFragmentManager
             .findFragmentById(R.id.nav_host_fragment) as NavHostFragment? ?: return
 
-        val navController = host.navController
+        val navController = host!!.navController
 
         appBarConfiguration = AppBarConfiguration(
             setOf(
@@ -123,7 +125,7 @@ class NavigationActivity : AppCompatActivity() {
             val dest: String = try {
                 resources.getResourceName(destination.id)
             } catch (e: Resources.NotFoundException) {
-                Integer.toString(destination.id)
+                destination.id.toString()
             }
             Timber.d("Navigated to $dest")
 
@@ -209,7 +211,7 @@ class NavigationActivity : AppCompatActivity() {
         navigationView?.setupWithNavController(navController)
 
         // The exit menu is handled here manually
-        val exitItem: MenuItem? = navigationView?.menu?.findItem(R.id.menu_exit) ?: null
+        val exitItem: MenuItem? = navigationView?.menu?.findItem(R.id.menu_exit)
         exitItem?.setOnMenuItemClickListener { item ->
             if (item.itemId == R.id.menu_exit) {
                 setResult(Constants.RESULT_CLOSE_ALL)
@@ -235,7 +237,9 @@ class NavigationActivity : AppCompatActivity() {
         if (drawerLayout?.isDrawerVisible(GravityCompat.START) == true) {
             this.drawerLayout?.closeDrawer(GravityCompat.START)
         } else {
-            super.onBackPressed()
+            val currentFragment = host!!.childFragmentManager.fragments.last()
+            if (currentFragment is OnBackPressedHandler) currentFragment.onBackPressed()
+            else super.onBackPressed()
         }
     }
 
@@ -254,7 +258,13 @@ class NavigationActivity : AppCompatActivity() {
     }
 
     override fun onSupportNavigateUp(): Boolean {
-        return findNavController(R.id.nav_host_fragment).navigateUp(appBarConfiguration)
+        val currentFragment = host!!.childFragmentManager.fragments.last()
+        return if (currentFragment is OnBackPressedHandler) {
+            currentFragment.onBackPressed()
+            true
+        } else {
+            findNavController(R.id.nav_host_fragment).navigateUp(appBarConfiguration)
+        }
     }
 
     // TODO Test if this works with external Intents

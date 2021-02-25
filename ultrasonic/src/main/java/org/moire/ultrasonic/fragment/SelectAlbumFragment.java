@@ -1,6 +1,5 @@
 package org.moire.ultrasonic.fragment;
 
-import android.os.AsyncTask;
 import android.os.Bundle;
 import android.view.ContextMenu;
 import android.view.LayoutInflater;
@@ -57,6 +56,9 @@ import timber.log.Timber;
 
 import static org.koin.java.KoinJavaComponent.inject;
 
+/**
+ * Displays a group of playable media from the library, which can be an Album, a Playlist, etc.
+ */
 public class SelectAlbumFragment extends Fragment {
 
     public static final String allSongsId = "-1";
@@ -79,7 +81,7 @@ public class SelectAlbumFragment extends Fragment {
     private MenuItem playAllButton;
     private MenuItem shareButton;
     private boolean showHeader = true;
-    private Random random = new java.security.SecureRandom();
+    private final Random random = new java.security.SecureRandom();
 
     private final Lazy<MediaPlayerController> mediaPlayerControllerLazy = inject(MediaPlayerController.class);
     private final Lazy<VideoPlayer> videoPlayer = inject(VideoPlayer.class);
@@ -115,7 +117,7 @@ public class SelectAlbumFragment extends Fragment {
         {
             @Override
             public void onRefresh() {
-                new SelectAlbumFragment.GetDataTask().executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
+                updateDisplay(true);
             }
         });
 
@@ -198,7 +200,7 @@ public class SelectAlbumFragment extends Fragment {
             @Override
             public void onClick(View view)
             {
-                playNow(false, false);
+                playNow(false);
             }
         });
         playNextButton.setOnClickListener(new View.OnClickListener()
@@ -215,7 +217,7 @@ public class SelectAlbumFragment extends Fragment {
             @Override
             public void onClick(View view)
             {
-                playNow(false, true);
+                playNow(true);
             }
         });
         pinButton.setOnClickListener(new View.OnClickListener()
@@ -333,7 +335,7 @@ public class SelectAlbumFragment extends Fragment {
     }
 
     @Override
-    public void onCreateContextMenu(ContextMenu menu, View view, ContextMenu.ContextMenuInfo menuInfo)
+    public void onCreateContextMenu(@NotNull ContextMenu menu, @NotNull View view, ContextMenu.ContextMenuInfo menuInfo)
     {
         super.onCreateContextMenu(menu, view, menuInfo);
         AdapterView.AdapterContextMenuInfo info = (AdapterView.AdapterContextMenuInfo) menuInfo;
@@ -397,7 +399,7 @@ public class SelectAlbumFragment extends Fragment {
         } else if (itemId == R.id.select_album_play_all) {
             playAll();
         } else if (itemId == R.id.menu_item_share) {
-            List<MusicDirectory.Entry> entries = new ArrayList<MusicDirectory.Entry>(1);
+            List<MusicDirectory.Entry> entries = new ArrayList<>(1);
             entries.add(entry);
             shareHandler.getValue().createShare(this, entries, refreshAlbumListView, cancellationToken);
             return true;
@@ -453,18 +455,18 @@ public class SelectAlbumFragment extends Fragment {
         super.onDestroyView();
     }
 
-    private void playNow(final boolean shuffle, final boolean append)
+    private void playNow(final boolean append)
     {
         List<MusicDirectory.Entry> selectedSongs = getSelectedSongs(albumListView);
 
         if (!selectedSongs.isEmpty())
         {
-            downloadHandler.getValue().download(this, append, false, !append, false, shuffle, selectedSongs);
+            downloadHandler.getValue().download(this, append, false, !append, false, false, selectedSongs);
             selectAll(false, false);
         }
         else
         {
-            playAll(shuffle, append);
+            playAll(false, append);
         }
     }
 
@@ -504,7 +506,7 @@ public class SelectAlbumFragment extends Fragment {
 
     private static List<MusicDirectory.Entry> getSelectedSongs(ListView albumListView)
     {
-        List<MusicDirectory.Entry> songs = new ArrayList<MusicDirectory.Entry>(10);
+        List<MusicDirectory.Entry> songs = new ArrayList<>(10);
 
         if (albumListView != null)
         {
@@ -519,15 +521,6 @@ public class SelectAlbumFragment extends Fragment {
         }
 
         return songs;
-    }
-
-    private void refresh()
-    {
-        getView().post(new Runnable() {
-            public void run() {
-                updateDisplay(true);
-            }
-        });
     }
 
     private void getMusicDirectory(final boolean refresh, final String id, final String name, final String parentId)
@@ -545,7 +538,7 @@ public class SelectAlbumFragment extends Fragment {
                 {
                     MusicDirectory musicDirectory = service.getMusicDirectory(parentId, name, refresh, getContext());
 
-                    List<MusicDirectory.Entry> songs = new LinkedList<MusicDirectory.Entry>();
+                    List<MusicDirectory.Entry> songs = new LinkedList<>();
                     getSongsRecursively(musicDirectory, songs);
 
                     for (MusicDirectory.Entry song : songs)
@@ -672,7 +665,7 @@ public class SelectAlbumFragment extends Fragment {
                 {
                     MusicDirectory root = new MusicDirectory();
 
-                    Collection<MusicDirectory.Entry> songs = new LinkedList<MusicDirectory.Entry>();
+                    Collection<MusicDirectory.Entry> songs = new LinkedList<>();
                     getSongsForArtist(parentId, songs);
 
                     for (MusicDirectory.Entry song : songs)
@@ -1095,7 +1088,7 @@ public class SelectAlbumFragment extends Fragment {
             MusicService musicService = MusicServiceFactory.getMusicService(getContext());
             MusicDirectory dir = load(musicService);
             boolean valid = musicService.isLicenseValid(getContext());
-            return new Pair<MusicDirectory, Boolean>(dir, valid);
+            return new Pair<>(dir, valid);
         }
 
         @Override
@@ -1273,22 +1266,6 @@ public class SelectAlbumFragment extends Fragment {
             durationView.setText(duration);
 
             return header;
-        }
-    }
-
-    private class GetDataTask extends AsyncTask<Void, Void, String[]>
-    {
-        @Override
-        protected void onPostExecute(String[] result)
-        {
-            super.onPostExecute(result);
-        }
-
-        @Override
-        protected String[] doInBackground(Void... params)
-        {
-            refresh();
-            return null;
         }
     }
 }

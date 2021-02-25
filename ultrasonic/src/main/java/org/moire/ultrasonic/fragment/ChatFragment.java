@@ -1,6 +1,5 @@
 package org.moire.ultrasonic.fragment;
 
-import android.os.AsyncTask;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
@@ -44,6 +43,9 @@ import kotlin.Lazy;
 
 import static org.koin.java.KoinJavaComponent.inject;
 
+/**
+ * Provides online chat functionality
+ */
 public class ChatFragment extends Fragment {
 
     private ListView chatListView;
@@ -51,7 +53,7 @@ public class ChatFragment extends Fragment {
     private ImageButton sendButton;
     private Timer timer;
     private volatile static Long lastChatMessageTime = (long) 0;
-    private static final ArrayList<ChatMessage> messageList = new ArrayList<ChatMessage>();
+    private static final ArrayList<ChatMessage> messageList = new ArrayList<>();
     private CancellationToken cancellationToken;
     private SwipeRefreshLayout swipeRefresh;
 
@@ -153,12 +155,11 @@ public class ChatFragment extends Fragment {
      */
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        switch (item.getItemId()) {
-            // Check if user triggered a refresh:
-            case R.id.menu_refresh:
-                // Start the refresh background task.
-                new GetDataTask().executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
-                return true;
+        // Check if user triggered a refresh:
+        if (item.getItemId() == R.id.menu_refresh) {
+            // Start the refresh background task.
+            load();
+            return true;
         }
         // User didn't trigger a refresh, let the superclass handle this action
         return super.onOptionsItemSelected(item);
@@ -312,21 +313,5 @@ public class ChatFragment extends Fragment {
         };
 
         task.execute();
-    }
-
-    private class GetDataTask extends AsyncTask<Void, Void, String[]>
-    {
-        @Override
-        protected void onPostExecute(String[] result)
-        {
-            load();
-            super.onPostExecute(result);
-        }
-
-        @Override
-        protected String[] doInBackground(Void... params)
-        {
-            return null;
-        }
     }
 }

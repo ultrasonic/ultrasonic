@@ -16,9 +16,13 @@ import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
+import org.jetbrains.annotations.NotNull;
 import org.moire.ultrasonic.R;
 import org.moire.ultrasonic.util.Util;
 
+/**
+ * Displays online help and about information in a webWiew
+ */
 public class AboutFragment extends Fragment {
 
     private WebView webView;
@@ -109,7 +113,7 @@ public class AboutFragment extends Fragment {
     }
 
     @Override
-    public void onSaveInstanceState(Bundle state)
+    public void onSaveInstanceState(@NotNull Bundle state)
     {
         webView.saveState(state);
         super.onSaveInstanceState(state);

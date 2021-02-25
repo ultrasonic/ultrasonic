@@ -156,9 +156,7 @@ public class FileUtil
 		File avatarFile = getAvatarFile(context, username);
 
 		Bitmap bitmap = null;
-		ImageLoader imageLoader = null;
-
-		imageLoader = imageLoaderProvider.getValue().getImageLoader();
+		ImageLoader imageLoader = imageLoaderProvider.getValue().getImageLoader();
 
 		if (imageLoader != null)
 		{
@@ -222,9 +220,7 @@ public class FileUtil
 		File albumArtFile = getAlbumArtFile(context, entry);
 
 		Bitmap bitmap = null;
-		ImageLoader imageLoader = null;
-
-		imageLoader = imageLoaderProvider.getValue().getImageLoader();
+		ImageLoader imageLoader = imageLoaderProvider.getValue().getImageLoader();
 
 		if (imageLoader != null)
 		{
@@ -491,10 +487,10 @@ public class FileUtil
 		if (files == null)
 		{
 			Timber.w("Failed to list children for %s", dir.getPath());
-			return new TreeSet<File>();
+			return new TreeSet<>();
 		}
 
-		return new TreeSet<File>(Arrays.asList(files));
+		return new TreeSet<>(Arrays.asList(files));
 	}
 
 	public static SortedSet<File> listMediaFiles(File dir)
