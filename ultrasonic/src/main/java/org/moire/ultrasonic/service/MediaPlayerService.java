@@ -285,11 +285,11 @@ public class MediaPlayerService extends Service
                 if (currentPlaying != null)
                 {
                     updateNotification(localMediaPlayer.playerState, currentPlaying);
-                    nowPlayingEventDistributor.getValue().RaiseShowNowPlayingEvent();
+                    nowPlayingEventDistributor.getValue().raiseShowNowPlayingEvent();
                 }
                 else
                 {
-                    nowPlayingEventDistributor.getValue().RaiseHideNowPlayingEvent();
+                    nowPlayingEventDistributor.getValue().raiseHideNowPlayingEvent();
                     stopForeground(true);
                     localMediaPlayer.clearRemoteControl();
                     isInForeground = false;
@@ -501,12 +501,12 @@ public class MediaPlayerService extends Service
                     if (playerState == PlayerState.STARTED || playerState == PlayerState.PAUSED)
                     {
                         updateNotification(playerState, currentPlaying);
-                        nowPlayingEventDistributor.getValue().RaiseShowNowPlayingEvent();
+                        nowPlayingEventDistributor.getValue().raiseShowNowPlayingEvent();
                     }
                 }
                 else
                 {
-                    nowPlayingEventDistributor.getValue().RaiseHideNowPlayingEvent();
+                    nowPlayingEventDistributor.getValue().raiseHideNowPlayingEvent();
                     stopForeground(true);
                     localMediaPlayer.clearRemoteControl();
                     isInForeground = false;

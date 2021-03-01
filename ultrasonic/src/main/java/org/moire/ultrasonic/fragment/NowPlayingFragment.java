@@ -192,7 +192,7 @@ public class NowPlayingFragment extends Fragment {
                 {
                     if (deltaY < 0)
                     {
-                        nowPlayingEventDistributor.getValue().RaiseNowPlayingDismissedEvent();
+                        nowPlayingEventDistributor.getValue().raiseNowPlayingDismissedEvent();
                         return false;
                     }
                     if (deltaY > 0)

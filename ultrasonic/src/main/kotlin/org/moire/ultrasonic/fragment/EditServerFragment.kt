@@ -30,6 +30,9 @@ import org.moire.ultrasonic.util.ModalBackgroundTask
 import org.moire.ultrasonic.util.Util
 import timber.log.Timber
 
+/**
+ * Displays a form where server settings can be created / edited
+ */
 class EditServerFragment : Fragment(), OnBackPressedHandler {
     companion object {
         const val EDIT_SERVER_INTENT_INDEX = "index"

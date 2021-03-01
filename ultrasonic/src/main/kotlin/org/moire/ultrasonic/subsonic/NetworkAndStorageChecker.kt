@@ -5,6 +5,9 @@ import org.moire.ultrasonic.R
 import org.moire.ultrasonic.data.ActiveServerProvider.Companion.isOffline
 import org.moire.ultrasonic.util.Util
 
+/**
+ * Utility class for checking the availability of the network and storage
+ */
 class NetworkAndStorageChecker(val context: Context) {
     fun warnIfNetworkOrStorageUnavailable() {
         if (!Util.isExternalStoragePresent()) {

@@ -9,6 +9,9 @@ import org.moire.ultrasonic.util.ImageLoader
 import org.moire.ultrasonic.util.LegacyImageLoader
 import org.moire.ultrasonic.util.Util
 
+/**
+ * Handles the lifetime of the Image Loader
+ */
 class ImageLoaderProvider(val context: Context) {
     private var imageLoader: ImageLoader? = null
 
@@ -32,13 +35,13 @@ class ImageLoaderProvider(val context: Context) {
             )
             val isNewImageLoaderEnabled = get(FeatureStorage::class.java)
                 .isFeatureEnabled(Feature.NEW_IMAGE_DOWNLOADER)
-            if (isNewImageLoaderEnabled) {
-                imageLoader = SubsonicImageLoaderProxy(
+            imageLoader = if (isNewImageLoaderEnabled) {
+                SubsonicImageLoaderProxy(
                     legacyImageLoader,
                     get(SubsonicImageLoader::class.java)
                 )
             } else {
-                imageLoader = legacyImageLoader
+                legacyImageLoader
             }
             imageLoader!!.startImageLoader()
         }

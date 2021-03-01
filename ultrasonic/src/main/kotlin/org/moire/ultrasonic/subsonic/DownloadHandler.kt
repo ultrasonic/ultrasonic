@@ -15,11 +15,14 @@ import org.moire.ultrasonic.util.EntryByDiscAndTrackComparator
 import org.moire.ultrasonic.util.ModalBackgroundTask
 import org.moire.ultrasonic.util.Util
 
+/**
+ * Retrieves a list of songs and adds them to the now playing list
+ */
 class DownloadHandler(
     val mediaPlayerController: MediaPlayerController,
     val networkAndStorageChecker: NetworkAndStorageChecker
 ) {
-    private val MAX_SONGS = 500
+    private val maxSongs = 500
 
     fun download(
         fragment: Fragment,
@@ -102,16 +105,16 @@ class DownloadHandler(
             fragment,
             id,
             name,
-            false,
-            false,
-            save,
-            append,
-            autoplay,
-            shuffle,
-            background,
-            playNext,
-            unpin,
-            false
+            isShare = false,
+            isDirectory = false,
+            save = save,
+            append = append,
+            autoPlay = autoplay,
+            shuffle = shuffle,
+            background = background,
+            playNext = playNext,
+            unpin = unpin,
+            isArtist = false
         )
     }
 
@@ -131,16 +134,16 @@ class DownloadHandler(
             fragment,
             id,
             name,
-            true,
-            false,
-            save,
-            append,
-            autoplay,
-            shuffle,
-            background,
-            playNext,
-            unpin,
-            false
+            isShare = true,
+            isDirectory = false,
+            save = save,
+            append = append,
+            autoPlay = autoplay,
+            shuffle = shuffle,
+            background = background,
+            playNext = playNext,
+            unpin = unpin,
+            isArtist = false
         )
     }
 
@@ -174,7 +177,7 @@ class DownloadHandler(
         )
     }
 
-    fun downloadRecursively(
+    private fun downloadRecursively(
         fragment: Fragment,
         id: String,
         name: String?,
@@ -232,18 +235,22 @@ class DownloadHandler(
                 parent: MusicDirectory,
                 songs: MutableList<MusicDirectory.Entry>
             ) {
-                if (songs.size > MAX_SONGS) {
+                if (songs.size > maxSongs) {
                     return
                 }
-                for (song in parent.getChildren(false, true)) {
+                for (song in parent.getChildren(includeDirs = false, includeFiles = true)) {
                     if (!song.isVideo) {
                         songs.add(song)
                     }
                 }
                 val musicService = getMusicService(activity)
-                for ((id1, _, _, title) in parent.getChildren(true, false)) {
-                    var root: MusicDirectory
-                    root = if (
+                for (
+                    (id1, _, _, title) in parent.getChildren(
+                        includeDirs = true,
+                        includeFiles = false
+                    )
+                ) {
+                    val root: MusicDirectory = if (
                         !isOffline(activity) &&
                         Util.getShouldUseId3Tags(activity)
                     ) musicService.getAlbum(id1, title, false, activity)
@@ -257,7 +264,7 @@ class DownloadHandler(
                 id: String,
                 songs: MutableCollection<MusicDirectory.Entry>
             ) {
-                if (songs.size > MAX_SONGS) {
+                if (songs.size > maxSongs) {
                     return
                 }
                 val musicService = getMusicService(activity)

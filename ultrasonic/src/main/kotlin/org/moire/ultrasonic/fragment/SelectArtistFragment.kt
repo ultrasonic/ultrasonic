@@ -24,6 +24,9 @@ import org.moire.ultrasonic.subsonic.ImageLoaderProvider
 import org.moire.ultrasonic.util.Constants
 import org.moire.ultrasonic.util.Util
 
+/**
+ * Displays the list of Artists from the media library
+ */
 class SelectArtistFragment : Fragment() {
     private val activeServerProvider: ActiveServerProvider by inject()
     private val serverSettingsModel: ServerSettingsModel by viewModel()
@@ -166,79 +169,79 @@ class SelectArtistFragment : Fragment() {
                 downloadHandler.downloadRecursively(
                     this,
                     artist.id,
-                    false,
-                    false,
-                    true,
-                    false,
-                    false,
-                    false,
-                    false,
-                    true
+                    save = false,
+                    append = false,
+                    autoPlay = true,
+                    shuffle = false,
+                    background = false,
+                    playNext = false,
+                    unpin = false,
+                    isArtist = true
                 )
             R.id.artist_menu_play_next ->
                 downloadHandler.downloadRecursively(
                     this,
                     artist.id,
-                    false,
-                    false,
-                    true,
-                    true,
-                    false,
-                    true,
-                    false,
-                    true
+                    save = false,
+                    append = false,
+                    autoPlay = true,
+                    shuffle = true,
+                    background = false,
+                    playNext = true,
+                    unpin = false,
+                    isArtist = true
                 )
             R.id.artist_menu_play_last ->
                 downloadHandler.downloadRecursively(
                     this,
                     artist.id,
-                    false,
-                    true,
-                    false,
-                    false,
-                    false,
-                    false,
-                    false,
-                    true
+                    save = false,
+                    append = true,
+                    autoPlay = false,
+                    shuffle = false,
+                    background = false,
+                    playNext = false,
+                    unpin = false,
+                    isArtist = true
                 )
             R.id.artist_menu_pin ->
                 downloadHandler.downloadRecursively(
                     this,
                     artist.id,
-                    true,
-                    true,
-                    false,
-                    false,
-                    false,
-                    false,
-                    false,
-                    true
+                    save = true,
+                    append = true,
+                    autoPlay = false,
+                    shuffle = false,
+                    background = false,
+                    playNext = false,
+                    unpin = false,
+                    isArtist = true
                 )
             R.id.artist_menu_unpin ->
                 downloadHandler.downloadRecursively(
                     this,
                     artist.id,
-                    false,
-                    false,
-                    false,
-                    false,
-                    false,
-                    false,
-                    true,
-                    true
+                    save = false,
+                    append = false,
+                    autoPlay = false,
+                    shuffle = false,
+                    background = false,
+                    playNext = false,
+                    unpin = true,
+                    isArtist = true
                 )
             R.id.artist_menu_download ->
                 downloadHandler.downloadRecursively(
                     this,
                     artist.id,
-                    false,
-                    false,
-                    false,
-                    false,
-                    true,
-                    false,
-                    false,
-                    true
+                    save = false,
+                    append = false,
+                    autoPlay = false,
+                    shuffle = false,
+                    background = true,
+                    playNext = false,
+                    unpin = false,
+                    isArtist = true
                 )
         }
         return true

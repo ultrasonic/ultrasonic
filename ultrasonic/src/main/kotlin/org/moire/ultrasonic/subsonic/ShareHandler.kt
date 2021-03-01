@@ -23,6 +23,9 @@ import org.moire.ultrasonic.util.TimeSpan
 import org.moire.ultrasonic.util.TimeSpanPicker
 import org.moire.ultrasonic.util.Util
 
+/**
+ * This class handles sharing items in the media library
+ */
 class ShareHandler(val context: Context) {
     private var shareDescription: EditText? = null
     private var timeSpanPicker: TimeSpanPicker? = null
@@ -93,7 +96,7 @@ class ShareHandler(val context: Context) {
                 fragment.activity?.startActivity(
                     Intent.createChooser(
                         intent,
-                        context.getResources().getString(R.string.share_via)
+                        context.resources.getString(R.string.share_via)
                     )
                 )
             }

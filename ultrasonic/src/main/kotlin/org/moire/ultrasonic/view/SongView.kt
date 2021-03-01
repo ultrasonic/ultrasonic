@@ -340,8 +340,8 @@ class SongView(context: Context) : UpdateView(context), Checkable {
     fun maximizeOrMinimize() {
         isMaximized = !isMaximized
 
-        viewHolder?.title?.setSingleLine(!isMaximized)
-        viewHolder?.artist?.setSingleLine(!isMaximized)
+        viewHolder?.title?.isSingleLine = !isMaximized
+        viewHolder?.artist?.isSingleLine = !isMaximized
     }
 
     enum class ImageType {

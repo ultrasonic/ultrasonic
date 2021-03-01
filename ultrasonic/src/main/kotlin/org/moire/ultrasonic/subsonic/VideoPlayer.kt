@@ -5,6 +5,9 @@ import org.moire.ultrasonic.R
 import org.moire.ultrasonic.domain.MusicDirectory
 import org.moire.ultrasonic.util.Util
 
+/**
+ * This utility class helps starting video playback
+ */
 class VideoPlayer(val context: Context) {
     fun playVideo(entry: MusicDirectory.Entry?) {
         if (!Util.isNetworkConnected(context)) {

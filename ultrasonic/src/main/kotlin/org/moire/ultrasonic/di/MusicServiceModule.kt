@@ -27,6 +27,9 @@ import org.moire.ultrasonic.subsonic.VideoPlayer
 import org.moire.ultrasonic.subsonic.loader.image.SubsonicImageLoader
 import org.moire.ultrasonic.util.Constants
 
+/**
+ * This Koin module contains the registration of classes related to the Music Services
+ */
 internal const val ONLINE_MUSIC_SERVICE = "OnlineMusicService"
 internal const val OFFLINE_MUSIC_SERVICE = "OfflineMusicService"
 

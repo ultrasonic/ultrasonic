@@ -65,6 +65,7 @@ import org.moire.ultrasonic.util.Util
 import timber.log.Timber
 
 /**
+ * This Music Service implementation connects to a server using the Subsonic REST API
  * @author Sindre Mehus
  */
 open class RESTMusicService(

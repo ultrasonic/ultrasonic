@@ -8,6 +8,9 @@ import org.moire.ultrasonic.util.NowPlayingEventDistributor
 import org.moire.ultrasonic.util.PermissionUtil
 import org.moire.ultrasonic.util.ThemeChangedEventDistributor
 
+/**
+ * This Koin module contains the registration of general classes needed for Ultrasonic
+ */
 val applicationModule = module {
     single { ActiveServerProvider(get(), androidContext()) }
     single { ImageLoaderProvider(androidContext()) }

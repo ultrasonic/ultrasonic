@@ -4,7 +4,7 @@ import okhttp3.OkHttpClient
 import org.koin.dsl.module
 
 /**
- * Provides base network dependencies.
+ * This Koin module provides base network dependencies.
  */
 val baseNetworkModule = module {
     single { OkHttpClient.Builder().build() }

@@ -23,6 +23,9 @@ import org.moire.ultrasonic.service.MediaPlayerController
 import org.moire.ultrasonic.util.Util
 import timber.log.Timber
 
+/**
+ * Displays the list of configured servers, they can be selected or edited
+ */
 class ServerSelectorFragment : Fragment() {
     companion object {
         const val SERVER_SELECTOR_MANAGE_MODE = "manageMode"

@@ -24,7 +24,6 @@ import org.koin.core.component.get
 import org.koin.core.context.loadKoinModules
 import org.koin.core.context.unloadKoinModules
 import org.koin.core.qualifier.named
-import org.moire.ultrasonic.cache.Directories
 import org.moire.ultrasonic.data.ActiveServerProvider
 import org.moire.ultrasonic.di.OFFLINE_MUSIC_SERVICE
 import org.moire.ultrasonic.di.ONLINE_MUSIC_SERVICE
@@ -50,10 +49,4 @@ object MusicServiceFactory : KoinComponent {
         unloadKoinModules(musicServiceModule)
         loadKoinModules(musicServiceModule)
     }
-
-    @JvmStatic
-    fun getServerId() = get<String>(named("ServerID"))
-
-    @JvmStatic
-    fun getDirectories() = get<Directories>()
 }
