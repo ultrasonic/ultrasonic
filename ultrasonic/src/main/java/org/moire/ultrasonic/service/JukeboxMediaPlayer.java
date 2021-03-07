@@ -67,13 +67,13 @@ public class JukeboxMediaPlayer
 	private JukeboxStatus jukeboxStatus;
 	private float gain = 0.5f;
 	private VolumeToast volumeToast;
-	private AtomicBoolean running = new AtomicBoolean();
+	private final AtomicBoolean running = new AtomicBoolean();
 	private Thread serviceThread;
 	private boolean enabled = false;
-	private Context context;
+	private final Context context;
 
 	// TODO: These create circular references, try to refactor
-	private Lazy<MediaPlayerControllerImpl> mediaPlayerControllerLazy = inject(MediaPlayerControllerImpl.class);
+	private final Lazy<MediaPlayerControllerImpl> mediaPlayerControllerLazy = inject(MediaPlayerControllerImpl.class);
 	private final Downloader downloader;
 
 	// TODO: Report warning if queue fills up.
@@ -397,7 +397,7 @@ public class JukeboxMediaPlayer
 		@Override
 		JukeboxStatus execute() throws Exception
 		{
-			return getMusicService().getJukeboxStatus(context, null);
+			return getMusicService().getJukeboxStatus(context);
 		}
 	}
 
@@ -413,7 +413,7 @@ public class JukeboxMediaPlayer
 		@Override
 		JukeboxStatus execute() throws Exception
 		{
-			return getMusicService().updateJukeboxPlaylist(ids, context, null);
+			return getMusicService().updateJukeboxPlaylist(ids, context);
 		}
 	}
 
@@ -431,7 +431,7 @@ public class JukeboxMediaPlayer
 		@Override
 		JukeboxStatus execute() throws Exception
 		{
-			return getMusicService().skipJukebox(index, offsetSeconds, context, null);
+			return getMusicService().skipJukebox(index, offsetSeconds, context);
 		}
 	}
 
@@ -440,7 +440,7 @@ public class JukeboxMediaPlayer
 		@Override
 		JukeboxStatus execute() throws Exception
 		{
-			return getMusicService().stopJukebox(context, null);
+			return getMusicService().stopJukebox(context);
 		}
 	}
 
@@ -449,7 +449,7 @@ public class JukeboxMediaPlayer
 		@Override
 		JukeboxStatus execute() throws Exception
 		{
-			return getMusicService().startJukebox(context, null);
+			return getMusicService().startJukebox(context);
 		}
 	}
 
@@ -466,7 +466,7 @@ public class JukeboxMediaPlayer
 		@Override
 		JukeboxStatus execute() throws Exception
 		{
-			return getMusicService().setJukeboxGain(gain, context, null);
+			return getMusicService().setJukeboxGain(gain, context);
 		}
 	}
 

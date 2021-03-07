@@ -1,11 +1,7 @@
 package org.moire.ultrasonic.util;
 
-import android.annotation.SuppressLint;
-import android.app.ProgressDialog;
-import android.content.DialogInterface;
-import android.os.Build;
-
-import org.moire.ultrasonic.activity.SubsonicTabActivity;
+import android.app.Activity;
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 /**
  * @author Sindre Mehus
@@ -13,29 +9,20 @@ import org.moire.ultrasonic.activity.SubsonicTabActivity;
  */
 public abstract class LoadingTask<T> extends BackgroundTask<T>
 {
-	private final SubsonicTabActivity tabActivity;
-	private final boolean cancellable;
-	private boolean cancelled;
+	private final SwipeRefreshLayout swipe;
+	private final CancellationToken cancel;
 
-	public LoadingTask(SubsonicTabActivity activity, final boolean cancellable)
+	public LoadingTask(Activity activity, SwipeRefreshLayout swipe, CancellationToken cancel)
 	{
 		super(activity);
-		tabActivity = activity;
-		this.cancellable = cancellable;
+		this.swipe = swipe;
+		this.cancel = cancel;
 	}
 
 	@Override
 	public void execute()
 	{
-		final ProgressDialog loading = ProgressDialog.show(tabActivity, "", "Loading. Please Wait...", true, cancellable, new DialogInterface.OnCancelListener()
-		{
-			@Override
-			public void onCancel(DialogInterface dialog)
-			{
-				cancelled = true;
-			}
-
-		});
+		swipe.setRefreshing(true);
 
 		new Thread()
 		{
@@ -45,7 +32,7 @@ public abstract class LoadingTask<T> extends BackgroundTask<T>
 				try
 				{
 					final T result = doInBackground();
-					if (isCancelled())
+					if (cancel.isCancellationRequested())
 					{
 						return;
 					}
@@ -55,14 +42,14 @@ public abstract class LoadingTask<T> extends BackgroundTask<T>
 						@Override
 						public void run()
 						{
-							loading.cancel();
+							swipe.setRefreshing(false);
 							done(result);
 						}
 					});
 				}
 				catch (final Throwable t)
 				{
-					if (isCancelled())
+					if (cancel.isCancellationRequested())
 					{
 						return;
 					}
@@ -72,7 +59,7 @@ public abstract class LoadingTask<T> extends BackgroundTask<T>
 						@Override
 						public void run()
 						{
-							loading.cancel();
+							swipe.setRefreshing(false);
 							error(t);
 						}
 					});
@@ -81,22 +68,8 @@ public abstract class LoadingTask<T> extends BackgroundTask<T>
 		}.start();
 	}
 
-	@SuppressLint("NewApi")
-	private boolean isCancelled()
-	{
-		return Build.VERSION.SDK_INT >= 17 ? tabActivity.isDestroyed() || cancelled : cancelled;
-	}
-
 	@Override
 	public void updateProgress(final String message)
 	{
-		getHandler().post(new Runnable()
-		{
-			@Override
-			public void run()
-			{
-
-			}
-		});
 	}
 }

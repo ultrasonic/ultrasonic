@@ -23,8 +23,6 @@ import android.content.Intent;
 import timber.log.Timber;
 
 import org.koin.java.KoinJavaComponent;
-import org.moire.ultrasonic.audiofx.EqualizerController;
-import org.moire.ultrasonic.audiofx.VisualizerController;
 import org.moire.ultrasonic.data.ActiveServerProvider;
 import org.moire.ultrasonic.domain.MusicDirectory;
 import org.moire.ultrasonic.domain.MusicDirectory.Entry;
@@ -60,9 +58,10 @@ public class MediaPlayerControllerImpl implements MediaPlayerController
 	private boolean showVisualization;
 	private boolean autoPlayStart;
 
-	private Context context;
-	private Lazy<JukeboxMediaPlayer> jukeboxMediaPlayer = inject(JukeboxMediaPlayer.class);
-	private Lazy<ActiveServerProvider> activeServerProvider = inject(ActiveServerProvider.class);
+	private final Context context;
+	private final Lazy<JukeboxMediaPlayer> jukeboxMediaPlayer = inject(JukeboxMediaPlayer.class);
+	private final Lazy<ActiveServerProvider> activeServerProvider = inject(ActiveServerProvider.class);
+
 	private final DownloadQueueSerializer downloadQueueSerializer;
 	private final ExternalStorageMonitor externalStorageMonitor;
 	private final Downloader downloader;
@@ -522,7 +521,7 @@ public class MediaPlayerControllerImpl implements MediaPlayerController
 		try
 		{
 			String username = activeServerProvider.getValue().getActiveServer().getUserName();
-			UserInfo user = MusicServiceFactory.getMusicService(context).getUser(username, context, null);
+			UserInfo user = MusicServiceFactory.getMusicService(context).getUser(username, context);
 			return user.getJukeboxRole();
 		}
 		catch (Exception e)
@@ -595,7 +594,7 @@ public class MediaPlayerControllerImpl implements MediaPlayerController
 			{
 				try
 				{
-					MusicServiceFactory.getMusicService(context).setRating(song.getId(), rating, context, null);
+					MusicServiceFactory.getMusicService(context).setRating(song.getId(), rating, context);
 				}
 				catch (Exception e)
 				{

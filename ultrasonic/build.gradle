@@ -50,6 +50,10 @@ android {
         warning 'MissingTranslation'
         abortOnError true
     }
+
+    kotlinOptions {
+        jvmTarget = "1.8"
+    }
 }
 
 tasks.withType(Test) {
@@ -57,7 +61,6 @@ tasks.withType(Test) {
 }
 
 dependencies {
-    implementation project(':core:menudrawer')
     implementation project(':core:library')
     implementation project(':core:domain')
     implementation project(':core:subsonic-api')
@@ -71,6 +74,13 @@ dependencies {
     implementation androidSupport.roomKtx
     implementation androidSupport.viewModelKtx
     implementation androidSupport.constraintLayout
+    implementation androidSupport.preferences
+
+    implementation androidSupport.navigationFragment
+    implementation androidSupport.navigationUi
+    implementation androidSupport.navigationFragmentKtx
+    implementation androidSupport.navigationUiKtx
+    implementation androidSupport.navigationFeature
 
     implementation other.kotlinStdlib
     implementation other.kotlinxCoroutines

@@ -2,22 +2,28 @@ package org.moire.ultrasonic.fragment;
 
 import android.app.AlertDialog;
 import android.content.DialogInterface;
-import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Build;
 import android.os.Bundle;
-import android.preference.*;
 import android.provider.SearchRecentSuggestions;
 import androidx.annotation.Nullable;
 import androidx.annotation.StringRes;
+import androidx.fragment.app.DialogFragment;
+import androidx.navigation.Navigation;
+import androidx.preference.CheckBoxPreference;
+import androidx.preference.EditTextPreference;
+import androidx.preference.ListPreference;
+import androidx.preference.Preference;
+import androidx.preference.PreferenceCategory;
+import androidx.preference.PreferenceFragmentCompat;
+import androidx.preference.PreferenceManager;
 
 import timber.log.Timber;
 import android.view.View;
 
+import org.jetbrains.annotations.NotNull;
 import org.koin.java.KoinJavaComponent;
 import org.moire.ultrasonic.R;
-import org.moire.ultrasonic.activity.ServerSelectorActivity;
-import org.moire.ultrasonic.activity.SubsonicTabActivity;
 import org.moire.ultrasonic.featureflags.Feature;
 import org.moire.ultrasonic.featureflags.FeatureStorage;
 import org.moire.ultrasonic.filepicker.FilePickerDialog;
@@ -26,6 +32,7 @@ import org.moire.ultrasonic.log.FileLoggerTree;
 import org.moire.ultrasonic.provider.SearchSuggestionProvider;
 import org.moire.ultrasonic.service.Consumer;
 import org.moire.ultrasonic.service.MediaPlayerController;
+import org.moire.ultrasonic.subsonic.ImageLoaderProvider;
 import org.moire.ultrasonic.util.*;
 
 import java.io.File;
@@ -33,14 +40,15 @@ import java.io.File;
 import kotlin.Lazy;
 
 import static org.koin.java.KoinJavaComponent.inject;
-import static org.moire.ultrasonic.activity.ServerSelectorActivity.SERVER_SELECTOR_MANAGE_MODE;
+import static org.moire.ultrasonic.fragment.ServerSelectorFragment.SERVER_SELECTOR_MANAGE_MODE;
 
 /**
  * Shows main app settings.
  */
-public class SettingsFragment extends PreferenceFragment
+public class SettingsFragment extends PreferenceFragmentCompat
         implements SharedPreferences.OnSharedPreferenceChangeListener {
 
+    private Preference addServerPreference;
     private ListPreference theme;
     private ListPreference videoPlayer;
     private ListPreference maxBitrateWifi;
@@ -69,61 +77,68 @@ public class SettingsFragment extends PreferenceFragment
     private EditTextPreference sharingDefaultDescription;
     private EditTextPreference sharingDefaultGreeting;
     private TimeSpanPreference sharingDefaultExpiration;
-    private PreferenceCategory serversCategory;
     private Preference resumeOnBluetoothDevice;
     private Preference pauseOnBluetoothDevice;
     private CheckBoxPreference debugLogToFile;
 
     private SharedPreferences settings;
 
-    private Lazy<MediaPlayerController> mediaPlayerControllerLazy = inject(MediaPlayerController.class);
+    private final Lazy<MediaPlayerController> mediaPlayerControllerLazy = inject(MediaPlayerController.class);
+    private final Lazy<ImageLoaderProvider> imageLoader = inject(ImageLoaderProvider.class);
+    private final Lazy<PermissionUtil> permissionUtil = inject(PermissionUtil.class);
+    private final Lazy<ThemeChangedEventDistributor> themeChangedEventDistributor = inject(ThemeChangedEventDistributor.class);
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        addPreferencesFromResource(R.xml.settings);
-
         settings = PreferenceManager.getDefaultSharedPreferences(getActivity());
     }
 
     @Override
-    public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
-        super.onViewCreated(view, savedInstanceState);
+    public void onCreatePreferences(Bundle savedInstanceState, String rootKey) {
+        setPreferencesFromResource(R.xml.settings, rootKey);
+    }
 
-        theme = (ListPreference) findPreference(Constants.PREFERENCES_KEY_THEME);
-        videoPlayer = (ListPreference) findPreference(Constants.PREFERENCES_KEY_VIDEO_PLAYER);
-        maxBitrateWifi = (ListPreference) findPreference(Constants.PREFERENCES_KEY_MAX_BITRATE_WIFI);
-        maxBitrateMobile = (ListPreference) findPreference(Constants.PREFERENCES_KEY_MAX_BITRATE_MOBILE);
-        cacheSize = (ListPreference) findPreference(Constants.PREFERENCES_KEY_CACHE_SIZE);
+    @Override
+    public void onViewCreated(@NotNull View view, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
+        FragmentTitle.Companion.setTitle(this, R.string.menu_settings);
+
+        addServerPreference = findPreference(Constants.PREFERENCES_KEY_SERVERS_EDIT);
+        theme = findPreference(Constants.PREFERENCES_KEY_THEME);
+        videoPlayer = findPreference(Constants.PREFERENCES_KEY_VIDEO_PLAYER);
+        maxBitrateWifi = findPreference(Constants.PREFERENCES_KEY_MAX_BITRATE_WIFI);
+        maxBitrateMobile = findPreference(Constants.PREFERENCES_KEY_MAX_BITRATE_MOBILE);
+        cacheSize = findPreference(Constants.PREFERENCES_KEY_CACHE_SIZE);
         cacheLocation = findPreference(Constants.PREFERENCES_KEY_CACHE_LOCATION);
-        preloadCount = (ListPreference) findPreference(Constants.PREFERENCES_KEY_PRELOAD_COUNT);
-        bufferLength = (ListPreference) findPreference(Constants.PREFERENCES_KEY_BUFFER_LENGTH);
-        incrementTime = (ListPreference) findPreference(Constants.PREFERENCES_KEY_INCREMENT_TIME);
-        networkTimeout = (ListPreference) findPreference(Constants.PREFERENCES_KEY_NETWORK_TIMEOUT);
-        maxAlbums = (ListPreference) findPreference(Constants.PREFERENCES_KEY_MAX_ALBUMS);
-        maxSongs = (ListPreference) findPreference(Constants.PREFERENCES_KEY_MAX_SONGS);
-        maxArtists = (ListPreference) findPreference(Constants.PREFERENCES_KEY_MAX_ARTISTS);
-        defaultArtists = (ListPreference) findPreference(Constants.PREFERENCES_KEY_DEFAULT_ARTISTS);
-        defaultSongs = (ListPreference) findPreference(Constants.PREFERENCES_KEY_DEFAULT_SONGS);
-        defaultAlbums = (ListPreference) findPreference(Constants.PREFERENCES_KEY_DEFAULT_ALBUMS);
-        chatRefreshInterval = (ListPreference) findPreference(Constants.PREFERENCES_KEY_CHAT_REFRESH_INTERVAL);
-        directoryCacheTime = (ListPreference) findPreference(Constants.PREFERENCES_KEY_DIRECTORY_CACHE_TIME);
-        mediaButtonsEnabled = (CheckBoxPreference) findPreference(Constants.PREFERENCES_KEY_MEDIA_BUTTONS);
-        lockScreenEnabled = (CheckBoxPreference) findPreference(Constants.PREFERENCES_KEY_SHOW_LOCK_SCREEN_CONTROLS);
-        sendBluetoothAlbumArt = (CheckBoxPreference) findPreference(Constants.PREFERENCES_KEY_SEND_BLUETOOTH_ALBUM_ART);
-        sendBluetoothNotifications = (CheckBoxPreference) findPreference(Constants.PREFERENCES_KEY_SEND_BLUETOOTH_NOTIFICATIONS);
-        viewRefresh = (ListPreference) findPreference(Constants.PREFERENCES_KEY_VIEW_REFRESH);
-        imageLoaderConcurrency = (ListPreference) findPreference(Constants.PREFERENCES_KEY_IMAGE_LOADER_CONCURRENCY);
-        sharingDefaultDescription = (EditTextPreference) findPreference(Constants.PREFERENCES_KEY_DEFAULT_SHARE_DESCRIPTION);
-        sharingDefaultGreeting = (EditTextPreference) findPreference(Constants.PREFERENCES_KEY_DEFAULT_SHARE_GREETING);
-        sharingDefaultExpiration = (TimeSpanPreference) findPreference(Constants.PREFERENCES_KEY_DEFAULT_SHARE_EXPIRATION);
-        serversCategory = (PreferenceCategory) findPreference(Constants.PREFERENCES_KEY_SERVERS_KEY);
+        preloadCount = findPreference(Constants.PREFERENCES_KEY_PRELOAD_COUNT);
+        bufferLength = findPreference(Constants.PREFERENCES_KEY_BUFFER_LENGTH);
+        incrementTime = findPreference(Constants.PREFERENCES_KEY_INCREMENT_TIME);
+        networkTimeout = findPreference(Constants.PREFERENCES_KEY_NETWORK_TIMEOUT);
+        maxAlbums = findPreference(Constants.PREFERENCES_KEY_MAX_ALBUMS);
+        maxSongs = findPreference(Constants.PREFERENCES_KEY_MAX_SONGS);
+        maxArtists = findPreference(Constants.PREFERENCES_KEY_MAX_ARTISTS);
+        defaultArtists = findPreference(Constants.PREFERENCES_KEY_DEFAULT_ARTISTS);
+        defaultSongs = findPreference(Constants.PREFERENCES_KEY_DEFAULT_SONGS);
+        defaultAlbums = findPreference(Constants.PREFERENCES_KEY_DEFAULT_ALBUMS);
+        chatRefreshInterval = findPreference(Constants.PREFERENCES_KEY_CHAT_REFRESH_INTERVAL);
+        directoryCacheTime = findPreference(Constants.PREFERENCES_KEY_DIRECTORY_CACHE_TIME);
+        mediaButtonsEnabled = findPreference(Constants.PREFERENCES_KEY_MEDIA_BUTTONS);
+        lockScreenEnabled = findPreference(Constants.PREFERENCES_KEY_SHOW_LOCK_SCREEN_CONTROLS);
+        sendBluetoothAlbumArt = findPreference(Constants.PREFERENCES_KEY_SEND_BLUETOOTH_ALBUM_ART);
+        sendBluetoothNotifications = findPreference(Constants.PREFERENCES_KEY_SEND_BLUETOOTH_NOTIFICATIONS);
+        viewRefresh = findPreference(Constants.PREFERENCES_KEY_VIEW_REFRESH);
+        imageLoaderConcurrency = findPreference(Constants.PREFERENCES_KEY_IMAGE_LOADER_CONCURRENCY);
+        sharingDefaultDescription = findPreference(Constants.PREFERENCES_KEY_DEFAULT_SHARE_DESCRIPTION);
+        sharingDefaultGreeting = findPreference(Constants.PREFERENCES_KEY_DEFAULT_SHARE_GREETING);
+        sharingDefaultExpiration = findPreference(Constants.PREFERENCES_KEY_DEFAULT_SHARE_EXPIRATION);
         resumeOnBluetoothDevice = findPreference(Constants.PREFERENCES_KEY_RESUME_ON_BLUETOOTH_DEVICE);
         pauseOnBluetoothDevice = findPreference(Constants.PREFERENCES_KEY_PAUSE_ON_BLUETOOTH_DEVICE);
-        debugLogToFile = (CheckBoxPreference) findPreference(Constants.PREFERENCES_KEY_DEBUG_LOG_TO_FILE);
-        showArtistPicture = (CheckBoxPreference) findPreference(Constants.PREFERENCES_KEY_SHOW_ARTIST_PICTURE);
+        debugLogToFile = findPreference(Constants.PREFERENCES_KEY_DEBUG_LOG_TO_FILE);
+        showArtistPicture = findPreference(Constants.PREFERENCES_KEY_SHOW_ARTIST_PICTURE);
 
+        setupServersCategory();
         sharingDefaultGreeting.setText(Util.getShareGreeting(getActivity()));
         setupClearSearchPreference();
         setupGaplessControlSettingsV14();
@@ -133,9 +148,11 @@ public class SettingsFragment extends PreferenceFragment
 
         // After API26 foreground services must be used for music playback, and they must have a notification
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            PreferenceCategory notificationsCategory = (PreferenceCategory) findPreference(Constants.PREFERENCES_KEY_CATEGORY_NOTIFICATIONS);
-            notificationsCategory.removePreference(findPreference(Constants.PREFERENCES_KEY_SHOW_NOTIFICATION));
-            notificationsCategory.removePreference(findPreference(Constants.PREFERENCES_KEY_ALWAYS_SHOW_NOTIFICATION));
+            PreferenceCategory notificationsCategory = findPreference(Constants.PREFERENCES_KEY_CATEGORY_NOTIFICATIONS);
+            Preference preferenceToRemove = findPreference(Constants.PREFERENCES_KEY_SHOW_NOTIFICATION);
+            if (preferenceToRemove != null) notificationsCategory.removePreference(preferenceToRemove);
+            preferenceToRemove = findPreference(Constants.PREFERENCES_KEY_ALWAYS_SHOW_NOTIFICATION);
+            if (preferenceToRemove != null) notificationsCategory.removePreference(preferenceToRemove);
         }
     }
 
@@ -149,8 +166,6 @@ public class SettingsFragment extends PreferenceFragment
     @Override
     public void onResume() {
         super.onResume();
-
-        setupServersCategory();
         SharedPreferences preferences = Util.getPreferences(getActivity());
         preferences.registerOnSharedPreferenceChangeListener(this);
     }
@@ -158,7 +173,6 @@ public class SettingsFragment extends PreferenceFragment
     @Override
     public void onPause() {
         super.onPause();
-
         SharedPreferences prefs = Util.getPreferences(getActivity());
         prefs.unregisterOnSharedPreferenceChangeListener(this);
     }
@@ -179,8 +193,32 @@ public class SettingsFragment extends PreferenceFragment
         } else if (Constants.PREFERENCES_KEY_DEBUG_LOG_TO_FILE.equals(key)) {
             setDebugLogToFile(sharedPreferences.getBoolean(key, false));
         } else if (Constants.PREFERENCES_KEY_ID3_TAGS.equals(key)) {
-            if (sharedPreferences.getBoolean(key, false)) showArtistPicture.setEnabled(true);
-            else showArtistPicture.setEnabled(false);
+            showArtistPicture.setEnabled(sharedPreferences.getBoolean(key, false));
+        } else if (Constants.PREFERENCES_KEY_THEME.equals(key)) {
+            themeChangedEventDistributor.getValue().RaiseThemeChangedEvent();
+        }
+    }
+
+    @Override
+    public void onDisplayPreferenceDialog(Preference preference)
+    {
+        DialogFragment dialogFragment = null;
+        if (preference instanceof TimeSpanPreference)
+        {
+            dialogFragment = new TimeSpanPreferenceDialogFragmentCompat();
+            Bundle bundle = new Bundle(1);
+            bundle.putString("key", preference.getKey());
+            dialogFragment.setArguments(bundle);
+        }
+
+        if (dialogFragment != null)
+        {
+            dialogFragment.setTargetFragment(this, 0);
+            dialogFragment.show(this.getParentFragmentManager(), "android.support.v7.preference.PreferenceFragment.DIALOG");
+        }
+        else
+        {
+            super.onDisplayPreferenceDialog(preference);
         }
     }
 
@@ -196,15 +234,15 @@ public class SettingsFragment extends PreferenceFragment
                     @Override
                     public void onPermissionRequestFinished(boolean hasPermission) {
                         if (hasPermission) {
-                            FilePickerDialog filePickerDialog = FilePickerDialog.Companion.createFilePickerDialog(getActivity());
+                            FilePickerDialog filePickerDialog = FilePickerDialog.Companion.createFilePickerDialog(getContext());
                             filePickerDialog.setDefaultDirectory(FileUtil.getDefaultMusicDirectory(getActivity()).getPath());
                             filePickerDialog.setInitialDirectory(cacheLocation.getSummary().toString());
                             filePickerDialog.setOnFileSelectedListener(new OnFileSelectedListener() {
                                 @Override
                                 public void onFileSelected(File file, String path) {
-                                    SharedPreferences.Editor editor = cacheLocation.getEditor();
+                                    SharedPreferences.Editor editor = cacheLocation.getSharedPreferences().edit();
                                     editor.putString(Constants.PREFERENCES_KEY_CACHE_LOCATION, path);
-                                    editor.commit();
+                                    editor.apply();
 
                                     setCacheLocation(path);
                                 }
@@ -234,9 +272,9 @@ public class SettingsFragment extends PreferenceFragment
                 new Consumer<Integer>() {
                     @Override
                     public void accept(Integer choice) {
-                        SharedPreferences.Editor editor = resumeOnBluetoothDevice.getEditor();
+                        SharedPreferences.Editor editor = resumeOnBluetoothDevice.getSharedPreferences().edit();
                         editor.putInt(Constants.PREFERENCES_KEY_RESUME_ON_BLUETOOTH_DEVICE, choice);
-                        editor.commit();
+                        editor.apply();
                         resumeOnBluetoothDevice.setSummary(bluetoothDevicePreferenceToString(choice));
                     }
                 });
@@ -253,9 +291,9 @@ public class SettingsFragment extends PreferenceFragment
                 new Consumer<Integer>() {
                     @Override
                     public void accept(Integer choice) {
-                        SharedPreferences.Editor editor = pauseOnBluetoothDevice.getEditor();
+                        SharedPreferences.Editor editor = pauseOnBluetoothDevice.getSharedPreferences().edit();
                         editor.putInt(Constants.PREFERENCES_KEY_PAUSE_ON_BLUETOOTH_DEVICE, choice);
-                        editor.commit();
+                        editor.apply();
                         pauseOnBluetoothDevice.setSummary(bluetoothDevicePreferenceToString(choice));
                     }
                 });
@@ -330,7 +368,7 @@ public class SettingsFragment extends PreferenceFragment
                 @Override
                 public boolean onPreferenceChange(Preference preference, Object o) {
                     featureStorage.changeFeatureFlag(Feature.NEW_IMAGE_DOWNLOADER, (Boolean) o);
-                    ((SubsonicTabActivity) getActivity()).clearImageLoader();
+                    imageLoader.getValue().clearImageLoader();
                     return true;
                 }
             });
@@ -355,9 +393,9 @@ public class SettingsFragment extends PreferenceFragment
     private void setupGaplessControlSettingsV14() {
         if (Build.VERSION.SDK_INT < Build.VERSION_CODES.JELLY_BEAN) {
             PreferenceCategory playbackControlSettings =
-                    (PreferenceCategory) findPreference(Constants.PREFERENCES_KEY_PLAYBACK_CONTROL_SETTINGS);
+                    findPreference(Constants.PREFERENCES_KEY_PLAYBACK_CONTROL_SETTINGS);
             CheckBoxPreference gaplessPlaybackEnabled =
-                    (CheckBoxPreference) findPreference(Constants.PREFERENCES_KEY_GAPLESS_PLAYBACK);
+                    findPreference(Constants.PREFERENCES_KEY_GAPLESS_PLAYBACK);
 
             if (gaplessPlaybackEnabled != null) {
                 gaplessPlaybackEnabled.setChecked(false);
@@ -371,25 +409,19 @@ public class SettingsFragment extends PreferenceFragment
     }
 
     private void setupServersCategory() {
-        final Preference addServerPreference = new Preference(getActivity());
         addServerPreference.setPersistent(false);
         addServerPreference.setTitle(getResources().getString(R.string.settings_server_manage_servers));
         addServerPreference.setEnabled(true);
 
-        // TODO new server management here
-        serversCategory.removeAll();
-        serversCategory.addPreference(addServerPreference);
-
         addServerPreference.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
             @Override
             public boolean onPreferenceClick(Preference preference) {
-                final Intent intent = new Intent(getActivity(), ServerSelectorActivity.class);
-                intent.putExtra(SERVER_SELECTOR_MANAGE_MODE, true);
-                startActivityForResult(intent, 0);
+                Bundle bundle = new Bundle();
+                bundle.putBoolean(SERVER_SELECTOR_MANAGE_MODE, true);
+                Navigation.findNavController(getView()).navigate(R.id.settingsToServerSelector, bundle);
                 return true;
             }
         });
-
     }
 
     private void update() {
@@ -433,20 +465,15 @@ public class SettingsFragment extends PreferenceFragment
             debugLogToFile.setSummary("");
         }
 
-        if (Util.getShouldUseId3Tags(getActivity())) showArtistPicture.setEnabled(true);
-        else showArtistPicture.setEnabled(false);
+        showArtistPicture.setEnabled(Util.getShouldUseId3Tags(getActivity()));
     }
 
-    private static void setImageLoaderConcurrency(int concurrency) {
-        SubsonicTabActivity instance = SubsonicTabActivity.getInstance();
+    private void setImageLoaderConcurrency(int concurrency) {
+        ImageLoader imageLoaderInstance = imageLoader.getValue().getImageLoader();
 
-        if (instance != null) {
-            ImageLoader imageLoader = instance.getImageLoader();
-
-            if (imageLoader != null) {
-                imageLoader.stopImageLoader();
-                imageLoader.setConcurrency(concurrency);
-            }
+        if (imageLoaderInstance != null) {
+            imageLoaderInstance.stopImageLoader();
+            imageLoaderInstance.setConcurrency(concurrency);
         }
     }
 
@@ -475,18 +502,14 @@ public class SettingsFragment extends PreferenceFragment
     }
 
     private void setBluetoothPreferences(boolean enabled) {
-        if (enabled) {
-            sendBluetoothAlbumArt.setEnabled(true);
-        } else {
-            sendBluetoothAlbumArt.setEnabled(false);
-        }
+        sendBluetoothAlbumArt.setEnabled(enabled);
     }
 
     private void setCacheLocation(String path) {
         File dir = new File(path);
 
         if (!FileUtil.ensureDirectoryExistsAndIsReadWritable(dir)) {
-            PermissionUtil.handlePermissionFailed(getActivity(), new PermissionUtil.PermissionRequestFinishedCallback() {
+            permissionUtil.getValue().handlePermissionFailed(new PermissionUtil.PermissionRequestFinishedCallback() {
                 @Override
                 public void onPermissionRequestFinished(boolean hasPermission) {
                     String currentPath = settings.getString(Constants.PREFERENCES_KEY_CACHE_LOCATION,

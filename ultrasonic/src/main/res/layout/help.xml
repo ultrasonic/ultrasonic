@@ -29,12 +29,18 @@
                 
     </LinearLayout>
 
-    <WebView
-        a:id="@+id/help_contents"
+    <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
+        a:id="@+id/help_refresh"
         a:layout_width="fill_parent"
         a:layout_height="match_parent"
-        a:layout_below="@id/help_buttons"
-        a:fadingEdge="vertical"
-        a:fadingEdgeLength="12dip" />
+        a:layout_below="@id/help_buttons">
 
+        <WebView
+            a:id="@+id/help_contents"
+            a:layout_width="fill_parent"
+            a:layout_height="match_parent"
+            a:fadingEdge="vertical"
+            a:fadingEdgeLength="12dip" />
+
+    </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
   </RelativeLayout>

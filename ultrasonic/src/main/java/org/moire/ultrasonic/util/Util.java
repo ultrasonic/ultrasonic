@@ -18,6 +18,7 @@
  */
 package org.moire.ultrasonic.util;
 
+import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.PendingIntent;
@@ -39,21 +40,21 @@ import android.net.wifi.WifiManager;
 import android.os.Build;
 import android.os.Environment;
 import android.os.Parcelable;
-import android.preference.PreferenceManager;
 import android.util.DisplayMetrics;
 import timber.log.Timber;
 import android.util.TypedValue;
 import android.view.Gravity;
 import android.view.KeyEvent;
+import android.view.View;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.RemoteViews;
 import android.widget.Toast;
 
 import androidx.annotation.ColorInt;
+import androidx.preference.PreferenceManager;
 
 import org.moire.ultrasonic.R;
-import org.moire.ultrasonic.activity.DownloadActivity;
-import org.moire.ultrasonic.activity.MainActivity;
-import org.moire.ultrasonic.activity.SettingsActivity;
+import org.moire.ultrasonic.activity.NavigationActivity;
 import org.moire.ultrasonic.data.ActiveServerProvider;
 import org.moire.ultrasonic.domain.*;
 import org.moire.ultrasonic.domain.MusicDirectory.Entry;
@@ -63,10 +64,8 @@ import org.moire.ultrasonic.service.DownloadFile;
 import java.io.*;
 import java.security.MessageDigest;
 import java.text.DecimalFormat;
-import java.text.NumberFormat;
 import java.util.List;
-import java.util.Map;
-import java.util.concurrent.ConcurrentHashMap;
+import java.util.Locale;
 import java.util.concurrent.TimeUnit;
 import java.util.regex.Pattern;
 
@@ -95,8 +94,6 @@ public class Util
 	private static boolean mediaButtonsRegisteredForUI;
 	private static boolean mediaButtonsRegisteredForService;
 
-	private static final Map<Integer, Version> SERVER_REST_VERSIONS = new ConcurrentHashMap<Integer, Version>();
-
 	// Used by hexEncode()
 	private static final char[] HEX_DIGITS = {'0', '1', '2', '3', '4', '5', '6', '7', '8', '9', 'a', 'b', 'c', 'd', 'e', 'f'};
 	private static Toast toast;
@@ -124,7 +121,7 @@ public class Util
 		SharedPreferences preferences = getPreferences(context);
 		SharedPreferences.Editor editor = preferences.edit();
 		editor.putString(Constants.PREFERENCES_KEY_REPEAT_MODE, repeatMode.name());
-		editor.commit();
+		editor.apply();
 	}
 
 	public static boolean isNotificationEnabled(Context context)
@@ -143,6 +140,7 @@ public class Util
 		return preferences.getBoolean(Constants.PREFERENCES_KEY_ALWAYS_SHOW_NOTIFICATION, false);
 	}
 
+	@SuppressWarnings({"BooleanMethodIsAlwaysInverted"}) // It is inverted for readability
 	public static boolean isLockScreenEnabled(Context context)
 	{
 		SharedPreferences preferences = getPreferences(context);
@@ -206,25 +204,6 @@ public class Util
     public static SharedPreferences getPreferences(Context context) {
         return PreferenceManager.getDefaultSharedPreferences(context);
     }
-
-	public static int getRemainingTrialDays(Context context)
-	{
-		SharedPreferences preferences = getPreferences(context);
-		long installTime = preferences.getLong(Constants.PREFERENCES_KEY_INSTALL_TIME, 0L);
-
-		if (installTime == 0L)
-		{
-			installTime = System.currentTimeMillis();
-			SharedPreferences.Editor editor = preferences.edit();
-			editor.putLong(Constants.PREFERENCES_KEY_INSTALL_TIME, installTime);
-			editor.commit();
-		}
-
-		long now = System.currentTimeMillis();
-		long millisPerDay = 24L * 60L * 60L * 1000L;
-		int daysSinceInstall = (int) ((now - installTime) / millisPerDay);
-		return Math.max(0, Constants.FREE_TRIAL_DAYS - daysSinceInstall);
-	}
 
 	/**
 	 * Get the contents of an <code>InputStream</code> as a <code>byte[]</code>.
@@ -348,6 +327,7 @@ public class Util
 		toast(context, message, true);
 	}
 
+	@SuppressLint("ShowToast") // Invalid warning
 	public static void toast(Context context, CharSequence message, boolean shortDuration)
 	{
 		if (toast == null)
@@ -383,22 +363,19 @@ public class Util
 		// More than 1 GB?
 		if (byteCount >= 1024 * 1024 * 1024)
 		{
-			NumberFormat gigaByteFormat = GIGA_BYTE_FORMAT;
-			return gigaByteFormat.format((double) byteCount / (1024 * 1024 * 1024));
+			return GIGA_BYTE_FORMAT.format((double) byteCount / (1024 * 1024 * 1024));
 		}
 
 		// More than 1 MB?
 		if (byteCount >= 1024 * 1024)
 		{
-			NumberFormat megaByteFormat = MEGA_BYTE_FORMAT;
-			return megaByteFormat.format((double) byteCount / (1024 * 1024));
+			return MEGA_BYTE_FORMAT.format((double) byteCount / (1024 * 1024));
 		}
 
 		// More than 1 KB?
 		if (byteCount >= 1024)
 		{
-			NumberFormat kiloByteFormat = KILO_BYTE_FORMAT;
-			return kiloByteFormat.format((double) byteCount / 1024);
+			return KILO_BYTE_FORMAT.format((double) byteCount / 1024);
 		}
 
 		return byteCount + " B";
@@ -604,19 +581,6 @@ public class Util
 		showDialog(context, android.R.drawable.ic_dialog_info, titleId, messageId);
 	}
 
-	public static void showWelcomeDialog(final Context context, final MainActivity activity, int titleId, int messageId)
-	{
-		new AlertDialog.Builder(context).setIcon(android.R.drawable.ic_dialog_info).setTitle(titleId).setMessage(messageId).setPositiveButton(R.string.common_ok, new DialogInterface.OnClickListener()
-		{
-			@Override
-			public void onClick(DialogInterface dialog, int i)
-			{
-				dialog.dismiss();
-				activity.startActivityForResultWithoutTransition(activity, SettingsActivity.class);
-			}
-		}).show();
-	}
-
 	private static void showDialog(Context context, int icon, int titleId, int messageId)
 	{
 		new AlertDialog.Builder(context).setIcon(icon).setTitle(titleId).setMessage(messageId).setPositiveButton(R.string.common_ok, new DialogInterface.OnClickListener()
@@ -640,11 +604,6 @@ public class Util
 		{
 			Timber.w(x, "Interrupted from sleep.");
 		}
-	}
-
-	public static void disablePendingTransition(Activity activity)
-	{
-		activity.overridePendingTransition(0, 0);
 	}
 
 	public static Drawable getDrawableFromAttribute(Context context, int attr)
@@ -682,7 +641,7 @@ public class Util
 
 	public static WifiManager.WifiLock createWifiLock(Context context, String tag)
 	{
-		WifiManager wm = (WifiManager) context.getSystemService(Context.WIFI_SERVICE);
+		WifiManager wm = (WifiManager) context.getApplicationContext().getSystemService(Context.WIFI_SERVICE);
 		return wm.createWifiLock(WifiManager.WIFI_MODE_FULL_HIGH_PERF, tag);
 	}
 
@@ -917,11 +876,7 @@ public class Util
 					avrcpIntent.putExtra("playing", true);
 					break;
 				case STOPPED:
-					avrcpIntent.putExtra("playing", false);
-					break;
 				case PAUSED:
-					avrcpIntent.putExtra("playing", false);
-					break;
 				case COMPLETED:
 					avrcpIntent.putExtra("playing", false);
 					break;
@@ -1026,7 +981,7 @@ public class Util
 			// guarantee
 			// a final image with both dimensions larger than or equal to the
 			// requested height and width.
-			inSampleSize = heightRatio < widthRatio ? heightRatio : widthRatio;
+			inSampleSize = Math.min(heightRatio, widthRatio);
 		}
 
 		return inSampleSize;
@@ -1034,8 +989,10 @@ public class Util
 
 	public static void linkButtons(Context context, RemoteViews views, boolean playerActive)
 	{
+		Intent intent = new Intent(context, NavigationActivity.class).addFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
+		if (playerActive)
+			intent.putExtra(Constants.INTENT_EXTRA_NAME_SHOW_PLAYER, true);
 
-		Intent intent = new Intent(context, playerActive ? DownloadActivity.class : MainActivity.class);
 		intent.setAction("android.intent.action.MAIN");
 		intent.addCategory("android.intent.category.LAUNCHER");
 		PendingIntent pendingIntent = PendingIntent.getActivity(context, 0, intent, PendingIntent.FLAG_UPDATE_CURRENT);
@@ -1098,6 +1055,7 @@ public class Util
 		views.setOnClickPendingIntent(R.id.notification_five_star_5, pendingIntent);
 	}
 
+	// TODO: Shouldn't this be used when making requests?
 	public static int getNetworkTimeout(Context context)
 	{
 		SharedPreferences preferences = getPreferences(context);
@@ -1203,6 +1161,7 @@ public class Util
 		return Integer.parseInt(preferences.getString(Constants.PREFERENCES_KEY_DIRECTORY_CACHE_TIME, "300"));
 	}
 
+	@SuppressWarnings("BooleanMethodIsAlwaysInverted") // Inverted for readability
 	public static boolean isNullOrWhiteSpace(String string)
 	{
 		return string == null || string.isEmpty() || string.trim().isEmpty();
@@ -1252,18 +1211,18 @@ public class Util
 
 		if (hours >= 10)
 		{
-			return String.format("%02d:%02d:%02d", hours, minutes, seconds);
+			return String.format(Locale.getDefault(), "%02d:%02d:%02d", hours, minutes, seconds);
 		}
 		else if (hours > 0)
 		{
-			return String.format("%d:%02d:%02d", hours, minutes, seconds);
+			return String.format(Locale.getDefault(), "%d:%02d:%02d", hours, minutes, seconds);
 		}
 		else if (minutes >= 10)
 		{
-			return String.format("%02d:%02d", minutes, seconds);
+			return String.format(Locale.getDefault(), "%02d:%02d", minutes, seconds);
 		}
 
-		else return minutes > 0 ? String.format("%d:%02d", minutes, seconds) : String.format("0:%02d", seconds);
+		else return minutes > 0 ? String.format(Locale.getDefault(), "%d:%02d", minutes, seconds) : String.format(Locale.getDefault(), "0:%02d", seconds);
 	}
 
 	public static VideoPlayerType getVideoPlayerType(Context context)
@@ -1342,6 +1301,7 @@ public class Util
 		return versionCode;
 	}
 
+	@SuppressWarnings("BooleanMethodIsAlwaysInverted") // Inverted for readability
 	public static boolean getShouldSendBluetoothNotifications(Context context)
 	{
 		SharedPreferences preferences = getPreferences(context);
@@ -1409,7 +1369,7 @@ public class Util
 		SharedPreferences preferences = getPreferences(context);
 		SharedPreferences.Editor editor = preferences.edit();
 		editor.putBoolean(Constants.PREFERENCES_KEY_ASK_FOR_SHARE_DETAILS, shouldAskForShareDetails);
-		editor.commit();
+		editor.apply();
 	}
 
 	public static void setDefaultShareExpiration(Context context, String defaultShareExpiration)
@@ -1417,7 +1377,7 @@ public class Util
 		SharedPreferences preferences = getPreferences(context);
 		SharedPreferences.Editor editor = preferences.edit();
 		editor.putString(Constants.PREFERENCES_KEY_DEFAULT_SHARE_EXPIRATION, defaultShareExpiration);
-		editor.commit();
+		editor.apply();
 	}
 
 	public static void setDefaultShareDescription(Context context, String defaultShareDescription)
@@ -1425,7 +1385,7 @@ public class Util
 		SharedPreferences preferences = getPreferences(context);
 		SharedPreferences.Editor editor = preferences.edit();
 		editor.putString(Constants.PREFERENCES_KEY_DEFAULT_SHARE_DESCRIPTION, defaultShareDescription);
-		editor.commit();
+		editor.apply();
 	}
 
 	public static boolean getShouldShowAllSongsByArtist(Context context)
@@ -1498,4 +1458,12 @@ public class Util
 		return preferences.getBoolean(Constants.PREFERENCES_KEY_DEBUG_LOG_TO_FILE, false);
 	}
 
+	public static void hideKeyboard(Activity activity) {
+		InputMethodManager inputManager = (InputMethodManager) activity.getSystemService(Context.INPUT_METHOD_SERVICE);
+
+		View currentFocusedView = activity.getCurrentFocus();
+		if (currentFocusedView != null) {
+			inputManager.hideSoftInputFromWindow(currentFocusedView.getWindowToken(), InputMethodManager.HIDE_NOT_ALWAYS);
+		}
+	}
 }

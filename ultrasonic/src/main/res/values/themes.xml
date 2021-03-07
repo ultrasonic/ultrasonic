@@ -1,8 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <style name="UltrasonicTheme.Black" parent="Theme.MaterialComponents">
+        <item name="windowActionBar">false</item>
+        <item name="windowNoTitle">true</item>
         <item name="color_background">@color/background_color_dark</item>
         <item name="color_selected">@color/selected_color_dark</item>
+        <item name="color_menu_selected">@color/selected_menu_dark</item>
+        <item name="color_menu_background">@color/selected_menu_background_black</item>
         <item name="star_hollow">@drawable/ic_star_hollow_dark</item>
         <item name="star_full">@drawable/ic_star_full_dark</item>
         <item name="about">@drawable/ic_menu_about_dark</item>
@@ -59,8 +63,12 @@
     </style>
 
     <style name="UltrasonicTheme" parent="Theme.AppCompat">
+        <item name="windowActionBar">false</item>
+        <item name="windowNoTitle">true</item>
         <item name="color_background">@color/background_color_dark</item>
         <item name="color_selected">@color/selected_color_dark</item>
+        <item name="color_menu_selected">@color/selected_menu_dark</item>
+        <item name="color_menu_background">@color/selected_menu_background_dark</item>
         <item name="star_hollow">@drawable/ic_star_hollow_dark</item>
         <item name="star_full">@drawable/ic_star_full_dark</item>
         <item name="about">@drawable/ic_menu_about_dark</item>
@@ -117,8 +125,12 @@
     </style>
 
     <style name="UltrasonicTheme.Light" parent="Theme.AppCompat.Light">
+        <item name="windowActionBar">false</item>
+        <item name="windowNoTitle">true</item>
         <item name="color_background">@color/background_color_light</item>
         <item name="color_selected">@color/selected_color_light</item>
+        <item name="color_menu_selected">@color/selected_menu_light</item>
+        <item name="color_menu_background">@color/selected_menu_background_light</item>
         <item name="star_hollow">@drawable/ic_star_hollow_light</item>
         <item name="star_full">@drawable/ic_star_full_light</item>
         <item name="about">@drawable/ic_menu_about_light</item>

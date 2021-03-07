@@ -67,7 +67,7 @@ public class DownloadFile
 	private volatile boolean saveWhenDone;
 	private volatile boolean completeWhenDone;
 
-	private Lazy<Downloader> downloader = inject(Downloader.class);
+	private final Lazy<Downloader> downloader = inject(Downloader.class);
 
 	public DownloadFile(Context context, MusicDirectory.Entry song, boolean save)
 	{
@@ -196,7 +196,9 @@ public class DownloadFile
 	{
 		if (saveFile.exists())
 		{
-			saveFile.renameTo(completeFile);
+			if (!saveFile.renameTo(completeFile)){
+				Timber.w("Renaming file failed. Original file: %s; Rename to: %s", saveFile.getName(), completeFile.getName());
+			}
 		}
 	}
 
@@ -456,13 +458,13 @@ public class DownloadFile
 			return String.format("DownloadTask (%s)", song);
 		}
 
-		private void downloadAndSaveCoverArt(MusicService musicService) throws Exception
+		private void downloadAndSaveCoverArt(MusicService musicService)
 		{
 			try
 			{
 				if (!TextUtils.isEmpty(song.getCoverArt())) {
 					int size = Util.getMinDisplayMetric(context);
-					musicService.getCoverArt(context, song, size, true, true, null);
+					musicService.getCoverArt(context, song, size, true, true);
 				}
 			}
 			catch (Exception x)

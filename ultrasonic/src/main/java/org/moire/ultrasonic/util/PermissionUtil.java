@@ -21,7 +21,6 @@ import com.karumi.dexter.listener.PermissionRequestErrorListener;
 import com.karumi.dexter.listener.multi.MultiplePermissionsListener;
 
 import org.moire.ultrasonic.R;
-import org.moire.ultrasonic.activity.MainActivity;
 
 import java.util.List;
 
@@ -32,8 +31,24 @@ import static androidx.core.content.PermissionChecker.PERMISSION_DENIED;
  * Contains static functions for Permission handling
  */
 public class PermissionUtil {
+
+    private Context activityContext;
+    private final Context applicationContext;
+
+    public PermissionUtil(Context context) {
+        applicationContext = context;
+    }
+
     public interface PermissionRequestFinishedCallback {
         void onPermissionRequestFinished(boolean hasPermission);
+    }
+
+    public void ForegroundApplicationStarted(Context context) {
+        this.activityContext = context;
+    }
+
+    public void ForegroundApplicationStopped() {
+        activityContext = null;
     }
 
     /**
@@ -42,33 +57,33 @@ public class PermissionUtil {
      * It will check if the failure is because the necessary permissions aren't available,
      * and it will request them, if necessary.
      *
-     * @param context context for the operation
      * @param callback callback function to execute after the permission request is finished
      */
-    public static void handlePermissionFailed(final Context context, final PermissionRequestFinishedCallback callback) {
-
-        String currentCachePath = Util.getPreferences(context).getString(Constants.PREFERENCES_KEY_CACHE_LOCATION, FileUtil.getDefaultMusicDirectory(context).getPath());
-        String defaultCachePath = FileUtil.getDefaultMusicDirectory(context).getPath();
+    public void handlePermissionFailed(final PermissionRequestFinishedCallback callback) {
+        String currentCachePath = Util.getPreferences(applicationContext).getString(Constants.PREFERENCES_KEY_CACHE_LOCATION, FileUtil.getDefaultMusicDirectory(applicationContext).getPath());
+        String defaultCachePath = FileUtil.getDefaultMusicDirectory(applicationContext).getPath();
 
         // Ultrasonic can do nothing about this error when the Music Directory is already set to the default.
         if (currentCachePath.compareTo(defaultCachePath) == 0) return;
 
-        // We must get the context of the Main Activity for the dialogs, as this function may be called from a background thread where displaying dialogs is not available
-        final Context mainContext = MainActivity.getInstance();
-
-        if ((PermissionChecker.checkSelfPermission(context, Manifest.permission.WRITE_EXTERNAL_STORAGE) == PERMISSION_DENIED) ||
-                (PermissionChecker.checkSelfPermission(context, Manifest.permission.READ_EXTERNAL_STORAGE) == PERMISSION_DENIED)) {
+        if ((PermissionChecker.checkSelfPermission(applicationContext, Manifest.permission.WRITE_EXTERNAL_STORAGE) == PERMISSION_DENIED) ||
+                (PermissionChecker.checkSelfPermission(applicationContext, Manifest.permission.READ_EXTERNAL_STORAGE) == PERMISSION_DENIED)) {
             // While we request permission, the Music Directory is temporarily reset to its default location
-            setCacheLocation(context, FileUtil.getDefaultMusicDirectory(context).getPath());
-            requestFailedPermission(mainContext, currentCachePath, callback);
+            setCacheLocation(applicationContext, FileUtil.getDefaultMusicDirectory(applicationContext).getPath());
+            // If the application is not running, we can't notify the user
+            if (activityContext == null) return;
+            requestFailedPermission(activityContext, currentCachePath, callback);
         } else {
-            setCacheLocation(context, FileUtil.getDefaultMusicDirectory(context).getPath());
-            new Handler(Looper.getMainLooper()).post(new Runnable() {
-                @Override
-                public void run() {
-                    showWarning(mainContext, context.getString(R.string.permissions_message_box_title), context.getString(R.string.permissions_access_error), null);
-                }
-            });
+            setCacheLocation(applicationContext, FileUtil.getDefaultMusicDirectory(applicationContext).getPath());
+            // If the application is not running, we can't notify the user
+            if (activityContext != null) {
+                new Handler(Looper.getMainLooper()).post(new Runnable() {
+                    @Override
+                    public void run() {
+                        showWarning(activityContext, activityContext.getString(R.string.permissions_message_box_title), activityContext.getString(R.string.permissions_access_error), null);
+                    }
+                });
+            }
             callback.onPermissionRequestFinished(false);
         }
     }

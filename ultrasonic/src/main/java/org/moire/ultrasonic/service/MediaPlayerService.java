@@ -20,8 +20,7 @@ import androidx.core.app.NotificationManagerCompat;
 
 import org.koin.java.KoinJavaComponent;
 import org.moire.ultrasonic.R;
-import org.moire.ultrasonic.activity.DownloadActivity;
-import org.moire.ultrasonic.activity.SubsonicTabActivity;
+import org.moire.ultrasonic.activity.NavigationActivity;
 import org.moire.ultrasonic.domain.MusicDirectory;
 import org.moire.ultrasonic.domain.PlayerState;
 import org.moire.ultrasonic.domain.RepeatMode;
@@ -31,7 +30,9 @@ import org.moire.ultrasonic.provider.UltrasonicAppWidgetProvider4X1;
 import org.moire.ultrasonic.provider.UltrasonicAppWidgetProvider4X2;
 import org.moire.ultrasonic.provider.UltrasonicAppWidgetProvider4X3;
 import org.moire.ultrasonic.provider.UltrasonicAppWidgetProvider4X4;
+import org.moire.ultrasonic.util.Constants;
 import org.moire.ultrasonic.util.FileUtil;
+import org.moire.ultrasonic.util.NowPlayingEventDistributor;
 import org.moire.ultrasonic.util.ShufflePlayBuffer;
 import org.moire.ultrasonic.util.SimpleServiceBinder;
 import org.moire.ultrasonic.util.Util;
@@ -64,10 +65,11 @@ public class MediaPlayerService extends Service
     private final Scrobbler scrobbler = new Scrobbler();
 
     public Lazy<JukeboxMediaPlayer> jukeboxMediaPlayer = inject(JukeboxMediaPlayer.class);
-    private Lazy<DownloadQueueSerializer> downloadQueueSerializerLazy = inject(DownloadQueueSerializer.class);
-    private Lazy<ShufflePlayBuffer> shufflePlayBufferLazy = inject(ShufflePlayBuffer.class);
-    private Lazy<Downloader> downloaderLazy = inject(Downloader.class);
-    private Lazy<LocalMediaPlayer> localMediaPlayerLazy = inject(LocalMediaPlayer.class);
+    private final Lazy<DownloadQueueSerializer> downloadQueueSerializerLazy = inject(DownloadQueueSerializer.class);
+    private final Lazy<ShufflePlayBuffer> shufflePlayBufferLazy = inject(ShufflePlayBuffer.class);
+    private final Lazy<Downloader> downloaderLazy = inject(Downloader.class);
+    private final Lazy<LocalMediaPlayer> localMediaPlayerLazy = inject(LocalMediaPlayer.class);
+    private final Lazy<NowPlayingEventDistributor> nowPlayingEventDistributor = inject(NowPlayingEventDistributor.class);
     private LocalMediaPlayer localMediaPlayer;
     private Downloader downloader;
     private ShufflePlayBuffer shufflePlayBuffer;
@@ -280,21 +282,14 @@ public class MediaPlayerService extends Service
                 UltrasonicAppWidgetProvider4X3.getInstance().notifyChange(MediaPlayerService.this, song, playerState == PlayerState.STARTED, false);
                 UltrasonicAppWidgetProvider4X4.getInstance().notifyChange(MediaPlayerService.this, song, playerState == PlayerState.STARTED, false);
 
-                SubsonicTabActivity tabInstance = SubsonicTabActivity.getInstance();
-
                 if (currentPlaying != null)
                 {
                     updateNotification(localMediaPlayer.playerState, currentPlaying);
-                    if (tabInstance != null) {
-                        tabInstance.showNowPlaying();
-                    }
+                    nowPlayingEventDistributor.getValue().raiseShowNowPlayingEvent();
                 }
                 else
                 {
-                    if (tabInstance != null)
-                    {
-                        tabInstance.hideNowPlaying();
-                    }
+                    nowPlayingEventDistributor.getValue().raiseHideNowPlayingEvent();
                     stopForeground(true);
                     localMediaPlayer.clearRemoteControl();
                     isInForeground = false;
@@ -499,7 +494,6 @@ public class MediaPlayerService extends Service
                 UltrasonicAppWidgetProvider4X2.getInstance().notifyChange(MediaPlayerService.this, song, playerState == PlayerState.STARTED, true);
                 UltrasonicAppWidgetProvider4X3.getInstance().notifyChange(MediaPlayerService.this, song, playerState == PlayerState.STARTED, false);
                 UltrasonicAppWidgetProvider4X4.getInstance().notifyChange(MediaPlayerService.this, song, playerState == PlayerState.STARTED, false);
-                SubsonicTabActivity tabInstance = SubsonicTabActivity.getInstance();
 
                 if (show)
                 {
@@ -507,18 +501,12 @@ public class MediaPlayerService extends Service
                     if (playerState == PlayerState.STARTED || playerState == PlayerState.PAUSED)
                     {
                         updateNotification(playerState, currentPlaying);
-                        if (tabInstance != null)
-                        {
-                            tabInstance.showNowPlaying();
-                        }
+                        nowPlayingEventDistributor.getValue().raiseShowNowPlayingEvent();
                     }
                 }
                 else
                 {
-                    if (tabInstance != null)
-                    {
-                        tabInstance.hideNowPlaying();
-                    }
+                    nowPlayingEventDistributor.getValue().raiseHideNowPlayingEvent();
                     stopForeground(true);
                     localMediaPlayer.clearRemoteControl();
                     isInForeground = false;
@@ -553,7 +541,7 @@ public class MediaPlayerService extends Service
                         MusicService musicService = MusicServiceFactory.getMusicService(MediaPlayerService.this);
                         try
                         {
-                            musicService.deleteBookmark(song.getId(), MediaPlayerService.this, null);
+                            musicService.deleteBookmark(song.getId(), MediaPlayerService.this);
                         }
                         catch (Exception ignored)
                         {
@@ -650,8 +638,10 @@ public class MediaPlayerService extends Service
 
         notificationBuilder.setContent(contentView);
 
-        Intent notificationIntent = new Intent(this, DownloadActivity.class);
-        notificationBuilder.setContentIntent(PendingIntent.getActivity(this, 0, notificationIntent, 0));
+        Intent notificationIntent = new Intent(this, NavigationActivity.class)
+            .addFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
+        notificationIntent.putExtra(Constants.INTENT_EXTRA_NAME_SHOW_PLAYER, true);
+        notificationBuilder.setContentIntent(PendingIntent.getActivity(this, 0, notificationIntent, PendingIntent.FLAG_UPDATE_CURRENT));
 
         if (playerState == PlayerState.PAUSED || playerState == PlayerState.IDLE) {
             contentView.setImageViewResource(R.id.control_play, R.drawable.media_start_normal_dark);

@@ -40,7 +40,7 @@ import java.io.Serializable;
 public class EqualizerController
 {
 	private static Boolean available = null;
-	private static MutableLiveData<EqualizerController> instance = new MutableLiveData<>();
+	private static final MutableLiveData<EqualizerController> instance = new MutableLiveData<>();
 
 	private Context context;
 	public Equalizer equalizer;

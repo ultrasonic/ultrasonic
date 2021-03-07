@@ -21,7 +21,6 @@ package org.moire.ultrasonic.service
 import android.content.Context
 import android.graphics.Bitmap
 import android.text.TextUtils
-import androidx.annotation.StringRes
 import java.io.BufferedWriter
 import java.io.File
 import java.io.FileOutputStream
@@ -31,7 +30,6 @@ import java.io.InputStream
 import java.io.OutputStream
 import java.util.concurrent.CountDownLatch
 import java.util.concurrent.TimeUnit
-import org.moire.ultrasonic.R
 import org.moire.ultrasonic.api.subsonic.ApiNotSupportedException
 import org.moire.ultrasonic.api.subsonic.SubsonicAPIClient
 import org.moire.ultrasonic.api.subsonic.models.AlbumListType.Companion.fromName
@@ -63,11 +61,11 @@ import org.moire.ultrasonic.domain.toDomainEntityList
 import org.moire.ultrasonic.domain.toMusicDirectoryDomainEntity
 import org.moire.ultrasonic.util.CancellableTask
 import org.moire.ultrasonic.util.FileUtil
-import org.moire.ultrasonic.util.ProgressListener
 import org.moire.ultrasonic.util.Util
 import timber.log.Timber
 
 /**
+ * This Music Service implementation connects to a server using the Subsonic REST API
  * @author Sindre Mehus
  */
 open class RESTMusicService(
@@ -78,16 +76,12 @@ open class RESTMusicService(
 ) : MusicService {
 
     @Throws(Exception::class)
-    override fun ping(context: Context, progressListener: ProgressListener?) {
-        updateProgressListener(progressListener, R.string.service_connecting)
-
+    override fun ping(context: Context) {
         responseChecker.callWithResponseCheck { api -> api.ping().execute() }
     }
 
     @Throws(Exception::class)
-    override fun isLicenseValid(context: Context, progressListener: ProgressListener?): Boolean {
-        updateProgressListener(progressListener, R.string.service_connecting)
-
+    override fun isLicenseValid(context: Context): Boolean {
         val response = responseChecker.callWithResponseCheck { api -> api.getLicense().execute() }
 
         return response.body()!!.license.valid
@@ -96,16 +90,13 @@ open class RESTMusicService(
     @Throws(Exception::class)
     override fun getMusicFolders(
         refresh: Boolean,
-        context: Context,
-        progressListener: ProgressListener?
+        context: Context
     ): List<MusicFolder> {
         val cachedMusicFolders = fileStorage.load(
             MUSIC_FOLDER_STORAGE_NAME, getMusicFolderListSerializer()
         )
 
         if (cachedMusicFolders != null && !refresh) return cachedMusicFolders
-
-        updateProgressListener(progressListener, R.string.parser_reading)
 
         val response = responseChecker.callWithResponseCheck { api ->
             api.getMusicFolders().execute()
@@ -121,13 +112,10 @@ open class RESTMusicService(
     override fun getIndexes(
         musicFolderId: String?,
         refresh: Boolean,
-        context: Context,
-        progressListener: ProgressListener?
+        context: Context
     ): Indexes {
         val cachedIndexes = fileStorage.load(INDEXES_STORAGE_NAME, getIndexesSerializer())
         if (cachedIndexes != null && !refresh) return cachedIndexes
-
-        updateProgressListener(progressListener, R.string.parser_reading)
 
         val response = responseChecker.callWithResponseCheck { api ->
             api.getIndexes(musicFolderId, null).execute()
@@ -141,13 +129,10 @@ open class RESTMusicService(
     @Throws(Exception::class)
     override fun getArtists(
         refresh: Boolean,
-        context: Context,
-        progressListener: ProgressListener?
+        context: Context
     ): Indexes {
         val cachedArtists = fileStorage.load(ARTISTS_STORAGE_NAME, getIndexesSerializer())
         if (cachedArtists != null && !refresh) return cachedArtists
-
-        updateProgressListener(progressListener, R.string.parser_reading)
 
         val response = responseChecker.callWithResponseCheck { api ->
             api.getArtists(null).execute()
@@ -163,11 +148,8 @@ open class RESTMusicService(
         id: String?,
         albumId: String?,
         artistId: String?,
-        context: Context,
-        progressListener: ProgressListener?
+        context: Context
     ) {
-        updateProgressListener(progressListener, R.string.parser_reading)
-
         responseChecker.callWithResponseCheck { api -> api.star(id, albumId, artistId).execute() }
     }
 
@@ -176,11 +158,8 @@ open class RESTMusicService(
         id: String?,
         albumId: String?,
         artistId: String?,
-        context: Context,
-        progressListener: ProgressListener?
+        context: Context
     ) {
-        updateProgressListener(progressListener, R.string.parser_reading)
-
         responseChecker.callWithResponseCheck { api -> api.unstar(id, albumId, artistId).execute() }
     }
 
@@ -188,11 +167,8 @@ open class RESTMusicService(
     override fun setRating(
         id: String,
         rating: Int,
-        context: Context,
-        progressListener: ProgressListener?
+        context: Context
     ) {
-        updateProgressListener(progressListener, R.string.parser_reading)
-
         responseChecker.callWithResponseCheck { api -> api.setRating(id, rating).execute() }
     }
 
@@ -201,11 +177,8 @@ open class RESTMusicService(
         id: String,
         name: String?,
         refresh: Boolean,
-        context: Context,
-        progressListener: ProgressListener?
+        context: Context
     ): MusicDirectory {
-        updateProgressListener(progressListener, R.string.parser_reading)
-
         val response = responseChecker.callWithResponseCheck { api ->
             api.getMusicDirectory(id).execute()
         }
@@ -218,11 +191,8 @@ open class RESTMusicService(
         id: String,
         name: String?,
         refresh: Boolean,
-        context: Context,
-        progressListener: ProgressListener?
+        context: Context
     ): MusicDirectory {
-        updateProgressListener(progressListener, R.string.parser_reading)
-
         val response = responseChecker.callWithResponseCheck { api -> api.getArtist(id).execute() }
 
         return response.body()!!.artist.toMusicDirectoryDomainEntity()
@@ -233,11 +203,8 @@ open class RESTMusicService(
         id: String,
         name: String?,
         refresh: Boolean,
-        context: Context,
-        progressListener: ProgressListener?
+        context: Context
     ): MusicDirectory {
-        updateProgressListener(progressListener, R.string.parser_reading)
-
         val response = responseChecker.callWithResponseCheck { api -> api.getAlbum(id).execute() }
 
         return response.body()!!.album.toMusicDirectoryDomainEntity()
@@ -246,18 +213,17 @@ open class RESTMusicService(
     @Throws(Exception::class)
     override fun search(
         criteria: SearchCriteria,
-        context: Context,
-        progressListener: ProgressListener?
+        context: Context
     ): SearchResult {
         return try {
             if (
                 !isOffline(context) &&
                 Util.getShouldUseId3Tags(context)
-            ) search3(criteria, progressListener)
-            else search2(criteria, progressListener)
+            ) search3(criteria)
+            else search2(criteria)
         } catch (ignored: ApiNotSupportedException) {
             // Ensure backward compatibility with REST 1.3.
-            searchOld(criteria, progressListener)
+            searchOld(criteria)
         }
     }
 
@@ -266,11 +232,8 @@ open class RESTMusicService(
      */
     @Throws(Exception::class)
     private fun searchOld(
-        criteria: SearchCriteria,
-        progressListener: ProgressListener?
+        criteria: SearchCriteria
     ): SearchResult {
-        updateProgressListener(progressListener, R.string.parser_reading)
-
         val response = responseChecker.callWithResponseCheck { api ->
             api.search(null, null, null, criteria.query, criteria.songCount, null, null)
                 .execute()
@@ -284,12 +247,9 @@ open class RESTMusicService(
      */
     @Throws(Exception::class)
     private fun search2(
-        criteria: SearchCriteria,
-        progressListener: ProgressListener?
+        criteria: SearchCriteria
     ): SearchResult {
         requireNotNull(criteria.query) { "Query param is null" }
-        updateProgressListener(progressListener, R.string.parser_reading)
-
         val response = responseChecker.callWithResponseCheck { api ->
             api.search2(
                 criteria.query, criteria.artistCount, null, criteria.albumCount, null,
@@ -302,12 +262,9 @@ open class RESTMusicService(
 
     @Throws(Exception::class)
     private fun search3(
-        criteria: SearchCriteria,
-        progressListener: ProgressListener?
+        criteria: SearchCriteria
     ): SearchResult {
         requireNotNull(criteria.query) { "Query param is null" }
-        updateProgressListener(progressListener, R.string.parser_reading)
-
         val response = responseChecker.callWithResponseCheck { api ->
             api.search3(
                 criteria.query, criteria.artistCount, null, criteria.albumCount, null,
@@ -322,11 +279,8 @@ open class RESTMusicService(
     override fun getPlaylist(
         id: String,
         name: String?,
-        context: Context,
-        progressListener: ProgressListener?
+        context: Context
     ): MusicDirectory {
-        updateProgressListener(progressListener, R.string.parser_reading)
-
         val response = responseChecker.callWithResponseCheck { api ->
             api.getPlaylist(id).execute()
         }
@@ -374,11 +328,8 @@ open class RESTMusicService(
     @Throws(Exception::class)
     override fun getPlaylists(
         refresh: Boolean,
-        context: Context,
-        progressListener: ProgressListener?
+        context: Context
     ): List<Playlist> {
-        updateProgressListener(progressListener, R.string.parser_reading)
-
         val response = responseChecker.callWithResponseCheck { api ->
             api.getPlaylists(null).execute()
         }
@@ -391,8 +342,7 @@ open class RESTMusicService(
         id: String?,
         name: String?,
         entries: List<MusicDirectory.Entry>,
-        context: Context,
-        progressListener: ProgressListener?
+        context: Context
     ) {
         val pSongIds: MutableList<String> = ArrayList(entries.size)
 
@@ -401,9 +351,6 @@ open class RESTMusicService(
                 pSongIds.add(id1)
             }
         }
-
-        updateProgressListener(progressListener, R.string.parser_reading)
-
         responseChecker.callWithResponseCheck { api ->
             api.createPlaylist(id, name, pSongIds.toList()).execute()
         }
@@ -412,11 +359,8 @@ open class RESTMusicService(
     @Throws(Exception::class)
     override fun deletePlaylist(
         id: String,
-        context: Context,
-        progressListener: ProgressListener?
+        context: Context
     ) {
-        updateProgressListener(progressListener, R.string.parser_reading)
-
         responseChecker.callWithResponseCheck { api -> api.deletePlaylist(id).execute() }
     }
 
@@ -426,11 +370,8 @@ open class RESTMusicService(
         name: String?,
         comment: String?,
         pub: Boolean,
-        context: Context?,
-        progressListener: ProgressListener?
+        context: Context?
     ) {
-        updateProgressListener(progressListener, R.string.parser_reading)
-
         responseChecker.callWithResponseCheck { api ->
             api.updatePlaylist(id, name, comment, pub, null, null)
                 .execute()
@@ -440,11 +381,8 @@ open class RESTMusicService(
     @Throws(Exception::class)
     override fun getPodcastsChannels(
         refresh: Boolean,
-        context: Context,
-        progressListener: ProgressListener?
+        context: Context
     ): List<PodcastsChannel> {
-        updateProgressListener(progressListener, R.string.parser_reading)
-
         val response = responseChecker.callWithResponseCheck { api ->
             api.getPodcasts(false, null).execute()
         }
@@ -455,11 +393,8 @@ open class RESTMusicService(
     @Throws(Exception::class)
     override fun getPodcastEpisodes(
         podcastChannelId: String?,
-        context: Context,
-        progressListener: ProgressListener?
+        context: Context
     ): MusicDirectory {
-        updateProgressListener(progressListener, R.string.parser_reading)
-
         val response = responseChecker.callWithResponseCheck { api ->
             api.getPodcasts(true, podcastChannelId).execute()
         }
@@ -485,11 +420,8 @@ open class RESTMusicService(
     override fun getLyrics(
         artist: String?,
         title: String?,
-        context: Context,
-        progressListener: ProgressListener?
+        context: Context
     ): Lyrics {
-        updateProgressListener(progressListener, R.string.parser_reading)
-
         val response = responseChecker.callWithResponseCheck { api ->
             api.getLyrics(artist, title).execute()
         }
@@ -501,11 +433,8 @@ open class RESTMusicService(
     override fun scrobble(
         id: String,
         submission: Boolean,
-        context: Context,
-        progressListener: ProgressListener?
+        context: Context
     ) {
-        updateProgressListener(progressListener, R.string.parser_reading)
-
         responseChecker.callWithResponseCheck { api ->
             api.scrobble(id, null, submission).execute()
         }
@@ -516,11 +445,8 @@ open class RESTMusicService(
         type: String,
         size: Int,
         offset: Int,
-        context: Context,
-        progressListener: ProgressListener?
+        context: Context
     ): MusicDirectory {
-        updateProgressListener(progressListener, R.string.parser_reading)
-
         val response = responseChecker.callWithResponseCheck { api ->
             api.getAlbumList(fromName(type), size, offset, null, null, null, null)
                 .execute()
@@ -538,11 +464,8 @@ open class RESTMusicService(
         type: String,
         size: Int,
         offset: Int,
-        context: Context,
-        progressListener: ProgressListener?
+        context: Context
     ): MusicDirectory {
-        updateProgressListener(progressListener, R.string.parser_reading)
-
         val response = responseChecker.callWithResponseCheck { api ->
             api.getAlbumList2(
                 fromName(type),
@@ -564,11 +487,8 @@ open class RESTMusicService(
     @Throws(Exception::class)
     override fun getRandomSongs(
         size: Int,
-        context: Context,
-        progressListener: ProgressListener?
+        context: Context
     ): MusicDirectory {
-        updateProgressListener(progressListener, R.string.parser_reading)
-
         val response = responseChecker.callWithResponseCheck { api ->
             api.getRandomSongs(
                 size,
@@ -587,11 +507,8 @@ open class RESTMusicService(
 
     @Throws(Exception::class)
     override fun getStarred(
-        context: Context,
-        progressListener: ProgressListener?
+        context: Context
     ): SearchResult {
-        updateProgressListener(progressListener, R.string.parser_reading)
-
         val response = responseChecker.callWithResponseCheck { api ->
             api.getStarred(null).execute()
         }
@@ -601,11 +518,8 @@ open class RESTMusicService(
 
     @Throws(Exception::class)
     override fun getStarred2(
-        context: Context,
-        progressListener: ProgressListener?
+        context: Context
     ): SearchResult {
-        updateProgressListener(progressListener, R.string.parser_reading)
-
         val response = responseChecker.callWithResponseCheck { api ->
             api.getStarred2(null).execute()
         }
@@ -619,8 +533,7 @@ open class RESTMusicService(
         entry: MusicDirectory.Entry?,
         size: Int,
         saveToFile: Boolean,
-        highQuality: Boolean,
-        progressListener: ProgressListener?
+        highQuality: Boolean
     ): Bitmap? {
         // Synchronize on the entry so that we don't download concurrently for
         // the same song.
@@ -719,7 +632,7 @@ open class RESTMusicService(
         id: String,
         useFlash: Boolean
     ): String {
-        // This method should not exists as video should be loaded using stream method
+        // TODO This method should not exists as video should be loaded using stream method
         // Previous method implementation uses assumption that video will be available
         // by videoPlayer.view?id=<id>&maxBitRate=500&autoplay=true, but this url is not
         // official Subsonic API call.
@@ -744,11 +657,8 @@ open class RESTMusicService(
     @Throws(Exception::class)
     override fun updateJukeboxPlaylist(
         ids: List<String>?,
-        context: Context,
-        progressListener: ProgressListener?
+        context: Context
     ): JukeboxStatus {
-        updateProgressListener(progressListener, R.string.parser_reading)
-
         val response = responseChecker.callWithResponseCheck { api ->
             api.jukeboxControl(JukeboxAction.SET, null, null, ids, null)
                 .execute()
@@ -761,11 +671,8 @@ open class RESTMusicService(
     override fun skipJukebox(
         index: Int,
         offsetSeconds: Int,
-        context: Context,
-        progressListener: ProgressListener?
+        context: Context
     ): JukeboxStatus {
-        updateProgressListener(progressListener, R.string.parser_reading)
-
         val response = responseChecker.callWithResponseCheck { api ->
             api.jukeboxControl(JukeboxAction.SKIP, index, offsetSeconds, null, null)
                 .execute()
@@ -776,11 +683,8 @@ open class RESTMusicService(
 
     @Throws(Exception::class)
     override fun stopJukebox(
-        context: Context,
-        progressListener: ProgressListener?
+        context: Context
     ): JukeboxStatus {
-        updateProgressListener(progressListener, R.string.parser_reading)
-
         val response = responseChecker.callWithResponseCheck { api ->
             api.jukeboxControl(JukeboxAction.STOP, null, null, null, null)
                 .execute()
@@ -791,11 +695,8 @@ open class RESTMusicService(
 
     @Throws(Exception::class)
     override fun startJukebox(
-        context: Context,
-        progressListener: ProgressListener?
+        context: Context
     ): JukeboxStatus {
-        updateProgressListener(progressListener, R.string.parser_reading)
-
         val response = responseChecker.callWithResponseCheck { api ->
             api.jukeboxControl(JukeboxAction.START, null, null, null, null)
                 .execute()
@@ -806,11 +707,8 @@ open class RESTMusicService(
 
     @Throws(Exception::class)
     override fun getJukeboxStatus(
-        context: Context,
-        progressListener: ProgressListener?
+        context: Context
     ): JukeboxStatus {
-        updateProgressListener(progressListener, R.string.parser_reading)
-
         val response = responseChecker.callWithResponseCheck { api ->
             api.jukeboxControl(JukeboxAction.STATUS, null, null, null, null)
                 .execute()
@@ -822,11 +720,8 @@ open class RESTMusicService(
     @Throws(Exception::class)
     override fun setJukeboxGain(
         gain: Float,
-        context: Context,
-        progressListener: ProgressListener?
+        context: Context
     ): JukeboxStatus {
-        updateProgressListener(progressListener, R.string.parser_reading)
-
         val response = responseChecker.callWithResponseCheck { api ->
             api.jukeboxControl(JukeboxAction.SET_GAIN, null, null, null, gain)
                 .execute()
@@ -838,11 +733,8 @@ open class RESTMusicService(
     @Throws(Exception::class)
     override fun getShares(
         refresh: Boolean,
-        context: Context,
-        progressListener: ProgressListener?
+        context: Context
     ): List<Share> {
-        updateProgressListener(progressListener, R.string.parser_reading)
-
         val response = responseChecker.callWithResponseCheck { api -> api.getShares().execute() }
 
         return response.body()!!.shares.toDomainEntitiesList()
@@ -851,11 +743,8 @@ open class RESTMusicService(
     @Throws(Exception::class)
     override fun getGenres(
         refresh: Boolean,
-        context: Context,
-        progressListener: ProgressListener?
+        context: Context
     ): List<Genre> {
-        updateProgressListener(progressListener, R.string.parser_reading)
-
         val response = responseChecker.callWithResponseCheck { api -> api.getGenres().execute() }
 
         return response.body()!!.genresList.toDomainEntityList()
@@ -866,11 +755,8 @@ open class RESTMusicService(
         genre: String,
         count: Int,
         offset: Int,
-        context: Context,
-        progressListener: ProgressListener?
+        context: Context
     ): MusicDirectory {
-        updateProgressListener(progressListener, R.string.parser_reading)
-
         val response = responseChecker.callWithResponseCheck { api ->
             api.getSongsByGenre(genre, count, offset, null).execute()
         }
@@ -884,11 +770,8 @@ open class RESTMusicService(
     @Throws(Exception::class)
     override fun getUser(
         username: String,
-        context: Context,
-        progressListener: ProgressListener?
+        context: Context
     ): UserInfo {
-        updateProgressListener(progressListener, R.string.parser_reading)
-
         val response = responseChecker.callWithResponseCheck { api ->
             api.getUser(username).execute()
         }
@@ -899,11 +782,8 @@ open class RESTMusicService(
     @Throws(Exception::class)
     override fun getChatMessages(
         since: Long?,
-        context: Context,
-        progressListener: ProgressListener?
+        context: Context
     ): List<ChatMessage> {
-        updateProgressListener(progressListener, R.string.parser_reading)
-
         val response = responseChecker.callWithResponseCheck { api ->
             api.getChatMessages(since).execute()
         }
@@ -914,21 +794,15 @@ open class RESTMusicService(
     @Throws(Exception::class)
     override fun addChatMessage(
         message: String,
-        context: Context,
-        progressListener: ProgressListener?
+        context: Context
     ) {
-        updateProgressListener(progressListener, R.string.parser_reading)
-
         responseChecker.callWithResponseCheck { api -> api.addChatMessage(message).execute() }
     }
 
     @Throws(Exception::class)
     override fun getBookmarks(
-        context: Context,
-        progressListener: ProgressListener?
+        context: Context
     ): List<Bookmark> {
-        updateProgressListener(progressListener, R.string.parser_reading)
-
         val response = responseChecker.callWithResponseCheck { api -> api.getBookmarks().execute() }
 
         return response.body()!!.bookmarkList.toDomainEntitiesList()
@@ -938,11 +812,8 @@ open class RESTMusicService(
     override fun createBookmark(
         id: String,
         position: Int,
-        context: Context,
-        progressListener: ProgressListener?
+        context: Context
     ) {
-        updateProgressListener(progressListener, R.string.parser_reading)
-
         responseChecker.callWithResponseCheck { api ->
             api.createBookmark(id, position.toLong(), null).execute()
         }
@@ -951,22 +822,16 @@ open class RESTMusicService(
     @Throws(Exception::class)
     override fun deleteBookmark(
         id: String,
-        context: Context,
-        progressListener: ProgressListener?
+        context: Context
     ) {
-        updateProgressListener(progressListener, R.string.parser_reading)
-
         responseChecker.callWithResponseCheck { api -> api.deleteBookmark(id).execute() }
     }
 
     @Throws(Exception::class)
     override fun getVideos(
         refresh: Boolean,
-        context: Context,
-        progressListener: ProgressListener?
+        context: Context
     ): MusicDirectory {
-        updateProgressListener(progressListener, R.string.parser_reading)
-
         val response = responseChecker.callWithResponseCheck { api -> api.getVideos().execute() }
 
         val musicDirectory = MusicDirectory()
@@ -980,11 +845,8 @@ open class RESTMusicService(
         ids: List<String>,
         description: String?,
         expires: Long?,
-        context: Context,
-        progressListener: ProgressListener?
+        context: Context
     ): List<Share> {
-        updateProgressListener(progressListener, R.string.parser_reading)
-
         val response = responseChecker.callWithResponseCheck { api ->
             api.createShare(ids, description, expires).execute()
         }
@@ -995,11 +857,8 @@ open class RESTMusicService(
     @Throws(Exception::class)
     override fun deleteShare(
         id: String,
-        context: Context,
-        progressListener: ProgressListener?
+        context: Context
     ) {
-        updateProgressListener(progressListener, R.string.parser_reading)
-
         responseChecker.callWithResponseCheck { api -> api.deleteShare(id).execute() }
     }
 
@@ -1008,15 +867,12 @@ open class RESTMusicService(
         id: String,
         description: String?,
         expires: Long?,
-        context: Context,
-        progressListener: ProgressListener?
+        context: Context
     ) {
         var expiresValue: Long? = expires
         if (expires != null && expires == 0L) {
             expiresValue = null
         }
-
-        updateProgressListener(progressListener, R.string.parser_reading)
 
         responseChecker.callWithResponseCheck { api ->
             api.updateShare(id, description, expiresValue).execute()
@@ -1029,8 +885,7 @@ open class RESTMusicService(
         username: String?,
         size: Int,
         saveToFile: Boolean,
-        highQuality: Boolean,
-        progressListener: ProgressListener?
+        highQuality: Boolean
     ): Bitmap? {
         // Synchronize on the username so that we don't download concurrently for
         // the same user.
@@ -1045,7 +900,6 @@ open class RESTMusicService(
             if (bitmap == null) {
                 var inputStream: InputStream? = null
                 try {
-                    updateProgressListener(progressListener, R.string.parser_reading)
                     val response = subsonicAPIClient.getAvatar(username)
 
                     if (response.hasError()) return null
@@ -1077,13 +931,6 @@ open class RESTMusicService(
             // Return scaled bitmap
             return Util.scaleBitmap(bitmap, size)
         }
-    }
-
-    private fun updateProgressListener(
-        progressListener: ProgressListener?,
-        @StringRes messageId: Int
-    ) {
-        progressListener?.updateProgress(messageId)
     }
 
     companion object {

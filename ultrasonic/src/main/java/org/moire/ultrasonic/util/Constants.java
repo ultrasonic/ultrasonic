@@ -52,13 +52,12 @@ public final class Constants
 	public static final String INTENT_EXTRA_NAME_ALBUM_LIST_OFFSET = "subsonic.albumlistoffset";
 	public static final String INTENT_EXTRA_NAME_SHUFFLE = "subsonic.shuffle";
 	public static final String INTENT_EXTRA_NAME_REFRESH = "subsonic.refresh";
-	public static final String INTENT_EXTRA_REQUEST_SEARCH = "subsonic.requestsearch";
-	public static final String INTENT_EXTRA_NAME_EXIT = "subsonic.exit";
 	public static final String INTENT_EXTRA_NAME_STARRED = "subsonic.starred";
 	public static final String INTENT_EXTRA_NAME_RANDOM = "subsonic.random";
 	public static final String INTENT_EXTRA_NAME_GENRE_NAME = "subsonic.genre";
 	public static final String INTENT_EXTRA_NAME_IS_ALBUM = "subsonic.isalbum";
 	public static final String INTENT_EXTRA_NAME_VIDEOS = "subsonic.videos";
+	public static final String INTENT_EXTRA_NAME_SHOW_PLAYER = "subsonic.showplayer";
 
 	// Names for Intent Actions
 	public static final String CMD_PROCESS_KEYCODE = "org.moire.ultrasonic.CMD_PROCESS_KEYCODE";
@@ -70,13 +69,9 @@ public final class Constants
 	public static final String CMD_PREVIOUS = "org.moire.ultrasonic.CMD_PREVIOUS";
 	public static final String CMD_NEXT = "org.moire.ultrasonic.CMD_NEXT";
 
-	// Notification IDs.
-	public static final int NOTIFICATION_ID_PLAYING = 100;
-
 	// Preferences keys.
 	public static final String PREFERENCES_KEY_SERVER_INSTANCE = "serverInstanceId";
-	public static final String PREFERENCES_KEY_SERVERS_KEY = "serversKey";
-	public static final String PREFERENCES_KEY_INSTALL_TIME = "installTime";
+	public static final String PREFERENCES_KEY_SERVERS_EDIT = "editServers";
 	public static final String PREFERENCES_KEY_THEME = "theme";
 	public static final String PREFERENCES_KEY_THEME_LIGHT = "light";
 	public static final String PREFERENCES_KEY_THEME_DARK = "dark";
@@ -144,12 +139,6 @@ public final class Constants
 	public static final int PREFERENCE_VALUE_ALL = 0;
 	public static final int PREFERENCE_VALUE_A2DP = 1;
 	public static final int PREFERENCE_VALUE_DISABLED = 2;
-
-	// Number of free trial days for non-licensed servers.
-	public static final int FREE_TRIAL_DAYS = 30;
-
-	// URL for project donations.
-	public static final String DONATION_URL = "http://www.subsonic.org/pages/premium.jsp";
 
 	public static final String FILENAME_DOWNLOADS_SER = "downloadstate.ser";
 

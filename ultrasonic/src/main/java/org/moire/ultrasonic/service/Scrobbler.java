@@ -4,7 +4,6 @@ import android.content.Context;
 import timber.log.Timber;
 
 import org.moire.ultrasonic.data.ActiveServerProvider;
-import org.moire.ultrasonic.util.Util;
 
 /**
  * Scrobbles played songs to Last.fm.
@@ -19,32 +18,18 @@ public class Scrobbler
 
 	public void scrobble(final Context context, final DownloadFile song, final boolean submission)
 	{
-		if (song == null || !ActiveServerProvider.Companion.isScrobblingEnabled(context))
-		{
-			return;
-		}
+		if (song == null || !ActiveServerProvider.Companion.isScrobblingEnabled(context)) return;
 
 		final String id = song.getSong().getId();
+		if (id == null) return;
 
 		// Avoid duplicate registrations.
-		if (submission && id.equals(lastSubmission))
-		{
-			return;
-		}
+		if (submission && id.equals(lastSubmission)) return;
 
-		if (!submission && id.equals(lastNowPlaying))
-		{
-			return;
-		}
+		if (!submission && id.equals(lastNowPlaying)) return;
 
-		if (submission)
-		{
-			lastSubmission = id;
-		}
-		else
-		{
-			lastNowPlaying = id;
-		}
+		if (submission)	lastSubmission = id;
+		else lastNowPlaying = id;
 
 		new Thread(String.format("Scrobble %s", song))
 		{
@@ -54,7 +39,7 @@ public class Scrobbler
 				MusicService service = MusicServiceFactory.getMusicService(context);
 				try
 				{
-					service.scrobble(id, submission, context, null);
+					service.scrobble(id, submission, context);
 					Timber.i("Scrobbled '%s' for %s", submission ? "submission" : "now playing", song);
 				}
 				catch (Exception x)

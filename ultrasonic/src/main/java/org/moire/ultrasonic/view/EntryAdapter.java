@@ -18,6 +18,7 @@
  */
 package org.moire.ultrasonic.view;
 
+import android.content.Context;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
@@ -25,7 +26,7 @@ import android.widget.CheckedTextView;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
-import org.moire.ultrasonic.activity.SubsonicTabActivity;
+
 import org.moire.ultrasonic.domain.MusicDirectory.Entry;
 import org.moire.ultrasonic.util.ImageLoader;
 
@@ -36,15 +37,15 @@ import java.util.List;
  */
 public class EntryAdapter extends ArrayAdapter<Entry>
 {
-	private final SubsonicTabActivity activity;
+	private final Context context;
 	private final ImageLoader imageLoader;
 	private final boolean checkable;
 
-	public EntryAdapter(SubsonicTabActivity activity, ImageLoader imageLoader, List<Entry> entries, boolean checkable)
+	public EntryAdapter(Context context, ImageLoader imageLoader, List<Entry> entries, boolean checkable)
 	{
-		super(activity, android.R.layout.simple_list_item_1, entries);
+		super(context, android.R.layout.simple_list_item_1, entries);
 
-		this.activity = activity;
+		this.context = context;
 		this.imageLoader = imageLoader;
 		this.checkable = checkable;
 	}
@@ -58,7 +59,7 @@ public class EntryAdapter extends ArrayAdapter<Entry>
 		{
 			AlbumView view;
 
-			if (convertView != null && convertView instanceof AlbumView)
+			if (convertView instanceof AlbumView)
 			{
 				AlbumView currentView = (AlbumView) convertView;
 
@@ -75,7 +76,7 @@ public class EntryAdapter extends ArrayAdapter<Entry>
 			}
 			else
 			{
-				view = new AlbumView(activity, imageLoader);
+				view = new AlbumView(context, imageLoader);
 				view.setLayout();
 			}
 
@@ -86,7 +87,7 @@ public class EntryAdapter extends ArrayAdapter<Entry>
 		{
 			SongView view;
 
-			if (convertView != null && convertView instanceof SongView)
+			if (convertView instanceof SongView)
 			{
 				SongView currentView = (SongView) convertView;
 
@@ -104,7 +105,7 @@ public class EntryAdapter extends ArrayAdapter<Entry>
 			}
 			else
 			{
-				view = new SongView(activity);
+				view = new SongView(context);
 				view.setLayout(entry);
 			}
 

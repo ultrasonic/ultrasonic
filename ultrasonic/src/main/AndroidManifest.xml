@@ -23,108 +23,31 @@
         android:allowBackup="false"
         android:icon="@mipmap/ic_launcher"
         android:roundIcon="@mipmap/ic_launcher_round"
-        android:theme="@style/Theme.AppCompat"
+        android:theme="@style/NoActionBar"
         android:name=".app.UApp"
         android:label="@string/common.appname"
         android:usesCleartextTraffic="true">
-        <activity
-            android:name=".activity.MainActivity"
+        <activity android:name=".activity.NavigationActivity"
             android:configChanges="orientation|keyboardHidden"
             android:label="@string/common.appname"
-            android:launchMode="standard">
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN"/>
-                <category android:name="android.intent.category.LAUNCHER"/>
-            </intent-filter>
-        </activity>
-        <activity
-            android:name=".activity.SelectArtistActivity"
-            android:configChanges="orientation|keyboardHidden"
-            android:launchMode="standard"/>
-        <activity
-            android:name=".activity.SelectAlbumActivity"
-            android:configChanges="orientation|keyboardHidden"/>
-        <activity
-            android:name=".activity.SearchActivity"
-            android:configChanges="orientation|keyboardHidden"
-            android:label="@string/search.label"
-            android:launchMode="singleTask"/>
-        <activity
-            android:name=".activity.SelectPlaylistActivity"
-            android:configChanges="orientation|keyboardHidden"
-            android:label="@string/playlist.label"
-            android:launchMode="standard"/>
-        <activity
-            android:name=".activity.PodcastsActivity"
-            android:configChanges="orientation|keyboardHidden"
-            android:label="@string/podcasts.label"
-            android:launchMode="standard"/>
-        <activity
-            android:name=".activity.BookmarkActivity"
-            android:configChanges="orientation|keyboardHidden"/>
-        <activity
-            android:name=".activity.ShareActivity"
-            android:configChanges="orientation|keyboardHidden"/>
-        <activity
-            android:name=".activity.ChatActivity"
-            android:configChanges="orientation|keyboardHidden"/>
-        <activity
-            android:name=".activity.DownloadActivity"
-            android:configChanges="keyboardHidden"
-            android:launchMode="singleTask"
-            android:exported="true" />
-        <activity
-            android:name=".activity.SettingsActivity"
-            android:configChanges="orientation|keyboardHidden"
-            android:launchMode="singleTask"/>
-        <activity
-            android:name=".activity.HelpActivity"
-            android:configChanges="orientation|keyboardHidden"
-            android:launchMode="singleTask"/>
-        <activity
-            android:name=".activity.LyricsActivity"
-            android:configChanges="orientation|keyboardHidden"
-            android:launchMode="singleTask"/>
-        <activity
-            android:name=".activity.EqualizerActivity"
-            android:configChanges="orientation|keyboardHidden"
-            android:label="@string/equalizer.label"
-            android:launchMode="singleTask"/>
-        <activity
-            android:name=".activity.SelectGenreActivity"
-            android:configChanges="orientation|keyboardHidden"
-            android:launchMode="standard"/>
-        <activity
-            android:name=".activity.VoiceQueryReceiverActivity"
             android:launchMode="singleTask">
             <intent-filter>
-                <action android:name="android.media.action.MEDIA_PLAY_FROM_SEARCH"/>
-                <category android:name="android.intent.category.DEFAULT"/>
-            </intent-filter>
-        </activity>
-        <activity
-            android:name=".activity.QueryReceiverActivity"
-            android:launchMode="singleTask">
-            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
                 <action android:name="android.intent.action.SEARCH"/>
-                <category android:name="android.intent.category.DEFAULT"/>
-            </intent-filter>
+                <action android:name="android.media.action.MEDIA_PLAY_FROM_SEARCH"/>
 
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+            <nav-graph android:value="@navigation/navigation_graph" />
             <meta-data
                 android:name="android.app.searchable"
                 android:resource="@xml/searchable"/>
         </activity>
 
-        <activity
-            android:name=".activity.ServerSelectorActivity"
-            android:label="@string/server_selector.label" />
-        <activity
-            android:name=".activity.EditServerActivity"
-            android:label="@string/server_editor.label" />
-
         <service
             android:name=".service.MediaPlayerService"
-            android:label="Ultrasonic Download Service"
+            android:label="Ultrasonic Media Player Service"
             android:exported="false">
         </service>
 
@@ -201,10 +124,6 @@
         <provider
             android:name=".provider.SearchSuggestionProvider"
             android:authorities="org.moire.ultrasonic.provider.SearchSuggestionProvider"/>
-
-        <meta-data
-            android:name="android.app.default_searchable"
-            android:value="org.moire.ultrasonic.activity.QueryReceiverActivity"/>
 
         <receiver
             android:name=".receiver.A2dpIntentReceiver"

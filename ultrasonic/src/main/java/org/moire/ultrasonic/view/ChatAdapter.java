@@ -1,5 +1,6 @@
 package org.moire.ultrasonic.view;
 
+import android.content.Context;
 import android.text.method.LinkMovementMethod;
 import android.text.util.Linkify;
 import android.view.LayoutInflater;
@@ -9,11 +10,10 @@ import android.widget.ArrayAdapter;
 import android.widget.ImageView;
 import android.widget.TextView;
 import org.moire.ultrasonic.R;
-import org.moire.ultrasonic.activity.SubsonicTabActivity;
 import org.moire.ultrasonic.data.ActiveServerProvider;
 import org.moire.ultrasonic.domain.ChatMessage;
+import org.moire.ultrasonic.subsonic.ImageLoaderProvider;
 import org.moire.ultrasonic.util.ImageLoader;
-import org.moire.ultrasonic.util.Util;
 
 import java.text.DateFormat;
 import java.util.Date;
@@ -26,18 +26,19 @@ import static org.koin.java.KoinJavaComponent.inject;
 
 public class ChatAdapter extends ArrayAdapter<ChatMessage>
 {
-	private final SubsonicTabActivity activity;
-	private List<ChatMessage> messages;
+	private final Context context;
+	private final List<ChatMessage> messages;
 
 	private static final String phoneRegex = "1?\\W*([2-9][0-8][0-9])\\W*([2-9][0-9]{2})\\W*([0-9]{4})";
 	private static final Pattern phoneMatcher = Pattern.compile(phoneRegex);
 
-	private Lazy<ActiveServerProvider> activeServerProvider = inject(ActiveServerProvider.class);
+	private final Lazy<ActiveServerProvider> activeServerProvider = inject(ActiveServerProvider.class);
+	private final Lazy<ImageLoaderProvider> imageLoader = inject(ImageLoaderProvider.class);
 
-	public ChatAdapter(SubsonicTabActivity activity, List<ChatMessage> messages)
+	public ChatAdapter(Context context, List<ChatMessage> messages)
 	{
-		super(activity, R.layout.chat_item, messages);
-		this.activity = activity;
+		super(context, R.layout.chat_item, messages);
+		this.context = context;
 		this.messages = messages;
 	}
 
@@ -91,14 +92,14 @@ public class ChatAdapter extends ArrayAdapter<ChatMessage>
 
 		holder.chatMessage = message;
 
-		DateFormat timeFormat = android.text.format.DateFormat.getTimeFormat(activity);
+		DateFormat timeFormat = android.text.format.DateFormat.getTimeFormat(context);
 		String messageTimeFormatted = String.format("[%s]", timeFormat.format(messageTime));
 
-		ImageLoader imageLoader = activity.getImageLoader();
+		ImageLoader imageLoaderInstance = imageLoader.getValue().getImageLoader();
 
-		if (imageLoader != null)
+		if (imageLoaderInstance != null)
 		{
-			imageLoader.loadAvatarImage(holder.avatar, messageUser, false, holder.avatar.getWidth(), false, true);
+			imageLoaderInstance.loadAvatarImage(holder.avatar, messageUser, false, holder.avatar.getWidth(), false, true);
 		}
 
 		holder.username.setText(messageUser);
@@ -110,7 +111,7 @@ public class ChatAdapter extends ArrayAdapter<ChatMessage>
 
 	private View inflateView(int layout, ViewGroup parent)
 	{
-		return LayoutInflater.from(activity).inflate(layout, parent, false);
+		return LayoutInflater.from(context).inflate(layout, parent, false);
 	}
 
 	private static ViewHolder createViewHolder(int layout, View convertView)

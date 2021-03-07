@@ -18,8 +18,8 @@
  */
 package org.moire.ultrasonic.util;
 
-import android.app.Activity;
 import android.app.AlertDialog;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.net.Uri;
@@ -38,27 +38,27 @@ public enum VideoPlayerType
 	MX("mx")
 			{
 				@Override
-				public void playVideo(final Activity activity, MusicDirectory.Entry entry) throws Exception
+				public void playVideo(final Context context, MusicDirectory.Entry entry) throws Exception
 				{
 
 					// Check if MX Player is installed.
-					boolean installedAd = Util.isPackageInstalled(activity, PACKAGE_NAME_MX_AD);
-					boolean installedPro = Util.isPackageInstalled(activity, PACKAGE_NAME_MX_PRO);
+					boolean installedAd = Util.isPackageInstalled(context, PACKAGE_NAME_MX_AD);
+					boolean installedPro = Util.isPackageInstalled(context, PACKAGE_NAME_MX_PRO);
 
 					if (!installedAd && !installedPro)
 					{
-						new AlertDialog.Builder(activity).setMessage(R.string.video_get_mx_player_text).setPositiveButton(R.string.video_get_mx_player_button, new DialogInterface.OnClickListener()
+						new AlertDialog.Builder(context).setMessage(R.string.video_get_mx_player_text).setPositiveButton(R.string.video_get_mx_player_button, new DialogInterface.OnClickListener()
 						{
 							@Override
 							public void onClick(DialogInterface dialog, int i)
 							{
 								try
 								{
-									activity.startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse(String.format("market://details?id=%s", PACKAGE_NAME_MX_AD))));
+									context.startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse(String.format("market://details?id=%s", PACKAGE_NAME_MX_AD))));
 								}
 								catch (android.content.ActivityNotFoundException x)
 								{
-									activity.startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse(String.format("http://play.google.com/store/apps/details?id=%s", PACKAGE_NAME_MX_AD))));
+									context.startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse(String.format("http://play.google.com/store/apps/details?id=%s", PACKAGE_NAME_MX_AD))));
 								}
 
 								dialog.dismiss();
@@ -79,8 +79,8 @@ public enum VideoPlayerType
 						Intent intent = new Intent(Intent.ACTION_VIEW);
 						intent.setPackage(installedPro ? PACKAGE_NAME_MX_PRO : PACKAGE_NAME_MX_AD);
 						intent.putExtra("title", entry.getTitle());
-						intent.setDataAndType(Uri.parse(MusicServiceFactory.getMusicService(activity).getVideoUrl(activity, entry.getId(), false)), "video/*");
-						activity.startActivity(intent);
+						intent.setDataAndType(Uri.parse(MusicServiceFactory.getMusicService(context).getVideoUrl(context, entry.getId(), false)), "video/*");
+						context.startActivity(intent);
 					}
 				}
 			},
@@ -88,22 +88,22 @@ public enum VideoPlayerType
 	FLASH("flash")
 			{
 				@Override
-				public void playVideo(Activity activity, MusicDirectory.Entry entry) throws Exception
+				public void playVideo(Context context, MusicDirectory.Entry entry) throws Exception
 				{
 					Intent intent = new Intent(Intent.ACTION_VIEW);
-					intent.setData(Uri.parse(MusicServiceFactory.getMusicService(activity).getVideoUrl(activity, entry.getId(), true)));
-					activity.startActivity(intent);
+					intent.setData(Uri.parse(MusicServiceFactory.getMusicService(context).getVideoUrl(context, entry.getId(), true)));
+					context.startActivity(intent);
 				}
 			},
 
 	DEFAULT("default")
 			{
 				@Override
-				public void playVideo(Activity activity, MusicDirectory.Entry entry) throws Exception
+				public void playVideo(Context context, MusicDirectory.Entry entry) throws Exception
 				{
 					Intent intent = new Intent(Intent.ACTION_VIEW);
-					intent.setDataAndType(Uri.parse(MusicServiceFactory.getMusicService(activity).getVideoUrl(activity, entry.getId(), false)), "video/*");
-					activity.startActivity(intent);
+					intent.setDataAndType(Uri.parse(MusicServiceFactory.getMusicService(context).getVideoUrl(context, entry.getId(), false)), "video/*");
+					context.startActivity(intent);
 				}
 			};
 
@@ -131,7 +131,7 @@ public enum VideoPlayerType
 		return null;
 	}
 
-	public abstract void playVideo(Activity activity, MusicDirectory.Entry entry) throws Exception;
+	public abstract void playVideo(Context context, MusicDirectory.Entry entry) throws Exception;
 
 	private static final String PACKAGE_NAME_MX_AD = "com.mxtech.videoplayer.ad";
 	private static final String PACKAGE_NAME_MX_PRO = "com.mxtech.videoplayer.pro";

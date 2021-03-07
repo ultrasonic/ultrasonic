@@ -8,21 +8,28 @@ import org.koin.android.viewmodel.dsl.viewModel
 import org.koin.core.qualifier.named
 import org.koin.dsl.module
 import org.moire.ultrasonic.BuildConfig
-import org.moire.ultrasonic.activity.ArtistListModel
 import org.moire.ultrasonic.api.subsonic.SubsonicAPIClient
 import org.moire.ultrasonic.api.subsonic.SubsonicAPIVersions
 import org.moire.ultrasonic.api.subsonic.SubsonicClientConfiguration
 import org.moire.ultrasonic.cache.PermanentFileStorage
 import org.moire.ultrasonic.data.ActiveServerProvider
+import org.moire.ultrasonic.fragment.ArtistListModel
 import org.moire.ultrasonic.log.TimberOkHttpLogger
 import org.moire.ultrasonic.service.ApiCallResponseChecker
 import org.moire.ultrasonic.service.CachedMusicService
 import org.moire.ultrasonic.service.MusicService
 import org.moire.ultrasonic.service.OfflineMusicService
 import org.moire.ultrasonic.service.RESTMusicService
+import org.moire.ultrasonic.subsonic.DownloadHandler
+import org.moire.ultrasonic.subsonic.NetworkAndStorageChecker
+import org.moire.ultrasonic.subsonic.ShareHandler
+import org.moire.ultrasonic.subsonic.VideoPlayer
 import org.moire.ultrasonic.subsonic.loader.image.SubsonicImageLoader
 import org.moire.ultrasonic.util.Constants
 
+/**
+ * This Koin module contains the registration of classes related to the Music Services
+ */
 internal const val ONLINE_MUSIC_SERVICE = "OnlineMusicService"
 internal const val OFFLINE_MUSIC_SERVICE = "OfflineMusicService"
 
@@ -75,4 +82,9 @@ val musicServiceModule = module {
     single { SubsonicImageLoader(androidContext(), get()) }
 
     viewModel { ArtistListModel(get(), androidContext()) }
+
+    single { DownloadHandler(get(), get()) }
+    single { NetworkAndStorageChecker(androidContext()) }
+    single { VideoPlayer(androidContext()) }
+    single { ShareHandler(androidContext()) }
 }

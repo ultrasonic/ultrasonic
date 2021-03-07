@@ -23,8 +23,6 @@ import android.graphics.drawable.Drawable;
 import timber.log.Timber;
 import android.view.LayoutInflater;
 import android.view.View;
-import android.widget.ImageView;
-import android.widget.TextView;
 import org.moire.ultrasonic.R;
 import org.moire.ultrasonic.data.ActiveServerProvider;
 import org.moire.ultrasonic.domain.MusicDirectory;
@@ -44,10 +42,10 @@ public class AlbumView extends UpdateView
 	private static Drawable starHollowDrawable;
 	private static String theme;
 
-	private Context context;
+	private final Context context;
 	private MusicDirectory.Entry entry;
 	private EntryAdapter.AlbumViewHolder viewHolder;
-	private ImageLoader imageLoader;
+	private final ImageLoader imageLoader;
 	private boolean maximized = false;
 
 	public AlbumView(Context context, ImageLoader imageLoader)
@@ -75,10 +73,10 @@ public class AlbumView extends UpdateView
 	{
 		LayoutInflater.from(context).inflate(R.layout.album_list_item, this, true);
 		viewHolder = new EntryAdapter.AlbumViewHolder();
-		viewHolder.title = (TextView) findViewById(R.id.album_title);
-		viewHolder.artist = (TextView) findViewById(R.id.album_artist);
-		viewHolder.cover_art = (ImageView) findViewById(R.id.album_coverart);
-		viewHolder.star = (ImageView) findViewById(R.id.album_star);
+		viewHolder.title = findViewById(R.id.album_title);
+		viewHolder.artist = findViewById(R.id.album_artist);
+		viewHolder.cover_art = findViewById(R.id.album_coverart);
+		viewHolder.star = findViewById(R.id.album_star);
 		setTag(viewHolder);
 	}
 
@@ -99,11 +97,7 @@ public class AlbumView extends UpdateView
 	}
 
 	public void maximizeOrMinimize() {
-		if (maximized) {
-			maximized = false;
-		} else {
-			maximized = true;
-		}
+		maximized = !maximized;
 		if (this.viewHolder.title != null) {
 			this.viewHolder.title.setSingleLine(!maximized);
 		}
@@ -164,11 +158,11 @@ public class AlbumView extends UpdateView
 							{
 								if (!isStarred)
 								{
-									musicService.star(!useId3 ? id : null, useId3 ? id : null, null, getContext(), null);
+									musicService.star(!useId3 ? id : null, useId3 ? id : null, null, getContext());
 								}
 								else
 								{
-									musicService.unstar(!useId3 ? id : null, useId3 ? id : null, null, getContext(), null);
+									musicService.unstar(!useId3 ? id : null, useId3 ? id : null, null, getContext());
 								}
 							}
 							catch (Exception e)

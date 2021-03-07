@@ -14,14 +14,16 @@ import android.view.KeyEvent;
 import android.widget.RemoteViews;
 
 import org.moire.ultrasonic.R;
-import org.moire.ultrasonic.activity.DownloadActivity;
-import org.moire.ultrasonic.activity.MainActivity;
+import org.moire.ultrasonic.activity.NavigationActivity;
 import org.moire.ultrasonic.domain.MusicDirectory;
 import org.moire.ultrasonic.receiver.MediaButtonIntentReceiver;
 import org.moire.ultrasonic.service.MediaPlayerController;
 import org.moire.ultrasonic.util.Constants;
 import org.moire.ultrasonic.util.FileUtil;
 
+/**
+ * Widget Provider for the Ultrasonic Widgets
+ */
 public class UltrasonicAppWidgetProvider extends AppWidgetProvider
 {
 	protected int layoutId;
@@ -41,6 +43,8 @@ public class UltrasonicAppWidgetProvider extends AppWidgetProvider
 		final Resources res = context.getResources();
 		final RemoteViews views = new RemoteViews(context.getPackageName(), this.layoutId);
 
+		views.setTextViewText(R.id.title, null);
+		views.setTextViewText(R.id.album, null);
 		views.setTextViewText(R.id.artist, res.getText(R.string.widget_initial_text));
 
 		linkButtons(context, views, false);
@@ -72,7 +76,7 @@ public class UltrasonicAppWidgetProvider extends AppWidgetProvider
 	{
 		if (hasInstances(context))
 		{
-			performUpdate(context, currentSong, null, playing, setAlbum);
+			performUpdate(context, currentSong, playing, setAlbum);
 		}
 	}
 
@@ -95,7 +99,7 @@ public class UltrasonicAppWidgetProvider extends AppWidgetProvider
 	/**
 	 * Update all active widget instances by pushing changes
 	 */
-	private void performUpdate(Context context, MusicDirectory.Entry currentSong, int[] appWidgetIds, boolean playing, boolean setAlbum)
+	private void performUpdate(Context context, MusicDirectory.Entry currentSong, boolean playing, boolean setAlbum)
 	{
 		final Resources res = context.getResources();
 		final RemoteViews views = new RemoteViews(context.getPackageName(), this.layoutId);
@@ -176,20 +180,18 @@ public class UltrasonicAppWidgetProvider extends AppWidgetProvider
 		// Link actions buttons to intents
 		linkButtons(context, views, currentSong != null);
 
-		pushUpdate(context, appWidgetIds, views);
+		pushUpdate(context, null, views);
 	}
 
 	/**
 	 * Link up various button actions using {@link PendingIntent}.
-	 *
-	 * @param playerActive True if player is active in background, which means
-	 *                     widget click will launch {@link DownloadActivity},
-	 *                     otherwise we launch {@link MainActivity}.
 	 */
 	private static void linkButtons(Context context, RemoteViews views, boolean playerActive)
 	{
+		Intent intent = new Intent(context, NavigationActivity.class).addFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
+		if (playerActive)
+			intent.putExtra(Constants.INTENT_EXTRA_NAME_SHOW_PLAYER, true);
 
-		Intent intent = new Intent(context, playerActive ? DownloadActivity.class : MainActivity.class);
 		intent.setAction("android.intent.action.MAIN");
 		intent.addCategory("android.intent.category.LAUNCHER");
 		PendingIntent pendingIntent = PendingIntent.getActivity(context, 10, intent, PendingIntent.FLAG_UPDATE_CURRENT);
@@ -198,21 +200,18 @@ public class UltrasonicAppWidgetProvider extends AppWidgetProvider
 
 		// Emulate media button clicks.
 		intent = new Intent(Constants.CMD_PROCESS_KEYCODE);
-		//intent.setPackage(context.getPackageName());
 		intent.setComponent(new ComponentName(context, MediaButtonIntentReceiver.class));
 		intent.putExtra(Intent.EXTRA_KEY_EVENT, new KeyEvent(KeyEvent.ACTION_DOWN, KeyEvent.KEYCODE_MEDIA_PLAY_PAUSE));
 		pendingIntent = PendingIntent.getBroadcast(context, 11, intent, 0);
 		views.setOnClickPendingIntent(R.id.control_play, pendingIntent);
 
 		intent = new Intent(Constants.CMD_PROCESS_KEYCODE);
-		//intent.setPackage(context.getPackageName());
 		intent.setComponent(new ComponentName(context, MediaButtonIntentReceiver.class));
 		intent.putExtra(Intent.EXTRA_KEY_EVENT, new KeyEvent(KeyEvent.ACTION_DOWN, KeyEvent.KEYCODE_MEDIA_NEXT));
 		pendingIntent = PendingIntent.getBroadcast(context, 12, intent, 0);
 		views.setOnClickPendingIntent(R.id.control_next, pendingIntent);
 
 		intent = new Intent(Constants.CMD_PROCESS_KEYCODE);
-		//intent.setPackage(context.getPackageName());
 		intent.setComponent(new ComponentName(context, MediaButtonIntentReceiver.class));
 		intent.putExtra(Intent.EXTRA_KEY_EVENT, new KeyEvent(KeyEvent.ACTION_DOWN, KeyEvent.KEYCODE_MEDIA_PREVIOUS));
 		pendingIntent = PendingIntent.getBroadcast(context, 13, intent, 0);

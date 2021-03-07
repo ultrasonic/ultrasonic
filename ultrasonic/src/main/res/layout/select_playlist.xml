@@ -4,8 +4,6 @@
     a:layout_height="fill_parent"
     a:orientation="vertical" >
 
-    <include layout="@layout/tab_progress" />
-
     <TextView
         a:id="@+id/select_playlist_empty"
         a:layout_width="fill_parent"
@@ -27,7 +25,5 @@
             android:layout_height="match_parent" />
 
     </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
-
-    <include layout="@layout/now_playing" />
 
 </LinearLayout>

@@ -36,7 +36,7 @@ public class VisualizerController
 {
 	private static final int PREFERRED_CAPTURE_SIZE = 128; // Must be a power of two.
 	private static Boolean available = null;
-	private static MutableLiveData<VisualizerController> instance = new MutableLiveData<>();
+	private static final MutableLiveData<VisualizerController> instance = new MutableLiveData<>();
 
 	public Visualizer visualizer;
 	private int audioSessionId;

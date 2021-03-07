@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:a="http://schemas.android.com/apk/res/android"
+    a:id="@+id/view_container"
+    a:layout_width="match_parent"
+    a:layout_height="96dp"
+    a:gravity="bottom"
+    a:orientation="vertical"
+    a:theme="@style/ThemeOverlay.AppCompat.Dark">
+
+    <ImageView
+        a:id="@+id/img_header_bg"
+        a:layout_width="match_parent"
+        a:layout_height="match_parent"
+        a:scaleType="fitXY"
+        a:src="@drawable/ic_launcher_background" />
+
+    <LinearLayout
+        a:layout_width="wrap_content"
+        a:layout_height="wrap_content"
+        a:layout_centerVertical="true"
+        a:orientation="horizontal"
+        a:padding="16dp">
+
+        <ImageView
+            a:id="@+id/img_profile"
+            a:layout_width="52dp"
+            a:layout_height="52dp"
+            a:src="@drawable/ic_stat_ultrasonic" />
+
+        <TextView
+            a:id="@+id/name"
+            a:layout_width="wrap_content"
+            a:layout_height="match_parent"
+            a:gravity="center_vertical"
+            a:paddingStart="16dp"
+            a:paddingLeft="16dp"
+            a:text="@string/common.appname"
+            a:textAppearance="@style/TextAppearance.AppCompat.Title" />
+
+    </LinearLayout>
+</RelativeLayout>

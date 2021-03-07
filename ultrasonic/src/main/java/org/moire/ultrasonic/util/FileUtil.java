@@ -24,10 +24,12 @@ import android.graphics.BitmapFactory;
 import android.os.Build;
 import android.os.Environment;
 import android.text.TextUtils;
+
+import kotlin.Lazy;
 import timber.log.Timber;
 
-import org.moire.ultrasonic.activity.SubsonicTabActivity;
 import org.moire.ultrasonic.domain.MusicDirectory;
+import org.moire.ultrasonic.subsonic.ImageLoaderProvider;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -43,6 +45,8 @@ import java.util.SortedSet;
 import java.util.TreeSet;
 import java.util.regex.Pattern;
 
+import static org.koin.java.KoinJavaComponent.inject;
+
 /**
  * @author Sindre Mehus
  */
@@ -54,6 +58,9 @@ public class FileUtil
 	private static final List<String> VIDEO_FILE_EXTENSIONS = Arrays.asList("flv", "mp4", "m4v", "wmv", "avi", "mov", "mpg", "mkv");
 	private static final List<String> PLAYLIST_FILE_EXTENSIONS = Collections.singletonList("m3u");
 	private static final Pattern TITLE_WITH_TRACK = Pattern.compile("^\\d\\d-.*");
+
+	private static final Lazy<ImageLoaderProvider> imageLoaderProvider = inject(ImageLoaderProvider.class);
+	private static final Lazy<PermissionUtil> permissionUtil = inject(PermissionUtil.class);
 
 	public static File getSongFile(Context context, MusicDirectory.Entry song)
 	{
@@ -148,18 +155,12 @@ public class FileUtil
 
 		File avatarFile = getAvatarFile(context, username);
 
-		SubsonicTabActivity subsonicTabActivity = SubsonicTabActivity.getInstance();
 		Bitmap bitmap = null;
-		ImageLoader imageLoader = null;
+		ImageLoader imageLoader = imageLoaderProvider.getValue().getImageLoader();
 
-		if (subsonicTabActivity != null)
+		if (imageLoader != null)
 		{
-			imageLoader = subsonicTabActivity.getImageLoader();
-
-			if (imageLoader != null)
-			{
-				bitmap = imageLoader.getImageBitmap(username, size);
-			}
+			bitmap = imageLoader.getImageBitmap(username, size);
 		}
 
 		if (bitmap != null)
@@ -218,18 +219,12 @@ public class FileUtil
 
 		File albumArtFile = getAlbumArtFile(context, entry);
 
-		SubsonicTabActivity subsonicTabActivity = SubsonicTabActivity.getInstance();
 		Bitmap bitmap = null;
-		ImageLoader imageLoader = null;
+		ImageLoader imageLoader = imageLoaderProvider.getValue().getImageLoader();
 
-		if (subsonicTabActivity != null)
+		if (imageLoader != null)
 		{
-			imageLoader = subsonicTabActivity.getImageLoader();
-
-			if (imageLoader != null)
-			{
-				bitmap = imageLoader.getImageBitmap(entry, true, size);
-			}
+			bitmap = imageLoader.getImageBitmap(entry, true, size);
 		}
 
 		if (bitmap != null)
@@ -389,7 +384,7 @@ public class FileUtil
 		File dir = new File(path);
 
 		boolean hasAccess = ensureDirectoryExistsAndIsReadWritable(dir);
-		if (hasAccess == false) PermissionUtil.handlePermissionFailed(context, null);
+		if (!hasAccess) permissionUtil.getValue().handlePermissionFailed(null);
 
 		return  hasAccess ? dir : defaultMusicDirectory;
 	}
@@ -492,10 +487,10 @@ public class FileUtil
 		if (files == null)
 		{
 			Timber.w("Failed to list children for %s", dir.getPath());
-			return new TreeSet<File>();
+			return new TreeSet<>();
 		}
 
-		return new TreeSet<File>(Arrays.asList(files));
+		return new TreeSet<>(Arrays.asList(files));
 	}
 
 	public static SortedSet<File> listMediaFiles(File dir)

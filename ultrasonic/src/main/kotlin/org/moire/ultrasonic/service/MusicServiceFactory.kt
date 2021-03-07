@@ -19,18 +19,17 @@
 package org.moire.ultrasonic.service
 
 import android.content.Context
-import org.koin.core.KoinComponent
+import org.koin.core.component.KoinComponent
+import org.koin.core.component.get
 import org.koin.core.context.loadKoinModules
 import org.koin.core.context.unloadKoinModules
-import org.koin.core.get
 import org.koin.core.qualifier.named
-import org.moire.ultrasonic.cache.Directories
 import org.moire.ultrasonic.data.ActiveServerProvider
 import org.moire.ultrasonic.di.OFFLINE_MUSIC_SERVICE
 import org.moire.ultrasonic.di.ONLINE_MUSIC_SERVICE
 import org.moire.ultrasonic.di.musicServiceModule
 
-@Deprecated("Use DI way to get MusicService")
+// TODO Refactor everywhere to use DI way to get MusicService, and then remove this class
 object MusicServiceFactory : KoinComponent {
     @JvmStatic
     fun getMusicService(context: Context): MusicService {
@@ -50,10 +49,4 @@ object MusicServiceFactory : KoinComponent {
         unloadKoinModules(musicServiceModule)
         loadKoinModules(musicServiceModule)
     }
-
-    @JvmStatic
-    fun getServerId() = get<String>(named("ServerID"))
-
-    @JvmStatic
-    fun getDirectories() = get<Directories>()
 }
