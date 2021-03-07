@@ -37,7 +37,7 @@
     <string name="common.play_now">Reproducir ahora</string>
     <string name="common.play_shuffled">Reproducción aleatoria</string>
     <string name="common.public">Public</string>
-    <string name="common.save">Save</string>
+    <string name="common.save">Guardar</string>
     <string name="common.unpin">Desanclar</string>
     <string name="common.various_artists">Varios artistas</string>
     <string name="delete_playlist">Quieres eliminar %1$s</string>
