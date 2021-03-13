@@ -74,10 +74,14 @@ class SelectAlbumFragment : Fragment() {
     private var showHeader = true
     private val random: Random = SecureRandom()
 
-    private val mediaPlayerControllerLazy = KoinJavaComponent.inject(MediaPlayerController::class.java)
+    private val mediaPlayerControllerLazy = KoinJavaComponent.inject(
+        MediaPlayerController::class.java
+    )
     private val videoPlayer = KoinJavaComponent.inject(VideoPlayer::class.java)
     private val downloadHandler = KoinJavaComponent.inject(DownloadHandler::class.java)
-    private val networkAndStorageChecker = KoinJavaComponent.inject(NetworkAndStorageChecker::class.java)
+    private val networkAndStorageChecker = KoinJavaComponent.inject(
+        NetworkAndStorageChecker::class.java
+    )
     private val imageLoaderProvider = KoinJavaComponent.inject(ImageLoaderProvider::class.java)
     private val shareHandler = KoinJavaComponent.inject(ShareHandler::class.java)
     private var cancellationToken: CancellationToken? = null
@@ -111,7 +115,10 @@ class SelectAlbumFragment : Fragment() {
             }
         )
 
-        header = LayoutInflater.from(context).inflate(R.layout.select_album_header, albumListView, false)
+        header = LayoutInflater.from(context).inflate(
+            R.layout.select_album_header, albumListView,
+            false
+        )
 
         albumListView!!.setChoiceMode(ListView.CHOICE_MODE_MULTIPLE)
         albumListView!!.setOnItemClickListener(
@@ -125,7 +132,10 @@ class SelectAlbumFragment : Fragment() {
                         bundle.putBoolean(Constants.INTENT_EXTRA_NAME_IS_ALBUM, entry.isDirectory)
                         bundle.putString(Constants.INTENT_EXTRA_NAME_NAME, entry.title)
                         bundle.putString(Constants.INTENT_EXTRA_NAME_PARENT_ID, entry.parent)
-                        Navigation.findNavController(view).navigate(R.id.selectAlbumFragment, bundle)
+                        Navigation.findNavController(view).navigate(
+                            R.id.selectAlbumFragment,
+                            bundle
+                        )
                     } else if (entry != null && entry.isVideo) {
                         videoPlayer.value.playVideo(entry)
                     } else {
@@ -135,8 +145,9 @@ class SelectAlbumFragment : Fragment() {
             }
         )
 
-        // TODO: Long click on an item will first try to maximize / collapse the item, even when it fits inside the TextView.
-        // The context menu is only displayed on the second long click... This may be improved somehow, e.g. checking first if the texts fit
+        // TODO: Long click on an item will first try to maximize / collapse the item, even when it
+        //  fits inside the TextView. The context menu is only displayed on the second long click...
+        //  This may be improved somehow, e.g. checking first if the texts fit
         albumListView!!.setOnItemLongClickListener(
             OnItemLongClickListener
             { parent, view, position, id ->
@@ -183,7 +194,11 @@ class SelectAlbumFragment : Fragment() {
         playNextButton!!.setOnClickListener(
             View.OnClickListener
             {
-                downloadHandler.value.download(this@SelectAlbumFragment, true, false, false, true, false, getSelectedSongs(albumListView))
+                downloadHandler.value.download(
+                    this@SelectAlbumFragment, true,
+                    false, false, true, false,
+                    getSelectedSongs(albumListView)
+                )
                 selectAll(false, false)
             }
         )
@@ -234,18 +249,28 @@ class SelectAlbumFragment : Fragment() {
         val name = requireArguments().getString(Constants.INTENT_EXTRA_NAME_NAME)
         val parentId = requireArguments().getString(Constants.INTENT_EXTRA_NAME_PARENT_ID)
         val playlistId = requireArguments().getString(Constants.INTENT_EXTRA_NAME_PLAYLIST_ID)
-        val podcastChannelId = requireArguments().getString(Constants.INTENT_EXTRA_NAME_PODCAST_CHANNEL_ID)
+        val podcastChannelId = requireArguments().getString(
+            Constants.INTENT_EXTRA_NAME_PODCAST_CHANNEL_ID
+        )
         val playlistName = requireArguments().getString(Constants.INTENT_EXTRA_NAME_PLAYLIST_NAME)
         val shareId = requireArguments().getString(Constants.INTENT_EXTRA_NAME_SHARE_ID)
         val shareName = requireArguments().getString(Constants.INTENT_EXTRA_NAME_SHARE_NAME)
-        val albumListType = requireArguments().getString(Constants.INTENT_EXTRA_NAME_ALBUM_LIST_TYPE)
+        val albumListType = requireArguments().getString(
+            Constants.INTENT_EXTRA_NAME_ALBUM_LIST_TYPE
+        )
         val genreName = requireArguments().getString(Constants.INTENT_EXTRA_NAME_GENRE_NAME)
-        val albumListTitle = requireArguments().getInt(Constants.INTENT_EXTRA_NAME_ALBUM_LIST_TITLE, 0)
+        val albumListTitle = requireArguments().getInt(
+            Constants.INTENT_EXTRA_NAME_ALBUM_LIST_TITLE, 0
+        )
         val getStarredTracks = requireArguments().getInt(Constants.INTENT_EXTRA_NAME_STARRED, 0)
         val getVideos = requireArguments().getInt(Constants.INTENT_EXTRA_NAME_VIDEOS, 0)
         val getRandomTracks = requireArguments().getInt(Constants.INTENT_EXTRA_NAME_RANDOM, 0)
-        val albumListSize = requireArguments().getInt(Constants.INTENT_EXTRA_NAME_ALBUM_LIST_SIZE, 0)
-        val albumListOffset = requireArguments().getInt(Constants.INTENT_EXTRA_NAME_ALBUM_LIST_OFFSET, 0)
+        val albumListSize = requireArguments().getInt(
+            Constants.INTENT_EXTRA_NAME_ALBUM_LIST_SIZE, 0
+        )
+        val albumListOffset = requireArguments().getInt(
+            Constants.INTENT_EXTRA_NAME_ALBUM_LIST_OFFSET, 0
+        )
 
         if (playlistId != null) {
             getPlaylist(playlistId, playlistName)
@@ -310,23 +335,38 @@ class SelectAlbumFragment : Fragment() {
 
         val itemId = menuItem.itemId
         if (itemId == R.id.album_menu_play_now) {
-            downloadHandler.value.downloadRecursively(this, entryId, false, false, true, false, false, false, false, false)
+            downloadHandler.value.downloadRecursively(
+                this, entryId, false, false, true, false, false, false, false, false
+            )
         } else if (itemId == R.id.album_menu_play_next) {
-            downloadHandler.value.downloadRecursively(this, entryId, false, false, false, false, false, true, false, false)
+            downloadHandler.value.downloadRecursively(
+                this, entryId, false, false, false, false, false, true, false, false
+            )
         } else if (itemId == R.id.album_menu_play_last) {
-            downloadHandler.value.downloadRecursively(this, entryId, false, true, false, false, false, false, false, false)
+            downloadHandler.value.downloadRecursively(
+                this, entryId, false, true, false, false, false, false, false, false
+            )
         } else if (itemId == R.id.album_menu_pin) {
-            downloadHandler.value.downloadRecursively(this, entryId, true, true, false, false, false, false, false, false)
+            downloadHandler.value.downloadRecursively(
+                this, entryId, true, true, false, false, false, false, false, false
+            )
         } else if (itemId == R.id.album_menu_unpin) {
-            downloadHandler.value.downloadRecursively(this, entryId, false, false, false, false, false, false, true, false)
+            downloadHandler.value.downloadRecursively(
+                this, entryId, false, false, false, false, false, false, true, false
+            )
         } else if (itemId == R.id.album_menu_download) {
-            downloadHandler.value.downloadRecursively(this, entryId, false, false, false, false, true, false, false, false)
+            downloadHandler.value.downloadRecursively(
+                this, entryId, false, false, false, false, true, false, false, false
+            )
         } else if (itemId == R.id.select_album_play_all) {
             playAll()
         } else if (itemId == R.id.menu_item_share) {
             val entries: MutableList<MusicDirectory.Entry?> = ArrayList(1)
             entries.add(entry)
-            shareHandler.value.createShare(this, entries, refreshAlbumListView, cancellationToken!!)
+            shareHandler.value.createShare(
+                this, entries, refreshAlbumListView,
+                cancellationToken!!
+            )
             return true
         } else {
             return super.onContextItemSelected(menuItem)
@@ -360,7 +400,10 @@ class SelectAlbumFragment : Fragment() {
             playAll()
             return true
         } else if (itemId == R.id.menu_item_share) {
-            shareHandler.value.createShare(this, getSelectedSongs(albumListView), refreshAlbumListView, cancellationToken!!)
+            shareHandler.value.createShare(
+                this, getSelectedSongs(albumListView),
+                refreshAlbumListView, cancellationToken!!
+            )
             return true
         }
 
@@ -376,7 +419,10 @@ class SelectAlbumFragment : Fragment() {
         val selectedSongs = getSelectedSongs(albumListView)
 
         if (!selectedSongs.isEmpty()) {
-            downloadHandler.value.download(this, append, false, !append, false, false, selectedSongs)
+            downloadHandler.value.download(
+                this, append, false, !append, false,
+                false, selectedSongs
+            )
             selectAll(false, false)
         } else {
             playAll(false, append)
@@ -398,10 +444,16 @@ class SelectAlbumFragment : Fragment() {
         val id = requireArguments().getString(Constants.INTENT_EXTRA_NAME_ID)
 
         if (hasSubFolders && id != null) {
-            downloadHandler.value.downloadRecursively(this, id, false, append, !append, shuffle, false, false, false, isArtist)
+            downloadHandler.value.downloadRecursively(
+                this, id, false, append, !append,
+                shuffle, false, false, false, isArtist
+            )
         } else {
             selectAll(true, false)
-            downloadHandler.value.download(this, append, false, !append, false, shuffle, getSelectedSongs(albumListView))
+            downloadHandler.value.download(
+                this, append, false, !append, false,
+                shuffle, getSelectedSongs(albumListView)
+            )
             selectAll(false, false)
         }
     }
@@ -428,14 +480,20 @@ class SelectAlbumFragment : Fragment() {
                 } else {
                     val musicDirectory = service.getMusicDirectory(id, name, refresh, context)
 
-                    if (Util.getShouldShowAllSongsByArtist(context) && musicDirectory.findChild(allSongsId) == null && musicDirectory.getChildren(true, false).size == musicDirectory.getChildren(true, true).size) {
+                    if (Util.getShouldShowAllSongsByArtist(context) &&
+                        musicDirectory.findChild(allSongsId) == null &&
+                        musicDirectory.getChildren(true, false).size ==
+                        musicDirectory.getChildren(true, true).size
+                    ) {
                         val allSongs = MusicDirectory.Entry()
 
                         allSongs.isDirectory = true
                         allSongs.artist = name
                         allSongs.parent = id
                         allSongs.id = allSongsId
-                        allSongs.title = String.format(resources.getString(R.string.select_album_all_songs), name)
+                        allSongs.title = String.format(
+                            resources.getString(R.string.select_album_all_songs), name
+                        )
 
                         root.addChild(allSongs)
 
@@ -488,14 +546,20 @@ class SelectAlbumFragment : Fragment() {
 
                 val musicDirectory = service.getArtist(id, name, refresh, context)
 
-                if (Util.getShouldShowAllSongsByArtist(context) && musicDirectory.findChild(allSongsId) == null && musicDirectory.getChildren(true, false).size == musicDirectory.getChildren(true, true).size) {
+                if (Util.getShouldShowAllSongsByArtist(context) &&
+                    musicDirectory.findChild(allSongsId) == null &&
+                    musicDirectory.getChildren(true, false).size ==
+                    musicDirectory.getChildren(true, true).size
+                ) {
                     val allSongs = MusicDirectory.Entry()
 
                     allSongs.isDirectory = true
                     allSongs.artist = name
                     allSongs.parent = id
                     allSongs.id = allSongsId
-                    allSongs.title = String.format(resources.getString(R.string.select_album_all_songs), name)
+                    allSongs.title = String.format(
+                        resources.getString(R.string.select_album_all_songs), name
+                    )
 
                     root.addFirst(allSongs)
 
@@ -574,7 +638,10 @@ class SelectAlbumFragment : Fragment() {
 
             override fun done(result: Pair<MusicDirectory, Boolean>) {
                 // Hide more button when results are less than album list size
-                if (result.first.getChildren().size < arguments!!.getInt(Constants.INTENT_EXTRA_NAME_ALBUM_LIST_SIZE, 0)) {
+                if (result.first.getChildren().size < arguments!!.getInt(
+                    Constants.INTENT_EXTRA_NAME_ALBUM_LIST_SIZE, 0
+                )
+                ) {
                     moreButton!!.visibility = View.GONE
                 } else {
                     moreButton!!.visibility = View.VISIBLE
@@ -583,7 +650,9 @@ class SelectAlbumFragment : Fragment() {
                 moreButton!!.setOnClickListener {
                     val genre = arguments!!.getString(Constants.INTENT_EXTRA_NAME_GENRE_NAME)
                     val size = arguments!!.getInt(Constants.INTENT_EXTRA_NAME_ALBUM_LIST_SIZE, 0)
-                    val offset = arguments!!.getInt(Constants.INTENT_EXTRA_NAME_ALBUM_LIST_OFFSET, 0) + size
+                    val offset = arguments!!.getInt(
+                        Constants.INTENT_EXTRA_NAME_ALBUM_LIST_OFFSET, 0
+                    ) + size
                     val bundle = Bundle()
                     bundle.putString(Constants.INTENT_EXTRA_NAME_GENRE_NAME, genre)
                     bundle.putInt(Constants.INTENT_EXTRA_NAME_ALBUM_LIST_SIZE, size)
@@ -603,7 +672,10 @@ class SelectAlbumFragment : Fragment() {
             object : LoadTask() {
                 @Throws(Exception::class)
                 override fun load(service: MusicService): MusicDirectory {
-                    return if (Util.getShouldUseId3Tags(context)) Util.getSongsFromSearchResult(service.getStarred2(context)) else Util.getSongsFromSearchResult(service.getStarred(context))
+                    return if (Util.getShouldUseId3Tags(context))
+                        Util.getSongsFromSearchResult(service.getStarred2(context))
+                    else
+                        Util.getSongsFromSearchResult(service.getStarred(context))
                 }
             }.execute()
         }
@@ -701,7 +773,10 @@ class SelectAlbumFragment : Fragment() {
 
             @Throws(Exception::class)
             override fun load(service: MusicService): MusicDirectory {
-                return if (Util.getShouldUseId3Tags(context)) service.getAlbumList2(albumListType, size, offset, context) else service.getAlbumList(albumListType, size, offset, context)
+                return if (Util.getShouldUseId3Tags(context))
+                    service.getAlbumList2(albumListType, size, offset, context)
+                else
+                    service.getAlbumList(albumListType, size, offset, context)
             }
 
             override fun done(result: Pair<MusicDirectory, Boolean>) {
@@ -712,22 +787,37 @@ class SelectAlbumFragment : Fragment() {
                     deleteButton!!.visibility = View.GONE
 
                     // Hide more button when results are less than album list size
-                    if (result.first.getChildren().size < arguments!!.getInt(Constants.INTENT_EXTRA_NAME_ALBUM_LIST_SIZE, 0)) {
+                    if (result.first.getChildren().size < arguments!!.getInt(
+                        Constants.INTENT_EXTRA_NAME_ALBUM_LIST_SIZE, 0
+                    )
+                    ) {
                         moreButton!!.visibility = View.GONE
                     } else {
                         moreButton!!.visibility = View.VISIBLE
                         moreButton!!.setOnClickListener {
-                            val albumListTitle = arguments!!.getInt(Constants.INTENT_EXTRA_NAME_ALBUM_LIST_TITLE, 0)
-                            val type = arguments!!.getString(Constants.INTENT_EXTRA_NAME_ALBUM_LIST_TYPE)
-                            val size = arguments!!.getInt(Constants.INTENT_EXTRA_NAME_ALBUM_LIST_SIZE, 0)
-                            val offset = arguments!!.getInt(Constants.INTENT_EXTRA_NAME_ALBUM_LIST_OFFSET, 0) + size
+                            val albumListTitle = arguments!!.getInt(
+                                Constants.INTENT_EXTRA_NAME_ALBUM_LIST_TITLE, 0
+                            )
+                            val type = arguments!!.getString(
+                                Constants.INTENT_EXTRA_NAME_ALBUM_LIST_TYPE
+                            )
+                            val size = arguments!!.getInt(
+                                Constants.INTENT_EXTRA_NAME_ALBUM_LIST_SIZE, 0
+                            )
+                            val offset = arguments!!.getInt(
+                                Constants.INTENT_EXTRA_NAME_ALBUM_LIST_OFFSET, 0
+                            ) + size
 
                             val bundle = Bundle()
-                            bundle.putInt(Constants.INTENT_EXTRA_NAME_ALBUM_LIST_TITLE, albumListTitle)
+                            bundle.putInt(
+                                Constants.INTENT_EXTRA_NAME_ALBUM_LIST_TITLE, albumListTitle
+                            )
                             bundle.putString(Constants.INTENT_EXTRA_NAME_ALBUM_LIST_TYPE, type)
                             bundle.putInt(Constants.INTENT_EXTRA_NAME_ALBUM_LIST_SIZE, size)
                             bundle.putInt(Constants.INTENT_EXTRA_NAME_ALBUM_LIST_OFFSET, offset)
-                            Navigation.findNavController(view!!).navigate(R.id.selectAlbumFragment, bundle)
+                            Navigation.findNavController(view!!).navigate(
+                                R.id.selectAlbumFragment, bundle
+                            )
                         }
                     }
                 } else {
@@ -743,7 +833,9 @@ class SelectAlbumFragment : Fragment() {
         val count = albumListView!!.count
 
         for (i in 0 until count) {
-            if (!albumListView!!.isItemChecked(i) && albumListView!!.getItemAtPosition(i) is MusicDirectory.Entry) {
+            if (!albumListView!!.isItemChecked(i) &&
+                albumListView!!.getItemAtPosition(i) is MusicDirectory.Entry
+            ) {
                 someUnselected = true
                 break
             }
@@ -765,7 +857,10 @@ class SelectAlbumFragment : Fragment() {
 
         // Display toast: N tracks selected / N tracks unselected
         if (toast) {
-            val toastResId = if (selected) R.string.select_album_n_selected else R.string.select_album_n_unselected
+            val toastResId = if (selected)
+                R.string.select_album_n_selected
+            else
+                R.string.select_album_n_unselected
             Util.toast(activity, getString(toastResId, selectedCount))
         }
         enableButtons()
@@ -793,9 +888,15 @@ class SelectAlbumFragment : Fragment() {
         playNowButton!!.visibility = if (enabled) View.VISIBLE else View.GONE
         playNextButton!!.visibility = if (enabled) View.VISIBLE else View.GONE
         playLastButton!!.visibility = if (enabled) View.VISIBLE else View.GONE
-        pinButton!!.visibility = if (enabled && !isOffline(context) && selection.size > pinnedCount) View.VISIBLE else View.GONE
+        pinButton!!.visibility = if (enabled && !isOffline(context) && selection.size > pinnedCount)
+            View.VISIBLE
+        else
+            View.GONE
         unpinButton!!.visibility = if (enabled && unpinEnabled) View.VISIBLE else View.GONE
-        downloadButton!!.visibility = if (enabled && !deleteEnabled && !isOffline(context)) View.VISIBLE else View.GONE
+        downloadButton!!.visibility = if (enabled && !deleteEnabled && !isOffline(context))
+            View.VISIBLE
+        else
+            View.GONE
         deleteButton!!.visibility = if (enabled && deleteEnabled) View.VISIBLE else View.GONE
     }
 
@@ -816,9 +917,19 @@ class SelectAlbumFragment : Fragment() {
             mediaPlayerControllerLazy.value.downloadBackground(songs, save)
 
             if (save) {
-                Util.toast(context, resources.getQuantityString(R.plurals.select_album_n_songs_pinned, songs.size, songs.size))
+                Util.toast(
+                    context,
+                    resources.getQuantityString(
+                        R.plurals.select_album_n_songs_pinned, songs.size, songs.size
+                    )
+                )
             } else {
-                Util.toast(context, resources.getQuantityString(R.plurals.select_album_n_songs_downloaded, songs.size, songs.size))
+                Util.toast(
+                    context,
+                    resources.getQuantityString(
+                        R.plurals.select_album_n_songs_downloaded, songs.size, songs.size
+                    )
+                )
             }
         }
         onValid.run()
@@ -837,11 +948,19 @@ class SelectAlbumFragment : Fragment() {
 
     private fun unpin() {
         val songs = getSelectedSongs(albumListView)
-        Util.toast(context, resources.getQuantityString(R.plurals.select_album_n_songs_unpinned, songs.size, songs.size))
+        Util.toast(
+            context,
+            resources.getQuantityString(
+                R.plurals.select_album_n_songs_unpinned, songs.size, songs.size
+            )
+        )
         mediaPlayerControllerLazy.value.unpin(songs)
     }
 
-    private abstract inner class LoadTask : FragmentBackgroundTask<Pair<MusicDirectory, Boolean>>(this@SelectAlbumFragment.activity, true, refreshAlbumListView, cancellationToken) {
+    private abstract inner class LoadTask : FragmentBackgroundTask<Pair<MusicDirectory, Boolean>>(
+        this@SelectAlbumFragment.activity, true, refreshAlbumListView,
+        cancellationToken
+    ) {
 
         @Throws(Exception::class)
         protected abstract fun load(service: MusicService): MusicDirectory
@@ -868,7 +987,10 @@ class SelectAlbumFragment : Fragment() {
             var allVideos = true
             var songCount = 0
 
-            for ((_, _, isDirectory, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, isVideo) in entries) {
+            for (
+                (_, _, isDirectory, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, isVideo)
+                in entries
+            ) {
                 if (!isVideo) {
                     allVideos = false
                 }
@@ -883,7 +1005,10 @@ class SelectAlbumFragment : Fragment() {
                 if (showHeader) {
                     val intentAlbumName = arguments!!.getString(Constants.INTENT_EXTRA_NAME_NAME)
                     val directoryName = musicDirectory.name
-                    val header = createHeader(entries, intentAlbumName ?: directoryName, songCount)
+                    val header = createHeader(
+                        entries, intentAlbumName ?: directoryName,
+                        songCount
+                    )
                     if (header != null && albumListView!!.headerViewsCount == 0) {
                         albumListView!!.addHeaderView(header, null, false)
                     }
@@ -904,12 +1029,16 @@ class SelectAlbumFragment : Fragment() {
                     moreButton!!.visibility = View.VISIBLE
                     if (arguments!!.getInt(Constants.INTENT_EXTRA_NAME_RANDOM, 0) > 0) {
                         moreButton!!.setOnClickListener {
-                            val offset = arguments!!.getInt(Constants.INTENT_EXTRA_NAME_ALBUM_LIST_OFFSET, 0) + listSize
+                            val offset = arguments!!.getInt(
+                                Constants.INTENT_EXTRA_NAME_ALBUM_LIST_OFFSET, 0
+                            ) + listSize
                             val bundle = Bundle()
                             bundle.putInt(Constants.INTENT_EXTRA_NAME_RANDOM, 1)
                             bundle.putInt(Constants.INTENT_EXTRA_NAME_ALBUM_LIST_SIZE, listSize)
                             bundle.putInt(Constants.INTENT_EXTRA_NAME_ALBUM_LIST_OFFSET, offset)
-                            Navigation.findNavController(view!!).navigate(R.id.selectAlbumFragment, bundle)
+                            Navigation.findNavController(view!!).navigate(
+                                R.id.selectAlbumFragment, bundle
+                            )
                         }
                     }
                 }
@@ -946,11 +1075,17 @@ class SelectAlbumFragment : Fragment() {
                 shareButton!!.isVisible = shareButtonVisible
             }
 
-            albumListView!!.adapter = EntryAdapter(context, imageLoaderProvider.value.getImageLoader(), entries, true)
+            albumListView!!.adapter = EntryAdapter(
+                context,
+                imageLoaderProvider.value.getImageLoader(), entries, true
+            )
 
             val playAll = arguments!!.getBoolean(Constants.INTENT_EXTRA_NAME_AUTOPLAY, false)
             if (playAll && songCount > 0) {
-                playAll(arguments!!.getBoolean(Constants.INTENT_EXTRA_NAME_SHUFFLE, false), false)
+                playAll(
+                    arguments!!.getBoolean(Constants.INTENT_EXTRA_NAME_SHUFFLE, false),
+                    false
+                )
             }
         }
 
@@ -961,7 +1096,10 @@ class SelectAlbumFragment : Fragment() {
         ): View? {
             val coverArtView = header!!.findViewById<View>(R.id.select_album_art) as ImageView
             val artworkSelection = random.nextInt(entries.size)
-            imageLoaderProvider.value.getImageLoader().loadImage(coverArtView, entries[artworkSelection], false, Util.getAlbumImageSize(context), false, true)
+            imageLoaderProvider.value.getImageLoader().loadImage(
+                coverArtView, entries[artworkSelection], false,
+                Util.getAlbumImageSize(context), false, true
+            )
 
             val albumHeader = AlbumHeader.processEntries(context, entries)
 
@@ -976,26 +1114,40 @@ class SelectAlbumFragment : Fragment() {
             val artistView = header!!.findViewById<TextView>(R.id.select_album_artist)
             val artist: String
 
-            artist = if (albumHeader.artists.size == 1) albumHeader.artists.iterator().next() else if (albumHeader.grandParents.size == 1) albumHeader.grandParents.iterator().next() else resources.getString(R.string.common_various_artists)
+            artist = if (albumHeader.artists.size == 1)
+                albumHeader.artists.iterator().next()
+            else if (albumHeader.grandParents.size == 1)
+                albumHeader.grandParents.iterator().next()
+            else
+                resources.getString(R.string.common_various_artists)
 
             artistView.text = artist
 
             val genreView = header!!.findViewById<TextView>(R.id.select_album_genre)
             val genre: String
 
-            genre = if (albumHeader.genres.size == 1) albumHeader.genres.iterator().next() else resources.getString(R.string.common_multiple_genres)
+            genre = if (albumHeader.genres.size == 1)
+                albumHeader.genres.iterator().next()
+            else
+                resources.getString(R.string.common_multiple_genres)
 
             genreView.text = genre
 
             val yearView = header!!.findViewById<TextView>(R.id.select_album_year)
             val year: String
 
-            year = if (albumHeader.years.size == 1) albumHeader.years.iterator().next().toString() else resources.getString(R.string.common_multiple_years)
+            year = if (albumHeader.years.size == 1)
+                albumHeader.years.iterator().next().toString()
+            else
+                resources.getString(R.string.common_multiple_years)
 
             yearView.text = year
 
             val songCountView = header!!.findViewById<TextView>(R.id.select_album_song_count)
-            val songs = resources.getQuantityString(R.plurals.select_album_n_songs, songCount, songCount)
+            val songs = resources.getQuantityString(
+                R.plurals.select_album_n_songs, songCount,
+                songCount
+            )
             songCountView.text = songs
 
             val duration = Util.formatTotalDuration(albumHeader.totalDuration)
