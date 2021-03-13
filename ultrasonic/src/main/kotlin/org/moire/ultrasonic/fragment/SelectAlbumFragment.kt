@@ -94,7 +94,7 @@ class SelectAlbumFragment : Fragment() {
         albumListView!!.setOnItemClickListener(OnItemClickListener
         { parent, view, position, id ->
             if (position >= 0) {
-                val entry = parent.getItemAtPosition(position) as MusicDirectory.Entry
+                val entry = parent.getItemAtPosition(position) as MusicDirectory.Entry?
                 if (entry != null && entry.isDirectory) {
                     val bundle = Bundle()
                     bundle.putString(Constants.INTENT_EXTRA_NAME_ID, entry.id)
@@ -237,7 +237,7 @@ class SelectAlbumFragment : Fragment() {
         super.onCreateContextMenu(menu, view, menuInfo)
         val info = menuInfo as AdapterContextMenuInfo?
 
-        val entry = albumListView!!.getItemAtPosition(info!!.position) as MusicDirectory.Entry
+        val entry = albumListView!!.getItemAtPosition(info!!.position) as MusicDirectory.Entry?
 
         if (entry != null && entry.isDirectory) {
             val inflater = requireActivity().menuInflater
@@ -258,9 +258,9 @@ class SelectAlbumFragment : Fragment() {
 
     override fun onContextItemSelected(menuItem: MenuItem): Boolean {
         Timber.d("onContextItemSelected")
-        val info = menuItem.menuInfo as AdapterContextMenuInfo ?: return true
+        val info = menuItem.menuInfo as AdapterContextMenuInfo? ?: return true
 
-        val entry = albumListView!!.getItemAtPosition(info.position) as MusicDirectory.Entry
+        val entry = albumListView!!.getItemAtPosition(info.position) as MusicDirectory.Entry?
                 ?: return true
 
         val entryId = entry.id
@@ -344,7 +344,7 @@ class SelectAlbumFragment : Fragment() {
         var hasSubFolders = false
 
         for (i in 0 until albumListView!!.count) {
-            val entry = albumListView!!.getItemAtPosition(i) as MusicDirectory.Entry
+            val entry = albumListView!!.getItemAtPosition(i) as MusicDirectory.Entry?
             if (entry != null && entry.isDirectory) {
                 hasSubFolders = true
                 break
@@ -718,7 +718,7 @@ class SelectAlbumFragment : Fragment() {
         var selectedCount = 0
 
         for (i in 0 until count) {
-            val entry = albumListView!!.getItemAtPosition(i) as MusicDirectory.Entry
+            val entry = albumListView!!.getItemAtPosition(i) as MusicDirectory.Entry?
             if (entry != null && !entry.isDirectory && !entry.isVideo) {
                 albumListView!!.setItemChecked(i, selected)
                 selectedCount++
@@ -975,7 +975,7 @@ class SelectAlbumFragment : Fragment() {
                 val count = albumListView.count
                 for (i in 0 until count) {
                     if (albumListView.isItemChecked(i)) {
-                        songs.add(albumListView.getItemAtPosition(i) as MusicDirectory.Entry)
+                        songs.add(albumListView.getItemAtPosition(i) as MusicDirectory.Entry?)
                     }
                 }
             }
