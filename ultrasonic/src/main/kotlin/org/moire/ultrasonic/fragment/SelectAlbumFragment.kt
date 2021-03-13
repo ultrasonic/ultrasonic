@@ -145,9 +145,9 @@ class SelectAlbumFragment : Fragment() {
             }
         )
 
-        // TODO: Long click on an item will first try to maximize / collapse the item, even when it
-        //  fits inside the TextView. The context menu is only displayed on the second long click...
-        //  This may be improved somehow, e.g. checking first if the texts fit
+        // To do: Long click on an item will first try to maximize / collapse the item, even when it
+        // fits inside the TextView. The context menu is only displayed on the second long click...
+        // This may be improved somehow, e.g. checking first if the texts fit
         albumListView!!.setOnItemLongClickListener(
             OnItemLongClickListener
             { parent, view, position, id ->
