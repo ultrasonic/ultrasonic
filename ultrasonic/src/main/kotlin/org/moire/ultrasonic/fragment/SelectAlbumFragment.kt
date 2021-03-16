@@ -123,7 +123,7 @@ class SelectAlbumFragment : Fragment() {
         albumListView!!.setChoiceMode(ListView.CHOICE_MODE_MULTIPLE)
         albumListView!!.setOnItemClickListener(
             OnItemClickListener
-            { parent, view, position, id ->
+            { parent, theView, position, _ ->
                 if (position >= 0) {
                     val entry = parent.getItemAtPosition(position) as MusicDirectory.Entry?
                     if (entry != null && entry.isDirectory) {
@@ -132,7 +132,7 @@ class SelectAlbumFragment : Fragment() {
                         bundle.putBoolean(Constants.INTENT_EXTRA_NAME_IS_ALBUM, entry.isDirectory)
                         bundle.putString(Constants.INTENT_EXTRA_NAME_NAME, entry.title)
                         bundle.putString(Constants.INTENT_EXTRA_NAME_PARENT_ID, entry.parent)
-                        Navigation.findNavController(view).navigate(
+                        Navigation.findNavController(theView).navigate(
                             R.id.selectAlbumFragment,
                             bundle
                         )
@@ -145,14 +145,14 @@ class SelectAlbumFragment : Fragment() {
             }
         )
 
-        // To do: Long click on an item will first try to maximize / collapse the item, even when it
+        // TODO Long click on an item will first try to maximize / collapse the item, even when it
         // fits inside the TextView. The context menu is only displayed on the second long click...
         // This may be improved somehow, e.g. checking first if the texts fit
         albumListView!!.setOnItemLongClickListener(
             OnItemLongClickListener
-            { parent, view, position, id ->
-                if (view is AlbumView) {
-                    val albumView = view
+            { _, theView, _, _ ->
+                if (theView is AlbumView) {
+                    val albumView = theView
                     if (!albumView.isMaximized) {
                         albumView.maximizeOrMinimize()
                         return@OnItemLongClickListener true
@@ -160,8 +160,8 @@ class SelectAlbumFragment : Fragment() {
                         return@OnItemLongClickListener false
                     }
                 }
-                if (view is SongView) {
-                    view.maximizeOrMinimize()
+                if (theView is SongView) {
+                    theView.maximizeOrMinimize()
                     return@OnItemLongClickListener true
                 }
                 false
@@ -496,12 +496,7 @@ class SelectAlbumFragment : Fragment() {
                         )
 
                         root.addChild(allSongs)
-
-                        val children = musicDirectory.getChildren()
-
-                        if (children != null) {
-                            root.addAll(children)
-                        }
+                        root.addAll(musicDirectory.getChildren())
                     } else {
                         root = musicDirectory
                     }
@@ -562,12 +557,7 @@ class SelectAlbumFragment : Fragment() {
                     )
 
                     root.addFirst(allSongs)
-
-                    val children = musicDirectory.getChildren()
-
-                    if (children != null) {
-                        root.addAll(children)
-                    }
+                    root.addAll(musicDirectory.getChildren())
                 } else {
                     root = musicDirectory
                 }
@@ -648,15 +638,15 @@ class SelectAlbumFragment : Fragment() {
                 }
 
                 moreButton!!.setOnClickListener {
-                    val genre = arguments!!.getString(Constants.INTENT_EXTRA_NAME_GENRE_NAME)
+                    val theGenre = arguments!!.getString(Constants.INTENT_EXTRA_NAME_GENRE_NAME)
                     val size = arguments!!.getInt(Constants.INTENT_EXTRA_NAME_ALBUM_LIST_SIZE, 0)
-                    val offset = arguments!!.getInt(
+                    val theOffset = arguments!!.getInt(
                         Constants.INTENT_EXTRA_NAME_ALBUM_LIST_OFFSET, 0
                     ) + size
                     val bundle = Bundle()
-                    bundle.putString(Constants.INTENT_EXTRA_NAME_GENRE_NAME, genre)
+                    bundle.putString(Constants.INTENT_EXTRA_NAME_GENRE_NAME, theGenre)
                     bundle.putInt(Constants.INTENT_EXTRA_NAME_ALBUM_LIST_SIZE, size)
-                    bundle.putInt(Constants.INTENT_EXTRA_NAME_ALBUM_LIST_OFFSET, offset)
+                    bundle.putInt(Constants.INTENT_EXTRA_NAME_ALBUM_LIST_OFFSET, theOffset)
                     Navigation.findNavController(view!!).navigate(R.id.selectAlbumFragment, bundle)
                 }
 
@@ -666,7 +656,7 @@ class SelectAlbumFragment : Fragment() {
     }
 
     private val starred: Unit
-        private get() {
+        get() {
             setTitle(this, R.string.main_songs_starred)
 
             object : LoadTask() {
@@ -795,26 +785,26 @@ class SelectAlbumFragment : Fragment() {
                     } else {
                         moreButton!!.visibility = View.VISIBLE
                         moreButton!!.setOnClickListener {
-                            val albumListTitle = arguments!!.getInt(
+                            val theAlbumListTitle = arguments!!.getInt(
                                 Constants.INTENT_EXTRA_NAME_ALBUM_LIST_TITLE, 0
                             )
                             val type = arguments!!.getString(
                                 Constants.INTENT_EXTRA_NAME_ALBUM_LIST_TYPE
                             )
-                            val size = arguments!!.getInt(
+                            val theSize = arguments!!.getInt(
                                 Constants.INTENT_EXTRA_NAME_ALBUM_LIST_SIZE, 0
                             )
-                            val offset = arguments!!.getInt(
+                            val theOffset = arguments!!.getInt(
                                 Constants.INTENT_EXTRA_NAME_ALBUM_LIST_OFFSET, 0
-                            ) + size
+                            ) + theSize
 
                             val bundle = Bundle()
                             bundle.putInt(
-                                Constants.INTENT_EXTRA_NAME_ALBUM_LIST_TITLE, albumListTitle
+                                Constants.INTENT_EXTRA_NAME_ALBUM_LIST_TITLE, theAlbumListTitle
                             )
                             bundle.putString(Constants.INTENT_EXTRA_NAME_ALBUM_LIST_TYPE, type)
-                            bundle.putInt(Constants.INTENT_EXTRA_NAME_ALBUM_LIST_SIZE, size)
-                            bundle.putInt(Constants.INTENT_EXTRA_NAME_ALBUM_LIST_OFFSET, offset)
+                            bundle.putInt(Constants.INTENT_EXTRA_NAME_ALBUM_LIST_SIZE, theSize)
+                            bundle.putInt(Constants.INTENT_EXTRA_NAME_ALBUM_LIST_OFFSET, theOffset)
                             Navigation.findNavController(view!!).navigate(
                                 R.id.selectAlbumFragment, bundle
                             )
