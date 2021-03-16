@@ -76,7 +76,7 @@ class SelectAlbumFragment : Fragment() {
     private var showHeader = true
     private val random: Random = SecureRandom()
 
-    private val mediaPlayerController:  MediaPlayerController by inject()
+    private val mediaPlayerController: MediaPlayerController by inject()
     private val videoPlayer = KoinJavaComponent.inject(VideoPlayer::class.java)
     private val downloadHandler = KoinJavaComponent.inject(DownloadHandler::class.java)
     private val networkAndStorageChecker = KoinJavaComponent.inject(
