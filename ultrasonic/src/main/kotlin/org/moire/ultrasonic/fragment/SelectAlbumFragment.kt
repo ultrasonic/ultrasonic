@@ -23,6 +23,7 @@ import java.security.SecureRandom
 import java.util.Collections
 import java.util.LinkedList
 import java.util.Random
+import org.koin.android.ext.android.inject
 import org.koin.java.KoinJavaComponent
 import org.moire.ultrasonic.R
 import org.moire.ultrasonic.data.ActiveServerProvider.Companion.isOffline
@@ -53,6 +54,7 @@ import timber.log.Timber
  */
 class SelectAlbumFragment : Fragment() {
 
+    private val allSongsId = "-1"
     private var refreshAlbumListView: SwipeRefreshLayout? = null
     private var albumListView: ListView? = null
     private var header: View? = null
@@ -74,9 +76,7 @@ class SelectAlbumFragment : Fragment() {
     private var showHeader = true
     private val random: Random = SecureRandom()
 
-    private val mediaPlayerControllerLazy = KoinJavaComponent.inject(
-        MediaPlayerController::class.java
-    )
+    private val mediaPlayerController:  MediaPlayerController by inject()
     private val videoPlayer = KoinJavaComponent.inject(VideoPlayer::class.java)
     private val downloadHandler = KoinJavaComponent.inject(DownloadHandler::class.java)
     private val networkAndStorageChecker = KoinJavaComponent.inject(
@@ -462,7 +462,6 @@ class SelectAlbumFragment : Fragment() {
         setTitle(this, name)
 
         object : LoadTask() {
-            @Throws(Exception::class)
             override fun load(service: MusicService): MusicDirectory {
                 var root = MusicDirectory()
 
@@ -504,7 +503,6 @@ class SelectAlbumFragment : Fragment() {
                 return root
             }
 
-            @Throws(Exception::class)
             private fun getSongsRecursively(
                 parent: MusicDirectory,
                 songs: MutableList<MusicDirectory.Entry>
@@ -534,7 +532,6 @@ class SelectAlbumFragment : Fragment() {
         setTitle(this, name)
 
         object : LoadTask() {
-            @Throws(Exception::class)
             override fun load(service: MusicService): MusicDirectory {
 
                 var root = MusicDirectory()
@@ -570,7 +567,6 @@ class SelectAlbumFragment : Fragment() {
         setTitle(this, name)
 
         object : LoadTask() {
-            @Throws(Exception::class)
             override fun load(service: MusicService): MusicDirectory {
 
                 val musicDirectory: MusicDirectory
@@ -593,7 +589,6 @@ class SelectAlbumFragment : Fragment() {
                 return musicDirectory
             }
 
-            @Throws(Exception::class)
             private fun getSongsForArtist(
                 id: String?,
                 songs: MutableCollection<MusicDirectory.Entry>
@@ -621,7 +616,6 @@ class SelectAlbumFragment : Fragment() {
         setTitle(this, genre)
 
         object : LoadTask() {
-            @Throws(Exception::class)
             override fun load(service: MusicService): MusicDirectory {
                 return service.getSongsByGenre(genre, count, offset, context)
             }
@@ -660,7 +654,6 @@ class SelectAlbumFragment : Fragment() {
             setTitle(this, R.string.main_songs_starred)
 
             object : LoadTask() {
-                @Throws(Exception::class)
                 override fun load(service: MusicService): MusicDirectory {
                     return if (Util.getShouldUseId3Tags(context))
                         Util.getSongsFromSearchResult(service.getStarred2(context))
@@ -676,7 +669,6 @@ class SelectAlbumFragment : Fragment() {
         setTitle(this, R.string.main_videos)
 
         object : LoadTask() {
-            @Throws(Exception::class)
             override fun load(service: MusicService): MusicDirectory {
                 return service.getVideos(refresh, context)
             }
@@ -691,7 +683,6 @@ class SelectAlbumFragment : Fragment() {
                 return false
             }
 
-            @Throws(Exception::class)
             override fun load(service: MusicService): MusicDirectory {
                 return service.getRandomSongs(size, context)
             }
@@ -703,7 +694,6 @@ class SelectAlbumFragment : Fragment() {
         setTitle(this, playlistName)
 
         object : LoadTask() {
-            @Throws(Exception::class)
             override fun load(service: MusicService): MusicDirectory {
                 return service.getPlaylist(playlistId, playlistName, context)
             }
@@ -715,7 +705,6 @@ class SelectAlbumFragment : Fragment() {
         setTitle(this, R.string.podcasts_label)
 
         object : LoadTask() {
-            @Throws(Exception::class)
             override fun load(service: MusicService): MusicDirectory {
                 return service.getPodcastEpisodes(podcastChannelId, context)
             }
@@ -728,7 +717,6 @@ class SelectAlbumFragment : Fragment() {
         // setActionBarSubtitle(shareName);
 
         object : LoadTask() {
-            @Throws(Exception::class)
             override fun load(service: MusicService): MusicDirectory {
                 val shares = service.getShares(true, context)
 
@@ -761,7 +749,6 @@ class SelectAlbumFragment : Fragment() {
                     albumListType != "frequent"
             }
 
-            @Throws(Exception::class)
             override fun load(service: MusicService): MusicDirectory {
                 return if (Util.getShouldUseId3Tags(context))
                     service.getAlbumList2(albumListType, size, offset, context)
@@ -865,7 +852,7 @@ class SelectAlbumFragment : Fragment() {
         var pinnedCount = 0
 
         for (song in selection) {
-            val downloadFile = mediaPlayerControllerLazy.value.getDownloadFileForSong(song)
+            val downloadFile = mediaPlayerController.getDownloadFileForSong(song)
             if (downloadFile.isWorkDone) {
                 deleteEnabled = true
             }
@@ -904,7 +891,7 @@ class SelectAlbumFragment : Fragment() {
     private fun downloadBackground(save: Boolean, songs: List<MusicDirectory.Entry?>) {
         val onValid = Runnable {
             networkAndStorageChecker.value.warnIfNetworkOrStorageUnavailable()
-            mediaPlayerControllerLazy.value.downloadBackground(songs, save)
+            mediaPlayerController.downloadBackground(songs, save)
 
             if (save) {
                 Util.toast(
@@ -933,7 +920,7 @@ class SelectAlbumFragment : Fragment() {
             songs = getSelectedSongs(albumListView)
         }
 
-        mediaPlayerControllerLazy.value.delete(songs)
+        mediaPlayerController.delete(songs)
     }
 
     private fun unpin() {
@@ -944,7 +931,7 @@ class SelectAlbumFragment : Fragment() {
                 R.plurals.select_album_n_songs_unpinned, songs.size, songs.size
             )
         )
-        mediaPlayerControllerLazy.value.unpin(songs)
+        mediaPlayerController.unpin(songs)
     }
 
     private abstract inner class LoadTask : FragmentBackgroundTask<Pair<MusicDirectory, Boolean>>(
@@ -952,13 +939,11 @@ class SelectAlbumFragment : Fragment() {
         cancellationToken
     ) {
 
-        @Throws(Exception::class)
         protected abstract fun load(service: MusicService): MusicDirectory
         protected open fun sortableCollection(): Boolean {
             return true
         }
 
-        @Throws(Throwable::class)
         override fun doInBackground(): Pair<MusicDirectory, Boolean> {
             val musicService = getMusicService(context!!)
             val dir = load(musicService)
@@ -977,14 +962,11 @@ class SelectAlbumFragment : Fragment() {
             var allVideos = true
             var songCount = 0
 
-            for (
-                (_, _, isDirectory, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, isVideo)
-                in entries
-            ) {
-                if (!isVideo) {
+            for (entry in entries) {
+                if (!entry.isVideo) {
                     allVideos = false
                 }
-                if (!isDirectory) {
+                if (!entry.isDirectory) {
                     songCount++
                 }
             }
@@ -1149,22 +1131,18 @@ class SelectAlbumFragment : Fragment() {
         }
     }
 
-    companion object {
-        const val allSongsId = "-1"
+    private fun getSelectedSongs(albumListView: ListView?): List<MusicDirectory.Entry?> {
+        val songs: MutableList<MusicDirectory.Entry?> = ArrayList(10)
 
-        private fun getSelectedSongs(albumListView: ListView?): List<MusicDirectory.Entry?> {
-            val songs: MutableList<MusicDirectory.Entry?> = ArrayList(10)
-
-            if (albumListView != null) {
-                val count = albumListView.count
-                for (i in 0 until count) {
-                    if (albumListView.isItemChecked(i)) {
-                        songs.add(albumListView.getItemAtPosition(i) as MusicDirectory.Entry?)
-                    }
+        if (albumListView != null) {
+            val count = albumListView.count
+            for (i in 0 until count) {
+                if (albumListView.isItemChecked(i)) {
+                    songs.add(albumListView.getItemAtPosition(i) as MusicDirectory.Entry?)
                 }
             }
-
-            return songs
         }
+
+        return songs
     }
 }
