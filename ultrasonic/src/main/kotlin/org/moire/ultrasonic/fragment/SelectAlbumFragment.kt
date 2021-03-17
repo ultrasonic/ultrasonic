@@ -24,7 +24,6 @@ import java.util.Collections
 import java.util.LinkedList
 import java.util.Random
 import org.koin.android.ext.android.inject
-import org.koin.java.KoinJavaComponent
 import org.moire.ultrasonic.R
 import org.moire.ultrasonic.data.ActiveServerProvider.Companion.isOffline
 import org.moire.ultrasonic.domain.MusicDirectory
