@@ -50,11 +50,17 @@ public class PodcastFragment extends Fragment {
     }
 
     @Override
-    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
+    public void onViewCreated(@NonNull final View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         cancellationToken = new CancellationToken();
         swipeRefresh = view.findViewById(R.id.podcasts_refresh);
-        swipeRefresh.setEnabled(false);
+        swipeRefresh.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener()
+        {
+            @Override
+            public void onRefresh() {
+                load(view.getContext(), true);
+            }
+        });
 
         FragmentTitle.Companion.setTitle(this, R.string.podcasts_label);
 
@@ -74,7 +80,7 @@ public class PodcastFragment extends Fragment {
             }
         });
 
-        load(view.getContext());
+        load(view.getContext(), false);
     }
 
     @Override
@@ -83,7 +89,7 @@ public class PodcastFragment extends Fragment {
         super.onDestroyView();
     }
 
-    private void load(final Context context)
+    private void load(final Context context, final boolean refresh)
     {
         BackgroundTask<List<PodcastsChannel>> task = new FragmentBackgroundTask<List<PodcastsChannel>>(getActivity(), true, swipeRefresh, cancellationToken)
         {
@@ -91,7 +97,7 @@ public class PodcastFragment extends Fragment {
             protected List<PodcastsChannel> doInBackground() throws Throwable
             {
                 MusicService musicService = MusicServiceFactory.getMusicService(context);
-                return musicService.getPodcastsChannels(false, context);
+                return musicService.getPodcastsChannels(refresh, context);
             }
 
             @Override
