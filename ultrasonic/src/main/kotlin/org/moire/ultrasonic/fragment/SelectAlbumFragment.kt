@@ -77,13 +77,11 @@ class SelectAlbumFragment : Fragment() {
     private val random: Random = SecureRandom()
 
     private val mediaPlayerController: MediaPlayerController by inject()
-    private val videoPlayer = KoinJavaComponent.inject(VideoPlayer::class.java)
-    private val downloadHandler = KoinJavaComponent.inject(DownloadHandler::class.java)
-    private val networkAndStorageChecker = KoinJavaComponent.inject(
-        NetworkAndStorageChecker::class.java
-    )
-    private val imageLoaderProvider = KoinJavaComponent.inject(ImageLoaderProvider::class.java)
-    private val shareHandler = KoinJavaComponent.inject(ShareHandler::class.java)
+    private val videoPlayer: VideoPlayer by inject()
+    private val downloadHandler: DownloadHandler by inject()
+    private val networkAndStorageChecker: NetworkAndStorageChecker by inject()
+    private val imageLoaderProvider: ImageLoaderProvider by inject()
+    private val shareHandler: ShareHandler by inject()
     private var cancellationToken: CancellationToken? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -137,7 +135,7 @@ class SelectAlbumFragment : Fragment() {
                             bundle
                         )
                     } else if (entry != null && entry.isVideo) {
-                        videoPlayer.value.playVideo(entry)
+                        videoPlayer.playVideo(entry)
                     } else {
                         enableButtons()
                     }
@@ -194,7 +192,7 @@ class SelectAlbumFragment : Fragment() {
         playNextButton!!.setOnClickListener(
             View.OnClickListener
             {
-                downloadHandler.value.download(
+                downloadHandler.download(
                     this@SelectAlbumFragment, true,
                     false, false, true, false,
                     getSelectedSongs(albumListView)
@@ -335,27 +333,27 @@ class SelectAlbumFragment : Fragment() {
 
         val itemId = menuItem.itemId
         if (itemId == R.id.album_menu_play_now) {
-            downloadHandler.value.downloadRecursively(
+            downloadHandler.downloadRecursively(
                 this, entryId, false, false, true, false, false, false, false, false
             )
         } else if (itemId == R.id.album_menu_play_next) {
-            downloadHandler.value.downloadRecursively(
+            downloadHandler.downloadRecursively(
                 this, entryId, false, false, false, false, false, true, false, false
             )
         } else if (itemId == R.id.album_menu_play_last) {
-            downloadHandler.value.downloadRecursively(
+            downloadHandler.downloadRecursively(
                 this, entryId, false, true, false, false, false, false, false, false
             )
         } else if (itemId == R.id.album_menu_pin) {
-            downloadHandler.value.downloadRecursively(
+            downloadHandler.downloadRecursively(
                 this, entryId, true, true, false, false, false, false, false, false
             )
         } else if (itemId == R.id.album_menu_unpin) {
-            downloadHandler.value.downloadRecursively(
+            downloadHandler.downloadRecursively(
                 this, entryId, false, false, false, false, false, false, true, false
             )
         } else if (itemId == R.id.album_menu_download) {
-            downloadHandler.value.downloadRecursively(
+            downloadHandler.downloadRecursively(
                 this, entryId, false, false, false, false, true, false, false, false
             )
         } else if (itemId == R.id.select_album_play_all) {
@@ -363,7 +361,7 @@ class SelectAlbumFragment : Fragment() {
         } else if (itemId == R.id.menu_item_share) {
             val entries: MutableList<MusicDirectory.Entry?> = ArrayList(1)
             entries.add(entry)
-            shareHandler.value.createShare(
+            shareHandler.createShare(
                 this, entries, refreshAlbumListView,
                 cancellationToken!!
             )
@@ -400,7 +398,7 @@ class SelectAlbumFragment : Fragment() {
             playAll()
             return true
         } else if (itemId == R.id.menu_item_share) {
-            shareHandler.value.createShare(
+            shareHandler.createShare(
                 this, getSelectedSongs(albumListView),
                 refreshAlbumListView, cancellationToken!!
             )
@@ -419,7 +417,7 @@ class SelectAlbumFragment : Fragment() {
         val selectedSongs = getSelectedSongs(albumListView)
 
         if (!selectedSongs.isEmpty()) {
-            downloadHandler.value.download(
+            downloadHandler.download(
                 this, append, false, !append, false,
                 false, selectedSongs
             )
@@ -444,13 +442,13 @@ class SelectAlbumFragment : Fragment() {
         val id = requireArguments().getString(Constants.INTENT_EXTRA_NAME_ID)
 
         if (hasSubFolders && id != null) {
-            downloadHandler.value.downloadRecursively(
+            downloadHandler.downloadRecursively(
                 this, id, false, append, !append,
                 shuffle, false, false, false, isArtist
             )
         } else {
             selectAll(true, false)
-            downloadHandler.value.download(
+            downloadHandler.download(
                 this, append, false, !append, false,
                 shuffle, getSelectedSongs(albumListView)
             )
@@ -890,7 +888,7 @@ class SelectAlbumFragment : Fragment() {
 
     private fun downloadBackground(save: Boolean, songs: List<MusicDirectory.Entry?>) {
         val onValid = Runnable {
-            networkAndStorageChecker.value.warnIfNetworkOrStorageUnavailable()
+            networkAndStorageChecker.warnIfNetworkOrStorageUnavailable()
             mediaPlayerController.downloadBackground(songs, save)
 
             if (save) {
@@ -1049,7 +1047,7 @@ class SelectAlbumFragment : Fragment() {
 
             albumListView!!.adapter = EntryAdapter(
                 context,
-                imageLoaderProvider.value.getImageLoader(), entries, true
+                imageLoaderProvider.getImageLoader(), entries, true
             )
 
             val playAll = arguments!!.getBoolean(Constants.INTENT_EXTRA_NAME_AUTOPLAY, false)
@@ -1068,7 +1066,7 @@ class SelectAlbumFragment : Fragment() {
         ): View? {
             val coverArtView = header!!.findViewById<View>(R.id.select_album_art) as ImageView
             val artworkSelection = random.nextInt(entries.size)
-            imageLoaderProvider.value.getImageLoader().loadImage(
+            imageLoaderProvider.getImageLoader().loadImage(
                 coverArtView, entries[artworkSelection], false,
                 Util.getAlbumImageSize(context), false, true
             )
