@@ -3,18 +3,18 @@
     a:layout_width="fill_parent"
     a:layout_height="fill_parent"
     a:orientation="vertical" >
+    <TextView
+        a:id="@+id/select_podcasts_empty"
+        a:layout_width="fill_parent"
+        a:layout_height="wrap_content"
+        a:padding="10dip"
+        a:text="@string/podcasts_channels.empty"
+        a:visibility="gone" />
     <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
         a:id="@+id/podcasts_refresh"
         a:layout_width="fill_parent"
         a:layout_height="0dp"
         a:layout_weight="1.0">
-        <TextView
-            a:id="@+id/select_podcasts_empty"
-            a:layout_width="fill_parent"
-            a:layout_height="wrap_content"
-            a:padding="10dip"
-            a:text="@string/podcasts_channels.empty"
-            a:visibility="gone" />
 
         <ListView
             a:id="@+id/podcasts_channels_items_list"
