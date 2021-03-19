@@ -1501,12 +1501,9 @@ public class PlayerFragment extends Fragment implements GestureDetector.OnGestur
         if (e1X - e2X > swipeDistance && absX > swipeVelocity)
         {
             networkAndStorageChecker.getValue().warnIfNetworkOrStorageUnavailable();
-            if (mediaPlayerController.getCurrentPlayingNumberOnPlaylist() < mediaPlayerController.getPlaylistSize() - 1)
-            {
-                mediaPlayerController.next();
-                onCurrentChanged();
-                onSliderProgressChanged();
-            }
+            mediaPlayerController.next();
+            onCurrentChanged();
+            onSliderProgressChanged();
             return true;
         }
 

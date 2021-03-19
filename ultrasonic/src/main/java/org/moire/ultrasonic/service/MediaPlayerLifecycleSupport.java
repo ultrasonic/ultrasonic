@@ -221,10 +221,7 @@ public class MediaPlayerLifecycleSupport
 						mediaPlayerController.previous();
 						break;
 					case KeyEvent.KEYCODE_MEDIA_NEXT:
-						if (downloader.getCurrentPlayingIndex() < downloader.downloadList.size() - 1)
-						{
-							mediaPlayerController.next();
-						}
+						mediaPlayerController.next();
 						break;
 					case KeyEvent.KEYCODE_MEDIA_STOP:
 						mediaPlayerController.stop();
