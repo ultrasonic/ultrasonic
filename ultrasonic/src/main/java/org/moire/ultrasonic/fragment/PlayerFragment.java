@@ -304,15 +304,8 @@ public class PlayerFragment extends Fragment implements GestureDetector.OnGestur
                     @Override
                     protected Boolean doInBackground()
                     {
-                        if (mediaPlayerControllerLazy.getValue().getCurrentPlayingNumberOnPlaylist() < mediaPlayerControllerLazy.getValue().getPlaylistSize() - 1)
-                        {
-                            mediaPlayerControllerLazy.getValue().next();
-                            return true;
-                        }
-                        else
-                        {
-                            return false;
-                        }
+                        mediaPlayerControllerLazy.getValue().next();
+                        return true;
                     }
 
                     @Override
