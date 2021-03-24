@@ -300,7 +300,7 @@ class LocalMediaPlayer(private val audioFocusHandler: AudioFocusHandler, private
             val title = currentSong.title
             val currentSongDuration = currentSong.duration
             var duration = 0L
-            if (currentSongDuration != null) duration = currentSongDuration!! as Long * 1000
+            if (currentSongDuration != null) duration = (currentSongDuration * 1000).toLong()
             remoteControlClient!!.editMetadata(true)
                     .putString(MediaMetadataRetriever.METADATA_KEY_ARTIST, artist)
                     .putString(MediaMetadataRetriever.METADATA_KEY_ALBUMARTIST, artist)
