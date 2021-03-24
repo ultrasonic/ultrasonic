@@ -616,9 +616,10 @@ class LocalMediaPlayer(private val audioFocusHandler: AudioFocusHandler, private
         }
     }
 
-    private inner class BufferTask(private val downloadFile: DownloadFile?, private val position: Int) : CancellableTask() {
+    private inner class BufferTask(private val downloadFile: DownloadFile, private val position: Int) : CancellableTask() {
         private val expectedFileSize: Long
-        private val partialFile: File
+        private val partialFile: File = downloadFile.partialFile
+
         override fun execute() {
             setPlayerState(PlayerState.DOWNLOADING)
             while (!bufferComplete() && !isOffline(context)) {
@@ -627,13 +628,13 @@ class LocalMediaPlayer(private val audioFocusHandler: AudioFocusHandler, private
                     return
                 }
             }
-            if (downloadFile != null) {
-                doPlay(downloadFile, position, true)
-            }
+
+            doPlay(downloadFile, position, true)
+
         }
 
         private fun bufferComplete(): Boolean {
-            val completeFileAvailable = downloadFile!!.isWorkDone
+            val completeFileAvailable = downloadFile.isWorkDone
             val size = partialFile.length()
             Timber.i("Buffering %s (%d/%d, %s)", partialFile, size, expectedFileSize, completeFileAvailable)
             return completeFileAvailable || size >= expectedFileSize
@@ -644,7 +645,6 @@ class LocalMediaPlayer(private val audioFocusHandler: AudioFocusHandler, private
         }
 
         init {
-            partialFile = downloadFile!!.partialFile
             var bufferLength = Util.getBufferLength(context).toLong()
             if (bufferLength == 0L) {
                 // Set to seconds in a day, basically infinity
