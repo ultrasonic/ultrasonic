@@ -26,6 +26,8 @@ import timber.log.Timber
 import java.io.File
 import java.net.URLEncoder
 import java.util.*
+import kotlin.math.abs
+import kotlin.math.max
 
 /**
  * Represents a Media Player which uses the mobile's resources for playback
@@ -50,7 +52,8 @@ class LocalMediaPlayer(private val audioFocusHandler: AudioFocusHandler, private
     private var nextPlayerState = PlayerState.IDLE
     private var nextSetup = false
     private var nextPlayingTask: CancellableTask? = null
-    private var wakeLock: WakeLock? = null
+    private val pm = context.getSystemService(Context.POWER_SERVICE) as PowerManager
+    private val wakeLock: WakeLock = pm.newWakeLock(PowerManager.PARTIAL_WAKE_LOCK, this.javaClass.name)
     private var mediaPlayer: MediaPlayer? = null
     private var nextMediaPlayer: MediaPlayer? = null
     private var mediaPlayerLooper: Looper? = null
@@ -62,6 +65,7 @@ class LocalMediaPlayer(private val audioFocusHandler: AudioFocusHandler, private
     private var bufferTask: CancellableTask? = null
     private var positionCache: PositionCache? = null
     private var secondaryProgress = -1
+
     fun onCreate() {
         if (mediaPlayer != null) {
             mediaPlayer!!.release()
@@ -93,8 +97,7 @@ class LocalMediaPlayer(private val audioFocusHandler: AudioFocusHandler, private
             EqualizerController.create(context, mediaPlayer)
             VisualizerController.create(mediaPlayer)
         }.start()
-        val pm = context.getSystemService(Context.POWER_SERVICE) as PowerManager
-        wakeLock = pm.newWakeLock(PowerManager.PARTIAL_WAKE_LOCK, this.javaClass.name)
+
         wakeLock.setReferenceCounted(false)
         audioManager = context.getSystemService(Context.AUDIO_SERVICE) as AudioManager
         Util.registerMediaButtonEventReceiver(context, true)
@@ -125,7 +128,7 @@ class LocalMediaPlayer(private val audioFocusHandler: AudioFocusHandler, private
             audioManager!!.unregisterRemoteControlClient(remoteControlClient)
             clearRemoteControl()
             Util.unregisterMediaButtonEventReceiver(context, true)
-            wakeLock!!.release()
+            wakeLock.release()
         } catch (exception: Throwable) {
             Timber.w(exception, "LocalMediaPlayer onDestroy exception: ")
         }
@@ -178,7 +181,7 @@ class LocalMediaPlayer(private val audioFocusHandler: AudioFocusHandler, private
         }
         nextPlaying = nextToPlay
         nextPlayingTask = CheckCompletionTask(nextPlaying)
-        nextPlayingTask.start()
+        nextPlayingTask?.start()
     }
 
     @Synchronized
@@ -202,7 +205,7 @@ class LocalMediaPlayer(private val audioFocusHandler: AudioFocusHandler, private
         if (playerState !== PlayerState.PREPARED) {
             reset()
             bufferTask = BufferTask(currentPlaying, 0)
-            bufferTask.start()
+            bufferTask!!.start()
         } else {
             doPlay(currentPlaying, 0, true)
         }
@@ -518,10 +521,10 @@ class LocalMediaPlayer(private val audioFocusHandler: AudioFocusHandler, private
                 // Acquire a temporary wakelock, since when we return from
                 // this callback the MediaPlayer will release its wakelock
                 // and allow the device to go to sleep.
-                wakeLock!!.acquire(60000)
+                wakeLock.acquire(60000)
                 val pos = cachedPosition
                 Timber.i("Ending position %d of %d", pos, duration)
-                if (!isPartial || downloadFile.isWorkDone && Math.abs(duration - pos) < 1000) {
+                if (!isPartial || downloadFile.isWorkDone && abs(duration - pos) < 1000) {
                     setPlayerState(PlayerState.COMPLETED)
                     if (Util.getGaplessPlaybackPreference(context) && nextPlaying != null && nextPlayerState === PlayerState.PREPARED) {
                         if (nextSetup) {
@@ -549,7 +552,7 @@ class LocalMediaPlayer(private val audioFocusHandler: AudioFocusHandler, private
                         Timber.i("Requesting restart from %d of %d", pos, duration)
                         reset()
                         bufferTask = BufferTask(downloadFile, pos)
-                        bufferTask.start()
+                        bufferTask!!.start()
                     }
                 }
             }
@@ -606,7 +609,7 @@ class LocalMediaPlayer(private val audioFocusHandler: AudioFocusHandler, private
 
             // Calculate roughly how many bytes BUFFER_LENGTH_SECONDS corresponds to.
             val bitRate = downloadFile.bitRate
-            val byteCount = Math.max(100000, bitRate * 1024L / 8L * bufferLength)
+            val byteCount = max(100000, bitRate * 1024L / 8L * bufferLength)
 
             // Find out how large the file should grow before resuming playback.
             Timber.i("Buffering from position %d and bitrate %d", position, bitRate)
