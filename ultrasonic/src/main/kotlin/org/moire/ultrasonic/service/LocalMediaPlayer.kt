@@ -84,8 +84,7 @@ class LocalMediaPlayer(private val audioFocusHandler: AudioFocusHandler, private
                 // Froyo or lower
             }
             mediaPlayerLooper = Looper.myLooper()
-            // FIXME: Looper null??
-            mediaPlayerHandler = Handler(mediaPlayerLooper)
+            mediaPlayerHandler = Handler(mediaPlayerLooper!!)
             Looper.loop()
         }.start()
 
@@ -267,18 +266,26 @@ class LocalMediaPlayer(private val audioFocusHandler: AudioFocusHandler, private
         }
     }
 
+
+    /*
+     * The remote control API is deprecated in API 21
+     */
     private fun updateRemoteControl() {
         if (!Util.isLockScreenEnabled(context)) {
             clearRemoteControl()
             return
         }
-        if (remoteControlClient != null) {
+
+        if (remoteControlClient == null) {
+            remoteControlClient = createRemoteControlClient()
+        } else {
+            // FIXME: This looks like a hack. Why is it needed?
             audioManager.unregisterRemoteControlClient(remoteControlClient)
             audioManager.registerRemoteControlClient(remoteControlClient)
-        } else {
-            setUpRemoteControlClient()
         }
+
         Timber.i("In updateRemoteControl, playerState: %s [%d]", playerState, playerPosition)
+
         if (playerState === PlayerState.STARTED) {
             if (Build.VERSION.SDK_INT < Build.VERSION_CODES.JELLY_BEAN_MR2) {
                 remoteControlClient!!.setPlaybackState(RemoteControlClient.PLAYSTATE_PLAYING)
@@ -292,6 +299,7 @@ class LocalMediaPlayer(private val audioFocusHandler: AudioFocusHandler, private
                 remoteControlClient!!.setPlaybackState(RemoteControlClient.PLAYSTATE_PAUSED, playerPosition.toLong(), 1.0f)
             }
         }
+
         if (currentPlaying != null) {
             val currentSong = currentPlaying!!.song
             val lockScreenBitmap = FileUtil.getAlbumArtBitmap(context, currentSong, Util.getMinDisplayMetric(context), true)
@@ -322,28 +330,38 @@ class LocalMediaPlayer(private val audioFocusHandler: AudioFocusHandler, private
 
     private fun setUpRemoteControlClient() {
         if (!Util.isLockScreenEnabled(context)) return
-        val componentName = ComponentName(context.packageName, MediaButtonIntentReceiver::class.java.name)
-        if (remoteControlClient == null) {
-            val mediaButtonIntent = Intent(Intent.ACTION_MEDIA_BUTTON)
-            mediaButtonIntent.component = componentName
-            val broadcast = PendingIntent.getBroadcast(context, 0, mediaButtonIntent, PendingIntent.FLAG_UPDATE_CURRENT)
-            remoteControlClient = RemoteControlClient(broadcast)
-            audioManager.registerRemoteControlClient(remoteControlClient)
 
-            // Flags for the media transport control that this client supports.
-            var flags = RemoteControlClient.FLAG_KEY_MEDIA_PREVIOUS or
-                    RemoteControlClient.FLAG_KEY_MEDIA_NEXT or
-                    RemoteControlClient.FLAG_KEY_MEDIA_PLAY or
-                    RemoteControlClient.FLAG_KEY_MEDIA_PAUSE or
-                    RemoteControlClient.FLAG_KEY_MEDIA_PLAY_PAUSE or
-                    RemoteControlClient.FLAG_KEY_MEDIA_STOP
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR2) {
-                flags = flags or RemoteControlClient.FLAG_KEY_MEDIA_POSITION_UPDATE
-                remoteControlClient!!.setOnGetPlaybackPositionListener { mediaPlayer.currentPosition.toLong() }
-                remoteControlClient!!.setPlaybackPositionUpdateListener { newPositionMs -> seekTo(newPositionMs.toInt()) }
-            }
-            remoteControlClient!!.setTransportControlFlags(flags)
+        if (remoteControlClient == null) {
+            remoteControlClient = createRemoteControlClient()
         }
+    }
+
+    private fun createRemoteControlClient(): RemoteControlClient {
+        val componentName = ComponentName(context.packageName, MediaButtonIntentReceiver::class.java.name)
+        val mediaButtonIntent = Intent(Intent.ACTION_MEDIA_BUTTON)
+        mediaButtonIntent.component = componentName
+
+        val broadcast = PendingIntent.getBroadcast(context, 0, mediaButtonIntent, PendingIntent.FLAG_UPDATE_CURRENT)
+        val remoteControlClient = RemoteControlClient(broadcast)
+        audioManager.registerRemoteControlClient(remoteControlClient)
+
+        // Flags for the media transport control that this client supports.
+        var flags = RemoteControlClient.FLAG_KEY_MEDIA_PREVIOUS or
+                RemoteControlClient.FLAG_KEY_MEDIA_NEXT or
+                RemoteControlClient.FLAG_KEY_MEDIA_PLAY or
+                RemoteControlClient.FLAG_KEY_MEDIA_PAUSE or
+                RemoteControlClient.FLAG_KEY_MEDIA_PLAY_PAUSE or
+                RemoteControlClient.FLAG_KEY_MEDIA_STOP
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR2) {
+            flags = flags or RemoteControlClient.FLAG_KEY_MEDIA_POSITION_UPDATE
+            remoteControlClient.setOnGetPlaybackPositionListener { mediaPlayer.currentPosition.toLong() }
+            remoteControlClient.setPlaybackPositionUpdateListener { newPositionMs -> seekTo(newPositionMs.toInt()) }
+        }
+
+        remoteControlClient.setTransportControlFlags(flags)
+
+        return remoteControlClient
     }
 
     @Synchronized
@@ -728,4 +746,5 @@ class LocalMediaPlayer(private val audioFocusHandler: AudioFocusHandler, private
             mainHandler.post(myRunnable)
         }
     }
+
 }
