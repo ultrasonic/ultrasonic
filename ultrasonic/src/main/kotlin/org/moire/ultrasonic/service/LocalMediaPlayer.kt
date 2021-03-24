@@ -240,16 +240,14 @@ class LocalMediaPlayer(private val audioFocusHandler: AudioFocusHandler, private
         // FIXME: Why is currentPlaying passed here and not nextPlaying?!
         attachHandlersToPlayer(mediaPlayer, currentPlaying!!, false)
 
-        if (onNextSongRequested != null) {
-            val mainHandler = Handler(context.mainLooper)
-            val myRunnable = Runnable { onNextSongRequested!!.run() }
-            mainHandler.post(myRunnable)
-        }
+        postRunnable(onNextSongRequested)
 
         // Proxy should not be being used here since the next player was already setup to play
         proxy?.stop()
         proxy = null
     }
+
+
 
     @Synchronized
     fun pause() {
@@ -479,11 +477,9 @@ class LocalMediaPlayer(private val audioFocusHandler: AudioFocusHandler, private
                         setPlayerState(PlayerState.PAUSED)
                     }
                 }
-                if (onPrepared != null) {
-                    val mainHandler = Handler(context.mainLooper)
-                    val myRunnable = Runnable { onPrepared!!.run() }
-                    mainHandler.post(myRunnable)
-                }
+
+                postRunnable(onPrepared)
+
             }
             attachHandlersToPlayer(mediaPlayer, downloadFile, partial)
             mediaPlayer.prepareAsync()
@@ -723,5 +719,13 @@ class LocalMediaPlayer(private val audioFocusHandler: AudioFocusHandler, private
     private fun handleErrorNext(x: Exception) {
         Timber.w(x, "Next Media player error")
         nextMediaPlayer!!.reset()
+    }
+
+    private fun postRunnable(runnable: Runnable?) {
+        if (runnable != null) {
+            val mainHandler = Handler(context.mainLooper)
+            val myRunnable = Runnable { runnable.run() }
+            mainHandler.post(myRunnable)
+        }
     }
 }
