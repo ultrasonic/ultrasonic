@@ -52,36 +52,32 @@ class LocalMediaPlayer(private val audioFocusHandler: AudioFocusHandler, private
     private var nextPlayerState = PlayerState.IDLE
     private var nextSetup = false
     private var nextPlayingTask: CancellableTask? = null
-    private val pm = context.getSystemService(Context.POWER_SERVICE) as PowerManager
-    private val wakeLock: WakeLock = pm.newWakeLock(PowerManager.PARTIAL_WAKE_LOCK, this.javaClass.name)
-    private var mediaPlayer: MediaPlayer? = null
+    private var mediaPlayer: MediaPlayer = MediaPlayer()
     private var nextMediaPlayer: MediaPlayer? = null
     private var mediaPlayerLooper: Looper? = null
     private var mediaPlayerHandler: Handler? = null
     private var cachedPosition = 0
     private var proxy: StreamProxy? = null
-    private var audioManager: AudioManager? = null
+    private var audioManager: AudioManager = context.getSystemService(Context.AUDIO_SERVICE) as AudioManager
     private var remoteControlClient: RemoteControlClient? = null
     private var bufferTask: CancellableTask? = null
     private var positionCache: PositionCache? = null
     private var secondaryProgress = -1
+    private val pm = context.getSystemService(Context.POWER_SERVICE) as PowerManager
+    private val wakeLock: WakeLock = pm.newWakeLock(PowerManager.PARTIAL_WAKE_LOCK, this.javaClass.name)
 
     fun onCreate() {
-        if (mediaPlayer != null) {
-            mediaPlayer!!.release()
-        }
-        mediaPlayer = MediaPlayer()
         Thread {
             Thread.currentThread().name = "MediaPlayerThread"
             Looper.prepare()
-            mediaPlayer!!.setWakeMode(context, PowerManager.PARTIAL_WAKE_LOCK)
-            mediaPlayer!!.setOnErrorListener { mediaPlayer, what, more ->
+            mediaPlayer.setWakeMode(context, PowerManager.PARTIAL_WAKE_LOCK)
+            mediaPlayer.setOnErrorListener { mediaPlayer, what, more ->
                 handleError(Exception(String.format(Locale.getDefault(), "MediaPlayer error: %d (%d)", what, more)))
                 false
             }
             try {
                 val i = Intent(AudioEffect.ACTION_OPEN_AUDIO_EFFECT_CONTROL_SESSION)
-                i.putExtra(AudioEffect.EXTRA_AUDIO_SESSION, mediaPlayer!!.audioSessionId)
+                i.putExtra(AudioEffect.EXTRA_AUDIO_SESSION, mediaPlayer.audioSessionId)
                 i.putExtra(AudioEffect.EXTRA_PACKAGE_NAME, context.packageName)
                 context.sendBroadcast(i)
             } catch (e: Throwable) {
@@ -99,7 +95,6 @@ class LocalMediaPlayer(private val audioFocusHandler: AudioFocusHandler, private
         }.start()
 
         wakeLock.setReferenceCounted(false)
-        audioManager = context.getSystemService(Context.AUDIO_SERVICE) as AudioManager
         Util.registerMediaButtonEventReceiver(context, true)
         setUpRemoteControlClient()
         Timber.i("LocalMediaPlayer created")
@@ -109,12 +104,12 @@ class LocalMediaPlayer(private val audioFocusHandler: AudioFocusHandler, private
         reset()
         try {
             val i = Intent(AudioEffect.ACTION_CLOSE_AUDIO_EFFECT_CONTROL_SESSION)
-            i.putExtra(AudioEffect.EXTRA_AUDIO_SESSION, mediaPlayer!!.audioSessionId)
+            i.putExtra(AudioEffect.EXTRA_AUDIO_SESSION, mediaPlayer.audioSessionId)
             i.putExtra(AudioEffect.EXTRA_PACKAGE_NAME, context.packageName)
             context.sendBroadcast(i)
             EqualizerController.release()
             VisualizerController.release()
-            mediaPlayer!!.release()
+            mediaPlayer.release()
             if (nextMediaPlayer != null) {
                 nextMediaPlayer!!.release()
             }
@@ -125,7 +120,7 @@ class LocalMediaPlayer(private val audioFocusHandler: AudioFocusHandler, private
             if (nextPlayingTask != null) {
                 nextPlayingTask!!.cancel()
             }
-            audioManager!!.unregisterRemoteControlClient(remoteControlClient)
+            audioManager.unregisterRemoteControlClient(remoteControlClient)
             clearRemoteControl()
             Util.unregisterMediaButtonEventReceiver(context, true)
             wakeLock.release()
@@ -160,11 +155,15 @@ class LocalMediaPlayer(private val audioFocusHandler: AudioFocusHandler, private
         }
     }
 
+    /*
+    * Set the current playing file. It's called with null to reset the player.
+    */
     @Synchronized
     fun setCurrentPlaying(currentPlaying: DownloadFile?) {
         Timber.v("setCurrentPlaying %s", currentPlaying)
         this.currentPlaying = currentPlaying
         updateRemoteControl()
+
         if (onCurrentPlayingChanged != null) {
             val mainHandler = Handler(context.mainLooper)
             val myRunnable = Runnable { onCurrentPlayingChanged!!.accept(currentPlaying) }
@@ -172,25 +171,27 @@ class LocalMediaPlayer(private val audioFocusHandler: AudioFocusHandler, private
         }
     }
 
+    /*
+    * Set the next playing file.
+    */
     @Synchronized
-    fun setNextPlaying(nextToPlay: DownloadFile?) {
-        if (nextToPlay == null) {
-            nextPlaying = null
-            setNextPlayerState(PlayerState.IDLE)
-            return
-        }
+    fun setNextPlaying(nextToPlay: DownloadFile) {
         nextPlaying = nextToPlay
         nextPlayingTask = CheckCompletionTask(nextPlaying)
         nextPlayingTask?.start()
     }
 
     @Synchronized
-    fun clearNextPlaying() {
+    fun clearNextPlaying(setIdle: Boolean) {
         nextSetup = false
         nextPlaying = null
         if (nextPlayingTask != null) {
             nextPlayingTask!!.cancel()
             nextPlayingTask = null
+        }
+
+        if (setIdle) {
+            setNextPlayerState(PlayerState.IDLE)
         }
     }
 
@@ -223,12 +224,14 @@ class LocalMediaPlayer(private val audioFocusHandler: AudioFocusHandler, private
 
     @Synchronized
     fun playNext() {
+        if (nextMediaPlayer == null || currentPlaying == null) return
+
         val tmp = mediaPlayer
-        mediaPlayer = nextMediaPlayer
+        mediaPlayer = nextMediaPlayer!!
         nextMediaPlayer = tmp
         setCurrentPlaying(nextPlaying)
         setPlayerState(PlayerState.STARTED)
-        setupHandlers(currentPlaying, false)
+        attachHandlersToPlayer(mediaPlayer, currentPlaying!!, false)
         if (onNextSongRequested != null) {
             val mainHandler = Handler(context.mainLooper)
             val myRunnable = Runnable { onNextSongRequested!!.run() }
@@ -236,16 +239,14 @@ class LocalMediaPlayer(private val audioFocusHandler: AudioFocusHandler, private
         }
 
         // Proxy should not be being used here since the next player was already setup to play
-        if (proxy != null) {
-            proxy!!.stop()
-            proxy = null
-        }
+        proxy?.stop()
+        proxy = null
     }
 
     @Synchronized
     fun pause() {
         try {
-            mediaPlayer!!.pause()
+            mediaPlayer.pause()
         } catch (x: Exception) {
             handleError(x)
         }
@@ -254,7 +255,7 @@ class LocalMediaPlayer(private val audioFocusHandler: AudioFocusHandler, private
     @Synchronized
     fun start() {
         try {
-            mediaPlayer!!.start()
+            mediaPlayer.start()
         } catch (x: Exception) {
             handleError(x)
         }
@@ -266,8 +267,8 @@ class LocalMediaPlayer(private val audioFocusHandler: AudioFocusHandler, private
             return
         }
         if (remoteControlClient != null) {
-            audioManager!!.unregisterRemoteControlClient(remoteControlClient)
-            audioManager!!.registerRemoteControlClient(remoteControlClient)
+            audioManager.unregisterRemoteControlClient(remoteControlClient)
+            audioManager.registerRemoteControlClient(remoteControlClient)
         } else {
             setUpRemoteControlClient()
         }
@@ -308,7 +309,7 @@ class LocalMediaPlayer(private val audioFocusHandler: AudioFocusHandler, private
     fun clearRemoteControl() {
         if (remoteControlClient != null) {
             remoteControlClient!!.setPlaybackState(RemoteControlClient.PLAYSTATE_STOPPED)
-            audioManager!!.unregisterRemoteControlClient(remoteControlClient)
+            audioManager.unregisterRemoteControlClient(remoteControlClient)
             remoteControlClient = null
         }
     }
@@ -321,7 +322,7 @@ class LocalMediaPlayer(private val audioFocusHandler: AudioFocusHandler, private
             mediaButtonIntent.component = componentName
             val broadcast = PendingIntent.getBroadcast(context, 0, mediaButtonIntent, PendingIntent.FLAG_UPDATE_CURRENT)
             remoteControlClient = RemoteControlClient(broadcast)
-            audioManager!!.registerRemoteControlClient(remoteControlClient)
+            audioManager.registerRemoteControlClient(remoteControlClient)
 
             // Flags for the media transport control that this client supports.
             var flags = RemoteControlClient.FLAG_KEY_MEDIA_PREVIOUS or
@@ -332,7 +333,7 @@ class LocalMediaPlayer(private val audioFocusHandler: AudioFocusHandler, private
                     RemoteControlClient.FLAG_KEY_MEDIA_STOP
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR2) {
                 flags = flags or RemoteControlClient.FLAG_KEY_MEDIA_POSITION_UPDATE
-                remoteControlClient!!.setOnGetPlaybackPositionListener { mediaPlayer!!.currentPosition.toLong() }
+                remoteControlClient!!.setOnGetPlaybackPositionListener { mediaPlayer.currentPosition.toLong() }
                 remoteControlClient!!.setPlaybackPositionUpdateListener { newPositionMs -> seekTo(newPositionMs.toInt()) }
             }
             remoteControlClient!!.setTransportControlFlags(flags)
@@ -342,7 +343,7 @@ class LocalMediaPlayer(private val audioFocusHandler: AudioFocusHandler, private
     @Synchronized
     fun seekTo(position: Int) {
         try {
-            mediaPlayer!!.seekTo(position)
+            mediaPlayer.seekTo(position)
             cachedPosition = position
             updateRemoteControl()
         } catch (x: Exception) {
@@ -372,7 +373,7 @@ class LocalMediaPlayer(private val audioFocusHandler: AudioFocusHandler, private
             }
             if (playerState !== PlayerState.IDLE && playerState !== PlayerState.DOWNLOADING && playerState !== PlayerState.PREPARING) {
                 try {
-                    return mediaPlayer!!.duration
+                    return mediaPlayer.duration
                 } catch (x: Exception) {
                     handleError(x)
                 }
@@ -382,7 +383,7 @@ class LocalMediaPlayer(private val audioFocusHandler: AudioFocusHandler, private
 
     fun setVolume(volume: Float) {
         if (mediaPlayer != null) {
-            mediaPlayer!!.setVolume(volume, volume)
+            mediaPlayer.setVolume(volume, volume)
         }
     }
 
@@ -394,11 +395,11 @@ class LocalMediaPlayer(private val audioFocusHandler: AudioFocusHandler, private
             val file = if (downloadFile.isCompleteFileAvailable) downloadFile.completeFile else downloadFile.partialFile
             val partial = file == downloadFile.partialFile
             downloadFile.updateModificationDate()
-            mediaPlayer!!.setOnCompletionListener(null)
+            mediaPlayer.setOnCompletionListener(null)
             secondaryProgress = -1 // Ensure seeking in non StreamProxy playback works
-            mediaPlayer!!.reset()
+            mediaPlayer.reset()
             setPlayerState(PlayerState.IDLE)
-            mediaPlayer!!.setAudioStreamType(AudioManager.STREAM_MUSIC)
+            mediaPlayer.setAudioStreamType(AudioManager.STREAM_MUSIC)
             var dataSource = file.path
             if (partial) {
                 if (proxy == null) {
@@ -417,9 +418,9 @@ class LocalMediaPlayer(private val audioFocusHandler: AudioFocusHandler, private
                 proxy = null
             }
             Timber.i("Preparing media player")
-            mediaPlayer!!.setDataSource(dataSource)
+            mediaPlayer.setDataSource(dataSource)
             setPlayerState(PlayerState.PREPARING)
-            mediaPlayer!!.setOnBufferingUpdateListener { mp, percent ->
+            mediaPlayer.setOnBufferingUpdateListener { mp, percent ->
                 val progressBar = PlayerFragment.getProgressBar()
                 val song = downloadFile.song
                 if (percent == 100) {
@@ -432,7 +433,7 @@ class LocalMediaPlayer(private val audioFocusHandler: AudioFocusHandler, private
                     progressBar.secondaryProgress = secondaryProgress
                 }
             }
-            mediaPlayer!!.setOnPreparedListener {
+            mediaPlayer.setOnPreparedListener {
                 Timber.i("Media player prepared")
                 setPlayerState(PlayerState.PREPARED)
                 val progressBar = PlayerFragment.getProgressBar()
@@ -447,7 +448,7 @@ class LocalMediaPlayer(private val audioFocusHandler: AudioFocusHandler, private
                     }
                     cachedPosition = position
                     if (start) {
-                        mediaPlayer!!.start()
+                        mediaPlayer.start()
                         setPlayerState(PlayerState.STARTED)
                     } else {
                         setPlayerState(PlayerState.PAUSED)
@@ -459,8 +460,8 @@ class LocalMediaPlayer(private val audioFocusHandler: AudioFocusHandler, private
                     mainHandler.post(myRunnable)
                 }
             }
-            setupHandlers(downloadFile, partial)
-            mediaPlayer!!.prepareAsync()
+            attachHandlersToPlayer(mediaPlayer, downloadFile, partial)
+            mediaPlayer.prepareAsync()
         } catch (x: Exception) {
             handleError(x)
         }
@@ -478,7 +479,7 @@ class LocalMediaPlayer(private val audioFocusHandler: AudioFocusHandler, private
             nextMediaPlayer = MediaPlayer()
             nextMediaPlayer!!.setWakeMode(context, PowerManager.PARTIAL_WAKE_LOCK)
             try {
-                nextMediaPlayer!!.audioSessionId = mediaPlayer!!.audioSessionId
+                nextMediaPlayer!!.audioSessionId = mediaPlayer.audioSessionId
             } catch (e: Throwable) {
                 nextMediaPlayer!!.setAudioStreamType(AudioManager.STREAM_MUSIC)
             }
@@ -488,7 +489,7 @@ class LocalMediaPlayer(private val audioFocusHandler: AudioFocusHandler, private
                 try {
                     setNextPlayerState(PlayerState.PREPARED)
                     if (Util.getGaplessPlaybackPreference(context) && Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN && (playerState === PlayerState.STARTED || playerState === PlayerState.PAUSED)) {
-                        mediaPlayer!!.setNextMediaPlayer(nextMediaPlayer)
+                        mediaPlayer.setNextMediaPlayer(nextMediaPlayer)
                         nextSetup = true
                     }
                 } catch (x: Exception) {
@@ -505,18 +506,20 @@ class LocalMediaPlayer(private val audioFocusHandler: AudioFocusHandler, private
         }
     }
 
-    private fun setupHandlers(downloadFile: DownloadFile?, isPartial: Boolean) {
-        mediaPlayer!!.setOnErrorListener { mediaPlayer, what, extra ->
+    private fun attachHandlersToPlayer(mediaPlayer: MediaPlayer, downloadFile: DownloadFile, isPartial: Boolean) {
+        mediaPlayer.setOnErrorListener { _, what, extra ->
             Timber.w("Error on playing file (%d, %d): %s", what, extra, downloadFile)
             val pos = cachedPosition
             reset()
-            downloadFile!!.setPlaying(false)
+            downloadFile.setPlaying(false)
             doPlay(downloadFile, pos, true)
             downloadFile.setPlaying(true)
             true
         }
-        val duration = if (downloadFile!!.song.duration == null) 0 else downloadFile.song.duration!! * 1000
-        mediaPlayer!!.setOnCompletionListener(object : OnCompletionListener {
+
+        val duration = if (downloadFile.song.duration == null) 0 else downloadFile.song.duration!! * 1000
+
+        mediaPlayer.setOnCompletionListener(object : OnCompletionListener {
             override fun onCompletion(mediaPlayer: MediaPlayer) {
                 // Acquire a temporary wakelock, since when we return from
                 // this callback the MediaPlayer will release its wakelock
@@ -566,9 +569,9 @@ class LocalMediaPlayer(private val audioFocusHandler: AudioFocusHandler, private
         }
         try {
             setPlayerState(PlayerState.IDLE)
-            mediaPlayer!!.setOnErrorListener(null)
-            mediaPlayer!!.setOnCompletionListener(null)
-            mediaPlayer!!.reset()
+            mediaPlayer.setOnErrorListener(null)
+            mediaPlayer.setOnCompletionListener(null)
+            mediaPlayer.reset()
         } catch (x: Exception) {
             handleError(x)
         }
@@ -669,7 +672,7 @@ class LocalMediaPlayer(private val audioFocusHandler: AudioFocusHandler, private
             while (isRunning) {
                 try {
                     if (mediaPlayer != null && playerState === PlayerState.STARTED) {
-                        cachedPosition = mediaPlayer!!.currentPosition
+                        cachedPosition = mediaPlayer.currentPosition
                     }
                     Util.sleepQuietly(50L)
                 } catch (e: Exception) {
@@ -684,7 +687,7 @@ class LocalMediaPlayer(private val audioFocusHandler: AudioFocusHandler, private
     private fun handleError(x: Exception) {
         Timber.w(x, "Media player error")
         try {
-            mediaPlayer!!.reset()
+            mediaPlayer.reset()
         } catch (ex: Exception) {
             Timber.w(ex, "Exception encountered when resetting media player")
         }
