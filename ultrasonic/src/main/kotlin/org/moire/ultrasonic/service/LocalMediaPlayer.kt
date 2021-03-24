@@ -84,6 +84,7 @@ class LocalMediaPlayer(private val audioFocusHandler: AudioFocusHandler, private
                 // Froyo or lower
             }
             mediaPlayerLooper = Looper.myLooper()
+            // FIXME: Looper null??
             mediaPlayerHandler = Handler(mediaPlayerLooper)
             Looper.loop()
         }.start()
@@ -204,17 +205,6 @@ class LocalMediaPlayer(private val audioFocusHandler: AudioFocusHandler, private
         nextPlayerState = playerState
     }
 
-    @Synchronized
-    private fun bufferAndPlay(fileToPlay: DownloadFile, position: Int, autoStart: Boolean) {
-        if (playerState !== PlayerState.PREPARED) {
-            reset()
-            bufferTask = BufferTask(fileToPlay, position)
-            bufferTask!!.start()
-        } else {
-            doPlay(fileToPlay, position, autoStart)
-        }
-    }
-
     /*
     * Public method to play a given file.
     * Optionally specify a position to start at.
@@ -238,12 +228,18 @@ class LocalMediaPlayer(private val audioFocusHandler: AudioFocusHandler, private
     fun playNext() {
         if (nextMediaPlayer == null || currentPlaying == null) return
 
-        val tmp = mediaPlayer
+        val oldPlayer = mediaPlayer
         mediaPlayer = nextMediaPlayer!!
-        nextMediaPlayer = tmp
+
+        // FIXME: Why is this being done?
+        nextMediaPlayer = oldPlayer
+
         setCurrentPlaying(nextPlaying)
         setPlayerState(PlayerState.STARTED)
+
+        // FIXME: Why is currentPlaying passed here and not nextPlaying?!
         attachHandlersToPlayer(mediaPlayer, currentPlaying!!, false)
+
         if (onNextSongRequested != null) {
             val mainHandler = Handler(context.mainLooper)
             val myRunnable = Runnable { onNextSongRequested!!.run() }
@@ -306,7 +302,7 @@ class LocalMediaPlayer(private val audioFocusHandler: AudioFocusHandler, private
             val title = currentSong.title
             val currentSongDuration = currentSong.duration
             var duration = 0L
-            if (currentSongDuration != null) duration = currentSongDuration as Long * 1000
+            if (currentSongDuration != null) duration = currentSongDuration!! as Long * 1000
             remoteControlClient!!.editMetadata(true)
                     .putString(MediaMetadataRetriever.METADATA_KEY_ARTIST, artist)
                     .putString(MediaMetadataRetriever.METADATA_KEY_ALBUMARTIST, artist)
@@ -400,6 +396,17 @@ class LocalMediaPlayer(private val audioFocusHandler: AudioFocusHandler, private
     }
 
     @Synchronized
+    private fun bufferAndPlay(fileToPlay: DownloadFile, position: Int, autoStart: Boolean) {
+        if (playerState !== PlayerState.PREPARED) {
+            reset()
+            bufferTask = BufferTask(fileToPlay, position)
+            bufferTask!!.start()
+        } else {
+            doPlay(fileToPlay, position, autoStart)
+        }
+    }
+
+    @Synchronized
     private fun doPlay(downloadFile: DownloadFile, position: Int, start: Boolean) {
         try {
             downloadFile.setPlaying(false)
@@ -428,7 +435,7 @@ class LocalMediaPlayer(private val audioFocusHandler: AudioFocusHandler, private
                         proxy!!.port, URLEncoder.encode(dataSource, Constants.UTF_8))
                 Timber.i("Data Source: %s", dataSource)
             } else if (proxy != null) {
-                proxy!!.stop()
+                proxy?.stop()
                 proxy = null
             }
 
