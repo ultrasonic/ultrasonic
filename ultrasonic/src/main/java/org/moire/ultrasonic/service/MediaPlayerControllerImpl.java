@@ -131,7 +131,7 @@ public class MediaPlayerControllerImpl implements MediaPlayerController
 						{
 							if (localMediaPlayer.currentPlaying.isCompleteFileAvailable())
 							{
-								localMediaPlayer.doPlay(localMediaPlayer.currentPlaying, currentPlayingPosition, autoPlay);
+								localMediaPlayer.play(localMediaPlayer.currentPlaying, currentPlayingPosition, autoPlay);
 							}
 						}
 					}

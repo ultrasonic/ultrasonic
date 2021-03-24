@@ -172,7 +172,7 @@ class LocalMediaPlayer(private val audioFocusHandler: AudioFocusHandler, private
     }
 
     /*
-    * Set the next playing file.
+    * Set the next playing file. nextToPlay cannot be null
     */
     @Synchronized
     fun setNextPlaying(nextToPlay: DownloadFile) {
@@ -181,6 +181,9 @@ class LocalMediaPlayer(private val audioFocusHandler: AudioFocusHandler, private
         nextPlayingTask?.start()
     }
 
+    /*
+    * Clear the next playing file. setIdle controls whether the playerState is affected as well
+    */
     @Synchronized
     fun clearNextPlaying(setIdle: Boolean) {
         nextSetup = false
@@ -202,25 +205,34 @@ class LocalMediaPlayer(private val audioFocusHandler: AudioFocusHandler, private
     }
 
     @Synchronized
-    fun bufferAndPlay() {
+    private fun bufferAndPlay(fileToPlay: DownloadFile, position: Int, autoStart: Boolean) {
         if (playerState !== PlayerState.PREPARED) {
             reset()
-            bufferTask = BufferTask(currentPlaying, 0)
+            bufferTask = BufferTask(fileToPlay, position)
             bufferTask!!.start()
         } else {
-            doPlay(currentPlaying, 0, true)
+            doPlay(fileToPlay, position, autoStart)
         }
     }
 
+    /*
+    * Public method to play a given file.
+    * Optionally specify a position to start at.
+    */
     @Synchronized
-    fun play(fileToPlay: DownloadFile?) {
+    @JvmOverloads
+    fun play(fileToPlay: DownloadFile?, position: Int = 0, autoStart: Boolean = true) {
         if (nextPlayingTask != null) {
             nextPlayingTask!!.cancel()
             nextPlayingTask = null
         }
         setCurrentPlaying(fileToPlay)
-        bufferAndPlay()
+
+        if (fileToPlay != null) {
+            bufferAndPlay(fileToPlay, position, autoStart)
+        }
     }
+
 
     @Synchronized
     fun playNext() {
@@ -388,18 +400,20 @@ class LocalMediaPlayer(private val audioFocusHandler: AudioFocusHandler, private
     }
 
     @Synchronized
-    fun doPlay(downloadFile: DownloadFile?, position: Int, start: Boolean) {
+    private fun doPlay(downloadFile: DownloadFile, position: Int, start: Boolean) {
         try {
-            downloadFile!!.setPlaying(false)
-            //downloadFile.setPlaying(true);
+            downloadFile.setPlaying(false)
+
             val file = if (downloadFile.isCompleteFileAvailable) downloadFile.completeFile else downloadFile.partialFile
             val partial = file == downloadFile.partialFile
+
             downloadFile.updateModificationDate()
             mediaPlayer.setOnCompletionListener(null)
             secondaryProgress = -1 // Ensure seeking in non StreamProxy playback works
             mediaPlayer.reset()
             setPlayerState(PlayerState.IDLE)
             mediaPlayer.setAudioStreamType(AudioManager.STREAM_MUSIC)
+
             var dataSource = file.path
             if (partial) {
                 if (proxy == null) {
@@ -417,9 +431,12 @@ class LocalMediaPlayer(private val audioFocusHandler: AudioFocusHandler, private
                 proxy!!.stop()
                 proxy = null
             }
+
             Timber.i("Preparing media player")
+
             mediaPlayer.setDataSource(dataSource)
             setPlayerState(PlayerState.PREPARING)
+
             mediaPlayer.setOnBufferingUpdateListener { mp, percent ->
                 val progressBar = PlayerFragment.getProgressBar()
                 val song = downloadFile.song
@@ -433,6 +450,7 @@ class LocalMediaPlayer(private val audioFocusHandler: AudioFocusHandler, private
                     progressBar.secondaryProgress = secondaryProgress
                 }
             }
+
             mediaPlayer.setOnPreparedListener {
                 Timber.i("Media player prepared")
                 setPlayerState(PlayerState.PREPARED)
@@ -588,7 +606,9 @@ class LocalMediaPlayer(private val audioFocusHandler: AudioFocusHandler, private
                     return
                 }
             }
-            doPlay(downloadFile, position, true)
+            if (downloadFile != null) {
+                doPlay(downloadFile, position, true)
+            }
         }
 
         private fun bufferComplete(): Boolean {
