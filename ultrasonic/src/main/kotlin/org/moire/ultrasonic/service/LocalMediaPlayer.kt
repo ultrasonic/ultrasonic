@@ -31,6 +31,7 @@ import org.moire.ultrasonic.fragment.PlayerFragment
 import org.moire.ultrasonic.receiver.MediaButtonIntentReceiver
 import org.moire.ultrasonic.util.CancellableTask
 import org.moire.ultrasonic.util.Constants
+import org.moire.ultrasonic.util.FileUtil
 import org.moire.ultrasonic.util.StreamProxy
 import org.moire.ultrasonic.util.Util
 import timber.log.Timber
@@ -89,7 +90,7 @@ class LocalMediaPlayer(
             Thread.currentThread().name = "MediaPlayerThread"
             Looper.prepare()
             mediaPlayer.setWakeMode(context, PowerManager.PARTIAL_WAKE_LOCK)
-            mediaPlayer.setOnErrorListener { mediaPlayer, what, more ->
+            mediaPlayer.setOnErrorListener { _, what, more ->
                 handleError(
                     Exception(
                         String.format(
@@ -460,9 +461,7 @@ class LocalMediaPlayer(
         }
 
     fun setVolume(volume: Float) {
-        if (mediaPlayer != null) {
-            mediaPlayer.setVolume(volume, volume)
-        }
+        mediaPlayer.setVolume(volume, volume)
     }
 
     @Synchronized
@@ -598,7 +597,7 @@ class LocalMediaPlayer(
                     handleErrorNext(x)
                 }
             }
-            nextMediaPlayer!!.setOnErrorListener { mediaPlayer, what, extra ->
+            nextMediaPlayer!!.setOnErrorListener { _, what, extra ->
                 Timber.w("Error on playing next (%d, %d): %s", what, extra, downloadFile)
                 true
             }
@@ -795,7 +794,7 @@ class LocalMediaPlayer(
             // Stop checking position before the song reaches completion
             while (isRunning) {
                 try {
-                    if (mediaPlayer != null && playerState === PlayerState.STARTED) {
+                    if (playerState === PlayerState.STARTED) {
                         cachedPosition = mediaPlayer.currentPosition
                     }
                     Util.sleepQuietly(50L)
