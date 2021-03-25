@@ -252,19 +252,14 @@ class LocalMediaPlayer(
 
     @Synchronized
     fun playNext() {
-        if (nextMediaPlayer == null || currentPlaying == null) return
+        if (nextMediaPlayer == null || nextPlaying == null) return
 
-        val oldPlayer = mediaPlayer
         mediaPlayer = nextMediaPlayer!!
-
-        // FIXME: Why is this being done?
-        nextMediaPlayer = oldPlayer
 
         setCurrentPlaying(nextPlaying)
         setPlayerState(PlayerState.STARTED)
 
-        // FIXME: Why is currentPlaying passed here and not nextPlaying?!
-        attachHandlersToPlayer(mediaPlayer, currentPlaying!!, false)
+        attachHandlersToPlayer(mediaPlayer, nextPlaying!!, false)
 
         postRunnable(onNextSongRequested)
 
@@ -303,7 +298,13 @@ class LocalMediaPlayer(
         if (remoteControlClient == null) {
             remoteControlClient = createRemoteControlClient()
         } else {
-            // FIXME: This looks like a hack. Why is it needed?
+            // This is probably needed only in API <=17
+            // "You must register your RemoteControlDisplay every time when the View which
+            // displays metadata is shown to the user. This is because 4.2.2 and lower
+            // versions support only one RemoteControlDisplay, and if system will
+            // decide to register it's own RCD, your RCD will be
+            // unregistered automatically.
+            // https://forum.xda-developers.com/t/guide-implement-your-own-lockscreen-like-music-controls.2401597/
             audioManager.unregisterRemoteControlClient(remoteControlClient)
             audioManager.registerRemoteControlClient(remoteControlClient)
         }
@@ -477,6 +478,11 @@ class LocalMediaPlayer(
 
     @Synchronized
     private fun doPlay(downloadFile: DownloadFile, position: Int, start: Boolean) {
+
+        // In many cases we will be resetting the mediaPlayer a second time here.
+        // figure out if we can remove this call...
+        resetMediaPlayer()
+
         try {
             downloadFile.setPlaying(false)
 
@@ -486,7 +492,7 @@ class LocalMediaPlayer(
             downloadFile.updateModificationDate()
             mediaPlayer.setOnCompletionListener(null)
             secondaryProgress = -1 // Ensure seeking in non StreamProxy playback works
-            mediaPlayer.reset()
+
             setPlayerState(PlayerState.IDLE)
             mediaPlayer.setAudioStreamType(AudioManager.STREAM_MUSIC)
 
@@ -678,13 +684,27 @@ class LocalMediaPlayer(
         if (bufferTask != null) {
             bufferTask!!.cancel()
         }
+
+        resetMediaPlayer()
+
         try {
             setPlayerState(PlayerState.IDLE)
             mediaPlayer.setOnErrorListener(null)
             mediaPlayer.setOnCompletionListener(null)
-            mediaPlayer.reset()
         } catch (x: Exception) {
             handleError(x)
+        }
+    }
+
+    @Synchronized
+    fun resetMediaPlayer() {
+        try {
+            mediaPlayer.reset()
+        } catch (x: Exception) {
+            Timber.w(x, "MediaPlayer was released but LocalMediaPlayer was not destroyed")
+
+            // Recreate MediaPlayer
+            mediaPlayer = MediaPlayer()
         }
     }
 
