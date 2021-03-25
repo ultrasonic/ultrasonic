@@ -1,0 +1,5 @@
+Bug fixes
+- #395: Corregido el diseño para mostrar correctamente los podcasts.
+
+Others
+- #399: Se ha convertido SelectAlbumFragment a kotlin.
