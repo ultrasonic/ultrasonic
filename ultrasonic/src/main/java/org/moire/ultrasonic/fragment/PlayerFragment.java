@@ -304,15 +304,8 @@ public class PlayerFragment extends Fragment implements GestureDetector.OnGestur
                     @Override
                     protected Boolean doInBackground()
                     {
-                        if (mediaPlayerControllerLazy.getValue().getCurrentPlayingNumberOnPlaylist() < mediaPlayerControllerLazy.getValue().getPlaylistSize() - 1)
-                        {
-                            mediaPlayerControllerLazy.getValue().next();
-                            return true;
-                        }
-                        else
-                        {
-                            return false;
-                        }
+                        mediaPlayerControllerLazy.getValue().next();
+                        return true;
                     }
 
                     @Override
@@ -1508,12 +1501,9 @@ public class PlayerFragment extends Fragment implements GestureDetector.OnGestur
         if (e1X - e2X > swipeDistance && absX > swipeVelocity)
         {
             networkAndStorageChecker.getValue().warnIfNetworkOrStorageUnavailable();
-            if (mediaPlayerController.getCurrentPlayingNumberOnPlaylist() < mediaPlayerController.getPlaylistSize() - 1)
-            {
-                mediaPlayerController.next();
-                onCurrentChanged();
-                onSliderProgressChanged();
-            }
+            mediaPlayerController.next();
+            onCurrentChanged();
+            onSliderProgressChanged();
             return true;
         }
 

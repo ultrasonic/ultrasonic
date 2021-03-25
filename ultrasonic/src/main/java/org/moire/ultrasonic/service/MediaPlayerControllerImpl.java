@@ -458,7 +458,20 @@ public class MediaPlayerControllerImpl implements MediaPlayerController
 		int index = downloader.getCurrentPlayingIndex();
 		if (index != -1)
 		{
-			play(index + 1);
+			switch (getRepeatMode())
+			{
+				case SINGLE:
+				case OFF:
+					if (index + 1 >= 0 && index + 1 < downloader.downloadList.size()) {
+						play(index + 1);
+					}
+					break;
+				case ALL:
+					play((index + 1) % downloader.downloadList.size());
+					break;
+				default:
+					break;
+			}
 		}
 	}
 
