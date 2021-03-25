@@ -469,7 +469,7 @@ class LocalMediaPlayer(
     private fun bufferAndPlay(fileToPlay: DownloadFile, position: Int, autoStart: Boolean) {
         if (playerState !== PlayerState.PREPARED) {
             reset()
-            bufferTask = BufferTask(fileToPlay, position)
+            bufferTask = BufferTask(fileToPlay, position, autoStart)
             bufferTask!!.start()
         } else {
             doPlay(fileToPlay, position, autoStart)
@@ -710,7 +710,8 @@ class LocalMediaPlayer(
 
     private inner class BufferTask(
         private val downloadFile: DownloadFile,
-        private val position: Int
+        private val position: Int,
+        private val autoStart: Boolean = true
     ) : CancellableTask() {
         private val expectedFileSize: Long
         private val partialFile: File = downloadFile.partialFile
@@ -724,7 +725,7 @@ class LocalMediaPlayer(
                 }
             }
 
-            doPlay(downloadFile, position, true)
+            doPlay(downloadFile, position, autoStart)
         }
 
         private fun bufferComplete(): Boolean {
