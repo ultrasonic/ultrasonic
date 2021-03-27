@@ -649,7 +649,7 @@ open class RESTMusicService(
             "Get-Video-Url"
         ).start()
 
-        latch.await(3, TimeUnit.SECONDS)
+        latch.await(5, TimeUnit.SECONDS)
 
         return expectedResult[0]!!
     }

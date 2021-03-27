@@ -134,7 +134,7 @@ class SelectAlbumFragment : Fragment() {
                             bundle
                         )
                     } else if (entry != null && entry.isVideo) {
-                        videoPlayer.playVideo(entry)
+                        videoPlayer.playVideo(requireContext(), entry)
                     } else {
                         enableButtons()
                     }

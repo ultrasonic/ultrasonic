@@ -8,8 +8,8 @@ import org.moire.ultrasonic.util.Util
 /**
  * This utility class helps starting video playback
  */
-class VideoPlayer(val context: Context) {
-    fun playVideo(entry: MusicDirectory.Entry?) {
+class VideoPlayer() {
+    fun playVideo(context: Context, entry: MusicDirectory.Entry?) {
         if (!Util.isNetworkConnected(context)) {
             Util.toast(context, R.string.select_album_no_network)
             return
@@ -18,7 +18,7 @@ class VideoPlayer(val context: Context) {
         try {
             player.playVideo(context, entry)
         } catch (e: Exception) {
-            Util.toast(context, e.message, false)
+            Util.toast(context, e.toString(), false)
         }
     }
 }
