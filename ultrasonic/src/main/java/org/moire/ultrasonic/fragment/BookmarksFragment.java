@@ -104,7 +104,7 @@ public class BookmarksFragment extends Fragment {
                     {
                         if (entry.isVideo())
                         {
-                            videoPlayer.getValue().playVideo(entry);
+                            videoPlayer.getValue().playVideo(getContext(), entry);
                         }
                         else
                         {

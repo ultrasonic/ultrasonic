@@ -576,7 +576,7 @@ public class SearchFragment extends Fragment {
 
     private void onVideoSelected(MusicDirectory.Entry entry)
     {
-        videoPlayer.getValue().playVideo(entry);
+        videoPlayer.getValue().playVideo(getContext(), entry);
     }
 
     private void autoplay()
