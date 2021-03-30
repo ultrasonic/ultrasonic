@@ -146,7 +146,7 @@ public class MediaPlayerService extends Service
         downloader.onCreate();
         shufflePlayBuffer.onCreate();
 
-        localMediaPlayer.onCreate();
+        localMediaPlayer.init();
         setupOnCurrentPlayingChangedHandler();
         setupOnPlayerStateChangedHandler();
         setupOnSongCompletedHandler();
@@ -198,7 +198,7 @@ public class MediaPlayerService extends Service
         instance = null;
 
         try {
-            localMediaPlayer.onDestroy();
+            localMediaPlayer.release();
             downloader.stop();
             shufflePlayBuffer.onDestroy();
         } catch (Throwable ignored) {

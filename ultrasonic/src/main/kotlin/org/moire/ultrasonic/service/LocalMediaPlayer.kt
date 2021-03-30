@@ -85,7 +85,7 @@ class LocalMediaPlayer(
     private val pm = context.getSystemService(POWER_SERVICE) as PowerManager
     private val wakeLock: WakeLock = pm.newWakeLock(PARTIAL_WAKE_LOCK, this.javaClass.name)
 
-    fun onCreate() {
+    fun init() {
         Thread {
             Thread.currentThread().name = "MediaPlayerThread"
             Looper.prepare()
@@ -126,7 +126,7 @@ class LocalMediaPlayer(
         Timber.i("LocalMediaPlayer created")
     }
 
-    fun onDestroy() {
+    fun release() {
         reset()
         try {
             val i = Intent(AudioEffect.ACTION_CLOSE_AUDIO_EFFECT_CONTROL_SESSION)
@@ -136,6 +136,9 @@ class LocalMediaPlayer(
             EqualizerController.release()
             VisualizerController.release()
             mediaPlayer.release()
+
+            mediaPlayer = MediaPlayer()
+
             if (nextMediaPlayer != null) {
                 nextMediaPlayer!!.release()
             }
