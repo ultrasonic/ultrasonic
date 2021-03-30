@@ -85,6 +85,6 @@ val musicServiceModule = module {
 
     single { DownloadHandler(get(), get()) }
     single { NetworkAndStorageChecker(androidContext()) }
-    single { VideoPlayer(androidContext()) }
+    single { VideoPlayer() }
     single { ShareHandler(androidContext()) }
 }
