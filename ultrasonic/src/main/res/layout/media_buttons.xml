@@ -8,7 +8,7 @@
     a:layout_marginRight="12dp" >
 
     <ImageView
-        a:id="@+id/download_shuffle"
+        a:id="@+id/button_shuffle"
         a:layout_width="0dip"
         a:layout_height="26dp"
         a:layout_alignParentLeft="true"
@@ -21,7 +21,7 @@
         a:contentDescription="@string/buttons.shuffle" />
 
     <org.moire.ultrasonic.view.AutoRepeatButton
-        a:id="@+id/download_previous"
+        a:id="@+id/button_previous"
         a:layout_width="0dip"
         a:layout_height="42dp"
         a:layout_gravity="center"
@@ -33,7 +33,7 @@
         a:contentDescription="@string/buttons.previous" />
 
     <ImageView
-        a:id="@+id/download_start"
+        a:id="@+id/button_start"
         a:layout_width="0dip"
         a:layout_height="74dp"
         a:layout_weight="2"
@@ -45,7 +45,7 @@
         a:contentDescription="@string/buttons.play" />
 
     <ImageView
-        a:id="@+id/download_pause"
+        a:id="@+id/button_pause"
         a:layout_width="0dip"
         a:layout_height="74dp"
         a:layout_weight="2"
@@ -56,7 +56,7 @@
         a:contentDescription="@string/buttons.pause" />
 
     <ImageView
-        a:id="@+id/download_stop"
+        a:id="@+id/button_stop"
         a:layout_width="0dip"
         a:layout_height="74dp"
         a:layout_weight="2"
@@ -68,7 +68,7 @@
         a:contentDescription="@string/buttons.stop" />
 
     <org.moire.ultrasonic.view.AutoRepeatButton
-        a:id="@+id/download_next"
+        a:id="@+id/button_next"
         a:layout_width="0dip"
         a:layout_height="42dp"
         a:layout_gravity="center"
@@ -80,7 +80,7 @@
         a:contentDescription="@string/buttons.next"/>
 
     <ImageView
-        a:id="@+id/download_repeat"
+        a:id="@+id/button_repeat"
         a:layout_width="0dip"
         a:layout_height="26dp"
         a:layout_gravity="center"

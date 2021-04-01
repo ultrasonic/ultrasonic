@@ -8,7 +8,7 @@
     a:layout_marginRight="12dp" >
     
     <SeekBar
-        a:id="@+id/download_progress_bar"
+        a:id="@+id/current_playing_progress_bar"
         a:layout_width="fill_parent"
         a:layout_height="32dp"
         a:indeterminate="false" />
@@ -18,7 +18,7 @@
         a:layout_height="match_parent">
 
         <TextView
-            a:id="@+id/download_position"
+            a:id="@+id/current_playing_position"
             a:layout_width="wrap_content"
             a:layout_height="wrap_content"
             a:layout_alignParentLeft="true"
@@ -27,7 +27,7 @@
             a:textAppearance="?android:attr/textAppearanceSmall" />
 
         <TextView
-            a:id="@+id/download_duration"
+            a:id="@+id/current_playing_duration"
             a:layout_width="wrap_content"
             a:layout_height="wrap_content"
             a:layout_alignParentRight="true"
