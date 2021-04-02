@@ -702,7 +702,7 @@ public class OfflineMusicService implements MusicService
 	}
 
 	@Override
-	public MusicDirectory getAlbumList(String type, int size, int offset, Context context) throws Exception
+	public MusicDirectory getAlbumList(String type, int size, int offset, String musicFolderId, Context context) throws Exception
 	{
 		throw new OfflineException("Album lists not available in offline mode");
 	}

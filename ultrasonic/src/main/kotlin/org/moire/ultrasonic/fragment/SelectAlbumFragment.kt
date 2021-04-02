@@ -24,13 +24,16 @@ import java.util.Collections
 import java.util.LinkedList
 import java.util.Random
 import org.koin.android.ext.android.inject
+import org.koin.android.viewmodel.ext.android.viewModel
 import org.moire.ultrasonic.R
+import org.moire.ultrasonic.data.ActiveServerProvider
 import org.moire.ultrasonic.data.ActiveServerProvider.Companion.isOffline
 import org.moire.ultrasonic.domain.MusicDirectory
 import org.moire.ultrasonic.fragment.FragmentTitle.Companion.getTitle
 import org.moire.ultrasonic.fragment.FragmentTitle.Companion.setTitle
 import org.moire.ultrasonic.service.MediaPlayerController
 import org.moire.ultrasonic.service.MusicService
+import org.moire.ultrasonic.service.MusicServiceFactory
 import org.moire.ultrasonic.service.MusicServiceFactory.getMusicService
 import org.moire.ultrasonic.subsonic.DownloadHandler
 import org.moire.ultrasonic.subsonic.ImageLoaderProvider
@@ -45,6 +48,7 @@ import org.moire.ultrasonic.util.FragmentBackgroundTask
 import org.moire.ultrasonic.util.Util
 import org.moire.ultrasonic.view.AlbumView
 import org.moire.ultrasonic.view.EntryAdapter
+import org.moire.ultrasonic.view.SelectMusicFolderView
 import org.moire.ultrasonic.view.SongView
 import timber.log.Timber
 
@@ -57,6 +61,7 @@ class SelectAlbumFragment : Fragment() {
     private var refreshAlbumListView: SwipeRefreshLayout? = null
     private var albumListView: ListView? = null
     private var header: View? = null
+    private var selectFolderHeader: SelectMusicFolderView? = null
     private var albumButtons: View? = null
     private var emptyView: View? = null
     private var selectButton: ImageView? = null
@@ -73,6 +78,7 @@ class SelectAlbumFragment : Fragment() {
     private var playAllButton: MenuItem? = null
     private var shareButton: MenuItem? = null
     private var showHeader = true
+    private var showSelectFolderHeader = false
     private val random: Random = SecureRandom()
 
     private val mediaPlayerController: MediaPlayerController by inject()
@@ -82,6 +88,9 @@ class SelectAlbumFragment : Fragment() {
     private val imageLoaderProvider: ImageLoaderProvider by inject()
     private val shareHandler: ShareHandler by inject()
     private var cancellationToken: CancellationToken? = null
+    private val activeServerProvider: ActiveServerProvider by inject()
+    private val serverSettingsModel: ServerSettingsModel by viewModel()
+    private val artistListModel: ArtistListModel by viewModel()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         Util.applyTheme(this.context)
@@ -115,6 +124,24 @@ class SelectAlbumFragment : Fragment() {
         header = LayoutInflater.from(context).inflate(
             R.layout.select_album_header, albumListView,
             false
+        )
+
+        selectFolderHeader = SelectMusicFolderView(
+            requireContext(), albumListView!!,
+            MusicServiceFactory.getMusicService(requireContext()).getMusicFolders(
+                false, requireContext()
+            ),
+            activeServerProvider.getActiveServer().musicFolderId,
+            { _, selectedFolderId ->
+                if (!ActiveServerProvider.isOffline(context)) {
+                    val currentSetting = activeServerProvider.getActiveServer()
+                    currentSetting.musicFolderId = selectedFolderId
+                    serverSettingsModel.updateItem(currentSetting)
+                }
+                artistListModel.refresh(refreshAlbumListView!!)
+
+                this.updateDisplay(true)
+            }
         )
 
         albumListView!!.setChoiceMode(ListView.CHOICE_MODE_MULTIPLE)
@@ -735,6 +762,7 @@ class SelectAlbumFragment : Fragment() {
     private fun getAlbumList(albumListType: String, albumListTitle: Int, size: Int, offset: Int) {
 
         showHeader = false
+        showSelectFolderHeader = !isOffline(context)
 
         setTitle(this, albumListTitle)
         // setActionBarSubtitle(albumListTitle);
@@ -747,10 +775,12 @@ class SelectAlbumFragment : Fragment() {
             }
 
             override fun load(service: MusicService): MusicDirectory {
+                val musicFolderId =
+                    this@SelectAlbumFragment.activeServerProvider.getActiveServer().musicFolderId
                 return if (Util.getShouldUseId3Tags(context))
                     service.getAlbumList2(albumListType, size, offset, context)
                 else
-                    service.getAlbumList(albumListType, size, offset, context)
+                    service.getAlbumList(albumListType, size, offset, musicFolderId, context)
             }
 
             override fun done(result: Pair<MusicDirectory, Boolean>) {
@@ -1012,6 +1042,12 @@ class SelectAlbumFragment : Fragment() {
                     }
                 }
             } else {
+                if (showSelectFolderHeader) {
+                    if (albumListView!!.headerViewsCount == 0) {
+                        albumListView!!.addHeaderView(selectFolderHeader!!.itemView, null, false)
+                    }
+                }
+
                 pinButton!!.visibility = View.GONE
                 unpinButton!!.visibility = View.GONE
                 downloadButton!!.visibility = View.GONE
