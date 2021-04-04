@@ -26,6 +26,7 @@ import java.util.Random
 import org.koin.android.ext.android.inject
 import org.koin.android.viewmodel.ext.android.viewModel
 import org.moire.ultrasonic.R
+import org.moire.ultrasonic.api.subsonic.models.AlbumListType
 import org.moire.ultrasonic.data.ActiveServerProvider
 import org.moire.ultrasonic.data.ActiveServerProvider.Companion.isOffline
 import org.moire.ultrasonic.domain.MusicDirectory
@@ -762,7 +763,11 @@ class SelectAlbumFragment : Fragment() {
     private fun getAlbumList(albumListType: String, albumListTitle: Int, size: Int, offset: Int) {
 
         showHeader = false
-        showSelectFolderHeader = !isOffline(context)
+        showSelectFolderHeader = !isOffline(context) &&
+            (
+                (albumListType == AlbumListType.SORTED_BY_NAME.toString()) ||
+                    (albumListType == AlbumListType.SORTED_BY_ARTIST.toString())
+                )
 
         setTitle(this, albumListTitle)
         // setActionBarSubtitle(albumListTitle);
