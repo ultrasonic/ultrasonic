@@ -143,6 +143,14 @@ public class DownloadFile
 		return saveFile;
 	}
 
+	public File getCompleteOrPartialFile() {
+		if (isCompleteFileAvailable()) {
+			return getCompleteFile();
+		} else {
+			return getPartialFile();
+		}
+	}
+
 	public File getPartialFile()
 	{
 		return partialFile;

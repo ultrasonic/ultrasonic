@@ -146,7 +146,7 @@ public class MediaPlayerService extends Service
         downloader.onCreate();
         shufflePlayBuffer.onCreate();
 
-        localMediaPlayer.onCreate();
+        localMediaPlayer.init();
         setupOnCurrentPlayingChangedHandler();
         setupOnPlayerStateChangedHandler();
         setupOnSongCompletedHandler();
@@ -198,7 +198,7 @@ public class MediaPlayerService extends Service
         instance = null;
 
         try {
-            localMediaPlayer.onDestroy();
+            localMediaPlayer.release();
             downloader.stop();
             shufflePlayBuffer.onDestroy();
         } catch (Throwable ignored) {
@@ -305,7 +305,7 @@ public class MediaPlayerService extends Service
 
         if (!gaplessPlayback)
         {
-            localMediaPlayer.setNextPlaying(null);
+            localMediaPlayer.clearNextPlaying(true);
             return;
         }
 
@@ -327,7 +327,7 @@ public class MediaPlayerService extends Service
             }
         }
 
-        localMediaPlayer.clearNextPlaying();
+        localMediaPlayer.clearNextPlaying(false);
 
         if (index < downloader.downloadList.size() && index != -1)
         {
@@ -335,7 +335,7 @@ public class MediaPlayerService extends Service
         }
         else
         {
-            localMediaPlayer.setNextPlaying(null);
+            localMediaPlayer.clearNextPlaying(true);
         }
     }
 
