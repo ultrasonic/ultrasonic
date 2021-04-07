@@ -27,8 +27,9 @@ class SelectMusicFolderView(
         R.layout.select_folder_header, root, false
     )
 ) {
-    private val folderName: TextView = itemView.findViewById(R.id.select_folder_2)
+    private val folderName: TextView = itemView.findViewById(R.id.select_folder_name)
     private val layout: LinearLayout = itemView.findViewById(R.id.select_folder_header)
+    private val MENU_GROUP_MUSIC_FOLDER = 10
 
     init {
         if (selectedFolderId != null) {
@@ -38,13 +39,14 @@ class SelectMusicFolderView(
                     break
                 }
             }
+        } else {
+            folderName.text = context.getString(R.string.select_artist_all_folders)
         }
         layout.setOnClickListener { onFolderClick() }
     }
 
     private fun onFolderClick() {
         val popup = PopupMenu(context, layout)
-        val MENU_GROUP_MUSIC_FOLDER = 10
 
         var menuItem = popup.menu.add(
             MENU_GROUP_MUSIC_FOLDER, -1, 0, R.string.select_artist_all_folders
@@ -52,8 +54,8 @@ class SelectMusicFolderView(
         if (selectedFolderId == null || selectedFolderId!!.isEmpty()) {
             menuItem.isChecked = true
         }
-        for (i in musicFolders.indices) {
-            val (id, name) = musicFolders[i]
+        musicFolders.forEachIndexed { i, musicFolder ->
+            val (id, name) = musicFolder
             menuItem = popup.menu.add(MENU_GROUP_MUSIC_FOLDER, i, i + 1, name)
             if (id == selectedFolderId) {
                 menuItem.isChecked = true

@@ -465,6 +465,7 @@ open class RESTMusicService(
         type: String,
         size: Int,
         offset: Int,
+        musicFolderId: String?,
         context: Context
     ): MusicDirectory {
         val response = responseChecker.callWithResponseCheck { api ->
@@ -475,7 +476,7 @@ open class RESTMusicService(
                 null,
                 null,
                 null,
-                null
+                musicFolderId
             ).execute()
         }
 

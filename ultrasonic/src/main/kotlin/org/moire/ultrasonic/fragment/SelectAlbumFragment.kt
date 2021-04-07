@@ -91,7 +91,6 @@ class SelectAlbumFragment : Fragment() {
     private var cancellationToken: CancellationToken? = null
     private val activeServerProvider: ActiveServerProvider by inject()
     private val serverSettingsModel: ServerSettingsModel by viewModel()
-    private val artistListModel: ArtistListModel by viewModel()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         Util.applyTheme(this.context)
@@ -139,8 +138,6 @@ class SelectAlbumFragment : Fragment() {
                     currentSetting.musicFolderId = selectedFolderId
                     serverSettingsModel.updateItem(currentSetting)
                 }
-                artistListModel.refresh(refreshAlbumListView!!)
-
                 this.updateDisplay(true)
             }
         )
@@ -783,7 +780,7 @@ class SelectAlbumFragment : Fragment() {
                 val musicFolderId =
                     this@SelectAlbumFragment.activeServerProvider.getActiveServer().musicFolderId
                 return if (Util.getShouldUseId3Tags(context))
-                    service.getAlbumList2(albumListType, size, offset, context)
+                    service.getAlbumList2(albumListType, size, offset, musicFolderId, context)
                 else
                     service.getAlbumList(albumListType, size, offset, musicFolderId, context)
             }

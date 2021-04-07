@@ -76,6 +76,7 @@ public class CachedMusicService implements MusicService
 	private final TimeLimitedCache<List<Genre>> cachedGenres = new TimeLimitedCache<>(10 * 3600, TimeUnit.SECONDS);
 
 	private String restUrl;
+	private String musicFolderId;
 
 	public CachedMusicService(MusicService musicService)
 	{
@@ -290,9 +291,9 @@ public class CachedMusicService implements MusicService
 	}
 
 	@Override
-	public MusicDirectory getAlbumList2(String type, int size, int offset, Context context) throws Exception
+	public MusicDirectory getAlbumList2(String type, int size, int offset, String musicFolderId, Context context) throws Exception
 	{
-		return musicService.getAlbumList2(type, size, offset, context);
+		return musicService.getAlbumList2(type, size, offset, musicFolderId, context);
 	}
 
 	@Override
@@ -370,7 +371,8 @@ public class CachedMusicService implements MusicService
 	private void checkSettingsChanged()
 	{
 		String newUrl = activeServerProvider.getValue().getRestUrl(null);
-		if (!Util.equals(newUrl, restUrl))
+		String newFolderId = activeServerProvider.getValue().getActiveServer().getMusicFolderId();
+		if (!Util.equals(newUrl, restUrl) || !Util.equals(musicFolderId,newFolderId))
 		{
 			cachedMusicFolders.clear();
 			cachedMusicDirectories.clear();
@@ -382,6 +384,7 @@ public class CachedMusicService implements MusicService
 			cachedArtist.clear();
 			cachedUserInfo.clear();
 			restUrl = newUrl;
+			musicFolderId = newFolderId;
 		}
 	}
 
