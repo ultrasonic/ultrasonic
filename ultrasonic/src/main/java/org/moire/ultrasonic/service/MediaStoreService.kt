@@ -16,110 +16,110 @@
 
  Copyright 2009 (C) Sindre Mehus
  */
-package org.moire.ultrasonic.service;
+package org.moire.ultrasonic.service
 
-import java.io.File;
-
-import android.content.ContentResolver;
-import android.content.ContentValues;
-import android.content.Context;
-import android.database.Cursor;
-import android.net.Uri;
-import android.provider.MediaStore;
-import timber.log.Timber;
-
-import org.moire.ultrasonic.domain.MusicDirectory;
-import org.moire.ultrasonic.util.FileUtil;
+import android.content.ContentValues
+import android.content.Context
+import android.net.Uri
+import android.os.Build
+import android.provider.MediaStore
+import org.moire.ultrasonic.util.FileUtil
+import timber.log.Timber
 
 /**
+ * By adding UltraSonics media files to the Android MediaStore
+ * they become available in the stock music apps
+ *
  * @author Sindre Mehus
  */
-public class MediaStoreService
-{
-	private static final Uri ALBUM_ART_URI = Uri.parse("content://media/external/audio/albumart");
 
-	private final Context context;
+class MediaStoreService(private val context: Context) {
 
-	public MediaStoreService(Context context)
-	{
-		this.context = context;
-	}
+    // Find the audio collection on the primary external storage device.
+    val collection: Uri by lazy {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+            MediaStore.Audio.Media.getContentUri(
+                MediaStore.VOLUME_EXTERNAL_PRIMARY
+            )
+        } else {
+            MediaStore.Audio.Media.EXTERNAL_CONTENT_URI
+        }
+    }
 
-	public void saveInMediaStore(DownloadFile downloadFile)
-	{
-		MusicDirectory.Entry song = downloadFile.getSong();
-		File songFile = downloadFile.getCompleteFile();
+    val albumArtCollection: Uri by lazy {
+        // This path is not well documented
+        // https://android.googlesource.com/platform/packages/providers/
+        // MediaProvider/+/refs/tags/android-platform-11.0.0_r5/
+        // src/com/android/providers/media/MediaProvider.java#7596
 
-		// Delete existing row in case the song has been downloaded before.
-		deleteFromMediaStore(downloadFile);
+        Uri.parse(collection.toString().replaceAfterLast("/", "albumart"))
+    }
 
-		ContentResolver contentResolver = context.getContentResolver();
-		ContentValues values = new ContentValues();
-		values.put(MediaStore.MediaColumns.TITLE, song.getTitle());
-		values.put(MediaStore.Audio.AudioColumns.ARTIST, song.getArtist());
-		values.put(MediaStore.Audio.AudioColumns.ALBUM, song.getAlbum());
-		values.put(MediaStore.Audio.AudioColumns.TRACK, song.getTrack());
-		values.put(MediaStore.Audio.AudioColumns.YEAR, song.getYear());
-		values.put(MediaStore.MediaColumns.DATA, songFile.getAbsolutePath());
-		values.put(MediaStore.MediaColumns.MIME_TYPE, song.getContentType());
-		values.put(MediaStore.Audio.AudioColumns.IS_MUSIC, 1);
+    fun saveInMediaStore(downloadFile: DownloadFile) {
+        val song = downloadFile.song
+        val songFile = downloadFile.completeFile
 
-		Uri uri = contentResolver.insert(MediaStore.Audio.Media.EXTERNAL_CONTENT_URI, values);
+        // Delete existing row in case the song has been downloaded before.
+        deleteFromMediaStore(downloadFile)
+        val contentResolver = context.contentResolver
+        val values = ContentValues()
+        values.put(MediaStore.MediaColumns.TITLE, song.title)
+        values.put(MediaStore.Audio.AudioColumns.ARTIST, song.artist)
+        values.put(MediaStore.Audio.AudioColumns.ALBUM, song.album)
+        values.put(MediaStore.Audio.AudioColumns.TRACK, song.track)
+        values.put(MediaStore.Audio.AudioColumns.YEAR, song.year)
+        values.put(MediaStore.MediaColumns.DATA, songFile.absolutePath)
+        values.put(MediaStore.MediaColumns.MIME_TYPE, song.contentType)
+        values.put(MediaStore.Audio.AudioColumns.IS_MUSIC, 1)
 
-		if (uri != null)
-		{
-			// Look up album, and add cover art if found.
-			Cursor cursor = contentResolver.query(uri, new String[]{MediaStore.Audio.AudioColumns.ALBUM_ID}, null, null, null);
+        val uri = contentResolver.insert(collection, values)
 
-			if (cursor != null && cursor.moveToFirst())
-			{
-				int albumId = cursor.getInt(0);
-				insertAlbumArt(albumId, downloadFile);
-				cursor.close();
-			}
-		}
-	}
+        if (uri != null) {
+            // Look up album, and add cover art if found.
+            val cursor = contentResolver.query(
+                uri, arrayOf(MediaStore.Audio.AudioColumns.ALBUM_ID),
+                null, null, null
+            )
+            if (cursor != null && cursor.moveToFirst()) {
+                val albumId = cursor.getInt(0)
+                insertAlbumArt(albumId, downloadFile)
+                cursor.close()
+            }
+        }
+    }
 
-	public void deleteFromMediaStore(DownloadFile downloadFile)
-	{
-		ContentResolver contentResolver = context.getContentResolver();
-		MusicDirectory.Entry song = downloadFile.getSong();
-		File file = downloadFile.getCompleteFile();
+    fun deleteFromMediaStore(downloadFile: DownloadFile) {
+        val contentResolver = context.contentResolver
+        val song = downloadFile.song
+        val file = downloadFile.completeFile
 
-		int n = contentResolver.delete(MediaStore.Audio.Media.EXTERNAL_CONTENT_URI, MediaStore.Audio.AudioColumns.TITLE_KEY + "=? AND " +
-				MediaStore.MediaColumns.DATA + "=?", new String[]{MediaStore.Audio.keyFor(song.getTitle()), file.getAbsolutePath()});
-		if (n > 0)
-		{
-			Timber.i("Deleting media store row for %s", song);
-		}
-	}
+        val selection = MediaStore.Audio.AudioColumns.TITLE_KEY + "=? AND " +
+            MediaStore.MediaColumns.DATA + "=?"
+        val selectionArgs = arrayOf(MediaStore.Audio.keyFor(song.title), file.absolutePath)
 
-	private void insertAlbumArt(int albumId, DownloadFile downloadFile)
-	{
-		ContentResolver contentResolver = context.getContentResolver();
-		Uri uri = Uri.withAppendedPath(ALBUM_ART_URI, String.valueOf(albumId));
+        val res = contentResolver.delete(collection, selection, selectionArgs)
 
-		if (uri == null)
-		{
-			return;
-		}
+        if (res > 0) {
+            Timber.i("Deleting media store row for %s", song)
+        }
+    }
 
-		Cursor cursor = contentResolver.query(uri, null, null, null, null);
-
-		if (cursor != null && !cursor.moveToFirst())
-		{
-			// No album art found, add it.
-			File albumArtFile = FileUtil.getAlbumArtFile(context, downloadFile.getSong());
-			if (albumArtFile.exists())
-			{
-				ContentValues values = new ContentValues();
-				values.put(MediaStore.Audio.AlbumColumns.ALBUM_ID, albumId);
-				values.put(MediaStore.MediaColumns.DATA, albumArtFile.getPath());
-				contentResolver.insert(ALBUM_ART_URI, values);
-				Timber.i("Added album art: %s", albumArtFile);
-			}
-
-			cursor.close();
-		}
-	}
+    private fun insertAlbumArt(albumId: Int, downloadFile: DownloadFile) {
+        val contentResolver = context.contentResolver
+        val uri = Uri.withAppendedPath(albumArtCollection, albumId.toString())
+            ?: return
+        val cursor = contentResolver.query(uri, null, null, null, null)
+        if (cursor != null && !cursor.moveToFirst()) {
+            // No album art found, add it.
+            val albumArtFile = FileUtil.getAlbumArtFile(context, downloadFile.song)
+            if (albumArtFile.exists()) {
+                val values = ContentValues()
+                values.put(MediaStore.Audio.AlbumColumns.ALBUM_ID, albumId)
+                // values.put(MediaStore.MediaColumns.DATA, albumArtFile.path)
+                contentResolver.insert(albumArtCollection, values)
+                Timber.i("Added album art: %s", albumArtFile)
+            }
+            cursor.close()
+        }
+    }
 }
