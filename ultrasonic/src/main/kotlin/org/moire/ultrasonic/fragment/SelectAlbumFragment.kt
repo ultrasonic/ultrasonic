@@ -820,8 +820,11 @@ class SelectAlbumFragment : Fragment() {
             }
 
             override fun load(service: MusicService): MusicDirectory {
-                val musicFolderId =
+                val musicFolderId = if (showSelectFolderHeader) {
                     this@SelectAlbumFragment.activeServerProvider.getActiveServer().musicFolderId
+                } else {
+                    null
+                }
                 return if (Util.getShouldUseId3Tags(context))
                     service.getAlbumList2(albumListType, size, offset, musicFolderId, context)
                 else

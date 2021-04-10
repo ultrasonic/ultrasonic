@@ -14,7 +14,7 @@ import org.moire.ultrasonic.domain.MusicFolder
 /**
  * This little view shows the currently selected Folder (or catalog) on the music server.
  * When clicked it will drop down a list of all available Folders and allow you to
- * select one. The intended usage us to supply a filter to lists of artists, albums, etc
+ * select one. The intended usage is to supply a filter to lists of artists, albums, etc
  */
 class SelectMusicFolderView(
     private val context: Context,
