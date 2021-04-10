@@ -225,59 +225,7 @@ class SongView(context: Context) : UpdateView(context), Checkable {
 
         downloadFile = mediaPlayerControllerLazy.value.getDownloadFileForSong(entry)
 
-        val partialFile = downloadFile!!.partialFile
-
-        if (downloadFile!!.isWorkDone) {
-            val newLeftImageType =
-                if (downloadFile!!.isSaved) ImageType.Pin else ImageType.Downloaded
-
-            if (leftImageType != newLeftImageType) {
-                leftImage = if (downloadFile!!.isSaved) pinImage else downloadedImage
-                leftImageType = newLeftImageType
-            }
-        } else {
-            leftImageType = ImageType.None
-            leftImage = null
-        }
-
-        val rightImageType: ImageType
-        val rightImage: Drawable?
-
-        if (
-            downloadFile!!.isDownloading &&
-            !downloadFile!!.isDownloadCancelled &&
-            partialFile.exists()
-        ) {
-            viewHolder?.status?.text = Util.formatLocalizedBytes(
-                partialFile.length(), this.context
-            )
-
-            rightImageType = ImageType.Downloading
-            rightImage = downloadingImage
-        } else {
-            rightImageType = ImageType.None
-            rightImage = null
-
-            val statusText = viewHolder?.status?.text
-            if (!statusText.isNullOrEmpty()) viewHolder?.status?.text = null
-        }
-        if (previousLeftImageType != leftImageType || previousRightImageType != rightImageType) {
-            previousLeftImageType = leftImageType
-            previousRightImageType = rightImageType
-
-            if (viewHolder?.status != null) {
-                viewHolder?.status?.setCompoundDrawablesWithIntrinsicBounds(
-                    leftImage, null, rightImage, null
-                )
-
-                if (rightImage === downloadingImage) {
-                    val frameAnimation = rightImage as AnimationDrawable?
-
-                    frameAnimation!!.setVisible(true, true)
-                    frameAnimation.start()
-                }
-            }
-        }
+        updateDownloadStatus(downloadFile!!)
 
         if (entry?.starred != true) {
             if (viewHolder?.star?.drawable !== starHollowDrawable) {
@@ -321,6 +269,56 @@ class SongView(context: Context) : UpdateView(context), Checkable {
                 viewHolder?.title?.setCompoundDrawablesWithIntrinsicBounds(
                     0, 0, 0, 0
                 )
+            }
+        }
+    }
+
+    private fun updateDownloadStatus(downloadFile: DownloadFile) {
+
+        if (downloadFile.isWorkDone) {
+            val newLeftImageType =
+                if (downloadFile.isSaved) ImageType.Pin else ImageType.Downloaded
+
+            if (leftImageType != newLeftImageType) {
+                leftImage = if (downloadFile.isSaved) pinImage else downloadedImage
+                leftImageType = newLeftImageType
+            }
+        } else {
+            leftImageType = ImageType.None
+            leftImage = null
+        }
+
+        val rightImageType: ImageType
+        val rightImage: Drawable?
+
+        if (downloadFile.isDownloading && !downloadFile.isDownloadCancelled) {
+            viewHolder?.status?.text = Util.formatPercentage(downloadFile.progress.value!!)
+
+            rightImageType = ImageType.Downloading
+            rightImage = downloadingImage
+        } else {
+            rightImageType = ImageType.None
+            rightImage = null
+
+            val statusText = viewHolder?.status?.text
+            if (!statusText.isNullOrEmpty()) viewHolder?.status?.text = null
+        }
+
+        if (previousLeftImageType != leftImageType || previousRightImageType != rightImageType) {
+            previousLeftImageType = leftImageType
+            previousRightImageType = rightImageType
+
+            if (viewHolder?.status != null) {
+                viewHolder?.status?.setCompoundDrawablesWithIntrinsicBounds(
+                    leftImage, null, rightImage, null
+                )
+
+                if (rightImage === downloadingImage) {
+                    val frameAnimation = rightImage as AnimationDrawable?
+
+                    frameAnimation!!.setVisible(true, true)
+                    frameAnimation.start()
+                }
             }
         }
     }

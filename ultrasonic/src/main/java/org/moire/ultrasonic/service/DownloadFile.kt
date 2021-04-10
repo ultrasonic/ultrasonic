@@ -76,14 +76,14 @@ class DownloadFile(
         partialFile = File(saveFile.parent, FileUtil.getPartialFile(saveFile.name))
         completeFile = File(saveFile.parent, FileUtil.getCompleteFile(saveFile.name))
         mediaStoreService = MediaStoreService(context)
-	}
+    }
 
-	/**
-	 * Returns the effective bit rate.
-	 */
+    /**
+     * Returns the effective bit rate.
+     */
     fun getBitRate(): Int {
         return if (song.bitRate == null) desiredBitRate else song.bitRate!!
-		}
+    }
 
     @Synchronized
     fun download() {
@@ -91,32 +91,31 @@ class DownloadFile(
         isFailed = false
         downloadTask = DownloadTask()
         downloadTask!!.start()
-		}
+    }
 
     @Synchronized
     fun cancelDownload() {
         if (downloadTask != null) {
             downloadTask!!.cancel()
-	}
-
-		}
+        }
+    }
 
     fun getCompleteFile(): File {
         if (saveFile.exists()) {
             return saveFile
-	}
+        }
 
         return if (completeFile.exists()) {
             completeFile
         } else saveFile
-	}
+    }
 
     val completeOrPartialFile: File
         get() = if (isCompleteFileAvailable) {
             getCompleteFile()
-		} else {
+        } else {
             partialFile
-	}
+        }
 
     val isSaved: Boolean
         get() = saveFile.exists()
@@ -140,7 +139,7 @@ class DownloadFile(
 
     fun shouldSave(): Boolean {
         return save
-	}
+    }
 
     fun delete() {
         cancelDownload()
@@ -148,43 +147,43 @@ class DownloadFile(
         Util.delete(completeFile)
         Util.delete(saveFile)
         mediaStoreService.deleteFromMediaStore(this)
-	}
+    }
 
     fun unpin() {
         if (saveFile.exists()) {
-			if (!saveFile.renameTo(completeFile)){
+            if (!saveFile.renameTo(completeFile)) {
                 Timber.w(
                     "Renaming file failed. Original file: %s; Rename to: %s",
                     saveFile.name, completeFile.name
                 )
-			}
-		}
-	}
+            }
+        }
+    }
 
     fun cleanup(): Boolean {
         var ok = true
         if (completeFile.exists() || saveFile.exists()) {
             ok = Util.delete(partialFile)
-		}
+        }
 
         if (saveFile.exists()) {
             ok = ok and Util.delete(completeFile)
-		}
+        }
 
         return ok
-	}
+    }
 
-	// In support of LRU caching.
+    // In support of LRU caching.
     fun updateModificationDate() {
         updateModificationDate(saveFile)
         updateModificationDate(partialFile)
         updateModificationDate(completeFile)
-	}
+    }
 
     fun setPlaying(isPlaying: Boolean) {
         if (!isPlaying) doPendingRename()
         this.isPlaying = isPlaying
-	}
+    }
 
     // Do a pending rename after the song has stopped playing
     private fun doPendingRename() {
@@ -198,18 +197,17 @@ class DownloadFile(
                     mediaStoreService.saveInMediaStore(this@DownloadFile)
                 } else {
                     Util.renameFile(partialFile, completeFile)
-			}
+                }
                 completeWhenDone = false
-				}
+            }
         } catch (ex: IOException) {
             Timber.w("Failed to rename file %s to %s", completeFile, saveFile)
-				}
-
-		}
+        }
+    }
 
     override fun toString(): String {
         return String.format("DownloadFile (%s)", song)
-	}
+    }
 
     private inner class DownloadTask : CancellableTask() {
         override fun execute() {
@@ -225,7 +223,7 @@ class DownloadFile(
                 if (saveFile.exists()) {
                     Timber.i("%s already exists. Skipping.", saveFile)
                     return
-				}
+                }
 
                 if (completeFile.exists()) {
                     if (save) {
@@ -233,23 +231,23 @@ class DownloadFile(
                             saveWhenDone = true
                         } else {
                             Util.renameFile(completeFile, saveFile)
-				}
+                        }
                     } else {
                         Timber.i("%s already exists. Skipping.", completeFile)
-						}
+                    }
                     return
-				}
+                }
 
                 val musicService = getMusicService(context)
 
-				// Some devices seem to throw error on partial file which doesn't exist
+                // Some devices seem to throw error on partial file which doesn't exist
                 val needsDownloading: Boolean
                 val duration = song.duration
                 var fileLength: Long = 0
 
                 if (!partialFile.exists()) {
                     fileLength = partialFile.length()
-				}
+                }
 
                 needsDownloading = (
                     desiredBitRate == 0 || duration == null ||
@@ -257,7 +255,7 @@ class DownloadFile(
                     )
 
                 if (needsDownloading) {
-					// Attempt partial HTTP GET, appending to the file if it exists.
+                    // Attempt partial HTTP GET, appending to the file if it exists.
                     val (inStream, partial) = musicService
                         .getDownloadInputStream(song, partialFile.length(), desiredBitRate)
 
@@ -268,14 +266,13 @@ class DownloadFile(
                             "Executed partial HTTP GET, skipping %d bytes",
                             partialFile.length()
                         )
-					}
+                    }
 
                     outputStream = FileOutputStream(partialFile, partial)
 
-                    val len = inputStream.copyTo(outputStream) {
-                        totalBytesCopied ->
+                    val len = inputStream.copyTo(outputStream) { totalBytesCopied ->
                         setProgress(totalBytesCopied)
-					}
+                    }
 
                     Timber.i("Downloaded %d bytes to %s", len, partialFile)
 
@@ -287,7 +284,7 @@ class DownloadFile(
                         throw Exception(String.format("Download of '%s' was cancelled", song))
                     }
                     downloadAndSaveCoverArt(musicService)
-				}
+                }
 
                 if (isPlaying) {
                     completeWhenDone = true
@@ -297,8 +294,8 @@ class DownloadFile(
                         mediaStoreService.saveInMediaStore(this@DownloadFile)
                     } else {
                         Util.renameFile(partialFile, completeFile)
-				}
-					}
+                    }
+                }
             } catch (x: Exception) {
                 Util.close(outputStream)
                 Util.delete(completeFile)
@@ -306,19 +303,19 @@ class DownloadFile(
                 if (!isCancelled) {
                     isFailed = true
                     Timber.w(x, "Failed to download '%s'.", song)
-					}
+                }
             } finally {
                 Util.close(inputStream)
                 Util.close(outputStream)
                 if (wakeLock != null) {
                     wakeLock.release()
                     Timber.i("Released wake lock %s", wakeLock)
-				}
+                }
                 wifiLock?.release()
                 CacheCleaner(context).cleanSpace()
                 downloader.value.checkDownloads()
-			}
-				}
+            }
+        }
 
         private fun acquireWakeLock(wakeLock: WakeLock?): WakeLock? {
             var wakeLock1 = wakeLock
@@ -328,24 +325,24 @@ class DownloadFile(
                 wakeLock1 = pm.newWakeLock(flags, toString())
                 wakeLock1.acquire(10 * 60 * 1000L /*10 minutes*/)
                 Timber.i("Acquired wake lock %s", wakeLock1)
-			}
+            }
             return wakeLock1
-				}
+        }
+
         override fun toString(): String {
             return String.format("DownloadTask (%s)", song)
-				}
+        }
 
         private fun downloadAndSaveCoverArt(musicService: MusicService) {
             try {
                 if (!TextUtils.isEmpty(song.coverArt)) {
                     val size = Util.getMinDisplayMetric(context)
                     musicService.getCoverArt(context, song, size, true, true)
-			}
+                }
             } catch (x: Exception) {
                 Timber.e(x, "Failed to get cover art.")
-		}
-
-		}
+            }
+        }
 
         @Throws(IOException::class)
         fun InputStream.copyTo(out: OutputStream, onCopy: (totalBytesCopied: Long) -> Any): Long {
@@ -357,16 +354,16 @@ class DownloadFile(
                 bytesCopied += bytes
                 onCopy(bytesCopied)
                 bytes = read(buffer)
-				}
+            }
             return bytesCopied
-			}
-		}
+        }
+    }
 
     private fun setProgress(totalBytesCopied: Long) {
         if (song.size != null) {
             progress.postValue((totalBytesCopied * 100 / song.size!!).toInt())
         }
-						}
+    }
 
     companion object {
         private fun updateModificationDate(file: File) {
@@ -387,9 +384,9 @@ class DownloadFile(
                         raf.close()
                     } catch (e: Exception) {
                         Timber.w("Failed to set last-modified date on %s", file)
-						}
-					}
-				}
-		}
-	}
+                    }
+                }
+            }
+        }
+    }
 }
