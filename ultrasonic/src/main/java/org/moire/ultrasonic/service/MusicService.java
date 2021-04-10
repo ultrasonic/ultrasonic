@@ -108,7 +108,7 @@ public interface MusicService
 	 * Return response {@link InputStream} and a {@link Boolean} that indicates if this response is
 	 * partial.
 	 */
-	Pair<InputStream, Boolean> getDownloadInputStream(Context context, MusicDirectory.Entry song, long offset, int maxBitrate, CancellableTask task) throws Exception;
+	Pair<InputStream, Boolean> getDownloadInputStream(MusicDirectory.Entry song, long offset, int maxBitrate) throws Exception;
 
 	// TODO: Refactor and remove this call (see RestMusicService implementation)
 	String getVideoUrl(Context context, String id, boolean useFlash) throws Exception;

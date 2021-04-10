@@ -59,7 +59,6 @@ import org.moire.ultrasonic.domain.toDomainEntitiesList
 import org.moire.ultrasonic.domain.toDomainEntity
 import org.moire.ultrasonic.domain.toDomainEntityList
 import org.moire.ultrasonic.domain.toMusicDirectoryDomainEntity
-import org.moire.ultrasonic.util.CancellableTask
 import org.moire.ultrasonic.util.FileUtil
 import org.moire.ultrasonic.util.Util
 import timber.log.Timber
@@ -611,11 +610,9 @@ open class RESTMusicService(
 
     @Throws(Exception::class)
     override fun getDownloadInputStream(
-        context: Context,
         song: MusicDirectory.Entry,
         offset: Long,
-        maxBitrate: Int,
-        task: CancellableTask
+        maxBitrate: Int
     ): Pair<InputStream, Boolean> {
         val songOffset = if (offset < 0) 0 else offset
 

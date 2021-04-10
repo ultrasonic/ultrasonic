@@ -377,8 +377,7 @@ public class DownloadFile
 				{
 					// Attempt partial HTTP GET, appending to the file if it exists.
 					Pair<InputStream, Boolean> response = musicService
-							.getDownloadInputStream(context, song, partialFile.length(), bitRate,
-									DownloadTask.this);
+							.getDownloadInputStream(song, partialFile.length(), bitRate);
 
 					if (response.getSecond())
 					{

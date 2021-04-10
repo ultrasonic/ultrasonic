@@ -321,9 +321,9 @@ public class CachedMusicService implements MusicService
 	}
 
 	@Override
-	public Pair<InputStream, Boolean> getDownloadInputStream(Context context, MusicDirectory.Entry song, long offset, int maxBitrate, CancellableTask task) throws Exception
+	public Pair<InputStream, Boolean> getDownloadInputStream(MusicDirectory.Entry song, long offset, int maxBitrate) throws Exception
 	{
-		return musicService.getDownloadInputStream(context, song, offset, maxBitrate, task);
+		return musicService.getDownloadInputStream(song, offset, maxBitrate);
 	}
 
 	@Override
