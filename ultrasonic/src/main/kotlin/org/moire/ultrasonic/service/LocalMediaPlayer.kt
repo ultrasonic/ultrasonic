@@ -755,7 +755,7 @@ class LocalMediaPlayer(
             }
 
             // Calculate roughly how many bytes BUFFER_LENGTH_SECONDS corresponds to.
-            val bitRate = downloadFile.bitRate
+            val bitRate = downloadFile.getBitRate()
             val byteCount = max(100000, bitRate * 1024L / 8L * bufferLength)
 
             // Find out how large the file should grow before resuming playback.

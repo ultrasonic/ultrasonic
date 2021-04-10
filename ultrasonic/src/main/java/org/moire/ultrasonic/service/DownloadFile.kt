@@ -16,505 +16,380 @@
 
  Copyright 2009 (C) Sindre Mehus
  */
-package org.moire.ultrasonic.service;
+package org.moire.ultrasonic.service
 
-import android.content.Context;
-import android.net.wifi.WifiManager;
-import android.os.PowerManager;
-import android.text.TextUtils;
-import timber.log.Timber;
-
-import org.jetbrains.annotations.NotNull;
-import org.moire.ultrasonic.domain.MusicDirectory;
-import org.moire.ultrasonic.util.CacheCleaner;
-import org.moire.ultrasonic.util.CancellableTask;
-import org.moire.ultrasonic.util.FileUtil;
-import org.moire.ultrasonic.util.Util;
-
-import java.io.File;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
-import java.io.RandomAccessFile;
-
-import kotlin.Lazy;
-import kotlin.Pair;
-
-import static android.content.Context.POWER_SERVICE;
-import static android.os.PowerManager.ON_AFTER_RELEASE;
-import static android.os.PowerManager.SCREEN_DIM_WAKE_LOCK;
-import static org.koin.java.KoinJavaComponent.inject;
+import android.content.Context
+import android.net.wifi.WifiManager.WifiLock
+import android.os.PowerManager
+import android.os.PowerManager.WakeLock
+import android.text.TextUtils
+import androidx.lifecycle.MutableLiveData
+import java.io.File
+import java.io.FileOutputStream
+import java.io.IOException
+import java.io.InputStream
+import java.io.OutputStream
+import java.io.RandomAccessFile
+import org.koin.java.KoinJavaComponent.inject
+import org.moire.ultrasonic.domain.MusicDirectory
+import org.moire.ultrasonic.service.MusicServiceFactory.getMusicService
+import org.moire.ultrasonic.util.CacheCleaner
+import org.moire.ultrasonic.util.CancellableTask
+import org.moire.ultrasonic.util.FileUtil
+import org.moire.ultrasonic.util.Util
+import timber.log.Timber
 
 /**
+ * This class represents a singe Song or Video that can be downloaded.
+ *
  * @author Sindre Mehus
  * @version $Id$
  */
-public class DownloadFile
-{
-	private final Context context;
-	private final MusicDirectory.Entry song;
-	private final File partialFile;
-	private final File completeFile;
-	private final File saveFile;
+class DownloadFile(
+    private val context: Context,
+    val song: MusicDirectory.Entry,
+    private val save: Boolean
+) {
+    val partialFile: File
+    val completeFile: File
+    private val saveFile: File = FileUtil.getSongFile(context, song)
+    private val mediaStoreService: MediaStoreService
+    private var downloadTask: CancellableTask? = null
+    var isFailed = false
 
-	private final MediaStoreService mediaStoreService;
-	private CancellableTask downloadTask;
-	private final boolean save;
-	private boolean failed;
-	private int bitRate;
-	private volatile boolean isPlaying;
-	private volatile boolean saveWhenDone;
-	private volatile boolean completeWhenDone;
+    private val desiredBitRate: Int = Util.getMaxBitRate(context)
 
-	private final Lazy<Downloader> downloader = inject(Downloader.class);
+    @Volatile
+    private var isPlaying = false
 
-	public DownloadFile(Context context, MusicDirectory.Entry song, boolean save)
-	{
-		super();
-		this.context = context;
-		this.song = song;
-		this.save = save;
+    @Volatile
+    private var saveWhenDone = false
 
-		saveFile = FileUtil.getSongFile(context, song);
-		bitRate = Util.getMaxBitRate(context);
-		partialFile = new File(saveFile.getParent(), String.format("%s.partial.%s", FileUtil.getBaseName(saveFile.getName()), FileUtil.getExtension(saveFile.getName())));
-		completeFile = new File(saveFile.getParent(), String.format("%s.complete.%s", FileUtil.getBaseName(saveFile.getName()), FileUtil.getExtension(saveFile.getName())));
-		mediaStoreService = new MediaStoreService(context);
-	}
+    @Volatile
+    private var completeWhenDone = false
 
-	public MusicDirectory.Entry getSong()
-	{
-		return song;
+    private val downloader = inject(Downloader::class.java)
+
+    val progress: MutableLiveData<Int> = MutableLiveData(0)
+
+    init {
+        partialFile = File(saveFile.parent, FileUtil.getPartialFile(saveFile.name))
+        completeFile = File(saveFile.parent, FileUtil.getCompleteFile(saveFile.name))
+        mediaStoreService = MediaStoreService(context)
 	}
 
 	/**
 	 * Returns the effective bit rate.
 	 */
-	public int getBitRate()
-	{
-		if (!partialFile.exists())
-		{
-			bitRate = Util.getMaxBitRate(context);
+    fun getBitRate(): Int {
+        return if (song.bitRate == null) desiredBitRate else song.bitRate!!
 		}
 
-		if (bitRate > 0)
-		{
-			return bitRate;
+    @Synchronized
+    fun download() {
+        FileUtil.createDirectoryForParent(saveFile)
+        isFailed = false
+        downloadTask = DownloadTask()
+        downloadTask!!.start()
 		}
 
-		return song.getBitRate() == null ? 160 : song.getBitRate();
+    @Synchronized
+    fun cancelDownload() {
+        if (downloadTask != null) {
+            downloadTask!!.cancel()
 	}
 
-	public synchronized void download()
-	{
-		FileUtil.createDirectoryForParent(saveFile);
-		failed = false;
-
-		if (!partialFile.exists())
-		{
-			bitRate = Util.getMaxBitRate(context);
 		}
 
-		downloadTask = new DownloadTask();
-		downloadTask.start();
+    fun getCompleteFile(): File {
+        if (saveFile.exists()) {
+            return saveFile
 	}
 
-	public synchronized void cancelDownload()
-	{
-		if (downloadTask != null)
-		{
-			downloadTask.cancel();
-		}
+        return if (completeFile.exists()) {
+            completeFile
+        } else saveFile
 	}
 
-	public File getCompleteFile()
-	{
-		if (saveFile.exists())
-		{
-			return saveFile;
-		}
-
-		if (completeFile.exists())
-		{
-			return completeFile;
-		}
-
-		return saveFile;
-	}
-
-	public File getCompleteOrPartialFile() {
-		if (isCompleteFileAvailable()) {
-			return getCompleteFile();
+    val completeOrPartialFile: File
+        get() = if (isCompleteFileAvailable) {
+            getCompleteFile()
 		} else {
-			return getPartialFile();
-		}
+            partialFile
 	}
 
-	public File getPartialFile()
-	{
-		return partialFile;
+    val isSaved: Boolean
+        get() = saveFile.exists()
+
+    @get:Synchronized
+    val isCompleteFileAvailable: Boolean
+        get() = saveFile.exists() || completeFile.exists()
+
+    @get:Synchronized
+    val isWorkDone: Boolean
+        get() = saveFile.exists() || completeFile.exists() && !save ||
+            saveWhenDone || completeWhenDone
+
+    @get:Synchronized
+    val isDownloading: Boolean
+        get() = downloadTask != null && downloadTask!!.isRunning
+
+    @get:Synchronized
+    val isDownloadCancelled: Boolean
+        get() = downloadTask != null && downloadTask!!.isCancelled
+
+    fun shouldSave(): Boolean {
+        return save
 	}
 
-	public boolean isSaved()
-	{
-		return saveFile.exists();
+    fun delete() {
+        cancelDownload()
+        Util.delete(partialFile)
+        Util.delete(completeFile)
+        Util.delete(saveFile)
+        mediaStoreService.deleteFromMediaStore(this)
 	}
 
-	public synchronized boolean isCompleteFileAvailable()
-	{
-		return saveFile.exists() || completeFile.exists();
-	}
-
-	public synchronized boolean isWorkDone()
-	{
-		return saveFile.exists() || (completeFile.exists() && !save) || saveWhenDone || completeWhenDone;
-	}
-
-	public synchronized boolean isDownloading()
-	{
-		return downloadTask != null && downloadTask.isRunning();
-	}
-
-	public synchronized boolean isDownloadCancelled()
-	{
-		return downloadTask != null && downloadTask.isCancelled();
-	}
-
-	public boolean shouldSave()
-	{
-		return save;
-	}
-
-	public boolean isFailed()
-	{
-		return failed;
-	}
-
-	public void delete()
-	{
-		cancelDownload();
-		Util.delete(partialFile);
-		Util.delete(completeFile);
-		Util.delete(saveFile);
-		mediaStoreService.deleteFromMediaStore(this);
-	}
-
-	public void unpin()
-	{
-		if (saveFile.exists())
-		{
+    fun unpin() {
+        if (saveFile.exists()) {
 			if (!saveFile.renameTo(completeFile)){
-				Timber.w("Renaming file failed. Original file: %s; Rename to: %s", saveFile.getName(), completeFile.getName());
+                Timber.w(
+                    "Renaming file failed. Original file: %s; Rename to: %s",
+                    saveFile.name, completeFile.name
+                )
 			}
 		}
 	}
 
-	public boolean cleanup()
-	{
-		boolean ok = true;
-
-		if (completeFile.exists() || saveFile.exists())
-		{
-			ok = Util.delete(partialFile);
+    fun cleanup(): Boolean {
+        var ok = true
+        if (completeFile.exists() || saveFile.exists()) {
+            ok = Util.delete(partialFile)
 		}
 
-		if (saveFile.exists())
-		{
-			ok &= Util.delete(completeFile);
+        if (saveFile.exists()) {
+            ok = ok and Util.delete(completeFile)
 		}
 
-		return ok;
+        return ok
 	}
 
 	// In support of LRU caching.
-	public void updateModificationDate()
-	{
-		updateModificationDate(saveFile);
-		updateModificationDate(partialFile);
-		updateModificationDate(completeFile);
+    fun updateModificationDate() {
+        updateModificationDate(saveFile)
+        updateModificationDate(partialFile)
+        updateModificationDate(completeFile)
 	}
 
-	private static void updateModificationDate(File file)
-	{
-		if (file.exists())
-		{
-			boolean ok = file.setLastModified(System.currentTimeMillis());
-
-			if (!ok)
-			{
-				Timber.i("Failed to set last-modified date on %s, trying alternate method", file);
-
-				try
-				{
-					// Try alternate method to update last modified date to current time
-					// 	Found at https://code.google.com/p/android/issues/detail?id=18624
-					RandomAccessFile raf = new RandomAccessFile(file, "rw");
-					long length = raf.length();
-					raf.setLength(length + 1);
-					raf.setLength(length);
-					raf.close();
-				}
-				catch (Exception e)
-				{
-					Timber.w("Failed to set last-modified date on %s", file);
-				}
-			}
-		}
+    fun setPlaying(isPlaying: Boolean) {
+        if (!isPlaying) doPendingRename()
+        this.isPlaying = isPlaying
 	}
 
-	public void setPlaying(boolean isPlaying)
-	{
-		try
-		{
-			if (saveWhenDone && !isPlaying)
-			{
-				Util.renameFile(completeFile, saveFile);
-				saveWhenDone = false;
+    // Do a pending rename after the song has stopped playing
+    private fun doPendingRename() {
+        try {
+            if (saveWhenDone) {
+                Util.renameFile(completeFile, saveFile)
+                saveWhenDone = false
+            } else if (completeWhenDone) {
+                if (save) {
+                    Util.renameFile(partialFile, saveFile)
+                    mediaStoreService.saveInMediaStore(this@DownloadFile)
+                } else {
+                    Util.renameFile(partialFile, completeFile)
 			}
-			else if (completeWhenDone && !isPlaying)
-			{
-				if (save)
-				{
-					Util.renameFile(partialFile, saveFile);
-					mediaStoreService.saveInMediaStore(DownloadFile.this);
+                completeWhenDone = false
 				}
-				else
-				{
-					Util.renameFile(partialFile, completeFile);
+        } catch (ex: IOException) {
+            Timber.w("Failed to rename file %s to %s", completeFile, saveFile)
 				}
 
-				completeWhenDone = false;
-			}
-		}
-		catch (IOException ex)
-		{
-			Timber.w("Failed to rename file %s to %s", completeFile, saveFile);
 		}
 
-		this.isPlaying = isPlaying;
+    override fun toString(): String {
+        return String.format("DownloadFile (%s)", song)
 	}
 
-	@NotNull
-	@Override
-	public String toString()
-	{
-		return String.format("DownloadFile (%s)", song);
-	}
+    private inner class DownloadTask : CancellableTask() {
+        override fun execute() {
+            var inputStream: InputStream? = null
+            var outputStream: FileOutputStream? = null
+            var wakeLock: WakeLock? = null
+            var wifiLock: WifiLock? = null
+            try {
+                wakeLock = acquireWakeLock(wakeLock)
+                wifiLock = Util.createWifiLock(context, toString())
+                wifiLock.acquire()
 
-	private class DownloadTask extends CancellableTask
-	{
-		@Override
-		public void execute()
-		{
-			InputStream in = null;
-			FileOutputStream out = null;
-			PowerManager.WakeLock wakeLock = null;
-			WifiManager.WifiLock wifiLock = null;
-
-			try
-			{
-				if (Util.isScreenLitOnDownload(context))
-				{
-					PowerManager pm = (PowerManager) context.getSystemService(POWER_SERVICE);
-					wakeLock = pm.newWakeLock(SCREEN_DIM_WAKE_LOCK | ON_AFTER_RELEASE, toString());
-					wakeLock.acquire(10*60*1000L /*10 minutes*/);
-					Timber.i("Acquired wake lock %s", wakeLock);
+                if (saveFile.exists()) {
+                    Timber.i("%s already exists. Skipping.", saveFile)
+                    return
 				}
 
-				wifiLock = Util.createWifiLock(context, toString());
-				wifiLock.acquire();
-
-				if (saveFile.exists())
-				{
-					Timber.i("%s already exists. Skipping.", saveFile);
-					return;
+                if (completeFile.exists()) {
+                    if (save) {
+                        if (isPlaying) {
+                            saveWhenDone = true
+                        } else {
+                            Util.renameFile(completeFile, saveFile)
 				}
-				if (completeFile.exists())
-				{
-					if (save)
-					{
-						if (isPlaying)
-						{
-							saveWhenDone = true;
+                    } else {
+                        Timber.i("%s already exists. Skipping.", completeFile)
 						}
-						else
-						{
-							Util.renameFile(completeFile, saveFile);
-						}
-					}
-					else
-					{
-						Timber.i("%s already exists. Skipping.", completeFile);
-					}
-					return;
+                    return
 				}
 
-				MusicService musicService = MusicServiceFactory.getMusicService(context);
+                val musicService = getMusicService(context)
 
 				// Some devices seem to throw error on partial file which doesn't exist
-				boolean compare;
+                val needsDownloading: Boolean
+                val duration = song.duration
+                var fileLength: Long = 0
 
-				Integer duration = song.getDuration();
-				long fileLength = 0;
-
-				if (!partialFile.exists())
-				{
-					fileLength = partialFile.length();
+                if (!partialFile.exists()) {
+                    fileLength = partialFile.length()
 				}
 
-				try
-				{
-					compare = (bitRate == 0) || (duration == null || duration == 0) || (fileLength == 0);
-					//(bitRate * song.getDuration() * 1000 / 8) > partialFile.length();
-				}
-				catch (Exception e)
-				{
-					compare = true;
-				}
+                needsDownloading = (
+                    desiredBitRate == 0 || duration == null ||
+                        duration == 0 || fileLength == 0L
+                    )
 
-				if (compare)
-				{
+                if (needsDownloading) {
 					// Attempt partial HTTP GET, appending to the file if it exists.
-					Pair<InputStream, Boolean> response = musicService
-							.getDownloadInputStream(song, partialFile.length(), bitRate);
+                    val (inStream, partial) = musicService
+                        .getDownloadInputStream(song, partialFile.length(), desiredBitRate)
 
-					if (response.getSecond())
-					{
-						Timber.i("Executed partial HTTP GET, skipping %d bytes", partialFile.length());
+                    inputStream = inStream
+
+                    if (partial) {
+                        Timber.i(
+                            "Executed partial HTTP GET, skipping %d bytes",
+                            partialFile.length()
+                        )
 					}
 
-					out = new FileOutputStream(partialFile, response.getSecond());
-					long n = copy(response.getFirst(), out);
-					Timber.i("Downloaded %d bytes to %s", n, partialFile);
-					out.flush();
-					out.close();
+                    outputStream = FileOutputStream(partialFile, partial)
 
-					if (isCancelled())
-					{
-						throw new Exception(String.format("Download of '%s' was cancelled", song));
+                    val len = inputStream.copyTo(outputStream) {
+                        totalBytesCopied ->
+                        setProgress(totalBytesCopied)
 					}
 
-					downloadAndSaveCoverArt(musicService);
+                    Timber.i("Downloaded %d bytes to %s", len, partialFile)
+
+                    inputStream.close()
+                    outputStream.flush()
+                    outputStream.close()
+
+                    if (isCancelled) {
+                        throw Exception(String.format("Download of '%s' was cancelled", song))
+                    }
+                    downloadAndSaveCoverArt(musicService)
 				}
 
-				if (isPlaying)
-				{
-					completeWhenDone = true;
+                if (isPlaying) {
+                    completeWhenDone = true
+                } else {
+                    if (save) {
+                        Util.renameFile(partialFile, saveFile)
+                        mediaStoreService.saveInMediaStore(this@DownloadFile)
+                    } else {
+                        Util.renameFile(partialFile, completeFile)
 				}
-				else
-				{
-					if (save)
-					{
-						Util.renameFile(partialFile, saveFile);
-						mediaStoreService.saveInMediaStore(DownloadFile.this);
 					}
-					else
-					{
-						Util.renameFile(partialFile, completeFile);
+            } catch (x: Exception) {
+                Util.close(outputStream)
+                Util.delete(completeFile)
+                Util.delete(saveFile)
+                if (!isCancelled) {
+                    isFailed = true
+                    Timber.w(x, "Failed to download '%s'.", song)
 					}
+            } finally {
+                Util.close(inputStream)
+                Util.close(outputStream)
+                if (wakeLock != null) {
+                    wakeLock.release()
+                    Timber.i("Released wake lock %s", wakeLock)
 				}
+                wifiLock?.release()
+                CacheCleaner(context).cleanSpace()
+                downloader.value.checkDownloads()
 			}
-			catch (Exception x)
-			{
-				Util.close(out);
-				Util.delete(completeFile);
-				Util.delete(saveFile);
-
-				if (!isCancelled())
-				{
-					failed = true;
-					Timber.w(x, "Failed to download '%s'.", song);
 				}
 
+        private fun acquireWakeLock(wakeLock: WakeLock?): WakeLock? {
+            var wakeLock1 = wakeLock
+            if (Util.isScreenLitOnDownload(context)) {
+                val pm = context.getSystemService(Context.POWER_SERVICE) as PowerManager
+                val flags = PowerManager.SCREEN_DIM_WAKE_LOCK or PowerManager.ON_AFTER_RELEASE
+                wakeLock1 = pm.newWakeLock(flags, toString())
+                wakeLock1.acquire(10 * 60 * 1000L /*10 minutes*/)
+                Timber.i("Acquired wake lock %s", wakeLock1)
 			}
-			finally
-			{
-				Util.close(in);
-				Util.close(out);
-				if (wakeLock != null)
-				{
-					wakeLock.release();
-					Timber.i("Released wake lock %s", wakeLock);
+            return wakeLock1
 				}
-				if (wifiLock != null)
-				{
-					wifiLock.release();
+        override fun toString(): String {
+            return String.format("DownloadTask (%s)", song)
 				}
 
-				new CacheCleaner(context).cleanSpace();
+        private fun downloadAndSaveCoverArt(musicService: MusicService) {
+            try {
+                if (!TextUtils.isEmpty(song.coverArt)) {
+                    val size = Util.getMinDisplayMetric(context)
+                    musicService.getCoverArt(context, song, size, true, true)
+			}
+            } catch (x: Exception) {
+                Timber.e(x, "Failed to get cover art.")
+		}
 
-				downloader.getValue().checkDownloads();
+		}
+
+        @Throws(IOException::class)
+        fun InputStream.copyTo(out: OutputStream, onCopy: (totalBytesCopied: Long) -> Any): Long {
+            var bytesCopied: Long = 0
+            val buffer = ByteArray(DEFAULT_BUFFER_SIZE)
+            var bytes = read(buffer)
+            while (!isCancelled && bytes >= 0) {
+                out.write(buffer, 0, bytes)
+                bytesCopied += bytes
+                onCopy(bytesCopied)
+                bytes = read(buffer)
+				}
+            return bytesCopied
 			}
 		}
 
-		@NotNull
-		@Override
-		public String toString()
-		{
-			return String.format("DownloadTask (%s)", song);
-		}
-
-		private void downloadAndSaveCoverArt(MusicService musicService)
-		{
-			try
-			{
-				if (!TextUtils.isEmpty(song.getCoverArt())) {
-					int size = Util.getMinDisplayMetric(context);
-					musicService.getCoverArt(context, song, size, true, true);
-				}
-			}
-			catch (Exception x)
-			{
-				Timber.e(x, "Failed to get cover art.");
-			}
-		}
-
-		private long copy(final InputStream in, OutputStream out) throws IOException
-		{
-			// Start a thread that will close the input stream if the task is
-			// cancelled, thus causing the copy() method to return.
-			new Thread()
-			{
-				@Override
-				public void run()
-				{
-					while (true)
-					{
-						Util.sleepQuietly(3000L);
-
-						if (isCancelled())
-						{
-							Util.close(in);
-							return;
+    private fun setProgress(totalBytesCopied: Long) {
+        if (song.size != null) {
+            progress.postValue((totalBytesCopied * 100 / song.size!!).toInt())
+        }
 						}
 
-						if (!isRunning())
-						{
-							return;
+    companion object {
+        private fun updateModificationDate(file: File) {
+            if (file.exists()) {
+                val ok = file.setLastModified(System.currentTimeMillis())
+                if (!ok) {
+                    Timber.i(
+                        "Failed to set last-modified date on %s, trying alternate method",
+                        file
+                    )
+                    try {
+                        // Try alternate method to update last modified date to current time
+                        // Found at https://code.google.com/p/android/issues/detail?id=18624
+                        val raf = RandomAccessFile(file, "rw")
+                        val length = raf.length()
+                        raf.setLength(length + 1)
+                        raf.setLength(length)
+                        raf.close()
+                    } catch (e: Exception) {
+                        Timber.w("Failed to set last-modified date on %s", file)
 						}
 					}
 				}
-			}.start();
-
-			byte[] buffer = new byte[1024 * 16];
-			long count = 0;
-			int n;
-			long lastLog = System.currentTimeMillis();
-
-			while (!isCancelled() && (n = in.read(buffer)) != -1)
-			{
-				out.write(buffer, 0, n);
-				count += n;
-
-				long now = System.currentTimeMillis();
-				if (now - lastLog > 3000L)
-				{  // Only every so often.
-					Timber.i("Downloaded %s of %s", Util.formatBytes(count), song);
-					lastLog = now;
-				}
-			}
-			return count;
 		}
 	}
 }
