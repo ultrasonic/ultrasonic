@@ -382,8 +382,6 @@
     <string name="settings.show_all_songs_by_artist">Zobrazit všechny skladby umělce</string>
     <string name="settings.show_all_songs_by_artist_summary">Přidat nový zápis v náhledu umělců pro přístup ke všem skladbám umělce</string>
     <string name="download.menu_show_artist">Zobrazit umělce</string>
-    <string name="settings.scan_media">Skenovat média po stažení</string>
-    <string name="settings.scan_media_summary">Automaticky skenovat médi po jejich stažení</string>
     <string name="settings.image_loader_concurrency">Počet vláken stahování obrázků</string>
     <string name="settings.image_loader_concurrency_1">1</string>
     <string name="settings.image_loader_concurrency_2">2</string>

@@ -384,8 +384,6 @@
     <string name="settings.show_all_songs_by_artist">Alle nummers van artiest tonen</string>
     <string name="settings.show_all_songs_by_artist_summary">Item toevoegen in artiestweergave om alle nummers van een artiest te bekijken</string>
     <string name="download.menu_show_artist">Artiest tonen</string>
-    <string name="settings.scan_media">Media scannen na downloaden</string>
-    <string name="settings.scan_media_summary">Media automatisch scannen na downloaden</string>
     <string name="settings.image_loader_concurrency">Aantal tegelijkertijd te laden afbeeldingen</string>
     <string name="settings.image_loader_concurrency_1">1</string>
     <string name="settings.image_loader_concurrency_2">2</string>

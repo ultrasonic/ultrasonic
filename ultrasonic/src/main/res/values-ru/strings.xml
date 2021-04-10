@@ -371,8 +371,6 @@
     <string name="settings.show_all_songs_by_artist">Показать все треки исполнителя</string>
     <string name="settings.show_all_songs_by_artist_summary">Добавить новую запись в представлении исполнителя, чтобы получить доступ ко всем песням для исполнителя</string>
     <string name="download.menu_show_artist">Показать исполнителей</string>
-    <string name="settings.scan_media">Сканировать носители после загрузки</string>
-    <string name="settings.scan_media_summary">Автомат</string>
     <string name="settings.image_loader_concurrency">Загрузчик совпадающих изображений</string>
     <string name="settings.image_loader_concurrency_1">1</string>
     <string name="settings.image_loader_concurrency_2">2</string>

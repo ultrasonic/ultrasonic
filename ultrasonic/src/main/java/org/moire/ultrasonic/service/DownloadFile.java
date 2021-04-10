@@ -409,20 +409,10 @@ public class DownloadFile
 					{
 						Util.renameFile(partialFile, saveFile);
 						mediaStoreService.saveInMediaStore(DownloadFile.this);
-
-						if (Util.getShouldScanMedia(context))
-						{
-							Util.scanMedia(context, saveFile);
-						}
 					}
 					else
 					{
 						Util.renameFile(partialFile, completeFile);
-
-						if (Util.getShouldScanMedia(context))
-						{
-							Util.scanMedia(context, completeFile);
-						}
 					}
 				}
 			}

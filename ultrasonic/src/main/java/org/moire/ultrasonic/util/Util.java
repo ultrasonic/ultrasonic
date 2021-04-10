@@ -1394,18 +1394,6 @@ public class Util
 		return preferences.getBoolean(Constants.PREFERENCES_KEY_SHOW_ALL_SONGS_BY_ARTIST, false);
 	}
 
-	public static boolean getShouldScanMedia(Context context)
-	{
-		SharedPreferences preferences = getPreferences(context);
-		return preferences.getBoolean(Constants.PREFERENCES_KEY_SCAN_MEDIA, false);
-	}
-
-	public static void scanMedia(Context context, File file)
-	{
-		Uri uri = Uri.fromFile(file);
-		Intent scanFileIntent = new Intent(Intent.ACTION_MEDIA_SCANNER_SCAN_FILE, uri);
-		context.sendBroadcast(scanFileIntent);
-	}
 
 	public static int getImageLoaderConcurrency(Context context)
 	{

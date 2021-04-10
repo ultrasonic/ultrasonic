@@ -379,8 +379,6 @@
     <string name="settings.show_all_songs_by_artist">Alle Titel nach Künstler sortieren</string>
     <string name="settings.show_all_songs_by_artist_summary">Einen neuen Eintrag in der Künstleransicht hinzufügen, um auf alle Lieder eines Künstlers zuzugreifen</string>
     <string name="download.menu_show_artist">Künstler zeigen</string>
-    <string name="settings.scan_media">Medien nach Download durchsuchen</string>
-    <string name="settings.scan_media_summary">Medien nach dem Herunterladen automatisch durchsuchen</string>
     <string name="settings.image_loader_concurrency">Paralleles laden von Bildern</string>
     <string name="settings.image_loader_concurrency_1">1</string>
     <string name="settings.image_loader_concurrency_2">2</string>

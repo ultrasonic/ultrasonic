@@ -118,12 +118,6 @@
             a:summary="@string/settings.clear_bookmark_summary"
             a:title="@string/settings.clear_bookmark"
             app:iconSpaceReserved="false"/>
-        <CheckBoxPreference
-            a:defaultValue="false"
-            a:key="scanMedia"
-            a:summary="@string/settings.scan_media_summary"
-            a:title="@string/settings.scan_media"
-            app:iconSpaceReserved="false"/>
         <ListPreference
             a:defaultValue="5000"
             a:entries="@array/bufferLengthNames"

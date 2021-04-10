@@ -384,8 +384,6 @@
     <string name="settings.show_all_songs_by_artist">Voir toutes les titres par artiste</string>
     <string name="settings.show_all_songs_by_artist_summary">Ajouter une nouvelle entrée de l\'affichage de l\'artiste pour accéder à toutes les titres pour un artiste</string>
     <string name="download.menu_show_artist">Afficher l\'artiste</string>
-    <string name="settings.scan_media">Scan Media After Download</string>
-    <string name="settings.scan_media_summary">Balayer automatiquement les médias après téléchargement</string>
     <string name="settings.image_loader_concurrency">Chargements d’images simultanés</string>
     <string name="settings.image_loader_concurrency_1">1</string>
     <string name="settings.image_loader_concurrency_2">2</string>

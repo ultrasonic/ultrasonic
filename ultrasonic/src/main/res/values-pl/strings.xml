@@ -379,8 +379,6 @@ ponieważ api Subsonic nie wspiera nowego sposobu autoryzacji dla użytkowników
     <string name="settings.show_all_songs_by_artist">Wyświetlaj wszystkie utwory artysty</string>
     <string name="settings.show_all_songs_by_artist_summary">Dodaje nową pozycję w widoku artysty z wszystkimi jego utworami</string>
     <string name="download.menu_show_artist">Wyświetlaj artystę</string>
-    <string name="settings.scan_media">Skanuj media po pobraniu</string>
-    <string name="settings.scan_media_summary">Automatycznie uruchamia skanowanie mediów po pobraniu</string>
     <string name="settings.image_loader_concurrency">Ilość jednocześnie ładowanych obrazów</string>
     <string name="settings.image_loader_concurrency_1">1</string>
     <string name="settings.image_loader_concurrency_2">2</string>

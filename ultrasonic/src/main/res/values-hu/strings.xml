@@ -383,8 +383,6 @@
     <string name="settings.show_all_songs_by_artist">Az előadó összes dalának megjelenítése</string>
     <string name="settings.show_all_songs_by_artist_summary">Új bejegyzés hozzáadása az előadóhoz, az előadó összes dalának eléréséhez.</string>
     <string name="download.menu_show_artist">Ugrás az előadóhoz</string>
-    <string name="settings.scan_media">Scan Media After Download</string>
-    <string name="settings.scan_media_summary">Automatically scan media after download</string>
     <string name="settings.image_loader_concurrency">Image Loader Concurrency</string>
     <string name="settings.image_loader_concurrency_1">1</string>
     <string name="settings.image_loader_concurrency_2">2</string>
