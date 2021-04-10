@@ -1,6 +1,8 @@
 package org.moire.ultrasonic.fragment
 
 import android.os.Bundle
+import android.os.Handler
+import android.os.Looper
 import android.view.ContextMenu
 import android.view.ContextMenu.ContextMenuInfo
 import android.view.LayoutInflater
@@ -16,6 +18,9 @@ import android.widget.ImageView
 import android.widget.ListView
 import android.widget.TextView
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.MutableLiveData
+import androidx.lifecycle.Observer
+import androidx.lifecycle.viewModelScope
 import androidx.navigation.Navigation
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout.OnRefreshListener
@@ -23,6 +28,9 @@ import java.security.SecureRandom
 import java.util.Collections
 import java.util.LinkedList
 import java.util.Random
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import org.koin.android.ext.android.inject
 import org.koin.android.viewmodel.ext.android.viewModel
 import org.moire.ultrasonic.R
@@ -30,8 +38,10 @@ import org.moire.ultrasonic.api.subsonic.models.AlbumListType
 import org.moire.ultrasonic.data.ActiveServerProvider
 import org.moire.ultrasonic.data.ActiveServerProvider.Companion.isOffline
 import org.moire.ultrasonic.domain.MusicDirectory
+import org.moire.ultrasonic.domain.MusicFolder
 import org.moire.ultrasonic.fragment.FragmentTitle.Companion.getTitle
 import org.moire.ultrasonic.fragment.FragmentTitle.Companion.setTitle
+import org.moire.ultrasonic.service.CommunicationErrorHandler
 import org.moire.ultrasonic.service.MediaPlayerController
 import org.moire.ultrasonic.service.MusicService
 import org.moire.ultrasonic.service.MusicServiceFactory
@@ -81,6 +91,7 @@ class SelectAlbumFragment : Fragment() {
     private var showHeader = true
     private var showSelectFolderHeader = false
     private val random: Random = SecureRandom()
+    private val musicFolders: MutableLiveData<List<MusicFolder>> = MutableLiveData()
 
     private val mediaPlayerController: MediaPlayerController by inject()
     private val videoPlayer: VideoPlayer by inject()
@@ -128,17 +139,24 @@ class SelectAlbumFragment : Fragment() {
 
         selectFolderHeader = SelectMusicFolderView(
             requireContext(), albumListView!!,
-            MusicServiceFactory.getMusicService(requireContext()).getMusicFolders(
-                false, requireContext()
-            ),
-            activeServerProvider.getActiveServer().musicFolderId,
-            { _, selectedFolderId ->
+            { selectedFolderId ->
                 if (!ActiveServerProvider.isOffline(context)) {
                     val currentSetting = activeServerProvider.getActiveServer()
                     currentSetting.musicFolderId = selectedFolderId
                     serverSettingsModel.updateItem(currentSetting)
                 }
                 this.updateDisplay(true)
+            }
+        )
+        musicFolders.observe(
+            viewLifecycleOwner,
+            Observer { changedFolders ->
+                if (changedFolders != null) {
+                    selectFolderHeader!!.setData(
+                        activeServerProvider.getActiveServer().musicFolderId,
+                        changedFolders
+                    )
+                }
             }
         )
 
@@ -294,6 +312,8 @@ class SelectAlbumFragment : Fragment() {
             Constants.INTENT_EXTRA_NAME_ALBUM_LIST_OFFSET, 0
         )
 
+        backgroundLoadMusicFolders(refresh)
+
         if (playlistId != null) {
             getPlaylist(playlistId, playlistName)
         } else if (podcastChannelId != null) {
@@ -319,6 +339,29 @@ class SelectAlbumFragment : Fragment() {
                 }
             } else {
                 getMusicDirectory(refresh, id, name, parentId)
+            }
+        }
+    }
+
+    private fun backgroundLoadMusicFolders(refresh: Boolean) {
+        serverSettingsModel.viewModelScope.launch {
+            refreshAlbumListView!!.isRefreshing = true
+            loadMusicFolders(refresh)
+            refreshAlbumListView!!.isRefreshing = false
+        }
+    }
+
+    private suspend fun loadMusicFolders(refresh: Boolean) {
+        withContext(Dispatchers.IO) {
+            if (!isOffline(context)) {
+                val musicService = MusicServiceFactory.getMusicService(requireContext())
+                try {
+                    musicFolders.postValue(musicService.getMusicFolders(refresh, context))
+                } catch (exception: Exception) {
+                    Handler(Looper.getMainLooper()).post {
+                        CommunicationErrorHandler.handleError(exception, requireContext())
+                    }
+                }
             }
         }
     }

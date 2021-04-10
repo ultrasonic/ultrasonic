@@ -114,7 +114,9 @@ open class RESTMusicService(
         refresh: Boolean,
         context: Context
     ): Indexes {
-        val cachedIndexes = fileStorage.load(INDEXES_STORAGE_NAME, getIndexesSerializer())
+        val indexName = INDEXES_STORAGE_NAME + (musicFolderId ?: "")
+
+        val cachedIndexes = fileStorage.load(indexName, getIndexesSerializer())
         if (cachedIndexes != null && !refresh) return cachedIndexes
 
         val response = responseChecker.callWithResponseCheck { api ->
@@ -122,7 +124,7 @@ open class RESTMusicService(
         }
 
         val indexes = response.body()!!.indexes.toDomainEntity()
-        fileStorage.store(INDEXES_STORAGE_NAME, indexes, getIndexesSerializer())
+        fileStorage.store(indexName, indexes, getIndexesSerializer())
         return indexes
     }
 
@@ -938,6 +940,7 @@ open class RESTMusicService(
     companion object {
         private const val MUSIC_FOLDER_STORAGE_NAME = "music_folder"
         private const val INDEXES_STORAGE_NAME = "indexes"
+        private const val INDEXES_FOLDER_STORAGE_NAME = "indexes_folder"
         private const val ARTISTS_STORAGE_NAME = "artists"
     }
 }

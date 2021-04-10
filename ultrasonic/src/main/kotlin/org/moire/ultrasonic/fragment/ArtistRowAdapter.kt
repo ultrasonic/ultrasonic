@@ -43,7 +43,6 @@ import org.moire.ultrasonic.view.SelectMusicFolderView
  */
 class ArtistRowAdapter(
     private var artistList: List<Artist>,
-    private var folderName: String,
     private var selectFolderHeader: SelectMusicFolderView?,
     val onArtistClick: (Artist) -> Unit,
     val onContextMenuClick: (MenuItem, Artist) -> Boolean,
@@ -55,14 +54,6 @@ class ArtistRowAdapter(
      */
     fun setData(data: List<Artist>) {
         artistList = data.sortedWith(compareBy(Collator.getInstance()) { t -> t.name })
-        notifyDataSetChanged()
-    }
-
-    /**
-     * Sets the name of the folder to be displayed n the Header (first) row
-     */
-    fun setFolderName(name: String) {
-        folderName = name
         notifyDataSetChanged()
     }
 

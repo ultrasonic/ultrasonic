@@ -16,9 +16,7 @@ import org.koin.android.viewmodel.ext.android.viewModel
 import org.moire.ultrasonic.R
 import org.moire.ultrasonic.data.ActiveServerProvider
 import org.moire.ultrasonic.domain.Artist
-import org.moire.ultrasonic.domain.MusicFolder
 import org.moire.ultrasonic.fragment.FragmentTitle.Companion.setTitle
-import org.moire.ultrasonic.service.MusicServiceFactory
 import org.moire.ultrasonic.subsonic.DownloadHandler
 import org.moire.ultrasonic.subsonic.ImageLoaderProvider
 import org.moire.ultrasonic.util.Constants
@@ -37,7 +35,6 @@ class SelectArtistFragment : Fragment() {
 
     private var refreshArtistListView: SwipeRefreshLayout? = null
     private var artistListView: RecyclerView? = null
-    private var musicFolders: List<MusicFolder>? = null
     private lateinit var viewManager: RecyclerView.LayoutManager
     private lateinit var viewAdapter: ArtistRowAdapter
     private var selectFolderHeader: SelectMusicFolderView? = null
@@ -67,17 +64,13 @@ class SelectArtistFragment : Fragment() {
         ) {
             selectFolderHeader = SelectMusicFolderView(
                 requireContext(), view as ViewGroup,
-                MusicServiceFactory.getMusicService(requireContext()).getMusicFolders(
-                    false, requireContext()
-                ),
-                activeServerProvider.getActiveServer().musicFolderId,
-                { musicFolderName, selectedFolderId ->
+                { selectedFolderId ->
                     if (!ActiveServerProvider.isOffline(context)) {
                         val currentSetting = activeServerProvider.getActiveServer()
                         currentSetting.musicFolderId = selectedFolderId
                         serverSettingsModel.updateItem(currentSetting)
                     }
-                    viewAdapter.setFolderName(musicFolderName)
+                    viewAdapter.notifyDataSetChanged()
                     artistListModel.refresh(refreshArtistListView!!)
                 }
             )
@@ -96,8 +89,6 @@ class SelectArtistFragment : Fragment() {
             setTitle(this, title)
         }
 
-        musicFolders = null
-
         val refresh = arguments?.getBoolean(Constants.INTENT_EXTRA_NAME_REFRESH) ?: false
 
         artistListModel.getMusicFolders()
@@ -105,8 +96,11 @@ class SelectArtistFragment : Fragment() {
                 viewLifecycleOwner,
                 Observer { changedFolders ->
                     if (changedFolders != null) {
-                        musicFolders = changedFolders
-                        viewAdapter.setFolderName(getMusicFolderName(changedFolders))
+                        viewAdapter.notifyDataSetChanged()
+                        selectFolderHeader!!.setData(
+                            activeServerProvider.getActiveServer().musicFolderId,
+                            changedFolders
+                        )
                     }
                 }
             )
@@ -119,7 +113,6 @@ class SelectArtistFragment : Fragment() {
         viewManager = LinearLayoutManager(this.context)
         viewAdapter = ArtistRowAdapter(
             artists.value ?: listOf(),
-            getText(R.string.select_artist_all_folders).toString(),
             selectFolderHeader,
             { artist -> onItemClick(artist) },
             { menuItem, artist -> onArtistMenuItemSelected(menuItem, artist) },
@@ -132,18 +125,6 @@ class SelectArtistFragment : Fragment() {
             adapter = viewAdapter
         }
         super.onViewCreated(view, savedInstanceState)
-    }
-
-    private fun getMusicFolderName(musicFolders: List<MusicFolder>): String {
-        val musicFolderId = activeServerProvider.getActiveServer().musicFolderId
-        if (musicFolderId != null && musicFolderId != "") {
-            for ((id, name) in musicFolders) {
-                if (id == musicFolderId) {
-                    return name
-                }
-            }
-        }
-        return getText(R.string.select_artist_all_folders).toString()
     }
 
     private fun onItemClick(artist: Artist) {

@@ -19,19 +19,26 @@ import org.moire.ultrasonic.domain.MusicFolder
 class SelectMusicFolderView(
     private val context: Context,
     root: ViewGroup,
-    private val musicFolders: List<MusicFolder>,
-    private var selectedFolderId: String?,
-    private val onUpdate: (String, String?) -> Unit
+    private val onUpdate: (String?) -> Unit
 ) : RecyclerView.ViewHolder(
     LayoutInflater.from(context).inflate(
         R.layout.select_folder_header, root, false
     )
 ) {
+    private var musicFolders: List<MusicFolder> = mutableListOf<MusicFolder>()
+    private var selectedFolderId: String? = null
     private val folderName: TextView = itemView.findViewById(R.id.select_folder_name)
     private val layout: LinearLayout = itemView.findViewById(R.id.select_folder_header)
     private val MENU_GROUP_MUSIC_FOLDER = 10
 
     init {
+        folderName.text = context.getString(R.string.select_artist_all_folders)
+        layout.setOnClickListener { onFolderClick() }
+    }
+
+    fun setData(selectedId: String?, folders: List<MusicFolder>) {
+        selectedFolderId = selectedId
+        musicFolders = folders
         if (selectedFolderId != null) {
             for ((id, name) in musicFolders) {
                 if (id == selectedFolderId) {
@@ -42,7 +49,6 @@ class SelectMusicFolderView(
         } else {
             folderName.text = context.getString(R.string.select_artist_all_folders)
         }
-        layout.setOnClickListener { onFolderClick() }
     }
 
     private fun onFolderClick() {
@@ -76,7 +82,7 @@ class SelectMusicFolderView(
 
         menuItem.isChecked = true
         folderName.text = musicFolderName
-        onUpdate(musicFolderName, selectedFolderId)
+        onUpdate(selectedFolderId)
 
         return true
     }
