@@ -14,6 +14,12 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.WeakHashMap;
 
+/**
+ * A View that is periodically refreshed
+ * @deprecated
+ * Use LiveData to ensure that the content is up-to-date
+ **/
+@Deprecated
 public class UpdateView extends LinearLayout
 {
 	private static final WeakHashMap<UpdateView, ?> INSTANCES = new WeakHashMap<UpdateView, Object>();
