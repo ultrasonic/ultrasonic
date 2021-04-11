@@ -803,7 +803,7 @@ class SelectAlbumFragment : Fragment() {
     private fun getAlbumList(albumListType: String, albumListTitle: Int, size: Int, offset: Int) {
 
         showHeader = false
-        showSelectFolderHeader = !isOffline(context) &&
+        showSelectFolderHeader = !isOffline(context) && !Util.getShouldUseId3Tags(context) &&
             (
                 (albumListType == AlbumListType.SORTED_BY_NAME.toString()) ||
                     (albumListType == AlbumListType.SORTED_BY_ARTIST.toString())
