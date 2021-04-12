@@ -10,22 +10,20 @@ import android.content.Intent;
 import android.graphics.Bitmap;
 import android.os.Build;
 import android.os.IBinder;
-import timber.log.Timber;
-import android.view.View;
-import android.widget.RemoteViews;
+import android.support.v4.media.MediaMetadataCompat;
+import android.support.v4.media.session.MediaSessionCompat;
+import android.support.v4.media.session.PlaybackStateCompat;
+import android.view.KeyEvent;
 
 import androidx.annotation.Nullable;
 import androidx.core.app.NotificationCompat;
 import androidx.core.app.NotificationManagerCompat;
 
-import org.koin.java.KoinJavaComponent;
 import org.moire.ultrasonic.R;
 import org.moire.ultrasonic.activity.NavigationActivity;
 import org.moire.ultrasonic.domain.MusicDirectory;
 import org.moire.ultrasonic.domain.PlayerState;
 import org.moire.ultrasonic.domain.RepeatMode;
-import org.moire.ultrasonic.featureflags.Feature;
-import org.moire.ultrasonic.featureflags.FeatureStorage;
 import org.moire.ultrasonic.provider.UltrasonicAppWidgetProvider4X1;
 import org.moire.ultrasonic.provider.UltrasonicAppWidgetProvider4X2;
 import org.moire.ultrasonic.provider.UltrasonicAppWidgetProvider4X3;
@@ -37,7 +35,10 @@ import org.moire.ultrasonic.util.ShufflePlayBuffer;
 import org.moire.ultrasonic.util.SimpleServiceBinder;
 import org.moire.ultrasonic.util.Util;
 
+import java.util.ArrayList;
+
 import kotlin.Lazy;
+import timber.log.Timber;
 
 import static org.koin.java.KoinJavaComponent.inject;
 import static org.moire.ultrasonic.domain.PlayerState.COMPLETED;
@@ -70,10 +71,14 @@ public class MediaPlayerService extends Service
     private final Lazy<Downloader> downloaderLazy = inject(Downloader.class);
     private final Lazy<LocalMediaPlayer> localMediaPlayerLazy = inject(LocalMediaPlayer.class);
     private final Lazy<NowPlayingEventDistributor> nowPlayingEventDistributor = inject(NowPlayingEventDistributor.class);
+
     private LocalMediaPlayer localMediaPlayer;
     private Downloader downloader;
     private ShufflePlayBuffer shufflePlayBuffer;
     private DownloadQueueSerializer downloadQueueSerializer;
+
+    private MediaSessionCompat mediaSession;
+    private MediaSessionCompat.Token mediaSessionToken;
 
     private boolean isInForeground = false;
     private NotificationCompat.Builder notificationBuilder;
@@ -143,6 +148,9 @@ public class MediaPlayerService extends Service
         shufflePlayBuffer = shufflePlayBufferLazy.getValue();
         downloadQueueSerializer = downloadQueueSerializerLazy.getValue();
 
+        initMediaSessions();
+
+
         downloader.onCreate();
         shufflePlayBuffer.onCreate();
 
@@ -150,6 +158,7 @@ public class MediaPlayerService extends Service
         setupOnCurrentPlayingChangedHandler();
         setupOnPlayerStateChangedHandler();
         setupOnSongCompletedHandler();
+
         localMediaPlayer.onPrepared = new Runnable() {
             @Override
             public void run() {
@@ -174,10 +183,9 @@ public class MediaPlayerService extends Service
             manager.createNotificationChannel(channel);
         }
 
-        // We should use a single notification builder, otherwise the notification may not be updated
-        notificationBuilder = new NotificationCompat.Builder(this, NOTIFICATION_CHANNEL_ID);
         // Update notification early. It is better to show an empty one temporarily than waiting too long and letting Android kill the app
         updateNotification(IDLE, null);
+
         instance = this;
 
         Timber.i("MediaPlayerService created");
@@ -201,6 +209,7 @@ public class MediaPlayerService extends Service
             localMediaPlayer.release();
             downloader.stop();
             shufflePlayBuffer.onDestroy();
+            mediaSession.release();
         } catch (Throwable ignored) {
         }
 
@@ -475,6 +484,9 @@ public class MediaPlayerService extends Service
         localMediaPlayer.onPlayerStateChanged = new BiConsumer<PlayerState, DownloadFile>() {
             @Override
             public void accept(PlayerState playerState, DownloadFile currentPlaying) {
+                // Notify MediaSession
+                updateMediaSession(currentPlaying, playerState);
+
                 if (playerState == PAUSED)
                 {
                     downloadQueueSerializer.serializeDownloadQueue(downloader.downloadList, downloader.getCurrentPlayingIndex(), getPlayerPosition());
@@ -597,6 +609,43 @@ public class MediaPlayerService extends Service
         }
     }
 
+    private void updateMediaSession(DownloadFile currentPlaying, PlayerState playerState) {
+        // Set Metadata
+        MediaMetadataCompat.Builder metadata = new MediaMetadataCompat.Builder();
+        Context context = getApplicationContext();
+
+        if (currentPlaying != null) {
+            try {
+                MusicDirectory.Entry song = currentPlaying.getSong();
+
+                Bitmap cover = FileUtil.getAlbumArtBitmap(context, song,
+                        Util.getMinDisplayMetric(context), true
+                );
+
+                metadata.putString(MediaMetadataCompat.METADATA_KEY_ARTIST, song.getArtist());
+                metadata.putString(MediaMetadataCompat.METADATA_KEY_ALBUM_ARTIST, song.getArtist());
+                metadata.putString(MediaMetadataCompat.METADATA_KEY_ALBUM, song.getAlbum());
+                metadata.putString(MediaMetadataCompat.METADATA_KEY_TITLE, song.getTitle());
+                metadata.putBitmap(MediaMetadataCompat.METADATA_KEY_ALBUM_ART, cover);
+            } catch (Exception e) {
+                Timber.e(e, "Error setting the metadata");
+            }
+        }
+
+        // Save the metadata
+        mediaSession.setMetadata(metadata.build());
+
+        // Create playback State
+        PlaybackStateCompat.Builder playbackState = new PlaybackStateCompat.Builder();
+        int state = (playerState == STARTED) ? PlaybackStateCompat.STATE_PLAYING : PlaybackStateCompat.STATE_PAUSED;
+
+        // If we set the playback position correctly, we can get a nice seek bar :)
+        playbackState.setState(state, PlaybackStateCompat.PLAYBACK_POSITION_UNKNOWN, 1.0F);
+
+        // Save the playback state
+        mediaSession.setPlaybackState(playbackState.build());
+    }
+
     public void updateNotification(PlayerState playerState, DownloadFile currentPlaying)
     {
         if (Util.isNotificationEnabled(this)) {
@@ -604,15 +653,13 @@ public class MediaPlayerService extends Service
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
                     NotificationManager notificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
                     notificationManager.notify(NOTIFICATION_ID, buildForegroundNotification(playerState, currentPlaying));
-                }
-                else {
+                } else {
                     final NotificationManagerCompat notificationManager =
                             NotificationManagerCompat.from(this);
                     notificationManager.notify(NOTIFICATION_ID, buildForegroundNotification(playerState, currentPlaying));
                 }
                 Timber.w("--- Updated notification");
-            }
-            else {
+            } else {
                 startForeground(NOTIFICATION_ID, buildForegroundNotification(playerState, currentPlaying));
                 isInForeground = true;
                 Timber.w("--- Created Foreground notification");
@@ -620,84 +667,187 @@ public class MediaPlayerService extends Service
         }
     }
 
-    @SuppressWarnings("IconColors")
+
+    /**
+     * This method builds a notification, reusing the Notification Builder if possible
+     */
     private Notification buildForegroundNotification(PlayerState playerState, DownloadFile currentPlaying) {
-        notificationBuilder.setSmallIcon(R.drawable.ic_stat_ultrasonic);
+        // Init
+        Context context = getApplicationContext();
 
-        notificationBuilder.setAutoCancel(false);
-        notificationBuilder.setOngoing(true);
-        notificationBuilder.setOnlyAlertOnce(true);
-        notificationBuilder.setWhen(System.currentTimeMillis());
-        notificationBuilder.setVisibility(NotificationCompat.VISIBILITY_PUBLIC);
-        notificationBuilder.setPriority(NotificationCompat.PRIORITY_LOW);
+        // We should use a single notification builder, otherwise the notification may not be updated
+        if (notificationBuilder == null) {
+            notificationBuilder = new NotificationCompat.Builder(this, NOTIFICATION_CHANNEL_ID);
 
-        RemoteViews contentView = new RemoteViews(this.getPackageName(), R.layout.notification);
-        Util.linkButtons(this, contentView, false);
-        RemoteViews bigView = new RemoteViews(this.getPackageName(), R.layout.notification_large);
-        Util.linkButtons(this, bigView, false);
+            // Set some values that never change
+            notificationBuilder.setSmallIcon(R.drawable.ic_stat_ultrasonic);
+            notificationBuilder.setAutoCancel(false);
+            notificationBuilder.setOngoing(true);
+            notificationBuilder.setOnlyAlertOnce(true);
+            notificationBuilder.setWhen(0);
+            notificationBuilder.setVisibility(NotificationCompat.VISIBILITY_PUBLIC);
+            notificationBuilder.setPriority(NotificationCompat.PRIORITY_LOW);
+            notificationBuilder.setVisibility(NotificationCompat.VISIBILITY_PUBLIC);
+            notificationBuilder.setColor(NotificationCompat.COLOR_DEFAULT);
 
-        notificationBuilder.setContent(contentView);
-
-        Intent notificationIntent = new Intent(this, NavigationActivity.class)
-            .addFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
-        notificationIntent.putExtra(Constants.INTENT_EXTRA_NAME_SHOW_PLAYER, true);
-        notificationBuilder.setContentIntent(PendingIntent.getActivity(this, 0, notificationIntent, PendingIntent.FLAG_UPDATE_CURRENT));
-
-        if (playerState == PlayerState.PAUSED || playerState == PlayerState.IDLE) {
-            contentView.setImageViewResource(R.id.control_play, R.drawable.media_start_normal_dark);
-            bigView.setImageViewResource(R.id.control_play, R.drawable.media_start_normal_dark);
-        } else if (playerState == PlayerState.STARTED) {
-            contentView.setImageViewResource(R.id.control_play, R.drawable.media_pause_normal_dark);
-            bigView.setImageViewResource(R.id.control_play, R.drawable.media_pause_normal_dark);
+            // Add content intent (when user taps on notification)
+            notificationBuilder.setContentIntent(getPendingIntentForContent());
         }
 
+        // Set song title, artist and cover if possible
         if (currentPlaying != null) {
-            final MusicDirectory.Entry song = currentPlaying.getSong();
-            final String title = song.getTitle();
-            final String text = song.getArtist();
-            final String album = song.getAlbum();
-            final int rating = song.getUserRating() == null ? 0 : song.getUserRating();
-            final int imageSize = Util.getNotificationImageSize(this);
-
-            try {
-                final Bitmap nowPlayingImage = FileUtil.getAlbumArtBitmap(this, currentPlaying.getSong(), imageSize, true);
-                if (nowPlayingImage == null) {
-                    contentView.setImageViewResource(R.id.notification_image, R.drawable.unknown_album);
-                    bigView.setImageViewResource(R.id.notification_image, R.drawable.unknown_album);
-                } else {
-                    contentView.setImageViewBitmap(R.id.notification_image, nowPlayingImage);
-                    bigView.setImageViewBitmap(R.id.notification_image, nowPlayingImage);
-                }
-            } catch (Exception x) {
-                Timber.w(x, "Failed to get notification cover art");
-                contentView.setImageViewResource(R.id.notification_image, R.drawable.unknown_album);
-                bigView.setImageViewResource(R.id.notification_image, R.drawable.unknown_album);
-            }
-
-            contentView.setTextViewText(R.id.trackname, title);
-            bigView.setTextViewText(R.id.trackname, title);
-            contentView.setTextViewText(R.id.artist, text);
-            bigView.setTextViewText(R.id.artist, text);
-            contentView.setTextViewText(R.id.album, album);
-            bigView.setTextViewText(R.id.album, album);
-
-            boolean useFiveStarRating = KoinJavaComponent.get(FeatureStorage.class).isFeatureEnabled(Feature.FIVE_STAR_RATING);
-            if (!useFiveStarRating)
-                bigView.setViewVisibility(R.id.notification_rating, View.INVISIBLE);
-            else {
-                bigView.setImageViewResource(R.id.notification_five_star_1, rating > 0 ? R.drawable.ic_star_full_dark : R.drawable.ic_star_hollow_dark);
-                bigView.setImageViewResource(R.id.notification_five_star_2, rating > 1 ? R.drawable.ic_star_full_dark : R.drawable.ic_star_hollow_dark);
-                bigView.setImageViewResource(R.id.notification_five_star_3, rating > 2 ? R.drawable.ic_star_full_dark : R.drawable.ic_star_hollow_dark);
-                bigView.setImageViewResource(R.id.notification_five_star_4, rating > 3 ? R.drawable.ic_star_full_dark : R.drawable.ic_star_hollow_dark);
-                bigView.setImageViewResource(R.id.notification_five_star_5, rating > 4 ? R.drawable.ic_star_full_dark : R.drawable.ic_star_hollow_dark);
-            }
+            MusicDirectory.Entry song = currentPlaying.getSong();
+            int iconSize = (int) (256 * context.getResources().getDisplayMetrics().density);
+            Bitmap bitmap = FileUtil.getAlbumArtBitmap(context, song, iconSize, true);
+            notificationBuilder.setContentTitle(song.getTitle());
+            notificationBuilder.setContentText(song.getArtist());
+            notificationBuilder.setLargeIcon(bitmap);
         }
 
-        Notification notification = notificationBuilder.build();
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
-            notification.bigContentView = bigView;
+        // Use the Media Style, to enable native Android support for playback notification
+        androidx.media.app.NotificationCompat.MediaStyle style = new androidx.media.app.NotificationCompat.MediaStyle();
+        style.setMediaSession(mediaSessionToken);
+
+        // Clear old actions
+        notificationBuilder.clearActions();
+
+        // Add actions
+        int[] compactActions = addActions(context, notificationBuilder, playerState);
+        style.setShowActionsInCompactView(compactActions);
+        notificationBuilder.setStyle(style);
+
+        return notificationBuilder.build();
+    }
+
+
+    private int[] addActions(Context context, NotificationCompat.Builder notificationBuilder, PlayerState playerState) {
+        ArrayList<Integer> compactActionList = new ArrayList<>();
+        int numActions = 0; // we start and 0 and then increment by 1 for each call to generateAction
+
+
+        // Next
+        notificationBuilder.addAction(generateAction(context, numActions));
+        compactActionList.add(numActions);
+        numActions++;
+
+        // Play/Pause button
+        notificationBuilder.addAction(generatePlayPauseAction(context, numActions, playerState));
+        compactActionList.add(numActions);
+        numActions++;
+
+        // Previous
+        notificationBuilder.addAction(generateAction(context, numActions));
+        compactActionList.add(numActions);
+
+        int[] actionArray = new int[compactActionList.size()];
+
+        for (int i = 0; i < actionArray.length; i++) {
+            actionArray[i] = compactActionList.get(i);
         }
 
-        return notification;
+        return actionArray;
+        //notificationBuilder.setShowActionsInCompactView())
+    }
+
+
+    private NotificationCompat.Action generateAction(Context context, int requestCode) {
+        int keycode;
+        int icon;
+        String label;
+
+        // If you change the order here, also update the requestCode in updatePlayPauseAction()!
+        switch (requestCode) {
+            case 0:
+                keycode = KeyEvent.KEYCODE_MEDIA_PREVIOUS;
+                label = getString(R.string.common_play_previous);
+                icon = R.drawable.media_backward_normal_dark;
+                break;
+            case 1:
+                // Is handled in generatePlayPauseAction()
+                return null;
+            case 2:
+                keycode = KeyEvent.KEYCODE_MEDIA_NEXT;
+                label = getString(R.string.common_play_next);
+                icon = R.drawable.media_forward_normal_dark;
+                break;
+            default:
+                return null;
+        }
+
+        PendingIntent pendingIntent = getPendingIntentForMediaAction(context, keycode, requestCode);
+
+        return new NotificationCompat.Action.Builder(icon, label, pendingIntent).build();
+    }
+
+    private NotificationCompat.Action generatePlayPauseAction(Context context, int requestCode, PlayerState playerState) {
+
+        boolean isPlaying = (playerState == STARTED);
+        PendingIntent pendingIntent = getPendingIntentForMediaAction(context, KeyEvent.KEYCODE_MEDIA_PLAY_PAUSE, requestCode);
+
+        String label;
+        int icon;
+
+        if (isPlaying) {
+            label = getString(R.string.common_pause);
+            icon = R.drawable.media_pause_normal_dark;
+        } else {
+            label = getString(R.string.common_play);
+            icon = R.drawable.media_start_normal_dark;
+        }
+
+        return new NotificationCompat.Action.Builder(icon, label, pendingIntent).build();
+    }
+
+
+    private PendingIntent getPendingIntentForContent() {
+        Intent notificationIntent = new Intent(this, NavigationActivity.class)
+                .addFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
+        notificationIntent.putExtra(Constants.INTENT_EXTRA_NAME_SHOW_PLAYER, true);
+        return PendingIntent.getActivity(this, 0, notificationIntent, PendingIntent.FLAG_UPDATE_CURRENT);
+    }
+
+    private PendingIntent getPendingIntentForMediaAction(Context context, int keycode, int requestCode) {
+        Intent intent = new Intent(Constants.CMD_PROCESS_KEYCODE);
+        intent.setPackage(context.getPackageName());
+        intent.putExtra(Intent.EXTRA_KEY_EVENT, new KeyEvent(KeyEvent.ACTION_DOWN, keycode));
+
+        return PendingIntent.getBroadcast(context, requestCode, intent, PendingIntent.FLAG_UPDATE_CURRENT);
+    }
+
+    private void initMediaSessions() {
+
+        mediaSession = new MediaSessionCompat(getApplicationContext(), "UltrasonicService");
+        mediaSessionToken = mediaSession.getSessionToken();
+        //mediaController = new MediaControllerCompat(getApplicationContext(), mediaSessionToken);
+
+        mediaSession.setCallback(new MediaSessionCompat.Callback() {
+                                     @Override
+                                     public void onPlay() {
+                                         super.onPlay();
+                                         play();
+                                         Timber.w("Media Session Callback: onPlay");
+                                     }
+
+                                     @Override
+                                     public void onPause() {
+                                         super.onPause();
+                                         pause();
+                                         Timber.w("Media Session Callback: onPause");
+                                     }
+
+                                     @Override
+                                     public void onStop() {
+                                         super.onStop();
+                                         stop();
+                                         Timber.w("Media Session Callback: onStop");
+                                     }
+
+                                     @Override
+                                     public void onSeekTo(long pos) {
+                                         super.onSeekTo(pos);
+                                     }
+
+                                 }
+        );
     }
 }
