@@ -5,7 +5,6 @@ import android.view.LayoutInflater
 import android.view.MenuItem
 import android.view.View
 import android.view.ViewGroup
-import android.widget.PopupMenu
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.navigation.fragment.findNavController
@@ -17,12 +16,12 @@ import org.koin.android.viewmodel.ext.android.viewModel
 import org.moire.ultrasonic.R
 import org.moire.ultrasonic.data.ActiveServerProvider
 import org.moire.ultrasonic.domain.Artist
-import org.moire.ultrasonic.domain.MusicFolder
 import org.moire.ultrasonic.fragment.FragmentTitle.Companion.setTitle
 import org.moire.ultrasonic.subsonic.DownloadHandler
 import org.moire.ultrasonic.subsonic.ImageLoaderProvider
 import org.moire.ultrasonic.util.Constants
 import org.moire.ultrasonic.util.Util
+import org.moire.ultrasonic.view.SelectMusicFolderView
 
 /**
  * Displays the list of Artists from the media library
@@ -36,9 +35,9 @@ class SelectArtistFragment : Fragment() {
 
     private var refreshArtistListView: SwipeRefreshLayout? = null
     private var artistListView: RecyclerView? = null
-    private var musicFolders: List<MusicFolder>? = null
     private lateinit var viewManager: RecyclerView.LayoutManager
     private lateinit var viewAdapter: ArtistRowAdapter
+    private var selectFolderHeader: SelectMusicFolderView? = null
 
     @Override
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -60,10 +59,22 @@ class SelectArtistFragment : Fragment() {
             artistListModel.refresh(refreshArtistListView!!)
         }
 
-        val shouldShowHeader = (
-            !ActiveServerProvider.isOffline(this.context) &&
-                !Util.getShouldUseId3Tags(this.context)
+        if (!ActiveServerProvider.isOffline(this.context) &&
+            !Util.getShouldUseId3Tags(this.context)
+        ) {
+            selectFolderHeader = SelectMusicFolderView(
+                requireContext(), view as ViewGroup,
+                { selectedFolderId ->
+                    if (!ActiveServerProvider.isOffline(context)) {
+                        val currentSetting = activeServerProvider.getActiveServer()
+                        currentSetting.musicFolderId = selectedFolderId
+                        serverSettingsModel.updateItem(currentSetting)
+                    }
+                    viewAdapter.notifyDataSetChanged()
+                    artistListModel.refresh(refreshArtistListView!!)
+                }
             )
+        }
 
         val title = arguments?.getString(Constants.INTENT_EXTRA_NAME_ALBUM_LIST_TITLE)
 
@@ -78,8 +89,6 @@ class SelectArtistFragment : Fragment() {
             setTitle(this, title)
         }
 
-        musicFolders = null
-
         val refresh = arguments?.getBoolean(Constants.INTENT_EXTRA_NAME_REFRESH) ?: false
 
         artistListModel.getMusicFolders()
@@ -87,8 +96,11 @@ class SelectArtistFragment : Fragment() {
                 viewLifecycleOwner,
                 Observer { changedFolders ->
                     if (changedFolders != null) {
-                        musicFolders = changedFolders
-                        viewAdapter.setFolderName(getMusicFolderName(changedFolders))
+                        viewAdapter.notifyDataSetChanged()
+                        selectFolderHeader!!.setData(
+                            activeServerProvider.getActiveServer().musicFolderId,
+                            changedFolders
+                        )
                     }
                 }
             )
@@ -101,11 +113,9 @@ class SelectArtistFragment : Fragment() {
         viewManager = LinearLayoutManager(this.context)
         viewAdapter = ArtistRowAdapter(
             artists.value ?: listOf(),
-            getText(R.string.select_artist_all_folders).toString(),
-            shouldShowHeader,
+            selectFolderHeader,
             { artist -> onItemClick(artist) },
             { menuItem, artist -> onArtistMenuItemSelected(menuItem, artist) },
-            { onFolderClick(it) },
             imageLoaderProvider.getImageLoader()
         )
 
@@ -117,18 +127,6 @@ class SelectArtistFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
     }
 
-    private fun getMusicFolderName(musicFolders: List<MusicFolder>): String {
-        val musicFolderId = activeServerProvider.getActiveServer().musicFolderId
-        if (musicFolderId != null && musicFolderId != "") {
-            for ((id, name) in musicFolders) {
-                if (id == musicFolderId) {
-                    return name
-                }
-            }
-        }
-        return getText(R.string.select_artist_all_folders).toString()
-    }
-
     private fun onItemClick(artist: Artist) {
         val bundle = Bundle()
         bundle.putString(Constants.INTENT_EXTRA_NAME_ID, artist.id)
@@ -136,31 +134,6 @@ class SelectArtistFragment : Fragment() {
         bundle.putString(Constants.INTENT_EXTRA_NAME_PARENT_ID, artist.id)
         bundle.putBoolean(Constants.INTENT_EXTRA_NAME_ARTIST, true)
         findNavController().navigate(R.id.selectArtistToSelectAlbum, bundle)
-    }
-
-    private fun onFolderClick(view: View) {
-        val popup = PopupMenu(this.context, view)
-
-        val musicFolderId = activeServerProvider.getActiveServer().musicFolderId
-        var menuItem = popup.menu.add(
-            MENU_GROUP_MUSIC_FOLDER, -1, 0, R.string.select_artist_all_folders
-        )
-        if (musicFolderId == null || musicFolderId.isEmpty()) {
-            menuItem.isChecked = true
-        }
-        if (musicFolders != null) {
-            for (i in musicFolders!!.indices) {
-                val (id, name) = musicFolders!![i]
-                menuItem = popup.menu.add(MENU_GROUP_MUSIC_FOLDER, i, i + 1, name)
-                if (id == musicFolderId) {
-                    menuItem.isChecked = true
-                }
-            }
-        }
-        popup.menu.setGroupCheckable(MENU_GROUP_MUSIC_FOLDER, true, true)
-
-        popup.setOnMenuItemClickListener { item -> onFolderMenuItemSelected(item) }
-        popup.show()
     }
 
     private fun onArtistMenuItemSelected(menuItem: MenuItem, artist: Artist): Boolean {
@@ -245,24 +218,5 @@ class SelectArtistFragment : Fragment() {
                 )
         }
         return true
-    }
-
-    private fun onFolderMenuItemSelected(menuItem: MenuItem): Boolean {
-        val selectedFolder = if (menuItem.itemId == -1) null else musicFolders!![menuItem.itemId]
-        val musicFolderId = selectedFolder?.id
-        val musicFolderName = selectedFolder?.name
-            ?: getString(R.string.select_artist_all_folders)
-        if (!ActiveServerProvider.isOffline(this.context)) {
-            val currentSetting = activeServerProvider.getActiveServer()
-            currentSetting.musicFolderId = musicFolderId
-            serverSettingsModel.updateItem(currentSetting)
-        }
-        viewAdapter.setFolderName(musicFolderName)
-        artistListModel.refresh(refreshArtistListView!!)
-        return true
-    }
-
-    companion object {
-        private const val MENU_GROUP_MUSIC_FOLDER = 10
     }
 }

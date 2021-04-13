@@ -24,7 +24,6 @@ import android.view.MenuItem
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
-import android.widget.LinearLayout
 import android.widget.PopupMenu
 import android.widget.RelativeLayout
 import android.widget.TextView
@@ -37,17 +36,16 @@ import org.moire.ultrasonic.domain.Artist
 import org.moire.ultrasonic.domain.MusicDirectory
 import org.moire.ultrasonic.util.ImageLoader
 import org.moire.ultrasonic.util.Util
+import org.moire.ultrasonic.view.SelectMusicFolderView
 
 /**
  * Creates a Row in a RecyclerView which contains the details of an Artist
  */
 class ArtistRowAdapter(
     private var artistList: List<Artist>,
-    private var folderName: String,
-    private var shouldShowHeader: Boolean,
+    private var selectFolderHeader: SelectMusicFolderView?,
     val onArtistClick: (Artist) -> Unit,
     val onContextMenuClick: (MenuItem, Artist) -> Boolean,
-    val onFolderClick: (view: View) -> Unit,
     private val imageLoader: ImageLoader
 ) : RecyclerView.Adapter<RecyclerView.ViewHolder>(), SectionedAdapter {
 
@@ -56,14 +54,6 @@ class ArtistRowAdapter(
      */
     fun setData(data: List<Artist>) {
         artistList = data.sortedWith(compareBy(Collator.getInstance()) { t -> t.name })
-        notifyDataSetChanged()
-    }
-
-    /**
-     * Sets the name of the folder to be displayed n the Header (first) row
-     */
-    fun setFolderName(name: String) {
-        folderName = name
         notifyDataSetChanged()
     }
 
@@ -80,16 +70,6 @@ class ArtistRowAdapter(
         var coverArtId: String? = null
     }
 
-    /**
-     * Holds the view properties of the Header row
-     */
-    class HeaderViewHolder(
-        itemView: View
-    ) : RecyclerView.ViewHolder(itemView) {
-        var folderName: TextView = itemView.findViewById(R.id.select_artist_folder_2)
-        var layout: LinearLayout = itemView.findViewById(R.id.select_artist_folder)
-    }
-
     override fun onCreateViewHolder(
         parent: ViewGroup,
         viewType: Int
@@ -99,9 +79,7 @@ class ArtistRowAdapter(
                 .inflate(R.layout.artist_list_item, parent, false)
             return ArtistViewHolder(row)
         }
-        val header = LayoutInflater.from(parent.context)
-            .inflate(R.layout.select_artist_header, parent, false)
-        return HeaderViewHolder(header)
+        return selectFolderHeader!!
     }
 
     override fun onViewRecycled(holder: RecyclerView.ViewHolder) {
@@ -113,7 +91,7 @@ class ArtistRowAdapter(
 
     override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
         if (holder is ArtistViewHolder) {
-            val listPosition = if (shouldShowHeader) position - 1 else position
+            val listPosition = if (selectFolderHeader != null) position - 1 else position
             holder.textView.text = artistList[listPosition].name
             holder.section.text = getSectionForArtist(listPosition)
             holder.layout.setOnClickListener { onArtistClick(artistList[listPosition]) }
@@ -130,20 +108,20 @@ class ArtistRowAdapter(
             } else {
                 holder.coverArt.visibility = View.GONE
             }
-        } else if (holder is HeaderViewHolder) {
-            holder.folderName.text = folderName
-            holder.layout.setOnClickListener { onFolderClick(holder.layout) }
         }
     }
 
-    override fun getItemCount() = if (shouldShowHeader) artistList.size + 1 else artistList.size
+    override fun getItemCount() = if (selectFolderHeader != null)
+        artistList.size + 1
+    else
+        artistList.size
 
     override fun getItemViewType(position: Int): Int {
-        return if (position == 0 && shouldShowHeader) TYPE_HEADER else TYPE_ITEM
+        return if (position == 0 && selectFolderHeader != null) TYPE_HEADER else TYPE_ITEM
     }
 
     override fun getSectionName(position: Int): String {
-        var listPosition = if (shouldShowHeader) position - 1 else position
+        var listPosition = if (selectFolderHeader != null) position - 1 else position
 
         // Show the first artist's initial in the popup when the list is
         // scrolled up to the "Select Folder" row

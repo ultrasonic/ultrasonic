@@ -702,7 +702,7 @@ public class OfflineMusicService implements MusicService
 	}
 
 	@Override
-	public MusicDirectory getAlbumList(String type, int size, int offset, Context context) throws Exception
+	public MusicDirectory getAlbumList(String type, int size, int offset, String musicFolderId, Context context) throws Exception
 	{
 		throw new OfflineException("Album lists not available in offline mode");
 	}
@@ -809,7 +809,7 @@ public class OfflineMusicService implements MusicService
 	}
 
 	@Override
-	public MusicDirectory getAlbumList2(String type, int size, int offset, Context context) {
+	public MusicDirectory getAlbumList2(String type, int size, int offset, String musicFolderId, Context context) {
 		Timber.w("OfflineMusicService.getAlbumList2 was called but it isn't available");
 		return null;
 	}
