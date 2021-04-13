@@ -138,7 +138,7 @@ class SelectAlbumFragment : Fragment() {
         )
 
         selectFolderHeader = SelectMusicFolderView(
-            requireContext(), albumListView!!,
+            requireContext(), view as ViewGroup,
             { selectedFolderId ->
                 if (!ActiveServerProvider.isOffline(context)) {
                     val currentSetting = activeServerProvider.getActiveServer()
