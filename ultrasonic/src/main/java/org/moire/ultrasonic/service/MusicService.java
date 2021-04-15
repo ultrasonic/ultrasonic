@@ -90,9 +90,9 @@ public interface MusicService
 
 	void scrobble(String id, boolean submission, Context context) throws Exception;
 
-	MusicDirectory getAlbumList(String type, int size, int offset, Context context) throws Exception;
+	MusicDirectory getAlbumList(String type, int size, int offset, String musicFolderId, Context context) throws Exception;
 
-	MusicDirectory getAlbumList2(String type, int size, int offset, Context context) throws Exception;
+	MusicDirectory getAlbumList2(String type, int size, int offset, String musicFolderId, Context context) throws Exception;
 
 	MusicDirectory getRandomSongs(int size, Context context) throws Exception;
 
