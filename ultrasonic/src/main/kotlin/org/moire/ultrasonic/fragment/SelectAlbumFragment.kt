@@ -74,7 +74,7 @@ class SelectAlbumFragment : Fragment() {
     private var header: View? = null
     private var selectFolderHeader: SelectMusicFolderView? = null
     private var albumButtons: View? = null
-    private var emptyView: View? = null
+    private var emptyView: TextView? = null
     private var selectButton: ImageView? = null
     private var playNowButton: ImageView? = null
     private var playNextButton: ImageView? = null
@@ -217,7 +217,7 @@ class SelectAlbumFragment : Fragment() {
         downloadButton = view.findViewById(R.id.select_album_download)
         deleteButton = view.findViewById(R.id.select_album_delete)
         moreButton = view.findViewById(R.id.select_album_more)
-        emptyView = view.findViewById(R.id.select_album_empty)
+        emptyView = TextView(requireContext())
 
         selectButton!!.setOnClickListener(
             View.OnClickListener
@@ -1118,7 +1118,12 @@ class SelectAlbumFragment : Fragment() {
             playAllButtonVisible = !(isAlbumList || entries.isEmpty()) && !allVideos
             shareButtonVisible = !isOffline(context) && songCount > 0
 
-            emptyView!!.visibility = if (entries.isEmpty()) View.VISIBLE else View.GONE
+            albumListView!!.removeHeaderView(emptyView!!)
+            if (entries.isEmpty()) {
+                emptyView!!.text = "No Media Found"
+                emptyView!!.setPadding(10, 10, 10, 10)
+                albumListView!!.addHeaderView(emptyView, null, false)
+            }
 
             if (playAllButton != null) {
                 playAllButton!!.isVisible = playAllButtonVisible
