@@ -1118,12 +1118,11 @@ class SelectAlbumFragment : Fragment() {
             playAllButtonVisible = !(isAlbumList || entries.isEmpty()) && !allVideos
             shareButtonVisible = !isOffline(context) && songCount > 0
 
+            albumListView!!.removeHeaderView(emptyView!!)
             if (entries.isEmpty()) {
                 emptyView!!.text = "No Media Found"
                 emptyView!!.setPadding(10, 10, 10, 10)
                 albumListView!!.addHeaderView(emptyView, null, false)
-            } else {
-                albumListView!!.removeHeaderView(emptyView!!)
             }
 
             if (playAllButton != null) {
