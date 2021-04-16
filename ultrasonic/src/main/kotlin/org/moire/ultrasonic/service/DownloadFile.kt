@@ -351,26 +351,25 @@ class DownloadFile(
         }
     }
 
-    companion object {
-        private fun updateModificationDate(file: File) {
-            if (file.exists()) {
-                val ok = file.setLastModified(System.currentTimeMillis())
-                if (!ok) {
-                    Timber.i(
-                        "Failed to set last-modified date on %s, trying alternate method",
-                        file
-                    )
-                    try {
-                        // Try alternate method to update last modified date to current time
-                        // Found at https://code.google.com/p/android/issues/detail?id=18624
-                        val raf = RandomAccessFile(file, "rw")
-                        val length = raf.length()
-                        raf.setLength(length + 1)
-                        raf.setLength(length)
-                        raf.close()
-                    } catch (e: Exception) {
-                        Timber.w("Failed to set last-modified date on %s", file)
-                    }
+    private fun updateModificationDate(file: File) {
+        if (file.exists()) {
+            val ok = file.setLastModified(System.currentTimeMillis())
+            if (!ok) {
+                Timber.i(
+                    "Failed to set last-modified date on %s, trying alternate method",
+                    file
+                )
+                try {
+                    // Try alternate method to update last modified date to current time
+                    // Found at https://code.google.com/p/android/issues/detail?id=18624
+                    // According to the bug, this was fixed in Android 8.0 (API 26)
+                    val raf = RandomAccessFile(file, "rw")
+                    val length = raf.length()
+                    raf.setLength(length + 1)
+                    raf.setLength(length)
+                    raf.close()
+                } catch (e: Exception) {
+                    Timber.w("Failed to set last-modified date on %s", file)
                 }
             }
         }
