@@ -758,7 +758,7 @@ public class MediaPlayerService extends Service
             case 0:
                 keycode = KeyEvent.KEYCODE_MEDIA_PREVIOUS;
                 label = getString(R.string.common_play_previous);
-                icon = R.drawable.media_backward_normal_dark;
+                icon = R.drawable.media_backward_medium_dark;
                 break;
             case 1:
                 // Is handled in generatePlayPauseAction()
@@ -766,7 +766,7 @@ public class MediaPlayerService extends Service
             case 2:
                 keycode = KeyEvent.KEYCODE_MEDIA_NEXT;
                 label = getString(R.string.common_play_next);
-                icon = R.drawable.media_forward_normal_dark;
+                icon = R.drawable.media_forward_medium_dark;
                 break;
             default:
                 return null;
@@ -787,10 +787,10 @@ public class MediaPlayerService extends Service
 
         if (isPlaying) {
             label = getString(R.string.common_pause);
-            icon = R.drawable.media_pause_normal_dark;
+            icon = R.drawable.media_pause_large_dark;
         } else {
             label = getString(R.string.common_play);
-            icon = R.drawable.media_start_normal_dark;
+            icon = R.drawable.media_start_large_dark;
         }
 
         return new NotificationCompat.Action.Builder(icon, label, pendingIntent).build();
