@@ -384,8 +384,6 @@
     <string name="settings.show_all_songs_by_artist">Mostrar Todas as Músicas por Artista</string>
     <string name="settings.show_all_songs_by_artist_summary">Adicionar nova entrada em artista para acessar todas as músicas do artista</string>
     <string name="download.menu_show_artist">Mostrar Artista</string>
-    <string name="settings.scan_media">Escanear Música no Download</string>
-    <string name="settings.scan_media_summary">Automaticamente escaneia música após o download</string>
     <string name="settings.image_loader_concurrency">Concorrência ao Carregar Imagens</string>
     <string name="settings.image_loader_concurrency_1">1</string>
     <string name="settings.image_loader_concurrency_2">2</string>
