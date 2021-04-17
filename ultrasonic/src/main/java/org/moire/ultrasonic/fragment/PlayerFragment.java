@@ -1377,11 +1377,9 @@ public class PlayerFragment extends Fragment implements GestureDetector.OnGestur
                     case DOWNLOADING:
                         final long bytes = currentPlaying != null ? currentPlaying.getPartialFile().length() : 0;
                         String downloadStatus = getResources().getString(R.string.download_playerstate_downloading, Util.formatLocalizedBytes(bytes, getContext()));
-                        Timber.d("Player set title");
                         FragmentTitle.Companion.setTitle(PlayerFragment.this, downloadStatus);
                         break;
                     case PREPARING:
-                        Timber.d("Player set title");
                         FragmentTitle.Companion.setTitle(PlayerFragment.this, R.string.download_playerstate_buffering);
                         break;
                     case STARTED:
@@ -1389,17 +1387,14 @@ public class PlayerFragment extends Fragment implements GestureDetector.OnGestur
 
                         if (mediaPlayerController != null && mediaPlayerController.isShufflePlayEnabled())
                         {
-                            Timber.d("Player set title");
                             FragmentTitle.Companion.setTitle(PlayerFragment.this, R.string.download_playerstate_playing_shuffle);
                         }
                         else
                         {
-                            Timber.d("Player set title");
                             FragmentTitle.Companion.setTitle(PlayerFragment.this, R.string.common_appname);
                         }
                         break;
                     default:
-                        Timber.d("Player set title");
                         FragmentTitle.Companion.setTitle(PlayerFragment.this, R.string.common_appname);
                         break;
                     case IDLE:
