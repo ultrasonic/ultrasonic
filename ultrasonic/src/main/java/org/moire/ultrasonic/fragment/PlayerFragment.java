@@ -1375,8 +1375,7 @@ public class PlayerFragment extends Fragment implements GestureDetector.OnGestur
                 switch (playerState)
                 {
                     case DOWNLOADING:
-                        final long bytes = currentPlaying != null ? currentPlaying.getPartialFile().length() : 0;
-                        String downloadStatus = getResources().getString(R.string.download_playerstate_downloading, Util.formatLocalizedBytes(bytes, getContext()));
+                        String downloadStatus = getResources().getString(R.string.download_playerstate_downloading, Util.formatPercentage(currentPlaying.getProgress().getValue()));
                         FragmentTitle.Companion.setTitle(PlayerFragment.this, downloadStatus);
                         break;
                     case PREPARING:
