@@ -536,7 +536,7 @@ public class MediaPlayerService extends Service
                 {
                     final MusicDirectory.Entry song = currentPlaying.getSong();
 
-                    if (song != null && song.getBookmarkPosition() > 0 && Util.getShouldClearBookmark(MediaPlayerService.this))
+                    if (song.getBookmarkPosition() > 0 && Util.getShouldClearBookmark(MediaPlayerService.this))
                     {
                         MusicService musicService = MusicServiceFactory.getMusicService(MediaPlayerService.this);
                         try
