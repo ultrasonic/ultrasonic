@@ -194,7 +194,7 @@ public class StreamProxy implements Runnable
 					while (isRunning && !client.isClosed())
 					{
 						// See if there's more to send
-						File file = downloadFile.isCompleteFileAvailable() ? downloadFile.getCompleteFile() : downloadFile.getPartialFile();
+						File file = downloadFile.isCompleteFileAvailable() ? downloadFile.getCompleteOrSaveFile() : downloadFile.getPartialFile();
 						int cbSentThisBatch = 0;
 
 						if (file.exists())

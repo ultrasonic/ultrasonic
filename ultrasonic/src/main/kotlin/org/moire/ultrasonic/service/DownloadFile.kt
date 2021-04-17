@@ -100,19 +100,16 @@ class DownloadFile(
         }
     }
 
-    fun getCompleteFile(): File {
-        if (saveFile.exists()) {
-            return saveFile
-        }
-
-        return if (completeFile.exists()) {
+    val completeOrSaveFile: File
+        get() = if (saveFile.exists()) {
+            saveFile
+        } else {
             completeFile
-        } else saveFile
-    }
+        }
 
     val completeOrPartialFile: File
         get() = if (isCompleteFileAvailable) {
-            getCompleteFile()
+            completeOrSaveFile
         } else {
             partialFile
         }

@@ -229,7 +229,7 @@ public class CacheCleaner
 		for (DownloadFile downloadFile : downloader.getValue().getDownloads())
 		{
 			filesToNotDelete.add(downloadFile.getPartialFile());
-			filesToNotDelete.add(downloadFile.getCompleteFile());
+			filesToNotDelete.add(downloadFile.getCompleteOrSaveFile());
 		}
 
 		filesToNotDelete.add(FileUtil.getMusicDirectory(context));
