@@ -300,7 +300,6 @@ public class MediaPlayerService extends Service
                 {
                     nowPlayingEventDistributor.getValue().raiseHideNowPlayingEvent();
                     stopForeground(true);
-                    localMediaPlayer.clearRemoteControl();
                     isInForeground = false;
                     stopIfIdle();
                 }
@@ -520,7 +519,6 @@ public class MediaPlayerService extends Service
                 {
                     nowPlayingEventDistributor.getValue().raiseHideNowPlayingEvent();
                     stopForeground(true);
-                    localMediaPlayer.clearRemoteControl();
                     isInForeground = false;
                     stopIfIdle();
                 }
