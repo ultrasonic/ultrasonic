@@ -438,7 +438,8 @@ class LocalMediaPlayer(
         try {
             val file = downloadFile.completeOrPartialFile
 
-            if (nextMediaPlayer != null) {
+            // Release the media player if it is not our active player
+            if (nextMediaPlayer != null && nextMediaPlayer != mediaPlayer) {
                 nextMediaPlayer!!.setOnCompletionListener(null)
                 nextMediaPlayer!!.release()
                 nextMediaPlayer = null
