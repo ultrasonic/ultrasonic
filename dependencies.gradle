@@ -5,7 +5,8 @@ ext.versions = [
         gradle               : '6.5',
 
         navigation           : "2.3.2",
-        androidTools         : "4.0.0",
+        gradlePlugin         : "4.1.2",
+        androidxcore         : "1.5.0-rc01",
         ktlint               : "0.37.1",
         ktlintGradle         : "9.2.1",
         detekt               : "1.0.0.RC6-4",
@@ -44,7 +45,7 @@ ext.versions = [
 ]
 
 ext.gradlePlugins = [
-        androidTools      : "com.android.tools.build:gradle:$versions.androidTools",
+        gradle            : "com.android.tools.build:gradle:$versions.gradlePlugin",
         kotlin            : "org.jetbrains.kotlin:kotlin-gradle-plugin:$versions.kotlin",
         ktlintGradle      : "org.jlleitschuh.gradle:ktlint-gradle:$versions.ktlintGradle",
         detekt            : "gradle.plugin.io.gitlab.arturbosch.detekt:detekt-gradle-plugin:$versions.detekt",
@@ -52,6 +53,7 @@ ext.gradlePlugins = [
 ]
 
 ext.androidSupport = [
+        core                 : "androidx.core:core-ktx:$versions.androidxcore",
         support               : "androidx.legacy:legacy-support-v4:$versions.androidLegacySupport",
         design                : "com.google.android.material:material:$versions.androidSupportDesign",
         annotations           : "com.android.support:support-annotations:$versions.androidSupport",

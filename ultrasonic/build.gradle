@@ -71,6 +71,7 @@ dependencies {
     implementation project(':core:subsonic-api-image-loader')
     implementation project(':core:cache')
 
+    implementation androidSupport.core
     implementation androidSupport.support
     implementation androidSupport.design
     implementation androidSupport.multidex
