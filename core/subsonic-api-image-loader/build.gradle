@@ -1,8 +1,8 @@
 apply from: bootstrap.androidModule
 
 android {
-    libraryVariants.all {
-        generateBuildConfig.enabled = true
+    buildFeatures {
+        buildConfig = true
     }
 }
 
