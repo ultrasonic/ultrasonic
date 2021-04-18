@@ -549,6 +549,28 @@ public class FileUtil
 		return index == -1 ? name : name.substring(0, index);
 	}
 
+	/**
+	 * Returns the file name of a .partial file of the given file.
+	 *
+	 * @param name The filename in question.
+	 * @return The .partial file name
+	 */
+	public static String getPartialFile(String name)
+	{
+		return String.format("%s.partial.%s", FileUtil.getBaseName(name), FileUtil.getExtension(name));
+	}
+
+	/**
+	 * Returns the file name of a .complete file of the given file.
+	 *
+	 * @param name The filename in question.
+	 * @return The .complete file name
+	 */
+	public static String getCompleteFile(String name)
+	{
+		return String.format("%s.complete.%s", FileUtil.getBaseName(name), FileUtil.getExtension(name));
+	}
+
 	public static <T extends Serializable> boolean serialize(Context context, T obj, String fileName)
 	{
 		File file = new File(context.getCacheDir(), fileName);

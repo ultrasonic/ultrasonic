@@ -15,6 +15,13 @@
     <string name="button_bar.chat">Chat</string>
     <string name="button_bar.home">Ultrasonic Main</string>
     <string name="button_bar.now_playing">Now Playing</string>
+    <string name="buttons.play">Play</string>
+    <string name="buttons.pause">Pause</string>
+    <string name="buttons.repeat">Repeat</string>
+    <string name="buttons.shuffle">Shuffle</string>
+    <string name="buttons.stop">Stop</string>
+    <string name="buttons.next">Next</string>
+    <string name="buttons.previous">Previous</string>
     <string name="podcasts.label">Podcast</string>
     <string name="podcasts_channels.empty">No podcasts channels registered</string>
     <string name="button_bar.podcasts">Podcast</string>

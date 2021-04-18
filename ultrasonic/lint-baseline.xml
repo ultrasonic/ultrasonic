@@ -321,28 +321,6 @@
     </issue>
 
     <issue
-        id="MissingDefaultResource"
-        message="The layout &quot;download&quot; in layout-land has no declaration in the base `layout` folder; this can lead to crashes when the resource is queried in a configuration that does not match this qualifier"
-        errorLine1="&lt;LinearLayout xmlns:a=&quot;http://schemas.android.com/apk/res/android&quot;"
-        errorLine2=" ~~~~~~~~~~~~">
-        <location
-            file="src/main/res/layout-land/download.xml"
-            line="2"
-            column="2"/>
-    </issue>
-
-    <issue
-        id="MissingDefaultResource"
-        message="The layout &quot;download&quot; in layout-port has no declaration in the base `layout` folder; this can lead to crashes when the resource is queried in a configuration that does not match this qualifier"
-        errorLine1="&lt;LinearLayout xmlns:a=&quot;http://schemas.android.com/apk/res/android&quot;"
-        errorLine2=" ~~~~~~~~~~~~">
-        <location
-            file="src/main/res/layout-port/download.xml"
-            line="2"
-            column="2"/>
-    </issue>
-
-    <issue
         id="SdCardPath"
         message="Do not hardcode &quot;/sdcard/&quot;; use `Environment.getExternalStorageDirectory().getPath()` instead"
         errorLine1="            &quot;/storage/sdcard0/external_sdcard&quot;, &quot;/mnt/extsdcard&quot;, &quot;/mnt/sdcard/external_sd&quot;,"
@@ -2428,61 +2406,6 @@
             file="src/main/res/layout/main_buttons.xml"
             line="10"
             column="4"/>
-    </issue>
-
-    <issue
-        id="ContentDescription"
-        message="Missing `contentDescription` attribute on image"
-        errorLine1="&lt;ImageView"
-        errorLine2=" ~~~~~~~~~">
-        <location
-            file="src/main/res/layout/media_buttons.xml"
-            line="12"
-            column="2"/>
-    </issue>
-
-    <issue
-        id="ContentDescription"
-        message="Missing `contentDescription` attribute on image"
-        errorLine1="    &lt;ImageView"
-        errorLine2="     ~~~~~~~~~">
-        <location
-            file="src/main/res/layout/media_buttons.xml"
-            line="32"
-            column="6"/>
-    </issue>
-
-    <issue
-        id="ContentDescription"
-        message="Missing `contentDescription` attribute on image"
-        errorLine1="    &lt;ImageView"
-        errorLine2="     ~~~~~~~~~">
-        <location
-            file="src/main/res/layout/media_buttons.xml"
-            line="42"
-            column="6"/>
-    </issue>
-
-    <issue
-        id="ContentDescription"
-        message="Missing `contentDescription` attribute on image"
-        errorLine1="    &lt;ImageView"
-        errorLine2="     ~~~~~~~~~">
-        <location
-            file="src/main/res/layout/media_buttons.xml"
-            line="52"
-            column="6"/>
-    </issue>
-
-    <issue
-        id="ContentDescription"
-        message="Missing `contentDescription` attribute on image"
-        errorLine1="    &lt;ImageView"
-        errorLine2="     ~~~~~~~~~">
-        <location
-            file="src/main/res/layout/media_buttons.xml"
-            line="72"
-            column="6"/>
     </issue>
 
     <issue

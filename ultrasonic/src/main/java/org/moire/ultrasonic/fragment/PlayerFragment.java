@@ -145,7 +145,7 @@ public class PlayerFragment extends Fragment implements GestureDetector.OnGestur
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        return inflater.inflate(R.layout.download, container, false);
+        return inflater.inflate(R.layout.current_playing, container, false);
     }
 
     @Override
@@ -168,27 +168,27 @@ public class PlayerFragment extends Fragment implements GestureDetector.OnGestur
         swipeVelocity = swipeDistance;
         gestureScanner = new GestureDetector(getContext(), this);
 
-        playlistFlipper = view.findViewById(R.id.download_playlist_flipper);
-        emptyTextView = view.findViewById(R.id.download_empty);
-        songTitleTextView = view.findViewById(R.id.download_song_title);
-        albumTextView = view.findViewById(R.id.download_album);
-        artistTextView = view.findViewById(R.id.download_artist);
-        albumArtImageView = view.findViewById(R.id.download_album_art_image);
-        positionTextView = view.findViewById(R.id.download_position);
-        downloadTrackTextView = view.findViewById(R.id.download_track);
-        downloadTotalDurationTextView = view.findViewById(R.id.download_total_duration);
-        durationTextView = view.findViewById(R.id.download_duration);
-        progressBar = view.findViewById(R.id.download_progress_bar);
-        playlistView = view.findViewById(R.id.download_list);
-        final AutoRepeatButton previousButton = view.findViewById(R.id.download_previous);
-        final AutoRepeatButton nextButton = view.findViewById(R.id.download_next);
-        pauseButton = view.findViewById(R.id.download_pause);
-        stopButton = view.findViewById(R.id.download_stop);
-        startButton = view.findViewById(R.id.download_start);
-        final View shuffleButton = view.findViewById(R.id.download_shuffle);
-        repeatButton = view.findViewById(R.id.download_repeat);
+        playlistFlipper = view.findViewById(R.id.current_playing_playlist_flipper);
+        emptyTextView = view.findViewById(R.id.playlist_empty);
+        songTitleTextView = view.findViewById(R.id.current_playing_song);
+        albumTextView = view.findViewById(R.id.current_playing_album);
+        artistTextView = view.findViewById(R.id.current_playing_artist);
+        albumArtImageView = view.findViewById(R.id.current_playing_album_art_image);
+        positionTextView = view.findViewById(R.id.current_playing_position);
+        downloadTrackTextView = view.findViewById(R.id.current_playing_track);
+        downloadTotalDurationTextView = view.findViewById(R.id.current_total_duration);
+        durationTextView = view.findViewById(R.id.current_playing_duration);
+        progressBar = view.findViewById(R.id.current_playing_progress_bar);
+        playlistView = view.findViewById(R.id.playlist_view);
+        final AutoRepeatButton previousButton = view.findViewById(R.id.button_previous);
+        final AutoRepeatButton nextButton = view.findViewById(R.id.button_next);
+        pauseButton = view.findViewById(R.id.button_pause);
+        stopButton = view.findViewById(R.id.button_stop);
+        startButton = view.findViewById(R.id.button_start);
+        final View shuffleButton = view.findViewById(R.id.button_shuffle);
+        repeatButton = view.findViewById(R.id.button_repeat);
 
-        visualizerViewLayout = view.findViewById(R.id.download_visualizer_view_layout);
+        visualizerViewLayout = view.findViewById(R.id.current_playing_visualizer_layout);
 
         LinearLayout ratingLinearLayout = view.findViewById(R.id.song_rating);
         fiveStar1ImageView = view.findViewById(R.id.song_five_star_1);
@@ -1375,13 +1375,10 @@ public class PlayerFragment extends Fragment implements GestureDetector.OnGestur
                 switch (playerState)
                 {
                     case DOWNLOADING:
-                        final long bytes = currentPlaying != null ? currentPlaying.getPartialFile().length() : 0;
-                        String downloadStatus = getResources().getString(R.string.download_playerstate_downloading, Util.formatLocalizedBytes(bytes, getContext()));
-                        Timber.d("Player set title");
+                        String downloadStatus = getResources().getString(R.string.download_playerstate_downloading, Util.formatPercentage(currentPlaying.getProgress().getValue()));
                         FragmentTitle.Companion.setTitle(PlayerFragment.this, downloadStatus);
                         break;
                     case PREPARING:
-                        Timber.d("Player set title");
                         FragmentTitle.Companion.setTitle(PlayerFragment.this, R.string.download_playerstate_buffering);
                         break;
                     case STARTED:
@@ -1389,17 +1386,14 @@ public class PlayerFragment extends Fragment implements GestureDetector.OnGestur
 
                         if (mediaPlayerController != null && mediaPlayerController.isShufflePlayEnabled())
                         {
-                            Timber.d("Player set title");
                             FragmentTitle.Companion.setTitle(PlayerFragment.this, R.string.download_playerstate_playing_shuffle);
                         }
                         else
                         {
-                            Timber.d("Player set title");
                             FragmentTitle.Companion.setTitle(PlayerFragment.this, R.string.common_appname);
                         }
                         break;
                     default:
-                        Timber.d("Player set title");
                         FragmentTitle.Companion.setTitle(PlayerFragment.this, R.string.common_appname);
                         break;
                     case IDLE:

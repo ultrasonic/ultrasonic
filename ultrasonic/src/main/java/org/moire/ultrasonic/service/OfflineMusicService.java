@@ -893,7 +893,7 @@ public class OfflineMusicService implements MusicService
 	}
 
 	@Override
-	public Pair<InputStream, Boolean> getDownloadInputStream(Context context, MusicDirectory.Entry song, long offset, int maxBitrate, CancellableTask task) {
+	public Pair<InputStream, Boolean> getDownloadInputStream(MusicDirectory.Entry song, long offset, int maxBitrate) {
 		Timber.w("OfflineMusicService.getDownloadInputStream was called but it isn't available");
 		return null;
 	}

@@ -343,6 +343,23 @@ public class Util
 		toast.show();
 	}
 
+
+	/**
+	 * Formats an Int to a percentage string
+	 * For instance:
+	 * <ul>
+	 * <li><code>format(99)</code> returns <em>"99 %"</em>.</li>
+	 * </ul>
+	 *
+	 * @param percent The percent as a range from 0 - 100
+	 * @return The formatted string.
+	 */
+	public static synchronized String formatPercentage(int percent)
+	{
+		return Math.min(Math.max(percent,0),100) + " %";
+	}
+
+
 	/**
 	 * Converts a byte-count to a formatted string suitable for display to the user.
 	 * For instance:

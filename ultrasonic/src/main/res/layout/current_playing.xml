@@ -1,30 +1,31 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:a="http://schemas.android.com/apk/res/android"
-              a:layout_width="fill_parent"
-              a:layout_height="fill_parent"
-              a:orientation="horizontal">
-
+    a:layout_width="fill_parent"
+    a:layout_height="fill_parent"
+    a:orientation="vertical" >
+    
     <org.moire.ultrasonic.util.MyViewFlipper
-        a:id="@+id/download_playlist_flipper"
-        a:layout_width="0dp"
-        a:layout_height="fill_parent"
-        a:layout_weight="1">
+        a:id="@+id/current_playing_playlist_flipper"
+        a:layout_width="fill_parent"
+        a:layout_height="0dip"
+        a:layout_weight="1" >
 
-        <FrameLayout
-            a:id="@+id/download_album_art_layout"
+        <RelativeLayout
+            a:id="@+id/current_playing_album_art_layout"
             a:layout_width="fill_parent"
             a:layout_height="fill_parent"
             a:layout_weight="1"
-            a:gravity="left"
-            a:orientation="horizontal">
+            a:gravity="start"
+            a:orientation="vertical" >
 
             <ImageView
-                a:id="@+id/download_album_art_image"
-                a:layout_width="wrap_content"
-                a:layout_height="wrap_content"
-                a:alpha="0.2"
-                a:contentDescription="@string/albumArt"
-                a:scaleType="centerCrop" />
+                a:id="@+id/current_playing_album_art_image"
+                a:layout_width="match_parent"
+                a:layout_height="match_parent"
+                a:scaleType="centerCrop"
+                a:layout_alignParentTop="true"
+                a:layout_centerInParent="true"
+                a:contentDescription="@string/albumArt"/>
 
             <LinearLayout
                 a:id="@+id/album_art_inside"
@@ -33,14 +34,12 @@
                 a:gravity="bottom"
                 a:orientation="vertical" >
 
-                <include layout="@layout/player_media_info"/>
-
                 <LinearLayout
                     a:id="@+id/song_rating"
                     a:layout_width="match_parent"
                     a:layout_height="60dip"
                     a:layout_gravity="center"
-                    a:layout_margin="10dip"
+                    a:layout_margin="40dip"
                     a:orientation="horizontal">
 
                     <ImageView
@@ -48,7 +47,7 @@
                         a:layout_width="0dip"
                         a:layout_height="fill_parent"
                         a:layout_weight="1"
-                        a:padding="10dip"
+                        a:padding="5dip"
                         a:background="@android:color/transparent"
                         a:focusable="false"
                         a:gravity="center_vertical"
@@ -60,7 +59,7 @@
                         a:layout_width="0dip"
                         a:layout_height="fill_parent"
                         a:layout_weight="1"
-                        a:padding="10dip"
+                        a:padding="5dip"
                         a:background="@android:color/transparent"
                         a:focusable="false"
                         a:gravity="center_vertical"
@@ -72,7 +71,7 @@
                         a:layout_width="0dip"
                         a:layout_height="fill_parent"
                         a:layout_weight="1"
-                        a:padding="10dip"
+                        a:padding="5dip"
                         a:background="@android:color/transparent"
                         a:focusable="false"
                         a:gravity="center_vertical"
@@ -84,7 +83,7 @@
                         a:layout_width="0dip"
                         a:layout_height="fill_parent"
                         a:layout_weight="1"
-                        a:padding="10dip"
+                        a:padding="5dip"
                         a:background="@android:color/transparent"
                         a:focusable="false"
                         a:gravity="center_vertical"
@@ -96,7 +95,7 @@
                         a:layout_width="0dip"
                         a:layout_height="fill_parent"
                         a:layout_weight="1"
-                        a:padding="10dip"
+                        a:padding="5dip"
                         a:background="@android:color/transparent"
                         a:focusable="false"
                         a:gravity="center_vertical"
@@ -106,22 +105,26 @@
                 </LinearLayout>
 
                 <LinearLayout
-                    a:id="@+id/download_visualizer_view_layout"
+                    a:id="@+id/current_playing_visualizer_layout"
                     a:layout_width="fill_parent"
                     a:layout_height="60dip"
-                    a:layout_gravity="bottom|center_horizontal"
-                    a:layout_marginLeft="60dip"
-                    a:layout_marginRight="60dip"
+                    a:layout_gravity="center"
                     a:background="@color/translucent"
-                    a:orientation="vertical"/>
-
-                <include layout="@layout/player_slider"/>
-                <include layout="@layout/media_buttons"/>
+                    a:layout_marginLeft="80dip"
+                    a:layout_marginRight="80dip"
+                    a:orientation="vertical"
+                    />
 
             </LinearLayout>
-        </FrameLayout>
+        </RelativeLayout>
 
-        <include layout="@layout/download_playlist"/>
+        <include layout="@layout/current_playlist" />
     </org.moire.ultrasonic.util.MyViewFlipper>
+
+    <include layout="@layout/player_media_info" />
+
+    <include layout="@layout/player_slider" />
+
+    <include layout="@layout/media_buttons" />
 
 </LinearLayout>

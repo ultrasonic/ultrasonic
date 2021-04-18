@@ -15,7 +15,7 @@
         a:orientation="vertical">
 
         <TextView
-            a:id="@+id/download_song_title"
+            a:id="@+id/current_playing_song"
             a:layout_width="wrap_content"
             a:layout_height="wrap_content"
             a:ellipsize="start"
@@ -26,7 +26,7 @@
             tools:text="Title" />
 
         <TextView
-            a:id="@+id/download_artist"
+            a:id="@+id/current_playing_artist"
             a:layout_width="wrap_content"
             a:layout_height="wrap_content"
             a:ellipsize="start"
@@ -36,7 +36,7 @@
             tools:text="Artist" />
 
         <TextView
-            a:id="@+id/download_album"
+            a:id="@+id/current_playing_album"
             a:layout_width="wrap_content"
             a:layout_height="wrap_content"
             a:ellipsize="start"
@@ -56,7 +56,7 @@
         a:orientation="vertical">
 
         <TextView
-            a:id="@+id/download_track"
+            a:id="@+id/current_playing_track"
             a:layout_width="wrap_content"
             a:layout_height="wrap_content"
             a:ellipsize="start"
@@ -65,7 +65,7 @@
             a:textAppearance="?android:attr/textAppearanceSmall" />
 
         <TextView
-            a:id="@+id/download_total_duration"
+            a:id="@+id/current_total_duration"
             a:layout_width="wrap_content"
             a:layout_height="wrap_content"
             a:ellipsize="start"
