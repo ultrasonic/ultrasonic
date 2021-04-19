@@ -3,9 +3,6 @@ apply plugin: 'kotlin'
 apply plugin: 'jacoco'
 apply from: "${project.rootDir}/gradle_scripts/code_quality.gradle"
 
-sourceCompatibility = JavaVersion.VERSION_1_8
-targetCompatibility = JavaVersion.VERSION_1_8
-
 sourceSets {
     main.java.srcDirs += "${projectDir}/src/main/kotlin"
     test.java.srcDirs += "${projectDir}/src/test/kotlin"

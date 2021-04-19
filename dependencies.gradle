@@ -5,7 +5,8 @@ ext.versions = [
         gradle               : '6.5',
 
         navigation           : "2.3.2",
-        androidTools         : "4.0.0",
+        gradlePlugin         : "4.1.2",
+        androidxcore         : "1.5.0-rc01",
         ktlint               : "0.37.1",
         ktlintGradle         : "9.2.1",
         detekt               : "1.0.0.RC6-4",
@@ -17,14 +18,14 @@ ext.versions = [
         androidSupportDesign : "1.2.1",
         constraintLayout     : "2.0.1",
         multidex             : "2.0.1",
-        room                 : "2.2.5",
-        kotlin               : "1.3.72",
+        room                 : "2.2.6",
+        kotlin               : "1.4.32",
         kotlinxCoroutines    : "1.3.9",
         viewModelKtx         : "2.2.0",
 
         retrofit             : "2.4.0",
         jackson              : "2.9.5",
-        okhttp               : "3.10.0",
+        okhttp               : "3.14.9",
         semver               : "1.0.0",
         twitterSerial        : "0.1.6",
         koin                 : "2.2.2",
@@ -44,7 +45,7 @@ ext.versions = [
 ]
 
 ext.gradlePlugins = [
-        androidTools      : "com.android.tools.build:gradle:$versions.androidTools",
+        gradle            : "com.android.tools.build:gradle:$versions.gradlePlugin",
         kotlin            : "org.jetbrains.kotlin:kotlin-gradle-plugin:$versions.kotlin",
         ktlintGradle      : "org.jlleitschuh.gradle:ktlint-gradle:$versions.ktlintGradle",
         detekt            : "gradle.plugin.io.gitlab.arturbosch.detekt:detekt-gradle-plugin:$versions.detekt",
@@ -52,6 +53,7 @@ ext.gradlePlugins = [
 ]
 
 ext.androidSupport = [
+        core                 : "androidx.core:core-ktx:$versions.androidxcore",
         support               : "androidx.legacy:legacy-support-v4:$versions.androidLegacySupport",
         design                : "com.google.android.material:material:$versions.androidSupportDesign",
         annotations           : "com.android.support:support-annotations:$versions.androidSupport",

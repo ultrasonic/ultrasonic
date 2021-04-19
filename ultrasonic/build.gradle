@@ -54,6 +54,10 @@ android {
     kotlinOptions {
         jvmTarget = "1.8"
     }
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_1_8
+        targetCompatibility JavaVersion.VERSION_1_8
+    }
 }
 
 tasks.withType(Test) {
@@ -67,6 +71,7 @@ dependencies {
     implementation project(':core:subsonic-api-image-loader')
     implementation project(':core:cache')
 
+    implementation androidSupport.core
     implementation androidSupport.support
     implementation androidSupport.design
     implementation androidSupport.multidex

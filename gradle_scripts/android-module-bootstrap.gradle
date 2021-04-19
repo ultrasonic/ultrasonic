@@ -1,12 +1,8 @@
 apply plugin: 'com.android.library'
 apply plugin: 'kotlin-android'
-apply plugin: 'kotlin-android-extensions'
 apply plugin: 'jacoco'
 apply from: "${project.rootDir}/gradle_scripts/code_quality.gradle"
 
-androidExtensions {
-    experimental = true
-}
 
 android {
     compileSdkVersion versions.compileSdk
@@ -17,7 +13,12 @@ android {
         targetSdkVersion versions.targetSdk
     }
 
+    kotlinOptions {
+        jvmTarget = "1.8"
+    }
+
     compileOptions {
+        // Sets Java compatibility to Java 8
         sourceCompatibility JavaVersion.VERSION_1_8
         targetCompatibility JavaVersion.VERSION_1_8
     }
@@ -39,15 +40,11 @@ android {
         }
     }
 
-    // Disable generating BuildConfig class by default
-    // Replace it with https://issuetracker.google.com/issues/72050365 once released.
-    libraryVariants.all {
-        generateBuildConfig.enabled = false
+    buildFeatures {
+        buildConfig = false
     }
 }
 
-sourceCompatibility = JavaVersion.VERSION_1_8
-targetCompatibility = JavaVersion.VERSION_1_8
 
 tasks.withType(Test) {
     useJUnitPlatform()
