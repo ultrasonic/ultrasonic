@@ -183,7 +183,7 @@ public class MediaPlayerLifecycleSupport
         context.registerReceiver(headsetEventReceiver, headsetIntentFilter);
     }
 
-	private void handleKeyEvent(KeyEvent event)
+	public void handleKeyEvent(KeyEvent event)
 	{
 		if (event.getAction() != KeyEvent.ACTION_DOWN || event.getRepeatCount() > 0)
 		{

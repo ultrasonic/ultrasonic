@@ -71,6 +71,7 @@ public class MediaPlayerService extends Service
     private final Lazy<Downloader> downloaderLazy = inject(Downloader.class);
     private final Lazy<LocalMediaPlayer> localMediaPlayerLazy = inject(LocalMediaPlayer.class);
     private final Lazy<NowPlayingEventDistributor> nowPlayingEventDistributor = inject(NowPlayingEventDistributor.class);
+    private final Lazy<MediaPlayerLifecycleSupport> mediaPlayerLifecycleSupport = inject(MediaPlayerLifecycleSupport.class);
 
     private LocalMediaPlayer localMediaPlayer;
     private Downloader downloader;
@@ -891,6 +892,17 @@ public class MediaPlayerService extends Service
                                      @Override
                                      public void onSeekTo(long pos) {
                                          super.onSeekTo(pos);
+                                     }
+
+                                     @Override
+                                     public boolean onMediaButtonEvent(Intent mediaButtonEvent) {
+                                         // This probably won't be necessary once we implement more
+                                         // of the modern media APIs, like the MediaController etc.
+                                         KeyEvent event = (KeyEvent) mediaButtonEvent.getExtras().get("android.intent.extra.KEY_EVENT");
+                                         MediaPlayerLifecycleSupport lifecycleSupport = mediaPlayerLifecycleSupport.getValue();
+                                         lifecycleSupport.handleKeyEvent(event);
+
+                                         return true;
                                      }
 
                                  }
