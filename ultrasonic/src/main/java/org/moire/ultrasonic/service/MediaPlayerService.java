@@ -174,14 +174,7 @@ public class MediaPlayerService extends Service
         };
 
         // Create Notification Channel
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            //The suggested importance of a startForeground service notification is IMPORTANCE_LOW
-            NotificationChannel channel = new NotificationChannel(NOTIFICATION_CHANNEL_ID, NOTIFICATION_CHANNEL_NAME, NotificationManager.IMPORTANCE_LOW);
-            channel.setLightColor(android.R.color.holo_blue_dark);
-            channel.setLockscreenVisibility(Notification.VISIBILITY_PUBLIC);
-            NotificationManager manager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
-            manager.createNotificationChannel(channel);
-        }
+        createNotificationChannel();
 
         // Update notification early. It is better to show an empty one temporarily than waiting too long and letting Android kill the app
         updateNotification(IDLE, null);
@@ -642,6 +635,18 @@ public class MediaPlayerService extends Service
 
         // Save the playback state
         mediaSession.setPlaybackState(playbackState.build());
+    }
+
+    private void createNotificationChannel() {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            //The suggested importance of a startForeground service notification is IMPORTANCE_LOW
+            NotificationChannel channel = new NotificationChannel(NOTIFICATION_CHANNEL_ID, NOTIFICATION_CHANNEL_NAME, NotificationManager.IMPORTANCE_LOW);
+            channel.setLightColor(android.R.color.holo_blue_dark);
+            channel.setLockscreenVisibility(Notification.VISIBILITY_PUBLIC);
+            channel.setShowBadge(false);
+            NotificationManager manager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
+            manager.createNotificationChannel(channel);
+        }
     }
 
     public void updateNotification(PlayerState playerState, DownloadFile currentPlaying)
