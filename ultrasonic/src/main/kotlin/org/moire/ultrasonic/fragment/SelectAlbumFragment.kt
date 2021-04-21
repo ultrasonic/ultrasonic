@@ -18,16 +18,13 @@ import android.widget.ImageView
 import android.widget.ListView
 import android.widget.TextView
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.Observer
 import androidx.lifecycle.viewModelScope
 import androidx.navigation.Navigation
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout.OnRefreshListener
-import java.security.SecureRandom
-import java.util.Collections
-import java.util.LinkedList
-import java.util.Random
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
@@ -44,7 +41,6 @@ import org.moire.ultrasonic.fragment.FragmentTitle.Companion.setTitle
 import org.moire.ultrasonic.service.CommunicationErrorHandler
 import org.moire.ultrasonic.service.MediaPlayerController
 import org.moire.ultrasonic.service.MusicService
-import org.moire.ultrasonic.service.MusicServiceFactory
 import org.moire.ultrasonic.service.MusicServiceFactory.getMusicService
 import org.moire.ultrasonic.subsonic.DownloadHandler
 import org.moire.ultrasonic.subsonic.ImageLoaderProvider
@@ -62,6 +58,10 @@ import org.moire.ultrasonic.view.EntryAdapter
 import org.moire.ultrasonic.view.SelectMusicFolderView
 import org.moire.ultrasonic.view.SongView
 import timber.log.Timber
+import java.security.SecureRandom
+import java.util.Collections
+import java.util.LinkedList
+import java.util.Random
 
 /**
  * Displays a group of playable media from the library, which can be an Album, a Playlist, etc.
@@ -91,7 +91,15 @@ class SelectAlbumFragment : Fragment() {
     private var showHeader = true
     private var showSelectFolderHeader = false
     private val random: Random = SecureRandom()
+
+
     private val musicFolders: MutableLiveData<List<MusicFolder>> = MutableLiveData()
+    private val artists: MutableLiveData<MusicDirectory> = MutableLiveData()
+    private val albumList: MutableLiveData<MusicDirectory> = MutableLiveData()
+    private val currentDirectory: MutableLiveData<MusicDirectory> = MutableLiveData()
+    private val songsForGenre: MutableLiveData<MusicDirectory> = MutableLiveData()
+    private var currentDirectoryIsSortable = true
+
 
     private val mediaPlayerController: MediaPlayerController by inject()
     private val videoPlayer: VideoPlayer by inject()
@@ -148,17 +156,11 @@ class SelectAlbumFragment : Fragment() {
                 this.updateDisplay(true)
             }
         )
-        musicFolders.observe(
-            viewLifecycleOwner,
-            Observer { changedFolders ->
-                if (changedFolders != null) {
-                    selectFolderHeader!!.setData(
-                        activeServerProvider.getActiveServer().musicFolderId,
-                        changedFolders
-                    )
-                }
-            }
-        )
+
+        musicFolders.observe(viewLifecycleOwner, musicFolderObserver)
+        currentDirectory.observe(viewLifecycleOwner, defaultObserver)
+        songsForGenre.observe(viewLifecycleOwner, songsForGenreObserver)
+        albumList.observe(viewLifecycleOwner, albumListObserver)
 
         albumListView!!.setChoiceMode(ListView.CHOICE_MODE_MULTIPLE)
         albumListView!!.setOnItemClickListener(
@@ -312,59 +314,69 @@ class SelectAlbumFragment : Fragment() {
             Constants.INTENT_EXTRA_NAME_ALBUM_LIST_OFFSET, 0
         )
 
-        backgroundLoadMusicFolders(refresh)
 
-        if (playlistId != null) {
-            getPlaylist(playlistId, playlistName)
-        } else if (podcastChannelId != null) {
-            getPodcastEpisodes(podcastChannelId)
-        } else if (shareId != null) {
-            getShare(shareId, shareName)
-        } else if (albumListType != null) {
-            getAlbumList(albumListType, albumListTitle, albumListSize, albumListOffset)
-        } else if (genreName != null) {
-            getSongsForGenre(genreName, albumListSize, albumListOffset)
-        } else if (getStarredTracks != 0) {
-            starred
-        } else if (getVideos != 0) {
-            getVideos(refresh)
-        } else if (getRandomTracks != 0) {
-            getRandom(albumListSize)
-        } else {
-            if (!isOffline(activity) && Util.getShouldUseId3Tags(activity)) {
-                if (isAlbum) {
-                    getAlbum(refresh, id, name, parentId)
-                } else {
-                    getArtist(refresh, id, name)
-                }
-            } else {
-                getMusicDirectory(refresh, id, name, parentId)
-            }
-        }
+        triggerLoad(refresh, id, name, playlistId, playlistName, podcastChannelId, shareId, shareName, albumListType, albumListTitle, albumListSize, albumListOffset, genreName, getStarredTracks, getVideos, getRandomTracks, isAlbum, parentId)
+
+
     }
 
-    private fun backgroundLoadMusicFolders(refresh: Boolean) {
+    private fun triggerLoad(
+            refresh: Boolean,
+            id: String?,
+            name: String?,
+            playlistId: String?,
+            playlistName: String?,
+            podcastChannelId: String?,
+            shareId: String?,
+            shareName: String?,
+            albumListType: String?,
+            albumListTitle: Int,
+            albumListSize: Int,
+            albumListOffset: Int,
+            genreName: String?,
+            getStarredTracks: Int,
+            getVideos: Int,
+            getRandomTracks: Int,
+            isAlbum: Boolean,
+            parentId: String?
+    ) {
         serverSettingsModel.viewModelScope.launch {
             refreshAlbumListView!!.isRefreshing = true
-            loadMusicFolders(refresh)
+
+            this@SelectAlbumFragment.getMusicFolders(refresh)
+
+            if (playlistId != null) {
+                this@SelectAlbumFragment.getPlaylist(playlistId, playlistName)
+            } else if (podcastChannelId != null) {
+                this@SelectAlbumFragment.getPodcastEpisodes(podcastChannelId)
+            } else if (shareId != null) {
+                this@SelectAlbumFragment.getShare(shareId, shareName)
+            } else if (albumListType != null) {
+                this@SelectAlbumFragment.getAlbumList(albumListType, albumListTitle, albumListSize, albumListOffset)
+            } else if (genreName != null) {
+                this@SelectAlbumFragment.getSongsForGenre(genreName, albumListSize, albumListOffset)
+            } else if (getStarredTracks != 0) {
+                this@SelectAlbumFragment.getStarred()
+            } else if (getVideos != 0) {
+                this@SelectAlbumFragment.getVideos(refresh)
+            } else if (getRandomTracks != 0) {
+                this@SelectAlbumFragment.getRandom(albumListSize)
+            } else {
+                if (!isOffline(activity) && Util.getShouldUseId3Tags(activity)) {
+                    if (isAlbum) {
+                        this@SelectAlbumFragment.getAlbum(refresh, id, name, parentId)
+                    } else {
+                        this@SelectAlbumFragment.getArtist(refresh, id, name)
+                    }
+                } else {
+                    this@SelectAlbumFragment.getMusicDirectory(refresh, id, name, parentId)
+                }
+            }
+
             refreshAlbumListView!!.isRefreshing = false
         }
     }
 
-    private suspend fun loadMusicFolders(refresh: Boolean) {
-        withContext(Dispatchers.IO) {
-            if (!isOffline(context)) {
-                val musicService = MusicServiceFactory.getMusicService(requireContext())
-                try {
-                    musicFolders.postValue(musicService.getMusicFolders(refresh, context))
-                } catch (exception: Exception) {
-                    Handler(Looper.getMainLooper()).post {
-                        CommunicationErrorHandler.handleError(exception, requireContext())
-                    }
-                }
-            }
-        }
-    }
 
     override fun onCreateContextMenu(menu: ContextMenu, view: View, menuInfo: ContextMenuInfo?) {
         super.onCreateContextMenu(menu, view, menuInfo)
@@ -523,11 +535,52 @@ class SelectAlbumFragment : Fragment() {
         }
     }
 
-    private fun getMusicDirectory(refresh: Boolean, id: String?, name: String?, parentId: String?) {
+
+    private suspend fun getMusicFolders(refresh: Boolean) {
+        withContext(Dispatchers.IO) {
+            if (!isOffline(context)) {
+                val musicService = getMusicService(requireContext())
+                try {
+                    musicFolders.postValue(musicService.getMusicFolders(refresh, context))
+                } catch (exception: Exception) {
+                    Handler(Looper.getMainLooper()).post {
+                        CommunicationErrorHandler.handleError(exception, requireContext())
+                    }
+                }
+            }
+        }
+    }
+
+    private suspend fun getMusicDirectory(refresh: Boolean, id: String?, name: String?, parentId: String?) {
         setTitle(this, name)
 
-        object : LoadTask() {
-            override fun load(service: MusicService): MusicDirectory {
+        withContext(Dispatchers.IO) {
+            if (!isOffline(context)) {
+                val service = getMusicService(requireContext())
+
+                fun getSongsRecursively(
+                        parent: MusicDirectory,
+                        songs: MutableList<MusicDirectory.Entry>
+                ) {
+                    for (song in parent.getChildren(false, true)) {
+                        if (!song.isVideo && !song.isDirectory) {
+                            songs.add(song)
+                        }
+                    }
+
+
+                    for ((id1, _, _, title) in parent.getChildren(true, false)) {
+                        var root: MusicDirectory
+
+                        if (allSongsId != id1) {
+                            root = service.getMusicDirectory(id1, title, false, context)
+
+                            getSongsRecursively(root, songs)
+                        }
+                    }
+                }
+
+
                 var root = MusicDirectory()
 
                 if (allSongsId == id) {
@@ -565,39 +618,19 @@ class SelectAlbumFragment : Fragment() {
                         root = musicDirectory
                     }
                 }
-                return root
+
+                currentDirectory.postValue(root)
             }
 
-            private fun getSongsRecursively(
-                parent: MusicDirectory,
-                songs: MutableList<MusicDirectory.Entry>
-            ) {
-                for (song in parent.getChildren(false, true)) {
-                    if (!song.isVideo && !song.isDirectory) {
-                        songs.add(song)
-                    }
-                }
-
-                val musicService = getMusicService(context!!)
-
-                for ((id1, _, _, title) in parent.getChildren(true, false)) {
-                    var root: MusicDirectory
-
-                    if (allSongsId != id1) {
-                        root = musicService.getMusicDirectory(id1, title, false, context)
-
-                        getSongsRecursively(root, songs)
-                    }
-                }
-            }
-        }.execute()
+        }
     }
 
-    private fun getArtist(refresh: Boolean, id: String?, name: String?) {
+    private suspend fun getArtist(refresh: Boolean, id: String?, name: String?) {
         setTitle(this, name)
 
-        object : LoadTask() {
-            override fun load(service: MusicService): MusicDirectory {
+        withContext(Dispatchers.IO) {
+            if (!isOffline(context)) {
+                val service = getMusicService(requireContext())
 
                 var root = MusicDirectory()
 
@@ -623,16 +656,18 @@ class SelectAlbumFragment : Fragment() {
                 } else {
                     root = musicDirectory
                 }
-                return root
+                currentDirectory.postValue(root)
             }
-        }.execute()
+        }
     }
 
-    private fun getAlbum(refresh: Boolean, id: String?, name: String?, parentId: String?) {
+    private suspend fun getAlbum(refresh: Boolean, id: String?, name: String?, parentId: String?) {
         setTitle(this, name)
 
-        object : LoadTask() {
-            override fun load(service: MusicService): MusicDirectory {
+        withContext(Dispatchers.IO) {
+            if (!isOffline(context)) {
+
+                val service = getMusicService(requireContext())
 
                 val musicDirectory: MusicDirectory
 
@@ -640,7 +675,19 @@ class SelectAlbumFragment : Fragment() {
                     val root = MusicDirectory()
 
                     val songs: MutableCollection<MusicDirectory.Entry> = LinkedList()
-                    getSongsForArtist(parentId, songs)
+                    val artist = service.getArtist(parentId, "", false, context)
+
+                    for ((id1) in artist.getChildren()) {
+                        if (allSongsId != id1) {
+                            val albumDirectory = service.getAlbum(id1, "", false, context)
+
+                            for (song in albumDirectory.getChildren()) {
+                                if (!song.isVideo) {
+                                    songs.add(song)
+                                }
+                            }
+                        }
+                    }
 
                     for (song in songs) {
                         if (!song.isDirectory) {
@@ -651,156 +698,131 @@ class SelectAlbumFragment : Fragment() {
                 } else {
                     service.getAlbum(id, name, refresh, context)
                 }
-                return musicDirectory
+                currentDirectory.postValue(musicDirectory);
             }
 
-            private fun getSongsForArtist(
-                id: String?,
-                songs: MutableCollection<MusicDirectory.Entry>
-            ) {
-
-                val musicService = getMusicService(context!!)
-                val artist = musicService.getArtist(id, "", false, context)
-
-                for ((id1) in artist.getChildren()) {
-                    if (allSongsId != id1) {
-                        val albumDirectory = musicService.getAlbum(id1, "", false, context)
-
-                        for (song in albumDirectory.getChildren()) {
-                            if (!song.isVideo) {
-                                songs.add(song)
-                            }
-                        }
-                    }
-                }
-            }
-        }.execute()
+        }
     }
 
-    private fun getSongsForGenre(genre: String, count: Int, offset: Int) {
+    private suspend fun getSongsForGenre(genre: String, count: Int, offset: Int) {
         setTitle(this, genre)
 
-        object : LoadTask() {
-            override fun load(service: MusicService): MusicDirectory {
-                return service.getSongsByGenre(genre, count, offset, context)
+        withContext(Dispatchers.IO) {
+            if (!isOffline(context)) {
+                val service = getMusicService(requireContext())
+                val musicDirectory: MusicDirectory
+                musicDirectory = service.getSongsByGenre(genre, count, offset, context)
+                songsForGenre.postValue(musicDirectory)
             }
-
-            override fun done(result: Pair<MusicDirectory, Boolean>) {
-                // Hide more button when results are less than album list size
-                if (result.first.getChildren().size < arguments!!.getInt(
-                    Constants.INTENT_EXTRA_NAME_ALBUM_LIST_SIZE, 0
-                )
-                ) {
-                    moreButton!!.visibility = View.GONE
-                } else {
-                    moreButton!!.visibility = View.VISIBLE
-                }
-
-                moreButton!!.setOnClickListener {
-                    val theGenre = arguments!!.getString(Constants.INTENT_EXTRA_NAME_GENRE_NAME)
-                    val size = arguments!!.getInt(Constants.INTENT_EXTRA_NAME_ALBUM_LIST_SIZE, 0)
-                    val theOffset = arguments!!.getInt(
-                        Constants.INTENT_EXTRA_NAME_ALBUM_LIST_OFFSET, 0
-                    ) + size
-                    val bundle = Bundle()
-                    bundle.putString(Constants.INTENT_EXTRA_NAME_GENRE_NAME, theGenre)
-                    bundle.putInt(Constants.INTENT_EXTRA_NAME_ALBUM_LIST_SIZE, size)
-                    bundle.putInt(Constants.INTENT_EXTRA_NAME_ALBUM_LIST_OFFSET, theOffset)
-                    Navigation.findNavController(view!!).navigate(R.id.selectAlbumFragment, bundle)
-                }
-
-                super.done(result)
-            }
-        }.execute()
-    }
-
-    private val starred: Unit
-        get() {
-            setTitle(this, R.string.main_songs_starred)
-
-            object : LoadTask() {
-                override fun load(service: MusicService): MusicDirectory {
-                    return if (Util.getShouldUseId3Tags(context))
-                        Util.getSongsFromSearchResult(service.getStarred2(context))
-                    else
-                        Util.getSongsFromSearchResult(service.getStarred(context))
-                }
-            }.execute()
         }
 
-    private fun getVideos(refresh: Boolean) {
+    }
+
+    private suspend fun getStarred() {
+        setTitle(this, R.string.main_songs_starred)
+
+        withContext(Dispatchers.IO) {
+            if (!isOffline(context)) {
+
+                val service = getMusicService(requireContext())
+                val musicDirectory: MusicDirectory
+                val context = requireContext()
+
+                if (Util.getShouldUseId3Tags(context)) {
+                    musicDirectory = Util.getSongsFromSearchResult(service.getStarred2(context))
+
+                } else {
+                    musicDirectory = Util.getSongsFromSearchResult(service.getStarred(context))
+                }
+
+                currentDirectory.postValue(musicDirectory)
+            }
+        }
+    }
+
+    private suspend fun getVideos(refresh: Boolean) {
         showHeader = false
 
         setTitle(this, R.string.main_videos)
 
-        object : LoadTask() {
-            override fun load(service: MusicService): MusicDirectory {
-                return service.getVideos(refresh, context)
+        withContext(Dispatchers.IO) {
+            if (!isOffline(context)) {
+                val service = getMusicService(requireContext())
+                currentDirectory.postValue(service.getVideos(refresh, context))
             }
-        }.execute()
+        }
     }
 
-    private fun getRandom(size: Int) {
+    private suspend fun getRandom(size: Int) {
         setTitle(this, R.string.main_songs_random)
 
-        object : LoadTask() {
-            override fun sortableCollection(): Boolean {
-                return false
-            }
+        withContext(Dispatchers.IO) {
+            if (!isOffline(context)) {
+                val service = getMusicService(requireContext())
+                val musicDirectory = service.getRandomSongs(size, context)
 
-            override fun load(service: MusicService): MusicDirectory {
-                return service.getRandomSongs(size, context)
+                currentDirectoryIsSortable = false
+                currentDirectory.postValue(musicDirectory)
             }
-        }.execute()
+        }
     }
 
-    private fun getPlaylist(playlistId: String, playlistName: String?) {
+    private suspend fun getPlaylist(playlistId: String, playlistName: String?) {
 
         setTitle(this, playlistName)
 
-        object : LoadTask() {
-            override fun load(service: MusicService): MusicDirectory {
-                return service.getPlaylist(playlistId, playlistName, context)
+        withContext(Dispatchers.IO) {
+            if (!isOffline(context)) {
+                val service = getMusicService(requireContext())
+                val musicDirectory: MusicDirectory
+                musicDirectory = service.getPlaylist(playlistId, playlistName, context)
+
+                currentDirectory.postValue(musicDirectory)
             }
-        }.execute()
+        }
     }
 
-    private fun getPodcastEpisodes(podcastChannelId: String) {
+    private suspend fun getPodcastEpisodes(podcastChannelId: String) {
 
         setTitle(this, R.string.podcasts_label)
 
-        object : LoadTask() {
-            override fun load(service: MusicService): MusicDirectory {
-                return service.getPodcastEpisodes(podcastChannelId, context)
+        withContext(Dispatchers.IO) {
+            if (!isOffline(context)) {
+                val service = getMusicService(requireContext())
+                val musicDirectory: MusicDirectory
+                musicDirectory = service.getPodcastEpisodes(podcastChannelId, context)
+                currentDirectory.postValue(musicDirectory)
             }
-        }.execute()
+        }
     }
 
-    private fun getShare(shareId: String, shareName: CharSequence?) {
+    private suspend fun getShare(shareId: String, shareName: CharSequence?) {
 
         setTitle(this, shareName)
         // setActionBarSubtitle(shareName);
 
-        object : LoadTask() {
-            override fun load(service: MusicService): MusicDirectory {
+        withContext(Dispatchers.IO) {
+            if (!isOffline(context)) {
+                val service = getMusicService(requireContext())
+                val musicDirectory = MusicDirectory()
+
                 val shares = service.getShares(true, context)
 
-                val md = MusicDirectory()
 
                 for (share in shares) {
                     if (share.id == shareId) {
                         for (entry in share.getEntries()) {
-                            md.addChild(entry)
+                            musicDirectory.addChild(entry)
                         }
                         break
                     }
                 }
-                return md
+                currentDirectory.postValue(musicDirectory)
             }
-        }.execute()
+        }
     }
 
-    private fun getAlbumList(albumListType: String, albumListTitle: Int, size: Int, offset: Int) {
+    private suspend fun getAlbumList(albumListType: String, albumListTitle: Int, size: Int, offset: Int) {
 
         showHeader = false
         showSelectFolderHeader = !isOffline(context) && !Util.getShouldUseId3Tags(context) &&
@@ -812,72 +834,35 @@ class SelectAlbumFragment : Fragment() {
         setTitle(this, albumListTitle)
         // setActionBarSubtitle(albumListTitle);
 
-        object : LoadTask() {
-            override fun sortableCollection(): Boolean {
-                return albumListType != "newest" && albumListType != "random" &&
+
+        fun sortableCollection(): Boolean {
+            return albumListType != "newest" && albumListType != "random" &&
                     albumListType != "highest" && albumListType != "recent" &&
                     albumListType != "frequent"
-            }
+        }
 
-            override fun load(service: MusicService): MusicDirectory {
+
+        withContext(Dispatchers.IO) {
+            if (!isOffline(context)) {
+                val service = getMusicService(requireContext())
+                val musicDirectory: MusicDirectory
                 val musicFolderId = if (showSelectFolderHeader) {
                     this@SelectAlbumFragment.activeServerProvider.getActiveServer().musicFolderId
                 } else {
                     null
                 }
-                return if (Util.getShouldUseId3Tags(context))
-                    service.getAlbumList2(albumListType, size, offset, musicFolderId, context)
-                else
-                    service.getAlbumList(albumListType, size, offset, musicFolderId, context)
-            }
 
-            override fun done(result: Pair<MusicDirectory, Boolean>) {
-                if (!result.first.getChildren().isEmpty()) {
-                    pinButton!!.visibility = View.GONE
-                    unpinButton!!.visibility = View.GONE
-                    downloadButton!!.visibility = View.GONE
-                    deleteButton!!.visibility = View.GONE
-
-                    // Hide more button when results are less than album list size
-                    if (result.first.getChildren().size < arguments!!.getInt(
-                        Constants.INTENT_EXTRA_NAME_ALBUM_LIST_SIZE, 0
-                    )
-                    ) {
-                        moreButton!!.visibility = View.GONE
-                    } else {
-                        moreButton!!.visibility = View.VISIBLE
-                        moreButton!!.setOnClickListener {
-                            val theAlbumListTitle = arguments!!.getInt(
-                                Constants.INTENT_EXTRA_NAME_ALBUM_LIST_TITLE, 0
-                            )
-                            val type = arguments!!.getString(
-                                Constants.INTENT_EXTRA_NAME_ALBUM_LIST_TYPE
-                            )
-                            val theSize = arguments!!.getInt(
-                                Constants.INTENT_EXTRA_NAME_ALBUM_LIST_SIZE, 0
-                            )
-                            val theOffset = arguments!!.getInt(
-                                Constants.INTENT_EXTRA_NAME_ALBUM_LIST_OFFSET, 0
-                            ) + theSize
-
-                            val bundle = Bundle()
-                            bundle.putInt(
-                                Constants.INTENT_EXTRA_NAME_ALBUM_LIST_TITLE, theAlbumListTitle
-                            )
-                            bundle.putString(Constants.INTENT_EXTRA_NAME_ALBUM_LIST_TYPE, type)
-                            bundle.putInt(Constants.INTENT_EXTRA_NAME_ALBUM_LIST_SIZE, theSize)
-                            bundle.putInt(Constants.INTENT_EXTRA_NAME_ALBUM_LIST_OFFSET, theOffset)
-                            Navigation.findNavController(view!!).navigate(
-                                R.id.selectAlbumFragment, bundle
-                            )
-                        }
-                    }
+                if (Util.getShouldUseId3Tags(context)) {
+                    musicDirectory = service.getAlbumList2(albumListType, size, offset, musicFolderId, context)
                 } else {
-                    moreButton!!.visibility = View.GONE
+                    musicDirectory = service.getAlbumList(albumListType, size, offset, musicFolderId, context)
                 }
-                super.done(result)
+
+                currentDirectoryIsSortable = sortableCollection()
+                albumList.postValue(musicDirectory)
+
             }
-        }.execute()
+        }
     }
 
     private fun selectAllOrNone() {
@@ -1009,213 +994,290 @@ class SelectAlbumFragment : Fragment() {
         mediaPlayerController.unpin(songs)
     }
 
-    private abstract inner class LoadTask : FragmentBackgroundTask<Pair<MusicDirectory, Boolean>>(
-        this@SelectAlbumFragment.activity, true, refreshAlbumListView,
-        cancellationToken
-    ) {
+    val albumListObserver =  Observer<MusicDirectory> { musicDirectory ->
+        if (!musicDirectory.getChildren().isEmpty()) {
+            pinButton!!.visibility = View.GONE
+            unpinButton!!.visibility = View.GONE
+            downloadButton!!.visibility = View.GONE
+            deleteButton!!.visibility = View.GONE
 
-        protected abstract fun load(service: MusicService): MusicDirectory
-        protected open fun sortableCollection(): Boolean {
-            return true
+            // Hide more button when results are less than album list size
+            if (musicDirectory.getChildren().size < requireArguments().getInt(
+                            Constants.INTENT_EXTRA_NAME_ALBUM_LIST_SIZE, 0
+                    )
+            ) {
+                moreButton!!.visibility = View.GONE
+            } else {
+                moreButton!!.visibility = View.VISIBLE
+                moreButton!!.setOnClickListener {
+                    val theAlbumListTitle = requireArguments().getInt(
+                            Constants.INTENT_EXTRA_NAME_ALBUM_LIST_TITLE, 0
+                    )
+                    val type = requireArguments().getString(
+                            Constants.INTENT_EXTRA_NAME_ALBUM_LIST_TYPE
+                    )
+                    val theSize = requireArguments().getInt(
+                            Constants.INTENT_EXTRA_NAME_ALBUM_LIST_SIZE, 0
+                    )
+                    val theOffset = requireArguments().getInt(
+                            Constants.INTENT_EXTRA_NAME_ALBUM_LIST_OFFSET, 0
+                    ) + theSize
+
+                    val bundle = Bundle()
+                    bundle.putInt(
+                            Constants.INTENT_EXTRA_NAME_ALBUM_LIST_TITLE, theAlbumListTitle
+                    )
+                    bundle.putString(Constants.INTENT_EXTRA_NAME_ALBUM_LIST_TYPE, type)
+                    bundle.putInt(Constants.INTENT_EXTRA_NAME_ALBUM_LIST_SIZE, theSize)
+                    bundle.putInt(Constants.INTENT_EXTRA_NAME_ALBUM_LIST_OFFSET, theOffset)
+                    Navigation.findNavController(requireView()).navigate(
+                            R.id.selectAlbumFragment, bundle
+                    )
+                }
+            }
+        } else {
+            moreButton!!.visibility = View.GONE
         }
 
-        override fun doInBackground(): Pair<MusicDirectory, Boolean> {
-            val musicService = getMusicService(context!!)
-            val dir = load(musicService)
-            val valid = musicService.isLicenseValid(context)
-            return Pair<MusicDirectory, Boolean>(dir, valid)
+        updateInterfaceWithEntries(musicDirectory)
+    }
+
+    val musicFolderObserver = Observer<List<MusicFolder>> { changedFolders ->
+        if (changedFolders != null) {
+            selectFolderHeader!!.setData(
+                    activeServerProvider.getActiveServer().musicFolderId,
+                    changedFolders
+            )
+        }
+    }
+
+    val songsForGenreObserver = Observer<MusicDirectory> {  musicDirectory ->
+
+        // Hide more button when results are less than album list size
+        if (musicDirectory.getChildren().size < requireArguments().getInt(
+                        Constants.INTENT_EXTRA_NAME_ALBUM_LIST_SIZE, 0
+                )
+        ) {
+            moreButton!!.visibility = View.GONE
+        } else {
+            moreButton!!.visibility = View.VISIBLE
         }
 
-        protected override fun done(result: Pair<MusicDirectory, Boolean>) {
-            val musicDirectory = result.first
-            val entries = musicDirectory.getChildren()
+        moreButton!!.setOnClickListener {
+            val theGenre = requireArguments().getString(Constants.INTENT_EXTRA_NAME_GENRE_NAME)
+            val size = requireArguments().getInt(Constants.INTENT_EXTRA_NAME_ALBUM_LIST_SIZE, 0)
+            val theOffset = requireArguments().getInt(
+                    Constants.INTENT_EXTRA_NAME_ALBUM_LIST_OFFSET, 0
+            ) + size
+            val bundle = Bundle()
+            bundle.putString(Constants.INTENT_EXTRA_NAME_GENRE_NAME, theGenre)
+            bundle.putInt(Constants.INTENT_EXTRA_NAME_ALBUM_LIST_SIZE, size)
+            bundle.putInt(Constants.INTENT_EXTRA_NAME_ALBUM_LIST_OFFSET, theOffset)
+            Navigation.findNavController(requireView()).navigate(R.id.selectAlbumFragment, bundle)
+        }
 
-            if (sortableCollection() && Util.getShouldSortByDisc(context)) {
-                Collections.sort(entries, EntryByDiscAndTrackComparator())
+        updateInterfaceWithEntries(musicDirectory)
+    }
+
+    // Our old "done" function
+    val defaultObserver = Observer(this::updateInterfaceWithEntries)
+
+    private fun updateInterfaceWithEntries(musicDirectory: MusicDirectory) {
+        val entries = musicDirectory.getChildren()
+
+        // FIXME
+        if (sortableCollection() && Util.getShouldSortByDisc(context)) {
+            Collections.sort(entries, EntryByDiscAndTrackComparator())
+        }
+
+        var allVideos = true
+        var songCount = 0
+
+        for (entry in entries) {
+            if (!entry.isVideo) {
+                allVideos = false
             }
-
-            var allVideos = true
-            var songCount = 0
-
-            for (entry in entries) {
-                if (!entry.isVideo) {
-                    allVideos = false
-                }
-                if (!entry.isDirectory) {
-                    songCount++
-                }
+            if (!entry.isDirectory) {
+                songCount++
             }
+        }
 
-            val listSize = arguments!!.getInt(Constants.INTENT_EXTRA_NAME_ALBUM_LIST_SIZE, 0)
+        val listSize = requireArguments().getInt(Constants.INTENT_EXTRA_NAME_ALBUM_LIST_SIZE, 0)
 
-            if (songCount > 0) {
-                if (showHeader) {
-                    val intentAlbumName = arguments!!.getString(Constants.INTENT_EXTRA_NAME_NAME)
-                    val directoryName = musicDirectory.name
-                    val header = createHeader(
+        if (songCount > 0) {
+            if (showHeader) {
+                val intentAlbumName = requireArguments().getString(Constants.INTENT_EXTRA_NAME_NAME)
+                val directoryName = musicDirectory.name
+                val header = createHeader(
                         entries, intentAlbumName ?: directoryName,
                         songCount
-                    )
-                    if (header != null && albumListView!!.headerViewsCount == 0) {
-                        albumListView!!.addHeaderView(header, null, false)
-                    }
-                }
-
-                pinButton!!.visibility = View.VISIBLE
-                unpinButton!!.visibility = View.VISIBLE
-                downloadButton!!.visibility = View.VISIBLE
-                deleteButton!!.visibility = View.VISIBLE
-                selectButton!!.visibility = if (allVideos) View.GONE else View.VISIBLE
-                playNowButton!!.visibility = View.VISIBLE
-                playNextButton!!.visibility = View.VISIBLE
-                playLastButton!!.visibility = View.VISIBLE
-
-                if (listSize == 0 || songCount < listSize) {
-                    moreButton!!.visibility = View.GONE
-                } else {
-                    moreButton!!.visibility = View.VISIBLE
-                    if (arguments!!.getInt(Constants.INTENT_EXTRA_NAME_RANDOM, 0) > 0) {
-                        moreButton!!.setOnClickListener {
-                            val offset = arguments!!.getInt(
-                                Constants.INTENT_EXTRA_NAME_ALBUM_LIST_OFFSET, 0
-                            ) + listSize
-                            val bundle = Bundle()
-                            bundle.putInt(Constants.INTENT_EXTRA_NAME_RANDOM, 1)
-                            bundle.putInt(Constants.INTENT_EXTRA_NAME_ALBUM_LIST_SIZE, listSize)
-                            bundle.putInt(Constants.INTENT_EXTRA_NAME_ALBUM_LIST_OFFSET, offset)
-                            Navigation.findNavController(view!!).navigate(
-                                R.id.selectAlbumFragment, bundle
-                            )
-                        }
-                    }
-                }
-            } else {
-                if (showSelectFolderHeader) {
-                    if (albumListView!!.headerViewsCount == 0) {
-                        albumListView!!.addHeaderView(selectFolderHeader!!.itemView, null, false)
-                    }
-                }
-
-                pinButton!!.visibility = View.GONE
-                unpinButton!!.visibility = View.GONE
-                downloadButton!!.visibility = View.GONE
-                deleteButton!!.visibility = View.GONE
-                selectButton!!.visibility = View.GONE
-                playNowButton!!.visibility = View.GONE
-                playNextButton!!.visibility = View.GONE
-                playLastButton!!.visibility = View.GONE
-
-                if (listSize == 0 || result.first.getChildren().size < listSize) {
-                    albumButtons!!.visibility = View.GONE
-                } else {
-                    moreButton!!.visibility = View.VISIBLE
-                }
-            }
-
-            enableButtons()
-
-            val isAlbumList = arguments!!.containsKey(Constants.INTENT_EXTRA_NAME_ALBUM_LIST_TYPE)
-            playAllButtonVisible = !(isAlbumList || entries.isEmpty()) && !allVideos
-            shareButtonVisible = !isOffline(context) && songCount > 0
-
-            albumListView!!.removeHeaderView(emptyView!!)
-            if (entries.isEmpty()) {
-                emptyView!!.text = "No Media Found"
-                emptyView!!.setPadding(10, 10, 10, 10)
-                albumListView!!.addHeaderView(emptyView, null, false)
-            }
-
-            if (playAllButton != null) {
-                playAllButton!!.isVisible = playAllButtonVisible
-            }
-
-            if (shareButton != null) {
-                shareButton!!.isVisible = shareButtonVisible
-            }
-
-            albumListView!!.adapter = EntryAdapter(
-                context,
-                imageLoaderProvider.getImageLoader(), entries, true
-            )
-
-            val playAll = arguments!!.getBoolean(Constants.INTENT_EXTRA_NAME_AUTOPLAY, false)
-            if (playAll && songCount > 0) {
-                playAll(
-                    arguments!!.getBoolean(Constants.INTENT_EXTRA_NAME_SHUFFLE, false),
-                    false
                 )
+                if (header != null && albumListView!!.headerViewsCount == 0) {
+                    albumListView!!.addHeaderView(header, null, false)
+                }
+            }
+
+            pinButton!!.visibility = View.VISIBLE
+            unpinButton!!.visibility = View.VISIBLE
+            downloadButton!!.visibility = View.VISIBLE
+            deleteButton!!.visibility = View.VISIBLE
+            selectButton!!.visibility = if (allVideos) View.GONE else View.VISIBLE
+            playNowButton!!.visibility = View.VISIBLE
+            playNextButton!!.visibility = View.VISIBLE
+            playLastButton!!.visibility = View.VISIBLE
+
+            if (listSize == 0 || songCount < listSize) {
+                moreButton!!.visibility = View.GONE
+            } else {
+                moreButton!!.visibility = View.VISIBLE
+                if (requireArguments().getInt(Constants.INTENT_EXTRA_NAME_RANDOM, 0) > 0) {
+                    moreButton!!.setOnClickListener {
+                        val offset = requireArguments().getInt(
+                                Constants.INTENT_EXTRA_NAME_ALBUM_LIST_OFFSET, 0
+                        ) + listSize
+                        val bundle = Bundle()
+                        bundle.putInt(Constants.INTENT_EXTRA_NAME_RANDOM, 1)
+                        bundle.putInt(Constants.INTENT_EXTRA_NAME_ALBUM_LIST_SIZE, listSize)
+                        bundle.putInt(Constants.INTENT_EXTRA_NAME_ALBUM_LIST_OFFSET, offset)
+                        Navigation.findNavController(requireView()).navigate(
+                                R.id.selectAlbumFragment, bundle
+                        )
+                    }
+                }
+            }
+        } else {
+            if (showSelectFolderHeader) {
+                if (albumListView!!.headerViewsCount == 0) {
+                    albumListView!!.addHeaderView(selectFolderHeader!!.itemView, null, false)
+                }
+            }
+
+            pinButton!!.visibility = View.GONE
+            unpinButton!!.visibility = View.GONE
+            downloadButton!!.visibility = View.GONE
+            deleteButton!!.visibility = View.GONE
+            selectButton!!.visibility = View.GONE
+            playNowButton!!.visibility = View.GONE
+            playNextButton!!.visibility = View.GONE
+            playLastButton!!.visibility = View.GONE
+
+            if (listSize == 0 || musicDirectory.getChildren().size < listSize) {
+                albumButtons!!.visibility = View.GONE
+            } else {
+                moreButton!!.visibility = View.VISIBLE
             }
         }
 
-        protected fun createHeader(
+        enableButtons()
+
+        val isAlbumList = requireArguments().containsKey(Constants.INTENT_EXTRA_NAME_ALBUM_LIST_TYPE)
+        playAllButtonVisible = !(isAlbumList || entries.isEmpty()) && !allVideos
+        shareButtonVisible = !isOffline(context) && songCount > 0
+
+        albumListView!!.removeHeaderView(emptyView!!)
+        if (entries.isEmpty()) {
+            emptyView!!.text = "No Media Found"
+            emptyView!!.setPadding(10, 10, 10, 10)
+            albumListView!!.addHeaderView(emptyView, null, false)
+        }
+
+        if (playAllButton != null) {
+            playAllButton!!.isVisible = playAllButtonVisible
+        }
+
+        if (shareButton != null) {
+            shareButton!!.isVisible = shareButtonVisible
+        }
+
+        albumListView!!.adapter = EntryAdapter(
+                context,
+                imageLoaderProvider.getImageLoader(), entries, true
+        )
+
+        val playAll = requireArguments().getBoolean(Constants.INTENT_EXTRA_NAME_AUTOPLAY, false)
+        if (playAll && songCount > 0) {
+            playAll(
+                    requireArguments().getBoolean(Constants.INTENT_EXTRA_NAME_SHUFFLE, false),
+                    false
+            )
+        }
+
+        currentDirectoryIsSortable = true
+    }
+
+    protected fun createHeader(
             entries: List<MusicDirectory.Entry>,
             name: CharSequence?,
             songCount: Int
-        ): View? {
-            val coverArtView = header!!.findViewById<View>(R.id.select_album_art) as ImageView
-            val artworkSelection = random.nextInt(entries.size)
-            imageLoaderProvider.getImageLoader().loadImage(
+    ): View? {
+        val coverArtView = header!!.findViewById<View>(R.id.select_album_art) as ImageView
+        val artworkSelection = random.nextInt(entries.size)
+        imageLoaderProvider.getImageLoader().loadImage(
                 coverArtView, entries[artworkSelection], false,
                 Util.getAlbumImageSize(context), false, true
-            )
+        )
 
-            val albumHeader = AlbumHeader.processEntries(context, entries)
+        val albumHeader = AlbumHeader.processEntries(context, entries)
 
-            val titleView = header!!.findViewById<View>(R.id.select_album_title) as TextView
-            titleView.text = name ?: getTitle(this@SelectAlbumFragment) // getActionBarSubtitle());
+        val titleView = header!!.findViewById<View>(R.id.select_album_title) as TextView
+        titleView.text = name ?: getTitle(this@SelectAlbumFragment) // getActionBarSubtitle());
 
-            // Don't show a header if all entries are videos
-            if (albumHeader.isAllVideo) {
-                return null
-            }
+        // Don't show a header if all entries are videos
+        if (albumHeader.isAllVideo) {
+            return null
+        }
 
-            val artistView = header!!.findViewById<TextView>(R.id.select_album_artist)
-            val artist: String
+        val artistView = header!!.findViewById<TextView>(R.id.select_album_artist)
+        val artist: String
 
-            artist = if (albumHeader.artists.size == 1)
-                albumHeader.artists.iterator().next()
-            else if (albumHeader.grandParents.size == 1)
-                albumHeader.grandParents.iterator().next()
-            else
-                resources.getString(R.string.common_various_artists)
+        artist = if (albumHeader.artists.size == 1)
+            albumHeader.artists.iterator().next()
+        else if (albumHeader.grandParents.size == 1)
+            albumHeader.grandParents.iterator().next()
+        else
+            resources.getString(R.string.common_various_artists)
 
-            artistView.text = artist
+        artistView.text = artist
 
-            val genreView = header!!.findViewById<TextView>(R.id.select_album_genre)
-            val genre: String
+        val genreView = header!!.findViewById<TextView>(R.id.select_album_genre)
+        val genre: String
 
-            genre = if (albumHeader.genres.size == 1)
-                albumHeader.genres.iterator().next()
-            else
-                resources.getString(R.string.common_multiple_genres)
+        genre = if (albumHeader.genres.size == 1)
+            albumHeader.genres.iterator().next()
+        else
+            resources.getString(R.string.common_multiple_genres)
 
-            genreView.text = genre
+        genreView.text = genre
 
-            val yearView = header!!.findViewById<TextView>(R.id.select_album_year)
-            val year: String
+        val yearView = header!!.findViewById<TextView>(R.id.select_album_year)
+        val year: String
 
-            year = if (albumHeader.years.size == 1)
-                albumHeader.years.iterator().next().toString()
-            else
-                resources.getString(R.string.common_multiple_years)
+        year = if (albumHeader.years.size == 1)
+            albumHeader.years.iterator().next().toString()
+        else
+            resources.getString(R.string.common_multiple_years)
 
-            yearView.text = year
+        yearView.text = year
 
-            val songCountView = header!!.findViewById<TextView>(R.id.select_album_song_count)
-            val songs = resources.getQuantityString(
+        val songCountView = header!!.findViewById<TextView>(R.id.select_album_song_count)
+        val songs = resources.getQuantityString(
                 R.plurals.select_album_n_songs, songCount,
                 songCount
-            )
-            songCountView.text = songs
+        )
+        songCountView.text = songs
 
-            val duration = Util.formatTotalDuration(albumHeader.totalDuration)
+        val duration = Util.formatTotalDuration(albumHeader.totalDuration)
 
-            val durationView = header!!.findViewById<TextView>(R.id.select_album_duration)
-            durationView.text = duration
+        val durationView = header!!.findViewById<TextView>(R.id.select_album_duration)
+        durationView.text = duration
 
-            return header
-        }
+        return header
     }
+
+    private fun sortableCollection(): Boolean {
+        return currentDirectoryIsSortable
+    }
+
 
     private fun getSelectedSongs(albumListView: ListView?): List<MusicDirectory.Entry?> {
         val songs: MutableList<MusicDirectory.Entry?> = ArrayList(10)
