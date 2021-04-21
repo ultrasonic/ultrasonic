@@ -17,8 +17,6 @@ import android.view.MenuItem
 import android.view.View
 import android.view.ViewGroup
 import android.widget.AdapterView.AdapterContextMenuInfo
-import android.widget.AdapterView.OnItemClickListener
-import android.widget.AdapterView.OnItemLongClickListener
 import android.widget.ImageView
 import android.widget.ListView
 import android.widget.TextView
@@ -28,7 +26,6 @@ import androidx.lifecycle.Observer
 import androidx.lifecycle.viewModelScope
 import androidx.navigation.Navigation
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
-import androidx.swiperefreshlayout.widget.SwipeRefreshLayout.OnRefreshListener
 import kotlinx.coroutines.launch
 import org.koin.android.ext.android.inject
 import org.koin.android.viewmodel.ext.android.viewModel
@@ -121,12 +118,9 @@ class SelectAlbumFragment : Fragment() {
         refreshAlbumListView = view.findViewById(R.id.select_album_entries_refresh)
         albumListView = view.findViewById(R.id.select_album_entries_list)
 
-        refreshAlbumListView!!.setOnRefreshListener(
-            OnRefreshListener
-            {
-                updateDisplay(true)
-            }
-        )
+        refreshAlbumListView!!.setOnRefreshListener {
+            updateDisplay(true)
+        }
 
         header = LayoutInflater.from(context).inflate(
             R.layout.select_album_header, albumListView,
@@ -134,69 +128,61 @@ class SelectAlbumFragment : Fragment() {
         )
 
         selectFolderHeader = SelectMusicFolderView(
-            requireContext(), view as ViewGroup,
-            { selectedFolderId ->
-                if (!ActiveServerProvider.isOffline(context)) {
-                    val currentSetting = activeServerProvider.getActiveServer()
-                    currentSetting.musicFolderId = selectedFolderId
-                    serverSettingsModel.updateItem(currentSetting)
-                }
-                this.updateDisplay(true)
+            requireContext(), view as ViewGroup
+        ) { selectedFolderId ->
+            if (!isOffline(context)) {
+                val currentSetting = activeServerProvider.getActiveServer()
+                currentSetting.musicFolderId = selectedFolderId
+                serverSettingsModel.updateItem(currentSetting)
             }
-        )
+            this.updateDisplay(true)
+        }
 
         model.musicFolders.observe(viewLifecycleOwner, musicFolderObserver)
         model.currentDirectory.observe(viewLifecycleOwner, defaultObserver)
         model.songsForGenre.observe(viewLifecycleOwner, songsForGenreObserver)
         model.albumList.observe(viewLifecycleOwner, albumListObserver)
 
-        albumListView!!.setChoiceMode(ListView.CHOICE_MODE_MULTIPLE)
-        albumListView!!.setOnItemClickListener(
-            OnItemClickListener
-            { parent, theView, position, _ ->
-                if (position >= 0) {
-                    val entry = parent.getItemAtPosition(position) as MusicDirectory.Entry?
-                    if (entry != null && entry.isDirectory) {
-                        val bundle = Bundle()
-                        bundle.putString(Constants.INTENT_EXTRA_NAME_ID, entry.id)
-                        bundle.putBoolean(Constants.INTENT_EXTRA_NAME_IS_ALBUM, entry.isDirectory)
-                        bundle.putString(Constants.INTENT_EXTRA_NAME_NAME, entry.title)
-                        bundle.putString(Constants.INTENT_EXTRA_NAME_PARENT_ID, entry.parent)
-                        Navigation.findNavController(theView).navigate(
+        albumListView!!.choiceMode = ListView.CHOICE_MODE_MULTIPLE
+        albumListView!!.setOnItemClickListener { parent, theView, position, _ ->
+            if (position >= 0) {
+                val entry = parent.getItemAtPosition(position) as MusicDirectory.Entry?
+                if (entry != null && entry.isDirectory) {
+                    val bundle = Bundle()
+                    bundle.putString(Constants.INTENT_EXTRA_NAME_ID, entry.id)
+                    bundle.putBoolean(Constants.INTENT_EXTRA_NAME_IS_ALBUM, entry.isDirectory)
+                    bundle.putString(Constants.INTENT_EXTRA_NAME_NAME, entry.title)
+                    bundle.putString(Constants.INTENT_EXTRA_NAME_PARENT_ID, entry.parent)
+                    Navigation.findNavController(theView).navigate(
                             R.id.selectAlbumFragment,
                             bundle
-                        )
-                    } else if (entry != null && entry.isVideo) {
-                        videoPlayer.playVideo(requireContext(), entry)
-                    } else {
-                        enableButtons()
-                    }
+                    )
+                } else if (entry != null && entry.isVideo) {
+                    videoPlayer.playVideo(requireContext(), entry)
+                } else {
+                    enableButtons()
                 }
             }
-        )
+        }
 
         // TODO Long click on an item will first try to maximize / collapse the item, even when it
         // fits inside the TextView. The context menu is only displayed on the second long click...
         // This may be improved somehow, e.g. checking first if the texts fit
-        albumListView!!.setOnItemLongClickListener(
-            OnItemLongClickListener
-            { _, theView, _, _ ->
-                if (theView is AlbumView) {
-                    val albumView = theView
-                    if (!albumView.isMaximized) {
-                        albumView.maximizeOrMinimize()
-                        return@OnItemLongClickListener true
-                    } else {
-                        return@OnItemLongClickListener false
-                    }
-                }
-                if (theView is SongView) {
+        albumListView!!.setOnItemLongClickListener { _, theView, _, _ ->
+            if (theView is AlbumView) {
+                if (!theView.isMaximized) {
                     theView.maximizeOrMinimize()
-                    return@OnItemLongClickListener true
+                    true
+                } else {
+                    false
                 }
-                false
             }
-        )
+            if (theView is SongView) {
+                theView.maximizeOrMinimize()
+                true
+            }
+            false
+        }
 
         selectButton = view.findViewById(R.id.select_album_select)
         playNowButton = view.findViewById(R.id.select_album_play_now)
@@ -209,63 +195,39 @@ class SelectAlbumFragment : Fragment() {
         moreButton = view.findViewById(R.id.select_album_more)
         emptyView = TextView(requireContext())
 
-        selectButton!!.setOnClickListener(
-            View.OnClickListener
-            {
-                selectAllOrNone()
-            }
-        )
-        playNowButton!!.setOnClickListener(
-            View.OnClickListener
-            {
-                playNow(false)
-            }
-        )
-        playNextButton!!.setOnClickListener(
-            View.OnClickListener
-            {
-                downloadHandler.download(
+        selectButton!!.setOnClickListener {
+            selectAllOrNone()
+        }
+        playNowButton!!.setOnClickListener {
+            playNow(false)
+        }
+        playNextButton!!.setOnClickListener {
+            downloadHandler.download(
                     this@SelectAlbumFragment, true,
                     false, false, true, false,
                     getSelectedSongs(albumListView)
-                )
-                selectAll(false, false)
-            }
-        )
-        playLastButton!!.setOnClickListener(
-            View.OnClickListener
-            {
-                playNow(true)
-            }
-        )
-        pinButton!!.setOnClickListener(
-            View.OnClickListener
-            {
-                downloadBackground(true)
-                selectAll(false, false)
-            }
-        )
-        unpinButton!!.setOnClickListener(
-            View.OnClickListener
-            {
-                unpin()
-                selectAll(false, false)
-            }
-        )
-        downloadButton!!.setOnClickListener(
-            View.OnClickListener
-            {
-                downloadBackground(false)
-                selectAll(false, false)
-            }
-        )
-        deleteButton!!.setOnClickListener(
-            View.OnClickListener
-            {
-                delete()
-                selectAll(false, false)
-            }
-        )
+            )
+            selectAll(false, false)
+        }
+        playLastButton!!.setOnClickListener {
+            playNow(true)
+        }
+        pinButton!!.setOnClickListener {
+            downloadBackground(true)
+            selectAll(false, false)
+        }
+        unpinButton!!.setOnClickListener {
+            unpin()
+            selectAll(false, false)
+        }
+        downloadButton!!.setOnClickListener {
+            downloadBackground(false)
+            selectAll(false, false)
+        }
+        deleteButton!!.setOnClickListener {
+            delete()
+            selectAll(false, false)
+        }
 
         registerForContextMenu(albumListView!!)
         setHasOptionsMenu(true)
@@ -494,7 +456,7 @@ class SelectAlbumFragment : Fragment() {
     private fun playNow(append: Boolean) {
         val selectedSongs = getSelectedSongs(albumListView)
 
-        if (!selectedSongs.isEmpty()) {
+        if (selectedSongs.isNotEmpty()) {
             downloadHandler.download(
                 this, append, false, !append, false,
                 false, selectedSongs
@@ -576,7 +538,7 @@ class SelectAlbumFragment : Fragment() {
 
     private fun enableButtons() {
         val selection = getSelectedSongs(albumListView)
-        val enabled = !selection.isEmpty()
+        val enabled = selection.isNotEmpty()
         var unpinEnabled = false
         var deleteEnabled = false
 
@@ -665,8 +627,8 @@ class SelectAlbumFragment : Fragment() {
         mediaPlayerController.unpin(songs)
     }
 
-    val albumListObserver =  Observer<MusicDirectory> { musicDirectory ->
-        if (!musicDirectory.getChildren().isEmpty()) {
+    private val albumListObserver =  Observer<MusicDirectory> { musicDirectory ->
+        if (musicDirectory.getChildren().isNotEmpty()) {
             pinButton!!.visibility = View.GONE
             unpinButton!!.visibility = View.GONE
             downloadButton!!.visibility = View.GONE
@@ -713,7 +675,7 @@ class SelectAlbumFragment : Fragment() {
         updateInterfaceWithEntries(musicDirectory)
     }
 
-    val musicFolderObserver = Observer<List<MusicFolder>> { changedFolders ->
+    private val musicFolderObserver = Observer<List<MusicFolder>> { changedFolders ->
         if (changedFolders != null) {
             selectFolderHeader!!.setData(
                     activeServerProvider.getActiveServer().musicFolderId,
@@ -722,7 +684,7 @@ class SelectAlbumFragment : Fragment() {
         }
     }
 
-    val songsForGenreObserver = Observer<MusicDirectory> {  musicDirectory ->
+    private val songsForGenreObserver = Observer<MusicDirectory> { musicDirectory ->
 
         // Hide more button when results are less than album list size
         if (musicDirectory.getChildren().size < requireArguments().getInt(
@@ -751,7 +713,7 @@ class SelectAlbumFragment : Fragment() {
     }
 
     // Our old "done" function
-    val defaultObserver = Observer(this::updateInterfaceWithEntries)
+    private val defaultObserver = Observer(this::updateInterfaceWithEntries)
 
     private fun updateInterfaceWithEntries(musicDirectory: MusicDirectory) {
         val entries = musicDirectory.getChildren()
@@ -875,7 +837,7 @@ class SelectAlbumFragment : Fragment() {
         model.currentDirectoryIsSortable = true
     }
 
-    protected fun createHeader(
+    private fun createHeader(
             entries: List<MusicDirectory.Entry>,
             name: CharSequence?,
             songCount: Int
@@ -898,9 +860,8 @@ class SelectAlbumFragment : Fragment() {
         }
 
         val artistView = header!!.findViewById<TextView>(R.id.select_album_artist)
-        val artist: String
 
-        artist = if (albumHeader.artists.size == 1)
+        val artist: String = if (albumHeader.artists.size == 1)
             albumHeader.artists.iterator().next()
         else if (albumHeader.grandParents.size == 1)
             albumHeader.grandParents.iterator().next()
@@ -910,9 +871,8 @@ class SelectAlbumFragment : Fragment() {
         artistView.text = artist
 
         val genreView = header!!.findViewById<TextView>(R.id.select_album_genre)
-        val genre: String
 
-        genre = if (albumHeader.genres.size == 1)
+        val genre: String = if (albumHeader.genres.size == 1)
             albumHeader.genres.iterator().next()
         else
             resources.getString(R.string.common_multiple_genres)
@@ -920,9 +880,8 @@ class SelectAlbumFragment : Fragment() {
         genreView.text = genre
 
         val yearView = header!!.findViewById<TextView>(R.id.select_album_year)
-        val year: String
 
-        year = if (albumHeader.years.size == 1)
+        val year: String = if (albumHeader.years.size == 1)
             albumHeader.years.iterator().next().toString()
         else
             resources.getString(R.string.common_multiple_years)
