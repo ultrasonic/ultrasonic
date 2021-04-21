@@ -672,6 +672,7 @@ public class MediaPlayerService extends Service
     private Notification buildForegroundNotification(PlayerState playerState, DownloadFile currentPlaying) {
         // Init
         Context context = getApplicationContext();
+        MusicDirectory.Entry song = (currentPlaying != null) ? currentPlaying.getSong() : null;
 
         // We should use a single notification builder, otherwise the notification may not be updated
         if (notificationBuilder == null) {
@@ -682,24 +683,13 @@ public class MediaPlayerService extends Service
             notificationBuilder.setAutoCancel(false);
             notificationBuilder.setOngoing(true);
             notificationBuilder.setOnlyAlertOnce(true);
-            notificationBuilder.setWhen(0);
+            notificationBuilder.setWhen(System.currentTimeMillis());
+            notificationBuilder.setShowWhen(false);
             notificationBuilder.setVisibility(NotificationCompat.VISIBILITY_PUBLIC);
             notificationBuilder.setPriority(NotificationCompat.PRIORITY_LOW);
-            notificationBuilder.setVisibility(NotificationCompat.VISIBILITY_PUBLIC);
-            notificationBuilder.setColor(NotificationCompat.COLOR_DEFAULT);
 
             // Add content intent (when user taps on notification)
             notificationBuilder.setContentIntent(getPendingIntentForContent());
-        }
-
-        // Set song title, artist and cover if possible
-        if (currentPlaying != null) {
-            MusicDirectory.Entry song = currentPlaying.getSong();
-            int iconSize = (int) (256 * context.getResources().getDisplayMetrics().density);
-            Bitmap bitmap = FileUtil.getAlbumArtBitmap(context, song, iconSize, true);
-            notificationBuilder.setContentTitle(song.getTitle());
-            notificationBuilder.setContentText(song.getArtist());
-            notificationBuilder.setLargeIcon(bitmap);
         }
 
         // Use the Media Style, to enable native Android support for playback notification
@@ -710,18 +700,36 @@ public class MediaPlayerService extends Service
         notificationBuilder.clearActions();
 
         // Add actions
-        int[] compactActions = addActions(context, notificationBuilder, playerState);
+        int[] compactActions = addActions(context, notificationBuilder, playerState, song);
+
+        // Configure shortcut actions
         style.setShowActionsInCompactView(compactActions);
         notificationBuilder.setStyle(style);
+
+        // Set song title, artist and cover if possible
+        if (song != null) {
+            int iconSize = (int) (256 * context.getResources().getDisplayMetrics().density);
+            Bitmap bitmap = FileUtil.getAlbumArtBitmap(context, song, iconSize, true);
+            notificationBuilder.setContentTitle(song.getTitle());
+            notificationBuilder.setContentText(song.getArtist());
+            notificationBuilder.setLargeIcon(bitmap);
+            notificationBuilder.setSubText(song.getAlbum());
+        }
 
         return notificationBuilder.build();
     }
 
 
-    private int[] addActions(Context context, NotificationCompat.Builder notificationBuilder, PlayerState playerState) {
+    private int[] addActions(Context context, NotificationCompat.Builder notificationBuilder, PlayerState playerState, MusicDirectory.Entry song) {
         ArrayList<Integer> compactActionList = new ArrayList<>();
         int numActions = 0; // we start and 0 and then increment by 1 for each call to generateAction
 
+
+        // Star
+        if (song != null) {
+            notificationBuilder.addAction(generateStarUnstarAction(context, numActions, song.getStarred()));
+        }
+        numActions++;
 
         // Next
         notificationBuilder.addAction(generateAction(context, numActions));
@@ -736,6 +744,10 @@ public class MediaPlayerService extends Service
         // Previous
         notificationBuilder.addAction(generateAction(context, numActions));
         compactActionList.add(numActions);
+        numActions++;
+
+        // Close
+        notificationBuilder.addAction(generateAction(context, numActions));
 
         int[] actionArray = new int[compactActionList.size()];
 
@@ -755,18 +767,23 @@ public class MediaPlayerService extends Service
 
         // If you change the order here, also update the requestCode in updatePlayPauseAction()!
         switch (requestCode) {
-            case 0:
+            case 1:
                 keycode = KeyEvent.KEYCODE_MEDIA_PREVIOUS;
                 label = getString(R.string.common_play_previous);
                 icon = R.drawable.media_backward_medium_dark;
                 break;
-            case 1:
+            case 2:
                 // Is handled in generatePlayPauseAction()
                 return null;
-            case 2:
+            case 3:
                 keycode = KeyEvent.KEYCODE_MEDIA_NEXT;
                 label = getString(R.string.common_play_next);
                 icon = R.drawable.media_forward_medium_dark;
+                break;
+            case 4:
+                keycode = KeyEvent.KEYCODE_MEDIA_STOP;
+                label = getString(R.string.buttons_stop);
+                icon = R.drawable.ic_baseline_close_24;
                 break;
             default:
                 return null;
@@ -792,6 +809,28 @@ public class MediaPlayerService extends Service
             label = getString(R.string.common_play);
             icon = R.drawable.media_start_large_dark;
         }
+
+        return new NotificationCompat.Action.Builder(icon, label, pendingIntent).build();
+    }
+
+
+    private NotificationCompat.Action generateStarUnstarAction(Context context, int requestCode, Boolean isStarred) {
+
+        int keyCode;
+        String label;
+        int icon;
+        keyCode = KeyEvent.KEYCODE_STAR;
+
+        if (isStarred) {
+            label = getString(R.string.download_menu_star);
+            icon = R.drawable.ic_star_full_dark;
+
+        } else {
+            label = getString(R.string.download_menu_star);
+            icon = R.drawable.ic_star_hollow_dark;
+        }
+
+        PendingIntent pendingIntent = getPendingIntentForMediaAction(context, keyCode, requestCode);
 
         return new NotificationCompat.Action.Builder(icon, label, pendingIntent).build();
     }

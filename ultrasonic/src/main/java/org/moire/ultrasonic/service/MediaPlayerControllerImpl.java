@@ -589,6 +589,18 @@ public class MediaPlayerControllerImpl implements MediaPlayerController
 		if (mediaPlayerService != null) mediaPlayerService.updateNotification(localMediaPlayer.playerState, localMediaPlayer.currentPlaying);
 	}
 
+	public void toggleSongStarred() {
+		if (localMediaPlayer.currentPlaying == null)
+			return;
+
+		final Entry song = localMediaPlayer.currentPlaying.getSong();
+
+		// Trigger an update
+		localMediaPlayer.setCurrentPlaying(localMediaPlayer.currentPlaying);
+
+		song.setStarred(!song.getStarred());
+	}
+
     public void setSongRating(final int rating)
 	{
 		if (!KoinJavaComponent.get(FeatureStorage.class).isFeatureEnabled(Feature.FIVE_STAR_RATING))

@@ -254,6 +254,9 @@ public class MediaPlayerLifecycleSupport
 					case KeyEvent.KEYCODE_5:
 						mediaPlayerController.setSongRating(5);
 						break;
+					case KeyEvent.KEYCODE_STAR:
+						mediaPlayerController.toggleSongStarred();
+						break;
 					default:
 						break;
 				}
