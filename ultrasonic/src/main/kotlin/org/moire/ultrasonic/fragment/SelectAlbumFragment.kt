@@ -165,23 +165,15 @@ class SelectAlbumFragment : Fragment() {
             }
         }
 
-        // TODO Long click on an item will first try to maximize / collapse the item, even when it
-        // fits inside the TextView. The context menu is only displayed on the second long click...
-        // This may be improved somehow, e.g. checking first if the texts fit
         albumListView!!.setOnItemLongClickListener { _, theView, _, _ ->
             if (theView is AlbumView) {
-                if (!theView.isMaximized) {
-                    theView.maximizeOrMinimize()
-                    true
-                } else {
-                    false
-                }
+                    return@setOnItemLongClickListener false
             }
             if (theView is SongView) {
                 theView.maximizeOrMinimize()
-                true
+                return@setOnItemLongClickListener true
             }
-            false
+            return@setOnItemLongClickListener false
         }
 
         selectButton = view.findViewById(R.id.select_album_select)
@@ -203,18 +195,18 @@ class SelectAlbumFragment : Fragment() {
         }
         playNextButton!!.setOnClickListener {
             downloadHandler.download(
-                    this@SelectAlbumFragment, true,
-                    false, false, true, false,
-                    getSelectedSongs(albumListView)
+                    this@SelectAlbumFragment, append = true,
+                    save = false, autoPlay = false, playNext = true, shuffle = false,
+                    songs = getSelectedSongs(albumListView)
             )
-            selectAll(false, false)
+            selectAll(selected = false, toast = false)
         }
         playLastButton!!.setOnClickListener {
             playNow(true)
         }
         pinButton!!.setOnClickListener {
             downloadBackground(true)
-            selectAll(false, false)
+            selectAll(selected = false, toast = false)
         }
         unpinButton!!.setOnClickListener {
             unpin()
@@ -371,43 +363,52 @@ class SelectAlbumFragment : Fragment() {
 
         val entryId = entry.id
 
-        val itemId = menuItem.itemId
-        if (itemId == R.id.album_menu_play_now) {
-            downloadHandler.downloadRecursively(
-                this, entryId, false, false, true, false, false, false, false, false
-            )
-        } else if (itemId == R.id.album_menu_play_next) {
-            downloadHandler.downloadRecursively(
-                this, entryId, false, false, false, false, false, true, false, false
-            )
-        } else if (itemId == R.id.album_menu_play_last) {
-            downloadHandler.downloadRecursively(
-                this, entryId, false, true, false, false, false, false, false, false
-            )
-        } else if (itemId == R.id.album_menu_pin) {
-            downloadHandler.downloadRecursively(
-                this, entryId, true, true, false, false, false, false, false, false
-            )
-        } else if (itemId == R.id.album_menu_unpin) {
-            downloadHandler.downloadRecursively(
-                this, entryId, false, false, false, false, false, false, true, false
-            )
-        } else if (itemId == R.id.album_menu_download) {
-            downloadHandler.downloadRecursively(
-                this, entryId, false, false, false, false, true, false, false, false
-            )
-        } else if (itemId == R.id.select_album_play_all) {
-            playAll()
-        } else if (itemId == R.id.menu_item_share) {
-            val entries: MutableList<MusicDirectory.Entry?> = ArrayList(1)
-            entries.add(entry)
-            shareHandler.createShare(
-                this, entries, refreshAlbumListView,
-                cancellationToken!!
-            )
-            return true
-        } else {
-            return super.onContextItemSelected(menuItem)
+        when (menuItem.itemId) {
+            R.id.album_menu_play_now -> {
+                downloadHandler.downloadRecursively(
+                        this, entryId, save = false, append = false, autoPlay = true, shuffle = false, background = false, playNext = false, unpin = false, isArtist = false
+                )
+            }
+            R.id.album_menu_play_next -> {
+                downloadHandler.downloadRecursively(
+                        this, entryId, save = false, append = false, autoPlay = false, shuffle = false, background = false, playNext = true, unpin = false, isArtist = false
+                )
+            }
+            R.id.album_menu_play_last -> {
+                downloadHandler.downloadRecursively(
+                        this, entryId, save = false, append = true, autoPlay = false, shuffle = false, background = false, playNext = false, unpin = false, isArtist = false
+                )
+            }
+            R.id.album_menu_pin -> {
+                downloadHandler.downloadRecursively(
+                        this, entryId, save = true, append = true, autoPlay = false, shuffle = false, background = false, playNext = false, unpin = false, isArtist = false
+                )
+            }
+            R.id.album_menu_unpin -> {
+                downloadHandler.downloadRecursively(
+                        this, entryId, save = false, append = false, autoPlay = false, shuffle = false, background = false, playNext = false, unpin = true, isArtist = false
+                )
+            }
+            R.id.album_menu_download -> {
+                downloadHandler.downloadRecursively(
+                        this, entryId, save = false, append = false, autoPlay = false, shuffle = false, background = true, playNext = false, unpin = false, isArtist = false
+                )
+            }
+            R.id.select_album_play_all -> {
+                playAll()
+            }
+            R.id.menu_item_share -> {
+                val entries: MutableList<MusicDirectory.Entry?> = ArrayList(1)
+                entries.add(entry)
+                shareHandler.createShare(
+                        this, entries, refreshAlbumListView,
+                        cancellationToken!!
+                )
+                return true
+            }
+            else -> {
+                return super.onContextItemSelected(menuItem)
+            }
         }
         return true
     }
@@ -458,10 +459,10 @@ class SelectAlbumFragment : Fragment() {
 
         if (selectedSongs.isNotEmpty()) {
             downloadHandler.download(
-                this, append, false, !append, false,
-                false, selectedSongs
+                this, append, false, !append, playNext = false,
+                    shuffle = false, songs = selectedSongs
             )
-            selectAll(false, false)
+            selectAll(selected = false, toast = false)
         } else {
             playAll(false, append)
         }
@@ -484,15 +485,15 @@ class SelectAlbumFragment : Fragment() {
         if (hasSubFolders && id != null) {
             downloadHandler.downloadRecursively(
                 this, id, false, append, !append,
-                shuffle, false, false, false, isArtist
+                shuffle, background = false, playNext = false, unpin = false, isArtist = isArtist
             )
         } else {
-            selectAll(true, false)
+            selectAll(selected = true, toast = false)
             downloadHandler.download(
                 this, append, false, !append, false,
                 shuffle, getSelectedSongs(albumListView)
             )
-            selectAll(false, false)
+            selectAll(selected = false, toast = false)
         }
     }
 
@@ -574,7 +575,7 @@ class SelectAlbumFragment : Fragment() {
         var songs = getSelectedSongs(albumListView)
 
         if (songs.isEmpty()) {
-            selectAll(true, false)
+            selectAll(selected = true, toast = false)
             songs = getSelectedSongs(albumListView)
         }
 
@@ -808,7 +809,7 @@ class SelectAlbumFragment : Fragment() {
 
         albumListView!!.removeHeaderView(emptyView!!)
         if (entries.isEmpty()) {
-            emptyView!!.text = "No Media Found"
+            emptyView!!.text = getString(R.string.select_album_empty)
             emptyView!!.setPadding(10, 10, 10, 10)
             albumListView!!.addHeaderView(emptyView, null, false)
         }
@@ -861,12 +862,11 @@ class SelectAlbumFragment : Fragment() {
 
         val artistView = header!!.findViewById<TextView>(R.id.select_album_artist)
 
-        val artist: String = if (albumHeader.artists.size == 1)
-            albumHeader.artists.iterator().next()
-        else if (albumHeader.grandParents.size == 1)
-            albumHeader.grandParents.iterator().next()
-        else
-            resources.getString(R.string.common_various_artists)
+        val artist: String = when {
+            albumHeader.artists.size == 1 -> albumHeader.artists.iterator().next()
+            albumHeader.grandParents.size == 1 -> albumHeader.grandParents.iterator().next()
+            else -> resources.getString(R.string.common_various_artists)
+        }
 
         artistView.text = artist
 
