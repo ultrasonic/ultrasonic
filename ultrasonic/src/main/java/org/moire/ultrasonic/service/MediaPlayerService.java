@@ -673,6 +673,7 @@ public class MediaPlayerService extends Service
         // Init
         Context context = getApplicationContext();
         MusicDirectory.Entry song = (currentPlaying != null) ? currentPlaying.getSong() : null;
+        PendingIntent stopIntent = getPendingIntentForMediaAction(context, KeyEvent.KEYCODE_MEDIA_STOP, 100);
 
         // We should use a single notification builder, otherwise the notification may not be updated
         if (notificationBuilder == null) {
@@ -690,6 +691,9 @@ public class MediaPlayerService extends Service
 
             // Add content intent (when user taps on notification)
             notificationBuilder.setContentIntent(getPendingIntentForContent());
+
+            // This intent is executed when the user closes the notification
+            notificationBuilder.setDeleteIntent(stopIntent);
         }
 
         // Use the Media Style, to enable native Android support for playback notification
