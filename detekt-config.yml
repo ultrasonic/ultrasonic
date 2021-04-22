@@ -71,7 +71,7 @@ style:
     active: true
   ForbiddenComment:
     active: true
-    values: 'TODO:,FIXME:,STOPSHIP:'
+    values: 'FIXME:,STOPSHIP:'
   WildcardImport:
     active: true
   MaxLineLength:
