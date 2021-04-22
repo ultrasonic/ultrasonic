@@ -2,8 +2,7 @@ autoCorrect: true
 failFast: false
 
 build:
-  warningThreshold: 0
-  failThreshold: 0
+  maxIssues: 0
   weights:
     complexity: 2
     formatting: 1
