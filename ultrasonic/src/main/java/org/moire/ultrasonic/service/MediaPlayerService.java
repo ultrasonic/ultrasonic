@@ -584,6 +584,7 @@ public class MediaPlayerService extends Service
                         Util.getMinDisplayMetric(context), true
                 );
 
+                metadata.putLong(MediaMetadataCompat.METADATA_KEY_DURATION, -1L);
                 metadata.putString(MediaMetadataCompat.METADATA_KEY_ARTIST, song.getArtist());
                 metadata.putString(MediaMetadataCompat.METADATA_KEY_ALBUM_ARTIST, song.getArtist());
                 metadata.putString(MediaMetadataCompat.METADATA_KEY_ALBUM, song.getAlbum());
@@ -603,6 +604,9 @@ public class MediaPlayerService extends Service
 
         // If we set the playback position correctly, we can get a nice seek bar :)
         playbackState.setState(state, PlaybackStateCompat.PLAYBACK_POSITION_UNKNOWN, 1.0F);
+
+        // Set Active state
+        mediaSession.setActive(playerState == STARTED);
 
         // Save the playback state
         mediaSession.setPlaybackState(playbackState.build());
