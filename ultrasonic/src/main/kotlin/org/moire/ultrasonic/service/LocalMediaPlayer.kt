@@ -360,7 +360,7 @@ class LocalMediaPlayer(
             secondaryProgress = -1 // Ensure seeking in non StreamProxy playback works
 
             setPlayerState(PlayerState.IDLE)
-            mediaPlayer.setAudioStreamType(AudioManager.STREAM_MUSIC)
+            setAudioAttributes(mediaPlayer)
 
             var dataSource = file.path
             if (partial) {
@@ -433,6 +433,15 @@ class LocalMediaPlayer(
         }
     }
 
+    private fun setAudioAttributes(player: MediaPlayer) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            player.setAudioAttributes(AudioFocusHandler.getAudioAttributes())
+        } else {
+            @Suppress("DEPRECATION")
+            player.setAudioStreamType(AudioManager.STREAM_MUSIC)
+        }
+    }
+
     @Synchronized
     private fun setupNext(downloadFile: DownloadFile) {
         try {
@@ -446,11 +455,17 @@ class LocalMediaPlayer(
             }
             nextMediaPlayer = MediaPlayer()
             nextMediaPlayer!!.setWakeMode(context, PowerManager.PARTIAL_WAKE_LOCK)
+
+            setAudioAttributes(nextMediaPlayer!!)
+
+
+            // This has nothing to do with the MediaSession, it is used to associate
+            // the equalizer or visualizer with the player
             try {
                 nextMediaPlayer!!.audioSessionId = mediaPlayer.audioSessionId
             } catch (e: Throwable) {
-                nextMediaPlayer!!.setAudioStreamType(AudioManager.STREAM_MUSIC)
             }
+
             nextMediaPlayer!!.setDataSource(file.path)
             setNextPlayerState(PlayerState.PREPARING)
             nextMediaPlayer!!.setOnPreparedListener {
