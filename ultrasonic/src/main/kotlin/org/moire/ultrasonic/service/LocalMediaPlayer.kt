@@ -87,7 +87,7 @@ class LocalMediaPlayer(
         Thread {
             Thread.currentThread().name = "MediaPlayerThread"
             Looper.prepare()
-            mediaPlayer.setWakeMode(context, PowerManager.PARTIAL_WAKE_LOCK)
+            mediaPlayer.setWakeMode(context, PARTIAL_WAKE_LOCK)
             mediaPlayer.setOnErrorListener { _, what, more ->
                 handleError(
                     Exception(
@@ -454,7 +454,7 @@ class LocalMediaPlayer(
                 nextMediaPlayer = null
             }
             nextMediaPlayer = MediaPlayer()
-            nextMediaPlayer!!.setWakeMode(context, PowerManager.PARTIAL_WAKE_LOCK)
+            nextMediaPlayer!!.setWakeMode(context, PARTIAL_WAKE_LOCK)
 
             setAudioAttributes(nextMediaPlayer!!)
 
