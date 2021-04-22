@@ -45,16 +45,16 @@ class LocalMediaPlayer(
 ) {
 
     @JvmField
-    var onCurrentPlayingChanged: Consumer<DownloadFile?>? = null
+    var onCurrentPlayingChanged: ((DownloadFile?) -> Unit?)? = null
 
     @JvmField
-    var onSongCompleted: Consumer<DownloadFile?>? = null
+    var onSongCompleted: ((DownloadFile?) -> Unit?)? = null
 
     @JvmField
-    var onPlayerStateChanged: BiConsumer<PlayerState, DownloadFile?>? = null
+    var onPlayerStateChanged: ((PlayerState, DownloadFile?) -> Unit?)? = null
 
     @JvmField
-    var onPrepared: Runnable? = null
+    var onPrepared: (() -> Any?)? = null
 
     @JvmField
     var onNextSongRequested: Runnable? = null
@@ -164,8 +164,9 @@ class LocalMediaPlayer(
 
         if (onPlayerStateChanged != null) {
             val mainHandler = Handler(context.mainLooper)
+
             val myRunnable = Runnable {
-                onPlayerStateChanged!!.accept(playerState, currentPlaying)
+                onPlayerStateChanged!!(playerState, currentPlaying)
             }
             mainHandler.post(myRunnable)
         }
@@ -189,7 +190,7 @@ class LocalMediaPlayer(
 
         if (onCurrentPlayingChanged != null) {
             val mainHandler = Handler(context.mainLooper)
-            val myRunnable = Runnable { onCurrentPlayingChanged!!.accept(currentPlaying) }
+            val myRunnable = Runnable { onCurrentPlayingChanged!!(currentPlaying) }
             mainHandler.post(myRunnable)
         }
     }
@@ -424,7 +425,9 @@ class LocalMediaPlayer(
                     }
                 }
 
-                postRunnable(onPrepared)
+                postRunnable {
+                    onPrepared
+                }
             }
             attachHandlersToPlayer(mediaPlayer, downloadFile, partial)
             mediaPlayer.prepareAsync()
@@ -457,7 +460,6 @@ class LocalMediaPlayer(
             nextMediaPlayer!!.setWakeMode(context, PARTIAL_WAKE_LOCK)
 
             setAudioAttributes(nextMediaPlayer!!)
-
 
             // This has nothing to do with the MediaSession, it is used to associate
             // the equalizer or visualizer with the player
@@ -536,7 +538,7 @@ class LocalMediaPlayer(
                     } else {
                         if (onSongCompleted != null) {
                             val mainHandler = Handler(context.mainLooper)
-                            val myRunnable = Runnable { onSongCompleted!!.accept(currentPlaying) }
+                            val myRunnable = Runnable { onSongCompleted!!(currentPlaying) }
                             mainHandler.post(myRunnable)
                         }
                     }

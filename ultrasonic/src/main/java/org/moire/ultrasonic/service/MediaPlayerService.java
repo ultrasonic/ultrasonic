@@ -160,19 +160,16 @@ public class MediaPlayerService extends Service
         setupOnPlayerStateChangedHandler();
         setupOnSongCompletedHandler();
 
-        localMediaPlayer.onPrepared = new Runnable() {
-            @Override
-            public void run() {
-                downloadQueueSerializer.serializeDownloadQueue(downloader.downloadList,
-                        downloader.getCurrentPlayingIndex(), getPlayerPosition());
-            }
+        localMediaPlayer.onPrepared = () -> {
+            downloadQueueSerializer.serializeDownloadQueue(
+                    downloader.downloadList,
+                    downloader.getCurrentPlayingIndex(),
+                    getPlayerPosition()
+            );
+            return null;
         };
-        localMediaPlayer.onNextSongRequested = new Runnable() {
-            @Override
-            public void run() {
-                setNextPlaying();
-            }
-        };
+
+        localMediaPlayer.onNextSongRequested = this::setNextPlaying;
 
         // Create Notification Channel
         createNotificationChannel();
@@ -259,45 +256,35 @@ public class MediaPlayerService extends Service
         }
     }
 
-    public void setupOnCurrentPlayingChangedHandler()
-    {
-        localMediaPlayer.onCurrentPlayingChanged = new Consumer<DownloadFile>() {
-            @Override
-            public void accept(DownloadFile currentPlaying) {
-                if (currentPlaying != null)
-                {
-                    Util.broadcastNewTrackInfo(MediaPlayerService.this, currentPlaying.getSong());
-                    Util.broadcastA2dpMetaDataChange(MediaPlayerService.this, getPlayerPosition(), currentPlaying,
-                            downloader.getDownloads().size(), downloader.getCurrentPlayingIndex() + 1);
-                }
-                else
-                {
-                    Util.broadcastNewTrackInfo(MediaPlayerService.this, null);
-                    Util.broadcastA2dpMetaDataChange(MediaPlayerService.this, getPlayerPosition(), null,
-                            downloader.getDownloads().size(), downloader.getCurrentPlayingIndex() + 1);
-                }
+    public void setupOnCurrentPlayingChangedHandler() {
+        localMediaPlayer.onCurrentPlayingChanged = (DownloadFile currentPlaying) -> {
 
-                // Update widget
-                PlayerState playerState = localMediaPlayer.playerState;
-                MusicDirectory.Entry song = currentPlaying == null? null : currentPlaying.getSong();
-                UltrasonicAppWidgetProvider4X1.getInstance().notifyChange(MediaPlayerService.this, song, playerState == PlayerState.STARTED, false);
-                UltrasonicAppWidgetProvider4X2.getInstance().notifyChange(MediaPlayerService.this, song, playerState == PlayerState.STARTED, true);
-                UltrasonicAppWidgetProvider4X3.getInstance().notifyChange(MediaPlayerService.this, song, playerState == PlayerState.STARTED, false);
-                UltrasonicAppWidgetProvider4X4.getInstance().notifyChange(MediaPlayerService.this, song, playerState == PlayerState.STARTED, false);
-
-                if (currentPlaying != null)
-                {
-                    updateNotification(localMediaPlayer.playerState, currentPlaying);
-                    nowPlayingEventDistributor.getValue().raiseShowNowPlayingEvent();
-                }
-                else
-                {
-                    nowPlayingEventDistributor.getValue().raiseHideNowPlayingEvent();
-                    stopForeground(true);
-                    isInForeground = false;
-                    stopIfIdle();
-                }
+            if (currentPlaying != null) {
+                Util.broadcastNewTrackInfo(MediaPlayerService.this, currentPlaying.getSong());
+                Util.broadcastA2dpMetaDataChange(MediaPlayerService.this, getPlayerPosition(), currentPlaying,
+                        downloader.getDownloads().size(), downloader.getCurrentPlayingIndex() + 1);
+            } else {
+                Util.broadcastNewTrackInfo(MediaPlayerService.this, null);
+                Util.broadcastA2dpMetaDataChange(MediaPlayerService.this, getPlayerPosition(), null,
+                        downloader.getDownloads().size(), downloader.getCurrentPlayingIndex() + 1);
             }
+
+            // Update widget
+            PlayerState playerState = localMediaPlayer.playerState;
+            MusicDirectory.Entry song = currentPlaying == null ? null : currentPlaying.getSong();
+            UpdateWidget(playerState, song);
+
+            if (currentPlaying != null) {
+                updateNotification(localMediaPlayer.playerState, currentPlaying);
+                nowPlayingEventDistributor.getValue().raiseShowNowPlayingEvent();
+            } else {
+                nowPlayingEventDistributor.getValue().raiseHideNowPlayingEvent();
+                stopForeground(true);
+                isInForeground = false;
+                stopIfIdle();
+            }
+
+            return null;
         };
     }
 
@@ -472,118 +459,101 @@ public class MediaPlayerService extends Service
         localMediaPlayer.setPlayerState(STARTED);
     }
 
-    public void setupOnPlayerStateChangedHandler()
-    {
-        localMediaPlayer.onPlayerStateChanged = new BiConsumer<PlayerState, DownloadFile>() {
-            @Override
-            public void accept(PlayerState playerState, DownloadFile currentPlaying) {
-                // Notify MediaSession
-                updateMediaSession(currentPlaying, playerState);
+    private void UpdateWidget(PlayerState playerState, MusicDirectory.Entry song) {
+        UltrasonicAppWidgetProvider4X1.getInstance().notifyChange(MediaPlayerService.this, song, playerState == PlayerState.STARTED, false);
+        UltrasonicAppWidgetProvider4X2.getInstance().notifyChange(MediaPlayerService.this, song, playerState == PlayerState.STARTED, true);
+        UltrasonicAppWidgetProvider4X3.getInstance().notifyChange(MediaPlayerService.this, song, playerState == PlayerState.STARTED, false);
+        UltrasonicAppWidgetProvider4X4.getInstance().notifyChange(MediaPlayerService.this, song, playerState == PlayerState.STARTED, false);
+    }
 
-                if (playerState == PAUSED)
-                {
-                    downloadQueueSerializer.serializeDownloadQueue(downloader.downloadList, downloader.getCurrentPlayingIndex(), getPlayerPosition());
-                }
+    public void setupOnPlayerStateChangedHandler() {
+        localMediaPlayer.onPlayerStateChanged = (PlayerState playerState, DownloadFile currentPlaying) -> {
+            // Notify MediaSession
+            updateMediaSession(currentPlaying, playerState);
 
-                boolean showWhenPaused = (playerState != PlayerState.STOPPED && Util.isNotificationAlwaysEnabled(MediaPlayerService.this));
-                boolean show = playerState == PlayerState.STARTED || showWhenPaused;
-                MusicDirectory.Entry song = currentPlaying == null? null : currentPlaying.getSong();
-
-                Util.broadcastPlaybackStatusChange(MediaPlayerService.this, playerState);
-                Util.broadcastA2dpPlayStatusChange(MediaPlayerService.this, playerState, song,
-                        downloader.downloadList.size() + downloader.backgroundDownloadList.size(),
-                        downloader.downloadList.indexOf(currentPlaying) + 1, getPlayerPosition());
-
-                // Update widget
-                UltrasonicAppWidgetProvider4X1.getInstance().notifyChange(MediaPlayerService.this, song, playerState == PlayerState.STARTED, false);
-                UltrasonicAppWidgetProvider4X2.getInstance().notifyChange(MediaPlayerService.this, song, playerState == PlayerState.STARTED, true);
-                UltrasonicAppWidgetProvider4X3.getInstance().notifyChange(MediaPlayerService.this, song, playerState == PlayerState.STARTED, false);
-                UltrasonicAppWidgetProvider4X4.getInstance().notifyChange(MediaPlayerService.this, song, playerState == PlayerState.STARTED, false);
-
-                if (show)
-                {
-                    // Only update notification if player state is one that will change the icon
-                    if (playerState == PlayerState.STARTED || playerState == PlayerState.PAUSED)
-                    {
-                        updateNotification(playerState, currentPlaying);
-                        nowPlayingEventDistributor.getValue().raiseShowNowPlayingEvent();
-                    }
-                }
-                else
-                {
-                    nowPlayingEventDistributor.getValue().raiseHideNowPlayingEvent();
-                    stopForeground(true);
-                    isInForeground = false;
-                    stopIfIdle();
-                }
-
-                if (playerState == STARTED)
-                {
-                    scrobbler.scrobble(MediaPlayerService.this, currentPlaying, false);
-                }
-                else if (playerState == COMPLETED)
-                {
-                    scrobbler.scrobble(MediaPlayerService.this, currentPlaying, true);
-                }
+            if (playerState == PAUSED) {
+                downloadQueueSerializer.serializeDownloadQueue(downloader.downloadList, downloader.getCurrentPlayingIndex(), getPlayerPosition());
             }
+
+            boolean showWhenPaused = (playerState != PlayerState.STOPPED && Util.isNotificationAlwaysEnabled(MediaPlayerService.this));
+            boolean show = playerState == PlayerState.STARTED || showWhenPaused;
+            MusicDirectory.Entry song = currentPlaying == null ? null : currentPlaying.getSong();
+
+            Util.broadcastPlaybackStatusChange(MediaPlayerService.this, playerState);
+            Util.broadcastA2dpPlayStatusChange(MediaPlayerService.this, playerState, song,
+                    downloader.downloadList.size() + downloader.backgroundDownloadList.size(),
+                    downloader.downloadList.indexOf(currentPlaying) + 1, getPlayerPosition());
+
+            // Update widget
+            UpdateWidget(playerState, song);
+
+            if (show) {
+                // Only update notification if player state is one that will change the icon
+                if (playerState == PlayerState.STARTED || playerState == PlayerState.PAUSED) {
+                    updateNotification(playerState, currentPlaying);
+                    nowPlayingEventDistributor.getValue().raiseShowNowPlayingEvent();
+                }
+            } else {
+                nowPlayingEventDistributor.getValue().raiseHideNowPlayingEvent();
+                stopForeground(true);
+                isInForeground = false;
+                stopIfIdle();
+            }
+
+            if (playerState == STARTED) {
+                scrobbler.scrobble(MediaPlayerService.this, currentPlaying, false);
+            } else if (playerState == COMPLETED) {
+                scrobbler.scrobble(MediaPlayerService.this, currentPlaying, true);
+            }
+
+            return null;
         };
     }
 
-    private void setupOnSongCompletedHandler()
-    {
-        localMediaPlayer.onSongCompleted = new Consumer<DownloadFile>() {
-            @Override
-            public void accept(DownloadFile currentPlaying) {
-                int index = downloader.getCurrentPlayingIndex();
+    private void setupOnSongCompletedHandler() {
+        localMediaPlayer.onSongCompleted = (DownloadFile currentPlaying) -> {
+            int index = downloader.getCurrentPlayingIndex();
 
-                if (currentPlaying != null)
-                {
-                    final MusicDirectory.Entry song = currentPlaying.getSong();
+            if (currentPlaying != null) {
+                final MusicDirectory.Entry song = currentPlaying.getSong();
 
-                    if (song.getBookmarkPosition() > 0 && Util.getShouldClearBookmark(MediaPlayerService.this))
-                    {
-                        MusicService musicService = MusicServiceFactory.getMusicService(MediaPlayerService.this);
-                        try
-                        {
-                            musicService.deleteBookmark(song.getId(), MediaPlayerService.this);
-                        }
-                        catch (Exception ignored)
-                        {
+                if (song.getBookmarkPosition() > 0 && Util.getShouldClearBookmark(MediaPlayerService.this)) {
+                    MusicService musicService = MusicServiceFactory.getMusicService(MediaPlayerService.this);
+                    try {
+                        musicService.deleteBookmark(song.getId(), MediaPlayerService.this);
+                    } catch (Exception ignored) {
 
-                        }
-                    }
-                }
-
-                if (index != -1)
-                {
-                    switch (getRepeatMode())
-                    {
-                        case OFF:
-                            if (index + 1 < 0 || index + 1 >= downloader.downloadList.size())
-                            {
-                                if (Util.getShouldClearPlaylist(MediaPlayerService.this))
-                                {
-                                    clear(true);
-                                    jukeboxMediaPlayer.getValue().updatePlaylist();
-                                }
-
-                                resetPlayback();
-                                break;
-                            }
-
-                            play(index + 1);
-                            break;
-                        case ALL:
-                            play((index + 1) % downloader.downloadList.size());
-                            break;
-                        case SINGLE:
-                            play(index);
-                            break;
-                        default:
-                            break;
                     }
                 }
             }
+
+            if (index != -1) {
+                switch (getRepeatMode()) {
+                    case OFF:
+                        if (index + 1 < 0 || index + 1 >= downloader.downloadList.size()) {
+                            if (Util.getShouldClearPlaylist(MediaPlayerService.this)) {
+                                clear(true);
+                                jukeboxMediaPlayer.getValue().updatePlaylist();
+                            }
+
+                            resetPlayback();
+                            break;
+                        }
+
+                        play(index + 1);
+                        break;
+                    case ALL:
+                        play((index + 1) % downloader.downloadList.size());
+                        break;
+                    case SINGLE:
+                        play(index);
+                        break;
+                    default:
+                        break;
+                }
+            }
+
+            return null;
         };
     }
 
