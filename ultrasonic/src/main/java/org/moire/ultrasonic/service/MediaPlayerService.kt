@@ -1,3 +1,10 @@
+/*
+ * MediaPlayerService.kt
+ * Copyright (C) 2009-2021 Ultrasonic developers
+ *
+ * Distributed under terms of the GNU GPLv3 license.
+ */
+
 package org.moire.ultrasonic.service
 
 import android.app.Notification
@@ -15,7 +22,8 @@ import android.support.v4.media.session.PlaybackStateCompat
 import android.view.KeyEvent
 import androidx.core.app.NotificationCompat
 import androidx.core.app.NotificationManagerCompat
-import org.koin.java.KoinJavaComponent.inject
+import java.util.ArrayList
+import org.koin.android.ext.android.inject
 import org.moire.ultrasonic.R
 import org.moire.ultrasonic.activity.NavigationActivity
 import org.moire.ultrasonic.domain.MusicDirectory
@@ -25,7 +33,6 @@ import org.moire.ultrasonic.provider.UltrasonicAppWidgetProvider4X1
 import org.moire.ultrasonic.provider.UltrasonicAppWidgetProvider4X2
 import org.moire.ultrasonic.provider.UltrasonicAppWidgetProvider4X3
 import org.moire.ultrasonic.provider.UltrasonicAppWidgetProvider4X4
-import org.moire.ultrasonic.service.MediaPlayerService
 import org.moire.ultrasonic.service.MusicServiceFactory.getMusicService
 import org.moire.ultrasonic.util.Constants
 import org.moire.ultrasonic.util.FileUtil
@@ -34,7 +41,6 @@ import org.moire.ultrasonic.util.ShufflePlayBuffer
 import org.moire.ultrasonic.util.SimpleServiceBinder
 import org.moire.ultrasonic.util.Util
 import timber.log.Timber
-import java.util.ArrayList
 
 /**
  * Android Foreground Service for playing music
@@ -43,55 +49,54 @@ import java.util.ArrayList
 class MediaPlayerService : Service() {
     private val binder: IBinder = SimpleServiceBinder(this)
     private val scrobbler = Scrobbler()
-    var jukeboxMediaPlayer = inject(JukeboxMediaPlayer::class.java)
-    private val downloadQueueSerializerLazy = inject(DownloadQueueSerializer::class.java)
-    private val shufflePlayBufferLazy = inject(ShufflePlayBuffer::class.java)
-    private val downloaderLazy = inject(Downloader::class.java)
-    private val localMediaPlayerLazy = inject(LocalMediaPlayer::class.java)
-    private val nowPlayingEventDistributor = inject(NowPlayingEventDistributor::class.java)
-    private val mediaPlayerLifecycleSupport = inject(MediaPlayerLifecycleSupport::class.java)
-    private var localMediaPlayer: LocalMediaPlayer? = null
-    private var downloader: Downloader? = null
-    private var shufflePlayBuffer: ShufflePlayBuffer? = null
-    private var downloadQueueSerializer: DownloadQueueSerializer? = null
+    private val jukeboxMediaPlayer by inject<JukeboxMediaPlayer>()
+    private val downloadQueueSerializer by inject<DownloadQueueSerializer>()
+    private val shufflePlayBuffer by inject<ShufflePlayBuffer>()
+    private val downloader by inject<Downloader>()
+    private val localMediaPlayer by inject<LocalMediaPlayer>()
+    private val nowPlayingEventDistributor by inject<NowPlayingEventDistributor>()
+    private val mediaPlayerLifecycleSupport by inject<MediaPlayerLifecycleSupport>()
+
     private var mediaSession: MediaSessionCompat? = null
     private var mediaSessionToken: MediaSessionCompat.Token? = null
     private var isInForeground = false
     private var notificationBuilder: NotificationCompat.Builder? = null
+
     val repeatMode: RepeatMode
         get() = Util.getRepeatMode(this)
 
-    override fun onBind(intent: Intent): IBinder? {
+    override fun onBind(intent: Intent): IBinder {
         return binder
     }
 
     override fun onCreate() {
         super.onCreate()
-        downloader = downloaderLazy.value
-        localMediaPlayer = localMediaPlayerLazy.value
-        shufflePlayBuffer = shufflePlayBufferLazy.value
-        downloadQueueSerializer = downloadQueueSerializerLazy.value
+
         initMediaSessions()
-        downloader!!.onCreate()
-        shufflePlayBuffer!!.onCreate()
-        localMediaPlayer!!.init()
+        downloader.onCreate()
+        shufflePlayBuffer.onCreate()
+        localMediaPlayer.init()
+
         setupOnCurrentPlayingChangedHandler()
         setupOnPlayerStateChangedHandler()
         setupOnSongCompletedHandler()
-        localMediaPlayer!!.onPrepared = {
-            downloadQueueSerializer!!.serializeDownloadQueue(
-                    downloader!!.downloadList,
-                    downloader!!.currentPlayingIndex,
-                    playerPosition
+
+        localMediaPlayer.onPrepared = {
+            downloadQueueSerializer.serializeDownloadQueue(
+                downloader.downloadList,
+                downloader.currentPlayingIndex,
+                playerPosition
             )
             null
         }
-        localMediaPlayer!!.onNextSongRequested = Runnable { setNextPlaying() }
+
+        localMediaPlayer.onNextSongRequested = Runnable { setNextPlaying() }
 
         // Create Notification Channel
         createNotificationChannel()
 
-        // Update notification early. It is better to show an empty one temporarily than waiting too long and letting Android kill the app
+        // Update notification early. It is better to show an empty one temporarily
+        // than waiting too long and letting Android kill the app
         updateNotification(PlayerState.IDLE, null)
         instance = this
         Timber.i("MediaPlayerService created")
@@ -106,9 +111,9 @@ class MediaPlayerService : Service() {
         super.onDestroy()
         instance = null
         try {
-            localMediaPlayer!!.release()
-            downloader!!.stop()
-            shufflePlayBuffer!!.onDestroy()
+            localMediaPlayer.release()
+            downloader.stop()
+            shufflePlayBuffer.onDestroy()
             mediaSession!!.release()
         } catch (ignored: Throwable) {
         }
@@ -117,113 +122,108 @@ class MediaPlayerService : Service() {
 
     private fun stopIfIdle() {
         synchronized(instanceLock) {
-            // currentPlaying could be changed from another thread in the meantime, so check again before stopping for good
-            if (localMediaPlayer!!.currentPlaying == null || localMediaPlayer!!.playerState === PlayerState.STOPPED) stopSelf()
+            // currentPlaying could be changed from another thread in the meantime,
+            // so check again before stopping for good
+            if (localMediaPlayer.currentPlaying == null ||
+                localMediaPlayer.playerState === PlayerState.STOPPED
+            ) {
+                stopSelf()
+            }
         }
     }
 
     @Synchronized
     fun seekTo(position: Int) {
-        if (jukeboxMediaPlayer.value.isEnabled) {
-            jukeboxMediaPlayer.value.skip(downloader!!.currentPlayingIndex, position / 1000)
+        if (jukeboxMediaPlayer.isEnabled) {
+            // TODO These APIs should be more aligned
+            val seconds = position / 1000
+            jukeboxMediaPlayer.skip(downloader.currentPlayingIndex, seconds)
         } else {
-            localMediaPlayer!!.seekTo(position)
+            localMediaPlayer.seekTo(position)
         }
     }
 
     @get:Synchronized
     val playerPosition: Int
         get() {
-            if (localMediaPlayer!!.playerState === PlayerState.IDLE || localMediaPlayer!!.playerState === PlayerState.DOWNLOADING || localMediaPlayer!!.playerState === PlayerState.PREPARING) {
+            if (localMediaPlayer.playerState === PlayerState.IDLE ||
+                localMediaPlayer.playerState === PlayerState.DOWNLOADING ||
+                localMediaPlayer.playerState === PlayerState.PREPARING
+            ) {
                 return 0
             }
-            return if (jukeboxMediaPlayer.value.isEnabled) jukeboxMediaPlayer.value.positionSeconds * 1000 else localMediaPlayer!!.playerPosition
+            return if (jukeboxMediaPlayer.isEnabled) {
+                jukeboxMediaPlayer.positionSeconds * 1000
+            } else {
+                localMediaPlayer.playerPosition
+            }
         }
 
     @get:Synchronized
     val playerDuration: Int
-        get() = localMediaPlayer!!.playerDuration
+        get() = localMediaPlayer.playerDuration
 
     @Synchronized
     fun setCurrentPlaying(currentPlayingIndex: Int) {
         try {
-            localMediaPlayer!!.setCurrentPlaying(downloader!!.downloadList[currentPlayingIndex])
+            localMediaPlayer.setCurrentPlaying(downloader.downloadList[currentPlayingIndex])
         } catch (x: IndexOutOfBoundsException) {
             // Ignored
-        }
-    }
-
-    fun setupOnCurrentPlayingChangedHandler() {
-        localMediaPlayer!!.onCurrentPlayingChanged = { currentPlaying: DownloadFile? ->
-            if (currentPlaying != null) {
-                Util.broadcastNewTrackInfo(this@MediaPlayerService, currentPlaying.song)
-                Util.broadcastA2dpMetaDataChange(this@MediaPlayerService, playerPosition, currentPlaying,
-                        downloader!!.downloads.size, downloader!!.currentPlayingIndex + 1)
-            } else {
-                Util.broadcastNewTrackInfo(this@MediaPlayerService, null)
-                Util.broadcastA2dpMetaDataChange(this@MediaPlayerService, playerPosition, null,
-                        downloader!!.downloads.size, downloader!!.currentPlayingIndex + 1)
-            }
-
-            // Update widget
-            val playerState = localMediaPlayer!!.playerState
-            val song = currentPlaying?.song
-            UpdateWidget(playerState, song)
-            if (currentPlaying != null) {
-                updateNotification(localMediaPlayer!!.playerState, currentPlaying)
-                nowPlayingEventDistributor.value.raiseShowNowPlayingEvent()
-            } else {
-                nowPlayingEventDistributor.value.raiseHideNowPlayingEvent()
-                stopForeground(true)
-                isInForeground = false
-                stopIfIdle()
-            }
-            null
         }
     }
 
     @Synchronized
     fun setNextPlaying() {
         val gaplessPlayback = Util.getGaplessPlaybackPreference(this)
+
         if (!gaplessPlayback) {
-            localMediaPlayer!!.clearNextPlaying(true)
+            localMediaPlayer.clearNextPlaying(true)
             return
         }
-        var index = downloader!!.currentPlayingIndex
+
+        var index = downloader.currentPlayingIndex
+
         if (index != -1) {
             when (repeatMode) {
                 RepeatMode.OFF -> index += 1
-                RepeatMode.ALL -> index = (index + 1) % downloader!!.downloadList.size
+                RepeatMode.ALL -> index = (index + 1) % downloader.downloadList.size
                 RepeatMode.SINGLE -> {
                 }
                 else -> {
                 }
             }
         }
-        localMediaPlayer!!.clearNextPlaying(false)
-        if (index < downloader!!.downloadList.size && index != -1) {
-            localMediaPlayer!!.setNextPlaying(downloader!!.downloadList[index])
+
+        localMediaPlayer.clearNextPlaying(false)
+        if (index < downloader.downloadList.size && index != -1) {
+            localMediaPlayer.setNextPlaying(downloader.downloadList[index])
         } else {
-            localMediaPlayer!!.clearNextPlaying(true)
+            localMediaPlayer.clearNextPlaying(true)
         }
     }
 
     @Synchronized
     fun togglePlayPause() {
-        if (localMediaPlayer!!.playerState === PlayerState.PAUSED || localMediaPlayer!!.playerState === PlayerState.COMPLETED || localMediaPlayer!!.playerState === PlayerState.STOPPED) {
+        if (localMediaPlayer.playerState === PlayerState.PAUSED ||
+            localMediaPlayer.playerState === PlayerState.COMPLETED ||
+            localMediaPlayer.playerState === PlayerState.STOPPED
+        ) {
             start()
-        } else if (localMediaPlayer!!.playerState === PlayerState.IDLE) {
+        } else if (localMediaPlayer.playerState === PlayerState.IDLE) {
             play()
-        } else if (localMediaPlayer!!.playerState === PlayerState.STARTED) {
+        } else if (localMediaPlayer.playerState === PlayerState.STARTED) {
             pause()
         }
     }
 
     @Synchronized
     fun resumeOrPlay() {
-        if (localMediaPlayer!!.playerState === PlayerState.PAUSED || localMediaPlayer!!.playerState === PlayerState.COMPLETED || localMediaPlayer!!.playerState === PlayerState.STOPPED) {
+        if (localMediaPlayer.playerState === PlayerState.PAUSED ||
+            localMediaPlayer.playerState === PlayerState.COMPLETED ||
+            localMediaPlayer.playerState === PlayerState.STOPPED
+        ) {
             start()
-        } else if (localMediaPlayer!!.playerState === PlayerState.IDLE) {
+        } else if (localMediaPlayer.playerState === PlayerState.IDLE) {
             play()
         }
     }
@@ -233,7 +233,7 @@ class MediaPlayerService : Service() {
      */
     @Synchronized
     fun play() {
-        val current = downloader!!.currentPlayingIndex
+        val current = downloader.currentPlayingIndex
         if (current == -1) {
             play(0)
         } else {
@@ -249,119 +249,176 @@ class MediaPlayerService : Service() {
     @Synchronized
     fun play(index: Int, start: Boolean) {
         Timber.v("play requested for %d", index)
-        if (index < 0 || index >= downloader!!.downloadList.size) {
+        if (index < 0 || index >= downloader.downloadList.size) {
             resetPlayback()
         } else {
             setCurrentPlaying(index)
             if (start) {
-                if (jukeboxMediaPlayer.value.isEnabled) {
-                    jukeboxMediaPlayer.value.skip(index, 0)
-                    localMediaPlayer!!.setPlayerState(PlayerState.STARTED)
+                if (jukeboxMediaPlayer.isEnabled) {
+                    jukeboxMediaPlayer.skip(index, 0)
+                    localMediaPlayer.setPlayerState(PlayerState.STARTED)
                 } else {
-                    localMediaPlayer!!.play(downloader!!.downloadList[index])
+                    localMediaPlayer.play(downloader.downloadList[index])
                 }
             }
-            downloader!!.checkDownloads()
+            downloader.checkDownloads()
             setNextPlaying()
         }
     }
 
     @Synchronized
     private fun resetPlayback() {
-        localMediaPlayer!!.reset()
-        localMediaPlayer!!.setCurrentPlaying(null)
-        downloadQueueSerializer!!.serializeDownloadQueue(downloader!!.downloadList,
-                downloader!!.currentPlayingIndex, playerPosition)
+        localMediaPlayer.reset()
+        localMediaPlayer.setCurrentPlaying(null)
+        downloadQueueSerializer.serializeDownloadQueue(
+            downloader.downloadList,
+            downloader.currentPlayingIndex, playerPosition
+        )
     }
 
     @Synchronized
     fun pause() {
-        if (localMediaPlayer!!.playerState === PlayerState.STARTED) {
-            if (jukeboxMediaPlayer.value.isEnabled) {
-                jukeboxMediaPlayer.value.stop()
+        if (localMediaPlayer.playerState === PlayerState.STARTED) {
+            if (jukeboxMediaPlayer.isEnabled) {
+                jukeboxMediaPlayer.stop()
             } else {
-                localMediaPlayer!!.pause()
+                localMediaPlayer.pause()
             }
-            localMediaPlayer!!.setPlayerState(PlayerState.PAUSED)
+            localMediaPlayer.setPlayerState(PlayerState.PAUSED)
         }
     }
 
     @Synchronized
     fun stop() {
-        if (localMediaPlayer!!.playerState === PlayerState.STARTED) {
-            if (jukeboxMediaPlayer.value.isEnabled) {
-                jukeboxMediaPlayer.value.stop()
+        if (localMediaPlayer.playerState === PlayerState.STARTED) {
+            if (jukeboxMediaPlayer.isEnabled) {
+                jukeboxMediaPlayer.stop()
             } else {
-                localMediaPlayer!!.pause()
+                localMediaPlayer.pause()
             }
         }
-        localMediaPlayer!!.setPlayerState(PlayerState.STOPPED)
+        localMediaPlayer.setPlayerState(PlayerState.STOPPED)
     }
 
     @Synchronized
     fun start() {
-        if (jukeboxMediaPlayer.value.isEnabled) {
-            jukeboxMediaPlayer.value.start()
+        if (jukeboxMediaPlayer.isEnabled) {
+            jukeboxMediaPlayer.start()
         } else {
-            localMediaPlayer!!.start()
+            localMediaPlayer.start()
         }
-        localMediaPlayer!!.setPlayerState(PlayerState.STARTED)
+        localMediaPlayer.setPlayerState(PlayerState.STARTED)
     }
 
-    private fun UpdateWidget(playerState: PlayerState, song: MusicDirectory.Entry?) {
-        UltrasonicAppWidgetProvider4X1.getInstance().notifyChange(this@MediaPlayerService, song, playerState === PlayerState.STARTED, false)
-        UltrasonicAppWidgetProvider4X2.getInstance().notifyChange(this@MediaPlayerService, song, playerState === PlayerState.STARTED, true)
-        UltrasonicAppWidgetProvider4X3.getInstance().notifyChange(this@MediaPlayerService, song, playerState === PlayerState.STARTED, false)
-        UltrasonicAppWidgetProvider4X4.getInstance().notifyChange(this@MediaPlayerService, song, playerState === PlayerState.STARTED, false)
+    private fun updateWidget(playerState: PlayerState, song: MusicDirectory.Entry?) {
+        val started = playerState === PlayerState.STARTED
+        val context = this@MediaPlayerService
+
+        UltrasonicAppWidgetProvider4X1.getInstance().notifyChange(context, song, started, false)
+        UltrasonicAppWidgetProvider4X2.getInstance().notifyChange(context, song, started, true)
+        UltrasonicAppWidgetProvider4X3.getInstance().notifyChange(context, song, started, false)
+        UltrasonicAppWidgetProvider4X4.getInstance().notifyChange(context, song, started, false)
     }
 
-    fun setupOnPlayerStateChangedHandler() {
-        localMediaPlayer!!.onPlayerStateChanged = { playerState: PlayerState, currentPlaying: DownloadFile? ->
+    private fun setupOnCurrentPlayingChangedHandler() {
+        localMediaPlayer.onCurrentPlayingChanged = { currentPlaying: DownloadFile? ->
+
+            if (currentPlaying != null) {
+                Util.broadcastNewTrackInfo(this@MediaPlayerService, currentPlaying.song)
+                Util.broadcastA2dpMetaDataChange(
+                    this@MediaPlayerService, playerPosition, currentPlaying,
+                    downloader.downloads.size, downloader.currentPlayingIndex + 1
+                )
+            } else {
+                Util.broadcastNewTrackInfo(this@MediaPlayerService, null)
+                Util.broadcastA2dpMetaDataChange(
+                    this@MediaPlayerService, playerPosition, null,
+                    downloader.downloads.size, downloader.currentPlayingIndex + 1
+                )
+            }
+
+            // Update widget
+            val playerState = localMediaPlayer.playerState
+            val song = currentPlaying?.song
+
+            updateWidget(playerState, song)
+
+            if (currentPlaying != null) {
+                updateNotification(localMediaPlayer.playerState, currentPlaying)
+                nowPlayingEventDistributor.raiseShowNowPlayingEvent()
+            } else {
+                nowPlayingEventDistributor.raiseHideNowPlayingEvent()
+                stopForeground(true)
+                isInForeground = false
+                stopIfIdle()
+            }
+            null
+        }
+    }
+
+    private fun setupOnPlayerStateChangedHandler() {
+        localMediaPlayer.onPlayerStateChanged = {
+            playerState: PlayerState,
+            currentPlaying: DownloadFile?
+            ->
+
+            val context = this@MediaPlayerService
+
             // Notify MediaSession
             updateMediaSession(currentPlaying, playerState)
             if (playerState === PlayerState.PAUSED) {
-                downloadQueueSerializer!!.serializeDownloadQueue(downloader!!.downloadList, downloader!!.currentPlayingIndex, playerPosition)
+                downloadQueueSerializer.serializeDownloadQueue(
+                    downloader.downloadList, downloader.currentPlayingIndex, playerPosition
+                )
             }
-            val showWhenPaused = playerState !== PlayerState.STOPPED && Util.isNotificationAlwaysEnabled(this@MediaPlayerService)
+
+            val showWhenPaused = playerState !== PlayerState.STOPPED &&
+                Util.isNotificationAlwaysEnabled(context)
+
             val show = playerState === PlayerState.STARTED || showWhenPaused
             val song = currentPlaying?.song
-            Util.broadcastPlaybackStatusChange(this@MediaPlayerService, playerState)
-            Util.broadcastA2dpPlayStatusChange(this@MediaPlayerService, playerState, song,
-                    downloader!!.downloadList.size + downloader!!.backgroundDownloadList.size,
-                    downloader!!.downloadList.indexOf(currentPlaying) + 1, playerPosition)
+
+            Util.broadcastPlaybackStatusChange(context, playerState)
+            Util.broadcastA2dpPlayStatusChange(
+                context, playerState, song,
+                downloader.downloadList.size + downloader.backgroundDownloadList.size,
+                downloader.downloadList.indexOf(currentPlaying) + 1, playerPosition
+            )
 
             // Update widget
-            UpdateWidget(playerState, song)
+            updateWidget(playerState, song)
             if (show) {
                 // Only update notification if player state is one that will change the icon
                 if (playerState === PlayerState.STARTED || playerState === PlayerState.PAUSED) {
                     updateNotification(playerState, currentPlaying)
-                    nowPlayingEventDistributor.value.raiseShowNowPlayingEvent()
+                    nowPlayingEventDistributor.raiseShowNowPlayingEvent()
                 }
             } else {
-                nowPlayingEventDistributor.value.raiseHideNowPlayingEvent()
+                nowPlayingEventDistributor.raiseHideNowPlayingEvent()
                 stopForeground(true)
                 isInForeground = false
                 stopIfIdle()
             }
             if (playerState === PlayerState.STARTED) {
-                scrobbler.scrobble(this@MediaPlayerService, currentPlaying, false)
+                scrobbler.scrobble(context, currentPlaying, false)
             } else if (playerState === PlayerState.COMPLETED) {
-                scrobbler.scrobble(this@MediaPlayerService, currentPlaying, true)
+                scrobbler.scrobble(context, currentPlaying, true)
             }
             null
         }
     }
 
     private fun setupOnSongCompletedHandler() {
-        localMediaPlayer!!.onSongCompleted = { currentPlaying: DownloadFile? ->
-            val index = downloader!!.currentPlayingIndex
+        localMediaPlayer.onSongCompleted = { currentPlaying: DownloadFile? ->
+            val index = downloader.currentPlayingIndex
+            val context = this@MediaPlayerService
+
             if (currentPlaying != null) {
                 val song = currentPlaying.song
-                if (song.bookmarkPosition > 0 && Util.getShouldClearBookmark(this@MediaPlayerService)) {
-                    val musicService = getMusicService(this@MediaPlayerService)
+                if (song.bookmarkPosition > 0 && Util.getShouldClearBookmark(context)) {
+                    val musicService = getMusicService(context)
                     try {
-                        musicService.deleteBookmark(song.id, this@MediaPlayerService)
+                        musicService.deleteBookmark(song.id, context)
                     } catch (ignored: Exception) {
                     }
                 }
@@ -369,17 +426,19 @@ class MediaPlayerService : Service() {
             if (index != -1) {
                 when (repeatMode) {
                     RepeatMode.OFF -> {
-                        if (index + 1 < 0 || index + 1 >= downloader!!.downloadList.size) {
-                            if (Util.getShouldClearPlaylist(this@MediaPlayerService)) {
+                        if (index + 1 < 0 || index + 1 >= downloader.downloadList.size) {
+                            if (Util.getShouldClearPlaylist(context)) {
                                 clear(true)
-                                jukeboxMediaPlayer.value.updatePlaylist()
+                                jukeboxMediaPlayer.updatePlaylist()
                             }
                             resetPlayback()
-                            break
+                        } else {
+                            play(index + 1)
                         }
-                        play(index + 1)
                     }
-                    RepeatMode.ALL -> play((index + 1) % downloader!!.downloadList.size)
+                    RepeatMode.ALL -> {
+                        play((index + 1) % downloader.downloadList.size)
+                    }
                     RepeatMode.SINGLE -> play(index)
                     else -> {
                     }
@@ -391,13 +450,15 @@ class MediaPlayerService : Service() {
 
     @Synchronized
     fun clear(serialize: Boolean) {
-        localMediaPlayer!!.reset()
-        downloader!!.clear()
-        localMediaPlayer!!.setCurrentPlaying(null)
+        localMediaPlayer.reset()
+        downloader.clear()
+        localMediaPlayer.setCurrentPlaying(null)
         setNextPlaying()
         if (serialize) {
-            downloadQueueSerializer!!.serializeDownloadQueue(downloader!!.downloadList,
-                    downloader!!.currentPlayingIndex, playerPosition)
+            downloadQueueSerializer.serializeDownloadQueue(
+                downloader.downloadList,
+                downloader.currentPlayingIndex, playerPosition
+            )
         }
     }
 
@@ -408,8 +469,9 @@ class MediaPlayerService : Service() {
         if (currentPlaying != null) {
             try {
                 val song = currentPlaying.song
-                val cover = FileUtil.getAlbumArtBitmap(context, song,
-                        Util.getMinDisplayMetric(context), true
+                val cover = FileUtil.getAlbumArtBitmap(
+                    context, song,
+                    Util.getMinDisplayMetric(context), true
                 )
                 metadata.putLong(MediaMetadataCompat.METADATA_KEY_DURATION, -1L)
                 metadata.putString(MediaMetadataCompat.METADATA_KEY_ARTIST, song.artist)
@@ -427,9 +489,13 @@ class MediaPlayerService : Service() {
 
         // Create playback State
         val playbackState = PlaybackStateCompat.Builder()
-        val state = if (playerState === PlayerState.STARTED) PlaybackStateCompat.STATE_PLAYING else PlaybackStateCompat.STATE_PAUSED
+        val state = if (playerState === PlayerState.STARTED) {
+            // If we set the playback position correctly, we can get a nice seek bar :)
+            PlaybackStateCompat.STATE_PLAYING
+        } else {
+            PlaybackStateCompat.STATE_PAUSED
+        }
 
-        // If we set the playback position correctly, we can get a nice seek bar :)
         playbackState.setState(state, PlaybackStateCompat.PLAYBACK_POSITION_UNKNOWN, 1.0f)
 
         // Set Active state
@@ -441,31 +507,40 @@ class MediaPlayerService : Service() {
 
     private fun createNotificationChannel() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            //The suggested importance of a startForeground service notification is IMPORTANCE_LOW
-            val channel = NotificationChannel(NOTIFICATION_CHANNEL_ID, NOTIFICATION_CHANNEL_NAME, NotificationManager.IMPORTANCE_LOW)
+
+            // The suggested importance of a startForeground service notification is IMPORTANCE_LOW
+            val channel = NotificationChannel(
+                NOTIFICATION_CHANNEL_ID,
+                NOTIFICATION_CHANNEL_NAME,
+                NotificationManager.IMPORTANCE_LOW
+            )
+
             channel.lightColor = android.R.color.holo_blue_dark
             channel.lockscreenVisibility = Notification.VISIBILITY_PUBLIC
             channel.setShowBadge(false)
+
             val manager = getSystemService(NOTIFICATION_SERVICE) as NotificationManager
             manager.createNotificationChannel(channel)
         }
     }
 
     fun updateNotification(playerState: PlayerState, currentPlaying: DownloadFile?) {
+        val notification = buildForegroundNotification(playerState, currentPlaying)
+
         if (Util.isNotificationEnabled(this)) {
             if (isInForeground) {
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-                    val notificationManager = getSystemService(NOTIFICATION_SERVICE) as NotificationManager
-                    notificationManager.notify(NOTIFICATION_ID, buildForegroundNotification(playerState, currentPlaying))
+                    val manager = getSystemService(NOTIFICATION_SERVICE) as NotificationManager
+                    manager.notify(NOTIFICATION_ID, notification)
                 } else {
-                    val notificationManager = NotificationManagerCompat.from(this)
-                    notificationManager.notify(NOTIFICATION_ID, buildForegroundNotification(playerState, currentPlaying))
+                    val manager = NotificationManagerCompat.from(this)
+                    manager.notify(NOTIFICATION_ID, notification)
                 }
-                Timber.w("--- Updated notification")
+                Timber.v("Updated notification")
             } else {
-                startForeground(NOTIFICATION_ID, buildForegroundNotification(playerState, currentPlaying))
+                startForeground(NOTIFICATION_ID, notification)
                 isInForeground = true
-                Timber.w("--- Created Foreground notification")
+                Timber.w("Created Foreground notification")
             }
         }
     }
@@ -473,7 +548,11 @@ class MediaPlayerService : Service() {
     /**
      * This method builds a notification, reusing the Notification Builder if possible
      */
-    private fun buildForegroundNotification(playerState: PlayerState, currentPlaying: DownloadFile?): Notification {
+    private fun buildForegroundNotification(
+        playerState: PlayerState,
+        currentPlaying: DownloadFile?
+    ): Notification {
+
         // Init
         val context = applicationContext
         val song = currentPlaying?.song
@@ -494,7 +573,7 @@ class MediaPlayerService : Service() {
             notificationBuilder!!.priority = NotificationCompat.PRIORITY_LOW
 
             // Add content intent (when user taps on notification)
-            notificationBuilder!!.setContentIntent(pendingIntentForContent)
+            notificationBuilder!!.setContentIntent(getPendingIntentForContent())
 
             // This intent is executed when the user closes the notification
             notificationBuilder!!.setDeleteIntent(stopIntent)
@@ -526,14 +605,19 @@ class MediaPlayerService : Service() {
         return notificationBuilder!!.build()
     }
 
-    private fun addActions(context: Context, notificationBuilder: NotificationCompat.Builder, playerState: PlayerState, song: MusicDirectory.Entry?): IntArray {
+    private fun addActions(
+        context: Context,
+        notificationBuilder: NotificationCompat.Builder,
+        playerState: PlayerState,
+        song: MusicDirectory.Entry?
+    ): IntArray {
+        // Init
         val compactActionList = ArrayList<Int>()
         var numActions = 0 // we start and 0 and then increment by 1 for each call to generateAction
 
-
         // Star
         if (song != null) {
-            notificationBuilder.addAction(generateStarUnstarAction(context, numActions, song.starred))
+            notificationBuilder.addAction(generateStarAction(context, numActions, song.starred))
         }
         numActions++
 
@@ -559,20 +643,21 @@ class MediaPlayerService : Service() {
             actionArray[i] = compactActionList[i]
         }
         return actionArray
-        //notificationBuilder.setShowActionsInCompactView())
+        // notificationBuilder.setShowActionsInCompactView())
     }
 
     private fun generateAction(context: Context, requestCode: Int): NotificationCompat.Action? {
         val keycode: Int
         val icon: Int
         val label: String
+
         when (requestCode) {
             1 -> {
                 keycode = KeyEvent.KEYCODE_MEDIA_PREVIOUS
                 label = getString(R.string.common_play_previous)
                 icon = R.drawable.media_backward_medium_dark
             }
-            2 ->                 // Is handled in generatePlayPauseAction()
+            2 -> // Is handled in generatePlayPauseAction()
                 return null
             3 -> {
                 keycode = KeyEvent.KEYCODE_MEDIA_NEXT
@@ -586,15 +671,22 @@ class MediaPlayerService : Service() {
             }
             else -> return null
         }
+
         val pendingIntent = getPendingIntentForMediaAction(context, keycode, requestCode)
         return NotificationCompat.Action.Builder(icon, label, pendingIntent).build()
     }
 
-    private fun generatePlayPauseAction(context: Context, requestCode: Int, playerState: PlayerState): NotificationCompat.Action {
+    private fun generatePlayPauseAction(
+        context: Context,
+        requestCode: Int,
+        playerState: PlayerState
+    ): NotificationCompat.Action {
         val isPlaying = playerState === PlayerState.STARTED
-        val pendingIntent = getPendingIntentForMediaAction(context, KeyEvent.KEYCODE_MEDIA_PLAY_PAUSE, requestCode)
+        val keycode = KeyEvent.KEYCODE_MEDIA_PLAY_PAUSE
+        val pendingIntent = getPendingIntentForMediaAction(context, keycode, requestCode)
         val label: String
         val icon: Int
+
         if (isPlaying) {
             label = getString(R.string.common_pause)
             icon = R.drawable.media_pause_large_dark
@@ -602,14 +694,20 @@ class MediaPlayerService : Service() {
             label = getString(R.string.common_play)
             icon = R.drawable.media_start_large_dark
         }
+
         return NotificationCompat.Action.Builder(icon, label, pendingIntent).build()
     }
 
-    private fun generateStarUnstarAction(context: Context, requestCode: Int, isStarred: Boolean): NotificationCompat.Action {
-        val keyCode: Int
+    private fun generateStarAction(
+        context: Context,
+        requestCode: Int,
+        isStarred: Boolean
+    ): NotificationCompat.Action {
+
         val label: String
         val icon: Int
-        keyCode = KeyEvent.KEYCODE_STAR
+        val keyCode: Int = KeyEvent.KEYCODE_STAR
+
         if (isStarred) {
             label = getString(R.string.download_menu_star)
             icon = R.drawable.ic_star_full_dark
@@ -617,29 +715,36 @@ class MediaPlayerService : Service() {
             label = getString(R.string.download_menu_star)
             icon = R.drawable.ic_star_hollow_dark
         }
+
         val pendingIntent = getPendingIntentForMediaAction(context, keyCode, requestCode)
         return NotificationCompat.Action.Builder(icon, label, pendingIntent).build()
     }
 
-    private val pendingIntentForContent: PendingIntent
-        private get() {
-            val notificationIntent = Intent(this, NavigationActivity::class.java)
-                    .addFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP)
-            notificationIntent.putExtra(Constants.INTENT_EXTRA_NAME_SHOW_PLAYER, true)
-            return PendingIntent.getActivity(this, 0, notificationIntent, PendingIntent.FLAG_UPDATE_CURRENT)
-        }
+    private fun getPendingIntentForContent(): PendingIntent {
+        val intent = Intent(this, NavigationActivity::class.java)
+            .addFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP)
+        val flags = PendingIntent.FLAG_UPDATE_CURRENT
+        intent.putExtra(Constants.INTENT_EXTRA_NAME_SHOW_PLAYER, true)
+        return PendingIntent.getActivity(this, 0, intent, flags)
+    }
 
-    private fun getPendingIntentForMediaAction(context: Context, keycode: Int, requestCode: Int): PendingIntent {
+    private fun getPendingIntentForMediaAction(
+        context: Context,
+        keycode: Int,
+        requestCode: Int
+    ): PendingIntent {
         val intent = Intent(Constants.CMD_PROCESS_KEYCODE)
+        val flags = PendingIntent.FLAG_UPDATE_CURRENT
         intent.setPackage(context.packageName)
         intent.putExtra(Intent.EXTRA_KEY_EVENT, KeyEvent(KeyEvent.ACTION_DOWN, keycode))
-        return PendingIntent.getBroadcast(context, requestCode, intent, PendingIntent.FLAG_UPDATE_CURRENT)
+        return PendingIntent.getBroadcast(context, requestCode, intent, flags)
     }
 
     private fun initMediaSessions() {
         mediaSession = MediaSessionCompat(applicationContext, "UltrasonicService")
         mediaSessionToken = mediaSession!!.sessionToken
-        //mediaController = new MediaControllerCompat(getApplicationContext(), mediaSessionToken);
+        // mediaController = new MediaControllerCompat(getApplicationContext(), mediaSessionToken);
+
         mediaSession!!.setCallback(object : MediaSessionCompat.Callback() {
             override fun onPlay() {
                 super.onPlay()
@@ -659,16 +764,11 @@ class MediaPlayerService : Service() {
                 Timber.w("Media Session Callback: onStop")
             }
 
-            override fun onSeekTo(pos: Long) {
-                super.onSeekTo(pos)
-            }
-
             override fun onMediaButtonEvent(mediaButtonEvent: Intent): Boolean {
                 // This probably won't be necessary once we implement more
                 // of the modern media APIs, like the MediaController etc.
                 val event = mediaButtonEvent.extras!!["android.intent.extra.KEY_EVENT"] as KeyEvent?
-                val lifecycleSupport = mediaPlayerLifecycleSupport.value
-                lifecycleSupport.handleKeyEvent(event)
+                mediaPlayerLifecycleSupport.handleKeyEvent(event)
                 return true
             }
         }
@@ -681,13 +781,16 @@ class MediaPlayerService : Service() {
         private const val NOTIFICATION_ID = 3033
         private var instance: MediaPlayerService? = null
         private val instanceLock = Any()
+
         @JvmStatic
         fun getInstance(context: Context): MediaPlayerService? {
             synchronized(instanceLock) {
                 for (i in 0..19) {
                     if (instance != null) return instance
                     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-                        context.startForegroundService(Intent(context, MediaPlayerService::class.java))
+                        context.startForegroundService(
+                            Intent(context, MediaPlayerService::class.java)
+                        )
                     } else {
                         context.startService(Intent(context, MediaPlayerService::class.java))
                     }
@@ -704,12 +807,16 @@ class MediaPlayerService : Service() {
             }
 
         @JvmStatic
-        fun executeOnStartedMediaPlayerService(context: Context, taskToExecute: Consumer<MediaPlayerService?>) {
+        fun executeOnStartedMediaPlayerService(
+            context: Context,
+            taskToExecute: Consumer<MediaPlayerService?>
+        ) {
+
             val t: Thread = object : Thread() {
                 override fun run() {
                     val instance = getInstance(context)
                     if (instance == null) {
-                        Timber.e("ExecuteOnStartedMediaPlayerService failed to get a MediaPlayerService instance!")
+                        Timber.e("ExecuteOnStarted.. failed to get a MediaPlayerService instance!")
                         return
                     }
                     taskToExecute.accept(instance)
