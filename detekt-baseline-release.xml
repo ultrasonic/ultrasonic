@@ -1,0 +1,261 @@
+<?xml version="1.0" ?>
+<SmellBaseline>
+  <ManuallySuppressedIssues></ManuallySuppressedIssues>
+  <CurrentIssues>
+    <ID>CommentOverPrivateFunction:EditServerFragment.kt$EditServerFragment$ private fun areFieldsChanged(): Boolean</ID>
+    <ID>CommentOverPrivateFunction:EditServerFragment.kt$EditServerFragment$ private fun finishActivity()</ID>
+    <ID>CommentOverPrivateFunction:EditServerFragment.kt$EditServerFragment$ private fun getFields(): Boolean</ID>
+    <ID>CommentOverPrivateFunction:EditServerFragment.kt$EditServerFragment$ private fun setFields()</ID>
+    <ID>CommentOverPrivateFunction:EditServerFragment.kt$EditServerFragment$ private fun testConnection()</ID>
+    <ID>CommentOverPrivateFunction:FileLoggerTree.kt$FileLoggerTree$ private fun getNextLogFile()</ID>
+    <ID>CommentOverPrivateFunction:FileLoggerTree.kt$FileLoggerTree$ private fun getNumberedFile(next: Boolean)</ID>
+    <ID>CommentOverPrivateFunction:MediaPlayerService.kt$MediaPlayerService$ private fun buildForegroundNotification( playerState: PlayerState, currentPlaying: DownloadFile? ): Notification</ID>
+    <ID>CommentOverPrivateFunction:RESTMusicService.kt$RESTMusicService$ @Throws(Exception::class) private fun search2( criteria: SearchCriteria ): SearchResult</ID>
+    <ID>CommentOverPrivateFunction:RESTMusicService.kt$RESTMusicService$ @Throws(Exception::class) private fun searchOld( criteria: SearchCriteria ): SearchResult</ID>
+    <ID>CommentOverPrivateFunction:ServerRowAdapter.kt$ServerRowAdapter$ private fun popupMenuItemClick(menuItem: MenuItem, position: Int): Boolean</ID>
+    <ID>CommentOverPrivateFunction:ServerRowAdapter.kt$ServerRowAdapter$ private fun serverMenuClick(view: View, position: Int)</ID>
+    <ID>CommentOverPrivateFunction:ServerSelectorFragment.kt$ServerSelectorFragment$ private fun editServer(index: Int)</ID>
+    <ID>CommentOverPrivateFunction:ServerSelectorFragment.kt$ServerSelectorFragment$ private fun onServerDeleted(index: Int)</ID>
+    <ID>CommentOverPrivateFunction:ServerSelectorFragment.kt$ServerSelectorFragment$ private fun setActiveServer(index: Int)</ID>
+    <ID>CommentOverPrivateFunction:ServerSettingsModel.kt$ServerSettingsModel$ private fun loadServerSettingFromPreferences( preferenceId: Int, serverId: Int, settings: SharedPreferences ): ServerSetting?</ID>
+    <ID>CommentOverPrivateFunction:ServerSettingsModel.kt$ServerSettingsModel$ private suspend fun areIndexesMissing(): Boolean</ID>
+    <ID>CommentOverPrivateFunction:ServerSettingsModel.kt$ServerSettingsModel$ private suspend fun reindexSettings()</ID>
+    <ID>ComplexCondition:DownloadHandler.kt$DownloadHandler.&lt;no name provided&gt;$!append &amp;&amp; !playNext &amp;&amp; !unpin &amp;&amp; !background</ID>
+    <ID>ComplexCondition:DownloadHandler.kt$DownloadHandler.&lt;no name provided&gt;$!isOffline(activity) &amp;&amp; isArtist &amp;&amp; Util.getShouldUseId3Tags(activity)</ID>
+    <ID>ComplexCondition:EditServerFragment.kt$EditServerFragment$urlString != urlString.trim(' ') || urlString.contains("@") || url.host.isNullOrBlank()</ID>
+    <ID>ComplexCondition:FilePickerAdapter.kt$FilePickerAdapter$currentDirectory.absolutePath == "/" || currentDirectory.absolutePath == "/storage" || currentDirectory.absolutePath == "/storage/emulated" || currentDirectory.absolutePath == "/mnt"</ID>
+    <ID>ComplexCondition:LocalMediaPlayer.kt$LocalMediaPlayer$Util.getGaplessPlaybackPreference(context) &amp;&amp; Build.VERSION.SDK_INT &gt;= Build.VERSION_CODES.JELLY_BEAN &amp;&amp; ( playerState === PlayerState.STARTED || playerState === PlayerState.PAUSED )</ID>
+    <ID>ComplexCondition:LocalMediaPlayer.kt$LocalMediaPlayer$playerState !== PlayerState.IDLE &amp;&amp; playerState !== PlayerState.DOWNLOADING &amp;&amp; playerState !== PlayerState.PREPARING</ID>
+    <ID>ComplexCondition:LocalMediaPlayer.kt$LocalMediaPlayer.&lt;no name provided&gt;$!isPartial || downloadFile.isWorkDone &amp;&amp; abs(duration - pos) &lt; 1000</ID>
+    <ID>ComplexCondition:LocalMediaPlayer.kt$LocalMediaPlayer.&lt;no name provided&gt;$Util.getGaplessPlaybackPreference(context) &amp;&amp; nextPlaying != null &amp;&amp; nextPlayerState === PlayerState.PREPARED</ID>
+    <ID>ComplexCondition:MediaPlayerService.kt$MediaPlayerService$localMediaPlayer.playerState === PlayerState.IDLE || localMediaPlayer.playerState === PlayerState.DOWNLOADING || localMediaPlayer.playerState === PlayerState.PREPARING</ID>
+    <ID>ComplexCondition:MediaPlayerService.kt$MediaPlayerService$localMediaPlayer.playerState === PlayerState.PAUSED || localMediaPlayer.playerState === PlayerState.COMPLETED || localMediaPlayer.playerState === PlayerState.STOPPED</ID>
+    <ID>ComplexCondition:SelectAlbumFragment.kt$SelectAlbumFragment$enabled &amp;&amp; !deleteEnabled &amp;&amp; !isOffline(context)</ID>
+    <ID>ComplexCondition:SelectAlbumFragment.kt$SelectAlbumFragment$enabled &amp;&amp; !isOffline(context) &amp;&amp; selection.size &gt; pinnedCount</ID>
+    <ID>ComplexCondition:SelectAlbumFragment.kt$SelectAlbumFragment$entry != null &amp;&amp; !entry.isDirectory &amp;&amp; !entry.isVideo</ID>
+    <ID>ComplexCondition:SelectAlbumFragment.kt$SelectAlbumFragment.&lt;no name provided&gt;$Util.getShouldShowAllSongsByArtist(context) &amp;&amp; musicDirectory.findChild(allSongsId) == null &amp;&amp; musicDirectory.getChildren(true, false).size == musicDirectory.getChildren(true, true).size</ID>
+    <ID>ComplexCondition:ServerSettingsModel.kt$ServerSettingsModel$url.isNullOrEmpty() || userName.isNullOrEmpty() || isMigrated</ID>
+    <ID>ComplexCondition:SongView.kt$SongView$TextUtils.isEmpty(transcodedSuffix) || transcodedSuffix == suffix || song.isVideo &amp;&amp; Util.getVideoPlayerType(this.context) !== VideoPlayerType.FLASH</ID>
+    <ID>ComplexCondition:SubsonicImageLoaderProxy.kt$SubsonicImageLoaderProxy$id != null &amp;&amp; view != null &amp;&amp; view is ImageView</ID>
+    <ID>ComplexCondition:SubsonicImageLoaderProxy.kt$SubsonicImageLoaderProxy$username != null &amp;&amp; view != null &amp;&amp; view is ImageView</ID>
+    <ID>ComplexMethod:CommunicationErrorHandler.kt$CommunicationErrorHandler.Companion$fun getErrorMessage(error: Throwable, context: Context): String</ID>
+    <ID>ComplexMethod:DownloadFile.kt$DownloadFile.DownloadTask$override fun execute()</ID>
+    <ID>ComplexMethod:EditServerFragment.kt$EditServerFragment$ private fun areFieldsChanged(): Boolean</ID>
+    <ID>ComplexMethod:EditServerFragment.kt$EditServerFragment$ private fun getFields(): Boolean</ID>
+    <ID>ComplexMethod:EditServerFragment.kt$EditServerFragment$override fun onViewCreated(view: View, savedInstanceState: Bundle?)</ID>
+    <ID>ComplexMethod:FilePickerAdapter.kt$FilePickerAdapter$private fun fileLister(currentDirectory: File)</ID>
+    <ID>ComplexMethod:LocalMediaPlayer.kt$LocalMediaPlayer$@Synchronized private fun doPlay(downloadFile: DownloadFile, position: Int, start: Boolean)</ID>
+    <ID>ComplexMethod:LocalMediaPlayer.kt$LocalMediaPlayer$@Synchronized private fun setupNext(downloadFile: DownloadFile)</ID>
+    <ID>ComplexMethod:MediaPlayerService.kt$MediaPlayerService$private fun setupOnSongCompletedHandler()</ID>
+    <ID>ComplexMethod:RestErrorMapper.kt$ fun SubsonicRESTException.getLocalizedErrorMessage(context: Context): String</ID>
+    <ID>ComplexMethod:SelectAlbumFragment.kt$SelectAlbumFragment$override fun onContextItemSelected(menuItem: MenuItem): Boolean</ID>
+    <ID>ComplexMethod:SelectAlbumFragment.kt$SelectAlbumFragment$override fun onViewCreated(view: View, savedInstanceState: Bundle?)</ID>
+    <ID>ComplexMethod:SelectAlbumFragment.kt$SelectAlbumFragment$private fun enableButtons()</ID>
+    <ID>ComplexMethod:SelectAlbumFragment.kt$SelectAlbumFragment$private fun updateDisplay(refresh: Boolean)</ID>
+    <ID>ComplexMethod:SelectAlbumFragment.kt$SelectAlbumFragment.LoadTask$protected override fun done(result: Pair&lt;MusicDirectory, Boolean&gt;)</ID>
+    <ID>ComplexMethod:SelectArtistFragment.kt$SelectArtistFragment$override fun onViewCreated(view: View, savedInstanceState: Bundle?)</ID>
+    <ID>ComplexMethod:ServerRowAdapter.kt$ServerRowAdapter$ override fun getView(position: Int, convertView: View?, parent: ViewGroup?): View?</ID>
+    <ID>ComplexMethod:SongView.kt$SongView$fun setSong(song: MusicDirectory.Entry, checkable: Boolean, draggable: Boolean)</ID>
+    <ID>ComplexMethod:SongView.kt$SongView$private fun updateDownloadStatus(downloadFile: DownloadFile)</ID>
+    <ID>ComplexMethod:SongView.kt$SongView$public override fun update()</ID>
+    <ID>EmptyCatchBlock:LocalMediaPlayer.kt$LocalMediaPlayer${ }</ID>
+    <ID>EmptyDefaultConstructor:VideoPlayer.kt$VideoPlayer$()</ID>
+    <ID>EmptyFunctionBlock:SongView.kt$SongView${}</ID>
+    <ID>FunctionNaming:ThemeChangedEventDistributor.kt$ThemeChangedEventDistributor$fun RaiseThemeChangedEvent()</ID>
+    <ID>ImplicitDefaultLocale:DownloadFile.kt$DownloadFile$String.format("DownloadFile (%s)", song)</ID>
+    <ID>ImplicitDefaultLocale:DownloadFile.kt$DownloadFile.DownloadTask$String.format("Download of '%s' was cancelled", song)</ID>
+    <ID>ImplicitDefaultLocale:DownloadFile.kt$DownloadFile.DownloadTask$String.format("DownloadTask (%s)", song)</ID>
+    <ID>ImplicitDefaultLocale:EditServerFragment.kt$EditServerFragment.&lt;no name provided&gt;$String.format( "%s %s", resources.getString(R.string.settings_connection_failure), getErrorMessage(error) )</ID>
+    <ID>ImplicitDefaultLocale:FileLoggerTree.kt$FileLoggerTree$String.format("Failed to write log to %s", file)</ID>
+    <ID>ImplicitDefaultLocale:FileLoggerTree.kt$FileLoggerTree$String.format("Log file rotated, logging into file %s", file?.name)</ID>
+    <ID>ImplicitDefaultLocale:FileLoggerTree.kt$FileLoggerTree$String.format("Logging into file %s", file?.name)</ID>
+    <ID>ImplicitDefaultLocale:LocalMediaPlayer.kt$LocalMediaPlayer.BufferTask$String.format("BufferTask (%s)", downloadFile)</ID>
+    <ID>ImplicitDefaultLocale:LocalMediaPlayer.kt$LocalMediaPlayer.CheckCompletionTask$String.format("CheckCompletionTask (%s)", downloadFile)</ID>
+    <ID>ImplicitDefaultLocale:ShareHandler.kt$ShareHandler$String.format("%d:%s", timeSpanAmount, timeSpanType)</ID>
+    <ID>ImplicitDefaultLocale:ShareHandler.kt$ShareHandler.&lt;no name provided&gt;$String.format("%s\n\n%s", Util.getShareGreeting(context), result.url)</ID>
+    <ID>ImplicitDefaultLocale:SongView.kt$SongView$String.format("%02d.", trackNumber)</ID>
+    <ID>ImplicitDefaultLocale:SongView.kt$SongView$String.format("%s ", bitRate)</ID>
+    <ID>ImplicitDefaultLocale:SongView.kt$SongView$String.format("%s &gt; %s", suffix, transcodedSuffix)</ID>
+    <ID>LargeClass:DownloadFile.kt$DownloadFile</ID>
+    <ID>LargeClass:DownloadHandler.kt$DownloadHandler</ID>
+    <ID>LargeClass:EditServerFragment.kt$EditServerFragment : FragmentOnBackPressedHandler</ID>
+    <ID>LargeClass:FilePickerAdapter.kt$FilePickerAdapter : Adapter</ID>
+    <ID>LargeClass:LocalMediaPlayer.kt$LocalMediaPlayer</ID>
+    <ID>LargeClass:MediaPlayerService.kt$MediaPlayerService : Service</ID>
+    <ID>LargeClass:NavigationActivity.kt$NavigationActivity : AppCompatActivity</ID>
+    <ID>LargeClass:RESTMusicService.kt$RESTMusicService : MusicService</ID>
+    <ID>LargeClass:SelectAlbumFragment.kt$SelectAlbumFragment : Fragment</ID>
+    <ID>LargeClass:SelectAlbumFragment.kt$SelectAlbumFragment$LoadTask : FragmentBackgroundTask</ID>
+    <ID>LargeClass:SelectArtistFragment.kt$SelectArtistFragment : Fragment</ID>
+    <ID>LargeClass:ServerSettingsModel.kt$ServerSettingsModel : ViewModel</ID>
+    <ID>LargeClass:SongView.kt$SongView : UpdateViewCheckable</ID>
+    <ID>LongMethod:APIMusicDirectoryConverter.kt$fun MusicDirectoryChild.toDomainEntity(): MusicDirectory.Entry</ID>
+    <ID>LongMethod:ActiveServerProvider.kt$ActiveServerProvider$ fun getActiveServer(): ServerSetting</ID>
+    <ID>LongMethod:ArtistListModel.kt$ArtistListModel$private suspend fun loadFromServer(refresh: Boolean, swipe: SwipeRefreshLayout)</ID>
+    <ID>LongMethod:ArtistRowAdapter.kt$ArtistRowAdapter$override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int)</ID>
+    <ID>LongMethod:CommunicationErrorHandler.kt$CommunicationErrorHandler.Companion$fun getErrorMessage(error: Throwable, context: Context): String</ID>
+    <ID>LongMethod:DownloadFile.kt$DownloadFile$private fun updateModificationDate(file: File)</ID>
+    <ID>LongMethod:DownloadFile.kt$DownloadFile.DownloadTask$override fun execute()</ID>
+    <ID>LongMethod:DownloadHandler.kt$DownloadHandler$fun download( fragment: Fragment, append: Boolean, save: Boolean, autoPlay: Boolean, playNext: Boolean, shuffle: Boolean, songs: List&lt;MusicDirectory.Entry?&gt; )</ID>
+    <ID>LongMethod:DownloadHandler.kt$DownloadHandler.&lt;no name provided&gt;$@Throws(Exception::class) private fun getSongsForArtist( id: String, songs: MutableCollection&lt;MusicDirectory.Entry&gt; )</ID>
+    <ID>LongMethod:DownloadHandler.kt$DownloadHandler.&lt;no name provided&gt;$@Throws(Exception::class) private fun getSongsRecursively( parent: MusicDirectory, songs: MutableList&lt;MusicDirectory.Entry&gt; )</ID>
+    <ID>LongMethod:DownloadHandler.kt$DownloadHandler.&lt;no name provided&gt;$@Throws(Throwable::class) override fun doInBackground(): List&lt;MusicDirectory.Entry&gt;</ID>
+    <ID>LongMethod:DownloadHandler.kt$DownloadHandler.&lt;no name provided&gt;$override fun done(songs: List&lt;MusicDirectory.Entry&gt;)</ID>
+    <ID>LongMethod:EditServerFragment.kt$EditServerFragment$ private fun finishActivity()</ID>
+    <ID>LongMethod:EditServerFragment.kt$EditServerFragment$ private fun getFields(): Boolean</ID>
+    <ID>LongMethod:EditServerFragment.kt$EditServerFragment$override fun onSaveInstanceState(savedInstanceState: Bundle)</ID>
+    <ID>LongMethod:EditServerFragment.kt$EditServerFragment$override fun onViewCreated(view: View, savedInstanceState: Bundle?)</ID>
+    <ID>LongMethod:EditServerFragment.kt$EditServerFragment$override fun onViewStateRestored(savedInstanceState: Bundle?)</ID>
+    <ID>LongMethod:EditServerFragment.kt$EditServerFragment.&lt;no name provided&gt;$@Throws(Throwable::class) override fun doInBackground(): Boolean</ID>
+    <ID>LongMethod:FileLoggerTree.kt$FileLoggerTree$ override fun log(priority: Int, tag: String?, message: String, t: Throwable?)</ID>
+    <ID>LongMethod:FileLoggerTree.kt$FileLoggerTree$ private fun getNextLogFile()</ID>
+    <ID>LongMethod:FilePickerAdapter.kt$FilePickerAdapter$fun createNewFolder()</ID>
+    <ID>LongMethod:FilePickerAdapter.kt$FilePickerAdapter$private fun fileLister(currentDirectory: File)</ID>
+    <ID>LongMethod:FilePickerAdapter.kt$FilePickerAdapter$private fun getKitKatStorageItems(storages: List&lt;File&gt;): LinkedList&lt;FileListItem&gt;</ID>
+    <ID>LongMethod:FilePickerAdapter.kt$FilePickerAdapter$private fun getStorageItems(): LinkedList&lt;FileListItem&gt;</ID>
+    <ID>LongMethod:FilePickerDialog.kt$FilePickerDialog$private fun initialize(context: Context)</ID>
+    <ID>LongMethod:ImageLoaderProvider.kt$ImageLoaderProvider$@Synchronized fun getImageLoader(): ImageLoader</ID>
+    <ID>LongMethod:LocalMediaPlayer.kt$LocalMediaPlayer$@Synchronized fun setPlayerState(playerState: PlayerState)</ID>
+    <ID>LongMethod:LocalMediaPlayer.kt$LocalMediaPlayer$@Synchronized private fun doPlay(downloadFile: DownloadFile, position: Int, start: Boolean)</ID>
+    <ID>LongMethod:LocalMediaPlayer.kt$LocalMediaPlayer$@Synchronized private fun setupNext(downloadFile: DownloadFile)</ID>
+    <ID>LongMethod:LocalMediaPlayer.kt$LocalMediaPlayer$fun init()</ID>
+    <ID>LongMethod:LocalMediaPlayer.kt$LocalMediaPlayer$fun release()</ID>
+    <ID>LongMethod:LocalMediaPlayer.kt$LocalMediaPlayer.&lt;no name provided&gt;$override fun onCompletion(mediaPlayer: MediaPlayer)</ID>
+    <ID>LongMethod:MediaPlayerService.kt$MediaPlayerService$ private fun buildForegroundNotification( playerState: PlayerState, currentPlaying: DownloadFile? ): Notification</ID>
+    <ID>LongMethod:MediaPlayerService.kt$MediaPlayerService$@Synchronized fun setNextPlaying()</ID>
+    <ID>LongMethod:MediaPlayerService.kt$MediaPlayerService$override fun onCreate()</ID>
+    <ID>LongMethod:MediaPlayerService.kt$MediaPlayerService$private fun addActions( context: Context, notificationBuilder: NotificationCompat.Builder, playerState: PlayerState, song: MusicDirectory.Entry? ): IntArray</ID>
+    <ID>LongMethod:MediaPlayerService.kt$MediaPlayerService$private fun generateAction(context: Context, requestCode: Int): NotificationCompat.Action?</ID>
+    <ID>LongMethod:MediaPlayerService.kt$MediaPlayerService$private fun setupOnCurrentPlayingChangedHandler()</ID>
+    <ID>LongMethod:MediaPlayerService.kt$MediaPlayerService$private fun setupOnPlayerStateChangedHandler()</ID>
+    <ID>LongMethod:MediaPlayerService.kt$MediaPlayerService$private fun setupOnSongCompletedHandler()</ID>
+    <ID>LongMethod:MediaPlayerService.kt$MediaPlayerService$private fun updateMediaSession(currentPlaying: DownloadFile?, playerState: PlayerState)</ID>
+    <ID>LongMethod:MediaStoreService.kt$MediaStoreService$fun saveInMediaStore(downloadFile: DownloadFile)</ID>
+    <ID>LongMethod:NavigationActivity.kt$NavigationActivity$// TODO Test if this works with external Intents // android.intent.action.SEARCH and android.media.action.MEDIA_PLAY_FROM_SEARCH calls here override fun onNewIntent(intent: Intent?)</ID>
+    <ID>LongMethod:NavigationActivity.kt$NavigationActivity$override fun onCreate(savedInstanceState: Bundle?)</ID>
+    <ID>LongMethod:NavigationActivity.kt$NavigationActivity$private fun showNowPlaying()</ID>
+    <ID>LongMethod:RESTMusicService.kt$RESTMusicService$@Throws(Exception::class) override fun getAvatar( context: Context, username: String?, size: Int, saveToFile: Boolean, highQuality: Boolean ): Bitmap?</ID>
+    <ID>LongMethod:RESTMusicService.kt$RESTMusicService$@Throws(Exception::class) override fun getCoverArt( context: Context, entry: MusicDirectory.Entry?, size: Int, saveToFile: Boolean, highQuality: Boolean ): Bitmap?</ID>
+    <ID>LongMethod:RESTMusicService.kt$RESTMusicService$@Throws(IOException::class) private fun savePlaylist( name: String?, context: Context, playlist: MusicDirectory )</ID>
+    <ID>LongMethod:RestErrorMapper.kt$ fun SubsonicRESTException.getLocalizedErrorMessage(context: Context): String</ID>
+    <ID>LongMethod:SelectAlbumFragment.kt$SelectAlbumFragment$override fun onContextItemSelected(menuItem: MenuItem): Boolean</ID>
+    <ID>LongMethod:SelectAlbumFragment.kt$SelectAlbumFragment$override fun onViewCreated(view: View, savedInstanceState: Bundle?)</ID>
+    <ID>LongMethod:SelectAlbumFragment.kt$SelectAlbumFragment$private fun downloadBackground(save: Boolean, songs: List&lt;MusicDirectory.Entry?&gt;)</ID>
+    <ID>LongMethod:SelectAlbumFragment.kt$SelectAlbumFragment$private fun enableButtons()</ID>
+    <ID>LongMethod:SelectAlbumFragment.kt$SelectAlbumFragment$private fun playAll(shuffle: Boolean = false, append: Boolean = false)</ID>
+    <ID>LongMethod:SelectAlbumFragment.kt$SelectAlbumFragment$private fun updateDisplay(refresh: Boolean)</ID>
+    <ID>LongMethod:SelectAlbumFragment.kt$SelectAlbumFragment.&lt;no name provided&gt;$override fun done(result: Pair&lt;MusicDirectory, Boolean&gt;)</ID>
+    <ID>LongMethod:SelectAlbumFragment.kt$SelectAlbumFragment.&lt;no name provided&gt;$override fun load(service: MusicService): MusicDirectory</ID>
+    <ID>LongMethod:SelectAlbumFragment.kt$SelectAlbumFragment.LoadTask$protected fun createHeader( entries: List&lt;MusicDirectory.Entry&gt;, name: CharSequence?, songCount: Int ): View?</ID>
+    <ID>LongMethod:SelectAlbumFragment.kt$SelectAlbumFragment.LoadTask$protected override fun done(result: Pair&lt;MusicDirectory, Boolean&gt;)</ID>
+    <ID>LongMethod:SelectArtistFragment.kt$SelectArtistFragment$override fun onViewCreated(view: View, savedInstanceState: Bundle?)</ID>
+    <ID>LongMethod:SelectArtistFragment.kt$SelectArtistFragment$private fun onArtistMenuItemSelected(menuItem: MenuItem, artist: Artist): Boolean</ID>
+    <ID>LongMethod:ServerRowAdapter.kt$ServerRowAdapter$ override fun getView(position: Int, convertView: View?, parent: ViewGroup?): View?</ID>
+    <ID>LongMethod:ServerRowAdapter.kt$ServerRowAdapter$ private fun popupMenuItemClick(menuItem: MenuItem, position: Int): Boolean</ID>
+    <ID>LongMethod:ServerRowAdapter.kt$ServerRowAdapter$ private fun serverMenuClick(view: View, position: Int)</ID>
+    <ID>LongMethod:ServerSelectorFragment.kt$ServerSelectorFragment$override fun onViewCreated(view: View, savedInstanceState: Bundle?)</ID>
+    <ID>LongMethod:ServerSettingsModel.kt$ServerSettingsModel$ fun migrateFromPreferences(): Boolean</ID>
+    <ID>LongMethod:ServerSettingsModel.kt$ServerSettingsModel$ private fun loadServerSettingFromPreferences( preferenceId: Int, serverId: Int, settings: SharedPreferences ): ServerSetting?</ID>
+    <ID>LongMethod:ShareHandler.kt$ShareHandler$private fun showDialog( fragment: Fragment, shareDetails: ShareDetails, swipe: SwipeRefreshLayout?, cancellationToken: CancellationToken )</ID>
+    <ID>LongMethod:SongView.kt$SongView$fun setLayout(song: MusicDirectory.Entry)</ID>
+    <ID>LongMethod:SongView.kt$SongView$fun setSong(song: MusicDirectory.Entry, checkable: Boolean, draggable: Boolean)</ID>
+    <ID>LongMethod:SongView.kt$SongView$private fun updateDownloadStatus(downloadFile: DownloadFile)</ID>
+    <ID>LongMethod:SongView.kt$SongView$public override fun update()</ID>
+    <ID>LongMethod:SubsonicUncaughtExceptionHandler.kt$SubsonicUncaughtExceptionHandler$override fun uncaughtException(thread: Thread, throwable: Throwable)</ID>
+    <ID>LongMethod:UApp.kt$UApp$override fun onCreate()</ID>
+    <ID>LongParameterList:ArtistRowAdapter.kt$ArtistRowAdapter$( private var artistList: List&lt;Artist&gt;, private var selectFolderHeader: SelectMusicFolderView?, val onArtistClick: (Artist) -&gt; Unit, val onContextMenuClick: (MenuItem, Artist) -&gt; Boolean, private val imageLoader: ImageLoader )</ID>
+    <ID>LongParameterList:DownloadHandler.kt$DownloadHandler$( fragment: Fragment, append: Boolean, save: Boolean, autoPlay: Boolean, playNext: Boolean, shuffle: Boolean, songs: List&lt;MusicDirectory.Entry?&gt; )</ID>
+    <ID>LongParameterList:DownloadHandler.kt$DownloadHandler$( fragment: Fragment, id: String, name: String?, isShare: Boolean, isDirectory: Boolean, save: Boolean, append: Boolean, autoPlay: Boolean, shuffle: Boolean, background: Boolean, playNext: Boolean, unpin: Boolean, isArtist: Boolean )</ID>
+    <ID>LongParameterList:DownloadHandler.kt$DownloadHandler$( fragment: Fragment, id: String, name: String?, save: Boolean, append: Boolean, autoplay: Boolean, shuffle: Boolean, background: Boolean, playNext: Boolean, unpin: Boolean )</ID>
+    <ID>LongParameterList:DownloadHandler.kt$DownloadHandler$( fragment: Fragment, id: String?, save: Boolean, append: Boolean, autoPlay: Boolean, shuffle: Boolean, background: Boolean, playNext: Boolean, unpin: Boolean, isArtist: Boolean )</ID>
+    <ID>LongParameterList:ServerRowAdapter.kt$ServerRowAdapter$( private var context: Context, private var data: Array&lt;ServerSetting&gt;, private val model: ServerSettingsModel, private val activeServerProvider: ActiveServerProvider, private val manageMode: Boolean, private val serverDeletedCallback: ((Int) -&gt; Unit), private val serverEditRequestedCallback: ((Int) -&gt; Unit) )</ID>
+    <ID>MagicNumber:ActiveServerProvider.kt$ActiveServerProvider$8192</ID>
+    <ID>MagicNumber:AudioFocusHandler.kt$AudioFocusHandler$0.1f</ID>
+    <ID>MagicNumber:DownloadFile.kt$DownloadFile$100</ID>
+    <ID>MagicNumber:DownloadFile.kt$DownloadFile.DownloadTask$10</ID>
+    <ID>MagicNumber:DownloadFile.kt$DownloadFile.DownloadTask$1000L</ID>
+    <ID>MagicNumber:DownloadFile.kt$DownloadFile.DownloadTask$60</ID>
+    <ID>MagicNumber:DownloadHandler.kt$DownloadHandler$500</ID>
+    <ID>MagicNumber:FileLoggerTree.kt$FileLoggerTree$100</ID>
+    <ID>MagicNumber:FileLoggerTree.kt$FileLoggerTree$3</ID>
+    <ID>MagicNumber:FileLoggerTree.kt$FileLoggerTree$4</ID>
+    <ID>MagicNumber:FileLoggerTree.kt$FileLoggerTree$5</ID>
+    <ID>MagicNumber:FileLoggerTree.kt$FileLoggerTree$6</ID>
+    <ID>MagicNumber:FileLoggerTree.kt$FileLoggerTree$7</ID>
+    <ID>MagicNumber:LocalMediaPlayer.kt$LocalMediaPlayer$100</ID>
+    <ID>MagicNumber:LocalMediaPlayer.kt$LocalMediaPlayer$1000</ID>
+    <ID>MagicNumber:LocalMediaPlayer.kt$LocalMediaPlayer.&lt;no name provided&gt;$1000</ID>
+    <ID>MagicNumber:LocalMediaPlayer.kt$LocalMediaPlayer.&lt;no name provided&gt;$60000</ID>
+    <ID>MagicNumber:LocalMediaPlayer.kt$LocalMediaPlayer.BufferTask$100000</ID>
+    <ID>MagicNumber:LocalMediaPlayer.kt$LocalMediaPlayer.BufferTask$1000L</ID>
+    <ID>MagicNumber:LocalMediaPlayer.kt$LocalMediaPlayer.BufferTask$1024L</ID>
+    <ID>MagicNumber:LocalMediaPlayer.kt$LocalMediaPlayer.BufferTask$8</ID>
+    <ID>MagicNumber:LocalMediaPlayer.kt$LocalMediaPlayer.BufferTask$86400L</ID>
+    <ID>MagicNumber:LocalMediaPlayer.kt$LocalMediaPlayer.BufferTask$8L</ID>
+    <ID>MagicNumber:LocalMediaPlayer.kt$LocalMediaPlayer.CheckCompletionTask$5000L</ID>
+    <ID>MagicNumber:LocalMediaPlayer.kt$LocalMediaPlayer.PositionCache$50L</ID>
+    <ID>MagicNumber:MediaPlayerService.kt$MediaPlayerService$100</ID>
+    <ID>MagicNumber:MediaPlayerService.kt$MediaPlayerService$1000</ID>
+    <ID>MagicNumber:MediaPlayerService.kt$MediaPlayerService$256</ID>
+    <ID>MagicNumber:MediaPlayerService.kt$MediaPlayerService$3</ID>
+    <ID>MagicNumber:MediaPlayerService.kt$MediaPlayerService$4</ID>
+    <ID>MagicNumber:MediaPlayerService.kt$MediaPlayerService.Companion$19</ID>
+    <ID>MagicNumber:MediaPlayerService.kt$MediaPlayerService.Companion$50L</ID>
+    <ID>MagicNumber:RESTMusicService.kt$RESTMusicService$206</ID>
+    <ID>MagicNumber:RESTMusicService.kt$RESTMusicService$5</ID>
+    <ID>MagicNumber:SelectAlbumFragment.kt$SelectAlbumFragment$10</ID>
+    <ID>MagicNumber:SelectAlbumFragment.kt$SelectAlbumFragment.LoadTask$10</ID>
+    <ID>MagicNumber:SelectMusicFolderView.kt$SelectMusicFolderView$10</ID>
+    <ID>MagicNumber:SongView.kt$SongView$3</ID>
+    <ID>MagicNumber:SongView.kt$SongView$4</ID>
+    <ID>MagicNumber:SongView.kt$SongView$60</ID>
+    <ID>NestedBlockDepth:DownloadFile.kt$DownloadFile.DownloadTask$override fun execute()</ID>
+    <ID>NestedBlockDepth:DownloadHandler.kt$DownloadHandler$private fun downloadRecursively( fragment: Fragment, id: String, name: String?, isShare: Boolean, isDirectory: Boolean, save: Boolean, append: Boolean, autoPlay: Boolean, shuffle: Boolean, background: Boolean, playNext: Boolean, unpin: Boolean, isArtist: Boolean )</ID>
+    <ID>NestedBlockDepth:MediaPlayerService.kt$MediaPlayerService$private fun setupOnSongCompletedHandler()</ID>
+    <ID>NestedBlockDepth:SelectAlbumFragment.kt$SelectAlbumFragment$private fun getAlbum(refresh: Boolean, id: String?, name: String?, parentId: String?)</ID>
+    <ID>ReturnCount:ActiveServerProvider.kt$ActiveServerProvider$ fun getActiveServer(): ServerSetting</ID>
+    <ID>ReturnCount:CommunicationErrorHandler.kt$CommunicationErrorHandler.Companion$fun getErrorMessage(error: Throwable, context: Context): String</ID>
+    <ID>ReturnCount:FileLoggerTree.kt$FileLoggerTree$ private fun getNextLogFile()</ID>
+    <ID>ReturnCount:MediaPlayerService.kt$MediaPlayerService$private fun generateAction(context: Context, requestCode: Int): NotificationCompat.Action?</ID>
+    <ID>ReturnCount:RESTMusicService.kt$RESTMusicService$@Throws(Exception::class) override fun getAvatar( context: Context, username: String?, size: Int, saveToFile: Boolean, highQuality: Boolean ): Bitmap?</ID>
+    <ID>ReturnCount:RESTMusicService.kt$RESTMusicService$@Throws(Exception::class) override fun getCoverArt( context: Context, entry: MusicDirectory.Entry?, size: Int, saveToFile: Boolean, highQuality: Boolean ): Bitmap?</ID>
+    <ID>ReturnCount:SelectAlbumFragment.kt$SelectAlbumFragment$override fun onContextItemSelected(menuItem: MenuItem): Boolean</ID>
+    <ID>ReturnCount:SelectAlbumFragment.kt$SelectAlbumFragment$override fun onOptionsItemSelected(item: MenuItem): Boolean</ID>
+    <ID>ReturnCount:ServerRowAdapter.kt$ServerRowAdapter$ private fun popupMenuItemClick(menuItem: MenuItem, position: Int): Boolean</ID>
+    <ID>SpreadOperator:MediaPlayerService.kt$MediaPlayerService$(*compactActions)</ID>
+    <ID>SwallowedException:DownloadFile.kt$DownloadFile$catch (e: Exception) { Timber.w("Failed to set last-modified date on %s", file) }</ID>
+    <ID>SwallowedException:DownloadFile.kt$DownloadFile$catch (ex: IOException) { Timber.w("Failed to rename file %s to %s", completeFile, saveFile) }</ID>
+    <ID>SwallowedException:LocalMediaPlayer.kt$LocalMediaPlayer$catch (e: Throwable) { // Froyo or lower }</ID>
+    <ID>SwallowedException:LocalMediaPlayer.kt$LocalMediaPlayer$catch (e: Throwable) { }</ID>
+    <ID>SwallowedException:MediaPlayerService.kt$MediaPlayerService$catch (x: IndexOutOfBoundsException) { // Ignored }</ID>
+    <ID>SwallowedException:NavigationActivity.kt$NavigationActivity$catch (e: Resources.NotFoundException) { destination.id.toString() }</ID>
+    <ID>ThrowsCount:ApiCallResponseChecker.kt$ApiCallResponseChecker.Companion$@Throws(SubsonicRESTException::class, IOException::class) fun checkResponseSuccessful(response: Response&lt;out SubsonicResponse&gt;)</ID>
+    <ID>TooGenericExceptionCaught:ArtistListModel.kt$ArtistListModel$exception: Exception</ID>
+    <ID>TooGenericExceptionCaught:DownloadFile.kt$DownloadFile$e: Exception</ID>
+    <ID>TooGenericExceptionCaught:DownloadFile.kt$DownloadFile.DownloadTask$x: Exception</ID>
+    <ID>TooGenericExceptionCaught:FileLoggerTree.kt$FileLoggerTree$x: Throwable</ID>
+    <ID>TooGenericExceptionCaught:LocalMediaPlayer.kt$LocalMediaPlayer$e: Throwable</ID>
+    <ID>TooGenericExceptionCaught:LocalMediaPlayer.kt$LocalMediaPlayer$ex: Exception</ID>
+    <ID>TooGenericExceptionCaught:LocalMediaPlayer.kt$LocalMediaPlayer$exception: Throwable</ID>
+    <ID>TooGenericExceptionCaught:LocalMediaPlayer.kt$LocalMediaPlayer$x: Exception</ID>
+    <ID>TooGenericExceptionCaught:LocalMediaPlayer.kt$LocalMediaPlayer.PositionCache$e: Exception</ID>
+    <ID>TooGenericExceptionCaught:MediaPlayerService.kt$MediaPlayerService$e: Exception</ID>
+    <ID>TooGenericExceptionCaught:MediaPlayerService.kt$MediaPlayerService$x: IndexOutOfBoundsException</ID>
+    <ID>TooGenericExceptionCaught:SelectAlbumFragment.kt$SelectAlbumFragment$exception: Exception</ID>
+    <ID>TooGenericExceptionCaught:SongView.kt$SongView$e: Exception</ID>
+    <ID>TooGenericExceptionCaught:SubsonicUncaughtExceptionHandler.kt$SubsonicUncaughtExceptionHandler$x: Throwable</ID>
+    <ID>TooGenericExceptionCaught:VideoPlayer.kt$VideoPlayer$e: Exception</ID>
+    <ID>TooGenericExceptionThrown:DownloadFile.kt$DownloadFile.DownloadTask$throw Exception(String.format("Download of '%s' was cancelled", song))</ID>
+    <ID>TooManyFunctions:LocalMediaPlayer.kt$LocalMediaPlayer</ID>
+    <ID>TooManyFunctions:MediaPlayerService.kt$MediaPlayerService : Service</ID>
+    <ID>TooManyFunctions:RESTMusicService.kt$RESTMusicService : MusicService</ID>
+    <ID>TooManyFunctions:SelectAlbumFragment.kt$SelectAlbumFragment : Fragment</ID>
+    <ID>TopLevelPropertyNaming:SubsonicUncaughtExceptionHandler.kt$private const val filename = "ultrasonic-stacktrace.txt"</ID>
+    <ID>UnusedPrivateMember:RESTMusicService.kt$RESTMusicService.Companion$private const val INDEXES_FOLDER_STORAGE_NAME = "indexes_folder"</ID>
+    <ID>UselessCallOnNotNull:FileLoggerTree.kt$FileLoggerTree$fileList.isNullOrEmpty()</ID>
+    <ID>UselessCallOnNotNull:FileLoggerTree.kt$FileLoggerTree.Companion$fileList.isNullOrEmpty()</ID>
+    <ID>UtilityClassWithPublicConstructor:CommunicationErrorHandler.kt$CommunicationErrorHandler</ID>
+    <ID>UtilityClassWithPublicConstructor:FragmentTitle.kt$FragmentTitle</ID>
+    <ID>VariableNaming:SelectMusicFolderView.kt$SelectMusicFolderView$private val MENU_GROUP_MUSIC_FOLDER = 10</ID>
+  </CurrentIssues>
+</SmellBaseline>
