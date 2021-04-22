@@ -323,6 +323,7 @@ class MediaPlayerService : Service() {
 
     private fun setupOnCurrentPlayingChangedHandler() {
         localMediaPlayer.onCurrentPlayingChanged = { currentPlaying: DownloadFile? ->
+            Timber.w("Calling onCurrentPlayingChanged")
 
             if (currentPlaying != null) {
                 Util.broadcastNewTrackInfo(this@MediaPlayerService, currentPlaying.song)
@@ -363,10 +364,13 @@ class MediaPlayerService : Service() {
             currentPlaying: DownloadFile?
             ->
 
+            Timber.w("Calling onPlayerStateChanged")
+
             val context = this@MediaPlayerService
 
             // Notify MediaSession
             updateMediaSession(currentPlaying, playerState)
+
             if (playerState === PlayerState.PAUSED) {
                 downloadQueueSerializer.serializeDownloadQueue(
                     downloader.downloadList, downloader.currentPlayingIndex, playerPosition
@@ -388,6 +392,7 @@ class MediaPlayerService : Service() {
 
             // Update widget
             updateWidget(playerState, song)
+
             if (show) {
                 // Only update notification if player state is one that will change the icon
                 if (playerState === PlayerState.STARTED || playerState === PlayerState.PAUSED) {
@@ -400,17 +405,20 @@ class MediaPlayerService : Service() {
                 isInForeground = false
                 stopIfIdle()
             }
+
             if (playerState === PlayerState.STARTED) {
                 scrobbler.scrobble(context, currentPlaying, false)
             } else if (playerState === PlayerState.COMPLETED) {
                 scrobbler.scrobble(context, currentPlaying, true)
             }
+
             null
         }
     }
 
     private fun setupOnSongCompletedHandler() {
         localMediaPlayer.onSongCompleted = { currentPlaying: DownloadFile? ->
+            Timber.w("Calling onSongCompleted")
             val index = downloader.currentPlayingIndex
             val context = this@MediaPlayerService
 
@@ -464,6 +472,7 @@ class MediaPlayerService : Service() {
     }
 
     private fun updateMediaSession(currentPlaying: DownloadFile?, playerState: PlayerState) {
+        Timber.w("Updating the MediaSession")
         // Set Metadata
         val metadata = MediaMetadataCompat.Builder()
         val context = applicationContext
@@ -490,20 +499,48 @@ class MediaPlayerService : Service() {
 
         // Create playback State
         val playbackState = PlaybackStateCompat.Builder()
-        val state = if (playerState === PlayerState.STARTED) {
-            // If we set the playback position correctly, we can get a nice seek bar :)
-            PlaybackStateCompat.STATE_PLAYING
-        } else {
-            PlaybackStateCompat.STATE_PAUSED
+        val state: Int
+        val isPlaying = (playerState === PlayerState.STARTED)
+
+        var actions: Long = PlaybackStateCompat.ACTION_PLAY_PAUSE or
+            PlaybackStateCompat.ACTION_SKIP_TO_NEXT or
+            PlaybackStateCompat.ACTION_SKIP_TO_PREVIOUS
+
+        // Map our playerState to native PlaybackState
+        // TODO: Synchronize these APIs
+        when (playerState) {
+            PlayerState.STARTED -> {
+                state = PlaybackStateCompat.STATE_PLAYING
+                actions = actions or PlaybackStateCompat.ACTION_PAUSE or PlaybackStateCompat.ACTION_STOP
+            }
+            PlayerState.COMPLETED,
+            PlayerState.STOPPED -> {
+                state = PlaybackStateCompat.STATE_STOPPED
+            }
+            PlayerState.IDLE -> {
+                state = PlaybackStateCompat.STATE_NONE
+                actions = 0L
+            }
+            PlayerState.PAUSED -> {
+                state = PlaybackStateCompat.STATE_PAUSED
+                actions = actions or PlaybackStateCompat.ACTION_PLAY or PlaybackStateCompat.ACTION_STOP
+            }
+            else -> state = PlaybackStateCompat.STATE_PAUSED
         }
 
         playbackState.setState(state, PlaybackStateCompat.PLAYBACK_POSITION_UNKNOWN, 1.0f)
 
-        // Set Active state
-        mediaSession!!.isActive = playerState === PlayerState.STARTED
+        // Set actions
+        playbackState.setActions(actions)
 
         // Save the playback state
         mediaSession!!.setPlaybackState(playbackState.build())
+
+        // Set Active state
+        mediaSession!!.isActive = isPlaying
+
+        Timber.w("Current controller: %s", mediaSession!!.remoteControlClient)
+        Timber.w("Setting the MediaSession to active = %s", isPlaying)
     }
 
     private fun createNotificationChannel() {
