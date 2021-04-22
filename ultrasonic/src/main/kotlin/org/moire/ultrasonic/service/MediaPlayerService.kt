@@ -49,6 +49,7 @@ import timber.log.Timber
 class MediaPlayerService : Service() {
     private val binder: IBinder = SimpleServiceBinder(this)
     private val scrobbler = Scrobbler()
+
     private val jukeboxMediaPlayer by inject<JukeboxMediaPlayer>()
     private val downloadQueueSerializer by inject<DownloadQueueSerializer>()
     private val shufflePlayBuffer by inject<ShufflePlayBuffer>()
@@ -62,7 +63,7 @@ class MediaPlayerService : Service() {
     private var isInForeground = false
     private var notificationBuilder: NotificationCompat.Builder? = null
 
-    val repeatMode: RepeatMode
+    private val repeatMode: RepeatMode
         get() = Util.getRepeatMode(this)
 
     override fun onBind(intent: Intent): IBinder {
