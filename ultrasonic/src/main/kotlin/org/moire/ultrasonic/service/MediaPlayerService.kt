@@ -73,7 +73,6 @@ class MediaPlayerService : Service() {
     override fun onCreate() {
         super.onCreate()
 
-        initMediaSessions()
         downloader.onCreate()
         shufflePlayBuffer.onCreate()
         localMediaPlayer.init()
@@ -115,7 +114,8 @@ class MediaPlayerService : Service() {
             localMediaPlayer.release()
             downloader.stop()
             shufflePlayBuffer.onDestroy()
-            mediaSession!!.release()
+            mediaSession?.release()
+            mediaSession == null
         } catch (ignored: Throwable) {
         }
         Timber.i("MediaPlayerService stopped")
@@ -473,6 +473,9 @@ class MediaPlayerService : Service() {
 
     private fun updateMediaSession(currentPlaying: DownloadFile?, playerState: PlayerState) {
         Timber.w("Updating the MediaSession")
+
+        if (mediaSession == null) initMediaSessions()
+
         // Set Metadata
         val metadata = MediaMetadataCompat.Builder()
         val context = applicationContext
@@ -502,16 +505,19 @@ class MediaPlayerService : Service() {
         val state: Int
         val isPlaying = (playerState === PlayerState.STARTED)
 
-        var actions: Long = PlaybackStateCompat.ACTION_PLAY_PAUSE or
-            PlaybackStateCompat.ACTION_SKIP_TO_NEXT or
-            PlaybackStateCompat.ACTION_SKIP_TO_PREVIOUS
+        var actions: Long = PlaybackStateCompat.ACTION_PLAY_PAUSE
+//        or
+//            PlaybackStateCompat.ACTION_SKIP_TO_NEXT or
+//            PlaybackStateCompat.ACTION_SKIP_TO_PREVIOUS
 
         // Map our playerState to native PlaybackState
         // TODO: Synchronize these APIs
         when (playerState) {
             PlayerState.STARTED -> {
                 state = PlaybackStateCompat.STATE_PLAYING
-                actions = actions or PlaybackStateCompat.ACTION_PAUSE or PlaybackStateCompat.ACTION_STOP
+                actions = actions or
+                    PlaybackStateCompat.ACTION_PAUSE or
+                    PlaybackStateCompat.ACTION_STOP
             }
             PlayerState.COMPLETED,
             PlayerState.STOPPED -> {
@@ -523,7 +529,9 @@ class MediaPlayerService : Service() {
             }
             PlayerState.PAUSED -> {
                 state = PlaybackStateCompat.STATE_PAUSED
-                actions = actions or PlaybackStateCompat.ACTION_PLAY or PlaybackStateCompat.ACTION_STOP
+                actions = actions or
+                    PlaybackStateCompat.ACTION_PLAY or
+                    PlaybackStateCompat.ACTION_STOP
             }
             else -> state = PlaybackStateCompat.STATE_PAUSED
         }
@@ -619,7 +627,10 @@ class MediaPlayerService : Service() {
 
         // Use the Media Style, to enable native Android support for playback notification
         val style = androidx.media.app.NotificationCompat.MediaStyle()
-        style.setMediaSession(mediaSessionToken)
+
+        if (mediaSessionToken != null) {
+            style.setMediaSession(mediaSessionToken)
+        }
 
         // Clear old actions
         notificationBuilder!!.clearActions()
@@ -779,6 +790,11 @@ class MediaPlayerService : Service() {
     }
 
     private fun initMediaSessions() {
+        @Suppress("MagicNumber")
+        val keycode = 110
+
+        Timber.w("Creating media session")
+
         mediaSession = MediaSessionCompat(applicationContext, "UltrasonicService")
         mediaSessionToken = mediaSession!!.sessionToken
         // mediaController = new MediaControllerCompat(getApplicationContext(), mediaSessionToken);
@@ -786,19 +802,33 @@ class MediaPlayerService : Service() {
         mediaSession!!.setCallback(object : MediaSessionCompat.Callback() {
             override fun onPlay() {
                 super.onPlay()
-                play()
+
+                getPendingIntentForMediaAction(
+                    applicationContext,
+                    KeyEvent.KEYCODE_MEDIA_PLAY,
+                    keycode
+                ).send()
+
                 Timber.w("Media Session Callback: onPlay")
             }
 
             override fun onPause() {
                 super.onPause()
-                pause()
+                getPendingIntentForMediaAction(
+                    applicationContext,
+                    KeyEvent.KEYCODE_MEDIA_PAUSE,
+                    keycode
+                ).send()
                 Timber.w("Media Session Callback: onPause")
             }
 
             override fun onStop() {
                 super.onStop()
-                stop()
+                getPendingIntentForMediaAction(
+                    applicationContext,
+                    KeyEvent.KEYCODE_MEDIA_STOP,
+                    keycode
+                ).send()
                 Timber.w("Media Session Callback: onStop")
             }
 
