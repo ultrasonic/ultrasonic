@@ -323,7 +323,6 @@ class MediaPlayerService : Service() {
 
     private fun setupOnCurrentPlayingChangedHandler() {
         localMediaPlayer.onCurrentPlayingChanged = { currentPlaying: DownloadFile? ->
-            Timber.w("Calling onCurrentPlayingChanged")
 
             if (currentPlaying != null) {
                 Util.broadcastNewTrackInfo(this@MediaPlayerService, currentPlaying.song)
@@ -363,8 +362,6 @@ class MediaPlayerService : Service() {
             playerState: PlayerState,
             currentPlaying: DownloadFile?
             ->
-
-            Timber.w("Calling onPlayerStateChanged")
 
             val context = this@MediaPlayerService
 
@@ -418,7 +415,6 @@ class MediaPlayerService : Service() {
 
     private fun setupOnSongCompletedHandler() {
         localMediaPlayer.onSongCompleted = { currentPlaying: DownloadFile? ->
-            Timber.w("Calling onSongCompleted")
             val index = downloader.currentPlayingIndex
             val context = this@MediaPlayerService
 
@@ -472,7 +468,7 @@ class MediaPlayerService : Service() {
     }
 
     private fun updateMediaSession(currentPlaying: DownloadFile?, playerState: PlayerState) {
-        Timber.w("Updating the MediaSession")
+        Timber.d("Updating the MediaSession")
 
         if (mediaSession == null) initMediaSessions()
 
@@ -547,8 +543,7 @@ class MediaPlayerService : Service() {
         // Set Active state
         mediaSession!!.isActive = isPlaying
 
-        Timber.w("Current controller: %s", mediaSession!!.remoteControlClient)
-        Timber.w("Setting the MediaSession to active = %s", isPlaying)
+        Timber.d("Setting the MediaSession to active = %s", isPlaying)
     }
 
     private fun createNotificationChannel() {
@@ -586,7 +581,7 @@ class MediaPlayerService : Service() {
             } else {
                 startForeground(NOTIFICATION_ID, notification)
                 isInForeground = true
-                Timber.w("Created Foreground notification")
+                Timber.v("Created Foreground notification")
             }
         }
     }
@@ -809,7 +804,7 @@ class MediaPlayerService : Service() {
                     keycode
                 ).send()
 
-                Timber.w("Media Session Callback: onPlay")
+                Timber.v("Media Session Callback: onPlay")
             }
 
             override fun onPause() {
@@ -819,7 +814,7 @@ class MediaPlayerService : Service() {
                     KeyEvent.KEYCODE_MEDIA_PAUSE,
                     keycode
                 ).send()
-                Timber.w("Media Session Callback: onPause")
+                Timber.v("Media Session Callback: onPause")
             }
 
             override fun onStop() {
@@ -829,7 +824,7 @@ class MediaPlayerService : Service() {
                     KeyEvent.KEYCODE_MEDIA_STOP,
                     keycode
                 ).send()
-                Timber.w("Media Session Callback: onStop")
+                Timber.v("Media Session Callback: onStop")
             }
 
             override fun onMediaButtonEvent(mediaButtonEvent: Intent): Boolean {
