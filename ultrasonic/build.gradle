@@ -48,6 +48,7 @@ android {
     lintOptions {
         baselineFile file("lint-baseline.xml")
         warning 'MissingTranslation'
+        warning 'ImpliedQuantity'
         abortOnError true
     }
 
