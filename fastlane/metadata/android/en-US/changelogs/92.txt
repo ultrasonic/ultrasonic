@@ -1,0 +1,13 @@
+Bug fixes
+- #383: App crash for use MediaStore legacy code.
+- #390: Random crashes when playing audio.
+- #397: Fixed Next button behavior when Repeat All is enabled.
+- #407: Fixed video play (VideoPlayer are using wrong context).
+- #416: Pinning can result in download loop.
+- #428: Null object reference in PlayerFragment.
+- #442: Rename Scrobbler for Last.fm with Scrobble.
+
+Enhancements
+- #403: Show download percentage.
+- #410: Adds the ability to select and filter Albums by a Music Folder on the server.
+- #421: Modernize Service Notification.

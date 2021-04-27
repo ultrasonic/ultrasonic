@@ -15,6 +15,13 @@
     <string name="button_bar.chat">Chat</string>
     <string name="button_bar.home">Ultrasonic Main</string>
     <string name="button_bar.now_playing">Nu aan het afspelen</string>
+    <string name="buttons.play">Afspelen</string>
+    <string name="buttons.pause">Pauzeren</string>
+    <string name="buttons.repeat">Herhalen</string>
+    <string name="buttons.shuffle">Willekeurig</string>
+    <string name="buttons.stop">Stoppen</string>
+    <string name="buttons.next">Volgende</string>
+    <string name="buttons.previous">Vorige</string>
     <string name="podcasts.label">Podcast</string>
     <string name="podcasts_channels.empty">Geen podcastkanalen opgegeven</string>
     <string name="button_bar.podcasts">Podcast</string>
@@ -32,8 +39,11 @@
     <string name="common.name">Naam</string>
     <string name="common.ok">Oké</string>
     <string name="common.pin">Vastmaken</string>
+    <string name="common.pause">Pauzeren</string>
+    <string name="common.play">Afspelen</string>
     <string name="common.play_last">Laatste afspelen</string>
     <string name="common.play_next">Volgende afspelen</string>
+    <string name="common.play_previous">Vorige afspelen</string>
     <string name="common.play_now">Nu afspelen</string>
     <string name="common.play_shuffled">Willekeurig afspelen</string>
     <string name="common.public">Openbaar</string>
@@ -256,8 +266,6 @@
     <string name="settings.playback.resume_play_on_headphones_plug.summary">Het afspelen wordt hervat zodra er een hoofdtelefoon wordt aangesloten.</string>
     <string name="settings.screen_lit_summary">Door het scherm aan te houden tijdens het downloaden, wordt de downloadsnelheid verhoogd.</string>
     <string name="settings.screen_lit_title">Scherm aan houden</string>
-    <string name="settings.scrobble_summary">Let op: stel je Last.fm-gebruikersnaam en -wachtwoord in op je Subsonic-server</string>
-    <string name="settings.scrobble_title">Scrobbelen naar Last.fm</string>
     <string name="settings.search_1">1</string>
     <string name="settings.search_10">10</string>
     <string name="settings.search_100">100</string>

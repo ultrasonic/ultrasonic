@@ -1,0 +1,13 @@
+Correción de errores
+- #383: Fallo de la aplicación por usar código heredado de MediaStore.
+- #390: Fallos aleatorios al reproducir audio.
+- #397: Se corrigió el comportamiento del botón Siguiente cuando repetir todo está habilitado.
+- #407: Falla la reproducción de video (VideoPlayer está usando un contexto incorrecto).
+- #416: Anclar un elemento puede resultar en un bucle de descarga.
+- #428: Referencia de objeto nulo en PlayerFragment.
+- #442: Cambio del nombre de la opción de Scrobbler a Last.fm a Hacer Scrobble.
+
+Mejoras
+- #403: Muestra el porcentaje de descarga.
+- #410: Agrega la capacidad de seleccionar y filtrar álbumes por una carpeta de música en el servidor.
+- #421: Modernizar la notificación de servicio.

@@ -256,8 +256,6 @@
     <string name="settings.playback.resume_play_on_headphones_plug.summary">Aplikace spustí pozastavené přehrávání po připojení kabelu sluchátek do přístroje.</string>
     <string name="settings.screen_lit_summary">Nezamčení displeje při stahování zlepšuje rychlost stahování.</string>
     <string name="settings.screen_lit_title">Nezamykat displej</string>
-    <string name="settings.scrobble_summary">Nezapomeňte nastavit svoje Last.fm uživatelské jméno a heslo na Subsonic serveru</string>
-    <string name="settings.scrobble_title">Posílat do Last.fm</string>
     <string name="settings.search_1">1</string>
     <string name="settings.search_10">10</string>
     <string name="settings.search_100">100</string>

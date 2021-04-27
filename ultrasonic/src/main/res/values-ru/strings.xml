@@ -250,8 +250,6 @@
     <string name="settings.playback.resume_play_on_headphones_plug.title">Возобновить подключение наушников</string>
     <string name="settings.screen_lit_summary">Сохранение экрана во время загрузки повышает скорость загрузки.</string>
     <string name="settings.screen_lit_title">Оставьте экран включенным</string>
-    <string name="settings.scrobble_summary">Не забудьте настроить свою учетную запись и пароль Last.fm на Subsonic сервере</string>
-    <string name="settings.scrobble_title">Скробблить на Last.fm</string>
     <string name="settings.search_1">1</string>
     <string name="settings.search_10">10</string>
     <string name="settings.search_100">100</string>

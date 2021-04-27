@@ -15,6 +15,13 @@
     <string name="button_bar.chat">Chat</string>
     <string name="button_bar.home">Inicio de Ultrasonic</string>
     <string name="button_bar.now_playing">Reproduciendo ahora</string>
+    <string name="buttons.play">Reproducir</string>
+    <string name="buttons.pause">Pausar</string>
+    <string name="buttons.repeat">Repetir</string>
+    <string name="buttons.shuffle">Aleatorio</string>
+    <string name="buttons.stop">Detener</string>
+    <string name="buttons.next">Siguiente</string>
+    <string name="buttons.previous">Anterior</string>
     <string name="podcasts.label">Podcast</string>
     <string name="podcasts_channels.empty">No hay canales de Podcasts registrados</string>
     <string name="button_bar.podcasts">Podcast</string>
@@ -32,8 +39,11 @@
     <string name="common.name">Nombre</string>
     <string name="common.ok">OK</string>
     <string name="common.pin">Anclar</string>
+    <string name="common.pause">Pausar</string>
+    <string name="common.play">Reproducir</string>
     <string name="common.play_last">Reproducir última</string>
     <string name="common.play_next">Reproducir a continuación</string>
+    <string name="common.play_previous">Reproducir anterior </string>
     <string name="common.play_now">Reproducir ahora</string>
     <string name="common.play_shuffled">Reproducción aleatoria</string>
     <string name="common.public">Public</string>
@@ -256,8 +266,8 @@
     <string name="settings.playback.resume_play_on_headphones_plug.summary">La aplicación reanudará la reproducción en pausa al insertar los auriculares en el dispositivo.</string>
     <string name="settings.screen_lit_summary">Mantener la pantalla encendida mientras descarga mejora la velocidad de la misma.</string>
     <string name="settings.screen_lit_title">Mantener la pantalla encendida</string>
-    <string name="settings.scrobble_summary">Recuerda configurar tu nombre de usuario y contraseña de Last.fm en el servidor de Subsonic</string>
-    <string name="settings.scrobble_title">Scrobble a Last.fm</string>
+    <string name="settings.scrobble_summary">Recuerda configurar tu nombre de usuario y contraseña en los servicios de Scrobble en el servidor</string>
+    <string name="settings.scrobble_title">Hacer Scrobble de mis reproducciones</string>
     <string name="settings.search_1">1</string>
     <string name="settings.search_10">10</string>
     <string name="settings.search_100">100</string>

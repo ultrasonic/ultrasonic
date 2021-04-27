@@ -256,8 +256,6 @@
     <string name="settings.playback.resume_play_on_headphones_plug.summary">O aplicativo retomará a reprodução em pausa na inserção dos fones de ouvido no dispositivo.</string>
     <string name="settings.screen_lit_summary">Manter a tela ligada enquanto baixando aumenta a velocidade de download.</string>
     <string name="settings.screen_lit_title">Manter a Tela Ligada</string>
-    <string name="settings.scrobble_summary">Lembre-se de definir seu usuário e senha do Last.fm no servidor Subsonic</string>
-    <string name="settings.scrobble_title">Gravar Pref. Musicais em Last.fm</string>
     <string name="settings.search_1">1</string>
     <string name="settings.search_10">10</string>
     <string name="settings.search_100">100</string>
