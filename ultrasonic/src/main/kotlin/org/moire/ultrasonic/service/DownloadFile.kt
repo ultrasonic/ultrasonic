@@ -45,6 +45,7 @@ class DownloadFile(
     private val mediaStoreService: MediaStoreService
     private var downloadTask: CancellableTask? = null
     var isFailed = false
+    private var retryCount = 5
 
     private val desiredBitRate: Int = Util.getMaxBitRate(context)
 
@@ -125,6 +126,10 @@ class DownloadFile(
 
     fun shouldSave(): Boolean {
         return save
+    }
+
+    fun shouldRetry(): Boolean {
+        return (retryCount > 0)
     }
 
     fun delete() {
@@ -288,6 +293,9 @@ class DownloadFile(
                 Util.delete(saveFile)
                 if (!isCancelled) {
                     isFailed = true
+                    if (retryCount > 0) {
+                        --retryCount
+                    }
                     Timber.w(x, "Failed to download '%s'.", song)
                 }
             } finally {
