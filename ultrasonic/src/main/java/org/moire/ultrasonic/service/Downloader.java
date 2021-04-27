@@ -194,6 +194,12 @@ public class Downloader
                     revision++;
                     i--;
                 }
+                else if (downloadFile.isFailed() && !downloadFile.shouldRetry()) {
+                    // Don't continue to attempt to download forever
+                    backgroundDownloadList.remove(i);
+                    revision++;
+                    i--;
+                }
                 else
                 {
                     currentDownloading = downloadFile;
