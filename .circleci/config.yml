@@ -4,7 +4,7 @@ jobs:
     docker:
       - image: circleci/android:api-28
     working_directory: ~/ultrasonic
-    envoronment:
+    environment:
       JVM_OPTS: -Xmx3200m
     steps:
       - checkout
@@ -70,7 +70,7 @@ jobs:
     docker:
       - image: circleci/android:api-28
     working_directory: ~/ultrasonic
-    envoronment:
+    environment:
       JAVA_TOOL_OPTIONS: "-XX:+UnlockExperimentalVMOptions -XX:+UseCGroupMemoryLimitForHeap"
     steps:
       - checkout
