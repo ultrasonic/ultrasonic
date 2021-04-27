@@ -80,6 +80,7 @@ dependencies {
     implementation androidSupport.viewModelKtx
     implementation androidSupport.constraintLayout
     implementation androidSupport.preferences
+    implementation androidSupport.media
 
     implementation androidSupport.navigationFragment
     implementation androidSupport.navigationUi

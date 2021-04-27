@@ -25,6 +25,7 @@ private val indexesSerializer get() = object : ObjectSerializer<Indexes>(SERIALI
             .writeObject<MutableList<Artist>>(context, item.artists, artistListSerializer)
     }
 
+    @Suppress("ReturnCount")
     override fun deserializeObject(
         context: SerializationContext,
         input: SerializerInput,

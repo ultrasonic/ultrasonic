@@ -183,7 +183,7 @@ public class MediaPlayerLifecycleSupport
         context.registerReceiver(headsetEventReceiver, headsetIntentFilter);
     }
 
-	private void handleKeyEvent(KeyEvent event)
+	public void handleKeyEvent(KeyEvent event)
 	{
 		if (event.getAction() != KeyEvent.ACTION_DOWN || event.getRepeatCount() > 0)
 		{
@@ -253,6 +253,9 @@ public class MediaPlayerLifecycleSupport
 						break;
 					case KeyEvent.KEYCODE_5:
 						mediaPlayerController.setSongRating(5);
+						break;
+					case KeyEvent.KEYCODE_STAR:
+						mediaPlayerController.toggleSongStarred();
 						break;
 					default:
 						break;

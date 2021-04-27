@@ -1,9 +1,5 @@
-autoCorrect: true
-failFast: false
-
 build:
-  warningThreshold: 0
-  failThreshold: 0
+  maxIssues: 0
   weights:
     complexity: 2
     formatting: 1
@@ -43,26 +39,24 @@ complexity:
   LongMethod:
     threshold: 20
   LongParameterList:
-    threshold: 5
+    functionThreshold: 5
+    constructorThreshold: 5
   LargeClass:
     threshold: 150
   ComplexMethod:
     threshold: 10
   TooManyFunctions:
-    threshold: 20
+    thresholdInFiles: 20
+    thresholdInClasses: 20
+    thresholdInInterfaces: 20
   ComplexCondition:
     threshold: 3
   LabeledExpression:
     active: false
 
-code-smell:
-  active: true
-  FeatureEnvy:
-    threshold: 0.5
-    weight: 0.45
-    base: 0.5
 
 formatting:
+  autoCorrect: true
   active: false
 
 style:
@@ -71,7 +65,7 @@ style:
     active: true
   ForbiddenComment:
     active: true
-    values: 'TODO:,FIXME:,STOPSHIP:'
+    values: 'FIXME:,STOPSHIP:'
   WildcardImport:
     active: true
   MaxLineLength:
@@ -79,17 +73,10 @@ style:
     maxLineLength: 120
     excludePackageStatements: false
     excludeImportStatements: false
-  NamingConventionViolation:
-    active: true
-    variablePattern: '^(_)?[a-z$][a-zA-Z$0-9]*$'
-    constantPattern: '^([A-Z_]*|serialVersionUID)$'
-    methodPattern: '^[a-z\s`$][a-zA-Z\s$0-9`]*$'
-    classPattern: '[A-Z$][a-zA-Z$]*'
-    enumEntryPattern: '^[A-Z$][a-zA-Z_$0-9]*$'
 
 comments:
   active: true
-  CommentOverPrivateMethod:
+  CommentOverPrivateFunction:
     active: true
   CommentOverPrivateProperty:
     active: true
@@ -100,12 +87,3 @@ comments:
     searchInInnerInterface: true
   UndocumentedPublicFunction:
     active: false
-
-# *experimental feature*
-# Migration rules can be defined in the same config file or a new one
-migration:
-  active: false
-  imports:
-    # your.package.Class: new.package.or.Class
-    # for example:
-    # io.gitlab.arturbosch.detekt.api.Rule: io.gitlab.arturbosch.detekt.rule.Rule

@@ -7,17 +7,12 @@
 
 package org.moire.ultrasonic.service
 
-import android.app.PendingIntent
-import android.content.ComponentName
 import android.content.Context
-import android.content.Context.AUDIO_SERVICE
 import android.content.Context.POWER_SERVICE
 import android.content.Intent
 import android.media.AudioManager
-import android.media.MediaMetadataRetriever
 import android.media.MediaPlayer
 import android.media.MediaPlayer.OnCompletionListener
-import android.media.RemoteControlClient
 import android.media.audiofx.AudioEffect
 import android.os.Build
 import android.os.Handler
@@ -35,10 +30,8 @@ import org.moire.ultrasonic.audiofx.VisualizerController
 import org.moire.ultrasonic.data.ActiveServerProvider.Companion.isOffline
 import org.moire.ultrasonic.domain.PlayerState
 import org.moire.ultrasonic.fragment.PlayerFragment
-import org.moire.ultrasonic.receiver.MediaButtonIntentReceiver
 import org.moire.ultrasonic.util.CancellableTask
 import org.moire.ultrasonic.util.Constants
-import org.moire.ultrasonic.util.FileUtil
 import org.moire.ultrasonic.util.StreamProxy
 import org.moire.ultrasonic.util.Util
 import timber.log.Timber
@@ -52,16 +45,16 @@ class LocalMediaPlayer(
 ) {
 
     @JvmField
-    var onCurrentPlayingChanged: Consumer<DownloadFile?>? = null
+    var onCurrentPlayingChanged: ((DownloadFile?) -> Unit?)? = null
 
     @JvmField
-    var onSongCompleted: Consumer<DownloadFile?>? = null
+    var onSongCompleted: ((DownloadFile?) -> Unit?)? = null
 
     @JvmField
-    var onPlayerStateChanged: BiConsumer<PlayerState, DownloadFile?>? = null
+    var onPlayerStateChanged: ((PlayerState, DownloadFile?) -> Unit?)? = null
 
     @JvmField
-    var onPrepared: Runnable? = null
+    var onPrepared: (() -> Any?)? = null
 
     @JvmField
     var onNextSongRequested: Runnable? = null
@@ -84,8 +77,6 @@ class LocalMediaPlayer(
     private var mediaPlayerHandler: Handler? = null
     private var cachedPosition = 0
     private var proxy: StreamProxy? = null
-    private var audioManager: AudioManager = context.getSystemService(AUDIO_SERVICE) as AudioManager
-    private var remoteControlClient: RemoteControlClient? = null
     private var bufferTask: CancellableTask? = null
     private var positionCache: PositionCache? = null
     private var secondaryProgress = -1
@@ -96,7 +87,7 @@ class LocalMediaPlayer(
         Thread {
             Thread.currentThread().name = "MediaPlayerThread"
             Looper.prepare()
-            mediaPlayer.setWakeMode(context, PowerManager.PARTIAL_WAKE_LOCK)
+            mediaPlayer.setWakeMode(context, PARTIAL_WAKE_LOCK)
             mediaPlayer.setOnErrorListener { _, what, more ->
                 handleError(
                     Exception(
@@ -129,7 +120,6 @@ class LocalMediaPlayer(
 
         wakeLock.setReferenceCounted(false)
         Util.registerMediaButtonEventReceiver(context, true)
-        setUpRemoteControlClient()
         Timber.i("LocalMediaPlayer created")
     }
 
@@ -156,8 +146,6 @@ class LocalMediaPlayer(
             if (nextPlayingTask != null) {
                 nextPlayingTask!!.cancel()
             }
-            audioManager.unregisterRemoteControlClient(remoteControlClient)
-            clearRemoteControl()
             Util.unregisterMediaButtonEventReceiver(context, true)
             wakeLock.release()
         } catch (exception: Throwable) {
@@ -173,13 +161,12 @@ class LocalMediaPlayer(
         if (playerState === PlayerState.STARTED) {
             audioFocusHandler.requestAudioFocus()
         }
-        if (playerState === PlayerState.STARTED || playerState === PlayerState.PAUSED) {
-            updateRemoteControl()
-        }
+
         if (onPlayerStateChanged != null) {
             val mainHandler = Handler(context.mainLooper)
+
             val myRunnable = Runnable {
-                onPlayerStateChanged!!.accept(playerState, currentPlaying)
+                onPlayerStateChanged!!(playerState, currentPlaying)
             }
             mainHandler.post(myRunnable)
         }
@@ -200,11 +187,10 @@ class LocalMediaPlayer(
     fun setCurrentPlaying(currentPlaying: DownloadFile?) {
         Timber.v("setCurrentPlaying %s", currentPlaying)
         this.currentPlaying = currentPlaying
-        updateRemoteControl()
 
         if (onCurrentPlayingChanged != null) {
             val mainHandler = Handler(context.mainLooper)
-            val myRunnable = Runnable { onCurrentPlayingChanged!!.accept(currentPlaying) }
+            val myRunnable = Runnable { onCurrentPlayingChanged!!(currentPlaying) }
             mainHandler.post(myRunnable)
         }
     }
@@ -296,140 +282,11 @@ class LocalMediaPlayer(
         }
     }
 
-    /*
-     * The remote control API is deprecated in API 21
-     */
-    private fun updateRemoteControl() {
-        if (!Util.isLockScreenEnabled(context)) {
-            clearRemoteControl()
-            return
-        }
-
-        if (remoteControlClient == null) {
-            remoteControlClient = createRemoteControlClient()
-        } else {
-            // This is probably needed only in API <=17
-            // "You must register your RemoteControlDisplay every time when the View which
-            // displays metadata is shown to the user. This is because 4.2.2 and lower
-            // versions support only one RemoteControlDisplay, and if system will
-            // decide to register it's own RCD, your RCD will be
-            // unregistered automatically.
-            // https://forum.xda-developers.com/t/guide-implement-your-own-lockscreen-like-music-controls.2401597/
-            audioManager.unregisterRemoteControlClient(remoteControlClient)
-            audioManager.registerRemoteControlClient(remoteControlClient)
-        }
-
-        Timber.i(
-            "In updateRemoteControl, playerState: %s [%d]",
-            playerState, playerPosition
-        )
-
-        if (playerState === PlayerState.STARTED) {
-            if (Build.VERSION.SDK_INT < Build.VERSION_CODES.JELLY_BEAN_MR2) {
-                remoteControlClient!!.setPlaybackState(RemoteControlClient.PLAYSTATE_PLAYING)
-            } else {
-                remoteControlClient!!.setPlaybackState(
-                    RemoteControlClient.PLAYSTATE_PLAYING,
-                    playerPosition.toLong(), 1.0f
-                )
-            }
-        } else {
-            if (Build.VERSION.SDK_INT < Build.VERSION_CODES.JELLY_BEAN_MR2) {
-                remoteControlClient!!.setPlaybackState(RemoteControlClient.PLAYSTATE_PAUSED)
-            } else {
-                remoteControlClient!!.setPlaybackState(
-                    RemoteControlClient.PLAYSTATE_PAUSED,
-                    playerPosition.toLong(), 1.0f
-                )
-            }
-        }
-
-        if (currentPlaying != null) {
-            val currentSong = currentPlaying!!.song
-            val lockScreenBitmap = FileUtil.getAlbumArtBitmap(
-                context, currentSong,
-                Util.getMinDisplayMetric(context), true
-            )
-            val artist = currentSong.artist
-            val album = currentSong.album
-            val title = currentSong.title
-            val currentSongDuration = currentSong.duration
-            var duration = 0L
-            if (currentSongDuration != null) duration = (currentSongDuration * 1000).toLong()
-            remoteControlClient!!.editMetadata(true)
-                .putString(MediaMetadataRetriever.METADATA_KEY_ARTIST, artist)
-                .putString(MediaMetadataRetriever.METADATA_KEY_ALBUMARTIST, artist)
-                .putString(MediaMetadataRetriever.METADATA_KEY_ALBUM, album)
-                .putString(MediaMetadataRetriever.METADATA_KEY_TITLE, title)
-                .putLong(MediaMetadataRetriever.METADATA_KEY_DURATION, duration)
-                .putBitmap(RemoteControlClient.MetadataEditor.BITMAP_KEY_ARTWORK, lockScreenBitmap)
-                .apply()
-        }
-    }
-
-    fun clearRemoteControl() {
-        if (remoteControlClient != null) {
-            remoteControlClient!!.setPlaybackState(RemoteControlClient.PLAYSTATE_STOPPED)
-            audioManager.unregisterRemoteControlClient(remoteControlClient)
-            remoteControlClient = null
-        }
-    }
-
-    private fun setUpRemoteControlClient() {
-        if (!Util.isLockScreenEnabled(context)) return
-
-        if (remoteControlClient == null) {
-            remoteControlClient = createRemoteControlClient()
-        }
-    }
-
-    private fun createRemoteControlClient(): RemoteControlClient {
-        val componentName = ComponentName(
-            context.packageName,
-            MediaButtonIntentReceiver::class.java.name
-        )
-
-        val mediaButtonIntent = Intent(Intent.ACTION_MEDIA_BUTTON)
-        mediaButtonIntent.component = componentName
-
-        val broadcast = PendingIntent.getBroadcast(
-            context, 0,
-            mediaButtonIntent, PendingIntent.FLAG_UPDATE_CURRENT
-        )
-
-        val remoteControlClient = RemoteControlClient(broadcast)
-        audioManager.registerRemoteControlClient(remoteControlClient)
-
-        // Flags for the media transport control that this client supports.
-        var flags = RemoteControlClient.FLAG_KEY_MEDIA_PREVIOUS or
-            RemoteControlClient.FLAG_KEY_MEDIA_NEXT or
-            RemoteControlClient.FLAG_KEY_MEDIA_PLAY or
-            RemoteControlClient.FLAG_KEY_MEDIA_PAUSE or
-            RemoteControlClient.FLAG_KEY_MEDIA_PLAY_PAUSE or
-            RemoteControlClient.FLAG_KEY_MEDIA_STOP
-
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR2) {
-            flags = flags or RemoteControlClient.FLAG_KEY_MEDIA_POSITION_UPDATE
-            remoteControlClient.setOnGetPlaybackPositionListener {
-                mediaPlayer.currentPosition.toLong()
-            }
-            remoteControlClient.setPlaybackPositionUpdateListener {
-                newPositionMs ->
-                seekTo(newPositionMs.toInt())
-            }
-        }
-
-        remoteControlClient.setTransportControlFlags(flags)
-
-        return remoteControlClient
-    }
-
     @Synchronized
     fun seekTo(position: Int) {
         try {
             mediaPlayer.seekTo(position)
             cachedPosition = position
-            updateRemoteControl()
         } catch (x: Exception) {
             handleError(x)
         }
@@ -504,7 +361,7 @@ class LocalMediaPlayer(
             secondaryProgress = -1 // Ensure seeking in non StreamProxy playback works
 
             setPlayerState(PlayerState.IDLE)
-            mediaPlayer.setAudioStreamType(AudioManager.STREAM_MUSIC)
+            setAudioAttributes(mediaPlayer)
 
             var dataSource = file.path
             if (partial) {
@@ -568,7 +425,9 @@ class LocalMediaPlayer(
                     }
                 }
 
-                postRunnable(onPrepared)
+                postRunnable {
+                    onPrepared
+                }
             }
             attachHandlersToPlayer(mediaPlayer, downloadFile, partial)
             mediaPlayer.prepareAsync()
@@ -577,23 +436,38 @@ class LocalMediaPlayer(
         }
     }
 
+    private fun setAudioAttributes(player: MediaPlayer) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            player.setAudioAttributes(AudioFocusHandler.getAudioAttributes())
+        } else {
+            @Suppress("DEPRECATION")
+            player.setAudioStreamType(AudioManager.STREAM_MUSIC)
+        }
+    }
+
     @Synchronized
     private fun setupNext(downloadFile: DownloadFile) {
         try {
             val file = downloadFile.completeOrPartialFile
 
-            if (nextMediaPlayer != null) {
+            // Release the media player if it is not our active player
+            if (nextMediaPlayer != null && nextMediaPlayer != mediaPlayer) {
                 nextMediaPlayer!!.setOnCompletionListener(null)
                 nextMediaPlayer!!.release()
                 nextMediaPlayer = null
             }
             nextMediaPlayer = MediaPlayer()
-            nextMediaPlayer!!.setWakeMode(context, PowerManager.PARTIAL_WAKE_LOCK)
+            nextMediaPlayer!!.setWakeMode(context, PARTIAL_WAKE_LOCK)
+
+            setAudioAttributes(nextMediaPlayer!!)
+
+            // This has nothing to do with the MediaSession, it is used to associate
+            // the equalizer or visualizer with the player
             try {
                 nextMediaPlayer!!.audioSessionId = mediaPlayer.audioSessionId
             } catch (e: Throwable) {
-                nextMediaPlayer!!.setAudioStreamType(AudioManager.STREAM_MUSIC)
             }
+
             nextMediaPlayer!!.setDataSource(file.path)
             setNextPlayerState(PlayerState.PREPARING)
             nextMediaPlayer!!.setOnPreparedListener {
@@ -664,7 +538,7 @@ class LocalMediaPlayer(
                     } else {
                         if (onSongCompleted != null) {
                             val mainHandler = Handler(context.mainLooper)
-                            val myRunnable = Runnable { onSongCompleted!!.accept(currentPlaying) }
+                            val myRunnable = Runnable { onSongCompleted!!(currentPlaying) }
                             mainHandler.post(myRunnable)
                         }
                     }
