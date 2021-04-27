@@ -278,7 +278,7 @@ class SelectAlbumFragment : Fragment() {
                 model.getPodcastEpisodes(podcastChannelId)
             } else if (shareId != null) {
                 setTitle(shareName)
-                model.getShare(shareId, shareName)
+                model.getShare(shareId)
             } else if (albumListType != null) {
                 setTitle(albumListTitle)
                 model.getAlbumList(albumListType, albumListSize, albumListOffset)

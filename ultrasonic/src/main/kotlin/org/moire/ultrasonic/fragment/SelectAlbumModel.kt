@@ -1,8 +1,7 @@
 package org.moire.ultrasonic.fragment
 
 import android.app.Application
-import android.os.Handler
-import android.os.Looper
+import android.content.Context
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.MutableLiveData
 import java.util.LinkedList
@@ -16,7 +15,6 @@ import org.moire.ultrasonic.api.subsonic.models.AlbumListType
 import org.moire.ultrasonic.data.ActiveServerProvider
 import org.moire.ultrasonic.domain.MusicDirectory
 import org.moire.ultrasonic.domain.MusicFolder
-import org.moire.ultrasonic.service.CommunicationErrorHandler
 import org.moire.ultrasonic.service.MusicServiceFactory
 import org.moire.ultrasonic.util.Util
 
@@ -24,7 +22,8 @@ import org.moire.ultrasonic.util.Util
 @KoinApiExtension
 class SelectAlbumModel(application: Application) : AndroidViewModel(application), KoinComponent {
 
-    private val context = getApplication<Application>().applicationContext
+    private val context: Context
+        get() = getApplication<Application>().applicationContext
 
     private val activeServerProvider: ActiveServerProvider by inject()
 
@@ -43,13 +42,7 @@ class SelectAlbumModel(application: Application) : AndroidViewModel(application)
         withContext(Dispatchers.IO) {
             if (!ActiveServerProvider.isOffline(context)) {
                 val musicService = MusicServiceFactory.getMusicService(context)
-                try {
-                    musicFolders.postValue(musicService.getMusicFolders(refresh, context))
-                } catch (exception: Exception) {
-                    Handler(Looper.getMainLooper()).post {
-                        CommunicationErrorHandler.handleError(exception, context)
-                    }
-                }
+                musicFolders.postValue(musicService.getMusicFolders(refresh, context))
             }
         }
     }
@@ -286,7 +279,7 @@ class SelectAlbumModel(application: Application) : AndroidViewModel(application)
         }
     }
 
-    suspend fun getShare(shareId: String, shareName: CharSequence?) {
+    suspend fun getShare(shareId: String) {
 
         withContext(Dispatchers.IO) {
             if (!ActiveServerProvider.isOffline(context)) {
