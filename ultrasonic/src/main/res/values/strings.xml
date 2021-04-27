@@ -268,8 +268,8 @@
     <string name="settings.playback.resume_play_on_headphones_plug.summary">App will resume paused playback on wired headphones insertion into device.</string>
     <string name="settings.screen_lit_summary">Keeping the screen on while downloading improves download speed.</string>
     <string name="settings.screen_lit_title">Keep Screen On</string>
-    <string name="settings.scrobble_summary">Remember to set up your Last.fm user and password on the Subsonic server</string>
-    <string name="settings.scrobble_title">Scrobble To Last.fm</string>
+    <string name="settings.scrobble_summary">Remember to set up your user and password in the Scrobble service(s) on the server</string>
+    <string name="settings.scrobble_title">Scrobble my plays</string>
     <string name="settings.search_1">1</string>
     <string name="settings.search_10">10</string>
     <string name="settings.search_100">100</string>
