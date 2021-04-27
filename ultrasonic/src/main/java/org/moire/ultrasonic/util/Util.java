@@ -21,7 +21,6 @@ package org.moire.ultrasonic.util;
 import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.app.AlertDialog;
-import android.app.PendingIntent;
 import android.content.*;
 import android.content.pm.ApplicationInfo;
 import android.content.pm.PackageManager;
@@ -35,7 +34,6 @@ import android.graphics.drawable.Drawable;
 import android.media.AudioManager;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
-import android.net.Uri;
 import android.net.wifi.WifiManager;
 import android.os.Build;
 import android.os.Environment;
@@ -44,17 +42,14 @@ import android.util.DisplayMetrics;
 import timber.log.Timber;
 import android.util.TypedValue;
 import android.view.Gravity;
-import android.view.KeyEvent;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
-import android.widget.RemoteViews;
 import android.widget.Toast;
 
 import androidx.annotation.ColorInt;
 import androidx.preference.PreferenceManager;
 
 import org.moire.ultrasonic.R;
-import org.moire.ultrasonic.activity.NavigationActivity;
 import org.moire.ultrasonic.data.ActiveServerProvider;
 import org.moire.ultrasonic.domain.*;
 import org.moire.ultrasonic.domain.MusicDirectory.Entry;
@@ -852,6 +847,7 @@ public class Util
 				return;
 			}
 
+			// FIXME: This is probably a bug.
 			if (currentSong != currentSong)
 			{
 				Util.currentSong = currentSong;
@@ -1002,74 +998,6 @@ public class Util
 		}
 
 		return inSampleSize;
-	}
-
-	public static void linkButtons(Context context, RemoteViews views, boolean playerActive)
-	{
-		Intent intent = new Intent(context, NavigationActivity.class).addFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
-		if (playerActive)
-			intent.putExtra(Constants.INTENT_EXTRA_NAME_SHOW_PLAYER, true);
-
-		intent.setAction("android.intent.action.MAIN");
-		intent.addCategory("android.intent.category.LAUNCHER");
-		PendingIntent pendingIntent = PendingIntent.getActivity(context, 0, intent, PendingIntent.FLAG_UPDATE_CURRENT);
-		views.setOnClickPendingIntent(R.id.appwidget_coverart, pendingIntent);
-		views.setOnClickPendingIntent(R.id.appwidget_top, pendingIntent);
-
-		// Emulate media button clicks.
-		intent = new Intent(Constants.CMD_PROCESS_KEYCODE);
-		intent.setPackage(context.getPackageName());
-		intent.putExtra(Intent.EXTRA_KEY_EVENT, new KeyEvent(KeyEvent.ACTION_DOWN, KeyEvent.KEYCODE_MEDIA_PLAY_PAUSE));
-		pendingIntent = PendingIntent.getBroadcast(context, 1, intent, 0);
-		views.setOnClickPendingIntent(R.id.control_play, pendingIntent);
-
-		intent = new Intent(Constants.CMD_PROCESS_KEYCODE);
-		intent.setPackage(context.getPackageName());
-		intent.putExtra(Intent.EXTRA_KEY_EVENT, new KeyEvent(KeyEvent.ACTION_DOWN, KeyEvent.KEYCODE_MEDIA_NEXT));
-		pendingIntent = PendingIntent.getBroadcast(context, 2, intent, 0);
-		views.setOnClickPendingIntent(R.id.control_next, pendingIntent);
-
-		intent = new Intent(Constants.CMD_PROCESS_KEYCODE);
-		intent.setPackage(context.getPackageName());
-		intent.putExtra(Intent.EXTRA_KEY_EVENT, new KeyEvent(KeyEvent.ACTION_DOWN, KeyEvent.KEYCODE_MEDIA_PREVIOUS));
-		pendingIntent = PendingIntent.getBroadcast(context, 3, intent, 0);
-		views.setOnClickPendingIntent(R.id.control_previous, pendingIntent);
-
-		intent = new Intent(Constants.CMD_PROCESS_KEYCODE);
-		intent.setPackage(context.getPackageName());
-		intent.putExtra(Intent.EXTRA_KEY_EVENT, new KeyEvent(KeyEvent.ACTION_DOWN, KeyEvent.KEYCODE_MEDIA_STOP));
-		pendingIntent = PendingIntent.getBroadcast(context, 4, intent, 0);
-		views.setOnClickPendingIntent(R.id.control_stop, pendingIntent);
-
-		intent = new Intent(Constants.CMD_PROCESS_KEYCODE);
-		intent.setPackage(context.getPackageName());
-		intent.putExtra(Intent.EXTRA_KEY_EVENT, new KeyEvent(KeyEvent.ACTION_DOWN, KeyEvent.KEYCODE_1));
-		pendingIntent = PendingIntent.getBroadcast(context, 5, intent, 0);
-		views.setOnClickPendingIntent(R.id.notification_five_star_1, pendingIntent);
-
-		intent = new Intent(Constants.CMD_PROCESS_KEYCODE);
-		intent.setPackage(context.getPackageName());
-		intent.putExtra(Intent.EXTRA_KEY_EVENT, new KeyEvent(KeyEvent.ACTION_DOWN, KeyEvent.KEYCODE_2));
-		pendingIntent = PendingIntent.getBroadcast(context, 6, intent, 0);
-		views.setOnClickPendingIntent(R.id.notification_five_star_2, pendingIntent);
-
-		intent = new Intent(Constants.CMD_PROCESS_KEYCODE);
-		intent.setPackage(context.getPackageName());
-		intent.putExtra(Intent.EXTRA_KEY_EVENT, new KeyEvent(KeyEvent.ACTION_DOWN, KeyEvent.KEYCODE_3));
-		pendingIntent = PendingIntent.getBroadcast(context, 7, intent, 0);
-		views.setOnClickPendingIntent(R.id.notification_five_star_3, pendingIntent);
-
-		intent = new Intent(Constants.CMD_PROCESS_KEYCODE);
-		intent.setPackage(context.getPackageName());
-		intent.putExtra(Intent.EXTRA_KEY_EVENT, new KeyEvent(KeyEvent.ACTION_DOWN, KeyEvent.KEYCODE_4));
-		pendingIntent = PendingIntent.getBroadcast(context, 8, intent, 0);
-		views.setOnClickPendingIntent(R.id.notification_five_star_4, pendingIntent);
-
-		intent = new Intent(Constants.CMD_PROCESS_KEYCODE);
-		intent.setPackage(context.getPackageName());
-		intent.putExtra(Intent.EXTRA_KEY_EVENT, new KeyEvent(KeyEvent.ACTION_DOWN, KeyEvent.KEYCODE_5));
-		pendingIntent = PendingIntent.getBroadcast(context, 9, intent, 0);
-		views.setOnClickPendingIntent(R.id.notification_five_star_5, pendingIntent);
 	}
 
 	// TODO: Shouldn't this be used when making requests?

@@ -22,6 +22,7 @@ private val musicFolderSerializer = object : ObjectSerializer<MusicFolder>(SERIA
         output.writeString(item.id).writeString(item.name)
     }
 
+    @Suppress("ReturnCount")
     override fun deserializeObject(
         context: SerializationContext,
         input: SerializerInput,

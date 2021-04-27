@@ -20,11 +20,13 @@ if (isCodeQualityEnabled) {
             apply plugin: "io.gitlab.arturbosch.detekt"
 
             detekt {
-                version = versions.detekt
-                profile("main") {
-                    config = "${rootProject.projectDir}/detekt-config.yml"
-                }
+                buildUponDefaultConfig = true
+                toolVersion = versions.detekt
+                baseline = file("${rootProject.projectDir}/detekt-baseline.xml")
+                config = files("${rootProject.projectDir}/detekt-config.yml")
             }
         }
+        tasks.detekt.jvmTarget = "1.8"
     }
+
 }

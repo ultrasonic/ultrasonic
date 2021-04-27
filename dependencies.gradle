@@ -5,13 +5,14 @@ ext.versions = [
         gradle               : '6.5',
 
         navigation           : "2.3.2",
-        gradlePlugin         : "4.1.2",
+        gradlePlugin         : "4.1.3",
         androidxcore         : "1.5.0-rc01",
         ktlint               : "0.37.1",
         ktlintGradle         : "9.2.1",
-        detekt               : "1.0.0.RC6-4",
+        detekt               : "1.16.0",
         jacoco               : "0.8.5",
         preferences          : "1.1.1",
+        media                : "1.3.0",
 
         androidSupport       : "28.0.0",
         androidLegacySupport : "1.0.0",
@@ -48,12 +49,12 @@ ext.gradlePlugins = [
         gradle            : "com.android.tools.build:gradle:$versions.gradlePlugin",
         kotlin            : "org.jetbrains.kotlin:kotlin-gradle-plugin:$versions.kotlin",
         ktlintGradle      : "org.jlleitschuh.gradle:ktlint-gradle:$versions.ktlintGradle",
-        detekt            : "gradle.plugin.io.gitlab.arturbosch.detekt:detekt-gradle-plugin:$versions.detekt",
+        detekt            : "io.gitlab.arturbosch.detekt:detekt-gradle-plugin:$versions.detekt",
         jacoco            : "org.jacoco:org.jacoco.core:$versions.jacoco",
 ]
 
 ext.androidSupport = [
-        core                 : "androidx.core:core-ktx:$versions.androidxcore",
+        core                  : "androidx.core:core-ktx:$versions.androidxcore",
         support               : "androidx.legacy:legacy-support-v4:$versions.androidLegacySupport",
         design                : "com.google.android.material:material:$versions.androidSupportDesign",
         annotations           : "com.android.support:support-annotations:$versions.androidSupport",
@@ -69,6 +70,7 @@ ext.androidSupport = [
         navigationUiKtx       : "androidx.navigation:navigation-ui-ktx:$versions.navigation",
         navigationFeature     : "androidx.navigation:navigation-dynamic-features-fragment:$versions.navigation",
         preferences           : "androidx.preference:preference:$versions.preferences",
+        media                 : "androidx.media:media:$versions.media",
 ]
 
 ext.other = [

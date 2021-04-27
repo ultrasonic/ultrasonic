@@ -45,7 +45,7 @@ class DownloadFile(
     private val mediaStoreService: MediaStoreService
     private var downloadTask: CancellableTask? = null
     var isFailed = false
-    private var retryCount = 5
+    private var retryCount = MAX_RETRIES
 
     private val desiredBitRate: Int = Util.getMaxBitRate(context)
 
@@ -381,5 +381,9 @@ class DownloadFile(
                 }
             }
         }
+    }
+
+    companion object {
+        const val MAX_RETRIES = 5
     }
 }
