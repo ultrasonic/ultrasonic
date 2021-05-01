@@ -31,6 +31,7 @@ import java.util.Collections
 import java.util.Random
 import kotlinx.coroutines.launch
 import org.koin.android.ext.android.inject
+import org.koin.android.viewmodel.ext.android.viewModel
 import org.koin.core.component.KoinApiExtension
 import org.moire.ultrasonic.R
 import org.moire.ultrasonic.data.ActiveServerProvider
@@ -92,7 +93,7 @@ class SelectAlbumFragment : Fragment() {
     private var cancellationToken: CancellationToken? = null
     private val activeServerProvider: ActiveServerProvider by inject()
 
-    private val serverSettingsModel: ServerSettingsModel by viewModels()
+    private val serverSettingsModel: ServerSettingsModel by viewModel()
     private val model: SelectAlbumModel by viewModels()
 
     private val random: Random = SecureRandom()
@@ -265,7 +266,7 @@ class SelectAlbumFragment : Fragment() {
             setTitle(this@SelectAlbumFragment, name)
         }
 
-        serverSettingsModel.viewModelScope.launch {
+        model.viewModelScope.launch {
             refreshAlbumListView!!.isRefreshing = true
 
             model.getMusicFolders(refresh)
