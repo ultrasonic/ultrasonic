@@ -31,7 +31,6 @@ import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
-import android.media.AudioManager;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.net.wifi.WifiManager;
@@ -53,8 +52,8 @@ import org.moire.ultrasonic.R;
 import org.moire.ultrasonic.data.ActiveServerProvider;
 import org.moire.ultrasonic.domain.*;
 import org.moire.ultrasonic.domain.MusicDirectory.Entry;
-import org.moire.ultrasonic.receiver.MediaButtonIntentReceiver;
 import org.moire.ultrasonic.service.DownloadFile;
+import org.moire.ultrasonic.service.MediaPlayerService;
 
 import java.io.*;
 import java.security.MessageDigest;
@@ -685,8 +684,13 @@ public class Util
 			if (isService) mediaButtonsRegisteredForService = true;
 			else mediaButtonsRegisteredForUI = true;
 
-			AudioManager audioManager = (AudioManager) context.getSystemService(Context.AUDIO_SERVICE);
-			audioManager.registerMediaButtonEventReceiver(new ComponentName(context.getPackageName(), MediaButtonIntentReceiver.class.getName()));
+			MediaPlayerService.executeOnStartedMediaPlayerService(context, (mediaPlayerService) ->
+					{
+						mediaPlayerService.registerMediaButtonEventReceiver();
+						return null;
+					}
+			);
+
 		}
 	}
 
@@ -698,8 +702,13 @@ public class Util
 		// Do not unregister while there is an active part of the app which needs the control
 		if (mediaButtonsRegisteredForService || mediaButtonsRegisteredForUI) return;
 
-		AudioManager audioManager = (AudioManager) context.getSystemService(Context.AUDIO_SERVICE);
-		audioManager.unregisterMediaButtonEventReceiver(new ComponentName(context.getPackageName(), MediaButtonIntentReceiver.class.getName()));
+		MediaPlayerService.executeOnStartedMediaPlayerService(context, (mediaPlayerService) ->
+				{
+					mediaPlayerService.unregisterMediaButtonEventReceiver();
+					return null;
+				}
+		);
+
 		Timber.i("MediaButtonEventReceiver unregistered.");
 	}
 
