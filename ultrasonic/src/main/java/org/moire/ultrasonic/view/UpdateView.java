@@ -19,7 +19,6 @@ import java.util.WeakHashMap;
  * @deprecated
  * Use LiveData to ensure that the content is up-to-date
  **/
-@Deprecated
 public class UpdateView extends LinearLayout
 {
 	private static final WeakHashMap<UpdateView, ?> INSTANCES = new WeakHashMap<UpdateView, Object>();
