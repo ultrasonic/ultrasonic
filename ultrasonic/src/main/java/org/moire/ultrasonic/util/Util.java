@@ -34,6 +34,7 @@ import android.graphics.drawable.Drawable;
 import android.media.AudioManager;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
+import android.net.Uri;
 import android.net.wifi.WifiManager;
 import android.os.Build;
 import android.os.Environment;
@@ -1339,6 +1340,12 @@ public class Util
 		return preferences.getBoolean(Constants.PREFERENCES_KEY_SHOW_ALL_SONGS_BY_ARTIST, false);
 	}
 
+	public static void scanMedia(Context context, File file)
+	{
+		Uri uri = Uri.fromFile(file);
+		Intent scanFileIntent = new Intent(Intent.ACTION_MEDIA_SCANNER_SCAN_FILE, uri);
+		context.sendBroadcast(scanFileIntent);
+	}
 
 	public static int getImageLoaderConcurrency(Context context)
 	{

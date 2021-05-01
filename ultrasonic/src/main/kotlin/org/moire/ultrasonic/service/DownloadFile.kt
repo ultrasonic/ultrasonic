@@ -42,7 +42,6 @@ class DownloadFile(
     val partialFile: File
     val completeFile: File
     private val saveFile: File = FileUtil.getSongFile(context, song)
-    private val mediaStoreService: MediaStoreService
     private var downloadTask: CancellableTask? = null
     var isFailed = false
     private var retryCount = MAX_RETRIES
@@ -65,7 +64,6 @@ class DownloadFile(
     init {
         partialFile = File(saveFile.parent, FileUtil.getPartialFile(saveFile.name))
         completeFile = File(saveFile.parent, FileUtil.getCompleteFile(saveFile.name))
-        mediaStoreService = MediaStoreService(context)
     }
 
     /**
@@ -137,7 +135,8 @@ class DownloadFile(
         Util.delete(partialFile)
         Util.delete(completeFile)
         Util.delete(saveFile)
-        mediaStoreService.deleteFromMediaStore(this)
+
+        Util.scanMedia(context, saveFile)
     }
 
     fun unpin() {
@@ -185,7 +184,7 @@ class DownloadFile(
             } else if (completeWhenDone) {
                 if (save) {
                     Util.renameFile(partialFile, saveFile)
-                    mediaStoreService.saveInMediaStore(this@DownloadFile)
+                    Util.scanMedia(context, saveFile)
                 } else {
                     Util.renameFile(partialFile, completeFile)
                 }
@@ -282,7 +281,7 @@ class DownloadFile(
                 } else {
                     if (save) {
                         Util.renameFile(partialFile, saveFile)
-                        mediaStoreService.saveInMediaStore(this@DownloadFile)
+                        Util.scanMedia(context, saveFile)
                     } else {
                         Util.renameFile(partialFile, completeFile)
                     }
