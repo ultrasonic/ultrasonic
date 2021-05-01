@@ -869,10 +869,13 @@ class MediaPlayerService : Service() {
                 synchronized(instanceLock) { return instance }
             }
 
+
+
+
         @JvmStatic
         fun executeOnStartedMediaPlayerService(
             context: Context,
-            taskToExecute: Consumer<MediaPlayerService?>
+            taskToExecute: (MediaPlayerService?) -> Unit
         ) {
 
             val t: Thread = object : Thread() {
@@ -882,7 +885,7 @@ class MediaPlayerService : Service() {
                         Timber.e("ExecuteOnStarted.. failed to get a MediaPlayerService instance!")
                         return
                     }
-                    taskToExecute.accept(instance)
+                    taskToExecute(instance)
                 }
             }
             t.start()
