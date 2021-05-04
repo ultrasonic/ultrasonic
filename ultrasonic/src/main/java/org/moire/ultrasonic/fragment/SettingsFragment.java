@@ -492,13 +492,8 @@ public class SettingsFragment extends PreferenceFragmentCompat
     }
 
     private void setMediaButtonsEnabled(boolean enabled) {
-        if (enabled) {
-            lockScreenEnabled.setEnabled(true);
-            Util.registerMediaButtonEventReceiver(getActivity(), false);
-        } else {
-            lockScreenEnabled.setEnabled(false);
-            Util.unregisterMediaButtonEventReceiver(getActivity(), false);
-        }
+        lockScreenEnabled.setEnabled(enabled);
+        Util.updateMediaButtonEventReceiver();
     }
 
     private void setBluetoothPreferences(boolean enabled) {

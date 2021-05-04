@@ -29,7 +29,7 @@ import org.moire.ultrasonic.util.Constants;
 import org.moire.ultrasonic.util.Util;
 
 /**
- * Request media button focus when connected to Bluetooth A2DP.
+ * Resume or pause playback on Bluetooth A2DP connect/disconnect.
  *
  * @author Sindre Mehus
  */
@@ -63,7 +63,6 @@ public class BluetoothIntentReceiver extends BroadcastReceiver
 		if (state == android.bluetooth.BluetoothA2dp.STATE_CONNECTED) actionA2dpConnected = true;
 		else if (state == android.bluetooth.BluetoothA2dp.STATE_DISCONNECTED) actionA2dpDisconnected = true;
 
-		boolean connected = actionA2dpConnected || actionBluetoothDeviceConnected;
 		boolean resume = false;
 		boolean pause = false;
 
@@ -81,12 +80,6 @@ public class BluetoothIntentReceiver extends BroadcastReceiver
 				break;
 			case Constants.PREFERENCE_VALUE_A2DP: pause = actionA2dpDisconnected;
 				break;
-		}
-
-		if (connected)
-		{
-			Timber.i("Connected to Bluetooth device %s address %s, requesting media button focus.", name, address);
-			Util.registerMediaButtonEventReceiver(context, false);
 		}
 
 		if (resume)

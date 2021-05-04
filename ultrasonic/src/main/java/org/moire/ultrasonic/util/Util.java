@@ -677,39 +677,14 @@ public class Util
 		return Bitmap.createScaledBitmap(bitmap, size, getScaledHeight(bitmap, size), true);
 	}
 
-	public static void registerMediaButtonEventReceiver(Context context, boolean isService)
+	// Trigger an update on the MediaSession. Depending on the preference it will register
+	// or deregister the MediaButtonReceiver.
+	public static void updateMediaButtonEventReceiver()
 	{
-		if (getMediaButtonsEnabled(context))
-		{
-			if (isService) mediaButtonsRegisteredForService = true;
-			else mediaButtonsRegisteredForUI = true;
-
-			MediaPlayerService.executeOnStartedMediaPlayerService(context, (mediaPlayerService) ->
-					{
-						mediaPlayerService.registerMediaButtonEventReceiver();
-						return null;
-					}
-			);
-
+		MediaPlayerService mediaPlayerService = MediaPlayerService.getRunningInstance();
+		if (mediaPlayerService != null) {
+			mediaPlayerService.updateMediaButtonReceiver();
 		}
-	}
-
-	public static void unregisterMediaButtonEventReceiver(Context context, boolean isService)
-	{
-		if (isService) mediaButtonsRegisteredForService = false;
-		else mediaButtonsRegisteredForUI = false;
-
-		// Do not unregister while there is an active part of the app which needs the control
-		if (mediaButtonsRegisteredForService || mediaButtonsRegisteredForUI) return;
-
-		MediaPlayerService.executeOnStartedMediaPlayerService(context, (mediaPlayerService) ->
-				{
-					mediaPlayerService.unregisterMediaButtonEventReceiver();
-					return null;
-				}
-		);
-
-		Timber.i("MediaButtonEventReceiver unregistered.");
 	}
 
 	public static MusicDirectory getSongsFromSearchResult(SearchResult searchResult)

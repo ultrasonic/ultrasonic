@@ -178,7 +178,7 @@ class NavigationActivity : AppCompatActivity() {
         super.onResume()
 
         setMenuForServerSetting()
-        Util.registerMediaButtonEventReceiver(this, false)
+
         // Lifecycle support's constructor registers some event receivers so it should be created early
         lifecycleSupport.onCreate()
 
@@ -188,7 +188,6 @@ class NavigationActivity : AppCompatActivity() {
 
     override fun onDestroy() {
         super.onDestroy()
-        Util.unregisterMediaButtonEventReceiver(this, false)
         nowPlayingEventDistributor.unsubscribe(nowPlayingEventListener)
         themeChangedEventDistributor.unsubscribe(themeChangedEventListener)
         imageLoaderProvider.clearImageLoader()
@@ -310,7 +309,6 @@ class NavigationActivity : AppCompatActivity() {
 
     private fun exit() {
         lifecycleSupport.onDestroy()
-        Util.unregisterMediaButtonEventReceiver(this, false)
         finish()
     }
 

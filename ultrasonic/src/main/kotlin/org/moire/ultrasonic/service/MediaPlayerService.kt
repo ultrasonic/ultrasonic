@@ -793,7 +793,8 @@ class MediaPlayerService : Service() {
 
         mediaSession = MediaSessionCompat(applicationContext, "UltrasonicService")
         mediaSessionToken = mediaSession!!.sessionToken
-        // mediaController = new MediaControllerCompat(getApplicationContext(), mediaSessionToken);
+
+        updateMediaButtonReceiver()
 
         mediaSession!!.setCallback(object : MediaSessionCompat.Callback() {
             override fun onPlay() {
@@ -837,6 +838,14 @@ class MediaPlayerService : Service() {
             }
         }
         )
+    }
+
+    fun updateMediaButtonReceiver() {
+        if (Util.getMediaButtonsEnabled(applicationContext)) {
+            registerMediaButtonEventReceiver()
+        } else {
+            unregisterMediaButtonEventReceiver()
+        }
     }
 
     fun registerMediaButtonEventReceiver() {
