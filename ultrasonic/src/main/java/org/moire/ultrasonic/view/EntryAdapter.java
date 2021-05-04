@@ -33,6 +33,8 @@ import org.moire.ultrasonic.util.ImageLoader;
 import java.util.List;
 
 /**
+ * This is the adapter for the display of a single list item (song, album, etc)
+ *
  * @author Sindre Mehus
  */
 public class EntryAdapter extends ArrayAdapter<Entry>

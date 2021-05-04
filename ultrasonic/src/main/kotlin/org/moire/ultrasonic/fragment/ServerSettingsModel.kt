@@ -1,9 +1,9 @@
 package org.moire.ultrasonic.fragment
 
-import android.content.Context
+import android.app.Application
 import android.content.SharedPreferences
+import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.LiveData
-import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.preference.PreferenceManager
 import kotlinx.coroutines.CoroutineScope
@@ -22,8 +22,8 @@ import timber.log.Timber
 class ServerSettingsModel(
     private val repository: ServerSettingDao,
     private val activeServerProvider: ActiveServerProvider,
-    private val context: Context
-) : ViewModel() {
+    application: Application
+) : AndroidViewModel(application) {
 
     companion object {
         private const val PREFERENCES_KEY_SERVER_MIGRATED = "serverMigrated"
@@ -54,6 +54,7 @@ class ServerSettingsModel(
             if (rowCount == null || rowCount == 0) {
                 // First time load up the server settings from the Preferences
                 val dbServerList = mutableListOf<ServerSetting>()
+                val context = getApplication<Application>().applicationContext
                 val settings = PreferenceManager.getDefaultSharedPreferences(context)
                 val serverNum = settings.getInt(PREFERENCES_KEY_ACTIVE_SERVERS, 0)
 
