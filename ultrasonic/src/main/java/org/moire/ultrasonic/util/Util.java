@@ -679,7 +679,7 @@ public class Util
 
 	public static void registerMediaButtonEventReceiver(Context context, boolean isService)
 	{
-		if (getMediaButtonsPreference(context))
+		if (getMediaButtonsEnabled(context))
 		{
 			if (isService) mediaButtonsRegisteredForService = true;
 			else mediaButtonsRegisteredForUI = true;
@@ -1064,7 +1064,7 @@ public class Util
 		return Integer.parseInt(preferences.getString(Constants.PREFERENCES_KEY_INCREMENT_TIME, "5"));
 	}
 
-	public static boolean getMediaButtonsPreference(Context context)
+	public static boolean getMediaButtonsEnabled(Context context)
 	{
 		SharedPreferences preferences = getPreferences(context);
 		return preferences.getBoolean(Constants.PREFERENCES_KEY_MEDIA_BUTTONS, true);
