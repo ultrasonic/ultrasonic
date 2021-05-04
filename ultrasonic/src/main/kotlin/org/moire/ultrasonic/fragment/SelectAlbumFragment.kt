@@ -93,7 +93,6 @@ class SelectAlbumFragment : Fragment() {
     private var cancellationToken: CancellationToken? = null
     private val activeServerProvider: ActiveServerProvider by inject()
 
-    private val serverSettingsModel: ServerSettingsModel by viewModel()
     private val model: SelectAlbumModel by viewModels()
 
     private val random: Random = SecureRandom()
@@ -133,6 +132,7 @@ class SelectAlbumFragment : Fragment() {
             requireContext(), view as ViewGroup
         ) { selectedFolderId ->
             if (!isOffline(context)) {
+                val serverSettingsModel: ServerSettingsModel by viewModel()
                 val currentSetting = activeServerProvider.getActiveServer()
                 currentSetting.musicFolderId = selectedFolderId
                 serverSettingsModel.updateItem(currentSetting)
