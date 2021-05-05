@@ -76,9 +76,6 @@ public class MediaPlayerLifecycleSupport
 
 		registerHeadsetReceiver();
 
-		// React to media buttons.
-		Util.registerMediaButtonEventReceiver(context, true);
-
 		mediaPlayerController.onCreate();
 		if (autoPlay) mediaPlayerController.preload();
 
