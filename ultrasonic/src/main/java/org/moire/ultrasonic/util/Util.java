@@ -31,7 +31,6 @@ import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
-import android.media.AudioManager;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.net.Uri;
@@ -54,8 +53,8 @@ import org.moire.ultrasonic.R;
 import org.moire.ultrasonic.data.ActiveServerProvider;
 import org.moire.ultrasonic.domain.*;
 import org.moire.ultrasonic.domain.MusicDirectory.Entry;
-import org.moire.ultrasonic.receiver.MediaButtonIntentReceiver;
 import org.moire.ultrasonic.service.DownloadFile;
+import org.moire.ultrasonic.service.MediaPlayerService;
 
 import java.io.*;
 import java.security.MessageDigest;
@@ -679,29 +678,14 @@ public class Util
 		return Bitmap.createScaledBitmap(bitmap, size, getScaledHeight(bitmap, size), true);
 	}
 
-	public static void registerMediaButtonEventReceiver(Context context, boolean isService)
+	// Trigger an update on the MediaSession. Depending on the preference it will register
+	// or deregister the MediaButtonReceiver.
+	public static void updateMediaButtonEventReceiver()
 	{
-		if (getMediaButtonsPreference(context))
-		{
-			if (isService) mediaButtonsRegisteredForService = true;
-			else mediaButtonsRegisteredForUI = true;
-
-			AudioManager audioManager = (AudioManager) context.getSystemService(Context.AUDIO_SERVICE);
-			audioManager.registerMediaButtonEventReceiver(new ComponentName(context.getPackageName(), MediaButtonIntentReceiver.class.getName()));
+		MediaPlayerService mediaPlayerService = MediaPlayerService.getRunningInstance();
+		if (mediaPlayerService != null) {
+			mediaPlayerService.updateMediaButtonReceiver();
 		}
-	}
-
-	public static void unregisterMediaButtonEventReceiver(Context context, boolean isService)
-	{
-		if (isService) mediaButtonsRegisteredForService = false;
-		else mediaButtonsRegisteredForUI = false;
-
-		// Do not unregister while there is an active part of the app which needs the control
-		if (mediaButtonsRegisteredForService || mediaButtonsRegisteredForUI) return;
-
-		AudioManager audioManager = (AudioManager) context.getSystemService(Context.AUDIO_SERVICE);
-		audioManager.unregisterMediaButtonEventReceiver(new ComponentName(context.getPackageName(), MediaButtonIntentReceiver.class.getName()));
-		Timber.i("MediaButtonEventReceiver unregistered.");
 	}
 
 	public static MusicDirectory getSongsFromSearchResult(SearchResult searchResult)
@@ -1056,7 +1040,7 @@ public class Util
 		return Integer.parseInt(preferences.getString(Constants.PREFERENCES_KEY_INCREMENT_TIME, "5"));
 	}
 
-	public static boolean getMediaButtonsPreference(Context context)
+	public static boolean getMediaButtonsEnabled(Context context)
 	{
 		SharedPreferences preferences = getPreferences(context);
 		return preferences.getBoolean(Constants.PREFERENCES_KEY_MEDIA_BUTTONS, true);

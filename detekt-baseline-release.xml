@@ -33,7 +33,7 @@
     <ID>ComplexCondition:SelectAlbumFragment.kt$SelectAlbumFragment$enabled &amp;&amp; !deleteEnabled &amp;&amp; !isOffline(context)</ID>
     <ID>ComplexCondition:SelectAlbumFragment.kt$SelectAlbumFragment$enabled &amp;&amp; !isOffline(context) &amp;&amp; selection.size &gt; pinnedCount</ID>
     <ID>ComplexCondition:SelectAlbumFragment.kt$SelectAlbumFragment$entry != null &amp;&amp; !entry.isDirectory &amp;&amp; !entry.isVideo</ID>
-    <ID>ComplexCondition:SelectAlbumFragment.kt$SelectAlbumFragment.&lt;no name provided&gt;$Util.getShouldShowAllSongsByArtist(context) &amp;&amp; musicDirectory.findChild(allSongsId) == null &amp;&amp; musicDirectory.getChildren(true, false).size == musicDirectory.getChildren(true, true).size</ID>
+    <ID>ComplexCondition:SelectAlbumModel.kt$SelectAlbumModel$Util.getShouldShowAllSongsByArtist(context) &amp;&amp; musicDirectory.findChild(allSongsId) == null &amp;&amp; musicDirectory.getChildren(true, false).size == musicDirectory.getChildren(true, true).size</ID>
     <ID>ComplexCondition:ServerSettingsModel.kt$ServerSettingsModel$url.isNullOrEmpty() || userName.isNullOrEmpty() || isMigrated</ID>
     <ID>ComplexCondition:SongView.kt$SongView$TextUtils.isEmpty(transcodedSuffix) || transcodedSuffix == suffix || song.isVideo &amp;&amp; Util.getVideoPlayerType(this.context) !== VideoPlayerType.FLASH</ID>
     <ID>ComplexCondition:SubsonicImageLoaderProxy.kt$SubsonicImageLoaderProxy$id != null &amp;&amp; view != null &amp;&amp; view is ImageView</ID>
@@ -49,10 +49,11 @@
     <ID>ComplexMethod:MediaPlayerService.kt$MediaPlayerService$private fun setupOnSongCompletedHandler()</ID>
     <ID>ComplexMethod:RestErrorMapper.kt$ fun SubsonicRESTException.getLocalizedErrorMessage(context: Context): String</ID>
     <ID>ComplexMethod:SelectAlbumFragment.kt$SelectAlbumFragment$override fun onContextItemSelected(menuItem: MenuItem): Boolean</ID>
-    <ID>ComplexMethod:SelectAlbumFragment.kt$SelectAlbumFragment$override fun onViewCreated(view: View, savedInstanceState: Bundle?)</ID>
     <ID>ComplexMethod:SelectAlbumFragment.kt$SelectAlbumFragment$private fun enableButtons()</ID>
     <ID>ComplexMethod:SelectAlbumFragment.kt$SelectAlbumFragment$private fun updateDisplay(refresh: Boolean)</ID>
-    <ID>ComplexMethod:SelectAlbumFragment.kt$SelectAlbumFragment.LoadTask$protected override fun done(result: Pair&lt;MusicDirectory, Boolean&gt;)</ID>
+    <ID>ComplexMethod:SelectAlbumFragment.kt$SelectAlbumFragment$private fun updateInterfaceWithEntries(musicDirectory: MusicDirectory)</ID>
+    <ID>ComplexMethod:SelectAlbumModel.kt$SelectAlbumModel$suspend fun getAlbumList(albumListType: String, size: Int, offset: Int)</ID>
+    <ID>ComplexMethod:SelectAlbumModel.kt$SelectAlbumModel$suspend fun getMusicDirectory( refresh: Boolean, id: String?, name: String?, parentId: String? )</ID>
     <ID>ComplexMethod:SelectArtistFragment.kt$SelectArtistFragment$override fun onViewCreated(view: View, savedInstanceState: Bundle?)</ID>
     <ID>ComplexMethod:ServerRowAdapter.kt$ServerRowAdapter$ override fun getView(position: Int, convertView: View?, parent: ViewGroup?): View?</ID>
     <ID>ComplexMethod:SongView.kt$SongView$fun setSong(song: MusicDirectory.Entry, checkable: Boolean, draggable: Boolean)</ID>
@@ -85,9 +86,9 @@
     <ID>LargeClass:NavigationActivity.kt$NavigationActivity : AppCompatActivity</ID>
     <ID>LargeClass:RESTMusicService.kt$RESTMusicService : MusicService</ID>
     <ID>LargeClass:SelectAlbumFragment.kt$SelectAlbumFragment : Fragment</ID>
-    <ID>LargeClass:SelectAlbumFragment.kt$SelectAlbumFragment$LoadTask : FragmentBackgroundTask</ID>
+    <ID>LargeClass:SelectAlbumModel.kt$SelectAlbumModel : AndroidViewModelKoinComponent</ID>
     <ID>LargeClass:SelectArtistFragment.kt$SelectArtistFragment : Fragment</ID>
-    <ID>LargeClass:ServerSettingsModel.kt$ServerSettingsModel : ViewModel</ID>
+    <ID>LargeClass:ServerSettingsModel.kt$ServerSettingsModel : AndroidViewModel</ID>
     <ID>LargeClass:SongView.kt$SongView : UpdateViewCheckable</ID>
     <ID>LongMethod:APIMusicDirectoryConverter.kt$fun MusicDirectoryChild.toDomainEntity(): MusicDirectory.Entry</ID>
     <ID>LongMethod:ActiveServerProvider.kt$ActiveServerProvider$ fun getActiveServer(): ServerSetting</ID>
@@ -140,14 +141,16 @@
     <ID>LongMethod:RestErrorMapper.kt$ fun SubsonicRESTException.getLocalizedErrorMessage(context: Context): String</ID>
     <ID>LongMethod:SelectAlbumFragment.kt$SelectAlbumFragment$override fun onContextItemSelected(menuItem: MenuItem): Boolean</ID>
     <ID>LongMethod:SelectAlbumFragment.kt$SelectAlbumFragment$override fun onViewCreated(view: View, savedInstanceState: Bundle?)</ID>
+    <ID>LongMethod:SelectAlbumFragment.kt$SelectAlbumFragment$private fun createHeader( entries: List&lt;MusicDirectory.Entry&gt;, name: CharSequence?, songCount: Int ): View?</ID>
     <ID>LongMethod:SelectAlbumFragment.kt$SelectAlbumFragment$private fun downloadBackground(save: Boolean, songs: List&lt;MusicDirectory.Entry?&gt;)</ID>
     <ID>LongMethod:SelectAlbumFragment.kt$SelectAlbumFragment$private fun enableButtons()</ID>
     <ID>LongMethod:SelectAlbumFragment.kt$SelectAlbumFragment$private fun playAll(shuffle: Boolean = false, append: Boolean = false)</ID>
     <ID>LongMethod:SelectAlbumFragment.kt$SelectAlbumFragment$private fun updateDisplay(refresh: Boolean)</ID>
-    <ID>LongMethod:SelectAlbumFragment.kt$SelectAlbumFragment.&lt;no name provided&gt;$override fun done(result: Pair&lt;MusicDirectory, Boolean&gt;)</ID>
-    <ID>LongMethod:SelectAlbumFragment.kt$SelectAlbumFragment.&lt;no name provided&gt;$override fun load(service: MusicService): MusicDirectory</ID>
-    <ID>LongMethod:SelectAlbumFragment.kt$SelectAlbumFragment.LoadTask$protected fun createHeader( entries: List&lt;MusicDirectory.Entry&gt;, name: CharSequence?, songCount: Int ): View?</ID>
-    <ID>LongMethod:SelectAlbumFragment.kt$SelectAlbumFragment.LoadTask$protected override fun done(result: Pair&lt;MusicDirectory, Boolean&gt;)</ID>
+    <ID>LongMethod:SelectAlbumFragment.kt$SelectAlbumFragment$private fun updateInterfaceWithEntries(musicDirectory: MusicDirectory)</ID>
+    <ID>LongMethod:SelectAlbumModel.kt$SelectAlbumModel$suspend fun getAlbum(refresh: Boolean, id: String?, name: String?, parentId: String?)</ID>
+    <ID>LongMethod:SelectAlbumModel.kt$SelectAlbumModel$suspend fun getAlbumList(albumListType: String, size: Int, offset: Int)</ID>
+    <ID>LongMethod:SelectAlbumModel.kt$SelectAlbumModel$suspend fun getArtist(refresh: Boolean, id: String?, name: String?)</ID>
+    <ID>LongMethod:SelectAlbumModel.kt$SelectAlbumModel$suspend fun getMusicDirectory( refresh: Boolean, id: String?, name: String?, parentId: String? )</ID>
     <ID>LongMethod:SelectArtistFragment.kt$SelectArtistFragment$override fun onViewCreated(view: View, savedInstanceState: Bundle?)</ID>
     <ID>LongMethod:SelectArtistFragment.kt$SelectArtistFragment$private fun onArtistMenuItemSelected(menuItem: MenuItem, artist: Artist): Boolean</ID>
     <ID>LongMethod:ServerRowAdapter.kt$ServerRowAdapter$ override fun getView(position: Int, convertView: View?, parent: ViewGroup?): View?</ID>
@@ -204,7 +207,6 @@
     <ID>MagicNumber:RESTMusicService.kt$RESTMusicService$206</ID>
     <ID>MagicNumber:RESTMusicService.kt$RESTMusicService$5</ID>
     <ID>MagicNumber:SelectAlbumFragment.kt$SelectAlbumFragment$10</ID>
-    <ID>MagicNumber:SelectAlbumFragment.kt$SelectAlbumFragment.LoadTask$10</ID>
     <ID>MagicNumber:SelectMusicFolderView.kt$SelectMusicFolderView$10</ID>
     <ID>MagicNumber:SongView.kt$SongView$3</ID>
     <ID>MagicNumber:SongView.kt$SongView$4</ID>
@@ -212,7 +214,6 @@
     <ID>NestedBlockDepth:DownloadFile.kt$DownloadFile.DownloadTask$override fun execute()</ID>
     <ID>NestedBlockDepth:DownloadHandler.kt$DownloadHandler$private fun downloadRecursively( fragment: Fragment, id: String, name: String?, isShare: Boolean, isDirectory: Boolean, save: Boolean, append: Boolean, autoPlay: Boolean, shuffle: Boolean, background: Boolean, playNext: Boolean, unpin: Boolean, isArtist: Boolean )</ID>
     <ID>NestedBlockDepth:MediaPlayerService.kt$MediaPlayerService$private fun setupOnSongCompletedHandler()</ID>
-    <ID>NestedBlockDepth:SelectAlbumFragment.kt$SelectAlbumFragment$private fun getAlbum(refresh: Boolean, id: String?, name: String?, parentId: String?)</ID>
     <ID>ReturnCount:ActiveServerProvider.kt$ActiveServerProvider$ fun getActiveServer(): ServerSetting</ID>
     <ID>ReturnCount:CommunicationErrorHandler.kt$CommunicationErrorHandler.Companion$fun getErrorMessage(error: Throwable, context: Context): String</ID>
     <ID>ReturnCount:FileLoggerTree.kt$FileLoggerTree$ private fun getNextLogFile()</ID>
@@ -241,7 +242,6 @@
     <ID>TooGenericExceptionCaught:LocalMediaPlayer.kt$LocalMediaPlayer.PositionCache$e: Exception</ID>
     <ID>TooGenericExceptionCaught:MediaPlayerService.kt$MediaPlayerService$e: Exception</ID>
     <ID>TooGenericExceptionCaught:MediaPlayerService.kt$MediaPlayerService$x: IndexOutOfBoundsException</ID>
-    <ID>TooGenericExceptionCaught:SelectAlbumFragment.kt$SelectAlbumFragment$exception: Exception</ID>
     <ID>TooGenericExceptionCaught:SongView.kt$SongView$e: Exception</ID>
     <ID>TooGenericExceptionCaught:SubsonicUncaughtExceptionHandler.kt$SubsonicUncaughtExceptionHandler$x: Throwable</ID>
     <ID>TooGenericExceptionCaught:VideoPlayer.kt$VideoPlayer$e: Exception</ID>

@@ -85,12 +85,7 @@ public class MediaPlayerControllerImpl implements MediaPlayerController
 	public void onCreate()
 	{
 		if (created) return;
-		this.externalStorageMonitor.onCreate(new Runnable() {
-			@Override
-			public void run() {
-				reset();
-			}
-		});
+		this.externalStorageMonitor.onCreate(this::reset);
 
 		setJukeboxEnabled(activeServerProvider.getValue().getActiveServer().getJukeboxByDefault());
 		created = true;
@@ -116,9 +111,8 @@ public class MediaPlayerControllerImpl implements MediaPlayerController
 
 		if (currentPlayingIndex != -1)
 		{
-			MediaPlayerService.executeOnStartedMediaPlayerService(context, new Consumer<MediaPlayerService>() {
-				@Override
-				public void accept(MediaPlayerService mediaPlayerService) {
+			MediaPlayerService.executeOnStartedMediaPlayerService(context, (mediaPlayerService) ->
+				 {
 					mediaPlayerService.play(currentPlayingIndex, autoPlayStart);
 
 					if (localMediaPlayer.currentPlaying != null)
@@ -136,8 +130,9 @@ public class MediaPlayerControllerImpl implements MediaPlayerController
 						}
 					}
 					autoPlayStart = false;
-				}
-			});
+					return null;
+				 }
+			);
 		}
 	}
 
@@ -149,55 +144,53 @@ public class MediaPlayerControllerImpl implements MediaPlayerController
 	@Override
 	public synchronized void play(final int index)
 	{
-		MediaPlayerService.executeOnStartedMediaPlayerService(context,new Consumer<MediaPlayerService>() {
-			@Override
-			public void accept(MediaPlayerService mediaPlayerService) {
+		MediaPlayerService.executeOnStartedMediaPlayerService(context, (mediaPlayerService) -> {
 				mediaPlayerService.play(index, true);
-			}
-		});
+					return null;
+				}
+		);
 	}
 
 	public synchronized void play()
 	{
-		MediaPlayerService.executeOnStartedMediaPlayerService(context, new Consumer<MediaPlayerService>() {
-			@Override
-			public void accept(MediaPlayerService mediaPlayerService) {
+		MediaPlayerService.executeOnStartedMediaPlayerService(context, (mediaPlayerService) -> {
+
 				mediaPlayerService.play();
-			}
-		});
+					return null;
+				}
+		);
 	}
 
 	public synchronized void resumeOrPlay()
 	{
-		MediaPlayerService.executeOnStartedMediaPlayerService(context, new Consumer<MediaPlayerService>() {
-			@Override
-			public void accept(MediaPlayerService mediaPlayerService) {
+		MediaPlayerService.executeOnStartedMediaPlayerService(context, (mediaPlayerService) -> {
 				mediaPlayerService.resumeOrPlay();
-			}
-		});
+					return null;
+				}
+		);
 	}
+
 
 	@Override
 	public synchronized void togglePlayPause()
 	{
 		if (localMediaPlayer.playerState == PlayerState.IDLE) autoPlayStart = true;
-		MediaPlayerService.executeOnStartedMediaPlayerService(context,new Consumer<MediaPlayerService>() {
-			@Override
-			public void accept(MediaPlayerService mediaPlayerService) {
+		MediaPlayerService.executeOnStartedMediaPlayerService(context, (mediaPlayerService) -> {
 				mediaPlayerService.togglePlayPause();
-			}
-		});
+					return null;
+				}
+		);
 	}
+
 
 	@Override
 	public synchronized void start()
 	{
-		MediaPlayerService.executeOnStartedMediaPlayerService(context, new Consumer<MediaPlayerService>() {
-			@Override
-			public void accept(MediaPlayerService mediaPlayerService) {
+		MediaPlayerService.executeOnStartedMediaPlayerService(context, (mediaPlayerService) -> {
 				mediaPlayerService.start();
-			}
-		});
+					return null;
+				}
+		);
 	}
 
 	@Override
@@ -612,19 +605,14 @@ public class MediaPlayerControllerImpl implements MediaPlayerController
 		final Entry song = localMediaPlayer.currentPlaying.getSong();
 		song.setUserRating(rating);
 
-		new Thread(new Runnable()
-		{
-			@Override
-			public void run()
+		new Thread(() -> {
+			try
 			{
-				try
-				{
-					MusicServiceFactory.getMusicService(context).setRating(song.getId(), rating, context);
-				}
-				catch (Exception e)
-				{
-					Timber.e(e);
-				}
+				MusicServiceFactory.getMusicService(context).setRating(song.getId(), rating, context);
+			}
+			catch (Exception e)
+			{
+				Timber.e(e);
 			}
 		}).start();
 

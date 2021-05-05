@@ -119,7 +119,6 @@ class LocalMediaPlayer(
         }.start()
 
         wakeLock.setReferenceCounted(false)
-        Util.registerMediaButtonEventReceiver(context, true)
         Timber.i("LocalMediaPlayer created")
     }
 
@@ -146,7 +145,7 @@ class LocalMediaPlayer(
             if (nextPlayingTask != null) {
                 nextPlayingTask!!.cancel()
             }
-            Util.unregisterMediaButtonEventReceiver(context, true)
+
             wakeLock.release()
         } catch (exception: Throwable) {
             Timber.w(exception, "LocalMediaPlayer onDestroy exception: ")
