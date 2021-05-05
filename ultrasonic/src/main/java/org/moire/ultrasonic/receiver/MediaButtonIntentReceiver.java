@@ -46,7 +46,7 @@ public class MediaButtonIntentReceiver extends BroadcastReceiver
 		String intentAction = intent.getAction();
 
 		// If media button are turned off and we received a media button, exit
-		if (!Util.getMediaButtonsPreference(context) &&
+		if (!Util.getMediaButtonsEnabled(context) &&
 				Intent.ACTION_MEDIA_BUTTON.equals(intentAction)) return;
 
 		// Only process media buttons and CMD_PROCESS_KEYCODE, which is received from the widgets

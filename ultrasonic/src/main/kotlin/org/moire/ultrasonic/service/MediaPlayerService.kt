@@ -12,6 +12,7 @@ import android.app.NotificationChannel
 import android.app.NotificationManager
 import android.app.PendingIntent
 import android.app.Service
+import android.content.ComponentName
 import android.content.Context
 import android.content.Intent
 import android.os.Build
@@ -22,7 +23,6 @@ import android.support.v4.media.session.PlaybackStateCompat
 import android.view.KeyEvent
 import androidx.core.app.NotificationCompat
 import androidx.core.app.NotificationManagerCompat
-import java.util.ArrayList
 import org.koin.android.ext.android.inject
 import org.moire.ultrasonic.R
 import org.moire.ultrasonic.activity.NavigationActivity
@@ -33,6 +33,7 @@ import org.moire.ultrasonic.provider.UltrasonicAppWidgetProvider4X1
 import org.moire.ultrasonic.provider.UltrasonicAppWidgetProvider4X2
 import org.moire.ultrasonic.provider.UltrasonicAppWidgetProvider4X3
 import org.moire.ultrasonic.provider.UltrasonicAppWidgetProvider4X4
+import org.moire.ultrasonic.receiver.MediaButtonIntentReceiver
 import org.moire.ultrasonic.service.MusicServiceFactory.getMusicService
 import org.moire.ultrasonic.util.Constants
 import org.moire.ultrasonic.util.FileUtil
@@ -792,7 +793,8 @@ class MediaPlayerService : Service() {
 
         mediaSession = MediaSessionCompat(applicationContext, "UltrasonicService")
         mediaSessionToken = mediaSession!!.sessionToken
-        // mediaController = new MediaControllerCompat(getApplicationContext(), mediaSessionToken);
+
+        updateMediaButtonReceiver()
 
         mediaSession!!.setCallback(object : MediaSessionCompat.Callback() {
             override fun onPlay() {
@@ -838,10 +840,39 @@ class MediaPlayerService : Service() {
         )
     }
 
+    fun updateMediaButtonReceiver() {
+        if (Util.getMediaButtonsEnabled(applicationContext)) {
+            registerMediaButtonEventReceiver()
+        } else {
+            unregisterMediaButtonEventReceiver()
+        }
+    }
+
+    fun registerMediaButtonEventReceiver() {
+        val component = ComponentName(packageName, MediaButtonIntentReceiver::class.java.name)
+        val mediaButtonIntent = Intent(Intent.ACTION_MEDIA_BUTTON)
+        mediaButtonIntent.component = component
+
+        val pendingIntent = PendingIntent.getBroadcast(
+            this,
+            INTENT_CODE_MEDIA_BUTTON,
+            mediaButtonIntent,
+            PendingIntent.FLAG_CANCEL_CURRENT
+        )
+
+        mediaSession?.setMediaButtonReceiver(pendingIntent)
+    }
+
+    fun unregisterMediaButtonEventReceiver() {
+        mediaSession?.setMediaButtonReceiver(null)
+    }
+
     companion object {
         private const val NOTIFICATION_CHANNEL_ID = "org.moire.ultrasonic"
         private const val NOTIFICATION_CHANNEL_NAME = "Ultrasonic background service"
         private const val NOTIFICATION_ID = 3033
+        private const val INTENT_CODE_MEDIA_BUTTON = 161
+
         private var instance: MediaPlayerService? = null
         private val instanceLock = Any()
 
@@ -872,7 +903,7 @@ class MediaPlayerService : Service() {
         @JvmStatic
         fun executeOnStartedMediaPlayerService(
             context: Context,
-            taskToExecute: Consumer<MediaPlayerService?>
+            taskToExecute: (MediaPlayerService?) -> Unit
         ) {
 
             val t: Thread = object : Thread() {
@@ -882,7 +913,7 @@ class MediaPlayerService : Service() {
                         Timber.e("ExecuteOnStarted.. failed to get a MediaPlayerService instance!")
                         return
                     }
-                    taskToExecute.accept(instance)
+                    taskToExecute(instance)
                 }
             }
             t.start()
