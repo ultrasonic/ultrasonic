@@ -502,10 +502,9 @@ class MediaPlayerService : Service() {
         val state: Int
         val isPlaying = (playerState === PlayerState.STARTED)
 
-        var actions: Long = PlaybackStateCompat.ACTION_PLAY_PAUSE
-//        or
-//            PlaybackStateCompat.ACTION_SKIP_TO_NEXT or
-//            PlaybackStateCompat.ACTION_SKIP_TO_PREVIOUS
+        var actions: Long = PlaybackStateCompat.ACTION_PLAY_PAUSE or
+            PlaybackStateCompat.ACTION_SKIP_TO_NEXT or
+            PlaybackStateCompat.ACTION_SKIP_TO_PREVIOUS
 
         // Map our playerState to native PlaybackState
         // TODO: Synchronize these APIs
@@ -827,6 +826,26 @@ class MediaPlayerService : Service() {
                     keycode
                 ).send()
                 Timber.v("Media Session Callback: onStop")
+            }
+
+            override fun onSkipToNext() {
+                super.onSkipToNext()
+                getPendingIntentForMediaAction(
+                    applicationContext,
+                    KeyEvent.KEYCODE_MEDIA_NEXT,
+                    keycode
+                ).send()
+                Timber.v("Media Session Callback: onSkipToNext")
+            }
+
+            override fun onSkipToPrevious() {
+                super.onSkipToPrevious()
+                getPendingIntentForMediaAction(
+                    applicationContext,
+                    KeyEvent.KEYCODE_MEDIA_PREVIOUS,
+                    keycode
+                ).send()
+                Timber.v("Media Session Callback: onSkipToPrevious")
             }
 
             override fun onMediaButtonEvent(mediaButtonEvent: Intent): Boolean {
