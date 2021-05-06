@@ -40,7 +40,7 @@ ext.versions = [
         apacheCodecs         : "1.10",
         testRunner           : "1.0.1",
         robolectric          : "4.4",
-        dexter               : "6.1.2",
+        dexter               : "6.2.2",
         timber               : "4.7.1",
         fastScroll           : "2.0.1",
 ]
