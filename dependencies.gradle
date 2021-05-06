@@ -27,7 +27,7 @@ ext.versions = [
         retrofit             : "2.4.0",
         jackson              : "2.9.5",
         okhttp               : "3.12.13",
-        semver               : "1.0.0",
+        semver               : "1.1.1",
         twitterSerial        : "0.1.6",
         koin                 : "2.2.2",
         picasso              : "2.71828",
