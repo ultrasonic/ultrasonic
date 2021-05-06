@@ -500,7 +500,7 @@ class MediaPlayerService : Service() {
         // Create playback State
         val playbackState = PlaybackStateCompat.Builder()
         val state: Int
-        val isPlaying = (playerState === PlayerState.STARTED)
+        val isActive: Boolean
 
         var actions: Long = PlaybackStateCompat.ACTION_PLAY_PAUSE or
             PlaybackStateCompat.ACTION_SKIP_TO_NEXT or
@@ -511,25 +511,33 @@ class MediaPlayerService : Service() {
         when (playerState) {
             PlayerState.STARTED -> {
                 state = PlaybackStateCompat.STATE_PLAYING
+                isActive = true
                 actions = actions or
                     PlaybackStateCompat.ACTION_PAUSE or
                     PlaybackStateCompat.ACTION_STOP
             }
             PlayerState.COMPLETED,
             PlayerState.STOPPED -> {
+                isActive = false
                 state = PlaybackStateCompat.STATE_STOPPED
             }
             PlayerState.IDLE -> {
+                isActive = false
                 state = PlaybackStateCompat.STATE_NONE
                 actions = 0L
             }
             PlayerState.PAUSED -> {
+                isActive = true
                 state = PlaybackStateCompat.STATE_PAUSED
                 actions = actions or
                     PlaybackStateCompat.ACTION_PLAY or
                     PlaybackStateCompat.ACTION_STOP
             }
-            else -> state = PlaybackStateCompat.STATE_PAUSED
+            else -> {
+                // These are the states PREPARING, PREPARED & DOWNLOADING
+                isActive = true
+                state = PlaybackStateCompat.STATE_PAUSED
+            }
         }
 
         playbackState.setState(state, PlaybackStateCompat.PLAYBACK_POSITION_UNKNOWN, 1.0f)
@@ -541,9 +549,9 @@ class MediaPlayerService : Service() {
         mediaSession!!.setPlaybackState(playbackState.build())
 
         // Set Active state
-        mediaSession!!.isActive = isPlaying
+        mediaSession!!.isActive = isActive
 
-        Timber.d("Setting the MediaSession to active = %s", isPlaying)
+        Timber.d("Setting the MediaSession to active = %s", isActive)
     }
 
     private fun createNotificationChannel() {
