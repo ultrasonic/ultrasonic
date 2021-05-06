@@ -188,6 +188,7 @@ public class Downloader
                 DownloadFile downloadFile = backgroundDownloadList.get(i);
                 if (downloadFile.isWorkDone() && (!downloadFile.shouldSave() || downloadFile.isSaved()))
                 {
+                    Util.scanMedia(context, downloadFile.getCompleteFile());
 
                     // Don't need to keep list like active song list
                     backgroundDownloadList.remove(i);
