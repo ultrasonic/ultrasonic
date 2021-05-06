@@ -447,6 +447,8 @@ public class SettingsFragment extends PreferenceFragmentCompat
         sharingDefaultExpiration.setSummary(sharingDefaultExpiration.getText());
         sharingDefaultDescription.setSummary(sharingDefaultDescription.getText());
         sharingDefaultGreeting.setSummary(sharingDefaultGreeting.getText());
+        cacheLocation.setSummary(settings.getString(Constants.PREFERENCES_KEY_CACHE_LOCATION,
+            FileUtil.getDefaultMusicDirectory(getActivity()).getPath()));
 
         if (!mediaButtonsEnabled.isChecked()) {
             lockScreenEnabled.setChecked(false);
