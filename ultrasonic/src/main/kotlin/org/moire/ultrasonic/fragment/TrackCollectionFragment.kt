@@ -62,7 +62,7 @@ import timber.log.Timber
  * TODO: Break up this class into smaller more specific classes, extending a base class if necessary
  */
 @KoinApiExtension
-class SelectAlbumFragment : Fragment() {
+class TrackCollectionFragment : Fragment() {
 
     private var refreshAlbumListView: SwipeRefreshLayout? = null
     private var albumListView: ListView? = null
@@ -93,7 +93,7 @@ class SelectAlbumFragment : Fragment() {
     private var cancellationToken: CancellationToken? = null
     private val activeServerProvider: ActiveServerProvider by inject()
 
-    private val model: SelectAlbumModel by viewModels()
+    private val model: TrackCollectionModel by viewModels()
 
     private val random: Random = SecureRandom()
 
@@ -197,7 +197,7 @@ class SelectAlbumFragment : Fragment() {
         }
         playNextButton!!.setOnClickListener {
             downloadHandler.download(
-                this@SelectAlbumFragment, append = true,
+                this@TrackCollectionFragment, append = true,
                 save = false, autoPlay = false, playNext = true, shuffle = false,
                 songs = getSelectedSongs(albumListView)
             )
@@ -260,11 +260,11 @@ class SelectAlbumFragment : Fragment() {
         )
 
         fun setTitle(name: String?) {
-            setTitle(this@SelectAlbumFragment, name)
+            setTitle(this@TrackCollectionFragment, name)
         }
 
         fun setTitle(name: Int) {
-            setTitle(this@SelectAlbumFragment, name)
+            setTitle(this@TrackCollectionFragment, name)
         }
 
         model.viewModelScope.launch {
@@ -847,7 +847,7 @@ class SelectAlbumFragment : Fragment() {
         val albumHeader = AlbumHeader.processEntries(context, entries)
 
         val titleView = header!!.findViewById<View>(R.id.select_album_title) as TextView
-        titleView.text = name ?: getTitle(this@SelectAlbumFragment) // getActionBarSubtitle());
+        titleView.text = name ?: getTitle(this@TrackCollectionFragment) // getActionBarSubtitle());
 
         // Don't show a header if all entries are videos
         if (albumHeader.isAllVideo) {

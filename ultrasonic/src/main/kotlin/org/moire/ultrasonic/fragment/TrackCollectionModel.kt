@@ -20,7 +20,7 @@ import org.moire.ultrasonic.util.Util
 
 // TODO: Break up this class into smaller more specific classes, extending a base class if necessary
 @KoinApiExtension
-class SelectAlbumModel(application: Application) : AndroidViewModel(application), KoinComponent {
+class TrackCollectionModel(application: Application) : AndroidViewModel(application), KoinComponent {
 
     private val context: Context
         get() = getApplication<Application>().applicationContext

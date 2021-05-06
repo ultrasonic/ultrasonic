@@ -26,7 +26,7 @@ import org.moire.ultrasonic.view.SelectMusicFolderView
 /**
  * Displays the list of Artists from the media library
  */
-class SelectArtistFragment : Fragment() {
+class ArtistListFragment : Fragment() {
     private val activeServerProvider: ActiveServerProvider by inject()
     private val serverSettingsModel: ServerSettingsModel by viewModel()
     private val artistListModel: ArtistListModel by viewModel()

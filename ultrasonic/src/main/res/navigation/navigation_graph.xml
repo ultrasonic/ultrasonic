@@ -19,7 +19,7 @@
     </fragment>
     <fragment
         android:id="@+id/selectArtistFragment"
-        android:name="org.moire.ultrasonic.fragment.SelectArtistFragment"
+        android:name="org.moire.ultrasonic.fragment.ArtistListFragment"
         android:label="@string/music_library.label" >
         <action
             android:id="@+id/selectArtistToSelectAlbum"
@@ -27,7 +27,7 @@
     </fragment>
     <fragment
         android:id="@+id/selectAlbumFragment"
-        android:name="org.moire.ultrasonic.fragment.SelectAlbumFragment" >
+        android:name="org.moire.ultrasonic.fragment.TrackCollectionFragment" >
     </fragment>
     <fragment
         android:id="@+id/searchFragment"
