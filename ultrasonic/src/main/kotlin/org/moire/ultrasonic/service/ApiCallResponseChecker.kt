@@ -26,7 +26,7 @@ class ApiCallResponseChecker(
         if (activeServerProvider.getActiveServer().minimumApiVersion == null) {
             try {
                 val response = subsonicAPIClient.api.ping().execute()
-                if (response?.body() != null) {
+                if (response.body() != null) {
                     val restApiVersion = response.body()!!.version.restApiVersion
                     Timber.i("Server minimum API version set to %s", restApiVersion)
                     activeServerProvider.setMinimumApiVersion(restApiVersion)
