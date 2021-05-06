@@ -116,7 +116,7 @@ class MediaPlayerService : Service() {
             downloader.stop()
             shufflePlayBuffer.onDestroy()
             mediaSession?.release()
-            mediaSession == null
+            mediaSession = null
         } catch (ignored: Throwable) {
         }
         Timber.i("MediaPlayerService stopped")
@@ -848,7 +848,7 @@ class MediaPlayerService : Service() {
         }
     }
 
-    fun registerMediaButtonEventReceiver() {
+    private fun registerMediaButtonEventReceiver() {
         val component = ComponentName(packageName, MediaButtonIntentReceiver::class.java.name)
         val mediaButtonIntent = Intent(Intent.ACTION_MEDIA_BUTTON)
         mediaButtonIntent.component = component
@@ -863,7 +863,7 @@ class MediaPlayerService : Service() {
         mediaSession?.setMediaButtonReceiver(pendingIntent)
     }
 
-    fun unregisterMediaButtonEventReceiver() {
+    private fun unregisterMediaButtonEventReceiver() {
         mediaSession?.setMediaButtonReceiver(null)
     }
 
