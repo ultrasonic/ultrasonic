@@ -10,7 +10,7 @@ ext.versions = [
         ktlint               : "0.37.1",
         ktlintGradle         : "9.2.1",
         detekt               : "1.16.0",
-        jacoco               : "0.8.5",
+        jacoco               : "0.8.7",
         preferences          : "1.1.1",
         media                : "1.3.0",
 
