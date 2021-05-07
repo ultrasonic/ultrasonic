@@ -4,7 +4,6 @@ package org.moire.ultrasonic.domain
 
 import java.util.Calendar
 import org.amshove.kluent.`should be equal to`
-import org.amshove.kluent.`should equal`
 import org.junit.Test
 import org.moire.ultrasonic.api.subsonic.models.Album
 import org.moire.ultrasonic.api.subsonic.models.MusicDirectoryChild
@@ -24,17 +23,17 @@ class APIAlbumConverterTest {
         val convertedEntity = entity.toDomainEntity()
 
         with(convertedEntity) {
-            id `should equal` entity.id
-            title `should equal` entity.name
-            isDirectory `should equal` true
-            coverArt `should equal` entity.coverArt
-            artist `should equal` entity.artist
-            artistId `should equal` entity.artistId
-            songCount `should equal` entity.songCount.toLong()
-            duration `should equal` entity.duration
-            created `should equal` entity.created?.time
-            year `should equal` entity.year
-            genre `should equal` entity.genre
+            id `should be equal to` entity.id
+            title `should be equal to` entity.name
+            isDirectory `should be equal to` true
+            coverArt `should be equal to` entity.coverArt
+            artist `should be equal to` entity.artist
+            artistId `should be equal to` entity.artistId
+            songCount `should be equal to` entity.songCount.toLong()
+            duration `should be equal to` entity.duration
+            created `should be equal to` entity.created?.time
+            year `should be equal to` entity.year
+            genre `should be equal to` entity.genre
         }
     }
 
@@ -50,9 +49,9 @@ class APIAlbumConverterTest {
         val convertedEntity = entity.toMusicDirectoryDomainEntity()
 
         with(convertedEntity) {
-            name `should equal` null
+            name `should be equal to` null
             getChildren().size `should be equal to` entity.songList.size
-            getChildren()[0] `should equal` entity.songList[0].toDomainEntity()
+            getChildren()[0] `should be equal to` entity.songList[0].toDomainEntity()
         }
     }
 
@@ -65,7 +64,7 @@ class APIAlbumConverterTest {
         with(convertedList) {
             size `should be equal to` entityList.size
             forEachIndexed { index, entry ->
-                entry `should equal` entityList[index].toDomainEntity()
+                entry `should be equal to` entityList[index].toDomainEntity()
             }
         }
     }

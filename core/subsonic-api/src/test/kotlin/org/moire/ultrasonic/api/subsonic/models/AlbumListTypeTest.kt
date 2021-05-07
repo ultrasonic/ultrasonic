@@ -1,7 +1,6 @@
 package org.moire.ultrasonic.api.subsonic.models
 
 import org.amshove.kluent.`should be equal to`
-import org.amshove.kluent.`should equal`
 import org.amshove.kluent.`should throw`
 import org.junit.Test
 
@@ -15,7 +14,7 @@ class AlbumListTypeTest {
 
         val albumListType = AlbumListType.fromName(type)
 
-        albumListType `should equal` AlbumListType.SORTED_BY_NAME
+        albumListType `should be equal to` AlbumListType.SORTED_BY_NAME
     }
 
     @Test
@@ -30,7 +29,7 @@ class AlbumListTypeTest {
     @Test
     fun `Should convert type string to corresponding AlbumListType`() {
         AlbumListType.values().forEach {
-            AlbumListType.fromName(it.typeName) `should equal` it
+            AlbumListType.fromName(it.typeName) `should be equal to` it
         }
     }
 

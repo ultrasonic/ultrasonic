@@ -6,10 +6,10 @@ import com.nhaarman.mockito_kotlin.mock
 import com.nhaarman.mockito_kotlin.whenever
 import com.squareup.picasso.Picasso
 import com.squareup.picasso.Request
-import org.amshove.kluent.`should equal`
+import org.amshove.kluent.`should be equal to`
 import org.amshove.kluent.`should not be`
 import org.amshove.kluent.`should throw`
-import org.amshove.kluent.shouldEqualTo
+import org.amshove.kluent.shouldBeEqualTo
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.moire.ultrasonic.api.subsonic.SubsonicAPIClient
@@ -27,7 +27,7 @@ class AvatarRequestHandlerTest {
     fun `Should accept only cover art request`() {
         val requestUri = createLoadAvatarRequest("some-username")
 
-        handler.canHandleRequest(requestUri.buildRequest()) shouldEqualTo true
+        handler.canHandleRequest(requestUri.buildRequest()) shouldBeEqualTo true
     }
 
     @Test
@@ -38,7 +38,7 @@ class AvatarRequestHandlerTest {
             .appendPath("something")
             .build()
 
-        handler.canHandleRequest(requestUri.buildRequest()) shouldEqualTo false
+        handler.canHandleRequest(requestUri.buildRequest()) shouldBeEqualTo false
     }
 
     @Test
@@ -65,7 +65,7 @@ class AvatarRequestHandlerTest {
 
         val response = handler.load(createLoadAvatarRequest("some-username").buildRequest(), 0)
 
-        response.loadedFrom `should equal` Picasso.LoadedFrom.NETWORK
+        response.loadedFrom `should be equal to` Picasso.LoadedFrom.NETWORK
         response.source `should not be` null
     }
 

@@ -45,7 +45,7 @@ class SubsonicApiSSLTest {
         certificatePkcs12Stream: InputStream,
         password: String
     ): SSLContext {
-        var cert: X509Certificate? = null
+        var cert: X509Certificate?
         val trustStore = KeyStore.getInstance(KeyStore.getDefaultType())
         trustStore.load(null)
 

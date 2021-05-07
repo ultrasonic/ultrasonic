@@ -3,7 +3,6 @@
 package org.moire.ultrasonic.domain
 
 import org.amshove.kluent.`should be equal to`
-import org.amshove.kluent.`should equal`
 import org.junit.Test
 import org.moire.ultrasonic.api.subsonic.models.ChatMessage
 
@@ -18,9 +17,9 @@ class APIChatMessageConverterTest {
         val domainEntity = entity.toDomainEntity()
 
         with(domainEntity) {
-            username `should equal` entity.username
-            time `should equal` entity.time
-            message `should equal` entity.message
+            username `should be equal to` entity.username
+            time `should be equal to` entity.time
+            message `should be equal to` entity.message
         }
     }
 
@@ -33,7 +32,7 @@ class APIChatMessageConverterTest {
         with(domainEntitiesList) {
             size `should be equal to` entitiesList.size
             forEachIndexed { index, chatMessage ->
-                chatMessage `should equal` entitiesList[index].toDomainEntity()
+                chatMessage `should be equal to` entitiesList[index].toDomainEntity()
             }
         }
     }

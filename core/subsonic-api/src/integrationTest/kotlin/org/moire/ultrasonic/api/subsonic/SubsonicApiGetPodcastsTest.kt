@@ -1,7 +1,6 @@
 package org.moire.ultrasonic.api.subsonic
 
 import org.amshove.kluent.`should be equal to`
-import org.amshove.kluent.`should equal`
 import org.amshove.kluent.`should not be`
 import org.junit.Test
 import org.moire.ultrasonic.api.subsonic.models.MusicDirectoryChild
@@ -17,7 +16,7 @@ class SubsonicApiGetPodcastsTest : SubsonicAPIClientTest() {
         }
 
         response.podcastChannels `should not be` null
-        response.podcastChannels `should equal` emptyList()
+        response.podcastChannels `should be equal to` emptyList()
     }
 
     @Test
@@ -41,7 +40,7 @@ class SubsonicApiGetPodcastsTest : SubsonicAPIClientTest() {
             status `should be equal to` "completed"
             errorMessage `should be equal to` ""
             episodeList.size `should be equal to` 10
-            episodeList[0] `should equal` MusicDirectoryChild(
+            episodeList[0] `should be equal to` MusicDirectoryChild(
                 id = "148", parent = "9959",
                 isDir = false,
                 title = "S1:EP3 – How to teach yourself computer science (Vaidehi Joshi)",

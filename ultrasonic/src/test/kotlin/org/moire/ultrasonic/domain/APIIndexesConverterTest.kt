@@ -3,7 +3,6 @@
 package org.moire.ultrasonic.domain
 
 import org.amshove.kluent.`should be equal to`
-import org.amshove.kluent.`should equal`
 import org.junit.Test
 import org.moire.ultrasonic.api.subsonic.models.Artist
 import org.moire.ultrasonic.api.subsonic.models.Index
@@ -39,8 +38,8 @@ class APIIndexesConverterTest {
             lastModified `should be equal to` entity.lastModified
             ignoredArticles `should be equal to` entity.ignoredArticles
             artists.size `should be equal to` expectedArtists.size
-            artists `should equal` expectedArtists
-            shortcuts `should equal` artistsA.map { it.toDomainEntity() }.toMutableList()
+            artists `should be equal to` expectedArtists
+            shortcuts `should be equal to` artistsA.map { it.toDomainEntity() }.toMutableList()
         }
     }
 }

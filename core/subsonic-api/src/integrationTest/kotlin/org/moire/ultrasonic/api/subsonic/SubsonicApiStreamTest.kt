@@ -3,7 +3,6 @@ package org.moire.ultrasonic.api.subsonic
 import okhttp3.mockwebserver.MockResponse
 import org.amshove.kluent.`should be equal to`
 import org.amshove.kluent.`should be`
-import org.amshove.kluent.`should equal`
 import org.amshove.kluent.`should not be`
 import org.junit.Test
 
@@ -20,7 +19,7 @@ class SubsonicApiStreamTest : SubsonicAPIClientTest() {
         with(response) {
             stream `should be` null
             responseHttpCode `should be equal to` 200
-            apiError `should equal` SubsonicError.RequestedDataWasNotFound
+            apiError `should be equal to` SubsonicError.RequestedDataWasNotFound
         }
     }
 

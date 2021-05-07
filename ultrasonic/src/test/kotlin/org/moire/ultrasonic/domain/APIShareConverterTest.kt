@@ -4,7 +4,6 @@ package org.moire.ultrasonic.domain
 
 import java.util.Calendar
 import org.amshove.kluent.`should be equal to`
-import org.amshove.kluent.`should equal`
 import org.junit.Test
 import org.moire.ultrasonic.api.subsonic.models.MusicDirectoryChild
 import org.moire.ultrasonic.api.subsonic.models.Share
@@ -20,15 +19,15 @@ class APIShareConverterTest {
         val domainEntity = entity.toDomainEntity()
 
         with(domainEntity) {
-            id `should equal` entity.id
-            url `should equal` entity.url
-            description `should equal` entity.description
-            username `should equal` entity.username
-            created `should equal` shareTimeFormat.format(entity.created?.time)
-            lastVisited `should equal` shareTimeFormat.format(entity.lastVisited?.time)
-            expires `should equal` shareTimeFormat.format(entity.expires?.time)
-            visitCount `should equal` entity.visitCount.toLong()
-            this.getEntries() `should equal` entity.items.toDomainEntityList()
+            id `should be equal to` entity.id
+            url `should be equal to` entity.url
+            description `should be equal to` entity.description
+            username `should be equal to` entity.username
+            created `should be equal to` shareTimeFormat.format(entity.created!!.time)
+            lastVisited `should be equal to` shareTimeFormat.format(entity.lastVisited!!.time)
+            expires `should be equal to` shareTimeFormat.format(entity.expires!!.time)
+            visitCount `should be equal to` entity.visitCount.toLong()
+            this.getEntries() `should be equal to` entity.items.toDomainEntityList()
         }
     }
 
@@ -51,7 +50,7 @@ class APIShareConverterTest {
         val domainEntityList = entityList.toDomainEntitiesList()
 
         domainEntityList.size `should be equal to` entityList.size
-        domainEntityList[0] `should equal` entityList[0].toDomainEntity()
-        domainEntityList[1] `should equal` entityList[1].toDomainEntity()
+        domainEntityList[0] `should be equal to` entityList[0].toDomainEntity()
+        domainEntityList[1] `should be equal to` entityList[1].toDomainEntity()
     }
 }

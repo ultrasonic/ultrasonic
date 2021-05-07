@@ -1,7 +1,7 @@
 package org.moire.ultrasonic.api.subsonic
 
 import java.io.IOException
-import org.amshove.kluent.`should equal`
+import org.amshove.kluent.`should be equal to`
 import org.amshove.kluent.`should not be`
 import org.amshove.kluent.`should throw`
 import org.junit.Test
@@ -152,6 +152,6 @@ class SubsonicApiErrorsTest : SubsonicAPIClientTest() {
     private fun Response<SubsonicResponse>.assertError(expectedError: SubsonicError) =
         with(body()!!) {
             error `should not be` null
-            error `should equal` expectedError
+            error `should be equal to` expectedError
         }
 }

@@ -3,7 +3,6 @@
 package org.moire.ultrasonic.domain
 
 import org.amshove.kluent.`should be equal to`
-import org.amshove.kluent.`should equal`
 import org.junit.Test
 import org.moire.ultrasonic.api.subsonic.models.JukeboxStatus
 
@@ -18,10 +17,10 @@ class APIJukeboxConverterTest {
         val convertedEntity = entity.toDomainEntity()
 
         with(convertedEntity) {
-            currentPlayingIndex `should equal` entity.currentIndex
-            gain `should equal` entity.gain
+            currentPlayingIndex `should be equal to` entity.currentIndex
+            gain `should be equal to` entity.gain
             isPlaying `should be equal to` entity.playing
-            positionSeconds `should equal` entity.position
+            positionSeconds `should be equal to` entity.position
         }
     }
 }

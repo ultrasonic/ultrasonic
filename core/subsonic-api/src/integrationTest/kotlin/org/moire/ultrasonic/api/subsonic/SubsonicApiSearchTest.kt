@@ -2,7 +2,6 @@ package org.moire.ultrasonic.api.subsonic
 
 import java.util.Calendar
 import org.amshove.kluent.`should be equal to`
-import org.amshove.kluent.`should equal`
 import org.amshove.kluent.`should not be`
 import org.junit.Test
 import org.moire.ultrasonic.api.subsonic.models.MusicDirectoryChild
@@ -19,7 +18,7 @@ class SubsonicApiSearchTest : SubsonicAPIClientTest() {
         }
 
         response.searchResult `should not be` null
-        response.searchResult `should equal` SearchResult()
+        response.searchResult `should be equal to` SearchResult()
     }
 
     @Test
@@ -33,7 +32,7 @@ class SubsonicApiSearchTest : SubsonicAPIClientTest() {
             offset `should be equal to` 10
             totalHits `should be equal to` 53
             matchList.size `should be equal to` 1
-            matchList[0] `should equal` MusicDirectoryChild(
+            matchList[0] `should be equal to` MusicDirectoryChild(
                 id = "5831", parent = "5766",
                 isDir = false, title = "You'll Be Under My Wheels",
                 album = "Need for Speed Most Wanted", artist = "The Prodigy",

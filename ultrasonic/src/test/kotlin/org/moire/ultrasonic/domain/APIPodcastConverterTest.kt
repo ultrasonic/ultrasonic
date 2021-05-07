@@ -3,7 +3,6 @@
 package org.moire.ultrasonic.domain
 
 import org.amshove.kluent.`should be equal to`
-import org.amshove.kluent.`should equal`
 import org.junit.Test
 import org.moire.ultrasonic.api.subsonic.models.PodcastChannel
 
@@ -22,11 +21,11 @@ class APIPodcastConverterTest {
         val converterEntity = entity.toDomainEntity()
 
         with(converterEntity) {
-            id `should equal` entity.id
-            description `should equal` entity.description
-            status `should equal` entity.status
-            title `should equal` entity.title
-            url `should equal` entity.url
+            id `should be equal to` entity.id
+            description `should be equal to` entity.description
+            status `should be equal to` entity.status
+            title `should be equal to` entity.title
+            url `should be equal to` entity.url
         }
     }
 
@@ -41,7 +40,7 @@ class APIPodcastConverterTest {
 
         with(converted) {
             size `should be equal to` entitiesList.size
-            this[0] `should equal` entitiesList[0].toDomainEntity()
+            this[0] `should be equal to` entitiesList[0].toDomainEntity()
         }
     }
 }

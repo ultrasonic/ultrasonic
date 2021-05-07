@@ -1,7 +1,7 @@
 package org.moire.ultrasonic.subsonic.loader.image
 
 import android.net.Uri
-import org.amshove.kluent.shouldEqualTo
+import org.amshove.kluent.shouldBeEqualTo
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.robolectric.RobolectricTestRunner
@@ -13,7 +13,7 @@ class RequestCreatorTest {
         val entityId = "299"
         val expectedUri = Uri.parse("$SCHEME://$AUTHORITY/$COVER_ART_PATH?$QUERY_ID=$entityId")
 
-        createLoadCoverArtRequest(entityId).compareTo(expectedUri).shouldEqualTo(0)
+        createLoadCoverArtRequest(entityId).compareTo(expectedUri).shouldBeEqualTo(0)
     }
 
     @Test
@@ -21,6 +21,6 @@ class RequestCreatorTest {
         val username = "some-username"
         val expectedUri = Uri.parse("$SCHEME://$AUTHORITY/$AVATAR_PATH?$QUERY_USERNAME=$username")
 
-        createLoadAvatarRequest(username).compareTo(expectedUri).shouldEqualTo(0)
+        createLoadAvatarRequest(username).compareTo(expectedUri).shouldBeEqualTo(0)
     }
 }

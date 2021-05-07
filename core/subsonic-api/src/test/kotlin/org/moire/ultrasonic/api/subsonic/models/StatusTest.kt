@@ -1,6 +1,6 @@
 package org.moire.ultrasonic.api.subsonic.models
 
-import org.amshove.kluent.`should equal`
+import org.amshove.kluent.`should be equal to`
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.junit.runners.Parameterized
@@ -19,7 +19,7 @@ class StatusTest(private val status: SubsonicResponse.Status) {
 
     @Test
     fun `Should proper parse response status`() {
-        SubsonicResponse.Status.getStatusFromJson(status.jsonValue) `should equal` status
+        SubsonicResponse.Status.getStatusFromJson(status.jsonValue) `should be equal to` status
     }
 
     @Test(expected = IllegalArgumentException::class)

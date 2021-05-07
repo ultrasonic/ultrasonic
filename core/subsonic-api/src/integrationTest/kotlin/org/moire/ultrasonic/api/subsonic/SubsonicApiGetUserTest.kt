@@ -1,7 +1,6 @@
 package org.moire.ultrasonic.api.subsonic
 
 import org.amshove.kluent.`should be equal to`
-import org.amshove.kluent.`should equal`
 import org.junit.Test
 import org.moire.ultrasonic.api.subsonic.models.User
 
@@ -15,7 +14,7 @@ class SubsonicApiGetUserTest : SubsonicAPIClientTest() {
             client.api.getUser("some").execute()
         }
 
-        response.user `should equal` User()
+        response.user `should be equal to` User()
     }
 
     @Test

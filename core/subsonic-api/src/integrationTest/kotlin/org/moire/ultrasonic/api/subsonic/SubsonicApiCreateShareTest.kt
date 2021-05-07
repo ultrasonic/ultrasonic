@@ -2,7 +2,6 @@ package org.moire.ultrasonic.api.subsonic
 
 import java.util.Calendar
 import org.amshove.kluent.`should be equal to`
-import org.amshove.kluent.`should equal`
 import org.junit.Test
 import org.moire.ultrasonic.api.subsonic.models.MusicDirectoryChild
 
@@ -16,7 +15,7 @@ class SubsonicApiCreateShareTest : SubsonicAPIClientTest() {
             client.api.createShare(listOf("some-id")).execute()
         }
 
-        response.shares `should equal` emptyList()
+        response.shares `should be equal to` emptyList()
     }
 
     @Test
@@ -34,13 +33,13 @@ class SubsonicApiCreateShareTest : SubsonicAPIClientTest() {
                 "eyJwYXRoIjoiL2V4dC9zaGFyZS9hd2R3byIsImV4cCI6MTU0MTYyNjQzMX0.iy8dkt_ZZc8hJ692" +
                 "UxorHdHWFU2RB-fMCmCA4IJ_dTw"
             username `should be equal to` "admin"
-            created `should equal` parseDate("2017-11-07T21:33:51.748Z")
-            expires `should equal` parseDate("2018-11-07T21:33:51.748Z")
-            lastVisited `should equal` parseDate("2018-11-07T21:33:51.748Z")
+            created `should be equal to` parseDate("2017-11-07T21:33:51.748Z")
+            expires `should be equal to` parseDate("2018-11-07T21:33:51.748Z")
+            lastVisited `should be equal to` parseDate("2018-11-07T21:33:51.748Z")
             description `should be equal to` "Awesome link!"
             visitCount `should be equal to` 0
             items.size `should be equal to` 1
-            items[0] `should equal` MusicDirectoryChild(
+            items[0] `should be equal to` MusicDirectoryChild(
                 id = "4212", parent = "4186", isDir = false,
                 title = "Heaven Knows", album = "Going to Hell", artist = "The Pretty Reckless",
                 track = 3, year = 2014, genre = "Hard Rock", coverArt = "4186", size = 9025090,

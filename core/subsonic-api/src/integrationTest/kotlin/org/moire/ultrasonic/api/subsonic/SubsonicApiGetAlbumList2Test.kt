@@ -1,7 +1,6 @@
 package org.moire.ultrasonic.api.subsonic
 
 import org.amshove.kluent.`should be equal to`
-import org.amshove.kluent.`should equal`
 import org.junit.Test
 import org.moire.ultrasonic.api.subsonic.models.Album
 import org.moire.ultrasonic.api.subsonic.models.AlbumListType
@@ -18,7 +17,7 @@ class SubsonicApiGetAlbumList2Test : SubsonicAPIClientTest() {
             client.api.getAlbumList2(STARRED).execute()
         }
 
-        response.albumList `should equal` emptyList()
+        response.albumList `should be equal to` emptyList()
     }
 
     @Test
@@ -30,13 +29,13 @@ class SubsonicApiGetAlbumList2Test : SubsonicAPIClientTest() {
         assertResponseSuccessful(response)
         with(response.body()!!.albumList) {
             this.size `should be equal to` 2
-            this[0] `should equal` Album(
+            this[0] `should be equal to` Album(
                 id = "962", name = "Fury", artist = "Sick Puppies",
                 artistId = "473", coverArt = "al-962", songCount = 13, duration = 2591,
                 created = parseDate("2017-09-02T17:34:51.000Z"), year = 2016,
                 genre = "Alternative Rock"
             )
-            this[1] `should equal` Album(
+            this[1] `should be equal to` Album(
                 id = "961", name = "Endless Forms Most Beautiful",
                 artist = "Nightwish", artistId = "559", coverArt = "al-961", songCount = 22,
                 duration = 9469, created = parseDate("2017-09-02T16:22:47.000Z"),

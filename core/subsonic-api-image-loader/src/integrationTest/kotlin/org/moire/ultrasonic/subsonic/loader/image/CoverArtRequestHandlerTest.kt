@@ -8,10 +8,10 @@ import com.nhaarman.mockito_kotlin.whenever
 import com.squareup.picasso.Picasso
 import com.squareup.picasso.Request
 import java.io.IOException
-import org.amshove.kluent.`should equal`
+import org.amshove.kluent.`should be equal to`
 import org.amshove.kluent.`should not be`
 import org.amshove.kluent.`should throw`
-import org.amshove.kluent.shouldEqualTo
+import org.amshove.kluent.shouldBeEqualTo
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.moire.ultrasonic.api.subsonic.SubsonicAPIClient
@@ -27,7 +27,7 @@ class CoverArtRequestHandlerTest {
     fun `Should accept only cover art request`() {
         val requestUri = createLoadCoverArtRequest("some-id")
 
-        handler.canHandleRequest(requestUri.buildRequest()) shouldEqualTo true
+        handler.canHandleRequest(requestUri.buildRequest()) shouldBeEqualTo true
     }
 
     @Test
@@ -38,7 +38,7 @@ class CoverArtRequestHandlerTest {
             .appendPath("random")
             .build()
 
-        handler.canHandleRequest(requestUri.buildRequest()) shouldEqualTo false
+        handler.canHandleRequest(requestUri.buildRequest()) shouldBeEqualTo false
     }
 
     @Test
@@ -78,7 +78,7 @@ class CoverArtRequestHandlerTest {
 
         val response = handler.load(createLoadCoverArtRequest("some").buildRequest(), 0)
 
-        response.loadedFrom `should equal` Picasso.LoadedFrom.NETWORK
+        response.loadedFrom `should be equal to` Picasso.LoadedFrom.NETWORK
         response.source `should not be` null
     }
 
