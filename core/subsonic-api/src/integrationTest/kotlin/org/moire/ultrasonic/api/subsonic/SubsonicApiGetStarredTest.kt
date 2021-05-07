@@ -1,7 +1,6 @@
 package org.moire.ultrasonic.api.subsonic
 
 import org.amshove.kluent.`should be equal to`
-import org.amshove.kluent.`should equal`
 import org.junit.Test
 import org.moire.ultrasonic.api.subsonic.models.Artist
 import org.moire.ultrasonic.api.subsonic.models.SearchTwoResult
@@ -16,7 +15,7 @@ class SubsonicApiGetStarredTest : SubsonicAPIClientTest() {
             client.api.getStarred().execute()
         }
 
-        response.starred `should equal` SearchTwoResult()
+        response.starred `should be equal to` SearchTwoResult()
     }
 
     @Test
@@ -27,13 +26,13 @@ class SubsonicApiGetStarredTest : SubsonicAPIClientTest() {
 
         assertResponseSuccessful(response)
         with(response.body()!!.starred) {
-            albumList `should equal` emptyList()
+            albumList `should be equal to` emptyList()
             artistList.size `should be equal to` 1
-            artistList[0] `should equal` Artist(
+            artistList[0] `should be equal to` Artist(
                 id = "364", name = "Parov Stelar",
                 starred = parseDate("2017-08-12T18:32:58.768Z")
             )
-            songList `should equal` emptyList()
+            songList `should be equal to` emptyList()
         }
     }
 

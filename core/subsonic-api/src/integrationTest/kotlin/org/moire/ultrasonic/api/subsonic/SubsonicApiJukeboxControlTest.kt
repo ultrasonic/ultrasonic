@@ -1,7 +1,6 @@
 package org.moire.ultrasonic.api.subsonic
 
 import org.amshove.kluent.`should be equal to`
-import org.amshove.kluent.`should equal`
 import org.junit.Test
 import org.moire.ultrasonic.api.subsonic.models.JukeboxAction
 import org.moire.ultrasonic.api.subsonic.models.JukeboxAction.GET
@@ -19,7 +18,7 @@ class SubsonicApiJukeboxControlTest : SubsonicAPIClientTest() {
             client.api.jukeboxControl(GET).execute()
         }
 
-        response.jukebox `should equal` JukeboxStatus()
+        response.jukebox `should be equal to` JukeboxStatus()
     }
 
     @Test
@@ -34,7 +33,7 @@ class SubsonicApiJukeboxControlTest : SubsonicAPIClientTest() {
             playing `should be equal to` true
             gain `should be equal to` 0.32f
             position `should be equal to` 3
-            playlistEntries `should equal` emptyList()
+            playlistEntries `should be equal to` emptyList()
         }
     }
 
@@ -51,7 +50,7 @@ class SubsonicApiJukeboxControlTest : SubsonicAPIClientTest() {
             gain `should be equal to` 0.88f
             position `should be equal to` 2
             playlistEntries.size `should be equal to` 2
-            playlistEntries[1] `should equal` MusicDirectoryChild(
+            playlistEntries[1] `should be equal to` MusicDirectoryChild(
                 id = "4215", parent = "4186",
                 isDir = false, title = "Going to Hell", album = "Going to Hell",
                 artist = "The Pretty Reckless", track = 2, year = 2014, genre = "Hard Rock",

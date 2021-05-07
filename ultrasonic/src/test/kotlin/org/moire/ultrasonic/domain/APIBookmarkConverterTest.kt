@@ -4,7 +4,6 @@ package org.moire.ultrasonic.domain
 
 import java.util.Calendar
 import org.amshove.kluent.`should be equal to`
-import org.amshove.kluent.`should equal`
 import org.junit.Test
 import org.moire.ultrasonic.api.subsonic.models.Bookmark
 import org.moire.ultrasonic.api.subsonic.models.MusicDirectoryChild
@@ -24,11 +23,11 @@ class APIBookmarkConverterTest {
 
         with(domainEntity) {
             position `should be equal to` entity.position.toInt()
-            username `should equal` entity.username
-            comment `should equal` entity.comment
-            created `should equal` entity.created?.time
-            changed `should equal` entity.changed?.time
-            entry `should equal` entity.entry.toDomainEntity()
+            username `should be equal to` entity.username
+            comment `should be equal to` entity.comment
+            created `should be equal to` entity.created?.time
+            changed `should be equal to` entity.changed?.time
+            entry `should be equal to` entity.entry.toDomainEntity()
         }
     }
 
@@ -40,7 +39,7 @@ class APIBookmarkConverterTest {
 
         domainEntitiesList.size `should be equal to` entitiesList.size
         domainEntitiesList.forEachIndexed({ index, bookmark ->
-            bookmark `should equal` entitiesList[index].toDomainEntity()
+            bookmark `should be equal to` entitiesList[index].toDomainEntity()
         })
     }
 }

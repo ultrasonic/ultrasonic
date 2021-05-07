@@ -1,7 +1,6 @@
 package org.moire.ultrasonic.api.subsonic
 
 import org.amshove.kluent.`should be equal to`
-import org.amshove.kluent.`should equal`
 import org.amshove.kluent.`should not be`
 import org.junit.Test
 import org.moire.ultrasonic.api.subsonic.models.Playlist
@@ -17,7 +16,7 @@ class SubsonicApiGetPlaylistsTest : SubsonicAPIClientTest() {
         }
 
         response.playlists `should not be` null
-        response.playlists `should equal` emptyList()
+        response.playlists `should be equal to` emptyList()
     }
 
     @Test
@@ -29,7 +28,7 @@ class SubsonicApiGetPlaylistsTest : SubsonicAPIClientTest() {
         assertResponseSuccessful(response)
         with(response.body()!!.playlists) {
             size `should be equal to` 1
-            this[0] `should equal` Playlist(
+            this[0] `should be equal to` Playlist(
                 id = "0", name = "Aug 27, 2017 11:17 AM",
                 owner = "admin", public = false, songCount = 16, duration = 3573,
                 comment = "Some comment",

@@ -1,6 +1,6 @@
 package org.moire.ultrasonic.api.subsonic
 
-import org.amshove.kluent.`should equal`
+import org.amshove.kluent.`should be equal to`
 import org.amshove.kluent.`should not be`
 import org.junit.Test
 import org.moire.ultrasonic.api.subsonic.models.License
@@ -18,7 +18,7 @@ class SubsonicApiGetLicenseTest : SubsonicAPIClientTest() {
         assertResponseSuccessful(response)
         with(response.body()!!) {
             assertBaseResponseOk()
-            license `should equal` License(
+            license `should be equal to` License(
                 valid = true,
                 trialExpires = parseDate("2016-11-23T20:17:15.206Z"),
                 email = "someone@example.net",
@@ -34,7 +34,7 @@ class SubsonicApiGetLicenseTest : SubsonicAPIClientTest() {
         }
 
         response.license `should not be` null
-        response.license.email `should equal` License().email
-        response.license.valid `should equal` License().valid
+        response.license.email `should be equal to` License().email
+        response.license.valid `should be equal to` License().valid
     }
 }

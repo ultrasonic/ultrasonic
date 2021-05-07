@@ -4,7 +4,6 @@ package org.moire.ultrasonic.domain
 
 import java.util.Calendar
 import org.amshove.kluent.`should be equal to`
-import org.amshove.kluent.`should equal`
 import org.junit.Test
 import org.moire.ultrasonic.api.subsonic.models.MusicDirectoryChild
 import org.moire.ultrasonic.api.subsonic.models.Playlist
@@ -26,10 +25,10 @@ class APIPlaylistConverterTest {
         val convertedEntity = entity.toMusicDirectoryDomainEntity()
 
         with(convertedEntity) {
-            name `should equal` entity.name
+            name `should be equal to` entity.name
             getAllChild().size `should be equal to` entity.entriesList.size
-            getAllChild()[0] `should equal` entity.entriesList[0].toDomainEntity()
-            getAllChild()[1] `should equal` entity.entriesList[1].toDomainEntity()
+            getAllChild()[0] `should be equal to` entity.entriesList[0].toDomainEntity()
+            getAllChild()[1] `should be equal to` entity.entriesList[1].toDomainEntity()
         }
     }
 
@@ -49,9 +48,9 @@ class APIPlaylistConverterTest {
             name `should be equal to` entity.name
             comment `should be equal to` entity.comment
             owner `should be equal to` entity.owner
-            public `should equal` entity.public
+            public `should be equal to` entity.public
             songCount `should be equal to` entity.songCount.toString()
-            created `should be equal to` playlistDateFormat.format(entity.created?.time)
+            created `should be equal to` playlistDateFormat.format(entity.created!!.time)
         }
     }
 
@@ -63,7 +62,7 @@ class APIPlaylistConverterTest {
 
         with(convertedList) {
             size `should be equal to` entitiesList.size
-            this[0] `should equal` entitiesList[0].toDomainEntity()
+            this[0] `should be equal to` entitiesList[0].toDomainEntity()
         }
     }
 }

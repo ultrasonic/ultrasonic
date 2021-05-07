@@ -1,6 +1,6 @@
 package org.moire.ultrasonic.api.subsonic
 
-import org.amshove.kluent.`should equal`
+import org.amshove.kluent.`should be equal to`
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.junit.runners.Parameterized
@@ -20,7 +20,7 @@ class SubsonicAPIVersionsTest(private val apiVersion: SubsonicAPIVersions) {
     fun `Should proper convert api version to enum`() {
         SubsonicAPIVersions.getClosestKnownClientApiVersion(
             apiVersion.restApiVersion
-        ) `should equal` apiVersion
+        ) `should be equal to` apiVersion
     }
 
     @Test(expected = IllegalArgumentException::class)

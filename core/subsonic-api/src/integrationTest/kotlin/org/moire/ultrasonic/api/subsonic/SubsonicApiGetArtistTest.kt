@@ -1,7 +1,6 @@
 package org.moire.ultrasonic.api.subsonic
 
 import org.amshove.kluent.`should be equal to`
-import org.amshove.kluent.`should equal`
 import org.amshove.kluent.`should not be`
 import org.junit.Test
 import org.moire.ultrasonic.api.subsonic.models.Album
@@ -18,7 +17,7 @@ class SubsonicApiGetArtistTest : SubsonicAPIClientTest() {
         }
 
         response.artist `should not be` null
-        response.artist `should equal` Artist()
+        response.artist `should be equal to` Artist()
     }
 
     @Test
@@ -46,13 +45,13 @@ class SubsonicApiGetArtistTest : SubsonicAPIClientTest() {
             coverArt `should be equal to` "ar-362"
             albumCount `should be equal to` 2
             albumsList.size `should be equal to` 2
-            albumsList[0] `should equal` Album(
+            albumsList[0] `should be equal to` Album(
                 id = "618", name = "Black Ice", artist = "AC/DC",
                 artistId = "362", coverArt = "al-618", songCount = 15, duration = 3331,
                 created = parseDate("2016-10-23T15:31:22.000Z"),
                 year = 2008, genre = "Hard Rock"
             )
-            albumsList[1] `should equal` Album(
+            albumsList[1] `should be equal to` Album(
                 id = "617", name = "Rock or Bust", artist = "AC/DC",
                 artistId = "362", coverArt = "al-617", songCount = 11, duration = 2095,
                 created = parseDate("2016-10-23T15:31:23.000Z"),

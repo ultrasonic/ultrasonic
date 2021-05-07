@@ -3,7 +3,7 @@
 package org.moire.ultrasonic.domain
 
 import java.util.Calendar
-import org.amshove.kluent.`should equal`
+import org.amshove.kluent.`should be equal to`
 import org.junit.Test
 import org.moire.ultrasonic.api.subsonic.models.Album
 import org.moire.ultrasonic.api.subsonic.models.Artist
@@ -19,8 +19,8 @@ class APIArtistConverterTest {
         val convertedEntity = entity.toDomainEntity()
 
         with(convertedEntity) {
-            id `should equal` entity.id
-            name `should equal` entity.name
+            id `should be equal to` entity.id
+            name `should be equal to` entity.name
         }
     }
 
@@ -41,8 +41,8 @@ class APIArtistConverterTest {
         val convertedEntity = entity.toMusicDirectoryDomainEntity()
 
         with(convertedEntity) {
-            name `should equal` entity.name
-            getAllChild() `should equal` entity.albumsList
+            name `should be equal to` entity.name
+            getAllChild() `should be equal to` entity.albumsList
                 .map { it.toDomainEntity() }.toMutableList()
         }
     }

@@ -1,6 +1,6 @@
 package org.moire.ultrasonic.api.subsonic
 
-import org.amshove.kluent.`should equal`
+import org.amshove.kluent.`should be equal to`
 import org.amshove.kluent.`should not be`
 import org.junit.Test
 import org.moire.ultrasonic.api.subsonic.models.Artist
@@ -20,13 +20,13 @@ class SubsonicApiGetIndexesTest : SubsonicAPIClientTest() {
         assertResponseSuccessful(response)
         response.body()!!.indexes `should not be` null
         with(response.body()!!.indexes) {
-            lastModified `should equal` 1491069027523
-            ignoredArticles `should equal` "The El La Los Las Le Les"
-            shortcutList `should equal` listOf(
+            lastModified `should be equal to` 1491069027523
+            ignoredArticles `should be equal to` "The El La Los Las Le Les"
+            shortcutList `should be equal to` listOf(
                 Artist(id = "889", name = "podcasts"),
                 Artist(id = "890", name = "audiobooks")
             )
-            indexList `should equal` mutableListOf(
+            indexList `should be equal to` mutableListOf(
                 Index(
                     "A",
                     listOf(
@@ -79,6 +79,6 @@ class SubsonicApiGetIndexesTest : SubsonicAPIClientTest() {
         }
 
         response.indexes `should not be` null
-        response.indexes `should equal` Indexes()
+        response.indexes `should be equal to` Indexes()
     }
 }
