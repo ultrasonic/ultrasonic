@@ -5,6 +5,3 @@ ext {
             '**/domain/**'
     ]
 }
-dependencies {
-    api other.semver
-}
