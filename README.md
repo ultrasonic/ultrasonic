@@ -42,6 +42,7 @@ See [CONTRIBUTING](CONTRIBUTING.md).
 - [Subsonic](http://www.subsonic.org/pages/index.jsp)
 - [Airsonic](https://github.com/airsonic/airsonic)
 - [Supysonic](https://github.com/spl0k/supysonic)
+- [Ampache](https://ampache.org/)
 
 Other *Subsonic API* implementations should work as well as long as they follow API
 [documentation](http://www.subsonic.org/pages/api.jsp).

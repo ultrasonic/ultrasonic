@@ -27,7 +27,6 @@ jobs:
           command: |
             ./gradlew ciTest testDebugUnitTest
             ./gradlew jacocoFullReport
-            bash <(curl -s https://codecov.io/bash)
       - run:
           name: lint
           command: ./gradlew :ultrasonic:lintRelease
