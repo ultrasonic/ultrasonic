@@ -1,6 +1,6 @@
 package org.moire.ultrasonic.api.subsonic
 
-import org.amshove.kluent.`should equal`
+import org.amshove.kluent.`should be equal to`
 import org.junit.Test
 import org.moire.ultrasonic.api.subsonic.models.MusicFolder
 
@@ -17,7 +17,7 @@ class SubsonicApiGetMusicFoldersTest : SubsonicAPIClientTest() {
         assertResponseSuccessful(response)
         with(response.body()!!) {
             assertBaseResponseOk()
-            musicFolders `should equal` listOf(
+            musicFolders `should be equal to` listOf(
                 MusicFolder("0", "Music"),
                 MusicFolder("2", "Test")
             )
@@ -30,6 +30,6 @@ class SubsonicApiGetMusicFoldersTest : SubsonicAPIClientTest() {
             client.api.getMusicFolders().execute()
         }
 
-        response.musicFolders `should equal` emptyList()
+        response.musicFolders `should be equal to` emptyList()
     }
 }

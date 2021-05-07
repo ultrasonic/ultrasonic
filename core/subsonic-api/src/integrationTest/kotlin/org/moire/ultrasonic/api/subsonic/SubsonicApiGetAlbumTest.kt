@@ -1,7 +1,6 @@
 package org.moire.ultrasonic.api.subsonic
 
 import org.amshove.kluent.`should be equal to`
-import org.amshove.kluent.`should equal`
 import org.amshove.kluent.`should not be`
 import org.junit.Test
 import org.moire.ultrasonic.api.subsonic.models.Album
@@ -18,7 +17,7 @@ class SubsonicApiGetAlbumTest : SubsonicAPIClientTest() {
         }
 
         response.album `should not be` null
-        response.album `should equal` Album()
+        response.album `should be equal to` Album()
     }
 
     @Test
@@ -48,11 +47,11 @@ class SubsonicApiGetAlbumTest : SubsonicAPIClientTest() {
             coverArt `should be equal to` "al-618"
             songCount `should be equal to` 15
             duration `should be equal to` 3331
-            created `should equal` parseDate("2016-10-23T15:31:22.000Z")
+            created `should be equal to` parseDate("2016-10-23T15:31:22.000Z")
             year `should be equal to` 2008
             genre `should be equal to` "Hard Rock"
             songList.size `should be equal to` 15
-            songList[0] `should equal` MusicDirectoryChild(
+            songList[0] `should be equal to` MusicDirectoryChild(
                 id = "6491", parent = "6475",
                 isDir = false, title = "Rock 'n' Roll Train", album = "Black Ice",
                 artist = "AC/DC", track = 1, year = 2008, genre = "Hard Rock",
@@ -63,7 +62,7 @@ class SubsonicApiGetAlbumTest : SubsonicAPIClientTest() {
                 created = parseDate("2016-10-23T15:31:20.000Z"),
                 albumId = "618", artistId = "362", type = "music"
             )
-            songList[5] `should equal` MusicDirectoryChild(
+            songList[5] `should be equal to` MusicDirectoryChild(
                 id = "6492", parent = "6475",
                 isDir = false, title = "Smash 'n' Grab", album = "Black Ice", artist = "AC/DC",
                 track = 6, year = 2008, genre = "Hard Rock", coverArt = "6475", size = 6697204,

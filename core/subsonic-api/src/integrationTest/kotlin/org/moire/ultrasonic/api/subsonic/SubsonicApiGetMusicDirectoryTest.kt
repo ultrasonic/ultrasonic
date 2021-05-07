@@ -2,7 +2,6 @@ package org.moire.ultrasonic.api.subsonic
 
 import org.amshove.kluent.`should be equal to`
 import org.amshove.kluent.`should be`
-import org.amshove.kluent.`should equal`
 import org.amshove.kluent.`should not be`
 import org.junit.Test
 import org.moire.ultrasonic.api.subsonic.models.MusicDirectory
@@ -19,7 +18,7 @@ class SubsonicApiGetMusicDirectoryTest : SubsonicAPIClientTest() {
         }
 
         response.musicDirectory `should not be` null
-        response.musicDirectory `should equal` MusicDirectory()
+        response.musicDirectory `should be equal to` MusicDirectory()
     }
 
     @Test
@@ -46,13 +45,13 @@ class SubsonicApiGetMusicDirectoryTest : SubsonicAPIClientTest() {
         with(response.body()!!.musicDirectory) {
             id `should be equal to` "4836"
             parent `should be equal to` "300"
-            name `should equal` "12 Stones"
+            name `should be equal to` "12 Stones"
             userRating `should be equal to` 5
             averageRating `should be equal to` 5.0f
-            starred `should equal` null
+            starred `should be equal to` null
             playCount `should be equal to` 1
             childList.size `should be` 2
-            childList[0] `should equal` MusicDirectoryChild(
+            childList[0] `should be equal to` MusicDirectoryChild(
                 id = "4844", parent = "4836",
                 isDir = false, title = "Crash", album = "12 Stones", artist = "12 Stones",
                 track = 1, year = 2002, genre = "Alternative Rock", coverArt = "4836",
@@ -62,7 +61,7 @@ class SubsonicApiGetMusicDirectoryTest : SubsonicAPIClientTest() {
                 created = parseDate("2016-10-23T15:19:10.000Z"),
                 albumId = "454", artistId = "288", type = "music"
             )
-            childList[1] `should equal` MusicDirectoryChild(
+            childList[1] `should be equal to` MusicDirectoryChild(
                 id = "4845", parent = "4836",
                 isDir = false, title = "Broken", album = "12 Stones", artist = "12 Stones",
                 track = 2, year = 2002, genre = "Alternative Rock", coverArt = "4836",

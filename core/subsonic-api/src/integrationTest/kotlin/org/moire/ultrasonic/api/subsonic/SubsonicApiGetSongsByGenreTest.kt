@@ -1,7 +1,6 @@
 package org.moire.ultrasonic.api.subsonic
 
 import org.amshove.kluent.`should be equal to`
-import org.amshove.kluent.`should equal`
 import org.junit.Test
 import org.moire.ultrasonic.api.subsonic.models.MusicDirectoryChild
 
@@ -15,7 +14,7 @@ class SubsonicApiGetSongsByGenreTest : SubsonicAPIClientTest() {
             client.api.getSongsByGenre("Metal").execute()
         }
 
-        response.songsList `should equal` emptyList()
+        response.songsList `should be equal to` emptyList()
     }
 
     @Test
@@ -27,7 +26,7 @@ class SubsonicApiGetSongsByGenreTest : SubsonicAPIClientTest() {
         assertResponseSuccessful(response)
         response.body()!!.songsList.size `should be equal to` 2
         with(response.body()!!.songsList) {
-            this[0] `should equal` MusicDirectoryChild(
+            this[0] `should be equal to` MusicDirectoryChild(
                 id = "575", parent = "576", isDir = false,
                 title = "Time Machine (Vadim Zhukov Remix)", album = "668",
                 artist = "Tasadi", year = 2008, genre = "Trance", size = 22467672,
@@ -36,7 +35,7 @@ class SubsonicApiGetSongsByGenreTest : SubsonicAPIClientTest() {
                 isVideo = false, playCount = 0, created = parseDate("2016-10-23T21:58:29.000Z"),
                 albumId = "0", artistId = "0", type = "music"
             )
-            this[1] `should equal` MusicDirectoryChild(
+            this[1] `should be equal to` MusicDirectoryChild(
                 id = "621", parent = "622", isDir = false,
                 title = "My Heart (Vadim Zhukov Remix)", album = "668",
                 artist = "DJ Polyakov PPK Feat Kate Cameron", year = 2009, genre = "Trance",

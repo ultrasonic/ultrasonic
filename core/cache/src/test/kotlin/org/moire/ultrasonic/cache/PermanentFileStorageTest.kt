@@ -3,7 +3,6 @@ package org.moire.ultrasonic.cache
 import java.io.File
 import org.amshove.kluent.`should be equal to`
 import org.amshove.kluent.`should contain`
-import org.amshove.kluent.`should equal`
 import org.junit.Test
 import org.moire.ultrasonic.cache.serializers.getMusicFolderSerializer
 import org.moire.ultrasonic.domain.MusicFolder
@@ -44,7 +43,7 @@ class PermanentFileStorageTest : BaseStorageTest() {
 
         val loadedItem = storage.load(name, getMusicFolderSerializer())
 
-        loadedItem `should equal` item
+        loadedItem `should be equal to` item
     }
 
     @Test
@@ -57,7 +56,7 @@ class PermanentFileStorageTest : BaseStorageTest() {
 
         val loadedItem = storage.load(name, getMusicFolderSerializer())
 
-        loadedItem `should equal` item2
+        loadedItem `should be equal to` item2
     }
 
     @Test
@@ -74,7 +73,7 @@ class PermanentFileStorageTest : BaseStorageTest() {
     fun `Should return null if serialized file not available`() {
         val loadedItem = storage.load("some-name", getMusicFolderSerializer())
 
-        loadedItem `should equal` null
+        loadedItem `should be equal to` null
     }
 
     private fun getServerStorageDir() = File(storageDir, serverId)

@@ -1,7 +1,6 @@
 package org.moire.ultrasonic.api.subsonic
 
 import org.amshove.kluent.`should be equal to`
-import org.amshove.kluent.`should equal`
 import org.junit.Test
 import org.moire.ultrasonic.api.subsonic.models.MusicDirectoryChild
 
@@ -15,7 +14,7 @@ class SubsonicApiGetBookmarksTest : SubsonicAPIClientTest() {
             client.api.getBookmarks().execute()
         }
 
-        response.bookmarkList `should equal` emptyList()
+        response.bookmarkList `should be equal to` emptyList()
     }
 
     @Test
@@ -30,9 +29,9 @@ class SubsonicApiGetBookmarksTest : SubsonicAPIClientTest() {
             position `should be equal to` 107914
             username `should be equal to` "CaptainEurope"
             comment `should be equal to` "Look at this"
-            created `should equal` parseDate("2017-11-18T15:22:22.144Z")
-            changed `should equal` parseDate("2017-11-18T15:22:22.144Z")
-            entry `should equal` MusicDirectoryChild(
+            created `should be equal to` parseDate("2017-11-18T15:22:22.144Z")
+            changed `should be equal to` parseDate("2017-11-18T15:22:22.144Z")
+            entry `should be equal to` MusicDirectoryChild(
                 id = "10349", parent = "10342",
                 isDir = false, title = "Amerika", album = "Home of the Strange",
                 artist = "Young the Giant", track = 1, year = 2016, genre = "Indie Rock",

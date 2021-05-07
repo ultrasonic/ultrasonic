@@ -320,7 +320,7 @@ class EditServerFragment : Fragment(), OnBackPressedHandler {
                 // Execute a ping to retrieve the API version.
                 // This is accepted to fail if the authentication is incorrect yet.
                 var pingResponse = subsonicApiClient.api.ping().execute()
-                if (pingResponse?.body() != null) {
+                if (pingResponse.body() != null) {
                     val restApiVersion = pingResponse.body()!!.version.restApiVersion
                     currentServerSetting!!.minimumApiVersion = restApiVersion
                     Timber.i("Server minimum API version set to %s", restApiVersion)

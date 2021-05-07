@@ -3,8 +3,7 @@
 package org.moire.ultrasonic.domain
 
 import org.amshove.kluent.`should be equal to`
-import org.amshove.kluent.`should equal`
-import org.amshove.kluent.`should not equal`
+import org.amshove.kluent.`should not be equal to`
 import org.junit.Test
 import org.moire.ultrasonic.api.subsonic.models.Album
 import org.moire.ultrasonic.api.subsonic.models.Artist
@@ -30,12 +29,12 @@ class APISearchConverterTest {
         val convertedEntity = entity.toDomainEntity()
 
         with(convertedEntity) {
-            albums `should not equal` null
+            albums `should not be equal to` null
             albums.size `should be equal to` 0
-            artists `should not equal` null
+            artists `should not be equal to` null
             artists.size `should be equal to` 0
             songs.size `should be equal to` entity.matchList.size
-            songs[0] `should equal` entity.matchList[0].toDomainEntity()
+            songs[0] `should be equal to` entity.matchList[0].toDomainEntity()
         }
     }
 
@@ -51,11 +50,11 @@ class APISearchConverterTest {
 
         with(convertedEntity) {
             artists.size `should be equal to` entity.artistList.size
-            artists[0] `should equal` entity.artistList[0].toDomainEntity()
+            artists[0] `should be equal to` entity.artistList[0].toDomainEntity()
             albums.size `should be equal to` entity.albumList.size
-            albums[0] `should equal` entity.albumList[0].toDomainEntity()
+            albums[0] `should be equal to` entity.albumList[0].toDomainEntity()
             songs.size `should be equal to` entity.songList.size
-            songs[0] `should equal` entity.songList[0].toDomainEntity()
+            songs[0] `should be equal to` entity.songList[0].toDomainEntity()
         }
     }
 
@@ -71,11 +70,11 @@ class APISearchConverterTest {
 
         with(convertedEntity) {
             artists.size `should be equal to` entity.artistList.size
-            artists[0] `should equal` entity.artistList[0].toDomainEntity()
+            artists[0] `should be equal to` entity.artistList[0].toDomainEntity()
             albums.size `should be equal to` entity.albumList.size
-            albums[0] `should equal` entity.albumList[0].toDomainEntity()
+            albums[0] `should be equal to` entity.albumList[0].toDomainEntity()
             songs.size `should be equal to` entity.songList.size
-            songs[0] `should equal` entity.songList[0].toDomainEntity()
+            songs[0] `should be equal to` entity.songList[0].toDomainEntity()
         }
     }
 }

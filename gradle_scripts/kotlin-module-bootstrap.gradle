@@ -10,9 +10,6 @@ sourceSets {
     test.resources.srcDirs += "${projectDir}/src/integrationTest/resources"
 }
 
-test {
-    useJUnitPlatform()
-}
 
 dependencies {
     api other.kotlinStdlib
@@ -44,15 +41,17 @@ jacocoTestReport {
     }
 }
 
-test.finalizedBy jacocoTestReport
-test {
+tasks.named("test").configure {
+    useJUnitPlatform()
     jacoco {
         excludes += jacocoExclude
         includeNoLocationClasses = true
     }
+    finalizedBy jacocoTestReport
 }
 
-tasks.create(name: "ciTest", dependsOn: "test") {
+tasks.register("ciTest") {
+    dependsOn test
     group = "Verification"
     description = "Special task for CI that calls all tests in pure kotlin modules"
 }
