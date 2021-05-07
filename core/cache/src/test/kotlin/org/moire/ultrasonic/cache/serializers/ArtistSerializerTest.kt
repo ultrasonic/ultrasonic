@@ -1,6 +1,6 @@
 package org.moire.ultrasonic.cache.serializers
 
-import org.amshove.kluent.`should equal`
+import org.amshove.kluent.`should be equal to`
 import org.junit.Test
 import org.moire.ultrasonic.cache.BaseStorageTest
 import org.moire.ultrasonic.domain.Artist
@@ -26,7 +26,7 @@ class ArtistSerializerTest : BaseStorageTest() {
 
         val loadedItem = storage.load(itemName, getArtistsSerializer())
 
-        loadedItem `should equal` item
+        loadedItem `should be equal to` item
     }
 
     @Test
@@ -52,6 +52,6 @@ class ArtistSerializerTest : BaseStorageTest() {
 
         val loadedItems = storage.load(name, getArtistListSerializer())
 
-        loadedItems `should equal` itemsList
+        loadedItems `should be equal to` itemsList
     }
 }
