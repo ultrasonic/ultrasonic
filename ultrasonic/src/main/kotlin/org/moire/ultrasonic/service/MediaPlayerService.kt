@@ -116,7 +116,7 @@ class MediaPlayerService : Service() {
             downloader.stop()
             shufflePlayBuffer.onDestroy()
             mediaSession?.release()
-            mediaSession == null
+            mediaSession = null
         } catch (ignored: Throwable) {
         }
         Timber.i("MediaPlayerService stopped")
@@ -500,37 +500,44 @@ class MediaPlayerService : Service() {
         // Create playback State
         val playbackState = PlaybackStateCompat.Builder()
         val state: Int
-        val isPlaying = (playerState === PlayerState.STARTED)
+        val isActive: Boolean
 
-        var actions: Long = PlaybackStateCompat.ACTION_PLAY_PAUSE
-//        or
-//            PlaybackStateCompat.ACTION_SKIP_TO_NEXT or
-//            PlaybackStateCompat.ACTION_SKIP_TO_PREVIOUS
+        var actions: Long = PlaybackStateCompat.ACTION_PLAY_PAUSE or
+            PlaybackStateCompat.ACTION_SKIP_TO_NEXT or
+            PlaybackStateCompat.ACTION_SKIP_TO_PREVIOUS
 
         // Map our playerState to native PlaybackState
         // TODO: Synchronize these APIs
         when (playerState) {
             PlayerState.STARTED -> {
                 state = PlaybackStateCompat.STATE_PLAYING
+                isActive = true
                 actions = actions or
                     PlaybackStateCompat.ACTION_PAUSE or
                     PlaybackStateCompat.ACTION_STOP
             }
             PlayerState.COMPLETED,
             PlayerState.STOPPED -> {
+                isActive = false
                 state = PlaybackStateCompat.STATE_STOPPED
             }
             PlayerState.IDLE -> {
+                isActive = false
                 state = PlaybackStateCompat.STATE_NONE
                 actions = 0L
             }
             PlayerState.PAUSED -> {
+                isActive = true
                 state = PlaybackStateCompat.STATE_PAUSED
                 actions = actions or
                     PlaybackStateCompat.ACTION_PLAY or
                     PlaybackStateCompat.ACTION_STOP
             }
-            else -> state = PlaybackStateCompat.STATE_PAUSED
+            else -> {
+                // These are the states PREPARING, PREPARED & DOWNLOADING
+                isActive = true
+                state = PlaybackStateCompat.STATE_PAUSED
+            }
         }
 
         playbackState.setState(state, PlaybackStateCompat.PLAYBACK_POSITION_UNKNOWN, 1.0f)
@@ -542,9 +549,9 @@ class MediaPlayerService : Service() {
         mediaSession!!.setPlaybackState(playbackState.build())
 
         // Set Active state
-        mediaSession!!.isActive = isPlaying
+        mediaSession!!.isActive = isActive
 
-        Timber.d("Setting the MediaSession to active = %s", isPlaying)
+        Timber.d("Setting the MediaSession to active = %s", isActive)
     }
 
     private fun createNotificationChannel() {
@@ -829,6 +836,26 @@ class MediaPlayerService : Service() {
                 Timber.v("Media Session Callback: onStop")
             }
 
+            override fun onSkipToNext() {
+                super.onSkipToNext()
+                getPendingIntentForMediaAction(
+                    applicationContext,
+                    KeyEvent.KEYCODE_MEDIA_NEXT,
+                    keycode
+                ).send()
+                Timber.v("Media Session Callback: onSkipToNext")
+            }
+
+            override fun onSkipToPrevious() {
+                super.onSkipToPrevious()
+                getPendingIntentForMediaAction(
+                    applicationContext,
+                    KeyEvent.KEYCODE_MEDIA_PREVIOUS,
+                    keycode
+                ).send()
+                Timber.v("Media Session Callback: onSkipToPrevious")
+            }
+
             override fun onMediaButtonEvent(mediaButtonEvent: Intent): Boolean {
                 // This probably won't be necessary once we implement more
                 // of the modern media APIs, like the MediaController etc.
@@ -848,7 +875,7 @@ class MediaPlayerService : Service() {
         }
     }
 
-    fun registerMediaButtonEventReceiver() {
+    private fun registerMediaButtonEventReceiver() {
         val component = ComponentName(packageName, MediaButtonIntentReceiver::class.java.name)
         val mediaButtonIntent = Intent(Intent.ACTION_MEDIA_BUTTON)
         mediaButtonIntent.component = component
@@ -863,7 +890,7 @@ class MediaPlayerService : Service() {
         mediaSession?.setMediaButtonReceiver(pendingIntent)
     }
 
-    fun unregisterMediaButtonEventReceiver() {
+    private fun unregisterMediaButtonEventReceiver() {
         mediaSession?.setMediaButtonReceiver(null)
     }
 
