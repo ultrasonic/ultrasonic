@@ -93,7 +93,6 @@ class SelectAlbumFragment : Fragment() {
     private var cancellationToken: CancellationToken? = null
     private val activeServerProvider: ActiveServerProvider by inject()
 
-    private val serverSettingsModel: ServerSettingsModel by viewModel()
     private val model: SelectAlbumModel by viewModels()
 
     private val random: Random = SecureRandom()
@@ -133,6 +132,7 @@ class SelectAlbumFragment : Fragment() {
             requireContext(), view as ViewGroup
         ) { selectedFolderId ->
             if (!isOffline(context)) {
+                val serverSettingsModel: ServerSettingsModel by viewModel()
                 val currentSetting = activeServerProvider.getActiveServer()
                 currentSetting.musicFolderId = selectedFolderId
                 serverSettingsModel.updateItem(currentSetting)
@@ -230,31 +230,32 @@ class SelectAlbumFragment : Fragment() {
     }
 
     private fun updateDisplay(refresh: Boolean) {
-        val id = requireArguments().getString(Constants.INTENT_EXTRA_NAME_ID)
-        val isAlbum = requireArguments().getBoolean(Constants.INTENT_EXTRA_NAME_IS_ALBUM, false)
-        val name = requireArguments().getString(Constants.INTENT_EXTRA_NAME_NAME)
-        val parentId = requireArguments().getString(Constants.INTENT_EXTRA_NAME_PARENT_ID)
-        val playlistId = requireArguments().getString(Constants.INTENT_EXTRA_NAME_PLAYLIST_ID)
-        val podcastChannelId = requireArguments().getString(
+        val args = requireArguments()
+        val id = args.getString(Constants.INTENT_EXTRA_NAME_ID)
+        val isAlbum = args.getBoolean(Constants.INTENT_EXTRA_NAME_IS_ALBUM, false)
+        val name = args.getString(Constants.INTENT_EXTRA_NAME_NAME)
+        val parentId = args.getString(Constants.INTENT_EXTRA_NAME_PARENT_ID)
+        val playlistId = args.getString(Constants.INTENT_EXTRA_NAME_PLAYLIST_ID)
+        val podcastChannelId = args.getString(
             Constants.INTENT_EXTRA_NAME_PODCAST_CHANNEL_ID
         )
-        val playlistName = requireArguments().getString(Constants.INTENT_EXTRA_NAME_PLAYLIST_NAME)
-        val shareId = requireArguments().getString(Constants.INTENT_EXTRA_NAME_SHARE_ID)
-        val shareName = requireArguments().getString(Constants.INTENT_EXTRA_NAME_SHARE_NAME)
-        val albumListType = requireArguments().getString(
+        val playlistName = args.getString(Constants.INTENT_EXTRA_NAME_PLAYLIST_NAME)
+        val shareId = args.getString(Constants.INTENT_EXTRA_NAME_SHARE_ID)
+        val shareName = args.getString(Constants.INTENT_EXTRA_NAME_SHARE_NAME)
+        val albumListType = args.getString(
             Constants.INTENT_EXTRA_NAME_ALBUM_LIST_TYPE
         )
-        val genreName = requireArguments().getString(Constants.INTENT_EXTRA_NAME_GENRE_NAME)
-        val albumListTitle = requireArguments().getInt(
+        val genreName = args.getString(Constants.INTENT_EXTRA_NAME_GENRE_NAME)
+        val albumListTitle = args.getInt(
             Constants.INTENT_EXTRA_NAME_ALBUM_LIST_TITLE, 0
         )
-        val getStarredTracks = requireArguments().getInt(Constants.INTENT_EXTRA_NAME_STARRED, 0)
-        val getVideos = requireArguments().getInt(Constants.INTENT_EXTRA_NAME_VIDEOS, 0)
-        val getRandomTracks = requireArguments().getInt(Constants.INTENT_EXTRA_NAME_RANDOM, 0)
-        val albumListSize = requireArguments().getInt(
+        val getStarredTracks = args.getInt(Constants.INTENT_EXTRA_NAME_STARRED, 0)
+        val getVideos = args.getInt(Constants.INTENT_EXTRA_NAME_VIDEOS, 0)
+        val getRandomTracks = args.getInt(Constants.INTENT_EXTRA_NAME_RANDOM, 0)
+        val albumListSize = args.getInt(
             Constants.INTENT_EXTRA_NAME_ALBUM_LIST_SIZE, 0
         )
-        val albumListOffset = requireArguments().getInt(
+        val albumListOffset = args.getInt(
             Constants.INTENT_EXTRA_NAME_ALBUM_LIST_OFFSET, 0
         )
 
