@@ -2,7 +2,6 @@
 <SmellBaseline>
   <ManuallySuppressedIssues></ManuallySuppressedIssues>
   <CurrentIssues>
-    <ID>ComplexCondition:SubsonicAPIClient.kt$SubsonicAPIClient$contentType != null &amp;&amp; contentType.type().equals("application", true) &amp;&amp; contentType.subtype().equals("json", true)</ID>
     <ID>ComplexMethod:AlbumListType.kt$AlbumListType.Companion$@JvmStatic fun fromName(typeName: String): AlbumListType</ID>
     <ID>ComplexMethod:SubsonicAPIVersions.kt$SubsonicAPIVersions.Companion$@JvmStatic @Throws(IllegalArgumentException::class) fun getClosestKnownClientApiVersion(apiVersion: String): SubsonicAPIVersions</ID>
     <ID>ComplexMethod:SubsonicError.kt$SubsonicError.Companion$fun getError(code: Int, message: String)</ID>

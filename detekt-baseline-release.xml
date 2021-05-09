@@ -21,23 +21,9 @@
     <ID>CommentOverPrivateFunction:ServerSettingsModel.kt$ServerSettingsModel$ private suspend fun areIndexesMissing(): Boolean</ID>
     <ID>CommentOverPrivateFunction:ServerSettingsModel.kt$ServerSettingsModel$ private suspend fun reindexSettings()</ID>
     <ID>ComplexCondition:DownloadHandler.kt$DownloadHandler.&lt;no name provided&gt;$!append &amp;&amp; !playNext &amp;&amp; !unpin &amp;&amp; !background</ID>
-    <ID>ComplexCondition:DownloadHandler.kt$DownloadHandler.&lt;no name provided&gt;$!isOffline(activity) &amp;&amp; isArtist &amp;&amp; Util.getShouldUseId3Tags(activity)</ID>
-    <ID>ComplexCondition:EditServerFragment.kt$EditServerFragment$urlString != urlString.trim(' ') || urlString.contains("@") || url.host.isNullOrBlank()</ID>
     <ID>ComplexCondition:FilePickerAdapter.kt$FilePickerAdapter$currentDirectory.absolutePath == "/" || currentDirectory.absolutePath == "/storage" || currentDirectory.absolutePath == "/storage/emulated" || currentDirectory.absolutePath == "/mnt"</ID>
-    <ID>ComplexCondition:LocalMediaPlayer.kt$LocalMediaPlayer$Util.getGaplessPlaybackPreference(context) &amp;&amp; Build.VERSION.SDK_INT &gt;= Build.VERSION_CODES.JELLY_BEAN &amp;&amp; ( playerState === PlayerState.STARTED || playerState === PlayerState.PAUSED )</ID>
-    <ID>ComplexCondition:LocalMediaPlayer.kt$LocalMediaPlayer$playerState !== PlayerState.IDLE &amp;&amp; playerState !== PlayerState.DOWNLOADING &amp;&amp; playerState !== PlayerState.PREPARING</ID>
-    <ID>ComplexCondition:LocalMediaPlayer.kt$LocalMediaPlayer.&lt;no name provided&gt;$!isPartial || downloadFile.isWorkDone &amp;&amp; abs(duration - pos) &lt; 1000</ID>
-    <ID>ComplexCondition:LocalMediaPlayer.kt$LocalMediaPlayer.&lt;no name provided&gt;$Util.getGaplessPlaybackPreference(context) &amp;&amp; nextPlaying != null &amp;&amp; nextPlayerState === PlayerState.PREPARED</ID>
-    <ID>ComplexCondition:MediaPlayerService.kt$MediaPlayerService$localMediaPlayer.playerState === PlayerState.IDLE || localMediaPlayer.playerState === PlayerState.DOWNLOADING || localMediaPlayer.playerState === PlayerState.PREPARING</ID>
-    <ID>ComplexCondition:MediaPlayerService.kt$MediaPlayerService$localMediaPlayer.playerState === PlayerState.PAUSED || localMediaPlayer.playerState === PlayerState.COMPLETED || localMediaPlayer.playerState === PlayerState.STOPPED</ID>
-    <ID>ComplexCondition:SelectAlbumFragment.kt$SelectAlbumFragment$enabled &amp;&amp; !deleteEnabled &amp;&amp; !isOffline(context)</ID>
-    <ID>ComplexCondition:SelectAlbumFragment.kt$SelectAlbumFragment$enabled &amp;&amp; !isOffline(context) &amp;&amp; selection.size &gt; pinnedCount</ID>
-    <ID>ComplexCondition:SelectAlbumFragment.kt$SelectAlbumFragment$entry != null &amp;&amp; !entry.isDirectory &amp;&amp; !entry.isVideo</ID>
-    <ID>ComplexCondition:SelectAlbumModel.kt$SelectAlbumModel$Util.getShouldShowAllSongsByArtist(context) &amp;&amp; musicDirectory.findChild(allSongsId) == null &amp;&amp; musicDirectory.getChildren(true, false).size == musicDirectory.getChildren(true, true).size</ID>
-    <ID>ComplexCondition:ServerSettingsModel.kt$ServerSettingsModel$url.isNullOrEmpty() || userName.isNullOrEmpty() || isMigrated</ID>
-    <ID>ComplexCondition:SongView.kt$SongView$TextUtils.isEmpty(transcodedSuffix) || transcodedSuffix == suffix || song.isVideo &amp;&amp; Util.getVideoPlayerType(this.context) !== VideoPlayerType.FLASH</ID>
-    <ID>ComplexCondition:SubsonicImageLoaderProxy.kt$SubsonicImageLoaderProxy$id != null &amp;&amp; view != null &amp;&amp; view is ImageView</ID>
-    <ID>ComplexCondition:SubsonicImageLoaderProxy.kt$SubsonicImageLoaderProxy$username != null &amp;&amp; view != null &amp;&amp; view is ImageView</ID>
+    <ID>ComplexCondition:LocalMediaPlayer.kt$LocalMediaPlayer$Util.getGaplessPlaybackPreference() &amp;&amp; Build.VERSION.SDK_INT &gt;= Build.VERSION_CODES.JELLY_BEAN &amp;&amp; ( playerState === PlayerState.STARTED || playerState === PlayerState.PAUSED )</ID>
+    <ID>ComplexCondition:SongView.kt$SongView$TextUtils.isEmpty(transcodedSuffix) || transcodedSuffix == suffix || song.isVideo &amp;&amp; Util.getVideoPlayerType() !== VideoPlayerType.FLASH</ID>
     <ID>ComplexMethod:CommunicationErrorHandler.kt$CommunicationErrorHandler.Companion$fun getErrorMessage(error: Throwable, context: Context): String</ID>
     <ID>ComplexMethod:DownloadFile.kt$DownloadFile.DownloadTask$override fun execute()</ID>
     <ID>ComplexMethod:EditServerFragment.kt$EditServerFragment$ private fun areFieldsChanged(): Boolean</ID>
@@ -52,8 +38,6 @@
     <ID>ComplexMethod:SelectAlbumFragment.kt$SelectAlbumFragment$private fun enableButtons()</ID>
     <ID>ComplexMethod:SelectAlbumFragment.kt$SelectAlbumFragment$private fun updateDisplay(refresh: Boolean)</ID>
     <ID>ComplexMethod:SelectAlbumFragment.kt$SelectAlbumFragment$private fun updateInterfaceWithEntries(musicDirectory: MusicDirectory)</ID>
-    <ID>ComplexMethod:SelectAlbumModel.kt$SelectAlbumModel$suspend fun getAlbumList(albumListType: String, size: Int, offset: Int)</ID>
-    <ID>ComplexMethod:SelectAlbumModel.kt$SelectAlbumModel$suspend fun getMusicDirectory( refresh: Boolean, id: String?, name: String?, parentId: String? )</ID>
     <ID>ComplexMethod:SelectArtistFragment.kt$SelectArtistFragment$override fun onViewCreated(view: View, savedInstanceState: Bundle?)</ID>
     <ID>ComplexMethod:ServerRowAdapter.kt$ServerRowAdapter$ override fun getView(position: Int, convertView: View?, parent: ViewGroup?): View?</ID>
     <ID>ComplexMethod:SongView.kt$SongView$fun setSong(song: MusicDirectory.Entry, checkable: Boolean, draggable: Boolean)</ID>
@@ -98,7 +82,6 @@
     <ID>LongMethod:DownloadFile.kt$DownloadFile$private fun updateModificationDate(file: File)</ID>
     <ID>LongMethod:DownloadFile.kt$DownloadFile.DownloadTask$override fun execute()</ID>
     <ID>LongMethod:DownloadHandler.kt$DownloadHandler$fun download( fragment: Fragment, append: Boolean, save: Boolean, autoPlay: Boolean, playNext: Boolean, shuffle: Boolean, songs: List&lt;MusicDirectory.Entry?&gt; )</ID>
-    <ID>LongMethod:DownloadHandler.kt$DownloadHandler.&lt;no name provided&gt;$@Throws(Exception::class) private fun getSongsForArtist( id: String, songs: MutableCollection&lt;MusicDirectory.Entry&gt; )</ID>
     <ID>LongMethod:DownloadHandler.kt$DownloadHandler.&lt;no name provided&gt;$@Throws(Exception::class) private fun getSongsRecursively( parent: MusicDirectory, songs: MutableList&lt;MusicDirectory.Entry&gt; )</ID>
     <ID>LongMethod:DownloadHandler.kt$DownloadHandler.&lt;no name provided&gt;$@Throws(Throwable::class) override fun doInBackground(): List&lt;MusicDirectory.Entry&gt;</ID>
     <ID>LongMethod:DownloadHandler.kt$DownloadHandler.&lt;no name provided&gt;$override fun done(songs: List&lt;MusicDirectory.Entry&gt;)</ID>
@@ -131,7 +114,6 @@
     <ID>LongMethod:MediaPlayerService.kt$MediaPlayerService$private fun setupOnPlayerStateChangedHandler()</ID>
     <ID>LongMethod:MediaPlayerService.kt$MediaPlayerService$private fun setupOnSongCompletedHandler()</ID>
     <ID>LongMethod:MediaPlayerService.kt$MediaPlayerService$private fun updateMediaSession(currentPlaying: DownloadFile?, playerState: PlayerState)</ID>
-    <ID>LongMethod:MediaStoreService.kt$MediaStoreService$fun saveInMediaStore(downloadFile: DownloadFile)</ID>
     <ID>LongMethod:NavigationActivity.kt$NavigationActivity$// TODO Test if this works with external Intents // android.intent.action.SEARCH and android.media.action.MEDIA_PLAY_FROM_SEARCH calls here override fun onNewIntent(intent: Intent?)</ID>
     <ID>LongMethod:NavigationActivity.kt$NavigationActivity$override fun onCreate(savedInstanceState: Bundle?)</ID>
     <ID>LongMethod:NavigationActivity.kt$NavigationActivity$private fun showNowPlaying()</ID>
