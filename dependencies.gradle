@@ -5,7 +5,7 @@ ext.versions = [
         // You need to run ./gradlew wrapper after updating the version
         gradle               : '7.0',
 
-        navigation           : "2.3.2",
+        navigation           : "2.3.5",
         gradlePlugin         : "4.2.0",
         androidxcore         : "1.5.0-rc01",
         ktlint               : "0.37.1",
