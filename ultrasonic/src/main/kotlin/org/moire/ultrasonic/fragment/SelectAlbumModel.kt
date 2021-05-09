@@ -61,7 +61,7 @@ class SelectAlbumModel(application: Application) : AndroidViewModel(application)
 
             if (allSongsId == id) {
                 val musicDirectory = service.getMusicDirectory(
-                    parentId, name, refresh, context
+                    parentId, name, refresh
                 )
 
                 val songs: MutableList<MusicDirectory.Entry> = LinkedList()
@@ -73,7 +73,7 @@ class SelectAlbumModel(application: Application) : AndroidViewModel(application)
                     }
                 }
             } else {
-                val musicDirectory = service.getMusicDirectory(id, name, refresh, context)
+                val musicDirectory = service.getMusicDirectory(id, name, refresh)
 
                 if (Util.getShouldShowAllSongsByArtist() &&
                     musicDirectory.findChild(allSongsId) == null &&
@@ -117,7 +117,7 @@ class SelectAlbumModel(application: Application) : AndroidViewModel(application)
             var root: MusicDirectory
 
             if (allSongsId != id1) {
-                root = service.getMusicDirectory(id1, title, false, context)
+                root = service.getMusicDirectory(id1, title, false)
 
                 getSongsRecursively(root, songs)
             }

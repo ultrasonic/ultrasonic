@@ -98,9 +98,9 @@ public class CacheCleaner
 			if (children != null)
 			{
 				// No songs left in the folder
-				if (children.length == 1 && children[0].getPath().equals(FileUtil.getAlbumArtFile(context, dir).getPath()))
+				if (children.length == 1 && children[0].getPath().equals(FileUtil.getAlbumArtFile(dir).getPath()))
 				{
-					Util.delete(FileUtil.getAlbumArtFile(context, dir));
+					Util.delete(FileUtil.getAlbumArtFile(dir));
 					children = dir.listFiles();
 				}
 
@@ -232,7 +232,7 @@ public class CacheCleaner
 			filesToNotDelete.add(downloadFile.getCompleteOrSaveFile());
 		}
 
-		filesToNotDelete.add(FileUtil.getMusicDirectory(context));
+		filesToNotDelete.add(FileUtil.getMusicDirectory());
 		return filesToNotDelete;
 	}
 
@@ -247,7 +247,7 @@ public class CacheCleaner
 				List<File> files = new ArrayList<File>();
 				List<File> dirs = new ArrayList<File>();
 
-				findCandidatesForDeletion(FileUtil.getMusicDirectory(context), files, dirs);
+				findCandidatesForDeletion(FileUtil.getMusicDirectory(), files, dirs);
 				sortByAscendingModificationTime(files);
 
 				Set<File> filesToNotDelete = findFilesToNotDelete();
@@ -274,7 +274,7 @@ public class CacheCleaner
 				Thread.currentThread().setName("BackgroundSpaceCleanup");
 				List<File> files = new ArrayList<File>();
 				List<File> dirs = new ArrayList<File>();
-				findCandidatesForDeletion(FileUtil.getMusicDirectory(context), files, dirs);
+				findCandidatesForDeletion(FileUtil.getMusicDirectory(), files, dirs);
 
 				long bytesToDelete = getMinimumDelete(files);
 				if (bytesToDelete > 0L)
@@ -302,11 +302,11 @@ public class CacheCleaner
 			{
 				Thread.currentThread().setName("BackgroundPlaylistsCleanup");
 				String server = activeServerProvider.getValue().getActiveServer().getName();
-				SortedSet<File> playlistFiles = FileUtil.listFiles(FileUtil.getPlaylistDirectory(context, server));
+				SortedSet<File> playlistFiles = FileUtil.listFiles(FileUtil.getPlaylistDirectory(server));
 				List<Playlist> playlists = params[0];
 				for (Playlist playlist : playlists)
 				{
-					playlistFiles.remove(FileUtil.getPlaylistFile(context, server, playlist.getName()));
+					playlistFiles.remove(FileUtil.getPlaylistFile(server, playlist.getName()));
 				}
 
 				for (File playlist : playlistFiles)

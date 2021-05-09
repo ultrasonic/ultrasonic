@@ -28,6 +28,7 @@ import android.text.TextUtils;
 import kotlin.Lazy;
 import timber.log.Timber;
 
+import org.moire.ultrasonic.app.UApp;
 import org.moire.ultrasonic.domain.MusicDirectory;
 import org.moire.ultrasonic.subsonic.ImageLoaderProvider;
 
@@ -62,9 +63,9 @@ public class FileUtil
 	private static final Lazy<ImageLoaderProvider> imageLoaderProvider = inject(ImageLoaderProvider.class);
 	private static final Lazy<PermissionUtil> permissionUtil = inject(PermissionUtil.class);
 
-	public static File getSongFile(Context context, MusicDirectory.Entry song)
+	public static File getSongFile(MusicDirectory.Entry song)
 	{
-		File dir = getAlbumDirectory(context, song);
+		File dir = getAlbumDirectory(song);
 
 		// Do not generate new name for offline files. Offline files will have their Path as their Id.
 		if (!TextUtils.isEmpty(song.getId()))
@@ -97,35 +98,35 @@ public class FileUtil
 		return new File(dir, fileName.toString());
 	}
 
-	public static File getPlaylistFile(Context context, String server, String name)
+	public static File getPlaylistFile(String server, String name)
 	{
-		File playlistDir = getPlaylistDirectory(context, server);
+		File playlistDir = getPlaylistDirectory(server);
 		return new File(playlistDir, String.format("%s.m3u", fileSystemSafe(name)));
 	}
 
-	public static File getPlaylistDirectory(Context context)
+	public static File getPlaylistDirectory()
 	{
-		File playlistDir = new File(getUltrasonicDirectory(context), "playlists");
+		File playlistDir = new File(getUltrasonicDirectory(), "playlists");
 		ensureDirectoryExistsAndIsReadWritable(playlistDir);
 		return playlistDir;
 	}
 
-	public static File getPlaylistDirectory(Context context, String server)
+	public static File getPlaylistDirectory(String server)
 	{
-		File playlistDir = new File(getPlaylistDirectory(context), server);
+		File playlistDir = new File(getPlaylistDirectory(), server);
 		ensureDirectoryExistsAndIsReadWritable(playlistDir);
 		return playlistDir;
 	}
 
-	public static File getAlbumArtFile(Context context, MusicDirectory.Entry entry)
+	public static File getAlbumArtFile(MusicDirectory.Entry entry)
 	{
-		File albumDir = getAlbumDirectory(context, entry);
-		return getAlbumArtFile(context, albumDir);
+		File albumDir = getAlbumDirectory(entry);
+		return getAlbumArtFile(albumDir);
 	}
 
-	public static File getAvatarFile(Context context, String username)
+	public static File getAvatarFile(String username)
 	{
-		File albumArtDir = getAlbumArtDirectory(context);
+		File albumArtDir = getAlbumArtDirectory();
 
 		if (albumArtDir == null || username == null)
 		{
@@ -136,9 +137,9 @@ public class FileUtil
 		return new File(albumArtDir, String.format("%s.jpeg", md5Hex));
 	}
 
-	public static File getAlbumArtFile(Context context, File albumDir)
+	public static File getAlbumArtFile(File albumDir)
 	{
-		File albumArtDir = getAlbumArtDirectory(context);
+		File albumArtDir = getAlbumArtDirectory();
 
 		if (albumArtDir == null || albumDir == null)
 		{
@@ -149,11 +150,11 @@ public class FileUtil
 		return new File(albumArtDir, String.format("%s.jpeg", md5Hex));
 	}
 
-	public static Bitmap getAvatarBitmap(Context context, String username, int size, boolean highQuality)
+	public static Bitmap getAvatarBitmap(String username, int size, boolean highQuality)
 	{
 		if (username == null) return null;
 
-		File avatarFile = getAvatarFile(context, username);
+		File avatarFile = getAvatarFile(username);
 
 		Bitmap bitmap = null;
 		ImageLoader imageLoader = imageLoaderProvider.getValue().getImageLoader();
@@ -217,7 +218,7 @@ public class FileUtil
 	{
 		if (entry == null) return null;
 
-		File albumArtFile = getAlbumArtFile(context, entry);
+		File albumArtFile = getAlbumArtFile(entry);
 
 		Bitmap bitmap = null;
 		ImageLoader imageLoader = imageLoaderProvider.getValue().getImageLoader();
@@ -301,15 +302,15 @@ public class FileUtil
 		return BitmapFactory.decodeByteArray(bytes, 0, bytes.length, opt);
 	}
 
-	public static File getAlbumArtDirectory(Context context)
+	public static File getAlbumArtDirectory()
 	{
-		File albumArtDir = new File(getUltrasonicDirectory(context), "artwork");
+		File albumArtDir = new File(getUltrasonicDirectory(), "artwork");
 		ensureDirectoryExistsAndIsReadWritable(albumArtDir);
 		ensureDirectoryExistsAndIsReadWritable(new File(albumArtDir, ".nomedia"));
 		return albumArtDir;
 	}
 
-	public static File getAlbumDirectory(Context context, MusicDirectory.Entry entry)
+	public static File getAlbumDirectory(MusicDirectory.Entry entry)
 	{
 		if (entry == null)
 		{
@@ -321,7 +322,7 @@ public class FileUtil
 		if (!TextUtils.isEmpty(entry.getPath()))
 		{
 			File f = new File(fileSystemSafeDir(entry.getPath()));
-			dir = new File(String.format("%s/%s", getMusicDirectory(context).getPath(), entry.isDirectory() ? f.getPath() : f.getParent()));
+			dir = new File(String.format("%s/%s", getMusicDirectory().getPath(), entry.isDirectory() ? f.getPath() : f.getParent()));
 		}
 		else
 		{
@@ -333,7 +334,7 @@ public class FileUtil
 				album = fileSystemSafe(entry.getTitle());
 			}
 
-			dir = new File(String.format("%s/%s/%s", getMusicDirectory(context).getPath(), artist, album));
+			dir = new File(String.format("%s/%s/%s", getMusicDirectory().getPath(), artist, album));
 		}
 
 		return dir;
@@ -351,9 +352,9 @@ public class FileUtil
 		}
 	}
 
-	private static File getOrCreateDirectory(Context context, String name)
+	private static File getOrCreateDirectory(String name)
 	{
-		File dir = new File(getUltrasonicDirectory(context), name);
+		File dir = new File(getUltrasonicDirectory(), name);
 
 		if (!dir.exists() && !dir.mkdirs())
 		{
@@ -363,23 +364,23 @@ public class FileUtil
 		return dir;
 	}
 
-	public static File getUltrasonicDirectory(Context context)
+	public static File getUltrasonicDirectory()
 	{
         if (Build.VERSION.SDK_INT < Build.VERSION_CODES.M)
             return new File(Environment.getExternalStorageDirectory(), "Android/data/org.moire.ultrasonic");
 
         // After Android M, the location of the files must be queried differently. GetExternalFilesDir will always return a directory which Ultrasonic can access without any extra privileges.
-        return context.getExternalFilesDir(null);
+        return UApp.Companion.applicationContext().getExternalFilesDir(null);
 	}
 
-	public static File getDefaultMusicDirectory(Context context)
+	public static File getDefaultMusicDirectory()
 	{
-		return getOrCreateDirectory(context, "music");
+		return getOrCreateDirectory("music");
 	}
 
-	public static File getMusicDirectory(Context context)
+	public static File getMusicDirectory()
 	{
-		File defaultMusicDirectory = getDefaultMusicDirectory(context);
+		File defaultMusicDirectory = getDefaultMusicDirectory();
 		String path = Util.getPreferences().getString(Constants.PREFERENCES_KEY_CACHE_LOCATION, defaultMusicDirectory.getPath());
 		File dir = new File(path);
 

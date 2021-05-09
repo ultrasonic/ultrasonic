@@ -108,10 +108,9 @@ open class RESTMusicService(
 
     @Throws(Exception::class)
     override fun getIndexes(
-        musicFolderId: String?,
-        refresh: Boolean,
-        context: Context
-    ): Indexes {
+        musicFolderId: String,
+        refresh: Boolean
+    ): Indexes? {
         val indexName = INDEXES_STORAGE_NAME + (musicFolderId ?: "")
 
         val cachedIndexes = fileStorage.load(indexName, getIndexesSerializer())
@@ -171,10 +170,9 @@ open class RESTMusicService(
     @Throws(Exception::class)
     override fun getMusicDirectory(
         id: String,
-        name: String?,
-        refresh: Boolean,
-        context: Context
-    ): MusicDirectory {
+        name: String,
+        refresh: Boolean
+    ): MusicDirectory? {
         val response = responseChecker.callWithResponseCheck { api ->
             api.getMusicDirectory(id).execute()
         }
@@ -280,7 +278,7 @@ open class RESTMusicService(
         }
 
         val playlist = response.body()!!.playlist.toMusicDirectoryDomainEntity()
-        savePlaylist(name, context, playlist)
+        savePlaylist(name, playlist)
 
         return playlist
     }
@@ -288,11 +286,10 @@ open class RESTMusicService(
     @Throws(IOException::class)
     private fun savePlaylist(
         name: String?,
-        context: Context,
         playlist: MusicDirectory
     ) {
         val playlistFile = FileUtil.getPlaylistFile(
-            context, activeServerProvider.getActiveServer().name, name
+            activeServerProvider.getActiveServer().name, name
         )
 
         val fw = FileWriter(playlistFile)
@@ -301,7 +298,7 @@ open class RESTMusicService(
         try {
             fw.write("#EXTM3U\n")
             for (e in playlist.getChildren()) {
-                var filePath = FileUtil.getSongFile(context, e).absolutePath
+                var filePath = FileUtil.getSongFile(e).absolutePath
 
                 if (!File(filePath).exists()) {
                     val ext = FileUtil.getExtension(filePath)
@@ -563,7 +560,7 @@ open class RESTMusicService(
                         var outputStream: OutputStream? = null
                         try {
                             outputStream = FileOutputStream(
-                                FileUtil.getAlbumArtFile(context, entry)
+                                FileUtil.getAlbumArtFile(entry)
                             )
                             outputStream.write(bytes)
                         } finally {
@@ -882,7 +879,7 @@ open class RESTMusicService(
 
         synchronized(username) {
             // Use cached file, if existing.
-            var bitmap = FileUtil.getAvatarBitmap(context, username, size, highQuality)
+            var bitmap = FileUtil.getAvatarBitmap(username, size, highQuality)
 
             if (bitmap == null) {
                 var inputStream: InputStream? = null
@@ -901,7 +898,7 @@ open class RESTMusicService(
 
                         try {
                             outputStream = FileOutputStream(
-                                FileUtil.getAvatarFile(context, username)
+                                FileUtil.getAvatarFile(username)
                             )
                             outputStream.write(bytes)
                         } finally {

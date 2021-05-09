@@ -124,7 +124,7 @@ public class CachedMusicService implements MusicService
 	}
 
 	@Override
-	public Indexes getIndexes(String musicFolderId, boolean refresh, Context context) throws Exception
+	public Indexes getIndexes(String musicFolderId, boolean refresh) throws Exception
 	{
 		checkSettingsChanged();
 		if (refresh)
@@ -136,7 +136,7 @@ public class CachedMusicService implements MusicService
 		Indexes result = cachedIndexes.get();
 		if (result == null)
 		{
-			result = musicService.getIndexes(musicFolderId, refresh, context);
+			result = musicService.getIndexes(musicFolderId, refresh);
 			cachedIndexes.set(result);
 		}
 		return result;
@@ -160,7 +160,7 @@ public class CachedMusicService implements MusicService
 	}
 
 	@Override
-	public MusicDirectory getMusicDirectory(String id, String name, boolean refresh, Context context) throws Exception
+	public MusicDirectory getMusicDirectory(String id, String name, boolean refresh) throws Exception
 	{
 		checkSettingsChanged();
 		TimeLimitedCache<MusicDirectory> cache = refresh ? null : cachedMusicDirectories.get(id);
@@ -169,7 +169,7 @@ public class CachedMusicService implements MusicService
 
 		if (dir == null)
 		{
-			dir = musicService.getMusicDirectory(id, name, refresh, context);
+			dir = musicService.getMusicDirectory(id, name, refresh);
 			cache = new TimeLimitedCache<>(Util.getDirectoryCacheTime(), TimeUnit.SECONDS);
 			cache.set(dir);
 			cachedMusicDirectories.put(id, cache);

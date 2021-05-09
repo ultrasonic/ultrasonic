@@ -46,7 +46,6 @@ import android.view.View;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.Toast;
 
-import androidx.annotation.ColorInt;
 import androidx.preference.PreferenceManager;
 
 import org.moire.ultrasonic.R;
@@ -725,7 +724,7 @@ public class Util
 			intent.putExtra("artist", song.getArtist());
 			intent.putExtra("album", song.getAlbum());
 
-			File albumArtFile = FileUtil.getAlbumArtFile(context, song);
+			File albumArtFile = FileUtil.getAlbumArtFile(song);
 			intent.putExtra("coverart", albumArtFile.getAbsolutePath());
 		}
 		else
@@ -797,7 +796,7 @@ public class Util
 
 			if (Util.getShouldSendBluetoothAlbumArt())
 			{
-				File albumArtFile = FileUtil.getAlbumArtFile(context, song);
+				File albumArtFile = FileUtil.getAlbumArtFile(song);
 				avrcpIntent.putExtra("coverart", albumArtFile.getAbsolutePath());
 				avrcpIntent.putExtra("cover", albumArtFile.getAbsolutePath());
 			}
@@ -853,7 +852,7 @@ public class Util
 
 			if (Util.getShouldSendBluetoothAlbumArt())
 			{
-				File albumArtFile = FileUtil.getAlbumArtFile(context, currentSong);
+				File albumArtFile = FileUtil.getAlbumArtFile(currentSong);
 				avrcpIntent.putExtra("coverart", albumArtFile.getAbsolutePath());
 				avrcpIntent.putExtra("cover", albumArtFile.getAbsolutePath());
 			}

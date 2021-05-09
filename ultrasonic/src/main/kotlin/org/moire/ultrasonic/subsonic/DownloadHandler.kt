@@ -3,9 +3,9 @@ package org.moire.ultrasonic.subsonic
 import android.app.Activity
 import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
-import org.koin.core.component.KoinApiExtension
 import java.util.Collections
 import java.util.LinkedList
+import org.koin.core.component.KoinApiExtension
 import org.moire.ultrasonic.R
 import org.moire.ultrasonic.data.ActiveServerProvider.Companion.isOffline
 import org.moire.ultrasonic.domain.MusicDirectory
@@ -212,7 +212,7 @@ class DownloadHandler(
                         root = if (!isOffline() && Util.getShouldUseId3Tags())
                             musicService.getAlbum(id, name, false)
                         else
-                            musicService.getMusicDirectory(id, name, false, activity)
+                            musicService.getMusicDirectory(id, name, false)
                     } else if (isShare) {
                         root = MusicDirectory()
                         val shares = musicService.getShares(true, activity)
@@ -256,7 +256,7 @@ class DownloadHandler(
                         !isOffline() &&
                         Util.getShouldUseId3Tags()
                     ) musicService.getAlbum(id1, title, false)
-                    else musicService.getMusicDirectory(id1, title, false, activity)
+                    else musicService.getMusicDirectory(id1, title, false)
                     getSongsRecursively(root, songs)
                 }
             }

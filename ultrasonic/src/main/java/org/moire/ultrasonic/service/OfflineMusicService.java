@@ -77,10 +77,10 @@ public class OfflineMusicService implements MusicService
 	private final Lazy<ActiveServerProvider> activeServerProvider = inject(ActiveServerProvider.class);
 
 	@Override
-	public Indexes getIndexes(String musicFolderId, boolean refresh, Context context)
+	public Indexes getIndexes(String musicFolderId, boolean refresh)
 	{
 		List<Artist> artists = new ArrayList<>();
-		File root = FileUtil.getMusicDirectory(context);
+		File root = FileUtil.getMusicDirectory();
 		for (File file : FileUtil.listFiles(root))
 		{
 			if (file.isDirectory())
@@ -142,7 +142,7 @@ public class OfflineMusicService implements MusicService
 	}
 
 	@Override
-	public MusicDirectory getMusicDirectory(String id, String artistName, boolean refresh, Context context)
+	public MusicDirectory getMusicDirectory(String id, String artistName, boolean refresh)
 	{
 		File dir = new File(id);
 		MusicDirectory result = new MusicDirectory();
@@ -156,7 +156,7 @@ public class OfflineMusicService implements MusicService
 			if (name != null & !names.contains(name))
 			{
 				names.add(name);
-				result.addChild(createEntry(context, file, name));
+				result.addChild(createEntry(file, name));
 			}
 		}
 
@@ -181,14 +181,14 @@ public class OfflineMusicService implements MusicService
 		return FileUtil.getBaseName(name);
 	}
 
-	private static MusicDirectory.Entry createEntry(Context context, File file, String name)
+	private static MusicDirectory.Entry createEntry(File file, String name)
 	{
 		MusicDirectory.Entry entry = new MusicDirectory.Entry();
 		entry.setDirectory(file.isDirectory());
 		entry.setId(file.getPath());
 		entry.setParent(file.getParent());
 		entry.setSize(file.length());
-		String root = FileUtil.getMusicDirectory(context).getPath();
+		String root = FileUtil.getMusicDirectory().getPath();
 		entry.setPath(file.getPath().replaceFirst(String.format("^%s/", root), ""));
 		entry.setTitle(name);
 
@@ -322,7 +322,7 @@ public class OfflineMusicService implements MusicService
 
 		entry.setSuffix(FileUtil.getExtension(file.getName().replace(".complete", "")));
 
-		File albumArt = FileUtil.getAlbumArtFile(context, entry);
+		File albumArt = FileUtil.getAlbumArtFile(entry);
 
 		if (albumArt.exists())
 		{
@@ -337,7 +337,7 @@ public class OfflineMusicService implements MusicService
 	{
 		try
 		{
-			Bitmap bitmap = FileUtil.getAvatarBitmap(context, username, size, highQuality);
+			Bitmap bitmap = FileUtil.getAvatarBitmap(username, size, highQuality);
 			return Util.scaleBitmap(bitmap, size);
 		}
 		catch (Exception e)
@@ -366,7 +366,7 @@ public class OfflineMusicService implements MusicService
 		List<Artist> artists = new ArrayList<>();
 		List<MusicDirectory.Entry> albums = new ArrayList<>();
 		List<MusicDirectory.Entry> songs = new ArrayList<>();
-		File root = FileUtil.getMusicDirectory(context);
+		File root = FileUtil.getMusicDirectory();
 		int closeness;
 
 		for (File artistFile : FileUtil.listFiles(root))
@@ -442,7 +442,7 @@ public class OfflineMusicService implements MusicService
 				String albumName = getName(albumFile);
 				if ((closeness = matchCriteria(criteria, albumName)) > 0)
 				{
-					MusicDirectory.Entry album = createEntry(context, albumFile, albumName);
+					MusicDirectory.Entry album = createEntry(albumFile, albumName);
 					album.setArtist(artistName);
 					album.setCloseness(closeness);
 					albums.add(album);
@@ -458,7 +458,7 @@ public class OfflineMusicService implements MusicService
 					}
 					else if ((closeness = matchCriteria(criteria, songName)) > 0)
 					{
-						MusicDirectory.Entry song = createEntry(context, albumFile, songName);
+						MusicDirectory.Entry song = createEntry(albumFile, songName);
 						song.setArtist(artistName);
 						song.setAlbum(albumName);
 						song.setCloseness(closeness);
@@ -472,7 +472,7 @@ public class OfflineMusicService implements MusicService
 
 				if ((closeness = matchCriteria(criteria, songName)) > 0)
 				{
-					MusicDirectory.Entry song = createEntry(context, albumFile, songName);
+					MusicDirectory.Entry song = createEntry(albumFile, songName);
 					song.setArtist(artistName);
 					song.setAlbum(songName);
 					song.setCloseness(closeness);
@@ -508,7 +508,7 @@ public class OfflineMusicService implements MusicService
 	public List<Playlist> getPlaylists(boolean refresh, Context context)
 	{
 		List<Playlist> playlists = new ArrayList<>();
-		File root = FileUtil.getPlaylistDirectory(context);
+		File root = FileUtil.getPlaylistDirectory();
 		String lastServer = null;
 		boolean removeServer = true;
 		for (File folder : FileUtil.listFiles(root))
@@ -577,7 +577,7 @@ public class OfflineMusicService implements MusicService
 				name = name.substring(id.length() + 2);
 			}
 
-			File playlistFile = FileUtil.getPlaylistFile(context, id, name);
+			File playlistFile = FileUtil.getPlaylistFile(id, name);
 			reader = new FileReader(playlistFile);
 			buffer = new BufferedReader(reader);
 
@@ -592,7 +592,7 @@ public class OfflineMusicService implements MusicService
 
 				if (entryFile.exists() && entryName != null)
 				{
-					playlist.addChild(createEntry(context, entryFile, entryName));
+					playlist.addChild(createEntry(entryFile, entryName));
 				}
 			}
 
@@ -608,7 +608,7 @@ public class OfflineMusicService implements MusicService
 	@Override
 	public void createPlaylist(String id, String name, List<MusicDirectory.Entry> entries, Context context) throws Exception
 	{
-		File playlistFile = FileUtil.getPlaylistFile(context, activeServerProvider.getValue().getActiveServer().getName(), name);
+		File playlistFile = FileUtil.getPlaylistFile(activeServerProvider.getValue().getActiveServer().getName(), name);
 		FileWriter fw = new FileWriter(playlistFile);
 		BufferedWriter bw = new BufferedWriter(fw);
 		try
@@ -616,7 +616,7 @@ public class OfflineMusicService implements MusicService
 			fw.write("#EXTM3U\n");
 			for (MusicDirectory.Entry e : entries)
 			{
-				String filePath = FileUtil.getSongFile(context, e).getAbsolutePath();
+				String filePath = FileUtil.getSongFile(e).getAbsolutePath();
 				if (!new File(filePath).exists())
 				{
 					String ext = FileUtil.getExtension(filePath);
@@ -641,7 +641,7 @@ public class OfflineMusicService implements MusicService
 	@Override
 	public MusicDirectory getRandomSongs(int size, Context context)
 	{
-		File root = FileUtil.getMusicDirectory(context);
+		File root = FileUtil.getMusicDirectory();
 		List<File> children = new LinkedList<>();
 		listFilesRecursively(root, children);
 		MusicDirectory result = new MusicDirectory();
@@ -655,7 +655,7 @@ public class OfflineMusicService implements MusicService
 		for (int i = 0; i < size; i++)
 		{
 			File file = children.get(random.nextInt(children.size()));
-			result.addChild(createEntry(context, file, getName(file)));
+			result.addChild(createEntry(file, getName(file)));
 		}
 
 		return result;

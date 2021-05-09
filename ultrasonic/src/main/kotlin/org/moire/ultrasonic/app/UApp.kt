@@ -36,7 +36,7 @@ class UApp : MultiDexApplication() {
             Timber.plant(DebugTree())
         }
         if (Util.getDebugLogToFile()) {
-            FileLoggerTree.plantToTimberForest(this)
+            FileLoggerTree.plantToTimberForest()
         }
 
         startKoin {

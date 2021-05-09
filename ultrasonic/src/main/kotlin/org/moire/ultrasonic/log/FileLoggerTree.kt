@@ -1,6 +1,5 @@
 package org.moire.ultrasonic.log
 
-import android.content.Context
 import java.io.File
 import java.io.FileWriter
 import java.text.SimpleDateFormat
@@ -14,7 +13,7 @@ import timber.log.Timber
  * A Timber Tree which can be used to log to a file
  * Subclass of the DebugTree so it inherits the Tag handling
  */
-class FileLoggerTree(val context: Context) : Timber.DebugTree() {
+class FileLoggerTree : Timber.DebugTree() {
     private val dateFormat = SimpleDateFormat("HH:mm:ss.SSS", Locale.getDefault())
 
     /**
@@ -81,7 +80,7 @@ class FileLoggerTree(val context: Context) : Timber.DebugTree() {
      */
     private fun getNumberedFile(next: Boolean) {
         var fileNum = 1
-        val fileList = getLogFileList(context)
+        val fileList = getLogFileList()
 
         if (!fileList.isNullOrEmpty()) {
             fileList.sortByDescending { t -> t.name }
@@ -94,7 +93,7 @@ class FileLoggerTree(val context: Context) : Timber.DebugTree() {
 
         if (next) fileNum++
         file = File(
-            FileUtil.getUltrasonicDirectory(context),
+            FileUtil.getUltrasonicDirectory(),
             FILENAME.replace("*", fileNum.toString())
         )
     }
@@ -124,9 +123,9 @@ class FileLoggerTree(val context: Context) : Timber.DebugTree() {
         const val MAX_LOGFILE_LENGTH = 10000000
         var callNum = 0
 
-        fun plantToTimberForest(context: Context) {
+        fun plantToTimberForest() {
             if (!Timber.forest().any { t -> t is FileLoggerTree }) {
-                Timber.plant(FileLoggerTree(context))
+                Timber.plant(FileLoggerTree())
             }
         }
 
@@ -137,15 +136,15 @@ class FileLoggerTree(val context: Context) : Timber.DebugTree() {
             file = null
         }
 
-        fun getLogFileNumber(context: Context): Int {
-            val fileList = getLogFileList(context)
+        fun getLogFileNumber(): Int {
+            val fileList = getLogFileList()
             if (!fileList.isNullOrEmpty()) return fileList.size
             return 0
         }
 
-        fun getLogFileSizes(context: Context): Long {
+        fun getLogFileSizes(): Long {
             var sizeSum: Long = 0
-            val fileList = getLogFileList(context)
+            val fileList = getLogFileList()
             if (fileList.isNullOrEmpty()) return sizeSum
             for (file in fileList) {
                 sizeSum += file.length()
@@ -153,16 +152,16 @@ class FileLoggerTree(val context: Context) : Timber.DebugTree() {
             return sizeSum
         }
 
-        fun deleteLogFiles(context: Context) {
-            val fileList = getLogFileList(context)
+        fun deleteLogFiles() {
+            val fileList = getLogFileList()
             if (fileList.isNullOrEmpty()) return
             for (file in fileList) {
                 file.delete()
             }
         }
 
-        private fun getLogFileList(context: Context): Array<File> {
-            val directory = FileUtil.getUltrasonicDirectory(context)
+        private fun getLogFileList(): Array<File> {
+            val directory = FileUtil.getUltrasonicDirectory()
             return directory.listFiles { t -> t.name.matches(fileNameRegex) }
         }
     }

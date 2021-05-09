@@ -81,7 +81,7 @@ val musicServiceModule = module {
 
     single { SubsonicImageLoader(androidContext(), get()) }
 
-    viewModel { ArtistListModel(get(), androidContext()) }
+    viewModel { ArtistListModel(get()) }
 
     single { DownloadHandler(get(), get()) }
     single { NetworkAndStorageChecker(androidContext()) }

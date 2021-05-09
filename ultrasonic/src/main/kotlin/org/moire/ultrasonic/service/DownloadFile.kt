@@ -41,7 +41,7 @@ class DownloadFile(
 ) {
     val partialFile: File
     val completeFile: File
-    private val saveFile: File = FileUtil.getSongFile(context, song)
+    private val saveFile: File = FileUtil.getSongFile(song)
     private var downloadTask: CancellableTask? = null
     var isFailed = false
     private var retryCount = MAX_RETRIES

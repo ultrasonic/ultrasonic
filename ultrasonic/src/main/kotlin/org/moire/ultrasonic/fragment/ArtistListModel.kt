@@ -18,7 +18,6 @@
  */
 package org.moire.ultrasonic.fragment
 
-import android.content.Context
 import android.os.Handler
 import android.os.Looper
 import androidx.lifecycle.LiveData
@@ -40,8 +39,7 @@ import org.moire.ultrasonic.util.Util
  * Provides ViewModel which contains the list of available Artists
  */
 class ArtistListModel(
-    private val activeServerProvider: ActiveServerProvider,
-    private val context: Context
+    private val activeServerProvider: ActiveServerProvider
 ) : ViewModel() {
     private val musicFolders: MutableLiveData<List<MusicFolder>> = MutableLiveData()
     private val artists: MutableLiveData<List<Artist>> = MutableLiveData()
@@ -93,7 +91,7 @@ class ArtistListModel(
 
                 val result = if (!isOffline && useId3Tags)
                     musicService.getArtists(refresh)
-                else musicService.getIndexes(musicFolderId, refresh, context)
+                else musicService.getIndexes(musicFolderId, refresh)
 
                 val retrievedArtists: MutableList<Artist> =
                     ArrayList(result.shortcuts.size + result.artists.size)

@@ -61,11 +61,11 @@ public interface MusicService
 
 	List<MusicFolder> getMusicFolders(boolean refresh) throws Exception;
 
-	Indexes getIndexes(String musicFolderId, boolean refresh, Context context) throws Exception;
+	Indexes getIndexes(String musicFolderId, boolean refresh) throws Exception;
 
 	Indexes getArtists(boolean refresh) throws Exception;
 
-	MusicDirectory getMusicDirectory(String id, String name, boolean refresh, Context context) throws Exception;
+	MusicDirectory getMusicDirectory(String id, String name, boolean refresh) throws Exception;
 
 	MusicDirectory getArtist(String id, String name, boolean refresh) throws Exception;
 

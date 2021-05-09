@@ -224,7 +224,7 @@ public class SettingsFragment extends PreferenceFragmentCompat
 
     private void setupCacheLocationPreference() {
         cacheLocation.setSummary(settings.getString(Constants.PREFERENCES_KEY_CACHE_LOCATION,
-            FileUtil.getDefaultMusicDirectory(getActivity()).getPath()));
+            FileUtil.getDefaultMusicDirectory().getPath()));
 
         cacheLocation.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
             @Override
@@ -235,7 +235,7 @@ public class SettingsFragment extends PreferenceFragmentCompat
                     public void onPermissionRequestFinished(boolean hasPermission) {
                         if (hasPermission) {
                             FilePickerDialog filePickerDialog = FilePickerDialog.Companion.createFilePickerDialog(getContext());
-                            filePickerDialog.setDefaultDirectory(FileUtil.getDefaultMusicDirectory(getActivity()).getPath());
+                            filePickerDialog.setDefaultDirectory(FileUtil.getDefaultMusicDirectory().getPath());
                             filePickerDialog.setInitialDirectory(cacheLocation.getSummary().toString());
                             filePickerDialog.setOnFileSelectedListener(new OnFileSelectedListener() {
                                 @Override
@@ -448,7 +448,7 @@ public class SettingsFragment extends PreferenceFragmentCompat
         sharingDefaultDescription.setSummary(sharingDefaultDescription.getText());
         sharingDefaultGreeting.setSummary(sharingDefaultGreeting.getText());
         cacheLocation.setSummary(settings.getString(Constants.PREFERENCES_KEY_CACHE_LOCATION,
-            FileUtil.getDefaultMusicDirectory(getActivity()).getPath()));
+            FileUtil.getDefaultMusicDirectory().getPath()));
 
         if (!mediaButtonsEnabled.isChecked()) {
             lockScreenEnabled.setChecked(false);
@@ -462,7 +462,7 @@ public class SettingsFragment extends PreferenceFragmentCompat
 
         if (debugLogToFile.isChecked()) {
             debugLogToFile.setSummary(getString(R.string.settings_debug_log_path,
-                FileUtil.getUltrasonicDirectory(getActivity()), FileLoggerTree.FILENAME));
+                FileUtil.getUltrasonicDirectory(), FileLoggerTree.FILENAME));
         } else {
             debugLogToFile.setSummary("");
         }
@@ -480,7 +480,7 @@ public class SettingsFragment extends PreferenceFragmentCompat
     }
 
     private void setHideMedia(boolean hide) {
-        File nomediaDir = new File(FileUtil.getUltrasonicDirectory(getActivity()), ".nomedia");
+        File nomediaDir = new File(FileUtil.getUltrasonicDirectory(), ".nomedia");
         if (hide && !nomediaDir.exists()) {
             if (!nomediaDir.mkdir()) {
                 Timber.w("Failed to create %s", nomediaDir);
@@ -510,7 +510,7 @@ public class SettingsFragment extends PreferenceFragmentCompat
                 @Override
                 public void onPermissionRequestFinished(boolean hasPermission) {
                     String currentPath = settings.getString(Constants.PREFERENCES_KEY_CACHE_LOCATION,
-                            FileUtil.getDefaultMusicDirectory(getActivity()).getPath());
+                            FileUtil.getDefaultMusicDirectory().getPath());
                     cacheLocation.setSummary(currentPath);
                 }
             });
@@ -525,18 +525,18 @@ public class SettingsFragment extends PreferenceFragmentCompat
 
     private void setDebugLogToFile(boolean writeLog) {
         if (writeLog) {
-            FileLoggerTree.Companion.plantToTimberForest(getActivity().getApplicationContext());
+            FileLoggerTree.Companion.plantToTimberForest();
             Timber.i("Enabled debug logging to file");
         } else {
             FileLoggerTree.Companion.uprootFromTimberForest();
             Timber.i("Disabled debug logging to file");
 
-            int fileNum = FileLoggerTree.Companion.getLogFileNumber(getActivity());
-            long fileSize = FileLoggerTree.Companion.getLogFileSizes(getActivity());
+            int fileNum = FileLoggerTree.Companion.getLogFileNumber();
+            long fileSize = FileLoggerTree.Companion.getLogFileSizes();
             String message = getString(R.string.settings_debug_log_summary,
                 String.valueOf(fileNum),
                 String.valueOf(Math.ceil(fileSize / 1000000d)),
-                FileUtil.getUltrasonicDirectory(getActivity()));
+                FileUtil.getUltrasonicDirectory());
 
             new AlertDialog.Builder(getActivity())
                 .setMessage(message)
@@ -550,7 +550,7 @@ public class SettingsFragment extends PreferenceFragmentCompat
                 .setPositiveButton(R.string.settings_debug_log_delete, new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialogInterface, int i) {
-                        FileLoggerTree.Companion.deleteLogFiles(getActivity());
+                        FileLoggerTree.Companion.deleteLogFiles();
                         Timber.i("Deleted debug log files");
                         dialogInterface.dismiss();
                         new AlertDialog.Builder(getActivity()).setMessage(R.string.settings_debug_log_deleted)

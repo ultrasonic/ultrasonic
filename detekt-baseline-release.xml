@@ -119,7 +119,7 @@
     <ID>LongMethod:NavigationActivity.kt$NavigationActivity$private fun showNowPlaying()</ID>
     <ID>LongMethod:RESTMusicService.kt$RESTMusicService$@Throws(Exception::class) override fun getAvatar( context: Context, username: String?, size: Int, saveToFile: Boolean, highQuality: Boolean ): Bitmap?</ID>
     <ID>LongMethod:RESTMusicService.kt$RESTMusicService$@Throws(Exception::class) override fun getCoverArt( context: Context, entry: MusicDirectory.Entry?, size: Int, saveToFile: Boolean, highQuality: Boolean ): Bitmap?</ID>
-    <ID>LongMethod:RESTMusicService.kt$RESTMusicService$@Throws(IOException::class) private fun savePlaylist( name: String?, context: Context, playlist: MusicDirectory )</ID>
+    <ID>LongMethod:RESTMusicService.kt$RESTMusicService$@Throws(IOException::class) private fun savePlaylist( name: String?, playlist: MusicDirectory )</ID>
     <ID>LongMethod:RestErrorMapper.kt$ fun SubsonicRESTException.getLocalizedErrorMessage(context: Context): String</ID>
     <ID>LongMethod:SelectAlbumFragment.kt$SelectAlbumFragment$override fun onContextItemSelected(menuItem: MenuItem): Boolean</ID>
     <ID>LongMethod:SelectAlbumFragment.kt$SelectAlbumFragment$override fun onViewCreated(view: View, savedInstanceState: Bundle?)</ID>
