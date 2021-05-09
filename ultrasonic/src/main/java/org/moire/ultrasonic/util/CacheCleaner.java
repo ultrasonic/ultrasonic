@@ -120,7 +120,7 @@ public class CacheCleaner
 			return 0L;
 		}
 
-		long cacheSizeBytes = Util.getCacheSizeMB(context) * 1024L * 1024L;
+		long cacheSizeBytes = Util.getCacheSizeMB() * 1024L * 1024L;
 		long bytesUsedBySubsonic = 0L;
 
 		for (File file : files)

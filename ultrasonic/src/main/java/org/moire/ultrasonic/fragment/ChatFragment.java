@@ -202,7 +202,7 @@ public class ChatFragment extends Fragment {
 
     private void timerMethod()
     {
-        int refreshInterval = Util.getChatRefreshInterval(getContext());
+        int refreshInterval = Util.getChatRefreshInterval();
 
         if (refreshInterval > 0)
         {

@@ -472,7 +472,7 @@ class LocalMediaPlayer(
             nextMediaPlayer!!.setOnPreparedListener {
                 try {
                     setNextPlayerState(PlayerState.PREPARED)
-                    if (Util.getGaplessPlaybackPreference(context) &&
+                    if (Util.getGaplessPlaybackPreference() &&
                         Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN &&
                         (
                             playerState === PlayerState.STARTED ||
@@ -526,7 +526,7 @@ class LocalMediaPlayer(
                 Timber.i("Ending position %d of %d", pos, duration)
                 if (!isPartial || downloadFile.isWorkDone && abs(duration - pos) < 1000) {
                     setPlayerState(PlayerState.COMPLETED)
-                    if (Util.getGaplessPlaybackPreference(context) &&
+                    if (Util.getGaplessPlaybackPreference() &&
                         nextPlaying != null &&
                         nextPlayerState === PlayerState.PREPARED
                     ) {
@@ -628,7 +628,7 @@ class LocalMediaPlayer(
         }
 
         init {
-            var bufferLength = Util.getBufferLength(context).toLong()
+            var bufferLength = Util.getBufferLength().toLong()
             if (bufferLength == 0L) {
                 // Set to seconds in a day, basically infinity
                 bufferLength = 86400L

@@ -16,7 +16,7 @@ const val SP_NAME = "Default_SP"
  * This Koin module contains registration of classes related to permanent storage
  */
 val appPermanentStorage = module {
-    single(named(SP_NAME)) { Util.getPreferences(androidContext()) }
+    single(named(SP_NAME)) { Util.getPreferences() }
 
     single {
         Room.databaseBuilder(

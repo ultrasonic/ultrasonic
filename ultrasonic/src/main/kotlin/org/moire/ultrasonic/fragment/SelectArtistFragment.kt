@@ -60,7 +60,7 @@ class SelectArtistFragment : Fragment() {
         }
 
         if (!ActiveServerProvider.isOffline(this.context) &&
-            !Util.getShouldUseId3Tags(this.context)
+            !Util.getShouldUseId3Tags()
         ) {
             selectFolderHeader = SelectMusicFolderView(
                 requireContext(), view as ViewGroup,

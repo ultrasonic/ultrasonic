@@ -75,7 +75,7 @@ class SelectAlbumModel(application: Application) : AndroidViewModel(application)
             } else {
                 val musicDirectory = service.getMusicDirectory(id, name, refresh, context)
 
-                if (Util.getShouldShowAllSongsByArtist(context) &&
+                if (Util.getShouldShowAllSongsByArtist() &&
                     musicDirectory.findChild(allSongsId) == null &&
                     hasOnlyFolders(musicDirectory)
                 ) {
@@ -133,7 +133,7 @@ class SelectAlbumModel(application: Application) : AndroidViewModel(application)
 
             val musicDirectory = service.getArtist(id, name, refresh, context)
 
-            if (Util.getShouldShowAllSongsByArtist(context) &&
+            if (Util.getShouldShowAllSongsByArtist() &&
                 musicDirectory.findChild(allSongsId) == null &&
                 hasOnlyFolders(musicDirectory)
             ) {
@@ -213,7 +213,7 @@ class SelectAlbumModel(application: Application) : AndroidViewModel(application)
             val musicDirectory: MusicDirectory
             val context = context
 
-            if (Util.getShouldUseId3Tags(context)) {
+            if (Util.getShouldUseId3Tags()) {
                 musicDirectory = Util.getSongsFromSearchResult(service.getStarred2(context))
             } else {
                 musicDirectory = Util.getSongsFromSearchResult(service.getStarred(context))
@@ -286,7 +286,7 @@ class SelectAlbumModel(application: Application) : AndroidViewModel(application)
 
         showHeader = false
         showSelectFolderHeader = !ActiveServerProvider.isOffline(context) &&
-            !Util.getShouldUseId3Tags(context) && (
+            !Util.getShouldUseId3Tags() && (
             (albumListType == AlbumListType.SORTED_BY_NAME.toString()) ||
                 (albumListType == AlbumListType.SORTED_BY_ARTIST.toString())
             )
@@ -300,7 +300,7 @@ class SelectAlbumModel(application: Application) : AndroidViewModel(application)
                 null
             }
 
-            if (Util.getShouldUseId3Tags(context)) {
+            if (Util.getShouldUseId3Tags()) {
                 musicDirectory = service.getAlbumList2(
                     albumListType, size,
                     offset, musicFolderId, context

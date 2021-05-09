@@ -140,7 +140,7 @@ class ActiveServerProvider(
          * Queries the Id of the Active Server
          */
         fun getActiveServerId(context: Context): Int {
-            val preferences = Util.getPreferences(context)
+            val preferences = Util.getPreferences()
             return preferences.getInt(Constants.PREFERENCES_KEY_SERVER_INSTANCE, -1)
         }
 
@@ -150,7 +150,7 @@ class ActiveServerProvider(
         fun setActiveServerId(context: Context, serverId: Int) {
             resetMusicService()
 
-            val preferences = Util.getPreferences(context)
+            val preferences = Util.getPreferences()
             val editor = preferences.edit()
             editor.putInt(Constants.PREFERENCES_KEY_SERVER_INSTANCE, serverId)
             editor.apply()
@@ -163,7 +163,7 @@ class ActiveServerProvider(
             if (isOffline(context)) {
                 return false
             }
-            val preferences = Util.getPreferences(context)
+            val preferences = Util.getPreferences()
             return preferences.getBoolean(Constants.PREFERENCES_KEY_SCROBBLE, false)
         }
 
@@ -174,7 +174,7 @@ class ActiveServerProvider(
             if (isOffline(context)) {
                 return false
             }
-            val preferences = Util.getPreferences(context)
+            val preferences = Util.getPreferences()
             return preferences.getBoolean(Constants.PREFERENCES_KEY_SERVER_SCALING, false)
         }
     }

@@ -80,7 +80,7 @@ class ArtistListModel(
         withContext(Dispatchers.IO) {
             val musicService = MusicServiceFactory.getMusicService(context)
             val isOffline = ActiveServerProvider.isOffline(context)
-            val useId3Tags = Util.getShouldUseId3Tags(context)
+            val useId3Tags = Util.getShouldUseId3Tags()
 
             try {
                 if (!isOffline && !useId3Tags) {

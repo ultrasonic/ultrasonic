@@ -53,7 +53,7 @@ class DownloadHandler(
                 mediaPlayerController.suggestedPlaylistName = playlistName
             }
             if (autoPlay) {
-                if (Util.getShouldTransitionOnPlaybackPreference(fragment.activity)) {
+                if (Util.getShouldTransitionOnPlaybackPreference()) {
                     fragment.findNavController().popBackStack(R.id.playerFragment, true)
                     fragment.findNavController().navigate(R.id.playerFragment)
                 }
@@ -203,11 +203,11 @@ class DownloadHandler(
                 val musicService = getMusicService(activity)
                 val songs: MutableList<MusicDirectory.Entry> = LinkedList()
                 val root: MusicDirectory
-                if (!isOffline(activity) && isArtist && Util.getShouldUseId3Tags(activity)) {
+                if (!isOffline(activity) && isArtist && Util.getShouldUseId3Tags()) {
                     getSongsForArtist(id, songs)
                 } else {
                     if (isDirectory) {
-                        root = if (!isOffline(activity) && Util.getShouldUseId3Tags(activity))
+                        root = if (!isOffline(activity) && Util.getShouldUseId3Tags())
                             musicService.getAlbum(id, name, false, activity)
                         else
                             musicService.getMusicDirectory(id, name, false, activity)
@@ -252,7 +252,7 @@ class DownloadHandler(
                 ) {
                     val root: MusicDirectory = if (
                         !isOffline(activity) &&
-                        Util.getShouldUseId3Tags(activity)
+                        Util.getShouldUseId3Tags()
                     ) musicService.getAlbum(id1, title, false, activity)
                     else musicService.getMusicDirectory(id1, title, false, activity)
                     getSongsRecursively(root, songs)
@@ -285,7 +285,7 @@ class DownloadHandler(
             }
 
             override fun done(songs: List<MusicDirectory.Entry>) {
-                if (Util.getShouldSortByDisc(activity)) {
+                if (Util.getShouldSortByDisc()) {
                     Collections.sort(songs, EntryByDiscAndTrackComparator())
                 }
                 if (songs.isNotEmpty()) {
@@ -307,7 +307,7 @@ class DownloadHandler(
                             )
                             if (
                                 !append &&
-                                Util.getShouldTransitionOnPlaybackPreference(activity)
+                                Util.getShouldTransitionOnPlaybackPreference()
                             ) {
                                 fragment.findNavController().popBackStack(
                                     R.id.playerFragment,

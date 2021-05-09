@@ -309,13 +309,13 @@ public class MediaPlayerControllerImpl implements MediaPlayerController
 	@Override
 	public RepeatMode getRepeatMode()
 	{
-		return Util.getRepeatMode(context);
+		return Util.getRepeatMode();
 	}
 
 	@Override
 	public synchronized void setRepeatMode(RepeatMode repeatMode)
 	{
-		Util.setRepeatMode(context, repeatMode);
+		Util.setRepeatMode(repeatMode);
 		MediaPlayerService mediaPlayerService = MediaPlayerService.getRunningInstance();
 		if (mediaPlayerService != null) mediaPlayerService.setNextPlaying();
 	}

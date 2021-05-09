@@ -54,7 +54,7 @@ public class AlbumView extends UpdateView
 		this.context = context;
 		this.imageLoader = imageLoader;
 
-		String theme = Util.getTheme(context);
+		String theme = Util.getTheme();
 		boolean themesMatch = theme.equals(AlbumView.theme);
 		AlbumView.theme = theme;
 
@@ -152,7 +152,7 @@ public class AlbumView extends UpdateView
 						@Override
 						public void run()
 						{
-							boolean useId3 = Util.getShouldUseId3Tags(getContext());
+							boolean useId3 = Util.getShouldUseId3Tags();
 
 							try
 							{

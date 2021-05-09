@@ -31,7 +31,7 @@ class ImageLoaderProvider(val context: Context) {
         if (imageLoader == null || !imageLoader!!.isRunning) {
             val legacyImageLoader = LegacyImageLoader(
                 context,
-                Util.getImageLoaderConcurrency(context)
+                Util.getImageLoaderConcurrency()
             )
             val isNewImageLoaderEnabled = get(FeatureStorage::class.java)
                 .isFeatureEnabled(Feature.NEW_IMAGE_DOWNLOADER)

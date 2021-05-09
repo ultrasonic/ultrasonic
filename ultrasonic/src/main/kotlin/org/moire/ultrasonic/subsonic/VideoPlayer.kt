@@ -14,7 +14,7 @@ class VideoPlayer() {
             Util.toast(context, R.string.select_album_no_network)
             return
         }
-        val player = Util.getVideoPlayerType(context)
+        val player = Util.getVideoPlayerType()
         try {
             player.playVideo(context, entry)
         } catch (e: Exception) {

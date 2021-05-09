@@ -25,7 +25,7 @@ class AudioFocusHandler(private val context: Context) {
     }
 
     private val preferences by lazy {
-        Util.getPreferences(context)
+        Util.getPreferences()
     }
 
     private val lossPref: Int

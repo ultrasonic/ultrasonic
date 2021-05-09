@@ -60,7 +60,7 @@ public class PermissionUtil {
      * @param callback callback function to execute after the permission request is finished
      */
     public void handlePermissionFailed(final PermissionRequestFinishedCallback callback) {
-        String currentCachePath = Util.getPreferences(applicationContext).getString(Constants.PREFERENCES_KEY_CACHE_LOCATION, FileUtil.getDefaultMusicDirectory(applicationContext).getPath());
+        String currentCachePath = Util.getPreferences().getString(Constants.PREFERENCES_KEY_CACHE_LOCATION, FileUtil.getDefaultMusicDirectory(applicationContext).getPath());
         String defaultCachePath = FileUtil.getDefaultMusicDirectory(applicationContext).getPath();
 
         // Ultrasonic can do nothing about this error when the Music Directory is already set to the default.
@@ -136,7 +136,7 @@ public class PermissionUtil {
     }
 
     private static void setCacheLocation(Context context, String cacheLocation) {
-        Util.getPreferences(context).edit()
+        Util.getPreferences().edit()
                 .putString(Constants.PREFERENCES_KEY_CACHE_LOCATION, cacheLocation)
                 .apply();
     }

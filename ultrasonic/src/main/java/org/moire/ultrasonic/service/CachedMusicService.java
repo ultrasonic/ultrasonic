@@ -36,7 +36,6 @@ import org.moire.ultrasonic.domain.SearchCriteria;
 import org.moire.ultrasonic.domain.SearchResult;
 import org.moire.ultrasonic.domain.Share;
 import org.moire.ultrasonic.domain.UserInfo;
-import org.moire.ultrasonic.util.CancellableTask;
 import org.moire.ultrasonic.util.Constants;
 import org.moire.ultrasonic.util.LRUCache;
 import org.moire.ultrasonic.util.TimeLimitedCache;
@@ -171,7 +170,7 @@ public class CachedMusicService implements MusicService
 		if (dir == null)
 		{
 			dir = musicService.getMusicDirectory(id, name, refresh, context);
-			cache = new TimeLimitedCache<>(Util.getDirectoryCacheTime(context), TimeUnit.SECONDS);
+			cache = new TimeLimitedCache<>(Util.getDirectoryCacheTime(), TimeUnit.SECONDS);
 			cache.set(dir);
 			cachedMusicDirectories.put(id, cache);
 		}
@@ -187,7 +186,7 @@ public class CachedMusicService implements MusicService
 		if (dir == null)
 		{
 			dir = musicService.getArtist(id, name, refresh, context);
-			cache = new TimeLimitedCache<>(Util.getDirectoryCacheTime(context), TimeUnit.SECONDS);
+			cache = new TimeLimitedCache<>(Util.getDirectoryCacheTime(), TimeUnit.SECONDS);
 			cache.set(dir);
 			cachedArtist.put(id, cache);
 		}
@@ -203,7 +202,7 @@ public class CachedMusicService implements MusicService
 		if (dir == null)
 		{
 			dir = musicService.getAlbum(id, name, refresh, context);
-			cache = new TimeLimitedCache<>(Util.getDirectoryCacheTime(context), TimeUnit.SECONDS);
+			cache = new TimeLimitedCache<>(Util.getDirectoryCacheTime(), TimeUnit.SECONDS);
 			cache.set(dir);
 			cachedAlbum.put(id, cache);
 		}
@@ -487,7 +486,7 @@ public class CachedMusicService implements MusicService
 		if (dir == null)
 		{
 			dir = musicService.getVideos(refresh, context);
-			cache = new TimeLimitedCache<>(Util.getDirectoryCacheTime(context), TimeUnit.SECONDS);
+			cache = new TimeLimitedCache<>(Util.getDirectoryCacheTime(), TimeUnit.SECONDS);
 			cache.set(dir);
 			cachedMusicDirectories.put(Constants.INTENT_EXTRA_NAME_VIDEOS, cache);
 		}
@@ -507,7 +506,7 @@ public class CachedMusicService implements MusicService
 		if (userInfo == null)
 		{
 			userInfo = musicService.getUser(username, context);
-			cache = new TimeLimitedCache<>(Util.getDirectoryCacheTime(context), TimeUnit.SECONDS);
+			cache = new TimeLimitedCache<>(Util.getDirectoryCacheTime(), TimeUnit.SECONDS);
 			cache.set(userInfo);
 			cachedUserInfo.put(username, cache);
 		}

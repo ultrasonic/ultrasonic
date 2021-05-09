@@ -298,7 +298,7 @@ class SelectAlbumFragment : Fragment() {
                 model.getRandom(albumListSize)
             } else {
                 setTitle(name)
-                if (!isOffline(activity) && Util.getShouldUseId3Tags(activity)) {
+                if (!isOffline(activity) && Util.getShouldUseId3Tags()) {
                     if (isAlbum) {
                         model.getAlbum(refresh, id, name, parentId)
                     } else {
@@ -710,7 +710,7 @@ class SelectAlbumFragment : Fragment() {
     private fun updateInterfaceWithEntries(musicDirectory: MusicDirectory) {
         val entries = musicDirectory.getChildren()
 
-        if (model.currentDirectoryIsSortable && Util.getShouldSortByDisc(context)) {
+        if (model.currentDirectoryIsSortable && Util.getShouldSortByDisc()) {
             Collections.sort(entries, EntryByDiscAndTrackComparator())
         }
 

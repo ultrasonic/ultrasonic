@@ -312,7 +312,7 @@ class DownloadFile(
 
         private fun acquireWakeLock(wakeLock: WakeLock?): WakeLock? {
             var wakeLock1 = wakeLock
-            if (Util.isScreenLitOnDownload(context)) {
+            if (Util.isScreenLitOnDownload()) {
                 val pm = context.getSystemService(Context.POWER_SERVICE) as PowerManager
                 val flags = PowerManager.SCREEN_DIM_WAKE_LOCK or PowerManager.ON_AFTER_RELEASE
                 wakeLock1 = pm.newWakeLock(flags, toString())

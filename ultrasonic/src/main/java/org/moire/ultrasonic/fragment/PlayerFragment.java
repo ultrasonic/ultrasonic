@@ -287,7 +287,7 @@ public class PlayerFragment extends Fragment implements GestureDetector.OnGestur
             @Override
             public void run()
             {
-                int incrementTime = Util.getIncrementTime(getActivity());
+                int incrementTime = Util.getIncrementTime();
                 changeProgress(-incrementTime);
             }
         });
@@ -326,7 +326,7 @@ public class PlayerFragment extends Fragment implements GestureDetector.OnGestur
             @Override
             public void run()
             {
-                int incrementTime = Util.getIncrementTime(getActivity());
+                int incrementTime = Util.getIncrementTime();
                 changeProgress(incrementTime);
             }
         });
@@ -834,7 +834,7 @@ public class PlayerFragment extends Fragment implements GestureDetector.OnGestur
                 }
             }
 
-            if (ActiveServerProvider.Companion.isOffline(getContext()) || !Util.getShouldUseId3Tags(getContext()))
+            if (ActiveServerProvider.Companion.isOffline(getContext()) || !Util.getShouldUseId3Tags())
             {
                 MenuItem menuItem = menu.findItem(R.id.menu_show_artist);
 
@@ -891,7 +891,7 @@ public class PlayerFragment extends Fragment implements GestureDetector.OnGestur
                 return false;
             }
 
-            if (Util.getShouldUseId3Tags(getContext())) {
+            if (Util.getShouldUseId3Tags()) {
                 bundle = new Bundle();
                 bundle.putString(Constants.INTENT_EXTRA_NAME_ID, entry.getArtistId());
                 bundle.putString(Constants.INTENT_EXTRA_NAME_NAME, entry.getArtist());
@@ -906,7 +906,7 @@ public class PlayerFragment extends Fragment implements GestureDetector.OnGestur
                 return false;
             }
 
-            String albumId = Util.getShouldUseId3Tags(getContext()) ? entry.getAlbumId() : entry.getParent();
+            String albumId = Util.getShouldUseId3Tags() ? entry.getAlbumId() : entry.getParent();
             bundle = new Bundle();
             bundle.putString(Constants.INTENT_EXTRA_NAME_ID, albumId);
             bundle.putString(Constants.INTENT_EXTRA_NAME_NAME, entry.getAlbum());

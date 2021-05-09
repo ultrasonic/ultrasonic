@@ -158,7 +158,7 @@ public class Downloader
                 DownloadFile downloadFile = downloadList.get(i);
                 if (!downloadFile.isWorkDone())
                 {
-                    if (downloadFile.shouldSave() || preloaded < Util.getPreloadCount(context))
+                    if (downloadFile.shouldSave() || preloaded < Util.getPreloadCount())
                     {
                         currentDownloading = downloadFile;
                         currentDownloading.download();
@@ -181,7 +181,7 @@ public class Downloader
         }
 
         // If the downloadList contains no work, check the backgroundDownloadList
-        if ((preloaded + 1 == n || preloaded >= Util.getPreloadCount(context) || downloadList.isEmpty()) && !backgroundDownloadList.isEmpty())
+        if ((preloaded + 1 == n || preloaded >= Util.getPreloadCount() || downloadList.isEmpty()) && !backgroundDownloadList.isEmpty())
         {
             for (int i = 0; i < backgroundDownloadList.size(); i++)
             {
@@ -401,7 +401,7 @@ public class Downloader
     private synchronized void checkShufflePlay(Context context)
     {
         // Get users desired random playlist size
-        int listSize = Util.getMaxSongs(context);
+        int listSize = Util.getMaxSongs();
         boolean wasEmpty = downloadList.isEmpty();
 
         long revisionBefore = revision;

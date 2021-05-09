@@ -115,7 +115,7 @@ public class NowPlayingFragment extends Fragment {
                 nowPlayingAlbumArtImage.setOnClickListener(v -> {
                     Bundle bundle = new Bundle();
 
-                    if (Util.getShouldUseId3Tags(getContext())) {
+                    if (Util.getShouldUseId3Tags()) {
                         bundle.putBoolean(Constants.INTENT_EXTRA_NAME_IS_ALBUM, true);
                         bundle.putString(Constants.INTENT_EXTRA_NAME_ID, song.getAlbumId());
                     } else {

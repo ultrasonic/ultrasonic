@@ -112,13 +112,13 @@ class SongView(context: Context) : UpdateView(context), Checkable {
 
         fileFormat = if (
             TextUtils.isEmpty(transcodedSuffix) || transcodedSuffix == suffix ||
-            song.isVideo && Util.getVideoPlayerType(this.context) !== VideoPlayerType.FLASH
+            song.isVideo && Util.getVideoPlayerType() !== VideoPlayerType.FLASH
         ) suffix else String.format("%s > %s", suffix, transcodedSuffix)
 
         val artistName = song.artist
 
         if (artistName != null) {
-            if (Util.shouldDisplayBitrateWithArtist(this.context)) {
+            if (Util.shouldDisplayBitrateWithArtist()) {
                 artist.append(artistName).append(" (").append(
                     String.format(
                         this.context.getString(R.string.song_details_all),
@@ -132,7 +132,7 @@ class SongView(context: Context) : UpdateView(context), Checkable {
 
         val trackNumber = song.track ?: 0
 
-        if (Util.shouldShowTrackNumber(this.context) && trackNumber != 0) {
+        if (Util.shouldShowTrackNumber() && trackNumber != 0) {
             viewHolder?.track?.text = String.format("%02d.", trackNumber)
         } else {
             viewHolder?.track?.visibility = GONE
@@ -141,7 +141,7 @@ class SongView(context: Context) : UpdateView(context), Checkable {
         val title = StringBuilder(60)
         title.append(song.title)
 
-        if (song.isVideo && Util.shouldDisplayBitrateWithArtist(this.context)) {
+        if (song.isVideo && Util.shouldDisplayBitrateWithArtist()) {
             title.append(" (").append(
                 String.format(
                     this.context.getString(R.string.song_details_all),
@@ -358,7 +358,7 @@ class SongView(context: Context) : UpdateView(context), Checkable {
     }
 
     init {
-        val theme = Util.getTheme(context)
+        val theme = Util.getTheme()
         val themesMatch = theme == Companion.theme
         inflater = LayoutInflater.from(this.context)
 

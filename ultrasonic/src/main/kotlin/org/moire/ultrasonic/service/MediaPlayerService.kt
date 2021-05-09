@@ -65,7 +65,7 @@ class MediaPlayerService : Service() {
     private var notificationBuilder: NotificationCompat.Builder? = null
 
     private val repeatMode: RepeatMode
-        get() = Util.getRepeatMode(this)
+        get() = Util.getRepeatMode()
 
     override fun onBind(intent: Intent): IBinder {
         return binder
@@ -176,7 +176,7 @@ class MediaPlayerService : Service() {
 
     @Synchronized
     fun setNextPlaying() {
-        val gaplessPlayback = Util.getGaplessPlaybackPreference(this)
+        val gaplessPlayback = Util.getGaplessPlaybackPreference()
 
         if (!gaplessPlayback) {
             localMediaPlayer.clearNextPlaying(true)
@@ -376,7 +376,7 @@ class MediaPlayerService : Service() {
             }
 
             val showWhenPaused = playerState !== PlayerState.STOPPED &&
-                Util.isNotificationAlwaysEnabled(context)
+                Util.isNotificationAlwaysEnabled()
 
             val show = playerState === PlayerState.STARTED || showWhenPaused
             val song = currentPlaying?.song
@@ -421,7 +421,7 @@ class MediaPlayerService : Service() {
 
             if (currentPlaying != null) {
                 val song = currentPlaying.song
-                if (song.bookmarkPosition > 0 && Util.getShouldClearBookmark(context)) {
+                if (song.bookmarkPosition > 0 && Util.getShouldClearBookmark()) {
                     val musicService = getMusicService(context)
                     try {
                         musicService.deleteBookmark(song.id, context)
@@ -433,7 +433,7 @@ class MediaPlayerService : Service() {
                 when (repeatMode) {
                     RepeatMode.OFF -> {
                         if (index + 1 < 0 || index + 1 >= downloader.downloadList.size) {
-                            if (Util.getShouldClearPlaylist(context)) {
+                            if (Util.getShouldClearPlaylist()) {
                                 clear(true)
                                 jukeboxMediaPlayer.updatePlaylist()
                             }
@@ -576,7 +576,7 @@ class MediaPlayerService : Service() {
     fun updateNotification(playerState: PlayerState, currentPlaying: DownloadFile?) {
         val notification = buildForegroundNotification(playerState, currentPlaying)
 
-        if (Util.isNotificationEnabled(this)) {
+        if (Util.isNotificationEnabled()) {
             if (isInForeground) {
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
                     val manager = getSystemService(NOTIFICATION_SERVICE) as NotificationManager
@@ -868,7 +868,7 @@ class MediaPlayerService : Service() {
     }
 
     fun updateMediaButtonReceiver() {
-        if (Util.getMediaButtonsEnabled(applicationContext)) {
+        if (Util.getMediaButtonsEnabled()) {
             registerMediaButtonEventReceiver()
         } else {
             unregisterMediaButtonEventReceiver()

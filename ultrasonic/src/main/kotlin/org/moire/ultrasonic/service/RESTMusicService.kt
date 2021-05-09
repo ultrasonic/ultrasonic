@@ -219,7 +219,7 @@ open class RESTMusicService(
         return try {
             if (
                 !isOffline(context) &&
-                Util.getShouldUseId3Tags(context)
+                Util.getShouldUseId3Tags()
             ) search3(criteria)
             else search2(criteria)
         } catch (ignored: ApiNotSupportedException) {
