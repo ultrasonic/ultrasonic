@@ -998,9 +998,9 @@ public class PlayerFragment extends Fragment implements GestureDetector.OnGestur
 
                     try {
                         if (isStarred) {
-                            musicService.unstar(id, null, null, getContext());
+                            musicService.unstar(id, null, null);
                         } else {
-                            musicService.star(id, null, null, getContext());
+                            musicService.star(id, null, null);
                         }
                     } catch (Exception e) {
                         Timber.e(e);

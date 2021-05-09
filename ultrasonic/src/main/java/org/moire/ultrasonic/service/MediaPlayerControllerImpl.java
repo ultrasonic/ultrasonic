@@ -608,7 +608,7 @@ public class MediaPlayerControllerImpl implements MediaPlayerController
 		new Thread(() -> {
 			try
 			{
-				MusicServiceFactory.getMusicService(context).setRating(song.getId(), rating, context);
+				MusicServiceFactory.getMusicService(context).setRating(song.getId(), rating);
 			}
 			catch (Exception e)
 			{

@@ -383,7 +383,7 @@ public class BookmarksFragment extends Fragment {
         {
             MusicService musicService = MusicServiceFactory.getMusicService(getContext());
             MusicDirectory dir = load(musicService);
-            boolean valid = musicService.isLicenseValid(getContext());
+            boolean valid = musicService.isLicenseValid();
             return new Pair<>(dir, valid);
         }
 

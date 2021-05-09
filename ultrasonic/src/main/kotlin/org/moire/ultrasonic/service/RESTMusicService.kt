@@ -75,12 +75,12 @@ open class RESTMusicService(
 ) : MusicService {
 
     @Throws(Exception::class)
-    override fun ping(context: Context) {
+    override fun ping() {
         responseChecker.callWithResponseCheck { api -> api.ping().execute() }
     }
 
     @Throws(Exception::class)
-    override fun isLicenseValid(context: Context): Boolean {
+    override fun isLicenseValid(): Boolean {
         val response = responseChecker.callWithResponseCheck { api -> api.getLicense().execute() }
 
         return response.body()!!.license.valid
@@ -88,8 +88,7 @@ open class RESTMusicService(
 
     @Throws(Exception::class)
     override fun getMusicFolders(
-        refresh: Boolean,
-        context: Context
+        refresh: Boolean
     ): List<MusicFolder> {
         val cachedMusicFolders = fileStorage.load(
             MUSIC_FOLDER_STORAGE_NAME, getMusicFolderListSerializer()
@@ -129,8 +128,7 @@ open class RESTMusicService(
 
     @Throws(Exception::class)
     override fun getArtists(
-        refresh: Boolean,
-        context: Context
+        refresh: Boolean
     ): Indexes {
         val cachedArtists = fileStorage.load(ARTISTS_STORAGE_NAME, getIndexesSerializer())
         if (cachedArtists != null && !refresh) return cachedArtists
@@ -148,8 +146,7 @@ open class RESTMusicService(
     override fun star(
         id: String?,
         albumId: String?,
-        artistId: String?,
-        context: Context
+        artistId: String?
     ) {
         responseChecker.callWithResponseCheck { api -> api.star(id, albumId, artistId).execute() }
     }
@@ -158,8 +155,7 @@ open class RESTMusicService(
     override fun unstar(
         id: String?,
         albumId: String?,
-        artistId: String?,
-        context: Context
+        artistId: String?
     ) {
         responseChecker.callWithResponseCheck { api -> api.unstar(id, albumId, artistId).execute() }
     }
@@ -167,8 +163,7 @@ open class RESTMusicService(
     @Throws(Exception::class)
     override fun setRating(
         id: String,
-        rating: Int,
-        context: Context
+        rating: Int
     ) {
         responseChecker.callWithResponseCheck { api -> api.setRating(id, rating).execute() }
     }
@@ -191,8 +186,7 @@ open class RESTMusicService(
     override fun getArtist(
         id: String,
         name: String?,
-        refresh: Boolean,
-        context: Context
+        refresh: Boolean
     ): MusicDirectory {
         val response = responseChecker.callWithResponseCheck { api -> api.getArtist(id).execute() }
 
@@ -203,8 +197,7 @@ open class RESTMusicService(
     override fun getAlbum(
         id: String,
         name: String?,
-        refresh: Boolean,
-        context: Context
+        refresh: Boolean
     ): MusicDirectory {
         val response = responseChecker.callWithResponseCheck { api -> api.getAlbum(id).execute() }
 
@@ -446,8 +439,7 @@ open class RESTMusicService(
         type: String,
         size: Int,
         offset: Int,
-        musicFolderId: String?,
-        context: Context
+        musicFolderId: String?
     ): MusicDirectory {
         val response = responseChecker.callWithResponseCheck { api ->
             api.getAlbumList(fromName(type), size, offset, null, null, null, musicFolderId)
@@ -466,8 +458,7 @@ open class RESTMusicService(
         type: String,
         size: Int,
         offset: Int,
-        musicFolderId: String?,
-        context: Context
+        musicFolderId: String?
     ): MusicDirectory {
         val response = responseChecker.callWithResponseCheck { api ->
             api.getAlbumList2(
@@ -509,9 +500,7 @@ open class RESTMusicService(
     }
 
     @Throws(Exception::class)
-    override fun getStarred(
-        context: Context
-    ): SearchResult {
+    override fun getStarred(): SearchResult {
         val response = responseChecker.callWithResponseCheck { api ->
             api.getStarred(null).execute()
         }
@@ -520,9 +509,7 @@ open class RESTMusicService(
     }
 
     @Throws(Exception::class)
-    override fun getStarred2(
-        context: Context
-    ): SearchResult {
+    override fun getStarred2(): SearchResult {
         val response = responseChecker.callWithResponseCheck { api ->
             api.getStarred2(null).execute()
         }
@@ -743,8 +730,7 @@ open class RESTMusicService(
 
     @Throws(Exception::class)
     override fun getGenres(
-        refresh: Boolean,
-        context: Context
+        refresh: Boolean
     ): List<Genre> {
         val response = responseChecker.callWithResponseCheck { api -> api.getGenres().execute() }
 

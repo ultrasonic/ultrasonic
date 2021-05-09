@@ -208,7 +208,7 @@ class DownloadHandler(
                 } else {
                     if (isDirectory) {
                         root = if (!isOffline(activity) && Util.getShouldUseId3Tags())
-                            musicService.getAlbum(id, name, false, activity)
+                            musicService.getAlbum(id, name, false)
                         else
                             musicService.getMusicDirectory(id, name, false, activity)
                     } else if (isShare) {
@@ -253,7 +253,7 @@ class DownloadHandler(
                     val root: MusicDirectory = if (
                         !isOffline(activity) &&
                         Util.getShouldUseId3Tags()
-                    ) musicService.getAlbum(id1, title, false, activity)
+                    ) musicService.getAlbum(id1, title, false)
                     else musicService.getMusicDirectory(id1, title, false, activity)
                     getSongsRecursively(root, songs)
                 }
@@ -268,13 +268,12 @@ class DownloadHandler(
                     return
                 }
                 val musicService = getMusicService(activity)
-                val artist = musicService.getArtist(id, "", false, activity)
+                val artist = musicService.getArtist(id, "", false)
                 for ((id1) in artist.getChildren()) {
                     val albumDirectory = musicService.getAlbum(
                         id1,
                         "",
-                        false,
-                        activity
+                        false
                     )
                     for (song in albumDirectory.getChildren()) {
                         if (!song.isVideo) {

@@ -158,11 +158,11 @@ public class AlbumView extends UpdateView
 							{
 								if (!isStarred)
 								{
-									musicService.star(!useId3 ? id : null, useId3 ? id : null, null, getContext());
+									musicService.star(!useId3 ? id : null, useId3 ? id : null, null);
 								}
 								else
 								{
-									musicService.unstar(!useId3 ? id : null, useId3 ? id : null, null, getContext());
+									musicService.unstar(!useId3 ? id : null, useId3 ? id : null, null);
 								}
 							}
 							catch (Exception e)

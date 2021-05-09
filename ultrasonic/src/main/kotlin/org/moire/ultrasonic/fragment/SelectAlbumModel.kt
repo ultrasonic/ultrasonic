@@ -42,7 +42,7 @@ class SelectAlbumModel(application: Application) : AndroidViewModel(application)
         withContext(Dispatchers.IO) {
             if (!ActiveServerProvider.isOffline(context)) {
                 val musicService = MusicServiceFactory.getMusicService(context)
-                musicFolders.postValue(musicService.getMusicFolders(refresh, context))
+                musicFolders.postValue(musicService.getMusicFolders(refresh))
             }
         }
     }
@@ -131,7 +131,7 @@ class SelectAlbumModel(application: Application) : AndroidViewModel(application)
 
             var root = MusicDirectory()
 
-            val musicDirectory = service.getArtist(id, name, refresh, context)
+            val musicDirectory = service.getArtist(id, name, refresh)
 
             if (Util.getShouldShowAllSongsByArtist() &&
                 musicDirectory.findChild(allSongsId) == null &&
@@ -168,12 +168,12 @@ class SelectAlbumModel(application: Application) : AndroidViewModel(application)
                 val root = MusicDirectory()
 
                 val songs: MutableCollection<MusicDirectory.Entry> = LinkedList()
-                val artist = service.getArtist(parentId, "", false, context)
+                val artist = service.getArtist(parentId, "", false)
 
                 for ((id1) in artist.getChildren()) {
                     if (allSongsId != id1) {
                         val albumDirectory = service.getAlbum(
-                            id1, "", false, context
+                            id1, "", false
                         )
 
                         for (song in albumDirectory.getChildren()) {
@@ -191,7 +191,7 @@ class SelectAlbumModel(application: Application) : AndroidViewModel(application)
                 }
                 root
             } else {
-                service.getAlbum(id, name, refresh, context)
+                service.getAlbum(id, name, refresh)
             }
             currentDirectory.postValue(musicDirectory)
         }
@@ -211,12 +211,11 @@ class SelectAlbumModel(application: Application) : AndroidViewModel(application)
 
             val service = MusicServiceFactory.getMusicService(context)
             val musicDirectory: MusicDirectory
-            val context = context
 
             if (Util.getShouldUseId3Tags()) {
-                musicDirectory = Util.getSongsFromSearchResult(service.getStarred2(context))
+                musicDirectory = Util.getSongsFromSearchResult(service.starred2)
             } else {
-                musicDirectory = Util.getSongsFromSearchResult(service.getStarred(context))
+                musicDirectory = Util.getSongsFromSearchResult(service.starred)
             }
 
             currentDirectory.postValue(musicDirectory)
@@ -303,12 +302,12 @@ class SelectAlbumModel(application: Application) : AndroidViewModel(application)
             if (Util.getShouldUseId3Tags()) {
                 musicDirectory = service.getAlbumList2(
                     albumListType, size,
-                    offset, musicFolderId, context
+                    offset, musicFolderId
                 )
             } else {
                 musicDirectory = service.getAlbumList(
                     albumListType, size,
-                    offset, musicFolderId, context
+                    offset, musicFolderId
                 )
             }
 

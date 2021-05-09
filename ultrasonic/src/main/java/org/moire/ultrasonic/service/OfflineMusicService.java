@@ -41,7 +41,6 @@ import org.moire.ultrasonic.domain.SearchCriteria;
 import org.moire.ultrasonic.domain.SearchResult;
 import org.moire.ultrasonic.domain.Share;
 import org.moire.ultrasonic.domain.UserInfo;
-import org.moire.ultrasonic.util.CancellableTask;
 import org.moire.ultrasonic.util.Constants;
 import org.moire.ultrasonic.util.FileUtil;
 import org.moire.ultrasonic.util.Util;
@@ -702,7 +701,7 @@ public class OfflineMusicService implements MusicService
 	}
 
 	@Override
-	public MusicDirectory getAlbumList(String type, int size, int offset, String musicFolderId, Context context) throws Exception
+	public MusicDirectory getAlbumList(String type, int size, int offset, String musicFolderId) throws Exception
 	{
 		throw new OfflineException("Album lists not available in offline mode");
 	}
@@ -744,7 +743,7 @@ public class OfflineMusicService implements MusicService
 	}
 
 	@Override
-	public SearchResult getStarred(Context context) throws Exception
+	public SearchResult getStarred() throws Exception
 	{
 		throw new OfflineException("Starred not available in offline mode");
 	}
@@ -756,7 +755,7 @@ public class OfflineMusicService implements MusicService
 	}
 
 	@Override
-	public List<Genre> getGenres(boolean refresh, Context context) throws Exception
+	public List<Genre> getGenres(boolean refresh) throws Exception
 	{
 		throw new OfflineException("Getting Genres not available in offline mode");
 	}
@@ -792,24 +791,24 @@ public class OfflineMusicService implements MusicService
 	}
 
 	@Override
-	public void star(String id, String albumId, String artistId, Context context) throws Exception
+	public void star(String id, String albumId, String artistId) throws Exception
 	{
 		throw new OfflineException("Star not available in offline mode");
 	}
 
 	@Override
-	public void unstar(String id, String albumId, String artistId, Context context) throws Exception
+	public void unstar(String id, String albumId, String artistId) throws Exception
 	{
 		throw new OfflineException("UnStar not available in offline mode");
 	}
 	@Override
-	public List<MusicFolder> getMusicFolders(boolean refresh, Context context) throws Exception
+	public List<MusicFolder> getMusicFolders(boolean refresh) throws Exception
 	{
 		throw new OfflineException("Music folders not available in offline mode");
 	}
 
 	@Override
-	public MusicDirectory getAlbumList2(String type, int size, int offset, String musicFolderId, Context context) {
+	public MusicDirectory getAlbumList2(String type, int size, int offset, String musicFolderId) {
 		Timber.w("OfflineMusicService.getAlbumList2 was called but it isn't available");
 		return null;
 	}
@@ -854,34 +853,34 @@ public class OfflineMusicService implements MusicService
 	}
 
 	@Override
-	public SearchResult getStarred2(Context context) {
+	public SearchResult getStarred2() {
 		Timber.w("OfflineMusicService.getStarred2 was called but it isn't available");
 		return null;
 	}
 
 	@Override
-	public void ping(Context context) {
+	public void ping() {
 	}
 
 	@Override
-	public boolean isLicenseValid(Context context) {
+	public boolean isLicenseValid() {
 		return true;
 	}
 
 	@Override
-	public Indexes getArtists(boolean refresh, Context context) {
+	public Indexes getArtists(boolean refresh) {
 		Timber.w("OfflineMusicService.getArtists was called but it isn't available");
 		return null;
 	}
 
 	@Override
-	public MusicDirectory getArtist(String id, String name, boolean refresh, Context context) {
+	public MusicDirectory getArtist(String id, String name, boolean refresh) {
 		Timber.w("OfflineMusicService.getArtist was called but it isn't available");
 		return null;
 	}
 
 	@Override
-	public MusicDirectory getAlbum(String id, String name, boolean refresh, Context context) {
+	public MusicDirectory getAlbum(String id, String name, boolean refresh) {
 		Timber.w("OfflineMusicService.getAlbum was called but it isn't available");
 		return null;
 	}
@@ -899,7 +898,7 @@ public class OfflineMusicService implements MusicService
 	}
 
 	@Override
-	public void setRating(String id, int rating, Context context) {
+	public void setRating(String id, int rating) {
 		Timber.w("OfflineMusicService.setRating was called but it isn't available");
 	}
 

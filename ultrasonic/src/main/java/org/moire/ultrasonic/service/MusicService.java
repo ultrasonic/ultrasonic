@@ -35,7 +35,6 @@ import org.moire.ultrasonic.domain.SearchCriteria;
 import org.moire.ultrasonic.domain.SearchResult;
 import org.moire.ultrasonic.domain.Share;
 import org.moire.ultrasonic.domain.UserInfo;
-import org.moire.ultrasonic.util.CancellableTask;
 
 import java.io.InputStream;
 import java.util.List;
@@ -48,29 +47,29 @@ import kotlin.Pair;
 public interface MusicService
 {
 
-	void ping(Context context) throws Exception;
+	void ping() throws Exception;
 
-	boolean isLicenseValid(Context context) throws Exception;
+	boolean isLicenseValid() throws Exception;
 
-	List<Genre> getGenres(boolean refresh, Context context) throws Exception;
+	List<Genre> getGenres(boolean refresh) throws Exception;
 
-	void star(String id, String albumId, String artistId, Context context) throws Exception;
+	void star(String id, String albumId, String artistId) throws Exception;
 
-	void unstar(String id, String albumId, String artistId, Context context) throws Exception;
+	void unstar(String id, String albumId, String artistId) throws Exception;
 
-	void setRating(String id, int rating, Context context) throws Exception;
+	void setRating(String id, int rating) throws Exception;
 
-	List<MusicFolder> getMusicFolders(boolean refresh, Context context) throws Exception;
+	List<MusicFolder> getMusicFolders(boolean refresh) throws Exception;
 
 	Indexes getIndexes(String musicFolderId, boolean refresh, Context context) throws Exception;
 
-	Indexes getArtists(boolean refresh, Context context) throws Exception;
+	Indexes getArtists(boolean refresh) throws Exception;
 
 	MusicDirectory getMusicDirectory(String id, String name, boolean refresh, Context context) throws Exception;
 
-	MusicDirectory getArtist(String id, String name, boolean refresh, Context context) throws Exception;
+	MusicDirectory getArtist(String id, String name, boolean refresh) throws Exception;
 
-	MusicDirectory getAlbum(String id, String name, boolean refresh, Context context) throws Exception;
+	MusicDirectory getAlbum(String id, String name, boolean refresh) throws Exception;
 
 	SearchResult search(SearchCriteria criteria, Context context) throws Exception;
 
@@ -90,17 +89,17 @@ public interface MusicService
 
 	void scrobble(String id, boolean submission, Context context) throws Exception;
 
-	MusicDirectory getAlbumList(String type, int size, int offset, String musicFolderId, Context context) throws Exception;
+	MusicDirectory getAlbumList(String type, int size, int offset, String musicFolderId) throws Exception;
 
-	MusicDirectory getAlbumList2(String type, int size, int offset, String musicFolderId, Context context) throws Exception;
+	MusicDirectory getAlbumList2(String type, int size, int offset, String musicFolderId) throws Exception;
 
 	MusicDirectory getRandomSongs(int size, Context context) throws Exception;
 
 	MusicDirectory getSongsByGenre(String genre, int count, int offset, Context context) throws Exception;
 
-	SearchResult getStarred(Context context) throws Exception;
+	SearchResult getStarred() throws Exception;
 
-	SearchResult getStarred2(Context context) throws Exception;
+	SearchResult getStarred2() throws Exception;
 
 	Bitmap getCoverArt(Context context, MusicDirectory.Entry entry, int size, boolean saveToFile, boolean highQuality) throws Exception;
 

@@ -108,7 +108,7 @@ public class SelectGenreFragment extends Fragment {
 
                 try
                 {
-                    genres = musicService.getGenres(refresh, getContext());
+                    genres = musicService.getGenres(refresh);
                 }
                 catch (Exception x)
                 {

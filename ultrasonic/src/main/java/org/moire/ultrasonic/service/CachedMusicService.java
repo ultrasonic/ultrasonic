@@ -87,27 +87,27 @@ public class CachedMusicService implements MusicService
 	}
 
 	@Override
-	public void ping(Context context) throws Exception
+	public void ping() throws Exception
 	{
 		checkSettingsChanged();
-		musicService.ping(context);
+		musicService.ping();
 	}
 
 	@Override
-	public boolean isLicenseValid(Context context) throws Exception
+	public boolean isLicenseValid() throws Exception
 	{
 		checkSettingsChanged();
 		Boolean result = cachedLicenseValid.get();
 		if (result == null)
 		{
-			result = musicService.isLicenseValid(context);
+			result = musicService.isLicenseValid();
 			cachedLicenseValid.set(result, result ? 30L * 60L : 2L * 60L, TimeUnit.SECONDS);
 		}
 		return result;
 	}
 
 	@Override
-	public List<MusicFolder> getMusicFolders(boolean refresh, Context context) throws Exception
+	public List<MusicFolder> getMusicFolders(boolean refresh) throws Exception
 	{
 		checkSettingsChanged();
 		if (refresh)
@@ -117,7 +117,7 @@ public class CachedMusicService implements MusicService
 		List<MusicFolder> result = cachedMusicFolders.get();
 		if (result == null)
 		{
-			result = musicService.getMusicFolders(refresh, context);
+			result = musicService.getMusicFolders(refresh);
 			cachedMusicFolders.set(result);
 		}
 		return result;
@@ -143,7 +143,7 @@ public class CachedMusicService implements MusicService
 	}
 
 	@Override
-	public Indexes getArtists(boolean refresh, Context context) throws Exception
+	public Indexes getArtists(boolean refresh) throws Exception
 	{
 		checkSettingsChanged();
 		if (refresh)
@@ -153,7 +153,7 @@ public class CachedMusicService implements MusicService
 		Indexes result = cachedArtists.get();
 		if (result == null)
 		{
-			result = musicService.getArtists(refresh, context);
+			result = musicService.getArtists(refresh);
 			cachedArtists.set(result);
 		}
 		return result;
@@ -178,14 +178,14 @@ public class CachedMusicService implements MusicService
 	}
 
 	@Override
-	public MusicDirectory getArtist(String id, String name, boolean refresh, Context context) throws Exception
+	public MusicDirectory getArtist(String id, String name, boolean refresh) throws Exception
 	{
 		checkSettingsChanged();
 		TimeLimitedCache<MusicDirectory> cache = refresh ? null : cachedArtist.get(id);
 		MusicDirectory dir = cache == null ? null : cache.get();
 		if (dir == null)
 		{
-			dir = musicService.getArtist(id, name, refresh, context);
+			dir = musicService.getArtist(id, name, refresh);
 			cache = new TimeLimitedCache<>(Util.getDirectoryCacheTime(), TimeUnit.SECONDS);
 			cache.set(dir);
 			cachedArtist.put(id, cache);
@@ -194,14 +194,14 @@ public class CachedMusicService implements MusicService
 	}
 
 	@Override
-	public MusicDirectory getAlbum(String id, String name, boolean refresh, Context context) throws Exception
+	public MusicDirectory getAlbum(String id, String name, boolean refresh) throws Exception
 	{
 		checkSettingsChanged();
 		TimeLimitedCache<MusicDirectory> cache = refresh ? null : cachedAlbum.get(id);
 		MusicDirectory dir = cache == null ? null : cache.get();
 		if (dir == null)
 		{
-			dir = musicService.getAlbum(id, name, refresh, context);
+			dir = musicService.getAlbum(id, name, refresh);
 			cache = new TimeLimitedCache<>(Util.getDirectoryCacheTime(), TimeUnit.SECONDS);
 			cache.set(dir);
 			cachedAlbum.put(id, cache);
@@ -284,15 +284,15 @@ public class CachedMusicService implements MusicService
 	}
 
 	@Override
-	public MusicDirectory getAlbumList(String type, int size, int offset, String musicFolderId, Context context) throws Exception
+	public MusicDirectory getAlbumList(String type, int size, int offset, String musicFolderId) throws Exception
 	{
-		return musicService.getAlbumList(type, size, offset, musicFolderId, context);
+		return musicService.getAlbumList(type, size, offset, musicFolderId);
 	}
 
 	@Override
-	public MusicDirectory getAlbumList2(String type, int size, int offset, String musicFolderId, Context context) throws Exception
+	public MusicDirectory getAlbumList2(String type, int size, int offset, String musicFolderId) throws Exception
 	{
-		return musicService.getAlbumList2(type, size, offset, musicFolderId, context);
+		return musicService.getAlbumList2(type, size, offset, musicFolderId);
 	}
 
 	@Override
@@ -302,15 +302,15 @@ public class CachedMusicService implements MusicService
 	}
 
 	@Override
-	public SearchResult getStarred(Context context) throws Exception
+	public SearchResult getStarred() throws Exception
 	{
-		return musicService.getStarred(context);
+		return musicService.getStarred();
 	}
 
 	@Override
-	public SearchResult getStarred2(Context context) throws Exception
+	public SearchResult getStarred2() throws Exception
 	{
-		return musicService.getStarred2(context);
+		return musicService.getStarred2();
 	}
 
 	@Override
@@ -388,25 +388,25 @@ public class CachedMusicService implements MusicService
 	}
 
 	@Override
-	public void star(String id, String albumId, String artistId, Context context) throws Exception
+	public void star(String id, String albumId, String artistId) throws Exception
 	{
-		musicService.star(id, albumId, artistId, context);
+		musicService.star(id, albumId, artistId);
 	}
 
 	@Override
-	public void unstar(String id, String albumId, String artistId, Context context) throws Exception
+	public void unstar(String id, String albumId, String artistId) throws Exception
 	{
-		musicService.unstar(id, albumId, artistId, context);
+		musicService.unstar(id, albumId, artistId);
 	}
 
 	@Override
-	public void setRating(String id, int rating, Context context) throws Exception
+	public void setRating(String id, int rating) throws Exception
 	{
-		musicService.setRating(id, rating, context);
+		musicService.setRating(id, rating);
 	}
 
 	@Override
-	public List<Genre> getGenres(boolean refresh, Context context) throws Exception
+	public List<Genre> getGenres(boolean refresh) throws Exception
 	{
 		checkSettingsChanged();
 		if (refresh)
@@ -417,7 +417,7 @@ public class CachedMusicService implements MusicService
 
 		if (result == null)
 		{
-			result = musicService.getGenres(refresh, context);
+			result = musicService.getGenres(refresh);
 			cachedGenres.set(result);
 		}
 
