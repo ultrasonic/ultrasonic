@@ -994,7 +994,7 @@ public class PlayerFragment extends Fragment implements GestureDetector.OnGestur
             new Thread(new Runnable() {
                 @Override
                 public void run() {
-                    final MusicService musicService = MusicServiceFactory.getMusicService(getContext());
+                    final MusicService musicService = MusicServiceFactory.getMusicService();
 
                     try {
                         if (isStarred) {
@@ -1024,7 +1024,7 @@ public class PlayerFragment extends Fragment implements GestureDetector.OnGestur
             new Thread(new Runnable() {
                 @Override
                 public void run() {
-                    final MusicService musicService = MusicServiceFactory.getMusicService(getContext());
+                    final MusicService musicService = MusicServiceFactory.getMusicService();
 
                     try {
                         musicService.createBookmark(songId, playerPosition, getContext());
@@ -1050,7 +1050,7 @@ public class PlayerFragment extends Fragment implements GestureDetector.OnGestur
             new Thread(new Runnable() {
                 @Override
                 public void run() {
-                    final MusicService musicService = MusicServiceFactory.getMusicService(getContext());
+                    final MusicService musicService = MusicServiceFactory.getMusicService();
 
                     try {
                         musicService.deleteBookmark(bookmarkSongId, getContext());
@@ -1127,7 +1127,7 @@ public class PlayerFragment extends Fragment implements GestureDetector.OnGestur
                 {
                     entries.add(downloadFile.getSong());
                 }
-                final MusicService musicService = MusicServiceFactory.getMusicService(getContext());
+                final MusicService musicService = MusicServiceFactory.getMusicService();
                 musicService.createPlaylist(null, playlistName, entries, getContext());
                 return null;
             }

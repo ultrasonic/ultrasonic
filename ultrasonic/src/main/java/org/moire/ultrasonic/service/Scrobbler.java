@@ -36,7 +36,7 @@ public class Scrobbler
 			@Override
 			public void run()
 			{
-				MusicService service = MusicServiceFactory.getMusicService(context);
+				MusicService service = MusicServiceFactory.getMusicService();
 				try
 				{
 					service.scrobble(id, submission, context);

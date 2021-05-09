@@ -420,7 +420,7 @@ public class SearchFragment extends Fragment {
             protected SearchResult doInBackground() throws Throwable
             {
                 SearchCriteria criteria = new SearchCriteria(query, maxArtists, maxAlbums, maxSongs);
-                MusicService service = MusicServiceFactory.getMusicService(getContext());
+                MusicService service = MusicServiceFactory.getMusicService();
                 return service.search(criteria, getContext());
             }
 

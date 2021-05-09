@@ -96,7 +96,7 @@ public class PodcastFragment extends Fragment {
             @Override
             protected List<PodcastsChannel> doInBackground() throws Throwable
             {
-                MusicService musicService = MusicServiceFactory.getMusicService(context);
+                MusicService musicService = MusicServiceFactory.getMusicService();
                 return musicService.getPodcastsChannels(refresh, context);
             }
 

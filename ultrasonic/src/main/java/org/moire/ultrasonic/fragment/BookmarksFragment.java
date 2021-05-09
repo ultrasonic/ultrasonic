@@ -381,7 +381,7 @@ public class BookmarksFragment extends Fragment {
         @Override
         protected Pair<MusicDirectory, Boolean> doInBackground() throws Throwable
         {
-            MusicService musicService = MusicServiceFactory.getMusicService(getContext());
+            MusicService musicService = MusicServiceFactory.getMusicService();
             MusicDirectory dir = load(musicService);
             boolean valid = musicService.isLicenseValid();
             return new Pair<>(dir, valid);

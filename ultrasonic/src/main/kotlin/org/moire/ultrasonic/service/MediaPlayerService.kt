@@ -422,7 +422,7 @@ class MediaPlayerService : Service() {
             if (currentPlaying != null) {
                 val song = currentPlaying.song
                 if (song.bookmarkPosition > 0 && Util.getShouldClearBookmark()) {
-                    val musicService = getMusicService(context)
+                    val musicService = getMusicService()
                     try {
                         musicService.deleteBookmark(song.id, context)
                     } catch (ignored: Exception) {

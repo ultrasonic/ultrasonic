@@ -41,7 +41,7 @@ class SelectAlbumModel(application: Application) : AndroidViewModel(application)
     suspend fun getMusicFolders(refresh: Boolean) {
         withContext(Dispatchers.IO) {
             if (!ActiveServerProvider.isOffline()) {
-                val musicService = MusicServiceFactory.getMusicService(context)
+                val musicService = MusicServiceFactory.getMusicService()
                 musicFolders.postValue(musicService.getMusicFolders(refresh))
             }
         }
@@ -55,7 +55,7 @@ class SelectAlbumModel(application: Application) : AndroidViewModel(application)
     ) {
         withContext(Dispatchers.IO) {
 
-            val service = MusicServiceFactory.getMusicService(context)
+            val service = MusicServiceFactory.getMusicService()
 
             var root = MusicDirectory()
 
@@ -105,7 +105,7 @@ class SelectAlbumModel(application: Application) : AndroidViewModel(application)
         parent: MusicDirectory,
         songs: MutableList<MusicDirectory.Entry>
     ) {
-        val service = MusicServiceFactory.getMusicService(context)
+        val service = MusicServiceFactory.getMusicService()
 
         for (song in parent.getChildren(includeDirs = false, includeFiles = true)) {
             if (!song.isVideo && !song.isDirectory) {
@@ -127,7 +127,7 @@ class SelectAlbumModel(application: Application) : AndroidViewModel(application)
     suspend fun getArtist(refresh: Boolean, id: String?, name: String?) {
 
         withContext(Dispatchers.IO) {
-            val service = MusicServiceFactory.getMusicService(context)
+            val service = MusicServiceFactory.getMusicService()
 
             var root = MusicDirectory()
 
@@ -160,7 +160,7 @@ class SelectAlbumModel(application: Application) : AndroidViewModel(application)
 
         withContext(Dispatchers.IO) {
 
-            val service = MusicServiceFactory.getMusicService(context)
+            val service = MusicServiceFactory.getMusicService()
 
             val musicDirectory: MusicDirectory
 
@@ -199,7 +199,7 @@ class SelectAlbumModel(application: Application) : AndroidViewModel(application)
 
     suspend fun getSongsForGenre(genre: String, count: Int, offset: Int) {
         withContext(Dispatchers.IO) {
-            val service = MusicServiceFactory.getMusicService(context)
+            val service = MusicServiceFactory.getMusicService()
             val musicDirectory = service.getSongsByGenre(genre, count, offset, context)
             songsForGenre.postValue(musicDirectory)
         }
@@ -209,7 +209,7 @@ class SelectAlbumModel(application: Application) : AndroidViewModel(application)
 
         withContext(Dispatchers.IO) {
 
-            val service = MusicServiceFactory.getMusicService(context)
+            val service = MusicServiceFactory.getMusicService()
             val musicDirectory: MusicDirectory
 
             if (Util.getShouldUseId3Tags()) {
@@ -226,7 +226,7 @@ class SelectAlbumModel(application: Application) : AndroidViewModel(application)
         showHeader = false
 
         withContext(Dispatchers.IO) {
-            val service = MusicServiceFactory.getMusicService(context)
+            val service = MusicServiceFactory.getMusicService()
             currentDirectory.postValue(service.getVideos(refresh, context))
         }
     }
@@ -234,7 +234,7 @@ class SelectAlbumModel(application: Application) : AndroidViewModel(application)
     suspend fun getRandom(size: Int) {
 
         withContext(Dispatchers.IO) {
-            val service = MusicServiceFactory.getMusicService(context)
+            val service = MusicServiceFactory.getMusicService()
             val musicDirectory = service.getRandomSongs(size, context)
 
             currentDirectoryIsSortable = false
@@ -245,7 +245,7 @@ class SelectAlbumModel(application: Application) : AndroidViewModel(application)
     suspend fun getPlaylist(playlistId: String, playlistName: String?) {
 
         withContext(Dispatchers.IO) {
-            val service = MusicServiceFactory.getMusicService(context)
+            val service = MusicServiceFactory.getMusicService()
             val musicDirectory = service.getPlaylist(playlistId, playlistName, context)
 
             currentDirectory.postValue(musicDirectory)
@@ -255,7 +255,7 @@ class SelectAlbumModel(application: Application) : AndroidViewModel(application)
     suspend fun getPodcastEpisodes(podcastChannelId: String) {
 
         withContext(Dispatchers.IO) {
-            val service = MusicServiceFactory.getMusicService(context)
+            val service = MusicServiceFactory.getMusicService()
             val musicDirectory = service.getPodcastEpisodes(podcastChannelId, context)
             currentDirectory.postValue(musicDirectory)
         }
@@ -264,7 +264,7 @@ class SelectAlbumModel(application: Application) : AndroidViewModel(application)
     suspend fun getShare(shareId: String) {
 
         withContext(Dispatchers.IO) {
-            val service = MusicServiceFactory.getMusicService(context)
+            val service = MusicServiceFactory.getMusicService()
             val musicDirectory = MusicDirectory()
 
             val shares = service.getShares(true, context)
@@ -291,7 +291,7 @@ class SelectAlbumModel(application: Application) : AndroidViewModel(application)
             )
 
         withContext(Dispatchers.IO) {
-            val service = MusicServiceFactory.getMusicService(context)
+            val service = MusicServiceFactory.getMusicService()
             val musicDirectory: MusicDirectory
             val musicFolderId = if (showSelectFolderHeader) {
                 activeServerProvider.getActiveServer().musicFolderId

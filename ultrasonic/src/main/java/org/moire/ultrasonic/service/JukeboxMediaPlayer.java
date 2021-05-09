@@ -300,7 +300,7 @@ public class JukeboxMediaPlayer
 
 	private MusicService getMusicService()
 	{
-		return MusicServiceFactory.getMusicService(context);
+		return MusicServiceFactory.getMusicService();
 	}
 
 	public int getPositionSeconds()

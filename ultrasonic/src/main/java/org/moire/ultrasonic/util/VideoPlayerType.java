@@ -79,7 +79,7 @@ public enum VideoPlayerType
 						Intent intent = new Intent(Intent.ACTION_VIEW);
 						intent.setPackage(installedPro ? PACKAGE_NAME_MX_PRO : PACKAGE_NAME_MX_AD);
 						intent.putExtra("title", entry.getTitle());
-						intent.setDataAndType(Uri.parse(MusicServiceFactory.getMusicService(context).getVideoUrl(context, entry.getId(), false)), "video/*");
+						intent.setDataAndType(Uri.parse(MusicServiceFactory.getMusicService().getVideoUrl(context, entry.getId(), false)), "video/*");
 						context.startActivity(intent);
 					}
 				}
@@ -91,7 +91,7 @@ public enum VideoPlayerType
 				public void playVideo(Context context, MusicDirectory.Entry entry) throws Exception
 				{
 					Intent intent = new Intent(Intent.ACTION_VIEW);
-					intent.setData(Uri.parse(MusicServiceFactory.getMusicService(context).getVideoUrl(context, entry.getId(), true)));
+					intent.setData(Uri.parse(MusicServiceFactory.getMusicService().getVideoUrl(context, entry.getId(), true)));
 					context.startActivity(intent);
 				}
 			},
@@ -102,7 +102,7 @@ public enum VideoPlayerType
 				public void playVideo(Context context, MusicDirectory.Entry entry) throws Exception
 				{
 					Intent intent = new Intent(Intent.ACTION_VIEW);
-					intent.setDataAndType(Uri.parse(MusicServiceFactory.getMusicService(context).getVideoUrl(context, entry.getId(), false)), "video/*");
+					intent.setDataAndType(Uri.parse(MusicServiceFactory.getMusicService().getVideoUrl(context, entry.getId(), false)), "video/*");
 					context.startActivity(intent);
 				}
 			};

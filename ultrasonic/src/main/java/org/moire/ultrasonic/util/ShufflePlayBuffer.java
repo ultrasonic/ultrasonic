@@ -104,7 +104,7 @@ public class ShufflePlayBuffer
 
 		try
 		{
-			MusicService service = MusicServiceFactory.getMusicService(context);
+			MusicService service = MusicServiceFactory.getMusicService();
 			int n = CAPACITY - buffer.size();
 			MusicDirectory songs = service.getRandomSongs(n, context);
 

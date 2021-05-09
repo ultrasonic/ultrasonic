@@ -249,7 +249,7 @@ public class ChatFragment extends Fragment {
                     @Override
                     protected Void doInBackground() throws Throwable
                     {
-                        MusicService musicService = MusicServiceFactory.getMusicService(getContext());
+                        MusicService musicService = MusicServiceFactory.getMusicService();
                         musicService.addChatMessage(message, getContext());
                         return null;
                     }
@@ -273,7 +273,7 @@ public class ChatFragment extends Fragment {
             @Override
             protected List<ChatMessage> doInBackground() throws Throwable
             {
-                MusicService musicService = MusicServiceFactory.getMusicService(getContext());
+                MusicService musicService = MusicServiceFactory.getMusicService();
                 return musicService.getChatMessages(lastChatMessageTime, getContext());
             }
 

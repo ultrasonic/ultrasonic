@@ -3,6 +3,7 @@ package org.moire.ultrasonic.subsonic
 import android.app.Activity
 import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
+import org.koin.core.component.KoinApiExtension
 import java.util.Collections
 import java.util.LinkedList
 import org.moire.ultrasonic.R
@@ -18,6 +19,7 @@ import org.moire.ultrasonic.util.Util
 /**
  * Retrieves a list of songs and adds them to the now playing list
  */
+@KoinApiExtension
 class DownloadHandler(
     val mediaPlayerController: MediaPlayerController,
     val networkAndStorageChecker: NetworkAndStorageChecker
@@ -200,7 +202,7 @@ class DownloadHandler(
 
             @Throws(Throwable::class)
             override fun doInBackground(): List<MusicDirectory.Entry> {
-                val musicService = getMusicService(activity)
+                val musicService = getMusicService()
                 val songs: MutableList<MusicDirectory.Entry> = LinkedList()
                 val root: MusicDirectory
                 if (!isOffline() && isArtist && Util.getShouldUseId3Tags()) {
@@ -243,7 +245,7 @@ class DownloadHandler(
                         songs.add(song)
                     }
                 }
-                val musicService = getMusicService(activity)
+                val musicService = getMusicService()
                 for (
                     (id1, _, _, title) in parent.getChildren(
                         includeDirs = true,
@@ -267,7 +269,7 @@ class DownloadHandler(
                 if (songs.size > maxSongs) {
                     return
                 }
-                val musicService = getMusicService(activity)
+                val musicService = getMusicService()
                 val artist = musicService.getArtist(id, "", false)
                 for ((id1) in artist.getChildren()) {
                     val albumDirectory = musicService.getAlbum(

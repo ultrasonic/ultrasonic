@@ -146,7 +146,7 @@ public class AlbumView extends UpdateView
 						album.setStarred(false);
 					}
 
-                    final MusicService musicService = MusicServiceFactory.getMusicService(view.getContext());
+                    final MusicService musicService = MusicServiceFactory.getMusicService();
 					new Thread(new Runnable()
 					{
 						@Override

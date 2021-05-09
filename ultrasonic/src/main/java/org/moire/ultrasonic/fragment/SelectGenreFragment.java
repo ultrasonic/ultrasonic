@@ -102,7 +102,7 @@ public class SelectGenreFragment extends Fragment {
             @Override
             protected List<Genre> doInBackground()
             {
-                MusicService musicService = MusicServiceFactory.getMusicService(getContext());
+                MusicService musicService = MusicServiceFactory.getMusicService();
 
                 List<Genre> genres = new ArrayList<>();
 

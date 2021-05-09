@@ -228,7 +228,7 @@ class DownloadFile(
                     return
                 }
 
-                val musicService = getMusicService(context)
+                val musicService = getMusicService()
 
                 // Some devices seem to throw error on partial file which doesn't exist
                 val needsDownloading: Boolean

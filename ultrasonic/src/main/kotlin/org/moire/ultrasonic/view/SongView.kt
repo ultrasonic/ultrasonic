@@ -201,7 +201,7 @@ class SongView(context: Context) : UpdateView(context), Checkable {
                         song.starred = false
                     }
                     Thread {
-                        val musicService = getMusicService(this@SongView.context)
+                        val musicService = getMusicService()
                         try {
                             if (!isStarred) {
                                 musicService.star(id, null, null)

@@ -78,7 +78,7 @@ class ArtistListModel(
 
     private suspend fun loadFromServer(refresh: Boolean, swipe: SwipeRefreshLayout) =
         withContext(Dispatchers.IO) {
-            val musicService = MusicServiceFactory.getMusicService(context)
+            val musicService = MusicServiceFactory.getMusicService()
             val isOffline = ActiveServerProvider.isOffline()
             val useId3Tags = Util.getShouldUseId3Tags()
 

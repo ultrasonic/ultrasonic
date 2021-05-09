@@ -527,7 +527,7 @@ public class MediaPlayerControllerImpl implements MediaPlayerController
 		try
 		{
 			String username = activeServerProvider.getValue().getActiveServer().getUserName();
-			UserInfo user = MusicServiceFactory.getMusicService(context).getUser(username, context);
+			UserInfo user = MusicServiceFactory.getMusicService().getUser(username, context);
 			return user.getJukeboxRole();
 		}
 		catch (Exception e)
@@ -608,7 +608,7 @@ public class MediaPlayerControllerImpl implements MediaPlayerController
 		new Thread(() -> {
 			try
 			{
-				MusicServiceFactory.getMusicService(context).setRating(song.getId(), rating);
+				MusicServiceFactory.getMusicService().setRating(song.getId(), rating);
 			}
 			catch (Exception e)
 			{

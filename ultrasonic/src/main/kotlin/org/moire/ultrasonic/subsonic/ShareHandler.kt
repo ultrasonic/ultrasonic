@@ -76,7 +76,7 @@ class ShareHandler(val context: Context) {
                         ids.add(id)
                     }
                 }
-                val musicService = getMusicService(context)
+                val musicService = getMusicService()
                 var timeInMillis: Long = 0
                 if (shareDetails.Expiration != 0L) {
                     timeInMillis = shareDetails.Expiration
