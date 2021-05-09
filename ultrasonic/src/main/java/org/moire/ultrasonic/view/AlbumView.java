@@ -121,7 +121,7 @@ public class AlbumView extends UpdateView
 		viewHolder.artist.setVisibility(artist == null ? View.GONE : View.VISIBLE);
 		viewHolder.star.setImageDrawable(starred ? starDrawable : starHollowDrawable);
 
-		if (ActiveServerProvider.Companion.isOffline(this.context) || "-1".equals(album.getId()))
+		if (ActiveServerProvider.Companion.isOffline() || "-1".equals(album.getId()))
 		{
 			viewHolder.star.setVisibility(View.GONE);
 		}

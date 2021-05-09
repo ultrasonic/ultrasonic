@@ -203,11 +203,11 @@ class DownloadHandler(
                 val musicService = getMusicService(activity)
                 val songs: MutableList<MusicDirectory.Entry> = LinkedList()
                 val root: MusicDirectory
-                if (!isOffline(activity) && isArtist && Util.getShouldUseId3Tags()) {
+                if (!isOffline() && isArtist && Util.getShouldUseId3Tags()) {
                     getSongsForArtist(id, songs)
                 } else {
                     if (isDirectory) {
-                        root = if (!isOffline(activity) && Util.getShouldUseId3Tags())
+                        root = if (!isOffline() && Util.getShouldUseId3Tags())
                             musicService.getAlbum(id, name, false)
                         else
                             musicService.getMusicDirectory(id, name, false, activity)
@@ -251,7 +251,7 @@ class DownloadHandler(
                     )
                 ) {
                     val root: MusicDirectory = if (
-                        !isOffline(activity) &&
+                        !isOffline() &&
                         Util.getShouldUseId3Tags()
                     ) musicService.getAlbum(id1, title, false)
                     else musicService.getMusicDirectory(id1, title, false, activity)

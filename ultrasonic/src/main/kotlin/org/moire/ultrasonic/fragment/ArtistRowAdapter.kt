@@ -156,7 +156,7 @@ class ArtistRowAdapter(
         inflater.inflate(R.menu.select_artist_context, popup.menu)
 
         val downloadMenuItem = popup.menu.findItem(R.id.artist_menu_download)
-        downloadMenuItem?.isVisible = !isOffline(view.context)
+        downloadMenuItem?.isVisible = !isOffline()
 
         popup.setOnMenuItemClickListener { menuItem ->
             onContextMenuClick(menuItem, artistList[position])

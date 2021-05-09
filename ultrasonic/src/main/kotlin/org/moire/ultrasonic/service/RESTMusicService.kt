@@ -211,7 +211,7 @@ open class RESTMusicService(
     ): SearchResult {
         return try {
             if (
-                !isOffline(context) &&
+                !isOffline() &&
                 Util.getShouldUseId3Tags()
             ) search3(criteria)
             else search2(criteria)
@@ -534,7 +534,7 @@ open class RESTMusicService(
         synchronized(entry) {
             // Use cached file, if existing.
             var bitmap = FileUtil.getAlbumArtBitmap(context, entry, size, highQuality)
-            val serverScaling = isServerScalingEnabled(context)
+            val serverScaling = isServerScalingEnabled()
 
             if (bitmap == null) {
                 Timber.d("Loading cover art for: %s", entry)

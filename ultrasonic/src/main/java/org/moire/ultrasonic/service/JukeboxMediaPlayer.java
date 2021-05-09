@@ -160,7 +160,7 @@ public class JukeboxMediaPlayer
 
 			try
 			{
-				if (!ActiveServerProvider.Companion.isOffline(context))
+				if (!ActiveServerProvider.Companion.isOffline())
 				{
 					task = tasks.take();
 					JukeboxStatus status = task.execute();

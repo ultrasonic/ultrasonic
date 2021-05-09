@@ -1065,7 +1065,7 @@ public class Util
 	public static boolean getShouldShowArtistPicture(Context context)
 	{
 		SharedPreferences preferences = getPreferences();
-		boolean isOffline = ActiveServerProvider.Companion.isOffline(context);
+		boolean isOffline = ActiveServerProvider.Companion.isOffline();
 		boolean isId3Enabled = preferences.getBoolean(Constants.PREFERENCES_KEY_ID3_TAGS, false);
 		boolean shouldShowArtistPicture = preferences.getBoolean(Constants.PREFERENCES_KEY_SHOW_ARTIST_PICTURE, false);
 		return (!isOffline) && isId3Enabled && shouldShowArtistPicture;

@@ -306,9 +306,9 @@ public class BookmarksFragment extends Fragment {
         }
 
         playNowButton.setVisibility(enabled && deleteEnabled ? View.VISIBLE : View.GONE);
-        pinButton.setVisibility((enabled && !ActiveServerProvider.Companion.isOffline(getContext()) && selection.size() > pinnedCount) ? View.VISIBLE : View.GONE);
+        pinButton.setVisibility((enabled && !ActiveServerProvider.Companion.isOffline() && selection.size() > pinnedCount) ? View.VISIBLE : View.GONE);
         unpinButton.setVisibility(enabled && unpinEnabled ? View.VISIBLE : View.GONE);
-        downloadButton.setVisibility(enabled && !deleteEnabled && !ActiveServerProvider.Companion.isOffline(getContext()) ? View.VISIBLE : View.GONE);
+        downloadButton.setVisibility(enabled && !deleteEnabled && !ActiveServerProvider.Companion.isOffline() ? View.VISIBLE : View.GONE);
         deleteButton.setVisibility(enabled && deleteEnabled ? View.VISIBLE : View.GONE);
     }
 

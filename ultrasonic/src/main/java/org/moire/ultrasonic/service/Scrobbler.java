@@ -18,7 +18,7 @@ public class Scrobbler
 
 	public void scrobble(final Context context, final DownloadFile song, final boolean submission)
 	{
-		if (song == null || !ActiveServerProvider.Companion.isScrobblingEnabled(context)) return;
+		if (song == null || !ActiveServerProvider.Companion.isScrobblingEnabled()) return;
 
 		final String id = song.getSong().getId();
 		if (id == null) return;

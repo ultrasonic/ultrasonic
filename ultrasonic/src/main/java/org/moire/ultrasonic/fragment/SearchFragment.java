@@ -280,10 +280,10 @@ public class SearchFragment extends Fragment {
 
         if (downloadMenuItem != null)
         {
-            downloadMenuItem.setVisible(!ActiveServerProvider.Companion.isOffline(getContext()));
+            downloadMenuItem.setVisible(!ActiveServerProvider.Companion.isOffline());
         }
 
-        if (ActiveServerProvider.Companion.isOffline(getContext()) || isArtist)
+        if (ActiveServerProvider.Companion.isOffline() || isArtist)
         {
             if (shareButton != null)
             {

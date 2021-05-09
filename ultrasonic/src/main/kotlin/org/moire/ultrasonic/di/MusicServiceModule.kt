@@ -36,7 +36,7 @@ internal const val OFFLINE_MUSIC_SERVICE = "OfflineMusicService"
 val musicServiceModule = module {
 
     single(named("ServerInstance")) {
-        return@single ActiveServerProvider.getActiveServerId(androidContext())
+        return@single ActiveServerProvider.getActiveServerId()
     }
 
     single(named("ServerID")) {

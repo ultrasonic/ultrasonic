@@ -130,7 +130,7 @@ public class PlaylistsFragment extends Fragment {
                 MusicService musicService = MusicServiceFactory.getMusicService(getContext());
                 List<Playlist> playlists = musicService.getPlaylists(refresh, getContext());
 
-                if (!ActiveServerProvider.Companion.isOffline(getContext()))
+                if (!ActiveServerProvider.Companion.isOffline())
                     new CacheCleaner(getContext()).cleanPlaylists(playlists);
                 return playlists;
             }
@@ -151,14 +151,14 @@ public class PlaylistsFragment extends Fragment {
         super.onCreateContextMenu(menu, view, menuInfo);
 
         MenuInflater inflater = getActivity().getMenuInflater();
-        if (ActiveServerProvider.Companion.isOffline(getContext())) inflater.inflate(R.menu.select_playlist_context_offline, menu);
+        if (ActiveServerProvider.Companion.isOffline()) inflater.inflate(R.menu.select_playlist_context_offline, menu);
         else inflater.inflate(R.menu.select_playlist_context, menu);
 
         MenuItem downloadMenuItem = menu.findItem(R.id.album_menu_download);
 
         if (downloadMenuItem != null)
         {
-            downloadMenuItem.setVisible(!ActiveServerProvider.Companion.isOffline(getContext()));
+            downloadMenuItem.setVisible(!ActiveServerProvider.Companion.isOffline());
         }
     }
 

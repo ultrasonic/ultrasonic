@@ -33,7 +33,7 @@ import org.moire.ultrasonic.di.musicServiceModule
 object MusicServiceFactory : KoinComponent {
     @JvmStatic
     fun getMusicService(context: Context): MusicService {
-        return if (ActiveServerProvider.isOffline(context)) {
+        return if (ActiveServerProvider.isOffline()) {
             get(named(OFFLINE_MUSIC_SERVICE))
         } else {
             get(named(ONLINE_MUSIC_SERVICE))

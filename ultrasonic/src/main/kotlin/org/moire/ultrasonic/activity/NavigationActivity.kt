@@ -368,7 +368,7 @@ class NavigationActivity : AppCompatActivity() {
     }
 
     private fun setMenuForServerSetting() {
-        val visibility = !isOffline(this)
+        val visibility = !isOffline()
         chatMenuItem?.isVisible = visibility
         bookmarksMenuItem?.isVisible = visibility
         sharesMenuItem?.isVisible = visibility

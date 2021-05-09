@@ -118,7 +118,7 @@ public class MainFragment extends Fragment {
         final MergeAdapter adapter = new MergeAdapter();
         adapter.addViews(Collections.singletonList(serverButton), true);
 
-        if (!ActiveServerProvider.Companion.isOffline(this.getContext()))
+        if (!ActiveServerProvider.Companion.isOffline())
         {
             adapter.addView(musicTitle, false);
             adapter.addViews(asList(artistsButton, albumsButton, genresButton), true);

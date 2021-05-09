@@ -601,7 +601,7 @@ class LocalMediaPlayer(
 
         override fun execute() {
             setPlayerState(PlayerState.DOWNLOADING)
-            while (!bufferComplete() && !isOffline(context)) {
+            while (!bufferComplete() && !isOffline()) {
                 Util.sleepQuietly(1000L)
                 if (isCancelled) {
                     return

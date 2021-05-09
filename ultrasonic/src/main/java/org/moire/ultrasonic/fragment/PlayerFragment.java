@@ -709,7 +709,7 @@ public class PlayerFragment extends Fragment implements GestureDetector.OnGestur
         MenuItem bookmarkRemoveMenuItem = menu.findItem(R.id.menu_item_bookmark_delete);
 
 
-        if (ActiveServerProvider.Companion.isOffline(getContext()))
+        if (ActiveServerProvider.Companion.isOffline())
         {
             if (shareMenuItem != null)
             {
@@ -834,7 +834,7 @@ public class PlayerFragment extends Fragment implements GestureDetector.OnGestur
                 }
             }
 
-            if (ActiveServerProvider.Companion.isOffline(getContext()) || !Util.getShouldUseId3Tags())
+            if (ActiveServerProvider.Companion.isOffline() || !Util.getShouldUseId3Tags())
             {
                 MenuItem menuItem = menu.findItem(R.id.menu_show_artist);
 
@@ -844,7 +844,7 @@ public class PlayerFragment extends Fragment implements GestureDetector.OnGestur
                 }
             }
 
-            if (ActiveServerProvider.Companion.isOffline(getContext()))
+            if (ActiveServerProvider.Companion.isOffline())
             {
                 MenuItem menuItem = menu.findItem(R.id.menu_lyrics);
 

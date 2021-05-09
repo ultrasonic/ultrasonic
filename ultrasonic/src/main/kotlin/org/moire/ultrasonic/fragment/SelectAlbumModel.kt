@@ -40,7 +40,7 @@ class SelectAlbumModel(application: Application) : AndroidViewModel(application)
 
     suspend fun getMusicFolders(refresh: Boolean) {
         withContext(Dispatchers.IO) {
-            if (!ActiveServerProvider.isOffline(context)) {
+            if (!ActiveServerProvider.isOffline()) {
                 val musicService = MusicServiceFactory.getMusicService(context)
                 musicFolders.postValue(musicService.getMusicFolders(refresh))
             }
@@ -284,7 +284,7 @@ class SelectAlbumModel(application: Application) : AndroidViewModel(application)
     suspend fun getAlbumList(albumListType: String, size: Int, offset: Int) {
 
         showHeader = false
-        showSelectFolderHeader = !ActiveServerProvider.isOffline(context) &&
+        showSelectFolderHeader = !ActiveServerProvider.isOffline() &&
             !Util.getShouldUseId3Tags() && (
             (albumListType == AlbumListType.SORTED_BY_NAME.toString()) ||
                 (albumListType == AlbumListType.SORTED_BY_ARTIST.toString())

@@ -161,7 +161,7 @@ class SongView(context: Context) : UpdateView(context), Checkable {
         viewHolder?.check?.visibility = if (checkable && !song.isVideo) VISIBLE else GONE
         viewHolder?.drag?.visibility = if (draggable) VISIBLE else GONE
 
-        if (isOffline(this.context)) {
+        if (isOffline()) {
             viewHolder?.star?.visibility = GONE
             viewHolder?.rating?.visibility = GONE
         } else {
