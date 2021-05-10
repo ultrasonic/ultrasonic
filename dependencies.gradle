@@ -26,7 +26,7 @@ ext.versions = [
         viewModelKtx         : "2.2.0",
 
         retrofit             : "2.6.4",
-        jackson              : "2.9.5",
+        jackson              : "2.12.3",
         okhttp               : "3.12.13",
         twitterSerial        : "0.1.6",
         koin                 : "2.2.2",
