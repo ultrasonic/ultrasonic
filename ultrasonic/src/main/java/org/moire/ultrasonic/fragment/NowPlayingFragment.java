@@ -63,10 +63,10 @@ public class NowPlayingFragment extends Fragment {
     @Override
     public void onViewCreated(@NonNull final View view, @Nullable Bundle savedInstanceState) {
 
-        playButton = (ImageView) view.findViewById(R.id.now_playing_control_play);
-        nowPlayingAlbumArtImage = (ImageView) view.findViewById(R.id.now_playing_image);
-        nowPlayingTrack = (TextView) view.findViewById(R.id.now_playing_trackname);
-        nowPlayingArtist = (TextView) view.findViewById(R.id.now_playing_artist);
+        playButton = view.findViewById(R.id.now_playing_control_play);
+        nowPlayingAlbumArtImage = view.findViewById(R.id.now_playing_image);
+        nowPlayingTrack = view.findViewById(R.id.now_playing_trackname);
+        nowPlayingArtist = view.findViewById(R.id.now_playing_artist);
 
         nowPlayingEventListener = new NowPlayingEventListener() {
             @Override
@@ -74,7 +74,7 @@ public class NowPlayingFragment extends Fragment {
             @Override
             public void onHideNowPlaying() { }
             @Override
-            public void onShowNowPlaying() { Update(); }
+            public void onShowNowPlaying() { update(); }
         };
 
         nowPlayingEventDistributor.getValue().subscribe(nowPlayingEventListener);
@@ -83,7 +83,7 @@ public class NowPlayingFragment extends Fragment {
     @Override
     public void onResume() {
         super.onResume();
-        Update();
+        update();
     }
 
     @Override
@@ -92,7 +92,7 @@ public class NowPlayingFragment extends Fragment {
         nowPlayingEventDistributor.getValue().unsubscribe(nowPlayingEventListener);
     }
 
-    private void Update() {
+    private void update() {
         try
         {
             PlayerState playerState = mediaPlayerControllerLazy.getValue().getPlayerState();
@@ -112,45 +112,29 @@ public class NowPlayingFragment extends Fragment {
                 nowPlayingTrack.setText(title);
                 nowPlayingArtist.setText(artist);
 
-                nowPlayingAlbumArtImage.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        Bundle bundle = new Bundle();
+                nowPlayingAlbumArtImage.setOnClickListener(v -> {
+                    Bundle bundle = new Bundle();
 
-                        if (Util.getShouldUseId3Tags(getContext())) {
-                            bundle.putBoolean(Constants.INTENT_EXTRA_NAME_IS_ALBUM, true);
-                            bundle.putString(Constants.INTENT_EXTRA_NAME_ID, song.getAlbumId());
-                        } else {
-                            bundle.putBoolean(Constants.INTENT_EXTRA_NAME_IS_ALBUM, false);
-                            bundle.putString(Constants.INTENT_EXTRA_NAME_ID, song.getParent());
-                        }
-
-                        bundle.putString(Constants.INTENT_EXTRA_NAME_NAME, song.getAlbum());
-                        Navigation.findNavController(getView()).navigate(R.id.selectAlbumFragment, bundle);
+                    if (Util.getShouldUseId3Tags(getContext())) {
+                        bundle.putBoolean(Constants.INTENT_EXTRA_NAME_IS_ALBUM, true);
+                        bundle.putString(Constants.INTENT_EXTRA_NAME_ID, song.getAlbumId());
+                    } else {
+                        bundle.putBoolean(Constants.INTENT_EXTRA_NAME_IS_ALBUM, false);
+                        bundle.putString(Constants.INTENT_EXTRA_NAME_ID, song.getParent());
                     }
+
+                    bundle.putString(Constants.INTENT_EXTRA_NAME_NAME, song.getAlbum());
+                    bundle.putString(Constants.INTENT_EXTRA_NAME_NAME, song.getAlbum());
+                    Navigation.findNavController(getActivity(), R.id.nav_host_fragment).navigate(R.id.selectAlbumFragment, bundle);
                 });
             }
 
-            getView().setOnTouchListener(new View.OnTouchListener() {
-                @Override
-                public boolean onTouch(View v, MotionEvent event) {
-                    return handleOnTouch(event);
-                }
-            });
+            getView().setOnTouchListener((v, event) -> handleOnTouch(event));
 
             // This empty onClickListener is necessary for the onTouchListener to work
-            getView().setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                }
-            });
+            getView().setOnClickListener(v -> {});
 
-            playButton.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    mediaPlayerControllerLazy.getValue().togglePlayPause();
-                }
-            });
+            playButton.setOnClickListener(v -> mediaPlayerControllerLazy.getValue().togglePlayPause());
         }
         catch (Exception x) {
             Timber.w(x, "Failed to get notification cover art");
