@@ -527,7 +527,7 @@ public class MediaPlayerControllerImpl implements MediaPlayerController
 		try
 		{
 			String username = activeServerProvider.getValue().getActiveServer().getUserName();
-			UserInfo user = MusicServiceFactory.getMusicService().getUser(username, context);
+			UserInfo user = MusicServiceFactory.getMusicService().getUser(username);
 			return user.getJukeboxRole();
 		}
 		catch (Exception e)

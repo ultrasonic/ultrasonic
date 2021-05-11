@@ -18,7 +18,6 @@
  */
 package org.moire.ultrasonic.service;
 
-import android.content.Context;
 import android.graphics.Bitmap;
 
 import org.moire.ultrasonic.domain.Bookmark;
@@ -71,82 +70,82 @@ public interface MusicService
 
 	MusicDirectory getAlbum(String id, String name, boolean refresh) throws Exception;
 
-	SearchResult search(SearchCriteria criteria, Context context) throws Exception;
+	SearchResult search(SearchCriteria criteria) throws Exception;
 
-	MusicDirectory getPlaylist(String id, String name, Context context) throws Exception;
+	MusicDirectory getPlaylist(String id, String name) throws Exception;
 
-	List<PodcastsChannel> getPodcastsChannels(boolean refresh, Context context) throws Exception;
+	List<PodcastsChannel> getPodcastsChannels(boolean refresh) throws Exception;
 
-	List<Playlist> getPlaylists(boolean refresh, Context context) throws Exception;
+	List<Playlist> getPlaylists(boolean refresh) throws Exception;
 
-	void createPlaylist(String id, String name, List<MusicDirectory.Entry> entries, Context context) throws Exception;
+	void createPlaylist(String id, String name, List<MusicDirectory.Entry> entries) throws Exception;
 
-	void deletePlaylist(String id, Context context) throws Exception;
+	void deletePlaylist(String id) throws Exception;
 
-	void updatePlaylist(String id, String name, String comment, boolean pub, Context context) throws Exception;
+	void updatePlaylist(String id, String name, String comment, boolean pub) throws Exception;
 
-	Lyrics getLyrics(String artist, String title, Context context) throws Exception;
+	Lyrics getLyrics(String artist, String title) throws Exception;
 
-	void scrobble(String id, boolean submission, Context context) throws Exception;
+	void scrobble(String id, boolean submission) throws Exception;
 
 	MusicDirectory getAlbumList(String type, int size, int offset, String musicFolderId) throws Exception;
 
 	MusicDirectory getAlbumList2(String type, int size, int offset, String musicFolderId) throws Exception;
 
-	MusicDirectory getRandomSongs(int size, Context context) throws Exception;
+	MusicDirectory getRandomSongs(int size) throws Exception;
 
-	MusicDirectory getSongsByGenre(String genre, int count, int offset, Context context) throws Exception;
+	MusicDirectory getSongsByGenre(String genre, int count, int offset) throws Exception;
 
 	SearchResult getStarred() throws Exception;
 
 	SearchResult getStarred2() throws Exception;
 
-	Bitmap getCoverArt(Context context, MusicDirectory.Entry entry, int size, boolean saveToFile, boolean highQuality) throws Exception;
+	Bitmap getCoverArt(MusicDirectory.Entry entry, int size, boolean saveToFile, boolean highQuality) throws Exception;
 
-	/**
+	Bitmap getAvatar(String username, int size, boolean saveToFile, boolean highQuality) throws Exception;
+
+		/**
 	 * Return response {@link InputStream} and a {@link Boolean} that indicates if this response is
 	 * partial.
 	 */
 	Pair<InputStream, Boolean> getDownloadInputStream(MusicDirectory.Entry song, long offset, int maxBitrate) throws Exception;
 
 	// TODO: Refactor and remove this call (see RestMusicService implementation)
-	String getVideoUrl(Context context, String id, boolean useFlash) throws Exception;
+	String getVideoUrl(String id, boolean useFlash) throws Exception;
 
-	JukeboxStatus updateJukeboxPlaylist(List<String> ids, Context context) throws Exception;
+	JukeboxStatus updateJukeboxPlaylist(List<String> ids) throws Exception;
 
-	JukeboxStatus skipJukebox(int index, int offsetSeconds, Context context) throws Exception;
+	JukeboxStatus skipJukebox(int index, int offsetSeconds) throws Exception;
 
-	JukeboxStatus stopJukebox(Context context) throws Exception;
+	JukeboxStatus stopJukebox() throws Exception;
 
-	JukeboxStatus startJukebox(Context context) throws Exception;
+	JukeboxStatus startJukebox() throws Exception;
 
-	JukeboxStatus getJukeboxStatus(Context context) throws Exception;
+	JukeboxStatus getJukeboxStatus() throws Exception;
 
-	JukeboxStatus setJukeboxGain(float gain, Context context) throws Exception;
+	JukeboxStatus setJukeboxGain(float gain) throws Exception;
 
-	List<Share> getShares(boolean refresh, Context context) throws Exception;
+	List<Share> getShares(boolean refresh) throws Exception;
 
-	List<ChatMessage> getChatMessages(Long since, Context context) throws Exception;
+	List<ChatMessage> getChatMessages(Long since) throws Exception;
 
-	void addChatMessage(String message, Context context) throws Exception;
+	void addChatMessage(String message) throws Exception;
 
-	List<Bookmark> getBookmarks(Context context) throws Exception;
+	List<Bookmark> getBookmarks() throws Exception;
 
-	void deleteBookmark(String id, Context context) throws Exception;
+	void deleteBookmark(String id) throws Exception;
 
-	void createBookmark(String id, int position, Context context) throws Exception;
+	void createBookmark(String id, int position) throws Exception;
 
-	MusicDirectory getVideos(boolean refresh, Context context) throws Exception;
+	MusicDirectory getVideos(boolean refresh) throws Exception;
 
-	UserInfo getUser(String username, Context context) throws Exception;
+	UserInfo getUser(String username) throws Exception;
 
-	List<Share> createShare(List<String> ids, String description, Long expires, Context context) throws Exception;
+	List<Share> createShare(List<String> ids, String description, Long expires) throws Exception;
 
-	void deleteShare(String id, Context context) throws Exception;
+	void deleteShare(String id) throws Exception;
 
-	void updateShare(String id, String description, Long expires, Context context) throws Exception;
+	void updateShare(String id, String description, Long expires) throws Exception;
 
-	Bitmap getAvatar(Context context, String username, int size, boolean saveToFile, boolean highQuality) throws Exception;
-
-	MusicDirectory getPodcastEpisodes(String podcastChannelId, Context context) throws Exception;
+	MusicDirectory getPodcastEpisodes(String podcastChannelId) throws Exception;
 }

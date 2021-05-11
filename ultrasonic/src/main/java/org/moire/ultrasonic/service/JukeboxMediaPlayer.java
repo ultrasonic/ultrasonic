@@ -397,7 +397,7 @@ public class JukeboxMediaPlayer
 		@Override
 		JukeboxStatus execute() throws Exception
 		{
-			return getMusicService().getJukeboxStatus(context);
+			return getMusicService().getJukeboxStatus();
 		}
 	}
 
@@ -413,7 +413,7 @@ public class JukeboxMediaPlayer
 		@Override
 		JukeboxStatus execute() throws Exception
 		{
-			return getMusicService().updateJukeboxPlaylist(ids, context);
+			return getMusicService().updateJukeboxPlaylist(ids);
 		}
 	}
 
@@ -431,7 +431,7 @@ public class JukeboxMediaPlayer
 		@Override
 		JukeboxStatus execute() throws Exception
 		{
-			return getMusicService().skipJukebox(index, offsetSeconds, context);
+			return getMusicService().skipJukebox(index, offsetSeconds);
 		}
 	}
 
@@ -440,7 +440,7 @@ public class JukeboxMediaPlayer
 		@Override
 		JukeboxStatus execute() throws Exception
 		{
-			return getMusicService().stopJukebox(context);
+			return getMusicService().stopJukebox();
 		}
 	}
 
@@ -449,7 +449,7 @@ public class JukeboxMediaPlayer
 		@Override
 		JukeboxStatus execute() throws Exception
 		{
-			return getMusicService().startJukebox(context);
+			return getMusicService().startJukebox();
 		}
 	}
 
@@ -466,7 +466,7 @@ public class JukeboxMediaPlayer
 		@Override
 		JukeboxStatus execute() throws Exception
 		{
-			return getMusicService().setJukeboxGain(gain, context);
+			return getMusicService().setJukeboxGain(gain);
 		}
 	}
 

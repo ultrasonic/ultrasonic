@@ -205,7 +205,7 @@ public class BookmarksFragment extends Fragment {
             @Override
             protected MusicDirectory load(MusicService service) throws Exception
             {
-                return Util.getSongsFromBookmarks(service.getBookmarks(getContext()));
+                return Util.getSongsFromBookmarks(service.getBookmarks());
             }
         }.execute();
     }

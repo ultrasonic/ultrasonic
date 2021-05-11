@@ -200,7 +200,7 @@ class SelectAlbumModel(application: Application) : AndroidViewModel(application)
     suspend fun getSongsForGenre(genre: String, count: Int, offset: Int) {
         withContext(Dispatchers.IO) {
             val service = MusicServiceFactory.getMusicService()
-            val musicDirectory = service.getSongsByGenre(genre, count, offset, context)
+            val musicDirectory = service.getSongsByGenre(genre, count, offset)
             songsForGenre.postValue(musicDirectory)
         }
     }
@@ -227,7 +227,7 @@ class SelectAlbumModel(application: Application) : AndroidViewModel(application)
 
         withContext(Dispatchers.IO) {
             val service = MusicServiceFactory.getMusicService()
-            currentDirectory.postValue(service.getVideos(refresh, context))
+            currentDirectory.postValue(service.getVideos(refresh))
         }
     }
 
@@ -235,7 +235,7 @@ class SelectAlbumModel(application: Application) : AndroidViewModel(application)
 
         withContext(Dispatchers.IO) {
             val service = MusicServiceFactory.getMusicService()
-            val musicDirectory = service.getRandomSongs(size, context)
+            val musicDirectory = service.getRandomSongs(size)
 
             currentDirectoryIsSortable = false
             currentDirectory.postValue(musicDirectory)
@@ -246,7 +246,7 @@ class SelectAlbumModel(application: Application) : AndroidViewModel(application)
 
         withContext(Dispatchers.IO) {
             val service = MusicServiceFactory.getMusicService()
-            val musicDirectory = service.getPlaylist(playlistId, playlistName, context)
+            val musicDirectory = service.getPlaylist(playlistId, playlistName)
 
             currentDirectory.postValue(musicDirectory)
         }
@@ -256,7 +256,7 @@ class SelectAlbumModel(application: Application) : AndroidViewModel(application)
 
         withContext(Dispatchers.IO) {
             val service = MusicServiceFactory.getMusicService()
-            val musicDirectory = service.getPodcastEpisodes(podcastChannelId, context)
+            val musicDirectory = service.getPodcastEpisodes(podcastChannelId)
             currentDirectory.postValue(musicDirectory)
         }
     }
@@ -267,7 +267,7 @@ class SelectAlbumModel(application: Application) : AndroidViewModel(application)
             val service = MusicServiceFactory.getMusicService()
             val musicDirectory = MusicDirectory()
 
-            val shares = service.getShares(true, context)
+            val shares = service.getShares(true)
 
             for (share in shares) {
                 if (share.id == shareId) {

@@ -39,7 +39,7 @@ public class Scrobbler
 				MusicService service = MusicServiceFactory.getMusicService();
 				try
 				{
-					service.scrobble(id, submission, context);
+					service.scrobble(id, submission);
 					Timber.i("Scrobbled '%s' for %s", submission ? "submission" : "now playing", song);
 				}
 				catch (Exception x)

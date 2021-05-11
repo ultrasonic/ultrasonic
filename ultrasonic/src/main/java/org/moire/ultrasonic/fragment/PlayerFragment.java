@@ -1027,7 +1027,7 @@ public class PlayerFragment extends Fragment implements GestureDetector.OnGestur
                     final MusicService musicService = MusicServiceFactory.getMusicService();
 
                     try {
-                        musicService.createBookmark(songId, playerPosition, getContext());
+                        musicService.createBookmark(songId, playerPosition);
                     } catch (Exception e) {
                         Timber.e(e);
                     }
@@ -1053,7 +1053,7 @@ public class PlayerFragment extends Fragment implements GestureDetector.OnGestur
                     final MusicService musicService = MusicServiceFactory.getMusicService();
 
                     try {
-                        musicService.deleteBookmark(bookmarkSongId, getContext());
+                        musicService.deleteBookmark(bookmarkSongId);
                     } catch (Exception e) {
                         Timber.e(e);
                     }
@@ -1128,7 +1128,7 @@ public class PlayerFragment extends Fragment implements GestureDetector.OnGestur
                     entries.add(downloadFile.getSong());
                 }
                 final MusicService musicService = MusicServiceFactory.getMusicService();
-                musicService.createPlaylist(null, playlistName, entries, getContext());
+                musicService.createPlaylist(null, playlistName, entries);
                 return null;
             }
 

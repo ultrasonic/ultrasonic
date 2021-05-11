@@ -421,7 +421,7 @@ public class SearchFragment extends Fragment {
             {
                 SearchCriteria criteria = new SearchCriteria(query, maxArtists, maxAlbums, maxSongs);
                 MusicService service = MusicServiceFactory.getMusicService();
-                return service.search(criteria, getContext());
+                return service.search(criteria);
             }
 
             @Override

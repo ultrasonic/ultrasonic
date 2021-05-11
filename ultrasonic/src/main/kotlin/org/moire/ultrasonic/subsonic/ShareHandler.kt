@@ -82,7 +82,7 @@ class ShareHandler(val context: Context) {
                     timeInMillis = shareDetails.Expiration
                 }
                 val shares =
-                    musicService.createShare(ids, shareDetails.Description, timeInMillis, context)
+                    musicService.createShare(ids, shareDetails.Description, timeInMillis)
                 return shares[0]
             }
 

@@ -330,7 +330,7 @@ class DownloadFile(
             try {
                 if (!TextUtils.isEmpty(song.coverArt)) {
                     val size = Util.getMinDisplayMetric(context)
-                    musicService.getCoverArt(context, song, size, true, true)
+                    musicService.getCoverArt(song, size, true, true)
                 }
             } catch (x: Exception) {
                 Timber.e(x, "Failed to get cover art.")
