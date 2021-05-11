@@ -41,7 +41,7 @@ class DownloadFile(
 ) {
     val partialFile: File
     val completeFile: File
-    private val saveFile: File = FileUtil.getSongFile(context, song)
+    private val saveFile: File = FileUtil.getSongFile(song)
     private var downloadTask: CancellableTask? = null
     var isFailed = false
     private var retryCount = MAX_RETRIES
@@ -228,7 +228,7 @@ class DownloadFile(
                     return
                 }
 
-                val musicService = getMusicService(context)
+                val musicService = getMusicService()
 
                 // Some devices seem to throw error on partial file which doesn't exist
                 val needsDownloading: Boolean
@@ -312,7 +312,7 @@ class DownloadFile(
 
         private fun acquireWakeLock(wakeLock: WakeLock?): WakeLock? {
             var wakeLock1 = wakeLock
-            if (Util.isScreenLitOnDownload(context)) {
+            if (Util.isScreenLitOnDownload()) {
                 val pm = context.getSystemService(Context.POWER_SERVICE) as PowerManager
                 val flags = PowerManager.SCREEN_DIM_WAKE_LOCK or PowerManager.ON_AFTER_RELEASE
                 wakeLock1 = pm.newWakeLock(flags, toString())

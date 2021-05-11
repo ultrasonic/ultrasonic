@@ -160,7 +160,7 @@ public class JukeboxMediaPlayer
 
 			try
 			{
-				if (!ActiveServerProvider.Companion.isOffline(context))
+				if (!ActiveServerProvider.Companion.isOffline())
 				{
 					task = tasks.take();
 					JukeboxStatus status = task.execute();
@@ -300,7 +300,7 @@ public class JukeboxMediaPlayer
 
 	private MusicService getMusicService()
 	{
-		return MusicServiceFactory.getMusicService(context);
+		return MusicServiceFactory.getMusicService();
 	}
 
 	public int getPositionSeconds()

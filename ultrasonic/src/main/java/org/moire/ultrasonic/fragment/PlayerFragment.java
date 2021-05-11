@@ -287,7 +287,7 @@ public class PlayerFragment extends Fragment implements GestureDetector.OnGestur
             @Override
             public void run()
             {
-                int incrementTime = Util.getIncrementTime(getActivity());
+                int incrementTime = Util.getIncrementTime();
                 changeProgress(-incrementTime);
             }
         });
@@ -326,7 +326,7 @@ public class PlayerFragment extends Fragment implements GestureDetector.OnGestur
             @Override
             public void run()
             {
-                int incrementTime = Util.getIncrementTime(getActivity());
+                int incrementTime = Util.getIncrementTime();
                 changeProgress(incrementTime);
             }
         });
@@ -709,7 +709,7 @@ public class PlayerFragment extends Fragment implements GestureDetector.OnGestur
         MenuItem bookmarkRemoveMenuItem = menu.findItem(R.id.menu_item_bookmark_delete);
 
 
-        if (ActiveServerProvider.Companion.isOffline(getContext()))
+        if (ActiveServerProvider.Companion.isOffline())
         {
             if (shareMenuItem != null)
             {
@@ -834,7 +834,7 @@ public class PlayerFragment extends Fragment implements GestureDetector.OnGestur
                 }
             }
 
-            if (ActiveServerProvider.Companion.isOffline(getContext()) || !Util.getShouldUseId3Tags(getContext()))
+            if (ActiveServerProvider.Companion.isOffline() || !Util.getShouldUseId3Tags())
             {
                 MenuItem menuItem = menu.findItem(R.id.menu_show_artist);
 
@@ -844,7 +844,7 @@ public class PlayerFragment extends Fragment implements GestureDetector.OnGestur
                 }
             }
 
-            if (ActiveServerProvider.Companion.isOffline(getContext()))
+            if (ActiveServerProvider.Companion.isOffline())
             {
                 MenuItem menuItem = menu.findItem(R.id.menu_lyrics);
 
@@ -891,7 +891,7 @@ public class PlayerFragment extends Fragment implements GestureDetector.OnGestur
                 return false;
             }
 
-            if (Util.getShouldUseId3Tags(getContext())) {
+            if (Util.getShouldUseId3Tags()) {
                 bundle = new Bundle();
                 bundle.putString(Constants.INTENT_EXTRA_NAME_ID, entry.getArtistId());
                 bundle.putString(Constants.INTENT_EXTRA_NAME_NAME, entry.getArtist());
@@ -906,7 +906,7 @@ public class PlayerFragment extends Fragment implements GestureDetector.OnGestur
                 return false;
             }
 
-            String albumId = Util.getShouldUseId3Tags(getContext()) ? entry.getAlbumId() : entry.getParent();
+            String albumId = Util.getShouldUseId3Tags() ? entry.getAlbumId() : entry.getParent();
             bundle = new Bundle();
             bundle.putString(Constants.INTENT_EXTRA_NAME_ID, albumId);
             bundle.putString(Constants.INTENT_EXTRA_NAME_NAME, entry.getAlbum());
@@ -994,13 +994,13 @@ public class PlayerFragment extends Fragment implements GestureDetector.OnGestur
             new Thread(new Runnable() {
                 @Override
                 public void run() {
-                    final MusicService musicService = MusicServiceFactory.getMusicService(getContext());
+                    final MusicService musicService = MusicServiceFactory.getMusicService();
 
                     try {
                         if (isStarred) {
-                            musicService.unstar(id, null, null, getContext());
+                            musicService.unstar(id, null, null);
                         } else {
-                            musicService.star(id, null, null, getContext());
+                            musicService.star(id, null, null);
                         }
                     } catch (Exception e) {
                         Timber.e(e);
@@ -1024,7 +1024,7 @@ public class PlayerFragment extends Fragment implements GestureDetector.OnGestur
             new Thread(new Runnable() {
                 @Override
                 public void run() {
-                    final MusicService musicService = MusicServiceFactory.getMusicService(getContext());
+                    final MusicService musicService = MusicServiceFactory.getMusicService();
 
                     try {
                         musicService.createBookmark(songId, playerPosition, getContext());
@@ -1050,7 +1050,7 @@ public class PlayerFragment extends Fragment implements GestureDetector.OnGestur
             new Thread(new Runnable() {
                 @Override
                 public void run() {
-                    final MusicService musicService = MusicServiceFactory.getMusicService(getContext());
+                    final MusicService musicService = MusicServiceFactory.getMusicService();
 
                     try {
                         musicService.deleteBookmark(bookmarkSongId, getContext());
@@ -1127,7 +1127,7 @@ public class PlayerFragment extends Fragment implements GestureDetector.OnGestur
                 {
                     entries.add(downloadFile.getSong());
                 }
-                final MusicService musicService = MusicServiceFactory.getMusicService(getContext());
+                final MusicService musicService = MusicServiceFactory.getMusicService();
                 musicService.createPlaylist(null, playlistName, entries, getContext());
                 return null;
             }

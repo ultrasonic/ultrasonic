@@ -128,7 +128,7 @@ public class SharesFragment extends Fragment {
             @Override
             protected List<Share> doInBackground() throws Throwable
             {
-                MusicService musicService = MusicServiceFactory.getMusicService(getContext());
+                MusicService musicService = MusicServiceFactory.getMusicService();
                 return musicService.getShares(refresh, getContext());
             }
 
@@ -195,7 +195,7 @@ public class SharesFragment extends Fragment {
                     @Override
                     protected Void doInBackground() throws Throwable
                     {
-                        MusicService musicService = MusicServiceFactory.getMusicService(getContext());
+                        MusicService musicService = MusicServiceFactory.getMusicService();
                         musicService.deleteShare(share.getId(), getContext());
                         return null;
                     }
@@ -301,7 +301,7 @@ public class SharesFragment extends Fragment {
                         Editable shareDescriptionText = shareDescription.getText();
                         String description = shareDescriptionText != null ? shareDescriptionText.toString() : null;
 
-                        MusicService musicService = MusicServiceFactory.getMusicService(getContext());
+                        MusicService musicService = MusicServiceFactory.getMusicService();
                         musicService.updateShare(share.getId(), description, millis, getContext());
                         return null;
                     }

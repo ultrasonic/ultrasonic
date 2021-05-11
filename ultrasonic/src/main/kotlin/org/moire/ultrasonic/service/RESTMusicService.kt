@@ -75,12 +75,12 @@ open class RESTMusicService(
 ) : MusicService {
 
     @Throws(Exception::class)
-    override fun ping(context: Context) {
+    override fun ping() {
         responseChecker.callWithResponseCheck { api -> api.ping().execute() }
     }
 
     @Throws(Exception::class)
-    override fun isLicenseValid(context: Context): Boolean {
+    override fun isLicenseValid(): Boolean {
         val response = responseChecker.callWithResponseCheck { api -> api.getLicense().execute() }
 
         return response.body()!!.license.valid
@@ -88,8 +88,7 @@ open class RESTMusicService(
 
     @Throws(Exception::class)
     override fun getMusicFolders(
-        refresh: Boolean,
-        context: Context
+        refresh: Boolean
     ): List<MusicFolder> {
         val cachedMusicFolders = fileStorage.load(
             MUSIC_FOLDER_STORAGE_NAME, getMusicFolderListSerializer()
@@ -110,9 +109,8 @@ open class RESTMusicService(
     @Throws(Exception::class)
     override fun getIndexes(
         musicFolderId: String?,
-        refresh: Boolean,
-        context: Context
-    ): Indexes {
+        refresh: Boolean
+    ): Indexes? {
         val indexName = INDEXES_STORAGE_NAME + (musicFolderId ?: "")
 
         val cachedIndexes = fileStorage.load(indexName, getIndexesSerializer())
@@ -129,8 +127,7 @@ open class RESTMusicService(
 
     @Throws(Exception::class)
     override fun getArtists(
-        refresh: Boolean,
-        context: Context
+        refresh: Boolean
     ): Indexes {
         val cachedArtists = fileStorage.load(ARTISTS_STORAGE_NAME, getIndexesSerializer())
         if (cachedArtists != null && !refresh) return cachedArtists
@@ -148,8 +145,7 @@ open class RESTMusicService(
     override fun star(
         id: String?,
         albumId: String?,
-        artistId: String?,
-        context: Context
+        artistId: String?
     ) {
         responseChecker.callWithResponseCheck { api -> api.star(id, albumId, artistId).execute() }
     }
@@ -158,8 +154,7 @@ open class RESTMusicService(
     override fun unstar(
         id: String?,
         albumId: String?,
-        artistId: String?,
-        context: Context
+        artistId: String?
     ) {
         responseChecker.callWithResponseCheck { api -> api.unstar(id, albumId, artistId).execute() }
     }
@@ -167,8 +162,7 @@ open class RESTMusicService(
     @Throws(Exception::class)
     override fun setRating(
         id: String,
-        rating: Int,
-        context: Context
+        rating: Int
     ) {
         responseChecker.callWithResponseCheck { api -> api.setRating(id, rating).execute() }
     }
@@ -177,9 +171,8 @@ open class RESTMusicService(
     override fun getMusicDirectory(
         id: String,
         name: String?,
-        refresh: Boolean,
-        context: Context
-    ): MusicDirectory {
+        refresh: Boolean
+    ): MusicDirectory? {
         val response = responseChecker.callWithResponseCheck { api ->
             api.getMusicDirectory(id).execute()
         }
@@ -191,8 +184,7 @@ open class RESTMusicService(
     override fun getArtist(
         id: String,
         name: String?,
-        refresh: Boolean,
-        context: Context
+        refresh: Boolean
     ): MusicDirectory {
         val response = responseChecker.callWithResponseCheck { api -> api.getArtist(id).execute() }
 
@@ -203,8 +195,7 @@ open class RESTMusicService(
     override fun getAlbum(
         id: String,
         name: String?,
-        refresh: Boolean,
-        context: Context
+        refresh: Boolean
     ): MusicDirectory {
         val response = responseChecker.callWithResponseCheck { api -> api.getAlbum(id).execute() }
 
@@ -218,8 +209,8 @@ open class RESTMusicService(
     ): SearchResult {
         return try {
             if (
-                !isOffline(context) &&
-                Util.getShouldUseId3Tags(context)
+                !isOffline() &&
+                Util.getShouldUseId3Tags()
             ) search3(criteria)
             else search2(criteria)
         } catch (ignored: ApiNotSupportedException) {
@@ -287,7 +278,7 @@ open class RESTMusicService(
         }
 
         val playlist = response.body()!!.playlist.toMusicDirectoryDomainEntity()
-        savePlaylist(name, context, playlist)
+        savePlaylist(name, playlist)
 
         return playlist
     }
@@ -295,11 +286,10 @@ open class RESTMusicService(
     @Throws(IOException::class)
     private fun savePlaylist(
         name: String?,
-        context: Context,
         playlist: MusicDirectory
     ) {
         val playlistFile = FileUtil.getPlaylistFile(
-            context, activeServerProvider.getActiveServer().name, name
+            activeServerProvider.getActiveServer().name, name
         )
 
         val fw = FileWriter(playlistFile)
@@ -308,7 +298,7 @@ open class RESTMusicService(
         try {
             fw.write("#EXTM3U\n")
             for (e in playlist.getChildren()) {
-                var filePath = FileUtil.getSongFile(context, e).absolutePath
+                var filePath = FileUtil.getSongFile(e).absolutePath
 
                 if (!File(filePath).exists()) {
                     val ext = FileUtil.getExtension(filePath)
@@ -446,8 +436,7 @@ open class RESTMusicService(
         type: String,
         size: Int,
         offset: Int,
-        musicFolderId: String?,
-        context: Context
+        musicFolderId: String?
     ): MusicDirectory {
         val response = responseChecker.callWithResponseCheck { api ->
             api.getAlbumList(fromName(type), size, offset, null, null, null, musicFolderId)
@@ -466,8 +455,7 @@ open class RESTMusicService(
         type: String,
         size: Int,
         offset: Int,
-        musicFolderId: String?,
-        context: Context
+        musicFolderId: String?
     ): MusicDirectory {
         val response = responseChecker.callWithResponseCheck { api ->
             api.getAlbumList2(
@@ -509,9 +497,7 @@ open class RESTMusicService(
     }
 
     @Throws(Exception::class)
-    override fun getStarred(
-        context: Context
-    ): SearchResult {
+    override fun getStarred(): SearchResult {
         val response = responseChecker.callWithResponseCheck { api ->
             api.getStarred(null).execute()
         }
@@ -520,9 +506,7 @@ open class RESTMusicService(
     }
 
     @Throws(Exception::class)
-    override fun getStarred2(
-        context: Context
-    ): SearchResult {
+    override fun getStarred2(): SearchResult {
         val response = responseChecker.callWithResponseCheck { api ->
             api.getStarred2(null).execute()
         }
@@ -547,7 +531,7 @@ open class RESTMusicService(
         synchronized(entry) {
             // Use cached file, if existing.
             var bitmap = FileUtil.getAlbumArtBitmap(context, entry, size, highQuality)
-            val serverScaling = isServerScalingEnabled(context)
+            val serverScaling = isServerScalingEnabled()
 
             if (bitmap == null) {
                 Timber.d("Loading cover art for: %s", entry)
@@ -576,7 +560,7 @@ open class RESTMusicService(
                         var outputStream: OutputStream? = null
                         try {
                             outputStream = FileOutputStream(
-                                FileUtil.getAlbumArtFile(context, entry)
+                                FileUtil.getAlbumArtFile(entry)
                             )
                             outputStream.write(bytes)
                         } finally {
@@ -743,8 +727,7 @@ open class RESTMusicService(
 
     @Throws(Exception::class)
     override fun getGenres(
-        refresh: Boolean,
-        context: Context
+        refresh: Boolean
     ): List<Genre> {
         val response = responseChecker.callWithResponseCheck { api -> api.getGenres().execute() }
 
@@ -896,7 +879,7 @@ open class RESTMusicService(
 
         synchronized(username) {
             // Use cached file, if existing.
-            var bitmap = FileUtil.getAvatarBitmap(context, username, size, highQuality)
+            var bitmap = FileUtil.getAvatarBitmap(username, size, highQuality)
 
             if (bitmap == null) {
                 var inputStream: InputStream? = null
@@ -915,7 +898,7 @@ open class RESTMusicService(
 
                         try {
                             outputStream = FileOutputStream(
-                                FileUtil.getAvatarFile(context, username)
+                                FileUtil.getAvatarFile(username)
                             )
                             outputStream.write(bytes)
                         } finally {

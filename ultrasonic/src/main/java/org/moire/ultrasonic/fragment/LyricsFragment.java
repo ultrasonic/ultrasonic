@@ -78,7 +78,7 @@ public class LyricsFragment extends Fragment {
                 if (arguments == null) return null;
                 String artist = arguments.getString(Constants.INTENT_EXTRA_NAME_ARTIST);
                 String title = arguments.getString(Constants.INTENT_EXTRA_NAME_TITLE);
-                MusicService musicService = MusicServiceFactory.getMusicService(getContext());
+                MusicService musicService = MusicServiceFactory.getMusicService();
                 return musicService.getLyrics(artist, title, getContext());
             }
 

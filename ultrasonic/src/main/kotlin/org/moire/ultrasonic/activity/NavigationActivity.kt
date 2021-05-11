@@ -142,7 +142,7 @@ class NavigationActivity : AppCompatActivity() {
         }
 
         // Determine first run and migrate server settings to DB as early as possible
-        var showWelcomeScreen = Util.isFirstRun(this)
+        var showWelcomeScreen = Util.isFirstRun()
         val areServersMigrated: Boolean = serverSettingsModel.migrateFromPreferences()
 
         // If there are any servers in the DB, do not show the welcome screen
@@ -296,12 +296,12 @@ class NavigationActivity : AppCompatActivity() {
 
     private fun loadSettings() {
         PreferenceManager.setDefaultValues(this, R.xml.settings, false)
-        val preferences = Util.getPreferences(this)
+        val preferences = Util.getPreferences()
         if (!preferences.contains(Constants.PREFERENCES_KEY_CACHE_LOCATION)) {
             val editor = preferences.edit()
             editor.putString(
                 Constants.PREFERENCES_KEY_CACHE_LOCATION,
-                FileUtil.getDefaultMusicDirectory(this).path
+                FileUtil.getDefaultMusicDirectory().path
             )
             editor.apply()
         }
@@ -336,7 +336,7 @@ class NavigationActivity : AppCompatActivity() {
     }
 
     private fun showNowPlaying() {
-        if (!Util.getShowNowPlayingPreference(this)) {
+        if (!Util.getShowNowPlayingPreference()) {
             hideNowPlaying()
             return
         }
@@ -368,7 +368,7 @@ class NavigationActivity : AppCompatActivity() {
     }
 
     private fun setMenuForServerSetting() {
-        val visibility = !isOffline(this)
+        val visibility = !isOffline()
         chatMenuItem?.isVisible = visibility
         bookmarksMenuItem?.isVisible = visibility
         sharesMenuItem?.isVisible = visibility

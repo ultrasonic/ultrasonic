@@ -113,9 +113,9 @@ public class SearchFragment extends Fragment {
         FragmentTitle.Companion.setTitle(this, R.string.search_title);
         setHasOptionsMenu(true);
 
-        DEFAULT_ARTISTS = Util.getDefaultArtists(getContext());
-        DEFAULT_ALBUMS = Util.getDefaultAlbums(getContext());
-        DEFAULT_SONGS = Util.getDefaultSongs(getContext());
+        DEFAULT_ARTISTS = Util.getDefaultArtists();
+        DEFAULT_ALBUMS = Util.getDefaultAlbums();
+        DEFAULT_SONGS = Util.getDefaultSongs();
 
         View buttons = LayoutInflater.from(getContext()).inflate(R.layout.search_buttons, list, false);
 
@@ -280,10 +280,10 @@ public class SearchFragment extends Fragment {
 
         if (downloadMenuItem != null)
         {
-            downloadMenuItem.setVisible(!ActiveServerProvider.Companion.isOffline(getContext()));
+            downloadMenuItem.setVisible(!ActiveServerProvider.Companion.isOffline());
         }
 
-        if (ActiveServerProvider.Companion.isOffline(getContext()) || isArtist)
+        if (ActiveServerProvider.Companion.isOffline() || isArtist)
         {
             if (shareButton != null)
             {
@@ -410,9 +410,9 @@ public class SearchFragment extends Fragment {
 
     private void search(final String query, final boolean autoplay)
     {
-        final int maxArtists = Util.getMaxArtists(getContext());
-        final int maxAlbums = Util.getMaxAlbums(getContext());
-        final int maxSongs = Util.getMaxSongs(getContext());
+        final int maxArtists = Util.getMaxArtists();
+        final int maxAlbums = Util.getMaxAlbums();
+        final int maxSongs = Util.getMaxSongs();
 
         BackgroundTask<SearchResult> task = new FragmentBackgroundTask<SearchResult>(getActivity(), true, searchRefresh, cancellationToken)
         {
@@ -420,7 +420,7 @@ public class SearchFragment extends Fragment {
             protected SearchResult doInBackground() throws Throwable
             {
                 SearchCriteria criteria = new SearchCriteria(query, maxArtists, maxAlbums, maxSongs);
-                MusicService service = MusicServiceFactory.getMusicService(getContext());
+                MusicService service = MusicServiceFactory.getMusicService();
                 return service.search(criteria, getContext());
             }
 

@@ -1,5 +1,6 @@
 package org.moire.ultrasonic.app
 
+import android.content.Context
 import androidx.multidex.MultiDexApplication
 import org.koin.android.ext.koin.androidContext
 import org.koin.core.context.startKoin
@@ -21,16 +22,21 @@ import timber.log.Timber.DebugTree
 /**
  * The Main class of the Application
  */
-@Suppress("unused")
+
 class UApp : MultiDexApplication() {
+
+    init {
+        instance = this
+    }
+
     override fun onCreate() {
         super.onCreate()
 
         if (BuildConfig.DEBUG) {
             Timber.plant(DebugTree())
         }
-        if (Util.getDebugLogToFile(this)) {
-            FileLoggerTree.plantToTimberForest(this)
+        if (Util.getDebugLogToFile()) {
+            FileLoggerTree.plantToTimberForest()
         }
 
         startKoin {
@@ -47,6 +53,14 @@ class UApp : MultiDexApplication() {
                 musicServiceModule,
                 mediaPlayerModule
             )
+        }
+    }
+
+    companion object {
+        private var instance: UApp? = null
+
+        fun applicationContext(): Context {
+            return instance!!.applicationContext
         }
     }
 }

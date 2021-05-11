@@ -36,7 +36,7 @@ internal const val OFFLINE_MUSIC_SERVICE = "OfflineMusicService"
 val musicServiceModule = module {
 
     single(named("ServerInstance")) {
-        return@single ActiveServerProvider.getActiveServerId(androidContext())
+        return@single ActiveServerProvider.getActiveServerId()
     }
 
     single(named("ServerID")) {
@@ -81,7 +81,7 @@ val musicServiceModule = module {
 
     single { SubsonicImageLoader(androidContext(), get()) }
 
-    viewModel { ArtistListModel(get(), androidContext()) }
+    viewModel { ArtistListModel(get()) }
 
     single { DownloadHandler(get(), get()) }
     single { NetworkAndStorageChecker(androidContext()) }

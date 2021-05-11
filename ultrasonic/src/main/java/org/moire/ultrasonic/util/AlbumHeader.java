@@ -70,7 +70,7 @@ public class AlbumHeader
 
 			if (!entry.isDirectory())
 			{
-				if (Util.shouldUseFolderForArtistName(context))
+				if (Util.shouldUseFolderForArtistName())
 				{
 					albumHeader.processGrandParents(entry);
 				}

@@ -5,6 +5,7 @@ import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
 import java.util.Collections
 import java.util.LinkedList
+import org.koin.core.component.KoinApiExtension
 import org.moire.ultrasonic.R
 import org.moire.ultrasonic.data.ActiveServerProvider.Companion.isOffline
 import org.moire.ultrasonic.domain.MusicDirectory
@@ -18,6 +19,7 @@ import org.moire.ultrasonic.util.Util
 /**
  * Retrieves a list of songs and adds them to the now playing list
  */
+@KoinApiExtension
 class DownloadHandler(
     val mediaPlayerController: MediaPlayerController,
     val networkAndStorageChecker: NetworkAndStorageChecker
@@ -53,7 +55,7 @@ class DownloadHandler(
                 mediaPlayerController.suggestedPlaylistName = playlistName
             }
             if (autoPlay) {
-                if (Util.getShouldTransitionOnPlaybackPreference(fragment.activity)) {
+                if (Util.getShouldTransitionOnPlaybackPreference()) {
                     fragment.findNavController().popBackStack(R.id.playerFragment, true)
                     fragment.findNavController().navigate(R.id.playerFragment)
                 }
@@ -200,17 +202,17 @@ class DownloadHandler(
 
             @Throws(Throwable::class)
             override fun doInBackground(): List<MusicDirectory.Entry> {
-                val musicService = getMusicService(activity)
+                val musicService = getMusicService()
                 val songs: MutableList<MusicDirectory.Entry> = LinkedList()
                 val root: MusicDirectory
-                if (!isOffline(activity) && isArtist && Util.getShouldUseId3Tags(activity)) {
+                if (!isOffline() && isArtist && Util.getShouldUseId3Tags()) {
                     getSongsForArtist(id, songs)
                 } else {
                     if (isDirectory) {
-                        root = if (!isOffline(activity) && Util.getShouldUseId3Tags(activity))
-                            musicService.getAlbum(id, name, false, activity)
+                        root = if (!isOffline() && Util.getShouldUseId3Tags())
+                            musicService.getAlbum(id, name, false)
                         else
-                            musicService.getMusicDirectory(id, name, false, activity)
+                            musicService.getMusicDirectory(id, name, false)
                     } else if (isShare) {
                         root = MusicDirectory()
                         val shares = musicService.getShares(true, activity)
@@ -243,7 +245,7 @@ class DownloadHandler(
                         songs.add(song)
                     }
                 }
-                val musicService = getMusicService(activity)
+                val musicService = getMusicService()
                 for (
                     (id1, _, _, title) in parent.getChildren(
                         includeDirs = true,
@@ -251,10 +253,10 @@ class DownloadHandler(
                     )
                 ) {
                     val root: MusicDirectory = if (
-                        !isOffline(activity) &&
-                        Util.getShouldUseId3Tags(activity)
-                    ) musicService.getAlbum(id1, title, false, activity)
-                    else musicService.getMusicDirectory(id1, title, false, activity)
+                        !isOffline() &&
+                        Util.getShouldUseId3Tags()
+                    ) musicService.getAlbum(id1, title, false)
+                    else musicService.getMusicDirectory(id1, title, false)
                     getSongsRecursively(root, songs)
                 }
             }
@@ -267,14 +269,13 @@ class DownloadHandler(
                 if (songs.size > maxSongs) {
                     return
                 }
-                val musicService = getMusicService(activity)
-                val artist = musicService.getArtist(id, "", false, activity)
+                val musicService = getMusicService()
+                val artist = musicService.getArtist(id, "", false)
                 for ((id1) in artist.getChildren()) {
                     val albumDirectory = musicService.getAlbum(
                         id1,
                         "",
-                        false,
-                        activity
+                        false
                     )
                     for (song in albumDirectory.getChildren()) {
                         if (!song.isVideo) {
@@ -285,7 +286,7 @@ class DownloadHandler(
             }
 
             override fun done(songs: List<MusicDirectory.Entry>) {
-                if (Util.getShouldSortByDisc(activity)) {
+                if (Util.getShouldSortByDisc()) {
                     Collections.sort(songs, EntryByDiscAndTrackComparator())
                 }
                 if (songs.isNotEmpty()) {
@@ -307,7 +308,7 @@ class DownloadHandler(
                             )
                             if (
                                 !append &&
-                                Util.getShouldTransitionOnPlaybackPreference(activity)
+                                Util.getShouldTransitionOnPlaybackPreference()
                             ) {
                                 fragment.findNavController().popBackStack(
                                     R.id.playerFragment,

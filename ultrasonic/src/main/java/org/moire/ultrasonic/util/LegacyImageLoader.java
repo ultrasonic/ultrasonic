@@ -416,7 +416,7 @@ public class LegacyImageLoader implements Runnable, ImageLoader {
 
         public void execute() {
             try {
-                MusicService musicService = MusicServiceFactory.getMusicService(view.getContext());
+                MusicService musicService = MusicServiceFactory.getMusicService();
                 final boolean isAvatar = this.username != null && this.entry == null;
                 final Bitmap bitmap = this.entry != null ?
                     musicService.getCoverArt(view.getContext(), entry, size, saveToFile, highQuality) :

@@ -60,8 +60,8 @@ public class PermissionUtil {
      * @param callback callback function to execute after the permission request is finished
      */
     public void handlePermissionFailed(final PermissionRequestFinishedCallback callback) {
-        String currentCachePath = Util.getPreferences(applicationContext).getString(Constants.PREFERENCES_KEY_CACHE_LOCATION, FileUtil.getDefaultMusicDirectory(applicationContext).getPath());
-        String defaultCachePath = FileUtil.getDefaultMusicDirectory(applicationContext).getPath();
+        String currentCachePath = Util.getPreferences().getString(Constants.PREFERENCES_KEY_CACHE_LOCATION, FileUtil.getDefaultMusicDirectory().getPath());
+        String defaultCachePath = FileUtil.getDefaultMusicDirectory().getPath();
 
         // Ultrasonic can do nothing about this error when the Music Directory is already set to the default.
         if (currentCachePath.compareTo(defaultCachePath) == 0) return;
@@ -69,12 +69,12 @@ public class PermissionUtil {
         if ((PermissionChecker.checkSelfPermission(applicationContext, Manifest.permission.WRITE_EXTERNAL_STORAGE) == PERMISSION_DENIED) ||
                 (PermissionChecker.checkSelfPermission(applicationContext, Manifest.permission.READ_EXTERNAL_STORAGE) == PERMISSION_DENIED)) {
             // While we request permission, the Music Directory is temporarily reset to its default location
-            setCacheLocation(applicationContext, FileUtil.getDefaultMusicDirectory(applicationContext).getPath());
+            setCacheLocation(applicationContext, FileUtil.getDefaultMusicDirectory().getPath());
             // If the application is not running, we can't notify the user
             if (activityContext == null) return;
             requestFailedPermission(activityContext, currentCachePath, callback);
         } else {
-            setCacheLocation(applicationContext, FileUtil.getDefaultMusicDirectory(applicationContext).getPath());
+            setCacheLocation(applicationContext, FileUtil.getDefaultMusicDirectory().getPath());
             // If the application is not running, we can't notify the user
             if (activityContext != null) {
                 new Handler(Looper.getMainLooper()).post(new Runnable() {
@@ -136,7 +136,7 @@ public class PermissionUtil {
     }
 
     private static void setCacheLocation(Context context, String cacheLocation) {
-        Util.getPreferences(context).edit()
+        Util.getPreferences().edit()
                 .putString(Constants.PREFERENCES_KEY_CACHE_LOCATION, cacheLocation)
                 .apply();
     }
@@ -164,7 +164,7 @@ public class PermissionUtil {
                         }
 
                         Timber.i("At least one permission is missing to use directory %s ", cacheLocation);
-                        setCacheLocation(context, FileUtil.getDefaultMusicDirectory(context).getPath());
+                        setCacheLocation(context, FileUtil.getDefaultMusicDirectory().getPath());
                         showWarning(context, context.getString(R.string.permissions_message_box_title),
                                 context.getString(R.string.permissions_permission_missing), null);
                         if (callback != null) callback.onPermissionRequestFinished(false);
@@ -201,7 +201,7 @@ public class PermissionUtil {
         builder.setNegativeButton(context.getString(R.string.common_cancel), new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
-                setCacheLocation(context, FileUtil.getDefaultMusicDirectory(context).getPath());
+                setCacheLocation(context, FileUtil.getDefaultMusicDirectory().getPath());
                 dialog.cancel();
             }
         });

@@ -127,10 +127,10 @@ public class PlaylistsFragment extends Fragment {
             @Override
             protected List<Playlist> doInBackground() throws Throwable
             {
-                MusicService musicService = MusicServiceFactory.getMusicService(getContext());
+                MusicService musicService = MusicServiceFactory.getMusicService();
                 List<Playlist> playlists = musicService.getPlaylists(refresh, getContext());
 
-                if (!ActiveServerProvider.Companion.isOffline(getContext()))
+                if (!ActiveServerProvider.Companion.isOffline())
                     new CacheCleaner(getContext()).cleanPlaylists(playlists);
                 return playlists;
             }
@@ -151,14 +151,14 @@ public class PlaylistsFragment extends Fragment {
         super.onCreateContextMenu(menu, view, menuInfo);
 
         MenuInflater inflater = getActivity().getMenuInflater();
-        if (ActiveServerProvider.Companion.isOffline(getContext())) inflater.inflate(R.menu.select_playlist_context_offline, menu);
+        if (ActiveServerProvider.Companion.isOffline()) inflater.inflate(R.menu.select_playlist_context_offline, menu);
         else inflater.inflate(R.menu.select_playlist_context, menu);
 
         MenuItem downloadMenuItem = menu.findItem(R.id.album_menu_download);
 
         if (downloadMenuItem != null)
         {
-            downloadMenuItem.setVisible(!ActiveServerProvider.Companion.isOffline(getContext()));
+            downloadMenuItem.setVisible(!ActiveServerProvider.Companion.isOffline());
         }
     }
 
@@ -222,7 +222,7 @@ public class PlaylistsFragment extends Fragment {
                     @Override
                     protected Void doInBackground() throws Throwable
                     {
-                        MusicService musicService = MusicServiceFactory.getMusicService(getContext());
+                        MusicService musicService = MusicServiceFactory.getMusicService();
                         musicService.deletePlaylist(playlist.getId(), getContext());
                         return null;
                     }
@@ -312,7 +312,7 @@ public class PlaylistsFragment extends Fragment {
                         String name = nameBoxText != null ? nameBoxText.toString() : null;
                         String comment = commentBoxText != null ? commentBoxText.toString() : null;
 
-                        MusicService musicService = MusicServiceFactory.getMusicService(getContext());
+                        MusicService musicService = MusicServiceFactory.getMusicService();
                         musicService.updatePlaylist(playlist.getId(), name, comment, publicBox.isChecked(), getContext());
                         return null;
                     }

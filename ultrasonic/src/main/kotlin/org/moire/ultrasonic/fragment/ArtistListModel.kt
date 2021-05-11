@@ -18,7 +18,6 @@
  */
 package org.moire.ultrasonic.fragment
 
-import android.content.Context
 import android.os.Handler
 import android.os.Looper
 import androidx.lifecycle.LiveData
@@ -40,8 +39,7 @@ import org.moire.ultrasonic.util.Util
  * Provides ViewModel which contains the list of available Artists
  */
 class ArtistListModel(
-    private val activeServerProvider: ActiveServerProvider,
-    private val context: Context
+    private val activeServerProvider: ActiveServerProvider
 ) : ViewModel() {
     private val musicFolders: MutableLiveData<List<MusicFolder>> = MutableLiveData()
     private val artists: MutableLiveData<List<Artist>> = MutableLiveData()
@@ -78,22 +76,22 @@ class ArtistListModel(
 
     private suspend fun loadFromServer(refresh: Boolean, swipe: SwipeRefreshLayout) =
         withContext(Dispatchers.IO) {
-            val musicService = MusicServiceFactory.getMusicService(context)
-            val isOffline = ActiveServerProvider.isOffline(context)
-            val useId3Tags = Util.getShouldUseId3Tags(context)
+            val musicService = MusicServiceFactory.getMusicService()
+            val isOffline = ActiveServerProvider.isOffline()
+            val useId3Tags = Util.getShouldUseId3Tags()
 
             try {
                 if (!isOffline && !useId3Tags) {
                     musicFolders.postValue(
-                        musicService.getMusicFolders(refresh, context)
+                        musicService.getMusicFolders(refresh)
                     )
                 }
 
                 val musicFolderId = activeServerProvider.getActiveServer().musicFolderId
 
                 val result = if (!isOffline && useId3Tags)
-                    musicService.getArtists(refresh, context)
-                else musicService.getIndexes(musicFolderId, refresh, context)
+                    musicService.getArtists(refresh)
+                else musicService.getIndexes(musicFolderId, refresh)
 
                 val retrievedArtists: MutableList<Artist> =
                     ArrayList(result.shortcuts.size + result.artists.size)

@@ -54,7 +54,7 @@ public class AlbumView extends UpdateView
 		this.context = context;
 		this.imageLoader = imageLoader;
 
-		String theme = Util.getTheme(context);
+		String theme = Util.getTheme();
 		boolean themesMatch = theme.equals(AlbumView.theme);
 		AlbumView.theme = theme;
 
@@ -121,7 +121,7 @@ public class AlbumView extends UpdateView
 		viewHolder.artist.setVisibility(artist == null ? View.GONE : View.VISIBLE);
 		viewHolder.star.setImageDrawable(starred ? starDrawable : starHollowDrawable);
 
-		if (ActiveServerProvider.Companion.isOffline(this.context) || "-1".equals(album.getId()))
+		if (ActiveServerProvider.Companion.isOffline() || "-1".equals(album.getId()))
 		{
 			viewHolder.star.setVisibility(View.GONE);
 		}
@@ -146,23 +146,23 @@ public class AlbumView extends UpdateView
 						album.setStarred(false);
 					}
 
-                    final MusicService musicService = MusicServiceFactory.getMusicService(view.getContext());
+                    final MusicService musicService = MusicServiceFactory.getMusicService();
 					new Thread(new Runnable()
 					{
 						@Override
 						public void run()
 						{
-							boolean useId3 = Util.getShouldUseId3Tags(getContext());
+							boolean useId3 = Util.getShouldUseId3Tags();
 
 							try
 							{
 								if (!isStarred)
 								{
-									musicService.star(!useId3 ? id : null, useId3 ? id : null, null, getContext());
+									musicService.star(!useId3 ? id : null, useId3 ? id : null, null);
 								}
 								else
 								{
-									musicService.unstar(!useId3 ? id : null, useId3 ? id : null, null, getContext());
+									musicService.unstar(!useId3 ? id : null, useId3 ? id : null, null);
 								}
 							}
 							catch (Exception e)

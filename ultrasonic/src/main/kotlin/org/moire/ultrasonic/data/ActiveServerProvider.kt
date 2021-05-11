@@ -1,12 +1,12 @@
 package org.moire.ultrasonic.data
 
-import android.content.Context
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.withContext
 import org.moire.ultrasonic.R
+import org.moire.ultrasonic.app.UApp
 import org.moire.ultrasonic.service.MusicServiceFactory.resetMusicService
 import org.moire.ultrasonic.util.Constants
 import org.moire.ultrasonic.util.Util
@@ -17,8 +17,7 @@ import timber.log.Timber
  * It caches the settings read up from the DB to improve performance.
  */
 class ActiveServerProvider(
-    private val repository: ServerSettingDao,
-    private val context: Context
+    private val repository: ServerSettingDao
 ) {
     private var cachedServer: ServerSetting? = null
 
@@ -27,7 +26,7 @@ class ActiveServerProvider(
      * @return The Active Server Settings
      */
     fun getActiveServer(): ServerSetting {
-        val serverId = getActiveServerId(context)
+        val serverId = getActiveServerId()
 
         if (serverId > 0) {
             if (cachedServer != null && cachedServer!!.id == serverId) return cachedServer!!
@@ -44,13 +43,13 @@ class ActiveServerProvider(
             }
 
             if (cachedServer != null) return cachedServer!!
-            setActiveServerId(context, 0)
+            setActiveServerId(0)
         }
 
         return ServerSetting(
             id = -1,
             index = 0,
-            name = context.getString(R.string.main_offline),
+            name = UApp.applicationContext().getString(R.string.main_offline),
             url = "http://localhost",
             userName = "",
             password = "",
@@ -70,13 +69,13 @@ class ActiveServerProvider(
         Timber.d("setActiveServerByIndex $index")
         if (index < 1) {
             // Offline mode is selected
-            setActiveServerId(context, 0)
+            setActiveServerId(0)
             return
         }
 
         GlobalScope.launch(Dispatchers.IO) {
             val serverId = repository.findByIndex(index)?.id ?: 0
-            setActiveServerId(context, serverId)
+            setActiveServerId(serverId)
         }
     }
 
@@ -132,25 +131,25 @@ class ActiveServerProvider(
          * Queries if the Active Server is the "Offline" mode of Ultrasonic
          * @return True, if the "Offline" mode is selected
          */
-        fun isOffline(context: Context?): Boolean {
-            return context == null || getActiveServerId(context) < 1
+        fun isOffline(): Boolean {
+            return getActiveServerId() < 1
         }
 
         /**
          * Queries the Id of the Active Server
          */
-        fun getActiveServerId(context: Context): Int {
-            val preferences = Util.getPreferences(context)
+        fun getActiveServerId(): Int {
+            val preferences = Util.getPreferences()
             return preferences.getInt(Constants.PREFERENCES_KEY_SERVER_INSTANCE, -1)
         }
 
         /**
          * Sets the Id of the Active Server
          */
-        fun setActiveServerId(context: Context, serverId: Int) {
+        fun setActiveServerId(serverId: Int) {
             resetMusicService()
 
-            val preferences = Util.getPreferences(context)
+            val preferences = Util.getPreferences()
             val editor = preferences.edit()
             editor.putInt(Constants.PREFERENCES_KEY_SERVER_INSTANCE, serverId)
             editor.apply()
@@ -159,22 +158,22 @@ class ActiveServerProvider(
         /**
          * Queries if Scrobbling is enabled
          */
-        fun isScrobblingEnabled(context: Context): Boolean {
-            if (isOffline(context)) {
+        fun isScrobblingEnabled(): Boolean {
+            if (isOffline()) {
                 return false
             }
-            val preferences = Util.getPreferences(context)
+            val preferences = Util.getPreferences()
             return preferences.getBoolean(Constants.PREFERENCES_KEY_SCROBBLE, false)
         }
 
         /**
          * Queries if Server Scaling is enabled
          */
-        fun isServerScalingEnabled(context: Context): Boolean {
-            if (isOffline(context)) {
+        fun isServerScalingEnabled(): Boolean {
+            if (isOffline()) {
                 return false
             }
-            val preferences = Util.getPreferences(context)
+            val preferences = Util.getPreferences()
             return preferences.getBoolean(Constants.PREFERENCES_KEY_SERVER_SCALING, false)
         }
     }

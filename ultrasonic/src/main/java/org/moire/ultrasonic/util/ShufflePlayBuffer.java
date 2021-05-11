@@ -97,14 +97,14 @@ public class ShufflePlayBuffer
 		// Check if active server has changed.
 		clearBufferIfNecessary();
 
-		if (buffer.size() > REFILL_THRESHOLD || (!Util.isNetworkConnected(context) && !ActiveServerProvider.Companion.isOffline(context)))
+		if (buffer.size() > REFILL_THRESHOLD || (!Util.isNetworkConnected(context) && !ActiveServerProvider.Companion.isOffline()))
 		{
 			return;
 		}
 
 		try
 		{
-			MusicService service = MusicServiceFactory.getMusicService(context);
+			MusicService service = MusicServiceFactory.getMusicService();
 			int n = CAPACITY - buffer.size();
 			MusicDirectory songs = service.getRandomSongs(n, context);
 
@@ -124,9 +124,9 @@ public class ShufflePlayBuffer
 	{
 		synchronized (buffer)
 		{
-			if (currentServer != ActiveServerProvider.Companion.getActiveServerId(context))
+			if (currentServer != ActiveServerProvider.Companion.getActiveServerId())
 			{
-				currentServer = ActiveServerProvider.Companion.getActiveServerId(context);
+				currentServer = ActiveServerProvider.Companion.getActiveServerId();
 				buffer.clear();
 			}
 		}

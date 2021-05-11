@@ -65,7 +65,7 @@ public class MainFragment extends Fragment {
         super.onResume();
         boolean shouldRestart = false;
 
-        boolean id3 = Util.getShouldUseId3Tags(MainFragment.this.getContext());
+        boolean id3 = Util.getShouldUseId3Tags();
         String currentActiveServerProperties = getActiveServerProperties();
 
         if (id3 != shouldUseId3)
@@ -118,7 +118,7 @@ public class MainFragment extends Fragment {
         final MergeAdapter adapter = new MergeAdapter();
         adapter.addViews(Collections.singletonList(serverButton), true);
 
-        if (!ActiveServerProvider.Companion.isOffline(this.getContext()))
+        if (!ActiveServerProvider.Companion.isOffline())
         {
             adapter.addView(musicTitle, false);
             adapter.addViews(asList(artistsButton, albumsButton, genresButton), true);
@@ -126,7 +126,7 @@ public class MainFragment extends Fragment {
             adapter.addViews(asList(randomSongsButton, songsStarredButton), true);
             adapter.addView(albumsTitle, false);
 
-            if (Util.getShouldUseId3Tags(MainFragment.this.getContext()))
+            if (Util.getShouldUseId3Tags())
             {
                 shouldUseId3 = true;
                 adapter.addViews(asList(albumsNewestButton, albumsRecentButton, albumsFrequentButton, albumsRandomButton, albumsStarredButton, albumsAlphaByNameButton, albumsAlphaByArtistButton), true);
@@ -224,7 +224,7 @@ public class MainFragment extends Fragment {
         Bundle bundle = new Bundle();
         bundle.putString(Constants.INTENT_EXTRA_NAME_ALBUM_LIST_TYPE, type);
         bundle.putInt(Constants.INTENT_EXTRA_NAME_ALBUM_LIST_TITLE, title);
-        bundle.putInt(Constants.INTENT_EXTRA_NAME_ALBUM_LIST_SIZE, Util.getMaxAlbums(getContext()));
+        bundle.putInt(Constants.INTENT_EXTRA_NAME_ALBUM_LIST_SIZE, Util.getMaxAlbums());
         bundle.putInt(Constants.INTENT_EXTRA_NAME_ALBUM_LIST_OFFSET, 0);
         Navigation.findNavController(getView()).navigate(R.id.mainToSelectAlbum, bundle);
     }
@@ -240,7 +240,7 @@ public class MainFragment extends Fragment {
     {
         Bundle bundle = new Bundle();
         bundle.putInt(Constants.INTENT_EXTRA_NAME_RANDOM, 1);
-        bundle.putInt(Constants.INTENT_EXTRA_NAME_ALBUM_LIST_SIZE, Util.getMaxSongs(getContext()));
+        bundle.putInt(Constants.INTENT_EXTRA_NAME_ALBUM_LIST_SIZE, Util.getMaxSongs());
         Navigation.findNavController(getView()).navigate(R.id.mainToSelectAlbum, bundle);
     }
 

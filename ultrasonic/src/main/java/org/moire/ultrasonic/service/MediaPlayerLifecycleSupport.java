@@ -138,7 +138,7 @@ public class MediaPlayerLifecycleSupport
 	 * while Ultrasonic is running.
 	 */
 	private void registerHeadsetReceiver() {
-        final SharedPreferences sp = Util.getPreferences(context);
+        final SharedPreferences sp = Util.getPreferences();
         final String spKey = context
                 .getString(R.string.settings_playback_resume_play_on_headphones_plug);
 
@@ -190,7 +190,7 @@ public class MediaPlayerLifecycleSupport
 		final int keyCode;
 		int receivedKeyCode = event.getKeyCode();
 		// Translate PLAY and PAUSE codes to PLAY_PAUSE to improve compatibility with old Bluetooth devices
-		if (Util.getSingleButtonPlayPause(context) &&
+		if (Util.getSingleButtonPlayPause() &&
 			(receivedKeyCode == KeyEvent.KEYCODE_MEDIA_PLAY ||
 				receivedKeyCode == KeyEvent.KEYCODE_MEDIA_PAUSE)) {
 			Timber.i("Single button Play/Pause is set, rewriting keyCode to PLAY_PAUSE");

@@ -75,7 +75,7 @@ public class SelectGenreFragment extends Fragment {
                 {
                     Bundle bundle = new Bundle();
                     bundle.putString(Constants.INTENT_EXTRA_NAME_GENRE_NAME, genre.getName());
-                    bundle.putInt(Constants.INTENT_EXTRA_NAME_ALBUM_LIST_SIZE, Util.getMaxSongs(getContext()));
+                    bundle.putInt(Constants.INTENT_EXTRA_NAME_ALBUM_LIST_SIZE, Util.getMaxSongs());
                     bundle.putInt(Constants.INTENT_EXTRA_NAME_ALBUM_LIST_OFFSET, 0);
                     Navigation.findNavController(view).navigate(R.id.selectAlbumFragment, bundle);
                 }
@@ -102,13 +102,13 @@ public class SelectGenreFragment extends Fragment {
             @Override
             protected List<Genre> doInBackground()
             {
-                MusicService musicService = MusicServiceFactory.getMusicService(getContext());
+                MusicService musicService = MusicServiceFactory.getMusicService();
 
                 List<Genre> genres = new ArrayList<>();
 
                 try
                 {
-                    genres = musicService.getGenres(refresh, getContext());
+                    genres = musicService.getGenres(refresh);
                 }
                 catch (Exception x)
                 {

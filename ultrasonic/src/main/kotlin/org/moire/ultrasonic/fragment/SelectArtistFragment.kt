@@ -59,13 +59,13 @@ class SelectArtistFragment : Fragment() {
             artistListModel.refresh(refreshArtistListView!!)
         }
 
-        if (!ActiveServerProvider.isOffline(this.context) &&
-            !Util.getShouldUseId3Tags(this.context)
+        if (!ActiveServerProvider.isOffline() &&
+            !Util.getShouldUseId3Tags()
         ) {
             selectFolderHeader = SelectMusicFolderView(
                 requireContext(), view as ViewGroup,
                 { selectedFolderId ->
-                    if (!ActiveServerProvider.isOffline(context)) {
+                    if (!ActiveServerProvider.isOffline()) {
                         val currentSetting = activeServerProvider.getActiveServer()
                         currentSetting.musicFolderId = selectedFolderId
                         serverSettingsModel.updateItem(currentSetting)
@@ -81,7 +81,7 @@ class SelectArtistFragment : Fragment() {
         if (title == null) {
             setTitle(
                 this,
-                if (ActiveServerProvider.isOffline(this.context))
+                if (ActiveServerProvider.isOffline())
                     R.string.music_library_label_offline
                 else R.string.music_library_label
             )

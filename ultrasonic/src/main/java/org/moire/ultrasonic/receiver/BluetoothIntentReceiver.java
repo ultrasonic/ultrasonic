@@ -66,7 +66,7 @@ public class BluetoothIntentReceiver extends BroadcastReceiver
 		boolean resume = false;
 		boolean pause = false;
 
-		switch (Util.getResumeOnBluetoothDevice(context))
+		switch (Util.getResumeOnBluetoothDevice())
 		{
 			case Constants.PREFERENCE_VALUE_ALL: resume = actionA2dpConnected || actionBluetoothDeviceConnected;
 				break;
@@ -74,7 +74,7 @@ public class BluetoothIntentReceiver extends BroadcastReceiver
 				break;
 		}
 
-		switch (Util.getPauseOnBluetoothDevice(context))
+		switch (Util.getPauseOnBluetoothDevice())
 		{
 			case Constants.PREFERENCE_VALUE_ALL: pause = actionA2dpDisconnected || actionBluetoothDeviceDisconnected;
 				break;

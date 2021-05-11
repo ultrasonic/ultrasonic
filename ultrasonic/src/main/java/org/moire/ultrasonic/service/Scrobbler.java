@@ -18,7 +18,7 @@ public class Scrobbler
 
 	public void scrobble(final Context context, final DownloadFile song, final boolean submission)
 	{
-		if (song == null || !ActiveServerProvider.Companion.isScrobblingEnabled(context)) return;
+		if (song == null || !ActiveServerProvider.Companion.isScrobblingEnabled()) return;
 
 		final String id = song.getSong().getId();
 		if (id == null) return;
@@ -36,7 +36,7 @@ public class Scrobbler
 			@Override
 			public void run()
 			{
-				MusicService service = MusicServiceFactory.getMusicService(context);
+				MusicService service = MusicServiceFactory.getMusicService();
 				try
 				{
 					service.scrobble(id, submission, context);

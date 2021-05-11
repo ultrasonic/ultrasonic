@@ -116,7 +116,7 @@ public class UpdateView extends LinearLayout
 					Timber.w(x, "Error when updating song views.");
 				}
 
-				uiHandler.postDelayed(updateRunnable, Util.getViewRefreshInterval(context));
+				uiHandler.postDelayed(updateRunnable, Util.getViewRefreshInterval());
 			}
 		};
 

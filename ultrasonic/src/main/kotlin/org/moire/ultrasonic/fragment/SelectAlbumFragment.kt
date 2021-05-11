@@ -131,7 +131,7 @@ class SelectAlbumFragment : Fragment() {
         selectFolderHeader = SelectMusicFolderView(
             requireContext(), view as ViewGroup
         ) { selectedFolderId ->
-            if (!isOffline(context)) {
+            if (!isOffline()) {
                 val serverSettingsModel: ServerSettingsModel by viewModel()
                 val currentSetting = activeServerProvider.getActiveServer()
                 currentSetting.musicFolderId = selectedFolderId
@@ -298,7 +298,7 @@ class SelectAlbumFragment : Fragment() {
                 model.getRandom(albumListSize)
             } else {
                 setTitle(name)
-                if (!isOffline(activity) && Util.getShouldUseId3Tags(activity)) {
+                if (!isOffline() && Util.getShouldUseId3Tags()) {
                     if (isAlbum) {
                         model.getAlbum(refresh, id, name, parentId)
                     } else {
@@ -327,12 +327,12 @@ class SelectAlbumFragment : Fragment() {
         shareButton = menu.findItem(R.id.menu_item_share)
 
         if (shareButton != null) {
-            shareButton!!.isVisible = !isOffline(context)
+            shareButton!!.isVisible = !isOffline()
         }
 
         val downloadMenuItem = menu.findItem(R.id.album_menu_download)
         if (downloadMenuItem != null) {
-            downloadMenuItem.isVisible = !isOffline(context)
+            downloadMenuItem.isVisible = !isOffline()
         }
     }
 
@@ -551,12 +551,12 @@ class SelectAlbumFragment : Fragment() {
         playNowButton!!.visibility = if (enabled) View.VISIBLE else View.GONE
         playNextButton!!.visibility = if (enabled) View.VISIBLE else View.GONE
         playLastButton!!.visibility = if (enabled) View.VISIBLE else View.GONE
-        pinButton!!.visibility = if (enabled && !isOffline(context) && selection.size > pinnedCount)
+        pinButton!!.visibility = if (enabled && !isOffline() && selection.size > pinnedCount)
             View.VISIBLE
         else
             View.GONE
         unpinButton!!.visibility = if (enabled && unpinEnabled) View.VISIBLE else View.GONE
-        downloadButton!!.visibility = if (enabled && !deleteEnabled && !isOffline(context))
+        downloadButton!!.visibility = if (enabled && !deleteEnabled && !isOffline())
             View.VISIBLE
         else
             View.GONE
@@ -710,7 +710,7 @@ class SelectAlbumFragment : Fragment() {
     private fun updateInterfaceWithEntries(musicDirectory: MusicDirectory) {
         val entries = musicDirectory.getChildren()
 
-        if (model.currentDirectoryIsSortable && Util.getShouldSortByDisc(context)) {
+        if (model.currentDirectoryIsSortable && Util.getShouldSortByDisc()) {
             Collections.sort(entries, EntryByDiscAndTrackComparator())
         }
 
@@ -799,7 +799,7 @@ class SelectAlbumFragment : Fragment() {
         )
 
         playAllButtonVisible = !(isAlbumList || entries.isEmpty()) && !allVideos
-        shareButtonVisible = !isOffline(context) && songCount > 0
+        shareButtonVisible = !isOffline() && songCount > 0
 
         albumListView!!.removeHeaderView(emptyView!!)
         if (entries.isEmpty()) {

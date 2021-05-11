@@ -309,13 +309,13 @@ public class MediaPlayerControllerImpl implements MediaPlayerController
 	@Override
 	public RepeatMode getRepeatMode()
 	{
-		return Util.getRepeatMode(context);
+		return Util.getRepeatMode();
 	}
 
 	@Override
 	public synchronized void setRepeatMode(RepeatMode repeatMode)
 	{
-		Util.setRepeatMode(context, repeatMode);
+		Util.setRepeatMode(repeatMode);
 		MediaPlayerService mediaPlayerService = MediaPlayerService.getRunningInstance();
 		if (mediaPlayerService != null) mediaPlayerService.setNextPlaying();
 	}
@@ -527,7 +527,7 @@ public class MediaPlayerControllerImpl implements MediaPlayerController
 		try
 		{
 			String username = activeServerProvider.getValue().getActiveServer().getUserName();
-			UserInfo user = MusicServiceFactory.getMusicService(context).getUser(username, context);
+			UserInfo user = MusicServiceFactory.getMusicService().getUser(username, context);
 			return user.getJukeboxRole();
 		}
 		catch (Exception e)
@@ -608,7 +608,7 @@ public class MediaPlayerControllerImpl implements MediaPlayerController
 		new Thread(() -> {
 			try
 			{
-				MusicServiceFactory.getMusicService(context).setRating(song.getId(), rating, context);
+				MusicServiceFactory.getMusicService().setRating(song.getId(), rating);
 			}
 			catch (Exception e)
 			{

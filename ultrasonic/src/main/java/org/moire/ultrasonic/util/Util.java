@@ -46,10 +46,10 @@ import android.view.View;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.Toast;
 
-import androidx.annotation.ColorInt;
 import androidx.preference.PreferenceManager;
 
 import org.moire.ultrasonic.R;
+import org.moire.ultrasonic.app.UApp;
 import org.moire.ultrasonic.data.ActiveServerProvider;
 import org.moire.ultrasonic.domain.*;
 import org.moire.ultrasonic.domain.MusicDirectory.Entry;
@@ -86,9 +86,6 @@ public class Util
 	public static final String CM_AVRCP_PLAYSTATE_CHANGED = "com.android.music.playstatechanged";
 	public static final String CM_AVRCP_METADATA_CHANGED = "com.android.music.metachanged";
 
-	private static boolean mediaButtonsRegisteredForUI;
-	private static boolean mediaButtonsRegisteredForService;
-
 	// Used by hexEncode()
 	private static final char[] HEX_DIGITS = {'0', '1', '2', '3', '4', '5', '6', '7', '8', '9', 'a', 'b', 'c', 'd', 'e', 'f'};
 	private static Toast toast;
@@ -99,58 +96,63 @@ public class Util
 	{
 	}
 
-	public static boolean isScreenLitOnDownload(Context context)
+	// Retrieves an instance of the application Context
+	public static Context appContext() {
+		return UApp.Companion.applicationContext();
+	}
+
+	public static boolean isScreenLitOnDownload()
 	{
-		SharedPreferences preferences = getPreferences(context);
+		SharedPreferences preferences = getPreferences();
 		return preferences.getBoolean(Constants.PREFERENCES_KEY_SCREEN_LIT_ON_DOWNLOAD, false);
 	}
 
-	public static RepeatMode getRepeatMode(Context context)
+	public static RepeatMode getRepeatMode()
 	{
-		SharedPreferences preferences = getPreferences(context);
+		SharedPreferences preferences = getPreferences();
 		return RepeatMode.valueOf(preferences.getString(Constants.PREFERENCES_KEY_REPEAT_MODE, RepeatMode.OFF.name()));
 	}
 
-	public static void setRepeatMode(Context context, RepeatMode repeatMode)
+	public static void setRepeatMode(RepeatMode repeatMode)
 	{
-		SharedPreferences preferences = getPreferences(context);
+		SharedPreferences preferences = getPreferences();
 		SharedPreferences.Editor editor = preferences.edit();
 		editor.putString(Constants.PREFERENCES_KEY_REPEAT_MODE, repeatMode.name());
 		editor.apply();
 	}
 
-	public static boolean isNotificationEnabled(Context context)
+	public static boolean isNotificationEnabled()
 	{
 		// After API26 foreground services must be used for music playback, and they must have a notification
 		if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) return true;
-		SharedPreferences preferences = getPreferences(context);
+		SharedPreferences preferences = getPreferences();
 		return preferences.getBoolean(Constants.PREFERENCES_KEY_SHOW_NOTIFICATION, false);
 	}
 
-	public static boolean isNotificationAlwaysEnabled(Context context)
+	public static boolean isNotificationAlwaysEnabled()
 	{
 		// After API26 foreground services must be used for music playback, and they must have a notification
 		if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) return true;
-		SharedPreferences preferences = getPreferences(context);
+		SharedPreferences preferences = getPreferences();
 		return preferences.getBoolean(Constants.PREFERENCES_KEY_ALWAYS_SHOW_NOTIFICATION, false);
 	}
 
 	@SuppressWarnings({"BooleanMethodIsAlwaysInverted"}) // It is inverted for readability
-	public static boolean isLockScreenEnabled(Context context)
+	public static boolean isLockScreenEnabled()
 	{
-		SharedPreferences preferences = getPreferences(context);
+		SharedPreferences preferences = getPreferences();
 		return preferences.getBoolean(Constants.PREFERENCES_KEY_SHOW_LOCK_SCREEN_CONTROLS, false);
 	}
 
-	public static String getTheme(Context context)
+	public static String getTheme()
 	{
-		SharedPreferences preferences = getPreferences(context);
+		SharedPreferences preferences = getPreferences();
 		return preferences.getString(Constants.PREFERENCES_KEY_THEME, Constants.PREFERENCES_KEY_THEME_DARK);
 	}
 
 	public static void applyTheme(Context context)
 	{
-		String theme = Util.getTheme(context);
+		String theme = Util.getTheme();
 
 		if (Constants.PREFERENCES_KEY_THEME_DARK.equalsIgnoreCase(theme) || "fullscreen".equalsIgnoreCase(theme))
 		{
@@ -178,26 +180,26 @@ public class Util
 		}
 
 		boolean wifi = networkInfo.getType() == ConnectivityManager.TYPE_WIFI;
-		SharedPreferences preferences = getPreferences(context);
+		SharedPreferences preferences = getPreferences();
 		return Integer.parseInt(preferences.getString(wifi ? Constants.PREFERENCES_KEY_MAX_BITRATE_WIFI : Constants.PREFERENCES_KEY_MAX_BITRATE_MOBILE, "0"));
 	}
 
-	public static int getPreloadCount(Context context)
+	public static int getPreloadCount()
 	{
-		SharedPreferences preferences = getPreferences(context);
+		SharedPreferences preferences = getPreferences();
 		int preloadCount = Integer.parseInt(preferences.getString(Constants.PREFERENCES_KEY_PRELOAD_COUNT, "-1"));
 		return preloadCount == -1 ? Integer.MAX_VALUE : preloadCount;
 	}
 
-	public static int getCacheSizeMB(Context context)
+	public static int getCacheSizeMB()
 	{
-		SharedPreferences preferences = getPreferences(context);
+		SharedPreferences preferences = getPreferences();
 		int cacheSize = Integer.parseInt(preferences.getString(Constants.PREFERENCES_KEY_CACHE_SIZE, "-1"));
 		return cacheSize == -1 ? Integer.MAX_VALUE : cacheSize;
 	}
 
-    public static SharedPreferences getPreferences(Context context) {
-        return PreferenceManager.getDefaultSharedPreferences(context);
+    public static SharedPreferences getPreferences() {
+        return PreferenceManager.getDefaultSharedPreferences(appContext());
     }
 
 	/**
@@ -554,7 +556,7 @@ public class Util
 		boolean connected = networkInfo != null && networkInfo.isConnected();
 
 		boolean wifiConnected = connected && networkInfo.getType() == ConnectivityManager.TYPE_WIFI;
-		boolean wifiRequired = isWifiRequiredForDownload(context);
+		boolean wifiRequired = isWifiRequiredForDownload();
 
 		return connected && (!wifiRequired || wifiConnected);
 	}
@@ -564,34 +566,30 @@ public class Util
 		return Environment.MEDIA_MOUNTED.equals(Environment.getExternalStorageState());
 	}
 
-	private static boolean isWifiRequiredForDownload(Context context)
+	private static boolean isWifiRequiredForDownload()
 	{
-		SharedPreferences preferences = getPreferences(context);
+		SharedPreferences preferences = getPreferences();
 		return preferences.getBoolean(Constants.PREFERENCES_KEY_WIFI_REQUIRED_FOR_DOWNLOAD, false);
 	}
 
-	public static boolean shouldDisplayBitrateWithArtist(Context context)
+	public static boolean shouldDisplayBitrateWithArtist()
 	{
-		SharedPreferences preferences = getPreferences(context);
+		SharedPreferences preferences = getPreferences();
 		return preferences.getBoolean(Constants.PREFERENCES_KEY_DISPLAY_BITRATE_WITH_ARTIST, true);
 	}
 
-	public static boolean shouldUseFolderForArtistName(Context context)
+	public static boolean shouldUseFolderForArtistName()
 	{
-		SharedPreferences preferences = getPreferences(context);
+		SharedPreferences preferences = getPreferences();
 		return preferences.getBoolean(Constants.PREFERENCES_KEY_USE_FOLDER_FOR_ALBUM_ARTIST, false);
 	}
 
-	public static boolean shouldShowTrackNumber(Context context)
+	public static boolean shouldShowTrackNumber()
 	{
-		SharedPreferences preferences = getPreferences(context);
+		SharedPreferences preferences = getPreferences();
 		return preferences.getBoolean(Constants.PREFERENCES_KEY_SHOW_TRACK_NUMBER, false);
 	}
 
-	public static void info(Context context, int titleId, int messageId)
-	{
-		showDialog(context, android.R.drawable.ic_dialog_info, titleId, messageId);
-	}
 
 	private static void showDialog(Context context, int icon, int titleId, int messageId)
 	{
@@ -669,7 +667,7 @@ public class Util
 
 	public static int getScaledHeight(Bitmap bitmap, int width)
 	{
-		return getScaledHeight((double) bitmap.getHeight(), (double) bitmap.getWidth(), width);
+		return getScaledHeight(bitmap.getHeight(), bitmap.getWidth(), width);
 	}
 
 	public static Bitmap scaleBitmap(Bitmap bitmap, int size)
@@ -726,7 +724,7 @@ public class Util
 			intent.putExtra("artist", song.getArtist());
 			intent.putExtra("album", song.getAlbum());
 
-			File albumArtFile = FileUtil.getAlbumArtFile(context, song);
+			File albumArtFile = FileUtil.getAlbumArtFile(song);
 			intent.putExtra("coverart", albumArtFile.getAbsolutePath());
 		}
 		else
@@ -742,7 +740,7 @@ public class Util
 
 	public static void broadcastA2dpMetaDataChange(Context context, int playerPosition, DownloadFile currentPlaying, int listSize, int id)
 	{
-		if (!Util.getShouldSendBluetoothNotifications(context))
+		if (!Util.getShouldSendBluetoothNotifications())
 		{
 			return;
 		}
@@ -763,7 +761,7 @@ public class Util
 			avrcpIntent.putExtra("album_artist", "");
 			avrcpIntent.putExtra("album_artist_name", "");
 
-			if (Util.getShouldSendBluetoothAlbumArt(context))
+			if (Util.getShouldSendBluetoothAlbumArt())
 			{
 				avrcpIntent.putExtra("coverart", (Parcelable) null);
 				avrcpIntent.putExtra("cover", (Parcelable) null);
@@ -796,9 +794,9 @@ public class Util
 			avrcpIntent.putExtra("album_artist_name", artist);
 
 
-			if (Util.getShouldSendBluetoothAlbumArt(context))
+			if (Util.getShouldSendBluetoothAlbumArt())
 			{
-				File albumArtFile = FileUtil.getAlbumArtFile(context, song);
+				File albumArtFile = FileUtil.getAlbumArtFile(song);
 				avrcpIntent.putExtra("coverart", albumArtFile.getAbsolutePath());
 				avrcpIntent.putExtra("cover", albumArtFile.getAbsolutePath());
 			}
@@ -818,7 +816,7 @@ public class Util
 
 	public static void broadcastA2dpPlayStatusChange(Context context, PlayerState state, Entry currentSong, Integer listSize, Integer id, Integer playerPosition)
 	{
-		if (!Util.getShouldSendBluetoothNotifications(context))
+		if (!Util.getShouldSendBluetoothNotifications())
 		{
 			return;
 		}
@@ -852,9 +850,9 @@ public class Util
 			avrcpIntent.putExtra("album_artist", artist);
 			avrcpIntent.putExtra("album_artist_name", artist);
 
-			if (Util.getShouldSendBluetoothAlbumArt(context))
+			if (Util.getShouldSendBluetoothAlbumArt())
 			{
-				File albumArtFile = FileUtil.getAlbumArtFile(context, currentSong);
+				File albumArtFile = FileUtil.getAlbumArtFile(currentSong);
 				avrcpIntent.putExtra("coverart", albumArtFile.getAbsolutePath());
 				avrcpIntent.putExtra("cover", albumArtFile.getAbsolutePath());
 			}
@@ -985,109 +983,102 @@ public class Util
 		return inSampleSize;
 	}
 
-	// TODO: Shouldn't this be used when making requests?
-	public static int getNetworkTimeout(Context context)
+	public static int getDefaultAlbums()
 	{
-		SharedPreferences preferences = getPreferences(context);
-		return Integer.parseInt(preferences.getString(Constants.PREFERENCES_KEY_NETWORK_TIMEOUT, "15000"));
-	}
-
-	public static int getDefaultAlbums(Context context)
-	{
-		SharedPreferences preferences = getPreferences(context);
+		SharedPreferences preferences = getPreferences();
 		return Integer.parseInt(preferences.getString(Constants.PREFERENCES_KEY_DEFAULT_ALBUMS, "5"));
 	}
 
-	public static int getMaxAlbums(Context context)
+	public static int getMaxAlbums()
 	{
-		SharedPreferences preferences = getPreferences(context);
+		SharedPreferences preferences = getPreferences();
 		return Integer.parseInt(preferences.getString(Constants.PREFERENCES_KEY_MAX_ALBUMS, "20"));
 	}
 
-	public static int getDefaultSongs(Context context)
+	public static int getDefaultSongs()
 	{
-		SharedPreferences preferences = getPreferences(context);
+		SharedPreferences preferences = getPreferences();
 		return Integer.parseInt(preferences.getString(Constants.PREFERENCES_KEY_DEFAULT_SONGS, "10"));
 	}
 
-	public static int getMaxSongs(Context context)
+	public static int getMaxSongs()
 	{
-		SharedPreferences preferences = getPreferences(context);
+		SharedPreferences preferences = getPreferences();
 		return Integer.parseInt(preferences.getString(Constants.PREFERENCES_KEY_MAX_SONGS, "25"));
 	}
 
-	public static int getMaxArtists(Context context)
+	public static int getMaxArtists()
 	{
-		SharedPreferences preferences = getPreferences(context);
+		SharedPreferences preferences = getPreferences();
 		return Integer.parseInt(preferences.getString(Constants.PREFERENCES_KEY_MAX_ARTISTS, "10"));
 	}
 
-	public static int getDefaultArtists(Context context)
+	public static int getDefaultArtists()
 	{
-		SharedPreferences preferences = getPreferences(context);
+		SharedPreferences preferences = getPreferences();
 		return Integer.parseInt(preferences.getString(Constants.PREFERENCES_KEY_DEFAULT_ARTISTS, "3"));
 	}
 
-	public static int getBufferLength(Context context)
+	public static int getBufferLength()
 	{
-		SharedPreferences preferences = getPreferences(context);
+		SharedPreferences preferences = getPreferences();
 		return Integer.parseInt(preferences.getString(Constants.PREFERENCES_KEY_BUFFER_LENGTH, "5"));
 	}
 
-	public static int getIncrementTime(Context context)
+	public static int getIncrementTime()
 	{
-		SharedPreferences preferences = getPreferences(context);
+		SharedPreferences preferences = getPreferences();
 		return Integer.parseInt(preferences.getString(Constants.PREFERENCES_KEY_INCREMENT_TIME, "5"));
 	}
 
-	public static boolean getMediaButtonsEnabled(Context context)
+	public static boolean getMediaButtonsEnabled()
 	{
-		SharedPreferences preferences = getPreferences(context);
+		SharedPreferences preferences = getPreferences();
 		return preferences.getBoolean(Constants.PREFERENCES_KEY_MEDIA_BUTTONS, true);
 	}
 
-	public static boolean getShowNowPlayingPreference(Context context)
+	public static boolean getShowNowPlayingPreference()
 	{
-		SharedPreferences preferences = getPreferences(context);
+		SharedPreferences preferences = getPreferences();
 		return preferences.getBoolean(Constants.PREFERENCES_KEY_SHOW_NOW_PLAYING, true);
 	}
 
-	public static boolean getGaplessPlaybackPreference(Context context)
+	public static boolean getGaplessPlaybackPreference()
 	{
-		SharedPreferences preferences = getPreferences(context);
+		SharedPreferences preferences = getPreferences();
 		return preferences.getBoolean(Constants.PREFERENCES_KEY_GAPLESS_PLAYBACK, false);
 	}
 
-	public static boolean getShouldTransitionOnPlaybackPreference(Context context)
+	public static boolean getShouldTransitionOnPlaybackPreference()
 	{
-		SharedPreferences preferences = getPreferences(context);
+		SharedPreferences preferences = getPreferences();
 		return preferences.getBoolean(Constants.PREFERENCES_KEY_DOWNLOAD_TRANSITION, true);
 	}
 
-	public static boolean getShouldUseId3Tags(Context context)
+	public static boolean getShouldUseId3Tags()
 	{
-		SharedPreferences preferences = getPreferences(context);
+		SharedPreferences preferences = getPreferences();
 		return preferences.getBoolean(Constants.PREFERENCES_KEY_ID3_TAGS, false);
 	}
 
 	public static boolean getShouldShowArtistPicture(Context context)
 	{
-		SharedPreferences preferences = getPreferences(context);
-		boolean isOffline = ActiveServerProvider.Companion.isOffline(context);
+		SharedPreferences preferences = getPreferences();
+		boolean isOffline = ActiveServerProvider.Companion.isOffline();
 		boolean isId3Enabled = preferences.getBoolean(Constants.PREFERENCES_KEY_ID3_TAGS, false);
 		boolean shouldShowArtistPicture = preferences.getBoolean(Constants.PREFERENCES_KEY_SHOW_ARTIST_PICTURE, false);
 		return (!isOffline) && isId3Enabled && shouldShowArtistPicture;
 	}
 
-	public static int getChatRefreshInterval(Context context)
+	public static int getChatRefreshInterval()
 	{
-		SharedPreferences preferences = getPreferences(context);
+		SharedPreferences preferences = getPreferences();
 		return Integer.parseInt(preferences.getString(Constants.PREFERENCES_KEY_CHAT_REFRESH_INTERVAL, "5000"));
 	}
 
-	public static int getDirectoryCacheTime(Context context)
+	public static int getDirectoryCacheTime()
 	{
-		SharedPreferences preferences = getPreferences(context);
+		SharedPreferences preferences = getPreferences();
 		return Integer.parseInt(preferences.getString(Constants.PREFERENCES_KEY_DIRECTORY_CACHE_TIME, "300"));
 	}
 
@@ -1102,27 +1093,27 @@ public class Util
 		return formatTotalDuration(totalDuration, false);
 	}
 
-	public static boolean getShouldClearPlaylist(Context context)
+	public static boolean getShouldClearPlaylist()
 	{
-		SharedPreferences preferences = getPreferences(context);
+		SharedPreferences preferences = getPreferences();
 		return preferences.getBoolean(Constants.PREFERENCES_KEY_CLEAR_PLAYLIST, false);
 	}
 
-	public static boolean getShouldSortByDisc(Context context)
+	public static boolean getShouldSortByDisc()
 	{
-		SharedPreferences preferences = getPreferences(context);
+		SharedPreferences preferences = getPreferences();
 		return preferences.getBoolean(Constants.PREFERENCES_KEY_DISC_SORT, false);
 	}
 
-	public static boolean getShouldClearBookmark(Context context)
+	public static boolean getShouldClearBookmark()
 	{
-		SharedPreferences preferences = getPreferences(context);
+		SharedPreferences preferences = getPreferences();
 		return preferences.getBoolean(Constants.PREFERENCES_KEY_CLEAR_BOOKMARK, false);
 	}
 
-	public static boolean getSingleButtonPlayPause(Context context)
+	public static boolean getSingleButtonPlayPause()
 	{
-		SharedPreferences preferences = getPreferences(context);
+		SharedPreferences preferences = getPreferences();
 		return preferences.getBoolean(Constants.PREFERENCES_KEY_SINGLE_BUTTON_PLAY_PAUSE, false);
 	}
 
@@ -1155,9 +1146,9 @@ public class Util
 		else return minutes > 0 ? String.format(Locale.getDefault(), "%d:%02d", minutes, seconds) : String.format(Locale.getDefault(), "0:%02d", seconds);
 	}
 
-	public static VideoPlayerType getVideoPlayerType(Context context)
+	public static VideoPlayerType getVideoPlayerType()
 	{
-		SharedPreferences preferences = getPreferences(context);
+		SharedPreferences preferences = getPreferences();
 		return VideoPlayerType.forKey(preferences.getString(Constants.PREFERENCES_KEY_VIDEO_PLAYER, VideoPlayerType.MX.getKey()));
 	}
 
@@ -1232,51 +1223,51 @@ public class Util
 	}
 
 	@SuppressWarnings("BooleanMethodIsAlwaysInverted") // Inverted for readability
-	public static boolean getShouldSendBluetoothNotifications(Context context)
+	public static boolean getShouldSendBluetoothNotifications()
 	{
-		SharedPreferences preferences = getPreferences(context);
+		SharedPreferences preferences = getPreferences();
 		return preferences.getBoolean(Constants.PREFERENCES_KEY_SEND_BLUETOOTH_NOTIFICATIONS, true);
 	}
 
-	public static boolean getShouldSendBluetoothAlbumArt(Context context)
+	public static boolean getShouldSendBluetoothAlbumArt()
 	{
-		SharedPreferences preferences = getPreferences(context);
+		SharedPreferences preferences = getPreferences();
 		return preferences.getBoolean(Constants.PREFERENCES_KEY_SEND_BLUETOOTH_ALBUM_ART, true);
 	}
 
-	public static int getViewRefreshInterval(Context context)
+	public static int getViewRefreshInterval()
 	{
-		SharedPreferences preferences = getPreferences(context);
+		SharedPreferences preferences = getPreferences();
 		return Integer.parseInt(preferences.getString(Constants.PREFERENCES_KEY_VIEW_REFRESH, "1000"));
 	}
 
-	public static boolean getShouldAskForShareDetails(Context context)
+	public static boolean getShouldAskForShareDetails()
 	{
-		SharedPreferences preferences = getPreferences(context);
+		SharedPreferences preferences = getPreferences();
 		return preferences.getBoolean(Constants.PREFERENCES_KEY_ASK_FOR_SHARE_DETAILS, true);
 	}
 
-	public static String getDefaultShareDescription(Context context)
+	public static String getDefaultShareDescription()
 	{
-		SharedPreferences preferences = getPreferences(context);
+		SharedPreferences preferences = getPreferences();
 		return preferences.getString(Constants.PREFERENCES_KEY_DEFAULT_SHARE_DESCRIPTION, "");
 	}
 
 	public static String getShareGreeting(Context context)
 	{
-		SharedPreferences preferences = getPreferences(context);
+		SharedPreferences preferences = getPreferences();
 		return preferences.getString(Constants.PREFERENCES_KEY_DEFAULT_SHARE_GREETING, String.format(context.getResources().getString(R.string.share_default_greeting), context.getResources().getString(R.string.common_appname)));
 	}
 
-	public static String getDefaultShareExpiration(Context context)
+	public static String getDefaultShareExpiration()
 	{
-		SharedPreferences preferences = getPreferences(context);
+		SharedPreferences preferences = getPreferences();
 		return preferences.getString(Constants.PREFERENCES_KEY_DEFAULT_SHARE_EXPIRATION, "0");
 	}
 
 	public static long getDefaultShareExpirationInMillis(Context context)
 	{
-		SharedPreferences preferences = getPreferences(context);
+		SharedPreferences preferences = getPreferences();
 		String preference = preferences.getString(Constants.PREFERENCES_KEY_DEFAULT_SHARE_EXPIRATION, "0");
 
 		String[] split = PATTERN.split(preference);
@@ -1294,33 +1285,33 @@ public class Util
 		return 0;
 	}
 
-	public static void setShouldAskForShareDetails(Context context, boolean shouldAskForShareDetails)
+	public static void setShouldAskForShareDetails(boolean shouldAskForShareDetails)
 	{
-		SharedPreferences preferences = getPreferences(context);
+		SharedPreferences preferences = getPreferences();
 		SharedPreferences.Editor editor = preferences.edit();
 		editor.putBoolean(Constants.PREFERENCES_KEY_ASK_FOR_SHARE_DETAILS, shouldAskForShareDetails);
 		editor.apply();
 	}
 
-	public static void setDefaultShareExpiration(Context context, String defaultShareExpiration)
+	public static void setDefaultShareExpiration(String defaultShareExpiration)
 	{
-		SharedPreferences preferences = getPreferences(context);
+		SharedPreferences preferences = getPreferences();
 		SharedPreferences.Editor editor = preferences.edit();
 		editor.putString(Constants.PREFERENCES_KEY_DEFAULT_SHARE_EXPIRATION, defaultShareExpiration);
 		editor.apply();
 	}
 
-	public static void setDefaultShareDescription(Context context, String defaultShareDescription)
+	public static void setDefaultShareDescription(String defaultShareDescription)
 	{
-		SharedPreferences preferences = getPreferences(context);
+		SharedPreferences preferences = getPreferences();
 		SharedPreferences.Editor editor = preferences.edit();
 		editor.putString(Constants.PREFERENCES_KEY_DEFAULT_SHARE_DESCRIPTION, defaultShareDescription);
 		editor.apply();
 	}
 
-	public static boolean getShouldShowAllSongsByArtist(Context context)
+	public static boolean getShouldShowAllSongsByArtist()
 	{
-		SharedPreferences preferences = getPreferences(context);
+		SharedPreferences preferences = getPreferences();
 		return preferences.getBoolean(Constants.PREFERENCES_KEY_SHOW_ALL_SONGS_BY_ARTIST, false);
 	}
 
@@ -1331,18 +1322,10 @@ public class Util
 		context.sendBroadcast(scanFileIntent);
 	}
 
-	public static int getImageLoaderConcurrency(Context context)
+	public static int getImageLoaderConcurrency()
 	{
-		SharedPreferences preferences = getPreferences(context);
+		SharedPreferences preferences = getPreferences();
 		return Integer.parseInt(preferences.getString(Constants.PREFERENCES_KEY_IMAGE_LOADER_CONCURRENCY, "5"));
-	}
-
-	public static @ColorInt int getColorFromAttribute(Context context, int resId)
-	{
-		TypedValue typedValue = new TypedValue();
-		Resources.Theme theme = context.getTheme();
-		theme.resolveAttribute(resId, typedValue, true);
-		return typedValue.data;
 	}
 
 	public static int getResourceFromAttribute(Context context, int resId)
@@ -1353,9 +1336,9 @@ public class Util
 		return typedValue.resourceId;
 	}
 
-	public static boolean isFirstRun(Context context)
+	public static boolean isFirstRun()
 	{
-		SharedPreferences preferences = getPreferences(context);
+		SharedPreferences preferences = getPreferences();
 		boolean firstExecuted = preferences.getBoolean(Constants.PREFERENCES_KEY_FIRST_RUN_EXECUTED, false);
 		if (firstExecuted) return false;
 		SharedPreferences.Editor editor = preferences.edit();
@@ -1364,21 +1347,21 @@ public class Util
 		return true;
 	}
 
-	public static int getResumeOnBluetoothDevice(Context context)
+	public static int getResumeOnBluetoothDevice()
 	{
-		SharedPreferences preferences = getPreferences(context);
+		SharedPreferences preferences = getPreferences();
 		return preferences.getInt(Constants.PREFERENCES_KEY_RESUME_ON_BLUETOOTH_DEVICE, Constants.PREFERENCE_VALUE_DISABLED);
 	}
 
-	public static int getPauseOnBluetoothDevice(Context context)
+	public static int getPauseOnBluetoothDevice()
 	{
-		SharedPreferences preferences = getPreferences(context);
+		SharedPreferences preferences = getPreferences();
 		return preferences.getInt(Constants.PREFERENCES_KEY_PAUSE_ON_BLUETOOTH_DEVICE, Constants.PREFERENCE_VALUE_A2DP);
 	}
 
-	public static boolean getDebugLogToFile(Context context)
+	public static boolean getDebugLogToFile()
 	{
-		SharedPreferences preferences = getPreferences(context);
+		SharedPreferences preferences = getPreferences();
 		return preferences.getBoolean(Constants.PREFERENCES_KEY_DEBUG_LOG_TO_FILE, false);
 	}
 
