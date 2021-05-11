@@ -417,14 +417,13 @@ class MediaPlayerService : Service() {
     private fun setupOnSongCompletedHandler() {
         localMediaPlayer.onSongCompleted = { currentPlaying: DownloadFile? ->
             val index = downloader.currentPlayingIndex
-            val context = this@MediaPlayerService
 
             if (currentPlaying != null) {
                 val song = currentPlaying.song
                 if (song.bookmarkPosition > 0 && Util.getShouldClearBookmark()) {
                     val musicService = getMusicService()
                     try {
-                        musicService.deleteBookmark(song.id, context)
+                        musicService.deleteBookmark(song.id)
                     } catch (ignored: Exception) {
                     }
                 }
@@ -480,8 +479,8 @@ class MediaPlayerService : Service() {
             try {
                 val song = currentPlaying.song
                 val cover = FileUtil.getAlbumArtBitmap(
-                    context, song,
-                    Util.getMinDisplayMetric(context), true
+                    song, Util.getMinDisplayMetric(context),
+                    true
                 )
                 metadata.putLong(MediaMetadataCompat.METADATA_KEY_DURATION, -1L)
                 metadata.putString(MediaMetadataCompat.METADATA_KEY_ARTIST, song.artist)
@@ -648,7 +647,7 @@ class MediaPlayerService : Service() {
         // Set song title, artist and cover if possible
         if (song != null) {
             val iconSize = (256 * context.resources.displayMetrics.density).toInt()
-            val bitmap = FileUtil.getAlbumArtBitmap(context, song, iconSize, true)
+            val bitmap = FileUtil.getAlbumArtBitmap(song, iconSize, true)
             notificationBuilder!!.setContentTitle(song.title)
             notificationBuilder!!.setContentText(song.artist)
             notificationBuilder!!.setLargeIcon(bitmap)

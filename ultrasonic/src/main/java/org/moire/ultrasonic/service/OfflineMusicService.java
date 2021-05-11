@@ -18,7 +18,6 @@
  */
 package org.moire.ultrasonic.service;
 
-import android.content.Context;
 import android.graphics.Bitmap;
 import android.media.MediaMetadataRetriever;
 
@@ -333,7 +332,7 @@ public class OfflineMusicService implements MusicService
 	}
 
 	@Override
-	public Bitmap getAvatar(Context context, String username, int size, boolean saveToFile, boolean highQuality)
+	public Bitmap getAvatar(String username, int size, boolean saveToFile, boolean highQuality)
 	{
 		try
 		{
@@ -347,11 +346,11 @@ public class OfflineMusicService implements MusicService
 	}
 
 	@Override
-	public Bitmap getCoverArt(Context context, MusicDirectory.Entry entry, int size, boolean saveToFile, boolean highQuality)
+	public Bitmap getCoverArt(MusicDirectory.Entry entry, int size, boolean saveToFile, boolean highQuality)
 	{
 		try
 		{
-			Bitmap bitmap = FileUtil.getAlbumArtBitmap(context, entry, size, highQuality);
+			Bitmap bitmap = FileUtil.getAlbumArtBitmap(entry, size, highQuality);
 			return Util.scaleBitmap(bitmap, size);
 		}
 		catch (Exception e)
@@ -361,7 +360,7 @@ public class OfflineMusicService implements MusicService
 	}
 
 	@Override
-	public SearchResult search(SearchCriteria criteria, Context context)
+	public SearchResult search(SearchCriteria criteria)
 	{
 		List<Artist> artists = new ArrayList<>();
 		List<MusicDirectory.Entry> albums = new ArrayList<>();
@@ -384,7 +383,7 @@ public class OfflineMusicService implements MusicService
 					artists.add(artist);
 				}
 
-				recursiveAlbumSearch(artistName, artistFile, criteria, context, albums, songs);
+				recursiveAlbumSearch(artistName, artistFile, criteria, albums, songs);
 			}
 		}
 
@@ -431,7 +430,7 @@ public class OfflineMusicService implements MusicService
 		return new SearchResult(artists, albums, songs);
 	}
 
-	private static void recursiveAlbumSearch(String artistName, File file, SearchCriteria criteria, Context context, List<MusicDirectory.Entry> albums, List<MusicDirectory.Entry> songs)
+	private static void recursiveAlbumSearch(String artistName, File file, SearchCriteria criteria, List<MusicDirectory.Entry> albums, List<MusicDirectory.Entry> songs)
 	{
 		int closeness;
 
@@ -454,7 +453,7 @@ public class OfflineMusicService implements MusicService
 
 					if (songFile.isDirectory())
 					{
-						recursiveAlbumSearch(artistName, songFile, criteria, context, albums, songs);
+						recursiveAlbumSearch(artistName, songFile, criteria, albums, songs);
 					}
 					else if ((closeness = matchCriteria(criteria, songName)) > 0)
 					{
@@ -505,7 +504,7 @@ public class OfflineMusicService implements MusicService
 	}
 
 	@Override
-	public List<Playlist> getPlaylists(boolean refresh, Context context)
+	public List<Playlist> getPlaylists(boolean refresh)
 	{
 		List<Playlist> playlists = new ArrayList<>();
 		File root = FileUtil.getPlaylistDirectory();
@@ -564,7 +563,7 @@ public class OfflineMusicService implements MusicService
 	}
 
 	@Override
-	public MusicDirectory getPlaylist(String id, String name, Context context) throws Exception
+	public MusicDirectory getPlaylist(String id, String name) throws Exception
 	{
 		Reader reader = null;
 		BufferedReader buffer = null;
@@ -606,7 +605,7 @@ public class OfflineMusicService implements MusicService
 	}
 
 	@Override
-	public void createPlaylist(String id, String name, List<MusicDirectory.Entry> entries, Context context) throws Exception
+	public void createPlaylist(String id, String name, List<MusicDirectory.Entry> entries) throws Exception
 	{
 		File playlistFile = FileUtil.getPlaylistFile(activeServerProvider.getValue().getActiveServer().getName(), name);
 		FileWriter fw = new FileWriter(playlistFile);
@@ -639,7 +638,7 @@ public class OfflineMusicService implements MusicService
 
 
 	@Override
-	public MusicDirectory getRandomSongs(int size, Context context)
+	public MusicDirectory getRandomSongs(int size)
 	{
 		File root = FileUtil.getMusicDirectory();
 		List<File> children = new LinkedList<>();
@@ -677,25 +676,25 @@ public class OfflineMusicService implements MusicService
 	}
 
 	@Override
-	public void deletePlaylist(String id, Context context) throws Exception
+	public void deletePlaylist(String id) throws Exception
 	{
 		throw new OfflineException("Playlists not available in offline mode");
 	}
 
 	@Override
-	public void updatePlaylist(String id, String name, String comment, boolean pub, Context context) throws Exception
+	public void updatePlaylist(String id, String name, String comment, boolean pub) throws Exception
 	{
 		throw new OfflineException("Updating playlist not available in offline mode");
 	}
 
 	@Override
-	public Lyrics getLyrics(String artist, String title, Context context) throws Exception
+	public Lyrics getLyrics(String artist, String title) throws Exception
 	{
 		throw new OfflineException("Lyrics not available in offline mode");
 	}
 
 	@Override
-	public void scrobble(String id, boolean submission, Context context) throws Exception
+	public void scrobble(String id, boolean submission) throws Exception
 	{
 		throw new OfflineException("Scrobbling not available in offline mode");
 	}
@@ -707,37 +706,37 @@ public class OfflineMusicService implements MusicService
 	}
 
 	@Override
-	public JukeboxStatus updateJukeboxPlaylist(List<String> ids, Context context) throws Exception
+	public JukeboxStatus updateJukeboxPlaylist(List<String> ids) throws Exception
 	{
 		throw new OfflineException("Jukebox not available in offline mode");
 	}
 
 	@Override
-	public JukeboxStatus skipJukebox(int index, int offsetSeconds, Context context) throws Exception
+	public JukeboxStatus skipJukebox(int index, int offsetSeconds) throws Exception
 	{
 		throw new OfflineException("Jukebox not available in offline mode");
 	}
 
 	@Override
-	public JukeboxStatus stopJukebox(Context context) throws Exception
+	public JukeboxStatus stopJukebox() throws Exception
 	{
 		throw new OfflineException("Jukebox not available in offline mode");
 	}
 
 	@Override
-	public JukeboxStatus startJukebox(Context context) throws Exception
+	public JukeboxStatus startJukebox() throws Exception
 	{
 		throw new OfflineException("Jukebox not available in offline mode");
 	}
 
 	@Override
-	public JukeboxStatus getJukeboxStatus(Context context) throws Exception
+	public JukeboxStatus getJukeboxStatus() throws Exception
 	{
 		throw new OfflineException("Jukebox not available in offline mode");
 	}
 
 	@Override
-	public JukeboxStatus setJukeboxGain(float gain, Context context) throws Exception
+	public JukeboxStatus setJukeboxGain(float gain) throws Exception
 	{
 		throw new OfflineException("Jukebox not available in offline mode");
 	}
@@ -749,7 +748,7 @@ public class OfflineMusicService implements MusicService
 	}
 
 	@Override
-	public MusicDirectory getSongsByGenre(String genre, int count, int offset, Context context) throws Exception
+	public MusicDirectory getSongsByGenre(String genre, int count, int offset) throws Exception
 	{
 		throw new OfflineException("Getting Songs By Genre not available in offline mode");
 	}
@@ -761,31 +760,31 @@ public class OfflineMusicService implements MusicService
 	}
 
 	@Override
-	public UserInfo getUser(String username, Context context) throws Exception
+	public UserInfo getUser(String username) throws Exception
 	{
 		throw new OfflineException("Getting user info not available in offline mode");
 	}
 
 	@Override
-	public List<Share> createShare(List<String> ids, String description, Long expires, Context context) throws Exception
+	public List<Share> createShare(List<String> ids, String description, Long expires) throws Exception
 	{
 		throw new OfflineException("Creating shares not available in offline mode");
 	}
 
 	@Override
-	public List<Share> getShares(boolean refresh, Context context) throws Exception
+	public List<Share> getShares(boolean refresh) throws Exception
 	{
 		throw new OfflineException("Getting shares not available in offline mode");
 	}
 
 	@Override
-	public void deleteShare(String id, Context context) throws Exception
+	public void deleteShare(String id) throws Exception
 	{
 		throw new OfflineException("Deleting shares not available in offline mode");
 	}
 
 	@Override
-	public void updateShare(String id, String description, Long expires, Context context) throws Exception
+	public void updateShare(String id, String description, Long expires) throws Exception
 	{
 		throw new OfflineException("Updating shares not available in offline mode");
 	}
@@ -814,40 +813,40 @@ public class OfflineMusicService implements MusicService
 	}
 
 	@Override
-	public String getVideoUrl(Context context, String id, boolean useFlash) {
+	public String getVideoUrl(String id, boolean useFlash) {
 		Timber.w("OfflineMusicService.getVideoUrl was called but it isn't available");
 		return null;
 	}
 
 	@Override
-	public List<ChatMessage> getChatMessages(Long since, Context context) {
+	public List<ChatMessage> getChatMessages(Long since) {
 		Timber.w("OfflineMusicService.getChatMessages was called but it isn't available");
 		return null;
 	}
 
 	@Override
-	public void addChatMessage(String message, Context context) {
+	public void addChatMessage(String message) {
 		Timber.w("OfflineMusicService.addChatMessage was called but it isn't available");
 	}
 
 	@Override
-	public List<Bookmark> getBookmarks(Context context) {
+	public List<Bookmark> getBookmarks() {
 		Timber.w("OfflineMusicService.getBookmarks was called but it isn't available");
 		return null;
 	}
 
 	@Override
-	public void deleteBookmark(String id, Context context) {
+	public void deleteBookmark(String id) {
 		Timber.w("OfflineMusicService.deleteBookmark was called but it isn't available");
 	}
 
 	@Override
-	public void createBookmark(String id, int position, Context context) {
+	public void createBookmark(String id, int position) {
 		Timber.w("OfflineMusicService.createBookmark was called but it isn't available");
 	}
 
 	@Override
-	public MusicDirectory getVideos(boolean refresh, Context context) {
+	public MusicDirectory getVideos(boolean refresh) {
 		Timber.w("OfflineMusicService.getVideos was called but it isn't available");
 		return null;
 	}
@@ -886,7 +885,7 @@ public class OfflineMusicService implements MusicService
 	}
 
 	@Override
-	public MusicDirectory getPodcastEpisodes(String podcastChannelId, Context context) {
+	public MusicDirectory getPodcastEpisodes(String podcastChannelId) {
 		Timber.w("OfflineMusicService.getPodcastEpisodes was called but it isn't available");
 		return null;
 	}
@@ -903,7 +902,7 @@ public class OfflineMusicService implements MusicService
 	}
 
 	@Override
-	public List<PodcastsChannel> getPodcastsChannels(boolean refresh, Context context) {
+	public List<PodcastsChannel> getPodcastsChannels(boolean refresh) {
 		Timber.w("OfflineMusicService.getPodcastsChannels was called but it isn't available");
 		return null;
 	}

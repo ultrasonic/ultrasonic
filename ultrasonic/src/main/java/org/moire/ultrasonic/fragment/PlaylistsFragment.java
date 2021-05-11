@@ -128,7 +128,7 @@ public class PlaylistsFragment extends Fragment {
             protected List<Playlist> doInBackground() throws Throwable
             {
                 MusicService musicService = MusicServiceFactory.getMusicService();
-                List<Playlist> playlists = musicService.getPlaylists(refresh, getContext());
+                List<Playlist> playlists = musicService.getPlaylists(refresh);
 
                 if (!ActiveServerProvider.Companion.isOffline())
                     new CacheCleaner(getContext()).cleanPlaylists(playlists);
@@ -223,7 +223,7 @@ public class PlaylistsFragment extends Fragment {
                     protected Void doInBackground() throws Throwable
                     {
                         MusicService musicService = MusicServiceFactory.getMusicService();
-                        musicService.deletePlaylist(playlist.getId(), getContext());
+                        musicService.deletePlaylist(playlist.getId());
                         return null;
                     }
 
@@ -313,7 +313,7 @@ public class PlaylistsFragment extends Fragment {
                         String comment = commentBoxText != null ? commentBoxText.toString() : null;
 
                         MusicService musicService = MusicServiceFactory.getMusicService();
-                        musicService.updatePlaylist(playlist.getId(), name, comment, publicBox.isChecked(), getContext());
+                        musicService.updatePlaylist(playlist.getId(), name, comment, publicBox.isChecked());
                         return null;
                     }
 

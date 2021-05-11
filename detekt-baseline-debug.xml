@@ -117,8 +117,8 @@
     <ID>LongMethod:NavigationActivity.kt$NavigationActivity$// TODO Test if this works with external Intents // android.intent.action.SEARCH and android.media.action.MEDIA_PLAY_FROM_SEARCH calls here override fun onNewIntent(intent: Intent?)</ID>
     <ID>LongMethod:NavigationActivity.kt$NavigationActivity$override fun onCreate(savedInstanceState: Bundle?)</ID>
     <ID>LongMethod:NavigationActivity.kt$NavigationActivity$private fun showNowPlaying()</ID>
-    <ID>LongMethod:RESTMusicService.kt$RESTMusicService$@Throws(Exception::class) override fun getAvatar( context: Context, username: String?, size: Int, saveToFile: Boolean, highQuality: Boolean ): Bitmap?</ID>
-    <ID>LongMethod:RESTMusicService.kt$RESTMusicService$@Throws(Exception::class) override fun getCoverArt( context: Context, entry: MusicDirectory.Entry?, size: Int, saveToFile: Boolean, highQuality: Boolean ): Bitmap?</ID>
+    <ID>LongMethod:RESTMusicService.kt$RESTMusicService$@Throws(Exception::class) override fun getAvatar( username: String?, size: Int, saveToFile: Boolean, highQuality: Boolean ): Bitmap?</ID>
+    <ID>LongMethod:RESTMusicService.kt$RESTMusicService$@Throws(Exception::class) override fun getCoverArt( entry: MusicDirectory.Entry?, size: Int, saveToFile: Boolean, highQuality: Boolean ): Bitmap?</ID>
     <ID>LongMethod:RESTMusicService.kt$RESTMusicService$@Throws(IOException::class) private fun savePlaylist( name: String?, playlist: MusicDirectory )</ID>
     <ID>LongMethod:RestErrorMapper.kt$ fun SubsonicRESTException.getLocalizedErrorMessage(context: Context): String</ID>
     <ID>LongMethod:SelectAlbumFragment.kt$SelectAlbumFragment$override fun onContextItemSelected(menuItem: MenuItem): Boolean</ID>
@@ -200,8 +200,8 @@
     <ID>ReturnCount:CommunicationErrorHandler.kt$CommunicationErrorHandler.Companion$fun getErrorMessage(error: Throwable, context: Context): String</ID>
     <ID>ReturnCount:FileLoggerTree.kt$FileLoggerTree$ private fun getNextLogFile()</ID>
     <ID>ReturnCount:MediaPlayerService.kt$MediaPlayerService$private fun generateAction(context: Context, requestCode: Int): NotificationCompat.Action?</ID>
-    <ID>ReturnCount:RESTMusicService.kt$RESTMusicService$@Throws(Exception::class) override fun getAvatar( context: Context, username: String?, size: Int, saveToFile: Boolean, highQuality: Boolean ): Bitmap?</ID>
-    <ID>ReturnCount:RESTMusicService.kt$RESTMusicService$@Throws(Exception::class) override fun getCoverArt( context: Context, entry: MusicDirectory.Entry?, size: Int, saveToFile: Boolean, highQuality: Boolean ): Bitmap?</ID>
+    <ID>ReturnCount:RESTMusicService.kt$RESTMusicService$@Throws(Exception::class) override fun getAvatar( username: String?, size: Int, saveToFile: Boolean, highQuality: Boolean ): Bitmap?</ID>
+    <ID>ReturnCount:RESTMusicService.kt$RESTMusicService$@Throws(Exception::class) override fun getCoverArt( entry: MusicDirectory.Entry?, size: Int, saveToFile: Boolean, highQuality: Boolean ): Bitmap?</ID>
     <ID>ReturnCount:SelectAlbumFragment.kt$SelectAlbumFragment$override fun onContextItemSelected(menuItem: MenuItem): Boolean</ID>
     <ID>ReturnCount:SelectAlbumFragment.kt$SelectAlbumFragment$override fun onOptionsItemSelected(item: MenuItem): Boolean</ID>
     <ID>ReturnCount:ServerRowAdapter.kt$ServerRowAdapter$ private fun popupMenuItemClick(menuItem: MenuItem, position: Int): Boolean</ID>

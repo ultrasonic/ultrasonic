@@ -159,7 +159,7 @@ public class UltrasonicAppWidgetProvider extends AppWidgetProvider
 		// Set the cover art
 		try
 		{
-			Bitmap bitmap = currentSong == null ? null : FileUtil.getAlbumArtBitmap(context, currentSong, 240, true);
+			Bitmap bitmap = currentSong == null ? null : FileUtil.getAlbumArtBitmap(currentSong, 240, true);
 
 			if (bitmap == null)
 			{
