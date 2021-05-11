@@ -108,7 +108,7 @@ open class RESTMusicService(
 
     @Throws(Exception::class)
     override fun getIndexes(
-        musicFolderId: String,
+        musicFolderId: String?,
         refresh: Boolean
     ): Indexes? {
         val indexName = INDEXES_STORAGE_NAME + (musicFolderId ?: "")
@@ -170,7 +170,7 @@ open class RESTMusicService(
     @Throws(Exception::class)
     override fun getMusicDirectory(
         id: String,
-        name: String,
+        name: String?,
         refresh: Boolean
     ): MusicDirectory? {
         val response = responseChecker.callWithResponseCheck { api ->
