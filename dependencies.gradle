@@ -38,7 +38,6 @@ ext.versions = [
         mockitoKotlin        : "1.5.0",
         kluent               : "1.64",
         apacheCodecs         : "1.15",
-        testRunner           : "1.0.1",
         robolectric          : "4.5.1",
         dexter               : "6.2.2",
         timber               : "4.7.1",
@@ -103,7 +102,5 @@ ext.testing = [
         kluentAndroid : "org.amshove.kluent:kluent-android:$versions.kluent",
         mockWebServer : "com.squareup.okhttp3:mockwebserver:$versions.okhttp",
         apacheCodecs  : "commons-codec:commons-codec:$versions.apacheCodecs",
-        testRunner    : "com.android.support.test:runner:$versions.testRunner",
-        robolectric   : "org.robolectric:robolectric:$versions.robolectric",
-        koinTest      : "org.koin:koin-test:$versions.koin"
+        robolectric   : "org.robolectric:robolectric:$versions.robolectric"
 ]
