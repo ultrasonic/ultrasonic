@@ -6,13 +6,13 @@
     a:orientation="vertical">
 
     <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
-        a:id="@+id/select_artist_refresh"
+        a:id="@+id/generic_list_refresh"
         a:layout_width="fill_parent"
         a:layout_height="0dip"
         a:layout_weight="1.0">
 
         <com.simplecityapps.recyclerview_fastscroll.views.FastScrollRecyclerView
-            a:id="@+id/select_artist_list"
+            a:id="@+id/generic_list_recycler"
             a:layout_width="match_parent"
             a:layout_height="match_parent"
             a:paddingTop="8dp"

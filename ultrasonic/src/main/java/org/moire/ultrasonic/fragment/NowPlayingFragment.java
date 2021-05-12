@@ -125,7 +125,7 @@ public class NowPlayingFragment extends Fragment {
 
                     bundle.putString(Constants.INTENT_EXTRA_NAME_NAME, song.getAlbum());
                     bundle.putString(Constants.INTENT_EXTRA_NAME_NAME, song.getAlbum());
-                    Navigation.findNavController(getActivity(), R.id.nav_host_fragment).navigate(R.id.selectAlbumFragment, bundle);
+                    Navigation.findNavController(getActivity(), R.id.nav_host_fragment).navigate(R.id.trackCollectionFragment, bundle);
                 });
             }
 

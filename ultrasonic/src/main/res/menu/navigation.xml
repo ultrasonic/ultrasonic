@@ -11,7 +11,7 @@
             a:icon="?attr/home"
             a:title="@string/button_bar.home" />
         <item
-            a:id="@+id/selectArtistFragment"
+            a:id="@+id/mediaLibraryFragment"
             a:checkable="true"
             a:icon="?attr/browse"
             a:title="@string/button_bar.browse" />

@@ -4,7 +4,6 @@ package org.moire.ultrasonic.di
 import kotlin.math.abs
 import okhttp3.logging.HttpLoggingInterceptor
 import org.koin.android.ext.koin.androidContext
-import org.koin.android.viewmodel.dsl.viewModel
 import org.koin.core.qualifier.named
 import org.koin.dsl.module
 import org.moire.ultrasonic.BuildConfig
@@ -13,7 +12,6 @@ import org.moire.ultrasonic.api.subsonic.SubsonicAPIVersions
 import org.moire.ultrasonic.api.subsonic.SubsonicClientConfiguration
 import org.moire.ultrasonic.cache.PermanentFileStorage
 import org.moire.ultrasonic.data.ActiveServerProvider
-import org.moire.ultrasonic.fragment.ArtistListModel
 import org.moire.ultrasonic.log.TimberOkHttpLogger
 import org.moire.ultrasonic.service.ApiCallResponseChecker
 import org.moire.ultrasonic.service.CachedMusicService
@@ -80,8 +78,6 @@ val musicServiceModule = module {
     }
 
     single { SubsonicImageLoader(androidContext(), get()) }
-
-    viewModel { ArtistListModel(get()) }
 
     single { DownloadHandler(get(), get()) }
     single { NetworkAndStorageChecker(androidContext()) }

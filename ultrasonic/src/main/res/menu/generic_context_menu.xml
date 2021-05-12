@@ -2,22 +2,25 @@
 <menu xmlns:a="http://schemas.android.com/apk/res/android" >
 
     <item
-        a:id="@+id/artist_menu_play_now"
+        a:id="@+id/menu_play_now"
         a:title="@string/common.play_now"/>
     <item
-        a:id="@+id/artist_menu_play_next"
+        a:id="@+id/album_menu_play_next"
         a:title="@string/common.play_next"/>
     <item
-        a:id="@+id/artist_menu_play_last"
+        a:id="@+id/menu_play_last"
         a:title="@string/common.play_last"/>
     <item
-        a:id="@+id/artist_menu_pin"
+        a:id="@+id/menu_pin"
         a:title="@string/common.pin"/>
     <item
-        a:id="@+id/artist_menu_unpin"
+        a:id="@+id/menu_unpin"
         a:title="@string/common.unpin"/>
     <item
-        a:id="@+id/artist_menu_download"
+        a:id="@+id/menu_download"
         a:title="@string/common.download"/>
+    <item
+        a:id="@+id/menu_item_share"
+        a:title="@string/menu.share"/>
 
 </menu>

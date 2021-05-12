@@ -4,7 +4,7 @@ import java.io.Serializable
 import org.moire.ultrasonic.domain.MusicDirectory.Entry
 
 data class Share(
-    var id: String? = null,
+    override var id: String? = null,
     var url: String? = null,
     var description: String? = null,
     var username: String? = null,
@@ -13,8 +13,8 @@ data class Share(
     var expires: String? = null,
     var visitCount: Long? = null,
     private val entries: MutableList<Entry> = mutableListOf()
-) : Serializable {
-    val name: String?
+) : Serializable, GenericEntry() {
+    override val name: String?
         get() = url?.let { urlPattern.matcher(url).replaceFirst("$1") }
 
     fun getEntries(): List<Entry> {

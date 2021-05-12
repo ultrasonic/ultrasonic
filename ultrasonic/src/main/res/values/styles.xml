@@ -25,6 +25,11 @@
         <item name="cornerSize">8dp</item>
     </style>
 
+    <style name="largeRoundedImageView" parent="">
+        <item name="cornerFamily">rounded</item>
+        <item name="cornerSize">2dp</item>
+    </style>
+
     <style name="ThemeOverlay.AppCompat.navTheme">
         <item name="colorPrimary">?attr/color_menu_selected</item>
         <item name="colorControlHighlight">?attr/color_selected</item>

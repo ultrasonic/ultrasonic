@@ -58,6 +58,7 @@ public final class Constants
 	public static final String INTENT_EXTRA_NAME_IS_ALBUM = "subsonic.isalbum";
 	public static final String INTENT_EXTRA_NAME_VIDEOS = "subsonic.videos";
 	public static final String INTENT_EXTRA_NAME_SHOW_PLAYER = "subsonic.showplayer";
+	public static final String INTENT_EXTRA_NAME_APPEND = "subsonic.append";
 
 	// Names for Intent Actions
 	public static final String CMD_PROCESS_KEYCODE = "org.moire.ultrasonic.CMD_PROCESS_KEYCODE";

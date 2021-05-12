@@ -223,7 +223,7 @@ class ServerSettingsModel(
     /**
      * Checks if there are any missing indexes in the ServerSetting list
      * For displaying the Server Settings in a ListView, it is mandatory that their indexes
-     * are'nt missing. Ideally the indexes are continuous, but some circumstances (e.g.
+     * aren't missing. Ideally the indexes are continuous, but some circumstances (e.g.
      * concurrency or migration errors) may get them out of order.
      * This would make the List Adapter crash, so it is best to prepare and check the list.
      */

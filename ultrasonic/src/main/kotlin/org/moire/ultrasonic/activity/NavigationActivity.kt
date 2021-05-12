@@ -103,7 +103,7 @@ class NavigationActivity : AppCompatActivity() {
         appBarConfiguration = AppBarConfiguration(
             setOf(
                 R.id.mainFragment,
-                R.id.selectArtistFragment,
+                R.id.mediaLibraryFragment,
                 R.id.searchFragment,
                 R.id.playlistsFragment,
                 R.id.sharesFragment,

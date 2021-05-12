@@ -19,8 +19,10 @@
             android:id="@+id/now_playing_image"
             android:layout_width="64.0dip"
             android:layout_height="64.0dip"
+            android:layout_marginLeft="6dp"
             android:focusable="true"
-            android:gravity="center" />
+            android:gravity="center"
+            android:layout_marginStart="6dp" />
 
         <LinearLayout
             android:layout_width="0.0dp"
@@ -28,7 +30,8 @@
             android:layout_gravity="center_vertical"
             android:layout_weight="1.0"
             android:orientation="vertical"
-            android:paddingLeft="11.0dip">
+            android:paddingLeft="11.0dip"
+            android:paddingStart="11.0dip">
 
             <TextView
                 android:id="@+id/now_playing_trackname"
