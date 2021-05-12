@@ -98,7 +98,7 @@ class ArtistRowAdapter(
             holder.layout.setOnLongClickListener { view -> createPopupMenu(view, listPosition) }
             holder.coverArtId = artistList[listPosition].coverArt
 
-            if (Util.getShouldShowArtistPicture(holder.coverArt.context)) {
+            if (Util.getShouldShowArtistPicture()) {
                 holder.coverArt.visibility = View.VISIBLE
                 imageLoader.loadImage(
                     holder.coverArt,

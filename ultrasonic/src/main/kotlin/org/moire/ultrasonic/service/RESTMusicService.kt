@@ -18,7 +18,6 @@
  */
 package org.moire.ultrasonic.service
 
-import android.content.Context
 import android.graphics.Bitmap
 import android.text.TextUtils
 import java.io.BufferedWriter
@@ -204,8 +203,7 @@ open class RESTMusicService(
 
     @Throws(Exception::class)
     override fun search(
-        criteria: SearchCriteria,
-        context: Context
+        criteria: SearchCriteria
     ): SearchResult {
         return try {
             if (
@@ -270,8 +268,7 @@ open class RESTMusicService(
     @Throws(Exception::class)
     override fun getPlaylist(
         id: String,
-        name: String?,
-        context: Context
+        name: String?
     ): MusicDirectory {
         val response = responseChecker.callWithResponseCheck { api ->
             api.getPlaylist(id).execute()
@@ -318,8 +315,7 @@ open class RESTMusicService(
 
     @Throws(Exception::class)
     override fun getPlaylists(
-        refresh: Boolean,
-        context: Context
+        refresh: Boolean
     ): List<Playlist> {
         val response = responseChecker.callWithResponseCheck { api ->
             api.getPlaylists(null).execute()
@@ -332,8 +328,7 @@ open class RESTMusicService(
     override fun createPlaylist(
         id: String?,
         name: String?,
-        entries: List<MusicDirectory.Entry>,
-        context: Context
+        entries: List<MusicDirectory.Entry>
     ) {
         val pSongIds: MutableList<String> = ArrayList(entries.size)
 
@@ -349,8 +344,7 @@ open class RESTMusicService(
 
     @Throws(Exception::class)
     override fun deletePlaylist(
-        id: String,
-        context: Context
+        id: String
     ) {
         responseChecker.callWithResponseCheck { api -> api.deletePlaylist(id).execute() }
     }
@@ -360,8 +354,7 @@ open class RESTMusicService(
         id: String,
         name: String?,
         comment: String?,
-        pub: Boolean,
-        context: Context?
+        pub: Boolean
     ) {
         responseChecker.callWithResponseCheck { api ->
             api.updatePlaylist(id, name, comment, pub, null, null)
@@ -371,8 +364,7 @@ open class RESTMusicService(
 
     @Throws(Exception::class)
     override fun getPodcastsChannels(
-        refresh: Boolean,
-        context: Context
+        refresh: Boolean
     ): List<PodcastsChannel> {
         val response = responseChecker.callWithResponseCheck { api ->
             api.getPodcasts(false, null).execute()
@@ -383,8 +375,7 @@ open class RESTMusicService(
 
     @Throws(Exception::class)
     override fun getPodcastEpisodes(
-        podcastChannelId: String?,
-        context: Context
+        podcastChannelId: String?
     ): MusicDirectory {
         val response = responseChecker.callWithResponseCheck { api ->
             api.getPodcasts(true, podcastChannelId).execute()
@@ -410,8 +401,7 @@ open class RESTMusicService(
     @Throws(Exception::class)
     override fun getLyrics(
         artist: String?,
-        title: String?,
-        context: Context
+        title: String?
     ): Lyrics {
         val response = responseChecker.callWithResponseCheck { api ->
             api.getLyrics(artist, title).execute()
@@ -423,8 +413,7 @@ open class RESTMusicService(
     @Throws(Exception::class)
     override fun scrobble(
         id: String,
-        submission: Boolean,
-        context: Context
+        submission: Boolean
     ) {
         responseChecker.callWithResponseCheck { api ->
             api.scrobble(id, null, submission).execute()
@@ -477,8 +466,7 @@ open class RESTMusicService(
 
     @Throws(Exception::class)
     override fun getRandomSongs(
-        size: Int,
-        context: Context
+        size: Int
     ): MusicDirectory {
         val response = responseChecker.callWithResponseCheck { api ->
             api.getRandomSongs(
@@ -516,7 +504,6 @@ open class RESTMusicService(
 
     @Throws(Exception::class)
     override fun getCoverArt(
-        context: Context,
         entry: MusicDirectory.Entry?,
         size: Int,
         saveToFile: Boolean,
@@ -530,7 +517,7 @@ open class RESTMusicService(
 
         synchronized(entry) {
             // Use cached file, if existing.
-            var bitmap = FileUtil.getAlbumArtBitmap(context, entry, size, highQuality)
+            var bitmap = FileUtil.getAlbumArtBitmap(entry, size, highQuality)
             val serverScaling = isServerScalingEnabled()
 
             if (bitmap == null) {
@@ -613,7 +600,6 @@ open class RESTMusicService(
 
     @Throws(Exception::class)
     override fun getVideoUrl(
-        context: Context,
         id: String,
         useFlash: Boolean
     ): String {
@@ -641,8 +627,7 @@ open class RESTMusicService(
 
     @Throws(Exception::class)
     override fun updateJukeboxPlaylist(
-        ids: List<String>?,
-        context: Context
+        ids: List<String>?
     ): JukeboxStatus {
         val response = responseChecker.callWithResponseCheck { api ->
             api.jukeboxControl(JukeboxAction.SET, null, null, ids, null)
@@ -655,8 +640,7 @@ open class RESTMusicService(
     @Throws(Exception::class)
     override fun skipJukebox(
         index: Int,
-        offsetSeconds: Int,
-        context: Context
+        offsetSeconds: Int
     ): JukeboxStatus {
         val response = responseChecker.callWithResponseCheck { api ->
             api.jukeboxControl(JukeboxAction.SKIP, index, offsetSeconds, null, null)
@@ -667,9 +651,7 @@ open class RESTMusicService(
     }
 
     @Throws(Exception::class)
-    override fun stopJukebox(
-        context: Context
-    ): JukeboxStatus {
+    override fun stopJukebox(): JukeboxStatus {
         val response = responseChecker.callWithResponseCheck { api ->
             api.jukeboxControl(JukeboxAction.STOP, null, null, null, null)
                 .execute()
@@ -679,9 +661,7 @@ open class RESTMusicService(
     }
 
     @Throws(Exception::class)
-    override fun startJukebox(
-        context: Context
-    ): JukeboxStatus {
+    override fun startJukebox(): JukeboxStatus {
         val response = responseChecker.callWithResponseCheck { api ->
             api.jukeboxControl(JukeboxAction.START, null, null, null, null)
                 .execute()
@@ -691,9 +671,7 @@ open class RESTMusicService(
     }
 
     @Throws(Exception::class)
-    override fun getJukeboxStatus(
-        context: Context
-    ): JukeboxStatus {
+    override fun getJukeboxStatus(): JukeboxStatus {
         val response = responseChecker.callWithResponseCheck { api ->
             api.jukeboxControl(JukeboxAction.STATUS, null, null, null, null)
                 .execute()
@@ -704,8 +682,7 @@ open class RESTMusicService(
 
     @Throws(Exception::class)
     override fun setJukeboxGain(
-        gain: Float,
-        context: Context
+        gain: Float
     ): JukeboxStatus {
         val response = responseChecker.callWithResponseCheck { api ->
             api.jukeboxControl(JukeboxAction.SET_GAIN, null, null, null, gain)
@@ -717,8 +694,7 @@ open class RESTMusicService(
 
     @Throws(Exception::class)
     override fun getShares(
-        refresh: Boolean,
-        context: Context
+        refresh: Boolean
     ): List<Share> {
         val response = responseChecker.callWithResponseCheck { api -> api.getShares().execute() }
 
@@ -738,8 +714,7 @@ open class RESTMusicService(
     override fun getSongsByGenre(
         genre: String,
         count: Int,
-        offset: Int,
-        context: Context
+        offset: Int
     ): MusicDirectory {
         val response = responseChecker.callWithResponseCheck { api ->
             api.getSongsByGenre(genre, count, offset, null).execute()
@@ -753,8 +728,7 @@ open class RESTMusicService(
 
     @Throws(Exception::class)
     override fun getUser(
-        username: String,
-        context: Context
+        username: String
     ): UserInfo {
         val response = responseChecker.callWithResponseCheck { api ->
             api.getUser(username).execute()
@@ -765,8 +739,7 @@ open class RESTMusicService(
 
     @Throws(Exception::class)
     override fun getChatMessages(
-        since: Long?,
-        context: Context
+        since: Long?
     ): List<ChatMessage> {
         val response = responseChecker.callWithResponseCheck { api ->
             api.getChatMessages(since).execute()
@@ -777,16 +750,13 @@ open class RESTMusicService(
 
     @Throws(Exception::class)
     override fun addChatMessage(
-        message: String,
-        context: Context
+        message: String
     ) {
         responseChecker.callWithResponseCheck { api -> api.addChatMessage(message).execute() }
     }
 
     @Throws(Exception::class)
-    override fun getBookmarks(
-        context: Context
-    ): List<Bookmark> {
+    override fun getBookmarks(): List<Bookmark> {
         val response = responseChecker.callWithResponseCheck { api -> api.getBookmarks().execute() }
 
         return response.body()!!.bookmarkList.toDomainEntitiesList()
@@ -795,8 +765,7 @@ open class RESTMusicService(
     @Throws(Exception::class)
     override fun createBookmark(
         id: String,
-        position: Int,
-        context: Context
+        position: Int
     ) {
         responseChecker.callWithResponseCheck { api ->
             api.createBookmark(id, position.toLong(), null).execute()
@@ -805,16 +774,14 @@ open class RESTMusicService(
 
     @Throws(Exception::class)
     override fun deleteBookmark(
-        id: String,
-        context: Context
+        id: String
     ) {
         responseChecker.callWithResponseCheck { api -> api.deleteBookmark(id).execute() }
     }
 
     @Throws(Exception::class)
     override fun getVideos(
-        refresh: Boolean,
-        context: Context
+        refresh: Boolean
     ): MusicDirectory {
         val response = responseChecker.callWithResponseCheck { api -> api.getVideos().execute() }
 
@@ -828,8 +795,7 @@ open class RESTMusicService(
     override fun createShare(
         ids: List<String>,
         description: String?,
-        expires: Long?,
-        context: Context
+        expires: Long?
     ): List<Share> {
         val response = responseChecker.callWithResponseCheck { api ->
             api.createShare(ids, description, expires).execute()
@@ -840,8 +806,7 @@ open class RESTMusicService(
 
     @Throws(Exception::class)
     override fun deleteShare(
-        id: String,
-        context: Context
+        id: String
     ) {
         responseChecker.callWithResponseCheck { api -> api.deleteShare(id).execute() }
     }
@@ -850,8 +815,7 @@ open class RESTMusicService(
     override fun updateShare(
         id: String,
         description: String?,
-        expires: Long?,
-        context: Context
+        expires: Long?
     ) {
         var expiresValue: Long? = expires
         if (expires != null && expires == 0L) {
@@ -865,7 +829,6 @@ open class RESTMusicService(
 
     @Throws(Exception::class)
     override fun getAvatar(
-        context: Context,
         username: String?,
         size: Int,
         saveToFile: Boolean,

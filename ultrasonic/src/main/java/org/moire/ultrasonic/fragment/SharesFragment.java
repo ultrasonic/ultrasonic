@@ -129,7 +129,7 @@ public class SharesFragment extends Fragment {
             protected List<Share> doInBackground() throws Throwable
             {
                 MusicService musicService = MusicServiceFactory.getMusicService();
-                return musicService.getShares(refresh, getContext());
+                return musicService.getShares(refresh);
             }
 
             @Override
@@ -196,7 +196,7 @@ public class SharesFragment extends Fragment {
                     protected Void doInBackground() throws Throwable
                     {
                         MusicService musicService = MusicServiceFactory.getMusicService();
-                        musicService.deleteShare(share.getId(), getContext());
+                        musicService.deleteShare(share.getId());
                         return null;
                     }
 
@@ -302,7 +302,7 @@ public class SharesFragment extends Fragment {
                         String description = shareDescriptionText != null ? shareDescriptionText.toString() : null;
 
                         MusicService musicService = MusicServiceFactory.getMusicService();
-                        musicService.updateShare(share.getId(), description, millis, getContext());
+                        musicService.updateShare(share.getId(), description, millis);
                         return null;
                     }
 

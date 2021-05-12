@@ -214,7 +214,7 @@ public class FileUtil
 		return null;
 	}
 
-	public static Bitmap getAlbumArtBitmap(Context context, MusicDirectory.Entry entry, int size, boolean highQuality)
+	public static Bitmap getAlbumArtBitmap(MusicDirectory.Entry entry, int size, boolean highQuality)
 	{
 		if (entry == null) return null;
 

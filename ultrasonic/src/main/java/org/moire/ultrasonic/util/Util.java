@@ -137,7 +137,6 @@ public class Util
 		return preferences.getBoolean(Constants.PREFERENCES_KEY_ALWAYS_SHOW_NOTIFICATION, false);
 	}
 
-	@SuppressWarnings({"BooleanMethodIsAlwaysInverted"}) // It is inverted for readability
 	public static boolean isLockScreenEnabled()
 	{
 		SharedPreferences preferences = getPreferences();
@@ -1061,7 +1060,7 @@ public class Util
 		return preferences.getBoolean(Constants.PREFERENCES_KEY_ID3_TAGS, false);
 	}
 
-	public static boolean getShouldShowArtistPicture(Context context)
+	public static boolean getShouldShowArtistPicture()
 	{
 		SharedPreferences preferences = getPreferences();
 		boolean isOffline = ActiveServerProvider.Companion.isOffline();
@@ -1082,7 +1081,6 @@ public class Util
 		return Integer.parseInt(preferences.getString(Constants.PREFERENCES_KEY_DIRECTORY_CACHE_TIME, "300"));
 	}
 
-	@SuppressWarnings("BooleanMethodIsAlwaysInverted") // Inverted for readability
 	public static boolean isNullOrWhiteSpace(String string)
 	{
 		return string == null || string.isEmpty() || string.trim().isEmpty();

@@ -419,8 +419,8 @@ public class LegacyImageLoader implements Runnable, ImageLoader {
                 MusicService musicService = MusicServiceFactory.getMusicService();
                 final boolean isAvatar = this.username != null && this.entry == null;
                 final Bitmap bitmap = this.entry != null ?
-                    musicService.getCoverArt(view.getContext(), entry, size, saveToFile, highQuality) :
-                    musicService.getAvatar(view.getContext(), username, size, saveToFile, highQuality);
+                    musicService.getCoverArt(entry, size, saveToFile, highQuality) :
+                    musicService.getAvatar(username, size, saveToFile, highQuality);
 
                 if (bitmap == null) {
                     Timber.d("Found empty album art.");

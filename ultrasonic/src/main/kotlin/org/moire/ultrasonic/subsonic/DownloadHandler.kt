@@ -215,7 +215,7 @@ class DownloadHandler(
                             musicService.getMusicDirectory(id, name, false)
                     } else if (isShare) {
                         root = MusicDirectory()
-                        val shares = musicService.getShares(true, activity)
+                        val shares = musicService.getShares(true)
                         for (share in shares) {
                             if (share.id == id) {
                                 for (entry in share.getEntries()) {
@@ -225,7 +225,7 @@ class DownloadHandler(
                             }
                         }
                     } else {
-                        root = musicService.getPlaylist(id, name, activity)
+                        root = musicService.getPlaylist(id, name)
                     }
                     getSongsRecursively(root, songs)
                 }
