@@ -36,15 +36,6 @@ empty-blocks:
 
 complexity:
   active: true
-  LongMethod:
-    threshold: 20
-  LongParameterList:
-    functionThreshold: 5
-    constructorThreshold: 5
-  LargeClass:
-    threshold: 150
-  ComplexMethod:
-    threshold: 10
   TooManyFunctions:
     thresholdInFiles: 20
     thresholdInClasses: 20
