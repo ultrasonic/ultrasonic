@@ -9,7 +9,6 @@ import androidx.recyclerview.widget.RecyclerView
 import org.koin.core.component.KoinApiExtension
 import org.moire.ultrasonic.R
 import org.moire.ultrasonic.domain.MusicDirectory
-import org.moire.ultrasonic.domain.MusicFolder
 import org.moire.ultrasonic.util.Constants
 
 /**
@@ -44,11 +43,6 @@ class AlbumListFragment : GenericListFragment<MusicDirectory.Entry, AlbumRowAdap
      * after the user has clicked on an item
      */
     override val itemClickTarget: Int = R.id.trackCollectionFragment
-
-    /**
-     * Whether to show the folder selector
-     */
-    override var folderHeaderEnabled = false
 
     /**
      * The central function to pass a query to the model and return a LiveData object
@@ -102,9 +96,5 @@ class AlbumListFragment : GenericListFragment<MusicDirectory.Entry, AlbumRowAdap
         bundle.putString(Constants.INTENT_EXTRA_NAME_NAME, item.title)
         bundle.putString(Constants.INTENT_EXTRA_NAME_PARENT_ID, item.parent)
         findNavController().navigate(itemClickTarget, bundle)
-    }
-
-    override val musicFolderObserver = { _: List<MusicFolder> ->
-        // Do nothing
     }
 }

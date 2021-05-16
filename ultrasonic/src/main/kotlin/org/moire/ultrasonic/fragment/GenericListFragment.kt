@@ -88,15 +88,21 @@ abstract class GenericListFragment<T : GenericEntry, TA : GenericRowAdapter<T>> 
     /**
      * The observer to be called if the available music folders have changed
      */
-    abstract val musicFolderObserver: (List<MusicFolder>) -> Unit
+    val musicFolderObserver = { changedFolders: List<MusicFolder> ->
+        viewAdapter.notifyDataSetChanged()
+        selectFolderHeader?.setData(
+            activeServerProvider.getActiveServer().musicFolderId,
+            changedFolders
+        )
+        Unit
+    }
 
     /**
      * Whether to show the folder selector
      */
-    internal open var folderHeaderEnabled: Boolean = true
-
     fun showFolderHeader(): Boolean {
-        return folderHeaderEnabled && listModel.isOffline() && !Util.getShouldUseId3Tags()
+        return listModel.showSelectFolderHeader(arguments) &&
+            !listModel.isOffline() && !Util.getShouldUseId3Tags()
     }
 
     fun setTitle(title: String?) {

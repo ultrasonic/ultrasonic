@@ -1,5 +1,5 @@
 /*
- * ArtistRowAdapter.kt
+ * AlbumRowAdapter.kt
  * Copyright (C) 2009-2021 Ultrasonic developers
  *
  * Distributed under terms of the GNU GPLv3 license.
@@ -21,7 +21,7 @@ import org.moire.ultrasonic.util.ImageLoader
 import org.moire.ultrasonic.view.SelectMusicFolderView
 
 /**
- * Creates a Row in a RecyclerView which contains the details of an Artist
+ * Creates a Row in a RecyclerView which contains the details of an Album
  */
 class AlbumRowAdapter(
     albumList: List<MusicDirectory.Entry>,

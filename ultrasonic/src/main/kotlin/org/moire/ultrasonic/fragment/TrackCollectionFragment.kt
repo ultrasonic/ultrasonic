@@ -232,7 +232,6 @@ class TrackCollectionFragment : Fragment() {
     }
 
     val handler = CoroutineExceptionHandler { _, exception ->
-        println("CoroutineExceptionHandler got $exception")
         Handler(Looper.getMainLooper()).post {
             context?.let { CommunicationErrorHandler.handleError(exception, it) }
         }
@@ -727,7 +726,7 @@ class TrackCollectionFragment : Fragment() {
                 }
             }
         } else {
-            if (model.showSelectFolderHeader) {
+            if (model.showSelectFolderHeader(arguments)) {
                 if (albumListView!!.headerViewsCount == 0) {
                     albumListView!!.addHeaderView(selectFolderHeader!!.itemView, null, false)
                 }

@@ -29,7 +29,7 @@ import org.moire.ultrasonic.util.Util
 * An abstract Model, which can be extended to retrieve a list of items from the API
 */
 @KoinApiExtension
-abstract class GenericListModel(application: Application) :
+open class GenericListModel(application: Application) :
     AndroidViewModel(application), KoinComponent {
 
     val activeServerProvider: ActiveServerProvider by inject()
@@ -42,7 +42,11 @@ abstract class GenericListModel(application: Application) :
 
     var currentListIsSortable = true
     var showHeader = true
-    var showSelectFolderHeader = false
+
+    @Suppress("UNUSED_PARAMETER")
+    open fun showSelectFolderHeader(args: Bundle?): Boolean {
+        return true
+    }
 
     internal val musicFolders: MutableLiveData<List<MusicFolder>> = MutableLiveData()
 
@@ -96,13 +100,20 @@ abstract class GenericListModel(application: Application) :
     /**
      * This is the central function you need to implement if you want to extend this class
      */
-    abstract fun load(
+    open fun load(
         isOffline: Boolean,
         useId3Tags: Boolean,
         musicService: MusicService,
         refresh: Boolean,
         args: Bundle
-    )
+    ) {
+        // Update the list of available folders if enabled
+        if (showSelectFolderHeader(args) && !isOffline && !useId3Tags) {
+            musicFolders.postValue(
+                musicService.getMusicFolders(refresh)
+            )
+        }
+    }
 
     /**
      * Retrieves the available Music Folders in a LiveData

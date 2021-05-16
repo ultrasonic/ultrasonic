@@ -35,19 +35,19 @@ class AlbumListModel(application: Application) : GenericListModel(application) {
         refresh: Boolean,
         args: Bundle
     ) {
-        val musicDirectory: MusicDirectory
-        val musicFolderId = if (showSelectFolderHeader) {
-            activeServerProvider.getActiveServer().musicFolderId
-        } else {
-            null
-        }
+        super.load(isOffline, useId3Tags, musicService, refresh, args)
 
         val albumListType = args.getString(Constants.INTENT_EXTRA_NAME_ALBUM_LIST_TYPE)!!
         val size = args.getInt(Constants.INTENT_EXTRA_NAME_ALBUM_LIST_SIZE, 0)
         var offset = args.getInt(Constants.INTENT_EXTRA_NAME_ALBUM_LIST_OFFSET, 0)
         val append = args.getBoolean(Constants.INTENT_EXTRA_NAME_APPEND, false)
 
-        showHeader = showHeader(albumListType)
+        val musicDirectory: MusicDirectory
+        val musicFolderId = if (showSelectFolderHeader(args)) {
+            activeServerProvider.getActiveServer().musicFolderId
+        } else {
+            null
+        }
 
         // Handle the logic for endless scrolling:
         // If appending the existing list, set the offset from where to load
@@ -65,7 +65,7 @@ class AlbumListModel(application: Application) : GenericListModel(application) {
             )
         }
 
-        currentListIsSortable = sortableCollection(albumListType)
+        currentListIsSortable = isCollectionSortable(albumListType)
 
         if (append && albumList.value != null) {
             val list = ArrayList<MusicDirectory.Entry>()
@@ -79,14 +79,18 @@ class AlbumListModel(application: Application) : GenericListModel(application) {
         loadedUntil = offset
     }
 
-    private fun showHeader(albumListType: String): Boolean {
+    override fun showSelectFolderHeader(args: Bundle?): Boolean {
+        if (args == null) return false
+
+        val albumListType = args.getString(Constants.INTENT_EXTRA_NAME_ALBUM_LIST_TYPE)!!
+
         val isAlphabetical = (albumListType == AlbumListType.SORTED_BY_NAME.toString()) ||
             (albumListType == AlbumListType.SORTED_BY_ARTIST.toString())
 
         return !isOffline() && !Util.getShouldUseId3Tags() && isAlphabetical
     }
 
-    private fun sortableCollection(albumListType: String): Boolean {
+    private fun isCollectionSortable(albumListType: String): Boolean {
         return albumListType != "newest" && albumListType != "random" &&
             albumListType != "highest" && albumListType != "recent" &&
             albumListType != "frequent"

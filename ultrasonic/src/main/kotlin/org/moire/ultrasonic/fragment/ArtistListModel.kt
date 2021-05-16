@@ -49,11 +49,7 @@ class ArtistListModel(application: Application) : GenericListModel(application) 
         refresh: Boolean,
         args: Bundle
     ) {
-        if (!isOffline && !useId3Tags) {
-            musicFolders.postValue(
-                musicService.getMusicFolders(refresh)
-            )
-        }
+        super.load(isOffline, useId3Tags, musicService, refresh, args)
 
         val musicFolderId = activeServer.musicFolderId
 

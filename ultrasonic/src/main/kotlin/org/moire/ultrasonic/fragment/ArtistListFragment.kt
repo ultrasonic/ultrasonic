@@ -6,7 +6,6 @@ import androidx.lifecycle.LiveData
 import org.koin.core.component.KoinApiExtension
 import org.moire.ultrasonic.R
 import org.moire.ultrasonic.domain.Artist
-import org.moire.ultrasonic.domain.MusicFolder
 import org.moire.ultrasonic.util.Constants
 
 /**
@@ -59,14 +58,6 @@ class ArtistListFragment : GenericListFragment<Artist, ArtistRowAdapter>() {
             { entry -> onItemClick(entry) },
             { menuItem, entry -> onContextMenuItemSelected(menuItem, entry) },
             imageLoaderProvider.getImageLoader()
-        )
-    }
-
-    override val musicFolderObserver = { changedFolders: List<MusicFolder> ->
-        viewAdapter.notifyDataSetChanged()
-        selectFolderHeader!!.setData(
-            activeServerProvider.getActiveServer().musicFolderId,
-            changedFolders
         )
     }
 }
