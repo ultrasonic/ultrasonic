@@ -17,22 +17,21 @@ import org.moire.ultrasonic.domain.Artist
 import org.moire.ultrasonic.domain.MusicDirectory
 import org.moire.ultrasonic.util.ImageLoader
 import org.moire.ultrasonic.util.Util
-import org.moire.ultrasonic.view.SelectMusicFolderView
 
 /**
  * Creates a Row in a RecyclerView which contains the details of an Artist
  */
 class ArtistRowAdapter(
     artistList: List<Artist>,
-    private var selectFolderHeader: SelectMusicFolderView?,
     onItemClick: (Artist) -> Unit,
     onContextMenuClick: (MenuItem, Artist) -> Boolean,
-    private val imageLoader: ImageLoader
+    private val imageLoader: ImageLoader,
+    onMusicFolderUpdate: (String?) -> Unit
 ) : GenericRowAdapter<Artist>(
-    selectFolderHeader,
     onItemClick,
     onContextMenuClick,
-    imageLoader
+    imageLoader,
+    onMusicFolderUpdate
 ),
     SectionedAdapter {
 
@@ -51,7 +50,7 @@ class ArtistRowAdapter(
     }
 
     override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
-        if (holder is ItemViewHolder) {
+        if (holder is ViewHolder) {
             val listPosition = if (selectFolderHeader != null) position - 1 else position
             holder.textView.text = itemList[listPosition].name
             holder.section.text = getSectionForArtist(listPosition)
@@ -100,5 +99,12 @@ class ArtistRowAdapter(
         var section = name.first().toUpperCase()
         if (!section.isLetter()) section = '#'
         return section.toString()
+    }
+
+    /**
+     * Creates an instance of our ViewHolder class
+     */
+    override fun newViewHolder(view: View): RecyclerView.ViewHolder {
+        return ViewHolder(view)
     }
 }

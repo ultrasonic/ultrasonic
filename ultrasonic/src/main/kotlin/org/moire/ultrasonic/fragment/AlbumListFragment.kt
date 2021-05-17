@@ -61,10 +61,10 @@ class AlbumListFragment : GenericListFragment<MusicDirectory.Entry, AlbumRowAdap
     override val viewAdapter: AlbumRowAdapter by lazy {
         AlbumRowAdapter(
             liveDataItems.value ?: listOf(),
-            selectFolderHeader,
             { entry -> onItemClick(entry) },
             { menuItem, entry -> onContextMenuItemSelected(menuItem, entry) },
-            imageLoaderProvider.getImageLoader()
+            imageLoaderProvider.getImageLoader(),
+            onMusicFolderUpdate
         )
     }
 

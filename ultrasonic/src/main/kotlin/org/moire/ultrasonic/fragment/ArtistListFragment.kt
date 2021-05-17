@@ -54,10 +54,10 @@ class ArtistListFragment : GenericListFragment<Artist, ArtistRowAdapter>() {
     override val viewAdapter: ArtistRowAdapter by lazy {
         ArtistRowAdapter(
             liveDataItems.value ?: listOf(),
-            selectFolderHeader,
             { entry -> onItemClick(entry) },
             { menuItem, entry -> onContextMenuItemSelected(menuItem, entry) },
-            imageLoaderProvider.getImageLoader()
+            imageLoaderProvider.getImageLoader(),
+            onMusicFolderUpdate
         )
     }
 }

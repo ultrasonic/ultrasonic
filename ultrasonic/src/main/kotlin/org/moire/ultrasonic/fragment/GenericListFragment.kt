@@ -88,13 +88,23 @@ abstract class GenericListFragment<T : GenericEntry, TA : GenericRowAdapter<T>> 
     /**
      * The observer to be called if the available music folders have changed
      */
-    val musicFolderObserver = { changedFolders: List<MusicFolder> ->
-        viewAdapter.notifyDataSetChanged()
-        selectFolderHeader?.setData(
-            activeServerProvider.getActiveServer().musicFolderId,
-            changedFolders
-        )
+    @Suppress("CommentOverPrivateProperty")
+    private val musicFolderObserver = { folders: List<MusicFolder> ->
+        viewAdapter.setFolderList(folders, listModel.activeServer.musicFolderId)
         Unit
+    }
+
+    /**
+     * What to do when the user has modified the folder filter
+     */
+    val onMusicFolderUpdate = { selectedFolderId: String? ->
+        if (!listModel.isOffline()) {
+            val currentSetting = listModel.activeServer
+            currentSetting.musicFolderId = selectedFolderId
+            serverSettingsModel.updateItem(currentSetting)
+        }
+        viewAdapter.notifyDataSetChanged()
+        listModel.refresh(refreshListView!!, arguments)
     }
 
     /**
@@ -142,27 +152,15 @@ abstract class GenericListFragment<T : GenericEntry, TA : GenericRowAdapter<T>> 
         // Create a View Manager
         viewManager = LinearLayoutManager(this.context)
 
-        // Show folder selector UI if enabled
-        if (showFolderHeader()) {
-            selectFolderHeader = SelectMusicFolderView(
-                requireContext(), view as ViewGroup
-            ) { selectedFolderId ->
-                if (!listModel.isOffline()) {
-                    val currentSetting = listModel.activeServer
-                    currentSetting.musicFolderId = selectedFolderId
-                    serverSettingsModel.updateItem(currentSetting)
-                }
-                viewAdapter.notifyDataSetChanged()
-                listModel.refresh(refreshListView!!, arguments)
-            }
-        }
-
         // Hook up the view with the manager and the adapter
         listView = view.findViewById<RecyclerView>(recyclerViewId).apply {
             setHasFixedSize(true)
             layoutManager = viewManager
             adapter = viewAdapter
         }
+
+        // Configure whether to show the folder header
+        viewAdapter.folderHeaderEnabled = showFolderHeader()
     }
 
     @Override

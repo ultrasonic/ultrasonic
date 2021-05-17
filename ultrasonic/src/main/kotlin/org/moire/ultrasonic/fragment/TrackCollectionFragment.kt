@@ -34,13 +34,10 @@ import java.util.Random
 import kotlinx.coroutines.CoroutineExceptionHandler
 import kotlinx.coroutines.launch
 import org.koin.android.ext.android.inject
-import org.koin.android.viewmodel.ext.android.viewModel
 import org.koin.core.component.KoinApiExtension
 import org.moire.ultrasonic.R
-import org.moire.ultrasonic.data.ActiveServerProvider
 import org.moire.ultrasonic.data.ActiveServerProvider.Companion.isOffline
 import org.moire.ultrasonic.domain.MusicDirectory
-import org.moire.ultrasonic.domain.MusicFolder
 import org.moire.ultrasonic.fragment.FragmentTitle.Companion.getTitle
 import org.moire.ultrasonic.fragment.FragmentTitle.Companion.setTitle
 import org.moire.ultrasonic.service.CommunicationErrorHandler
@@ -57,7 +54,6 @@ import org.moire.ultrasonic.util.EntryByDiscAndTrackComparator
 import org.moire.ultrasonic.util.Util
 import org.moire.ultrasonic.view.AlbumView
 import org.moire.ultrasonic.view.EntryAdapter
-import org.moire.ultrasonic.view.SelectMusicFolderView
 import org.moire.ultrasonic.view.SongView
 import timber.log.Timber
 
@@ -71,7 +67,6 @@ class TrackCollectionFragment : Fragment() {
     private var refreshAlbumListView: SwipeRefreshLayout? = null
     private var albumListView: ListView? = null
     private var header: View? = null
-    private var selectFolderHeader: SelectMusicFolderView? = null
     private var albumButtons: View? = null
     private var emptyView: TextView? = null
     private var selectButton: ImageView? = null
@@ -95,7 +90,6 @@ class TrackCollectionFragment : Fragment() {
     private val imageLoaderProvider: ImageLoaderProvider by inject()
     private val shareHandler: ShareHandler by inject()
     private var cancellationToken: CancellationToken? = null
-    private val activeServerProvider: ActiveServerProvider by inject()
 
     private val model: TrackCollectionModel by viewModels()
     private val random: Random = SecureRandom()
@@ -131,19 +125,6 @@ class TrackCollectionFragment : Fragment() {
             false
         )
 
-        selectFolderHeader = SelectMusicFolderView(
-            requireContext(), view as ViewGroup
-        ) { selectedFolderId ->
-            if (!isOffline()) {
-                val serverSettingsModel: ServerSettingsModel by viewModel()
-                val currentSetting = activeServerProvider.getActiveServer()
-                currentSetting.musicFolderId = selectedFolderId
-                serverSettingsModel.updateItem(currentSetting)
-            }
-            this.updateDisplay(true)
-        }
-
-        model.musicFolders.observe(viewLifecycleOwner, musicFolderObserver)
         model.currentDirectory.observe(viewLifecycleOwner, defaultObserver)
         model.songsForGenre.observe(viewLifecycleOwner, songsForGenreObserver)
 
@@ -622,15 +603,6 @@ class TrackCollectionFragment : Fragment() {
         mediaPlayerController.unpin(songs)
     }
 
-    private val musicFolderObserver = Observer<List<MusicFolder>> { changedFolders ->
-        if (changedFolders != null) {
-            selectFolderHeader!!.setData(
-                activeServerProvider.getActiveServer().musicFolderId,
-                changedFolders
-            )
-        }
-    }
-
     private val songsForGenreObserver = Observer<MusicDirectory> { musicDirectory ->
 
         // Hide more button when results are less than album list size
@@ -726,12 +698,9 @@ class TrackCollectionFragment : Fragment() {
                 }
             }
         } else {
-            if (model.showSelectFolderHeader(arguments)) {
-                if (albumListView!!.headerViewsCount == 0) {
-                    albumListView!!.addHeaderView(selectFolderHeader!!.itemView, null, false)
-                }
-            }
 
+            // TODO: This code path can be removed when getArtist has been moved to
+            // AlbumListFragment (getArtist returns the albums of an artist)
             pinButton!!.visibility = View.GONE
             unpinButton!!.visibility = View.GONE
             downloadButton!!.visibility = View.GONE

@@ -1,9 +1,8 @@
 package org.moire.ultrasonic.view
 
 import android.content.Context
-import android.view.LayoutInflater
 import android.view.MenuItem
-import android.view.ViewGroup
+import android.view.View
 import android.widget.LinearLayout
 import android.widget.PopupMenu
 import android.widget.TextView
@@ -18,18 +17,13 @@ import org.moire.ultrasonic.domain.MusicFolder
  */
 class SelectMusicFolderView(
     private val context: Context,
-    root: ViewGroup,
+    view: View,
     private val onUpdate: (String?) -> Unit
-) : RecyclerView.ViewHolder(
-    LayoutInflater.from(context).inflate(
-        R.layout.select_folder_header, root, false
-    )
-) {
-    private var musicFolders: List<MusicFolder> = mutableListOf<MusicFolder>()
+) : RecyclerView.ViewHolder(view) {
+    private var musicFolders: List<MusicFolder> = mutableListOf()
     private var selectedFolderId: String? = null
     private val folderName: TextView = itemView.findViewById(R.id.select_folder_name)
     private val layout: LinearLayout = itemView.findViewById(R.id.select_folder_header)
-    private val MENU_GROUP_MUSIC_FOLDER = 10
 
     init {
         folderName.text = context.getString(R.string.select_artist_all_folders)
@@ -85,5 +79,9 @@ class SelectMusicFolderView(
         onUpdate(selectedFolderId)
 
         return true
+    }
+
+    companion object {
+        const val MENU_GROUP_MUSIC_FOLDER = 10
     }
 }

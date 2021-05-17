@@ -19,6 +19,7 @@ import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import org.moire.ultrasonic.R
 import org.moire.ultrasonic.data.ActiveServerProvider
+import org.moire.ultrasonic.domain.MusicFolder
 import org.moire.ultrasonic.util.ImageLoader
 import org.moire.ultrasonic.view.SelectMusicFolderView
 
@@ -26,15 +27,19 @@ import org.moire.ultrasonic.view.SelectMusicFolderView
 * An abstract Adapter, which can be extended to display a List of <T> in a RecyclerView
 */
 abstract class GenericRowAdapter<T>(
-    private var selectFolderHeader: SelectMusicFolderView?,
     val onItemClick: (T) -> Unit,
     val onContextMenuClick: (MenuItem, T) -> Boolean,
-    private val imageLoader: ImageLoader
+    private val imageLoader: ImageLoader,
+    private val onMusicFolderUpdate: (String?) -> Unit
 ) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
-
     open var itemList: List<T> = listOf()
     protected abstract val layout: Int
     protected abstract val contextMenuLayout: Int
+
+    var folderHeaderEnabled: Boolean = true
+    var selectFolderHeader: SelectMusicFolderView? = null
+    var musicFolders: List<MusicFolder> = listOf()
+    var selectedFolder: String? = null
 
     /**
      * Sets the data to be displayed in the RecyclerView
@@ -44,6 +49,25 @@ abstract class GenericRowAdapter<T>(
         notifyDataSetChanged()
     }
 
+    /**
+     * Sets the content and state of the music folder selector row
+     */
+    fun setFolderList(changedFolders: List<MusicFolder>, selectedId: String?) {
+        musicFolders = changedFolders
+        selectedFolder = selectedId
+
+        selectFolderHeader?.setData(
+            selectedFolder,
+            musicFolders
+        )
+
+        notifyDataSetChanged()
+    }
+
+    open fun newViewHolder(view: View): RecyclerView.ViewHolder {
+        return ViewHolder(view)
+    }
+
     override fun onCreateViewHolder(
         parent: ViewGroup,
         viewType: Int
@@ -51,13 +75,27 @@ abstract class GenericRowAdapter<T>(
         if (viewType == TYPE_ITEM) {
             val row = LayoutInflater.from(parent.context)
                 .inflate(layout, parent, false)
-            return ItemViewHolder(row)
+            return newViewHolder(row)
+        } else {
+            val row = LayoutInflater.from(parent.context)
+                .inflate(
+                    R.layout.select_folder_header, parent, false
+                )
+            selectFolderHeader = SelectMusicFolderView(parent.context, row, onMusicFolderUpdate)
+
+            if (musicFolders.isNotEmpty()) {
+                selectFolderHeader?.setData(
+                    selectedFolder,
+                    musicFolders
+                )
+            }
+
+            return selectFolderHeader!!
         }
-        return selectFolderHeader!!
     }
 
     override fun onViewRecycled(holder: RecyclerView.ViewHolder) {
-        if ((holder is ItemViewHolder) && (holder.coverArtId != null)) {
+        if ((holder is ViewHolder) && (holder.coverArtId != null)) {
             imageLoader.cancel(holder.coverArtId)
         }
         super.onViewRecycled(holder)
@@ -73,7 +111,7 @@ abstract class GenericRowAdapter<T>(
     }
 
     override fun getItemViewType(position: Int): Int {
-        return if (position == 0 && selectFolderHeader != null) TYPE_HEADER else TYPE_ITEM
+        return if (position == 0 && folderHeaderEnabled) TYPE_HEADER else TYPE_ITEM
     }
 
     internal fun createPopupMenu(view: View, position: Int): Boolean {
@@ -94,7 +132,7 @@ abstract class GenericRowAdapter<T>(
     /**
      * Holds the view properties of an Item row
      */
-    class ItemViewHolder(
+    class ViewHolder(
         itemView: View
     ) : RecyclerView.ViewHolder(itemView) {
         var section: TextView = itemView.findViewById(R.id.row_section)

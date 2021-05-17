@@ -7,10 +7,8 @@
 
 package org.moire.ultrasonic.fragment
 
-import android.view.LayoutInflater
 import android.view.MenuItem
 import android.view.View
-import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.TextView
@@ -18,22 +16,21 @@ import androidx.recyclerview.widget.RecyclerView
 import org.moire.ultrasonic.R
 import org.moire.ultrasonic.domain.MusicDirectory
 import org.moire.ultrasonic.util.ImageLoader
-import org.moire.ultrasonic.view.SelectMusicFolderView
 
 /**
  * Creates a Row in a RecyclerView which contains the details of an Album
  */
 class AlbumRowAdapter(
     albumList: List<MusicDirectory.Entry>,
-    private var selectFolderHeader: SelectMusicFolderView?,
     onItemClick: (MusicDirectory.Entry) -> Unit,
     onContextMenuClick: (MenuItem, MusicDirectory.Entry) -> Boolean,
-    private val imageLoader: ImageLoader
+    private val imageLoader: ImageLoader,
+    onMusicFolderUpdate: (String?) -> Unit
 ) : GenericRowAdapter<MusicDirectory.Entry>(
-    selectFolderHeader,
     onItemClick,
     onContextMenuClick,
-    imageLoader
+    imageLoader,
+    onMusicFolderUpdate
 ) {
 
     override var itemList = albumList
@@ -48,20 +45,8 @@ class AlbumRowAdapter(
         super.notifyDataSetChanged()
     }
 
-    override fun onCreateViewHolder(
-        parent: ViewGroup,
-        viewType: Int
-    ): RecyclerView.ViewHolder {
-        if (viewType == TYPE_ITEM) {
-            val row = LayoutInflater.from(parent.context)
-                .inflate(layout, parent, false)
-            return AlbumViewHolder(row)
-        }
-        return selectFolderHeader!!
-    }
-
     override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
-        if (holder is AlbumViewHolder) {
+        if (holder is ViewHolder) {
             val listPosition = if (selectFolderHeader != null) position - 1 else position
             val entry = itemList[listPosition]
             holder.album.text = entry.title
@@ -73,7 +58,7 @@ class AlbumRowAdapter(
             imageLoader.loadImage(
                 holder.coverArt,
                 MusicDirectory.Entry().apply { coverArt = holder.coverArtId },
-                false, 0, false, true, R.drawable.ic_contact_picture
+                false, 0, false, true, R.drawable.unknown_album
             )
         }
     }
@@ -88,13 +73,20 @@ class AlbumRowAdapter(
     /**
      * Holds the view properties of an Item row
      */
-    class AlbumViewHolder(
-        itemView: View
-    ) : RecyclerView.ViewHolder(itemView) {
-        var album: TextView = itemView.findViewById(R.id.album_title)
-        var artist: TextView = itemView.findViewById(R.id.album_artist)
-        var details: LinearLayout = itemView.findViewById(R.id.row_album_details)
-        var coverArt: ImageView = itemView.findViewById(R.id.album_coverart)
+    class ViewHolder(
+        view: View
+    ) : RecyclerView.ViewHolder(view) {
+        var album: TextView = view.findViewById(R.id.album_title)
+        var artist: TextView = view.findViewById(R.id.album_artist)
+        var details: LinearLayout = view.findViewById(R.id.row_album_details)
+        var coverArt: ImageView = view.findViewById(R.id.album_coverart)
         var coverArtId: String? = null
+    }
+
+    /**
+     * Creates an instance of our ViewHolder class
+     */
+    override fun newViewHolder(view: View): RecyclerView.ViewHolder {
+        return ViewHolder(view)
     }
 }
