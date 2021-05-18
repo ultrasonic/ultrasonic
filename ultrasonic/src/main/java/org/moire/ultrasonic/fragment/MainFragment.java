@@ -4,7 +4,6 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.AdapterView;
 import android.widget.ListView;
 import android.widget.TextView;
 
@@ -142,71 +141,66 @@ public class MainFragment extends Fragment {
         }
 
         list.setAdapter(adapter);
-        list.setOnItemClickListener(new AdapterView.OnItemClickListener()
-        {
-            @Override
-            public void onItemClick(AdapterView<?> parent, View view, int position, long id)
+        list.setOnItemClickListener((parent, view, position, id) -> {
+            if (view == serverButton)
             {
-                if (view == serverButton)
-                {
-                    showServers();
-                }
-                else if (view == albumsNewestButton)
-                {
-                    showAlbumList("newest", R.string.main_albums_newest);
-                }
-                else if (view == albumsRandomButton)
-                {
-                    showAlbumList("random", R.string.main_albums_random);
-                }
-                else if (view == albumsHighestButton)
-                {
-                    showAlbumList("highest", R.string.main_albums_highest);
-                }
-                else if (view == albumsRecentButton)
-                {
-                    showAlbumList("recent", R.string.main_albums_recent);
-                }
-                else if (view == albumsFrequentButton)
-                {
-                    showAlbumList("frequent", R.string.main_albums_frequent);
-                }
-                else if (view == albumsStarredButton)
-                {
-                    showAlbumList(Constants.STARRED, R.string.main_albums_starred);
-                }
-                else if (view == albumsAlphaByNameButton)
-                {
-                    showAlbumList(Constants.ALPHABETICAL_BY_NAME, R.string.main_albums_alphaByName);
-                }
-                else if (view == albumsAlphaByArtistButton)
-                {
-                    showAlbumList("alphabeticalByArtist", R.string.main_albums_alphaByArtist);
-                }
-                else if (view == songsStarredButton)
-                {
-                    showStarredSongs();
-                }
-                else if (view == artistsButton)
-                {
-                    showArtists();
-                }
-                else if (view == albumsButton)
-                {
-                    showAlbumList(Constants.ALPHABETICAL_BY_NAME, R.string.main_albums_title);
-                }
-                else if (view == randomSongsButton)
-                {
-                    showRandomSongs();
-                }
-                else if (view == genresButton)
-                {
-                    showGenres();
-                }
-                else if (view == videosButton)
-                {
-                    showVideos();
-                }
+                showServers();
+            }
+            else if (view == albumsNewestButton)
+            {
+                showAlbumList("newest", R.string.main_albums_newest);
+            }
+            else if (view == albumsRandomButton)
+            {
+                showAlbumList("random", R.string.main_albums_random);
+            }
+            else if (view == albumsHighestButton)
+            {
+                showAlbumList("highest", R.string.main_albums_highest);
+            }
+            else if (view == albumsRecentButton)
+            {
+                showAlbumList("recent", R.string.main_albums_recent);
+            }
+            else if (view == albumsFrequentButton)
+            {
+                showAlbumList("frequent", R.string.main_albums_frequent);
+            }
+            else if (view == albumsStarredButton)
+            {
+                showAlbumList(Constants.STARRED, R.string.main_albums_starred);
+            }
+            else if (view == albumsAlphaByNameButton)
+            {
+                showAlbumList(Constants.ALPHABETICAL_BY_NAME, R.string.main_albums_alphaByName);
+            }
+            else if (view == albumsAlphaByArtistButton)
+            {
+                showAlbumList("alphabeticalByArtist", R.string.main_albums_alphaByArtist);
+            }
+            else if (view == songsStarredButton)
+            {
+                showStarredSongs();
+            }
+            else if (view == artistsButton)
+            {
+                showArtists();
+            }
+            else if (view == albumsButton)
+            {
+                showAlbumList(Constants.ALPHABETICAL_BY_NAME, R.string.main_albums_title);
+            }
+            else if (view == randomSongsButton)
+            {
+                showRandomSongs();
+            }
+            else if (view == genresButton)
+            {
+                showGenres();
+            }
+            else if (view == videosButton)
+            {
+                showVideos();
             }
         });
     }
@@ -219,21 +213,11 @@ public class MainFragment extends Fragment {
             currentSetting.getLdapSupport(), currentSetting.getMinimumApiVersion());
     }
 
-    private void showAlbumList(final String type, final int title)
-    {
-        Bundle bundle = new Bundle();
-        bundle.putString(Constants.INTENT_EXTRA_NAME_ALBUM_LIST_TYPE, type);
-        bundle.putInt(Constants.INTENT_EXTRA_NAME_ALBUM_LIST_TITLE, title);
-        bundle.putInt(Constants.INTENT_EXTRA_NAME_ALBUM_LIST_SIZE, Util.getMaxAlbums());
-        bundle.putInt(Constants.INTENT_EXTRA_NAME_ALBUM_LIST_OFFSET, 0);
-        Navigation.findNavController(getView()).navigate(R.id.mainToSelectAlbum, bundle);
-    }
-
     private void showStarredSongs()
     {
         Bundle bundle = new Bundle();
         bundle.putInt(Constants.INTENT_EXTRA_NAME_STARRED, 1);
-        Navigation.findNavController(getView()).navigate(R.id.mainToSelectAlbum, bundle);
+        Navigation.findNavController(getView()).navigate(R.id.mainToTrackCollection, bundle);
     }
 
     private void showRandomSongs()
@@ -241,14 +225,23 @@ public class MainFragment extends Fragment {
         Bundle bundle = new Bundle();
         bundle.putInt(Constants.INTENT_EXTRA_NAME_RANDOM, 1);
         bundle.putInt(Constants.INTENT_EXTRA_NAME_ALBUM_LIST_SIZE, Util.getMaxSongs());
-        Navigation.findNavController(getView()).navigate(R.id.mainToSelectAlbum, bundle);
+        Navigation.findNavController(getView()).navigate(R.id.mainToTrackCollection, bundle);
     }
 
     private void showArtists()
     {
         Bundle bundle = new Bundle();
         bundle.putString(Constants.INTENT_EXTRA_NAME_ALBUM_LIST_TITLE, getContext().getResources().getString(R.string.main_artists_title));
-        Navigation.findNavController(getView()).navigate(R.id.selectArtistFragment, bundle);
+        Navigation.findNavController(getView()).navigate(R.id.mainToArtistList, bundle);
+    }
+
+    private void showAlbumList(final String type, final int title) {
+        Bundle bundle = new Bundle();
+        bundle.putString(Constants.INTENT_EXTRA_NAME_ALBUM_LIST_TYPE, type);
+        bundle.putInt(Constants.INTENT_EXTRA_NAME_ALBUM_LIST_TITLE, title);
+        bundle.putInt(Constants.INTENT_EXTRA_NAME_ALBUM_LIST_SIZE, Util.getMaxAlbums());
+        bundle.putInt(Constants.INTENT_EXTRA_NAME_ALBUM_LIST_OFFSET, 0);
+        Navigation.findNavController(getView()).navigate(R.id.mainToAlbumList, bundle);
     }
 
     private void showGenres()
@@ -260,7 +253,7 @@ public class MainFragment extends Fragment {
     {
         Bundle bundle = new Bundle();
         bundle.putInt(Constants.INTENT_EXTRA_NAME_VIDEOS, 1);
-        Navigation.findNavController(getView()).navigate(R.id.mainToSelectAlbum, bundle);
+        Navigation.findNavController(getView()).navigate(R.id.mainToTrackCollection, bundle);
     }
 
     private void showServers()

@@ -36,7 +36,7 @@ class MusicDirectory {
     }
 
     data class Entry(
-        var id: String? = null,
+        override var id: String? = null,
         var parent: String? = null,
         var isDirectory: Boolean = false,
         var title: String? = null,
@@ -66,7 +66,7 @@ class MusicDirectory {
         var bookmarkPosition: Int = 0,
         var userRating: Int? = null,
         var averageRating: Float? = null
-    ) : Serializable {
+    ) : Serializable, GenericEntry() {
         fun setDuration(duration: Long) {
             this.duration = duration.toInt()
         }

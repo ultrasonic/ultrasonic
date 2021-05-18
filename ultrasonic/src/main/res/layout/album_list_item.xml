@@ -1,51 +1,95 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:a="http://schemas.android.com/apk/res/android"
-    a:orientation="horizontal"
-    a:layout_width="fill_parent"
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:a="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    a:id="@+id/row_artist_layout"
+    a:layout_width="match_parent"
     a:layout_height="wrap_content"
-    a:minHeight="?android:attr/listPreferredItemHeight">
+    a:background="?android:attr/selectableItemBackground"
+    a:clickable="true"
+    a:focusable="true">
 
-    <ImageView
+    <com.google.android.material.imageview.ShapeableImageView
         a:id="@+id/album_coverart"
         a:layout_width="64dp"
         a:layout_height="64dp"
-        a:layout_gravity="left|center_vertical"
-        a:paddingLeft="3dip" />
+        a:layout_gravity="center_horizontal|center_vertical"
+        a:layout_marginStart="6dp"
+        a:layout_marginLeft="6dp"
+        a:layout_marginTop="6dp"
+        a:scaleType="fitCenter"
+        a:src="@drawable/unknown_album"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:shapeAppearanceOverlay="@style/largeRoundedImageView" />
 
     <LinearLayout
+        a:id="@+id/row_album_details"
+        a:layout_width="0dp"
+        a:layout_height="74dp"
+        a:layout_marginStart="10dp"
+        a:layout_marginLeft="10dp"
+        a:drawablePadding="6dip"
+        a:gravity="center_vertical"
+        a:minHeight="56dip"
         a:orientation="vertical"
-        a:layout_width="0dip"
-        a:layout_height="wrap_content"
-        a:layout_weight="1"
-        a:layout_gravity="left|center_vertical"
-        a:paddingLeft="6dip"
-        a:paddingRight="3dip">
+        a:paddingLeft="3dip"
+        a:paddingRight="3dip"
+        a:textAppearance="?android:attr/textAppearanceMedium"
+        app:layout_constraintEnd_toStartOf="@+id/guideline2"
+        app:layout_constraintLeft_toRightOf="@+id/album_coverart"
+        app:layout_constraintStart_toEndOf="@+id/album_coverart"
+        app:layout_constraintTop_toTopOf="parent">
 
         <TextView
             a:id="@+id/album_title"
             a:layout_width="wrap_content"
             a:layout_height="wrap_content"
-            a:textAppearance="?android:attr/textAppearanceMedium"
+            a:ellipsize="marquee"
             a:singleLine="true"
-            a:ellipsize="marquee" />
+            a:textAppearance="?android:attr/textAppearanceMedium"
+            tools:text="TITLE" />
 
         <TextView
             a:id="@+id/album_artist"
             a:layout_width="wrap_content"
             a:layout_height="wrap_content"
+            a:singleLine="true"
             a:textAppearance="?android:attr/textAppearanceSmall"
-            a:singleLine="true" />
+            tools:text="ARTIST" />
 
     </LinearLayout>
 
     <ImageView
         a:id="@+id/album_star"
         a:layout_width="38dp"
-        a:layout_height="fill_parent"
-        a:gravity="center_vertical"
+        a:layout_height="38dp"
+        a:layout_marginStart="16dp"
+        a:layout_marginLeft="16dp"
+        a:layout_marginTop="16dp"
         a:background="@android:color/transparent"
-        a:src="?attr/star_hollow"
         a:focusable="false"
-        a:paddingRight="3dip" />
+        a:gravity="center_horizontal"
+        a:paddingRight="3dip"
+        a:src="?attr/star_hollow"
+        app:layout_constraintLeft_toRightOf="@+id/row_album_details"
+        app:layout_constraintStart_toEndOf="@+id/row_album_details"
+        app:layout_constraintTop_toTopOf="parent"
+        tools:src="@drawable/ic_star_hollow_dark"
+        a:paddingEnd="3dip" />
 
-</LinearLayout>
+    <androidx.constraintlayout.widget.Guideline
+        a:id="@+id/guideline"
+        a:layout_width="wrap_content"
+        a:layout_height="wrap_content"
+        a:orientation="vertical"
+        app:layout_constraintGuide_begin="76dp" />
+
+    <androidx.constraintlayout.widget.Guideline
+        a:id="@+id/guideline2"
+        a:layout_width="wrap_content"
+        a:layout_height="wrap_content"
+        a:orientation="vertical"
+        app:layout_constraintGuide_begin="346dp" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>

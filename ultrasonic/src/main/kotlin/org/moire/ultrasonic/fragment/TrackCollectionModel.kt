@@ -1,46 +1,40 @@
+/*
+ * TrackCollectionModel.kt
+ * Copyright (C) 2009-2021 Ultrasonic developers
+ *
+ * Distributed under terms of the GNU GPLv3 license.
+ */
+
 package org.moire.ultrasonic.fragment
 
 import android.app.Application
-import android.content.Context
-import androidx.lifecycle.AndroidViewModel
+import android.os.Bundle
 import androidx.lifecycle.MutableLiveData
 import java.util.LinkedList
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import org.koin.core.component.KoinApiExtension
-import org.koin.core.component.KoinComponent
-import org.koin.core.component.inject
 import org.moire.ultrasonic.R
-import org.moire.ultrasonic.api.subsonic.models.AlbumListType
-import org.moire.ultrasonic.data.ActiveServerProvider
 import org.moire.ultrasonic.domain.MusicDirectory
-import org.moire.ultrasonic.domain.MusicFolder
+import org.moire.ultrasonic.service.MusicService
 import org.moire.ultrasonic.service.MusicServiceFactory
 import org.moire.ultrasonic.util.Util
 
-// TODO: Break up this class into smaller more specific classes, extending a base class if necessary
+/*
+* Model for retrieving different collections of tracks from the API
+* TODO: Refactor this model to extend the GenericListModel
+*/
 @KoinApiExtension
-class SelectAlbumModel(application: Application) : AndroidViewModel(application), KoinComponent {
-
-    private val context: Context
-        get() = getApplication<Application>().applicationContext
-
-    private val activeServerProvider: ActiveServerProvider by inject()
+class TrackCollectionModel(application: Application) : GenericListModel(application) {
 
     private val allSongsId = "-1"
 
-    val musicFolders: MutableLiveData<List<MusicFolder>> = MutableLiveData()
-    val albumList: MutableLiveData<MusicDirectory> = MutableLiveData()
     val currentDirectory: MutableLiveData<MusicDirectory> = MutableLiveData()
     val songsForGenre: MutableLiveData<MusicDirectory> = MutableLiveData()
 
-    var currentDirectoryIsSortable = true
-    var showHeader = true
-    var showSelectFolderHeader = false
-
     suspend fun getMusicFolders(refresh: Boolean) {
         withContext(Dispatchers.IO) {
-            if (!ActiveServerProvider.isOffline()) {
+            if (!isOffline()) {
                 val musicService = MusicServiceFactory.getMusicService()
                 musicFolders.postValue(musicService.getMusicFolders(refresh))
             }
@@ -124,6 +118,10 @@ class SelectAlbumModel(application: Application) : AndroidViewModel(application)
         }
     }
 
+    /*
+    * TODO: This method should be moved to AlbumListModel,
+    * since it displays a list of albums by a specified artist.
+    */
     suspend fun getArtist(refresh: Boolean, id: String?, name: String?) {
 
         withContext(Dispatchers.IO) {
@@ -164,7 +162,7 @@ class SelectAlbumModel(application: Application) : AndroidViewModel(application)
 
             val musicDirectory: MusicDirectory
 
-            musicDirectory = if (allSongsId == id) {
+            if (allSongsId == id) {
                 val root = MusicDirectory()
 
                 val songs: MutableCollection<MusicDirectory.Entry> = LinkedList()
@@ -189,10 +187,11 @@ class SelectAlbumModel(application: Application) : AndroidViewModel(application)
                         root.addChild(song)
                     }
                 }
-                root
+                musicDirectory = root
             } else {
-                service.getAlbum(id, name, refresh)
+                musicDirectory = service.getAlbum(id, name, refresh)
             }
+
             currentDirectory.postValue(musicDirectory)
         }
     }
@@ -237,7 +236,7 @@ class SelectAlbumModel(application: Application) : AndroidViewModel(application)
             val service = MusicServiceFactory.getMusicService()
             val musicDirectory = service.getRandomSongs(size)
 
-            currentDirectoryIsSortable = false
+            currentListIsSortable = false
             currentDirectory.postValue(musicDirectory)
         }
     }
@@ -281,49 +280,18 @@ class SelectAlbumModel(application: Application) : AndroidViewModel(application)
         }
     }
 
-    suspend fun getAlbumList(albumListType: String, size: Int, offset: Int) {
-
-        showHeader = false
-        showSelectFolderHeader = !ActiveServerProvider.isOffline() &&
-            !Util.getShouldUseId3Tags() && (
-            (albumListType == AlbumListType.SORTED_BY_NAME.toString()) ||
-                (albumListType == AlbumListType.SORTED_BY_ARTIST.toString())
-            )
-
-        withContext(Dispatchers.IO) {
-            val service = MusicServiceFactory.getMusicService()
-            val musicDirectory: MusicDirectory
-            val musicFolderId = if (showSelectFolderHeader) {
-                activeServerProvider.getActiveServer().musicFolderId
-            } else {
-                null
-            }
-
-            if (Util.getShouldUseId3Tags()) {
-                musicDirectory = service.getAlbumList2(
-                    albumListType, size,
-                    offset, musicFolderId
-                )
-            } else {
-                musicDirectory = service.getAlbumList(
-                    albumListType, size,
-                    offset, musicFolderId
-                )
-            }
-
-            currentDirectoryIsSortable = sortableCollection(albumListType)
-            albumList.postValue(musicDirectory)
-        }
-    }
-
-    private fun sortableCollection(albumListType: String): Boolean {
-        return albumListType != "newest" && albumListType != "random" &&
-            albumListType != "highest" && albumListType != "recent" &&
-            albumListType != "frequent"
-    }
-
     // Returns true if the directory contains only folders
     private fun hasOnlyFolders(musicDirectory: MusicDirectory) =
         musicDirectory.getChildren(includeDirs = true, includeFiles = false).size ==
             musicDirectory.getChildren(includeDirs = true, includeFiles = true).size
+
+    override fun load(
+        isOffline: Boolean,
+        useId3Tags: Boolean,
+        musicService: MusicService,
+        refresh: Boolean,
+        args: Bundle
+    ) {
+        // See To_Do at the top
+    }
 }

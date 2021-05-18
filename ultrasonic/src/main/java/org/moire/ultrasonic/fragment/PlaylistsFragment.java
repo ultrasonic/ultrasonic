@@ -105,7 +105,7 @@ public class PlaylistsFragment extends Fragment {
                 bundle.putString(Constants.INTENT_EXTRA_NAME_ID, playlist.getId());
                 bundle.putString(Constants.INTENT_EXTRA_NAME_PLAYLIST_ID, playlist.getId());
                 bundle.putString(Constants.INTENT_EXTRA_NAME_PLAYLIST_NAME, playlist.getName());
-                Navigation.findNavController(getView()).navigate(R.id.selectAlbumFragment, bundle);
+                Navigation.findNavController(getView()).navigate(R.id.trackCollectionFragment, bundle);
             }
         });
         registerForContextMenu(playlistsListView);
@@ -154,7 +154,7 @@ public class PlaylistsFragment extends Fragment {
         if (ActiveServerProvider.Companion.isOffline()) inflater.inflate(R.menu.select_playlist_context_offline, menu);
         else inflater.inflate(R.menu.select_playlist_context, menu);
 
-        MenuItem downloadMenuItem = menu.findItem(R.id.album_menu_download);
+        MenuItem downloadMenuItem = menu.findItem(R.id.playlist_menu_download);
 
         if (downloadMenuItem != null)
         {
@@ -190,14 +190,14 @@ public class PlaylistsFragment extends Fragment {
             bundle.putString(Constants.INTENT_EXTRA_NAME_PLAYLIST_ID, playlist.getId());
             bundle.putString(Constants.INTENT_EXTRA_NAME_PLAYLIST_NAME, playlist.getName());
             bundle.putBoolean(Constants.INTENT_EXTRA_NAME_AUTOPLAY, true);
-            Navigation.findNavController(getView()).navigate(R.id.selectAlbumFragment, bundle);
+            Navigation.findNavController(getView()).navigate(R.id.trackCollectionFragment, bundle);
         } else if (itemId == R.id.playlist_menu_play_shuffled) {
             bundle = new Bundle();
             bundle.putString(Constants.INTENT_EXTRA_NAME_PLAYLIST_ID, playlist.getId());
             bundle.putString(Constants.INTENT_EXTRA_NAME_PLAYLIST_NAME, playlist.getName());
             bundle.putBoolean(Constants.INTENT_EXTRA_NAME_AUTOPLAY, true);
             bundle.putBoolean(Constants.INTENT_EXTRA_NAME_SHUFFLE, true);
-            Navigation.findNavController(getView()).navigate(R.id.selectAlbumFragment, bundle);
+            Navigation.findNavController(getView()).navigate(R.id.trackCollectionFragment, bundle);
         } else if (itemId == R.id.playlist_menu_delete) {
             deletePlaylist(playlist);
         } else if (itemId == R.id.playlist_info) {

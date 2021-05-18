@@ -272,11 +272,11 @@ public class SearchFragment extends Fragment {
         }
         else
         {
-            inflater.inflate(R.menu.select_album_context, menu);
+            inflater.inflate(R.menu.generic_context_menu, menu);
         }
 
         MenuItem shareButton = menu.findItem(R.id.menu_item_share);
-        MenuItem downloadMenuItem = menu.findItem(R.id.album_menu_download);
+        MenuItem downloadMenuItem = menu.findItem(R.id.menu_download);
 
         if (downloadMenuItem != null)
         {
@@ -324,17 +324,17 @@ public class SearchFragment extends Fragment {
         List<MusicDirectory.Entry> songs = new ArrayList<>(1);
 
         int itemId = menuItem.getItemId();
-        if (itemId == R.id.album_menu_play_now) {
+        if (itemId == R.id.menu_play_now) {
             downloadHandler.getValue().downloadRecursively(this, id, false, false, true, false, false, false, false, false);
-        } else if (itemId == R.id.album_menu_play_next) {
+        } else if (itemId == R.id.menu_play_next) {
             downloadHandler.getValue().downloadRecursively(this, id, false, true, false, true, false, true, false, false);
-        } else if (itemId == R.id.album_menu_play_last) {
+        } else if (itemId == R.id.menu_play_last) {
             downloadHandler.getValue().downloadRecursively(this, id, false, true, false, false, false, false, false, false);
-        } else if (itemId == R.id.album_menu_pin) {
+        } else if (itemId == R.id.menu_pin) {
             downloadHandler.getValue().downloadRecursively(this, id, true, true, false, false, false, false, false, false);
-        } else if (itemId == R.id.album_menu_unpin) {
+        } else if (itemId == R.id.menu_unpin) {
             downloadHandler.getValue().downloadRecursively(this, id, false, false, false, false, false, false, true, false);
-        } else if (itemId == R.id.album_menu_download) {
+        } else if (itemId == R.id.menu_download) {
             downloadHandler.getValue().downloadRecursively(this, id, false, false, false, false, true, false, false, false);
         } else if (itemId == R.id.song_menu_play_now) {
             if (entry != null) {

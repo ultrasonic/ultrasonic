@@ -76,7 +76,7 @@ public class PodcastFragment extends Fragment {
 
                 Bundle bundle = new Bundle();
                 bundle.putString(Constants.INTENT_EXTRA_NAME_PODCAST_CHANNEL_ID, pc.getId());
-                Navigation.findNavController(view).navigate(R.id.selectAlbumFragment, bundle);
+                Navigation.findNavController(view).navigate(R.id.trackCollectionFragment, bundle);
             }
         });
 

@@ -8,8 +8,14 @@
         android:name="org.moire.ultrasonic.fragment.MainFragment"
         android:label="@string/common.appname" >
         <action
-            android:id="@+id/mainToSelectAlbum"
-            app:destination="@id/selectAlbumFragment" />
+            android:id="@+id/mainToTrackCollection"
+            app:destination="@id/trackCollectionFragment" />
+        <action
+            android:id="@+id/mainToAlbumList"
+            app:destination="@id/albumListFragment" />
+        <action
+            android:id="@+id/mainToArtistList"
+            app:destination="@id/artistListFragment" />
         <action
             android:id="@+id/mainToSelectGenre"
             app:destination="@id/selectGenreFragment" />
@@ -18,37 +24,48 @@
             app:destination="@id/serverSelectorFragment" />
     </fragment>
     <fragment
-        android:id="@+id/selectArtistFragment"
-        android:name="org.moire.ultrasonic.fragment.SelectArtistFragment"
+        android:id="@+id/mediaLibraryFragment"
+        android:name="org.moire.ultrasonic.fragment.ArtistListFragment"
         android:label="@string/music_library.label" >
         <action
             android:id="@+id/selectArtistToSelectAlbum"
-            app:destination="@id/selectAlbumFragment" />
+            app:destination="@id/trackCollectionFragment" />
     </fragment>
     <fragment
-        android:id="@+id/selectAlbumFragment"
-        android:name="org.moire.ultrasonic.fragment.SelectAlbumFragment" >
+        android:id="@+id/artistListFragment"
+        android:name="org.moire.ultrasonic.fragment.ArtistListFragment" >
+        <action
+            android:id="@+id/selectArtistToSelectAlbum"
+            app:destination="@id/trackCollectionFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/trackCollectionFragment"
+        android:name="org.moire.ultrasonic.fragment.TrackCollectionFragment" >
+    </fragment>
+    <fragment
+        android:id="@+id/albumListFragment"
+        android:name="org.moire.ultrasonic.fragment.AlbumListFragment" >
     </fragment>
     <fragment
         android:id="@+id/searchFragment"
         android:name="org.moire.ultrasonic.fragment.SearchFragment" >
         <action
             android:id="@+id/searchToSelectAlbum"
-            app:destination="@id/selectAlbumFragment" />
+            app:destination="@id/trackCollectionFragment" />
     </fragment>
     <fragment
         android:id="@+id/playlistsFragment"
         android:name="org.moire.ultrasonic.fragment.PlaylistsFragment" >
         <action
             android:id="@+id/playlistsToSelectAlbum"
-            app:destination="@id/selectAlbumFragment" />
+            app:destination="@id/trackCollectionFragment" />
     </fragment>
     <fragment
         android:id="@+id/sharesFragment"
         android:name="org.moire.ultrasonic.fragment.SharesFragment" >
         <action
             android:id="@+id/sharesToSelectAlbum"
-            app:destination="@id/selectAlbumFragment" />
+            app:destination="@id/trackCollectionFragment" />
     </fragment>
     <fragment
         android:id="@+id/bookmarksFragment"
@@ -61,7 +78,7 @@
         android:name="org.moire.ultrasonic.fragment.PodcastFragment" >
         <action
             android:id="@+id/podcastToSelectAlbum"
-            app:destination="@id/selectAlbumFragment" />
+            app:destination="@id/trackCollectionFragment" />
     </fragment>
     <fragment
         android:id="@+id/settingsFragment"
@@ -81,7 +98,7 @@
         android:name="org.moire.ultrasonic.fragment.PlayerFragment" >
         <action
             android:id="@+id/playerToSelectAlbum"
-            app:destination="@id/selectAlbumFragment" />
+            app:destination="@id/trackCollectionFragment" />
         <action
             android:id="@+id/playerToLyrics"
             app:destination="@id/lyricsFragment" />

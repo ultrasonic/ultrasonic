@@ -71,7 +71,7 @@ public class AlbumView extends UpdateView
 
 	public void setLayout()
 	{
-		LayoutInflater.from(context).inflate(R.layout.album_list_item, this, true);
+		LayoutInflater.from(context).inflate(R.layout.album_list_item_legacy, this, true);
 		viewHolder = new EntryAdapter.AlbumViewHolder();
 		viewHolder.title = findViewById(R.id.album_title);
 		viewHolder.artist = findViewById(R.id.album_artist);

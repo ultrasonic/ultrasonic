@@ -2,14 +2,8 @@
 <SmellBaseline>
   <ManuallySuppressedIssues></ManuallySuppressedIssues>
   <CurrentIssues>
-    <ID>ComplexMethod:AlbumListType.kt$AlbumListType.Companion$@JvmStatic fun fromName(typeName: String): AlbumListType</ID>
     <ID>ComplexMethod:SubsonicAPIVersions.kt$SubsonicAPIVersions.Companion$@JvmStatic @Throws(IllegalArgumentException::class) fun getClosestKnownClientApiVersion(apiVersion: String): SubsonicAPIVersions</ID>
-    <ID>ComplexMethod:SubsonicError.kt$SubsonicError.Companion$fun getError(code: Int, message: String)</ID>
     <ID>EmptyFunctionBlock:SubsonicAPIClient.kt$SubsonicAPIClient.&lt;no name provided&gt;${}</ID>
-    <ID>LargeClass:ApiVersionCheckWrapper.kt$ApiVersionCheckWrapper : SubsonicAPIDefinition</ID>
-    <ID>LargeClass:SubsonicAPIDefinition.kt$SubsonicAPIDefinition</ID>
-    <ID>LongMethod:SubsonicAPIClient.kt$SubsonicAPIClient$private inline fun handleStreamResponse(apiCall: () -&gt; Response&lt;ResponseBody&gt;): StreamResponse</ID>
-    <ID>LongMethod:SubsonicAPIVersions.kt$SubsonicAPIVersions.Companion$@JvmStatic @Throws(IllegalArgumentException::class) fun getClosestKnownClientApiVersion(apiVersion: String): SubsonicAPIVersions</ID>
     <ID>MagicNumber:PasswordExt.kt$0xFF</ID>
     <ID>MagicNumber:PasswordExt.kt$4</ID>
     <ID>MagicNumber:PasswordMD5Interceptor.kt$PasswordMD5Interceptor$16</ID>

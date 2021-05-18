@@ -18,90 +18,49 @@
  */
 package org.moire.ultrasonic.fragment
 
-import android.os.Handler
-import android.os.Looper
+import android.app.Application
+import android.os.Bundle
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
-import androidx.lifecycle.ViewModel
-import androidx.lifecycle.viewModelScope
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
-import org.moire.ultrasonic.data.ActiveServerProvider
+import org.koin.core.component.KoinApiExtension
 import org.moire.ultrasonic.domain.Artist
-import org.moire.ultrasonic.domain.MusicFolder
-import org.moire.ultrasonic.service.CommunicationErrorHandler
-import org.moire.ultrasonic.service.MusicServiceFactory
-import org.moire.ultrasonic.util.Util
+import org.moire.ultrasonic.service.MusicService
 
 /**
  * Provides ViewModel which contains the list of available Artists
  */
-class ArtistListModel(
-    private val activeServerProvider: ActiveServerProvider
-) : ViewModel() {
-    private val musicFolders: MutableLiveData<List<MusicFolder>> = MutableLiveData()
+@KoinApiExtension
+class ArtistListModel(application: Application) : GenericListModel(application) {
     private val artists: MutableLiveData<List<Artist>> = MutableLiveData()
 
     /**
-     * Retrieves the available Artists in a LiveData
+     * Retrieves all available Artists in a LiveData
      */
-    fun getArtists(refresh: Boolean, swipe: SwipeRefreshLayout): LiveData<List<Artist>> {
+    fun getItems(refresh: Boolean, swipe: SwipeRefreshLayout): LiveData<List<Artist>> {
         backgroundLoadFromServer(refresh, swipe)
         return artists
     }
 
-    /**
-     * Retrieves the available Music Folders in a LiveData
-     */
-    fun getMusicFolders(): LiveData<List<MusicFolder>> {
-        return musicFolders
+    override fun load(
+        isOffline: Boolean,
+        useId3Tags: Boolean,
+        musicService: MusicService,
+        refresh: Boolean,
+        args: Bundle
+    ) {
+        super.load(isOffline, useId3Tags, musicService, refresh, args)
+
+        val musicFolderId = activeServer.musicFolderId
+
+        val result = if (!isOffline && useId3Tags)
+            musicService.getArtists(refresh)
+        else musicService.getIndexes(musicFolderId, refresh)
+
+        val retrievedArtists: MutableList<Artist> =
+            ArrayList(result.shortcuts.size + result.artists.size)
+        retrievedArtists.addAll(result.shortcuts)
+        retrievedArtists.addAll(result.artists)
+        artists.postValue(retrievedArtists)
     }
-
-    /**
-     * Refreshes the cached Artists from the server
-     */
-    fun refresh(swipe: SwipeRefreshLayout) {
-        backgroundLoadFromServer(true, swipe)
-    }
-
-    private fun backgroundLoadFromServer(refresh: Boolean, swipe: SwipeRefreshLayout) {
-        viewModelScope.launch {
-            swipe.isRefreshing = true
-            loadFromServer(refresh, swipe)
-            swipe.isRefreshing = false
-        }
-    }
-
-    private suspend fun loadFromServer(refresh: Boolean, swipe: SwipeRefreshLayout) =
-        withContext(Dispatchers.IO) {
-            val musicService = MusicServiceFactory.getMusicService()
-            val isOffline = ActiveServerProvider.isOffline()
-            val useId3Tags = Util.getShouldUseId3Tags()
-
-            try {
-                if (!isOffline && !useId3Tags) {
-                    musicFolders.postValue(
-                        musicService.getMusicFolders(refresh)
-                    )
-                }
-
-                val musicFolderId = activeServerProvider.getActiveServer().musicFolderId
-
-                val result = if (!isOffline && useId3Tags)
-                    musicService.getArtists(refresh)
-                else musicService.getIndexes(musicFolderId, refresh)
-
-                val retrievedArtists: MutableList<Artist> =
-                    ArrayList(result.shortcuts.size + result.artists.size)
-                retrievedArtists.addAll(result.shortcuts)
-                retrievedArtists.addAll(result.artists)
-                artists.postValue(retrievedArtists)
-            } catch (exception: Exception) {
-                Handler(Looper.getMainLooper()).post {
-                    CommunicationErrorHandler.handleError(exception, swipe.context)
-                }
-            }
-        }
 }
