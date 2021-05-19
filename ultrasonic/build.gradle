@@ -49,6 +49,7 @@ android {
         baselineFile file("lint-baseline.xml")
         ignore 'MissingTranslation'
         warning 'ImpliedQuantity'
+        disable 'IconMissingDensityFolder'
         abortOnError true
     }
 
