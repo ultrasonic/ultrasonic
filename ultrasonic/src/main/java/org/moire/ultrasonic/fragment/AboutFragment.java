@@ -21,7 +21,7 @@ import org.moire.ultrasonic.R;
 import org.moire.ultrasonic.util.Util;
 
 /**
- * Displays online help and about information in a webWiew
+ * Displays online help and about information in a WebView
  */
 public class AboutFragment extends Fragment {
 

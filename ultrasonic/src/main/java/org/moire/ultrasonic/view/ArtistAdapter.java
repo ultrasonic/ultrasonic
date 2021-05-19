@@ -68,8 +68,8 @@ public class ArtistAdapter extends ArrayAdapter<Artist> implements SectionIndexe
 			}
 		}
 
-		sections = sectionSet.toArray(new Object[sectionSet.size()]);
-		positions = positionList.toArray(new Integer[positionList.size()]);
+		sections = sectionSet.toArray(new Object[0]);
+		positions = positionList.toArray(new Integer[0]);
 	}
 
     @NonNull

@@ -18,8 +18,6 @@
  */
 package org.moire.ultrasonic.service;
 
-import org.moire.ultrasonic.audiofx.EqualizerController;
-import org.moire.ultrasonic.audiofx.VisualizerController;
 import org.moire.ultrasonic.domain.MusicDirectory.Entry;
 import org.moire.ultrasonic.domain.PlayerState;
 import org.moire.ultrasonic.domain.RepeatMode;

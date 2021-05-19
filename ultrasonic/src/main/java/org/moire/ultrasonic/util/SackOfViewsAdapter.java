@@ -1,4 +1,4 @@
-/***
+/**
  Copyright (c) 2008-2009 CommonsWare, LLC
  Portions (c) 2009 Google, Inc.
 
