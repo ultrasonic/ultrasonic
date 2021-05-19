@@ -18,6 +18,9 @@ jobs:
           name: disable daemon
           command: sed -i '/^org.gradle.daemon/d' gradle.properties
       - run:
+          name: clean gradle.properties
+          command: echo -e "android.useAndroidX=true\nandroid.enableJetifier=true\n" > gradle.properties
+      - run:
           name: clean project
           command: ./gradlew
       - run:
