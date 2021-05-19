@@ -11,8 +11,11 @@ jobs:
       - restore_cache:
           key: gradle-cache-{{ checksum "dependencies.gradle" }}
       - run:
-          name: clean gradle.properties
-          command: echo -e "android.useAndroidX=true\nandroid.enableJetifier=true\n" > gradle.properties
+          name: remove JVM args from gradle.properties
+          command: sed -i '/^org.gradle.jvmargs/d' gradle.properties
+      - run:
+          name: clean project
+          command: ./gradlew
       - run:
           name: checkstyle
           command: ./gradlew -Pqc ktlintCheck
@@ -33,6 +36,9 @@ jobs:
       - run:
           name: assemble release build
           command: ./gradlew build assembleRelease
+      - run:
+          name: clean project cache
+          command: ./gradlew
       - save_cache:
           paths:
             - ~/.gradle
