@@ -15,6 +15,9 @@ jobs:
           name: remove JVM args from gradle.properties
           command: sed -i '/^org.gradle.jvmargs/d' gradle.properties
       - run:
+          name: disable daemon
+          command: sed -i '/^org.gradle.daemon/d' gradle.properties
+      - run:
           name: clean project
           command: ./gradlew
       - run:
