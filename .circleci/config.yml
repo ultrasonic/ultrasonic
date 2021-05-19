@@ -12,7 +12,7 @@ jobs:
           key: gradle-cache-{{ checksum "dependencies.gradle" }}
       - run:
           name: clean gradle.properties
-          command: echo -e "android.useAndroidX=true\nandroid.enableJetifier=true\n" > gradle.properties
+          command: echo -e "android.useAndroidX=true\nandroid.enableJetifier=true\norg.gradle.daemon=false\n" > gradle.properties
       - run:
           name: checkstyle
           command: ./gradlew -Pqc ktlintCheck
@@ -27,6 +27,10 @@ jobs:
           command: |
             ./gradlew ciTest testDebugUnitTest
             ./gradlew jacocoFullReport
+      - save_cache:
+          paths:
+            - ~/.gradle
+          key: gradle-cache-{{ checksum "dependencies.gradle" }}
       - run:
           name: lint
           command: ./gradlew :ultrasonic:lintRelease
