@@ -1,114 +1,15 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<issues format="5" by="lint 4.0.0" client="gradle" variant="release" version="4.0.0">
+<issues format="5" by="lint 4.2.0" client="gradle" variant="release" version="4.2.0">
 
     <issue
-        id="ObsoleteLintCustomCheck"
-        message="Lint found an issue registry (`androidx.annotation.experimental.lint.ExperimentalIssueRegistry`) which did not specify the Lint API version it was compiled with.&#xA;&#xA;**This means that the lint checks are likely not compatible.**&#xA;&#xA;If you are the author of this lint check, make your lint `IssueRegistry` class contain&#xA;  override val api: Int = com.android.tools.lint.detector.api.CURRENT_API&#xA;or from Java,&#xA;  @Override public int getApi() { return com.android.tools.lint.detector.api.ApiKt.CURRENT_API; }&#xA;&#xA;If you are just using lint checks from a third party library you have no control over, you can disable these lint checks (if they misbehave) like this:&#xA;&#xA;    android {&#xA;        lintOptions {&#xA;            disable &quot;UnsafeExperimentalUsageError&quot;,&#xA;                    &quot;UnsafeExperimentalUsageWarning&quot;&#xA;        }&#xA;    }&#xA;">
+        id="ScopedStorage"
+        message="WRITE_EXTERNAL_STORAGE no longer provides write access when targeting Android 10, unless you use `requestLegacyExternalStorage`"
+        errorLine1="    &lt;uses-permission android:name=&quot;android.permission.WRITE_EXTERNAL_STORAGE&quot;/>"
+        errorLine2="                                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
         <location
-            file="../../../../.gradle/caches/transforms-2/files-2.1/a5739005f919352cf20461ea51e3b581/jetified-annotation-experimental-1.0.0/jars/lint.jar"/>
-    </issue>
-
-    <issue
-        id="ScrollViewSize"
-        message="This LinearLayout should use `android:layout_height=&quot;wrap_content&quot;`"
-        errorLine1="                a:layout_height=&quot;fill_parent&quot;>"
-        errorLine2="                ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
-        <location
-            file="src/main/res/layout/lyrics.xml"
-            line="18"
-            column="17"/>
-    </issue>
-
-    <issue
-        id="ApplySharedPref"
-        message="Consider using `apply()` instead; `commit` writes its data to persistent storage immediately, whereas `apply` will handle it in the background"
-        errorLine1="   editor.commit();"
-        errorLine2="   ~~~~~~~~~~~~~~~">
-        <location
-            file="src/main/java/org/moire/ultrasonic/activity/MainActivity.java"
-            line="252"
-            column="4"/>
-    </issue>
-
-    <issue
-        id="ApplySharedPref"
-        message="Consider using `apply()` instead; `commit` writes its data to persistent storage immediately, whereas `apply` will handle it in the background"
-        errorLine1="  editor.commit();"
-        errorLine2="  ~~~~~~~~~~~~~~~">
-        <location
-            file="src/main/java/org/moire/ultrasonic/util/Util.java"
-            line="128"
-            column="3"/>
-    </issue>
-
-    <issue
-        id="ApplySharedPref"
-        message="Consider using `apply()` instead; `commit` writes its data to persistent storage immediately, whereas `apply` will handle it in the background"
-        errorLine1="   editor.commit();"
-        errorLine2="   ~~~~~~~~~~~~~~~">
-        <location
-            file="src/main/java/org/moire/ultrasonic/util/Util.java"
-            line="203"
-            column="4"/>
-    </issue>
-
-    <issue
-        id="ApplySharedPref"
-        message="Consider using `apply()` instead; `commit` writes its data to persistent storage immediately, whereas `apply` will handle it in the background"
-        errorLine1="  editor.commit();"
-        errorLine2="  ~~~~~~~~~~~~~~~">
-        <location
-            file="src/main/java/org/moire/ultrasonic/util/Util.java"
-            line="1380"
-            column="3"/>
-    </issue>
-
-    <issue
-        id="ApplySharedPref"
-        message="Consider using `apply()` instead; `commit` writes its data to persistent storage immediately, whereas `apply` will handle it in the background"
-        errorLine1="  editor.commit();"
-        errorLine2="  ~~~~~~~~~~~~~~~">
-        <location
-            file="src/main/java/org/moire/ultrasonic/util/Util.java"
-            line="1388"
-            column="3"/>
-    </issue>
-
-    <issue
-        id="ApplySharedPref"
-        message="Consider using `apply()` instead; `commit` writes its data to persistent storage immediately, whereas `apply` will handle it in the background"
-        errorLine1="  editor.commit();"
-        errorLine2="  ~~~~~~~~~~~~~~~">
-        <location
-            file="src/main/java/org/moire/ultrasonic/util/Util.java"
-            line="1396"
-            column="3"/>
-    </issue>
-
-    <issue
-        id="CutPasteId"
-        message="The id `R.id.now_playing_control_play` has already been looked up in this method; possible cut &amp; paste error?"
-        errorLine1="    ImageView nowPlayingControlPlay = (ImageView) nowPlayingView.findViewById(R.id.now_playing_control_play);"
-        errorLine2="                                                  ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
-        <location
-            file="src/main/java/org/moire/ultrasonic/activity/SubsonicTabActivity.java"
-            line="391"
-            column="51"/>
-        <location
-            file="src/main/java/org/moire/ultrasonic/activity/SubsonicTabActivity.java"
-            line="337"
-            column="40"/>
-    </issue>
-
-    <issue
-        id="DefaultLocale"
-        message="Implicitly using the default locale is a common source of bugs: Use `String.format(Locale, ...)` instead"
-        errorLine1="   levelTextView.setText(String.format(&quot;%s%d dB&quot;, level > 0 ? &quot;+&quot; : &quot;&quot;, level / 100));"
-        errorLine2="                         ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
-        <location
-            file="src/main/java/org/moire/ultrasonic/activity/EqualizerActivity.java"
-            line="263"
-            column="26"/>
+            file="src/main/AndroidManifest.xml"
+            line="9"
+            column="36"/>
     </issue>
 
     <issue
@@ -118,30 +19,8 @@
         errorLine2="                                                      ~~~~~~~~~~~">
         <location
             file="src/main/java/org/moire/ultrasonic/util/FileUtil.java"
-            line="534"
+            line="537"
             column="55"/>
-    </issue>
-
-    <issue
-        id="DefaultLocale"
-        message="Implicitly using the default locale is a common source of bugs: Use `String.format(Locale, ...)` instead"
-        errorLine1="            Thread thread = new Thread(this, String.format(&quot;ImageLoader_%d&quot;, i));"
-        errorLine2="                                             ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
-        <location
-            file="src/main/java/org/moire/ultrasonic/util/LegacyImageLoader.java"
-            line="104"
-            column="46"/>
-    </issue>
-
-    <issue
-        id="DefaultLocale"
-        message="Implicitly using the default locale is a common source of bugs: Use `String.format(Locale, ...)` instead"
-        errorLine1="        return String.format(&quot;%s:%d&quot;, coverArtId, size);"
-        errorLine2="               ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
-        <location
-            file="src/main/java/org/moire/ultrasonic/util/LegacyImageLoader.java"
-            line="209"
-            column="16"/>
     </issue>
 
     <issue
@@ -151,7 +30,7 @@
         errorLine2="                                     ~~~~~~~~~~~">
         <location
             file="src/main/java/org/moire/ultrasonic/service/OfflineMusicService.java"
-            line="113"
+            line="103"
             column="38"/>
     </issue>
 
@@ -162,7 +41,7 @@
         errorLine2="                                     ~~~~~~~~~~~">
         <location
             file="src/main/java/org/moire/ultrasonic/service/OfflineMusicService.java"
-            line="114"
+            line="104"
             column="38"/>
     </issue>
 
@@ -173,7 +52,7 @@
         errorLine2="                                                          ~~~~~~~~~~~">
         <location
             file="src/main/java/org/moire/ultrasonic/service/OfflineMusicService.java"
-            line="131"
+            line="121"
             column="59"/>
     </issue>
 
@@ -184,7 +63,7 @@
         errorLine2="                                                      ~~~~~~~~~~~">
         <location
             file="src/main/java/org/moire/ultrasonic/service/OfflineMusicService.java"
-            line="138"
+            line="128"
             column="55"/>
     </issue>
 
@@ -195,7 +74,7 @@
         errorLine2="                                     ~~~~~~~~~~~">
         <location
             file="src/main/java/org/moire/ultrasonic/service/OfflineMusicService.java"
-            line="514"
+            line="486"
             column="38"/>
     </issue>
 
@@ -206,106 +85,18 @@
         errorLine2="                                          ~~~~~~~~~~~">
         <location
             file="src/main/java/org/moire/ultrasonic/service/OfflineMusicService.java"
-            line="516"
+            line="488"
             column="43"/>
     </issue>
 
     <issue
-        id="DefaultLocale"
-        message="Implicitly using the default locale is a common source of bugs: Use `String.format(Locale, ...)` instead"
-        errorLine1="    viewHolder.track.setText(String.format(&quot;%02d.&quot;, trackNumber));"
-        errorLine2="                             ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
-        <location
-            file="src/main/java/org/moire/ultrasonic/view/SongView.java"
-            line="210"
-            column="30"/>
-    </issue>
-
-    <issue
-        id="DefaultLocale"
-        message="Implicitly using the default locale is a common source of bugs: Use `String.format(Locale, ...)` instead"
-        errorLine1="      Util.setDefaultShareExpiration(SubsonicTabActivity.this, !noExpirationCheckBox.isChecked() &amp;&amp; timeSpanAmount > 0 ? String.format(&quot;%d:%s&quot;, timeSpanAmount, timeSpanType) : &quot;&quot;);"
-        errorLine2="                                                                                                                         ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
-        <location
-            file="src/main/java/org/moire/ultrasonic/activity/SubsonicTabActivity.java"
-            line="484"
-            column="122"/>
-    </issue>
-
-    <issue
-        id="DefaultLocale"
-        message="Implicitly using the default locale is a common source of bugs: Use `String.format(Locale, ...)` instead"
-        errorLine1="    persisted = String.format(&quot;%d:%s&quot;, tsAmount, tsType);"
-        errorLine2="                ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
-        <location
-            file="src/main/java/org/moire/ultrasonic/util/TimeSpanPreference.java"
-            line="92"
-            column="17"/>
-    </issue>
-
-    <issue
-        id="DefaultLocale"
-        message="Implicitly using the default locale is a common source of bugs: Use `String.format(Locale, ...)` instead"
-        errorLine1="   return String.format(&quot;%02d:%02d:%02d&quot;, hours, minutes, seconds);"
-        errorLine2="          ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
-        <location
-            file="src/main/java/org/moire/ultrasonic/util/Util.java"
-            line="1223"
-            column="11"/>
-    </issue>
-
-    <issue
-        id="DefaultLocale"
-        message="Implicitly using the default locale is a common source of bugs: Use `String.format(Locale, ...)` instead"
-        errorLine1="   return String.format(&quot;%d:%02d:%02d&quot;, hours, minutes, seconds);"
-        errorLine2="          ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
-        <location
-            file="src/main/java/org/moire/ultrasonic/util/Util.java"
-            line="1227"
-            column="11"/>
-    </issue>
-
-    <issue
-        id="DefaultLocale"
-        message="Implicitly using the default locale is a common source of bugs: Use `String.format(Locale, ...)` instead"
-        errorLine1="   return String.format(&quot;%02d:%02d&quot;, minutes, seconds);"
-        errorLine2="          ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
-        <location
-            file="src/main/java/org/moire/ultrasonic/util/Util.java"
-            line="1231"
-            column="11"/>
-    </issue>
-
-    <issue
-        id="DefaultLocale"
-        message="Implicitly using the default locale is a common source of bugs: Use `String.format(Locale, ...)` instead"
-        errorLine1="  else return minutes > 0 ? String.format(&quot;%d:%02d&quot;, minutes, seconds) : String.format(&quot;0:%02d&quot;, seconds);"
-        errorLine2="                            ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
-        <location
-            file="src/main/java/org/moire/ultrasonic/util/Util.java"
-            line="1234"
-            column="29"/>
-    </issue>
-
-    <issue
-        id="DefaultLocale"
-        message="Implicitly using the default locale is a common source of bugs: Use `String.format(Locale, ...)` instead"
-        errorLine1="  else return minutes > 0 ? String.format(&quot;%d:%02d&quot;, minutes, seconds) : String.format(&quot;0:%02d&quot;, seconds);"
-        errorLine2="                                                                         ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
-        <location
-            file="src/main/java/org/moire/ultrasonic/util/Util.java"
-            line="1234"
-            column="74"/>
-    </issue>
-
-    <issue
         id="InlinedApi"
         message="Field requires API level 16 (current min is 14): `android.Manifest.permission#READ_EXTERNAL_STORAGE`"
         errorLine1="                        Manifest.permission.READ_EXTERNAL_STORAGE)"
         errorLine2="                        ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
         <location
             file="src/main/java/org/moire/ultrasonic/util/PermissionUtil.java"
-            line="89"
+            line="101"
             column="25"/>
     </issue>
 
@@ -316,8 +107,29 @@
         errorLine2="                        ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
         <location
             file="src/main/java/org/moire/ultrasonic/util/PermissionUtil.java"
-            line="136"
+            line="148"
             column="25"/>
+    </issue>
+
+    <issue
+        id="NotificationIconCompatibility"
+        message="Notification icon ic_stat_play_dark has to have a raster image to support Android versions below 5.0 (API 21)">
+        <location
+            file="src/main/res/drawable/ic_stat_play_dark.xml"/>
+    </issue>
+
+    <issue
+        id="NotificationIconCompatibility"
+        message="Notification icon ic_stat_play_light has to have a raster image to support Android versions below 5.0 (API 21)">
+        <location
+            file="src/main/res/drawable/ic_stat_play_light.xml"/>
+    </issue>
+
+    <issue
+        id="NotificationIconCompatibility"
+        message="Notification icon ic_stat_ultrasonic has to have a raster image to support Android versions below 5.0 (API 21)">
+        <location
+            file="src/main/res/drawable/ic_stat_ultrasonic.xml"/>
     </issue>
 
     <issue
@@ -351,17 +163,6 @@
             file="src/main/kotlin/org/moire/ultrasonic/filepicker/FilePickerAdapter.kt"
             line="47"
             column="14"/>
-    </issue>
-
-    <issue
-        id="ShowToast"
-        message="Toast created but not shown: did you forget to call `show()` ?"
-        errorLine1="   toast = Toast.makeText(context, message, shortDuration ? Toast.LENGTH_SHORT : Toast.LENGTH_LONG);"
-        errorLine2="           ~~~~~~~~~~~~~~">
-        <location
-            file="src/main/java/org/moire/ultrasonic/util/Util.java"
-            line="338"
-            column="12"/>
     </issue>
 
     <issue
@@ -420,17 +221,6 @@
     </issue>
 
     <issue
-        id="WifiManagerPotentialLeak"
-        message="The WIFI_SERVICE must be looked up on the Application context or memory will leak on devices &lt; Android N. Try changing `context` to `context.getApplicationContext()`"
-        errorLine1="  WifiManager wm = (WifiManager) context.getSystemService(Context.WIFI_SERVICE);"
-        errorLine2="                                 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
-        <location
-            file="src/main/java/org/moire/ultrasonic/util/Util.java"
-            line="668"
-            column="34"/>
-    </issue>
-
-    <issue
         id="IncludeLayoutParam"
         message="Layout parameter `layout_gravity` ignored unless both `layout_width` and `layout_height` are also specified on `&lt;include>` tag"
         errorLine1="        a:layout_gravity=&quot;center_vertical&quot; />"
@@ -444,236 +234,12 @@
     <issue
         id="InflateParams"
         message="Avoid passing `null` as the view root (needed to resolve layout parameters on the inflated layout&apos;s root element)"
-        errorLine1="    View bandBar = LayoutInflater.from(this).inflate(R.layout.equalizer_bar, null);"
-        errorLine2="                                                                             ~~~~">
-        <location
-            file="src/main/java/org/moire/ultrasonic/activity/EqualizerActivity.java"
-            line="200"
-            column="78"/>
-    </issue>
-
-    <issue
-        id="InflateParams"
-        message="Avoid passing `null` as the view root (needed to resolve layout parameters on the inflated layout&apos;s root element)"
         errorLine1="   View view = inflater.inflate(R.layout.jukebox_volume, null);"
         errorLine2="                                                         ~~~~">
         <location
             file="src/main/java/org/moire/ultrasonic/service/JukeboxMediaPlayer.java"
-            line="484"
+            line="483"
             column="58"/>
-    </issue>
-
-    <issue
-        id="InflateParams"
-        message="Avoid passing `null` as the view root (needed to resolve layout parameters on the inflated layout&apos;s root element)"
-        errorLine1="  final View buttons = LayoutInflater.from(this).inflate(R.layout.main_buttons, null);"
-        errorLine2="                                                                                ~~~~">
-        <location
-            file="src/main/java/org/moire/ultrasonic/activity/MainActivity.java"
-            line="102"
-            column="81"/>
-    </issue>
-
-    <issue
-        id="InflateParams"
-        message="Avoid passing `null` as the view root (needed to resolve layout parameters on the inflated layout&apos;s root element)"
-        errorLine1="  View buttons = LayoutInflater.from(this).inflate(R.layout.search_buttons, null);"
-        errorLine2="                                                                            ~~~~">
-        <location
-            file="src/main/java/org/moire/ultrasonic/activity/SearchActivity.java"
-            line="102"
-            column="77"/>
-    </issue>
-
-    <issue
-        id="EllipsizeMaxLines"
-        message="Combining `ellipsize=marquee` and `maxLines=1` can lead to crashes. Use `singleLine=true` instead."
-        errorLine1="            android:maxLines=&quot;1&quot;"
-        errorLine2="            ~~~~~~~~~~~~~~~~~~~~">
-        <location
-            file="src/main/res/layout/notification.xml"
-            line="38"
-            column="13"/>
-        <location
-            file="src/main/res/layout/notification.xml"
-            line="36"
-            column="13"/>
-    </issue>
-
-    <issue
-        id="UseCompatLoadingForDrawables"
-        message="Use `ResourcesCompat.getDrawable()`"
-        errorLine1="        Drawable drawable = resources.getDrawable(R.drawable.unknown_album);"
-        errorLine2="                            ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
-        <location
-            file="src/main/java/org/moire/ultrasonic/util/LegacyImageLoader.java"
-            line="75"
-            column="29"/>
-    </issue>
-
-    <issue
-        id="UseCompatLoadingForDrawables"
-        message="Use `ResourcesCompat.getDrawable()`"
-        errorLine1="        BitmapDrawable drawable = (BitmapDrawable) context.getResources().getDrawable(R.drawable.unknown_album_large);"
-        errorLine2="                                                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
-        <location
-            file="src/main/java/org/moire/ultrasonic/util/LegacyImageLoader.java"
-            line="123"
-            column="52"/>
-    </issue>
-
-    <issue
-        id="UseCompatLoadingForDrawables"
-        message="Use `ResourcesCompat.getDrawable()`"
-        errorLine1="        Drawable contact = res.getDrawable(R.drawable.ic_contact_picture);"
-        errorLine2="                           ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
-        <location
-            file="src/main/java/org/moire/ultrasonic/util/LegacyImageLoader.java"
-            line="133"
-            column="28"/>
-    </issue>
-
-    <issue
-        id="UseCompatTextViewDrawableXml"
-        message="Use `app:drawableLeftCompat` instead of `android:drawableLeft`"
-        errorLine1="            android:drawableLeft=&quot;?attr/home&quot;"
-        errorLine2="            ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
-        <location
-            file="src/main/res/layout/menu_main.xml"
-            line="25"
-            column="13"/>
-    </issue>
-
-    <issue
-        id="UseCompatTextViewDrawableXml"
-        message="Use `app:drawableLeftCompat` instead of `android:drawableLeft`"
-        errorLine1="            android:drawableLeft=&quot;?attr/browse&quot;"
-        errorLine2="            ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
-        <location
-            file="src/main/res/layout/menu_main.xml"
-            line="33"
-            column="13"/>
-    </issue>
-
-    <issue
-        id="UseCompatTextViewDrawableXml"
-        message="Use `app:drawableLeftCompat` instead of `android:drawableLeft`"
-        errorLine1="            android:drawableLeft=&quot;?attr/search&quot;"
-        errorLine2="            ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
-        <location
-            file="src/main/res/layout/menu_main.xml"
-            line="41"
-            column="13"/>
-    </issue>
-
-    <issue
-        id="UseCompatTextViewDrawableXml"
-        message="Use `app:drawableLeftCompat` instead of `android:drawableLeft`"
-        errorLine1="            android:drawableLeft=&quot;?attr/playlists&quot;"
-        errorLine2="            ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
-        <location
-            file="src/main/res/layout/menu_main.xml"
-            line="49"
-            column="13"/>
-    </issue>
-
-    <issue
-        id="UseCompatTextViewDrawableXml"
-        message="Use `app:drawableLeftCompat` instead of `android:drawableLeft`"
-        errorLine1="            android:drawableLeft=&quot;?attr/share&quot;"
-        errorLine2="            ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
-        <location
-            file="src/main/res/layout/menu_main.xml"
-            line="57"
-            column="13"/>
-    </issue>
-
-    <issue
-        id="UseCompatTextViewDrawableXml"
-        message="Use `app:drawableLeftCompat` instead of `android:drawableLeft`"
-        errorLine1="            android:drawableLeft=&quot;?attr/bookmark&quot;"
-        errorLine2="            ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
-        <location
-            file="src/main/res/layout/menu_main.xml"
-            line="65"
-            column="13"/>
-    </issue>
-
-    <issue
-        id="UseCompatTextViewDrawableXml"
-        message="Use `app:drawableLeftCompat` instead of `android:drawableLeft`"
-        errorLine1="            android:drawableLeft=&quot;?attr/chat&quot;"
-        errorLine2="            ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
-        <location
-            file="src/main/res/layout/menu_main.xml"
-            line="73"
-            column="13"/>
-    </issue>
-
-    <issue
-        id="UseCompatTextViewDrawableXml"
-        message="Use `app:drawableLeftCompat` instead of `android:drawableLeft`"
-        errorLine1="            android:drawableLeft=&quot;?attr/media_play&quot;"
-        errorLine2="            ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
-        <location
-            file="src/main/res/layout/menu_main.xml"
-            line="81"
-            column="13"/>
-    </issue>
-
-    <issue
-        id="UseCompatTextViewDrawableXml"
-        message="Use `app:drawableLeftCompat` instead of `android:drawableLeft`"
-        errorLine1="            android:drawableLeft=&quot;?attr/podcasts&quot;"
-        errorLine2="            ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
-        <location
-            file="src/main/res/layout/menu_main.xml"
-            line="89"
-            column="13"/>
-    </issue>
-
-    <issue
-        id="UseCompatTextViewDrawableXml"
-        message="Use `app:drawableLeftCompat` instead of `android:drawableLeft`"
-        errorLine1="            android:drawableLeft=&quot;?attr/settings&quot;"
-        errorLine2="            ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
-        <location
-            file="src/main/res/layout/menu_main.xml"
-            line="104"
-            column="13"/>
-    </issue>
-
-    <issue
-        id="UseCompatTextViewDrawableXml"
-        message="Use `app:drawableLeftCompat` instead of `android:drawableLeft`"
-        errorLine1="            android:drawableLeft=&quot;?attr/about&quot;"
-        errorLine2="            ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
-        <location
-            file="src/main/res/layout/menu_main.xml"
-            line="112"
-            column="13"/>
-    </issue>
-
-    <issue
-        id="UseCompatTextViewDrawableXml"
-        message="Use `app:drawableLeftCompat` instead of `android:drawableLeft`"
-        errorLine1="            android:drawableLeft=&quot;?attr/exit&quot;"
-        errorLine2="            ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
-        <location
-            file="src/main/res/layout/menu_main.xml"
-            line="120"
-            column="13"/>
-    </issue>
-
-    <issue
-        id="UseCompatTextViewDrawableXml"
-        message="Use `app:drawableLeftCompat` instead of `android:drawableLeft`"
-        errorLine1="            a:drawableLeft=&quot;?attr/search&quot;"
-        errorLine2="            ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
-        <location
-            file="src/main/res/layout/search_buttons.xml"
-            line="13"
-            column="13"/>
     </issue>
 
     <issue
@@ -683,7 +249,7 @@
         errorLine2="                                                                              ^">
         <location
             file="src/main/res/values-es/strings.xml"
-            line="141"
+            line="152"
             column="79"/>
     </issue>
 
@@ -694,8 +260,107 @@
         errorLine2="                                                                           ^">
         <location
             file="src/main/res/values-de/strings.xml"
-            line="303"
+            line="301"
             column="76"/>
+    </issue>
+
+    <issue
+        id="BinaryOperationInTimber"
+        message="Replace String concatenation with Timber&apos;s string formatting"
+        errorLine1="                    &quot;getActiveServer retrieved from DataBase, id: $serverId; &quot; +"
+        errorLine2="                    ^">
+        <location
+            file="src/main/kotlin/org/moire/ultrasonic/data/ActiveServerProvider.kt"
+            line="40"
+            column="21"/>
+    </issue>
+
+    <issue
+        id="BinaryOperationInTimber"
+        message="Replace String concatenation with Timber&apos;s string formatting"
+        errorLine1="                                &quot;Imported server from Preferences to Database:&quot; +"
+        errorLine2="                                ^">
+        <location
+            file="src/main/kotlin/org/moire/ultrasonic/fragment/ServerSettingsModel.kt"
+            line="70"
+            column="33"/>
+    </issue>
+
+    <issue
+        id="ImpliedQuantity"
+        message="The quantity `&apos;one&apos;` matches more than one specific number in this locale (0, 1), but the message did not include a formatting argument (such as `%d`). This is usually an internationalization error. See full issue explanation for more."
+        errorLine1="        &lt;item quantity=&quot;one&quot;>1 titre&lt;/item>"
+        errorLine2="        ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
+        <location
+            file="src/main/res/values-fr/strings.xml"
+            line="452"
+            column="9"/>
+    </issue>
+
+    <issue
+        id="ImpliedQuantity"
+        message="The quantity `&apos;one&apos;` matches more than one specific number in this locale (0, 1), but the message did not include a formatting argument (such as `%d`). This is usually an internationalization error. See full issue explanation for more."
+        errorLine1="        &lt;item quantity=&quot;one&quot;>1 titre sélectionné pour être épinglé.&lt;/item>"
+        errorLine2="        ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
+        <location
+            file="src/main/res/values-fr/strings.xml"
+            line="456"
+            column="9"/>
+    </issue>
+
+    <issue
+        id="ImpliedQuantity"
+        message="The quantity `&apos;one&apos;` matches more than one specific number in this locale (0, 1), but the message did not include a formatting argument (such as `%d`). This is usually an internationalization error. See full issue explanation for more."
+        errorLine1="        &lt;item quantity=&quot;one&quot;>1 titre sélectionné pour être téléchargé.&lt;/item>"
+        errorLine2="        ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
+        <location
+            file="src/main/res/values-fr/strings.xml"
+            line="460"
+            column="9"/>
+    </issue>
+
+    <issue
+        id="ImpliedQuantity"
+        message="The quantity `&apos;one&apos;` matches more than one specific number in this locale (0, 1), but the message did not include a formatting argument (such as `%d`). This is usually an internationalization error. See full issue explanation for more."
+        errorLine1="        &lt;item quantity=&quot;one&quot;>1 titre sélectionné pour être désépinglé.&lt;/item>"
+        errorLine2="        ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
+        <location
+            file="src/main/res/values-fr/strings.xml"
+            line="464"
+            column="9"/>
+    </issue>
+
+    <issue
+        id="ImpliedQuantity"
+        message="The quantity `&apos;one&apos;` matches more than one specific number in this locale (0, 1), but the message did not include a formatting argument (such as `%d`). This is usually an internationalization error. See full issue explanation for more."
+        errorLine1="        &lt;item quantity=&quot;one&quot;>1 titre ajouté à la fin de la file d\&apos;attente de lecture.&lt;/item>"
+        errorLine2="        ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
+        <location
+            file="src/main/res/values-fr/strings.xml"
+            line="468"
+            column="9"/>
+    </issue>
+
+    <issue
+        id="ImpliedQuantity"
+        message="The quantity `&apos;one&apos;` matches more than one specific number in this locale (0, 1), but the message did not include a formatting argument (such as `%d`). This is usually an internationalization error. See full issue explanation for more."
+        errorLine1="        &lt;item quantity=&quot;one&quot;>1 titre inséré après le titre actuel.&lt;/item>"
+        errorLine2="        ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
+        <location
+            file="src/main/res/values-fr/strings.xml"
+            line="472"
+            column="9"/>
+    </issue>
+
+    <issue
+        id="ImpliedQuantity"
+        message="The quantity `&apos;one&apos;` matches more than one specific number in this locale (0, 1), but the message did not include a formatting argument (such as `%d`). This is usually an internationalization error. See full issue explanation for more."
+        errorLine1="        &lt;item quantity=&quot;one&quot;>1 jour restant à la période d\&apos;essai&lt;/item>"
+        errorLine2="        ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
+        <location
+            file="src/main/res/values-fr/strings.xml"
+            line="476"
+            column="9"/>
     </issue>
 
     <issue
@@ -705,7 +370,7 @@
         errorLine2="    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
         <location
             file="src/main/res/values/strings.xml"
-            line="116"
+            line="127"
             column="5"/>
     </issue>
 
@@ -716,7 +381,7 @@
         errorLine2="    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
         <location
             file="src/main/res/values/strings.xml"
-            line="137"
+            line="148"
             column="5"/>
     </issue>
 
@@ -727,7 +392,7 @@
         errorLine2="    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
         <location
             file="src/main/res/values/strings.xml"
-            line="138"
+            line="149"
             column="5"/>
     </issue>
 
@@ -738,24 +403,101 @@
         errorLine2="    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
         <location
             file="src/main/res/values/strings.xml"
-            line="141"
+            line="152"
+            column="5"/>
+    </issue>
+
+    <issue
+        id="UnusedQuantity"
+        message="For language &quot;cs&quot; (Czech) the following quantities are not relevant: `many`"
+        errorLine1="    &lt;plurals name=&quot;select_album_n_songs&quot;>"
+        errorLine2="    ^">
+        <location
+            file="src/main/res/values-cs/strings.xml"
+            line="449"
+            column="5"/>
+    </issue>
+
+    <issue
+        id="UnusedQuantity"
+        message="For language &quot;cs&quot; (Czech) the following quantities are not relevant: `many`"
+        errorLine1="    &lt;plurals name=&quot;select_album_n_songs_pinned&quot;>"
+        errorLine2="    ^">
+        <location
+            file="src/main/res/values-cs/strings.xml"
+            line="455"
+            column="5"/>
+    </issue>
+
+    <issue
+        id="UnusedQuantity"
+        message="For language &quot;cs&quot; (Czech) the following quantities are not relevant: `many`"
+        errorLine1="    &lt;plurals name=&quot;select_album_n_songs_downloaded&quot;>"
+        errorLine2="    ^">
+        <location
+            file="src/main/res/values-cs/strings.xml"
+            line="461"
+            column="5"/>
+    </issue>
+
+    <issue
+        id="UnusedQuantity"
+        message="For language &quot;cs&quot; (Czech) the following quantities are not relevant: `many`"
+        errorLine1="    &lt;plurals name=&quot;select_album_n_songs_unpinned&quot;>"
+        errorLine2="    ^">
+        <location
+            file="src/main/res/values-cs/strings.xml"
+            line="467"
+            column="5"/>
+    </issue>
+
+    <issue
+        id="UnusedQuantity"
+        message="For language &quot;cs&quot; (Czech) the following quantities are not relevant: `many`"
+        errorLine1="    &lt;plurals name=&quot;select_album_n_songs_added&quot;>"
+        errorLine2="    ^">
+        <location
+            file="src/main/res/values-cs/strings.xml"
+            line="473"
+            column="5"/>
+    </issue>
+
+    <issue
+        id="UnusedQuantity"
+        message="For language &quot;cs&quot; (Czech) the following quantities are not relevant: `many`"
+        errorLine1="    &lt;plurals name=&quot;select_album_n_songs_play_next&quot;>"
+        errorLine2="    ^">
+        <location
+            file="src/main/res/values-cs/strings.xml"
+            line="479"
+            column="5"/>
+    </issue>
+
+    <issue
+        id="UnusedQuantity"
+        message="For language &quot;cs&quot; (Czech) the following quantities are not relevant: `many`"
+        errorLine1="    &lt;plurals name=&quot;select_album_donate_dialog_n_trial_days_left&quot;>"
+        errorLine2="    ^">
+        <location
+            file="src/main/res/values-cs/strings.xml"
+            line="485"
             column="5"/>
     </issue>
 
     <issue
         id="TrulyRandom"
         message="Potentially insecure random numbers on Android 4.3 and older. Read https://android-developers.blogspot.com/2013/08/some-securerandom-thoughts.html for more info."
-        errorLine1=" private Random random = new java.security.SecureRandom();"
-        errorLine2="                                           ~~~~~~~~~~~~">
+        errorLine1="  Random random = new java.security.SecureRandom();"
+        errorLine2="                                    ~~~~~~~~~~~~">
         <location
-            file="src/main/java/org/moire/ultrasonic/activity/SelectAlbumActivity.java"
-            line="85"
-            column="44"/>
+            file="src/main/java/org/moire/ultrasonic/service/OfflineMusicService.java"
+            line="653"
+            column="37"/>
     </issue>
 
     <issue
         id="AllowAllHostnameVerifier"
-        message="Using the AllowAllHostnameVerifier HostnameVerifier is unsafe because it always returns true, which could cause insecure network traffic due to trusting TLS/SSL server certificates for wrong hostnames"
+        message="Using the `AllowAllHostnameVerifier` HostnameVerifier is unsafe because it always returns true, which could cause insecure network traffic due to trusting TLS/SSL server certificates for wrong hostnames"
         errorLine1=" public static final X509HostnameVerifier ALLOW_ALL_HOSTNAME_VERIFIER = new AllowAllHostnameVerifier();"
         errorLine2="                                                                        ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
         <location
@@ -766,13 +508,13 @@
 
     <issue
         id="SetJavaScriptEnabled"
-        message="Using `setJavaScriptEnabled` can introduce XSS vulnerabilities into your application, review carefully."
-        errorLine1="  webView.getSettings().setJavaScriptEnabled(true);"
-        errorLine2="  ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
+        message="Using `setJavaScriptEnabled` can introduce XSS vulnerabilities into your application, review carefully"
+        errorLine1="        webView.getSettings().setJavaScriptEnabled(true);"
+        errorLine2="        ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
         <location
-            file="src/main/java/org/moire/ultrasonic/activity/HelpActivity.java"
-            line="110"
-            column="3"/>
+            file="src/main/java/org/moire/ultrasonic/fragment/AboutFragment.java"
+            line="51"
+            column="9"/>
     </issue>
 
     <issue
@@ -782,8 +524,30 @@
         errorLine2="         ~~~~~~~~">
         <location
             file="src/main/AndroidManifest.xml"
-            line="197"
+            line="124"
             column="10"/>
+    </issue>
+
+    <issue
+        id="ExportedReceiver"
+        message="Exported receiver does not require permission"
+        errorLine1="        &lt;receiver android:name=&quot;.receiver.UltrasonicIntentReceiver&quot;>"
+        errorLine2="         ~~~~~~~~">
+        <location
+            file="src/main/AndroidManifest.xml"
+            line="59"
+            column="10"/>
+    </issue>
+
+    <issue
+        id="ObsoleteLayoutParam"
+        message="Invalid layout param in a `LinearLayout`: `layout_alignParentLeft`"
+        errorLine1="        a:layout_alignParentLeft=&quot;true&quot;"
+        errorLine2="        ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
+        <location
+            file="src/main/res/layout/media_buttons.xml"
+            line="14"
+            column="9"/>
     </issue>
 
     <issue
@@ -810,34 +574,9 @@
 
     <issue
         id="ObsoleteSdkInt"
-        message="This folder configuration (`v14`) is unnecessary; `minSdkVersion` is 14. Merge all the resources in this folder into `drawable-hdpi`.">
-        <location
-            file="src/main/res/drawable-hdpi-v14"/>
-    </issue>
-
-    <issue
-        id="ObsoleteSdkInt"
-        message="This folder configuration (`v14`) is unnecessary; `minSdkVersion` is 14. Merge all the resources in this folder into `drawable-mdpi`.">
-        <location
-            file="src/main/res/drawable-mdpi-v14"/>
-    </issue>
-
-    <issue
-        id="ObsoleteSdkInt"
         message="This folder configuration (`v14`) is unnecessary; `minSdkVersion` is 14. Merge all the resources in this folder into `drawable-xhdpi`.">
         <location
             file="src/main/res/drawable-xhdpi-v14"/>
-    </issue>
-
-    <issue
-        id="StaticFieldLeak"
-        message="This `AsyncTask` class should be static or leaks might occur (org.moire.ultrasonic.activity.BookmarkActivity.GetDataTask)"
-        errorLine1=" private class GetDataTask extends AsyncTask&lt;Void, Void, String[]&gt;"
-        errorLine2="               ~~~~~~~~~~~">
-        <location
-            file="src/main/java/org/moire/ultrasonic/activity/BookmarkActivity.java"
-            line="470"
-            column="16"/>
     </issue>
 
     <issue
@@ -847,7 +586,7 @@
         errorLine2="               ~~~~~~~~~~~~~~~~~">
         <location
             file="src/main/java/org/moire/ultrasonic/util/CacheCleaner.java"
-            line="241"
+            line="225"
             column="16"/>
     </issue>
 
@@ -858,7 +597,7 @@
         errorLine2="               ~~~~~~~~~~~~~~~~~~~~~~">
         <location
             file="src/main/java/org/moire/ultrasonic/util/CacheCleaner.java"
-            line="269"
+            line="253"
             column="16"/>
     </issue>
 
@@ -869,30 +608,8 @@
         errorLine2="               ~~~~~~~~~~~~~~~~~~~~~~~~~~">
         <location
             file="src/main/java/org/moire/ultrasonic/util/CacheCleaner.java"
-            line="298"
+            line="282"
             column="16"/>
-    </issue>
-
-    <issue
-        id="StaticFieldLeak"
-        message="This `AsyncTask` class should be static or leaks might occur (org.moire.ultrasonic.activity.ChatActivity.GetDataTask)"
-        errorLine1=" private class GetDataTask extends AsyncTask&lt;Void, Void, String[]&gt;"
-        errorLine2="               ~~~~~~~~~~~">
-        <location
-            file="src/main/java/org/moire/ultrasonic/activity/ChatActivity.java"
-            line="295"
-            column="16"/>
-    </issue>
-
-    <issue
-        id="StaticFieldLeak"
-        message="Do not place Android context classes in static fields; this is a memory leak"
-        errorLine1=" private static SeekBar progressBar;"
-        errorLine2="         ~~~~~~">
-        <location
-            file="src/main/java/org/moire/ultrasonic/activity/DownloadActivity.java"
-            line="107"
-            column="10"/>
     </issue>
 
     <issue
@@ -902,7 +619,7 @@
         errorLine2="                  ~~~~~~~~~~~~~">
         <location
             file="src/main/java/org/moire/ultrasonic/service/DownloadQueueSerializer.java"
-            line="69"
+            line="67"
             column="19"/>
     </issue>
 
@@ -913,85 +630,19 @@
         errorLine2="                  ~~~~~~~~~~~~~~~">
         <location
             file="src/main/java/org/moire/ultrasonic/service/DownloadQueueSerializer.java"
-            line="90"
+            line="88"
             column="19"/>
     </issue>
 
     <issue
         id="StaticFieldLeak"
-        message="This `AsyncTask` class should be static or leaks might occur (org.moire.ultrasonic.activity.SelectAlbumActivity.GetDataTask)"
-        errorLine1=" private class GetDataTask extends AsyncTask&lt;Void, Void, String[]&gt;"
-        errorLine2="               ~~~~~~~~~~~">
+        message="Do not place Android context classes in static fields; this is a memory leak"
+        errorLine1="    private static SeekBar progressBar; // TODO: Refactor this to not be static"
+        errorLine2="            ~~~~~~">
         <location
-            file="src/main/java/org/moire/ultrasonic/activity/SelectAlbumActivity.java"
-            line="1287"
-            column="16"/>
-    </issue>
-
-    <issue
-        id="StaticFieldLeak"
-        message="This `AsyncTask` class should be static or leaks might occur (org.moire.ultrasonic.activity.SelectArtistActivity.GetDataTask)"
-        errorLine1=" private class GetDataTask extends AsyncTask&lt;Void, Void, String[]&gt;"
-        errorLine2="               ~~~~~~~~~~~">
-        <location
-            file="src/main/java/org/moire/ultrasonic/activity/SelectArtistActivity.java"
-            line="359"
-            column="16"/>
-    </issue>
-
-    <issue
-        id="StaticFieldLeak"
-        message="This `AsyncTask` class should be static or leaks might occur (org.moire.ultrasonic.activity.SelectGenreActivity.GetDataTask)"
-        errorLine1=" private class GetDataTask extends AsyncTask&lt;Void, Void, String[]&gt;"
-        errorLine2="               ~~~~~~~~~~~">
-        <location
-            file="src/main/java/org/moire/ultrasonic/activity/SelectGenreActivity.java"
-            line="178"
-            column="16"/>
-    </issue>
-
-    <issue
-        id="StaticFieldLeak"
-        message="This `AsyncTask` class should be static or leaks might occur (org.moire.ultrasonic.activity.SelectPlaylistActivity.GetDataTask)"
-        errorLine1=" private class GetDataTask extends AsyncTask&lt;Void, Void, String[]&gt;"
-        errorLine2="               ~~~~~~~~~~~">
-        <location
-            file="src/main/java/org/moire/ultrasonic/activity/SelectPlaylistActivity.java"
-            line="376"
-            column="16"/>
-    </issue>
-
-    <issue
-        id="StaticFieldLeak"
-        message="This field leaks a context object"
-        errorLine1="    private val context: Context"
-        errorLine2="    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
-        <location
-            file="src/main/kotlin/org/moire/ultrasonic/activity/ServerSettingsModel.kt"
-            line="24"
-            column="5"/>
-    </issue>
-
-    <issue
-        id="StaticFieldLeak"
-        message="This `AsyncTask` class should be static or leaks might occur (org.moire.ultrasonic.activity.ShareActivity.GetDataTask)"
-        errorLine1=" private class GetDataTask extends AsyncTask&lt;Void, Void, String[]&gt;"
-        errorLine2="               ~~~~~~~~~~~">
-        <location
-            file="src/main/java/org/moire/ultrasonic/activity/ShareActivity.java"
-            line="370"
-            column="16"/>
-    </issue>
-
-    <issue
-        id="StaticFieldLeak"
-        message="Do not place Android context classes in static fields (static reference to `SubsonicTabActivity` which has field `nowPlayingView` pointing to `View`); this is a memory leak"
-        errorLine1=" private static SubsonicTabActivity instance;"
-        errorLine2="         ~~~~~~">
-        <location
-            file="src/main/java/org/moire/ultrasonic/activity/SubsonicTabActivity.java"
-            line="72"
-            column="10"/>
+            file="src/main/java/org/moire/ultrasonic/fragment/PlayerFragment.java"
+            line="103"
+            column="13"/>
     </issue>
 
     <issue
@@ -1001,7 +652,7 @@
         errorLine2="         ~~~~~~">
         <location
             file="src/main/java/org/moire/ultrasonic/view/UpdateView.java"
-            line="25"
+            line="29"
             column="10"/>
     </issue>
 
@@ -1017,8 +668,19 @@
     </issue>
 
     <issue
+        id="UseCompoundDrawables"
+        message="This tag and its children can be replaced by one `&lt;TextView/>` and a compound drawable"
+        errorLine1="    &lt;LinearLayout"
+        errorLine2="     ~~~~~~~~~~~~">
+        <location
+            file="src/main/res/layout/navigation_header.xml"
+            line="17"
+            column="6"/>
+    </issue>
+
+    <issue
         id="Overdraw"
-        message="Possible overdraw: Root element paints background `@drawable/appwidget_dark_bg_trans` with a theme that also paints a background (inferred theme is `@style/Theme.AppCompat`)"
+        message="Possible overdraw: Root element paints background `@drawable/appwidget_dark_bg_trans` with a theme that also paints a background (inferred theme is `@style/NoActionBar`)"
         errorLine1="    a:background=&quot;@drawable/appwidget_dark_bg_trans&quot;"
         errorLine2="    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
         <location
@@ -1029,7 +691,7 @@
 
     <issue
         id="Overdraw"
-        message="Possible overdraw: Root element paints background `@drawable/appwidget_dark_bg_trans` with a theme that also paints a background (inferred theme is `@style/Theme.AppCompat`)"
+        message="Possible overdraw: Root element paints background `@drawable/appwidget_dark_bg_trans` with a theme that also paints a background (inferred theme is `@style/NoActionBar`)"
         errorLine1="    a:background=&quot;@drawable/appwidget_dark_bg_trans&quot;"
         errorLine2="    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
         <location
@@ -1040,7 +702,7 @@
 
     <issue
         id="Overdraw"
-        message="Possible overdraw: Root element paints background `@drawable/appwidget_dark_bg_trans` with a theme that also paints a background (inferred theme is `@style/Theme.AppCompat`)"
+        message="Possible overdraw: Root element paints background `@drawable/appwidget_dark_bg_trans` with a theme that also paints a background (inferred theme is `@style/NoActionBar`)"
         errorLine1="    a:background=&quot;@drawable/appwidget_dark_bg_trans&quot;"
         errorLine2="    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
         <location
@@ -1051,7 +713,7 @@
 
     <issue
         id="Overdraw"
-        message="Possible overdraw: Root element paints background `@drawable/appwidget_dark_bg_trans` with a theme that also paints a background (inferred theme is `@style/Theme.AppCompat`)"
+        message="Possible overdraw: Root element paints background `@drawable/appwidget_dark_bg_trans` with a theme that also paints a background (inferred theme is `@style/NoActionBar`)"
         errorLine1="    a:background=&quot;@drawable/appwidget_dark_bg_trans&quot; >"
         errorLine2="    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
         <location
@@ -1062,24 +724,35 @@
 
     <issue
         id="Overdraw"
-        message="Possible overdraw: Root element paints background `@color/background_color_dark` with a theme that also paints a background (inferred theme is `@style/Theme.AppCompat`)"
-        errorLine1="    android:background=&quot;@color/background_color_dark&quot;"
-        errorLine2="    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
+        message="Possible overdraw: Root element paints background `?android:attr/selectableItemBackground` with a theme that also paints a background (inferred theme is `@style/NoActionBar`)"
+        errorLine1="    a:background=&quot;?android:attr/selectableItemBackground&quot;"
+        errorLine2="    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
         <location
-            file="src/main/res/layout/notification.xml"
-            line="9"
+            file="src/main/res/layout/select_folder_header.xml"
+            line="11"
             column="5"/>
     </issue>
 
     <issue
-        id="Overdraw"
-        message="Possible overdraw: Root element paints background `@color/background_color_dark` with a theme that also paints a background (inferred theme is `@style/Theme.AppCompat`)"
-        errorLine1="    android:background=&quot;@color/background_color_dark&quot; >"
-        errorLine2="    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
+        id="UnusedResources"
+        message="The resource `R.drawable.btn_bg` appears to be unused"
+        errorLine1="    &lt;item android:drawable=&quot;@color/ics_opaque&quot; android:state_pressed=&quot;true&quot;/>"
+        errorLine2="^">
         <location
-            file="src/main/res/layout/notification_large.xml"
-            line="9"
-            column="5"/>
+            file="src/main/res/drawable/btn_bg.xml"
+            line="14"
+            column="1"/>
+    </issue>
+
+    <issue
+        id="UnusedResources"
+        message="The resource `R.color.ics_opaque` appears to be unused"
+        errorLine1="    &lt;color name=&quot;ics_opaque&quot;>#8033b5e5&lt;/color>"
+        errorLine2="           ~~~~~~~~~~~~~~~~~">
+        <location
+            file="src/main/res/values/colors.xml"
+            line="7"
+            column="12"/>
     </issue>
 
     <issue
@@ -1095,101 +768,175 @@
 
     <issue
         id="UnusedResources"
-        message="The resource `R.drawable.md__list_focused_holo` appears to be unused">
-        <location
-            file="src/main/res/drawable-xhdpi/md__list_focused_holo.9.png"/>
-    </issue>
-
-    <issue
-        id="UnusedResources"
-        message="The resource `R.drawable.md__list_longpressed_holo` appears to be unused">
-        <location
-            file="src/main/res/drawable-xhdpi/md__list_longpressed_holo.9.png"/>
-    </issue>
-
-    <issue
-        id="UnusedResources"
-        message="The resource `R.drawable.md__list_pressed_holo_dark` appears to be unused">
-        <location
-            file="src/main/res/drawable-xhdpi/md__list_pressed_holo_dark.9.png"/>
-    </issue>
-
-    <issue
-        id="UnusedResources"
-        message="The resource `R.drawable.md__list_selector_background_transition_holo_dark` appears to be unused"
-        errorLine1="&lt;transition xmlns:android=&quot;http://schemas.android.com/apk/res/android&quot;>"
+        message="The resource `R.drawable.ic_menu_arrow` appears to be unused"
+        errorLine1="&lt;vector xmlns:android=&quot;http://schemas.android.com/apk/res/android&quot;"
         errorLine2="^">
         <location
-            file="src/main/res/drawable/md__list_selector_background_transition_holo_dark.xml"
-            line="17"
+            file="src/main/res/drawable/ic_menu_arrow.xml"
+            line="1"
             column="1"/>
     </issue>
 
     <issue
         id="UnusedResources"
-        message="The resource `R.drawable.md__list_selector_disabled_holo_dark` appears to be unused">
+        message="The resource `R.drawable.line` appears to be unused"
+        errorLine1="&lt;shape xmlns:android=&quot;http://schemas.android.com/apk/res/android&quot;"
+        errorLine2="^">
         <location
-            file="src/main/res/drawable-xhdpi/md__list_selector_disabled_holo_dark.9.png"/>
+            file="src/main/res/drawable/line.xml"
+            line="2"
+            column="1"/>
     </issue>
 
     <issue
         id="UnusedResources"
-        message="The resource `R.drawable.md__list_selector_holo_dark` appears to be unused"
+        message="The resource `R.drawable.line_drawable` appears to be unused"
         errorLine1="&lt;selector xmlns:android=&quot;http://schemas.android.com/apk/res/android&quot;>"
         errorLine2="^">
         <location
-            file="src/main/res/drawable/md__list_selector_holo_dark.xml"
-            line="17"
+            file="src/main/res/drawable/line_drawable.xml"
+            line="2"
             column="1"/>
     </issue>
 
     <issue
         id="UnusedResources"
-        message="The resource `R.drawable.menu_arrow` appears to be unused">
-        <location
-            file="src/main/res/drawable-hdpi/menu_arrow.png"/>
-        <location
-            file="src/main/res/drawable-hdpi-v14/menu_arrow.png"/>
-        <location
-            file="src/main/res/drawable-mdpi/menu_arrow.png"/>
-        <location
-            file="src/main/res/drawable-mdpi-v14/menu_arrow.png"/>
-        <location
-            file="src/main/res/drawable-xhdpi/menu_arrow.png"/>
-        <location
-            file="src/main/res/drawable-xhdpi-v14/menu_arrow.png"/>
-    </issue>
-
-    <issue
-        id="UnusedResources"
-        message="The resource `R.drawable.progress_bg_holo_dark` appears to be unused">
-        <location
-            file="src/main/res/drawable-hdpi/progress_bg_holo_dark.9.png"/>
-    </issue>
-
-    <issue
-        id="UnusedResources"
-        message="The resource `R.drawable.progress_horizontal_holo_dark` appears to be unused"
-        errorLine1="&lt;layer-list xmlns:android=&quot;http://schemas.android.com/apk/res/android&quot;>"
+        message="The resource `R.menu.main` appears to be unused"
+        errorLine1="&lt;menu"
         errorLine2="^">
         <location
-            file="src/main/res/drawable/progress_horizontal_holo_dark.xml"
-            line="17"
+            file="src/main/res/menu/main.xml"
+            line="2"
             column="1"/>
     </issue>
 
     <issue
         id="UnusedResources"
-        message="The resource `R.drawable.progress_primary_holo_dark` appears to be unused">
+        message="The resource `R.drawable.menu_arrow` appears to be unused"
+        errorLine1="&lt;vector xmlns:android=&quot;http://schemas.android.com/apk/res/android&quot;"
+        errorLine2="^">
         <location
-            file="src/main/res/drawable-hdpi/progress_primary_holo_dark.9.png"/>
+            file="src/main/res/drawable/menu_arrow.xml"
+            line="1"
+            column="1"/>
     </issue>
 
     <issue
         id="UnusedResources"
-        message="The resource `R.drawable.progress_secondary_holo_dark` appears to be unused">
+        message="The resource `R.string.main_shuffle` appears to be unused"
+        errorLine1="    &lt;string name=&quot;main.shuffle&quot;>Shuffle Play&lt;/string>"
+        errorLine2="            ~~~~~~~~~~~~~~~~~~~">
         <location
-            file="src/main/res/drawable-hdpi/progress_secondary_holo_dark.9.png"/>
+            file="src/main/res/values/strings.xml"
+            line="109"
+            column="13"/>
+        <location
+            file="src/main/res/values-cs/strings.xml"
+            line="99"
+            column="13"/>
+        <location
+            file="src/main/res/values-de/strings.xml"
+            line="98"
+            column="13"/>
+        <location
+            file="src/main/res/values-es/strings.xml"
+            line="109"
+            column="13"/>
+        <location
+            file="src/main/res/values-fr/strings.xml"
+            line="99"
+            column="13"/>
+        <location
+            file="src/main/res/values-hu/strings.xml"
+            line="99"
+            column="13"/>
+        <location
+            file="src/main/res/values-it/strings.xml"
+            line="96"
+            column="13"/>
+        <location
+            file="src/main/res/values-nl/strings.xml"
+            line="109"
+            column="13"/>
+        <location
+            file="src/main/res/values-pl/strings.xml"
+            line="98"
+            column="13"/>
+        <location
+            file="src/main/res/values-pt/strings.xml"
+            line="98"
+            column="13"/>
+        <location
+            file="src/main/res/values-pt-rBR/strings.xml"
+            line="99"
+            column="13"/>
+        <location
+            file="src/main/res/values-ru/strings.xml"
+            line="96"
+            column="13"/>
+        <location
+            file="src/main/res/values-zh-rCN/strings.xml"
+            line="80"
+            column="13"/>
+    </issue>
+
+    <issue
+        id="UnusedResources"
+        message="The resource `R.string.menu_navigation` appears to be unused"
+        errorLine1="    &lt;string name=&quot;menu.navigation&quot;>Navigation&lt;/string>"
+        errorLine2="            ~~~~~~~~~~~~~~~~~~~~~~">
+        <location
+            file="src/main/res/values/strings.xml"
+            line="121"
+            column="13"/>
+        <location
+            file="src/main/res/values-cs/strings.xml"
+            line="111"
+            column="13"/>
+        <location
+            file="src/main/res/values-de/strings.xml"
+            line="110"
+            column="13"/>
+        <location
+            file="src/main/res/values-es/strings.xml"
+            line="121"
+            column="13"/>
+        <location
+            file="src/main/res/values-fr/strings.xml"
+            line="111"
+            column="13"/>
+        <location
+            file="src/main/res/values-hu/strings.xml"
+            line="111"
+            column="13"/>
+        <location
+            file="src/main/res/values-it/strings.xml"
+            line="107"
+            column="13"/>
+        <location
+            file="src/main/res/values-nl/strings.xml"
+            line="121"
+            column="13"/>
+        <location
+            file="src/main/res/values-pl/strings.xml"
+            line="110"
+            column="13"/>
+        <location
+            file="src/main/res/values-pt/strings.xml"
+            line="110"
+            column="13"/>
+        <location
+            file="src/main/res/values-pt-rBR/strings.xml"
+            line="111"
+            column="13"/>
+        <location
+            file="src/main/res/values-ru/strings.xml"
+            line="107"
+            column="13"/>
+        <location
+            file="src/main/res/values-zh-rCN/strings.xml"
+            line="90"
+            column="13"/>
     </issue>
 
     <issue
@@ -1199,7 +946,11 @@
         errorLine2="            ~~~~~~~~~~~~~~~~~~~~~~~~~~">
         <location
             file="src/main/res/values/strings.xml"
-            line="115"
+            line="126"
+            column="13"/>
+        <location
+            file="src/main/res/values-cs/strings.xml"
+            line="116"
             column="13"/>
         <location
             file="src/main/res/values-de/strings.xml"
@@ -1207,31 +958,43 @@
             column="13"/>
         <location
             file="src/main/res/values-es/strings.xml"
-            line="115"
+            line="126"
             column="13"/>
         <location
             file="src/main/res/values-fr/strings.xml"
-            line="115"
+            line="116"
             column="13"/>
         <location
             file="src/main/res/values-hu/strings.xml"
-            line="115"
+            line="116"
+            column="13"/>
+        <location
+            file="src/main/res/values-it/strings.xml"
+            line="111"
             column="13"/>
         <location
             file="src/main/res/values-nl/strings.xml"
-            line="115"
+            line="126"
             column="13"/>
         <location
             file="src/main/res/values-pl/strings.xml"
-            line="115"
+            line="114"
             column="13"/>
         <location
             file="src/main/res/values-pt/strings.xml"
-            line="115"
+            line="114"
             column="13"/>
         <location
             file="src/main/res/values-pt-rBR/strings.xml"
-            line="115"
+            line="116"
+            column="13"/>
+        <location
+            file="src/main/res/values-ru/strings.xml"
+            line="111"
+            column="13"/>
+        <location
+            file="src/main/res/values-zh-rCN/strings.xml"
+            line="95"
             column="13"/>
     </issue>
 
@@ -1242,7 +1005,11 @@
         errorLine2="            ~~~~~~~~~~~~~~~~~~~~~~~~~~">
         <location
             file="src/main/res/values/strings.xml"
-            line="116"
+            line="127"
+            column="13"/>
+        <location
+            file="src/main/res/values-cs/strings.xml"
+            line="117"
             column="13"/>
         <location
             file="src/main/res/values-de/strings.xml"
@@ -1250,19 +1017,78 @@
             column="13"/>
         <location
             file="src/main/res/values-es/strings.xml"
-            line="116"
+            line="127"
             column="13"/>
         <location
             file="src/main/res/values-fr/strings.xml"
-            line="116"
+            line="117"
             column="13"/>
         <location
             file="src/main/res/values-hu/strings.xml"
-            line="116"
+            line="117"
+            column="13"/>
+        <location
+            file="src/main/res/values-it/strings.xml"
+            line="112"
             column="13"/>
         <location
             file="src/main/res/values-nl/strings.xml"
-            line="116"
+            line="127"
+            column="13"/>
+        <location
+            file="src/main/res/values-pl/strings.xml"
+            line="115"
+            column="13"/>
+        <location
+            file="src/main/res/values-pt/strings.xml"
+            line="115"
+            column="13"/>
+        <location
+            file="src/main/res/values-pt-rBR/strings.xml"
+            line="117"
+            column="13"/>
+        <location
+            file="src/main/res/values-ru/strings.xml"
+            line="112"
+            column="13"/>
+    </issue>
+
+    <issue
+        id="UnusedResources"
+        message="The resource `R.string.parser_reading` appears to be unused"
+        errorLine1="    &lt;string name=&quot;parser.reading&quot;>Reading from server.&lt;/string>"
+        errorLine2="            ~~~~~~~~~~~~~~~~~~~~~">
+        <location
+            file="src/main/res/values/strings.xml"
+            line="128"
+            column="13"/>
+        <location
+            file="src/main/res/values-cs/strings.xml"
+            line="118"
+            column="13"/>
+        <location
+            file="src/main/res/values-de/strings.xml"
+            line="117"
+            column="13"/>
+        <location
+            file="src/main/res/values-es/strings.xml"
+            line="128"
+            column="13"/>
+        <location
+            file="src/main/res/values-fr/strings.xml"
+            line="118"
+            column="13"/>
+        <location
+            file="src/main/res/values-hu/strings.xml"
+            line="118"
+            column="13"/>
+        <location
+            file="src/main/res/values-it/strings.xml"
+            line="113"
+            column="13"/>
+        <location
+            file="src/main/res/values-nl/strings.xml"
+            line="128"
             column="13"/>
         <location
             file="src/main/res/values-pl/strings.xml"
@@ -1274,7 +1100,15 @@
             column="13"/>
         <location
             file="src/main/res/values-pt-rBR/strings.xml"
-            line="116"
+            line="118"
+            column="13"/>
+        <location
+            file="src/main/res/values-ru/strings.xml"
+            line="113"
+            column="13"/>
+        <location
+            file="src/main/res/values-zh-rCN/strings.xml"
+            line="96"
             column="13"/>
     </issue>
 
@@ -1285,7 +1119,11 @@
         errorLine2="            ~~~~~~~~~~~~~~~~~~~~~~~~~~">
         <location
             file="src/main/res/values/strings.xml"
-            line="118"
+            line="129"
+            column="13"/>
+        <location
+            file="src/main/res/values-cs/strings.xml"
+            line="119"
             column="13"/>
         <location
             file="src/main/res/values-de/strings.xml"
@@ -1293,31 +1131,507 @@
             column="13"/>
         <location
             file="src/main/res/values-es/strings.xml"
-            line="118"
+            line="129"
             column="13"/>
         <location
             file="src/main/res/values-fr/strings.xml"
-            line="118"
+            line="119"
             column="13"/>
         <location
             file="src/main/res/values-hu/strings.xml"
-            line="118"
+            line="119"
+            column="13"/>
+        <location
+            file="src/main/res/values-it/strings.xml"
+            line="114"
             column="13"/>
         <location
             file="src/main/res/values-nl/strings.xml"
-            line="118"
+            line="129"
             column="13"/>
         <location
             file="src/main/res/values-pl/strings.xml"
-            line="118"
+            line="117"
             column="13"/>
         <location
             file="src/main/res/values-pt/strings.xml"
-            line="118"
+            line="117"
             column="13"/>
         <location
             file="src/main/res/values-pt-rBR/strings.xml"
-            line="118"
+            line="119"
+            column="13"/>
+        <location
+            file="src/main/res/values-ru/strings.xml"
+            line="114"
+            column="13"/>
+        <location
+            file="src/main/res/values-zh-rCN/strings.xml"
+            line="97"
+            column="13"/>
+    </issue>
+
+    <issue
+        id="UnusedResources"
+        message="The resource `R.string.progress_wait` appears to be unused"
+        errorLine1="    &lt;string name=&quot;progress.wait&quot;>Please wait&amp;#8230;&lt;/string>"
+        errorLine2="            ~~~~~~~~~~~~~~~~~~~~">
+        <location
+            file="src/main/res/values/strings.xml"
+            line="134"
+            column="13"/>
+        <location
+            file="src/main/res/values-cs/strings.xml"
+            line="124"
+            column="13"/>
+        <location
+            file="src/main/res/values-de/strings.xml"
+            line="123"
+            column="13"/>
+        <location
+            file="src/main/res/values-es/strings.xml"
+            line="134"
+            column="13"/>
+        <location
+            file="src/main/res/values-fr/strings.xml"
+            line="124"
+            column="13"/>
+        <location
+            file="src/main/res/values-hu/strings.xml"
+            line="124"
+            column="13"/>
+        <location
+            file="src/main/res/values-it/strings.xml"
+            line="119"
+            column="13"/>
+        <location
+            file="src/main/res/values-nl/strings.xml"
+            line="134"
+            column="13"/>
+        <location
+            file="src/main/res/values-pl/strings.xml"
+            line="122"
+            column="13"/>
+        <location
+            file="src/main/res/values-pt/strings.xml"
+            line="122"
+            column="13"/>
+        <location
+            file="src/main/res/values-pt-rBR/strings.xml"
+            line="124"
+            column="13"/>
+        <location
+            file="src/main/res/values-ru/strings.xml"
+            line="119"
+            column="13"/>
+        <location
+            file="src/main/res/values-zh-rCN/strings.xml"
+            line="100"
+            column="13"/>
+    </issue>
+
+    <issue
+        id="UnusedResources"
+        message="The resource `R.string.search_search` appears to be unused"
+        errorLine1="    &lt;string name=&quot;search.search&quot;>Click to search&lt;/string>"
+        errorLine2="            ~~~~~~~~~~~~~~~~~~~~">
+        <location
+            file="src/main/res/values/strings.xml"
+            line="140"
+            column="13"/>
+        <location
+            file="src/main/res/values-cs/strings.xml"
+            line="130"
+            column="13"/>
+        <location
+            file="src/main/res/values-de/strings.xml"
+            line="129"
+            column="13"/>
+        <location
+            file="src/main/res/values-es/strings.xml"
+            line="140"
+            column="13"/>
+        <location
+            file="src/main/res/values-fr/strings.xml"
+            line="130"
+            column="13"/>
+        <location
+            file="src/main/res/values-hu/strings.xml"
+            line="130"
+            column="13"/>
+        <location
+            file="src/main/res/values-it/strings.xml"
+            line="125"
+            column="13"/>
+        <location
+            file="src/main/res/values-nl/strings.xml"
+            line="140"
+            column="13"/>
+        <location
+            file="src/main/res/values-pl/strings.xml"
+            line="128"
+            column="13"/>
+        <location
+            file="src/main/res/values-pt/strings.xml"
+            line="128"
+            column="13"/>
+        <location
+            file="src/main/res/values-pt-rBR/strings.xml"
+            line="130"
+            column="13"/>
+        <location
+            file="src/main/res/values-ru/strings.xml"
+            line="125"
+            column="13"/>
+        <location
+            file="src/main/res/values-zh-rCN/strings.xml"
+            line="106"
+            column="13"/>
+    </issue>
+
+    <issue
+        id="UnusedResources"
+        message="The resource `R.string.select_album_donate_dialog_0_trial_days_left` appears to be unused"
+        errorLine1="    &lt;string name=&quot;select_album.donate_dialog_0_trial_days_left&quot;>Trial period is over&lt;/string>"
+        errorLine2="            ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
+        <location
+            file="src/main/res/values/strings.xml"
+            line="143"
+            column="13"/>
+        <location
+            file="src/main/res/values-cs/strings.xml"
+            line="133"
+            column="13"/>
+        <location
+            file="src/main/res/values-de/strings.xml"
+            line="132"
+            column="13"/>
+        <location
+            file="src/main/res/values-es/strings.xml"
+            line="143"
+            column="13"/>
+        <location
+            file="src/main/res/values-fr/strings.xml"
+            line="133"
+            column="13"/>
+        <location
+            file="src/main/res/values-hu/strings.xml"
+            line="133"
+            column="13"/>
+        <location
+            file="src/main/res/values-it/strings.xml"
+            line="128"
+            column="13"/>
+        <location
+            file="src/main/res/values-nl/strings.xml"
+            line="143"
+            column="13"/>
+        <location
+            file="src/main/res/values-pl/strings.xml"
+            line="131"
+            column="13"/>
+        <location
+            file="src/main/res/values-pt/strings.xml"
+            line="131"
+            column="13"/>
+        <location
+            file="src/main/res/values-pt-rBR/strings.xml"
+            line="133"
+            column="13"/>
+        <location
+            file="src/main/res/values-ru/strings.xml"
+            line="128"
+            column="13"/>
+        <location
+            file="src/main/res/values-zh-rCN/strings.xml"
+            line="109"
+            column="13"/>
+    </issue>
+
+    <issue
+        id="UnusedResources"
+        message="The resource `R.string.select_album_donate_dialog_later` appears to be unused"
+        errorLine1="    &lt;string name=&quot;select_album.donate_dialog_later&quot;>Later&lt;/string>"
+        errorLine2="            ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
+        <location
+            file="src/main/res/values/strings.xml"
+            line="144"
+            column="13"/>
+        <location
+            file="src/main/res/values-cs/strings.xml"
+            line="134"
+            column="13"/>
+        <location
+            file="src/main/res/values-de/strings.xml"
+            line="133"
+            column="13"/>
+        <location
+            file="src/main/res/values-es/strings.xml"
+            line="144"
+            column="13"/>
+        <location
+            file="src/main/res/values-fr/strings.xml"
+            line="134"
+            column="13"/>
+        <location
+            file="src/main/res/values-hu/strings.xml"
+            line="134"
+            column="13"/>
+        <location
+            file="src/main/res/values-it/strings.xml"
+            line="129"
+            column="13"/>
+        <location
+            file="src/main/res/values-nl/strings.xml"
+            line="144"
+            column="13"/>
+        <location
+            file="src/main/res/values-pl/strings.xml"
+            line="132"
+            column="13"/>
+        <location
+            file="src/main/res/values-pt/strings.xml"
+            line="132"
+            column="13"/>
+        <location
+            file="src/main/res/values-pt-rBR/strings.xml"
+            line="134"
+            column="13"/>
+        <location
+            file="src/main/res/values-ru/strings.xml"
+            line="129"
+            column="13"/>
+        <location
+            file="src/main/res/values-zh-rCN/strings.xml"
+            line="110"
+            column="13"/>
+    </issue>
+
+    <issue
+        id="UnusedResources"
+        message="The resource `R.string.select_album_donate_dialog_message` appears to be unused"
+        errorLine1="    &lt;string name=&quot;select_album.donate_dialog_message&quot;>Get unlimited downloads by donating to Subsonic.&lt;/string>"
+        errorLine2="            ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
+        <location
+            file="src/main/res/values/strings.xml"
+            line="145"
+            column="13"/>
+        <location
+            file="src/main/res/values-cs/strings.xml"
+            line="135"
+            column="13"/>
+        <location
+            file="src/main/res/values-de/strings.xml"
+            line="134"
+            column="13"/>
+        <location
+            file="src/main/res/values-es/strings.xml"
+            line="145"
+            column="13"/>
+        <location
+            file="src/main/res/values-fr/strings.xml"
+            line="135"
+            column="13"/>
+        <location
+            file="src/main/res/values-hu/strings.xml"
+            line="135"
+            column="13"/>
+        <location
+            file="src/main/res/values-it/strings.xml"
+            line="130"
+            column="13"/>
+        <location
+            file="src/main/res/values-nl/strings.xml"
+            line="145"
+            column="13"/>
+        <location
+            file="src/main/res/values-pl/strings.xml"
+            line="133"
+            column="13"/>
+        <location
+            file="src/main/res/values-pt/strings.xml"
+            line="133"
+            column="13"/>
+        <location
+            file="src/main/res/values-pt-rBR/strings.xml"
+            line="135"
+            column="13"/>
+        <location
+            file="src/main/res/values-ru/strings.xml"
+            line="130"
+            column="13"/>
+        <location
+            file="src/main/res/values-zh-rCN/strings.xml"
+            line="111"
+            column="13"/>
+    </issue>
+
+    <issue
+        id="UnusedResources"
+        message="The resource `R.string.select_album_donate_dialog_now` appears to be unused"
+        errorLine1="    &lt;string name=&quot;select_album.donate_dialog_now&quot;>Now&lt;/string>"
+        errorLine2="            ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
+        <location
+            file="src/main/res/values/strings.xml"
+            line="146"
+            column="13"/>
+        <location
+            file="src/main/res/values-cs/strings.xml"
+            line="136"
+            column="13"/>
+        <location
+            file="src/main/res/values-de/strings.xml"
+            line="135"
+            column="13"/>
+        <location
+            file="src/main/res/values-es/strings.xml"
+            line="146"
+            column="13"/>
+        <location
+            file="src/main/res/values-fr/strings.xml"
+            line="136"
+            column="13"/>
+        <location
+            file="src/main/res/values-hu/strings.xml"
+            line="136"
+            column="13"/>
+        <location
+            file="src/main/res/values-it/strings.xml"
+            line="131"
+            column="13"/>
+        <location
+            file="src/main/res/values-nl/strings.xml"
+            line="146"
+            column="13"/>
+        <location
+            file="src/main/res/values-pl/strings.xml"
+            line="134"
+            column="13"/>
+        <location
+            file="src/main/res/values-pt/strings.xml"
+            line="134"
+            column="13"/>
+        <location
+            file="src/main/res/values-pt-rBR/strings.xml"
+            line="136"
+            column="13"/>
+        <location
+            file="src/main/res/values-ru/strings.xml"
+            line="131"
+            column="13"/>
+        <location
+            file="src/main/res/values-zh-rCN/strings.xml"
+            line="112"
+            column="13"/>
+    </issue>
+
+    <issue
+        id="UnusedResources"
+        message="The resource `R.string.select_album_not_licensed` appears to be unused"
+        errorLine1="    &lt;string name=&quot;select_album.not_licensed&quot;>Server not licensed. %d trial days left.&lt;/string>"
+        errorLine2="            ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
+        <location
+            file="src/main/res/values/strings.xml"
+            line="152"
+            column="13"/>
+        <location
+            file="src/main/res/values-cs/strings.xml"
+            line="142"
+            column="13"/>
+        <location
+            file="src/main/res/values-de/strings.xml"
+            line="141"
+            column="13"/>
+        <location
+            file="src/main/res/values-es/strings.xml"
+            line="152"
+            column="13"/>
+        <location
+            file="src/main/res/values-fr/strings.xml"
+            line="142"
+            column="13"/>
+        <location
+            file="src/main/res/values-hu/strings.xml"
+            line="142"
+            column="13"/>
+        <location
+            file="src/main/res/values-it/strings.xml"
+            line="137"
+            column="13"/>
+        <location
+            file="src/main/res/values-nl/strings.xml"
+            line="152"
+            column="13"/>
+        <location
+            file="src/main/res/values-pl/strings.xml"
+            line="140"
+            column="13"/>
+        <location
+            file="src/main/res/values-pt/strings.xml"
+            line="140"
+            column="13"/>
+        <location
+            file="src/main/res/values-pt-rBR/strings.xml"
+            line="142"
+            column="13"/>
+        <location
+            file="src/main/res/values-ru/strings.xml"
+            line="137"
+            column="13"/>
+    </issue>
+
+    <issue
+        id="UnusedResources"
+        message="The resource `R.string.service_connecting` appears to be unused"
+        errorLine1="    &lt;string name=&quot;service.connecting&quot;>Contacting server, please wait.&lt;/string>"
+        errorLine2="            ~~~~~~~~~~~~~~~~~~~~~~~~~">
+        <location
+            file="src/main/res/values/strings.xml"
+            line="158"
+            column="13"/>
+        <location
+            file="src/main/res/values-cs/strings.xml"
+            line="148"
+            column="13"/>
+        <location
+            file="src/main/res/values-de/strings.xml"
+            line="147"
+            column="13"/>
+        <location
+            file="src/main/res/values-es/strings.xml"
+            line="158"
+            column="13"/>
+        <location
+            file="src/main/res/values-fr/strings.xml"
+            line="148"
+            column="13"/>
+        <location
+            file="src/main/res/values-hu/strings.xml"
+            line="148"
+            column="13"/>
+        <location
+            file="src/main/res/values-it/strings.xml"
+            line="143"
+            column="13"/>
+        <location
+            file="src/main/res/values-nl/strings.xml"
+            line="158"
+            column="13"/>
+        <location
+            file="src/main/res/values-pl/strings.xml"
+            line="146"
+            column="13"/>
+        <location
+            file="src/main/res/values-pt/strings.xml"
+            line="146"
+            column="13"/>
+        <location
+            file="src/main/res/values-pt-rBR/strings.xml"
+            line="148"
+            column="13"/>
+        <location
+            file="src/main/res/values-ru/strings.xml"
+            line="143"
             column="13"/>
     </issue>
 
@@ -1328,7 +1642,7 @@
         errorLine2="            ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
         <location
             file="src/main/res/values/strings.xml"
-            line="148"
+            line="159"
             column="13"/>
     </issue>
 
@@ -1339,7 +1653,7 @@
         errorLine2="            ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
         <location
             file="src/main/res/values/strings.xml"
-            line="149"
+            line="160"
             column="13"/>
     </issue>
 
@@ -1350,7 +1664,11 @@
         errorLine2="            ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
         <location
             file="src/main/res/values/strings.xml"
-            line="165"
+            line="176"
+            column="13"/>
+        <location
+            file="src/main/res/values-cs/strings.xml"
+            line="164"
             column="13"/>
         <location
             file="src/main/res/values-de/strings.xml"
@@ -1358,31 +1676,43 @@
             column="13"/>
         <location
             file="src/main/res/values-es/strings.xml"
-            line="163"
+            line="174"
             column="13"/>
         <location
             file="src/main/res/values-fr/strings.xml"
-            line="163"
+            line="164"
             column="13"/>
         <location
             file="src/main/res/values-hu/strings.xml"
-            line="163"
+            line="164"
+            column="13"/>
+        <location
+            file="src/main/res/values-it/strings.xml"
+            line="159"
             column="13"/>
         <location
             file="src/main/res/values-nl/strings.xml"
-            line="163"
+            line="174"
             column="13"/>
         <location
             file="src/main/res/values-pl/strings.xml"
-            line="163"
+            line="162"
             column="13"/>
         <location
             file="src/main/res/values-pt/strings.xml"
-            line="163"
+            line="162"
             column="13"/>
         <location
             file="src/main/res/values-pt-rBR/strings.xml"
-            line="163"
+            line="164"
+            column="13"/>
+        <location
+            file="src/main/res/values-ru/strings.xml"
+            line="159"
+            column="13"/>
+        <location
+            file="src/main/res/values-zh-rCN/strings.xml"
+            line="135"
             column="13"/>
     </issue>
 
@@ -1393,7 +1723,11 @@
         errorLine2="            ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
         <location
             file="src/main/res/values/strings.xml"
-            line="217"
+            line="228"
+            column="13"/>
+        <location
+            file="src/main/res/values-cs/strings.xml"
+            line="216"
             column="13"/>
         <location
             file="src/main/res/values-de/strings.xml"
@@ -1401,31 +1735,39 @@
             column="13"/>
         <location
             file="src/main/res/values-es/strings.xml"
-            line="215"
+            line="226"
             column="13"/>
         <location
             file="src/main/res/values-fr/strings.xml"
-            line="215"
+            line="216"
             column="13"/>
         <location
             file="src/main/res/values-hu/strings.xml"
-            line="215"
+            line="216"
+            column="13"/>
+        <location
+            file="src/main/res/values-it/strings.xml"
+            line="210"
             column="13"/>
         <location
             file="src/main/res/values-nl/strings.xml"
-            line="215"
+            line="226"
             column="13"/>
         <location
             file="src/main/res/values-pl/strings.xml"
-            line="215"
+            line="214"
             column="13"/>
         <location
             file="src/main/res/values-pt/strings.xml"
-            line="215"
+            line="214"
             column="13"/>
         <location
             file="src/main/res/values-pt-rBR/strings.xml"
-            line="215"
+            line="216"
+            column="13"/>
+        <location
+            file="src/main/res/values-ru/strings.xml"
+            line="211"
             column="13"/>
     </issue>
 
@@ -1436,39 +1778,55 @@
         errorLine2="            ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
         <location
             file="src/main/res/values/strings.xml"
-            line="286"
+            line="297"
+            column="13"/>
+        <location
+            file="src/main/res/values-cs/strings.xml"
+            line="283"
             column="13"/>
         <location
             file="src/main/res/values-de/strings.xml"
-            line="284"
+            line="282"
             column="13"/>
         <location
             file="src/main/res/values-es/strings.xml"
-            line="284"
+            line="295"
             column="13"/>
         <location
             file="src/main/res/values-fr/strings.xml"
-            line="284"
+            line="283"
             column="13"/>
         <location
             file="src/main/res/values-hu/strings.xml"
-            line="284"
+            line="283"
+            column="13"/>
+        <location
+            file="src/main/res/values-it/strings.xml"
+            line="275"
             column="13"/>
         <location
             file="src/main/res/values-nl/strings.xml"
-            line="284"
+            line="293"
             column="13"/>
         <location
             file="src/main/res/values-pl/strings.xml"
-            line="284"
+            line="281"
             column="13"/>
         <location
             file="src/main/res/values-pt/strings.xml"
-            line="284"
+            line="281"
             column="13"/>
         <location
             file="src/main/res/values-pt-rBR/strings.xml"
-            line="284"
+            line="283"
+            column="13"/>
+        <location
+            file="src/main/res/values-ru/strings.xml"
+            line="276"
+            column="13"/>
+        <location
+            file="src/main/res/values-zh-rCN/strings.xml"
+            line="217"
             column="13"/>
     </issue>
 
@@ -1479,39 +1837,51 @@
         errorLine2="            ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
         <location
             file="src/main/res/values/strings.xml"
-            line="289"
+            line="300"
+            column="13"/>
+        <location
+            file="src/main/res/values-cs/strings.xml"
+            line="286"
             column="13"/>
         <location
             file="src/main/res/values-de/strings.xml"
-            line="287"
+            line="285"
             column="13"/>
         <location
             file="src/main/res/values-es/strings.xml"
-            line="287"
+            line="298"
             column="13"/>
         <location
             file="src/main/res/values-fr/strings.xml"
-            line="287"
+            line="286"
             column="13"/>
         <location
             file="src/main/res/values-hu/strings.xml"
-            line="287"
+            line="286"
+            column="13"/>
+        <location
+            file="src/main/res/values-it/strings.xml"
+            line="278"
             column="13"/>
         <location
             file="src/main/res/values-nl/strings.xml"
-            line="287"
+            line="296"
             column="13"/>
         <location
             file="src/main/res/values-pl/strings.xml"
-            line="287"
+            line="284"
             column="13"/>
         <location
             file="src/main/res/values-pt/strings.xml"
-            line="287"
+            line="284"
             column="13"/>
         <location
             file="src/main/res/values-pt-rBR/strings.xml"
-            line="287"
+            line="286"
+            column="13"/>
+        <location
+            file="src/main/res/values-ru/strings.xml"
+            line="279"
             column="13"/>
     </issue>
 
@@ -1522,52 +1892,77 @@
         errorLine2="            ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
         <location
             file="src/main/res/values/strings.xml"
-            line="402"
+            line="414"
             column="13"/>
     </issue>
 
     <issue
         id="UnusedResources"
-        message="The resource `R.style.listselect` appears to be unused"
-        errorLine1="    &lt;style name=&quot;listselect&quot; parent=&quot;Widget.AppCompat.ListView&quot;>"
-        errorLine2="           ~~~~~~~~~~~~~~~~~">
+        message="The resource `R.plurals.select_album_donate_dialog_n_trial_days_left` appears to be unused"
+        errorLine1="    &lt;plurals name=&quot;select_album_donate_dialog_n_trial_days_left&quot;>"
+        errorLine2="             ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
         <location
-            file="src/main/res/values/styles.xml"
-            line="3"
-            column="12"/>
+            file="src/main/res/values/strings.xml"
+            line="490"
+            column="14"/>
+        <location
+            file="src/main/res/values-cs/strings.xml"
+            line="485"
+            column="14"/>
+        <location
+            file="src/main/res/values-de/strings.xml"
+            line="419"
+            column="14"/>
+        <location
+            file="src/main/res/values-es/strings.xml"
+            line="487"
+            column="14"/>
+        <location
+            file="src/main/res/values-fr/strings.xml"
+            line="475"
+            column="14"/>
+        <location
+            file="src/main/res/values-hu/strings.xml"
+            line="472"
+            column="14"/>
+        <location
+            file="src/main/res/values-nl/strings.xml"
+            line="485"
+            column="14"/>
+        <location
+            file="src/main/res/values-pl/strings.xml"
+            line="432"
+            column="14"/>
+        <location
+            file="src/main/res/values-pt/strings.xml"
+            line="419"
+            column="14"/>
+        <location
+            file="src/main/res/values-pt-rBR/strings.xml"
+            line="475"
+            column="14"/>
     </issue>
 
     <issue
         id="UnusedResources"
-        message="The resource `R.style.listselectlight` appears to be unused"
-        errorLine1="    &lt;style name=&quot;listselectlight&quot; parent=&quot;Widget.AppCompat.ListView&quot;>"
-        errorLine2="           ~~~~~~~~~~~~~~~~~~~~~~">
+        message="The resource `R.drawable.thumb` appears to be unused"
+        errorLine1="&lt;shape xmlns:android=&quot;http://schemas.android.com/apk/res/android&quot;"
+        errorLine2="^">
         <location
-            file="src/main/res/values/styles.xml"
-            line="7"
-            column="12"/>
+            file="src/main/res/drawable/thumb.xml"
+            line="2"
+            column="1"/>
     </issue>
 
     <issue
         id="UnusedResources"
-        message="The resource `R.style.customprogress` appears to be unused"
-        errorLine1="    &lt;style name=&quot;customprogress&quot; parent=&quot;Widget.AppCompat.ProgressBar.Horizontal&quot;>"
-        errorLine2="           ~~~~~~~~~~~~~~~~~~~~~">
+        message="The resource `R.drawable.thumb_drawable` appears to be unused"
+        errorLine1="&lt;selector xmlns:android=&quot;http://schemas.android.com/apk/res/android&quot;>"
+        errorLine2="^">
         <location
-            file="src/main/res/values/styles.xml"
-            line="11"
-            column="12"/>
-    </issue>
-
-    <issue
-        id="UnusedResources"
-        message="The resource `R.style.Widget_MenuDrawer` appears to be unused"
-        errorLine1="    &lt;style name=&quot;Widget.MenuDrawer&quot;>"
-        errorLine2="           ~~~~~~~~~~~~~~~~~~~~~~~~">
-        <location
-            file="src/main/res/values/styles.xml"
-            line="15"
-            column="12"/>
+            file="src/main/res/drawable/thumb_drawable.xml"
+            line="2"
+            column="1"/>
     </issue>
 
     <issue
@@ -1587,8 +1982,8 @@
         errorLine1="    &lt;string name=&quot;util.no_time&quot;>-:--&lt;/string>"
         errorLine2="                                ^">
         <location
-            file="src/main/res/values-de/strings.xml"
-            line="335"
+            file="src/main/res/values-it/strings.xml"
+            line="321"
             column="33"/>
     </issue>
 
@@ -1598,7 +1993,40 @@
         errorLine1="    &lt;string name=&quot;util.no_time&quot;>-:--&lt;/string>"
         errorLine2="                                ^">
         <location
-            file="src/main/res/values-es/strings.xml"
+            file="src/main/res/values-ru/strings.xml"
+            line="325"
+            column="33"/>
+    </issue>
+
+    <issue
+        id="TypographyDashes"
+        message="Replace &quot;--&quot; with an &quot;em dash&quot; character (—, &amp;#8212;) ?"
+        errorLine1="    &lt;string name=&quot;util.no_time&quot;>-:--&lt;/string>"
+        errorLine2="                                ^">
+        <location
+            file="src/main/res/values-de/strings.xml"
+            line="333"
+            column="33"/>
+    </issue>
+
+    <issue
+        id="TypographyDashes"
+        message="Replace &quot;--&quot; with an &quot;em dash&quot; character (—, &amp;#8212;) ?"
+        errorLine1="    &lt;string name=&quot;util.no_time&quot;>-:--&lt;/string>"
+        errorLine2="                                ^">
+        <location
+            file="src/main/res/values-pl/strings.xml"
+            line="333"
+            column="33"/>
+    </issue>
+
+    <issue
+        id="TypographyDashes"
+        message="Replace &quot;--&quot; with an &quot;em dash&quot; character (—, &amp;#8212;) ?"
+        errorLine1="    &lt;string name=&quot;util.no_time&quot;>-:--&lt;/string>"
+        errorLine2="                                ^">
+        <location
+            file="src/main/res/values-cs/strings.xml"
             line="336"
             column="33"/>
     </issue>
@@ -1610,29 +2038,7 @@
         errorLine2="                                ^">
         <location
             file="src/main/res/values-hu/strings.xml"
-            line="336"
-            column="33"/>
-    </issue>
-
-    <issue
-        id="TypographyDashes"
-        message="Replace &quot;--&quot; with an &quot;em dash&quot; character (—, &amp;#8212;) ?"
-        errorLine1="    &lt;string name=&quot;util.no_time&quot;>-:--&lt;/string>"
-        errorLine2="                                ^">
-        <location
-            file="src/main/res/values-nl/strings.xml"
-            line="336"
-            column="33"/>
-    </issue>
-
-    <issue
-        id="TypographyDashes"
-        message="Replace &quot;--&quot; with an &quot;em dash&quot; character (—, &amp;#8212;) ?"
-        errorLine1="    &lt;string name=&quot;util.no_time&quot;>-:--&lt;/string>"
-        errorLine2="                                ^">
-        <location
-            file="src/main/res/values-pl/strings.xml"
-            line="336"
+            line="337"
             column="33"/>
     </issue>
 
@@ -1643,7 +2049,29 @@
         errorLine2="                                ^">
         <location
             file="src/main/res/values-pt-rBR/strings.xml"
-            line="336"
+            line="338"
+            column="33"/>
+    </issue>
+
+    <issue
+        id="TypographyDashes"
+        message="Replace &quot;--&quot; with an &quot;em dash&quot; character (—, &amp;#8212;) ?"
+        errorLine1="    &lt;string name=&quot;util.no_time&quot;>-:--&lt;/string>"
+        errorLine2="                                ^">
+        <location
+            file="src/main/res/values-nl/strings.xml"
+            line="348"
+            column="33"/>
+    </issue>
+
+    <issue
+        id="TypographyDashes"
+        message="Replace &quot;--&quot; with an &quot;em dash&quot; character (—, &amp;#8212;) ?"
+        errorLine1="    &lt;string name=&quot;util.no_time&quot;>-:--&lt;/string>"
+        errorLine2="                                ^">
+        <location
+            file="src/main/res/values-es/strings.xml"
+            line="350"
             column="33"/>
     </issue>
 
@@ -1654,7 +2082,7 @@
         errorLine2="                                ^">
         <location
             file="src/main/res/values/strings.xml"
-            line="338"
+            line="352"
             column="33"/>
     </issue>
 
@@ -1665,7 +2093,7 @@
         errorLine2="                                  ^">
         <location
             file="src/main/res/values-nl/strings.xml"
-            line="117"
+            line="128"
             column="35"/>
     </issue>
 
@@ -1676,98 +2104,24 @@
         errorLine2="                                      ^">
         <location
             file="src/main/res/values-nl/strings.xml"
-            line="147"
+            line="158"
             column="39"/>
     </issue>
 
     <issue
-        id="IconColors"
-        message="Action Bar icons should use a single gray color (`#333333` for light themes (with 60%/30% opacity for enabled/disabled), and `#FFFFFF` with opacity 80%/30% for dark themes">
-        <location
-            file="src/main/res/drawable-xhdpi/ic_menu_pin.png"/>
-    </issue>
-
-    <issue
-        id="IconColors"
-        message="Notification icons must be entirely white">
-        <location
-            file="src/main/res/drawable-hdpi/ic_stat_play_light.png"/>
-    </issue>
-
-    <issue
-        id="IconColors"
-        message="Notification icons must be entirely white">
-        <location
-            file="src/main/res/drawable-hdpi/ic_stat_ultrasonic.png"/>
-    </issue>
-
-    <issue
-        id="IconColors"
-        message="Notification icons must be entirely white">
-        <location
-            file="src/main/res/drawable-ldpi/ic_stat_ultrasonic.png"/>
-    </issue>
-
-    <issue
-        id="IconColors"
-        message="Notification icons must be entirely white">
-        <location
-            file="src/main/res/drawable-mdpi/ic_stat_ultrasonic.png"/>
-    </issue>
-
-    <issue
-        id="IconColors"
-        message="Notification icons must be entirely white">
-        <location
-            file="src/main/res/drawable-xhdpi/ic_stat_ultrasonic.png"/>
-    </issue>
-
-    <issue
-        id="IconDensities"
-        message="Missing the following drawables in `drawable-hdpi`: ic_contact_picture.png, ic_menu_pin.png, md__list_focused_holo.9.png, md__list_longpressed_holo.9.png, md__list_pressed_holo_dark.9.png... (3 more)">
-        <location
-            file="src/main/res/drawable-hdpi"/>
-    </issue>
-
-    <issue
-        id="IconDensities"
-        message="Missing the following drawables in `drawable-mdpi`: ic_contact_picture.png, ic_menu_pin.png, ic_stat_play_dark.png, ic_stat_play_light.png, list_focused_holo.9.png... (17 more)">
-        <location
-            file="src/main/res/drawable-mdpi"/>
-    </issue>
-
-    <issue
-        id="IconDensities"
-        message="Missing the following drawables in `drawable-xhdpi`: ic_contact_picture.png, ic_stat_play_dark.png, ic_stat_play_light.png, list_focused_holo.9.png, list_longpressed_holo.9.png... (9 more)">
-        <location
-            file="src/main/res/drawable-xhdpi"/>
-    </issue>
-
-    <issue
-        id="IconDensities"
-        message="Missing the following drawables in `drawable-xxhdpi`: ic_drag_queue.png, ic_menu_pin.png, ic_stat_play_dark.png, ic_stat_play_light.png, ic_stat_ultrasonic.png... (19 more)">
-        <location
-            file="src/main/res/drawable-xxhdpi"/>
-    </issue>
-
-    <issue
         id="IconDuplicates"
-        message="The following unrelated icon files have identical contents: list_longpressed_holo.9.png, md__list_longpressed_holo.9.png">
-        <location
-            file="src/main/res/drawable-xhdpi/md__list_longpressed_holo.9.png"/>
-        <location
-            file="src/main/res/drawable-hdpi/list_longpressed_holo.9.png"/>
-    </issue>
-
-    <issue
-        id="IconDuplicates"
-        message="The following unrelated icon files have identical contents: list_pressed_holo_dark.9.png, list_pressed_holo_light.9.png, md__list_pressed_holo_dark.9.png">
-        <location
-            file="src/main/res/drawable-xhdpi/md__list_pressed_holo_dark.9.png"/>
+        message="The following unrelated icon files have identical contents: list_pressed_holo_dark.9.png, list_pressed_holo_light.9.png">
         <location
             file="src/main/res/drawable-hdpi/list_pressed_holo_light.9.png"/>
         <location
             file="src/main/res/drawable-hdpi/list_pressed_holo_dark.9.png"/>
+    </issue>
+
+    <issue
+        id="IconMissingDensityFolder"
+        message="Missing density variation folders in `/home/xyz/08-Tech/02-Android/ultrasonic/ultrasonic/src/main/res`: drawable-mdpi, drawable-xhdpi, drawable-xxhdpi">
+        <location
+            file="src/main/res"/>
     </issue>
 
     <issue
@@ -1777,7 +2131,7 @@
         errorLine2="         ~~~~~~~~">
         <location
             file="src/main/res/layout/chat.xml"
-            line="28"
+            line="27"
             column="10"/>
     </issue>
 
@@ -1843,7 +2197,7 @@
         errorLine2="             ~~~~~~~~~">
         <location
             file="src/main/java/org/moire/ultrasonic/view/AlbumView.java"
-            line="41"
+            line="39"
             column="14"/>
     </issue>
 
@@ -1854,63 +2208,74 @@
         errorLine2="  ^">
         <location
             file="src/main/java/org/moire/ultrasonic/view/AutoRepeatButton.java"
-            line="37"
+            line="36"
             column="3"/>
     </issue>
 
     <issue
         id="ClickableViewAccessibility"
-        message="`onTouch` should call `View#performClick` when a click is detected"
-        errorLine1="   public boolean onTouch(View view, MotionEvent me)"
-        errorLine2="                  ~~~~~~~">
+        message="`onTouch` lambda should call `View#performClick` when a click is detected"
+        errorLine1="            getView().setOnTouchListener((v, event) -> handleOnTouch(event));"
+        errorLine2="                                         ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
         <location
-            file="src/main/java/org/moire/ultrasonic/activity/DownloadActivity.java"
-            line="232"
-            column="19"/>
+            file="src/main/java/org/moire/ultrasonic/fragment/NowPlayingFragment.java"
+            line="132"
+            column="42"/>
     </issue>
 
     <issue
         id="ClickableViewAccessibility"
         message="Custom view ``ImageView`` has `setOnTouchListener` called on it but does not override `performClick`"
-        errorLine1="  albumArtImageView.setOnTouchListener(touchListener);"
-        errorLine2="  ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
+        errorLine1="        albumArtImageView.setOnTouchListener(new View.OnTouchListener()"
+        errorLine2="        ^">
         <location
-            file="src/main/java/org/moire/ultrasonic/activity/DownloadActivity.java"
-            line="238"
-            column="3"/>
-    </issue>
-
-    <issue
-        id="ClickableViewAccessibility"
-        message="Custom view ``VisualizerView`` has `setOnTouchListener` called on it but does not override `performClick`"
-        errorLine1="   visualizerView.setOnTouchListener(new View.OnTouchListener()"
-        errorLine2="   ^">
-        <location
-            file="src/main/java/org/moire/ultrasonic/activity/DownloadActivity.java"
-            line="547"
-            column="4"/>
+            file="src/main/java/org/moire/ultrasonic/fragment/PlayerFragment.java"
+            line="241"
+            column="9"/>
     </issue>
 
     <issue
         id="ClickableViewAccessibility"
         message="`onTouch` should call `View#performClick` when a click is detected"
-        errorLine1="    public boolean onTouch(final View view, final MotionEvent motionEvent)"
-        errorLine2="                   ~~~~~~~">
+        errorLine1="            public boolean onTouch(View view, MotionEvent me)"
+        errorLine2="                           ~~~~~~~">
         <location
-            file="src/main/java/org/moire/ultrasonic/activity/DownloadActivity.java"
-            line="550"
-            column="20"/>
+            file="src/main/java/org/moire/ultrasonic/fragment/PlayerFragment.java"
+            line="244"
+            column="28"/>
     </issue>
 
     <issue
         id="ClickableViewAccessibility"
-        message="`SwipeDetector#onTouch` should call `View#performClick` when a click is detected"
-        errorLine1="  public boolean onTouch(View v, MotionEvent event)"
-        errorLine2="                 ~~~~~~~">
+        message="Custom view ``VisualizerView`` has `setOnTouchListener` called on it but does not override `performClick`"
+        errorLine1="                    visualizerView.setOnTouchListener(new View.OnTouchListener()"
+        errorLine2="                    ^">
         <location
-            file="src/main/java/org/moire/ultrasonic/activity/SubsonicTabActivity.java"
-            line="1368"
-            column="18"/>
+            file="src/main/java/org/moire/ultrasonic/fragment/PlayerFragment.java"
+            line="531"
+            column="21"/>
+    </issue>
+
+    <issue
+        id="ClickableViewAccessibility"
+        message="`onTouch` should call `View#performClick` when a click is detected"
+        errorLine1="                        public boolean onTouch(final View view, final MotionEvent motionEvent)"
+        errorLine2="                                       ~~~~~~~">
+        <location
+            file="src/main/java/org/moire/ultrasonic/fragment/PlayerFragment.java"
+            line="534"
+            column="40"/>
+    </issue>
+
+    <issue
+        id="ClickableViewAccessibility"
+        message="`onTouch` should call `View#performClick` when a click is detected"
+        errorLine1="            public boolean onTouch(View v, MotionEvent event) {"
+        errorLine2="                           ~~~~~~~">
+        <location
+            file="src/main/java/org/moire/ultrasonic/fragment/PlayerFragment.java"
+            line="582"
+            column="28"/>
     </issue>
 
     <issue
@@ -1931,7 +2296,7 @@
         errorLine2="     ~~~~~~~~~">
         <location
             file="src/main/res/layout/album_buttons.xml"
-            line="17"
+            line="18"
             column="6"/>
     </issue>
 
@@ -1942,7 +2307,7 @@
         errorLine2="     ~~~~~~~~~">
         <location
             file="src/main/res/layout/album_buttons.xml"
-            line="25"
+            line="27"
             column="6"/>
     </issue>
 
@@ -1953,7 +2318,7 @@
         errorLine2="     ~~~~~~~~~">
         <location
             file="src/main/res/layout/album_buttons.xml"
-            line="33"
+            line="36"
             column="6"/>
     </issue>
 
@@ -1964,73 +2329,84 @@
         errorLine2="     ~~~~~~~~~">
         <location
             file="src/main/res/layout/album_buttons.xml"
+            line="45"
+            column="6"/>
+    </issue>
+
+    <issue
+        id="ContentDescription"
+        message="Missing `contentDescription` attribute on image"
+        errorLine1="    &lt;ImageView"
+        errorLine2="     ~~~~~~~~~">
+        <location
+            file="src/main/res/layout/album_buttons.xml"
+            line="54"
+            column="6"/>
+    </issue>
+
+    <issue
+        id="ContentDescription"
+        message="Missing `contentDescription` attribute on image"
+        errorLine1="    &lt;ImageView"
+        errorLine2="     ~~~~~~~~~">
+        <location
+            file="src/main/res/layout/album_buttons.xml"
+            line="63"
+            column="6"/>
+    </issue>
+
+    <issue
+        id="ContentDescription"
+        message="Missing `contentDescription` attribute on image"
+        errorLine1="    &lt;ImageView"
+        errorLine2="     ~~~~~~~~~">
+        <location
+            file="src/main/res/layout/album_buttons.xml"
+            line="72"
+            column="6"/>
+    </issue>
+
+    <issue
+        id="ContentDescription"
+        message="Missing `contentDescription` attribute on image"
+        errorLine1="    &lt;ImageView"
+        errorLine2="     ~~~~~~~~~">
+        <location
+            file="src/main/res/layout/album_buttons.xml"
+            line="81"
+            column="6"/>
+    </issue>
+
+    <issue
+        id="ContentDescription"
+        message="Missing `contentDescription` attribute on image"
+        errorLine1="    &lt;ImageView"
+        errorLine2="     ~~~~~~~~~">
+        <location
+            file="src/main/res/layout/album_list_item.xml"
+            line="63"
+            column="6"/>
+    </issue>
+
+    <issue
+        id="ContentDescription"
+        message="Missing `contentDescription` attribute on image"
+        errorLine1="    &lt;ImageView"
+        errorLine2="     ~~~~~~~~~">
+        <location
+            file="src/main/res/layout/album_list_item_legacy.xml"
+            line="8"
+            column="6"/>
+    </issue>
+
+    <issue
+        id="ContentDescription"
+        message="Missing `contentDescription` attribute on image"
+        errorLine1="    &lt;ImageView"
+        errorLine2="     ~~~~~~~~~">
+        <location
+            file="src/main/res/layout/album_list_item_legacy.xml"
             line="41"
-            column="6"/>
-    </issue>
-
-    <issue
-        id="ContentDescription"
-        message="Missing `contentDescription` attribute on image"
-        errorLine1="    &lt;ImageView"
-        errorLine2="     ~~~~~~~~~">
-        <location
-            file="src/main/res/layout/album_buttons.xml"
-            line="49"
-            column="6"/>
-    </issue>
-
-    <issue
-        id="ContentDescription"
-        message="Missing `contentDescription` attribute on image"
-        errorLine1="    &lt;ImageView"
-        errorLine2="     ~~~~~~~~~">
-        <location
-            file="src/main/res/layout/album_buttons.xml"
-            line="57"
-            column="6"/>
-    </issue>
-
-    <issue
-        id="ContentDescription"
-        message="Missing `contentDescription` attribute on image"
-        errorLine1="    &lt;ImageView"
-        errorLine2="     ~~~~~~~~~">
-        <location
-            file="src/main/res/layout/album_buttons.xml"
-            line="65"
-            column="6"/>
-    </issue>
-
-    <issue
-        id="ContentDescription"
-        message="Missing `contentDescription` attribute on image"
-        errorLine1="    &lt;ImageView"
-        errorLine2="     ~~~~~~~~~">
-        <location
-            file="src/main/res/layout/album_buttons.xml"
-            line="73"
-            column="6"/>
-    </issue>
-
-    <issue
-        id="ContentDescription"
-        message="Missing `contentDescription` attribute on image"
-        errorLine1="    &lt;ImageView"
-        errorLine2="     ~~~~~~~~~">
-        <location
-            file="src/main/res/layout/album_list_item.xml"
-            line="9"
-            column="6"/>
-    </issue>
-
-    <issue
-        id="ContentDescription"
-        message="Missing `contentDescription` attribute on image"
-        errorLine1="    &lt;ImageView"
-        errorLine2="     ~~~~~~~~~">
-        <location
-            file="src/main/res/layout/album_list_item.xml"
-            line="42"
             column="6"/>
     </issue>
 
@@ -2217,7 +2593,7 @@
         errorLine2="         ~~~~~~~~~~~">
         <location
             file="src/main/res/layout/chat.xml"
-            line="40"
+            line="38"
             column="10"/>
     </issue>
 
@@ -2249,18 +2625,7 @@
         errorLine1="                    &lt;ImageView"
         errorLine2="                     ~~~~~~~~~">
         <location
-            file="src/main/res/layout-land/download.xml"
-            line="43"
-            column="22"/>
-    </issue>
-
-    <issue
-        id="ContentDescription"
-        message="Missing `contentDescription` attribute on image"
-        errorLine1="                    &lt;ImageView"
-        errorLine2="                     ~~~~~~~~~">
-        <location
-            file="src/main/res/layout-port/download.xml"
+            file="src/main/res/layout/current_playing.xml"
             line="45"
             column="22"/>
     </issue>
@@ -2271,8 +2636,8 @@
         errorLine1="                    &lt;ImageView"
         errorLine2="                     ~~~~~~~~~">
         <location
-            file="src/main/res/layout-land/download.xml"
-            line="55"
+            file="src/main/res/layout-land/current_playing.xml"
+            line="46"
             column="22"/>
     </issue>
 
@@ -2282,7 +2647,7 @@
         errorLine1="                    &lt;ImageView"
         errorLine2="                     ~~~~~~~~~">
         <location
-            file="src/main/res/layout-port/download.xml"
+            file="src/main/res/layout/current_playing.xml"
             line="57"
             column="22"/>
     </issue>
@@ -2293,8 +2658,8 @@
         errorLine1="                    &lt;ImageView"
         errorLine2="                     ~~~~~~~~~">
         <location
-            file="src/main/res/layout-land/download.xml"
-            line="67"
+            file="src/main/res/layout-land/current_playing.xml"
+            line="58"
             column="22"/>
     </issue>
 
@@ -2304,7 +2669,7 @@
         errorLine1="                    &lt;ImageView"
         errorLine2="                     ~~~~~~~~~">
         <location
-            file="src/main/res/layout-port/download.xml"
+            file="src/main/res/layout/current_playing.xml"
             line="69"
             column="22"/>
     </issue>
@@ -2315,8 +2680,8 @@
         errorLine1="                    &lt;ImageView"
         errorLine2="                     ~~~~~~~~~">
         <location
-            file="src/main/res/layout-land/download.xml"
-            line="79"
+            file="src/main/res/layout-land/current_playing.xml"
+            line="70"
             column="22"/>
     </issue>
 
@@ -2326,7 +2691,7 @@
         errorLine1="                    &lt;ImageView"
         errorLine2="                     ~~~~~~~~~">
         <location
-            file="src/main/res/layout-port/download.xml"
+            file="src/main/res/layout/current_playing.xml"
             line="81"
             column="22"/>
     </issue>
@@ -2337,8 +2702,8 @@
         errorLine1="                    &lt;ImageView"
         errorLine2="                     ~~~~~~~~~">
         <location
-            file="src/main/res/layout-land/download.xml"
-            line="91"
+            file="src/main/res/layout-land/current_playing.xml"
+            line="82"
             column="22"/>
     </issue>
 
@@ -2348,8 +2713,19 @@
         errorLine1="                    &lt;ImageView"
         errorLine2="                     ~~~~~~~~~">
         <location
-            file="src/main/res/layout-port/download.xml"
+            file="src/main/res/layout/current_playing.xml"
             line="93"
+            column="22"/>
+    </issue>
+
+    <issue
+        id="ContentDescription"
+        message="Missing `contentDescription` attribute on image"
+        errorLine1="                    &lt;ImageView"
+        errorLine2="                     ~~~~~~~~~">
+        <location
+            file="src/main/res/layout-land/current_playing.xml"
+            line="94"
             column="22"/>
     </issue>
 
@@ -2414,163 +2790,9 @@
         errorLine1="    &lt;ImageView"
         errorLine2="     ~~~~~~~~~">
         <location
-            file="src/main/res/layout/notification.xml"
-            line="12"
+            file="src/main/res/layout/navigation_header.xml"
+            line="10"
             column="6"/>
-    </issue>
-
-    <issue
-        id="ContentDescription"
-        message="Missing `contentDescription` attribute on image"
-        errorLine1="        &lt;ImageButton"
-        errorLine2="         ~~~~~~~~~~~">
-        <location
-            file="src/main/res/layout/notification.xml"
-            line="75"
-            column="10"/>
-    </issue>
-
-    <issue
-        id="ContentDescription"
-        message="Missing `contentDescription` attribute on image"
-        errorLine1="        &lt;ImageButton"
-        errorLine2="         ~~~~~~~~~~~">
-        <location
-            file="src/main/res/layout/notification.xml"
-            line="85"
-            column="10"/>
-    </issue>
-
-    <issue
-        id="ContentDescription"
-        message="Missing `contentDescription` attribute on image"
-        errorLine1="        &lt;ImageButton"
-        errorLine2="         ~~~~~~~~~~~">
-        <location
-            file="src/main/res/layout/notification.xml"
-            line="95"
-            column="10"/>
-    </issue>
-
-    <issue
-        id="ContentDescription"
-        message="Missing `contentDescription` attribute on image"
-        errorLine1="        &lt;ImageButton"
-        errorLine2="         ~~~~~~~~~~~">
-        <location
-            file="src/main/res/layout/notification.xml"
-            line="105"
-            column="10"/>
-    </issue>
-
-    <issue
-        id="ContentDescription"
-        message="Missing `contentDescription` attribute on image"
-        errorLine1="    &lt;ImageView"
-        errorLine2="     ~~~~~~~~~">
-        <location
-            file="src/main/res/layout/notification_large.xml"
-            line="11"
-            column="6"/>
-    </issue>
-
-    <issue
-        id="ContentDescription"
-        message="Missing `contentDescription` attribute on image"
-        errorLine1="            &lt;ImageButton"
-        errorLine2="             ~~~~~~~~~~~">
-        <location
-            file="src/main/res/layout/notification_large.xml"
-            line="48"
-            column="14"/>
-    </issue>
-
-    <issue
-        id="ContentDescription"
-        message="Missing `contentDescription` attribute on image"
-        errorLine1="            &lt;ImageView"
-        errorLine2="             ~~~~~~~~~">
-        <location
-            file="src/main/res/layout/notification_large.xml"
-            line="91"
-            column="14"/>
-    </issue>
-
-    <issue
-        id="ContentDescription"
-        message="Missing `contentDescription` attribute on image"
-        errorLine1="            &lt;ImageView"
-        errorLine2="             ~~~~~~~~~">
-        <location
-            file="src/main/res/layout/notification_large.xml"
-            line="101"
-            column="14"/>
-    </issue>
-
-    <issue
-        id="ContentDescription"
-        message="Missing `contentDescription` attribute on image"
-        errorLine1="            &lt;ImageView"
-        errorLine2="             ~~~~~~~~~">
-        <location
-            file="src/main/res/layout/notification_large.xml"
-            line="111"
-            column="14"/>
-    </issue>
-
-    <issue
-        id="ContentDescription"
-        message="Missing `contentDescription` attribute on image"
-        errorLine1="            &lt;ImageView"
-        errorLine2="             ~~~~~~~~~">
-        <location
-            file="src/main/res/layout/notification_large.xml"
-            line="121"
-            column="14"/>
-    </issue>
-
-    <issue
-        id="ContentDescription"
-        message="Missing `contentDescription` attribute on image"
-        errorLine1="            &lt;ImageView"
-        errorLine2="             ~~~~~~~~~">
-        <location
-            file="src/main/res/layout/notification_large.xml"
-            line="131"
-            column="14"/>
-    </issue>
-
-    <issue
-        id="ContentDescription"
-        message="Missing `contentDescription` attribute on image"
-        errorLine1="            &lt;ImageButton"
-        errorLine2="             ~~~~~~~~~~~">
-        <location
-            file="src/main/res/layout/notification_large.xml"
-            line="158"
-            column="14"/>
-    </issue>
-
-    <issue
-        id="ContentDescription"
-        message="Missing `contentDescription` attribute on image"
-        errorLine1="            &lt;ImageButton"
-        errorLine2="             ~~~~~~~~~~~">
-        <location
-            file="src/main/res/layout/notification_large.xml"
-            line="167"
-            column="14"/>
-    </issue>
-
-    <issue
-        id="ContentDescription"
-        message="Missing `contentDescription` attribute on image"
-        errorLine1="            &lt;ImageButton"
-        errorLine2="             ~~~~~~~~~~~">
-        <location
-            file="src/main/res/layout/notification_large.xml"
-            line="176"
-            column="14"/>
     </issue>
 
     <issue
@@ -2579,8 +2801,8 @@
         errorLine1="        &lt;ImageView"
         errorLine2="         ~~~~~~~~~">
         <location
-            file="src/main/res/layout/now_playing.xml"
-            line="19"
+            file="src/main/res/layout/navigation_header.xml"
+            line="24"
             column="10"/>
     </issue>
 
@@ -2591,7 +2813,18 @@
         errorLine2="         ~~~~~~~~~">
         <location
             file="src/main/res/layout/now_playing.xml"
-            line="55"
+            line="18"
+            column="10"/>
+    </issue>
+
+    <issue
+        id="ContentDescription"
+        message="Missing `contentDescription` attribute on image"
+        errorLine1="        &lt;ImageView"
+        errorLine2="         ~~~~~~~~~">
+        <location
+            file="src/main/res/layout/now_playing.xml"
+            line="57"
             column="10"/>
     </issue>
 
@@ -2601,8 +2834,8 @@
         errorLine1="    &lt;ImageView"
         errorLine2="     ~~~~~~~~~">
         <location
-            file="src/main/res/layout/select_artist_header.xml"
-            line="12"
+            file="src/main/res/layout/select_folder_header.xml"
+            line="15"
             column="6"/>
     </issue>
 
@@ -2631,11 +2864,22 @@
     <issue
         id="ContentDescription"
         message="Missing `contentDescription` attribute on image"
+        errorLine1="    &lt;com.google.android.material.floatingactionbutton.FloatingActionButton"
+        errorLine2="     ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
+        <location
+            file="src/main/res/layout/server_selector.xml"
+            line="12"
+            column="6"/>
+    </issue>
+
+    <issue
+        id="ContentDescription"
+        message="Missing `contentDescription` attribute on image"
         errorLine1="        &lt;ImageView"
         errorLine2="         ~~~~~~~~~">
         <location
             file="src/main/res/layout/song_list_item.xml"
-            line="25"
+            line="27"
             column="10"/>
     </issue>
 
@@ -2646,7 +2890,7 @@
         errorLine2="         ~~~~~~~~~">
         <location
             file="src/main/res/layout/song_list_item.xml"
-            line="35"
+            line="37"
             column="10"/>
     </issue>
 
@@ -2657,7 +2901,7 @@
         errorLine2="         ~~~~~~~~~">
         <location
             file="src/main/res/layout/song_list_item.xml"
-            line="45"
+            line="47"
             column="10"/>
     </issue>
 
@@ -2668,7 +2912,7 @@
         errorLine2="         ~~~~~~~~~">
         <location
             file="src/main/res/layout/song_list_item.xml"
-            line="55"
+            line="57"
             column="10"/>
     </issue>
 
@@ -2679,7 +2923,7 @@
         errorLine2="         ~~~~~~~~~">
         <location
             file="src/main/res/layout/song_list_item.xml"
-            line="65"
+            line="67"
             column="10"/>
     </issue>
 
@@ -2690,7 +2934,7 @@
         errorLine2="     ~~~~~~~~~">
         <location
             file="src/main/res/layout/song_list_item.xml"
-            line="78"
+            line="80"
             column="6"/>
     </issue>
 
@@ -2701,7 +2945,7 @@
         errorLine2="     ~~~~~~~~~">
         <location
             file="src/main/res/layout/song_list_item.xml"
-            line="88"
+            line="90"
             column="6"/>
     </issue>
 
@@ -2747,39 +2991,6 @@
             file="src/main/res/layout/time_span_dialog.xml"
             line="30"
             column="10"/>
-    </issue>
-
-    <issue
-        id="ConstantLocale"
-        message="Assigning `Locale.getDefault()` to a final static field is suspicious; this code will not work correctly if the user changes locale while the app is running"
-        errorLine1="    SimpleDateFormat.getDateTimeInstance(DateFormat.SHORT, DateFormat.SHORT, Locale.getDefault())"
-        errorLine2="                                                                             ~~~~~~~~~~~~~~~~~~~">
-        <location
-            file="src/main/kotlin/org/moire/ultrasonic/domain/APIMusicDirectoryConverter.kt"
-            line="13"
-            column="78"/>
-    </issue>
-
-    <issue
-        id="SetTextI18n"
-        message="Do not concatenate text displayed with `setText`. Use resource string with placeholders."
-        errorLine1="     freqTextView.setText((equalizer.getCenterFreq(band) / 1000) + &quot; Hz&quot;);"
-        errorLine2="                          ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
-        <location
-            file="src/main/java/org/moire/ultrasonic/activity/EqualizerActivity.java"
-            line="209"
-            column="27"/>
-    </issue>
-
-    <issue
-        id="SetTextI18n"
-        message="String literal in `setText` can not be translated. Use Android resources instead."
-        errorLine1="     freqTextView.setText((equalizer.getCenterFreq(band) / 1000) + &quot; Hz&quot;);"
-        errorLine2="                                                                   ~~~~~">
-        <location
-            file="src/main/java/org/moire/ultrasonic/activity/EqualizerActivity.java"
-            line="209"
-            column="68"/>
     </issue>
 
     <issue
@@ -2883,12 +3094,12 @@
 
     <issue
         id="HardcodedText"
-        message="Hardcoded string &quot;0 / 0&quot;, should use `@string` resource"
-        errorLine1="        a:text=&quot;0 / 0&quot;"
-        errorLine2="        ~~~~~~~~~~~~~~">
+        message="Hardcoded string &quot;A&quot;, should use `@string` resource"
+        errorLine1="        a:text=&quot;A&quot;"
+        errorLine2="        ~~~~~~~~~~">
         <location
-            file="src/main/res/layout/download_button_bar_flipper.xml"
-            line="43"
+            file="src/main/res/layout/artist_list_item.xml"
+            line="22"
             column="9"/>
     </issue>
 
@@ -2900,6 +3111,17 @@
         <location
             file="src/main/res/layout/equalizer_bar.xml"
             line="19"
+            column="13"/>
+    </issue>
+
+    <issue
+        id="HardcodedText"
+        message="Hardcoded string &quot;0 / 0&quot;, should use `@string` resource"
+        errorLine1="            a:text=&quot;0 / 0&quot;"
+        errorLine2="            ~~~~~~~~~~~~~~">
+        <location
+            file="src/main/res/layout/player_media_info.xml"
+            line="64"
             column="13"/>
     </issue>
 
@@ -2923,6 +3145,28 @@
             file="src/main/res/layout/server_edit.xml"
             line="44"
             column="13"/>
+    </issue>
+
+    <issue
+        id="RelativeOverlap"
+        message="`LinearLayout-3` can overlap `LinearLayout-1` if LinearLayout-1, LinearLayout-3 grow due to localized text expansion"
+        errorLine1="    &lt;LinearLayout"
+        errorLine2="     ~~~~~~~~~~~~">
+        <location
+            file="src/main/res/layout/player_media_info.xml"
+            line="50"
+            column="6"/>
+    </issue>
+
+    <issue
+        id="RelativeOverlap"
+        message="`@id/current_playing_duration` can overlap `@id/current_playing_position` if @string/util.no_time, @string/util.no_time grow due to localized text expansion"
+        errorLine1="        &lt;TextView"
+        errorLine2="         ~~~~~~~~">
+        <location
+            file="src/main/res/layout/player_slider.xml"
+            line="29"
+            column="10"/>
     </issue>
 
     <issue
@@ -3004,24 +3248,46 @@
 
     <issue
         id="RtlSymmetry"
-        message="When you define `paddingLeft` you should probably also define `paddingRight` for right-to-left symmetry"
-        errorLine1="            a:paddingLeft=&quot;3dip&quot;/>"
-        errorLine2="            ~~~~~~~~~~~~~">
+        message="When you define `paddingRight` you should probably also define `paddingLeft` for right-to-left symmetry"
+        errorLine1="        a:paddingRight=&quot;3dip&quot;"
+        errorLine2="        ~~~~~~~~~~~~~~">
         <location
             file="src/main/res/layout/album_list_item.xml"
-            line="14"
-            column="13"/>
+            line="73"
+            column="9"/>
+    </issue>
+
+    <issue
+        id="RtlSymmetry"
+        message="When you define `paddingEnd` you should probably also define `paddingStart` for right-to-left symmetry"
+        errorLine1="        a:paddingEnd=&quot;3dip&quot; />"
+        errorLine2="        ~~~~~~~~~~~~">
+        <location
+            file="src/main/res/layout/album_list_item.xml"
+            line="79"
+            column="9"/>
+    </issue>
+
+    <issue
+        id="RtlSymmetry"
+        message="When you define `paddingLeft` you should probably also define `paddingRight` for right-to-left symmetry"
+        errorLine1="        a:paddingLeft=&quot;3dip&quot; />"
+        errorLine2="        ~~~~~~~~~~~~~">
+        <location
+            file="src/main/res/layout/album_list_item_legacy.xml"
+            line="13"
+            column="9"/>
     </issue>
 
     <issue
         id="RtlSymmetry"
         message="When you define `paddingRight` you should probably also define `paddingLeft` for right-to-left symmetry"
-        errorLine1="            a:paddingRight=&quot;3dip&quot; />"
-        errorLine2="            ~~~~~~~~~~~~~~">
+        errorLine1="        a:paddingRight=&quot;3dip&quot; />"
+        errorLine2="        ~~~~~~~~~~~~~~">
         <location
-            file="src/main/res/layout/album_list_item.xml"
-            line="50"
-            column="13"/>
+            file="src/main/res/layout/album_list_item_legacy.xml"
+            line="49"
+            column="9"/>
     </issue>
 
     <issue
@@ -3049,7 +3315,7 @@
     <issue
         id="RtlSymmetry"
         message="When you define `paddingLeft` you should probably also define `paddingRight` for right-to-left symmetry"
-        errorLine1="  a:paddingLeft=&quot;6dp&quot; a:layout_width=&quot;fill_parent&quot; a:layout_height=&quot;wrap_content&quot;"
+        errorLine1="  a:paddingLeft=&quot;10dp&quot; a:layout_width=&quot;fill_parent&quot; a:layout_height=&quot;wrap_content&quot;"
         errorLine2="  ~~~~~~~~~~~~~">
         <location
             file="src/main/res/layout/main_buttons.xml"
@@ -3103,44 +3369,44 @@
 
     <issue
         id="RtlSymmetry"
-        message="When you define `paddingLeft` you should probably also define `paddingRight` for right-to-left symmetry"
-        errorLine1="        android:paddingLeft=&quot;12dip&quot;"
-        errorLine2="        ~~~~~~~~~~~~~~~~~~~">
+        message="When you define `paddingStart` you should probably also define `paddingEnd` for right-to-left symmetry"
+        errorLine1="            a:paddingStart=&quot;16dp&quot;"
+        errorLine2="            ~~~~~~~~~~~~~~">
         <location
-            file="src/main/res/layout/notification.xml"
-            line="26"
-            column="9"/>
+            file="src/main/res/layout/navigation_header.xml"
+            line="35"
+            column="13"/>
+    </issue>
+
+    <issue
+        id="RtlSymmetry"
+        message="When you define `paddingLeft` you should probably also define `paddingRight` for right-to-left symmetry"
+        errorLine1="            a:paddingLeft=&quot;16dp&quot;"
+        errorLine2="            ~~~~~~~~~~~~~">
+        <location
+            file="src/main/res/layout/navigation_header.xml"
+            line="36"
+            column="13"/>
+    </issue>
+
+    <issue
+        id="RtlSymmetry"
+        message="When you define `paddingLeft` you should probably also define `paddingRight` for right-to-left symmetry"
+        errorLine1="            android:paddingLeft=&quot;11.0dip&quot;"
+        errorLine2="            ~~~~~~~~~~~~~~~~~~~">
+        <location
+            file="src/main/res/layout/now_playing.xml"
+            line="33"
+            column="13"/>
     </issue>
 
     <issue
         id="RtlSymmetry"
         message="When you define `paddingStart` you should probably also define `paddingEnd` for right-to-left symmetry"
-        errorLine1="        android:paddingStart=&quot;12dp&quot;"
-        errorLine2="        ~~~~~~~~~~~~~~~~~~~~">
-        <location
-            file="src/main/res/layout/notification.xml"
-            line="27"
-            column="9"/>
-    </issue>
-
-    <issue
-        id="RtlSymmetry"
-        message="When you define `paddingRight` you should probably also define `paddingLeft` for right-to-left symmetry"
-        errorLine1="        android:paddingRight=&quot;4dp&quot;>"
-        errorLine2="        ~~~~~~~~~~~~~~~~~~~~">
-        <location
-            file="src/main/res/layout/notification.xml"
-            line="73"
-            column="9"/>
-    </issue>
-
-    <issue
-        id="RtlSymmetry"
-        message="When you define `paddingRight` you should probably also define `paddingLeft` for right-to-left symmetry"
-        errorLine1="            android:paddingRight=&quot;4dp&quot;>"
+        errorLine1="            android:paddingStart=&quot;11.0dip&quot;>"
         errorLine2="            ~~~~~~~~~~~~~~~~~~~~">
         <location
-            file="src/main/res/layout/notification_large.xml"
+            file="src/main/res/layout/now_playing.xml"
             line="34"
             column="13"/>
     </issue>
@@ -3148,11 +3414,11 @@
     <issue
         id="RtlSymmetry"
         message="When you define `paddingLeft` you should probably also define `paddingRight` for right-to-left symmetry"
-        errorLine1="            android:paddingLeft=&quot;11.0dip&quot;>"
-        errorLine2="            ~~~~~~~~~~~~~~~~~~~">
+        errorLine1="            a:paddingLeft=&quot;4dp&quot;/>"
+        errorLine2="            ~~~~~~~~~~~~~">
         <location
-            file="src/main/res/layout/now_playing.xml"
-            line="32"
+            file="src/main/res/layout/search_buttons.xml"
+            line="27"
             column="13"/>
     </issue>
 
@@ -3163,7 +3429,7 @@
         errorLine2="            ~~~~~~~~~~~~~">
         <location
             file="src/main/res/layout/search_buttons.xml"
-            line="28"
+            line="39"
             column="13"/>
     </issue>
 
@@ -3174,18 +3440,7 @@
         errorLine2="            ~~~~~~~~~~~~~">
         <location
             file="src/main/res/layout/search_buttons.xml"
-            line="40"
-            column="13"/>
-    </issue>
-
-    <issue
-        id="RtlSymmetry"
-        message="When you define `paddingLeft` you should probably also define `paddingRight` for right-to-left symmetry"
-        errorLine1="            a:paddingLeft=&quot;4dp&quot;/>"
-        errorLine2="            ~~~~~~~~~~~~~">
-        <location
-            file="src/main/res/layout/search_buttons.xml"
-            line="52"
+            line="51"
             column="13"/>
     </issue>
 
@@ -3261,7 +3516,7 @@
         errorLine1="    a:paddingLeft=&quot;6dp&quot;"
         errorLine2="    ~~~~~~~~~~~~~">
         <location
-            file="src/main/res/layout/select_artist_header.xml"
+            file="src/main/res/layout/select_folder_header.xml"
             line="9"
             column="5"/>
     </issue>
@@ -3284,7 +3539,7 @@
         errorLine2="            ~~~~~~~~~~~~~~">
         <location
             file="src/main/res/layout/song_details.xml"
-            line="41"
+            line="42"
             column="13"/>
     </issue>
 
@@ -3295,18 +3550,18 @@
         errorLine2="            ~~~~~~~~~~~~~">
         <location
             file="src/main/res/layout/song_details.xml"
-            line="57"
+            line="58"
             column="13"/>
     </issue>
 
     <issue
         id="RtlSymmetry"
-        message="When you define `paddingLeft` you should probably also define `paddingRight` for right-to-left symmetry"
-        errorLine1="        a:paddingLeft=&quot;3dip&quot; />"
-        errorLine2="        ~~~~~~~~~~~~~">
+        message="When you define `paddingRight` you should probably also define `paddingLeft` for right-to-left symmetry"
+        errorLine1="        a:paddingRight=&quot;4dip&quot;/>"
+        errorLine2="        ~~~~~~~~~~~~~~">
         <location
             file="src/main/res/layout/song_list_item.xml"
-            line="14"
+            line="15"
             column="9"/>
     </issue>
 
@@ -3317,18 +3572,7 @@
         errorLine2="        ~~~~~~~~~~~~~~">
         <location
             file="src/main/res/layout/song_list_item.xml"
-            line="85"
-            column="9"/>
-    </issue>
-
-    <issue
-        id="RtlSymmetry"
-        message="When you define `paddingRight` you should probably also define `paddingLeft` for right-to-left symmetry"
-        errorLine1="        a:paddingRight=&quot;8dip&quot;"
-        errorLine2="        ~~~~~~~~~~~~~~">
-        <location
-            file="src/main/res/layout/song_list_item.xml"
-            line="95"
+            line="87"
             column="9"/>
     </issue>
 
@@ -3357,67 +3601,67 @@
     <issue
         id="RtlHardcoded"
         message="Use &quot;`start`&quot; instead of &quot;`left`&quot; to ensure correct behavior in right-to-left locales"
-        errorLine1="            a:layout_gravity=&quot;left|center_vertical&quot;"
-        errorLine2="                              ~~~~~~~~~~~~~~~~~~~~">
+        errorLine1="        a:layout_gravity=&quot;left|center_vertical&quot;"
+        errorLine2="                          ~~~~~~~~~~~~~~~~~~~~">
         <location
-            file="src/main/res/layout/album_list_item.xml"
-            line="13"
-            column="31"/>
+            file="src/main/res/layout/album_list_item_legacy.xml"
+            line="12"
+            column="27"/>
     </issue>
 
     <issue
         id="RtlHardcoded"
         message="Consider adding `a:paddingStart=&quot;3dip&quot;` to better support right-to-left layouts"
-        errorLine1="            a:paddingLeft=&quot;3dip&quot;/>"
-        errorLine2="            ~~~~~~~~~~~~~">
+        errorLine1="        a:paddingLeft=&quot;3dip&quot; />"
+        errorLine2="        ~~~~~~~~~~~~~">
         <location
-            file="src/main/res/layout/album_list_item.xml"
-            line="14"
-            column="13"/>
+            file="src/main/res/layout/album_list_item_legacy.xml"
+            line="13"
+            column="9"/>
     </issue>
 
     <issue
         id="RtlHardcoded"
         message="Use &quot;`start`&quot; instead of &quot;`left`&quot; to ensure correct behavior in right-to-left locales"
-        errorLine1="            a:layout_gravity=&quot;left|center_vertical&quot;"
-        errorLine2="                              ~~~~~~~~~~~~~~~~~~~~">
+        errorLine1="        a:layout_gravity=&quot;left|center_vertical&quot;"
+        errorLine2="                          ~~~~~~~~~~~~~~~~~~~~">
         <location
-            file="src/main/res/layout/album_list_item.xml"
-            line="21"
-            column="31"/>
+            file="src/main/res/layout/album_list_item_legacy.xml"
+            line="20"
+            column="27"/>
     </issue>
 
     <issue
         id="RtlHardcoded"
         message="Consider adding `a:paddingStart=&quot;6dip&quot;` to better support right-to-left layouts"
-        errorLine1="            a:paddingLeft=&quot;6dip&quot;"
-        errorLine2="            ~~~~~~~~~~~~~">
+        errorLine1="        a:paddingLeft=&quot;6dip&quot;"
+        errorLine2="        ~~~~~~~~~~~~~">
         <location
-            file="src/main/res/layout/album_list_item.xml"
+            file="src/main/res/layout/album_list_item_legacy.xml"
+            line="21"
+            column="9"/>
+    </issue>
+
+    <issue
+        id="RtlHardcoded"
+        message="Consider adding `a:paddingEnd=&quot;3dip&quot;` to better support right-to-left layouts"
+        errorLine1="        a:paddingRight=&quot;3dip&quot;>"
+        errorLine2="        ~~~~~~~~~~~~~~">
+        <location
+            file="src/main/res/layout/album_list_item_legacy.xml"
             line="22"
-            column="13"/>
+            column="9"/>
     </issue>
 
     <issue
         id="RtlHardcoded"
         message="Consider adding `a:paddingEnd=&quot;3dip&quot;` to better support right-to-left layouts"
-        errorLine1="            a:paddingRight=&quot;3dip&quot;>"
-        errorLine2="            ~~~~~~~~~~~~~~">
+        errorLine1="        a:paddingRight=&quot;3dip&quot; />"
+        errorLine2="        ~~~~~~~~~~~~~~">
         <location
-            file="src/main/res/layout/album_list_item.xml"
-            line="23"
-            column="13"/>
-    </issue>
-
-    <issue
-        id="RtlHardcoded"
-        message="Consider adding `a:paddingEnd=&quot;3dip&quot;` to better support right-to-left layouts"
-        errorLine1="            a:paddingRight=&quot;3dip&quot; />"
-        errorLine2="            ~~~~~~~~~~~~~~">
-        <location
-            file="src/main/res/layout/album_list_item.xml"
-            line="50"
-            column="13"/>
+            file="src/main/res/layout/album_list_item_legacy.xml"
+            line="49"
+            column="9"/>
     </issue>
 
     <issue
@@ -3657,119 +3901,9 @@
         errorLine1="            a:gravity=&quot;left&quot;"
         errorLine2="                       ~~~~">
         <location
-            file="src/main/res/layout-land/download.xml"
+            file="src/main/res/layout-land/current_playing.xml"
             line="18"
             column="24"/>
-    </issue>
-
-    <issue
-        id="RtlHardcoded"
-        message="Consider adding `a:layout_alignParentStart=&quot;true&quot;` to better support right-to-left layouts"
-        errorLine1="        a:layout_alignParentLeft=&quot;true&quot;"
-        errorLine2="        ~~~~~~~~~~~~~~~~~~~~~~~~">
-        <location
-            file="src/main/res/layout/download_button_bar_flipper.xml"
-            line="31"
-            column="9"/>
-    </issue>
-
-    <issue
-        id="RtlHardcoded"
-        message="Consider adding `a:layout_marginEnd=&quot;6dip&quot;` to better support right-to-left layouts"
-        errorLine1="        a:layout_marginRight=&quot;6dip&quot;"
-        errorLine2="        ~~~~~~~~~~~~~~~~~~~~">
-        <location
-            file="src/main/res/layout/download_button_bar_flipper.xml"
-            line="32"
-            column="9"/>
-    </issue>
-
-    <issue
-        id="RtlHardcoded"
-        message="Consider adding `a:layout_alignParentStart=&quot;true&quot;` to better support right-to-left layouts"
-        errorLine1="        a:layout_alignParentLeft=&quot;true&quot;"
-        errorLine2="        ~~~~~~~~~~~~~~~~~~~~~~~~">
-        <location
-            file="src/main/res/layout/download_button_bar_flipper.xml"
-            line="40"
-            column="9"/>
-    </issue>
-
-    <issue
-        id="RtlHardcoded"
-        message="Consider adding `a:layout_marginEnd=&quot;6dip&quot;` to better support right-to-left layouts"
-        errorLine1="        a:layout_marginRight=&quot;6dip&quot;"
-        errorLine2="        ~~~~~~~~~~~~~~~~~~~~">
-        <location
-            file="src/main/res/layout/download_button_bar_flipper.xml"
-            line="42"
-            column="9"/>
-    </issue>
-
-    <issue
-        id="RtlHardcoded"
-        message="Consider adding `a:layout_alignParentEnd=&quot;true&quot;` to better support right-to-left layouts"
-        errorLine1="        a:layout_alignParentRight=&quot;true&quot;"
-        errorLine2="        ~~~~~~~~~~~~~~~~~~~~~~~~~">
-        <location
-            file="src/main/res/layout/download_button_bar_flipper.xml"
-            line="50"
-            column="9"/>
-    </issue>
-
-    <issue
-        id="RtlHardcoded"
-        message="Consider adding `a:layout_marginStart=&quot;6dip&quot;` to better support right-to-left layouts"
-        errorLine1="        a:layout_marginLeft=&quot;6dip&quot;"
-        errorLine2="        ~~~~~~~~~~~~~~~~~~~">
-        <location
-            file="src/main/res/layout/download_button_bar_flipper.xml"
-            line="51"
-            column="9"/>
-    </issue>
-
-    <issue
-        id="RtlHardcoded"
-        message="Consider adding `a:layout_alignParentEnd=&quot;true&quot;` to better support right-to-left layouts"
-        errorLine1="        a:layout_alignParentRight=&quot;true&quot;"
-        errorLine2="        ~~~~~~~~~~~~~~~~~~~~~~~~~">
-        <location
-            file="src/main/res/layout/download_button_bar_flipper.xml"
-            line="59"
-            column="9"/>
-    </issue>
-
-    <issue
-        id="RtlHardcoded"
-        message="Consider adding `a:layout_marginStart=&quot;6dip&quot;` to better support right-to-left layouts"
-        errorLine1="        a:layout_marginLeft=&quot;6dip&quot;"
-        errorLine2="        ~~~~~~~~~~~~~~~~~~~">
-        <location
-            file="src/main/res/layout/download_button_bar_flipper.xml"
-            line="61"
-            column="9"/>
-    </issue>
-
-    <issue
-        id="RtlHardcoded"
-        message="Consider adding `a:layout_toStartOf=&quot;@+id/download_duration&quot;` to better support right-to-left layouts"
-        errorLine1="        a:layout_toLeftOf=&quot;@+id/download_duration&quot;"
-        errorLine2="        ~~~~~~~~~~~~~~~~~">
-        <location
-            file="src/main/res/layout/download_button_bar_flipper.xml"
-            line="70"
-            column="9"/>
-    </issue>
-
-    <issue
-        id="RtlHardcoded"
-        message="Consider adding `a:layout_toEndOf=&quot;@+id/download_position&quot;` to better support right-to-left layouts"
-        errorLine1="        a:layout_toRightOf=&quot;@+id/download_position&quot;"
-        errorLine2="        ~~~~~~~~~~~~~~~~~~">
-        <location
-            file="src/main/res/layout/download_button_bar_flipper.xml"
-            line="71"
-            column="9"/>
     </issue>
 
     <issue
@@ -3818,8 +3952,8 @@
 
     <issue
         id="RtlHardcoded"
-        message="Consider adding `a:paddingStart=&quot;6dp&quot;` to better support right-to-left layouts"
-        errorLine1="  a:paddingLeft=&quot;6dp&quot; a:layout_width=&quot;fill_parent&quot; a:layout_height=&quot;wrap_content&quot;"
+        message="Consider adding `a:paddingStart=&quot;10dp&quot;` to better support right-to-left layouts"
+        errorLine1="  a:paddingLeft=&quot;10dp&quot; a:layout_width=&quot;fill_parent&quot; a:layout_height=&quot;wrap_content&quot;"
         errorLine2="  ~~~~~~~~~~~~~">
         <location
             file="src/main/res/layout/main_buttons.xml"
@@ -3895,222 +4029,13 @@
 
     <issue
         id="RtlHardcoded"
-        message="Consider adding `a:paddingStart=&quot;2dip&quot;` to better support right-to-left layouts"
-        errorLine1="        a:paddingLeft=&quot;2dip&quot;"
-        errorLine2="        ~~~~~~~~~~~~~">
+        message="Consider adding `a:layout_alignParentStart=&quot;true&quot;` to better support right-to-left layouts"
+        errorLine1="        a:layout_alignParentLeft=&quot;true&quot;"
+        errorLine2="        ~~~~~~~~~~~~~~~~~~~~~~~~">
         <location
             file="src/main/res/layout/media_buttons.xml"
-            line="19"
+            line="14"
             column="9"/>
-    </issue>
-
-    <issue
-        id="RtlHardcoded"
-        message="Consider adding `a:paddingEnd=&quot;8dip&quot;` to better support right-to-left layouts"
-        errorLine1="        a:paddingRight=&quot;8dip&quot;/>"
-        errorLine2="        ~~~~~~~~~~~~~~">
-        <location
-            file="src/main/res/layout/media_buttons.xml"
-            line="20"
-            column="9"/>
-    </issue>
-
-    <issue
-        id="RtlHardcoded"
-        message="Consider adding `a:paddingStart=&quot;8dip&quot;` to better support right-to-left layouts"
-        errorLine1="        a:paddingLeft=&quot;8dip&quot;"
-        errorLine2="        ~~~~~~~~~~~~~">
-        <location
-            file="src/main/res/layout/media_buttons.xml"
-            line="79"
-            column="9"/>
-    </issue>
-
-    <issue
-        id="RtlHardcoded"
-        message="Consider adding `a:paddingEnd=&quot;2dip&quot;` to better support right-to-left layouts"
-        errorLine1="        a:paddingRight=&quot;2dip&quot;/>"
-        errorLine2="        ~~~~~~~~~~~~~~">
-        <location
-            file="src/main/res/layout/media_buttons.xml"
-            line="80"
-            column="9"/>
-    </issue>
-
-    <issue
-        id="RtlHardcoded"
-        message="Consider adding `android:drawableStart=&quot;?attr/home&quot;` to better support right-to-left layouts"
-        errorLine1="            android:drawableLeft=&quot;?attr/home&quot;"
-        errorLine2="            ~~~~~~~~~~~~~~~~~~~~">
-        <location
-            file="src/main/res/layout/menu_main.xml"
-            line="25"
-            column="13"/>
-    </issue>
-
-    <issue
-        id="RtlHardcoded"
-        message="Consider adding `android:drawableStart=&quot;?attr/browse&quot;` to better support right-to-left layouts"
-        errorLine1="            android:drawableLeft=&quot;?attr/browse&quot;"
-        errorLine2="            ~~~~~~~~~~~~~~~~~~~~">
-        <location
-            file="src/main/res/layout/menu_main.xml"
-            line="33"
-            column="13"/>
-    </issue>
-
-    <issue
-        id="RtlHardcoded"
-        message="Consider adding `android:drawableStart=&quot;?attr/search&quot;` to better support right-to-left layouts"
-        errorLine1="            android:drawableLeft=&quot;?attr/search&quot;"
-        errorLine2="            ~~~~~~~~~~~~~~~~~~~~">
-        <location
-            file="src/main/res/layout/menu_main.xml"
-            line="41"
-            column="13"/>
-    </issue>
-
-    <issue
-        id="RtlHardcoded"
-        message="Consider adding `android:drawableStart=&quot;?attr/playlists&quot;` to better support right-to-left layouts"
-        errorLine1="            android:drawableLeft=&quot;?attr/playlists&quot;"
-        errorLine2="            ~~~~~~~~~~~~~~~~~~~~">
-        <location
-            file="src/main/res/layout/menu_main.xml"
-            line="49"
-            column="13"/>
-    </issue>
-
-    <issue
-        id="RtlHardcoded"
-        message="Consider adding `android:drawableStart=&quot;?attr/share&quot;` to better support right-to-left layouts"
-        errorLine1="            android:drawableLeft=&quot;?attr/share&quot;"
-        errorLine2="            ~~~~~~~~~~~~~~~~~~~~">
-        <location
-            file="src/main/res/layout/menu_main.xml"
-            line="57"
-            column="13"/>
-    </issue>
-
-    <issue
-        id="RtlHardcoded"
-        message="Consider adding `android:drawableStart=&quot;?attr/bookmark&quot;` to better support right-to-left layouts"
-        errorLine1="            android:drawableLeft=&quot;?attr/bookmark&quot;"
-        errorLine2="            ~~~~~~~~~~~~~~~~~~~~">
-        <location
-            file="src/main/res/layout/menu_main.xml"
-            line="65"
-            column="13"/>
-    </issue>
-
-    <issue
-        id="RtlHardcoded"
-        message="Consider adding `android:drawableStart=&quot;?attr/chat&quot;` to better support right-to-left layouts"
-        errorLine1="            android:drawableLeft=&quot;?attr/chat&quot;"
-        errorLine2="            ~~~~~~~~~~~~~~~~~~~~">
-        <location
-            file="src/main/res/layout/menu_main.xml"
-            line="73"
-            column="13"/>
-    </issue>
-
-    <issue
-        id="RtlHardcoded"
-        message="Consider adding `android:drawableStart=&quot;?attr/media_play&quot;` to better support right-to-left layouts"
-        errorLine1="            android:drawableLeft=&quot;?attr/media_play&quot;"
-        errorLine2="            ~~~~~~~~~~~~~~~~~~~~">
-        <location
-            file="src/main/res/layout/menu_main.xml"
-            line="81"
-            column="13"/>
-    </issue>
-
-    <issue
-        id="RtlHardcoded"
-        message="Consider adding `android:drawableStart=&quot;?attr/podcasts&quot;` to better support right-to-left layouts"
-        errorLine1="            android:drawableLeft=&quot;?attr/podcasts&quot;"
-        errorLine2="            ~~~~~~~~~~~~~~~~~~~~">
-        <location
-            file="src/main/res/layout/menu_main.xml"
-            line="89"
-            column="13"/>
-    </issue>
-
-    <issue
-        id="RtlHardcoded"
-        message="Consider adding `android:drawableStart=&quot;?attr/settings&quot;` to better support right-to-left layouts"
-        errorLine1="            android:drawableLeft=&quot;?attr/settings&quot;"
-        errorLine2="            ~~~~~~~~~~~~~~~~~~~~">
-        <location
-            file="src/main/res/layout/menu_main.xml"
-            line="104"
-            column="13"/>
-    </issue>
-
-    <issue
-        id="RtlHardcoded"
-        message="Consider adding `android:drawableStart=&quot;?attr/about&quot;` to better support right-to-left layouts"
-        errorLine1="            android:drawableLeft=&quot;?attr/about&quot;"
-        errorLine2="            ~~~~~~~~~~~~~~~~~~~~">
-        <location
-            file="src/main/res/layout/menu_main.xml"
-            line="112"
-            column="13"/>
-    </issue>
-
-    <issue
-        id="RtlHardcoded"
-        message="Consider adding `android:drawableStart=&quot;?attr/exit&quot;` to better support right-to-left layouts"
-        errorLine1="            android:drawableLeft=&quot;?attr/exit&quot;"
-        errorLine2="            ~~~~~~~~~~~~~~~~~~~~">
-        <location
-            file="src/main/res/layout/menu_main.xml"
-            line="120"
-            column="13"/>
-    </issue>
-
-    <issue
-        id="RtlHardcoded"
-        message="Consider adding `android:paddingEnd=&quot;4dp&quot;` to better support right-to-left layouts"
-        errorLine1="        android:paddingRight=&quot;4dp&quot;>"
-        errorLine2="        ~~~~~~~~~~~~~~~~~~~~">
-        <location
-            file="src/main/res/layout/notification.xml"
-            line="73"
-            column="9"/>
-    </issue>
-
-    <issue
-        id="RtlHardcoded"
-        message="Consider adding `android:layout_marginStart=&quot;4dp&quot;` to better support right-to-left layouts"
-        errorLine1="            android:layout_marginLeft=&quot;4dp&quot;"
-        errorLine2="            ~~~~~~~~~~~~~~~~~~~~~~~~~">
-        <location
-            file="src/main/res/layout/notification.xml"
-            line="110"
-            column="13"/>
-    </issue>
-
-    <issue
-        id="RtlHardcoded"
-        message="Consider adding `android:paddingEnd=&quot;4dp&quot;` to better support right-to-left layouts"
-        errorLine1="            android:paddingRight=&quot;4dp&quot;>"
-        errorLine2="            ~~~~~~~~~~~~~~~~~~~~">
-        <location
-            file="src/main/res/layout/notification_large.xml"
-            line="34"
-            column="13"/>
-    </issue>
-
-    <issue
-        id="RtlHardcoded"
-        message="Consider adding `android:paddingStart=&quot;11.0dip&quot;` to better support right-to-left layouts"
-        errorLine1="            android:paddingLeft=&quot;11.0dip&quot;>"
-        errorLine2="            ~~~~~~~~~~~~~~~~~~~">
-        <location
-            file="src/main/res/layout/now_playing.xml"
-            line="32"
-            column="13"/>
     </issue>
 
     <issue
@@ -4120,7 +4045,7 @@
         errorLine2="                                        ~~~~">
         <location
             file="src/main/res/layout/now_playing.xml"
-            line="38"
+            line="40"
             column="41"/>
     </issue>
 
@@ -4131,7 +4056,7 @@
         errorLine2="                                        ~~~~">
         <location
             file="src/main/res/layout/now_playing.xml"
-            line="48"
+            line="50"
             column="41"/>
     </issue>
 
@@ -4142,18 +4067,150 @@
         errorLine2="                                    ~~~~~~~~~~~~">
         <location
             file="src/main/res/layout/now_playing.xml"
-            line="59"
+            line="61"
             column="37"/>
     </issue>
 
     <issue
         id="RtlHardcoded"
-        message="Consider adding `android:layout_marginEnd=&quot;5dip&quot;` to better support right-to-left layouts"
-        errorLine1="            android:layout_marginRight=&quot;5dip&quot;"
+        message="Consider adding `android:layout_marginEnd=&quot;16dip&quot;` to better support right-to-left layouts"
+        errorLine1="            android:layout_marginRight=&quot;16dip&quot;"
         errorLine2="            ~~~~~~~~~~~~~~~~~~~~~~~~~~">
         <location
             file="src/main/res/layout/now_playing.xml"
-            line="61"
+            line="63"
+            column="13"/>
+    </issue>
+
+    <issue
+        id="RtlHardcoded"
+        message="Consider adding `a:layout_alignParentStart=&quot;true&quot;` to better support right-to-left layouts"
+        errorLine1="        a:layout_alignParentLeft=&quot;true&quot;"
+        errorLine2="        ~~~~~~~~~~~~~~~~~~~~~~~~">
+        <location
+            file="src/main/res/layout/player_media_info.xml"
+            line="14"
+            column="9"/>
+    </issue>
+
+    <issue
+        id="RtlHardcoded"
+        message="Use &quot;`start`&quot; instead of &quot;`left`&quot; to ensure correct behavior in right-to-left locales"
+        errorLine1="            a:gravity=&quot;left&quot;"
+        errorLine2="                       ~~~~">
+        <location
+            file="src/main/res/layout/player_media_info.xml"
+            line="22"
+            column="24"/>
+    </issue>
+
+    <issue
+        id="RtlHardcoded"
+        message="Use &quot;`start`&quot; instead of &quot;`left`&quot; to ensure correct behavior in right-to-left locales"
+        errorLine1="            a:gravity=&quot;left&quot;"
+        errorLine2="                       ~~~~">
+        <location
+            file="src/main/res/layout/player_media_info.xml"
+            line="33"
+            column="24"/>
+    </issue>
+
+    <issue
+        id="RtlHardcoded"
+        message="Use &quot;`end`&quot; instead of &quot;`right`&quot; to ensure correct behavior in right-to-left locales"
+        errorLine1="            a:gravity=&quot;right&quot;"
+        errorLine2="                       ~~~~~">
+        <location
+            file="src/main/res/layout/player_media_info.xml"
+            line="43"
+            column="24"/>
+    </issue>
+
+    <issue
+        id="RtlHardcoded"
+        message="Consider adding `a:layout_alignParentEnd=&quot;true&quot;` to better support right-to-left layouts"
+        errorLine1="        a:layout_alignParentRight=&quot;true&quot;"
+        errorLine2="        ~~~~~~~~~~~~~~~~~~~~~~~~~">
+        <location
+            file="src/main/res/layout/player_media_info.xml"
+            line="53"
+            column="9"/>
+    </issue>
+
+    <issue
+        id="RtlHardcoded"
+        message="Use &quot;`end`&quot; instead of &quot;`right`&quot; to ensure correct behavior in right-to-left locales"
+        errorLine1="        a:gravity=&quot;right&quot;"
+        errorLine2="                   ~~~~~">
+        <location
+            file="src/main/res/layout/player_media_info.xml"
+            line="55"
+            column="20"/>
+    </issue>
+
+    <issue
+        id="RtlHardcoded"
+        message="Use &quot;`end`&quot; instead of &quot;`right`&quot; to ensure correct behavior in right-to-left locales"
+        errorLine1="            a:gravity=&quot;right&quot;"
+        errorLine2="                       ~~~~~">
+        <location
+            file="src/main/res/layout/player_media_info.xml"
+            line="63"
+            column="24"/>
+    </issue>
+
+    <issue
+        id="RtlHardcoded"
+        message="Use &quot;`end`&quot; instead of &quot;`right`&quot; to ensure correct behavior in right-to-left locales"
+        errorLine1="            a:gravity=&quot;right&quot;"
+        errorLine2="                       ~~~~~">
+        <location
+            file="src/main/res/layout/player_media_info.xml"
+            line="72"
+            column="24"/>
+    </issue>
+
+    <issue
+        id="RtlHardcoded"
+        message="Consider adding `a:layout_alignParentStart=&quot;true&quot;` to better support right-to-left layouts"
+        errorLine1="            a:layout_alignParentLeft=&quot;true&quot;"
+        errorLine2="            ~~~~~~~~~~~~~~~~~~~~~~~~">
+        <location
+            file="src/main/res/layout/player_slider.xml"
+            line="24"
+            column="13"/>
+    </issue>
+
+    <issue
+        id="RtlHardcoded"
+        message="Consider adding `a:layout_marginStart=&quot;12dip&quot;` to better support right-to-left layouts"
+        errorLine1="            a:layout_marginLeft=&quot;12dip&quot;"
+        errorLine2="            ~~~~~~~~~~~~~~~~~~~">
+        <location
+            file="src/main/res/layout/player_slider.xml"
+            line="25"
+            column="13"/>
+    </issue>
+
+    <issue
+        id="RtlHardcoded"
+        message="Consider adding `a:layout_alignParentEnd=&quot;true&quot;` to better support right-to-left layouts"
+        errorLine1="            a:layout_alignParentRight=&quot;true&quot;"
+        errorLine2="            ~~~~~~~~~~~~~~~~~~~~~~~~~">
+        <location
+            file="src/main/res/layout/player_slider.xml"
+            line="33"
+            column="13"/>
+    </issue>
+
+    <issue
+        id="RtlHardcoded"
+        message="Consider adding `a:layout_marginEnd=&quot;12dip&quot;` to better support right-to-left layouts"
+        errorLine1="            a:layout_marginRight=&quot;12dip&quot;"
+        errorLine2="            ~~~~~~~~~~~~~~~~~~~~">
+        <location
+            file="src/main/res/layout/player_slider.xml"
+            line="34"
             column="13"/>
     </issue>
 
@@ -4170,12 +4227,12 @@
 
     <issue
         id="RtlHardcoded"
-        message="Consider adding `a:drawableStart=&quot;?attr/search&quot;` to better support right-to-left layouts"
-        errorLine1="            a:drawableLeft=&quot;?attr/search&quot;"
-        errorLine2="            ~~~~~~~~~~~~~~">
+        message="Consider adding `a:paddingStart=&quot;4dp&quot;` to better support right-to-left layouts"
+        errorLine1="            a:paddingLeft=&quot;4dp&quot;/>"
+        errorLine2="            ~~~~~~~~~~~~~">
         <location
             file="src/main/res/layout/search_buttons.xml"
-            line="13"
+            line="27"
             column="13"/>
     </issue>
 
@@ -4186,7 +4243,7 @@
         errorLine2="            ~~~~~~~~~~~~~">
         <location
             file="src/main/res/layout/search_buttons.xml"
-            line="28"
+            line="39"
             column="13"/>
     </issue>
 
@@ -4197,18 +4254,7 @@
         errorLine2="            ~~~~~~~~~~~~~">
         <location
             file="src/main/res/layout/search_buttons.xml"
-            line="40"
-            column="13"/>
-    </issue>
-
-    <issue
-        id="RtlHardcoded"
-        message="Consider adding `a:paddingStart=&quot;4dp&quot;` to better support right-to-left layouts"
-        errorLine1="            a:paddingLeft=&quot;4dp&quot;/>"
-        errorLine2="            ~~~~~~~~~~~~~">
-        <location
-            file="src/main/res/layout/search_buttons.xml"
-            line="52"
+            line="51"
             column="13"/>
     </issue>
 
@@ -4372,7 +4418,7 @@
         errorLine1="    a:paddingLeft=&quot;6dp&quot;"
         errorLine2="    ~~~~~~~~~~~~~">
         <location
-            file="src/main/res/layout/select_artist_header.xml"
+            file="src/main/res/layout/select_folder_header.xml"
             line="9"
             column="5"/>
     </issue>
@@ -4383,8 +4429,8 @@
         errorLine1="            a:layout_marginLeft=&quot;10dip&quot;"
         errorLine2="            ~~~~~~~~~~~~~~~~~~~">
         <location
-            file="src/main/res/layout/select_artist_header.xml"
-            line="27"
+            file="src/main/res/layout/select_folder_header.xml"
+            line="30"
             column="13"/>
     </issue>
 
@@ -4394,8 +4440,8 @@
         errorLine1="            a:layout_marginLeft=&quot;10dip&quot;"
         errorLine2="            ~~~~~~~~~~~~~~~~~~~">
         <location
-            file="src/main/res/layout/select_artist_header.xml"
-            line="36"
+            file="src/main/res/layout/select_folder_header.xml"
+            line="39"
             column="13"/>
     </issue>
 
@@ -4434,12 +4480,23 @@
 
     <issue
         id="RtlHardcoded"
+        message="Consider adding `a:layout_marginStart=&quot;4dp&quot;` to better support right-to-left layouts"
+        errorLine1="    a:layout_marginLeft=&quot;4dp&quot;"
+        errorLine2="    ~~~~~~~~~~~~~~~~~~~">
+        <location
+            file="src/main/res/layout/song_details.xml"
+            line="7"
+            column="5"/>
+    </issue>
+
+    <issue
+        id="RtlHardcoded"
         message="Use &quot;`start`&quot; instead of &quot;`left`&quot; to ensure correct behavior in right-to-left locales"
         errorLine1="            a:layout_gravity=&quot;left|center_vertical&quot;"
         errorLine2="                              ~~~~~~~~~~~~~~~~~~~~">
         <location
             file="src/main/res/layout/song_details.xml"
-            line="19"
+            line="20"
             column="31"/>
     </issue>
 
@@ -4450,7 +4507,7 @@
         errorLine2="                              ~~~~~~~~~~~~~~~~~~~~">
         <location
             file="src/main/res/layout/song_details.xml"
-            line="26"
+            line="27"
             column="31"/>
     </issue>
 
@@ -4461,7 +4518,7 @@
         errorLine2="            ~~~~~~~~~~~~~">
         <location
             file="src/main/res/layout/song_details.xml"
-            line="30"
+            line="31"
             column="13"/>
     </issue>
 
@@ -4472,7 +4529,7 @@
         errorLine2="            ~~~~~~~~~~~~~~">
         <location
             file="src/main/res/layout/song_details.xml"
-            line="31"
+            line="32"
             column="13"/>
     </issue>
 
@@ -4483,7 +4540,7 @@
         errorLine2="                              ~~~~~~~~~~~~~~~~~~~~~">
         <location
             file="src/main/res/layout/song_details.xml"
-            line="39"
+            line="40"
             column="31"/>
     </issue>
 
@@ -4494,7 +4551,7 @@
         errorLine2="            ~~~~~~~~~~~~~~">
         <location
             file="src/main/res/layout/song_details.xml"
-            line="41"
+            line="42"
             column="13"/>
     </issue>
 
@@ -4505,7 +4562,7 @@
         errorLine2="                              ~~~~~~~~~~~~~~~~~~~~">
         <location
             file="src/main/res/layout/song_details.xml"
-            line="54"
+            line="55"
             column="31"/>
     </issue>
 
@@ -4516,7 +4573,7 @@
         errorLine2="            ~~~~~~~~~~~~~">
         <location
             file="src/main/res/layout/song_details.xml"
-            line="57"
+            line="58"
             column="13"/>
     </issue>
 
@@ -4527,7 +4584,7 @@
         errorLine2="                              ~~~~~~~~~~~~~~~~~~~~~">
         <location
             file="src/main/res/layout/song_details.xml"
-            line="65"
+            line="66"
             column="31"/>
     </issue>
 
@@ -4538,7 +4595,7 @@
         errorLine2="            ~~~~~~~~~~~~~">
         <location
             file="src/main/res/layout/song_details.xml"
-            line="66"
+            line="67"
             column="13"/>
     </issue>
 
@@ -4549,18 +4606,18 @@
         errorLine2="            ~~~~~~~~~~~~~~">
         <location
             file="src/main/res/layout/song_details.xml"
-            line="67"
+            line="68"
             column="13"/>
     </issue>
 
     <issue
         id="RtlHardcoded"
-        message="Consider adding `a:paddingStart=&quot;3dip&quot;` to better support right-to-left layouts"
-        errorLine1="        a:paddingLeft=&quot;3dip&quot; />"
-        errorLine2="        ~~~~~~~~~~~~~">
+        message="Consider adding `a:paddingEnd=&quot;4dip&quot;` to better support right-to-left layouts"
+        errorLine1="        a:paddingRight=&quot;4dip&quot;/>"
+        errorLine2="        ~~~~~~~~~~~~~~">
         <location
             file="src/main/res/layout/song_list_item.xml"
-            line="14"
+            line="15"
             column="9"/>
     </issue>
 
@@ -4571,7 +4628,7 @@
         errorLine2="            ~~~~~~~~~~~~~~~~~~~~">
         <location
             file="src/main/res/layout/song_list_item.xml"
-            line="73"
+            line="71"
             column="13"/>
     </issue>
 
@@ -4582,29 +4639,7 @@
         errorLine2="        ~~~~~~~~~~~~~~">
         <location
             file="src/main/res/layout/song_list_item.xml"
-            line="85"
-            column="9"/>
-    </issue>
-
-    <issue
-        id="RtlHardcoded"
-        message="Consider adding `a:paddingEnd=&quot;8dip&quot;` to better support right-to-left layouts"
-        errorLine1="        a:paddingRight=&quot;8dip&quot;"
-        errorLine2="        ~~~~~~~~~~~~~~">
-        <location
-            file="src/main/res/layout/song_list_item.xml"
-            line="95"
-            column="9"/>
-    </issue>
-
-    <issue
-        id="RtlHardcoded"
-        message="Consider adding `a:layout_marginEnd=&quot;6dp&quot;` to better support right-to-left layouts"
-        errorLine1="        a:layout_marginRight=&quot;6dp&quot; />"
-        errorLine2="        ~~~~~~~~~~~~~~~~~~~~">
-        <location
-            file="src/main/res/layout/tab_progress.xml"
-            line="15"
+            line="87"
             column="9"/>
     </issue>
 
