@@ -50,6 +50,7 @@ android {
         ignore 'MissingTranslation'
         warning 'ImpliedQuantity'
         abortOnError true
+        warningsAsErrors true
     }
 
     kotlinOptions {
