@@ -27,7 +27,6 @@
         app:remove_mode="flingRemove"
         app:fling_handle_id="@+id/song_drag"
         app:drag_start_mode="onMove"
-        app:float_background_color="?attr/color_background"
-        app:float_alpha="0.7" />
+        app:float_background_color="?attr/color_background" />
 
 </LinearLayout>

@@ -1,4 +1,3 @@
-include ':core:library'
 include ':core:domain'
 include ':core:subsonic-api'
 include ':core:subsonic-api-image-loader'
