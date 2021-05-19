@@ -18,7 +18,7 @@ jobs:
           command: ./gradlew -Pqc ktlintCheck
       - run:
           name: static analysis
-          command: ./gradlew -Pqc detektMain
+          command: ./gradlew -Pqc detekt
       - run:
           name: build
           command: ./gradlew assembleDebug
