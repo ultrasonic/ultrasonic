@@ -25,11 +25,6 @@ import kotlin.Lazy;
 import static org.koin.java.KoinJavaComponent.inject;
 
 /**
- * @author Sindre Mehus
- * @version $Id$
- */
-
-/**
  * Responsible for cleaning up files from the offline download cache on the filesystem
  */
 public class CacheCleaner
@@ -207,17 +202,8 @@ public class CacheCleaner
 			@Override
 			public int compare(File a, File b)
 			{
-				if (a.lastModified() < b.lastModified())
-				{
-					return -1;
-				}
+				return Long.compare(a.lastModified(), b.lastModified());
 
-				if (a.lastModified() > b.lastModified())
-				{
-					return 1;
-				}
-
-				return 0;
 			}
 		});
 	}

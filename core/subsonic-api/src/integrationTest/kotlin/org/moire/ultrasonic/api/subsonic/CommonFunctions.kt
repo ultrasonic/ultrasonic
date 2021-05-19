@@ -22,11 +22,10 @@ val CLIENT_VERSION = SubsonicAPIVersions.V1_16_0
 const val CLIENT_ID = "test-client"
 
 val dateFormat by lazy(
-    LazyThreadSafetyMode.NONE,
-    {
-        SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSZ", Locale.US)
-    }
-)
+    LazyThreadSafetyMode.NONE
+) {
+    SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSZ", Locale.US)
+}
 
 fun MockWebServerRule.enqueueResponse(resourceName: String) {
     mockWebServer.enqueueResponse(resourceName)

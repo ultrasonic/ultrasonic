@@ -47,7 +47,7 @@ public class EntryByDiscAndTrackComparator implements Comparator<MusicDirectory.
 
 	private static int compare(long a, long b)
 	{
-		return a < b ? -1 : a > b ? 1 : 0;
+		return Long.compare(a, b);
 	}
 
 	private static int compare(String a, String b)

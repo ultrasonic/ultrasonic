@@ -32,7 +32,7 @@ public class PodcastsChannelsAdapter extends ArrayAdapter<PodcastsChannel> {
         PodcastsChannel entry = getItem(position);
 
         TextView view;
-        if (convertView != null && convertView instanceof PlaylistView) {
+        if (convertView instanceof PlaylistView) {
             view = (TextView) convertView;
         } else {
             view = (TextView) layoutInflater
