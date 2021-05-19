@@ -6,6 +6,7 @@ jobs:
     working_directory: ~/ultrasonic
     environment:
       JVM_OPTS: -Xmx3200m
+      JAVA_TOOL_OPTIONS: -Xmx3200m
     steps:
       - checkout
       - restore_cache:
@@ -23,6 +24,9 @@ jobs:
           name: static analysis
           command: ./gradlew -Pqc detekt
       - run:
+          name: lint
+          command: ./gradlew :ultrasonic:lintRelease
+      - run:
           name: build
           command: ./gradlew assembleDebug
       - run:
@@ -30,9 +34,6 @@ jobs:
           command: |
             ./gradlew ciTest testDebugUnitTest
             ./gradlew jacocoFullReport
-      - run:
-          name: lint
-          command: ./gradlew :ultrasonic:lintRelease
       - run:
           name: assemble release build
           command: ./gradlew build assembleRelease
@@ -42,7 +43,7 @@ jobs:
       - save_cache:
           paths:
             - ~/.gradle
-          key: gradle-cache-{{ checksum "dependencies.gradle" }}
+          key: gradle-cache-{{ .Branch }}-{{ checksum "dependencies.gradle" }}
       - store_artifacts:
           path: ultrasonic/build/reports
           destination: reports
