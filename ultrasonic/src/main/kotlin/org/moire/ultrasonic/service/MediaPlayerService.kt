@@ -47,6 +47,7 @@ import timber.log.Timber
  * Android Foreground Service for playing music
  * while the rest of the Ultrasonic App is in the background.
  */
+@Suppress("LargeClass")
 class MediaPlayerService : Service() {
     private val binder: IBinder = SimpleServiceBinder(this)
     private val scrobbler = Scrobbler()
@@ -596,6 +597,7 @@ class MediaPlayerService : Service() {
     /**
      * This method builds a notification, reusing the Notification Builder if possible
      */
+    @Suppress("SpreadOperator")
     private fun buildForegroundNotification(
         playerState: PlayerState,
         currentPlaying: DownloadFile?
@@ -893,6 +895,7 @@ class MediaPlayerService : Service() {
         mediaSession?.setMediaButtonReceiver(null)
     }
 
+    @Suppress("MagicNumber")
     companion object {
         private const val NOTIFICATION_CHANNEL_ID = "org.moire.ultrasonic"
         private const val NOTIFICATION_CHANNEL_NAME = "Ultrasonic background service"

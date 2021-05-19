@@ -13,6 +13,7 @@ import timber.log.Timber
  * A Timber Tree which can be used to log to a file
  * Subclass of the DebugTree so it inherits the Tag handling
  */
+@Suppress("MagicNumber")
 class FileLoggerTree : Timber.DebugTree() {
     private val dateFormat = SimpleDateFormat("HH:mm:ss.SSS", Locale.getDefault())
 

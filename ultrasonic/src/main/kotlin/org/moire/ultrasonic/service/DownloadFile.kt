@@ -19,6 +19,7 @@ import java.io.IOException
 import java.io.InputStream
 import java.io.OutputStream
 import java.io.RandomAccessFile
+import org.koin.core.component.KoinApiExtension
 import org.koin.java.KoinJavaComponent.inject
 import org.moire.ultrasonic.domain.MusicDirectory
 import org.moire.ultrasonic.service.MusicServiceFactory.getMusicService
@@ -34,6 +35,7 @@ import timber.log.Timber
  * @author Sindre Mehus
  * @version $Id$
  */
+@KoinApiExtension
 class DownloadFile(
     private val context: Context,
     val song: MusicDirectory.Entry,
@@ -190,8 +192,8 @@ class DownloadFile(
                 }
                 completeWhenDone = false
             }
-        } catch (ex: IOException) {
-            Timber.w("Failed to rename file %s to %s", completeFile, saveFile)
+        } catch (e: IOException) {
+            Timber.w(e, "Failed to rename file %s to %s", completeFile, saveFile)
         }
     }
 
@@ -199,6 +201,8 @@ class DownloadFile(
         return String.format("DownloadFile (%s)", song)
     }
 
+    @KoinApiExtension
+    @Suppress("TooGenericExceptionCaught")
     private inner class DownloadTask : CancellableTask() {
         override fun execute() {
             var inputStream: InputStream? = null
@@ -286,7 +290,7 @@ class DownloadFile(
                         Util.renameFile(partialFile, completeFile)
                     }
                 }
-            } catch (x: Exception) {
+            } catch (e: Exception) {
                 Util.close(outputStream)
                 Util.delete(completeFile)
                 Util.delete(saveFile)
@@ -295,7 +299,7 @@ class DownloadFile(
                     if (retryCount > 0) {
                         --retryCount
                     }
-                    Timber.w(x, "Failed to download '%s'.", song)
+                    Timber.w(e, "Failed to download '%s'.", song)
                 }
             } finally {
                 Util.close(inputStream)
@@ -332,8 +336,8 @@ class DownloadFile(
                     val size = Util.getMinDisplayMetric(context)
                     musicService.getCoverArt(song, size, true, true)
                 }
-            } catch (x: Exception) {
-                Timber.e(x, "Failed to get cover art.")
+            } catch (e: Exception) {
+                Timber.e(e, "Failed to get cover art.")
             }
         }
 
@@ -376,7 +380,7 @@ class DownloadFile(
                     raf.setLength(length)
                     raf.close()
                 } catch (e: Exception) {
-                    Timber.w("Failed to set last-modified date on %s", file)
+                    Timber.w(e, "Failed to set last-modified date on %s", file)
                 }
             }
         }

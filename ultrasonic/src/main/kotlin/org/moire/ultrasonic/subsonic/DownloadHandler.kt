@@ -19,6 +19,7 @@ import org.moire.ultrasonic.util.Util
 /**
  * Retrieves a list of songs and adds them to the now playing list
  */
+@Suppress("LongParameterList")
 @KoinApiExtension
 class DownloadHandler(
     val mediaPlayerController: MediaPlayerController,

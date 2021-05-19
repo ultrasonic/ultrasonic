@@ -183,7 +183,7 @@ class SubsonicAPIClient(
         this.addInterceptor(loggingInterceptor)
     }
 
-    @SuppressWarnings("TrustAllX509TrustManager")
+    @SuppressWarnings("TrustAllX509TrustManager", "EmptyFunctionBlock")
     private fun OkHttpClient.Builder.allowSelfSignedCertificates() {
         val trustManager = object : X509TrustManager {
             override fun checkClientTrusted(p0: Array<out X509Certificate>?, p1: String?) {}

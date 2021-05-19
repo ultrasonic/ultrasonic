@@ -42,6 +42,7 @@ import retrofit2.Call
  * Special wrapper for [SubsonicAPIDefinition] that checks if [currentApiVersion] is suitable
  * for this call.
  */
+@Suppress("TooManyFunctions")
 internal class ApiVersionCheckWrapper(
     val api: SubsonicAPIDefinition,
     var currentApiVersion: SubsonicAPIVersions

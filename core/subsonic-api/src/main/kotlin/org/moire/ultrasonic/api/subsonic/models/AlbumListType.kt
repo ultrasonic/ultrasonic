@@ -38,6 +38,7 @@ enum class AlbumListType(val typeName: String) {
             else -> throw IllegalArgumentException("Unknown type: $typeName")
         }
 
+        @Suppress("UnusedPrivateMember") // Used in the tests
         private operator fun String.contains(other: String) = this.equals(other, true)
     }
 }
