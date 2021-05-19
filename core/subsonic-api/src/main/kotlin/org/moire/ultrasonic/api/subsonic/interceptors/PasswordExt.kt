@@ -11,6 +11,7 @@ fun String.toHexBytes(): String = this.toByteArray().toHexBytes()
 /**
  * Converts given [ByteArray] to corresponding hex chars representation.
  */
+@Suppress("MagicNumber")
 fun ByteArray.toHexBytes(): String {
     val hexChars = CharArray(this.size * 2)
     for (j in 0..this.lastIndex) {

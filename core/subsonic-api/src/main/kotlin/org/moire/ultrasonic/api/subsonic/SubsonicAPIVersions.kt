@@ -10,6 +10,7 @@ import java.lang.NumberFormatException
 /**
  * Subsonic REST API versions.
  */
+@Suppress("MagicNumber", "ComplexMethod", "ReturnCount", "ThrowsCount")
 @JsonDeserialize(using = SubsonicAPIVersions.Companion.SubsonicAPIVersionsDeserializer::class)
 enum class SubsonicAPIVersions(val subsonicVersions: String, val restApiVersion: String) {
     V1_1_0("3.8", "1.1.0"),

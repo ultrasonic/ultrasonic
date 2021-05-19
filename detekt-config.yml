@@ -62,13 +62,15 @@ style:
     maxLineLength: 120
     excludePackageStatements: false
     excludeImportStatements: false
+  MagicNumber:
+    ignoreNumbers: ['-1', '0', '1', '2', '100']
+    ignoreEnums: true
+    ignorePropertyDeclaration: true
+  UnnecessaryAbstractClass:
+    active: false
 
 comments:
   active: true
-  CommentOverPrivateFunction:
-    active: true
-  CommentOverPrivateProperty:
-    active: true
   UndocumentedPublicClass:
     active: false
     searchInNestedClass: true

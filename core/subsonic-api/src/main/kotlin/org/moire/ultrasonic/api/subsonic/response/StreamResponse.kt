@@ -9,6 +9,7 @@ import org.moire.ultrasonic.api.subsonic.SubsonicError
  *
  * [responseHttpCode] will be there always.
  */
+@Suppress("MagicNumber")
 class StreamResponse(
     val stream: InputStream? = null,
     val apiError: SubsonicError? = null,

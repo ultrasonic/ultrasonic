@@ -2,66 +2,6 @@
 <SmellBaseline>
   <ManuallySuppressedIssues></ManuallySuppressedIssues>
   <CurrentIssues>
-    <ID>ComplexMethod:SubsonicAPIVersions.kt$SubsonicAPIVersions.Companion$@JvmStatic @Throws(IllegalArgumentException::class) fun getClosestKnownClientApiVersion(apiVersion: String): SubsonicAPIVersions</ID>
-    <ID>EmptyFunctionBlock:SubsonicAPIClient.kt$SubsonicAPIClient.&lt;no name provided&gt;${}</ID>
-    <ID>MagicNumber:PasswordExt.kt$0xFF</ID>
-    <ID>MagicNumber:PasswordExt.kt$4</ID>
-    <ID>MagicNumber:PasswordMD5Interceptor.kt$PasswordMD5Interceptor$16</ID>
-    <ID>MagicNumber:StreamResponse.kt$StreamResponse$200</ID>
-    <ID>MagicNumber:StreamResponse.kt$StreamResponse$300</ID>
-    <ID>MagicNumber:SubsonicAPIVersions.kt$SubsonicAPIVersions.Companion$10</ID>
-    <ID>MagicNumber:SubsonicAPIVersions.kt$SubsonicAPIVersions.Companion$11</ID>
-    <ID>MagicNumber:SubsonicAPIVersions.kt$SubsonicAPIVersions.Companion$12</ID>
-    <ID>MagicNumber:SubsonicAPIVersions.kt$SubsonicAPIVersions.Companion$13</ID>
-    <ID>MagicNumber:SubsonicAPIVersions.kt$SubsonicAPIVersions.Companion$14</ID>
-    <ID>MagicNumber:SubsonicAPIVersions.kt$SubsonicAPIVersions.Companion$15</ID>
-    <ID>MagicNumber:SubsonicAPIVersions.kt$SubsonicAPIVersions.Companion$16</ID>
-    <ID>MagicNumber:SubsonicAPIVersions.kt$SubsonicAPIVersions.Companion$3</ID>
-    <ID>MagicNumber:SubsonicAPIVersions.kt$SubsonicAPIVersions.Companion$4</ID>
-    <ID>MagicNumber:SubsonicAPIVersions.kt$SubsonicAPIVersions.Companion$5</ID>
-    <ID>MagicNumber:SubsonicAPIVersions.kt$SubsonicAPIVersions.Companion$6</ID>
-    <ID>MagicNumber:SubsonicAPIVersions.kt$SubsonicAPIVersions.Companion$7</ID>
-    <ID>MagicNumber:SubsonicAPIVersions.kt$SubsonicAPIVersions.Companion$8</ID>
-    <ID>MagicNumber:SubsonicAPIVersions.kt$SubsonicAPIVersions.Companion$9</ID>
-    <ID>MagicNumber:SubsonicError.kt$SubsonicError.Companion$10</ID>
-    <ID>MagicNumber:SubsonicError.kt$SubsonicError.Companion$20</ID>
-    <ID>MagicNumber:SubsonicError.kt$SubsonicError.Companion$30</ID>
-    <ID>MagicNumber:SubsonicError.kt$SubsonicError.Companion$40</ID>
-    <ID>MagicNumber:SubsonicError.kt$SubsonicError.Companion$41</ID>
-    <ID>MagicNumber:SubsonicError.kt$SubsonicError.Companion$50</ID>
-    <ID>MagicNumber:SubsonicError.kt$SubsonicError.Companion$60</ID>
-    <ID>MagicNumber:SubsonicError.kt$SubsonicError.Companion$70</ID>
-    <ID>MagicNumber:SubsonicError.kt$SubsonicError.IncompatibleClientProtocolVersion$20</ID>
-    <ID>MagicNumber:SubsonicError.kt$SubsonicError.IncompatibleServerProtocolVersion$30</ID>
-    <ID>MagicNumber:SubsonicError.kt$SubsonicError.RequestedDataWasNotFound$70</ID>
-    <ID>MagicNumber:SubsonicError.kt$SubsonicError.RequiredParamMissing$10</ID>
-    <ID>MagicNumber:SubsonicError.kt$SubsonicError.TokenAuthNotSupportedForLDAP$41</ID>
-    <ID>MagicNumber:SubsonicError.kt$SubsonicError.TrialPeriodIsOver$60</ID>
-    <ID>MagicNumber:SubsonicError.kt$SubsonicError.UserNotAuthorizedForOperation$50</ID>
-    <ID>MagicNumber:SubsonicError.kt$SubsonicError.WrongUsernameOrPassword$40</ID>
-    <ID>ReturnCount:SubsonicAPIVersions.kt$SubsonicAPIVersions.Companion$@JvmStatic @Throws(IllegalArgumentException::class) fun getClosestKnownClientApiVersion(apiVersion: String): SubsonicAPIVersions</ID>
-    <ID>SwallowedException:VersionAwareJacksonConverterFactory.kt$VersionAwareJacksonConverterFactory.VersionAwareResponseBodyConverter$catch (e: IllegalArgumentException) { // no-op }</ID>
-    <ID>ThrowsCount:SubsonicAPIVersions.kt$SubsonicAPIVersions.Companion$@JvmStatic @Throws(IllegalArgumentException::class) fun getClosestKnownClientApiVersion(apiVersion: String): SubsonicAPIVersions</ID>
-    <ID>TooManyFunctions:ApiVersionCheckWrapper.kt$ApiVersionCheckWrapper : SubsonicAPIDefinition</ID>
-    <ID>UnusedPrivateMember:AlbumListType.kt$AlbumListType.Companion$private operator fun String.contains(other: String)</ID>
-    <ID>CommentOverPrivateFunction:EditServerFragment.kt$EditServerFragment$ private fun areFieldsChanged(): Boolean</ID>
-    <ID>CommentOverPrivateFunction:EditServerFragment.kt$EditServerFragment$ private fun finishActivity()</ID>
-    <ID>CommentOverPrivateFunction:EditServerFragment.kt$EditServerFragment$ private fun getFields(): Boolean</ID>
-    <ID>CommentOverPrivateFunction:EditServerFragment.kt$EditServerFragment$ private fun setFields()</ID>
-    <ID>CommentOverPrivateFunction:EditServerFragment.kt$EditServerFragment$ private fun testConnection()</ID>
-    <ID>CommentOverPrivateFunction:FileLoggerTree.kt$FileLoggerTree$ private fun getNextLogFile()</ID>
-    <ID>CommentOverPrivateFunction:FileLoggerTree.kt$FileLoggerTree$ private fun getNumberedFile(next: Boolean)</ID>
-    <ID>CommentOverPrivateFunction:MediaPlayerService.kt$MediaPlayerService$ private fun buildForegroundNotification( playerState: PlayerState, currentPlaying: DownloadFile? ): Notification</ID>
-    <ID>CommentOverPrivateFunction:RESTMusicService.kt$RESTMusicService$ @Throws(Exception::class) private fun search2( criteria: SearchCriteria ): SearchResult</ID>
-    <ID>CommentOverPrivateFunction:RESTMusicService.kt$RESTMusicService$ @Throws(Exception::class) private fun searchOld( criteria: SearchCriteria ): SearchResult</ID>
-    <ID>CommentOverPrivateFunction:ServerRowAdapter.kt$ServerRowAdapter$ private fun popupMenuItemClick(menuItem: MenuItem, position: Int): Boolean</ID>
-    <ID>CommentOverPrivateFunction:ServerRowAdapter.kt$ServerRowAdapter$ private fun serverMenuClick(view: View, position: Int)</ID>
-    <ID>CommentOverPrivateFunction:ServerSelectorFragment.kt$ServerSelectorFragment$ private fun editServer(index: Int)</ID>
-    <ID>CommentOverPrivateFunction:ServerSelectorFragment.kt$ServerSelectorFragment$ private fun onServerDeleted(index: Int)</ID>
-    <ID>CommentOverPrivateFunction:ServerSelectorFragment.kt$ServerSelectorFragment$ private fun setActiveServer(index: Int)</ID>
-    <ID>CommentOverPrivateFunction:ServerSettingsModel.kt$ServerSettingsModel$ private fun loadServerSettingFromPreferences( preferenceId: Int, serverId: Int, settings: SharedPreferences ): ServerSetting?</ID>
-    <ID>CommentOverPrivateFunction:ServerSettingsModel.kt$ServerSettingsModel$ private suspend fun areIndexesMissing(): Boolean</ID>
-    <ID>CommentOverPrivateFunction:ServerSettingsModel.kt$ServerSettingsModel$ private suspend fun reindexSettings()</ID>
     <ID>ComplexCondition:DownloadHandler.kt$DownloadHandler.&lt;no name provided&gt;$!append &amp;&amp; !playNext &amp;&amp; !unpin &amp;&amp; !background</ID>
     <ID>ComplexCondition:FilePickerAdapter.kt$FilePickerAdapter$currentDirectory.absolutePath == "/" || currentDirectory.absolutePath == "/storage" || currentDirectory.absolutePath == "/storage/emulated" || currentDirectory.absolutePath == "/mnt"</ID>
     <ID>ComplexCondition:LocalMediaPlayer.kt$LocalMediaPlayer$Util.getGaplessPlaybackPreference() &amp;&amp; Build.VERSION.SDK_INT &gt;= Build.VERSION_CODES.JELLY_BEAN &amp;&amp; ( playerState === PlayerState.STARTED || playerState === PlayerState.PAUSED )</ID>
@@ -89,7 +29,6 @@
     <ID>ImplicitDefaultLocale:SongView.kt$SongView$String.format("%02d.", trackNumber)</ID>
     <ID>ImplicitDefaultLocale:SongView.kt$SongView$String.format("%s ", bitRate)</ID>
     <ID>ImplicitDefaultLocale:SongView.kt$SongView$String.format("%s &gt; %s", suffix, transcodedSuffix)</ID>
-    <ID>LargeClass:MediaPlayerService.kt$MediaPlayerService : Service</ID>
     <ID>LargeClass:RESTMusicService.kt$RESTMusicService : MusicService</ID>
     <ID>LargeClass:TrackCollectionFragment.kt$TrackCollectionFragment : Fragment</ID>
     <ID>LongMethod:DownloadFile.kt$DownloadFile.DownloadTask$override fun execute()</ID>
@@ -104,25 +43,11 @@
     <ID>LongMethod:TrackCollectionFragment.kt$TrackCollectionFragment$override fun onViewCreated(view: View, savedInstanceState: Bundle?)</ID>
     <ID>LongMethod:TrackCollectionFragment.kt$TrackCollectionFragment$private fun updateDisplay(refresh: Boolean)</ID>
     <ID>LongMethod:TrackCollectionFragment.kt$TrackCollectionFragment$private fun updateInterfaceWithEntries(musicDirectory: MusicDirectory)</ID>
-    <ID>LongParameterList:DownloadHandler.kt$DownloadHandler$( fragment: Fragment, append: Boolean, save: Boolean, autoPlay: Boolean, playNext: Boolean, shuffle: Boolean, songs: List&lt;MusicDirectory.Entry?&gt; )</ID>
-    <ID>LongParameterList:DownloadHandler.kt$DownloadHandler$( fragment: Fragment, id: String, name: String?, isShare: Boolean, isDirectory: Boolean, save: Boolean, append: Boolean, autoPlay: Boolean, shuffle: Boolean, background: Boolean, playNext: Boolean, unpin: Boolean, isArtist: Boolean )</ID>
-    <ID>LongParameterList:DownloadHandler.kt$DownloadHandler$( fragment: Fragment, id: String, name: String?, save: Boolean, append: Boolean, autoplay: Boolean, shuffle: Boolean, background: Boolean, playNext: Boolean, unpin: Boolean )</ID>
-    <ID>LongParameterList:DownloadHandler.kt$DownloadHandler$( fragment: Fragment, id: String?, save: Boolean, append: Boolean, autoPlay: Boolean, shuffle: Boolean, background: Boolean, playNext: Boolean, unpin: Boolean, isArtist: Boolean )</ID>
     <ID>LongParameterList:ServerRowAdapter.kt$ServerRowAdapter$( private var context: Context, private var data: Array&lt;ServerSetting&gt;, private val model: ServerSettingsModel, private val activeServerProvider: ActiveServerProvider, private val manageMode: Boolean, private val serverDeletedCallback: ((Int) -&gt; Unit), private val serverEditRequestedCallback: ((Int) -&gt; Unit) )</ID>
     <ID>MagicNumber:ActiveServerProvider.kt$ActiveServerProvider$8192</ID>
-    <ID>MagicNumber:AudioFocusHandler.kt$AudioFocusHandler$0.1f</ID>
-    <ID>MagicNumber:DownloadFile.kt$DownloadFile$100</ID>
     <ID>MagicNumber:DownloadFile.kt$DownloadFile.DownloadTask$10</ID>
     <ID>MagicNumber:DownloadFile.kt$DownloadFile.DownloadTask$1000L</ID>
     <ID>MagicNumber:DownloadFile.kt$DownloadFile.DownloadTask$60</ID>
-    <ID>MagicNumber:DownloadHandler.kt$DownloadHandler$500</ID>
-    <ID>MagicNumber:FileLoggerTree.kt$FileLoggerTree$100</ID>
-    <ID>MagicNumber:FileLoggerTree.kt$FileLoggerTree$3</ID>
-    <ID>MagicNumber:FileLoggerTree.kt$FileLoggerTree$4</ID>
-    <ID>MagicNumber:FileLoggerTree.kt$FileLoggerTree$5</ID>
-    <ID>MagicNumber:FileLoggerTree.kt$FileLoggerTree$6</ID>
-    <ID>MagicNumber:FileLoggerTree.kt$FileLoggerTree$7</ID>
-    <ID>MagicNumber:LocalMediaPlayer.kt$LocalMediaPlayer$100</ID>
     <ID>MagicNumber:LocalMediaPlayer.kt$LocalMediaPlayer$1000</ID>
     <ID>MagicNumber:LocalMediaPlayer.kt$LocalMediaPlayer.&lt;no name provided&gt;$1000</ID>
     <ID>MagicNumber:LocalMediaPlayer.kt$LocalMediaPlayer.&lt;no name provided&gt;$60000</ID>
@@ -134,13 +59,10 @@
     <ID>MagicNumber:LocalMediaPlayer.kt$LocalMediaPlayer.BufferTask$8L</ID>
     <ID>MagicNumber:LocalMediaPlayer.kt$LocalMediaPlayer.CheckCompletionTask$5000L</ID>
     <ID>MagicNumber:LocalMediaPlayer.kt$LocalMediaPlayer.PositionCache$50L</ID>
-    <ID>MagicNumber:MediaPlayerService.kt$MediaPlayerService$100</ID>
     <ID>MagicNumber:MediaPlayerService.kt$MediaPlayerService$1000</ID>
     <ID>MagicNumber:MediaPlayerService.kt$MediaPlayerService$256</ID>
     <ID>MagicNumber:MediaPlayerService.kt$MediaPlayerService$3</ID>
     <ID>MagicNumber:MediaPlayerService.kt$MediaPlayerService$4</ID>
-    <ID>MagicNumber:MediaPlayerService.kt$MediaPlayerService.Companion$19</ID>
-    <ID>MagicNumber:MediaPlayerService.kt$MediaPlayerService.Companion$50L</ID>
     <ID>MagicNumber:RESTMusicService.kt$RESTMusicService$206</ID>
     <ID>MagicNumber:RESTMusicService.kt$RESTMusicService$5</ID>
     <ID>MagicNumber:SongView.kt$SongView$3</ID>
@@ -159,16 +81,12 @@
     <ID>ReturnCount:ServerRowAdapter.kt$ServerRowAdapter$ private fun popupMenuItemClick(menuItem: MenuItem, position: Int): Boolean</ID>
     <ID>ReturnCount:TrackCollectionFragment.kt$TrackCollectionFragment$override fun onContextItemSelected(menuItem: MenuItem): Boolean</ID>
     <ID>ReturnCount:TrackCollectionFragment.kt$TrackCollectionFragment$override fun onOptionsItemSelected(item: MenuItem): Boolean</ID>
-    <ID>SpreadOperator:MediaPlayerService.kt$MediaPlayerService$(*compactActions)</ID>
-    <ID>SwallowedException:DownloadFile.kt$DownloadFile$catch (e: Exception) { Timber.w("Failed to set last-modified date on %s", file) }</ID>
-    <ID>SwallowedException:DownloadFile.kt$DownloadFile$catch (ex: IOException) { Timber.w("Failed to rename file %s to %s", completeFile, saveFile) }</ID>
     <ID>SwallowedException:LocalMediaPlayer.kt$LocalMediaPlayer$catch (e: Throwable) { // Froyo or lower }</ID>
     <ID>SwallowedException:LocalMediaPlayer.kt$LocalMediaPlayer$catch (e: Throwable) { }</ID>
     <ID>SwallowedException:MediaPlayerService.kt$MediaPlayerService$catch (x: IndexOutOfBoundsException) { // Ignored }</ID>
     <ID>SwallowedException:NavigationActivity.kt$NavigationActivity$catch (e: Resources.NotFoundException) { destination.id.toString() }</ID>
     <ID>ThrowsCount:ApiCallResponseChecker.kt$ApiCallResponseChecker.Companion$@Throws(SubsonicRESTException::class, IOException::class) fun checkResponseSuccessful(response: Response&lt;out SubsonicResponse&gt;)</ID>
     <ID>TooGenericExceptionCaught:DownloadFile.kt$DownloadFile$e: Exception</ID>
-    <ID>TooGenericExceptionCaught:DownloadFile.kt$DownloadFile.DownloadTask$x: Exception</ID>
     <ID>TooGenericExceptionCaught:FileLoggerTree.kt$FileLoggerTree$x: Throwable</ID>
     <ID>TooGenericExceptionCaught:LocalMediaPlayer.kt$LocalMediaPlayer$e: Throwable</ID>
     <ID>TooGenericExceptionCaught:LocalMediaPlayer.kt$LocalMediaPlayer$ex: Exception</ID>
@@ -185,10 +103,8 @@
     <ID>TooManyFunctions:MediaPlayerService.kt$MediaPlayerService : Service</ID>
     <ID>TooManyFunctions:RESTMusicService.kt$RESTMusicService : MusicService</ID>
     <ID>TooManyFunctions:TrackCollectionFragment.kt$TrackCollectionFragment : Fragment</ID>
-    <ID>TopLevelPropertyNaming:SubsonicUncaughtExceptionHandler.kt$private const val filename = "ultrasonic-stacktrace.txt"</ID>
     <ID>UnusedPrivateMember:RESTMusicService.kt$RESTMusicService.Companion$private const val INDEXES_FOLDER_STORAGE_NAME = "indexes_folder"</ID>
     <ID>UtilityClassWithPublicConstructor:CommunicationErrorHandler.kt$CommunicationErrorHandler</ID>
     <ID>UtilityClassWithPublicConstructor:FragmentTitle.kt$FragmentTitle</ID>
-    <ID>UnnecessaryAbstractClass:BaseStorageTest.kt$BaseStorageTest</ID>
   </CurrentIssues>
 </SmellBaseline>

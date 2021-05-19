@@ -10,6 +10,7 @@ import com.fasterxml.jackson.databind.annotation.JsonDeserialize
 /**
  * Common API errors.
  */
+@Suppress("MagicNumber")
 @JsonDeserialize(using = SubsonicError.Companion.SubsonicErrorDeserializer::class)
 sealed class SubsonicError(val code: Int) {
     data class Generic(val message: String) : SubsonicError(0)
