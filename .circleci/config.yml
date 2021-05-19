@@ -2,7 +2,7 @@ version: 3
 jobs:
   build:
     docker:
-      - image: circleci/android:api-28
+      - image: circleci/android:api-29
     working_directory: ~/ultrasonic
     environment:
       JVM_OPTS: -Xmx3200m
