@@ -14,8 +14,10 @@ jobs:
             - v1-ultrasonic-{{ .Branch }}
             - v1-ultrasonic
       - run:
-          name: clean gradle.properties
-          command: echo -e "android.useAndroidX=true\nandroid.enableJetifier=true\norg.gradle.daemon=false\n" > gradle.properties
+          name: configure gradle.properties for CI building
+          command: |
+            sed -i '/^org.gradle.jvmargs/d' gradle.properties
+            sed -i 's/^org.gradle.daemon=true/org.gradle.daemon=false/g' gradle.properties
       - run:
           name: checkstyle
           command: ./gradlew -Pqc ktlintCheck
