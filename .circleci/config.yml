@@ -9,7 +9,10 @@ jobs:
     steps:
       - checkout
       - restore_cache:
-          key: gradle-cache-{{ checksum "dependencies.gradle" }}
+          keys:
+            - v1-ultrasonic-{{ .Branch }}-{{ checksum "dependencies.gradle" }}
+            - v1-ultrasonic-{{ .Branch }}
+            - v1-ultrasonic
       - run:
           name: clean gradle.properties
           command: echo -e "android.useAndroidX=true\nandroid.enableJetifier=true\norg.gradle.daemon=false\n" > gradle.properties
@@ -27,10 +30,6 @@ jobs:
           command: |
             ./gradlew ciTest testDebugUnitTest
             ./gradlew jacocoFullReport
-      - save_cache:
-          paths:
-            - ~/.gradle
-          key: gradle-cache-{{ checksum "dependencies.gradle" }}
       - run:
           name: lint
           command: ./gradlew :ultrasonic:lintRelease
@@ -40,7 +39,7 @@ jobs:
       - save_cache:
           paths:
             - ~/.gradle
-          key: gradle-cache-{{ checksum "dependencies.gradle" }}
+          key:  v1-ultrasonic-{{ .Branch }}-{{ checksum "dependencies.gradle" }}
       - store_artifacts:
           path: ultrasonic/build/reports
           destination: reports
@@ -76,7 +75,10 @@ jobs:
     steps:
       - checkout
       - restore_cache:
-          key: gradle-cache-{{ checksum "dependencies.gradle" }}
+          keys:
+            - v1-ultrasonic-{{ .Branch }}-{{ checksum "dependencies.gradle" }}
+            - v1-ultrasonic-{{ .Branch }}
+            - v1-ultrasonic
       - run:
           name: decrypt ultrasonic-keystore
           command: openssl aes-256-cbc -K ${ULTRASONIC_KEYSTORE_KEY} -iv ${ULTRASONIC_KEYSTORE_IV} -in ultrasonic-keystore.enc -out ultrasonic-keystore -d
