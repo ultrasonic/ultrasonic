@@ -21,9 +21,6 @@ package org.moire.ultrasonic.service;
 import android.graphics.Bitmap;
 import android.media.MediaMetadataRetriever;
 
-import kotlin.Pair;
-import timber.log.Timber;
-
 import org.moire.ultrasonic.data.ActiveServerProvider;
 import org.moire.ultrasonic.domain.Artist;
 import org.moire.ultrasonic.domain.Bookmark;
@@ -54,7 +51,6 @@ import java.io.Reader;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
-import java.util.Comparator;
 import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
@@ -64,6 +60,8 @@ import java.util.concurrent.TimeUnit;
 import java.util.regex.Pattern;
 
 import kotlin.Lazy;
+import kotlin.Pair;
+import timber.log.Timber;
 
 import static org.koin.java.KoinJavaComponent.inject;
 
@@ -95,49 +93,44 @@ public class OfflineMusicService implements MusicService
 		String ignoredArticlesString = "The El La Los Las Le Les";
 		final String[] ignoredArticles = COMPILE.split(ignoredArticlesString);
 
-		Collections.sort(artists, new Comparator<Artist>()
-		{
-			@Override
-			public int compare(Artist lhsArtist, Artist rhsArtist)
+		Collections.sort(artists, (lhsArtist, rhsArtist) -> {
+			String lhs = lhsArtist.getName().toLowerCase();
+			String rhs = rhsArtist.getName().toLowerCase();
+
+			char lhs1 = lhs.charAt(0);
+			char rhs1 = rhs.charAt(0);
+
+			if (Character.isDigit(lhs1) && !Character.isDigit(rhs1))
 			{
-				String lhs = lhsArtist.getName().toLowerCase();
-				String rhs = rhsArtist.getName().toLowerCase();
-
-				char lhs1 = lhs.charAt(0);
-				char rhs1 = rhs.charAt(0);
-
-				if (Character.isDigit(lhs1) && !Character.isDigit(rhs1))
-				{
-					return 1;
-				}
-
-				if (Character.isDigit(rhs1) && !Character.isDigit(lhs1))
-				{
-					return -1;
-				}
-
-				for (String article : ignoredArticles)
-				{
-					int index = lhs.indexOf(String.format("%s ", article.toLowerCase()));
-
-					if (index == 0)
-					{
-						lhs = lhs.substring(article.length() + 1);
-					}
-
-					index = rhs.indexOf(String.format("%s ", article.toLowerCase()));
-
-					if (index == 0)
-					{
-						rhs = rhs.substring(article.length() + 1);
-					}
-				}
-
-				return lhs.compareTo(rhs);
+				return 1;
 			}
+
+			if (Character.isDigit(rhs1) && !Character.isDigit(lhs1))
+			{
+				return -1;
+			}
+
+			for (String article : ignoredArticles)
+			{
+				int index = lhs.indexOf(String.format("%s ", article.toLowerCase()));
+
+				if (index == 0)
+				{
+					lhs = lhs.substring(article.length() + 1);
+				}
+
+				index = rhs.indexOf(String.format("%s ", article.toLowerCase()));
+
+				if (index == 0)
+				{
+					rhs = rhs.substring(article.length() + 1);
+				}
+			}
+
+			return lhs.compareTo(rhs);
 		});
 
-		return new Indexes(0L, ignoredArticlesString, Collections.<Artist>emptyList(), artists);
+		return new Indexes(0L, ignoredArticlesString, Collections.emptyList(), artists);
 	}
 
 	@Override
@@ -387,44 +380,31 @@ public class OfflineMusicService implements MusicService
 			}
 		}
 
-		Collections.sort(artists, new Comparator<Artist>()
-		{
-			@Override
-			public int compare(Artist lhs, Artist rhs)
+		Collections.sort(artists, (lhs, rhs) -> {
+			if (lhs.getCloseness() == rhs.getCloseness())
 			{
-				if (lhs.getCloseness() == rhs.getCloseness())
-				{
-					return 0;
-				}
-
-				else return lhs.getCloseness() > rhs.getCloseness() ? -1 : 1;
+				return 0;
 			}
+
+			else return lhs.getCloseness() > rhs.getCloseness() ? -1 : 1;
 		});
-		Collections.sort(albums, new Comparator<MusicDirectory.Entry>()
-		{
-			@Override
-			public int compare(MusicDirectory.Entry lhs, MusicDirectory.Entry rhs)
-			{
-				if (lhs.getCloseness() == rhs.getCloseness())
-				{
-					return 0;
-				}
 
-				else return lhs.getCloseness() > rhs.getCloseness() ? -1 : 1;
+		Collections.sort(albums, (lhs, rhs) -> {
+			if (lhs.getCloseness() == rhs.getCloseness())
+			{
+				return 0;
 			}
+
+			else return lhs.getCloseness() > rhs.getCloseness() ? -1 : 1;
 		});
-		Collections.sort(songs, new Comparator<MusicDirectory.Entry>()
-		{
-			@Override
-			public int compare(MusicDirectory.Entry lhs, MusicDirectory.Entry rhs)
-			{
-				if (lhs.getCloseness() == rhs.getCloseness())
-				{
-					return 0;
-				}
 
-				else return lhs.getCloseness() > rhs.getCloseness() ? -1 : 1;
+		Collections.sort(songs, (lhs, rhs) -> {
+			if (lhs.getCloseness() == rhs.getCloseness())
+			{
+				return 0;
 			}
+
+			else return lhs.getCloseness() > rhs.getCloseness() ? -1 : 1;
 		});
 
 		return new SearchResult(artists, albums, songs);
