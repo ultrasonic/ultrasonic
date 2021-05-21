@@ -26,5 +26,5 @@ val mediaPlayerModule = module {
     single { AudioFocusHandler(get()) }
 
     // TODO Ideally this can be cleaned up when all circular references are removed.
-    single { MediaPlayerController(androidContext(), get(), get(), get(), get(), get()) }
+    single { MediaPlayerController(get(), get(), get(), get(), get()) }
 }

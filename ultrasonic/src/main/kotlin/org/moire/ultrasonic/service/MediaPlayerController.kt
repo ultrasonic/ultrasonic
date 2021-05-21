@@ -1,612 +1,514 @@
 /*
- This file is part of Subsonic.
-
- Subsonic is free software: you can redistribute it and/or modify
- it under the terms of the GNU General Public License as published by
- the Free Software Foundation, either version 3 of the License, or
- (at your option) any later version.
-
- Subsonic is distributed in the hope that it will be useful,
- but WITHOUT ANY WARRANTY; without even the implied warranty of
- MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- GNU General Public License for more details.
-
- You should have received a copy of the GNU General Public License
- along with Subsonic.  If not, see <http://www.gnu.org/licenses/>.
-
- Copyright 2009 (C) Sindre Mehus
+ * MediaPlayerController.kt
+ * Copyright (C) 2009-2021 Ultrasonic developers
+ *
+ * Distributed under terms of the GNU GPLv3 license.
  */
-package org.moire.ultrasonic.service;
+package org.moire.ultrasonic.service
 
-import android.content.Context;
-import android.content.Intent;
-import timber.log.Timber;
-
-import org.koin.java.KoinJavaComponent;
-import org.moire.ultrasonic.data.ActiveServerProvider;
-import org.moire.ultrasonic.domain.MusicDirectory;
-import org.moire.ultrasonic.domain.MusicDirectory.Entry;
-import org.moire.ultrasonic.domain.PlayerState;
-import org.moire.ultrasonic.domain.RepeatMode;
-import org.moire.ultrasonic.domain.UserInfo;
-import org.moire.ultrasonic.featureflags.Feature;
-import org.moire.ultrasonic.featureflags.FeatureStorage;
-import org.moire.ultrasonic.util.ShufflePlayBuffer;
-import org.moire.ultrasonic.util.Util;
-
-import java.util.Iterator;
-import java.util.List;
-
-import kotlin.Lazy;
-
-import static org.koin.java.KoinJavaComponent.inject;
+import android.content.Intent
+import org.koin.core.component.KoinApiExtension
+import org.koin.java.KoinJavaComponent.get
+import org.koin.java.KoinJavaComponent.inject
+import org.moire.ultrasonic.app.UApp
+import org.moire.ultrasonic.data.ActiveServerProvider
+import org.moire.ultrasonic.domain.MusicDirectory
+import org.moire.ultrasonic.domain.PlayerState
+import org.moire.ultrasonic.domain.RepeatMode
+import org.moire.ultrasonic.featureflags.Feature
+import org.moire.ultrasonic.featureflags.FeatureStorage
+import org.moire.ultrasonic.service.MediaPlayerService.Companion.executeOnStartedMediaPlayerService
+import org.moire.ultrasonic.service.MediaPlayerService.Companion.getInstance
+import org.moire.ultrasonic.service.MediaPlayerService.Companion.runningInstance
+import org.moire.ultrasonic.service.MusicServiceFactory.getMusicService
+import org.moire.ultrasonic.util.ShufflePlayBuffer
+import org.moire.ultrasonic.util.Util
+import timber.log.Timber
 
 /**
  * The implementation of the Media Player Controller.
  * This class contains everything that is necessary for the Application UI
  * to control the Media Player implementation.
- *
- * @author Sindre Mehus, Joshua Bahnsen
- * @version $Id$
  */
-public class MediaPlayerController
-{
-	private boolean created = false;
-	private String suggestedPlaylistName;
-	private boolean keepScreenOn;
-
-	private boolean showVisualization;
-	private boolean autoPlayStart;
-
-	private final Context context;
-	private final Lazy<JukeboxMediaPlayer> jukeboxMediaPlayer = inject(JukeboxMediaPlayer.class);
-	private final Lazy<ActiveServerProvider> activeServerProvider = inject(ActiveServerProvider.class);
-
-	private final DownloadQueueSerializer downloadQueueSerializer;
-	private final ExternalStorageMonitor externalStorageMonitor;
-	private final Downloader downloader;
-	private final ShufflePlayBuffer shufflePlayBuffer;
-	private final LocalMediaPlayer localMediaPlayer;
-
-	public MediaPlayerController(Context context, DownloadQueueSerializer downloadQueueSerializer,
-								 ExternalStorageMonitor externalStorageMonitor, Downloader downloader,
-								 ShufflePlayBuffer shufflePlayBuffer, LocalMediaPlayer localMediaPlayer)
-	{
-		this.context = context;
-		this.downloadQueueSerializer = downloadQueueSerializer;
-		this.externalStorageMonitor = externalStorageMonitor;
-		this.downloader = downloader;
-		this.shufflePlayBuffer = shufflePlayBuffer;
-		this.localMediaPlayer = localMediaPlayer;
-
-		Timber.i("MediaPlayerController constructed");
-	}
-
-	public void onCreate()
-	{
-		if (created) return;
-		this.externalStorageMonitor.onCreate(this::reset);
-
-		setJukeboxEnabled(activeServerProvider.getValue().getActiveServer().getJukeboxByDefault());
-		created = true;
-
-		Timber.i("MediaPlayerController created");
-	}
-
-	public void onDestroy()
-	{
-		if (!created) return;
-		externalStorageMonitor.onDestroy();
-		context.stopService(new Intent(context, MediaPlayerService.class));
-		downloader.onDestroy();
-		created = false;
-
-		Timber.i("MediaPlayerController destroyed");
-	}
-	public synchronized void restore(List<MusicDirectory.Entry> songs, final int currentPlayingIndex, final int currentPlayingPosition, final boolean autoPlay, boolean newPlaylist)
-	{
-		download(songs, false, false, false, false, newPlaylist);
-
-		if (currentPlayingIndex != -1)
-		{
-			MediaPlayerService.executeOnStartedMediaPlayerService(context, (mediaPlayerService) ->
-				 {
-					mediaPlayerService.play(currentPlayingIndex, autoPlayStart);
-
-					if (localMediaPlayer.currentPlaying != null)
-					{
-						if (autoPlay && jukeboxMediaPlayer.getValue().isEnabled())
-						{
-							jukeboxMediaPlayer.getValue().skip(downloader.getCurrentPlayingIndex(), currentPlayingPosition / 1000);
-						}
-						else
-						{
-							if (localMediaPlayer.currentPlaying.isCompleteFileAvailable())
-							{
-								localMediaPlayer.play(localMediaPlayer.currentPlaying, currentPlayingPosition, autoPlay);
-							}
-						}
-					}
-					autoPlayStart = false;
-					return null;
-				 }
-			);
-		}
-	}
-
-	public synchronized void preload()
-	{
-		MediaPlayerService.getInstance(context);
-	}
-
-	public synchronized void play(final int index)
-	{
-		MediaPlayerService.executeOnStartedMediaPlayerService(context, (mediaPlayerService) -> {
-				mediaPlayerService.play(index, true);
-					return null;
-				}
-		);
-	}
-
-	public synchronized void play()
-	{
-		MediaPlayerService.executeOnStartedMediaPlayerService(context, (mediaPlayerService) -> {
-
-				mediaPlayerService.play();
-					return null;
-				}
-		);
-	}
-
-	public synchronized void resumeOrPlay()
-	{
-		MediaPlayerService.executeOnStartedMediaPlayerService(context, (mediaPlayerService) -> {
-				mediaPlayerService.resumeOrPlay();
-					return null;
-				}
-		);
-	}
-
-	public synchronized void togglePlayPause()
-	{
-		if (localMediaPlayer.playerState == PlayerState.IDLE) autoPlayStart = true;
-		MediaPlayerService.executeOnStartedMediaPlayerService(context, (mediaPlayerService) -> {
-				mediaPlayerService.togglePlayPause();
-					return null;
-				}
-		);
-	}
-
-	public synchronized void start()
-	{
-		MediaPlayerService.executeOnStartedMediaPlayerService(context, (mediaPlayerService) -> {
-				mediaPlayerService.start();
-					return null;
-				}
-		);
-	}
-
-	public synchronized void seekTo(final int position)
-	{
-		MediaPlayerService mediaPlayerService = MediaPlayerService.getRunningInstance();
-		if (mediaPlayerService != null) mediaPlayerService.seekTo(position);
-	}
-
-	public synchronized void pause()
-	{
-		MediaPlayerService mediaPlayerService = MediaPlayerService.getRunningInstance();
-		if (mediaPlayerService != null) mediaPlayerService.pause();
-	}
-
-	public synchronized void stop()
-	{
-		MediaPlayerService mediaPlayerService = MediaPlayerService.getRunningInstance();
-		if (mediaPlayerService != null) mediaPlayerService.stop();
-	}
-
-	public synchronized void download(List<MusicDirectory.Entry> songs, boolean save, boolean autoPlay, boolean playNext, boolean shuffle, boolean newPlaylist)
-	{
-		downloader.download(songs, save, autoPlay, playNext, newPlaylist);
-		jukeboxMediaPlayer.getValue().updatePlaylist();
-
-		if (shuffle) shuffle();
-
-		if (!playNext && !autoPlay && (downloader.downloadList.size() - 1) == downloader.getCurrentPlayingIndex())
-		{
-			MediaPlayerService mediaPlayerService = MediaPlayerService.getRunningInstance();
-			if (mediaPlayerService != null) mediaPlayerService.setNextPlaying();
-		}
-
-		if (autoPlay)
-		{
-			play(0);
-		}
-		else
-		{
-			if (localMediaPlayer.currentPlaying == null && downloader.downloadList.size() > 0)
-			{
-				localMediaPlayer.currentPlaying = downloader.downloadList.get(0);
-				localMediaPlayer.currentPlaying.setPlaying(true);
-			}
-
-			downloader.checkDownloads();
-		}
-
-		downloadQueueSerializer.serializeDownloadQueue(downloader.downloadList, downloader.getCurrentPlayingIndex(), getPlayerPosition());
-	}
-
-	public synchronized void downloadBackground(List<MusicDirectory.Entry> songs, boolean save)
-	{
-		downloader.downloadBackground(songs, save);
-		downloadQueueSerializer.serializeDownloadQueue(downloader.downloadList, downloader.getCurrentPlayingIndex(), getPlayerPosition());
-	}
-
-	public synchronized void setCurrentPlaying(DownloadFile currentPlaying)
-	{
-		MediaPlayerService mediaPlayerService = MediaPlayerService.getRunningInstance();
-		if (mediaPlayerService != null) localMediaPlayer.setCurrentPlaying(currentPlaying);
-	}
-
-	public synchronized void setCurrentPlaying(int index)
-	{
-		MediaPlayerService mediaPlayerService = MediaPlayerService.getRunningInstance();
-		if (mediaPlayerService != null) mediaPlayerService.setCurrentPlaying(index);
-	}
-
-	public synchronized void setPlayerState(PlayerState state)
-	{
-		MediaPlayerService mediaPlayerService = MediaPlayerService.getRunningInstance();
-		if (mediaPlayerService != null) localMediaPlayer.setPlayerState(state);
-	}
-
-	public void stopJukeboxService()
-	{
-		jukeboxMediaPlayer.getValue().stopJukeboxService();
-	}
-
-	public synchronized void setShufflePlayEnabled(boolean enabled)
-	{
-		shufflePlayBuffer.isEnabled = enabled;
-		if (enabled)
-		{
-			clear();
-			downloader.checkDownloads();
-		}
-	}
-
-	public boolean isShufflePlayEnabled()
-	{
-		return shufflePlayBuffer.isEnabled;
-	}
-
-	public synchronized void shuffle()
-	{
-		downloader.shuffle();
-
-		downloadQueueSerializer.serializeDownloadQueue(downloader.downloadList, downloader.getCurrentPlayingIndex(), getPlayerPosition());
-		jukeboxMediaPlayer.getValue().updatePlaylist();
-
-		MediaPlayerService mediaPlayerService = MediaPlayerService.getRunningInstance();
-		if (mediaPlayerService != null) mediaPlayerService.setNextPlaying();
-	}
-
-	public RepeatMode getRepeatMode()
-	{
-		return Util.getRepeatMode();
-	}
-
-	public synchronized void setRepeatMode(RepeatMode repeatMode)
-	{
-		Util.setRepeatMode(repeatMode);
-		MediaPlayerService mediaPlayerService = MediaPlayerService.getRunningInstance();
-		if (mediaPlayerService != null) mediaPlayerService.setNextPlaying();
-	}
-
-	public boolean getKeepScreenOn()
-	{
-		return keepScreenOn;
-	}
-
-	public void setKeepScreenOn(boolean keepScreenOn)
-	{
-		this.keepScreenOn = keepScreenOn;
-	}
-
-	public boolean getShowVisualization()
-	{
-		return showVisualization;
-	}
-
-	public void setShowVisualization(boolean showVisualization)
-	{
-		this.showVisualization = showVisualization;
-	}
-
-	public synchronized void clear()
-	{
-		clear(true);
-	}
-
-	public synchronized void clear(boolean serialize)
-	{
-		MediaPlayerService mediaPlayerService = MediaPlayerService.getRunningInstance();
-		if (mediaPlayerService != null) {
-			mediaPlayerService.clear(serialize);
-		} else {
-			// If no MediaPlayerService is available, just empty the playlist
-			downloader.clear();
-			if (serialize) {
-				downloadQueueSerializer.serializeDownloadQueue(downloader.downloadList,
-					downloader.getCurrentPlayingIndex(), getPlayerPosition());
-			}
-		}
-
-		jukeboxMediaPlayer.getValue().updatePlaylist();
-	}
-
-	public synchronized void clearIncomplete()
-	{
-		reset();
-		Iterator<DownloadFile> iterator = downloader.downloadList.iterator();
-
-		while (iterator.hasNext())
-		{
-			DownloadFile downloadFile = iterator.next();
-			if (!downloadFile.isCompleteFileAvailable())
-			{
-				iterator.remove();
-			}
-		}
-
-		downloadQueueSerializer.serializeDownloadQueue(downloader.downloadList, downloader.getCurrentPlayingIndex(), getPlayerPosition());
-		jukeboxMediaPlayer.getValue().updatePlaylist();
-	}
-
-	public synchronized void remove(DownloadFile downloadFile)
-	{
-		if (downloadFile == localMediaPlayer.currentPlaying)
-		{
-			reset();
-			setCurrentPlaying(null);
-		}
-
-		downloader.removeDownloadFile(downloadFile);
-
-		downloadQueueSerializer.serializeDownloadQueue(downloader.downloadList, downloader.getCurrentPlayingIndex(), getPlayerPosition());
-		jukeboxMediaPlayer.getValue().updatePlaylist();
-
-		if (downloadFile == localMediaPlayer.nextPlaying)
-		{
-			MediaPlayerService mediaPlayerService = MediaPlayerService.getRunningInstance();
-			if (mediaPlayerService != null) mediaPlayerService.setNextPlaying();
-		}
-	}
-
-	public synchronized void delete(List<MusicDirectory.Entry> songs)
-	{
-		for (MusicDirectory.Entry song : songs)
-		{
-			downloader.getDownloadFileForSong(song).delete();
-		}
-	}
-
-	public synchronized void unpin(List<MusicDirectory.Entry> songs)
-	{
-		for (MusicDirectory.Entry song : songs)
-		{
-			downloader.getDownloadFileForSong(song).unpin();
-		}
-	}
-
-	public synchronized void previous()
-	{
-		int index = downloader.getCurrentPlayingIndex();
-		if (index == -1)
-		{
-			return;
-		}
-
-		// Restart song if played more than five seconds.
-		if (getPlayerPosition() > 5000 || index == 0)
-		{
-			play(index);
-		}
-		else
-		{
-			play(index - 1);
-		}
-	}
-
-	public synchronized void next()
-	{
-		int index = downloader.getCurrentPlayingIndex();
-		if (index != -1)
-		{
-			switch (getRepeatMode())
-			{
-				case SINGLE:
-				case OFF:
-					if (index + 1 >= 0 && index + 1 < downloader.downloadList.size()) {
-						play(index + 1);
-					}
-					break;
-				case ALL:
-					play((index + 1) % downloader.downloadList.size());
-					break;
-				default:
-					break;
-			}
-		}
-	}
-
-	public synchronized void reset()
-	{
-		MediaPlayerService mediaPlayerService = MediaPlayerService.getRunningInstance();
-		if (mediaPlayerService != null) localMediaPlayer.reset();
-	}
-
-	public synchronized int getPlayerPosition()
-	{
-		MediaPlayerService mediaPlayerService = MediaPlayerService.getRunningInstance();
-		if (mediaPlayerService == null) return 0;
-		return mediaPlayerService.getPlayerPosition();
-	}
-
-	public synchronized int getPlayerDuration()
-	{
-		if (localMediaPlayer.currentPlaying != null)
-		{
-			Integer duration = localMediaPlayer.currentPlaying.getSong().getDuration();
-			if (duration != null)
-			{
-				return duration * 1000;
-			}
-		}
-
-		MediaPlayerService mediaPlayerService = MediaPlayerService.getRunningInstance();
-		if (mediaPlayerService == null) return 0;
-		return mediaPlayerService.getPlayerDuration();
-	}
-
-	public PlayerState getPlayerState()	{ return localMediaPlayer.playerState; }
-
-	public void setSuggestedPlaylistName(String name)
-	{
-		this.suggestedPlaylistName = name;
-	}
-
-	public String getSuggestedPlaylistName()
-	{
-		return suggestedPlaylistName;
-	}
-
-	public boolean isJukeboxEnabled()
-	{
-		return jukeboxMediaPlayer.getValue().isEnabled();
-	}
-
-	public boolean isJukeboxAvailable()
-	{
-		try
-		{
-			String username = activeServerProvider.getValue().getActiveServer().getUserName();
-			UserInfo user = MusicServiceFactory.getMusicService().getUser(username);
-			return user.getJukeboxRole();
-		}
-		catch (Exception e)
-		{
-			Timber.w(e, "Error getting user information");
-		}
-
-		return false;
-	}
-
-	public void setJukeboxEnabled(boolean jukeboxEnabled)
-	{
-		jukeboxMediaPlayer.getValue().setEnabled(jukeboxEnabled);
-		setPlayerState(PlayerState.IDLE);
-
-		if (jukeboxEnabled)
-		{
-			jukeboxMediaPlayer.getValue().startJukeboxService();
-
-			reset();
-
-			// Cancel current download, if necessary.
-			if (downloader.currentDownloading != null)
-			{
-				downloader.currentDownloading.cancelDownload();
-			}
-		}
-		else
-		{
-			jukeboxMediaPlayer.getValue().stopJukeboxService();
-		}
-	}
-
-	public void adjustJukeboxVolume(boolean up)
-	{
-		jukeboxMediaPlayer.getValue().adjustVolume(up);
-	}
-
-	public void setVolume(float volume)
-	{
-		MediaPlayerService mediaPlayerService = MediaPlayerService.getRunningInstance();
-		if (mediaPlayerService != null) localMediaPlayer.setVolume(volume);
-	}
-
-	public void updateNotification()
-	{
-		MediaPlayerService mediaPlayerService = MediaPlayerService.getRunningInstance();
-		if (mediaPlayerService != null) mediaPlayerService.updateNotification(localMediaPlayer.playerState, localMediaPlayer.currentPlaying);
-	}
-
-	public void toggleSongStarred() {
-		if (localMediaPlayer.currentPlaying == null)
-			return;
-
-		final Entry song = localMediaPlayer.currentPlaying.getSong();
-
-		// Trigger an update
-		localMediaPlayer.setCurrentPlaying(localMediaPlayer.currentPlaying);
-
-		song.setStarred(!song.getStarred());
-	}
-
-    public void setSongRating(final int rating)
-	{
-		if (!KoinJavaComponent.get(FeatureStorage.class).isFeatureEnabled(Feature.FIVE_STAR_RATING))
-			return;
-
-		if (localMediaPlayer.currentPlaying == null)
-			return;
-
-		final Entry song = localMediaPlayer.currentPlaying.getSong();
-		song.setUserRating(rating);
-
-		new Thread(() -> {
-			try
-			{
-				MusicServiceFactory.getMusicService().setRating(song.getId(), rating);
-			}
-			catch (Exception e)
-			{
-				Timber.e(e);
-			}
-		}).start();
-
-		updateNotification();
-	}
-
-	public DownloadFile getCurrentPlaying() {
-		return localMediaPlayer.currentPlaying;
-	}
-
-	public int getPlaylistSize() {
-		return downloader.downloadList.size();
-	}
-
-	public int getCurrentPlayingNumberOnPlaylist() {
-		return downloader.getCurrentPlayingIndex();
-	}
-
-	public DownloadFile getCurrentDownloading() {
-		return downloader.currentDownloading;
-	}
-
-	public List<DownloadFile> getPlayList() {
-		return downloader.downloadList;
-	}
-
-	public long getPlayListUpdateRevision() {
-		return downloader.getDownloadListUpdateRevision();
-	}
-
-	public long getPlayListDuration() {
-		return downloader.getDownloadListDuration();
-	}
-
-	public DownloadFile getDownloadFileForSong(Entry song) {
-		return downloader.getDownloadFileForSong(song);
-	}
+@KoinApiExtension
+@Suppress("TooManyFunctions")
+class MediaPlayerController(
+    private val downloadQueueSerializer: DownloadQueueSerializer,
+    private val externalStorageMonitor: ExternalStorageMonitor,
+    private val downloader: Downloader,
+    private val shufflePlayBuffer: ShufflePlayBuffer,
+    private val localMediaPlayer: LocalMediaPlayer
+) {
+
+    private var created = false
+    var suggestedPlaylistName: String? = null
+    var keepScreenOn = false
+    var showVisualization = false
+    private var autoPlayStart = false
+
+    private val jukeboxMediaPlayer = inject(JukeboxMediaPlayer::class.java).value
+    private val activeServerProvider = inject(ActiveServerProvider::class.java).value
+
+    fun onCreate() {
+        if (created) return
+        externalStorageMonitor.onCreate { reset() }
+        isJukeboxEnabled = activeServerProvider.getActiveServer().jukeboxByDefault
+        created = true
+        Timber.i("MediaPlayerController created")
+    }
+
+    fun onDestroy() {
+        if (!created) return
+        val context = UApp.applicationContext()
+        externalStorageMonitor.onDestroy()
+        context.stopService(Intent(context, MediaPlayerService::class.java))
+        downloader.onDestroy()
+        created = false
+        Timber.i("MediaPlayerController destroyed")
+    }
+
+    @Synchronized
+    fun restore(
+        songs: List<MusicDirectory.Entry?>?,
+        currentPlayingIndex: Int,
+        currentPlayingPosition: Int,
+        autoPlay: Boolean,
+        newPlaylist: Boolean
+    ) {
+        download(
+            songs,
+            save = false,
+            autoPlay = false,
+            playNext = false,
+            shuffle = false,
+            newPlaylist = newPlaylist
+        )
+        if (currentPlayingIndex != -1) {
+            executeOnStartedMediaPlayerService { mediaPlayerService: MediaPlayerService ->
+                mediaPlayerService.play(currentPlayingIndex, autoPlayStart)
+                if (localMediaPlayer.currentPlaying != null) {
+                    if (autoPlay && jukeboxMediaPlayer.isEnabled) {
+                        jukeboxMediaPlayer.skip(
+                            downloader.currentPlayingIndex,
+                            currentPlayingPosition / 1000
+                        )
+                    } else {
+                        if (localMediaPlayer.currentPlaying!!.isCompleteFileAvailable) {
+                            localMediaPlayer.play(
+                                localMediaPlayer.currentPlaying,
+                                currentPlayingPosition,
+                                autoPlay
+                            )
+                        }
+                    }
+                }
+                autoPlayStart = false
+            }
+        }
+    }
+
+    @Synchronized
+    fun preload() {
+        getInstance()
+    }
+
+    @Synchronized
+    fun play(index: Int) {
+        executeOnStartedMediaPlayerService { service: MediaPlayerService ->
+            service.play(index, true)
+        }
+    }
+
+    @Synchronized
+    fun play() {
+        executeOnStartedMediaPlayerService { service: MediaPlayerService ->
+            service.play()
+        }
+    }
+
+    @Synchronized
+    fun resumeOrPlay() {
+        executeOnStartedMediaPlayerService { service: MediaPlayerService ->
+            service.resumeOrPlay()
+        }
+    }
+
+    @Synchronized
+    fun togglePlayPause() {
+        if (localMediaPlayer.playerState === PlayerState.IDLE) autoPlayStart = true
+        executeOnStartedMediaPlayerService { service: MediaPlayerService ->
+            service.togglePlayPause()
+        }
+    }
+
+    @Synchronized
+    fun start() {
+        executeOnStartedMediaPlayerService { service: MediaPlayerService ->
+            service.start()
+        }
+    }
+
+    @Synchronized
+    fun seekTo(position: Int) {
+        val mediaPlayerService = runningInstance
+        mediaPlayerService?.seekTo(position)
+    }
+
+    @Synchronized
+    fun pause() {
+        val mediaPlayerService = runningInstance
+        mediaPlayerService?.pause()
+    }
+
+    @Synchronized
+    fun stop() {
+        val mediaPlayerService = runningInstance
+        mediaPlayerService?.stop()
+    }
+
+    @Synchronized
+    @Suppress("LongParameterList")
+    fun download(
+        songs: List<MusicDirectory.Entry?>?,
+        save: Boolean,
+        autoPlay: Boolean,
+        playNext: Boolean,
+        shuffle: Boolean,
+        newPlaylist: Boolean
+    ) {
+        downloader.download(songs, save, autoPlay, playNext, newPlaylist)
+        jukeboxMediaPlayer.updatePlaylist()
+        if (shuffle) shuffle()
+        val isLastTrack = (downloader.downloadList.size - 1 == downloader.currentPlayingIndex)
+
+        if (!playNext && !autoPlay && isLastTrack) {
+            val mediaPlayerService = runningInstance
+            mediaPlayerService?.setNextPlaying()
+        }
+
+        if (autoPlay) {
+            play(0)
+        } else {
+            if (localMediaPlayer.currentPlaying == null && downloader.downloadList.size > 0) {
+                localMediaPlayer.currentPlaying = downloader.downloadList[0]
+                downloader.downloadList[0].setPlaying(true)
+            }
+            downloader.checkDownloads()
+        }
+
+        downloadQueueSerializer.serializeDownloadQueue(
+            downloader.downloadList,
+            downloader.currentPlayingIndex,
+            playerPosition
+        )
+    }
+
+    @Synchronized
+    fun downloadBackground(songs: List<MusicDirectory.Entry?>?, save: Boolean) {
+        downloader.downloadBackground(songs, save)
+        downloadQueueSerializer.serializeDownloadQueue(
+            downloader.downloadList,
+            downloader.currentPlayingIndex,
+            playerPosition
+        )
+    }
+
+    @Synchronized
+    fun setCurrentPlaying(index: Int) {
+        val mediaPlayerService = runningInstance
+        mediaPlayerService?.setCurrentPlaying(index)
+    }
+
+    fun stopJukeboxService() {
+        jukeboxMediaPlayer.stopJukeboxService()
+    }
+
+    @set:Synchronized
+    var isShufflePlayEnabled: Boolean
+        get() = shufflePlayBuffer.isEnabled
+        set(enabled) {
+            shufflePlayBuffer.isEnabled = enabled
+            if (enabled) {
+                clear()
+                downloader.checkDownloads()
+            }
+        }
+
+    @Synchronized
+    fun shuffle() {
+        downloader.shuffle()
+        downloadQueueSerializer.serializeDownloadQueue(
+            downloader.downloadList,
+            downloader.currentPlayingIndex,
+            playerPosition
+        )
+        jukeboxMediaPlayer.updatePlaylist()
+        val mediaPlayerService = runningInstance
+        mediaPlayerService?.setNextPlaying()
+    }
+
+    @set:Synchronized
+    var repeatMode: RepeatMode?
+        get() = Util.getRepeatMode()
+        set(repeatMode) {
+            Util.setRepeatMode(repeatMode)
+            val mediaPlayerService = runningInstance
+            mediaPlayerService?.setNextPlaying()
+        }
+
+    @Synchronized
+    fun clear() {
+        clear(true)
+    }
+
+    @Synchronized
+    fun clear(serialize: Boolean) {
+        val mediaPlayerService = runningInstance
+        if (mediaPlayerService != null) {
+            mediaPlayerService.clear(serialize)
+        } else {
+            // If no MediaPlayerService is available, just empty the playlist
+            downloader.clear()
+            if (serialize) {
+                downloadQueueSerializer.serializeDownloadQueue(
+                    downloader.downloadList,
+                    downloader.currentPlayingIndex, playerPosition
+                )
+            }
+        }
+        jukeboxMediaPlayer.updatePlaylist()
+    }
+
+    @Synchronized
+    fun clearIncomplete() {
+        reset()
+        val iterator = downloader.downloadList.iterator()
+        while (iterator.hasNext()) {
+            val downloadFile = iterator.next()
+            if (!downloadFile.isCompleteFileAvailable) {
+                iterator.remove()
+            }
+        }
+
+        downloadQueueSerializer.serializeDownloadQueue(
+            downloader.downloadList,
+            downloader.currentPlayingIndex,
+            playerPosition
+        )
+
+        jukeboxMediaPlayer.updatePlaylist()
+    }
+
+    @Synchronized
+    fun remove(downloadFile: DownloadFile) {
+        if (downloadFile == localMediaPlayer.currentPlaying) {
+            reset()
+            currentPlaying = null
+        }
+        downloader.removeDownloadFile(downloadFile)
+
+        downloadQueueSerializer.serializeDownloadQueue(
+            downloader.downloadList,
+            downloader.currentPlayingIndex,
+            playerPosition
+        )
+
+        jukeboxMediaPlayer.updatePlaylist()
+
+        if (downloadFile == localMediaPlayer.nextPlaying) {
+            val mediaPlayerService = runningInstance
+            mediaPlayerService?.setNextPlaying()
+        }
+    }
+
+    @Synchronized
+    fun delete(songs: List<MusicDirectory.Entry?>) {
+        for (song in songs) {
+            downloader.getDownloadFileForSong(song).delete()
+        }
+    }
+
+    @Synchronized
+    fun unpin(songs: List<MusicDirectory.Entry?>) {
+        for (song in songs) {
+            downloader.getDownloadFileForSong(song).unpin()
+        }
+    }
+
+    @Synchronized
+    fun previous() {
+        val index = downloader.currentPlayingIndex
+        if (index == -1) {
+            return
+        }
+
+        // Restart song if played more than five seconds.
+        @Suppress("MagicNumber")
+        if (playerPosition > 5000 || index == 0) {
+            play(index)
+        } else {
+            play(index - 1)
+        }
+    }
+
+    @Synchronized
+    operator fun next() {
+        val index = downloader.currentPlayingIndex
+        if (index != -1) {
+            when (repeatMode) {
+                RepeatMode.SINGLE, RepeatMode.OFF -> {
+                    // Play next if exists
+                    if (index + 1 >= 0 && index + 1 < downloader.downloadList.size) {
+                        play(index + 1)
+                    }
+                }
+                RepeatMode.ALL -> {
+                    play((index + 1) % downloader.downloadList.size)
+                }
+                else -> {
+                }
+            }
+        }
+    }
+
+    @Synchronized
+    fun reset() {
+        val mediaPlayerService = runningInstance
+        if (mediaPlayerService != null) localMediaPlayer.reset()
+    }
+
+    @get:Synchronized
+    val playerPosition: Int
+        get() {
+            val mediaPlayerService = runningInstance ?: return 0
+            return mediaPlayerService.playerPosition
+        }
+
+    @get:Synchronized
+    val playerDuration: Int
+        get() {
+            if (localMediaPlayer.currentPlaying != null) {
+                val duration = localMediaPlayer.currentPlaying!!.song.duration
+                if (duration != null) {
+                    return duration * 1000
+                }
+            }
+            val mediaPlayerService = runningInstance ?: return 0
+            return mediaPlayerService.playerDuration
+        }
+
+    @set:Synchronized
+    var playerState: PlayerState
+        get() = localMediaPlayer.playerState
+        set(state) {
+            val mediaPlayerService = runningInstance
+            if (mediaPlayerService != null) localMediaPlayer.setPlayerState(state)
+        }
+
+    @set:Synchronized
+    var isJukeboxEnabled: Boolean
+        get() = jukeboxMediaPlayer.isEnabled
+        set(jukeboxEnabled) {
+            jukeboxMediaPlayer.isEnabled = jukeboxEnabled
+            playerState = PlayerState.IDLE
+            if (jukeboxEnabled) {
+                jukeboxMediaPlayer.startJukeboxService()
+                reset()
+
+                // Cancel current download, if necessary.
+                if (downloader.currentDownloading != null) {
+                    downloader.currentDownloading.cancelDownload()
+                }
+            } else {
+                jukeboxMediaPlayer.stopJukeboxService()
+            }
+        }
+
+    @Suppress("TooGenericExceptionCaught") // The interface throws only generic exceptions
+    val isJukeboxAvailable: Boolean
+        get() {
+            try {
+                val username = activeServerProvider.getActiveServer().userName
+                val (_, _, _, _, _, _, _, _, _, _, _, _, jukeboxRole) = getMusicService().getUser(
+                    username
+                )
+                return jukeboxRole
+            } catch (e: Exception) {
+                Timber.w(e, "Error getting user information")
+            }
+            return false
+        }
+
+    fun adjustJukeboxVolume(up: Boolean) {
+        jukeboxMediaPlayer.adjustVolume(up)
+    }
+
+    fun setVolume(volume: Float) {
+        if (runningInstance != null) localMediaPlayer.setVolume(volume)
+    }
+
+    private fun updateNotification() {
+        runningInstance?.updateNotification(
+            localMediaPlayer.playerState,
+            localMediaPlayer.currentPlaying
+        )
+    }
+
+    fun toggleSongStarred() {
+        if (localMediaPlayer.currentPlaying == null) return
+        val song = localMediaPlayer.currentPlaying!!.song
+
+        // Trigger an update
+        localMediaPlayer.setCurrentPlaying(localMediaPlayer.currentPlaying)
+        song.starred = !song.starred
+    }
+
+    @Suppress("TooGenericExceptionCaught") // The interface throws only generic exceptions
+    fun setSongRating(rating: Int) {
+        if (!get(FeatureStorage::class.java).isFeatureEnabled(Feature.FIVE_STAR_RATING)) return
+        if (localMediaPlayer.currentPlaying == null) return
+        val song = localMediaPlayer.currentPlaying!!.song
+        song.userRating = rating
+        Thread {
+            try {
+                getMusicService().setRating(song.id, rating)
+            } catch (e: Exception) {
+                Timber.e(e)
+            }
+        }.start()
+        updateNotification()
+    }
+
+    @set:Synchronized
+    var currentPlaying: DownloadFile?
+        get() = localMediaPlayer.currentPlaying
+        set(currentPlaying) {
+            if (runningInstance != null) localMediaPlayer.setCurrentPlaying(currentPlaying)
+        }
+
+    val playlistSize: Int
+        get() = downloader.downloadList.size
+
+    val currentPlayingNumberOnPlaylist: Int
+        get() = downloader.currentPlayingIndex
+
+    val currentDownloading: DownloadFile
+        get() = downloader.currentDownloading
+
+    val playList: List<DownloadFile>
+        get() = downloader.downloadList
+
+    val playListUpdateRevision: Long
+        get() = downloader.downloadListUpdateRevision
+
+    val playListDuration: Long
+        get() = downloader.downloadListDuration
+
+    fun getDownloadFileForSong(song: MusicDirectory.Entry?): DownloadFile {
+        return downloader.getDownloadFileForSong(song)
+    }
+
+    init {
+        Timber.i("MediaPlayerController constructed")
+    }
 }

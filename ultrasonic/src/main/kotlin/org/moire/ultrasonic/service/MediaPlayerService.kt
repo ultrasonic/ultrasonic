@@ -24,8 +24,10 @@ import android.view.KeyEvent
 import androidx.core.app.NotificationCompat
 import androidx.core.app.NotificationManagerCompat
 import org.koin.android.ext.android.inject
+import org.koin.core.component.KoinApiExtension
 import org.moire.ultrasonic.R
 import org.moire.ultrasonic.activity.NavigationActivity
+import org.moire.ultrasonic.app.UApp
 import org.moire.ultrasonic.domain.MusicDirectory
 import org.moire.ultrasonic.domain.PlayerState
 import org.moire.ultrasonic.domain.RepeatMode
@@ -47,6 +49,7 @@ import timber.log.Timber
  * Android Foreground Service for playing music
  * while the rest of the Ultrasonic App is in the background.
  */
+@KoinApiExtension
 @Suppress("LargeClass")
 class MediaPlayerService : Service() {
     private val binder: IBinder = SimpleServiceBinder(this)
@@ -906,7 +909,8 @@ class MediaPlayerService : Service() {
         private val instanceLock = Any()
 
         @JvmStatic
-        fun getInstance(context: Context): MediaPlayerService? {
+        fun getInstance(): MediaPlayerService? {
+            val context = UApp.applicationContext()
             synchronized(instanceLock) {
                 for (i in 0..19) {
                     if (instance != null) return instance
@@ -931,18 +935,18 @@ class MediaPlayerService : Service() {
 
         @JvmStatic
         fun executeOnStartedMediaPlayerService(
-            context: Context,
-            taskToExecute: (MediaPlayerService?) -> Unit
+            taskToExecute: (MediaPlayerService) -> Unit
         ) {
 
             val t: Thread = object : Thread() {
                 override fun run() {
-                    val instance = getInstance(context)
+                    val instance = getInstance()
                     if (instance == null) {
                         Timber.e("ExecuteOnStarted.. failed to get a MediaPlayerService instance!")
                         return
+                    } else {
+                        taskToExecute(instance)
                     }
-                    taskToExecute(instance)
                 }
             }
             t.start()
