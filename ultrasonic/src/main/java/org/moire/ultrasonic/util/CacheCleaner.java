@@ -1,6 +1,5 @@
 package org.moire.ultrasonic.util;
 
-import android.content.Context;
 import android.os.AsyncTask;
 import android.os.StatFs;
 import timber.log.Timber;
@@ -31,13 +30,11 @@ public class CacheCleaner
 {
 	private static final long MIN_FREE_SPACE = 500 * 1024L * 1024L;
 
-	private final Context context;
 	private Lazy<Downloader> downloader = inject(Downloader.class);
 	private Lazy<ActiveServerProvider> activeServerProvider = inject(ActiveServerProvider.class);
 
-	public CacheCleaner(Context context)
+	public CacheCleaner()
 	{
-		this.context = context;
 	}
 
 	public void clean()
@@ -168,7 +165,7 @@ public class CacheCleaner
 			}
 		}
 
-		Timber.i("Deleted           : %s", Util.formatBytes(bytesDeleted));
+		Timber.i("Deleted: %s", Util.formatBytes(bytesDeleted));
 	}
 
 	private static void findCandidatesForDeletion(File file, List<File> files, List<File> dirs)

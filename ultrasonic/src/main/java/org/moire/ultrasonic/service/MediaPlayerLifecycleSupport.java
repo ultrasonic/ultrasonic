@@ -92,7 +92,7 @@ public class MediaPlayerLifecycleSupport
 			}
 		});
 
-		new CacheCleaner(context).clean();
+		new CacheCleaner().clean();
 		created = true;
 		Timber.i("LifecycleSupport created");
 	}

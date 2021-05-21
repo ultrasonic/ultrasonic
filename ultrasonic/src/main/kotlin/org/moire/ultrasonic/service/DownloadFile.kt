@@ -309,7 +309,7 @@ class DownloadFile(
                     Timber.i("Released wake lock %s", wakeLock)
                 }
                 wifiLock?.release()
-                CacheCleaner(context).cleanSpace()
+                CacheCleaner().cleanSpace()
                 downloader.value.checkDownloads()
             }
         }
