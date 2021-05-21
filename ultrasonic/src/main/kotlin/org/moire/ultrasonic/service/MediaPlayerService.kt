@@ -409,9 +409,9 @@ class MediaPlayerService : Service() {
             }
 
             if (playerState === PlayerState.STARTED) {
-                scrobbler.scrobble(context, currentPlaying, false)
+                scrobbler.scrobble(currentPlaying, false)
             } else if (playerState === PlayerState.COMPLETED) {
-                scrobbler.scrobble(context, currentPlaying, true)
+                scrobbler.scrobble(currentPlaying, true)
             }
 
             null
