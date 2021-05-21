@@ -44,14 +44,14 @@ public class MediaPlayerLifecycleSupport
 {
 	private boolean created = false;
 	private DownloadQueueSerializer downloadQueueSerializer; // From DI
-	private final MediaPlayerControllerImpl mediaPlayerController; // From DI
+	private final MediaPlayerController mediaPlayerController; // From DI
 	private final Downloader downloader; // From DI
 	private Context context;
 
 	private BroadcastReceiver headsetEventReceiver;
 
 	public MediaPlayerLifecycleSupport(Context context, DownloadQueueSerializer downloadQueueSerializer,
-									   final MediaPlayerControllerImpl mediaPlayerController, final Downloader downloader)
+									   final MediaPlayerController mediaPlayerController, final Downloader downloader)
 	{
 		this.downloadQueueSerializer = downloadQueueSerializer;
 		this.mediaPlayerController = mediaPlayerController;

@@ -73,7 +73,7 @@ public class JukeboxMediaPlayer
 	private final Context context;
 
 	// TODO: These create circular references, try to refactor
-	private final Lazy<MediaPlayerControllerImpl> mediaPlayerControllerLazy = inject(MediaPlayerControllerImpl.class);
+	private final Lazy<MediaPlayerController> mediaPlayerControllerLazy = inject(MediaPlayerController.class);
 	private final Downloader downloader;
 
 	// TODO: Report warning if queue fills up.

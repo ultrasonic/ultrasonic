@@ -18,112 +18,595 @@
  */
 package org.moire.ultrasonic.service;
 
+import android.content.Context;
+import android.content.Intent;
+import timber.log.Timber;
+
+import org.koin.java.KoinJavaComponent;
+import org.moire.ultrasonic.data.ActiveServerProvider;
+import org.moire.ultrasonic.domain.MusicDirectory;
 import org.moire.ultrasonic.domain.MusicDirectory.Entry;
 import org.moire.ultrasonic.domain.PlayerState;
 import org.moire.ultrasonic.domain.RepeatMode;
+import org.moire.ultrasonic.domain.UserInfo;
+import org.moire.ultrasonic.featureflags.Feature;
+import org.moire.ultrasonic.featureflags.FeatureStorage;
+import org.moire.ultrasonic.util.ShufflePlayBuffer;
+import org.moire.ultrasonic.util.Util;
 
+import java.util.Iterator;
 import java.util.List;
 
+import kotlin.Lazy;
+
+import static org.koin.java.KoinJavaComponent.inject;
+
 /**
- * This interface contains all functions which are necessary for the Application UI
+ * The implementation of the Media Player Controller.
+ * This class contains everything that is necessary for the Application UI
  * to control the Media Player implementation.
  *
- * @author Sindre Mehus
+ * @author Sindre Mehus, Joshua Bahnsen
  * @version $Id$
  */
-public interface MediaPlayerController
+public class MediaPlayerController
 {
-	void download(List<Entry> songs, boolean save, boolean autoplay, boolean playNext, boolean shuffle, boolean newPlaylist);
+	private boolean created = false;
+	private String suggestedPlaylistName;
+	private boolean keepScreenOn;
 
-	void downloadBackground(List<Entry> songs, boolean save);
+	private boolean showVisualization;
+	private boolean autoPlayStart;
 
-	void setShufflePlayEnabled(boolean enabled);
+	private final Context context;
+	private final Lazy<JukeboxMediaPlayer> jukeboxMediaPlayer = inject(JukeboxMediaPlayer.class);
+	private final Lazy<ActiveServerProvider> activeServerProvider = inject(ActiveServerProvider.class);
 
-	boolean isShufflePlayEnabled();
+	private final DownloadQueueSerializer downloadQueueSerializer;
+	private final ExternalStorageMonitor externalStorageMonitor;
+	private final Downloader downloader;
+	private final ShufflePlayBuffer shufflePlayBuffer;
+	private final LocalMediaPlayer localMediaPlayer;
 
-	void shuffle();
+	public MediaPlayerController(Context context, DownloadQueueSerializer downloadQueueSerializer,
+								 ExternalStorageMonitor externalStorageMonitor, Downloader downloader,
+								 ShufflePlayBuffer shufflePlayBuffer, LocalMediaPlayer localMediaPlayer)
+	{
+		this.context = context;
+		this.downloadQueueSerializer = downloadQueueSerializer;
+		this.externalStorageMonitor = externalStorageMonitor;
+		this.downloader = downloader;
+		this.shufflePlayBuffer = shufflePlayBuffer;
+		this.localMediaPlayer = localMediaPlayer;
 
-	RepeatMode getRepeatMode();
+		Timber.i("MediaPlayerController constructed");
+	}
 
-	void setRepeatMode(RepeatMode repeatMode);
+	public void onCreate()
+	{
+		if (created) return;
+		this.externalStorageMonitor.onCreate(this::reset);
 
-	boolean getKeepScreenOn();
+		setJukeboxEnabled(activeServerProvider.getValue().getActiveServer().getJukeboxByDefault());
+		created = true;
 
-	void setKeepScreenOn(boolean screenOn);
+		Timber.i("MediaPlayerController created");
+	}
 
-	boolean getShowVisualization();
+	public void onDestroy()
+	{
+		if (!created) return;
+		externalStorageMonitor.onDestroy();
+		context.stopService(new Intent(context, MediaPlayerService.class));
+		downloader.onDestroy();
+		created = false;
 
-	void setShowVisualization(boolean showVisualization);
+		Timber.i("MediaPlayerController destroyed");
+	}
+	public synchronized void restore(List<MusicDirectory.Entry> songs, final int currentPlayingIndex, final int currentPlayingPosition, final boolean autoPlay, boolean newPlaylist)
+	{
+		download(songs, false, false, false, false, newPlaylist);
 
-	void clear();
+		if (currentPlayingIndex != -1)
+		{
+			MediaPlayerService.executeOnStartedMediaPlayerService(context, (mediaPlayerService) ->
+				 {
+					mediaPlayerService.play(currentPlayingIndex, autoPlayStart);
 
-	void clearIncomplete();
+					if (localMediaPlayer.currentPlaying != null)
+					{
+						if (autoPlay && jukeboxMediaPlayer.getValue().isEnabled())
+						{
+							jukeboxMediaPlayer.getValue().skip(downloader.getCurrentPlayingIndex(), currentPlayingPosition / 1000);
+						}
+						else
+						{
+							if (localMediaPlayer.currentPlaying.isCompleteFileAvailable())
+							{
+								localMediaPlayer.play(localMediaPlayer.currentPlaying, currentPlayingPosition, autoPlay);
+							}
+						}
+					}
+					autoPlayStart = false;
+					return null;
+				 }
+			);
+		}
+	}
 
-	void remove(DownloadFile downloadFile);
+	public synchronized void preload()
+	{
+		MediaPlayerService.getInstance(context);
+	}
 
-	void play(int index);
+	public synchronized void play(final int index)
+	{
+		MediaPlayerService.executeOnStartedMediaPlayerService(context, (mediaPlayerService) -> {
+				mediaPlayerService.play(index, true);
+					return null;
+				}
+		);
+	}
 
-	void seekTo(int position);
+	public synchronized void play()
+	{
+		MediaPlayerService.executeOnStartedMediaPlayerService(context, (mediaPlayerService) -> {
 
-	void previous();
+				mediaPlayerService.play();
+					return null;
+				}
+		);
+	}
 
-	void next();
+	public synchronized void resumeOrPlay()
+	{
+		MediaPlayerService.executeOnStartedMediaPlayerService(context, (mediaPlayerService) -> {
+				mediaPlayerService.resumeOrPlay();
+					return null;
+				}
+		);
+	}
 
-	void pause();
+	public synchronized void togglePlayPause()
+	{
+		if (localMediaPlayer.playerState == PlayerState.IDLE) autoPlayStart = true;
+		MediaPlayerService.executeOnStartedMediaPlayerService(context, (mediaPlayerService) -> {
+				mediaPlayerService.togglePlayPause();
+					return null;
+				}
+		);
+	}
 
-	void stop();
+	public synchronized void start()
+	{
+		MediaPlayerService.executeOnStartedMediaPlayerService(context, (mediaPlayerService) -> {
+				mediaPlayerService.start();
+					return null;
+				}
+		);
+	}
 
-	void start();
+	public synchronized void seekTo(final int position)
+	{
+		MediaPlayerService mediaPlayerService = MediaPlayerService.getRunningInstance();
+		if (mediaPlayerService != null) mediaPlayerService.seekTo(position);
+	}
 
-	void reset();
+	public synchronized void pause()
+	{
+		MediaPlayerService mediaPlayerService = MediaPlayerService.getRunningInstance();
+		if (mediaPlayerService != null) mediaPlayerService.pause();
+	}
 
-	PlayerState getPlayerState();
+	public synchronized void stop()
+	{
+		MediaPlayerService mediaPlayerService = MediaPlayerService.getRunningInstance();
+		if (mediaPlayerService != null) mediaPlayerService.stop();
+	}
 
-	int getPlayerPosition();
+	public synchronized void download(List<MusicDirectory.Entry> songs, boolean save, boolean autoPlay, boolean playNext, boolean shuffle, boolean newPlaylist)
+	{
+		downloader.download(songs, save, autoPlay, playNext, newPlaylist);
+		jukeboxMediaPlayer.getValue().updatePlaylist();
 
-	int getPlayerDuration();
+		if (shuffle) shuffle();
 
-	void delete(List<Entry> songs);
+		if (!playNext && !autoPlay && (downloader.downloadList.size() - 1) == downloader.getCurrentPlayingIndex())
+		{
+			MediaPlayerService mediaPlayerService = MediaPlayerService.getRunningInstance();
+			if (mediaPlayerService != null) mediaPlayerService.setNextPlaying();
+		}
 
-	void unpin(List<Entry> songs);
+		if (autoPlay)
+		{
+			play(0);
+		}
+		else
+		{
+			if (localMediaPlayer.currentPlaying == null && downloader.downloadList.size() > 0)
+			{
+				localMediaPlayer.currentPlaying = downloader.downloadList.get(0);
+				localMediaPlayer.currentPlaying.setPlaying(true);
+			}
 
-	void setSuggestedPlaylistName(String name);
+			downloader.checkDownloads();
+		}
 
-	String getSuggestedPlaylistName();
+		downloadQueueSerializer.serializeDownloadQueue(downloader.downloadList, downloader.getCurrentPlayingIndex(), getPlayerPosition());
+	}
 
-	boolean isJukeboxEnabled();
+	public synchronized void downloadBackground(List<MusicDirectory.Entry> songs, boolean save)
+	{
+		downloader.downloadBackground(songs, save);
+		downloadQueueSerializer.serializeDownloadQueue(downloader.downloadList, downloader.getCurrentPlayingIndex(), getPlayerPosition());
+	}
 
-	boolean isJukeboxAvailable();
+	public synchronized void setCurrentPlaying(DownloadFile currentPlaying)
+	{
+		MediaPlayerService mediaPlayerService = MediaPlayerService.getRunningInstance();
+		if (mediaPlayerService != null) localMediaPlayer.setCurrentPlaying(currentPlaying);
+	}
 
-	void setJukeboxEnabled(boolean b);
+	public synchronized void setCurrentPlaying(int index)
+	{
+		MediaPlayerService mediaPlayerService = MediaPlayerService.getRunningInstance();
+		if (mediaPlayerService != null) mediaPlayerService.setCurrentPlaying(index);
+	}
 
-	void adjustJukeboxVolume(boolean up);
+	public synchronized void setPlayerState(PlayerState state)
+	{
+		MediaPlayerService mediaPlayerService = MediaPlayerService.getRunningInstance();
+		if (mediaPlayerService != null) localMediaPlayer.setPlayerState(state);
+	}
 
-	void togglePlayPause();
+	public void stopJukeboxService()
+	{
+		jukeboxMediaPlayer.getValue().stopJukeboxService();
+	}
 
-	void setVolume(float volume);
+	public synchronized void setShufflePlayEnabled(boolean enabled)
+	{
+		shufflePlayBuffer.isEnabled = enabled;
+		if (enabled)
+		{
+			clear();
+			downloader.checkDownloads();
+		}
+	}
 
-	void restore(List<Entry> songs, int currentPlayingIndex, int currentPlayingPosition, boolean autoPlay, boolean newPlaylist);
+	public boolean isShufflePlayEnabled()
+	{
+		return shufflePlayBuffer.isEnabled;
+	}
 
-	void stopJukeboxService();
+	public synchronized void shuffle()
+	{
+		downloader.shuffle();
 
-	void updateNotification();
+		downloadQueueSerializer.serializeDownloadQueue(downloader.downloadList, downloader.getCurrentPlayingIndex(), getPlayerPosition());
+		jukeboxMediaPlayer.getValue().updatePlaylist();
 
-	void setSongRating(final int rating);
+		MediaPlayerService mediaPlayerService = MediaPlayerService.getRunningInstance();
+		if (mediaPlayerService != null) mediaPlayerService.setNextPlaying();
+	}
 
-	DownloadFile getCurrentPlaying();
+	public RepeatMode getRepeatMode()
+	{
+		return Util.getRepeatMode();
+	}
 
-	int getPlaylistSize();
+	public synchronized void setRepeatMode(RepeatMode repeatMode)
+	{
+		Util.setRepeatMode(repeatMode);
+		MediaPlayerService mediaPlayerService = MediaPlayerService.getRunningInstance();
+		if (mediaPlayerService != null) mediaPlayerService.setNextPlaying();
+	}
 
-	int getCurrentPlayingNumberOnPlaylist();
+	public boolean getKeepScreenOn()
+	{
+		return keepScreenOn;
+	}
 
-	DownloadFile getCurrentDownloading();
+	public void setKeepScreenOn(boolean keepScreenOn)
+	{
+		this.keepScreenOn = keepScreenOn;
+	}
 
-	List<DownloadFile> getPlayList();
+	public boolean getShowVisualization()
+	{
+		return showVisualization;
+	}
 
-	long getPlayListUpdateRevision();
+	public void setShowVisualization(boolean showVisualization)
+	{
+		this.showVisualization = showVisualization;
+	}
 
-	long getPlayListDuration();
+	public synchronized void clear()
+	{
+		clear(true);
+	}
 
-	DownloadFile getDownloadFileForSong(Entry song);
+	public synchronized void clear(boolean serialize)
+	{
+		MediaPlayerService mediaPlayerService = MediaPlayerService.getRunningInstance();
+		if (mediaPlayerService != null) {
+			mediaPlayerService.clear(serialize);
+		} else {
+			// If no MediaPlayerService is available, just empty the playlist
+			downloader.clear();
+			if (serialize) {
+				downloadQueueSerializer.serializeDownloadQueue(downloader.downloadList,
+					downloader.getCurrentPlayingIndex(), getPlayerPosition());
+			}
+		}
+
+		jukeboxMediaPlayer.getValue().updatePlaylist();
+	}
+
+	public synchronized void clearIncomplete()
+	{
+		reset();
+		Iterator<DownloadFile> iterator = downloader.downloadList.iterator();
+
+		while (iterator.hasNext())
+		{
+			DownloadFile downloadFile = iterator.next();
+			if (!downloadFile.isCompleteFileAvailable())
+			{
+				iterator.remove();
+			}
+		}
+
+		downloadQueueSerializer.serializeDownloadQueue(downloader.downloadList, downloader.getCurrentPlayingIndex(), getPlayerPosition());
+		jukeboxMediaPlayer.getValue().updatePlaylist();
+	}
+
+	public synchronized void remove(DownloadFile downloadFile)
+	{
+		if (downloadFile == localMediaPlayer.currentPlaying)
+		{
+			reset();
+			setCurrentPlaying(null);
+		}
+
+		downloader.removeDownloadFile(downloadFile);
+
+		downloadQueueSerializer.serializeDownloadQueue(downloader.downloadList, downloader.getCurrentPlayingIndex(), getPlayerPosition());
+		jukeboxMediaPlayer.getValue().updatePlaylist();
+
+		if (downloadFile == localMediaPlayer.nextPlaying)
+		{
+			MediaPlayerService mediaPlayerService = MediaPlayerService.getRunningInstance();
+			if (mediaPlayerService != null) mediaPlayerService.setNextPlaying();
+		}
+	}
+
+	public synchronized void delete(List<MusicDirectory.Entry> songs)
+	{
+		for (MusicDirectory.Entry song : songs)
+		{
+			downloader.getDownloadFileForSong(song).delete();
+		}
+	}
+
+	public synchronized void unpin(List<MusicDirectory.Entry> songs)
+	{
+		for (MusicDirectory.Entry song : songs)
+		{
+			downloader.getDownloadFileForSong(song).unpin();
+		}
+	}
+
+	public synchronized void previous()
+	{
+		int index = downloader.getCurrentPlayingIndex();
+		if (index == -1)
+		{
+			return;
+		}
+
+		// Restart song if played more than five seconds.
+		if (getPlayerPosition() > 5000 || index == 0)
+		{
+			play(index);
+		}
+		else
+		{
+			play(index - 1);
+		}
+	}
+
+	public synchronized void next()
+	{
+		int index = downloader.getCurrentPlayingIndex();
+		if (index != -1)
+		{
+			switch (getRepeatMode())
+			{
+				case SINGLE:
+				case OFF:
+					if (index + 1 >= 0 && index + 1 < downloader.downloadList.size()) {
+						play(index + 1);
+					}
+					break;
+				case ALL:
+					play((index + 1) % downloader.downloadList.size());
+					break;
+				default:
+					break;
+			}
+		}
+	}
+
+	public synchronized void reset()
+	{
+		MediaPlayerService mediaPlayerService = MediaPlayerService.getRunningInstance();
+		if (mediaPlayerService != null) localMediaPlayer.reset();
+	}
+
+	public synchronized int getPlayerPosition()
+	{
+		MediaPlayerService mediaPlayerService = MediaPlayerService.getRunningInstance();
+		if (mediaPlayerService == null) return 0;
+		return mediaPlayerService.getPlayerPosition();
+	}
+
+	public synchronized int getPlayerDuration()
+	{
+		if (localMediaPlayer.currentPlaying != null)
+		{
+			Integer duration = localMediaPlayer.currentPlaying.getSong().getDuration();
+			if (duration != null)
+			{
+				return duration * 1000;
+			}
+		}
+
+		MediaPlayerService mediaPlayerService = MediaPlayerService.getRunningInstance();
+		if (mediaPlayerService == null) return 0;
+		return mediaPlayerService.getPlayerDuration();
+	}
+
+	public PlayerState getPlayerState()	{ return localMediaPlayer.playerState; }
+
+	public void setSuggestedPlaylistName(String name)
+	{
+		this.suggestedPlaylistName = name;
+	}
+
+	public String getSuggestedPlaylistName()
+	{
+		return suggestedPlaylistName;
+	}
+
+	public boolean isJukeboxEnabled()
+	{
+		return jukeboxMediaPlayer.getValue().isEnabled();
+	}
+
+	public boolean isJukeboxAvailable()
+	{
+		try
+		{
+			String username = activeServerProvider.getValue().getActiveServer().getUserName();
+			UserInfo user = MusicServiceFactory.getMusicService().getUser(username);
+			return user.getJukeboxRole();
+		}
+		catch (Exception e)
+		{
+			Timber.w(e, "Error getting user information");
+		}
+
+		return false;
+	}
+
+	public void setJukeboxEnabled(boolean jukeboxEnabled)
+	{
+		jukeboxMediaPlayer.getValue().setEnabled(jukeboxEnabled);
+		setPlayerState(PlayerState.IDLE);
+
+		if (jukeboxEnabled)
+		{
+			jukeboxMediaPlayer.getValue().startJukeboxService();
+
+			reset();
+
+			// Cancel current download, if necessary.
+			if (downloader.currentDownloading != null)
+			{
+				downloader.currentDownloading.cancelDownload();
+			}
+		}
+		else
+		{
+			jukeboxMediaPlayer.getValue().stopJukeboxService();
+		}
+	}
+
+	public void adjustJukeboxVolume(boolean up)
+	{
+		jukeboxMediaPlayer.getValue().adjustVolume(up);
+	}
+
+	public void setVolume(float volume)
+	{
+		MediaPlayerService mediaPlayerService = MediaPlayerService.getRunningInstance();
+		if (mediaPlayerService != null) localMediaPlayer.setVolume(volume);
+	}
+
+	public void updateNotification()
+	{
+		MediaPlayerService mediaPlayerService = MediaPlayerService.getRunningInstance();
+		if (mediaPlayerService != null) mediaPlayerService.updateNotification(localMediaPlayer.playerState, localMediaPlayer.currentPlaying);
+	}
+
+	public void toggleSongStarred() {
+		if (localMediaPlayer.currentPlaying == null)
+			return;
+
+		final Entry song = localMediaPlayer.currentPlaying.getSong();
+
+		// Trigger an update
+		localMediaPlayer.setCurrentPlaying(localMediaPlayer.currentPlaying);
+
+		song.setStarred(!song.getStarred());
+	}
+
+    public void setSongRating(final int rating)
+	{
+		if (!KoinJavaComponent.get(FeatureStorage.class).isFeatureEnabled(Feature.FIVE_STAR_RATING))
+			return;
+
+		if (localMediaPlayer.currentPlaying == null)
+			return;
+
+		final Entry song = localMediaPlayer.currentPlaying.getSong();
+		song.setUserRating(rating);
+
+		new Thread(() -> {
+			try
+			{
+				MusicServiceFactory.getMusicService().setRating(song.getId(), rating);
+			}
+			catch (Exception e)
+			{
+				Timber.e(e);
+			}
+		}).start();
+
+		updateNotification();
+	}
+
+	public DownloadFile getCurrentPlaying() {
+		return localMediaPlayer.currentPlaying;
+	}
+
+	public int getPlaylistSize() {
+		return downloader.downloadList.size();
+	}
+
+	public int getCurrentPlayingNumberOnPlaylist() {
+		return downloader.getCurrentPlayingIndex();
+	}
+
+	public DownloadFile getCurrentDownloading() {
+		return downloader.currentDownloading;
+	}
+
+	public List<DownloadFile> getPlayList() {
+		return downloader.downloadList;
+	}
+
+	public long getPlayListUpdateRevision() {
+		return downloader.getDownloadListUpdateRevision();
+	}
+
+	public long getPlayListDuration() {
+		return downloader.getDownloadListDuration();
+	}
+
+	public DownloadFile getDownloadFileForSong(Entry song) {
+		return downloader.getDownloadFileForSong(song);
+	}
 }
