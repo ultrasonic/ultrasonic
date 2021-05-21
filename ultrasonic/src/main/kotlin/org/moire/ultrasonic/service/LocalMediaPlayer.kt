@@ -397,7 +397,7 @@ class LocalMediaPlayer(
 
                 secondaryProgress = (percent.toDouble() / 100.toDouble() * progressBar.max).toInt()
 
-                if (song.transcodedContentType == null && Util.getMaxBitRate(context) == 0) {
+                if (song.transcodedContentType == null && Util.getMaxBitRate() == 0) {
                     progressBar?.secondaryProgress = secondaryProgress
                 }
             }

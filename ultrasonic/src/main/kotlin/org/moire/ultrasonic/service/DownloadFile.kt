@@ -21,6 +21,7 @@ import java.io.OutputStream
 import java.io.RandomAccessFile
 import org.koin.core.component.KoinApiExtension
 import org.koin.java.KoinJavaComponent.inject
+import org.moire.ultrasonic.app.UApp
 import org.moire.ultrasonic.domain.MusicDirectory
 import org.moire.ultrasonic.service.MusicServiceFactory.getMusicService
 import org.moire.ultrasonic.util.CacheCleaner
@@ -37,7 +38,6 @@ import timber.log.Timber
  */
 @KoinApiExtension
 class DownloadFile(
-    private val context: Context,
     val song: MusicDirectory.Entry,
     private val save: Boolean
 ) {
@@ -48,7 +48,7 @@ class DownloadFile(
     var isFailed = false
     private var retryCount = MAX_RETRIES
 
-    private val desiredBitRate: Int = Util.getMaxBitRate(context)
+    private val desiredBitRate: Int = Util.getMaxBitRate()
 
     @Volatile
     private var isPlaying = false
@@ -138,7 +138,7 @@ class DownloadFile(
         Util.delete(completeFile)
         Util.delete(saveFile)
 
-        Util.scanMedia(context, saveFile)
+        Util.scanMedia(saveFile)
     }
 
     fun unpin() {
@@ -186,7 +186,7 @@ class DownloadFile(
             } else if (completeWhenDone) {
                 if (save) {
                     Util.renameFile(partialFile, saveFile)
-                    Util.scanMedia(context, saveFile)
+                    Util.scanMedia(saveFile)
                 } else {
                     Util.renameFile(partialFile, completeFile)
                 }
@@ -211,7 +211,7 @@ class DownloadFile(
             var wifiLock: WifiLock? = null
             try {
                 wakeLock = acquireWakeLock(wakeLock)
-                wifiLock = Util.createWifiLock(context, toString())
+                wifiLock = Util.createWifiLock(toString())
                 wifiLock.acquire()
 
                 if (saveFile.exists()) {
@@ -285,7 +285,7 @@ class DownloadFile(
                 } else {
                     if (save) {
                         Util.renameFile(partialFile, saveFile)
-                        Util.scanMedia(context, saveFile)
+                        Util.scanMedia(saveFile)
                     } else {
                         Util.renameFile(partialFile, completeFile)
                     }
@@ -317,6 +317,7 @@ class DownloadFile(
         private fun acquireWakeLock(wakeLock: WakeLock?): WakeLock? {
             var wakeLock1 = wakeLock
             if (Util.isScreenLitOnDownload()) {
+                val context = UApp.applicationContext()
                 val pm = context.getSystemService(Context.POWER_SERVICE) as PowerManager
                 val flags = PowerManager.SCREEN_DIM_WAKE_LOCK or PowerManager.ON_AFTER_RELEASE
                 wakeLock1 = pm.newWakeLock(flags, toString())
@@ -333,7 +334,7 @@ class DownloadFile(
         private fun downloadAndSaveCoverArt(musicService: MusicService) {
             try {
                 if (!TextUtils.isEmpty(song.coverArt)) {
-                    val size = Util.getMinDisplayMetric(context)
+                    val size = Util.getMinDisplayMetric()
                     musicService.getCoverArt(song, size, true, true)
                 }
             } catch (e: Exception) {

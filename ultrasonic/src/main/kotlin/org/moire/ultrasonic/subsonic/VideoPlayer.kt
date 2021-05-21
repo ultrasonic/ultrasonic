@@ -10,7 +10,7 @@ import org.moire.ultrasonic.util.Util
  */
 class VideoPlayer() {
     fun playVideo(context: Context, entry: MusicDirectory.Entry?) {
-        if (!Util.isNetworkConnected(context)) {
+        if (!Util.isNetworkConnected()) {
             Util.toast(context, R.string.select_album_no_network)
             return
         }

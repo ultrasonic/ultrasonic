@@ -91,7 +91,7 @@ class ShareHandler(val context: Context) {
                 intent.type = "text/plain"
                 intent.putExtra(
                     Intent.EXTRA_TEXT,
-                    String.format("%s\n\n%s", Util.getShareGreeting(context), result.url)
+                    String.format("%s\n\n%s", Util.getShareGreeting(), result.url)
                 )
                 fragment.activity?.startActivity(
                     Intent.createChooser(

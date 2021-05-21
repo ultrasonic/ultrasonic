@@ -51,7 +51,7 @@ class CommunicationErrorHandler {
         }
 
         fun getErrorMessage(error: Throwable, context: Context): String {
-            if (error is IOException && !Util.isNetworkConnected(context)) {
+            if (error is IOException && !Util.isNetworkConnected()) {
                 return context.resources.getString(R.string.background_task_no_network)
             } else if (error is FileNotFoundException) {
                 return context.resources.getString(R.string.background_task_not_found)

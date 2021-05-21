@@ -79,7 +79,7 @@ public class LegacyImageLoader implements Runnable, ImageLoader {
             imageSizeDefault = drawable.getIntrinsicHeight();
         }
 
-        imageSizeLarge = Util.getMaxDisplayMetric(context);
+        imageSizeLarge = Util.getMaxDisplayMetric();
         createLargeUnknownImage(context);
         createUnknownAvatarImage(context);
     }

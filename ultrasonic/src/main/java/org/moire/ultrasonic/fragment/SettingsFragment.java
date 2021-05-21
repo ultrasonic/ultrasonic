@@ -139,7 +139,7 @@ public class SettingsFragment extends PreferenceFragmentCompat
         showArtistPicture = findPreference(Constants.PREFERENCES_KEY_SHOW_ARTIST_PICTURE);
 
         setupServersCategory();
-        sharingDefaultGreeting.setText(Util.getShareGreeting(getActivity()));
+        sharingDefaultGreeting.setText(Util.getShareGreeting());
         setupClearSearchPreference();
         setupGaplessControlSettingsV14();
         setupFeatureFlagsPreferences();

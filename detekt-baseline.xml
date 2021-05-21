@@ -25,7 +25,7 @@
     <ID>ImplicitDefaultLocale:LocalMediaPlayer.kt$LocalMediaPlayer.BufferTask$String.format("BufferTask (%s)", downloadFile)</ID>
     <ID>ImplicitDefaultLocale:LocalMediaPlayer.kt$LocalMediaPlayer.CheckCompletionTask$String.format("CheckCompletionTask (%s)", downloadFile)</ID>
     <ID>ImplicitDefaultLocale:ShareHandler.kt$ShareHandler$String.format("%d:%s", timeSpanAmount, timeSpanType)</ID>
-    <ID>ImplicitDefaultLocale:ShareHandler.kt$ShareHandler.&lt;no name provided&gt;$String.format("%s\n\n%s", Util.getShareGreeting(context), result.url)</ID>
+    <ID>ImplicitDefaultLocale:ShareHandler.kt$ShareHandler.&lt;no name provided&gt;$String.format("%s\n\n%s", Util.getShareGreeting(), result.url)</ID>
     <ID>ImplicitDefaultLocale:SongView.kt$SongView$String.format("%02d.", trackNumber)</ID>
     <ID>ImplicitDefaultLocale:SongView.kt$SongView$String.format("%s ", bitRate)</ID>
     <ID>ImplicitDefaultLocale:SongView.kt$SongView$String.format("%s &gt; %s", suffix, transcodedSuffix)</ID>

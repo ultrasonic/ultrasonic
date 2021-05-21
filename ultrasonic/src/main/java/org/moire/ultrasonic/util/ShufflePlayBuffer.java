@@ -97,7 +97,7 @@ public class ShufflePlayBuffer
 		// Check if active server has changed.
 		clearBufferIfNecessary();
 
-		if (buffer.size() > REFILL_THRESHOLD || (!Util.isNetworkConnected(context) && !ActiveServerProvider.Companion.isOffline()))
+		if (buffer.size() > REFILL_THRESHOLD || (!Util.isNetworkConnected() && !ActiveServerProvider.Companion.isOffline()))
 		{
 			return;
 		}

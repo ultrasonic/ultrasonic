@@ -478,12 +478,11 @@ class MediaPlayerService : Service() {
 
         // Set Metadata
         val metadata = MediaMetadataCompat.Builder()
-        val context = applicationContext
         if (currentPlaying != null) {
             try {
                 val song = currentPlaying.song
                 val cover = FileUtil.getAlbumArtBitmap(
-                    song, Util.getMinDisplayMetric(context),
+                    song, Util.getMinDisplayMetric(),
                     true
                 )
                 metadata.putLong(MediaMetadataCompat.METADATA_KEY_DURATION, -1L)
