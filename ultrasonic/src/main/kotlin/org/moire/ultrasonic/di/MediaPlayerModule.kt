@@ -16,10 +16,8 @@ import org.moire.ultrasonic.util.ShufflePlayBuffer
  * This Koin module contains the registration of classes related to the media player
  */
 val mediaPlayerModule = module {
-    single { MediaPlayerController(androidContext(), get(), get(), get(), get(), get()) }
-
     single { JukeboxMediaPlayer(androidContext(), get()) }
-    single { MediaPlayerLifecycleSupport(androidContext(), get(), get(), get()) }
+    single { MediaPlayerLifecycleSupport(get(), get(), get()) }
     single { DownloadQueueSerializer(androidContext()) }
     single { ExternalStorageMonitor(androidContext()) }
     single { ShufflePlayBuffer(androidContext()) }

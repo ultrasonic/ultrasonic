@@ -30,6 +30,7 @@ import timber.log.Timber;
 import android.view.KeyEvent;
 
 import org.moire.ultrasonic.R;
+import org.moire.ultrasonic.app.UApp;
 import org.moire.ultrasonic.domain.PlayerState;
 import org.moire.ultrasonic.util.CacheCleaner;
 import org.moire.ultrasonic.util.Constants;
@@ -46,16 +47,14 @@ public class MediaPlayerLifecycleSupport
 	private DownloadQueueSerializer downloadQueueSerializer; // From DI
 	private final MediaPlayerController mediaPlayerController; // From DI
 	private final Downloader downloader; // From DI
-	private Context context;
 
 	private BroadcastReceiver headsetEventReceiver;
 
-	public MediaPlayerLifecycleSupport(Context context, DownloadQueueSerializer downloadQueueSerializer,
+	public MediaPlayerLifecycleSupport(DownloadQueueSerializer downloadQueueSerializer,
 									   final MediaPlayerController mediaPlayerController, final Downloader downloader)
 	{
 		this.downloadQueueSerializer = downloadQueueSerializer;
 		this.mediaPlayerController = mediaPlayerController;
-		this.context = context;
 		this.downloader = downloader;
 
 		Timber.i("LifecycleSupport constructed");
@@ -103,7 +102,7 @@ public class MediaPlayerLifecycleSupport
 		downloadQueueSerializer.serializeDownloadQueueNow(downloader.downloadList,
 				downloader.getCurrentPlayingIndex(), mediaPlayerController.getPlayerPosition());
 		mediaPlayerController.clear(false);
-		context.unregisterReceiver(headsetEventReceiver);
+		UApp.Companion.applicationContext().unregisterReceiver(headsetEventReceiver);
 		mediaPlayerController.onDestroy();
 		created = false;
 		Timber.i("LifecycleSupport destroyed");
@@ -139,6 +138,7 @@ public class MediaPlayerLifecycleSupport
 	 */
 	private void registerHeadsetReceiver() {
         final SharedPreferences sp = Util.getPreferences();
+        final Context context = UApp.Companion.applicationContext();
         final String spKey = context
                 .getString(R.string.settings_playback_resume_play_on_headphones_plug);
 
@@ -177,7 +177,7 @@ public class MediaPlayerLifecycleSupport
 		{
 			headsetIntentFilter = new IntentFilter(Intent.ACTION_HEADSET_PLUG);
 		}
-        context.registerReceiver(headsetEventReceiver, headsetIntentFilter);
+		UApp.Companion.applicationContext().registerReceiver(headsetEventReceiver, headsetIntentFilter);
     }
 
 	public void handleKeyEvent(KeyEvent event)
