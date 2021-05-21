@@ -20,12 +20,12 @@ import android.os.Looper
 import android.os.PowerManager
 import android.os.PowerManager.PARTIAL_WAKE_LOCK
 import android.os.PowerManager.WakeLock
-import org.koin.core.component.KoinApiExtension
 import java.io.File
 import java.net.URLEncoder
 import java.util.Locale
 import kotlin.math.abs
 import kotlin.math.max
+import org.koin.core.component.KoinApiExtension
 import org.moire.ultrasonic.audiofx.EqualizerController
 import org.moire.ultrasonic.audiofx.VisualizerController
 import org.moire.ultrasonic.data.ActiveServerProvider.Companion.isOffline
