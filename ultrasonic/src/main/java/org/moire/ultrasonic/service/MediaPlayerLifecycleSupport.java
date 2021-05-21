@@ -44,7 +44,7 @@ import org.moire.ultrasonic.util.Util;
 public class MediaPlayerLifecycleSupport
 {
 	private boolean created = false;
-	private DownloadQueueSerializer downloadQueueSerializer; // From DI
+	private final DownloadQueueSerializer downloadQueueSerializer; // From DI
 	private final MediaPlayerController mediaPlayerController; // From DI
 	private final Downloader downloader; // From DI
 
@@ -205,58 +205,55 @@ public class MediaPlayerLifecycleSupport
 				keyCode == KeyEvent.KEYCODE_MEDIA_NEXT);
 
 		// We can receive intents (e.g. MediaButton) when everything is stopped, so we need to start
-		onCreate(autoStart, new Runnable() {
-			@Override
-			public void run() {
-				switch (keyCode)
-				{
-					case KeyEvent.KEYCODE_MEDIA_PLAY_PAUSE:
-					case KeyEvent.KEYCODE_HEADSETHOOK:
-						mediaPlayerController.togglePlayPause();
-						break;
-					case KeyEvent.KEYCODE_MEDIA_PREVIOUS:
-						mediaPlayerController.previous();
-						break;
-					case KeyEvent.KEYCODE_MEDIA_NEXT:
-						mediaPlayerController.next();
-						break;
-					case KeyEvent.KEYCODE_MEDIA_STOP:
-						mediaPlayerController.stop();
-						break;
-					case KeyEvent.KEYCODE_MEDIA_PLAY:
-						if (mediaPlayerController.getPlayerState() == PlayerState.IDLE)
-						{
-							mediaPlayerController.play();
-						}
-						else if (mediaPlayerController.getPlayerState() != PlayerState.STARTED)
-						{
-							mediaPlayerController.start();
-						}
-						break;
-					case KeyEvent.KEYCODE_MEDIA_PAUSE:
-						mediaPlayerController.pause();
-						break;
-					case KeyEvent.KEYCODE_1:
-						mediaPlayerController.setSongRating(1);
-						break;
-					case KeyEvent.KEYCODE_2:
-						mediaPlayerController.setSongRating(2);
-						break;
-					case KeyEvent.KEYCODE_3:
-						mediaPlayerController.setSongRating(3);
-						break;
-					case KeyEvent.KEYCODE_4:
-						mediaPlayerController.setSongRating(4);
-						break;
-					case KeyEvent.KEYCODE_5:
-						mediaPlayerController.setSongRating(5);
-						break;
-					case KeyEvent.KEYCODE_STAR:
-						mediaPlayerController.toggleSongStarred();
-						break;
-					default:
-						break;
-				}
+		onCreate(autoStart, () -> {
+			switch (keyCode)
+			{
+				case KeyEvent.KEYCODE_MEDIA_PLAY_PAUSE:
+				case KeyEvent.KEYCODE_HEADSETHOOK:
+					mediaPlayerController.togglePlayPause();
+					break;
+				case KeyEvent.KEYCODE_MEDIA_PREVIOUS:
+					mediaPlayerController.previous();
+					break;
+				case KeyEvent.KEYCODE_MEDIA_NEXT:
+					mediaPlayerController.next();
+					break;
+				case KeyEvent.KEYCODE_MEDIA_STOP:
+					mediaPlayerController.stop();
+					break;
+				case KeyEvent.KEYCODE_MEDIA_PLAY:
+					if (mediaPlayerController.getPlayerState() == PlayerState.IDLE)
+					{
+						mediaPlayerController.play();
+					}
+					else if (mediaPlayerController.getPlayerState() != PlayerState.STARTED)
+					{
+						mediaPlayerController.start();
+					}
+					break;
+				case KeyEvent.KEYCODE_MEDIA_PAUSE:
+					mediaPlayerController.pause();
+					break;
+				case KeyEvent.KEYCODE_1:
+					mediaPlayerController.setSongRating(1);
+					break;
+				case KeyEvent.KEYCODE_2:
+					mediaPlayerController.setSongRating(2);
+					break;
+				case KeyEvent.KEYCODE_3:
+					mediaPlayerController.setSongRating(3);
+					break;
+				case KeyEvent.KEYCODE_4:
+					mediaPlayerController.setSongRating(4);
+					break;
+				case KeyEvent.KEYCODE_5:
+					mediaPlayerController.setSongRating(5);
+					break;
+				case KeyEvent.KEYCODE_STAR:
+					mediaPlayerController.toggleSongStarred();
+					break;
+				default:
+					break;
 			}
 		});
 	}
@@ -278,36 +275,33 @@ public class MediaPlayerLifecycleSupport
 			intentAction.equals(Constants.CMD_NEXT));
 
 		// We can receive intents when everything is stopped, so we need to start
-		onCreate(autoStart, new Runnable() {
-			@Override
-			public void run() {
-				switch(intentAction)
-				{
-					case Constants.CMD_PLAY:
-						mediaPlayerController.play();
-						break;
-					case Constants.CMD_RESUME_OR_PLAY:
-						// If Ultrasonic wasn't running, the autoStart is enough to resume, no need to call anything
-						if (isRunning) mediaPlayerController.resumeOrPlay();
-						break;
-					case Constants.CMD_NEXT:
-						mediaPlayerController.next();
-						break;
-					case Constants.CMD_PREVIOUS:
-						mediaPlayerController.previous();
-						break;
-					case Constants.CMD_TOGGLEPAUSE:
-						mediaPlayerController.togglePlayPause();
-						break;
-					case Constants.CMD_STOP:
-						// TODO: There is a stop() function, shouldn't we use that?
-						mediaPlayerController.pause();
-						mediaPlayerController.seekTo(0);
-						break;
-					case Constants.CMD_PAUSE:
-						mediaPlayerController.pause();
-						break;
-				}
+		onCreate(autoStart, () -> {
+			switch(intentAction)
+			{
+				case Constants.CMD_PLAY:
+					mediaPlayerController.play();
+					break;
+				case Constants.CMD_RESUME_OR_PLAY:
+					// If Ultrasonic wasn't running, the autoStart is enough to resume, no need to call anything
+					if (isRunning) mediaPlayerController.resumeOrPlay();
+					break;
+				case Constants.CMD_NEXT:
+					mediaPlayerController.next();
+					break;
+				case Constants.CMD_PREVIOUS:
+					mediaPlayerController.previous();
+					break;
+				case Constants.CMD_TOGGLEPAUSE:
+					mediaPlayerController.togglePlayPause();
+					break;
+				case Constants.CMD_STOP:
+					// TODO: There is a stop() function, shouldn't we use that?
+					mediaPlayerController.pause();
+					mediaPlayerController.seekTo(0);
+					break;
+				case Constants.CMD_PAUSE:
+					mediaPlayerController.pause();
+					break;
 			}
 		});
 	}
