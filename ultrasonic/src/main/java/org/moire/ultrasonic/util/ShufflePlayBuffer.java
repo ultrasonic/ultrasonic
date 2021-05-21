@@ -18,9 +18,6 @@
  */
 package org.moire.ultrasonic.util;
 
-import android.content.Context;
-import timber.log.Timber;
-
 import org.moire.ultrasonic.data.ActiveServerProvider;
 import org.moire.ultrasonic.domain.MusicDirectory;
 import org.moire.ultrasonic.service.MusicService;
@@ -32,6 +29,8 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
 
+import timber.log.Timber;
+
 /**
  * @author Sindre Mehus
  * @version $Id$
@@ -42,28 +41,19 @@ public class ShufflePlayBuffer
 	private static final int REFILL_THRESHOLD = 40;
 
 	private final List<MusicDirectory.Entry> buffer = new ArrayList<>();
-	private final Context context;
 	private ScheduledExecutorService executorService;
 	private int currentServer;
 
 	public boolean isEnabled = false;
 
-	public ShufflePlayBuffer(Context context)
+	public ShufflePlayBuffer()
 	{
-		this.context = context;
 	}
 
 	public void onCreate()
 	{
 		executorService = Executors.newSingleThreadScheduledExecutor();
-		Runnable runnable = new Runnable()
-		{
-			@Override
-			public void run()
-			{
-				refill();
-			}
-		};
+		Runnable runnable = this::refill;
 		executorService.scheduleWithFixedDelay(runnable, 1, 10, TimeUnit.SECONDS);
 		Timber.i("ShufflePlayBuffer created");
 	}

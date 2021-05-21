@@ -20,7 +20,7 @@ val mediaPlayerModule = module {
     single { MediaPlayerLifecycleSupport(get(), get(), get()) }
     single { DownloadQueueSerializer(androidContext()) }
     single { ExternalStorageMonitor() }
-    single { ShufflePlayBuffer(androidContext()) }
+    single { ShufflePlayBuffer() }
     single { Downloader(get(), get(), get()) }
     single { LocalMediaPlayer(get(), androidContext()) }
     single { AudioFocusHandler(get()) }

@@ -20,6 +20,7 @@ import android.os.Looper
 import android.os.PowerManager
 import android.os.PowerManager.PARTIAL_WAKE_LOCK
 import android.os.PowerManager.WakeLock
+import org.koin.core.component.KoinApiExtension
 import java.io.File
 import java.net.URLEncoder
 import java.util.Locale
@@ -39,6 +40,7 @@ import timber.log.Timber
 /**
  * Represents a Media Player which uses the mobile's resources for playback
  */
+@KoinApiExtension
 class LocalMediaPlayer(
     private val audioFocusHandler: AudioFocusHandler,
     private val context: Context
