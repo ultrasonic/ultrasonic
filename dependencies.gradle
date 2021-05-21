@@ -31,6 +31,7 @@ ext.versions = [
         twitterSerial        : "0.1.6",
         koin                 : "2.2.2",
         picasso              : "2.71828",
+        sortListView         : "1.0.1",
 
         junit4               : "4.13.2",
         junit5               : "5.7.1",
@@ -89,6 +90,7 @@ ext.other = [
         dexter             : "com.karumi:dexter:$versions.dexter",
         timber             : "com.jakewharton.timber:timber:$versions.timber",
         fastScroll         : "com.simplecityapps:recyclerview-fastscroll:$versions.fastScroll",
+        sortListView       : "com.github.tzugen:drag-sort-listview:$versions.sortListView",
 ]
 
 ext.testing = [

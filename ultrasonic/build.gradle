@@ -47,9 +47,11 @@ android {
 
     lintOptions {
         baselineFile file("lint-baseline.xml")
-        warning 'MissingTranslation'
+        ignore 'MissingTranslation'
         warning 'ImpliedQuantity'
+        disable 'IconMissingDensityFolder'
         abortOnError true
+        warningsAsErrors true
     }
 
     kotlinOptions {
@@ -66,7 +68,6 @@ tasks.withType(Test) {
 }
 
 dependencies {
-    implementation project(':core:library')
     implementation project(':core:domain')
     implementation project(':core:subsonic-api')
     implementation project(':core:subsonic-api-image-loader')
@@ -95,6 +96,7 @@ dependencies {
     implementation other.koinViewModel
     implementation other.okhttpLogging
     implementation other.fastScroll
+    implementation other.sortListView
 
     kapt androidSupport.room
 

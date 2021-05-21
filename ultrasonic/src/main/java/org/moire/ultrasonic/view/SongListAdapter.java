@@ -28,7 +28,7 @@ public class SongListAdapter extends ArrayAdapter<DownloadFile>
 
 		SongView view;
 
-		if (convertView != null && convertView instanceof SongView)
+		if (convertView instanceof SongView)
 		{
 			SongView currentView = (SongView) convertView;
 			if (currentView.getEntry().equals(entry))

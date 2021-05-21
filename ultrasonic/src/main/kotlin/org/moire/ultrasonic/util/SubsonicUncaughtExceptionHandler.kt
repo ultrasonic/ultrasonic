@@ -6,8 +6,6 @@ import java.io.File
 import java.io.PrintWriter
 import timber.log.Timber
 
-private const val filename = "ultrasonic-stacktrace.txt"
-
 /**
  * Logs the stack trace of uncaught exceptions to a file on the SD card.
  */
@@ -22,7 +20,7 @@ class SubsonicUncaughtExceptionHandler(
         var printWriter: PrintWriter? = null
 
         try {
-            file = File(FileUtil.getUltrasonicDirectory(), filename)
+            file = File(FileUtil.getUltrasonicDirectory(), STACKTRACE_NAME)
             printWriter = PrintWriter(file)
             val logMessage = String.format(
                 "Android API level: %s\nUltrasonic version name: %s\n" +
@@ -39,5 +37,9 @@ class SubsonicUncaughtExceptionHandler(
             Util.close(printWriter)
             defaultHandler?.uncaughtException(thread, throwable)
         }
+    }
+
+    companion object {
+        private const val STACKTRACE_NAME = "ultrasonic-stacktrace.txt"
     }
 }

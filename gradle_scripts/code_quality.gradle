@@ -22,6 +22,9 @@ if (isCodeQualityEnabled) {
             detekt {
                 buildUponDefaultConfig = true
                 toolVersion = versions.detekt
+                // Builds the AST in parallel. Rules are always executed in parallel.
+                // Can lead to speedups in larger projects.
+                parallel = true
                 baseline = file("${rootProject.projectDir}/detekt-baseline.xml")
                 config = files("${rootProject.projectDir}/detekt-config.yml")
             }
