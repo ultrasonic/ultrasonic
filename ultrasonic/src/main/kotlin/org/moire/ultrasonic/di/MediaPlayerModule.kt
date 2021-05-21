@@ -19,7 +19,7 @@ val mediaPlayerModule = module {
     single { JukeboxMediaPlayer(androidContext(), get()) }
     single { MediaPlayerLifecycleSupport(get(), get(), get()) }
     single { DownloadQueueSerializer(androidContext()) }
-    single { ExternalStorageMonitor(androidContext()) }
+    single { ExternalStorageMonitor() }
     single { ShufflePlayBuffer(androidContext()) }
     single { Downloader(androidContext(), get(), get(), get()) }
     single { LocalMediaPlayer(get(), androidContext()) }
