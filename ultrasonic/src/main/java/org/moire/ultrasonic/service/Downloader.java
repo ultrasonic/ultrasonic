@@ -1,6 +1,5 @@
 package org.moire.ultrasonic.service;
 
-import android.content.Context;
 import timber.log.Timber;
 
 import org.moire.ultrasonic.domain.MusicDirectory;
@@ -37,7 +36,7 @@ public class Downloader
     private final LocalMediaPlayer localMediaPlayer;
 
     // TODO: This is a circular reference, try to remove
-    private Lazy<JukeboxMediaPlayer> jukeboxMediaPlayer = inject(JukeboxMediaPlayer.class);
+    private final Lazy<JukeboxMediaPlayer> jukeboxMediaPlayer = inject(JukeboxMediaPlayer.class);
 
     private final List<DownloadFile> cleanupCandidates = new ArrayList<>();
     private final LRUCache<MusicDirectory.Entry, DownloadFile> downloadFileCache = new LRUCache<>(100);
@@ -54,19 +53,14 @@ public class Downloader
 
     public void onCreate()
     {
-        Runnable downloadChecker = new Runnable()
-        {
-            @Override
-            public void run()
+        Runnable downloadChecker = () -> {
+            try
             {
-                try
-                {
-                    checkDownloads();
-                }
-                catch (Throwable x)
-                {
-                    Timber.e(x,"checkDownloads() failed.");
-                }
+                checkDownloads();
+            }
+            catch (Throwable x)
+            {
+                Timber.e(x,"checkDownloads() failed.");
             }
         };
 
