@@ -1,4 +1,3 @@
 include ':core:domain'
 include ':core:subsonic-api'
-include ':core:cache'
 include ':ultrasonic'

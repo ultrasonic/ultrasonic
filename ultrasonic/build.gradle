@@ -70,7 +70,6 @@ tasks.withType(Test) {
 dependencies {
     implementation project(':core:domain')
     implementation project(':core:subsonic-api')
-    implementation project(':core:cache')
 
     api(other.picasso) {
         exclude group: "com.android.support"

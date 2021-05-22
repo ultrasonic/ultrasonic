@@ -10,7 +10,6 @@ import org.moire.ultrasonic.BuildConfig
 import org.moire.ultrasonic.api.subsonic.SubsonicAPIClient
 import org.moire.ultrasonic.api.subsonic.SubsonicAPIVersions
 import org.moire.ultrasonic.api.subsonic.SubsonicClientConfiguration
-import org.moire.ultrasonic.cache.PermanentFileStorage
 import org.moire.ultrasonic.data.ActiveServerProvider
 import org.moire.ultrasonic.imageloader.ImageLoader
 import org.moire.ultrasonic.log.TimberOkHttpLogger
@@ -41,11 +40,6 @@ val musicServiceModule = module {
         val serverInstance = get<Int>(named("ServerInstance"))
         val serverUrl = get<ActiveServerProvider>().getActiveServer().url
         return@single abs("$serverUrl$serverInstance".hashCode()).toString()
-    }
-
-    single {
-        val serverId = get<String>(named("ServerID"))
-        return@single PermanentFileStorage(get(), serverId, BuildConfig.DEBUG)
     }
 
     single {
