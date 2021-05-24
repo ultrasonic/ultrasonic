@@ -29,7 +29,7 @@ ext.versions = [
         jackson              : "2.9.5",
         okhttp               : "3.12.13",
         twitterSerial        : "0.1.6",
-        koin                 : "2.2.2",
+        koin                 : "2.2.3",
         picasso              : "2.71828",
         sortListView         : "1.0.1",
 
