@@ -35,6 +35,13 @@ allprojects {
         google()
         maven { url 'https://jitpack.io' }
     }
+
+    // Set Kotlin JVM target to the same for all subprojects
+    tasks.withType(org.jetbrains.kotlin.gradle.tasks.KotlinCompile).all {
+        kotlinOptions {
+            jvmTarget = "1.8"
+        }
+    }
 }
 
 apply from: 'gradle_scripts/jacoco.gradle'
