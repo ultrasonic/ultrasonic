@@ -295,14 +295,22 @@ class EditServerFragment : Fragment(), OnBackPressedHandler {
      * Tests if the network connection to the entered Server Settings can be made
      */
     private fun testConnection() {
-        val task: ModalBackgroundTask<Boolean> = object : ModalBackgroundTask<Boolean>(
+        val task: ModalBackgroundTask<String> = object : ModalBackgroundTask<String>(
             activity,
             false
         ) {
 
             @Throws(Throwable::class)
-            override fun doInBackground(): Boolean {
-                updateProgress(R.string.settings_testing_connection)
+            override fun doInBackground(): String {
+
+                var progressString = """
+                    |%s - ${activity.resources.getString(R.string.button_bar_chat)}
+                    |%s - ${activity.resources.getString(R.string.button_bar_bookmarks)}
+                    |%s - ${activity.resources.getString(R.string.button_bar_shares)}
+                    |%s - ${activity.resources.getString(R.string.button_bar_podcasts)}
+                    """.trimMargin()
+                updateProgress(String.format(progressString, "⌛", "⌛", "⌛", "⌛"))
+
                 val configuration = SubsonicClientConfiguration(
                     currentServerSetting!!.url,
                     currentServerSetting!!.userName,
@@ -330,17 +338,65 @@ class EditServerFragment : Fragment(), OnBackPressedHandler {
                 pingResponse = subsonicApiClient.api.ping().execute()
                 ApiCallResponseChecker.checkResponseSuccessful(pingResponse)
 
+                updateProgress(String.format(progressString, "⌛", "⌛", "⌛", "⌛"))
+
+                currentServerSetting!!.chatSupport = try {
+                    subsonicApiClient.api.getChatMessages().execute()
+                    true
+                } catch (e: Throwable) { false }
+
+                updateProgress(String.format(progressString,
+                        Util.boolToMark(currentServerSetting!!.chatSupport),
+                        "⌛", "⌛", "⌛"))
+
+                currentServerSetting!!.bookmarkSupport = try {
+                    subsonicApiClient.api.getBookmarks().execute()
+                    true
+                } catch (e: Throwable) { false }
+
+                updateProgress(String.format(progressString,
+                        Util.boolToMark(currentServerSetting!!.chatSupport),
+                        Util.boolToMark(currentServerSetting!!.bookmarkSupport),
+                        "⌛", "⌛"))
+
+                currentServerSetting!!.shareSupport = try {
+                    subsonicApiClient.api.getShares().execute()
+                    true
+                } catch (e: Throwable) { false }
+
+                updateProgress(String.format(progressString,
+                        Util.boolToMark(currentServerSetting!!.chatSupport),
+                        Util.boolToMark(currentServerSetting!!.bookmarkSupport),
+                        Util.boolToMark(currentServerSetting!!.shareSupport),
+                        "⌛"))
+
+                currentServerSetting!!.podcastSupport = try {
+                    subsonicApiClient.api.getPodcasts().execute()
+                    true
+                } catch (e: Throwable) { false }
+
+                // Finalize String before displaying it to Dialog
+                progressString = String.format(progressString,
+                        Util.boolToMark(currentServerSetting!!.chatSupport),
+                        Util.boolToMark(currentServerSetting!!.bookmarkSupport),
+                        Util.boolToMark(currentServerSetting!!.shareSupport),
+                        Util.boolToMark(currentServerSetting!!.podcastSupport))
+                updateProgress(progressString)
+
                 val licenseResponse = subsonicApiClient.api.getLicense().execute()
                 ApiCallResponseChecker.checkResponseSuccessful(licenseResponse)
-                return licenseResponse.body()!!.license.valid
+                if (!licenseResponse.body()!!.license.valid) {
+                    progressString += "\n${activity.resources.getString(R.string.settings_testing_unlicensed)}"
+                }
+                return progressString
             }
 
-            override fun done(licenseValid: Boolean) {
-                if (licenseValid) {
-                    Util.toast(activity, R.string.settings_testing_ok)
-                } else {
-                    Util.toast(activity, R.string.settings_testing_unlicensed)
-                }
+            override fun done(responseString: String) {
+                Util.showDialog(
+                        activity,
+                        android.R.drawable.ic_dialog_info,
+                        R.string.settings_testing_ok,
+                        responseString)
             }
 
             override fun error(error: Throwable) {

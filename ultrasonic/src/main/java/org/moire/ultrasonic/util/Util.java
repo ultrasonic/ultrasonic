@@ -359,6 +359,20 @@ public class Util
 		return Math.min(Math.max(percent,0),100) + " %";
 	}
 
+	/**
+	 * Return a Mark depending on boolean (❌ or ✓)
+	 *
+	 * @param value Is true or false
+	 * @return The corresponding mark.
+	 */
+	public static synchronized String boolToMark(boolean value)
+	{
+		if (value)
+			return "✔️";
+		else
+			return "❌";
+	}
+
 
 	/**
 	 * Converts a byte-count to a formatted string suitable for display to the user.
@@ -597,6 +611,18 @@ public class Util
 	private static void showDialog(Context context, int icon, int titleId, int messageId)
 	{
 		new AlertDialog.Builder(context).setIcon(icon).setTitle(titleId).setMessage(messageId).setPositiveButton(R.string.common_ok, new DialogInterface.OnClickListener()
+		{
+			@Override
+			public void onClick(DialogInterface dialog, int i)
+			{
+				dialog.dismiss();
+			}
+		}).show();
+	}
+
+	public static void showDialog(Context context, int icon, int titleId, String message)
+	{
+		new AlertDialog.Builder(context).setIcon(icon).setTitle(titleId).setMessage(message).setPositiveButton(R.string.common_ok, new DialogInterface.OnClickListener()
 		{
 			@Override
 			public void onClick(DialogInterface dialog, int i)
