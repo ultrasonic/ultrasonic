@@ -11,6 +11,7 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import java.net.ConnectException
+import java.net.UnknownHostException
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
@@ -91,11 +92,17 @@ open class GenericListModel(application: Application) :
             try {
                 load(isOffline, useId3Tags, musicService, refresh, bundle)
             } catch (exception: ConnectException) {
-                Handler(Looper.getMainLooper()).post {
-                    CommunicationErrorHandler.handleError(exception, swipe.context)
-                }
+                handleException(exception, swipe.context)
+            } catch (exception: UnknownHostException) {
+                handleException(exception, swipe.context)
             }
         }
+
+    private fun handleException(exception: Exception, context: Context) {
+        Handler(Looper.getMainLooper()).post {
+            CommunicationErrorHandler.handleError(exception, context)
+        }
+    }
 
     /**
      * This is the central function you need to implement if you want to extend this class

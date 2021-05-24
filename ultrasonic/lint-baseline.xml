@@ -26,45 +26,45 @@
     <issue
         id="DefaultLocale"
         message="Implicitly using the default locale is a common source of bugs: Use `toLowerCase(Locale)` instead. For strings meant to be internal use `Locale.ROOT`, otherwise `Locale.getDefault()`."
-        errorLine1="    String lhs = lhsArtist.getName().toLowerCase();"
-        errorLine2="                                     ~~~~~~~~~~~">
+        errorLine1="   String lhs = lhsArtist.getName().toLowerCase();"
+        errorLine2="                                    ~~~~~~~~~~~">
         <location
             file="src/main/java/org/moire/ultrasonic/service/OfflineMusicService.java"
-            line="103"
-            column="38"/>
+            line="97"
+            column="37"/>
     </issue>
 
     <issue
         id="DefaultLocale"
         message="Implicitly using the default locale is a common source of bugs: Use `toLowerCase(Locale)` instead. For strings meant to be internal use `Locale.ROOT`, otherwise `Locale.getDefault()`."
-        errorLine1="    String rhs = rhsArtist.getName().toLowerCase();"
-        errorLine2="                                     ~~~~~~~~~~~">
+        errorLine1="   String rhs = rhsArtist.getName().toLowerCase();"
+        errorLine2="                                    ~~~~~~~~~~~">
         <location
             file="src/main/java/org/moire/ultrasonic/service/OfflineMusicService.java"
-            line="104"
-            column="38"/>
+            line="98"
+            column="37"/>
     </issue>
 
     <issue
         id="DefaultLocale"
         message="Implicitly using the default locale is a common source of bugs: Use `toLowerCase(Locale)` instead. For strings meant to be internal use `Locale.ROOT`, otherwise `Locale.getDefault()`."
-        errorLine1="     int index = lhs.indexOf(String.format(&quot;%s &quot;, article.toLowerCase()));"
-        errorLine2="                                                          ~~~~~~~~~~~">
+        errorLine1="    int index = lhs.indexOf(String.format(&quot;%s &quot;, article.toLowerCase()));"
+        errorLine2="                                                         ~~~~~~~~~~~">
         <location
             file="src/main/java/org/moire/ultrasonic/service/OfflineMusicService.java"
-            line="121"
-            column="59"/>
+            line="115"
+            column="58"/>
     </issue>
 
     <issue
         id="DefaultLocale"
         message="Implicitly using the default locale is a common source of bugs: Use `toLowerCase(Locale)` instead. For strings meant to be internal use `Locale.ROOT`, otherwise `Locale.getDefault()`."
-        errorLine1="     index = rhs.indexOf(String.format(&quot;%s &quot;, article.toLowerCase()));"
-        errorLine2="                                                      ~~~~~~~~~~~">
+        errorLine1="    index = rhs.indexOf(String.format(&quot;%s &quot;, article.toLowerCase()));"
+        errorLine2="                                                     ~~~~~~~~~~~">
         <location
             file="src/main/java/org/moire/ultrasonic/service/OfflineMusicService.java"
-            line="128"
-            column="55"/>
+            line="122"
+            column="54"/>
     </issue>
 
     <issue
@@ -74,7 +74,7 @@
         errorLine2="                                     ~~~~~~~~~~~">
         <location
             file="src/main/java/org/moire/ultrasonic/service/OfflineMusicService.java"
-            line="486"
+            line="466"
             column="38"/>
     </issue>
 
@@ -85,7 +85,7 @@
         errorLine2="                                          ~~~~~~~~~~~">
         <location
             file="src/main/java/org/moire/ultrasonic/service/OfflineMusicService.java"
-            line="488"
+            line="468"
             column="43"/>
     </issue>
 
@@ -238,7 +238,7 @@
         errorLine2="                                                         ~~~~">
         <location
             file="src/main/java/org/moire/ultrasonic/service/JukeboxMediaPlayer.java"
-            line="483"
+            line="476"
             column="58"/>
     </issue>
 
@@ -491,7 +491,7 @@
         errorLine2="                                    ~~~~~~~~~~~~">
         <location
             file="src/main/java/org/moire/ultrasonic/service/OfflineMusicService.java"
-            line="653"
+            line="633"
             column="37"/>
     </issue>
 
@@ -577,39 +577,6 @@
         message="This folder configuration (`v14`) is unnecessary; `minSdkVersion` is 14. Merge all the resources in this folder into `drawable-xhdpi`.">
         <location
             file="src/main/res/drawable-xhdpi-v14"/>
-    </issue>
-
-    <issue
-        id="StaticFieldLeak"
-        message="This `AsyncTask` class should be static or leaks might occur (org.moire.ultrasonic.util.CacheCleaner.BackgroundCleanup)"
-        errorLine1=" private class BackgroundCleanup extends AsyncTask&lt;Void, Void, Void>"
-        errorLine2="               ~~~~~~~~~~~~~~~~~">
-        <location
-            file="src/main/java/org/moire/ultrasonic/util/CacheCleaner.java"
-            line="225"
-            column="16"/>
-    </issue>
-
-    <issue
-        id="StaticFieldLeak"
-        message="This `AsyncTask` class should be static or leaks might occur (org.moire.ultrasonic.util.CacheCleaner.BackgroundSpaceCleanup)"
-        errorLine1=" private class BackgroundSpaceCleanup extends AsyncTask&lt;Void, Void, Void>"
-        errorLine2="               ~~~~~~~~~~~~~~~~~~~~~~">
-        <location
-            file="src/main/java/org/moire/ultrasonic/util/CacheCleaner.java"
-            line="253"
-            column="16"/>
-    </issue>
-
-    <issue
-        id="StaticFieldLeak"
-        message="This `AsyncTask` class should be static or leaks might occur (org.moire.ultrasonic.util.CacheCleaner.BackgroundPlaylistsCleanup)"
-        errorLine1=" private class BackgroundPlaylistsCleanup extends AsyncTask&lt;List&lt;Playlist>, Void, Void>"
-        errorLine2="               ~~~~~~~~~~~~~~~~~~~~~~~~~~">
-        <location
-            file="src/main/java/org/moire/ultrasonic/util/CacheCleaner.java"
-            line="282"
-            column="16"/>
     </issue>
 
     <issue
@@ -2115,13 +2082,6 @@
             file="src/main/res/drawable-hdpi/list_pressed_holo_light.9.png"/>
         <location
             file="src/main/res/drawable-hdpi/list_pressed_holo_dark.9.png"/>
-    </issue>
-
-    <issue
-        id="IconMissingDensityFolder"
-        message="Missing density variation folders in `/home/xyz/08-Tech/02-Android/ultrasonic/ultrasonic/src/main/res`: drawable-mdpi, drawable-xhdpi, drawable-xxhdpi">
-        <location
-            file="src/main/res"/>
     </issue>
 
     <issue

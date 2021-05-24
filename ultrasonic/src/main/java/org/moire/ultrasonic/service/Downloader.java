@@ -1,6 +1,5 @@
 package org.moire.ultrasonic.service;
 
-import android.content.Context;
 import timber.log.Timber;
 
 import org.moire.ultrasonic.domain.MusicDirectory;
@@ -35,20 +34,18 @@ public class Downloader
     private final ShufflePlayBuffer shufflePlayBuffer;
     private final ExternalStorageMonitor externalStorageMonitor;
     private final LocalMediaPlayer localMediaPlayer;
-    private final Context context;
 
     // TODO: This is a circular reference, try to remove
-    private Lazy<JukeboxMediaPlayer> jukeboxMediaPlayer = inject(JukeboxMediaPlayer.class);
+    private final Lazy<JukeboxMediaPlayer> jukeboxMediaPlayer = inject(JukeboxMediaPlayer.class);
 
     private final List<DownloadFile> cleanupCandidates = new ArrayList<>();
     private final LRUCache<MusicDirectory.Entry, DownloadFile> downloadFileCache = new LRUCache<>(100);
     private ScheduledExecutorService executorService;
     private long revision;
 
-    public Downloader(Context context, ShufflePlayBuffer shufflePlayBuffer, ExternalStorageMonitor externalStorageMonitor,
+    public Downloader(ShufflePlayBuffer shufflePlayBuffer, ExternalStorageMonitor externalStorageMonitor,
                       LocalMediaPlayer localMediaPlayer)
     {
-        this.context = context;
         this.shufflePlayBuffer = shufflePlayBuffer;
         this.externalStorageMonitor = externalStorageMonitor;
         this.localMediaPlayer = localMediaPlayer;
@@ -56,19 +53,14 @@ public class Downloader
 
     public void onCreate()
     {
-        Runnable downloadChecker = new Runnable()
-        {
-            @Override
-            public void run()
+        Runnable downloadChecker = () -> {
+            try
             {
-                try
-                {
-                    checkDownloads();
-                }
-                catch (Throwable x)
-                {
-                    Timber.e(x,"checkDownloads() failed.");
-                }
+                checkDownloads();
+            }
+            catch (Throwable x)
+            {
+                Timber.e(x,"checkDownloads() failed.");
             }
         };
 
@@ -100,10 +92,10 @@ public class Downloader
 
         if (shufflePlayBuffer.isEnabled)
         {
-            checkShufflePlay(context);
+            checkShufflePlay();
         }
 
-        if (jukeboxMediaPlayer.getValue().isEnabled() || !Util.isNetworkConnected(context))
+        if (jukeboxMediaPlayer.getValue().isEnabled() || !Util.isNetworkConnected())
         {
             return;
         }
@@ -188,7 +180,7 @@ public class Downloader
                 DownloadFile downloadFile = backgroundDownloadList.get(i);
                 if (downloadFile.isWorkDone() && (!downloadFile.shouldSave() || downloadFile.isSaved()))
                 {
-                    Util.scanMedia(context, downloadFile.getCompleteFile());
+                    Util.scanMedia(downloadFile.getCompleteFile());
 
                     // Don't need to keep list like active song list
                     backgroundDownloadList.remove(i);
@@ -316,7 +308,7 @@ public class Downloader
 
             for (MusicDirectory.Entry song : songs)
             {
-                DownloadFile downloadFile = new DownloadFile(context, song, save);
+                DownloadFile downloadFile = new DownloadFile(song, save);
                 downloadList.add(getCurrentPlayingIndex() + offset, downloadFile);
                 offset++;
             }
@@ -325,7 +317,7 @@ public class Downloader
         {
             for (MusicDirectory.Entry song : songs)
             {
-                DownloadFile downloadFile = new DownloadFile(context, song, save);
+                DownloadFile downloadFile = new DownloadFile(song, save);
                 downloadList.add(downloadFile);
             }
         }
@@ -336,7 +328,7 @@ public class Downloader
     {
         for (MusicDirectory.Entry song : songs)
         {
-            DownloadFile downloadFile = new DownloadFile(context, song, save);
+            DownloadFile downloadFile = new DownloadFile(song, save);
             backgroundDownloadList.add(downloadFile);
         }
 
@@ -376,7 +368,7 @@ public class Downloader
         DownloadFile downloadFile = downloadFileCache.get(song);
         if (downloadFile == null)
         {
-            downloadFile = new DownloadFile(context, song, false);
+            downloadFile = new DownloadFile(song, false);
             downloadFileCache.put(song, downloadFile);
         }
         return downloadFile;
@@ -398,7 +390,7 @@ public class Downloader
         }
     }
 
-    private synchronized void checkShufflePlay(Context context)
+    private synchronized void checkShufflePlay()
     {
         // Get users desired random playlist size
         int listSize = Util.getMaxSongs();
@@ -412,7 +404,7 @@ public class Downloader
         {
             for (MusicDirectory.Entry song : shufflePlayBuffer.get(listSize - size))
             {
-                DownloadFile downloadFile = new DownloadFile(context, song, false);
+                DownloadFile downloadFile = new DownloadFile(song, false);
                 downloadList.add(downloadFile);
                 revision++;
             }
@@ -426,7 +418,7 @@ public class Downloader
             int songsToShift = currIndex - 2;
             for (MusicDirectory.Entry song : shufflePlayBuffer.get(songsToShift))
             {
-                downloadList.add(new DownloadFile(context, song, false));
+                downloadList.add(new DownloadFile(song, false));
                 downloadList.get(0).cancelDownload();
                 downloadList.remove(0);
                 revision++;

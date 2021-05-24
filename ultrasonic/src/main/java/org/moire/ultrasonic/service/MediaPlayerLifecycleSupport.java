@@ -30,6 +30,7 @@ import timber.log.Timber;
 import android.view.KeyEvent;
 
 import org.moire.ultrasonic.R;
+import org.moire.ultrasonic.app.UApp;
 import org.moire.ultrasonic.domain.PlayerState;
 import org.moire.ultrasonic.util.CacheCleaner;
 import org.moire.ultrasonic.util.Constants;
@@ -43,19 +44,17 @@ import org.moire.ultrasonic.util.Util;
 public class MediaPlayerLifecycleSupport
 {
 	private boolean created = false;
-	private DownloadQueueSerializer downloadQueueSerializer; // From DI
-	private final MediaPlayerControllerImpl mediaPlayerController; // From DI
+	private final DownloadQueueSerializer downloadQueueSerializer; // From DI
+	private final MediaPlayerController mediaPlayerController; // From DI
 	private final Downloader downloader; // From DI
-	private Context context;
 
 	private BroadcastReceiver headsetEventReceiver;
 
-	public MediaPlayerLifecycleSupport(Context context, DownloadQueueSerializer downloadQueueSerializer,
-									   final MediaPlayerControllerImpl mediaPlayerController, final Downloader downloader)
+	public MediaPlayerLifecycleSupport(DownloadQueueSerializer downloadQueueSerializer,
+									   final MediaPlayerController mediaPlayerController, final Downloader downloader)
 	{
 		this.downloadQueueSerializer = downloadQueueSerializer;
 		this.mediaPlayerController = mediaPlayerController;
-		this.context = context;
 		this.downloader = downloader;
 
 		Timber.i("LifecycleSupport constructed");
@@ -92,7 +91,7 @@ public class MediaPlayerLifecycleSupport
 			}
 		});
 
-		new CacheCleaner(context).clean();
+		new CacheCleaner().clean();
 		created = true;
 		Timber.i("LifecycleSupport created");
 	}
@@ -103,7 +102,7 @@ public class MediaPlayerLifecycleSupport
 		downloadQueueSerializer.serializeDownloadQueueNow(downloader.downloadList,
 				downloader.getCurrentPlayingIndex(), mediaPlayerController.getPlayerPosition());
 		mediaPlayerController.clear(false);
-		context.unregisterReceiver(headsetEventReceiver);
+		UApp.Companion.applicationContext().unregisterReceiver(headsetEventReceiver);
 		mediaPlayerController.onDestroy();
 		created = false;
 		Timber.i("LifecycleSupport destroyed");
@@ -139,6 +138,7 @@ public class MediaPlayerLifecycleSupport
 	 */
 	private void registerHeadsetReceiver() {
         final SharedPreferences sp = Util.getPreferences();
+        final Context context = UApp.Companion.applicationContext();
         final String spKey = context
                 .getString(R.string.settings_playback_resume_play_on_headphones_plug);
 
@@ -177,7 +177,7 @@ public class MediaPlayerLifecycleSupport
 		{
 			headsetIntentFilter = new IntentFilter(Intent.ACTION_HEADSET_PLUG);
 		}
-        context.registerReceiver(headsetEventReceiver, headsetIntentFilter);
+		UApp.Companion.applicationContext().registerReceiver(headsetEventReceiver, headsetIntentFilter);
     }
 
 	public void handleKeyEvent(KeyEvent event)
@@ -205,58 +205,55 @@ public class MediaPlayerLifecycleSupport
 				keyCode == KeyEvent.KEYCODE_MEDIA_NEXT);
 
 		// We can receive intents (e.g. MediaButton) when everything is stopped, so we need to start
-		onCreate(autoStart, new Runnable() {
-			@Override
-			public void run() {
-				switch (keyCode)
-				{
-					case KeyEvent.KEYCODE_MEDIA_PLAY_PAUSE:
-					case KeyEvent.KEYCODE_HEADSETHOOK:
-						mediaPlayerController.togglePlayPause();
-						break;
-					case KeyEvent.KEYCODE_MEDIA_PREVIOUS:
-						mediaPlayerController.previous();
-						break;
-					case KeyEvent.KEYCODE_MEDIA_NEXT:
-						mediaPlayerController.next();
-						break;
-					case KeyEvent.KEYCODE_MEDIA_STOP:
-						mediaPlayerController.stop();
-						break;
-					case KeyEvent.KEYCODE_MEDIA_PLAY:
-						if (mediaPlayerController.getPlayerState() == PlayerState.IDLE)
-						{
-							mediaPlayerController.play();
-						}
-						else if (mediaPlayerController.getPlayerState() != PlayerState.STARTED)
-						{
-							mediaPlayerController.start();
-						}
-						break;
-					case KeyEvent.KEYCODE_MEDIA_PAUSE:
-						mediaPlayerController.pause();
-						break;
-					case KeyEvent.KEYCODE_1:
-						mediaPlayerController.setSongRating(1);
-						break;
-					case KeyEvent.KEYCODE_2:
-						mediaPlayerController.setSongRating(2);
-						break;
-					case KeyEvent.KEYCODE_3:
-						mediaPlayerController.setSongRating(3);
-						break;
-					case KeyEvent.KEYCODE_4:
-						mediaPlayerController.setSongRating(4);
-						break;
-					case KeyEvent.KEYCODE_5:
-						mediaPlayerController.setSongRating(5);
-						break;
-					case KeyEvent.KEYCODE_STAR:
-						mediaPlayerController.toggleSongStarred();
-						break;
-					default:
-						break;
-				}
+		onCreate(autoStart, () -> {
+			switch (keyCode)
+			{
+				case KeyEvent.KEYCODE_MEDIA_PLAY_PAUSE:
+				case KeyEvent.KEYCODE_HEADSETHOOK:
+					mediaPlayerController.togglePlayPause();
+					break;
+				case KeyEvent.KEYCODE_MEDIA_PREVIOUS:
+					mediaPlayerController.previous();
+					break;
+				case KeyEvent.KEYCODE_MEDIA_NEXT:
+					mediaPlayerController.next();
+					break;
+				case KeyEvent.KEYCODE_MEDIA_STOP:
+					mediaPlayerController.stop();
+					break;
+				case KeyEvent.KEYCODE_MEDIA_PLAY:
+					if (mediaPlayerController.getPlayerState() == PlayerState.IDLE)
+					{
+						mediaPlayerController.play();
+					}
+					else if (mediaPlayerController.getPlayerState() != PlayerState.STARTED)
+					{
+						mediaPlayerController.start();
+					}
+					break;
+				case KeyEvent.KEYCODE_MEDIA_PAUSE:
+					mediaPlayerController.pause();
+					break;
+				case KeyEvent.KEYCODE_1:
+					mediaPlayerController.setSongRating(1);
+					break;
+				case KeyEvent.KEYCODE_2:
+					mediaPlayerController.setSongRating(2);
+					break;
+				case KeyEvent.KEYCODE_3:
+					mediaPlayerController.setSongRating(3);
+					break;
+				case KeyEvent.KEYCODE_4:
+					mediaPlayerController.setSongRating(4);
+					break;
+				case KeyEvent.KEYCODE_5:
+					mediaPlayerController.setSongRating(5);
+					break;
+				case KeyEvent.KEYCODE_STAR:
+					mediaPlayerController.toggleSongStarred();
+					break;
+				default:
+					break;
 			}
 		});
 	}
@@ -278,36 +275,33 @@ public class MediaPlayerLifecycleSupport
 			intentAction.equals(Constants.CMD_NEXT));
 
 		// We can receive intents when everything is stopped, so we need to start
-		onCreate(autoStart, new Runnable() {
-			@Override
-			public void run() {
-				switch(intentAction)
-				{
-					case Constants.CMD_PLAY:
-						mediaPlayerController.play();
-						break;
-					case Constants.CMD_RESUME_OR_PLAY:
-						// If Ultrasonic wasn't running, the autoStart is enough to resume, no need to call anything
-						if (isRunning) mediaPlayerController.resumeOrPlay();
-						break;
-					case Constants.CMD_NEXT:
-						mediaPlayerController.next();
-						break;
-					case Constants.CMD_PREVIOUS:
-						mediaPlayerController.previous();
-						break;
-					case Constants.CMD_TOGGLEPAUSE:
-						mediaPlayerController.togglePlayPause();
-						break;
-					case Constants.CMD_STOP:
-						// TODO: There is a stop() function, shouldn't we use that?
-						mediaPlayerController.pause();
-						mediaPlayerController.seekTo(0);
-						break;
-					case Constants.CMD_PAUSE:
-						mediaPlayerController.pause();
-						break;
-				}
+		onCreate(autoStart, () -> {
+			switch(intentAction)
+			{
+				case Constants.CMD_PLAY:
+					mediaPlayerController.play();
+					break;
+				case Constants.CMD_RESUME_OR_PLAY:
+					// If Ultrasonic wasn't running, the autoStart is enough to resume, no need to call anything
+					if (isRunning) mediaPlayerController.resumeOrPlay();
+					break;
+				case Constants.CMD_NEXT:
+					mediaPlayerController.next();
+					break;
+				case Constants.CMD_PREVIOUS:
+					mediaPlayerController.previous();
+					break;
+				case Constants.CMD_TOGGLEPAUSE:
+					mediaPlayerController.togglePlayPause();
+					break;
+				case Constants.CMD_STOP:
+					// TODO: There is a stop() function, shouldn't we use that?
+					mediaPlayerController.pause();
+					mediaPlayerController.seekTo(0);
+					break;
+				case Constants.CMD_PAUSE:
+					mediaPlayerController.pause();
+					break;
 			}
 		});
 	}

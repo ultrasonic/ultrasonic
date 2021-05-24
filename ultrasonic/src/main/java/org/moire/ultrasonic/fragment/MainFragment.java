@@ -235,10 +235,11 @@ public class MainFragment extends Fragment {
         Navigation.findNavController(getView()).navigate(R.id.mainToArtistList, bundle);
     }
 
-    private void showAlbumList(final String type, final int title) {
+    private void showAlbumList(final String type, final int titleIndex) {
         Bundle bundle = new Bundle();
+        String title = getContext().getResources().getString(titleIndex, "");
         bundle.putString(Constants.INTENT_EXTRA_NAME_ALBUM_LIST_TYPE, type);
-        bundle.putInt(Constants.INTENT_EXTRA_NAME_ALBUM_LIST_TITLE, title);
+        bundle.putString(Constants.INTENT_EXTRA_NAME_ALBUM_LIST_TITLE, title);
         bundle.putInt(Constants.INTENT_EXTRA_NAME_ALBUM_LIST_SIZE, Util.getMaxAlbums());
         bundle.putInt(Constants.INTENT_EXTRA_NAME_ALBUM_LIST_OFFSET, 0);
         Navigation.findNavController(getView()).navigate(R.id.mainToAlbumList, bundle);

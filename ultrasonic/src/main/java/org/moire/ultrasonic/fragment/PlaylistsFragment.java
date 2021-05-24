@@ -131,7 +131,7 @@ public class PlaylistsFragment extends Fragment {
                 List<Playlist> playlists = musicService.getPlaylists(refresh);
 
                 if (!ActiveServerProvider.Companion.isOffline())
-                    new CacheCleaner(getContext()).cleanPlaylists(playlists);
+                    new CacheCleaner().cleanPlaylists(playlists);
                 return playlists;
             }
 

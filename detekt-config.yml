@@ -63,7 +63,8 @@ style:
     excludePackageStatements: false
     excludeImportStatements: false
   MagicNumber:
-    ignoreNumbers: ['-1', '0', '1', '2', '100']
+    # 100 common in percentage, 1000 in milliseconds
+    ignoreNumbers: ['-1', '0', '1', '2', '100', '1000']
     ignoreEnums: true
     ignorePropertyDeclaration: true
   UnnecessaryAbstractClass:

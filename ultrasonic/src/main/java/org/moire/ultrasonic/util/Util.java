@@ -167,10 +167,14 @@ public class Util
 		}
 	}
 
-	public static int getMaxBitRate(Context context)
-	{
-		ConnectivityManager manager = (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
+	public static ConnectivityManager getConnectivityManager() {
+		Context context = appContext();
+		return (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
+	}
 
+	public static int getMaxBitRate()
+	{
+		ConnectivityManager manager = getConnectivityManager();
 		NetworkInfo networkInfo = manager.getActiveNetworkInfo();
 
 		if (networkInfo == null)
@@ -548,9 +552,9 @@ public class Util
 		return null;
 	}
 
-	public static boolean isNetworkConnected(Context context)
+	public static boolean isNetworkConnected()
 	{
-		ConnectivityManager manager = (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
+		ConnectivityManager manager = getConnectivityManager();
 		NetworkInfo networkInfo = manager.getActiveNetworkInfo();
 		boolean connected = networkInfo != null && networkInfo.isConnected();
 
@@ -648,9 +652,9 @@ public class Util
 		return bitmap;
 	}
 
-	public static WifiManager.WifiLock createWifiLock(Context context, String tag)
+	public static WifiManager.WifiLock createWifiLock(String tag)
 	{
-		WifiManager wm = (WifiManager) context.getApplicationContext().getSystemService(Context.WIFI_SERVICE);
+		WifiManager wm = (WifiManager) appContext().getApplicationContext().getSystemService(Context.WIFI_SERVICE);
 		return wm.createWifiLock(WifiManager.WIFI_MODE_FULL_HIGH_PERF, tag);
 	}
 
@@ -945,15 +949,15 @@ public class Util
 		return size;
 	}
 
-	public static int getMinDisplayMetric(Context context)
+	public static int getMinDisplayMetric()
 	{
-		DisplayMetrics metrics = context.getResources().getDisplayMetrics();
+		DisplayMetrics metrics = appContext().getResources().getDisplayMetrics();
 		return Math.min(metrics.widthPixels, metrics.heightPixels);
 	}
 
-	public static int getMaxDisplayMetric(Context context)
+	public static int getMaxDisplayMetric()
 	{
-		DisplayMetrics metrics = context.getResources().getDisplayMetrics();
+		DisplayMetrics metrics = appContext().getResources().getDisplayMetrics();
 		return Math.max(metrics.widthPixels, metrics.heightPixels);
 	}
 
@@ -1251,10 +1255,12 @@ public class Util
 		return preferences.getString(Constants.PREFERENCES_KEY_DEFAULT_SHARE_DESCRIPTION, "");
 	}
 
-	public static String getShareGreeting(Context context)
+	public static String getShareGreeting()
 	{
 		SharedPreferences preferences = getPreferences();
-		return preferences.getString(Constants.PREFERENCES_KEY_DEFAULT_SHARE_GREETING, String.format(context.getResources().getString(R.string.share_default_greeting), context.getResources().getString(R.string.common_appname)));
+		Context context = appContext();
+		String defaultVal = String.format(context.getResources().getString(R.string.share_default_greeting), context.getResources().getString(R.string.common_appname));
+		return preferences.getString(Constants.PREFERENCES_KEY_DEFAULT_SHARE_GREETING, defaultVal);
 	}
 
 	public static String getDefaultShareExpiration()
@@ -1313,11 +1319,11 @@ public class Util
 		return preferences.getBoolean(Constants.PREFERENCES_KEY_SHOW_ALL_SONGS_BY_ARTIST, false);
 	}
 
-	public static void scanMedia(Context context, File file)
+	public static void scanMedia(File file)
 	{
 		Uri uri = Uri.fromFile(file);
 		Intent scanFileIntent = new Intent(Intent.ACTION_MEDIA_SCANNER_SCAN_FILE, uri);
-		context.sendBroadcast(scanFileIntent);
+		appContext().sendBroadcast(scanFileIntent);
 	}
 
 	public static int getImageLoaderConcurrency()

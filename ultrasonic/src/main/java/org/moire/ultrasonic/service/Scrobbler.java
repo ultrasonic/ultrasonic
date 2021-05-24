@@ -1,8 +1,6 @@
 package org.moire.ultrasonic.service;
 
-import android.content.Context;
 import timber.log.Timber;
-
 import org.moire.ultrasonic.data.ActiveServerProvider;
 
 /**
@@ -16,7 +14,7 @@ public class Scrobbler
 	private String lastSubmission;
 	private String lastNowPlaying;
 
-	public void scrobble(final Context context, final DownloadFile song, final boolean submission)
+	public void scrobble(final DownloadFile song, final boolean submission)
 	{
 		if (song == null || !ActiveServerProvider.Companion.isScrobblingEnabled()) return;
 

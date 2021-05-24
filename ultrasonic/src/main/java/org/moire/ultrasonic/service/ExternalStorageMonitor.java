@@ -4,6 +4,9 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
+
+import org.moire.ultrasonic.app.UApp;
+
 import timber.log.Timber;
 
 /**
@@ -11,14 +14,8 @@ import timber.log.Timber;
  */
 public class ExternalStorageMonitor
 {
-    private Context context;
     private BroadcastReceiver ejectEventReceiver;
     private boolean externalStorageAvailable = true;
-
-    public ExternalStorageMonitor(Context context)
-    {
-        this.context = context;
-    }
 
     public void onCreate(final Runnable ejectedCallback)
     {
@@ -44,12 +41,12 @@ public class ExternalStorageMonitor
         IntentFilter ejectFilter = new IntentFilter(Intent.ACTION_MEDIA_EJECT);
         ejectFilter.addAction(Intent.ACTION_MEDIA_MOUNTED);
         ejectFilter.addDataScheme("file");
-        context.registerReceiver(ejectEventReceiver, ejectFilter);
+        UApp.Companion.applicationContext().registerReceiver(ejectEventReceiver, ejectFilter);
     }
 
     public void onDestroy()
     {
-        context.unregisterReceiver(ejectEventReceiver);
+        UApp.Companion.applicationContext().unregisterReceiver(ejectEventReceiver);
     }
 
     public boolean isExternalStorageAvailable() { return externalStorageAvailable; }

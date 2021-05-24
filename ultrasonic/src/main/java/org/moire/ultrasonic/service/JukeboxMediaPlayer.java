@@ -30,6 +30,7 @@ import android.widget.Toast;
 import org.jetbrains.annotations.NotNull;
 import org.moire.ultrasonic.R;
 import org.moire.ultrasonic.api.subsonic.ApiNotSupportedException;
+import org.moire.ultrasonic.app.UApp;
 import org.moire.ultrasonic.data.ActiveServerProvider;
 import org.moire.ultrasonic.domain.JukeboxStatus;
 import org.moire.ultrasonic.domain.PlayerState;
@@ -70,10 +71,9 @@ public class JukeboxMediaPlayer
 	private final AtomicBoolean running = new AtomicBoolean();
 	private Thread serviceThread;
 	private boolean enabled = false;
-	private final Context context;
 
 	// TODO: These create circular references, try to refactor
-	private final Lazy<MediaPlayerControllerImpl> mediaPlayerControllerLazy = inject(MediaPlayerControllerImpl.class);
+	private final Lazy<MediaPlayerController> mediaPlayerControllerLazy = inject(MediaPlayerController.class);
 	private final Downloader downloader;
 
 	// TODO: Report warning if queue fills up.
@@ -82,9 +82,8 @@ public class JukeboxMediaPlayer
 	// TODO: Persist RC state?
 	// TODO: Minimize status updates.
 
-	public JukeboxMediaPlayer(Context context, Downloader downloader)
+	public JukeboxMediaPlayer(Downloader downloader)
 	{
-		this.context = context;
 		this.downloader = downloader;
 	}
 
@@ -217,15 +216,8 @@ public class JukeboxMediaPlayer
 	private void disableJukeboxOnError(Throwable x, final int resourceId)
 	{
 		Timber.w(x.toString());
-
-		new Handler().post(new Runnable()
-		{
-			@Override
-			public void run()
-			{
-				Util.toast(context, resourceId, false);
-			}
-		});
+		Context context = UApp.Companion.applicationContext();
+		new Handler().post(() -> Util.toast(context, resourceId, false));
 
 		mediaPlayerControllerLazy.getValue().setJukeboxEnabled(false);
 	}
@@ -293,6 +285,7 @@ public class JukeboxMediaPlayer
 		tasks.remove(SetGain.class);
 		tasks.add(new SetGain(gain));
 
+		Context context = UApp.Companion.applicationContext();
 		if (volumeToast == null) volumeToast = new VolumeToast(context);
 
 		volumeToast.setVolume(gain);

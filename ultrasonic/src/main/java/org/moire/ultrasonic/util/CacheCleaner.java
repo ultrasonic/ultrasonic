@@ -1,6 +1,5 @@
 package org.moire.ultrasonic.util;
 
-import android.content.Context;
 import android.os.AsyncTask;
 import android.os.StatFs;
 import timber.log.Timber;
@@ -14,7 +13,6 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
-import java.util.Comparator;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -31,13 +29,8 @@ public class CacheCleaner
 {
 	private static final long MIN_FREE_SPACE = 500 * 1024L * 1024L;
 
-	private final Context context;
-	private Lazy<Downloader> downloader = inject(Downloader.class);
-	private Lazy<ActiveServerProvider> activeServerProvider = inject(ActiveServerProvider.class);
-
-	public CacheCleaner(Context context)
+	public CacheCleaner()
 	{
-		this.context = context;
 	}
 
 	public void clean()
@@ -79,7 +72,7 @@ public class CacheCleaner
 		}
 	}
 
-	private void deleteEmptyDirs(Iterable<File> dirs, Collection<File> doNotDelete)
+	private static void deleteEmptyDirs(Iterable<File> dirs, Collection<File> doNotDelete)
 	{
 		for (File dir : dirs)
 		{
@@ -108,7 +101,7 @@ public class CacheCleaner
 		}
 	}
 
-	private long getMinimumDelete(List<File> files)
+	private static long getMinimumDelete(List<File> files)
 	{
 		if (files.isEmpty())
 		{
@@ -168,7 +161,7 @@ public class CacheCleaner
 			}
 		}
 
-		Timber.i("Deleted           : %s", Util.formatBytes(bytesDeleted));
+		Timber.i("Deleted: %s", Util.formatBytes(bytesDeleted));
 	}
 
 	private static void findCandidatesForDeletion(File file, List<File> files, List<File> dirs)
@@ -197,20 +190,14 @@ public class CacheCleaner
 
 	private static void sortByAscendingModificationTime(List<File> files)
 	{
-		Collections.sort(files, new Comparator<File>()
-		{
-			@Override
-			public int compare(File a, File b)
-			{
-				return Long.compare(a.lastModified(), b.lastModified());
-
-			}
-		});
+		Collections.sort(files, (a, b) -> Long.compare(a.lastModified(), b.lastModified()));
 	}
 
-	private Set<File> findFilesToNotDelete()
+	private static Set<File> findFilesToNotDelete()
 	{
-		Set<File> filesToNotDelete = new HashSet<File>(5);
+		Set<File> filesToNotDelete = new HashSet<>(5);
+
+		Lazy<Downloader> downloader = inject(Downloader.class);
 
 		for (DownloadFile downloadFile : downloader.getValue().getDownloads())
 		{
@@ -222,7 +209,7 @@ public class CacheCleaner
 		return filesToNotDelete;
 	}
 
-	private class BackgroundCleanup extends AsyncTask<Void, Void, Void>
+	private static class BackgroundCleanup extends AsyncTask<Void, Void, Void>
 	{
 		@Override
 		protected Void doInBackground(Void... params)
@@ -230,8 +217,8 @@ public class CacheCleaner
 			try
 			{
 				Thread.currentThread().setName("BackgroundCleanup");
-				List<File> files = new ArrayList<File>();
-				List<File> dirs = new ArrayList<File>();
+				List<File> files = new ArrayList<>();
+				List<File> dirs = new ArrayList<>();
 
 				findCandidatesForDeletion(FileUtil.getMusicDirectory(), files, dirs);
 				sortByAscendingModificationTime(files);
@@ -250,7 +237,7 @@ public class CacheCleaner
 		}
 	}
 
-	private class BackgroundSpaceCleanup extends AsyncTask<Void, Void, Void>
+	private static class BackgroundSpaceCleanup extends AsyncTask<Void, Void, Void>
 	{
 		@Override
 		protected Void doInBackground(Void... params)
@@ -258,8 +245,8 @@ public class CacheCleaner
 			try
 			{
 				Thread.currentThread().setName("BackgroundSpaceCleanup");
-				List<File> files = new ArrayList<File>();
-				List<File> dirs = new ArrayList<File>();
+				List<File> files = new ArrayList<>();
+				List<File> dirs = new ArrayList<>();
 				findCandidatesForDeletion(FileUtil.getMusicDirectory(), files, dirs);
 
 				long bytesToDelete = getMinimumDelete(files);
@@ -279,13 +266,14 @@ public class CacheCleaner
 		}
 	}
 
-	private class BackgroundPlaylistsCleanup extends AsyncTask<List<Playlist>, Void, Void>
+	private static class BackgroundPlaylistsCleanup extends AsyncTask<List<Playlist>, Void, Void>
 	{
 		@Override
 		protected Void doInBackground(List<Playlist>... params)
 		{
 			try
 			{
+				Lazy<ActiveServerProvider> activeServerProvider = inject(ActiveServerProvider.class);
 				Thread.currentThread().setName("BackgroundPlaylistsCleanup");
 				String server = activeServerProvider.getValue().getActiveServer().getName();
 				SortedSet<File> playlistFiles = FileUtil.listFiles(FileUtil.getPlaylistDirectory(server));

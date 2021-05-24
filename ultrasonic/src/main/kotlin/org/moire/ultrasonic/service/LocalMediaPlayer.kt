@@ -25,6 +25,7 @@ import java.net.URLEncoder
 import java.util.Locale
 import kotlin.math.abs
 import kotlin.math.max
+import org.koin.core.component.KoinApiExtension
 import org.moire.ultrasonic.audiofx.EqualizerController
 import org.moire.ultrasonic.audiofx.VisualizerController
 import org.moire.ultrasonic.data.ActiveServerProvider.Companion.isOffline
@@ -39,6 +40,7 @@ import timber.log.Timber
 /**
  * Represents a Media Player which uses the mobile's resources for playback
  */
+@KoinApiExtension
 class LocalMediaPlayer(
     private val audioFocusHandler: AudioFocusHandler,
     private val context: Context
@@ -397,7 +399,7 @@ class LocalMediaPlayer(
 
                 secondaryProgress = (percent.toDouble() / 100.toDouble() * progressBar.max).toInt()
 
-                if (song.transcodedContentType == null && Util.getMaxBitRate(context) == 0) {
+                if (song.transcodedContentType == null && Util.getMaxBitRate() == 0) {
                     progressBar?.secondaryProgress = secondaryProgress
                 }
             }
