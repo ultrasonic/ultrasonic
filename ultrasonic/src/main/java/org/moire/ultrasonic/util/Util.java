@@ -365,7 +365,7 @@ public class Util
 	 * @param value Is true or false
 	 * @return The corresponding mark.
 	 */
-	public static synchronized String boolToMark(boolean value)
+	public static String boolToMark(boolean value)
 	{
 		if (value)
 			return "✔️";

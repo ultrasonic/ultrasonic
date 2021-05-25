@@ -303,7 +303,8 @@ class EditServerFragment : Fragment(), OnBackPressedHandler {
             @Throws(Throwable::class)
             override fun doInBackground(): String {
 
-                var progressString = """
+                var progressString =
+                    """
                     |%s - ${activity.resources.getString(R.string.button_bar_chat)}
                     |%s - ${activity.resources.getString(R.string.button_bar_bookmarks)}
                     |%s - ${activity.resources.getString(R.string.button_bar_shares)}
@@ -345,30 +346,42 @@ class EditServerFragment : Fragment(), OnBackPressedHandler {
                     true
                 } catch (e: Throwable) { false }
 
-                updateProgress(String.format(progressString,
+                updateProgress(
+                    String.format(
+                        progressString,
                         Util.boolToMark(currentServerSetting!!.chatSupport),
-                        "⌛", "⌛", "⌛"))
+                        "⌛", "⌛", "⌛"
+                    )
+                )
 
                 currentServerSetting!!.bookmarkSupport = try {
                     subsonicApiClient.api.getBookmarks().execute()
                     true
                 } catch (e: Throwable) { false }
 
-                updateProgress(String.format(progressString,
+                updateProgress(
+                    String.format(
+                        progressString,
                         Util.boolToMark(currentServerSetting!!.chatSupport),
                         Util.boolToMark(currentServerSetting!!.bookmarkSupport),
-                        "⌛", "⌛"))
+                        "⌛", "⌛"
+                    )
+                )
 
                 currentServerSetting!!.shareSupport = try {
                     subsonicApiClient.api.getShares().execute()
                     true
                 } catch (e: Throwable) { false }
 
-                updateProgress(String.format(progressString,
+                updateProgress(
+                    String.format(
+                        progressString,
                         Util.boolToMark(currentServerSetting!!.chatSupport),
                         Util.boolToMark(currentServerSetting!!.bookmarkSupport),
                         Util.boolToMark(currentServerSetting!!.shareSupport),
-                        "⌛"))
+                        "⌛"
+                    )
+                )
 
                 currentServerSetting!!.podcastSupport = try {
                     subsonicApiClient.api.getPodcasts().execute()
@@ -376,27 +389,31 @@ class EditServerFragment : Fragment(), OnBackPressedHandler {
                 } catch (e: Throwable) { false }
 
                 // Finalize String before displaying it to Dialog
-                progressString = String.format(progressString,
-                        Util.boolToMark(currentServerSetting!!.chatSupport),
-                        Util.boolToMark(currentServerSetting!!.bookmarkSupport),
-                        Util.boolToMark(currentServerSetting!!.shareSupport),
-                        Util.boolToMark(currentServerSetting!!.podcastSupport))
+                progressString = String.format(
+                    progressString,
+                    Util.boolToMark(currentServerSetting!!.chatSupport),
+                    Util.boolToMark(currentServerSetting!!.bookmarkSupport),
+                    Util.boolToMark(currentServerSetting!!.shareSupport),
+                    Util.boolToMark(currentServerSetting!!.podcastSupport)
+                )
                 updateProgress(progressString)
 
                 val licenseResponse = subsonicApiClient.api.getLicense().execute()
                 ApiCallResponseChecker.checkResponseSuccessful(licenseResponse)
                 if (!licenseResponse.body()!!.license.valid) {
-                    progressString += "\n${activity.resources.getString(R.string.settings_testing_unlicensed)}"
+                    progressString += "\n" +
+                        activity.resources.getString(R.string.settings_testing_unlicensed)
                 }
                 return progressString
             }
 
             override fun done(responseString: String) {
                 Util.showDialog(
-                        activity,
-                        android.R.drawable.ic_dialog_info,
-                        R.string.settings_testing_ok,
-                        responseString)
+                    activity,
+                    android.R.drawable.ic_dialog_info,
+                    R.string.settings_testing_ok,
+                    responseString
+                )
             }
 
             override fun error(error: Throwable) {

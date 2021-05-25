@@ -370,8 +370,7 @@ class NavigationActivity : AppCompatActivity() {
     }
 
     private fun setMenuForServerSetting() {
-        if (isOffline())
-        {
+        if (isOffline()) {
             chatMenuItem?.isVisible = false
             bookmarksMenuItem?.isVisible = false
             sharesMenuItem?.isVisible = false

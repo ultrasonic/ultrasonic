@@ -27,9 +27,17 @@ val MIGRATION_1_2: Migration = object : Migration(1, 2) {
 
 val MIGRATION_2_3: Migration = object : Migration(2, 3) {
     override fun migrate(database: SupportSQLiteDatabase) {
-        database.execSQL("ALTER TABLE ServerSetting ADD COLUMN chatSupport INTEGER NOT NULL DEFAULT(1)")
-        database.execSQL("ALTER TABLE ServerSetting ADD COLUMN bookmarkSupport INTEGER NOT NULL DEFAULT(1)")
-        database.execSQL("ALTER TABLE ServerSetting ADD COLUMN shareSupport INTEGER NOT NULL DEFAULT(1)")
-        database.execSQL("ALTER TABLE ServerSetting ADD COLUMN podcastSupport INTEGER NOT NULL DEFAULT(1)")
+        database.execSQL(
+            "ALTER TABLE ServerSetting ADD COLUMN chatSupport INTEGER NOT NULL DEFAULT(1)"
+        )
+        database.execSQL(
+            "ALTER TABLE ServerSetting ADD COLUMN bookmarkSupport INTEGER NOT NULL DEFAULT(1)"
+        )
+        database.execSQL(
+            "ALTER TABLE ServerSetting ADD COLUMN shareSupport INTEGER NOT NULL DEFAULT(1)"
+        )
+        database.execSQL(
+            "ALTER TABLE ServerSetting ADD COLUMN podcastSupport INTEGER NOT NULL DEFAULT(1)"
+        )
     }
 }

@@ -25,8 +25,8 @@ val appPermanentStorage = module {
             AppDatabase::class.java,
             "ultrasonic-database"
         )
-                .addMigrations(MIGRATION_1_2)
-                .addMigrations(MIGRATION_2_3)
+            .addMigrations(MIGRATION_1_2)
+            .addMigrations(MIGRATION_2_3)
             .fallbackToDestructiveMigrationOnDowngrade()
             .build()
     }
