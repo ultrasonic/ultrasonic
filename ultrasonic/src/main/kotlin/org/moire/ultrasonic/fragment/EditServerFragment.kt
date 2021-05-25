@@ -29,6 +29,7 @@ import org.moire.ultrasonic.util.ErrorDialog
 import org.moire.ultrasonic.util.ModalBackgroundTask
 import org.moire.ultrasonic.util.Util
 import timber.log.Timber
+import java.io.IOException
 
 /**
  * Displays a form where server settings can be created / edited
@@ -344,7 +345,7 @@ class EditServerFragment : Fragment(), OnBackPressedHandler {
                 currentServerSetting!!.chatSupport = try {
                     subsonicApiClient.api.getChatMessages().execute()
                     true
-                } catch (e: Throwable) { false }
+                } catch (e: IOException) { false }
 
                 updateProgress(
                     String.format(
@@ -357,7 +358,7 @@ class EditServerFragment : Fragment(), OnBackPressedHandler {
                 currentServerSetting!!.bookmarkSupport = try {
                     subsonicApiClient.api.getBookmarks().execute()
                     true
-                } catch (e: Throwable) { false }
+                } catch (e: IOException) { false }
 
                 updateProgress(
                     String.format(
@@ -371,7 +372,7 @@ class EditServerFragment : Fragment(), OnBackPressedHandler {
                 currentServerSetting!!.shareSupport = try {
                     subsonicApiClient.api.getShares().execute()
                     true
-                } catch (e: Throwable) { false }
+                } catch (e: IOException) { false }
 
                 updateProgress(
                     String.format(
@@ -386,7 +387,7 @@ class EditServerFragment : Fragment(), OnBackPressedHandler {
                 currentServerSetting!!.podcastSupport = try {
                     subsonicApiClient.api.getPodcasts().execute()
                     true
-                } catch (e: Throwable) { false }
+                } catch (e: IOException) { false }
 
                 // Finalize String before displaying it to Dialog
                 progressString = String.format(
