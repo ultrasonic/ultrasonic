@@ -8,6 +8,21 @@ package org.moire.ultrasonic.service
 
 import android.graphics.Bitmap
 import android.media.MediaMetadataRetriever
+import java.io.BufferedReader
+import java.io.BufferedWriter
+import java.io.File
+import java.io.FileReader
+import java.io.FileWriter
+import java.io.InputStream
+import java.io.Reader
+import java.security.SecureRandom
+import java.util.ArrayList
+import java.util.HashSet
+import java.util.LinkedList
+import java.util.Locale
+import java.util.Random
+import java.util.concurrent.TimeUnit
+import java.util.regex.Pattern
 import org.koin.java.KoinJavaComponent.inject
 import org.moire.ultrasonic.data.ActiveServerProvider
 import org.moire.ultrasonic.domain.Artist
@@ -29,21 +44,6 @@ import org.moire.ultrasonic.util.Constants
 import org.moire.ultrasonic.util.FileUtil
 import org.moire.ultrasonic.util.Util
 import timber.log.Timber
-import java.io.BufferedReader
-import java.io.BufferedWriter
-import java.io.File
-import java.io.FileReader
-import java.io.FileWriter
-import java.io.InputStream
-import java.io.Reader
-import java.security.SecureRandom
-import java.util.ArrayList
-import java.util.HashSet
-import java.util.LinkedList
-import java.util.Locale
-import java.util.Random
-import java.util.concurrent.TimeUnit
-import java.util.regex.Pattern
 
 class OfflineMusicService : MusicService {
     private val activeServerProvider = inject(
@@ -299,7 +299,7 @@ class OfflineMusicService : MusicService {
                     """
     $filePath
     
-    """.trimIndent()
+                    """.trimIndent()
                 )
             }
         } catch (e: Exception) {
@@ -452,47 +452,47 @@ class OfflineMusicService : MusicService {
         offset: Int,
         musicFolderId: String?
     ): MusicDirectory {
-        throw OfflineException("OfflineMusicService.getAlbumList2 was called but it isn't available")
+        throw OfflineException("getAlbumList2 isn't available in offline mode")
     }
 
     @Throws(OfflineException::class)
     override fun getVideoUrl(id: String, useFlash: Boolean): String? {
-        throw OfflineException("OfflineMusicService.getVideoUrl was called but it isn't available")
+        throw OfflineException("getVideoUrl isn't available in offline mode")
     }
 
     @Throws(OfflineException::class)
     override fun getChatMessages(since: Long?): List<ChatMessage?>? {
-        throw OfflineException("OfflineMusicService.getChatMessages was called but it isn't available")
+        throw OfflineException("getChatMessages isn't available in offline mode")
     }
 
     @Throws(OfflineException::class)
     override fun addChatMessage(message: String) {
-        throw OfflineException("OfflineMusicService.addChatMessage was called but it isn't available")
+        throw OfflineException("addChatMessage isn't available in offline mode")
     }
 
     @Throws(OfflineException::class)
     override fun getBookmarks(): List<Bookmark?>? {
-        throw OfflineException("OfflineMusicService.getBookmarks was called but it isn't available")
+        throw OfflineException("getBookmarks isn't available in offline mode")
     }
 
     @Throws(OfflineException::class)
     override fun deleteBookmark(id: String) {
-        throw OfflineException("OfflineMusicService.deleteBookmark was called but it isn't available")
+        throw OfflineException("deleteBookmark isn't available in offline mode")
     }
 
     @Throws(OfflineException::class)
     override fun createBookmark(id: String, position: Int) {
-        throw OfflineException("OfflineMusicService.createBookmark was called but it isn't available")
+        throw OfflineException("createBookmark isn't available in offline mode")
     }
 
     @Throws(OfflineException::class)
     override fun getVideos(refresh: Boolean): MusicDirectory? {
-        throw OfflineException("OfflineMusicService.getVideos was called but it isn't available")
+        throw OfflineException("getVideos isn't available in offline mode")
     }
 
     @Throws(OfflineException::class)
     override fun getStarred2(): SearchResult {
-        throw OfflineException("OfflineMusicService.getStarred2 was called but it isn't available")
+        throw OfflineException("getStarred2 isn't available in offline mode")
     }
 
     override fun ping() {}
@@ -501,22 +501,22 @@ class OfflineMusicService : MusicService {
 
     @Throws(OfflineException::class)
     override fun getArtists(refresh: Boolean): Indexes {
-        throw OfflineException("OfflineMusicService.getArtists was called but it isn't available")
+        throw OfflineException("getArtists isn't available in offline mode")
     }
 
     @Throws(OfflineException::class)
     override fun getArtist(id: String, name: String?, refresh: Boolean): MusicDirectory {
-        throw OfflineException("OfflineMusicService.getArtist was called but it isn't available")
+        throw OfflineException("getArtist isn't available in offline mode")
     }
 
     @Throws(OfflineException::class)
     override fun getAlbum(id: String, name: String?, refresh: Boolean): MusicDirectory {
-        throw OfflineException("OfflineMusicService.getAlbum was called but it isn't available")
+        throw OfflineException("getAlbum isn't available in offline mode")
     }
 
     @Throws(OfflineException::class)
     override fun getPodcastEpisodes(podcastChannelId: String?): MusicDirectory? {
-        throw OfflineException("OfflineMusicService.getPodcastEpisodes was called but it isn't available")
+        throw OfflineException("getPodcastEpisodes isn't available in offline mode")
     }
 
     @Throws(OfflineException::class)
@@ -525,17 +525,17 @@ class OfflineMusicService : MusicService {
         offset: Long,
         maxBitrate: Int
     ): Pair<InputStream, Boolean> {
-        throw OfflineException("OfflineMusicService.getDownloadInputStream was called but it isn't available")
+        throw OfflineException("getDownloadInputStream isn't available in offline mode")
     }
 
     @Throws(OfflineException::class)
     override fun setRating(id: String, rating: Int) {
-        throw OfflineException("OfflineMusicService.setRating was called but it isn't available")
+        throw OfflineException("setRating isn't available in offline mode")
     }
 
     @Throws(OfflineException::class)
     override fun getPodcastsChannels(refresh: Boolean): List<PodcastsChannel> {
-        throw OfflineException("OfflineMusicService.getPodcastsChannels was called but it isn't available")
+        throw OfflineException("getPodcastsChannels isn't available in offline mode")
     }
 
     companion object {
@@ -545,7 +545,8 @@ class OfflineMusicService : MusicService {
             if (file.isDirectory) {
                 return name
             }
-            if (name.endsWith(".partial") || name.contains(".partial.") || name == Constants.ALBUM_ART_FILE) {
+            if (name.endsWith(".partial") || name.contains(".partial.")
+                || name == Constants.ALBUM_ART_FILE) {
                 return null
             }
             name = name.replace(".complete", "")

@@ -19,6 +19,8 @@
 package org.moire.ultrasonic.service
 
 import android.graphics.Bitmap
+import java.io.InputStream
+import java.util.concurrent.TimeUnit
 import org.koin.java.KoinJavaComponent.inject
 import org.moire.ultrasonic.data.ActiveServerProvider
 import org.moire.ultrasonic.domain.Bookmark
@@ -39,12 +41,8 @@ import org.moire.ultrasonic.util.Constants
 import org.moire.ultrasonic.util.LRUCache
 import org.moire.ultrasonic.util.TimeLimitedCache
 import org.moire.ultrasonic.util.Util
-import java.io.InputStream
-import java.util.concurrent.TimeUnit
 
-/**
- * @author Sindre Mehus
- */
+@Suppress("TooManyFunctions")
 class CachedMusicService(private val musicService: MusicService) : MusicService {
     private val activeServerProvider = inject(
         ActiveServerProvider::class.java

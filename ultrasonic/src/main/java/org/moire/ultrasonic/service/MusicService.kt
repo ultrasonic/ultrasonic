@@ -7,6 +7,7 @@
 package org.moire.ultrasonic.service
 
 import android.graphics.Bitmap
+import java.io.InputStream
 import org.moire.ultrasonic.domain.Bookmark
 import org.moire.ultrasonic.domain.ChatMessage
 import org.moire.ultrasonic.domain.Genre
@@ -21,7 +22,6 @@ import org.moire.ultrasonic.domain.SearchCriteria
 import org.moire.ultrasonic.domain.SearchResult
 import org.moire.ultrasonic.domain.Share
 import org.moire.ultrasonic.domain.UserInfo
-import java.io.InputStream
 
 interface MusicService {
     @Throws(Exception::class)
