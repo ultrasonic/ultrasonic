@@ -1,20 +1,8 @@
 /*
- This file is part of Subsonic.
-
- Subsonic is free software: you can redistribute it and/or modify
- it under the terms of the GNU General Public License as published by
- the Free Software Foundation, either version 3 of the License, or
- (at your option) any later version.
-
- Subsonic is distributed in the hope that it will be useful,
- but WITHOUT ANY WARRANTY; without even the implied warranty of
- MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- GNU General Public License for more details.
-
- You should have received a copy of the GNU General Public License
- along with Subsonic.  If not, see <http://www.gnu.org/licenses/>.
-
- Copyright 2009 (C) Sindre Mehus
+ * RestMusicService.kt
+ * Copyright (C) 2009-2021 Ultrasonic developers
+ *
+ * Distributed under terms of the GNU GPLv3 license.
  */
 package org.moire.ultrasonic.service
 
@@ -64,7 +52,6 @@ import timber.log.Timber
 
 /**
  * This Music Service implementation connects to a server using the Subsonic REST API
- * @author Sindre Mehus
  */
 open class RESTMusicService(
     private val subsonicAPIClient: SubsonicAPIClient,
@@ -109,7 +96,7 @@ open class RESTMusicService(
     override fun getIndexes(
         musicFolderId: String?,
         refresh: Boolean
-    ): Indexes? {
+    ): Indexes {
         val indexName = INDEXES_STORAGE_NAME + (musicFolderId ?: "")
 
         val cachedIndexes = fileStorage.load(indexName, getIndexesSerializer())
@@ -171,7 +158,7 @@ open class RESTMusicService(
         id: String,
         name: String?,
         refresh: Boolean
-    ): MusicDirectory? {
+    ): MusicDirectory {
         val response = responseChecker.callWithResponseCheck { api ->
             api.getMusicDirectory(id).execute()
         }
@@ -268,7 +255,7 @@ open class RESTMusicService(
     @Throws(Exception::class)
     override fun getPlaylist(
         id: String,
-        name: String?
+        name: String
     ): MusicDirectory {
         val response = responseChecker.callWithResponseCheck { api ->
             api.getPlaylist(id).execute()
@@ -282,7 +269,7 @@ open class RESTMusicService(
 
     @Throws(IOException::class)
     private fun savePlaylist(
-        name: String?,
+        name: String,
         playlist: MusicDirectory
     ) {
         val playlistFile = FileUtil.getPlaylistFile(
@@ -326,16 +313,14 @@ open class RESTMusicService(
 
     @Throws(Exception::class)
     override fun createPlaylist(
-        id: String?,
-        name: String?,
+        id: String,
+        name: String,
         entries: List<MusicDirectory.Entry>
     ) {
         val pSongIds: MutableList<String> = ArrayList(entries.size)
 
         for ((id1) in entries) {
-            if (id1 != null) {
-                pSongIds.add(id1)
-            }
+            pSongIds.add(id1)
         }
         responseChecker.callWithResponseCheck { api ->
             api.createPlaylist(id, name, pSongIds.toList()).execute()
@@ -400,8 +385,8 @@ open class RESTMusicService(
 
     @Throws(Exception::class)
     override fun getLyrics(
-        artist: String?,
-        title: String?
+        artist: String,
+        title: String
     ): Lyrics {
         val response = responseChecker.callWithResponseCheck { api ->
             api.getLyrics(artist, title).execute()
@@ -587,7 +572,7 @@ open class RESTMusicService(
     ): Pair<InputStream, Boolean> {
         val songOffset = if (offset < 0) 0 else offset
 
-        val response = subsonicAPIClient.stream(song.id!!, maxBitrate, songOffset)
+        val response = subsonicAPIClient.stream(song.id, maxBitrate, songOffset)
         checkStreamResponseError(response)
 
         if (response.stream == null) {
@@ -704,7 +689,7 @@ open class RESTMusicService(
     @Throws(Exception::class)
     override fun getGenres(
         refresh: Boolean
-    ): List<Genre> {
+    ): List<Genre>? {
         val response = responseChecker.callWithResponseCheck { api -> api.getGenres().execute() }
 
         return response.body()!!.genresList.toDomainEntityList()

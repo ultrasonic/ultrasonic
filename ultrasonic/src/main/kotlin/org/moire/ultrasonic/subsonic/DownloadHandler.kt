@@ -226,7 +226,7 @@ class DownloadHandler(
                             }
                         }
                     } else {
-                        root = musicService.getPlaylist(id, name)
+                        root = musicService.getPlaylist(id, name!!)
                     }
                     getSongsRecursively(root, songs)
                 }

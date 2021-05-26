@@ -258,7 +258,7 @@ class TrackCollectionFragment : Fragment() {
             model.getMusicFolders(refresh)
 
             if (playlistId != null) {
-                setTitle(playlistName)
+                setTitle(playlistName!!)
                 model.getPlaylist(playlistId, playlistName)
             } else if (podcastChannelId != null) {
                 setTitle(getString(R.string.podcasts_label))
@@ -282,12 +282,12 @@ class TrackCollectionFragment : Fragment() {
                 setTitle(name)
                 if (!isOffline() && Util.getShouldUseId3Tags()) {
                     if (isAlbum) {
-                        model.getAlbum(refresh, id, name, parentId)
+                        model.getAlbum(refresh, id!!, name, parentId!!)
                     } else {
-                        model.getArtist(refresh, id, name)
+                        model.getArtist(refresh, id!!, name)
                     }
                 } else {
-                    model.getMusicDirectory(refresh, id, name, parentId)
+                    model.getMusicDirectory(refresh, id!!, name, parentId!!)
                 }
             }
 

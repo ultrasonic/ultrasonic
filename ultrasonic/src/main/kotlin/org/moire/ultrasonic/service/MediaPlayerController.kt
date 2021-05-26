@@ -429,10 +429,7 @@ class MediaPlayerController(
         get() {
             try {
                 val username = activeServerProvider.getActiveServer().userName
-                val (_, _, _, _, _, _, _, _, _, _, _, _, jukeboxRole) = getMusicService().getUser(
-                    username
-                )
-                return jukeboxRole
+                return getMusicService().getUser(username).jukeboxRole
             } catch (e: Exception) {
                 Timber.w(e, "Error getting user information")
             }
