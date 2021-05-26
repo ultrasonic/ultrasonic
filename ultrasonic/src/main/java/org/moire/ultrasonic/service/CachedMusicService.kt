@@ -16,524 +16,470 @@
 
  Copyright 2009 (C) Sindre Mehus
  */
-package org.moire.ultrasonic.service;
+package org.moire.ultrasonic.service
 
-import android.graphics.Bitmap;
-
-import org.moire.ultrasonic.data.ActiveServerProvider;
-import org.moire.ultrasonic.domain.Bookmark;
-import org.moire.ultrasonic.domain.ChatMessage;
-import org.moire.ultrasonic.domain.Genre;
-import org.moire.ultrasonic.domain.Indexes;
-import org.moire.ultrasonic.domain.JukeboxStatus;
-import org.moire.ultrasonic.domain.Lyrics;
-import org.moire.ultrasonic.domain.MusicDirectory;
-import org.moire.ultrasonic.domain.MusicFolder;
-import org.moire.ultrasonic.domain.Playlist;
-import org.moire.ultrasonic.domain.PodcastsChannel;
-import org.moire.ultrasonic.domain.SearchCriteria;
-import org.moire.ultrasonic.domain.SearchResult;
-import org.moire.ultrasonic.domain.Share;
-import org.moire.ultrasonic.domain.UserInfo;
-import org.moire.ultrasonic.util.Constants;
-import org.moire.ultrasonic.util.LRUCache;
-import org.moire.ultrasonic.util.TimeLimitedCache;
-import org.moire.ultrasonic.util.Util;
-
-import java.io.InputStream;
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.List;
-import java.util.concurrent.TimeUnit;
-
-import kotlin.Lazy;
-import kotlin.Pair;
-
-import static org.koin.java.KoinJavaComponent.inject;
+import android.graphics.Bitmap
+import org.koin.java.KoinJavaComponent.inject
+import org.moire.ultrasonic.data.ActiveServerProvider
+import org.moire.ultrasonic.domain.Bookmark
+import org.moire.ultrasonic.domain.ChatMessage
+import org.moire.ultrasonic.domain.Genre
+import org.moire.ultrasonic.domain.Indexes
+import org.moire.ultrasonic.domain.JukeboxStatus
+import org.moire.ultrasonic.domain.Lyrics
+import org.moire.ultrasonic.domain.MusicDirectory
+import org.moire.ultrasonic.domain.MusicFolder
+import org.moire.ultrasonic.domain.Playlist
+import org.moire.ultrasonic.domain.PodcastsChannel
+import org.moire.ultrasonic.domain.SearchCriteria
+import org.moire.ultrasonic.domain.SearchResult
+import org.moire.ultrasonic.domain.Share
+import org.moire.ultrasonic.domain.UserInfo
+import org.moire.ultrasonic.util.Constants
+import org.moire.ultrasonic.util.LRUCache
+import org.moire.ultrasonic.util.TimeLimitedCache
+import org.moire.ultrasonic.util.Util
+import java.io.InputStream
+import java.util.concurrent.TimeUnit
 
 /**
  * @author Sindre Mehus
  */
-public class CachedMusicService implements MusicService
-{
-	private final Lazy<ActiveServerProvider> activeServerProvider = inject(ActiveServerProvider.class);
-
-	private static final int MUSIC_DIR_CACHE_SIZE = 100;
-
-	private final MusicService musicService;
-	private final LRUCache<String, TimeLimitedCache<MusicDirectory>> cachedMusicDirectories;
-	private final LRUCache<String, TimeLimitedCache<MusicDirectory>> cachedArtist;
-	private final LRUCache<String, TimeLimitedCache<MusicDirectory>> cachedAlbum;
-	private final LRUCache<String, TimeLimitedCache<UserInfo>> cachedUserInfo;
-	private final TimeLimitedCache<Boolean> cachedLicenseValid = new TimeLimitedCache<>(120, TimeUnit.SECONDS);
-	private final TimeLimitedCache<Indexes> cachedIndexes = new TimeLimitedCache<>(60 * 60, TimeUnit.SECONDS);
-	private final TimeLimitedCache<Indexes> cachedArtists = new TimeLimitedCache<>(60 * 60, TimeUnit.SECONDS);
-	private final TimeLimitedCache<List<Playlist>> cachedPlaylists = new TimeLimitedCache<>(3600, TimeUnit.SECONDS);
-	private final TimeLimitedCache<List<PodcastsChannel>> cachedPodcastsChannels = new TimeLimitedCache<>(3600, TimeUnit.SECONDS);
-	private final TimeLimitedCache<List<MusicFolder>> cachedMusicFolders = new TimeLimitedCache<>(10 * 3600, TimeUnit.SECONDS);
-	private final TimeLimitedCache<List<Genre>> cachedGenres = new TimeLimitedCache<>(10 * 3600, TimeUnit.SECONDS);
-
-	private String restUrl;
-	private String cachedMusicFolderId;
-
-	public CachedMusicService(MusicService musicService)
-	{
-		this.musicService = musicService;
-		cachedMusicDirectories = new LRUCache<>(MUSIC_DIR_CACHE_SIZE);
-		cachedArtist = new LRUCache<>(MUSIC_DIR_CACHE_SIZE);
-		cachedAlbum = new LRUCache<>(MUSIC_DIR_CACHE_SIZE);
-		cachedUserInfo = new LRUCache<>(MUSIC_DIR_CACHE_SIZE);
-	}
-
-	@Override
-	public void ping() throws Exception
-	{
-		checkSettingsChanged();
-		musicService.ping();
-	}
-
-	@Override
-	public boolean isLicenseValid() throws Exception
-	{
-		checkSettingsChanged();
-		Boolean result = cachedLicenseValid.get();
-		if (result == null)
-		{
-			result = musicService.isLicenseValid();
-			cachedLicenseValid.set(result, result ? 30L * 60L : 2L * 60L, TimeUnit.SECONDS);
-		}
-		return result;
-	}
-
-	@Override
-	public List<MusicFolder> getMusicFolders(boolean refresh) throws Exception
-	{
-		checkSettingsChanged();
-		if (refresh)
-		{
-			cachedMusicFolders.clear();
-		}
-		List<MusicFolder> result = cachedMusicFolders.get();
-		if (result == null)
-		{
-			result = musicService.getMusicFolders(refresh);
-			cachedMusicFolders.set(result);
-		}
-		return result;
-	}
-
-	@Override
-	public Indexes getIndexes(String musicFolderId, boolean refresh) throws Exception
-	{
-		checkSettingsChanged();
-		if (refresh)
-		{
-			cachedIndexes.clear();
-			cachedMusicFolders.clear();
-			cachedMusicDirectories.clear();
-		}
-		Indexes result = cachedIndexes.get();
-		if (result == null)
-		{
-			result = musicService.getIndexes(musicFolderId, refresh);
-			cachedIndexes.set(result);
-		}
-		return result;
-	}
-
-	@Override
-	public Indexes getArtists(boolean refresh) throws Exception
-	{
-		checkSettingsChanged();
-		if (refresh)
-		{
-			cachedArtists.clear();
-		}
-		Indexes result = cachedArtists.get();
-		if (result == null)
-		{
-			result = musicService.getArtists(refresh);
-			cachedArtists.set(result);
-		}
-		return result;
-	}
-
-	@Override
-	public MusicDirectory getMusicDirectory(String id, String name, boolean refresh) throws Exception
-	{
-		checkSettingsChanged();
-		TimeLimitedCache<MusicDirectory> cache = refresh ? null : cachedMusicDirectories.get(id);
-
-		MusicDirectory dir = cache == null ? null : cache.get();
-
-		if (dir == null)
-		{
-			dir = musicService.getMusicDirectory(id, name, refresh);
-			cache = new TimeLimitedCache<>(Util.getDirectoryCacheTime(), TimeUnit.SECONDS);
-			cache.set(dir);
-			cachedMusicDirectories.put(id, cache);
-		}
-		return dir;
-	}
-
-	@Override
-	public MusicDirectory getArtist(String id, String name, boolean refresh) throws Exception
-	{
-		checkSettingsChanged();
-		TimeLimitedCache<MusicDirectory> cache = refresh ? null : cachedArtist.get(id);
-		MusicDirectory dir = cache == null ? null : cache.get();
-		if (dir == null)
-		{
-			dir = musicService.getArtist(id, name, refresh);
-			cache = new TimeLimitedCache<>(Util.getDirectoryCacheTime(), TimeUnit.SECONDS);
-			cache.set(dir);
-			cachedArtist.put(id, cache);
-		}
-		return dir;
-	}
-
-	@Override
-	public MusicDirectory getAlbum(String id, String name, boolean refresh) throws Exception
-	{
-		checkSettingsChanged();
-		TimeLimitedCache<MusicDirectory> cache = refresh ? null : cachedAlbum.get(id);
-		MusicDirectory dir = cache == null ? null : cache.get();
-		if (dir == null)
-		{
-			dir = musicService.getAlbum(id, name, refresh);
-			cache = new TimeLimitedCache<>(Util.getDirectoryCacheTime(), TimeUnit.SECONDS);
-			cache.set(dir);
-			cachedAlbum.put(id, cache);
-		}
-		return dir;
-	}
-
-	@Override
-	public SearchResult search(SearchCriteria criteria) throws Exception
-	{
-		return musicService.search(criteria);
-	}
-
-	@Override
-	public MusicDirectory getPlaylist(String id, String name) throws Exception
-	{
-		return musicService.getPlaylist(id, name);
-	}
-
-	@Override
-	public List<PodcastsChannel> getPodcastsChannels(boolean refresh) throws Exception {
-		checkSettingsChanged();
-		List<PodcastsChannel> result = refresh ? null : cachedPodcastsChannels.get();
-		if (result == null)
-		{
-			result = musicService.getPodcastsChannels(refresh);
-			cachedPodcastsChannels.set(result);
-		}
-		return result;
-	}
-
-	@Override
-	public MusicDirectory getPodcastEpisodes(String podcastChannelId) throws Exception {
-		return musicService.getPodcastEpisodes(podcastChannelId);
-	}
-
-
-	@Override
-	public List<Playlist> getPlaylists(boolean refresh) throws Exception
-	{
-		checkSettingsChanged();
-		List<Playlist> result = refresh ? null : cachedPlaylists.get();
-		if (result == null)
-		{
-			result = musicService.getPlaylists(refresh);
-			cachedPlaylists.set(result);
-		}
-		return result;
-	}
-
-	@Override
-	public void createPlaylist(String id, String name, List<MusicDirectory.Entry> entries) throws Exception
-	{
-		cachedPlaylists.clear();
-		musicService.createPlaylist(id, name, entries);
-	}
-
-	@Override
-	public void deletePlaylist(String id) throws Exception
-	{
-		musicService.deletePlaylist(id);
-	}
-
-	@Override
-	public void updatePlaylist(String id, String name, String comment, boolean pub) throws Exception
-	{
-		musicService.updatePlaylist(id, name, comment, pub);
-	}
-
-	@Override
-	public Lyrics getLyrics(String artist, String title) throws Exception
-	{
-		return musicService.getLyrics(artist, title);
-	}
-
-	@Override
-	public void scrobble(String id, boolean submission) throws Exception
-	{
-		musicService.scrobble(id, submission);
-	}
-
-	@Override
-	public MusicDirectory getAlbumList(String type, int size, int offset, String musicFolderId) throws Exception
-	{
-		return musicService.getAlbumList(type, size, offset, musicFolderId);
-	}
-
-	@Override
-	public MusicDirectory getAlbumList2(String type, int size, int offset, String musicFolderId) throws Exception
-	{
-		return musicService.getAlbumList2(type, size, offset, musicFolderId);
-	}
-
-	@Override
-	public MusicDirectory getRandomSongs(int size) throws Exception
-	{
-		return musicService.getRandomSongs(size);
-	}
-
-	@Override
-	public SearchResult getStarred() throws Exception
-	{
-		return musicService.getStarred();
-	}
-
-	@Override
-	public SearchResult getStarred2() throws Exception
-	{
-		return musicService.getStarred2();
-	}
-
-	@Override
-	public Bitmap getCoverArt(MusicDirectory.Entry entry, int size, boolean saveToFile, boolean highQuality) throws Exception
-	{
-		return musicService.getCoverArt(entry, size, saveToFile, highQuality);
-	}
-
-	@Override
-	public Pair<InputStream, Boolean> getDownloadInputStream(MusicDirectory.Entry song, long offset, int maxBitrate) throws Exception
-	{
-		return musicService.getDownloadInputStream(song, offset, maxBitrate);
-	}
-
-	@Override
-	public String getVideoUrl(String id, boolean useFlash) throws Exception
-	{
-		return musicService.getVideoUrl(id, useFlash);
-	}
-
-	@Override
-	public JukeboxStatus updateJukeboxPlaylist(List<String> ids) throws Exception
-	{
-		return musicService.updateJukeboxPlaylist(ids);
-	}
-
-	@Override
-	public JukeboxStatus skipJukebox(int index, int offsetSeconds) throws Exception
-	{
-		return musicService.skipJukebox(index, offsetSeconds);
-	}
-
-	@Override
-	public JukeboxStatus stopJukebox() throws Exception
-	{
-		return musicService.stopJukebox();
-	}
-
-	@Override
-	public JukeboxStatus startJukebox() throws Exception
-	{
-		return musicService.startJukebox();
-	}
-
-	@Override
-	public JukeboxStatus getJukeboxStatus() throws Exception
-	{
-		return musicService.getJukeboxStatus();
-	}
-
-	@Override
-	public JukeboxStatus setJukeboxGain(float gain) throws Exception
-	{
-		return musicService.setJukeboxGain(gain);
-	}
-
-	private void checkSettingsChanged()
-	{
-		String newUrl = activeServerProvider.getValue().getRestUrl(null);
-		String newFolderId = activeServerProvider.getValue().getActiveServer().getMusicFolderId();
-		if (!Util.equals(newUrl, restUrl) || !Util.equals(cachedMusicFolderId,newFolderId))
-		{
-			cachedMusicFolders.clear();
-			cachedMusicDirectories.clear();
-			cachedLicenseValid.clear();
-			cachedIndexes.clear();
-			cachedPlaylists.clear();
-			cachedGenres.clear();
-			cachedAlbum.clear();
-			cachedArtist.clear();
-			cachedUserInfo.clear();
-			restUrl = newUrl;
-			cachedMusicFolderId = newFolderId;
-		}
-	}
-
-	@Override
-	public void star(String id, String albumId, String artistId) throws Exception
-	{
-		musicService.star(id, albumId, artistId);
-	}
-
-	@Override
-	public void unstar(String id, String albumId, String artistId) throws Exception
-	{
-		musicService.unstar(id, albumId, artistId);
-	}
-
-	@Override
-	public void setRating(String id, int rating) throws Exception
-	{
-		musicService.setRating(id, rating);
-	}
-
-	@Override
-	public List<Genre> getGenres(boolean refresh) throws Exception
-	{
-		checkSettingsChanged();
-		if (refresh)
-		{
-			cachedGenres.clear();
-		}
-		List<Genre> result = cachedGenres.get();
-
-		if (result == null)
-		{
-			result = musicService.getGenres(refresh);
-			cachedGenres.set(result);
-		}
-
-		Collections.sort(result, new Comparator<Genre>()
-		{
-			@Override
-			public int compare(Genre genre, Genre genre2)
-			{
-				return genre.getName().compareToIgnoreCase(genre2.getName());
-			}
-		});
-
-		return result;
-	}
-
-	@Override
-	public MusicDirectory getSongsByGenre(String genre, int count, int offset) throws Exception
-	{
-		return musicService.getSongsByGenre(genre, count, offset);
-	}
-
-	@Override
-	public List<Share> getShares(boolean refresh) throws Exception
-	{
-		return musicService.getShares(refresh);
-	}
-
-	@Override
-	public List<ChatMessage> getChatMessages(Long since) throws Exception
-	{
-		return musicService.getChatMessages(since);
-	}
-
-	@Override
-	public void addChatMessage(String message) throws Exception
-	{
-		musicService.addChatMessage(message);
-	}
-
-	@Override
-	public List<Bookmark> getBookmarks() throws Exception
-	{
-		return musicService.getBookmarks();
-	}
-
-	@Override
-	public void deleteBookmark(String id) throws Exception
-	{
-		musicService.deleteBookmark(id);
-	}
-
-	@Override
-	public void createBookmark(String id, int position) throws Exception
-	{
-		musicService.createBookmark(id, position);
-	}
-
-	@Override
-	public MusicDirectory getVideos(boolean refresh) throws Exception
-	{
-		checkSettingsChanged();
-		TimeLimitedCache<MusicDirectory> cache = refresh ? null : cachedMusicDirectories.get(Constants.INTENT_EXTRA_NAME_VIDEOS);
-
-		MusicDirectory dir = cache == null ? null : cache.get();
-
-		if (dir == null)
-		{
-			dir = musicService.getVideos(refresh);
-			cache = new TimeLimitedCache<>(Util.getDirectoryCacheTime(), TimeUnit.SECONDS);
-			cache.set(dir);
-			cachedMusicDirectories.put(Constants.INTENT_EXTRA_NAME_VIDEOS, cache);
-		}
-
-		return dir;
-	}
-
-	@Override
-	public UserInfo getUser(String username) throws Exception
-	{
-		checkSettingsChanged();
-
-		TimeLimitedCache<UserInfo> cache = cachedUserInfo.get(username);
-
-		UserInfo userInfo = cache == null ? null : cache.get();
-
-		if (userInfo == null)
-		{
-			userInfo = musicService.getUser(username);
-			cache = new TimeLimitedCache<>(Util.getDirectoryCacheTime(), TimeUnit.SECONDS);
-			cache.set(userInfo);
-			cachedUserInfo.put(username, cache);
-		}
-
-		return userInfo;
-	}
-
-	@Override
-	public List<Share> createShare(List<String> ids, String description, Long expires) throws Exception
-	{
-		return musicService.createShare(ids, description, expires);
-	}
-
-	@Override
-	public void deleteShare(String id) throws Exception
-	{
-		musicService.deleteShare(id);
-	}
-
-	@Override
-	public void updateShare(String id, String description, Long expires) throws Exception
-	{
-		musicService.updateShare(id, description, expires);
-	}
-
-	@Override
-	public Bitmap getAvatar(String username, int size, boolean saveToFile, boolean highQuality) throws Exception
-	{
-		return musicService.getAvatar(username, size, saveToFile, highQuality);
-	}
+class CachedMusicService(private val musicService: MusicService) : MusicService {
+    private val activeServerProvider = inject(
+        ActiveServerProvider::class.java
+    )
+    private val cachedMusicDirectories: LRUCache<String?, TimeLimitedCache<MusicDirectory?>>
+    private val cachedArtist: LRUCache<String?, TimeLimitedCache<MusicDirectory?>>
+    private val cachedAlbum: LRUCache<String?, TimeLimitedCache<MusicDirectory?>>
+    private val cachedUserInfo: LRUCache<String?, TimeLimitedCache<UserInfo?>>
+    private val cachedLicenseValid = TimeLimitedCache<Boolean>(120, TimeUnit.SECONDS)
+    private val cachedIndexes = TimeLimitedCache<Indexes?>(60 * 60, TimeUnit.SECONDS)
+    private val cachedArtists = TimeLimitedCache<Indexes?>(60 * 60, TimeUnit.SECONDS)
+    private val cachedPlaylists = TimeLimitedCache<List<Playlist>?>(3600, TimeUnit.SECONDS)
+    private val cachedPodcastsChannels =
+        TimeLimitedCache<List<PodcastsChannel>>(3600, TimeUnit.SECONDS)
+    private val cachedMusicFolders =
+        TimeLimitedCache<List<MusicFolder>?>(10 * 3600, TimeUnit.SECONDS)
+    private val cachedGenres = TimeLimitedCache<List<Genre>?>(10 * 3600, TimeUnit.SECONDS)
+    private var restUrl: String? = null
+    private var cachedMusicFolderId: String? = null
+
+    @Throws(Exception::class)
+    override fun ping() {
+        checkSettingsChanged()
+        musicService.ping()
+    }
+
+    @Throws(Exception::class)
+    override fun isLicenseValid(): Boolean {
+        checkSettingsChanged()
+        var result = cachedLicenseValid.get()
+        if (result == null) {
+            result = musicService.isLicenseValid()
+            cachedLicenseValid[result, if (result) 30L * 60L else 2L * 60L] = TimeUnit.SECONDS
+        }
+        return result
+    }
+
+    @Throws(Exception::class)
+    override fun getMusicFolders(refresh: Boolean): List<MusicFolder> {
+        checkSettingsChanged()
+        if (refresh) {
+            cachedMusicFolders.clear()
+        }
+
+        val cache = cachedMusicFolders.get()
+        if (cache != null) return cache
+
+        val result = musicService.getMusicFolders(refresh)
+        cachedMusicFolders.set(result)
+
+        return result
+    }
+
+    @Throws(Exception::class)
+    override fun getIndexes(musicFolderId: String?, refresh: Boolean): Indexes {
+        checkSettingsChanged()
+        if (refresh) {
+            cachedIndexes.clear()
+            cachedMusicFolders.clear()
+            cachedMusicDirectories.clear()
+        }
+        var result = cachedIndexes.get()
+        if (result == null) {
+            result = musicService.getIndexes(musicFolderId, refresh)
+            cachedIndexes.set(result)
+        }
+        return result
+    }
+
+    @Throws(Exception::class)
+    override fun getArtists(refresh: Boolean): Indexes {
+        checkSettingsChanged()
+        if (refresh) {
+            cachedArtists.clear()
+        }
+        var result = cachedArtists.get()
+        if (result == null) {
+            result = musicService.getArtists(refresh)
+            cachedArtists.set(result)
+        }
+        return result
+    }
+
+    @Throws(Exception::class)
+    override fun getMusicDirectory(id: String, name: String?, refresh: Boolean): MusicDirectory {
+        checkSettingsChanged()
+        var cache = if (refresh) null else cachedMusicDirectories[id]
+        var dir = cache?.get()
+        if (dir == null) {
+            dir = musicService.getMusicDirectory(id, name, refresh)
+            cache = TimeLimitedCache(
+                Util.getDirectoryCacheTime().toLong(), TimeUnit.SECONDS
+            )
+            cache.set(dir)
+            cachedMusicDirectories.put(id, cache)
+        }
+        return dir
+    }
+
+    @Throws(Exception::class)
+    override fun getArtist(id: String, name: String?, refresh: Boolean): MusicDirectory {
+        checkSettingsChanged()
+        var cache = if (refresh) null else cachedArtist[id]
+        var dir = cache?.get()
+        if (dir == null) {
+            dir = musicService.getArtist(id, name, refresh)
+            cache = TimeLimitedCache(
+                Util.getDirectoryCacheTime().toLong(), TimeUnit.SECONDS
+            )
+            cache.set(dir)
+            cachedArtist.put(id, cache)
+        }
+        return dir
+    }
+
+    @Throws(Exception::class)
+    override fun getAlbum(id: String, name: String?, refresh: Boolean): MusicDirectory {
+        checkSettingsChanged()
+        var cache = if (refresh) null else cachedAlbum[id]
+        var dir = cache?.get()
+        if (dir == null) {
+            dir = musicService.getAlbum(id, name, refresh)
+            cache = TimeLimitedCache(
+                Util.getDirectoryCacheTime().toLong(), TimeUnit.SECONDS
+            )
+            cache.set(dir)
+            cachedAlbum.put(id, cache)
+        }
+        return dir
+    }
+
+    @Throws(Exception::class)
+    override fun search(criteria: SearchCriteria): SearchResult? {
+        return musicService.search(criteria)
+    }
+
+    @Throws(Exception::class)
+    override fun getPlaylist(id: String, name: String): MusicDirectory {
+        return musicService.getPlaylist(id, name)
+    }
+
+    @Throws(Exception::class)
+    override fun getPodcastsChannels(refresh: Boolean): List<PodcastsChannel> {
+        checkSettingsChanged()
+        var result = if (refresh) null else cachedPodcastsChannels.get()
+        if (result == null) {
+            result = musicService.getPodcastsChannels(refresh)
+            cachedPodcastsChannels.set(result)
+        }
+        return result
+    }
+
+    @Throws(Exception::class)
+    override fun getPodcastEpisodes(podcastChannelId: String?): MusicDirectory? {
+        return musicService.getPodcastEpisodes(podcastChannelId)
+    }
+
+    @Throws(Exception::class)
+    override fun getPlaylists(refresh: Boolean): List<Playlist> {
+        checkSettingsChanged()
+        var result = if (refresh) null else cachedPlaylists.get()
+        if (result == null) {
+            result = musicService.getPlaylists(refresh)
+            cachedPlaylists.set(result)
+        }
+        return result
+    }
+
+    @Throws(Exception::class)
+    override fun createPlaylist(id: String, name: String, entries: List<MusicDirectory.Entry>) {
+        cachedPlaylists.clear()
+        musicService.createPlaylist(id, name, entries)
+    }
+
+    @Throws(Exception::class)
+    override fun deletePlaylist(id: String) {
+        musicService.deletePlaylist(id)
+    }
+
+    @Throws(Exception::class)
+    override fun updatePlaylist(id: String, name: String?, comment: String?, pub: Boolean) {
+        musicService.updatePlaylist(id, name, comment, pub)
+    }
+
+    @Throws(Exception::class)
+    override fun getLyrics(artist: String, title: String): Lyrics? {
+        return musicService.getLyrics(artist, title)
+    }
+
+    @Throws(Exception::class)
+    override fun scrobble(id: String, submission: Boolean) {
+        musicService.scrobble(id, submission)
+    }
+
+    @Throws(Exception::class)
+    override fun getAlbumList(
+        type: String,
+        size: Int,
+        offset: Int,
+        musicFolderId: String?
+    ): MusicDirectory {
+        return musicService.getAlbumList(type, size, offset, musicFolderId)
+    }
+
+    @Throws(Exception::class)
+    override fun getAlbumList2(
+        type: String,
+        size: Int,
+        offset: Int,
+        musicFolderId: String?
+    ): MusicDirectory {
+        return musicService.getAlbumList2(type, size, offset, musicFolderId)
+    }
+
+    @Throws(Exception::class)
+    override fun getRandomSongs(size: Int): MusicDirectory {
+        return musicService.getRandomSongs(size)
+    }
+
+    @Throws(Exception::class)
+    override fun getStarred(): SearchResult = musicService.getStarred()
+
+    @Throws(Exception::class)
+    override fun getStarred2(): SearchResult = musicService.getStarred2()
+
+    @Throws(Exception::class)
+    override fun getCoverArt(
+        entry: MusicDirectory.Entry?,
+        size: Int,
+        saveToFile: Boolean,
+        highQuality: Boolean
+    ): Bitmap? {
+        return musicService.getCoverArt(entry, size, saveToFile, highQuality)
+    }
+
+    @Throws(Exception::class)
+    override fun getDownloadInputStream(
+        song: MusicDirectory.Entry,
+        offset: Long,
+        maxBitrate: Int
+    ): Pair<InputStream, Boolean> {
+        return musicService.getDownloadInputStream(song, offset, maxBitrate)
+    }
+
+    @Throws(Exception::class)
+    override fun getVideoUrl(id: String, useFlash: Boolean): String? {
+        return musicService.getVideoUrl(id, useFlash)
+    }
+
+    @Throws(Exception::class)
+    override fun updateJukeboxPlaylist(ids: List<String>?): JukeboxStatus {
+        return musicService.updateJukeboxPlaylist(ids)
+    }
+
+    @Throws(Exception::class)
+    override fun skipJukebox(index: Int, offsetSeconds: Int): JukeboxStatus {
+        return musicService.skipJukebox(index, offsetSeconds)
+    }
+
+    @Throws(Exception::class)
+    override fun stopJukebox(): JukeboxStatus {
+        return musicService.stopJukebox()
+    }
+
+    @Throws(Exception::class)
+    override fun startJukebox(): JukeboxStatus {
+        return musicService.startJukebox()
+    }
+
+    @Throws(Exception::class)
+    override fun getJukeboxStatus(): JukeboxStatus = musicService.getJukeboxStatus()
+
+    @Throws(Exception::class)
+    override fun setJukeboxGain(gain: Float): JukeboxStatus {
+        return musicService.setJukeboxGain(gain)
+    }
+
+    private fun checkSettingsChanged() {
+        val newUrl = activeServerProvider.value.getRestUrl(null)
+        val newFolderId = activeServerProvider.value.getActiveServer().musicFolderId
+        if (!Util.equals(newUrl, restUrl) || !Util.equals(cachedMusicFolderId, newFolderId)) {
+            cachedMusicFolders.clear()
+            cachedMusicDirectories.clear()
+            cachedLicenseValid.clear()
+            cachedIndexes.clear()
+            cachedPlaylists.clear()
+            cachedGenres.clear()
+            cachedAlbum.clear()
+            cachedArtist.clear()
+            cachedUserInfo.clear()
+            restUrl = newUrl
+            cachedMusicFolderId = newFolderId
+        }
+    }
+
+    @Throws(Exception::class)
+    override fun star(id: String?, albumId: String?, artistId: String?) {
+        musicService.star(id, albumId, artistId)
+    }
+
+    @Throws(Exception::class)
+    override fun unstar(id: String?, albumId: String?, artistId: String?) {
+        musicService.unstar(id, albumId, artistId)
+    }
+
+    @Throws(Exception::class)
+    override fun setRating(id: String, rating: Int) {
+        musicService.setRating(id, rating)
+    }
+
+    @Throws(Exception::class)
+    override fun getGenres(refresh: Boolean): List<Genre>? {
+        checkSettingsChanged()
+        if (refresh) {
+            cachedGenres.clear()
+        }
+        var result = cachedGenres.get()
+        if (result == null) {
+            result = musicService.getGenres(refresh)
+            cachedGenres.set(result)
+        }
+
+        val sorted = result?.toMutableList()
+        sorted?.sortWith { genre, genre2 ->
+            genre.name.compareTo(
+                genre2.name,
+                ignoreCase = true
+            )
+        }
+        return sorted
+    }
+
+    @Throws(Exception::class)
+    override fun getSongsByGenre(genre: String, count: Int, offset: Int): MusicDirectory {
+        return musicService.getSongsByGenre(genre, count, offset)
+    }
+
+    @Throws(Exception::class)
+    override fun getShares(refresh: Boolean): List<Share> {
+        return musicService.getShares(refresh)
+    }
+
+    @Throws(Exception::class)
+    override fun getChatMessages(since: Long?): List<ChatMessage?>? {
+        return musicService.getChatMessages(since)
+    }
+
+    @Throws(Exception::class)
+    override fun addChatMessage(message: String) {
+        musicService.addChatMessage(message)
+    }
+
+    @Throws(Exception::class)
+    override fun getBookmarks(): List<Bookmark?>? = musicService.getBookmarks()
+
+    @Throws(Exception::class)
+    override fun deleteBookmark(id: String) {
+        musicService.deleteBookmark(id)
+    }
+
+    @Throws(Exception::class)
+    override fun createBookmark(id: String, position: Int) {
+        musicService.createBookmark(id, position)
+    }
+
+    @Throws(Exception::class)
+    override fun getVideos(refresh: Boolean): MusicDirectory? {
+        checkSettingsChanged()
+        var cache =
+            if (refresh) null else cachedMusicDirectories[Constants.INTENT_EXTRA_NAME_VIDEOS]
+        var dir = cache?.get()
+        if (dir == null) {
+            dir = musicService.getVideos(refresh)
+            cache = TimeLimitedCache(
+                Util.getDirectoryCacheTime().toLong(), TimeUnit.SECONDS
+            )
+            cache.set(dir)
+            cachedMusicDirectories.put(Constants.INTENT_EXTRA_NAME_VIDEOS, cache)
+        }
+        return dir
+    }
+
+    @Throws(Exception::class)
+    override fun getUser(username: String): UserInfo {
+        checkSettingsChanged()
+        var cache = cachedUserInfo[username]
+        var userInfo = cache?.get()
+        if (userInfo == null) {
+            userInfo = musicService.getUser(username)
+            cache = TimeLimitedCache(
+                Util.getDirectoryCacheTime().toLong(), TimeUnit.SECONDS
+            )
+            cache.set(userInfo)
+            cachedUserInfo.put(username, cache)
+        }
+        return userInfo
+    }
+
+    @Throws(Exception::class)
+    override fun createShare(
+        ids: List<String>,
+        description: String?,
+        expires: Long?
+    ): List<Share> {
+        return musicService.createShare(ids, description, expires)
+    }
+
+    @Throws(Exception::class)
+    override fun deleteShare(id: String) {
+        musicService.deleteShare(id)
+    }
+
+    @Throws(Exception::class)
+    override fun updateShare(id: String, description: String?, expires: Long?) {
+        musicService.updateShare(id, description, expires)
+    }
+
+    @Throws(Exception::class)
+    override fun getAvatar(
+        username: String?,
+        size: Int,
+        saveToFile: Boolean,
+        highQuality: Boolean
+    ): Bitmap? {
+        return musicService.getAvatar(username, size, saveToFile, highQuality)
+    }
+
+    companion object {
+        private const val MUSIC_DIR_CACHE_SIZE = 100
+    }
+
+    init {
+        cachedMusicDirectories = LRUCache(MUSIC_DIR_CACHE_SIZE)
+        cachedArtist = LRUCache(MUSIC_DIR_CACHE_SIZE)
+        cachedAlbum = LRUCache(MUSIC_DIR_CACHE_SIZE)
+        cachedUserInfo = LRUCache(MUSIC_DIR_CACHE_SIZE)
+    }
 }

@@ -1,151 +1,192 @@
 /*
- This file is part of Subsonic.
-
- Subsonic is free software: you can redistribute it and/or modify
- it under the terms of the GNU General Public License as published by
- the Free Software Foundation, either version 3 of the License, or
- (at your option) any later version.
-
- Subsonic is distributed in the hope that it will be useful,
- but WITHOUT ANY WARRANTY; without even the implied warranty of
- MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- GNU General Public License for more details.
-
- You should have received a copy of the GNU General Public License
- along with Subsonic.  If not, see <http://www.gnu.org/licenses/>.
-
- Copyright 2009 (C) Sindre Mehus
+ * MusicService.kt
+ * Copyright (C) 2009-2021 Ultrasonic developers
+ *
+ * Distributed under terms of the GNU GPLv3 license.
  */
-package org.moire.ultrasonic.service;
+package org.moire.ultrasonic.service
 
-import android.graphics.Bitmap;
+import android.graphics.Bitmap
+import org.moire.ultrasonic.domain.Bookmark
+import org.moire.ultrasonic.domain.ChatMessage
+import org.moire.ultrasonic.domain.Genre
+import org.moire.ultrasonic.domain.Indexes
+import org.moire.ultrasonic.domain.JukeboxStatus
+import org.moire.ultrasonic.domain.Lyrics
+import org.moire.ultrasonic.domain.MusicDirectory
+import org.moire.ultrasonic.domain.MusicFolder
+import org.moire.ultrasonic.domain.Playlist
+import org.moire.ultrasonic.domain.PodcastsChannel
+import org.moire.ultrasonic.domain.SearchCriteria
+import org.moire.ultrasonic.domain.SearchResult
+import org.moire.ultrasonic.domain.Share
+import org.moire.ultrasonic.domain.UserInfo
+import java.io.InputStream
 
-import org.moire.ultrasonic.domain.Bookmark;
-import org.moire.ultrasonic.domain.ChatMessage;
-import org.moire.ultrasonic.domain.Genre;
-import org.moire.ultrasonic.domain.Indexes;
-import org.moire.ultrasonic.domain.JukeboxStatus;
-import org.moire.ultrasonic.domain.Lyrics;
-import org.moire.ultrasonic.domain.MusicDirectory;
-import org.moire.ultrasonic.domain.MusicFolder;
-import org.moire.ultrasonic.domain.Playlist;
-import org.moire.ultrasonic.domain.PodcastsChannel;
-import org.moire.ultrasonic.domain.SearchCriteria;
-import org.moire.ultrasonic.domain.SearchResult;
-import org.moire.ultrasonic.domain.Share;
-import org.moire.ultrasonic.domain.UserInfo;
+interface MusicService {
+    @Throws(Exception::class)
+    fun ping()
 
-import java.io.InputStream;
-import java.util.List;
+    @Throws(Exception::class)
+    fun isLicenseValid(): Boolean
 
-import kotlin.Pair;
+    @Throws(Exception::class)
+    fun getGenres(refresh: Boolean): List<Genre>?
 
-/**
- * @author Sindre Mehus
- */
-public interface MusicService
-{
+    @Throws(Exception::class)
+    fun star(id: String?, albumId: String?, artistId: String?)
 
-	void ping() throws Exception;
+    @Throws(Exception::class)
+    fun unstar(id: String?, albumId: String?, artistId: String?)
 
-	boolean isLicenseValid() throws Exception;
+    @Throws(Exception::class)
+    fun setRating(id: String, rating: Int)
 
-	List<Genre> getGenres(boolean refresh) throws Exception;
+    @Throws(Exception::class)
+    fun getMusicFolders(refresh: Boolean): List<MusicFolder>
 
-	void star(String id, String albumId, String artistId) throws Exception;
+    @Throws(Exception::class)
+    fun getIndexes(musicFolderId: String?, refresh: Boolean): Indexes
 
-	void unstar(String id, String albumId, String artistId) throws Exception;
+    @Throws(Exception::class)
+    fun getArtists(refresh: Boolean): Indexes
 
-	void setRating(String id, int rating) throws Exception;
+    @Throws(Exception::class)
+    fun getMusicDirectory(id: String, name: String?, refresh: Boolean): MusicDirectory
 
-	List<MusicFolder> getMusicFolders(boolean refresh) throws Exception;
+    @Throws(Exception::class)
+    fun getArtist(id: String, name: String?, refresh: Boolean): MusicDirectory
 
-	Indexes getIndexes(String musicFolderId, boolean refresh) throws Exception;
+    @Throws(Exception::class)
+    fun getAlbum(id: String, name: String?, refresh: Boolean): MusicDirectory
 
-	Indexes getArtists(boolean refresh) throws Exception;
+    @Throws(Exception::class)
+    fun search(criteria: SearchCriteria): SearchResult?
 
-	MusicDirectory getMusicDirectory(String id, String name, boolean refresh) throws Exception;
+    @Throws(Exception::class)
+    fun getPlaylist(id: String, name: String): MusicDirectory
 
-	MusicDirectory getArtist(String id, String name, boolean refresh) throws Exception;
+    @Throws(Exception::class)
+    fun getPodcastsChannels(refresh: Boolean): List<PodcastsChannel>
 
-	MusicDirectory getAlbum(String id, String name, boolean refresh) throws Exception;
+    @Throws(Exception::class)
+    fun getPlaylists(refresh: Boolean): List<Playlist>
 
-	SearchResult search(SearchCriteria criteria) throws Exception;
+    @Throws(Exception::class)
+    fun createPlaylist(id: String, name: String, entries: List<MusicDirectory.Entry>)
 
-	MusicDirectory getPlaylist(String id, String name) throws Exception;
+    @Throws(Exception::class)
+    fun deletePlaylist(id: String)
 
-	List<PodcastsChannel> getPodcastsChannels(boolean refresh) throws Exception;
+    @Throws(Exception::class)
+    fun updatePlaylist(id: String, name: String?, comment: String?, pub: Boolean)
 
-	List<Playlist> getPlaylists(boolean refresh) throws Exception;
+    @Throws(Exception::class)
+    fun getLyrics(artist: String, title: String): Lyrics?
 
-	void createPlaylist(String id, String name, List<MusicDirectory.Entry> entries) throws Exception;
+    @Throws(Exception::class)
+    fun scrobble(id: String, submission: Boolean)
 
-	void deletePlaylist(String id) throws Exception;
+    @Throws(Exception::class)
+    fun getAlbumList(type: String, size: Int, offset: Int, musicFolderId: String?): MusicDirectory
 
-	void updatePlaylist(String id, String name, String comment, boolean pub) throws Exception;
+    @Throws(Exception::class)
+    fun getAlbumList2(
+        type: String,
+        size: Int,
+        offset: Int,
+        musicFolderId: String?
+    ): MusicDirectory
 
-	Lyrics getLyrics(String artist, String title) throws Exception;
+    @Throws(Exception::class)
+    fun getRandomSongs(size: Int): MusicDirectory
 
-	void scrobble(String id, boolean submission) throws Exception;
+    @Throws(Exception::class)
+    fun getSongsByGenre(genre: String, count: Int, offset: Int): MusicDirectory
 
-	MusicDirectory getAlbumList(String type, int size, int offset, String musicFolderId) throws Exception;
+    @Throws(Exception::class)
+    fun getStarred(): SearchResult
 
-	MusicDirectory getAlbumList2(String type, int size, int offset, String musicFolderId) throws Exception;
+    @Throws(Exception::class)
+    fun getStarred2(): SearchResult
 
-	MusicDirectory getRandomSongs(int size) throws Exception;
+    @Throws(Exception::class)
+    fun getCoverArt(
+        entry: MusicDirectory.Entry?,
+        size: Int,
+        saveToFile: Boolean,
+        highQuality: Boolean
+    ): Bitmap?
 
-	MusicDirectory getSongsByGenre(String genre, int count, int offset) throws Exception;
+    @Throws(Exception::class)
+    fun getAvatar(username: String?, size: Int, saveToFile: Boolean, highQuality: Boolean): Bitmap?
 
-	SearchResult getStarred() throws Exception;
+    /**
+     * Return response [InputStream] and a [Boolean] that indicates if this response is
+     * partial.
+     */
+    @Throws(Exception::class)
+    fun getDownloadInputStream(
+        song: MusicDirectory.Entry,
+        offset: Long,
+        maxBitrate: Int
+    ): Pair<InputStream, Boolean>
 
-	SearchResult getStarred2() throws Exception;
+    // TODO: Refactor and remove this call (see RestMusicService implementation)
+    @Throws(Exception::class)
+    fun getVideoUrl(id: String, useFlash: Boolean): String?
 
-	Bitmap getCoverArt(MusicDirectory.Entry entry, int size, boolean saveToFile, boolean highQuality) throws Exception;
+    @Throws(Exception::class)
+    fun updateJukeboxPlaylist(ids: List<String>?): JukeboxStatus
 
-	Bitmap getAvatar(String username, int size, boolean saveToFile, boolean highQuality) throws Exception;
+    @Throws(Exception::class)
+    fun skipJukebox(index: Int, offsetSeconds: Int): JukeboxStatus
 
-		/**
-	 * Return response {@link InputStream} and a {@link Boolean} that indicates if this response is
-	 * partial.
-	 */
-	Pair<InputStream, Boolean> getDownloadInputStream(MusicDirectory.Entry song, long offset, int maxBitrate) throws Exception;
+    @Throws(Exception::class)
+    fun stopJukebox(): JukeboxStatus
 
-	// TODO: Refactor and remove this call (see RestMusicService implementation)
-	String getVideoUrl(String id, boolean useFlash) throws Exception;
+    @Throws(Exception::class)
+    fun startJukebox(): JukeboxStatus
 
-	JukeboxStatus updateJukeboxPlaylist(List<String> ids) throws Exception;
+    @Throws(Exception::class)
+    fun getJukeboxStatus(): JukeboxStatus
 
-	JukeboxStatus skipJukebox(int index, int offsetSeconds) throws Exception;
+    @Throws(Exception::class)
+    fun setJukeboxGain(gain: Float): JukeboxStatus
 
-	JukeboxStatus stopJukebox() throws Exception;
+    @Throws(Exception::class)
+    fun getShares(refresh: Boolean): List<Share>
 
-	JukeboxStatus startJukebox() throws Exception;
+    @Throws(Exception::class)
+    fun getChatMessages(since: Long?): List<ChatMessage?>?
 
-	JukeboxStatus getJukeboxStatus() throws Exception;
+    @Throws(Exception::class)
+    fun addChatMessage(message: String)
 
-	JukeboxStatus setJukeboxGain(float gain) throws Exception;
+    @Throws(Exception::class)
+    fun getBookmarks(): List<Bookmark?>?
 
-	List<Share> getShares(boolean refresh) throws Exception;
+    @Throws(Exception::class)
+    fun deleteBookmark(id: String)
 
-	List<ChatMessage> getChatMessages(Long since) throws Exception;
+    @Throws(Exception::class)
+    fun createBookmark(id: String, position: Int)
 
-	void addChatMessage(String message) throws Exception;
+    @Throws(Exception::class)
+    fun getVideos(refresh: Boolean): MusicDirectory?
 
-	List<Bookmark> getBookmarks() throws Exception;
+    @Throws(Exception::class)
+    fun getUser(username: String): UserInfo
 
-	void deleteBookmark(String id) throws Exception;
+    @Throws(Exception::class)
+    fun createShare(ids: List<String>, description: String?, expires: Long?): List<Share>
 
-	void createBookmark(String id, int position) throws Exception;
+    @Throws(Exception::class)
+    fun deleteShare(id: String)
 
-	MusicDirectory getVideos(boolean refresh) throws Exception;
+    @Throws(Exception::class)
+    fun updateShare(id: String, description: String?, expires: Long?)
 
-	UserInfo getUser(String username) throws Exception;
-
-	List<Share> createShare(List<String> ids, String description, Long expires) throws Exception;
-
-	void deleteShare(String id) throws Exception;
-
-	void updateShare(String id, String description, Long expires) throws Exception;
-
-	MusicDirectory getPodcastEpisodes(String podcastChannelId) throws Exception;
+    @Throws(Exception::class)
+    fun getPodcastEpisodes(podcastChannelId: String?): MusicDirectory?
 }
