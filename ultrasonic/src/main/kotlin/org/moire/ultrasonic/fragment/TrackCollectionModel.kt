@@ -73,12 +73,11 @@ class TrackCollectionModel(application: Application) : GenericListModel(applicat
                     musicDirectory.findChild(allSongsId) == null &&
                     hasOnlyFolders(musicDirectory)
                 ) {
-                    val allSongs = MusicDirectory.Entry()
+                    val allSongs = MusicDirectory.Entry(allSongsId)
 
                     allSongs.isDirectory = true
                     allSongs.artist = name
                     allSongs.parent = id
-                    allSongs.id = allSongsId
                     allSongs.title = String.format(
                         context.resources.getString(R.string.select_album_all_songs), name
                     )
@@ -135,12 +134,11 @@ class TrackCollectionModel(application: Application) : GenericListModel(applicat
                 musicDirectory.findChild(allSongsId) == null &&
                 hasOnlyFolders(musicDirectory)
             ) {
-                val allSongs = MusicDirectory.Entry()
+                val allSongs = MusicDirectory.Entry(allSongsId)
 
                 allSongs.isDirectory = true
                 allSongs.artist = name
                 allSongs.parent = id
-                allSongs.id = allSongsId
                 allSongs.title = String.format(
                     context.resources.getString(R.string.select_album_all_songs), name
                 )
