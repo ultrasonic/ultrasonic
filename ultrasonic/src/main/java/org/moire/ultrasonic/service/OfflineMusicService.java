@@ -787,54 +787,48 @@ public class OfflineMusicService implements MusicService
 	}
 
 	@Override
-	public MusicDirectory getAlbumList2(String type, int size, int offset, String musicFolderId) {
-		Timber.w("OfflineMusicService.getAlbumList2 was called but it isn't available");
-		return null;
+	public MusicDirectory getAlbumList2(String type, int size, int offset, String musicFolderId) throws OfflineException {
+		throw new OfflineException("OfflineMusicService.getAlbumList2 was called but it isn't available");
 	}
 
 	@Override
-	public String getVideoUrl(String id, boolean useFlash) {
-		Timber.w("OfflineMusicService.getVideoUrl was called but it isn't available");
-		return null;
+	public String getVideoUrl(String id, boolean useFlash) throws OfflineException {
+		throw new OfflineException("OfflineMusicService.getVideoUrl was called but it isn't available");
 	}
 
 	@Override
-	public List<ChatMessage> getChatMessages(Long since) {
-		Timber.w("OfflineMusicService.getChatMessages was called but it isn't available");
-		return null;
+	public List<ChatMessage> getChatMessages(Long since) throws OfflineException {
+		throw new OfflineException("OfflineMusicService.getChatMessages was called but it isn't available");
+				}
+
+	@Override
+	public void addChatMessage(String message) throws OfflineException {
+		throw new OfflineException("OfflineMusicService.addChatMessage was called but it isn't available");
 	}
 
 	@Override
-	public void addChatMessage(String message) {
-		Timber.w("OfflineMusicService.addChatMessage was called but it isn't available");
+	public List<Bookmark> getBookmarks() throws OfflineException {
+		throw new OfflineException("OfflineMusicService.getBookmarks was called but it isn't available");
 	}
 
 	@Override
-	public List<Bookmark> getBookmarks() {
-		Timber.w("OfflineMusicService.getBookmarks was called but it isn't available");
-		return null;
+	public void deleteBookmark(String id) throws OfflineException {
+		throw new OfflineException("OfflineMusicService.deleteBookmark was called but it isn't available");
 	}
 
 	@Override
-	public void deleteBookmark(String id) {
-		Timber.w("OfflineMusicService.deleteBookmark was called but it isn't available");
+	public void createBookmark(String id, int position) throws OfflineException {
+		throw new OfflineException("OfflineMusicService.createBookmark was called but it isn't available");
 	}
 
 	@Override
-	public void createBookmark(String id, int position) {
-		Timber.w("OfflineMusicService.createBookmark was called but it isn't available");
+	public MusicDirectory getVideos(boolean refresh) throws OfflineException {
+		throw new OfflineException("OfflineMusicService.getVideos was called but it isn't available");
 	}
 
 	@Override
-	public MusicDirectory getVideos(boolean refresh) {
-		Timber.w("OfflineMusicService.getVideos was called but it isn't available");
-		return null;
-	}
-
-	@Override
-	public SearchResult getStarred2() {
-		Timber.w("OfflineMusicService.getStarred2 was called but it isn't available");
-		return null;
+	public SearchResult getStarred2() throws OfflineException {
+		throw new OfflineException("OfflineMusicService.getStarred2 was called but it isn't available");
 	}
 
 	@Override
@@ -847,43 +841,37 @@ public class OfflineMusicService implements MusicService
 	}
 
 	@Override
-	public Indexes getArtists(boolean refresh) {
-		Timber.w("OfflineMusicService.getArtists was called but it isn't available");
-		return null;
+	public Indexes getArtists(boolean refresh) throws OfflineException {
+		throw new OfflineException("OfflineMusicService.getArtists was called but it isn't available");
 	}
 
 	@Override
-	public MusicDirectory getArtist(String id, String name, boolean refresh) {
-		Timber.w("OfflineMusicService.getArtist was called but it isn't available");
-		return null;
+	public MusicDirectory getArtist(String id, String name, boolean refresh) throws OfflineException {
+		throw new OfflineException("OfflineMusicService.getArtist was called but it isn't available");
 	}
 
 	@Override
-	public MusicDirectory getAlbum(String id, String name, boolean refresh) {
-		Timber.w("OfflineMusicService.getAlbum was called but it isn't available");
-		return null;
+	public MusicDirectory getAlbum(String id, String name, boolean refresh) throws OfflineException {
+		throw new OfflineException("OfflineMusicService.getAlbum was called but it isn't available");
 	}
 
 	@Override
-	public MusicDirectory getPodcastEpisodes(String podcastChannelId) {
-		Timber.w("OfflineMusicService.getPodcastEpisodes was called but it isn't available");
-		return null;
+	public MusicDirectory getPodcastEpisodes(String podcastChannelId) throws OfflineException {
+		throw new OfflineException("OfflineMusicService.getPodcastEpisodes was called but it isn't available");
 	}
 
 	@Override
-	public Pair<InputStream, Boolean> getDownloadInputStream(MusicDirectory.Entry song, long offset, int maxBitrate) {
-		Timber.w("OfflineMusicService.getDownloadInputStream was called but it isn't available");
-		return null;
+	public Pair<InputStream, Boolean> getDownloadInputStream(MusicDirectory.Entry song, long offset, int maxBitrate) throws OfflineException {
+		throw new OfflineException("OfflineMusicService.getDownloadInputStream was called but it isn't available");
 	}
 
 	@Override
-	public void setRating(String id, int rating) {
-		Timber.w("OfflineMusicService.setRating was called but it isn't available");
+	public void setRating(String id, int rating) throws OfflineException {
+		throw new OfflineException("OfflineMusicService.setRating was called but it isn't available");
 	}
 
 	@Override
-	public List<PodcastsChannel> getPodcastsChannels(boolean refresh) {
-		Timber.w("OfflineMusicService.getPodcastsChannels was called but it isn't available");
-		return null;
+	public List<PodcastsChannel> getPodcastsChannels(boolean refresh) throws OfflineException {
+		throw new OfflineException("OfflineMusicService.getPodcastsChannels was called but it isn't available");
 	}
 }
