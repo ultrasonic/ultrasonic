@@ -36,7 +36,7 @@ class MusicDirectory {
     }
 
     data class Entry(
-        override var id: String? = null,
+        override var id: String,
         var parent: String? = null,
         var isDirectory: Boolean = false,
         var title: String? = null,

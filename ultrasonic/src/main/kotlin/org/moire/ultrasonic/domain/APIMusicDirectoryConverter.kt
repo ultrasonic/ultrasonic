@@ -13,8 +13,7 @@ internal val dateFormat: DateFormat by lazy {
     SimpleDateFormat.getDateTimeInstance(DateFormat.SHORT, DateFormat.SHORT, Locale.getDefault())
 }
 
-fun MusicDirectoryChild.toDomainEntity(): MusicDirectory.Entry = MusicDirectory.Entry().apply {
-    id = this@toDomainEntity.id
+fun MusicDirectoryChild.toDomainEntity(): MusicDirectory.Entry = MusicDirectory.Entry(id).apply {
     parent = this@toDomainEntity.parent
     isDirectory = this@toDomainEntity.isDir
     title = this@toDomainEntity.title
