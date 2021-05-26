@@ -11,6 +11,7 @@ import androidx.lifecycle.Observer
 import androidx.navigation.fragment.findNavController
 import com.google.android.material.switchmaterial.SwitchMaterial
 import com.google.android.material.textfield.TextInputLayout
+import java.io.IOException
 import java.net.MalformedURLException
 import java.net.URL
 import org.koin.android.ext.android.inject
@@ -29,7 +30,6 @@ import org.moire.ultrasonic.util.ErrorDialog
 import org.moire.ultrasonic.util.ModalBackgroundTask
 import org.moire.ultrasonic.util.Util
 import timber.log.Timber
-import java.io.IOException
 
 /**
  * Displays a form where server settings can be created / edited
