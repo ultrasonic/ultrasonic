@@ -608,28 +608,16 @@ public class Util
 	}
 
 
-	private static void showDialog(Context context, int icon, int titleId, int messageId)
-	{
-		new AlertDialog.Builder(context).setIcon(icon).setTitle(titleId).setMessage(messageId).setPositiveButton(R.string.common_ok, new DialogInterface.OnClickListener()
-		{
-			@Override
-			public void onClick(DialogInterface dialog, int i)
-			{
-				dialog.dismiss();
-			}
-		}).show();
-	}
-
+	// The AlertDialog requires an Activity context, app context is not enough
+	// See https://stackoverflow.com/questions/5436822/
 	public static void showDialog(Context context, int icon, int titleId, String message)
 	{
-		new AlertDialog.Builder(context).setIcon(icon).setTitle(titleId).setMessage(message).setPositiveButton(R.string.common_ok, new DialogInterface.OnClickListener()
-		{
-			@Override
-			public void onClick(DialogInterface dialog, int i)
-			{
-				dialog.dismiss();
-			}
-		}).show();
+		new AlertDialog.Builder(context)
+				.setIcon(icon)
+				.setTitle(titleId)
+				.setMessage(message)
+				.setPositiveButton(R.string.common_ok, (dialog, i) -> dialog.dismiss())
+				.show();
 	}
 
 
