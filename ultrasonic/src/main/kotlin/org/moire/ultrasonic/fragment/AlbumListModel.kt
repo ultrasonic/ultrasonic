@@ -5,14 +5,12 @@ import android.os.Bundle
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
-import org.koin.core.component.KoinApiExtension
 import org.moire.ultrasonic.api.subsonic.models.AlbumListType
 import org.moire.ultrasonic.domain.MusicDirectory
 import org.moire.ultrasonic.service.MusicService
 import org.moire.ultrasonic.util.Constants
 import org.moire.ultrasonic.util.Util
 
-@KoinApiExtension
 class AlbumListModel(application: Application) : GenericListModel(application) {
 
     val albumList: MutableLiveData<List<MusicDirectory.Entry>> = MutableLiveData()

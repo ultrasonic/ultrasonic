@@ -13,8 +13,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import org.koin.android.ext.android.inject
-import org.koin.android.viewmodel.ext.android.viewModel
-import org.koin.core.component.KoinApiExtension
+import org.koin.androidx.viewmodel.ext.android.viewModel
 import org.moire.ultrasonic.R
 import org.moire.ultrasonic.data.ActiveServerProvider
 import org.moire.ultrasonic.domain.Artist
@@ -31,7 +30,6 @@ import org.moire.ultrasonic.view.SelectMusicFolderView
  * @param T: The type of data which will be used (must extend GenericEntry)
  * @param TA: The Adapter to use (must extend GenericRowAdapter)
  */
-@KoinApiExtension
 abstract class GenericListFragment<T : GenericEntry, TA : GenericRowAdapter<T>> : Fragment() {
     internal val activeServerProvider: ActiveServerProvider by inject()
     internal val serverSettingsModel: ServerSettingsModel by viewModel()

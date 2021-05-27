@@ -18,7 +18,6 @@
  */
 package org.moire.ultrasonic.service
 
-import org.koin.core.component.KoinApiExtension
 import org.koin.core.component.KoinComponent
 import org.koin.core.component.get
 import org.koin.core.context.loadKoinModules
@@ -30,7 +29,6 @@ import org.moire.ultrasonic.di.ONLINE_MUSIC_SERVICE
 import org.moire.ultrasonic.di.musicServiceModule
 
 // TODO Refactor everywhere to use DI way to get MusicService, and then remove this class
-@KoinApiExtension
 object MusicServiceFactory : KoinComponent {
     @JvmStatic
     fun getMusicService(): MusicService {

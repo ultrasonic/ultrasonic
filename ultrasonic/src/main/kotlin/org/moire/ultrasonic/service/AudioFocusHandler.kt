@@ -18,7 +18,8 @@ import timber.log.Timber
 class AudioFocusHandler(private val context: Context) {
     // TODO: This is a circular reference, try to remove it
     // This should be doable by using the native MediaController framework
-    private val mediaPlayerControllerLazy = inject(MediaPlayerController::class.java)
+    private val mediaPlayerControllerLazy =
+        inject<MediaPlayerController>(MediaPlayerController::class.java)
 
     private val audioManager by lazy {
         context.getSystemService(Context.AUDIO_SERVICE) as AudioManager

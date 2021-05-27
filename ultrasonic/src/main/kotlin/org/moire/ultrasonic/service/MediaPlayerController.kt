@@ -7,9 +7,9 @@
 package org.moire.ultrasonic.service
 
 import android.content.Intent
-import org.koin.core.component.KoinApiExtension
-import org.koin.java.KoinJavaComponent.get
-import org.koin.java.KoinJavaComponent.inject
+import org.koin.core.component.KoinComponent
+import org.koin.core.component.get
+import org.koin.core.component.inject
 import org.moire.ultrasonic.app.UApp
 import org.moire.ultrasonic.data.ActiveServerProvider
 import org.moire.ultrasonic.domain.MusicDirectory
@@ -30,7 +30,6 @@ import timber.log.Timber
  * This class contains everything that is necessary for the Application UI
  * to control the Media Player implementation.
  */
-@KoinApiExtension
 @Suppress("TooManyFunctions")
 class MediaPlayerController(
     private val downloadQueueSerializer: DownloadQueueSerializer,
@@ -38,7 +37,7 @@ class MediaPlayerController(
     private val downloader: Downloader,
     private val shufflePlayBuffer: ShufflePlayBuffer,
     private val localMediaPlayer: LocalMediaPlayer
-) {
+) : KoinComponent {
 
     private var created = false
     var suggestedPlaylistName: String? = null
@@ -46,8 +45,8 @@ class MediaPlayerController(
     var showVisualization = false
     private var autoPlayStart = false
 
-    private val jukeboxMediaPlayer = inject(JukeboxMediaPlayer::class.java).value
-    private val activeServerProvider = inject(ActiveServerProvider::class.java).value
+    private val jukeboxMediaPlayer: JukeboxMediaPlayer by inject()
+    private val activeServerProvider: ActiveServerProvider by inject()
 
     fun onCreate() {
         if (created) return
@@ -462,7 +461,8 @@ class MediaPlayerController(
 
     @Suppress("TooGenericExceptionCaught") // The interface throws only generic exceptions
     fun setSongRating(rating: Int) {
-        if (!get(FeatureStorage::class.java).isFeatureEnabled(Feature.FIVE_STAR_RATING)) return
+        val features: FeatureStorage = get()
+        if (!features.isFeatureEnabled(Feature.FIVE_STAR_RATING)) return
         if (localMediaPlayer.currentPlaying == null) return
         val song = localMediaPlayer.currentPlaying!!.song
         song.userRating = rating

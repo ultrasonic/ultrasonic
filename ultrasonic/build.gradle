@@ -56,7 +56,6 @@ android {
 
     kotlinOptions {
         jvmTarget = "1.8"
-        freeCompilerArgs += "-Xopt-in=org.koin.core.component.KoinApiExtension"
     }
     compileOptions {
         sourceCompatibility JavaVersion.VERSION_1_8
@@ -94,7 +93,6 @@ dependencies {
     implementation other.kotlinStdlib
     implementation other.kotlinxCoroutines
     implementation other.koinAndroid
-    implementation other.koinViewModel
     implementation other.okhttpLogging
     implementation other.fastScroll
     implementation other.sortListView

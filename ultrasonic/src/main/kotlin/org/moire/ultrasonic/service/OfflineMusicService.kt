@@ -22,7 +22,8 @@ import java.util.Locale
 import java.util.Random
 import java.util.concurrent.TimeUnit
 import java.util.regex.Pattern
-import org.koin.java.KoinJavaComponent.inject
+import org.koin.core.component.KoinComponent
+import org.koin.core.component.inject
 import org.moire.ultrasonic.data.ActiveServerProvider
 import org.moire.ultrasonic.domain.Artist
 import org.moire.ultrasonic.domain.Bookmark
@@ -47,10 +48,8 @@ import timber.log.Timber
 // TODO: There are quite a number of deeply nested and complicated functions in this class..
 // Simplify them :)
 @Suppress("TooManyFunctions")
-class OfflineMusicService : MusicService {
-    private val activeServerProvider = inject(
-        ActiveServerProvider::class.java
-    )
+class OfflineMusicService : MusicService, KoinComponent {
+    private val activeServerProvider: ActiveServerProvider by inject()
 
     override fun getIndexes(musicFolderId: String?, refresh: Boolean): Indexes {
         val artists: MutableList<Artist> = ArrayList()
@@ -85,7 +84,7 @@ class OfflineMusicService : MusicService {
                     lhs = lhs.substring(article.length + 1)
                 }
                 index = rhs.indexOf(
-                    String.format(Locale.ROOT, "%s ", article.toLowerCase(Locale.ROOT))
+                    String.format(Locale.ROOT, "%s ", article.lowercase(Locale.ROOT))
                 )
                 if (index == 0) {
                     rhs = rhs.substring(article.length + 1)
@@ -253,7 +252,7 @@ class OfflineMusicService : MusicService {
     @Throws(Exception::class)
     override fun createPlaylist(id: String, name: String, entries: List<MusicDirectory.Entry>) {
         val playlistFile =
-            FileUtil.getPlaylistFile(activeServerProvider.value.getActiveServer().name, name)
+            FileUtil.getPlaylistFile(activeServerProvider.getActiveServer().name, name)
         val fw = FileWriter(playlistFile)
         val bw = BufferedWriter(fw)
         try {
