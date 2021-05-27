@@ -23,7 +23,7 @@ import kotlin.Lazy;
 import static org.koin.java.KoinJavaComponent.inject;
 
 /**
- * Responsible for cleaning up files from the offline download cache on the filesystem
+ * Responsible for cleaning up files from the offline download cache on the filesystem. TEST
  */
 public class CacheCleaner
 {
