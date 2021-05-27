@@ -23,6 +23,7 @@ import org.moire.ultrasonic.domain.SearchResult
 import org.moire.ultrasonic.domain.Share
 import org.moire.ultrasonic.domain.UserInfo
 
+@Suppress("TooManyFunctions")
 interface MusicService {
     @Throws(Exception::class)
     fun ping()

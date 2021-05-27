@@ -45,6 +45,10 @@ import org.moire.ultrasonic.util.FileUtil
 import org.moire.ultrasonic.util.Util
 import timber.log.Timber
 
+
+// TODO: There are quite a number of deeply nested and complicated functions in this class..
+// Simplify them :)
+@Suppress("TooManyFunctions")
 class OfflineMusicService : MusicService {
     private val activeServerProvider = inject(
         ActiveServerProvider::class.java
@@ -76,11 +80,15 @@ class OfflineMusicService : MusicService {
                 return@sortWith -1
             }
             for (article in ignoredArticles) {
-                var index = lhs.indexOf(String.format("%s ", article.toLowerCase(Locale.ROOT)))
+                var index = lhs.indexOf(
+                    String.format(Locale.ROOT, "%s ", article.toLowerCase(Locale.ROOT))
+                )
                 if (index == 0) {
                     lhs = lhs.substring(article.length + 1)
                 }
-                index = rhs.indexOf(String.format("%s ", article.toLowerCase(Locale.ROOT)))
+                index = rhs.indexOf(
+                    String.format(Locale.ROOT, "%s ", article.toLowerCase(Locale.ROOT))
+                )
                 if (index == 0) {
                     rhs = rhs.substring(article.length + 1)
                 }
@@ -122,7 +130,7 @@ class OfflineMusicService : MusicService {
         return try {
             val bitmap = FileUtil.getAvatarBitmap(username, size, highQuality)
             Util.scaleBitmap(bitmap, size)
-        } catch (e: Exception) {
+        } catch (ignored: Exception) {
             null
         }
     }
@@ -136,7 +144,7 @@ class OfflineMusicService : MusicService {
         return try {
             val bitmap = FileUtil.getAlbumArtBitmap(entry, size, highQuality)
             Util.scaleBitmap(bitmap, size)
-        } catch (e: Exception) {
+        } catch (ignored: Exception) {
             null
         }
     }
@@ -162,51 +170,14 @@ class OfflineMusicService : MusicService {
             }
         }
 
-        artists.sortWith { lhs, rhs ->
-            when {
-                lhs.closeness == rhs.closeness -> {
-                    return@sortWith 0
-                }
-                lhs.closeness > rhs.closeness -> {
-                    return@sortWith -1
-                }
-                else -> {
-                    return@sortWith 1
-                }
-            }
-        }
-
-        albums.sortWith { lhs, rhs ->
-            when {
-                lhs.closeness == rhs.closeness -> {
-                    return@sortWith 0
-                }
-                lhs.closeness > rhs.closeness -> {
-                    return@sortWith -1
-                }
-                else -> {
-                    return@sortWith 1
-                }
-            }
-        }
-
-        songs.sortWith { lhs, rhs ->
-            when {
-                lhs.closeness == rhs.closeness -> {
-                    return@sortWith 0
-                }
-                lhs.closeness > rhs.closeness -> {
-                    return@sortWith -1
-                }
-                else -> {
-                    return@sortWith 1
-                }
-            }
-        }
+        artists.sort()
+        albums.sort()
+        songs.sort()
 
         return SearchResult(artists, albums, songs)
     }
 
+    @Suppress("NestedBlockDepth", "TooGenericExceptionCaught")
     override fun getPlaylists(refresh: Boolean): List<Playlist> {
         val playlists: MutableList<Playlist> = ArrayList()
         val root = FileUtil.getPlaylistDirectory()
@@ -280,6 +251,7 @@ class OfflineMusicService : MusicService {
         }
     }
 
+    @Suppress("TooGenericExceptionCaught")
     @Throws(Exception::class)
     override fun createPlaylist(id: String, name: String, entries: List<MusicDirectory.Entry>) {
         val playlistFile =
@@ -302,7 +274,7 @@ class OfflineMusicService : MusicService {
                     """.trimIndent()
                 )
             }
-        } catch (e: Exception) {
+        } catch (ignored: Exception) {
             Timber.w("Failed to save playlist: %s", name)
         } finally {
             bw.close()
@@ -495,7 +467,9 @@ class OfflineMusicService : MusicService {
         throw OfflineException("getStarred2 isn't available in offline mode")
     }
 
-    override fun ping() {}
+    override fun ping() {
+        // Void
+    }
 
     override fun isLicenseValid(): Boolean = true
 
@@ -545,21 +519,25 @@ class OfflineMusicService : MusicService {
             if (file.isDirectory) {
                 return name
             }
-            if (name.endsWith(".partial") || name.contains(".partial.")
-                || name == Constants.ALBUM_ART_FILE) {
+            if (name.endsWith(".partial") || name.contains(".partial.") ||
+                name == Constants.ALBUM_ART_FILE
+            ) {
                 return null
             }
             name = name.replace(".complete", "")
             return FileUtil.getBaseName(name)
         }
 
+        @Suppress("TooGenericExceptionCaught", "ComplexMethod", "LongMethod", "NestedBlockDepth")
         private fun createEntry(file: File, name: String?): MusicDirectory.Entry {
             val entry = MusicDirectory.Entry(file.path)
             entry.isDirectory = file.isDirectory
             entry.parent = file.parent
             entry.size = file.length()
             val root = FileUtil.getMusicDirectory().path
-            entry.path = file.path.replaceFirst(String.format("^%s/", root).toRegex(), "")
+            entry.path = file.path.replaceFirst(
+                String.format(Locale.ROOT, "^%s/", root).toRegex(), ""
+            )
             entry.title = name
             if (file.isFile) {
                 var artist: String? = null
@@ -648,6 +626,7 @@ class OfflineMusicService : MusicService {
             return entry
         }
 
+        @Suppress("NestedBlockDepth")
         private fun recursiveAlbumSearch(
             artistName: String,
             file: File,
