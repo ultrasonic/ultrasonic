@@ -29,7 +29,7 @@ ext.versions = [
         jackson              : "2.9.5",
         okhttp               : "3.12.13",
         twitterSerial        : "0.1.6",
-        koin                 : "2.2.3",
+        koin                 : "3.0.2",
         picasso              : "2.71828",
         sortListView         : "1.0.1",
 
@@ -85,7 +85,6 @@ ext.other = [
         twitterSerial      : "com.twitter.serial:serial:$versions.twitterSerial",
         koinCore           : "io.insert-koin:koin-core:$versions.koin",
         koinAndroid        : "io.insert-koin:koin-android:$versions.koin",
-        koinViewModel      : "io.insert-koin:koin-android-viewmodel:$versions.koin",
         picasso            : "com.squareup.picasso:picasso:$versions.picasso",
         dexter             : "com.karumi:dexter:$versions.dexter",
         timber             : "com.jakewharton.timber:timber:$versions.timber",

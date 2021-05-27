@@ -13,7 +13,6 @@ import androidx.lifecycle.MutableLiveData
 import java.util.LinkedList
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
-import org.koin.core.component.KoinApiExtension
 import org.moire.ultrasonic.R
 import org.moire.ultrasonic.domain.MusicDirectory
 import org.moire.ultrasonic.service.MusicService
@@ -24,7 +23,6 @@ import org.moire.ultrasonic.util.Util
 * Model for retrieving different collections of tracks from the API
 * TODO: Refactor this model to extend the GenericListModel
 */
-@KoinApiExtension
 class TrackCollectionModel(application: Application) : GenericListModel(application) {
 
     private val allSongsId = "-1"

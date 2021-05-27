@@ -15,7 +15,6 @@ import java.net.UnknownHostException
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
-import org.koin.core.component.KoinApiExtension
 import org.koin.core.component.KoinComponent
 import org.koin.core.component.inject
 import org.moire.ultrasonic.data.ActiveServerProvider
@@ -29,7 +28,6 @@ import org.moire.ultrasonic.util.Util
 /**
 * An abstract Model, which can be extended to retrieve a list of items from the API
 */
-@KoinApiExtension
 open class GenericListModel(application: Application) :
     AndroidViewModel(application), KoinComponent {
 

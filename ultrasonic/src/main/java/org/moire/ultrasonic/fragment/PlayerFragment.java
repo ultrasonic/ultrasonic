@@ -162,7 +162,8 @@ public class PlayerFragment extends Fragment implements GestureDetector.OnGestur
 
         setHasOptionsMenu(true);
 
-        useFiveStarRating = KoinJavaComponent.get(FeatureStorage.class).isFeatureEnabled(Feature.FIVE_STAR_RATING);
+        FeatureStorage features = KoinJavaComponent.get(FeatureStorage.class);
+        useFiveStarRating = features.isFeatureEnabled(Feature.FIVE_STAR_RATING);
 
         swipeDistance = (width + height) * PERCENTAGE_OF_SCREEN_FOR_SWIPE / 100;
         swipeVelocity = swipeDistance;

@@ -24,7 +24,6 @@ import android.view.KeyEvent
 import androidx.core.app.NotificationCompat
 import androidx.core.app.NotificationManagerCompat
 import org.koin.android.ext.android.inject
-import org.koin.core.component.KoinApiExtension
 import org.moire.ultrasonic.R
 import org.moire.ultrasonic.activity.NavigationActivity
 import org.moire.ultrasonic.app.UApp
@@ -49,7 +48,6 @@ import timber.log.Timber
  * Android Foreground Service for playing music
  * while the rest of the Ultrasonic App is in the background.
  */
-@KoinApiExtension
 @Suppress("LargeClass")
 class MediaPlayerService : Service() {
     private val binder: IBinder = SimpleServiceBinder(this)
