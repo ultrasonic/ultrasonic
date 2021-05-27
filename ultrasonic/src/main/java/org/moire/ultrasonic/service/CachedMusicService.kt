@@ -1,20 +1,8 @@
 /*
- This file is part of Subsonic.
-
- Subsonic is free software: you can redistribute it and/or modify
- it under the terms of the GNU General Public License as published by
- the Free Software Foundation, either version 3 of the License, or
- (at your option) any later version.
-
- Subsonic is distributed in the hope that it will be useful,
- but WITHOUT ANY WARRANTY; without even the implied warranty of
- MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- GNU General Public License for more details.
-
- You should have received a copy of the GNU General Public License
- along with Subsonic.  If not, see <http://www.gnu.org/licenses/>.
-
- Copyright 2009 (C) Sindre Mehus
+ * CachedMusicService.kt
+ * Copyright (C) 2009-2021 Ultrasonic developers
+ *
+ * Distributed under terms of the GNU GPLv3 license.
  */
 package org.moire.ultrasonic.service
 
@@ -51,15 +39,14 @@ class CachedMusicService(private val musicService: MusicService) : MusicService 
     private val cachedArtist: LRUCache<String?, TimeLimitedCache<MusicDirectory?>>
     private val cachedAlbum: LRUCache<String?, TimeLimitedCache<MusicDirectory?>>
     private val cachedUserInfo: LRUCache<String?, TimeLimitedCache<UserInfo?>>
-    private val cachedLicenseValid = TimeLimitedCache<Boolean>(120, TimeUnit.SECONDS)
-    private val cachedIndexes = TimeLimitedCache<Indexes?>(60 * 60, TimeUnit.SECONDS)
-    private val cachedArtists = TimeLimitedCache<Indexes?>(60 * 60, TimeUnit.SECONDS)
-    private val cachedPlaylists = TimeLimitedCache<List<Playlist>?>(3600, TimeUnit.SECONDS)
-    private val cachedPodcastsChannels =
-        TimeLimitedCache<List<PodcastsChannel>>(3600, TimeUnit.SECONDS)
+    private val cachedLicenseValid = TimeLimitedCache<Boolean>(expiresAfter = 10, TimeUnit.MINUTES)
+    private val cachedIndexes = TimeLimitedCache<Indexes?>()
+    private val cachedArtists = TimeLimitedCache<Indexes?>()
+    private val cachedPlaylists = TimeLimitedCache<List<Playlist>?>()
+    private val cachedPodcastsChannels = TimeLimitedCache<List<PodcastsChannel>>()
     private val cachedMusicFolders =
-        TimeLimitedCache<List<MusicFolder>?>(10 * 3600, TimeUnit.SECONDS)
-    private val cachedGenres = TimeLimitedCache<List<Genre>?>(10 * 3600, TimeUnit.SECONDS)
+        TimeLimitedCache<List<MusicFolder>?>(10, TimeUnit.HOURS)
+    private val cachedGenres = TimeLimitedCache<List<Genre>?>(10, TimeUnit.HOURS)
     private var restUrl: String? = null
     private var cachedMusicFolderId: String? = null
 
@@ -72,12 +59,12 @@ class CachedMusicService(private val musicService: MusicService) : MusicService 
     @Throws(Exception::class)
     override fun isLicenseValid(): Boolean {
         checkSettingsChanged()
-        var result = cachedLicenseValid.get()
-        if (result == null) {
-            result = musicService.isLicenseValid()
-            cachedLicenseValid[result, if (result) 30L * 60L else 2L * 60L] = TimeUnit.SECONDS
+        var isValid = cachedLicenseValid.get()
+        if (isValid == null) {
+            isValid = musicService.isLicenseValid()
+            cachedLicenseValid.set(isValid)
         }
-        return result
+        return isValid
     }
 
     @Throws(Exception::class)
