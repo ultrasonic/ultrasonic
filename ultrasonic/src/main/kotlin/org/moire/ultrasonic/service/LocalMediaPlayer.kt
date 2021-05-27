@@ -106,7 +106,7 @@ class LocalMediaPlayer(
                 i.putExtra(AudioEffect.EXTRA_AUDIO_SESSION, mediaPlayer.audioSessionId)
                 i.putExtra(AudioEffect.EXTRA_PACKAGE_NAME, context.packageName)
                 context.sendBroadcast(i)
-            } catch (e: Throwable) {
+            } catch (ignored: Throwable) {
                 // Froyo or lower
             }
             mediaPlayerLooper = Looper.myLooper()
@@ -466,7 +466,7 @@ class LocalMediaPlayer(
             // the equalizer or visualizer with the player
             try {
                 nextMediaPlayer!!.audioSessionId = mediaPlayer.audioSessionId
-            } catch (e: Throwable) {
+            } catch (ignored: Throwable) {
             }
 
             nextMediaPlayer!!.setDataSource(file.path)

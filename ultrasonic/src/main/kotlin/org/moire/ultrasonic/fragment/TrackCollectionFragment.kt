@@ -28,7 +28,6 @@ import androidx.lifecycle.Observer
 import androidx.lifecycle.viewModelScope
 import androidx.navigation.Navigation
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
-import java.security.SecureRandom
 import java.util.Collections
 import java.util.Random
 import kotlinx.coroutines.CoroutineExceptionHandler
@@ -92,7 +91,7 @@ class TrackCollectionFragment : Fragment() {
     private var cancellationToken: CancellationToken? = null
 
     private val model: TrackCollectionModel by viewModels()
-    private val random: Random = SecureRandom()
+    private val random: Random = Random()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         Util.applyTheme(this.context)

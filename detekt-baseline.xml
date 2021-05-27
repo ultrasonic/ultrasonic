@@ -67,18 +67,10 @@
     <ID>NestedBlockDepth:DownloadFile.kt$DownloadFile.DownloadTask$override fun execute()</ID>
     <ID>NestedBlockDepth:DownloadHandler.kt$DownloadHandler$private fun downloadRecursively( fragment: Fragment, id: String, name: String?, isShare: Boolean, isDirectory: Boolean, save: Boolean, append: Boolean, autoPlay: Boolean, shuffle: Boolean, background: Boolean, playNext: Boolean, unpin: Boolean, isArtist: Boolean )</ID>
     <ID>NestedBlockDepth:MediaPlayerService.kt$MediaPlayerService$private fun setupOnSongCompletedHandler()</ID>
-    <ID>ReturnCount:ActiveServerProvider.kt$ActiveServerProvider$ fun getActiveServer(): ServerSetting</ID>
     <ID>ReturnCount:CommunicationErrorHandler.kt$CommunicationErrorHandler.Companion$fun getErrorMessage(error: Throwable, context: Context): String</ID>
-    <ID>ReturnCount:FileLoggerTree.kt$FileLoggerTree$ private fun getNextLogFile()</ID>
-    <ID>ReturnCount:MediaPlayerService.kt$MediaPlayerService$private fun generateAction(context: Context, requestCode: Int): NotificationCompat.Action?</ID>
-    <ID>ReturnCount:RESTMusicService.kt$RESTMusicService$@Throws(Exception::class) override fun getAvatar( username: String?, size: Int, saveToFile: Boolean, highQuality: Boolean ): Bitmap?</ID>
     <ID>ReturnCount:RESTMusicService.kt$RESTMusicService$@Throws(Exception::class) override fun getCoverArt( entry: MusicDirectory.Entry?, size: Int, saveToFile: Boolean, highQuality: Boolean ): Bitmap?</ID>
     <ID>ReturnCount:ServerRowAdapter.kt$ServerRowAdapter$ private fun popupMenuItemClick(menuItem: MenuItem, position: Int): Boolean</ID>
     <ID>ReturnCount:TrackCollectionFragment.kt$TrackCollectionFragment$override fun onContextItemSelected(menuItem: MenuItem): Boolean</ID>
-    <ID>ReturnCount:TrackCollectionFragment.kt$TrackCollectionFragment$override fun onOptionsItemSelected(item: MenuItem): Boolean</ID>
-    <ID>SwallowedException:LocalMediaPlayer.kt$LocalMediaPlayer$catch (e: Throwable) { // Froyo or lower }</ID>
-    <ID>SwallowedException:LocalMediaPlayer.kt$LocalMediaPlayer$catch (e: Throwable) { }</ID>
-    <ID>SwallowedException:MediaPlayerService.kt$MediaPlayerService$catch (x: IndexOutOfBoundsException) { // Ignored }</ID>
     <ID>SwallowedException:NavigationActivity.kt$NavigationActivity$catch (e: Resources.NotFoundException) { destination.id.toString() }</ID>
     <ID>ThrowsCount:ApiCallResponseChecker.kt$ApiCallResponseChecker.Companion$@Throws(SubsonicRESTException::class, IOException::class) fun checkResponseSuccessful(response: Response&lt;out SubsonicResponse&gt;)</ID>
     <ID>TooGenericExceptionCaught:DownloadFile.kt$DownloadFile$e: Exception</ID>
@@ -89,7 +81,6 @@
     <ID>TooGenericExceptionCaught:LocalMediaPlayer.kt$LocalMediaPlayer$x: Exception</ID>
     <ID>TooGenericExceptionCaught:LocalMediaPlayer.kt$LocalMediaPlayer.PositionCache$e: Exception</ID>
     <ID>TooGenericExceptionCaught:MediaPlayerService.kt$MediaPlayerService$e: Exception</ID>
-    <ID>TooGenericExceptionCaught:MediaPlayerService.kt$MediaPlayerService$x: IndexOutOfBoundsException</ID>
     <ID>TooGenericExceptionCaught:SongView.kt$SongView$e: Exception</ID>
     <ID>TooGenericExceptionCaught:SubsonicUncaughtExceptionHandler.kt$SubsonicUncaughtExceptionHandler$x: Throwable</ID>
     <ID>TooGenericExceptionCaught:VideoPlayer.kt$VideoPlayer$e: Exception</ID>
@@ -98,7 +89,6 @@
     <ID>TooManyFunctions:MediaPlayerService.kt$MediaPlayerService : Service</ID>
     <ID>TooManyFunctions:RESTMusicService.kt$RESTMusicService : MusicService</ID>
     <ID>TooManyFunctions:TrackCollectionFragment.kt$TrackCollectionFragment : Fragment</ID>
-    <ID>UnusedPrivateMember:RESTMusicService.kt$RESTMusicService.Companion$private const val INDEXES_FOLDER_STORAGE_NAME = "indexes_folder"</ID>
     <ID>UtilityClassWithPublicConstructor:CommunicationErrorHandler.kt$CommunicationErrorHandler</ID>
     <ID>UtilityClassWithPublicConstructor:FragmentTitle.kt$FragmentTitle</ID>
   </CurrentIssues>

@@ -15,7 +15,6 @@ import java.io.FileReader
 import java.io.FileWriter
 import java.io.InputStream
 import java.io.Reader
-import java.security.SecureRandom
 import java.util.ArrayList
 import java.util.HashSet
 import java.util.LinkedList
@@ -44,7 +43,6 @@ import org.moire.ultrasonic.util.Constants
 import org.moire.ultrasonic.util.FileUtil
 import org.moire.ultrasonic.util.Util
 import timber.log.Timber
-
 
 // TODO: There are quite a number of deeply nested and complicated functions in this class..
 // Simplify them :)
@@ -290,7 +288,7 @@ class OfflineMusicService : MusicService {
         if (children.isEmpty()) {
             return result
         }
-        val random: Random = SecureRandom()
+        val random = Random()
         for (i in 0 until size) {
             val file = children[random.nextInt(children.size)]
             result.addChild(createEntry(file, getName(file)))

@@ -53,6 +53,7 @@ import timber.log.Timber
 /**
  * This Music Service implementation connects to a server using the Subsonic REST API
  */
+@Suppress("LargeClass")
 open class RESTMusicService(
     private val subsonicAPIClient: SubsonicAPIClient,
     private val fileStorage: PermanentFileStorage,
@@ -868,7 +869,6 @@ open class RESTMusicService(
     companion object {
         private const val MUSIC_FOLDER_STORAGE_NAME = "music_folder"
         private const val INDEXES_STORAGE_NAME = "indexes"
-        private const val INDEXES_FOLDER_STORAGE_NAME = "indexes_folder"
         private const val ARTISTS_STORAGE_NAME = "artists"
     }
 }
