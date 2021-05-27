@@ -9,8 +9,22 @@ data class Artist(
     var coverArt: String? = null,
     var albumCount: Long? = null,
     var closeness: Int = 0
-) : Serializable, GenericEntry() {
+) : Serializable, GenericEntry(), Comparable<Artist> {
     companion object {
         private const val serialVersionUID = -5790532593784846982L
+    }
+
+    override fun compareTo(other: Artist): Int {
+        when {
+            this.closeness == other.closeness -> {
+                return 0
+            }
+            this.closeness > other.closeness -> {
+                return -1
+            }
+            else -> {
+                return 1
+            }
+        }
     }
 }
