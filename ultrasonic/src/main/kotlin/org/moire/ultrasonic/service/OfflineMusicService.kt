@@ -66,8 +66,8 @@ class OfflineMusicService : MusicService, KoinComponent {
         val ignoredArticlesString = "The El La Los Las Le Les"
         val ignoredArticles = COMPILE.split(ignoredArticlesString)
         artists.sortWith { lhsArtist, rhsArtist ->
-            var lhs = lhsArtist.name!!.toLowerCase(Locale.ROOT)
-            var rhs = rhsArtist.name!!.toLowerCase(Locale.ROOT)
+            var lhs = lhsArtist.name!!.lowercase(Locale.ROOT)
+            var rhs = rhsArtist.name!!.lowercase(Locale.ROOT)
             val lhs1 = lhs[0]
             val rhs1 = rhs[0]
             if (Character.isDigit(lhs1) && !Character.isDigit(rhs1)) {
@@ -78,7 +78,7 @@ class OfflineMusicService : MusicService, KoinComponent {
             }
             for (article in ignoredArticles) {
                 var index = lhs.indexOf(
-                    String.format(Locale.ROOT, "%s ", article.toLowerCase(Locale.ROOT))
+                    String.format(Locale.ROOT, "%s ", article.lowercase(Locale.ROOT))
                 )
                 if (index == 0) {
                     lhs = lhs.substring(article.length + 1)
@@ -667,10 +667,10 @@ class OfflineMusicService : MusicService, KoinComponent {
         }
 
         private fun matchCriteria(criteria: SearchCriteria, name: String?): Int {
-            val query = criteria.query.toLowerCase(Locale.ROOT)
+            val query = criteria.query.lowercase(Locale.ROOT)
             val queryParts = COMPILE.split(query)
             val nameParts = COMPILE.split(
-                name!!.toLowerCase(Locale.ROOT)
+                name!!.lowercase(Locale.ROOT)
             )
             var closeness = 0
             for (queryPart in queryParts) {
