@@ -28,7 +28,6 @@ import androidx.lifecycle.Observer
 import androidx.lifecycle.viewModelScope
 import androidx.navigation.Navigation
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
-import java.security.SecureRandom
 import java.util.Collections
 import java.util.Random
 import kotlinx.coroutines.CoroutineExceptionHandler
@@ -92,7 +91,7 @@ class TrackCollectionFragment : Fragment() {
     private var cancellationToken: CancellationToken? = null
 
     private val model: TrackCollectionModel by viewModels()
-    private val random: Random = SecureRandom()
+    private val random: Random = Random()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         Util.applyTheme(this.context)
@@ -258,7 +257,7 @@ class TrackCollectionFragment : Fragment() {
             model.getMusicFolders(refresh)
 
             if (playlistId != null) {
-                setTitle(playlistName)
+                setTitle(playlistName!!)
                 model.getPlaylist(playlistId, playlistName)
             } else if (podcastChannelId != null) {
                 setTitle(getString(R.string.podcasts_label))
@@ -282,12 +281,12 @@ class TrackCollectionFragment : Fragment() {
                 setTitle(name)
                 if (!isOffline() && Util.getShouldUseId3Tags()) {
                     if (isAlbum) {
-                        model.getAlbum(refresh, id, name, parentId)
+                        model.getAlbum(refresh, id!!, name, parentId)
                     } else {
-                        model.getArtist(refresh, id, name)
+                        model.getArtist(refresh, id!!, name)
                     }
                 } else {
-                    model.getMusicDirectory(refresh, id, name, parentId)
+                    model.getMusicDirectory(refresh, id!!, name, parentId)
                 }
             }
 

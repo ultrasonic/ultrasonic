@@ -43,7 +43,7 @@ class TrackCollectionModel(application: Application) : GenericListModel(applicat
 
     suspend fun getMusicDirectory(
         refresh: Boolean,
-        id: String?,
+        id: String,
         name: String?,
         parentId: String?
     ) {
@@ -53,7 +53,7 @@ class TrackCollectionModel(application: Application) : GenericListModel(applicat
 
             var root = MusicDirectory()
 
-            if (allSongsId == id) {
+            if (allSongsId == id && parentId != null) {
                 val musicDirectory = service.getMusicDirectory(
                     parentId, name, refresh
                 )
@@ -73,12 +73,11 @@ class TrackCollectionModel(application: Application) : GenericListModel(applicat
                     musicDirectory.findChild(allSongsId) == null &&
                     hasOnlyFolders(musicDirectory)
                 ) {
-                    val allSongs = MusicDirectory.Entry()
+                    val allSongs = MusicDirectory.Entry(allSongsId)
 
                     allSongs.isDirectory = true
                     allSongs.artist = name
                     allSongs.parent = id
-                    allSongs.id = allSongsId
                     allSongs.title = String.format(
                         context.resources.getString(R.string.select_album_all_songs), name
                     )
@@ -122,7 +121,7 @@ class TrackCollectionModel(application: Application) : GenericListModel(applicat
     * TODO: This method should be moved to AlbumListModel,
     * since it displays a list of albums by a specified artist.
     */
-    suspend fun getArtist(refresh: Boolean, id: String?, name: String?) {
+    suspend fun getArtist(refresh: Boolean, id: String, name: String?) {
 
         withContext(Dispatchers.IO) {
             val service = MusicServiceFactory.getMusicService()
@@ -135,12 +134,11 @@ class TrackCollectionModel(application: Application) : GenericListModel(applicat
                 musicDirectory.findChild(allSongsId) == null &&
                 hasOnlyFolders(musicDirectory)
             ) {
-                val allSongs = MusicDirectory.Entry()
+                val allSongs = MusicDirectory.Entry(allSongsId)
 
                 allSongs.isDirectory = true
                 allSongs.artist = name
                 allSongs.parent = id
-                allSongs.id = allSongsId
                 allSongs.title = String.format(
                     context.resources.getString(R.string.select_album_all_songs), name
                 )
@@ -154,7 +152,7 @@ class TrackCollectionModel(application: Application) : GenericListModel(applicat
         }
     }
 
-    suspend fun getAlbum(refresh: Boolean, id: String?, name: String?, parentId: String?) {
+    suspend fun getAlbum(refresh: Boolean, id: String, name: String?, parentId: String?) {
 
         withContext(Dispatchers.IO) {
 
@@ -162,7 +160,7 @@ class TrackCollectionModel(application: Application) : GenericListModel(applicat
 
             val musicDirectory: MusicDirectory
 
-            if (allSongsId == id) {
+            if (allSongsId == id && parentId != null) {
                 val root = MusicDirectory()
 
                 val songs: MutableCollection<MusicDirectory.Entry> = LinkedList()
@@ -212,9 +210,9 @@ class TrackCollectionModel(application: Application) : GenericListModel(applicat
             val musicDirectory: MusicDirectory
 
             if (Util.getShouldUseId3Tags()) {
-                musicDirectory = Util.getSongsFromSearchResult(service.starred2)
+                musicDirectory = Util.getSongsFromSearchResult(service.getStarred2())
             } else {
-                musicDirectory = Util.getSongsFromSearchResult(service.starred)
+                musicDirectory = Util.getSongsFromSearchResult(service.getStarred())
             }
 
             currentDirectory.postValue(musicDirectory)
@@ -241,7 +239,7 @@ class TrackCollectionModel(application: Application) : GenericListModel(applicat
         }
     }
 
-    suspend fun getPlaylist(playlistId: String, playlistName: String?) {
+    suspend fun getPlaylist(playlistId: String, playlistName: String) {
 
         withContext(Dispatchers.IO) {
             val service = MusicServiceFactory.getMusicService()

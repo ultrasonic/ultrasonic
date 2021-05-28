@@ -124,7 +124,7 @@ class NavigationActivity : AppCompatActivity() {
         navController.addOnDestinationChangedListener { _, destination, _ ->
             val dest: String = try {
                 resources.getResourceName(destination.id)
-            } catch (e: Resources.NotFoundException) {
+            } catch (ignored: Resources.NotFoundException) {
                 destination.id.toString()
             }
             Timber.d("Navigated to $dest")

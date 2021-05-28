@@ -26,10 +26,10 @@ class AvatarRequestHandler(
             ?: throw IllegalArgumentException("Nullable username")
 
         val response = apiClient.getAvatar(username)
-        if (response.hasError()) {
+        if (response.hasError() || response.stream == null) {
             throw IOException("${response.apiError}")
         } else {
-            return Result(Okio.source(response.stream), Picasso.LoadedFrom.NETWORK)
+            return Result(Okio.source(response.stream!!), Picasso.LoadedFrom.NETWORK)
         }
     }
 }

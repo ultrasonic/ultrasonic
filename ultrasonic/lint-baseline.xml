@@ -24,72 +24,6 @@
     </issue>
 
     <issue
-        id="DefaultLocale"
-        message="Implicitly using the default locale is a common source of bugs: Use `toLowerCase(Locale)` instead. For strings meant to be internal use `Locale.ROOT`, otherwise `Locale.getDefault()`."
-        errorLine1="   String lhs = lhsArtist.getName().toLowerCase();"
-        errorLine2="                                    ~~~~~~~~~~~">
-        <location
-            file="src/main/java/org/moire/ultrasonic/service/OfflineMusicService.java"
-            line="97"
-            column="37"/>
-    </issue>
-
-    <issue
-        id="DefaultLocale"
-        message="Implicitly using the default locale is a common source of bugs: Use `toLowerCase(Locale)` instead. For strings meant to be internal use `Locale.ROOT`, otherwise `Locale.getDefault()`."
-        errorLine1="   String rhs = rhsArtist.getName().toLowerCase();"
-        errorLine2="                                    ~~~~~~~~~~~">
-        <location
-            file="src/main/java/org/moire/ultrasonic/service/OfflineMusicService.java"
-            line="98"
-            column="37"/>
-    </issue>
-
-    <issue
-        id="DefaultLocale"
-        message="Implicitly using the default locale is a common source of bugs: Use `toLowerCase(Locale)` instead. For strings meant to be internal use `Locale.ROOT`, otherwise `Locale.getDefault()`."
-        errorLine1="    int index = lhs.indexOf(String.format(&quot;%s &quot;, article.toLowerCase()));"
-        errorLine2="                                                         ~~~~~~~~~~~">
-        <location
-            file="src/main/java/org/moire/ultrasonic/service/OfflineMusicService.java"
-            line="115"
-            column="58"/>
-    </issue>
-
-    <issue
-        id="DefaultLocale"
-        message="Implicitly using the default locale is a common source of bugs: Use `toLowerCase(Locale)` instead. For strings meant to be internal use `Locale.ROOT`, otherwise `Locale.getDefault()`."
-        errorLine1="    index = rhs.indexOf(String.format(&quot;%s &quot;, article.toLowerCase()));"
-        errorLine2="                                                     ~~~~~~~~~~~">
-        <location
-            file="src/main/java/org/moire/ultrasonic/service/OfflineMusicService.java"
-            line="122"
-            column="54"/>
-    </issue>
-
-    <issue
-        id="DefaultLocale"
-        message="Implicitly using the default locale is a common source of bugs: Use `toLowerCase(Locale)` instead. For strings meant to be internal use `Locale.ROOT`, otherwise `Locale.getDefault()`."
-        errorLine1="  String query = criteria.getQuery().toLowerCase();"
-        errorLine2="                                     ~~~~~~~~~~~">
-        <location
-            file="src/main/java/org/moire/ultrasonic/service/OfflineMusicService.java"
-            line="466"
-            column="38"/>
-    </issue>
-
-    <issue
-        id="DefaultLocale"
-        message="Implicitly using the default locale is a common source of bugs: Use `toLowerCase(Locale)` instead. For strings meant to be internal use `Locale.ROOT`, otherwise `Locale.getDefault()`."
-        errorLine1="  String[] nameParts = COMPILE.split(name.toLowerCase());"
-        errorLine2="                                          ~~~~~~~~~~~">
-        <location
-            file="src/main/java/org/moire/ultrasonic/service/OfflineMusicService.java"
-            line="468"
-            column="43"/>
-    </issue>
-
-    <issue
         id="InlinedApi"
         message="Field requires API level 16 (current min is 14): `android.Manifest.permission#READ_EXTERNAL_STORAGE`"
         errorLine1="                        Manifest.permission.READ_EXTERNAL_STORAGE)"
@@ -482,17 +416,6 @@
             file="src/main/res/values-cs/strings.xml"
             line="485"
             column="5"/>
-    </issue>
-
-    <issue
-        id="TrulyRandom"
-        message="Potentially insecure random numbers on Android 4.3 and older. Read https://android-developers.blogspot.com/2013/08/some-securerandom-thoughts.html for more info."
-        errorLine1="  Random random = new java.security.SecureRandom();"
-        errorLine2="                                    ~~~~~~~~~~~~">
-        <location
-            file="src/main/java/org/moire/ultrasonic/service/OfflineMusicService.java"
-            line="633"
-            column="37"/>
     </issue>
 
     <issue

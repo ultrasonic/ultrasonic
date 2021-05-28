@@ -69,6 +69,8 @@ style:
     ignorePropertyDeclaration: true
   UnnecessaryAbstractClass:
     active: false
+  ReturnCount:
+    max: 3
 
 comments:
   active: true

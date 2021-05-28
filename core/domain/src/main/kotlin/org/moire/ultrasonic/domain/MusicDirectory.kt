@@ -36,7 +36,7 @@ class MusicDirectory {
     }
 
     data class Entry(
-        override var id: String? = null,
+        override var id: String,
         var parent: String? = null,
         var isDirectory: Boolean = false,
         var title: String? = null,
@@ -66,13 +66,27 @@ class MusicDirectory {
         var bookmarkPosition: Int = 0,
         var userRating: Int? = null,
         var averageRating: Float? = null
-    ) : Serializable, GenericEntry() {
+    ) : Serializable, GenericEntry(), Comparable<Entry> {
         fun setDuration(duration: Long) {
             this.duration = duration.toInt()
         }
 
         companion object {
             private const val serialVersionUID = -3339106650010798108L
+        }
+
+        override fun compareTo(other: Entry): Int {
+            when {
+                this.closeness == other.closeness -> {
+                    return 0
+                }
+                this.closeness > other.closeness -> {
+                    return -1
+                }
+                else -> {
+                    return 1
+                }
+            }
         }
     }
 }
