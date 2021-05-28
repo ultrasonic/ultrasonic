@@ -45,7 +45,7 @@ class TrackCollectionModel(application: Application) : GenericListModel(applicat
         refresh: Boolean,
         id: String,
         name: String?,
-        parentId: String
+        parentId: String?
     ) {
         withContext(Dispatchers.IO) {
 
@@ -53,7 +53,7 @@ class TrackCollectionModel(application: Application) : GenericListModel(applicat
 
             var root = MusicDirectory()
 
-            if (allSongsId == id) {
+            if (allSongsId == id && parentId != null) {
                 val musicDirectory = service.getMusicDirectory(
                     parentId, name, refresh
                 )
@@ -152,7 +152,7 @@ class TrackCollectionModel(application: Application) : GenericListModel(applicat
         }
     }
 
-    suspend fun getAlbum(refresh: Boolean, id: String, name: String?, parentId: String) {
+    suspend fun getAlbum(refresh: Boolean, id: String, name: String?, parentId: String?) {
 
         withContext(Dispatchers.IO) {
 
@@ -160,7 +160,7 @@ class TrackCollectionModel(application: Application) : GenericListModel(applicat
 
             val musicDirectory: MusicDirectory
 
-            if (allSongsId == id) {
+            if (allSongsId == id && parentId != null) {
                 val root = MusicDirectory()
 
                 val songs: MutableCollection<MusicDirectory.Entry> = LinkedList()
