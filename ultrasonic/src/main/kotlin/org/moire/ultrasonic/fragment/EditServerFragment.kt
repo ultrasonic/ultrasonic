@@ -11,9 +11,6 @@ import androidx.lifecycle.Observer
 import androidx.navigation.fragment.findNavController
 import com.google.android.material.switchmaterial.SwitchMaterial
 import com.google.android.material.textfield.TextInputLayout
-import java.io.IOException
-import java.net.MalformedURLException
-import java.net.URL
 import org.koin.android.ext.android.inject
 import org.koin.android.viewmodel.ext.android.viewModel
 import org.moire.ultrasonic.BuildConfig
@@ -29,7 +26,11 @@ import org.moire.ultrasonic.util.Constants
 import org.moire.ultrasonic.util.ErrorDialog
 import org.moire.ultrasonic.util.ModalBackgroundTask
 import org.moire.ultrasonic.util.Util
+import retrofit2.Call
 import timber.log.Timber
+import java.io.IOException
+import java.net.MalformedURLException
+import java.net.URL
 
 /**
  * Displays a form where server settings can be created / edited
@@ -300,18 +301,36 @@ class EditServerFragment : Fragment(), OnBackPressedHandler {
             activity,
             false
         ) {
+            fun boolToMark(value: Boolean?): String {
+                if (value == null)
+                    return "⌛"
+                return if (value) "✔️" else "❌"
+            }
 
-            @Throws(Throwable::class)
-            override fun doInBackground(): String {
-
-                var progressString =
-                    """
+            fun getProgress(): String {
+                return String.format(
+                        """
                     |%s - ${activity.resources.getString(R.string.button_bar_chat)}
                     |%s - ${activity.resources.getString(R.string.button_bar_bookmarks)}
                     |%s - ${activity.resources.getString(R.string.button_bar_shares)}
                     |%s - ${activity.resources.getString(R.string.button_bar_podcasts)}
-                    """.trimMargin()
-                updateProgress(String.format(progressString, "⌛", "⌛", "⌛", "⌛"))
+                    """.trimMargin(),
+                        boolToMark(currentServerSetting!!.chatSupport),
+                        boolToMark(currentServerSetting!!.bookmarkSupport),
+                        boolToMark(currentServerSetting!!.shareSupport),
+                        boolToMark(currentServerSetting!!.podcastSupport)
+                )
+            }
+
+            @Throws(Throwable::class)
+            override fun doInBackground(): String {
+
+                currentServerSetting!!.chatSupport = null
+                currentServerSetting!!.bookmarkSupport = null
+                currentServerSetting!!.shareSupport = null
+                currentServerSetting!!.podcastSupport = null
+
+                updateProgress(getProgress())
 
                 val configuration = SubsonicClientConfiguration(
                     currentServerSetting!!.url,
@@ -340,72 +359,41 @@ class EditServerFragment : Fragment(), OnBackPressedHandler {
                 pingResponse = subsonicApiClient.api.ping().execute()
                 ApiCallResponseChecker.checkResponseSuccessful(pingResponse)
 
-                updateProgress(String.format(progressString, "⌛", "⌛", "⌛", "⌛"))
-
                 currentServerSetting!!.chatSupport = try {
                     subsonicApiClient.api.getChatMessages().execute()
                     true
                 } catch (e: IOException) { false }
 
-                updateProgress(
-                    String.format(
-                        progressString,
-                        Util.boolToMark(currentServerSetting!!.chatSupport),
-                        "⌛", "⌛", "⌛"
-                    )
-                )
+                updateProgress(getProgress())
 
                 currentServerSetting!!.bookmarkSupport = try {
                     subsonicApiClient.api.getBookmarks().execute()
                     true
                 } catch (e: IOException) { false }
 
-                updateProgress(
-                    String.format(
-                        progressString,
-                        Util.boolToMark(currentServerSetting!!.chatSupport),
-                        Util.boolToMark(currentServerSetting!!.bookmarkSupport),
-                        "⌛", "⌛"
-                    )
-                )
+                updateProgress(getProgress())
 
                 currentServerSetting!!.shareSupport = try {
                     subsonicApiClient.api.getShares().execute()
                     true
                 } catch (e: IOException) { false }
 
-                updateProgress(
-                    String.format(
-                        progressString,
-                        Util.boolToMark(currentServerSetting!!.chatSupport),
-                        Util.boolToMark(currentServerSetting!!.bookmarkSupport),
-                        Util.boolToMark(currentServerSetting!!.shareSupport),
-                        "⌛"
-                    )
-                )
+                updateProgress(getProgress())
 
                 currentServerSetting!!.podcastSupport = try {
                     subsonicApiClient.api.getPodcasts().execute()
                     true
                 } catch (e: IOException) { false }
 
-                // Finalize String before displaying it to Dialog
-                progressString = String.format(
-                    progressString,
-                    Util.boolToMark(currentServerSetting!!.chatSupport),
-                    Util.boolToMark(currentServerSetting!!.bookmarkSupport),
-                    Util.boolToMark(currentServerSetting!!.shareSupport),
-                    Util.boolToMark(currentServerSetting!!.podcastSupport)
-                )
-                updateProgress(progressString)
+                updateProgress(getProgress())
 
                 val licenseResponse = subsonicApiClient.api.getLicense().execute()
                 ApiCallResponseChecker.checkResponseSuccessful(licenseResponse)
                 if (!licenseResponse.body()!!.license.valid) {
-                    progressString += "\n" +
+                    return getProgress() + "\n" +
                         activity.resources.getString(R.string.settings_testing_unlicensed)
                 }
-                return progressString
+                return getProgress()
             }
 
             override fun done(responseString: String) {

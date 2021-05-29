@@ -30,10 +30,10 @@ data class ServerSetting(
     @ColumnInfo(name = "ldapSupport") var ldapSupport: Boolean,
     @ColumnInfo(name = "musicFolderId") var musicFolderId: String?,
     @ColumnInfo(name = "minimumApiVersion") var minimumApiVersion: String?,
-    @ColumnInfo(name = "chatSupport") var chatSupport: Boolean = true,
-    @ColumnInfo(name = "bookmarkSupport") var bookmarkSupport: Boolean = true,
-    @ColumnInfo(name = "shareSupport") var shareSupport: Boolean = true,
-    @ColumnInfo(name = "podcastSupport") var podcastSupport: Boolean = true
+    @ColumnInfo(name = "chatSupport") var chatSupport: Boolean? = null,
+    @ColumnInfo(name = "bookmarkSupport") var bookmarkSupport: Boolean? = null,
+    @ColumnInfo(name = "shareSupport") var shareSupport: Boolean? = null,
+    @ColumnInfo(name = "podcastSupport") var podcastSupport: Boolean? = null
 ) {
     constructor() : this (
         -1, 0, "", "", "", "", false, false, false, null, null

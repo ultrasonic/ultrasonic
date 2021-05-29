@@ -359,20 +359,6 @@ public class Util
 		return Math.min(Math.max(percent,0),100) + " %";
 	}
 
-	/**
-	 * Return a Mark depending on boolean (❌ or ✓)
-	 *
-	 * @param value Is true or false
-	 * @return The corresponding mark.
-	 */
-	public static String boolToMark(boolean value)
-	{
-		if (value)
-			return "✔️";
-		else
-			return "❌";
-	}
-
 
 	/**
 	 * Converts a byte-count to a formatted string suitable for display to the user.
