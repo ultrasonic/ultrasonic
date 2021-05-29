@@ -2,7 +2,7 @@ package org.moire.ultrasonic.di
 
 import androidx.room.Room
 import org.koin.android.ext.koin.androidContext
-import org.koin.android.viewmodel.dsl.viewModel
+import org.koin.androidx.viewmodel.dsl.viewModel
 import org.koin.core.qualifier.named
 import org.koin.dsl.module
 import org.moire.ultrasonic.data.AppDatabase

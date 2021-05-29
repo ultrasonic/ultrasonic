@@ -5,7 +5,6 @@ import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
 import java.util.Collections
 import java.util.LinkedList
-import org.koin.core.component.KoinApiExtension
 import org.moire.ultrasonic.R
 import org.moire.ultrasonic.data.ActiveServerProvider.Companion.isOffline
 import org.moire.ultrasonic.domain.MusicDirectory
@@ -20,7 +19,6 @@ import org.moire.ultrasonic.util.Util
  * Retrieves a list of songs and adds them to the now playing list
  */
 @Suppress("LongParameterList")
-@KoinApiExtension
 class DownloadHandler(
     val mediaPlayerController: MediaPlayerController,
     val networkAndStorageChecker: NetworkAndStorageChecker
@@ -226,7 +224,7 @@ class DownloadHandler(
                             }
                         }
                     } else {
-                        root = musicService.getPlaylist(id, name)
+                        root = musicService.getPlaylist(id, name!!)
                     }
                     getSongsRecursively(root, songs)
                 }

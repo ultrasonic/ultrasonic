@@ -3,7 +3,6 @@ package org.moire.ultrasonic.fragment
 import android.os.Bundle
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.LiveData
-import org.koin.core.component.KoinApiExtension
 import org.moire.ultrasonic.R
 import org.moire.ultrasonic.domain.Artist
 import org.moire.ultrasonic.util.Constants
@@ -11,7 +10,6 @@ import org.moire.ultrasonic.util.Constants
 /**
  * Displays the list of Artists from the media library
  */
-@KoinApiExtension
 class ArtistListFragment : GenericListFragment<Artist, ArtistRowAdapter>() {
 
     /**

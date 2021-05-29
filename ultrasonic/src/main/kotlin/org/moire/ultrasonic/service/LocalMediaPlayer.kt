@@ -25,7 +25,6 @@ import java.net.URLEncoder
 import java.util.Locale
 import kotlin.math.abs
 import kotlin.math.max
-import org.koin.core.component.KoinApiExtension
 import org.moire.ultrasonic.audiofx.EqualizerController
 import org.moire.ultrasonic.audiofx.VisualizerController
 import org.moire.ultrasonic.data.ActiveServerProvider.Companion.isOffline
@@ -40,7 +39,6 @@ import timber.log.Timber
 /**
  * Represents a Media Player which uses the mobile's resources for playback
  */
-@KoinApiExtension
 class LocalMediaPlayer(
     private val audioFocusHandler: AudioFocusHandler,
     private val context: Context
@@ -106,7 +104,7 @@ class LocalMediaPlayer(
                 i.putExtra(AudioEffect.EXTRA_AUDIO_SESSION, mediaPlayer.audioSessionId)
                 i.putExtra(AudioEffect.EXTRA_PACKAGE_NAME, context.packageName)
                 context.sendBroadcast(i)
-            } catch (e: Throwable) {
+            } catch (ignored: Throwable) {
                 // Froyo or lower
             }
             mediaPlayerLooper = Looper.myLooper()
@@ -466,7 +464,7 @@ class LocalMediaPlayer(
             // the equalizer or visualizer with the player
             try {
                 nextMediaPlayer!!.audioSessionId = mediaPlayer.audioSessionId
-            } catch (e: Throwable) {
+            } catch (ignored: Throwable) {
             }
 
             nextMediaPlayer!!.setDataSource(file.path)

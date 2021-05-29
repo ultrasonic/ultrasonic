@@ -28,13 +28,11 @@ import androidx.lifecycle.Observer
 import androidx.lifecycle.viewModelScope
 import androidx.navigation.Navigation
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
-import java.security.SecureRandom
 import java.util.Collections
 import java.util.Random
 import kotlinx.coroutines.CoroutineExceptionHandler
 import kotlinx.coroutines.launch
 import org.koin.android.ext.android.inject
-import org.koin.core.component.KoinApiExtension
 import org.moire.ultrasonic.R
 import org.moire.ultrasonic.data.ActiveServerProvider.Companion.isOffline
 import org.moire.ultrasonic.domain.MusicDirectory
@@ -61,7 +59,6 @@ import timber.log.Timber
  * Displays a group of tracks, eg. the songs of an album, of a playlist etc.
  * TODO: Refactor this fragment and model to extend the GenericListFragment
  */
-@KoinApiExtension
 class TrackCollectionFragment : Fragment() {
 
     private var refreshAlbumListView: SwipeRefreshLayout? = null
@@ -92,7 +89,7 @@ class TrackCollectionFragment : Fragment() {
     private var cancellationToken: CancellationToken? = null
 
     private val model: TrackCollectionModel by viewModels()
-    private val random: Random = SecureRandom()
+    private val random: Random = Random()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         Util.applyTheme(this.context)
@@ -258,7 +255,7 @@ class TrackCollectionFragment : Fragment() {
             model.getMusicFolders(refresh)
 
             if (playlistId != null) {
-                setTitle(playlistName)
+                setTitle(playlistName!!)
                 model.getPlaylist(playlistId, playlistName)
             } else if (podcastChannelId != null) {
                 setTitle(getString(R.string.podcasts_label))
@@ -282,12 +279,12 @@ class TrackCollectionFragment : Fragment() {
                 setTitle(name)
                 if (!isOffline() && Util.getShouldUseId3Tags()) {
                     if (isAlbum) {
-                        model.getAlbum(refresh, id, name, parentId)
+                        model.getAlbum(refresh, id!!, name, parentId)
                     } else {
-                        model.getArtist(refresh, id, name)
+                        model.getArtist(refresh, id!!, name)
                     }
                 } else {
-                    model.getMusicDirectory(refresh, id, name, parentId)
+                    model.getMusicDirectory(refresh, id!!, name, parentId)
                 }
             }
 

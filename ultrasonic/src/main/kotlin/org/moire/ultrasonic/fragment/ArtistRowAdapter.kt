@@ -62,7 +62,7 @@ class ArtistRowAdapter(
                 holder.coverArt.visibility = View.VISIBLE
                 imageLoader.loadImage(
                     holder.coverArt,
-                    MusicDirectory.Entry().apply { coverArt = holder.coverArtId },
+                    MusicDirectory.Entry("-1").apply { coverArt = holder.coverArtId },
                     false, 0, false, true, R.drawable.ic_contact_picture
                 )
             } else {
@@ -96,7 +96,7 @@ class ArtistRowAdapter(
     }
 
     private fun getSectionFromName(name: String): String {
-        var section = name.first().toUpperCase()
+        var section = name.first().uppercaseChar()
         if (!section.isLetter()) section = '#'
         return section.toString()
     }

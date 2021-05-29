@@ -19,8 +19,8 @@ import java.io.IOException
 import java.io.InputStream
 import java.io.OutputStream
 import java.io.RandomAccessFile
-import org.koin.core.component.KoinApiExtension
-import org.koin.java.KoinJavaComponent.inject
+import org.koin.core.component.KoinComponent
+import org.koin.core.component.inject
 import org.moire.ultrasonic.app.UApp
 import org.moire.ultrasonic.domain.MusicDirectory
 import org.moire.ultrasonic.service.MusicServiceFactory.getMusicService
@@ -36,11 +36,10 @@ import timber.log.Timber
  * @author Sindre Mehus
  * @version $Id$
  */
-@KoinApiExtension
 class DownloadFile(
     val song: MusicDirectory.Entry,
     private val save: Boolean
-) {
+) : KoinComponent {
     val partialFile: File
     val completeFile: File
     private val saveFile: File = FileUtil.getSongFile(song)
@@ -59,7 +58,7 @@ class DownloadFile(
     @Volatile
     private var completeWhenDone = false
 
-    private val downloader = inject(Downloader::class.java)
+    private val downloader: Downloader by inject()
 
     val progress: MutableLiveData<Int> = MutableLiveData(0)
 
@@ -201,7 +200,6 @@ class DownloadFile(
         return String.format("DownloadFile (%s)", song)
     }
 
-    @KoinApiExtension
     @Suppress("TooGenericExceptionCaught")
     private inner class DownloadTask : CancellableTask() {
         override fun execute() {
@@ -310,7 +308,7 @@ class DownloadFile(
                 }
                 wifiLock?.release()
                 CacheCleaner().cleanSpace()
-                downloader.value.checkDownloads()
+                downloader.checkDownloads()
             }
         }
 

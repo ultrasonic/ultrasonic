@@ -24,10 +24,10 @@ class CoverArtRequestHandler(private val apiClient: SubsonicAPIClient) : Request
             ?: throw IllegalArgumentException("Nullable id")
 
         val response = apiClient.getCoverArt(id)
-        if (response.hasError()) {
+        if (response.hasError() || response.stream == null) {
             throw IOException("${response.apiError}")
         } else {
-            return Result(Okio.source(response.stream), NETWORK)
+            return Result(Okio.source(response.stream!!), NETWORK)
         }
     }
 }

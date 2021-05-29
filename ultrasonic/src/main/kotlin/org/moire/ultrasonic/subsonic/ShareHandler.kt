@@ -68,9 +68,11 @@ class ShareHandler(val context: Context) {
         ) {
             @Throws(Throwable::class)
             override fun doInBackground(): Share {
-                val ids: MutableList<String?> = ArrayList()
+                val ids: MutableList<String> = ArrayList()
                 if (shareDetails.Entries.isEmpty()) {
-                    ids.add(fragment.arguments?.getString(Constants.INTENT_EXTRA_NAME_ID))
+                    fragment.arguments?.getString(Constants.INTENT_EXTRA_NAME_ID)?.let {
+                        ids.add(it)
+                    }
                 } else {
                     for ((id) in shareDetails.Entries) {
                         ids.add(id)

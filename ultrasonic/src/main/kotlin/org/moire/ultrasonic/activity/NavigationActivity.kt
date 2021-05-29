@@ -28,7 +28,7 @@ import androidx.navigation.ui.setupWithNavController
 import androidx.preference.PreferenceManager
 import com.google.android.material.navigation.NavigationView
 import org.koin.android.ext.android.inject
-import org.koin.android.viewmodel.ext.android.viewModel
+import org.koin.androidx.viewmodel.ext.android.viewModel
 import org.koin.java.KoinJavaComponent.inject
 import org.moire.ultrasonic.R
 import org.moire.ultrasonic.data.ActiveServerProvider
@@ -126,7 +126,7 @@ class NavigationActivity : AppCompatActivity() {
         navController.addOnDestinationChangedListener { _, destination, _ ->
             val dest: String = try {
                 resources.getResourceName(destination.id)
-            } catch (e: Resources.NotFoundException) {
+            } catch (ignored: Resources.NotFoundException) {
                 destination.id.toString()
             }
             Timber.d("Navigated to $dest")
