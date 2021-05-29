@@ -10,7 +10,7 @@ ext.versions = [
         androidxcore         : "1.5.0",
         ktlint               : "0.37.1",
         ktlintGradle         : "9.2.1",
-        detekt               : "1.17.0",
+        detekt               : "1.17.1",
         jacoco               : "0.8.7",
         preferences          : "1.1.1",
         media                : "1.3.1",
