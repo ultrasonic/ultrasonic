@@ -9,7 +9,8 @@ package org.moire.ultrasonic.service
 import android.graphics.Bitmap
 import java.io.InputStream
 import java.util.concurrent.TimeUnit
-import org.koin.java.KoinJavaComponent.inject
+import org.koin.core.component.KoinComponent
+import org.koin.core.component.inject
 import org.moire.ultrasonic.data.ActiveServerProvider
 import org.moire.ultrasonic.domain.Bookmark
 import org.moire.ultrasonic.domain.ChatMessage
@@ -31,10 +32,9 @@ import org.moire.ultrasonic.util.TimeLimitedCache
 import org.moire.ultrasonic.util.Util
 
 @Suppress("TooManyFunctions")
-class CachedMusicService(private val musicService: MusicService) : MusicService {
-    private val activeServerProvider = inject(
-        ActiveServerProvider::class.java
-    )
+class CachedMusicService(private val musicService: MusicService) : MusicService, KoinComponent {
+    private val activeServerProvider: ActiveServerProvider by inject()
+
     private val cachedMusicDirectories: LRUCache<String?, TimeLimitedCache<MusicDirectory?>>
     private val cachedArtist: LRUCache<String?, TimeLimitedCache<MusicDirectory?>>
     private val cachedAlbum: LRUCache<String?, TimeLimitedCache<MusicDirectory?>>
@@ -308,8 +308,8 @@ class CachedMusicService(private val musicService: MusicService) : MusicService 
     }
 
     private fun checkSettingsChanged() {
-        val newUrl = activeServerProvider.value.getRestUrl(null)
-        val newFolderId = activeServerProvider.value.getActiveServer().musicFolderId
+        val newUrl = activeServerProvider.getRestUrl(null)
+        val newFolderId = activeServerProvider.getActiveServer().musicFolderId
         if (!Util.equals(newUrl, restUrl) || !Util.equals(cachedMusicFolderId, newFolderId)) {
             cachedMusicFolders.clear()
             cachedMusicDirectories.clear()

@@ -23,14 +23,12 @@ import android.os.Bundle
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
-import org.koin.core.component.KoinApiExtension
 import org.moire.ultrasonic.domain.Artist
 import org.moire.ultrasonic.service.MusicService
 
 /**
  * Provides ViewModel which contains the list of available Artists
  */
-@KoinApiExtension
 class ArtistListModel(application: Application) : GenericListModel(application) {
     private val artists: MutableLiveData<List<Artist>> = MutableLiveData()
 

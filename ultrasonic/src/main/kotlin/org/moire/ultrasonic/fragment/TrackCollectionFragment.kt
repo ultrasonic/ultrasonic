@@ -33,7 +33,6 @@ import java.util.Random
 import kotlinx.coroutines.CoroutineExceptionHandler
 import kotlinx.coroutines.launch
 import org.koin.android.ext.android.inject
-import org.koin.core.component.KoinApiExtension
 import org.moire.ultrasonic.R
 import org.moire.ultrasonic.data.ActiveServerProvider.Companion.isOffline
 import org.moire.ultrasonic.domain.MusicDirectory
@@ -60,7 +59,6 @@ import timber.log.Timber
  * Displays a group of tracks, eg. the songs of an album, of a playlist etc.
  * TODO: Refactor this fragment and model to extend the GenericListFragment
  */
-@KoinApiExtension
 class TrackCollectionFragment : Fragment() {
 
     private var refreshAlbumListView: SwipeRefreshLayout? = null
