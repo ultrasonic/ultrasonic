@@ -125,6 +125,10 @@ class LocalMediaPlayer(
     }
 
     fun release() {
+        // Calling reset() will result in changing this player's state. If we allow
+        // the onPlayerStateChanged callback, then the state change will cause this
+        // to resurrect the media session which has just been destroyed.
+        onPlayerStateChanged = null
         reset()
         try {
             val i = Intent(AudioEffect.ACTION_CLOSE_AUDIO_EFFECT_CONTROL_SESSION)

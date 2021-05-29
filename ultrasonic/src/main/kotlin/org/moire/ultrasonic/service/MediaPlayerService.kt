@@ -11,18 +11,27 @@ import android.app.Notification
 import android.app.NotificationChannel
 import android.app.NotificationManager
 import android.app.PendingIntent
-import android.app.Service
 import android.content.ComponentName
 import android.content.Context
 import android.content.Intent
 import android.os.Build
-import android.os.IBinder
+import android.os.Bundle
+import android.support.v4.media.MediaBrowserCompat
+import android.support.v4.media.MediaDescriptionCompat
 import android.support.v4.media.MediaMetadataCompat
 import android.support.v4.media.session.MediaSessionCompat
 import android.support.v4.media.session.PlaybackStateCompat
 import android.view.KeyEvent
 import androidx.core.app.NotificationCompat
 import androidx.core.app.NotificationManagerCompat
+import androidx.media.MediaBrowserServiceCompat
+import java.io.ByteArrayInputStream
+import java.io.ByteArrayOutputStream
+import java.io.ObjectInputStream
+import java.io.ObjectOutputStream
+import java.util.concurrent.ExecutorService
+import java.util.concurrent.Executors
+import kotlin.collections.ArrayList
 import org.koin.android.ext.android.inject
 import org.moire.ultrasonic.R
 import org.moire.ultrasonic.activity.NavigationActivity
@@ -40,7 +49,6 @@ import org.moire.ultrasonic.util.Constants
 import org.moire.ultrasonic.util.FileUtil
 import org.moire.ultrasonic.util.NowPlayingEventDistributor
 import org.moire.ultrasonic.util.ShufflePlayBuffer
-import org.moire.ultrasonic.util.SimpleServiceBinder
 import org.moire.ultrasonic.util.Util
 import timber.log.Timber
 
@@ -49,8 +57,7 @@ import timber.log.Timber
  * while the rest of the Ultrasonic App is in the background.
  */
 @Suppress("LargeClass")
-class MediaPlayerService : Service() {
-    private val binder: IBinder = SimpleServiceBinder(this)
+class MediaPlayerService : MediaBrowserServiceCompat() {
     private val scrobbler = Scrobbler()
 
     private val jukeboxMediaPlayer by inject<JukeboxMediaPlayer>()
@@ -62,19 +69,24 @@ class MediaPlayerService : Service() {
     private val mediaPlayerLifecycleSupport by inject<MediaPlayerLifecycleSupport>()
 
     private var mediaSession: MediaSessionCompat? = null
-    private var mediaSessionToken: MediaSessionCompat.Token? = null
     private var isInForeground = false
     private var notificationBuilder: NotificationCompat.Builder? = null
+
+    val executorService: ExecutorService = Executors.newFixedThreadPool(4)
+
+    private val MEDIA_BROWSER_ROOT_ID = "_Ultrasonice_mb_root_"
+    private val MEDIA_BROWSER_ALBUM_LIST_ROOT = "_Ultrasonic_mb_album_list_root_"
+    private val MEDIA_BROWSER_ALBUM_PREFIX = "_Ultrasonic_mb_album_prefix_"
+    private val MEDIA_BROWSER_EXTRA_ENTRY_BYTES = "_Ultrasonic_mb_extra_entry_bytes_"
 
     private val repeatMode: RepeatMode
         get() = Util.getRepeatMode()
 
-    override fun onBind(intent: Intent): IBinder {
-        return binder
-    }
-
     override fun onCreate() {
         super.onCreate()
+
+        updateMediaSession(null, PlayerState.IDLE)
+        mediaSession!!.isActive = true
 
         downloader.onCreate()
         shufflePlayBuffer.onCreate()
@@ -134,6 +146,99 @@ class MediaPlayerService : Service() {
                 stopSelf()
             }
         }
+    }
+
+    override fun onGetRoot(
+        clientPackageName: String,
+        clientUid: Int,
+        rootHints: Bundle?
+    ): MediaBrowserServiceCompat.BrowserRoot {
+
+        // Returns a root ID that clients can use with onLoadChildren() to retrieve
+        // the content hierarchy. Note that this root isn't actually displayed.
+        return MediaBrowserServiceCompat.BrowserRoot(MEDIA_BROWSER_ROOT_ID, null)
+    }
+
+    override fun onLoadChildren(
+        parentMediaId: String,
+        result: MediaBrowserServiceCompat.Result<List<MediaBrowserCompat.MediaItem>>
+    ) {
+
+        val mediaItems: MutableList<MediaBrowserCompat.MediaItem> = mutableListOf()
+
+        if (MEDIA_BROWSER_ROOT_ID == parentMediaId) {
+            // Build the MediaItem objects for the top level,
+            // and put them in the mediaItems list...
+
+            var albumList: MediaDescriptionCompat.Builder = MediaDescriptionCompat.Builder()
+            albumList.setTitle("Browse Albums").setMediaId(MEDIA_BROWSER_ALBUM_LIST_ROOT)
+            mediaItems.add(
+                MediaBrowserCompat.MediaItem(
+                    albumList.build(),
+                    MediaBrowserCompat.MediaItem.FLAG_BROWSABLE
+                )
+            )
+        } else if (MEDIA_BROWSER_ALBUM_LIST_ROOT == parentMediaId) {
+            executorService.execute {
+                val musicService = getMusicService()
+
+                val musicDirectory: MusicDirectory = musicService.getAlbumList2(
+                    "alphabeticalByName", 10, 0, null
+                )
+
+                for (item in musicDirectory.getAllChild()) {
+                    var entryBuilder: MediaDescriptionCompat.Builder =
+                        MediaDescriptionCompat.Builder()
+                    entryBuilder
+                        .setTitle(item.title)
+                        .setMediaId(MEDIA_BROWSER_ALBUM_PREFIX + item.id)
+                    mediaItems.add(
+                        MediaBrowserCompat.MediaItem(
+                            entryBuilder.build(),
+                            MediaBrowserCompat.MediaItem.FLAG_BROWSABLE
+                        )
+                    )
+                }
+                result.sendResult(mediaItems)
+            }
+            result.detach()
+            return
+        } else if (parentMediaId.startsWith(MEDIA_BROWSER_ALBUM_PREFIX)) {
+            executorService.execute {
+                val musicService = getMusicService()
+                val id = parentMediaId.substring(MEDIA_BROWSER_ALBUM_PREFIX.length)
+
+                val albumDirectory = musicService.getAlbum(
+                    id, "", false
+                )
+                for (item in albumDirectory.getAllChild()) {
+                    var extras = Bundle()
+
+                    var baos = ByteArrayOutputStream()
+                    var oos = ObjectOutputStream(baos)
+                    oos.writeObject(item)
+                    oos.close()
+                    extras.putByteArray(MEDIA_BROWSER_EXTRA_ENTRY_BYTES, baos.toByteArray())
+
+                    var entryBuilder: MediaDescriptionCompat.Builder =
+                        MediaDescriptionCompat.Builder()
+                    entryBuilder.setTitle(item.title).setMediaId(item.id).setExtras(extras)
+                    mediaItems.add(
+                        MediaBrowserCompat.MediaItem(
+                            entryBuilder.build(),
+                            MediaBrowserCompat.MediaItem.FLAG_PLAYABLE
+                        )
+                    )
+                }
+                result.sendResult(mediaItems)
+            }
+            result.detach()
+            return
+        } else {
+            // Examine the passed parentMediaId to see which submenu we're at,
+            // and put the children of that menu in the mediaItems list...
+        }
+        result.sendResult(mediaItems)
     }
 
     @Synchronized
@@ -631,8 +736,8 @@ class MediaPlayerService : Service() {
         // Use the Media Style, to enable native Android support for playback notification
         val style = androidx.media.app.NotificationCompat.MediaStyle()
 
-        if (mediaSessionToken != null) {
-            style.setMediaSession(mediaSessionToken)
+        if (getSessionToken() != null) {
+            style.setMediaSession(getSessionToken())
         }
 
         // Clear old actions
@@ -799,7 +904,7 @@ class MediaPlayerService : Service() {
         Timber.w("Creating media session")
 
         mediaSession = MediaSessionCompat(applicationContext, "UltrasonicService")
-        mediaSessionToken = mediaSession!!.sessionToken
+        setSessionToken(mediaSession!!.sessionToken)
 
         updateMediaButtonReceiver()
 
@@ -814,6 +919,32 @@ class MediaPlayerService : Service() {
                 ).send()
 
                 Timber.v("Media Session Callback: onPlay")
+            }
+
+            override fun onPlayFromMediaId(mediaId: String?, extras: Bundle?) {
+                super.onPlayFromMediaId(mediaId, extras)
+
+                if (extras!!.containsKey(MEDIA_BROWSER_EXTRA_ENTRY_BYTES)) {
+
+                    resetPlayback()
+
+                    var bytes = extras.getByteArray(MEDIA_BROWSER_EXTRA_ENTRY_BYTES)
+                    var bais = ByteArrayInputStream(bytes)
+                    var ois = ObjectInputStream(bais)
+                    var item: MusicDirectory.Entry = ois.readObject() as MusicDirectory.Entry
+
+                    val songs: MutableList<MusicDirectory.Entry> = mutableListOf()
+                    songs.add(item)
+
+                    downloader.download(songs, false, false, false, true)
+
+                    getPendingIntentForMediaAction(
+                        applicationContext,
+                        KeyEvent.KEYCODE_MEDIA_PLAY,
+                        keycode
+                    ).send()
+                }
+                Timber.v("Media Session Callback: onPlayFromMediaId")
             }
 
             override fun onPause() {
