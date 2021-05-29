@@ -377,10 +377,10 @@ class NavigationActivity : AppCompatActivity() {
             podcastsMenuItem?.isVisible = false
             return
         }
-        val activeServerProvider = inject(ActiveServerProvider::class.java).value.getActiveServer()
-        chatMenuItem?.isVisible = activeServerProvider.chatSupport != false
-        bookmarksMenuItem?.isVisible = activeServerProvider.bookmarkSupport != false
-        sharesMenuItem?.isVisible = activeServerProvider.shareSupport != false
-        podcastsMenuItem?.isVisible = activeServerProvider.podcastSupport != false
+        val activeServerProvider: ActiveServerProvider by inject()
+        chatMenuItem?.isVisible = activeServerProvider.getActiveServer().chatSupport != false
+        bookmarksMenuItem?.isVisible = activeServerProvider.getActiveServer().bookmarkSupport != false
+        sharesMenuItem?.isVisible = activeServerProvider.getActiveServer().shareSupport != false
+        podcastsMenuItem?.isVisible = activeServerProvider.getActiveServer().podcastSupport != false
     }
 }
