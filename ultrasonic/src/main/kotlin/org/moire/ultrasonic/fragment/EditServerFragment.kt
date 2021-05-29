@@ -11,6 +11,9 @@ import androidx.lifecycle.Observer
 import androidx.navigation.fragment.findNavController
 import com.google.android.material.switchmaterial.SwitchMaterial
 import com.google.android.material.textfield.TextInputLayout
+import java.io.IOException
+import java.net.MalformedURLException
+import java.net.URL
 import org.koin.android.ext.android.inject
 import org.koin.androidx.viewmodel.ext.android.viewModel
 import org.moire.ultrasonic.BuildConfig
@@ -26,11 +29,7 @@ import org.moire.ultrasonic.util.Constants
 import org.moire.ultrasonic.util.ErrorDialog
 import org.moire.ultrasonic.util.ModalBackgroundTask
 import org.moire.ultrasonic.util.Util
-import retrofit2.Call
 import timber.log.Timber
-import java.io.IOException
-import java.net.MalformedURLException
-import java.net.URL
 
 /**
  * Displays a form where server settings can be created / edited
@@ -309,16 +308,16 @@ class EditServerFragment : Fragment(), OnBackPressedHandler {
 
             fun getProgress(): String {
                 return String.format(
-                        """
+                    """
                     |%s - ${activity.resources.getString(R.string.button_bar_chat)}
                     |%s - ${activity.resources.getString(R.string.button_bar_bookmarks)}
                     |%s - ${activity.resources.getString(R.string.button_bar_shares)}
                     |%s - ${activity.resources.getString(R.string.button_bar_podcasts)}
                     """.trimMargin(),
-                        boolToMark(currentServerSetting!!.chatSupport),
-                        boolToMark(currentServerSetting!!.bookmarkSupport),
-                        boolToMark(currentServerSetting!!.shareSupport),
-                        boolToMark(currentServerSetting!!.podcastSupport)
+                    boolToMark(currentServerSetting!!.chatSupport),
+                    boolToMark(currentServerSetting!!.bookmarkSupport),
+                    boolToMark(currentServerSetting!!.shareSupport),
+                    boolToMark(currentServerSetting!!.podcastSupport)
                 )
             }
 
@@ -362,28 +361,36 @@ class EditServerFragment : Fragment(), OnBackPressedHandler {
                 currentServerSetting!!.chatSupport = try {
                     subsonicApiClient.api.getChatMessages().execute()
                     true
-                } catch (e: IOException) { false }
+                } catch (e: IOException) {
+                    false
+                }
 
                 updateProgress(getProgress())
 
                 currentServerSetting!!.bookmarkSupport = try {
                     subsonicApiClient.api.getBookmarks().execute()
                     true
-                } catch (e: IOException) { false }
+                } catch (e: IOException) {
+                    false
+                }
 
                 updateProgress(getProgress())
 
                 currentServerSetting!!.shareSupport = try {
                     subsonicApiClient.api.getShares().execute()
                     true
-                } catch (e: IOException) { false }
+                } catch (e: IOException) {
+                    false
+                }
 
                 updateProgress(getProgress())
 
                 currentServerSetting!!.podcastSupport = try {
                     subsonicApiClient.api.getPodcasts().execute()
                     true
-                } catch (e: IOException) { false }
+                } catch (e: IOException) {
+                    false
+                }
 
                 updateProgress(getProgress())
 
