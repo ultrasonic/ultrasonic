@@ -498,5 +498,6 @@
     <string name="feature_flags_five_star_rating_description">Utiliser un système de notation à base d\'étoiles pour les morceaux
          au lieu de simplement mettre en avant les morceaux.
     </string>
+    <string name="server_editor.disabled_feature">Une ou plusieurs fonctionnalités ont été désactivées car le serveur ne les prend pas en charge.\nVous pouvez réexécuter ce test à tout moment.</string>
 
 </resources>
