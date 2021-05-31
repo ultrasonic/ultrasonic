@@ -14,6 +14,7 @@ import com.google.android.material.textfield.TextInputLayout
 import java.io.IOException
 import java.net.MalformedURLException
 import java.net.URL
+import java.util.Locale
 import org.koin.android.ext.android.inject
 import org.koin.androidx.viewmodel.ext.android.viewModel
 import org.moire.ultrasonic.BuildConfig
@@ -396,12 +397,15 @@ class EditServerFragment : Fragment(), OnBackPressedHandler {
 
             override fun done(responseString: String) {
                 var dialogText = responseString
-                if ( arrayOf(currentServerSetting!!.chatSupport,
+                if (arrayOf(
+                    currentServerSetting!!.chatSupport,
                     currentServerSetting!!.bookmarkSupport,
                     currentServerSetting!!.shareSupport,
-                    currentServerSetting!!.podcastSupport).any { x -> x == false }
+                    currentServerSetting!!.podcastSupport
+                ).any { x -> x == false }
                 ) {
                     dialogText = String.format(
+                        Locale.ROOT,
                         "%s\n\n%s",
                         responseString,
                         resources.getString(R.string.server_editor_disabled_feature)
