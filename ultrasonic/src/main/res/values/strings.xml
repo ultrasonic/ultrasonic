@@ -462,6 +462,7 @@
     <string name="server_menu.move_down">Move down</string>
     <string name="server_editor.authentication">Authentication</string>
     <string name="server_editor.advanced">Advanced settings</string>
+    <string name="server_editor.disabled_feature">One or more features were disabled because the server doesn\'t support them.\nYou can run this test again anytime.</string>
 
     <plurals name="select_album_n_songs">
         <item quantity="one">1 song</item>

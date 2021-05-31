@@ -21,14 +21,17 @@ import org.moire.ultrasonic.R
 import org.moire.ultrasonic.api.subsonic.SubsonicAPIClient
 import org.moire.ultrasonic.api.subsonic.SubsonicAPIVersions
 import org.moire.ultrasonic.api.subsonic.SubsonicClientConfiguration
+import org.moire.ultrasonic.api.subsonic.response.SubsonicResponse
 import org.moire.ultrasonic.data.ActiveServerProvider
 import org.moire.ultrasonic.data.ServerSetting
 import org.moire.ultrasonic.service.ApiCallResponseChecker
 import org.moire.ultrasonic.service.MusicServiceFactory
+import org.moire.ultrasonic.service.SubsonicRESTException
 import org.moire.ultrasonic.util.Constants
 import org.moire.ultrasonic.util.ErrorDialog
 import org.moire.ultrasonic.util.ModalBackgroundTask
 import org.moire.ultrasonic.util.Util
+import retrofit2.Response
 import timber.log.Timber
 
 /**
@@ -309,10 +312,10 @@ class EditServerFragment : Fragment(), OnBackPressedHandler {
             fun getProgress(): String {
                 return String.format(
                     """
-                    |%s - ${activity.resources.getString(R.string.button_bar_chat)}
-                    |%s - ${activity.resources.getString(R.string.button_bar_bookmarks)}
-                    |%s - ${activity.resources.getString(R.string.button_bar_shares)}
-                    |%s - ${activity.resources.getString(R.string.button_bar_podcasts)}
+                    |%s - ${resources.getString(R.string.button_bar_chat)}
+                    |%s - ${resources.getString(R.string.button_bar_bookmarks)}
+                    |%s - ${resources.getString(R.string.button_bar_shares)}
+                    |%s - ${resources.getString(R.string.button_bar_podcasts)}
                     """.trimMargin(),
                     boolToMark(currentServerSetting!!.chatSupport),
                     boolToMark(currentServerSetting!!.bookmarkSupport),
@@ -358,38 +361,26 @@ class EditServerFragment : Fragment(), OnBackPressedHandler {
                 pingResponse = subsonicApiClient.api.ping().execute()
                 ApiCallResponseChecker.checkResponseSuccessful(pingResponse)
 
-                currentServerSetting!!.chatSupport = try {
+                currentServerSetting!!.chatSupport = isServerFunctionAvailable {
                     subsonicApiClient.api.getChatMessages().execute()
-                    true
-                } catch (e: IOException) {
-                    false
                 }
 
                 updateProgress(getProgress())
 
-                currentServerSetting!!.bookmarkSupport = try {
+                currentServerSetting!!.bookmarkSupport = isServerFunctionAvailable {
                     subsonicApiClient.api.getBookmarks().execute()
-                    true
-                } catch (e: IOException) {
-                    false
                 }
 
                 updateProgress(getProgress())
 
-                currentServerSetting!!.shareSupport = try {
+                currentServerSetting!!.shareSupport = isServerFunctionAvailable {
                     subsonicApiClient.api.getShares().execute()
-                    true
-                } catch (e: IOException) {
-                    false
                 }
 
                 updateProgress(getProgress())
 
-                currentServerSetting!!.podcastSupport = try {
+                currentServerSetting!!.podcastSupport = isServerFunctionAvailable {
                     subsonicApiClient.api.getPodcasts().execute()
-                    true
-                } catch (e: IOException) {
-                    false
                 }
 
                 updateProgress(getProgress())
@@ -398,17 +389,30 @@ class EditServerFragment : Fragment(), OnBackPressedHandler {
                 ApiCallResponseChecker.checkResponseSuccessful(licenseResponse)
                 if (!licenseResponse.body()!!.license.valid) {
                     return getProgress() + "\n" +
-                        activity.resources.getString(R.string.settings_testing_unlicensed)
+                        resources.getString(R.string.settings_testing_unlicensed)
                 }
                 return getProgress()
             }
 
             override fun done(responseString: String) {
+                var dialogText = responseString
+                if ( arrayOf(currentServerSetting!!.chatSupport,
+                    currentServerSetting!!.bookmarkSupport,
+                    currentServerSetting!!.shareSupport,
+                    currentServerSetting!!.podcastSupport).any { x -> x == false }
+                ) {
+                    dialogText = String.format(
+                        "%s\n\n%s",
+                        responseString,
+                        resources.getString(R.string.server_editor_disabled_feature)
+                    )
+                }
+
                 Util.showDialog(
                     activity,
                     android.R.drawable.ic_dialog_info,
                     R.string.settings_testing_ok,
-                    responseString
+                    dialogText
                 )
             }
 
@@ -426,6 +430,18 @@ class EditServerFragment : Fragment(), OnBackPressedHandler {
             }
         }
         task.execute()
+    }
+
+    private fun isServerFunctionAvailable(function: () -> Response<out SubsonicResponse>): Boolean {
+        return try {
+            val response = function()
+            ApiCallResponseChecker.checkResponseSuccessful(response)
+            true
+        } catch (_: IOException) {
+            false
+        } catch (_: SubsonicRESTException) {
+            false
+        }
     }
 
     /**
