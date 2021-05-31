@@ -295,7 +295,6 @@
     <string name="settings.show_track_number">Wyświetlaj numer utworu</string>
     <string name="settings.show_track_number_summary">Dołącza numer utworu podczas wyświetlania utworu</string>
     <string name="settings.test_connection_title">Testuj połączenie</string>
-    <string name="settings.testing_connection">Trwa testowanie połączenia&#8230;</string>
     <string name="settings.testing_ok">Połączenie jest OK</string>
     <string name="settings.testing_unlicensed">Połączenie jest OK. Brak licencji na serwerze.</string>
     <string name="settings.theme_light">Jasny</string>

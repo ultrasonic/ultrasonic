@@ -297,7 +297,6 @@
     <string name="settings.show_track_number">Sorszám megjelenítése</string>
     <string name="settings.show_track_number_summary">Dalok sorszámának megjelenítése.</string>
     <string name="settings.test_connection_title">Kapcsolat tesztelése</string>
-    <string name="settings.testing_connection">Kapcsolat tesztelése&#8230;</string>
     <string name="settings.testing_ok">Kapcsolat OK!</string>
     <string name="settings.testing_unlicensed">Kapcsolat OK! A kiszolgálónak nincs licence!</string>
     <string name="settings.theme_light">Világos</string>

@@ -290,7 +290,6 @@
     <string name="settings.show_track_number">Показать номер трека</string>
     <string name="settings.show_track_number_summary">Включить номер дорожки при отображении песни</string>
     <string name="settings.test_connection_title">Тестовое соединение</string>
-    <string name="settings.testing_connection">Тестирование соединения&#8230;</string>
     <string name="settings.testing_ok">Успешное соединение</string>
     <string name="settings.testing_unlicensed">Успешное соединение. Сервер нелицензионный.</string>
     <string name="settings.theme_light">Светлая</string>
