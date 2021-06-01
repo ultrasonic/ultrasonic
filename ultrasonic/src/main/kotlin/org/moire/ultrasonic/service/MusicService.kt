@@ -113,7 +113,7 @@ interface MusicService {
 
     @Throws(Exception::class)
     fun getCoverArt(
-        entry: MusicDirectory.Entry?,
+        entry: MusicDirectory.Entry,
         size: Int,
         saveToFile: Boolean,
         highQuality: Boolean

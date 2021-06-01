@@ -257,7 +257,7 @@ class CachedMusicService(private val musicService: MusicService) : MusicService,
 
     @Throws(Exception::class)
     override fun getCoverArt(
-        entry: MusicDirectory.Entry?,
+        entry: MusicDirectory.Entry,
         size: Int,
         saveToFile: Boolean,
         highQuality: Boolean

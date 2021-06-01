@@ -490,17 +490,13 @@ open class RESTMusicService(
 
     @Throws(Exception::class)
     override fun getCoverArt(
-        entry: MusicDirectory.Entry?,
+        entry: MusicDirectory.Entry,
         size: Int,
         saveToFile: Boolean,
         highQuality: Boolean
     ): Bitmap? {
         // Synchronize on the entry so that we don't download concurrently for
         // the same song.
-        if (entry == null) {
-            return null
-        }
-
         synchronized(entry) {
             // Use cached file, if existing.
             var bitmap = FileUtil.getAlbumArtBitmap(entry, size, highQuality)
