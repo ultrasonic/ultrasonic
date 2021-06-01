@@ -289,7 +289,6 @@
     <string name="settings.show_track_number">Visualizza numero traccia</string>
     <string name="settings.show_track_number_summary">Includi numero traccia quando visualizzi una canzone</string>
     <string name="settings.test_connection_title">Prova Connessione</string>
-    <string name="settings.testing_connection">Collaudo connessione&#8230;</string>
     <string name="settings.testing_ok">Connessione OK</string>
     <string name="settings.testing_unlicensed">Connessione OK. Server senza licenza.</string>
     <string name="settings.theme_light">Chiaro</string>

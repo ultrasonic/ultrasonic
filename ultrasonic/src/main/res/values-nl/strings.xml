@@ -307,7 +307,6 @@
     <string name="settings.show_track_number">Itemnummer tonen</string>
     <string name="settings.show_track_number_summary">Itemnummer tonen tijdens tonen van nummers</string>
     <string name="settings.test_connection_title">Verbinding testen</string>
-    <string name="settings.testing_connection">Bezig met testen van verbinding&#8230;</string>
     <string name="settings.testing_ok">Verbinding is goed</string>
     <string name="settings.testing_unlicensed">Verbinding is goed; geen serverlicentie.</string>
     <string name="settings.theme_light">Licht</string>

@@ -311,7 +311,6 @@
     <string name="settings.show_track_number">Show Track Number</string>
     <string name="settings.show_track_number_summary">Include track number when displaying a song</string>
     <string name="settings.test_connection_title">Test Connection</string>
-    <string name="settings.testing_connection">Testing connection&#8230;</string>
     <string name="settings.testing_ok">Connection is OK</string>
     <string name="settings.testing_unlicensed">Connection is OK. Server unlicensed.</string>
     <string name="settings.theme_light">Light</string>
@@ -462,6 +461,7 @@
     <string name="server_menu.move_down">Move down</string>
     <string name="server_editor.authentication">Authentication</string>
     <string name="server_editor.advanced">Advanced settings</string>
+    <string name="server_editor.disabled_feature">One or more features were disabled because the server doesn\'t support them.\nYou can run this test again anytime.</string>
 
     <plurals name="select_album_n_songs">
         <item quantity="one">1 song</item>

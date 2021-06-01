@@ -7,6 +7,7 @@ import org.koin.core.qualifier.named
 import org.koin.dsl.module
 import org.moire.ultrasonic.data.AppDatabase
 import org.moire.ultrasonic.data.MIGRATION_1_2
+import org.moire.ultrasonic.data.MIGRATION_2_3
 import org.moire.ultrasonic.fragment.ServerSettingsModel
 import org.moire.ultrasonic.util.Util
 
@@ -25,6 +26,7 @@ val appPermanentStorage = module {
             "ultrasonic-database"
         )
             .addMigrations(MIGRATION_1_2)
+            .addMigrations(MIGRATION_2_3)
             .fallbackToDestructiveMigrationOnDowngrade()
             .build()
     }

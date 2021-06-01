@@ -297,7 +297,6 @@
     <string name="settings.show_track_number">Afficher le numéro du titre</string>
     <string name="settings.show_track_number_summary">Inclure son numero lors de l\'affichage d\'un titre</string>
     <string name="settings.test_connection_title">Tester la connexion</string>
-    <string name="settings.testing_connection">Connexion en cours de test&#8230;</string>
     <string name="settings.testing_ok">Connexion correcte</string>
     <string name="settings.testing_unlicensed">Connexion correcte. Serveur sans licence.</string>
     <string name="settings.theme_light">Clair</string>
@@ -499,5 +498,6 @@
     <string name="feature_flags_five_star_rating_description">Utiliser un système de notation à base d\'étoiles pour les morceaux
          au lieu de simplement mettre en avant les morceaux.
     </string>
+    <string name="server_editor.disabled_feature">Une ou plusieurs fonctionnalités ont été désactivées car le serveur ne les prend pas en charge.\nVous pouvez réexécuter ce test à tout moment.</string>
 
 </resources>

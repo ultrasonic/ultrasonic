@@ -29,7 +29,11 @@ data class ServerSetting(
     @ColumnInfo(name = "allowSelfSignedCertificate") var allowSelfSignedCertificate: Boolean,
     @ColumnInfo(name = "ldapSupport") var ldapSupport: Boolean,
     @ColumnInfo(name = "musicFolderId") var musicFolderId: String?,
-    @ColumnInfo(name = "minimumApiVersion") var minimumApiVersion: String?
+    @ColumnInfo(name = "minimumApiVersion") var minimumApiVersion: String?,
+    @ColumnInfo(name = "chatSupport") var chatSupport: Boolean? = null,
+    @ColumnInfo(name = "bookmarkSupport") var bookmarkSupport: Boolean? = null,
+    @ColumnInfo(name = "shareSupport") var shareSupport: Boolean? = null,
+    @ColumnInfo(name = "podcastSupport") var podcastSupport: Boolean? = null
 ) {
     constructor() : this (
         -1, 0, "", "", "", "", false, false, false, null, null

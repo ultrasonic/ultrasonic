@@ -296,7 +296,6 @@
     <string name="settings.show_track_number">Titelnummer anzeigen</string>
     <string name="settings.show_track_number_summary">Titel mit Nummer anzeigen</string>
     <string name="settings.test_connection_title">Verbindung testen</string>
-    <string name="settings.testing_connection">Teste Verbindung&#8230;</string>
     <string name="settings.testing_ok">Verbindung OK</string>
     <string name="settings.testing_unlicensed">Verbindung OK, Server nicht lizensiert.</string>
     <string name="settings.theme_light">Hell</string>

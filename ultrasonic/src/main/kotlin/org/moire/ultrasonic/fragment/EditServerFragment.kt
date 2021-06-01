@@ -11,8 +11,10 @@ import androidx.lifecycle.Observer
 import androidx.navigation.fragment.findNavController
 import com.google.android.material.switchmaterial.SwitchMaterial
 import com.google.android.material.textfield.TextInputLayout
+import java.io.IOException
 import java.net.MalformedURLException
 import java.net.URL
+import java.util.Locale
 import org.koin.android.ext.android.inject
 import org.koin.androidx.viewmodel.ext.android.viewModel
 import org.moire.ultrasonic.BuildConfig
@@ -20,14 +22,17 @@ import org.moire.ultrasonic.R
 import org.moire.ultrasonic.api.subsonic.SubsonicAPIClient
 import org.moire.ultrasonic.api.subsonic.SubsonicAPIVersions
 import org.moire.ultrasonic.api.subsonic.SubsonicClientConfiguration
+import org.moire.ultrasonic.api.subsonic.response.SubsonicResponse
 import org.moire.ultrasonic.data.ActiveServerProvider
 import org.moire.ultrasonic.data.ServerSetting
 import org.moire.ultrasonic.service.ApiCallResponseChecker
 import org.moire.ultrasonic.service.MusicServiceFactory
+import org.moire.ultrasonic.service.SubsonicRESTException
 import org.moire.ultrasonic.util.Constants
 import org.moire.ultrasonic.util.ErrorDialog
 import org.moire.ultrasonic.util.ModalBackgroundTask
 import org.moire.ultrasonic.util.Util
+import retrofit2.Response
 import timber.log.Timber
 
 /**
@@ -295,14 +300,41 @@ class EditServerFragment : Fragment(), OnBackPressedHandler {
      * Tests if the network connection to the entered Server Settings can be made
      */
     private fun testConnection() {
-        val task: ModalBackgroundTask<Boolean> = object : ModalBackgroundTask<Boolean>(
+        val task: ModalBackgroundTask<String> = object : ModalBackgroundTask<String>(
             activity,
             false
         ) {
+            fun boolToMark(value: Boolean?): String {
+                if (value == null)
+                    return "⌛"
+                return if (value) "✔️" else "❌"
+            }
+
+            fun getProgress(): String {
+                return String.format(
+                    """
+                    |%s - ${resources.getString(R.string.button_bar_chat)}
+                    |%s - ${resources.getString(R.string.button_bar_bookmarks)}
+                    |%s - ${resources.getString(R.string.button_bar_shares)}
+                    |%s - ${resources.getString(R.string.button_bar_podcasts)}
+                    """.trimMargin(),
+                    boolToMark(currentServerSetting!!.chatSupport),
+                    boolToMark(currentServerSetting!!.bookmarkSupport),
+                    boolToMark(currentServerSetting!!.shareSupport),
+                    boolToMark(currentServerSetting!!.podcastSupport)
+                )
+            }
 
             @Throws(Throwable::class)
-            override fun doInBackground(): Boolean {
-                updateProgress(R.string.settings_testing_connection)
+            override fun doInBackground(): String {
+
+                currentServerSetting!!.chatSupport = null
+                currentServerSetting!!.bookmarkSupport = null
+                currentServerSetting!!.shareSupport = null
+                currentServerSetting!!.podcastSupport = null
+
+                updateProgress(getProgress())
+
                 val configuration = SubsonicClientConfiguration(
                     currentServerSetting!!.url,
                     currentServerSetting!!.userName,
@@ -330,17 +362,62 @@ class EditServerFragment : Fragment(), OnBackPressedHandler {
                 pingResponse = subsonicApiClient.api.ping().execute()
                 ApiCallResponseChecker.checkResponseSuccessful(pingResponse)
 
+                currentServerSetting!!.chatSupport = isServerFunctionAvailable {
+                    subsonicApiClient.api.getChatMessages().execute()
+                }
+
+                updateProgress(getProgress())
+
+                currentServerSetting!!.bookmarkSupport = isServerFunctionAvailable {
+                    subsonicApiClient.api.getBookmarks().execute()
+                }
+
+                updateProgress(getProgress())
+
+                currentServerSetting!!.shareSupport = isServerFunctionAvailable {
+                    subsonicApiClient.api.getShares().execute()
+                }
+
+                updateProgress(getProgress())
+
+                currentServerSetting!!.podcastSupport = isServerFunctionAvailable {
+                    subsonicApiClient.api.getPodcasts().execute()
+                }
+
+                updateProgress(getProgress())
+
                 val licenseResponse = subsonicApiClient.api.getLicense().execute()
                 ApiCallResponseChecker.checkResponseSuccessful(licenseResponse)
-                return licenseResponse.body()!!.license.valid
+                if (!licenseResponse.body()!!.license.valid) {
+                    return getProgress() + "\n" +
+                        resources.getString(R.string.settings_testing_unlicensed)
+                }
+                return getProgress()
             }
 
-            override fun done(licenseValid: Boolean) {
-                if (licenseValid) {
-                    Util.toast(activity, R.string.settings_testing_ok)
-                } else {
-                    Util.toast(activity, R.string.settings_testing_unlicensed)
+            override fun done(responseString: String) {
+                var dialogText = responseString
+                if (arrayOf(
+                    currentServerSetting!!.chatSupport,
+                    currentServerSetting!!.bookmarkSupport,
+                    currentServerSetting!!.shareSupport,
+                    currentServerSetting!!.podcastSupport
+                ).any { x -> x == false }
+                ) {
+                    dialogText = String.format(
+                        Locale.ROOT,
+                        "%s\n\n%s",
+                        responseString,
+                        resources.getString(R.string.server_editor_disabled_feature)
+                    )
                 }
+
+                Util.showDialog(
+                    activity,
+                    android.R.drawable.ic_dialog_info,
+                    R.string.settings_testing_ok,
+                    dialogText
+                )
             }
 
             override fun error(error: Throwable) {
@@ -357,6 +434,18 @@ class EditServerFragment : Fragment(), OnBackPressedHandler {
             }
         }
         task.execute()
+    }
+
+    private fun isServerFunctionAvailable(function: () -> Response<out SubsonicResponse>): Boolean {
+        return try {
+            val response = function()
+            ApiCallResponseChecker.checkResponseSuccessful(response)
+            true
+        } catch (_: IOException) {
+            false
+        } catch (_: SubsonicRESTException) {
+            false
+        }
     }
 
     /**

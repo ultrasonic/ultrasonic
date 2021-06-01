@@ -295,7 +295,6 @@
     <string name="settings.show_track_number">Mostrar o Número da Faixa</string>
     <string name="settings.show_track_number_summary">Incluir o número da faixa quando mostrando uma música</string>
     <string name="settings.test_connection_title">Teste de Conexão</string>
-    <string name="settings.testing_connection">Testando conexão&#8230;</string>
     <string name="settings.testing_ok">Conexão OK</string>
     <string name="settings.testing_unlicensed">Conexão OK. Servidor não licenciado.</string>
     <string name="settings.theme_light">Claro</string>
