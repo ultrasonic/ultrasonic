@@ -6,6 +6,9 @@ import com.squareup.picasso.Picasso
 import com.squareup.picasso.RequestCreator
 import org.moire.ultrasonic.api.subsonic.SubsonicAPIClient
 
+// TODO: Caching doesn't work as expected because our query string varies.
+// Need to use .stableKey() method
+
 class SubsonicImageLoader(
     context: Context,
     apiClient: SubsonicAPIClient
@@ -13,7 +16,7 @@ class SubsonicImageLoader(
     private val picasso = Picasso.Builder(context)
         .addRequestHandler(CoverArtRequestHandler(apiClient))
         .addRequestHandler(AvatarRequestHandler(apiClient))
-        .build().apply { setIndicatorsEnabled(BuildConfig.DEBUG) }
+        .build().apply { setIndicatorsEnabled(true) }
 
     fun load(request: ImageRequest) = when (request) {
         is ImageRequest.CoverArt -> loadCoverArt(request)
@@ -21,9 +24,10 @@ class SubsonicImageLoader(
     }
 
     private fun loadCoverArt(request: ImageRequest.CoverArt) {
-        picasso.load(createLoadCoverArtRequest(request.entityId))
+        picasso.load(createLoadCoverArtRequest(request))
             .addPlaceholder(request)
             .addError(request)
+            .stableKey("${request.entityId}-${request.size}" )
             .into(request.imageView)
     }
 
@@ -31,6 +35,7 @@ class SubsonicImageLoader(
         picasso.load(createLoadAvatarRequest(request.username))
             .addPlaceholder(request)
             .addError(request)
+            .stableKey(request.username)
             .into(request.imageView)
     }
 
@@ -59,8 +64,9 @@ sealed class ImageRequest(
     class CoverArt(
         val entityId: String,
         imageView: ImageView,
+        val size: Int,
         placeHolderDrawableRes: Int? = null,
-        errorDrawableRes: Int? = null
+        errorDrawableRes: Int? = null,
     ) : ImageRequest(
         placeHolderDrawableRes,
         errorDrawableRes,

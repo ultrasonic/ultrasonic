@@ -22,8 +22,9 @@ class CoverArtRequestHandler(private val apiClient: SubsonicAPIClient) : Request
     override fun load(request: Request, networkPolicy: Int): Result {
         val id = request.uri.getQueryParameter(QUERY_ID)
             ?: throw IllegalArgumentException("Nullable id")
+        val size = request.uri.getQueryParameter(SIZE)?.toLong()
 
-        val response = apiClient.getCoverArt(id)
+        val response = apiClient.getCoverArt(id, size)
         if (response.hasError() || response.stream == null) {
             throw IOException("${response.apiError}")
         } else {
