@@ -23,14 +23,11 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.Build;
 import android.os.Environment;
+import android.os.StatFs;
 import android.text.TextUtils;
-
-import kotlin.Lazy;
-import timber.log.Timber;
 
 import org.moire.ultrasonic.app.UApp;
 import org.moire.ultrasonic.domain.MusicDirectory;
-import org.moire.ultrasonic.subsonic.ImageLoaderProvider;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -60,7 +57,6 @@ public class FileUtil
 	private static final List<String> PLAYLIST_FILE_EXTENSIONS = Collections.singletonList("m3u");
 	private static final Pattern TITLE_WITH_TRACK = Pattern.compile("^\\d\\d-.*");
 
-	private static final Lazy<ImageLoaderProvider> imageLoaderProvider = inject(ImageLoaderProvider.class);
 	private static final Lazy<PermissionUtil> permissionUtil = inject(PermissionUtil.class);
 
 	public static File getSongFile(MusicDirectory.Entry song)
@@ -118,6 +114,11 @@ public class FileUtil
 		return playlistDir;
 	}
 
+	/**
+	 * Get the album art file for a given album entry
+	 * @param entry The album entry
+	 * @return File object. Not guaranteed that it exists
+	 */
 	public static File getAlbumArtFile(MusicDirectory.Entry entry)
 	{
 		File albumDir = getAlbumDirectory(entry);
@@ -137,6 +138,11 @@ public class FileUtil
 		return new File(albumArtDir, String.format("%s.jpeg", md5Hex));
 	}
 
+	/**
+	 * Get the album art file for a given album directory
+	 * @param albumDir The album directory
+	 * @return File object. Not guaranteed that it exists
+	 */
 	public static File getAlbumArtFile(File albumDir)
 	{
 		File albumArtDir = getAlbumArtDirectory();
@@ -150,24 +156,13 @@ public class FileUtil
 		return new File(albumArtDir, String.format("%s.jpeg", md5Hex));
 	}
 
-	public static Bitmap getAvatarBitmap(String username, int size, boolean highQuality)
+	public static Bitmap getAvatarBitmapFromDisk(String username, int size, boolean highQuality)
 	{
 		if (username == null) return null;
 
 		File avatarFile = getAvatarFile(username);
 
 		Bitmap bitmap = null;
-		ImageLoader imageLoader = imageLoaderProvider.getValue().getImageLoader();
-
-		if (imageLoader != null)
-		{
-			bitmap = imageLoader.getImageBitmap(username, size);
-		}
-
-		if (bitmap != null)
-		{
-			return bitmap.copy(bitmap.getConfig(), false);
-		}
 
 		if (avatarFile != null && avatarFile.exists())
 		{
@@ -198,15 +193,7 @@ public class FileUtil
 				Timber.e(ex, "Exception in BitmapFactory.decodeFile()");
 			}
 
-			Timber.i("getAvatarBitmap %s", String.valueOf(size));
-
-			if (bitmap != null)
-			{
-				if (imageLoader != null)
-				{
-					imageLoader.addImageToCache(bitmap, username, size);
-				}
-			}
+			Timber.i("getAvatarBitmapFromDisk %s", String.valueOf(size));
 
 			return bitmap;
 		}
@@ -214,24 +201,13 @@ public class FileUtil
 		return null;
 	}
 
-	public static Bitmap getAlbumArtBitmap(MusicDirectory.Entry entry, int size, boolean highQuality)
+	public static Bitmap getAlbumArtBitmapFromDisk(MusicDirectory.Entry entry, int size, boolean highQuality)
 	{
 		if (entry == null) return null;
 
 		File albumArtFile = getAlbumArtFile(entry);
 
 		Bitmap bitmap = null;
-		ImageLoader imageLoader = imageLoaderProvider.getValue().getImageLoader();
-
-		if (imageLoader != null)
-		{
-			bitmap = imageLoader.getImageBitmap(entry, true, size);
-		}
-
-		if (bitmap != null)
-		{
-			return bitmap.copy(bitmap.getConfig(), false);
-		}
 
 		if (albumArtFile != null && albumArtFile.exists())
 		{
@@ -262,15 +238,7 @@ public class FileUtil
 				Timber.e(ex, "Exception in BitmapFactory.decodeFile()");
 			}
 
-			Timber.i("getAlbumArtBitmap %s", String.valueOf(size));
-
-			if (bitmap != null)
-			{
-				if (imageLoader != null)
-				{
-					imageLoader.addImageToCache(bitmap, entry, size);
-				}
-			}
+			Timber.i("getAlbumArtBitmapFromDisk %s", String.valueOf(size));
 
 			return bitmap;
 		}

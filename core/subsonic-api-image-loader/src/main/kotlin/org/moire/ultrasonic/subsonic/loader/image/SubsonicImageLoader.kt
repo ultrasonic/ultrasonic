@@ -6,9 +6,7 @@ import com.squareup.picasso.Picasso
 import com.squareup.picasso.RequestCreator
 import org.moire.ultrasonic.api.subsonic.SubsonicAPIClient
 
-// TODO: Caching doesn't work as expected because our query string varies.
-// Need to use .stableKey() method
-
+// TODO: Implement OkHTTP disk caching
 class SubsonicImageLoader(
     context: Context,
     apiClient: SubsonicAPIClient
@@ -16,7 +14,10 @@ class SubsonicImageLoader(
     private val picasso = Picasso.Builder(context)
         .addRequestHandler(CoverArtRequestHandler(apiClient))
         .addRequestHandler(AvatarRequestHandler(apiClient))
-        .build().apply { setIndicatorsEnabled(true) }
+        .build().apply {
+            setIndicatorsEnabled(BuildConfig.DEBUG)
+            Picasso.setSingletonInstance(this)
+        }
 
     fun load(request: ImageRequest) = when (request) {
         is ImageRequest.CoverArt -> loadCoverArt(request)
@@ -24,10 +25,10 @@ class SubsonicImageLoader(
     }
 
     private fun loadCoverArt(request: ImageRequest.CoverArt) {
-        picasso.load(createLoadCoverArtRequest(request))
+        picasso.load(createLoadCoverArtRequest(request.entityId, request.size.toLong()))
             .addPlaceholder(request)
             .addError(request)
-            .stableKey("${request.entityId}-${request.size}" )
+            .stableKey("${request.entityId}-${request.size}")
             .into(request.imageView)
     }
 

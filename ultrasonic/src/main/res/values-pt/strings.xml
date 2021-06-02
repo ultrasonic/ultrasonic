@@ -376,19 +376,6 @@
     <string name="settings.show_all_songs_by_artist">Todas as Músicas do Artista</string>
     <string name="settings.show_all_songs_by_artist_summary">Adicionar nova entrada em artista para ver todas as músicas do artista</string>
     <string name="download.menu_show_artist">Mostrar Artista</string>
-    <string name="settings.image_loader_concurrency">Concorrência ao Carregar Imagens</string>
-    <string name="settings.image_loader_concurrency_1">1</string>
-    <string name="settings.image_loader_concurrency_2">2</string>
-    <string name="settings.image_loader_concurrency_3">3</string>
-    <string name="settings.image_loader_concurrency_4">4</string>
-    <string name="settings.image_loader_concurrency_5">5</string>
-    <string name="settings.image_loader_concurrency_6">6</string>
-    <string name="settings.image_loader_concurrency_7">7</string>
-    <string name="settings.image_loader_concurrency_8">8</string>
-    <string name="settings.image_loader_concurrency_9">9</string>
-    <string name="settings.image_loader_concurrency_10">10</string>
-    <string name="settings.image_loader_concurrency_11">11</string>
-    <string name="settings.image_loader_concurrency_12">12</string>
     <string name="common_multiple_years">Múltiplos Anos</string>
     <string name="server_editor.new_label">Adicionar Servidor</string>
     <plurals name="select_album_n_songs">
@@ -434,10 +421,6 @@
 
     <!-- Subsonic feature flags -->
     <string name="feature_flags_category_title">Bandeiras de recursos</string>
-    <string name="feature_flags_image_loader_title">Ativar novo carregador de imagens</string>
-    <string name="feature_flags_image_loader_description">Permite nova implementação do carregador de imagens.
-        Atualmente, ele não salva a imagem no armazenamento do dispositivo e usa apenas o cache na memória.
-    </string>
     <string name="feature_flags_five_star_rating_title">Use classificação de cinco estrelas para músicas</string>
     <string name="feature_flags_five_star_rating_description">Use o sistema de classificação de cinco estrelas para músicas
          em vez de simplesmente estrelar / não estrelar itens.

@@ -9,23 +9,20 @@ import org.moire.ultrasonic.domain.MusicDirectory
 import org.moire.ultrasonic.subsonic.loader.image.ImageRequest
 import org.moire.ultrasonic.subsonic.loader.image.SubsonicImageLoader
 import org.moire.ultrasonic.util.ImageLoader
-import org.moire.ultrasonic.util.LegacyImageLoader
 import org.moire.ultrasonic.util.Util
 
 /**
- * Temporary proxy between new [SubsonicImageLoader] and [ImageLoader] interface and old
- * [LegacyImageLoader] implementation.
- *
- * Should be removed on [LegacyImageLoader] removal.
+ * Proxy between [SubsonicImageLoader] and the main App.
+ * Needed to calculate values like the maximum image size,
+ * which we can't outside the main package.
  */
+
 class SubsonicImageLoaderProxy(
-    legacyImageLoader: LegacyImageLoader,
     private val subsonicImageLoader: SubsonicImageLoader
-) : ImageLoader by legacyImageLoader {
+) : ImageLoader {
 
     private var imageSizeLarge = Util.getMaxDisplayMetric()
     private var imageSizeDefault = 0
-
 
     override fun loadImage(
         view: View?,
@@ -87,7 +84,8 @@ class SubsonicImageLoaderProxy(
 
     init {
         val default = ResourcesCompat.getDrawable(
-            UApp.applicationContext().resources, R.drawable.unknown_album, null)
+            UApp.applicationContext().resources, R.drawable.unknown_album, null
+        )
 
         // Determine the density-dependent image sizes by taking the fallback album
         // image and querying its size.

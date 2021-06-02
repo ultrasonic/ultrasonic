@@ -30,7 +30,6 @@ class ArtistRowAdapter(
 ) : GenericRowAdapter<Artist>(
     onItemClick,
     onContextMenuClick,
-    imageLoader,
     onMusicFolderUpdate
 ),
     SectionedAdapter {

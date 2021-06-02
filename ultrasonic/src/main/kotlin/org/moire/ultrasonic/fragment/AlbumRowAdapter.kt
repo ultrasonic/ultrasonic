@@ -29,7 +29,6 @@ class AlbumRowAdapter(
 ) : GenericRowAdapter<MusicDirectory.Entry>(
     onItemClick,
     onContextMenuClick,
-    imageLoader,
     onMusicFolderUpdate
 ) {
 

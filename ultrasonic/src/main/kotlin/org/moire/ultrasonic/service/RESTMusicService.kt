@@ -488,6 +488,9 @@ open class RESTMusicService(
         return response.body()!!.starred2.toDomainEntity()
     }
 
+    // TODO: Implement file caching in Picasso CoverArtRequestHandler,
+    //  and then use Picasso to handle this cache
+    // This is only called by DownloadFile to cache the cover art for offline use
     @Throws(Exception::class)
     override fun getCoverArt(
         entry: MusicDirectory.Entry,
@@ -499,7 +502,7 @@ open class RESTMusicService(
         // the same song.
         synchronized(entry) {
             // Use cached file, if existing.
-            var bitmap = FileUtil.getAlbumArtBitmap(entry, size, highQuality)
+            var bitmap = FileUtil.getAlbumArtBitmapFromDisk(entry, size, highQuality)
             val serverScaling = isServerScalingEnabled()
 
             if (bitmap == null) {
@@ -507,8 +510,9 @@ open class RESTMusicService(
 
                 val id = entry.coverArt
 
+                // Can't load empty string ids
                 if (TextUtils.isEmpty(id)) {
-                    return null // Can't load
+                    return null
                 }
 
                 val response = subsonicAPIClient.getCoverArt(id!!, size.toLong())
@@ -809,6 +813,9 @@ open class RESTMusicService(
         }
     }
 
+    // TODO: Implement file caching in Picasso AvatarRequestHandler,
+    // and then use Picasso to handle this cache
+    // This method is called from nowhere (all avatars are loaded directly using Picasso)
     @Throws(Exception::class)
     override fun getAvatar(
         username: String?,
@@ -824,7 +831,7 @@ open class RESTMusicService(
 
         synchronized(username) {
             // Use cached file, if existing.
-            var bitmap = FileUtil.getAvatarBitmap(username, size, highQuality)
+            var bitmap = FileUtil.getAvatarBitmapFromDisk(username, size, highQuality)
 
             if (bitmap == null) {
                 var inputStream: InputStream? = null

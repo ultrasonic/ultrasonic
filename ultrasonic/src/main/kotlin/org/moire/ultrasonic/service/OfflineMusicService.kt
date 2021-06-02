@@ -125,7 +125,7 @@ class OfflineMusicService : MusicService, KoinComponent {
         highQuality: Boolean
     ): Bitmap? {
         return try {
-            val bitmap = FileUtil.getAvatarBitmap(username, size, highQuality)
+            val bitmap = FileUtil.getAvatarBitmapFromDisk(username, size, highQuality)
             Util.scaleBitmap(bitmap, size)
         } catch (ignored: Exception) {
             null
@@ -139,7 +139,7 @@ class OfflineMusicService : MusicService, KoinComponent {
         highQuality: Boolean
     ): Bitmap? {
         return try {
-            val bitmap = FileUtil.getAlbumArtBitmap(entry, size, highQuality)
+            val bitmap = FileUtil.getAlbumArtBitmapFromDisk(entry, size, highQuality)
             Util.scaleBitmap(bitmap, size)
         } catch (ignored: Exception) {
             null

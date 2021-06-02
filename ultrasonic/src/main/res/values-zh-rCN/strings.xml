@@ -264,18 +264,6 @@
     <string name="settings.video_mx_player">MX Player</string>
     <string name="settings.video_default">默认</string>
     <string name="menu.share">分享</string>
-    <string name="settings.image_loader_concurrency_1">1</string>
-    <string name="settings.image_loader_concurrency_2">2</string>
-    <string name="settings.image_loader_concurrency_3">3</string>
-    <string name="settings.image_loader_concurrency_4">4</string>
-    <string name="settings.image_loader_concurrency_5">5</string>
-    <string name="settings.image_loader_concurrency_6">6</string>
-    <string name="settings.image_loader_concurrency_7">7</string>
-    <string name="settings.image_loader_concurrency_8">8</string>
-    <string name="settings.image_loader_concurrency_9">9</string>
-    <string name="settings.image_loader_concurrency_10">10</string>
-    <string name="settings.image_loader_concurrency_11">11</string>
-    <string name="settings.image_loader_concurrency_12">12</string>
     <string name="settings.playback.bluetooth_disabled">已禁用</string>
     <string name="settings.debug.log_delete">删除文件</string>
     <string name="settings.debug.log_deleted">删除日志文件</string>
@@ -307,5 +295,4 @@
     <string name="api.subsonic.upgrade_client">版本不兼容，请升级 Ultrasonic 应用。</string>
     <string name="api.subsonic.upgrade_server">不兼容的版本。请升级Subsonic 服务。</string>
 
-    <string name="feature_flags_image_loader_title">启用新的图像加载器</string>
     </resources>

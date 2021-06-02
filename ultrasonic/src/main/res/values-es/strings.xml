@@ -393,19 +393,6 @@
     <string name="settings.show_all_songs_by_artist">Mostrar todas las canciones por artista</string>
     <string name="settings.show_all_songs_by_artist_summary">Añadir nueva entrada en la vista de artista para acceder a todas las canciones de un artista</string>
     <string name="download.menu_show_artist">Mostrar artista</string>
-    <string name="settings.image_loader_concurrency">Concurrencia del cargador de imágenes</string>
-    <string name="settings.image_loader_concurrency_1">1</string>
-    <string name="settings.image_loader_concurrency_2">2</string>
-    <string name="settings.image_loader_concurrency_3">3</string>
-    <string name="settings.image_loader_concurrency_4">4</string>
-    <string name="settings.image_loader_concurrency_5">5</string>
-    <string name="settings.image_loader_concurrency_6">6</string>
-    <string name="settings.image_loader_concurrency_7">7</string>
-    <string name="settings.image_loader_concurrency_8">8</string>
-    <string name="settings.image_loader_concurrency_9">9</string>
-    <string name="settings.image_loader_concurrency_10">10</string>
-    <string name="settings.image_loader_concurrency_11">11</string>
-    <string name="settings.image_loader_concurrency_12">12</string>
     <string name="albumArt">Caratula del Álbum</string>
     <string name="common_multiple_years">Múltiples años</string>
     <string name="settings.playback.resume_on_bluetooth_device">Reanudar al conectar un dispositivo Bluetooth</string>
@@ -503,10 +490,6 @@
 
     <!-- Subsonic feature flags -->
     <string name="feature_flags_category_title">Funciones experimentales</string>
-    <string name="feature_flags_image_loader_title">Habilitar nuevo cargador de imágenes</string>
-    <string name="feature_flags_image_loader_description">Permite la implementación de un nuevo cargador de imágenes.
-        Actualmente no guarda la imagen en el almacenamiento del dispositivo y sólo utiliza caché en la memoria.
-    </string>
     <string name="feature_flags_five_star_rating_title">Use cinco estrellas para las canciones</string>
     <string name="feature_flags_five_star_rating_description">Utilice el sistema de calificación de cinco estrellas para canciones
          en lugar de simplemente destacar / desestimar elementos.

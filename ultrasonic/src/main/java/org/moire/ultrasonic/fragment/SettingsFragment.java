@@ -6,6 +6,8 @@ import android.content.SharedPreferences;
 import android.os.Build;
 import android.os.Bundle;
 import android.provider.SearchRecentSuggestions;
+import android.view.View;
+
 import androidx.annotation.Nullable;
 import androidx.annotation.StringRes;
 import androidx.fragment.app.DialogFragment;
@@ -18,9 +20,6 @@ import androidx.preference.PreferenceCategory;
 import androidx.preference.PreferenceFragmentCompat;
 import androidx.preference.PreferenceManager;
 
-import timber.log.Timber;
-import android.view.View;
-
 import org.jetbrains.annotations.NotNull;
 import org.koin.java.KoinJavaComponent;
 import org.moire.ultrasonic.R;
@@ -32,12 +31,18 @@ import org.moire.ultrasonic.log.FileLoggerTree;
 import org.moire.ultrasonic.provider.SearchSuggestionProvider;
 import org.moire.ultrasonic.service.Consumer;
 import org.moire.ultrasonic.service.MediaPlayerController;
-import org.moire.ultrasonic.subsonic.ImageLoaderProvider;
-import org.moire.ultrasonic.util.*;
+import org.moire.ultrasonic.util.Constants;
+import org.moire.ultrasonic.util.FileUtil;
+import org.moire.ultrasonic.util.PermissionUtil;
+import org.moire.ultrasonic.util.ThemeChangedEventDistributor;
+import org.moire.ultrasonic.util.TimeSpanPreference;
+import org.moire.ultrasonic.util.TimeSpanPreferenceDialogFragmentCompat;
+import org.moire.ultrasonic.util.Util;
 
 import java.io.File;
 
 import kotlin.Lazy;
+import timber.log.Timber;
 
 import static org.koin.java.KoinJavaComponent.inject;
 import static org.moire.ultrasonic.fragment.ServerSelectorFragment.SERVER_SELECTOR_MANAGE_MODE;
@@ -73,7 +78,6 @@ public class SettingsFragment extends PreferenceFragmentCompat
     private CheckBoxPreference sendBluetoothAlbumArt;
     private CheckBoxPreference showArtistPicture;
     private ListPreference viewRefresh;
-    private ListPreference imageLoaderConcurrency;
     private EditTextPreference sharingDefaultDescription;
     private EditTextPreference sharingDefaultGreeting;
     private TimeSpanPreference sharingDefaultExpiration;
@@ -84,7 +88,6 @@ public class SettingsFragment extends PreferenceFragmentCompat
     private SharedPreferences settings;
 
     private final Lazy<MediaPlayerController> mediaPlayerControllerLazy = inject(MediaPlayerController.class);
-    private final Lazy<ImageLoaderProvider> imageLoader = inject(ImageLoaderProvider.class);
     private final Lazy<PermissionUtil> permissionUtil = inject(PermissionUtil.class);
     private final Lazy<ThemeChangedEventDistributor> themeChangedEventDistributor = inject(ThemeChangedEventDistributor.class);
 
@@ -129,7 +132,6 @@ public class SettingsFragment extends PreferenceFragmentCompat
         sendBluetoothAlbumArt = findPreference(Constants.PREFERENCES_KEY_SEND_BLUETOOTH_ALBUM_ART);
         sendBluetoothNotifications = findPreference(Constants.PREFERENCES_KEY_SEND_BLUETOOTH_NOTIFICATIONS);
         viewRefresh = findPreference(Constants.PREFERENCES_KEY_VIEW_REFRESH);
-        imageLoaderConcurrency = findPreference(Constants.PREFERENCES_KEY_IMAGE_LOADER_CONCURRENCY);
         sharingDefaultDescription = findPreference(Constants.PREFERENCES_KEY_DEFAULT_SHARE_DESCRIPTION);
         sharingDefaultGreeting = findPreference(Constants.PREFERENCES_KEY_DEFAULT_SHARE_GREETING);
         sharingDefaultExpiration = findPreference(Constants.PREFERENCES_KEY_DEFAULT_SHARE_EXPIRATION);
@@ -188,8 +190,6 @@ public class SettingsFragment extends PreferenceFragmentCompat
             setMediaButtonsEnabled(sharedPreferences.getBoolean(key, true));
         } else if (Constants.PREFERENCES_KEY_SEND_BLUETOOTH_NOTIFICATIONS.equals(key)) {
             setBluetoothPreferences(sharedPreferences.getBoolean(key, true));
-        } else if (Constants.PREFERENCES_KEY_IMAGE_LOADER_CONCURRENCY.equals(key)) {
-            setImageLoaderConcurrency(Integer.parseInt(sharedPreferences.getString(key, "5")));
         } else if (Constants.PREFERENCES_KEY_DEBUG_LOG_TO_FILE.equals(key)) {
             setDebugLogToFile(sharedPreferences.getBoolean(key, false));
         } else if (Constants.PREFERENCES_KEY_ID3_TAGS.equals(key)) {
@@ -359,21 +359,6 @@ public class SettingsFragment extends PreferenceFragmentCompat
     private void setupFeatureFlagsPreferences() {
         final FeatureStorage featureStorage = KoinJavaComponent.get(FeatureStorage.class);
 
-        CheckBoxPreference ffImageLoader = (CheckBoxPreference) findPreference(
-                Constants.PREFERENCES_KEY_FF_IMAGE_LOADER);
-
-        if (ffImageLoader != null) {
-            ffImageLoader.setChecked(featureStorage.isFeatureEnabled(Feature.NEW_IMAGE_DOWNLOADER));
-            ffImageLoader.setOnPreferenceChangeListener(new Preference.OnPreferenceChangeListener() {
-                @Override
-                public boolean onPreferenceChange(Preference preference, Object o) {
-                    featureStorage.changeFeatureFlag(Feature.NEW_IMAGE_DOWNLOADER, (Boolean) o);
-                    imageLoader.getValue().clearImageLoader();
-                    return true;
-                }
-            });
-        }
-
         CheckBoxPreference useFiveStarRating = (CheckBoxPreference) findPreference(
                 Constants.PREFERENCES_KEY_USE_FIVE_STAR_RATING);
 
@@ -443,7 +428,6 @@ public class SettingsFragment extends PreferenceFragmentCompat
         chatRefreshInterval.setSummary(chatRefreshInterval.getEntry());
         directoryCacheTime.setSummary(directoryCacheTime.getEntry());
         viewRefresh.setSummary(viewRefresh.getEntry());
-        imageLoaderConcurrency.setSummary(imageLoaderConcurrency.getEntry());
         sharingDefaultExpiration.setSummary(sharingDefaultExpiration.getText());
         sharingDefaultDescription.setSummary(sharingDefaultDescription.getText());
         sharingDefaultGreeting.setSummary(sharingDefaultGreeting.getText());
@@ -470,14 +454,6 @@ public class SettingsFragment extends PreferenceFragmentCompat
         showArtistPicture.setEnabled(Util.getShouldUseId3Tags());
     }
 
-    private void setImageLoaderConcurrency(int concurrency) {
-        ImageLoader imageLoaderInstance = imageLoader.getValue().getImageLoader();
-
-        if (imageLoaderInstance != null) {
-            imageLoaderInstance.stopImageLoader();
-            imageLoaderInstance.setConcurrency(concurrency);
-        }
-    }
 
     private void setHideMedia(boolean hide) {
         File nomediaDir = new File(FileUtil.getUltrasonicDirectory(), ".nomedia");

@@ -14,19 +14,19 @@ internal const val QUERY_USERNAME = "username"
  * Picasso.load() only accepts an URI as parameter. Therefore we create a bogus URI, in which
  * we encode the data that we need in the RequestHandler.
  */
-internal fun createLoadCoverArtRequest(config: ImageRequest.CoverArt): Uri =
+internal fun createLoadCoverArtRequest(entityId: String, size: Long? = 0): Uri =
     Uri.Builder()
-    .scheme(SCHEME)
-    .authority(AUTHORITY)
-    .appendPath(COVER_ART_PATH)
-    .appendQueryParameter(QUERY_ID, config.entityId)
-    .appendQueryParameter(SIZE, config.size.toString())
-    .build()
+        .scheme(SCHEME)
+        .authority(AUTHORITY)
+        .appendPath(COVER_ART_PATH)
+        .appendQueryParameter(QUERY_ID, entityId)
+        .appendQueryParameter(SIZE, size.toString())
+        .build()
 
 internal fun createLoadAvatarRequest(username: String): Uri =
     Uri.Builder()
-    .scheme(SCHEME)
-    .authority(AUTHORITY)
-    .appendPath(AVATAR_PATH)
-    .appendQueryParameter(QUERY_USERNAME, username)
-    .build()
+        .scheme(SCHEME)
+        .authority(AUTHORITY)
+        .appendPath(AVATAR_PATH)
+        .appendQueryParameter(QUERY_USERNAME, username)
+        .build()

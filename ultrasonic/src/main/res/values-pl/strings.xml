@@ -376,19 +376,6 @@ ponieważ api Subsonic nie wspiera nowego sposobu autoryzacji dla użytkowników
     <string name="settings.show_all_songs_by_artist">Wyświetlaj wszystkie utwory artysty</string>
     <string name="settings.show_all_songs_by_artist_summary">Dodaje nową pozycję w widoku artysty z wszystkimi jego utworami</string>
     <string name="download.menu_show_artist">Wyświetlaj artystę</string>
-    <string name="settings.image_loader_concurrency">Ilość jednocześnie ładowanych obrazów</string>
-    <string name="settings.image_loader_concurrency_1">1</string>
-    <string name="settings.image_loader_concurrency_2">2</string>
-    <string name="settings.image_loader_concurrency_3">3</string>
-    <string name="settings.image_loader_concurrency_4">4</string>
-    <string name="settings.image_loader_concurrency_5">5</string>
-    <string name="settings.image_loader_concurrency_6">6</string>
-    <string name="settings.image_loader_concurrency_7">7</string>
-    <string name="settings.image_loader_concurrency_8">8</string>
-    <string name="settings.image_loader_concurrency_9">9</string>
-    <string name="settings.image_loader_concurrency_10">10</string>
-    <string name="settings.image_loader_concurrency_11">11</string>
-    <string name="settings.image_loader_concurrency_12">12</string>
     <string name="albumArt">Okładka</string>
     <string name="common_multiple_years">Z różnych lat</string>
     <string name="server_editor.new_label">Dodaj serwer</string>
@@ -449,9 +436,6 @@ ponieważ api Subsonic nie wspiera nowego sposobu autoryzacji dla użytkowników
 
     <!-- Subsonic feature flags -->
     <string name="feature_flags_category_title">Flagi funkcji</string>
-    <string name="feature_flags_image_loader_title">Włącz program ładujący nowe obrazy</string>
-    <string name="feature_flags_image_loader_description">Włącza implementację modułu ładującego nowe obrazy.
-Obecnie nie zapisuje obrazów w pamięci urządzenia, tylko wykorzystuje tylko pamięć podręczną.</string>
     <string name="feature_flags_five_star_rating_title">Użyj pięciu gwiazdek dla utworów</string>
     <string name="feature_flags_five_star_rating_description">W przypadku utworów użyj systemu pięciu gwiazdek
          zamiast po prostu grać gwiazdkami / bez gwiazd.

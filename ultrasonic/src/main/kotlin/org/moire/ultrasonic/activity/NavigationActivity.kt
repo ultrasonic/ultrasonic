@@ -217,7 +217,6 @@ class NavigationActivity : AppCompatActivity() {
             if (item.itemId == R.id.menu_exit) {
                 setResult(Constants.RESULT_CLOSE_ALL)
                 mediaPlayerController.stopJukeboxService()
-                imageLoaderProvider.getImageLoader().stopImageLoader()
                 finish()
                 exit()
             }

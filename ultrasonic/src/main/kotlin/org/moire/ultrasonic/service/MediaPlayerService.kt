@@ -478,7 +478,7 @@ class MediaPlayerService : Service() {
         if (currentPlaying != null) {
             try {
                 val song = currentPlaying.song
-                val cover = FileUtil.getAlbumArtBitmap(
+                val cover = FileUtil.getAlbumArtBitmapFromDisk(
                     song, Util.getMinDisplayMetric(),
                     true
                 )
@@ -648,7 +648,7 @@ class MediaPlayerService : Service() {
         // Set song title, artist and cover if possible
         if (song != null) {
             val iconSize = (256 * context.resources.displayMetrics.density).toInt()
-            val bitmap = FileUtil.getAlbumArtBitmap(song, iconSize, true)
+            val bitmap = FileUtil.getAlbumArtBitmapFromDisk(song, iconSize, true)
             notificationBuilder!!.setContentTitle(song.title)
             notificationBuilder!!.setContentText(song.artist)
             notificationBuilder!!.setLargeIcon(bitmap)
