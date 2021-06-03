@@ -1,0 +1,14 @@
+Bug fixes
+- #411: getContext() can return null in Fragments.
+- #415: App crashes when pressing the album cover in player.
+- #447: Fix all service notification issues.
+- #484: Add error handling to SelectAlbumModel functions.
+
+Enhancements
+- #433: Lock screen playback controls should include next/previous track.
+- #476: Remove jcenter().
+- #477: Make all preference operations context-free.
+- #485: Remove MusicService.
+- #493: Introduce new Generic Fragments, ViewModels, and Adapters for the display of API data.
+- #505: Implement server feature checking.
+- #506: Convert all remaining Music servic classes to Kotlin.

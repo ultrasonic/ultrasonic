@@ -1,0 +1,14 @@
+Correción de errores
+- #411: getContext() puede retornar fragmentos nulos.
+- #415: La aplicación se bloquea al presionar sobre la portada del álbum en el reproductor.
+- #447: Solucionar todos los problemas de notificación de servicio.
+- #484: Agregar manejo de errores a las funciones de SelectAlbumModel.
+
+Mejoras
+- #433: Los controles de reproducción de la pantalla de bloqueo deben incluir la pista siguiente/anterior.
+- #476: Elimina jcenter().
+- #477: Hacer que todas las operaciones de preferencias estén libres de contexto.
+- #485: Elimina MusicService.
+- #493: Introducir nuevos fragmentos genéricos, modelos de vista y adaptadores para la visualización de datos de API.
+- #505: Implementar la verificación de características del servidor.
+- #506: Convertir todas las clases de servicios de música restantes a Kotlin.
