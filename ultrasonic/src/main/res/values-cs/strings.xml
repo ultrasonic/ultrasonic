@@ -444,7 +444,6 @@
     <string name="server_menu.move_down">Posunout níž</string>
     <string name="server_editor.authentication">Ověření</string>
     <string name="server_editor.advanced">Rozšířené možnosti</string>
-
     <plurals name="select_album_n_songs">
         <item quantity="one">1 skladba</item>
         <item quantity="few">%d skladby</item>

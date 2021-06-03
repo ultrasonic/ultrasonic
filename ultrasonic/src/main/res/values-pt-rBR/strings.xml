@@ -446,7 +446,6 @@
     <string name="server_menu.move_down">Para baixo</string>
     <string name="server_editor.authentication">Autenticação</string>
     <string name="server_editor.advanced">Configurações avançadas</string>
-
     <plurals name="select_album_n_songs">
         <item quantity="one">%d música</item>
         <item quantity="other">%d músicas</item>

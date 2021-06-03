@@ -300,7 +300,6 @@
     <string name="server_menu.move_down">下移</string>
     <string name="server_editor.authentication">认证</string>
     <string name="server_editor.advanced">高级设置</string>
-
     <string name="api.subsonic.not_authenticated">用户名或密码错误</string>
     <string name="api.subsonic.param_missing">缺少必需的参数。</string>
     <string name="api.subsonic.requested_data_was_not_found">未找到请求的数据。</string>

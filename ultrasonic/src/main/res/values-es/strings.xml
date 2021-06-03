@@ -458,6 +458,7 @@
     <string name="server_menu.move_down">Bajar</string>
     <string name="server_editor.authentication">Autenticación</string>
     <string name="server_editor.advanced">Configuración avanzada</string>
+    <string name="server_editor.disabled_feature">Una o más funciones se han deshabilitado porque el servidor no las admite.\nPuedes ejecutar esta prueba nuevamente en cualquier momento.</string>
 
     <plurals name="select_album_n_songs">
         <item quantity="one">1 canción</item>
