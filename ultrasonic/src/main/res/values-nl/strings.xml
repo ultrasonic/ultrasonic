@@ -266,6 +266,8 @@
     <string name="settings.playback.resume_play_on_headphones_plug.summary">Het afspelen wordt hervat zodra er een hoofdtelefoon wordt aangesloten.</string>
     <string name="settings.screen_lit_summary">Door het scherm aan te houden tijdens het downloaden, wordt de downloadsnelheid verhoogd.</string>
     <string name="settings.screen_lit_title">Scherm aan houden</string>
+    <string name="settings.scrobble_summary">Let op: stel je gebruikersnaam en wachtwoord van je scrobble-dienst(en) in op je Subsonic-server</string>
+    <string name="settings.scrobble_title">Scrobbelen</string>
     <string name="settings.search_1">1</string>
     <string name="settings.search_10">10</string>
     <string name="settings.search_100">100</string>
@@ -307,7 +309,6 @@
     <string name="settings.show_track_number">Itemnummer tonen</string>
     <string name="settings.show_track_number_summary">Itemnummer tonen tijdens tonen van nummers</string>
     <string name="settings.test_connection_title">Verbinding testen</string>
-    <string name="settings.testing_connection">Bezig met testen van verbinding&#8230;</string>
     <string name="settings.testing_ok">Verbinding is goed</string>
     <string name="settings.testing_unlicensed">Verbinding is goed; geen serverlicentie.</string>
     <string name="settings.theme_light">Licht</string>
@@ -457,6 +458,7 @@
     <string name="server_menu.move_down">Omlaag</string>
     <string name="server_editor.authentication">Authenticatie</string>
     <string name="server_editor.advanced">Geavanceerde instellingen</string>
+    <string name="server_editor.disabled_feature">Eén of meerdere functies zijn uitgeschakeld omdat de server ze niet ondersteunt.\nVoer deze test later opnieuw uit.</string>
 
     <plurals name="select_album_n_songs">
         <item quantity="one">1 nummer</item>

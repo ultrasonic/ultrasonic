@@ -297,7 +297,6 @@
     <string name="settings.show_track_number">Afficher le numéro du titre</string>
     <string name="settings.show_track_number_summary">Inclure son numero lors de l\'affichage d\'un titre</string>
     <string name="settings.test_connection_title">Tester la connexion</string>
-    <string name="settings.testing_connection">Connexion en cours de test&#8230;</string>
     <string name="settings.testing_ok">Connexion correcte</string>
     <string name="settings.testing_unlicensed">Connexion correcte. Serveur sans licence.</string>
     <string name="settings.theme_light">Clair</string>
@@ -447,6 +446,7 @@
     <string name="server_menu.move_down">Déplacer vers le bas</string>
     <string name="server_editor.authentication">Authentification</string>
     <string name="server_editor.advanced">Paramètres avancés</string>
+    <string name="server_editor.disabled_feature">Une ou plusieurs fonctionnalités ont été désactivées car le serveur ne les prend pas en charge.\nVous pouvez réexécuter ce test à tout moment.</string>
 
     <plurals name="select_album_n_songs">
         <item quantity="one">1 titre</item>

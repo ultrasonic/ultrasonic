@@ -9,8 +9,8 @@ android {
 
     defaultConfig {
         applicationId "org.moire.ultrasonic"
-        versionCode 92
-        versionName "2.20.0"
+        versionCode 93
+        versionName "2.21.0"
 
         minSdkVersion versions.minSdk
         targetSdkVersion versions.targetSdk
@@ -56,7 +56,6 @@ android {
 
     kotlinOptions {
         jvmTarget = "1.8"
-        freeCompilerArgs += "-Xopt-in=org.koin.core.component.KoinApiExtension"
     }
     compileOptions {
         sourceCompatibility JavaVersion.VERSION_1_8
@@ -94,7 +93,6 @@ dependencies {
     implementation other.kotlinStdlib
     implementation other.kotlinxCoroutines
     implementation other.koinAndroid
-    implementation other.koinViewModel
     implementation other.okhttpLogging
     implementation other.fastScroll
     implementation other.sortListView

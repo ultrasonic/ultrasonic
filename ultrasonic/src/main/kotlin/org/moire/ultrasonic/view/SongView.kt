@@ -24,8 +24,9 @@ import android.graphics.drawable.Drawable
 import android.text.TextUtils
 import android.view.LayoutInflater
 import android.widget.Checkable
-import org.koin.java.KoinJavaComponent.get
-import org.koin.java.KoinJavaComponent.inject
+import org.koin.core.component.KoinComponent
+import org.koin.core.component.get
+import org.koin.core.component.inject
 import org.moire.ultrasonic.R
 import org.moire.ultrasonic.data.ActiveServerProvider.Companion.isOffline
 import org.moire.ultrasonic.domain.MusicDirectory
@@ -42,7 +43,7 @@ import timber.log.Timber
 /**
  * Used to display songs and videos in a `ListView`.
  */
-class SongView(context: Context) : UpdateView(context), Checkable {
+class SongView(context: Context) : UpdateView(context), Checkable, KoinComponent {
 
     var entry: MusicDirectory.Entry? = null
         private set
@@ -55,10 +56,9 @@ class SongView(context: Context) : UpdateView(context), Checkable {
     private var downloadFile: DownloadFile? = null
     private var playing = false
     private var viewHolder: SongViewHolder? = null
-
-    private val useFiveStarRating: Boolean =
-        get(FeatureStorage::class.java).isFeatureEnabled(Feature.FIVE_STAR_RATING)
-    private val mediaPlayerControllerLazy = inject(MediaPlayerController::class.java)
+    private val features: FeatureStorage = get()
+    private val useFiveStarRating: Boolean = features.isFeatureEnabled(Feature.FIVE_STAR_RATING)
+    private val mediaPlayerController: MediaPlayerController by inject()
 
     fun setLayout(song: MusicDirectory.Entry) {
 
@@ -96,7 +96,7 @@ class SongView(context: Context) : UpdateView(context), Checkable {
         updateBackground()
 
         entry = song
-        downloadFile = mediaPlayerControllerLazy.value.getDownloadFileForSong(song)
+        downloadFile = mediaPlayerController.getDownloadFileForSong(song)
 
         val artist = StringBuilder(60)
         var bitRate: String? = null
@@ -223,7 +223,7 @@ class SongView(context: Context) : UpdateView(context), Checkable {
     public override fun update() {
         updateBackground()
 
-        downloadFile = mediaPlayerControllerLazy.value.getDownloadFileForSong(entry)
+        downloadFile = mediaPlayerController.getDownloadFileForSong(entry)
 
         updateDownloadStatus(downloadFile!!)
 
@@ -254,7 +254,7 @@ class SongView(context: Context) : UpdateView(context), Checkable {
             if (rating > 4) starDrawable else starHollowDrawable
         )
 
-        val playing = mediaPlayerControllerLazy.value.currentPlaying === downloadFile
+        val playing = mediaPlayerController.currentPlaying === downloadFile
 
         if (playing) {
             if (!this.playing) {

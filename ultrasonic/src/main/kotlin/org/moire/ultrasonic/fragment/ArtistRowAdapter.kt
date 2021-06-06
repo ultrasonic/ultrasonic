@@ -96,7 +96,7 @@ class ArtistRowAdapter(
     }
 
     private fun getSectionFromName(name: String): String {
-        var section = name.first().toUpperCase()
+        var section = name.first().uppercaseChar()
         if (!section.isLetter()) section = '#'
         return section.toString()
     }

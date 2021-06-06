@@ -28,8 +28,10 @@ import androidx.navigation.ui.setupWithNavController
 import androidx.preference.PreferenceManager
 import com.google.android.material.navigation.NavigationView
 import org.koin.android.ext.android.inject
-import org.koin.android.viewmodel.ext.android.viewModel
+import org.koin.androidx.viewmodel.ext.android.viewModel
+import org.koin.java.KoinJavaComponent.inject
 import org.moire.ultrasonic.R
+import org.moire.ultrasonic.data.ActiveServerProvider
 import org.moire.ultrasonic.data.ActiveServerProvider.Companion.isOffline
 import org.moire.ultrasonic.domain.PlayerState
 import org.moire.ultrasonic.fragment.OnBackPressedHandler
@@ -368,10 +370,18 @@ class NavigationActivity : AppCompatActivity() {
     }
 
     private fun setMenuForServerSetting() {
-        val visibility = !isOffline()
-        chatMenuItem?.isVisible = visibility
-        bookmarksMenuItem?.isVisible = visibility
-        sharesMenuItem?.isVisible = visibility
-        podcastsMenuItem?.isVisible = visibility
+        if (isOffline()) {
+            chatMenuItem?.isVisible = false
+            bookmarksMenuItem?.isVisible = false
+            sharesMenuItem?.isVisible = false
+            podcastsMenuItem?.isVisible = false
+            return
+        }
+        val activeServerProvider: ActiveServerProvider by inject()
+        val activeServer = activeServerProvider.getActiveServer()
+        chatMenuItem?.isVisible = activeServer.chatSupport != false
+        bookmarksMenuItem?.isVisible = activeServer.bookmarkSupport != false
+        sharesMenuItem?.isVisible = activeServer.shareSupport != false
+        podcastsMenuItem?.isVisible = activeServer.podcastSupport != false
     }
 }

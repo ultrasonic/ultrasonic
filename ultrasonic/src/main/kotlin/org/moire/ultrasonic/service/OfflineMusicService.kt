@@ -22,7 +22,8 @@ import java.util.Locale
 import java.util.Random
 import java.util.concurrent.TimeUnit
 import java.util.regex.Pattern
-import org.koin.java.KoinJavaComponent.inject
+import org.koin.core.component.KoinComponent
+import org.koin.core.component.inject
 import org.moire.ultrasonic.data.ActiveServerProvider
 import org.moire.ultrasonic.domain.Artist
 import org.moire.ultrasonic.domain.Bookmark
@@ -47,10 +48,8 @@ import timber.log.Timber
 // TODO: There are quite a number of deeply nested and complicated functions in this class..
 // Simplify them :)
 @Suppress("TooManyFunctions")
-class OfflineMusicService : MusicService {
-    private val activeServerProvider = inject(
-        ActiveServerProvider::class.java
-    )
+class OfflineMusicService : MusicService, KoinComponent {
+    private val activeServerProvider: ActiveServerProvider by inject()
 
     override fun getIndexes(musicFolderId: String?, refresh: Boolean): Indexes {
         val artists: MutableList<Artist> = ArrayList()
@@ -67,8 +66,8 @@ class OfflineMusicService : MusicService {
         val ignoredArticlesString = "The El La Los Las Le Les"
         val ignoredArticles = COMPILE.split(ignoredArticlesString)
         artists.sortWith { lhsArtist, rhsArtist ->
-            var lhs = lhsArtist.name!!.toLowerCase(Locale.ROOT)
-            var rhs = rhsArtist.name!!.toLowerCase(Locale.ROOT)
+            var lhs = lhsArtist.name!!.lowercase(Locale.ROOT)
+            var rhs = rhsArtist.name!!.lowercase(Locale.ROOT)
             val lhs1 = lhs[0]
             val rhs1 = rhs[0]
             if (Character.isDigit(lhs1) && !Character.isDigit(rhs1)) {
@@ -79,13 +78,13 @@ class OfflineMusicService : MusicService {
             }
             for (article in ignoredArticles) {
                 var index = lhs.indexOf(
-                    String.format(Locale.ROOT, "%s ", article.toLowerCase(Locale.ROOT))
+                    String.format(Locale.ROOT, "%s ", article.lowercase(Locale.ROOT))
                 )
                 if (index == 0) {
                     lhs = lhs.substring(article.length + 1)
                 }
                 index = rhs.indexOf(
-                    String.format(Locale.ROOT, "%s ", article.toLowerCase(Locale.ROOT))
+                    String.format(Locale.ROOT, "%s ", article.lowercase(Locale.ROOT))
                 )
                 if (index == 0) {
                     rhs = rhs.substring(article.length + 1)
@@ -253,7 +252,7 @@ class OfflineMusicService : MusicService {
     @Throws(Exception::class)
     override fun createPlaylist(id: String, name: String, entries: List<MusicDirectory.Entry>) {
         val playlistFile =
-            FileUtil.getPlaylistFile(activeServerProvider.value.getActiveServer().name, name)
+            FileUtil.getPlaylistFile(activeServerProvider.getActiveServer().name, name)
         val fw = FileWriter(playlistFile)
         val bw = BufferedWriter(fw)
         try {
@@ -668,10 +667,10 @@ class OfflineMusicService : MusicService {
         }
 
         private fun matchCriteria(criteria: SearchCriteria, name: String?): Int {
-            val query = criteria.query.toLowerCase(Locale.ROOT)
+            val query = criteria.query.lowercase(Locale.ROOT)
             val queryParts = COMPILE.split(query)
             val nameParts = COMPILE.split(
-                name!!.toLowerCase(Locale.ROOT)
+                name!!.lowercase(Locale.ROOT)
             )
             var closeness = 0
             for (queryPart in queryParts) {

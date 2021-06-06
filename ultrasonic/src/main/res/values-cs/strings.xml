@@ -297,7 +297,6 @@
     <string name="settings.show_track_number">Zobrazovat číslo skladby</string>
     <string name="settings.show_track_number_summary">Připojovat číslo skladby při zobrazování skladby</string>
     <string name="settings.test_connection_title">Test připojení</string>
-    <string name="settings.testing_connection">Testuji připojení&#8230;</string>
     <string name="settings.testing_ok">Připojení je v pořádku</string>
     <string name="settings.testing_unlicensed">Připojení je v pořádku. Server bez licence.</string>
     <string name="settings.theme_light">Světlý</string>
@@ -445,7 +444,6 @@
     <string name="server_menu.move_down">Posunout níž</string>
     <string name="server_editor.authentication">Ověření</string>
     <string name="server_editor.advanced">Rozšířené možnosti</string>
-
     <plurals name="select_album_n_songs">
         <item quantity="one">1 skladba</item>
         <item quantity="few">%d skladby</item>

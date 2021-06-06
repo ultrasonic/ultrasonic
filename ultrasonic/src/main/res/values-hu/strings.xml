@@ -15,6 +15,13 @@
     <string name="button_bar.chat">Csevegés (Chat)</string>
     <string name="button_bar.home">Ultrasonic főoldal</string>
     <string name="button_bar.now_playing">Lejátszó</string>
+    <string name="buttons.play">Lejátszás</string>
+    <string name="buttons.pause">Szünet</string>
+    <string name="buttons.repeat">Ismétlés</string>
+    <string name="buttons.shuffle">Véletlen sorrendű</string>
+    <string name="buttons.stop">Állj</string>
+    <string name="buttons.next">Következő</string>
+    <string name="buttons.previous">Előző</string>
     <string name="podcasts.label">Podcast</string>
     <string name="podcasts_channels.empty">Nincsenek podcast-csatornák regisztrálva</string>
     <string name="button_bar.podcasts">Podcast</string>
@@ -32,8 +39,11 @@
     <string name="common.name">Név</string>
     <string name="common.ok">OK</string>
     <string name="common.pin">Tárolás (Megőrzés az eszközön)</string>
+    <string name="common.pause">Szünet</string>
+    <string name="common.play">Lejátszás</string>
     <string name="common.play_last">Lejátszás (Utolsóként)</string>
     <string name="common.play_next">Lejátszás (Következőként)</string>
+    <string name="common.play_previous">Előző lejátszása</string>
     <string name="common.play_now">Lejátszás</string>
     <string name="common.play_shuffled">Véletlen sorrendű lejátszás</string>
     <string name="common.public">Nyilvános</string>
@@ -256,6 +266,8 @@
     <string name="settings.playback.resume_play_on_headphones_plug.summary">Az alkalmazás folytatja a szüneteltetett lejátszást a fejhallgató behelyezésekor a készülékbe.</string>
     <string name="settings.screen_lit_summary">Képernyő ébrentartása a letöltés alatt, a magasabb letöltési sebesség érdekében.</string>
     <string name="settings.screen_lit_title">Képernyő ébrentartása</string>
+    <string name="settings.scrobble_summary">Ne felejtsd el beállítani a Scrobble szolgáltatónál használt felhasználóneved és jelszavad a szervereden</string>
+    <string name="settings.scrobble_title">Scrobble engedélyezése</string>
     <string name="settings.search_1">1</string>
     <string name="settings.search_10">10</string>
     <string name="settings.search_100">100</string>
@@ -297,11 +309,11 @@
     <string name="settings.show_track_number">Sorszám megjelenítése</string>
     <string name="settings.show_track_number_summary">Dalok sorszámának megjelenítése.</string>
     <string name="settings.test_connection_title">Kapcsolat tesztelése</string>
-    <string name="settings.testing_connection">Kapcsolat tesztelése&#8230;</string>
     <string name="settings.testing_ok">Kapcsolat OK!</string>
     <string name="settings.testing_unlicensed">Kapcsolat OK! A kiszolgálónak nincs licence!</string>
     <string name="settings.theme_light">Világos</string>
     <string name="settings.theme_dark">Sötét</string>
+    <string name="settings.theme_black">Fekete</string>
     <string name="settings.theme_title">Téma</string>
     <string name="settings.title.allow_self_signed_certificate">Engedélyezze az önaláírt HTTPS tanúsítványt</string>
     <string name="settings.title.enable_ldap_users_support">Az LDAP-felhasználók támogatásának engedélyezése</string>
@@ -401,6 +413,8 @@
     <string name="settings.playback.bluetooth_all">Minden Bluetooth eszköz</string>
     <string name="settings.playback.bluetooth_a2dp">Csak audio (A2DP) eszközök</string>
     <string name="settings.playback.bluetooth_disabled">Kikapcsolva</string>
+    <string name="settings.playback.single_button_bluetooth_device">Egy gombos Lejátszás/Szünet a Bluetooth eszközökön</string>
+    <string name="settings.playback.single_button_bluetooth_device_summary">Régebbi Bluetooth eszközök esetén segíthet, ha a Lejátszás/Szünet nem működik megfelelően</string>
     <string name="settings.debug.title">Hibakeresési lehetőségek</string>
     <string name="settings.debug.log_to_file">Hibakeresési napló írása fájlba</string>
     <string name="settings.debug.log_path">A naplófájlok elérhetőek a következő helyen: %1$s/%2$s</string>
@@ -444,7 +458,6 @@
     <string name="server_menu.move_down">Lejjebb mozgat</string>
     <string name="server_editor.authentication">Bejelentkezés</string>
     <string name="server_editor.advanced">Haladó beállítások</string>
-
     <plurals name="select_album_n_songs">
         <item quantity="one">1 dal</item>
         <item quantity="other">%d dal</item>

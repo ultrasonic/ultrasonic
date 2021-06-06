@@ -220,7 +220,6 @@
     <string name="settings.show_notification">显示通知</string>
     <string name="settings.show_notification_always">总是显示通知</string>
     <string name="settings.test_connection_title">测试连接</string>
-    <string name="settings.testing_connection">测试连接&#8230;</string>
     <string name="settings.testing_ok">连接正常</string>
     <string name="settings.testing_unlicensed">连接正常， 服务器未授权。</string>
     <string name="settings.theme_title">主题</string>
@@ -301,7 +300,6 @@
     <string name="server_menu.move_down">下移</string>
     <string name="server_editor.authentication">认证</string>
     <string name="server_editor.advanced">高级设置</string>
-
     <string name="api.subsonic.not_authenticated">用户名或密码错误</string>
     <string name="api.subsonic.param_missing">缺少必需的参数。</string>
     <string name="api.subsonic.requested_data_was_not_found">未找到请求的数据。</string>

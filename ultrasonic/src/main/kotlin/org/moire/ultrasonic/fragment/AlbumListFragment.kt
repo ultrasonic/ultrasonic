@@ -6,7 +6,6 @@ import androidx.fragment.app.viewModels
 import androidx.lifecycle.LiveData
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.RecyclerView
-import org.koin.core.component.KoinApiExtension
 import org.moire.ultrasonic.R
 import org.moire.ultrasonic.domain.MusicDirectory
 import org.moire.ultrasonic.util.Constants
@@ -15,7 +14,6 @@ import org.moire.ultrasonic.util.Constants
  * Displays a list of Albums from the media library
  * TODO: Check refresh is working
  */
-@KoinApiExtension
 class AlbumListFragment : GenericListFragment<MusicDirectory.Entry, AlbumRowAdapter>() {
 
     /**

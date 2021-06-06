@@ -39,7 +39,7 @@ class PasswordMD5Interceptor(private val password: String) : Interceptor {
             val md5Digest = MessageDigest.getInstance("MD5")
             return md5Digest.digest(
                 "$password$salt".toByteArray()
-            ).toHexBytes().toLowerCase(Locale.getDefault())
+            ).toHexBytes().lowercase(Locale.getDefault())
         } catch (e: NoSuchAlgorithmException) {
             throw IllegalStateException(e)
         }
