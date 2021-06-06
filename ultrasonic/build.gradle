@@ -70,8 +70,11 @@ tasks.withType(Test) {
 dependencies {
     implementation project(':core:domain')
     implementation project(':core:subsonic-api')
-    implementation project(':core:subsonic-api-image-loader')
     implementation project(':core:cache')
+
+    api(other.picasso) {
+        exclude group: "com.android.support"
+    }
 
     implementation androidSupport.core
     implementation androidSupport.support
@@ -103,8 +106,12 @@ dependencies {
     testImplementation testing.junit
     testRuntimeOnly testing.junitVintage
     testImplementation testing.kotlinJunit
-    testImplementation testing.mockitoKotlin
     testImplementation testing.kluent
+    testImplementation testing.mockito
+    testImplementation testing.mockitoInline
+    testImplementation testing.mockitoKotlin
+    testImplementation testing.robolectric
+
     implementation other.dexter
     implementation other.timber
 }

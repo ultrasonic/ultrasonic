@@ -1,4 +1,4 @@
-package org.moire.ultrasonic.subsonic.loader.image
+package org.moire.ultrasonic.imageloader
 
 import android.net.Uri
 import com.nhaarman.mockito_kotlin.any
@@ -21,7 +21,8 @@ import org.robolectric.RobolectricTestRunner
 @RunWith(RobolectricTestRunner::class)
 class CoverArtRequestHandlerTest {
     private val mockSubsonicApiClientMock = mock<SubsonicAPIClient>()
-    private val handler = CoverArtRequestHandler(mockSubsonicApiClientMock)
+    private val handler =
+        CoverArtRequestHandler(mockSubsonicApiClientMock)
 
     @Test
     fun `Should accept only cover art request`() {
@@ -34,7 +35,6 @@ class CoverArtRequestHandlerTest {
     fun `Should not accept random request uri`() {
         val requestUri = Uri.Builder()
             .scheme(SCHEME)
-            .authority(AUTHORITY)
             .appendPath("random")
             .build()
 
@@ -76,7 +76,8 @@ class CoverArtRequestHandlerTest {
         whenever(mockSubsonicApiClientMock.getCoverArt(any(), anyOrNull()))
             .thenReturn(streamResponse)
 
-        val response = handler.load(createLoadCoverArtRequest("some").buildRequest(), 0)
+        val response = handler.load(
+            createLoadCoverArtRequest("some").buildRequest(), 0)
 
         response.loadedFrom `should be equal to` Picasso.LoadedFrom.NETWORK
         response.source `should not be` null

@@ -1,4 +1,4 @@
-package org.moire.ultrasonic.subsonic.loader.image
+package org.moire.ultrasonic.imageloader
 
 import android.net.Uri
 import com.nhaarman.mockito_kotlin.any
@@ -21,7 +21,8 @@ import org.robolectric.annotation.Config
 @Config(manifest = Config.NONE)
 class AvatarRequestHandlerTest {
     private val mockSubsonicApiClient = mock<SubsonicAPIClient>()
-    private val handler = AvatarRequestHandler(mockSubsonicApiClient)
+    private val handler =
+        AvatarRequestHandler(mockSubsonicApiClient)
 
     @Test
     fun `Should accept only cover art request`() {
@@ -34,7 +35,6 @@ class AvatarRequestHandlerTest {
     fun `Should not accept random request uri`() {
         val requestUri = Uri.Builder()
             .scheme(SCHEME)
-            .authority(AUTHORITY)
             .appendPath("something")
             .build()
 
@@ -63,7 +63,8 @@ class AvatarRequestHandlerTest {
         whenever(mockSubsonicApiClient.getAvatar(any()))
             .thenReturn(streamResponse)
 
-        val response = handler.load(createLoadAvatarRequest("some-username").buildRequest(), 0)
+        val response = handler.load(
+            createLoadAvatarRequest("some-username").buildRequest(), 0)
 
         response.loadedFrom `should be equal to` Picasso.LoadedFrom.NETWORK
         response.source `should not be` null

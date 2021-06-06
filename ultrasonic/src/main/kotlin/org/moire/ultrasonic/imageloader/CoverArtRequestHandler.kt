@@ -1,4 +1,4 @@
-package org.moire.ultrasonic.subsonic.loader.image
+package org.moire.ultrasonic.imageloader
 
 import com.squareup.picasso.Picasso.LoadedFrom.NETWORK
 import com.squareup.picasso.Request
@@ -14,7 +14,6 @@ class CoverArtRequestHandler(private val apiClient: SubsonicAPIClient) : Request
     override fun canHandleRequest(data: Request): Boolean {
         return with(data.uri) {
             scheme == SCHEME &&
-                authority == AUTHORITY &&
                 path == "/$COVER_ART_PATH"
         }
     }

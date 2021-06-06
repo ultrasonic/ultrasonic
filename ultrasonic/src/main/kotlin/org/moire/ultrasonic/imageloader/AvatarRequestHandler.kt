@@ -1,4 +1,4 @@
-package org.moire.ultrasonic.subsonic.loader.image
+package org.moire.ultrasonic.imageloader
 
 import com.squareup.picasso.Picasso
 import com.squareup.picasso.Request
@@ -15,9 +15,7 @@ class AvatarRequestHandler(
 ) : RequestHandler() {
     override fun canHandleRequest(data: Request): Boolean {
         return with(data.uri) {
-            scheme == SCHEME &&
-                authority == AUTHORITY &&
-                path == "/$AVATAR_PATH"
+            scheme == SCHEME && path == "/$AVATAR_PATH"
         }
     }
 

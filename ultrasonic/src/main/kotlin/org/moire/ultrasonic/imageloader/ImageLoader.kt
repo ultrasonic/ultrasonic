@@ -1,16 +1,25 @@
-package org.moire.ultrasonic.subsonic.loader.image
+package org.moire.ultrasonic.imageloader
 
 import android.content.Context
+import android.view.View
 import android.widget.ImageView
 import com.squareup.picasso.Picasso
 import com.squareup.picasso.RequestCreator
+import org.moire.ultrasonic.BuildConfig
+import org.moire.ultrasonic.R
 import org.moire.ultrasonic.api.subsonic.SubsonicAPIClient
+import org.moire.ultrasonic.domain.MusicDirectory
+import java.io.File
 
-// TODO: Implement OkHTTP disk caching
-class SubsonicImageLoader(
+/**
+ * Our new image loader which uses Picasso as a backend.
+ */
+class ImageLoader(
     context: Context,
-    apiClient: SubsonicAPIClient
-) {
+    apiClient: SubsonicAPIClient,
+    private val config: ImageLoaderConfig
+)  {
+
     private val picasso = Picasso.Builder(context)
         .addRequestHandler(CoverArtRequestHandler(apiClient))
         .addRequestHandler(AvatarRequestHandler(apiClient))
@@ -19,7 +28,7 @@ class SubsonicImageLoader(
             Picasso.setSingletonInstance(this)
         }
 
-    fun load(request: ImageRequest) = when (request) {
+    private fun load(request: ImageRequest) = when (request) {
         is ImageRequest.CoverArt -> loadCoverArt(request)
         is ImageRequest.Avatar -> loadAvatar(request)
     }
@@ -55,8 +64,60 @@ class SubsonicImageLoader(
 
         return this
     }
+
+    /**
+     * Load the cover of a given entry into an ImageView
+     */
+    @JvmOverloads
+    fun loadImage(
+        view: View?,
+        entry: MusicDirectory.Entry?,
+        large: Boolean,
+        size: Int,
+        defaultResourceId: Int = R.drawable.unknown_album
+    ) {
+        val id = entry?.coverArt
+        val requestedSize = resolveSize(size, large)
+
+        if (id != null && id.isNotEmpty() && view is ImageView) {
+            val request = ImageRequest.CoverArt(
+                id, view, requestedSize,
+                placeHolderDrawableRes = defaultResourceId,
+                errorDrawableRes = defaultResourceId
+            )
+            load(request)
+        }
+    }
+
+    /**
+     * Load the avatar of a given user into an ImageView
+     */
+    fun loadAvatarImage(
+        view: ImageView,
+        username: String
+    ) {
+        if (username.isNotEmpty()) {
+            val request = ImageRequest.Avatar(
+                username, view,
+                placeHolderDrawableRes = R.drawable.ic_contact_picture,
+                errorDrawableRes = R.drawable.ic_contact_picture
+            )
+            load(request)
+        }
+    }
+
+    private fun resolveSize(requested: Int, large: Boolean): Int {
+        if (requested <= 0) {
+            return if (large) config.largeSize else config.defaultSize
+        } else {
+            return requested
+        }
+    }
 }
 
+/**
+ * Data classes to hold all the info we need later on to process the request
+ */
 sealed class ImageRequest(
     val placeHolderDrawableRes: Int? = null,
     val errorDrawableRes: Int? = null,
@@ -85,3 +146,12 @@ sealed class ImageRequest(
         imageView
     )
 }
+
+/**
+ * Used to configure an instance of the ImageLoader
+ */
+data class ImageLoaderConfig (
+    val largeSize: Int = 0,
+    val defaultSize: Int = 0,
+    val cacheFolder: File?
+)

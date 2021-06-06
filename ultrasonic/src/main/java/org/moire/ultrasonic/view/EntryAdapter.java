@@ -28,7 +28,7 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import org.moire.ultrasonic.domain.MusicDirectory.Entry;
-import org.moire.ultrasonic.util.ImageLoader;
+import org.moire.ultrasonic.imageloader.ImageLoader;
 
 import java.util.List;
 

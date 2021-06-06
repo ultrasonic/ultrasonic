@@ -1,9 +1,8 @@
-package org.moire.ultrasonic.subsonic.loader.image
+package org.moire.ultrasonic.imageloader
 
 import android.net.Uri
 
 internal const val SCHEME = "subsonic_api"
-internal const val AUTHORITY = BuildConfig.LIBRARY_PACKAGE_NAME
 internal const val COVER_ART_PATH = "cover_art"
 internal const val AVATAR_PATH = "avatar"
 internal const val QUERY_ID = "id"
@@ -17,7 +16,6 @@ internal const val QUERY_USERNAME = "username"
 internal fun createLoadCoverArtRequest(entityId: String, size: Long? = 0): Uri =
     Uri.Builder()
         .scheme(SCHEME)
-        .authority(AUTHORITY)
         .appendPath(COVER_ART_PATH)
         .appendQueryParameter(QUERY_ID, entityId)
         .appendQueryParameter(SIZE, size.toString())
@@ -26,7 +24,6 @@ internal fun createLoadCoverArtRequest(entityId: String, size: Long? = 0): Uri =
 internal fun createLoadAvatarRequest(username: String): Uri =
     Uri.Builder()
         .scheme(SCHEME)
-        .authority(AUTHORITY)
         .appendPath(AVATAR_PATH)
         .appendQueryParameter(QUERY_USERNAME, username)
         .build()

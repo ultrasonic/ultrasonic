@@ -763,7 +763,7 @@ class TrackCollectionFragment : Fragment() {
         val artworkSelection = random.nextInt(entries.size)
         imageLoaderProvider.getImageLoader().loadImage(
             coverArtView, entries[artworkSelection], false,
-            Util.getAlbumImageSize(context), false, true
+            Util.getAlbumImageSize(context)
         )
 
         val albumHeader = AlbumHeader.processEntries(context, entries)
