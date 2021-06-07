@@ -87,6 +87,8 @@ class ImageLoader(
                 errorDrawableRes = defaultResourceId
             )
             load(request)
+        } else if (view is ImageView) {
+            view.setImageResource(defaultResourceId)
         }
     }
 
@@ -104,6 +106,8 @@ class ImageLoader(
                 errorDrawableRes = R.drawable.ic_contact_picture
             )
             load(request)
+        } else {
+            view.setImageResource(R.drawable.ic_contact_picture)
         }
     }
 
