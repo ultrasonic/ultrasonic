@@ -80,7 +80,7 @@ class ImageLoader(
         val requestedSize = resolveSize(size, large)
 
         if (id != null && id.isNotEmpty() && view is ImageView) {
-            val key = FileUtil.getAlbumArtKey(entry)
+            val key = FileUtil.getAlbumArtKey(entry, large)
             val request = ImageRequest.CoverArt(
                 id, key, view, requestedSize,
                 placeHolderDrawableRes = defaultResourceId,

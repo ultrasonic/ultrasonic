@@ -129,9 +129,10 @@ public class FileUtil
 	/**
 	 * Get the cache key for a given album entry
 	 * @param entry The album entry
+	 * @param large Whether to get the key for the large or the default image
 	 * @return String The hash key
 	 */
-	public static String getAlbumArtKey(MusicDirectory.Entry entry)
+	public static String getAlbumArtKey(MusicDirectory.Entry entry, boolean large)
 	{
 		File albumDir = getAlbumDirectory(entry);
 		File albumArtDir = getAlbumArtDirectory();
@@ -140,7 +141,7 @@ public class FileUtil
 			return null;
 		}
 
-		return String.format(Locale.ROOT, "%s.jpeg", Util.md5Hex(albumDir.getPath()));
+		return String.format(Locale.ROOT, "%s%b.jpeg", Util.md5Hex(albumDir.getPath()), large);
 	}
 
 
