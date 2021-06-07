@@ -5,11 +5,12 @@ import android.view.View
 import android.widget.ImageView
 import com.squareup.picasso.Picasso
 import com.squareup.picasso.RequestCreator
+import java.io.File
 import org.moire.ultrasonic.BuildConfig
 import org.moire.ultrasonic.R
 import org.moire.ultrasonic.api.subsonic.SubsonicAPIClient
 import org.moire.ultrasonic.domain.MusicDirectory
-import java.io.File
+import org.moire.ultrasonic.util.FileUtil
 
 /**
  * Our new image loader which uses Picasso as a backend.
@@ -18,14 +19,13 @@ class ImageLoader(
     context: Context,
     apiClient: SubsonicAPIClient,
     private val config: ImageLoaderConfig
-)  {
+) {
 
     private val picasso = Picasso.Builder(context)
         .addRequestHandler(CoverArtRequestHandler(apiClient))
         .addRequestHandler(AvatarRequestHandler(apiClient))
         .build().apply {
             setIndicatorsEnabled(BuildConfig.DEBUG)
-            Picasso.setSingletonInstance(this)
         }
 
     private fun load(request: ImageRequest) = when (request) {
@@ -37,7 +37,7 @@ class ImageLoader(
         picasso.load(createLoadCoverArtRequest(request.entityId, request.size.toLong()))
             .addPlaceholder(request)
             .addError(request)
-            .stableKey("${request.entityId}-${request.size}")
+            .stableKey(request.cacheKey)
             .into(request.imageView)
     }
 
@@ -80,8 +80,9 @@ class ImageLoader(
         val requestedSize = resolveSize(size, large)
 
         if (id != null && id.isNotEmpty() && view is ImageView) {
+            val key = FileUtil.getAlbumArtKey(entry)
             val request = ImageRequest.CoverArt(
-                id, view, requestedSize,
+                id, key, view, requestedSize,
                 placeHolderDrawableRes = defaultResourceId,
                 errorDrawableRes = defaultResourceId
             )
@@ -125,6 +126,7 @@ sealed class ImageRequest(
 ) {
     class CoverArt(
         val entityId: String,
+        val cacheKey: String,
         imageView: ImageView,
         val size: Int,
         placeHolderDrawableRes: Int? = null,
@@ -150,7 +152,7 @@ sealed class ImageRequest(
 /**
  * Used to configure an instance of the ImageLoader
  */
-data class ImageLoaderConfig (
+data class ImageLoaderConfig(
     val largeSize: Int = 0,
     val defaultSize: Int = 0,
     val cacheFolder: File?

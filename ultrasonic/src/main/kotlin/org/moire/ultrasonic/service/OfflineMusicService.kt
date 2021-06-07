@@ -40,6 +40,7 @@ import org.moire.ultrasonic.domain.SearchCriteria
 import org.moire.ultrasonic.domain.SearchResult
 import org.moire.ultrasonic.domain.Share
 import org.moire.ultrasonic.domain.UserInfo
+import org.moire.ultrasonic.imageloader.BitmapUtils
 import org.moire.ultrasonic.util.Constants
 import org.moire.ultrasonic.util.FileUtil
 import org.moire.ultrasonic.util.Util
@@ -121,11 +122,10 @@ class OfflineMusicService : MusicService, KoinComponent {
     override fun getAvatar(
         username: String?,
         size: Int,
-        saveToFile: Boolean,
-        highQuality: Boolean
+        saveToFile: Boolean
     ): Bitmap? {
         return try {
-            val bitmap = FileUtil.getAvatarBitmapFromDisk(username, size, highQuality)
+            val bitmap = BitmapUtils.getAvatarBitmapFromDisk(username, size)
             Util.scaleBitmap(bitmap, size)
         } catch (ignored: Exception) {
             null
@@ -135,11 +135,10 @@ class OfflineMusicService : MusicService, KoinComponent {
     override fun getCoverArt(
         entry: MusicDirectory.Entry,
         size: Int,
-        saveToFile: Boolean,
-        highQuality: Boolean
+        saveToFile: Boolean
     ): Bitmap? {
         return try {
-            val bitmap = FileUtil.getAlbumArtBitmapFromDisk(entry, size, highQuality)
+            val bitmap = BitmapUtils.getAlbumArtBitmapFromDisk(entry, size)
             Util.scaleBitmap(bitmap, size)
         } catch (ignored: Exception) {
             null

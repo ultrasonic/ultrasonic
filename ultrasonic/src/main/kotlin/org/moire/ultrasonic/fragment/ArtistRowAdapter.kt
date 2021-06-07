@@ -61,7 +61,10 @@ class ArtistRowAdapter(
                 holder.coverArt.visibility = View.VISIBLE
                 imageLoader.loadImage(
                     holder.coverArt,
-                    MusicDirectory.Entry("-1").apply { coverArt = holder.coverArtId },
+                    MusicDirectory.Entry("-1").apply {
+                        coverArt = holder.coverArtId
+                        artist = itemList[listPosition].name
+                    },
                     false, 0, R.drawable.ic_contact_picture
                 )
             } else {

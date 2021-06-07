@@ -77,7 +77,8 @@ class CoverArtRequestHandlerTest {
             .thenReturn(streamResponse)
 
         val response = handler.load(
-            createLoadCoverArtRequest("some").buildRequest(), 0)
+            createLoadCoverArtRequest("some").buildRequest(), 0
+        )
 
         response.loadedFrom `should be equal to` Picasso.LoadedFrom.NETWORK
         response.source `should not be` null

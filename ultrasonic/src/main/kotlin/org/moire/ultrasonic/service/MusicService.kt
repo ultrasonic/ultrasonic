@@ -115,12 +115,15 @@ interface MusicService {
     fun getCoverArt(
         entry: MusicDirectory.Entry,
         size: Int,
-        saveToFile: Boolean,
-        highQuality: Boolean
+        saveToFile: Boolean
     ): Bitmap?
 
     @Throws(Exception::class)
-    fun getAvatar(username: String?, size: Int, saveToFile: Boolean, highQuality: Boolean): Bitmap?
+    fun getAvatar(
+        username: String?,
+        size: Int,
+        saveToFile: Boolean
+    ): Bitmap?
 
     /**
      * Return response [InputStream] and a [Boolean] that indicates if this response is

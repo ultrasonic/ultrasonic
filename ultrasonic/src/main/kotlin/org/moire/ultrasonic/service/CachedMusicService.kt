@@ -259,10 +259,9 @@ class CachedMusicService(private val musicService: MusicService) : MusicService,
     override fun getCoverArt(
         entry: MusicDirectory.Entry,
         size: Int,
-        saveToFile: Boolean,
-        highQuality: Boolean
+        saveToFile: Boolean
     ): Bitmap? {
-        return musicService.getCoverArt(entry, size, saveToFile, highQuality)
+        return musicService.getCoverArt(entry, size, saveToFile)
     }
 
     @Throws(Exception::class)
@@ -451,10 +450,9 @@ class CachedMusicService(private val musicService: MusicService) : MusicService,
     override fun getAvatar(
         username: String?,
         size: Int,
-        saveToFile: Boolean,
-        highQuality: Boolean
+        saveToFile: Boolean
     ): Bitmap? {
-        return musicService.getAvatar(username, size, saveToFile, highQuality)
+        return musicService.getAvatar(username, size, saveToFile)
     }
 
     companion object {

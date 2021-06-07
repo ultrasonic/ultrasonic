@@ -1,5 +1,6 @@
 package org.moire.ultrasonic.imageloader
 
+import com.squareup.picasso.Picasso.LoadedFrom.DISK
 import com.squareup.picasso.Picasso.LoadedFrom.NETWORK
 import com.squareup.picasso.Request
 import com.squareup.picasso.RequestHandler
@@ -22,6 +23,12 @@ class CoverArtRequestHandler(private val apiClient: SubsonicAPIClient) : Request
         val id = request.uri.getQueryParameter(QUERY_ID)
             ?: throw IllegalArgumentException("Nullable id")
         val size = request.uri.getQueryParameter(SIZE)?.toLong()
+
+        // Check if we have a hit in the disk cache
+        val cache = BitmapUtils.getAlbumArtBitmapFromDisk(request.stableKey!!, size?.toInt())
+        if (cache != null) {
+            return Result(cache, DISK)
+        }
 
         val response = apiClient.getCoverArt(id, size)
         if (response.hasError() || response.stream == null) {

@@ -55,8 +55,7 @@ class AlbumRowAdapter(
             holder.coverArtId = entry.coverArt
 
             imageLoader.loadImage(
-                holder.coverArt,
-                MusicDirectory.Entry("-1").apply { coverArt = holder.coverArtId },
+                holder.coverArt, entry,
                 false, 0, R.drawable.unknown_album
             )
         }

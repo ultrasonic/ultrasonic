@@ -15,10 +15,10 @@ import android.widget.RemoteViews;
 import org.moire.ultrasonic.R;
 import org.moire.ultrasonic.activity.NavigationActivity;
 import org.moire.ultrasonic.domain.MusicDirectory;
+import org.moire.ultrasonic.imageloader.BitmapUtils;
 import org.moire.ultrasonic.receiver.MediaButtonIntentReceiver;
 import org.moire.ultrasonic.service.MediaPlayerController;
 import org.moire.ultrasonic.util.Constants;
-import org.moire.ultrasonic.util.FileUtil;
 
 import timber.log.Timber;
 
@@ -160,7 +160,7 @@ public class UltrasonicAppWidgetProvider extends AppWidgetProvider
 		// Set the cover art
 		try
 		{
-			Bitmap bitmap = currentSong == null ? null : FileUtil.getAlbumArtBitmapFromDisk(currentSong, 240, true);
+			Bitmap bitmap = currentSong == null ? null : BitmapUtils.Companion.getAlbumArtBitmapFromDisk(currentSong, 240);
 
 			if (bitmap == null)
 			{

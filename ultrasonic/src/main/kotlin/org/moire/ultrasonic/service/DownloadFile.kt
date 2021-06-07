@@ -24,6 +24,7 @@ import org.koin.core.component.inject
 import org.moire.ultrasonic.app.UApp
 import org.moire.ultrasonic.domain.MusicDirectory
 import org.moire.ultrasonic.service.MusicServiceFactory.getMusicService
+import org.moire.ultrasonic.subsonic.ImageLoaderProvider
 import org.moire.ultrasonic.util.CacheCleaner
 import org.moire.ultrasonic.util.CancellableTask
 import org.moire.ultrasonic.util.FileUtil
@@ -332,8 +333,9 @@ class DownloadFile(
         private fun downloadAndSaveCoverArt(musicService: MusicService) {
             try {
                 if (!TextUtils.isEmpty(song.coverArt)) {
-                    val size = Util.getMinDisplayMetric()
-                    musicService.getCoverArt(song, size, true, true)
+                    // Download the largest size that we can display in the UI
+                    val size = ImageLoaderProvider.config.largeSize
+                    musicService.getCoverArt(song, size = size, saveToFile = true)
                 }
             } catch (e: Exception) {
                 Timber.e(e, "Failed to get cover art.")

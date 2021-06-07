@@ -46,6 +46,7 @@ import org.moire.ultrasonic.domain.toDomainEntitiesList
 import org.moire.ultrasonic.domain.toDomainEntity
 import org.moire.ultrasonic.domain.toDomainEntityList
 import org.moire.ultrasonic.domain.toMusicDirectoryDomainEntity
+import org.moire.ultrasonic.imageloader.BitmapUtils
 import org.moire.ultrasonic.util.FileUtil
 import org.moire.ultrasonic.util.Util
 import timber.log.Timber
@@ -488,21 +489,18 @@ open class RESTMusicService(
         return response.body()!!.starred2.toDomainEntity()
     }
 
-    // TODO: Implement file caching in Picasso CoverArtRequestHandler,
-    //  and then use Picasso to handle this cache
     // This is only called by DownloadFile to cache the cover art for offline use
     @Throws(Exception::class)
     override fun getCoverArt(
         entry: MusicDirectory.Entry,
         size: Int,
-        saveToFile: Boolean,
-        highQuality: Boolean
+        saveToFile: Boolean
     ): Bitmap? {
         // Synchronize on the entry so that we don't download concurrently for
         // the same song.
         synchronized(entry) {
             // Use cached file, if existing.
-            var bitmap = FileUtil.getAlbumArtBitmapFromDisk(entry, size, highQuality)
+            var bitmap = BitmapUtils.getAlbumArtBitmapFromDisk(entry, size)
             val serverScaling = isServerScalingEnabled()
 
             if (bitmap == null) {
@@ -541,7 +539,7 @@ open class RESTMusicService(
                         }
                     }
 
-                    bitmap = FileUtil.getSampledBitmap(bytes, size, highQuality)
+                    bitmap = BitmapUtils.getSampledBitmap(bytes, size)
                 } finally {
                     Util.close(inputStream)
                 }
@@ -820,8 +818,7 @@ open class RESTMusicService(
     override fun getAvatar(
         username: String?,
         size: Int,
-        saveToFile: Boolean,
-        highQuality: Boolean
+        saveToFile: Boolean
     ): Bitmap? {
         // Synchronize on the username so that we don't download concurrently for
         // the same user.
@@ -831,7 +828,7 @@ open class RESTMusicService(
 
         synchronized(username) {
             // Use cached file, if existing.
-            var bitmap = FileUtil.getAvatarBitmapFromDisk(username, size, highQuality)
+            var bitmap = BitmapUtils.getAvatarBitmapFromDisk(username, size)
 
             if (bitmap == null) {
                 var inputStream: InputStream? = null
@@ -858,7 +855,7 @@ open class RESTMusicService(
                         }
                     }
 
-                    bitmap = FileUtil.getSampledBitmap(bytes, size, highQuality)
+                    bitmap = BitmapUtils.getSampledBitmap(bytes, size)
                 } finally {
                     Util.close(inputStream)
                 }
