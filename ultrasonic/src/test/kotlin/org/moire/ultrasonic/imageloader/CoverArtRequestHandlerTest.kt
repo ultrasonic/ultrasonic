@@ -84,5 +84,5 @@ class CoverArtRequestHandlerTest {
         response.source `should not be` null
     }
 
-    private fun Uri.buildRequest() = Request.Builder(this).build()
+    private fun Uri.buildRequest() = Request.Builder(this).stableKey("-1").build()
 }
