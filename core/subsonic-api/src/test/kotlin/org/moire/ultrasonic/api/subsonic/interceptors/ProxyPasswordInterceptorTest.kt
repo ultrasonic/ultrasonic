@@ -1,9 +1,9 @@
 package org.moire.ultrasonic.api.subsonic.interceptors
 
-import com.nhaarman.mockito_kotlin.mock
-import com.nhaarman.mockito_kotlin.verify
 import okhttp3.Interceptor.Chain
 import org.junit.Test
+import org.mockito.Mockito.verify
+import org.mockito.kotlin.mock
 import org.moire.ultrasonic.api.subsonic.SubsonicAPIVersions.V1_12_0
 import org.moire.ultrasonic.api.subsonic.SubsonicAPIVersions.V1_13_0
 import org.moire.ultrasonic.api.subsonic.SubsonicAPIVersions.V1_16_0
