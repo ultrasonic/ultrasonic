@@ -141,6 +141,7 @@ class SubsonicAPIClient(
         api.getAvatar(username).execute()
     }
 
+    // TODO: Move this to response checker
     private inline fun handleStreamResponse(apiCall: () -> Response<ResponseBody>): StreamResponse {
         val response = apiCall()
         return if (response.isSuccessful) {

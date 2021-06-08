@@ -736,6 +736,7 @@ open class RESTMusicService(
         private const val INDEXES_STORAGE_NAME = "indexes"
         private const val ARTISTS_STORAGE_NAME = "artists"
 
+        // TODO: Move to response checker
         @Throws(SubsonicRESTException::class, IOException::class)
         fun checkStreamResponseError(response: StreamResponse) {
             if (response.hasError() || response.stream == null) {
