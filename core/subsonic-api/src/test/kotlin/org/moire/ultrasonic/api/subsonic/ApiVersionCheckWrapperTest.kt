@@ -1,10 +1,10 @@
 package org.moire.ultrasonic.api.subsonic
 
-import com.nhaarman.mockito_kotlin.mock
-import com.nhaarman.mockito_kotlin.never
-import com.nhaarman.mockito_kotlin.verify
 import org.amshove.kluent.`should throw`
 import org.junit.Test
+import org.mockito.Mockito.never
+import org.mockito.Mockito.verify
+import org.mockito.kotlin.mock
 import org.moire.ultrasonic.api.subsonic.SubsonicAPIVersions.V1_1_0
 import org.moire.ultrasonic.api.subsonic.SubsonicAPIVersions.V1_2_0
 import org.moire.ultrasonic.api.subsonic.models.AlbumListType.BY_GENRE
