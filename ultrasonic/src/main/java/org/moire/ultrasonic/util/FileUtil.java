@@ -57,6 +57,8 @@ public class FileUtil
 	private static final List<String> VIDEO_FILE_EXTENSIONS = Arrays.asList("flv", "mp4", "m4v", "wmv", "avi", "mov", "mpg", "mkv");
 	private static final List<String> PLAYLIST_FILE_EXTENSIONS = Collections.singletonList("m3u");
 	private static final Pattern TITLE_WITH_TRACK = Pattern.compile("^\\d\\d-.*");
+	public static final String SUFFIX_LARGE = ".jpeg";
+	public static final String SUFFIX_SMALL = ".jpeg-small";
 
 	private static final Lazy<PermissionUtil> permissionUtil = inject(PermissionUtil.class);
 
@@ -141,7 +143,9 @@ public class FileUtil
 			return null;
 		}
 
-		return String.format(Locale.ROOT, "%s%b.jpeg", Util.md5Hex(albumDir.getPath()), large);
+		String suffix = (large) ? SUFFIX_LARGE : SUFFIX_SMALL;
+
+		return String.format(Locale.ROOT, "%s%s", Util.md5Hex(albumDir.getPath()), suffix);
 	}
 
 
