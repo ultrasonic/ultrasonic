@@ -381,19 +381,6 @@
     <string name="settings.show_all_songs_by_artist">Voir tous les titres par artiste</string>
     <string name="settings.show_all_songs_by_artist_summary">Ajouter une nouvelle entrée dans la vue artiste pour accéder à toutes les titres d\'un artiste</string>
     <string name="download.menu_show_artist">Afficher l\'artiste</string>
-    <string name="settings.image_loader_concurrency">Chargements d’images simultanés</string>
-    <string name="settings.image_loader_concurrency_1">1</string>
-    <string name="settings.image_loader_concurrency_2">2</string>
-    <string name="settings.image_loader_concurrency_3">3</string>
-    <string name="settings.image_loader_concurrency_4">4</string>
-    <string name="settings.image_loader_concurrency_5">5</string>
-    <string name="settings.image_loader_concurrency_6">6</string>
-    <string name="settings.image_loader_concurrency_7">7</string>
-    <string name="settings.image_loader_concurrency_8">8</string>
-    <string name="settings.image_loader_concurrency_9">9</string>
-    <string name="settings.image_loader_concurrency_10">10</string>
-    <string name="settings.image_loader_concurrency_11">11</string>
-    <string name="settings.image_loader_concurrency_12">12</string>
     <string name="albumArt">Pochette d\'album</string>
     <string name="common_multiple_years">Années multiples</string>
     <string name="settings.playback.resume_on_bluetooth_device">Reprendre lorsqu’un appareil Bluetooth se connecte</string>
@@ -491,10 +478,6 @@
 
     <!-- Subsonic feature flags -->
     <string name="feature_flags_category_title">Drapeaux des fonctionnalités</string>
-    <string name="feature_flags_image_loader_title">Activer le nouveau chargeur d\'images</string>
-    <string name="feature_flags_image_loader_description">Permet l\'implémentation d\'un nouveau chargeur d\'images.
-        Actuellement, il n\'enregistre pas l\'image dans l\'appareil et n\'utilise que le cache en mémoire.
-    </string>
     <string name="feature_flags_five_star_rating_title">Utiliser les étoiles pour noter les morceaux</string>
     <string name="feature_flags_five_star_rating_description">Utiliser un système de notation à base d\'étoiles pour les morceaux
          au lieu de simplement mettre en avant les morceaux.

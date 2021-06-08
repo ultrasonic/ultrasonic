@@ -6,7 +6,6 @@
  */
 package org.moire.ultrasonic.service
 
-import android.graphics.Bitmap
 import java.io.InputStream
 import org.moire.ultrasonic.domain.Bookmark
 import org.moire.ultrasonic.domain.ChatMessage
@@ -110,17 +109,6 @@ interface MusicService {
 
     @Throws(Exception::class)
     fun getStarred2(): SearchResult
-
-    @Throws(Exception::class)
-    fun getCoverArt(
-        entry: MusicDirectory.Entry?,
-        size: Int,
-        saveToFile: Boolean,
-        highQuality: Boolean
-    ): Bitmap?
-
-    @Throws(Exception::class)
-    fun getAvatar(username: String?, size: Int, saveToFile: Boolean, highQuality: Boolean): Bitmap?
 
     /**
      * Return response [InputStream] and a [Boolean] that indicates if this response is

@@ -6,15 +6,11 @@
  */
 package org.moire.ultrasonic.service
 
-import android.graphics.Bitmap
-import android.text.TextUtils
 import java.io.BufferedWriter
 import java.io.File
-import java.io.FileOutputStream
 import java.io.FileWriter
 import java.io.IOException
 import java.io.InputStream
-import java.io.OutputStream
 import java.util.concurrent.CountDownLatch
 import java.util.concurrent.TimeUnit
 import org.moire.ultrasonic.api.subsonic.ApiNotSupportedException
@@ -27,7 +23,6 @@ import org.moire.ultrasonic.cache.serializers.getIndexesSerializer
 import org.moire.ultrasonic.cache.serializers.getMusicFolderListSerializer
 import org.moire.ultrasonic.data.ActiveServerProvider
 import org.moire.ultrasonic.data.ActiveServerProvider.Companion.isOffline
-import org.moire.ultrasonic.data.ActiveServerProvider.Companion.isServerScalingEnabled
 import org.moire.ultrasonic.domain.Bookmark
 import org.moire.ultrasonic.domain.ChatMessage
 import org.moire.ultrasonic.domain.Genre
@@ -489,83 +484,6 @@ open class RESTMusicService(
     }
 
     @Throws(Exception::class)
-    override fun getCoverArt(
-        entry: MusicDirectory.Entry?,
-        size: Int,
-        saveToFile: Boolean,
-        highQuality: Boolean
-    ): Bitmap? {
-        // Synchronize on the entry so that we don't download concurrently for
-        // the same song.
-        if (entry == null) {
-            return null
-        }
-
-        synchronized(entry) {
-            // Use cached file, if existing.
-            var bitmap = FileUtil.getAlbumArtBitmap(entry, size, highQuality)
-            val serverScaling = isServerScalingEnabled()
-
-            if (bitmap == null) {
-                Timber.d("Loading cover art for: %s", entry)
-
-                val id = entry.coverArt
-
-                if (TextUtils.isEmpty(id)) {
-                    return null // Can't load
-                }
-
-                val response = subsonicAPIClient.getCoverArt(id!!, size.toLong())
-                checkStreamResponseError(response)
-
-                if (response.stream == null) {
-                    return null // Failed to load
-                }
-
-                var inputStream: InputStream? = null
-                try {
-                    inputStream = response.stream
-                    val bytes = Util.toByteArray(inputStream)
-
-                    // If we aren't allowing server-side scaling, always save the file to disk
-                    // because it will be unmodified
-                    if (!serverScaling || saveToFile) {
-                        var outputStream: OutputStream? = null
-                        try {
-                            outputStream = FileOutputStream(
-                                FileUtil.getAlbumArtFile(entry)
-                            )
-                            outputStream.write(bytes)
-                        } finally {
-                            Util.close(outputStream)
-                        }
-                    }
-
-                    bitmap = FileUtil.getSampledBitmap(bytes, size, highQuality)
-                } finally {
-                    Util.close(inputStream)
-                }
-            }
-
-            // Return scaled bitmap
-            return Util.scaleBitmap(bitmap, size)
-        }
-    }
-
-    @Throws(SubsonicRESTException::class, IOException::class)
-    private fun checkStreamResponseError(response: StreamResponse) {
-        if (response.hasError() || response.stream == null) {
-            if (response.apiError != null) {
-                throw SubsonicRESTException(response.apiError!!)
-            } else {
-                throw IOException(
-                    "Failed to make endpoint request, code: " + response.responseHttpCode
-                )
-            }
-        }
-    }
-
-    @Throws(Exception::class)
     override fun getDownloadInputStream(
         song: MusicDirectory.Entry,
         offset: Long,
@@ -813,62 +731,23 @@ open class RESTMusicService(
         }
     }
 
-    @Throws(Exception::class)
-    override fun getAvatar(
-        username: String?,
-        size: Int,
-        saveToFile: Boolean,
-        highQuality: Boolean
-    ): Bitmap? {
-        // Synchronize on the username so that we don't download concurrently for
-        // the same user.
-        if (username == null) {
-            return null
-        }
-
-        synchronized(username) {
-            // Use cached file, if existing.
-            var bitmap = FileUtil.getAvatarBitmap(username, size, highQuality)
-
-            if (bitmap == null) {
-                var inputStream: InputStream? = null
-                try {
-                    val response = subsonicAPIClient.getAvatar(username)
-
-                    if (response.hasError()) return null
-
-                    inputStream = response.stream
-                    val bytes = Util.toByteArray(inputStream)
-
-                    // If we aren't allowing server-side scaling, always save the file to disk
-                    // because it will be unmodified
-                    if (saveToFile) {
-                        var outputStream: OutputStream? = null
-
-                        try {
-                            outputStream = FileOutputStream(
-                                FileUtil.getAvatarFile(username)
-                            )
-                            outputStream.write(bytes)
-                        } finally {
-                            Util.close(outputStream)
-                        }
-                    }
-
-                    bitmap = FileUtil.getSampledBitmap(bytes, size, highQuality)
-                } finally {
-                    Util.close(inputStream)
-                }
-            }
-
-            // Return scaled bitmap
-            return Util.scaleBitmap(bitmap, size)
-        }
-    }
-
     companion object {
         private const val MUSIC_FOLDER_STORAGE_NAME = "music_folder"
         private const val INDEXES_STORAGE_NAME = "indexes"
         private const val ARTISTS_STORAGE_NAME = "artists"
+
+        // TODO: Move to response checker
+        @Throws(SubsonicRESTException::class, IOException::class)
+        fun checkStreamResponseError(response: StreamResponse) {
+            if (response.hasError() || response.stream == null) {
+                if (response.apiError != null) {
+                    throw SubsonicRESTException(response.apiError!!)
+                } else {
+                    throw IOException(
+                        "Failed to make endpoint request, code: " + response.responseHttpCode
+                    )
+                }
+            }
+        }
     }
 }

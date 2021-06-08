@@ -368,19 +368,6 @@
     <string name="settings.show_all_songs_by_artist">Показать все треки исполнителя</string>
     <string name="settings.show_all_songs_by_artist_summary">Добавить новую запись в представлении исполнителя, чтобы получить доступ ко всем песням для исполнителя</string>
     <string name="download.menu_show_artist">Показать исполнителей</string>
-    <string name="settings.image_loader_concurrency">Загрузчик совпадающих изображений</string>
-    <string name="settings.image_loader_concurrency_1">1</string>
-    <string name="settings.image_loader_concurrency_2">2</string>
-    <string name="settings.image_loader_concurrency_3">3</string>
-    <string name="settings.image_loader_concurrency_4">4</string>
-    <string name="settings.image_loader_concurrency_5">5</string>
-    <string name="settings.image_loader_concurrency_6">6</string>
-    <string name="settings.image_loader_concurrency_7">7</string>
-    <string name="settings.image_loader_concurrency_8">8</string>
-    <string name="settings.image_loader_concurrency_9">9</string>
-    <string name="settings.image_loader_concurrency_10">10</string>
-    <string name="settings.image_loader_concurrency_11">11</string>
-    <string name="settings.image_loader_concurrency_12">12</string>
     <string name="albumArt">albumArt</string>
     <string name="common_multiple_years">Несколько лет</string>
     <!-- Subsonic api errors -->
@@ -396,7 +383,4 @@
 
     <!-- Subsonic feature flags -->
     <string name="feature_flags_category_title">Флаги</string>
-    <string name="feature_flags_image_loader_title">Включить новый загрузчик изображений</string>
-    <string name="feature_flags_image_loader_description">Включает новую реализацию загрузчика изображений.
-В настоящее время он не сохраняет изображение в памяти устройства и использует только кэш в памяти.</string>
     </resources>

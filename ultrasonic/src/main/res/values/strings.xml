@@ -395,19 +395,6 @@
     <string name="settings.show_all_songs_by_artist">Show All Songs By Artist</string>
     <string name="settings.show_all_songs_by_artist_summary">Add new entry in artist view to access all songs for an artist</string>
     <string name="download.menu_show_artist">Show Artist</string>
-    <string name="settings.image_loader_concurrency">Image Loader Concurrency</string>
-    <string name="settings.image_loader_concurrency_1">1</string>
-    <string name="settings.image_loader_concurrency_2">2</string>
-    <string name="settings.image_loader_concurrency_3">3</string>
-    <string name="settings.image_loader_concurrency_4">4</string>
-    <string name="settings.image_loader_concurrency_5">5</string>
-    <string name="settings.image_loader_concurrency_6">6</string>
-    <string name="settings.image_loader_concurrency_7">7</string>
-    <string name="settings.image_loader_concurrency_8">8</string>
-    <string name="settings.image_loader_concurrency_9">9</string>
-    <string name="settings.image_loader_concurrency_10">10</string>
-    <string name="settings.image_loader_concurrency_11">11</string>
-    <string name="settings.image_loader_concurrency_12">12</string>
     <string name="albumArt">albumArt</string>
     <string name="common_multiple_years">Multiple Years</string>
     <string name="settings.server_address_unset" translatable="false">http://example.com</string>
@@ -506,10 +493,6 @@
 
     <!-- Subsonic feature flags -->
     <string name="feature_flags_category_title">Feature Flags</string>
-    <string name="feature_flags_image_loader_title">Enable new image loader</string>
-    <string name="feature_flags_image_loader_description">Enables new image loader implementation.
-        Currently it doesn\'t save image in device storage and uses only cache in memory.
-    </string>
     <string name="feature_flags_five_star_rating_title">Use five star rating for songs</string>
     <string name="feature_flags_five_star_rating_description">Use five star rating system for songs
         instead of simply starring/unstarring items.

@@ -1,11 +1,13 @@
-package org.moire.ultrasonic.subsonic.loader.image
+package org.moire.ultrasonic.imageloader
 
 import android.net.Uri
 import com.nhaarman.mockito_kotlin.any
+import com.nhaarman.mockito_kotlin.anyOrNull
 import com.nhaarman.mockito_kotlin.mock
 import com.nhaarman.mockito_kotlin.whenever
 import com.squareup.picasso.Picasso
 import com.squareup.picasso.Request
+import java.io.IOException
 import org.amshove.kluent.`should be equal to`
 import org.amshove.kluent.`should not be`
 import org.amshove.kluent.`should throw`
@@ -15,17 +17,16 @@ import org.junit.runner.RunWith
 import org.moire.ultrasonic.api.subsonic.SubsonicAPIClient
 import org.moire.ultrasonic.api.subsonic.response.StreamResponse
 import org.robolectric.RobolectricTestRunner
-import org.robolectric.annotation.Config
 
 @RunWith(RobolectricTestRunner::class)
-@Config(manifest = Config.NONE)
-class AvatarRequestHandlerTest {
-    private val mockSubsonicApiClient = mock<SubsonicAPIClient>()
-    private val handler = AvatarRequestHandler(mockSubsonicApiClient)
+class CoverArtRequestHandlerTest {
+    private val mockSubsonicApiClientMock = mock<SubsonicAPIClient>()
+    private val handler =
+        CoverArtRequestHandler(mockSubsonicApiClientMock)
 
     @Test
     fun `Should accept only cover art request`() {
-        val requestUri = createLoadAvatarRequest("some-username")
+        val requestUri = createLoadCoverArtRequest("some-id")
 
         handler.canHandleRequest(requestUri.buildRequest()) shouldBeEqualTo true
     }
@@ -34,16 +35,15 @@ class AvatarRequestHandlerTest {
     fun `Should not accept random request uri`() {
         val requestUri = Uri.Builder()
             .scheme(SCHEME)
-            .authority(AUTHORITY)
-            .appendPath("something")
+            .appendPath("random")
             .build()
 
         handler.canHandleRequest(requestUri.buildRequest()) shouldBeEqualTo false
     }
 
     @Test
-    fun `Should fail loading if uri doesn't contain username`() {
-        var requestUri = createLoadAvatarRequest("some-username")
+    fun `Should fail loading if uri doesn't contain id`() {
+        var requestUri = createLoadCoverArtRequest("some-id")
         requestUri = requestUri.buildUpon().clearQuery().build()
 
         val fail = {
@@ -54,20 +54,35 @@ class AvatarRequestHandlerTest {
     }
 
     @Test
-    fun `Should load avatar from network`() {
+    fun `Should throw IOException when request to api failed`() {
+        val streamResponse = StreamResponse(null, null, 500)
+        whenever(mockSubsonicApiClientMock.getCoverArt(any(), anyOrNull()))
+            .thenReturn(streamResponse)
+
+        val fail = {
+            handler.load(createLoadCoverArtRequest("some").buildRequest(), 0)
+        }
+
+        fail `should throw` IOException::class
+    }
+
+    @Test
+    fun `Should load bitmap from network`() {
         val streamResponse = StreamResponse(
             loadResourceStream("Big_Buck_Bunny.jpeg"),
             apiError = null,
             responseHttpCode = 200
         )
-        whenever(mockSubsonicApiClient.getAvatar(any()))
+        whenever(mockSubsonicApiClientMock.getCoverArt(any(), anyOrNull()))
             .thenReturn(streamResponse)
 
-        val response = handler.load(createLoadAvatarRequest("some-username").buildRequest(), 0)
+        val response = handler.load(
+            createLoadCoverArtRequest("some").buildRequest(), 0
+        )
 
         response.loadedFrom `should be equal to` Picasso.LoadedFrom.NETWORK
         response.source `should not be` null
     }
 
-    private fun Uri.buildRequest() = Request.Builder(this).build()
+    private fun Uri.buildRequest() = Request.Builder(this).stableKey("-1").build()
 }

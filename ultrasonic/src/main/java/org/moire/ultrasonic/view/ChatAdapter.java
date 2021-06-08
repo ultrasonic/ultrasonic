@@ -1,6 +1,7 @@
 package org.moire.ultrasonic.view;
 
 import android.content.Context;
+import android.text.TextUtils;
 import android.text.method.LinkMovementMethod;
 import android.text.util.Linkify;
 import android.view.LayoutInflater;
@@ -12,8 +13,8 @@ import android.widget.TextView;
 import org.moire.ultrasonic.R;
 import org.moire.ultrasonic.data.ActiveServerProvider;
 import org.moire.ultrasonic.domain.ChatMessage;
+import org.moire.ultrasonic.imageloader.ImageLoader;
 import org.moire.ultrasonic.subsonic.ImageLoaderProvider;
-import org.moire.ultrasonic.util.ImageLoader;
 
 import java.text.DateFormat;
 import java.util.Date;
@@ -33,7 +34,7 @@ public class ChatAdapter extends ArrayAdapter<ChatMessage>
 	private static final Pattern phoneMatcher = Pattern.compile(phoneRegex);
 
 	private final Lazy<ActiveServerProvider> activeServerProvider = inject(ActiveServerProvider.class);
-	private final Lazy<ImageLoaderProvider> imageLoader = inject(ImageLoaderProvider.class);
+	private final Lazy<ImageLoaderProvider> imageLoaderProvider = inject(ImageLoaderProvider.class);
 
 	public ChatAdapter(Context context, List<ChatMessage> messages)
 	{
@@ -95,11 +96,11 @@ public class ChatAdapter extends ArrayAdapter<ChatMessage>
 		DateFormat timeFormat = android.text.format.DateFormat.getTimeFormat(context);
 		String messageTimeFormatted = String.format("[%s]", timeFormat.format(messageTime));
 
-		ImageLoader imageLoaderInstance = imageLoader.getValue().getImageLoader();
+		ImageLoader imageLoader = imageLoaderProvider.getValue().getImageLoader();
 
-		if (imageLoaderInstance != null)
+		if (holder.avatar != null && !TextUtils.isEmpty(messageUser))
 		{
-			imageLoaderInstance.loadAvatarImage(holder.avatar, messageUser, false, holder.avatar.getWidth(), false, true);
+			imageLoader.loadAvatarImage(holder.avatar, messageUser);
 		}
 
 		holder.username.setText(messageUser);

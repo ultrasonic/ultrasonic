@@ -19,18 +19,12 @@
 package org.moire.ultrasonic.util;
 
 import android.content.Context;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.os.Build;
 import android.os.Environment;
 import android.text.TextUtils;
 
-import kotlin.Lazy;
-import timber.log.Timber;
-
 import org.moire.ultrasonic.app.UApp;
 import org.moire.ultrasonic.domain.MusicDirectory;
-import org.moire.ultrasonic.subsonic.ImageLoaderProvider;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -42,9 +36,13 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Locale;
 import java.util.SortedSet;
 import java.util.TreeSet;
 import java.util.regex.Pattern;
+
+import kotlin.Lazy;
+import timber.log.Timber;
 
 import static org.koin.java.KoinJavaComponent.inject;
 
@@ -59,8 +57,9 @@ public class FileUtil
 	private static final List<String> VIDEO_FILE_EXTENSIONS = Arrays.asList("flv", "mp4", "m4v", "wmv", "avi", "mov", "mpg", "mkv");
 	private static final List<String> PLAYLIST_FILE_EXTENSIONS = Collections.singletonList("m3u");
 	private static final Pattern TITLE_WITH_TRACK = Pattern.compile("^\\d\\d-.*");
+	public static final String SUFFIX_LARGE = ".jpeg";
+	public static final String SUFFIX_SMALL = ".jpeg-small";
 
-	private static final Lazy<ImageLoaderProvider> imageLoaderProvider = inject(ImageLoaderProvider.class);
 	private static final Lazy<PermissionUtil> permissionUtil = inject(PermissionUtil.class);
 
 	public static File getSongFile(MusicDirectory.Entry song)
@@ -118,11 +117,48 @@ public class FileUtil
 		return playlistDir;
 	}
 
+	/**
+	 * Get the album art file for a given album entry
+	 * @param entry The album entry
+	 * @return File object. Not guaranteed that it exists
+	 */
 	public static File getAlbumArtFile(MusicDirectory.Entry entry)
 	{
 		File albumDir = getAlbumDirectory(entry);
 		return getAlbumArtFile(albumDir);
 	}
+
+	/**
+	 * Get the cache key for a given album entry
+	 * @param entry The album entry
+	 * @param large Whether to get the key for the large or the default image
+	 * @return String The hash key
+	 */
+	public static String getAlbumArtKey(MusicDirectory.Entry entry, boolean large)
+	{
+		File albumDir = getAlbumDirectory(entry);
+
+		return getAlbumArtKey(albumDir, large);
+	}
+
+	/**
+	 * Get the cache key for a given album entry
+	 * @param albumDir The album directory
+	 * @param large Whether to get the key for the large or the default image
+	 * @return String The hash key
+	 */
+	public static String getAlbumArtKey(File albumDir, boolean large)
+	{
+		if (albumDir == null) {
+			return null;
+		}
+
+		String suffix = (large) ? SUFFIX_LARGE : SUFFIX_SMALL;
+
+		return String.format(Locale.ROOT, "%s%s", Util.md5Hex(albumDir.getPath()), suffix);
+	}
+
+
 
 	public static File getAvatarFile(String username)
 	{
@@ -134,173 +170,45 @@ public class FileUtil
 		}
 
 		String md5Hex = Util.md5Hex(username);
-		return new File(albumArtDir, String.format("%s.jpeg", md5Hex));
+		return new File(albumArtDir, String.format("%s%s", md5Hex, SUFFIX_LARGE));
 	}
 
+	/**
+	 * Get the album art file for a given album directory
+	 * @param albumDir The album directory
+	 * @return File object. Not guaranteed that it exists
+	 */
 	public static File getAlbumArtFile(File albumDir)
 	{
 		File albumArtDir = getAlbumArtDirectory();
+		String key = getAlbumArtKey(albumDir, true);
 
-		if (albumArtDir == null || albumDir == null)
+		if (key == null || albumArtDir == null)
 		{
 			return null;
 		}
 
-		String md5Hex = Util.md5Hex(albumDir.getPath());
-		return new File(albumArtDir, String.format("%s.jpeg", md5Hex));
+		return new File(albumArtDir, key);
 	}
 
-	public static Bitmap getAvatarBitmap(String username, int size, boolean highQuality)
+
+	/**
+	 * Get the album art file for a given cache key
+	 * @param cacheKey The key (== the filename)
+	 * @return File object. Not guaranteed that it exists
+	 */
+	public static File getAlbumArtFile(String cacheKey)
 	{
-		if (username == null) return null;
+		File albumArtDir = getAlbumArtDirectory();
 
-		File avatarFile = getAvatarFile(username);
-
-		Bitmap bitmap = null;
-		ImageLoader imageLoader = imageLoaderProvider.getValue().getImageLoader();
-
-		if (imageLoader != null)
+		if (albumArtDir == null || cacheKey == null)
 		{
-			bitmap = imageLoader.getImageBitmap(username, size);
+			return null;
 		}
 
-		if (bitmap != null)
-		{
-			return bitmap.copy(bitmap.getConfig(), false);
-		}
-
-		if (avatarFile != null && avatarFile.exists())
-		{
-			final BitmapFactory.Options opt = new BitmapFactory.Options();
-
-			if (size > 0)
-			{
-				opt.inJustDecodeBounds = true;
-				BitmapFactory.decodeFile(avatarFile.getPath(), opt);
-
-				if (highQuality)
-				{
-					opt.inDither = true;
-					opt.inPreferQualityOverSpeed = true;
-				}
-
-				opt.inPurgeable = true;
-				opt.inSampleSize = Util.calculateInSampleSize(opt, size, Util.getScaledHeight(opt.outHeight, opt.outWidth, size));
-				opt.inJustDecodeBounds = false;
-			}
-
-			try
-			{
-				bitmap = BitmapFactory.decodeFile(avatarFile.getPath(), opt);
-			}
-			catch (Exception ex)
-			{
-				Timber.e(ex, "Exception in BitmapFactory.decodeFile()");
-			}
-
-			Timber.i("getAvatarBitmap %s", String.valueOf(size));
-
-			if (bitmap != null)
-			{
-				if (imageLoader != null)
-				{
-					imageLoader.addImageToCache(bitmap, username, size);
-				}
-			}
-
-			return bitmap;
-		}
-
-		return null;
+		return new File(albumArtDir, cacheKey);
 	}
 
-	public static Bitmap getAlbumArtBitmap(MusicDirectory.Entry entry, int size, boolean highQuality)
-	{
-		if (entry == null) return null;
-
-		File albumArtFile = getAlbumArtFile(entry);
-
-		Bitmap bitmap = null;
-		ImageLoader imageLoader = imageLoaderProvider.getValue().getImageLoader();
-
-		if (imageLoader != null)
-		{
-			bitmap = imageLoader.getImageBitmap(entry, true, size);
-		}
-
-		if (bitmap != null)
-		{
-			return bitmap.copy(bitmap.getConfig(), false);
-		}
-
-		if (albumArtFile != null && albumArtFile.exists())
-		{
-			final BitmapFactory.Options opt = new BitmapFactory.Options();
-
-			if (size > 0)
-			{
-				opt.inJustDecodeBounds = true;
-				BitmapFactory.decodeFile(albumArtFile.getPath(), opt);
-
-				if (highQuality)
-				{
-					opt.inDither = true;
-					opt.inPreferQualityOverSpeed = true;
-				}
-
-				opt.inPurgeable = true;
-				opt.inSampleSize = Util.calculateInSampleSize(opt, size, Util.getScaledHeight(opt.outHeight, opt.outWidth, size));
-				opt.inJustDecodeBounds = false;
-			}
-
-			try
-			{
-				bitmap = BitmapFactory.decodeFile(albumArtFile.getPath(), opt);
-			}
-			catch (Exception ex)
-			{
-				Timber.e(ex, "Exception in BitmapFactory.decodeFile()");
-			}
-
-			Timber.i("getAlbumArtBitmap %s", String.valueOf(size));
-
-			if (bitmap != null)
-			{
-				if (imageLoader != null)
-				{
-					imageLoader.addImageToCache(bitmap, entry, size);
-				}
-			}
-
-			return bitmap;
-		}
-
-		return null;
-	}
-
-	public static Bitmap getSampledBitmap(byte[] bytes, int size, boolean highQuality)
-	{
-		final BitmapFactory.Options opt = new BitmapFactory.Options();
-
-		if (size > 0)
-		{
-			opt.inJustDecodeBounds = true;
-			BitmapFactory.decodeByteArray(bytes, 0, bytes.length, opt);
-
-			if (highQuality)
-			{
-				opt.inDither = true;
-				opt.inPreferQualityOverSpeed = true;
-			}
-
-			opt.inPurgeable = true;
-			opt.inSampleSize = Util.calculateInSampleSize(opt, size, Util.getScaledHeight(opt.outHeight, opt.outWidth, size));
-			opt.inJustDecodeBounds = false;
-		}
-
-		Timber.i("getSampledBitmap %s", String.valueOf(size));
-		return BitmapFactory.decodeByteArray(bytes, 0, bytes.length, opt);
-	}
 
 	public static File getAlbumArtDirectory()
 	{

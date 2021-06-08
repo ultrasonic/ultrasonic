@@ -15,7 +15,7 @@ import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import org.moire.ultrasonic.R
 import org.moire.ultrasonic.domain.MusicDirectory
-import org.moire.ultrasonic.util.ImageLoader
+import org.moire.ultrasonic.imageloader.ImageLoader
 
 /**
  * Creates a Row in a RecyclerView which contains the details of an Album
@@ -29,7 +29,6 @@ class AlbumRowAdapter(
 ) : GenericRowAdapter<MusicDirectory.Entry>(
     onItemClick,
     onContextMenuClick,
-    imageLoader,
     onMusicFolderUpdate
 ) {
 
@@ -56,9 +55,8 @@ class AlbumRowAdapter(
             holder.coverArtId = entry.coverArt
 
             imageLoader.loadImage(
-                holder.coverArt,
-                MusicDirectory.Entry("-1").apply { coverArt = holder.coverArtId },
-                false, 0, false, true, R.drawable.unknown_album
+                holder.coverArt, entry,
+                false, 0, R.drawable.unknown_album
             )
         }
     }

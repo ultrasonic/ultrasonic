@@ -1,4 +1,4 @@
-package org.moire.ultrasonic.subsonic.loader.image
+package org.moire.ultrasonic.imageloader
 
 import android.net.Uri
 import org.amshove.kluent.shouldBeEqualTo
@@ -11,15 +11,17 @@ class RequestCreatorTest {
     @Test
     fun `Should create valid load cover art request`() {
         val entityId = "299"
-        val expectedUri = Uri.parse("$SCHEME://$AUTHORITY/$COVER_ART_PATH?$QUERY_ID=$entityId")
+        val size = 100L
+        val expectedUri =
+            Uri.parse("$SCHEME:/$COVER_ART_PATH?$QUERY_ID=$entityId&$SIZE=$size")
 
-        createLoadCoverArtRequest(entityId).compareTo(expectedUri).shouldBeEqualTo(0)
+        createLoadCoverArtRequest(entityId, size).compareTo(expectedUri).shouldBeEqualTo(0)
     }
 
     @Test
     fun `Should create valid avatar request`() {
         val username = "some-username"
-        val expectedUri = Uri.parse("$SCHEME://$AUTHORITY/$AVATAR_PATH?$QUERY_USERNAME=$username")
+        val expectedUri = Uri.parse("$SCHEME:/$AVATAR_PATH?$QUERY_USERNAME=$username")
 
         createLoadAvatarRequest(username).compareTo(expectedUri).shouldBeEqualTo(0)
     }

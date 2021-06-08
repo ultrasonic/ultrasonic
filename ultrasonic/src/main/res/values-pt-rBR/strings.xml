@@ -381,19 +381,6 @@
     <string name="settings.show_all_songs_by_artist">Mostrar Todas as Músicas por Artista</string>
     <string name="settings.show_all_songs_by_artist_summary">Adicionar nova entrada em artista para acessar todas as músicas do artista</string>
     <string name="download.menu_show_artist">Mostrar Artista</string>
-    <string name="settings.image_loader_concurrency">Concorrência ao Carregar Imagens</string>
-    <string name="settings.image_loader_concurrency_1">1</string>
-    <string name="settings.image_loader_concurrency_2">2</string>
-    <string name="settings.image_loader_concurrency_3">3</string>
-    <string name="settings.image_loader_concurrency_4">4</string>
-    <string name="settings.image_loader_concurrency_5">5</string>
-    <string name="settings.image_loader_concurrency_6">6</string>
-    <string name="settings.image_loader_concurrency_7">7</string>
-    <string name="settings.image_loader_concurrency_8">8</string>
-    <string name="settings.image_loader_concurrency_9">9</string>
-    <string name="settings.image_loader_concurrency_10">10</string>
-    <string name="settings.image_loader_concurrency_11">11</string>
-    <string name="settings.image_loader_concurrency_12">12</string>
     <string name="albumArt">albumArt</string>
     <string name="common_multiple_years">Anos Múltiplos</string>
     <string name="settings.playback.resume_on_bluetooth_device">Retomar ao Conectar Dispositivo Bluetooth</string>
@@ -489,10 +476,6 @@
 
     <!-- Subsonic feature flags -->
     <string name="feature_flags_category_title">Bandeiras de Recursos</string>
-    <string name="feature_flags_image_loader_title">Ativar Novo Carregador de Imagens</string>
-    <string name="feature_flags_image_loader_description">Permite nova implementação do carregador de imagens.
-        Atualmente, ele não salva a imagem no armazenamento do dispositivo e usa apenas o cache na memória.
-    </string>
     <string name="feature_flags_five_star_rating_title">Usar Classif. de 5 estrelas Para Músicas</string>
     <string name="feature_flags_five_star_rating_description">Use o sistema de classificação de 5 estrelas para músicas
          em vez de simplesmente estrelar/não estrelar itens.

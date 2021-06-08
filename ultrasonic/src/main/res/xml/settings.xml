@@ -64,13 +64,6 @@
             a:key="viewRefresh"
             a:title="@string/settings.view_refresh"
             app:iconSpaceReserved="false"/>
-        <ListPreference
-            a:defaultValue="5"
-            a:entries="@array/imageConcurrencyNames"
-            a:entryValues="@array/imageConcurrencyValues"
-            a:key="imageLoaderConcurrency"
-            a:title="@string/settings.image_loader_concurrency"
-            app:iconSpaceReserved="false"/>
     </PreferenceCategory>
     <PreferenceCategory
         a:title="@string/settings.playback_control_title"
@@ -371,12 +364,6 @@
     <PreferenceCategory
         a:title="@string/feature_flags_category_title"
         app:iconSpaceReserved="false">
-        <CheckBoxPreference
-            a:key="ff_new_image_loader"
-            a:persistent="false"
-            a:title="@string/feature_flags_image_loader_title"
-            a:summary="@string/feature_flags_image_loader_description"
-            app:iconSpaceReserved="false"/>
         <CheckBoxPreference
             a:key="use_five_star_rating"
             a:persistent="false"

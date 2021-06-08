@@ -393,19 +393,6 @@
     <string name="settings.show_all_songs_by_artist">Alle nummers van artiest tonen</string>
     <string name="settings.show_all_songs_by_artist_summary">Item toevoegen in artiestweergave om alle nummers van een artiest te bekijken</string>
     <string name="download.menu_show_artist">Artiest tonen</string>
-    <string name="settings.image_loader_concurrency">Aantal tegelijkertijd te laden afbeeldingen</string>
-    <string name="settings.image_loader_concurrency_1">1</string>
-    <string name="settings.image_loader_concurrency_2">2</string>
-    <string name="settings.image_loader_concurrency_3">3</string>
-    <string name="settings.image_loader_concurrency_4">4</string>
-    <string name="settings.image_loader_concurrency_5">5</string>
-    <string name="settings.image_loader_concurrency_6">6</string>
-    <string name="settings.image_loader_concurrency_7">7</string>
-    <string name="settings.image_loader_concurrency_8">8</string>
-    <string name="settings.image_loader_concurrency_9">9</string>
-    <string name="settings.image_loader_concurrency_10">10</string>
-    <string name="settings.image_loader_concurrency_11">11</string>
-    <string name="settings.image_loader_concurrency_12">12</string>
     <string name="albumArt">Albumhoes</string>
     <string name="common_multiple_years">Meerdere jaren</string>
     <string name="settings.playback.resume_on_bluetooth_device">Hervatten bij verbinding met bluetoothapparaat</string>
@@ -503,10 +490,6 @@
 
     <!-- Subsonic feature flags -->
     <string name="feature_flags_category_title">Experimentele functies</string>
-    <string name="feature_flags_image_loader_title">Nieuwe manier van afbeeldingen laden inschakelen</string>
-    <string name="feature_flags_image_loader_description">Schakelt de nieuwe methode voor het laden van afbeeldingen in.
-        Momenteel slaat het geen afbeeldingen op op de apparaatopslag en wordt alleen geheugencache gebruikt.
-    </string>
     <string name="feature_flags_five_star_rating_title">Gebruik vijf sterren voor nummers</string>
     <string name="feature_flags_five_star_rating_description">Gebruik vijf sterren ratingsysteem voor liedjes
          in plaats van items simpelweg in de hoofdrol te zetten / niet te verwijderen.

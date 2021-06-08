@@ -20,7 +20,6 @@ import androidx.recyclerview.widget.RecyclerView
 import org.moire.ultrasonic.R
 import org.moire.ultrasonic.data.ActiveServerProvider
 import org.moire.ultrasonic.domain.MusicFolder
-import org.moire.ultrasonic.util.ImageLoader
 import org.moire.ultrasonic.view.SelectMusicFolderView
 
 /*
@@ -29,7 +28,6 @@ import org.moire.ultrasonic.view.SelectMusicFolderView
 abstract class GenericRowAdapter<T>(
     val onItemClick: (T) -> Unit,
     val onContextMenuClick: (MenuItem, T) -> Boolean,
-    private val imageLoader: ImageLoader,
     private val onMusicFolderUpdate: (String?) -> Unit
 ) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
     open var itemList: List<T> = listOf()
@@ -92,13 +90,6 @@ abstract class GenericRowAdapter<T>(
 
             return selectFolderHeader!!
         }
-    }
-
-    override fun onViewRecycled(holder: RecyclerView.ViewHolder) {
-        if ((holder is ViewHolder) && (holder.coverArtId != null)) {
-            imageLoader.cancel(holder.coverArtId)
-        }
-        super.onViewRecycled(holder)
     }
 
     abstract override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int)
