@@ -6,7 +6,6 @@
  */
 package org.moire.ultrasonic.service
 
-import android.graphics.Bitmap
 import android.media.MediaMetadataRetriever
 import java.io.BufferedReader
 import java.io.BufferedWriter
@@ -40,7 +39,6 @@ import org.moire.ultrasonic.domain.SearchCriteria
 import org.moire.ultrasonic.domain.SearchResult
 import org.moire.ultrasonic.domain.Share
 import org.moire.ultrasonic.domain.UserInfo
-import org.moire.ultrasonic.imageloader.BitmapUtils
 import org.moire.ultrasonic.util.Constants
 import org.moire.ultrasonic.util.FileUtil
 import org.moire.ultrasonic.util.Util
@@ -117,32 +115,6 @@ class OfflineMusicService : MusicService, KoinComponent {
         }
 
         return result
-    }
-
-    override fun getAvatar(
-        username: String?,
-        size: Int,
-        saveToFile: Boolean
-    ): Bitmap? {
-        return try {
-            val bitmap = BitmapUtils.getAvatarBitmapFromDisk(username, size)
-            Util.scaleBitmap(bitmap, size)
-        } catch (ignored: Exception) {
-            null
-        }
-    }
-
-    override fun getCoverArt(
-        entry: MusicDirectory.Entry,
-        size: Int,
-        saveToFile: Boolean
-    ): Bitmap? {
-        return try {
-            val bitmap = BitmapUtils.getAlbumArtBitmapFromDisk(entry, size)
-            Util.scaleBitmap(bitmap, size)
-        } catch (ignored: Exception) {
-            null
-        }
     }
 
     override fun search(criteria: SearchCriteria): SearchResult {

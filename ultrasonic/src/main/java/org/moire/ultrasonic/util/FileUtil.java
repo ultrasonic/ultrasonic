@@ -137,9 +137,19 @@ public class FileUtil
 	public static String getAlbumArtKey(MusicDirectory.Entry entry, boolean large)
 	{
 		File albumDir = getAlbumDirectory(entry);
-		File albumArtDir = getAlbumArtDirectory();
 
-		if (albumArtDir == null || albumDir == null) {
+		return getAlbumArtKey(albumDir, large);
+	}
+
+	/**
+	 * Get the cache key for a given album entry
+	 * @param albumDir The album directory
+	 * @param large Whether to get the key for the large or the default image
+	 * @return String The hash key
+	 */
+	public static String getAlbumArtKey(File albumDir, boolean large)
+	{
+		if (albumDir == null) {
 			return null;
 		}
 
@@ -147,6 +157,7 @@ public class FileUtil
 
 		return String.format(Locale.ROOT, "%s%s", Util.md5Hex(albumDir.getPath()), suffix);
 	}
+
 
 
 	public static File getAvatarFile(String username)
@@ -159,7 +170,7 @@ public class FileUtil
 		}
 
 		String md5Hex = Util.md5Hex(username);
-		return new File(albumArtDir, String.format("%s.jpeg", md5Hex));
+		return new File(albumArtDir, String.format("%s%s", md5Hex, SUFFIX_LARGE));
 	}
 
 	/**
@@ -170,20 +181,20 @@ public class FileUtil
 	public static File getAlbumArtFile(File albumDir)
 	{
 		File albumArtDir = getAlbumArtDirectory();
+		String key = getAlbumArtKey(albumDir, true);
 
-		if (albumArtDir == null || albumDir == null)
+		if (key == null || albumArtDir == null)
 		{
 			return null;
 		}
 
-		String md5Hex = Util.md5Hex(albumDir.getPath());
-		return new File(albumArtDir, String.format("%s.jpeg", md5Hex));
+		return new File(albumArtDir, key);
 	}
 
 
 	/**
 	 * Get the album art file for a given cache key
-	 * @param cacheKey
+	 * @param cacheKey The key (== the filename)
 	 * @return File object. Not guaranteed that it exists
 	 */
 	public static File getAlbumArtFile(String cacheKey)

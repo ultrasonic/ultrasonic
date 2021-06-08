@@ -6,7 +6,6 @@
  */
 package org.moire.ultrasonic.service
 
-import android.graphics.Bitmap
 import java.io.InputStream
 import java.util.concurrent.TimeUnit
 import org.koin.core.component.KoinComponent
@@ -256,15 +255,6 @@ class CachedMusicService(private val musicService: MusicService) : MusicService,
     override fun getStarred2(): SearchResult = musicService.getStarred2()
 
     @Throws(Exception::class)
-    override fun getCoverArt(
-        entry: MusicDirectory.Entry,
-        size: Int,
-        saveToFile: Boolean
-    ): Bitmap? {
-        return musicService.getCoverArt(entry, size, saveToFile)
-    }
-
-    @Throws(Exception::class)
     override fun getDownloadInputStream(
         song: MusicDirectory.Entry,
         offset: Long,
@@ -444,15 +434,6 @@ class CachedMusicService(private val musicService: MusicService) : MusicService,
     @Throws(Exception::class)
     override fun updateShare(id: String, description: String?, expires: Long?) {
         musicService.updateShare(id, description, expires)
-    }
-
-    @Throws(Exception::class)
-    override fun getAvatar(
-        username: String?,
-        size: Int,
-        saveToFile: Boolean
-    ): Bitmap? {
-        return musicService.getAvatar(username, size, saveToFile)
     }
 
     companion object {

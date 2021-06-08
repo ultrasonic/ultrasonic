@@ -1,23 +1,30 @@
 package org.moire.ultrasonic.imageloader
 
 import android.content.Context
+import android.text.TextUtils
 import android.view.View
 import android.widget.ImageView
 import com.squareup.picasso.Picasso
 import com.squareup.picasso.RequestCreator
 import java.io.File
+import java.io.FileOutputStream
+import java.io.InputStream
+import java.io.OutputStream
 import org.moire.ultrasonic.BuildConfig
 import org.moire.ultrasonic.R
 import org.moire.ultrasonic.api.subsonic.SubsonicAPIClient
 import org.moire.ultrasonic.domain.MusicDirectory
+import org.moire.ultrasonic.service.RESTMusicService
 import org.moire.ultrasonic.util.FileUtil
+import org.moire.ultrasonic.util.Util
+import timber.log.Timber
 
 /**
  * Our new image loader which uses Picasso as a backend.
  */
 class ImageLoader(
     context: Context,
-    apiClient: SubsonicAPIClient,
+    private val apiClient: SubsonicAPIClient,
     private val config: ImageLoaderConfig
 ) {
 
@@ -108,6 +115,56 @@ class ImageLoader(
             load(request)
         } else {
             view.setImageResource(R.drawable.ic_contact_picture)
+        }
+    }
+
+    /**
+     * Download a cover art file and cache it on disk
+     */
+    fun cacheCoverArt(
+        entry: MusicDirectory.Entry
+    ) {
+
+        // Synchronize on the entry so that we don't download concurrently for
+        // the same song.
+        synchronized(entry) {
+            // Always download the large size..
+            val size = config.largeSize
+
+            // Check cache to avoid downloading existing files
+            val file = FileUtil.getAlbumArtFile(entry)
+
+            // Return if have a cache hit
+            if (file.exists()) return
+
+            // Can't load empty string ids
+            val id = entry.coverArt
+            if (TextUtils.isEmpty(id)) return
+
+            // Query the API
+            Timber.d("Loading cover art for: %s", entry)
+            val response = apiClient.getCoverArt(id!!, size.toLong())
+            RESTMusicService.checkStreamResponseError(response)
+
+            // Check for failure
+            if (response.stream == null) return
+
+            // Write Response stream to file
+            var inputStream: InputStream? = null
+            try {
+                inputStream = response.stream
+                val bytes = Util.toByteArray(inputStream)
+
+                var outputStream: OutputStream? = null
+                try {
+                    outputStream = FileOutputStream(file)
+                    outputStream.write(bytes)
+                } finally {
+                    Util.close(outputStream)
+                }
+            } finally {
+                Util.close(inputStream)
+            }
         }
     }
 

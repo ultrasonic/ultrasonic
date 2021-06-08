@@ -60,6 +60,7 @@ class DownloadFile(
     private var completeWhenDone = false
 
     private val downloader: Downloader by inject()
+    private val imageLoaderProvider: ImageLoaderProvider by inject()
 
     val progress: MutableLiveData<Int> = MutableLiveData(0)
 
@@ -276,7 +277,7 @@ class DownloadFile(
                     if (isCancelled) {
                         throw Exception(String.format("Download of '%s' was cancelled", song))
                     }
-                    downloadAndSaveCoverArt(musicService)
+                    downloadAndSaveCoverArt()
                 }
 
                 if (isPlaying) {
@@ -330,12 +331,11 @@ class DownloadFile(
             return String.format("DownloadTask (%s)", song)
         }
 
-        private fun downloadAndSaveCoverArt(musicService: MusicService) {
+        private fun downloadAndSaveCoverArt() {
             try {
                 if (!TextUtils.isEmpty(song.coverArt)) {
                     // Download the largest size that we can display in the UI
-                    val size = ImageLoaderProvider.config.largeSize
-                    musicService.getCoverArt(song, size = size, saveToFile = true)
+                    imageLoaderProvider.getImageLoader().cacheCoverArt(song)
                 }
             } catch (e: Exception) {
                 Timber.e(e, "Failed to get cover art.")

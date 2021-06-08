@@ -2,7 +2,6 @@ package org.moire.ultrasonic.util;
 
 import android.os.AsyncTask;
 import android.os.StatFs;
-import timber.log.Timber;
 
 import org.moire.ultrasonic.data.ActiveServerProvider;
 import org.moire.ultrasonic.domain.Playlist;
@@ -19,6 +18,7 @@ import java.util.Set;
 import java.util.SortedSet;
 
 import kotlin.Lazy;
+import timber.log.Timber;
 
 import static org.koin.java.KoinJavaComponent.inject;
 
@@ -88,6 +88,7 @@ public class CacheCleaner
 				// No songs left in the folder
 				if (children.length == 1 && children[0].getPath().equals(FileUtil.getAlbumArtFile(dir).getPath()))
 				{
+					// Delete Artwork files
 					Util.delete(FileUtil.getAlbumArtFile(dir));
 					children = dir.listFiles();
 				}
