@@ -40,11 +40,11 @@ fun Response<out ResponseBody>.toStreamResponse(): StreamResponse {
  * It creates Exceptions from the results returned by the Subsonic API
  */
 @Suppress("ThrowsCount")
-fun Response<out SubsonicResponse>.throwOnFailure(): Response<out SubsonicResponse> {
+fun <T : SubsonicResponse> Response<out T>.throwOnFailure(): Response<out T> {
     val response = this
 
     if (response.isSuccessful && response.body()!!.status === SubsonicResponse.Status.OK) {
-        return this
+        return this as Response<T>
     }
     if (!response.isSuccessful) {
         throw IOException("Server error, code: " + response.code())
