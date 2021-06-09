@@ -57,6 +57,7 @@ class SubsonicAPIClient(
             field = value
             proxyPasswordInterceptor.apiVersion = field
             wrappedApi.currentApiVersion = field
+            wrappedApi.isRealProtocolVersion = true
             versionInterceptor.protocolVersion = field
             onProtocolChange(field)
         }
@@ -88,8 +89,8 @@ class SubsonicAPIClient(
         .addConverterFactory(
             VersionAwareJacksonConverterFactory.create(
                 {
-                    // Only trigger update on change
-                    if (protocolVersion != it) {
+                    // Only trigger update on change, or if still using the default
+                    if (protocolVersion != it || !config.isRealProtocolVersion) {
                         protocolVersion = it
                     }
                 },
@@ -100,7 +101,8 @@ class SubsonicAPIClient(
 
     private val wrappedApi = ApiVersionCheckWrapper(
         retrofit.create(SubsonicAPIDefinition::class.java),
-        config.minimalProtocolVersion
+        config.minimalProtocolVersion,
+        config.isRealProtocolVersion
     )
 
     val api: SubsonicAPIDefinition get() = wrappedApi

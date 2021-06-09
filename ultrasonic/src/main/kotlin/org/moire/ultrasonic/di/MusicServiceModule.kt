@@ -49,19 +49,21 @@ val musicServiceModule = module {
     }
 
     single {
+        val server = get<ActiveServerProvider>().getActiveServer()
+
         return@single SubsonicClientConfiguration(
-            baseUrl = get<ActiveServerProvider>().getActiveServer().url,
-            username = get<ActiveServerProvider>().getActiveServer().userName,
-            password = get<ActiveServerProvider>().getActiveServer().password,
+            baseUrl = server.url,
+            username = server.userName,
+            password = server.password,
             minimalProtocolVersion = SubsonicAPIVersions.getClosestKnownClientApiVersion(
-                get<ActiveServerProvider>().getActiveServer().minimumApiVersion
+                server.minimumApiVersion
                     ?: Constants.REST_PROTOCOL_VERSION
             ),
             clientID = Constants.REST_CLIENT_ID,
-            allowSelfSignedCertificate = get<ActiveServerProvider>()
-                .getActiveServer().allowSelfSignedCertificate,
-            enableLdapUserSupport = get<ActiveServerProvider>().getActiveServer().ldapSupport,
-            debug = BuildConfig.DEBUG
+            allowSelfSignedCertificate = server.allowSelfSignedCertificate,
+            enableLdapUserSupport = server.ldapSupport,
+            debug = BuildConfig.DEBUG,
+            isRealProtocolVersion = server.minimumApiVersion != null
         )
     }
 
