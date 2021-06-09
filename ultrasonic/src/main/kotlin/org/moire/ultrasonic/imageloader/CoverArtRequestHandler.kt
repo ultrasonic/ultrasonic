@@ -39,7 +39,8 @@ class CoverArtRequestHandler(private val client: SubsonicAPIClient) : RequestHan
         }
 
         // Try to fetch the image from the API
-        val response = client.api.getCoverArt(id, size).execute().toStreamResponse()
+        // Inverted call order, because Mockito has problems with chained calls.
+        val response = client.toStreamResponse(client.api.getCoverArt(id, size).execute())
 
         // Handle the response
         if (!response.hasError() && response.stream != null) {

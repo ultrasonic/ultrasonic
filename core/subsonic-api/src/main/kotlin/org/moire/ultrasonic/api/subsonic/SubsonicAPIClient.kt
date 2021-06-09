@@ -9,12 +9,15 @@ import java.util.concurrent.TimeUnit.MILLISECONDS
 import javax.net.ssl.SSLContext
 import javax.net.ssl.X509TrustManager
 import okhttp3.OkHttpClient
+import okhttp3.ResponseBody
 import okhttp3.logging.HttpLoggingInterceptor
 import org.moire.ultrasonic.api.subsonic.interceptors.PasswordHexInterceptor
 import org.moire.ultrasonic.api.subsonic.interceptors.PasswordMD5Interceptor
 import org.moire.ultrasonic.api.subsonic.interceptors.ProxyPasswordInterceptor
 import org.moire.ultrasonic.api.subsonic.interceptors.RangeHeaderInterceptor
 import org.moire.ultrasonic.api.subsonic.interceptors.VersionInterceptor
+import org.moire.ultrasonic.api.subsonic.response.StreamResponse
+import retrofit2.Response
 import retrofit2.Retrofit
 
 private const val READ_TIMEOUT = 60_000L
@@ -122,6 +125,13 @@ class SubsonicAPIClient(
         sslSocketFactory(sslContext.socketFactory, trustManager)
 
         hostnameVerifier { _, _ -> true }
+    }
+
+    /**
+     * This function is necessary because Mockito has problems with stubbing chained calls
+     */
+    fun toStreamResponse(call: Response<ResponseBody>): StreamResponse {
+        return call.toStreamResponse()
     }
 
     companion object {

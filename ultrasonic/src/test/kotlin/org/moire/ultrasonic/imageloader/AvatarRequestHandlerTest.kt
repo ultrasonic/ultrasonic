@@ -9,6 +9,7 @@ import org.amshove.kluent.`should throw`
 import org.amshove.kluent.shouldBeEqualTo
 import org.junit.Test
 import org.junit.runner.RunWith
+import org.mockito.Answers
 import org.mockito.kotlin.any
 import org.mockito.kotlin.mock
 import org.mockito.kotlin.whenever
@@ -21,7 +22,7 @@ import org.robolectric.annotation.Config
 @RunWith(RobolectricTestRunner::class)
 @Config(manifest = Config.NONE)
 class AvatarRequestHandlerTest {
-    private val mockApiClient: SubsonicAPIClient = mock()
+    private val mockApiClient: SubsonicAPIClient = mock(defaultAnswer = Answers.RETURNS_DEEP_STUBS)
     private val handler = AvatarRequestHandler(mockApiClient)
 
     @Test
@@ -60,8 +61,10 @@ class AvatarRequestHandlerTest {
             apiError = null,
             responseHttpCode = 200
         )
-        whenever(mockApiClient.api.getAvatar(any()).execute().toStreamResponse())
-            .thenReturn(streamResponse)
+
+        whenever(
+            mockApiClient.toStreamResponse(any())
+        ).thenReturn(streamResponse)
 
         val response = handler.load(
             createLoadAvatarRequest("some-username").buildRequest(), 0

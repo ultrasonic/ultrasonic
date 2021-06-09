@@ -10,18 +10,17 @@ import org.amshove.kluent.`should throw`
 import org.amshove.kluent.shouldBeEqualTo
 import org.junit.Test
 import org.junit.runner.RunWith
+import org.mockito.Answers
 import org.mockito.kotlin.any
-import org.mockito.kotlin.anyOrNull
 import org.mockito.kotlin.mock
 import org.mockito.kotlin.whenever
 import org.moire.ultrasonic.api.subsonic.SubsonicAPIClient
 import org.moire.ultrasonic.api.subsonic.response.StreamResponse
-import org.moire.ultrasonic.api.subsonic.toStreamResponse
 import org.robolectric.RobolectricTestRunner
 
 @RunWith(RobolectricTestRunner::class)
 class CoverArtRequestHandlerTest {
-    private val mockApiClient: SubsonicAPIClient = mock()
+    private val mockApiClient: SubsonicAPIClient = mock(defaultAnswer = Answers.RETURNS_DEEP_STUBS)
     private val handler = CoverArtRequestHandler(mockApiClient)
 
     @Test
@@ -58,7 +57,7 @@ class CoverArtRequestHandlerTest {
         val streamResponse = StreamResponse(null, null, 500)
 
         whenever(
-            mockApiClient.api.getCoverArt(any(), anyOrNull()).execute().toStreamResponse()
+            mockApiClient.toStreamResponse(any())
         ).thenReturn(streamResponse)
 
         val fail = {
@@ -77,7 +76,7 @@ class CoverArtRequestHandlerTest {
         )
 
         whenever(
-            mockApiClient.api.getCoverArt(any(), anyOrNull()).execute().toStreamResponse()
+            mockApiClient.toStreamResponse(any())
         ).thenReturn(streamResponse)
 
         val response = handler.load(
