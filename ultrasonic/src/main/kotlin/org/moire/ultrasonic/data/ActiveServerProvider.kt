@@ -37,12 +37,15 @@ class ActiveServerProvider(
                     cachedServer = repository.findById(serverId)
                 }
                 Timber.d(
-                    "getActiveServer retrieved from DataBase, id: $serverId; " +
-                        "cachedServer: $cachedServer"
+                    "getActiveServer retrieved from DataBase, id: %s cachedServer: %s",
+                    serverId, cachedServer
                 )
             }
 
-            if (cachedServer != null) return cachedServer!!
+            if (cachedServer != null) {
+                return cachedServer!!
+            }
+
             setActiveServerId(0)
         }
 
@@ -105,7 +108,7 @@ class ActiveServerProvider(
      * @param method: The Rest resource to use
      * @return The Rest Url of the method on the server
      */
-    fun getRestUrl(method: String?): String? {
+    fun getRestUrl(method: String?): String {
         val builder = StringBuilder(8192)
         val activeServer = getActiveServer()
         val serverUrl: String = activeServer.url

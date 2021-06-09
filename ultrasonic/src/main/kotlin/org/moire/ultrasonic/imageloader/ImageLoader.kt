@@ -13,8 +13,9 @@ import java.io.OutputStream
 import org.moire.ultrasonic.BuildConfig
 import org.moire.ultrasonic.R
 import org.moire.ultrasonic.api.subsonic.SubsonicAPIClient
+import org.moire.ultrasonic.api.subsonic.throwOnFailure
+import org.moire.ultrasonic.api.subsonic.toStreamResponse
 import org.moire.ultrasonic.domain.MusicDirectory
-import org.moire.ultrasonic.service.RESTMusicService
 import org.moire.ultrasonic.util.FileUtil
 import org.moire.ultrasonic.util.Util
 import timber.log.Timber
@@ -24,9 +25,12 @@ import timber.log.Timber
  */
 class ImageLoader(
     context: Context,
-    private val apiClient: SubsonicAPIClient,
+    apiClient: SubsonicAPIClient,
     private val config: ImageLoaderConfig
 ) {
+    // Shortcut
+    @Suppress("VariableNaming", "PropertyName")
+    val API = apiClient.api
 
     private val picasso = Picasso.Builder(context)
         .addRequestHandler(CoverArtRequestHandler(apiClient))
@@ -143,8 +147,8 @@ class ImageLoader(
 
             // Query the API
             Timber.d("Loading cover art for: %s", entry)
-            val response = apiClient.getCoverArt(id!!, size.toLong())
-            RESTMusicService.checkStreamResponseError(response)
+            val response = API.getCoverArt(id!!, size.toLong()).execute().toStreamResponse()
+            response.throwOnFailure()
 
             // Check for failure
             if (response.stream == null) return

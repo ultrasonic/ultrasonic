@@ -10,7 +10,7 @@ import org.moire.ultrasonic.api.subsonic.interceptors.toHexBytes
 import org.moire.ultrasonic.api.subsonic.rules.MockWebServerRule
 
 /**
- * Integration test for [SubsonicAPIClient.getStreamUrl] method.
+ * Integration test for [getStreamUrl] method.
  */
 class GetStreamUrlTest {
     @JvmField @Rule val mockWebServerRule = MockWebServerRule()
@@ -30,7 +30,7 @@ class GetStreamUrlTest {
         )
         client = SubsonicAPIClient(config)
         val baseExpectedUrl = mockWebServerRule.mockWebServer.url("").toString()
-        expectedUrl = "$baseExpectedUrl/rest/stream.view?id=$id&u=$USERNAME" +
+        expectedUrl = "$baseExpectedUrl/rest/stream.view?id=$id&format=raw&u=$USERNAME" +
             "&c=$CLIENT_ID&f=json&v=${V1_6_0.restApiVersion}&p=enc:${PASSWORD.toHexBytes()}"
     }
 
@@ -38,7 +38,7 @@ class GetStreamUrlTest {
     fun `Should return valid stream url`() {
         mockWebServerRule.enqueueResponse("ping_ok.json")
 
-        val streamUrl = client.getStreamUrl(id)
+        val streamUrl = client.api.getStreamUrl(id)
 
         streamUrl `should be equal to` expectedUrl
     }
@@ -47,7 +47,7 @@ class GetStreamUrlTest {
     fun `Should still return stream url if connection failed`() {
         mockWebServerRule.mockWebServer.enqueue(MockResponse().setResponseCode(500))
 
-        val streamUrl = client.getStreamUrl(id)
+        val streamUrl = client.api.getStreamUrl(id)
 
         streamUrl `should be equal to` expectedUrl
     }

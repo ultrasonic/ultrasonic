@@ -28,6 +28,7 @@ import java.security.cert.CertificateException
 import javax.net.ssl.SSLException
 import org.moire.ultrasonic.R
 import org.moire.ultrasonic.api.subsonic.ApiNotSupportedException
+import org.moire.ultrasonic.api.subsonic.SubsonicRESTException
 import org.moire.ultrasonic.subsonic.getLocalizedErrorMessage
 import org.moire.ultrasonic.util.Util
 import timber.log.Timber

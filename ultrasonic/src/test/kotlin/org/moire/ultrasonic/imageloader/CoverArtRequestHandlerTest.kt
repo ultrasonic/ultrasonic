@@ -16,6 +16,7 @@ import org.mockito.kotlin.mock
 import org.mockito.kotlin.whenever
 import org.moire.ultrasonic.api.subsonic.SubsonicAPIClient
 import org.moire.ultrasonic.api.subsonic.response.StreamResponse
+import org.moire.ultrasonic.api.subsonic.toStreamResponse
 import org.robolectric.RobolectricTestRunner
 
 @RunWith(RobolectricTestRunner::class)
@@ -56,7 +57,9 @@ class CoverArtRequestHandlerTest {
     fun `Should throw IOException when request to api failed`() {
         val streamResponse = StreamResponse(null, null, 500)
 
-        whenever(mockApiClient.getCoverArt(any(), anyOrNull())).thenReturn(streamResponse)
+        whenever(
+            mockApiClient.api.getCoverArt(any(), anyOrNull()).execute().toStreamResponse()
+        ).thenReturn(streamResponse)
 
         val fail = {
             handler.load(createLoadCoverArtRequest("some").buildRequest(), 0)
@@ -73,7 +76,9 @@ class CoverArtRequestHandlerTest {
             responseHttpCode = 200
         )
 
-        whenever(mockApiClient.getCoverArt(any(), anyOrNull())).thenReturn(streamResponse)
+        whenever(
+            mockApiClient.api.getCoverArt(any(), anyOrNull()).execute().toStreamResponse()
+        ).thenReturn(streamResponse)
 
         val response = handler.load(
             createLoadCoverArtRequest("some").buildRequest(), 0

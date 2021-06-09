@@ -14,7 +14,7 @@ class SubsonicApiStreamTest : SubsonicAPIClientTest() {
     fun `Should handle api error response`() {
         mockWebServerRule.enqueueResponse("request_data_not_found_error_response.json")
 
-        val response = client.stream("some-id")
+        val response = client.api.stream("some-id").execute().toStreamResponse()
 
         with(response) {
             stream `should be` null
@@ -28,7 +28,7 @@ class SubsonicApiStreamTest : SubsonicAPIClientTest() {
         val httpErrorCode = 404
         mockWebServerRule.mockWebServer.enqueue(MockResponse().setResponseCode(httpErrorCode))
 
-        val response = client.stream("some-id")
+        val response = client.api.stream("some-id").execute().toStreamResponse()
 
         with(response) {
             stream `should be` null
@@ -38,13 +38,13 @@ class SubsonicApiStreamTest : SubsonicAPIClientTest() {
     }
 
     @Test
-    fun `Should return successfull call stream`() {
+    fun `Should return successful call stream`() {
         mockWebServerRule.mockWebServer.enqueue(
             MockResponse()
                 .setBody(mockWebServerRule.loadJsonResponse("ping_ok.json"))
         )
 
-        val response = client.stream("some-id")
+        val response = client.api.stream("some-id").execute().toStreamResponse()
 
         with(response) {
             responseHttpCode `should be equal to` 200

@@ -63,7 +63,6 @@ class VersionAwareJacksonConverterFactory(
         }
     }
 
-    @Suppress("SwallowedException")
     class VersionAwareResponseBodyConverter<T> (
         private val notifier: (SubsonicAPIVersions) -> Unit = {},
         private val adapter: ObjectReader
@@ -77,7 +76,7 @@ class VersionAwareJacksonConverterFactory(
                 if (response is SubsonicResponse) {
                     try {
                         notifier(response.version)
-                    } catch (e: IllegalArgumentException) {
+                    } catch (ignored: IllegalArgumentException) {
                         // no-op
                     }
                 }

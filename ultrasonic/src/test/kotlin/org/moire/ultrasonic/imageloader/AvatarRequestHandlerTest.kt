@@ -14,6 +14,7 @@ import org.mockito.kotlin.mock
 import org.mockito.kotlin.whenever
 import org.moire.ultrasonic.api.subsonic.SubsonicAPIClient
 import org.moire.ultrasonic.api.subsonic.response.StreamResponse
+import org.moire.ultrasonic.api.subsonic.toStreamResponse
 import org.robolectric.RobolectricTestRunner
 import org.robolectric.annotation.Config
 
@@ -59,7 +60,7 @@ class AvatarRequestHandlerTest {
             apiError = null,
             responseHttpCode = 200
         )
-        whenever(mockApiClient.getAvatar(any()))
+        whenever(mockApiClient.api.getAvatar(any()).execute().toStreamResponse())
             .thenReturn(streamResponse)
 
         val response = handler.load(
