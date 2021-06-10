@@ -111,7 +111,6 @@
     <string name="main.songs_starred">Csillaggal megjelölt</string>
     <string name="main.songs_title">Dalok</string>
     <string name="main.videos">Videók</string>
-    <string name="main.welcome_text">Üdvözli az Ultrasonic! Az alkalmazás még nincs beállítva. Miután konfigurálta saját kiszolgálóját (elérhető: <b>subsonic.org</b>), húzza balról jobbra az oldalsávot, lépjen be a <b>Beállítások</b> menüpontba, és adja meg csatlakozási adatokat!</string>
     <string name="main.welcome_title">Üdvözlet!</string>
     <string name="menu.about">Névjegy</string>
     <string name="menu.common">Általános</string>

@@ -111,7 +111,6 @@
     <string name="main.songs_starred">Favorieten</string>
     <string name="main.songs_title">Nummers</string>
     <string name="main.videos">Video\'s</string>
-    <string name="main.welcome_text">Welkom bij Ultrasonic! De app is nog niet ingesteld. Nadat je je persoonlijke server hebt opgezet (beschikbaar op <b>subsonic.org</b>), kun je naar de <b>Instellingen</b> gaan en drukken op <i>Server toevoegen</i>.</string>
     <string name="main.welcome_title">Welkom!</string>
     <string name="menu.about">Over</string>
     <string name="menu.common">Algemeen</string>

@@ -29,7 +29,6 @@ import androidx.preference.PreferenceManager
 import com.google.android.material.navigation.NavigationView
 import org.koin.android.ext.android.inject
 import org.koin.androidx.viewmodel.ext.android.viewModel
-import org.koin.java.KoinJavaComponent.inject
 import org.moire.ultrasonic.R
 import org.moire.ultrasonic.data.ActiveServerProvider
 import org.moire.ultrasonic.data.ActiveServerProvider.Companion.isOffline
@@ -151,7 +150,12 @@ class NavigationActivity : AppCompatActivity() {
         showWelcomeScreen = showWelcomeScreen and !areServersMigrated
 
         loadSettings()
-        showInfoDialog(showWelcomeScreen)
+
+        // This is a first run with only the demo entry inside the database
+        // We set the active server to the demo one and show the welcome dialog
+        if (showWelcomeScreen) {
+            showWelcomeDialog()
+        }
 
         nowPlayingEventListener = object : NowPlayingEventListener {
             override fun onDismissNowPlaying() {
@@ -313,19 +317,27 @@ class NavigationActivity : AppCompatActivity() {
         finish()
     }
 
-    private fun showInfoDialog(show: Boolean) {
+    private fun showWelcomeDialog() {
         if (!infoDialogDisplayed) {
             infoDialogDisplayed = true
-            if (show) {
-                AlertDialog.Builder(this)
-                    .setIcon(android.R.drawable.ic_dialog_info)
-                    .setTitle(R.string.main_welcome_title)
-                    .setMessage(R.string.main_welcome_text)
-                    .setPositiveButton(R.string.common_ok) { dialog, _ ->
-                        dialog.dismiss()
-                        findNavController(R.id.nav_host_fragment).navigate(R.id.settingsFragment)
-                    }.show()
-            }
+
+            AlertDialog.Builder(this)
+                .setIcon(android.R.drawable.ic_dialog_info)
+                .setTitle(R.string.main_welcome_title)
+                .setMessage(R.string.main_welcome_text_demo)
+                .setNegativeButton(R.string.main_welcome_cancel) { dialog, _ ->
+                    // Got to the settings screen
+                    dialog.dismiss()
+                    findNavController(R.id.nav_host_fragment).navigate(R.id.settingsFragment)
+                }
+                .setPositiveButton(R.string.common_ok) { dialog, _ ->
+                    // Add the demo server
+                    val activeServerProvider: ActiveServerProvider by inject()
+                    val demoIndex = serverSettingsModel.addDemoServer()
+                    activeServerProvider.setActiveServerByIndex(demoIndex)
+                    findNavController(R.id.nav_host_fragment).navigate(R.id.mainFragment)
+                    dialog.dismiss()
+                }.show()
         }
     }
 
