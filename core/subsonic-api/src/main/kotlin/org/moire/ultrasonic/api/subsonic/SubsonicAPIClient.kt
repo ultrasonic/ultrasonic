@@ -103,6 +103,7 @@ class SubsonicAPIClient(
     val api: SubsonicAPIDefinition get() = wrappedApi
 
     /**
+     * TODO: Remove this in favour of handling the stream response inside RESTService
      * Convenient method to get cover art from api using item [id] and optional maximum [size].
      *
      * It detects the response `Content-Type` and tries to parse subsonic error if there is one.
@@ -114,6 +115,7 @@ class SubsonicAPIClient(
     }
 
     /**
+     * TODO: Remove this in favour of handling the stream response inside RESTService
      * Convenient method to get media stream from api using item [id] and optional [maxBitrate].
      *
      * Optionally also you can provide [offset] that stream should start from.
@@ -128,6 +130,7 @@ class SubsonicAPIClient(
         }
 
     /**
+     * TODO: Remove this in favour of handling the stream response inside RESTService
      * Convenient method to get user avatar using [username].
      *
      * It detects the response `Content-Type` and tries to parse subsonic error if there is one.
@@ -138,6 +141,7 @@ class SubsonicAPIClient(
         api.getAvatar(username).execute()
     }
 
+    // TODO: Move this to response checker
     private inline fun handleStreamResponse(apiCall: () -> Response<ResponseBody>): StreamResponse {
         val response = apiCall()
         return if (response.isSuccessful) {

@@ -1,10 +1,6 @@
-package org.moire.ultrasonic.subsonic.loader.image
+package org.moire.ultrasonic.imageloader
 
 import android.net.Uri
-import com.nhaarman.mockito_kotlin.any
-import com.nhaarman.mockito_kotlin.anyOrNull
-import com.nhaarman.mockito_kotlin.mock
-import com.nhaarman.mockito_kotlin.whenever
 import com.squareup.picasso.Picasso
 import com.squareup.picasso.Request
 import java.io.IOException
@@ -14,14 +10,18 @@ import org.amshove.kluent.`should throw`
 import org.amshove.kluent.shouldBeEqualTo
 import org.junit.Test
 import org.junit.runner.RunWith
+import org.mockito.kotlin.any
+import org.mockito.kotlin.anyOrNull
+import org.mockito.kotlin.mock
+import org.mockito.kotlin.whenever
 import org.moire.ultrasonic.api.subsonic.SubsonicAPIClient
 import org.moire.ultrasonic.api.subsonic.response.StreamResponse
 import org.robolectric.RobolectricTestRunner
 
 @RunWith(RobolectricTestRunner::class)
 class CoverArtRequestHandlerTest {
-    private val mockSubsonicApiClientMock = mock<SubsonicAPIClient>()
-    private val handler = CoverArtRequestHandler(mockSubsonicApiClientMock)
+    private val mockApiClient: SubsonicAPIClient = mock()
+    private val handler = CoverArtRequestHandler(mockApiClient)
 
     @Test
     fun `Should accept only cover art request`() {
@@ -34,7 +34,6 @@ class CoverArtRequestHandlerTest {
     fun `Should not accept random request uri`() {
         val requestUri = Uri.Builder()
             .scheme(SCHEME)
-            .authority(AUTHORITY)
             .appendPath("random")
             .build()
 
@@ -56,8 +55,8 @@ class CoverArtRequestHandlerTest {
     @Test
     fun `Should throw IOException when request to api failed`() {
         val streamResponse = StreamResponse(null, null, 500)
-        whenever(mockSubsonicApiClientMock.getCoverArt(any(), anyOrNull()))
-            .thenReturn(streamResponse)
+
+        whenever(mockApiClient.getCoverArt(any(), anyOrNull())).thenReturn(streamResponse)
 
         val fail = {
             handler.load(createLoadCoverArtRequest("some").buildRequest(), 0)
@@ -73,14 +72,16 @@ class CoverArtRequestHandlerTest {
             apiError = null,
             responseHttpCode = 200
         )
-        whenever(mockSubsonicApiClientMock.getCoverArt(any(), anyOrNull()))
-            .thenReturn(streamResponse)
 
-        val response = handler.load(createLoadCoverArtRequest("some").buildRequest(), 0)
+        whenever(mockApiClient.getCoverArt(any(), anyOrNull())).thenReturn(streamResponse)
+
+        val response = handler.load(
+            createLoadCoverArtRequest("some").buildRequest(), 0
+        )
 
         response.loadedFrom `should be equal to` Picasso.LoadedFrom.NETWORK
         response.source `should not be` null
     }
 
-    private fun Uri.buildRequest() = Request.Builder(this).build()
+    private fun Uri.buildRequest() = Request.Builder(this).stableKey("-1").build()
 }

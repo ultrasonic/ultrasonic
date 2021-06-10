@@ -3,13 +3,13 @@ package org.moire.ultrasonic.api.subsonic
 import com.fasterxml.jackson.core.JsonParseException
 import com.fasterxml.jackson.core.JsonParser
 import com.fasterxml.jackson.databind.DeserializationContext
-import com.nhaarman.mockito_kotlin.doReturn
-import com.nhaarman.mockito_kotlin.mock
-import com.nhaarman.mockito_kotlin.whenever
 import org.amshove.kluent.`should be`
 import org.amshove.kluent.`should throw`
 import org.junit.Before
 import org.junit.Test
+import org.mockito.Mockito.doReturn
+import org.mockito.kotlin.mock
+import org.mockito.kotlin.whenever
 
 /**
  * Unit test for [SubsonicAPIVersions.SubsonicAPIVersionsDeserializer] class.

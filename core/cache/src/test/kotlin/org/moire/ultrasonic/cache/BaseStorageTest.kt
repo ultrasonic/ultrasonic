@@ -1,12 +1,12 @@
 package org.moire.ultrasonic.cache
 
-import com.nhaarman.mockito_kotlin.mock
 import com.twitter.serial.util.SerializationUtils
 import java.io.File
 import org.amshove.kluent.`it returns`
 import org.junit.Before
 import org.junit.Rule
 import org.junit.rules.TemporaryFolder
+import org.mockito.kotlin.mock
 
 internal const val INTERNAL_DATA_FOLDER = "data"
 internal const val INTERNAL_CACHE_FOLDER = "cache"

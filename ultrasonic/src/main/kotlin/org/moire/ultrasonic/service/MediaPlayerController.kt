@@ -489,7 +489,7 @@ class MediaPlayerController(
     val currentPlayingNumberOnPlaylist: Int
         get() = downloader.currentPlayingIndex
 
-    val currentDownloading: DownloadFile
+    val currentDownloading: DownloadFile?
         get() = downloader.currentDownloading
 
     val playList: List<DownloadFile>

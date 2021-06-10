@@ -1306,7 +1306,7 @@ public class PlayerFragment extends Fragment implements GestureDetector.OnGestur
             artistTextView.setText(currentSong.getArtist());
             downloadTrackTextView.setText(trackFormat);
             downloadTotalDurationTextView.setText(duration);
-            imageLoaderProvider.getValue().getImageLoader().loadImage(albumArtImageView, currentSong, true, 0, false, true);
+            imageLoaderProvider.getValue().getImageLoader().loadImage(albumArtImageView, currentSong, true, 0);
 
             displaySongRating();
         }
@@ -1318,7 +1318,7 @@ public class PlayerFragment extends Fragment implements GestureDetector.OnGestur
             artistTextView.setText(null);
             downloadTrackTextView.setText(null);
             downloadTotalDurationTextView.setText(null);
-            imageLoaderProvider.getValue().getImageLoader().loadImage(albumArtImageView, null, true, 0, false, true);
+            imageLoaderProvider.getValue().getImageLoader().loadImage(albumArtImageView, null, true, 0);
         }
     }
 

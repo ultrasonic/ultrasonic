@@ -1,9 +1,6 @@
-package org.moire.ultrasonic.subsonic.loader.image
+package org.moire.ultrasonic.imageloader
 
 import android.net.Uri
-import com.nhaarman.mockito_kotlin.any
-import com.nhaarman.mockito_kotlin.mock
-import com.nhaarman.mockito_kotlin.whenever
 import com.squareup.picasso.Picasso
 import com.squareup.picasso.Request
 import org.amshove.kluent.`should be equal to`
@@ -12,6 +9,9 @@ import org.amshove.kluent.`should throw`
 import org.amshove.kluent.shouldBeEqualTo
 import org.junit.Test
 import org.junit.runner.RunWith
+import org.mockito.kotlin.any
+import org.mockito.kotlin.mock
+import org.mockito.kotlin.whenever
 import org.moire.ultrasonic.api.subsonic.SubsonicAPIClient
 import org.moire.ultrasonic.api.subsonic.response.StreamResponse
 import org.robolectric.RobolectricTestRunner
@@ -20,8 +20,8 @@ import org.robolectric.annotation.Config
 @RunWith(RobolectricTestRunner::class)
 @Config(manifest = Config.NONE)
 class AvatarRequestHandlerTest {
-    private val mockSubsonicApiClient = mock<SubsonicAPIClient>()
-    private val handler = AvatarRequestHandler(mockSubsonicApiClient)
+    private val mockApiClient: SubsonicAPIClient = mock()
+    private val handler = AvatarRequestHandler(mockApiClient)
 
     @Test
     fun `Should accept only cover art request`() {
@@ -34,7 +34,6 @@ class AvatarRequestHandlerTest {
     fun `Should not accept random request uri`() {
         val requestUri = Uri.Builder()
             .scheme(SCHEME)
-            .authority(AUTHORITY)
             .appendPath("something")
             .build()
 
@@ -60,10 +59,12 @@ class AvatarRequestHandlerTest {
             apiError = null,
             responseHttpCode = 200
         )
-        whenever(mockSubsonicApiClient.getAvatar(any()))
+        whenever(mockApiClient.getAvatar(any()))
             .thenReturn(streamResponse)
 
-        val response = handler.load(createLoadAvatarRequest("some-username").buildRequest(), 0)
+        val response = handler.load(
+            createLoadAvatarRequest("some-username").buildRequest(), 0
+        )
 
         response.loadedFrom `should be equal to` Picasso.LoadedFrom.NETWORK
         response.source `should not be` null

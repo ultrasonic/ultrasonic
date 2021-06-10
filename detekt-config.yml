@@ -30,6 +30,8 @@ performance:
 
 exceptions:
   active: true
+  TooGenericExceptionCaught:
+    allowedExceptionNameRegex: '_|(all|ignore|expected).*'
 
 empty-blocks:
   active: true

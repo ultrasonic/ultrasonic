@@ -32,6 +32,7 @@ import org.moire.ultrasonic.app.UApp
 import org.moire.ultrasonic.domain.MusicDirectory
 import org.moire.ultrasonic.domain.PlayerState
 import org.moire.ultrasonic.domain.RepeatMode
+import org.moire.ultrasonic.imageloader.BitmapUtils
 import org.moire.ultrasonic.provider.UltrasonicAppWidgetProvider4X1
 import org.moire.ultrasonic.provider.UltrasonicAppWidgetProvider4X2
 import org.moire.ultrasonic.provider.UltrasonicAppWidgetProvider4X3
@@ -40,7 +41,6 @@ import org.moire.ultrasonic.receiver.MediaButtonIntentReceiver
 import org.moire.ultrasonic.service.MusicServiceFactory.getMusicService
 import org.moire.ultrasonic.util.AndroidAutoMediaBrowser
 import org.moire.ultrasonic.util.Constants
-import org.moire.ultrasonic.util.FileUtil
 import org.moire.ultrasonic.util.NowPlayingEventDistributor
 import org.moire.ultrasonic.util.ShufflePlayBuffer
 import org.moire.ultrasonic.util.Util
@@ -492,9 +492,8 @@ class MediaPlayerService : MediaBrowserServiceCompat() {
         if (currentPlaying != null) {
             try {
                 val song = currentPlaying.song
-                val cover = FileUtil.getAlbumArtBitmap(
-                    song, Util.getMinDisplayMetric(),
-                    true
+                val cover = BitmapUtils.getAlbumArtBitmapFromDisk(
+                    song, Util.getMinDisplayMetric()
                 )
                 metadata.putLong(MediaMetadataCompat.METADATA_KEY_DURATION, -1L)
                 metadata.putString(MediaMetadataCompat.METADATA_KEY_ARTIST, song.artist)
@@ -662,7 +661,7 @@ class MediaPlayerService : MediaBrowserServiceCompat() {
         // Set song title, artist and cover if possible
         if (song != null) {
             val iconSize = (256 * context.resources.displayMetrics.density).toInt()
-            val bitmap = FileUtil.getAlbumArtBitmap(song, iconSize, true)
+            val bitmap = BitmapUtils.getAlbumArtBitmapFromDisk(song, iconSize)
             notificationBuilder!!.setContentTitle(song.title)
             notificationBuilder!!.setContentText(song.artist)
             notificationBuilder!!.setLargeIcon(bitmap)

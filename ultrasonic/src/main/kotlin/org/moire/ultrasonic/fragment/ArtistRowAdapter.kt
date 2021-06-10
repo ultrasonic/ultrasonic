@@ -15,7 +15,7 @@ import java.text.Collator
 import org.moire.ultrasonic.R
 import org.moire.ultrasonic.domain.Artist
 import org.moire.ultrasonic.domain.MusicDirectory
-import org.moire.ultrasonic.util.ImageLoader
+import org.moire.ultrasonic.imageloader.ImageLoader
 import org.moire.ultrasonic.util.Util
 
 /**
@@ -30,7 +30,6 @@ class ArtistRowAdapter(
 ) : GenericRowAdapter<Artist>(
     onItemClick,
     onContextMenuClick,
-    imageLoader,
     onMusicFolderUpdate
 ),
     SectionedAdapter {
@@ -62,8 +61,11 @@ class ArtistRowAdapter(
                 holder.coverArt.visibility = View.VISIBLE
                 imageLoader.loadImage(
                     holder.coverArt,
-                    MusicDirectory.Entry("-1").apply { coverArt = holder.coverArtId },
-                    false, 0, false, true, R.drawable.ic_contact_picture
+                    MusicDirectory.Entry("-1").apply {
+                        coverArt = holder.coverArtId
+                        artist = itemList[listPosition].name
+                    },
+                    false, 0, R.drawable.ic_contact_picture
                 )
             } else {
                 holder.coverArt.visibility = View.GONE

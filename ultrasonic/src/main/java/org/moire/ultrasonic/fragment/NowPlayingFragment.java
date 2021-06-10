@@ -108,7 +108,7 @@ public class NowPlayingFragment extends Fragment {
                 String title = song.getTitle();
                 String artist = song.getArtist();
 
-                imageLoader.getValue().getImageLoader().loadImage(nowPlayingAlbumArtImage, song, false, Util.getNotificationImageSize(getContext()), false, true);
+                imageLoader.getValue().getImageLoader().loadImage(nowPlayingAlbumArtImage, song, false, Util.getNotificationImageSize(getContext()));
                 nowPlayingTrack.setText(title);
                 nowPlayingArtist.setText(artist);
 

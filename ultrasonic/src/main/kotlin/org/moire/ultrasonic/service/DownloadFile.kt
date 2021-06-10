@@ -24,6 +24,7 @@ import org.koin.core.component.inject
 import org.moire.ultrasonic.app.UApp
 import org.moire.ultrasonic.domain.MusicDirectory
 import org.moire.ultrasonic.service.MusicServiceFactory.getMusicService
+import org.moire.ultrasonic.subsonic.ImageLoaderProvider
 import org.moire.ultrasonic.util.CacheCleaner
 import org.moire.ultrasonic.util.CancellableTask
 import org.moire.ultrasonic.util.FileUtil
@@ -59,6 +60,7 @@ class DownloadFile(
     private var completeWhenDone = false
 
     private val downloader: Downloader by inject()
+    private val imageLoaderProvider: ImageLoaderProvider by inject()
 
     val progress: MutableLiveData<Int> = MutableLiveData(0)
 
@@ -275,7 +277,7 @@ class DownloadFile(
                     if (isCancelled) {
                         throw Exception(String.format("Download of '%s' was cancelled", song))
                     }
-                    downloadAndSaveCoverArt(musicService)
+                    downloadAndSaveCoverArt()
                 }
 
                 if (isPlaying) {
@@ -329,11 +331,11 @@ class DownloadFile(
             return String.format("DownloadTask (%s)", song)
         }
 
-        private fun downloadAndSaveCoverArt(musicService: MusicService) {
+        private fun downloadAndSaveCoverArt() {
             try {
                 if (!TextUtils.isEmpty(song.coverArt)) {
-                    val size = Util.getMinDisplayMetric()
-                    musicService.getCoverArt(song, size, true, true)
+                    // Download the largest size that we can display in the UI
+                    imageLoaderProvider.getImageLoader().cacheCoverArt(song)
                 }
             } catch (e: Exception) {
                 Timber.e(e, "Failed to get cover art.")

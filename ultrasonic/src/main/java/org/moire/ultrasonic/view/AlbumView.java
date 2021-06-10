@@ -28,7 +28,7 @@ import org.moire.ultrasonic.data.ActiveServerProvider;
 import org.moire.ultrasonic.domain.MusicDirectory;
 import org.moire.ultrasonic.service.MusicService;
 import org.moire.ultrasonic.service.MusicServiceFactory;
-import org.moire.ultrasonic.util.ImageLoader;
+import org.moire.ultrasonic.imageloader.ImageLoader;
 import org.moire.ultrasonic.util.Util;
 
 /**
@@ -109,7 +109,7 @@ public class AlbumView extends UpdateView
 	public void setAlbum(final MusicDirectory.Entry album)
 	{
 		viewHolder.cover_art.setTag(album);
-		imageLoader.loadImage(viewHolder.cover_art, album, false, 0, false, true);
+		imageLoader.loadImage(viewHolder.cover_art, album, false, 0);
 		this.entry = album;
 
 		String title = album.getTitle();
