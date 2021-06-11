@@ -45,7 +45,7 @@ import retrofit2.Call
 @Suppress("TooManyFunctions")
 internal class ApiVersionCheckWrapper(
     val api: SubsonicAPIDefinition,
-    var currentApiVersion: SubsonicAPIVersions?,
+    var currentApiVersion: SubsonicAPIVersions,
     var isRealProtocolVersion: Boolean = false
 ) : SubsonicAPIDefinition by api {
     override fun getArtists(musicFolderId: String?): Call<GetArtistsResponse> {
@@ -328,8 +328,8 @@ internal class ApiVersionCheckWrapper(
     private fun checkVersion(expectedVersion: SubsonicAPIVersions) {
         // If it is true, it is probably the first call with this server
         if (!isRealProtocolVersion) return
-        if (currentApiVersion!! < expectedVersion)
-            throw ApiNotSupportedException(currentApiVersion!!)
+        if (currentApiVersion < expectedVersion)
+            throw ApiNotSupportedException(currentApiVersion)
     }
 
     private fun checkParamVersion(param: Any?, expectedVersion: SubsonicAPIVersions) {

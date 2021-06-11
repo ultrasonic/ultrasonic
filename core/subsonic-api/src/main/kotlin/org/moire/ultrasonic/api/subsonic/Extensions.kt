@@ -36,7 +36,7 @@ fun Response<out ResponseBody>.toStreamResponse(): StreamResponse {
 }
 
 /**
- * This call wraps Subsonic API calls so their results can be checked for errors, API version, etc
+ * This extension checks API call results for errors, API version, etc
  * It creates Exceptions from the results returned by the Subsonic API
  */
 @Suppress("ThrowsCount")
@@ -58,6 +58,10 @@ fun <T : SubsonicResponse> Response<out T>.throwOnFailure(): Response<out T> {
     }
 }
 
+/**
+ * This extension checks API call results for errors, API version, etc
+ * @return Boolean: True if everything was ok, false if an error was found
+ */
 fun Response<out SubsonicResponse>.falseOnFailure(): Boolean {
     return (this.isSuccessful && this.body()!!.status === SubsonicResponse.Status.OK)
 }
