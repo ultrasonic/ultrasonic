@@ -14,7 +14,6 @@ import org.moire.ultrasonic.cache.PermanentFileStorage
 import org.moire.ultrasonic.data.ActiveServerProvider
 import org.moire.ultrasonic.imageloader.ImageLoader
 import org.moire.ultrasonic.log.TimberOkHttpLogger
-import org.moire.ultrasonic.service.ApiCallResponseChecker
 import org.moire.ultrasonic.service.CachedMusicService
 import org.moire.ultrasonic.service.MusicService
 import org.moire.ultrasonic.service.OfflineMusicService
@@ -50,28 +49,29 @@ val musicServiceModule = module {
     }
 
     single {
+        val server = get<ActiveServerProvider>().getActiveServer()
+
         return@single SubsonicClientConfiguration(
-            baseUrl = get<ActiveServerProvider>().getActiveServer().url,
-            username = get<ActiveServerProvider>().getActiveServer().userName,
-            password = get<ActiveServerProvider>().getActiveServer().password,
+            baseUrl = server.url,
+            username = server.userName,
+            password = server.password,
             minimalProtocolVersion = SubsonicAPIVersions.getClosestKnownClientApiVersion(
-                get<ActiveServerProvider>().getActiveServer().minimumApiVersion
+                server.minimumApiVersion
                     ?: Constants.REST_PROTOCOL_VERSION
             ),
             clientID = Constants.REST_CLIENT_ID,
-            allowSelfSignedCertificate = get<ActiveServerProvider>()
-                .getActiveServer().allowSelfSignedCertificate,
-            enableLdapUserSupport = get<ActiveServerProvider>().getActiveServer().ldapSupport,
-            debug = BuildConfig.DEBUG
+            allowSelfSignedCertificate = server.allowSelfSignedCertificate,
+            enableLdapUserSupport = server.ldapSupport,
+            debug = BuildConfig.DEBUG,
+            isRealProtocolVersion = server.minimumApiVersion != null
         )
     }
 
     single<HttpLoggingInterceptor.Logger> { TimberOkHttpLogger() }
     single { SubsonicAPIClient(get(), get()) }
-    single { ApiCallResponseChecker(get(), get()) }
 
     single<MusicService>(named(ONLINE_MUSIC_SERVICE)) {
-        CachedMusicService(RESTMusicService(get(), get(), get(), get()))
+        CachedMusicService(RESTMusicService(get(), get(), get()))
     }
 
     single<MusicService>(named(OFFLINE_MUSIC_SERVICE)) {

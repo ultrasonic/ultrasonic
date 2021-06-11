@@ -10,8 +10,6 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
-import java.net.ConnectException
-import java.net.UnknownHostException
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
@@ -89,10 +87,8 @@ open class GenericListModel(application: Application) :
 
             try {
                 load(isOffline, useId3Tags, musicService, refresh, bundle)
-            } catch (exception: ConnectException) {
-                handleException(exception, swipe.context)
-            } catch (exception: UnknownHostException) {
-                handleException(exception, swipe.context)
+            } catch (all: Exception) {
+                handleException(all, swipe.context)
             }
         }
 

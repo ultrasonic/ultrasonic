@@ -14,7 +14,7 @@ import org.moire.ultrasonic.api.subsonic.models.AlbumListType.BY_GENRE
  */
 class ApiVersionCheckWrapperTest {
     private val apiMock = mock<SubsonicAPIDefinition>()
-    private val wrapper = ApiVersionCheckWrapper(apiMock, V1_1_0)
+    private val wrapper = ApiVersionCheckWrapper(apiMock, V1_1_0, isRealProtocolVersion = true)
 
     @Test
     fun `Should just call real api for ping`() {

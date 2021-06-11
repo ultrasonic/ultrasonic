@@ -11,7 +11,7 @@ import org.moire.ultrasonic.api.subsonic.SubsonicAPIClient
  * Loads avatars from subsonic api.
  */
 class AvatarRequestHandler(
-    private val apiClient: SubsonicAPIClient
+    private val client: SubsonicAPIClient
 ) : RequestHandler() {
     override fun canHandleRequest(data: Request): Boolean {
         return with(data.uri) {
@@ -23,7 +23,9 @@ class AvatarRequestHandler(
         val username = request.uri.getQueryParameter(QUERY_USERNAME)
             ?: throw IllegalArgumentException("Nullable username")
 
-        val response = apiClient.getAvatar(username)
+        // Inverted call order, because Mockito has problems with chained calls.
+        val response = client.toStreamResponse(client.api.getAvatar(username).execute())
+
         if (response.hasError() || response.stream == null) {
             throw IOException("${response.apiError}")
         } else {

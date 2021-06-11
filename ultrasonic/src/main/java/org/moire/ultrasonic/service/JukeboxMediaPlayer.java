@@ -30,6 +30,7 @@ import android.widget.Toast;
 import org.jetbrains.annotations.NotNull;
 import org.moire.ultrasonic.R;
 import org.moire.ultrasonic.api.subsonic.ApiNotSupportedException;
+import org.moire.ultrasonic.api.subsonic.SubsonicRESTException;
 import org.moire.ultrasonic.app.UApp;
 import org.moire.ultrasonic.data.ActiveServerProvider;
 import org.moire.ultrasonic.domain.JukeboxStatus;

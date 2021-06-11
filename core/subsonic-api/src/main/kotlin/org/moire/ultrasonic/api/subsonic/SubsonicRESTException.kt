@@ -1,6 +1,4 @@
-package org.moire.ultrasonic.service
-
-import org.moire.ultrasonic.api.subsonic.SubsonicError
+package org.moire.ultrasonic.api.subsonic
 
 /**
  * Exception returned by API with given `code`.

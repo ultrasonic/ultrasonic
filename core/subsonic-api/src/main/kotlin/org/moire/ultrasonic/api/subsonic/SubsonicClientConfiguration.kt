@@ -11,5 +11,6 @@ data class SubsonicClientConfiguration(
     val clientID: String,
     val allowSelfSignedCertificate: Boolean = false,
     val enableLdapUserSupport: Boolean = false,
-    val debug: Boolean = false
+    val debug: Boolean = false,
+    val isRealProtocolVersion: Boolean = false
 )

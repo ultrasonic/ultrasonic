@@ -22,12 +22,13 @@ import org.moire.ultrasonic.R
 import org.moire.ultrasonic.api.subsonic.SubsonicAPIClient
 import org.moire.ultrasonic.api.subsonic.SubsonicAPIVersions
 import org.moire.ultrasonic.api.subsonic.SubsonicClientConfiguration
+import org.moire.ultrasonic.api.subsonic.SubsonicRESTException
+import org.moire.ultrasonic.api.subsonic.falseOnFailure
 import org.moire.ultrasonic.api.subsonic.response.SubsonicResponse
+import org.moire.ultrasonic.api.subsonic.throwOnFailure
 import org.moire.ultrasonic.data.ActiveServerProvider
 import org.moire.ultrasonic.data.ServerSetting
-import org.moire.ultrasonic.service.ApiCallResponseChecker
 import org.moire.ultrasonic.service.MusicServiceFactory
-import org.moire.ultrasonic.service.SubsonicRESTException
 import org.moire.ultrasonic.util.Constants
 import org.moire.ultrasonic.util.ErrorDialog
 import org.moire.ultrasonic.util.ModalBackgroundTask
@@ -360,7 +361,7 @@ class EditServerFragment : Fragment(), OnBackPressedHandler {
 
                 // Execute a ping to check the authentication, now using the correct API version.
                 pingResponse = subsonicApiClient.api.ping().execute()
-                ApiCallResponseChecker.checkResponseSuccessful(pingResponse)
+                pingResponse.throwOnFailure()
 
                 currentServerSetting!!.chatSupport = isServerFunctionAvailable {
                     subsonicApiClient.api.getChatMessages().execute()
@@ -387,7 +388,8 @@ class EditServerFragment : Fragment(), OnBackPressedHandler {
                 updateProgress(getProgress())
 
                 val licenseResponse = subsonicApiClient.api.getLicense().execute()
-                ApiCallResponseChecker.checkResponseSuccessful(licenseResponse)
+                licenseResponse.throwOnFailure()
+
                 if (!licenseResponse.body()!!.license.valid) {
                     return getProgress() + "\n" +
                         resources.getString(R.string.settings_testing_unlicensed)
@@ -438,9 +440,7 @@ class EditServerFragment : Fragment(), OnBackPressedHandler {
 
     private fun isServerFunctionAvailable(function: () -> Response<out SubsonicResponse>): Boolean {
         return try {
-            val response = function()
-            ApiCallResponseChecker.checkResponseSuccessful(response)
-            true
+            function().falseOnFailure()
         } catch (_: IOException) {
             false
         } catch (_: SubsonicRESTException) {

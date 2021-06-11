@@ -14,7 +14,7 @@ class SubsonicApiGetCoverArtTest : SubsonicAPIClientTest() {
     fun `Should handle api error response`() {
         mockWebServerRule.enqueueResponse("request_data_not_found_error_response.json")
 
-        val response = client.getCoverArt("some-id")
+        val response = client.api.getCoverArt("some-id").execute().toStreamResponse()
 
         with(response) {
             stream `should be` null
@@ -28,7 +28,7 @@ class SubsonicApiGetCoverArtTest : SubsonicAPIClientTest() {
         val httpErrorCode = 404
         mockWebServerRule.mockWebServer.enqueue(MockResponse().setResponseCode(httpErrorCode))
 
-        val response = client.getCoverArt("some-id")
+        val response = client.api.getCoverArt("some-id").execute().toStreamResponse()
 
         with(response) {
             stream `should be` null
@@ -44,7 +44,7 @@ class SubsonicApiGetCoverArtTest : SubsonicAPIClientTest() {
                 .setBody(mockWebServerRule.loadJsonResponse("ping_ok.json"))
         )
 
-        val response = client.getCoverArt("some-id")
+        val response = client.api.getCoverArt("some-id").execute().toStreamResponse()
 
         with(response) {
             responseHttpCode `should be equal to` 200
