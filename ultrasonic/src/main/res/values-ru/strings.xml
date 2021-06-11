@@ -300,7 +300,7 @@
     <string name="settings.use_folder_for_album_artist_summary">Предположим, папка верхнего уровня - это имя исполнителя альбома</string>
     <string name="settings.use_id3">Обзор с использованием тегов ID3</string>
     <string name="settings.use_id3_summary">Используйте методы тегов ID3 ​​вместо методов на основе файловой системы</string>
-    <string name="settings.video_title">Видео</string>
+    <string name="main.video">Видео</string>
     <string name="settings.video_player">Видеоплеер</string>
     <string name="settings.view_refresh">Посмотреть Обновить</string>
     <string name="settings.view_refresh_500">.5 секунд</string>
@@ -360,9 +360,6 @@
     <string name="settings.share_greeting_default">Поделиться приветствием по умолчанию</string>
     <string name="share_default_greeting">Проверьте эту музыку, с которой я поделился %s</string>
     <string name="share_via">Поделиться треками через</string>
-    <string name="settings.video_mx_player">MX Player</string>
-    <string name="settings.video_default">По умолчанию</string>
-    <string name="settings.video_flash">Flash</string>
     <string name="menu.share">Поделиться</string>
     <string name="select_album_all_songs">Все треки %s</string>
     <string name="settings.show_all_songs_by_artist">Показать все треки исполнителя</string>

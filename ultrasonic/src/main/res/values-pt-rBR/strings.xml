@@ -313,7 +313,7 @@
     <string name="settings.use_id3_summary">Usar as etiquetas ID3 ao invés do sistema de arquivos</string>
     <string name="settings.show_artist_picture">Mostrar Foto do Artista na Lista</string>
     <string name="settings.show_artist_picture_summary">Mostrar a imagem do artista na lista de artistas, se disponível</string>
-    <string name="settings.video_title">Vídeo</string>
+    <string name="main.video">Vídeo</string>
     <string name="settings.video_player">Player de Vídeo</string>
     <string name="settings.view_refresh">Atualização da Tela</string>
     <string name="settings.view_refresh_500">.5 segundos</string>
@@ -373,9 +373,6 @@
     <string name="settings.share_greeting_default">Saudação Padrão do Compartilhamento</string>
     <string name="share_default_greeting">Confira esta música que compartilhei do %s</string>
     <string name="share_via">Compartilhar músicas via</string>
-    <string name="settings.video_mx_player">MX Player</string>
-    <string name="settings.video_default">Padrão</string>
-    <string name="settings.video_flash">Flash</string>
     <string name="menu.share">Compartilhar</string>
     <string name="select_album_all_songs">Todas as Músicas de %s</string>
     <string name="settings.show_all_songs_by_artist">Mostrar Todas as Músicas por Artista</string>

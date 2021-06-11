@@ -308,7 +308,7 @@
     <string name="settings.use_folder_for_album_artist_summary">Assumir que a pasta mais acima é o nome do artista</string>
     <string name="settings.use_id3">Navegar Usando Etiquetas ID3</string>
     <string name="settings.use_id3_summary">Usa as etiquetas ID3 ao invés do sistema de ficheiros</string>
-    <string name="settings.video_title">Vídeo</string>
+    <string name="main.video">Vídeo</string>
     <string name="settings.video_player">Player de Vídeo</string>
     <string name="settings.view_refresh">Atualização do Ecrã</string>
     <string name="settings.view_refresh_500">.5 segundos</string>
@@ -368,9 +368,6 @@
     <string name="settings.share_greeting_default">Saudação Padrão</string>
     <string name="share_default_greeting">Confira esta música que compartilhei do %s</string>
     <string name="share_via">Compartilhar músicas via</string>
-    <string name="settings.video_mx_player">MX Player</string>
-    <string name="settings.video_default">Padrão</string>
-    <string name="settings.video_flash">Flash</string>
     <string name="menu.share">Compartilhar</string>
     <string name="select_album_all_songs">Todas as Músicas de %s</string>
     <string name="settings.show_all_songs_by_artist">Todas as Músicas do Artista</string>

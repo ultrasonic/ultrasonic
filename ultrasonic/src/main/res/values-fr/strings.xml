@@ -313,7 +313,7 @@
     <string name="settings.use_id3_summary">Utiliser ID3 Tags à la place du système de fichier basique</string>
     <string name="settings.show_artist_picture">Afficher l’image de l’artiste dans la liste</string>
     <string name="settings.show_artist_picture_summary">Affiche l’image de l’artiste dans la liste des artistes si celle-ci est disponible</string>
-    <string name="settings.video_title">Vidéo</string>
+    <string name="main.video">Vidéo</string>
     <string name="settings.video_player">Lecteur vidéo</string>
     <string name="settings.view_refresh">Actualisation de la vue</string>
     <string name="settings.view_refresh_500">0,5 secondes</string>
@@ -373,9 +373,6 @@
     <string name="settings.share_greeting_default">Texte par défaut lors d\'un partage</string>
     <string name="share_default_greeting">Regardez cette musique que j\'ai partagée depuis %s</string>
     <string name="share_via">Partager des titres via</string>
-    <string name="settings.video_mx_player">MX Player</string>
-    <string name="settings.video_default">Défaut</string>
-    <string name="settings.video_flash">Flash</string>
     <string name="menu.share">Partager</string>
     <string name="select_album_all_songs">Tous les titres de %s</string>
     <string name="settings.show_all_songs_by_artist">Voir tous les titres par artiste</string>

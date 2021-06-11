@@ -181,17 +181,6 @@
             app:iconSpaceReserved="false"/>
     </PreferenceCategory>
     <PreferenceCategory
-        a:title="@string/settings.video_title"
-        app:iconSpaceReserved="false">
-        <ListPreference
-            a:defaultValue="default"
-            a:entries="@array/videoPlayerNames"
-            a:entryValues="@array/videoPlayerValues"
-            a:key="videoPlayer"
-            a:title="@string/settings.video_player"
-            app:iconSpaceReserved="false"/>
-    </PreferenceCategory>
-    <PreferenceCategory
         a:title="@string/settings.sharing_title"
         app:iconSpaceReserved="false">
         <EditTextPreference

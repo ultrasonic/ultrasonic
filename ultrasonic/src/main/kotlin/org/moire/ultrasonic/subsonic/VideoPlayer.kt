@@ -1,22 +1,30 @@
 package org.moire.ultrasonic.subsonic
 
 import android.content.Context
+import android.content.Intent
+import android.net.Uri
 import org.moire.ultrasonic.R
 import org.moire.ultrasonic.domain.MusicDirectory
+import org.moire.ultrasonic.service.MusicServiceFactory
 import org.moire.ultrasonic.util.Util
 
 /**
  * This utility class helps starting video playback
  */
-class VideoPlayer() {
+class VideoPlayer {
     fun playVideo(context: Context, entry: MusicDirectory.Entry?) {
-        if (!Util.isNetworkConnected()) {
+        if (!Util.isNetworkConnected() || entry == null) {
             Util.toast(context, R.string.select_album_no_network)
             return
         }
-        val player = Util.getVideoPlayerType()
         try {
-            player.playVideo(context, entry)
+            val intent = Intent(Intent.ACTION_VIEW)
+            val url = MusicServiceFactory.getMusicService().getVideoUrl(entry.id)
+            intent.setDataAndType(
+                Uri.parse(url),
+                "video/*"
+            )
+            context.startActivity(intent)
         } catch (e: Exception) {
             Util.toast(context, e.toString(), false)
         }

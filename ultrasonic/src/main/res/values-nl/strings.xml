@@ -325,7 +325,7 @@
     <string name="settings.use_id3_summary">ID3-labels gebruiken in plaats van systeemlabels</string>
     <string name="settings.show_artist_picture">Artiestfoto tonen op artiestenlijst</string>
     <string name="settings.show_artist_picture_summary">Toont de artiestfoto op de artiestenlijst (indien beschikbaar)</string>
-    <string name="settings.video_title">Video</string>
+    <string name="main.video">Video</string>
     <string name="settings.video_player">Videospeler</string>
     <string name="settings.view_refresh">Verversen</string>
     <string name="settings.view_refresh_500">0,5 seconden</string>
@@ -385,9 +385,6 @@
     <string name="settings.share_greeting_default">Standaard deelbericht</string>
     <string name="share_default_greeting">Hé, luister eens naar de muziek die ik heb gedeeld via %s</string>
     <string name="share_via">Nummers delen via</string>
-    <string name="settings.video_mx_player">MX Player</string>
-    <string name="settings.video_default">Standaard</string>
-    <string name="settings.video_flash">Flash</string>
     <string name="menu.share">Delen</string>
     <string name="select_album_all_songs">Alle nummers van %s</string>
     <string name="settings.show_all_songs_by_artist">Alle nummers van artiest tonen</string>

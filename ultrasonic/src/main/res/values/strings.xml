@@ -327,7 +327,7 @@
     <string name="settings.use_id3_summary">Use ID3 tag methods instead of file system based methods</string>
     <string name="settings.show_artist_picture">Show artist picture in artist list</string>
     <string name="settings.show_artist_picture_summary">Displays the artist picture in the artist list if available</string>
-    <string name="settings.video_title">Video</string>
+    <string name="main.video">Video</string>
     <string name="settings.video_player">Video player</string>
     <string name="settings.view_refresh">View Refresh</string>
     <string name="settings.view_refresh_500">.5 seconds</string>
@@ -387,9 +387,6 @@
     <string name="settings.share_greeting_default">Default Share Greeting</string>
     <string name="share_default_greeting">Check out this music I shared from %s</string>
     <string name="share_via">Share songs via</string>
-    <string name="settings.video_mx_player">MX Player</string>
-    <string name="settings.video_default">Default</string>
-    <string name="settings.video_flash">Flash</string>
     <string name="menu.share">Share</string>
     <string name="select_album_all_songs">All Songs by %s</string>
     <string name="settings.show_all_songs_by_artist">Show All Songs By Artist</string>

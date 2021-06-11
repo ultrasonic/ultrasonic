@@ -5,7 +5,6 @@
     <ID>ComplexCondition:DownloadHandler.kt$DownloadHandler.&lt;no name provided&gt;$!append &amp;&amp; !playNext &amp;&amp; !unpin &amp;&amp; !background</ID>
     <ID>ComplexCondition:FilePickerAdapter.kt$FilePickerAdapter$currentDirectory.absolutePath == "/" || currentDirectory.absolutePath == "/storage" || currentDirectory.absolutePath == "/storage/emulated" || currentDirectory.absolutePath == "/mnt"</ID>
     <ID>ComplexCondition:LocalMediaPlayer.kt$LocalMediaPlayer$Util.getGaplessPlaybackPreference() &amp;&amp; Build.VERSION.SDK_INT &gt;= Build.VERSION_CODES.JELLY_BEAN &amp;&amp; ( playerState === PlayerState.STARTED || playerState === PlayerState.PAUSED )</ID>
-    <ID>ComplexCondition:SongView.kt$SongView$TextUtils.isEmpty(transcodedSuffix) || transcodedSuffix == suffix || song.isVideo &amp;&amp; Util.getVideoPlayerType() !== VideoPlayerType.FLASH</ID>
     <ID>ComplexMethod:DownloadFile.kt$DownloadFile.DownloadTask$override fun execute()</ID>
     <ID>ComplexMethod:FilePickerAdapter.kt$FilePickerAdapter$private fun fileLister(currentDirectory: File)</ID>
     <ID>ComplexMethod:SongView.kt$SongView$fun setSong(song: MusicDirectory.Entry, checkable: Boolean, draggable: Boolean)</ID>

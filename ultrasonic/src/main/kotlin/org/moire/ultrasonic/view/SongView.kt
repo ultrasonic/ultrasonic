@@ -36,7 +36,6 @@ import org.moire.ultrasonic.service.DownloadFile
 import org.moire.ultrasonic.service.MediaPlayerController
 import org.moire.ultrasonic.service.MusicServiceFactory.getMusicService
 import org.moire.ultrasonic.util.Util
-import org.moire.ultrasonic.util.VideoPlayerType
 import org.moire.ultrasonic.view.EntryAdapter.SongViewHolder
 import timber.log.Timber
 
@@ -111,8 +110,7 @@ class SongView(context: Context) : UpdateView(context), Checkable, KoinComponent
         val transcodedSuffix = song.transcodedSuffix
 
         fileFormat = if (
-            TextUtils.isEmpty(transcodedSuffix) || transcodedSuffix == suffix ||
-            song.isVideo && Util.getVideoPlayerType() !== VideoPlayerType.FLASH
+            TextUtils.isEmpty(transcodedSuffix) || transcodedSuffix == suffix || song.isVideo
         ) suffix else String.format("%s > %s", suffix, transcodedSuffix)
 
         val artistName = song.artist

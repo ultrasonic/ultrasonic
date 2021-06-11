@@ -311,7 +311,7 @@
     <string name="settings.use_folder_for_album_artist_summary">Očekává jména hlavních adresářů obsahující jména umělců</string>
     <string name="settings.use_id3">Procházet za použití ID3 tagů</string>
     <string name="settings.use_id3_summary">Používat metodu ID3 tagů místo jmen na základě adresářové struktury</string>
-    <string name="settings.video_title">Video</string>
+    <string name="main.video">Video</string>
     <string name="settings.video_player">Videopřehrávač</string>
     <string name="settings.view_refresh">Obnovení náhledu</string>
     <string name="settings.view_refresh_500">.5 sekundy</string>
@@ -371,9 +371,6 @@
     <string name="settings.share_greeting_default">Výchozí pozdrav sdílení</string>
     <string name="share_default_greeting">Mrkni na hudbu sdílenou z %s</string>
     <string name="share_via">Sdílet skladby přes</string>
-    <string name="settings.video_mx_player">MX Player</string>
-    <string name="settings.video_default">Výchozí</string>
-    <string name="settings.video_flash">Flash</string>
     <string name="menu.share">Sdílení</string>
     <string name="select_album_all_songs">Všechny skladby od %s</string>
     <string name="settings.show_all_songs_by_artist">Zobrazit všechny skladby umělce</string>
