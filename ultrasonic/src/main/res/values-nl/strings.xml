@@ -326,7 +326,6 @@
     <string name="settings.show_artist_picture">Artiestfoto tonen op artiestenlijst</string>
     <string name="settings.show_artist_picture_summary">Toont de artiestfoto op de artiestenlijst (indien beschikbaar)</string>
     <string name="main.video">Video</string>
-    <string name="settings.video_player">Videospeler</string>
     <string name="settings.view_refresh">Verversen</string>
     <string name="settings.view_refresh_500">0,5 seconden</string>
     <string name="settings.view_refresh_1000">1 seconde</string>
@@ -348,8 +347,6 @@
     <string name="util.bytes_format.megabyte">0,00 MB</string>
     <string name="util.no_time">-:--</string>
     <string name="util.zero_time">0:00</string>
-    <string name="video.get_mx_player_text">MX Player is niet geïnstalleerd. Installeer deze gratis via de Play Store of wijzig de video-instellingen.</string>
-    <string name="video.get_mx_player_button">MX Player installeren</string>
     <string name="widget.initial_text">Druk om muziek te selecteren</string>
     <string name="widget.sdcard_busy">SD-kaart niet beschikbaar</string>
     <string name="widget.sdcard_missing">Geen SD-kaart</string>

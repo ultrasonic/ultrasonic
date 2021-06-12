@@ -300,7 +300,6 @@
     <string name="settings.use_id3">Sfoglia Utilizzando Tag ID3</string>
     <string name="settings.use_id3_summary">Usa metodi tag ID3 invece dei metodi basati sul filesystem</string>
     <string name="main.video">Video</string>
-    <string name="settings.video_player">Riproduttore video</string>
     <string name="settings.view_refresh_500">.5 secondo</string>
     <string name="settings.view_refresh_1000">1 secondo</string>
     <string name="settings.view_refresh_1500">1.5 secondi</string>
@@ -319,8 +318,6 @@
     <string name="util.bytes_format.megabyte">0.00 MB</string>
     <string name="util.no_time">-:--</string>
     <string name="util.zero_time">0:00</string>
-    <string name="video.get_mx_player_text">MX Player non è installato. Scaricalo gratuitamente dal Play Store, o cambia le impostazioni video.</string>
-    <string name="video.get_mx_player_button">Ottieni MX Player</string>
     <string name="widget.initial_text">Tocca per selezionare musica</string>
     <string name="widget.sdcard_busy">Scheda SD non disponibile</string>
     <string name="widget.sdcard_missing">Nessuna scheda SD</string>

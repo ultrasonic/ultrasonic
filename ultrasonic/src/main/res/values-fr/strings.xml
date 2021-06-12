@@ -314,7 +314,6 @@
     <string name="settings.show_artist_picture">Afficher l’image de l’artiste dans la liste</string>
     <string name="settings.show_artist_picture_summary">Affiche l’image de l’artiste dans la liste des artistes si celle-ci est disponible</string>
     <string name="main.video">Vidéo</string>
-    <string name="settings.video_player">Lecteur vidéo</string>
     <string name="settings.view_refresh">Actualisation de la vue</string>
     <string name="settings.view_refresh_500">0,5 secondes</string>
     <string name="settings.view_refresh_1000">1 seconde</string>
@@ -336,8 +335,6 @@
     <string name="util.bytes_format.megabyte">0.00 Mo</string>
     <string name="util.no_time">&#8212;:&#8212;&#8212;</string>
     <string name="util.zero_time">0:00</string>
-    <string name="video.get_mx_player_text">MX Player n\'est pas installé. Récupérez le gratuitement sur Play Store, ou modifier les paramètres vidéo.</string>
-    <string name="video.get_mx_player_button">Obtenez MX Player</string>
     <string name="widget.initial_text">Touchez pour sélectionner un titre</string>
     <string name="widget.sdcard_busy">Carte SD non disponible</string>
     <string name="widget.sdcard_missing">Aucune carte SD</string>

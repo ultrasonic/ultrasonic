@@ -312,7 +312,6 @@
     <string name="settings.use_id3">Procházet za použití ID3 tagů</string>
     <string name="settings.use_id3_summary">Používat metodu ID3 tagů místo jmen na základě adresářové struktury</string>
     <string name="main.video">Video</string>
-    <string name="settings.video_player">Videopřehrávač</string>
     <string name="settings.view_refresh">Obnovení náhledu</string>
     <string name="settings.view_refresh_500">.5 sekundy</string>
     <string name="settings.view_refresh_1000">1 sekunda</string>
@@ -334,8 +333,6 @@
     <string name="util.bytes_format.megabyte">0.00 MB</string>
     <string name="util.no_time">-:--</string>
     <string name="util.zero_time">0:00</string>
-    <string name="video.get_mx_player_text">MX Player není nainstalován. Nainstalujte z Obchodu Play nebo změňte nastavení videí.</string>
-    <string name="video.get_mx_player_button">Stáhnout MX Player</string>
     <string name="widget.initial_text">Ťuknutím vybrat hudbu</string>
     <string name="widget.sdcard_busy">SD karta nedostupná</string>
     <string name="widget.sdcard_missing">Chybí SD karta</string>

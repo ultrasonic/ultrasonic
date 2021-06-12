@@ -225,7 +225,6 @@
     <string name="settings.theme_title">主题</string>
     <string name="settings.title.allow_self_signed_certificate">允许自签名 HTTPS 证书</string>
     <string name="main.video">视频</string>
-    <string name="settings.video_player">视频播放器</string>
     <string name="settings.view_refresh">刷新视图</string>
     <string name="settings.view_refresh_500">.5 秒</string>
     <string name="settings.view_refresh_1000">1 秒</string>

@@ -326,7 +326,6 @@
     <string name="settings.show_artist_picture">Előadó képének megjelenítése</string>
     <string name="settings.show_artist_picture_summary">Az előadó listában megjeleníti a képeket, amennyiben elérhetőek</string>
     <string name="main.video">Videó</string>
-    <string name="settings.video_player">Videólejátszó</string>
     <string name="settings.view_refresh">Nézet frissítési gyakorisága</string>
     <string name="settings.view_refresh_500">.5 másodperc</string>
     <string name="settings.view_refresh_1000">1 másodperc</string>
@@ -348,8 +347,6 @@
     <string name="util.bytes_format.megabyte">0.00 MB</string>
     <string name="util.no_time">-:--</string>
     <string name="util.zero_time">0:00</string>
-    <string name="video.get_mx_player_text">Az MX Player nincs telepítve. Töltse le díjmentesen a Play Áruházból, vagy módosítsa a videó beállításait!</string>
-    <string name="video.get_mx_player_button">MX Player letöltése</string>
     <string name="widget.initial_text">Érintse meg a zene kiválasztásához</string>
     <string name="widget.sdcard_busy">Az SD kártya nem elérhető!</string>
     <string name="widget.sdcard_missing">Nincs SD kártya!</string>

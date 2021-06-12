@@ -309,7 +309,6 @@
     <string name="settings.use_id3">Navegar Usando Etiquetas ID3</string>
     <string name="settings.use_id3_summary">Usa as etiquetas ID3 ao invés do sistema de ficheiros</string>
     <string name="main.video">Vídeo</string>
-    <string name="settings.video_player">Player de Vídeo</string>
     <string name="settings.view_refresh">Atualização do Ecrã</string>
     <string name="settings.view_refresh_500">.5 segundos</string>
     <string name="settings.view_refresh_1000">1 segundo</string>
@@ -331,8 +330,6 @@
     <string name="util.bytes_format.megabyte">0.00 MB</string>
     <string name="util.no_time">&#8212;:&#8212;&#8212;</string>
     <string name="util.zero_time">0:00</string>
-    <string name="video.get_mx_player_text">O MX Player não está instalado. Descarregue da graça pela Play Store ou modifique as configurações de vídeo.</string>
-    <string name="video.get_mx_player_button">Descarregar MX Player</string>
     <string name="widget.initial_text">Toque para selecionar a música</string>
     <string name="widget.sdcard_busy">Cartão SD indisponível</string>
     <string name="widget.sdcard_missing">Sem cartão SD</string>

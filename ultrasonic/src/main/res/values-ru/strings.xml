@@ -301,7 +301,6 @@
     <string name="settings.use_id3">Обзор с использованием тегов ID3</string>
     <string name="settings.use_id3_summary">Используйте методы тегов ID3 ​​вместо методов на основе файловой системы</string>
     <string name="main.video">Видео</string>
-    <string name="settings.video_player">Видеоплеер</string>
     <string name="settings.view_refresh">Посмотреть Обновить</string>
     <string name="settings.view_refresh_500">.5 секунд</string>
     <string name="settings.view_refresh_1000">1 секунда</string>
@@ -323,8 +322,6 @@
     <string name="util.bytes_format.megabyte">0.00 MB</string>
     <string name="util.no_time">-:--</string>
     <string name="util.zero_time">0:00</string>
-    <string name="video.get_mx_player_text">MX Player не установлен. Получите его бесплатно в магазине Play Store или измените настройки видео.</string>
-    <string name="video.get_mx_player_button">Получить MX Player</string>
     <string name="widget.initial_text">Нажмите, чтобы выбрать музыку</string>
     <string name="widget.sdcard_busy">SD-карта недоступна</string>
     <string name="widget.sdcard_missing">Нет SD-карты</string>

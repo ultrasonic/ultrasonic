@@ -309,7 +309,6 @@ ponieważ api Subsonic nie wspiera nowego sposobu autoryzacji dla użytkowników
     <string name="settings.use_id3">Przeglądaj używając tagów ID3</string>
     <string name="settings.use_id3_summary">Używa metod z tagów ID3 zamiast metod opartych na systemie plików</string>
     <string name="main.video">Wideo</string>
-    <string name="settings.video_player">Odtwarzacz wideo</string>
     <string name="settings.view_refresh">Odświeżanie widoku</string>
     <string name="settings.view_refresh_500">co pół sekundy</string>
     <string name="settings.view_refresh_1000">co 1 sekundę</string>
@@ -331,8 +330,6 @@ ponieważ api Subsonic nie wspiera nowego sposobu autoryzacji dla użytkowników
     <string name="util.bytes_format.megabyte">0.00 MB</string>
     <string name="util.no_time">-:--</string>
     <string name="util.zero_time">0:00</string>
-    <string name="video.get_mx_player_text">MX Player nie jest zainstalowany, Pobierz go za darmo w Sklepie Play, lub zmień ustawiena wideo.</string>
-    <string name="video.get_mx_player_button">Pobierz MX Player</string>
     <string name="widget.initial_text">Dotknij, aby wybrać muzykę</string>
     <string name="widget.sdcard_busy">Karta SD jest niedostępna</string>
     <string name="widget.sdcard_missing">Brak karty SD</string>
