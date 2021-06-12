@@ -128,16 +128,11 @@
     <string name="search.search">Kliknij, aby wyszukać</string>
     <string name="search.songs">Utwory</string>
     <string name="search.title">Wyszukiwanie</string>
-    <string name="select_album.donate_dialog_0_trial_days_left">Okres próbny zakończył się</string>
-    <string name="select_album.donate_dialog_later">Później</string>
-    <string name="select_album.donate_dialog_message">Uzyskaj możliwość nieograniczonych pobrań przekazując darowiznę na rzecz Subsonic.</string>
-    <string name="select_album.donate_dialog_now">Teraz</string>
     <string name="select_album.empty">Brak mediów</string>
     <string name="select_album.n_selected">Zaznaczono %d utworów.</string>
     <string name="select_album.n_unselected">Odznaczono %d utworów.</string>
     <string name="select_album.no_network">Uwaga: sieć niedostępna.</string>
     <string name="select_album.no_sdcard">Błąd: Niedostępna karta SD.</string>
-    <string name="select_album.not_licensed">Serwer bez licencji. Pozostało %d dni próbnych.</string>
     <string name="select_album.play_all">Odtwórz wszystkie</string>
     <string name="select_artist.all_folders">Wszystkie foldery</string>
     <string name="select_artist.folder">Wybierz folder</string>

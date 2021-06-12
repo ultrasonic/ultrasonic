@@ -106,10 +106,6 @@
     <string name="search.search">点击搜索</string>
     <string name="search.songs">歌曲</string>
     <string name="search.title">搜索</string>
-    <string name="select_album.donate_dialog_0_trial_days_left">试用已结束</string>
-    <string name="select_album.donate_dialog_later">稍后</string>
-    <string name="select_album.donate_dialog_message">通过捐赠 Subsonic 得到无限制的下载。</string>
-    <string name="select_album.donate_dialog_now">现在</string>
     <string name="select_album.empty">找不到歌曲</string>
     <string name="select_album.no_network">警告：网络不可用</string>
     <string name="select_album.no_sdcard">错误：没有SD卡</string>
