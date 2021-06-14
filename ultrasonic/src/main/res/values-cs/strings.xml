@@ -101,7 +101,6 @@
     <string name="main.songs_starred">Označené hvězdičkou</string>
     <string name="main.songs_title">Skladby</string>
     <string name="main.videos">Videa</string>
-    <string name="main.welcome_text">Vítejte v aplikaci Ultrasonic! Aplikace není ještě nakonfigurována. Poté co nastavíte svůj osobní server (dostupný na <b>subsonic.org</b>), vyberte <i>Správa serverů</i> v <b>Nastavení</b> a připojte aplikaci.</string>
     <string name="main.welcome_title">Vítejte!</string>
     <string name="menu.about">O aplikaci</string>
     <string name="menu.common">Další</string>
