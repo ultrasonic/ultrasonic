@@ -11,6 +11,8 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
+import org.moire.ultrasonic.R
+import org.moire.ultrasonic.app.UApp
 import org.moire.ultrasonic.data.ActiveServerProvider
 import org.moire.ultrasonic.data.ServerSetting
 import org.moire.ultrasonic.data.ServerSettingDao
@@ -24,20 +26,6 @@ class ServerSettingsModel(
     private val activeServerProvider: ActiveServerProvider,
     application: Application
 ) : AndroidViewModel(application) {
-
-    companion object {
-        private const val PREFERENCES_KEY_SERVER_MIGRATED = "serverMigrated"
-        // These constants were removed from Constants.java as they are deprecated and only used here
-        private const val PREFERENCES_KEY_JUKEBOX_BY_DEFAULT = "jukeboxEnabled"
-        private const val PREFERENCES_KEY_SERVER_NAME = "serverName"
-        private const val PREFERENCES_KEY_SERVER_URL = "serverUrl"
-        private const val PREFERENCES_KEY_ACTIVE_SERVERS = "activeServers"
-        private const val PREFERENCES_KEY_USERNAME = "username"
-        private const val PREFERENCES_KEY_PASSWORD = "password"
-        private const val PREFERENCES_KEY_ALLOW_SELF_SIGNED_CERTIFICATE = "allowSSCertificate"
-        private const val PREFERENCES_KEY_LDAP_SUPPORT = "enableLdapSupport"
-        private const val PREFERENCES_KEY_MUSIC_FOLDER_ID = "musicFolderId"
-    }
 
     private val appScope = CoroutineScope(SupervisorJob() + Dispatchers.IO)
 
@@ -67,8 +55,8 @@ class ServerSettingsModel(
                             repository.insert(newServerSetting)
                             index++
                             Timber.i(
-                                "Imported server from Preferences to Database:" +
-                                    " ${newServerSetting.name}"
+                                "Imported server from Preferences to Database: %s",
+                                newServerSetting.name
                             )
                         }
                     }
@@ -188,6 +176,23 @@ class ServerSettingsModel(
     }
 
     /**
+     * Inserts a new Setting into the database
+     * @return The id of the demo server
+     */
+    fun addDemoServer(): Int {
+        val demo = DEMO_SERVER_CONFIG.copy()
+
+        runBlocking {
+            demo.index = (repository.count() ?: 0) + 1
+            demo.id = (repository.getMaxId() ?: 0) + 1
+            repository.insert(demo)
+            Timber.d("Added demo server")
+        }
+
+        return demo.id
+    }
+
+    /**
      * Reads up a Server Setting stored in the obsolete Preferences
      */
     private fun loadServerSettingFromPreferences(
@@ -261,5 +266,37 @@ class ServerSettingsModel(
         val editor = settings.edit()
         editor.putBoolean(PREFERENCES_KEY_SERVER_MIGRATED + preferenceId, true)
         editor.apply()
+    }
+
+    companion object {
+        private const val PREFERENCES_KEY_SERVER_MIGRATED = "serverMigrated"
+        // These constants were removed from Constants.java as they are deprecated and only used here
+        private const val PREFERENCES_KEY_JUKEBOX_BY_DEFAULT = "jukeboxEnabled"
+        private const val PREFERENCES_KEY_SERVER_NAME = "serverName"
+        private const val PREFERENCES_KEY_SERVER_URL = "serverUrl"
+        private const val PREFERENCES_KEY_ACTIVE_SERVERS = "activeServers"
+        private const val PREFERENCES_KEY_USERNAME = "username"
+        private const val PREFERENCES_KEY_PASSWORD = "password"
+        private const val PREFERENCES_KEY_ALLOW_SELF_SIGNED_CERTIFICATE = "allowSSCertificate"
+        private const val PREFERENCES_KEY_LDAP_SUPPORT = "enableLdapSupport"
+        private const val PREFERENCES_KEY_MUSIC_FOLDER_ID = "musicFolderId"
+
+        private val DEMO_SERVER_CONFIG = ServerSetting(
+            id = 0,
+            index = 0,
+            name = UApp.applicationContext().getString(R.string.server_menu_demo),
+            url = "https://demo.ampache.dev",
+            userName = "ultrasonic_demo",
+            password = "W7DumQ3ZUR89Se3",
+            jukeboxByDefault = false,
+            allowSelfSignedCertificate = false,
+            ldapSupport = false,
+            musicFolderId = null,
+            minimumApiVersion = "1.13.0",
+            chatSupport = true,
+            bookmarkSupport = true,
+            shareSupport = true,
+            podcastSupport = true
+        )
     }
 }

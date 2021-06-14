@@ -111,8 +111,9 @@
     <string name="main.songs_starred">Starred</string>
     <string name="main.songs_title">Songs</string>
     <string name="main.videos">Videos</string>
-    <string name="main.welcome_text">Welcome to Ultrasonic! The app is currently not configured. After you\'ve set up your personal server (available from <b>subsonic.org</b>), please click <i>Manage Servers</i> in <b>Settings</b> to connect to it.</string>
-    <string name="main.welcome_title">Welcome!</string>
+    <string name="main.welcome_text_demo">To use Ultrasonic with your own music you will need your <b>own server</b>. \n\n➤ In case you want to try out the app first, it can add a demo server now. \n\n➤ Otherwise you can configure your server in the <b>settings</b>.</string>
+    <string name="main.welcome_title">Welcome to Ultrasonic!</string>
+    <string name="main.welcome_cancel">Take me to the settings</string>
     <string name="menu.about">About</string>
     <string name="menu.common">Common</string>
     <string name="menu.deleted_playlist">Deleted playlist %s</string>
@@ -342,7 +343,7 @@
     <string name="util.bytes_format.gigabyte">0.00 GB</string>
     <string name="util.bytes_format.kilobyte">0 KB</string>
     <string name="util.bytes_format.megabyte">0.00 MB</string>
-    <string name="util.no_time">-:--</string>
+    <string name="util.no_time" tools:ignore="TypographyDashes">-:--</string>
     <string name="util.zero_time">0:00</string>
     <string name="widget.initial_text">Touch to select music</string>
     <string name="widget.sdcard_busy">SD card unavailable</string>
@@ -438,6 +439,7 @@
     <string name="server_editor.authentication">Authentication</string>
     <string name="server_editor.advanced">Advanced settings</string>
     <string name="server_editor.disabled_feature">One or more features were disabled because the server doesn\'t support them.\nYou can run this test again anytime.</string>
+    <string name="server_menu.demo">Demo Server</string>
 
     <plurals name="select_album_n_songs">
         <item quantity="one">1 song</item>

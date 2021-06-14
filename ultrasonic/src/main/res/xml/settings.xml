@@ -70,13 +70,13 @@
         a:key="playbackControlSettings"
         app:iconSpaceReserved="false">
         <CheckBoxPreference
-            a:defaultValue="false"
+            a:defaultValue="true"
             a:key="useId3Tags"
             a:summary="@string/settings.use_id3_summary"
             a:title="@string/settings.use_id3"
             app:iconSpaceReserved="false"/>
         <CheckBoxPreference
-            a:defaultValue="false"
+            a:defaultValue="true"
             a:key="showArtistPicture"
             a:summary="@string/settings.show_artist_picture_summary"
             a:title="@string/settings.show_artist_picture"

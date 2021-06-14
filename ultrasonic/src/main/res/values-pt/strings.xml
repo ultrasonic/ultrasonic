@@ -100,7 +100,6 @@
     <string name="main.songs_starred">Favoritas</string>
     <string name="main.songs_title">Músicas</string>
     <string name="main.videos">Vídeos</string>
-    <string name="main.welcome_text">Bem-vindo ao Ultrasonic! O aplicativo ainda não está configurado. Após configurar seu servidor pessoal (disponível em <b>subsonic.org</b>), clique em <i>Adicionar Servidor</i> em <b>Configurações</b> para a conexão.</string>
     <string name="main.welcome_title">Bem-vindo!</string>
     <string name="menu.about">Sobre</string>
     <string name="menu.common">Comum</string>

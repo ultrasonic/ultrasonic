@@ -100,7 +100,6 @@
     <string name="main.songs_starred">Mit Stern</string>
     <string name="main.songs_title">Titel</string>
     <string name="main.videos">Filme</string>
-    <string name="main.welcome_text">Willkommen bei Ultrasonic! Die App ist zurzeit unkonfiguriert. Nachdem du deinen Server konfiguriert hast (siehe <b>subsonic.org</b>), bitte <i>Server hinzufügen</i> in den <b>Einstellungen</b> klicken um die Verbindun herzustellen.</string>
     <string name="main.welcome_title">Willkommen</string>
     <string name="menu.about">Über</string>
     <string name="menu.common">Allgemein</string>

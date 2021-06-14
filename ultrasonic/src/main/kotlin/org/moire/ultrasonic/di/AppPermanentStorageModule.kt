@@ -12,6 +12,7 @@ import org.moire.ultrasonic.fragment.ServerSettingsModel
 import org.moire.ultrasonic.util.Util
 
 const val SP_NAME = "Default_SP"
+const val DB_FILENAME = "ultrasonic-database"
 
 /**
  * This Koin module contains registration of classes related to permanent storage
@@ -23,11 +24,10 @@ val appPermanentStorage = module {
         Room.databaseBuilder(
             androidContext(),
             AppDatabase::class.java,
-            "ultrasonic-database"
+            DB_FILENAME
         )
             .addMigrations(MIGRATION_1_2)
             .addMigrations(MIGRATION_2_3)
-            .fallbackToDestructiveMigrationOnDowngrade()
             .build()
     }
 
