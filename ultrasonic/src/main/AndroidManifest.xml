@@ -3,6 +3,8 @@
           package="org.moire.ultrasonic"
           android:installLocation="auto">
 
+    <uses-sdk android:minSdkVersion="20" android:targetSdkVersion="29" />
+
     <uses-permission android:name="android.permission.INTERNET"/>
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE"/>
     <uses-permission android:name="android.permission.WAKE_LOCK"/>
@@ -27,6 +29,14 @@
         android:name=".app.UApp"
         android:label="@string/common.appname"
         android:usesCleartextTraffic="true">
+
+        <meta-data android:name="com.google.android.gms.car.application"
+            android:resource="@xml/automotive_app_desc"/>
+
+        <!--Used by Android Auto-->
+        <meta-data android:name="com.google.android.gms.car.notification.SmallIcon"
+            android:resource="@mipmap/ic_launcher" />
+
         <activity android:name=".activity.NavigationActivity"
             android:configChanges="orientation|keyboardHidden"
             android:label="@string/common.appname"
@@ -48,7 +58,11 @@
         <service
             android:name=".service.MediaPlayerService"
             android:label="Ultrasonic Media Player Service"
-            android:exported="false">
+            android:exported="true">
+
+            <intent-filter>
+                <action android:name="android.media.browse.MediaBrowserService" />
+            </intent-filter>
         </service>
 
         <receiver android:name=".receiver.MediaButtonIntentReceiver">
