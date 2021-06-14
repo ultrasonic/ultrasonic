@@ -129,16 +129,11 @@
     <string name="search.search">Kliknout pro vyhledání</string>
     <string name="search.songs">Skladby</string>
     <string name="search.title">Hledat</string>
-    <string name="select_album.donate_dialog_0_trial_days_left">Zkušební doba vypršela</string>
-    <string name="select_album.donate_dialog_later">Pozdějí</string>
-    <string name="select_album.donate_dialog_message">Získejte neomezená stahování přispěním na Subsonic.</string>
-    <string name="select_album.donate_dialog_now">Hned</string>
     <string name="select_album.empty">Média nenalezena</string>
     <string name="select_album.n_selected">%d skladeb označeno.</string>
     <string name="select_album.n_unselected">%d skladeb odznačeno.</string>
     <string name="select_album.no_network">Varování: Připojení nedostupné.</string>
     <string name="select_album.no_sdcard">Chyba: SD karta nedostupná.</string>
-    <string name="select_album.not_licensed">Server bez licence. Zbývá %d dní zkušební doby.</string>
     <string name="select_album.play_all">Přehrát vše</string>
     <string name="select_artist.all_folders">Všechny adresáře</string>
     <string name="select_artist.folder">Vybrat adresář</string>
@@ -310,8 +305,7 @@
     <string name="settings.use_folder_for_album_artist_summary">Očekává jména hlavních adresářů obsahující jména umělců</string>
     <string name="settings.use_id3">Procházet za použití ID3 tagů</string>
     <string name="settings.use_id3_summary">Používat metodu ID3 tagů místo jmen na základě adresářové struktury</string>
-    <string name="settings.video_title">Video</string>
-    <string name="settings.video_player">Videopřehrávač</string>
+    <string name="main.video">Video</string>
     <string name="settings.view_refresh">Obnovení náhledu</string>
     <string name="settings.view_refresh_500">.5 sekundy</string>
     <string name="settings.view_refresh_1000">1 sekunda</string>
@@ -333,8 +327,6 @@
     <string name="util.bytes_format.megabyte">0.00 MB</string>
     <string name="util.no_time">-:--</string>
     <string name="util.zero_time">0:00</string>
-    <string name="video.get_mx_player_text">MX Player není nainstalován. Nainstalujte z Obchodu Play nebo změňte nastavení videí.</string>
-    <string name="video.get_mx_player_button">Stáhnout MX Player</string>
     <string name="widget.initial_text">Ťuknutím vybrat hudbu</string>
     <string name="widget.sdcard_busy">SD karta nedostupná</string>
     <string name="widget.sdcard_missing">Chybí SD karta</string>
@@ -370,9 +362,6 @@
     <string name="settings.share_greeting_default">Výchozí pozdrav sdílení</string>
     <string name="share_default_greeting">Mrkni na hudbu sdílenou z %s</string>
     <string name="share_via">Sdílet skladby přes</string>
-    <string name="settings.video_mx_player">MX Player</string>
-    <string name="settings.video_default">Výchozí</string>
-    <string name="settings.video_flash">Flash</string>
     <string name="menu.share">Sdílení</string>
     <string name="select_album_all_songs">Všechny skladby od %s</string>
     <string name="settings.show_all_songs_by_artist">Zobrazit všechny skladby umělce</string>

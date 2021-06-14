@@ -55,7 +55,6 @@ public class SettingsFragment extends PreferenceFragmentCompat
 
     private Preference addServerPreference;
     private ListPreference theme;
-    private ListPreference videoPlayer;
     private ListPreference maxBitrateWifi;
     private ListPreference maxBitrateMobile;
     private ListPreference cacheSize;
@@ -110,7 +109,6 @@ public class SettingsFragment extends PreferenceFragmentCompat
 
         addServerPreference = findPreference(Constants.PREFERENCES_KEY_SERVERS_EDIT);
         theme = findPreference(Constants.PREFERENCES_KEY_THEME);
-        videoPlayer = findPreference(Constants.PREFERENCES_KEY_VIDEO_PLAYER);
         maxBitrateWifi = findPreference(Constants.PREFERENCES_KEY_MAX_BITRATE_WIFI);
         maxBitrateMobile = findPreference(Constants.PREFERENCES_KEY_MAX_BITRATE_MOBILE);
         cacheSize = findPreference(Constants.PREFERENCES_KEY_CACHE_SIZE);
@@ -411,7 +409,6 @@ public class SettingsFragment extends PreferenceFragmentCompat
 
     private void update() {
         theme.setSummary(theme.getEntry());
-        videoPlayer.setSummary(videoPlayer.getEntry());
         maxBitrateWifi.setSummary(maxBitrateWifi.getEntry());
         maxBitrateMobile.setSummary(maxBitrateMobile.getEntry());
         cacheSize.setSummary(cacheSize.getEntry());

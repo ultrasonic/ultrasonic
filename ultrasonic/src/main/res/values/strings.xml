@@ -141,16 +141,11 @@
     <string name="search.search">Click to search</string>
     <string name="search.songs">Songs</string>
     <string name="search.title">Search</string>
-    <string name="select_album.donate_dialog_0_trial_days_left">Trial period is over</string>
-    <string name="select_album.donate_dialog_later">Later</string>
-    <string name="select_album.donate_dialog_message">Get unlimited downloads by donating to Subsonic.</string>
-    <string name="select_album.donate_dialog_now">Now</string>
     <string name="select_album.empty">No media found</string>
     <string name="select_album.n_selected">%d tracks selected.</string>
     <string name="select_album.n_unselected">%d tracks unselected.</string>
     <string name="select_album.no_network">Warning: No network available.</string>
     <string name="select_album.no_sdcard">Error: No SD card available.</string>
-    <string name="select_album.not_licensed">Server not licensed. %d trial days left.</string>
     <string name="select_album.play_all">Play All</string>
     <string name="select_artist.all_folders">All Folders</string>
     <string name="select_artist.folder">Select Folder</string>
@@ -328,8 +323,7 @@
     <string name="settings.use_id3_summary">Use ID3 tag methods instead of file system based methods</string>
     <string name="settings.show_artist_picture">Show artist picture in artist list</string>
     <string name="settings.show_artist_picture_summary">Displays the artist picture in the artist list if available</string>
-    <string name="settings.video_title">Video</string>
-    <string name="settings.video_player">Video player</string>
+    <string name="main.video" tools:ignore="UnusedResources">Video</string>
     <string name="settings.view_refresh">View Refresh</string>
     <string name="settings.view_refresh_500">.5 seconds</string>
     <string name="settings.view_refresh_1000">1 second</string>
@@ -351,8 +345,6 @@
     <string name="util.bytes_format.megabyte">0.00 MB</string>
     <string name="util.no_time" tools:ignore="TypographyDashes">-:--</string>
     <string name="util.zero_time">0:00</string>
-    <string name="video.get_mx_player_text">MX Player is not installed. Get it for free on Play Store, or change video settings.</string>
-    <string name="video.get_mx_player_button">Get MX Player</string>
     <string name="widget.initial_text">Touch to select music</string>
     <string name="widget.sdcard_busy">SD card unavailable</string>
     <string name="widget.sdcard_missing">No SD card</string>
@@ -388,9 +380,6 @@
     <string name="settings.share_greeting_default">Default Share Greeting</string>
     <string name="share_default_greeting">Check out this music I shared from %s</string>
     <string name="share_via">Share songs via</string>
-    <string name="settings.video_mx_player">MX Player</string>
-    <string name="settings.video_default">Default</string>
-    <string name="settings.video_flash">Flash</string>
     <string name="menu.share">Share</string>
     <string name="select_album_all_songs">All Songs by %s</string>
     <string name="settings.show_all_songs_by_artist">Show All Songs By Artist</string>

@@ -224,16 +224,6 @@
         <item>@string/settings.search_250</item>
         <item>@string/settings.search_500</item>
     </string-array>
-    <string-array name="videoPlayerValues" translatable="false">
-        <item>mx</item>
-        <item>default</item>
-        <item>flash</item>
-    </string-array>
-    <string-array name="videoPlayerNames" translatable="false">
-        <item>@string/settings.video_mx_player</item>
-        <item>@string/settings.video_default</item>
-        <item>@string/settings.video_flash</item>
-    </string-array>
     <string-array name="viewRefreshNames" translatable="false">
         <item>@string/settings.view_refresh_500</item>
         <item>@string/settings.view_refresh_1000</item>

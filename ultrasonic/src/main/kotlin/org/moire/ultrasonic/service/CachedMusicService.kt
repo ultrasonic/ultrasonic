@@ -264,8 +264,8 @@ class CachedMusicService(private val musicService: MusicService) : MusicService,
     }
 
     @Throws(Exception::class)
-    override fun getVideoUrl(id: String, useFlash: Boolean): String? {
-        return musicService.getVideoUrl(id, useFlash)
+    override fun getVideoUrl(id: String): String? {
+        return musicService.getVideoUrl(id)
     }
 
     @Throws(Exception::class)

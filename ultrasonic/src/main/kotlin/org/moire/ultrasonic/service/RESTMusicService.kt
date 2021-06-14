@@ -481,8 +481,7 @@ open class RESTMusicService(
 
     @Throws(Exception::class)
     override fun getVideoUrl(
-        id: String,
-        useFlash: Boolean
+        id: String
     ): String {
         // TODO This method should not exists as video should be loaded using stream method
         // Previous method implementation uses assumption that video will be available

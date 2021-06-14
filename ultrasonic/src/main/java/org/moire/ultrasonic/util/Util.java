@@ -21,8 +21,9 @@ package org.moire.ultrasonic.util;
 import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.app.AlertDialog;
-import android.content.*;
-import android.content.pm.ApplicationInfo;
+import android.content.Context;
+import android.content.Intent;
+import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.content.res.Resources;
 import android.content.res.TypedArray;
@@ -39,7 +40,6 @@ import android.os.Build;
 import android.os.Environment;
 import android.os.Parcelable;
 import android.util.DisplayMetrics;
-import timber.log.Timber;
 import android.util.TypedValue;
 import android.view.Gravity;
 import android.view.View;
@@ -51,18 +51,31 @@ import androidx.preference.PreferenceManager;
 import org.moire.ultrasonic.R;
 import org.moire.ultrasonic.app.UApp;
 import org.moire.ultrasonic.data.ActiveServerProvider;
-import org.moire.ultrasonic.domain.*;
+import org.moire.ultrasonic.domain.Bookmark;
+import org.moire.ultrasonic.domain.MusicDirectory;
 import org.moire.ultrasonic.domain.MusicDirectory.Entry;
+import org.moire.ultrasonic.domain.PlayerState;
+import org.moire.ultrasonic.domain.RepeatMode;
+import org.moire.ultrasonic.domain.SearchResult;
 import org.moire.ultrasonic.service.DownloadFile;
 import org.moire.ultrasonic.service.MediaPlayerService;
 
-import java.io.*;
+import java.io.ByteArrayOutputStream;
+import java.io.Closeable;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
+import java.io.UnsupportedEncodingException;
 import java.security.MessageDigest;
 import java.text.DecimalFormat;
-import java.util.List;
 import java.util.Locale;
 import java.util.concurrent.TimeUnit;
 import java.util.regex.Pattern;
+
+import timber.log.Timber;
 
 /**
  * @author Sindre Mehus
@@ -1146,36 +1159,6 @@ public class Util
 		}
 
 		else return minutes > 0 ? String.format(Locale.getDefault(), "%d:%02d", minutes, seconds) : String.format(Locale.getDefault(), "0:%02d", seconds);
-	}
-
-	public static VideoPlayerType getVideoPlayerType()
-	{
-		SharedPreferences preferences = getPreferences();
-		return VideoPlayerType.forKey(preferences.getString(Constants.PREFERENCES_KEY_VIDEO_PLAYER, VideoPlayerType.MX.getKey()));
-	}
-
-	public static boolean isPackageInstalled(Context context, String packageName)
-	{
-		PackageManager pm = context.getPackageManager();
-		List<ApplicationInfo> packages = null;
-
-		if (pm != null)
-		{
-			packages = pm.getInstalledApplications(0);
-		}
-
-		if (packages != null)
-		{
-			for (ApplicationInfo packageInfo : packages)
-			{
-				if (packageInfo.packageName.equals(packageName))
-				{
-					return true;
-				}
-			}
-		}
-
-		return false;
 	}
 
 	public static String getVersionName(Context context)

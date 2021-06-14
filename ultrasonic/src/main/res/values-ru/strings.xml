@@ -125,16 +125,11 @@
     <string name="search.search">Нажми для поиска</string>
     <string name="search.songs">Песни</string>
     <string name="search.title">Поиск</string>
-    <string name="select_album.donate_dialog_0_trial_days_left">Пробный период окончен</string>
-    <string name="select_album.donate_dialog_later">Позже</string>
-    <string name="select_album.donate_dialog_message">Получите неограниченное количество загрузок, пожертвовав Subsonic</string>
-    <string name="select_album.donate_dialog_now">Сейчас</string>
     <string name="select_album.empty">Медиа не найдена</string>
     <string name="select_album.n_selected">%d треки выбраны.</string>
     <string name="select_album.n_unselected">%d треки не выбраны.</string>
     <string name="select_album.no_network">Предупреждение: сеть недоступна.</string>
     <string name="select_album.no_sdcard">Ошибка: нет SD-карты</string>
-    <string name="select_album.not_licensed">Сервер не лицензирован. %d пробные дни остались.</string>
     <string name="select_album.play_all">Воспроизвести все</string>
     <string name="select_artist.all_folders">Все папки</string>
     <string name="select_artist.folder">Выбрать папку</string>
@@ -300,8 +295,7 @@
     <string name="settings.use_folder_for_album_artist_summary">Предположим, папка верхнего уровня - это имя исполнителя альбома</string>
     <string name="settings.use_id3">Обзор с использованием тегов ID3</string>
     <string name="settings.use_id3_summary">Используйте методы тегов ID3 ​​вместо методов на основе файловой системы</string>
-    <string name="settings.video_title">Видео</string>
-    <string name="settings.video_player">Видеоплеер</string>
+    <string name="main.video">Видео</string>
     <string name="settings.view_refresh">Посмотреть Обновить</string>
     <string name="settings.view_refresh_500">.5 секунд</string>
     <string name="settings.view_refresh_1000">1 секунда</string>
@@ -323,8 +317,6 @@
     <string name="util.bytes_format.megabyte">0.00 MB</string>
     <string name="util.no_time">-:--</string>
     <string name="util.zero_time">0:00</string>
-    <string name="video.get_mx_player_text">MX Player не установлен. Получите его бесплатно в магазине Play Store или измените настройки видео.</string>
-    <string name="video.get_mx_player_button">Получить MX Player</string>
     <string name="widget.initial_text">Нажмите, чтобы выбрать музыку</string>
     <string name="widget.sdcard_busy">SD-карта недоступна</string>
     <string name="widget.sdcard_missing">Нет SD-карты</string>
@@ -360,9 +352,6 @@
     <string name="settings.share_greeting_default">Поделиться приветствием по умолчанию</string>
     <string name="share_default_greeting">Проверьте эту музыку, с которой я поделился %s</string>
     <string name="share_via">Поделиться треками через</string>
-    <string name="settings.video_mx_player">MX Player</string>
-    <string name="settings.video_default">По умолчанию</string>
-    <string name="settings.video_flash">Flash</string>
     <string name="menu.share">Поделиться</string>
     <string name="select_album_all_songs">Все треки %s</string>
     <string name="settings.show_all_songs_by_artist">Показать все треки исполнителя</string>

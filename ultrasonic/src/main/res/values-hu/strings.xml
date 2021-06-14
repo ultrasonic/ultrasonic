@@ -139,16 +139,11 @@
     <string name="search.search">Érintse meg a kereséshez</string>
     <string name="search.songs">Dalok</string>
     <string name="search.title">Keresés</string>
-    <string name="select_album.donate_dialog_0_trial_days_left">A próbaidőszak lejárt!</string>
-    <string name="select_album.donate_dialog_later">Később</string>
-    <string name="select_album.donate_dialog_message">Korlátlan letöltéshez juthat a Subsonic támogatásával.</string>
-    <string name="select_album.donate_dialog_now">Most</string>
     <string name="select_album.empty">Nem található média!</string>
     <string name="select_album.n_selected">%d dal kijelölve.</string>
     <string name="select_album.n_unselected">%d dal visszavonva.</string>
     <string name="select_album.no_network">Figyelem: Hálózat nem áll rendelkezésre!</string>
     <string name="select_album.no_sdcard">Hiba: SD kártya nem áll rendelkezésre!</string>
-    <string name="select_album.not_licensed">A kiszolgálónak nincs licence! %d próba nap van hátra!</string>
     <string name="select_album.play_all">Összes lejátszása</string>
     <string name="select_artist.all_folders">Összes mappa</string>
     <string name="select_artist.folder">Mappa kiválasztása</string>
@@ -324,8 +319,7 @@
     <string name="settings.use_id3_summary">ID3 Tag módszer használata a fájlredszer alapú mód helyett.</string>
     <string name="settings.show_artist_picture">Előadó képének megjelenítése</string>
     <string name="settings.show_artist_picture_summary">Az előadó listában megjeleníti a képeket, amennyiben elérhetőek</string>
-    <string name="settings.video_title">Videó</string>
-    <string name="settings.video_player">Videólejátszó</string>
+    <string name="main.video">Videó</string>
     <string name="settings.view_refresh">Nézet frissítési gyakorisága</string>
     <string name="settings.view_refresh_500">.5 másodperc</string>
     <string name="settings.view_refresh_1000">1 másodperc</string>
@@ -347,8 +341,6 @@
     <string name="util.bytes_format.megabyte">0.00 MB</string>
     <string name="util.no_time">-:--</string>
     <string name="util.zero_time">0:00</string>
-    <string name="video.get_mx_player_text">Az MX Player nincs telepítve. Töltse le díjmentesen a Play Áruházból, vagy módosítsa a videó beállításait!</string>
-    <string name="video.get_mx_player_button">MX Player letöltése</string>
     <string name="widget.initial_text">Érintse meg a zene kiválasztásához</string>
     <string name="widget.sdcard_busy">Az SD kártya nem elérhető!</string>
     <string name="widget.sdcard_missing">Nincs SD kártya!</string>
@@ -384,9 +376,6 @@
     <string name="settings.share_greeting_default">Alapértelmezett megosztási üzenet</string>
     <string name="share_default_greeting">Hallgasd meg ezt a zenét, megosztottam innen: %s</string>
     <string name="share_via">Dalok megosztása ezzel</string>
-    <string name="settings.video_mx_player">MX Player</string>
-    <string name="settings.video_default">Alapértelmezett</string>
-    <string name="settings.video_flash">Flash</string>
     <string name="menu.share">Megosztás</string>
     <string name="select_album_all_songs">%s minden dala</string>
     <string name="settings.show_all_songs_by_artist">Az előadó összes dalának megjelenítése</string>

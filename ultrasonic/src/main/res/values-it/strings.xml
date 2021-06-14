@@ -125,16 +125,11 @@
     <string name="search.search">Selezione per cercare</string>
     <string name="search.songs">Canzoni</string>
     <string name="search.title">Cerca</string>
-    <string name="select_album.donate_dialog_0_trial_days_left">Periodo di prova terminato </string>
-    <string name="select_album.donate_dialog_later">Dopo</string>
-    <string name="select_album.donate_dialog_message">Ottieni download illimitato con una donazione a Subsonic.</string>
-    <string name="select_album.donate_dialog_now">Ora</string>
     <string name="select_album.empty">Nessun media trovato</string>
     <string name="select_album.n_selected">%dtracce selezionate.</string>
     <string name="select_album.n_unselected">%d tracce non selezionate.</string>
     <string name="select_album.no_network">Attenzione: nessuna rete disponibile.</string>
     <string name="select_album.no_sdcard">Errore: Nessuna memoria SD disponibile.</string>
-    <string name="select_album.not_licensed">Nessuna licenza presente. %d giorni di prova rimanenti.</string>
     <string name="select_album.play_all">Riproduci tutto</string>
     <string name="select_artist.all_folders">Tutte le cartelle</string>
     <string name="select_artist.folder">Seleziona cartella</string>
@@ -299,8 +294,7 @@
     <string name="settings.use_folder_for_album_artist_summary">Presumi che la cartella superiore sia il nome dell\'artista dell\'album</string>
     <string name="settings.use_id3">Sfoglia Utilizzando Tag ID3</string>
     <string name="settings.use_id3_summary">Usa metodi tag ID3 invece dei metodi basati sul filesystem</string>
-    <string name="settings.video_title">Video</string>
-    <string name="settings.video_player">Riproduttore video</string>
+    <string name="main.video">Video</string>
     <string name="settings.view_refresh_500">.5 secondo</string>
     <string name="settings.view_refresh_1000">1 secondo</string>
     <string name="settings.view_refresh_1500">1.5 secondi</string>
@@ -319,8 +313,6 @@
     <string name="util.bytes_format.megabyte">0.00 MB</string>
     <string name="util.no_time">-:--</string>
     <string name="util.zero_time">0:00</string>
-    <string name="video.get_mx_player_text">MX Player non è installato. Scaricalo gratuitamente dal Play Store, o cambia le impostazioni video.</string>
-    <string name="video.get_mx_player_button">Ottieni MX Player</string>
     <string name="widget.initial_text">Tocca per selezionare musica</string>
     <string name="widget.sdcard_busy">Scheda SD non disponibile</string>
     <string name="widget.sdcard_missing">Nessuna scheda SD</string>
@@ -336,8 +328,6 @@
     <string name="share_comment">Commenta</string>
     <string name="download_song_removed">\"%s\" è stato rimosso dalla playlist</string>
     <string name="share_via">Condividi canzoni via</string>
-    <string name="settings.video_mx_player">MX Player</string>
-    <string name="settings.video_default">Predefinito</string>
     <plurals name="select_album_n_songs">
         <item quantity="one">1 canzone</item>
         <item quantity="other">%d canzoni</item>
