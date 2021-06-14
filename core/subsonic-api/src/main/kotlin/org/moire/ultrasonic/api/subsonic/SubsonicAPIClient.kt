@@ -62,7 +62,7 @@ class SubsonicAPIClient(
             onProtocolChange(field)
         }
 
-    private val okHttpClient = baseOkClient.newBuilder()
+    val okHttpClient: OkHttpClient = baseOkClient.newBuilder()
         .readTimeout(READ_TIMEOUT, MILLISECONDS)
         .apply { if (config.allowSelfSignedCertificate) allowSelfSignedCertificates() }
         .addInterceptor { chain ->
@@ -83,7 +83,7 @@ class SubsonicAPIClient(
 
     // Create the Retrofit instance, and register a special converter factory
     // It will update our protocol version to the correct version, once we made a successful call
-    private val retrofit = Retrofit.Builder()
+    val retrofit: Retrofit = Retrofit.Builder()
         .baseUrl("${config.baseUrl}/rest/")
         .client(okHttpClient)
         .addConverterFactory(
