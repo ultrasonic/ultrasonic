@@ -326,7 +326,7 @@ class NavigationActivity : AppCompatActivity() {
                 .setTitle(R.string.main_welcome_title)
                 .setMessage(R.string.main_welcome_text_demo)
                 .setNegativeButton(R.string.main_welcome_cancel) { dialog, _ ->
-                    // Got to the settings screen
+                    // Go to the settings screen
                     dialog.dismiss()
                     findNavController(R.id.nav_host_fragment).navigate(R.id.settingsFragment)
                 }

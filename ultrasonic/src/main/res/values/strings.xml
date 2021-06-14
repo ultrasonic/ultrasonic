@@ -111,7 +111,7 @@
     <string name="main.songs_starred">Starred</string>
     <string name="main.songs_title">Songs</string>
     <string name="main.videos">Videos</string>
-    <string name="main.welcome_text_demo">To use Ultrasonic with your own music you will need your <b>own server</b>: \n\n➤ In case you want to try out the app first, it can add a demo server now. \n\n➤ Otherwise you can configure your server it in the <b>settings</b>.</string>
+    <string name="main.welcome_text_demo">To use Ultrasonic with your own music you will need your <b>own server</b>. \n\n➤ In case you want to try out the app first, it can add a demo server now. \n\n➤ Otherwise you can configure your server in the <b>settings</b>.</string>
     <string name="main.welcome_title">Welcome to Ultrasonic!</string>
     <string name="main.welcome_cancel">Take me to the settings</string>
     <string name="menu.about">About</string>
