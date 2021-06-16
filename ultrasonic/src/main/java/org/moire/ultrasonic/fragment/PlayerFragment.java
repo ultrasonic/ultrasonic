@@ -992,6 +992,7 @@ public class PlayerFragment extends Fragment implements GestureDetector.OnGestur
                 currentSong.setStarred(true);
             }
 
+            // Code is duplicated with MediaPlayerController:457 FIXME: There should be a better way
             new Thread(new Runnable() {
                 @Override
                 public void run() {
