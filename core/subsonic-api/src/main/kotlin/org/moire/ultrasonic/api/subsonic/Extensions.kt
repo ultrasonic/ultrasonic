@@ -83,19 +83,3 @@ fun StreamResponse.throwOnFailure(): StreamResponse {
     }
     return this
 }
-
-/**
- * Gets a stream url.
- *
- * Calling this method do actual connection to the backend, though not downloading all content.
- *
- * Consider do not use this method, but [SubsonicAPIDefinition.stream] call.
- */
-fun SubsonicAPIDefinition.getStreamUrl(id: String): String {
-    val response = this.stream(id, format = "raw").execute()
-    val url = response.raw().request().url().toString()
-    if (response.isSuccessful) {
-        response.body()?.close()
-    }
-    return url
-}

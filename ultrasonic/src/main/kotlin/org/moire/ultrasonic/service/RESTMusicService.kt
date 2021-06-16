@@ -11,12 +11,11 @@ import java.io.File
 import java.io.FileWriter
 import java.io.IOException
 import java.io.InputStream
-import java.util.concurrent.CountDownLatch
-import java.util.concurrent.TimeUnit
-import java.util.concurrent.TimeoutException
+import okhttp3.Protocol
+import okhttp3.Response
+import okhttp3.ResponseBody
 import org.moire.ultrasonic.api.subsonic.ApiNotSupportedException
 import org.moire.ultrasonic.api.subsonic.SubsonicAPIClient
-import org.moire.ultrasonic.api.subsonic.getStreamUrl
 import org.moire.ultrasonic.api.subsonic.models.AlbumListType.Companion.fromName
 import org.moire.ultrasonic.api.subsonic.models.JukeboxAction
 import org.moire.ultrasonic.api.subsonic.throwOnFailure
@@ -53,7 +52,7 @@ import timber.log.Timber
  */
 @Suppress("LargeClass")
 open class RESTMusicService(
-    subsonicAPIClient: SubsonicAPIClient,
+    val subsonicAPIClient: SubsonicAPIClient,
     private val fileStorage: PermanentFileStorage,
     private val activeServerProvider: ActiveServerProvider
 ) : MusicService {
@@ -479,35 +478,43 @@ open class RESTMusicService(
         return Pair(response.stream!!, partial)
     }
 
+    /**
+     * We currently don't handle video playback in the app, but just create an Intent which video
+     * players can respond to. For this intent we need the full URL of the stream, including the
+     * authentication params. This is a bit tricky, because we want to avoid actually executing the
+     * call because that could take a long time.
+     */
     @Throws(Exception::class)
     override fun getVideoUrl(
         id: String
     ): String {
-        // TODO This method should not exists as video should be loaded using stream method
-        // Previous method implementation uses assumption that video will be available
-        // by videoPlayer.view?id=<id>&maxBitRate=500&autoplay=true, but this url is not
-        // official Subsonic API call.
-        val expectedResult = arrayOfNulls<String>(1)
-        expectedResult[0] = null
+        // Create a new modified okhttp client to intercept the URL
+        val builder = subsonicAPIClient.okHttpClient.newBuilder()
 
-        val latch = CountDownLatch(1)
-
-        Thread(
-            {
-                expectedResult[0] = API.getStreamUrl(id)
-                latch.countDown()
-            },
-            "Get-Video-Url"
-        ).start()
-
-        // Getting the stream can take a long time on some servers
-        latch.await(1, TimeUnit.MINUTES)
-
-        if (expectedResult[0] == null) {
-            throw TimeoutException("Server didn't respond in time")
+        builder.addInterceptor { chain ->
+            // Returns a dummy response
+            Response.Builder()
+                .code(100)
+                .body(ResponseBody.create(null, ""))
+                .protocol(Protocol.HTTP_2)
+                .message("Empty response")
+                .request(chain.request())
+                .build()
         }
 
-        return expectedResult[0]!!
+        // Create a new Okhttp client
+        val client = builder.build()
+
+        // Get the request from Retrofit, but don't execute it!
+        val request = API.stream(id, format = "raw").request()
+
+        // Create a new call with the request, and execute ist on our custom client
+        val response = client.newCall(request).execute()
+
+        // The complete url :)
+        val url = response.request().url()
+
+        return url.toString()
     }
 
     @Throws(Exception::class)
