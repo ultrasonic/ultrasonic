@@ -18,7 +18,7 @@ class AlbumListModel(application: Application) : GenericListModel(application) {
 
     fun getAlbumList(
         refresh: Boolean,
-        swipe: SwipeRefreshLayout,
+        swipe: SwipeRefreshLayout?,
         args: Bundle
     ): LiveData<List<MusicDirectory.Entry>> {
 

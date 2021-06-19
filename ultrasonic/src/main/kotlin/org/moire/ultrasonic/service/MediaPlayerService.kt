@@ -61,8 +61,8 @@ class MediaPlayerService : MediaBrowserServiceCompat() {
     private val localMediaPlayer by inject<LocalMediaPlayer>()
     private val nowPlayingEventDistributor by inject<NowPlayingEventDistributor>()
     private val mediaPlayerLifecycleSupport by inject<MediaPlayerLifecycleSupport>()
-    private val autoMediaBrowser: AndroidAutoMediaBrowser = AndroidAutoMediaBrowser()
 
+    private var autoMediaBrowser: AndroidAutoMediaBrowser? = null
     private var mediaSession: MediaSessionCompat? = null
     private var isInForeground = false
     private var notificationBuilder: NotificationCompat.Builder? = null
@@ -73,6 +73,7 @@ class MediaPlayerService : MediaBrowserServiceCompat() {
     override fun onCreate() {
         super.onCreate()
 
+        autoMediaBrowser = AndroidAutoMediaBrowser(application)
         updateMediaSession(null, PlayerState.IDLE)
 
         downloader.onCreate()
@@ -140,14 +141,14 @@ class MediaPlayerService : MediaBrowserServiceCompat() {
         clientUid: Int,
         rootHints: Bundle?
     ): MediaBrowserServiceCompat.BrowserRoot {
-        return autoMediaBrowser.getRoot(clientPackageName, clientUid, rootHints)
+        return autoMediaBrowser!!.getRoot(clientPackageName, clientUid, rootHints)
     }
 
     override fun onLoadChildren(
         parentMediaId: String,
         result: MediaBrowserServiceCompat.Result<List<MediaBrowserCompat.MediaItem>>
     ) {
-        autoMediaBrowser.loadChildren(parentMediaId, result)
+        autoMediaBrowser!!.loadChildren(parentMediaId, result)
     }
 
     @Synchronized
@@ -832,12 +833,20 @@ class MediaPlayerService : MediaBrowserServiceCompat() {
             override fun onPlayFromMediaId(mediaId: String?, extras: Bundle?) {
                 super.onPlayFromMediaId(mediaId, extras)
 
-                val item: MusicDirectory.Entry? = autoMediaBrowser.getMusicDirectoryEntry(extras)
-                if (item != null) {
+                val result = autoMediaBrowser!!.getBundleData(extras)
+                if (result != null) {
+                    val mediaId = result.first
+                    val directoryList = result.second
+
                     resetPlayback()
                     val songs: MutableList<MusicDirectory.Entry> = mutableListOf()
-                    songs.add(item)
-
+                    var found = false
+                    for (item in directoryList) {
+                        if (found || item.id == mediaId) {
+                            found = true
+                            songs.add(item)
+                        }
+                    }
                     downloader.download(songs, false, false, false, true)
 
                     getPendingIntentForMediaAction(
