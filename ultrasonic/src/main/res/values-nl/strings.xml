@@ -111,7 +111,6 @@
     <string name="main.songs_starred">Favorieten</string>
     <string name="main.songs_title">Nummers</string>
     <string name="main.videos">Video\'s</string>
-    <string name="main.welcome_text">Welkom bij Ultrasonic! De app is nog niet ingesteld. Nadat je je persoonlijke server hebt opgezet (beschikbaar op <b>subsonic.org</b>), kun je naar de <b>Instellingen</b> gaan en drukken op <i>Server toevoegen</i>.</string>
     <string name="main.welcome_title">Welkom!</string>
     <string name="menu.about">Over</string>
     <string name="menu.common">Algemeen</string>
@@ -140,16 +139,11 @@
     <string name="search.search">Druk om te zoeken</string>
     <string name="search.songs">Nummers</string>
     <string name="search.title">Zoeken</string>
-    <string name="select_album.donate_dialog_0_trial_days_left">Proefperiode is afgelopen</string>
-    <string name="select_album.donate_dialog_later">Later</string>
-    <string name="select_album.donate_dialog_message">Verkrijg ongelimiteerde downloads door te doneren aan Subsonic.</string>
-    <string name="select_album.donate_dialog_now">Nu</string>
     <string name="select_album.empty">Geen media gevonden</string>
     <string name="select_album.n_selected">%d nummers geselecteerd.</string>
     <string name="select_album.n_unselected">%d nummers gedeselecteerd.</string>
     <string name="select_album.no_network">Waarschuwing: geen internetverbinding.</string>
     <string name="select_album.no_sdcard">Fout: geen SD-kaart beschikbaar.</string>
-    <string name="select_album.not_licensed">Geen serverlicentie; nog %d dagen resterend van de proefperiode.</string>
     <string name="select_album.play_all">Alles afspelen</string>
     <string name="select_artist.all_folders">Alle mappen</string>
     <string name="select_artist.folder">Map kiezen</string>
@@ -325,8 +319,7 @@
     <string name="settings.use_id3_summary">ID3-labels gebruiken in plaats van systeemlabels</string>
     <string name="settings.show_artist_picture">Artiestfoto tonen op artiestenlijst</string>
     <string name="settings.show_artist_picture_summary">Toont de artiestfoto op de artiestenlijst (indien beschikbaar)</string>
-    <string name="settings.video_title">Video</string>
-    <string name="settings.video_player">Videospeler</string>
+    <string name="main.video">Video</string>
     <string name="settings.view_refresh">Verversen</string>
     <string name="settings.view_refresh_500">0,5 seconden</string>
     <string name="settings.view_refresh_1000">1 seconde</string>
@@ -348,8 +341,6 @@
     <string name="util.bytes_format.megabyte">0,00 MB</string>
     <string name="util.no_time">-:--</string>
     <string name="util.zero_time">0:00</string>
-    <string name="video.get_mx_player_text">MX Player is niet geïnstalleerd. Installeer deze gratis via de Play Store of wijzig de video-instellingen.</string>
-    <string name="video.get_mx_player_button">MX Player installeren</string>
     <string name="widget.initial_text">Druk om muziek te selecteren</string>
     <string name="widget.sdcard_busy">SD-kaart niet beschikbaar</string>
     <string name="widget.sdcard_missing">Geen SD-kaart</string>
@@ -385,9 +376,6 @@
     <string name="settings.share_greeting_default">Standaard deelbericht</string>
     <string name="share_default_greeting">Hé, luister eens naar de muziek die ik heb gedeeld via %s</string>
     <string name="share_via">Nummers delen via</string>
-    <string name="settings.video_mx_player">MX Player</string>
-    <string name="settings.video_default">Standaard</string>
-    <string name="settings.video_flash">Flash</string>
     <string name="menu.share">Delen</string>
     <string name="select_album_all_songs">Alle nummers van %s</string>
     <string name="settings.show_all_songs_by_artist">Alle nummers van artiest tonen</string>

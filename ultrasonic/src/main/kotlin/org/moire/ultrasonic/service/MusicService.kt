@@ -123,7 +123,7 @@ interface MusicService {
 
     // TODO: Refactor and remove this call (see RestMusicService implementation)
     @Throws(Exception::class)
-    fun getVideoUrl(id: String, useFlash: Boolean): String?
+    fun getVideoUrl(id: String): String?
 
     @Throws(Exception::class)
     fun updateJukeboxPlaylist(ids: List<String>?): JukeboxStatus

@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<resources>
+<resources xmlns:tools="http://schemas.android.com/tools">
 
     <string name="background_task.loading">Loading&#8230;</string>
     <string name="background_task.network_error">A network error occurred. Please check the server address or try again later.</string>
@@ -111,8 +111,9 @@
     <string name="main.songs_starred">Starred</string>
     <string name="main.songs_title">Songs</string>
     <string name="main.videos">Videos</string>
-    <string name="main.welcome_text">Welcome to Ultrasonic! The app is currently not configured. After you\'ve set up your personal server (available from <b>subsonic.org</b>), please click <i>Manage Servers</i> in <b>Settings</b> to connect to it.</string>
-    <string name="main.welcome_title">Welcome!</string>
+    <string name="main.welcome_text_demo">To use Ultrasonic with your own music you will need your <b>own server</b>. \n\n➤ In case you want to try out the app first, it can add a demo server now. \n\n➤ Otherwise you can configure your server in the <b>settings</b>.</string>
+    <string name="main.welcome_title">Welcome to Ultrasonic!</string>
+    <string name="main.welcome_cancel">Take me to the settings</string>
     <string name="menu.about">About</string>
     <string name="menu.common">Common</string>
     <string name="menu.deleted_playlist">Deleted playlist %s</string>
@@ -140,16 +141,11 @@
     <string name="search.search">Click to search</string>
     <string name="search.songs">Songs</string>
     <string name="search.title">Search</string>
-    <string name="select_album.donate_dialog_0_trial_days_left">Trial period is over</string>
-    <string name="select_album.donate_dialog_later">Later</string>
-    <string name="select_album.donate_dialog_message">Get unlimited downloads by donating to Subsonic.</string>
-    <string name="select_album.donate_dialog_now">Now</string>
     <string name="select_album.empty">No media found</string>
     <string name="select_album.n_selected">%d tracks selected.</string>
     <string name="select_album.n_unselected">%d tracks unselected.</string>
     <string name="select_album.no_network">Warning: No network available.</string>
     <string name="select_album.no_sdcard">Error: No SD card available.</string>
-    <string name="select_album.not_licensed">Server not licensed. %d trial days left.</string>
     <string name="select_album.play_all">Play All</string>
     <string name="select_artist.all_folders">All Folders</string>
     <string name="select_artist.folder">Select Folder</string>
@@ -327,8 +323,7 @@
     <string name="settings.use_id3_summary">Use ID3 tag methods instead of file system based methods</string>
     <string name="settings.show_artist_picture">Show artist picture in artist list</string>
     <string name="settings.show_artist_picture_summary">Displays the artist picture in the artist list if available</string>
-    <string name="settings.video_title">Video</string>
-    <string name="settings.video_player">Video player</string>
+    <string name="main.video" tools:ignore="UnusedResources">Video</string>
     <string name="settings.view_refresh">View Refresh</string>
     <string name="settings.view_refresh_500">.5 seconds</string>
     <string name="settings.view_refresh_1000">1 second</string>
@@ -348,10 +343,8 @@
     <string name="util.bytes_format.gigabyte">0.00 GB</string>
     <string name="util.bytes_format.kilobyte">0 KB</string>
     <string name="util.bytes_format.megabyte">0.00 MB</string>
-    <string name="util.no_time">-:--</string>
+    <string name="util.no_time" tools:ignore="TypographyDashes">-:--</string>
     <string name="util.zero_time">0:00</string>
-    <string name="video.get_mx_player_text">MX Player is not installed. Get it for free on Play Store, or change video settings.</string>
-    <string name="video.get_mx_player_button">Get MX Player</string>
     <string name="widget.initial_text">Touch to select music</string>
     <string name="widget.sdcard_busy">SD card unavailable</string>
     <string name="widget.sdcard_missing">No SD card</string>
@@ -387,9 +380,6 @@
     <string name="settings.share_greeting_default">Default Share Greeting</string>
     <string name="share_default_greeting">Check out this music I shared from %s</string>
     <string name="share_via">Share songs via</string>
-    <string name="settings.video_mx_player">MX Player</string>
-    <string name="settings.video_default">Default</string>
-    <string name="settings.video_flash">Flash</string>
     <string name="menu.share">Share</string>
     <string name="select_album_all_songs">All Songs by %s</string>
     <string name="settings.show_all_songs_by_artist">Show All Songs By Artist</string>
@@ -449,6 +439,7 @@
     <string name="server_editor.authentication">Authentication</string>
     <string name="server_editor.advanced">Advanced settings</string>
     <string name="server_editor.disabled_feature">One or more features were disabled because the server doesn\'t support them.\nYou can run this test again anytime.</string>
+    <string name="server_menu.demo">Demo Server</string>
 
     <plurals name="select_album_n_songs">
         <item quantity="one">1 song</item>

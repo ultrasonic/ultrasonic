@@ -7,13 +7,14 @@ import com.squareup.picasso.RequestHandler
 import java.io.IOException
 import okio.Okio
 import org.moire.ultrasonic.api.subsonic.SubsonicAPIClient
+import org.moire.ultrasonic.api.subsonic.toStreamResponse
 import org.moire.ultrasonic.util.FileUtil.SUFFIX_LARGE
 import org.moire.ultrasonic.util.FileUtil.SUFFIX_SMALL
 
 /**
  * Loads cover arts from subsonic api.
  */
-class CoverArtRequestHandler(private val apiClient: SubsonicAPIClient) : RequestHandler() {
+class CoverArtRequestHandler(private val client: SubsonicAPIClient) : RequestHandler() {
     override fun canHandleRequest(data: Request): Boolean {
         return with(data.uri) {
             scheme == SCHEME &&
@@ -38,7 +39,10 @@ class CoverArtRequestHandler(private val apiClient: SubsonicAPIClient) : Request
         }
 
         // Try to fetch the image from the API
-        val response = apiClient.getCoverArt(id, size)
+        // Inverted call order, because Mockito has problems with chained calls.
+        val response = client.toStreamResponse(client.api.getCoverArt(id, size).execute())
+
+        // Handle the response
         if (!response.hasError() && response.stream != null) {
             return Result(Okio.source(response.stream!!), NETWORK)
         }

@@ -7,14 +7,14 @@ import org.amshove.kluent.`should not be`
 import org.junit.Test
 
 /**
- * Integration test for [SubsonicAPIClient.getAvatar] call.
+ * Integration test for [SubsonicAPIDefinition.getAvatar] call.
  */
 class SubsonicApiGetAvatarTest : SubsonicAPIClientTest() {
     @Test
     fun `Should handle api error response`() {
         mockWebServerRule.enqueueResponse("request_data_not_found_error_response.json")
 
-        val response = client.getAvatar("some")
+        val response = client.api.getAvatar("some-id").execute().toStreamResponse()
 
         with(response) {
             stream `should be` null
@@ -28,7 +28,7 @@ class SubsonicApiGetAvatarTest : SubsonicAPIClientTest() {
         val httpErrorCode = 500
         mockWebServerRule.mockWebServer.enqueue(MockResponse().setResponseCode(httpErrorCode))
 
-        val response = client.getAvatar("some")
+        val response = client.api.getAvatar("some-id").execute().toStreamResponse()
 
         with(response) {
             stream `should be equal to` null
@@ -44,7 +44,7 @@ class SubsonicApiGetAvatarTest : SubsonicAPIClientTest() {
                 .setBody(mockWebServerRule.loadJsonResponse("ping_ok.json"))
         )
 
-        val response = client.stream("some")
+        val response = client.api.stream("some-id").execute().toStreamResponse()
 
         with(response) {
             responseHttpCode `should be equal to` 200

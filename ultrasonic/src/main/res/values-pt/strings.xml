@@ -100,7 +100,6 @@
     <string name="main.songs_starred">Favoritas</string>
     <string name="main.songs_title">Músicas</string>
     <string name="main.videos">Vídeos</string>
-    <string name="main.welcome_text">Bem-vindo ao Ultrasonic! O aplicativo ainda não está configurado. Após configurar seu servidor pessoal (disponível em <b>subsonic.org</b>), clique em <i>Adicionar Servidor</i> em <b>Configurações</b> para a conexão.</string>
     <string name="main.welcome_title">Bem-vindo!</string>
     <string name="menu.about">Sobre</string>
     <string name="menu.common">Comum</string>
@@ -128,16 +127,11 @@
     <string name="search.search">Clique para pesquisar</string>
     <string name="search.songs">Músicas</string>
     <string name="search.title">Pesquisar</string>
-    <string name="select_album.donate_dialog_0_trial_days_left">O período de teste acabou</string>
-    <string name="select_album.donate_dialog_later">Mais tarde</string>
-    <string name="select_album.donate_dialog_message">Obtenha downloads ilimitados fazendo uma doação ao Subsonic.</string>
-    <string name="select_album.donate_dialog_now">Agora</string>
     <string name="select_album.empty">Nenhuma mídia encontrada</string>
     <string name="select_album.n_selected">%d faixas selecionadas.</string>
     <string name="select_album.n_unselected">%d faixas desselecionadas.</string>
     <string name="select_album.no_network">Aviso: Nenhuma rede disponível.</string>
     <string name="select_album.no_sdcard">Erro: Nenhum cartão SD disponível.</string>
-    <string name="select_album.not_licensed">Servidor não licenciado. Restam %d dias de teste.</string>
     <string name="select_album.play_all">Tocar Tudo</string>
     <string name="select_artist.all_folders">Todas as Pastas</string>
     <string name="select_artist.folder">Selecionar Pasta</string>
@@ -308,8 +302,7 @@
     <string name="settings.use_folder_for_album_artist_summary">Assumir que a pasta mais acima é o nome do artista</string>
     <string name="settings.use_id3">Navegar Usando Etiquetas ID3</string>
     <string name="settings.use_id3_summary">Usa as etiquetas ID3 ao invés do sistema de ficheiros</string>
-    <string name="settings.video_title">Vídeo</string>
-    <string name="settings.video_player">Player de Vídeo</string>
+    <string name="main.video">Vídeo</string>
     <string name="settings.view_refresh">Atualização do Ecrã</string>
     <string name="settings.view_refresh_500">.5 segundos</string>
     <string name="settings.view_refresh_1000">1 segundo</string>
@@ -331,8 +324,6 @@
     <string name="util.bytes_format.megabyte">0.00 MB</string>
     <string name="util.no_time">&#8212;:&#8212;&#8212;</string>
     <string name="util.zero_time">0:00</string>
-    <string name="video.get_mx_player_text">O MX Player não está instalado. Descarregue da graça pela Play Store ou modifique as configurações de vídeo.</string>
-    <string name="video.get_mx_player_button">Descarregar MX Player</string>
     <string name="widget.initial_text">Toque para selecionar a música</string>
     <string name="widget.sdcard_busy">Cartão SD indisponível</string>
     <string name="widget.sdcard_missing">Sem cartão SD</string>
@@ -368,9 +359,6 @@
     <string name="settings.share_greeting_default">Saudação Padrão</string>
     <string name="share_default_greeting">Confira esta música que compartilhei do %s</string>
     <string name="share_via">Compartilhar músicas via</string>
-    <string name="settings.video_mx_player">MX Player</string>
-    <string name="settings.video_default">Padrão</string>
-    <string name="settings.video_flash">Flash</string>
     <string name="menu.share">Compartilhar</string>
     <string name="select_album_all_songs">Todas as Músicas de %s</string>
     <string name="settings.show_all_songs_by_artist">Todas as Músicas do Artista</string>

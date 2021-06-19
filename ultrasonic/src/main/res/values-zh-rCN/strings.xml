@@ -106,10 +106,6 @@
     <string name="search.search">点击搜索</string>
     <string name="search.songs">歌曲</string>
     <string name="search.title">搜索</string>
-    <string name="select_album.donate_dialog_0_trial_days_left">试用已结束</string>
-    <string name="select_album.donate_dialog_later">稍后</string>
-    <string name="select_album.donate_dialog_message">通过捐赠 Subsonic 得到无限制的下载。</string>
-    <string name="select_album.donate_dialog_now">现在</string>
     <string name="select_album.empty">找不到歌曲</string>
     <string name="select_album.no_network">警告：网络不可用</string>
     <string name="select_album.no_sdcard">错误：没有SD卡</string>
@@ -224,8 +220,7 @@
     <string name="settings.testing_unlicensed">连接正常， 服务器未授权。</string>
     <string name="settings.theme_title">主题</string>
     <string name="settings.title.allow_self_signed_certificate">允许自签名 HTTPS 证书</string>
-    <string name="settings.video_title">视频</string>
-    <string name="settings.video_player">视频播放器</string>
+    <string name="main.video">视频</string>
     <string name="settings.view_refresh">刷新视图</string>
     <string name="settings.view_refresh_500">.5 秒</string>
     <string name="settings.view_refresh_1000">1 秒</string>
@@ -261,8 +256,6 @@
     <string name="share_comment">评论</string>
     <string name="download_song_removed">%s已从播放列表中移除</string>
     <string name="download.share_playlist">分享播放列表</string>
-    <string name="settings.video_mx_player">MX Player</string>
-    <string name="settings.video_default">默认</string>
     <string name="menu.share">分享</string>
     <string name="settings.playback.bluetooth_disabled">已禁用</string>
     <string name="settings.debug.log_delete">删除文件</string>

@@ -12,7 +12,7 @@ import org.moire.ultrasonic.api.subsonic.SubsonicError.TokenAuthNotSupportedForL
 import org.moire.ultrasonic.api.subsonic.SubsonicError.TrialPeriodIsOver
 import org.moire.ultrasonic.api.subsonic.SubsonicError.UserNotAuthorizedForOperation
 import org.moire.ultrasonic.api.subsonic.SubsonicError.WrongUsernameOrPassword
-import org.moire.ultrasonic.service.SubsonicRESTException
+import org.moire.ultrasonic.api.subsonic.SubsonicRESTException
 
 /**
  * Extension for [SubsonicRESTException] that returns localized error string, that can used to
@@ -21,7 +21,7 @@ import org.moire.ultrasonic.service.SubsonicRESTException
 fun SubsonicRESTException.getLocalizedErrorMessage(context: Context): String =
     when (error) {
         is Generic -> {
-            val message = error.message
+            val message = (error as Generic).message
             val errorMessage = if (message == "") {
                 context.getString(R.string.api_subsonic_generic_no_message)
             } else {

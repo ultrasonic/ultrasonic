@@ -70,13 +70,13 @@
         a:key="playbackControlSettings"
         app:iconSpaceReserved="false">
         <CheckBoxPreference
-            a:defaultValue="false"
+            a:defaultValue="true"
             a:key="useId3Tags"
             a:summary="@string/settings.use_id3_summary"
             a:title="@string/settings.use_id3"
             app:iconSpaceReserved="false"/>
         <CheckBoxPreference
-            a:defaultValue="false"
+            a:defaultValue="true"
             a:key="showArtistPicture"
             a:summary="@string/settings.show_artist_picture_summary"
             a:title="@string/settings.show_artist_picture"
@@ -178,17 +178,6 @@
             a:key="sendBluetoothAlbumArt"
             a:summary="@string/settings.send_bluetooth_album_art_summary"
             a:title="@string/settings.send_bluetooth_album_art"
-            app:iconSpaceReserved="false"/>
-    </PreferenceCategory>
-    <PreferenceCategory
-        a:title="@string/settings.video_title"
-        app:iconSpaceReserved="false">
-        <ListPreference
-            a:defaultValue="default"
-            a:entries="@array/videoPlayerNames"
-            a:entryValues="@array/videoPlayerValues"
-            a:key="videoPlayer"
-            a:title="@string/settings.video_player"
             app:iconSpaceReserved="false"/>
     </PreferenceCategory>
     <PreferenceCategory

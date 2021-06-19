@@ -10,8 +10,8 @@ import org.amshove.kluent.`should throw`
 import org.amshove.kluent.shouldBeEqualTo
 import org.junit.Test
 import org.junit.runner.RunWith
+import org.mockito.Answers
 import org.mockito.kotlin.any
-import org.mockito.kotlin.anyOrNull
 import org.mockito.kotlin.mock
 import org.mockito.kotlin.whenever
 import org.moire.ultrasonic.api.subsonic.SubsonicAPIClient
@@ -20,7 +20,7 @@ import org.robolectric.RobolectricTestRunner
 
 @RunWith(RobolectricTestRunner::class)
 class CoverArtRequestHandlerTest {
-    private val mockApiClient: SubsonicAPIClient = mock()
+    private val mockApiClient: SubsonicAPIClient = mock(defaultAnswer = Answers.RETURNS_DEEP_STUBS)
     private val handler = CoverArtRequestHandler(mockApiClient)
 
     @Test
@@ -56,7 +56,9 @@ class CoverArtRequestHandlerTest {
     fun `Should throw IOException when request to api failed`() {
         val streamResponse = StreamResponse(null, null, 500)
 
-        whenever(mockApiClient.getCoverArt(any(), anyOrNull())).thenReturn(streamResponse)
+        whenever(
+            mockApiClient.toStreamResponse(any())
+        ).thenReturn(streamResponse)
 
         val fail = {
             handler.load(createLoadCoverArtRequest("some").buildRequest(), 0)
@@ -73,7 +75,9 @@ class CoverArtRequestHandlerTest {
             responseHttpCode = 200
         )
 
-        whenever(mockApiClient.getCoverArt(any(), anyOrNull())).thenReturn(streamResponse)
+        whenever(
+            mockApiClient.toStreamResponse(any())
+        ).thenReturn(streamResponse)
 
         val response = handler.load(
             createLoadCoverArtRequest("some").buildRequest(), 0
