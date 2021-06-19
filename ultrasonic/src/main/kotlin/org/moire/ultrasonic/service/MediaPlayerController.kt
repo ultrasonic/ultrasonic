@@ -462,8 +462,8 @@ class MediaPlayerController(
                 } else {
                     musicService.star(song.id, null, null)
                 }
-            } catch (e: java.lang.Exception) {
-                Timber.e(e)
+            } catch (all: Exception) {
+                Timber.e(all)
             }
         }.start()
 
