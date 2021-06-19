@@ -16,16 +16,18 @@ import android.widget.ImageView
 import android.widget.PopupMenu
 import android.widget.RelativeLayout
 import android.widget.TextView
+import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
 import org.moire.ultrasonic.R
 import org.moire.ultrasonic.data.ActiveServerProvider
+import org.moire.ultrasonic.domain.GenericEntry
 import org.moire.ultrasonic.domain.MusicFolder
 import org.moire.ultrasonic.view.SelectMusicFolderView
 
 /*
 * An abstract Adapter, which can be extended to display a List of <T> in a RecyclerView
 */
-abstract class GenericRowAdapter<T>(
+abstract class GenericRowAdapter<T : GenericEntry>(
     val onItemClick: (T) -> Unit,
     val onContextMenuClick: (MenuItem, T) -> Boolean,
     private val onMusicFolderUpdate: (String?) -> Unit
@@ -40,11 +42,14 @@ abstract class GenericRowAdapter<T>(
     var selectedFolder: String? = null
 
     /**
-     * Sets the data to be displayed in the RecyclerView
+     * Sets the data to be displayed in the RecyclerView,
+     * using DiffUtil to efficiently calculate the minimum required changes..
      */
     open fun setData(data: List<T>) {
+        val callback = DiffUtilCallback(itemList, data)
+        val result = DiffUtil.calculateDiff(callback)
         itemList = data
-        notifyDataSetChanged()
+        result.dispatchUpdatesTo(this)
     }
 
     /**
@@ -131,6 +136,27 @@ abstract class GenericRowAdapter<T>(
         var layout: RelativeLayout = itemView.findViewById(R.id.row_artist_layout)
         var coverArt: ImageView = itemView.findViewById(R.id.artist_coverart)
         var coverArtId: String? = null
+    }
+
+    /**
+     * Calculates the differences between data sets
+     */
+    open class DiffUtilCallback<T : GenericEntry>(
+        private val oldList: List<T>,
+        private val newList: List<T>
+    ) : DiffUtil.Callback() {
+        override fun getOldListSize(): Int {
+            return oldList.size
+        }
+        override fun getNewListSize(): Int {
+            return newList.size
+        }
+        override fun areItemsTheSame(oldItemPosition: Int, newItemPosition: Int): Boolean {
+            return oldList[oldItemPosition].id == newList[newItemPosition].id
+        }
+        override fun areContentsTheSame(oldItemPosition: Int, newItemPosition: Int): Boolean {
+            return oldList[oldItemPosition] == newList[newItemPosition]
+        }
     }
 
     companion object {
