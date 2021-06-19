@@ -16,66 +16,28 @@
 
  Copyright 2010 (C) Sindre Mehus
  */
-package org.moire.ultrasonic.util;
+package org.moire.ultrasonic.util
 
-import android.app.Activity;
+import android.app.Activity
 
 /**
  * @author Sindre Mehus
  */
-public abstract class SilentBackgroundTask<T> extends BackgroundTask<T>
-{
+abstract class SilentBackgroundTask<T>(activity: Activity?) : BackgroundTask<T>(activity) {
+    override fun execute() {
+        val thread: Thread = object : Thread() {
+            override fun run() {
+                try {
+                    val result = doInBackground()
+                    handler.post { done(result) }
+                } catch (all: Throwable) {
+                    handler.post { error(all) }
+                }
+            }
+        }
+        thread.start()
+    }
 
-	public SilentBackgroundTask(Activity activity)
-	{
-		super(activity);
-	}
-
-	@Override
-	public void execute()
-	{
-		Thread thread = new Thread()
-		{
-			@Override
-			public void run()
-			{
-				try
-				{
-					final T result = doInBackground();
-
-					getHandler().post(new Runnable()
-					{
-						@Override
-						public void run()
-						{
-							done(result);
-						}
-					});
-
-				}
-				catch (final Throwable t)
-				{
-					getHandler().post(new Runnable()
-					{
-						@Override
-						public void run()
-						{
-							error(t);
-						}
-					});
-				}
-			}
-		};
-		thread.start();
-	}
-
-	@Override
-	public void updateProgress(int messageId)
-	{
-	}
-
-	@Override
-	public void updateProgress(String message)
-	{
-	}
+    override fun updateProgress(messageId: Int) {}
+    override fun updateProgress(message: String) {}
 }
