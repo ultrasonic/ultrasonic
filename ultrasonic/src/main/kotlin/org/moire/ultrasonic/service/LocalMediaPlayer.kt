@@ -388,7 +388,7 @@ class LocalMediaPlayer(
             setPlayerState(PlayerState.PREPARING)
 
             mediaPlayer.setOnBufferingUpdateListener { mp, percent ->
-                val progressBar = PlayerFragment.getProgressBar()
+                val progressBar = PlayerFragment.progressBar
                 val song = downloadFile.song
 
                 if (percent == 100) {
@@ -405,10 +405,10 @@ class LocalMediaPlayer(
             mediaPlayer.setOnPreparedListener {
                 Timber.i("Media player prepared")
                 setPlayerState(PlayerState.PREPARED)
-                val progressBar = PlayerFragment.getProgressBar()
+                val progressBar = PlayerFragment.progressBar
                 if (progressBar != null && downloadFile.isWorkDone) {
                     // Populate seek bar secondary progress if we have a complete file for consistency
-                    PlayerFragment.getProgressBar().secondaryProgress = 100 * progressBar.max
+                    PlayerFragment.progressBar.secondaryProgress = 100 * progressBar.max
                 }
                 synchronized(this@LocalMediaPlayer) {
                     if (position != 0) {

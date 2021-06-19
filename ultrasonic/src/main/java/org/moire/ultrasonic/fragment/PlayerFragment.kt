@@ -1,1631 +1,1150 @@
-package org.moire.ultrasonic.fragment;
+package org.moire.ultrasonic.fragment
 
-import android.app.AlertDialog;
-import android.content.DialogInterface;
-import android.graphics.Point;
-import android.graphics.drawable.Drawable;
-import android.os.Bundle;
-import android.os.Handler;
-import android.view.ContextMenu;
-import android.view.Display;
-import android.view.GestureDetector;
-import android.view.LayoutInflater;
-import android.view.Menu;
-import android.view.MenuInflater;
-import android.view.MenuItem;
-import android.view.MotionEvent;
-import android.view.View;
-import android.view.ViewGroup;
-import android.view.WindowManager;
-import android.view.animation.AnimationUtils;
-import android.widget.AdapterView;
-import android.widget.EditText;
-import android.widget.ImageView;
-import android.widget.LinearLayout;
-import android.widget.ListAdapter;
-import android.widget.SeekBar;
-import android.widget.TextView;
-import android.widget.ViewFlipper;
-
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-import androidx.fragment.app.Fragment;
-import androidx.lifecycle.Observer;
-import androidx.navigation.Navigation;
-
-import com.mobeta.android.dslv.DragSortListView;
-
-import org.jetbrains.annotations.NotNull;
-import org.koin.java.KoinJavaComponent;
-import org.moire.ultrasonic.R;
-import org.moire.ultrasonic.audiofx.EqualizerController;
-import org.moire.ultrasonic.audiofx.VisualizerController;
-import org.moire.ultrasonic.data.ActiveServerProvider;
-import org.moire.ultrasonic.domain.MusicDirectory;
-import org.moire.ultrasonic.domain.PlayerState;
-import org.moire.ultrasonic.domain.RepeatMode;
-import org.moire.ultrasonic.featureflags.Feature;
-import org.moire.ultrasonic.featureflags.FeatureStorage;
-import org.moire.ultrasonic.service.DownloadFile;
-import org.moire.ultrasonic.service.MediaPlayerController;
-import org.moire.ultrasonic.service.MusicService;
-import org.moire.ultrasonic.service.MusicServiceFactory;
-import org.moire.ultrasonic.subsonic.ImageLoaderProvider;
-import org.moire.ultrasonic.subsonic.NetworkAndStorageChecker;
-import org.moire.ultrasonic.subsonic.ShareHandler;
-import org.moire.ultrasonic.util.CancellationToken;
-import org.moire.ultrasonic.util.Constants;
-import org.moire.ultrasonic.util.SilentBackgroundTask;
-import org.moire.ultrasonic.util.Util;
-import org.moire.ultrasonic.view.AutoRepeatButton;
-import org.moire.ultrasonic.view.SongListAdapter;
-import org.moire.ultrasonic.view.VisualizerView;
-
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Locale;
-import java.util.concurrent.Executors;
-import java.util.concurrent.ScheduledExecutorService;
-import java.util.concurrent.TimeUnit;
-
-import kotlin.Lazy;
-import timber.log.Timber;
-
-import static android.content.Context.LAYOUT_INFLATER_SERVICE;
-import static org.koin.java.KoinJavaComponent.inject;
-import static org.moire.ultrasonic.domain.PlayerState.COMPLETED;
-import static org.moire.ultrasonic.domain.PlayerState.IDLE;
-import static org.moire.ultrasonic.domain.PlayerState.PAUSED;
-import static org.moire.ultrasonic.domain.PlayerState.STOPPED;
+import android.app.AlertDialog
+import android.content.Context
+import android.graphics.Point
+import android.graphics.drawable.Drawable
+import android.os.Bundle
+import android.os.Handler
+import android.view.ContextMenu
+import android.view.ContextMenu.ContextMenuInfo
+import android.view.GestureDetector
+import android.view.LayoutInflater
+import android.view.Menu
+import android.view.MenuInflater
+import android.view.MenuItem
+import android.view.MotionEvent
+import android.view.View
+import android.view.View.OnTouchListener
+import android.view.ViewGroup
+import android.view.WindowManager
+import android.view.animation.AnimationUtils
+import android.widget.AdapterView.AdapterContextMenuInfo
+import android.widget.AdapterView.OnItemClickListener
+import android.widget.EditText
+import android.widget.ImageView
+import android.widget.LinearLayout
+import android.widget.SeekBar
+import android.widget.SeekBar.OnSeekBarChangeListener
+import android.widget.TextView
+import android.widget.ViewFlipper
+import androidx.fragment.app.Fragment
+import androidx.navigation.Navigation
+import com.mobeta.android.dslv.DragSortListView
+import com.mobeta.android.dslv.DragSortListView.DragSortListener
+import org.koin.java.KoinJavaComponent.get
+import org.koin.java.KoinJavaComponent.inject
+import org.moire.ultrasonic.R
+import org.moire.ultrasonic.audiofx.EqualizerController
+import org.moire.ultrasonic.audiofx.VisualizerController
+import org.moire.ultrasonic.data.ActiveServerProvider.Companion.isOffline
+import org.moire.ultrasonic.domain.MusicDirectory
+import org.moire.ultrasonic.domain.PlayerState
+import org.moire.ultrasonic.domain.RepeatMode
+import org.moire.ultrasonic.featureflags.Feature
+import org.moire.ultrasonic.featureflags.FeatureStorage
+import org.moire.ultrasonic.fragment.FragmentTitle.Companion.setTitle
+import org.moire.ultrasonic.fragment.PlayerFragment
+import org.moire.ultrasonic.service.DownloadFile
+import org.moire.ultrasonic.service.MediaPlayerController
+import org.moire.ultrasonic.service.MusicServiceFactory.getMusicService
+import org.moire.ultrasonic.subsonic.ImageLoaderProvider
+import org.moire.ultrasonic.subsonic.NetworkAndStorageChecker
+import org.moire.ultrasonic.subsonic.ShareHandler
+import org.moire.ultrasonic.util.CancellationToken
+import org.moire.ultrasonic.util.Constants
+import org.moire.ultrasonic.util.SilentBackgroundTask
+import org.moire.ultrasonic.util.Util
+import org.moire.ultrasonic.view.AutoRepeatButton
+import org.moire.ultrasonic.view.SongListAdapter
+import org.moire.ultrasonic.view.VisualizerView
+import timber.log.Timber
+import java.text.DateFormat
+import java.text.SimpleDateFormat
+import java.util.ArrayList
+import java.util.Date
+import java.util.LinkedList
+import java.util.Locale
+import java.util.concurrent.Executors
+import java.util.concurrent.ScheduledExecutorService
+import java.util.concurrent.TimeUnit
 
 /**
  * Contains the Music Player screen of Ultrasonic with playback controls and the playlist
  */
-public class PlayerFragment extends Fragment implements GestureDetector.OnGestureListener {
+class PlayerFragment : Fragment(), GestureDetector.OnGestureListener {
+    private var playlistFlipper: ViewFlipper? = null
+    private var emptyTextView: TextView? = null
+    private var songTitleTextView: TextView? = null
+    private var albumTextView: TextView? = null
+    private var artistTextView: TextView? = null
+    private var albumArtImageView: ImageView? = null
+    private var playlistView: DragSortListView? = null
+    private var positionTextView: TextView? = null
+    private var downloadTrackTextView: TextView? = null
+    private var downloadTotalDurationTextView: TextView? = null
+    private var durationTextView: TextView? = null
+    private var pauseButton: View? = null
+    private var stopButton: View? = null
+    private var startButton: View? = null
+    private var repeatButton: ImageView? = null
+    private var executorService: ScheduledExecutorService? = null
+    private var currentPlaying: DownloadFile? = null
+    private var currentSong: MusicDirectory.Entry? = null
+    private var currentRevision: Long = 0
+    private var playlistNameView: EditText? = null
+    private var gestureScanner: GestureDetector? = null
+    private var swipeDistance = 0
+    private var swipeVelocity = 0
+    private var visualizerView: VisualizerView? = null
+    private var jukeboxAvailable = false
+    private var onProgressChangedTask: SilentBackgroundTask<Void?>? = null
+    var visualizerViewLayout: LinearLayout? = null
+    private var starMenuItem: MenuItem? = null
+    private var fiveStar1ImageView: ImageView? = null
+    private var fiveStar2ImageView: ImageView? = null
+    private var fiveStar3ImageView: ImageView? = null
+    private var fiveStar4ImageView: ImageView? = null
+    private var fiveStar5ImageView: ImageView? = null
+    private var useFiveStarRating = false
+    private var hollowStar: Drawable? = null
+    private var fullStar: Drawable? = null
+    private var cancellationToken: CancellationToken? = null
+    private var isEqualizerAvailable = false
+    private var isVisualizerAvailable = false
+    private val networkAndStorageChecker = inject<NetworkAndStorageChecker>(
+        NetworkAndStorageChecker::class.java
+    )
+    private val mediaPlayerControllerLazy = inject<MediaPlayerController>(
+        MediaPlayerController::class.java
+    )
+    private val shareHandler = inject<ShareHandler>(ShareHandler::class.java)
+    private val imageLoaderProvider = inject<ImageLoaderProvider>(
+        ImageLoaderProvider::class.java
+    )
 
-    private static final int PERCENTAGE_OF_SCREEN_FOR_SWIPE = 5;
-
-    private ViewFlipper playlistFlipper;
-    private TextView emptyTextView;
-    private TextView songTitleTextView;
-    private TextView albumTextView;
-    private TextView artistTextView;
-    private ImageView albumArtImageView;
-    private DragSortListView playlistView;
-    private TextView positionTextView;
-    private TextView downloadTrackTextView;
-    private TextView downloadTotalDurationTextView;
-    private TextView durationTextView;
-    private static SeekBar progressBar; // TODO: Refactor this to not be static
-    private View pauseButton;
-    private View stopButton;
-    private View startButton;
-    private ImageView repeatButton;
-    private ScheduledExecutorService executorService;
-    private DownloadFile currentPlaying;
-    private MusicDirectory.Entry currentSong;
-    private long currentRevision;
-    private EditText playlistNameView;
-    private GestureDetector gestureScanner;
-    private int swipeDistance;
-    private int swipeVelocity;
-    private VisualizerView visualizerView;
-    private boolean jukeboxAvailable;
-    private SilentBackgroundTask<Void> onProgressChangedTask;
-    LinearLayout visualizerViewLayout;
-    private MenuItem starMenuItem;
-    private ImageView fiveStar1ImageView;
-    private ImageView fiveStar2ImageView;
-    private ImageView fiveStar3ImageView;
-    private ImageView fiveStar4ImageView;
-    private ImageView fiveStar5ImageView;
-    private boolean useFiveStarRating;
-    private Drawable hollowStar;
-    private Drawable fullStar;
-    private CancellationToken cancellationToken;
-
-    private boolean isEqualizerAvailable;
-    private boolean isVisualizerAvailable;
-
-    private final Lazy<NetworkAndStorageChecker> networkAndStorageChecker = inject(NetworkAndStorageChecker.class);
-    private final Lazy<MediaPlayerController> mediaPlayerControllerLazy = inject(MediaPlayerController.class);
-    private final Lazy<ShareHandler> shareHandler = inject(ShareHandler.class);
-    private final Lazy<ImageLoaderProvider> imageLoaderProvider = inject(ImageLoaderProvider.class);
-
-    @Override
-    public void onCreate(@Nullable Bundle savedInstanceState) {
-        Util.applyTheme(this.getContext());
-        super.onCreate(savedInstanceState);
+    override fun onCreate(savedInstanceState: Bundle?) {
+        Util.applyTheme(this.context)
+        super.onCreate(savedInstanceState)
     }
 
-    @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                             Bundle savedInstanceState) {
-        return inflater.inflate(R.layout.current_playing, container, false);
+    override fun onCreateView(
+        inflater: LayoutInflater, container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View? {
+        return inflater.inflate(R.layout.current_playing, container, false)
     }
 
-    @Override
-    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
-        cancellationToken = new CancellationToken();
-        FragmentTitle.Companion.setTitle(this, R.string.common_appname);
-
-        final WindowManager windowManager = getActivity().getWindowManager();
-        final Display display = windowManager.getDefaultDisplay();
-        Point size = new Point();
-        display.getSize(size);
-        int width = size.x;
-        int height = size.y;
-
-        setHasOptionsMenu(true);
-
-        FeatureStorage features = KoinJavaComponent.get(FeatureStorage.class);
-        useFiveStarRating = features.isFeatureEnabled(Feature.FIVE_STAR_RATING);
-
-        swipeDistance = (width + height) * PERCENTAGE_OF_SCREEN_FOR_SWIPE / 100;
-        swipeVelocity = swipeDistance;
-        gestureScanner = new GestureDetector(getContext(), this);
-
-        playlistFlipper = view.findViewById(R.id.current_playing_playlist_flipper);
-        emptyTextView = view.findViewById(R.id.playlist_empty);
-        songTitleTextView = view.findViewById(R.id.current_playing_song);
-        albumTextView = view.findViewById(R.id.current_playing_album);
-        artistTextView = view.findViewById(R.id.current_playing_artist);
-        albumArtImageView = view.findViewById(R.id.current_playing_album_art_image);
-        positionTextView = view.findViewById(R.id.current_playing_position);
-        downloadTrackTextView = view.findViewById(R.id.current_playing_track);
-        downloadTotalDurationTextView = view.findViewById(R.id.current_total_duration);
-        durationTextView = view.findViewById(R.id.current_playing_duration);
-        progressBar = view.findViewById(R.id.current_playing_progress_bar);
-        playlistView = view.findViewById(R.id.playlist_view);
-        final AutoRepeatButton previousButton = view.findViewById(R.id.button_previous);
-        final AutoRepeatButton nextButton = view.findViewById(R.id.button_next);
-        pauseButton = view.findViewById(R.id.button_pause);
-        stopButton = view.findViewById(R.id.button_stop);
-        startButton = view.findViewById(R.id.button_start);
-        final View shuffleButton = view.findViewById(R.id.button_shuffle);
-        repeatButton = view.findViewById(R.id.button_repeat);
-
-        visualizerViewLayout = view.findViewById(R.id.current_playing_visualizer_layout);
-
-        LinearLayout ratingLinearLayout = view.findViewById(R.id.song_rating);
-        fiveStar1ImageView = view.findViewById(R.id.song_five_star_1);
-        fiveStar2ImageView = view.findViewById(R.id.song_five_star_2);
-        fiveStar3ImageView = view.findViewById(R.id.song_five_star_3);
-        fiveStar4ImageView = view.findViewById(R.id.song_five_star_4);
-        fiveStar5ImageView = view.findViewById(R.id.song_five_star_5);
-
-        if (!useFiveStarRating) ratingLinearLayout.setVisibility(View.GONE);
-
-        hollowStar = Util.getDrawableFromAttribute(view.getContext(), R.attr.star_hollow);
-        fullStar = Util.getDrawableFromAttribute(getContext(), R.attr.star_full);
-
-        fiveStar1ImageView.setOnClickListener(new View.OnClickListener()
-        {
-            @Override
-            public void onClick(final View view) {
-                setSongRating(1);
-            }
-        });
-        fiveStar2ImageView.setOnClickListener(new View.OnClickListener()
-        {
-            @Override
-            public void onClick(final View view) {
-                setSongRating(2);
-            }
-        });
-        fiveStar3ImageView.setOnClickListener(new View.OnClickListener()
-        {
-            @Override
-            public void onClick(final View view) {
-                setSongRating(3);
-            }
-        });
-        fiveStar4ImageView.setOnClickListener(new View.OnClickListener()
-        {
-            @Override
-            public void onClick(final View view) {
-                setSongRating(4);
-            }
-        });
-        fiveStar5ImageView.setOnClickListener(new View.OnClickListener()
-        {
-            @Override
-            public void onClick(final View view) {
-                setSongRating(5);
-            }
-        });
-
-        albumArtImageView.setOnTouchListener(new View.OnTouchListener()
-        {
-            @Override
-            public boolean onTouch(View view, MotionEvent me)
-            {
-                return gestureScanner.onTouchEvent(me);
-            }
-        });
-
-        albumArtImageView.setOnClickListener(new View.OnClickListener()
-        {
-            @Override
-            public void onClick(final View view)
-            {
-                toggleFullScreenAlbumArt();
-            }
-        });
-
-        previousButton.setOnClickListener(new View.OnClickListener()
-        {
-            @Override
-            public void onClick(final View view)
-            {
-                networkAndStorageChecker.getValue().warnIfNetworkOrStorageUnavailable();
-
-                new SilentBackgroundTask<Void>(getActivity())
-                {
-                    @Override
-                    protected Void doInBackground()
-                    {
-                        mediaPlayerControllerLazy.getValue().previous();
-                        return null;
-                    }
-
-                    @Override
-                    protected void done(final Void result)
-                    {
-                        onCurrentChanged();
-                        onSliderProgressChanged();
-                    }
-                }.execute();
-            }
-        });
-
-        previousButton.setOnRepeatListener(new Runnable()
-        {
-            @Override
-            public void run()
-            {
-                int incrementTime = Util.getIncrementTime();
-                changeProgress(-incrementTime);
-            }
-        });
-
-        nextButton.setOnClickListener(new View.OnClickListener()
-        {
-            @Override
-            public void onClick(final View view)
-            {
-                networkAndStorageChecker.getValue().warnIfNetworkOrStorageUnavailable();
-
-                new SilentBackgroundTask<Boolean>(getActivity())
-                {
-                    @Override
-                    protected Boolean doInBackground()
-                    {
-                        mediaPlayerControllerLazy.getValue().next();
-                        return true;
-                    }
-
-                    @Override
-                    protected void done(final Boolean result)
-                    {
-                        if (result)
-                        {
-                            onCurrentChanged();
-                            onSliderProgressChanged();
-                        }
-                    }
-                }.execute();
-            }
-        });
-
-        nextButton.setOnRepeatListener(new Runnable()
-        {
-            @Override
-            public void run()
-            {
-                int incrementTime = Util.getIncrementTime();
-                changeProgress(incrementTime);
-            }
-        });
-
-        pauseButton.setOnClickListener(new View.OnClickListener()
-        {
-            @Override
-            public void onClick(final View view)
-            {
-                new SilentBackgroundTask<Void>(getActivity())
-                {
-                    @Override
-                    protected Void doInBackground()
-                    {
-                        mediaPlayerControllerLazy.getValue().pause();
-                        return null;
-                    }
-
-                    @Override
-                    protected void done(final Void result)
-                    {
-                        onCurrentChanged();
-                        onSliderProgressChanged();
-                    }
-                }.execute();
-            }
-        });
-
-        stopButton.setOnClickListener(new View.OnClickListener()
-        {
-            @Override
-            public void onClick(final View view)
-            {
-                new SilentBackgroundTask<Void>(getActivity())
-                {
-                    @Override
-                    protected Void doInBackground()
-                    {
-                        mediaPlayerControllerLazy.getValue().reset();
-                        return null;
-                    }
-
-                    @Override
-                    protected void done(final Void result)
-                    {
-                        onCurrentChanged();
-                        onSliderProgressChanged();
-                    }
-                }.execute();
-            }
-        });
-
-        startButton.setOnClickListener(new View.OnClickListener()
-        {
-            @Override
-            public void onClick(final View view)
-            {
-                networkAndStorageChecker.getValue().warnIfNetworkOrStorageUnavailable();
-
-                new SilentBackgroundTask<Void>(getActivity())
-                {
-                    @Override
-                    protected Void doInBackground()
-                    {
-                        start();
-                        return null;
-                    }
-
-                    @Override
-                    protected void done(final Void result)
-                    {
-                        onCurrentChanged();
-                        onSliderProgressChanged();
-                    }
-                }.execute();
-            }
-        });
-
-        shuffleButton.setOnClickListener(new View.OnClickListener()
-        {
-            @Override
-            public void onClick(final View view)
-            {
-                mediaPlayerControllerLazy.getValue().shuffle();
-                Util.toast(getActivity(), R.string.download_menu_shuffle_notification);
-            }
-        });
-
-        repeatButton.setOnClickListener(new View.OnClickListener()
-        {
-            @Override
-            public void onClick(final View view)
-            {
-                final RepeatMode repeatMode = mediaPlayerControllerLazy.getValue().getRepeatMode().next();
-
-                mediaPlayerControllerLazy.getValue().setRepeatMode(repeatMode);
-                onDownloadListChanged();
-
-                switch (repeatMode)
-                {
-                    case OFF:
-                        Util.toast(getContext(), R.string.download_repeat_off);
-                        break;
-                    case ALL:
-                        Util.toast(getContext(), R.string.download_repeat_all);
-                        break;
-                    case SINGLE:
-                        Util.toast(getContext(), R.string.download_repeat_single);
-                        break;
-                    default:
-                        break;
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        cancellationToken = CancellationToken()
+        setTitle(this, R.string.common_appname)
+        val windowManager = activity!!.windowManager
+        val display = windowManager.defaultDisplay
+        val size = Point()
+        display.getSize(size)
+        val width = size.x
+        val height = size.y
+        setHasOptionsMenu(true)
+        val features = get<FeatureStorage>(FeatureStorage::class.java)
+        useFiveStarRating = features.isFeatureEnabled(Feature.FIVE_STAR_RATING)
+        swipeDistance = (width + height) * PERCENTAGE_OF_SCREEN_FOR_SWIPE / 100
+        swipeVelocity = swipeDistance
+        gestureScanner = GestureDetector(context, this)
+        playlistFlipper = view.findViewById(R.id.current_playing_playlist_flipper)
+        emptyTextView = view.findViewById(R.id.playlist_empty)
+        songTitleTextView = view.findViewById(R.id.current_playing_song)
+        albumTextView = view.findViewById(R.id.current_playing_album)
+        artistTextView = view.findViewById(R.id.current_playing_artist)
+        albumArtImageView = view.findViewById(R.id.current_playing_album_art_image)
+        positionTextView = view.findViewById(R.id.current_playing_position)
+        downloadTrackTextView = view.findViewById(R.id.current_playing_track)
+        downloadTotalDurationTextView = view.findViewById(R.id.current_total_duration)
+        durationTextView = view.findViewById(R.id.current_playing_duration)
+        progressBar = view.findViewById(R.id.current_playing_progress_bar)
+        playlistView = view.findViewById(R.id.playlist_view)
+        val previousButton: AutoRepeatButton = view.findViewById(R.id.button_previous)
+        val nextButton: AutoRepeatButton = view.findViewById(R.id.button_next)
+        pauseButton = view.findViewById(R.id.button_pause)
+        stopButton = view.findViewById(R.id.button_stop)
+        startButton = view.findViewById(R.id.button_start)
+        val shuffleButton = view.findViewById<View>(R.id.button_shuffle)
+        repeatButton = view.findViewById(R.id.button_repeat)
+        visualizerViewLayout = view.findViewById(R.id.current_playing_visualizer_layout)
+        val ratingLinearLayout = view.findViewById<LinearLayout>(R.id.song_rating)
+        fiveStar1ImageView = view.findViewById(R.id.song_five_star_1)
+        fiveStar2ImageView = view.findViewById(R.id.song_five_star_2)
+        fiveStar3ImageView = view.findViewById(R.id.song_five_star_3)
+        fiveStar4ImageView = view.findViewById(R.id.song_five_star_4)
+        fiveStar5ImageView = view.findViewById(R.id.song_five_star_5)
+        if (!useFiveStarRating) ratingLinearLayout.visibility = View.GONE
+        hollowStar = Util.getDrawableFromAttribute(view.context, R.attr.star_hollow)
+        fullStar = Util.getDrawableFromAttribute(context, R.attr.star_full)
+        fiveStar1ImageView.setOnClickListener(View.OnClickListener { setSongRating(1) })
+        fiveStar2ImageView.setOnClickListener(View.OnClickListener { setSongRating(2) })
+        fiveStar3ImageView.setOnClickListener(View.OnClickListener { setSongRating(3) })
+        fiveStar4ImageView.setOnClickListener(View.OnClickListener { setSongRating(4) })
+        fiveStar5ImageView.setOnClickListener(View.OnClickListener { setSongRating(5) })
+        albumArtImageView.setOnTouchListener(OnTouchListener { view, me ->
+            gestureScanner!!.onTouchEvent(
+                me
+            )
+        })
+        albumArtImageView.setOnClickListener(View.OnClickListener { toggleFullScreenAlbumArt() })
+        previousButton.setOnClickListener {
+            networkAndStorageChecker.value.warnIfNetworkOrStorageUnavailable()
+            object : SilentBackgroundTask<Void?>(activity) {
+                override fun doInBackground(): Void {
+                    mediaPlayerControllerLazy.value.previous()
+                    return null
                 }
-            }
-        });
 
-        progressBar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener()
-        {
-            @Override
-            public void onStopTrackingTouch(final SeekBar seekBar)
-            {
-                new SilentBackgroundTask<Void>(getActivity())
-                {
-                    @Override
-                    protected Void doInBackground()
-                    {
-                        mediaPlayerControllerLazy.getValue().seekTo(getProgressBar().getProgress());
-                        return null;
-                    }
-
-                    @Override
-                    protected void done(final Void result)
-                    {
-                        onSliderProgressChanged();
-                    }
-                }.execute();
-            }
-
-            @Override
-            public void onStartTrackingTouch(final SeekBar seekBar)
-            {
-            }
-
-            @Override
-            public void onProgressChanged(final SeekBar seekBar, final int progress, final boolean fromUser)
-            {
-            }
-        });
-
-        playlistView.setOnItemClickListener(new AdapterView.OnItemClickListener()
-        {
-            @Override
-            public void onItemClick(final AdapterView<?> parent, final View view, final int position, final long id)
-            {
-                networkAndStorageChecker.getValue().warnIfNetworkOrStorageUnavailable();
-
-                new SilentBackgroundTask<Void>(getActivity())
-                {
-                    @Override
-                    protected Void doInBackground()
-                    {
-                        mediaPlayerControllerLazy.getValue().play(position);
-                        return null;
-                    }
-
-                    @Override
-                    protected void done(final Void result)
-                    {
-                        onCurrentChanged();
-                        onSliderProgressChanged();
-                    }
-                }.execute();
-            }
-        });
-
-        registerForContextMenu(playlistView);
-
-        final MediaPlayerController mediaPlayerController = mediaPlayerControllerLazy.getValue();
-        if (mediaPlayerController != null && getArguments() != null && getArguments().getBoolean(Constants.INTENT_EXTRA_NAME_SHUFFLE, false))
-        {
-            networkAndStorageChecker.getValue().warnIfNetworkOrStorageUnavailable();
-            mediaPlayerController.setShufflePlayEnabled(true);
+                protected override fun done(result: Void) {
+                    onCurrentChanged()
+                    onSliderProgressChanged()
+                }
+            }.execute()
         }
+        previousButton.setOnRepeatListener {
+            val incrementTime = Util.getIncrementTime()
+            changeProgress(-incrementTime)
+        }
+        nextButton.setOnClickListener {
+            networkAndStorageChecker.value.warnIfNetworkOrStorageUnavailable()
+            object : SilentBackgroundTask<Boolean?>(activity) {
+                override fun doInBackground(): Boolean {
+                    mediaPlayerControllerLazy.value.next()
+                    return true
+                }
 
-        visualizerViewLayout.setVisibility(View.GONE);
-        VisualizerController.get().observe(getActivity(), new Observer<VisualizerController>() {
-            @Override
-            public void onChanged(VisualizerController visualizerController) {
-                if (visualizerController != null) {
-                    Timber.d("VisualizerController Observer.onChanged received controller");
-                    visualizerView = new VisualizerView(getContext());
-                    visualizerViewLayout.addView(visualizerView, new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.MATCH_PARENT));
-
-                    if (!visualizerView.isActive())
-                    {
-                        visualizerViewLayout.setVisibility(View.GONE);
+                protected override fun done(result: Boolean) {
+                    if (result) {
+                        onCurrentChanged()
+                        onSliderProgressChanged()
                     }
-                    else
-                    {
-                        visualizerViewLayout.setVisibility(View.VISIBLE);
+                }
+            }.execute()
+        }
+        nextButton.setOnRepeatListener {
+            val incrementTime = Util.getIncrementTime()
+            changeProgress(incrementTime)
+        }
+        pauseButton.setOnClickListener(View.OnClickListener {
+            object : SilentBackgroundTask<Void?>(activity) {
+                override fun doInBackground(): Void {
+                    mediaPlayerControllerLazy.value.pause()
+                    return null
+                }
+
+                protected override fun done(result: Void) {
+                    onCurrentChanged()
+                    onSliderProgressChanged()
+                }
+            }.execute()
+        })
+        stopButton.setOnClickListener(View.OnClickListener {
+            object : SilentBackgroundTask<Void?>(activity) {
+                override fun doInBackground(): Void {
+                    mediaPlayerControllerLazy.value.reset()
+                    return null
+                }
+
+                protected override fun done(result: Void) {
+                    onCurrentChanged()
+                    onSliderProgressChanged()
+                }
+            }.execute()
+        })
+        startButton.setOnClickListener(View.OnClickListener {
+            networkAndStorageChecker.value.warnIfNetworkOrStorageUnavailable()
+            object : SilentBackgroundTask<Void?>(activity) {
+                override fun doInBackground(): Void {
+                    start()
+                    return null
+                }
+
+                protected override fun done(result: Void) {
+                    onCurrentChanged()
+                    onSliderProgressChanged()
+                }
+            }.execute()
+        })
+        shuffleButton.setOnClickListener {
+            mediaPlayerControllerLazy.value.shuffle()
+            Util.toast(activity, R.string.download_menu_shuffle_notification)
+        }
+        repeatButton.setOnClickListener(View.OnClickListener {
+            val repeatMode = mediaPlayerControllerLazy.value.repeatMode!!.next()
+            mediaPlayerControllerLazy.value.repeatMode = repeatMode
+            onDownloadListChanged()
+            when (repeatMode) {
+                RepeatMode.OFF -> Util.toast(
+                    context, R.string.download_repeat_off
+                )
+                RepeatMode.ALL -> Util.toast(
+                    context, R.string.download_repeat_all
+                )
+                RepeatMode.SINGLE -> Util.toast(
+                    context, R.string.download_repeat_single
+                )
+                else -> {
+                }
+            }
+        })
+        progressBar.setOnSeekBarChangeListener(object : OnSeekBarChangeListener {
+            override fun onStopTrackingTouch(seekBar: SeekBar) {
+                object : SilentBackgroundTask<Void?>(activity) {
+                    override fun doInBackground(): Void {
+                        mediaPlayerControllerLazy.value.seekTo(progressBar.getProgress())
+                        return null
                     }
 
-                    visualizerView.setOnTouchListener(new View.OnTouchListener()
-                    {
-                        @Override
-                        public boolean onTouch(final View view, final MotionEvent motionEvent)
-                        {
-                            visualizerView.setActive(!visualizerView.isActive());
-                            mediaPlayerControllerLazy.getValue().setShowVisualization(visualizerView.isActive());
-                            return true;
-                        }
-                    });
-                    isVisualizerAvailable = true;
+                    protected override fun done(result: Void) {
+                        onSliderProgressChanged()
+                    }
+                }.execute()
+            }
+
+            override fun onStartTrackingTouch(seekBar: SeekBar) {}
+            override fun onProgressChanged(seekBar: SeekBar, progress: Int, fromUser: Boolean) {}
+        })
+        playlistView.setOnItemClickListener(OnItemClickListener { parent, view, position, id ->
+            networkAndStorageChecker.value.warnIfNetworkOrStorageUnavailable()
+            object : SilentBackgroundTask<Void?>(activity) {
+                override fun doInBackground(): Void {
+                    mediaPlayerControllerLazy.value.play(position)
+                    return null
+                }
+
+                protected override fun done(result: Void) {
+                    onCurrentChanged()
+                    onSliderProgressChanged()
+                }
+            }.execute()
+        })
+        registerForContextMenu(playlistView)
+        val mediaPlayerController = mediaPlayerControllerLazy.value
+        if (mediaPlayerController != null && arguments != null && arguments!!.getBoolean(
+                Constants.INTENT_EXTRA_NAME_SHUFFLE,
+                false
+            )
+        ) {
+            networkAndStorageChecker.value.warnIfNetworkOrStorageUnavailable()
+            mediaPlayerController.isShufflePlayEnabled = true
+        }
+        visualizerViewLayout.setVisibility(View.GONE)
+        VisualizerController.get().observe(activity!!, { visualizerController ->
+            if (visualizerController != null) {
+                Timber.d("VisualizerController Observer.onChanged received controller")
+                visualizerView = VisualizerView(context)
+                visualizerViewLayout.addView(
+                    visualizerView,
+                    LinearLayout.LayoutParams(
+                        LinearLayout.LayoutParams.MATCH_PARENT,
+                        LinearLayout.LayoutParams.MATCH_PARENT
+                    )
+                )
+                if (!visualizerView!!.isActive) {
+                    visualizerViewLayout.setVisibility(View.GONE)
                 } else {
-                    Timber.d("VisualizerController Observer.onChanged has no controller");
-                    visualizerViewLayout.setVisibility(View.GONE);
-                    isVisualizerAvailable = false;
+                    visualizerViewLayout.setVisibility(View.VISIBLE)
                 }
-            }
-        });
-
-        EqualizerController.get().observe(getActivity(), new Observer<EqualizerController>() {
-            @Override
-            public void onChanged(EqualizerController equalizerController) {
-                if (equalizerController != null) {
-                    Timber.d("EqualizerController Observer.onChanged received controller");
-                    isEqualizerAvailable = true;
-                } else {
-                    Timber.d("EqualizerController Observer.onChanged has no controller");
-                    isEqualizerAvailable = false;
+                visualizerView!!.setOnTouchListener { view, motionEvent ->
+                    visualizerView!!.isActive = !visualizerView!!.isActive
+                    mediaPlayerControllerLazy.value.showVisualization = visualizerView!!.isActive
+                    true
                 }
+                isVisualizerAvailable = true
+            } else {
+                Timber.d("VisualizerController Observer.onChanged has no controller")
+                visualizerViewLayout.setVisibility(View.GONE)
+                isVisualizerAvailable = false
             }
-        });
-
-        new Thread(new Runnable()
-        {
-            @Override
-            public void run()
-            {
-                try
-                {
-                    MediaPlayerController mediaPlayerController = mediaPlayerControllerLazy.getValue();
-                    jukeboxAvailable = (mediaPlayerController != null) && (mediaPlayerController.isJukeboxAvailable());
-                }
-                catch (Exception e)
-                {
-                    Timber.e(e);
-                }
+        })
+        EqualizerController.get().observe(activity!!, { equalizerController ->
+            isEqualizerAvailable = if (equalizerController != null) {
+                Timber.d("EqualizerController Observer.onChanged received controller")
+                true
+            } else {
+                Timber.d("EqualizerController Observer.onChanged has no controller")
+                false
             }
-        }).start();
-
-        view.setOnTouchListener(new View.OnTouchListener() {
-            @Override
-            public boolean onTouch(View v, MotionEvent event) {
-                return gestureScanner.onTouchEvent(event);
+        })
+        Thread {
+            try {
+                val mediaPlayerController = mediaPlayerControllerLazy.value
+                jukeboxAvailable =
+                    mediaPlayerController != null && mediaPlayerController.isJukeboxAvailable
+            } catch (e: Exception) {
+                Timber.e(e)
             }
-        });
+        }.start()
+        view.setOnTouchListener { v, event -> gestureScanner!!.onTouchEvent(event) }
     }
 
-    @Override
-    public void onResume()
-    {
-        super.onResume();
-
-        final MediaPlayerController mediaPlayerController = mediaPlayerControllerLazy.getValue();
-
-        if (mediaPlayerController == null || mediaPlayerController.getCurrentPlaying() == null)
-        {
-            playlistFlipper.setDisplayedChild(1);
-        }
-        else
-        {
+    override fun onResume() {
+        super.onResume()
+        val mediaPlayerController = mediaPlayerControllerLazy.value
+        if (mediaPlayerController == null || mediaPlayerController.currentPlaying == null) {
+            playlistFlipper!!.displayedChild = 1
+        } else {
             // Download list and Album art must be updated when Resumed
-            onDownloadListChanged();
-            onCurrentChanged();
+            onDownloadListChanged()
+            onCurrentChanged()
         }
-
-
-        final Handler handler = new Handler();
-        final Runnable runnable = new Runnable()
-        {
-            @Override
-            public void run()
-            {
-                handler.post(new Runnable()
-                {
-                    @Override
-                    public void run()
-                    {
-                        update(cancellationToken);
-                    }
-                });
-            }
-        };
-
-        executorService = Executors.newSingleThreadScheduledExecutor();
-        executorService.scheduleWithFixedDelay(runnable, 0L, 250L, TimeUnit.MILLISECONDS);
-
-        if (mediaPlayerController != null && mediaPlayerController.getKeepScreenOn())
-        {
-            getActivity().getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
+        val handler = Handler()
+        val runnable = Runnable { handler.post { update(cancellationToken) } }
+        executorService = Executors.newSingleThreadScheduledExecutor()
+        executorService.scheduleWithFixedDelay(runnable, 0L, 250L, TimeUnit.MILLISECONDS)
+        if (mediaPlayerController != null && mediaPlayerController.keepScreenOn) {
+            activity!!.window.addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON)
+        } else {
+            activity!!.window.clearFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON)
         }
-        else
-        {
-            getActivity().getWindow().clearFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
+        if (visualizerView != null) {
+            visualizerView!!.isActive =
+                mediaPlayerController != null && mediaPlayerController.showVisualization
         }
-
-        if (visualizerView != null)
-        {
-            visualizerView.setActive(mediaPlayerController != null && mediaPlayerController.getShowVisualization());
-        }
-
-        getActivity().invalidateOptionsMenu();
+        activity!!.invalidateOptionsMenu()
     }
 
     // Scroll to current playing/downloading.
-    private void scrollToCurrent()
-    {
-        ListAdapter adapter = playlistView.getAdapter();
-
-        if (adapter != null)
-        {
-            int count = adapter.getCount();
-
-            for (int i = 0; i < count; i++)
-            {
-                if (currentPlaying == playlistView.getItemAtPosition(i))
-                {
-                    playlistView.smoothScrollToPositionFromTop(i, 40);
-                    return;
+    private fun scrollToCurrent() {
+        val adapter = playlistView!!.adapter
+        if (adapter != null) {
+            val count = adapter.count
+            for (i in 0 until count) {
+                if (currentPlaying == playlistView!!.getItemAtPosition(i)) {
+                    playlistView!!.smoothScrollToPositionFromTop(i, 40)
+                    return
                 }
             }
-
-            final DownloadFile currentDownloading = mediaPlayerControllerLazy.getValue().getCurrentDownloading();
-            for (int i = 0; i < count; i++)
-            {
-                if (currentDownloading == playlistView.getItemAtPosition(i))
-                {
-                    playlistView.smoothScrollToPositionFromTop(i, 40);
-                    return;
+            val currentDownloading = mediaPlayerControllerLazy.value.currentDownloading
+            for (i in 0 until count) {
+                if (currentDownloading == playlistView!!.getItemAtPosition(i)) {
+                    playlistView!!.smoothScrollToPositionFromTop(i, 40)
+                    return
                 }
             }
         }
     }
 
-    @Override
-    public void onPause()
-    {
-        super.onPause();
-        executorService.shutdown();
-
-        if (visualizerView != null)
-        {
-            visualizerView.setActive(false);
+    override fun onPause() {
+        super.onPause()
+        executorService!!.shutdown()
+        if (visualizerView != null) {
+            visualizerView!!.isActive = false
         }
     }
 
-    @Override
-    public void onDestroyView() {
-        cancellationToken.cancel();
-        super.onDestroyView();
+    override fun onDestroyView() {
+        cancellationToken!!.cancel()
+        super.onDestroyView()
     }
 
-    @Override
-    public void onCreateOptionsMenu(@NonNull Menu menu, @NonNull MenuInflater inflater) {
-        inflater.inflate(R.menu.nowplaying, menu);
-        super.onCreateOptionsMenu(menu, inflater);
+    override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
+        inflater.inflate(R.menu.nowplaying, menu)
+        super.onCreateOptionsMenu(menu, inflater)
     }
 
-    @Override
-    public void onPrepareOptionsMenu(@NotNull Menu menu) {
-        super.onPrepareOptionsMenu(menu);
-
-        final MenuItem screenOption = menu.findItem(R.id.menu_item_screen_on_off);
-        final MenuItem jukeboxOption = menu.findItem(R.id.menu_item_jukebox);
-        final MenuItem equalizerMenuItem = menu.findItem(R.id.menu_item_equalizer);
-        final MenuItem visualizerMenuItem = menu.findItem(R.id.menu_item_visualizer);
-        final MenuItem shareMenuItem = menu.findItem(R.id.menu_item_share);
-        starMenuItem = menu.findItem(R.id.menu_item_star);
-        MenuItem bookmarkMenuItem = menu.findItem(R.id.menu_item_bookmark_set);
-        MenuItem bookmarkRemoveMenuItem = menu.findItem(R.id.menu_item_bookmark_delete);
-
-
-        if (ActiveServerProvider.Companion.isOffline())
-        {
-            if (shareMenuItem != null)
-            {
-                shareMenuItem.setVisible(false);
+    override fun onPrepareOptionsMenu(menu: Menu) {
+        super.onPrepareOptionsMenu(menu)
+        val screenOption = menu.findItem(R.id.menu_item_screen_on_off)
+        val jukeboxOption = menu.findItem(R.id.menu_item_jukebox)
+        val equalizerMenuItem = menu.findItem(R.id.menu_item_equalizer)
+        val visualizerMenuItem = menu.findItem(R.id.menu_item_visualizer)
+        val shareMenuItem = menu.findItem(R.id.menu_item_share)
+        starMenuItem = menu.findItem(R.id.menu_item_star)
+        val bookmarkMenuItem = menu.findItem(R.id.menu_item_bookmark_set)
+        val bookmarkRemoveMenuItem = menu.findItem(R.id.menu_item_bookmark_delete)
+        if (isOffline()) {
+            if (shareMenuItem != null) {
+                shareMenuItem.isVisible = false
             }
-
-            if (starMenuItem != null)
-            {
-                starMenuItem.setVisible(false);
+            if (starMenuItem != null) {
+                starMenuItem!!.isVisible = false
             }
-
-            if (bookmarkMenuItem != null)
-            {
-                bookmarkMenuItem.setVisible(false);
+            if (bookmarkMenuItem != null) {
+                bookmarkMenuItem.isVisible = false
             }
-
-            if (bookmarkRemoveMenuItem != null)
-            {
-                bookmarkRemoveMenuItem.setVisible(false);
+            if (bookmarkRemoveMenuItem != null) {
+                bookmarkRemoveMenuItem.isVisible = false
             }
         }
-
-        if (equalizerMenuItem != null)
-        {
-            equalizerMenuItem.setEnabled(isEqualizerAvailable);
-            equalizerMenuItem.setVisible(isEqualizerAvailable);
+        if (equalizerMenuItem != null) {
+            equalizerMenuItem.isEnabled = isEqualizerAvailable
+            equalizerMenuItem.isVisible = isEqualizerAvailable
         }
-
-        if (visualizerMenuItem != null)
-        {
-            visualizerMenuItem.setEnabled(isVisualizerAvailable);
-            visualizerMenuItem.setVisible(isVisualizerAvailable);
+        if (visualizerMenuItem != null) {
+            visualizerMenuItem.isEnabled = isVisualizerAvailable
+            visualizerMenuItem.isVisible = isVisualizerAvailable
         }
-
-        final MediaPlayerController mediaPlayerController = mediaPlayerControllerLazy.getValue();
-
-        if (mediaPlayerController != null)
-        {
-            DownloadFile downloadFile = mediaPlayerController.getCurrentPlaying();
-
-            if (downloadFile != null)
-            {
-                currentSong = downloadFile.getSong();
+        val mediaPlayerController = mediaPlayerControllerLazy.value
+        if (mediaPlayerController != null) {
+            val downloadFile = mediaPlayerController.currentPlaying
+            if (downloadFile != null) {
+                currentSong = downloadFile.song
             }
-
-            if (useFiveStarRating) starMenuItem.setVisible(false);
-
-            if (currentSong != null)
-            {
-                if (starMenuItem != null)
-                {
-                    starMenuItem.setIcon(currentSong.getStarred() ? fullStar : hollowStar);
+            if (useFiveStarRating) starMenuItem.setVisible(false)
+            if (currentSong != null) {
+                if (starMenuItem != null) {
+                    starMenuItem!!.icon = if (currentSong!!.starred) fullStar else hollowStar
+                }
+            } else {
+                if (starMenuItem != null) {
+                    starMenuItem!!.icon = hollowStar
                 }
             }
-            else
-            {
-                if (starMenuItem != null)
-                {
-                    starMenuItem.setIcon(hollowStar);
-                }
+            if (mediaPlayerController.keepScreenOn) {
+                screenOption?.setTitle(R.string.download_menu_screen_off)
+            } else {
+                screenOption?.setTitle(R.string.download_menu_screen_on)
             }
-
-
-            if (mediaPlayerController.getKeepScreenOn())
-            {
-                if (screenOption != null)
-                {
-                    screenOption.setTitle(R.string.download_menu_screen_off);
-                }
-            }
-            else
-            {
-                if (screenOption != null)
-                {
-                    screenOption.setTitle(R.string.download_menu_screen_on);
-                }
-            }
-
-            if (jukeboxOption != null)
-            {
-                jukeboxOption.setEnabled(jukeboxAvailable);
-                jukeboxOption.setVisible(jukeboxAvailable);
-
-                if (mediaPlayerController.isJukeboxEnabled())
-                {
-                    jukeboxOption.setTitle(R.string.download_menu_jukebox_off);
-                }
-                else
-                {
-                    jukeboxOption.setTitle(R.string.download_menu_jukebox_on);
+            if (jukeboxOption != null) {
+                jukeboxOption.isEnabled = jukeboxAvailable
+                jukeboxOption.isVisible = jukeboxAvailable
+                if (mediaPlayerController.isJukeboxEnabled) {
+                    jukeboxOption.setTitle(R.string.download_menu_jukebox_off)
+                } else {
+                    jukeboxOption.setTitle(R.string.download_menu_jukebox_on)
                 }
             }
         }
     }
 
-    @Override
-    public void onCreateContextMenu(final @NotNull ContextMenu menu, final @NotNull View view, final ContextMenu.ContextMenuInfo menuInfo)
-    {
-        super.onCreateContextMenu(menu, view, menuInfo);
-        if (view == playlistView)
-        {
-            final AdapterView.AdapterContextMenuInfo info = (AdapterView.AdapterContextMenuInfo) menuInfo;
-            final DownloadFile downloadFile = (DownloadFile) playlistView.getItemAtPosition(info.position);
-
-            final MenuInflater menuInflater = getActivity().getMenuInflater();
-            menuInflater.inflate(R.menu.nowplaying_context, menu);
-
-            MusicDirectory.Entry song = null;
-
-            if (downloadFile != null)
-            {
-                song = downloadFile.getSong();
+    override fun onCreateContextMenu(menu: ContextMenu, view: View, menuInfo: ContextMenuInfo?) {
+        super.onCreateContextMenu(menu, view, menuInfo)
+        if (view === playlistView) {
+            val info = menuInfo as AdapterContextMenuInfo?
+            val downloadFile = playlistView!!.getItemAtPosition(info!!.position) as DownloadFile
+            val menuInflater = activity!!.menuInflater
+            menuInflater.inflate(R.menu.nowplaying_context, menu)
+            var song: MusicDirectory.Entry? = null
+            if (downloadFile != null) {
+                song = downloadFile.song
             }
-
-            if (song != null && song.getParent() == null)
-            {
-                MenuItem menuItem = menu.findItem(R.id.menu_show_album);
-
-                if (menuItem != null)
-                {
-                    menuItem.setVisible(false);
+            if (song != null && song.parent == null) {
+                val menuItem = menu.findItem(R.id.menu_show_album)
+                if (menuItem != null) {
+                    menuItem.isVisible = false
                 }
             }
-
-            if (ActiveServerProvider.Companion.isOffline() || !Util.getShouldUseId3Tags())
-            {
-                MenuItem menuItem = menu.findItem(R.id.menu_show_artist);
-
-                if (menuItem != null)
-                {
-                    menuItem.setVisible(false);
+            if (isOffline() || !Util.getShouldUseId3Tags()) {
+                val menuItem = menu.findItem(R.id.menu_show_artist)
+                if (menuItem != null) {
+                    menuItem.isVisible = false
                 }
             }
-
-            if (ActiveServerProvider.Companion.isOffline())
-            {
-                MenuItem menuItem = menu.findItem(R.id.menu_lyrics);
-
-                if (menuItem != null)
-                {
-                    menuItem.setVisible(false);
+            if (isOffline()) {
+                val menuItem = menu.findItem(R.id.menu_lyrics)
+                if (menuItem != null) {
+                    menuItem.isVisible = false
                 }
             }
         }
     }
 
-    @Override
-    public boolean onContextItemSelected(final MenuItem menuItem)
-    {
-        final AdapterView.AdapterContextMenuInfo info = (AdapterView.AdapterContextMenuInfo) menuItem.getMenuInfo();
-
-        DownloadFile downloadFile = null;
-
-        if (info != null)
-        {
-            downloadFile = (DownloadFile) playlistView.getItemAtPosition(info.position);
+    override fun onContextItemSelected(menuItem: MenuItem): Boolean {
+        val info = menuItem.menuInfo as AdapterContextMenuInfo
+        var downloadFile: DownloadFile? = null
+        if (info != null) {
+            downloadFile = playlistView!!.getItemAtPosition(info.position) as DownloadFile
         }
-
-        return menuItemSelected(menuItem.getItemId(), downloadFile) || super.onContextItemSelected(menuItem);
+        return menuItemSelected(menuItem.itemId, downloadFile) || super.onContextItemSelected(
+            menuItem
+        )
     }
 
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        return menuItemSelected(item.getItemId(), null) || super.onOptionsItemSelected(item);
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        return menuItemSelected(item.itemId, null) || super.onOptionsItemSelected(item)
     }
 
-    private boolean menuItemSelected(final int menuItemId, final DownloadFile song)
-    {
-        MusicDirectory.Entry entry = null;
-        Bundle bundle;
-
-        if (song != null)
-        {
-            entry = song.getSong();
+    private fun menuItemSelected(menuItemId: Int, song: DownloadFile?): Boolean {
+        var entry: MusicDirectory.Entry? = null
+        val bundle: Bundle
+        if (song != null) {
+            entry = song.song
         }
-
         if (menuItemId == R.id.menu_show_artist) {
             if (entry == null) {
-                return false;
+                return false
             }
-
             if (Util.getShouldUseId3Tags()) {
-                bundle = new Bundle();
-                bundle.putString(Constants.INTENT_EXTRA_NAME_ID, entry.getArtistId());
-                bundle.putString(Constants.INTENT_EXTRA_NAME_NAME, entry.getArtist());
-                bundle.putString(Constants.INTENT_EXTRA_NAME_PARENT_ID, entry.getArtistId());
-                bundle.putBoolean(Constants.INTENT_EXTRA_NAME_ARTIST, true);
-                Navigation.findNavController(getView()).navigate(R.id.playerToSelectAlbum, bundle);
+                bundle = Bundle()
+                bundle.putString(Constants.INTENT_EXTRA_NAME_ID, entry.artistId)
+                bundle.putString(Constants.INTENT_EXTRA_NAME_NAME, entry.artist)
+                bundle.putString(Constants.INTENT_EXTRA_NAME_PARENT_ID, entry.artistId)
+                bundle.putBoolean(Constants.INTENT_EXTRA_NAME_ARTIST, true)
+                Navigation.findNavController(view!!).navigate(R.id.playerToSelectAlbum, bundle)
             }
-
-            return true;
+            return true
         } else if (menuItemId == R.id.menu_show_album) {
             if (entry == null) {
-                return false;
+                return false
             }
-
-            String albumId = Util.getShouldUseId3Tags() ? entry.getAlbumId() : entry.getParent();
-            bundle = new Bundle();
-            bundle.putString(Constants.INTENT_EXTRA_NAME_ID, albumId);
-            bundle.putString(Constants.INTENT_EXTRA_NAME_NAME, entry.getAlbum());
-            bundle.putString(Constants.INTENT_EXTRA_NAME_PARENT_ID, entry.getParent());
-            bundle.putBoolean(Constants.INTENT_EXTRA_NAME_IS_ALBUM, true);
-            Navigation.findNavController(getView()).navigate(R.id.playerToSelectAlbum, bundle);
-            return true;
+            val albumId = if (Util.getShouldUseId3Tags()) entry.albumId else entry.parent
+            bundle = Bundle()
+            bundle.putString(Constants.INTENT_EXTRA_NAME_ID, albumId)
+            bundle.putString(Constants.INTENT_EXTRA_NAME_NAME, entry.album)
+            bundle.putString(Constants.INTENT_EXTRA_NAME_PARENT_ID, entry.parent)
+            bundle.putBoolean(Constants.INTENT_EXTRA_NAME_IS_ALBUM, true)
+            Navigation.findNavController(view!!).navigate(R.id.playerToSelectAlbum, bundle)
+            return true
         } else if (menuItemId == R.id.menu_lyrics) {
             if (entry == null) {
-                return false;
+                return false
             }
-
-            bundle = new Bundle();
-            bundle.putString(Constants.INTENT_EXTRA_NAME_ARTIST, entry.getArtist());
-            bundle.putString(Constants.INTENT_EXTRA_NAME_TITLE, entry.getTitle());
-            Navigation.findNavController(getView()).navigate(R.id.playerToLyrics, bundle);
-            return true;
+            bundle = Bundle()
+            bundle.putString(Constants.INTENT_EXTRA_NAME_ARTIST, entry.artist)
+            bundle.putString(Constants.INTENT_EXTRA_NAME_TITLE, entry.title)
+            Navigation.findNavController(view!!).navigate(R.id.playerToLyrics, bundle)
+            return true
         } else if (menuItemId == R.id.menu_remove) {
-            mediaPlayerControllerLazy.getValue().remove(song);
-            onDownloadListChanged();
-            return true;
+            mediaPlayerControllerLazy.value.remove(song!!)
+            onDownloadListChanged()
+            return true
         } else if (menuItemId == R.id.menu_item_screen_on_off) {
-            if (mediaPlayerControllerLazy.getValue().getKeepScreenOn()) {
-                getActivity().getWindow().clearFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
-                mediaPlayerControllerLazy.getValue().setKeepScreenOn(false);
+            if (mediaPlayerControllerLazy.value.keepScreenOn) {
+                activity!!.window.clearFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON)
+                mediaPlayerControllerLazy.value.keepScreenOn = false
             } else {
-                getActivity().getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
-                mediaPlayerControllerLazy.getValue().setKeepScreenOn(true);
+                activity!!.window.addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON)
+                mediaPlayerControllerLazy.value.keepScreenOn = true
             }
-            return true;
+            return true
         } else if (menuItemId == R.id.menu_shuffle) {
-            mediaPlayerControllerLazy.getValue().shuffle();
-            Util.toast(getContext(), R.string.download_menu_shuffle_notification);
-            return true;
+            mediaPlayerControllerLazy.value.shuffle()
+            Util.toast(context, R.string.download_menu_shuffle_notification)
+            return true
         } else if (menuItemId == R.id.menu_item_equalizer) {
-            Navigation.findNavController(getView()).navigate(R.id.playerToEqualizer);
-            return true;
+            Navigation.findNavController(view!!).navigate(R.id.playerToEqualizer)
+            return true
         } else if (menuItemId == R.id.menu_item_visualizer) {
-            final boolean active = !visualizerView.isActive();
-            visualizerView.setActive(active);
-
-            if (!visualizerView.isActive()) {
-                visualizerViewLayout.setVisibility(View.GONE);
+            val active = !visualizerView!!.isActive
+            visualizerView!!.isActive = active
+            if (!visualizerView!!.isActive) {
+                visualizerViewLayout!!.visibility = View.GONE
             } else {
-                visualizerViewLayout.setVisibility(View.VISIBLE);
+                visualizerViewLayout!!.visibility = View.VISIBLE
             }
-
-            mediaPlayerControllerLazy.getValue().setShowVisualization(visualizerView.isActive());
-            Util.toast(getContext(), active ? R.string.download_visualizer_on : R.string.download_visualizer_off);
-            return true;
+            mediaPlayerControllerLazy.value.showVisualization = visualizerView!!.isActive
+            Util.toast(
+                context,
+                if (active) R.string.download_visualizer_on else R.string.download_visualizer_off
+            )
+            return true
         } else if (menuItemId == R.id.menu_item_jukebox) {
-            final boolean jukeboxEnabled = !mediaPlayerControllerLazy.getValue().isJukeboxEnabled();
-            mediaPlayerControllerLazy.getValue().setJukeboxEnabled(jukeboxEnabled);
-            Util.toast(getContext(), jukeboxEnabled ? R.string.download_jukebox_on : R.string.download_jukebox_off, false);
-            return true;
+            val jukeboxEnabled = !mediaPlayerControllerLazy.value.isJukeboxEnabled
+            mediaPlayerControllerLazy.value.isJukeboxEnabled = jukeboxEnabled
+            Util.toast(
+                context,
+                if (jukeboxEnabled) R.string.download_jukebox_on else R.string.download_jukebox_off,
+                false
+            )
+            return true
         } else if (menuItemId == R.id.menu_item_toggle_list) {
-            toggleFullScreenAlbumArt();
-            return true;
+            toggleFullScreenAlbumArt()
+            return true
         } else if (menuItemId == R.id.menu_item_clear_playlist) {
-            mediaPlayerControllerLazy.getValue().setShufflePlayEnabled(false);
-            mediaPlayerControllerLazy.getValue().clear();
-            onDownloadListChanged();
-            return true;
+            mediaPlayerControllerLazy.value.isShufflePlayEnabled = false
+            mediaPlayerControllerLazy.value.clear()
+            onDownloadListChanged()
+            return true
         } else if (menuItemId == R.id.menu_item_save_playlist) {
-            if (mediaPlayerControllerLazy.getValue().getPlaylistSize() > 0) {
-                showSavePlaylistDialog();
+            if (mediaPlayerControllerLazy.value.playlistSize > 0) {
+                showSavePlaylistDialog()
             }
-            return true;
+            return true
         } else if (menuItemId == R.id.menu_item_star) {
             if (currentSong == null) {
-                return true;
+                return true
             }
-
-            final boolean isStarred = currentSong.getStarred();
-            final String id = currentSong.getId();
-
+            val isStarred = currentSong!!.starred
+            val id = currentSong!!.id
             if (isStarred) {
-                starMenuItem.setIcon(hollowStar);
-                currentSong.setStarred(false);
+                starMenuItem!!.icon = hollowStar
+                currentSong!!.starred = false
             } else {
-                starMenuItem.setIcon(fullStar);
-                currentSong.setStarred(true);
+                starMenuItem!!.icon = fullStar
+                currentSong!!.starred = true
             }
-
-            new Thread(new Runnable() {
-                @Override
-                public void run() {
-                    final MusicService musicService = MusicServiceFactory.getMusicService();
-
-                    try {
-                        if (isStarred) {
-                            musicService.unstar(id, null, null);
-                        } else {
-                            musicService.star(id, null, null);
-                        }
-                    } catch (Exception e) {
-                        Timber.e(e);
+            Thread {
+                val musicService = getMusicService()
+                try {
+                    if (isStarred) {
+                        musicService.unstar(id, null, null)
+                    } else {
+                        musicService.star(id, null, null)
                     }
+                } catch (e: Exception) {
+                    Timber.e(e)
                 }
-            }).start();
-
-            return true;
+            }.start()
+            return true
         } else if (menuItemId == R.id.menu_item_bookmark_set) {
             if (currentSong == null) {
-                return true;
+                return true
             }
-
-            final String songId = currentSong.getId();
-            final int playerPosition = mediaPlayerControllerLazy.getValue().getPlayerPosition();
-
-            currentSong.setBookmarkPosition(playerPosition);
-
-            String bookmarkTime = Util.formatTotalDuration(playerPosition, true);
-
-            new Thread(new Runnable() {
-                @Override
-                public void run() {
-                    final MusicService musicService = MusicServiceFactory.getMusicService();
-
-                    try {
-                        musicService.createBookmark(songId, playerPosition);
-                    } catch (Exception e) {
-                        Timber.e(e);
-                    }
+            val songId = currentSong!!.id
+            val playerPosition = mediaPlayerControllerLazy.value.playerPosition
+            currentSong!!.bookmarkPosition = playerPosition
+            val bookmarkTime = Util.formatTotalDuration(playerPosition.toLong(), true)
+            Thread {
+                val musicService = getMusicService()
+                try {
+                    musicService.createBookmark(songId, playerPosition)
+                } catch (e: Exception) {
+                    Timber.e(e)
                 }
-            }).start();
-
-            String msg = getResources().getString(R.string.download_bookmark_set_at_position, bookmarkTime);
-
-            Util.toast(getContext(), msg);
-
-            return true;
+            }.start()
+            val msg = resources.getString(R.string.download_bookmark_set_at_position, bookmarkTime)
+            Util.toast(context, msg)
+            return true
         } else if (menuItemId == R.id.menu_item_bookmark_delete) {
             if (currentSong == null) {
-                return true;
+                return true
             }
-
-            final String bookmarkSongId = currentSong.getId();
-            currentSong.setBookmarkPosition(0);
-
-            new Thread(new Runnable() {
-                @Override
-                public void run() {
-                    final MusicService musicService = MusicServiceFactory.getMusicService();
-
-                    try {
-                        musicService.deleteBookmark(bookmarkSongId);
-                    } catch (Exception e) {
-                        Timber.e(e);
-                    }
+            val bookmarkSongId = currentSong!!.id
+            currentSong!!.bookmarkPosition = 0
+            Thread {
+                val musicService = getMusicService()
+                try {
+                    musicService.deleteBookmark(bookmarkSongId)
+                } catch (e: Exception) {
+                    Timber.e(e)
                 }
-            }).start();
-
-            Util.toast(getContext(), R.string.download_bookmark_removed);
-
-            return true;
+            }.start()
+            Util.toast(context, R.string.download_bookmark_removed)
+            return true
         } else if (menuItemId == R.id.menu_item_share) {
-            MediaPlayerController mediaPlayerController = mediaPlayerControllerLazy.getValue();
-            List<MusicDirectory.Entry> entries = new ArrayList<>();
-
+            val mediaPlayerController = mediaPlayerControllerLazy.value
+            val entries: MutableList<MusicDirectory.Entry?> = ArrayList()
             if (mediaPlayerController != null) {
-                List<DownloadFile> downloadServiceSongs = mediaPlayerController.getPlayList();
-
+                val downloadServiceSongs = mediaPlayerController.playList
                 if (downloadServiceSongs != null) {
-                    for (DownloadFile downloadFile : downloadServiceSongs) {
+                    for (downloadFile in downloadServiceSongs) {
                         if (downloadFile != null) {
-                            MusicDirectory.Entry playlistEntry = downloadFile.getSong();
-
+                            val playlistEntry = downloadFile.song
                             if (playlistEntry != null) {
-                                entries.add(playlistEntry);
+                                entries.add(playlistEntry)
                             }
                         }
                     }
                 }
             }
-
-            shareHandler.getValue().createShare(this, entries, null, cancellationToken);
-            return true;
+            shareHandler.value.createShare(this, entries, null, cancellationToken!!)
+            return true
         }
-        return false;
+        return false
     }
 
-    private void update(CancellationToken cancel)
-    {
-        if (cancel.isCancellationRequested()) return;
-
-        MediaPlayerController mediaPlayerController = mediaPlayerControllerLazy.getValue();
-        if (mediaPlayerController == null)
-        {
-            return;
+    private fun update(cancel: CancellationToken?) {
+        if (cancel!!.isCancellationRequested) return
+        val mediaPlayerController = mediaPlayerControllerLazy.value ?: return
+        if (currentRevision != mediaPlayerController.playListUpdateRevision) {
+            onDownloadListChanged()
         }
-
-        if (currentRevision != mediaPlayerController.getPlayListUpdateRevision())
-        {
-            onDownloadListChanged();
+        if (currentPlaying != mediaPlayerController.currentPlaying) {
+            onCurrentChanged()
         }
-
-        if (currentPlaying != mediaPlayerController.getCurrentPlaying())
-        {
-            onCurrentChanged();
-        }
-
-        onSliderProgressChanged();
-        getActivity().invalidateOptionsMenu();
+        onSliderProgressChanged()
+        activity!!.invalidateOptionsMenu()
     }
 
-    private void savePlaylistInBackground(final String playlistName)
-    {
-        Util.toast(getContext(), getResources().getString(R.string.download_playlist_saving, playlistName));
-        mediaPlayerControllerLazy.getValue().setSuggestedPlaylistName(playlistName);
-        new SilentBackgroundTask<Void>(getActivity())
-        {
-            @Override
-            protected Void doInBackground() throws Throwable
-            {
-                final List<MusicDirectory.Entry> entries = new LinkedList<>();
-                for (final DownloadFile downloadFile : mediaPlayerControllerLazy.getValue().getPlayList())
-                {
-                    entries.add(downloadFile.getSong());
+    private fun savePlaylistInBackground(playlistName: String) {
+        Util.toast(context, resources.getString(R.string.download_playlist_saving, playlistName))
+        mediaPlayerControllerLazy.value.suggestedPlaylistName = playlistName
+        object : SilentBackgroundTask<Void?>(activity) {
+            @Throws(Throwable::class)
+            override fun doInBackground(): Void {
+                val entries: MutableList<MusicDirectory.Entry> = LinkedList()
+                for (downloadFile in mediaPlayerControllerLazy.value.playList) {
+                    entries.add(downloadFile.song)
                 }
-                final MusicService musicService = MusicServiceFactory.getMusicService();
-                musicService.createPlaylist(null, playlistName, entries);
-                return null;
+                val musicService = getMusicService()
+                musicService.createPlaylist(null, playlistName, entries)
+                return null
             }
 
-            @Override
-            protected void done(final Void result)
-            {
-                Util.toast(getContext(), R.string.download_playlist_done);
+            protected override fun done(result: Void) {
+                Util.toast(context, R.string.download_playlist_done)
             }
 
-            @Override
-            protected void error(final Throwable error)
-            {
-                Timber.e(error, "Exception has occurred in savePlaylistInBackground");
-                final String msg = String.format("%s %s", getResources().getString(R.string.download_playlist_error), getErrorMessage(error));
-                Util.toast(getContext(), msg);
+            override fun error(error: Throwable) {
+                Timber.e(error, "Exception has occurred in savePlaylistInBackground")
+                val msg = String.format(
+                    "%s %s",
+                    resources.getString(R.string.download_playlist_error),
+                    getErrorMessage(error)
+                )
+                Util.toast(context, msg)
             }
-        }.execute();
+        }.execute()
     }
 
-    private void toggleFullScreenAlbumArt()
-    {
-        if (playlistFlipper.getDisplayedChild() == 1)
-        {
-            playlistFlipper.setInAnimation(AnimationUtils.loadAnimation(getContext(), R.anim.push_down_in));
-            playlistFlipper.setOutAnimation(AnimationUtils.loadAnimation(getContext(), R.anim.push_down_out));
-            playlistFlipper.setDisplayedChild(0);
+    private fun toggleFullScreenAlbumArt() {
+        if (playlistFlipper!!.displayedChild == 1) {
+            playlistFlipper!!.inAnimation =
+                AnimationUtils.loadAnimation(context, R.anim.push_down_in)
+            playlistFlipper!!.outAnimation =
+                AnimationUtils.loadAnimation(context, R.anim.push_down_out)
+            playlistFlipper!!.displayedChild = 0
+        } else {
+            playlistFlipper!!.inAnimation =
+                AnimationUtils.loadAnimation(context, R.anim.push_up_in)
+            playlistFlipper!!.outAnimation =
+                AnimationUtils.loadAnimation(context, R.anim.push_up_out)
+            playlistFlipper!!.displayedChild = 1
         }
-        else
-        {
-            playlistFlipper.setInAnimation(AnimationUtils.loadAnimation(getContext(), R.anim.push_up_in));
-            playlistFlipper.setOutAnimation(AnimationUtils.loadAnimation(getContext(), R.anim.push_up_out));
-            playlistFlipper.setDisplayedChild(1);
-        }
-
-        scrollToCurrent();
+        scrollToCurrent()
     }
 
-    private void start()
-    {
-        final MediaPlayerController service = mediaPlayerControllerLazy.getValue();
-        final PlayerState state = service.getPlayerState();
-
-        if (state == PAUSED || state == COMPLETED || state == STOPPED)
-        {
-            service.start();
-        }
-        else if (state == IDLE)
-        {
-            networkAndStorageChecker.getValue().warnIfNetworkOrStorageUnavailable();
-
-            final int current = mediaPlayerControllerLazy.getValue().getCurrentPlayingNumberOnPlaylist();
-
-            if (current == -1)
-            {
-                service.play(0);
-            }
-            else
-            {
-                service.play(current);
+    private fun start() {
+        val service = mediaPlayerControllerLazy.value
+        val state = service.playerState
+        if (state === PlayerState.PAUSED || state === PlayerState.COMPLETED || state === PlayerState.STOPPED) {
+            service.start()
+        } else if (state === PlayerState.IDLE) {
+            networkAndStorageChecker.value.warnIfNetworkOrStorageUnavailable()
+            val current = mediaPlayerControllerLazy.value.currentPlayingNumberOnPlaylist
+            if (current == -1) {
+                service.play(0)
+            } else {
+                service.play(current)
             }
         }
     }
 
-    private void onDownloadListChanged()
-    {
-        final MediaPlayerController mediaPlayerController = mediaPlayerControllerLazy.getValue();
-        if (mediaPlayerController == null)
-        {
-            return;
-        }
-
-        final List<DownloadFile> list = mediaPlayerController.getPlayList();
-
-        emptyTextView.setText(R.string.download_empty);
-        final SongListAdapter adapter = new SongListAdapter(getContext(), list);
-        playlistView.setAdapter(adapter);
-
-        playlistView.setDragSortListener(new DragSortListView.DragSortListener()
-        {
-            @Override
-            public void drop(int from, int to)
-            {
-                if (from != to)
-                {
-                    DownloadFile item = adapter.getItem(from);
-                    adapter.remove(item);
-                    adapter.notifyDataSetChanged();
-                    adapter.insert(item, to);
-                    adapter.notifyDataSetChanged();
+    private fun onDownloadListChanged() {
+        val mediaPlayerController = mediaPlayerControllerLazy.value ?: return
+        val list = mediaPlayerController.playList
+        emptyTextView!!.setText(R.string.download_empty)
+        val adapter = SongListAdapter(context, list)
+        playlistView!!.adapter = adapter
+        playlistView!!.setDragSortListener(object : DragSortListener {
+            override fun drop(from: Int, to: Int) {
+                if (from != to) {
+                    val item = adapter.getItem(from)
+                    adapter.remove(item)
+                    adapter.notifyDataSetChanged()
+                    adapter.insert(item, to)
+                    adapter.notifyDataSetChanged()
                 }
             }
 
-            @Override
-            public void drag(int from, int to)
-            {
-
-            }
-
-            @Override
-            public void remove(int which)
-            {
-                DownloadFile item = adapter.getItem(which);
-                MediaPlayerController mediaPlayerController = mediaPlayerControllerLazy.getValue();
-
-                if (item == null || mediaPlayerController == null)
-                {
-                    return;
+            override fun drag(from: Int, to: Int) {}
+            override fun remove(which: Int) {
+                val item = adapter.getItem(which)
+                val mediaPlayerController = mediaPlayerControllerLazy.value
+                if (item == null || mediaPlayerController == null) {
+                    return
                 }
-
-                DownloadFile currentPlaying = mediaPlayerController.getCurrentPlaying();
-
-                if (currentPlaying == item)
-                {
-                    mediaPlayerControllerLazy.getValue().next();
+                val currentPlaying = mediaPlayerController.currentPlaying
+                if (currentPlaying == item) {
+                    mediaPlayerControllerLazy.value.next()
                 }
-
-                adapter.remove(item);
-                adapter.notifyDataSetChanged();
-
-                String songRemoved = String.format(getResources().getString(R.string.download_song_removed), item.getSong().getTitle());
-
-                Util.toast(getContext(), songRemoved);
-
-                onDownloadListChanged();
-                onCurrentChanged();
+                adapter.remove(item)
+                adapter.notifyDataSetChanged()
+                val songRemoved = String.format(
+                    resources.getString(R.string.download_song_removed),
+                    item.song.title
+                )
+                Util.toast(context, songRemoved)
+                onDownloadListChanged()
+                onCurrentChanged()
             }
-        });
-
-        emptyTextView.setVisibility(list.isEmpty() ? View.VISIBLE : View.GONE);
-        currentRevision = mediaPlayerController.getPlayListUpdateRevision();
-
-        switch (mediaPlayerController.getRepeatMode())
-        {
-            case OFF:
-                repeatButton.setImageDrawable(Util.getDrawableFromAttribute(getContext(), R.attr.media_repeat_off));
-                break;
-            case ALL:
-                repeatButton.setImageDrawable(Util.getDrawableFromAttribute(getContext(), R.attr.media_repeat_all));
-                break;
-            case SINGLE:
-                repeatButton.setImageDrawable(Util.getDrawableFromAttribute(getContext(), R.attr.media_repeat_single));
-                break;
-            default:
-                break;
+        })
+        emptyTextView!!.visibility = if (list.isEmpty()) View.VISIBLE else View.GONE
+        currentRevision = mediaPlayerController.playListUpdateRevision
+        when (mediaPlayerController.repeatMode) {
+            RepeatMode.OFF -> repeatButton!!.setImageDrawable(
+                Util.getDrawableFromAttribute(
+                    context, R.attr.media_repeat_off
+                )
+            )
+            RepeatMode.ALL -> repeatButton!!.setImageDrawable(
+                Util.getDrawableFromAttribute(
+                    context, R.attr.media_repeat_all
+                )
+            )
+            RepeatMode.SINGLE -> repeatButton!!.setImageDrawable(
+                Util.getDrawableFromAttribute(
+                    context, R.attr.media_repeat_single
+                )
+            )
+            else -> {
+            }
         }
     }
 
-    private void onCurrentChanged()
-    {
-        MediaPlayerController mediaPlayerController = mediaPlayerControllerLazy.getValue();
-
-        if (mediaPlayerController == null)
-        {
-            return;
-        }
-
-        currentPlaying = mediaPlayerController.getCurrentPlaying();
-
-        scrollToCurrent();
-
-        long totalDuration = mediaPlayerController.getPlayListDuration();
-        long totalSongs = mediaPlayerController.getPlaylistSize();
-        int currentSongIndex = mediaPlayerController.getCurrentPlayingNumberOnPlaylist() + 1;
-
-        String duration = Util.formatTotalDuration(totalDuration);
-
-        String trackFormat = String.format(Locale.getDefault(), "%d / %d", currentSongIndex, totalSongs);
-
-        if (currentPlaying != null)
-        {
-            currentSong = currentPlaying.getSong();
-            songTitleTextView.setText(currentSong.getTitle());
-            albumTextView.setText(currentSong.getAlbum());
-            artistTextView.setText(currentSong.getArtist());
-            downloadTrackTextView.setText(trackFormat);
-            downloadTotalDurationTextView.setText(duration);
-            imageLoaderProvider.getValue().getImageLoader().loadImage(albumArtImageView, currentSong, true, 0);
-
-            displaySongRating();
-        }
-        else
-        {
-            currentSong = null;
-            songTitleTextView.setText(null);
-            albumTextView.setText(null);
-            artistTextView.setText(null);
-            downloadTrackTextView.setText(null);
-            downloadTotalDurationTextView.setText(null);
-            imageLoaderProvider.getValue().getImageLoader().loadImage(albumArtImageView, null, true, 0);
+    private fun onCurrentChanged() {
+        val mediaPlayerController = mediaPlayerControllerLazy.value ?: return
+        currentPlaying = mediaPlayerController.currentPlaying
+        scrollToCurrent()
+        val totalDuration = mediaPlayerController.playListDuration
+        val totalSongs = mediaPlayerController.playlistSize.toLong()
+        val currentSongIndex = mediaPlayerController.currentPlayingNumberOnPlaylist + 1
+        val duration = Util.formatTotalDuration(totalDuration)
+        val trackFormat =
+            String.format(Locale.getDefault(), "%d / %d", currentSongIndex, totalSongs)
+        if (currentPlaying != null) {
+            currentSong = currentPlaying!!.song
+            songTitleTextView!!.text = currentSong!!.title
+            albumTextView!!.text = currentSong!!.album
+            artistTextView!!.text = currentSong!!.artist
+            downloadTrackTextView!!.text = trackFormat
+            downloadTotalDurationTextView!!.text = duration
+            imageLoaderProvider.value.getImageLoader()
+                .loadImage(albumArtImageView, currentSong, true, 0)
+            displaySongRating()
+        } else {
+            currentSong = null
+            songTitleTextView.setText(null)
+            albumTextView.setText(null)
+            artistTextView.setText(null)
+            downloadTrackTextView.setText(null)
+            downloadTotalDurationTextView.setText(null)
+            imageLoaderProvider.value.getImageLoader().loadImage(albumArtImageView, null, true, 0)
         }
     }
 
-    private void onSliderProgressChanged()
-    {
-        MediaPlayerController mediaPlayerController = mediaPlayerControllerLazy.getValue();
-
-        if (mediaPlayerController == null || onProgressChangedTask != null)
-        {
-            return;
+    private fun onSliderProgressChanged() {
+        val mediaPlayerController = mediaPlayerControllerLazy.value
+        if (mediaPlayerController == null || onProgressChangedTask != null) {
+            return
         }
-
-        onProgressChangedTask = new SilentBackgroundTask<Void>(getActivity())
-        {
-            MediaPlayerController mediaPlayerController;
-            boolean isJukeboxEnabled;
-            int millisPlayed;
-            Integer duration;
-            PlayerState playerState;
-
-            @Override
-            protected Void doInBackground()
-            {
-                this.mediaPlayerController = mediaPlayerControllerLazy.getValue();
-                isJukeboxEnabled = this.mediaPlayerController.isJukeboxEnabled();
-                millisPlayed = Math.max(0, this.mediaPlayerController.getPlayerPosition());
-                duration = this.mediaPlayerController.getPlayerDuration();
-                playerState = mediaPlayerControllerLazy.getValue().getPlayerState();
-                return null;
+        onProgressChangedTask = object : SilentBackgroundTask<Void?>(activity) {
+            var mediaPlayerController: MediaPlayerController? = null
+            var isJukeboxEnabled = false
+            var millisPlayed = 0
+            var duration: Int? = null
+            var playerState: PlayerState? = null
+            override fun doInBackground(): Void {
+                this.mediaPlayerController = mediaPlayerControllerLazy.value
+                isJukeboxEnabled = this.mediaPlayerController!!.isJukeboxEnabled
+                millisPlayed = Math.max(0, this.mediaPlayerController!!.playerPosition)
+                duration = this.mediaPlayerController!!.playerDuration
+                playerState = mediaPlayerControllerLazy.value.playerState
+                return null
             }
 
-            @Override
-            protected void done(final Void result)
-            {
-                if (cancellationToken.isCancellationRequested()) return;
-                if (currentPlaying != null)
-                {
-                    final int millisTotal = duration == null ? 0 : duration;
-
-                    positionTextView.setText(Util.formatTotalDuration(millisPlayed, true));
-                    durationTextView.setText(Util.formatTotalDuration(millisTotal, true));
-                    progressBar.setMax(millisTotal == 0 ? 100 : millisTotal); // Work-around for apparent bug.
-                    progressBar.setProgress(millisPlayed);
-                    progressBar.setEnabled(currentPlaying.isWorkDone() || isJukeboxEnabled);
+            protected override fun done(result: Void) {
+                if (cancellationToken!!.isCancellationRequested) return
+                if (currentPlaying != null) {
+                    val millisTotal = if (duration == null) 0 else duration!!
+                    positionTextView!!.text = Util.formatTotalDuration(millisPlayed.toLong(), true)
+                    durationTextView!!.text = Util.formatTotalDuration(millisTotal.toLong(), true)
+                    progressBar!!.max =
+                        if (millisTotal == 0) 100 else millisTotal // Work-around for apparent bug.
+                    progressBar!!.progress = millisPlayed
+                    progressBar!!.isEnabled = currentPlaying!!.isWorkDone || isJukeboxEnabled
+                } else {
+                    positionTextView!!.setText(R.string.util_zero_time)
+                    durationTextView!!.setText(R.string.util_no_time)
+                    progressBar!!.progress = 0
+                    progressBar!!.max = 0
+                    progressBar!!.isEnabled = false
                 }
-                else
-                {
-                    positionTextView.setText(R.string.util_zero_time);
-                    durationTextView.setText(R.string.util_no_time);
-                    progressBar.setProgress(0);
-                    progressBar.setMax(0);
-                    progressBar.setEnabled(false);
-                }
-
-                switch (playerState)
-                {
-                    case DOWNLOADING:
-                        int progress = currentPlaying != null ? currentPlaying.getProgress().getValue() : 0;
-                        String downloadStatus = getResources().getString(R.string.download_playerstate_downloading, Util.formatPercentage(progress));
-                        FragmentTitle.Companion.setTitle(PlayerFragment.this, downloadStatus);
-                        break;
-                    case PREPARING:
-                        FragmentTitle.Companion.setTitle(PlayerFragment.this, R.string.download_playerstate_buffering);
-                        break;
-                    case STARTED:
-                        final MediaPlayerController mediaPlayerController = mediaPlayerControllerLazy.getValue();
-
-                        if (mediaPlayerController != null && mediaPlayerController.isShufflePlayEnabled())
-                        {
-                            FragmentTitle.Companion.setTitle(PlayerFragment.this, R.string.download_playerstate_playing_shuffle);
+                when (playerState) {
+                    PlayerState.DOWNLOADING -> {
+                        val progress =
+                            if (currentPlaying != null) currentPlaying!!.progress.value!! else 0
+                        val downloadStatus = resources.getString(
+                            R.string.download_playerstate_downloading,
+                            Util.formatPercentage(progress)
+                        )
+                        setTitle(this@PlayerFragment, downloadStatus)
+                    }
+                    PlayerState.PREPARING -> setTitle(
+                        this@PlayerFragment,
+                        R.string.download_playerstate_buffering
+                    )
+                    PlayerState.STARTED -> {
+                        val mediaPlayerController = mediaPlayerControllerLazy.value
+                        if (mediaPlayerController != null && mediaPlayerController.isShufflePlayEnabled) {
+                            setTitle(
+                                this@PlayerFragment,
+                                R.string.download_playerstate_playing_shuffle
+                            )
+                        } else {
+                            setTitle(this@PlayerFragment, R.string.common_appname)
                         }
-                        else
-                        {
-                            FragmentTitle.Companion.setTitle(PlayerFragment.this, R.string.common_appname);
-                        }
-                        break;
-                    default:
-                        FragmentTitle.Companion.setTitle(PlayerFragment.this, R.string.common_appname);
-                        break;
-                    case IDLE:
-                    case PREPARED:
-                    case STOPPED:
-                    case PAUSED:
-                    case COMPLETED:
-                        break;
+                    }
+                    PlayerState.IDLE, PlayerState.PREPARED, PlayerState.STOPPED, PlayerState.PAUSED, PlayerState.COMPLETED -> {
+                    }
+                    else -> setTitle(this@PlayerFragment, R.string.common_appname)
                 }
-
-                switch (playerState)
-                {
-                    case STARTED:
-                        pauseButton.setVisibility(View.VISIBLE);
-                        stopButton.setVisibility(View.GONE);
-                        startButton.setVisibility(View.GONE);
-                        break;
-                    case DOWNLOADING:
-                    case PREPARING:
-                        pauseButton.setVisibility(View.GONE);
-                        stopButton.setVisibility(View.VISIBLE);
-                        startButton.setVisibility(View.GONE);
-                        break;
-                    default:
-                        pauseButton.setVisibility(View.GONE);
-                        stopButton.setVisibility(View.GONE);
-                        startButton.setVisibility(View.VISIBLE);
-                        break;
+                when (playerState) {
+                    PlayerState.STARTED -> {
+                        pauseButton!!.visibility = View.VISIBLE
+                        stopButton!!.visibility = View.GONE
+                        startButton!!.visibility = View.GONE
+                    }
+                    PlayerState.DOWNLOADING, PlayerState.PREPARING -> {
+                        pauseButton!!.visibility = View.GONE
+                        stopButton!!.visibility = View.VISIBLE
+                        startButton!!.visibility = View.GONE
+                    }
+                    else -> {
+                        pauseButton!!.visibility = View.GONE
+                        stopButton!!.visibility = View.GONE
+                        startButton!!.visibility = View.VISIBLE
+                    }
                 }
 
                 // TODO: It would be a lot nicer if MediaPlayerController would send an event when this is necessary instead of updating every time
-                displaySongRating();
-
-                onProgressChangedTask = null;
+                displaySongRating()
+                onProgressChangedTask = null
             }
-        };
-        onProgressChangedTask.execute();
-    }
-
-    private void changeProgress(final int ms)
-    {
-        final MediaPlayerController mediaPlayerController = mediaPlayerControllerLazy.getValue();
-        if (mediaPlayerController == null)
-        {
-            return;
         }
-
-        new SilentBackgroundTask<Void>(getActivity())
-        {
-            int msPlayed;
-            Integer duration;
-            int seekTo;
-
-            @Override
-            protected Void doInBackground()
-            {
-                msPlayed = Math.max(0, mediaPlayerController.getPlayerPosition());
-                duration = mediaPlayerController.getPlayerDuration();
-
-                final int msTotal = duration;
-                seekTo = Math.min(msPlayed + ms, msTotal);
-                mediaPlayerController.seekTo(seekTo);
-                return null;
-            }
-
-            @Override
-            protected void done(final Void result)
-            {
-                progressBar.setProgress(seekTo);
-            }
-        }.execute();
+        onProgressChangedTask.execute()
     }
 
-    @Override
-    public boolean onDown(final MotionEvent me)
-    {
-        return false;
+    private fun changeProgress(ms: Int) {
+        val mediaPlayerController = mediaPlayerControllerLazy.value ?: return
+        object : SilentBackgroundTask<Void?>(activity) {
+            var msPlayed = 0
+            var duration: Int? = null
+            var seekTo = 0
+            override fun doInBackground(): Void {
+                msPlayed = Math.max(0, mediaPlayerController.playerPosition)
+                duration = mediaPlayerController.playerDuration
+                val msTotal = duration!!
+                seekTo = Math.min(msPlayed + ms, msTotal)
+                mediaPlayerController.seekTo(seekTo)
+                return null
+            }
+
+            protected override fun done(result: Void) {
+                progressBar!!.progress = seekTo
+            }
+        }.execute()
     }
 
-    @Override
-    public boolean onFling(final MotionEvent e1, final MotionEvent e2, final float velocityX, final float velocityY)
-    {
+    override fun onDown(me: MotionEvent): Boolean {
+        return false
+    }
 
-        final MediaPlayerController mediaPlayerController = mediaPlayerControllerLazy.getValue();
-
-        if (mediaPlayerController == null || e1 == null || e2 == null)
-        {
-            return false;
+    override fun onFling(
+        e1: MotionEvent,
+        e2: MotionEvent,
+        velocityX: Float,
+        velocityY: Float
+    ): Boolean {
+        val mediaPlayerController = mediaPlayerControllerLazy.value
+        if (mediaPlayerController == null || e1 == null || e2 == null) {
+            return false
         }
-
-        float e1X = e1.getX();
-        float e2X = e2.getX();
-        float e1Y = e1.getY();
-        float e2Y = e2.getY();
-        float absX = Math.abs(velocityX);
-        float absY = Math.abs(velocityY);
+        val e1X = e1.x
+        val e2X = e2.x
+        val e1Y = e1.y
+        val e2Y = e2.y
+        val absX = Math.abs(velocityX)
+        val absY = Math.abs(velocityY)
 
         // Right to Left swipe
-        if (e1X - e2X > swipeDistance && absX > swipeVelocity)
-        {
-            networkAndStorageChecker.getValue().warnIfNetworkOrStorageUnavailable();
-            mediaPlayerController.next();
-            onCurrentChanged();
-            onSliderProgressChanged();
-            return true;
+        if (e1X - e2X > swipeDistance && absX > swipeVelocity) {
+            networkAndStorageChecker.value.warnIfNetworkOrStorageUnavailable()
+            mediaPlayerController.next()
+            onCurrentChanged()
+            onSliderProgressChanged()
+            return true
         }
 
         // Left to Right swipe
-        if (e2X - e1X > swipeDistance && absX > swipeVelocity)
-        {
-            networkAndStorageChecker.getValue().warnIfNetworkOrStorageUnavailable();
-            mediaPlayerController.previous();
-            onCurrentChanged();
-            onSliderProgressChanged();
-            return true;
+        if (e2X - e1X > swipeDistance && absX > swipeVelocity) {
+            networkAndStorageChecker.value.warnIfNetworkOrStorageUnavailable()
+            mediaPlayerController.previous()
+            onCurrentChanged()
+            onSliderProgressChanged()
+            return true
         }
 
         // Top to Bottom swipe
-        if (e2Y - e1Y > swipeDistance && absY > swipeVelocity)
-        {
-            networkAndStorageChecker.getValue().warnIfNetworkOrStorageUnavailable();
-            mediaPlayerController.seekTo(mediaPlayerController.getPlayerPosition() + 30000);
-            onSliderProgressChanged();
-            return true;
+        if (e2Y - e1Y > swipeDistance && absY > swipeVelocity) {
+            networkAndStorageChecker.value.warnIfNetworkOrStorageUnavailable()
+            mediaPlayerController.seekTo(mediaPlayerController.playerPosition + 30000)
+            onSliderProgressChanged()
+            return true
         }
 
         // Bottom to Top swipe
-        if (e1Y - e2Y > swipeDistance && absY > swipeVelocity)
-        {
-            networkAndStorageChecker.getValue().warnIfNetworkOrStorageUnavailable();
-            mediaPlayerController.seekTo(mediaPlayerController.getPlayerPosition() - 8000);
-            onSliderProgressChanged();
-            return true;
+        if (e1Y - e2Y > swipeDistance && absY > swipeVelocity) {
+            networkAndStorageChecker.value.warnIfNetworkOrStorageUnavailable()
+            mediaPlayerController.seekTo(mediaPlayerController.playerPosition - 8000)
+            onSliderProgressChanged()
+            return true
         }
-
-        return false;
+        return false
     }
 
-    @Override
-    public void onLongPress(final MotionEvent e)
-    {
+    override fun onLongPress(e: MotionEvent) {}
+    override fun onScroll(
+        e1: MotionEvent,
+        e2: MotionEvent,
+        distanceX: Float,
+        distanceY: Float
+    ): Boolean {
+        return false
     }
 
-    @Override
-    public boolean onScroll(final MotionEvent e1, final MotionEvent e2, final float distanceX, final float distanceY)
-    {
-        return false;
+    override fun onShowPress(e: MotionEvent) {}
+    override fun onSingleTapUp(e: MotionEvent): Boolean {
+        return false
     }
 
-    @Override
-    public void onShowPress(final MotionEvent e)
-    {
+    private fun displaySongRating() {
+        val rating =
+            if (currentSong == null || currentSong!!.userRating == null) 0 else currentSong!!.userRating!!
+        fiveStar1ImageView!!.setImageDrawable(if (rating > 0) fullStar else hollowStar)
+        fiveStar2ImageView!!.setImageDrawable(if (rating > 1) fullStar else hollowStar)
+        fiveStar3ImageView!!.setImageDrawable(if (rating > 2) fullStar else hollowStar)
+        fiveStar4ImageView!!.setImageDrawable(if (rating > 3) fullStar else hollowStar)
+        fiveStar5ImageView!!.setImageDrawable(if (rating > 4) fullStar else hollowStar)
     }
 
-    @Override
-    public boolean onSingleTapUp(final MotionEvent e)
-    {
-        return false;
+    private fun setSongRating(rating: Int) {
+        if (currentSong == null) return
+        displaySongRating()
+        mediaPlayerControllerLazy.value.setSongRating(rating)
     }
 
-    public static SeekBar getProgressBar()
-    {
-        return progressBar;
-    }
-
-    private void displaySongRating()
-    {
-        int rating = currentSong == null || currentSong.getUserRating() == null ? 0 : currentSong.getUserRating();
-        fiveStar1ImageView.setImageDrawable(rating > 0 ? fullStar : hollowStar);
-        fiveStar2ImageView.setImageDrawable(rating > 1 ? fullStar : hollowStar);
-        fiveStar3ImageView.setImageDrawable(rating > 2 ? fullStar : hollowStar);
-        fiveStar4ImageView.setImageDrawable(rating > 3 ? fullStar : hollowStar);
-        fiveStar5ImageView.setImageDrawable(rating > 4 ? fullStar : hollowStar);
-    }
-
-    private void setSongRating(final int rating)
-    {
-        if (currentSong == null)
-            return;
-
-        displaySongRating();
-        mediaPlayerControllerLazy.getValue().setSongRating(rating);
-    }
-
-    private void showSavePlaylistDialog() {
-        final AlertDialog.Builder builder;
-
-        final LayoutInflater layoutInflater = (LayoutInflater) getContext().getSystemService(LAYOUT_INFLATER_SERVICE);
-        final View layout = layoutInflater.inflate(R.layout.save_playlist, (ViewGroup) getActivity().findViewById(R.id.save_playlist_root));
-
-        if (layout != null)
-        {
-            playlistNameView = layout.findViewById(R.id.save_playlist_name);
+    private fun showSavePlaylistDialog() {
+        val builder: AlertDialog.Builder
+        val layoutInflater =
+            context!!.getSystemService(Context.LAYOUT_INFLATER_SERVICE) as LayoutInflater
+        val layout = layoutInflater.inflate(
+            R.layout.save_playlist,
+            activity!!.findViewById<View>(R.id.save_playlist_root) as ViewGroup
+        )
+        if (layout != null) {
+            playlistNameView = layout.findViewById(R.id.save_playlist_name)
         }
-
-        builder = new AlertDialog.Builder(getContext());
-        builder.setTitle(R.string.download_playlist_title);
-        builder.setMessage(R.string.download_playlist_name);
-        builder.setPositiveButton(R.string.common_save, new DialogInterface.OnClickListener()
-        {
-            @Override
-            public void onClick(final DialogInterface dialog, final int clickId)
-            {
-                savePlaylistInBackground(String.valueOf(playlistNameView.getText()));
-            }
-        });
-        builder.setNegativeButton(R.string.common_cancel, new DialogInterface.OnClickListener()
-        {
-            @Override
-            public void onClick(final DialogInterface dialog, final int clickId)
-            {
-                dialog.cancel();
-            }
-        });
-        builder.setView(layout);
-        builder.setCancelable(true);
-
-        AlertDialog dialog = builder.create();
-
-        final String playlistName = mediaPlayerControllerLazy.getValue().getSuggestedPlaylistName();
-        if (playlistName != null)
-        {
-            playlistNameView.setText(playlistName);
+        builder = AlertDialog.Builder(context)
+        builder.setTitle(R.string.download_playlist_title)
+        builder.setMessage(R.string.download_playlist_name)
+        builder.setPositiveButton(R.string.common_save) { dialog, clickId ->
+            savePlaylistInBackground(
+                playlistNameView!!.text.toString()
+            )
         }
-        else
-        {
-            final DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd", Locale.getDefault());
-            playlistNameView.setText(dateFormat.format(new Date()));
+        builder.setNegativeButton(R.string.common_cancel) { dialog, clickId -> dialog.cancel() }
+        builder.setView(layout)
+        builder.setCancelable(true)
+        val dialog = builder.create()
+        val playlistName = mediaPlayerControllerLazy.value.suggestedPlaylistName
+        if (playlistName != null) {
+            playlistNameView!!.setText(playlistName)
+        } else {
+            val dateFormat: DateFormat = SimpleDateFormat("yyyy-MM-dd", Locale.getDefault())
+            playlistNameView!!.setText(dateFormat.format(Date()))
         }
+        dialog.show()
+    }
 
-        dialog.show();
+    companion object {
+        private const val PERCENTAGE_OF_SCREEN_FOR_SWIPE = 5
+        var progressBar // TODO: Refactor this to not be static
+                : SeekBar? = null
+            private set
     }
 }
