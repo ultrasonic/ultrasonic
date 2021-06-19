@@ -1,8 +1,14 @@
+/*
+ * PlayerFragment.kt
+ * Copyright (C) 2009-2021 Ultrasonic developers
+ *
+ * Distributed under terms of the GNU GPLv3 license.
+ */
+
 package org.moire.ultrasonic.fragment
 
 import android.annotation.SuppressLint
 import android.app.AlertDialog
-import android.content.Context
 import android.graphics.Point
 import android.graphics.drawable.Drawable
 import android.os.Bundle
@@ -31,6 +37,20 @@ import androidx.fragment.app.Fragment
 import androidx.navigation.Navigation
 import com.mobeta.android.dslv.DragSortListView
 import com.mobeta.android.dslv.DragSortListView.DragSortListener
+import java.text.DateFormat
+import java.text.SimpleDateFormat
+import java.util.ArrayList
+import java.util.Date
+import java.util.LinkedList
+import java.util.Locale
+import java.util.concurrent.Executors
+import java.util.concurrent.ScheduledExecutorService
+import java.util.concurrent.TimeUnit
+import kotlin.math.abs
+import kotlin.math.max
+import org.koin.android.ext.android.inject
+import org.koin.core.component.KoinComponent
+import org.koin.core.component.get
 import org.moire.ultrasonic.R
 import org.moire.ultrasonic.audiofx.EqualizerController
 import org.moire.ultrasonic.audiofx.VisualizerController
@@ -42,6 +62,7 @@ import org.moire.ultrasonic.featureflags.Feature
 import org.moire.ultrasonic.featureflags.FeatureStorage
 import org.moire.ultrasonic.fragment.FragmentTitle.Companion.setTitle
 import org.moire.ultrasonic.service.DownloadFile
+import org.moire.ultrasonic.service.LocalMediaPlayer
 import org.moire.ultrasonic.service.MediaPlayerController
 import org.moire.ultrasonic.service.MusicServiceFactory.getMusicService
 import org.moire.ultrasonic.subsonic.ImageLoaderProvider
@@ -49,29 +70,19 @@ import org.moire.ultrasonic.subsonic.NetworkAndStorageChecker
 import org.moire.ultrasonic.subsonic.ShareHandler
 import org.moire.ultrasonic.util.CancellationToken
 import org.moire.ultrasonic.util.Constants
+import org.moire.ultrasonic.util.SilentBackgroundTask
 import org.moire.ultrasonic.util.Util
 import org.moire.ultrasonic.view.AutoRepeatButton
 import org.moire.ultrasonic.view.SongListAdapter
 import org.moire.ultrasonic.view.VisualizerView
 import timber.log.Timber
-import java.text.DateFormat
-import java.text.SimpleDateFormat
-import java.util.ArrayList
-import java.util.Date
-import java.util.LinkedList
-import java.util.Locale
-import java.util.concurrent.Executors
-import java.util.concurrent.ScheduledExecutorService
-import java.util.concurrent.TimeUnit
-import kotlin.math.abs
-import org.koin.android.ext.android.inject
-import org.koin.core.component.KoinComponent
-import org.koin.core.component.get
-import org.moire.ultrasonic.util.SilentBackgroundTask
-import kotlin.math.max
 
 /**
  * Contains the Music Player screen of Ultrasonic with playback controls and the playlist
+ *
+ * TODO: This class was more or less straight converted from Java legacy code.
+ * There are many places where further cleanup would be nice.
+ * The usage of threads and SilentBackgroundTask can be replaced with Coroutines.
  */
 @Suppress("LargeClass", "TooManyFunctions", "MagicNumber")
 class PlayerFragment : Fragment(), GestureDetector.OnGestureListener, KoinComponent {
@@ -84,7 +95,6 @@ class PlayerFragment : Fragment(), GestureDetector.OnGestureListener, KoinCompon
     private var isEqualizerAvailable = false
     private var isVisualizerAvailable = false
 
-
     // Detectors & Callbacks
     private lateinit var gestureScanner: GestureDetector
     private lateinit var cancellationToken: CancellationToken
@@ -92,6 +102,7 @@ class PlayerFragment : Fragment(), GestureDetector.OnGestureListener, KoinCompon
     // Data & Services
     private val networkAndStorageChecker: NetworkAndStorageChecker by inject()
     private val mediaPlayerController: MediaPlayerController by inject()
+    private val localMediaPlayer: LocalMediaPlayer by inject()
     private val shareHandler: ShareHandler by inject()
     private val imageLoaderProvider: ImageLoaderProvider by inject()
     private lateinit var executorService: ScheduledExecutorService
@@ -126,6 +137,7 @@ class PlayerFragment : Fragment(), GestureDetector.OnGestureListener, KoinCompon
     private lateinit var repeatButton: ImageView
     private lateinit var hollowStar: Drawable
     private lateinit var fullStar: Drawable
+    private lateinit var progressBar: SeekBar
 
     override fun onCreate(savedInstanceState: Bundle?) {
         Util.applyTheme(this.context)
@@ -133,7 +145,8 @@ class PlayerFragment : Fragment(), GestureDetector.OnGestureListener, KoinCompon
     }
 
     override fun onCreateView(
-        inflater: LayoutInflater, container: ViewGroup?,
+        inflater: LayoutInflater,
+        container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
         return inflater.inflate(R.layout.current_playing, container, false)
@@ -163,7 +176,6 @@ class PlayerFragment : Fragment(), GestureDetector.OnGestureListener, KoinCompon
         fiveStar3ImageView = view.findViewById(R.id.song_five_star_3)
         fiveStar4ImageView = view.findViewById(R.id.song_five_star_4)
         fiveStar5ImageView = view.findViewById(R.id.song_five_star_5)
-
     }
 
     @Suppress("LongMethod")
@@ -182,6 +194,14 @@ class PlayerFragment : Fragment(), GestureDetector.OnGestureListener, KoinCompon
         swipeDistance = (width + height) * PERCENTAGE_OF_SCREEN_FOR_SWIPE / 100
         swipeVelocity = swipeDistance
         gestureScanner = GestureDetector(context, this)
+
+        // The secondary progress is an indicator of how far the song is cached.
+        localMediaPlayer.secondaryProgress.observe(
+            viewLifecycleOwner,
+            {
+                progressBar.secondaryProgress = it
+            }
+        )
 
         findViews(view)
         val previousButton: AutoRepeatButton = view.findViewById(R.id.button_previous)
@@ -311,11 +331,11 @@ class PlayerFragment : Fragment(), GestureDetector.OnGestureListener, KoinCompon
             }
         }
 
-        progressBar!!.setOnSeekBarChangeListener(object : OnSeekBarChangeListener {
+        progressBar.setOnSeekBarChangeListener(object : OnSeekBarChangeListener {
             override fun onStopTrackingTouch(seekBar: SeekBar) {
                 object : SilentBackgroundTask<Void?>(activity) {
                     override fun doInBackground(): Void? {
-                        mediaPlayerController.seekTo(progressBar!!.progress)
+                        mediaPlayerController.seekTo(progressBar.progress)
                         return null
                     }
 
@@ -328,7 +348,7 @@ class PlayerFragment : Fragment(), GestureDetector.OnGestureListener, KoinCompon
             override fun onStartTrackingTouch(seekBar: SeekBar) {}
             override fun onProgressChanged(seekBar: SeekBar, progress: Int, fromUser: Boolean) {}
         })
-        
+
         playlistView.setOnItemClickListener { _, _, position, _ ->
             networkAndStorageChecker.warnIfNetworkOrStorageUnavailable()
             object : SilentBackgroundTask<Void?>(activity) {
@@ -346,53 +366,59 @@ class PlayerFragment : Fragment(), GestureDetector.OnGestureListener, KoinCompon
         registerForContextMenu(playlistView)
 
         if (arguments != null && requireArguments().getBoolean(
-                Constants.INTENT_EXTRA_NAME_SHUFFLE,
-                false
-            )
+            Constants.INTENT_EXTRA_NAME_SHUFFLE,
+            false
+        )
         ) {
             networkAndStorageChecker.warnIfNetworkOrStorageUnavailable()
             mediaPlayerController.isShufflePlayEnabled = true
         }
 
         visualizerViewLayout.visibility = View.GONE
-        VisualizerController.get().observe(requireActivity(), { visualizerController ->
-            if (visualizerController != null) {
-                Timber.d("VisualizerController Observer.onChanged received controller")
-                visualizerView = VisualizerView(context)
-                visualizerViewLayout.addView(
-                    visualizerView,
-                    LinearLayout.LayoutParams(
-                        LinearLayout.LayoutParams.MATCH_PARENT,
-                        LinearLayout.LayoutParams.MATCH_PARENT
+        VisualizerController.get().observe(
+            requireActivity(),
+            { visualizerController ->
+                if (visualizerController != null) {
+                    Timber.d("VisualizerController Observer.onChanged received controller")
+                    visualizerView = VisualizerView(context)
+                    visualizerViewLayout.addView(
+                        visualizerView,
+                        LinearLayout.LayoutParams(
+                            LinearLayout.LayoutParams.MATCH_PARENT,
+                            LinearLayout.LayoutParams.MATCH_PARENT
+                        )
                     )
-                )
-                if (!visualizerView.isActive) {
-                    visualizerViewLayout.visibility = View.GONE
+                    if (!visualizerView.isActive) {
+                        visualizerViewLayout.visibility = View.GONE
+                    } else {
+                        visualizerViewLayout.visibility = View.VISIBLE
+                    }
+                    visualizerView.setOnTouchListener { _, _ ->
+                        visualizerView.isActive = !visualizerView.isActive
+                        mediaPlayerController.showVisualization = visualizerView.isActive
+                        true
+                    }
+                    isVisualizerAvailable = true
                 } else {
-                    visualizerViewLayout.visibility = View.VISIBLE
+                    Timber.d("VisualizerController Observer.onChanged has no controller")
+                    visualizerViewLayout.visibility = View.GONE
+                    isVisualizerAvailable = false
                 }
-                visualizerView.setOnTouchListener { _, _ ->
-                    visualizerView.isActive = !visualizerView.isActive
-                    mediaPlayerController.showVisualization = visualizerView.isActive
-                    true
-                }
-                isVisualizerAvailable = true
-            } else {
-                Timber.d("VisualizerController Observer.onChanged has no controller")
-                visualizerViewLayout.visibility = View.GONE
-                isVisualizerAvailable = false
             }
-        })
+        )
 
-        EqualizerController.get().observe(requireActivity(), { equalizerController ->
-            isEqualizerAvailable = if (equalizerController != null) {
-                Timber.d("EqualizerController Observer.onChanged received controller")
-                true
-            } else {
-                Timber.d("EqualizerController Observer.onChanged has no controller")
-                false
+        EqualizerController.get().observe(
+            requireActivity(),
+            { equalizerController ->
+                isEqualizerAvailable = if (equalizerController != null) {
+                    Timber.d("EqualizerController Observer.onChanged received controller")
+                    true
+                } else {
+                    Timber.d("EqualizerController Observer.onChanged has no controller")
+                    false
+                }
             }
-        })
+        )
         Thread {
             try {
                 jukeboxAvailable = mediaPlayerController.isJukeboxAvailable
@@ -423,7 +449,9 @@ class PlayerFragment : Fragment(), GestureDetector.OnGestureListener, KoinCompon
             requireActivity().window.clearFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON)
         }
 
-        visualizerView.isActive = mediaPlayerController.showVisualization
+        if (::visualizerView.isInitialized) {
+            visualizerView.isActive = mediaPlayerController.showVisualization
+        }
 
         requireActivity().invalidateOptionsMenu()
     }
@@ -452,7 +480,9 @@ class PlayerFragment : Fragment(), GestureDetector.OnGestureListener, KoinCompon
     override fun onPause() {
         super.onPause()
         executorService.shutdown()
-        visualizerView.isActive = false
+        if (::visualizerView.isInitialized) {
+            visualizerView.isActive = mediaPlayerController.showVisualization
+        }
     }
 
     override fun onDestroyView() {
@@ -583,7 +613,8 @@ class PlayerFragment : Fragment(), GestureDetector.OnGestureListener, KoinCompon
                     bundle.putString(Constants.INTENT_EXTRA_NAME_NAME, entry.artist)
                     bundle.putString(Constants.INTENT_EXTRA_NAME_PARENT_ID, entry.artistId)
                     bundle.putBoolean(Constants.INTENT_EXTRA_NAME_ARTIST, true)
-                    Navigation.findNavController(view!!).navigate(R.id.playerToSelectAlbum, bundle)
+                    Navigation.findNavController(requireView())
+                        .navigate(R.id.playerToSelectAlbum, bundle)
                 }
                 return true
             }
@@ -597,7 +628,8 @@ class PlayerFragment : Fragment(), GestureDetector.OnGestureListener, KoinCompon
                 bundle.putString(Constants.INTENT_EXTRA_NAME_NAME, entry.album)
                 bundle.putString(Constants.INTENT_EXTRA_NAME_PARENT_ID, entry.parent)
                 bundle.putBoolean(Constants.INTENT_EXTRA_NAME_IS_ALBUM, true)
-                Navigation.findNavController(view!!).navigate(R.id.playerToSelectAlbum, bundle)
+                Navigation.findNavController(requireView())
+                    .navigate(R.id.playerToSelectAlbum, bundle)
                 return true
             }
             R.id.menu_lyrics -> {
@@ -607,7 +639,7 @@ class PlayerFragment : Fragment(), GestureDetector.OnGestureListener, KoinCompon
                 bundle = Bundle()
                 bundle.putString(Constants.INTENT_EXTRA_NAME_ARTIST, entry.artist)
                 bundle.putString(Constants.INTENT_EXTRA_NAME_TITLE, entry.title)
-                Navigation.findNavController(view!!).navigate(R.id.playerToLyrics, bundle)
+                Navigation.findNavController(requireView()).navigate(R.id.playerToLyrics, bundle)
                 return true
             }
             R.id.menu_remove -> {
@@ -616,11 +648,12 @@ class PlayerFragment : Fragment(), GestureDetector.OnGestureListener, KoinCompon
                 return true
             }
             R.id.menu_item_screen_on_off -> {
+                val window = requireActivity().window
                 if (mediaPlayerController.keepScreenOn) {
-                    activity!!.window.clearFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON)
+                    window.clearFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON)
                     mediaPlayerController.keepScreenOn = false
                 } else {
-                    activity!!.window.addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON)
+                    window.addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON)
                     mediaPlayerController.keepScreenOn = true
                 }
                 return true
@@ -631,7 +664,7 @@ class PlayerFragment : Fragment(), GestureDetector.OnGestureListener, KoinCompon
                 return true
             }
             R.id.menu_item_equalizer -> {
-                Navigation.findNavController(view!!).navigate(R.id.playerToEqualizer)
+                Navigation.findNavController(requireView()).navigate(R.id.playerToEqualizer)
                 return true
             }
             R.id.menu_item_visualizer -> {
@@ -645,7 +678,8 @@ class PlayerFragment : Fragment(), GestureDetector.OnGestureListener, KoinCompon
                 mediaPlayerController.showVisualization = visualizerView.isActive
                 Util.toast(
                     context,
-                    if (active) R.string.download_visualizer_on else R.string.download_visualizer_off
+                    if (active) R.string.download_visualizer_on
+                    else R.string.download_visualizer_off
                 )
                 return true
             }
@@ -654,7 +688,8 @@ class PlayerFragment : Fragment(), GestureDetector.OnGestureListener, KoinCompon
                 mediaPlayerController.isJukeboxEnabled = jukeboxEnabled
                 Util.toast(
                     context,
-                    if (jukeboxEnabled) R.string.download_jukebox_on else R.string.download_jukebox_off,
+                    if (jukeboxEnabled) R.string.download_jukebox_on
+                    else R.string.download_jukebox_off,
                     false
                 )
                 return true
@@ -718,7 +753,10 @@ class PlayerFragment : Fragment(), GestureDetector.OnGestureListener, KoinCompon
                         Timber.e(all)
                     }
                 }.start()
-                val msg = resources.getString(R.string.download_bookmark_set_at_position, bookmarkTime)
+                val msg = resources.getString(
+                    R.string.download_bookmark_set_at_position,
+                    bookmarkTime
+                )
                 Util.toast(context, msg)
                 return true
             }
@@ -788,7 +826,8 @@ class PlayerFragment : Fragment(), GestureDetector.OnGestureListener, KoinCompon
 
             override fun error(error: Throwable) {
                 Timber.e(error, "Exception has occurred in savePlaylistInBackground")
-                val msg = String.format(Locale.ROOT,
+                val msg = String.format(
+                    Locale.ROOT,
                     "%s %s",
                     resources.getString(R.string.download_playlist_error),
                     getErrorMessage(error)
@@ -818,8 +857,9 @@ class PlayerFragment : Fragment(), GestureDetector.OnGestureListener, KoinCompon
     private fun start() {
         val service = mediaPlayerController
         val state = service.playerState
-        if (state === PlayerState.PAUSED 
-            || state === PlayerState.COMPLETED || state === PlayerState.STOPPED) {
+        if (state === PlayerState.PAUSED ||
+            state === PlayerState.COMPLETED || state === PlayerState.STOPPED
+        ) {
             service.start()
         } else if (state === PlayerState.IDLE) {
             networkAndStorageChecker.warnIfNetworkOrStorageUnavailable()
@@ -947,16 +987,16 @@ class PlayerFragment : Fragment(), GestureDetector.OnGestureListener, KoinCompon
                     val millisTotal = if (duration == null) 0 else duration!!
                     positionTextView.text = Util.formatTotalDuration(millisPlayed.toLong(), true)
                     durationTextView.text = Util.formatTotalDuration(millisTotal.toLong(), true)
-                    progressBar!!.max =
+                    progressBar.max =
                         if (millisTotal == 0) 100 else millisTotal // Work-around for apparent bug.
-                    progressBar!!.progress = millisPlayed
-                    progressBar!!.isEnabled = currentPlaying!!.isWorkDone || isJukeboxEnabled
+                    progressBar.progress = millisPlayed
+                    progressBar.isEnabled = currentPlaying!!.isWorkDone || isJukeboxEnabled
                 } else {
                     positionTextView.setText(R.string.util_zero_time)
                     durationTextView.setText(R.string.util_no_time)
-                    progressBar!!.progress = 0
-                    progressBar!!.max = 0
-                    progressBar!!.isEnabled = false
+                    progressBar.progress = 0
+                    progressBar.max = 0
+                    progressBar.isEnabled = false
                 }
 
                 when (playerState) {
@@ -1034,7 +1074,7 @@ class PlayerFragment : Fragment(), GestureDetector.OnGestureListener, KoinCompon
             }
 
             override fun done(result: Void?) {
-                progressBar!!.progress = seekTo
+                progressBar.progress = seekTo
             }
         }.execute()
     }
@@ -1109,8 +1149,12 @@ class PlayerFragment : Fragment(), GestureDetector.OnGestureListener, KoinCompon
     }
 
     private fun displaySongRating() {
-        val rating =
-            if (currentSong == null || currentSong!!.userRating == null) 0 else currentSong!!.userRating!!
+        var rating = 0
+
+        if (currentSong?.userRating != null) {
+            rating = currentSong!!.userRating!!
+        }
+
         fiveStar1ImageView.setImageDrawable(if (rating > 0) fullStar else hollowStar)
         fiveStar2ImageView.setImageDrawable(if (rating > 1) fullStar else hollowStar)
         fiveStar3ImageView.setImageDrawable(if (rating > 2) fullStar else hollowStar)
@@ -1125,15 +1169,10 @@ class PlayerFragment : Fragment(), GestureDetector.OnGestureListener, KoinCompon
     }
 
     private fun showSavePlaylistDialog() {
-        val layoutInflater =
-            requireContext().getSystemService(Context.LAYOUT_INFLATER_SERVICE) as LayoutInflater
-        val layout = layoutInflater.inflate(
-            R.layout.save_playlist,
-            requireActivity().findViewById<View>(R.id.save_playlist_root) as ViewGroup
-        )
-        if (layout != null) {
-            playlistNameView = layout.findViewById(R.id.save_playlist_name)
-        }
+        val layout = LayoutInflater.from(this.context).inflate(R.layout.save_playlist, null)
+
+        playlistNameView = layout.findViewById(R.id.save_playlist_name)
+
         val builder: AlertDialog.Builder = AlertDialog.Builder(context)
         builder.setTitle(R.string.download_playlist_title)
         builder.setMessage(R.string.download_playlist_name)
@@ -1160,8 +1199,5 @@ class PlayerFragment : Fragment(), GestureDetector.OnGestureListener, KoinCompon
 
     companion object {
         private const val PERCENTAGE_OF_SCREEN_FOR_SWIPE = 5
-        var progressBar // TODO: Refactor this to not be static
-                : SeekBar? = null
-            private set
     }
 }

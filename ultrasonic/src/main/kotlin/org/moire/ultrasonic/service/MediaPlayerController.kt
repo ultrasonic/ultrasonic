@@ -386,12 +386,6 @@ class MediaPlayerController(
     @get:Synchronized
     val playerDuration: Int
         get() {
-            if (localMediaPlayer.currentPlaying != null) {
-                val duration = localMediaPlayer.currentPlaying!!.song.duration
-                if (duration != null) {
-                    return duration * 1000
-                }
-            }
             val mediaPlayerService = runningInstance ?: return 0
             return mediaPlayerService.playerDuration
         }
