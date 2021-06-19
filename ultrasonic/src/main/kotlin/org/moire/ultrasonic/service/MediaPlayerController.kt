@@ -454,6 +454,19 @@ class MediaPlayerController(
         if (localMediaPlayer.currentPlaying == null) return
         val song = localMediaPlayer.currentPlaying!!.song
 
+        Thread {
+            val musicService = getMusicService()
+            try {
+                if (song.starred) {
+                    musicService.unstar(song.id, null, null)
+                } else {
+                    musicService.star(song.id, null, null)
+                }
+            } catch (all: Exception) {
+                Timber.e(all)
+            }
+        }.start()
+
         // Trigger an update
         localMediaPlayer.setCurrentPlaying(localMediaPlayer.currentPlaying)
         song.starred = !song.starred
