@@ -65,7 +65,7 @@ val musicServiceModule = module {
     single { SubsonicAPIClient(get(), get()) }
 
     single<MusicService>(named(ONLINE_MUSIC_SERVICE)) {
-        CachedMusicService(RESTMusicService(get(), get(), get()))
+        CachedMusicService(RESTMusicService(get(), get()))
     }
 
     single<MusicService>(named(OFFLINE_MUSIC_SERVICE)) {

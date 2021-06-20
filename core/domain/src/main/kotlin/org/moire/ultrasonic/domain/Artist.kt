@@ -1,18 +1,17 @@
 package org.moire.ultrasonic.domain
 
-import java.io.Serializable
+import androidx.room.Entity
+import androidx.room.PrimaryKey
 
+@Entity(tableName = "artists")
 data class Artist(
-    override var id: String? = null,
+    @PrimaryKey override var id: String,
     override var name: String? = null,
-    var index: String? = null,
-    var coverArt: String? = null,
-    var albumCount: Long? = null,
-    var closeness: Int = 0
-) : Serializable, GenericEntry(), Comparable<Artist> {
-    companion object {
-        private const val serialVersionUID = -5790532593784846982L
-    }
+    override var index: String? = null,
+    override var coverArt: String? = null,
+    override var albumCount: Long? = null,
+    override var closeness: Int = 0
+) : ArtistOrIndex(id), Comparable<Artist> {
 
     override fun compareTo(other: Artist): Int {
         when {

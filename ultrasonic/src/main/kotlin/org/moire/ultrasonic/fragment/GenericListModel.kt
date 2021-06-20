@@ -45,7 +45,7 @@ open class GenericListModel(application: Application) :
         return true
     }
 
-    internal val musicFolders: MutableLiveData<List<MusicFolder>> = MutableLiveData()
+    internal val musicFolders: MutableLiveData<List<MusicFolder>> = MutableLiveData(listOf())
 
     /**
      * Helper function to check online status
