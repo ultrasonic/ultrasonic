@@ -17,6 +17,7 @@ import android.widget.PopupMenu
 import android.widget.RelativeLayout
 import android.widget.TextView
 import androidx.recyclerview.widget.DiffUtil
+import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import org.moire.ultrasonic.R
 import org.moire.ultrasonic.data.ActiveServerProvider
@@ -31,7 +32,8 @@ abstract class GenericRowAdapter<T : GenericEntry>(
     val onItemClick: (T) -> Unit,
     val onContextMenuClick: (MenuItem, T) -> Boolean,
     private val onMusicFolderUpdate: (String?) -> Unit
-) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
+) : ListAdapter<T, RecyclerView.ViewHolder>(GenericDiffCallback()) {
+
     open var itemList: List<T> = listOf()
     protected abstract val layout: Int
     protected abstract val contextMenuLayout: Int
@@ -46,10 +48,8 @@ abstract class GenericRowAdapter<T : GenericEntry>(
      * using DiffUtil to efficiently calculate the minimum required changes..
      */
     open fun setData(data: List<T>) {
-        val callback = DiffUtilCallback(itemList, data)
-        val result = DiffUtil.calculateDiff(callback)
+        submitList(data)
         itemList = data
-        result.dispatchUpdatesTo(this)
     }
 
     /**
@@ -138,29 +138,20 @@ abstract class GenericRowAdapter<T : GenericEntry>(
         var coverArtId: String? = null
     }
 
-    /**
-     * Calculates the differences between data sets
-     */
-    open class DiffUtilCallback<T : GenericEntry>(
-        private val oldList: List<T>,
-        private val newList: List<T>
-    ) : DiffUtil.Callback() {
-        override fun getOldListSize(): Int {
-            return oldList.size
-        }
-        override fun getNewListSize(): Int {
-            return newList.size
-        }
-        override fun areItemsTheSame(oldItemPosition: Int, newItemPosition: Int): Boolean {
-            return oldList[oldItemPosition].id == newList[newItemPosition].id
-        }
-        override fun areContentsTheSame(oldItemPosition: Int, newItemPosition: Int): Boolean {
-            return oldList[oldItemPosition] == newList[newItemPosition]
-        }
-    }
-
     companion object {
         internal const val TYPE_HEADER = 0
         internal const val TYPE_ITEM = 1
+
+        /**
+         * Calculates the differences between data sets
+         */
+        class GenericDiffCallback<T : GenericEntry> : DiffUtil.ItemCallback<T>() {
+            override fun areContentsTheSame(oldItem: T, newItem: T): Boolean {
+                return oldItem == newItem
+            }
+            override fun areItemsTheSame(oldItem: T, newItem: T): Boolean {
+                return oldItem.id == newItem.id
+            }
+        }
     }
 }
