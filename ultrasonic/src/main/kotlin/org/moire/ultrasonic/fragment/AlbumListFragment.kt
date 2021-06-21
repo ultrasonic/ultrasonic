@@ -49,8 +49,9 @@ class AlbumListFragment : GenericListFragment<MusicDirectory.Entry, AlbumRowAdap
         if (args == null) throw IllegalArgumentException("Required arguments are missing")
 
         val refresh = args.getBoolean(Constants.INTENT_EXTRA_NAME_REFRESH)
+        val append = args.getBoolean(Constants.INTENT_EXTRA_NAME_APPEND)
 
-        return listModel.getAlbumList(refresh, refreshListView!!, args)
+        return listModel.getAlbumList(refresh or append, refreshListView!!, args)
     }
 
     /**
