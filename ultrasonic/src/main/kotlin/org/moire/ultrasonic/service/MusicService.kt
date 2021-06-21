@@ -73,7 +73,7 @@ interface MusicService {
     fun getPlaylists(refresh: Boolean): List<Playlist>
 
     @Throws(Exception::class)
-    fun createPlaylist(id: String, name: String, entries: List<MusicDirectory.Entry>)
+    fun createPlaylist(id: String?, name: String?, entries: List<MusicDirectory.Entry>)
 
     @Throws(Exception::class)
     fun deletePlaylist(id: String)
