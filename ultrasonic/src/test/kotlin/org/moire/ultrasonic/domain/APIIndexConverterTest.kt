@@ -31,7 +31,7 @@ class APIIndexConverterTest {
             shortcutList = artistsA
         )
 
-        val convertedEntity = entity.toIndexList(null)
+        val convertedEntity = entity.toArtistList()
 
         val expectedArtists = (artistsA + artistsT).map { it.toDomainEntity() }.toMutableList()
         with(convertedEntity) {

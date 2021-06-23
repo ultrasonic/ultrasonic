@@ -7,15 +7,29 @@ import org.moire.ultrasonic.api.subsonic.models.Index as APIIndex
 import org.moire.ultrasonic.api.subsonic.models.Indexes as APIIndexes
 
 fun APIIndexes.toArtistList(): List<Artist> {
-    val list = this.shortcutList.map { it.toDomainEntity() }.toMutableList()
-    list.addAll(this.indexList.foldIndexToArtistList())
-    return list
+    val shortcuts = this.shortcutList.map { it.toDomainEntity() }.toMutableList()
+    val indexes = this.indexList.foldIndexToArtistList()
+
+    indexes.forEach {
+        if (!shortcuts.contains(it)) {
+            shortcuts.add(it)
+        }
+    }
+
+    return shortcuts
 }
 
 fun APIIndexes.toIndexList(musicFolderId: String?): List<Index> {
-    val list = this.shortcutList.map { it.toIndexEntity() }.toMutableList()
-    list.addAll(this.indexList.foldIndexToIndexList(musicFolderId))
-    return list
+    val shortcuts = this.shortcutList.map { it.toIndexEntity() }.toMutableList()
+    val indexes = this.indexList.foldIndexToIndexList(musicFolderId)
+
+    indexes.forEach {
+        if (!shortcuts.contains(it)) {
+            shortcuts.add(it)
+        }
+    }
+
+    return shortcuts
 }
 
 private fun List<APIIndex>.foldIndexToArtistList(): List<Artist> = this.fold(
