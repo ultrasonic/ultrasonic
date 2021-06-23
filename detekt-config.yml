@@ -35,6 +35,9 @@ exceptions:
 
 empty-blocks:
   active: true
+  EmptyFunctionBlock:
+    active: true
+    ignoreOverridden: true
 
 complexity:
   active: true

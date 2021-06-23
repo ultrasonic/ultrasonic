@@ -20,6 +20,7 @@ import android.os.Looper
 import android.os.PowerManager
 import android.os.PowerManager.PARTIAL_WAKE_LOCK
 import android.os.PowerManager.WakeLock
+import androidx.lifecycle.MutableLiveData
 import java.io.File
 import java.net.URLEncoder
 import java.util.Locale
@@ -29,7 +30,6 @@ import org.moire.ultrasonic.audiofx.EqualizerController
 import org.moire.ultrasonic.audiofx.VisualizerController
 import org.moire.ultrasonic.data.ActiveServerProvider.Companion.isOffline
 import org.moire.ultrasonic.domain.PlayerState
-import org.moire.ultrasonic.fragment.PlayerFragment
 import org.moire.ultrasonic.util.CancellableTask
 import org.moire.ultrasonic.util.Constants
 import org.moire.ultrasonic.util.StreamProxy
@@ -79,9 +79,11 @@ class LocalMediaPlayer(
     private var proxy: StreamProxy? = null
     private var bufferTask: CancellableTask? = null
     private var positionCache: PositionCache? = null
-    private var secondaryProgress = -1
+
     private val pm = context.getSystemService(POWER_SERVICE) as PowerManager
     private val wakeLock: WakeLock = pm.newWakeLock(PARTIAL_WAKE_LOCK, this.javaClass.name)
+
+    val secondaryProgress: MutableLiveData<Int> = MutableLiveData(0)
 
     fun init() {
         Thread {
@@ -361,7 +363,6 @@ class LocalMediaPlayer(
 
             downloadFile.updateModificationDate()
             mediaPlayer.setOnCompletionListener(null)
-            secondaryProgress = -1 // Ensure seeking in non StreamProxy playback works
 
             setPlayerState(PlayerState.IDLE)
             setAudioAttributes(mediaPlayer)
@@ -392,28 +393,28 @@ class LocalMediaPlayer(
             setPlayerState(PlayerState.PREPARING)
 
             mediaPlayer.setOnBufferingUpdateListener { mp, percent ->
-                val progressBar = PlayerFragment.getProgressBar()
                 val song = downloadFile.song
 
                 if (percent == 100) {
                     mp.setOnBufferingUpdateListener(null)
                 }
 
-                secondaryProgress = (percent.toDouble() / 100.toDouble() * progressBar.max).toInt()
-
+                // The secondary progress is an indicator of how far the song is cached.
                 if (song.transcodedContentType == null && Util.getMaxBitRate() == 0) {
-                    progressBar?.secondaryProgress = secondaryProgress
+                    val progress = (percent.toDouble() / 100.toDouble() * playerDuration).toInt()
+                    secondaryProgress.postValue(progress)
                 }
             }
 
             mediaPlayer.setOnPreparedListener {
                 Timber.i("Media player prepared")
                 setPlayerState(PlayerState.PREPARED)
-                val progressBar = PlayerFragment.getProgressBar()
-                if (progressBar != null && downloadFile.isWorkDone) {
-                    // Populate seek bar secondary progress if we have a complete file for consistency
-                    PlayerFragment.getProgressBar().secondaryProgress = 100 * progressBar.max
+
+                // Populate seek bar secondary progress if we have a complete file for consistency
+                if (downloadFile.isWorkDone) {
+                    secondaryProgress.postValue(playerDuration)
                 }
+
                 synchronized(this@LocalMediaPlayer) {
                     if (position != 0) {
                         Timber.i("Restarting player from position %d", position)

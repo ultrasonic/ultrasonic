@@ -198,7 +198,7 @@ class CachedMusicService(private val musicService: MusicService) : MusicService,
     }
 
     @Throws(Exception::class)
-    override fun createPlaylist(id: String, name: String, entries: List<MusicDirectory.Entry>) {
+    override fun createPlaylist(id: String?, name: String?, entries: List<MusicDirectory.Entry>) {
         cachedPlaylists.clear()
         musicService.createPlaylist(id, name, entries)
     }

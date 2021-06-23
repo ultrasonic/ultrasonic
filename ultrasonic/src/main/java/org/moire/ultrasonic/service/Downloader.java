@@ -1,7 +1,5 @@
 package org.moire.ultrasonic.service;
 
-import timber.log.Timber;
-
 import org.moire.ultrasonic.domain.MusicDirectory;
 import org.moire.ultrasonic.util.LRUCache;
 import org.moire.ultrasonic.util.ShufflePlayBuffer;
@@ -16,6 +14,7 @@ import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
 
 import kotlin.Lazy;
+import timber.log.Timber;
 
 import static org.koin.java.KoinJavaComponent.inject;
 import static org.moire.ultrasonic.domain.PlayerState.DOWNLOADING;
@@ -342,7 +341,7 @@ public class Downloader
         Collections.shuffle(downloadList);
         if (localMediaPlayer.currentPlaying != null)
         {
-            downloadList.remove(getCurrentPlayingIndex());
+            downloadList.remove(localMediaPlayer.currentPlaying);
             downloadList.add(0, localMediaPlayer.currentPlaying);
         }
         revision++;

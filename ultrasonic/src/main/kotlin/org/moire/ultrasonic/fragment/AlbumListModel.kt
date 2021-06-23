@@ -13,7 +13,8 @@ import org.moire.ultrasonic.util.Util
 
 class AlbumListModel(application: Application) : GenericListModel(application) {
 
-    val albumList: MutableLiveData<List<MusicDirectory.Entry>> = MutableLiveData()
+    val albumList: MutableLiveData<List<MusicDirectory.Entry>> = MutableLiveData(listOf())
+    var lastType: String? = null
     private var loadedUntil: Int = 0
 
     fun getAlbumList(
@@ -21,8 +22,14 @@ class AlbumListModel(application: Application) : GenericListModel(application) {
         swipe: SwipeRefreshLayout?,
         args: Bundle
     ): LiveData<List<MusicDirectory.Entry>> {
+        // Don't reload the data if navigating back to the view that was active before.
+        // This way, we keep the scroll position
+        val albumListType = args.getString(Constants.INTENT_EXTRA_NAME_ALBUM_LIST_TYPE)!!
 
-        backgroundLoadFromServer(refresh, swipe, args)
+        if (refresh || albumList.value!!.isEmpty() || albumListType != lastType) {
+            lastType = albumListType
+            backgroundLoadFromServer(refresh, swipe, args)
+        }
         return albumList
     }
 

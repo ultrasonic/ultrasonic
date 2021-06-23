@@ -295,12 +295,20 @@ open class RESTMusicService(
         return response.body()!!.playlists.toDomainEntitiesList()
     }
 
+    /**
+     * Either ID or String is required.
+     * ID is required when updating
+     * String is required when creating
+     */
     @Throws(Exception::class)
     override fun createPlaylist(
-        id: String,
-        name: String,
+        id: String?,
+        name: String?,
         entries: List<MusicDirectory.Entry>
     ) {
+        if (id == null && name == null)
+            throw IllegalArgumentException("Either id or name is required.")
+
         val pSongIds: MutableList<String> = ArrayList(entries.size)
 
         for ((id1) in entries) {

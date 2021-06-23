@@ -221,7 +221,7 @@ class OfflineMusicService : MusicService, KoinComponent {
 
     @Suppress("TooGenericExceptionCaught")
     @Throws(Exception::class)
-    override fun createPlaylist(id: String, name: String, entries: List<MusicDirectory.Entry>) {
+    override fun createPlaylist(id: String?, name: String?, entries: List<MusicDirectory.Entry>) {
         val playlistFile =
             FileUtil.getPlaylistFile(activeServerProvider.getActiveServer().name, name)
         val fw = FileWriter(playlistFile)
