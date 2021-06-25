@@ -708,7 +708,7 @@ open class RESTMusicService(
         // By registering a callback we ensure this info is saved in the database as well
         subsonicAPIClient.onProtocolChange = {
             Timber.i("Server minimum API version set to %s", it)
-            activeServerProvider.setMinimumApiVersion(it.toString())
+            activeServerProvider.setMinimumApiVersion(it.restApiVersion)
         }
     }
 
