@@ -45,6 +45,7 @@ complexity:
     thresholdInFiles: 20
     thresholdInClasses: 20
     thresholdInInterfaces: 20
+    thresholdInObjects: 30
   LabeledExpression:
     active: false
 

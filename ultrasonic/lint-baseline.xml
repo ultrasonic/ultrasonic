@@ -452,13 +452,6 @@
     </issue>
 
     <issue
-        id="ObsoleteSdkInt"
-        message="This folder configuration (`v14`) is unnecessary; `minSdkVersion` is 14. Merge all the resources in this folder into `drawable-xhdpi`.">
-        <location
-            file="src/main/res/drawable-xhdpi-v14"/>
-    </issue>
-
-    <issue
         id="StaticFieldLeak"
         message="This `AsyncTask` class should be static or leaks might occur (org.moire.ultrasonic.service.DownloadQueueSerializer.SerializeTask)"
         errorLine1="    private class SerializeTask extends AsyncTask&lt;Object, Void, Void>"
@@ -478,17 +471,6 @@
             file="src/main/java/org/moire/ultrasonic/service/DownloadQueueSerializer.java"
             line="88"
             column="19"/>
-    </issue>
-
-    <issue
-        id="StaticFieldLeak"
-        message="Do not place Android context classes in static fields; this is a memory leak"
-        errorLine1=" private static Context context;"
-        errorLine2="         ~~~~~~">
-        <location
-            file="src/main/java/org/moire/ultrasonic/view/UpdateView.java"
-            line="29"
-            column="10"/>
     </issue>
 
     <issue
