@@ -37,7 +37,7 @@ ext.versions = [
         junit5               : "5.7.1",
         mockito              : "3.11.0",
         mockitoKotlin        : "3.2.0",
-        kluent               : "1.64",
+        kluent               : "1.67",
         apacheCodecs         : "1.15",
         robolectric          : "4.5.1",
         dexter               : "6.2.2",
