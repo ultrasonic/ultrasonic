@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<resources>
+<resources xmlns:tools="http://schemas.android.com/tools">
 
     <string name="background_task.loading">Carregando&#8230;</string>
     <string name="background_task.network_error">Ocorreu um erro de rede. Verifique o endereço do servidor ou tente mais tarde.</string>
@@ -15,9 +15,16 @@
     <string name="button_bar.chat">Chat</string>
     <string name="button_bar.home">Menu Principal</string>
     <string name="button_bar.now_playing">Tocando Agora</string>
+    <string name="buttons.play">Tocar</string>
+    <string name="buttons.pause">Pausar</string>
+    <string name="buttons.repeat">Repetir</string>
+    <string name="buttons.shuffle">Misturar</string>
+    <string name="buttons.stop">Parar</string>
+    <string name="buttons.next">Próxima</string>
+    <string name="buttons.previous">Anterior</string>
     <string name="podcasts.label">Podcasts</string>
     <string name="podcasts_channels.empty">Nenhum canal de podcasts registrado</string>
-    <string name="button_bar.podcasts">Podcast</string>
+    <string name="button_bar.podcasts">Podcasts</string>
     <string name="button_bar.playlists">Playlists</string>
     <string name="button_bar.search">Pesquisa</string>
     <string name="chat.send_a_message">Enviar uma mensagem</string>
@@ -32,8 +39,11 @@
     <string name="common.name">Nome</string>
     <string name="common.ok">OK</string>
     <string name="common.pin">Fixar</string>
+    <string name="common.pause">Pausar</string>
+    <string name="common.play">Tocar</string>
     <string name="common.play_last">Tocar por Último</string>
     <string name="common.play_next">Tocar na Próxima</string>
+    <string name="common.play_previous">Tocar a Anterior</string>
     <string name="common.play_now">Tocar Agora</string>
     <string name="common.play_shuffled">Tocar Aleatoriamente</string>
     <string name="common.public">Público</string>
@@ -101,7 +111,9 @@
     <string name="main.songs_starred">Favoritas</string>
     <string name="main.songs_title">Músicas</string>
     <string name="main.videos">Vídeos</string>
-    <string name="main.welcome_title">Bem-vindo!</string>
+    <string name="main.welcome_text_demo">Para usar o Ultrasonic com sua própria música, você precisará de um <b>servidor próprio</b>.\n\n➤ Caso queira experimentar o aplicativo primeiro, você pode adicionar um servidor de demonstração agora.\n\n➤ Caso contrário, configure seu servidor nas <b>configurações</b>.</string>
+    <string name="main.welcome_title">Bem-vindo ao Ultrasonic!</string>
+    <string name="main.welcome_cancel">Vá para as configurações</string>
     <string name="menu.about">Sobre</string>
     <string name="menu.common">Comum</string>
     <string name="menu.deleted_playlist">Playlist excluída %s</string>
@@ -250,6 +262,8 @@
     <string name="settings.playback.resume_play_on_headphones_plug.summary">O aplicativo retomará a reprodução em pausa na inserção dos fones de ouvido no dispositivo.</string>
     <string name="settings.screen_lit_summary">Manter a tela ligada enquanto baixando aumenta a velocidade de download.</string>
     <string name="settings.screen_lit_title">Manter a Tela Ligada</string>
+    <string name="settings.scrobble_summary">Lembrar de configurar o usuário e senha no(s) serviço(s) Scrobble do servidor</string>
+    <string name="settings.scrobble_title">Scrobble minhas músicas</string>
     <string name="settings.search_1">1</string>
     <string name="settings.search_10">10</string>
     <string name="settings.search_100">100</string>
@@ -307,7 +321,7 @@
     <string name="settings.use_id3_summary">Usar as etiquetas ID3 ao invés do sistema de arquivos</string>
     <string name="settings.show_artist_picture">Mostrar Foto do Artista na Lista</string>
     <string name="settings.show_artist_picture_summary">Mostrar a imagem do artista na lista de artistas, se disponível</string>
-    <string name="main.video">Vídeo</string>
+    <string name="main.video" tools:ignore="UnusedResources">Vídeo</string>
     <string name="settings.view_refresh">Atualização da Tela</string>
     <string name="settings.view_refresh_500">.5 segundos</string>
     <string name="settings.view_refresh_1000">1 segundo</string>
@@ -327,7 +341,7 @@
     <string name="util.bytes_format.gigabyte">0.00 GB</string>
     <string name="util.bytes_format.kilobyte">0 KB</string>
     <string name="util.bytes_format.megabyte">0.00 MB</string>
-    <string name="util.no_time">-:--</string>
+    <string name="util.no_time" tools:ignore="TypographyDashes">-:--</string>
     <string name="util.zero_time">0:00</string>
     <string name="widget.initial_text">Toque para selecionar a música</string>
     <string name="widget.sdcard_busy">Cartão SD indisponível</string>
@@ -421,6 +435,9 @@
     <string name="server_menu.move_down">Para baixo</string>
     <string name="server_editor.authentication">Autenticação</string>
     <string name="server_editor.advanced">Configurações avançadas</string>
+    <string name="server_editor.disabled_feature">Um ou mais recursos foram desativados porque o servidor não os suporta.\nVocê pode rodar este teste novamente a qualquer momento.</string>
+    <string name="server_menu.demo">Servidor Demonstração</string>
+
     <plurals name="select_album_n_songs">
         <item quantity="one">%d música</item>
         <item quantity="other">%d músicas</item>
