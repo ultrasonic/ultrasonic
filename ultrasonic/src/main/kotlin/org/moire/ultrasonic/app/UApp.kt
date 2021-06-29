@@ -9,7 +9,6 @@ import org.moire.ultrasonic.BuildConfig
 import org.moire.ultrasonic.di.appPermanentStorage
 import org.moire.ultrasonic.di.applicationModule
 import org.moire.ultrasonic.di.baseNetworkModule
-import org.moire.ultrasonic.di.directoriesModule
 import org.moire.ultrasonic.di.featureFlagsModule
 import org.moire.ultrasonic.di.mediaPlayerModule
 import org.moire.ultrasonic.di.musicServiceModule
@@ -46,7 +45,6 @@ class UApp : MultiDexApplication() {
             // declare modules to use
             modules(
                 applicationModule,
-                directoriesModule,
                 appPermanentStorage,
                 baseNetworkModule,
                 featureFlagsModule,

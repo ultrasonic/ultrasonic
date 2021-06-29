@@ -1,5 +1,8 @@
-apply plugin: 'java-library'
+/**
+ * This module provides a base for for pure kotlin modules
+ */
 apply plugin: 'kotlin'
+apply plugin: 'kotlin-kapt'
 apply plugin: 'jacoco'
 apply from: "${project.rootDir}/gradle_scripts/code_quality.gradle"
 

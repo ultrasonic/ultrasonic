@@ -1,5 +1,7 @@
 package org.moire.ultrasonic.domain
 
+import androidx.room.Entity
+import androidx.room.PrimaryKey
 import java.io.Serializable
 import java.util.Date
 
@@ -35,8 +37,9 @@ class MusicDirectory {
         return children.filter { it.isDirectory && includeDirs || !it.isDirectory && includeFiles }
     }
 
+    @Entity
     data class Entry(
-        override var id: String,
+        @PrimaryKey override var id: String,
         var parent: String? = null,
         var isDirectory: Boolean = false,
         var title: String? = null,

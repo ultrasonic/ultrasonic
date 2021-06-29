@@ -11,7 +11,7 @@ import org.moire.ultrasonic.api.subsonic.models.Indexes
 /**
  * Unit tests for extension functions in [APIIndexesConverter.kt].
  */
-class APIIndexesConverterTest {
+class APIIndexConverterTest {
     @Test
     fun `Should convert Indexes entity`() {
         val artistsA = listOf(
@@ -31,15 +31,12 @@ class APIIndexesConverterTest {
             shortcutList = artistsA
         )
 
-        val convertedEntity = entity.toDomainEntity()
+        val convertedEntity = entity.toArtistList()
 
         val expectedArtists = (artistsA + artistsT).map { it.toDomainEntity() }.toMutableList()
         with(convertedEntity) {
-            lastModified `should be equal to` entity.lastModified
-            ignoredArticles `should be equal to` entity.ignoredArticles
-            artists.size `should be equal to` expectedArtists.size
-            artists `should be equal to` expectedArtists
-            shortcuts `should be equal to` artistsA.map { it.toDomainEntity() }.toMutableList()
+            size `should be equal to` expectedArtists.size
+            this `should be equal to` expectedArtists
         }
     }
 }

@@ -6,9 +6,6 @@
  */
 package org.moire.ultrasonic.service
 
-import java.io.BufferedWriter
-import java.io.File
-import java.io.FileWriter
 import java.io.IOException
 import java.io.InputStream
 import okhttp3.Protocol
@@ -20,15 +17,13 @@ import org.moire.ultrasonic.api.subsonic.models.AlbumListType.Companion.fromName
 import org.moire.ultrasonic.api.subsonic.models.JukeboxAction
 import org.moire.ultrasonic.api.subsonic.throwOnFailure
 import org.moire.ultrasonic.api.subsonic.toStreamResponse
-import org.moire.ultrasonic.cache.PermanentFileStorage
-import org.moire.ultrasonic.cache.serializers.getIndexesSerializer
-import org.moire.ultrasonic.cache.serializers.getMusicFolderListSerializer
 import org.moire.ultrasonic.data.ActiveServerProvider
 import org.moire.ultrasonic.data.ActiveServerProvider.Companion.isOffline
+import org.moire.ultrasonic.domain.Artist
 import org.moire.ultrasonic.domain.Bookmark
 import org.moire.ultrasonic.domain.ChatMessage
 import org.moire.ultrasonic.domain.Genre
-import org.moire.ultrasonic.domain.Indexes
+import org.moire.ultrasonic.domain.Index
 import org.moire.ultrasonic.domain.JukeboxStatus
 import org.moire.ultrasonic.domain.Lyrics
 import org.moire.ultrasonic.domain.MusicDirectory
@@ -39,11 +34,14 @@ import org.moire.ultrasonic.domain.SearchCriteria
 import org.moire.ultrasonic.domain.SearchResult
 import org.moire.ultrasonic.domain.Share
 import org.moire.ultrasonic.domain.UserInfo
+import org.moire.ultrasonic.domain.toArtistList
 import org.moire.ultrasonic.domain.toDomainEntitiesList
 import org.moire.ultrasonic.domain.toDomainEntity
 import org.moire.ultrasonic.domain.toDomainEntityList
+import org.moire.ultrasonic.domain.toIndexList
 import org.moire.ultrasonic.domain.toMusicDirectoryDomainEntity
 import org.moire.ultrasonic.util.FileUtil
+import org.moire.ultrasonic.util.FileUtilKt
 import org.moire.ultrasonic.util.Util
 import timber.log.Timber
 
@@ -53,7 +51,6 @@ import timber.log.Timber
 @Suppress("LargeClass")
 open class RESTMusicService(
     val subsonicAPIClient: SubsonicAPIClient,
-    private val fileStorage: PermanentFileStorage,
     private val activeServerProvider: ActiveServerProvider
 ) : MusicService {
 
@@ -77,49 +74,31 @@ open class RESTMusicService(
     override fun getMusicFolders(
         refresh: Boolean
     ): List<MusicFolder> {
-        val cachedMusicFolders = fileStorage.load(
-            MUSIC_FOLDER_STORAGE_NAME, getMusicFolderListSerializer()
-        )
-
-        if (cachedMusicFolders != null && !refresh) return cachedMusicFolders
-
         val response = API.getMusicFolders().execute().throwOnFailure()
 
-        val musicFolders = response.body()!!.musicFolders.toDomainEntityList()
-        fileStorage.store(MUSIC_FOLDER_STORAGE_NAME, musicFolders, getMusicFolderListSerializer())
-
-        return musicFolders
+        return response.body()!!.musicFolders.toDomainEntityList()
     }
 
+    /**
+     *  Retrieves the artists for a given music folder     *
+     */
     @Throws(Exception::class)
     override fun getIndexes(
         musicFolderId: String?,
         refresh: Boolean
-    ): Indexes {
-        val indexName = INDEXES_STORAGE_NAME + (musicFolderId ?: "")
-
-        val cachedIndexes = fileStorage.load(indexName, getIndexesSerializer())
-        if (cachedIndexes != null && !refresh) return cachedIndexes
-
+    ): List<Index> {
         val response = API.getIndexes(musicFolderId, null).execute().throwOnFailure()
 
-        val indexes = response.body()!!.indexes.toDomainEntity()
-        fileStorage.store(indexName, indexes, getIndexesSerializer())
-        return indexes
+        return response.body()!!.indexes.toIndexList(musicFolderId)
     }
 
     @Throws(Exception::class)
     override fun getArtists(
         refresh: Boolean
-    ): Indexes {
-        val cachedArtists = fileStorage.load(ARTISTS_STORAGE_NAME, getIndexesSerializer())
-        if (cachedArtists != null && !refresh) return cachedArtists
-
+    ): List<Artist> {
         val response = API.getArtists(null).execute().throwOnFailure()
 
-        val indexes = response.body()!!.indexes.toDomainEntity()
-        fileStorage.store(ARTISTS_STORAGE_NAME, indexes, getIndexesSerializer())
-        return indexes
+        return response.body()!!.indexes.toArtistList()
     }
 
     @Throws(Exception::class)
@@ -186,11 +165,11 @@ open class RESTMusicService(
         criteria: SearchCriteria
     ): SearchResult {
         return try {
-            if (
-                !isOffline() &&
-                Util.getShouldUseId3Tags()
-            ) search3(criteria)
-            else search2(criteria)
+            if (!isOffline() && Util.getShouldUseId3Tags()) {
+                search3(criteria)
+            } else {
+                search2(criteria)
+            }
         } catch (ignored: ApiNotSupportedException) {
             // Ensure backward compatibility with REST 1.3.
             searchOld(criteria)
@@ -262,28 +241,7 @@ open class RESTMusicService(
             activeServerProvider.getActiveServer().name, name
         )
 
-        val fw = FileWriter(playlistFile)
-        val bw = BufferedWriter(fw)
-
-        try {
-            fw.write("#EXTM3U\n")
-            for (e in playlist.getChildren()) {
-                var filePath = FileUtil.getSongFile(e).absolutePath
-
-                if (!File(filePath).exists()) {
-                    val ext = FileUtil.getExtension(filePath)
-                    val base = FileUtil.getBaseName(filePath)
-                    filePath = "$base.complete.$ext"
-                }
-                fw.write(filePath + "\n")
-            }
-        } catch (e: IOException) {
-            Timber.w("Failed to save playlist: %s", name)
-            throw e
-        } finally {
-            bw.close()
-            fw.close()
-        }
+        FileUtilKt.savePlaylist(playlistFile, playlist, name)
     }
 
     @Throws(Exception::class)
@@ -710,11 +668,5 @@ open class RESTMusicService(
             Timber.i("Server minimum API version set to %s", it)
             activeServerProvider.setMinimumApiVersion(it.restApiVersion)
         }
-    }
-
-    companion object {
-        private const val MUSIC_FOLDER_STORAGE_NAME = "music_folder"
-        private const val INDEXES_STORAGE_NAME = "indexes"
-        private const val ARTISTS_STORAGE_NAME = "artists"
     }
 }

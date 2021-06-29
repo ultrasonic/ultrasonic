@@ -1,8 +1,10 @@
+/**
+ * This module provides a base for for submodules which depend on the Android runtime
+ */
 apply plugin: 'com.android.library'
 apply plugin: 'kotlin-android'
 apply plugin: 'jacoco'
 apply from: "${project.rootDir}/gradle_scripts/code_quality.gradle"
-
 
 android {
     compileSdkVersion versions.compileSdk

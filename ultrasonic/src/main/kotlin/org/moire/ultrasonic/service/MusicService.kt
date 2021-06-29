@@ -7,10 +7,11 @@
 package org.moire.ultrasonic.service
 
 import java.io.InputStream
+import org.moire.ultrasonic.domain.Artist
 import org.moire.ultrasonic.domain.Bookmark
 import org.moire.ultrasonic.domain.ChatMessage
 import org.moire.ultrasonic.domain.Genre
-import org.moire.ultrasonic.domain.Indexes
+import org.moire.ultrasonic.domain.Index
 import org.moire.ultrasonic.domain.JukeboxStatus
 import org.moire.ultrasonic.domain.Lyrics
 import org.moire.ultrasonic.domain.MusicDirectory
@@ -46,10 +47,10 @@ interface MusicService {
     fun getMusicFolders(refresh: Boolean): List<MusicFolder>
 
     @Throws(Exception::class)
-    fun getIndexes(musicFolderId: String?, refresh: Boolean): Indexes
+    fun getIndexes(musicFolderId: String?, refresh: Boolean): List<Index>
 
     @Throws(Exception::class)
-    fun getArtists(refresh: Boolean): Indexes
+    fun getArtists(refresh: Boolean): List<Artist>
 
     @Throws(Exception::class)
     fun getMusicDirectory(id: String, name: String?, refresh: Boolean): MusicDirectory
