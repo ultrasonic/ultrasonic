@@ -21,7 +21,6 @@ import org.moire.ultrasonic.subsonic.DownloadHandler
 import org.moire.ultrasonic.subsonic.ImageLoaderProvider
 import org.moire.ultrasonic.subsonic.NetworkAndStorageChecker
 import org.moire.ultrasonic.subsonic.ShareHandler
-import org.moire.ultrasonic.subsonic.VideoPlayer
 import org.moire.ultrasonic.util.Constants
 
 /**
@@ -76,6 +75,5 @@ val musicServiceModule = module {
 
     single { DownloadHandler(get(), get()) }
     single { NetworkAndStorageChecker(androidContext()) }
-    single { VideoPlayer() }
     single { ShareHandler(androidContext()) }
 }

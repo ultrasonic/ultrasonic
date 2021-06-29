@@ -52,7 +52,6 @@ public class BookmarksFragment extends Fragment {
     private ImageView downloadButton;
     private ImageView deleteButton;
 
-    private final Lazy<VideoPlayer> videoPlayer = inject(VideoPlayer.class);
     private final Lazy<MediaPlayerController> mediaPlayerController = inject(MediaPlayerController.class);
     private final Lazy<ImageLoaderProvider> imageLoader = inject(ImageLoaderProvider.class);
     private final Lazy<NetworkAndStorageChecker> networkAndStorageChecker = inject(NetworkAndStorageChecker.class);
@@ -104,7 +103,7 @@ public class BookmarksFragment extends Fragment {
                     {
                         if (entry.isVideo())
                         {
-                            videoPlayer.getValue().playVideo(getContext(), entry);
+                            VideoPlayer.Companion.playVideo(getContext(), entry);
                         }
                         else
                         {

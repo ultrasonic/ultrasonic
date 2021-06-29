@@ -11,22 +11,25 @@ import org.moire.ultrasonic.util.Util
 /**
  * This utility class helps starting video playback
  */
+@Suppress("UtilityClassWithPublicConstructor")
 class VideoPlayer {
-    fun playVideo(context: Context, entry: MusicDirectory.Entry?) {
-        if (!Util.isNetworkConnected() || entry == null) {
-            Util.toast(context, R.string.select_album_no_network)
-            return
-        }
-        try {
-            val intent = Intent(Intent.ACTION_VIEW)
-            val url = MusicServiceFactory.getMusicService().getVideoUrl(entry.id)
-            intent.setDataAndType(
-                Uri.parse(url),
-                "video/*"
-            )
-            context.startActivity(intent)
-        } catch (e: Exception) {
-            Util.toast(context, e.toString(), false)
+    companion object {
+        fun playVideo(context: Context, entry: MusicDirectory.Entry?) {
+            if (!Util.isNetworkConnected() || entry == null) {
+                Util.toast(context, R.string.select_album_no_network)
+                return
+            }
+            try {
+                val intent = Intent(Intent.ACTION_VIEW)
+                val url = MusicServiceFactory.getMusicService().getVideoUrl(entry.id)
+                intent.setDataAndType(
+                    Uri.parse(url),
+                    "video/*"
+                )
+                context.startActivity(intent)
+            } catch (e: Exception) {
+                Util.toast(context, e.toString(), false)
+            }
         }
     }
 }
