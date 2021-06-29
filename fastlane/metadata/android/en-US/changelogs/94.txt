@@ -1,0 +1,12 @@
+Bug fixes
+- #368: Empty id in getCoverArt.
+- #528: Saving playlists does not work.
+
+Enhancements
+- #514: Fix bugs in new image loader and make it default.
+- #517: Cleaner separation of API result handling.
+- #519: Better experience for new users.
+- #520: Remove flash.
+- #525: Properly generate the Video stream url, without actually making a request.
+- #530: Use DiffUtil for better performance when refreshing the data.
+- #532: Larger image cache.
