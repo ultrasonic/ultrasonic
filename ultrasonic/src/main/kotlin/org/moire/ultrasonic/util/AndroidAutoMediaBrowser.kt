@@ -16,6 +16,7 @@ import java.util.concurrent.ExecutorService
 import java.util.concurrent.Executors
 import org.moire.ultrasonic.api.subsonic.models.AlbumListType
 import org.moire.ultrasonic.domain.Artist
+import org.moire.ultrasonic.domain.ArtistOrIndex
 import org.moire.ultrasonic.domain.MusicDirectory
 import org.moire.ultrasonic.fragment.AlbumListModel
 import org.moire.ultrasonic.fragment.ArtistListModel
@@ -91,11 +92,11 @@ class AndroidAutoMediaBrowser(application: Application) {
     class ArtistListObserver(
         val idPrefix: String,
         val result: MediaBrowserServiceCompat.Result<List<MediaBrowserCompat.MediaItem>>,
-        data: LiveData<List<Artist>>
+        data: LiveData<List<ArtistOrIndex>>
     ) :
-        Observer<List<Artist>> {
+        Observer<List<ArtistOrIndex>> {
 
-        private var liveData: LiveData<List<Artist>>? = null
+        private var liveData: LiveData<List<ArtistOrIndex>>? = null
 
         init {
             // Order is very important here. When observerForever is called onChanged
@@ -106,7 +107,7 @@ class AndroidAutoMediaBrowser(application: Application) {
             liveData = data
         }
 
-        override fun onChanged(artistList: List<Artist>?) {
+        override fun onChanged(artistList: List<ArtistOrIndex>?) {
             if (liveData == null) {
                 // See comment in the initializer
                 return

@@ -1,5 +1,6 @@
 package org.moire.ultrasonic.data
 
+import androidx.room.Room
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
@@ -7,6 +8,7 @@ import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.withContext
 import org.moire.ultrasonic.R
 import org.moire.ultrasonic.app.UApp
+import org.moire.ultrasonic.di.DB_FILENAME
 import org.moire.ultrasonic.service.MusicServiceFactory.resetMusicService
 import org.moire.ultrasonic.util.Constants
 import org.moire.ultrasonic.util.Util
@@ -20,6 +22,8 @@ class ActiveServerProvider(
     private val repository: ServerSettingDao
 ) {
     private var cachedServer: ServerSetting? = null
+    private var cachedDatabase: MetaDatabase? = null
+    private var cachedServerId: Int? = null
 
     /**
      * Get the settings of the current Active Server
@@ -82,6 +86,33 @@ class ActiveServerProvider(
         }
     }
 
+    @Synchronized
+    fun getActiveMetaDatabase(): MetaDatabase {
+        val activeServer = getActiveServerId()
+
+        if (activeServer == cachedServerId && cachedDatabase != null) {
+            return cachedDatabase!!
+        }
+
+        Timber.i("Switching to new database, id:$activeServer")
+        cachedServerId = activeServer
+        val db = Room.databaseBuilder(
+            UApp.applicationContext(),
+            MetaDatabase::class.java,
+            METADATA_DB + cachedServerId
+        )
+            .fallbackToDestructiveMigrationOnDowngrade()
+            .build()
+        return db
+    }
+
+    @Synchronized
+    fun deleteMetaDatabase(id: Int) {
+        cachedDatabase?.close()
+        UApp.applicationContext().deleteDatabase(METADATA_DB + id)
+        Timber.i("Deleted metadataBase, id:$id")
+    }
+
     /**
      * Sets the minimum Subsonic API version of the current server.
      */
@@ -130,6 +161,9 @@ class ActiveServerProvider(
     }
 
     companion object {
+
+        const val METADATA_DB = "$DB_FILENAME-meta-"
+
         /**
          * Queries if the Active Server is the "Offline" mode of Ultrasonic
          * @return True, if the "Offline" mode is selected

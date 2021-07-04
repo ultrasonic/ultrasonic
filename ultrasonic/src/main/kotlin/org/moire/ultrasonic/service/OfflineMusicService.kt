@@ -28,7 +28,7 @@ import org.moire.ultrasonic.domain.Artist
 import org.moire.ultrasonic.domain.Bookmark
 import org.moire.ultrasonic.domain.ChatMessage
 import org.moire.ultrasonic.domain.Genre
-import org.moire.ultrasonic.domain.Indexes
+import org.moire.ultrasonic.domain.Index
 import org.moire.ultrasonic.domain.JukeboxStatus
 import org.moire.ultrasonic.domain.Lyrics
 import org.moire.ultrasonic.domain.MusicDirectory
@@ -50,21 +50,21 @@ import timber.log.Timber
 class OfflineMusicService : MusicService, KoinComponent {
     private val activeServerProvider: ActiveServerProvider by inject()
 
-    override fun getIndexes(musicFolderId: String?, refresh: Boolean): Indexes {
-        val artists: MutableList<Artist> = ArrayList()
+    override fun getIndexes(musicFolderId: String?, refresh: Boolean): List<Index> {
+        val indexes: MutableList<Index> = ArrayList()
         val root = FileUtil.getMusicDirectory()
         for (file in FileUtil.listFiles(root)) {
             if (file.isDirectory) {
-                val artist = Artist()
-                artist.id = file.path
-                artist.index = file.name.substring(0, 1)
-                artist.name = file.name
-                artists.add(artist)
+                val index = Index(file.path)
+                index.id = file.path
+                index.index = file.name.substring(0, 1)
+                index.name = file.name
+                indexes.add(index)
             }
         }
         val ignoredArticlesString = "The El La Los Las Le Les"
         val ignoredArticles = COMPILE.split(ignoredArticlesString)
-        artists.sortWith { lhsArtist, rhsArtist ->
+        indexes.sortWith { lhsArtist, rhsArtist ->
             var lhs = lhsArtist.name!!.lowercase(Locale.ROOT)
             var rhs = rhsArtist.name!!.lowercase(Locale.ROOT)
             val lhs1 = lhs[0]
@@ -92,7 +92,7 @@ class OfflineMusicService : MusicService, KoinComponent {
             lhs.compareTo(rhs)
         }
 
-        return Indexes(0L, ignoredArticlesString, artists = artists)
+        return indexes
     }
 
     override fun getMusicDirectory(
@@ -127,8 +127,7 @@ class OfflineMusicService : MusicService, KoinComponent {
             val artistName = artistFile.name
             if (artistFile.isDirectory) {
                 if (matchCriteria(criteria, artistName).also { closeness = it } > 0) {
-                    val artist = Artist()
-                    artist.id = artistFile.path
+                    val artist = Artist(artistFile.path)
                     artist.index = artistFile.name.substring(0, 1)
                     artist.name = artistName
                     artist.closeness = closeness
@@ -442,7 +441,7 @@ class OfflineMusicService : MusicService, KoinComponent {
     override fun isLicenseValid(): Boolean = true
 
     @Throws(OfflineException::class)
-    override fun getArtists(refresh: Boolean): Indexes {
+    override fun getArtists(refresh: Boolean): List<Artist> {
         throw OfflineException("getArtists isn't available in offline mode")
     }
 

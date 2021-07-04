@@ -23,19 +23,19 @@ import android.os.Bundle
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
-import org.moire.ultrasonic.domain.Artist
+import org.moire.ultrasonic.domain.ArtistOrIndex
 import org.moire.ultrasonic.service.MusicService
 
 /**
  * Provides ViewModel which contains the list of available Artists
  */
 class ArtistListModel(application: Application) : GenericListModel(application) {
-    val artists: MutableLiveData<List<Artist>> = MutableLiveData(listOf())
+    val artists: MutableLiveData<List<ArtistOrIndex>> = MutableLiveData(listOf())
 
     /**
      * Retrieves all available Artists in a LiveData
      */
-    fun getItems(refresh: Boolean, swipe: SwipeRefreshLayout?): LiveData<List<Artist>> {
+    fun getItems(refresh: Boolean, swipe: SwipeRefreshLayout?): LiveData<List<ArtistOrIndex>> {
         // Don't reload the data if navigating back to the view that was active before.
         // This way, we keep the scroll position
         if (artists.value!!.isEmpty() || refresh) {
@@ -55,14 +55,14 @@ class ArtistListModel(application: Application) : GenericListModel(application) 
 
         val musicFolderId = activeServer.musicFolderId
 
-        val result = if (!isOffline && useId3Tags)
-            musicService.getArtists(refresh)
-        else musicService.getIndexes(musicFolderId, refresh)
+        val result: List<ArtistOrIndex>
 
-        val retrievedArtists: MutableList<Artist> =
-            ArrayList(result.shortcuts.size + result.artists.size)
-        retrievedArtists.addAll(result.shortcuts)
-        retrievedArtists.addAll(result.artists)
-        artists.postValue(retrievedArtists)
+        if (!isOffline && useId3Tags) {
+            result = musicService.getArtists(refresh)
+        } else {
+            result = musicService.getIndexes(musicFolderId, refresh)
+        }
+
+        artists.postValue(result.toMutableList())
     }
 }

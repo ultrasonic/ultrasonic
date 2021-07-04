@@ -3,7 +3,6 @@ package org.moire.ultrasonic.view;
 import android.content.Context;
 import android.os.Handler;
 import android.os.Looper;
-import timber.log.Timber;
 import android.view.ViewGroup;
 import android.widget.AbsListView;
 import android.widget.LinearLayout;
@@ -13,6 +12,8 @@ import org.moire.ultrasonic.util.Util;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.WeakHashMap;
+
+import timber.log.Timber;
 
 /**
  * A View that is periodically refreshed
@@ -26,12 +27,10 @@ public class UpdateView extends LinearLayout
 	private static Handler backgroundHandler;
 	private static Handler uiHandler;
 	private static Runnable updateRunnable;
-	private static Context context;
 
 	public UpdateView(Context context)
 	{
 		super(context);
-		UpdateView.context = context;
 
 		setLayoutParams(new AbsListView.LayoutParams(ViewGroup.LayoutParams.FILL_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT));
 		INSTANCES.put(this, null);

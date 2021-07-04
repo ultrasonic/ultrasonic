@@ -9,8 +9,8 @@ android {
 
     defaultConfig {
         applicationId "org.moire.ultrasonic"
-        versionCode 93
-        versionName "2.21.0"
+        versionCode 94
+        versionName "2.22.0"
 
         minSdkVersion versions.minSdk
         targetSdkVersion versions.targetSdk
@@ -61,6 +61,13 @@ android {
         sourceCompatibility JavaVersion.VERSION_1_8
         targetCompatibility JavaVersion.VERSION_1_8
     }
+
+    kapt {
+        arguments {
+            arg("room.schemaLocation", "$buildDir/schemas".toString())
+        }
+    }
+
 }
 
 tasks.withType(Test) {
@@ -70,7 +77,6 @@ tasks.withType(Test) {
 dependencies {
     implementation project(':core:domain')
     implementation project(':core:subsonic-api')
-    implementation project(':core:cache')
 
     api(other.picasso) {
         exclude group: "com.android.support"

@@ -10,7 +10,6 @@
     <ID>ComplexMethod:SongView.kt$SongView$fun setSong(song: MusicDirectory.Entry, checkable: Boolean, draggable: Boolean)</ID>
     <ID>ComplexMethod:TrackCollectionFragment.kt$TrackCollectionFragment$private fun enableButtons()</ID>
     <ID>ComplexMethod:TrackCollectionFragment.kt$TrackCollectionFragment$private fun updateInterfaceWithEntries(musicDirectory: MusicDirectory)</ID>
-    <ID>EmptyFunctionBlock:SongView.kt$SongView${}</ID>
     <ID>FunctionNaming:ThemeChangedEventDistributor.kt$ThemeChangedEventDistributor$fun RaiseThemeChangedEvent()</ID>
     <ID>ImplicitDefaultLocale:DownloadFile.kt$DownloadFile$String.format("DownloadFile (%s)", song)</ID>
     <ID>ImplicitDefaultLocale:DownloadFile.kt$DownloadFile.DownloadTask$String.format("Download of '%s' was cancelled", song)</ID>

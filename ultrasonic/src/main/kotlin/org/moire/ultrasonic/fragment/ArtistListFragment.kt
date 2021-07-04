@@ -4,13 +4,13 @@ import android.os.Bundle
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.LiveData
 import org.moire.ultrasonic.R
-import org.moire.ultrasonic.domain.Artist
+import org.moire.ultrasonic.domain.ArtistOrIndex
 import org.moire.ultrasonic.util.Constants
 
 /**
  * Displays the list of Artists from the media library
  */
-class ArtistListFragment : GenericListFragment<Artist, ArtistRowAdapter>() {
+class ArtistListFragment : GenericListFragment<ArtistOrIndex, ArtistRowAdapter>() {
 
     /**
      * The ViewModel to use to get the data
@@ -41,7 +41,7 @@ class ArtistListFragment : GenericListFragment<Artist, ArtistRowAdapter>() {
     /**
      * The central function to pass a query to the model and return a LiveData object
      */
-    override fun getLiveData(args: Bundle?): LiveData<List<Artist>> {
+    override fun getLiveData(args: Bundle?): LiveData<List<ArtistOrIndex>> {
         val refresh = args?.getBoolean(Constants.INTENT_EXTRA_NAME_REFRESH) ?: false
         return listModel.getItems(refresh, refreshListView!!)
     }

@@ -8,7 +8,6 @@ import android.view.ViewGroup
 import android.widget.AdapterView
 import android.widget.ListView
 import androidx.fragment.app.Fragment
-import androidx.lifecycle.Observer
 import androidx.navigation.fragment.findNavController
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 import kotlinx.coroutines.Dispatchers
@@ -104,7 +103,7 @@ class ServerSelectorFragment : Fragment() {
         val serverList = serverSettingsModel.getServerList()
         serverList.observe(
             this,
-            Observer { t ->
+            { t ->
                 serverRowAdapter!!.setData(t.toTypedArray())
             }
         )
@@ -141,10 +140,16 @@ class ServerSelectorFragment : Fragment() {
                 dialog.dismiss()
 
                 val activeServerIndex = activeServerProvider.getActiveServer().index
+                val id = ActiveServerProvider.getActiveServerId()
+
                 // If the currently active server is deleted, go offline
                 if (index == activeServerIndex) setActiveServer(-1)
 
                 serverSettingsModel.deleteItem(index)
+
+                // Clear the metadata cache
+                activeServerProvider.deleteMetaDatabase(id)
+
                 Timber.i("Server deleted: $index")
             }
             .setNegativeButton(R.string.common_cancel) { dialog, _ ->

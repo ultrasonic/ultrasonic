@@ -1,5 +1,6 @@
 package org.moire.ultrasonic.api.subsonic.models
 
+import java.util.Locale
 import org.amshove.kluent.`should be equal to`
 import org.amshove.kluent.`should throw`
 import org.junit.Test
@@ -10,7 +11,7 @@ import org.junit.Test
 class AlbumListTypeTest {
     @Test
     fun `Should create type from string ignoring case`() {
-        val type = AlbumListType.SORTED_BY_NAME.typeName.toLowerCase()
+        val type = AlbumListType.SORTED_BY_NAME.typeName.lowercase(Locale.ROOT)
 
         val albumListType = AlbumListType.fromName(type)
 

@@ -10,7 +10,6 @@ import org.moire.ultrasonic.BuildConfig
 import org.moire.ultrasonic.api.subsonic.SubsonicAPIClient
 import org.moire.ultrasonic.api.subsonic.SubsonicAPIVersions
 import org.moire.ultrasonic.api.subsonic.SubsonicClientConfiguration
-import org.moire.ultrasonic.cache.PermanentFileStorage
 import org.moire.ultrasonic.data.ActiveServerProvider
 import org.moire.ultrasonic.imageloader.ImageLoader
 import org.moire.ultrasonic.log.TimberOkHttpLogger
@@ -44,11 +43,6 @@ val musicServiceModule = module {
     }
 
     single {
-        val serverId = get<String>(named("ServerID"))
-        return@single PermanentFileStorage(get(), serverId, BuildConfig.DEBUG)
-    }
-
-    single {
         val server = get<ActiveServerProvider>().getActiveServer()
 
         return@single SubsonicClientConfiguration(
@@ -71,7 +65,7 @@ val musicServiceModule = module {
     single { SubsonicAPIClient(get(), get()) }
 
     single<MusicService>(named(ONLINE_MUSIC_SERVICE)) {
-        CachedMusicService(RESTMusicService(get(), get(), get()))
+        CachedMusicService(RESTMusicService(get(), get()))
     }
 
     single<MusicService>(named(OFFLINE_MUSIC_SERVICE)) {

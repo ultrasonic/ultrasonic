@@ -1,0 +1,12 @@
+Corrección de errores
+- # 368: ID vacío en getCoverArt.
+- # 528: Guardar listas de reproducción no funciona.
+
+Mejoras
+- # 514: Corregir errores en el nuevo cargador de imágenes y usarlo por defecto.
+- # 517: Separación más limpia del manejo de resultados API.
+- # 519: Mejor experiencia para nuevos usuarios.
+- # 520: Quitar flash.
+- # 525: Generar correctamente la URL de transmisión de video, sin realizar una nueva solicitud.
+- # 530: Usar DiffUtil para un mejor rendimiento al actualizar los datos.
+- # 532: Caché de imágenes más grande.

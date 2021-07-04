@@ -1,9 +1,13 @@
 package org.moire.ultrasonic.imageloader
 
+import android.app.ActivityManager
 import android.content.Context
+import android.content.pm.ApplicationInfo
 import android.text.TextUtils
 import android.view.View
 import android.widget.ImageView
+import androidx.core.content.ContextCompat
+import com.squareup.picasso.LruCache
 import com.squareup.picasso.Picasso
 import com.squareup.picasso.RequestCreator
 import java.io.File
@@ -35,6 +39,7 @@ class ImageLoader(
     private val picasso = Picasso.Builder(context)
         .addRequestHandler(CoverArtRequestHandler(apiClient))
         .addRequestHandler(AvatarRequestHandler(apiClient))
+        .memoryCache(LruCache(calculateMemoryCacheSize(context)))
         .build().apply {
             setIndicatorsEnabled(BuildConfig.DEBUG)
         }
@@ -178,6 +183,18 @@ class ImageLoader(
         } else {
             return requested
         }
+    }
+
+    private fun calculateMemoryCacheSize(context: Context): Int {
+        val am = ContextCompat.getSystemService(
+            context,
+            ActivityManager::class.java
+        )
+        val largeHeap = context.applicationInfo.flags and ApplicationInfo.FLAG_LARGE_HEAP != 0
+        val memoryClass = if (largeHeap) am!!.largeMemoryClass else am!!.memoryClass
+        // Target 25% of the available heap.
+        @Suppress("MagicNumber")
+        return (1024L * 1024L * memoryClass / 4).toInt()
     }
 }
 

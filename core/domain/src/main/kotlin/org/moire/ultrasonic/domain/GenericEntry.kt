@@ -1,8 +1,12 @@
 package org.moire.ultrasonic.domain
 
-abstract class GenericEntry {
-    // TODO: Should be non-null!
-    abstract val id: String?
+import androidx.room.Ignore
+
+open class GenericEntry {
+    // TODO Should be non-null!
+    @Ignore
+    open val id: String? = null
+    @Ignore
     open val name: String? = null
 
     // These are just a formality and will never be called,
