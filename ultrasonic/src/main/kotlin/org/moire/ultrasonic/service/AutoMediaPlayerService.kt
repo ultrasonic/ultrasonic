@@ -1,6 +1,5 @@
-package org.moire.ultrasonic.util
+package org.moire.ultrasonic.service
 
-import android.app.Application
 import android.os.Bundle
 import android.support.v4.media.MediaBrowserCompat
 import android.support.v4.media.MediaDescriptionCompat
@@ -8,24 +7,26 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.Observer
 import androidx.media.MediaBrowserServiceCompat
 import androidx.media.utils.MediaConstants
+import org.moire.ultrasonic.api.subsonic.models.AlbumListType
+import org.moire.ultrasonic.domain.ArtistOrIndex
+import org.moire.ultrasonic.domain.MusicDirectory
+import org.moire.ultrasonic.domain.PlayerState
+import org.moire.ultrasonic.fragment.AlbumListModel
+import org.moire.ultrasonic.fragment.ArtistListModel
+import org.moire.ultrasonic.util.Constants
+import org.moire.ultrasonic.util.Pair
 import java.io.ByteArrayInputStream
 import java.io.ByteArrayOutputStream
 import java.io.ObjectInputStream
 import java.io.ObjectOutputStream
 import java.util.concurrent.ExecutorService
 import java.util.concurrent.Executors
-import org.moire.ultrasonic.api.subsonic.models.AlbumListType
-import org.moire.ultrasonic.domain.Artist
-import org.moire.ultrasonic.domain.ArtistOrIndex
-import org.moire.ultrasonic.domain.MusicDirectory
-import org.moire.ultrasonic.fragment.AlbumListModel
-import org.moire.ultrasonic.fragment.ArtistListModel
-import org.moire.ultrasonic.service.MusicServiceFactory
 
-class AndroidAutoMediaBrowser(application: Application) {
+class AutoMediaPlayerService: MediaBrowserServiceCompat() {
 
-    val albumListModel: AlbumListModel = AlbumListModel(application)
-    val artistListModel: ArtistListModel = ArtistListModel(application)
+    val mediaPlayerService : MediaPlayerService = MediaPlayerService()
+    var albumListModel: AlbumListModel? = null
+    var artistListModel: ArtistListModel? = null
 
     val executorService: ExecutorService = Executors.newFixedThreadPool(4)
     var maximumRootChildLimit: Int = 4
@@ -44,11 +45,11 @@ class AndroidAutoMediaBrowser(application: Application) {
     private val MEDIA_BROWSER_EXTRA_MEDIA_ID = "_Ultrasonic_mb_extra_media_id_"
 
     class AlbumListObserver(
-        val idPrefix: String,
-        val result: MediaBrowserServiceCompat.Result<List<MediaBrowserCompat.MediaItem>>,
-        data: LiveData<List<MusicDirectory.Entry>>
+            val idPrefix: String,
+            val result: MediaBrowserServiceCompat.Result<List<MediaBrowserCompat.MediaItem>>,
+            data: LiveData<List<MusicDirectory.Entry>>
     ) :
-        Observer<List<MusicDirectory.Entry>> {
+            Observer<List<MusicDirectory.Entry>> {
 
         private var liveData: LiveData<List<MusicDirectory.Entry>>? = null
 
@@ -73,15 +74,15 @@ class AndroidAutoMediaBrowser(application: Application) {
             val mediaItems: MutableList<MediaBrowserCompat.MediaItem> = mutableListOf()
             for (item in albumList) {
                 val entryBuilder: MediaDescriptionCompat.Builder =
-                    MediaDescriptionCompat.Builder()
+                        MediaDescriptionCompat.Builder()
                 entryBuilder
-                    .setTitle(item.title)
-                    .setMediaId(idPrefix + item.id)
+                        .setTitle(item.title)
+                        .setMediaId(idPrefix + item.id)
                 mediaItems.add(
-                    MediaBrowserCompat.MediaItem(
-                        entryBuilder.build(),
-                        MediaBrowserCompat.MediaItem.FLAG_BROWSABLE
-                    )
+                        MediaBrowserCompat.MediaItem(
+                                entryBuilder.build(),
+                                MediaBrowserCompat.MediaItem.FLAG_BROWSABLE
+                        )
                 )
             }
 
@@ -90,11 +91,11 @@ class AndroidAutoMediaBrowser(application: Application) {
     }
 
     class ArtistListObserver(
-        val idPrefix: String,
-        val result: MediaBrowserServiceCompat.Result<List<MediaBrowserCompat.MediaItem>>,
-        data: LiveData<List<ArtistOrIndex>>
+            val idPrefix: String,
+            val result: MediaBrowserServiceCompat.Result<List<MediaBrowserCompat.MediaItem>>,
+            data: LiveData<List<ArtistOrIndex>>
     ) :
-        Observer<List<ArtistOrIndex>> {
+            Observer<List<ArtistOrIndex>> {
 
         private var liveData: LiveData<List<ArtistOrIndex>>? = null
 
@@ -119,15 +120,15 @@ class AndroidAutoMediaBrowser(application: Application) {
             val mediaItems: MutableList<MediaBrowserCompat.MediaItem> = mutableListOf()
             for (item in artistList) {
                 val entryBuilder: MediaDescriptionCompat.Builder =
-                    MediaDescriptionCompat.Builder()
+                        MediaDescriptionCompat.Builder()
                 entryBuilder
-                    .setTitle(item.name)
-                    .setMediaId(idPrefix + item.id)
+                        .setTitle(item.name)
+                        .setMediaId(idPrefix + item.id)
                 mediaItems.add(
-                    MediaBrowserCompat.MediaItem(
-                        entryBuilder.build(),
-                        MediaBrowserCompat.MediaItem.FLAG_BROWSABLE
-                    )
+                        MediaBrowserCompat.MediaItem(
+                                entryBuilder.build(),
+                                MediaBrowserCompat.MediaItem.FLAG_BROWSABLE
+                        )
                 )
             }
 
@@ -135,15 +136,21 @@ class AndroidAutoMediaBrowser(application: Application) {
         }
     }
 
-    fun getRoot(
-        clientPackageName: String,
-        clientUid: Int,
-        rootHints: Bundle?
-    ): MediaBrowserServiceCompat.BrowserRoot {
+    override fun onCreate() {
+        super.onCreate()
+
+        albumListModel = AlbumListModel(application)
+        artistListModel = ArtistListModel(application)
+
+        mediaPlayerService.onCreate()
+        mediaPlayerService.updateMediaSession(null, PlayerState.IDLE)
+    }
+
+    override fun onGetRoot(clientPackageName: String, clientUid: Int, rootHints: Bundle?): BrowserRoot? {
         if (rootHints != null) {
             maximumRootChildLimit = rootHints.getInt(
-                MediaConstants.BROWSER_ROOT_HINTS_KEY_ROOT_CHILDREN_LIMIT,
-                4
+                    MediaConstants.BROWSER_ROOT_HINTS_KEY_ROOT_CHILDREN_LIMIT,
+                    4
             )
         }
         // opt into the root tabs (because it's gonna be non-optional
@@ -154,60 +161,56 @@ class AndroidAutoMediaBrowser(application: Application) {
         return MediaBrowserServiceCompat.BrowserRoot(MEDIA_BROWSER_ROOT_ID, extras)
     }
 
-    fun loadChildren(
-        parentMediaId: String,
-        result: MediaBrowserServiceCompat.Result<List<MediaBrowserCompat.MediaItem>>
-    ) {
-
+    override fun onLoadChildren(parentId: String, result: Result<List<MediaBrowserCompat.MediaItem>>) {
         val mediaItems: MutableList<MediaBrowserCompat.MediaItem> = mutableListOf()
 
-        if (MEDIA_BROWSER_ROOT_ID == parentMediaId) {
+        if (MEDIA_BROWSER_ROOT_ID == parentId) {
             // Build the MediaItem objects for the top level,
             // and put them in the mediaItems list...
 
             var recentList: MediaDescriptionCompat.Builder = MediaDescriptionCompat.Builder()
             recentList.setTitle("Recent").setMediaId(MEDIA_BROWSER_RECENT_LIST_ROOT)
             mediaItems.add(
-                MediaBrowserCompat.MediaItem(
-                    recentList.build(),
-                    MediaBrowserCompat.MediaItem.FLAG_BROWSABLE
-                )
+                    MediaBrowserCompat.MediaItem(
+                            recentList.build(),
+                            MediaBrowserCompat.MediaItem.FLAG_BROWSABLE
+                    )
             )
             var albumList: MediaDescriptionCompat.Builder = MediaDescriptionCompat.Builder()
             albumList.setTitle("Albums").setMediaId(MEDIA_BROWSER_ALBUM_LIST_ROOT)
             mediaItems.add(
-                MediaBrowserCompat.MediaItem(
-                    albumList.build(),
-                    MediaBrowserCompat.MediaItem.FLAG_BROWSABLE
-                )
+                    MediaBrowserCompat.MediaItem(
+                            albumList.build(),
+                            MediaBrowserCompat.MediaItem.FLAG_BROWSABLE
+                    )
             )
             var artistList: MediaDescriptionCompat.Builder = MediaDescriptionCompat.Builder()
             artistList.setTitle("Artists").setMediaId(MEDIA_BROWSER_ARTIST_LIST_ROOT)
             mediaItems.add(
-                MediaBrowserCompat.MediaItem(
-                    artistList.build(),
-                    MediaBrowserCompat.MediaItem.FLAG_BROWSABLE
-                )
+                    MediaBrowserCompat.MediaItem(
+                            artistList.build(),
+                            MediaBrowserCompat.MediaItem.FLAG_BROWSABLE
+                    )
             )
-        } else if (MEDIA_BROWSER_RECENT_LIST_ROOT == parentMediaId) {
+        } else if (MEDIA_BROWSER_RECENT_LIST_ROOT == parentId) {
             fetchAlbumList(AlbumListType.RECENT, MEDIA_BROWSER_RECENT_PREFIX, result)
             return
-        } else if (MEDIA_BROWSER_ALBUM_LIST_ROOT == parentMediaId) {
+        } else if (MEDIA_BROWSER_ALBUM_LIST_ROOT == parentId) {
             fetchAlbumList(AlbumListType.SORTED_BY_NAME, MEDIA_BROWSER_ALBUM_PREFIX, result)
             return
-        } else if (MEDIA_BROWSER_ARTIST_LIST_ROOT == parentMediaId) {
+        } else if (MEDIA_BROWSER_ARTIST_LIST_ROOT == parentId) {
             fetchArtistList(MEDIA_BROWSER_ARTIST_PREFIX, result)
             return
-        } else if (parentMediaId.startsWith(MEDIA_BROWSER_RECENT_PREFIX)) {
-            fetchTrackList(parentMediaId.substring(MEDIA_BROWSER_RECENT_PREFIX.length), result)
+        } else if (parentId.startsWith(MEDIA_BROWSER_RECENT_PREFIX)) {
+            fetchTrackList(parentId.substring(MEDIA_BROWSER_RECENT_PREFIX.length), result)
             return
-        } else if (parentMediaId.startsWith(MEDIA_BROWSER_ALBUM_PREFIX)) {
-            fetchTrackList(parentMediaId.substring(MEDIA_BROWSER_ALBUM_PREFIX.length), result)
+        } else if (parentId.startsWith(MEDIA_BROWSER_ALBUM_PREFIX)) {
+            fetchTrackList(parentId.substring(MEDIA_BROWSER_ALBUM_PREFIX.length), result)
             return
-        } else if (parentMediaId.startsWith(MEDIA_BROWSER_ARTIST_PREFIX)) {
+        } else if (parentId.startsWith(MEDIA_BROWSER_ARTIST_PREFIX)) {
             fetchArtistAlbumList(
-                parentMediaId.substring(MEDIA_BROWSER_ARTIST_PREFIX.length),
-                result
+                    parentId.substring(MEDIA_BROWSER_ARTIST_PREFIX.length),
+                    result
             )
             return
         } else {
@@ -217,13 +220,14 @@ class AndroidAutoMediaBrowser(application: Application) {
         result.sendResult(mediaItems)
     }
 
+
     fun getBundleData(bundle: Bundle?): Pair<String, List<MusicDirectory.Entry>>? {
         if (bundle == null) {
             return null
         }
 
         if (!bundle.containsKey(MEDIA_BROWSER_EXTRA_ALBUM_LIST) ||
-            !bundle.containsKey(MEDIA_BROWSER_EXTRA_MEDIA_ID)
+                !bundle.containsKey(MEDIA_BROWSER_EXTRA_MEDIA_ID)
         ) {
             return null
         }
@@ -231,58 +235,58 @@ class AndroidAutoMediaBrowser(application: Application) {
         val byteArrayInputStream = ByteArrayInputStream(bytes)
         val objectInputStream = ObjectInputStream(byteArrayInputStream)
         return Pair(
-            bundle.getString(MEDIA_BROWSER_EXTRA_MEDIA_ID),
-            objectInputStream.readObject() as List<MusicDirectory.Entry>
+                bundle.getString(MEDIA_BROWSER_EXTRA_MEDIA_ID),
+                objectInputStream.readObject() as List<MusicDirectory.Entry>
         )
     }
 
     private fun fetchAlbumList(
-        type: AlbumListType,
-        idPrefix: String,
-        result: MediaBrowserServiceCompat.Result<List<MediaBrowserCompat.MediaItem>>
+            type: AlbumListType,
+            idPrefix: String,
+            result: MediaBrowserServiceCompat.Result<List<MediaBrowserCompat.MediaItem>>
     ) {
-        AlbumListObserver(
-            idPrefix, result,
-            albumListModel.albumList
+        AutoMediaPlayerService.AlbumListObserver(
+                idPrefix, result,
+                albumListModel!!.albumList
         )
 
         val args: Bundle = Bundle()
         args.putString(Constants.INTENT_EXTRA_NAME_ALBUM_LIST_TYPE, type.toString())
-        albumListModel.getAlbumList(false, null, args)
+        albumListModel!!.getAlbumList(false, null, args)
         result.detach()
     }
 
     private fun fetchArtistList(
-        idPrefix: String,
-        result: MediaBrowserServiceCompat.Result<List<MediaBrowserCompat.MediaItem>>
+            idPrefix: String,
+            result: MediaBrowserServiceCompat.Result<List<MediaBrowserCompat.MediaItem>>
     ) {
-        ArtistListObserver(idPrefix, result, artistListModel.artists)
+        AutoMediaPlayerService.ArtistListObserver(idPrefix, result, artistListModel!!.artists)
 
-        artistListModel.getItems(false, null)
+        artistListModel!!.getItems(false, null)
         result.detach()
     }
 
     private fun fetchArtistAlbumList(
-        id: String,
-        result: MediaBrowserServiceCompat.Result<List<MediaBrowserCompat.MediaItem>>
+            id: String,
+            result: MediaBrowserServiceCompat.Result<List<MediaBrowserCompat.MediaItem>>
     ) {
         executorService.execute {
             val musicService = MusicServiceFactory.getMusicService()
 
             val musicDirectory = musicService.getMusicDirectory(
-                id, "", false
+                    id, "", false
             )
             val mediaItems: MutableList<MediaBrowserCompat.MediaItem> = mutableListOf()
 
             for (item in musicDirectory.getAllChild()) {
                 val entryBuilder: MediaDescriptionCompat.Builder =
-                    MediaDescriptionCompat.Builder()
+                        MediaDescriptionCompat.Builder()
                 entryBuilder.setTitle(item.title).setMediaId(MEDIA_BROWSER_ALBUM_PREFIX + item.id)
                 mediaItems.add(
-                    MediaBrowserCompat.MediaItem(
-                        entryBuilder.build(),
-                        MediaBrowserCompat.MediaItem.FLAG_BROWSABLE
-                    )
+                        MediaBrowserCompat.MediaItem(
+                                entryBuilder.build(),
+                                MediaBrowserCompat.MediaItem.FLAG_BROWSABLE
+                        )
                 )
             }
             result.sendResult(mediaItems)
@@ -291,14 +295,14 @@ class AndroidAutoMediaBrowser(application: Application) {
     }
 
     private fun fetchTrackList(
-        id: String,
-        result: MediaBrowserServiceCompat.Result<List<MediaBrowserCompat.MediaItem>>
+            id: String,
+            result: MediaBrowserServiceCompat.Result<List<MediaBrowserCompat.MediaItem>>
     ) {
         executorService.execute {
             val musicService = MusicServiceFactory.getMusicService()
 
             val albumDirectory = musicService.getAlbum(
-                id, "", false
+                    id, "", false
             )
 
             // The idea here is that we want to attach the full album list to every song,
@@ -315,22 +319,22 @@ class AndroidAutoMediaBrowser(application: Application) {
                 val extras = Bundle()
 
                 extras.putByteArray(
-                    MEDIA_BROWSER_EXTRA_ALBUM_LIST,
-                    songList
+                        MEDIA_BROWSER_EXTRA_ALBUM_LIST,
+                        songList
                 )
                 extras.putString(
-                    MEDIA_BROWSER_EXTRA_MEDIA_ID,
-                    item.id
+                        MEDIA_BROWSER_EXTRA_MEDIA_ID,
+                        item.id
                 )
 
                 val entryBuilder: MediaDescriptionCompat.Builder =
-                    MediaDescriptionCompat.Builder()
+                        MediaDescriptionCompat.Builder()
                 entryBuilder.setTitle(item.title).setMediaId(item.id).setExtras(extras)
                 mediaItems.add(
-                    MediaBrowserCompat.MediaItem(
-                        entryBuilder.build(),
-                        MediaBrowserCompat.MediaItem.FLAG_PLAYABLE
-                    )
+                        MediaBrowserCompat.MediaItem(
+                                entryBuilder.build(),
+                                MediaBrowserCompat.MediaItem.FLAG_PLAYABLE
+                        )
                 )
             }
             result.sendResult(mediaItems)
