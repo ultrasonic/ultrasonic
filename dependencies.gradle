@@ -39,7 +39,7 @@ ext.versions = [
         kluent               : "1.64",
         apacheCodecs         : "1.15",
         robolectric          : "4.6.1",
-        dexter               : "6.2.2",
+        dexter               : "6.2.3",
         timber               : "4.7.1",
         fastScroll           : "2.0.1",
 ]
