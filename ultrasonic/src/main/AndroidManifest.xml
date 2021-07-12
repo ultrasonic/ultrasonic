@@ -60,7 +60,7 @@
         </service>
 
         <service
-            android:name=".service.AutoMediaPlayerService"
+            android:name=".service.AutoMediaBrowserService"
             android:label="Ultrasonic Auto Media Player Service"
             android:exported="true">
 

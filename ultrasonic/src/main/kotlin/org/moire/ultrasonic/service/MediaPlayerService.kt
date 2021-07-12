@@ -14,14 +14,13 @@ import android.content.Intent
 import android.os.Build
 import android.os.Bundle
 import android.os.IBinder
-import android.support.v4.media.MediaBrowserCompat
+import android.support.v4.media.MediaDescriptionCompat
 import android.support.v4.media.MediaMetadataCompat
 import android.support.v4.media.session.MediaSessionCompat
 import android.support.v4.media.session.PlaybackStateCompat
 import android.view.KeyEvent
 import androidx.core.app.NotificationCompat
 import androidx.core.app.NotificationManagerCompat
-import androidx.media.MediaBrowserServiceCompat
 import kotlin.collections.ArrayList
 import org.koin.android.ext.android.inject
 import org.moire.ultrasonic.R
@@ -37,7 +36,12 @@ import org.moire.ultrasonic.provider.UltrasonicAppWidgetProvider4X3
 import org.moire.ultrasonic.provider.UltrasonicAppWidgetProvider4X4
 import org.moire.ultrasonic.receiver.MediaButtonIntentReceiver
 import org.moire.ultrasonic.service.MusicServiceFactory.getMusicService
-import org.moire.ultrasonic.util.*
+import org.moire.ultrasonic.util.Constants
+import org.moire.ultrasonic.util.MediaSessionEventDistributor
+import org.moire.ultrasonic.util.NowPlayingEventDistributor
+import org.moire.ultrasonic.util.ShufflePlayBuffer
+import org.moire.ultrasonic.util.SimpleServiceBinder
+import org.moire.ultrasonic.util.Util
 import timber.log.Timber
 
 /**
@@ -56,9 +60,10 @@ class MediaPlayerService : Service() {
     private val localMediaPlayer by inject<LocalMediaPlayer>()
     private val nowPlayingEventDistributor by inject<NowPlayingEventDistributor>()
     private val mediaPlayerLifecycleSupport by inject<MediaPlayerLifecycleSupport>()
+    private val mediaSessionEventDistributor: MediaSessionEventDistributor by inject()
 
     private var mediaSession: MediaSessionCompat? = null
-    private var mediaSessionToken: MediaSessionCompat.Token? = null
+    var mediaSessionToken: MediaSessionCompat.Token? = null
     private var isInForeground = false
     private var notificationBuilder: NotificationCompat.Builder? = null
 
@@ -91,6 +96,12 @@ class MediaPlayerService : Service() {
 
         localMediaPlayer.onNextSongRequested = Runnable { setNextPlaying() }
 
+        // TODO maybe MediaSession must be in an independent class after all...
+        // It seems this must be initialized in the stopped state too, e.g. for Android Auto.
+        // So it is best to init this early.
+        initMediaSessions()
+        updateMediaSession(null, PlayerState.IDLE)
+
         // Create Notification Channel
         createNotificationChannel()
 
@@ -113,6 +124,8 @@ class MediaPlayerService : Service() {
             localMediaPlayer.release()
             downloader.stop()
             shufflePlayBuffer.onDestroy()
+
+            mediaSessionEventDistributor.ReleaseCachedMediaSessionToken()
             mediaSession?.release()
             mediaSession = null
         } catch (ignored: Throwable) {
@@ -467,7 +480,7 @@ class MediaPlayerService : Service() {
     fun updateMediaSession(currentPlaying: DownloadFile?, playerState: PlayerState) {
         Timber.d("Updating the MediaSession")
 
-        if (mediaSession == null) initMediaSessions()
+        val playbackState = PlaybackStateCompat.Builder()
 
         // Set Metadata
         val metadata = MediaMetadataCompat.Builder()
@@ -483,6 +496,9 @@ class MediaPlayerService : Service() {
                 metadata.putString(MediaMetadataCompat.METADATA_KEY_ALBUM, song.album)
                 metadata.putString(MediaMetadataCompat.METADATA_KEY_TITLE, song.title)
                 metadata.putBitmap(MediaMetadataCompat.METADATA_KEY_ALBUM_ART, cover)
+
+                playbackState.setActiveQueueItemId(downloader.currentPlayingIndex.toLong())
+
             } catch (e: Exception) {
                 Timber.e(e, "Error setting the metadata")
             }
@@ -492,13 +508,15 @@ class MediaPlayerService : Service() {
         mediaSession!!.setMetadata(metadata.build())
 
         // Create playback State
-        val playbackState = PlaybackStateCompat.Builder()
         val state: Int
         val isActive: Boolean
 
         var actions: Long = PlaybackStateCompat.ACTION_PLAY_PAUSE or
             PlaybackStateCompat.ACTION_SKIP_TO_NEXT or
-            PlaybackStateCompat.ACTION_SKIP_TO_PREVIOUS
+            PlaybackStateCompat.ACTION_SKIP_TO_PREVIOUS or
+            PlaybackStateCompat.ACTION_PLAY_FROM_MEDIA_ID or
+            PlaybackStateCompat.ACTION_PLAY_FROM_SEARCH or
+            PlaybackStateCompat.ACTION_SKIP_TO_QUEUE_ITEM
 
         // Map our playerState to native PlaybackState
         // TODO: Synchronize these APIs
@@ -534,7 +552,8 @@ class MediaPlayerService : Service() {
             }
         }
 
-        playbackState.setState(state, PlaybackStateCompat.PLAYBACK_POSITION_UNKNOWN, 1.0f)
+        // TODO playerPosition should be updated more frequently (currently this function is called only when the playing track changes)
+        playbackState.setState(state, playerPosition.toLong(), 1.0f)
 
         // Set actions
         playbackState.setActions(actions)
@@ -544,6 +563,14 @@ class MediaPlayerService : Service() {
 
         // Set Active state
         mediaSession!!.isActive = isActive
+
+        // TODO Implement Now Playing queue handling properly
+        mediaSession!!.setQueueTitle("Now Playing")
+        mediaSession!!.setQueue(downloader.downloadList.mapIndexed { id, file ->
+            MediaSessionCompat.QueueItem(MediaDescriptionCompat.Builder()
+                .setTitle(file.song.title)
+                .build(), id.toLong())
+        })
 
         Timber.d("Setting the MediaSession to active = %s", isActive)
     }
@@ -795,6 +822,7 @@ class MediaPlayerService : Service() {
 
         mediaSession = MediaSessionCompat(applicationContext, "UltrasonicService")
         mediaSessionToken = mediaSession!!.sessionToken
+        mediaSessionEventDistributor.RaiseMediaSessionTokenCreatedEvent(mediaSessionToken!!)
 
         updateMediaButtonReceiver()
 
@@ -810,35 +838,21 @@ class MediaPlayerService : Service() {
 
                 Timber.v("Media Session Callback: onPlay")
             }
-/*
+
             override fun onPlayFromMediaId(mediaId: String?, extras: Bundle?) {
                 super.onPlayFromMediaId(mediaId, extras)
 
-                val result = autoMediaBrowser!!.getBundleData(extras)
-                if (result != null) {
-                    val mediaId = result.first
-                    val directoryList = result.second
-
-                    resetPlayback()
-                    val songs: MutableList<MusicDirectory.Entry> = mutableListOf()
-                    var found = false
-                    for (item in directoryList) {
-                        if (found || item.id == mediaId) {
-                            found = true
-                            songs.add(item)
-                        }
-                    }
-                    downloader.download(songs, false, false, false, true)
-
-                    getPendingIntentForMediaAction(
-                        applicationContext,
-                        KeyEvent.KEYCODE_MEDIA_PLAY,
-                        keycode
-                    ).send()
-                }
-                Timber.v("Media Session Callback: onPlayFromMediaId")
+                Timber.d("Media Session Callback: onPlayFromMediaId")
+                mediaSessionEventDistributor.RaisePlayFromMediaIdRequestedEvent(mediaId, extras)
             }
-*/
+
+            override fun onPlayFromSearch(query: String?, extras: Bundle?) {
+                super.onPlayFromSearch(query, extras)
+
+                Timber.d("Media Session Callback: onPlayFromSearch")
+                mediaSessionEventDistributor.RaisePlayFromSearchRequestedEvent(query, extras)
+            }
+
             override fun onPause() {
                 super.onPause()
                 getPendingIntentForMediaAction(
@@ -885,6 +899,11 @@ class MediaPlayerService : Service() {
                 val event = mediaButtonEvent.extras!!["android.intent.extra.KEY_EVENT"] as KeyEvent?
                 mediaPlayerLifecycleSupport.handleKeyEvent(event)
                 return true
+            }
+
+            override fun onSkipToQueueItem(id: Long) {
+                super.onSkipToQueueItem(id)
+                play(id.toInt())
             }
         }
         )

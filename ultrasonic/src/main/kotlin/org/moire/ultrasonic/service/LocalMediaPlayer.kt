@@ -171,7 +171,7 @@ class LocalMediaPlayer(
             val mainHandler = Handler(context.mainLooper)
 
             val myRunnable = Runnable {
-                onPlayerStateChanged!!(playerState, currentPlaying)
+                onPlayerStateChanged?.invoke(playerState, currentPlaying)
             }
             mainHandler.post(myRunnable)
         }
