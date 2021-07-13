@@ -142,8 +142,8 @@ class AutoMediaPlayerService: MediaBrowserServiceCompat() {
         albumListModel = AlbumListModel(application)
         artistListModel = ArtistListModel(application)
 
-        mediaPlayerService.onCreate()
-        mediaPlayerService.updateMediaSession(null, PlayerState.IDLE)
+        //mediaPlayerService.onCreate()
+        //mediaPlayerService.updateMediaSession(null, PlayerState.IDLE)
     }
 
     override fun onGetRoot(clientPackageName: String, clientUid: Int, rootHints: Bundle?): BrowserRoot? {

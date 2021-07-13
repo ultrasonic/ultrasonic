@@ -21,6 +21,8 @@ import android.os.PowerManager
 import android.os.PowerManager.PARTIAL_WAKE_LOCK
 import android.os.PowerManager.WakeLock
 import androidx.lifecycle.MutableLiveData
+import org.koin.core.component.KoinComponent
+import org.koin.core.component.inject
 import java.io.File
 import java.net.URLEncoder
 import java.util.Locale
@@ -32,6 +34,7 @@ import org.moire.ultrasonic.data.ActiveServerProvider.Companion.isOffline
 import org.moire.ultrasonic.domain.PlayerState
 import org.moire.ultrasonic.util.CancellableTask
 import org.moire.ultrasonic.util.Constants
+import org.moire.ultrasonic.util.MediaSessionHandler
 import org.moire.ultrasonic.util.StreamProxy
 import org.moire.ultrasonic.util.Util
 import timber.log.Timber
@@ -39,10 +42,11 @@ import timber.log.Timber
 /**
  * Represents a Media Player which uses the mobile's resources for playback
  */
-class LocalMediaPlayer(
-    private val audioFocusHandler: AudioFocusHandler,
-    private val context: Context
-) {
+class LocalMediaPlayer: KoinComponent {
+
+    private val audioFocusHandler by inject<AudioFocusHandler>()
+    private val context by inject<Context>()
+    private val mediaSessionHandler by inject<MediaSessionHandler>()
 
     @JvmField
     var onCurrentPlayingChanged: ((DownloadFile?) -> Unit?)? = null
@@ -705,8 +709,11 @@ class LocalMediaPlayer(
                 try {
                     if (playerState === PlayerState.STARTED) {
                         cachedPosition = mediaPlayer.currentPosition
+                        mediaSessionHandler.updateMediaSessionPlaybackPosition(
+                            cachedPosition.toLong()
+                        )
                     }
-                    Util.sleepQuietly(50L)
+                    Util.sleepQuietly(100L)
                 } catch (e: Exception) {
                     Timber.w(e, "Crashed getting current position")
                     isRunning = false

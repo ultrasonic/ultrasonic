@@ -10,6 +10,7 @@ import androidx.media.utils.MediaConstants
 import org.koin.android.ext.android.inject
 import org.moire.ultrasonic.util.MediaSessionEventDistributor
 import org.moire.ultrasonic.util.MediaSessionEventListener
+import org.moire.ultrasonic.util.MediaSessionHandler
 import timber.log.Timber
 
 
@@ -23,49 +24,49 @@ const val MY_MEDIA_PLAYLIST_ID = "MY_MEDIA_PLAYLIST_ID"
 class AutoMediaBrowserService : MediaBrowserServiceCompat() {
 
     private lateinit var mediaSessionEventListener: MediaSessionEventListener
-    private val mediaSessionEventDistributor: MediaSessionEventDistributor by inject()
-    private val lifecycleSupport: MediaPlayerLifecycleSupport by inject()
+    private val mediaSessionEventDistributor by inject<MediaSessionEventDistributor>()
+    private val lifecycleSupport by inject<MediaPlayerLifecycleSupport>()
+    private val mediaSessionHandler by inject<MediaSessionHandler>()
 
     override fun onCreate() {
         super.onCreate()
 
         mediaSessionEventListener = object : MediaSessionEventListener {
             override fun onMediaSessionTokenCreated(token: MediaSessionCompat.Token) {
-                Timber.i("AutoMediaBrowserService onMediaSessionTokenCreated called")
                 if (sessionToken == null) {
-                    Timber.i("AutoMediaBrowserService onMediaSessionTokenCreated session token was null, set it to %s", token.toString())
                     sessionToken = token
                 }
             }
 
             override fun onPlayFromMediaIdRequested(mediaId: String?, extras: Bundle?) {
                 // TODO implement
-                Timber.i("AutoMediaBrowserService onPlayFromMediaIdRequested called")
             }
 
             override fun onPlayFromSearchRequested(query: String?, extras: Bundle?) {
                 // TODO implement
-                Timber.i("AutoMediaBrowserService onPlayFromSearchRequested called")
             }
         }
 
         mediaSessionEventDistributor.subscribe(mediaSessionEventListener)
+        mediaSessionHandler.initialize()
 
         val handler = Handler()
         handler.postDelayed({
-            Timber.i("AutoMediaBrowserService starting lifecycleSupport and MediaPlayerService...")
-            // TODO it seems Android Auto handles autostart, but we must check that
+            // Ultrasonic may be started from Android Auto. This boots up the necessary components.
+            Timber.d("AutoMediaBrowserService starting lifecycleSupport and MediaPlayerService...")
             lifecycleSupport.onCreate()
             MediaPlayerService.getInstance()
         }, 100)
 
-        Timber.i("AutoMediaBrowserService onCreate called")
+        Timber.i("AutoMediaBrowserService onCreate finished")
     }
 
     override fun onDestroy() {
         super.onDestroy()
         mediaSessionEventDistributor.unsubscribe(mediaSessionEventListener)
-        Timber.i("AutoMediaBrowserService onDestroy called")
+        mediaSessionHandler.release()
+
+        Timber.i("AutoMediaBrowserService onDestroy finished")
     }
 
     override fun onGetRoot(
@@ -73,7 +74,7 @@ class AutoMediaBrowserService : MediaBrowserServiceCompat() {
         clientUid: Int,
         rootHints: Bundle?
     ): BrowserRoot? {
-        Timber.i("AutoMediaBrowserService onGetRoot called")
+        Timber.d("AutoMediaBrowserService onGetRoot called")
 
         // TODO: The number of horizontal items available on the Andoid Auto screen. Check and handle.
         val maximumRootChildLimit = rootHints!!.getInt(
@@ -102,7 +103,7 @@ class AutoMediaBrowserService : MediaBrowserServiceCompat() {
         parentId: String,
         result: Result<MutableList<MediaBrowserCompat.MediaItem>>
     ) {
-        Timber.i("AutoMediaBrowserService onLoadChildren called")
+        Timber.d("AutoMediaBrowserService onLoadChildren called")
 
         if (parentId == MY_MEDIA_ROOT_ID) {
             return getRootItems(result)

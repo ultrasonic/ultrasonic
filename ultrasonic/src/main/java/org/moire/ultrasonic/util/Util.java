@@ -692,16 +692,6 @@ public class Util
 		return Bitmap.createScaledBitmap(bitmap, size, getScaledHeight(bitmap, size), true);
 	}
 
-	// Trigger an update on the MediaSession. Depending on the preference it will register
-	// or deregister the MediaButtonReceiver.
-	public static void updateMediaButtonEventReceiver()
-	{
-		MediaPlayerService mediaPlayerService = MediaPlayerService.getRunningInstance();
-		if (mediaPlayerService != null) {
-			mediaPlayerService.updateMediaButtonReceiver();
-		}
-	}
-
 	public static MusicDirectory getSongsFromSearchResult(SearchResult searchResult)
 	{
 		MusicDirectory musicDirectory = new MusicDirectory();

@@ -2,6 +2,7 @@ package org.moire.ultrasonic.util
 
 import android.os.Bundle
 import android.support.v4.media.session.MediaSessionCompat
+import android.view.KeyEvent
 
 /**
  * This class distributes MediaSession related events to its subscribers.
@@ -26,24 +27,32 @@ class MediaSessionEventDistributor {
         eventListenerList.remove(listener)
     }
 
-    fun ReleaseCachedMediaSessionToken() {
+    fun releaseCachedMediaSessionToken() {
         synchronized(this) {
             cachedToken = null
         }
     }
 
-    fun RaiseMediaSessionTokenCreatedEvent(token: MediaSessionCompat.Token) {
+    fun raiseMediaSessionTokenCreatedEvent(token: MediaSessionCompat.Token) {
         synchronized(this) {
             cachedToken = token
             eventListenerList.forEach { listener -> listener.onMediaSessionTokenCreated(token) }
         }
     }
 
-    fun RaisePlayFromMediaIdRequestedEvent(mediaId: String?, extras: Bundle?) {
+    fun raisePlayFromMediaIdRequestedEvent(mediaId: String?, extras: Bundle?) {
         eventListenerList.forEach { listener -> listener.onPlayFromMediaIdRequested(mediaId, extras) }
     }
 
-    fun RaisePlayFromSearchRequestedEvent(query: String?, extras: Bundle?) {
+    fun raisePlayFromSearchRequestedEvent(query: String?, extras: Bundle?) {
         eventListenerList.forEach { listener -> listener.onPlayFromSearchRequested(query, extras) }
+    }
+
+    fun raiseSkipToQueueItemRequestedEvent(id: Long) {
+        eventListenerList.forEach { listener -> listener.onSkipToQueueItemRequested(id) }
+    }
+
+    fun raiseMediaButtonEvent(keyEvent: KeyEvent?) {
+        eventListenerList.forEach { listener -> listener.onMediaButtonEvent(keyEvent) }
     }
 }

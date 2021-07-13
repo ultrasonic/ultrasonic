@@ -5,6 +5,7 @@ import org.koin.dsl.module
 import org.moire.ultrasonic.data.ActiveServerProvider
 import org.moire.ultrasonic.subsonic.ImageLoaderProvider
 import org.moire.ultrasonic.util.MediaSessionEventDistributor
+import org.moire.ultrasonic.util.MediaSessionHandler
 import org.moire.ultrasonic.util.NowPlayingEventDistributor
 import org.moire.ultrasonic.util.PermissionUtil
 import org.moire.ultrasonic.util.ThemeChangedEventDistributor
@@ -19,4 +20,5 @@ val applicationModule = module {
     single { NowPlayingEventDistributor() }
     single { ThemeChangedEventDistributor() }
     single { MediaSessionEventDistributor() }
+    single { MediaSessionHandler() }
 }

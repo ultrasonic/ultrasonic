@@ -61,7 +61,7 @@
 
         <service
             android:name=".service.AutoMediaBrowserService"
-            android:label="Ultrasonic Auto Media Player Service"
+            android:label="@string/common.appname"
             android:exported="true">
 
             <intent-filter>
