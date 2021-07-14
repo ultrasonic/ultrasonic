@@ -10,6 +10,7 @@ import android.support.v4.media.MediaMetadataCompat
 import android.support.v4.media.session.MediaSessionCompat
 import android.support.v4.media.session.PlaybackStateCompat
 import android.support.v4.media.session.PlaybackStateCompat.PLAYBACK_POSITION_UNKNOWN
+import android.text.TextUtils
 import android.view.KeyEvent
 import org.koin.core.component.KoinComponent
 import org.koin.core.component.inject
@@ -36,6 +37,7 @@ class MediaSessionHandler : KoinComponent {
     private var referenceCount: Int = 0
     private var cachedPlaylist: Iterable<MusicDirectory.Entry>? = null
     private var playbackPositionDelayCount: Int = 0
+    private var cachedPosition: Long = 0
 
     fun release() {
 
@@ -47,7 +49,7 @@ class MediaSessionHandler : KoinComponent {
         mediaSession?.release()
         mediaSession = null
 
-        Timber.i("MediaSessionHandler.initialize Media Session released")
+        Timber.i("MediaSessionHandler.release Media Session released")
     }
 
     fun initialize() {
@@ -82,14 +84,14 @@ class MediaSessionHandler : KoinComponent {
             override fun onPlayFromMediaId(mediaId: String?, extras: Bundle?) {
                 super.onPlayFromMediaId(mediaId, extras)
 
-                Timber.d("Media Session Callback: onPlayFromMediaId")
+                Timber.d("Media Session Callback: onPlayFromMediaId %s", mediaId)
                 mediaSessionEventDistributor.raisePlayFromMediaIdRequestedEvent(mediaId, extras)
             }
 
             override fun onPlayFromSearch(query: String?, extras: Bundle?) {
                 super.onPlayFromSearch(query, extras)
 
-                Timber.d("Media Session Callback: onPlayFromSearch")
+                Timber.d("Media Session Callback: onPlayFromSearch %s", query)
                 mediaSessionEventDistributor.raisePlayFromSearchRequestedEvent(query, extras)
             }
 
@@ -199,6 +201,7 @@ class MediaSessionHandler : KoinComponent {
             PlayerState.COMPLETED,
             PlayerState.STOPPED -> {
                 playbackState = PlaybackStateCompat.STATE_STOPPED
+                cachedPosition = PLAYBACK_POSITION_UNKNOWN
             }
             PlayerState.IDLE -> {
                 // IDLE state usually just means the playback is stopped
@@ -208,6 +211,7 @@ class MediaSessionHandler : KoinComponent {
                 else
                     PlaybackStateCompat.STATE_STOPPED
                 playbackActions = 0L
+                cachedPosition = PLAYBACK_POSITION_UNKNOWN
             }
             PlayerState.PAUSED -> {
                 playbackState = PlaybackStateCompat.STATE_PAUSED
@@ -222,7 +226,7 @@ class MediaSessionHandler : KoinComponent {
         }
 
         val playbackStateBuilder = PlaybackStateCompat.Builder()
-        playbackStateBuilder.setState(playbackState!!, PLAYBACK_POSITION_UNKNOWN, 1.0f)
+        playbackStateBuilder.setState(playbackState!!, cachedPosition, 1.0f)
 
         // Set actions
         playbackStateBuilder.setActions(playbackActions!!)
@@ -245,14 +249,14 @@ class MediaSessionHandler : KoinComponent {
         mediaSession!!.setQueueTitle(applicationContext.getString(R.string.button_bar_now_playing))
         mediaSession!!.setQueue(playlist.mapIndexed { id, song ->
             MediaSessionCompat.QueueItem(
-                MediaDescriptionCompat.Builder()
-                    .setTitle(song.title)
-                    .build(), id.toLong())
+                getMediaDescriptionForEntry(song),
+                id.toLong())
         })
     }
 
     fun updateMediaSessionPlaybackPosition(playbackPosition: Long) {
 
+        cachedPosition = playbackPosition
         if (mediaSession == null) return
 
         if (playbackState == null || playbackActions == null) return
@@ -311,5 +315,67 @@ class MediaSessionHandler : KoinComponent {
         intent.setPackage(context.packageName)
         intent.putExtra(Intent.EXTRA_KEY_EVENT, KeyEvent(KeyEvent.ACTION_DOWN, keycode))
         return PendingIntent.getBroadcast(context, requestCode, intent, flags)
+    }
+
+    private fun getMediaDescriptionForEntry(song: MusicDirectory.Entry): MediaDescriptionCompat {
+
+        val descriptionBuilder = MediaDescriptionCompat.Builder()
+        val artist = StringBuilder(60)
+        var bitRate: String? = null
+
+        val duration = song.duration
+        if (duration != null) {
+            artist.append(String.format("%s  ", Util.formatTotalDuration(duration.toLong())))
+        }
+
+        if (song.bitRate != null)
+            bitRate = String.format(
+                applicationContext.getString(R.string.song_details_kbps), song.bitRate
+            )
+
+        val fileFormat: String?
+        val suffix = song.suffix
+        val transcodedSuffix = song.transcodedSuffix
+
+        fileFormat = if (
+            TextUtils.isEmpty(transcodedSuffix) || transcodedSuffix == suffix || song.isVideo
+        ) suffix else String.format("%s > %s", suffix, transcodedSuffix)
+
+        val artistName = song.artist
+
+        if (artistName != null) {
+            if (Util.shouldDisplayBitrateWithArtist()) {
+                artist.append(artistName).append(" (").append(
+                    String.format(
+                        applicationContext.getString(R.string.song_details_all),
+                        if (bitRate == null) "" else String.format("%s ", bitRate), fileFormat
+                    )
+                ).append(')')
+            } else {
+                artist.append(artistName)
+            }
+        }
+
+        val trackNumber = song.track ?: 0
+
+        val title = StringBuilder(60)
+        if (Util.shouldShowTrackNumber() && trackNumber > 0)
+            title.append(String.format("%02d - ", trackNumber))
+
+        title.append(song.title)
+
+        if (song.isVideo && Util.shouldDisplayBitrateWithArtist()) {
+            title.append(" (").append(
+                String.format(
+                    applicationContext.getString(R.string.song_details_all),
+                    if (bitRate == null) "" else String.format("%s ", bitRate), fileFormat
+                )
+            ).append(')')
+        }
+
+        descriptionBuilder.setTitle(title)
+        descriptionBuilder.setSubtitle(artist)
+
+        return descriptionBuilder.build()
     }
 }
