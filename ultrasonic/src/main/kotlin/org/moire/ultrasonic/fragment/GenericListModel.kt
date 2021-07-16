@@ -66,20 +66,24 @@ open class GenericListModel(application: Application) :
      */
     fun backgroundLoadFromServer(
         refresh: Boolean,
-        swipe: SwipeRefreshLayout,
+        swipe: SwipeRefreshLayout?,
         bundle: Bundle = Bundle()
     ) {
         viewModelScope.launch {
-            swipe.isRefreshing = true
+            if (swipe != null) {
+                swipe.isRefreshing = true
+            }
             loadFromServer(refresh, swipe, bundle)
-            swipe.isRefreshing = false
+            if (swipe != null) {
+                swipe.isRefreshing = false
+            }
         }
     }
 
     /**
      * Calls the load() function with error handling
      */
-    suspend fun loadFromServer(refresh: Boolean, swipe: SwipeRefreshLayout, bundle: Bundle) =
+    suspend fun loadFromServer(refresh: Boolean, swipe: SwipeRefreshLayout?, bundle: Bundle) =
         withContext(Dispatchers.IO) {
             val musicService = MusicServiceFactory.getMusicService()
             val isOffline = ActiveServerProvider.isOffline()
@@ -88,7 +92,9 @@ open class GenericListModel(application: Application) :
             try {
                 load(isOffline, useId3Tags, musicService, refresh, bundle)
             } catch (all: Exception) {
-                handleException(all, swipe.context)
+                if (swipe != null) {
+                    handleException(all, swipe.context)
+                }
             }
         }
 

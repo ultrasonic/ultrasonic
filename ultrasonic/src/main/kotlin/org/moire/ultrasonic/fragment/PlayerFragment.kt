@@ -313,7 +313,7 @@ class PlayerFragment : Fragment(), GestureDetector.OnGestureListener, KoinCompon
         }
 
         repeatButton.setOnClickListener {
-            val repeatMode = mediaPlayerController.repeatMode?.next()
+            val repeatMode = mediaPlayerController.repeatMode.next()
             mediaPlayerController.repeatMode = repeatMode
             onDownloadListChanged()
             when (repeatMode) {

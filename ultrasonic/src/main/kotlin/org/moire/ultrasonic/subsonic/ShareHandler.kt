@@ -40,13 +40,13 @@ class ShareHandler(val context: Context) {
         swipe: SwipeRefreshLayout?,
         cancellationToken: CancellationToken
     ) {
-        val askForDetails = Util.getShouldAskForShareDetails()
+        val askForDetails = Util.shouldAskForShareDetails
         val shareDetails = ShareDetails()
         shareDetails.Entries = entries
         if (askForDetails) {
             showDialog(fragment, shareDetails, swipe, cancellationToken)
         } else {
-            shareDetails.Description = Util.getDefaultShareDescription()
+            shareDetails.Description = Util.defaultShareDescription
             shareDetails.Expiration = TimeSpan.getCurrentTime().add(
                 Util.getDefaultShareExpirationInMillis(context)
             ).totalMilliseconds
@@ -133,16 +133,16 @@ class ShareHandler(val context: Context) {
             }
             shareDetails.Description = shareDescription!!.text.toString()
             if (hideDialogCheckBox!!.isChecked) {
-                Util.setShouldAskForShareDetails(false)
+                Util.shouldAskForShareDetails = false
             }
             if (saveAsDefaultsCheckBox!!.isChecked) {
                 val timeSpanType: String = timeSpanPicker!!.timeSpanType
                 val timeSpanAmount: Int = timeSpanPicker!!.timeSpanAmount
-                Util.setDefaultShareExpiration(
+                Util.defaultShareExpiration =
                     if (!noExpirationCheckBox!!.isChecked && timeSpanAmount > 0)
                         String.format("%d:%s", timeSpanAmount, timeSpanType) else ""
-                )
-                Util.setDefaultShareDescription(shareDetails.Description)
+
+                Util.defaultShareDescription = shareDetails.Description
             }
             share(fragment, shareDetails, swipe, cancellationToken)
         }
@@ -157,8 +157,8 @@ class ShareHandler(val context: Context) {
             b ->
             timeSpanPicker!!.isEnabled = !b
         }
-        val defaultDescription = Util.getDefaultShareDescription()
-        val timeSpan = Util.getDefaultShareExpiration()
+        val defaultDescription = Util.defaultShareDescription
+        val timeSpan = Util.defaultShareExpiration
         val split = pattern.split(timeSpan)
         if (split.size == 2) {
             val timeSpanAmount = split[0].toInt()
