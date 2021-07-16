@@ -24,6 +24,9 @@ import timber.log.Timber
 
 private const val INTENT_CODE_MEDIA_BUTTON = 161
 
+/**
+ * Central place to handle the state of the MediaSession
+ */
 class MediaSessionHandler : KoinComponent {
 
     private var mediaSession: MediaSessionCompat? = null
@@ -249,7 +252,7 @@ class MediaSessionHandler : KoinComponent {
         mediaSession!!.setQueueTitle(applicationContext.getString(R.string.button_bar_now_playing))
         mediaSession!!.setQueue(playlist.mapIndexed { id, song ->
             MediaSessionCompat.QueueItem(
-                getMediaDescriptionForEntry(song),
+                Util.getMediaDescriptionForEntry(song),
                 id.toLong())
         })
     }
@@ -315,67 +318,5 @@ class MediaSessionHandler : KoinComponent {
         intent.setPackage(context.packageName)
         intent.putExtra(Intent.EXTRA_KEY_EVENT, KeyEvent(KeyEvent.ACTION_DOWN, keycode))
         return PendingIntent.getBroadcast(context, requestCode, intent, flags)
-    }
-
-    private fun getMediaDescriptionForEntry(song: MusicDirectory.Entry): MediaDescriptionCompat {
-
-        val descriptionBuilder = MediaDescriptionCompat.Builder()
-        val artist = StringBuilder(60)
-        var bitRate: String? = null
-
-        val duration = song.duration
-        if (duration != null) {
-            artist.append(String.format("%s  ", Util.formatTotalDuration(duration.toLong())))
-        }
-
-        if (song.bitRate != null)
-            bitRate = String.format(
-                applicationContext.getString(R.string.song_details_kbps), song.bitRate
-            )
-
-        val fileFormat: String?
-        val suffix = song.suffix
-        val transcodedSuffix = song.transcodedSuffix
-
-        fileFormat = if (
-            TextUtils.isEmpty(transcodedSuffix) || transcodedSuffix == suffix || song.isVideo
-        ) suffix else String.format("%s > %s", suffix, transcodedSuffix)
-
-        val artistName = song.artist
-
-        if (artistName != null) {
-            if (Util.shouldDisplayBitrateWithArtist()) {
-                artist.append(artistName).append(" (").append(
-                    String.format(
-                        applicationContext.getString(R.string.song_details_all),
-                        if (bitRate == null) "" else String.format("%s ", bitRate), fileFormat
-                    )
-                ).append(')')
-            } else {
-                artist.append(artistName)
-            }
-        }
-
-        val trackNumber = song.track ?: 0
-
-        val title = StringBuilder(60)
-        if (Util.shouldShowTrackNumber() && trackNumber > 0)
-            title.append(String.format("%02d - ", trackNumber))
-
-        title.append(song.title)
-
-        if (song.isVideo && Util.shouldDisplayBitrateWithArtist()) {
-            title.append(" (").append(
-                String.format(
-                    applicationContext.getString(R.string.song_details_all),
-                    if (bitRate == null) "" else String.format("%s ", bitRate), fileFormat
-                )
-            ).append(')')
-        }
-
-        descriptionBuilder.setTitle(title)
-        descriptionBuilder.setSubtitle(artist)
-
-        return descriptionBuilder.build()
     }
 }

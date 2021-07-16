@@ -65,7 +65,7 @@ class MediaPlayerService : Service() {
     private lateinit var mediaSessionEventListener: MediaSessionEventListener
 
     private val repeatMode: RepeatMode
-        get() = Util.getRepeatMode()
+        get() = Util.repeatMode
 
     override fun onBind(intent: Intent): IBinder {
         return binder
