@@ -535,7 +535,7 @@ class MediaPlayerService : Service() {
         // Init
         val context = applicationContext
         val song = currentPlaying?.song
-        val stopIntent = getPendingIntentForMediaAction(context, KeyEvent.KEYCODE_MEDIA_STOP, 100)
+        val stopIntent = Util.getPendingIntentForMediaAction(context, KeyEvent.KEYCODE_MEDIA_STOP, 100)
 
         // We should use a single notification builder, otherwise the notification may not be updated
         if (notificationBuilder == null) {
@@ -654,7 +654,7 @@ class MediaPlayerService : Service() {
             else -> return null
         }
 
-        val pendingIntent = getPendingIntentForMediaAction(context, keycode, requestCode)
+        val pendingIntent = Util.getPendingIntentForMediaAction(context, keycode, requestCode)
         return NotificationCompat.Action.Builder(icon, label, pendingIntent).build()
     }
 
@@ -665,7 +665,7 @@ class MediaPlayerService : Service() {
     ): NotificationCompat.Action {
         val isPlaying = playerState === PlayerState.STARTED
         val keycode = KeyEvent.KEYCODE_MEDIA_PLAY_PAUSE
-        val pendingIntent = getPendingIntentForMediaAction(context, keycode, requestCode)
+        val pendingIntent = Util.getPendingIntentForMediaAction(context, keycode, requestCode)
         val label: String
         val icon: Int
 
@@ -698,7 +698,7 @@ class MediaPlayerService : Service() {
             icon = R.drawable.ic_star_hollow_dark
         }
 
-        val pendingIntent = getPendingIntentForMediaAction(context, keyCode, requestCode)
+        val pendingIntent = Util.getPendingIntentForMediaAction(context, keyCode, requestCode)
         return NotificationCompat.Action.Builder(icon, label, pendingIntent).build()
     }
 
@@ -708,18 +708,6 @@ class MediaPlayerService : Service() {
         val flags = PendingIntent.FLAG_UPDATE_CURRENT
         intent.putExtra(Constants.INTENT_EXTRA_NAME_SHOW_PLAYER, true)
         return PendingIntent.getActivity(this, 0, intent, flags)
-    }
-
-    private fun getPendingIntentForMediaAction(
-        context: Context,
-        keycode: Int,
-        requestCode: Int
-    ): PendingIntent {
-        val intent = Intent(Constants.CMD_PROCESS_KEYCODE)
-        val flags = PendingIntent.FLAG_UPDATE_CURRENT
-        intent.setPackage(context.packageName)
-        intent.putExtra(Intent.EXTRA_KEY_EVENT, KeyEvent(KeyEvent.ACTION_DOWN, keycode))
-        return PendingIntent.getBroadcast(context, requestCode, intent, flags)
     }
 
     @Suppress("MagicNumber")

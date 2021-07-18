@@ -5,12 +5,10 @@ import android.content.ComponentName
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
-import android.support.v4.media.MediaDescriptionCompat
 import android.support.v4.media.MediaMetadataCompat
 import android.support.v4.media.session.MediaSessionCompat
 import android.support.v4.media.session.PlaybackStateCompat
 import android.support.v4.media.session.PlaybackStateCompat.PLAYBACK_POSITION_UNKNOWN
-import android.text.TextUtils
 import android.view.KeyEvent
 import org.koin.core.component.KoinComponent
 import org.koin.core.component.inject
@@ -75,7 +73,7 @@ class MediaSessionHandler : KoinComponent {
             override fun onPlay() {
                 super.onPlay()
 
-                getPendingIntentForMediaAction(
+                Util.getPendingIntentForMediaAction(
                     applicationContext,
                     KeyEvent.KEYCODE_MEDIA_PLAY,
                     keycode
@@ -100,7 +98,7 @@ class MediaSessionHandler : KoinComponent {
 
             override fun onPause() {
                 super.onPause()
-                getPendingIntentForMediaAction(
+                Util.getPendingIntentForMediaAction(
                     applicationContext,
                     KeyEvent.KEYCODE_MEDIA_PAUSE,
                     keycode
@@ -110,7 +108,7 @@ class MediaSessionHandler : KoinComponent {
 
             override fun onStop() {
                 super.onStop()
-                getPendingIntentForMediaAction(
+                Util.getPendingIntentForMediaAction(
                     applicationContext,
                     KeyEvent.KEYCODE_MEDIA_STOP,
                     keycode
@@ -120,7 +118,7 @@ class MediaSessionHandler : KoinComponent {
 
             override fun onSkipToNext() {
                 super.onSkipToNext()
-                getPendingIntentForMediaAction(
+                Util.getPendingIntentForMediaAction(
                     applicationContext,
                     KeyEvent.KEYCODE_MEDIA_NEXT,
                     keycode
@@ -130,7 +128,7 @@ class MediaSessionHandler : KoinComponent {
 
             override fun onSkipToPrevious() {
                 super.onSkipToPrevious()
-                getPendingIntentForMediaAction(
+                Util.getPendingIntentForMediaAction(
                     applicationContext,
                     KeyEvent.KEYCODE_MEDIA_PREVIOUS,
                     keycode
@@ -248,7 +246,6 @@ class MediaSessionHandler : KoinComponent {
         cachedPlaylist = playlist
         if (mediaSession == null) return
 
-        // TODO Implement Now Playing queue handling properly
         mediaSession!!.setQueueTitle(applicationContext.getString(R.string.button_bar_now_playing))
         mediaSession!!.setQueue(playlist.mapIndexed { id, song ->
             MediaSessionCompat.QueueItem(
@@ -305,18 +302,5 @@ class MediaSessionHandler : KoinComponent {
 
     private fun unregisterMediaButtonEventReceiver() {
         mediaSession?.setMediaButtonReceiver(null)
-    }
-
-    // TODO Copied from MediaPlayerService. Move to Utils
-    private fun getPendingIntentForMediaAction(
-        context: Context,
-        keycode: Int,
-        requestCode: Int
-    ): PendingIntent {
-        val intent = Intent(Constants.CMD_PROCESS_KEYCODE)
-        val flags = PendingIntent.FLAG_UPDATE_CURRENT
-        intent.setPackage(context.packageName)
-        intent.putExtra(Intent.EXTRA_KEY_EVENT, KeyEvent(KeyEvent.ACTION_DOWN, keycode))
-        return PendingIntent.getBroadcast(context, requestCode, intent, flags)
     }
 }

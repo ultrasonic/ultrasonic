@@ -21,6 +21,7 @@ package org.moire.ultrasonic.util
 import android.annotation.SuppressLint
 import android.app.Activity
 import android.app.AlertDialog
+import android.app.PendingIntent
 import android.content.ContentResolver
 import android.content.Context
 import android.content.DialogInterface
@@ -37,15 +38,18 @@ import android.net.Uri
 import android.net.wifi.WifiManager
 import android.net.wifi.WifiManager.WifiLock
 import android.os.Build
+import android.os.Bundle
 import android.os.Environment
 import android.os.Parcelable
 import android.support.v4.media.MediaDescriptionCompat
 import android.text.TextUtils
 import android.util.TypedValue
 import android.view.Gravity
+import android.view.KeyEvent
 import android.view.inputmethod.InputMethodManager
 import android.widget.Toast
 import androidx.annotation.AnyRes
+import androidx.media.utils.MediaConstants
 import androidx.preference.PreferenceManager
 import org.moire.ultrasonic.R
 import org.moire.ultrasonic.app.UApp.Companion.applicationContext
@@ -641,12 +645,13 @@ object Util {
     }
 
     @JvmStatic
-    fun getSongsFromBookmarks(bookmarks: Iterable<Bookmark>): MusicDirectory {
+    fun getSongsFromBookmarks(bookmarks: Iterable<Bookmark?>): MusicDirectory {
         val musicDirectory = MusicDirectory()
         var song: MusicDirectory.Entry
-        for ((position, _, _, _, _, entry) in bookmarks) {
-            song = entry
-            song.bookmarkPosition = position
+        for (bookmark in bookmarks) {
+            if (bookmark == null) continue
+            song = bookmark.entry
+            song.bookmarkPosition = bookmark.position
             musicDirectory.addChild(song)
         }
         return musicDirectory
@@ -1255,7 +1260,11 @@ object Util {
         )
     }
 
-    fun getMediaDescriptionForEntry(song: MusicDirectory.Entry, mediaId: String? = null): MediaDescriptionCompat {
+    fun getMediaDescriptionForEntry(
+        song: MusicDirectory.Entry,
+        mediaId: String? = null,
+        groupNameId: Int? = null
+    ): MediaDescriptionCompat {
 
         val descriptionBuilder = MediaDescriptionCompat.Builder()
         val artist = StringBuilder(60)
@@ -1266,7 +1275,7 @@ object Util {
             artist.append(String.format("%s  ", formatTotalDuration(duration.toLong())))
         }
 
-        if (song.bitRate != null)
+        if (song.bitRate != null && song.bitRate!! > 0)
             bitRate = String.format(
                 appContext().getString(R.string.song_details_kbps), song.bitRate
             )
@@ -1282,7 +1291,7 @@ object Util {
         val artistName = song.artist
 
         if (artistName != null) {
-            if (shouldDisplayBitrateWithArtist()) {
+            if (shouldDisplayBitrateWithArtist() && (!bitRate.isNullOrBlank() || !fileFormat.isNullOrBlank())) {
                 artist.append(artistName).append(" (").append(
                     String.format(
                         appContext().getString(R.string.song_details_all),
@@ -1311,10 +1320,28 @@ object Util {
             ).append(')')
         }
 
+        if (groupNameId != null)
+            descriptionBuilder.setExtras(Bundle().apply { putString(
+                MediaConstants.DESCRIPTION_EXTRAS_KEY_CONTENT_STYLE_GROUP_TITLE,
+                appContext().getString(groupNameId)
+            ) })
+
         descriptionBuilder.setTitle(title)
         descriptionBuilder.setSubtitle(artist)
         descriptionBuilder.setMediaId(mediaId)
 
         return descriptionBuilder.build()
+    }
+
+    fun getPendingIntentForMediaAction(
+        context: Context,
+        keycode: Int,
+        requestCode: Int
+    ): PendingIntent {
+        val intent = Intent(Constants.CMD_PROCESS_KEYCODE)
+        val flags = PendingIntent.FLAG_UPDATE_CURRENT
+        intent.setPackage(context.packageName)
+        intent.putExtra(Intent.EXTRA_KEY_EVENT, KeyEvent(KeyEvent.ACTION_DOWN, keycode))
+        return PendingIntent.getBroadcast(context, requestCode, intent, flags)
     }
 }
