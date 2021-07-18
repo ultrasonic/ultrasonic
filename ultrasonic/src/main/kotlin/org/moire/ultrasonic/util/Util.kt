@@ -1269,7 +1269,7 @@ object Util {
         )
     }
 
-    @Suppress("ComplexMethod")
+    @Suppress("ComplexMethod", "LongMethod")
     fun getMediaDescriptionForEntry(
         song: MusicDirectory.Entry,
         mediaId: String? = null,
