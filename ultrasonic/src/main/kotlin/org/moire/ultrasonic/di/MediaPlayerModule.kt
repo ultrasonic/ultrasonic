@@ -1,6 +1,5 @@
 package org.moire.ultrasonic.di
 
-import org.koin.android.ext.koin.androidContext
 import org.koin.dsl.module
 import org.moire.ultrasonic.service.AudioFocusHandler
 import org.moire.ultrasonic.service.DownloadQueueSerializer

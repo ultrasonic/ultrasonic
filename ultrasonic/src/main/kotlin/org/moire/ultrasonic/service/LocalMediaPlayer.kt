@@ -21,13 +21,13 @@ import android.os.PowerManager
 import android.os.PowerManager.PARTIAL_WAKE_LOCK
 import android.os.PowerManager.WakeLock
 import androidx.lifecycle.MutableLiveData
-import org.koin.core.component.KoinComponent
-import org.koin.core.component.inject
 import java.io.File
 import java.net.URLEncoder
 import java.util.Locale
 import kotlin.math.abs
 import kotlin.math.max
+import org.koin.core.component.KoinComponent
+import org.koin.core.component.inject
 import org.moire.ultrasonic.audiofx.EqualizerController
 import org.moire.ultrasonic.audiofx.VisualizerController
 import org.moire.ultrasonic.data.ActiveServerProvider.Companion.isOffline
@@ -42,7 +42,8 @@ import timber.log.Timber
 /**
  * Represents a Media Player which uses the mobile's resources for playback
  */
-class LocalMediaPlayer: KoinComponent {
+@Suppress("TooManyFunctions")
+class LocalMediaPlayer : KoinComponent {
 
     private val audioFocusHandler by inject<AudioFocusHandler>()
     private val context by inject<Context>()

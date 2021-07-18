@@ -1,21 +1,10 @@
 /*
- This file is part of Subsonic.
-
- Subsonic is free software: you can redistribute it and/or modify
- it under the terms of the GNU General Public License as published by
- the Free Software Foundation, either version 3 of the License, or
- (at your option) any later version.
-
- Subsonic is distributed in the hope that it will be useful,
- but WITHOUT ANY WARRANTY; without even the implied warranty of
- MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- GNU General Public License for more details.
-
- You should have received a copy of the GNU General Public License
- along with Subsonic.  If not, see <http://www.gnu.org/licenses/>.
-
- Copyright 2009 (C) Sindre Mehus
+ * Util.kt
+ * Copyright (C) 2009-2021 Ultrasonic developers
+ *
+ * Distributed under terms of the GNU GPLv3 license.
  */
+
 package org.moire.ultrasonic.util
 
 import android.annotation.SuppressLint
@@ -51,16 +40,6 @@ import android.widget.Toast
 import androidx.annotation.AnyRes
 import androidx.media.utils.MediaConstants
 import androidx.preference.PreferenceManager
-import org.moire.ultrasonic.R
-import org.moire.ultrasonic.app.UApp.Companion.applicationContext
-import org.moire.ultrasonic.data.ActiveServerProvider.Companion.isOffline
-import org.moire.ultrasonic.domain.Bookmark
-import org.moire.ultrasonic.domain.MusicDirectory
-import org.moire.ultrasonic.domain.PlayerState
-import org.moire.ultrasonic.domain.RepeatMode
-import org.moire.ultrasonic.domain.SearchResult
-import org.moire.ultrasonic.service.DownloadFile
-import timber.log.Timber
 import java.io.ByteArrayOutputStream
 import java.io.Closeable
 import java.io.File
@@ -72,17 +51,32 @@ import java.io.OutputStream
 import java.io.UnsupportedEncodingException
 import java.security.MessageDigest
 import java.text.DecimalFormat
-import java.util.*
+import java.util.Locale
 import java.util.concurrent.TimeUnit
 import java.util.regex.Pattern
 import kotlin.math.max
 import kotlin.math.min
 import kotlin.math.roundToInt
+import org.moire.ultrasonic.R
+import org.moire.ultrasonic.app.UApp.Companion.applicationContext
+import org.moire.ultrasonic.data.ActiveServerProvider.Companion.isOffline
+import org.moire.ultrasonic.domain.Bookmark
+import org.moire.ultrasonic.domain.MusicDirectory
+import org.moire.ultrasonic.domain.PlayerState
+import org.moire.ultrasonic.domain.RepeatMode
+import org.moire.ultrasonic.domain.SearchResult
+import org.moire.ultrasonic.service.DownloadFile
+import timber.log.Timber
+
+private const val LINE_LENGTH = 60
+private const val DEGRADE_PRECISION_AFTER = 10
+private const val MINUTES_IN_HOUR = 60
+private const val KBYTE = 1024
 
 /**
- * @author Sindre Mehus
- * @version $Id$
+ * Contains various utility functions
  */
+@Suppress("TooManyFunctions", "LargeClass")
 object Util {
 
     private val GIGA_BYTE_FORMAT = DecimalFormat("0.00 GB")
@@ -171,17 +165,17 @@ object Util {
     fun applyTheme(context: Context?) {
         val theme = getTheme()
         if (Constants.PREFERENCES_KEY_THEME_DARK.equals(
-                theme,
-                ignoreCase = true
-            ) || "fullscreen".equals(theme, ignoreCase = true)
+            theme,
+            ignoreCase = true
+        ) || "fullscreen".equals(theme, ignoreCase = true)
         ) {
             context!!.setTheme(R.style.UltrasonicTheme)
         } else if (Constants.PREFERENCES_KEY_THEME_BLACK.equals(theme, ignoreCase = true)) {
             context!!.setTheme(R.style.UltrasonicTheme_Black)
         } else if (Constants.PREFERENCES_KEY_THEME_LIGHT.equals(
-                theme,
-                ignoreCase = true
-            ) || "fullscreenlight".equals(theme, ignoreCase = true)
+            theme,
+            ignoreCase = true
+        ) || "fullscreenlight".equals(theme, ignoreCase = true)
         ) {
             context!!.setTheme(R.style.UltrasonicTheme_Light)
         }
@@ -248,8 +242,9 @@ object Util {
     }
 
     @Throws(IOException::class)
+    @Suppress("MagicNumber")
     fun copy(input: InputStream, output: OutputStream): Long {
-        val buffer = ByteArray(1024 * 4)
+        val buffer = ByteArray(KBYTE * 4)
         var count: Long = 0
         var n: Int
         while (-1 != input.read(buffer).also { n = it }) {
@@ -261,14 +256,16 @@ object Util {
 
     @Throws(IOException::class)
     fun atomicCopy(from: File, to: File) {
-        val tmp = File(String.format("%s.tmp", to.path))
-        val `in` = FileInputStream(from)
+        val tmp = File(String.format(Locale.ROOT, "%s.tmp", to.path))
+        val input = FileInputStream(from)
         val out = FileOutputStream(tmp)
         try {
-            `in`.channel.transferTo(0, from.length(), out.channel)
+            input.channel.transferTo(0, from.length(), out.channel)
             out.close()
             if (!tmp.renameTo(to)) {
-                throw IOException(String.format("Failed to rename %s to %s", tmp, to))
+                throw IOException(
+                    String.format(Locale.ROOT, "Failed to rename %s to %s", tmp, to)
+                )
             }
             Timber.i("Copied %s to %s", from, to)
         } catch (x: IOException) {
@@ -276,7 +273,7 @@ object Util {
             delete(to)
             throw x
         } finally {
-            close(`in`)
+            close(input)
             close(out)
             delete(tmp)
         }
@@ -296,7 +293,7 @@ object Util {
     fun close(closeable: Closeable?) {
         try {
             closeable?.close()
-        } catch (x: Throwable) {
+        } catch (_: Throwable) {
             // Ignored
         }
     }
@@ -376,18 +373,18 @@ object Util {
     fun formatBytes(byteCount: Long): String {
 
         // More than 1 GB?
-        if (byteCount >= 1024 * 1024 * 1024) {
-            return GIGA_BYTE_FORMAT.format(byteCount.toDouble() / (1024 * 1024 * 1024))
+        if (byteCount >= KBYTE * KBYTE * KBYTE) {
+            return GIGA_BYTE_FORMAT.format(byteCount.toDouble() / (KBYTE * KBYTE * KBYTE))
         }
 
         // More than 1 MB?
-        if (byteCount >= 1024 * 1024) {
-            return MEGA_BYTE_FORMAT.format(byteCount.toDouble() / (1024 * 1024))
+        if (byteCount >= KBYTE * KBYTE) {
+            return MEGA_BYTE_FORMAT.format(byteCount.toDouble() / (KBYTE * KBYTE))
         }
 
         // More than 1 KB?
-        return if (byteCount >= 1024) {
-            KILO_BYTE_FORMAT.format(byteCount.toDouble() / 1024)
+        return if (byteCount >= KBYTE) {
+            KILO_BYTE_FORMAT.format(byteCount.toDouble() / KBYTE)
         } else "$byteCount B"
     }
 
@@ -406,35 +403,36 @@ object Util {
      * @return The formatted string.
      */
     @Synchronized
+    @Suppress("ReturnCount")
     fun formatLocalizedBytes(byteCount: Long, context: Context): String {
 
         // More than 1 GB?
-        if (byteCount >= 1024 * 1024 * 1024) {
+        if (byteCount >= KBYTE * KBYTE * KBYTE) {
             if (GIGA_BYTE_LOCALIZED_FORMAT == null) {
                 GIGA_BYTE_LOCALIZED_FORMAT =
                     DecimalFormat(context.resources.getString(R.string.util_bytes_format_gigabyte))
             }
             return GIGA_BYTE_LOCALIZED_FORMAT!!
-                .format(byteCount.toDouble() / (1024 * 1024 * 1024))
+                .format(byteCount.toDouble() / (KBYTE * KBYTE * KBYTE))
         }
 
         // More than 1 MB?
-        if (byteCount >= 1024 * 1024) {
+        if (byteCount >= KBYTE * KBYTE) {
             if (MEGA_BYTE_LOCALIZED_FORMAT == null) {
                 MEGA_BYTE_LOCALIZED_FORMAT =
                     DecimalFormat(context.resources.getString(R.string.util_bytes_format_megabyte))
             }
             return MEGA_BYTE_LOCALIZED_FORMAT!!
-                .format(byteCount.toDouble() / (1024 * 1024))
+                .format(byteCount.toDouble() / (KBYTE * KBYTE))
         }
 
         // More than 1 KB?
-        if (byteCount >= 1024) {
+        if (byteCount >= KBYTE) {
             if (KILO_BYTE_LOCALIZED_FORMAT == null) {
                 KILO_BYTE_LOCALIZED_FORMAT =
                     DecimalFormat(context.resources.getString(R.string.util_bytes_format_kilobyte))
             }
-            return KILO_BYTE_LOCALIZED_FORMAT!!.format(byteCount.toDouble() / 1024)
+            return KILO_BYTE_LOCALIZED_FORMAT!!.format(byteCount.toDouble() / KBYTE)
         }
         if (BYTE_LOCALIZED_FORMAT == null) {
             BYTE_LOCALIZED_FORMAT =
@@ -453,6 +451,7 @@ object Util {
      * @param s The string to encode.
      * @return The encoded string.
      */
+    @Suppress("TooGenericExceptionThrown", "TooGenericExceptionCaught")
     fun utf8HexEncode(s: String?): String? {
         if (s == null) {
             return null
@@ -473,6 +472,7 @@ object Util {
      * @param data Bytes to convert to hexadecimal characters.
      * @return A string containing hexadecimal characters.
      */
+    @Suppress("MagicNumber")
     fun hexEncode(data: ByteArray): String {
         val length = data.size
         val out = CharArray(length shl 1)
@@ -493,6 +493,7 @@ object Util {
      * @return MD5 digest as a hex string.
      */
     @JvmStatic
+    @Suppress("TooGenericExceptionThrown", "TooGenericExceptionCaught")
     fun md5Hex(s: String?): String? {
         return if (s == null) {
             null
@@ -567,7 +568,11 @@ object Util {
             .setIcon(icon)
             .setTitle(titleId)
             .setMessage(message)
-            .setPositiveButton(R.string.common_ok) { dialog: DialogInterface, _: Int -> dialog.dismiss() }
+            .setPositiveButton(R.string.common_ok) {
+                dialog: DialogInterface,
+                _: Int ->
+                dialog.dismiss()
+            }
             .show()
     }
 
@@ -746,6 +751,7 @@ object Util {
         context.sendBroadcast(avrcpIntent)
     }
 
+    @Suppress("LongParameterList")
     fun broadcastA2dpPlayStatusChange(
         context: Context,
         state: PlayerState?,
@@ -763,7 +769,7 @@ object Util {
                 return
             }
 
-            // FIXME: This is probably a bug.
+            // FIXME This is probably a bug.
             if (currentSong !== currentSong) {
                 Util.currentSong = currentSong
             }
@@ -797,11 +803,12 @@ object Util {
 
             when (state) {
                 PlayerState.STARTED -> avrcpIntent.putExtra("playing", true)
-                PlayerState.STOPPED, PlayerState.PAUSED, PlayerState.COMPLETED -> avrcpIntent.putExtra(
+                PlayerState.STOPPED, PlayerState.PAUSED,
+                PlayerState.COMPLETED -> avrcpIntent.putExtra(
                     "playing",
                     false
                 )
-                else -> return  // No need to broadcast.
+                else -> return // No need to broadcast.
             }
 
             context.sendBroadcast(avrcpIntent)
@@ -819,12 +826,13 @@ object Util {
             PlayerState.STOPPED -> intent.putExtra("state", "stop")
             PlayerState.PAUSED -> intent.putExtra("state", "pause")
             PlayerState.COMPLETED -> intent.putExtra("state", "complete")
-            else -> return  // No need to broadcast.
+            else -> return // No need to broadcast.
         }
         context.sendBroadcast(intent)
     }
 
     @JvmStatic
+    @Suppress("MagicNumber")
     fun getNotificationImageSize(context: Context): Int {
         val metrics = context.resources.displayMetrics
         val imageSizeLarge =
@@ -838,6 +846,7 @@ object Util {
         }
     }
 
+    @Suppress("MagicNumber")
     fun getAlbumImageSize(context: Context?): Int {
         val metrics = context!!.resources.displayMetrics
         val imageSizeLarge =
@@ -1027,11 +1036,11 @@ object Util {
         }
         val hours = TimeUnit.MILLISECONDS.toHours(millis)
         val minutes = TimeUnit.MILLISECONDS.toMinutes(millis) - TimeUnit.HOURS.toMinutes(hours)
-        val seconds =
-            TimeUnit.MILLISECONDS.toSeconds(millis) - TimeUnit.MINUTES.toSeconds(hours * 60 + minutes)
+        val seconds = TimeUnit.MILLISECONDS.toSeconds(millis) -
+            TimeUnit.MINUTES.toSeconds(hours * MINUTES_IN_HOUR + minutes)
 
         return when {
-            hours >= 10 -> {
+            hours >= DEGRADE_PRECISION_AFTER -> {
                 String.format(
                     Locale.getDefault(),
                     "%02d:%02d:%02d",
@@ -1043,7 +1052,7 @@ object Util {
             hours > 0 -> {
                 String.format(Locale.getDefault(), "%d:%02d:%02d", hours, minutes, seconds)
             }
-            minutes >= 10 -> {
+            minutes >= DEGRADE_PRECISION_AFTER -> {
                 String.format(Locale.getDefault(), "%02d:%02d", minutes, seconds)
             }
             minutes > 0 -> String.format(
@@ -1254,12 +1263,13 @@ object Util {
     fun getUriToDrawable(context: Context, @AnyRes drawableId: Int): Uri {
         return Uri.parse(
             ContentResolver.SCHEME_ANDROID_RESOURCE +
-                "://" + context.resources.getResourcePackageName(drawableId)
-                + '/' + context.resources.getResourceTypeName(drawableId)
-                + '/' + context.resources.getResourceEntryName(drawableId)
+                "://" + context.resources.getResourcePackageName(drawableId) +
+                '/' + context.resources.getResourceTypeName(drawableId) +
+                '/' + context.resources.getResourceEntryName(drawableId)
         )
     }
 
+    @Suppress("ComplexMethod")
     fun getMediaDescriptionForEntry(
         song: MusicDirectory.Entry,
         mediaId: String? = null,
@@ -1267,12 +1277,14 @@ object Util {
     ): MediaDescriptionCompat {
 
         val descriptionBuilder = MediaDescriptionCompat.Builder()
-        val artist = StringBuilder(60)
+        val artist = StringBuilder(LINE_LENGTH)
         var bitRate: String? = null
 
         val duration = song.duration
         if (duration != null) {
-            artist.append(String.format("%s  ", formatTotalDuration(duration.toLong())))
+            artist.append(
+                String.format(Locale.ROOT, "%s  ", formatTotalDuration(duration.toLong()))
+            )
         }
 
         if (song.bitRate != null && song.bitRate!! > 0)
@@ -1286,16 +1298,21 @@ object Util {
 
         fileFormat = if (
             TextUtils.isEmpty(transcodedSuffix) || transcodedSuffix == suffix || song.isVideo
-        ) suffix else String.format("%s > %s", suffix, transcodedSuffix)
+        ) suffix else String.format(Locale.ROOT, "%s > %s", suffix, transcodedSuffix)
 
         val artistName = song.artist
 
         if (artistName != null) {
-            if (shouldDisplayBitrateWithArtist() && (!bitRate.isNullOrBlank() || !fileFormat.isNullOrBlank())) {
+            if (shouldDisplayBitrateWithArtist() && (
+                !bitRate.isNullOrBlank() || !fileFormat.isNullOrBlank()
+                )
+            ) {
                 artist.append(artistName).append(" (").append(
                     String.format(
                         appContext().getString(R.string.song_details_all),
-                        if (bitRate == null) "" else String.format("%s ", bitRate), fileFormat
+                        if (bitRate == null) ""
+                        else String.format(Locale.ROOT, "%s ", bitRate),
+                        fileFormat
                     )
                 ).append(')')
             } else {
@@ -1305,9 +1322,9 @@ object Util {
 
         val trackNumber = song.track ?: 0
 
-        val title = StringBuilder(60)
+        val title = StringBuilder(LINE_LENGTH)
         if (shouldShowTrackNumber() && trackNumber > 0)
-            title.append(String.format("%02d - ", trackNumber))
+            title.append(String.format(Locale.ROOT, "%02d - ", trackNumber))
 
         title.append(song.title)
 
@@ -1315,16 +1332,22 @@ object Util {
             title.append(" (").append(
                 String.format(
                     appContext().getString(R.string.song_details_all),
-                    if (bitRate == null) "" else String.format("%s ", bitRate), fileFormat
+                    if (bitRate == null) ""
+                    else String.format(Locale.ROOT, "%s ", bitRate),
+                    fileFormat
                 )
             ).append(')')
         }
 
         if (groupNameId != null)
-            descriptionBuilder.setExtras(Bundle().apply { putString(
-                MediaConstants.DESCRIPTION_EXTRAS_KEY_CONTENT_STYLE_GROUP_TITLE,
-                appContext().getString(groupNameId)
-            ) })
+            descriptionBuilder.setExtras(
+                Bundle().apply {
+                    putString(
+                        MediaConstants.DESCRIPTION_EXTRAS_KEY_CONTENT_STYLE_GROUP_TITLE,
+                        appContext().getString(groupNameId)
+                    )
+                }
+            )
 
         descriptionBuilder.setTitle(title)
         descriptionBuilder.setSubtitle(artist)

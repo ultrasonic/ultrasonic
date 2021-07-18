@@ -1,3 +1,10 @@
+/*
+ * MediaSessionEventDistributor.kt
+ * Copyright (C) 2009-2021 Ultrasonic developers
+ *
+ * Distributed under terms of the GNU GPLv3 license.
+ */
+
 package org.moire.ultrasonic.util
 
 import android.os.Bundle
@@ -41,7 +48,10 @@ class MediaSessionEventDistributor {
     }
 
     fun raisePlayFromMediaIdRequestedEvent(mediaId: String?, extras: Bundle?) {
-        eventListenerList.forEach { listener -> listener.onPlayFromMediaIdRequested(mediaId, extras) }
+        eventListenerList.forEach {
+            listener ->
+            listener.onPlayFromMediaIdRequested(mediaId, extras)
+        }
     }
 
     fun raisePlayFromSearchRequestedEvent(query: String?, extras: Bundle?) {

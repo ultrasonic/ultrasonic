@@ -1,3 +1,10 @@
+/*
+ * MediaSessionHandler.kt
+ * Copyright (C) 2009-2021 Ultrasonic developers
+ *
+ * Distributed under terms of the GNU GPLv3 license.
+ */
+
 package org.moire.ultrasonic.util
 
 import android.app.PendingIntent
@@ -21,7 +28,7 @@ import org.moire.ultrasonic.service.DownloadFile
 import timber.log.Timber
 
 private const val INTENT_CODE_MEDIA_BUTTON = 161
-
+private const val CALL_DIVIDE = 10
 /**
  * Central place to handle the state of the MediaSession
  */
@@ -157,7 +164,12 @@ class MediaSessionHandler : KoinComponent {
         Timber.i("MediaSessionHandler.initialize Media Session created")
     }
 
-    fun updateMediaSession(currentPlaying: DownloadFile?, currentPlayingIndex: Long?, playerState: PlayerState) {
+    @Suppress("TooGenericExceptionCaught", "LongMethod")
+    fun updateMediaSession(
+        currentPlaying: DownloadFile?,
+        currentPlayingIndex: Long?,
+        playerState: PlayerState
+    ) {
         Timber.d("Updating the MediaSession")
 
         // Set Metadata
@@ -240,18 +252,20 @@ class MediaSessionHandler : KoinComponent {
         mediaSession!!.setPlaybackState(playbackStateBuilder.build())
     }
 
-    fun updateMediaSessionQueue(playlist: Iterable<MusicDirectory.Entry>)
-    {
+    fun updateMediaSessionQueue(playlist: Iterable<MusicDirectory.Entry>) {
         // This call is cached because Downloader may initialize earlier than the MediaSession
         cachedPlaylist = playlist
         if (mediaSession == null) return
 
         mediaSession!!.setQueueTitle(applicationContext.getString(R.string.button_bar_now_playing))
-        mediaSession!!.setQueue(playlist.mapIndexed { id, song ->
-            MediaSessionCompat.QueueItem(
-                Util.getMediaDescriptionForEntry(song),
-                id.toLong())
-        })
+        mediaSession!!.setQueue(
+            playlist.mapIndexed { id, song ->
+                MediaSessionCompat.QueueItem(
+                    Util.getMediaDescriptionForEntry(song),
+                    id.toLong()
+                )
+            }
+        )
     }
 
     fun updateMediaSessionPlaybackPosition(playbackPosition: Long) {
@@ -264,7 +278,7 @@ class MediaSessionHandler : KoinComponent {
         // Playback position is updated too frequently in the player.
         // This counter makes sure that the MediaSession is updated ~ at every second
         playbackPositionDelayCount++
-        if (playbackPositionDelayCount < 10) return
+        if (playbackPositionDelayCount < CALL_DIVIDE) return
 
         playbackPositionDelayCount = 0
         val playbackStateBuilder = PlaybackStateCompat.Builder()
@@ -286,7 +300,10 @@ class MediaSessionHandler : KoinComponent {
     }
 
     private fun registerMediaButtonEventReceiver() {
-        val component = ComponentName(applicationContext.packageName, MediaButtonIntentReceiver::class.java.name)
+        val component = ComponentName(
+            applicationContext.packageName,
+            MediaButtonIntentReceiver::class.java.name
+        )
         val mediaButtonIntent = Intent(Intent.ACTION_MEDIA_BUTTON)
         mediaButtonIntent.component = component
 

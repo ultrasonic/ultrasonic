@@ -1,7 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-          package="org.moire.ultrasonic"
-          android:installLocation="auto">
+    xmlns:tools="http://schemas.android.com/tools"
+    package="org.moire.ultrasonic"
+    android:installLocation="auto">
 
     <uses-permission android:name="android.permission.INTERNET"/>
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE"/>
@@ -60,6 +61,7 @@
         </service>
 
         <service
+            tools:ignore="ExportedService"
             android:name=".service.AutoMediaBrowserService"
             android:label="@string/common.appname"
             android:exported="true">

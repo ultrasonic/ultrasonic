@@ -1,3 +1,10 @@
+/*
+ * MediaSessionEventListener.kt
+ * Copyright (C) 2009-2021 Ultrasonic developers
+ *
+ * Distributed under terms of the GNU GPLv3 license.
+ */
+
 package org.moire.ultrasonic.util
 
 import android.os.Bundle

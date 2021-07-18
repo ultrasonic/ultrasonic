@@ -1,21 +1,10 @@
 /*
- This file is part of Subsonic.
-
- Subsonic is free software: you can redistribute it and/or modify
- it under the terms of the GNU General Public License as published by
- the Free Software Foundation, either version 3 of the License, or
- (at your option) any later version.
-
- Subsonic is distributed in the hope that it will be useful,
- but WITHOUT ANY WARRANTY; without even the implied warranty of
- MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- GNU General Public License for more details.
-
- You should have received a copy of the GNU General Public License
- along with Subsonic.  If not, see <http://www.gnu.org/licenses/>.
-
- Copyright 2009 (C) Sindre Mehus
+ * MediaPlayerLifecycleSupport.kt
+ * Copyright (C) 2009-2021 Ultrasonic developers
+ *
+ * Distributed under terms of the GNU GPLv3 license.
  */
+
 package org.moire.ultrasonic.service
 
 import android.content.BroadcastReceiver
@@ -25,7 +14,6 @@ import android.content.IntentFilter
 import android.media.AudioManager
 import android.os.Build
 import android.view.KeyEvent
-import kotlinx.coroutines.newFixedThreadPoolContext
 import org.koin.core.component.KoinComponent
 import org.koin.core.component.inject
 import org.moire.ultrasonic.R
@@ -85,7 +73,8 @@ class MediaPlayerLifecycleSupport : KoinComponent {
                     false
                 )
 
-                // Work-around: Serialize again, as the restore() method creates a serialization without current playing info.
+                // Work-around: Serialize again, as the restore() method creates a
+                // serialization without current playing info.
                 downloadQueueSerializer.serializeDownloadQueue(
                     downloader.downloadList,
                     downloader.currentPlayingIndex,
@@ -179,14 +168,15 @@ class MediaPlayerLifecycleSupport : KoinComponent {
 
         val headsetIntentFilter: IntentFilter =
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-            IntentFilter(AudioManager.ACTION_HEADSET_PLUG)
-        } else {
-            IntentFilter(Intent.ACTION_HEADSET_PLUG)
-        }
+                IntentFilter(AudioManager.ACTION_HEADSET_PLUG)
+            } else {
+                IntentFilter(Intent.ACTION_HEADSET_PLUG)
+            }
 
         applicationContext().registerReceiver(headsetEventReceiver, headsetIntentFilter)
     }
 
+    @Suppress("MagicNumber", "ComplexMethod")
     private fun handleKeyEvent(event: KeyEvent) {
 
         if (event.action != KeyEvent.ACTION_DOWN || event.repeatCount > 0) return
@@ -195,9 +185,10 @@ class MediaPlayerLifecycleSupport : KoinComponent {
         val receivedKeyCode = event.keyCode
 
         // Translate PLAY and PAUSE codes to PLAY_PAUSE to improve compatibility with old Bluetooth devices
-        keyCode = if (Util.getSingleButtonPlayPause() &&
-            (receivedKeyCode == KeyEvent.KEYCODE_MEDIA_PLAY ||
-                receivedKeyCode == KeyEvent.KEYCODE_MEDIA_PAUSE)
+        keyCode = if (Util.getSingleButtonPlayPause() && (
+            receivedKeyCode == KeyEvent.KEYCODE_MEDIA_PLAY ||
+                receivedKeyCode == KeyEvent.KEYCODE_MEDIA_PAUSE
+            )
         ) {
             Timber.i("Single button Play/Pause is set, rewriting keyCode to PLAY_PAUSE")
             KeyEvent.KEYCODE_MEDIA_PLAY_PAUSE
@@ -221,10 +212,10 @@ class MediaPlayerLifecycleSupport : KoinComponent {
 
                 KeyEvent.KEYCODE_MEDIA_PLAY ->
                     if (mediaPlayerController.playerState === PlayerState.IDLE) {
-                    mediaPlayerController.play()
-                } else if (mediaPlayerController.playerState !== PlayerState.STARTED) {
-                    mediaPlayerController.start()
-                }
+                        mediaPlayerController.play()
+                    } else if (mediaPlayerController.playerState !== PlayerState.STARTED) {
+                        mediaPlayerController.start()
+                    }
 
                 KeyEvent.KEYCODE_MEDIA_PAUSE -> mediaPlayerController.pause()
                 KeyEvent.KEYCODE_1 -> mediaPlayerController.setSongRating(1)
@@ -242,13 +233,18 @@ class MediaPlayerLifecycleSupport : KoinComponent {
     /**
      * This function processes the intent that could come from other applications.
      */
+    @Suppress("ComplexMethod")
     private fun handleUltrasonicIntent(intentAction: String) {
 
         val isRunning = created
 
         // If Ultrasonic is not running, do nothing to stop or pause
-        if (!isRunning && (intentAction == Constants.CMD_PAUSE ||
-                intentAction == Constants.CMD_STOP)) return
+        if (
+            !isRunning && (
+                intentAction == Constants.CMD_PAUSE ||
+                    intentAction == Constants.CMD_STOP
+                )
+        ) return
 
         val autoStart =
             intentAction == Constants.CMD_PLAY ||
@@ -261,7 +257,9 @@ class MediaPlayerLifecycleSupport : KoinComponent {
         onCreate(autoStart) {
             when (intentAction) {
                 Constants.CMD_PLAY -> mediaPlayerController.play()
-                Constants.CMD_RESUME_OR_PLAY ->                    // If Ultrasonic wasn't running, the autoStart is enough to resume, no need to call anything
+                Constants.CMD_RESUME_OR_PLAY ->
+                    // If Ultrasonic wasn't running, the autoStart is enough to resume,
+                    // no need to call anything
                     if (isRunning) mediaPlayerController.resumeOrPlay()
 
                 Constants.CMD_NEXT -> mediaPlayerController.next()

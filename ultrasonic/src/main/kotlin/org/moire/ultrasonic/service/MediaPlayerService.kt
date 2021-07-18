@@ -7,7 +7,11 @@
 
 package org.moire.ultrasonic.service
 
-import android.app.*
+import android.app.Notification
+import android.app.NotificationChannel
+import android.app.NotificationManager
+import android.app.PendingIntent
+import android.app.Service
 import android.content.Context
 import android.content.Intent
 import android.os.Build
@@ -93,7 +97,7 @@ class MediaPlayerService : Service() {
 
         localMediaPlayer.onNextSongRequested = Runnable { setNextPlaying() }
 
-        mediaSessionEventListener = object:MediaSessionEventListener {
+        mediaSessionEventListener = object : MediaSessionEventListener {
             override fun onMediaSessionTokenCreated(token: MediaSessionCompat.Token) {
                 mediaSessionToken = token
             }
@@ -383,7 +387,11 @@ class MediaPlayerService : Service() {
             val context = this@MediaPlayerService
 
             // Notify MediaSession
-            mediaSessionHandler.updateMediaSession(currentPlaying, downloader.currentPlayingIndex.toLong(), playerState)
+            mediaSessionHandler.updateMediaSession(
+                currentPlaying,
+                downloader.currentPlayingIndex.toLong(),
+                playerState
+            )
 
             if (playerState === PlayerState.PAUSED) {
                 downloadQueueSerializer.serializeDownloadQueue(
@@ -535,7 +543,11 @@ class MediaPlayerService : Service() {
         // Init
         val context = applicationContext
         val song = currentPlaying?.song
-        val stopIntent = Util.getPendingIntentForMediaAction(context, KeyEvent.KEYCODE_MEDIA_STOP, 100)
+        val stopIntent = Util.getPendingIntentForMediaAction(
+            context,
+            KeyEvent.KEYCODE_MEDIA_STOP,
+            100
+        )
 
         // We should use a single notification builder, otherwise the notification may not be updated
         if (notificationBuilder == null) {
