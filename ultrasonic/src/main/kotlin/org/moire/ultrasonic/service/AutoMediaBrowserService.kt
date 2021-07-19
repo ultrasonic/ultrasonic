@@ -1085,7 +1085,8 @@ class AutoMediaBrowserService : MediaBrowserServiceCompat() {
             shuffle = false,
             newPlaylist = false
         )
-        mediaPlayerController.next()
+        if (mediaPlayerController.playlistSize > 1) mediaPlayerController.next()
+        else mediaPlayerController.play()
     }
 
     private fun <T> callWithErrorHandling(function: () -> T): T? {
