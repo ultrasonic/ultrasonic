@@ -27,8 +27,8 @@ class VideoPlayer {
                     "video/*"
                 )
                 context.startActivity(intent)
-            } catch (e: Exception) {
-                Util.toast(context, e.toString(), false)
+            } catch (all: Exception) {
+                Util.toast(context, all.toString(), false)
             }
         }
     }
