@@ -117,24 +117,32 @@ public class MainFragment extends Fragment {
         final MergeAdapter adapter = new MergeAdapter();
         adapter.addViews(Collections.singletonList(serverButton), true);
 
+        shouldUseId3 = Util.getShouldUseId3Tags();
+
         if (!ActiveServerProvider.Companion.isOffline())
         {
             adapter.addView(musicTitle, false);
             adapter.addViews(asList(artistsButton, albumsButton, genresButton), true);
+
             adapter.addView(songsTitle, false);
             adapter.addViews(asList(randomSongsButton, songsStarredButton), true);
-            adapter.addView(albumsTitle, false);
 
-            if (Util.getShouldUseId3Tags())
-            {
-                shouldUseId3 = true;
-                adapter.addViews(asList(albumsNewestButton, albumsRecentButton, albumsFrequentButton, albumsRandomButton, albumsStarredButton, albumsAlphaByNameButton, albumsAlphaByArtistButton), true);
-            }
-            else
-            {
-                shouldUseId3 = false;
-                adapter.addViews(asList(albumsNewestButton, albumsRecentButton, albumsFrequentButton, albumsHighestButton, albumsRandomButton, albumsStarredButton, albumsAlphaByNameButton, albumsAlphaByArtistButton), true);
-            }
+            adapter.addView(albumsTitle, false);
+            adapter.addViews(asList(albumsNewestButton, albumsRecentButton, albumsFrequentButton), true);
+            if (!shouldUseId3)
+                adapter.addView(albumsHighestButton, true);
+            adapter.addViews(asList(albumsRandomButton, albumsStarredButton, albumsAlphaByNameButton, albumsAlphaByArtistButton), true);
+
+            adapter.addView(videosTitle, false);
+            adapter.addViews(Collections.singletonList(videosButton), true);
+        }
+        else // Offline supported calls
+        {
+            adapter.addView(musicTitle, false);
+            adapter.addViews(asList(artistsButton, genresButton), true);
+
+            adapter.addView(songsTitle, false);
+            adapter.addView(randomSongsButton, true);
 
             adapter.addView(videosTitle, false);
             adapter.addViews(Collections.singletonList(videosButton), true);
@@ -261,5 +269,4 @@ public class MainFragment extends Fragment {
     {
         Navigation.findNavController(getView()).navigate(R.id.mainToServerSelector);
     }
-}
-
+}   

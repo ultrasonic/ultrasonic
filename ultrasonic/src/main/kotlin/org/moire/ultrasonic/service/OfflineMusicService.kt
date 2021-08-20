@@ -18,7 +18,6 @@ import java.util.ArrayList
 import java.util.HashSet
 import java.util.LinkedList
 import java.util.Locale
-import java.util.Random
 import java.util.concurrent.TimeUnit
 import java.util.regex.Pattern
 import org.koin.core.component.KoinComponent
@@ -257,9 +256,9 @@ class OfflineMusicService : MusicService, KoinComponent {
         if (children.isEmpty()) {
             return result
         }
-        val random = Random()
+        children.shuffle()
         for (i in 0 until size) {
-            val file = children[random.nextInt(children.size)]
+            val file = children[i % children.size]
             result.addChild(createEntry(file, getName(file)))
         }
         return result
