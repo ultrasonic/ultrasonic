@@ -96,7 +96,6 @@ object Util {
     private val HEX_DIGITS =
         charArrayOf('0', '1', '2', '3', '4', '5', '6', '7', '8', '9', 'a', 'b', 'c', 'd', 'e', 'f')
     private var toast: Toast? = null
-    private var currentSong: MusicDirectory.Entry? = null
 
     // Retrieves an instance of the application Context
     fun appContext(): Context {
@@ -717,9 +716,6 @@ object Util {
             avrcpIntent.putExtra("duration", 0.toLong())
             avrcpIntent.putExtra("position", 0.toLong())
         } else {
-            if (song !== currentSong) {
-                currentSong = song
-            }
             val title = song.title
             val artist = song.artist
             val album = song.album
@@ -755,7 +751,7 @@ object Util {
     fun broadcastA2dpPlayStatusChange(
         context: Context,
         state: PlayerState?,
-        currentSong: MusicDirectory.Entry?,
+        newSong: MusicDirectory.Entry?,
         listSize: Int,
         id: Int,
         playerPosition: Int
@@ -763,20 +759,13 @@ object Util {
         if (!shouldSendBluetoothNotifications) {
             return
         }
-        if (currentSong != null) {
+        if (newSong != null) {
             val avrcpIntent = Intent(CM_AVRCP_PLAYSTATE_CHANGED)
-            if (currentSong == null) {
-                return
-            }
 
-            // FIXME This is probably a bug.
-            if (currentSong !== currentSong) {
-                Util.currentSong = currentSong
-            }
-            val title = currentSong.title
-            val artist = currentSong.artist
-            val album = currentSong.album
-            val duration = currentSong.duration
+            val title = newSong.title
+            val artist = newSong.artist
+            val album = newSong.album
+            val duration = newSong.duration
 
             avrcpIntent.putExtra("track", title)
             avrcpIntent.putExtra("track_name", title)
@@ -788,7 +777,7 @@ object Util {
             avrcpIntent.putExtra("album_artist_name", artist)
 
             if (getShouldSendBluetoothAlbumArt()) {
-                val albumArtFile = FileUtil.getAlbumArtFile(currentSong)
+                val albumArtFile = FileUtil.getAlbumArtFile(newSong)
                 avrcpIntent.putExtra("coverart", albumArtFile.absolutePath)
                 avrcpIntent.putExtra("cover", albumArtFile.absolutePath)
             }
@@ -1197,14 +1186,6 @@ object Util {
         val uri = Uri.fromFile(file)
         val scanFileIntent = Intent(Intent.ACTION_MEDIA_SCANNER_SCAN_FILE, uri)
         appContext().sendBroadcast(scanFileIntent)
-    }
-
-    fun imageLoaderConcurrency(): Int {
-        val preferences = getPreferences()
-        return preferences.getString(
-            Constants.PREFERENCES_KEY_IMAGE_LOADER_CONCURRENCY,
-            "5"
-        )!!.toInt()
     }
 
     fun getResourceFromAttribute(context: Context, resId: Int): Int {
