@@ -26,12 +26,15 @@ import java.net.URLEncoder
 import java.util.Locale
 import kotlin.math.abs
 import kotlin.math.max
+import org.koin.core.component.KoinComponent
+import org.koin.core.component.inject
 import org.moire.ultrasonic.audiofx.EqualizerController
 import org.moire.ultrasonic.audiofx.VisualizerController
 import org.moire.ultrasonic.data.ActiveServerProvider.Companion.isOffline
 import org.moire.ultrasonic.domain.PlayerState
 import org.moire.ultrasonic.util.CancellableTask
 import org.moire.ultrasonic.util.Constants
+import org.moire.ultrasonic.util.MediaSessionHandler
 import org.moire.ultrasonic.util.StreamProxy
 import org.moire.ultrasonic.util.Util
 import timber.log.Timber
@@ -39,10 +42,12 @@ import timber.log.Timber
 /**
  * Represents a Media Player which uses the mobile's resources for playback
  */
-class LocalMediaPlayer(
-    private val audioFocusHandler: AudioFocusHandler,
-    private val context: Context
-) {
+@Suppress("TooManyFunctions")
+class LocalMediaPlayer : KoinComponent {
+
+    private val audioFocusHandler by inject<AudioFocusHandler>()
+    private val context by inject<Context>()
+    private val mediaSessionHandler by inject<MediaSessionHandler>()
 
     @JvmField
     var onCurrentPlayingChanged: ((DownloadFile?) -> Unit?)? = null
@@ -125,6 +130,10 @@ class LocalMediaPlayer(
     }
 
     fun release() {
+        // Calling reset() will result in changing this player's state. If we allow
+        // the onPlayerStateChanged callback, then the state change will cause this
+        // to resurrect the media session which has just been destroyed.
+        onPlayerStateChanged = null
         reset()
         try {
             val i = Intent(AudioEffect.ACTION_CLOSE_AUDIO_EFFECT_CONTROL_SESSION)
@@ -167,7 +176,7 @@ class LocalMediaPlayer(
             val mainHandler = Handler(context.mainLooper)
 
             val myRunnable = Runnable {
-                onPlayerStateChanged!!(playerState, currentPlaying)
+                onPlayerStateChanged?.invoke(playerState, currentPlaying)
             }
             mainHandler.post(myRunnable)
         }
@@ -701,8 +710,11 @@ class LocalMediaPlayer(
                 try {
                     if (playerState === PlayerState.STARTED) {
                         cachedPosition = mediaPlayer.currentPosition
+                        mediaSessionHandler.updateMediaSessionPlaybackPosition(
+                            cachedPosition.toLong()
+                        )
                     }
-                    Util.sleepQuietly(50L)
+                    Util.sleepQuietly(100L)
                 } catch (e: Exception) {
                     Timber.w(e, "Crashed getting current position")
                     isRunning = false

@@ -1,6 +1,5 @@
 package org.moire.ultrasonic.di
 
-import org.koin.android.ext.koin.androidContext
 import org.koin.dsl.module
 import org.moire.ultrasonic.service.AudioFocusHandler
 import org.moire.ultrasonic.service.DownloadQueueSerializer
@@ -17,12 +16,12 @@ import org.moire.ultrasonic.util.ShufflePlayBuffer
  */
 val mediaPlayerModule = module {
     single { JukeboxMediaPlayer(get()) }
-    single { MediaPlayerLifecycleSupport(get(), get(), get()) }
-    single { DownloadQueueSerializer(androidContext()) }
+    single { MediaPlayerLifecycleSupport() }
+    single { DownloadQueueSerializer() }
     single { ExternalStorageMonitor() }
     single { ShufflePlayBuffer() }
     single { Downloader(get(), get(), get()) }
-    single { LocalMediaPlayer(get(), androidContext()) }
+    single { LocalMediaPlayer() }
     single { AudioFocusHandler(get()) }
 
     // TODO Ideally this can be cleaned up when all circular references are removed.
