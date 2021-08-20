@@ -14,6 +14,7 @@ import java.io.FileReader
 import java.io.FileWriter
 import java.io.InputStream
 import java.io.Reader
+import java.lang.Math.min
 import java.util.ArrayList
 import java.util.HashSet
 import java.util.LinkedList
@@ -42,7 +43,6 @@ import org.moire.ultrasonic.util.Constants
 import org.moire.ultrasonic.util.FileUtil
 import org.moire.ultrasonic.util.Util
 import timber.log.Timber
-import java.lang.Math.min
 
 // TODO: There are quite a number of deeply nested and complicated functions in this class..
 // Simplify them :)
