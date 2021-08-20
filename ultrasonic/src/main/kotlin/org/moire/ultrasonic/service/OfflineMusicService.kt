@@ -42,6 +42,7 @@ import org.moire.ultrasonic.util.Constants
 import org.moire.ultrasonic.util.FileUtil
 import org.moire.ultrasonic.util.Util
 import timber.log.Timber
+import java.lang.Math.min
 
 // TODO: There are quite a number of deeply nested and complicated functions in this class..
 // Simplify them :)
@@ -257,7 +258,8 @@ class OfflineMusicService : MusicService, KoinComponent {
             return result
         }
         children.shuffle()
-        for (i in 0 until size) {
+        val finalSize: Int = min(children.size, size)
+        for (i in 0 until finalSize) {
             val file = children[i % children.size]
             result.addChild(createEntry(file, getName(file)))
         }
