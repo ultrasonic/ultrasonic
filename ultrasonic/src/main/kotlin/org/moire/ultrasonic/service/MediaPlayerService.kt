@@ -12,17 +12,15 @@ import android.app.NotificationChannel
 import android.app.NotificationManager
 import android.app.PendingIntent
 import android.app.Service
-import android.content.ComponentName
 import android.content.Context
 import android.content.Intent
 import android.os.Build
 import android.os.IBinder
-import android.support.v4.media.MediaMetadataCompat
 import android.support.v4.media.session.MediaSessionCompat
-import android.support.v4.media.session.PlaybackStateCompat
 import android.view.KeyEvent
 import androidx.core.app.NotificationCompat
 import androidx.core.app.NotificationManagerCompat
+import kotlin.collections.ArrayList
 import org.koin.android.ext.android.inject
 import org.moire.ultrasonic.R
 import org.moire.ultrasonic.activity.NavigationActivity
@@ -35,9 +33,11 @@ import org.moire.ultrasonic.provider.UltrasonicAppWidgetProvider4X1
 import org.moire.ultrasonic.provider.UltrasonicAppWidgetProvider4X2
 import org.moire.ultrasonic.provider.UltrasonicAppWidgetProvider4X3
 import org.moire.ultrasonic.provider.UltrasonicAppWidgetProvider4X4
-import org.moire.ultrasonic.receiver.MediaButtonIntentReceiver
 import org.moire.ultrasonic.service.MusicServiceFactory.getMusicService
 import org.moire.ultrasonic.util.Constants
+import org.moire.ultrasonic.util.MediaSessionEventDistributor
+import org.moire.ultrasonic.util.MediaSessionEventListener
+import org.moire.ultrasonic.util.MediaSessionHandler
 import org.moire.ultrasonic.util.NowPlayingEventDistributor
 import org.moire.ultrasonic.util.ShufflePlayBuffer
 import org.moire.ultrasonic.util.SimpleServiceBinder
@@ -59,15 +59,17 @@ class MediaPlayerService : Service() {
     private val downloader by inject<Downloader>()
     private val localMediaPlayer by inject<LocalMediaPlayer>()
     private val nowPlayingEventDistributor by inject<NowPlayingEventDistributor>()
-    private val mediaPlayerLifecycleSupport by inject<MediaPlayerLifecycleSupport>()
+    private val mediaSessionEventDistributor by inject<MediaSessionEventDistributor>()
+    private val mediaSessionHandler by inject<MediaSessionHandler>()
 
     private var mediaSession: MediaSessionCompat? = null
     private var mediaSessionToken: MediaSessionCompat.Token? = null
     private var isInForeground = false
     private var notificationBuilder: NotificationCompat.Builder? = null
+    private lateinit var mediaSessionEventListener: MediaSessionEventListener
 
     private val repeatMode: RepeatMode
-        get() = Util.getRepeatMode()
+        get() = Util.repeatMode
 
     override fun onBind(intent: Intent): IBinder {
         return binder
@@ -95,6 +97,19 @@ class MediaPlayerService : Service() {
 
         localMediaPlayer.onNextSongRequested = Runnable { setNextPlaying() }
 
+        mediaSessionEventListener = object : MediaSessionEventListener {
+            override fun onMediaSessionTokenCreated(token: MediaSessionCompat.Token) {
+                mediaSessionToken = token
+            }
+
+            override fun onSkipToQueueItemRequested(id: Long) {
+                play(id.toInt())
+            }
+        }
+
+        mediaSessionEventDistributor.subscribe(mediaSessionEventListener)
+        mediaSessionHandler.initialize()
+
         // Create Notification Channel
         createNotificationChannel()
 
@@ -114,9 +129,13 @@ class MediaPlayerService : Service() {
         super.onDestroy()
         instance = null
         try {
+            mediaSessionEventDistributor.unsubscribe(mediaSessionEventListener)
+            mediaSessionHandler.release()
+
             localMediaPlayer.release()
             downloader.stop()
             shufflePlayBuffer.onDestroy()
+
             mediaSession?.release()
             mediaSession = null
         } catch (ignored: Throwable) {
@@ -368,7 +387,11 @@ class MediaPlayerService : Service() {
             val context = this@MediaPlayerService
 
             // Notify MediaSession
-            updateMediaSession(currentPlaying, playerState)
+            mediaSessionHandler.updateMediaSession(
+                currentPlaying,
+                downloader.currentPlayingIndex.toLong(),
+                playerState
+            )
 
             if (playerState === PlayerState.PAUSED) {
                 downloadQueueSerializer.serializeDownloadQueue(
@@ -468,90 +491,6 @@ class MediaPlayerService : Service() {
         }
     }
 
-    private fun updateMediaSession(currentPlaying: DownloadFile?, playerState: PlayerState) {
-        Timber.d("Updating the MediaSession")
-
-        if (mediaSession == null) initMediaSessions()
-
-        // Set Metadata
-        val metadata = MediaMetadataCompat.Builder()
-        if (currentPlaying != null) {
-            try {
-                val song = currentPlaying.song
-                val cover = BitmapUtils.getAlbumArtBitmapFromDisk(
-                    song, Util.getMinDisplayMetric()
-                )
-                metadata.putLong(MediaMetadataCompat.METADATA_KEY_DURATION, -1L)
-                metadata.putString(MediaMetadataCompat.METADATA_KEY_ARTIST, song.artist)
-                metadata.putString(MediaMetadataCompat.METADATA_KEY_ALBUM_ARTIST, song.artist)
-                metadata.putString(MediaMetadataCompat.METADATA_KEY_ALBUM, song.album)
-                metadata.putString(MediaMetadataCompat.METADATA_KEY_TITLE, song.title)
-                metadata.putBitmap(MediaMetadataCompat.METADATA_KEY_ALBUM_ART, cover)
-            } catch (e: Exception) {
-                Timber.e(e, "Error setting the metadata")
-            }
-        }
-
-        // Save the metadata
-        mediaSession!!.setMetadata(metadata.build())
-
-        // Create playback State
-        val playbackState = PlaybackStateCompat.Builder()
-        val state: Int
-        val isActive: Boolean
-
-        var actions: Long = PlaybackStateCompat.ACTION_PLAY_PAUSE or
-            PlaybackStateCompat.ACTION_SKIP_TO_NEXT or
-            PlaybackStateCompat.ACTION_SKIP_TO_PREVIOUS
-
-        // Map our playerState to native PlaybackState
-        // TODO: Synchronize these APIs
-        when (playerState) {
-            PlayerState.STARTED -> {
-                state = PlaybackStateCompat.STATE_PLAYING
-                isActive = true
-                actions = actions or
-                    PlaybackStateCompat.ACTION_PAUSE or
-                    PlaybackStateCompat.ACTION_STOP
-            }
-            PlayerState.COMPLETED,
-            PlayerState.STOPPED -> {
-                isActive = false
-                state = PlaybackStateCompat.STATE_STOPPED
-            }
-            PlayerState.IDLE -> {
-                isActive = false
-                state = PlaybackStateCompat.STATE_NONE
-                actions = 0L
-            }
-            PlayerState.PAUSED -> {
-                isActive = true
-                state = PlaybackStateCompat.STATE_PAUSED
-                actions = actions or
-                    PlaybackStateCompat.ACTION_PLAY or
-                    PlaybackStateCompat.ACTION_STOP
-            }
-            else -> {
-                // These are the states PREPARING, PREPARED & DOWNLOADING
-                isActive = true
-                state = PlaybackStateCompat.STATE_PAUSED
-            }
-        }
-
-        playbackState.setState(state, PlaybackStateCompat.PLAYBACK_POSITION_UNKNOWN, 1.0f)
-
-        // Set actions
-        playbackState.setActions(actions)
-
-        // Save the playback state
-        mediaSession!!.setPlaybackState(playbackState.build())
-
-        // Set Active state
-        mediaSession!!.isActive = isActive
-
-        Timber.d("Setting the MediaSession to active = %s", isActive)
-    }
-
     private fun createNotificationChannel() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
 
@@ -604,7 +543,11 @@ class MediaPlayerService : Service() {
         // Init
         val context = applicationContext
         val song = currentPlaying?.song
-        val stopIntent = getPendingIntentForMediaAction(context, KeyEvent.KEYCODE_MEDIA_STOP, 100)
+        val stopIntent = Util.getPendingIntentForMediaAction(
+            context,
+            KeyEvent.KEYCODE_MEDIA_STOP,
+            100
+        )
 
         // We should use a single notification builder, otherwise the notification may not be updated
         if (notificationBuilder == null) {
@@ -723,7 +666,7 @@ class MediaPlayerService : Service() {
             else -> return null
         }
 
-        val pendingIntent = getPendingIntentForMediaAction(context, keycode, requestCode)
+        val pendingIntent = Util.getPendingIntentForMediaAction(context, keycode, requestCode)
         return NotificationCompat.Action.Builder(icon, label, pendingIntent).build()
     }
 
@@ -734,7 +677,7 @@ class MediaPlayerService : Service() {
     ): NotificationCompat.Action {
         val isPlaying = playerState === PlayerState.STARTED
         val keycode = KeyEvent.KEYCODE_MEDIA_PLAY_PAUSE
-        val pendingIntent = getPendingIntentForMediaAction(context, keycode, requestCode)
+        val pendingIntent = Util.getPendingIntentForMediaAction(context, keycode, requestCode)
         val label: String
         val icon: Int
 
@@ -767,7 +710,7 @@ class MediaPlayerService : Service() {
             icon = R.drawable.ic_star_hollow_dark
         }
 
-        val pendingIntent = getPendingIntentForMediaAction(context, keyCode, requestCode)
+        val pendingIntent = Util.getPendingIntentForMediaAction(context, keyCode, requestCode)
         return NotificationCompat.Action.Builder(icon, label, pendingIntent).build()
     }
 
@@ -779,126 +722,11 @@ class MediaPlayerService : Service() {
         return PendingIntent.getActivity(this, 0, intent, flags)
     }
 
-    private fun getPendingIntentForMediaAction(
-        context: Context,
-        keycode: Int,
-        requestCode: Int
-    ): PendingIntent {
-        val intent = Intent(Constants.CMD_PROCESS_KEYCODE)
-        val flags = PendingIntent.FLAG_UPDATE_CURRENT
-        intent.setPackage(context.packageName)
-        intent.putExtra(Intent.EXTRA_KEY_EVENT, KeyEvent(KeyEvent.ACTION_DOWN, keycode))
-        return PendingIntent.getBroadcast(context, requestCode, intent, flags)
-    }
-
-    private fun initMediaSessions() {
-        @Suppress("MagicNumber")
-        val keycode = 110
-
-        Timber.w("Creating media session")
-
-        mediaSession = MediaSessionCompat(applicationContext, "UltrasonicService")
-        mediaSessionToken = mediaSession!!.sessionToken
-
-        updateMediaButtonReceiver()
-
-        mediaSession!!.setCallback(object : MediaSessionCompat.Callback() {
-            override fun onPlay() {
-                super.onPlay()
-
-                getPendingIntentForMediaAction(
-                    applicationContext,
-                    KeyEvent.KEYCODE_MEDIA_PLAY,
-                    keycode
-                ).send()
-
-                Timber.v("Media Session Callback: onPlay")
-            }
-
-            override fun onPause() {
-                super.onPause()
-                getPendingIntentForMediaAction(
-                    applicationContext,
-                    KeyEvent.KEYCODE_MEDIA_PAUSE,
-                    keycode
-                ).send()
-                Timber.v("Media Session Callback: onPause")
-            }
-
-            override fun onStop() {
-                super.onStop()
-                getPendingIntentForMediaAction(
-                    applicationContext,
-                    KeyEvent.KEYCODE_MEDIA_STOP,
-                    keycode
-                ).send()
-                Timber.v("Media Session Callback: onStop")
-            }
-
-            override fun onSkipToNext() {
-                super.onSkipToNext()
-                getPendingIntentForMediaAction(
-                    applicationContext,
-                    KeyEvent.KEYCODE_MEDIA_NEXT,
-                    keycode
-                ).send()
-                Timber.v("Media Session Callback: onSkipToNext")
-            }
-
-            override fun onSkipToPrevious() {
-                super.onSkipToPrevious()
-                getPendingIntentForMediaAction(
-                    applicationContext,
-                    KeyEvent.KEYCODE_MEDIA_PREVIOUS,
-                    keycode
-                ).send()
-                Timber.v("Media Session Callback: onSkipToPrevious")
-            }
-
-            override fun onMediaButtonEvent(mediaButtonEvent: Intent): Boolean {
-                // This probably won't be necessary once we implement more
-                // of the modern media APIs, like the MediaController etc.
-                val event = mediaButtonEvent.extras!!["android.intent.extra.KEY_EVENT"] as KeyEvent?
-                mediaPlayerLifecycleSupport.handleKeyEvent(event)
-                return true
-            }
-        }
-        )
-    }
-
-    fun updateMediaButtonReceiver() {
-        if (Util.getMediaButtonsEnabled()) {
-            registerMediaButtonEventReceiver()
-        } else {
-            unregisterMediaButtonEventReceiver()
-        }
-    }
-
-    private fun registerMediaButtonEventReceiver() {
-        val component = ComponentName(packageName, MediaButtonIntentReceiver::class.java.name)
-        val mediaButtonIntent = Intent(Intent.ACTION_MEDIA_BUTTON)
-        mediaButtonIntent.component = component
-
-        val pendingIntent = PendingIntent.getBroadcast(
-            this,
-            INTENT_CODE_MEDIA_BUTTON,
-            mediaButtonIntent,
-            PendingIntent.FLAG_CANCEL_CURRENT
-        )
-
-        mediaSession?.setMediaButtonReceiver(pendingIntent)
-    }
-
-    private fun unregisterMediaButtonEventReceiver() {
-        mediaSession?.setMediaButtonReceiver(null)
-    }
-
     @Suppress("MagicNumber")
     companion object {
         private const val NOTIFICATION_CHANNEL_ID = "org.moire.ultrasonic"
         private const val NOTIFICATION_CHANNEL_NAME = "Ultrasonic background service"
         private const val NOTIFICATION_ID = 3033
-        private const val INTENT_CODE_MEDIA_BUTTON = 161
 
         private var instance: MediaPlayerService? = null
         private val instanceLock = Any()

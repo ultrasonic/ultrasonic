@@ -247,10 +247,10 @@ class MediaPlayerController(
     }
 
     @set:Synchronized
-    var repeatMode: RepeatMode?
-        get() = Util.getRepeatMode()
+    var repeatMode: RepeatMode
+        get() = Util.repeatMode
         set(repeatMode) {
-            Util.setRepeatMode(repeatMode)
+            Util.repeatMode = repeatMode
             val mediaPlayerService = runningInstance
             mediaPlayerService?.setNextPlaying()
         }

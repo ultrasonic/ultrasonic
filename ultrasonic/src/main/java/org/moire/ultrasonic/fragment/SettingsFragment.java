@@ -33,6 +33,7 @@ import org.moire.ultrasonic.service.Consumer;
 import org.moire.ultrasonic.service.MediaPlayerController;
 import org.moire.ultrasonic.util.Constants;
 import org.moire.ultrasonic.util.FileUtil;
+import org.moire.ultrasonic.util.MediaSessionHandler;
 import org.moire.ultrasonic.util.PermissionUtil;
 import org.moire.ultrasonic.util.ThemeChangedEventDistributor;
 import org.moire.ultrasonic.util.TimeSpanPreference;
@@ -89,6 +90,7 @@ public class SettingsFragment extends PreferenceFragmentCompat
     private final Lazy<MediaPlayerController> mediaPlayerControllerLazy = inject(MediaPlayerController.class);
     private final Lazy<PermissionUtil> permissionUtil = inject(PermissionUtil.class);
     private final Lazy<ThemeChangedEventDistributor> themeChangedEventDistributor = inject(ThemeChangedEventDistributor.class);
+    private final Lazy<MediaSessionHandler> mediaSessionHandler = inject(MediaSessionHandler.class);
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
@@ -468,7 +470,7 @@ public class SettingsFragment extends PreferenceFragmentCompat
 
     private void setMediaButtonsEnabled(boolean enabled) {
         lockScreenEnabled.setEnabled(enabled);
-        Util.updateMediaButtonEventReceiver();
+        mediaSessionHandler.getValue().updateMediaButtonReceiver();
     }
 
     private void setBluetoothPreferences(boolean enabled) {
