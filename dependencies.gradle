@@ -18,7 +18,7 @@ ext.versions = [
         androidSupport       : "28.0.0",
         androidLegacySupport : "1.0.0",
         androidSupportDesign : "1.4.0",
-        constraintLayout     : "2.0.4",
+        constraintLayout     : "2.1.0",
         multidex             : "2.0.1",
         room                 : "2.3.0",
         kotlin               : "1.5.21",
