@@ -85,7 +85,6 @@ public class SearchFragment extends Fragment {
     private EntryAdapter songAdapter;
     private SwipeRefreshLayout searchRefresh;
 
-    private final Lazy<VideoPlayer> videoPlayer = inject(VideoPlayer.class);
     private final Lazy<MediaPlayerController> mediaPlayerControllerLazy = inject(MediaPlayerController.class);
     private final Lazy<ImageLoaderProvider> imageLoaderProvider = inject(ImageLoaderProvider.class);
     private final Lazy<DownloadHandler> downloadHandler = inject(DownloadHandler.class);
@@ -576,7 +575,7 @@ public class SearchFragment extends Fragment {
 
     private void onVideoSelected(MusicDirectory.Entry entry)
     {
-        videoPlayer.getValue().playVideo(getContext(), entry);
+        VideoPlayer.Companion.playVideo(getContext(), entry);
     }
 
     private void autoplay()

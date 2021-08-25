@@ -81,7 +81,6 @@ class TrackCollectionFragment : Fragment() {
     private var shareButton: MenuItem? = null
 
     private val mediaPlayerController: MediaPlayerController by inject()
-    private val videoPlayer: VideoPlayer by inject()
     private val downloadHandler: DownloadHandler by inject()
     private val networkAndStorageChecker: NetworkAndStorageChecker by inject()
     private val imageLoaderProvider: ImageLoaderProvider by inject()
@@ -140,7 +139,7 @@ class TrackCollectionFragment : Fragment() {
                         bundle
                     )
                 } else if (entry != null && entry.isVideo) {
-                    videoPlayer.playVideo(requireContext(), entry)
+                    VideoPlayer.playVideo(requireContext(), entry)
                 } else {
                     enableButtons()
                 }

@@ -73,7 +73,6 @@
     <ID>TooGenericExceptionCaught:MediaPlayerService.kt$MediaPlayerService$e: Exception</ID>
     <ID>TooGenericExceptionCaught:SongView.kt$SongView$e: Exception</ID>
     <ID>TooGenericExceptionCaught:SubsonicUncaughtExceptionHandler.kt$SubsonicUncaughtExceptionHandler$x: Throwable</ID>
-    <ID>TooGenericExceptionCaught:VideoPlayer.kt$VideoPlayer$e: Exception</ID>
     <ID>TooGenericExceptionThrown:DownloadFile.kt$DownloadFile.DownloadTask$throw Exception(String.format("Download of '%s' was cancelled", song))</ID>
     <ID>TooManyFunctions:LocalMediaPlayer.kt$LocalMediaPlayer</ID>
     <ID>TooManyFunctions:MediaPlayerService.kt$MediaPlayerService : Service</ID>
