@@ -409,9 +409,7 @@ class MediaPlayerController(
                 reset()
 
                 // Cancel current download, if necessary.
-                if (downloader.currentDownloading != null) {
-                    downloader.currentDownloading.cancelDownload()
-                }
+                downloader.currentDownloading?.cancelDownload()
             } else {
                 jukeboxMediaPlayer.stopJukeboxService()
             }

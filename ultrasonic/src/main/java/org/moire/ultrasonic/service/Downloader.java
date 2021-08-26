@@ -1,5 +1,7 @@
 package org.moire.ultrasonic.service;
 
+import androidx.annotation.Nullable;
+
 import org.moire.ultrasonic.domain.MusicDirectory;
 import org.moire.ultrasonic.util.LRUCache;
 import org.moire.ultrasonic.util.ShufflePlayBuffer;
@@ -28,6 +30,8 @@ public class Downloader
 {
     public final List<DownloadFile> downloadList = new ArrayList<>();
     public final List<DownloadFile> backgroundDownloadList = new ArrayList<>();
+
+    @Nullable
     public DownloadFile currentDownloading;
 
     private final ShufflePlayBuffer shufflePlayBuffer;
