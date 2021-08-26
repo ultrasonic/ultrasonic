@@ -25,7 +25,7 @@ jobs:
           name: static analysis
           command: ./gradlew -Pqc detekt
       - run:
-          name: build
+          name: build debug
           command: ./gradlew assembleDebug
       - run:
           name: unit-tests
@@ -36,8 +36,11 @@ jobs:
           name: lint
           command: ./gradlew :ultrasonic:lintRelease
       - run:
-          name: assemble release build
-          command: ./gradlew build assembleRelease
+          name: build
+          command: ./gradlew buildRelease
+      - run:
+          name: assemble release
+          command: ./gradlew assembleRelease
       - save_cache:
           paths:
             - ~/.gradle
