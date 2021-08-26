@@ -1,0 +1,3 @@
+Mejoras
+- #445: Se implementa una base de datos para un mejor soporte sin conexión.
+- #537: Añadido soporte para Android Auto.
