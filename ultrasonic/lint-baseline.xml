@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<issues format="5" by="lint 4.2.0" client="gradle" variant="release" version="4.2.0">
+<issues format="6" by="lint 7.0.1">
 
     <issue
         id="ScopedStorage"
@@ -4277,6 +4277,174 @@
         message="The project references RTL attributes, but does not explicitly enable or disable RTL support with `android:supportsRtl` in the manifest">
         <location
             file="src/main/AndroidManifest.xml"/>
+    </issue>
+
+    <issue
+        id="MediaCapabilities"
+        message="The app accesses `MediaStore.Video`, but is missing a `&lt;property>` tag with a `android.content.MEDIA_CAPABILITIES` declaration"
+        errorLine1="    &lt;application"
+        errorLine2="     ~~~~~~~~~~~">
+        <location
+            file="C:\Git\Ultrasonic\ultrasonic\src\main\AndroidManifest.xml"
+            line="23"
+            column="6"/>
+    </issue>
+
+    <issue
+        id="TrustAllX509TrustManager"
+        message="`checkClientTrusted` is empty, which could cause insecure network traffic due to trusting arbitrary TLS/SSL certificates presented by peers">
+        <location
+            file="C:\Git\Ultrasonic\ultrasonic\org\moire\ultrasonic\api\subsonic\SubsonicAPIClient$allowSelfSignedCertificates$trustManager$1.class"/>
+    </issue>
+
+    <issue
+        id="TrustAllX509TrustManager"
+        message="`checkServerTrusted` is empty, which could cause insecure network traffic due to trusting arbitrary TLS/SSL certificates presented by peers">
+        <location
+            file="C:\Git\Ultrasonic\ultrasonic\org\moire\ultrasonic\api\subsonic\SubsonicAPIClient$allowSelfSignedCertificates$trustManager$1.class"/>
+    </issue>
+
+    <issue
+        id="CustomX509TrustManager"
+        message="Implementing a custom `X509TrustManager` is error-prone and likely to be insecure. It is likely to disable certificate validation altogether, and is non-trivial to implement correctly without calling Android&apos;s default implementation."
+        errorLine1="class TrustManagerDecorator implements X509TrustManager"
+        errorLine2="      ~~~~~~~~~~~~~~~~~~~~~">
+        <location
+            file="C:\Git\Ultrasonic\ultrasonic\src\main\java\org\moire\ultrasonic\service\ssl\TrustManagerDecorator.java"
+            line="37"
+            column="7"/>
+    </issue>
+
+    <issue
+        id="UnspecifiedImmutableFlag"
+        message="Missing `PendingIntent` mutability flag"
+        errorLine1="        return PendingIntent.getActivity(this, 0, intent, flags)"
+        errorLine2="                                                          ~~~~~">
+        <location
+            file="C:\Git\Ultrasonic\ultrasonic\src\main\kotlin\org\moire\ultrasonic\service\MediaPlayerService.kt"
+            line="722"
+            column="59"/>
+    </issue>
+
+    <issue
+        id="UnspecifiedImmutableFlag"
+        message="Missing `PendingIntent` mutability flag"
+        errorLine1="            PendingIntent.FLAG_CANCEL_CURRENT"
+        errorLine2="            ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
+        <location
+            file="C:\Git\Ultrasonic\ultrasonic\src\main\kotlin\org\moire\ultrasonic\util\MediaSessionHandler.kt"
+            line="314"
+            column="13"/>
+    </issue>
+
+    <issue
+        id="UnspecifiedImmutableFlag"
+        message="Missing `PendingIntent` mutability flag"
+        errorLine1="  PendingIntent pendingIntent = PendingIntent.getActivity(context, 10, intent, PendingIntent.FLAG_UPDATE_CURRENT);"
+        errorLine2="                                                                               ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
+        <location
+            file="C:\Git\Ultrasonic\ultrasonic\src\main\java\org\moire\ultrasonic\provider\UltrasonicAppWidgetProvider.java"
+            line="198"
+            column="80"/>
+    </issue>
+
+    <issue
+        id="UnspecifiedImmutableFlag"
+        message="Missing `PendingIntent` mutability flag"
+        errorLine1="  pendingIntent = PendingIntent.getBroadcast(context, 11, intent, 0);"
+        errorLine2="                                                                  ~">
+        <location
+            file="C:\Git\Ultrasonic\ultrasonic\src\main\java\org\moire\ultrasonic\provider\UltrasonicAppWidgetProvider.java"
+            line="206"
+            column="67"/>
+    </issue>
+
+    <issue
+        id="UnspecifiedImmutableFlag"
+        message="Missing `PendingIntent` mutability flag"
+        errorLine1="  pendingIntent = PendingIntent.getBroadcast(context, 12, intent, 0);"
+        errorLine2="                                                                  ~">
+        <location
+            file="C:\Git\Ultrasonic\ultrasonic\src\main\java\org\moire\ultrasonic\provider\UltrasonicAppWidgetProvider.java"
+            line="212"
+            column="67"/>
+    </issue>
+
+    <issue
+        id="UnspecifiedImmutableFlag"
+        message="Missing `PendingIntent` mutability flag"
+        errorLine1="  pendingIntent = PendingIntent.getBroadcast(context, 13, intent, 0);"
+        errorLine2="                                                                  ~">
+        <location
+            file="C:\Git\Ultrasonic\ultrasonic\src\main\java\org\moire\ultrasonic\provider\UltrasonicAppWidgetProvider.java"
+            line="218"
+            column="67"/>
+    </issue>
+
+    <issue
+        id="UnspecifiedImmutableFlag"
+        message="Missing `PendingIntent` mutability flag"
+        errorLine1="        return PendingIntent.getBroadcast(context, requestCode, intent, flags)"
+        errorLine2="                                                                        ~~~~~">
+        <location
+            file="C:\Git\Ultrasonic\ultrasonic\src\main\kotlin\org\moire\ultrasonic\util\Util.kt"
+            line="1349"
+            column="73"/>
+    </issue>
+
+    <issue
+        id="NotifyDataSetChanged"
+        message="It will always be more efficient to use more specific change events if you can. Rely on `notifyDataSetChanged` as a last resort."
+        errorLine1="        super.notifyDataSetChanged()"
+        errorLine2="        ~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
+        <location
+            file="C:\Git\Ultrasonic\ultrasonic\src\main\kotlin\org\moire\ultrasonic\fragment\AlbumRowAdapter.kt"
+            line="44"
+            column="9"/>
+    </issue>
+
+    <issue
+        id="NotifyDataSetChanged"
+        message="It will always be more efficient to use more specific change events if you can. Rely on `notifyDataSetChanged` as a last resort."
+        errorLine1="        super.notifyDataSetChanged()"
+        errorLine2="        ~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
+        <location
+            file="C:\Git\Ultrasonic\ultrasonic\src\main\kotlin\org\moire\ultrasonic\fragment\ArtistRowAdapter.kt"
+            line="48"
+            column="9"/>
+    </issue>
+
+    <issue
+        id="NotifyDataSetChanged"
+        message="It will always be more efficient to use more specific change events if you can. Rely on `notifyDataSetChanged` as a last resort."
+        errorLine1="        notifyDataSetChanged()"
+        errorLine2="        ~~~~~~~~~~~~~~~~~~~~~~">
+        <location
+            file="C:\Git\Ultrasonic\ultrasonic\src\main\kotlin\org\moire\ultrasonic\filepicker\FilePickerAdapter.kt"
+            line="142"
+            column="9"/>
+    </issue>
+
+    <issue
+        id="NotifyDataSetChanged"
+        message="It will always be more efficient to use more specific change events if you can. Rely on `notifyDataSetChanged` as a last resort."
+        errorLine1="        viewAdapter.notifyDataSetChanged()"
+        errorLine2="        ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
+        <location
+            file="C:\Git\Ultrasonic\ultrasonic\src\main\kotlin\org\moire\ultrasonic\fragment\GenericListFragment.kt"
+            line="104"
+            column="9"/>
+    </issue>
+
+    <issue
+        id="NotifyDataSetChanged"
+        message="It will always be more efficient to use more specific change events if you can. Rely on `notifyDataSetChanged` as a last resort."
+        errorLine1="        notifyDataSetChanged()"
+        errorLine2="        ~~~~~~~~~~~~~~~~~~~~~~">
+        <location
+            file="C:\Git\Ultrasonic\ultrasonic\src\main\kotlin\org\moire\ultrasonic\fragment\GenericRowAdapter.kt"
+            line="67"
+            column="9"/>
     </issue>
 
 </issues>

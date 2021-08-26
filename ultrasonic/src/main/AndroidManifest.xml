@@ -39,7 +39,8 @@
         <activity android:name=".activity.NavigationActivity"
             android:configChanges="orientation|keyboardHidden"
             android:label="@string/common.appname"
-            android:launchMode="singleTask">
+            android:launchMode="singleTask"
+            android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <action android:name="android.intent.action.SEARCH"/>
@@ -71,12 +72,12 @@
             </intent-filter>
         </service>
 
-        <receiver android:name=".receiver.MediaButtonIntentReceiver">
+        <receiver android:name=".receiver.MediaButtonIntentReceiver" android:exported="true">
             <intent-filter android:priority="2147483647">
                 <action android:name="android.intent.action.MEDIA_BUTTON"/>
             </intent-filter>
         </receiver>
-        <receiver android:name=".receiver.UltrasonicIntentReceiver">
+        <receiver android:name=".receiver.UltrasonicIntentReceiver" android:exported="false">
             <intent-filter>
                 <action android:name="org.moire.ultrasonic.CMD_TOGGLEPAUSE"/>
                 <action android:name="org.moire.ultrasonic.CMD_PLAY"/>
@@ -88,7 +89,7 @@
                 <action android:name="org.moire.ultrasonic.CMD_PROCESS_KEYCODE"/>
             </intent-filter>
         </receiver>
-        <receiver android:name=".receiver.BluetoothIntentReceiver">
+        <receiver android:name=".receiver.BluetoothIntentReceiver" android:exported="true">
             <intent-filter>
                 <action android:name="android.bluetooth.device.action.ACL_CONNECTED"/>
                 <action android:name="android.bluetooth.device.action.ACL_DISCONNECTED"/>
@@ -98,7 +99,8 @@
         </receiver>
         <receiver
             android:name=".provider.UltrasonicAppWidgetProvider4X1"
-            android:label="Ultrasonic (4x1)">
+            android:label="Ultrasonic (4x1)"
+            android:exported="true">
             <intent-filter>
                 <action android:name="android.appwidget.action.APPWIDGET_UPDATE"/>
             </intent-filter>
@@ -109,7 +111,8 @@
         </receiver>
         <receiver
             android:name=".provider.UltrasonicAppWidgetProvider4X2"
-            android:label="Ultrasonic (4x2)">
+            android:label="Ultrasonic (4x2)"
+            android:exported="true">
             <intent-filter>
                 <action android:name="android.appwidget.action.APPWIDGET_UPDATE"/>
             </intent-filter>
@@ -120,7 +123,8 @@
         </receiver>
         <receiver
             android:name=".provider.UltrasonicAppWidgetProvider4X3"
-            android:label="Ultrasonic (4x3)">
+            android:label="Ultrasonic (4x3)"
+            android:exported="true">
             <intent-filter>
                 <action android:name="android.appwidget.action.APPWIDGET_UPDATE"/>
             </intent-filter>
@@ -131,7 +135,8 @@
         </receiver>
         <receiver
             android:name=".provider.UltrasonicAppWidgetProvider4X4"
-            android:label="Ultrasonic (4x4)">
+            android:label="Ultrasonic (4x4)"
+            android:exported="true">
             <intent-filter>
                 <action android:name="android.appwidget.action.APPWIDGET_UPDATE"/>
             </intent-filter>
@@ -143,7 +148,8 @@
 
         <provider
             android:name=".provider.SearchSuggestionProvider"
-            android:authorities="org.moire.ultrasonic.provider.SearchSuggestionProvider"/>
+            android:authorities="org.moire.ultrasonic.provider.SearchSuggestionProvider"
+            android:exported="false" />
 
         <receiver
             android:name=".receiver.A2dpIntentReceiver"

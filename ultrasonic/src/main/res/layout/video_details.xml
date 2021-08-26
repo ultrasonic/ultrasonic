@@ -1,16 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:a="http://schemas.android.com/apk/res/android"
-              a:layout_width="0dip"
-              a:layout_height="wrap_content"
-              a:layout_gravity="center_vertical"
-              a:layout_weight="1"
-              a:orientation="vertical">
-
-    <LinearLayout
-        a:layout_width="fill_parent"
-        a:layout_height="wrap_content"
-        a:layout_gravity="center_vertical"
-        a:orientation="horizontal">
+    a:layout_width="fill_parent"
+    a:layout_height="wrap_content"
+    a:layout_gravity="center_vertical"
+    a:layout_weight="1"
+    a:orientation="horizontal">
 
         <TextView
             a:id="@+id/song_title"
@@ -33,6 +27,5 @@
             a:paddingRight="6dip"
             a:singleLine="true"
             a:textAppearance="?android:attr/textAppearanceSmall"/>
-    </LinearLayout>
 
 </LinearLayout>
