@@ -1,8 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
-<resources>
+<resources xmlns:tools="http://schemas.android.com/tools">
 
     <string name="background_task.loading">Загрузка&#8230;</string>
     <string name="background_task.network_error">Произошла ошибка сети. Пожалуйста, проверьте адрес сервера или повторите попытку позже.</string>
+    <string name="background_task.unsupported_api">Серверный api версии %1$s не поддерживает эту функцию.</string>
     <string name="background_task.no_network">Эта программа требует доступа к сети. Пожалуйста, включите Wi-Fi или мобильную сеть.</string>
     <string name="background_task.not_found">Ресурс не найден. Пожалуйста, проверьте адрес сервера.</string>
     <string name="background_task.parse_error">Не понятный ответ. Пожалуйста, проверьте адрес сервера.</string>
@@ -12,13 +13,22 @@
     <string name="button_bar.bookmarks">Закладки</string>
     <string name="button_bar.browse">Медиа библиотека</string>
     <string name="button_bar.chat">Чат</string>
+    <string name="button_bar.home">UltraSonic Главная</string>
     <string name="button_bar.now_playing">Сейчас играет</string>
+    <string name="buttons.play">Воспроизведение</string>
+    <string name="buttons.pause">Пауза</string>
+    <string name="buttons.repeat">Повтор</string>
+    <string name="buttons.shuffle">Случайное воспроизведение</string>
+    <string name="buttons.stop">Стоп</string>
+    <string name="buttons.next">Следующий</string>
+    <string name="buttons.previous">Предыдущий</string>
     <string name="podcasts.label">Подкаст</string>
     <string name="podcasts_channels.empty">Подкасты не зарегистрированы</string>
     <string name="button_bar.podcasts">Подкаст</string>
     <string name="button_bar.playlists">Плейлист</string>
     <string name="button_bar.search">Поиск</string>
     <string name="chat.send_a_message">Отправить сообщение</string>
+    <string name="common.appname">Ultrasonic</string>
     <string name="common.cancel">Отмена</string>
     <string name="common.comment">Комментарий</string>
     <string name="common.confirm">Подтвердить</string>
@@ -29,8 +39,11 @@
     <string name="common.name">Имя</string>
     <string name="common.ok">Ок</string>
     <string name="common.pin">Пин</string>
+    <string name="common.pause">Пауза</string>
+    <string name="common.play">Воспроизведение</string>
     <string name="common.play_last">Воспроизвести последний</string>
     <string name="common.play_next">Воспроизвести следующий</string>
+    <string name="common.play_previous">Воспроизвести предыдущий</string>
     <string name="common.play_now">Воспроизвести сейчас</string>
     <string name="common.play_shuffled">Играть в случайном порядке</string>
     <string name="common.public">Публичный</string>
@@ -98,7 +111,9 @@
     <string name="main.songs_starred">Отмеченные</string>
     <string name="main.songs_title">Песни</string>
     <string name="main.videos">Видео</string>
-    <string name="main.welcome_title">Добро Пожаловать!</string>
+    <string name="main.welcome_text_demo">Чтобы использовать Ultrasonic с вашей собственной музыкой, вам понадобится <b>собственный сервер</b>. \n\n➤ Если вы хотите сначала опробовать приложение, вы можете добавить демо-сервер прямо сейчас. \n\n➤ В противном случае вы можете настроить свой сервер в <b>настройках</b>.</string>
+    <string name="main.welcome_title">Добро пожаловать в Ultrasonic!</string>
+    <string name="main.welcome_cancel">Отведи меня в настройки</string>
     <string name="menu.about">О приложении</string>
     <string name="menu.common">Общий</string>
     <string name="menu.deleted_playlist">Удалить плейлист %s</string>
@@ -106,6 +121,7 @@
     <string name="menu.exit">Выход</string>
     <string name="menu.navigation">Навигация</string>
     <string name="menu.settings">Настройки</string>
+    <string name="menu.refresh">Обновить</string>
     <string name="music_library.label">Медиа библиотека</string>
     <string name="music_library.label_offline">Медиа Оффлайн</string>
     <string name="music_service.retry">Произошла ошибка сети. Повторная %1$d из %2$d.</string>
@@ -243,8 +259,11 @@
     <string name="settings.preload_5">5 песен</string>
     <string name="settings.preload_unlimited">Неограниченный</string>
     <string name="settings.playback.resume_play_on_headphones_plug.title">Возобновить подключение наушников</string>
+    <string name="settings.playback.resume_play_on_headphones_plug.summary">Приложение возобновит приостановленное воспроизведение после того, как в устройство будут вставлены проводные наушники.</string>
     <string name="settings.screen_lit_summary">Сохранение экрана во время загрузки повышает скорость загрузки.</string>
     <string name="settings.screen_lit_title">Оставьте экран включенным</string>
+    <string name="settings.scrobble_summary">Не забудьте установить своего пользователя и пароль в Скроббл сервисах на сервере.</string>
+    <string name="settings.scrobble_title">Скробблить мои воспроизведения</string>
     <string name="settings.search_1">1</string>
     <string name="settings.search_10">10</string>
     <string name="settings.search_100">100</string>
@@ -265,6 +284,7 @@
     <string name="settings.send_bluetooth_album_art">Обложка альбома через Bluetooth</string>
     <string name="settings.send_bluetooth_notification_summary">Отправлять уведомления о воспроизведении через Bluetooth</string>
     <string name="settings.send_bluetooth_notification">Отправить уведомление Bluetooth</string>
+    <string name="settings.server_manage_servers">Управление серверами</string>
     <string name="settings.server_address">Адрес сервера</string>
     <string name="settings.server_name">Имя</string>
     <string name="settings.server_password">Пароль</string>
@@ -289,13 +309,19 @@
     <string name="settings.testing_unlicensed">Успешное соединение. Сервер нелицензионный.</string>
     <string name="settings.theme_light">Светлая</string>
     <string name="settings.theme_dark">Темная</string>
+    <string name="settings.theme_black">Черная</string>
     <string name="settings.theme_title">Оформление</string>
     <string name="settings.title.allow_self_signed_certificate">Разрешить самоподписанный сертификат HTTPS</string>
+    <string name="settings.title.enable_ldap_users_support">Принудительная аутентификация по обычному паролю</string>
+    <string name="settings.summary.enable_ldap_users_support">Это заставляет приложение всегда отправлять пароль в незашифрованном виде.
+        Полезно, если сервер Subsonic не поддерживает новый API аутентификации пользователей.</string>
     <string name="settings.use_folder_for_album_artist">Использовать папки для имени исполнителя</string>
     <string name="settings.use_folder_for_album_artist_summary">Предположим, папка верхнего уровня - это имя исполнителя альбома</string>
     <string name="settings.use_id3">Обзор с использованием тегов ID3</string>
     <string name="settings.use_id3_summary">Используйте методы тегов ID3 ​​вместо методов на основе файловой системы</string>
-    <string name="main.video">Видео</string>
+    <string name="settings.show_artist_picture">Показать изображение исполнителя в списке исполнителей</string>
+    <string name="settings.show_artist_picture_summary">Отображает изображение исполнителя в списке исполнителей, если доступно</string>
+    <string name="main.video" tools:ignore="UnusedResources">Видео</string>
     <string name="settings.view_refresh">Посмотреть Обновить</string>
     <string name="settings.view_refresh_500">.5 секунд</string>
     <string name="settings.view_refresh_1000">1 секунда</string>
@@ -315,7 +341,7 @@
     <string name="util.bytes_format.gigabyte">0.00 GB</string>
     <string name="util.bytes_format.kilobyte">0 KB</string>
     <string name="util.bytes_format.megabyte">0.00 MB</string>
-    <string name="util.no_time">-:--</string>
+    <string name="util.no_time" tools:ignore="TypographyDashes">-:--</string>
     <string name="util.zero_time">0:00</string>
     <string name="widget.initial_text">Нажмите, чтобы выбрать музыку</string>
     <string name="widget.sdcard_busy">SD-карта недоступна</string>
@@ -359,6 +385,102 @@
     <string name="download.menu_show_artist">Показать исполнителей</string>
     <string name="albumArt">albumArt</string>
     <string name="common_multiple_years">Несколько лет</string>
+    <string name="settings.playback.resume_on_bluetooth_device">Возобновить при подключении устройства Bluetooth</string>
+    <string name="settings.playback.pause_on_bluetooth_device">Пауза при отключении устройства Bluetooth</string>
+    <string name="settings.playback.bluetooth_all">Все устройства Bluetooth</string>
+    <string name="settings.playback.bluetooth_a2dp">Только аудио (A2DP) устройства</string>
+    <string name="settings.playback.bluetooth_disabled">Отключено</string>
+    <string name="settings.playback.single_button_bluetooth_device">Одна кнопка Воспроизведение/Пауза на устройстве Bluetooth</string>
+    <string name="settings.playback.single_button_bluetooth_device_summary">Включение этого может помочь со старыми устройствами Bluetooth, когда Воспроизведение/Пауза работает некорректно.</string>
+    <string name="settings.debug.title">Настройки отладки</string>
+    <string name="settings.debug.log_to_file">Записать журнал отладки в файл</string>
+    <string name="settings.debug.log_path">Файлы журнала доступны по адресу %1$s/%2$s</string>
+    <string name="settings.debug.log_summary">В каталоге %3$s есть %1$s файлов журналов, занимающие ~%2$sМб места. Хотите ли вы сохранить их?</string>
+    <string name="settings.debug.log_keep">Сохранить файлы</string>
+    <string name="settings.debug.log_delete">Удалить файлы</string>
+    <string name="settings.debug.log_deleted">Удаленные файлы журналов.</string>
+
+    <string name="permissions.access_error">Ultrasonic не может получить доступ к кэшу музыкальных файлов. Местоположение кэша было сброшено на путь по умолчанию.</string>
+    <string name="permissions.message_box_title">Внимание</string>
+    <string name="permissions.permission_missing">Ultrasonic требуется разрешение на чтение/запись в директории музыкального кэша. Каталог кэша был сброшен на значение по умолчанию.</string>
+    <string name="permissions.rationale_title">Запрос разрешения</string>
+    <string name="permissions.rationale_description_failed">Ultrasonic требуется разрешение на чтение/запись в директории музыкального кэша.\nПожалуйста, разрешите Ultrasonic доступ к файловой системе.</string>
+    <string name="permissions.permanent_denial_title">Разрешениях навсегда отклонены</string>
+    <string name="permissions.permanent_denial_description">Ultrasonic необходим доступ на чтение/запись к местоположению кэша. Вы можете предоставить их в настройках приложения. Если вы отклоните этот запрос, в качестве местоположения кэша будет использоваться папка по умолчанию.</string>
+    <string name="permissions.open_settings">Открыть настройки</string>
+    <string name="permissions.rationale_description_initial">Чтобы иметь возможность изменять местоположение кэша, Ultrasonic необходимо разрешение на чтение/запись в файловой системе.</string>
+
+    <string name="filepicker.select_folder">Выберите папку</string>
+    <string name="filepicker.create_folder">Создать новую папку</string>
+    <string name="filepicker.create_folder_failed">Не удалось создать новую папку</string>
+    <string name="filepicker.internal">%1$s(Внутренний) </string>
+    <string name="filepicker.default_app_folder">Папка приложения по умолчанию %1$s (Внешняя)</string>
+    <string name="filepicker.enter_folder_name">Введите имя папки</string>
+    <string name="filepicker.create">Создать</string>
+    <string name="filepicker.name_invalid">Пожалуйста, введите правильное имя папки</string>
+    <string name="filepicker.already_exists">Эта папка уже существует.\nПожалуйста, укажите другое имя для папки</string>
+    <string name="filepicker.select">Выбрать</string>
+    <string name="filepicker.default">Использовать по умолчанию</string>
+    <string name="filepicker.available_drives">Доступные диски:</string>
+
+    <string name="server_selector.label">Настроенные серверы</string>
+    <string name="server_selector.delete_confirmation">Вы уверены, что хотите удалить сервер?</string>
+    <string name="server_editor.label">Редактирование сервера</string>
+    <string name="server_editor.new_label">Добавить сервер</string>
+    <string name="server_editor.leave_confirmation">Вы уверены, что хотите уйти и потерять свои изменения?</string>
+    <string name="server_editor.required">Это поле является обязательным</string>
+    <string name="server_menu.edit">Редактировать</string>
+    <string name="server_menu.delete">Удалить</string>
+    <string name="server_menu.move_up">Поднять</string>
+    <string name="server_menu.move_down">Опустить</string>
+    <string name="server_editor.authentication">Аутентификация</string>
+    <string name="server_editor.advanced">Дополнительные настройки</string>
+    <string name="server_editor.disabled_feature">Одна или несколько функций были отключены, потому что сервер их не поддерживает.\nВы можете запустить этот тест снова в любое время.</string>
+    <string name="server_menu.demo">Демо-сервер</string>
+
+    <plurals name="select_album_n_songs">
+        <item quantity="one">%d песня</item>
+        <item quantity="few">%d песни</item>
+        <item quantity="many">%d песен</item>
+        <item quantity="other">%d песен</item>
+    </plurals>
+    <plurals name="select_album_n_songs_pinned">
+        <item quantity="one">%d песня выбрана для закрепления.</item>
+        <item quantity="few">%d песни выбрано для закрепления.</item>
+        <item quantity="many">%d песен выбрано для закрепления.</item>
+        <item quantity="other">%d песен выбрано для закрепления.</item>
+    </plurals>
+    <plurals name="select_album_n_songs_downloaded">
+        <item quantity="one">%d песня выбрана для загрузки.</item>
+        <item quantity="few">%d песни выбрано для загрузки.</item>
+        <item quantity="many">%d песен выбрано для загрузки.</item>
+        <item quantity="other">%d песен выбрано для загрузки.</item>
+    </plurals>
+    <plurals name="select_album_n_songs_unpinned">
+        <item quantity="one">%d песня выбрана для открепления.</item>
+        <item quantity="few">%d песни выбрано для открепления.</item>
+        <item quantity="many">%d песен выбрано для открепления.</item>
+        <item quantity="other">%d песен выбрано для открепления.</item>
+    </plurals>
+    <plurals name="select_album_n_songs_added">
+        <item quantity="one">%d песня добавлена в конец очереди воспроизведения.</item>
+        <item quantity="few">%d песни добавлено в конец очереди воспроизведения.</item>
+        <item quantity="many">%d песен добавлено в конец очереди воспроизведения.</item>
+        <item quantity="other">%d песен добавлено в конец очереди воспроизведения.</item>
+    </plurals>
+    <plurals name="select_album_n_songs_play_next">
+        <item quantity="one">%d песня вставлена после текущей песни.</item>
+        <item quantity="few">%d песни вставлено после текущей песни.</item>
+        <item quantity="many">%d песен вставлено после текущей песни.</item>
+        <item quantity="other">%d песен вставлено после текущей песни.</item>
+    </plurals>
+    <plurals name="select_album_donate_dialog_n_trial_days_left">
+        <item quantity="one">Остался %d день пробного периода</item>
+        <item quantity="few">Осталось %d дня пробного периода</item>
+        <item quantity="many">Осталось %d дней пробного периода</item>
+        <item quantity="other">Осталось %d дней пробного периода</item>
+    </plurals>
+
     <!-- Subsonic api errors -->
     <string name="api.subsonic.generic">Общая ошибка API: %1$s</string>
     <string name="api.subsonic.generic.no.message">нет сообщений от сервера</string>
@@ -368,8 +490,13 @@
     <string name="api.subsonic.param_missing">Требуемый параметр отсутствует.</string>
     <string name="api.subsonic.requested_data_was_not_found">Запрошенные данные не найдены.</string>
     <string name="api.subsonic.trial_period_is_over">Пробный период окончен.</string>
+    <string name="api.subsonic.upgrade_client">Несовместимые версии. Пожалуйста, обновите приложение Ultrasonic для Android.</string>
     <string name="api.subsonic.upgrade_server">Несовместимые версии. Пожалуйста, обновите Subsonic сервер.</string>
 
     <!-- Subsonic feature flags -->
     <string name="feature_flags_category_title">Флаги</string>
-    </resources>
+    <string name="feature_flags_five_star_rating_title">Использовать пятизвездочный рейтинг для песен</string>
+    <string name="feature_flags_five_star_rating_description">Использовать пятизвездочную систему рейтинга для песен
+        вместо того, чтобы просто ставить/не ставить звезды.</string>
+
+</resources>

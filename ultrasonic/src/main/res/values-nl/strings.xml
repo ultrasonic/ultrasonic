@@ -436,31 +436,31 @@
     <string name="server_editor.disabled_feature">Eén of meerdere functies zijn uitgeschakeld omdat de server ze niet ondersteunt.\nVoer deze test later opnieuw uit.</string>
 
     <plurals name="select_album_n_songs">
-        <item quantity="one">1 nummer</item>
+        <item quantity="one">%d nummer</item>
         <item quantity="other">%d nummers</item>
     </plurals>
     <plurals name="select_album_n_songs_pinned">
-        <item quantity="one">1 vast te maken nummer geselecteerd.</item>
+        <item quantity="one">%d vast te maken nummer geselecteerd.</item>
         <item quantity="other">%d vast te maken nummers geselecteerd.</item>
     </plurals>
     <plurals name="select_album_n_songs_downloaded">
-        <item quantity="one">1 te downloaden nummer geselecteerd.</item>
+        <item quantity="one">%d te downloaden nummer geselecteerd.</item>
         <item quantity="other">%d te downloaden nummers geselecteerd.</item>
     </plurals>
     <plurals name="select_album_n_songs_unpinned">
-        <item quantity="one">1 los te maken nummer geselecteerd. </item>
+        <item quantity="one">%d los te maken nummer geselecteerd.</item>
         <item quantity="other">%dlos te maken nummers geselecteerd. </item>
     </plurals>
     <plurals name="select_album_n_songs_added">
-        <item quantity="one">1 nummer toegevoegd aan einde van afspeelwachtrij.</item>
+        <item quantity="one">%d nummer toegevoegd aan einde van afspeelwachtrij.</item>
         <item quantity="other">%d nummers toegevoegd aan einde van afspeelwachtrij.</item>
     </plurals>
     <plurals name="select_album_n_songs_play_next">
-        <item quantity="one">1 nummer ingevoegd na huidige nummer.</item>
+        <item quantity="one">%d nummer ingevoegd na huidige nummer.</item>
         <item quantity="other">%d nummers ingevoegd na huidige nummer.</item>
     </plurals>
     <plurals name="select_album_donate_dialog_n_trial_days_left">
-        <item quantity="one">Nog 1 dag over van proefperiode</item>
+        <item quantity="one">Nog %d dag over van proefperiode</item>
         <item quantity="other">Nog %d dagen over van proefperiode</item>
     </plurals>
 

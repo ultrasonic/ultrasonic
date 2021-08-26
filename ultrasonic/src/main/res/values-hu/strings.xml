@@ -434,31 +434,31 @@
     <string name="server_editor.authentication">Bejelentkezés</string>
     <string name="server_editor.advanced">Haladó beállítások</string>
     <plurals name="select_album_n_songs">
-        <item quantity="one">1 dal</item>
+        <item quantity="one">%d dal</item>
         <item quantity="other">%d dal</item>
     </plurals>
     <plurals name="select_album_n_songs_pinned">
-        <item quantity="one">1 dal kijelölve tárolásra.</item>
+        <item quantity="one">%d dal kijelölve tárolásra.</item>
         <item quantity="other">%d dal kijelölve tárolásra.</item>
     </plurals>
     <plurals name="select_album_n_songs_downloaded">
-        <item quantity="one">1 dal kijelölve letöltésre.</item>
+        <item quantity="one">%d dal kijelölve letöltésre.</item>
         <item quantity="other">%d dal kijelölve letöltésre.</item>
     </plurals>
     <plurals name="select_album_n_songs_unpinned">
-        <item quantity="one">1 dal tárolása visszavonva.</item>
+        <item quantity="one">%d dal tárolása visszavonva.</item>
         <item quantity="other">%d dal tárolása visszavonva.</item>
     </plurals>
     <plurals name="select_album_n_songs_added">
-        <item quantity="one">1 dal hozzáadva a várólistához utolsóként.</item>
+        <item quantity="one">%d dal hozzáadva a várólistához utolsóként.</item>
         <item quantity="other">%d dal hozzáadva a várólistához utolsóként.</item>
     </plurals>
     <plurals name="select_album_n_songs_play_next">
-        <item quantity="one">1 dal hozzáadva a várólistához következőként.</item>
+        <item quantity="one">%d dal hozzáadva a várólistához következőként.</item>
         <item quantity="other">%d dal hozzáadva a várólistához következőként.</item>
     </plurals>
     <plurals name="select_album_donate_dialog_n_trial_days_left">
-        <item quantity="one">1 nap van hátra a próba időszakból.</item>
+        <item quantity="one">%d nap van hátra a próba időszakból.</item>
         <item quantity="other">%d nap van hátra a próba időszakból.</item>
     </plurals>
 

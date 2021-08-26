@@ -439,31 +439,31 @@
     <string name="server_menu.demo">Servidor de demostración</string>
 
     <plurals name="select_album_n_songs">
-        <item quantity="one">1 canción</item>
+        <item quantity="one">%d canción</item>
         <item quantity="other">%d canciones</item>
     </plurals>
     <plurals name="select_album_n_songs_pinned">
-        <item quantity="one">1 canción seleccionada para ser anclada.</item>
+        <item quantity="one">%d canción seleccionada para ser anclada.</item>
         <item quantity="other">%d canciones seleccionadas para ser ancladas.</item>
     </plurals>
     <plurals name="select_album_n_songs_downloaded">
-        <item quantity="one">1 canción seleccionada para ser descargada.</item>
+        <item quantity="one">%d canción seleccionada para ser descargada.</item>
         <item quantity="other">%d canciones seleccionadas para ser descargadas.</item>
     </plurals>
     <plurals name="select_album_n_songs_unpinned">
-        <item quantity="one">1 canción seleccionada para ser desanclada.</item>
+        <item quantity="one">%d canción seleccionada para ser desanclada.</item>
         <item quantity="other">%d canciones seleccionadas para ser desancladas.</item>
     </plurals>
     <plurals name="select_album_n_songs_added">
-        <item quantity="one">1 canción añadida al final de la cola de reproducción.</item>
+        <item quantity="one">%d canción añadida al final de la cola de reproducción.</item>
         <item quantity="other">%d canciones añadidas al final de la cola de reproducción.</item>
     </plurals>
     <plurals name="select_album_n_songs_play_next">
-        <item quantity="one">1 canción insertada después de la canción actual.</item>
+        <item quantity="one">%d canción insertada después de la canción actual.</item>
         <item quantity="other">%d canciones insertadas después de la canción actual.</item>
     </plurals>
     <plurals name="select_album_donate_dialog_n_trial_days_left">
-        <item quantity="one">Queda un día de periodo de prueba</item>
+        <item quantity="one">Queda %d día de periodo de prueba</item>
         <item quantity="other">Quedan %d días de periodo de prueba</item>
     </plurals>
 

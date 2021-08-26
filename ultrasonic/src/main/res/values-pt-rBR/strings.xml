@@ -262,8 +262,8 @@
     <string name="settings.playback.resume_play_on_headphones_plug.summary">O aplicativo retomará a reprodução em pausa na inserção dos fones de ouvido no dispositivo.</string>
     <string name="settings.screen_lit_summary">Manter a tela ligada enquanto baixando aumenta a velocidade de download.</string>
     <string name="settings.screen_lit_title">Manter a Tela Ligada</string>
-    <string name="settings.scrobble_summary">Lembrar de configurar o usuário e senha no(s) serviço(s) Scrobble do servidor</string>
-    <string name="settings.scrobble_title">Scrobble minhas músicas</string>
+    <string name="settings.scrobble_summary">Lembre-se de configurar usuário e senha nos serviços Scrobble do servidor</string>
+    <string name="settings.scrobble_title">Registre Minhas Músicas</string>
     <string name="settings.search_1">1</string>
     <string name="settings.search_10">10</string>
     <string name="settings.search_100">100</string>
@@ -480,8 +480,8 @@
     <string name="api.subsonic.upgrade_server">Versões incompativeis. Atualize o servidor Ultrasonic.</string>
 
     <!-- Subsonic feature flags -->
-    <string name="feature_flags_category_title">Bandeiras de Recursos</string>
-    <string name="feature_flags_five_star_rating_title">Usar Classif. de 5 estrelas Para Músicas</string>
+    <string name="feature_flags_category_title">Sinalização de Recursos</string>
+    <string name="feature_flags_five_star_rating_title">Usar Classif. 5 Estrelas para Músicas</string>
     <string name="feature_flags_five_star_rating_description">Use o sistema de classificação de 5 estrelas para músicas
          em vez de simplesmente estrelar/não estrelar itens.
     </string>
