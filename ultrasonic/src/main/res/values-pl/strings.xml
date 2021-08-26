@@ -368,43 +368,43 @@ ponieważ api Subsonic nie wspiera nowego sposobu autoryzacji dla użytkowników
     <string name="common_multiple_years">Z różnych lat</string>
     <string name="server_editor.new_label">Dodaj serwer</string>
     <plurals name="select_album_n_songs">
-        <item quantity="one">1 utwór</item>
+        <item quantity="one">%d utwór</item>
         <item quantity="few">%d utwory</item>
         <item quantity="many">%d utworów</item>
         <item quantity="other">%d utworów</item>
     </plurals>
     <plurals name="select_album_n_songs_pinned">
-        <item quantity="one">1 utwór zaznaczony do przypięcia</item>
+        <item quantity="one">%d utwór zaznaczony do przypięcia</item>
         <item quantity="few">%d utwory zaznaczone do przypięcia</item>
         <item quantity="many">%d utworów zaznaczonych do przypięcia</item>
         <item quantity="other">%d utworów zaznaczonych do przypięcia</item>
     </plurals>
     <plurals name="select_album_n_songs_downloaded">
-        <item quantity="one">1 utwór zaznaczony do pobrania</item>
+        <item quantity="one">%d utwór zaznaczony do pobrania</item>
         <item quantity="few">%d utwory zaznaczone do pobrania</item>
         <item quantity="many">%d utworów zaznaczonych do pobrania</item>
         <item quantity="other">%d utworów zaznaczonych do pobrania</item>
     </plurals>
     <plurals name="select_album_n_songs_unpinned">
-        <item quantity="one">1 utwór zaznaczony do odpięcia</item>
+        <item quantity="one">%d utwór zaznaczony do odpięcia</item>
         <item quantity="few">%d utwory zaznaczone do odpięcia</item>
         <item quantity="many">%d utworów zaznaczonych do odpięcia </item>
         <item quantity="other">%d utworów zaznaczonych do odpięcia</item>
     </plurals>
     <plurals name="select_album_n_songs_added">
-        <item quantity="one">1 utwór dodany na koniec kolejki odtwarzania</item>
+        <item quantity="one">%d utwór dodany na koniec kolejki odtwarzania</item>
         <item quantity="few">%d utwory dodane na koniec kolejki odtwarzania</item>
         <item quantity="many">%dutworów dodanych na koniec kolejki odtwarzania </item>
         <item quantity="other">%d utworów dodanych na koniec kolejki odtwarzania </item>
     </plurals>
     <plurals name="select_album_n_songs_play_next">
-        <item quantity="one">1 utwór wstawiony po bieżącym utworze</item>
+        <item quantity="one">%d utwór wstawiony po bieżącym utworze</item>
         <item quantity="few">%d utwory wstawione po bieżącym utworze</item>
         <item quantity="many">%d utworów wstawionych po bieżącym utworze </item>
         <item quantity="other">%d utworów wstawionych po bieżącym utworze  </item>
     </plurals>
     <plurals name="select_album_donate_dialog_n_trial_days_left">
-        <item quantity="one">1 dzień pozostał do zakończenia okresu próbnego</item>
+        <item quantity="one">%d dzień pozostał do zakończenia okresu próbnego</item>
         <item quantity="few">%d dni pozostały do zakończenia okresu próbnego</item>
         <item quantity="many">%d dni pozostało do zakończenia okresu próbnego </item>
         <item quantity="other">%d dni pozostało do zakończenia okresu próbnego </item>
