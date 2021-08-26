@@ -4279,16 +4279,6 @@
             file="src/main/AndroidManifest.xml"/>
     </issue>
 
-    <issue
-        id="MediaCapabilities"
-        message="The app accesses `MediaStore.Video`, but is missing a `&lt;property>` tag with a `android.content.MEDIA_CAPABILITIES` declaration"
-        errorLine1="    &lt;application"
-        errorLine2="     ~~~~~~~~~~~">
-        <location
-            file="C:\Git\Ultrasonic\ultrasonic\src\main\AndroidManifest.xml"
-            line="23"
-            column="6"/>
-    </issue>
 
     <issue
         id="TrustAllX509TrustManager"

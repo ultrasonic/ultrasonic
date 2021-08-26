@@ -27,7 +27,8 @@
         android:theme="@style/NoActionBar"
         android:name=".app.UApp"
         android:label="@string/common.appname"
-        android:usesCleartextTraffic="true">
+        android:usesCleartextTraffic="true"
+        tools:ignore="MediaCapabilities">
 
         <meta-data android:name="com.google.android.gms.car.application"
             android:resource="@xml/automotive_app_desc"/>
