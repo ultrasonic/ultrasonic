@@ -420,45 +420,38 @@
     <string name="server_editor.authentication">Ověření</string>
     <string name="server_editor.advanced">Rozšířené možnosti</string>
     <plurals name="select_album_n_songs">
-        <item quantity="one">1 skladba</item>
+        <item quantity="one">%d skladba</item>
         <item quantity="few">%d skladby</item>
-        <item quantity="many">%d  skladeb</item>
         <item quantity="other">%d skladeb</item>
     </plurals>
     <plurals name="select_album_n_songs_pinned">
-        <item quantity="one">1 skladba vybrána pro připnutí.</item>
+        <item quantity="one">%d skladba vybrána pro připnutí.</item>
         <item quantity="few">%d skladby vybrány pro připnutí.</item>
-        <item quantity="many">%d skladeb vybráno pro připnutí.</item>
         <item quantity="other">%d skladeb vybráno pro připnutí.</item>
     </plurals>
     <plurals name="select_album_n_songs_downloaded">
-        <item quantity="one">1 skladba vybrána pro stažení.</item>
+        <item quantity="one">%d skladba vybrána pro stažení.</item>
         <item quantity="few">%d skladby vybrány pro stažení.</item>
-        <item quantity="many">%d skladeb vybráno pro stažení.</item>
         <item quantity="other">%d skladeb vybráno pro stažení.</item>
     </plurals>
     <plurals name="select_album_n_songs_unpinned">
-        <item quantity="one">1 skladba vybrána pro odepnutí.</item>
+        <item quantity="one">%d skladba vybrána pro odepnutí.</item>
         <item quantity="few">%d skladby vybrány pro odepnutí.</item>
-        <item quantity="many">%d skladeb vybráno pro odepnutí.</item>
         <item quantity="other">%d skladeb vybráno pro odepnutí.</item>
     </plurals>
     <plurals name="select_album_n_songs_added">
-        <item quantity="one">1 skladba přidána na konec fronty přehrávání.</item>
+        <item quantity="one">%d skladba přidána na konec fronty přehrávání.</item>
         <item quantity="few">%d skladyb přidány na konec fronty přehrávání.</item>
-        <item quantity="many">%d skladeb přidáno na konec fronty přehrávání.</item>
         <item quantity="other">%d skladeb přidáno na konec fronty přehrávání.</item>
     </plurals>
     <plurals name="select_album_n_songs_play_next">
-        <item quantity="one">1 skladba přidána za aktuální skladbu.</item>
+        <item quantity="one">%d skladba přidána za aktuální skladbu.</item>
         <item quantity="few">%d skladby přidány za aktuální skladbu.</item>
-        <item quantity="many">%d skladeb přidáno za aktuální skladbu.</item>
         <item quantity="other">%d skladeb přidáno za aktuální skladbu.</item>
     </plurals>
     <plurals name="select_album_donate_dialog_n_trial_days_left">
-        <item quantity="one">Zbývá 1 den zkušební doby</item>
+        <item quantity="one">Zbývá %d den zkušební doby</item>
         <item quantity="few">Zbývají %d dny zkušební doby</item>
-        <item quantity="many">Zbývá %d dní zkušební doby</item>
         <item quantity="other">Zbývá %d dní zkušební doby</item>
     </plurals>
 

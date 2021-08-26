@@ -367,31 +367,31 @@
     <string name="common_multiple_years">Mehrere Jahre</string>
     <string name="server_editor.new_label">Server hinzufügen</string>
     <plurals name="select_album_n_songs">
-        <item quantity="one">1 Titel</item>
+        <item quantity="one">%d Titel</item>
         <item quantity="other">%d Titel</item>
     </plurals>
     <plurals name="select_album_n_songs_pinned">
-        <item quantity="one">1 Titel</item>
+        <item quantity="one">%d Titel</item>
         <item quantity="other">%d Titel</item>
     </plurals>
     <plurals name="select_album_n_songs_downloaded">
-        <item quantity="one">1 Titel</item>
+        <item quantity="one">%d Titel</item>
         <item quantity="other">%d Titel</item>
     </plurals>
     <plurals name="select_album_n_songs_unpinned">
-        <item quantity="one">1 Titel</item>
+        <item quantity="one">%d Titel</item>
         <item quantity="other">%d Titel</item>
     </plurals>
     <plurals name="select_album_n_songs_added">
-        <item quantity="one">1 Titel</item>
+        <item quantity="one">%d Titel</item>
         <item quantity="other">%d Titel</item>
     </plurals>
     <plurals name="select_album_n_songs_play_next">
-        <item quantity="one">1 Titel</item>
+        <item quantity="one">%d Titel</item>
         <item quantity="other">%d Titel</item>
     </plurals>
     <plurals name="select_album_donate_dialog_n_trial_days_left">
-        <item quantity="one">1 Titel</item>
+        <item quantity="one">%d Titel</item>
         <item quantity="other">%d Titel</item>
     </plurals>
 

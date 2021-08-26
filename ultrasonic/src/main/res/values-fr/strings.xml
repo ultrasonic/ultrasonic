@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<resources>
+<resources xmlns:tools="http://schemas.android.com/tools">
 
     <string name="background_task.loading">Chargement&#8230;</string>
     <string name="background_task.network_error">Une erreur réseau est survenue. Veuillez vérifier l\'adresse du serveur ou réessayer plus tard.</string>
@@ -15,6 +15,13 @@
     <string name="button_bar.chat">Salon de discussion</string>
     <string name="button_bar.home">Accueil Ultrasonic</string>
     <string name="button_bar.now_playing">Lecture en cours</string>
+    <string name="buttons.play">Lecture</string>
+    <string name="buttons.pause">Pause</string>
+    <string name="buttons.repeat">Répéter</string>
+    <string name="buttons.shuffle">Aléatoire</string>
+    <string name="buttons.stop">Arrêter</string>
+    <string name="buttons.next">Suivant</string>
+    <string name="buttons.previous">Précédent</string>
     <string name="podcasts.label">Podcast</string>
     <string name="podcasts_channels.empty">Aucune chaîne de podcast enregistré</string>
     <string name="button_bar.podcasts">Podcast</string>
@@ -32,8 +39,11 @@
     <string name="common.name">Nom</string>
     <string name="common.ok">OK</string>
     <string name="common.pin">Épingler</string>
+    <string name="common.pause">Pause</string>
+    <string name="common.play">Lecture</string>
     <string name="common.play_last">Jouer en dernier</string>
     <string name="common.play_next">Jouer à la suite</string>
+    <string name="common.play_previous">Lire le précédent</string>
     <string name="common.play_now">Jouer maintenant</string>
     <string name="common.play_shuffled">Jouer aléatoirement</string>
     <string name="common.public">Public</string>
@@ -101,7 +111,9 @@
     <string name="main.songs_starred">Favoris</string>
     <string name="main.songs_title">Titres</string>
     <string name="main.videos">Vidéos</string>
-    <string name="main.welcome_title">Bienvenue !</string>
+    <string name="main.welcome_text_demo">Pour utiliser Ultrasonic avec votre propre musique vous allez avoir besoin de <b>votre propre serveur</b>. \n\n➤ Si vous souhaitez essayer l’application d’abord, il est possible d’ajouter un serveur de démo dès maintenant. \n\n➤ Autrement, vous pouvez configurer votre serveur dans les <b>paramètres</b>.</string>
+    <string name="main.welcome_title">Bienvenue sur Ultrasonic !</string>
+    <string name="main.welcome_cancel">Aller aux paramètres</string>
     <string name="menu.about">À propos</string>
     <string name="menu.common">Général</string>
     <string name="menu.deleted_playlist">Playlist %s supprimée</string>
@@ -250,6 +262,8 @@
     <string name="settings.playback.resume_play_on_headphones_plug.summary">L\'application reprendra la lecture lors de l\'insertion du casque dans l\'appareil.</string>
     <string name="settings.screen_lit_summary">Garder l\'écran allumé pendant le téléchargement permet d\'améliorer la vitesse de téléchargement.</string>
     <string name="settings.screen_lit_title">Garder l\'écran allumé</string>
+    <string name="settings.scrobble_summary">Pensez à configurer votre nom d’utilisateur et votre mot de passe dans le(s) service(s) Scrobble sur le serveur.</string>
+    <string name="settings.scrobble_title">Scrobbler mes lectures</string>
     <string name="settings.search_1">1</string>
     <string name="settings.search_10">10</string>
     <string name="settings.search_100">100</string>
@@ -270,7 +284,7 @@
     <string name="settings.send_bluetooth_album_art">Pochette de l\'album via Bluetooth</string>
     <string name="settings.send_bluetooth_notification_summary">Envoyer des notifications de lecture via Bluetooth</string>
     <string name="settings.send_bluetooth_notification">Envoyer une notification Bluetooth</string>
-    <string name="settings.server_manage_servers">Manage Servers</string>
+    <string name="settings.server_manage_servers">Gérer les serveurs</string>
     <string name="settings.server_address">Adresse du serveur</string>
     <string name="settings.server_name">Nom</string>
     <string name="settings.server_password">Mot de passe</string>
@@ -303,11 +317,11 @@
         Utile si le serveur Subsonic ne supporte pas la nouvelle API d\'authentification LDAP des utilisateurs.</string>
     <string name="settings.use_folder_for_album_artist">Utiliser les noms des dossiers pour les noms d\'artistes</string>
     <string name="settings.use_folder_for_album_artist_summary">Dossier de niveau supérieur devient le nom de l\'artiste de l\'album</string>
-    <string name="settings.use_id3">Naviguer en utilisant ID3 Tags</string>
-    <string name="settings.use_id3_summary">Utiliser ID3 Tags à la place du système de fichier basique</string>
+    <string name="settings.use_id3">Naviguer en utilisant les tags ID3</string>
+    <string name="settings.use_id3_summary">Utiliser les tags ID3 à la place du système de fichier basique</string>
     <string name="settings.show_artist_picture">Afficher l’image de l’artiste dans la liste</string>
     <string name="settings.show_artist_picture_summary">Affiche l’image de l’artiste dans la liste des artistes si celle-ci est disponible</string>
-    <string name="main.video">Vidéo</string>
+    <string name="main.video" tools:ignore="UnusedResources">Vidéo</string>
     <string name="settings.view_refresh">Actualisation de la vue</string>
     <string name="settings.view_refresh_500">0,5 secondes</string>
     <string name="settings.view_refresh_1000">1 seconde</string>
@@ -327,7 +341,7 @@
     <string name="util.bytes_format.gigabyte">0.00 Go</string>
     <string name="util.bytes_format.kilobyte">0 Ko</string>
     <string name="util.bytes_format.megabyte">0.00 Mo</string>
-    <string name="util.no_time">&#8212;:&#8212;&#8212;</string>
+    <string name="util.no_time" tools:ignore="TypographyDashes">&#8212;:&#8212;&#8212;</string>
     <string name="util.zero_time">0:00</string>
     <string name="widget.initial_text">Touchez pour sélectionner un titre</string>
     <string name="widget.sdcard_busy">Carte SD non disponible</string>
@@ -422,33 +436,34 @@
     <string name="server_editor.authentication">Authentification</string>
     <string name="server_editor.advanced">Paramètres avancés</string>
     <string name="server_editor.disabled_feature">Une ou plusieurs fonctionnalités ont été désactivées car le serveur ne les prend pas en charge.\nVous pouvez réexécuter ce test à tout moment.</string>
+    <string name="server_menu.demo">Serveur de démo</string>
 
     <plurals name="select_album_n_songs">
-        <item quantity="one">1 titre</item>
+        <item quantity="one">%d titre</item>
         <item quantity="other">%d titres</item>
     </plurals>
     <plurals name="select_album_n_songs_pinned">
-        <item quantity="one">1 titre sélectionné pour être épinglé.</item>
+        <item quantity="one">%d titre sélectionné pour être épinglé.</item>
         <item quantity="other">%d titres sélectionnés pour être épinglés.</item>
     </plurals>
     <plurals name="select_album_n_songs_downloaded">
-        <item quantity="one">1 titre sélectionné pour être téléchargé.</item>
+        <item quantity="one">%d titre sélectionné pour être téléchargé.</item>
         <item quantity="other">%d titres sélectionnés pour être téléchargés.</item>
     </plurals>
     <plurals name="select_album_n_songs_unpinned">
-        <item quantity="one">1 titre sélectionné pour être désépinglé.</item>
+        <item quantity="one">%d titre sélectionné pour être désépinglé.</item>
         <item quantity="other">%d titres sélectionnés pour être désépinglés.</item>
     </plurals>
     <plurals name="select_album_n_songs_added">
-        <item quantity="one">1 titre ajouté à la fin de la file d\'attente de lecture.</item>
+        <item quantity="one">%d titre ajouté à la fin de la file d\'attente de lecture.</item>
         <item quantity="other">%d titres ajoutés à la fin de la file d\'attente de lecture.</item>
     </plurals>
     <plurals name="select_album_n_songs_play_next">
-        <item quantity="one">1 titre inséré après le titre actuel.</item>
+        <item quantity="one">%d titre inséré après le titre actuel.</item>
         <item quantity="other">%d titres insérés après le titre actuel.</item>
     </plurals>
     <plurals name="select_album_donate_dialog_n_trial_days_left">
-        <item quantity="one">1 jour restant à la période d\'essai</item>
+        <item quantity="one">%d jour restant à la période d\'essai</item>
         <item quantity="other">%d jours restant à la période d\'essai</item>
     </plurals>
 
