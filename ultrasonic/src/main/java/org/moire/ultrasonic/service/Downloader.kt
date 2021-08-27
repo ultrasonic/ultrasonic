@@ -1,21 +1,21 @@
 package org.moire.ultrasonic.service
 
-import org.koin.core.component.KoinComponent
-import org.koin.core.component.inject
-import org.moire.ultrasonic.domain.MusicDirectory
-import org.moire.ultrasonic.util.Util.isExternalStoragePresent
-import org.moire.ultrasonic.util.Util.isNetworkConnected
-import org.moire.ultrasonic.util.Util.getPreloadCount
-import org.moire.ultrasonic.util.Util.getMaxSongs
-import org.moire.ultrasonic.util.ShufflePlayBuffer
-import timber.log.Timber
-import org.moire.ultrasonic.domain.PlayerState
-import org.moire.ultrasonic.util.LRUCache
 import java.util.ArrayList
 import java.util.PriorityQueue
 import java.util.concurrent.Executors
 import java.util.concurrent.ScheduledExecutorService
 import java.util.concurrent.TimeUnit
+import org.koin.core.component.KoinComponent
+import org.koin.core.component.inject
+import org.moire.ultrasonic.domain.MusicDirectory
+import org.moire.ultrasonic.domain.PlayerState
+import org.moire.ultrasonic.util.LRUCache
+import org.moire.ultrasonic.util.ShufflePlayBuffer
+import org.moire.ultrasonic.util.Util.getMaxSongs
+import org.moire.ultrasonic.util.Util.getPreloadCount
+import org.moire.ultrasonic.util.Util.isExternalStoragePresent
+import org.moire.ultrasonic.util.Util.isNetworkConnected
+import timber.log.Timber
 
 /**
  * This class is responsible for maintaining the playlist and downloading
@@ -25,17 +25,18 @@ class Downloader(
     private val shufflePlayBuffer: ShufflePlayBuffer,
     private val externalStorageMonitor: ExternalStorageMonitor,
     private val localMediaPlayer: LocalMediaPlayer
-): KoinComponent {
-    val playList: MutableList<DownloadFile> = ArrayList()
+) : KoinComponent {
+    val playlist: MutableList<DownloadFile> = ArrayList()
     private val downloadQueue: PriorityQueue<DownloadFile> = PriorityQueue<DownloadFile>()
     private val activelyDownloading: MutableList<DownloadFile> = ArrayList()
 
     private val jukeboxMediaPlayer: JukeboxMediaPlayer by inject()
-    
+
     private val downloadFileCache = LRUCache<MusicDirectory.Entry, DownloadFile>(100)
 
     private var executorService: ScheduledExecutorService? = null
-    var downloadListUpdateRevision: Long = 0
+
+    var playlistUpdateRevision: Long = 0
         private set
 
     val downloadChecker = Runnable {
@@ -49,7 +50,9 @@ class Downloader(
 
     fun onCreate() {
         executorService = Executors.newSingleThreadScheduledExecutor()
-        executorService!!.scheduleWithFixedDelay(downloadChecker, 5, 5, TimeUnit.SECONDS)
+        executorService!!.scheduleWithFixedDelay(
+            downloadChecker, CHECK_INTERVAL, CHECK_INTERVAL, TimeUnit.SECONDS
+        )
         Timber.i("Downloader created")
     }
 
@@ -81,7 +84,47 @@ class Downloader(
             return
         }
 
-        // Check the active downloads for failures or completions
+        // Check the active downloads for failures or completions and remove them
+        cleanupActiveDownloads()
+
+        // Check if need to preload more from playlist
+        val preloadCount = getPreloadCount()
+
+        // Start preloading at the current playing song
+        var start = currentPlayingIndex
+        if (start == -1) start = 0
+
+        val end = (start + preloadCount).coerceAtMost(playlist.size)
+
+        for (i in start until end) {
+            val download = playlist[i]
+
+            // Set correct priority (the lower the number, the higher the priority)
+            download.priority = i
+
+            // Add file to queue if not in one of the queues already.
+            if (!download.isWorkDone &&
+                !activelyDownloading.contains(download) &&
+                !downloadQueue.contains(download)
+            ) {
+                downloadQueue.add(download)
+            }
+        }
+
+        // Fill up active List with waiting tasks
+        while (activelyDownloading.size < PARALLEL_DOWNLOADS && downloadQueue.size > 0) {
+            val task = downloadQueue.remove()
+            activelyDownloading.add(task)
+            task.download()
+
+            // The next file on the playlist is currently downloading
+            if (playlist.indexOf(task) == 1) {
+                localMediaPlayer.setNextPlayerState(PlayerState.DOWNLOADING)
+            }
+        }
+    }
+
+    private fun cleanupActiveDownloads() {
         activelyDownloading.retainAll {
             when {
                 it.isDownloading -> true
@@ -96,138 +139,17 @@ class Downloader(
                 }
             }
         }
-
-
-        // Check if need to preload more from playlist
-        val preloadCount = getPreloadCount()
-
-        // Start preloading at the current playing song
-        var start = if (localMediaPlayer.currentPlaying == null) 0 else currentPlayingIndex
-        if (start == -1) start = 0
-
-        var end = (start + preloadCount).coerceAtMost(playList.size)
-
-        // Playlist also contains played songs!!!!
-        for (i in start until end) {
-            val download = playList[i]
-
-            // Set correct priority (the lower the number, the higher the priority)
-            download.priority = i
-
-            // Add file to queue if not in one of the queues already.
-            if (!download.isWorkDone && !activelyDownloading.contains(download) && !downloadQueue.contains(download)) {
-                downloadQueue.add(download)
-            }
-        }
-
-        // Fill up active List with waiting tasks
-        while (activelyDownloading.size < PARALLEL_DOWNLOADS && downloadQueue.size > 0 ) {
-            val task = downloadQueue.remove()
-            activelyDownloading.add(task)
-            task.download()
-
-            // The next file on the playlist is currently downloading
-            // TODO: really necessary?
-            if (playList.indexOf(task) == 1) {
-                localMediaPlayer.setNextPlayerState(PlayerState.DOWNLOADING)
-            }
-        }
-
     }
-
-
-//    fun oldStuff() {
-//        // Need to download current playing?
-//        if (localMediaPlayer.currentPlaying != null && localMediaPlayer.currentPlaying != currentDownloading && !localMediaPlayer.currentPlaying!!.isWorkDone) {
-//            // Cancel current download, if necessary.
-//            if (currentDownloading != null) {
-//                currentDownloading!!.cancelDownload()
-//            }
-//            currentDownloading = localMediaPlayer.currentPlaying
-//            currentDownloading!!.download()
-//            cleanupCandidates.add(currentDownloading)
-//
-//            // Delete obsolete .partial and .complete files.
-//            cleanup()
-//            return
-//        }
-//
-//        // Find a suitable target for download.
-//        if (currentDownloading != null &&
-//            !currentDownloading!!.isWorkDone &&
-//            (!currentDownloading!!.isFailed || playList.isEmpty() && backgroundDownloadList.isEmpty())
-//        ) {
-//            cleanup()
-//            return
-//        }
-//
-//        // There is a target to download
-//        currentDownloading = null
-//        val n = playList.size
-//        var preloaded = 0
-//        if (n != 0) {
-//            var start = if (localMediaPlayer.currentPlaying == null) 0 else currentPlayingIndex
-//            if (start == -1) start = 0
-//            var i = start
-//            // Check all DownloadFiles on the playlist
-//            do {
-//                val downloadFile = playList[i]
-//                if (!downloadFile.isWorkDone) {
-//                    if (downloadFile.shouldSave() || preloaded < getPreloadCount()) {
-//                        currentDownloading = downloadFile
-//                        currentDownloading!!.download()
-//                        cleanupCandidates.add(currentDownloading)
-//                        if (i == start + 1) {
-//                            // The next file on the playlist is currently downloading
-//                            localMediaPlayer.setNextPlayerState(PlayerState.DOWNLOADING)
-//                        }
-//                        break
-//                    }
-//                } else if (localMediaPlayer.currentPlaying != downloadFile) {
-//                    preloaded++
-//                }
-//                i = (i + 1) % n
-//            } while (i != start)
-//        }
-//
-//        // If the downloadList contains no work, check the backgroundDownloadList
-//        if ((preloaded + 1 == n || preloaded >= getPreloadCount() || playList.isEmpty()) && backgroundDownloadList.isNotEmpty()) {
-//            var i = 0
-//            while (i < backgroundDownloadList.size) {
-//                val downloadFile = backgroundDownloadList[i]
-//                if (downloadFile.isWorkDone && (!downloadFile.shouldSave() || downloadFile.isSaved)) {
-//                    scanMedia(downloadFile.completeFile)
-//
-//                    // Don't need to keep list like active song list
-//                    backgroundDownloadList.removeAt(i)
-//                    downloadListUpdateRevision++
-//                    i--
-//                } else if (downloadFile.isFailed && !downloadFile.shouldRetry()) {
-//                    // Don't continue to attempt to download forever
-//                    backgroundDownloadList.removeAt(i)
-//                    downloadListUpdateRevision++
-//                    i--
-//                } else {
-//                    currentDownloading = downloadFile
-//                    currentDownloading!!.download()
-//                    cleanupCandidates.add(currentDownloading)
-//                    break
-//                }
-//                i++
-//            }
-//        }
-//
-//    }
 
     @get:Synchronized
     val currentPlayingIndex: Int
-        get() = playList.indexOf(localMediaPlayer.currentPlaying)
+        get() = playlist.indexOf(localMediaPlayer.currentPlaying)
 
     @get:Synchronized
     val downloadListDuration: Long
         get() {
             var totalDuration: Long = 0
-            for (downloadFile in playList) {
+            for (downloadFile in playlist) {
                 val song = downloadFile.song
                 if (!song.isDirectory) {
                     if (song.artist != null) {
@@ -244,7 +166,7 @@ class Downloader(
     val downloads: List<DownloadFile?>
         get() {
             val temp: MutableList<DownloadFile?> = ArrayList()
-            temp.addAll(playList)
+            temp.addAll(playlist)
             temp.addAll(activelyDownloading)
             temp.addAll(downloadQueue)
             return temp.distinct()
@@ -252,7 +174,7 @@ class Downloader(
 
     @Synchronized
     fun clearPlaylist() {
-        playList.clear()
+        playlist.clear()
 
         // Cancel all active downloads with a high priority
         for (download in activelyDownloading) {
@@ -260,7 +182,7 @@ class Downloader(
                 download.cancelDownload()
         }
 
-        downloadListUpdateRevision++
+        playlistUpdateRevision++
     }
 
     @Synchronized
@@ -273,8 +195,6 @@ class Downloader(
             if (download.priority >= 100)
                 download.cancelDownload()
         }
-
-        downloadListUpdateRevision++
     }
 
     @Synchronized
@@ -290,8 +210,8 @@ class Downloader(
         if (activelyDownloading.contains(downloadFile)) {
             downloadFile.cancelDownload()
         }
-        playList.remove(downloadFile)
-        downloadListUpdateRevision++
+        playlist.remove(downloadFile)
+        playlistUpdateRevision++
     }
 
     @Synchronized
@@ -308,7 +228,7 @@ class Downloader(
             return
         }
         if (newPlaylist) {
-            playList.clear()
+            playlist.clear()
         }
         if (playNext) {
             if (autoPlay && currentPlayingIndex >= 0) {
@@ -316,17 +236,17 @@ class Downloader(
             }
             for (song in songs) {
                 val downloadFile = DownloadFile(song!!, save)
-                playList.add(currentPlayingIndex + offset, downloadFile)
+                playlist.add(currentPlayingIndex + offset, downloadFile)
                 offset++
             }
         } else {
             for (song in songs) {
                 val downloadFile = DownloadFile(song!!, save)
-                playList.add(downloadFile)
+                playlist.add(downloadFile)
             }
         }
-        downloadListUpdateRevision++
-        //checkDownloads()
+        playlistUpdateRevision++
+        checkDownloads()
     }
 
     @Synchronized
@@ -338,26 +258,26 @@ class Downloader(
             downloadQueue.add(DownloadFile(song, save))
         }
 
-        downloadListUpdateRevision++
-        //checkDownloads()
+        checkDownloads()
     }
 
     @Synchronized
     fun shuffle() {
-        playList.shuffle()
+        playlist.shuffle()
 
         // Move the current song to the top..
         if (localMediaPlayer.currentPlaying != null) {
-            playList.remove(localMediaPlayer.currentPlaying)
-            playList.add(0, localMediaPlayer.currentPlaying!!)
+            playlist.remove(localMediaPlayer.currentPlaying)
+            playlist.add(0, localMediaPlayer.currentPlaying!!)
         }
 
-        downloadListUpdateRevision++
+        playlistUpdateRevision++
     }
 
     @Synchronized
+    @Suppress("ReturnCount")
     fun getDownloadFileForSong(song: MusicDirectory.Entry): DownloadFile {
-        for (downloadFile in playList) {
+        for (downloadFile in playlist) {
             if (downloadFile.song == song) {
                 return downloadFile
             }
@@ -380,49 +300,50 @@ class Downloader(
         return downloadFile
     }
 
-
     @Synchronized
     private fun checkShufflePlay() {
         // Get users desired random playlist size
         val listSize = getMaxSongs()
-        val wasEmpty = playList.isEmpty()
-        val revisionBefore = downloadListUpdateRevision
+        val wasEmpty = playlist.isEmpty()
+        val revisionBefore = playlistUpdateRevision
 
         // First, ensure that list is at least 20 songs long.
-        val size = playList.size
+        val size = playlist.size
         if (size < listSize) {
             for (song in shufflePlayBuffer[listSize - size]) {
                 val downloadFile = DownloadFile(song, false)
-                playList.add(downloadFile)
-                downloadListUpdateRevision++
+                playlist.add(downloadFile)
+                playlistUpdateRevision++
             }
         }
-        
+
         val currIndex = if (localMediaPlayer.currentPlaying == null) 0 else currentPlayingIndex
 
         // Only shift playlist if playing song #5 or later.
-        if (currIndex > 4) {
+        if (currIndex > SHUFFLE_BUFFER_LIMIT) {
             val songsToShift = currIndex - 2
             for (song in shufflePlayBuffer[songsToShift]) {
-                playList.add(DownloadFile(song, false))
-                playList[0].cancelDownload()
-                playList.removeAt(0)
-                downloadListUpdateRevision++
+                playlist.add(DownloadFile(song, false))
+                playlist[0].cancelDownload()
+                playlist.removeAt(0)
+                playlistUpdateRevision++
             }
         }
-        if (revisionBefore != downloadListUpdateRevision) {
+        if (revisionBefore != playlistUpdateRevision) {
             jukeboxMediaPlayer.updatePlaylist()
         }
-        if (wasEmpty && playList.isNotEmpty()) {
+        if (wasEmpty && playlist.isNotEmpty()) {
             if (jukeboxMediaPlayer.isEnabled) {
                 jukeboxMediaPlayer.skip(0, 0)
                 localMediaPlayer.setPlayerState(PlayerState.STARTED)
             } else {
-                localMediaPlayer.play(playList[0])
+                localMediaPlayer.play(playlist[0])
             }
         }
     }
     companion object {
         const val PARALLEL_DOWNLOADS = 3
+        const val CHECK_INTERVAL = 5L
+        const val SHUFFLE_BUFFER_LIMIT = 4
     }
 }

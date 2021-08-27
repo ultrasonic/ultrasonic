@@ -180,7 +180,7 @@ class MediaPlayerController(
         downloader.addToPlaylist(filteredSongs, save, autoPlay, playNext, newPlaylist)
         jukeboxMediaPlayer.updatePlaylist()
         if (shuffle) shuffle()
-        val isLastTrack = (downloader.playList.size - 1 == downloader.currentPlayingIndex)
+        val isLastTrack = (downloader.playlist.size - 1 == downloader.currentPlayingIndex)
 
         if (!playNext && !autoPlay && isLastTrack) {
             val mediaPlayerService = runningInstance
@@ -190,15 +190,15 @@ class MediaPlayerController(
         if (autoPlay) {
             play(0)
         } else {
-            if (localMediaPlayer.currentPlaying == null && downloader.playList.size > 0) {
-                localMediaPlayer.currentPlaying = downloader.playList[0]
-                downloader.playList[0].setPlaying(true)
+            if (localMediaPlayer.currentPlaying == null && downloader.playlist.size > 0) {
+                localMediaPlayer.currentPlaying = downloader.playlist[0]
+                downloader.playlist[0].setPlaying(true)
             }
             downloader.checkDownloads()
         }
 
         downloadQueueSerializer.serializeDownloadQueue(
-            downloader.playList,
+            downloader.playlist,
             downloader.currentPlayingIndex,
             playerPosition
         )
@@ -210,7 +210,7 @@ class MediaPlayerController(
         val filteredSongs = songs.filterNotNull()
         downloader.downloadBackground(filteredSongs, save)
         downloadQueueSerializer.serializeDownloadQueue(
-            downloader.playList,
+            downloader.playlist,
             downloader.currentPlayingIndex,
             playerPosition
         )
@@ -241,7 +241,7 @@ class MediaPlayerController(
     fun shuffle() {
         downloader.shuffle()
         downloadQueueSerializer.serializeDownloadQueue(
-            downloader.playList,
+            downloader.playlist,
             downloader.currentPlayingIndex,
             playerPosition
         )
@@ -274,7 +274,7 @@ class MediaPlayerController(
             downloader.clearPlaylist()
             if (serialize) {
                 downloadQueueSerializer.serializeDownloadQueue(
-                    downloader.playList,
+                    downloader.playlist,
                     downloader.currentPlayingIndex, playerPosition
                 )
             }
@@ -285,7 +285,7 @@ class MediaPlayerController(
     @Synchronized
     fun clearIncomplete() {
         reset()
-        val iterator = downloader.playList.iterator()
+        val iterator = downloader.playlist.iterator()
         while (iterator.hasNext()) {
             val downloadFile = iterator.next()
             if (!downloadFile.isCompleteFileAvailable) {
@@ -294,7 +294,7 @@ class MediaPlayerController(
         }
 
         downloadQueueSerializer.serializeDownloadQueue(
-            downloader.playList,
+            downloader.playlist,
             downloader.currentPlayingIndex,
             playerPosition
         )
@@ -311,7 +311,7 @@ class MediaPlayerController(
         downloader.removeFromPlaylist(downloadFile)
 
         downloadQueueSerializer.serializeDownloadQueue(
-            downloader.playList,
+            downloader.playlist,
             downloader.currentPlayingIndex,
             playerPosition
         )
@@ -363,12 +363,12 @@ class MediaPlayerController(
             when (repeatMode) {
                 RepeatMode.SINGLE, RepeatMode.OFF -> {
                     // Play next if exists
-                    if (index + 1 >= 0 && index + 1 < downloader.playList.size) {
+                    if (index + 1 >= 0 && index + 1 < downloader.playlist.size) {
                         play(index + 1)
                     }
                 }
                 RepeatMode.ALL -> {
-                    play((index + 1) % downloader.playList.size)
+                    play((index + 1) % downloader.playlist.size)
                 }
                 else -> {
                 }
@@ -495,16 +495,16 @@ class MediaPlayerController(
         }
 
     val playlistSize: Int
-        get() = downloader.playList.size
+        get() = downloader.playlist.size
 
     val currentPlayingNumberOnPlaylist: Int
         get() = downloader.currentPlayingIndex
 
     val playList: List<DownloadFile>
-        get() = downloader.playList
+        get() = downloader.playlist
 
     val playListUpdateRevision: Long
-        get() = downloader.downloadListUpdateRevision
+        get() = downloader.playlistUpdateRevision
 
     val playListDuration: Long
         get() = downloader.downloadListDuration

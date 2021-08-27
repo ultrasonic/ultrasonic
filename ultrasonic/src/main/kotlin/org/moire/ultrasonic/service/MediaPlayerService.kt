@@ -88,7 +88,7 @@ class MediaPlayerService : Service() {
 
         localMediaPlayer.onPrepared = {
             downloadQueueSerializer.serializeDownloadQueue(
-                downloader.playList,
+                downloader.playlist,
                 downloader.currentPlayingIndex,
                 playerPosition
             )
@@ -189,7 +189,7 @@ class MediaPlayerService : Service() {
     @Synchronized
     fun setCurrentPlaying(currentPlayingIndex: Int) {
         try {
-            localMediaPlayer.setCurrentPlaying(downloader.playList[currentPlayingIndex])
+            localMediaPlayer.setCurrentPlaying(downloader.playlist[currentPlayingIndex])
         } catch (ignored: IndexOutOfBoundsException) {
         }
     }
@@ -208,7 +208,7 @@ class MediaPlayerService : Service() {
         if (index != -1) {
             when (repeatMode) {
                 RepeatMode.OFF -> index += 1
-                RepeatMode.ALL -> index = (index + 1) % downloader.playList.size
+                RepeatMode.ALL -> index = (index + 1) % downloader.playlist.size
                 RepeatMode.SINGLE -> {
                 }
                 else -> {
@@ -217,8 +217,8 @@ class MediaPlayerService : Service() {
         }
 
         localMediaPlayer.clearNextPlaying(false)
-        if (index < downloader.playList.size && index != -1) {
-            localMediaPlayer.setNextPlaying(downloader.playList[index])
+        if (index < downloader.playlist.size && index != -1) {
+            localMediaPlayer.setNextPlaying(downloader.playlist[index])
         } else {
             localMediaPlayer.clearNextPlaying(true)
         }
@@ -271,7 +271,7 @@ class MediaPlayerService : Service() {
     @Synchronized
     fun play(index: Int, start: Boolean) {
         Timber.v("play requested for %d", index)
-        if (index < 0 || index >= downloader.playList.size) {
+        if (index < 0 || index >= downloader.playlist.size) {
             resetPlayback()
         } else {
             setCurrentPlaying(index)
@@ -280,7 +280,7 @@ class MediaPlayerService : Service() {
                     jukeboxMediaPlayer.skip(index, 0)
                     localMediaPlayer.setPlayerState(PlayerState.STARTED)
                 } else {
-                    localMediaPlayer.play(downloader.playList[index])
+                    localMediaPlayer.play(downloader.playlist[index])
                 }
             }
             downloader.checkDownloads()
@@ -293,7 +293,7 @@ class MediaPlayerService : Service() {
         localMediaPlayer.reset()
         localMediaPlayer.setCurrentPlaying(null)
         downloadQueueSerializer.serializeDownloadQueue(
-            downloader.playList,
+            downloader.playlist,
             downloader.currentPlayingIndex, playerPosition
         )
     }
@@ -395,7 +395,7 @@ class MediaPlayerService : Service() {
 
             if (playerState === PlayerState.PAUSED) {
                 downloadQueueSerializer.serializeDownloadQueue(
-                    downloader.playList, downloader.currentPlayingIndex, playerPosition
+                    downloader.playlist, downloader.currentPlayingIndex, playerPosition
                 )
             }
 
@@ -408,8 +408,8 @@ class MediaPlayerService : Service() {
             Util.broadcastPlaybackStatusChange(context, playerState)
             Util.broadcastA2dpPlayStatusChange(
                 context, playerState, song,
-                downloader.playList.size,
-                downloader.playList.indexOf(currentPlaying) + 1, playerPosition
+                downloader.playlist.size,
+                downloader.playlist.indexOf(currentPlaying) + 1, playerPosition
             )
 
             // Update widget
@@ -455,7 +455,7 @@ class MediaPlayerService : Service() {
             if (index != -1) {
                 when (repeatMode) {
                     RepeatMode.OFF -> {
-                        if (index + 1 < 0 || index + 1 >= downloader.playList.size) {
+                        if (index + 1 < 0 || index + 1 >= downloader.playlist.size) {
                             if (Util.getShouldClearPlaylist()) {
                                 clear(true)
                                 jukeboxMediaPlayer.updatePlaylist()
@@ -466,7 +466,7 @@ class MediaPlayerService : Service() {
                         }
                     }
                     RepeatMode.ALL -> {
-                        play((index + 1) % downloader.playList.size)
+                        play((index + 1) % downloader.playlist.size)
                     }
                     RepeatMode.SINGLE -> play(index)
                     else -> {
@@ -485,7 +485,7 @@ class MediaPlayerService : Service() {
         setNextPlaying()
         if (serialize) {
             downloadQueueSerializer.serializeDownloadQueue(
-                downloader.playList,
+                downloader.playlist,
                 downloader.currentPlayingIndex, playerPosition
             )
         }
