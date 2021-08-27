@@ -87,10 +87,10 @@ object Util {
     private var MEGA_BYTE_LOCALIZED_FORMAT: DecimalFormat? = null
     private var KILO_BYTE_LOCALIZED_FORMAT: DecimalFormat? = null
     private var BYTE_LOCALIZED_FORMAT: DecimalFormat? = null
-    const val EVENT_META_CHANGED = "org.moire.ultrasonic.EVENT_META_CHANGED"
-    const val EVENT_PLAYSTATE_CHANGED = "org.moire.ultrasonic.EVENT_PLAYSTATE_CHANGED"
-    const val CM_AVRCP_PLAYSTATE_CHANGED = "com.android.music.playstatechanged"
-    const val CM_AVRCP_METADATA_CHANGED = "com.android.music.metachanged"
+    private const val EVENT_META_CHANGED = "org.moire.ultrasonic.EVENT_META_CHANGED"
+    private const val EVENT_PLAYSTATE_CHANGED = "org.moire.ultrasonic.EVENT_PLAYSTATE_CHANGED"
+    private const val CM_AVRCP_PLAYSTATE_CHANGED = "com.android.music.playstatechanged"
+    private const val CM_AVRCP_METADATA_CHANGED = "com.android.music.metachanged"
 
     // Used by hexEncode()
     private val HEX_DIGITS =
@@ -440,6 +440,7 @@ object Util {
         return BYTE_LOCALIZED_FORMAT!!.format(byteCount.toDouble())
     }
 
+    @Suppress("SuspiciousEqualsCombination")
     fun equals(object1: Any?, object2: Any?): Boolean {
         return object1 === object2 || !(object1 == null || object2 == null) && object1 == object2
     }
@@ -624,10 +625,10 @@ object Util {
 
         // Assume the size given refers to the width of the image, so calculate the new height using
         // the previously determined aspect ratio
-        return Math.round(newWidth * aspectRatio).toInt()
+        return (newWidth * aspectRatio).roundToInt()
     }
 
-    fun getScaledHeight(bitmap: Bitmap, width: Int): Int {
+    private fun getScaledHeight(bitmap: Bitmap, width: Int): Int {
         return getScaledHeight(bitmap.height.toDouble(), bitmap.width.toDouble(), width)
     }
 
@@ -851,12 +852,12 @@ object Util {
 
     fun getMinDisplayMetric(): Int {
         val metrics = appContext().resources.displayMetrics
-        return Math.min(metrics.widthPixels, metrics.heightPixels)
+        return min(metrics.widthPixels, metrics.heightPixels)
     }
 
     fun getMaxDisplayMetric(): Int {
         val metrics = appContext().resources.displayMetrics
-        return Math.max(metrics.widthPixels, metrics.heightPixels)
+        return max(metrics.widthPixels, metrics.heightPixels)
     }
 
     fun calculateInSampleSize(options: BitmapFactory.Options, reqWidth: Int, reqHeight: Int): Int {
@@ -868,14 +869,14 @@ object Util {
 
             // Calculate ratios of height and width to requested height and
             // width
-            val heightRatio = Math.round(height.toFloat() / reqHeight.toFloat())
-            val widthRatio = Math.round(width.toFloat() / reqWidth.toFloat())
+            val heightRatio = (height.toFloat() / reqHeight.toFloat()).roundToInt()
+            val widthRatio = (width.toFloat() / reqWidth.toFloat()).roundToInt()
 
             // Choose the smallest ratio as inSampleSize value, this will
             // guarantee
             // a final image with both dimensions larger than or equal to the
             // requested height and width.
-            inSampleSize = Math.min(heightRatio, widthRatio)
+            inSampleSize = min(heightRatio, widthRatio)
         }
         return inSampleSize
     }
@@ -1091,7 +1092,7 @@ object Util {
             )
         }
 
-    fun getShouldSendBluetoothAlbumArt(): Boolean {
+    private fun getShouldSendBluetoothAlbumArt(): Boolean {
         val preferences = getPreferences()
         return preferences.getBoolean(Constants.PREFERENCES_KEY_SEND_BLUETOOTH_ALBUM_ART, true)
     }

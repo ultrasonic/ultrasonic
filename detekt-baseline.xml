@@ -30,7 +30,6 @@
     <ID>LongMethod:EditServerFragment.kt$EditServerFragment$override fun onViewCreated(view: View, savedInstanceState: Bundle?)</ID>
     <ID>LongMethod:FilePickerAdapter.kt$FilePickerAdapter$private fun fileLister(currentDirectory: File)</ID>
     <ID>LongMethod:LocalMediaPlayer.kt$LocalMediaPlayer$@Synchronized private fun doPlay(downloadFile: DownloadFile, position: Int, start: Boolean)</ID>
-    <ID>LongMethod:MediaPlayerService.kt$MediaPlayerService$private fun updateMediaSession(currentPlaying: DownloadFile?, playerState: PlayerState)</ID>
     <ID>LongMethod:NavigationActivity.kt$NavigationActivity$override fun onCreate(savedInstanceState: Bundle?)</ID>
     <ID>LongMethod:ShareHandler.kt$ShareHandler$private fun showDialog( fragment: Fragment, shareDetails: ShareDetails, swipe: SwipeRefreshLayout?, cancellationToken: CancellationToken )</ID>
     <ID>LongMethod:SongView.kt$SongView$fun setSong(song: MusicDirectory.Entry, checkable: Boolean, draggable: Boolean)</ID>
@@ -49,7 +48,6 @@
     <ID>MagicNumber:LocalMediaPlayer.kt$LocalMediaPlayer.BufferTask$86400L</ID>
     <ID>MagicNumber:LocalMediaPlayer.kt$LocalMediaPlayer.BufferTask$8L</ID>
     <ID>MagicNumber:LocalMediaPlayer.kt$LocalMediaPlayer.CheckCompletionTask$5000L</ID>
-    <ID>MagicNumber:LocalMediaPlayer.kt$LocalMediaPlayer.PositionCache$50L</ID>
     <ID>MagicNumber:MediaPlayerService.kt$MediaPlayerService$256</ID>
     <ID>MagicNumber:MediaPlayerService.kt$MediaPlayerService$3</ID>
     <ID>MagicNumber:MediaPlayerService.kt$MediaPlayerService$4</ID>
@@ -70,11 +68,9 @@
     <ID>TooGenericExceptionCaught:LocalMediaPlayer.kt$LocalMediaPlayer$exception: Throwable</ID>
     <ID>TooGenericExceptionCaught:LocalMediaPlayer.kt$LocalMediaPlayer$x: Exception</ID>
     <ID>TooGenericExceptionCaught:LocalMediaPlayer.kt$LocalMediaPlayer.PositionCache$e: Exception</ID>
-    <ID>TooGenericExceptionCaught:MediaPlayerService.kt$MediaPlayerService$e: Exception</ID>
     <ID>TooGenericExceptionCaught:SongView.kt$SongView$e: Exception</ID>
     <ID>TooGenericExceptionCaught:SubsonicUncaughtExceptionHandler.kt$SubsonicUncaughtExceptionHandler$x: Throwable</ID>
     <ID>TooGenericExceptionThrown:DownloadFile.kt$DownloadFile.DownloadTask$throw Exception(String.format("Download of '%s' was cancelled", song))</ID>
-    <ID>TooManyFunctions:LocalMediaPlayer.kt$LocalMediaPlayer</ID>
     <ID>TooManyFunctions:MediaPlayerService.kt$MediaPlayerService : Service</ID>
     <ID>TooManyFunctions:RESTMusicService.kt$RESTMusicService : MusicService</ID>
     <ID>TooManyFunctions:TrackCollectionFragment.kt$TrackCollectionFragment : Fragment</ID>

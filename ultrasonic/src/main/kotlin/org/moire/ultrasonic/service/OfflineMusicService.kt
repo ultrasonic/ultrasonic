@@ -14,11 +14,11 @@ import java.io.FileReader
 import java.io.FileWriter
 import java.io.InputStream
 import java.io.Reader
+import java.lang.Math.min
 import java.util.ArrayList
 import java.util.HashSet
 import java.util.LinkedList
 import java.util.Locale
-import java.util.Random
 import java.util.concurrent.TimeUnit
 import java.util.regex.Pattern
 import org.koin.core.component.KoinComponent
@@ -257,9 +257,10 @@ class OfflineMusicService : MusicService, KoinComponent {
         if (children.isEmpty()) {
             return result
         }
-        val random = Random()
-        for (i in 0 until size) {
-            val file = children[random.nextInt(children.size)]
+        children.shuffle()
+        val finalSize: Int = min(children.size, size)
+        for (i in 0 until finalSize) {
+            val file = children[i % children.size]
             result.addChild(createEntry(file, getName(file)))
         }
         return result
