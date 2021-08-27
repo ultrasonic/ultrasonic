@@ -51,7 +51,8 @@ android {
         warning 'ImpliedQuantity'
         disable 'IconMissingDensityFolder'
         abortOnError true
-        warningsAsErrors true
+        warningsAsErrors false
+        checkDependencies true
     }
 
     kotlinOptions {
