@@ -74,7 +74,7 @@ class MediaPlayerController(
         autoPlay: Boolean,
         newPlaylist: Boolean
     ) {
-        download(
+        addToPlaylist(
             songs,
             save = false,
             autoPlay = false,
@@ -167,7 +167,7 @@ class MediaPlayerController(
 
     @Synchronized
     @Suppress("LongParameterList")
-    fun download(
+    fun addToPlaylist(
         songs: List<MusicDirectory.Entry?>?,
         save: Boolean,
         autoPlay: Boolean,
@@ -175,10 +175,12 @@ class MediaPlayerController(
         shuffle: Boolean,
         newPlaylist: Boolean
     ) {
-        downloader.download(songs, save, autoPlay, playNext, newPlaylist)
+        if (songs == null) return
+        val filteredSongs = songs.filterNotNull()
+        downloader.addToPlaylist(filteredSongs, save, autoPlay, playNext, newPlaylist)
         jukeboxMediaPlayer.updatePlaylist()
         if (shuffle) shuffle()
-        val isLastTrack = (downloader.downloadList.size - 1 == downloader.currentPlayingIndex)
+        val isLastTrack = (downloader.playList.size - 1 == downloader.currentPlayingIndex)
 
         if (!playNext && !autoPlay && isLastTrack) {
             val mediaPlayerService = runningInstance
@@ -188,15 +190,15 @@ class MediaPlayerController(
         if (autoPlay) {
             play(0)
         } else {
-            if (localMediaPlayer.currentPlaying == null && downloader.downloadList.size > 0) {
-                localMediaPlayer.currentPlaying = downloader.downloadList[0]
-                downloader.downloadList[0].setPlaying(true)
+            if (localMediaPlayer.currentPlaying == null && downloader.playList.size > 0) {
+                localMediaPlayer.currentPlaying = downloader.playList[0]
+                downloader.playList[0].setPlaying(true)
             }
             downloader.checkDownloads()
         }
 
         downloadQueueSerializer.serializeDownloadQueue(
-            downloader.downloadList,
+            downloader.playList,
             downloader.currentPlayingIndex,
             playerPosition
         )
@@ -204,9 +206,11 @@ class MediaPlayerController(
 
     @Synchronized
     fun downloadBackground(songs: List<MusicDirectory.Entry?>?, save: Boolean) {
-        downloader.downloadBackground(songs, save)
+        if (songs == null) return
+        val filteredSongs = songs.filterNotNull()
+        downloader.downloadBackground(filteredSongs, save)
         downloadQueueSerializer.serializeDownloadQueue(
-            downloader.downloadList,
+            downloader.playList,
             downloader.currentPlayingIndex,
             playerPosition
         )
@@ -237,7 +241,7 @@ class MediaPlayerController(
     fun shuffle() {
         downloader.shuffle()
         downloadQueueSerializer.serializeDownloadQueue(
-            downloader.downloadList,
+            downloader.playList,
             downloader.currentPlayingIndex,
             playerPosition
         )
@@ -267,10 +271,10 @@ class MediaPlayerController(
             mediaPlayerService.clear(serialize)
         } else {
             // If no MediaPlayerService is available, just empty the playlist
-            downloader.clear()
+            downloader.clearPlaylist()
             if (serialize) {
                 downloadQueueSerializer.serializeDownloadQueue(
-                    downloader.downloadList,
+                    downloader.playList,
                     downloader.currentPlayingIndex, playerPosition
                 )
             }
@@ -281,7 +285,7 @@ class MediaPlayerController(
     @Synchronized
     fun clearIncomplete() {
         reset()
-        val iterator = downloader.downloadList.iterator()
+        val iterator = downloader.playList.iterator()
         while (iterator.hasNext()) {
             val downloadFile = iterator.next()
             if (!downloadFile.isCompleteFileAvailable) {
@@ -290,7 +294,7 @@ class MediaPlayerController(
         }
 
         downloadQueueSerializer.serializeDownloadQueue(
-            downloader.downloadList,
+            downloader.playList,
             downloader.currentPlayingIndex,
             playerPosition
         )
@@ -299,15 +303,15 @@ class MediaPlayerController(
     }
 
     @Synchronized
-    fun remove(downloadFile: DownloadFile) {
+    fun removeFromPlaylist(downloadFile: DownloadFile) {
         if (downloadFile == localMediaPlayer.currentPlaying) {
             reset()
             currentPlaying = null
         }
-        downloader.removeDownloadFile(downloadFile)
+        downloader.removeFromPlaylist(downloadFile)
 
         downloadQueueSerializer.serializeDownloadQueue(
-            downloader.downloadList,
+            downloader.playList,
             downloader.currentPlayingIndex,
             playerPosition
         )
@@ -321,15 +325,17 @@ class MediaPlayerController(
     }
 
     @Synchronized
+    // TODO: Make it require not null
     fun delete(songs: List<MusicDirectory.Entry?>) {
-        for (song in songs) {
+        for (song in songs.filterNotNull()) {
             downloader.getDownloadFileForSong(song).delete()
         }
     }
 
     @Synchronized
+    // TODO: Make it require not null
     fun unpin(songs: List<MusicDirectory.Entry?>) {
-        for (song in songs) {
+        for (song in songs.filterNotNull()) {
             downloader.getDownloadFileForSong(song).unpin()
         }
     }
@@ -357,12 +363,12 @@ class MediaPlayerController(
             when (repeatMode) {
                 RepeatMode.SINGLE, RepeatMode.OFF -> {
                     // Play next if exists
-                    if (index + 1 >= 0 && index + 1 < downloader.downloadList.size) {
+                    if (index + 1 >= 0 && index + 1 < downloader.playList.size) {
                         play(index + 1)
                     }
                 }
                 RepeatMode.ALL -> {
-                    play((index + 1) % downloader.downloadList.size)
+                    play((index + 1) % downloader.playList.size)
                 }
                 else -> {
                 }
@@ -409,7 +415,7 @@ class MediaPlayerController(
                 reset()
 
                 // Cancel current download, if necessary.
-                downloader.currentDownloading?.cancelDownload()
+                downloader.clearActiveDownloads()
             } else {
                 jukeboxMediaPlayer.stopJukeboxService()
             }
@@ -489,16 +495,13 @@ class MediaPlayerController(
         }
 
     val playlistSize: Int
-        get() = downloader.downloadList.size
+        get() = downloader.playList.size
 
     val currentPlayingNumberOnPlaylist: Int
         get() = downloader.currentPlayingIndex
 
-    val currentDownloading: DownloadFile?
-        get() = downloader.currentDownloading
-
     val playList: List<DownloadFile>
-        get() = downloader.downloadList
+        get() = downloader.playList
 
     val playListUpdateRevision: Long
         get() = downloader.downloadListUpdateRevision
@@ -506,7 +509,7 @@ class MediaPlayerController(
     val playListDuration: Long
         get() = downloader.downloadListDuration
 
-    fun getDownloadFileForSong(song: MusicDirectory.Entry?): DownloadFile {
+    fun getDownloadFileForSong(song: MusicDirectory.Entry): DownloadFile {
         return downloader.getDownloadFileForSong(song)
     }
 

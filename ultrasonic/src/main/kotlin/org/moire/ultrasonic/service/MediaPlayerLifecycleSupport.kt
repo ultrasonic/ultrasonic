@@ -76,7 +76,7 @@ class MediaPlayerLifecycleSupport : KoinComponent {
                 // Work-around: Serialize again, as the restore() method creates a
                 // serialization without current playing info.
                 downloadQueueSerializer.serializeDownloadQueue(
-                    downloader.downloadList,
+                    downloader.playList,
                     downloader.currentPlayingIndex,
                     mediaPlayerController.playerPosition
                 )
@@ -94,7 +94,7 @@ class MediaPlayerLifecycleSupport : KoinComponent {
         if (!created) return
 
         downloadQueueSerializer.serializeDownloadQueueNow(
-            downloader.downloadList,
+            downloader.playList,
             downloader.currentPlayingIndex,
             mediaPlayerController.playerPosition
         )

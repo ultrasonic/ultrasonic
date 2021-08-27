@@ -39,7 +39,7 @@ class DownloadHandler(
                 mediaPlayerController.clear()
             }
             networkAndStorageChecker.warnIfNetworkOrStorageUnavailable()
-            mediaPlayerController.download(
+            mediaPlayerController.addToPlaylist(
                 songs,
                 save,
                 autoPlay,
@@ -297,7 +297,7 @@ class DownloadHandler(
                         if (unpin) {
                             mediaPlayerController.unpin(songs)
                         } else {
-                            mediaPlayerController.download(
+                            mediaPlayerController.addToPlaylist(
                                 songs,
                                 save,
                                 autoPlay,

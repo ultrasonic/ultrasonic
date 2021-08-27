@@ -40,7 +40,7 @@ import timber.log.Timber
 class DownloadFile(
     val song: MusicDirectory.Entry,
     private val save: Boolean
-) : KoinComponent {
+) : KoinComponent, Comparable<DownloadFile> {
     val partialFile: File
     val completeFile: File
     private val saveFile: File = FileUtil.getSongFile(song)
@@ -49,6 +49,8 @@ class DownloadFile(
     private var retryCount = MAX_RETRIES
 
     private val desiredBitRate: Int = Util.getMaxBitRate()
+
+    var priority = 100
 
     @Volatile
     private var isPlaying = false
@@ -385,6 +387,10 @@ class DownloadFile(
                 }
             }
         }
+    }
+
+    override fun compareTo(other: DownloadFile): Int {
+        return priority.compareTo(other.priority)
     }
 
     companion object {
