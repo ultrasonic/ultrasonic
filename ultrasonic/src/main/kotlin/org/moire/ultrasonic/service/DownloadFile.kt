@@ -204,7 +204,6 @@ class DownloadFile(
         return String.format("DownloadFile (%s)", song)
     }
 
-    @Suppress("TooGenericExceptionCaught")
     private inner class DownloadTask : CancellableTask() {
         override fun execute() {
             var inputStream: InputStream? = null
@@ -292,7 +291,7 @@ class DownloadFile(
                         Util.renameFile(partialFile, completeFile)
                     }
                 }
-            } catch (e: Exception) {
+            } catch (all: Exception) {
                 Util.close(outputStream)
                 Util.delete(completeFile)
                 Util.delete(saveFile)
@@ -301,7 +300,7 @@ class DownloadFile(
                     if (retryCount > 0) {
                         --retryCount
                     }
-                    Timber.w(e, "Failed to download '%s'.", song)
+                    Timber.w(all, "Failed to download '%s'.", song)
                 }
             } finally {
                 Util.close(inputStream)

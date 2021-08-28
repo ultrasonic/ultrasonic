@@ -20,6 +20,10 @@ import timber.log.Timber
 /**
  * This class is responsible for maintaining the playlist and downloading
  * its items from the network to the filesystem.
+ *
+ * TODO: Implement LiveData
+ * TODO: Move away from managing the queue with scheduled checks, instead use callbacks when
+ * Downloads are finished
  */
 class Downloader(
     private val shufflePlayBuffer: ShufflePlayBuffer,
