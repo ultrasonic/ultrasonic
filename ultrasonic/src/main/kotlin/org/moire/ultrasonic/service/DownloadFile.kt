@@ -250,8 +250,9 @@ class DownloadFile(
 
                 if (needsDownloading) {
                     // Attempt partial HTTP GET, appending to the file if it exists.
-                    val (inStream, partial) = musicService
-                        .getDownloadInputStream(song, partialFile.length(), desiredBitRate)
+                    val (inStream, partial) = musicService.getDownloadInputStream(
+                        song, partialFile.length(), desiredBitRate, save
+                    )
 
                     inputStream = inStream
 
@@ -337,8 +338,8 @@ class DownloadFile(
                     // Download the largest size that we can display in the UI
                     imageLoaderProvider.getImageLoader().cacheCoverArt(song)
                 }
-            } catch (e: Exception) {
-                Timber.e(e, "Failed to get cover art.")
+            } catch (all: Exception) {
+                Timber.e(all, "Failed to get cover art.")
             }
         }
 

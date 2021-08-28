@@ -119,10 +119,10 @@ interface MusicService {
     fun getDownloadInputStream(
         song: MusicDirectory.Entry,
         offset: Long,
-        maxBitrate: Int
+        maxBitrate: Int,
+        save: Boolean
     ): Pair<InputStream, Boolean>
 
-    // TODO: Refactor and remove this call (see RestMusicService implementation)
     @Throws(Exception::class)
     fun getVideoUrl(id: String): String?
 

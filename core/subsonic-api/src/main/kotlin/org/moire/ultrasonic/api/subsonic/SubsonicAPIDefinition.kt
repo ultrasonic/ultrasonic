@@ -229,6 +229,19 @@ interface SubsonicAPIDefinition {
         @Header("Range") offset: Long? = null
     ): Call<ResponseBody>
 
+    @Streaming
+    @GET("download.view")
+    fun download(
+        @Query("id") id: String,
+        @Query("maxBitRate") maxBitRate: Int? = null,
+        @Query("format") format: String? = null,
+        @Query("timeOffset") timeOffset: Int? = null,
+        @Query("size") videoSize: String? = null,
+        @Query("estimateContentLength") estimateContentLength: Boolean? = null,
+        @Query("converted") converted: Boolean? = null,
+        @Header("Range") offset: Long? = null
+    ): Call<ResponseBody>
+
     @GET("jukeboxControl.view")
     fun jukeboxControl(
         @Query("action") action: JukeboxAction,

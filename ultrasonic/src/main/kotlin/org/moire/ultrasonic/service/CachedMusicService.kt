@@ -275,9 +275,10 @@ class CachedMusicService(private val musicService: MusicService) : MusicService,
     override fun getDownloadInputStream(
         song: MusicDirectory.Entry,
         offset: Long,
-        maxBitrate: Int
+        maxBitrate: Int,
+        save: Boolean
     ): Pair<InputStream, Boolean> {
-        return musicService.getDownloadInputStream(song, offset, maxBitrate)
+        return musicService.getDownloadInputStream(song, offset, maxBitrate, save)
     }
 
     @Throws(Exception::class)
