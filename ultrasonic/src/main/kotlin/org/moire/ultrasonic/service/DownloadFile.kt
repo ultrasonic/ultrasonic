@@ -7,21 +7,11 @@
 
 package org.moire.ultrasonic.service
 
-import android.content.Context
 import android.net.wifi.WifiManager.WifiLock
-import android.os.PowerManager
-import android.os.PowerManager.WakeLock
 import android.text.TextUtils
 import androidx.lifecycle.MutableLiveData
-import java.io.File
-import java.io.FileOutputStream
-import java.io.IOException
-import java.io.InputStream
-import java.io.OutputStream
-import java.io.RandomAccessFile
 import org.koin.core.component.KoinComponent
 import org.koin.core.component.inject
-import org.moire.ultrasonic.app.UApp
 import org.moire.ultrasonic.domain.MusicDirectory
 import org.moire.ultrasonic.service.MusicServiceFactory.getMusicService
 import org.moire.ultrasonic.subsonic.ImageLoaderProvider
@@ -30,6 +20,12 @@ import org.moire.ultrasonic.util.CancellableTask
 import org.moire.ultrasonic.util.FileUtil
 import org.moire.ultrasonic.util.Util
 import timber.log.Timber
+import java.io.File
+import java.io.FileOutputStream
+import java.io.IOException
+import java.io.InputStream
+import java.io.OutputStream
+import java.io.RandomAccessFile
 
 /**
  * This class represents a singe Song or Video that can be downloaded.
@@ -208,10 +204,8 @@ class DownloadFile(
         override fun execute() {
             var inputStream: InputStream? = null
             var outputStream: FileOutputStream? = null
-            var wakeLock: WakeLock? = null
             var wifiLock: WifiLock? = null
             try {
-                wakeLock = acquireWakeLock(wakeLock)
                 wifiLock = Util.createWifiLock(toString())
                 wifiLock.acquire()
 
@@ -306,27 +300,10 @@ class DownloadFile(
             } finally {
                 Util.close(inputStream)
                 Util.close(outputStream)
-                if (wakeLock != null) {
-                    wakeLock.release()
-                    Timber.i("Released wake lock %s", wakeLock)
-                }
                 wifiLock?.release()
                 CacheCleaner().cleanSpace()
                 downloader.checkDownloads()
             }
-        }
-
-        private fun acquireWakeLock(wakeLock: WakeLock?): WakeLock? {
-            var wakeLock1 = wakeLock
-            if (Util.isScreenLitOnDownload()) {
-                val context = UApp.applicationContext()
-                val pm = context.getSystemService(Context.POWER_SERVICE) as PowerManager
-                val flags = PowerManager.SCREEN_DIM_WAKE_LOCK or PowerManager.ON_AFTER_RELEASE
-                wakeLock1 = pm.newWakeLock(flags, toString())
-                wakeLock1.acquire(10 * 60 * 1000L /*10 minutes*/)
-                Timber.i("Acquired wake lock %s", wakeLock1)
-            }
-            return wakeLock1
         }
 
         override fun toString(): String {

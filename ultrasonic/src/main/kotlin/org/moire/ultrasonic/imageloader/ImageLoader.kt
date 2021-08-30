@@ -162,8 +162,7 @@ class ImageLoader(
             var inputStream: InputStream? = null
             try {
                 inputStream = response.stream
-                val bytes = Util.toByteArray(inputStream)
-
+                val bytes = inputStream!!.readBytes()
                 var outputStream: OutputStream? = null
                 try {
                     outputStream = FileOutputStream(file)

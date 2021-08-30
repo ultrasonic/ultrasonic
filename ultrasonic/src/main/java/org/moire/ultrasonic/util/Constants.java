@@ -87,7 +87,6 @@ public final class Constants
 	public static final String PREFERENCES_KEY_PRELOAD_COUNT = "preloadCount";
 	public static final String PREFERENCES_KEY_HIDE_MEDIA = "hideMedia";
 	public static final String PREFERENCES_KEY_MEDIA_BUTTONS = "mediaButtons";
-	public static final String PREFERENCES_KEY_SCREEN_LIT_ON_DOWNLOAD = "screenLitOnDownload";
 	public static final String PREFERENCES_KEY_SCROBBLE = "scrobble";
 	public static final String PREFERENCES_KEY_SERVER_SCALING = "serverScaling";
 	public static final String PREFERENCES_KEY_REPEAT_MODE = "repeatMode";

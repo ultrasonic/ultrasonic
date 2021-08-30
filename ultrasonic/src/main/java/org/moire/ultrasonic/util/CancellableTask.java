@@ -18,10 +18,10 @@
  */
 package org.moire.ultrasonic.util;
 
-import timber.log.Timber;
-
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicReference;
+
+import timber.log.Timber;
 
 /**
  * @author Sindre Mehus
@@ -93,7 +93,7 @@ public abstract class CancellableTask
 		thread.get().start();
 	}
 
-	public static interface OnCancelListener
+	public interface OnCancelListener
 	{
 		void onCancel();
 	}

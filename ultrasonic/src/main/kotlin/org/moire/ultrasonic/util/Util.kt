@@ -102,14 +102,6 @@ object Util {
         return applicationContext()
     }
 
-    fun isScreenLitOnDownload(): Boolean {
-        val preferences = getPreferences()
-        return preferences.getBoolean(
-            Constants.PREFERENCES_KEY_SCREEN_LIT_ON_DOWNLOAD,
-            false
-        )
-    }
-
     var repeatMode: RepeatMode
         get() {
             val preferences = getPreferences()
@@ -220,38 +212,6 @@ object Util {
     @JvmStatic
     fun getPreferences(): SharedPreferences =
         PreferenceManager.getDefaultSharedPreferences(appContext())
-
-    /**
-     * Get the contents of an `InputStream` as a `byte[]`.
-     *
-     *
-     * This method buffers the input internally, so there is no need to use a
-     * `BufferedInputStream`.
-     *
-     * @param input the `InputStream` to read from
-     * @return the requested byte array
-     * @throws NullPointerException if the input is null
-     * @throws java.io.IOException  if an I/O error occurs
-     */
-    @Throws(IOException::class)
-    fun toByteArray(input: InputStream?): ByteArray {
-        val output = ByteArrayOutputStream()
-        copy(input!!, output)
-        return output.toByteArray()
-    }
-
-    @Throws(IOException::class)
-    @Suppress("MagicNumber")
-    fun copy(input: InputStream, output: OutputStream): Long {
-        val buffer = ByteArray(KBYTE * 4)
-        var count: Long = 0
-        var n: Int
-        while (-1 != input.read(buffer).also { n = it }) {
-            output.write(buffer, 0, n)
-            count += n.toLong()
-        }
-        return count
-    }
 
     @Throws(IOException::class)
     fun atomicCopy(from: File, to: File) {

@@ -119,12 +119,18 @@ class Downloader(
         while (activelyDownloading.size < PARALLEL_DOWNLOADS && downloadQueue.size > 0) {
             val task = downloadQueue.remove()
             activelyDownloading.add(task)
-            task.download()
+            startDownloadOnService(task)
 
             // The next file on the playlist is currently downloading
             if (playlist.indexOf(task) == 1) {
                 localMediaPlayer.setNextPlayerState(PlayerState.DOWNLOADING)
             }
+        }
+    }
+
+    private fun startDownloadOnService(task: DownloadFile) {
+        MediaPlayerService.executeOnStartedMediaPlayerService {
+            task.download()
         }
     }
 

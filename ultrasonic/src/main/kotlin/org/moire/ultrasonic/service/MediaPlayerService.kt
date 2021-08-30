@@ -47,6 +47,9 @@ import timber.log.Timber
 /**
  * Android Foreground Service for playing music
  * while the rest of the Ultrasonic App is in the background.
+ *
+ * "A foreground service is a service that the user is
+ * actively aware of and isn’t a candidate for the system to kill when low on memory."
  */
 @Suppress("LargeClass")
 class MediaPlayerService : Service() {
