@@ -218,10 +218,13 @@ class SongView(context: Context) : UpdateView(context), Checkable, KoinComponent
 
     override fun updateBackground() {}
 
+    @Synchronized
     public override fun update() {
         updateBackground()
 
-        downloadFile = mediaPlayerController.getDownloadFileForSong(entry)
+        val song = entry ?: return
+
+        downloadFile = mediaPlayerController.getDownloadFileForSong(song)
 
         updateDownloadStatus(downloadFile!!)
 

@@ -562,7 +562,7 @@ public class SearchFragment extends Fragment {
                 mediaPlayerController.clear();
             }
 
-            mediaPlayerController.download(Collections.singletonList(song), false, false, false, false, false);
+            mediaPlayerController.addToPlaylist(Collections.singletonList(song), false, false, false, false, false);
 
             if (true)
             {

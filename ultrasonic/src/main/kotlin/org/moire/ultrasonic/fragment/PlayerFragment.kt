@@ -456,20 +456,13 @@ class PlayerFragment : Fragment(), GestureDetector.OnGestureListener, KoinCompon
         requireActivity().invalidateOptionsMenu()
     }
 
-    // Scroll to current playing/downloading.
+    // Scroll to current playing.
     private fun scrollToCurrent() {
         val adapter = playlistView.adapter
         if (adapter != null) {
             val count = adapter.count
             for (i in 0 until count) {
                 if (currentPlaying == playlistView.getItemAtPosition(i)) {
-                    playlistView.smoothScrollToPositionFromTop(i, 40)
-                    return
-                }
-            }
-            val currentDownloading = mediaPlayerController.currentDownloading
-            for (i in 0 until count) {
-                if (currentDownloading == playlistView.getItemAtPosition(i)) {
                     playlistView.smoothScrollToPositionFromTop(i, 40)
                     return
                 }
@@ -643,7 +636,7 @@ class PlayerFragment : Fragment(), GestureDetector.OnGestureListener, KoinCompon
                 return true
             }
             R.id.menu_remove -> {
-                mediaPlayerController.remove(song!!)
+                mediaPlayerController.removeFromPlaylist(song!!)
                 onDownloadListChanged()
                 return true
             }

@@ -4,7 +4,6 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.AdapterView;
 import android.widget.ImageView;
 import android.widget.ListView;
 
@@ -25,8 +24,8 @@ import org.moire.ultrasonic.subsonic.NetworkAndStorageChecker;
 import org.moire.ultrasonic.subsonic.VideoPlayer;
 import org.moire.ultrasonic.util.CancellationToken;
 import org.moire.ultrasonic.util.Constants;
-import org.moire.ultrasonic.util.Pair;
 import org.moire.ultrasonic.util.FragmentBackgroundTask;
+import org.moire.ultrasonic.util.Pair;
 import org.moire.ultrasonic.util.Util;
 import org.moire.ultrasonic.view.EntryAdapter;
 
@@ -78,37 +77,27 @@ public class BookmarksFragment extends Fragment {
         refreshAlbumListView = view.findViewById(R.id.select_album_entries_refresh);
         albumListView = view.findViewById(R.id.select_album_entries_list);
 
-        refreshAlbumListView.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener()
-        {
-            @Override
-            public void onRefresh()
-            {
-                enableButtons();
-                getBookmarks();
-            }
+        refreshAlbumListView.setOnRefreshListener(() -> {
+            enableButtons();
+            getBookmarks();
         });
 
         albumListView.setChoiceMode(ListView.CHOICE_MODE_SINGLE);
 
-        albumListView.setOnItemClickListener(new AdapterView.OnItemClickListener()
-        {
-            @Override
-            public void onItemClick(AdapterView<?> parent, View view, int position, long id)
+        albumListView.setOnItemClickListener((parent, view17, position, id) -> {
+            if (position >= 0)
             {
-                if (position >= 0)
-                {
-                    MusicDirectory.Entry entry = (MusicDirectory.Entry) parent.getItemAtPosition(position);
+                MusicDirectory.Entry entry = (MusicDirectory.Entry) parent.getItemAtPosition(position);
 
-                    if (entry != null)
+                if (entry != null)
+                {
+                    if (entry.isVideo())
                     {
-                        if (entry.isVideo())
-                        {
-                            VideoPlayer.Companion.playVideo(getContext(), entry);
-                        }
-                        else
-                        {
-                            enableButtons();
-                        }
+                        VideoPlayer.Companion.playVideo(getContext(), entry);
+                    }
+                    else
+                    {
+                        enableButtons();
                     }
                 }
             }
@@ -130,58 +119,24 @@ public class BookmarksFragment extends Fragment {
         playLastButton.setVisibility(View.GONE);
         oreButton.setVisibility(View.GONE);
 
-        playNowButton.setOnClickListener(new View.OnClickListener()
-        {
-            @Override
-            public void onClick(View view)
-            {
-                playNow(getSelectedSongs(albumListView));
-            }
-        });
+        playNowButton.setOnClickListener(view16 -> playNow(getSelectedSongs(albumListView)));
 
-        selectButton.setOnClickListener(new View.OnClickListener()
-        {
-            @Override
-            public void onClick(View view)
-            {
-                selectAllOrNone();
-            }
+        selectButton.setOnClickListener(view15 -> selectAllOrNone());
+        pinButton.setOnClickListener(view14 -> {
+            downloadBackground(true);
+            selectAll(false, false);
         });
-        pinButton.setOnClickListener(new View.OnClickListener()
-        {
-            @Override
-            public void onClick(View view)
-            {
-                downloadBackground(true);
-                selectAll(false, false);
-            }
+        unpinButton.setOnClickListener(view13 -> {
+            unpin();
+            selectAll(false, false);
         });
-        unpinButton.setOnClickListener(new View.OnClickListener()
-        {
-            @Override
-            public void onClick(View view)
-            {
-                unpin();
-                selectAll(false, false);
-            }
+        downloadButton.setOnClickListener(view12 -> {
+            downloadBackground(false);
+            selectAll(false, false);
         });
-        downloadButton.setOnClickListener(new View.OnClickListener()
-        {
-            @Override
-            public void onClick(View view)
-            {
-                downloadBackground(false);
-                selectAll(false, false);
-            }
-        });
-        deleteButton.setOnClickListener(new View.OnClickListener()
-        {
-            @Override
-            public void onClick(View view)
-            {
-                delete();
-                selectAll(false, false);
-            }
+        deleteButton.setOnClickListener(view1 -> {
+            delete();
+            selectAll(false, false);
         });
 
         registerForContextMenu(albumListView);
@@ -230,7 +185,8 @@ public class BookmarksFragment extends Fragment {
             {
                 if (albumListView.isItemChecked(i))
                 {
-                    songs.add((MusicDirectory.Entry) albumListView.getItemAtPosition(i));
+                    MusicDirectory.Entry song = (MusicDirectory.Entry) albumListView.getItemAtPosition(i);
+                    if (song != null) songs.add(song);
                 }
             }
         }
@@ -291,6 +247,7 @@ public class BookmarksFragment extends Fragment {
 
         for (MusicDirectory.Entry song : selection)
         {
+            if (song == null) continue;
             DownloadFile downloadFile = mediaPlayerController.getValue().getDownloadFileForSong(song);
             if (downloadFile.isWorkDone())
             {
@@ -326,22 +283,17 @@ public class BookmarksFragment extends Fragment {
 
     private void downloadBackground(final boolean save, final List<MusicDirectory.Entry> songs)
     {
-        Runnable onValid = new Runnable()
-        {
-            @Override
-            public void run()
-            {
-                networkAndStorageChecker.getValue().warnIfNetworkOrStorageUnavailable();
-                mediaPlayerController.getValue().downloadBackground(songs, save);
+        Runnable onValid = () -> {
+            networkAndStorageChecker.getValue().warnIfNetworkOrStorageUnavailable();
+            mediaPlayerController.getValue().downloadBackground(songs, save);
 
-                if (save)
-                {
-                    Util.toast(getContext(), getResources().getQuantityString(R.plurals.select_album_n_songs_pinned, songs.size(), songs.size()));
-                }
-                else
-                {
-                    Util.toast(getContext(), getResources().getQuantityString(R.plurals.select_album_n_songs_downloaded, songs.size(), songs.size()));
-                }
+            if (save)
+            {
+                Util.toast(getContext(), getResources().getQuantityString(R.plurals.select_album_n_songs_pinned, songs.size(), songs.size()));
+            }
+            else
+            {
+                Util.toast(getContext(), getResources().getQuantityString(R.plurals.select_album_n_songs_downloaded, songs.size(), songs.size()));
             }
         };
 

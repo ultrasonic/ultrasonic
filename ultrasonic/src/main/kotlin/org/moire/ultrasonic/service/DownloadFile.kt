@@ -40,7 +40,7 @@ import timber.log.Timber
 class DownloadFile(
     val song: MusicDirectory.Entry,
     private val save: Boolean
-) : KoinComponent {
+) : KoinComponent, Comparable<DownloadFile> {
     val partialFile: File
     val completeFile: File
     private val saveFile: File = FileUtil.getSongFile(song)
@@ -49,6 +49,8 @@ class DownloadFile(
     private var retryCount = MAX_RETRIES
 
     private val desiredBitRate: Int = Util.getMaxBitRate()
+
+    var priority = 100
 
     @Volatile
     private var isPlaying = false
@@ -202,7 +204,6 @@ class DownloadFile(
         return String.format("DownloadFile (%s)", song)
     }
 
-    @Suppress("TooGenericExceptionCaught")
     private inner class DownloadTask : CancellableTask() {
         override fun execute() {
             var inputStream: InputStream? = null
@@ -291,7 +292,7 @@ class DownloadFile(
                         Util.renameFile(partialFile, completeFile)
                     }
                 }
-            } catch (e: Exception) {
+            } catch (all: Exception) {
                 Util.close(outputStream)
                 Util.delete(completeFile)
                 Util.delete(saveFile)
@@ -300,7 +301,7 @@ class DownloadFile(
                     if (retryCount > 0) {
                         --retryCount
                     }
-                    Timber.w(e, "Failed to download '%s'.", song)
+                    Timber.w(all, "Failed to download '%s'.", song)
                 }
             } finally {
                 Util.close(inputStream)
@@ -386,6 +387,10 @@ class DownloadFile(
                 }
             }
         }
+    }
+
+    override fun compareTo(other: DownloadFile): Int {
+        return priority.compareTo(other.priority)
     }
 
     companion object {

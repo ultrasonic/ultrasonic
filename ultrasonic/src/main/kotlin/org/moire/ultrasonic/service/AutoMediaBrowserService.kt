@@ -1066,7 +1066,7 @@ class AutoMediaBrowserService : MediaBrowserServiceCompat() {
     }
 
     private fun playSongs(songs: List<MusicDirectory.Entry?>?) {
-        mediaPlayerController.download(
+        mediaPlayerController.addToPlaylist(
             songs,
             save = false,
             autoPlay = true,
@@ -1077,7 +1077,7 @@ class AutoMediaBrowserService : MediaBrowserServiceCompat() {
     }
 
     private fun playSong(song: MusicDirectory.Entry) {
-        mediaPlayerController.download(
+        mediaPlayerController.addToPlaylist(
             listOf(song),
             save = false,
             autoPlay = false,

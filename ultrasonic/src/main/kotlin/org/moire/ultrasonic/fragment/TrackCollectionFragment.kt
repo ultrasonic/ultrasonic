@@ -517,6 +517,7 @@ class TrackCollectionFragment : Fragment() {
         var pinnedCount = 0
 
         for (song in selection) {
+            if (song == null) continue
             val downloadFile = mediaPlayerController.getDownloadFileForSong(song)
             if (downloadFile.isWorkDone) {
                 deleteEnabled = true
