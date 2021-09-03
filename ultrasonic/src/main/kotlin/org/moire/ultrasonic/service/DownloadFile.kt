@@ -251,8 +251,9 @@ class DownloadFile(
 
                 if (needsDownloading) {
                     // Attempt partial HTTP GET, appending to the file if it exists.
-                    val (inStream, partial) = musicService
-                        .getDownloadInputStream(song, partialFile.length(), desiredBitRate)
+                    val (inStream, partial) = musicService.getDownloadInputStream(
+                        song, partialFile.length(), desiredBitRate, save
+                    )
 
                     inputStream = inStream
 

@@ -15,6 +15,7 @@ import org.moire.ultrasonic.api.subsonic.ApiNotSupportedException
 import org.moire.ultrasonic.api.subsonic.SubsonicAPIClient
 import org.moire.ultrasonic.api.subsonic.models.AlbumListType.Companion.fromName
 import org.moire.ultrasonic.api.subsonic.models.JukeboxAction
+import org.moire.ultrasonic.api.subsonic.response.StreamResponse
 import org.moire.ultrasonic.api.subsonic.throwOnFailure
 import org.moire.ultrasonic.api.subsonic.toStreamResponse
 import org.moire.ultrasonic.data.ActiveServerProvider
@@ -427,12 +428,20 @@ open class RESTMusicService(
     override fun getDownloadInputStream(
         song: MusicDirectory.Entry,
         offset: Long,
-        maxBitrate: Int
+        maxBitrate: Int,
+        save: Boolean
     ): Pair<InputStream, Boolean> {
         val songOffset = if (offset < 0) 0 else offset
+        lateinit var response: StreamResponse
 
-        val response = API.stream(song.id, maxBitrate, offset = songOffset)
-            .execute().toStreamResponse()
+        // Use semantically correct call
+        if (save) {
+            response = API.download(song.id, maxBitrate, offset = songOffset)
+                .execute().toStreamResponse()
+        } else {
+            response = API.stream(song.id, maxBitrate, offset = songOffset)
+                .execute().toStreamResponse()
+        }
 
         response.throwOnFailure()
 

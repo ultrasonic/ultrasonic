@@ -465,7 +465,8 @@ class OfflineMusicService : MusicService, KoinComponent {
     override fun getDownloadInputStream(
         song: MusicDirectory.Entry,
         offset: Long,
-        maxBitrate: Int
+        maxBitrate: Int,
+        save: Boolean
     ): Pair<InputStream, Boolean> {
         throw OfflineException("getDownloadInputStream isn't available in offline mode")
     }
