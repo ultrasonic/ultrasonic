@@ -13,6 +13,8 @@
         a:layout_height="fill_parent"
         a:paddingLeft="5dip"
         a:paddingStart="5dip"
+        a:paddingRight="0dip"
+        a:paddingEnd="0dip"
         a:background="@android:color/transparent"
         a:focusable="false"
         a:gravity="center_vertical"
