@@ -13,7 +13,7 @@ public class State implements Serializable
 {
     public static final long serialVersionUID = -6346438781062572270L;
 
-    public List<MusicDirectory.Entry> songs = new ArrayList<MusicDirectory.Entry>();
+    public List<MusicDirectory.Entry> songs = new ArrayList<>();
     public int currentPlayingIndex;
     public int currentPlayingPosition;
 }
