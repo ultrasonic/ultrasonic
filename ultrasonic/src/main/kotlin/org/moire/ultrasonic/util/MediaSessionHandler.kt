@@ -71,12 +71,12 @@ class MediaSessionHandler : KoinComponent {
         Timber.d("MediaSessionHandler.initialize Creating Media Session")
 
         mediaSession = MediaSessionCompat(applicationContext, "UltrasonicService")
-        val mediaSessionToken = mediaSession!!.sessionToken
-        mediaSessionEventDistributor.raiseMediaSessionTokenCreatedEvent(mediaSessionToken!!)
+        val mediaSessionToken = mediaSession?.sessionToken ?: return
+        mediaSessionEventDistributor.raiseMediaSessionTokenCreatedEvent(mediaSessionToken)
 
         updateMediaButtonReceiver()
 
-        mediaSession!!.setCallback(object : MediaSessionCompat.Callback() {
+        mediaSession?.setCallback(object : MediaSessionCompat.Callback() {
             override fun onPlay() {
                 super.onPlay()
 
@@ -159,7 +159,7 @@ class MediaSessionHandler : KoinComponent {
         )
 
         // It seems to be the best practice to set this to true for the lifetime of the session
-        mediaSession!!.isActive = true
+        mediaSession?.isActive = true
         if (cachedPlaylist != null) updateMediaSessionQueue(cachedPlaylist!!)
         Timber.i("MediaSessionHandler.initialize Media Session created")
     }
@@ -193,7 +193,7 @@ class MediaSessionHandler : KoinComponent {
         }
 
         // Save the metadata
-        mediaSession!!.setMetadata(metadata.build())
+        mediaSession?.setMetadata(metadata.build())
 
         playbackActions = PlaybackStateCompat.ACTION_PLAY_PAUSE or
             PlaybackStateCompat.ACTION_SKIP_TO_NEXT or
@@ -249,7 +249,7 @@ class MediaSessionHandler : KoinComponent {
             playbackStateBuilder.setActiveQueueItemId(currentPlayingIndex)
 
         // Save the playback state
-        mediaSession!!.setPlaybackState(playbackStateBuilder.build())
+        mediaSession?.setPlaybackState(playbackStateBuilder.build())
     }
 
     fun updateMediaSessionQueue(playlist: Iterable<MusicDirectory.Entry>) {
@@ -257,8 +257,8 @@ class MediaSessionHandler : KoinComponent {
         cachedPlaylist = playlist
         if (mediaSession == null) return
 
-        mediaSession!!.setQueueTitle(applicationContext.getString(R.string.button_bar_now_playing))
-        mediaSession!!.setQueue(
+        mediaSession?.setQueueTitle(applicationContext.getString(R.string.button_bar_now_playing))
+        mediaSession?.setQueue(
             playlist.mapIndexed { id, song ->
                 MediaSessionCompat.QueueItem(
                     Util.getMediaDescriptionForEntry(song),
@@ -288,7 +288,7 @@ class MediaSessionHandler : KoinComponent {
         if (cachedPlayingIndex != null)
             playbackStateBuilder.setActiveQueueItemId(cachedPlayingIndex!!)
 
-        mediaSession!!.setPlaybackState(playbackStateBuilder.build())
+        mediaSession?.setPlaybackState(playbackStateBuilder.build())
     }
 
     fun updateMediaButtonReceiver() {
