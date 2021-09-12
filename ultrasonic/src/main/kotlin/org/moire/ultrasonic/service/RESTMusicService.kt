@@ -42,7 +42,6 @@ import org.moire.ultrasonic.domain.toDomainEntityList
 import org.moire.ultrasonic.domain.toIndexList
 import org.moire.ultrasonic.domain.toMusicDirectoryDomainEntity
 import org.moire.ultrasonic.util.FileUtil
-import org.moire.ultrasonic.util.FileUtilKt
 import org.moire.ultrasonic.util.Util
 import timber.log.Timber
 
@@ -242,7 +241,7 @@ open class RESTMusicService(
             activeServerProvider.getActiveServer().name, name
         )
 
-        FileUtilKt.savePlaylist(playlistFile, playlist, name)
+        FileUtil.savePlaylist(playlistFile, playlist, name)
     }
 
     @Throws(Exception::class)

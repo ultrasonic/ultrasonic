@@ -40,14 +40,11 @@ import android.widget.Toast
 import androidx.annotation.AnyRes
 import androidx.media.utils.MediaConstants
 import androidx.preference.PreferenceManager
-import java.io.ByteArrayOutputStream
 import java.io.Closeable
 import java.io.File
 import java.io.FileInputStream
 import java.io.FileOutputStream
 import java.io.IOException
-import java.io.InputStream
-import java.io.OutputStream
 import java.io.UnsupportedEncodingException
 import java.security.MessageDigest
 import java.text.DecimalFormat

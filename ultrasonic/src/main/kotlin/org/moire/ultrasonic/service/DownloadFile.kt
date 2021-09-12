@@ -10,6 +10,12 @@ package org.moire.ultrasonic.service
 import android.net.wifi.WifiManager.WifiLock
 import android.text.TextUtils
 import androidx.lifecycle.MutableLiveData
+import java.io.File
+import java.io.FileOutputStream
+import java.io.IOException
+import java.io.InputStream
+import java.io.OutputStream
+import java.io.RandomAccessFile
 import org.koin.core.component.KoinComponent
 import org.koin.core.component.inject
 import org.moire.ultrasonic.domain.MusicDirectory
@@ -20,12 +26,6 @@ import org.moire.ultrasonic.util.CancellableTask
 import org.moire.ultrasonic.util.FileUtil
 import org.moire.ultrasonic.util.Util
 import timber.log.Timber
-import java.io.File
-import java.io.FileOutputStream
-import java.io.IOException
-import java.io.InputStream
-import java.io.OutputStream
-import java.io.RandomAccessFile
 
 /**
  * This class represents a singe Song or Video that can be downloaded.
