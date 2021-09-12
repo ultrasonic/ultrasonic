@@ -92,6 +92,7 @@
     <attr name="filepicker_subdirectory_up" format="reference"/>
     <attr name="filepicker_sd_card" format="reference"/>
     <attr name="drag_queue" format="reference"/>
+    <attr name="drag_vertical" format="reference"/>
     <attr name="more_vert" format="reference"/>
     <attr name="list_selector_holo" format="reference"/>
     <attr name="list_selector_holo_selected" format="reference"/>

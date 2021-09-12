@@ -4,7 +4,21 @@
     a:layout_width="fill_parent"
     a:layout_height="wrap_content"
     a:minHeight="?android:attr/listPreferredItemHeight"
-    a:orientation="horizontal" >
+    a:orientation="horizontal"
+    a:background="?attr/color_menu_background">
+
+    <ImageView
+        a:id="@+id/song_drag"
+        a:layout_width="wrap_content"
+        a:layout_height="fill_parent"
+        a:paddingLeft="5dip"
+        a:paddingStart="5dip"
+        a:paddingRight="0dip"
+        a:paddingEnd="0dip"
+        a:background="@android:color/transparent"
+        a:focusable="false"
+        a:gravity="center_vertical"
+        a:src="?attr/drag_vertical" />
 
     <CheckedTextView
         a:id="@+id/song_check"
@@ -86,16 +100,5 @@
         a:gravity="center_vertical"
         a:paddingRight="8dip"
         a:src="?attr/star_hollow" />
-
-    <ImageView
-        a:id="@+id/song_drag"
-        a:layout_width="wrap_content"
-        a:layout_height="fill_parent"
-        a:background="@android:color/transparent"
-        a:focusable="false"
-        a:gravity="center_vertical"
-        a:layout_marginRight="16dip"
-        a:src="?attr/drag_queue"
-        a:layout_marginEnd="16dip" />
 
 </LinearLayout>
