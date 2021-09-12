@@ -306,7 +306,7 @@ class NavigationActivity : AppCompatActivity() {
             val editor = preferences.edit()
             editor.putString(
                 Constants.PREFERENCES_KEY_CACHE_LOCATION,
-                FileUtil.getDefaultMusicDirectory().path
+                FileUtil.defaultMusicDirectory.path
             )
             editor.apply()
         }
