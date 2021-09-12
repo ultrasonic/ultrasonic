@@ -81,7 +81,6 @@ class MediaPlayerService : Service() {
     override fun onCreate() {
         super.onCreate()
 
-        downloader.onCreate()
         shufflePlayBuffer.onCreate()
         localMediaPlayer.init()
 

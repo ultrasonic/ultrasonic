@@ -28,10 +28,7 @@ import org.moire.ultrasonic.util.Util
 import timber.log.Timber
 
 /**
- * This class represents a singe Song or Video that can be downloaded.
- *
- * @author Sindre Mehus
- * @version $Id$
+ * This class represents a single Song or Video that can be downloaded.
  */
 class DownloadFile(
     val song: MusicDirectory.Entry,
@@ -204,11 +201,7 @@ class DownloadFile(
         override fun execute() {
             var inputStream: InputStream? = null
             var outputStream: FileOutputStream? = null
-            var wifiLock: WifiLock? = null
             try {
-                wifiLock = Util.createWifiLock(toString())
-                wifiLock.acquire()
-
                 if (saveFile.exists()) {
                     Timber.i("%s already exists. Skipping.", saveFile)
                     return
@@ -300,7 +293,6 @@ class DownloadFile(
             } finally {
                 Util.close(inputStream)
                 Util.close(outputStream)
-                wifiLock?.release()
                 CacheCleaner().cleanSpace()
                 downloader.checkDownloads()
             }
