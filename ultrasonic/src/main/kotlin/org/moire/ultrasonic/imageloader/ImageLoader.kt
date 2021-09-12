@@ -93,10 +93,27 @@ class ImageLoader(
         defaultResourceId: Int = R.drawable.unknown_album
     ) {
         val id = entry?.coverArt
+        val key = FileUtil.getAlbumArtKey(entry, large)
+
+        loadImage(view, id, key, large, size, defaultResourceId)
+    }
+
+    /**
+     * Load the cover of a given entry into an ImageView
+     */
+    @JvmOverloads
+    @Suppress("LongParameterList", "ComplexCondition")
+    fun loadImage(
+        view: View?,
+        id: String?,
+        key: String?,
+        large: Boolean,
+        size: Int,
+        defaultResourceId: Int = R.drawable.unknown_album
+    ) {
         val requestedSize = resolveSize(size, large)
 
-        if (id != null && id.isNotEmpty() && view is ImageView) {
-            val key = FileUtil.getAlbumArtKey(entry, large)
+        if (id != null && key != null && id.isNotEmpty() && view is ImageView) {
             val request = ImageRequest.CoverArt(
                 id, key, view, requestedSize,
                 placeHolderDrawableRes = defaultResourceId,

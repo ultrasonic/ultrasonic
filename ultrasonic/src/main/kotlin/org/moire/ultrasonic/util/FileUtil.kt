@@ -41,6 +41,8 @@ object FileUtil {
     private val TITLE_WITH_TRACK = Pattern.compile("^\\d\\d-.*")
     const val SUFFIX_LARGE = ".jpeg"
     const val SUFFIX_SMALL = ".jpeg-small"
+    private const val UNNAMED = "unnamed"
+
     private val permissionUtil = KoinJavaComponent.inject<PermissionUtil>(
         PermissionUtil::class.java
     )
@@ -50,7 +52,7 @@ object FileUtil {
 
         // Do not generate new name for offline files. Offline files will have their Path as their Id.
         if (!TextUtils.isEmpty(song.id)) {
-            if (song.id.startsWith(dir!!.absolutePath)) return File(song.id)
+            if (song.id.startsWith(dir.absolutePath)) return File(song.id)
         }
 
         // Generate a file name for the song
@@ -66,7 +68,7 @@ object FileUtil {
                 fileName.append(track).append('-')
             }
         }
-        fileName.append(fileSystemSafe(song.title!!)).append('.')
+        fileName.append(fileSystemSafe(song.title)).append('.')
         if (!TextUtils.isEmpty(song.transcodedSuffix)) {
             fileName.append(song.transcodedSuffix)
         } else {
@@ -76,7 +78,7 @@ object FileUtil {
     }
 
     @JvmStatic
-    fun getPlaylistFile(server: String?, name: String): File {
+    fun getPlaylistFile(server: String?, name: String?): File {
         val playlistDir = getPlaylistDirectory(server)
         return File(playlistDir, String.format(Locale.ROOT, "%s.m3u", fileSystemSafe(name)))
     }
@@ -89,7 +91,8 @@ object FileUtil {
             return playlistDir
         }
 
-    fun getPlaylistDirectory(server: String?): File {
+    @JvmStatic
+    fun getPlaylistDirectory(server: String? = null): File {
         val playlistDir: File
         if (server != null) {
             playlistDir = File(playlistDirectory, server)
@@ -105,7 +108,7 @@ object FileUtil {
      * @param entry The album entry
      * @return File object. Not guaranteed that it exists
      */
-    fun getAlbumArtFile(entry: MusicDirectory.Entry?): File? {
+    fun getAlbumArtFile(entry: MusicDirectory.Entry): File {
         val albumDir = getAlbumDirectory(entry)
         return getAlbumArtFile(albumDir)
     }
@@ -117,8 +120,21 @@ object FileUtil {
      * @return String The hash key
      */
     fun getAlbumArtKey(entry: MusicDirectory.Entry?, large: Boolean): String? {
+        if (entry == null) return null
         val albumDir = getAlbumDirectory(entry)
         return getAlbumArtKey(albumDir, large)
+    }
+
+    /**
+     * Get the cache key for a given artist
+     * @param name The artist name
+     * @param large Whether to get the key for the large or the default image
+     * @return String The hash key
+     */
+    fun getArtistArtKey(name: String?, large: Boolean): String {
+        val artist = fileSystemSafe(name)
+        val dir = File(String.format(Locale.ROOT, "%s/%s/%s", musicDirectory.path, artist, UNNAMED))
+        return getAlbumArtKey(dir, large)
     }
 
     /**
@@ -127,10 +143,7 @@ object FileUtil {
      * @param large Whether to get the key for the large or the default image
      * @return String The hash key
      */
-    private fun getAlbumArtKey(albumDir: File?, large: Boolean): String? {
-        if (albumDir == null) {
-            return null
-        }
+    private fun getAlbumArtKey(albumDir: File, large: Boolean): String {
         val suffix = if (large) SUFFIX_LARGE else SUFFIX_SMALL
         return String.format(Locale.ROOT, "%s%s", Util.md5Hex(albumDir.path), suffix)
     }
@@ -149,12 +162,11 @@ object FileUtil {
      * @param albumDir The album directory
      * @return File object. Not guaranteed that it exists
      */
-    fun getAlbumArtFile(albumDir: File?): File? {
+    @JvmStatic
+    fun getAlbumArtFile(albumDir: File): File {
         val albumArtDir = albumArtDirectory
         val key = getAlbumArtKey(albumDir, true)
-        return if (key == null) {
-            null
-        } else File(albumArtDir, key)
+        return File(albumArtDir, key)
     }
 
     /**
@@ -162,6 +174,7 @@ object FileUtil {
      * @param cacheKey The key (== the filename)
      * @return File object. Not guaranteed that it exists
      */
+    @JvmStatic
     fun getAlbumArtFile(cacheKey: String?): File? {
         val albumArtDir = albumArtDirectory
         return if (cacheKey == null) {
@@ -177,10 +190,7 @@ object FileUtil {
             return albumArtDir
         }
 
-    fun getAlbumDirectory(entry: MusicDirectory.Entry?): File? {
-        if (entry == null) {
-            return null
-        }
+    fun getAlbumDirectory(entry: MusicDirectory.Entry): File {
         val dir: File
         if (!TextUtils.isEmpty(entry.path)) {
             val f = File(fileSystemSafeDir(entry.path))
@@ -193,10 +203,10 @@ object FileUtil {
                 )
             )
         } else {
-            val artist = fileSystemSafe(entry.artist!!)
-            var album = fileSystemSafe(entry.album!!)
-            if ("unnamed" == album) {
-                album = fileSystemSafe(entry.title!!)
+            val artist = fileSystemSafe(entry.artist)
+            var album = fileSystemSafe(entry.album)
+            if (UNNAMED == album) {
+                album = fileSystemSafe(entry.title)
             }
             dir = File(String.format(Locale.ROOT, "%s/%s/%s", musicDirectory.path, artist, album))
         }
@@ -225,11 +235,13 @@ object FileUtil {
     // GetExternalFilesDir will always return a directory which Ultrasonic
     // can access without any extra privileges.
     @JvmStatic
-    val ultrasonicDirectory: File?
-        get() = if (Build.VERSION.SDK_INT < Build.VERSION_CODES.M) File(
-            Environment.getExternalStorageDirectory(),
-            "Android/data/org.moire.ultrasonic"
-        ) else UApp.applicationContext().getExternalFilesDir(null)
+    val ultrasonicDirectory: File
+        get() {
+            return if (Build.VERSION.SDK_INT < Build.VERSION_CODES.M) File(
+                Environment.getExternalStorageDirectory(),
+                "Android/data/org.moire.ultrasonic"
+            ) else UApp.applicationContext().getExternalFilesDir(null)!!
+        }
 
     // After Android M, the location of the files must be queried differently.
     // GetExternalFilesDir will always return a directory which Ultrasonic
@@ -237,6 +249,7 @@ object FileUtil {
     @JvmStatic
     val defaultMusicDirectory: File
         get() = getOrCreateDirectory("music")
+
     @JvmStatic
     val musicDirectory: File
         get() {
@@ -285,11 +298,12 @@ object FileUtil {
      * @param name The filename in question.
      * @return The filename with special characters replaced by hyphens.
      */
-    private fun fileSystemSafe(name: String): String {
-        var filename = name
-        if (filename.trim { it <= ' ' }.isEmpty()) {
-            return "unnamed"
+    private fun fileSystemSafe(name: String?): String {
+        if (name == null || name.trim { it <= ' ' }.isEmpty()) {
+            return UNNAMED
         }
+        var filename: String = name
+
         for (s in FILE_SYSTEM_UNSAFE) {
             filename = filename.replace(s, "-")
         }
