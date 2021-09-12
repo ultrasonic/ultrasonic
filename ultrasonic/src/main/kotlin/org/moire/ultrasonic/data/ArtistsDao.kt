@@ -18,6 +18,16 @@ interface ArtistsDao {
     fun set(objects: List<Artist>)
 
     /**
+     * Insert an object in the database.
+     *
+     * @param obj the object to be inserted.
+     * @return The SQLite row id
+     */
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    @JvmSuppressWildcards
+    fun insert(obj: Artist): Long
+
+    /**
      * Clear the whole database
      */
     @Query("DELETE FROM artists")
@@ -28,4 +38,10 @@ interface ArtistsDao {
      */
     @Query("SELECT * FROM artists")
     fun get(): List<Artist>
+
+    /**
+     * Get artist by id
+     */
+    @Query("SELECT * FROM artists WHERE id LIKE :id")
+    fun get(id: String): Artist
 }

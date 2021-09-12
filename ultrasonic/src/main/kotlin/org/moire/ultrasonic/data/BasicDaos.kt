@@ -103,6 +103,16 @@ interface GenericDao<T> {
      * @param obj the object to be inserted.
      * @return The SQLite row id
      */
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    @JvmSuppressWildcards
+    fun insert(obj: T): Long
+
+    /**
+     * Insert an object in the database.
+     *
+     * @param obj the object to be inserted.
+     * @return The SQLite row id
+     */
     @Insert(onConflict = OnConflictStrategy.IGNORE)
     @JvmSuppressWildcards
     fun insertIgnoring(obj: T): Long

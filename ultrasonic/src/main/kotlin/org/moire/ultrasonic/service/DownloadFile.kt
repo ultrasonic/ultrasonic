@@ -7,7 +7,6 @@
 
 package org.moire.ultrasonic.service
 
-import android.net.wifi.WifiManager.WifiLock
 import android.text.TextUtils
 import androidx.lifecycle.MutableLiveData
 import java.io.File
@@ -18,6 +17,7 @@ import java.io.OutputStream
 import java.io.RandomAccessFile
 import org.koin.core.component.KoinComponent
 import org.koin.core.component.inject
+import org.moire.ultrasonic.data.ActiveServerProvider
 import org.moire.ultrasonic.domain.MusicDirectory
 import org.moire.ultrasonic.service.MusicServiceFactory.getMusicService
 import org.moire.ultrasonic.subsonic.ImageLoaderProvider
@@ -56,6 +56,7 @@ class DownloadFile(
 
     private val downloader: Downloader by inject()
     private val imageLoaderProvider: ImageLoaderProvider by inject()
+    private val activeServerProvider: ActiveServerProvider by inject()
 
     val progress: MutableLiveData<Int> = MutableLiveData(0)
 
@@ -266,6 +267,11 @@ class DownloadFile(
                     if (isCancelled) {
                         throw Exception(String.format("Download of '%s' was cancelled", song))
                     }
+
+                    if (song.artistId != null) {
+                        cacheMetadata(song.artistId!!)
+                    }
+
                     downloadAndSaveCoverArt()
                 }
 
@@ -300,6 +306,15 @@ class DownloadFile(
 
         override fun toString(): String {
             return String.format("DownloadTask (%s)", song)
+        }
+
+        private fun cacheMetadata(artistId: String) {
+            // TODO: Right now it's caching the track artist.
+            // Once the albums are cached in db, we should retrieve the album,
+            // and then cache the album artist.
+            if (artistId.isEmpty()) return
+            val artist = activeServerProvider.getActiveMetaDatabase().artistsDao().get(artistId)
+            activeServerProvider.offlineMetaDatabase.artistsDao().insert(artist)
         }
 
         private fun downloadAndSaveCoverArt() {

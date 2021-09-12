@@ -6,6 +6,10 @@ import org.moire.ultrasonic.domain.Artist
 import org.moire.ultrasonic.domain.Index
 import org.moire.ultrasonic.domain.MusicFolder
 
+/**
+ * This database is used to store and cache the ID3 metadata
+ */
+
 @Database(
     entities = [Artist::class, Index::class, MusicFolder::class],
     version = 1

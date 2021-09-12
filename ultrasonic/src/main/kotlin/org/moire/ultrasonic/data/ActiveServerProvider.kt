@@ -17,6 +17,8 @@ import timber.log.Timber
 /**
  * This class can be used to retrieve the properties of the Active Server
  * It caches the settings read up from the DB to improve performance.
+ *
+ * TODO: There seems to be some confusion whether offline id is 0 or -1. Clean this up (carefully!)
  */
 class ActiveServerProvider(
     private val repository: ServerSettingDao
@@ -29,9 +31,8 @@ class ActiveServerProvider(
      * Get the settings of the current Active Server
      * @return The Active Server Settings
      */
-    fun getActiveServer(): ServerSetting {
-        val serverId = getActiveServerId()
-
+    @JvmOverloads
+    fun getActiveServer(serverId: Int = getActiveServerId()): ServerSetting {
         if (serverId > 0) {
             if (cachedServer != null && cachedServer!!.id == serverId) return cachedServer!!
 
@@ -94,16 +95,29 @@ class ActiveServerProvider(
             return cachedDatabase!!
         }
 
+        if (activeServer < 1) {
+            return offlineMetaDatabase
+        }
+
         Timber.i("Switching to new database, id:$activeServer")
         cachedServerId = activeServer
-        val db = Room.databaseBuilder(
+        return Room.databaseBuilder(
             UApp.applicationContext(),
             MetaDatabase::class.java,
             METADATA_DB + cachedServerId
         )
             .fallbackToDestructiveMigrationOnDowngrade()
             .build()
-        return db
+    }
+
+    val offlineMetaDatabase: MetaDatabase by lazy {
+        Room.databaseBuilder(
+            UApp.applicationContext(),
+            MetaDatabase::class.java,
+            METADATA_DB + 0
+        )
+            .fallbackToDestructiveMigrationOnDowngrade()
+            .build()
     }
 
     @Synchronized

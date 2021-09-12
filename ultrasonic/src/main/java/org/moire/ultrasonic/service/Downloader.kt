@@ -43,7 +43,6 @@ class Downloader(
     private var executorService: ScheduledExecutorService? = null
     private var wifiLock: WifiManager.WifiLock? = null
 
-
     var playlistUpdateRevision: Long = 0
         private set
 
