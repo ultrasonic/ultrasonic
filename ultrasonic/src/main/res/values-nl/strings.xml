@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<resources>
+<resources xmlns:tools="http://schemas.android.com/tools">
 
     <string name="background_task.loading">Bezig met laden&#8230;</string>
     <string name="background_task.network_error">Er is een netwerkfout opgetreden. Controleer het serveradres of probeer het later opnieuw.</string>
@@ -111,7 +111,9 @@
     <string name="main.songs_starred">Favorieten</string>
     <string name="main.songs_title">Nummers</string>
     <string name="main.videos">Video\'s</string>
+    <string name="main.welcome_text_demo">Om in Ultrasonic naar je eigen muziek te luisteren, heb je je <b>eigen server</b> nodig. \n\n➤ Maar als je de app eerst wilt uitproberen, dan kun je voorlopig de demoserver gebruiken. \n\n➤ In de <b>instellingen</b> kun je je eigen server instellen.</string>
     <string name="main.welcome_title">Welkom!</string>
+    <string name="main.welcome_cancel">Open de instellingen</string>
     <string name="menu.about">Over</string>
     <string name="menu.common">Algemeen</string>
     <string name="menu.deleted_playlist">Afspeellijst %s verwijderd</string>
@@ -319,7 +321,7 @@
     <string name="settings.use_id3_summary">ID3-labels gebruiken in plaats van systeemlabels</string>
     <string name="settings.show_artist_picture">Artiestfoto tonen op artiestenlijst</string>
     <string name="settings.show_artist_picture_summary">Toont de artiestfoto op de artiestenlijst (indien beschikbaar)</string>
-    <string name="main.video">Video</string>
+    <string name="main.video" tools:ignore="UnusedResources">Video</string>
     <string name="settings.view_refresh">Verversen</string>
     <string name="settings.view_refresh_500">0,5 seconden</string>
     <string name="settings.view_refresh_1000">1 seconde</string>
@@ -339,7 +341,7 @@
     <string name="util.bytes_format.gigabyte">0,00 GB</string>
     <string name="util.bytes_format.kilobyte">0 KB</string>
     <string name="util.bytes_format.megabyte">0,00 MB</string>
-    <string name="util.no_time">-:--</string>
+    <string name="util.no_time" tools:ignore="TypographyDashes">-:--</string>
     <string name="util.zero_time">0:00</string>
     <string name="widget.initial_text">Druk om muziek te selecteren</string>
     <string name="widget.sdcard_busy">SD-kaart niet beschikbaar</string>
@@ -434,6 +436,7 @@
     <string name="server_editor.authentication">Authenticatie</string>
     <string name="server_editor.advanced">Geavanceerde instellingen</string>
     <string name="server_editor.disabled_feature">Eén of meerdere functies zijn uitgeschakeld omdat de server ze niet ondersteunt.\nVoer deze test later opnieuw uit.</string>
+    <string name="server_menu.demo">Demoserver</string>
 
     <plurals name="select_album_n_songs">
         <item quantity="one">%d nummer</item>
@@ -449,19 +452,19 @@
     </plurals>
     <plurals name="select_album_n_songs_unpinned">
         <item quantity="one">%d los te maken nummer geselecteerd.</item>
-        <item quantity="other">%dlos te maken nummers geselecteerd. </item>
+        <item quantity="other">%d los te maken nummers geselecteerd.</item>
     </plurals>
     <plurals name="select_album_n_songs_added">
-        <item quantity="one">%d nummer toegevoegd aan einde van afspeelwachtrij.</item>
-        <item quantity="other">%d nummers toegevoegd aan einde van afspeelwachtrij.</item>
+        <item quantity="one">%d nummer toegevoegd aan het einde van afspeelwachtrij.</item>
+        <item quantity="other">%d nummers toegevoegd aan het einde van afspeelwachtrij.</item>
     </plurals>
     <plurals name="select_album_n_songs_play_next">
-        <item quantity="one">%d nummer ingevoegd na huidige nummer.</item>
-        <item quantity="other">%d nummers ingevoegd na huidige nummer.</item>
+        <item quantity="one">%d nummer ingevoegd na het huidige nummer.</item>
+        <item quantity="other">%d nummers ingevoegd na het huidige nummer.</item>
     </plurals>
     <plurals name="select_album_donate_dialog_n_trial_days_left">
-        <item quantity="one">Nog %d dag over van proefperiode</item>
-        <item quantity="other">Nog %d dagen over van proefperiode</item>
+        <item quantity="one">Nog %d dag over van de proefperiode</item>
+        <item quantity="other">Nog %d dagen over van de proefperiode</item>
     </plurals>
 
     <!-- Subsonic api errors -->
