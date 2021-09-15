@@ -246,8 +246,6 @@
     <string name="settings.preload_unlimited">Ilimitado</string>
     <string name="settings.playback.resume_play_on_headphones_plug.title">Retomar ao inserir Auscultadores</string>
     <string name="settings.playback.resume_play_on_headphones_plug.summary">O aplicativo retomará a reprodução em pausa na inserção dos auscultadores no dispositivo.</string>
-    <string name="settings.screen_lit_summary">Manter o ecrã ligado enquanto descarrega aumenta a velocidade de download.</string>
-    <string name="settings.screen_lit_title">Manter o Ecrã Ligado</string>
     <string name="settings.search_1">1</string>
     <string name="settings.search_10">10</string>
     <string name="settings.search_100">100</string>

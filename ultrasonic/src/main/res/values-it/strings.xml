@@ -242,8 +242,6 @@
     <string name="settings.preload_5">5 canzoni</string>
     <string name="settings.preload_unlimited">Illimitato</string>
     <string name="settings.playback.resume_play_on_headphones_plug.title">Riprendi all\'inserimento delle cuffie</string>
-    <string name="settings.screen_lit_summary">Mantenere lo schermo acceso durante il download migliora la sua velocità.</string>
-    <string name="settings.screen_lit_title">Mantieni lo schemo acceso </string>
     <string name="settings.search_1">1</string>
     <string name="settings.search_10">10</string>
     <string name="settings.search_100">100</string>

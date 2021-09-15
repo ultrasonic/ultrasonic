@@ -260,8 +260,6 @@
     <string name="settings.preload_unlimited">Ilimitado</string>
     <string name="settings.playback.resume_play_on_headphones_plug.title">Reanudar al insertar los auriculares</string>
     <string name="settings.playback.resume_play_on_headphones_plug.summary">La aplicación reanudará la reproducción en pausa al insertar los auriculares en el dispositivo.</string>
-    <string name="settings.screen_lit_summary">Mantener la pantalla encendida mientras descarga mejora la velocidad de la misma.</string>
-    <string name="settings.screen_lit_title">Mantener la pantalla encendida</string>
     <string name="settings.scrobble_summary">Recuerda configurar tu nombre de usuario y contraseña en los servicios de Scrobble en el servidor</string>
     <string name="settings.scrobble_title">Hacer Scrobble de mis reproducciones</string>
     <string name="settings.search_1">1</string>

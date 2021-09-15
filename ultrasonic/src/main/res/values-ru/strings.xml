@@ -260,8 +260,6 @@
     <string name="settings.preload_unlimited">Неограниченный</string>
     <string name="settings.playback.resume_play_on_headphones_plug.title">Возобновить подключение наушников</string>
     <string name="settings.playback.resume_play_on_headphones_plug.summary">Приложение возобновит приостановленное воспроизведение после того, как в устройство будут вставлены проводные наушники.</string>
-    <string name="settings.screen_lit_summary">Сохранение экрана во время загрузки повышает скорость загрузки.</string>
-    <string name="settings.screen_lit_title">Оставьте экран включенным</string>
     <string name="settings.scrobble_summary">Не забудьте установить своего пользователя и пароль в Скроббл сервисах на сервере.</string>
     <string name="settings.scrobble_title">Скробблить мои воспроизведения</string>
     <string name="settings.search_1">1</string>

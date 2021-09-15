@@ -247,8 +247,6 @@
     <string name="settings.preload_unlimited">Unbegrenzt</string>
     <string name="settings.playback.resume_play_on_headphones_plug.title">Fortsetzen mit Kopfhörer</string>
     <string name="settings.playback.resume_play_on_headphones_plug.summary">Die App setzt eine pausierte Wiedergabe beim Anschließen der Kopfhörer fort.</string>
-    <string name="settings.screen_lit_summary">Wenn der Bildschirm während des Herunterladens eingeschaltet bleibt, wird die Download-Geschwindigkeit verbessert.</string>
-    <string name="settings.screen_lit_title">Bildschirm eingeschaltet lassen</string>
     <string name="settings.search_1">1</string>
     <string name="settings.search_10">10</string>
     <string name="settings.search_100">100</string>
