@@ -1097,6 +1097,13 @@ object Util {
         return preferences.getBoolean(Constants.PREFERENCES_KEY_SEND_BLUETOOTH_ALBUM_ART, true)
     }
 
+    fun getShouldDisableNowPlayingListSending(): Boolean {
+        val preferences = getPreferences()
+        return preferences.getBoolean(
+            Constants.PREFERENCES_KEY_DISABLE_SEND_NOW_PLAYING_LIST, false
+        )
+    }
+
     @JvmStatic
     fun getViewRefreshInterval(): Int {
         val preferences = getPreferences()

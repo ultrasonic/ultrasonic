@@ -119,6 +119,7 @@ public final class Constants
 	public static final String PREFERENCES_KEY_DISC_SORT = "discAndTrackSort";
 	public static final String PREFERENCES_KEY_SEND_BLUETOOTH_NOTIFICATIONS = "sendBluetoothNotifications";
 	public static final String PREFERENCES_KEY_SEND_BLUETOOTH_ALBUM_ART = "sendBluetoothAlbumArt";
+	public static final String PREFERENCES_KEY_DISABLE_SEND_NOW_PLAYING_LIST = "disableNowPlayingListSending";
 	public static final String PREFERENCES_KEY_VIEW_REFRESH = "viewRefresh";
 	public static final String PREFERENCES_KEY_ASK_FOR_SHARE_DETAILS = "sharingAlwaysAskForDetails";
 	public static final String PREFERENCES_KEY_DEFAULT_SHARE_DESCRIPTION = "sharingDefaultDescription";
