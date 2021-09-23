@@ -199,7 +199,7 @@ object FileUtil {
                     Locale.ROOT,
                     "%s/%s",
                     musicDirectory.path,
-                    if (entry.isDirectory) f.path else f.parent!!
+                    if (entry.isDirectory) f.path else f.parent ?: ""
                 )
             )
         } else {

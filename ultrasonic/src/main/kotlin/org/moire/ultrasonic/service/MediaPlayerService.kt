@@ -157,6 +157,10 @@ class MediaPlayerService : Service() {
         }
     }
 
+    fun notifyDownloaderStopped() {
+        stopIfIdle()
+    }
+
     @Synchronized
     fun seekTo(position: Int) {
         if (jukeboxMediaPlayer.isEnabled) {
@@ -582,15 +586,14 @@ class MediaPlayerService : Service() {
         // Clear old actions
         notificationBuilder!!.clearActions()
 
-        // Add actions
-        val compactActions = addActions(context, notificationBuilder!!, playerState, song)
-
-        // Configure shortcut actions
-        style.setShowActionsInCompactView(*compactActions)
-        notificationBuilder!!.setStyle(style)
-
-        // Set song title, artist and cover if possible
         if (song != null) {
+            // Add actions
+            val compactActions = addActions(context, notificationBuilder!!, playerState, song)
+            // Configure shortcut actions
+            style.setShowActionsInCompactView(*compactActions)
+            notificationBuilder!!.setStyle(style)
+
+            // Set song title, artist and cover
             val iconSize = (256 * context.resources.displayMetrics.density).toInt()
             val bitmap = BitmapUtils.getAlbumArtBitmapFromDisk(song, iconSize)
             notificationBuilder!!.setContentTitle(song.title)
@@ -598,6 +601,14 @@ class MediaPlayerService : Service() {
             notificationBuilder!!.setLargeIcon(bitmap)
             notificationBuilder!!.setSubText(song.album)
         }
+        else if (downloader.started)
+        {
+            // No song is playing, but Ultrasonic is downloading files
+            notificationBuilder!!.setContentTitle(
+                getString(R.string.notification_downloading_title)
+            )
+        }
+
         return notificationBuilder!!.build()
     }
 

@@ -33,6 +33,8 @@ class Downloader(
     private val localMediaPlayer: LocalMediaPlayer
 ) : KoinComponent {
     val playlist: MutableList<DownloadFile> = ArrayList()
+    var started: Boolean = false
+
     private val downloadQueue: PriorityQueue<DownloadFile> = PriorityQueue<DownloadFile>()
     private val activelyDownloading: MutableList<DownloadFile> = ArrayList()
 
@@ -63,6 +65,7 @@ class Downloader(
     }
 
     fun start() {
+        started = true
         if (executorService == null) {
             executorService = Executors.newSingleThreadScheduledExecutor()
             executorService!!.scheduleWithFixedDelay(
@@ -78,10 +81,12 @@ class Downloader(
     }
 
     fun stop() {
+        started = false
         executorService?.shutdown()
         executorService = null
         wifiLock?.release()
         wifiLock = null
+        MediaPlayerService.runningInstance?.notifyDownloaderStopped()
         Timber.i("Downloader stopped")
     }
 
