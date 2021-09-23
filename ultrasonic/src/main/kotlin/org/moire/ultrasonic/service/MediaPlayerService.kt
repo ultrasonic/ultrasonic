@@ -600,9 +600,7 @@ class MediaPlayerService : Service() {
             notificationBuilder!!.setContentText(song.artist)
             notificationBuilder!!.setLargeIcon(bitmap)
             notificationBuilder!!.setSubText(song.album)
-        }
-        else if (downloader.started)
-        {
+        } else if (downloader.started) {
             // No song is playing, but Ultrasonic is downloading files
             notificationBuilder!!.setContentTitle(
                 getString(R.string.notification_downloading_title)
