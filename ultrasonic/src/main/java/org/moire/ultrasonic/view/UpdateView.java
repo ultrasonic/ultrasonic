@@ -7,6 +7,7 @@ import android.view.ViewGroup;
 import android.widget.AbsListView;
 import android.widget.LinearLayout;
 
+import org.moire.ultrasonic.util.Settings;
 import org.moire.ultrasonic.util.Util;
 
 import java.util.ArrayList;
@@ -115,7 +116,7 @@ public class UpdateView extends LinearLayout
 					Timber.w(x, "Error when updating song views.");
 				}
 
-				uiHandler.postDelayed(updateRunnable, Util.getViewRefreshInterval());
+				uiHandler.postDelayed(updateRunnable, Settings.getViewRefreshInterval());
 			}
 		};
 

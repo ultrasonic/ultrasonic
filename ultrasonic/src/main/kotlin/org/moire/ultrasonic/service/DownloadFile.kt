@@ -28,6 +28,7 @@ import org.moire.ultrasonic.subsonic.ImageLoaderProvider
 import org.moire.ultrasonic.util.CacheCleaner
 import org.moire.ultrasonic.util.CancellableTask
 import org.moire.ultrasonic.util.FileUtil
+import org.moire.ultrasonic.util.Settings
 import org.moire.ultrasonic.util.Util
 import timber.log.Timber
 
@@ -48,7 +49,7 @@ class DownloadFile(
     var isFailed = false
     private var retryCount = MAX_RETRIES
 
-    private val desiredBitRate: Int = Util.getMaxBitRate()
+    private val desiredBitRate: Int = Settings.maxBitRate
 
     var priority = 100
 
@@ -318,7 +319,7 @@ class DownloadFile(
 
         private fun acquireWakeLock(wakeLock: WakeLock?): WakeLock? {
             var wakeLock1 = wakeLock
-            if (Util.isScreenLitOnDownload()) {
+            if (Settings.isScreenLitOnDownload) {
                 val context = UApp.applicationContext()
                 val pm = context.getSystemService(Context.POWER_SERVICE) as PowerManager
                 val flags = PowerManager.SCREEN_DIM_WAKE_LOCK or PowerManager.ON_AFTER_RELEASE

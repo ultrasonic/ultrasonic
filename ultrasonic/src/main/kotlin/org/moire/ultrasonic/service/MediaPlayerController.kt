@@ -21,8 +21,8 @@ import org.moire.ultrasonic.service.MediaPlayerService.Companion.executeOnStarte
 import org.moire.ultrasonic.service.MediaPlayerService.Companion.getInstance
 import org.moire.ultrasonic.service.MediaPlayerService.Companion.runningInstance
 import org.moire.ultrasonic.service.MusicServiceFactory.getMusicService
+import org.moire.ultrasonic.util.Settings
 import org.moire.ultrasonic.util.ShufflePlayBuffer
-import org.moire.ultrasonic.util.Util
 import timber.log.Timber
 
 /**
@@ -252,9 +252,9 @@ class MediaPlayerController(
 
     @set:Synchronized
     var repeatMode: RepeatMode
-        get() = Util.repeatMode
+        get() = Settings.repeatMode
         set(repeatMode) {
-            Util.repeatMode = repeatMode
+            Settings.repeatMode = repeatMode
             val mediaPlayerService = runningInstance
             mediaPlayerService?.setNextPlaying()
         }

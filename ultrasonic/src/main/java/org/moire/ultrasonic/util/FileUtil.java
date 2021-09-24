@@ -289,7 +289,7 @@ public class FileUtil
 	public static File getMusicDirectory()
 	{
 		File defaultMusicDirectory = getDefaultMusicDirectory();
-		String path = Util.getPreferences().getString(Constants.PREFERENCES_KEY_CACHE_LOCATION, defaultMusicDirectory.getPath());
+		String path = Settings.getPreferences().getString(Constants.PREFERENCES_KEY_CACHE_LOCATION, defaultMusicDirectory.getPath());
 		File dir = new File(path);
 
 		boolean hasAccess = ensureDirectoryExistsAndIsReadWritable(dir);

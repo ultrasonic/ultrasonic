@@ -26,6 +26,7 @@ import android.content.Intent;
 import timber.log.Timber;
 
 import org.moire.ultrasonic.util.Constants;
+import org.moire.ultrasonic.util.Settings;
 import org.moire.ultrasonic.util.Util;
 
 /**
@@ -66,7 +67,7 @@ public class BluetoothIntentReceiver extends BroadcastReceiver
 		boolean resume = false;
 		boolean pause = false;
 
-		switch (Util.getResumeOnBluetoothDevice())
+		switch (Settings.getResumeOnBluetoothDevice())
 		{
 			case Constants.PREFERENCE_VALUE_ALL: resume = actionA2dpConnected || actionBluetoothDeviceConnected;
 				break;
@@ -74,7 +75,7 @@ public class BluetoothIntentReceiver extends BroadcastReceiver
 				break;
 		}
 
-		switch (Util.getPauseOnBluetoothDevice())
+		switch (Settings.getPauseOnBluetoothDevice())
 		{
 			case Constants.PREFERENCE_VALUE_ALL: pause = actionA2dpDisconnected || actionBluetoothDeviceDisconnected;
 				break;

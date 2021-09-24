@@ -29,6 +29,7 @@ import org.moire.ultrasonic.domain.MusicDirectory;
 import org.moire.ultrasonic.service.MusicService;
 import org.moire.ultrasonic.service.MusicServiceFactory;
 import org.moire.ultrasonic.imageloader.ImageLoader;
+import org.moire.ultrasonic.util.Settings;
 import org.moire.ultrasonic.util.Util;
 
 /**
@@ -54,7 +55,7 @@ public class AlbumView extends UpdateView
 		this.context = context;
 		this.imageLoader = imageLoader;
 
-		String theme = Util.getTheme();
+		String theme = Settings.getTheme();
 		boolean themesMatch = theme.equals(AlbumView.theme);
 		AlbumView.theme = theme;
 
@@ -152,7 +153,7 @@ public class AlbumView extends UpdateView
 						@Override
 						public void run()
 						{
-							boolean useId3 = Util.getShouldUseId3Tags();
+							boolean useId3 = Settings.getShouldUseId3Tags();
 
 							try
 							{

@@ -30,6 +30,7 @@ import org.moire.ultrasonic.service.MusicServiceFactory;
 import org.moire.ultrasonic.util.BackgroundTask;
 import org.moire.ultrasonic.util.CancellationToken;
 import org.moire.ultrasonic.util.FragmentBackgroundTask;
+import org.moire.ultrasonic.util.Settings;
 import org.moire.ultrasonic.util.Util;
 import org.moire.ultrasonic.view.ChatAdapter;
 
@@ -202,7 +203,7 @@ public class ChatFragment extends Fragment {
 
     private void timerMethod()
     {
-        int refreshInterval = Util.getChatRefreshInterval();
+        int refreshInterval = Settings.getChatRefreshInterval();
 
         if (refreshInterval > 0)
         {

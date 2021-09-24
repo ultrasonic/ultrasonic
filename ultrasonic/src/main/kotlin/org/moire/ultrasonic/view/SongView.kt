@@ -35,6 +35,7 @@ import org.moire.ultrasonic.featureflags.FeatureStorage
 import org.moire.ultrasonic.service.DownloadFile
 import org.moire.ultrasonic.service.MediaPlayerController
 import org.moire.ultrasonic.service.MusicServiceFactory.getMusicService
+import org.moire.ultrasonic.util.Settings
 import org.moire.ultrasonic.util.Util
 import org.moire.ultrasonic.view.EntryAdapter.SongViewHolder
 import timber.log.Timber
@@ -116,7 +117,7 @@ class SongView(context: Context) : UpdateView(context), Checkable, KoinComponent
         val artistName = song.artist
 
         if (artistName != null) {
-            if (Util.shouldDisplayBitrateWithArtist()) {
+            if (Settings.shouldDisplayBitrateWithArtist) {
                 artist.append(artistName).append(" (").append(
                     String.format(
                         this.context.getString(R.string.song_details_all),
@@ -130,7 +131,7 @@ class SongView(context: Context) : UpdateView(context), Checkable, KoinComponent
 
         val trackNumber = song.track ?: 0
 
-        if (Util.shouldShowTrackNumber() && trackNumber != 0) {
+        if (Settings.shouldShowTrackNumber && trackNumber != 0) {
             viewHolder?.track?.text = String.format("%02d.", trackNumber)
         } else {
             viewHolder?.track?.visibility = GONE
@@ -139,7 +140,7 @@ class SongView(context: Context) : UpdateView(context), Checkable, KoinComponent
         val title = StringBuilder(60)
         title.append(song.title)
 
-        if (song.isVideo && Util.shouldDisplayBitrateWithArtist()) {
+        if (song.isVideo && Settings.shouldDisplayBitrateWithArtist) {
             title.append(" (").append(
                 String.format(
                     this.context.getString(R.string.song_details_all),
@@ -359,7 +360,7 @@ class SongView(context: Context) : UpdateView(context), Checkable, KoinComponent
     }
 
     init {
-        val theme = Util.getTheme()
+        val theme = Settings.theme
         val themesMatch = theme == Companion.theme
         inflater = LayoutInflater.from(this.context)
 

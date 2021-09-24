@@ -23,7 +23,7 @@ import org.moire.ultrasonic.util.CacheCleaner
 import org.moire.ultrasonic.util.Constants
 import org.moire.ultrasonic.util.MediaSessionEventDistributor
 import org.moire.ultrasonic.util.MediaSessionEventListener
-import org.moire.ultrasonic.util.Util
+import org.moire.ultrasonic.util.Settings
 import timber.log.Timber
 
 /**
@@ -136,7 +136,7 @@ class MediaPlayerLifecycleSupport : KoinComponent {
      */
     private fun registerHeadsetReceiver() {
 
-        val sp = Util.getPreferences()
+        val sp = Settings.preferences
         val context = applicationContext()
         val spKey = context
             .getString(R.string.settings_playback_resume_play_on_headphones_plug)
@@ -185,7 +185,7 @@ class MediaPlayerLifecycleSupport : KoinComponent {
         val receivedKeyCode = event.keyCode
 
         // Translate PLAY and PAUSE codes to PLAY_PAUSE to improve compatibility with old Bluetooth devices
-        keyCode = if (Util.getSingleButtonPlayPause() && (
+        keyCode = if (Settings.singleButtonPlayPause && (
             receivedKeyCode == KeyEvent.KEYCODE_MEDIA_PLAY ||
                 receivedKeyCode == KeyEvent.KEYCODE_MEDIA_PAUSE
             )

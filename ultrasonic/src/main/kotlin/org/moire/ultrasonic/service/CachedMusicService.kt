@@ -8,6 +8,7 @@ package org.moire.ultrasonic.service
 
 import java.io.InputStream
 import java.util.concurrent.TimeUnit
+import kotlin.Pair
 import org.koin.core.component.KoinComponent
 import org.koin.core.component.inject
 import org.moire.ultrasonic.data.ActiveServerProvider
@@ -29,6 +30,7 @@ import org.moire.ultrasonic.domain.Share
 import org.moire.ultrasonic.domain.UserInfo
 import org.moire.ultrasonic.util.Constants
 import org.moire.ultrasonic.util.LRUCache
+import org.moire.ultrasonic.util.Settings
 import org.moire.ultrasonic.util.TimeLimitedCache
 import org.moire.ultrasonic.util.Util
 
@@ -137,7 +139,7 @@ class CachedMusicService(private val musicService: MusicService) : MusicService,
         if (dir == null) {
             dir = musicService.getMusicDirectory(id, name, refresh)
             cache = TimeLimitedCache(
-                Util.getDirectoryCacheTime().toLong(), TimeUnit.SECONDS
+                Settings.directoryCacheTime.toLong(), TimeUnit.SECONDS
             )
             cache.set(dir)
             cachedMusicDirectories.put(id, cache)
@@ -153,7 +155,7 @@ class CachedMusicService(private val musicService: MusicService) : MusicService,
         if (dir == null) {
             dir = musicService.getArtist(id, name, refresh)
             cache = TimeLimitedCache(
-                Util.getDirectoryCacheTime().toLong(), TimeUnit.SECONDS
+                Settings.directoryCacheTime.toLong(), TimeUnit.SECONDS
             )
             cache.set(dir)
             cachedArtist.put(id, cache)
@@ -169,7 +171,7 @@ class CachedMusicService(private val musicService: MusicService) : MusicService,
         if (dir == null) {
             dir = musicService.getAlbum(id, name, refresh)
             cache = TimeLimitedCache(
-                Util.getDirectoryCacheTime().toLong(), TimeUnit.SECONDS
+                Settings.directoryCacheTime.toLong(), TimeUnit.SECONDS
             )
             cache.set(dir)
             cachedAlbum.put(id, cache)
@@ -418,7 +420,7 @@ class CachedMusicService(private val musicService: MusicService) : MusicService,
         if (dir == null) {
             dir = musicService.getVideos(refresh)
             cache = TimeLimitedCache(
-                Util.getDirectoryCacheTime().toLong(), TimeUnit.SECONDS
+                Settings.directoryCacheTime.toLong(), TimeUnit.SECONDS
             )
             cache.set(dir)
             cachedMusicDirectories.put(Constants.INTENT_EXTRA_NAME_VIDEOS, cache)
@@ -434,7 +436,7 @@ class CachedMusicService(private val musicService: MusicService) : MusicService,
         if (userInfo == null) {
             userInfo = musicService.getUser(username)
             cache = TimeLimitedCache(
-                Util.getDirectoryCacheTime().toLong(), TimeUnit.SECONDS
+                Settings.directoryCacheTime.toLong(), TimeUnit.SECONDS
             )
             cache.set(userInfo)
             cachedUserInfo.put(username, cache)

@@ -9,7 +9,9 @@ import android.widget.CheckBox
 import android.widget.EditText
 import androidx.fragment.app.Fragment
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
+import java.util.Locale
 import java.util.regex.Pattern
+import kotlin.collections.ArrayList
 import org.moire.ultrasonic.R
 import org.moire.ultrasonic.domain.MusicDirectory
 import org.moire.ultrasonic.domain.Share
@@ -18,10 +20,10 @@ import org.moire.ultrasonic.util.BackgroundTask
 import org.moire.ultrasonic.util.CancellationToken
 import org.moire.ultrasonic.util.Constants
 import org.moire.ultrasonic.util.FragmentBackgroundTask
+import org.moire.ultrasonic.util.Settings
 import org.moire.ultrasonic.util.ShareDetails
 import org.moire.ultrasonic.util.TimeSpan
 import org.moire.ultrasonic.util.TimeSpanPicker
-import org.moire.ultrasonic.util.Util
 
 /**
  * This class handles sharing items in the media library
@@ -40,15 +42,15 @@ class ShareHandler(val context: Context) {
         swipe: SwipeRefreshLayout?,
         cancellationToken: CancellationToken
     ) {
-        val askForDetails = Util.shouldAskForShareDetails
+        val askForDetails = Settings.shouldAskForShareDetails
         val shareDetails = ShareDetails()
         shareDetails.Entries = entries
         if (askForDetails) {
             showDialog(fragment, shareDetails, swipe, cancellationToken)
         } else {
-            shareDetails.Description = Util.defaultShareDescription
+            shareDetails.Description = Settings.defaultShareDescription
             shareDetails.Expiration = TimeSpan.getCurrentTime().add(
-                Util.getDefaultShareExpirationInMillis(context)
+                Settings.defaultShareExpirationInMillis
             ).totalMilliseconds
             share(fragment, shareDetails, swipe, cancellationToken)
         }
@@ -93,7 +95,7 @@ class ShareHandler(val context: Context) {
                 intent.type = "text/plain"
                 intent.putExtra(
                     Intent.EXTRA_TEXT,
-                    String.format("%s\n\n%s", Util.getShareGreeting(), result.url)
+                    String.format(Locale.ROOT, "%s\n\n%s", Settings.shareGreeting, result.url)
                 )
                 fragment.activity?.startActivity(
                     Intent.createChooser(
@@ -133,16 +135,16 @@ class ShareHandler(val context: Context) {
             }
             shareDetails.Description = shareDescription!!.text.toString()
             if (hideDialogCheckBox!!.isChecked) {
-                Util.shouldAskForShareDetails = false
+                Settings.shouldAskForShareDetails = false
             }
             if (saveAsDefaultsCheckBox!!.isChecked) {
                 val timeSpanType: String = timeSpanPicker!!.timeSpanType
                 val timeSpanAmount: Int = timeSpanPicker!!.timeSpanAmount
-                Util.defaultShareExpiration =
+                Settings.defaultShareExpiration =
                     if (!noExpirationCheckBox!!.isChecked && timeSpanAmount > 0)
                         String.format("%d:%s", timeSpanAmount, timeSpanType) else ""
 
-                Util.defaultShareDescription = shareDetails.Description
+                Settings.defaultShareDescription = shareDetails.Description
             }
             share(fragment, shareDetails, swipe, cancellationToken)
         }
@@ -157,8 +159,8 @@ class ShareHandler(val context: Context) {
             b ->
             timeSpanPicker!!.isEnabled = !b
         }
-        val defaultDescription = Util.defaultShareDescription
-        val timeSpan = Util.defaultShareExpiration
+        val defaultDescription = Settings.defaultShareDescription
+        val timeSpan = Settings.defaultShareExpiration
         val split = pattern.split(timeSpan)
         if (split.size == 2) {
             val timeSpanAmount = split[0].toInt()
