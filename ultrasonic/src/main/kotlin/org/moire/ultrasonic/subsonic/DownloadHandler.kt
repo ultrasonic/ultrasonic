@@ -13,6 +13,7 @@ import org.moire.ultrasonic.service.MusicServiceFactory.getMusicService
 import org.moire.ultrasonic.util.Constants
 import org.moire.ultrasonic.util.EntryByDiscAndTrackComparator
 import org.moire.ultrasonic.util.ModalBackgroundTask
+import org.moire.ultrasonic.util.Settings
 import org.moire.ultrasonic.util.Util
 
 /**
@@ -54,7 +55,7 @@ class DownloadHandler(
                 mediaPlayerController.suggestedPlaylistName = playlistName
             }
             if (autoPlay) {
-                if (Util.getShouldTransitionOnPlaybackPreference()) {
+                if (Settings.shouldTransitionOnPlayback) {
                     fragment.findNavController().popBackStack(R.id.playerFragment, true)
                     fragment.findNavController().navigate(R.id.playerFragment)
                 }
@@ -204,11 +205,11 @@ class DownloadHandler(
                 val musicService = getMusicService()
                 val songs: MutableList<MusicDirectory.Entry> = LinkedList()
                 val root: MusicDirectory
-                if (!isOffline() && isArtist && Util.getShouldUseId3Tags()) {
+                if (!isOffline() && isArtist && Settings.shouldUseId3Tags) {
                     getSongsForArtist(id, songs)
                 } else {
                     if (isDirectory) {
-                        root = if (!isOffline() && Util.getShouldUseId3Tags())
+                        root = if (!isOffline() && Settings.shouldUseId3Tags)
                             musicService.getAlbum(id, name, false)
                         else
                             musicService.getMusicDirectory(id, name, false)
@@ -253,7 +254,7 @@ class DownloadHandler(
                 ) {
                     val root: MusicDirectory = if (
                         !isOffline() &&
-                        Util.getShouldUseId3Tags()
+                        Settings.shouldUseId3Tags
                     ) musicService.getAlbum(id1, title, false)
                     else musicService.getMusicDirectory(id1, title, false)
                     getSongsRecursively(root, songs)
@@ -285,7 +286,7 @@ class DownloadHandler(
             }
 
             override fun done(songs: List<MusicDirectory.Entry>) {
-                if (Util.getShouldSortByDisc()) {
+                if (Settings.shouldSortByDisc) {
                     Collections.sort(songs, EntryByDiscAndTrackComparator())
                 }
                 if (songs.isNotEmpty()) {
@@ -307,7 +308,7 @@ class DownloadHandler(
                             )
                             if (
                                 !append &&
-                                Util.getShouldTransitionOnPlaybackPreference()
+                                Settings.shouldTransitionOnPlayback
                             ) {
                                 fragment.findNavController().popBackStack(
                                     R.id.playerFragment,

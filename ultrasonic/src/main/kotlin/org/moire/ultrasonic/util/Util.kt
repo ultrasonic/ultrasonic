@@ -15,7 +15,6 @@ import android.content.ContentResolver
 import android.content.Context
 import android.content.DialogInterface
 import android.content.Intent
-import android.content.SharedPreferences
 import android.content.pm.PackageManager
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
@@ -26,7 +25,6 @@ import android.net.ConnectivityManager
 import android.net.Uri
 import android.net.wifi.WifiManager
 import android.net.wifi.WifiManager.WifiLock
-import android.os.Build
 import android.os.Bundle
 import android.os.Environment
 import android.os.Parcelable
@@ -39,7 +37,6 @@ import android.view.inputmethod.InputMethodManager
 import android.widget.Toast
 import androidx.annotation.AnyRes
 import androidx.media.utils.MediaConstants
-import androidx.preference.PreferenceManager
 import java.io.ByteArrayOutputStream
 import java.io.Closeable
 import java.io.File
@@ -53,17 +50,14 @@ import java.security.MessageDigest
 import java.text.DecimalFormat
 import java.util.Locale
 import java.util.concurrent.TimeUnit
-import java.util.regex.Pattern
 import kotlin.math.max
 import kotlin.math.min
 import kotlin.math.roundToInt
 import org.moire.ultrasonic.R
 import org.moire.ultrasonic.app.UApp.Companion.applicationContext
-import org.moire.ultrasonic.data.ActiveServerProvider.Companion.isOffline
 import org.moire.ultrasonic.domain.Bookmark
 import org.moire.ultrasonic.domain.MusicDirectory
 import org.moire.ultrasonic.domain.PlayerState
-import org.moire.ultrasonic.domain.RepeatMode
 import org.moire.ultrasonic.domain.SearchResult
 import org.moire.ultrasonic.service.DownloadFile
 import timber.log.Timber
@@ -82,7 +76,6 @@ object Util {
     private val GIGA_BYTE_FORMAT = DecimalFormat("0.00 GB")
     private val MEGA_BYTE_FORMAT = DecimalFormat("0.00 MB")
     private val KILO_BYTE_FORMAT = DecimalFormat("0 KB")
-    private val PATTERN = Pattern.compile(":")
     private var GIGA_BYTE_LOCALIZED_FORMAT: DecimalFormat? = null
     private var MEGA_BYTE_LOCALIZED_FORMAT: DecimalFormat? = null
     private var KILO_BYTE_LOCALIZED_FORMAT: DecimalFormat? = null
@@ -102,67 +95,9 @@ object Util {
         return applicationContext()
     }
 
-    fun isScreenLitOnDownload(): Boolean {
-        val preferences = getPreferences()
-        return preferences.getBoolean(
-            Constants.PREFERENCES_KEY_SCREEN_LIT_ON_DOWNLOAD,
-            false
-        )
-    }
-
-    var repeatMode: RepeatMode
-        get() {
-            val preferences = getPreferences()
-            return RepeatMode.valueOf(
-                preferences.getString(
-                    Constants.PREFERENCES_KEY_REPEAT_MODE,
-                    RepeatMode.OFF.name
-                )!!
-            )
-        }
-        set(repeatMode) {
-            val preferences = getPreferences()
-            val editor = preferences.edit()
-            editor.putString(Constants.PREFERENCES_KEY_REPEAT_MODE, repeatMode.name)
-            editor.apply()
-        }
-
-    // After API26 foreground services must be used for music playback,
-    // and they must have a notification
-    fun isNotificationEnabled(): Boolean {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) return true
-        val preferences = getPreferences()
-        return preferences.getBoolean(Constants.PREFERENCES_KEY_SHOW_NOTIFICATION, false)
-    }
-
-    // After API26 foreground services must be used for music playback,
-    // and they must have a notification
-    fun isNotificationAlwaysEnabled(): Boolean {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) return true
-        val preferences = getPreferences()
-        return preferences.getBoolean(Constants.PREFERENCES_KEY_ALWAYS_SHOW_NOTIFICATION, false)
-    }
-
-    fun isLockScreenEnabled(): Boolean {
-        val preferences = getPreferences()
-        return preferences.getBoolean(
-            Constants.PREFERENCES_KEY_SHOW_LOCK_SCREEN_CONTROLS,
-            false
-        )
-    }
-
-    @JvmStatic
-    fun getTheme(): String? {
-        val preferences = getPreferences()
-        return preferences.getString(
-            Constants.PREFERENCES_KEY_THEME,
-            Constants.PREFERENCES_KEY_THEME_DARK
-        )
-    }
-
     @JvmStatic
     fun applyTheme(context: Context?) {
-        val theme = getTheme()
+        val theme = Settings.theme
         if (Constants.PREFERENCES_KEY_THEME_DARK.equals(
             theme,
             ignoreCase = true
@@ -179,47 +114,6 @@ object Util {
             context!!.setTheme(R.style.UltrasonicTheme_Light)
         }
     }
-
-    private fun getConnectivityManager(): ConnectivityManager {
-        val context = appContext()
-        return context.getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
-    }
-
-    @JvmStatic
-    fun getMaxBitRate(): Int {
-        val manager = getConnectivityManager()
-        val networkInfo = manager.activeNetworkInfo ?: return 0
-        val wifi = networkInfo.type == ConnectivityManager.TYPE_WIFI
-        val preferences = getPreferences()
-        return preferences.getString(
-            if (wifi) Constants.PREFERENCES_KEY_MAX_BITRATE_WIFI
-            else Constants.PREFERENCES_KEY_MAX_BITRATE_MOBILE,
-            "0"
-        )!!.toInt()
-    }
-
-    @JvmStatic
-    fun getPreloadCount(): Int {
-        val preferences = getPreferences()
-        val preloadCount =
-            preferences.getString(Constants.PREFERENCES_KEY_PRELOAD_COUNT, "-1")!!
-                .toInt()
-        return if (preloadCount == -1) Int.MAX_VALUE else preloadCount
-    }
-
-    @JvmStatic
-    fun getCacheSizeMB(): Int {
-        val preferences = getPreferences()
-        val cacheSize = preferences.getString(
-            Constants.PREFERENCES_KEY_CACHE_SIZE,
-            "-1"
-        )!!.toInt()
-        return if (cacheSize == -1) Int.MAX_VALUE else cacheSize
-    }
-
-    @JvmStatic
-    fun getPreferences(): SharedPreferences =
-        PreferenceManager.getDefaultSharedPreferences(appContext())
 
     /**
      * Get the contents of an `InputStream` as a `byte[]`.
@@ -523,43 +417,13 @@ object Util {
         val networkInfo = manager.activeNetworkInfo
         val connected = networkInfo != null && networkInfo.isConnected
         val wifiConnected = connected && networkInfo!!.type == ConnectivityManager.TYPE_WIFI
-        val wifiRequired = isWifiRequiredForDownload()
+        val wifiRequired = Settings.isWifiRequiredForDownload
         return connected && (!wifiRequired || wifiConnected)
     }
 
     @JvmStatic
     fun isExternalStoragePresent(): Boolean =
         Environment.MEDIA_MOUNTED == Environment.getExternalStorageState()
-
-    fun isWifiRequiredForDownload(): Boolean {
-        val preferences = getPreferences()
-        return preferences.getBoolean(
-            Constants.PREFERENCES_KEY_WIFI_REQUIRED_FOR_DOWNLOAD,
-            false
-        )
-    }
-
-    fun shouldDisplayBitrateWithArtist(): Boolean {
-        val preferences = getPreferences()
-        return preferences.getBoolean(
-            Constants.PREFERENCES_KEY_DISPLAY_BITRATE_WITH_ARTIST,
-            true
-        )
-    }
-
-    @JvmStatic
-    fun shouldUseFolderForArtistName(): Boolean {
-        val preferences = getPreferences()
-        return preferences.getBoolean(
-            Constants.PREFERENCES_KEY_USE_FOLDER_FOR_ALBUM_ARTIST,
-            false
-        )
-    }
-
-    fun shouldShowTrackNumber(): Boolean {
-        val preferences = getPreferences()
-        return preferences.getBoolean(Constants.PREFERENCES_KEY_SHOW_TRACK_NUMBER, false)
-    }
 
     // The AlertDialog requires an Activity context, app context is not enough
     // See https://stackoverflow.com/questions/5436822/
@@ -690,7 +554,7 @@ object Util {
         listSize: Int,
         id: Int
     ) {
-        if (!shouldSendBluetoothNotifications) {
+        if (!Settings.shouldSendBluetoothNotifications) {
             return
         }
         var song: MusicDirectory.Entry? = null
@@ -707,7 +571,7 @@ object Util {
             avrcpIntent.putExtra("album_artist", "")
             avrcpIntent.putExtra("album_artist_name", "")
 
-            if (getShouldSendBluetoothAlbumArt()) {
+            if (Settings.shouldSendBluetoothAlbumArt) {
                 avrcpIntent.putExtra("coverart", null as Parcelable?)
                 avrcpIntent.putExtra("cover", null as Parcelable?)
             }
@@ -731,7 +595,7 @@ object Util {
             avrcpIntent.putExtra("album_artist", artist)
             avrcpIntent.putExtra("album_artist_name", artist)
 
-            if (getShouldSendBluetoothAlbumArt()) {
+            if (Settings.shouldSendBluetoothAlbumArt) {
                 val albumArtFile = FileUtil.getAlbumArtFile(song)
                 avrcpIntent.putExtra("coverart", albumArtFile.absolutePath)
                 avrcpIntent.putExtra("cover", albumArtFile.absolutePath)
@@ -757,7 +621,7 @@ object Util {
         id: Int,
         playerPosition: Int
     ) {
-        if (!shouldSendBluetoothNotifications) {
+        if (!Settings.shouldSendBluetoothNotifications) {
             return
         }
         if (newSong != null) {
@@ -777,7 +641,7 @@ object Util {
             avrcpIntent.putExtra("album_artist", artist)
             avrcpIntent.putExtra("album_artist_name", artist)
 
-            if (getShouldSendBluetoothAlbumArt()) {
+            if (Settings.shouldSendBluetoothAlbumArt) {
                 val albumArtFile = FileUtil.getAlbumArtFile(newSong)
                 avrcpIntent.putExtra("coverart", albumArtFile.absolutePath)
                 avrcpIntent.putExtra("cover", albumArtFile.absolutePath)
@@ -882,140 +746,8 @@ object Util {
     }
 
     @JvmStatic
-    fun getDefaultAlbums(): Int {
-        val preferences = getPreferences()
-        return preferences.getString(Constants.PREFERENCES_KEY_DEFAULT_ALBUMS, "5")!!
-            .toInt()
-    }
-
-    @JvmStatic
-    fun getMaxAlbums(): Int {
-        val preferences = getPreferences()
-        return preferences.getString(Constants.PREFERENCES_KEY_MAX_ALBUMS, "20")!!
-            .toInt()
-    }
-
-    @JvmStatic
-    fun getDefaultSongs(): Int {
-        val preferences = getPreferences()
-        return preferences.getString(Constants.PREFERENCES_KEY_DEFAULT_SONGS, "10")!!
-            .toInt()
-    }
-
-    @JvmStatic
-    fun getMaxSongs(): Int {
-        val preferences = getPreferences()
-        return preferences.getString(Constants.PREFERENCES_KEY_MAX_SONGS, "25")!!
-            .toInt()
-    }
-
-    @JvmStatic
-    fun getMaxArtists(): Int {
-        val preferences = getPreferences()
-        return preferences.getString(Constants.PREFERENCES_KEY_MAX_ARTISTS, "10")!!
-            .toInt()
-    }
-
-    @JvmStatic
-    fun getDefaultArtists(): Int {
-        val preferences = getPreferences()
-        return preferences.getString(Constants.PREFERENCES_KEY_DEFAULT_ARTISTS, "3")!!
-            .toInt()
-    }
-
-    @JvmStatic
-    fun getBufferLength(): Int {
-        val preferences = getPreferences()
-        return preferences.getString(Constants.PREFERENCES_KEY_BUFFER_LENGTH, "5")!!
-            .toInt()
-    }
-
-    @JvmStatic
-    fun getIncrementTime(): Int {
-        val preferences = getPreferences()
-        return preferences.getString(Constants.PREFERENCES_KEY_INCREMENT_TIME, "5")!!
-            .toInt()
-    }
-
-    @JvmStatic
-    fun getMediaButtonsEnabled(): Boolean {
-        val preferences = getPreferences()
-        return preferences.getBoolean(Constants.PREFERENCES_KEY_MEDIA_BUTTONS, true)
-    }
-
-    @JvmStatic
-    fun getShowNowPlayingPreference(): Boolean {
-        val preferences = getPreferences()
-        return preferences.getBoolean(Constants.PREFERENCES_KEY_SHOW_NOW_PLAYING, true)
-    }
-
-    @JvmStatic
-    fun getGaplessPlaybackPreference(): Boolean {
-        val preferences = getPreferences()
-        return preferences.getBoolean(Constants.PREFERENCES_KEY_GAPLESS_PLAYBACK, false)
-    }
-
-    @JvmStatic
-    fun getShouldTransitionOnPlaybackPreference(): Boolean {
-        val preferences = getPreferences()
-        return preferences.getBoolean(Constants.PREFERENCES_KEY_DOWNLOAD_TRANSITION, true)
-    }
-
-    @JvmStatic
-    fun getShouldUseId3Tags(): Boolean {
-        val preferences = getPreferences()
-        return preferences.getBoolean(Constants.PREFERENCES_KEY_ID3_TAGS, false)
-    }
-
-    fun getShouldShowArtistPicture(): Boolean {
-        val preferences = getPreferences()
-        val isOffline = isOffline()
-        val isId3Enabled = preferences.getBoolean(Constants.PREFERENCES_KEY_ID3_TAGS, false)
-        val shouldShowArtistPicture =
-            preferences.getBoolean(Constants.PREFERENCES_KEY_SHOW_ARTIST_PICTURE, false)
-        return !isOffline && isId3Enabled && shouldShowArtistPicture
-    }
-
-    @JvmStatic
-    fun getChatRefreshInterval(): Int {
-        val preferences = getPreferences()
-        return preferences.getString(
-            Constants.PREFERENCES_KEY_CHAT_REFRESH_INTERVAL,
-            "5000"
-        )!!.toInt()
-    }
-
-    fun getDirectoryCacheTime(): Int {
-        val preferences = getPreferences()
-        return preferences.getString(
-            Constants.PREFERENCES_KEY_DIRECTORY_CACHE_TIME,
-            "300"
-        )!!.toInt()
-    }
-
-    @JvmStatic
     fun isNullOrWhiteSpace(string: String?): Boolean {
         return string == null || string.isEmpty() || string.trim { it <= ' ' }.isEmpty()
-    }
-
-    fun getShouldClearPlaylist(): Boolean {
-        val preferences = getPreferences()
-        return preferences.getBoolean(Constants.PREFERENCES_KEY_CLEAR_PLAYLIST, false)
-    }
-
-    fun getShouldSortByDisc(): Boolean {
-        val preferences = getPreferences()
-        return preferences.getBoolean(Constants.PREFERENCES_KEY_DISC_SORT, false)
-    }
-
-    fun getShouldClearBookmark(): Boolean {
-        val preferences = getPreferences()
-        return preferences.getBoolean(Constants.PREFERENCES_KEY_CLEAR_BOOKMARK, false)
-    }
-
-    fun getSingleButtonPlayPause(): Boolean {
-        val preferences = getPreferences()
-        return preferences.getBoolean(Constants.PREFERENCES_KEY_SINGLE_BUTTON_PLAY_PAUSE, false)
     }
 
     @JvmOverloads
@@ -1082,113 +814,6 @@ object Util {
         return versionCode
     }
 
-    // Inverted for readability
-    val shouldSendBluetoothNotifications: Boolean
-        get() {
-            val preferences = getPreferences()
-            return preferences.getBoolean(
-                Constants.PREFERENCES_KEY_SEND_BLUETOOTH_NOTIFICATIONS,
-                true
-            )
-        }
-
-    private fun getShouldSendBluetoothAlbumArt(): Boolean {
-        val preferences = getPreferences()
-        return preferences.getBoolean(Constants.PREFERENCES_KEY_SEND_BLUETOOTH_ALBUM_ART, true)
-    }
-
-    fun getShouldDisableNowPlayingListSending(): Boolean {
-        val preferences = getPreferences()
-        return preferences.getBoolean(
-            Constants.PREFERENCES_KEY_DISABLE_SEND_NOW_PLAYING_LIST, false
-        )
-    }
-
-    @JvmStatic
-    fun getViewRefreshInterval(): Int {
-        val preferences = getPreferences()
-        return preferences.getString(Constants.PREFERENCES_KEY_VIEW_REFRESH, "1000")!!
-            .toInt()
-    }
-
-    var shouldAskForShareDetails: Boolean
-        get() {
-            val preferences = getPreferences()
-            return preferences.getBoolean(Constants.PREFERENCES_KEY_ASK_FOR_SHARE_DETAILS, true)
-        }
-        set(shouldAskForShareDetails) {
-            val preferences = getPreferences()
-            val editor = preferences.edit()
-            editor.putBoolean(
-                Constants.PREFERENCES_KEY_ASK_FOR_SHARE_DETAILS,
-                shouldAskForShareDetails
-            )
-            editor.apply()
-        }
-
-    var defaultShareDescription: String?
-        get() {
-            val preferences = getPreferences()
-            return preferences.getString(Constants.PREFERENCES_KEY_DEFAULT_SHARE_DESCRIPTION, "")
-        }
-        set(defaultShareDescription) {
-            val preferences = getPreferences()
-            val editor = preferences.edit()
-            editor.putString(
-                Constants.PREFERENCES_KEY_DEFAULT_SHARE_DESCRIPTION,
-                defaultShareDescription
-            )
-            editor.apply()
-        }
-
-    @JvmStatic
-    fun getShareGreeting(): String? {
-        val preferences = getPreferences()
-        val context = appContext()
-        val defaultVal = String.format(
-            context.resources.getString(R.string.share_default_greeting),
-            context.resources.getString(R.string.common_appname)
-        )
-        return preferences.getString(
-            Constants.PREFERENCES_KEY_DEFAULT_SHARE_GREETING,
-            defaultVal
-        )
-    }
-
-    var defaultShareExpiration: String
-        get() {
-            val preferences = getPreferences()
-            return preferences.getString(Constants.PREFERENCES_KEY_DEFAULT_SHARE_EXPIRATION, "0")!!
-        }
-        set(defaultShareExpiration) {
-            val preferences = getPreferences()
-            val editor = preferences.edit()
-            editor.putString(
-                Constants.PREFERENCES_KEY_DEFAULT_SHARE_EXPIRATION,
-                defaultShareExpiration
-            )
-            editor.apply()
-        }
-
-    fun getDefaultShareExpirationInMillis(context: Context?): Long {
-        val preferences = getPreferences()
-        val preference =
-            preferences.getString(Constants.PREFERENCES_KEY_DEFAULT_SHARE_EXPIRATION, "0")!!
-        val split = PATTERN.split(preference)
-        if (split.size == 2) {
-            val timeSpanAmount = split[0].toInt()
-            val timeSpanType = split[1]
-            val timeSpan = TimeSpanPicker.calculateTimeSpan(context, timeSpanType, timeSpanAmount)
-            return timeSpan.totalMilliseconds
-        }
-        return 0
-    }
-
-    fun getShouldShowAllSongsByArtist(): Boolean {
-        val preferences = getPreferences()
-        return preferences.getBoolean(Constants.PREFERENCES_KEY_SHOW_ALL_SONGS_BY_ARTIST, false)
-    }
-
     @JvmStatic
     fun scanMedia(file: File?) {
         val uri = Uri.fromFile(file)
@@ -1204,7 +829,7 @@ object Util {
     }
 
     fun isFirstRun(): Boolean {
-        val preferences = getPreferences()
+        val preferences = Settings.preferences
         val firstExecuted =
             preferences.getBoolean(Constants.PREFERENCES_KEY_FIRST_RUN_EXECUTED, false)
         if (firstExecuted) return false
@@ -1212,29 +837,6 @@ object Util {
         editor.putBoolean(Constants.PREFERENCES_KEY_FIRST_RUN_EXECUTED, true)
         editor.apply()
         return true
-    }
-
-    @JvmStatic
-    fun getResumeOnBluetoothDevice(): Int {
-        val preferences = getPreferences()
-        return preferences.getInt(
-            Constants.PREFERENCES_KEY_RESUME_ON_BLUETOOTH_DEVICE,
-            Constants.PREFERENCE_VALUE_DISABLED
-        )
-    }
-
-    @JvmStatic
-    fun getPauseOnBluetoothDevice(): Int {
-        val preferences = getPreferences()
-        return preferences.getInt(
-            Constants.PREFERENCES_KEY_PAUSE_ON_BLUETOOTH_DEVICE,
-            Constants.PREFERENCE_VALUE_A2DP
-        )
-    }
-
-    fun getDebugLogToFile(): Boolean {
-        val preferences = getPreferences()
-        return preferences.getBoolean(Constants.PREFERENCES_KEY_DEBUG_LOG_TO_FILE, false)
     }
 
     fun hideKeyboard(activity: Activity?) {
@@ -1292,7 +894,7 @@ object Util {
         val artistName = song.artist
 
         if (artistName != null) {
-            if (shouldDisplayBitrateWithArtist() && (
+            if (Settings.shouldDisplayBitrateWithArtist && (
                 !bitRate.isNullOrBlank() || !fileFormat.isNullOrBlank()
                 )
             ) {
@@ -1312,12 +914,12 @@ object Util {
         val trackNumber = song.track ?: 0
 
         val title = StringBuilder(LINE_LENGTH)
-        if (shouldShowTrackNumber() && trackNumber > 0)
+        if (Settings.shouldShowTrackNumber && trackNumber > 0)
             title.append(String.format(Locale.ROOT, "%02d - ", trackNumber))
 
         title.append(song.title)
 
-        if (song.isVideo && shouldDisplayBitrateWithArtist()) {
+        if (song.isVideo && Settings.shouldDisplayBitrateWithArtist) {
             title.append(" (").append(
                 String.format(
                     appContext().getString(R.string.song_details_all),
@@ -1355,5 +957,10 @@ object Util {
         intent.setPackage(context.packageName)
         intent.putExtra(Intent.EXTRA_KEY_EVENT, KeyEvent(KeyEvent.ACTION_DOWN, keycode))
         return PendingIntent.getBroadcast(context, requestCode, intent, flags)
+    }
+
+    fun getConnectivityManager(): ConnectivityManager {
+        val context = Util.appContext()
+        return context.getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
     }
 }

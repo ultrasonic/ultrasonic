@@ -35,6 +35,7 @@ import org.moire.ultrasonic.domain.PlayerState
 import org.moire.ultrasonic.util.CancellableTask
 import org.moire.ultrasonic.util.Constants
 import org.moire.ultrasonic.util.MediaSessionHandler
+import org.moire.ultrasonic.util.Settings
 import org.moire.ultrasonic.util.StreamProxy
 import org.moire.ultrasonic.util.Util
 import timber.log.Timber
@@ -405,7 +406,7 @@ class LocalMediaPlayer : KoinComponent {
                 }
 
                 // The secondary progress is an indicator of how far the song is cached.
-                if (song.transcodedContentType == null && Util.getMaxBitRate() == 0) {
+                if (song.transcodedContentType == null && Settings.maxBitRate == 0) {
                     val progress = (percent.toDouble() / 100.toDouble() * playerDuration).toInt()
                     secondaryProgress.postValue(progress)
                 }
@@ -454,6 +455,7 @@ class LocalMediaPlayer : KoinComponent {
         }
     }
 
+    @Suppress("ComplexCondition")
     @Synchronized
     private fun setupNext(downloadFile: DownloadFile) {
         try {
@@ -482,7 +484,7 @@ class LocalMediaPlayer : KoinComponent {
             nextMediaPlayer!!.setOnPreparedListener {
                 try {
                     setNextPlayerState(PlayerState.PREPARED)
-                    if (Util.getGaplessPlaybackPreference() &&
+                    if (Settings.gaplessPlayback &&
                         Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN &&
                         (
                             playerState === PlayerState.STARTED ||
@@ -536,7 +538,7 @@ class LocalMediaPlayer : KoinComponent {
                 Timber.i("Ending position %d of %d", pos, duration)
                 if (!isPartial || downloadFile.isWorkDone && abs(duration - pos) < 1000) {
                     setPlayerState(PlayerState.COMPLETED)
-                    if (Util.getGaplessPlaybackPreference() &&
+                    if (Settings.gaplessPlayback &&
                         nextPlaying != null &&
                         nextPlayerState === PlayerState.PREPARED
                     ) {
@@ -638,7 +640,7 @@ class LocalMediaPlayer : KoinComponent {
         }
 
         init {
-            var bufferLength = Util.getBufferLength().toLong()
+            var bufferLength = Settings.bufferLength.toLong()
             if (bufferLength == 0L) {
                 // Set to seconds in a day, basically infinity
                 bufferLength = 86400L

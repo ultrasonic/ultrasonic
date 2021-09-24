@@ -44,6 +44,7 @@ import org.moire.ultrasonic.util.CancellationToken;
 import org.moire.ultrasonic.util.Constants;
 import org.moire.ultrasonic.util.MergeAdapter;
 import org.moire.ultrasonic.util.FragmentBackgroundTask;
+import org.moire.ultrasonic.util.Settings;
 import org.moire.ultrasonic.util.Util;
 import org.moire.ultrasonic.view.ArtistAdapter;
 import org.moire.ultrasonic.view.EntryAdapter;
@@ -112,9 +113,9 @@ public class SearchFragment extends Fragment {
         FragmentTitle.Companion.setTitle(this, R.string.search_title);
         setHasOptionsMenu(true);
 
-        DEFAULT_ARTISTS = Util.getDefaultArtists();
-        DEFAULT_ALBUMS = Util.getDefaultAlbums();
-        DEFAULT_SONGS = Util.getDefaultSongs();
+        DEFAULT_ARTISTS = Settings.getDefaultArtists();
+        DEFAULT_ALBUMS = Settings.getDefaultAlbums();
+        DEFAULT_SONGS = Settings.getDefaultSongs();
 
         View buttons = LayoutInflater.from(getContext()).inflate(R.layout.search_buttons, list, false);
 
@@ -409,9 +410,9 @@ public class SearchFragment extends Fragment {
 
     private void search(final String query, final boolean autoplay)
     {
-        final int maxArtists = Util.getMaxArtists();
-        final int maxAlbums = Util.getMaxAlbums();
-        final int maxSongs = Util.getMaxSongs();
+        final int maxArtists = Settings.getMaxArtists();
+        final int maxAlbums = Settings.getMaxAlbums();
+        final int maxSongs = Settings.getMaxSongs();
 
         BackgroundTask<SearchResult> task = new FragmentBackgroundTask<SearchResult>(getActivity(), true, searchRefresh, cancellationToken)
         {

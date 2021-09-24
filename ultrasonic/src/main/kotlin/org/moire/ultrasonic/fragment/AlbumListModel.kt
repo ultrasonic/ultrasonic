@@ -9,7 +9,7 @@ import org.moire.ultrasonic.api.subsonic.models.AlbumListType
 import org.moire.ultrasonic.domain.MusicDirectory
 import org.moire.ultrasonic.service.MusicService
 import org.moire.ultrasonic.util.Constants
-import org.moire.ultrasonic.util.Util
+import org.moire.ultrasonic.util.Settings
 
 class AlbumListModel(application: Application) : GenericListModel(application) {
 
@@ -92,7 +92,7 @@ class AlbumListModel(application: Application) : GenericListModel(application) {
         val isAlphabetical = (albumListType == AlbumListType.SORTED_BY_NAME.toString()) ||
             (albumListType == AlbumListType.SORTED_BY_ARTIST.toString())
 
-        return !isOffline() && !Util.getShouldUseId3Tags() && isAlphabetical
+        return !isOffline() && !Settings.shouldUseId3Tags && isAlphabetical
     }
 
     private fun isCollectionSortable(albumListType: String): Boolean {

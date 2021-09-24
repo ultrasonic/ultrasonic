@@ -17,6 +17,7 @@ import org.moire.ultrasonic.R
 import org.moire.ultrasonic.domain.MusicDirectory
 import org.moire.ultrasonic.service.MusicService
 import org.moire.ultrasonic.service.MusicServiceFactory
+import org.moire.ultrasonic.util.Settings
 import org.moire.ultrasonic.util.Util
 
 /*
@@ -67,7 +68,7 @@ class TrackCollectionModel(application: Application) : GenericListModel(applicat
             } else {
                 val musicDirectory = service.getMusicDirectory(id, name, refresh)
 
-                if (Util.getShouldShowAllSongsByArtist() &&
+                if (Settings.shouldShowAllSongsByArtist &&
                     musicDirectory.findChild(allSongsId) == null &&
                     hasOnlyFolders(musicDirectory)
                 ) {
@@ -128,7 +129,7 @@ class TrackCollectionModel(application: Application) : GenericListModel(applicat
 
             val musicDirectory = service.getArtist(id, name, refresh)
 
-            if (Util.getShouldShowAllSongsByArtist() &&
+            if (Settings.shouldShowAllSongsByArtist &&
                 musicDirectory.findChild(allSongsId) == null &&
                 hasOnlyFolders(musicDirectory)
             ) {
@@ -207,7 +208,7 @@ class TrackCollectionModel(application: Application) : GenericListModel(applicat
             val service = MusicServiceFactory.getMusicService()
             val musicDirectory: MusicDirectory
 
-            if (Util.getShouldUseId3Tags()) {
+            if (Settings.shouldUseId3Tags) {
                 musicDirectory = Util.getSongsFromSearchResult(service.getStarred2())
             } else {
                 musicDirectory = Util.getSongsFromSearchResult(service.getStarred())

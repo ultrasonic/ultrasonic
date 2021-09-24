@@ -21,7 +21,7 @@ import org.moire.ultrasonic.domain.MusicFolder
 import org.moire.ultrasonic.service.CommunicationErrorHandler
 import org.moire.ultrasonic.service.MusicService
 import org.moire.ultrasonic.service.MusicServiceFactory
-import org.moire.ultrasonic.util.Util
+import org.moire.ultrasonic.util.Settings
 
 /**
 * An abstract Model, which can be extended to retrieve a list of items from the API
@@ -83,7 +83,7 @@ open class GenericListModel(application: Application) :
         withContext(Dispatchers.IO) {
             val musicService = MusicServiceFactory.getMusicService()
             val isOffline = ActiveServerProvider.isOffline()
-            val useId3Tags = Util.getShouldUseId3Tags()
+            val useId3Tags = Settings.shouldUseId3Tags
 
             try {
                 load(isOffline, useId3Tags, musicService, refresh, bundle)

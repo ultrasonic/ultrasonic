@@ -22,6 +22,7 @@ import org.moire.ultrasonic.domain.MusicFolder
 import org.moire.ultrasonic.subsonic.DownloadHandler
 import org.moire.ultrasonic.subsonic.ImageLoaderProvider
 import org.moire.ultrasonic.util.Constants
+import org.moire.ultrasonic.util.Settings
 import org.moire.ultrasonic.util.Util
 import org.moire.ultrasonic.view.SelectMusicFolderView
 
@@ -110,7 +111,7 @@ abstract class GenericListFragment<T : GenericEntry, TA : GenericRowAdapter<T>> 
      */
     fun showFolderHeader(): Boolean {
         return listModel.showSelectFolderHeader(arguments) &&
-            !listModel.isOffline() && !Util.getShouldUseId3Tags()
+            !listModel.isOffline() && !Settings.shouldUseId3Tags
     }
 
     fun setTitle(title: String?) {

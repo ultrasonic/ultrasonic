@@ -18,10 +18,8 @@ import org.moire.ultrasonic.data.ActiveServerProvider
 import org.moire.ultrasonic.data.ActiveServerProvider.Companion.isOffline
 import org.moire.ultrasonic.util.Constants
 import org.moire.ultrasonic.util.MergeAdapter
-import org.moire.ultrasonic.util.Util.applyTheme
-import org.moire.ultrasonic.util.Util.getMaxAlbums
-import org.moire.ultrasonic.util.Util.getMaxSongs
-import org.moire.ultrasonic.util.Util.getShouldUseId3Tags
+import org.moire.ultrasonic.util.Settings
+import org.moire.ultrasonic.util.Util
 
 /**
  * Displays the Main screen of Ultrasonic, where the music library can be browsed
@@ -53,7 +51,7 @@ class MainFragment : Fragment(), KoinComponent {
     private val activeServerProvider: ActiveServerProvider by inject()
 
     override fun onCreate(savedInstanceState: Bundle?) {
-        applyTheme(this.context)
+        Util.applyTheme(this.context)
         super.onCreate(savedInstanceState)
     }
 
@@ -79,7 +77,7 @@ class MainFragment : Fragment(), KoinComponent {
     override fun onResume() {
         super.onResume()
         var shouldRestart = false
-        val currentId3Setting = getShouldUseId3Tags()
+        val currentId3Setting = Settings.shouldUseId3Tags
         val currentActiveServerProperties = getActiveServerProperties()
 
         // If setting has changed...
@@ -134,7 +132,7 @@ class MainFragment : Fragment(), KoinComponent {
 
         adapter.addView(serverButton, true)
 
-        shouldUseId3 = getShouldUseId3Tags()
+        shouldUseId3 = Settings.shouldUseId3Tags
 
         if (!isOffline()) {
             adapter.addView(musicTitle, false)
@@ -250,7 +248,7 @@ class MainFragment : Fragment(), KoinComponent {
     private fun showRandomSongs() {
         val bundle = Bundle()
         bundle.putInt(Constants.INTENT_EXTRA_NAME_RANDOM, 1)
-        bundle.putInt(Constants.INTENT_EXTRA_NAME_ALBUM_LIST_SIZE, getMaxSongs())
+        bundle.putInt(Constants.INTENT_EXTRA_NAME_ALBUM_LIST_SIZE, Settings.maxSongs)
         Navigation.findNavController(requireView()).navigate(R.id.mainToTrackCollection, bundle)
     }
 
@@ -268,7 +266,7 @@ class MainFragment : Fragment(), KoinComponent {
         val title = requireContext().resources.getString(titleIndex, "")
         bundle.putString(Constants.INTENT_EXTRA_NAME_ALBUM_LIST_TYPE, type)
         bundle.putString(Constants.INTENT_EXTRA_NAME_ALBUM_LIST_TITLE, title)
-        bundle.putInt(Constants.INTENT_EXTRA_NAME_ALBUM_LIST_SIZE, getMaxAlbums())
+        bundle.putInt(Constants.INTENT_EXTRA_NAME_ALBUM_LIST_SIZE, Settings.maxAlbums)
         bundle.putInt(Constants.INTENT_EXTRA_NAME_ALBUM_LIST_OFFSET, 0)
         Navigation.findNavController(requireView()).navigate(R.id.mainToAlbumList, bundle)
     }

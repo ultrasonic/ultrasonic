@@ -248,7 +248,7 @@ class MediaSessionHandler : KoinComponent {
         setMediaSessionQueue(cachedPlaylist)
         if (
             currentPlayingIndex != null && cachedPlaylist != null &&
-            !Util.getShouldDisableNowPlayingListSending()
+            !Settings.shouldDisableNowPlayingListSending
         )
             playbackStateBuilder.setActiveQueueItemId(currentPlayingIndex)
 
@@ -269,7 +269,7 @@ class MediaSessionHandler : KoinComponent {
 
     private fun setMediaSessionQueue(queue: List<MediaSessionCompat.QueueItem>?) {
         if (mediaSession == null) return
-        if (Util.getShouldDisableNowPlayingListSending()) return
+        if (Settings.shouldDisableNowPlayingListSending) return
 
         mediaSession?.setQueueTitle(applicationContext.getString(R.string.button_bar_now_playing))
         mediaSession?.setQueue(queue)
@@ -294,7 +294,7 @@ class MediaSessionHandler : KoinComponent {
 
         if (
             cachedPlayingIndex != null && cachedPlaylist != null &&
-            !Util.getShouldDisableNowPlayingListSending()
+            !Settings.shouldDisableNowPlayingListSending
         )
             playbackStateBuilder.setActiveQueueItemId(cachedPlayingIndex!!)
 
@@ -302,7 +302,7 @@ class MediaSessionHandler : KoinComponent {
     }
 
     fun updateMediaButtonReceiver() {
-        if (Util.getMediaButtonsEnabled()) {
+        if (Settings.mediaButtonsEnabled) {
             registerMediaButtonEventReceiver()
         } else {
             unregisterMediaButtonEventReceiver()

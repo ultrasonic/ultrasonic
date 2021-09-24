@@ -45,6 +45,7 @@ import org.moire.ultrasonic.util.FileUtil
 import org.moire.ultrasonic.util.NowPlayingEventDistributor
 import org.moire.ultrasonic.util.NowPlayingEventListener
 import org.moire.ultrasonic.util.PermissionUtil
+import org.moire.ultrasonic.util.Settings
 import org.moire.ultrasonic.util.SubsonicUncaughtExceptionHandler
 import org.moire.ultrasonic.util.ThemeChangedEventDistributor
 import org.moire.ultrasonic.util.ThemeChangedEventListener
@@ -301,7 +302,7 @@ class NavigationActivity : AppCompatActivity() {
 
     private fun loadSettings() {
         PreferenceManager.setDefaultValues(this, R.xml.settings, false)
-        val preferences = Util.getPreferences()
+        val preferences = Settings.preferences
         if (!preferences.contains(Constants.PREFERENCES_KEY_CACHE_LOCATION)) {
             val editor = preferences.edit()
             editor.putString(
@@ -349,7 +350,7 @@ class NavigationActivity : AppCompatActivity() {
     }
 
     private fun showNowPlaying() {
-        if (!Util.getShowNowPlayingPreference()) {
+        if (!Settings.showNowPlaying) {
             hideNowPlaying()
             return
         }

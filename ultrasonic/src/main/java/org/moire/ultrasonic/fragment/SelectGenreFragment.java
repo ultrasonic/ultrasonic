@@ -21,6 +21,7 @@ import org.moire.ultrasonic.util.BackgroundTask;
 import org.moire.ultrasonic.util.CancellationToken;
 import org.moire.ultrasonic.util.Constants;
 import org.moire.ultrasonic.util.FragmentBackgroundTask;
+import org.moire.ultrasonic.util.Settings;
 import org.moire.ultrasonic.util.Util;
 import org.moire.ultrasonic.view.GenreAdapter;
 
@@ -75,7 +76,7 @@ public class SelectGenreFragment extends Fragment {
                 {
                     Bundle bundle = new Bundle();
                     bundle.putString(Constants.INTENT_EXTRA_NAME_GENRE_NAME, genre.getName());
-                    bundle.putInt(Constants.INTENT_EXTRA_NAME_ALBUM_LIST_SIZE, Util.getMaxSongs());
+                    bundle.putInt(Constants.INTENT_EXTRA_NAME_ALBUM_LIST_SIZE, Settings.getMaxSongs());
                     bundle.putInt(Constants.INTENT_EXTRA_NAME_ALBUM_LIST_OFFSET, 0);
                     Navigation.findNavController(view).navigate(R.id.trackCollectionFragment, bundle);
                 }

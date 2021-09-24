@@ -70,6 +70,7 @@ import org.moire.ultrasonic.subsonic.NetworkAndStorageChecker
 import org.moire.ultrasonic.subsonic.ShareHandler
 import org.moire.ultrasonic.util.CancellationToken
 import org.moire.ultrasonic.util.Constants
+import org.moire.ultrasonic.util.Settings
 import org.moire.ultrasonic.util.SilentBackgroundTask
 import org.moire.ultrasonic.util.Util
 import org.moire.ultrasonic.view.AutoRepeatButton
@@ -242,7 +243,7 @@ class PlayerFragment : Fragment(), GestureDetector.OnGestureListener, KoinCompon
         }
 
         previousButton.setOnRepeatListener {
-            val incrementTime = Util.getIncrementTime()
+            val incrementTime = Settings.incrementTime
             changeProgress(-incrementTime)
         }
 
@@ -264,7 +265,7 @@ class PlayerFragment : Fragment(), GestureDetector.OnGestureListener, KoinCompon
         }
 
         nextButton.setOnRepeatListener {
-            val incrementTime = Util.getIncrementTime()
+            val incrementTime = Settings.incrementTime
             changeProgress(incrementTime)
         }
         pauseButton.setOnClickListener {
@@ -565,7 +566,7 @@ class PlayerFragment : Fragment(), GestureDetector.OnGestureListener, KoinCompon
                 }
             }
 
-            if (isOffline() || !Util.getShouldUseId3Tags()) {
+            if (isOffline() || !Settings.shouldUseId3Tags) {
                 menu.findItem(R.id.menu_show_artist)?.isVisible = false
             }
 
@@ -600,7 +601,7 @@ class PlayerFragment : Fragment(), GestureDetector.OnGestureListener, KoinCompon
                 if (entry == null) {
                     return false
                 }
-                if (Util.getShouldUseId3Tags()) {
+                if (Settings.shouldUseId3Tags) {
                     bundle = Bundle()
                     bundle.putString(Constants.INTENT_EXTRA_NAME_ID, entry.artistId)
                     bundle.putString(Constants.INTENT_EXTRA_NAME_NAME, entry.artist)
@@ -615,7 +616,7 @@ class PlayerFragment : Fragment(), GestureDetector.OnGestureListener, KoinCompon
                 if (entry == null) {
                     return false
                 }
-                val albumId = if (Util.getShouldUseId3Tags()) entry.albumId else entry.parent
+                val albumId = if (Settings.shouldUseId3Tags) entry.albumId else entry.parent
                 bundle = Bundle()
                 bundle.putString(Constants.INTENT_EXTRA_NAME_ID, albumId)
                 bundle.putString(Constants.INTENT_EXTRA_NAME_NAME, entry.album)
