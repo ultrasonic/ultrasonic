@@ -28,6 +28,7 @@ import org.moire.ultrasonic.domain.SearchResult
 import org.moire.ultrasonic.util.MediaSessionEventDistributor
 import org.moire.ultrasonic.util.MediaSessionEventListener
 import org.moire.ultrasonic.util.MediaSessionHandler
+import org.moire.ultrasonic.util.Settings
 import org.moire.ultrasonic.util.Util
 import timber.log.Timber
 
@@ -89,7 +90,7 @@ class AutoMediaBrowserService : MediaBrowserServiceCompat() {
     private var searchSongsCache: List<MusicDirectory.Entry>? = null
 
     private val isOffline get() = ActiveServerProvider.isOffline()
-    private val useId3Tags get() = Util.getShouldUseId3Tags()
+    private val useId3Tags get() = Settings.shouldUseId3Tags
     private val musicFolderId get() = activeServerProvider.getActiveServer().musicFolderId
 
     @Suppress("MagicNumber")
@@ -968,7 +969,7 @@ class AutoMediaBrowserService : MediaBrowserServiceCompat() {
     }
 
     private fun listSongsInMusicService(id: String, name: String): MusicDirectory? {
-        return if (!ActiveServerProvider.isOffline() && Util.getShouldUseId3Tags()) {
+        return if (!ActiveServerProvider.isOffline() && Settings.shouldUseId3Tags) {
             callWithErrorHandling { musicService.getAlbum(id, name, false) }
         } else {
             callWithErrorHandling { musicService.getMusicDirectory(id, name, false) }
@@ -976,7 +977,7 @@ class AutoMediaBrowserService : MediaBrowserServiceCompat() {
     }
 
     private fun listStarredSongsInMusicService(): SearchResult? {
-        return if (Util.getShouldUseId3Tags()) {
+        return if (Settings.shouldUseId3Tags) {
             callWithErrorHandling { musicService.getStarred2() }
         } else {
             callWithErrorHandling { musicService.getStarred() }

@@ -16,7 +16,7 @@ import org.moire.ultrasonic.R
 import org.moire.ultrasonic.domain.ArtistOrIndex
 import org.moire.ultrasonic.imageloader.ImageLoader
 import org.moire.ultrasonic.util.FileUtil
-import org.moire.ultrasonic.util.Util
+import org.moire.ultrasonic.util.Settings
 
 /**
  * Creates a Row in a RecyclerView which contains the details of an Artist
@@ -57,7 +57,7 @@ class ArtistRowAdapter(
             holder.layout.setOnLongClickListener { view -> createPopupMenu(view, listPosition) }
             holder.coverArtId = itemList[listPosition].coverArt
 
-            if (Util.getShouldShowArtistPicture()) {
+            if (Settings.shouldShowArtistPicture) {
                 holder.coverArt.visibility = View.VISIBLE
                 val key = FileUtil.getArtistArtKey(itemList[listPosition].name, false)
                 imageLoader.loadImage(

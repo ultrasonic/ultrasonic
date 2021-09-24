@@ -11,12 +11,9 @@ import org.koin.core.component.inject
 import org.moire.ultrasonic.domain.MusicDirectory
 import org.moire.ultrasonic.domain.PlayerState
 import org.moire.ultrasonic.util.LRUCache
+import org.moire.ultrasonic.util.Settings
 import org.moire.ultrasonic.util.ShufflePlayBuffer
 import org.moire.ultrasonic.util.Util
-import org.moire.ultrasonic.util.Util.getMaxSongs
-import org.moire.ultrasonic.util.Util.getPreloadCount
-import org.moire.ultrasonic.util.Util.isExternalStoragePresent
-import org.moire.ultrasonic.util.Util.isNetworkConnected
 import timber.log.Timber
 
 /**
@@ -101,13 +98,16 @@ class Downloader(
     @Synchronized
     @Suppress("ComplexMethod")
     fun checkDownloadsInternal() {
-        if (!isExternalStoragePresent() || !externalStorageMonitor.isExternalStorageAvailable) {
+        if (
+            !Util.isExternalStoragePresent() ||
+            !externalStorageMonitor.isExternalStorageAvailable
+        ) {
             return
         }
         if (shufflePlayBuffer.isEnabled) {
             checkShufflePlay()
         }
-        if (jukeboxMediaPlayer.isEnabled || !isNetworkConnected()) {
+        if (jukeboxMediaPlayer.isEnabled || !Util.isNetworkConnected()) {
             return
         }
 
@@ -115,7 +115,7 @@ class Downloader(
         cleanupActiveDownloads()
 
         // Check if need to preload more from playlist
-        val preloadCount = getPreloadCount()
+        val preloadCount = Settings.preloadCount
 
         // Start preloading at the current playing song
         var start = currentPlayingIndex
@@ -341,7 +341,7 @@ class Downloader(
     @Synchronized
     private fun checkShufflePlay() {
         // Get users desired random playlist size
-        val listSize = getMaxSongs()
+        val listSize = Settings.maxSongs
         val wasEmpty = playlist.isEmpty()
         val revisionBefore = playlistUpdateRevision
 

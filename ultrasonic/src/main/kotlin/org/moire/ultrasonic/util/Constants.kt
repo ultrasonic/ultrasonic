@@ -100,6 +100,7 @@ object Constants {
     const val PREFERENCES_KEY_DISC_SORT = "discAndTrackSort"
     const val PREFERENCES_KEY_SEND_BLUETOOTH_NOTIFICATIONS = "sendBluetoothNotifications"
     const val PREFERENCES_KEY_SEND_BLUETOOTH_ALBUM_ART = "sendBluetoothAlbumArt"
+    const val PREFERENCES_KEY_DISABLE_SEND_NOW_PLAYING_LIST = "disableNowPlayingListSending"
     const val PREFERENCES_KEY_VIEW_REFRESH = "viewRefresh"
     const val PREFERENCES_KEY_ASK_FOR_SHARE_DETAILS = "sharingAlwaysAskForDetails"
     const val PREFERENCES_KEY_DEFAULT_SHARE_DESCRIPTION = "sharingDefaultDescription"

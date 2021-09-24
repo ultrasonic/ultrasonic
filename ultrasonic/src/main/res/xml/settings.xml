@@ -179,6 +179,12 @@
             a:summary="@string/settings.send_bluetooth_album_art_summary"
             a:title="@string/settings.send_bluetooth_album_art"
             app:iconSpaceReserved="false"/>
+        <CheckBoxPreference
+            a:defaultValue="false"
+            a:key="disableNowPlayingListSending"
+            a:summary="@string/settings.disable_send_now_playing_list_summary"
+            a:title="@string/settings.disable_send_now_playing_list"
+            app:iconSpaceReserved="false"/>
     </PreferenceCategory>
     <PreferenceCategory
         a:title="@string/settings.sharing_title"

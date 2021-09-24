@@ -11,6 +11,7 @@ import org.moire.ultrasonic.app.UApp
 import org.moire.ultrasonic.di.DB_FILENAME
 import org.moire.ultrasonic.service.MusicServiceFactory.resetMusicService
 import org.moire.ultrasonic.util.Constants
+import org.moire.ultrasonic.util.Settings
 import org.moire.ultrasonic.util.Util
 import timber.log.Timber
 
@@ -190,7 +191,7 @@ class ActiveServerProvider(
          * Queries the Id of the Active Server
          */
         fun getActiveServerId(): Int {
-            val preferences = Util.getPreferences()
+            val preferences = Settings.preferences
             return preferences.getInt(Constants.PREFERENCES_KEY_SERVER_INSTANCE, -1)
         }
 
@@ -200,7 +201,7 @@ class ActiveServerProvider(
         fun setActiveServerId(serverId: Int) {
             resetMusicService()
 
-            val preferences = Util.getPreferences()
+            val preferences = Settings.preferences
             val editor = preferences.edit()
             editor.putInt(Constants.PREFERENCES_KEY_SERVER_INSTANCE, serverId)
             editor.apply()
@@ -213,7 +214,7 @@ class ActiveServerProvider(
             if (isOffline()) {
                 return false
             }
-            val preferences = Util.getPreferences()
+            val preferences = Settings.preferences
             return preferences.getBoolean(Constants.PREFERENCES_KEY_SCROBBLE, false)
         }
 
@@ -224,7 +225,7 @@ class ActiveServerProvider(
             if (isOffline()) {
                 return false
             }
-            val preferences = Util.getPreferences()
+            val preferences = Settings.preferences
             return preferences.getBoolean(Constants.PREFERENCES_KEY_SERVER_SCALING, false)
         }
     }

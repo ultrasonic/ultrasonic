@@ -35,6 +35,7 @@ import org.moire.ultrasonic.util.Constants;
 import org.moire.ultrasonic.util.FileUtil;
 import org.moire.ultrasonic.util.MediaSessionHandler;
 import org.moire.ultrasonic.util.PermissionUtil;
+import org.moire.ultrasonic.util.Settings;
 import org.moire.ultrasonic.util.ThemeChangedEventDistributor;
 import org.moire.ultrasonic.util.TimeSpanPreference;
 import org.moire.ultrasonic.util.TimeSpanPreferenceDialogFragmentCompat;
@@ -141,7 +142,7 @@ public class SettingsFragment extends PreferenceFragmentCompat
         showArtistPicture = findPreference(Constants.PREFERENCES_KEY_SHOW_ARTIST_PICTURE);
 
         setupServersCategory();
-        sharingDefaultGreeting.setText(Util.getShareGreeting());
+        sharingDefaultGreeting.setText(Settings.getShareGreeting());
         setupClearSearchPreference();
         setupGaplessControlSettingsV14();
         setupFeatureFlagsPreferences();
@@ -168,14 +169,14 @@ public class SettingsFragment extends PreferenceFragmentCompat
     @Override
     public void onResume() {
         super.onResume();
-        SharedPreferences preferences = Util.getPreferences();
+        SharedPreferences preferences = Settings.getPreferences();
         preferences.registerOnSharedPreferenceChangeListener(this);
     }
 
     @Override
     public void onPause() {
         super.onPause();
-        SharedPreferences prefs = Util.getPreferences();
+        SharedPreferences prefs = Settings.getPreferences();
         prefs.unregisterOnSharedPreferenceChangeListener(this);
     }
 
@@ -257,8 +258,8 @@ public class SettingsFragment extends PreferenceFragmentCompat
     }
 
     private void setupBluetoothDevicePreferences() {
-        final int resumeSetting = Util.getResumeOnBluetoothDevice();
-        final int pauseSetting = Util.getPauseOnBluetoothDevice();
+        final int resumeSetting = Settings.getResumeOnBluetoothDevice();
+        final int pauseSetting = Settings.getPauseOnBluetoothDevice();
 
         resumeOnBluetoothDevice.setSummary(bluetoothDevicePreferenceToString(resumeSetting));
         pauseOnBluetoothDevice.setSummary(bluetoothDevicePreferenceToString(pauseSetting));
@@ -268,7 +269,7 @@ public class SettingsFragment extends PreferenceFragmentCompat
             public boolean onPreferenceClick(Preference preference) {
             showBluetoothDevicePreferenceDialog(
                 R.string.settings_playback_resume_on_bluetooth_device,
-                Util.getResumeOnBluetoothDevice(),
+                Settings.getResumeOnBluetoothDevice(),
                 new Consumer<Integer>() {
                     @Override
                     public void accept(Integer choice) {
@@ -287,7 +288,7 @@ public class SettingsFragment extends PreferenceFragmentCompat
             public boolean onPreferenceClick(Preference preference) {
             showBluetoothDevicePreferenceDialog(
                 R.string.settings_playback_pause_on_bluetooth_device,
-                Util.getPauseOnBluetoothDevice(),
+                Settings.getPauseOnBluetoothDevice(),
                 new Consumer<Integer>() {
                     @Override
                     public void accept(Integer choice) {
@@ -450,7 +451,7 @@ public class SettingsFragment extends PreferenceFragmentCompat
             debugLogToFile.setSummary("");
         }
 
-        showArtistPicture.setEnabled(Util.getShouldUseId3Tags());
+        showArtistPicture.setEnabled(Settings.getShouldUseId3Tags());
     }
 
 

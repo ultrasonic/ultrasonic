@@ -22,6 +22,7 @@ import org.moire.ultrasonic.subsonic.ImageLoaderProvider;
 import org.moire.ultrasonic.util.Constants;
 import org.moire.ultrasonic.util.NowPlayingEventDistributor;
 import org.moire.ultrasonic.util.NowPlayingEventListener;
+import org.moire.ultrasonic.util.Settings;
 import org.moire.ultrasonic.util.Util;
 
 import kotlin.Lazy;
@@ -115,7 +116,7 @@ public class NowPlayingFragment extends Fragment {
                 nowPlayingAlbumArtImage.setOnClickListener(v -> {
                     Bundle bundle = new Bundle();
 
-                    if (Util.getShouldUseId3Tags()) {
+                    if (Settings.getShouldUseId3Tags()) {
                         bundle.putBoolean(Constants.INTENT_EXTRA_NAME_IS_ALBUM, true);
                         bundle.putString(Constants.INTENT_EXTRA_NAME_ID, song.getAlbumId());
                     } else {

@@ -49,6 +49,7 @@ import org.moire.ultrasonic.util.AlbumHeader
 import org.moire.ultrasonic.util.CancellationToken
 import org.moire.ultrasonic.util.Constants
 import org.moire.ultrasonic.util.EntryByDiscAndTrackComparator
+import org.moire.ultrasonic.util.Settings
 import org.moire.ultrasonic.util.Util
 import org.moire.ultrasonic.view.AlbumView
 import org.moire.ultrasonic.view.EntryAdapter
@@ -276,7 +277,7 @@ class TrackCollectionFragment : Fragment() {
                 model.getRandom(albumListSize)
             } else {
                 setTitle(name)
-                if (!isOffline() && Util.getShouldUseId3Tags()) {
+                if (!isOffline() && Settings.shouldUseId3Tags) {
                     if (isAlbum) {
                         model.getAlbum(refresh, id!!, name, parentId)
                     } else {
@@ -635,7 +636,7 @@ class TrackCollectionFragment : Fragment() {
     private fun updateInterfaceWithEntries(musicDirectory: MusicDirectory) {
         val entries = musicDirectory.getChildren()
 
-        if (model.currentListIsSortable && Util.getShouldSortByDisc()) {
+        if (model.currentListIsSortable && Settings.shouldSortByDisc) {
             Collections.sort(entries, EntryByDiscAndTrackComparator())
         }
 

@@ -42,7 +42,7 @@ import org.moire.ultrasonic.domain.toDomainEntityList
 import org.moire.ultrasonic.domain.toIndexList
 import org.moire.ultrasonic.domain.toMusicDirectoryDomainEntity
 import org.moire.ultrasonic.util.FileUtil
-import org.moire.ultrasonic.util.Util
+import org.moire.ultrasonic.util.Settings
 import timber.log.Timber
 
 /**
@@ -165,7 +165,7 @@ open class RESTMusicService(
         criteria: SearchCriteria
     ): SearchResult {
         return try {
-            if (!isOffline() && Util.getShouldUseId3Tags()) {
+            if (!isOffline() && Settings.shouldUseId3Tags) {
                 search3(criteria)
             } else {
                 search2(criteria)

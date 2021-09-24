@@ -27,6 +27,7 @@ import timber.log.Timber;
 
 import org.moire.ultrasonic.service.MediaPlayerLifecycleSupport;
 import org.moire.ultrasonic.util.Constants;
+import org.moire.ultrasonic.util.Settings;
 import org.moire.ultrasonic.util.Util;
 
 import kotlin.Lazy;
@@ -46,7 +47,7 @@ public class MediaButtonIntentReceiver extends BroadcastReceiver
 		String intentAction = intent.getAction();
 
 		// If media button are turned off and we received a media button, exit
-		if (!Util.getMediaButtonsEnabled() && Intent.ACTION_MEDIA_BUTTON.equals(intentAction))
+		if (!Settings.getMediaButtonsEnabled() && Intent.ACTION_MEDIA_BUTTON.equals(intentAction))
 			return;
 
 		// Only process media buttons and CMD_PROCESS_KEYCODE, which is received from the widgets

@@ -14,7 +14,7 @@ import org.moire.ultrasonic.di.mediaPlayerModule
 import org.moire.ultrasonic.di.musicServiceModule
 import org.moire.ultrasonic.log.FileLoggerTree
 import org.moire.ultrasonic.log.TimberKoinLogger
-import org.moire.ultrasonic.util.Util
+import org.moire.ultrasonic.util.Settings
 import timber.log.Timber
 import timber.log.Timber.DebugTree
 
@@ -34,7 +34,7 @@ class UApp : MultiDexApplication() {
         if (BuildConfig.DEBUG) {
             Timber.plant(DebugTree())
         }
-        if (Util.getDebugLogToFile()) {
+        if (Settings.debugLogToFile) {
             FileLoggerTree.plantToTimberForest()
         }
 
