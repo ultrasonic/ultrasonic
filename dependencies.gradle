@@ -21,7 +21,7 @@ ext.versions = [
         constraintLayout     : "2.1.0",
         multidex             : "2.0.1",
         room                 : "2.3.0",
-        kotlin               : "1.5.30",
+        kotlin               : "1.5.31",
         kotlinxCoroutines    : "1.5.2-native-mt",
         viewModelKtx         : "2.2.0",
 
