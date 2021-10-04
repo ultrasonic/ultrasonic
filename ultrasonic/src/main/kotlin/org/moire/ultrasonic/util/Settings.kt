@@ -24,15 +24,6 @@ import org.moire.ultrasonic.domain.RepeatMode
 object Settings {
     private val PATTERN = Pattern.compile(":")
 
-    val isScreenLitOnDownload: Boolean
-        get() {
-            val preferences = preferences
-            return preferences.getBoolean(
-                Constants.PREFERENCES_KEY_SCREEN_LIT_ON_DOWNLOAD,
-                false
-            )
-        }
-
     var repeatMode: RepeatMode
         get() {
             val preferences = preferences

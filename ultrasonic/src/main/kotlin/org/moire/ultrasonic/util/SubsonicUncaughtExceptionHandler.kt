@@ -20,7 +20,7 @@ class SubsonicUncaughtExceptionHandler(
         var printWriter: PrintWriter? = null
 
         try {
-            file = File(FileUtil.getUltrasonicDirectory(), STACKTRACE_NAME)
+            file = File(FileUtil.ultrasonicDirectory, STACKTRACE_NAME)
             printWriter = PrintWriter(file)
             val logMessage = String.format(
                 "Android API level: %s\nUltrasonic version name: %s\n" +

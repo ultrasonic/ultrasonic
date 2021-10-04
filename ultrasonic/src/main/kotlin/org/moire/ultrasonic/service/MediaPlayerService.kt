@@ -48,6 +48,9 @@ import timber.log.Timber
 /**
  * Android Foreground Service for playing music
  * while the rest of the Ultrasonic App is in the background.
+ *
+ * "A foreground service is a service that the user is
+ * actively aware of and isn’t a candidate for the system to kill when low on memory."
  */
 @Suppress("LargeClass")
 class MediaPlayerService : Service() {
@@ -79,7 +82,6 @@ class MediaPlayerService : Service() {
     override fun onCreate() {
         super.onCreate()
 
-        downloader.onCreate()
         shufflePlayBuffer.onCreate()
         localMediaPlayer.init()
 
@@ -154,6 +156,10 @@ class MediaPlayerService : Service() {
                 stopSelf()
             }
         }
+    }
+
+    fun notifyDownloaderStopped() {
+        stopIfIdle()
     }
 
     @Synchronized
@@ -581,22 +587,27 @@ class MediaPlayerService : Service() {
         // Clear old actions
         notificationBuilder!!.clearActions()
 
-        // Add actions
-        val compactActions = addActions(context, notificationBuilder!!, playerState, song)
-
-        // Configure shortcut actions
-        style.setShowActionsInCompactView(*compactActions)
-        notificationBuilder!!.setStyle(style)
-
-        // Set song title, artist and cover if possible
         if (song != null) {
+            // Add actions
+            val compactActions = addActions(context, notificationBuilder!!, playerState, song)
+            // Configure shortcut actions
+            style.setShowActionsInCompactView(*compactActions)
+            notificationBuilder!!.setStyle(style)
+
+            // Set song title, artist and cover
             val iconSize = (256 * context.resources.displayMetrics.density).toInt()
             val bitmap = BitmapUtils.getAlbumArtBitmapFromDisk(song, iconSize)
             notificationBuilder!!.setContentTitle(song.title)
             notificationBuilder!!.setContentText(song.artist)
             notificationBuilder!!.setLargeIcon(bitmap)
             notificationBuilder!!.setSubText(song.album)
+        } else if (downloader.started) {
+            // No song is playing, but Ultrasonic is downloading files
+            notificationBuilder!!.setContentTitle(
+                getString(R.string.notification_downloading_title)
+            )
         }
+
         return notificationBuilder!!.build()
     }
 

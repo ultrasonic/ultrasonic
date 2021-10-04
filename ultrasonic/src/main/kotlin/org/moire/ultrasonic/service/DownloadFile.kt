@@ -7,10 +7,6 @@
 
 package org.moire.ultrasonic.service
 
-import android.content.Context
-import android.net.wifi.WifiManager.WifiLock
-import android.os.PowerManager
-import android.os.PowerManager.WakeLock
 import android.text.TextUtils
 import androidx.lifecycle.MutableLiveData
 import java.io.File
@@ -21,7 +17,8 @@ import java.io.OutputStream
 import java.io.RandomAccessFile
 import org.koin.core.component.KoinComponent
 import org.koin.core.component.inject
-import org.moire.ultrasonic.app.UApp
+import org.moire.ultrasonic.data.ActiveServerProvider
+import org.moire.ultrasonic.domain.Artist
 import org.moire.ultrasonic.domain.MusicDirectory
 import org.moire.ultrasonic.service.MusicServiceFactory.getMusicService
 import org.moire.ultrasonic.subsonic.ImageLoaderProvider
@@ -33,10 +30,7 @@ import org.moire.ultrasonic.util.Util
 import timber.log.Timber
 
 /**
- * This class represents a singe Song or Video that can be downloaded.
- *
- * @author Sindre Mehus
- * @version $Id$
+ * This class represents a single Song or Video that can be downloaded.
  */
 class DownloadFile(
     val song: MusicDirectory.Entry,
@@ -64,6 +58,7 @@ class DownloadFile(
 
     private val downloader: Downloader by inject()
     private val imageLoaderProvider: ImageLoaderProvider by inject()
+    private val activeServerProvider: ActiveServerProvider by inject()
 
     val progress: MutableLiveData<Int> = MutableLiveData(0)
 
@@ -206,16 +201,12 @@ class DownloadFile(
     }
 
     private inner class DownloadTask : CancellableTask() {
+        val musicService = getMusicService()
+
         override fun execute() {
             var inputStream: InputStream? = null
             var outputStream: FileOutputStream? = null
-            var wakeLock: WakeLock? = null
-            var wifiLock: WifiLock? = null
             try {
-                wakeLock = acquireWakeLock(wakeLock)
-                wifiLock = Util.createWifiLock(toString())
-                wifiLock.acquire()
-
                 if (saveFile.exists()) {
                     Timber.i("%s already exists. Skipping.", saveFile)
                     return
@@ -233,8 +224,6 @@ class DownloadFile(
                     }
                     return
                 }
-
-                val musicService = getMusicService()
 
                 // Some devices seem to throw error on partial file which doesn't exist
                 val needsDownloading: Boolean
@@ -280,6 +269,11 @@ class DownloadFile(
                     if (isCancelled) {
                         throw Exception(String.format("Download of '%s' was cancelled", song))
                     }
+
+                    if (song.artistId != null) {
+                        cacheMetadata(song.artistId!!)
+                    }
+
                     downloadAndSaveCoverArt()
                 }
 
@@ -307,31 +301,36 @@ class DownloadFile(
             } finally {
                 Util.close(inputStream)
                 Util.close(outputStream)
-                if (wakeLock != null) {
-                    wakeLock.release()
-                    Timber.i("Released wake lock %s", wakeLock)
-                }
-                wifiLock?.release()
                 CacheCleaner().cleanSpace()
                 downloader.checkDownloads()
             }
         }
 
-        private fun acquireWakeLock(wakeLock: WakeLock?): WakeLock? {
-            var wakeLock1 = wakeLock
-            if (Settings.isScreenLitOnDownload) {
-                val context = UApp.applicationContext()
-                val pm = context.getSystemService(Context.POWER_SERVICE) as PowerManager
-                val flags = PowerManager.SCREEN_DIM_WAKE_LOCK or PowerManager.ON_AFTER_RELEASE
-                wakeLock1 = pm.newWakeLock(flags, toString())
-                wakeLock1.acquire(10 * 60 * 1000L /*10 minutes*/)
-                Timber.i("Acquired wake lock %s", wakeLock1)
-            }
-            return wakeLock1
-        }
-
         override fun toString(): String {
             return String.format("DownloadTask (%s)", song)
+        }
+
+        private fun cacheMetadata(artistId: String) {
+            // TODO: Right now it's caching the track artist.
+            // Once the albums are cached in db, we should retrieve the album,
+            // and then cache the album artist.
+            if (artistId.isEmpty()) return
+            var artist: Artist? =
+                activeServerProvider.getActiveMetaDatabase().artistsDao().get(artistId)
+
+            // If we are downloading a new album, and the user has not visited the Artists list
+            // recently, then the artist won't be in the database.
+            if (artist == null) {
+                val artists: List<Artist> = musicService.getArtists(true)
+                artist = artists.find {
+                    it.id == artistId
+                }
+            }
+
+            // If we have found an artist, catch it.
+            if (artist != null) {
+                activeServerProvider.offlineMetaDatabase.artistsDao().insert(artist)
+            }
         }
 
         private fun downloadAndSaveCoverArt() {

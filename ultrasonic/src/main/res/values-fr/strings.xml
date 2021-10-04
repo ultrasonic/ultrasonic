@@ -260,8 +260,6 @@
     <string name="settings.preload_unlimited">Illimité</string>
     <string name="settings.playback.resume_play_on_headphones_plug.title">Reprise à l\'insertion des écouteurs</string>
     <string name="settings.playback.resume_play_on_headphones_plug.summary">L\'application reprendra la lecture lors de l\'insertion du casque dans l\'appareil.</string>
-    <string name="settings.screen_lit_summary">Garder l\'écran allumé pendant le téléchargement permet d\'améliorer la vitesse de téléchargement.</string>
-    <string name="settings.screen_lit_title">Garder l\'écran allumé</string>
     <string name="settings.scrobble_summary">Pensez à configurer votre nom d’utilisateur et votre mot de passe dans le(s) service(s) Scrobble sur le serveur.</string>
     <string name="settings.scrobble_title">Scrobbler mes lectures</string>
     <string name="settings.search_1">1</string>

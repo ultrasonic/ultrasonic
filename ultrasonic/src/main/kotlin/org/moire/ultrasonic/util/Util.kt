@@ -37,14 +37,11 @@ import android.view.inputmethod.InputMethodManager
 import android.widget.Toast
 import androidx.annotation.AnyRes
 import androidx.media.utils.MediaConstants
-import java.io.ByteArrayOutputStream
 import java.io.Closeable
 import java.io.File
 import java.io.FileInputStream
 import java.io.FileOutputStream
 import java.io.IOException
-import java.io.InputStream
-import java.io.OutputStream
 import java.io.UnsupportedEncodingException
 import java.security.MessageDigest
 import java.text.DecimalFormat
@@ -113,38 +110,6 @@ object Util {
         ) {
             context!!.setTheme(R.style.UltrasonicTheme_Light)
         }
-    }
-
-    /**
-     * Get the contents of an `InputStream` as a `byte[]`.
-     *
-     *
-     * This method buffers the input internally, so there is no need to use a
-     * `BufferedInputStream`.
-     *
-     * @param input the `InputStream` to read from
-     * @return the requested byte array
-     * @throws NullPointerException if the input is null
-     * @throws java.io.IOException  if an I/O error occurs
-     */
-    @Throws(IOException::class)
-    fun toByteArray(input: InputStream?): ByteArray {
-        val output = ByteArrayOutputStream()
-        copy(input!!, output)
-        return output.toByteArray()
-    }
-
-    @Throws(IOException::class)
-    @Suppress("MagicNumber")
-    fun copy(input: InputStream, output: OutputStream): Long {
-        val buffer = ByteArray(KBYTE * 4)
-        var count: Long = 0
-        var n: Int
-        while (-1 != input.read(buffer).also { n = it }) {
-            output.write(buffer, 0, n)
-            count += n.toLong()
-        }
-        return count
     }
 
     @Throws(IOException::class)

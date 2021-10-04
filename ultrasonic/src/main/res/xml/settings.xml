@@ -349,12 +349,6 @@
             a:summary="@string/settings.hide_media_summary"
             a:title="@string/settings.hide_media_title"
             app:iconSpaceReserved="false"/>
-        <CheckBoxPreference
-            a:defaultValue="true"
-            a:key="screenLitOnDownload"
-            a:summary="@string/settings.screen_lit_summary"
-            a:title="@string/settings.screen_lit_title"
-            app:iconSpaceReserved="false"/>
     </PreferenceCategory>
     <PreferenceCategory
         a:title="@string/feature_flags_category_title"

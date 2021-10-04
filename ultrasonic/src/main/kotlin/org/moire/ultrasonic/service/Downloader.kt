@@ -1,5 +1,6 @@
 package org.moire.ultrasonic.service
 
+import android.net.wifi.WifiManager
 import java.util.ArrayList
 import java.util.PriorityQueue
 import java.util.concurrent.Executors
@@ -29,6 +30,8 @@ class Downloader(
     private val localMediaPlayer: LocalMediaPlayer
 ) : KoinComponent {
     val playlist: MutableList<DownloadFile> = ArrayList()
+    var started: Boolean = false
+
     private val downloadQueue: PriorityQueue<DownloadFile> = PriorityQueue<DownloadFile>()
     private val activelyDownloading: MutableList<DownloadFile> = ArrayList()
 
@@ -37,25 +40,18 @@ class Downloader(
     private val downloadFileCache = LRUCache<MusicDirectory.Entry, DownloadFile>(100)
 
     private var executorService: ScheduledExecutorService? = null
+    private var wifiLock: WifiManager.WifiLock? = null
 
     var playlistUpdateRevision: Long = 0
         private set
 
     val downloadChecker = Runnable {
         try {
-            Timber.w("checking Downloads")
+            Timber.w("Checking Downloads")
             checkDownloadsInternal()
         } catch (all: Exception) {
             Timber.e(all, "checkDownloads() failed.")
         }
-    }
-
-    fun onCreate() {
-        executorService = Executors.newSingleThreadScheduledExecutor()
-        executorService!!.scheduleWithFixedDelay(
-            downloadChecker, CHECK_INTERVAL, CHECK_INTERVAL, TimeUnit.SECONDS
-        )
-        Timber.i("Downloader created")
     }
 
     fun onDestroy() {
@@ -65,16 +61,42 @@ class Downloader(
         Timber.i("Downloader destroyed")
     }
 
+    fun start() {
+        started = true
+        if (executorService == null) {
+            executorService = Executors.newSingleThreadScheduledExecutor()
+            executorService!!.scheduleWithFixedDelay(
+                downloadChecker, 0L, CHECK_INTERVAL, TimeUnit.SECONDS
+            )
+            Timber.i("Downloader started")
+        }
+
+        if (wifiLock == null) {
+            wifiLock = Util.createWifiLock(toString())
+            wifiLock?.acquire()
+        }
+    }
+
     fun stop() {
-        if (executorService != null) executorService!!.shutdown()
+        started = false
+        executorService?.shutdown()
+        executorService = null
+        wifiLock?.release()
+        wifiLock = null
+        MediaPlayerService.runningInstance?.notifyDownloaderStopped()
         Timber.i("Downloader stopped")
     }
 
     fun checkDownloads() {
-        executorService?.execute(downloadChecker)
+        if (executorService == null || executorService!!.isTerminated) {
+            start()
+        } else {
+            executorService?.execute(downloadChecker)
+        }
     }
 
     @Synchronized
+    @Suppress("ComplexMethod")
     fun checkDownloadsInternal() {
         if (
             !Util.isExternalStoragePresent() ||
@@ -120,12 +142,23 @@ class Downloader(
         while (activelyDownloading.size < PARALLEL_DOWNLOADS && downloadQueue.size > 0) {
             val task = downloadQueue.remove()
             activelyDownloading.add(task)
-            task.download()
+            startDownloadOnService(task)
 
             // The next file on the playlist is currently downloading
             if (playlist.indexOf(task) == 1) {
                 localMediaPlayer.setNextPlayerState(PlayerState.DOWNLOADING)
             }
+        }
+
+        // Stop Executor service when done downloading
+        if (activelyDownloading.size == 0) {
+            stop()
+        }
+    }
+
+    private fun startDownloadOnService(task: DownloadFile) {
+        MediaPlayerService.executeOnStartedMediaPlayerService {
+            task.download()
         }
     }
 

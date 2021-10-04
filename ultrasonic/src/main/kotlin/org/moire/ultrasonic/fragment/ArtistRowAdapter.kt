@@ -14,8 +14,8 @@ import com.simplecityapps.recyclerview_fastscroll.views.FastScrollRecyclerView.S
 import java.text.Collator
 import org.moire.ultrasonic.R
 import org.moire.ultrasonic.domain.ArtistOrIndex
-import org.moire.ultrasonic.domain.MusicDirectory
 import org.moire.ultrasonic.imageloader.ImageLoader
+import org.moire.ultrasonic.util.FileUtil
 import org.moire.ultrasonic.util.Settings
 
 /**
@@ -59,13 +59,14 @@ class ArtistRowAdapter(
 
             if (Settings.shouldShowArtistPicture) {
                 holder.coverArt.visibility = View.VISIBLE
+                val key = FileUtil.getArtistArtKey(itemList[listPosition].name, false)
                 imageLoader.loadImage(
-                    holder.coverArt,
-                    MusicDirectory.Entry("-1").apply {
-                        coverArt = holder.coverArtId
-                        artist = itemList[listPosition].name
-                    },
-                    false, 0, R.drawable.ic_contact_picture
+                    view = holder.coverArt,
+                    id = holder.coverArtId,
+                    key = key,
+                    large = false,
+                    size = 0,
+                    defaultResourceId = R.drawable.ic_contact_picture
                 )
             } else {
                 holder.coverArt.visibility = View.GONE

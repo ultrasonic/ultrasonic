@@ -262,8 +262,6 @@
     <string name="settings.preload_unlimited">Unlimited</string>
     <string name="settings.playback.resume_play_on_headphones_plug.title">Resume on headphones insertion</string>
     <string name="settings.playback.resume_play_on_headphones_plug.summary">App will resume paused playback on wired headphones insertion into device.</string>
-    <string name="settings.screen_lit_summary">Keeping the screen on while downloading improves download speed.</string>
-    <string name="settings.screen_lit_title">Keep Screen On</string>
     <string name="settings.scrobble_summary">Remember to set up your user and password in the Scrobble service(s) on the server</string>
     <string name="settings.scrobble_title">Scrobble my plays</string>
     <string name="settings.search_1">1</string>
@@ -404,6 +402,7 @@
     <string name="settings.debug.log_keep">Keep files</string>
     <string name="settings.debug.log_delete">Delete files</string>
     <string name="settings.debug.log_deleted">Deleted log files.</string>
+    <string name="notification.downloading_title">Downloading media in the background…</string>
 
     <string name="permissions.access_error">Ultrasonic can\'t access the music file cache. Cache location was reset to the default path.</string>
     <string name="permissions.message_box_title">Warning</string>

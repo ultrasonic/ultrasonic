@@ -246,8 +246,6 @@
     <string name="settings.preload_unlimited">Bez limitu</string>
     <string name="settings.playback.resume_play_on_headphones_plug.title">Wznawiaj po podłączeniu słuchawek</string>
     <string name="settings.playback.resume_play_on_headphones_plug.summary">Aplikacja wznowi zatrzymane odtwarzanie po podpięciu słuchawek.</string>
-    <string name="settings.screen_lit_summary">Podtrzymywanie włączonego ekranu poprawia prędkość pobierania.</string>
-    <string name="settings.screen_lit_title">Podtrzymuj ekran włączony</string>
     <string name="settings.search_1">1</string>
     <string name="settings.search_10">10</string>
     <string name="settings.search_100">100</string>

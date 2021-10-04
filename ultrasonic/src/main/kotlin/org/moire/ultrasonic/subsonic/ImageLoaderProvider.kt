@@ -51,7 +51,7 @@ class ImageLoaderProvider(val context: Context) : KoinComponent {
             ImageLoaderConfig(
                 Util.getMaxDisplayMetric(),
                 defaultSize,
-                FileUtil.getAlbumArtDirectory()
+                FileUtil.albumArtDirectory
             )
         }
     }

@@ -94,7 +94,7 @@ class FileLoggerTree : Timber.DebugTree() {
 
         if (next) fileNum++
         file = File(
-            FileUtil.getUltrasonicDirectory(),
+            FileUtil.ultrasonicDirectory,
             FILENAME.replace("*", fileNum.toString())
         )
     }
@@ -162,7 +162,7 @@ class FileLoggerTree : Timber.DebugTree() {
         }
 
         private fun getLogFileList(): Array<out File>? {
-            val directory = FileUtil.getUltrasonicDirectory()
+            val directory = FileUtil.ultrasonicDirectory
             return directory.listFiles { t -> t.name.matches(fileNameRegex) }
         }
     }

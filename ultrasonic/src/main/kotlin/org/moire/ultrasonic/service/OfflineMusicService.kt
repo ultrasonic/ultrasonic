@@ -52,7 +52,7 @@ class OfflineMusicService : MusicService, KoinComponent {
 
     override fun getIndexes(musicFolderId: String?, refresh: Boolean): List<Index> {
         val indexes: MutableList<Index> = ArrayList()
-        val root = FileUtil.getMusicDirectory()
+        val root = FileUtil.musicDirectory
         for (file in FileUtil.listFiles(root)) {
             if (file.isDirectory) {
                 val index = Index(file.path)
@@ -121,7 +121,7 @@ class OfflineMusicService : MusicService, KoinComponent {
         val artists: MutableList<Artist> = ArrayList()
         val albums: MutableList<MusicDirectory.Entry> = ArrayList()
         val songs: MutableList<MusicDirectory.Entry> = ArrayList()
-        val root = FileUtil.getMusicDirectory()
+        val root = FileUtil.musicDirectory
         var closeness: Int
         for (artistFile in FileUtil.listFiles(root)) {
             val artistName = artistFile.name
@@ -250,7 +250,7 @@ class OfflineMusicService : MusicService, KoinComponent {
     }
 
     override fun getRandomSongs(size: Int): MusicDirectory {
-        val root = FileUtil.getMusicDirectory()
+        val root = FileUtil.musicDirectory
         val children: MutableList<File> = LinkedList()
         listFilesRecursively(root, children)
         val result = MusicDirectory()
@@ -503,7 +503,7 @@ class OfflineMusicService : MusicService, KoinComponent {
             entry.isDirectory = file.isDirectory
             entry.parent = file.parent
             entry.size = file.length()
-            val root = FileUtil.getMusicDirectory().path
+            val root = FileUtil.musicDirectory.path
             entry.path = file.path.replaceFirst(
                 String.format(Locale.ROOT, "^%s/", root).toRegex(), ""
             )
