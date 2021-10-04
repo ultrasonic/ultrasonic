@@ -18,6 +18,7 @@ import java.io.RandomAccessFile
 import org.koin.core.component.KoinComponent
 import org.koin.core.component.inject
 import org.moire.ultrasonic.data.ActiveServerProvider
+import org.moire.ultrasonic.domain.Artist
 import org.moire.ultrasonic.domain.MusicDirectory
 import org.moire.ultrasonic.service.MusicServiceFactory.getMusicService
 import org.moire.ultrasonic.subsonic.ImageLoaderProvider
@@ -200,6 +201,8 @@ class DownloadFile(
     }
 
     private inner class DownloadTask : CancellableTask() {
+        val musicService = getMusicService()
+
         override fun execute() {
             var inputStream: InputStream? = null
             var outputStream: FileOutputStream? = null
@@ -221,8 +224,6 @@ class DownloadFile(
                     }
                     return
                 }
-
-                val musicService = getMusicService()
 
                 // Some devices seem to throw error on partial file which doesn't exist
                 val needsDownloading: Boolean
@@ -314,8 +315,22 @@ class DownloadFile(
             // Once the albums are cached in db, we should retrieve the album,
             // and then cache the album artist.
             if (artistId.isEmpty()) return
-            val artist = activeServerProvider.getActiveMetaDatabase().artistsDao().get(artistId)
-            activeServerProvider.offlineMetaDatabase.artistsDao().insert(artist)
+            var artist: Artist? =
+                activeServerProvider.getActiveMetaDatabase().artistsDao().get(artistId)
+
+            // If we are downloading a new album, and the user has not visited the Artists list
+            // recently, then the artist won't be in the database.
+            if (artist == null) {
+                val artists: List<Artist> = musicService.getArtists(true)
+                artist = artists.find {
+                    it.id == artistId
+                }
+            }
+
+            // If we have found an artist, catch it.
+            if (artist != null) {
+                activeServerProvider.offlineMetaDatabase.artistsDao().insert(artist)
+            }
         }
 
         private fun downloadAndSaveCoverArt() {
