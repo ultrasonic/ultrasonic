@@ -36,14 +36,14 @@
         a:paddingLeft="3dip"
         a:paddingRight="3dip"
         a:textAppearance="?android:attr/textAppearanceMedium"
-        app:layout_constraintEnd_toStartOf="@+id/guideline2"
+        app:layout_constraintEnd_toStartOf="@+id/album_star"
         app:layout_constraintLeft_toRightOf="@+id/album_coverart"
         app:layout_constraintStart_toEndOf="@+id/album_coverart"
         app:layout_constraintTop_toTopOf="parent">
 
         <TextView
             a:id="@+id/album_title"
-            a:layout_width="wrap_content"
+            a:layout_width="match_parent"
             a:layout_height="wrap_content"
             a:ellipsize="marquee"
             a:singleLine="true"
@@ -52,7 +52,7 @@
 
         <TextView
             a:id="@+id/album_artist"
-            a:layout_width="wrap_content"
+            a:layout_width="match_parent"
             a:layout_height="wrap_content"
             a:singleLine="true"
             a:textAppearance="?android:attr/textAppearanceSmall"
@@ -67,29 +67,15 @@
         a:layout_marginStart="16dp"
         a:layout_marginLeft="16dp"
         a:layout_marginTop="16dp"
+        a:layout_marginEnd="20dp"
+        a:layout_marginRight="20dp"
         a:background="@android:color/transparent"
-        a:focusable="false"
         a:gravity="center_horizontal"
-        a:paddingRight="3dip"
         a:src="?attr/star_hollow"
+        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintLeft_toRightOf="@+id/row_album_details"
         app:layout_constraintStart_toEndOf="@+id/row_album_details"
         app:layout_constraintTop_toTopOf="parent"
-        tools:src="@drawable/ic_star_hollow_dark"
-        a:paddingEnd="3dip" />
-
-    <androidx.constraintlayout.widget.Guideline
-        a:id="@+id/guideline"
-        a:layout_width="wrap_content"
-        a:layout_height="wrap_content"
-        a:orientation="vertical"
-        app:layout_constraintGuide_begin="76dp" />
-
-    <androidx.constraintlayout.widget.Guideline
-        a:id="@+id/guideline2"
-        a:layout_width="wrap_content"
-        a:layout_height="wrap_content"
-        a:orientation="vertical"
-        app:layout_constraintGuide_begin="346dp" />
+        tools:src="@drawable/ic_star_hollow_dark" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

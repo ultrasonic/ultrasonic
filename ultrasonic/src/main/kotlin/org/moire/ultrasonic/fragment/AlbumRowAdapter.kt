@@ -7,15 +7,22 @@
 
 package org.moire.ultrasonic.fragment
 
+import android.content.Context
+import android.graphics.drawable.Drawable
 import android.view.MenuItem
 import android.view.View
 import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
+import java.lang.Exception
 import org.moire.ultrasonic.R
 import org.moire.ultrasonic.domain.MusicDirectory
 import org.moire.ultrasonic.imageloader.ImageLoader
+import org.moire.ultrasonic.service.MusicServiceFactory.getMusicService
+import org.moire.ultrasonic.util.Settings.shouldUseId3Tags
+import org.moire.ultrasonic.util.Util
+import timber.log.Timber
 
 /**
  * Creates a Row in a RecyclerView which contains the details of an Album
@@ -25,12 +32,18 @@ class AlbumRowAdapter(
     onItemClick: (MusicDirectory.Entry) -> Unit,
     onContextMenuClick: (MenuItem, MusicDirectory.Entry) -> Boolean,
     private val imageLoader: ImageLoader,
-    onMusicFolderUpdate: (String?) -> Unit
+    onMusicFolderUpdate: (String?) -> Unit,
+    context: Context,
 ) : GenericRowAdapter<MusicDirectory.Entry>(
     onItemClick,
     onContextMenuClick,
     onMusicFolderUpdate
 ) {
+
+    private val starDrawable: Drawable =
+        Util.getDrawableFromAttribute(context, R.attr.star_full)
+    private val starHollowDrawable: Drawable =
+        Util.getDrawableFromAttribute(context, R.attr.star_hollow)
 
     override var itemList = albumList
 
@@ -53,6 +66,8 @@ class AlbumRowAdapter(
             holder.details.setOnClickListener { onItemClick(entry) }
             holder.details.setOnLongClickListener { view -> createPopupMenu(view, listPosition) }
             holder.coverArtId = entry.coverArt
+            holder.star.setImageDrawable(if (entry.starred) starDrawable else starHollowDrawable)
+            holder.star.setOnClickListener { onStarClick(entry, holder.star) }
 
             imageLoader.loadImage(
                 holder.coverArt, entry,
@@ -78,6 +93,7 @@ class AlbumRowAdapter(
         var artist: TextView = view.findViewById(R.id.album_artist)
         var details: LinearLayout = view.findViewById(R.id.row_album_details)
         var coverArt: ImageView = view.findViewById(R.id.album_coverart)
+        var star: ImageView = view.findViewById(R.id.album_star)
         var coverArtId: String? = null
     }
 
@@ -86,5 +102,35 @@ class AlbumRowAdapter(
      */
     override fun newViewHolder(view: View): RecyclerView.ViewHolder {
         return ViewHolder(view)
+    }
+
+    /**
+     * Handles the star / unstar action for an album
+     */
+    @Suppress("TooGenericExceptionCaught")
+    private fun onStarClick(entry: MusicDirectory.Entry, star: ImageView) {
+        entry.starred = !entry.starred
+        star.setImageDrawable(if (entry.starred) starDrawable else starHollowDrawable)
+        val musicService = getMusicService()
+        Thread {
+            val useId3 = shouldUseId3Tags
+            try {
+                if (entry.starred) {
+                    musicService.star(
+                        if (!useId3) entry.id else null,
+                        if (useId3) entry.id else null,
+                        null
+                    )
+                } else {
+                    musicService.unstar(
+                        if (!useId3) entry.id else null,
+                        if (useId3) entry.id else null,
+                        null
+                    )
+                }
+            } catch (exception: Exception) {
+                Timber.e(exception)
+            }
+        }.start()
     }
 }
