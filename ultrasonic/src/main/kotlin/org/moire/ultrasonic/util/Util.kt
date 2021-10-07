@@ -565,7 +565,11 @@ object Util {
     }
 
     private fun fillIntent(
-        intent: Intent, song: MusicDirectory.Entry?, playerPosition: Int, id: Int, listSize: Int
+        intent: Intent,
+        song: MusicDirectory.Entry?,
+        playerPosition: Int,
+        id: Int,
+        listSize: Int
     ) {
         if (song == null) {
             intent.putExtra("track", "")
