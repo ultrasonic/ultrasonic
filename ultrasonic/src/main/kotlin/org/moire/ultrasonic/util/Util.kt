@@ -80,6 +80,7 @@ object Util {
     private const val EVENT_META_CHANGED = "org.moire.ultrasonic.EVENT_META_CHANGED"
     private const val EVENT_PLAYSTATE_CHANGED = "org.moire.ultrasonic.EVENT_PLAYSTATE_CHANGED"
     private const val CM_AVRCP_PLAYSTATE_CHANGED = "com.android.music.playstatechanged"
+    private const val CM_AVRCP_PLAYBACK_COMPLETE = "com.android.music.playbackcomplete"
     private const val CM_AVRCP_METADATA_CHANGED = "com.android.music.metachanged"
 
     // Used by hexEncode()
@@ -519,61 +520,14 @@ object Util {
         listSize: Int,
         id: Int
     ) {
-        if (!Settings.shouldSendBluetoothNotifications) {
-            return
-        }
+        if (!Settings.shouldSendBluetoothNotifications) return
+
         var song: MusicDirectory.Entry? = null
         val avrcpIntent = Intent(CM_AVRCP_METADATA_CHANGED)
         if (currentPlaying != null) song = currentPlaying.song
 
-        if (song == null) {
-            avrcpIntent.putExtra("track", "")
-            avrcpIntent.putExtra("track_name", "")
-            avrcpIntent.putExtra("artist", "")
-            avrcpIntent.putExtra("artist_name", "")
-            avrcpIntent.putExtra("album", "")
-            avrcpIntent.putExtra("album_name", "")
-            avrcpIntent.putExtra("album_artist", "")
-            avrcpIntent.putExtra("album_artist_name", "")
+        fillIntent(avrcpIntent, song, playerPosition, id, listSize)
 
-            if (Settings.shouldSendBluetoothAlbumArt) {
-                avrcpIntent.putExtra("coverart", null as Parcelable?)
-                avrcpIntent.putExtra("cover", null as Parcelable?)
-            }
-
-            avrcpIntent.putExtra("ListSize", 0.toLong())
-            avrcpIntent.putExtra("id", 0.toLong())
-            avrcpIntent.putExtra("duration", 0.toLong())
-            avrcpIntent.putExtra("position", 0.toLong())
-        } else {
-            val title = song.title
-            val artist = song.artist
-            val album = song.album
-            val duration = song.duration
-
-            avrcpIntent.putExtra("track", title)
-            avrcpIntent.putExtra("track_name", title)
-            avrcpIntent.putExtra("artist", artist)
-            avrcpIntent.putExtra("artist_name", artist)
-            avrcpIntent.putExtra("album", album)
-            avrcpIntent.putExtra("album_name", album)
-            avrcpIntent.putExtra("album_artist", artist)
-            avrcpIntent.putExtra("album_artist_name", artist)
-
-            if (Settings.shouldSendBluetoothAlbumArt) {
-                val albumArtFile = FileUtil.getAlbumArtFile(song)
-                avrcpIntent.putExtra("coverart", albumArtFile.absolutePath)
-                avrcpIntent.putExtra("cover", albumArtFile.absolutePath)
-            }
-
-            avrcpIntent.putExtra("position", playerPosition.toLong())
-            avrcpIntent.putExtra("id", id.toLong())
-            avrcpIntent.putExtra("ListSize", listSize.toLong())
-
-            if (duration != null) {
-                avrcpIntent.putExtra("duration", duration.toLong())
-            }
-        }
         context.sendBroadcast(avrcpIntent)
     }
 
@@ -586,51 +540,80 @@ object Util {
         id: Int,
         playerPosition: Int
     ) {
-        if (!Settings.shouldSendBluetoothNotifications) {
-            return
-        }
+        if (!Settings.shouldSendBluetoothNotifications) return
+
         if (newSong != null) {
-            val avrcpIntent = Intent(CM_AVRCP_PLAYSTATE_CHANGED)
 
-            val title = newSong.title
-            val artist = newSong.artist
-            val album = newSong.album
-            val duration = newSong.duration
+            val avrcpIntent = Intent(
+                if (state == PlayerState.COMPLETED) CM_AVRCP_PLAYBACK_COMPLETE
+                else CM_AVRCP_PLAYSTATE_CHANGED
+            )
 
-            avrcpIntent.putExtra("track", title)
-            avrcpIntent.putExtra("track_name", title)
-            avrcpIntent.putExtra("artist", artist)
-            avrcpIntent.putExtra("artist_name", artist)
-            avrcpIntent.putExtra("album", album)
-            avrcpIntent.putExtra("album_name", album)
-            avrcpIntent.putExtra("album_artist", artist)
-            avrcpIntent.putExtra("album_artist_name", artist)
+            fillIntent(avrcpIntent, newSong, playerPosition, id, listSize)
 
-            if (Settings.shouldSendBluetoothAlbumArt) {
-                val albumArtFile = FileUtil.getAlbumArtFile(newSong)
-                avrcpIntent.putExtra("coverart", albumArtFile.absolutePath)
-                avrcpIntent.putExtra("cover", albumArtFile.absolutePath)
-            }
-
-            avrcpIntent.putExtra("position", playerPosition.toLong())
-            avrcpIntent.putExtra("id", id.toLong())
-            avrcpIntent.putExtra("ListSize", listSize.toLong())
-
-            if (duration != null) {
-                avrcpIntent.putExtra("duration", duration.toLong())
-            }
-
-            when (state) {
-                PlayerState.STARTED -> avrcpIntent.putExtra("playing", true)
-                PlayerState.STOPPED, PlayerState.PAUSED,
-                PlayerState.COMPLETED -> avrcpIntent.putExtra(
-                    "playing",
-                    false
-                )
-                else -> return // No need to broadcast.
+            if (state != PlayerState.COMPLETED) {
+                when (state) {
+                    PlayerState.STARTED -> avrcpIntent.putExtra("playing", true)
+                    PlayerState.STOPPED,
+                    PlayerState.PAUSED -> avrcpIntent.putExtra("playing", false)
+                    else -> return // No need to broadcast.
+                }
             }
 
             context.sendBroadcast(avrcpIntent)
+        }
+    }
+
+    private fun fillIntent(
+        intent: Intent, song: MusicDirectory.Entry?, playerPosition: Int, id: Int, listSize: Int
+    ) {
+        if (song == null) {
+            intent.putExtra("track", "")
+            intent.putExtra("track_name", "")
+            intent.putExtra("artist", "")
+            intent.putExtra("artist_name", "")
+            intent.putExtra("album", "")
+            intent.putExtra("album_name", "")
+            intent.putExtra("album_artist", "")
+            intent.putExtra("album_artist_name", "")
+
+            if (Settings.shouldSendBluetoothAlbumArt) {
+                intent.putExtra("coverart", null as Parcelable?)
+                intent.putExtra("cover", null as Parcelable?)
+            }
+
+            intent.putExtra("ListSize", 0.toLong())
+            intent.putExtra("id", 0.toLong())
+            intent.putExtra("duration", 0.toLong())
+            intent.putExtra("position", 0.toLong())
+        } else {
+            val title = song.title
+            val artist = song.artist
+            val album = song.album
+            val duration = song.duration
+
+            intent.putExtra("track", title)
+            intent.putExtra("track_name", title)
+            intent.putExtra("artist", artist)
+            intent.putExtra("artist_name", artist)
+            intent.putExtra("album", album)
+            intent.putExtra("album_name", album)
+            intent.putExtra("album_artist", artist)
+            intent.putExtra("album_artist_name", artist)
+
+            if (Settings.shouldSendBluetoothAlbumArt) {
+                val albumArtFile = FileUtil.getAlbumArtFile(song)
+                intent.putExtra("coverart", albumArtFile.absolutePath)
+                intent.putExtra("cover", albumArtFile.absolutePath)
+            }
+
+            intent.putExtra("position", playerPosition.toLong())
+            intent.putExtra("id", id.toLong())
+            intent.putExtra("ListSize", listSize.toLong())
+
+            if (duration != null) {
+                intent.putExtra("duration", duration.toLong())
+            }
         }
     }
 
