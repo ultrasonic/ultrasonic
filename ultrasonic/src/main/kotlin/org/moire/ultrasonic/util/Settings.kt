@@ -376,6 +376,21 @@ object Settings {
             )
         }
 
+    var shareOnServer: Boolean
+        get() {
+            val preferences = preferences
+            return preferences.getBoolean(Constants.PREFERENCES_KEY_SHARE_ON_SERVER, true)!!
+        }
+        set(shareOnServer) {
+            val preferences = preferences
+            val editor = preferences.edit()
+            editor.putBoolean(
+                Constants.PREFERENCES_KEY_SHARE_ON_SERVER,
+                shareOnServer
+            )
+            editor.apply()
+        }
+
     var defaultShareExpiration: String
         get() {
             val preferences = preferences

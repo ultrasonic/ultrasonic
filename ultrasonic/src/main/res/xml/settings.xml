@@ -197,6 +197,11 @@
             a:key="sharingDefaultGreeting"
             a:title="@string/settings.share_greeting_default"
             app:iconSpaceReserved="false"/>
+        <CheckBoxPreference
+            a:defaultValue="true"
+            a:key="sharingCreateOnServer"
+            a:title="@string/share_on_server"
+            app:iconSpaceReserved="false"/>
         <org.moire.ultrasonic.util.TimeSpanPreference
             a:defaultValue="0"
             a:key="sharingDefaultExpiration"
