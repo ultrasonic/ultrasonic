@@ -152,8 +152,8 @@
     <string name="select_genre.empty">找不到流派</string>
     <string name="select_playlist.empty">服务器上没有保存的播放列表</string>
     <string name="service.connecting">服务器连接中，请稍等。</string>
-    <string name="settings.allow_self_signed_certificate" translatable="false">允许自签ssl证书</string>
-    <string name="settings.enable_ldap_user_support" translatable="false">开启ldap用户支持</string>
+
+    
     <string name="settings.appearance_title">外观</string>
     <string name="settings.buffer_length">缓冲长度</string>
     <string name="settings.buffer_length_0">已禁用</string>
@@ -387,7 +387,7 @@
     <string name="download.menu_show_artist">显示艺术家</string>
     <string name="albumArt">albumArt</string>
     <string name="common_multiple_years">Multiple Years</string>
-    <string name="settings.server_address_unset" translatable="false">http://example.com</string>
+
     <string name="settings.playback.resume_on_bluetooth_device">连接蓝牙设备时恢复播放</string>
     <string name="settings.playback.pause_on_bluetooth_device">断开蓝牙设备时暂停播放</string>
     <string name="settings.playback.bluetooth_all">所有蓝牙设备</string>
