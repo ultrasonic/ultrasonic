@@ -343,7 +343,7 @@
     <string name="util.bytes_format.gigabyte">0.00 GB</string>
     <string name="util.bytes_format.kilobyte">0 KB</string>
     <string name="util.bytes_format.megabyte">0.00 MB</string>
-    <string name="util.no_time" tools:ignore="TypographyDashes">-:--</string>
+    <string name="util.no_time">-:--</string>
     <string name="util.zero_time">0:00</string>
     <string name="widget.initial_text">轻触选择音乐</string>
     <string name="widget.sdcard_busy">SD 卡不可用</string>
