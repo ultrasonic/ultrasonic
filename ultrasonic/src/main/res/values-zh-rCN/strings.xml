@@ -343,7 +343,7 @@
     <string name="util.bytes_format.gigabyte">0.00 GB</string>
     <string name="util.bytes_format.kilobyte">0 KB</string>
     <string name="util.bytes_format.megabyte">0.00 MB</string>
-    <string name="util.no_time">-:--</string>
+    
     <string name="util.zero_time">0:00</string>
     <string name="widget.initial_text">轻触选择音乐</string>
     <string name="widget.sdcard_busy">SD 卡不可用</string>
@@ -402,7 +402,7 @@
     <string name="settings.debug.log_keep">保留文件</string>
     <string name="settings.debug.log_delete">删除文件</string>
     <string name="settings.debug.log_deleted">删除日志文件</string>
-    <string name="notification.downloading_title">在后台下载媒体...</string>
+    <string name="notification.downloading_title">在后台下载媒体…</string>
 
     <string name="permissions.access_error">Ultrasonic 无法访问音乐文件缓存。缓存位置已重置为默认路径。</string>
     <string name="permissions.message_box_title">警告</string>
@@ -443,7 +443,7 @@
     <string name="server_menu.demo">试用服务器</string>
 
     <plurals name="select_album_n_songs">
-        <item quantity="one">%d 首曲目</item>
+
         <item quantity="other">%d 首曲目</item>
     </plurals>
     <plurals name="select_album_n_songs_pinned">
@@ -467,7 +467,7 @@
         <item quantity="other">在当前歌曲之后插入了 %d 首歌曲。</item>
     </plurals>
     <plurals name="select_album_donate_dialog_n_trial_days_left">
-        
+
         <item quantity="other">试用期还剩 %d 天</item>
     </plurals>
 
