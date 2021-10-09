@@ -153,7 +153,7 @@
     <string name="select_playlist.empty">服务器上没有保存的播放列表</string>
     <string name="service.connecting">服务器连接中，请稍等。</string>
 
-    
+
     <string name="settings.appearance_title">外观</string>
     <string name="settings.buffer_length">缓冲长度</string>
     <string name="settings.buffer_length_0">已禁用</string>
@@ -447,27 +447,27 @@
         <item quantity="other">%d 首曲目</item>
     </plurals>
     <plurals name="select_album_n_songs_pinned">
-        <item quantity="one">已选择 %d 首歌曲进行固定。</item>
+
         <item quantity="other">已选择 %d 首歌曲进行固定。</item>
     </plurals>
     <plurals name="select_album_n_songs_downloaded">
-        <item quantity="one">已选择要下载 %d 首歌曲。</item>
+
         <item quantity="other">已选择要下载 %d 首歌曲。</item>
     </plurals>
     <plurals name="select_album_n_songs_unpinned">
-        <item quantity="one">已选择 %d 首歌曲取消固定。</item>
+
         <item quantity="other">已选择 %d 首歌曲取消固定。</item>
     </plurals>
     <plurals name="select_album_n_songs_added">
-        <item quantity="one">已将 %d 首歌曲添加到播放队列的末尾。</item>
+
         <item quantity="other">已将 %d 首歌曲添加到播放队列的末尾。</item>
     </plurals>
     <plurals name="select_album_n_songs_play_next">
-        <item quantity="one">在当前歌曲之后插入了 %d 首歌曲。</item>
+
         <item quantity="other">在当前歌曲之后插入了 %d 首歌曲。</item>
     </plurals>
     <plurals name="select_album_donate_dialog_n_trial_days_left">
-        <item quantity="one">试用期还剩 %d 天</item>
+        
         <item quantity="other">试用期还剩 %d 天</item>
     </plurals>
 
