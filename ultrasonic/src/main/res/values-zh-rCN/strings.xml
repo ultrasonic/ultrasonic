@@ -336,7 +336,7 @@
     <string name="settings.view_refresh_4500">4.5 秒</string>
     <string name="settings.view_refresh_5000">5 秒</string>
     <string name="settings.wifi_required_summary">仅在连接到 WIFI 时使用流媒体</string>
-    <string name="settings.wifi_required_title">仅使用 WIFI</string>    <string name="song_details.all">%1$s%2$s</string>
+    <string name="settings.wifi_required_title">仅使用 WIFI</string>  
     <string name="song_details.all">%1$s%2$s</string>
     <string name="song_details.kbps">%d kbps</string>
     <string name="util.bytes_format.byte">0 B</string>
