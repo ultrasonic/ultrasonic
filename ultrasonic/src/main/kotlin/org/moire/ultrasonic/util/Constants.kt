@@ -54,7 +54,6 @@ object Constants {
 
     // Preferences keys.
     const val PREFERENCES_KEY_SERVER_INSTANCE = "serverInstanceId"
-    const val PREFERENCES_KEY_SERVERS_EDIT = "editServers"
     const val PREFERENCES_KEY_THEME = "theme"
     const val PREFERENCES_KEY_THEME_LIGHT = "light"
     const val PREFERENCES_KEY_THEME_DARK = "dark"

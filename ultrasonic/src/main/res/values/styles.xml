@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <style name="NoActionBar" parent="@style/Theme.AppCompat">
+    <style name="NoActionBar" parent="@style/Theme.MaterialComponents">
         <item name="windowActionBar">false</item>
         <item name="windowNoTitle">true</item>
     </style>

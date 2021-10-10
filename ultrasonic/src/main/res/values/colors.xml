@@ -8,7 +8,8 @@
     <color name="md__transparent">#00000000</color>
     <color name="translucent">#80000000</color>
     <color name="background_color_dark">#ff000000</color>
-    <color name="background_color_light">#fff3f3f3</color>
+    <color name="background_color_grey">#ff333333</color>
+    <color name="background_color_light">#ffffffff</color>
     <color name="selected_color_dark">#424242</color>
     <color name="selected_color_light">#B1B1B1</color>
     <color name="selected_menu_dark">#fff3f3f3</color>

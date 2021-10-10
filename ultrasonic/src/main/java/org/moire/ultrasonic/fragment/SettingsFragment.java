@@ -55,7 +55,6 @@ import static org.moire.ultrasonic.fragment.ServerSelectorFragment.SERVER_SELECT
 public class SettingsFragment extends PreferenceFragmentCompat
         implements SharedPreferences.OnSharedPreferenceChangeListener {
 
-    private Preference addServerPreference;
     private ListPreference theme;
     private ListPreference maxBitrateWifi;
     private ListPreference maxBitrateMobile;
@@ -110,7 +109,6 @@ public class SettingsFragment extends PreferenceFragmentCompat
         super.onViewCreated(view, savedInstanceState);
         FragmentTitle.Companion.setTitle(this, R.string.menu_settings);
 
-        addServerPreference = findPreference(Constants.PREFERENCES_KEY_SERVERS_EDIT);
         theme = findPreference(Constants.PREFERENCES_KEY_THEME);
         maxBitrateWifi = findPreference(Constants.PREFERENCES_KEY_MAX_BITRATE_WIFI);
         maxBitrateMobile = findPreference(Constants.PREFERENCES_KEY_MAX_BITRATE_MOBILE);
@@ -141,7 +139,6 @@ public class SettingsFragment extends PreferenceFragmentCompat
         debugLogToFile = findPreference(Constants.PREFERENCES_KEY_DEBUG_LOG_TO_FILE);
         showArtistPicture = findPreference(Constants.PREFERENCES_KEY_SHOW_ARTIST_PICTURE);
 
-        setupServersCategory();
         sharingDefaultGreeting.setText(Settings.getShareGreeting());
         setupClearSearchPreference();
         setupGaplessControlSettingsV14();
@@ -392,22 +389,6 @@ public class SettingsFragment extends PreferenceFragmentCompat
                 }
             }
         }
-    }
-
-    private void setupServersCategory() {
-        addServerPreference.setPersistent(false);
-        addServerPreference.setTitle(getResources().getString(R.string.settings_server_manage_servers));
-        addServerPreference.setEnabled(true);
-
-        addServerPreference.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
-            @Override
-            public boolean onPreferenceClick(Preference preference) {
-                Bundle bundle = new Bundle();
-                bundle.putBoolean(SERVER_SELECTOR_MANAGE_MODE, true);
-                Navigation.findNavController(getView()).navigate(R.id.settingsToServerSelector, bundle);
-                return true;
-            }
-        });
     }
 
     private void update() {

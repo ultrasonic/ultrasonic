@@ -12,12 +12,14 @@ import android.view.KeyEvent
 import android.view.Menu
 import android.view.MenuItem
 import android.view.View
+import android.widget.Button
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
 import androidx.core.view.GravityCompat
 import androidx.drawerlayout.widget.DrawerLayout
 import androidx.fragment.app.FragmentContainerView
 import androidx.navigation.NavController
+import androidx.navigation.Navigation
 import androidx.navigation.findNavController
 import androidx.navigation.fragment.NavHostFragment
 import androidx.navigation.ui.AppBarConfiguration
@@ -31,7 +33,7 @@ import org.koin.android.ext.android.inject
 import org.koin.androidx.viewmodel.ext.android.viewModel
 import org.moire.ultrasonic.R
 import org.moire.ultrasonic.data.ActiveServerProvider
-import org.moire.ultrasonic.data.ActiveServerProvider.Companion.isOffline
+import org.moire.ultrasonic.data.ServerSettingDao
 import org.moire.ultrasonic.domain.PlayerState
 import org.moire.ultrasonic.fragment.OnBackPressedHandler
 import org.moire.ultrasonic.fragment.ServerSettingsModel
@@ -65,6 +67,7 @@ class NavigationActivity : AppCompatActivity() {
     private var navigationView: NavigationView? = null
     private var drawerLayout: DrawerLayout? = null
     private var host: NavHostFragment? = null
+    private var selectServerButton: Button? = null
 
     private lateinit var appBarConfiguration: AppBarConfiguration
     private lateinit var nowPlayingEventListener: NowPlayingEventListener
@@ -77,9 +80,12 @@ class NavigationActivity : AppCompatActivity() {
     private val nowPlayingEventDistributor: NowPlayingEventDistributor by inject()
     private val themeChangedEventDistributor: ThemeChangedEventDistributor by inject()
     private val permissionUtil: PermissionUtil by inject()
+    private val activeServerProvider: ActiveServerProvider by inject()
+    private val serverRepository: ServerSettingDao by inject()
 
     private var infoDialogDisplayed = false
     private var currentFragmentId: Int = 0
+    private var cachedServerCount: Int = 0
 
     override fun onCreate(savedInstanceState: Bundle?) {
         setUncaughtExceptionHandler()
@@ -140,7 +146,7 @@ class NavigationActivity : AppCompatActivity() {
             }
 
             // Hides menu items for Offline mode
-            setMenuForServerSetting()
+            setMenuForServerCapabilities()
         }
 
         // Determine first run and migrate server settings to DB as early as possible
@@ -179,12 +185,25 @@ class NavigationActivity : AppCompatActivity() {
 
         nowPlayingEventDistributor.subscribe(nowPlayingEventListener)
         themeChangedEventDistributor.subscribe(themeChangedEventListener)
+
+        serverRepository.liveServerCount().observe(this, { count ->
+            cachedServerCount = count ?: 0
+            setSelectServerButtonText()
+        })
+        ActiveServerProvider.liveActiveServerId.observe(this, { setSelectServerButtonText() })
+    }
+
+    private fun setSelectServerButtonText() {
+        val activeServerName = activeServerProvider.getActiveServer().name
+        if (cachedServerCount == 0)
+            selectServerButton?.text = getString(R.string.main_setup_server, activeServerName)
+        else selectServerButton?.text = activeServerName
     }
 
     override fun onResume() {
         super.onResume()
 
-        setMenuForServerSetting()
+        setMenuForServerCapabilities()
 
         // Lifecycle support's constructor registers some event receivers so it should be created early
         lifecycleSupport.onCreate()
@@ -232,6 +251,12 @@ class NavigationActivity : AppCompatActivity() {
         bookmarksMenuItem = navigationView?.menu?.findItem(R.id.bookmarksFragment)
         sharesMenuItem = navigationView?.menu?.findItem(R.id.sharesFragment)
         podcastsMenuItem = navigationView?.menu?.findItem(R.id.podcastFragment)
+        selectServerButton = navigationView?.getHeaderView(0)?.findViewById(R.id.header_select_server)
+        selectServerButton?.setOnClickListener {
+            if (drawerLayout?.isDrawerVisible(GravityCompat.START) == true)
+                this.drawerLayout?.closeDrawer(GravityCompat.START)
+            navController.navigate(R.id.serverSelectorFragment)
+        }
     }
 
     private fun setupActionBar(navController: NavController, appBarConfig: AppBarConfiguration) {
@@ -381,15 +406,14 @@ class NavigationActivity : AppCompatActivity() {
         nowPlayingView?.visibility = View.GONE
     }
 
-    private fun setMenuForServerSetting() {
-        if (isOffline()) {
+    private fun setMenuForServerCapabilities() {
+        if (ActiveServerProvider.isOffline()) {
             chatMenuItem?.isVisible = false
             bookmarksMenuItem?.isVisible = false
             sharesMenuItem?.isVisible = false
             podcastsMenuItem?.isVisible = false
             return
         }
-        val activeServerProvider: ActiveServerProvider by inject()
         val activeServer = activeServerProvider.getActiveServer()
         chatMenuItem?.isVisible = activeServer.chatSupport != false
         bookmarksMenuItem?.isVisible = activeServer.bookmarkSupport != false

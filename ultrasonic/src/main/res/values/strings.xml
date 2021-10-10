@@ -106,6 +106,7 @@
     <string name="main.music">Music</string>
     <string name="main.offline">Offline</string>
     <string name="main.select_server">Select Server</string>
+    <string name="main.setup_server">%s - Setup Server</string>
     <string name="main.shuffle">Shuffle Play</string>
     <string name="main.songs_random">Random</string>
     <string name="main.songs_starred">Starred</string>
