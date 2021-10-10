@@ -1,6 +1,5 @@
 package org.moire.ultrasonic.data
 
-import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.room.Room
 import kotlinx.coroutines.Dispatchers

@@ -19,7 +19,6 @@ import androidx.core.view.GravityCompat
 import androidx.drawerlayout.widget.DrawerLayout
 import androidx.fragment.app.FragmentContainerView
 import androidx.navigation.NavController
-import androidx.navigation.Navigation
 import androidx.navigation.findNavController
 import androidx.navigation.fragment.NavHostFragment
 import androidx.navigation.ui.AppBarConfiguration
@@ -186,10 +185,13 @@ class NavigationActivity : AppCompatActivity() {
         nowPlayingEventDistributor.subscribe(nowPlayingEventListener)
         themeChangedEventDistributor.subscribe(themeChangedEventListener)
 
-        serverRepository.liveServerCount().observe(this, { count ->
-            cachedServerCount = count ?: 0
-            setSelectServerButtonText()
-        })
+        serverRepository.liveServerCount().observe(
+            this,
+            { count ->
+                cachedServerCount = count ?: 0
+                setSelectServerButtonText()
+            }
+        )
         ActiveServerProvider.liveActiveServerId.observe(this, { setSelectServerButtonText() })
     }
 
@@ -251,7 +253,8 @@ class NavigationActivity : AppCompatActivity() {
         bookmarksMenuItem = navigationView?.menu?.findItem(R.id.bookmarksFragment)
         sharesMenuItem = navigationView?.menu?.findItem(R.id.sharesFragment)
         podcastsMenuItem = navigationView?.menu?.findItem(R.id.podcastFragment)
-        selectServerButton = navigationView?.getHeaderView(0)?.findViewById(R.id.header_select_server)
+        selectServerButton =
+            navigationView?.getHeaderView(0)?.findViewById(R.id.header_select_server)
         selectServerButton?.setOnClickListener {
             if (drawerLayout?.isDrawerVisible(GravityCompat.START) == true)
                 this.drawerLayout?.closeDrawer(GravityCompat.START)
