@@ -94,7 +94,6 @@
     <string name="main.genres_title">Genres</string>
     <string name="main.music">Musik</string>
     <string name="main.offline">Offline</string>
-    <string name="main.select_server">Server wählen</string>
     <string name="main.shuffle">Gemischte Wiedergabe</string>
     <string name="main.songs_random">Zufällig</string>
     <string name="main.songs_starred">Mit Stern</string>
@@ -276,7 +275,6 @@
     <string name="settings.server_scaling_title">Serverseitige Skalierung der Cover</string>
     <string name="settings.server_unused">Unbenutzt</string>
     <string name="settings.server_username">Benutzername</string>
-    <string name="settings.servers_title">Server</string>
     <string name="settings.show_lockscreen_controls">Steuerelemente auf Sperrbildschirm</string>
     <string name="settings.show_lockscreen_controls_summary">Wiedergabeelemente auf dem Sperrbildschirm anzeigen</string>
     <string name="settings.show_notification">Benachrichtigungen anzeigen</string>

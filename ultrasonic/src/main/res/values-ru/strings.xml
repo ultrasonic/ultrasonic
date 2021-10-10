@@ -105,7 +105,6 @@
     <string name="main.genres_title">Жанры</string>
     <string name="main.music">Музыка</string>
     <string name="main.offline">Не в сети</string>
-    <string name="main.select_server">Выбрать сервер</string>
     <string name="main.shuffle">Играть в случайном порядке</string>
     <string name="main.songs_random">Случайный</string>
     <string name="main.songs_starred">Отмеченные</string>
@@ -291,7 +290,6 @@
     <string name="settings.server_scaling_title">Серверное масштабирование обложек альбомов</string>
     <string name="settings.server_unused">Неиспользуемый</string>
     <string name="settings.server_username">Имя пользователя</string>
-    <string name="settings.servers_title">Серверы</string>
     <string name="settings.show_lockscreen_controls">Показать блокировку экрана</string>
     <string name="settings.show_lockscreen_controls_summary">Показать элементы управления воспроизведением на экране блокировки</string>
     <string name="settings.show_notification">Показывать уведомления</string>

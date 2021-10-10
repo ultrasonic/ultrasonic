@@ -105,7 +105,6 @@
     <string name="main.genres_title">Genres</string>
     <string name="main.music">Muziek</string>
     <string name="main.offline">Offline</string>
-    <string name="main.select_server">Kies een server</string>
     <string name="main.shuffle">Willekeurig afspelen</string>
     <string name="main.songs_random">Willekeurig</string>
     <string name="main.songs_starred">Favorieten</string>
@@ -289,7 +288,6 @@
     <string name="settings.server_scaling_title">Verkleinde afbeeldingen ophalen van server</string>
     <string name="settings.server_unused">Ongebruikt</string>
     <string name="settings.server_username">Gebruikersnaam</string>
-    <string name="settings.servers_title">Servers</string>
     <string name="settings.show_lockscreen_controls">Vergrendelschermbediening tonen</string>
     <string name="settings.show_lockscreen_controls_summary">Toont afspeelbediening op het vergrendelscherm</string>
     <string name="settings.show_notification">Melding tonen</string>

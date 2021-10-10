@@ -94,7 +94,6 @@
     <string name="main.genres_title">Gatunki</string>
     <string name="main.music">Muzyka</string>
     <string name="main.offline">Offline</string>
-    <string name="main.select_server">Wybierz serwer</string>
     <string name="main.shuffle">Losowo</string>
     <string name="main.songs_random">Losowe</string>
     <string name="main.songs_starred">Ulubione</string>
@@ -275,7 +274,6 @@
     <string name="settings.server_scaling_title">Skalowanie okładek po stronie serwera</string>
     <string name="settings.server_unused">Bez nazwy</string>
     <string name="settings.server_username">Nazwa użytkownika</string>
-    <string name="settings.servers_title">Serwery</string>
     <string name="settings.show_lockscreen_controls">Wyświetlaj na ekranie blokady</string>
     <string name="settings.show_lockscreen_controls_summary">Wyświetla widżet odtwarzacza na ekranie blokady</string>
     <string name="settings.show_notification">Wyświetlaj powiadomienia</string>

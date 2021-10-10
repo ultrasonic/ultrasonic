@@ -105,7 +105,6 @@
     <string name="main.genres_title">Genres</string>
     <string name="main.music">Musique</string>
     <string name="main.offline">Hors-ligne</string>
-    <string name="main.select_server">Sélectionner un serveur</string>
     <string name="main.shuffle">Lecture aléatoire</string>
     <string name="main.songs_random">Aléatoire</string>
     <string name="main.songs_starred">Favoris</string>
@@ -291,7 +290,6 @@
     <string name="settings.server_scaling_title">Mise à l\'échelle des pochettes d\'album sur le serveur</string>
     <string name="settings.server_unused">Inutilisé</string>
     <string name="settings.server_username">Nom d\'utilisateur</string>
-    <string name="settings.servers_title">Serveurs</string>
     <string name="settings.show_lockscreen_controls">Boutons de contrôle sur l\'écran de verrouillage</string>
     <string name="settings.show_lockscreen_controls_summary">Afficher les contrôles de lecture sur l\'écran de verrouillage</string>
     <string name="settings.show_notification">Notifications</string>

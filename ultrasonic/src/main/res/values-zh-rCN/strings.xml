@@ -76,7 +76,6 @@
     <string name="main.genres_title">流派</string>
     <string name="main.music">音乐</string>
     <string name="main.offline">离线</string>
-    <string name="main.select_server">选择服务器</string>
     <string name="main.shuffle">随机播放</string>
     <string name="main.songs_random">随机</string>
     <string name="main.songs_starred">收藏夹</string>
@@ -212,7 +211,6 @@
     <string name="settings.server_password">密码</string>
     <string name="settings.server_remove_server">删除服务器</string>
     <string name="settings.server_username">用户名</string>
-    <string name="settings.servers_title">服务器</string>
     <string name="settings.show_notification">显示通知</string>
     <string name="settings.show_notification_always">总是显示通知</string>
     <string name="settings.test_connection_title">测试连接</string>

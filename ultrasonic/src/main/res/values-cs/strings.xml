@@ -95,7 +95,6 @@
     <string name="main.genres_title">Žánry</string>
     <string name="main.music">Hudba</string>
     <string name="main.offline">Bez připojení</string>
-    <string name="main.select_server">Vybrat server</string>
     <string name="main.shuffle">Náhodné přehrávání</string>
     <string name="main.songs_random">Náhodné</string>
     <string name="main.songs_starred">Označené hvězdičkou</string>
@@ -277,7 +276,6 @@
     <string name="settings.server_scaling_title">Škálování obrázků alb na serveru</string>
     <string name="settings.server_unused">Nepoužitý</string>
     <string name="settings.server_username">Uživatelské jméno</string>
-    <string name="settings.servers_title">Servery</string>
     <string name="settings.show_lockscreen_controls">Zobrazit ovládání na zamknuté obrazovce</string>
     <string name="settings.show_lockscreen_controls_summary">Zobrazí ovládání přehrávače na zamknuté obrazovce</string>
     <string name="settings.show_notification">Zobrazení upozornění</string>
