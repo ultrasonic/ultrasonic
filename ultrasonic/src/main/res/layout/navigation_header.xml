@@ -6,8 +6,16 @@
     a:layout_width="match_parent"
     a:layout_height="wrap_content"
     a:gravity="bottom"
-    a:background="?attr/colorPrimary"
     a:orientation="vertical">
+
+    <ImageView
+        a:id="@+id/img_header_bg"
+        a:layout_width="match_parent"
+        a:layout_height="0dp"
+        a:scaleType="fitXY"
+        a:src="?attr/colorPrimary"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
 
     <ImageView
         a:id="@+id/img_profile"
