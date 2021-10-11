@@ -4,6 +4,8 @@
     <color name="appwidget_text">#FFFFFF</color>
     <color name="transparent">#00000000</color>
     <color name="cyan">#ff0099cc</color>
+    <color name="navigation_header_light">#ff6200EE</color>
+    <color name="navigation_header_dark">#ffBB86FC</color>
     <color name="ics_opaque">#8033b5e5</color>
     <color name="md__transparent">#00000000</color>
     <color name="translucent">#80000000</color>

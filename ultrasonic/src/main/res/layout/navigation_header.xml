@@ -13,7 +13,7 @@
         a:layout_width="match_parent"
         a:layout_height="0dp"
         a:scaleType="fitXY"
-        a:src="?attr/colorPrimary"
+        a:src="?attr/color_navigation_header_background"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
