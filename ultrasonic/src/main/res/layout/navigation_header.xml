@@ -2,22 +2,12 @@
 <androidx.constraintlayout.widget.ConstraintLayout
     xmlns:a="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
     a:id="@+id/view_container"
     a:layout_width="match_parent"
     a:layout_height="wrap_content"
     a:gravity="bottom"
-    a:orientation="vertical"
-    a:theme="@style/ThemeOverlay.AppCompat.Dark">
-
-    <ImageView
-        a:id="@+id/img_header_bg"
-        a:layout_width="match_parent"
-        a:layout_height="0dp"
-        a:scaleType="fitXY"
-        a:src="@drawable/ic_launcher_background"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+    a:background="?attr/colorPrimary"
+    a:orientation="vertical">
 
     <ImageView
         a:id="@+id/img_profile"
@@ -27,6 +17,7 @@
         a:layout_marginLeft="16dp"
         a:layout_marginTop="32dp"
         a:src="@drawable/ic_stat_ultrasonic"
+        app:tint="?attr/colorOnPrimary"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
@@ -39,6 +30,7 @@
         a:paddingLeft="16dp"
         a:text="@string/common.appname"
         a:textAppearance="@style/TextAppearance.AppCompat.Title"
+        a:textColor="?attr/colorOnPrimary"
         app:layout_constraintBottom_toBottomOf="@+id/img_profile"
         app:layout_constraintStart_toEndOf="@+id/img_profile"
         app:layout_constraintTop_toTopOf="@+id/img_profile" />
@@ -46,20 +38,23 @@
     <Button
         a:id="@+id/header_select_server"
         style="@style/Widget.MaterialComponents.Button.TextButton.Icon"
-        a:layout_width="wrap_content"
+        a:layout_width="match_parent"
         a:layout_height="wrap_content"
-        a:layout_marginStart="6dp"
-        a:layout_marginLeft="6dp"
+        a:gravity="center_vertical"
         a:textAppearance="@style/MenuDrawer.Widget"
         a:textSize="14sp"
         app:icon="@drawable/ic_menu_select_server_dark"
         app:iconPadding="16dp"
-        app:iconTint="@color/appwidget_text"
-        a:padding="16dp"
+        app:iconTint="?attr/colorOnPrimary"
+        a:paddingTop="16dp"
+        a:paddingBottom="16dp"
+        a:paddingLeft="22dp"
+        a:paddingRight="22dp"
         a:text="@string/main.offline"
-        a:textColor="@color/appwidget_text"
+        a:textColor="?attr/colorOnPrimary"
+        a:background="@drawable/default_ripple"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintStart_toStartOf="@+id/img_header_bg"
+        app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/img_profile" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
