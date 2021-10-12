@@ -393,17 +393,30 @@ object Util {
 
     // The AlertDialog requires an Activity context, app context is not enough
     // See https://stackoverflow.com/questions/5436822/
-    fun showDialog(context: Context?, icon: Int, titleId: Int, message: String?) {
-        AlertDialog.Builder(context)
+    fun createDialog(
+        context: Context?,
+        icon: Int = android.R.drawable.ic_dialog_info,
+        title: String,
+        message: String?
+    ): AlertDialog.Builder {
+        return AlertDialog.Builder(context)
             .setIcon(icon)
-            .setTitle(titleId)
+            .setTitle(title)
             .setMessage(message)
             .setPositiveButton(R.string.common_ok) {
                 dialog: DialogInterface,
                 _: Int ->
                 dialog.dismiss()
             }
-            .show()
+    }
+
+    fun showDialog(
+        context: Context,
+        icon: Int = android.R.drawable.ic_dialog_info,
+        titleId: Int,
+        message: String?
+    ) {
+        createDialog(context, icon, context.getString(titleId, ""), message).show()
     }
 
     @JvmStatic

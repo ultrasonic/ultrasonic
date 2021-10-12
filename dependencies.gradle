@@ -1,5 +1,5 @@
 ext.versions = [
-        minSdk               : 14,
+        minSdk               : 16,
         targetSdk            : 29,
         compileSdk           : 29,
         // You need to run ./gradlew wrapper after updating the version

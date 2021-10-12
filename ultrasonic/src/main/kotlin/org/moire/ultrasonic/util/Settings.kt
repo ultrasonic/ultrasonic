@@ -103,6 +103,23 @@ object Settings {
         }
 
     @JvmStatic
+    var cacheLocation: String
+        get() {
+            return preferences.getString(
+                Constants.PREFERENCES_KEY_CACHE_LOCATION,
+                FileUtil.defaultMusicDirectory.path
+            )!!
+        }
+        set(location) {
+            val editor = preferences.edit()
+            editor.putString(
+                Constants.PREFERENCES_KEY_CACHE_LOCATION,
+                location
+            )
+            editor.apply()
+        }
+
+    @JvmStatic
     val cacheSizeMB: Int
         get() {
             val preferences = preferences

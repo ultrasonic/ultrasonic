@@ -83,7 +83,7 @@ class NavigationActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         setUncaughtExceptionHandler()
-        permissionUtil.ForegroundApplicationStarted(this)
+        permissionUtil.onForegroundApplicationStarted(this)
         Util.applyTheme(this)
 
         super.onCreate(savedInstanceState)
@@ -198,7 +198,7 @@ class NavigationActivity : AppCompatActivity() {
         nowPlayingEventDistributor.unsubscribe(nowPlayingEventListener)
         themeChangedEventDistributor.unsubscribe(themeChangedEventListener)
         imageLoaderProvider.clearImageLoader()
-        permissionUtil.ForegroundApplicationStopped()
+        permissionUtil.onForegroundApplicationStopped()
     }
 
     override fun onKeyDown(keyCode: Int, event: KeyEvent?): Boolean {
@@ -304,12 +304,7 @@ class NavigationActivity : AppCompatActivity() {
         PreferenceManager.setDefaultValues(this, R.xml.settings, false)
         val preferences = Settings.preferences
         if (!preferences.contains(Constants.PREFERENCES_KEY_CACHE_LOCATION)) {
-            val editor = preferences.edit()
-            editor.putString(
-                Constants.PREFERENCES_KEY_CACHE_LOCATION,
-                FileUtil.defaultMusicDirectory.path
-            )
-            editor.apply()
+            Settings.cacheLocation = FileUtil.defaultMusicDirectory.path
         }
     }
 

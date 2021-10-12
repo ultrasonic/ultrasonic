@@ -253,9 +253,8 @@ object FileUtil {
     @JvmStatic
     val musicDirectory: File
         get() {
-            val path = Settings.preferences
-                .getString(Constants.PREFERENCES_KEY_CACHE_LOCATION, defaultMusicDirectory.path)
-            val dir = File(path!!)
+            val path = Settings.cacheLocation
+            val dir = File(path)
             val hasAccess = ensureDirectoryExistsAndIsReadWritable(dir)
             if (!hasAccess) permissionUtil.value.handlePermissionFailed(null)
             return if (hasAccess) dir else defaultMusicDirectory

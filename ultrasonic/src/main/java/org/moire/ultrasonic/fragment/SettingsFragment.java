@@ -224,8 +224,7 @@ public class SettingsFragment extends PreferenceFragmentCompat
     }
 
     private void setupCacheLocationPreference() {
-        cacheLocation.setSummary(settings.getString(Constants.PREFERENCES_KEY_CACHE_LOCATION,
-            FileUtil.getDefaultMusicDirectory().getPath()));
+        cacheLocation.setSummary(Settings.getCacheLocation());
 
         cacheLocation.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
             @Override
@@ -431,8 +430,7 @@ public class SettingsFragment extends PreferenceFragmentCompat
         sharingDefaultExpiration.setSummary(sharingDefaultExpiration.getText());
         sharingDefaultDescription.setSummary(sharingDefaultDescription.getText());
         sharingDefaultGreeting.setSummary(sharingDefaultGreeting.getText());
-        cacheLocation.setSummary(settings.getString(Constants.PREFERENCES_KEY_CACHE_LOCATION,
-            FileUtil.getDefaultMusicDirectory().getPath()));
+        cacheLocation.setSummary(Settings.getCacheLocation());
 
         if (!mediaButtonsEnabled.isChecked()) {
             lockScreenEnabled.setChecked(false);
