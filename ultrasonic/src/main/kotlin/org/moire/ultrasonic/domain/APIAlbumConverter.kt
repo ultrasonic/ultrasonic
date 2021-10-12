@@ -16,7 +16,8 @@ fun Album.toDomainEntity(): MusicDirectory.Entry = MusicDirectory.Entry(
     duration = this@toDomainEntity.duration,
     created = this@toDomainEntity.created?.time,
     year = this@toDomainEntity.year,
-    genre = this@toDomainEntity.genre
+    genre = this@toDomainEntity.genre,
+    starred = this@toDomainEntity.starredDate.isNotEmpty()
 )
 
 fun Album.toMusicDirectoryDomainEntity(): MusicDirectory = MusicDirectory().apply {

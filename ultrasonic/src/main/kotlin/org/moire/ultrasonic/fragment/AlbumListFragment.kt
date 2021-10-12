@@ -63,7 +63,8 @@ class AlbumListFragment : GenericListFragment<MusicDirectory.Entry, AlbumRowAdap
             { entry -> onItemClick(entry) },
             { menuItem, entry -> onContextMenuItemSelected(menuItem, entry) },
             imageLoaderProvider.getImageLoader(),
-            onMusicFolderUpdate
+            onMusicFolderUpdate,
+            requireContext()
         )
     }
 
