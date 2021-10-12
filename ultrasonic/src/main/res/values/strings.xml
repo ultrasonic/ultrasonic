@@ -353,12 +353,13 @@
     <string name="widget.sdcard_missing">No SD card</string>
     <string name="settings.share_description_default">Default Share Description</string>
     <string name="settings.sharing_title">Sharing</string>
-    <string name="settings.sharing_always_ask_for_details_summary">Always ask for description and expiration when creating a share</string>
+    <string name="settings.sharing_always_ask_for_details_summary">Always ask for description and expiration when creating a share on the server</string>
     <string name="settings.sharing_always_ask_for_details">Always Ask For Details</string>
     <string name="settings.share_expiration_default">Default Expiration Time</string>
     <string name="do_not_show_dialog_again">Do not show dialog again</string>
     <string name="share_set_share_options">Set Share Options</string>
     <string name="share_on_server">Create share on the server</string>
+    <string name="settings.share_on_server_summary">Sharing will create a share on the server and share its URL. If disabled, only the song details are shared</string>
     <string name="no_expiration">No Expiration</string>
     <string name="download.toggle_playlist">Toggle Playlist</string>
     <string name="download.bookmark_set">Set Bookmark</string>
