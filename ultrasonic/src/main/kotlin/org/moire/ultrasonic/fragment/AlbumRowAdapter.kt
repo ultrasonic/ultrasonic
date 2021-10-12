@@ -107,7 +107,6 @@ class AlbumRowAdapter(
     /**
      * Handles the star / unstar action for an album
      */
-    @Suppress("TooGenericExceptionCaught")
     private fun onStarClick(entry: MusicDirectory.Entry, star: ImageView) {
         entry.starred = !entry.starred
         star.setImageDrawable(if (entry.starred) starDrawable else starHollowDrawable)
@@ -128,8 +127,8 @@ class AlbumRowAdapter(
                         null
                     )
                 }
-            } catch (exception: Exception) {
-                Timber.e(exception)
+            } catch (all: Exception) {
+                Timber.e(all)
             }
         }.start()
     }
