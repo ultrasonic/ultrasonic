@@ -485,11 +485,7 @@ class LocalMediaPlayer : KoinComponent {
                 try {
                     setNextPlayerState(PlayerState.PREPARED)
                     if (Settings.gaplessPlayback &&
-                        Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN &&
-                        (
-                            playerState === PlayerState.STARTED ||
-                                playerState === PlayerState.PAUSED
-                            )
+                        (playerState === PlayerState.STARTED || playerState === PlayerState.PAUSED)
                     ) {
                         mediaPlayer.setNextMediaPlayer(nextMediaPlayer)
                         nextSetup = true
