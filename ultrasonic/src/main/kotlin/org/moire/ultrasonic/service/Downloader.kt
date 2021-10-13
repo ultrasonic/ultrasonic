@@ -1,6 +1,8 @@
 package org.moire.ultrasonic.service
 
 import android.net.wifi.WifiManager
+import androidx.lifecycle.LiveData
+import androidx.lifecycle.MutableLiveData
 import java.util.ArrayList
 import java.util.PriorityQueue
 import java.util.concurrent.Executors
@@ -20,7 +22,6 @@ import timber.log.Timber
  * This class is responsible for maintaining the playlist and downloading
  * its items from the network to the filesystem.
  *
- * TODO: Implement LiveData
  * TODO: Move away from managing the queue with scheduled checks, instead use callbacks when
  * Downloads are finished
  */
@@ -34,6 +35,8 @@ class Downloader(
 
     private val downloadQueue: PriorityQueue<DownloadFile> = PriorityQueue<DownloadFile>()
     private val activelyDownloading: MutableList<DownloadFile> = ArrayList()
+
+    val observableList: MutableLiveData<List<DownloadFile>> = MutableLiveData<List<DownloadFile>>()
 
     private val jukeboxMediaPlayer: JukeboxMediaPlayer by inject()
 
@@ -58,6 +61,7 @@ class Downloader(
         stop()
         clearPlaylist()
         clearBackground()
+        observableList.value = listOf()
         Timber.i("Downloader destroyed")
     }
 
@@ -111,6 +115,9 @@ class Downloader(
             return
         }
 
+        // Flag to know if changes have occured
+        var listChanged = false
+
         // Check the active downloads for failures or completions and remove them
         cleanupActiveDownloads()
 
@@ -134,6 +141,7 @@ class Downloader(
                 !activelyDownloading.contains(download) &&
                 !downloadQueue.contains(download)
             ) {
+                listChanged = true
                 downloadQueue.add(download)
             }
         }
@@ -148,11 +156,16 @@ class Downloader(
             if (playlist.indexOf(task) == 1) {
                 localMediaPlayer.setNextPlayerState(PlayerState.DOWNLOADING)
             }
+            listChanged = true
         }
 
         // Stop Executor service when done downloading
         if (activelyDownloading.size == 0) {
             stop()
+        }
+
+        if (listChanged) {
+            observableList.value = downloads
         }
     }
 
@@ -201,13 +214,13 @@ class Downloader(
         }
 
     @get:Synchronized
-    val downloads: List<DownloadFile?>
+    val downloads: List<DownloadFile>
         get() {
-            val temp: MutableList<DownloadFile?> = ArrayList()
-            temp.addAll(playlist)
+            val temp: MutableList<DownloadFile> = ArrayList()
             temp.addAll(activelyDownloading)
             temp.addAll(downloadQueue)
-            return temp.distinct()
+            temp.addAll(playlist)
+            return temp.distinct().sorted()
         }
 
     @Synchronized
@@ -221,6 +234,7 @@ class Downloader(
         }
 
         playlistUpdateRevision++
+        checkDownloads()
     }
 
     @Synchronized
@@ -241,6 +255,7 @@ class Downloader(
         for (download in activelyDownloading) {
             download.cancelDownload()
         }
+        checkDownloads()
     }
 
     @Synchronized
@@ -250,6 +265,7 @@ class Downloader(
         }
         playlist.remove(downloadFile)
         playlistUpdateRevision++
+        checkDownloads()
     }
 
     @Synchronized

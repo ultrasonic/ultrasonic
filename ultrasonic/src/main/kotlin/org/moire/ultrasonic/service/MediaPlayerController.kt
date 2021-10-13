@@ -421,14 +421,13 @@ class MediaPlayerController(
             }
         }
 
-    @Suppress("TooGenericExceptionCaught") // The interface throws only generic exceptions
     val isJukeboxAvailable: Boolean
         get() {
             try {
                 val username = activeServerProvider.getActiveServer().userName
                 return getMusicService().getUser(username).jukeboxRole
-            } catch (e: Exception) {
-                Timber.w(e, "Error getting user information")
+            } catch (all: Exception) {
+                Timber.w(all, "Error getting user information")
             }
             return false
         }
