@@ -7,8 +7,8 @@ import android.content.Intent;
 import android.net.Uri;
 import android.os.Handler;
 import android.os.Looper;
-import timber.log.Timber;
 
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.AlertDialog;
 import androidx.core.content.PermissionChecker;
 
@@ -23,6 +23,8 @@ import com.karumi.dexter.listener.multi.MultiplePermissionsListener;
 import org.moire.ultrasonic.R;
 
 import java.util.List;
+
+import timber.log.Timber;
 
 import static androidx.core.content.PermissionChecker.PERMISSION_DENIED;
 
@@ -59,7 +61,7 @@ public class PermissionUtil {
      *
      * @param callback callback function to execute after the permission request is finished
      */
-    public void handlePermissionFailed(final PermissionRequestFinishedCallback callback) {
+    public void handlePermissionFailed(@Nullable final PermissionRequestFinishedCallback callback) {
         String currentCachePath = Settings.getPreferences().getString(Constants.PREFERENCES_KEY_CACHE_LOCATION, FileUtil.getDefaultMusicDirectory().getPath());
         String defaultCachePath = FileUtil.getDefaultMusicDirectory().getPath();
 
@@ -84,7 +86,9 @@ public class PermissionUtil {
                     }
                 });
             }
-            callback.onPermissionRequestFinished(false);
+            if (callback != null) {
+                callback.onPermissionRequestFinished(false);
+            }
         }
     }
 
