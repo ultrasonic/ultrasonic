@@ -190,23 +190,29 @@
         a:title="@string/settings.sharing_title"
         app:iconSpaceReserved="false">
         <EditTextPreference
-            a:key="sharingDefaultDescription"
-            a:title="@string/settings.share_description_default"
-            app:iconSpaceReserved="false"/>
-        <EditTextPreference
             a:key="sharingDefaultGreeting"
             a:title="@string/settings.share_greeting_default"
             app:iconSpaceReserved="false"/>
-        <org.moire.ultrasonic.util.TimeSpanPreference
-            a:defaultValue="0"
-            a:key="sharingDefaultExpiration"
-            a:title="@string/settings.share_expiration_default"
+        <CheckBoxPreference
+            a:defaultValue="true"
+            a:key="sharingCreateOnServer"
+            a:title="@string/share_on_server"
+            a:summary="@string/settings.share_on_server_summary"
             app:iconSpaceReserved="false"/>
         <CheckBoxPreference
             a:defaultValue="true"
             a:key="sharingAlwaysAskForDetails"
             a:summary="@string/settings.sharing_always_ask_for_details_summary"
             a:title="@string/settings.sharing_always_ask_for_details"
+            app:iconSpaceReserved="false"/>
+        <EditTextPreference
+            a:key="sharingDefaultDescription"
+            a:title="@string/settings.share_description_default"
+            app:iconSpaceReserved="false"/>
+        <org.moire.ultrasonic.util.TimeSpanPreference
+            a:defaultValue="0"
+            a:key="sharingDefaultExpiration"
+            a:title="@string/settings.share_expiration_default"
             app:iconSpaceReserved="false"/>
     </PreferenceCategory>
     <PreferenceCategory

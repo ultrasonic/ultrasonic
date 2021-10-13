@@ -10,6 +10,7 @@ import java.util.List;
 public class ShareDetails
 {
 	public String Description;
+	public boolean ShareOnServer;
 	public long Expiration;
 	public List<MusicDirectory.Entry> Entries;
 }

@@ -105,6 +105,7 @@ object Constants {
     const val PREFERENCES_KEY_ASK_FOR_SHARE_DETAILS = "sharingAlwaysAskForDetails"
     const val PREFERENCES_KEY_DEFAULT_SHARE_DESCRIPTION = "sharingDefaultDescription"
     const val PREFERENCES_KEY_DEFAULT_SHARE_GREETING = "sharingDefaultGreeting"
+    const val PREFERENCES_KEY_SHARE_ON_SERVER = "sharingCreateOnServer"
     const val PREFERENCES_KEY_DEFAULT_SHARE_EXPIRATION = "sharingDefaultExpiration"
     const val PREFERENCES_KEY_SHOW_ALL_SONGS_BY_ARTIST = "showAllSongsByArtist"
     const val PREFERENCES_KEY_USE_FIVE_STAR_RATING = "use_five_star_rating"
