@@ -5,8 +5,8 @@
     a:layout_width="fill_parent"
     a:layout_height="wrap_content"
     a:layout_marginTop="10dp"
-    a:layout_marginLeft="12dp"
-    a:layout_marginRight="12dp" >
+    a:layout_marginStart="12dp"
+    a:layout_marginEnd="12dp" >
 
     <LinearLayout
         a:layout_width="wrap_content"

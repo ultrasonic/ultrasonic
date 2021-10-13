@@ -9,8 +9,8 @@
         android:bottomLeftRadius="44dp" />
 
     <padding
-        android:paddingLeft="22dp"
-        android:paddingRight="22dp" />
+        android:paddingStart="22dp"
+        android:paddingEnd="22dp" />
 
     <solid android:color="@color/selected_color_dark" />
 

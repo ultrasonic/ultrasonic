@@ -36,8 +36,8 @@
                     android:layout_height="wrap_content"
                     android:layout_gravity="center"
                     android:layout_marginTop="20dip"
-                    android:paddingLeft="40dip"
-                    android:paddingRight="40dip"/>
+                    android:paddingStart="40dip"
+                    android:paddingEnd="40dip"/>
 
         </LinearLayout>
     </ScrollView>

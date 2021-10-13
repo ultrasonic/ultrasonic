@@ -11,8 +11,8 @@
 		android:layout_weight="1"
 		android:textAppearance="?android:attr/textAppearanceMedium"
 		android:gravity="left|center_vertical"
-		android:paddingLeft="6dip"
-		android:paddingRight="6dip"
+		android:paddingStart="6dip"
+		android:paddingEnd="6dip"
 		android:minHeight="50dip"/>
 
 </LinearLayout>

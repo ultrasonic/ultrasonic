@@ -28,6 +28,7 @@
         android:name=".app.UApp"
         android:label="@string/common.appname"
         android:usesCleartextTraffic="true"
+        android:supportsRtl="false"
         tools:ignore="UnusedAttribute">
 
         <meta-data android:name="com.google.android.gms.car.application"

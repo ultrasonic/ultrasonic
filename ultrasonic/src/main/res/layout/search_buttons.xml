@@ -24,7 +24,7 @@
             a:textStyle="bold"
             a:background="#ff555555"
             a:gravity="center_vertical"
-            a:paddingLeft="4dp"/>
+            a:paddingStart="4dp"/>
 
     <TextView
             a:id="@+id/search_albums"
@@ -36,7 +36,7 @@
             a:textStyle="bold"
             a:background="#ff555555"
             a:gravity="center_vertical"
-            a:paddingLeft="4dp"/>
+            a:paddingStart="4dp"/>
 
     <TextView
             a:id="@+id/search_songs"
@@ -48,7 +48,7 @@
             a:textStyle="bold"
             a:background="#ff555555"
             a:gravity="center_vertical"
-            a:paddingLeft="4dp"/>
+            a:paddingStart="4dp"/>
 
     <TextView
             a:id="@+id/search_more_artists"

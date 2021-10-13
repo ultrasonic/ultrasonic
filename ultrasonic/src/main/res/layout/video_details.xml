@@ -19,8 +19,8 @@
             a:layout_gravity="left|center_vertical"
             a:layout_weight="1"
             a:ellipsize="end"
-            a:paddingLeft="4dip"
-            a:paddingRight="2dip"
+            a:paddingStart="4dip"
+            a:paddingEnd="2dip"
             a:singleLine="true"
             a:textAppearance="?android:attr/textAppearanceMedium"/>
 
@@ -29,8 +29,8 @@
             a:layout_width="wrap_content"
             a:layout_height="wrap_content"
             a:layout_gravity="right|center_vertical"
-            a:paddingLeft="2dip"
-            a:paddingRight="6dip"
+            a:paddingStart="2dip"
+            a:paddingEnd="6dip"
             a:singleLine="true"
             a:textAppearance="?android:attr/textAppearanceSmall"/>
     </LinearLayout>

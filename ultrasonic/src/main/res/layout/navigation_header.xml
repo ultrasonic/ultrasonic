@@ -33,7 +33,6 @@
             a:layout_height="match_parent"
             a:gravity="center_vertical"
             a:paddingStart="16dp"
-            a:paddingLeft="16dp"
             a:text="@string/common.appname"
             a:textAppearance="@style/TextAppearance.AppCompat.Title" />
 

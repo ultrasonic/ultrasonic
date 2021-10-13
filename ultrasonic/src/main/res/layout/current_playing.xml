@@ -110,8 +110,8 @@
                     a:layout_height="60dip"
                     a:layout_gravity="center"
                     a:background="@color/translucent"
-                    a:layout_marginLeft="80dip"
-                    a:layout_marginRight="80dip"
+                    a:layout_marginStart="80dip"
+                    a:layout_marginEnd="80dip"
                     a:orientation="vertical"
                     />
 
