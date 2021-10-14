@@ -3,13 +3,13 @@ ext.versions = [
         targetSdk            : 29,
         compileSdk           : 29,
         // You need to run ./gradlew wrapper after updating the version
-        gradle               : '7.0',
+        gradle               : '7.2',
 
         navigation           : "2.3.5",
         gradlePlugin         : "4.2.2",
         androidxcore         : "1.5.0",
         ktlint               : "0.37.1",
-        ktlintGradle         : "9.2.1",
+        ktlintGradle         : "10.2.0",
         detekt               : "1.18.1",
         jacoco               : "0.8.7",
         preferences          : "1.1.1",

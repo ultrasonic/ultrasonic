@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<resources>
+<resources xmlns:tools="http://schemas.android.com/tools">
 
     <string name="background_task.loading">Načítám&#8230;</string>
     <string name="background_task.network_error">Chyba sítě. Ověřte adresu serveru nebo zkuste později.</string>
@@ -17,7 +17,7 @@
     <string name="button_bar.now_playing">Právě hraje</string>
     <string name="podcasts.label">Podcasty</string>
     <string name="podcasts_channels.empty">Není registrován žádný podcast kanál</string>
-    <string name="button_bar.podcasts">Podcast</string>
+    <string name="button_bar.podcasts">Podcasty</string>
     <string name="button_bar.playlists">Playlisty</string>
     <string name="button_bar.search">Hledat</string>
     <string name="chat.send_a_message">Poslat zprávu</string>
@@ -303,7 +303,9 @@
     <string name="settings.use_folder_for_album_artist_summary">Očekává jména hlavních adresářů obsahující jména umělců</string>
     <string name="settings.use_id3">Procházet za použití ID3 tagů</string>
     <string name="settings.use_id3_summary">Používat metodu ID3 tagů místo jmen na základě adresářové struktury</string>
-    <string name="main.video">Video</string>
+    <string name="settings.show_artist_picture">Obrázek umělce v seznamu umělců</string>
+    <string name="settings.show_artist_picture_summary">Zobrazí obrázek umělce v náhledu umělců pokud je dostupný</string>
+    <string name="main.video" tools:ignore="UnusedResources">Video</string>
     <string name="settings.view_refresh">Obnovení náhledu</string>
     <string name="settings.view_refresh_500">.5 sekundy</string>
     <string name="settings.view_refresh_1000">1 sekunda</string>
@@ -323,14 +325,13 @@
     <string name="util.bytes_format.gigabyte">0.00 GB</string>
     <string name="util.bytes_format.kilobyte">0 KB</string>
     <string name="util.bytes_format.megabyte">0.00 MB</string>
-    <string name="util.no_time">-:--</string>
+    <string name="util.no_time" tools:ignore="TypographyDashes">-:--</string>
     <string name="util.zero_time">0:00</string>
     <string name="widget.initial_text">Ťuknutím vybrat hudbu</string>
     <string name="widget.sdcard_busy">SD karta nedostupná</string>
     <string name="widget.sdcard_missing">Chybí SD karta</string>
     <string name="settings.share_description_default">Výchozí popis sdílení</string>
     <string name="settings.sharing_title">Sdílení</string>
-    <string name="settings.sharing_always_ask_for_details_summary">Vždy se dotazovat na popis a čas vypršení při vytváření sdílení</string>
     <string name="settings.sharing_always_ask_for_details">Vždy se dotazovat na detaily</string>
     <string name="settings.share_expiration_default">Výchozí čas vypršení</string>
     <string name="do_not_show_dialog_again">Dialog opět nezobrazovat</string>
@@ -381,7 +382,6 @@
     <string name="settings.debug.log_keep">Zachovat soubory</string>
     <string name="settings.debug.log_delete">Smazat soubory</string>
     <string name="settings.debug.log_deleted">Smazat soubory logů.</string>
-
     <string name="permissions.access_error">Ultrasonic nemá přístup k odkládacím souborům hudby. Umístění odkládacího adresáře bylo změněno na výchozí hodnotu.</string>
     <string name="permissions.message_box_title">Varování</string>
     <string name="permissions.permission_missing">Ultrasonic vyžaduje práva čtení/zápisu do hudebního odkládacího adresáře. Umístění odkládacího adresáře bylo změněno na výchozí hodnotu.</string>
@@ -420,36 +420,43 @@
     <plurals name="select_album_n_songs">
         <item quantity="one">%d skladba</item>
         <item quantity="few">%d skladby</item>
+        <item quantity="many">%d skladeb</item>
         <item quantity="other">%d skladeb</item>
     </plurals>
     <plurals name="select_album_n_songs_pinned">
         <item quantity="one">%d skladba vybrána pro připnutí.</item>
         <item quantity="few">%d skladby vybrány pro připnutí.</item>
+        <item quantity="many">%d skladeb vybráno pro připnutí.</item>
         <item quantity="other">%d skladeb vybráno pro připnutí.</item>
     </plurals>
     <plurals name="select_album_n_songs_downloaded">
         <item quantity="one">%d skladba vybrána pro stažení.</item>
         <item quantity="few">%d skladby vybrány pro stažení.</item>
+        <item quantity="many">%d skladeb vybráno pro stažení.</item>
         <item quantity="other">%d skladeb vybráno pro stažení.</item>
     </plurals>
     <plurals name="select_album_n_songs_unpinned">
         <item quantity="one">%d skladba vybrána pro odepnutí.</item>
         <item quantity="few">%d skladby vybrány pro odepnutí.</item>
+        <item quantity="many">%d skladeb vybráno pro odepnutí.</item>
         <item quantity="other">%d skladeb vybráno pro odepnutí.</item>
     </plurals>
     <plurals name="select_album_n_songs_added">
         <item quantity="one">%d skladba přidána na konec fronty přehrávání.</item>
         <item quantity="few">%d skladyb přidány na konec fronty přehrávání.</item>
+        <item quantity="many">%d skladeb přidáno na konec fronty přehrávání.</item>
         <item quantity="other">%d skladeb přidáno na konec fronty přehrávání.</item>
     </plurals>
     <plurals name="select_album_n_songs_play_next">
         <item quantity="one">%d skladba přidána za aktuální skladbu.</item>
         <item quantity="few">%d skladby přidány za aktuální skladbu.</item>
+        <item quantity="many">%d skladeb přidáno za aktuální skladbu.</item>
         <item quantity="other">%d skladeb přidáno za aktuální skladbu.</item>
     </plurals>
     <plurals name="select_album_donate_dialog_n_trial_days_left">
         <item quantity="one">Zbývá %d den zkušební doby</item>
         <item quantity="few">Zbývají %d dny zkušební doby</item>
+        <item quantity="many">Zbývá %d dní zkušební doby</item>
         <item quantity="other">Zbývá %d dní zkušební doby</item>
     </plurals>
 
