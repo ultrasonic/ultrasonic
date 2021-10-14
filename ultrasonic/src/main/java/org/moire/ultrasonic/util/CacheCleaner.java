@@ -200,7 +200,7 @@ public class CacheCleaner
 
 		Lazy<Downloader> downloader = inject(Downloader.class);
 
-		for (DownloadFile downloadFile : downloader.getValue().getDownloads())
+		for (DownloadFile downloadFile : downloader.getValue().getAll())
 		{
 			filesToNotDelete.add(downloadFile.getPartialFile());
 			filesToNotDelete.add(downloadFile.getCompleteOrSaveFile());

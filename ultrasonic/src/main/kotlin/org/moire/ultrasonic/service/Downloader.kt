@@ -1,7 +1,6 @@
 package org.moire.ultrasonic.service
 
 import android.net.wifi.WifiManager
-import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import java.util.ArrayList
 import java.util.PriorityQueue
@@ -115,11 +114,9 @@ class Downloader(
             return
         }
 
-        // Flag to know if changes have occured
-        var listChanged = false
-
         // Check the active downloads for failures or completions and remove them
-        cleanupActiveDownloads()
+        // Store the result in a flag to know if changes have occurred
+        var listChanged = cleanupActiveDownloads()
 
         // Check if need to preload more from playlist
         val preloadCount = Settings.preloadCount
@@ -165,7 +162,7 @@ class Downloader(
         }
 
         if (listChanged) {
-            observableList.value = downloads
+            observableList.postValue(downloads)
         }
     }
 
@@ -175,7 +172,12 @@ class Downloader(
         }
     }
 
-    private fun cleanupActiveDownloads() {
+    /**
+     * Return true if modifications were made
+     */
+    private fun cleanupActiveDownloads(): Boolean {
+        val oldSize = activelyDownloading.size
+
         activelyDownloading.retainAll {
             when {
                 it.isDownloading -> true
@@ -190,6 +192,8 @@ class Downloader(
                 }
             }
         }
+
+        return (oldSize != activelyDownloading.size)
     }
 
     @get:Synchronized
@@ -214,12 +218,33 @@ class Downloader(
         }
 
     @get:Synchronized
-    val downloads: List<DownloadFile>
+    val all: List<DownloadFile>
         get() {
             val temp: MutableList<DownloadFile> = ArrayList()
             temp.addAll(activelyDownloading)
             temp.addAll(downloadQueue)
             temp.addAll(playlist)
+            return temp.distinct().sorted()
+        }
+
+    /*
+    * Returns a list of all DownloadFiles that are currently downloading or waiting for download,
+    * including undownloaded files from the playlist.
+     */
+    @get:Synchronized
+    val downloads: List<DownloadFile>
+        get() {
+            val temp: MutableList<DownloadFile> = ArrayList()
+            temp.addAll(activelyDownloading)
+            temp.addAll(downloadQueue)
+            temp.addAll(
+                playlist.filter {
+                    when (it.status.value) {
+                        DownloadStatus.DOWNLOADING -> true
+                        else -> false
+                    }
+                }
+            )
             return temp.distinct().sorted()
         }
 

@@ -356,13 +356,13 @@ class MediaPlayerService : Service() {
                 Util.broadcastNewTrackInfo(this@MediaPlayerService, currentPlaying.song)
                 Util.broadcastA2dpMetaDataChange(
                     this@MediaPlayerService, playerPosition, currentPlaying,
-                    downloader.downloads.size, downloader.currentPlayingIndex + 1
+                    downloader.all.size, downloader.currentPlayingIndex + 1
                 )
             } else {
                 Util.broadcastNewTrackInfo(this@MediaPlayerService, null)
                 Util.broadcastA2dpMetaDataChange(
                     this@MediaPlayerService, playerPosition, null,
-                    downloader.downloads.size, downloader.currentPlayingIndex + 1
+                    downloader.all.size, downloader.currentPlayingIndex + 1
                 )
             }
 

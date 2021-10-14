@@ -69,7 +69,7 @@ class MusicDirectory {
         var bookmarkPosition: Int = 0,
         var userRating: Int? = null,
         var averageRating: Float? = null
-    ) : Serializable, GenericEntry(), Comparable<Entry> {
+    ) : Serializable, GenericEntry(id) {
         fun setDuration(duration: Long) {
             this.duration = duration.toInt()
         }
@@ -78,7 +78,7 @@ class MusicDirectory {
             private const val serialVersionUID = -3339106650010798108L
         }
 
-        override fun compareTo(other: Entry): Int {
+        fun compareTo(other: Entry): Int {
             when {
                 this.closeness == other.closeness -> {
                     return 0
@@ -91,5 +91,7 @@ class MusicDirectory {
                 }
             }
         }
+
+        override fun compareTo(other: Identifiable) = compareTo(other as Entry)
     }
 }

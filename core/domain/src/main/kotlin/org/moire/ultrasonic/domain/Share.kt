@@ -4,7 +4,7 @@ import java.io.Serializable
 import org.moire.ultrasonic.domain.MusicDirectory.Entry
 
 data class Share(
-    override var id: String? = null,
+    override var id: String,
     var url: String? = null,
     var description: String? = null,
     var username: String? = null,
@@ -13,7 +13,7 @@ data class Share(
     var expires: String? = null,
     var visitCount: Long? = null,
     private val entries: MutableList<Entry> = mutableListOf()
-) : Serializable, GenericEntry() {
+) : Serializable, GenericEntry(id) {
     override val name: String?
         get() {
             if (url != null) {

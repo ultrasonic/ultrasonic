@@ -2,7 +2,7 @@ package org.moire.ultrasonic.domain
 
 import androidx.room.Ignore
 
-open class ArtistOrIndex(
+abstract class ArtistOrIndex(
     @Ignore
     override var id: String,
     @Ignore
@@ -15,4 +15,4 @@ open class ArtistOrIndex(
     open var albumCount: Long? = null,
     @Ignore
     open var closeness: Int = 0
-) : GenericEntry()
+) : GenericEntry(id)

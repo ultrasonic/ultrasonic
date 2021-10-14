@@ -61,6 +61,9 @@
             app:destination="@id/trackCollectionFragment" />
     </fragment>
     <fragment
+        android:id="@+id/downloadsFragment"
+        android:name="org.moire.ultrasonic.fragment.DownloadsFragment" />
+    <fragment
         android:id="@+id/sharesFragment"
         android:name="org.moire.ultrasonic.fragment.SharesFragment" >
         <action
