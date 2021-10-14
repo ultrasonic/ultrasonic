@@ -21,7 +21,6 @@
         a:layout_height="wrap_content"
         a:textAppearance="?android:attr/textAppearanceListItem"
         a:paddingTop="10dp"
-        a:layout_toRightOf="@id/server_image"
         a:layout_toEndOf="@id/server_image" />
 
     <TextView
@@ -31,7 +30,6 @@
         a:textAppearance="?android:attr/textAppearanceSmall"
         a:layout_below="@id/server_name"
         a:paddingBottom="10dp"
-        a:layout_toRightOf="@id/server_image"
         a:layout_toEndOf="@id/server_image" />
 
     <ImageButton
@@ -43,7 +41,7 @@
         a:layout_centerVertical="true"
         a:layout_gravity="end"
         a:layout_marginEnd="15dp"
-        a:layout_marginRight="15dp"
+
         a:focusable="false"
         a:src="?attr/more_vert"
         a:padding="5dp" />

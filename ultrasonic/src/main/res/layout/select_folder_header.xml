@@ -6,7 +6,7 @@
     a:minHeight="?android:attr/listPreferredItemHeight"
     a:orientation="horizontal"
     a:paddingBottom="2dip"
-    a:paddingLeft="6dp"
+    a:paddingStart="6dp"
     a:paddingTop="2dip"
     a:background="?android:attr/selectableItemBackground"
     a:clickable="true"
@@ -27,7 +27,7 @@
             a:id="@+id/select_folder_title"
             a:layout_width="fill_parent"
             a:layout_height="wrap_content"
-            a:layout_marginLeft="10dip"
+            a:layout_marginStart="10dip"
             a:layout_marginTop="6dip"
             a:text="@string/select_artist.folder"
             a:textAppearance="?android:attr/textAppearanceLarge" />
@@ -36,7 +36,7 @@
             a:id="@+id/select_folder_name"
             a:layout_width="fill_parent"
             a:layout_height="wrap_content"
-            a:layout_marginLeft="10dip"
+            a:layout_marginStart="10dip"
             a:textAppearance="?android:attr/textAppearanceSmall" />
     </LinearLayout>
 

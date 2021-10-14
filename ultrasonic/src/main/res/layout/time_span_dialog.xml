@@ -44,7 +44,7 @@
             android:layout_height="wrap_content"
             android:id="@+id/timeSpanSpinner"
             android:layout_alignBottom="@+id/timeSpanEditText"
-            android:layout_toRightOf="@+id/timeSpanEditText"/>
+            android:layout_toEndOf="@+id/timeSpanEditText"/>
     </RelativeLayout>
 
 </LinearLayout>

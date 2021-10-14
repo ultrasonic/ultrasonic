@@ -415,10 +415,9 @@ class EditServerFragment : Fragment(), OnBackPressedHandler {
                 }
 
                 Util.showDialog(
-                    activity,
-                    android.R.drawable.ic_dialog_info,
-                    R.string.settings_testing_ok,
-                    dialogText
+                    context = requireActivity(),
+                    titleId = R.string.settings_testing_ok,
+                    message = dialogText
                 )
             }
 

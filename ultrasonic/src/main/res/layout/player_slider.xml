@@ -4,8 +4,8 @@
     a:layout_height="wrap_content"
     a:orientation="vertical"
     a:layout_marginTop="10dp"
-    a:layout_marginLeft="12dp"
-    a:layout_marginRight="12dp" >
+    a:layout_marginStart="12dp"
+    a:layout_marginEnd="12dp" >
     
     <SeekBar
         a:id="@+id/current_playing_progress_bar"
@@ -22,7 +22,7 @@
             a:layout_width="wrap_content"
             a:layout_height="wrap_content"
             a:layout_alignParentLeft="true"
-            a:layout_marginLeft="12dip"
+            a:layout_marginStart="12dip"
             a:text="@string/util.no_time"
             a:textAppearance="?android:attr/textAppearanceSmall" />
 
@@ -31,7 +31,7 @@
             a:layout_width="wrap_content"
             a:layout_height="wrap_content"
             a:layout_alignParentRight="true"
-            a:layout_marginRight="12dip"
+            a:layout_marginEnd="12dip"
             a:text="@string/util.no_time"
             a:textAppearance="?android:attr/textAppearanceSmall" />
 

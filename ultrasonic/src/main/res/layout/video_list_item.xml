@@ -10,7 +10,7 @@
         a:layout_width="wrap_content"
         a:layout_height="fill_parent"
         a:gravity="center_vertical"
-        a:paddingLeft="1dip"
+        a:paddingStart="1dip"
         a:visibility="gone" />
 
     <include layout="@layout/video_details"
@@ -23,7 +23,7 @@
         a:background="@android:color/transparent"
         a:focusable="false"
         a:gravity="center_vertical"
-        a:paddingRight="8dip"
+        a:paddingEnd="8dip"
         a:src="?attr/star_hollow" />
 
 </LinearLayout>

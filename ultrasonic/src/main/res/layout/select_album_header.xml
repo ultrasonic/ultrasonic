@@ -9,7 +9,7 @@
         a:layout_height="160dip"
         a:layout_alignParentLeft="true"
         a:layout_alignParentTop="true"
-        a:layout_marginRight="10dip"
+        a:layout_marginEnd="10dip"
         a:contentDescription="@null"
         a:scaleType="fitCenter"
         a:src="@drawable/unknown_album"/>
@@ -18,9 +18,9 @@
         a:id="@+id/select_album_title"
         a:layout_width="wrap_content"
         a:layout_height="wrap_content"
-        a:layout_toRightOf="@+id/select_album_art"
+        a:layout_toEndOf="@+id/select_album_art"
         a:ellipsize="end"
-        a:paddingRight="4dip"
+        a:paddingEnd="4dip"
         a:paddingTop="10dip"
         a:singleLine="true"
         a:textAppearance="?android:attr/textAppearanceMedium"/>
@@ -30,9 +30,9 @@
         a:layout_width="wrap_content"
         a:layout_height="wrap_content"
         a:layout_below="@+id/select_album_title"
-        a:layout_toRightOf="@+id/select_album_art"
+        a:layout_toEndOf="@+id/select_album_art"
         a:ellipsize="end"
-        a:paddingRight="4dip"
+        a:paddingEnd="4dip"
         a:singleLine="true"
         a:textAppearance="?android:attr/textAppearanceSmall"/>
 
@@ -41,9 +41,9 @@
         a:layout_width="wrap_content"
         a:layout_height="wrap_content"
         a:layout_below="@+id/select_album_artist"
-        a:layout_toRightOf="@+id/select_album_art"
+        a:layout_toEndOf="@+id/select_album_art"
         a:ellipsize="end"
-        a:paddingRight="4dip"
+        a:paddingEnd="4dip"
         a:singleLine="true"
         a:textAppearance="?android:attr/textAppearanceSmall"/>
 
@@ -52,9 +52,9 @@
         a:layout_width="wrap_content"
         a:layout_height="wrap_content"
         a:layout_below="@+id/select_album_genre"
-        a:layout_toRightOf="@+id/select_album_art"
+        a:layout_toEndOf="@+id/select_album_art"
         a:ellipsize="end"
-        a:paddingRight="4dip"
+        a:paddingEnd="4dip"
         a:singleLine="true"
         a:textAppearance="?android:attr/textAppearanceSmall"/>
 
@@ -63,9 +63,9 @@
         a:layout_width="wrap_content"
         a:layout_height="wrap_content"
         a:layout_below="@+id/select_album_year"
-        a:layout_toRightOf="@+id/select_album_art"
+        a:layout_toEndOf="@+id/select_album_art"
         a:ellipsize="none"
-        a:paddingRight="4dip"
+        a:paddingEnd="4dip"
         a:singleLine="true"
         a:textAppearance="?android:attr/textAppearanceSmall"/>
 
@@ -74,9 +74,9 @@
         a:layout_width="wrap_content"
         a:layout_height="wrap_content"
         a:layout_below="@+id/select_album_song_count"
-        a:layout_toRightOf="@+id/select_album_art"
+        a:layout_toEndOf="@+id/select_album_art"
         a:ellipsize="none"
-        a:paddingRight="4dip"
+        a:paddingEnd="4dip"
         a:singleLine="true"
         a:textAppearance="?android:attr/textAppearanceSmall"/>
 

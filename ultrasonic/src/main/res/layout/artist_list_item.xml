@@ -16,9 +16,7 @@
         a:minWidth="56dip"
         a:minHeight="56dip"
         a:paddingStart="8dip"
-        a:paddingLeft="8dip"
         a:paddingEnd="8dip"
-        a:paddingRight="8dip"
         a:text="A"
         a:textAppearance="?android:attr/textAppearanceLarge"
         a:textColor="@color/cyan" />
@@ -30,11 +28,8 @@
         a:layout_gravity="center_horizontal|center_vertical"
         a:layout_marginTop="8dp"
         a:layout_marginStart="2dp"
-        a:layout_marginLeft="2dp"
         a:layout_marginEnd="10dp"
-        a:layout_marginRight="10dp"
         a:layout_toEndOf="@+id/row_section"
-        a:layout_toRightOf="@+id/row_section"
         a:scaleType="fitCenter"
         a:src="@drawable/ic_contact_picture"
         app:shapeAppearanceOverlay="@style/roundedImageView" />
@@ -44,13 +39,12 @@
         a:layout_width="fill_parent"
         a:layout_height="wrap_content"
         a:layout_toEndOf="@+id/artist_coverart"
-        a:layout_toRightOf="@+id/artist_coverart"
         a:drawablePadding="6dip"
         a:gravity="center_vertical"
         a:minHeight="56dip"
-        a:paddingLeft="3dip"
-        a:paddingRight="3dip"
-        a:layout_marginRight="12dp"
+        a:paddingStart="3dip"
+        a:paddingEnd="3dip"
         a:layout_marginEnd="12dp"
+
         a:textAppearance="?android:attr/textAppearanceMedium" />
 </RelativeLayout>
