@@ -32,9 +32,9 @@ ext {
 
 jacocoTestReport {
     reports {
-        html.enabled true
-        csv.enabled false
-        xml.enabled true
+        html.required = true
+        xml.required = false
+        csv.required = false
     }
 
     afterEvaluate {
