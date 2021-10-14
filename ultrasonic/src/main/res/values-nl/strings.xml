@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<resources>
+<resources xmlns:tools="http://schemas.android.com/tools">
 
     <string name="background_task.loading">Bezig met laden&#8230;</string>
     <string name="background_task.network_error">Er is een netwerkfout opgetreden. Controleer het serveradres of probeer het later opnieuw.</string>
@@ -28,7 +28,9 @@
     <string name="button_bar.playlists">Afspeellijsten</string>
     <string name="button_bar.search">Zoeken</string>
     <string name="chat.send_a_message">Bericht versturen</string>
+    <string name="common.album">Album</string>
     <string name="common.appname">Ultrasonic</string>
+    <string name="common.artist">Artiest</string>
     <string name="common.cancel">Annuleren</string>
     <string name="common.comment">Reageren</string>
     <string name="common.confirm">Bevestigen</string>
@@ -48,6 +50,7 @@
     <string name="common.play_shuffled">Willekeurig afspelen</string>
     <string name="common.public">Openbaar</string>
     <string name="common.save">Opslaan</string>
+    <string name="common.title">Titel</string>
     <string name="common.unpin">Losmaken</string>
     <string name="common.various_artists">Verschillende artiesten</string>
     <string name="delete_playlist">Wil je %1$s verwijderen?</string>
@@ -111,7 +114,9 @@
     <string name="main.songs_starred">Favorieten</string>
     <string name="main.songs_title">Nummers</string>
     <string name="main.videos">Video\'s</string>
+    <string name="main.welcome_text_demo">Om in Ultrasonic naar je eigen muziek te luisteren, heb je je <b>eigen server</b> nodig. \n\n➤ Maar als je de app eerst wilt uitproberen, dan kun je voorlopig de demoserver gebruiken. \n\n➤ In de <b>instellingen</b> kun je je eigen server instellen.</string>
     <string name="main.welcome_title">Welkom!</string>
+    <string name="main.welcome_cancel">Open de instellingen</string>
     <string name="menu.about">Over</string>
     <string name="menu.common">Algemeen</string>
     <string name="menu.deleted_playlist">Afspeellijst %s verwijderd</string>
@@ -124,7 +129,7 @@
     <string name="music_library.label_offline">Offline media</string>
     <string name="music_service.retry">Er is een netwerkfout opgetreden. Bezig met opnieuw proberen; poging %1$d van %2$d.</string>
     <string name="parser.artist_count">%d artiesten opgehaald.</string>
-    <string name="parser.reading">Bezig met uitlezen van server...</string>
+    <string name="parser.reading">Bezig met uitlezen van server…</string>
     <string name="parser.reading_done">Klaar!</string>
     <string name="playlist.label">Afspeellijsten</string>
     <string name="playlist.update_info">Informatie bijwerken</string>
@@ -149,7 +154,7 @@
     <string name="select_artist.folder">Map kiezen</string>
     <string name="select_genre.empty">Geen genres gevonden</string>
     <string name="select_playlist.empty">Geen opgeslagen afspeellijsten op server</string>
-    <string name="service.connecting">Bezig met verbinden met server; even geduld...</string>
+    <string name="service.connecting">Bezig met verbinden met server; even geduld…</string>
     <string name="settings.appearance_title">Uiterlijk</string>
     <string name="settings.buffer_length">Bufferduur</string>
     <string name="settings.buffer_length_0">Uitgeschakeld</string>
@@ -278,6 +283,8 @@
     <string name="settings.search_title">Zoekinstellingen</string>
     <string name="settings.send_bluetooth_album_art_summary">Albumhoezen versturen via bluetooth (dit kan leiden tot mislukte bluetoothmeldingen)</string>
     <string name="settings.send_bluetooth_album_art">Albumhoezen versturen via bluetooth</string>
+    <string name="settings.disable_send_now_playing_list_summary">De lijst ‘Nu aan het afspelen’ wordt niet gedeeld met verbonden apparaten. Hierdoor wordt de comptabiliteit met AVCRP 1.3-apparaten hersteld als het huidige nummer niet wordt bijgewerkt.</string>
+    <string name="settings.disable_send_now_playing_list">‘Nu aan het afspelen’-lijst niet delen</string>
     <string name="settings.send_bluetooth_notification_summary">Afspeelmeldingen sturen via bluetooth</string>
     <string name="settings.send_bluetooth_notification">Bluetoothmelding sturen</string>
     <string name="settings.server_manage_servers">Manage Servers</string>
@@ -317,7 +324,7 @@
     <string name="settings.use_id3_summary">ID3-labels gebruiken in plaats van systeemlabels</string>
     <string name="settings.show_artist_picture">Artiestfoto tonen op artiestenlijst</string>
     <string name="settings.show_artist_picture_summary">Toont de artiestfoto op de artiestenlijst (indien beschikbaar)</string>
-    <string name="main.video">Video</string>
+    <string name="main.video" tools:ignore="UnusedResources">Video</string>
     <string name="settings.view_refresh">Verversen</string>
     <string name="settings.view_refresh_500">0,5 seconden</string>
     <string name="settings.view_refresh_1000">1 seconde</string>
@@ -337,7 +344,7 @@
     <string name="util.bytes_format.gigabyte">0,00 GB</string>
     <string name="util.bytes_format.kilobyte">0 KB</string>
     <string name="util.bytes_format.megabyte">0,00 MB</string>
-    <string name="util.no_time">-:--</string>
+    <string name="util.no_time" tools:ignore="TypographyDashes">-:--</string>
     <string name="util.zero_time">0:00</string>
     <string name="widget.initial_text">Druk om muziek te selecteren</string>
     <string name="widget.sdcard_busy">SD-kaart niet beschikbaar</string>
@@ -349,6 +356,8 @@
     <string name="settings.share_expiration_default">Standaard vervaltijd</string>
     <string name="do_not_show_dialog_again">Niet meer tonen</string>
     <string name="share_set_share_options">Deelopties instellen</string>
+    <string name="share_on_server">Delen op server</string>
+    <string name="settings.share_on_server_summary">Delen deelt een item op de server en maakt een deel-url aan. Schakel uit om alleen de nummerinformatie te delen.</string>
     <string name="no_expiration">Geen vervaldatum</string>
     <string name="download.toggle_playlist">Afspeellijst tonen/verbergen</string>
     <string name="download.bookmark_set">Bladwijzer instellen</string>
@@ -371,6 +380,7 @@
     <string name="settings.share_expiration">Tijd tot verval</string>
     <string name="download_song_removed">\"%s\" is verwijderd uit de afspeellijst</string>
     <string name="download.share_playlist">Afspeellijst delen</string>
+    <string name="download.share_song">Huidig nummer delen</string>
     <string name="settings.share_greeting_default">Standaard deelbericht</string>
     <string name="share_default_greeting">Hé, luister eens naar de muziek die ik heb gedeeld via %s</string>
     <string name="share_via">Nummers delen via</string>
@@ -391,10 +401,11 @@
     <string name="settings.debug.title">Foutopsporingsopties</string>
     <string name="settings.debug.log_to_file">Foutopsporingslogboek bijhouden</string>
     <string name="settings.debug.log_path">De logboeken worden opgeslagen in %1$s/%2$s</string>
-    <string name="settings.debug.log_summary">Er staan %1$s logboeken in de map \'%3$s\' met een omvang van om en nabij de %2$s MB. Wil je deze behouden?</string>
+    <string name="settings.debug.log_summary">Er staan %1$s logboeken in de map ‘%3$s’ met een omvang van om en nabij de %2$s MB. Wil je deze behouden?</string>
     <string name="settings.debug.log_keep">Behouden</string>
     <string name="settings.debug.log_delete">Verwijderen</string>
     <string name="settings.debug.log_deleted">De logboeken zijn verwijderd.</string>
+    <string name="notification.downloading_title">Bezig met downloaden van media op de achtergrond…</string>
 
     <string name="permissions.access_error">Ultrasonic heeft geen toegang tot de muziekcache. De cachelocatie is teruggezet op de standaardlocatie.</string>
     <string name="permissions.message_box_title">Waarschuwing</string>
@@ -432,6 +443,7 @@
     <string name="server_editor.authentication">Authenticatie</string>
     <string name="server_editor.advanced">Geavanceerde instellingen</string>
     <string name="server_editor.disabled_feature">Eén of meerdere functies zijn uitgeschakeld omdat de server ze niet ondersteunt.\nVoer deze test later opnieuw uit.</string>
+    <string name="server_menu.demo">Demoserver</string>
 
     <plurals name="select_album_n_songs">
         <item quantity="one">%d nummer</item>
@@ -447,19 +459,19 @@
     </plurals>
     <plurals name="select_album_n_songs_unpinned">
         <item quantity="one">%d los te maken nummer geselecteerd.</item>
-        <item quantity="other">%dlos te maken nummers geselecteerd. </item>
+        <item quantity="other">%d los te maken nummers geselecteerd.</item>
     </plurals>
     <plurals name="select_album_n_songs_added">
-        <item quantity="one">%d nummer toegevoegd aan einde van afspeelwachtrij.</item>
-        <item quantity="other">%d nummers toegevoegd aan einde van afspeelwachtrij.</item>
+        <item quantity="one">%d nummer toegevoegd aan het einde van afspeelwachtrij.</item>
+        <item quantity="other">%d nummers toegevoegd aan het einde van afspeelwachtrij.</item>
     </plurals>
     <plurals name="select_album_n_songs_play_next">
-        <item quantity="one">%d nummer ingevoegd na huidige nummer.</item>
-        <item quantity="other">%d nummers ingevoegd na huidige nummer.</item>
+        <item quantity="one">%d nummer ingevoegd na het huidige nummer.</item>
+        <item quantity="other">%d nummers ingevoegd na het huidige nummer.</item>
     </plurals>
     <plurals name="select_album_donate_dialog_n_trial_days_left">
-        <item quantity="one">Nog %d dag over van proefperiode</item>
-        <item quantity="other">Nog %d dagen over van proefperiode</item>
+        <item quantity="one">Nog %d dag over van de proefperiode</item>
+        <item quantity="other">Nog %d dagen over van de proefperiode</item>
     </plurals>
 
     <!-- Subsonic api errors -->

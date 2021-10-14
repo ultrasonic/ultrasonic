@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<resources>
+<resources xmlns:tools="http://schemas.android.com/tools">
 
     <string name="background_task.loading">Lade&#8230;</string>
     <string name="background_task.network_error">Ein Netzwerkfehler ist aufgetreten. Bitte die Serveradresse prüfen oder später noch einmal versuchen.</string>
@@ -300,7 +300,7 @@
     <string name="settings.use_folder_for_album_artist_summary">Annehmen, dass der Ordner der obersten Ebene der Name des Albumkünstlers ist</string>
     <string name="settings.use_id3">Durchsuchen von ID3-Tags</string>
     <string name="settings.use_id3_summary">Nutze ID3 Tag Methode anstatt Dateisystem-Methode</string>
-    <string name="main.video">Film</string>
+    <string name="main.video" tools:ignore="UnusedResources">Film</string>
     <string name="settings.view_refresh">Aktualisierungsinterval</string>
     <string name="settings.view_refresh_500">.5 Sekunden</string>
     <string name="settings.view_refresh_1000">1 Sekunde</string>
@@ -320,14 +320,13 @@
     <string name="util.bytes_format.gigabyte">0.00 GB</string>
     <string name="util.bytes_format.kilobyte">0 KB</string>
     <string name="util.bytes_format.megabyte">0.00 MB</string>
-    <string name="util.no_time">-:--</string>
+    <string name="util.no_time" tools:ignore="TypographyDashes">-:--</string>
     <string name="util.zero_time">0:00</string>
     <string name="widget.initial_text">Berühren, um Musik auszuwählen</string>
     <string name="widget.sdcard_busy">SD Karte nicht verfügbar</string>
     <string name="widget.sdcard_missing">Keine SD Karte</string>
     <string name="settings.share_description_default">Standard Beschreibung einer Freigabe</string>
     <string name="settings.sharing_title">Teilen</string>
-    <string name="settings.sharing_always_ask_for_details_summary">Beim erstellen einer Freigabe immer nach Beschreibung und Ablaufdatum fragen</string>
     <string name="settings.sharing_always_ask_for_details">Immer nach Details fragen</string>
     <string name="settings.share_expiration_default">Standard Ablaufzeit</string>
     <string name="do_not_show_dialog_again">Dialog nicht wieder anzeigen</string>
@@ -364,35 +363,6 @@
     <string name="download.menu_show_artist">Künstler zeigen</string>
     <string name="common_multiple_years">Mehrere Jahre</string>
     <string name="server_editor.new_label">Server hinzufügen</string>
-    <plurals name="select_album_n_songs">
-        <item quantity="one">%d Titel</item>
-        <item quantity="other">%d Titel</item>
-    </plurals>
-    <plurals name="select_album_n_songs_pinned">
-        <item quantity="one">%d Titel</item>
-        <item quantity="other">%d Titel</item>
-    </plurals>
-    <plurals name="select_album_n_songs_downloaded">
-        <item quantity="one">%d Titel</item>
-        <item quantity="other">%d Titel</item>
-    </plurals>
-    <plurals name="select_album_n_songs_unpinned">
-        <item quantity="one">%d Titel</item>
-        <item quantity="other">%d Titel</item>
-    </plurals>
-    <plurals name="select_album_n_songs_added">
-        <item quantity="one">%d Titel</item>
-        <item quantity="other">%d Titel</item>
-    </plurals>
-    <plurals name="select_album_n_songs_play_next">
-        <item quantity="one">%d Titel</item>
-        <item quantity="other">%d Titel</item>
-    </plurals>
-    <plurals name="select_album_donate_dialog_n_trial_days_left">
-        <item quantity="one">%d Titel</item>
-        <item quantity="other">%d Titel</item>
-    </plurals>
-
     <!-- Subsonic api errors -->
     <string name="api.subsonic.generic">Allgemeiner API Fehler: %1$s</string>
     <string name="api.subsonic.generic.no.message">Keine Nachricht vom Server erhalten</string>

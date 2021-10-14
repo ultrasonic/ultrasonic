@@ -346,7 +346,6 @@
     <string name="widget.sdcard_missing">Нет SD-карты</string>
     <string name="settings.share_description_default">Описание общего ресурса</string>
     <string name="settings.sharing_title">Поделиться</string>
-    <string name="settings.sharing_always_ask_for_details_summary">Всегда запрашивайте описание и срок действия при создании ресурса</string>
     <string name="settings.sharing_always_ask_for_details">Всегда спрашивайте подробности</string>
     <string name="settings.share_expiration_default">Время истечения по умолчанию</string>
     <string name="do_not_show_dialog_again">Больше не показывать диалог</string>
@@ -397,7 +396,6 @@
     <string name="settings.debug.log_keep">Сохранить файлы</string>
     <string name="settings.debug.log_delete">Удалить файлы</string>
     <string name="settings.debug.log_deleted">Удаленные файлы журналов.</string>
-
     <string name="permissions.access_error">Ultrasonic не может получить доступ к кэшу музыкальных файлов. Местоположение кэша было сброшено на путь по умолчанию.</string>
     <string name="permissions.message_box_title">Внимание</string>
     <string name="permissions.permission_missing">Ultrasonic требуется разрешение на чтение/запись в директории музыкального кэша. Каталог кэша был сброшен на значение по умолчанию.</string>

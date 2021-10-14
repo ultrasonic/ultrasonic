@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<resources>
+<resources xmlns:tools="http://schemas.android.com/tools">
 
     <string name="background_task.loading">Betöltés&#8230;</string>
     <string name="background_task.network_error">Hálózati hiba történt! Kérjük, ellenőrizze a kiszolgáló címét vagy próbálja később!</string>
@@ -317,7 +317,7 @@
     <string name="settings.use_id3_summary">ID3 Tag módszer használata a fájlredszer alapú mód helyett.</string>
     <string name="settings.show_artist_picture">Előadó képének megjelenítése</string>
     <string name="settings.show_artist_picture_summary">Az előadó listában megjeleníti a képeket, amennyiben elérhetőek</string>
-    <string name="main.video">Videó</string>
+    <string name="main.video" tools:ignore="UnusedResources">Videó</string>
     <string name="settings.view_refresh">Nézet frissítési gyakorisága</string>
     <string name="settings.view_refresh_500">.5 másodperc</string>
     <string name="settings.view_refresh_1000">1 másodperc</string>
@@ -337,14 +337,13 @@
     <string name="util.bytes_format.gigabyte">0.00 GB</string>
     <string name="util.bytes_format.kilobyte">0 KB</string>
     <string name="util.bytes_format.megabyte">0.00 MB</string>
-    <string name="util.no_time">-:--</string>
+    <string name="util.no_time" tools:ignore="TypographyDashes">-:--</string>
     <string name="util.zero_time">0:00</string>
     <string name="widget.initial_text">Érintse meg a zene kiválasztásához</string>
     <string name="widget.sdcard_busy">Az SD kártya nem elérhető!</string>
     <string name="widget.sdcard_missing">Nincs SD kártya!</string>
     <string name="settings.share_description_default">Megosztás alapértelmezett leírása</string>
     <string name="settings.sharing_title">Megosztás</string>
-    <string name="settings.sharing_always_ask_for_details_summary">Megosztás létrehozásakor mindig kérje be a leírást és a lejárati időt.</string>
     <string name="settings.sharing_always_ask_for_details">Mindig kérdezzen rá a részletekre</string>
     <string name="settings.share_expiration_default">Alapértelmezett lejárati idő</string>
     <string name="do_not_show_dialog_again">A párbeszédablak ne jelenjen meg többé</string>
@@ -395,7 +394,6 @@
     <string name="settings.debug.log_keep">Fájlok megtartása</string>
     <string name="settings.debug.log_delete">Fájlok törlése</string>
     <string name="settings.debug.log_deleted">Naplófájlok törölve.</string>
-
     <string name="permissions.access_error">Az Ultrasonic nem éri el a zenei fájl gyorsítótárat. A gyorsítótár helye visszaállítva az alapbeállításra.</string>
     <string name="permissions.message_box_title">Figyelem</string>
     <string name="permissions.permission_missing">Az Ultrasonic működéséhez írás/olvasás hozzáférés szükséges a zenei fájl gyorsítótárhoz. A gyorsítótár helye visszaállítva az alapbeállításra.</string>
