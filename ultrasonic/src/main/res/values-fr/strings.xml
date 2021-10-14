@@ -346,7 +346,6 @@
     <string name="widget.sdcard_missing">Aucune carte SD</string>
     <string name="settings.share_description_default">Description par défaut de la collection partagée</string>
     <string name="settings.sharing_title">Répartition</string>
-    <string name="settings.sharing_always_ask_for_details_summary">Toujours demander pour la description et l\'expiration lors de la création d\'une collection partagée</string>
     <string name="settings.sharing_always_ask_for_details">Toujours demander pour plus de détails</string>
     <string name="settings.share_expiration_default">Temps d\'expiration par défaut</string>
     <string name="do_not_show_dialog_again">Ne montre pas de dialogue à nouveau</string>
@@ -397,7 +396,6 @@
     <string name="settings.debug.log_keep">Conserver les fichiers</string>
     <string name="settings.debug.log_delete">Supprimer les fichiers</string>
     <string name="settings.debug.log_deleted">Fichiers de log supprimés</string>
-
     <string name="permissions.access_error">Ultrasonic ne peut pas accéder au cache. Le répertoire de cache a été réinitialisé sur le chemin par défaut.</string>
     <string name="permissions.message_box_title">Attention</string>
     <string name="permissions.permission_missing">Ultrasonic requiert les droits de lecture/écriture sur le répertoire de cache. Le répertoire de cache a été réinitialisé à la valeur par défaut.</string>
