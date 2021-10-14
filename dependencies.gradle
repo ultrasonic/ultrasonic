@@ -1,5 +1,5 @@
 ext.versions = [
-        minSdk               : 14,
+        minSdk               : 21,
         targetSdk            : 29,
         compileSdk           : 29,
         // You need to run ./gradlew wrapper after updating the version
@@ -42,6 +42,7 @@ ext.versions = [
         dexter               : "6.2.3",
         timber               : "4.7.1",
         fastScroll           : "2.0.1",
+        colorPicker          : "2.2.3",
 ]
 
 ext.gradlePlugins = [
@@ -89,6 +90,7 @@ ext.other = [
         timber             : "com.jakewharton.timber:timber:$versions.timber",
         fastScroll         : "com.simplecityapps:recyclerview-fastscroll:$versions.fastScroll",
         sortListView       : "com.github.tzugen:drag-sort-listview:$versions.sortListView",
+        colorPickerView    : "com.github.skydoves:colorpickerview:$versions.colorPicker",
 ]
 
 ext.testing = [

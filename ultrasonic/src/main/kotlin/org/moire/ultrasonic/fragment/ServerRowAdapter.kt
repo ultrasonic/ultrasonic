@@ -14,10 +14,12 @@ import android.widget.ImageView
 import android.widget.PopupMenu
 import android.widget.RelativeLayout
 import android.widget.TextView
+import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.content.ContextCompat
 import org.moire.ultrasonic.R
 import org.moire.ultrasonic.data.ActiveServerProvider
 import org.moire.ultrasonic.data.ServerSetting
+import org.moire.ultrasonic.util.ServerColor
 import org.moire.ultrasonic.util.Util
 
 /**
@@ -77,15 +79,15 @@ internal class ServerRowAdapter(
 
         val text = vi?.findViewById<TextView>(R.id.server_name)
         val description = vi?.findViewById<TextView>(R.id.server_description)
-        val layout = vi?.findViewById<RelativeLayout>(R.id.server_layout)
+        val layout = vi?.findViewById<ConstraintLayout>(R.id.server_layout)
         val image = vi?.findViewById<ImageView>(R.id.server_image)
         val serverMenu = vi?.findViewById<ImageButton>(R.id.server_menu)
+        val setting = data.singleOrNull { t -> t.index == index }
 
         if (index == 0) {
             text?.text = context.getString(R.string.main_offline)
             description?.text = ""
         } else {
-            val setting = data.singleOrNull { t -> t.index == index }
             text?.text = setting?.name ?: ""
             description?.text = setting?.url ?: ""
             if (setting == null) serverMenu?.visibility = View.INVISIBLE
@@ -95,8 +97,14 @@ internal class ServerRowAdapter(
         if (index == 0) {
             serverMenu?.visibility = View.INVISIBLE
             image?.setImageDrawable(Util.getDrawableFromAttribute(context, R.attr.screen_on_off))
+            image?.background = ContextCompat.getDrawable(context, R.color.transparent)
         } else {
-            image?.setImageDrawable(Util.getDrawableFromAttribute(context, R.attr.server))
+            val icon = ContextCompat.getDrawable(context, R.drawable.ic_menu_server_dark)
+            icon?.setTint(ServerColor.getForegroundColor(context, setting?.color))
+            image?.setImageDrawable(icon)
+            val background = ContextCompat.getDrawable(context, R.drawable.circle)
+            background?.setTint(ServerColor.getBackgroundColor(context, setting?.color))
+            image?.background = background
         }
 
         // Highlight the Active Server's row by changing its background

@@ -295,6 +295,7 @@
     <string name="settings.server_scaling_title">Server-Side Album Art Scaling</string>
     <string name="settings.server_unused">Unused</string>
     <string name="settings.server_username">Username</string>
+    <string name="settings.server_color">Server color</string>
     <string name="settings.show_lockscreen_controls">Show Lock Screen Controls</string>
     <string name="settings.show_lockscreen_controls_summary">Show playback controls on the lock screen</string>
     <string name="settings.show_notification">Show Notification</string>

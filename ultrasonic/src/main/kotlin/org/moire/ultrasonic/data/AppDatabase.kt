@@ -9,7 +9,7 @@ import androidx.sqlite.db.SupportSQLiteDatabase
  * Room Database to be used to store global data for the whole app.
  * This could be settings or data that are not specific to any remote music database
  */
-@Database(entities = [ServerSetting::class], version = 3)
+@Database(entities = [ServerSetting::class], version = 4)
 abstract class AppDatabase : RoomDatabase() {
 
     /**
@@ -39,6 +39,14 @@ val MIGRATION_2_3: Migration = object : Migration(2, 3) {
         )
         database.execSQL(
             "ALTER TABLE ServerSetting ADD COLUMN podcastSupport INTEGER"
+        )
+    }
+}
+
+val MIGRATION_3_4: Migration = object : Migration(3, 4) {
+    override fun migrate(database: SupportSQLiteDatabase) {
+        database.execSQL(
+            "ALTER TABLE ServerSetting ADD COLUMN color INTEGER"
         )
     }
 }
