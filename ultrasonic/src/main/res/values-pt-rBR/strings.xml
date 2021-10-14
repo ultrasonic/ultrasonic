@@ -398,7 +398,7 @@
     <string name="settings.debug.log_keep">Manter arquivos</string>
     <string name="settings.debug.log_delete">Excluir arquivos</string>
     <string name="settings.debug.log_deleted">Arquivos de log excluídos.</string>
-    <string name="notification.downloading_title">Baixado mídia em segundo plano...</string>
+    <string name="notification.downloading_title">Baixado mídia em segundo plano…</string>
 
     <string name="permissions.access_error">O Ultrasonic não pôde acessar o cache dos arquivos de música. O local do cache foi redefinido para o caminho padrão.</string>
     <string name="permissions.message_box_title">Atenção</string>

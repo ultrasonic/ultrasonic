@@ -373,7 +373,7 @@
     <string name="api.subsonic.requested_data_was_not_found">Angeforderte Daten nicht gefunden.</string>
     <string name="api.subsonic.trial_period_is_over">Der Testzeitraum ist abgelaufen.</string>
     <string name="api.subsonic.upgrade_client">Inkompatible Versionen. Bitte die Ultrasonic App aktualisieren.</string>
-    <string name="api.subsonic.upgrade_server">Inkompatible Versionen. Bitte den subsonic Server aktualisieren..</string>
+    <string name="api.subsonic.upgrade_server">Inkompatible Versionen. Bitte den subsonic Server aktualisieren.</string>
 
     <!-- Subsonic feature flags -->
     <string name="feature_flags_category_title">Funktionseinstellungem</string>

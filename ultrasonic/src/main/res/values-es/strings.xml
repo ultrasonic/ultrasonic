@@ -317,7 +317,7 @@
     <string name="settings.title.allow_self_signed_certificate">Permir certificado HTTPS autofirmado</string>
     <string name="settings.title.enable_ldap_users_support">Forzar autenticación de contraseña plana</string>
     <string name="settings.summary.enable_ldap_users_support">Esto obliga a la aplicación a enviar siempre la contraseña sin cifrar.
-        Útil si el servidor Subsonic no admite la nueva API de autenticación para los usuarios..</string>
+        Útil si el servidor Subsonic no admite la nueva API de autenticación para los usuarios.</string>
     <string name="settings.use_folder_for_album_artist">Usar carpetas para el nombre del artista</string>
     <string name="settings.use_folder_for_album_artist_summary">Se asume que la carpeta en el nivel mal alto es el nombre del artista del álbum</string>
     <string name="settings.use_id3">Navegar usando las etiquetas ID3</string>
