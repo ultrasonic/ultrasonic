@@ -14,7 +14,6 @@ import androidx.appcompat.widget.AppCompatEditText
 import androidx.recyclerview.widget.RecyclerView
 import java.io.File
 import java.util.LinkedList
-import kotlin.Comparator
 import org.moire.ultrasonic.R
 import org.moire.ultrasonic.util.Util
 import timber.log.Timber
@@ -24,7 +23,8 @@ import timber.log.Timber
  * @author this implementation is loosely based on the work of Yogesh Sundaresan,
  * original license: http://www.apache.org/licenses/LICENSE-2.0
  */
-internal class FilePickerAdapter : RecyclerView.Adapter<FilePickerAdapter.FileListHolder> {
+internal class FilePickerAdapter(view: FilePickerView) :
+    RecyclerView.Adapter<FilePickerAdapter.FileListHolder>() {
 
     private var data: MutableList<FileListItem> = LinkedList()
     var defaultDirectory: File = Environment.getExternalStorageDirectory()
@@ -34,32 +34,15 @@ internal class FilePickerAdapter : RecyclerView.Adapter<FilePickerAdapter.FileLi
         private set
 
     private var context: Context? = null
-    private var listerView: FilePickerView? = null
+    private var listerView: FilePickerView? = view
     private var isRealDirectory: Boolean = false
-
-    private val physicalPaths: Array<String>
-        get() = arrayOf(
-            "/storage/sdcard0", "/storage/sdcard1", "/storage/extsdcard",
-            "/storage/sdcard0/external_sdcard", "/mnt/extsdcard", "/mnt/sdcard/external_sd",
-            "/mnt/external_sd", "/mnt/media_rw/sdcard1", "/removable/microsd", "/mnt/emmc",
-            "/storage/external_SD", "/storage/ext_sd", "/storage/removable/sdcard1",
-            "/data/sdext", "/data/sdext2", "/data/sdext3", "/data/sdext4", "/sdcard1",
-            "/sdcard2", "/storage/microsd", "/data/user"
-        )
 
     private var folderIcon: Drawable? = null
     private var upIcon: Drawable? = null
     private var sdIcon: Drawable? = null
 
-    constructor(defaultDir: File, view: FilePickerView) : this(view) {
-        this.defaultDirectory = defaultDir
-        selectedDirectory = defaultDir
-    }
-
-    constructor(view: FilePickerView) {
+    init {
         this.context = view.context
-        listerView = view
-
         upIcon = Util.getDrawableFromAttribute(context, R.attr.filepicker_subdirectory_up)
         folderIcon = Util.getDrawableFromAttribute(context, R.attr.filepicker_folder)
         sdIcon = Util.getDrawableFromAttribute(context, R.attr.filepicker_sd_card)
@@ -71,8 +54,8 @@ internal class FilePickerAdapter : RecyclerView.Adapter<FilePickerAdapter.FileLi
 
     private fun fileLister(currentDirectory: File) {
         var fileList = LinkedList<FileListItem>()
-        var storages: List<File>? = null
-        var storagePaths: List<String>? = null
+        val storages: List<File>?
+        val storagePaths: List<String>?
         storages = context!!.getExternalFilesDirs(null).filterNotNull()
         storagePaths = storages.map { i -> i.absolutePath }
 
@@ -82,8 +65,7 @@ internal class FilePickerAdapter : RecyclerView.Adapter<FilePickerAdapter.FileLi
             currentDirectory.absolutePath == "/mnt"
         ) {
             isRealDirectory = false
-            fileList =
-                getKitKatStorageItems(storages!!)
+            fileList = getKitKatStorageItems(storages)
         } else {
             isRealDirectory = true
             val files = currentDirectory.listFiles()
@@ -96,20 +78,18 @@ internal class FilePickerAdapter : RecyclerView.Adapter<FilePickerAdapter.FileLi
 
         data = LinkedList(fileList)
 
-        data.sortWith(
-            Comparator { f1, f2 ->
-                if (f1.file!!.isDirectory && f2.file!!.isDirectory)
-                    f1.name.compareTo(f2.name, ignoreCase = true)
-                else if (f1.file!!.isDirectory && !f2.file!!.isDirectory)
-                    -1
-                else if (!f1.file!!.isDirectory && f2.file!!.isDirectory)
-                    1
-                else if (!f1.file!!.isDirectory && !f2.file!!.isDirectory)
-                    f1.name.compareTo(f2.name, ignoreCase = true)
-                else
-                    0
-            }
-        )
+        data.sortWith { f1, f2 ->
+            if (f1.file!!.isDirectory && f2.file!!.isDirectory)
+                f1.name.compareTo(f2.name, ignoreCase = true)
+            else if (f1.file!!.isDirectory && !f2.file!!.isDirectory)
+                -1
+            else if (!f1.file!!.isDirectory && f2.file!!.isDirectory)
+                1
+            else if (!f1.file!!.isDirectory && !f2.file!!.isDirectory)
+                f1.name.compareTo(f2.name, ignoreCase = true)
+            else
+                0
+        }
 
         selectedDirectory = currentDirectory
         selectedDirectoryChanged.invoke(
@@ -122,7 +102,7 @@ internal class FilePickerAdapter : RecyclerView.Adapter<FilePickerAdapter.FileLi
         if (currentDirectory.absolutePath != "/" && isRealDirectory) {
             // If we are on KitKat or later, only the default App folder is usable, so we can't
             // navigate the SD card. Jump to the root if "Up" is selected.
-            if (storagePaths!!.indexOf(currentDirectory.absolutePath) > 0)
+            if (storagePaths.indexOf(currentDirectory.absolutePath) > 0)
                 data.add(0, FileListItem(File("/"), "..", upIcon!!))
             else
                 data.add(0, FileListItem(selectedDirectory.parentFile!!, "..", upIcon!!))
@@ -130,33 +110,6 @@ internal class FilePickerAdapter : RecyclerView.Adapter<FilePickerAdapter.FileLi
 
         notifyDataSetChanged()
         listerView!!.scrollToPosition(0)
-    }
-
-    private fun getStorageItems(): LinkedList<FileListItem> {
-        val fileList = LinkedList<FileListItem>()
-        var s = System.getenv("EXTERNAL_STORAGE")
-        if (!TextUtils.isEmpty(s)) {
-            val f = File(s!!)
-            fileList.add(FileListItem(f, f.name, sdIcon!!))
-        } else {
-            val paths = physicalPaths
-            for (path in paths) {
-                val f = File(path)
-                if (f.exists())
-                    fileList.add(FileListItem(f, f.name, sdIcon!!))
-            }
-        }
-        s = System.getenv("SECONDARY_STORAGE")
-        if (s != null && !TextUtils.isEmpty(s)) {
-            val rawSecondaryStorages =
-                s.split(File.pathSeparator.toRegex()).dropLastWhile { it.isEmpty() }.toTypedArray()
-            for (path in rawSecondaryStorages) {
-                val f = File(path)
-                if (f.exists())
-                    fileList.add(FileListItem(f, f.name, sdIcon!!))
-            }
-        }
-        return fileList
     }
 
     private fun getKitKatStorageItems(storages: List<File>): LinkedList<FileListItem> {
