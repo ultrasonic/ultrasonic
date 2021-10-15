@@ -3,6 +3,7 @@ package org.moire.ultrasonic.activity
 import android.app.AlertDialog
 import android.app.SearchManager
 import android.content.Intent
+import android.content.res.ColorStateList
 import android.content.res.Resources
 import android.media.AudioManager
 import android.os.Bundle
@@ -12,9 +13,11 @@ import android.view.KeyEvent
 import android.view.Menu
 import android.view.MenuItem
 import android.view.View
-import android.widget.Button
+import android.widget.ImageView
+import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
+import androidx.core.content.ContextCompat
 import androidx.core.view.GravityCompat
 import androidx.drawerlayout.widget.DrawerLayout
 import androidx.fragment.app.FragmentContainerView
@@ -27,6 +30,7 @@ import androidx.navigation.ui.onNavDestinationSelected
 import androidx.navigation.ui.setupActionBarWithNavController
 import androidx.navigation.ui.setupWithNavController
 import androidx.preference.PreferenceManager
+import com.google.android.material.button.MaterialButton
 import com.google.android.material.navigation.NavigationView
 import org.koin.android.ext.android.inject
 import org.koin.androidx.viewmodel.ext.android.viewModel
@@ -46,6 +50,7 @@ import org.moire.ultrasonic.util.FileUtil
 import org.moire.ultrasonic.util.NowPlayingEventDistributor
 import org.moire.ultrasonic.util.NowPlayingEventListener
 import org.moire.ultrasonic.util.PermissionUtil
+import org.moire.ultrasonic.util.ServerColor
 import org.moire.ultrasonic.util.Settings
 import org.moire.ultrasonic.util.SubsonicUncaughtExceptionHandler
 import org.moire.ultrasonic.util.ThemeChangedEventDistributor
@@ -66,7 +71,10 @@ class NavigationActivity : AppCompatActivity() {
     private var navigationView: NavigationView? = null
     private var drawerLayout: DrawerLayout? = null
     private var host: NavHostFragment? = null
-    private var selectServerButton: Button? = null
+    private var selectServerButton: MaterialButton? = null
+    private var headerBackgroundImage: ImageView? = null
+    private var ultrasonicLogoImage: ImageView? = null
+    private var ultrasonicNameText: TextView? = null
 
     private lateinit var appBarConfiguration: AppBarConfiguration
     private lateinit var nowPlayingEventListener: NowPlayingEventListener
@@ -189,17 +197,35 @@ class NavigationActivity : AppCompatActivity() {
             this,
             { count ->
                 cachedServerCount = count ?: 0
-                setSelectServerButtonText()
+                updateNavigationHeaderForServer()
             }
         )
-        ActiveServerProvider.liveActiveServerId.observe(this, { setSelectServerButtonText() })
+        ActiveServerProvider.liveActiveServerId.observe(this, { updateNavigationHeaderForServer() })
     }
 
-    private fun setSelectServerButtonText() {
-        val activeServerName = activeServerProvider.getActiveServer().name
+    private fun updateNavigationHeaderForServer() {
+        val activeServer = activeServerProvider.getActiveServer()
+
         if (cachedServerCount == 0)
-            selectServerButton?.text = getString(R.string.main_setup_server, activeServerName)
-        else selectServerButton?.text = activeServerName
+            selectServerButton?.text = getString(R.string.main_setup_server, activeServer.name)
+        else selectServerButton?.text = activeServer.name
+
+        val foregroundColor = ServerColor.getForegroundColor(this, activeServer.color)
+        val backgroundColor = ServerColor.getBackgroundColor(this, activeServer.color)
+
+        if (activeServer.index == 0)
+            selectServerButton?.icon =
+                ContextCompat.getDrawable(this, R.drawable.ic_menu_screen_on_off_dark)
+        else
+            selectServerButton?.icon =
+                ContextCompat.getDrawable(this, R.drawable.ic_menu_select_server_dark)
+
+        selectServerButton?.iconTint = ColorStateList.valueOf(foregroundColor)
+        ultrasonicLogoImage?.imageTintList = ColorStateList.valueOf(foregroundColor)
+
+        selectServerButton?.setTextColor(foregroundColor)
+        ultrasonicNameText?.setTextColor(foregroundColor)
+        headerBackgroundImage?.setBackgroundColor(backgroundColor)
     }
 
     override fun onResume() {
@@ -260,6 +286,12 @@ class NavigationActivity : AppCompatActivity() {
                 this.drawerLayout?.closeDrawer(GravityCompat.START)
             navController.navigate(R.id.serverSelectorFragment)
         }
+        headerBackgroundImage =
+            navigationView?.getHeaderView(0)?.findViewById(R.id.img_header_bg)
+        ultrasonicLogoImage =
+            navigationView?.getHeaderView(0)?.findViewById(R.id.img_profile)
+        ultrasonicNameText =
+            navigationView?.getHeaderView(0)?.findViewById(R.id.name)
     }
 
     private fun setupActionBar(navController: NavController, appBarConfig: AppBarConfiguration) {

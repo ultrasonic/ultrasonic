@@ -73,10 +73,8 @@ internal class FilePickerAdapter : RecyclerView.Adapter<FilePickerAdapter.FileLi
         var fileList = LinkedList<FileListItem>()
         var storages: List<File>? = null
         var storagePaths: List<String>? = null
-        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.KITKAT) {
-            storages = context!!.getExternalFilesDirs(null).filterNotNull()
-            storagePaths = storages.map { i -> i.absolutePath }
-        }
+        storages = context!!.getExternalFilesDirs(null).filterNotNull()
+        storagePaths = storages.map { i -> i.absolutePath }
 
         if (currentDirectory.absolutePath == "/" ||
             currentDirectory.absolutePath == "/storage" ||
@@ -84,13 +82,8 @@ internal class FilePickerAdapter : RecyclerView.Adapter<FilePickerAdapter.FileLi
             currentDirectory.absolutePath == "/mnt"
         ) {
             isRealDirectory = false
-            fileList = if (
-                android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.KITKAT
-            ) {
+            fileList =
                 getKitKatStorageItems(storages!!)
-            } else {
-                getStorageItems()
-            }
         } else {
             isRealDirectory = true
             val files = currentDirectory.listFiles()
@@ -129,14 +122,10 @@ internal class FilePickerAdapter : RecyclerView.Adapter<FilePickerAdapter.FileLi
         if (currentDirectory.absolutePath != "/" && isRealDirectory) {
             // If we are on KitKat or later, only the default App folder is usable, so we can't
             // navigate the SD card. Jump to the root if "Up" is selected.
-            if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.KITKAT) {
-                if (storagePaths!!.indexOf(currentDirectory.absolutePath) > 0)
-                    data.add(0, FileListItem(File("/"), "..", upIcon!!))
-                else
-                    data.add(0, FileListItem(selectedDirectory.parentFile!!, "..", upIcon!!))
-            } else {
+            if (storagePaths!!.indexOf(currentDirectory.absolutePath) > 0)
+                data.add(0, FileListItem(File("/"), "..", upIcon!!))
+            else
                 data.add(0, FileListItem(selectedDirectory.parentFile!!, "..", upIcon!!))
-            }
         }
 
         notifyDataSetChanged()

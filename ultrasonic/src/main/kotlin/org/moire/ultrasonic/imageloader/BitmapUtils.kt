@@ -65,10 +65,6 @@ class BitmapUtils {
                     opt.inPreferQualityOverSpeed = true
                 }
 
-                if (Build.VERSION.SDK_INT < Build.VERSION_CODES.LOLLIPOP) {
-                    opt.inPurgeable = true
-                }
-
                 opt.inSampleSize = Util.calculateInSampleSize(
                     opt,
                     size,
@@ -101,10 +97,6 @@ class BitmapUtils {
                 if (Build.VERSION.SDK_INT < Build.VERSION_CODES.N) {
                     opt.inDither = true
                     opt.inPreferQualityOverSpeed = true
-                }
-
-                if (Build.VERSION.SDK_INT < Build.VERSION_CODES.LOLLIPOP) {
-                    opt.inPurgeable = true
                 }
 
                 opt.inSampleSize = Util.calculateInSampleSize(

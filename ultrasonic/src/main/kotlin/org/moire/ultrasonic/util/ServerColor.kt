@@ -1,3 +1,10 @@
+/*
+ * ServerColor.kt
+ * Copyright (C) 2009-2021 Ultrasonic developers
+ *
+ * Distributed under terms of the GNU GPLv3 license.
+ */
+
 package org.moire.ultrasonic.util
 
 import android.content.Context
@@ -7,6 +14,9 @@ import org.moire.ultrasonic.R
 
 private const val LUMINANCE_LIMIT = 0.25
 
+/**
+ * Contains functions for computing server display colors
+ */
 object ServerColor {
     fun getBackgroundColor(context: Context, serverColor: Int?): Int {
         return serverColor ?: ContextCompat.getColor(

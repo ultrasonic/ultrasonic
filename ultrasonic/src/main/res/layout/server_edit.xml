@@ -1,9 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <ScrollView xmlns:a="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     a:layout_width="match_parent"
     a:layout_height="match_parent"
-    a:fillViewport="true" >
+    a:fillViewport="true">
 
 <androidx.constraintlayout.widget.ConstraintLayout
     a:layout_width="match_parent"
@@ -64,7 +65,7 @@
         a:src="@drawable/rounded_border"
         app:layout_constraintTop_toBottomOf="@id/edit_server_address"
         app:layout_constraintRight_toRightOf="parent"
-        />
+        tools:ignore="ContentDescription" />
 
     <TextView
         a:id="@+id/edit_authentication_header"

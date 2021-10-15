@@ -2,6 +2,7 @@
 <androidx.constraintlayout.widget.ConstraintLayout
     xmlns:a="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     a:id="@+id/view_container"
     a:layout_width="match_parent"
     a:layout_height="wrap_content"
@@ -13,9 +14,9 @@
         a:layout_width="match_parent"
         a:layout_height="0dp"
         a:scaleType="fitXY"
-        a:src="?attr/color_navigation_header_background"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toTopOf="parent"
+        tools:ignore="ContentDescription" />
 
     <ImageView
         a:id="@+id/img_profile"
@@ -25,9 +26,10 @@
         a:layout_marginLeft="16dp"
         a:layout_marginTop="32dp"
         a:src="@drawable/ic_stat_ultrasonic"
-        app:tint="?attr/colorOnPrimary"
+        tools:tint="@color/selected_menu_dark"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toTopOf="parent"
+        tools:ignore="ContentDescription" />
 
     <TextView
         a:id="@+id/name"
@@ -39,6 +41,7 @@
         a:text="@string/common.appname"
         a:textAppearance="@style/TextAppearance.AppCompat.Title"
         a:textColor="?attr/colorOnPrimary"
+        tools:textColor="@color/selected_menu_dark"
         app:layout_constraintBottom_toBottomOf="@+id/img_profile"
         app:layout_constraintStart_toEndOf="@+id/img_profile"
         app:layout_constraintTop_toTopOf="@+id/img_profile" />
@@ -53,16 +56,25 @@
         a:textSize="14sp"
         app:icon="@drawable/ic_menu_select_server_dark"
         app:iconPadding="16dp"
-        app:iconTint="?attr/colorOnPrimary"
-        a:paddingTop="16dp"
-        a:paddingBottom="16dp"
-        a:paddingStart="22dp"
-        a:paddingEnd="22dp"
+        a:paddingHorizontal="22dp"
+        a:paddingTop="14dp"
+        a:paddingBottom="14dp"
         a:text="@string/main.offline"
         a:textColor="?attr/colorOnPrimary"
         a:background="@drawable/default_ripple"
+        tools:iconTint="@color/selected_menu_dark"
+        tools:textColor="@color/selected_menu_dark"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/img_profile" />
+
+    <ImageView
+        a:id="@+id/img_shadow"
+        a:layout_width="match_parent"
+        a:layout_height="6dp"
+        a:layout_marginTop="-6dp"
+        a:scaleType="fitXY"
+        a:src="@drawable/drop_shadow"
+        app:layout_constraintTop_toBottomOf="@+id/header_select_server" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
