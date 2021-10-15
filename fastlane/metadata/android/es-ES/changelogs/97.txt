@@ -1,0 +1,2 @@
+Correción de errores
+- #571: Se comprueban los valores nulos en la sesión de medios.

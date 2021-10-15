@@ -103,6 +103,23 @@ object Settings {
         }
 
     @JvmStatic
+    var cacheLocation: String
+        get() {
+            return preferences.getString(
+                Constants.PREFERENCES_KEY_CACHE_LOCATION,
+                FileUtil.defaultMusicDirectory.path
+            )!!
+        }
+        set(location) {
+            val editor = preferences.edit()
+            editor.putString(
+                Constants.PREFERENCES_KEY_CACHE_LOCATION,
+                location
+            )
+            editor.apply()
+        }
+
+    @JvmStatic
     val cacheSizeMB: Int
         get() {
             val preferences = preferences
@@ -374,6 +391,21 @@ object Settings {
                 Constants.PREFERENCES_KEY_DEFAULT_SHARE_GREETING,
                 defaultVal
             )
+        }
+
+    var shareOnServer: Boolean
+        get() {
+            val preferences = preferences
+            return preferences.getBoolean(Constants.PREFERENCES_KEY_SHARE_ON_SERVER, true)!!
+        }
+        set(shareOnServer) {
+            val preferences = preferences
+            val editor = preferences.edit()
+            editor.putBoolean(
+                Constants.PREFERENCES_KEY_SHARE_ON_SERVER,
+                shareOnServer
+            )
+            editor.apply()
         }
 
     var defaultShareExpiration: String

@@ -55,7 +55,7 @@
         a:layout_centerVertical="true"
         a:layout_gravity="end"
         a:layout_marginEnd="15dp"
-        a:layout_marginRight="15dp"
+
         a:focusable="false"
         a:src="?attr/more_vert"
         tools:src="@drawable/ic_more_vert_dark"

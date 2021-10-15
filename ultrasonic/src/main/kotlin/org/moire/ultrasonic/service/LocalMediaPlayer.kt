@@ -485,11 +485,7 @@ class LocalMediaPlayer : KoinComponent {
                 try {
                     setNextPlayerState(PlayerState.PREPARED)
                     if (Settings.gaplessPlayback &&
-                        Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN &&
-                        (
-                            playerState === PlayerState.STARTED ||
-                                playerState === PlayerState.PAUSED
-                            )
+                        (playerState === PlayerState.STARTED || playerState === PlayerState.PAUSED)
                     ) {
                         mediaPlayer.setNextMediaPlayer(nextMediaPlayer)
                         nextSetup = true
@@ -536,6 +532,7 @@ class LocalMediaPlayer : KoinComponent {
                 wakeLock.acquire(60000)
                 val pos = cachedPosition
                 Timber.i("Ending position %d of %d", pos, duration)
+
                 if (!isPartial || downloadFile.isWorkDone && abs(duration - pos) < 1000) {
                     setPlayerState(PlayerState.COMPLETED)
                     if (Settings.gaplessPlayback &&
@@ -555,6 +552,7 @@ class LocalMediaPlayer : KoinComponent {
                     }
                     return
                 }
+
                 synchronized(this) {
                     if (downloadFile.isWorkDone) {
                         // Complete was called early even though file is fully buffered

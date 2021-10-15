@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<issues format="5" by="lint 4.2.0" client="gradle" variant="release" version="4.2.0">
+<issues format="5" by="lint 4.2.2" client="gradle" variant="release" version="4.2.2">
 
     <issue
         id="ScopedStorage"
@@ -8,41 +8,8 @@
         errorLine2="                                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
         <location
             file="src/main/AndroidManifest.xml"
-            line="9"
+            line="10"
             column="36"/>
-    </issue>
-
-    <issue
-        id="DefaultLocale"
-        message="Implicitly using the default locale is a common source of bugs: Use `toLowerCase(Locale)` instead. For strings meant to be internal use `Locale.ROOT`, otherwise `Locale.getDefault()`."
-        errorLine1="  return index == -1 ? &quot;&quot; : name.substring(index + 1).toLowerCase();"
-        errorLine2="                                                      ~~~~~~~~~~~">
-        <location
-            file="src/main/java/org/moire/ultrasonic/util/FileUtil.java"
-            line="445"
-            column="55"/>
-    </issue>
-
-    <issue
-        id="InlinedApi"
-        message="Field requires API level 16 (current min is 14): `android.Manifest.permission#READ_EXTERNAL_STORAGE`"
-        errorLine1="                        Manifest.permission.READ_EXTERNAL_STORAGE)"
-        errorLine2="                        ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
-        <location
-            file="src/main/java/org/moire/ultrasonic/util/PermissionUtil.java"
-            line="101"
-            column="25"/>
-    </issue>
-
-    <issue
-        id="InlinedApi"
-        message="Field requires API level 16 (current min is 14): `android.Manifest.permission#READ_EXTERNAL_STORAGE`"
-        errorLine1="                        Manifest.permission.READ_EXTERNAL_STORAGE)"
-        errorLine2="                        ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
-        <location
-            file="src/main/java/org/moire/ultrasonic/util/PermissionUtil.java"
-            line="148"
-            column="25"/>
     </issue>
 
     <issue
@@ -100,61 +67,6 @@
     </issue>
 
     <issue
-        id="UnusedAttribute"
-        message="Attribute `usesCleartextTraffic` is only used in API level 23 and higher (current min is 14)"
-        errorLine1="        android:usesCleartextTraffic=&quot;true&quot;>"
-        errorLine2="        ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
-        <location
-            file="src/main/AndroidManifest.xml"
-            line="29"
-            column="9"/>
-    </issue>
-
-    <issue
-        id="UnusedAttribute"
-        message="Attribute `widgetCategory` is only used in API level 17 and higher (current min is 14)"
-        errorLine1="                    a:widgetCategory=&quot;home_screen|keyguard&quot;"
-        errorLine2="                    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
-        <location
-            file="src/main/res/xml/appwidget_info_4x1.xml"
-            line="8"
-            column="21"/>
-    </issue>
-
-    <issue
-        id="UnusedAttribute"
-        message="Attribute `widgetCategory` is only used in API level 17 and higher (current min is 14)"
-        errorLine1="                    a:widgetCategory=&quot;home_screen|keyguard&quot;"
-        errorLine2="                    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
-        <location
-            file="src/main/res/xml/appwidget_info_4x2.xml"
-            line="8"
-            column="21"/>
-    </issue>
-
-    <issue
-        id="UnusedAttribute"
-        message="Attribute `widgetCategory` is only used in API level 17 and higher (current min is 14)"
-        errorLine1="                    a:widgetCategory=&quot;home_screen|keyguard&quot;"
-        errorLine2="                    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
-        <location
-            file="src/main/res/xml/appwidget_info_4x3.xml"
-            line="8"
-            column="21"/>
-    </issue>
-
-    <issue
-        id="UnusedAttribute"
-        message="Attribute `widgetCategory` is only used in API level 17 and higher (current min is 14)"
-        errorLine1="                    a:widgetCategory=&quot;home_screen|keyguard&quot;"
-        errorLine2="                    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
-        <location
-            file="src/main/res/xml/appwidget_info_4x4.xml"
-            line="8"
-            column="21"/>
-    </issue>
-
-    <issue
         id="IncludeLayoutParam"
         message="Layout parameter `layout_gravity` ignored unless both `layout_width` and `layout_height` are also specified on `&lt;include>` tag"
         errorLine1="        a:layout_gravity=&quot;center_vertical&quot; />"
@@ -183,85 +95,8 @@
         errorLine2="                                                                           ^">
         <location
             file="src/main/res/values-de/strings.xml"
-            line="294"
+            line="292"
             column="76"/>
-    </issue>
-
-    <issue
-        id="ImpliedQuantity"
-        message="The quantity `&apos;one&apos;` matches more than one specific number in this locale (0, 1), but the message did not include a formatting argument (such as `%d`). This is usually an internationalization error. See full issue explanation for more."
-        errorLine1="        &lt;item quantity=&quot;one&quot;>1 titre&lt;/item>"
-        errorLine2="        ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
-        <location
-            file="src/main/res/values-fr/strings.xml"
-            line="427"
-            column="9"/>
-    </issue>
-
-    <issue
-        id="ImpliedQuantity"
-        message="The quantity `&apos;one&apos;` matches more than one specific number in this locale (0, 1), but the message did not include a formatting argument (such as `%d`). This is usually an internationalization error. See full issue explanation for more."
-        errorLine1="        &lt;item quantity=&quot;one&quot;>1 titre sélectionné pour être épinglé.&lt;/item>"
-        errorLine2="        ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
-        <location
-            file="src/main/res/values-fr/strings.xml"
-            line="431"
-            column="9"/>
-    </issue>
-
-    <issue
-        id="ImpliedQuantity"
-        message="The quantity `&apos;one&apos;` matches more than one specific number in this locale (0, 1), but the message did not include a formatting argument (such as `%d`). This is usually an internationalization error. See full issue explanation for more."
-        errorLine1="        &lt;item quantity=&quot;one&quot;>1 titre sélectionné pour être téléchargé.&lt;/item>"
-        errorLine2="        ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
-        <location
-            file="src/main/res/values-fr/strings.xml"
-            line="435"
-            column="9"/>
-    </issue>
-
-    <issue
-        id="ImpliedQuantity"
-        message="The quantity `&apos;one&apos;` matches more than one specific number in this locale (0, 1), but the message did not include a formatting argument (such as `%d`). This is usually an internationalization error. See full issue explanation for more."
-        errorLine1="        &lt;item quantity=&quot;one&quot;>1 titre sélectionné pour être désépinglé.&lt;/item>"
-        errorLine2="        ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
-        <location
-            file="src/main/res/values-fr/strings.xml"
-            line="439"
-            column="9"/>
-    </issue>
-
-    <issue
-        id="ImpliedQuantity"
-        message="The quantity `&apos;one&apos;` matches more than one specific number in this locale (0, 1), but the message did not include a formatting argument (such as `%d`). This is usually an internationalization error. See full issue explanation for more."
-        errorLine1="        &lt;item quantity=&quot;one&quot;>1 titre ajouté à la fin de la file d\&apos;attente de lecture.&lt;/item>"
-        errorLine2="        ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
-        <location
-            file="src/main/res/values-fr/strings.xml"
-            line="443"
-            column="9"/>
-    </issue>
-
-    <issue
-        id="ImpliedQuantity"
-        message="The quantity `&apos;one&apos;` matches more than one specific number in this locale (0, 1), but the message did not include a formatting argument (such as `%d`). This is usually an internationalization error. See full issue explanation for more."
-        errorLine1="        &lt;item quantity=&quot;one&quot;>1 titre inséré après le titre actuel.&lt;/item>"
-        errorLine2="        ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
-        <location
-            file="src/main/res/values-fr/strings.xml"
-            line="447"
-            column="9"/>
-    </issue>
-
-    <issue
-        id="ImpliedQuantity"
-        message="The quantity `&apos;one&apos;` matches more than one specific number in this locale (0, 1), but the message did not include a formatting argument (such as `%d`). This is usually an internationalization error. See full issue explanation for more."
-        errorLine1="        &lt;item quantity=&quot;one&quot;>1 jour restant à la période d\&apos;essai&lt;/item>"
-        errorLine2="        ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
-        <location
-            file="src/main/res/values-fr/strings.xml"
-            line="451"
-            column="9"/>
     </issue>
 
     <issue
@@ -298,83 +133,6 @@
     </issue>
 
     <issue
-        id="UnusedQuantity"
-        message="For language &quot;cs&quot; (Czech) the following quantities are not relevant: `many`"
-        errorLine1="    &lt;plurals name=&quot;select_album_n_songs&quot;>"
-        errorLine2="    ^">
-        <location
-            file="src/main/res/values-cs/strings.xml"
-            line="422"
-            column="5"/>
-    </issue>
-
-    <issue
-        id="UnusedQuantity"
-        message="For language &quot;cs&quot; (Czech) the following quantities are not relevant: `many`"
-        errorLine1="    &lt;plurals name=&quot;select_album_n_songs_pinned&quot;>"
-        errorLine2="    ^">
-        <location
-            file="src/main/res/values-cs/strings.xml"
-            line="428"
-            column="5"/>
-    </issue>
-
-    <issue
-        id="UnusedQuantity"
-        message="For language &quot;cs&quot; (Czech) the following quantities are not relevant: `many`"
-        errorLine1="    &lt;plurals name=&quot;select_album_n_songs_downloaded&quot;>"
-        errorLine2="    ^">
-        <location
-            file="src/main/res/values-cs/strings.xml"
-            line="434"
-            column="5"/>
-    </issue>
-
-    <issue
-        id="UnusedQuantity"
-        message="For language &quot;cs&quot; (Czech) the following quantities are not relevant: `many`"
-        errorLine1="    &lt;plurals name=&quot;select_album_n_songs_unpinned&quot;>"
-        errorLine2="    ^">
-        <location
-            file="src/main/res/values-cs/strings.xml"
-            line="440"
-            column="5"/>
-    </issue>
-
-    <issue
-        id="UnusedQuantity"
-        message="For language &quot;cs&quot; (Czech) the following quantities are not relevant: `many`"
-        errorLine1="    &lt;plurals name=&quot;select_album_n_songs_added&quot;>"
-        errorLine2="    ^">
-        <location
-            file="src/main/res/values-cs/strings.xml"
-            line="446"
-            column="5"/>
-    </issue>
-
-    <issue
-        id="UnusedQuantity"
-        message="For language &quot;cs&quot; (Czech) the following quantities are not relevant: `many`"
-        errorLine1="    &lt;plurals name=&quot;select_album_n_songs_play_next&quot;>"
-        errorLine2="    ^">
-        <location
-            file="src/main/res/values-cs/strings.xml"
-            line="452"
-            column="5"/>
-    </issue>
-
-    <issue
-        id="UnusedQuantity"
-        message="For language &quot;cs&quot; (Czech) the following quantities are not relevant: `many`"
-        errorLine1="    &lt;plurals name=&quot;select_album_donate_dialog_n_trial_days_left&quot;>"
-        errorLine2="    ^">
-        <location
-            file="src/main/res/values-cs/strings.xml"
-            line="458"
-            column="5"/>
-    </issue>
-
-    <issue
         id="AllowAllHostnameVerifier"
         message="Using the `AllowAllHostnameVerifier` HostnameVerifier is unsafe because it always returns true, which could cause insecure network traffic due to trusting TLS/SSL server certificates for wrong hostnames"
         errorLine1=" public static final X509HostnameVerifier ALLOW_ALL_HOSTNAME_VERIFIER = new AllowAllHostnameVerifier();"
@@ -403,7 +161,7 @@
         errorLine2="         ~~~~~~~~">
         <location
             file="src/main/AndroidManifest.xml"
-            line="124"
+            line="146"
             column="10"/>
     </issue>
 
@@ -414,7 +172,7 @@
         errorLine2="         ~~~~~~~~">
         <location
             file="src/main/AndroidManifest.xml"
-            line="59"
+            line="81"
             column="10"/>
     </issue>
 
@@ -449,28 +207,6 @@
             file="src/main/res/layout/time_span_dialog.xml"
             line="28"
             column="9"/>
-    </issue>
-
-    <issue
-        id="StaticFieldLeak"
-        message="This `AsyncTask` class should be static or leaks might occur (org.moire.ultrasonic.service.DownloadQueueSerializer.SerializeTask)"
-        errorLine1="    private class SerializeTask extends AsyncTask&lt;Object, Void, Void>"
-        errorLine2="                  ~~~~~~~~~~~~~">
-        <location
-            file="src/main/java/org/moire/ultrasonic/service/DownloadQueueSerializer.java"
-            line="67"
-            column="19"/>
-    </issue>
-
-    <issue
-        id="StaticFieldLeak"
-        message="This `AsyncTask` class should be static or leaks might occur (org.moire.ultrasonic.service.DownloadQueueSerializer.DeserializeTask)"
-        errorLine1="    private class DeserializeTask extends AsyncTask&lt;Object, Void, Void>"
-        errorLine2="                  ~~~~~~~~~~~~~~~">
-        <location
-            file="src/main/java/org/moire/ultrasonic/service/DownloadQueueSerializer.java"
-            line="88"
-            column="19"/>
     </issue>
 
     <issue
@@ -661,7 +397,7 @@
             column="13"/>
         <location
             file="src/main/res/values-fr/strings.xml"
-            line="99"
+            line="109"
             column="13"/>
         <location
             file="src/main/res/values-hu/strings.xml"
@@ -685,11 +421,11 @@
             column="13"/>
         <location
             file="src/main/res/values-pt-rBR/strings.xml"
-            line="99"
+            line="109"
             column="13"/>
         <location
             file="src/main/res/values-ru/strings.xml"
-            line="96"
+            line="109"
             column="13"/>
         <location
             file="src/main/res/values-zh-rCN/strings.xml"
@@ -716,11 +452,11 @@
             column="13"/>
         <location
             file="src/main/res/values-es/strings.xml"
-            line="120"
+            line="122"
             column="13"/>
         <location
             file="src/main/res/values-fr/strings.xml"
-            line="110"
+            line="122"
             column="13"/>
         <location
             file="src/main/res/values-hu/strings.xml"
@@ -744,11 +480,11 @@
             column="13"/>
         <location
             file="src/main/res/values-pt-rBR/strings.xml"
-            line="110"
+            line="122"
             column="13"/>
         <location
             file="src/main/res/values-ru/strings.xml"
-            line="107"
+            line="122"
             column="13"/>
         <location
             file="src/main/res/values-zh-rCN/strings.xml"
@@ -775,11 +511,11 @@
             column="13"/>
         <location
             file="src/main/res/values-es/strings.xml"
-            line="125"
+            line="127"
             column="13"/>
         <location
             file="src/main/res/values-fr/strings.xml"
-            line="115"
+            line="127"
             column="13"/>
         <location
             file="src/main/res/values-hu/strings.xml"
@@ -803,11 +539,11 @@
             column="13"/>
         <location
             file="src/main/res/values-pt-rBR/strings.xml"
-            line="115"
+            line="127"
             column="13"/>
         <location
             file="src/main/res/values-ru/strings.xml"
-            line="111"
+            line="127"
             column="13"/>
         <location
             file="src/main/res/values-zh-rCN/strings.xml"
@@ -834,11 +570,11 @@
             column="13"/>
         <location
             file="src/main/res/values-es/strings.xml"
-            line="126"
+            line="128"
             column="13"/>
         <location
             file="src/main/res/values-fr/strings.xml"
-            line="116"
+            line="128"
             column="13"/>
         <location
             file="src/main/res/values-hu/strings.xml"
@@ -862,11 +598,11 @@
             column="13"/>
         <location
             file="src/main/res/values-pt-rBR/strings.xml"
-            line="116"
+            line="128"
             column="13"/>
         <location
             file="src/main/res/values-ru/strings.xml"
-            line="112"
+            line="128"
             column="13"/>
     </issue>
 
@@ -889,11 +625,11 @@
             column="13"/>
         <location
             file="src/main/res/values-es/strings.xml"
-            line="127"
+            line="129"
             column="13"/>
         <location
             file="src/main/res/values-fr/strings.xml"
-            line="117"
+            line="129"
             column="13"/>
         <location
             file="src/main/res/values-hu/strings.xml"
@@ -917,11 +653,11 @@
             column="13"/>
         <location
             file="src/main/res/values-pt-rBR/strings.xml"
-            line="117"
+            line="129"
             column="13"/>
         <location
             file="src/main/res/values-ru/strings.xml"
-            line="113"
+            line="129"
             column="13"/>
         <location
             file="src/main/res/values-zh-rCN/strings.xml"
@@ -948,11 +684,11 @@
             column="13"/>
         <location
             file="src/main/res/values-es/strings.xml"
-            line="128"
+            line="130"
             column="13"/>
         <location
             file="src/main/res/values-fr/strings.xml"
-            line="118"
+            line="130"
             column="13"/>
         <location
             file="src/main/res/values-hu/strings.xml"
@@ -976,11 +712,11 @@
             column="13"/>
         <location
             file="src/main/res/values-pt-rBR/strings.xml"
-            line="118"
+            line="130"
             column="13"/>
         <location
             file="src/main/res/values-ru/strings.xml"
-            line="114"
+            line="130"
             column="13"/>
         <location
             file="src/main/res/values-zh-rCN/strings.xml"
@@ -1007,11 +743,11 @@
             column="13"/>
         <location
             file="src/main/res/values-es/strings.xml"
-            line="133"
+            line="135"
             column="13"/>
         <location
             file="src/main/res/values-fr/strings.xml"
-            line="123"
+            line="135"
             column="13"/>
         <location
             file="src/main/res/values-hu/strings.xml"
@@ -1035,11 +771,11 @@
             column="13"/>
         <location
             file="src/main/res/values-pt-rBR/strings.xml"
-            line="123"
+            line="135"
             column="13"/>
         <location
             file="src/main/res/values-ru/strings.xml"
-            line="119"
+            line="135"
             column="13"/>
         <location
             file="src/main/res/values-zh-rCN/strings.xml"
@@ -1066,11 +802,11 @@
             column="13"/>
         <location
             file="src/main/res/values-es/strings.xml"
-            line="139"
+            line="141"
             column="13"/>
         <location
             file="src/main/res/values-fr/strings.xml"
-            line="129"
+            line="141"
             column="13"/>
         <location
             file="src/main/res/values-hu/strings.xml"
@@ -1094,11 +830,11 @@
             column="13"/>
         <location
             file="src/main/res/values-pt-rBR/strings.xml"
-            line="129"
+            line="141"
             column="13"/>
         <location
             file="src/main/res/values-ru/strings.xml"
-            line="125"
+            line="141"
             column="13"/>
         <location
             file="src/main/res/values-zh-rCN/strings.xml"
@@ -1125,11 +861,11 @@
             column="13"/>
         <location
             file="src/main/res/values-es/strings.xml"
-            line="152"
+            line="154"
             column="13"/>
         <location
             file="src/main/res/values-fr/strings.xml"
-            line="142"
+            line="154"
             column="13"/>
         <location
             file="src/main/res/values-hu/strings.xml"
@@ -1153,11 +889,11 @@
             column="13"/>
         <location
             file="src/main/res/values-pt-rBR/strings.xml"
-            line="142"
+            line="154"
             column="13"/>
         <location
             file="src/main/res/values-ru/strings.xml"
-            line="138"
+            line="154"
             column="13"/>
     </issue>
 
@@ -1202,11 +938,11 @@
             column="13"/>
         <location
             file="src/main/res/values-es/strings.xml"
-            line="168"
+            line="170"
             column="13"/>
         <location
             file="src/main/res/values-fr/strings.xml"
-            line="158"
+            line="170"
             column="13"/>
         <location
             file="src/main/res/values-hu/strings.xml"
@@ -1230,11 +966,11 @@
             column="13"/>
         <location
             file="src/main/res/values-pt-rBR/strings.xml"
-            line="158"
+            line="170"
             column="13"/>
         <location
             file="src/main/res/values-ru/strings.xml"
-            line="154"
+            line="170"
             column="13"/>
         <location
             file="src/main/res/values-zh-rCN/strings.xml"
@@ -1261,11 +997,11 @@
             column="13"/>
         <location
             file="src/main/res/values-es/strings.xml"
-            line="220"
+            line="222"
             column="13"/>
         <location
             file="src/main/res/values-fr/strings.xml"
-            line="210"
+            line="222"
             column="13"/>
         <location
             file="src/main/res/values-hu/strings.xml"
@@ -1289,11 +1025,11 @@
             column="13"/>
         <location
             file="src/main/res/values-pt-rBR/strings.xml"
-            line="210"
+            line="222"
             column="13"/>
         <location
             file="src/main/res/values-ru/strings.xml"
-            line="206"
+            line="222"
             column="13"/>
     </issue>
 
@@ -1308,11 +1044,11 @@
             column="13"/>
         <location
             file="src/main/res/values-cs/strings.xml"
-            line="277"
+            line="275"
             column="13"/>
         <location
             file="src/main/res/values-de/strings.xml"
-            line="276"
+            line="274"
             column="13"/>
         <location
             file="src/main/res/values-es/strings.xml"
@@ -1320,35 +1056,35 @@
             column="13"/>
         <location
             file="src/main/res/values-fr/strings.xml"
-            line="277"
+            line="289"
             column="13"/>
         <location
             file="src/main/res/values-hu/strings.xml"
-            line="289"
+            line="287"
             column="13"/>
         <location
             file="src/main/res/values-it/strings.xml"
-            line="270"
+            line="268"
             column="13"/>
         <location
             file="src/main/res/values-nl/strings.xml"
-            line="289"
+            line="287"
             column="13"/>
         <location
             file="src/main/res/values-pl/strings.xml"
-            line="275"
+            line="273"
             column="13"/>
         <location
             file="src/main/res/values-pt/strings.xml"
-            line="275"
+            line="273"
             column="13"/>
         <location
             file="src/main/res/values-pt-rBR/strings.xml"
-            line="277"
+            line="289"
             column="13"/>
         <location
             file="src/main/res/values-ru/strings.xml"
-            line="271"
+            line="289"
             column="13"/>
         <location
             file="src/main/res/values-zh-rCN/strings.xml"
@@ -1367,11 +1103,11 @@
             column="13"/>
         <location
             file="src/main/res/values-cs/strings.xml"
-            line="280"
+            line="278"
             column="13"/>
         <location
             file="src/main/res/values-de/strings.xml"
-            line="279"
+            line="277"
             column="13"/>
         <location
             file="src/main/res/values-es/strings.xml"
@@ -1379,35 +1115,35 @@
             column="13"/>
         <location
             file="src/main/res/values-fr/strings.xml"
-            line="280"
+            line="292"
             column="13"/>
         <location
             file="src/main/res/values-hu/strings.xml"
-            line="292"
+            line="290"
             column="13"/>
         <location
             file="src/main/res/values-it/strings.xml"
-            line="273"
+            line="271"
             column="13"/>
         <location
             file="src/main/res/values-nl/strings.xml"
-            line="292"
+            line="290"
             column="13"/>
         <location
             file="src/main/res/values-pl/strings.xml"
-            line="278"
+            line="276"
             column="13"/>
         <location
             file="src/main/res/values-pt/strings.xml"
-            line="278"
+            line="276"
             column="13"/>
         <location
             file="src/main/res/values-pt-rBR/strings.xml"
-            line="280"
+            line="292"
             column="13"/>
         <location
             file="src/main/res/values-ru/strings.xml"
-            line="274"
+            line="292"
             column="13"/>
     </issue>
 
@@ -1429,43 +1165,47 @@
         errorLine2="             ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
         <location
             file="src/main/res/values/strings.xml"
-            line="468"
+            line="469"
             column="14"/>
         <location
             file="src/main/res/values-cs/strings.xml"
-            line="458"
-            column="14"/>
-        <location
-            file="src/main/res/values-de/strings.xml"
-            line="393"
-            column="14"/>
-        <location
-            file="src/main/res/values-es/strings.xml"
-            line="462"
-            column="14"/>
-        <location
-            file="src/main/res/values-fr/strings.xml"
             line="450"
             column="14"/>
         <location
+            file="src/main/res/values-de/strings.xml"
+            line="391"
+            column="14"/>
+        <location
+            file="src/main/res/values-es/strings.xml"
+            line="463"
+            column="14"/>
+        <location
+            file="src/main/res/values-fr/strings.xml"
+            line="463"
+            column="14"/>
+        <location
             file="src/main/res/values-hu/strings.xml"
-            line="460"
+            line="458"
             column="14"/>
         <location
             file="src/main/res/values-nl/strings.xml"
-            line="462"
+            line="460"
             column="14"/>
         <location
             file="src/main/res/values-pl/strings.xml"
-            line="406"
+            line="404"
             column="14"/>
         <location
             file="src/main/res/values-pt/strings.xml"
-            line="393"
+            line="391"
             column="14"/>
         <location
             file="src/main/res/values-pt-rBR/strings.xml"
-            line="448"
+            line="463"
+            column="14"/>
+        <location
+            file="src/main/res/values-ru/strings.xml"
+            line="475"
             column="14"/>
     </issue>
 
@@ -1509,18 +1249,7 @@
         errorLine2="                                ^">
         <location
             file="src/main/res/values-it/strings.xml"
-            line="314"
-            column="33"/>
-    </issue>
-
-    <issue
-        id="TypographyDashes"
-        message="Replace &quot;--&quot; with an &quot;em dash&quot; character (—, &amp;#8212;) ?"
-        errorLine1="    &lt;string name=&quot;util.no_time&quot;>-:--&lt;/string>"
-        errorLine2="                                ^">
-        <location
-            file="src/main/res/values-ru/strings.xml"
-            line="318"
+            line="312"
             column="33"/>
     </issue>
 
@@ -1531,7 +1260,7 @@
         errorLine2="                                ^">
         <location
             file="src/main/res/values-de/strings.xml"
-            line="325"
+            line="323"
             column="33"/>
     </issue>
 
@@ -1542,7 +1271,7 @@
         errorLine2="                                ^">
         <location
             file="src/main/res/values-pl/strings.xml"
-            line="325"
+            line="323"
             column="33"/>
     </issue>
 
@@ -1553,29 +1282,7 @@
         errorLine2="                                ^">
         <location
             file="src/main/res/values-cs/strings.xml"
-            line="328"
-            column="33"/>
-    </issue>
-
-    <issue
-        id="TypographyDashes"
-        message="Replace &quot;--&quot; with an &quot;em dash&quot; character (—, &amp;#8212;) ?"
-        errorLine1="    &lt;string name=&quot;util.no_time&quot;>-:--&lt;/string>"
-        errorLine2="                                ^">
-        <location
-            file="src/main/res/values-pt-rBR/strings.xml"
-            line="330"
-            column="33"/>
-    </issue>
-
-    <issue
-        id="TypographyDashes"
-        message="Replace &quot;--&quot; with an &quot;em dash&quot; character (—, &amp;#8212;) ?"
-        errorLine1="    &lt;string name=&quot;util.no_time&quot;>-:--&lt;/string>"
-        errorLine2="                                ^">
-        <location
-            file="src/main/res/values-es/strings.xml"
-            line="342"
+            line="326"
             column="33"/>
     </issue>
 
@@ -1586,7 +1293,7 @@
         errorLine2="                                ^">
         <location
             file="src/main/res/values-hu/strings.xml"
-            line="342"
+            line="340"
             column="33"/>
     </issue>
 
@@ -1597,7 +1304,7 @@
         errorLine2="                                ^">
         <location
             file="src/main/res/values-nl/strings.xml"
-            line="342"
+            line="340"
             column="33"/>
     </issue>
 
@@ -1705,7 +1412,7 @@
         errorLine2="             ~~~~~~~~~">
         <location
             file="src/main/java/org/moire/ultrasonic/view/AlbumView.java"
-            line="39"
+            line="40"
             column="14"/>
     </issue>
 
@@ -1727,7 +1434,7 @@
         errorLine2="                                         ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
         <location
             file="src/main/java/org/moire/ultrasonic/fragment/NowPlayingFragment.java"
-            line="132"
+            line="133"
             column="42"/>
     </issue>
 
@@ -1837,7 +1544,7 @@
         errorLine2="     ~~~~~~~~~">
         <location
             file="src/main/res/layout/album_list_item.xml"
-            line="63"
+            line="61"
             column="6"/>
     </issue>
 
@@ -2277,7 +1984,7 @@
         errorLine2="         ~~~~~~~~~">
         <location
             file="src/main/res/layout/now_playing.xml"
-            line="57"
+            line="55"
             column="10"/>
     </issue>
 
@@ -2310,7 +2017,7 @@
         errorLine2="     ~~~~~~~~~~~">
         <location
             file="src/main/res/layout/server_row.xml"
-            line="37"
+            line="35"
             column="6"/>
     </issue>
 
@@ -2328,77 +2035,77 @@
     <issue
         id="ContentDescription"
         message="Missing `contentDescription` attribute on image"
-        errorLine1="        &lt;ImageView"
-        errorLine2="         ~~~~~~~~~">
-        <location
-            file="src/main/res/layout/song_list_item.xml"
-            line="27"
-            column="10"/>
-    </issue>
-
-    <issue
-        id="ContentDescription"
-        message="Missing `contentDescription` attribute on image"
-        errorLine1="        &lt;ImageView"
-        errorLine2="         ~~~~~~~~~">
-        <location
-            file="src/main/res/layout/song_list_item.xml"
-            line="37"
-            column="10"/>
-    </issue>
-
-    <issue
-        id="ContentDescription"
-        message="Missing `contentDescription` attribute on image"
-        errorLine1="        &lt;ImageView"
-        errorLine2="         ~~~~~~~~~">
-        <location
-            file="src/main/res/layout/song_list_item.xml"
-            line="47"
-            column="10"/>
-    </issue>
-
-    <issue
-        id="ContentDescription"
-        message="Missing `contentDescription` attribute on image"
-        errorLine1="        &lt;ImageView"
-        errorLine2="         ~~~~~~~~~">
-        <location
-            file="src/main/res/layout/song_list_item.xml"
-            line="57"
-            column="10"/>
-    </issue>
-
-    <issue
-        id="ContentDescription"
-        message="Missing `contentDescription` attribute on image"
-        errorLine1="        &lt;ImageView"
-        errorLine2="         ~~~~~~~~~">
-        <location
-            file="src/main/res/layout/song_list_item.xml"
-            line="67"
-            column="10"/>
-    </issue>
-
-    <issue
-        id="ContentDescription"
-        message="Missing `contentDescription` attribute on image"
         errorLine1="    &lt;ImageView"
         errorLine2="     ~~~~~~~~~">
         <location
             file="src/main/res/layout/song_list_item.xml"
-            line="80"
+            line="10"
             column="6"/>
     </issue>
 
     <issue
         id="ContentDescription"
         message="Missing `contentDescription` attribute on image"
+        errorLine1="        &lt;ImageView"
+        errorLine2="         ~~~~~~~~~">
+        <location
+            file="src/main/res/layout/song_list_item.xml"
+            line="39"
+            column="10"/>
+    </issue>
+
+    <issue
+        id="ContentDescription"
+        message="Missing `contentDescription` attribute on image"
+        errorLine1="        &lt;ImageView"
+        errorLine2="         ~~~~~~~~~">
+        <location
+            file="src/main/res/layout/song_list_item.xml"
+            line="49"
+            column="10"/>
+    </issue>
+
+    <issue
+        id="ContentDescription"
+        message="Missing `contentDescription` attribute on image"
+        errorLine1="        &lt;ImageView"
+        errorLine2="         ~~~~~~~~~">
+        <location
+            file="src/main/res/layout/song_list_item.xml"
+            line="59"
+            column="10"/>
+    </issue>
+
+    <issue
+        id="ContentDescription"
+        message="Missing `contentDescription` attribute on image"
+        errorLine1="        &lt;ImageView"
+        errorLine2="         ~~~~~~~~~">
+        <location
+            file="src/main/res/layout/song_list_item.xml"
+            line="69"
+            column="10"/>
+    </issue>
+
+    <issue
+        id="ContentDescription"
+        message="Missing `contentDescription` attribute on image"
+        errorLine1="        &lt;ImageView"
+        errorLine2="         ~~~~~~~~~">
+        <location
+            file="src/main/res/layout/song_list_item.xml"
+            line="79"
+            column="10"/>
+    </issue>
+
+    <issue
+        id="ContentDescription"
+        message="Missing `contentDescription` attribute on image"
         errorLine1="    &lt;ImageView"
         errorLine2="     ~~~~~~~~~">
         <location
             file="src/main/res/layout/song_list_item.xml"
-            line="90"
+            line="92"
             column="6"/>
     </issue>
 
@@ -2415,7 +2122,7 @@
 
     <issue
         id="LabelFor"
-        message="Missing accessibility label: where minSdk &lt; 17, you should provide an `android:hint`"
+        message="Missing accessibility label: provide either a view with an `android:labelFor` that references this view or provide an `android:hint`"
         errorLine1="    &lt;EditText"
         errorLine2="     ~~~~~~~~">
         <location
@@ -2426,7 +2133,7 @@
 
     <issue
         id="LabelFor"
-        message="Missing accessibility label: where minSdk &lt; 17, you should provide an `android:hint`"
+        message="Missing accessibility label: provide either a view with an `android:labelFor` that references this view or provide an `android:hint`"
         errorLine1="        &lt;EditText"
         errorLine2="         ~~~~~~~~">
         <location
@@ -2437,7 +2144,7 @@
 
     <issue
         id="LabelFor"
-        message="Missing accessibility label: where minSdk &lt; 17, you should provide an `android:hint`"
+        message="Missing accessibility label: provide either a view with an `android:labelFor` that references this view or provide an `android:hint`"
         errorLine1="        &lt;EditText"
         errorLine2="         ~~~~~~~~">
         <location
@@ -2552,7 +2259,7 @@
         errorLine2="        ~~~~~~~~~~">
         <location
             file="src/main/res/layout/artist_list_item.xml"
-            line="22"
+            line="20"
             column="9"/>
     </issue>
 
@@ -2631,1652 +2338,6 @@
             file="src/main/res/layout/server_row.xml"
             line="18"
             column="6"/>
-    </issue>
-
-    <issue
-        id="RtlCompat"
-        message="To support older versions than API 17 (project specifies 14) you should **also** add `a:layout_toRightOf=&quot;@id/chat_avatar&quot;`"
-        errorLine1="        a:layout_toEndOf=&quot;@id/chat_avatar&quot;"
-        errorLine2="        ~~~~~~~~~~~~~~~~">
-        <location
-            file="src/main/res/layout/chat_item.xml"
-            line="16"
-            column="9"/>
-    </issue>
-
-    <issue
-        id="RtlCompat"
-        message="To support older versions than API 17 (project specifies 14) you should **also** add `a:layout_alignParentRight=&quot;false&quot;`"
-        errorLine1="        a:layout_alignParentEnd=&quot;false&quot;"
-        errorLine2="        ~~~~~~~~~~~~~~~~~~~~~~~">
-        <location
-            file="src/main/res/layout/chat_item_reverse.xml"
-            line="12"
-            column="9"/>
-    </issue>
-
-    <issue
-        id="RtlCompat"
-        message="To support older versions than API 17 (project specifies 14) you should **also** add `a:layout_toLeftOf=&quot;@id/chat_avatar&quot;`"
-        errorLine1="        a:layout_toStartOf=&quot;@id/chat_avatar&quot;"
-        errorLine2="        ~~~~~~~~~~~~~~~~~~">
-        <location
-            file="src/main/res/layout/chat_item_reverse.xml"
-            line="13"
-            column="9"/>
-    </issue>
-
-    <issue
-        id="RtlCompat"
-        message="To support older versions than API 17 (project specifies 14) you should **also** add `a:layout_alignParentRight=&quot;true&quot;`"
-        errorLine1="        a:layout_alignParentEnd=&quot;true&quot;"
-        errorLine2="        ~~~~~~~~~~~~~~~~~~~~~~~">
-        <location
-            file="src/main/res/layout/chat_item_reverse.xml"
-            line="68"
-            column="9"/>
-    </issue>
-
-    <issue
-        id="RtlCompat"
-        message="To support older versions than API 17 (project specifies 14) you should **also** add `a:layout_toLeftOf=&quot;@id/chat_avatar&quot;`"
-        errorLine1="        a:layout_toStartOf=&quot;@id/chat_avatar&quot;/>"
-        errorLine2="        ~~~~~~~~~~~~~~~~~~">
-        <location
-            file="src/main/res/layout/chat_item_reverse.xml"
-            line="69"
-            column="9"/>
-    </issue>
-
-    <issue
-        id="RtlCompat"
-        message="To support older versions than API 17 (project specifies 14) you should **also** add `android:layout_alignParentRight=&quot;false&quot;`"
-        errorLine1="            android:layout_alignParentEnd=&quot;false&quot;/>"
-        errorLine2="            ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
-        <location
-            file="src/main/res/layout/time_span_dialog.xml"
-            line="40"
-            column="13"/>
-    </issue>
-
-    <issue
-        id="RtlSymmetry"
-        message="When you define `paddingRight` you should probably also define `paddingLeft` for right-to-left symmetry"
-        errorLine1="        a:paddingRight=&quot;3dip&quot;"
-        errorLine2="        ~~~~~~~~~~~~~~">
-        <location
-            file="src/main/res/layout/album_list_item.xml"
-            line="73"
-            column="9"/>
-    </issue>
-
-    <issue
-        id="RtlSymmetry"
-        message="When you define `paddingEnd` you should probably also define `paddingStart` for right-to-left symmetry"
-        errorLine1="        a:paddingEnd=&quot;3dip&quot; />"
-        errorLine2="        ~~~~~~~~~~~~">
-        <location
-            file="src/main/res/layout/album_list_item.xml"
-            line="79"
-            column="9"/>
-    </issue>
-
-    <issue
-        id="RtlSymmetry"
-        message="When you define `paddingLeft` you should probably also define `paddingRight` for right-to-left symmetry"
-        errorLine1="        a:paddingLeft=&quot;3dip&quot; />"
-        errorLine2="        ~~~~~~~~~~~~~">
-        <location
-            file="src/main/res/layout/album_list_item_legacy.xml"
-            line="13"
-            column="9"/>
-    </issue>
-
-    <issue
-        id="RtlSymmetry"
-        message="When you define `paddingRight` you should probably also define `paddingLeft` for right-to-left symmetry"
-        errorLine1="        a:paddingRight=&quot;3dip&quot; />"
-        errorLine2="        ~~~~~~~~~~~~~~">
-        <location
-            file="src/main/res/layout/album_list_item_legacy.xml"
-            line="49"
-            column="9"/>
-    </issue>
-
-    <issue
-        id="RtlSymmetry"
-        message="When you define `paddingLeft` you should probably also define `paddingRight` for right-to-left symmetry"
-        errorLine1="                a:paddingLeft=&quot;5dip&quot;"
-        errorLine2="                ~~~~~~~~~~~~~">
-        <location
-            file="src/main/res/layout/appwidget4x3.xml"
-            line="64"
-            column="17"/>
-    </issue>
-
-    <issue
-        id="RtlSymmetry"
-        message="When you define `paddingLeft` you should probably also define `paddingRight` for right-to-left symmetry"
-        errorLine1="                a:paddingLeft=&quot;5dip&quot;"
-        errorLine2="                ~~~~~~~~~~~~~">
-        <location
-            file="src/main/res/layout/appwidget4x4.xml"
-            line="65"
-            column="17"/>
-    </issue>
-
-    <issue
-        id="RtlSymmetry"
-        message="When you define `paddingLeft` you should probably also define `paddingRight` for right-to-left symmetry"
-        errorLine1="  a:paddingLeft=&quot;10dp&quot; a:layout_width=&quot;fill_parent&quot; a:layout_height=&quot;wrap_content&quot;"
-        errorLine2="  ~~~~~~~~~~~~~">
-        <location
-            file="src/main/res/layout/main_buttons.xml"
-            line="7"
-            column="3"/>
-    </issue>
-
-    <issue
-        id="RtlSymmetry"
-        message="When you define `paddingLeft` you should probably also define `paddingRight` for right-to-left symmetry"
-        errorLine1="  a:gravity=&quot;center_vertical&quot; a:paddingLeft=&quot;6dp&quot; a:textAllCaps=&quot;true&quot;"
-        errorLine2="                              ~~~~~~~~~~~~~">
-        <location
-            file="src/main/res/layout/main_buttons.xml"
-            line="40"
-            column="31"/>
-    </issue>
-
-    <issue
-        id="RtlSymmetry"
-        message="When you define `paddingLeft` you should probably also define `paddingRight` for right-to-left symmetry"
-        errorLine1="  a:gravity=&quot;center_vertical&quot; a:paddingLeft=&quot;6dp&quot; a:textAllCaps=&quot;true&quot;"
-        errorLine2="                              ~~~~~~~~~~~~~">
-        <location
-            file="src/main/res/layout/main_buttons.xml"
-            line="61"
-            column="31"/>
-    </issue>
-
-    <issue
-        id="RtlSymmetry"
-        message="When you define `paddingLeft` you should probably also define `paddingRight` for right-to-left symmetry"
-        errorLine1="  a:gravity=&quot;center_vertical&quot; a:paddingLeft=&quot;6dp&quot; a:textAllCaps=&quot;true&quot;"
-        errorLine2="                              ~~~~~~~~~~~~~">
-        <location
-            file="src/main/res/layout/main_buttons.xml"
-            line="77"
-            column="31"/>
-    </issue>
-
-    <issue
-        id="RtlSymmetry"
-        message="When you define `paddingLeft` you should probably also define `paddingRight` for right-to-left symmetry"
-        errorLine1="  a:gravity=&quot;center_vertical&quot; a:paddingLeft=&quot;6dp&quot; a:textAllCaps=&quot;true&quot;"
-        errorLine2="                              ~~~~~~~~~~~~~">
-        <location
-            file="src/main/res/layout/main_buttons.xml"
-            line="123"
-            column="31"/>
-    </issue>
-
-    <issue
-        id="RtlSymmetry"
-        message="When you define `paddingStart` you should probably also define `paddingEnd` for right-to-left symmetry"
-        errorLine1="            a:paddingStart=&quot;16dp&quot;"
-        errorLine2="            ~~~~~~~~~~~~~~">
-        <location
-            file="src/main/res/layout/navigation_header.xml"
-            line="35"
-            column="13"/>
-    </issue>
-
-    <issue
-        id="RtlSymmetry"
-        message="When you define `paddingLeft` you should probably also define `paddingRight` for right-to-left symmetry"
-        errorLine1="            a:paddingLeft=&quot;16dp&quot;"
-        errorLine2="            ~~~~~~~~~~~~~">
-        <location
-            file="src/main/res/layout/navigation_header.xml"
-            line="36"
-            column="13"/>
-    </issue>
-
-    <issue
-        id="RtlSymmetry"
-        message="When you define `paddingLeft` you should probably also define `paddingRight` for right-to-left symmetry"
-        errorLine1="            android:paddingLeft=&quot;11.0dip&quot;"
-        errorLine2="            ~~~~~~~~~~~~~~~~~~~">
-        <location
-            file="src/main/res/layout/now_playing.xml"
-            line="33"
-            column="13"/>
-    </issue>
-
-    <issue
-        id="RtlSymmetry"
-        message="When you define `paddingStart` you should probably also define `paddingEnd` for right-to-left symmetry"
-        errorLine1="            android:paddingStart=&quot;11.0dip&quot;>"
-        errorLine2="            ~~~~~~~~~~~~~~~~~~~~">
-        <location
-            file="src/main/res/layout/now_playing.xml"
-            line="34"
-            column="13"/>
-    </issue>
-
-    <issue
-        id="RtlSymmetry"
-        message="When you define `paddingLeft` you should probably also define `paddingRight` for right-to-left symmetry"
-        errorLine1="            a:paddingLeft=&quot;4dp&quot;/>"
-        errorLine2="            ~~~~~~~~~~~~~">
-        <location
-            file="src/main/res/layout/search_buttons.xml"
-            line="27"
-            column="13"/>
-    </issue>
-
-    <issue
-        id="RtlSymmetry"
-        message="When you define `paddingLeft` you should probably also define `paddingRight` for right-to-left symmetry"
-        errorLine1="            a:paddingLeft=&quot;4dp&quot;/>"
-        errorLine2="            ~~~~~~~~~~~~~">
-        <location
-            file="src/main/res/layout/search_buttons.xml"
-            line="39"
-            column="13"/>
-    </issue>
-
-    <issue
-        id="RtlSymmetry"
-        message="When you define `paddingLeft` you should probably also define `paddingRight` for right-to-left symmetry"
-        errorLine1="            a:paddingLeft=&quot;4dp&quot;/>"
-        errorLine2="            ~~~~~~~~~~~~~">
-        <location
-            file="src/main/res/layout/search_buttons.xml"
-            line="51"
-            column="13"/>
-    </issue>
-
-    <issue
-        id="RtlSymmetry"
-        message="When you define `paddingRight` you should probably also define `paddingLeft` for right-to-left symmetry"
-        errorLine1="        a:paddingRight=&quot;4dip&quot;"
-        errorLine2="        ~~~~~~~~~~~~~~">
-        <location
-            file="src/main/res/layout/select_album_header.xml"
-            line="23"
-            column="9"/>
-    </issue>
-
-    <issue
-        id="RtlSymmetry"
-        message="When you define `paddingRight` you should probably also define `paddingLeft` for right-to-left symmetry"
-        errorLine1="        a:paddingRight=&quot;4dip&quot;"
-        errorLine2="        ~~~~~~~~~~~~~~">
-        <location
-            file="src/main/res/layout/select_album_header.xml"
-            line="35"
-            column="9"/>
-    </issue>
-
-    <issue
-        id="RtlSymmetry"
-        message="When you define `paddingRight` you should probably also define `paddingLeft` for right-to-left symmetry"
-        errorLine1="        a:paddingRight=&quot;4dip&quot;"
-        errorLine2="        ~~~~~~~~~~~~~~">
-        <location
-            file="src/main/res/layout/select_album_header.xml"
-            line="46"
-            column="9"/>
-    </issue>
-
-    <issue
-        id="RtlSymmetry"
-        message="When you define `paddingRight` you should probably also define `paddingLeft` for right-to-left symmetry"
-        errorLine1="        a:paddingRight=&quot;4dip&quot;"
-        errorLine2="        ~~~~~~~~~~~~~~">
-        <location
-            file="src/main/res/layout/select_album_header.xml"
-            line="57"
-            column="9"/>
-    </issue>
-
-    <issue
-        id="RtlSymmetry"
-        message="When you define `paddingRight` you should probably also define `paddingLeft` for right-to-left symmetry"
-        errorLine1="        a:paddingRight=&quot;4dip&quot;"
-        errorLine2="        ~~~~~~~~~~~~~~">
-        <location
-            file="src/main/res/layout/select_album_header.xml"
-            line="68"
-            column="9"/>
-    </issue>
-
-    <issue
-        id="RtlSymmetry"
-        message="When you define `paddingRight` you should probably also define `paddingLeft` for right-to-left symmetry"
-        errorLine1="        a:paddingRight=&quot;4dip&quot;"
-        errorLine2="        ~~~~~~~~~~~~~~">
-        <location
-            file="src/main/res/layout/select_album_header.xml"
-            line="79"
-            column="9"/>
-    </issue>
-
-    <issue
-        id="RtlSymmetry"
-        message="When you define `paddingLeft` you should probably also define `paddingRight` for right-to-left symmetry"
-        errorLine1="    a:paddingLeft=&quot;6dp&quot;"
-        errorLine2="    ~~~~~~~~~~~~~">
-        <location
-            file="src/main/res/layout/select_folder_header.xml"
-            line="9"
-            column="5"/>
-    </issue>
-
-    <issue
-        id="RtlSymmetry"
-        message="When you define `paddingLeft` you should probably also define `paddingRight` for right-to-left symmetry"
-        errorLine1="            a:paddingLeft=&quot;4dip&quot;"
-        errorLine2="            ~~~~~~~~~~~~~">
-        <location
-            file="src/main/res/layout/share_list_item.xml"
-            line="41"
-            column="13"/>
-    </issue>
-
-    <issue
-        id="RtlSymmetry"
-        message="When you define `paddingRight` you should probably also define `paddingLeft` for right-to-left symmetry"
-        errorLine1="            a:paddingRight=&quot;6dip&quot;/>"
-        errorLine2="            ~~~~~~~~~~~~~~">
-        <location
-            file="src/main/res/layout/song_details.xml"
-            line="42"
-            column="13"/>
-    </issue>
-
-    <issue
-        id="RtlSymmetry"
-        message="When you define `paddingLeft` you should probably also define `paddingRight` for right-to-left symmetry"
-        errorLine1="            a:paddingLeft=&quot;4dip&quot;"
-        errorLine2="            ~~~~~~~~~~~~~">
-        <location
-            file="src/main/res/layout/song_details.xml"
-            line="58"
-            column="13"/>
-    </issue>
-
-    <issue
-        id="RtlSymmetry"
-        message="When you define `paddingRight` you should probably also define `paddingLeft` for right-to-left symmetry"
-        errorLine1="        a:paddingRight=&quot;4dip&quot;/>"
-        errorLine2="        ~~~~~~~~~~~~~~">
-        <location
-            file="src/main/res/layout/song_list_item.xml"
-            line="15"
-            column="9"/>
-    </issue>
-
-    <issue
-        id="RtlSymmetry"
-        message="When you define `paddingRight` you should probably also define `paddingLeft` for right-to-left symmetry"
-        errorLine1="        a:paddingRight=&quot;8dip&quot;"
-        errorLine2="        ~~~~~~~~~~~~~~">
-        <location
-            file="src/main/res/layout/song_list_item.xml"
-            line="87"
-            column="9"/>
-    </issue>
-
-    <issue
-        id="RtlSymmetry"
-        message="When you define `paddingLeft` you should probably also define `paddingRight` for right-to-left symmetry"
-        errorLine1="        a:paddingLeft=&quot;1dip&quot;"
-        errorLine2="        ~~~~~~~~~~~~~">
-        <location
-            file="src/main/res/layout/video_list_item.xml"
-            line="13"
-            column="9"/>
-    </issue>
-
-    <issue
-        id="RtlSymmetry"
-        message="When you define `paddingRight` you should probably also define `paddingLeft` for right-to-left symmetry"
-        errorLine1="        a:paddingRight=&quot;8dip&quot;"
-        errorLine2="        ~~~~~~~~~~~~~~">
-        <location
-            file="src/main/res/layout/video_list_item.xml"
-            line="26"
-            column="9"/>
-    </issue>
-
-    <issue
-        id="RtlHardcoded"
-        message="Use &quot;`start`&quot; instead of &quot;`left`&quot; to ensure correct behavior in right-to-left locales"
-        errorLine1="        a:layout_gravity=&quot;left|center_vertical&quot;"
-        errorLine2="                          ~~~~~~~~~~~~~~~~~~~~">
-        <location
-            file="src/main/res/layout/album_list_item_legacy.xml"
-            line="12"
-            column="27"/>
-    </issue>
-
-    <issue
-        id="RtlHardcoded"
-        message="Consider adding `a:paddingStart=&quot;3dip&quot;` to better support right-to-left layouts"
-        errorLine1="        a:paddingLeft=&quot;3dip&quot; />"
-        errorLine2="        ~~~~~~~~~~~~~">
-        <location
-            file="src/main/res/layout/album_list_item_legacy.xml"
-            line="13"
-            column="9"/>
-    </issue>
-
-    <issue
-        id="RtlHardcoded"
-        message="Use &quot;`start`&quot; instead of &quot;`left`&quot; to ensure correct behavior in right-to-left locales"
-        errorLine1="        a:layout_gravity=&quot;left|center_vertical&quot;"
-        errorLine2="                          ~~~~~~~~~~~~~~~~~~~~">
-        <location
-            file="src/main/res/layout/album_list_item_legacy.xml"
-            line="20"
-            column="27"/>
-    </issue>
-
-    <issue
-        id="RtlHardcoded"
-        message="Consider adding `a:paddingStart=&quot;6dip&quot;` to better support right-to-left layouts"
-        errorLine1="        a:paddingLeft=&quot;6dip&quot;"
-        errorLine2="        ~~~~~~~~~~~~~">
-        <location
-            file="src/main/res/layout/album_list_item_legacy.xml"
-            line="21"
-            column="9"/>
-    </issue>
-
-    <issue
-        id="RtlHardcoded"
-        message="Consider adding `a:paddingEnd=&quot;3dip&quot;` to better support right-to-left layouts"
-        errorLine1="        a:paddingRight=&quot;3dip&quot;>"
-        errorLine2="        ~~~~~~~~~~~~~~">
-        <location
-            file="src/main/res/layout/album_list_item_legacy.xml"
-            line="22"
-            column="9"/>
-    </issue>
-
-    <issue
-        id="RtlHardcoded"
-        message="Consider adding `a:paddingEnd=&quot;3dip&quot;` to better support right-to-left layouts"
-        errorLine1="        a:paddingRight=&quot;3dip&quot; />"
-        errorLine2="        ~~~~~~~~~~~~~~">
-        <location
-            file="src/main/res/layout/album_list_item_legacy.xml"
-            line="49"
-            column="9"/>
-    </issue>
-
-    <issue
-        id="RtlHardcoded"
-        message="Consider adding `a:paddingStart=&quot;5dip&quot;` to better support right-to-left layouts"
-        errorLine1="                a:paddingLeft=&quot;5dip&quot;"
-        errorLine2="                ~~~~~~~~~~~~~">
-        <location
-            file="src/main/res/layout/appwidget4x3.xml"
-            line="64"
-            column="17"/>
-    </issue>
-
-    <issue
-        id="RtlHardcoded"
-        message="Consider adding `a:paddingStart=&quot;5dip&quot;` to better support right-to-left layouts"
-        errorLine1="                a:paddingLeft=&quot;5dip&quot;"
-        errorLine2="                ~~~~~~~~~~~~~">
-        <location
-            file="src/main/res/layout/appwidget4x4.xml"
-            line="65"
-            column="17"/>
-    </issue>
-
-    <issue
-        id="RtlHardcoded"
-        message="Use &quot;`start`&quot; instead of &quot;`left`&quot; to ensure correct behavior in right-to-left locales"
-        errorLine1="            a:layout_gravity=&quot;left&quot;"
-        errorLine2="                              ~~~~">
-        <location
-            file="src/main/res/layout/chat_item.xml"
-            line="30"
-            column="31"/>
-    </issue>
-
-    <issue
-        id="RtlHardcoded"
-        message="Use &quot;`start`&quot; instead of &quot;`left`&quot; to ensure correct behavior in right-to-left locales"
-        errorLine1="            a:gravity=&quot;center_vertical|left&quot;/>"
-        errorLine2="                       ~~~~~~~~~~~~~~~~~~~~">
-        <location
-            file="src/main/res/layout/chat_item.xml"
-            line="31"
-            column="24"/>
-    </issue>
-
-    <issue
-        id="RtlHardcoded"
-        message="Use &quot;`start`&quot; instead of &quot;`left`&quot; to ensure correct behavior in right-to-left locales"
-        errorLine1="            a:gravity=&quot;center_vertical|left&quot;"
-        errorLine2="                       ~~~~~~~~~~~~~~~~~~~~">
-        <location
-            file="src/main/res/layout/chat_item.xml"
-            line="39"
-            column="24"/>
-    </issue>
-
-    <issue
-        id="RtlHardcoded"
-        message="Use &quot;`start`&quot; instead of &quot;`left`&quot; to ensure correct behavior in right-to-left locales"
-        errorLine1="            a:layout_gravity=&quot;left&quot;>"
-        errorLine2="                              ~~~~">
-        <location
-            file="src/main/res/layout/chat_item.xml"
-            line="40"
-            column="31"/>
-    </issue>
-
-    <issue
-        id="RtlHardcoded"
-        message="Consider adding `a:layout_marginStart=&quot;6dip&quot;` to better support right-to-left layouts"
-        errorLine1="                a:layout_marginLeft=&quot;6dip&quot;"
-        errorLine2="                ~~~~~~~~~~~~~~~~~~~">
-        <location
-            file="src/main/res/layout/chat_item.xml"
-            line="46"
-            column="17"/>
-    </issue>
-
-    <issue
-        id="RtlHardcoded"
-        message="Use &quot;`start`&quot; instead of &quot;`left`&quot; to ensure correct behavior in right-to-left locales"
-        errorLine1="                a:gravity=&quot;left&quot;/>"
-        errorLine2="                           ~~~~">
-        <location
-            file="src/main/res/layout/chat_item.xml"
-            line="50"
-            column="28"/>
-    </issue>
-
-    <issue
-        id="RtlHardcoded"
-        message="Use &quot;`start`&quot; instead of &quot;`left`&quot; to ensure correct behavior in right-to-left locales"
-        errorLine1="                a:gravity=&quot;left&quot;/>"
-        errorLine2="                           ~~~~">
-        <location
-            file="src/main/res/layout/chat_item.xml"
-            line="63"
-            column="28"/>
-    </issue>
-
-    <issue
-        id="RtlHardcoded"
-        message="Use &quot;`end`&quot; instead of &quot;`right`&quot; to ensure correct behavior in right-to-left locales"
-        errorLine1="        a:layout_gravity=&quot;right&quot;"
-        errorLine2="                          ~~~~~">
-        <location
-            file="src/main/res/layout/chat_item_reverse.xml"
-            line="11"
-            column="27"/>
-    </issue>
-
-    <issue
-        id="RtlHardcoded"
-        message="Use &quot;`end`&quot; instead of &quot;`right`&quot; to ensure correct behavior in right-to-left locales"
-        errorLine1="        a:gravity=&quot;center_vertical|right&quot;>"
-        errorLine2="                   ~~~~~~~~~~~~~~~~~~~~~">
-        <location
-            file="src/main/res/layout/chat_item_reverse.xml"
-            line="14"
-            column="20"/>
-    </issue>
-
-    <issue
-        id="RtlHardcoded"
-        message="Consider adding `a:layout_marginEnd=&quot;6dip&quot;` to better support right-to-left layouts"
-        errorLine1="            a:layout_marginRight=&quot;6dip&quot;"
-        errorLine2="            ~~~~~~~~~~~~~~~~~~~~">
-        <location
-            file="src/main/res/layout/chat_item_reverse.xml"
-            line="20"
-            column="13"/>
-    </issue>
-
-    <issue
-        id="RtlHardcoded"
-        message="Use &quot;`end`&quot; instead of &quot;`right`&quot; to ensure correct behavior in right-to-left locales"
-        errorLine1="            a:gravity=&quot;center_vertical|right&quot;"
-        errorLine2="                       ~~~~~~~~~~~~~~~~~~~~~">
-        <location
-            file="src/main/res/layout/chat_item_reverse.xml"
-            line="21"
-            column="24"/>
-    </issue>
-
-    <issue
-        id="RtlHardcoded"
-        message="Use &quot;`end`&quot; instead of &quot;`right`&quot; to ensure correct behavior in right-to-left locales"
-        errorLine1="            a:layout_gravity=&quot;right&quot;"
-        errorLine2="                              ~~~~~">
-        <location
-            file="src/main/res/layout/chat_item_reverse.xml"
-            line="22"
-            column="31"/>
-    </issue>
-
-    <issue
-        id="RtlHardcoded"
-        message="Use &quot;`end`&quot; instead of &quot;`right`&quot; to ensure correct behavior in right-to-left locales"
-        errorLine1="            a:layout_gravity=&quot;right|end&quot;"
-        errorLine2="                              ~~~~~~~~~">
-        <location
-            file="src/main/res/layout/chat_item_reverse.xml"
-            line="34"
-            column="31"/>
-    </issue>
-
-    <issue
-        id="RtlHardcoded"
-        message="Use &quot;`end`&quot; instead of &quot;`right`&quot; to ensure correct behavior in right-to-left locales"
-        errorLine1="            a:gravity=&quot;center_vertical|right&quot;>"
-        errorLine2="                       ~~~~~~~~~~~~~~~~~~~~~">
-        <location
-            file="src/main/res/layout/chat_item_reverse.xml"
-            line="35"
-            column="24"/>
-    </issue>
-
-    <issue
-        id="RtlHardcoded"
-        message="Consider adding `a:layout_marginStart=&quot;6dip&quot;` to better support right-to-left layouts"
-        errorLine1="                a:layout_marginLeft=&quot;6dip&quot;"
-        errorLine2="                ~~~~~~~~~~~~~~~~~~~">
-        <location
-            file="src/main/res/layout/chat_item_reverse.xml"
-            line="41"
-            column="17"/>
-    </issue>
-
-    <issue
-        id="RtlHardcoded"
-        message="Use &quot;`end`&quot; instead of &quot;`right`&quot; to ensure correct behavior in right-to-left locales"
-        errorLine1="                a:gravity=&quot;center_vertical|right&quot;"
-        errorLine2="                           ~~~~~~~~~~~~~~~~~~~~~">
-        <location
-            file="src/main/res/layout/chat_item_reverse.xml"
-            line="43"
-            column="28"/>
-    </issue>
-
-    <issue
-        id="RtlHardcoded"
-        message="Use &quot;`end`&quot; instead of &quot;`right`&quot; to ensure correct behavior in right-to-left locales"
-        errorLine1="                a:layout_gravity=&quot;right&quot;/>"
-        errorLine2="                                  ~~~~~">
-        <location
-            file="src/main/res/layout/chat_item_reverse.xml"
-            line="46"
-            column="35"/>
-    </issue>
-
-    <issue
-        id="RtlHardcoded"
-        message="Use &quot;`end`&quot; instead of &quot;`right`&quot; to ensure correct behavior in right-to-left locales"
-        errorLine1="                a:gravity=&quot;center_vertical|right&quot;"
-        errorLine2="                           ~~~~~~~~~~~~~~~~~~~~~">
-        <location
-            file="src/main/res/layout/chat_item_reverse.xml"
-            line="59"
-            column="28"/>
-    </issue>
-
-    <issue
-        id="RtlHardcoded"
-        message="Use &quot;`end`&quot; instead of &quot;`right`&quot; to ensure correct behavior in right-to-left locales"
-        errorLine1="                a:layout_gravity=&quot;right&quot;/>"
-        errorLine2="                                  ~~~~~">
-        <location
-            file="src/main/res/layout/chat_item_reverse.xml"
-            line="60"
-            column="35"/>
-    </issue>
-
-    <issue
-        id="RtlHardcoded"
-        message="Use &quot;`start`&quot; instead of &quot;`left`&quot; to ensure correct behavior in right-to-left locales"
-        errorLine1="            a:gravity=&quot;left&quot;"
-        errorLine2="                       ~~~~">
-        <location
-            file="src/main/res/layout-land/current_playing.xml"
-            line="18"
-            column="24"/>
-    </issue>
-
-    <issue
-        id="RtlHardcoded"
-        message="Consider adding `a:layout_alignParentStart=&quot;true&quot;` to better support right-to-left layouts"
-        errorLine1="            a:layout_alignParentLeft=&quot;true&quot;"
-        errorLine2="            ~~~~~~~~~~~~~~~~~~~~~~~~">
-        <location
-            file="src/main/res/layout/equalizer_bar.xml"
-            line="14"
-            column="13"/>
-    </issue>
-
-    <issue
-        id="RtlHardcoded"
-        message="Use &quot;`end`&quot; instead of &quot;`right`&quot; to ensure correct behavior in right-to-left locales"
-        errorLine1="            a:gravity=&quot;right&quot;"
-        errorLine2="                       ~~~~~">
-        <location
-            file="src/main/res/layout/equalizer_bar.xml"
-            line="22"
-            column="24"/>
-    </issue>
-
-    <issue
-        id="RtlHardcoded"
-        message="Consider adding `a:layout_alignParentEnd=&quot;true&quot;` to better support right-to-left layouts"
-        errorLine1="            a:layout_alignParentRight=&quot;true&quot;"
-        errorLine2="            ~~~~~~~~~~~~~~~~~~~~~~~~~">
-        <location
-            file="src/main/res/layout/equalizer_bar.xml"
-            line="26"
-            column="13"/>
-    </issue>
-
-    <issue
-        id="RtlHardcoded"
-        message="Consider adding `a:layout_toEndOf=&quot;@+id/equalizer.frequency&quot;` to better support right-to-left layouts"
-        errorLine1="            a:layout_toRightOf=&quot;@+id/equalizer.frequency&quot;"
-        errorLine2="            ~~~~~~~~~~~~~~~~~~">
-        <location
-            file="src/main/res/layout/equalizer_bar.xml"
-            line="27"
-            column="13"/>
-    </issue>
-
-    <issue
-        id="RtlHardcoded"
-        message="Consider adding `a:paddingStart=&quot;10dp&quot;` to better support right-to-left layouts"
-        errorLine1="  a:paddingLeft=&quot;10dp&quot; a:layout_width=&quot;fill_parent&quot; a:layout_height=&quot;wrap_content&quot;"
-        errorLine2="  ~~~~~~~~~~~~~">
-        <location
-            file="src/main/res/layout/main_buttons.xml"
-            line="7"
-            column="3"/>
-    </issue>
-
-    <issue
-        id="RtlHardcoded"
-        message="Consider adding `a:layout_marginStart=&quot;10dip&quot;` to better support right-to-left layouts"
-        errorLine1="    a:layout_marginLeft=&quot;10dip&quot;"
-        errorLine2="    ~~~~~~~~~~~~~~~~~~~">
-        <location
-            file="src/main/res/layout/main_buttons.xml"
-            line="22"
-            column="5"/>
-    </issue>
-
-    <issue
-        id="RtlHardcoded"
-        message="Consider adding `a:layout_marginStart=&quot;10dip&quot;` to better support right-to-left layouts"
-        errorLine1="    a:layout_marginLeft=&quot;10dip&quot;"
-        errorLine2="    ~~~~~~~~~~~~~~~~~~~">
-        <location
-            file="src/main/res/layout/main_buttons.xml"
-            line="31"
-            column="5"/>
-    </issue>
-
-    <issue
-        id="RtlHardcoded"
-        message="Consider adding `a:paddingStart=&quot;6dp&quot;` to better support right-to-left layouts"
-        errorLine1="  a:gravity=&quot;center_vertical&quot; a:paddingLeft=&quot;6dp&quot; a:textAllCaps=&quot;true&quot;"
-        errorLine2="                              ~~~~~~~~~~~~~">
-        <location
-            file="src/main/res/layout/main_buttons.xml"
-            line="40"
-            column="31"/>
-    </issue>
-
-    <issue
-        id="RtlHardcoded"
-        message="Consider adding `a:paddingStart=&quot;6dp&quot;` to better support right-to-left layouts"
-        errorLine1="  a:gravity=&quot;center_vertical&quot; a:paddingLeft=&quot;6dp&quot; a:textAllCaps=&quot;true&quot;"
-        errorLine2="                              ~~~~~~~~~~~~~">
-        <location
-            file="src/main/res/layout/main_buttons.xml"
-            line="61"
-            column="31"/>
-    </issue>
-
-    <issue
-        id="RtlHardcoded"
-        message="Consider adding `a:paddingStart=&quot;6dp&quot;` to better support right-to-left layouts"
-        errorLine1="  a:gravity=&quot;center_vertical&quot; a:paddingLeft=&quot;6dp&quot; a:textAllCaps=&quot;true&quot;"
-        errorLine2="                              ~~~~~~~~~~~~~">
-        <location
-            file="src/main/res/layout/main_buttons.xml"
-            line="77"
-            column="31"/>
-    </issue>
-
-    <issue
-        id="RtlHardcoded"
-        message="Consider adding `a:paddingStart=&quot;6dp&quot;` to better support right-to-left layouts"
-        errorLine1="  a:gravity=&quot;center_vertical&quot; a:paddingLeft=&quot;6dp&quot; a:textAllCaps=&quot;true&quot;"
-        errorLine2="                              ~~~~~~~~~~~~~">
-        <location
-            file="src/main/res/layout/main_buttons.xml"
-            line="123"
-            column="31"/>
-    </issue>
-
-    <issue
-        id="RtlHardcoded"
-        message="Consider adding `a:layout_alignParentStart=&quot;true&quot;` to better support right-to-left layouts"
-        errorLine1="        a:layout_alignParentLeft=&quot;true&quot;"
-        errorLine2="        ~~~~~~~~~~~~~~~~~~~~~~~~">
-        <location
-            file="src/main/res/layout/media_buttons.xml"
-            line="14"
-            column="9"/>
-    </issue>
-
-    <issue
-        id="RtlHardcoded"
-        message="Use &quot;`start`&quot; instead of &quot;`left`&quot; to ensure correct behavior in right-to-left locales"
-        errorLine1="                android:layout_gravity=&quot;left&quot;"
-        errorLine2="                                        ~~~~">
-        <location
-            file="src/main/res/layout/now_playing.xml"
-            line="40"
-            column="41"/>
-    </issue>
-
-    <issue
-        id="RtlHardcoded"
-        message="Use &quot;`start`&quot; instead of &quot;`left`&quot; to ensure correct behavior in right-to-left locales"
-        errorLine1="                android:layout_gravity=&quot;left&quot;"
-        errorLine2="                                        ~~~~">
-        <location
-            file="src/main/res/layout/now_playing.xml"
-            line="50"
-            column="41"/>
-    </issue>
-
-    <issue
-        id="RtlHardcoded"
-        message="Use &quot;`end`&quot; instead of &quot;`right`&quot; to ensure correct behavior in right-to-left locales"
-        errorLine1="            android:layout_gravity=&quot;center|right&quot;"
-        errorLine2="                                    ~~~~~~~~~~~~">
-        <location
-            file="src/main/res/layout/now_playing.xml"
-            line="61"
-            column="37"/>
-    </issue>
-
-    <issue
-        id="RtlHardcoded"
-        message="Consider adding `android:layout_marginEnd=&quot;16dip&quot;` to better support right-to-left layouts"
-        errorLine1="            android:layout_marginRight=&quot;16dip&quot;"
-        errorLine2="            ~~~~~~~~~~~~~~~~~~~~~~~~~~">
-        <location
-            file="src/main/res/layout/now_playing.xml"
-            line="63"
-            column="13"/>
-    </issue>
-
-    <issue
-        id="RtlHardcoded"
-        message="Consider adding `a:layout_alignParentStart=&quot;true&quot;` to better support right-to-left layouts"
-        errorLine1="        a:layout_alignParentLeft=&quot;true&quot;"
-        errorLine2="        ~~~~~~~~~~~~~~~~~~~~~~~~">
-        <location
-            file="src/main/res/layout/player_media_info.xml"
-            line="14"
-            column="9"/>
-    </issue>
-
-    <issue
-        id="RtlHardcoded"
-        message="Use &quot;`start`&quot; instead of &quot;`left`&quot; to ensure correct behavior in right-to-left locales"
-        errorLine1="            a:gravity=&quot;left&quot;"
-        errorLine2="                       ~~~~">
-        <location
-            file="src/main/res/layout/player_media_info.xml"
-            line="22"
-            column="24"/>
-    </issue>
-
-    <issue
-        id="RtlHardcoded"
-        message="Use &quot;`start`&quot; instead of &quot;`left`&quot; to ensure correct behavior in right-to-left locales"
-        errorLine1="            a:gravity=&quot;left&quot;"
-        errorLine2="                       ~~~~">
-        <location
-            file="src/main/res/layout/player_media_info.xml"
-            line="33"
-            column="24"/>
-    </issue>
-
-    <issue
-        id="RtlHardcoded"
-        message="Use &quot;`end`&quot; instead of &quot;`right`&quot; to ensure correct behavior in right-to-left locales"
-        errorLine1="            a:gravity=&quot;right&quot;"
-        errorLine2="                       ~~~~~">
-        <location
-            file="src/main/res/layout/player_media_info.xml"
-            line="43"
-            column="24"/>
-    </issue>
-
-    <issue
-        id="RtlHardcoded"
-        message="Consider adding `a:layout_alignParentEnd=&quot;true&quot;` to better support right-to-left layouts"
-        errorLine1="        a:layout_alignParentRight=&quot;true&quot;"
-        errorLine2="        ~~~~~~~~~~~~~~~~~~~~~~~~~">
-        <location
-            file="src/main/res/layout/player_media_info.xml"
-            line="53"
-            column="9"/>
-    </issue>
-
-    <issue
-        id="RtlHardcoded"
-        message="Use &quot;`end`&quot; instead of &quot;`right`&quot; to ensure correct behavior in right-to-left locales"
-        errorLine1="        a:gravity=&quot;right&quot;"
-        errorLine2="                   ~~~~~">
-        <location
-            file="src/main/res/layout/player_media_info.xml"
-            line="55"
-            column="20"/>
-    </issue>
-
-    <issue
-        id="RtlHardcoded"
-        message="Use &quot;`end`&quot; instead of &quot;`right`&quot; to ensure correct behavior in right-to-left locales"
-        errorLine1="            a:gravity=&quot;right&quot;"
-        errorLine2="                       ~~~~~">
-        <location
-            file="src/main/res/layout/player_media_info.xml"
-            line="63"
-            column="24"/>
-    </issue>
-
-    <issue
-        id="RtlHardcoded"
-        message="Use &quot;`end`&quot; instead of &quot;`right`&quot; to ensure correct behavior in right-to-left locales"
-        errorLine1="            a:gravity=&quot;right&quot;"
-        errorLine2="                       ~~~~~">
-        <location
-            file="src/main/res/layout/player_media_info.xml"
-            line="72"
-            column="24"/>
-    </issue>
-
-    <issue
-        id="RtlHardcoded"
-        message="Consider adding `a:layout_alignParentStart=&quot;true&quot;` to better support right-to-left layouts"
-        errorLine1="            a:layout_alignParentLeft=&quot;true&quot;"
-        errorLine2="            ~~~~~~~~~~~~~~~~~~~~~~~~">
-        <location
-            file="src/main/res/layout/player_slider.xml"
-            line="24"
-            column="13"/>
-    </issue>
-
-    <issue
-        id="RtlHardcoded"
-        message="Consider adding `a:layout_marginStart=&quot;12dip&quot;` to better support right-to-left layouts"
-        errorLine1="            a:layout_marginLeft=&quot;12dip&quot;"
-        errorLine2="            ~~~~~~~~~~~~~~~~~~~">
-        <location
-            file="src/main/res/layout/player_slider.xml"
-            line="25"
-            column="13"/>
-    </issue>
-
-    <issue
-        id="RtlHardcoded"
-        message="Consider adding `a:layout_alignParentEnd=&quot;true&quot;` to better support right-to-left layouts"
-        errorLine1="            a:layout_alignParentRight=&quot;true&quot;"
-        errorLine2="            ~~~~~~~~~~~~~~~~~~~~~~~~~">
-        <location
-            file="src/main/res/layout/player_slider.xml"
-            line="33"
-            column="13"/>
-    </issue>
-
-    <issue
-        id="RtlHardcoded"
-        message="Consider adding `a:layout_marginEnd=&quot;12dip&quot;` to better support right-to-left layouts"
-        errorLine1="            a:layout_marginRight=&quot;12dip&quot;"
-        errorLine2="            ~~~~~~~~~~~~~~~~~~~~">
-        <location
-            file="src/main/res/layout/player_slider.xml"
-            line="34"
-            column="13"/>
-    </issue>
-
-    <issue
-        id="RtlHardcoded"
-        message="Use &quot;`start`&quot; instead of &quot;`left`&quot; to ensure correct behavior in right-to-left locales"
-        errorLine1="  android:gravity=&quot;left|center_vertical&quot;"
-        errorLine2="                   ~~~~~~~~~~~~~~~~~~~~">
-        <location
-            file="src/main/res/layout/playlist_list_item.xml"
-            line="13"
-            column="20"/>
-    </issue>
-
-    <issue
-        id="RtlHardcoded"
-        message="Consider adding `a:paddingStart=&quot;4dp&quot;` to better support right-to-left layouts"
-        errorLine1="            a:paddingLeft=&quot;4dp&quot;/>"
-        errorLine2="            ~~~~~~~~~~~~~">
-        <location
-            file="src/main/res/layout/search_buttons.xml"
-            line="27"
-            column="13"/>
-    </issue>
-
-    <issue
-        id="RtlHardcoded"
-        message="Consider adding `a:paddingStart=&quot;4dp&quot;` to better support right-to-left layouts"
-        errorLine1="            a:paddingLeft=&quot;4dp&quot;/>"
-        errorLine2="            ~~~~~~~~~~~~~">
-        <location
-            file="src/main/res/layout/search_buttons.xml"
-            line="39"
-            column="13"/>
-    </issue>
-
-    <issue
-        id="RtlHardcoded"
-        message="Consider adding `a:paddingStart=&quot;4dp&quot;` to better support right-to-left layouts"
-        errorLine1="            a:paddingLeft=&quot;4dp&quot;/>"
-        errorLine2="            ~~~~~~~~~~~~~">
-        <location
-            file="src/main/res/layout/search_buttons.xml"
-            line="51"
-            column="13"/>
-    </issue>
-
-    <issue
-        id="RtlHardcoded"
-        message="Consider adding `a:layout_alignParentStart=&quot;true&quot;` to better support right-to-left layouts"
-        errorLine1="        a:layout_alignParentLeft=&quot;true&quot;"
-        errorLine2="        ~~~~~~~~~~~~~~~~~~~~~~~~">
-        <location
-            file="src/main/res/layout/select_album_header.xml"
-            line="10"
-            column="9"/>
-    </issue>
-
-    <issue
-        id="RtlHardcoded"
-        message="Consider adding `a:layout_marginEnd=&quot;10dip&quot;` to better support right-to-left layouts"
-        errorLine1="        a:layout_marginRight=&quot;10dip&quot;"
-        errorLine2="        ~~~~~~~~~~~~~~~~~~~~">
-        <location
-            file="src/main/res/layout/select_album_header.xml"
-            line="12"
-            column="9"/>
-    </issue>
-
-    <issue
-        id="RtlHardcoded"
-        message="Consider adding `a:layout_toEndOf=&quot;@+id/select_album_art&quot;` to better support right-to-left layouts"
-        errorLine1="        a:layout_toRightOf=&quot;@+id/select_album_art&quot;"
-        errorLine2="        ~~~~~~~~~~~~~~~~~~">
-        <location
-            file="src/main/res/layout/select_album_header.xml"
-            line="21"
-            column="9"/>
-    </issue>
-
-    <issue
-        id="RtlHardcoded"
-        message="Consider adding `a:paddingEnd=&quot;4dip&quot;` to better support right-to-left layouts"
-        errorLine1="        a:paddingRight=&quot;4dip&quot;"
-        errorLine2="        ~~~~~~~~~~~~~~">
-        <location
-            file="src/main/res/layout/select_album_header.xml"
-            line="23"
-            column="9"/>
-    </issue>
-
-    <issue
-        id="RtlHardcoded"
-        message="Consider adding `a:layout_toEndOf=&quot;@+id/select_album_art&quot;` to better support right-to-left layouts"
-        errorLine1="        a:layout_toRightOf=&quot;@+id/select_album_art&quot;"
-        errorLine2="        ~~~~~~~~~~~~~~~~~~">
-        <location
-            file="src/main/res/layout/select_album_header.xml"
-            line="33"
-            column="9"/>
-    </issue>
-
-    <issue
-        id="RtlHardcoded"
-        message="Consider adding `a:paddingEnd=&quot;4dip&quot;` to better support right-to-left layouts"
-        errorLine1="        a:paddingRight=&quot;4dip&quot;"
-        errorLine2="        ~~~~~~~~~~~~~~">
-        <location
-            file="src/main/res/layout/select_album_header.xml"
-            line="35"
-            column="9"/>
-    </issue>
-
-    <issue
-        id="RtlHardcoded"
-        message="Consider adding `a:layout_toEndOf=&quot;@+id/select_album_art&quot;` to better support right-to-left layouts"
-        errorLine1="        a:layout_toRightOf=&quot;@+id/select_album_art&quot;"
-        errorLine2="        ~~~~~~~~~~~~~~~~~~">
-        <location
-            file="src/main/res/layout/select_album_header.xml"
-            line="44"
-            column="9"/>
-    </issue>
-
-    <issue
-        id="RtlHardcoded"
-        message="Consider adding `a:paddingEnd=&quot;4dip&quot;` to better support right-to-left layouts"
-        errorLine1="        a:paddingRight=&quot;4dip&quot;"
-        errorLine2="        ~~~~~~~~~~~~~~">
-        <location
-            file="src/main/res/layout/select_album_header.xml"
-            line="46"
-            column="9"/>
-    </issue>
-
-    <issue
-        id="RtlHardcoded"
-        message="Consider adding `a:layout_toEndOf=&quot;@+id/select_album_art&quot;` to better support right-to-left layouts"
-        errorLine1="        a:layout_toRightOf=&quot;@+id/select_album_art&quot;"
-        errorLine2="        ~~~~~~~~~~~~~~~~~~">
-        <location
-            file="src/main/res/layout/select_album_header.xml"
-            line="55"
-            column="9"/>
-    </issue>
-
-    <issue
-        id="RtlHardcoded"
-        message="Consider adding `a:paddingEnd=&quot;4dip&quot;` to better support right-to-left layouts"
-        errorLine1="        a:paddingRight=&quot;4dip&quot;"
-        errorLine2="        ~~~~~~~~~~~~~~">
-        <location
-            file="src/main/res/layout/select_album_header.xml"
-            line="57"
-            column="9"/>
-    </issue>
-
-    <issue
-        id="RtlHardcoded"
-        message="Consider adding `a:layout_toEndOf=&quot;@+id/select_album_art&quot;` to better support right-to-left layouts"
-        errorLine1="        a:layout_toRightOf=&quot;@+id/select_album_art&quot;"
-        errorLine2="        ~~~~~~~~~~~~~~~~~~">
-        <location
-            file="src/main/res/layout/select_album_header.xml"
-            line="66"
-            column="9"/>
-    </issue>
-
-    <issue
-        id="RtlHardcoded"
-        message="Consider adding `a:paddingEnd=&quot;4dip&quot;` to better support right-to-left layouts"
-        errorLine1="        a:paddingRight=&quot;4dip&quot;"
-        errorLine2="        ~~~~~~~~~~~~~~">
-        <location
-            file="src/main/res/layout/select_album_header.xml"
-            line="68"
-            column="9"/>
-    </issue>
-
-    <issue
-        id="RtlHardcoded"
-        message="Consider adding `a:layout_toEndOf=&quot;@+id/select_album_art&quot;` to better support right-to-left layouts"
-        errorLine1="        a:layout_toRightOf=&quot;@+id/select_album_art&quot;"
-        errorLine2="        ~~~~~~~~~~~~~~~~~~">
-        <location
-            file="src/main/res/layout/select_album_header.xml"
-            line="77"
-            column="9"/>
-    </issue>
-
-    <issue
-        id="RtlHardcoded"
-        message="Consider adding `a:paddingEnd=&quot;4dip&quot;` to better support right-to-left layouts"
-        errorLine1="        a:paddingRight=&quot;4dip&quot;"
-        errorLine2="        ~~~~~~~~~~~~~~">
-        <location
-            file="src/main/res/layout/select_album_header.xml"
-            line="79"
-            column="9"/>
-    </issue>
-
-    <issue
-        id="RtlHardcoded"
-        message="Consider adding `a:paddingStart=&quot;6dp&quot;` to better support right-to-left layouts"
-        errorLine1="    a:paddingLeft=&quot;6dp&quot;"
-        errorLine2="    ~~~~~~~~~~~~~">
-        <location
-            file="src/main/res/layout/select_folder_header.xml"
-            line="9"
-            column="5"/>
-    </issue>
-
-    <issue
-        id="RtlHardcoded"
-        message="Consider adding `a:layout_marginStart=&quot;10dip&quot;` to better support right-to-left layouts"
-        errorLine1="            a:layout_marginLeft=&quot;10dip&quot;"
-        errorLine2="            ~~~~~~~~~~~~~~~~~~~">
-        <location
-            file="src/main/res/layout/select_folder_header.xml"
-            line="30"
-            column="13"/>
-    </issue>
-
-    <issue
-        id="RtlHardcoded"
-        message="Consider adding `a:layout_marginStart=&quot;10dip&quot;` to better support right-to-left layouts"
-        errorLine1="            a:layout_marginLeft=&quot;10dip&quot;"
-        errorLine2="            ~~~~~~~~~~~~~~~~~~~">
-        <location
-            file="src/main/res/layout/select_folder_header.xml"
-            line="39"
-            column="13"/>
-    </issue>
-
-    <issue
-        id="RtlHardcoded"
-        message="Use &quot;`start`&quot; instead of &quot;`left`&quot; to ensure correct behavior in right-to-left locales"
-        errorLine1="            a:layout_gravity=&quot;left|center_vertical&quot;"
-        errorLine2="                              ~~~~~~~~~~~~~~~~~~~~">
-        <location
-            file="src/main/res/layout/share_list_item.xml"
-            line="22"
-            column="31"/>
-    </issue>
-
-    <issue
-        id="RtlHardcoded"
-        message="Use &quot;`start`&quot; instead of &quot;`left`&quot; to ensure correct behavior in right-to-left locales"
-        errorLine1="            a:layout_gravity=&quot;left|center_vertical&quot;"
-        errorLine2="                              ~~~~~~~~~~~~~~~~~~~~">
-        <location
-            file="src/main/res/layout/share_list_item.xml"
-            line="38"
-            column="31"/>
-    </issue>
-
-    <issue
-        id="RtlHardcoded"
-        message="Consider adding `a:paddingStart=&quot;4dip&quot;` to better support right-to-left layouts"
-        errorLine1="            a:paddingLeft=&quot;4dip&quot;"
-        errorLine2="            ~~~~~~~~~~~~~">
-        <location
-            file="src/main/res/layout/share_list_item.xml"
-            line="41"
-            column="13"/>
-    </issue>
-
-    <issue
-        id="RtlHardcoded"
-        message="Consider adding `a:layout_marginStart=&quot;4dp&quot;` to better support right-to-left layouts"
-        errorLine1="    a:layout_marginLeft=&quot;4dp&quot;"
-        errorLine2="    ~~~~~~~~~~~~~~~~~~~">
-        <location
-            file="src/main/res/layout/song_details.xml"
-            line="7"
-            column="5"/>
-    </issue>
-
-    <issue
-        id="RtlHardcoded"
-        message="Use &quot;`start`&quot; instead of &quot;`left`&quot; to ensure correct behavior in right-to-left locales"
-        errorLine1="            a:layout_gravity=&quot;left|center_vertical&quot;"
-        errorLine2="                              ~~~~~~~~~~~~~~~~~~~~">
-        <location
-            file="src/main/res/layout/song_details.xml"
-            line="20"
-            column="31"/>
-    </issue>
-
-    <issue
-        id="RtlHardcoded"
-        message="Use &quot;`start`&quot; instead of &quot;`left`&quot; to ensure correct behavior in right-to-left locales"
-        errorLine1="            a:layout_gravity=&quot;left|center_vertical&quot;"
-        errorLine2="                              ~~~~~~~~~~~~~~~~~~~~">
-        <location
-            file="src/main/res/layout/song_details.xml"
-            line="27"
-            column="31"/>
-    </issue>
-
-    <issue
-        id="RtlHardcoded"
-        message="Consider adding `a:paddingStart=&quot;4dip&quot;` to better support right-to-left layouts"
-        errorLine1="            a:paddingLeft=&quot;4dip&quot;"
-        errorLine2="            ~~~~~~~~~~~~~">
-        <location
-            file="src/main/res/layout/song_details.xml"
-            line="31"
-            column="13"/>
-    </issue>
-
-    <issue
-        id="RtlHardcoded"
-        message="Consider adding `a:paddingEnd=&quot;2dip&quot;` to better support right-to-left layouts"
-        errorLine1="            a:paddingRight=&quot;2dip&quot;"
-        errorLine2="            ~~~~~~~~~~~~~~">
-        <location
-            file="src/main/res/layout/song_details.xml"
-            line="32"
-            column="13"/>
-    </issue>
-
-    <issue
-        id="RtlHardcoded"
-        message="Use &quot;`end`&quot; instead of &quot;`right`&quot; to ensure correct behavior in right-to-left locales"
-        errorLine1="            a:layout_gravity=&quot;right|center_vertical&quot;"
-        errorLine2="                              ~~~~~~~~~~~~~~~~~~~~~">
-        <location
-            file="src/main/res/layout/song_details.xml"
-            line="40"
-            column="31"/>
-    </issue>
-
-    <issue
-        id="RtlHardcoded"
-        message="Consider adding `a:paddingEnd=&quot;6dip&quot;` to better support right-to-left layouts"
-        errorLine1="            a:paddingRight=&quot;6dip&quot;/>"
-        errorLine2="            ~~~~~~~~~~~~~~">
-        <location
-            file="src/main/res/layout/song_details.xml"
-            line="42"
-            column="13"/>
-    </issue>
-
-    <issue
-        id="RtlHardcoded"
-        message="Use &quot;`start`&quot; instead of &quot;`left`&quot; to ensure correct behavior in right-to-left locales"
-        errorLine1="            a:layout_gravity=&quot;left|center_vertical&quot;"
-        errorLine2="                              ~~~~~~~~~~~~~~~~~~~~">
-        <location
-            file="src/main/res/layout/song_details.xml"
-            line="55"
-            column="31"/>
-    </issue>
-
-    <issue
-        id="RtlHardcoded"
-        message="Consider adding `a:paddingStart=&quot;4dip&quot;` to better support right-to-left layouts"
-        errorLine1="            a:paddingLeft=&quot;4dip&quot;"
-        errorLine2="            ~~~~~~~~~~~~~">
-        <location
-            file="src/main/res/layout/song_details.xml"
-            line="58"
-            column="13"/>
-    </issue>
-
-    <issue
-        id="RtlHardcoded"
-        message="Use &quot;`end`&quot; instead of &quot;`right`&quot; to ensure correct behavior in right-to-left locales"
-        errorLine1="            a:layout_gravity=&quot;right|center_vertical&quot;"
-        errorLine2="                              ~~~~~~~~~~~~~~~~~~~~~">
-        <location
-            file="src/main/res/layout/song_details.xml"
-            line="66"
-            column="31"/>
-    </issue>
-
-    <issue
-        id="RtlHardcoded"
-        message="Consider adding `a:paddingStart=&quot;3dip&quot;` to better support right-to-left layouts"
-        errorLine1="            a:paddingLeft=&quot;3dip&quot;"
-        errorLine2="            ~~~~~~~~~~~~~">
-        <location
-            file="src/main/res/layout/song_details.xml"
-            line="67"
-            column="13"/>
-    </issue>
-
-    <issue
-        id="RtlHardcoded"
-        message="Consider adding `a:paddingEnd=&quot;9dip&quot;` to better support right-to-left layouts"
-        errorLine1="            a:paddingRight=&quot;9dip&quot;"
-        errorLine2="            ~~~~~~~~~~~~~~">
-        <location
-            file="src/main/res/layout/song_details.xml"
-            line="68"
-            column="13"/>
-    </issue>
-
-    <issue
-        id="RtlHardcoded"
-        message="Consider adding `a:paddingEnd=&quot;4dip&quot;` to better support right-to-left layouts"
-        errorLine1="        a:paddingRight=&quot;4dip&quot;/>"
-        errorLine2="        ~~~~~~~~~~~~~~">
-        <location
-            file="src/main/res/layout/song_list_item.xml"
-            line="15"
-            column="9"/>
-    </issue>
-
-    <issue
-        id="RtlHardcoded"
-        message="Consider adding `a:layout_marginEnd=&quot;8dip&quot;` to better support right-to-left layouts"
-        errorLine1="            a:layout_marginRight=&quot;8dip&quot;"
-        errorLine2="            ~~~~~~~~~~~~~~~~~~~~">
-        <location
-            file="src/main/res/layout/song_list_item.xml"
-            line="71"
-            column="13"/>
-    </issue>
-
-    <issue
-        id="RtlHardcoded"
-        message="Consider adding `a:paddingEnd=&quot;8dip&quot;` to better support right-to-left layouts"
-        errorLine1="        a:paddingRight=&quot;8dip&quot;"
-        errorLine2="        ~~~~~~~~~~~~~~">
-        <location
-            file="src/main/res/layout/song_list_item.xml"
-            line="87"
-            column="9"/>
-    </issue>
-
-    <issue
-        id="RtlHardcoded"
-        message="Use &quot;`start`&quot; instead of &quot;`left`&quot; to ensure correct behavior in right-to-left locales"
-        errorLine1="            android:gravity=&quot;left&quot;"
-        errorLine2="                             ~~~~">
-        <location
-            file="src/main/res/layout/time_span_dialog.xml"
-            line="38"
-            column="30"/>
-    </issue>
-
-    <issue
-        id="RtlHardcoded"
-        message="Consider adding `android:layout_toEndOf=&quot;@+id/timeSpanEditText&quot;` to better support right-to-left layouts"
-        errorLine1="            android:layout_toRightOf=&quot;@+id/timeSpanEditText&quot;/>"
-        errorLine2="            ~~~~~~~~~~~~~~~~~~~~~~~~">
-        <location
-            file="src/main/res/layout/time_span_dialog.xml"
-            line="47"
-            column="13"/>
-    </issue>
-
-    <issue
-        id="RtlHardcoded"
-        message="Consider adding `android:layout_marginStart=&quot;4dp&quot;` to better support right-to-left layouts"
-        errorLine1="   android:layout_marginLeft=&quot;4dp&quot;"
-        errorLine2="   ~~~~~~~~~~~~~~~~~~~~~~~~~">
-        <location
-            file="src/main/res/layout/update_playlist.xml"
-            line="15"
-            column="4"/>
-    </issue>
-
-    <issue
-        id="RtlHardcoded"
-        message="Consider adding `android:layout_marginStart=&quot;4dp&quot;` to better support right-to-left layouts"
-        errorLine1="   android:layout_marginLeft=&quot;4dp&quot;"
-        errorLine2="   ~~~~~~~~~~~~~~~~~~~~~~~~~">
-        <location
-            file="src/main/res/layout/update_playlist.xml"
-            line="24"
-            column="4"/>
-    </issue>
-
-    <issue
-        id="RtlHardcoded"
-        message="Consider adding `android:layout_marginStart=&quot;4dp&quot;` to better support right-to-left layouts"
-        errorLine1="   android:layout_marginLeft=&quot;4dp&quot;"
-        errorLine2="   ~~~~~~~~~~~~~~~~~~~~~~~~~">
-        <location
-            file="src/main/res/layout/update_playlist.xml"
-            line="37"
-            column="4"/>
-    </issue>
-
-    <issue
-        id="RtlHardcoded"
-        message="Consider adding `android:layout_marginStart=&quot;4dp&quot;` to better support right-to-left layouts"
-        errorLine1="   android:layout_marginLeft=&quot;4dp&quot;"
-        errorLine2="   ~~~~~~~~~~~~~~~~~~~~~~~~~">
-        <location
-            file="src/main/res/layout/update_playlist.xml"
-            line="46"
-            column="4"/>
-    </issue>
-
-    <issue
-        id="RtlHardcoded"
-        message="Consider adding `android:layout_marginStart=&quot;4dp&quot;` to better support right-to-left layouts"
-        errorLine1="   android:layout_marginLeft=&quot;4dp&quot;"
-        errorLine2="   ~~~~~~~~~~~~~~~~~~~~~~~~~">
-        <location
-            file="src/main/res/layout/update_playlist.xml"
-            line="59"
-            column="4"/>
-    </issue>
-
-    <issue
-        id="RtlHardcoded"
-        message="Consider adding `android:layout_marginStart=&quot;4dp&quot;` to better support right-to-left layouts"
-        errorLine1="   android:layout_marginLeft=&quot;4dp&quot;"
-        errorLine2="   ~~~~~~~~~~~~~~~~~~~~~~~~~">
-        <location
-            file="src/main/res/layout/update_playlist.xml"
-            line="67"
-            column="4"/>
-    </issue>
-
-    <issue
-        id="RtlHardcoded"
-        message="Use &quot;`start`&quot; instead of &quot;`left`&quot; to ensure correct behavior in right-to-left locales"
-        errorLine1="            a:layout_gravity=&quot;left|center_vertical&quot;"
-        errorLine2="                              ~~~~~~~~~~~~~~~~~~~~">
-        <location
-            file="src/main/res/layout/video_details.xml"
-            line="19"
-            column="31"/>
-    </issue>
-
-    <issue
-        id="RtlHardcoded"
-        message="Consider adding `a:paddingStart=&quot;4dip&quot;` to better support right-to-left layouts"
-        errorLine1="            a:paddingLeft=&quot;4dip&quot;"
-        errorLine2="            ~~~~~~~~~~~~~">
-        <location
-            file="src/main/res/layout/video_details.xml"
-            line="22"
-            column="13"/>
-    </issue>
-
-    <issue
-        id="RtlHardcoded"
-        message="Consider adding `a:paddingEnd=&quot;2dip&quot;` to better support right-to-left layouts"
-        errorLine1="            a:paddingRight=&quot;2dip&quot;"
-        errorLine2="            ~~~~~~~~~~~~~~">
-        <location
-            file="src/main/res/layout/video_details.xml"
-            line="23"
-            column="13"/>
-    </issue>
-
-    <issue
-        id="RtlHardcoded"
-        message="Use &quot;`end`&quot; instead of &quot;`right`&quot; to ensure correct behavior in right-to-left locales"
-        errorLine1="            a:layout_gravity=&quot;right|center_vertical&quot;"
-        errorLine2="                              ~~~~~~~~~~~~~~~~~~~~~">
-        <location
-            file="src/main/res/layout/video_details.xml"
-            line="31"
-            column="31"/>
-    </issue>
-
-    <issue
-        id="RtlHardcoded"
-        message="Consider adding `a:paddingStart=&quot;2dip&quot;` to better support right-to-left layouts"
-        errorLine1="            a:paddingLeft=&quot;2dip&quot;"
-        errorLine2="            ~~~~~~~~~~~~~">
-        <location
-            file="src/main/res/layout/video_details.xml"
-            line="32"
-            column="13"/>
-    </issue>
-
-    <issue
-        id="RtlHardcoded"
-        message="Consider adding `a:paddingEnd=&quot;6dip&quot;` to better support right-to-left layouts"
-        errorLine1="            a:paddingRight=&quot;6dip&quot;"
-        errorLine2="            ~~~~~~~~~~~~~~">
-        <location
-            file="src/main/res/layout/video_details.xml"
-            line="33"
-            column="13"/>
-    </issue>
-
-    <issue
-        id="RtlHardcoded"
-        message="Consider adding `a:paddingStart=&quot;1dip&quot;` to better support right-to-left layouts"
-        errorLine1="        a:paddingLeft=&quot;1dip&quot;"
-        errorLine2="        ~~~~~~~~~~~~~">
-        <location
-            file="src/main/res/layout/video_list_item.xml"
-            line="13"
-            column="9"/>
-    </issue>
-
-    <issue
-        id="RtlHardcoded"
-        message="Consider adding `a:paddingEnd=&quot;8dip&quot;` to better support right-to-left layouts"
-        errorLine1="        a:paddingRight=&quot;8dip&quot;"
-        errorLine2="        ~~~~~~~~~~~~~~">
-        <location
-            file="src/main/res/layout/video_list_item.xml"
-            line="26"
-            column="9"/>
-    </issue>
-
-    <issue
-        id="RtlEnabled"
-        message="The project references RTL attributes, but does not explicitly enable or disable RTL support with `android:supportsRtl` in the manifest">
-        <location
-            file="src/main/AndroidManifest.xml"/>
     </issue>
 
 </issues>

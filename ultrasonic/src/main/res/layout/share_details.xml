@@ -10,6 +10,14 @@
         a:layout_width="wrap_content"
         a:layout_height="wrap_content">
 
+        <CheckBox
+            a:id="@+id/share_on_server"
+            a:text="@string/share_on_server"
+            a:layout_width="wrap_content"
+            a:layout_height="wrap_content"
+            a:layout_marginTop="4dip"
+            a:layout_marginBottom="4dip" />
+
         <TextView
             a:layout_width="wrap_content"
             a:layout_height="wrap_content"

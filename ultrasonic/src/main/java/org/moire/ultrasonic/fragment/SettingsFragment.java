@@ -141,7 +141,6 @@ public class SettingsFragment extends PreferenceFragmentCompat
 
         sharingDefaultGreeting.setText(Settings.getShareGreeting());
         setupClearSearchPreference();
-        setupGaplessControlSettingsV14();
         setupFeatureFlagsPreferences();
         setupCacheLocationPreference();
         setupBluetoothDevicePreferences();
@@ -221,8 +220,7 @@ public class SettingsFragment extends PreferenceFragmentCompat
     }
 
     private void setupCacheLocationPreference() {
-        cacheLocation.setSummary(settings.getString(Constants.PREFERENCES_KEY_CACHE_LOCATION,
-            FileUtil.getDefaultMusicDirectory().getPath()));
+        cacheLocation.setSummary(Settings.getCacheLocation());
 
         cacheLocation.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
             @Override
@@ -373,24 +371,6 @@ public class SettingsFragment extends PreferenceFragmentCompat
 
     }
 
-    private void setupGaplessControlSettingsV14() {
-        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.JELLY_BEAN) {
-            PreferenceCategory playbackControlSettings =
-                    findPreference(Constants.PREFERENCES_KEY_PLAYBACK_CONTROL_SETTINGS);
-            CheckBoxPreference gaplessPlaybackEnabled =
-                    findPreference(Constants.PREFERENCES_KEY_GAPLESS_PLAYBACK);
-
-            if (gaplessPlaybackEnabled != null) {
-                gaplessPlaybackEnabled.setChecked(false);
-                gaplessPlaybackEnabled.setEnabled(false);
-
-                if (playbackControlSettings != null) {
-                    playbackControlSettings.removePreference(gaplessPlaybackEnabled);
-                }
-            }
-        }
-    }
-
     private void update() {
         theme.setSummary(theme.getEntry());
         maxBitrateWifi.setSummary(maxBitrateWifi.getEntry());
@@ -412,8 +392,7 @@ public class SettingsFragment extends PreferenceFragmentCompat
         sharingDefaultExpiration.setSummary(sharingDefaultExpiration.getText());
         sharingDefaultDescription.setSummary(sharingDefaultDescription.getText());
         sharingDefaultGreeting.setSummary(sharingDefaultGreeting.getText());
-        cacheLocation.setSummary(settings.getString(Constants.PREFERENCES_KEY_CACHE_LOCATION,
-            FileUtil.getDefaultMusicDirectory().getPath()));
+        cacheLocation.setSummary(Settings.getCacheLocation());
 
         if (!mediaButtonsEnabled.isChecked()) {
             lockScreenEnabled.setChecked(false);

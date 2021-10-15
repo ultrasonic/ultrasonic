@@ -9,17 +9,17 @@
         a:id="@+id/album_coverart"
         a:layout_width="64dp"
         a:layout_height="64dp"
-        a:layout_gravity="left|center_vertical"
-        a:paddingLeft="3dip" />
+        a:layout_gravity="start|center_vertical"
+        a:paddingStart="3dip" />
 
     <LinearLayout
         a:orientation="vertical"
         a:layout_width="0dip"
         a:layout_height="wrap_content"
         a:layout_weight="1"
-        a:layout_gravity="left|center_vertical"
-        a:paddingLeft="6dip"
-        a:paddingRight="3dip">
+        a:layout_gravity="start|center_vertical"
+        a:paddingStart="6dip"
+        a:paddingEnd="3dip">
 
         <TextView
             a:id="@+id/album_title"
@@ -46,6 +46,6 @@
         a:background="@android:color/transparent"
         a:src="?attr/star_hollow"
         a:focusable="false"
-        a:paddingRight="3dip" />
+        a:paddingEnd="3dip" />
 
 </LinearLayout>

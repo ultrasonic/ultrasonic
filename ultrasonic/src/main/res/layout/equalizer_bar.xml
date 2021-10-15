@@ -24,7 +24,7 @@
             a:layout_height="wrap_content"
             a:layout_marginTop="8dp"
             a:layout_alignParentRight="true"
-            a:layout_toRightOf="@+id/equalizer.frequency"
+            a:layout_toEndOf="@+id/equalizer.frequency"
             />
 
     <SeekBar

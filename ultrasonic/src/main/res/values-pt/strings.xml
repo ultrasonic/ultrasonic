@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<resources>
+<resources xmlns:tools="http://schemas.android.com/tools">
 
     <string name="background_task.loading">Carregando&#8230;</string>
     <string name="background_task.network_error">Ocorreu um erro de rede. Verifique o endereço do servidor ou tente mais tarde.</string>
@@ -298,7 +298,7 @@
     <string name="settings.use_folder_for_album_artist_summary">Assumir que a pasta mais acima é o nome do artista</string>
     <string name="settings.use_id3">Navegar Usando Etiquetas ID3</string>
     <string name="settings.use_id3_summary">Usa as etiquetas ID3 ao invés do sistema de ficheiros</string>
-    <string name="main.video">Vídeo</string>
+    <string name="main.video" tools:ignore="UnusedResources">Vídeo</string>
     <string name="settings.view_refresh">Atualização do Ecrã</string>
     <string name="settings.view_refresh_500">.5 segundos</string>
     <string name="settings.view_refresh_1000">1 segundo</string>
@@ -318,14 +318,13 @@
     <string name="util.bytes_format.gigabyte">0.00 GB</string>
     <string name="util.bytes_format.kilobyte">0 KB</string>
     <string name="util.bytes_format.megabyte">0.00 MB</string>
-    <string name="util.no_time">&#8212;:&#8212;&#8212;</string>
+    <string name="util.no_time" tools:ignore="TypographyDashes">&#8212;:&#8212;&#8212;</string>
     <string name="util.zero_time">0:00</string>
     <string name="widget.initial_text">Toque para selecionar a música</string>
     <string name="widget.sdcard_busy">Cartão SD indisponível</string>
     <string name="widget.sdcard_missing">Sem cartão SD</string>
     <string name="settings.share_description_default">Texto Padrão</string>
     <string name="settings.sharing_title">Compartilhamento</string>
-    <string name="settings.sharing_always_ask_for_details_summary">Sempre pergunta pela descrição e prazo ao criar um compartilhamento</string>
     <string name="settings.sharing_always_ask_for_details">Sempre Perguntar por Detalhes</string>
     <string name="settings.share_expiration_default">Tempo Padrão para Expirar</string>
     <string name="do_not_show_dialog_again">Não mostrar este diálogo novamente</string>
@@ -371,24 +370,24 @@
         <item quantity="other">%d músicas selecionadas para serem fixadas.</item>
     </plurals>
     <plurals name="select_album_n_songs_downloaded">
-        <item quantity="one">%d música selecionada para descarregar.</item>
-        <item quantity="other">%d músicas selecionadas para serem descarregadas.</item>
+        <item quantity="one">%d música selecionada para ser baixada.</item>
+        <item quantity="other">%d músicas selecionadas para serem baixadas.</item>
     </plurals>
     <plurals name="select_album_n_songs_unpinned">
-        <item quantity="one">%d música selecionada para ser desafixada.</item>
+        <item quantity="one">%d música selecionada para ser desfixada.</item>
         <item quantity="other">%d músicas selecionadas para serem desfixadas.</item>
     </plurals>
     <plurals name="select_album_n_songs_added">
-        <item quantity="one">%d música adicionada ao fim da fila.</item>
-        <item quantity="other">%d músicas adicionadas ao fim da fila.</item>
+        <item quantity="one">%d música adicionada ao final da playlist.</item>
+        <item quantity="other">%d músicas adicionadas ao final da playlist.</item>
     </plurals>
     <plurals name="select_album_n_songs_play_next">
-        <item quantity="one">%d música inserida após a atual.</item>
-        <item quantity="other">%d músicas inseridas após a atual.</item>
+        <item quantity="one">%d música adicionada após a atual.</item>
+        <item quantity="other">%d músicas adicionadas após a atual.</item>
     </plurals>
     <plurals name="select_album_donate_dialog_n_trial_days_left">
-        <item quantity="one">Resta %d dia para o fim do período de teste</item>
-        <item quantity="other">Restam %d dias para o fim do período de teste</item>
+        <item quantity="one">%d dia restante do período de teste</item>
+        <item quantity="other">%d dias restantes do período de teste</item>
     </plurals>
 
     <!-- Subsonic api errors -->

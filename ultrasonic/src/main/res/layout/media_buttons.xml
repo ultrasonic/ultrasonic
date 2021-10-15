@@ -4,8 +4,8 @@
     a:layout_width="fill_parent"
     a:layout_height="wrap_content"
     a:orientation="horizontal"
-    a:layout_marginLeft="12dp"
-    a:layout_marginRight="12dp" >
+    a:layout_marginStart="12dp"
+    a:layout_marginEnd="12dp" >
 
     <ImageView
         a:id="@+id/button_shuffle"

@@ -14,8 +14,8 @@
             a:textColor="#ffffffff"
             a:shadowColor="#bb000000"
             a:shadowRadius="2.75"
-            a:paddingLeft="32dp"
-            a:paddingRight="32dp"
+            a:paddingStart="32dp"
+            a:paddingEnd="32dp"
             a:paddingBottom="12dp"
             />
       

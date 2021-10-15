@@ -10,9 +10,7 @@
         a:id="@+id/song_drag"
         a:layout_width="wrap_content"
         a:layout_height="fill_parent"
-        a:paddingLeft="5dip"
         a:paddingStart="5dip"
-        a:paddingRight="0dip"
         a:paddingEnd="0dip"
         a:background="@android:color/transparent"
         a:focusable="false"
@@ -25,7 +23,7 @@
         a:layout_height="fill_parent"
         a:checkMark="?attr/button_check_custom"
         a:gravity="center_vertical"
-        a:paddingRight="4dip"/>
+        a:paddingEnd="4dip"/>
 
     <include layout="@layout/song_details" />
 
@@ -81,7 +79,7 @@
             a:id="@+id/song_five_star_5"
             a:layout_width="10dip"
             a:layout_height="fill_parent"
-            a:layout_marginRight="8dip"
+            a:layout_marginEnd="8dip"
             a:background="@android:color/transparent"
             a:focusable="false"
             a:gravity="center_vertical"
@@ -97,7 +95,7 @@
         a:background="@android:color/transparent"
         a:focusable="false"
         a:gravity="center_vertical"
-        a:paddingRight="8dip"
+        a:paddingEnd="8dip"
         a:src="?attr/star_hollow" />
 
 </LinearLayout>

@@ -14,7 +14,13 @@ import androidx.navigation.fragment.findNavController
 import com.google.android.material.switchmaterial.SwitchMaterial
 import com.google.android.material.textfield.TextInputLayout
 import com.skydoves.colorpickerview.ColorPickerDialog
+import com.skydoves.colorpickerview.flag.BubbleFlag
+import com.skydoves.colorpickerview.flag.FlagMode
 import com.skydoves.colorpickerview.listeners.ColorEnvelopeListener
+import java.io.IOException
+import java.net.MalformedURLException
+import java.net.URL
+import java.util.Locale
 import org.koin.android.ext.android.inject
 import org.koin.androidx.viewmodel.ext.android.viewModel
 import org.moire.ultrasonic.BuildConfig
@@ -32,18 +38,12 @@ import org.moire.ultrasonic.service.MusicServiceFactory
 import org.moire.ultrasonic.util.Constants
 import org.moire.ultrasonic.util.ErrorDialog
 import org.moire.ultrasonic.util.ModalBackgroundTask
+import org.moire.ultrasonic.util.ServerColor
 import org.moire.ultrasonic.util.Util
 import retrofit2.Response
 import timber.log.Timber
-import java.io.IOException
-import java.net.MalformedURLException
-import java.net.URL
-import java.util.*
-import com.skydoves.colorpickerview.flag.FlagMode
 
-import com.skydoves.colorpickerview.flag.BubbleFlag
-import org.moire.ultrasonic.util.ServerColor
-
+private const val DIALOG_PADDING = 12
 
 /**
  * Displays a form where server settings can be created / edited
@@ -170,14 +170,18 @@ class EditServerFragment : Fragment(), OnBackPressedHandler {
                 this.colorPickerView.setFlagView(bubbleFlag)
             }
                 .attachAlphaSlideBar(false)
-                .setPositiveButton(getString(R.string.common_ok),
+                .setPositiveButton(
+                    getString(R.string.common_ok),
                     ColorEnvelopeListener { envelope, _ ->
                         selectedColor = envelope.color
-                        updateColor(envelope.color) })
+                        updateColor(envelope.color)
+                    }
+                )
                 .setNegativeButton(getString(R.string.common_cancel)) {
-                        dialogInterface, i -> dialogInterface.dismiss()
+                    dialogInterface, i ->
+                    dialogInterface.dismiss()
                 }
-                .setBottomSpace(12)
+                .setBottomSpace(DIALOG_PADDING)
                 .show()
         }
     }
@@ -466,10 +470,9 @@ class EditServerFragment : Fragment(), OnBackPressedHandler {
                 }
 
                 Util.showDialog(
-                    activity,
-                    android.R.drawable.ic_dialog_info,
-                    R.string.settings_testing_ok,
-                    dialogText
+                    context = requireActivity(),
+                    titleId = R.string.settings_testing_ok,
+                    message = dialogText
                 )
             }
 

@@ -15,6 +15,11 @@
         app:showAsAction="ifRoom|withText"
         a:title="@string/download.menu_star"/>
     <item
+        a:id="@+id/menu_item_share_song"
+        a:icon="?attr/share"
+        app:showAsAction="ifRoom|withText"
+        a:title="@string/download.share_song"/>
+    <item
         a:id="@+id/menu_item_share"
         a:icon="?attr/share"
         app:showAsAction="ifRoom|withText"

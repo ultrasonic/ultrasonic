@@ -28,8 +28,8 @@
                         a:gravity="center_horizontal"
                         a:layout_width="fill_parent"
                         a:layout_height="wrap_content"
-                        a:paddingLeft="10dip"
-                        a:paddingRight="10dip"
+                        a:paddingStart="10dip"
+                        a:paddingEnd="10dip"
                         a:paddingTop="10dip"
                         a:paddingBottom="4dip"
                         />
@@ -40,8 +40,8 @@
                         a:gravity="center_horizontal"
                         a:layout_width="fill_parent"
                         a:layout_height="wrap_content"
-                        a:paddingLeft="10dip"
-                        a:paddingRight="10dip"
+                        a:paddingStart="10dip"
+                        a:paddingEnd="10dip"
                         />
 
                 <TextView
@@ -51,8 +51,8 @@
                         a:layout_width="fill_parent"
                         a:layout_height="wrap_content"
                         a:paddingTop="32dip"
-                        a:paddingLeft="10dip"
-                        a:paddingRight="10dip"
+                        a:paddingStart="10dip"
+                        a:paddingEnd="10dip"
                         />
 
             </LinearLayout>

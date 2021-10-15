@@ -33,6 +33,7 @@ import android.widget.SeekBar
 import android.widget.SeekBar.OnSeekBarChangeListener
 import android.widget.TextView
 import android.widget.ViewFlipper
+import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import androidx.navigation.Navigation
 import com.mobeta.android.dslv.DragSortListView
@@ -153,7 +154,7 @@ class PlayerFragment : Fragment(), GestureDetector.OnGestureListener, KoinCompon
         return inflater.inflate(R.layout.current_playing, container, false)
     }
 
-    fun findViews(view: View) {
+    private fun findViews(view: View) {
         playlistFlipper = view.findViewById(R.id.current_playing_playlist_flipper)
         emptyTextView = view.findViewById(R.id.playlist_empty)
         songTitleTextView = view.findViewById(R.id.current_playing_song)
@@ -209,7 +210,7 @@ class PlayerFragment : Fragment(), GestureDetector.OnGestureListener, KoinCompon
         val nextButton: AutoRepeatButton = view.findViewById(R.id.button_next)
         val shuffleButton = view.findViewById<View>(R.id.button_shuffle)
         val ratingLinearLayout = view.findViewById<LinearLayout>(R.id.song_rating)
-        if (!useFiveStarRating) ratingLinearLayout.visibility = View.GONE
+        if (!useFiveStarRating) ratingLinearLayout.isVisible = false
         hollowStar = Util.getDrawableFromAttribute(view.context, R.attr.star_hollow)
         fullStar = Util.getDrawableFromAttribute(context, R.attr.star_full)
 
@@ -375,7 +376,7 @@ class PlayerFragment : Fragment(), GestureDetector.OnGestureListener, KoinCompon
             mediaPlayerController.isShufflePlayEnabled = true
         }
 
-        visualizerViewLayout.visibility = View.GONE
+        visualizerViewLayout.isVisible = false
         VisualizerController.get().observe(
             requireActivity(),
             { visualizerController ->
@@ -389,11 +390,9 @@ class PlayerFragment : Fragment(), GestureDetector.OnGestureListener, KoinCompon
                             LinearLayout.LayoutParams.MATCH_PARENT
                         )
                     )
-                    if (!visualizerView.isActive) {
-                        visualizerViewLayout.visibility = View.GONE
-                    } else {
-                        visualizerViewLayout.visibility = View.VISIBLE
-                    }
+
+                    visualizerViewLayout.isVisible = visualizerView.isActive
+
                     visualizerView.setOnTouchListener { _, _ ->
                         visualizerView.isActive = !visualizerView.isActive
                         mediaPlayerController.showVisualization = visualizerView.isActive
@@ -402,7 +401,7 @@ class PlayerFragment : Fragment(), GestureDetector.OnGestureListener, KoinCompon
                     isVisualizerAvailable = true
                 } else {
                     Timber.d("VisualizerController Observer.onChanged has no controller")
-                    visualizerViewLayout.visibility = View.GONE
+                    visualizerViewLayout.isVisible = false
                     isVisualizerAvailable = false
                 }
             }
@@ -497,6 +496,7 @@ class PlayerFragment : Fragment(), GestureDetector.OnGestureListener, KoinCompon
         val equalizerMenuItem = menu.findItem(R.id.menu_item_equalizer)
         val visualizerMenuItem = menu.findItem(R.id.menu_item_visualizer)
         val shareMenuItem = menu.findItem(R.id.menu_item_share)
+        val shareSongMenuItem = menu.findItem(R.id.menu_item_share_song)
         starMenuItem = menu.findItem(R.id.menu_item_star)
         val bookmarkMenuItem = menu.findItem(R.id.menu_item_bookmark_set)
         val bookmarkRemoveMenuItem = menu.findItem(R.id.menu_item_bookmark_delete)
@@ -523,20 +523,27 @@ class PlayerFragment : Fragment(), GestureDetector.OnGestureListener, KoinCompon
         }
         val mediaPlayerController = mediaPlayerController
         val downloadFile = mediaPlayerController.currentPlaying
+
         if (downloadFile != null) {
             currentSong = downloadFile.song
         }
+
         if (useFiveStarRating) starMenuItem.isVisible = false
+
         if (currentSong != null) {
             starMenuItem.icon = if (currentSong!!.starred) fullStar else hollowStar
+            shareSongMenuItem.isVisible = true
         } else {
             starMenuItem.icon = hollowStar
+            shareSongMenuItem.isVisible = false
         }
+
         if (mediaPlayerController.keepScreenOn) {
             screenOption?.setTitle(R.string.download_menu_screen_off)
         } else {
             screenOption?.setTitle(R.string.download_menu_screen_on)
         }
+
         if (jukeboxOption != null) {
             jukeboxOption.isEnabled = jukeboxAvailable
             jukeboxOption.isVisible = jukeboxAvailable
@@ -598,9 +605,8 @@ class PlayerFragment : Fragment(), GestureDetector.OnGestureListener, KoinCompon
 
         when (menuItemId) {
             R.id.menu_show_artist -> {
-                if (entry == null) {
-                    return false
-                }
+                if (entry == null) return false
+
                 if (Settings.shouldUseId3Tags) {
                     bundle = Bundle()
                     bundle.putString(Constants.INTENT_EXTRA_NAME_ID, entry.artistId)
@@ -613,9 +619,8 @@ class PlayerFragment : Fragment(), GestureDetector.OnGestureListener, KoinCompon
                 return true
             }
             R.id.menu_show_album -> {
-                if (entry == null) {
-                    return false
-                }
+                if (entry == null) return false
+
                 val albumId = if (Settings.shouldUseId3Tags) entry.albumId else entry.parent
                 bundle = Bundle()
                 bundle.putString(Constants.INTENT_EXTRA_NAME_ID, albumId)
@@ -627,9 +632,8 @@ class PlayerFragment : Fragment(), GestureDetector.OnGestureListener, KoinCompon
                 return true
             }
             R.id.menu_lyrics -> {
-                if (entry == null) {
-                    return false
-                }
+                if (entry == null) return false
+
                 bundle = Bundle()
                 bundle.putString(Constants.INTENT_EXTRA_NAME_ARTIST, entry.artist)
                 bundle.putString(Constants.INTENT_EXTRA_NAME_TITLE, entry.title)
@@ -664,11 +668,9 @@ class PlayerFragment : Fragment(), GestureDetector.OnGestureListener, KoinCompon
             R.id.menu_item_visualizer -> {
                 val active = !visualizerView.isActive
                 visualizerView.isActive = active
-                if (!visualizerView.isActive) {
-                    visualizerViewLayout.visibility = View.GONE
-                } else {
-                    visualizerViewLayout.visibility = View.VISIBLE
-                }
+
+                visualizerViewLayout.isVisible = visualizerView.isActive
+
                 mediaPlayerController.showVisualization = visualizerView.isActive
                 Util.toast(
                     context,
@@ -705,9 +707,8 @@ class PlayerFragment : Fragment(), GestureDetector.OnGestureListener, KoinCompon
                 return true
             }
             R.id.menu_item_star -> {
-                if (currentSong == null) {
-                    return true
-                }
+                if (currentSong == null) return true
+
                 val isStarred = currentSong!!.starred
                 val id = currentSong!!.id
                 if (isStarred) {
@@ -732,9 +733,8 @@ class PlayerFragment : Fragment(), GestureDetector.OnGestureListener, KoinCompon
                 return true
             }
             R.id.menu_item_bookmark_set -> {
-                if (currentSong == null) {
-                    return true
-                }
+                if (currentSong == null) return true
+
                 val songId = currentSong!!.id
                 val playerPosition = mediaPlayerController.playerPosition
                 currentSong!!.bookmarkPosition = playerPosition
@@ -755,9 +755,8 @@ class PlayerFragment : Fragment(), GestureDetector.OnGestureListener, KoinCompon
                 return true
             }
             R.id.menu_item_bookmark_delete -> {
-                if (currentSong == null) {
-                    return true
-                }
+                if (currentSong == null) return true
+
                 val bookmarkSongId = currentSong!!.id
                 currentSong!!.bookmarkPosition = 0
                 Thread {
@@ -779,6 +778,15 @@ class PlayerFragment : Fragment(), GestureDetector.OnGestureListener, KoinCompon
                     val playlistEntry = downloadFile.song
                     entries.add(playlistEntry)
                 }
+                shareHandler.createShare(this, entries, null, cancellationToken)
+                return true
+            }
+            R.id.menu_item_share_song -> {
+                if (currentSong == null) return true
+
+                val entries: MutableList<MusicDirectory.Entry?> = ArrayList()
+                entries.add(currentSong)
+
                 shareHandler.createShare(this, entries, null, cancellationToken)
                 return true
             }
@@ -903,7 +911,9 @@ class PlayerFragment : Fragment(), GestureDetector.OnGestureListener, KoinCompon
                 onCurrentChanged()
             }
         })
-        emptyTextView.visibility = if (list.isEmpty()) View.VISIBLE else View.GONE
+
+        emptyTextView.isVisible = list.isEmpty()
+
         currentRevision = mediaPlayerController.playListUpdateRevision
         when (mediaPlayerController.repeatMode) {
             RepeatMode.OFF -> repeatButton.setImageDrawable(
@@ -1028,19 +1038,19 @@ class PlayerFragment : Fragment(), GestureDetector.OnGestureListener, KoinCompon
 
                 when (playerState) {
                     PlayerState.STARTED -> {
-                        pauseButton.visibility = View.VISIBLE
-                        stopButton.visibility = View.GONE
-                        startButton.visibility = View.GONE
+                        pauseButton.isVisible = true
+                        stopButton.isVisible = false
+                        startButton.isVisible = false
                     }
                     PlayerState.DOWNLOADING, PlayerState.PREPARING -> {
-                        pauseButton.visibility = View.GONE
-                        stopButton.visibility = View.VISIBLE
-                        startButton.visibility = View.GONE
+                        pauseButton.isVisible = false
+                        stopButton.isVisible = true
+                        startButton.isVisible = false
                     }
                     else -> {
-                        pauseButton.visibility = View.GONE
-                        stopButton.visibility = View.GONE
-                        startButton.visibility = View.VISIBLE
+                        pauseButton.isVisible = false
+                        stopButton.isVisible = false
+                        startButton.isVisible = true
                     }
                 }
 

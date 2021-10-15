@@ -206,14 +206,14 @@
     <string name="settings.directory_cache_time_5">5 minutos</string>
     <string name="settings.directory_cache_time_60">1 hora</string>
     <string name="settings.disc_sort">Classificar Músicas por Álbum</string>
-    <string name="settings.disc_sort_summary">Classificar músicas pelo número do álbum e faixas.</string>
+    <string name="settings.disc_sort_summary">Classificar músicas pelo número do álbum e faixas</string>
     <string name="settings.display_bitrate">Mostrar Taxa de Bits e Sufixo de Arquivo</string>
     <string name="settings.display_bitrate_summary">Adicionar o nome do artista com a taxa de bits e sufixo do arquivo</string>
     <string name="settings.download_transition">Mostrar Downloads na Reprodução</string>
     <string name="settings.download_transition_summary">Transição para atividade de download quando iniciar reprodução</string>
     <string name="settings.gapless_playback">Reprodução sem Interrupção</string>
     <string name="settings.gapless_playback_summary">Ativar reprodução sem interrupção</string>
-    <string name="settings.hide_media_summary">Esconder músicas de outros aplicativos.</string>
+    <string name="settings.hide_media_summary">Esconder arquivos de músicas de outros aplicativos</string>
     <string name="settings.hide_media_title">Esconder de Outros</string>
     <string name="settings.hide_media_toast">Será efetivado na próxima vez que o Android procurar por músicas em seu celular.</string>
     <string name="settings.increment_time">Intervalo de Salto</string>
@@ -231,9 +231,9 @@
     <string name="settings.max_bitrate_64">64 Kbps</string>
     <string name="settings.max_bitrate_80">80 Kbps</string>
     <string name="settings.max_bitrate_96">96 Kbps</string>
-    <string name="settings.max_bitrate_mobile">Máx. de Taxa de Bits - Celular</string>
+    <string name="settings.max_bitrate_mobile">Taxa Máxima de Bits - Celular</string>
     <string name="settings.max_bitrate_unlimited">Ilimitado</string>
-    <string name="settings.max_bitrate_wifi">Máx. de Taxa de Bits - Wi-Fi</string>
+    <string name="settings.max_bitrate_wifi">Taxa Máxima de Bits - Wi-Fi</string>
     <string name="settings.max_songs">Máximo de Músicas</string>
     <string name="settings.media_button_summary">Obedecer aos botões do celular, fones e botões de mídia do Bluetooth</string>
     <string name="settings.media_button_title">Botões de Mídia</string>
@@ -258,9 +258,9 @@
     <string name="settings.preload_5">5 músicas</string>
     <string name="settings.preload_unlimited">Ilimitado</string>
     <string name="settings.playback.resume_play_on_headphones_plug.title">Retomar ao Inserir Fone de Ouvido</string>
-    <string name="settings.playback.resume_play_on_headphones_plug.summary">O aplicativo retomará a reprodução em pausa na inserção dos fones de ouvido no dispositivo.</string>
+    <string name="settings.playback.resume_play_on_headphones_plug.summary">O aplicativo retomará a reprodução em pausa na inserção dos fones de ouvido no dispositivo</string>
     <string name="settings.scrobble_summary">Lembre-se de configurar usuário e senha nos serviços Scrobble do servidor</string>
-    <string name="settings.scrobble_title">Registre Minhas Músicas</string>
+    <string name="settings.scrobble_title">Registrar Minhas Músicas</string>
     <string name="settings.search_1">1</string>
     <string name="settings.search_10">10</string>
     <string name="settings.search_100">100</string>
@@ -279,6 +279,8 @@
     <string name="settings.search_title">Configurações de Pesquisa</string>
     <string name="settings.send_bluetooth_album_art_summary">Enviar a arte do álbum via Bluetooth (Pode causar falhas nas notificações do Bluetooth)</string>
     <string name="settings.send_bluetooth_album_art">Arte do Álbum via Bluetooth</string>
+    <string name="settings.disable_send_now_playing_list_summary">A Lista Tocando Agora não será enviada aos dispositivos conectados. Isso pode restaurar a compatibilidade com dispositivos AVRCP 1.3 quando a exibição da trilha atual não é atualizada</string>
+    <string name="settings.disable_send_now_playing_list">Desativar Envio da Lista Tocando Agora</string>
     <string name="settings.send_bluetooth_notification_summary">Enviar notificações de reprodução via Bluetooth</string>
     <string name="settings.send_bluetooth_notification">Notificações via Bluetooth</string>
     <string name="settings.server_manage_servers">Gerenciar Servidores</string>
@@ -344,7 +346,6 @@
     <string name="widget.sdcard_missing">Sem cartão SD</string>
     <string name="settings.share_description_default">Descrição Padrão do Compartilhamento</string>
     <string name="settings.sharing_title">Compartilhamento</string>
-    <string name="settings.sharing_always_ask_for_details_summary">Sempre perguntar pela descrição e expiração ao criar um compartilhamento</string>
     <string name="settings.sharing_always_ask_for_details">Sempre Perguntar por Detalhes</string>
     <string name="settings.share_expiration_default">Tempo Padrão para Expirar</string>
     <string name="do_not_show_dialog_again">Não mostrar este diálogo novamente</string>
@@ -395,6 +396,7 @@
     <string name="settings.debug.log_keep">Manter arquivos</string>
     <string name="settings.debug.log_delete">Excluir arquivos</string>
     <string name="settings.debug.log_deleted">Arquivos de log excluídos.</string>
+    <string name="notification.downloading_title">Baixado mídia em segundo plano…</string>
 
     <string name="permissions.access_error">O Ultrasonic não pôde acessar o cache dos arquivos de música. O local do cache foi redefinido para o caminho padrão.</string>
     <string name="permissions.message_box_title">Atenção</string>
@@ -419,9 +421,9 @@
     <string name="filepicker.default">Usar o padrão</string>
     <string name="filepicker.available_drives">Unidades disponíveis:</string>
 
-    <string name="server_selector.label">Servidores configurados</string>
+    <string name="server_selector.label">Servidores Configurados</string>
     <string name="server_selector.delete_confirmation">Quer realmente excluir o servidor?</string>
-    <string name="server_editor.label">Gerenciar servidor</string>
+    <string name="server_editor.label">Gerenciar Servidor</string>
     <string name="server_editor.new_label">Adicionar Servidor</string>
     <string name="server_editor.leave_confirmation">Quer realmente sair e descartar as alterações?</string>
     <string name="server_editor.required">Este campo é necessário</string>
@@ -447,20 +449,20 @@
         <item quantity="other">%d músicas selecionadas para serem baixadas.</item>
     </plurals>
     <plurals name="select_album_n_songs_unpinned">
-        <item quantity="one">%d música selecionada para ser desafixada.</item>
+        <item quantity="one">%d música selecionada para ser desfixada.</item>
         <item quantity="other">%d músicas selecionadas para serem desfixadas.</item>
     </plurals>
     <plurals name="select_album_n_songs_added">
-        <item quantity="one">%d música adicionada ao fim da fila.</item>
-        <item quantity="other">%d músicas adicionadas ao fim da fila.</item>
+        <item quantity="one">%d música adicionada ao final da playlist.</item>
+        <item quantity="other">%d músicas adicionadas ao final da playlist.</item>
     </plurals>
     <plurals name="select_album_n_songs_play_next">
-        <item quantity="one">%d música inserida após a atual.</item>
-        <item quantity="other">%d músicas inseridas após a atual.</item>
+        <item quantity="one">%d música adicionada após a atual.</item>
+        <item quantity="other">%d músicas adicionadas após a atual.</item>
     </plurals>
     <plurals name="select_album_donate_dialog_n_trial_days_left">
-        <item quantity="one">Resta %d dia para o fim do período de teste</item>
-        <item quantity="other">Restam %d dias para o fim do período de teste</item>
+        <item quantity="one">%d dia restante do período de teste</item>
+        <item quantity="other">%d dias restantes do período de teste</item>
     </plurals>
 
     <!-- Subsonic api errors -->
@@ -478,8 +480,8 @@
     <!-- Subsonic feature flags -->
     <string name="feature_flags_category_title">Sinalização de Recursos</string>
     <string name="feature_flags_five_star_rating_title">Usar Classif. 5 Estrelas para Músicas</string>
-    <string name="feature_flags_five_star_rating_description">Use o sistema de classificação de 5 estrelas para músicas
-         em vez de simplesmente estrelar/não estrelar itens.
+    <string name="feature_flags_five_star_rating_description">Usar o sistema de classificação de 5 estrelas para músicas
+         em vez de simplesmente estrelar/não estrelar itens
     </string>
 
 </resources>

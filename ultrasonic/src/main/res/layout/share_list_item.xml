@@ -4,8 +4,8 @@
               a:layout_height="wrap_content"
               a:layout_gravity="center_vertical"
               a:layout_weight="1"
-              a:paddingLeft="6dip"
-              a:paddingRight="6dip"
+              a:paddingStart="6dip"
+              a:paddingEnd="6dip"
               a:minHeight="44dip"
               a:orientation="vertical">
 
@@ -38,7 +38,7 @@
             a:layout_gravity="left|center_vertical"
             a:layout_weight="1"
             a:ellipsize="middle"
-            a:paddingLeft="4dip"
+            a:paddingStart="4dip"
             a:singleLine="true"
             a:textAppearance="?android:attr/textAppearanceSmall"/>
 

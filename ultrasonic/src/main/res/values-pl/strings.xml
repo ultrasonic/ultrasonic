@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<resources>
+<resources xmlns:tools="http://schemas.android.com/tools">
 
     <string name="background_task.loading">Ładowanie&#8230;</string>
     <string name="background_task.network_error">Wystąpił błąd sieci. Proszę sprawdzić adres serwera i spróbować później.</string>
@@ -298,7 +298,7 @@ ponieważ api Subsonic nie wspiera nowego sposobu autoryzacji dla użytkowników
     <string name="settings.use_folder_for_album_artist_summary">Zakłada, że folder najwyższego poziomu jest nazwą artysty albumu</string>
     <string name="settings.use_id3">Przeglądaj używając tagów ID3</string>
     <string name="settings.use_id3_summary">Używa metod z tagów ID3 zamiast metod opartych na systemie plików</string>
-    <string name="main.video">Wideo</string>
+    <string name="main.video" tools:ignore="UnusedResources">Wideo</string>
     <string name="settings.view_refresh">Odświeżanie widoku</string>
     <string name="settings.view_refresh_500">co pół sekundy</string>
     <string name="settings.view_refresh_1000">co 1 sekundę</string>
@@ -318,14 +318,13 @@ ponieważ api Subsonic nie wspiera nowego sposobu autoryzacji dla użytkowników
     <string name="util.bytes_format.gigabyte">0.00 GB</string>
     <string name="util.bytes_format.kilobyte">0 KB</string>
     <string name="util.bytes_format.megabyte">0.00 MB</string>
-    <string name="util.no_time">-:--</string>
+    <string name="util.no_time" tools:ignore="TypographyDashes">-:--</string>
     <string name="util.zero_time">0:00</string>
     <string name="widget.initial_text">Dotknij, aby wybrać muzykę</string>
     <string name="widget.sdcard_busy">Karta SD jest niedostępna</string>
     <string name="widget.sdcard_missing">Brak karty SD</string>
     <string name="settings.share_description_default">Domyślne ustawienia udostępniania</string>
     <string name="settings.sharing_title">Udostępnianie</string>
-    <string name="settings.sharing_always_ask_for_details_summary">Zawsze pytaj o opis i czas wygaśnięcia podczas tworzenia udostępnienia</string>
     <string name="settings.sharing_always_ask_for_details">Zawsze pytaj o szczegóły</string>
     <string name="settings.share_expiration_default">Domyślny czas wygaśnięcia</string>
     <string name="do_not_show_dialog_again">Nie wyświetlaj więcej tego okna</string>
@@ -370,40 +369,40 @@ ponieważ api Subsonic nie wspiera nowego sposobu autoryzacji dla użytkowników
         <item quantity="other">%d utworów</item>
     </plurals>
     <plurals name="select_album_n_songs_pinned">
-        <item quantity="one">%d utwór zaznaczony do przypięcia</item>
-        <item quantity="few">%d utwory zaznaczone do przypięcia</item>
-        <item quantity="many">%d utworów zaznaczonych do przypięcia</item>
-        <item quantity="other">%d utworów zaznaczonych do przypięcia</item>
+        <item quantity="one">%d utwór zaznaczony do przypięcia.</item>
+        <item quantity="few">%d utwory zaznaczone do przypięcia.</item>
+        <item quantity="many">%d utworów zaznaczonych do przypięcia.</item>
+        <item quantity="other">%d utworów zaznaczonych do przypięcia.</item>
     </plurals>
     <plurals name="select_album_n_songs_downloaded">
-        <item quantity="one">%d utwór zaznaczony do pobrania</item>
-        <item quantity="few">%d utwory zaznaczone do pobrania</item>
-        <item quantity="many">%d utworów zaznaczonych do pobrania</item>
-        <item quantity="other">%d utworów zaznaczonych do pobrania</item>
+        <item quantity="one">%d utwór zaznaczony do pobrania.</item>
+        <item quantity="few">%d utwory zaznaczone do pobrania.</item>
+        <item quantity="many">%d utworów zaznaczonych do pobrania.</item>
+        <item quantity="other">%d utworów zaznaczonych do pobrania.</item>
     </plurals>
     <plurals name="select_album_n_songs_unpinned">
-        <item quantity="one">%d utwór zaznaczony do odpięcia</item>
-        <item quantity="few">%d utwory zaznaczone do odpięcia</item>
-        <item quantity="many">%d utworów zaznaczonych do odpięcia </item>
-        <item quantity="other">%d utworów zaznaczonych do odpięcia</item>
+        <item quantity="one">%d utwór zaznaczony do odpięcia.</item>
+        <item quantity="few">%d utwory zaznaczone do odpięcia.</item>
+        <item quantity="many">%d utworów zaznaczonych do odpięcia.</item>
+        <item quantity="other">%d utworów zaznaczonych do odpięcia.</item>
     </plurals>
     <plurals name="select_album_n_songs_added">
-        <item quantity="one">%d utwór dodany na koniec kolejki odtwarzania</item>
-        <item quantity="few">%d utwory dodane na koniec kolejki odtwarzania</item>
-        <item quantity="many">%dutworów dodanych na koniec kolejki odtwarzania </item>
-        <item quantity="other">%d utworów dodanych na koniec kolejki odtwarzania </item>
+        <item quantity="one">%d utwór dodany na koniec kolejki odtwarzania.</item>
+        <item quantity="few">%d utwory dodane na koniec kolejki odtwarzania.</item>
+        <item quantity="many">%d utworów dodanych na koniec kolejki odtwarzania.</item>
+        <item quantity="other">%d utworów dodanych na koniec kolejki odtwarzania.</item>
     </plurals>
     <plurals name="select_album_n_songs_play_next">
-        <item quantity="one">%d utwór wstawiony po bieżącym utworze</item>
-        <item quantity="few">%d utwory wstawione po bieżącym utworze</item>
-        <item quantity="many">%d utworów wstawionych po bieżącym utworze </item>
-        <item quantity="other">%d utworów wstawionych po bieżącym utworze  </item>
+        <item quantity="one">%d utwór wstawiony po bieżącym utworze.</item>
+        <item quantity="few">%d utwory wstawione po bieżącym utworze.</item>
+        <item quantity="many">%d utworów wstawionych po bieżącym utworze.</item>
+        <item quantity="other">%d utworów wstawionych po bieżącym utworze.</item>
     </plurals>
     <plurals name="select_album_donate_dialog_n_trial_days_left">
         <item quantity="one">%d dzień pozostał do zakończenia okresu próbnego</item>
         <item quantity="few">%d dni pozostały do zakończenia okresu próbnego</item>
-        <item quantity="many">%d dni pozostało do zakończenia okresu próbnego </item>
-        <item quantity="other">%d dni pozostało do zakończenia okresu próbnego </item>
+        <item quantity="many">%d dni pozostało do zakończenia okresu próbnego</item>
+        <item quantity="other">%d dni pozostało do zakończenia okresu próbnego</item>
     </plurals>
 
     <!-- Subsonic api errors -->
