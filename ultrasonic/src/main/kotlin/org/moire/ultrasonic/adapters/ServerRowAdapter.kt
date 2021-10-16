@@ -18,6 +18,7 @@ import org.moire.ultrasonic.R
 import org.moire.ultrasonic.data.ActiveServerProvider
 import org.moire.ultrasonic.data.ServerSetting
 import org.moire.ultrasonic.util.ServerColor
+import org.moire.ultrasonic.fragment.ServerSettingsModel
 import org.moire.ultrasonic.util.Util
 
 /**

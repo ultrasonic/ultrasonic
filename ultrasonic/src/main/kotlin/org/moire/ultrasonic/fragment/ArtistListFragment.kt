@@ -4,6 +4,7 @@ import android.os.Bundle
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.LiveData
 import org.moire.ultrasonic.R
+import org.moire.ultrasonic.adapters.ArtistRowAdapter
 import org.moire.ultrasonic.domain.ArtistOrIndex
 import org.moire.ultrasonic.util.Constants
 

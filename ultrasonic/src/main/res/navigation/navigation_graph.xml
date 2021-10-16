@@ -38,6 +38,13 @@
     <fragment
         android:id="@+id/trackCollectionFragment"
         android:name="org.moire.ultrasonic.fragment.TrackCollectionFragment" >
+        <argument
+            android:name="id"
+            app:argType="string" />
+        <argument
+            android:name="isAlbum"
+            app:argType="boolean"
+            android:defaultValue="false" />
     </fragment>
     <fragment
         android:id="@+id/albumListFragment"

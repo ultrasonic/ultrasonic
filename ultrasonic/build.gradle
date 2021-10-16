@@ -108,6 +108,8 @@ dependencies {
     implementation other.colorPickerView
     implementation other.rxJava
     implementation other.rxAndroid
+    implementation other.multiType
+    implementation 'androidx.recyclerview:recyclerview-selection:1.1.0'
 
     kapt androidSupport.room
 

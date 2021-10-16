@@ -474,4 +474,10 @@ class Downloader(
         const val CHECK_INTERVAL = 5L
         const val SHUFFLE_BUFFER_LIMIT = 4
     }
+
+    // Extension function
+    fun MusicDirectory.Entry.downloadFile(): DownloadFile {
+        return getDownloadFileForSong(this)
+    }
 }
+

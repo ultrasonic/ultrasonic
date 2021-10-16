@@ -12,10 +12,10 @@ import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
+import com.drakeet.multitype.MultiTypeAdapter
 import org.koin.android.ext.android.inject
 import org.koin.androidx.viewmodel.ext.android.viewModel
 import org.moire.ultrasonic.R
-import org.moire.ultrasonic.adapters.GenericRowAdapter
 import org.moire.ultrasonic.data.ActiveServerProvider
 import org.moire.ultrasonic.domain.Artist
 import org.moire.ultrasonic.domain.GenericEntry
@@ -33,7 +33,7 @@ import org.moire.ultrasonic.view.SelectMusicFolderView
  * @param T: The type of data which will be used (must extend GenericEntry)
  * @param TA: The Adapter to use (must extend GenericRowAdapter)
  */
-abstract class GenericListFragment<T : Identifiable, TA : GenericRowAdapter<T>> : Fragment() {
+abstract class MultiListFragment<T : Identifiable, TA : MultiTypeAdapter> : Fragment() {
     internal val activeServerProvider: ActiveServerProvider by inject()
     internal val serverSettingsModel: ServerSettingsModel by viewModel()
     internal val imageLoaderProvider: ImageLoaderProvider by inject()
@@ -91,7 +91,7 @@ abstract class GenericListFragment<T : Identifiable, TA : GenericRowAdapter<T>> 
      */
     @Suppress("CommentOverPrivateProperty")
     private val musicFolderObserver = { folders: List<MusicFolder> ->
-        viewAdapter.setFolderList(folders, listModel.activeServer.musicFolderId)
+        //viewAdapter.setFolderList(folders, listModel.activeServer.musicFolderId)
     }
 
     /**
@@ -112,7 +112,7 @@ abstract class GenericListFragment<T : Identifiable, TA : GenericRowAdapter<T>> 
      */
     fun showFolderHeader(): Boolean {
         return listModel.showSelectFolderHeader(arguments) &&
-            !listModel.isOffline() && !Settings.shouldUseId3Tags
+                !listModel.isOffline() && !Settings.shouldUseId3Tags
     }
 
     open fun setTitle(title: String?) {
@@ -144,7 +144,9 @@ abstract class GenericListFragment<T : Identifiable, TA : GenericRowAdapter<T>> 
         liveDataItems = getLiveData(arguments)
 
         // Register an observer to update our UI when the data changes
-        liveDataItems.observe(viewLifecycleOwner, { newItems -> viewAdapter.submitList(newItems) })
+//        liveDataItems.observe(viewLifecycleOwner, {
+//                newItems -> viewAdapter.submitList(newItems)
+//        })
 
         // Setup the Music folder handling
         listModel.getMusicFolders().observe(viewLifecycleOwner, musicFolderObserver)
@@ -160,7 +162,7 @@ abstract class GenericListFragment<T : Identifiable, TA : GenericRowAdapter<T>> 
         }
 
         // Configure whether to show the folder header
-        viewAdapter.folderHeaderEnabled = showFolderHeader()
+        //viewAdapter.folderHeaderEnabled = showFolderHeader()
     }
 
     @Override
@@ -182,101 +184,101 @@ abstract class GenericListFragment<T : Identifiable, TA : GenericRowAdapter<T>> 
     abstract fun onItemClick(item: T)
 }
 
-abstract class EntryListFragment<T : GenericEntry, TA : GenericRowAdapter<T>> :
-    GenericListFragment<T, TA>() {
-    @Suppress("LongMethod")
-    override fun onContextMenuItemSelected(menuItem: MenuItem, item: T): Boolean {
-        val isArtist = (item is Artist)
-
-        when (menuItem.itemId) {
-            R.id.menu_play_now ->
-                downloadHandler.downloadRecursively(
-                    this,
-                    item.id,
-                    save = false,
-                    append = false,
-                    autoPlay = true,
-                    shuffle = false,
-                    background = false,
-                    playNext = false,
-                    unpin = false,
-                    isArtist = isArtist
-                )
-            R.id.menu_play_next ->
-                downloadHandler.downloadRecursively(
-                    this,
-                    item.id,
-                    save = false,
-                    append = false,
-                    autoPlay = true,
-                    shuffle = true,
-                    background = false,
-                    playNext = true,
-                    unpin = false,
-                    isArtist = isArtist
-                )
-            R.id.menu_play_last ->
-                downloadHandler.downloadRecursively(
-                    this,
-                    item.id,
-                    save = false,
-                    append = true,
-                    autoPlay = false,
-                    shuffle = false,
-                    background = false,
-                    playNext = false,
-                    unpin = false,
-                    isArtist = isArtist
-                )
-            R.id.menu_pin ->
-                downloadHandler.downloadRecursively(
-                    this,
-                    item.id,
-                    save = true,
-                    append = true,
-                    autoPlay = false,
-                    shuffle = false,
-                    background = false,
-                    playNext = false,
-                    unpin = false,
-                    isArtist = isArtist
-                )
-            R.id.menu_unpin ->
-                downloadHandler.downloadRecursively(
-                    this,
-                    item.id,
-                    save = false,
-                    append = false,
-                    autoPlay = false,
-                    shuffle = false,
-                    background = false,
-                    playNext = false,
-                    unpin = true,
-                    isArtist = isArtist
-                )
-            R.id.menu_download ->
-                downloadHandler.downloadRecursively(
-                    this,
-                    item.id,
-                    save = false,
-                    append = false,
-                    autoPlay = false,
-                    shuffle = false,
-                    background = true,
-                    playNext = false,
-                    unpin = false,
-                    isArtist = isArtist
-                )
-        }
-        return true
-    }
-
-    override fun onItemClick(item: T) {
-        val bundle = Bundle()
-        bundle.putString(Constants.INTENT_EXTRA_NAME_ID, item.id)
-        bundle.putString(Constants.INTENT_EXTRA_NAME_NAME, item.name)
-        bundle.putString(Constants.INTENT_EXTRA_NAME_PARENT_ID, item.id)
-        bundle.putBoolean(Constants.INTENT_EXTRA_NAME_ARTIST, (item is Artist))
-        findNavController().navigate(itemClickTarget, bundle)
-    }
-}
+//abstract class EntryListFragment<T : GenericEntry, TA : GenericRowAdapter<T>> :
+//    GenericListFragment<T, TA>() {
+//    @Suppress("LongMethod")
+//    override fun onContextMenuItemSelected(menuItem: MenuItem, item: T): Boolean {
+//        val isArtist = (item is Artist)
+//
+//        when (menuItem.itemId) {
+//            R.id.menu_play_now ->
+//                downloadHandler.downloadRecursively(
+//                    this,
+//                    item.id,
+//                    save = false,
+//                    append = false,
+//                    autoPlay = true,
+//                    shuffle = false,
+//                    background = false,
+//                    playNext = false,
+//                    unpin = false,
+//                    isArtist = isArtist
+//                )
+//            R.id.menu_play_next ->
+//                downloadHandler.downloadRecursively(
+//                    this,
+//                    item.id,
+//                    save = false,
+//                    append = false,
+//                    autoPlay = true,
+//                    shuffle = true,
+//                    background = false,
+//                    playNext = true,
+//                    unpin = false,
+//                    isArtist = isArtist
+//                )
+//            R.id.menu_play_last ->
+//                downloadHandler.downloadRecursively(
+//                    this,
+//                    item.id,
+//                    save = false,
+//                    append = true,
+//                    autoPlay = false,
+//                    shuffle = false,
+//                    background = false,
+//                    playNext = false,
+//                    unpin = false,
+//                    isArtist = isArtist
+//                )
+//            R.id.menu_pin ->
+//                downloadHandler.downloadRecursively(
+//                    this,
+//                    item.id,
+//                    save = true,
+//                    append = true,
+//                    autoPlay = false,
+//                    shuffle = false,
+//                    background = false,
+//                    playNext = false,
+//                    unpin = false,
+//                    isArtist = isArtist
+//                )
+//            R.id.menu_unpin ->
+//                downloadHandler.downloadRecursively(
+//                    this,
+//                    item.id,
+//                    save = false,
+//                    append = false,
+//                    autoPlay = false,
+//                    shuffle = false,
+//                    background = false,
+//                    playNext = false,
+//                    unpin = true,
+//                    isArtist = isArtist
+//                )
+//            R.id.menu_download ->
+//                downloadHandler.downloadRecursively(
+//                    this,
+//                    item.id,
+//                    save = false,
+//                    append = false,
+//                    autoPlay = false,
+//                    shuffle = false,
+//                    background = true,
+//                    playNext = false,
+//                    unpin = false,
+//                    isArtist = isArtist
+//                )
+//        }
+//        return true
+//    }
+//
+//    override fun onItemClick(item: T) {
+//        val bundle = Bundle()
+//        bundle.putString(Constants.INTENT_EXTRA_NAME_ID, item.id)
+//        bundle.putString(Constants.INTENT_EXTRA_NAME_NAME, item.name)
+//        bundle.putString(Constants.INTENT_EXTRA_NAME_PARENT_ID, item.id)
+//        bundle.putBoolean(Constants.INTENT_EXTRA_NAME_ARTIST, (item is Artist))
+//        findNavController().navigate(itemClickTarget, bundle)
+//    }
+//}

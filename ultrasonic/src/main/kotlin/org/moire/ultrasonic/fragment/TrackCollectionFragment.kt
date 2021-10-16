@@ -10,8 +10,6 @@ package org.moire.ultrasonic.fragment
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
-import android.view.ContextMenu
-import android.view.ContextMenu.ContextMenuInfo
 import android.view.LayoutInflater
 import android.view.Menu
 import android.view.MenuInflater
@@ -20,30 +18,30 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.AdapterView.AdapterContextMenuInfo
 import android.widget.ImageView
-import android.widget.ListView
 import android.widget.TextView
-import androidx.fragment.app.Fragment
+import androidx.core.view.isVisible
 import androidx.fragment.app.viewModels
+import androidx.lifecycle.LiveData
 import androidx.lifecycle.Observer
 import androidx.lifecycle.viewModelScope
 import androidx.navigation.Navigation
-import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
-import java.util.Collections
-import java.util.Random
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import kotlinx.coroutines.CoroutineExceptionHandler
 import kotlinx.coroutines.launch
 import org.koin.android.ext.android.inject
 import org.moire.ultrasonic.R
+import org.moire.ultrasonic.adapters.MultiTypeDiffAdapter
+import org.moire.ultrasonic.adapters.TrackViewBinder
+import org.moire.ultrasonic.adapters.TrackViewHolder
 import org.moire.ultrasonic.data.ActiveServerProvider.Companion.isOffline
+import org.moire.ultrasonic.domain.Identifiable
 import org.moire.ultrasonic.domain.MusicDirectory
 import org.moire.ultrasonic.fragment.FragmentTitle.Companion.getTitle
 import org.moire.ultrasonic.fragment.FragmentTitle.Companion.setTitle
 import org.moire.ultrasonic.service.MediaPlayerController
-import org.moire.ultrasonic.subsonic.DownloadHandler
-import org.moire.ultrasonic.subsonic.ImageLoaderProvider
 import org.moire.ultrasonic.subsonic.NetworkAndStorageChecker
 import org.moire.ultrasonic.subsonic.ShareHandler
-import org.moire.ultrasonic.subsonic.VideoPlayer
 import org.moire.ultrasonic.util.AlbumHeader
 import org.moire.ultrasonic.util.CancellationToken
 import org.moire.ultrasonic.util.CommunicationError
@@ -51,19 +49,18 @@ import org.moire.ultrasonic.util.Constants
 import org.moire.ultrasonic.util.EntryByDiscAndTrackComparator
 import org.moire.ultrasonic.util.Settings
 import org.moire.ultrasonic.util.Util
-import org.moire.ultrasonic.view.AlbumView
-import org.moire.ultrasonic.view.EntryAdapter
-import org.moire.ultrasonic.view.SongView
 import timber.log.Timber
+import java.util.Collections
+import java.util.Random
+import java.util.TreeSet
 
 /**
  * Displays a group of tracks, eg. the songs of an album, of a playlist etc.
  * TODO: Refactor this fragment and model to extend the GenericListFragment
  */
-class TrackCollectionFragment : Fragment() {
+class TrackCollectionFragment :
+    MultiListFragment<MusicDirectory.Entry, MultiTypeDiffAdapter<Identifiable>>() {
 
-    private var refreshAlbumListView: SwipeRefreshLayout? = null
-    private var albumListView: ListView? = null
     private var header: View? = null
     private var albumButtons: View? = null
     private var emptyView: TextView? = null
@@ -82,14 +79,37 @@ class TrackCollectionFragment : Fragment() {
     private var shareButton: MenuItem? = null
 
     private val mediaPlayerController: MediaPlayerController by inject()
-    private val downloadHandler: DownloadHandler by inject()
     private val networkAndStorageChecker: NetworkAndStorageChecker by inject()
-    private val imageLoaderProvider: ImageLoaderProvider by inject()
     private val shareHandler: ShareHandler by inject()
     private var cancellationToken: CancellationToken? = null
 
-    private val model: TrackCollectionModel by viewModels()
+    override val listModel: TrackCollectionModel by viewModels()
     private val random: Random = Random()
+
+    private var selectedSet: TreeSet<Long> = TreeSet()
+
+    /**
+     * The id of the main layout
+     */
+    override val mainLayout: Int = R.layout.track_list
+
+    /**
+     * The id of the refresh view
+     */
+    override val refreshListId: Int = R.id.generic_list_refresh
+
+    /**
+     * The id of the RecyclerView
+     */
+    override val recyclerViewId = R.id.generic_list_recycler
+
+    /**
+     * The id of the target in the navigation graph where we should go,
+     * after the user has clicked on an item
+     */
+    // FIXME
+    override val itemClickTarget: Int = R.id.trackCollectionFragment
+
 
     override fun onCreate(savedInstanceState: Bundle?) {
         Util.applyTheme(this.context)
@@ -101,7 +121,7 @@ class TrackCollectionFragment : Fragment() {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        return inflater.inflate(R.layout.select_album, container, false)
+        return inflater.inflate(R.layout.track_list, container, false)
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -110,53 +130,51 @@ class TrackCollectionFragment : Fragment() {
 
         albumButtons = view.findViewById(R.id.menu_album)
 
-        refreshAlbumListView = view.findViewById(R.id.select_album_entries_refresh)
-        albumListView = view.findViewById(R.id.select_album_entries_list)
-
-        refreshAlbumListView!!.setOnRefreshListener {
+        // Setup refresh handler
+        refreshListView = view.findViewById(refreshListId)
+        refreshListView?.setOnRefreshListener {
             updateDisplay(true)
         }
 
         header = LayoutInflater.from(context).inflate(
-            R.layout.select_album_header, albumListView,
+            R.layout.select_album_header, listView,
             false
         )
 
-        model.currentDirectory.observe(viewLifecycleOwner, defaultObserver)
-        model.songsForGenre.observe(viewLifecycleOwner, songsForGenreObserver)
+        listModel.currentList.observe(viewLifecycleOwner, defaultObserver)
+        listModel.songsForGenre.observe(viewLifecycleOwner, songsForGenreObserver)
 
-        albumListView!!.choiceMode = ListView.CHOICE_MODE_MULTIPLE
-        albumListView!!.setOnItemClickListener { parent, theView, position, _ ->
-            if (position >= 0) {
-                val entry = parent.getItemAtPosition(position) as MusicDirectory.Entry?
-                if (entry != null && entry.isDirectory) {
-                    val bundle = Bundle()
-                    bundle.putString(Constants.INTENT_EXTRA_NAME_ID, entry.id)
-                    bundle.putBoolean(Constants.INTENT_EXTRA_NAME_IS_ALBUM, entry.isDirectory)
-                    bundle.putString(Constants.INTENT_EXTRA_NAME_NAME, entry.title)
-                    bundle.putString(Constants.INTENT_EXTRA_NAME_PARENT_ID, entry.parent)
-                    Navigation.findNavController(theView).navigate(
-                        R.id.trackCollectionFragment,
-                        bundle
-                    )
-                } else if (entry != null && entry.isVideo) {
-                    VideoPlayer.playVideo(requireContext(), entry)
-                } else {
-                    enableButtons()
-                }
-            }
-        }
-
-        albumListView!!.setOnItemLongClickListener { _, theView, _, _ ->
-            if (theView is AlbumView) {
-                return@setOnItemLongClickListener false
-            }
-            if (theView is SongView) {
-                theView.maximizeOrMinimize()
-                return@setOnItemLongClickListener true
-            }
-            return@setOnItemLongClickListener false
-        }
+//        listView!!.setOnItemClickListener { parent, theView, position, _ ->
+//            if (position >= 0) {
+//                val entry = parent.getItemAtPosition(position) as MusicDirectory.Entry?
+//                if (entry != null && entry.isDirectory) {
+//                    val bundle = Bundle()
+//                    bundle.putString(Constants.INTENT_EXTRA_NAME_ID, entry.id)
+//                    bundle.putBoolean(Constants.INTENT_EXTRA_NAME_IS_ALBUM, entry.isDirectory)
+//                    bundle.putString(Constants.INTENT_EXTRA_NAME_NAME, entry.title)
+//                    bundle.putString(Constants.INTENT_EXTRA_NAME_PARENT_ID, entry.parent)
+//                    Navigation.findNavController(theView).navigate(
+//                        R.id.trackCollectionFragment,
+//                        bundle
+//                    )
+//                } else if (entry != null && entry.isVideo) {
+//                    VideoPlayer.playVideo(requireContext(), entry)
+//                } else {
+//                    enableButtons()
+//                }
+//            }
+//        }
+//
+//        listView!!.setOnItemLongClickListener { _, theView, _, _ ->
+//            if (theView is AlbumView) {
+//                return@setOnItemLongClickListener false
+//            }
+//            if (theView is SongView) {
+//                theView.maximizeOrMinimize()
+//                return@setOnItemLongClickListener true
+//            }
+//            return@setOnItemLongClickListener false
+//        }
 
         selectButton = view.findViewById(R.id.select_album_select)
         playNowButton = view.findViewById(R.id.select_album_play_now)
@@ -179,33 +197,51 @@ class TrackCollectionFragment : Fragment() {
             downloadHandler.download(
                 this@TrackCollectionFragment, append = true,
                 save = false, autoPlay = false, playNext = true, shuffle = false,
-                songs = getSelectedSongs(albumListView)
+                songs = getSelectedSongs()
             )
-            selectAll(selected = false, toast = false)
         }
         playLastButton!!.setOnClickListener {
             playNow(true)
         }
         pinButton!!.setOnClickListener {
             downloadBackground(true)
-            selectAll(selected = false, toast = false)
         }
         unpinButton!!.setOnClickListener {
             unpin()
-            selectAll(selected = false, toast = false)
         }
         downloadButton!!.setOnClickListener {
             downloadBackground(false)
-            selectAll(selected = false, toast = false)
         }
         deleteButton!!.setOnClickListener {
             delete()
-            selectAll(selected = false, toast = false)
         }
 
-        registerForContextMenu(albumListView!!)
+        registerForContextMenu(listView!!)
         setHasOptionsMenu(true)
+
+
+        // Create a View Manager
+        viewManager = LinearLayoutManager(this.context)
+
+        // Hook up the view with the manager and the adapter
+        listView = view.findViewById<RecyclerView>(recyclerViewId).apply {
+            setHasFixedSize(true)
+            layoutManager = viewManager
+            adapter = viewAdapter
+        }
+
+
+        viewAdapter.register(
+            TrackViewBinder(
+                selectedSet = selectedSet,
+                checkable = true,
+                draggable = false,
+                context = context!!
+            )
+        )
+
         enableButtons()
+
         updateDisplay(false)
     }
 
@@ -213,177 +249,82 @@ class TrackCollectionFragment : Fragment() {
         Handler(Looper.getMainLooper()).post {
             CommunicationError.handleError(exception, context)
         }
-        refreshAlbumListView!!.isRefreshing = false
+        refreshListView!!.isRefreshing = false
     }
 
     private fun updateDisplay(refresh: Boolean) {
-        val args = requireArguments()
-        val id = args.getString(Constants.INTENT_EXTRA_NAME_ID)
-        val isAlbum = args.getBoolean(Constants.INTENT_EXTRA_NAME_IS_ALBUM, false)
-        val name = args.getString(Constants.INTENT_EXTRA_NAME_NAME)
-        val parentId = args.getString(Constants.INTENT_EXTRA_NAME_PARENT_ID)
-        val playlistId = args.getString(Constants.INTENT_EXTRA_NAME_PLAYLIST_ID)
-        val podcastChannelId = args.getString(
-            Constants.INTENT_EXTRA_NAME_PODCAST_CHANNEL_ID
-        )
-        val playlistName = args.getString(Constants.INTENT_EXTRA_NAME_PLAYLIST_NAME)
-        val shareId = args.getString(Constants.INTENT_EXTRA_NAME_SHARE_ID)
-        val shareName = args.getString(Constants.INTENT_EXTRA_NAME_SHARE_NAME)
-        val genreName = args.getString(Constants.INTENT_EXTRA_NAME_GENRE_NAME)
-
-        val getStarredTracks = args.getInt(Constants.INTENT_EXTRA_NAME_STARRED, 0)
-        val getVideos = args.getInt(Constants.INTENT_EXTRA_NAME_VIDEOS, 0)
-        val getRandomTracks = args.getInt(Constants.INTENT_EXTRA_NAME_RANDOM, 0)
-        val albumListSize = args.getInt(
-            Constants.INTENT_EXTRA_NAME_ALBUM_LIST_SIZE, 0
-        )
-        val albumListOffset = args.getInt(
-            Constants.INTENT_EXTRA_NAME_ALBUM_LIST_OFFSET, 0
-        )
-
-        fun setTitle(name: String?) {
-            setTitle(this@TrackCollectionFragment, name)
-        }
-
-        fun setTitle(name: Int) {
-            setTitle(this@TrackCollectionFragment, name)
-        }
-
-        model.viewModelScope.launch(handler) {
-            refreshAlbumListView!!.isRefreshing = true
-
-            model.getMusicFolders(refresh)
-
-            if (playlistId != null) {
-                setTitle(playlistName!!)
-                model.getPlaylist(playlistId, playlistName)
-            } else if (podcastChannelId != null) {
-                setTitle(getString(R.string.podcasts_label))
-                model.getPodcastEpisodes(podcastChannelId)
-            } else if (shareId != null) {
-                setTitle(shareName)
-                model.getShare(shareId)
-            } else if (genreName != null) {
-                setTitle(genreName)
-                model.getSongsForGenre(genreName, albumListSize, albumListOffset)
-            } else if (getStarredTracks != 0) {
-                setTitle(getString(R.string.main_songs_starred))
-                model.getStarred()
-            } else if (getVideos != 0) {
-                setTitle(R.string.main_videos)
-                model.getVideos(refresh)
-            } else if (getRandomTracks != 0) {
-                setTitle(R.string.main_songs_random)
-                model.getRandom(albumListSize)
-            } else {
-                setTitle(name)
-                if (!isOffline() && Settings.shouldUseId3Tags) {
-                    if (isAlbum) {
-                        model.getAlbum(refresh, id!!, name, parentId)
-                    } else {
-                        model.getArtist(refresh, id!!, name)
-                    }
-                } else {
-                    model.getMusicDirectory(refresh, id!!, name, parentId)
-                }
-            }
-
-            refreshAlbumListView!!.isRefreshing = false
-        }
-    }
-
-    override fun onCreateContextMenu(menu: ContextMenu, view: View, menuInfo: ContextMenuInfo?) {
-        super.onCreateContextMenu(menu, view, menuInfo)
-        val info = menuInfo as AdapterContextMenuInfo?
-
-        val entry = albumListView!!.getItemAtPosition(info!!.position) as MusicDirectory.Entry?
-
-        if (entry != null && entry.isDirectory) {
-            val inflater = requireActivity().menuInflater
-            inflater.inflate(R.menu.generic_context_menu, menu)
-        }
-
-        shareButton = menu.findItem(R.id.menu_item_share)
-
-        if (shareButton != null) {
-            shareButton!!.isVisible = !isOffline()
-        }
-
-        val downloadMenuItem = menu.findItem(R.id.menu_download)
-        if (downloadMenuItem != null) {
-            downloadMenuItem.isVisible = !isOffline()
-        }
+        getLiveData(requireArguments())
     }
 
     override fun onContextItemSelected(menuItem: MenuItem): Boolean {
         Timber.d("onContextItemSelected")
         val info = menuItem.menuInfo as AdapterContextMenuInfo? ?: return true
 
-        val entry = albumListView!!.getItemAtPosition(info.position) as MusicDirectory.Entry?
-            ?: return true
-
-        val entryId = entry.id
-
-        when (menuItem.itemId) {
-            R.id.menu_play_now -> {
-                downloadHandler.downloadRecursively(
-                    this, entryId, save = false, append = false,
-                    autoPlay = true, shuffle = false, background = false,
-                    playNext = false, unpin = false, isArtist = false
-                )
-            }
-            R.id.menu_play_next -> {
-                downloadHandler.downloadRecursively(
-                    this, entryId, save = false, append = false,
-                    autoPlay = false, shuffle = false, background = false,
-                    playNext = true, unpin = false, isArtist = false
-                )
-            }
-            R.id.menu_play_last -> {
-                downloadHandler.downloadRecursively(
-                    this, entryId, save = false, append = true,
-                    autoPlay = false, shuffle = false, background = false,
-                    playNext = false, unpin = false, isArtist = false
-                )
-            }
-            R.id.menu_pin -> {
-                downloadHandler.downloadRecursively(
-                    this, entryId, save = true, append = true,
-                    autoPlay = false, shuffle = false, background = false,
-                    playNext = false, unpin = false, isArtist = false
-                )
-            }
-            R.id.menu_unpin -> {
-                downloadHandler.downloadRecursively(
-                    this, entryId, save = false, append = false,
-                    autoPlay = false, shuffle = false, background = false,
-                    playNext = false, unpin = true, isArtist = false
-                )
-            }
-            R.id.menu_download -> {
-                downloadHandler.downloadRecursively(
-                    this, entryId, save = false, append = false,
-                    autoPlay = false, shuffle = false, background = true,
-                    playNext = false, unpin = false, isArtist = false
-                )
-            }
-            R.id.select_album_play_all -> {
-                // TODO: Why is this being handled here?!
-                playAll()
-            }
-            R.id.menu_item_share -> {
-                val entries: MutableList<MusicDirectory.Entry?> = ArrayList(1)
-                entries.add(entry)
-                shareHandler.createShare(
-                    this, entries, refreshAlbumListView,
-                    cancellationToken!!
-                )
-                return true
-            }
-            else -> {
-                return super.onContextItemSelected(menuItem)
-            }
-        }
+//        val entry = listView!!.getItemAtPosition(info.position) as MusicDirectory.Entry?
+//            ?: return true
+//
+//        val entryId = entry.id
+//
+//        when (menuItem.itemId) {
+//            R.id.menu_play_now -> {
+//                downloadHandler.downloadRecursively(
+//                    this, entryId, save = false, append = false,
+//                    autoPlay = true, shuffle = false, background = false,
+//                    playNext = false, unpin = false, isArtist = false
+//                )
+//            }
+//            R.id.menu_play_next -> {
+//                downloadHandler.downloadRecursively(
+//                    this, entryId, save = false, append = false,
+//                    autoPlay = false, shuffle = false, background = false,
+//                    playNext = true, unpin = false, isArtist = false
+//                )
+//            }
+//            R.id.menu_play_last -> {
+//                downloadHandler.downloadRecursively(
+//                    this, entryId, save = false, append = true,
+//                    autoPlay = false, shuffle = false, background = false,
+//                    playNext = false, unpin = false, isArtist = false
+//                )
+//            }
+//            R.id.menu_pin -> {
+//                downloadHandler.downloadRecursively(
+//                    this, entryId, save = true, append = true,
+//                    autoPlay = false, shuffle = false, background = false,
+//                    playNext = false, unpin = false, isArtist = false
+//                )
+//            }
+//            R.id.menu_unpin -> {
+//                downloadHandler.downloadRecursively(
+//                    this, entryId, save = false, append = false,
+//                    autoPlay = false, shuffle = false, background = false,
+//                    playNext = false, unpin = true, isArtist = false
+//                )
+//            }
+//            R.id.menu_download -> {
+//                downloadHandler.downloadRecursively(
+//                    this, entryId, save = false, append = false,
+//                    autoPlay = false, shuffle = false, background = true,
+//                    playNext = false, unpin = false, isArtist = false
+//                )
+//            }
+//            R.id.select_album_play_all -> {
+//                // TODO: Why is this being handled here?!
+//                playAll()
+//            }
+//            R.id.menu_item_share -> {
+//                val entries: MutableList<MusicDirectory.Entry?> = ArrayList(1)
+//                entries.add(entry)
+//                shareHandler.createShare(
+//                    this, entries, refreshListView,
+//                    cancellationToken!!
+//                )
+//                return true
+//            }
+//            else -> {
+//                return super.onContextItemSelected(menuItem)
+//            }
+//        }
         return true
     }
 
@@ -414,8 +355,8 @@ class TrackCollectionFragment : Fragment() {
             return true
         } else if (itemId == R.id.menu_item_share) {
             shareHandler.createShare(
-                this, getSelectedSongs(albumListView),
-                refreshAlbumListView, cancellationToken!!
+                this, getSelectedSongs(),
+                refreshListView, cancellationToken!!
             )
             return true
         }
@@ -429,7 +370,7 @@ class TrackCollectionFragment : Fragment() {
     }
 
     private fun playNow(append: Boolean) {
-        val selectedSongs = getSelectedSongs(albumListView)
+        val selectedSongs = getSelectedSongs()
 
         if (selectedSongs.isNotEmpty()) {
             downloadHandler.download(
@@ -445,8 +386,9 @@ class TrackCollectionFragment : Fragment() {
     private fun playAll(shuffle: Boolean = false, append: Boolean = false) {
         var hasSubFolders = false
 
-        for (i in 0 until albumListView!!.count) {
-            val entry = albumListView!!.getItemAtPosition(i) as MusicDirectory.Entry?
+        for (i in 0 until listView!!.childCount) {
+            val vh = listView!!.findViewHolderForAdapterPosition(i) as TrackViewHolder?
+            val entry = vh?.entry
             if (entry != null && entry.isDirectory) {
                 hasSubFolders = true
                 break
@@ -458,45 +400,55 @@ class TrackCollectionFragment : Fragment() {
 
         if (hasSubFolders && id != null) {
             downloadHandler.downloadRecursively(
-                this, id, false, append, !append,
-                shuffle, background = false, playNext = false, unpin = false, isArtist = isArtist
+                fragment = this,
+                id = id,
+                save = false,
+                append = append,
+                autoPlay = !append,
+                shuffle = shuffle,
+                background = false,
+                playNext = false,
+                unpin = false,
+                isArtist = isArtist
             )
         } else {
             selectAll(selected = true, toast = false)
             downloadHandler.download(
-                this, append, false, !append, false,
-                shuffle, getSelectedSongs(albumListView)
+                fragment = this,
+                append = append,
+                save = false,
+                autoPlay = !append,
+                playNext = false,
+                shuffle = shuffle,
+                songs = getSelectedSongs()
             )
             selectAll(selected = false, toast = false)
         }
     }
 
     private fun selectAllOrNone() {
-        var someUnselected = false
-        val count = albumListView!!.count
+        val someUnselected = selectedSet.size < listView!!.childCount
 
-        for (i in 0 until count) {
-            if (!albumListView!!.isItemChecked(i) &&
-                albumListView!!.getItemAtPosition(i) is MusicDirectory.Entry
-            ) {
-                someUnselected = true
-                break
-            }
-        }
         selectAll(someUnselected, true)
+
     }
 
     private fun selectAll(selected: Boolean, toast: Boolean) {
-        val count = albumListView!!.count
+        val count = listView!!.childCount
         var selectedCount = 0
 
+        listView!!
+
         for (i in 0 until count) {
-            val entry = albumListView!!.getItemAtPosition(i) as MusicDirectory.Entry?
+            val vh = listView!!.findViewHolderForAdapterPosition(i) as TrackViewHolder
+            val entry = vh.entry
+
             if (entry != null && !entry.isDirectory && !entry.isVideo) {
-                albumListView!!.setItemChecked(i, selected)
+                vh.isChecked = selected
                 selectedCount++
             }
         }
+
 
         // Display toast: N tracks selected / N tracks unselected
         if (toast) {
@@ -506,11 +458,12 @@ class TrackCollectionFragment : Fragment() {
                 R.string.select_album_n_unselected
             Util.toast(activity, getString(toastResId, selectedCount))
         }
+
         enableButtons()
     }
 
     private fun enableButtons() {
-        val selection = getSelectedSongs(albumListView)
+        val selection = getSelectedSongs()
         val enabled = selection.isNotEmpty()
         var unpinEnabled = false
         var deleteEnabled = false
@@ -518,7 +471,6 @@ class TrackCollectionFragment : Fragment() {
         var pinnedCount = 0
 
         for (song in selection) {
-            if (song == null) continue
             val downloadFile = mediaPlayerController.getDownloadFileForSong(song)
             if (downloadFile.isWorkDone) {
                 deleteEnabled = true
@@ -529,27 +481,21 @@ class TrackCollectionFragment : Fragment() {
             }
         }
 
-        playNowButton!!.visibility = if (enabled) View.VISIBLE else View.GONE
-        playNextButton!!.visibility = if (enabled) View.VISIBLE else View.GONE
-        playLastButton!!.visibility = if (enabled) View.VISIBLE else View.GONE
-        pinButton!!.visibility = if (enabled && !isOffline() && selection.size > pinnedCount)
-            View.VISIBLE
-        else
-            View.GONE
-        unpinButton!!.visibility = if (enabled && unpinEnabled) View.VISIBLE else View.GONE
-        downloadButton!!.visibility = if (enabled && !deleteEnabled && !isOffline())
-            View.VISIBLE
-        else
-            View.GONE
-        deleteButton!!.visibility = if (enabled && deleteEnabled) View.VISIBLE else View.GONE
+        playNowButton?.isVisible = enabled
+        playNextButton?.isVisible = enabled
+        playLastButton?.isVisible = enabled
+        pinButton?.isVisible = (enabled && !isOffline() && selection.size > pinnedCount)
+        unpinButton?.isVisible = (enabled && unpinEnabled)
+        downloadButton?.isVisible = (enabled && !deleteEnabled && !isOffline())
+        deleteButton?.isVisible = (enabled && deleteEnabled)
     }
 
     private fun downloadBackground(save: Boolean) {
-        var songs = getSelectedSongs(albumListView)
+        var songs = getSelectedSongs()
 
         if (songs.isEmpty()) {
             selectAll(selected = true, toast = false)
-            songs = getSelectedSongs(albumListView)
+            songs = getSelectedSongs()
         }
 
         downloadBackground(save, songs)
@@ -580,18 +526,18 @@ class TrackCollectionFragment : Fragment() {
     }
 
     private fun delete() {
-        var songs = getSelectedSongs(albumListView)
+        var songs = getSelectedSongs()
 
         if (songs.isEmpty()) {
             selectAll(selected = true, toast = false)
-            songs = getSelectedSongs(albumListView)
+            songs = getSelectedSongs()
         }
 
         mediaPlayerController.delete(songs)
     }
 
     private fun unpin() {
-        val songs = getSelectedSongs(albumListView)
+        val songs = getSelectedSongs()
         Util.toast(
             context,
             resources.getQuantityString(
@@ -605,8 +551,8 @@ class TrackCollectionFragment : Fragment() {
 
         // Hide more button when results are less than album list size
         if (musicDirectory.getChildren().size < requireArguments().getInt(
-            Constants.INTENT_EXTRA_NAME_ALBUM_LIST_SIZE, 0
-        )
+                Constants.INTENT_EXTRA_NAME_ALBUM_LIST_SIZE, 0
+            )
         ) {
             moreButton!!.visibility = View.GONE
         } else {
@@ -628,22 +574,21 @@ class TrackCollectionFragment : Fragment() {
                 .navigate(R.id.trackCollectionFragment, bundle)
         }
 
-        updateInterfaceWithEntries(musicDirectory)
+        //updateInterfaceWithEntries(musicDirectory)
     }
 
     private val defaultObserver = Observer(this::updateInterfaceWithEntries)
 
-    private fun updateInterfaceWithEntries(musicDirectory: MusicDirectory) {
-        val entries = musicDirectory.getChildren()
+    private fun updateInterfaceWithEntries(list: List<MusicDirectory.Entry>) {
 
-        if (model.currentListIsSortable && Settings.shouldSortByDisc) {
-            Collections.sort(entries, EntryByDiscAndTrackComparator())
+        if (listModel.currentListIsSortable && Settings.shouldSortByDisc) {
+            Collections.sort(list, EntryByDiscAndTrackComparator())
         }
 
         var allVideos = true
         var songCount = 0
 
-        for (entry in entries) {
+        for (entry in list) {
             if (!entry.isVideo) {
                 allVideos = false
             }
@@ -655,17 +600,17 @@ class TrackCollectionFragment : Fragment() {
         val listSize = requireArguments().getInt(Constants.INTENT_EXTRA_NAME_ALBUM_LIST_SIZE, 0)
 
         if (songCount > 0) {
-            if (model.showHeader) {
-                val intentAlbumName = requireArguments().getString(Constants.INTENT_EXTRA_NAME_NAME)
-                val directoryName = musicDirectory.name
-                val header = createHeader(
-                    entries, intentAlbumName ?: directoryName,
-                    songCount
-                )
-                if (header != null && albumListView!!.headerViewsCount == 0) {
-                    albumListView!!.addHeaderView(header, null, false)
-                }
-            }
+//            if (listModel.showHeader) {
+//                val intentAlbumName = requireArguments().getString(Constants.INTENT_EXTRA_NAME_NAME)
+//                val directoryName = musicDirectory.name
+//                val header = createHeader(
+//                    entries, intentAlbumName ?: directoryName,
+//                    songCount
+//                )
+////                if (header != null && listView!!.headerViewsCount == 0) {
+////                    listView!!.addHeaderView(header, null, false)
+////                }
+//            }
 
             pinButton!!.visibility = View.VISIBLE
             unpinButton!!.visibility = View.VISIBLE
@@ -708,7 +653,7 @@ class TrackCollectionFragment : Fragment() {
             playNextButton!!.visibility = View.GONE
             playLastButton!!.visibility = View.GONE
 
-            if (listSize == 0 || musicDirectory.getChildren().size < listSize) {
+            if (listSize == 0 || list.size < listSize) {
                 albumButtons!!.visibility = View.GONE
             } else {
                 moreButton!!.visibility = View.VISIBLE
@@ -721,15 +666,15 @@ class TrackCollectionFragment : Fragment() {
             Constants.INTENT_EXTRA_NAME_ALBUM_LIST_TYPE
         )
 
-        playAllButtonVisible = !(isAlbumList || entries.isEmpty()) && !allVideos
+        playAllButtonVisible = !(isAlbumList || list.isEmpty()) && !allVideos
         shareButtonVisible = !isOffline() && songCount > 0
 
-        albumListView!!.removeHeaderView(emptyView!!)
-        if (entries.isEmpty()) {
-            emptyView!!.text = getString(R.string.select_album_empty)
-            emptyView!!.setPadding(10, 10, 10, 10)
-            albumListView!!.addHeaderView(emptyView, null, false)
-        }
+//        listView!!.removeHeaderView(emptyView!!)
+//        if (entries.isEmpty()) {
+//            emptyView!!.text = getString(R.string.select_album_empty)
+//            emptyView!!.setPadding(10, 10, 10, 10)
+//            listView!!.addHeaderView(emptyView, null, false)
+//        }
 
         if (playAllButton != null) {
             playAllButton!!.isVisible = playAllButtonVisible
@@ -739,10 +684,7 @@ class TrackCollectionFragment : Fragment() {
             shareButton!!.isVisible = shareButtonVisible
         }
 
-        albumListView!!.adapter = EntryAdapter(
-            context,
-            imageLoaderProvider.getImageLoader(), entries, true
-        )
+        viewAdapter.submitList(list)
 
         val playAll = requireArguments().getBoolean(Constants.INTENT_EXTRA_NAME_AUTOPLAY, false)
         if (playAll && songCount > 0) {
@@ -752,7 +694,9 @@ class TrackCollectionFragment : Fragment() {
             )
         }
 
-        model.currentListIsSortable = true
+        listModel.currentListIsSortable = true
+
+
     }
 
     private fun createHeader(
@@ -820,18 +764,122 @@ class TrackCollectionFragment : Fragment() {
         return header
     }
 
-    private fun getSelectedSongs(albumListView: ListView?): List<MusicDirectory.Entry?> {
-        val songs: MutableList<MusicDirectory.Entry?> = ArrayList(10)
+    private fun getSelectedSongs(): MutableList<MusicDirectory.Entry> {
+        val songs: MutableList<MusicDirectory.Entry> = mutableListOf()
 
-        if (albumListView != null) {
-            val count = albumListView.count
-            for (i in 0 until count) {
-                if (albumListView.isItemChecked(i)) {
-                    songs.add(albumListView.getItemAtPosition(i) as MusicDirectory.Entry?)
-                }
+        for (i in 0 until listView!!.childCount) {
+            val vh = listView!!.findViewHolderForAdapterPosition(i) as TrackViewHolder? ?: continue
+
+            if (vh.isChecked) {
+                songs.add(vh.entry!!)
             }
         }
 
+        for (key in selectedSet) {
+            songs.add(viewAdapter.getCurrentList().findLast {
+                it.longId == key
+            } as MusicDirectory.Entry)
+        }
         return songs
     }
+
+    override val viewAdapter: MultiTypeDiffAdapter<Identifiable> by lazy {
+        MultiTypeDiffAdapter()
+    }
+
+    override fun setTitle(title: String?) {
+        setTitle(this@TrackCollectionFragment, title)
+    }
+
+    fun setTitle(id: Int) {
+        setTitle(this@TrackCollectionFragment, id)
+    }
+
+    @Suppress("LongMethod")
+    override fun getLiveData(args: Bundle?): LiveData<List<MusicDirectory.Entry>> {
+        if (args == null) return listModel.currentList
+        val id = args.getString(Constants.INTENT_EXTRA_NAME_ID)
+        val isAlbum = args.getBoolean(Constants.INTENT_EXTRA_NAME_IS_ALBUM, false)
+        val name = args.getString(Constants.INTENT_EXTRA_NAME_NAME)
+        val parentId = args.getString(Constants.INTENT_EXTRA_NAME_PARENT_ID)
+        val playlistId = args.getString(Constants.INTENT_EXTRA_NAME_PLAYLIST_ID)
+        val podcastChannelId = args.getString(
+            Constants.INTENT_EXTRA_NAME_PODCAST_CHANNEL_ID
+        )
+        val playlistName = args.getString(Constants.INTENT_EXTRA_NAME_PLAYLIST_NAME)
+        val shareId = args.getString(Constants.INTENT_EXTRA_NAME_SHARE_ID)
+        val shareName = args.getString(Constants.INTENT_EXTRA_NAME_SHARE_NAME)
+        val genreName = args.getString(Constants.INTENT_EXTRA_NAME_GENRE_NAME)
+
+        val getStarredTracks = args.getInt(Constants.INTENT_EXTRA_NAME_STARRED, 0)
+        val getVideos = args.getInt(Constants.INTENT_EXTRA_NAME_VIDEOS, 0)
+        val getRandomTracks = args.getInt(Constants.INTENT_EXTRA_NAME_RANDOM, 0)
+        val albumListSize = args.getInt(
+            Constants.INTENT_EXTRA_NAME_ALBUM_LIST_SIZE, 0
+        )
+        val albumListOffset = args.getInt(
+            Constants.INTENT_EXTRA_NAME_ALBUM_LIST_OFFSET, 0
+        )
+        val refresh = args.getBoolean(Constants.INTENT_EXTRA_NAME_REFRESH, true)
+
+        listModel.viewModelScope.launch(handler) {
+            refreshListView!!.isRefreshing = true
+
+            listModel.getMusicFolders(refresh)
+
+            if (playlistId != null) {
+                setTitle(playlistName!!)
+                listModel.getPlaylist(playlistId, playlistName)
+            } else if (podcastChannelId != null) {
+                setTitle(getString(R.string.podcasts_label))
+                listModel.getPodcastEpisodes(podcastChannelId)
+            } else if (shareId != null) {
+                setTitle(shareName)
+                listModel.getShare(shareId)
+            } else if (genreName != null) {
+                setTitle(genreName)
+                listModel.getSongsForGenre(genreName, albumListSize, albumListOffset)
+            } else if (getStarredTracks != 0) {
+                setTitle(getString(R.string.main_songs_starred))
+                listModel.getStarred()
+            } else if (getVideos != 0) {
+                setTitle(R.string.main_videos)
+                listModel.getVideos(refresh)
+            } else if (getRandomTracks != 0) {
+                setTitle(R.string.main_songs_random)
+                listModel.getRandom(albumListSize)
+            } else {
+                setTitle(name)
+                if (!isOffline() && Settings.shouldUseId3Tags) {
+                    if (isAlbum) {
+                        listModel.getAlbum(refresh, id!!, name, parentId)
+                    } else {
+                        listModel.getArtist(refresh, id!!, name)
+                    }
+                } else {
+                    listModel.getMusicDirectory(refresh, id!!, name, parentId)
+                }
+            }
+
+            refreshListView!!.isRefreshing = false
+        }
+        return listModel.currentList
+    }
+
+    override fun onContextMenuItemSelected(
+        menuItem: MenuItem,
+        item: MusicDirectory.Entry
+    ): Boolean {
+        //TODO
+        return false
+    }
+
+    override fun onItemClick(item: MusicDirectory.Entry) {
+        // nothing
+    }
+
+
 }
+
+
+

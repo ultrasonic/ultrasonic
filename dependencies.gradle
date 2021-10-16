@@ -45,6 +45,7 @@ ext.versions = [
         colorPicker          : "2.2.3",
         rxJava               : "3.1.2",
         rxAndroid            : "3.0.0",
+        multiType            : "4.3.0",
 ]
 
 ext.gradlePlugins = [
@@ -95,6 +96,7 @@ ext.other = [
         colorPickerView    : "com.github.skydoves:colorpickerview:$versions.colorPicker",
         rxJava             : "io.reactivex.rxjava3:rxjava:$versions.rxJava",
         rxAndroid          : "io.reactivex.rxjava3:rxandroid:$versions.rxAndroid",
+        multiType          : "com.drakeet.multitype:multitype:$versions.multiType",
 ]
 
 ext.testing = [

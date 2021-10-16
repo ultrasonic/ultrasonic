@@ -5,7 +5,7 @@
  * Distributed under terms of the GNU GPLv3 license.
  */
 
-package org.moire.ultrasonic.fragment
+package org.moire.ultrasonic.adapters
 
 import android.view.MenuItem
 import android.view.View

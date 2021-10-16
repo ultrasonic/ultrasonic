@@ -43,9 +43,11 @@ internal class FilePickerAdapter(view: FilePickerView) :
 
     init {
         this.context = view.context
-        upIcon = Util.getDrawableFromAttribute(context, R.attr.filepicker_subdirectory_up)
-        folderIcon = Util.getDrawableFromAttribute(context, R.attr.filepicker_folder)
-        sdIcon = Util.getDrawableFromAttribute(context, R.attr.filepicker_sd_card)
+        listerView = view
+
+        upIcon = Util.getDrawableFromAttribute(context!!, R.attr.filepicker_subdirectory_up)
+        folderIcon = Util.getDrawableFromAttribute(context!!, R.attr.filepicker_folder)
+        sdIcon = Util.getDrawableFromAttribute(context!!, R.attr.filepicker_sd_card)
     }
 
     fun start() {

@@ -217,7 +217,7 @@ class PlayerFragment :
         val ratingLinearLayout = view.findViewById<LinearLayout>(R.id.song_rating)
         if (!useFiveStarRating) ratingLinearLayout.isVisible = false
         hollowStar = Util.getDrawableFromAttribute(view.context, R.attr.star_hollow)
-        fullStar = Util.getDrawableFromAttribute(context, R.attr.star_full)
+        fullStar = Util.getDrawableFromAttribute(context!!, R.attr.star_full)
 
         fiveStar1ImageView.setOnClickListener { setSongRating(1) }
         fiveStar2ImageView.setOnClickListener { setSongRating(2) }
@@ -885,17 +885,17 @@ class PlayerFragment :
         when (mediaPlayerController.repeatMode) {
             RepeatMode.OFF -> repeatButton.setImageDrawable(
                 Util.getDrawableFromAttribute(
-                    context, R.attr.media_repeat_off
+                    requireContext(), R.attr.media_repeat_off
                 )
             )
             RepeatMode.ALL -> repeatButton.setImageDrawable(
                 Util.getDrawableFromAttribute(
-                    context, R.attr.media_repeat_all
+                    requireContext(), R.attr.media_repeat_all
                 )
             )
             RepeatMode.SINGLE -> repeatButton.setImageDrawable(
                 Util.getDrawableFromAttribute(
-                    context, R.attr.media_repeat_single
+                    requireContext(), R.attr.media_repeat_single
                 )
             )
             else -> {

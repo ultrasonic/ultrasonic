@@ -7,6 +7,7 @@ import androidx.lifecycle.LiveData
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.RecyclerView
 import org.moire.ultrasonic.R
+import org.moire.ultrasonic.adapters.AlbumRowAdapter
 import org.moire.ultrasonic.domain.MusicDirectory
 import org.moire.ultrasonic.util.Constants
 

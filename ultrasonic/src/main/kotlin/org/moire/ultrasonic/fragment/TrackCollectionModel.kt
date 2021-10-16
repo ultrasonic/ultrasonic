@@ -13,8 +13,11 @@ import androidx.lifecycle.MutableLiveData
 import java.util.LinkedList
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
+import org.koin.core.component.inject
 import org.moire.ultrasonic.R
 import org.moire.ultrasonic.domain.MusicDirectory
+import org.moire.ultrasonic.service.DownloadFile
+import org.moire.ultrasonic.service.Downloader
 import org.moire.ultrasonic.service.MusicService
 import org.moire.ultrasonic.service.MusicServiceFactory
 import org.moire.ultrasonic.util.Settings
@@ -29,7 +32,9 @@ class TrackCollectionModel(application: Application) : GenericListModel(applicat
     private val allSongsId = "-1"
 
     val currentDirectory: MutableLiveData<MusicDirectory> = MutableLiveData()
+    val currentList: MutableLiveData<List<MusicDirectory.Entry>> = MutableLiveData()
     val songsForGenre: MutableLiveData<MusicDirectory> = MutableLiveData()
+    private val downloader: Downloader by inject()
 
     suspend fun getMusicFolders(refresh: Boolean) {
         withContext(Dispatchers.IO) {
@@ -89,7 +94,12 @@ class TrackCollectionModel(application: Application) : GenericListModel(applicat
             }
 
             currentDirectory.postValue(root)
+            updateList(root)
         }
+    }
+
+    private fun updateList(root: MusicDirectory) {
+        currentList.postValue(root.getChildren())
     }
 
     // Given a Music directory "songs" it recursively adds all children to "songs"
@@ -148,6 +158,7 @@ class TrackCollectionModel(application: Application) : GenericListModel(applicat
                 root = musicDirectory
             }
             currentDirectory.postValue(root)
+            updateList(root)
         }
     }
 
@@ -190,6 +201,7 @@ class TrackCollectionModel(application: Application) : GenericListModel(applicat
             }
 
             currentDirectory.postValue(musicDirectory)
+            updateList(musicDirectory)
         }
     }
 
@@ -215,6 +227,7 @@ class TrackCollectionModel(application: Application) : GenericListModel(applicat
             }
 
             currentDirectory.postValue(musicDirectory)
+            updateList(musicDirectory)
         }
     }
 
@@ -223,7 +236,11 @@ class TrackCollectionModel(application: Application) : GenericListModel(applicat
 
         withContext(Dispatchers.IO) {
             val service = MusicServiceFactory.getMusicService()
-            currentDirectory.postValue(service.getVideos(refresh))
+            val videos = service.getVideos(refresh)
+            currentDirectory.postValue(videos)
+            if (videos != null) {
+                updateList(videos)
+            }
         }
     }
 
@@ -235,6 +252,7 @@ class TrackCollectionModel(application: Application) : GenericListModel(applicat
 
             currentListIsSortable = false
             currentDirectory.postValue(musicDirectory)
+            updateList(musicDirectory)
         }
     }
 
@@ -245,6 +263,7 @@ class TrackCollectionModel(application: Application) : GenericListModel(applicat
             val musicDirectory = service.getPlaylist(playlistId, playlistName)
 
             currentDirectory.postValue(musicDirectory)
+            updateList(musicDirectory)
         }
     }
 
@@ -254,6 +273,9 @@ class TrackCollectionModel(application: Application) : GenericListModel(applicat
             val service = MusicServiceFactory.getMusicService()
             val musicDirectory = service.getPodcastEpisodes(podcastChannelId)
             currentDirectory.postValue(musicDirectory)
+            if (musicDirectory != null) {
+                updateList(musicDirectory)
+            }
         }
     }
 
@@ -274,6 +296,7 @@ class TrackCollectionModel(application: Application) : GenericListModel(applicat
                 }
             }
             currentDirectory.postValue(musicDirectory)
+            updateList(musicDirectory)
         }
     }
 
