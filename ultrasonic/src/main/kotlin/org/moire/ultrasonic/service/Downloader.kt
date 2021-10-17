@@ -162,8 +162,12 @@ class Downloader(
         }
 
         if (listChanged) {
-            observableList.postValue(downloads)
+            updateLiveData()
         }
+    }
+
+    private fun updateLiveData() {
+        observableList.postValue(downloads)
     }
 
     private fun startDownloadOnService(task: DownloadFile) {
@@ -254,12 +258,14 @@ class Downloader(
 
         // Cancel all active downloads with a high priority
         for (download in activelyDownloading) {
-            if (download.priority < 100)
+            if (download.priority < 100) {
                 download.cancelDownload()
+                activelyDownloading.remove(download)
+            }
         }
 
         playlistUpdateRevision++
-        checkDownloads()
+        updateLiveData()
     }
 
     @Synchronized
@@ -269,18 +275,21 @@ class Downloader(
 
         // Cancel all active downloads with a low priority
         for (download in activelyDownloading) {
-            if (download.priority >= 100)
+            if (download.priority >= 100) {
                 download.cancelDownload()
+                activelyDownloading.remove(download)
+            }
         }
     }
 
     @Synchronized
     fun clearActiveDownloads() {
-        // Cancel all active downloads with a low priority
+        // Cancel all active downloads
         for (download in activelyDownloading) {
             download.cancelDownload()
         }
-        checkDownloads()
+        activelyDownloading.clear()
+        updateLiveData()
     }
 
     @Synchronized
