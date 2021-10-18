@@ -72,19 +72,19 @@ abstract class MultiListFragment<T : Identifiable, TA : MultiTypeAdapter> : Frag
     protected abstract val itemClickTarget: Int
 
     /**
-     * The id of the RecyclerView
-     */
-    protected abstract val recyclerViewId: Int
-
-    /**
      * The id of the main layout
      */
-    abstract val mainLayout: Int
+    open val mainLayout: Int = R.layout.generic_list
 
     /**
      * The id of the refresh view
      */
-    abstract val refreshListId: Int
+    open val refreshListId: Int = R.id.generic_list_refresh
+
+    /**
+     * The id of the RecyclerView
+     */
+    open val recyclerViewId = R.id.generic_list_recycler
 
     /**
      * The observer to be called if the available music folders have changed

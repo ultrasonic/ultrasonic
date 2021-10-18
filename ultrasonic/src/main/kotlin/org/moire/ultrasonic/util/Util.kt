@@ -871,7 +871,7 @@ object Util {
 
         val descriptionBuilder = MediaDescriptionCompat.Builder()
         val desc = readableEntryDescription(song)
-        var title = ""
+        val title: String
 
         if (groupNameId != null)
             descriptionBuilder.setExtras(

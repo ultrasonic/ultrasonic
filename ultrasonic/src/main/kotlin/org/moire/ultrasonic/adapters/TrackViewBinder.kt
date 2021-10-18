@@ -1,11 +1,8 @@
 package org.moire.ultrasonic.adapters
 
 import android.content.Context
-import android.graphics.drawable.Drawable
 import android.view.LayoutInflater
 import android.view.ViewGroup
-import android.widget.Checkable
-import androidx.recyclerview.selection.SelectionTracker
 import com.drakeet.multitype.ItemViewBinder
 import org.koin.core.component.KoinComponent
 import org.koin.core.component.inject
@@ -14,7 +11,6 @@ import org.moire.ultrasonic.domain.Identifiable
 import org.moire.ultrasonic.domain.MusicDirectory
 import org.moire.ultrasonic.service.DownloadFile
 import org.moire.ultrasonic.service.Downloader
-import org.moire.ultrasonic.util.Settings
 
 class TrackViewBinder(
     val selectedSet: MutableSet<Long>,
@@ -70,7 +66,7 @@ class TrackViewBinder(
             checkable = checkable,
             draggable = draggable
         )
-        
+
         // Observe download status
 //        item.status.observe(
 //            lifecycleOwner,
