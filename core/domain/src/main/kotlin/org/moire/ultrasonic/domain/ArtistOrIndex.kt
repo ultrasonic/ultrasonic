@@ -15,4 +15,4 @@ abstract class ArtistOrIndex(
     open var albumCount: Long? = null,
     @Ignore
     open var closeness: Int = 0
-) : GenericEntry(id)
+) : GenericEntry()

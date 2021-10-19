@@ -2,9 +2,8 @@ package org.moire.ultrasonic.domain
 
 import androidx.room.Ignore
 
-open class GenericEntry(
-    @Ignore override val id: String
-) : Identifiable {
+abstract class GenericEntry : Identifiable {
+    abstract override val id: String
     @Ignore
     open val name: String? = null
     override fun compareTo(other: Identifiable): Int {

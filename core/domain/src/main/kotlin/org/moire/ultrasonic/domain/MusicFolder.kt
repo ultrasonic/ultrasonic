@@ -10,4 +10,4 @@ import androidx.room.PrimaryKey
 data class MusicFolder(
     @PrimaryKey override val id: String,
     override val name: String
-) : GenericEntry(id)
+) : GenericEntry()

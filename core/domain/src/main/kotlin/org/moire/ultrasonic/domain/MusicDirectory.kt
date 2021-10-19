@@ -69,7 +69,7 @@ class MusicDirectory {
         var bookmarkPosition: Int = 0,
         var userRating: Int? = null,
         var averageRating: Float? = null
-    ) : Serializable, GenericEntry(id) {
+    ) : Serializable, GenericEntry() {
         fun setDuration(duration: Long) {
             this.duration = duration.toInt()
         }

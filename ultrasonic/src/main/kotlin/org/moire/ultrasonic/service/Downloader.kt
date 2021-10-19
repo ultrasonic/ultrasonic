@@ -5,6 +5,7 @@ import androidx.lifecycle.MutableLiveData
 import java.util.ArrayList
 import java.util.PriorityQueue
 import java.util.concurrent.Executors
+import java.util.concurrent.RejectedExecutionException
 import java.util.concurrent.ScheduledExecutorService
 import java.util.concurrent.TimeUnit
 import org.koin.core.component.KoinComponent
@@ -91,10 +92,21 @@ class Downloader(
     }
 
     fun checkDownloads() {
-        if (executorService == null || executorService!!.isTerminated) {
+        if (
+            executorService == null ||
+            executorService!!.isTerminated ||
+            executorService!!.isShutdown
+        ) {
             start()
         } else {
-            executorService?.execute(downloadChecker)
+            try {
+                executorService?.execute(downloadChecker)
+            } catch (exception: RejectedExecutionException) {
+                Timber.w(
+                    exception,
+                    "checkDownloads() can't run, maybe the Downloader is shutting down..."
+                )
+            }
         }
     }
 

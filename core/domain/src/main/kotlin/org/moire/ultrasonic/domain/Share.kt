@@ -13,7 +13,7 @@ data class Share(
     var expires: String? = null,
     var visitCount: Long? = null,
     private val entries: MutableList<Entry> = mutableListOf()
-) : Serializable, GenericEntry(id) {
+) : Serializable, GenericEntry() {
     override val name: String?
         get() {
             if (url != null) {
