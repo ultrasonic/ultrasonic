@@ -59,24 +59,13 @@ object Settings {
             return preferences.getBoolean(Constants.PREFERENCES_KEY_ALWAYS_SHOW_NOTIFICATION, false)
         }
 
-    val isLockScreenEnabled: Boolean
-        get() {
-            val preferences = preferences
-            return preferences.getBoolean(
-                Constants.PREFERENCES_KEY_SHOW_LOCK_SCREEN_CONTROLS,
-                false
-            )
-        }
+    var isLockScreenEnabled by BooleanSetting(Constants.PREFERENCES_KEY_SHOW_LOCK_SCREEN_CONTROLS)
 
     @JvmStatic
-    val theme: String?
-        get() {
-            val preferences = preferences
-            return preferences.getString(
-                Constants.PREFERENCES_KEY_THEME,
-                Constants.PREFERENCES_KEY_THEME_DARK
-            )
-        }
+    var theme by StringSetting(
+        Constants.PREFERENCES_KEY_THEME,
+        Constants.PREFERENCES_KEY_THEME_DARK
+    )
 
     @JvmStatic
     val maxBitRate: Int
@@ -103,23 +92,6 @@ object Settings {
         }
 
     @JvmStatic
-    var cacheLocation: String
-        get() {
-            return preferences.getString(
-                Constants.PREFERENCES_KEY_CACHE_LOCATION,
-                FileUtil.defaultMusicDirectory.path
-            )!!
-        }
-        set(location) {
-            val editor = preferences.edit()
-            editor.putString(
-                Constants.PREFERENCES_KEY_CACHE_LOCATION,
-                location
-            )
-            editor.apply()
-        }
-
-    @JvmStatic
     val cacheSizeMB: Int
         get() {
             val preferences = preferences
@@ -130,138 +102,88 @@ object Settings {
             return if (cacheSize == -1) Int.MAX_VALUE else cacheSize
         }
 
-    val isWifiRequiredForDownload: Boolean
-        get() {
-            val preferences = preferences
-            return preferences.getBoolean(
-                Constants.PREFERENCES_KEY_WIFI_REQUIRED_FOR_DOWNLOAD,
-                false
-            )
-        }
-
-    val shouldDisplayBitrateWithArtist: Boolean
-        get() {
-            val preferences = preferences
-            return preferences.getBoolean(
-                Constants.PREFERENCES_KEY_DISPLAY_BITRATE_WITH_ARTIST,
-                true
-            )
-        }
+    @JvmStatic
+    var cacheLocation by StringSetting(
+        Constants.PREFERENCES_KEY_CACHE_LOCATION,
+        FileUtil.defaultMusicDirectory.path
+    )
 
     @JvmStatic
-    val shouldUseFolderForArtistName: Boolean
-        get() {
-            val preferences = preferences
-            return preferences.getBoolean(
-                Constants.PREFERENCES_KEY_USE_FOLDER_FOR_ALBUM_ARTIST,
-                false
-            )
-        }
-
-    val shouldShowTrackNumber: Boolean
-        get() {
-            val preferences = preferences
-            return preferences.getBoolean(Constants.PREFERENCES_KEY_SHOW_TRACK_NUMBER, false)
-        }
+    var isWifiRequiredForDownload by BooleanSetting(
+        Constants.PREFERENCES_KEY_WIFI_REQUIRED_FOR_DOWNLOAD,
+        false
+    )
 
     @JvmStatic
-    val defaultAlbums: Int
-        get() {
-            val preferences = preferences
-            return preferences.getString(Constants.PREFERENCES_KEY_DEFAULT_ALBUMS, "5")!!
-                .toInt()
-        }
+    var shareOnServer by BooleanSetting(Constants.PREFERENCES_KEY_SHARE_ON_SERVER, true)
 
     @JvmStatic
-    val maxAlbums: Int
-        get() {
-            val preferences = preferences
-            return preferences.getString(Constants.PREFERENCES_KEY_MAX_ALBUMS, "20")!!
-                .toInt()
-        }
+    var shouldDisplayBitrateWithArtist by BooleanSetting(
+        Constants.PREFERENCES_KEY_DISPLAY_BITRATE_WITH_ARTIST,
+        true
+    )
 
     @JvmStatic
-    val defaultSongs: Int
-        get() {
-            val preferences = preferences
-            return preferences.getString(Constants.PREFERENCES_KEY_DEFAULT_SONGS, "10")!!
-                .toInt()
-        }
+    var shouldUseFolderForArtistName
+    by BooleanSetting(Constants.PREFERENCES_KEY_USE_FOLDER_FOR_ALBUM_ARTIST, false)
 
     @JvmStatic
-    val maxSongs: Int
-        get() {
-            val preferences = preferences
-            return preferences.getString(Constants.PREFERENCES_KEY_MAX_SONGS, "25")!!
-                .toInt()
-        }
+    var shouldShowTrackNumber
+    by BooleanSetting(Constants.PREFERENCES_KEY_SHOW_TRACK_NUMBER, false)
 
     @JvmStatic
-    val maxArtists: Int
-        get() {
-            val preferences = preferences
-            return preferences.getString(Constants.PREFERENCES_KEY_MAX_ARTISTS, "10")!!
-                .toInt()
-        }
+    var defaultAlbums
+    by StringIntSetting(Constants.PREFERENCES_KEY_DEFAULT_ALBUMS, "5")
 
     @JvmStatic
-    val defaultArtists: Int
-        get() {
-            val preferences = preferences
-            return preferences.getString(Constants.PREFERENCES_KEY_DEFAULT_ARTISTS, "3")!!
-                .toInt()
-        }
+    var maxAlbums
+    by StringIntSetting(Constants.PREFERENCES_KEY_MAX_ALBUMS, "20")
 
     @JvmStatic
-    val bufferLength: Int
-        get() {
-            val preferences = preferences
-            return preferences.getString(Constants.PREFERENCES_KEY_BUFFER_LENGTH, "5")!!
-                .toInt()
-        }
+    var defaultSongs
+    by StringIntSetting(Constants.PREFERENCES_KEY_DEFAULT_SONGS, "10")
 
     @JvmStatic
-    val incrementTime: Int
-        get() {
-            val preferences = preferences
-            return preferences.getString(Constants.PREFERENCES_KEY_INCREMENT_TIME, "5")!!
-                .toInt()
-        }
+    var maxSongs
+    by StringIntSetting(Constants.PREFERENCES_KEY_MAX_SONGS, "25")
 
     @JvmStatic
-    val mediaButtonsEnabled: Boolean
-        get() {
-            val preferences = preferences
-            return preferences.getBoolean(Constants.PREFERENCES_KEY_MEDIA_BUTTONS, true)
-        }
+    var maxArtists
+    by StringIntSetting(Constants.PREFERENCES_KEY_MAX_ARTISTS, "10")
 
     @JvmStatic
-    val showNowPlaying: Boolean
-        get() {
-            val preferences = preferences
-            return preferences.getBoolean(Constants.PREFERENCES_KEY_SHOW_NOW_PLAYING, true)
-        }
+    var defaultArtists
+    by StringIntSetting(Constants.PREFERENCES_KEY_DEFAULT_ARTISTS, "3")
 
     @JvmStatic
-    val gaplessPlayback: Boolean
-        get() {
-            val preferences = preferences
-            return preferences.getBoolean(Constants.PREFERENCES_KEY_GAPLESS_PLAYBACK, false)
-        }
+    var bufferLength
+    by StringIntSetting(Constants.PREFERENCES_KEY_BUFFER_LENGTH, "5")
 
     @JvmStatic
-    val shouldTransitionOnPlayback: Boolean
-        get() {
-            val preferences = preferences
-            return preferences.getBoolean(Constants.PREFERENCES_KEY_DOWNLOAD_TRANSITION, true)
-        }
+    var incrementTime
+    by StringIntSetting(Constants.PREFERENCES_KEY_INCREMENT_TIME, "5")
 
     @JvmStatic
-    val shouldUseId3Tags: Boolean
-        get() {
-            val preferences = preferences
-            return preferences.getBoolean(Constants.PREFERENCES_KEY_ID3_TAGS, false)
-        }
+    var mediaButtonsEnabled
+    by BooleanSetting(Constants.PREFERENCES_KEY_MEDIA_BUTTONS, true)
+
+    @JvmStatic
+    var showNowPlaying
+    by BooleanSetting(Constants.PREFERENCES_KEY_SHOW_NOW_PLAYING, true)
+
+    @JvmStatic
+    var gaplessPlayback
+    by BooleanSetting(Constants.PREFERENCES_KEY_GAPLESS_PLAYBACK, false)
+
+    @JvmStatic
+    var shouldTransitionOnPlayback by BooleanSetting(
+        Constants.PREFERENCES_KEY_DOWNLOAD_TRANSITION,
+        true
+    )
+
+    @JvmStatic
+    var shouldUseId3Tags
+    by BooleanSetting(Constants.PREFERENCES_KEY_ID3_TAGS, false)
 
     val shouldShowArtistPicture: Boolean
         get() {
@@ -274,109 +196,52 @@ object Settings {
         }
 
     @JvmStatic
-    val chatRefreshInterval: Int
-        get() {
-            val preferences = preferences
-            return preferences.getString(
-                Constants.PREFERENCES_KEY_CHAT_REFRESH_INTERVAL,
-                "5000"
-            )!!.toInt()
-        }
+    var chatRefreshInterval by StringIntSetting(
+        Constants.PREFERENCES_KEY_CHAT_REFRESH_INTERVAL,
+        "5000"
+    )
 
-    val directoryCacheTime: Int
-        get() {
-            val preferences = preferences
-            return preferences.getString(
-                Constants.PREFERENCES_KEY_DIRECTORY_CACHE_TIME,
-                "300"
-            )!!.toInt()
-        }
+    var directoryCacheTime by StringIntSetting(
+        Constants.PREFERENCES_KEY_DIRECTORY_CACHE_TIME,
+        "300"
+    )
 
-    val shouldClearPlaylist: Boolean
-        get() {
-            val preferences = preferences
-            return preferences.getBoolean(Constants.PREFERENCES_KEY_CLEAR_PLAYLIST, false)
-        }
+    var shouldClearPlaylist
+    by BooleanSetting(Constants.PREFERENCES_KEY_CLEAR_PLAYLIST, false)
 
-    val shouldSortByDisc: Boolean
-        get() {
-            val preferences = preferences
-            return preferences.getBoolean(Constants.PREFERENCES_KEY_DISC_SORT, false)
-        }
+    var shouldSortByDisc
+    by BooleanSetting(Constants.PREFERENCES_KEY_DISC_SORT, false)
 
-    val shouldClearBookmark: Boolean
-        get() {
-            val preferences = preferences
-            return preferences.getBoolean(Constants.PREFERENCES_KEY_CLEAR_BOOKMARK, false)
-        }
+    var shouldClearBookmark
+    by BooleanSetting(Constants.PREFERENCES_KEY_CLEAR_BOOKMARK, false)
 
-    val singleButtonPlayPause: Boolean
-        get() {
-            val preferences = preferences
-            return preferences.getBoolean(Constants.PREFERENCES_KEY_SINGLE_BUTTON_PLAY_PAUSE, false)
-        }
+    var singleButtonPlayPause
+    by BooleanSetting(
+        Constants.PREFERENCES_KEY_SINGLE_BUTTON_PLAY_PAUSE,
+        false
+    )
 
     // Inverted for readability
-    val shouldSendBluetoothNotifications: Boolean
-        get() {
-            val preferences = preferences
-            return preferences.getBoolean(
-                Constants.PREFERENCES_KEY_SEND_BLUETOOTH_NOTIFICATIONS,
-                true
-            )
-        }
+    var shouldSendBluetoothNotifications by BooleanSetting(
+        Constants.PREFERENCES_KEY_SEND_BLUETOOTH_NOTIFICATIONS,
+        true
+    )
 
-    val shouldSendBluetoothAlbumArt: Boolean
-        get() {
-            val preferences = preferences
-            return preferences.getBoolean(Constants.PREFERENCES_KEY_SEND_BLUETOOTH_ALBUM_ART, true)
-        }
+    var shouldSendBluetoothAlbumArt
+    by BooleanSetting(Constants.PREFERENCES_KEY_SEND_BLUETOOTH_ALBUM_ART, true)
 
-    val shouldDisableNowPlayingListSending: Boolean
-        get() {
-            val preferences = preferences
-            return preferences.getBoolean(
-                Constants.PREFERENCES_KEY_DISABLE_SEND_NOW_PLAYING_LIST, false
-            )
-        }
+    var shouldDisableNowPlayingListSending
+    by BooleanSetting(Constants.PREFERENCES_KEY_DISABLE_SEND_NOW_PLAYING_LIST, false)
 
     @JvmStatic
-    val viewRefreshInterval: Int
-        get() {
-            val preferences = preferences
-            return preferences.getString(Constants.PREFERENCES_KEY_VIEW_REFRESH, "1000")!!
-                .toInt()
-        }
+    var viewRefreshInterval
+    by StringIntSetting(Constants.PREFERENCES_KEY_VIEW_REFRESH, "1000")
 
-    var shouldAskForShareDetails: Boolean
-        get() {
-            val preferences = preferences
-            return preferences.getBoolean(Constants.PREFERENCES_KEY_ASK_FOR_SHARE_DETAILS, true)
-        }
-        set(shouldAskForShareDetails) {
-            val preferences = preferences
-            val editor = preferences.edit()
-            editor.putBoolean(
-                Constants.PREFERENCES_KEY_ASK_FOR_SHARE_DETAILS,
-                shouldAskForShareDetails
-            )
-            editor.apply()
-        }
+    var shouldAskForShareDetails
+    by BooleanSetting(Constants.PREFERENCES_KEY_ASK_FOR_SHARE_DETAILS, true)
 
-    var defaultShareDescription: String?
-        get() {
-            val preferences = preferences
-            return preferences.getString(Constants.PREFERENCES_KEY_DEFAULT_SHARE_DESCRIPTION, "")
-        }
-        set(defaultShareDescription) {
-            val preferences = preferences
-            val editor = preferences.edit()
-            editor.putString(
-                Constants.PREFERENCES_KEY_DEFAULT_SHARE_DESCRIPTION,
-                defaultShareDescription
-            )
-            editor.apply()
-        }
+    var defaultShareDescription
+    by StringSetting(Constants.PREFERENCES_KEY_DEFAULT_SHARE_DESCRIPTION, "")
 
     @JvmStatic
     val shareGreeting: String?
@@ -393,35 +258,10 @@ object Settings {
             )
         }
 
-    var shareOnServer: Boolean
-        get() {
-            val preferences = preferences
-            return preferences.getBoolean(Constants.PREFERENCES_KEY_SHARE_ON_SERVER, true)!!
-        }
-        set(shareOnServer) {
-            val preferences = preferences
-            val editor = preferences.edit()
-            editor.putBoolean(
-                Constants.PREFERENCES_KEY_SHARE_ON_SERVER,
-                shareOnServer
-            )
-            editor.apply()
-        }
-
-    var defaultShareExpiration: String
-        get() {
-            val preferences = preferences
-            return preferences.getString(Constants.PREFERENCES_KEY_DEFAULT_SHARE_EXPIRATION, "0")!!
-        }
-        set(defaultShareExpiration) {
-            val preferences = preferences
-            val editor = preferences.edit()
-            editor.putString(
-                Constants.PREFERENCES_KEY_DEFAULT_SHARE_EXPIRATION,
-                defaultShareExpiration
-            )
-            editor.apply()
-        }
+    var defaultShareExpiration by StringSetting(
+        Constants.PREFERENCES_KEY_DEFAULT_SHARE_EXPIRATION,
+        "0"
+    )
 
     val defaultShareExpirationInMillis: Long
         get() {
@@ -439,37 +279,24 @@ object Settings {
             return 0
         }
 
-    val shouldShowAllSongsByArtist: Boolean
-        get() {
-            val preferences = preferences
-            return preferences.getBoolean(Constants.PREFERENCES_KEY_SHOW_ALL_SONGS_BY_ARTIST, false)
-        }
+    var shouldShowAllSongsByArtist by BooleanSetting(
+        Constants.PREFERENCES_KEY_SHOW_ALL_SONGS_BY_ARTIST,
+        false
+    )
 
     @JvmStatic
-    val resumeOnBluetoothDevice: Int
-        get() {
-            val preferences = preferences
-            return preferences.getInt(
-                Constants.PREFERENCES_KEY_RESUME_ON_BLUETOOTH_DEVICE,
-                Constants.PREFERENCE_VALUE_DISABLED
-            )
-        }
+    var resumeOnBluetoothDevice by IntSetting(
+        Constants.PREFERENCES_KEY_RESUME_ON_BLUETOOTH_DEVICE,
+        Constants.PREFERENCE_VALUE_DISABLED
+    )
 
     @JvmStatic
-    val pauseOnBluetoothDevice: Int
-        get() {
-            val preferences = preferences
-            return preferences.getInt(
-                Constants.PREFERENCES_KEY_PAUSE_ON_BLUETOOTH_DEVICE,
-                Constants.PREFERENCE_VALUE_A2DP
-            )
-        }
+    var pauseOnBluetoothDevice by IntSetting(
+        Constants.PREFERENCES_KEY_PAUSE_ON_BLUETOOTH_DEVICE,
+        Constants.PREFERENCE_VALUE_A2DP
+    )
 
-    val debugLogToFile: Boolean
-        get() {
-            val preferences = preferences
-            return preferences.getBoolean(Constants.PREFERENCES_KEY_DEBUG_LOG_TO_FILE, false)
-        }
+    var debugLogToFile by BooleanSetting(Constants.PREFERENCES_KEY_DEBUG_LOG_TO_FILE, false)
 
     @JvmStatic
     val preferences: SharedPreferences
