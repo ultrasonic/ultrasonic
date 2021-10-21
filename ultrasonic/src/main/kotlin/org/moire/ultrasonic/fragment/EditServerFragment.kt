@@ -9,7 +9,6 @@ import android.widget.Button
 import android.widget.ImageView
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
-import androidx.lifecycle.Observer
 import androidx.navigation.fragment.findNavController
 import com.google.android.material.switchmaterial.SwitchMaterial
 import com.google.android.material.textfield.TextInputLayout
@@ -111,7 +110,7 @@ class EditServerFragment : Fragment(), OnBackPressedHandler {
             val serverSetting = serverSettingsModel.getServerSetting(index)
             serverSetting.observe(
                 viewLifecycleOwner,
-                Observer { t ->
+                { t ->
                     if (t != null) {
                         currentServerSetting = t
                         if (!isInstanceStateSaved) setFields()
@@ -147,6 +146,7 @@ class EditServerFragment : Fragment(), OnBackPressedHandler {
         } else {
             // Creating a new server
             FragmentTitle.setTitle(this, R.string.server_editor_new_label)
+            updateColor(null)
             currentServerSetting = ServerSetting()
             saveButton!!.setOnClickListener {
                 if (getFields()) {
@@ -167,7 +167,7 @@ class EditServerFragment : Fragment(), OnBackPressedHandler {
             bubbleFlag.flagMode = FlagMode.LAST
             ColorPickerDialog.Builder(context).apply {
                 this.colorPickerView.setInitialColor(currentColor)
-                this.colorPickerView.setFlagView(bubbleFlag)
+                this.colorPickerView.flagView = bubbleFlag
             }
                 .attachAlphaSlideBar(false)
                 .setPositiveButton(

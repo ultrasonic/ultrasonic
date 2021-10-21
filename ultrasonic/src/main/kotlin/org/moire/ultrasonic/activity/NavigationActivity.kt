@@ -384,7 +384,7 @@ class NavigationActivity : AppCompatActivity() {
                 .setNegativeButton(R.string.main_welcome_cancel) { dialog, _ ->
                     // Go to the settings screen
                     dialog.dismiss()
-                    findNavController(R.id.nav_host_fragment).navigate(R.id.settingsFragment)
+                    findNavController(R.id.nav_host_fragment).navigate(R.id.serverSelectorFragment)
                 }
                 .setPositiveButton(R.string.common_ok) { dialog, _ ->
                     // Add the demo server
