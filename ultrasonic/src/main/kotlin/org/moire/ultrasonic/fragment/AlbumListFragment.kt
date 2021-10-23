@@ -14,7 +14,7 @@ import org.moire.ultrasonic.util.Constants
  * Displays a list of Albums from the media library
  * TODO: Check refresh is working
  */
-class AlbumListFragment : GenericListFragment<MusicDirectory.Entry, AlbumRowAdapter>() {
+class AlbumListFragment : EntryListFragment<MusicDirectory.Entry, AlbumRowAdapter>() {
 
     /**
      * The ViewModel to use to get the data

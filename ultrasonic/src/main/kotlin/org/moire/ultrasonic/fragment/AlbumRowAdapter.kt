@@ -28,7 +28,7 @@ import timber.log.Timber
  * Creates a Row in a RecyclerView which contains the details of an Album
  */
 class AlbumRowAdapter(
-    albumList: List<MusicDirectory.Entry>,
+    itemList: List<MusicDirectory.Entry>,
     onItemClick: (MusicDirectory.Entry) -> Unit,
     onContextMenuClick: (MenuItem, MusicDirectory.Entry) -> Boolean,
     private val imageLoader: ImageLoader,
@@ -40,27 +40,23 @@ class AlbumRowAdapter(
     onMusicFolderUpdate
 ) {
 
+    init {
+        super.submitList(itemList)
+    }
+
     private val starDrawable: Drawable =
         Util.getDrawableFromAttribute(context, R.attr.star_full)
     private val starHollowDrawable: Drawable =
         Util.getDrawableFromAttribute(context, R.attr.star_hollow)
 
-    override var itemList = albumList
-
     // Set our layout files
     override val layout = R.layout.album_list_item
     override val contextMenuLayout = R.menu.artist_context_menu
 
-    // Sets the data to be displayed in the RecyclerView
-    override fun setData(data: List<MusicDirectory.Entry>) {
-        itemList = data
-        super.notifyDataSetChanged()
-    }
-
     override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
         if (holder is ViewHolder) {
             val listPosition = if (selectFolderHeader != null) position - 1 else position
-            val entry = itemList[listPosition]
+            val entry = currentList[listPosition]
             holder.album.text = entry.title
             holder.artist.text = entry.artist
             holder.details.setOnClickListener { onItemClick(entry) }
@@ -78,9 +74,9 @@ class AlbumRowAdapter(
 
     override fun getItemCount(): Int {
         if (selectFolderHeader != null)
-            return itemList.size + 1
+            return currentList.size + 1
         else
-            return itemList.size
+            return currentList.size
     }
 
     /**

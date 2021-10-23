@@ -351,9 +351,9 @@ class SongView(context: Context) : UpdateView(context), Checkable, KoinComponent
     companion object {
         private var starHollowDrawable: Drawable? = null
         private var starDrawable: Drawable? = null
-        private var pinImage: Drawable? = null
-        private var downloadedImage: Drawable? = null
-        private var downloadingImage: Drawable? = null
+        var pinImage: Drawable? = null
+        var downloadedImage: Drawable? = null
+        var downloadingImage: Drawable? = null
         private var playingImage: Drawable? = null
         private var theme: String? = null
         private var inflater: LayoutInflater? = null

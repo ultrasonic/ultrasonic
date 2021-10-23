@@ -7,6 +7,7 @@
 
 package org.moire.ultrasonic.fragment
 
+import android.annotation.SuppressLint
 import android.view.LayoutInflater
 import android.view.MenuInflater
 import android.view.MenuItem
@@ -21,20 +22,19 @@ import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import org.moire.ultrasonic.R
 import org.moire.ultrasonic.data.ActiveServerProvider
-import org.moire.ultrasonic.domain.GenericEntry
+import org.moire.ultrasonic.domain.Identifiable
 import org.moire.ultrasonic.domain.MusicFolder
 import org.moire.ultrasonic.view.SelectMusicFolderView
 
 /*
 * An abstract Adapter, which can be extended to display a List of <T> in a RecyclerView
 */
-abstract class GenericRowAdapter<T : GenericEntry>(
+abstract class GenericRowAdapter<T : Identifiable>(
     val onItemClick: (T) -> Unit,
     val onContextMenuClick: (MenuItem, T) -> Boolean,
     private val onMusicFolderUpdate: (String?) -> Unit
 ) : ListAdapter<T, RecyclerView.ViewHolder>(GenericDiffCallback()) {
 
-    open var itemList: List<T> = listOf()
     protected abstract val layout: Int
     protected abstract val contextMenuLayout: Int
 
@@ -42,15 +42,6 @@ abstract class GenericRowAdapter<T : GenericEntry>(
     var selectFolderHeader: SelectMusicFolderView? = null
     var musicFolders: List<MusicFolder> = listOf()
     var selectedFolder: String? = null
-
-    /**
-     * Sets the data to be displayed in the RecyclerView,
-     * using DiffUtil to efficiently calculate the minimum required changes..
-     */
-    open fun setData(data: List<T>) {
-        submitList(data)
-        itemList = data
-    }
 
     /**
      * Sets the content and state of the music folder selector row
@@ -101,9 +92,9 @@ abstract class GenericRowAdapter<T : GenericEntry>(
 
     override fun getItemCount(): Int {
         if (selectFolderHeader != null)
-            return itemList.size + 1
+            return currentList.size + 1
         else
-            return itemList.size
+            return currentList.size
     }
 
     override fun getItemViewType(position: Int): Int {
@@ -119,7 +110,7 @@ abstract class GenericRowAdapter<T : GenericEntry>(
         downloadMenuItem?.isVisible = !ActiveServerProvider.isOffline()
 
         popup.setOnMenuItemClickListener { menuItem ->
-            onContextMenuClick(menuItem, itemList[position])
+            onContextMenuClick(menuItem, currentList[position])
         }
         popup.show()
         return true
@@ -145,7 +136,8 @@ abstract class GenericRowAdapter<T : GenericEntry>(
         /**
          * Calculates the differences between data sets
          */
-        class GenericDiffCallback<T : GenericEntry> : DiffUtil.ItemCallback<T>() {
+        class GenericDiffCallback<T : Identifiable> : DiffUtil.ItemCallback<T>() {
+            @SuppressLint("DiffUtilEquals")
             override fun areContentsTheSame(oldItem: T, newItem: T): Boolean {
                 return oldItem == newItem
             }

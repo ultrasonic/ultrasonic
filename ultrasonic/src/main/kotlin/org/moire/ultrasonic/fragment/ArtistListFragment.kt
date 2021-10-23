@@ -10,7 +10,7 @@ import org.moire.ultrasonic.util.Constants
 /**
  * Displays the list of Artists from the media library
  */
-class ArtistListFragment : GenericListFragment<ArtistOrIndex, ArtistRowAdapter>() {
+class ArtistListFragment : EntryListFragment<ArtistOrIndex, ArtistRowAdapter>() {
 
     /**
      * The ViewModel to use to get the data

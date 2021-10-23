@@ -2,7 +2,7 @@ package org.moire.ultrasonic.domain
 
 import androidx.room.Ignore
 
-open class ArtistOrIndex(
+abstract class ArtistOrIndex(
     @Ignore
     override var id: String,
     @Ignore

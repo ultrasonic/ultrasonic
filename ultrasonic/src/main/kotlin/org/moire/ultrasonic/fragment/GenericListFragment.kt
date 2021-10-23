@@ -18,6 +18,7 @@ import org.moire.ultrasonic.R
 import org.moire.ultrasonic.data.ActiveServerProvider
 import org.moire.ultrasonic.domain.Artist
 import org.moire.ultrasonic.domain.GenericEntry
+import org.moire.ultrasonic.domain.Identifiable
 import org.moire.ultrasonic.domain.MusicFolder
 import org.moire.ultrasonic.subsonic.DownloadHandler
 import org.moire.ultrasonic.subsonic.ImageLoaderProvider
@@ -31,7 +32,7 @@ import org.moire.ultrasonic.view.SelectMusicFolderView
  * @param T: The type of data which will be used (must extend GenericEntry)
  * @param TA: The Adapter to use (must extend GenericRowAdapter)
  */
-abstract class GenericListFragment<T : GenericEntry, TA : GenericRowAdapter<T>> : Fragment() {
+abstract class GenericListFragment<T : Identifiable, TA : GenericRowAdapter<T>> : Fragment() {
     internal val activeServerProvider: ActiveServerProvider by inject()
     internal val serverSettingsModel: ServerSettingsModel by viewModel()
     internal val imageLoaderProvider: ImageLoaderProvider by inject()
@@ -90,7 +91,6 @@ abstract class GenericListFragment<T : GenericEntry, TA : GenericRowAdapter<T>> 
     @Suppress("CommentOverPrivateProperty")
     private val musicFolderObserver = { folders: List<MusicFolder> ->
         viewAdapter.setFolderList(folders, listModel.activeServer.musicFolderId)
-        Unit
     }
 
     /**
@@ -114,7 +114,7 @@ abstract class GenericListFragment<T : GenericEntry, TA : GenericRowAdapter<T>> 
             !listModel.isOffline() && !Settings.shouldUseId3Tags
     }
 
-    fun setTitle(title: String?) {
+    open fun setTitle(title: String?) {
         if (title == null) {
             FragmentTitle.setTitle(
                 this,
@@ -143,7 +143,7 @@ abstract class GenericListFragment<T : GenericEntry, TA : GenericRowAdapter<T>> 
         liveDataItems = getLiveData(arguments)
 
         // Register an observer to update our UI when the data changes
-        liveDataItems.observe(viewLifecycleOwner, { newItems -> viewAdapter.setData(newItems) })
+        liveDataItems.observe(viewLifecycleOwner, { newItems -> viewAdapter.submitList(newItems) })
 
         // Setup the Music folder handling
         listModel.getMusicFolders().observe(viewLifecycleOwner, musicFolderObserver)
@@ -176,8 +176,15 @@ abstract class GenericListFragment<T : GenericEntry, TA : GenericRowAdapter<T>> 
         return inflater.inflate(mainLayout, container, false)
     }
 
+    abstract fun onContextMenuItemSelected(menuItem: MenuItem, item: T): Boolean
+
+    abstract fun onItemClick(item: T)
+}
+
+abstract class EntryListFragment<T : GenericEntry, TA : GenericRowAdapter<T>> :
+    GenericListFragment<T, TA>() {
     @Suppress("LongMethod")
-    fun onContextMenuItemSelected(menuItem: MenuItem, item: T): Boolean {
+    override fun onContextMenuItemSelected(menuItem: MenuItem, item: T): Boolean {
         val isArtist = (item is Artist)
 
         when (menuItem.itemId) {
@@ -263,7 +270,7 @@ abstract class GenericListFragment<T : GenericEntry, TA : GenericRowAdapter<T>> 
         return true
     }
 
-    open fun onItemClick(item: T) {
+    override fun onItemClick(item: T) {
         val bundle = Bundle()
         bundle.putString(Constants.INTENT_EXTRA_NAME_ID, item.id)
         bundle.putString(Constants.INTENT_EXTRA_NAME_NAME, item.name)

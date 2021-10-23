@@ -11,7 +11,6 @@ import android.view.MenuItem
 import android.view.View
 import androidx.recyclerview.widget.RecyclerView
 import com.simplecityapps.recyclerview_fastscroll.views.FastScrollRecyclerView.SectionedAdapter
-import java.text.Collator
 import org.moire.ultrasonic.R
 import org.moire.ultrasonic.domain.ArtistOrIndex
 import org.moire.ultrasonic.imageloader.ImageLoader
@@ -22,7 +21,7 @@ import org.moire.ultrasonic.util.Settings
  * Creates a Row in a RecyclerView which contains the details of an Artist
  */
 class ArtistRowAdapter(
-    artistList: List<ArtistOrIndex>,
+    itemList: List<ArtistOrIndex>,
     onItemClick: (ArtistOrIndex) -> Unit,
     onContextMenuClick: (MenuItem, ArtistOrIndex) -> Boolean,
     private val imageLoader: ImageLoader,
@@ -34,32 +33,26 @@ class ArtistRowAdapter(
 ),
     SectionedAdapter {
 
-    override var itemList = artistList
+    init {
+        super.submitList(itemList)
+    }
 
     // Set our layout files
     override val layout = R.layout.artist_list_item
     override val contextMenuLayout = R.menu.artist_context_menu
 
-    /**
-     * Sets the data to be displayed in the RecyclerView
-     */
-    override fun setData(data: List<ArtistOrIndex>) {
-        itemList = data.sortedWith(compareBy(Collator.getInstance()) { t -> t.name })
-        super.notifyDataSetChanged()
-    }
-
     override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
         if (holder is ViewHolder) {
             val listPosition = if (selectFolderHeader != null) position - 1 else position
-            holder.textView.text = itemList[listPosition].name
+            holder.textView.text = currentList[listPosition].name
             holder.section.text = getSectionForArtist(listPosition)
-            holder.layout.setOnClickListener { onItemClick(itemList[listPosition]) }
+            holder.layout.setOnClickListener { onItemClick(currentList[listPosition]) }
             holder.layout.setOnLongClickListener { view -> createPopupMenu(view, listPosition) }
-            holder.coverArtId = itemList[listPosition].coverArt
+            holder.coverArtId = currentList[listPosition].coverArt
 
             if (Settings.shouldShowArtistPicture) {
                 holder.coverArt.visibility = View.VISIBLE
-                val key = FileUtil.getArtistArtKey(itemList[listPosition].name, false)
+                val key = FileUtil.getArtistArtKey(currentList[listPosition].name, false)
                 imageLoader.loadImage(
                     view = holder.coverArt,
                     id = holder.coverArtId,
@@ -81,18 +74,18 @@ class ArtistRowAdapter(
         // scrolled up to the "Select Folder" row
         if (listPosition < 0) listPosition = 0
 
-        return getSectionFromName(itemList[listPosition].name ?: " ")
+        return getSectionFromName(currentList[listPosition].name ?: " ")
     }
 
     private fun getSectionForArtist(artistPosition: Int): String {
         if (artistPosition == 0)
-            return getSectionFromName(itemList[artistPosition].name ?: " ")
+            return getSectionFromName(currentList[artistPosition].name ?: " ")
 
         val previousArtistSection = getSectionFromName(
-            itemList[artistPosition - 1].name ?: " "
+            currentList[artistPosition - 1].name ?: " "
         )
         val currentArtistSection = getSectionFromName(
-            itemList[artistPosition].name ?: " "
+            currentList[artistPosition].name ?: " "
         )
 
         return if (previousArtistSection == currentArtistSection) "" else currentArtistSection

@@ -26,6 +26,11 @@
             a:icon="?attr/playlists"
             a:title="@string/button_bar.playlists" />
         <item
+            a:id="@+id/downloadsFragment"
+            a:checkable="true"
+            a:icon="?attr/downloaded"
+            a:title="@string/menu.downloads" />
+        <item
             a:id="@+id/sharesFragment"
             a:checkable="true"
             a:icon="?attr/share"

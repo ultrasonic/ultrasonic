@@ -4,7 +4,7 @@ import java.io.Serializable
 import org.moire.ultrasonic.domain.MusicDirectory.Entry
 
 data class Share(
-    override var id: String? = null,
+    override var id: String,
     var url: String? = null,
     var description: String? = null,
     var username: String? = null,
