@@ -81,7 +81,7 @@ class PlaybackStateSerializer : KoinComponent {
         mediaSessionHandler.updateMediaSessionQueue(state.songs)
     }
 
-    fun deserialize(afterDeserialized: Consumer<State?>) {
+    fun deserialize(afterDeserialized: (State?) -> Unit?) {
 
         appScope.launch {
             try {
@@ -94,7 +94,7 @@ class PlaybackStateSerializer : KoinComponent {
         }
     }
 
-    private fun deserializeNow(afterDeserialized: Consumer<State?>) {
+    private fun deserializeNow(afterDeserialized: (State?) -> Unit?) {
 
         val state = FileUtil.deserialize<State>(
             context, Constants.FILENAME_PLAYLIST_SER
@@ -107,6 +107,6 @@ class PlaybackStateSerializer : KoinComponent {
         )
 
         mediaSessionHandler.updateMediaSessionQueue(state.songs)
-        afterDeserialized.accept(state)
+        afterDeserialized(state)
     }
 }

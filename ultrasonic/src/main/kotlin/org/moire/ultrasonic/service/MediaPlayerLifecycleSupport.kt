@@ -63,26 +63,25 @@ class MediaPlayerLifecycleSupport : KoinComponent {
         mediaPlayerController.onCreate()
         if (autoPlay) mediaPlayerController.preload()
 
-        playbackStateSerializer.deserialize(object : Consumer<State?>() {
-            override fun accept(state: State?) {
-                mediaPlayerController.restore(
-                    state!!.songs,
-                    state.currentPlayingIndex,
-                    state.currentPlayingPosition,
-                    autoPlay,
-                    false
-                )
+        playbackStateSerializer.deserialize {
 
-                // Work-around: Serialize again, as the restore() method creates a
-                // serialization without current playing info.
-                playbackStateSerializer.serialize(
-                    downloader.playlist,
-                    downloader.currentPlayingIndex,
-                    mediaPlayerController.playerPosition
-                )
-                afterCreated?.run()
-            }
-        })
+            mediaPlayerController.restore(
+                it!!.songs,
+                it.currentPlayingIndex,
+                it.currentPlayingPosition,
+                autoPlay,
+                false
+            )
+
+            // Work-around: Serialize again, as the restore() method creates a
+            // serialization without current playing info.
+            playbackStateSerializer.serialize(
+                downloader.playlist,
+                downloader.currentPlayingIndex,
+                mediaPlayerController.playerPosition
+            )
+            afterCreated?.run()
+        }
 
         CacheCleaner().clean()
         created = true
