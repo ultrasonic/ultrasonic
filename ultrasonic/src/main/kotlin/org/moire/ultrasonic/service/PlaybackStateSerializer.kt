@@ -1,5 +1,5 @@
 /*
- * DownloadQueueSerializer.kt
+ * PlaybackStateSerializer.kt
  * Copyright (C) 2009-2021 Ultrasonic developers
  *
  * Distributed under terms of the GNU GPLv3 license.
@@ -24,10 +24,10 @@ import timber.log.Timber
 
 /**
  * This class is responsible for the serialization / deserialization
- * of the DownloadQueue (playlist) to the filesystem.
- * It also serializes the player state e.g. current playing number and play position.
+ * of the playlist and the player state (e.g. current playing number and play position)
+ * to the filesystem.
  */
-class DownloadQueueSerializer : KoinComponent {
+class PlaybackStateSerializer : KoinComponent {
 
     private val context by inject<Context>()
     private val mediaSessionHandler by inject<MediaSessionHandler>()
@@ -37,7 +37,7 @@ class DownloadQueueSerializer : KoinComponent {
 
     private val appScope = CoroutineScope(SupervisorJob() + Dispatchers.IO)
 
-    fun serializeDownloadQueue(
+    fun serialize(
         songs: Iterable<DownloadFile>,
         currentPlayingIndex: Int,
         currentPlayingPosition: Int
@@ -47,7 +47,7 @@ class DownloadQueueSerializer : KoinComponent {
         appScope.launch {
             if (lock.tryLock()) {
                 try {
-                    serializeDownloadQueueNow(songs, currentPlayingIndex, currentPlayingPosition)
+                    serializeNow(songs, currentPlayingIndex, currentPlayingPosition)
                 } finally {
                     lock.unlock()
                 }
@@ -55,7 +55,7 @@ class DownloadQueueSerializer : KoinComponent {
         }
     }
 
-    fun serializeDownloadQueueNow(
+    fun serializeNow(
         songs: Iterable<DownloadFile>,
         currentPlayingIndex: Int,
         currentPlayingPosition: Int
@@ -75,18 +75,18 @@ class DownloadQueueSerializer : KoinComponent {
             state.currentPlayingPosition
         )
 
-        FileUtil.serialize(context, state, Constants.FILENAME_DOWNLOADS_SER)
+        FileUtil.serialize(context, state, Constants.FILENAME_PLAYLIST_SER)
 
         // This is called here because the queue is usually serialized after a change
         mediaSessionHandler.updateMediaSessionQueue(state.songs)
     }
 
-    fun deserializeDownloadQueue(afterDeserialized: Consumer<State?>) {
+    fun deserialize(afterDeserialized: Consumer<State?>) {
 
         appScope.launch {
             try {
                 lock.lock()
-                deserializeDownloadQueueNow(afterDeserialized)
+                deserializeNow(afterDeserialized)
                 setup.set(true)
             } finally {
                 lock.unlock()
@@ -94,10 +94,10 @@ class DownloadQueueSerializer : KoinComponent {
         }
     }
 
-    private fun deserializeDownloadQueueNow(afterDeserialized: Consumer<State?>) {
+    private fun deserializeNow(afterDeserialized: Consumer<State?>) {
 
         val state = FileUtil.deserialize<State>(
-            context, Constants.FILENAME_DOWNLOADS_SER
+            context, Constants.FILENAME_PLAYLIST_SER
         ) ?: return
 
         Timber.i(

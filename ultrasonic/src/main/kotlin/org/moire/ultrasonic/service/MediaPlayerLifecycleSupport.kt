@@ -32,7 +32,7 @@ import timber.log.Timber
  * @author Sindre Mehus
  */
 class MediaPlayerLifecycleSupport : KoinComponent {
-    private val downloadQueueSerializer by inject<DownloadQueueSerializer>()
+    private val playbackStateSerializer by inject<PlaybackStateSerializer>()
     private val mediaPlayerController by inject<MediaPlayerController>()
     private val downloader by inject<Downloader>()
     private val mediaSessionEventDistributor by inject<MediaSessionEventDistributor>()
@@ -63,7 +63,7 @@ class MediaPlayerLifecycleSupport : KoinComponent {
         mediaPlayerController.onCreate()
         if (autoPlay) mediaPlayerController.preload()
 
-        downloadQueueSerializer.deserializeDownloadQueue(object : Consumer<State?>() {
+        playbackStateSerializer.deserialize(object : Consumer<State?>() {
             override fun accept(state: State?) {
                 mediaPlayerController.restore(
                     state!!.songs,
@@ -75,7 +75,7 @@ class MediaPlayerLifecycleSupport : KoinComponent {
 
                 // Work-around: Serialize again, as the restore() method creates a
                 // serialization without current playing info.
-                downloadQueueSerializer.serializeDownloadQueue(
+                playbackStateSerializer.serialize(
                     downloader.playlist,
                     downloader.currentPlayingIndex,
                     mediaPlayerController.playerPosition
@@ -93,7 +93,7 @@ class MediaPlayerLifecycleSupport : KoinComponent {
 
         if (!created) return
 
-        downloadQueueSerializer.serializeDownloadQueueNow(
+        playbackStateSerializer.serializeNow(
             downloader.playlist,
             downloader.currentPlayingIndex,
             mediaPlayerController.playerPosition

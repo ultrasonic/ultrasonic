@@ -2,13 +2,13 @@ package org.moire.ultrasonic.di
 
 import org.koin.dsl.module
 import org.moire.ultrasonic.service.AudioFocusHandler
-import org.moire.ultrasonic.service.DownloadQueueSerializer
 import org.moire.ultrasonic.service.Downloader
 import org.moire.ultrasonic.service.ExternalStorageMonitor
 import org.moire.ultrasonic.service.JukeboxMediaPlayer
 import org.moire.ultrasonic.service.LocalMediaPlayer
 import org.moire.ultrasonic.service.MediaPlayerController
 import org.moire.ultrasonic.service.MediaPlayerLifecycleSupport
+import org.moire.ultrasonic.service.PlaybackStateSerializer
 import org.moire.ultrasonic.util.ShufflePlayBuffer
 
 /**
@@ -17,7 +17,7 @@ import org.moire.ultrasonic.util.ShufflePlayBuffer
 val mediaPlayerModule = module {
     single { JukeboxMediaPlayer(get()) }
     single { MediaPlayerLifecycleSupport() }
-    single { DownloadQueueSerializer() }
+    single { PlaybackStateSerializer() }
     single { ExternalStorageMonitor() }
     single { ShufflePlayBuffer() }
     single { Downloader(get(), get(), get()) }

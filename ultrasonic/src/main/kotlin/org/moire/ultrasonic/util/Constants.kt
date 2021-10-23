@@ -118,7 +118,7 @@ object Constants {
     const val PREFERENCE_VALUE_ALL = 0
     const val PREFERENCE_VALUE_A2DP = 1
     const val PREFERENCE_VALUE_DISABLED = 2
-    const val FILENAME_DOWNLOADS_SER = "downloadstate.ser"
+    const val FILENAME_PLAYLIST_SER = "downloadstate.ser"
     const val ALBUM_ART_FILE = "folder.jpeg"
     const val STARRED = "starred"
     const val ALPHABETICAL_BY_NAME = "alphabeticalByName"
