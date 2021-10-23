@@ -193,8 +193,7 @@ class ActiveServerProvider(
          * Queries the Id of the Active Server
          */
         fun getActiveServerId(): Int {
-            val preferences = Settings.preferences
-            return preferences.getInt(Constants.PREFERENCES_KEY_SERVER_INSTANCE, -1)
+            return Settings.activeServer
         }
 
         /**
@@ -203,11 +202,7 @@ class ActiveServerProvider(
         fun setActiveServerId(serverId: Int) {
             resetMusicService()
 
-            val preferences = Settings.preferences
-            val editor = preferences.edit()
-            editor.putInt(Constants.PREFERENCES_KEY_SERVER_INSTANCE, serverId)
-            editor.apply()
-
+            Settings.activeServer = serverId
             liveActiveServerId.postValue(serverId)
         }
 
@@ -229,8 +224,7 @@ class ActiveServerProvider(
             if (isOffline()) {
                 return false
             }
-            val preferences = Settings.preferences
-            return preferences.getBoolean(Constants.PREFERENCES_KEY_SERVER_SCALING, false)
+            return Settings.serverScaling
         }
     }
 }

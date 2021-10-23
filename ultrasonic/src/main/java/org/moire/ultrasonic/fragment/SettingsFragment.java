@@ -26,7 +26,6 @@ import org.moire.ultrasonic.R;
 import org.moire.ultrasonic.featureflags.Feature;
 import org.moire.ultrasonic.featureflags.FeatureStorage;
 import org.moire.ultrasonic.filepicker.FilePickerDialog;
-import org.moire.ultrasonic.filepicker.OnFileSelectedListener;
 import org.moire.ultrasonic.log.FileLoggerTree;
 import org.moire.ultrasonic.provider.SearchSuggestionProvider;
 import org.moire.ultrasonic.service.Consumer;
@@ -233,15 +232,9 @@ public class SettingsFragment extends PreferenceFragmentCompat
                             FilePickerDialog filePickerDialog = FilePickerDialog.Companion.createFilePickerDialog(getContext());
                             filePickerDialog.setDefaultDirectory(FileUtil.getDefaultMusicDirectory().getPath());
                             filePickerDialog.setInitialDirectory(cacheLocation.getSummary().toString());
-                            filePickerDialog.setOnFileSelectedListener(new OnFileSelectedListener() {
-                                @Override
-                                public void onFileSelected(File file, String path) {
-                                    SharedPreferences.Editor editor = cacheLocation.getSharedPreferences().edit();
-                                    editor.putString(Constants.PREFERENCES_KEY_CACHE_LOCATION, path);
-                                    editor.apply();
-
-                                    setCacheLocation(path);
-                                }
+                            filePickerDialog.setOnFileSelectedListener((file, path) -> {
+                                Settings.setCacheLocation(path);
+                                setCacheLocation(path);
                             });
                             filePickerDialog.show();
                         }
@@ -287,9 +280,7 @@ public class SettingsFragment extends PreferenceFragmentCompat
                 new Consumer<Integer>() {
                     @Override
                     public void accept(Integer choice) {
-                        SharedPreferences.Editor editor = pauseOnBluetoothDevice.getSharedPreferences().edit();
-                        editor.putInt(Constants.PREFERENCES_KEY_PAUSE_ON_BLUETOOTH_DEVICE, choice);
-                        editor.apply();
+                        Settings.setPauseOnBluetoothDevice(choice);
                         pauseOnBluetoothDevice.setSummary(bluetoothDevicePreferenceToString(choice));
                     }
                 });
@@ -442,13 +433,9 @@ public class SettingsFragment extends PreferenceFragmentCompat
         File dir = new File(path);
 
         if (!FileUtil.ensureDirectoryExistsAndIsReadWritable(dir)) {
-            permissionUtil.getValue().handlePermissionFailed(new PermissionUtil.PermissionRequestFinishedCallback() {
-                @Override
-                public void onPermissionRequestFinished(boolean hasPermission) {
-                    String currentPath = settings.getString(Constants.PREFERENCES_KEY_CACHE_LOCATION,
-                            FileUtil.getDefaultMusicDirectory().getPath());
-                    cacheLocation.setSummary(currentPath);
-                }
+            permissionUtil.getValue().handlePermissionFailed(hasPermission -> {
+                String currentPath = Settings.getCacheLocation();
+                cacheLocation.setSummary(currentPath);
             });
         }
         else {

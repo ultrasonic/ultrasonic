@@ -11,7 +11,6 @@ import androidx.media.AudioFocusRequestCompat
 import androidx.media.AudioManagerCompat
 import org.koin.java.KoinJavaComponent.inject
 import org.moire.ultrasonic.domain.PlayerState
-import org.moire.ultrasonic.util.Constants
 import org.moire.ultrasonic.util.Settings
 import timber.log.Timber
 
@@ -25,12 +24,8 @@ class AudioFocusHandler(private val context: Context) {
         context.getSystemService(Context.AUDIO_SERVICE) as AudioManager
     }
 
-    private val preferences by lazy {
-        Settings.preferences
-    }
-
     private val lossPref: Int
-        get() = preferences.getString(Constants.PREFERENCES_KEY_TEMP_LOSS, "1")!!.toInt()
+        get() = Settings.tempLoss
 
     private val audioAttributesCompat by lazy {
         AudioAttributesCompat.Builder()
