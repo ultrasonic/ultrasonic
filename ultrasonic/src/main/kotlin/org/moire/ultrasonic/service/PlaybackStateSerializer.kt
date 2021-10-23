@@ -33,7 +33,7 @@ class PlaybackStateSerializer : KoinComponent {
     private val mediaSessionHandler by inject<MediaSessionHandler>()
 
     val lock: Lock = ReentrantLock()
-    val setup = AtomicBoolean(false)
+    private val setup = AtomicBoolean(false)
 
     private val appScope = CoroutineScope(SupervisorJob() + Dispatchers.IO)
 
