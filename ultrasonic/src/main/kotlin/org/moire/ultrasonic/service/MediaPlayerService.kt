@@ -752,6 +752,9 @@ class MediaPlayerService : Service() {
         @JvmStatic
         fun getInstance(): MediaPlayerService? {
             val context = UApp.applicationContext()
+            // Try for twenty times to retrieve a running service,
+            // sleep 100 millis between each try,
+            // and run the block that creates a service only synchronized.
             for (i in 0..19) {
                 if (instance != null) return instance
                 synchronized(instanceLock) {
