@@ -121,6 +121,7 @@
     <string name="menu.common">Common</string>
     <string name="menu.deleted_playlist">Deleted playlist %s</string>
     <string name="menu.deleted_playlist_error">Failed to delete playlist %s</string>
+    <string name="menu.downloads">Downloads</string>
     <string name="menu.exit">Exit</string>
     <string name="menu.navigation">Navigation</string>
     <string name="menu.settings">Settings</string>
@@ -213,9 +214,9 @@
     <string name="settings.directory_cache_time_60">1 hour</string>
     <string name="settings.disc_sort">Sort Songs By Disc</string>
     <string name="settings.disc_sort_summary">Sort song list by disc number and track number</string>
-    <string name="settings.display_bitrate">Display Bitrate And File Suffix</string>
+    <string name="settings.display_bitrate">Display Bitrate and File Suffix</string>
     <string name="settings.display_bitrate_summary">Append artist name with bitrate and file suffix</string>
-    <string name="settings.download_transition">Show Downloads On Play</string>
+    <string name="settings.download_transition">Show Downloads on Play</string>
     <string name="settings.download_transition_summary">Transition to download activity when starting playback</string>
     <string name="settings.gapless_playback">Gapless Playback</string>
     <string name="settings.gapless_playback_summary">Enable gapless playback</string>

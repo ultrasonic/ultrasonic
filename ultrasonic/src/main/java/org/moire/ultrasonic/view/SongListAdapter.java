@@ -24,7 +24,7 @@ public class SongListAdapter extends ArrayAdapter<DownloadFile>
 	public View getView(final int position, final View convertView, final ViewGroup parent)
 	{
 		DownloadFile downloadFile = getItem(position);
-   	MusicDirectory.Entry entry = downloadFile.getSong();
+   		MusicDirectory.Entry entry = downloadFile.getSong();
 
 		SongView view;
 

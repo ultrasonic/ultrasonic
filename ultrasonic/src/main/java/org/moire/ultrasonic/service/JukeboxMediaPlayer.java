@@ -232,7 +232,7 @@ public class JukeboxMediaPlayer
 		tasks.remove(Start.class);
 
 		List<String> ids = new ArrayList<>();
-		for (DownloadFile file : downloader.getDownloads())
+		for (DownloadFile file : downloader.getAll())
 		{
 			ids.add(file.getSong().getId());
 		}

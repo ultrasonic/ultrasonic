@@ -317,7 +317,7 @@ class PlayerFragment : Fragment(), GestureDetector.OnGestureListener, KoinCompon
         repeatButton.setOnClickListener {
             val repeatMode = mediaPlayerController.repeatMode.next()
             mediaPlayerController.repeatMode = repeatMode
-            onDownloadListChanged()
+            onPlaylistChanged()
             when (repeatMode) {
                 RepeatMode.OFF -> Util.toast(
                     context, R.string.download_repeat_off
@@ -435,7 +435,7 @@ class PlayerFragment : Fragment(), GestureDetector.OnGestureListener, KoinCompon
             playlistFlipper.displayedChild = 1
         } else {
             // Download list and Album art must be updated when Resumed
-            onDownloadListChanged()
+            onPlaylistChanged()
             onCurrentChanged()
         }
         val handler = Handler()
@@ -642,7 +642,7 @@ class PlayerFragment : Fragment(), GestureDetector.OnGestureListener, KoinCompon
             }
             R.id.menu_remove -> {
                 mediaPlayerController.removeFromPlaylist(song!!)
-                onDownloadListChanged()
+                onPlaylistChanged()
                 return true
             }
             R.id.menu_item_screen_on_off -> {
@@ -697,7 +697,7 @@ class PlayerFragment : Fragment(), GestureDetector.OnGestureListener, KoinCompon
             R.id.menu_item_clear_playlist -> {
                 mediaPlayerController.isShufflePlayEnabled = false
                 mediaPlayerController.clear()
-                onDownloadListChanged()
+                onPlaylistChanged()
                 return true
             }
             R.id.menu_item_save_playlist -> {
@@ -798,7 +798,7 @@ class PlayerFragment : Fragment(), GestureDetector.OnGestureListener, KoinCompon
         if (cancel!!.isCancellationRequested) return
         val mediaPlayerController = mediaPlayerController
         if (currentRevision != mediaPlayerController.playListUpdateRevision) {
-            onDownloadListChanged()
+            onPlaylistChanged()
         }
         if (currentPlaying != mediaPlayerController.currentPlaying) {
             onCurrentChanged()
@@ -874,7 +874,7 @@ class PlayerFragment : Fragment(), GestureDetector.OnGestureListener, KoinCompon
         }
     }
 
-    private fun onDownloadListChanged() {
+    private fun onPlaylistChanged() {
         val mediaPlayerController = mediaPlayerController
         val list = mediaPlayerController.playList
         emptyTextView.setText(R.string.download_empty)
@@ -907,7 +907,7 @@ class PlayerFragment : Fragment(), GestureDetector.OnGestureListener, KoinCompon
                     item.song.title
                 )
                 Util.toast(context, songRemoved)
-                onDownloadListChanged()
+                onPlaylistChanged()
                 onCurrentChanged()
             }
         })

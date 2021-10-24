@@ -19,6 +19,7 @@ import org.koin.core.component.KoinComponent
 import org.koin.core.component.inject
 import org.moire.ultrasonic.data.ActiveServerProvider
 import org.moire.ultrasonic.domain.Artist
+import org.moire.ultrasonic.domain.Identifiable
 import org.moire.ultrasonic.domain.MusicDirectory
 import org.moire.ultrasonic.service.MusicServiceFactory.getMusicService
 import org.moire.ultrasonic.subsonic.ImageLoaderProvider
@@ -35,7 +36,7 @@ import timber.log.Timber
 class DownloadFile(
     val song: MusicDirectory.Entry,
     private val save: Boolean
-) : KoinComponent, Comparable<DownloadFile> {
+) : KoinComponent, Identifiable {
     val partialFile: File
     val completeFile: File
     private val saveFile: File = FileUtil.getSongFile(song)
@@ -61,6 +62,7 @@ class DownloadFile(
     private val activeServerProvider: ActiveServerProvider by inject()
 
     val progress: MutableLiveData<Int> = MutableLiveData(0)
+    val status: MutableLiveData<DownloadStatus> = MutableLiveData(DownloadStatus.IDLE)
 
     init {
         partialFile = File(saveFile.parent, FileUtil.getPartialFile(saveFile.name))
@@ -204,11 +206,13 @@ class DownloadFile(
         val musicService = getMusicService()
 
         override fun execute() {
+
             var inputStream: InputStream? = null
             var outputStream: FileOutputStream? = null
             try {
                 if (saveFile.exists()) {
                     Timber.i("%s already exists. Skipping.", saveFile)
+                    status.postValue(DownloadStatus.DONE)
                     return
                 }
 
@@ -222,8 +226,11 @@ class DownloadFile(
                     } else {
                         Timber.i("%s already exists. Skipping.", completeFile)
                     }
+                    status.postValue(DownloadStatus.DONE)
                     return
                 }
+
+                status.postValue(DownloadStatus.DOWNLOADING)
 
                 // Some devices seem to throw error on partial file which doesn't exist
                 val needsDownloading: Boolean
@@ -267,6 +274,7 @@ class DownloadFile(
                     outputStream.close()
 
                     if (isCancelled) {
+                        status.postValue(DownloadStatus.ABORTED)
                         throw Exception(String.format("Download of '%s' was cancelled", song))
                     }
 
@@ -275,6 +283,8 @@ class DownloadFile(
                     }
 
                     downloadAndSaveCoverArt()
+
+                    status.postValue(DownloadStatus.DONE)
                 }
 
                 if (isPlaying) {
@@ -293,7 +303,11 @@ class DownloadFile(
                 Util.delete(saveFile)
                 if (!isCancelled) {
                     isFailed = true
-                    if (retryCount > 0) {
+                    if (retryCount > 1) {
+                        status.postValue(DownloadStatus.RETRYING)
+                        --retryCount
+                    } else if (retryCount == 1) {
+                        status.postValue(DownloadStatus.FAILED)
                         --retryCount
                     }
                     Timber.w(all, "Failed to download '%s'.", song)
@@ -389,11 +403,20 @@ class DownloadFile(
         }
     }
 
-    override fun compareTo(other: DownloadFile): Int {
+    override fun compareTo(other: Identifiable) = compareTo(other as DownloadFile)
+
+    fun compareTo(other: DownloadFile): Int {
         return priority.compareTo(other.priority)
     }
+
+    override val id: String
+        get() = song.id
 
     companion object {
         const val MAX_RETRIES = 5
     }
+}
+
+enum class DownloadStatus {
+    IDLE, DOWNLOADING, RETRYING, FAILED, ABORTED, DONE
 }

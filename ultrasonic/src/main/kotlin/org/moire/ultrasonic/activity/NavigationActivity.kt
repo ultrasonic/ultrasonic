@@ -121,6 +121,7 @@ class NavigationActivity : AppCompatActivity() {
                 R.id.mediaLibraryFragment,
                 R.id.searchFragment,
                 R.id.playlistsFragment,
+                R.id.downloadsFragment,
                 R.id.sharesFragment,
                 R.id.bookmarksFragment,
                 R.id.chatFragment,

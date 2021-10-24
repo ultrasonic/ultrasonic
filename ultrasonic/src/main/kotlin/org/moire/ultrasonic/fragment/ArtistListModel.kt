@@ -23,6 +23,7 @@ import android.os.Bundle
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
+import java.text.Collator
 import org.moire.ultrasonic.domain.ArtistOrIndex
 import org.moire.ultrasonic.service.MusicService
 
@@ -63,6 +64,11 @@ class ArtistListModel(application: Application) : GenericListModel(application) 
             result = musicService.getIndexes(musicFolderId, refresh)
         }
 
-        artists.postValue(result.toMutableList())
+        artists.postValue(result.toMutableList().sortedWith(comparator))
+    }
+
+    companion object {
+        val comparator: Comparator<ArtistOrIndex> =
+            compareBy(Collator.getInstance()) { t -> t.name }
     }
 }

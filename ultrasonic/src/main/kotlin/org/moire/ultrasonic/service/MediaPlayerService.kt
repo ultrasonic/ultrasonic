@@ -15,7 +15,9 @@ import android.app.Service
 import android.content.Context
 import android.content.Intent
 import android.os.Build
+import android.os.Handler
 import android.os.IBinder
+import android.os.Looper
 import android.support.v4.media.session.MediaSessionCompat
 import android.view.KeyEvent
 import androidx.core.app.NotificationCompat
@@ -159,7 +161,10 @@ class MediaPlayerService : Service() {
     }
 
     fun notifyDownloaderStopped() {
-        stopIfIdle()
+        // TODO It would be nice to know if the service really can be stopped instead of just
+        // checking if it is idle once...
+        val handler = Handler(Looper.getMainLooper())
+        handler.postDelayed({ stopIfIdle() }, 1000)
     }
 
     @Synchronized
@@ -356,13 +361,13 @@ class MediaPlayerService : Service() {
                 Util.broadcastNewTrackInfo(this@MediaPlayerService, currentPlaying.song)
                 Util.broadcastA2dpMetaDataChange(
                     this@MediaPlayerService, playerPosition, currentPlaying,
-                    downloader.downloads.size, downloader.currentPlayingIndex + 1
+                    downloader.all.size, downloader.currentPlayingIndex + 1
                 )
             } else {
                 Util.broadcastNewTrackInfo(this@MediaPlayerService, null)
                 Util.broadcastA2dpMetaDataChange(
                     this@MediaPlayerService, playerPosition, null,
-                    downloader.downloads.size, downloader.currentPlayingIndex + 1
+                    downloader.all.size, downloader.currentPlayingIndex + 1
                 )
             }
 
@@ -740,14 +745,19 @@ class MediaPlayerService : Service() {
         private const val NOTIFICATION_CHANNEL_NAME = "Ultrasonic background service"
         private const val NOTIFICATION_ID = 3033
 
+        @Volatile
         private var instance: MediaPlayerService? = null
         private val instanceLock = Any()
 
         @JvmStatic
         fun getInstance(): MediaPlayerService? {
             val context = UApp.applicationContext()
-            synchronized(instanceLock) {
-                for (i in 0..19) {
+            // Try for twenty times to retrieve a running service,
+            // sleep 100 millis between each try,
+            // and run the block that creates a service only synchronized.
+            for (i in 0..19) {
+                if (instance != null) return instance
+                synchronized(instanceLock) {
                     if (instance != null) return instance
                     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
                         context.startForegroundService(
@@ -756,10 +766,10 @@ class MediaPlayerService : Service() {
                     } else {
                         context.startService(Intent(context, MediaPlayerService::class.java))
                     }
-                    Util.sleepQuietly(50L)
                 }
-                return instance
+                Util.sleepQuietly(100L)
             }
+            return instance
         }
 
         @JvmStatic

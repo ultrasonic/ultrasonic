@@ -8,3 +8,5 @@ public abstract class Supplier<T>
 {
     public abstract T get();
 }
+
+
