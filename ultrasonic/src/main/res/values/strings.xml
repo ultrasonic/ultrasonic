@@ -400,7 +400,7 @@
     <string name="settings.playback.bluetooth_all">All Bluetooth devices</string>
     <string name="settings.playback.bluetooth_a2dp">Only audio (A2DP) devices</string>
     <string name="settings.playback.bluetooth_disabled">Disabled</string>
-    <string name="settings.playback.single_button_bluetooth_device">Single button Play/Pause on Bluetooth device</string>
+    <string name="settings.playback.single_button_bluetooth_device">Bluetooth device with only a single  Play/Pause button</string>
     <string name="settings.playback.single_button_bluetooth_device_summary">Enabling this may help with older Bluetooth devices when Play/Pause doesn\'t work correctly</string>
     <string name="settings.debug.title">Debug options</string>
     <string name="settings.debug.log_to_file">Write debug log to file</string>
