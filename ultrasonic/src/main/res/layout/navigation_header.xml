@@ -16,7 +16,7 @@
         a:scaleType="fitXY"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        tools:ignore="ContentDescription" />
+        a:importantForAccessibility="no" />
 
     <ImageView
         a:id="@+id/img_profile"
@@ -29,7 +29,7 @@
         tools:tint="@color/selected_menu_dark"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        tools:ignore="ContentDescription" />
+        a:importantForAccessibility="no"  />
 
     <TextView
         a:id="@+id/name"

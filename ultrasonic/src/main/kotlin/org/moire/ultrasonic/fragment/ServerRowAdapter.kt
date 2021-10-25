@@ -2,6 +2,7 @@ package org.moire.ultrasonic.fragment
 
 import android.content.Context
 import android.graphics.Color
+import android.graphics.drawable.Drawable
 import android.os.Build
 import android.view.LayoutInflater
 import android.view.Menu
@@ -68,8 +69,10 @@ internal class ServerRowAdapter(
     /**
      * Creates the Row representation of a Server Setting
      */
+    @Suppress("LongMethod")
     override fun getView(position: Int, convertView: View?, parent: ViewGroup?): View? {
         var index = position
+
         // Skip "Offline" in manage mode
         if (manageMode) index++
 
@@ -92,19 +95,28 @@ internal class ServerRowAdapter(
             if (setting == null) serverMenu?.visibility = View.INVISIBLE
         }
 
-        // Provide icons for the row
+        val icon: Drawable?
+        val background: Drawable?
+
+        // Configure icons for the row
         if (index == 0) {
             serverMenu?.visibility = View.INVISIBLE
-            image?.setImageDrawable(Util.getDrawableFromAttribute(context, R.attr.screen_on_off))
-            image?.background = ContextCompat.getDrawable(context, R.color.transparent)
+            icon = Util.getDrawableFromAttribute(context, R.attr.screen_on_off)
+            background = ContextCompat.getDrawable(context, R.drawable.circle)
         } else {
-            val icon = ContextCompat.getDrawable(context, R.drawable.ic_menu_server_dark)
-            icon?.setTint(ServerColor.getForegroundColor(context, setting?.color))
-            image?.setImageDrawable(icon)
-            val background = ContextCompat.getDrawable(context, R.drawable.circle)
-            background?.setTint(ServerColor.getBackgroundColor(context, setting?.color))
-            image?.background = background
+            icon = ContextCompat.getDrawable(context, R.drawable.ic_menu_server_dark)
+            background = ContextCompat.getDrawable(context, R.drawable.circle)
         }
+
+        // Set colors
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            icon?.setTint(ServerColor.getForegroundColor(context, setting?.color))
+            background?.setTint(ServerColor.getBackgroundColor(context, setting?.color))
+        }
+
+        // Set the final drawables
+        image?.setImageDrawable(icon)
+        image?.background = background
 
         // Highlight the Active Server's row by changing its background
         if (index == activeServerProvider.getActiveServer().index) {
