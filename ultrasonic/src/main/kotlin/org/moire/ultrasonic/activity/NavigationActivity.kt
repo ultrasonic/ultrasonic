@@ -73,8 +73,6 @@ class NavigationActivity : AppCompatActivity() {
     private var host: NavHostFragment? = null
     private var selectServerButton: MaterialButton? = null
     private var headerBackgroundImage: ImageView? = null
-    private var ultrasonicLogoImage: ImageView? = null
-    private var ultrasonicNameText: TextView? = null
 
     private lateinit var appBarConfiguration: AppBarConfiguration
     private lateinit var nowPlayingEventListener: NowPlayingEventListener
@@ -222,10 +220,7 @@ class NavigationActivity : AppCompatActivity() {
                 ContextCompat.getDrawable(this, R.drawable.ic_menu_select_server_dark)
 
         selectServerButton?.iconTint = ColorStateList.valueOf(foregroundColor)
-        ultrasonicLogoImage?.imageTintList = ColorStateList.valueOf(foregroundColor)
-
         selectServerButton?.setTextColor(foregroundColor)
-        ultrasonicNameText?.setTextColor(foregroundColor)
         headerBackgroundImage?.setBackgroundColor(backgroundColor)
     }
 
@@ -289,10 +284,6 @@ class NavigationActivity : AppCompatActivity() {
         }
         headerBackgroundImage =
             navigationView?.getHeaderView(0)?.findViewById(R.id.img_header_bg)
-        ultrasonicLogoImage =
-            navigationView?.getHeaderView(0)?.findViewById(R.id.img_profile)
-        ultrasonicNameText =
-            navigationView?.getHeaderView(0)?.findViewById(R.id.name)
     }
 
     private fun setupActionBar(navController: NavController, appBarConfig: AppBarConfiguration) {

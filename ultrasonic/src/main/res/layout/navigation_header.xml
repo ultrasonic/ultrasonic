@@ -14,67 +14,32 @@
         a:layout_width="match_parent"
         a:layout_height="0dp"
         a:scaleType="fitXY"
+        a:src="@drawable/ic_header_bg"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         a:importantForAccessibility="no" />
-
-    <ImageView
-        a:id="@+id/img_profile"
-        a:layout_width="52dp"
-        a:layout_height="52dp"
-        a:layout_marginStart="16dp"
-        a:layout_marginLeft="16dp"
-        a:layout_marginTop="32dp"
-        a:src="@drawable/ic_stat_ultrasonic"
-        tools:tint="@color/selected_menu_dark"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        a:importantForAccessibility="no"  />
-
-    <TextView
-        a:id="@+id/name"
-        a:layout_width="wrap_content"
-        a:layout_height="wrap_content"
-        a:gravity="center_vertical"
-        a:paddingStart="16dp"
-        a:paddingLeft="16dp"
-        a:text="@string/common.appname"
-        a:textAppearance="@style/TextAppearance.AppCompat.Title"
-        a:textColor="?attr/colorOnPrimary"
-        tools:textColor="@color/selected_menu_dark"
-        app:layout_constraintBottom_toBottomOf="@+id/img_profile"
-        app:layout_constraintStart_toEndOf="@+id/img_profile"
-        app:layout_constraintTop_toTopOf="@+id/img_profile" />
 
     <Button
         a:id="@+id/header_select_server"
         style="@style/Widget.MaterialComponents.Button.TextButton.Icon"
         a:layout_width="match_parent"
         a:layout_height="wrap_content"
+        a:layout_marginTop="24dp"
+        a:background="@drawable/default_ripple"
         a:gravity="center_vertical"
-        a:textAppearance="@style/MenuDrawer.Widget"
-        a:textSize="14sp"
-        app:icon="@drawable/ic_menu_select_server_dark"
-        app:iconPadding="16dp"
         a:paddingHorizontal="22dp"
         a:paddingTop="14dp"
         a:paddingBottom="14dp"
         a:text="@string/main.offline"
+        a:textAppearance="@style/MenuDrawer.Widget"
         a:textColor="?attr/colorOnPrimary"
-        a:background="@drawable/default_ripple"
-        tools:iconTint="@color/selected_menu_dark"
-        tools:textColor="@color/selected_menu_dark"
+        a:textSize="14sp"
+        app:icon="@drawable/ic_menu_select_server_dark"
+        app:iconPadding="16dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/img_profile" />
-
-    <ImageView
-        a:id="@+id/img_shadow"
-        a:layout_width="match_parent"
-        a:layout_height="6dp"
-        a:layout_marginTop="-6dp"
-        a:scaleType="fitXY"
-        a:src="@drawable/drop_shadow"
-        app:layout_constraintTop_toBottomOf="@+id/header_select_server" />
+        app:layout_constraintTop_toTopOf="parent"
+        tools:iconTint="@color/selected_menu_dark"
+        tools:textColor="@color/selected_menu_dark" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
