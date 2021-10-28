@@ -212,6 +212,7 @@ class ServerSettingsModel(
             serverId,
             settings.getString(PREFERENCES_KEY_SERVER_NAME + preferenceId, "")!!,
             url,
+            null,
             userName,
             settings.getString(PREFERENCES_KEY_PASSWORD + preferenceId, "")!!,
             settings.getBoolean(PREFERENCES_KEY_JUKEBOX_BY_DEFAULT + preferenceId, false),

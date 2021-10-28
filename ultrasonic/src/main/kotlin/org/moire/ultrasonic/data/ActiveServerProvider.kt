@@ -1,5 +1,6 @@
 package org.moire.ultrasonic.data
 
+import androidx.lifecycle.MutableLiveData
 import androidx.room.Room
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
@@ -178,6 +179,7 @@ class ActiveServerProvider(
     companion object {
 
         const val METADATA_DB = "$DB_FILENAME-meta-"
+        val liveActiveServerId: MutableLiveData<Int> = MutableLiveData(getActiveServerId())
 
         /**
          * Queries if the Active Server is the "Offline" mode of Ultrasonic
@@ -205,6 +207,8 @@ class ActiveServerProvider(
             val editor = preferences.edit()
             editor.putInt(Constants.PREFERENCES_KEY_SERVER_INSTANCE, serverId)
             editor.apply()
+
+            liveActiveServerId.postValue(serverId)
         }
 
         /**

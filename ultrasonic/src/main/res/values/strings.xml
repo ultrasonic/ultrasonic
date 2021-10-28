@@ -108,7 +108,7 @@
     <string name="main.genres_title">Genres</string>
     <string name="main.music">Music</string>
     <string name="main.offline">Offline</string>
-    <string name="main.select_server">Select Server</string>
+    <string name="main.setup_server">%s - Set up Server</string>
     <string name="main.shuffle">Shuffle Play</string>
     <string name="main.songs_random">Random</string>
     <string name="main.songs_starred">Starred</string>
@@ -299,7 +299,7 @@
     <string name="settings.server_scaling_title">Server-Side Album Art Scaling</string>
     <string name="settings.server_unused">Unused</string>
     <string name="settings.server_username">Username</string>
-    <string name="settings.servers_title">Servers</string>
+    <string name="settings.server_color">Server color</string>
     <string name="settings.show_lockscreen_controls">Show Lock Screen Controls</string>
     <string name="settings.show_lockscreen_controls_summary">Show playback controls on the lock screen</string>
     <string name="settings.show_notification">Show Notification</string>

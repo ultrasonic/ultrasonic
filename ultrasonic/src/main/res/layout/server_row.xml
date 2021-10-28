@@ -1,5 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:a="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout
+    xmlns:a="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     a:id="@+id/server_layout"
     a:layout_width="match_parent"
     a:layout_height="wrap_content"
@@ -8,42 +11,58 @@
 
     <ImageView
         a:id="@+id/server_image"
-        a:layout_width="wrap_content"
-        a:layout_height="match_parent"
-        a:background="@android:color/transparent"
-        a:focusable="false"
+        a:layout_width="48dp"
+        a:layout_height="48dp"
         a:layout_centerVertical="true"
-        a:paddingHorizontal="15dp" />
+        a:layout_margin="10dp"
+        a:background="@drawable/circle"
+        a:focusable="false"
+        a:paddingHorizontal="8dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        tools:src="@drawable/ic_menu_server_dark"
+        a:importantForAccessibility="no" />
 
     <TextView
         a:id="@+id/server_name"
-        a:layout_width="wrap_content"
+        a:layout_width="0dp"
         a:layout_height="wrap_content"
+        a:layout_marginStart="15dp"
         a:textAppearance="?android:attr/textAppearanceListItem"
-        a:paddingTop="10dp"
-        a:layout_toEndOf="@id/server_image" />
+        app:layout_constraintStart_toEndOf="@id/server_image"
+        app:layout_constraintTop_toTopOf="@id/server_image"
+        app:layout_constraintEnd_toStartOf="@id/server_menu"
+        tools:text="Server name" />
 
     <TextView
         a:id="@+id/server_description"
-        a:layout_width="wrap_content"
+        a:layout_width="0dp"
         a:layout_height="wrap_content"
+        a:layout_marginStart="15dp"
         a:textAppearance="?android:attr/textAppearanceSmall"
-        a:layout_below="@id/server_name"
-        a:paddingBottom="10dp"
-        a:layout_toEndOf="@id/server_image" />
+        app:layout_constraintBottom_toBottomOf="@id/server_image"
+        app:layout_constraintStart_toEndOf="@id/server_image"
+        app:layout_constraintTop_toBottomOf="@id/server_name"
+        app:layout_constraintEnd_toStartOf="@id/server_menu"
+        tools:text="Server description" />
 
     <ImageButton
         a:id="@+id/server_menu"
         a:layout_width="wrap_content"
-        a:layout_height="match_parent"
+        a:layout_height="wrap_content"
         a:layout_alignParentEnd="true"
         a:layout_alignParentRight="true"
         a:layout_centerVertical="true"
         a:layout_gravity="end"
         a:layout_marginEnd="15dp"
-
+        a:contentDescription="@string/server_editor.advanced"
         a:focusable="false"
         a:src="?attr/more_vert"
+        tools:src="@drawable/ic_more_vert_dark"
+        app:layout_constraintTop_toTopOf="@id/server_name"
+        app:layout_constraintBottom_toBottomOf="@+id/server_description"
+        app:layout_constraintEnd_toEndOf="parent"
         a:padding="5dp" />
 
-</RelativeLayout>
+</androidx.constraintlayout.widget.ConstraintLayout>

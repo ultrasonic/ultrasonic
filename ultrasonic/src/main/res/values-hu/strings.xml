@@ -105,7 +105,6 @@
     <string name="main.genres_title">Műfajok</string>
     <string name="main.music">Zenék</string>
     <string name="main.offline">Kapcsolat nélküli</string>
-    <string name="main.select_server">Kiszolgáló kiválasztása</string>
     <string name="main.shuffle">Véletlen sorrendű</string>
     <string name="main.songs_random">Véletlenszerű</string>
     <string name="main.songs_starred">Csillaggal megjelölt</string>
@@ -289,7 +288,6 @@
     <string name="settings.server_scaling_title">Albumborító átméretezés (Kiszolgáló-oldali)</string>
     <string name="settings.server_unused">Kiszolgáló</string>
     <string name="settings.server_username">Felhasználónév</string>
-    <string name="settings.servers_title">Kiszolgálók</string>
     <string name="settings.show_lockscreen_controls">Képernyőzár kezelése</string>
     <string name="settings.show_lockscreen_controls_summary">Lejátszó-kezelőpanel megjelenítése a képernyőzáron.</string>
     <string name="settings.show_notification">Értesítések megjelenítése</string>

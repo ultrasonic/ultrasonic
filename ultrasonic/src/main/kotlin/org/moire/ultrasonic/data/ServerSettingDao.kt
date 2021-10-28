@@ -64,6 +64,12 @@ interface ServerSettingDao {
     suspend fun count(): Int?
 
     /**
+     * Retrieves the count of rows in the table as a LiveData
+     */
+    @Query("SELECT COUNT(*) FROM serverSetting")
+    fun liveServerCount(): LiveData<Int?>
+
+    /**
      * Retrieves the greatest value of the Id column in the table
      */
     @Query("SELECT MAX([id]) FROM serverSetting")

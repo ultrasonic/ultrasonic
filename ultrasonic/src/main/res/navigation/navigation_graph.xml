@@ -19,9 +19,6 @@
         <action
             android:id="@+id/mainToSelectGenre"
             app:destination="@id/selectGenreFragment" />
-        <action
-            android:id="@+id/mainToServerSelector"
-            app:destination="@id/serverSelectorFragment" />
     </fragment>
     <fragment
         android:id="@+id/mediaLibraryFragment"
@@ -86,9 +83,6 @@
     <fragment
         android:id="@+id/settingsFragment"
         android:name="org.moire.ultrasonic.fragment.SettingsFragment" >
-        <action
-            android:id="@+id/settingsToServerSelector"
-            app:destination="@id/serverSelectorFragment" />
     </fragment>
     <fragment
         android:id="@+id/aboutFragment"

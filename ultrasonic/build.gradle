@@ -49,7 +49,7 @@ android {
         baselineFile file("lint-baseline.xml")
         ignore 'MissingTranslation'
         warning 'ImpliedQuantity'
-        disable 'IconMissingDensityFolder'
+        disable 'IconMissingDensityFolder', "VectorPath"
         abortOnError true
         warningsAsErrors true
     }
@@ -105,6 +105,7 @@ dependencies {
     implementation other.okhttpLogging
     implementation other.fastScroll
     implementation other.sortListView
+    implementation other.colorPickerView
 
     kapt androidSupport.room
 

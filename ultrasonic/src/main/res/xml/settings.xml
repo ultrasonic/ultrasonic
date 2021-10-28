@@ -3,15 +3,6 @@
     xmlns:app="http://schemas.android.com/apk/res-auto" a:title="@string/common.appname">
 
     <PreferenceCategory
-        a:key="serversKey"
-        a:title="@string/settings.servers_title"
-        app:iconSpaceReserved="false">
-        <Preference
-            a:key="editServers"
-            a:title="@string/settings.server_manage_servers"
-            app:iconSpaceReserved="false"/>
-    </PreferenceCategory>
-    <PreferenceCategory
         a:title="@string/settings.appearance_title"
         app:iconSpaceReserved="false">
         <ListPreference

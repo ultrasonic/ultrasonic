@@ -104,7 +104,6 @@
     <string name="main.genres_title">流派</string>
     <string name="main.music">音乐</string>
     <string name="main.offline">离线</string>
-    <string name="main.select_server">选择服务器</string>
     <string name="main.shuffle">随机播放</string>
     <string name="main.songs_random">随机</string>
     <string name="main.songs_starred">收藏夹</string>
@@ -289,7 +288,6 @@
     <string name="settings.server_scaling_title">服务器端专辑图片缩放</string>
     <string name="settings.server_unused">未启用</string>
     <string name="settings.server_username">用户名</string>
-    <string name="settings.servers_title">服务器</string>
     <string name="settings.show_lockscreen_controls">锁屏显示控制器</string>
     <string name="settings.show_lockscreen_controls_summary">在锁定屏幕上显示播放控件</string>
     <string name="settings.show_notification">显示通知</string>

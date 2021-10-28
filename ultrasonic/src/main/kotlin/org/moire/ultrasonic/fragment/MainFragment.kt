@@ -7,14 +7,10 @@ import android.view.ViewGroup
 import android.widget.AdapterView
 import android.widget.AdapterView.OnItemClickListener
 import android.widget.ListView
-import android.widget.TextView
 import androidx.fragment.app.Fragment
 import androidx.navigation.Navigation
-import java.util.Locale
 import org.koin.core.component.KoinComponent
-import org.koin.core.component.inject
 import org.moire.ultrasonic.R
-import org.moire.ultrasonic.data.ActiveServerProvider
 import org.moire.ultrasonic.data.ActiveServerProvider.Companion.isOffline
 import org.moire.ultrasonic.util.Constants
 import org.moire.ultrasonic.util.MergeAdapter
@@ -27,8 +23,6 @@ import org.moire.ultrasonic.util.Util
 class MainFragment : Fragment(), KoinComponent {
     private var list: ListView? = null
 
-    private lateinit var serverButton: View
-    private lateinit var serverTextView: TextView
     private lateinit var musicTitle: View
     private lateinit var artistsButton: View
     private lateinit var albumsButton: View
@@ -48,8 +42,6 @@ class MainFragment : Fragment(), KoinComponent {
     private lateinit var albumsAlphaByArtistButton: View
     private lateinit var videosButton: View
 
-    private val activeServerProvider: ActiveServerProvider by inject()
-
     override fun onCreate(savedInstanceState: Bundle?) {
         Util.applyTheme(this.context)
         super.onCreate(savedInstanceState)
@@ -65,7 +57,6 @@ class MainFragment : Fragment(), KoinComponent {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         list = view.findViewById(R.id.main_list)
-        cachedActiveServerProperties = getActiveServerProperties()
 
         setupButtons()
 
@@ -78,17 +69,10 @@ class MainFragment : Fragment(), KoinComponent {
         super.onResume()
         var shouldRestart = false
         val currentId3Setting = Settings.shouldUseId3Tags
-        val currentActiveServerProperties = getActiveServerProperties()
 
         // If setting has changed...
         if (currentId3Setting != shouldUseId3) {
             shouldUseId3 = currentId3Setting
-            shouldRestart = true
-        }
-
-        // or the server has changed...
-        if (currentActiveServerProperties != cachedActiveServerProperties) {
-            cachedActiveServerProperties = currentActiveServerProperties
             shouldRestart = true
         }
 
@@ -100,8 +84,6 @@ class MainFragment : Fragment(), KoinComponent {
 
     private fun setupButtons() {
         val buttons = layoutInflater.inflate(R.layout.main_buttons, list, false)
-        serverButton = buttons.findViewById(R.id.main_select_server)
-        serverTextView = serverButton.findViewById(R.id.main_select_server_2)
         musicTitle = buttons.findViewById(R.id.main_music)
         artistsButton = buttons.findViewById(R.id.main_artists_button)
         albumsButton = buttons.findViewById(R.id.main_albums_button)
@@ -123,14 +105,9 @@ class MainFragment : Fragment(), KoinComponent {
     }
 
     private fun setupMenuList(list: ListView) {
-        // Set title
-        val activeServerName = activeServerProvider.getActiveServer().name
-        serverTextView.text = activeServerName
 
         // TODO: Should use RecyclerView
         val adapter = MergeAdapter()
-
-        adapter.addView(serverButton, true)
 
         shouldUseId3 = Settings.shouldUseId3Tags
 
@@ -177,9 +154,6 @@ class MainFragment : Fragment(), KoinComponent {
     private val listListener =
         OnItemClickListener { _: AdapterView<*>?, view: View, _: Int, _: Long ->
             when {
-                view === serverButton -> {
-                    showServers()
-                }
                 view === albumsNewestButton -> {
                     showAlbumList("newest", R.string.main_albums_newest)
                 }
@@ -225,20 +199,6 @@ class MainFragment : Fragment(), KoinComponent {
             }
         }
 
-    private fun getActiveServerProperties(): String {
-        val server = activeServerProvider.getActiveServer()
-        return String.format(
-            Locale.ROOT,
-            "%s;%s;%s;%s;%s;%s",
-            server.url,
-            server.userName,
-            server.password,
-            server.allowSelfSignedCertificate,
-            server.ldapSupport,
-            server.minimumApiVersion
-        )
-    }
-
     private fun showStarredSongs() {
         val bundle = Bundle()
         bundle.putInt(Constants.INTENT_EXTRA_NAME_STARRED, 1)
@@ -281,12 +241,7 @@ class MainFragment : Fragment(), KoinComponent {
         Navigation.findNavController(requireView()).navigate(R.id.mainToTrackCollection, bundle)
     }
 
-    private fun showServers() {
-        Navigation.findNavController(requireView()).navigate(R.id.mainToServerSelector)
-    }
-
     companion object {
         private var shouldUseId3 = false
-        private var cachedActiveServerProperties: String? = null
     }
 }

@@ -4,8 +4,7 @@
     a:layout_width="fill_parent"
     a:layout_height="wrap_content"
     a:minHeight="?android:attr/listPreferredItemHeight"
-    a:orientation="horizontal"
-    a:background="?attr/color_menu_background">
+    a:orientation="horizontal">
 
     <ImageView
         a:id="@+id/song_drag"

@@ -1,40 +1,46 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:a="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout
+    xmlns:a="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     a:id="@+id/view_container"
     a:layout_width="match_parent"
-    a:layout_height="96dp"
+    a:layout_height="wrap_content"
     a:gravity="bottom"
-    a:orientation="vertical"
-    a:theme="@style/ThemeOverlay.AppCompat.Dark">
+    a:orientation="vertical">
 
     <ImageView
         a:id="@+id/img_header_bg"
         a:layout_width="match_parent"
-        a:layout_height="match_parent"
+        a:layout_height="0dp"
         a:scaleType="fitXY"
-        a:src="@drawable/ic_launcher_background" />
+        a:src="@drawable/ic_header_bg"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        a:importantForAccessibility="no" />
 
-    <LinearLayout
-        a:layout_width="wrap_content"
+    <Button
+        a:id="@+id/header_select_server"
+        style="@style/Widget.MaterialComponents.Button.TextButton.Icon"
+        a:layout_width="match_parent"
         a:layout_height="wrap_content"
-        a:layout_centerVertical="true"
-        a:orientation="horizontal"
-        a:padding="16dp">
+        a:layout_marginTop="0dp"
+        a:background="@drawable/default_ripple"
+        a:gravity="center_vertical"
+        a:paddingHorizontal="22dp"
+        a:paddingTop="16dp"
+        a:paddingBottom="16dp"
+        a:text="@string/main.offline"
+        a:textAppearance="@style/MenuDrawer.Widget"
+        a:textColor="?attr/colorOnPrimary"
+        a:textSize="17sp"
+        a:textStyle="bold"
+        app:icon="@drawable/ic_menu_select_server_dark"
+        app:iconPadding="12dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        tools:iconTint="@color/selected_menu_dark"
+        tools:textColor="@color/selected_menu_dark" />
 
-        <ImageView
-            a:id="@+id/img_profile"
-            a:layout_width="52dp"
-            a:layout_height="52dp"
-            a:src="@drawable/ic_stat_ultrasonic" />
-
-        <TextView
-            a:id="@+id/name"
-            a:layout_width="wrap_content"
-            a:layout_height="match_parent"
-            a:gravity="center_vertical"
-            a:paddingStart="16dp"
-            a:text="@string/common.appname"
-            a:textAppearance="@style/TextAppearance.AppCompat.Title" />
-
-    </LinearLayout>
-</RelativeLayout>
+</androidx.constraintlayout.widget.ConstraintLayout>

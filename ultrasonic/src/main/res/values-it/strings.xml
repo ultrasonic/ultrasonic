@@ -92,7 +92,6 @@
     <string name="main.genres_title">Generi</string>
     <string name="main.music">Musica</string>
     <string name="main.offline">Disconnesso</string>
-    <string name="main.select_server">Seleziona Server</string>
     <string name="main.shuffle">Riproduzione casuale</string>
     <string name="main.songs_random">Casuale</string>
     <string name="main.songs_starred">Preferiti</string>
@@ -270,7 +269,6 @@
     <string name="settings.server_scaling_title">Ridimensionamento copertine Album lato server</string>
     <string name="settings.server_unused">Inutilizzato</string>
     <string name="settings.server_username">Username</string>
-    <string name="settings.servers_title">Server</string>
     <string name="settings.show_lockscreen_controls">Mostra i controlli del blocco schermo</string>
     <string name="settings.show_lockscreen_controls_summary">Mostra i controlli di riproduzione sulla schermata di blocco</string>
     <string name="settings.show_notification">Mostra notifica</string>
