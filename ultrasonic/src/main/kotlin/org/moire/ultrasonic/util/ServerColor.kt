@@ -25,10 +25,8 @@ object ServerColor {
     }
 
     fun getForegroundColor(context: Context, serverColor: Int?): Int {
-        if (serverColor == null) return ContextCompat.getColor(
-            context, Util.getResourceFromAttribute(context, R.attr.colorOnPrimary)
-        )
-        val luminance = ColorUtils.calculateLuminance(serverColor)
+        val backgroundColor = getBackgroundColor(context, serverColor)
+        val luminance = ColorUtils.calculateLuminance(backgroundColor)
         return if (luminance < LUMINANCE_LIMIT) {
             ContextCompat.getColor(context, R.color.selected_menu_dark)
         } else {
