@@ -12,7 +12,7 @@ import androidx.core.content.ContextCompat
 import androidx.core.graphics.ColorUtils
 import org.moire.ultrasonic.R
 
-private const val LUMINANCE_LIMIT = 0.4
+private const val LUMINANCE_LIMIT = 0.5
 
 /**
  * Contains functions for computing server display colors
