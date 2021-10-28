@@ -3,6 +3,7 @@ package org.moire.ultrasonic.activity
 import android.app.AlertDialog
 import android.app.SearchManager
 import android.content.Intent
+import android.content.res.ColorStateList
 import android.content.res.Resources
 import android.media.AudioManager
 import android.os.Bundle
@@ -12,8 +13,10 @@ import android.view.KeyEvent
 import android.view.Menu
 import android.view.MenuItem
 import android.view.View
+import android.widget.ImageView
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
+import androidx.core.content.ContextCompat
 import androidx.core.view.GravityCompat
 import androidx.drawerlayout.widget.DrawerLayout
 import androidx.fragment.app.FragmentContainerView
@@ -26,12 +29,13 @@ import androidx.navigation.ui.onNavDestinationSelected
 import androidx.navigation.ui.setupActionBarWithNavController
 import androidx.navigation.ui.setupWithNavController
 import androidx.preference.PreferenceManager
+import com.google.android.material.button.MaterialButton
 import com.google.android.material.navigation.NavigationView
 import org.koin.android.ext.android.inject
 import org.koin.androidx.viewmodel.ext.android.viewModel
 import org.moire.ultrasonic.R
 import org.moire.ultrasonic.data.ActiveServerProvider
-import org.moire.ultrasonic.data.ActiveServerProvider.Companion.isOffline
+import org.moire.ultrasonic.data.ServerSettingDao
 import org.moire.ultrasonic.domain.PlayerState
 import org.moire.ultrasonic.fragment.OnBackPressedHandler
 import org.moire.ultrasonic.fragment.ServerSettingsModel
@@ -45,6 +49,7 @@ import org.moire.ultrasonic.util.FileUtil
 import org.moire.ultrasonic.util.NowPlayingEventDistributor
 import org.moire.ultrasonic.util.NowPlayingEventListener
 import org.moire.ultrasonic.util.PermissionUtil
+import org.moire.ultrasonic.util.ServerColor
 import org.moire.ultrasonic.util.Settings
 import org.moire.ultrasonic.util.SubsonicUncaughtExceptionHandler
 import org.moire.ultrasonic.util.ThemeChangedEventDistributor
@@ -65,6 +70,8 @@ class NavigationActivity : AppCompatActivity() {
     private var navigationView: NavigationView? = null
     private var drawerLayout: DrawerLayout? = null
     private var host: NavHostFragment? = null
+    private var selectServerButton: MaterialButton? = null
+    private var headerBackgroundImage: ImageView? = null
 
     private lateinit var appBarConfiguration: AppBarConfiguration
     private lateinit var nowPlayingEventListener: NowPlayingEventListener
@@ -77,9 +84,12 @@ class NavigationActivity : AppCompatActivity() {
     private val nowPlayingEventDistributor: NowPlayingEventDistributor by inject()
     private val themeChangedEventDistributor: ThemeChangedEventDistributor by inject()
     private val permissionUtil: PermissionUtil by inject()
+    private val activeServerProvider: ActiveServerProvider by inject()
+    private val serverRepository: ServerSettingDao by inject()
 
     private var infoDialogDisplayed = false
     private var currentFragmentId: Int = 0
+    private var cachedServerCount: Int = 0
 
     override fun onCreate(savedInstanceState: Bundle?) {
         setUncaughtExceptionHandler()
@@ -141,7 +151,7 @@ class NavigationActivity : AppCompatActivity() {
             }
 
             // Hides menu items for Offline mode
-            setMenuForServerSetting()
+            setMenuForServerCapabilities()
         }
 
         // Determine first run and migrate server settings to DB as early as possible
@@ -180,12 +190,43 @@ class NavigationActivity : AppCompatActivity() {
 
         nowPlayingEventDistributor.subscribe(nowPlayingEventListener)
         themeChangedEventDistributor.subscribe(themeChangedEventListener)
+
+        serverRepository.liveServerCount().observe(
+            this,
+            { count ->
+                cachedServerCount = count ?: 0
+                updateNavigationHeaderForServer()
+            }
+        )
+        ActiveServerProvider.liveActiveServerId.observe(this, { updateNavigationHeaderForServer() })
+    }
+
+    private fun updateNavigationHeaderForServer() {
+        val activeServer = activeServerProvider.getActiveServer()
+
+        if (cachedServerCount == 0)
+            selectServerButton?.text = getString(R.string.main_setup_server, activeServer.name)
+        else selectServerButton?.text = activeServer.name
+
+        val foregroundColor = ServerColor.getForegroundColor(this, activeServer.color)
+        val backgroundColor = ServerColor.getBackgroundColor(this, activeServer.color)
+
+        if (activeServer.index == 0)
+            selectServerButton?.icon =
+                ContextCompat.getDrawable(this, R.drawable.ic_menu_screen_on_off_dark)
+        else
+            selectServerButton?.icon =
+                ContextCompat.getDrawable(this, R.drawable.ic_menu_select_server_dark)
+
+        selectServerButton?.iconTint = ColorStateList.valueOf(foregroundColor)
+        selectServerButton?.setTextColor(foregroundColor)
+        headerBackgroundImage?.setBackgroundColor(backgroundColor)
     }
 
     override fun onResume() {
         super.onResume()
 
-        setMenuForServerSetting()
+        setMenuForServerCapabilities()
 
         // Lifecycle support's constructor registers some event receivers so it should be created early
         lifecycleSupport.onCreate()
@@ -233,6 +274,15 @@ class NavigationActivity : AppCompatActivity() {
         bookmarksMenuItem = navigationView?.menu?.findItem(R.id.bookmarksFragment)
         sharesMenuItem = navigationView?.menu?.findItem(R.id.sharesFragment)
         podcastsMenuItem = navigationView?.menu?.findItem(R.id.podcastFragment)
+        selectServerButton =
+            navigationView?.getHeaderView(0)?.findViewById(R.id.header_select_server)
+        selectServerButton?.setOnClickListener {
+            if (drawerLayout?.isDrawerVisible(GravityCompat.START) == true)
+                this.drawerLayout?.closeDrawer(GravityCompat.START)
+            navController.navigate(R.id.serverSelectorFragment)
+        }
+        headerBackgroundImage =
+            navigationView?.getHeaderView(0)?.findViewById(R.id.img_header_bg)
     }
 
     private fun setupActionBar(navController: NavController, appBarConfig: AppBarConfiguration) {
@@ -325,7 +375,7 @@ class NavigationActivity : AppCompatActivity() {
                 .setNegativeButton(R.string.main_welcome_cancel) { dialog, _ ->
                     // Go to the settings screen
                     dialog.dismiss()
-                    findNavController(R.id.nav_host_fragment).navigate(R.id.settingsFragment)
+                    findNavController(R.id.nav_host_fragment).navigate(R.id.serverSelectorFragment)
                 }
                 .setPositiveButton(R.string.common_ok) { dialog, _ ->
                     // Add the demo server
@@ -377,15 +427,14 @@ class NavigationActivity : AppCompatActivity() {
         nowPlayingView?.visibility = View.GONE
     }
 
-    private fun setMenuForServerSetting() {
-        if (isOffline()) {
+    private fun setMenuForServerCapabilities() {
+        if (ActiveServerProvider.isOffline()) {
             chatMenuItem?.isVisible = false
             bookmarksMenuItem?.isVisible = false
             sharesMenuItem?.isVisible = false
             podcastsMenuItem?.isVisible = false
             return
         }
-        val activeServerProvider: ActiveServerProvider by inject()
         val activeServer = activeServerProvider.getActiveServer()
         chatMenuItem?.isVisible = activeServer.chatSupport != false
         bookmarksMenuItem?.isVisible = activeServer.bookmarkSupport != false

@@ -2,6 +2,7 @@ package org.moire.ultrasonic.fragment
 
 import android.content.Context
 import android.graphics.Color
+import android.graphics.drawable.Drawable
 import android.os.Build
 import android.view.LayoutInflater
 import android.view.Menu
@@ -12,12 +13,13 @@ import android.widget.BaseAdapter
 import android.widget.ImageButton
 import android.widget.ImageView
 import android.widget.PopupMenu
-import android.widget.RelativeLayout
 import android.widget.TextView
+import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.content.ContextCompat
 import org.moire.ultrasonic.R
 import org.moire.ultrasonic.data.ActiveServerProvider
 import org.moire.ultrasonic.data.ServerSetting
+import org.moire.ultrasonic.util.ServerColor
 import org.moire.ultrasonic.util.Util
 
 /**
@@ -67,8 +69,10 @@ internal class ServerRowAdapter(
     /**
      * Creates the Row representation of a Server Setting
      */
+    @Suppress("LongMethod")
     override fun getView(position: Int, convertView: View?, parent: ViewGroup?): View? {
         var index = position
+
         // Skip "Offline" in manage mode
         if (manageMode) index++
 
@@ -77,27 +81,42 @@ internal class ServerRowAdapter(
 
         val text = vi?.findViewById<TextView>(R.id.server_name)
         val description = vi?.findViewById<TextView>(R.id.server_description)
-        val layout = vi?.findViewById<RelativeLayout>(R.id.server_layout)
+        val layout = vi?.findViewById<ConstraintLayout>(R.id.server_layout)
         val image = vi?.findViewById<ImageView>(R.id.server_image)
         val serverMenu = vi?.findViewById<ImageButton>(R.id.server_menu)
+        val setting = data.singleOrNull { t -> t.index == index }
 
         if (index == 0) {
             text?.text = context.getString(R.string.main_offline)
             description?.text = ""
         } else {
-            val setting = data.singleOrNull { t -> t.index == index }
             text?.text = setting?.name ?: ""
             description?.text = setting?.url ?: ""
             if (setting == null) serverMenu?.visibility = View.INVISIBLE
         }
 
-        // Provide icons for the row
+        val icon: Drawable?
+        val background: Drawable?
+
+        // Configure icons for the row
         if (index == 0) {
             serverMenu?.visibility = View.INVISIBLE
-            image?.setImageDrawable(Util.getDrawableFromAttribute(context, R.attr.screen_on_off))
+            icon = Util.getDrawableFromAttribute(context, R.attr.screen_on_off)
+            background = ContextCompat.getDrawable(context, R.drawable.circle)
         } else {
-            image?.setImageDrawable(Util.getDrawableFromAttribute(context, R.attr.server))
+            icon = ContextCompat.getDrawable(context, R.drawable.ic_menu_server_dark)
+            background = ContextCompat.getDrawable(context, R.drawable.circle)
         }
+
+        // Set colors
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            icon?.setTint(ServerColor.getForegroundColor(context, setting?.color))
+            background?.setTint(ServerColor.getBackgroundColor(context, setting?.color))
+        }
+
+        // Set the final drawables
+        image?.setImageDrawable(icon)
+        image?.background = background
 
         // Highlight the Active Server's row by changing its background
         if (index == activeServerProvider.getActiveServer().index) {

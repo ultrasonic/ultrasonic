@@ -2,38 +2,6 @@
 <LinearLayout xmlns:a="http://schemas.android.com/apk/res/android"
 	a:orientation="vertical" a:layout_width="fill_parent" a:layout_height="fill_parent">
 
-	<LinearLayout a:id="@+id/main_select_server"
-		a:orientation="horizontal" a:paddingTop="2dip" a:paddingBottom="2dip"
-		a:paddingStart="10dp" a:layout_width="fill_parent" a:layout_height="wrap_content"
-		a:minHeight="?android:attr/listPreferredItemHeight">
-
-		<ImageView a:layout_width="wrap_content" a:layout_height="wrap_content"
-			a:layout_gravity="center_vertical" a:src="?attr/select_server" />
-
-		<LinearLayout
-			a:layout_width="wrap_content"
-			a:layout_height="wrap_content"
-			a:orientation="vertical">
-
-			<TextView
-				a:id="@+id/main.select_server_1"
-				a:layout_width="fill_parent"
-				a:layout_height="wrap_content"
-				a:layout_marginStart="10dip"
-				a:layout_marginTop="6dip"
-				a:text="@string/main.select_server"
-				a:textAppearance="?android:attr/textAppearanceLarge" />
-
-			<TextView
-				a:id="@+id/main.select_server_2"
-				a:layout_width="fill_parent"
-				a:layout_height="wrap_content"
-				a:layout_marginStart="10dip"
-				a:textAppearance="?android:attr/textAppearanceSmall" />
-
-		</LinearLayout>
-	</LinearLayout>
-
 	<TextView a:id="@+id/main_music" a:text="@string/main.music"
 		a:layout_width="fill_parent" a:layout_height="wrap_content"
 		a:textAppearance="?android:attr/textAppearanceSmall" a:textColor="@color/cyan"

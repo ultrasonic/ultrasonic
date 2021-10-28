@@ -88,7 +88,7 @@ class ServerSelectorFragment : Fragment() {
                 editServer(position + 1)
             } else {
                 setActiveServer(position)
-                findNavController().navigateUp()
+                findNavController().popBackStack(R.id.mainFragment, false)
             }
         }
 

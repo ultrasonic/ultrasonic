@@ -105,7 +105,6 @@
     <string name="main.genres_title">Gêneros</string>
     <string name="main.music">Música</string>
     <string name="main.offline">Offline</string>
-    <string name="main.select_server">Selecione o Servidor</string>
     <string name="main.shuffle">Misturar Músicas</string>
     <string name="main.songs_random">Aleatórias</string>
     <string name="main.songs_starred">Favoritas</string>
@@ -293,7 +292,6 @@
     <string name="settings.server_scaling_title">Reduzir Arte dos Álbuns</string>
     <string name="settings.server_unused">Não usado</string>
     <string name="settings.server_username">Login</string>
-    <string name="settings.servers_title">Servidores</string>
     <string name="settings.show_lockscreen_controls">Controles na Tela de Bloqueio</string>
     <string name="settings.show_lockscreen_controls_summary">Mostrar controles de reprodução na tela de bloqueio</string>
     <string name="settings.show_notification">Mostrar Notificações</string>

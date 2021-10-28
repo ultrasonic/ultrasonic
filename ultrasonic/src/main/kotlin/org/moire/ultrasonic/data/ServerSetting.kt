@@ -23,6 +23,7 @@ data class ServerSetting(
     @ColumnInfo(name = "index") var index: Int,
     @ColumnInfo(name = "name") var name: String,
     @ColumnInfo(name = "url") var url: String,
+    @ColumnInfo(name = "color") var color: Int? = null,
     @ColumnInfo(name = "userName") var userName: String,
     @ColumnInfo(name = "password") var password: String,
     @ColumnInfo(name = "jukeboxByDefault") var jukeboxByDefault: Boolean,
@@ -36,9 +37,9 @@ data class ServerSetting(
     @ColumnInfo(name = "podcastSupport") var podcastSupport: Boolean? = null
 ) {
     constructor() : this (
-        -1, 0, "", "", "", "", false, false, false, null, null
+        -1, 0, "", "", null, "", "", false, false, false, null, null
     )
     constructor(name: String, url: String) : this(
-        -1, 0, name, url, "", "", false, false, false, null, null
+        -1, 0, name, url, null, "", "", false, false, false, null, null
     )
 }

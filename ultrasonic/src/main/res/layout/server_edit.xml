@@ -1,9 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <ScrollView xmlns:a="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     a:layout_width="match_parent"
     a:layout_height="match_parent"
-    a:fillViewport="true" >
+    a:fillViewport="true">
 
 <androidx.constraintlayout.widget.ConstraintLayout
     a:layout_width="match_parent"
@@ -14,7 +15,6 @@
         a:layout_width="match_parent"
         a:layout_height="wrap_content"
         a:hint="@string/settings.server_name"
-        app:layout_constraintBottom_toTopOf="@id/edit_server_address"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent">
@@ -33,7 +33,6 @@
         a:layout_height="wrap_content"
         a:layout_marginBottom="20dp"
         a:hint="@string/settings.server_address"
-        app:layout_constraintBottom_toTopOf="@id/edit_authentication_header"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/edit_server_name">
@@ -47,14 +46,37 @@
     </com.google.android.material.textfield.TextInputLayout>
 
     <TextView
+        a:id="@+id/edit_server_color_text"
+        style="@style/Widget.AppCompat.CompoundButton.Switch"
+        a:layout_width="0dp"
+        a:layout_height="wrap_content"
+        a:layout_marginStart="5dp"
+        a:layout_marginLeft="5dp"
+        a:text="@string/settings.server_color"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="@id/edit_server_color_picker"
+        app:layout_constraintBottom_toBottomOf="@id/edit_server_color_picker"/>
+
+    <ImageView
+        a:id="@+id/edit_server_color_picker"
+        a:layout_width="48dp"
+        a:layout_height="32dp"
+        a:layout_margin="8dp"
+        a:src="@drawable/rounded_border"
+        app:layout_constraintTop_toBottomOf="@id/edit_server_address"
+        app:layout_constraintRight_toRightOf="parent"
+        tools:ignore="ContentDescription" />
+
+    <TextView
         a:id="@+id/edit_authentication_header"
         style="@style/MenuDrawer.Widget.Category"
         a:layout_width="wrap_content"
         a:layout_height="wrap_content"
+        a:layout_marginTop="15dp"
         a:text="@string/server_editor.authentication"
         app:layout_constraintBottom_toTopOf="@id/edit_server_username"
         app:layout_constraintStart_toStartOf="@id/edit_server_username"
-        app:layout_constraintTop_toBottomOf="@id/edit_server_address" />
+        app:layout_constraintTop_toBottomOf="@id/edit_server_color_picker" />
 
     <com.google.android.material.textfield.TextInputLayout
         a:id="@+id/edit_server_username"

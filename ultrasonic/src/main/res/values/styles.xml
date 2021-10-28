@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <style name="NoActionBar" parent="@style/Theme.AppCompat">
+    <style name="NoActionBar" parent="@style/Theme.MaterialComponents">
         <item name="windowActionBar">false</item>
         <item name="windowNoTitle">true</item>
     </style>
@@ -30,7 +30,7 @@
         <item name="cornerSize">2dp</item>
     </style>
 
-    <style name="ThemeOverlay.AppCompat.navTheme">
+   <style name="ThemeOverlay.AppCompat.navTheme">
         <item name="colorPrimary">?attr/color_menu_selected</item>
         <item name="colorControlHighlight">?attr/color_selected</item>
     </style>
@@ -86,6 +86,7 @@
     <attr name="color_selected" format="reference"/>
     <attr name="color_menu_selected" format="reference"/>
     <attr name="color_menu_background" format="reference"/>
+    <attr name="color_navigation_header_background" format="reference"/>
     <attr name="filepicker_create_new_folder" format="reference"/>
     <attr name="filepicker_folder" format="reference"/>
     <attr name="filepicker_subdirectory_left" format="reference"/>
