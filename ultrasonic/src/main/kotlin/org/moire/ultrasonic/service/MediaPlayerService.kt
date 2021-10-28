@@ -60,7 +60,7 @@ class MediaPlayerService : Service() {
     private val scrobbler = Scrobbler()
 
     private val jukeboxMediaPlayer by inject<JukeboxMediaPlayer>()
-    private val downloadQueueSerializer by inject<DownloadQueueSerializer>()
+    private val playbackStateSerializer by inject<PlaybackStateSerializer>()
     private val shufflePlayBuffer by inject<ShufflePlayBuffer>()
     private val downloader by inject<Downloader>()
     private val localMediaPlayer by inject<LocalMediaPlayer>()
@@ -92,7 +92,7 @@ class MediaPlayerService : Service() {
         setupOnSongCompletedHandler()
 
         localMediaPlayer.onPrepared = {
-            downloadQueueSerializer.serializeDownloadQueue(
+            playbackStateSerializer.serialize(
                 downloader.playlist,
                 downloader.currentPlayingIndex,
                 playerPosition
@@ -304,7 +304,7 @@ class MediaPlayerService : Service() {
     private fun resetPlayback() {
         localMediaPlayer.reset()
         localMediaPlayer.setCurrentPlaying(null)
-        downloadQueueSerializer.serializeDownloadQueue(
+        playbackStateSerializer.serialize(
             downloader.playlist,
             downloader.currentPlayingIndex, playerPosition
         )
@@ -406,7 +406,7 @@ class MediaPlayerService : Service() {
             )
 
             if (playerState === PlayerState.PAUSED) {
-                downloadQueueSerializer.serializeDownloadQueue(
+                playbackStateSerializer.serialize(
                     downloader.playlist, downloader.currentPlayingIndex, playerPosition
                 )
             }
@@ -496,7 +496,7 @@ class MediaPlayerService : Service() {
         localMediaPlayer.setCurrentPlaying(null)
         setNextPlaying()
         if (serialize) {
-            downloadQueueSerializer.serializeDownloadQueue(
+            playbackStateSerializer.serialize(
                 downloader.playlist,
                 downloader.currentPlayingIndex, playerPosition
             )

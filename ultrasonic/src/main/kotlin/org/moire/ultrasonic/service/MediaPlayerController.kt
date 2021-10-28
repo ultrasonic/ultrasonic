@@ -32,7 +32,7 @@ import timber.log.Timber
  */
 @Suppress("TooManyFunctions")
 class MediaPlayerController(
-    private val downloadQueueSerializer: DownloadQueueSerializer,
+    private val playbackStateSerializer: PlaybackStateSerializer,
     private val externalStorageMonitor: ExternalStorageMonitor,
     private val downloader: Downloader,
     private val shufflePlayBuffer: ShufflePlayBuffer,
@@ -197,7 +197,7 @@ class MediaPlayerController(
             downloader.checkDownloads()
         }
 
-        downloadQueueSerializer.serializeDownloadQueue(
+        playbackStateSerializer.serialize(
             downloader.playlist,
             downloader.currentPlayingIndex,
             playerPosition
@@ -209,7 +209,7 @@ class MediaPlayerController(
         if (songs == null) return
         val filteredSongs = songs.filterNotNull()
         downloader.downloadBackground(filteredSongs, save)
-        downloadQueueSerializer.serializeDownloadQueue(
+        playbackStateSerializer.serialize(
             downloader.playlist,
             downloader.currentPlayingIndex,
             playerPosition
@@ -240,7 +240,7 @@ class MediaPlayerController(
     @Synchronized
     fun shuffle() {
         downloader.shuffle()
-        downloadQueueSerializer.serializeDownloadQueue(
+        playbackStateSerializer.serialize(
             downloader.playlist,
             downloader.currentPlayingIndex,
             playerPosition
@@ -273,7 +273,7 @@ class MediaPlayerController(
             // If no MediaPlayerService is available, just empty the playlist
             downloader.clearPlaylist()
             if (serialize) {
-                downloadQueueSerializer.serializeDownloadQueue(
+                playbackStateSerializer.serialize(
                     downloader.playlist,
                     downloader.currentPlayingIndex, playerPosition
                 )
@@ -293,7 +293,7 @@ class MediaPlayerController(
             }
         }
 
-        downloadQueueSerializer.serializeDownloadQueue(
+        playbackStateSerializer.serialize(
             downloader.playlist,
             downloader.currentPlayingIndex,
             playerPosition
@@ -310,7 +310,7 @@ class MediaPlayerController(
         }
         downloader.removeFromPlaylist(downloadFile)
 
-        downloadQueueSerializer.serializeDownloadQueue(
+        playbackStateSerializer.serialize(
             downloader.playlist,
             downloader.currentPlayingIndex,
             playerPosition
