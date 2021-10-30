@@ -22,10 +22,6 @@ import timber.log.Timber
 class PermissionUtil(private val applicationContext: Context) {
     private var activityContext: Context? = null
 
-    interface PermissionRequestFinishedCallback {
-        fun onPermissionRequestFinished(hasPermission: Boolean)
-    }
-
     fun onForegroundApplicationStarted(context: Context?) {
         activityContext = context
     }
@@ -42,7 +38,7 @@ class PermissionUtil(private val applicationContext: Context) {
      *
      * @param callback callback function to execute after the permission request is finished
      */
-    fun handlePermissionFailed(callback: PermissionRequestFinishedCallback?) {
+    fun handlePermissionFailed(callback: ((Boolean) -> Unit)?) {
         val currentCachePath = Settings.cacheLocation
         val defaultCachePath = defaultMusicDirectory.path
 
@@ -76,7 +72,7 @@ class PermissionUtil(private val applicationContext: Context) {
                     )
                 }
             }
-            callback?.onPermissionRequestFinished(false)
+            callback?.invoke(false)
         }
     }
 
@@ -91,7 +87,7 @@ class PermissionUtil(private val applicationContext: Context) {
         @JvmStatic
         fun requestInitialPermission(
             context: Context,
-            callback: PermissionRequestFinishedCallback?
+            callback: ((Boolean) -> Unit)?
         ) {
             Dexter.withContext(context)
                 .withPermissions(
@@ -102,7 +98,7 @@ class PermissionUtil(private val applicationContext: Context) {
                     override fun onPermissionsChecked(report: MultiplePermissionsReport) {
                         if (report.areAllPermissionsGranted()) {
                             Timber.i("R/W permission granted for external storage")
-                            callback?.onPermissionRequestFinished(true)
+                            callback?.invoke(true)
                             return
                         }
                         if (report.isAnyPermissionPermanentlyDenied) {
@@ -110,7 +106,7 @@ class PermissionUtil(private val applicationContext: Context) {
                                 "R/W permission is permanently denied for external storage"
                             )
                             showSettingsDialog(context)
-                            callback?.onPermissionRequestFinished(false)
+                            callback?.invoke(false)
                             return
                         }
                         Timber.i("R/W permission is missing for external storage")
@@ -120,7 +116,7 @@ class PermissionUtil(private val applicationContext: Context) {
                             context.getString(R.string.permissions_rationale_description_initial),
                             null
                         )
-                        callback?.onPermissionRequestFinished(false)
+                        callback?.invoke(false)
                     }
 
                     override fun onPermissionRationaleShouldBeShown(
@@ -146,7 +142,7 @@ class PermissionUtil(private val applicationContext: Context) {
         private fun requestFailedPermission(
             context: Context,
             cacheLocation: String?,
-            callback: PermissionRequestFinishedCallback?
+            callback: ((Boolean) -> Unit)?
         ) {
             Dexter.withContext(context)
                 .withPermissions(
@@ -161,7 +157,7 @@ class PermissionUtil(private val applicationContext: Context) {
                             if (cacheLocation != null) {
                                 Settings.cacheLocation = cacheLocation
                             }
-                            callback?.onPermissionRequestFinished(true)
+                            callback?.invoke(true)
                             return
                         }
                         if (report.isAnyPermissionPermanentlyDenied) {
@@ -170,7 +166,7 @@ class PermissionUtil(private val applicationContext: Context) {
                                 cacheLocation
                             )
                             showSettingsDialog(context)
-                            callback?.onPermissionRequestFinished(false)
+                            callback?.invoke(false)
                             return
                         }
                         Timber.i(
@@ -182,7 +178,7 @@ class PermissionUtil(private val applicationContext: Context) {
                             context, context.getString(R.string.permissions_message_box_title),
                             context.getString(R.string.permissions_permission_missing), null
                         )
-                        callback?.onPermissionRequestFinished(false)
+                        callback?.invoke(false)
                     }
 
                     override fun onPermissionRationaleShouldBeShown(

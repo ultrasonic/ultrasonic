@@ -16,6 +16,8 @@ import androidx.preference.ListPreference
 import androidx.preference.Preference
 import androidx.preference.PreferenceCategory
 import androidx.preference.PreferenceFragmentCompat
+import java.io.File
+import kotlin.math.ceil
 import org.koin.core.component.KoinComponent
 import org.koin.java.KoinJavaComponent.get
 import org.koin.java.KoinJavaComponent.inject
@@ -40,7 +42,6 @@ import org.moire.ultrasonic.util.FileUtil.ultrasonicDirectory
 import org.moire.ultrasonic.util.MediaSessionHandler
 import org.moire.ultrasonic.util.PermissionUtil
 import org.moire.ultrasonic.util.PermissionUtil.Companion.requestInitialPermission
-import org.moire.ultrasonic.util.PermissionUtil.PermissionRequestFinishedCallback
 import org.moire.ultrasonic.util.Settings
 import org.moire.ultrasonic.util.Settings.preferences
 import org.moire.ultrasonic.util.Settings.shareGreeting
@@ -50,13 +51,14 @@ import org.moire.ultrasonic.util.TimeSpanPreference
 import org.moire.ultrasonic.util.TimeSpanPreferenceDialogFragmentCompat
 import org.moire.ultrasonic.util.Util.toast
 import timber.log.Timber
-import java.io.File
-import kotlin.math.ceil
 
 /**
  * Shows main app settings.
  */
-class SettingsFragment : PreferenceFragmentCompat(), OnSharedPreferenceChangeListener, KoinComponent {
+class SettingsFragment :
+    PreferenceFragmentCompat(),
+    OnSharedPreferenceChangeListener,
+    KoinComponent {
     private var theme: ListPreference? = null
     private var maxBitrateWifi: ListPreference? = null
     private var maxBitrateMobile: ListPreference? = null
@@ -227,30 +229,29 @@ class SettingsFragment : PreferenceFragmentCompat(), OnSharedPreferenceChangeLis
         cacheLocation!!.summary = Settings.cacheLocation
         cacheLocation!!.onPreferenceClickListener =
             Preference.OnPreferenceClickListener {
-                // If the user tries to change the cache location, we must first check to see if we have write access.
+                // If the user tries to change the cache location,
+                // we must first check to see if we have write access.
                 requestInitialPermission(
-                    requireActivity(),
-                    object : PermissionRequestFinishedCallback {
-                        override fun onPermissionRequestFinished(hasPermission: Boolean) {
-                            if (hasPermission) {
-                                val filePickerDialog = createFilePickerDialog(
-                                    context!!
-                                )
-                                filePickerDialog.setDefaultDirectory(defaultMusicDirectory.path)
-                                filePickerDialog.setInitialDirectory(cacheLocation!!.summary.toString())
-                                filePickerDialog.setOnFileSelectedListener(object :
-                                    OnFileSelectedListener {
-                                    override fun onFileSelected(file: File?, path: String?) {
-                                        if (path != null) {
-                                            Settings.cacheLocation = path
-                                            setCacheLocation(path)
-                                        }
+                    requireActivity()
+                ) {
+                    if (it) {
+                        val filePickerDialog = createFilePickerDialog(
+                            requireContext()
+                        )
+                        filePickerDialog.setDefaultDirectory(defaultMusicDirectory.path)
+                        filePickerDialog.setInitialDirectory(cacheLocation!!.summary.toString())
+                        filePickerDialog.setOnFileSelectedListener(object :
+                                OnFileSelectedListener {
+                                override fun onFileSelected(file: File?, path: String?) {
+                                    if (path != null) {
+                                        Settings.cacheLocation = path
+                                        setCacheLocation(path)
                                     }
-                                })
-                                filePickerDialog.show()
-                            }
-                        }
-                    })
+                                }
+                            })
+                        filePickerDialog.show()
+                    }
+                }
                 true
             }
     }
@@ -308,9 +309,15 @@ class SettingsFragment : PreferenceFragmentCompat(), OnSharedPreferenceChangeLis
 
     private fun bluetoothDevicePreferenceToString(preferenceValue: Int): String {
         return when (preferenceValue) {
-            Constants.PREFERENCE_VALUE_ALL -> getString(R.string.settings_playback_bluetooth_all)
-            Constants.PREFERENCE_VALUE_A2DP -> getString(R.string.settings_playback_bluetooth_a2dp)
-            Constants.PREFERENCE_VALUE_DISABLED -> getString(R.string.settings_playback_bluetooth_disabled)
+            Constants.PREFERENCE_VALUE_ALL -> {
+                getString(R.string.settings_playback_bluetooth_all)
+            }
+            Constants.PREFERENCE_VALUE_A2DP -> {
+                getString(R.string.settings_playback_bluetooth_a2dp)
+            }
+            Constants.PREFERENCE_VALUE_DISABLED -> {
+                getString(R.string.settings_playback_bluetooth_disabled)
+            }
             else -> ""
         }
     }
@@ -415,12 +422,10 @@ class SettingsFragment : PreferenceFragmentCompat(), OnSharedPreferenceChangeLis
     private fun setCacheLocation(path: String) {
         val dir = File(path)
         if (!ensureDirectoryExistsAndIsReadWritable(dir)) {
-            permissionUtil.value.handlePermissionFailed(object : PermissionRequestFinishedCallback {
-                override fun onPermissionRequestFinished(hasPermission: Boolean) {
-                    val currentPath = Settings.cacheLocation
-                    cacheLocation!!.summary = currentPath
-                }
-            })
+            permissionUtil.value.handlePermissionFailed {
+                val currentPath = Settings.cacheLocation
+                cacheLocation!!.summary = currentPath
+            }
         } else {
             cacheLocation!!.summary = path
         }
@@ -444,19 +449,22 @@ class SettingsFragment : PreferenceFragmentCompat(), OnSharedPreferenceChangeLis
                 ceil(fileSize / 1000 * 1000.0).toString(),
                 ultrasonicDirectory
             )
+            val keep = R.string.settings_debug_log_keep
+            val delete = R.string.settings_debug_log_delete
             AlertDialog.Builder(activity)
                 .setMessage(message)
                 .setIcon(android.R.drawable.ic_dialog_info)
-                .setNegativeButton(R.string.settings_debug_log_keep) { dialogInterface: DialogInterface, _: Int ->
-                    dialogInterface.cancel()
+                .setNegativeButton(keep) { dIf: DialogInterface, _: Int ->
+                    dIf.cancel()
                 }
-                .setPositiveButton(R.string.settings_debug_log_delete) { dialogInterface: DialogInterface, _: Int ->
+                .setPositiveButton(delete) { dIf: DialogInterface, _: Int ->
                     deleteLogFiles()
                     Timber.i("Deleted debug log files")
-                    dialogInterface.dismiss()
-                    AlertDialog.Builder(activity).setMessage(R.string.settings_debug_log_deleted)
-                        .setPositiveButton(R.string.common_ok) { dialogInterface1: DialogInterface, _: Int ->
-                            dialogInterface1.dismiss()
+                    dIf.dismiss()
+                    AlertDialog.Builder(activity)
+                        .setMessage(R.string.settings_debug_log_deleted)
+                        .setPositiveButton(R.string.common_ok) { dIf2: DialogInterface, _: Int ->
+                            dIf2.dismiss()
                         }
                         .create().show()
                 }
