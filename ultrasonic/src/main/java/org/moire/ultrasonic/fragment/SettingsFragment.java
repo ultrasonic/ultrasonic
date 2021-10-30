@@ -1,7 +1,6 @@
 package org.moire.ultrasonic.fragment;
 
 import android.app.AlertDialog;
-import android.content.DialogInterface;
 import android.content.SharedPreferences;
 import android.os.Build;
 import android.os.Bundle;
@@ -11,14 +10,12 @@ import android.view.View;
 import androidx.annotation.Nullable;
 import androidx.annotation.StringRes;
 import androidx.fragment.app.DialogFragment;
-import androidx.navigation.Navigation;
 import androidx.preference.CheckBoxPreference;
 import androidx.preference.EditTextPreference;
 import androidx.preference.ListPreference;
 import androidx.preference.Preference;
 import androidx.preference.PreferenceCategory;
 import androidx.preference.PreferenceFragmentCompat;
-import androidx.preference.PreferenceManager;
 
 import org.jetbrains.annotations.NotNull;
 import org.koin.java.KoinJavaComponent;
@@ -28,7 +25,6 @@ import org.moire.ultrasonic.featureflags.FeatureStorage;
 import org.moire.ultrasonic.filepicker.FilePickerDialog;
 import org.moire.ultrasonic.log.FileLoggerTree;
 import org.moire.ultrasonic.provider.SearchSuggestionProvider;
-import org.moire.ultrasonic.service.Consumer;
 import org.moire.ultrasonic.service.MediaPlayerController;
 import org.moire.ultrasonic.util.Constants;
 import org.moire.ultrasonic.util.FileUtil;
@@ -43,10 +39,10 @@ import org.moire.ultrasonic.util.Util;
 import java.io.File;
 
 import kotlin.Lazy;
+import kotlin.jvm.functions.Function1;
 import timber.log.Timber;
 
 import static org.koin.java.KoinJavaComponent.inject;
-import static org.moire.ultrasonic.fragment.ServerSelectorFragment.SERVER_SELECTOR_MANAGE_MODE;
 
 /**
  * Shows main app settings.
@@ -84,8 +80,6 @@ public class SettingsFragment extends PreferenceFragmentCompat
     private Preference pauseOnBluetoothDevice;
     private CheckBoxPreference debugLogToFile;
 
-    private SharedPreferences settings;
-
     private final Lazy<MediaPlayerController> mediaPlayerControllerLazy = inject(MediaPlayerController.class);
     private final Lazy<PermissionUtil> permissionUtil = inject(PermissionUtil.class);
     private final Lazy<ThemeChangedEventDistributor> themeChangedEventDistributor = inject(ThemeChangedEventDistributor.class);
@@ -94,8 +88,6 @@ public class SettingsFragment extends PreferenceFragmentCompat
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
-        settings = PreferenceManager.getDefaultSharedPreferences(getActivity());
     }
 
     @Override
@@ -148,9 +140,11 @@ public class SettingsFragment extends PreferenceFragmentCompat
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             PreferenceCategory notificationsCategory = findPreference(Constants.PREFERENCES_KEY_CATEGORY_NOTIFICATIONS);
             Preference preferenceToRemove = findPreference(Constants.PREFERENCES_KEY_SHOW_NOTIFICATION);
-            if (preferenceToRemove != null) notificationsCategory.removePreference(preferenceToRemove);
+            if (preferenceToRemove != null)
+                notificationsCategory.removePreference(preferenceToRemove);
             preferenceToRemove = findPreference(Constants.PREFERENCES_KEY_ALWAYS_SHOW_NOTIFICATION);
-            if (preferenceToRemove != null) notificationsCategory.removePreference(preferenceToRemove);
+            if (preferenceToRemove != null)
+                notificationsCategory.removePreference(preferenceToRemove);
         }
     }
 
@@ -196,24 +190,19 @@ public class SettingsFragment extends PreferenceFragmentCompat
     }
 
     @Override
-    public void onDisplayPreferenceDialog(Preference preference)
-    {
+    public void onDisplayPreferenceDialog(Preference preference) {
         DialogFragment dialogFragment = null;
-        if (preference instanceof TimeSpanPreference)
-        {
+        if (preference instanceof TimeSpanPreference) {
             dialogFragment = new TimeSpanPreferenceDialogFragmentCompat();
             Bundle bundle = new Bundle(1);
             bundle.putString("key", preference.getKey());
             dialogFragment.setArguments(bundle);
         }
 
-        if (dialogFragment != null)
-        {
+        if (dialogFragment != null) {
             dialogFragment.setTargetFragment(this, 0);
             dialogFragment.show(this.getParentFragmentManager(), "android.support.v7.preference.PreferenceFragment.DIALOG");
-        }
-        else
-        {
+        } else {
             super.onDisplayPreferenceDialog(preference);
         }
     }
@@ -221,27 +210,21 @@ public class SettingsFragment extends PreferenceFragmentCompat
     private void setupCacheLocationPreference() {
         cacheLocation.setSummary(Settings.getCacheLocation());
 
-        cacheLocation.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
-            @Override
-            public boolean onPreferenceClick(Preference preference) {
+        cacheLocation.setOnPreferenceClickListener(preference -> {
             // If the user tries to change the cache location, we must first check to see if we have write access.
-            PermissionUtil.requestInitialPermission(getActivity(), new PermissionUtil.PermissionRequestFinishedCallback() {
-                    @Override
-                    public void onPermissionRequestFinished(boolean hasPermission) {
-                        if (hasPermission) {
-                            FilePickerDialog filePickerDialog = FilePickerDialog.Companion.createFilePickerDialog(getContext());
-                            filePickerDialog.setDefaultDirectory(FileUtil.getDefaultMusicDirectory().getPath());
-                            filePickerDialog.setInitialDirectory(cacheLocation.getSummary().toString());
-                            filePickerDialog.setOnFileSelectedListener((file, path) -> {
-                                Settings.setCacheLocation(path);
-                                setCacheLocation(path);
-                            });
-                            filePickerDialog.show();
-                        }
-                    }
-                });
+            PermissionUtil.requestInitialPermission(getActivity(), hasPermission -> {
+                if (hasPermission) {
+                    FilePickerDialog filePickerDialog = FilePickerDialog.Companion.createFilePickerDialog(getContext());
+                    filePickerDialog.setDefaultDirectory(FileUtil.getDefaultMusicDirectory().getPath());
+                    filePickerDialog.setInitialDirectory(cacheLocation.getSummary().toString());
+                    filePickerDialog.setOnFileSelectedListener((file, path) -> {
+                        Settings.setCacheLocation(path);
+                        setCacheLocation(path);
+                    });
+                    filePickerDialog.show();
+                }
+            });
             return true;
-            }
         });
     }
 
@@ -252,75 +235,56 @@ public class SettingsFragment extends PreferenceFragmentCompat
         resumeOnBluetoothDevice.setSummary(bluetoothDevicePreferenceToString(resumeSetting));
         pauseOnBluetoothDevice.setSummary(bluetoothDevicePreferenceToString(pauseSetting));
 
-        resumeOnBluetoothDevice.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
-            @Override
-            public boolean onPreferenceClick(Preference preference) {
+        resumeOnBluetoothDevice.setOnPreferenceClickListener(preference -> {
             showBluetoothDevicePreferenceDialog(
-                R.string.settings_playback_resume_on_bluetooth_device,
-                Settings.getResumeOnBluetoothDevice(),
-                new Consumer<Integer>() {
-                    @Override
-                    public void accept(Integer choice) {
+                    R.string.settings_playback_resume_on_bluetooth_device,
+                    Settings.getResumeOnBluetoothDevice(),
+                    choice -> {
                         SharedPreferences.Editor editor = resumeOnBluetoothDevice.getSharedPreferences().edit();
                         editor.putInt(Constants.PREFERENCES_KEY_RESUME_ON_BLUETOOTH_DEVICE, choice);
                         editor.apply();
                         resumeOnBluetoothDevice.setSummary(bluetoothDevicePreferenceToString(choice));
-                    }
-                });
+                        return null;
+                    });
             return true;
-            }
         });
 
-        pauseOnBluetoothDevice.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
-            @Override
-            public boolean onPreferenceClick(Preference preference) {
+        pauseOnBluetoothDevice.setOnPreferenceClickListener(preference -> {
             showBluetoothDevicePreferenceDialog(
-                R.string.settings_playback_pause_on_bluetooth_device,
-                Settings.getPauseOnBluetoothDevice(),
-                new Consumer<Integer>() {
-                    @Override
-                    public void accept(Integer choice) {
+                    R.string.settings_playback_pause_on_bluetooth_device,
+                    Settings.getPauseOnBluetoothDevice(), choice ->
+                    {
                         Settings.setPauseOnBluetoothDevice(choice);
                         pauseOnBluetoothDevice.setSummary(bluetoothDevicePreferenceToString(choice));
-                    }
-                });
+                        return null;
+                    });
             return true;
-            }
         });
     }
 
-    private void showBluetoothDevicePreferenceDialog(@StringRes int title, int defaultChoice, final Consumer<Integer> onChosen) {
+    private void showBluetoothDevicePreferenceDialog(@StringRes int title, int defaultChoice, final Function1<Integer, Void> onChosen) {
         final int[] choice = {defaultChoice};
         new AlertDialog.Builder(getActivity()).setTitle(title)
-            .setSingleChoiceItems(R.array.bluetoothDeviceSettingNames, defaultChoice,
-                new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialogInterface, int i) {
-                        choice[0] = i;
-                    }
-                })
-            .setNegativeButton(R.string.common_cancel, new DialogInterface.OnClickListener() {
-                @Override
-                public void onClick(DialogInterface dialogInterface, int i) {
-                    dialogInterface.cancel();
-                }
-            })
-            .setPositiveButton(R.string.common_ok, new DialogInterface.OnClickListener() {
-                @Override
-                public void onClick(DialogInterface dialogInterface, int i) {
-                    onChosen.accept(choice[0]);
+                .setSingleChoiceItems(R.array.bluetoothDeviceSettingNames, defaultChoice,
+                        (dialogInterface, i) -> choice[0] = i)
+                .setNegativeButton(R.string.common_cancel, (dialogInterface, i) -> dialogInterface.cancel())
+                .setPositiveButton(R.string.common_ok, (dialogInterface, i) -> {
+                    onChosen.invoke(choice[0]);
                     dialogInterface.dismiss();
-                }
-            })
-            .create().show();
+                })
+                .create().show();
     }
 
     private String bluetoothDevicePreferenceToString(int preferenceValue) {
         switch (preferenceValue) {
-            case Constants.PREFERENCE_VALUE_ALL: return getString(R.string.settings_playback_bluetooth_all);
-            case Constants.PREFERENCE_VALUE_A2DP: return getString(R.string.settings_playback_bluetooth_a2dp);
-            case Constants.PREFERENCE_VALUE_DISABLED: return getString(R.string.settings_playback_bluetooth_disabled);
-            default: return "";
+            case Constants.PREFERENCE_VALUE_ALL:
+                return getString(R.string.settings_playback_bluetooth_all);
+            case Constants.PREFERENCE_VALUE_A2DP:
+                return getString(R.string.settings_playback_bluetooth_a2dp);
+            case Constants.PREFERENCE_VALUE_DISABLED:
+                return getString(R.string.settings_playback_bluetooth_disabled);
+            default:
+                return "";
         }
     }
 
@@ -328,17 +292,14 @@ public class SettingsFragment extends PreferenceFragmentCompat
         Preference clearSearchPreference = findPreference(Constants.PREFERENCES_KEY_CLEAR_SEARCH_HISTORY);
 
         if (clearSearchPreference != null) {
-            clearSearchPreference.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
-                @Override
-                public boolean onPreferenceClick(Preference preference) {
-                    SearchRecentSuggestions suggestions =
-                            new SearchRecentSuggestions(getActivity(),
-                                    SearchSuggestionProvider.AUTHORITY,
-                                    SearchSuggestionProvider.MODE);
-                    suggestions.clearHistory();
-                    Util.toast(getActivity(), R.string.settings_search_history_cleared);
-                    return false;
-                }
+            clearSearchPreference.setOnPreferenceClickListener(preference -> {
+                SearchRecentSuggestions suggestions =
+                        new SearchRecentSuggestions(getActivity(),
+                                SearchSuggestionProvider.AUTHORITY,
+                                SearchSuggestionProvider.MODE);
+                suggestions.clearHistory();
+                Util.toast(getActivity(), R.string.settings_search_history_cleared);
+                return false;
             });
         }
     }
@@ -351,12 +312,9 @@ public class SettingsFragment extends PreferenceFragmentCompat
 
         if (useFiveStarRating != null) {
             useFiveStarRating.setChecked(featureStorage.isFeatureEnabled(Feature.FIVE_STAR_RATING));
-            useFiveStarRating.setOnPreferenceChangeListener(new Preference.OnPreferenceChangeListener() {
-                @Override
-                public boolean onPreferenceChange(Preference preference, Object o) {
-                    featureStorage.changeFeatureFlag(Feature.FIVE_STAR_RATING, (Boolean) o);
-                    return true;
-                }
+            useFiveStarRating.setOnPreferenceChangeListener((preference, o) -> {
+                featureStorage.changeFeatureFlag(Feature.FIVE_STAR_RATING, (Boolean) o);
+                return true;
             });
         }
 
@@ -397,7 +355,7 @@ public class SettingsFragment extends PreferenceFragmentCompat
 
         if (debugLogToFile.isChecked()) {
             debugLogToFile.setSummary(getString(R.string.settings_debug_log_path,
-                FileUtil.getUltrasonicDirectory(), FileLoggerTree.FILENAME));
+                    FileUtil.getUltrasonicDirectory(), FileLoggerTree.FILENAME));
         } else {
             debugLogToFile.setSummary("");
         }
@@ -437,8 +395,7 @@ public class SettingsFragment extends PreferenceFragmentCompat
                 String currentPath = Settings.getCacheLocation();
                 cacheLocation.setSummary(currentPath);
             });
-        }
-        else {
+        } else {
             cacheLocation.setSummary(path);
         }
 
@@ -457,35 +414,22 @@ public class SettingsFragment extends PreferenceFragmentCompat
             int fileNum = FileLoggerTree.Companion.getLogFileNumber();
             long fileSize = FileLoggerTree.Companion.getLogFileSizes();
             String message = getString(R.string.settings_debug_log_summary,
-                String.valueOf(fileNum),
-                String.valueOf(Math.ceil(fileSize / 1000000d)),
-                FileUtil.getUltrasonicDirectory());
+                    String.valueOf(fileNum),
+                    String.valueOf(Math.ceil(fileSize / 1000000d)),
+                    FileUtil.getUltrasonicDirectory());
 
             new AlertDialog.Builder(getActivity())
-                .setMessage(message)
-                .setIcon(android.R.drawable.ic_dialog_info)
-                .setNegativeButton(R.string.settings_debug_log_keep, new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialogInterface, int i) {
-                        dialogInterface.cancel();
-                    }
-                })
-                .setPositiveButton(R.string.settings_debug_log_delete, new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialogInterface, int i) {
+                    .setMessage(message)
+                    .setIcon(android.R.drawable.ic_dialog_info)
+                    .setNegativeButton(R.string.settings_debug_log_keep, (dialogInterface, i) -> dialogInterface.cancel())
+                    .setPositiveButton(R.string.settings_debug_log_delete, (dialogInterface, i) -> {
                         FileLoggerTree.Companion.deleteLogFiles();
                         Timber.i("Deleted debug log files");
                         dialogInterface.dismiss();
                         new AlertDialog.Builder(getActivity()).setMessage(R.string.settings_debug_log_deleted)
-                            .setPositiveButton(R.string.common_ok, new DialogInterface.OnClickListener() {
-                                @Override
-                                public void onClick(DialogInterface dialogInterface, int i) {
-                                    dialogInterface.dismiss();
-                                }
-                            }).create().show();
-                    }
-                })
-                .create().show();
+                                .setPositiveButton(R.string.common_ok, (dialogInterface1, i1) -> dialogInterface1.dismiss()).create().show();
+                    })
+                    .create().show();
         }
     }
 }
