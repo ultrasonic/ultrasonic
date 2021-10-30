@@ -4,8 +4,6 @@ import android.content.Context
 import android.media.AudioAttributes
 import android.media.AudioManager
 import android.media.AudioManager.OnAudioFocusChangeListener
-import android.os.Build
-import androidx.annotation.RequiresApi
 import androidx.media.AudioAttributesCompat
 import androidx.media.AudioFocusRequestCompat
 import androidx.media.AudioManagerCompat
@@ -109,7 +107,6 @@ class AudioFocusHandler(private val context: Context) {
         private var lowerFocus = false
 
         // TODO: This can be removed if we switch to androidx.media2.player
-        @RequiresApi(Build.VERSION_CODES.LOLLIPOP)
         fun getAudioAttributes(): AudioAttributes {
             return AudioAttributes.Builder()
                 .setUsage(AudioAttributes.USAGE_MEDIA)
