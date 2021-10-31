@@ -23,28 +23,10 @@ class MediaSessionEventDistributor {
 
     fun subscribe(listener: MediaSessionEventListener) {
         eventListenerList.add(listener)
-
-        synchronized(this) {
-            if (cachedToken != null)
-                listener.onMediaSessionTokenCreated(cachedToken!!)
-        }
     }
 
     fun unsubscribe(listener: MediaSessionEventListener) {
         eventListenerList.remove(listener)
-    }
-
-    fun releaseCachedMediaSessionToken() {
-        synchronized(this) {
-            cachedToken = null
-        }
-    }
-
-    fun raiseMediaSessionTokenCreatedEvent(token: MediaSessionCompat.Token) {
-        synchronized(this) {
-            cachedToken = token
-            eventListenerList.forEach { listener -> listener.onMediaSessionTokenCreated(token) }
-        }
     }
 
     fun raisePlayFromMediaIdRequestedEvent(mediaId: String?, extras: Bundle?) {
@@ -60,9 +42,5 @@ class MediaSessionEventDistributor {
 
     fun raiseSkipToQueueItemRequestedEvent(id: Long) {
         eventListenerList.forEach { listener -> listener.onSkipToQueueItemRequested(id) }
-    }
-
-    fun raiseMediaButtonEvent(keyEvent: KeyEvent?) {
-        eventListenerList.forEach { listener -> listener.onMediaButtonEvent(keyEvent) }
     }
 }

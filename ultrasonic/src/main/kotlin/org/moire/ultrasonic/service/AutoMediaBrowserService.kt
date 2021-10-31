@@ -14,6 +14,7 @@ import android.support.v4.media.MediaDescriptionCompat
 import android.support.v4.media.session.MediaSessionCompat
 import androidx.media.MediaBrowserServiceCompat
 import androidx.media.utils.MediaConstants
+import io.reactivex.rxjava3.disposables.Disposable
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
@@ -93,16 +94,17 @@ class AutoMediaBrowserService : MediaBrowserServiceCompat() {
     private val useId3Tags get() = Settings.shouldUseId3Tags
     private val musicFolderId get() = activeServerProvider.getActiveServer().musicFolderId
 
+    private var mediaSessionTokenSubscription: Disposable? = null
+
     @Suppress("MagicNumber")
     override fun onCreate() {
         super.onCreate()
 
+        mediaSessionTokenSubscription = RxBus.mediaSessionTokenObservable.subscribe {
+            if (sessionToken == null) sessionToken = it
+        }
+
         mediaSessionEventListener = object : MediaSessionEventListener {
-            override fun onMediaSessionTokenCreated(token: MediaSessionCompat.Token) {
-                if (sessionToken == null) {
-                    sessionToken = token
-                }
-            }
 
             override fun onPlayFromMediaIdRequested(mediaId: String?, extras: Bundle?) {
                 Timber.d(
@@ -182,6 +184,7 @@ class AutoMediaBrowserService : MediaBrowserServiceCompat() {
 
     override fun onDestroy() {
         super.onDestroy()
+        mediaSessionTokenSubscription?.dispose()
         mediaSessionEventDistributor.unsubscribe(mediaSessionEventListener)
         mediaSessionHandler.release()
         serviceJob.cancel()

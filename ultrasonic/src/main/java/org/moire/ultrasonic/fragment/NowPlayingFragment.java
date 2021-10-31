@@ -18,6 +18,7 @@ import org.moire.ultrasonic.domain.MusicDirectory;
 import org.moire.ultrasonic.domain.PlayerState;
 import org.moire.ultrasonic.service.DownloadFile;
 import org.moire.ultrasonic.service.MediaPlayerController;
+import org.moire.ultrasonic.service.RxBus;
 import org.moire.ultrasonic.subsonic.ImageLoaderProvider;
 import org.moire.ultrasonic.util.Constants;
 import org.moire.ultrasonic.util.NowPlayingEventDistributor;
@@ -26,6 +27,7 @@ import org.moire.ultrasonic.util.Settings;
 import org.moire.ultrasonic.util.Util;
 
 import kotlin.Lazy;
+import kotlin.Unit;
 import timber.log.Timber;
 
 import static org.koin.java.KoinJavaComponent.inject;
@@ -70,8 +72,6 @@ public class NowPlayingFragment extends Fragment {
         nowPlayingArtist = view.findViewById(R.id.now_playing_artist);
 
         nowPlayingEventListener = new NowPlayingEventListener() {
-            @Override
-            public void onDismissNowPlaying() { }
             @Override
             public void onHideNowPlaying() { }
             @Override
@@ -177,7 +177,7 @@ public class NowPlayingFragment extends Fragment {
                 {
                     if (deltaY < 0)
                     {
-                        nowPlayingEventDistributor.getValue().raiseNowPlayingDismissedEvent();
+                        RxBus.INSTANCE.getDismissNowPlayingCommandPublisher().onNext(Unit.INSTANCE);
                         return false;
                     }
                     if (deltaY > 0)

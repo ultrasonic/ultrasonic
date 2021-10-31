@@ -14,6 +14,7 @@ import android.content.IntentFilter
 import android.media.AudioManager
 import android.os.Build
 import android.view.KeyEvent
+import io.reactivex.rxjava3.disposables.Disposable
 import org.koin.core.component.KoinComponent
 import org.koin.core.component.inject
 import org.moire.ultrasonic.R
@@ -39,7 +40,7 @@ class MediaPlayerLifecycleSupport : KoinComponent {
 
     private var created = false
     private var headsetEventReceiver: BroadcastReceiver? = null
-    private lateinit var mediaSessionEventListener: MediaSessionEventListener
+    private var mediaButtonEventSubscription: Disposable? = null
 
     fun onCreate() {
         onCreate(false, null)
@@ -52,13 +53,10 @@ class MediaPlayerLifecycleSupport : KoinComponent {
             return
         }
 
-        mediaSessionEventListener = object : MediaSessionEventListener {
-            override fun onMediaButtonEvent(keyEvent: KeyEvent?) {
-                if (keyEvent != null) handleKeyEvent(keyEvent)
-            }
+        mediaButtonEventSubscription = RxBus.mediaButtonEventObservable.subscribe {
+            handleKeyEvent(it)
         }
 
-        mediaSessionEventDistributor.subscribe(mediaSessionEventListener)
         registerHeadsetReceiver()
         mediaPlayerController.onCreate()
         if (autoPlay) mediaPlayerController.preload()
@@ -98,9 +96,8 @@ class MediaPlayerLifecycleSupport : KoinComponent {
             mediaPlayerController.playerPosition
         )
 
-        mediaSessionEventDistributor.unsubscribe(mediaSessionEventListener)
-
         mediaPlayerController.clear(false)
+        mediaButtonEventSubscription?.dispose()
         applicationContext().unregisterReceiver(headsetEventReceiver)
         mediaPlayerController.onDestroy()
 
@@ -165,12 +162,7 @@ class MediaPlayerLifecycleSupport : KoinComponent {
             }
         }
 
-        val headsetIntentFilter: IntentFilter =
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-                IntentFilter(AudioManager.ACTION_HEADSET_PLUG)
-            } else {
-                IntentFilter(Intent.ACTION_HEADSET_PLUG)
-            }
+        val headsetIntentFilter = IntentFilter(AudioManager.ACTION_HEADSET_PLUG)
 
         applicationContext().registerReceiver(headsetEventReceiver, headsetIntentFilter)
     }

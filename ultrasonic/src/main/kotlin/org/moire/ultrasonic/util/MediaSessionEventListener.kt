@@ -15,9 +15,9 @@ import android.view.KeyEvent
  * Callback interface for MediaSession related event subscribers
  */
 interface MediaSessionEventListener {
-    fun onMediaSessionTokenCreated(token: MediaSessionCompat.Token) {}
+//    fun onMediaSessionTokenCreated(token: MediaSessionCompat.Token) {}
     fun onPlayFromMediaIdRequested(mediaId: String?, extras: Bundle?) {}
     fun onPlayFromSearchRequested(query: String?, extras: Bundle?) {}
     fun onSkipToQueueItemRequested(id: Long) {}
-    fun onMediaButtonEvent(keyEvent: KeyEvent?) {}
+//    fun onMediaButtonEvent(keyEvent: KeyEvent?) {}
 }

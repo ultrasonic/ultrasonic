@@ -8,7 +8,6 @@ import org.moire.ultrasonic.util.MediaSessionEventDistributor
 import org.moire.ultrasonic.util.MediaSessionHandler
 import org.moire.ultrasonic.util.NowPlayingEventDistributor
 import org.moire.ultrasonic.util.PermissionUtil
-import org.moire.ultrasonic.util.ThemeChangedEventDistributor
 
 /**
  * This Koin module contains the registration of general classes needed for Ultrasonic
@@ -18,7 +17,6 @@ val applicationModule = module {
     single { ImageLoaderProvider(androidContext()) }
     single { PermissionUtil(androidContext()) }
     single { NowPlayingEventDistributor() }
-    single { ThemeChangedEventDistributor() }
     single { MediaSessionEventDistributor() }
     single { MediaSessionHandler() }
 }

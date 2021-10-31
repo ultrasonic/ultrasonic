@@ -22,6 +22,7 @@ import android.support.v4.media.session.MediaSessionCompat
 import android.view.KeyEvent
 import androidx.core.app.NotificationCompat
 import androidx.core.app.NotificationManagerCompat
+import io.reactivex.rxjava3.disposables.Disposable
 import kotlin.collections.ArrayList
 import org.koin.android.ext.android.inject
 import org.moire.ultrasonic.R
@@ -73,6 +74,7 @@ class MediaPlayerService : Service() {
     private var isInForeground = false
     private var notificationBuilder: NotificationCompat.Builder? = null
     private lateinit var mediaSessionEventListener: MediaSessionEventListener
+    private var mediaSessionTokenSubscription: Disposable? = null
 
     private val repeatMode: RepeatMode
         get() = Settings.repeatMode
@@ -102,11 +104,11 @@ class MediaPlayerService : Service() {
 
         localMediaPlayer.onNextSongRequested = Runnable { setNextPlaying() }
 
-        mediaSessionEventListener = object : MediaSessionEventListener {
-            override fun onMediaSessionTokenCreated(token: MediaSessionCompat.Token) {
-                mediaSessionToken = token
-            }
+        mediaSessionTokenSubscription = RxBus.mediaSessionTokenObservable.subscribe {
+            mediaSessionToken = it
+        }
 
+        mediaSessionEventListener = object : MediaSessionEventListener {
             override fun onSkipToQueueItemRequested(id: Long) {
                 play(id.toInt())
             }
@@ -134,6 +136,7 @@ class MediaPlayerService : Service() {
         super.onDestroy()
         instance = null
         try {
+            mediaSessionTokenSubscription?.dispose()
             mediaSessionEventDistributor.unsubscribe(mediaSessionEventListener)
             mediaSessionHandler.release()
 
@@ -357,19 +360,11 @@ class MediaPlayerService : Service() {
     private fun setupOnCurrentPlayingChangedHandler() {
         localMediaPlayer.onCurrentPlayingChanged = { currentPlaying: DownloadFile? ->
 
-            if (currentPlaying != null) {
-                Util.broadcastNewTrackInfo(this@MediaPlayerService, currentPlaying.song)
-                Util.broadcastA2dpMetaDataChange(
-                    this@MediaPlayerService, playerPosition, currentPlaying,
-                    downloader.all.size, downloader.currentPlayingIndex + 1
-                )
-            } else {
-                Util.broadcastNewTrackInfo(this@MediaPlayerService, null)
-                Util.broadcastA2dpMetaDataChange(
-                    this@MediaPlayerService, playerPosition, null,
-                    downloader.all.size, downloader.currentPlayingIndex + 1
-                )
-            }
+            Util.broadcastNewTrackInfo(this@MediaPlayerService, currentPlaying?.song)
+            Util.broadcastA2dpMetaDataChange(
+                this@MediaPlayerService, playerPosition, currentPlaying,
+                downloader.all.size, downloader.currentPlayingIndex + 1
+            )
 
             // Update widget
             val playerState = localMediaPlayer.playerState

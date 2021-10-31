@@ -25,6 +25,7 @@ import org.moire.ultrasonic.domain.PlayerState
 import org.moire.ultrasonic.imageloader.BitmapUtils
 import org.moire.ultrasonic.receiver.MediaButtonIntentReceiver
 import org.moire.ultrasonic.service.DownloadFile
+import org.moire.ultrasonic.service.RxBus
 import timber.log.Timber
 
 private const val INTENT_CODE_MEDIA_BUTTON = 161
@@ -53,7 +54,7 @@ class MediaSessionHandler : KoinComponent {
         if (referenceCount > 0) return
 
         mediaSession?.isActive = false
-        mediaSessionEventDistributor.releaseCachedMediaSessionToken()
+        RxBus.releaseMediaSessionToken()
         mediaSession?.release()
         mediaSession = null
 
@@ -72,7 +73,7 @@ class MediaSessionHandler : KoinComponent {
 
         mediaSession = MediaSessionCompat(applicationContext, "UltrasonicService")
         val mediaSessionToken = mediaSession?.sessionToken ?: return
-        mediaSessionEventDistributor.raiseMediaSessionTokenCreatedEvent(mediaSessionToken)
+        RxBus.mediaSessionTokenPublisher.onNext(mediaSessionToken)
 
         updateMediaButtonReceiver()
 
@@ -147,7 +148,7 @@ class MediaSessionHandler : KoinComponent {
                 // This probably won't be necessary once we implement more
                 // of the modern media APIs, like the MediaController etc.
                 val event = mediaButtonEvent.extras!!["android.intent.extra.KEY_EVENT"] as KeyEvent?
-                mediaSessionEventDistributor.raiseMediaButtonEvent(event)
+                event?.let { RxBus.mediaButtonEventPublisher.onNext(it) }
                 return true
             }
 

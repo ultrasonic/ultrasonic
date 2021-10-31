@@ -31,12 +31,12 @@ import org.moire.ultrasonic.log.FileLoggerTree;
 import org.moire.ultrasonic.provider.SearchSuggestionProvider;
 import org.moire.ultrasonic.service.Consumer;
 import org.moire.ultrasonic.service.MediaPlayerController;
+import org.moire.ultrasonic.service.RxBus;
 import org.moire.ultrasonic.util.Constants;
 import org.moire.ultrasonic.util.FileUtil;
 import org.moire.ultrasonic.util.MediaSessionHandler;
 import org.moire.ultrasonic.util.PermissionUtil;
 import org.moire.ultrasonic.util.Settings;
-import org.moire.ultrasonic.util.ThemeChangedEventDistributor;
 import org.moire.ultrasonic.util.TimeSpanPreference;
 import org.moire.ultrasonic.util.TimeSpanPreferenceDialogFragmentCompat;
 import org.moire.ultrasonic.util.Util;
@@ -44,6 +44,7 @@ import org.moire.ultrasonic.util.Util;
 import java.io.File;
 
 import kotlin.Lazy;
+import kotlin.Unit;
 import timber.log.Timber;
 
 import static org.koin.java.KoinJavaComponent.inject;
@@ -89,7 +90,6 @@ public class SettingsFragment extends PreferenceFragmentCompat
 
     private final Lazy<MediaPlayerController> mediaPlayerControllerLazy = inject(MediaPlayerController.class);
     private final Lazy<PermissionUtil> permissionUtil = inject(PermissionUtil.class);
-    private final Lazy<ThemeChangedEventDistributor> themeChangedEventDistributor = inject(ThemeChangedEventDistributor.class);
     private final Lazy<MediaSessionHandler> mediaSessionHandler = inject(MediaSessionHandler.class);
 
     @Override
@@ -192,7 +192,7 @@ public class SettingsFragment extends PreferenceFragmentCompat
         } else if (Constants.PREFERENCES_KEY_ID3_TAGS.equals(key)) {
             showArtistPicture.setEnabled(sharedPreferences.getBoolean(key, false));
         } else if (Constants.PREFERENCES_KEY_THEME.equals(key)) {
-            themeChangedEventDistributor.getValue().RaiseThemeChangedEvent();
+            RxBus.INSTANCE.getThemeChangedEventPublisher().onNext(Unit.INSTANCE);
         }
     }
 

@@ -23,8 +23,4 @@ class NowPlayingEventDistributor {
     fun raiseHideNowPlayingEvent() {
         eventListenerList.forEach { listener -> listener.onHideNowPlaying() }
     }
-
-    fun raiseNowPlayingDismissedEvent() {
-        eventListenerList.forEach { listener -> listener.onDismissNowPlaying() }
-    }
 }
