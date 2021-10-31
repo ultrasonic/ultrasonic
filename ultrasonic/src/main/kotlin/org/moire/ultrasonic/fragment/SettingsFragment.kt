@@ -102,7 +102,7 @@ class SettingsFragment :
         MediaSessionHandler::class.java
     )
 
-    override fun onCreatePreferences(savedInstanceState: Bundle, rootKey: String) {
+    override fun onCreatePreferences(savedInstanceState: Bundle?, rootKey: String?) {
         setPreferencesFromResource(R.xml.settings, rootKey)
     }
 
