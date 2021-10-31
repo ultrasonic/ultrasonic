@@ -95,21 +95,18 @@ object Util {
 
     @JvmStatic
     fun applyTheme(context: Context?) {
-        val theme = Settings.theme
-        if (Constants.PREFERENCES_KEY_THEME_DARK.equals(
-            theme,
-            ignoreCase = true
-        ) || "fullscreen".equals(theme, ignoreCase = true)
-        ) {
-            context!!.setTheme(R.style.UltrasonicTheme)
-        } else if (Constants.PREFERENCES_KEY_THEME_BLACK.equals(theme, ignoreCase = true)) {
-            context!!.setTheme(R.style.UltrasonicTheme_Black)
-        } else if (Constants.PREFERENCES_KEY_THEME_LIGHT.equals(
-            theme,
-            ignoreCase = true
-        ) || "fullscreenlight".equals(theme, ignoreCase = true)
-        ) {
-            context!!.setTheme(R.style.UltrasonicTheme_Light)
+        when (Settings.theme.lowercase()) {
+            Constants.PREFERENCES_KEY_THEME_DARK,
+            "fullscreen" -> {
+                context!!.setTheme(R.style.UltrasonicTheme)
+            }
+            Constants.PREFERENCES_KEY_THEME_BLACK -> {
+                context!!.setTheme(R.style.UltrasonicTheme_Black)
+            }
+            Constants.PREFERENCES_KEY_THEME_LIGHT,
+            "fullscreenlight" -> {
+                context!!.setTheme(R.style.UltrasonicTheme_Light)
+            }
         }
     }
 
@@ -794,13 +791,9 @@ object Util {
     }
 
     fun isFirstRun(): Boolean {
-        val preferences = Settings.preferences
-        val firstExecuted =
-            preferences.getBoolean(Constants.PREFERENCES_KEY_FIRST_RUN_EXECUTED, false)
-        if (firstExecuted) return false
-        val editor = preferences.edit()
-        editor.putBoolean(Constants.PREFERENCES_KEY_FIRST_RUN_EXECUTED, true)
-        editor.apply()
+        if (Settings.firstRunExecuted) return false
+
+        Settings.firstRunExecuted = true
         return true
     }
 
@@ -925,7 +918,7 @@ object Util {
     }
 
     fun getConnectivityManager(): ConnectivityManager {
-        val context = Util.appContext()
+        val context = appContext()
         return context.getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
     }
 }

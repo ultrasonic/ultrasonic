@@ -10,11 +10,9 @@ package org.moire.ultrasonic.service
 import android.content.Context
 import android.content.Context.POWER_SERVICE
 import android.content.Intent
-import android.media.AudioManager
 import android.media.MediaPlayer
 import android.media.MediaPlayer.OnCompletionListener
 import android.media.audiofx.AudioEffect
-import android.os.Build
 import android.os.Handler
 import android.os.Looper
 import android.os.PowerManager
@@ -447,12 +445,7 @@ class LocalMediaPlayer : KoinComponent {
     }
 
     private fun setAudioAttributes(player: MediaPlayer) {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-            player.setAudioAttributes(AudioFocusHandler.getAudioAttributes())
-        } else {
-            @Suppress("DEPRECATION")
-            player.setAudioStreamType(AudioManager.STREAM_MUSIC)
-        }
+        player.setAudioAttributes(AudioFocusHandler.getAudioAttributes())
     }
 
     @Suppress("ComplexCondition")

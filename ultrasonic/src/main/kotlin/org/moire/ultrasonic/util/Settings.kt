@@ -185,6 +185,15 @@ object Settings {
     var shouldUseId3Tags
     by BooleanSetting(Constants.PREFERENCES_KEY_ID3_TAGS, false)
 
+    @JvmStatic
+    var tempLoss by StringIntSetting(Constants.PREFERENCES_KEY_TEMP_LOSS, "1")
+
+    var activeServer by IntSetting(Constants.PREFERENCES_KEY_SERVER_INSTANCE, -1)
+
+    var serverScaling by BooleanSetting(Constants.PREFERENCES_KEY_SERVER_SCALING, false)
+
+    var firstRunExecuted by BooleanSetting(Constants.PREFERENCES_KEY_FIRST_RUN_EXECUTED, false)
+
     val shouldShowArtistPicture: Boolean
         get() {
             val preferences = preferences
