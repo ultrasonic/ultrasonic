@@ -4,14 +4,11 @@ import android.content.Context
 import android.media.AudioAttributes
 import android.media.AudioManager
 import android.media.AudioManager.OnAudioFocusChangeListener
-import android.os.Build
-import androidx.annotation.RequiresApi
 import androidx.media.AudioAttributesCompat
 import androidx.media.AudioFocusRequestCompat
 import androidx.media.AudioManagerCompat
 import org.koin.java.KoinJavaComponent.inject
 import org.moire.ultrasonic.domain.PlayerState
-import org.moire.ultrasonic.util.Constants
 import org.moire.ultrasonic.util.Settings
 import timber.log.Timber
 
@@ -25,12 +22,8 @@ class AudioFocusHandler(private val context: Context) {
         context.getSystemService(Context.AUDIO_SERVICE) as AudioManager
     }
 
-    private val preferences by lazy {
-        Settings.preferences
-    }
-
     private val lossPref: Int
-        get() = preferences.getString(Constants.PREFERENCES_KEY_TEMP_LOSS, "1")!!.toInt()
+        get() = Settings.tempLoss
 
     private val audioAttributesCompat by lazy {
         AudioAttributesCompat.Builder()
@@ -114,7 +107,6 @@ class AudioFocusHandler(private val context: Context) {
         private var lowerFocus = false
 
         // TODO: This can be removed if we switch to androidx.media2.player
-        @RequiresApi(Build.VERSION_CODES.LOLLIPOP)
         fun getAudioAttributes(): AudioAttributes {
             return AudioAttributes.Builder()
                 .setUsage(AudioAttributes.USAGE_MEDIA)

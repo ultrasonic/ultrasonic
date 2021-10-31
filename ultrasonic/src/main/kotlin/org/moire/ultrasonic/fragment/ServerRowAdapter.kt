@@ -1,9 +1,7 @@
 package org.moire.ultrasonic.fragment
 
 import android.content.Context
-import android.graphics.Color
 import android.graphics.drawable.Drawable
-import android.os.Build
 import android.view.LayoutInflater
 import android.view.Menu
 import android.view.MenuItem
@@ -109,10 +107,8 @@ internal class ServerRowAdapter(
         }
 
         // Set colors
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-            icon?.setTint(ServerColor.getForegroundColor(context, setting?.color))
-            background?.setTint(ServerColor.getBackgroundColor(context, setting?.color))
-        }
+        icon?.setTint(ServerColor.getForegroundColor(context, setting?.color))
+        background?.setTint(ServerColor.getBackgroundColor(context, setting?.color))
 
         // Set the final drawables
         image?.setImageDrawable(icon)
@@ -120,32 +116,16 @@ internal class ServerRowAdapter(
 
         // Highlight the Active Server's row by changing its background
         if (index == activeServerProvider.getActiveServer().index) {
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-                layout?.background = ContextCompat.getDrawable(context, R.drawable.select_ripple)
-            } else {
-                layout?.setBackgroundResource(
-                    Util.getResourceFromAttribute(context, R.attr.list_selector_holo_selected)
-                )
-            }
+            layout?.background = ContextCompat.getDrawable(context, R.drawable.select_ripple)
         } else {
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-                layout?.background = ContextCompat.getDrawable(context, R.drawable.default_ripple)
-            } else {
-                layout?.setBackgroundResource(
-                    Util.getResourceFromAttribute(context, R.attr.list_selector_holo)
-                )
-            }
+            layout?.background = ContextCompat.getDrawable(context, R.drawable.default_ripple)
         }
 
         // Add the context menu for the row
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-            serverMenu?.background = ContextCompat.getDrawable(
-                context,
-                R.drawable.select_ripple_circle
-            )
-        } else {
-            serverMenu?.setBackgroundColor(Color.TRANSPARENT)
-        }
+        serverMenu?.background = ContextCompat.getDrawable(
+            context,
+            R.drawable.select_ripple_circle
+        )
 
         serverMenu?.setOnClickListener { view -> serverMenuClick(view, index) }
 

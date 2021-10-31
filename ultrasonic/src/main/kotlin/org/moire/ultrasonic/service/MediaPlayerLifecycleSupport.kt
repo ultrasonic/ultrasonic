@@ -12,7 +12,6 @@ import android.content.Context
 import android.content.Intent
 import android.content.IntentFilter
 import android.media.AudioManager
-import android.os.Build
 import android.view.KeyEvent
 import org.koin.core.component.KoinComponent
 import org.koin.core.component.inject
@@ -165,12 +164,7 @@ class MediaPlayerLifecycleSupport : KoinComponent {
             }
         }
 
-        val headsetIntentFilter: IntentFilter =
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-                IntentFilter(AudioManager.ACTION_HEADSET_PLUG)
-            } else {
-                IntentFilter(Intent.ACTION_HEADSET_PLUG)
-            }
+        val headsetIntentFilter = IntentFilter(AudioManager.ACTION_HEADSET_PLUG)
 
         applicationContext().registerReceiver(headsetEventReceiver, headsetIntentFilter)
     }
