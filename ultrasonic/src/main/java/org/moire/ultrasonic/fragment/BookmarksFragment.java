@@ -1,6 +1,7 @@
 package org.moire.ultrasonic.fragment;
 
 import android.os.Bundle;
+import android.util.Pair;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -25,7 +26,6 @@ import org.moire.ultrasonic.subsonic.VideoPlayer;
 import org.moire.ultrasonic.util.CancellationToken;
 import org.moire.ultrasonic.util.Constants;
 import org.moire.ultrasonic.util.FragmentBackgroundTask;
-import org.moire.ultrasonic.util.Pair;
 import org.moire.ultrasonic.util.Util;
 import org.moire.ultrasonic.view.EntryAdapter;
 
@@ -341,7 +341,7 @@ public class BookmarksFragment extends Fragment {
         @Override
         protected void done(Pair<MusicDirectory, Boolean> result)
         {
-            MusicDirectory musicDirectory = result.getFirst();
+            MusicDirectory musicDirectory = result.first;
             List<MusicDirectory.Entry> entries = musicDirectory.getChildren();
 
             int songCount = 0;
@@ -371,7 +371,7 @@ public class BookmarksFragment extends Fragment {
                 deleteButton.setVisibility(View.GONE);
                 playNowButton.setVisibility(View.GONE);
 
-                if (listSize == 0 || result.getFirst().getChildren().size() < listSize)
+                if (listSize == 0 || result.first.getChildren().size() < listSize)
                 {
                     albumButtons.setVisibility(View.GONE);
                 }
