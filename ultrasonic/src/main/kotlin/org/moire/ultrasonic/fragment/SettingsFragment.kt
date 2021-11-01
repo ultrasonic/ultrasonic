@@ -1,11 +1,15 @@
 package org.moire.ultrasonic.fragment
 
+import android.app.Activity
 import android.app.AlertDialog
 import android.content.DialogInterface
+import android.content.Intent
 import android.content.SharedPreferences
 import android.content.SharedPreferences.OnSharedPreferenceChangeListener
+import android.net.Uri
 import android.os.Build
 import android.os.Bundle
+import android.provider.DocumentsContract
 import android.provider.SearchRecentSuggestions
 import android.view.View
 import androidx.annotation.StringRes
@@ -22,10 +26,9 @@ import org.koin.core.component.KoinComponent
 import org.koin.java.KoinJavaComponent.get
 import org.koin.java.KoinJavaComponent.inject
 import org.moire.ultrasonic.R
+import org.moire.ultrasonic.app.UApp
 import org.moire.ultrasonic.featureflags.Feature
 import org.moire.ultrasonic.featureflags.FeatureStorage
-import org.moire.ultrasonic.filepicker.FilePickerDialog.Companion.createFilePickerDialog
-import org.moire.ultrasonic.filepicker.OnFileSelectedListener
 import org.moire.ultrasonic.fragment.FragmentTitle.Companion.setTitle
 import org.moire.ultrasonic.log.FileLoggerTree
 import org.moire.ultrasonic.log.FileLoggerTree.Companion.deleteLogFiles
@@ -37,11 +40,8 @@ import org.moire.ultrasonic.provider.SearchSuggestionProvider
 import org.moire.ultrasonic.service.MediaPlayerController
 import org.moire.ultrasonic.util.Constants
 import org.moire.ultrasonic.util.FileUtil.defaultMusicDirectory
-import org.moire.ultrasonic.util.FileUtil.ensureDirectoryExistsAndIsReadWritable
 import org.moire.ultrasonic.util.FileUtil.ultrasonicDirectory
 import org.moire.ultrasonic.util.MediaSessionHandler
-import org.moire.ultrasonic.util.PermissionUtil
-import org.moire.ultrasonic.util.PermissionUtil.Companion.requestInitialPermission
 import org.moire.ultrasonic.util.Settings
 import org.moire.ultrasonic.util.Settings.preferences
 import org.moire.ultrasonic.util.Settings.shareGreeting
@@ -55,6 +55,7 @@ import timber.log.Timber
 /**
  * Shows main app settings.
  */
+@Suppress("TooManyFunctions")
 class SettingsFragment :
     PreferenceFragmentCompat(),
     OnSharedPreferenceChangeListener,
@@ -91,9 +92,6 @@ class SettingsFragment :
 
     private val mediaPlayerControllerLazy = inject<MediaPlayerController>(
         MediaPlayerController::class.java
-    )
-    private val permissionUtil = inject<PermissionUtil>(
-        PermissionUtil::class.java
     )
     private val themeChangedEventDistributor = inject<ThemeChangedEventDistributor>(
         ThemeChangedEventDistributor::class.java
@@ -169,6 +167,21 @@ class SettingsFragment :
         update()
     }
 
+    override fun onActivityResult(requestCode: Int, resultCode: Int, resultData: Intent?) {
+        if (requestCode == SELECT_CACHE_ACTIVITY && resultCode == Activity.RESULT_OK) {
+            // The result data contains a URI for the document or directory that
+            // the user selected.
+            resultData?.data?.also { uri ->
+                // Perform operations on the document using its URI.
+                val contentResolver = UApp.applicationContext().contentResolver
+
+                contentResolver.takePersistableUriPermission(uri, RW_FLAG)
+
+                setCacheLocation(uri)
+            }
+        }
+    }
+
     override fun onResume() {
         super.onResume()
         val preferences = preferences
@@ -229,29 +242,20 @@ class SettingsFragment :
         cacheLocation!!.summary = Settings.cacheLocation
         cacheLocation!!.onPreferenceClickListener =
             Preference.OnPreferenceClickListener {
-                // If the user tries to change the cache location,
-                // we must first check to see if we have write access.
-                requestInitialPermission(
-                    requireActivity()
-                ) {
-                    if (it) {
-                        val filePickerDialog = createFilePickerDialog(
-                            requireContext()
-                        )
-                        filePickerDialog.setDefaultDirectory(defaultMusicDirectory.path)
-                        filePickerDialog.setInitialDirectory(cacheLocation!!.summary.toString())
-                        filePickerDialog.setOnFileSelectedListener(object :
-                                OnFileSelectedListener {
-                                override fun onFileSelected(file: File?, path: String?) {
-                                    if (path != null) {
-                                        Settings.cacheLocation = path
-                                        setCacheLocation(path)
-                                    }
-                                }
-                            })
-                        filePickerDialog.show()
-                    }
+                val isDefault = Settings.cacheLocation == defaultMusicDirectory.path
+
+                // Choose a directory using the system's file picker.
+                val intent = Intent(Intent.ACTION_OPEN_DOCUMENT_TREE)
+
+                if (!isDefault && Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+                    intent.putExtra(DocumentsContract.EXTRA_INITIAL_URI, defaultMusicDirectory.path)
                 }
+
+                intent.addFlags(RW_FLAG)
+                intent.addFlags(PERSISTABLE_FLAG)
+
+                startActivityForResult(intent, SELECT_CACHE_ACTIVITY)
+
                 true
             }
     }
@@ -419,19 +423,14 @@ class SettingsFragment :
         sendBluetoothAlbumArt!!.isEnabled = enabled
     }
 
-    private fun setCacheLocation(path: String) {
-        val dir = File(path)
-        if (!ensureDirectoryExistsAndIsReadWritable(dir)) {
-            permissionUtil.value.handlePermissionFailed {
-                val currentPath = Settings.cacheLocation
-                cacheLocation!!.summary = currentPath
-            }
-        } else {
-            cacheLocation!!.summary = path
-        }
+    private fun setCacheLocation(uri: Uri) {
+        if (uri.path != null) {
+            cacheLocation!!.summary = uri.path
+            Settings.cacheLocation = uri.path!!
 
-        // Clear download queue.
-        mediaPlayerControllerLazy.value.clear()
+            // Clear download queue.
+            mediaPlayerControllerLazy.value.clear()
+        }
     }
 
     private fun setDebugLogToFile(writeLog: Boolean) {
@@ -470,5 +469,12 @@ class SettingsFragment :
                 }
                 .create().show()
         }
+    }
+
+    companion object {
+        const val SELECT_CACHE_ACTIVITY = 161161
+        const val RW_FLAG = Intent.FLAG_GRANT_READ_URI_PERMISSION or
+            Intent.FLAG_GRANT_WRITE_URI_PERMISSION
+        const val PERSISTABLE_FLAG = Intent.FLAG_GRANT_PERSISTABLE_URI_PERMISSION
     }
 }

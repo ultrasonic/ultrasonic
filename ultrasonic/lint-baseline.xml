@@ -16,17 +16,6 @@
     </issue>
 
     <issue
-        id="ScopedStorage"
-        message="WRITE_EXTERNAL_STORAGE no longer provides write access when targeting Android 10, unless you use `requestLegacyExternalStorage`"
-        errorLine1="    &lt;uses-permission android:name=&quot;android.permission.WRITE_EXTERNAL_STORAGE&quot;/>"
-        errorLine2="                                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
-        <location
-            file="src/main/AndroidManifest.xml"
-            line="10"
-            column="36"/>
-    </issue>
-
-    <issue
         id="IncludeLayoutParam"
         message="Layout parameter `layout_gravity` ignored unless both `layout_width` and `layout_height` are also specified on `&lt;include>` tag"
         errorLine1="        a:layout_gravity=&quot;center_vertical&quot; />"
@@ -115,17 +104,6 @@
     </issue>
 
     <issue
-        id="ExportedContentProvider"
-        message="Exported content providers can provide access to potentially sensitive data"
-        errorLine1="        &lt;provider"
-        errorLine2="         ~~~~~~~~">
-        <location
-            file="src/main/AndroidManifest.xml"
-            line="146"
-            column="10"/>
-    </issue>
-
-    <issue
         id="ExportedReceiver"
         message="Exported receiver does not require permission"
         errorLine1="        &lt;receiver android:name=&quot;.receiver.UltrasonicIntentReceiver&quot;>"
@@ -167,17 +145,6 @@
             file="src/main/res/layout/time_span_dialog.xml"
             line="28"
             column="9"/>
-    </issue>
-
-    <issue
-        id="UseCompoundDrawables"
-        message="This tag and its children can be replaced by one `&lt;TextView/>` and a compound drawable"
-        errorLine1="&lt;LinearLayout xmlns:a=&quot;http://schemas.android.com/apk/res/android&quot;"
-        errorLine2=" ~~~~~~~~~~~~">
-        <location
-            file="src/main/res/layout/filepicker_item_file_lister.xml"
-            line="2"
-            column="2"/>
     </issue>
 
     <issue
@@ -1064,27 +1031,27 @@
         errorLine2="             ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
         <location
             file="src/main/res/values/strings.xml"
-            line="476"
+            line="453"
             column="14"/>
         <location
             file="src/main/res/values-cs/strings.xml"
-            line="448"
+            line="426"
             column="14"/>
         <location
             file="src/main/res/values-es/strings.xml"
-            line="470"
+            line="449"
             column="14"/>
         <location
             file="src/main/res/values-fr/strings.xml"
-            line="459"
+            line="438"
             column="14"/>
         <location
             file="src/main/res/values-hu/strings.xml"
-            line="454"
+            line="433"
             column="14"/>
         <location
             file="src/main/res/values-nl/strings.xml"
-            line="470"
+            line="449"
             column="14"/>
         <location
             file="src/main/res/values-pl/strings.xml"
@@ -1096,15 +1063,15 @@
             column="14"/>
         <location
             file="src/main/res/values-pt-rBR/strings.xml"
-            line="463"
+            line="442"
             column="14"/>
         <location
             file="src/main/res/values-ru/strings.xml"
-            line="471"
+            line="450"
             column="14"/>
         <location
             file="src/main/res/values-zh-rCN/strings.xml"
-            line="452"
+            line="432"
             column="14"/>
     </issue>
 
@@ -1676,17 +1643,6 @@
             file="src/main/res/layout-land/current_playing.xml"
             line="94"
             column="22"/>
-    </issue>
-
-    <issue
-        id="ContentDescription"
-        message="Missing `contentDescription` attribute on image"
-        errorLine1="    &lt;ImageView"
-        errorLine2="     ~~~~~~~~~">
-        <location
-            file="src/main/res/layout/filepicker_item_file_lister.xml"
-            line="10"
-            column="6"/>
     </issue>
 
     <issue

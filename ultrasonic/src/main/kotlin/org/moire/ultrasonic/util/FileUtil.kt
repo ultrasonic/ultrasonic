@@ -11,6 +11,7 @@ import android.content.Context
 import android.os.Build
 import android.os.Environment
 import android.text.TextUtils
+import android.util.Pair
 import java.io.BufferedWriter
 import java.io.File
 import java.io.FileInputStream
@@ -24,7 +25,6 @@ import java.util.Locale
 import java.util.SortedSet
 import java.util.TreeSet
 import java.util.regex.Pattern
-import org.koin.java.KoinJavaComponent
 import org.moire.ultrasonic.app.UApp
 import org.moire.ultrasonic.domain.MusicDirectory
 import timber.log.Timber
@@ -42,10 +42,6 @@ object FileUtil {
     const val SUFFIX_LARGE = ".jpeg"
     const val SUFFIX_SMALL = ".jpeg-small"
     private const val UNNAMED = "unnamed"
-
-    private val permissionUtil = KoinJavaComponent.inject<PermissionUtil>(
-        PermissionUtil::class.java
-    )
 
     fun getSongFile(song: MusicDirectory.Entry): File {
         val dir = getAlbumDirectory(song)
@@ -237,15 +233,13 @@ object FileUtil {
     @JvmStatic
     val ultrasonicDirectory: File
         get() {
+            @Suppress("DEPRECATION")
             return if (Build.VERSION.SDK_INT < Build.VERSION_CODES.M) File(
                 Environment.getExternalStorageDirectory(),
                 "Android/data/org.moire.ultrasonic"
             ) else UApp.applicationContext().getExternalFilesDir(null)!!
         }
 
-    // After Android M, the location of the files must be queried differently.
-    // GetExternalFilesDir will always return a directory which Ultrasonic
-    // can access without any extra privileges.
     @JvmStatic
     val defaultMusicDirectory: File
         get() = getOrCreateDirectory("music")
@@ -256,38 +250,39 @@ object FileUtil {
             val path = Settings.cacheLocation
             val dir = File(path)
             val hasAccess = ensureDirectoryExistsAndIsReadWritable(dir)
-            if (!hasAccess) permissionUtil.value.handlePermissionFailed(null)
-            return if (hasAccess) dir else defaultMusicDirectory
+            return if (hasAccess.second) dir else defaultMusicDirectory
         }
 
     @JvmStatic
     @Suppress("ReturnCount")
-    fun ensureDirectoryExistsAndIsReadWritable(dir: File?): Boolean {
+    fun ensureDirectoryExistsAndIsReadWritable(dir: File?): Pair<Boolean, Boolean> {
+        val noAccess = Pair(false, false)
+
         if (dir == null) {
-            return false
+            return noAccess
         }
         if (dir.exists()) {
             if (!dir.isDirectory) {
                 Timber.w("%s exists but is not a directory.", dir)
-                return false
+                return noAccess
             }
         } else {
             if (dir.mkdirs()) {
                 Timber.i("Created directory %s", dir)
             } else {
                 Timber.w("Failed to create directory %s", dir)
-                return false
+                return noAccess
             }
         }
         if (!dir.canRead()) {
             Timber.w("No read permission for directory %s", dir)
-            return false
+            return noAccess
         }
         if (!dir.canWrite()) {
             Timber.w("No write permission for directory %s", dir)
-            return false
+            return Pair(true, false)
         }
-        return true
+        return Pair(true, true)
     }
 
     /**

@@ -405,28 +405,7 @@
     <string name="settings.debug.log_deleted">Archivos de registro eliminados.</string>
     <string name="notification.downloading_title">Descargando medios en segundo plano…</string>
 
-    <string name="permissions.access_error">Ultrasonic no puede acceder a la caché de los ficheros de música. La ubicación de la caché se restableció a la ruta predeterminada.</string>
-    <string name="permissions.message_box_title">Atención</string>
-    <string name="permissions.permission_missing">Ultrasonic necesita permiso de lectura / escritura para el directorio caché de música. El directorio caché se restableció a su valor predeterminado.</string>
-    <string name="permissions.rationale_title">Solicitud de permisos</string>
-    <string name="permissions.rationale_description_failed">Ultrasonic necesita permiso de lectura / escritura para el directorio caché de música. Por favor permite a Ultrasonic acceder al sistema de ficheros.</string>
-    <string name="permissions.permanent_denial_title">Permisos denegados permanentemente</string>
-    <string name="permissions.permanent_denial_description">Ultrasonic necesita acceso de lectura / escritura a la ubicación de la caché. Puedes otorgarlos en la configuración de la aplicación. Si rechazas esta solicitud, la ubicación de la caché se restablecerá a su valor predeterminado.</string>
-    <string name="permissions.open_settings">Abrir configuración</string>
-    <string name="permissions.rationale_description_initial">Para poder cambiar la ubicación de la caché, Ultrasonic necesita permiso de lectura / escritura en el sistema de archivos.</string>
 
-    <string name="filepicker.select_folder">Selecciona una carpeta</string>
-    <string name="filepicker.create_folder">Crear nueva carpeta</string>
-    <string name="filepicker.create_folder_failed">Fallo al crear una nueva carpeta</string>
-    <string name="filepicker.internal">%1$s (Almacenamiento interno)</string>
-    <string name="filepicker.default_app_folder">Carpeta predeterminada de la aplicación en %1$s (Almacenamiento externo)</string>
-    <string name="filepicker.enter_folder_name">Introduce el nombre de la carpeta</string>
-    <string name="filepicker.create">Crear</string>
-    <string name="filepicker.name_invalid">Por favor introduce un nombre de carpeta válido</string>
-    <string name="filepicker.already_exists">Esta carpeta ya existe.\nPor favor proporciona otro nombre para la carpeta</string>
-    <string name="filepicker.select">Seleccionar</string>
-    <string name="filepicker.default">Usar predeterminado</string>
-    <string name="filepicker.available_drives">Unidades disponibles:</string>
 
     <string name="server_selector.label">Servidores configurados</string>
     <string name="server_selector.delete_confirmation">¿Seguro que deseas borrar el servidor?</string>

@@ -7,7 +7,6 @@
     <uses-permission android:name="android.permission.INTERNET"/>
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE"/>
     <uses-permission android:name="android.permission.WAKE_LOCK"/>
-    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"/>
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE"/>
     <uses-permission android:name="android.permission.MODIFY_AUDIO_SETTINGS"/>
     <uses-permission android:name="android.permission.BLUETOOTH"/>
@@ -29,6 +28,7 @@
         android:label="@string/common.appname"
         android:usesCleartextTraffic="true"
         android:supportsRtl="false"
+        android:preserveLegacyExternalStorage="true"
         tools:ignore="UnusedAttribute">
 
         <meta-data android:name="com.google.android.gms.car.application"
@@ -145,7 +145,8 @@
 
         <provider
             android:name=".provider.SearchSuggestionProvider"
-            android:authorities="org.moire.ultrasonic.provider.SearchSuggestionProvider"/>
+            android:authorities="org.moire.ultrasonic.provider.SearchSuggestionProvider"
+            tools:ignore="ExportedContentProvider" />
 
         <receiver
             android:name=".receiver.A2dpIntentReceiver"

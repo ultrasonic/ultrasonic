@@ -394,28 +394,7 @@
     <string name="settings.debug.log_keep">Сохранить файлы</string>
     <string name="settings.debug.log_delete">Удалить файлы</string>
     <string name="settings.debug.log_deleted">Удаленные файлы журналов.</string>
-    <string name="permissions.access_error">Ultrasonic не может получить доступ к кэшу музыкальных файлов. Местоположение кэша было сброшено на путь по умолчанию.</string>
-    <string name="permissions.message_box_title">Внимание</string>
-    <string name="permissions.permission_missing">Ultrasonic требуется разрешение на чтение/запись в директории музыкального кэша. Каталог кэша был сброшен на значение по умолчанию.</string>
-    <string name="permissions.rationale_title">Запрос разрешения</string>
-    <string name="permissions.rationale_description_failed">Ultrasonic требуется разрешение на чтение/запись в директории музыкального кэша.\nПожалуйста, разрешите Ultrasonic доступ к файловой системе.</string>
-    <string name="permissions.permanent_denial_title">Разрешениях навсегда отклонены</string>
-    <string name="permissions.permanent_denial_description">Ultrasonic необходим доступ на чтение/запись к местоположению кэша. Вы можете предоставить их в настройках приложения. Если вы отклоните этот запрос, в качестве местоположения кэша будет использоваться папка по умолчанию.</string>
-    <string name="permissions.open_settings">Открыть настройки</string>
-    <string name="permissions.rationale_description_initial">Чтобы иметь возможность изменять местоположение кэша, Ultrasonic необходимо разрешение на чтение/запись в файловой системе.</string>
 
-    <string name="filepicker.select_folder">Выберите папку</string>
-    <string name="filepicker.create_folder">Создать новую папку</string>
-    <string name="filepicker.create_folder_failed">Не удалось создать новую папку</string>
-    <string name="filepicker.internal">%1$s(Внутренний) </string>
-    <string name="filepicker.default_app_folder">Папка приложения по умолчанию %1$s (Внешняя)</string>
-    <string name="filepicker.enter_folder_name">Введите имя папки</string>
-    <string name="filepicker.create">Создать</string>
-    <string name="filepicker.name_invalid">Пожалуйста, введите правильное имя папки</string>
-    <string name="filepicker.already_exists">Эта папка уже существует.\nПожалуйста, укажите другое имя для папки</string>
-    <string name="filepicker.select">Выбрать</string>
-    <string name="filepicker.default">Использовать по умолчанию</string>
-    <string name="filepicker.available_drives">Доступные диски:</string>
 
     <string name="server_selector.label">Настроенные серверы</string>
     <string name="server_selector.delete_confirmation">Вы уверены, что хотите удалить сервер?</string>
