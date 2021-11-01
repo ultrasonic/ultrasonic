@@ -48,7 +48,6 @@ import org.moire.ultrasonic.util.Constants
 import org.moire.ultrasonic.util.FileUtil
 import org.moire.ultrasonic.util.NowPlayingEventDistributor
 import org.moire.ultrasonic.util.NowPlayingEventListener
-import org.moire.ultrasonic.util.PermissionUtil
 import org.moire.ultrasonic.util.ServerColor
 import org.moire.ultrasonic.util.Settings
 import org.moire.ultrasonic.util.SubsonicUncaughtExceptionHandler
@@ -60,6 +59,7 @@ import timber.log.Timber
 /**
  * The main Activity of Ultrasonic which loads all other screens as Fragments
  */
+@Suppress("TooManyFunctions")
 class NavigationActivity : AppCompatActivity() {
     private var chatMenuItem: MenuItem? = null
     private var bookmarksMenuItem: MenuItem? = null
@@ -83,7 +83,6 @@ class NavigationActivity : AppCompatActivity() {
     private val imageLoaderProvider: ImageLoaderProvider by inject()
     private val nowPlayingEventDistributor: NowPlayingEventDistributor by inject()
     private val themeChangedEventDistributor: ThemeChangedEventDistributor by inject()
-    private val permissionUtil: PermissionUtil by inject()
     private val activeServerProvider: ActiveServerProvider by inject()
     private val serverRepository: ServerSettingDao by inject()
 
@@ -93,7 +92,6 @@ class NavigationActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         setUncaughtExceptionHandler()
-        permissionUtil.onForegroundApplicationStarted(this)
         Util.applyTheme(this)
 
         super.onCreate(savedInstanceState)
@@ -240,7 +238,6 @@ class NavigationActivity : AppCompatActivity() {
         nowPlayingEventDistributor.unsubscribe(nowPlayingEventListener)
         themeChangedEventDistributor.unsubscribe(themeChangedEventListener)
         imageLoaderProvider.clearImageLoader()
-        permissionUtil.onForegroundApplicationStopped()
     }
 
     override fun onKeyDown(keyCode: Int, event: KeyEvent?): Boolean {
@@ -353,10 +350,6 @@ class NavigationActivity : AppCompatActivity() {
 
     private fun loadSettings() {
         PreferenceManager.setDefaultValues(this, R.xml.settings, false)
-        val preferences = Settings.preferences
-        if (!preferences.contains(Constants.PREFERENCES_KEY_CACHE_LOCATION)) {
-            Settings.cacheLocation = FileUtil.defaultMusicDirectory.path
-        }
     }
 
     private fun exit() {

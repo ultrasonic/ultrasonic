@@ -3,10 +3,7 @@
   <ManuallySuppressedIssues></ManuallySuppressedIssues>
   <CurrentIssues>
     <ID>ComplexCondition:DownloadHandler.kt$DownloadHandler.&lt;no name provided&gt;$!append &amp;&amp; !playNext &amp;&amp; !unpin &amp;&amp; !background</ID>
-    <ID>ComplexCondition:FilePickerAdapter.kt$FilePickerAdapter$currentDirectory.absolutePath == "/" || currentDirectory.absolutePath == "/storage" || currentDirectory.absolutePath == "/storage/emulated" || currentDirectory.absolutePath == "/mnt"</ID>
-    <ID>ComplexCondition:LocalMediaPlayer.kt$LocalMediaPlayer$Util.getGaplessPlaybackPreference() &amp;&amp; Build.VERSION.SDK_INT &gt;= Build.VERSION_CODES.JELLY_BEAN &amp;&amp; ( playerState === PlayerState.STARTED || playerState === PlayerState.PAUSED )</ID>
     <ID>ComplexMethod:DownloadFile.kt$DownloadFile.DownloadTask$override fun execute()</ID>
-    <ID>ComplexMethod:FilePickerAdapter.kt$FilePickerAdapter$private fun fileLister(currentDirectory: File)</ID>
     <ID>ComplexMethod:SongView.kt$SongView$fun setSong(song: MusicDirectory.Entry, checkable: Boolean, draggable: Boolean)</ID>
     <ID>ComplexMethod:TrackCollectionFragment.kt$TrackCollectionFragment$private fun enableButtons()</ID>
     <ID>ComplexMethod:TrackCollectionFragment.kt$TrackCollectionFragment$private fun updateInterfaceWithEntries(musicDirectory: MusicDirectory)</ID>
@@ -21,14 +18,12 @@
     <ID>ImplicitDefaultLocale:LocalMediaPlayer.kt$LocalMediaPlayer.BufferTask$String.format("BufferTask (%s)", downloadFile)</ID>
     <ID>ImplicitDefaultLocale:LocalMediaPlayer.kt$LocalMediaPlayer.CheckCompletionTask$String.format("CheckCompletionTask (%s)", downloadFile)</ID>
     <ID>ImplicitDefaultLocale:ShareHandler.kt$ShareHandler$String.format("%d:%s", timeSpanAmount, timeSpanType)</ID>
-    <ID>ImplicitDefaultLocale:ShareHandler.kt$ShareHandler.&lt;no name provided&gt;$String.format("%s\n\n%s", Util.getShareGreeting(), result.url)</ID>
     <ID>ImplicitDefaultLocale:SongView.kt$SongView$String.format("%02d.", trackNumber)</ID>
     <ID>ImplicitDefaultLocale:SongView.kt$SongView$String.format("%s ", bitRate)</ID>
     <ID>ImplicitDefaultLocale:SongView.kt$SongView$String.format("%s &gt; %s", suffix, transcodedSuffix)</ID>
     <ID>LargeClass:TrackCollectionFragment.kt$TrackCollectionFragment : Fragment</ID>
     <ID>LongMethod:DownloadFile.kt$DownloadFile.DownloadTask$override fun execute()</ID>
     <ID>LongMethod:EditServerFragment.kt$EditServerFragment$override fun onViewCreated(view: View, savedInstanceState: Bundle?)</ID>
-    <ID>LongMethod:FilePickerAdapter.kt$FilePickerAdapter$private fun fileLister(currentDirectory: File)</ID>
     <ID>LongMethod:LocalMediaPlayer.kt$LocalMediaPlayer$@Synchronized private fun doPlay(downloadFile: DownloadFile, position: Int, start: Boolean)</ID>
     <ID>LongMethod:NavigationActivity.kt$NavigationActivity$override fun onCreate(savedInstanceState: Bundle?)</ID>
     <ID>LongMethod:ShareHandler.kt$ShareHandler$private fun showDialog( fragment: Fragment, shareDetails: ShareDetails, swipe: SwipeRefreshLayout?, cancellationToken: CancellationToken )</ID>
@@ -39,23 +34,18 @@
     <ID>LongMethod:TrackCollectionFragment.kt$TrackCollectionFragment$private fun updateInterfaceWithEntries(musicDirectory: MusicDirectory)</ID>
     <ID>LongParameterList:ServerRowAdapter.kt$ServerRowAdapter$( private var context: Context, private var data: Array&lt;ServerSetting&gt;, private val model: ServerSettingsModel, private val activeServerProvider: ActiveServerProvider, private val manageMode: Boolean, private val serverDeletedCallback: ((Int) -&gt; Unit), private val serverEditRequestedCallback: ((Int) -&gt; Unit) )</ID>
     <ID>MagicNumber:ActiveServerProvider.kt$ActiveServerProvider$8192</ID>
-    <ID>MagicNumber:DownloadFile.kt$DownloadFile.DownloadTask$10</ID>
-    <ID>MagicNumber:DownloadFile.kt$DownloadFile.DownloadTask$60</ID>
     <ID>MagicNumber:LocalMediaPlayer.kt$LocalMediaPlayer.&lt;no name provided&gt;$60000</ID>
     <ID>MagicNumber:LocalMediaPlayer.kt$LocalMediaPlayer.BufferTask$100000</ID>
-    <ID>MagicNumber:LocalMediaPlayer.kt$LocalMediaPlayer.BufferTask$1024L</ID>
     <ID>MagicNumber:LocalMediaPlayer.kt$LocalMediaPlayer.BufferTask$8</ID>
     <ID>MagicNumber:LocalMediaPlayer.kt$LocalMediaPlayer.BufferTask$86400L</ID>
     <ID>MagicNumber:LocalMediaPlayer.kt$LocalMediaPlayer.BufferTask$8L</ID>
     <ID>MagicNumber:LocalMediaPlayer.kt$LocalMediaPlayer.CheckCompletionTask$5000L</ID>
-    <ID>MagicNumber:MediaPlayerService.kt$MediaPlayerService$256</ID>
     <ID>MagicNumber:MediaPlayerService.kt$MediaPlayerService$3</ID>
     <ID>MagicNumber:MediaPlayerService.kt$MediaPlayerService$4</ID>
     <ID>MagicNumber:RESTMusicService.kt$RESTMusicService$206</ID>
     <ID>MagicNumber:SongView.kt$SongView$3</ID>
     <ID>MagicNumber:SongView.kt$SongView$4</ID>
     <ID>MagicNumber:SongView.kt$SongView$60</ID>
-    <ID>MagicNumber:TrackCollectionFragment.kt$TrackCollectionFragment$10</ID>
     <ID>NestedBlockDepth:DownloadFile.kt$DownloadFile.DownloadTask$override fun execute()</ID>
     <ID>NestedBlockDepth:DownloadHandler.kt$DownloadHandler$private fun downloadRecursively( fragment: Fragment, id: String, name: String?, isShare: Boolean, isDirectory: Boolean, save: Boolean, append: Boolean, autoPlay: Boolean, shuffle: Boolean, background: Boolean, playNext: Boolean, unpin: Boolean, isArtist: Boolean )</ID>
     <ID>NestedBlockDepth:MediaPlayerService.kt$MediaPlayerService$private fun setupOnSongCompletedHandler()</ID>

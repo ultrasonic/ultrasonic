@@ -405,28 +405,7 @@
     <string name="settings.debug.log_deleted">De logboeken zijn verwijderd.</string>
     <string name="notification.downloading_title">Bezig met downloaden van media op de achtergrond…</string>
 
-    <string name="permissions.access_error">Ultrasonic heeft geen toegang tot de muziekcache. De cachelocatie is teruggezet op de standaardlocatie.</string>
-    <string name="permissions.message_box_title">Waarschuwing</string>
-    <string name="permissions.permission_missing">Ultrasonic heeft lees- en schrijfrechten nodig op de muziekcachemap. De cachemap is teruggezet op de standaardmap.</string>
-    <string name="permissions.rationale_title">Rechtenverzoek</string>
-    <string name="permissions.rationale_description_failed">Ultrasonic heeft lees- en schrijfrechten nodig op de muziekcachemap.\nGeef Ultrasonic toegang tot het bestandssysteem.</string>
-    <string name="permissions.permanent_denial_title">De rechten zijn afgewezen</string>
-    <string name="permissions.permanent_denial_description">Ultrasonic heeft lees- en schrijfrechten nodig op de cachemap. Je kunt deze rechten verlenen in de appinstellingen. Als je dit verzoek afwijst, wordt de standaardmap gebruikt.</string>
-    <string name="permissions.open_settings">Instellingen openen</string>
-    <string name="permissions.rationale_description_initial">Ultrasonic heeft lees- en schrijfrechten nodig op het bestandssysteem om de cachemap te kunnen wijzigen.</string>
 
-    <string name="filepicker.select_folder">Kies een map</string>
-    <string name="filepicker.create_folder">Nieuwe map maken</string>
-    <string name="filepicker.create_folder_failed">De map kan niet worden aangemaakt</string>
-    <string name="filepicker.internal">%1$s (intern)</string>
-    <string name="filepicker.default_app_folder">De standaard appmap op %1$s (extern)</string>
-    <string name="filepicker.enter_folder_name">Voer een mapnaam in</string>
-    <string name="filepicker.create">Maken</string>
-    <string name="filepicker.name_invalid">Voer een geldige mapnaam in</string>
-    <string name="filepicker.already_exists">Deze map bestaat al.\nGeef de map een andere naam.</string>
-    <string name="filepicker.select">Kiezen</string>
-    <string name="filepicker.default">Standaard gebruiken</string>
-    <string name="filepicker.available_drives">Beschikbare schijven:</string>
 
     <string name="server_selector.label">Ingestelde servers:</string>
     <string name="server_selector.delete_confirmation">Weet je zeker dat je deze server wilt verwijderen?</string>

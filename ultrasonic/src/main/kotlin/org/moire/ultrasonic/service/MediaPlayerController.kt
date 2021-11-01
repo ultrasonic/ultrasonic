@@ -260,12 +260,8 @@ class MediaPlayerController(
         }
 
     @Synchronized
-    fun clear() {
-        clear(true)
-    }
-
-    @Synchronized
-    fun clear(serialize: Boolean) {
+    @JvmOverloads
+    fun clear(serialize: Boolean = true) {
         val mediaPlayerService = runningInstance
         if (mediaPlayerService != null) {
             mediaPlayerService.clear(serialize)
