@@ -9,7 +9,6 @@ package org.moire.ultrasonic.util
 
 import android.content.Context
 import android.content.SharedPreferences
-import android.net.ConnectivityManager
 import android.os.Build
 import androidx.preference.PreferenceManager
 import java.util.regex.Pattern
@@ -70,12 +69,9 @@ object Settings {
     @JvmStatic
     val maxBitRate: Int
         get() {
-            val manager = Util.getConnectivityManager()
-            val networkInfo = manager.activeNetworkInfo ?: return 0
-            val wifi = networkInfo.type == ConnectivityManager.TYPE_WIFI
             val preferences = preferences
             return preferences.getString(
-                if (wifi) Constants.PREFERENCES_KEY_MAX_BITRATE_WIFI
+                if (Util.networkInfo().unmetered) Constants.PREFERENCES_KEY_MAX_BITRATE_WIFI
                 else Constants.PREFERENCES_KEY_MAX_BITRATE_MOBILE,
                 "0"
             )!!.toInt()
