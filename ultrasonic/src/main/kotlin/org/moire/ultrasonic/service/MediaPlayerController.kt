@@ -401,7 +401,8 @@ class MediaPlayerController(
         get() = localMediaPlayer.playerState
         set(state) {
             val mediaPlayerService = runningInstance
-            if (mediaPlayerService != null) localMediaPlayer.setPlayerState(state)
+            if (mediaPlayerService != null)
+                localMediaPlayer.setPlayerState(state, localMediaPlayer.currentPlaying)
         }
 
     @set:Synchronized
@@ -483,6 +484,7 @@ class MediaPlayerController(
                 Timber.e(e)
             }
         }.start()
+        // TODO this would be better handled with a Rx command
         updateNotification()
     }
 

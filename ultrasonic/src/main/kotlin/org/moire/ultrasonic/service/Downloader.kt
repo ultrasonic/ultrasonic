@@ -31,6 +31,7 @@ class Downloader(
     private val localMediaPlayer: LocalMediaPlayer
 ) : KoinComponent {
     val playlist: MutableList<DownloadFile> = ArrayList()
+
     var started: Boolean = false
 
     private val downloadQueue: PriorityQueue<DownloadFile> = PriorityQueue<DownloadFile>()
@@ -46,7 +47,10 @@ class Downloader(
     private var wifiLock: WifiManager.WifiLock? = null
 
     var playlistUpdateRevision: Long = 0
-        private set
+        private set(value) {
+            field = value
+            RxBus.playlistPublisher.onNext(playlist)
+        }
 
     val downloadChecker = Runnable {
         try {
@@ -350,6 +354,20 @@ class Downloader(
     }
 
     @Synchronized
+    fun clearIncomplete() {
+        val iterator = playlist.iterator()
+        var changedPlaylist = false
+        while (iterator.hasNext()) {
+            val downloadFile = iterator.next()
+            if (!downloadFile.isCompleteFileAvailable) {
+                iterator.remove()
+                changedPlaylist = true
+            }
+        }
+        if (changedPlaylist) playlistUpdateRevision++
+    }
+
+    @Synchronized
     fun downloadBackground(songs: List<MusicDirectory.Entry>, save: Boolean) {
 
         // Because of the priority handling we add the songs in the reverse order they
@@ -429,18 +447,21 @@ class Downloader(
                 playlistUpdateRevision++
             }
         }
+
         if (revisionBefore != playlistUpdateRevision) {
             jukeboxMediaPlayer.updatePlaylist()
         }
+
         if (wasEmpty && playlist.isNotEmpty()) {
             if (jukeboxMediaPlayer.isEnabled) {
                 jukeboxMediaPlayer.skip(0, 0)
-                localMediaPlayer.setPlayerState(PlayerState.STARTED)
+                localMediaPlayer.setPlayerState(PlayerState.STARTED, playlist[0])
             } else {
                 localMediaPlayer.play(playlist[0])
             }
         }
     }
+
     companion object {
         const val PARALLEL_DOWNLOADS = 3
         const val CHECK_INTERVAL = 5L

@@ -22,7 +22,7 @@ import android.support.v4.media.session.MediaSessionCompat
 import android.view.KeyEvent
 import androidx.core.app.NotificationCompat
 import androidx.core.app.NotificationManagerCompat
-import io.reactivex.rxjava3.disposables.Disposable
+import io.reactivex.rxjava3.disposables.CompositeDisposable
 import kotlin.collections.ArrayList
 import org.koin.android.ext.android.inject
 import org.moire.ultrasonic.R
@@ -38,10 +38,7 @@ import org.moire.ultrasonic.provider.UltrasonicAppWidgetProvider4X3
 import org.moire.ultrasonic.provider.UltrasonicAppWidgetProvider4X4
 import org.moire.ultrasonic.service.MusicServiceFactory.getMusicService
 import org.moire.ultrasonic.util.Constants
-import org.moire.ultrasonic.util.MediaSessionEventDistributor
-import org.moire.ultrasonic.util.MediaSessionEventListener
 import org.moire.ultrasonic.util.MediaSessionHandler
-import org.moire.ultrasonic.util.NowPlayingEventDistributor
 import org.moire.ultrasonic.util.Settings
 import org.moire.ultrasonic.util.ShufflePlayBuffer
 import org.moire.ultrasonic.util.SimpleServiceBinder
@@ -65,19 +62,13 @@ class MediaPlayerService : Service() {
     private val shufflePlayBuffer by inject<ShufflePlayBuffer>()
     private val downloader by inject<Downloader>()
     private val localMediaPlayer by inject<LocalMediaPlayer>()
-    private val nowPlayingEventDistributor by inject<NowPlayingEventDistributor>()
-    private val mediaSessionEventDistributor by inject<MediaSessionEventDistributor>()
     private val mediaSessionHandler by inject<MediaSessionHandler>()
 
     private var mediaSession: MediaSessionCompat? = null
     private var mediaSessionToken: MediaSessionCompat.Token? = null
     private var isInForeground = false
     private var notificationBuilder: NotificationCompat.Builder? = null
-    private lateinit var mediaSessionEventListener: MediaSessionEventListener
-    private var mediaSessionTokenSubscription: Disposable? = null
-
-    private val repeatMode: RepeatMode
-        get() = Settings.repeatMode
+    private var rxBusSubscription: CompositeDisposable = CompositeDisposable()
 
     override fun onBind(intent: Intent): IBinder {
         return binder
@@ -89,8 +80,6 @@ class MediaPlayerService : Service() {
         shufflePlayBuffer.onCreate()
         localMediaPlayer.init()
 
-        setupOnCurrentPlayingChangedHandler()
-        setupOnPlayerStateChangedHandler()
         setupOnSongCompletedHandler()
 
         localMediaPlayer.onPrepared = {
@@ -104,25 +93,32 @@ class MediaPlayerService : Service() {
 
         localMediaPlayer.onNextSongRequested = Runnable { setNextPlaying() }
 
-        mediaSessionTokenSubscription = RxBus.mediaSessionTokenObservable.subscribe {
-            mediaSessionToken = it
-        }
-
-        mediaSessionEventListener = object : MediaSessionEventListener {
-            override fun onSkipToQueueItemRequested(id: Long) {
-                play(id.toInt())
-            }
-        }
-
-        mediaSessionEventDistributor.subscribe(mediaSessionEventListener)
-        mediaSessionHandler.initialize()
-
         // Create Notification Channel
         createNotificationChannel()
 
         // Update notification early. It is better to show an empty one temporarily
         // than waiting too long and letting Android kill the app
         updateNotification(PlayerState.IDLE, null)
+
+        // Subscribing should be after updateNotification to avoid concurrency
+        rxBusSubscription += RxBus.playerStateObservable.subscribe {
+            playerStateChangedHandler(it.state, it.track)
+        }
+
+        rxBusSubscription += RxBus.currentPlayingObservable.subscribe {
+            currentPlayingChangedHandler(it.state, it.track)
+        }
+
+        rxBusSubscription += RxBus.mediaSessionTokenObservable.subscribe {
+            mediaSessionToken = it
+        }
+
+        rxBusSubscription += RxBus.skipToQueueItemCommandObservable.subscribe {
+            play(it.toInt())
+        }
+
+        mediaSessionHandler.initialize()
+
         instance = this
         Timber.i("MediaPlayerService created")
     }
@@ -136,9 +132,8 @@ class MediaPlayerService : Service() {
         super.onDestroy()
         instance = null
         try {
-            mediaSessionTokenSubscription?.dispose()
-            mediaSessionEventDistributor.unsubscribe(mediaSessionEventListener)
             mediaSessionHandler.release()
+            rxBusSubscription.dispose()
 
             localMediaPlayer.release()
             downloader.stop()
@@ -211,9 +206,7 @@ class MediaPlayerService : Service() {
 
     @Synchronized
     fun setNextPlaying() {
-        val gaplessPlayback = Settings.gaplessPlayback
-
-        if (!gaplessPlayback) {
+        if (!Settings.gaplessPlayback) {
             localMediaPlayer.clearNextPlaying(true)
             return
         }
@@ -221,7 +214,7 @@ class MediaPlayerService : Service() {
         var index = downloader.currentPlayingIndex
 
         if (index != -1) {
-            when (repeatMode) {
+            when (Settings.repeatMode) {
                 RepeatMode.OFF -> index += 1
                 RepeatMode.ALL -> index = (index + 1) % downloader.playlist.size
                 RepeatMode.SINGLE -> {
@@ -293,7 +286,6 @@ class MediaPlayerService : Service() {
             if (start) {
                 if (jukeboxMediaPlayer.isEnabled) {
                     jukeboxMediaPlayer.skip(index, 0)
-                    localMediaPlayer.setPlayerState(PlayerState.STARTED)
                 } else {
                     localMediaPlayer.play(downloader.playlist[index])
                 }
@@ -321,7 +313,7 @@ class MediaPlayerService : Service() {
             } else {
                 localMediaPlayer.pause()
             }
-            localMediaPlayer.setPlayerState(PlayerState.PAUSED)
+            localMediaPlayer.setPlayerState(PlayerState.PAUSED, localMediaPlayer.currentPlaying)
         }
     }
 
@@ -334,7 +326,7 @@ class MediaPlayerService : Service() {
                 localMediaPlayer.pause()
             }
         }
-        localMediaPlayer.setPlayerState(PlayerState.STOPPED)
+        localMediaPlayer.setPlayerState(PlayerState.STOPPED, null)
     }
 
     @Synchronized
@@ -344,7 +336,7 @@ class MediaPlayerService : Service() {
         } else {
             localMediaPlayer.start()
         }
-        localMediaPlayer.setPlayerState(PlayerState.STARTED)
+        localMediaPlayer.setPlayerState(PlayerState.STARTED, localMediaPlayer.currentPlaying)
     }
 
     private fun updateWidget(playerState: PlayerState, song: MusicDirectory.Entry?) {
@@ -357,92 +349,78 @@ class MediaPlayerService : Service() {
         UltrasonicAppWidgetProvider4X4.getInstance().notifyChange(context, song, started, false)
     }
 
-    private fun setupOnCurrentPlayingChangedHandler() {
-        localMediaPlayer.onCurrentPlayingChanged = { currentPlaying: DownloadFile? ->
+    private fun currentPlayingChangedHandler(
+        playerState: PlayerState,
+        currentPlaying: DownloadFile?
+    ) {
+        Util.broadcastNewTrackInfo(this@MediaPlayerService, currentPlaying?.song)
+        Util.broadcastA2dpMetaDataChange(
+            this@MediaPlayerService, playerPosition, currentPlaying,
+            downloader.all.size, downloader.currentPlayingIndex + 1
+        )
 
-            Util.broadcastNewTrackInfo(this@MediaPlayerService, currentPlaying?.song)
-            Util.broadcastA2dpMetaDataChange(
-                this@MediaPlayerService, playerPosition, currentPlaying,
-                downloader.all.size, downloader.currentPlayingIndex + 1
-            )
+        // Update widget
+        val song = currentPlaying?.song
 
-            // Update widget
-            val playerState = localMediaPlayer.playerState
-            val song = currentPlaying?.song
+        updateWidget(playerState, song)
 
-            updateWidget(playerState, song)
-
-            if (currentPlaying != null) {
-                updateNotification(localMediaPlayer.playerState, currentPlaying)
-                nowPlayingEventDistributor.raiseShowNowPlayingEvent()
-            } else {
-                nowPlayingEventDistributor.raiseHideNowPlayingEvent()
-                stopForeground(true)
-                isInForeground = false
-                stopIfIdle()
-            }
-            null
+        if (currentPlaying != null) {
+            updateNotification(playerState, currentPlaying)
+        } else {
+            stopForeground(true)
+            isInForeground = false
+            stopIfIdle()
         }
+
+        Timber.d("Processed currently playing track change")
     }
 
-    private fun setupOnPlayerStateChangedHandler() {
-        localMediaPlayer.onPlayerStateChanged = {
-            playerState: PlayerState,
-            currentPlaying: DownloadFile?
-            ->
+    private fun playerStateChangedHandler(
+        playerState: PlayerState,
+        currentPlaying: DownloadFile?
+    ) {
 
-            val context = this@MediaPlayerService
+        val context = this@MediaPlayerService
 
-            // Notify MediaSession
-            mediaSessionHandler.updateMediaSession(
-                currentPlaying,
-                downloader.currentPlayingIndex.toLong(),
-                playerState
+        if (playerState === PlayerState.PAUSED) {
+            playbackStateSerializer.serialize(
+                downloader.playlist, downloader.currentPlayingIndex, playerPosition
             )
-
-            if (playerState === PlayerState.PAUSED) {
-                playbackStateSerializer.serialize(
-                    downloader.playlist, downloader.currentPlayingIndex, playerPosition
-                )
-            }
-
-            val showWhenPaused = playerState !== PlayerState.STOPPED &&
-                Settings.isNotificationAlwaysEnabled
-
-            val show = playerState === PlayerState.STARTED || showWhenPaused
-            val song = currentPlaying?.song
-
-            Util.broadcastPlaybackStatusChange(context, playerState)
-            Util.broadcastA2dpPlayStatusChange(
-                context, playerState, song,
-                downloader.playlist.size,
-                downloader.playlist.indexOf(currentPlaying) + 1, playerPosition
-            )
-
-            // Update widget
-            updateWidget(playerState, song)
-
-            if (show) {
-                // Only update notification if player state is one that will change the icon
-                if (playerState === PlayerState.STARTED || playerState === PlayerState.PAUSED) {
-                    updateNotification(playerState, currentPlaying)
-                    nowPlayingEventDistributor.raiseShowNowPlayingEvent()
-                }
-            } else {
-                nowPlayingEventDistributor.raiseHideNowPlayingEvent()
-                stopForeground(true)
-                isInForeground = false
-                stopIfIdle()
-            }
-
-            if (playerState === PlayerState.STARTED) {
-                scrobbler.scrobble(currentPlaying, false)
-            } else if (playerState === PlayerState.COMPLETED) {
-                scrobbler.scrobble(currentPlaying, true)
-            }
-
-            null
         }
+
+        val showWhenPaused = playerState !== PlayerState.STOPPED &&
+            Settings.isNotificationAlwaysEnabled
+
+        val show = playerState === PlayerState.STARTED || showWhenPaused
+        val song = currentPlaying?.song
+
+        Util.broadcastPlaybackStatusChange(context, playerState)
+        Util.broadcastA2dpPlayStatusChange(
+            context, playerState, song,
+            downloader.playlist.size,
+            downloader.playlist.indexOf(currentPlaying) + 1, playerPosition
+        )
+
+        // Update widget
+        updateWidget(playerState, song)
+
+        if (show) {
+            // Only update notification if player state is one that will change the icon
+            if (playerState === PlayerState.STARTED || playerState === PlayerState.PAUSED) {
+                updateNotification(playerState, currentPlaying)
+            }
+        } else {
+            stopForeground(true)
+            isInForeground = false
+            stopIfIdle()
+        }
+
+        if (playerState === PlayerState.STARTED) {
+            scrobbler.scrobble(currentPlaying, false)
+        } else if (playerState === PlayerState.COMPLETED) {
+            scrobbler.scrobble(currentPlaying, true)
+        }
+        Timber.d("Processed player state change")
     }
 
     private fun setupOnSongCompletedHandler() {
@@ -460,7 +438,7 @@ class MediaPlayerService : Service() {
                 }
             }
             if (index != -1) {
-                when (repeatMode) {
+                when (Settings.repeatMode) {
                     RepeatMode.OFF -> {
                         if (index + 1 < 0 || index + 1 >= downloader.playlist.size) {
                             if (Settings.shouldClearPlaylist) {

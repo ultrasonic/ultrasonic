@@ -21,8 +21,6 @@ import org.moire.ultrasonic.app.UApp.Companion.applicationContext
 import org.moire.ultrasonic.domain.PlayerState
 import org.moire.ultrasonic.util.CacheCleaner
 import org.moire.ultrasonic.util.Constants
-import org.moire.ultrasonic.util.MediaSessionEventDistributor
-import org.moire.ultrasonic.util.MediaSessionEventListener
 import org.moire.ultrasonic.util.Settings
 import timber.log.Timber
 
@@ -35,7 +33,6 @@ class MediaPlayerLifecycleSupport : KoinComponent {
     private val playbackStateSerializer by inject<PlaybackStateSerializer>()
     private val mediaPlayerController by inject<MediaPlayerController>()
     private val downloader by inject<Downloader>()
-    private val mediaSessionEventDistributor by inject<MediaSessionEventDistributor>()
 
     private var created = false
     private var headsetEventReceiver: BroadcastReceiver? = null
