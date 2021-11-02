@@ -178,7 +178,7 @@ class EditServerFragment : Fragment(), OnBackPressedHandler {
                     }
                 )
                 .setNegativeButton(getString(R.string.common_cancel)) {
-                    dialogInterface, i ->
+                    dialogInterface, _ ->
                     dialogInterface.dismiss()
                 }
                 .setBottomSpace(DIALOG_PADDING)
