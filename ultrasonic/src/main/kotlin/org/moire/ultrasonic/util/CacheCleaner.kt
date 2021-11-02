@@ -57,11 +57,14 @@ class CacheCleaner {
         override fun doInBackground(vararg params: Void?): Void? {
             try {
                 Thread.currentThread().name = "BackgroundCleanup"
+
                 val files: MutableList<File> = ArrayList()
                 val dirs: MutableList<File> = ArrayList()
+
                 findCandidatesForDeletion(musicDirectory, files, dirs)
                 sortByAscendingModificationTime(files)
                 val filesToNotDelete = findFilesToNotDelete()
+
                 deleteFiles(files, filesToNotDelete, getMinimumDelete(files), true)
                 deleteEmptyDirs(dirs, filesToNotDelete)
             } catch (all: RuntimeException) {
@@ -75,15 +78,18 @@ class CacheCleaner {
         override fun doInBackground(vararg params: Void?): Void? {
             try {
                 Thread.currentThread().name = "BackgroundSpaceCleanup"
+
                 val files: MutableList<File> = ArrayList()
                 val dirs: MutableList<File> = ArrayList()
+
                 findCandidatesForDeletion(musicDirectory, files, dirs)
+
                 val bytesToDelete = getMinimumDelete(files)
-                if (bytesToDelete > 0L) {
-                    sortByAscendingModificationTime(files)
-                    val filesToNotDelete = findFilesToNotDelete()
-                    deleteFiles(files, filesToNotDelete, bytesToDelete, false)
-                }
+                if (bytesToDelete <= 0L) return null
+
+                sortByAscendingModificationTime(files)
+                val filesToNotDelete = findFilesToNotDelete()
+                deleteFiles(files, filesToNotDelete, bytesToDelete, false)
             } catch (all: RuntimeException) {
                 Timber.e(all, "Error in cache cleaning.")
             }
@@ -97,13 +103,17 @@ class CacheCleaner {
                 val activeServerProvider = inject<ActiveServerProvider>(
                     ActiveServerProvider::class.java
                 )
+
                 Thread.currentThread().name = "BackgroundPlaylistsCleanup"
+
                 val server = activeServerProvider.value.getActiveServer().name
                 val playlistFiles = listFiles(getPlaylistDirectory(server))
                 val playlists = params[0]
+
                 for ((_, name) in playlists) {
                     playlistFiles.remove(getPlaylistFile(server, name))
                 }
+
                 for (playlist in playlistFiles) {
                     playlist.delete()
                 }
@@ -118,9 +128,8 @@ class CacheCleaner {
         private const val MIN_FREE_SPACE = 500 * 1024L * 1024L
         private fun deleteEmptyDirs(dirs: Iterable<File>, doNotDelete: Collection<File>) {
             for (dir in dirs) {
-                if (doNotDelete.contains(dir)) {
-                    continue
-                }
+                if (doNotDelete.contains(dir)) continue
+
                 var children = dir.listFiles()
                 if (children != null) {
                     // No songs left in the folder
@@ -139,11 +148,11 @@ class CacheCleaner {
         }
 
         private fun getMinimumDelete(files: List<File>): Long {
-            if (files.isEmpty()) {
-                return 0L
-            }
+            if (files.isEmpty()) return 0L
+
             val cacheSizeBytes = cacheSizeMB * 1024L * 1024L
             var bytesUsedBySubsonic = 0L
+
             for (file in files) {
                 bytesUsedBySubsonic += file.length()
             }
@@ -166,6 +175,7 @@ class CacheCleaner {
             Timber.i("Cache limit       : %s", formatBytes(cacheSizeBytes))
             Timber.i("Cache size before : %s", formatBytes(bytesUsedBySubsonic))
             Timber.i("Minimum to delete : %s", formatBytes(bytesToDelete))
+
             return bytesToDelete
         }
 
@@ -184,10 +194,9 @@ class CacheCleaner {
             bytesToDelete: Long,
             deletePartials: Boolean
         ) {
-            if (files.isEmpty()) {
-                return
-            }
+            if (files.isEmpty()) return
             var bytesDeleted = 0L
+
             for (file in files) {
                 if (!deletePartials && bytesDeleted > bytesToDelete) break
                 if (bytesToDelete > bytesDeleted || deletePartials && isPartial(file)) {
@@ -209,7 +218,7 @@ class CacheCleaner {
         ) {
             if (file.isFile && (isPartial(file) || isComplete(file))) {
                 files.add(file)
-            } else {
+            } else if (file.isDirectory) {
                 // Depth-first
                 for (child in listFiles(file)) {
                     findCandidatesForDeletion(child, files, dirs)
@@ -226,13 +235,16 @@ class CacheCleaner {
 
         private fun findFilesToNotDelete(): Set<File> {
             val filesToNotDelete: MutableSet<File> = HashSet(5)
+
             val downloader = inject<Downloader>(
                 Downloader::class.java
             )
+
             for (downloadFile in downloader.value.all) {
                 filesToNotDelete.add(downloadFile.partialFile)
                 filesToNotDelete.add(downloadFile.completeOrSaveFile)
             }
+
             filesToNotDelete.add(musicDirectory)
             return filesToNotDelete
         }
