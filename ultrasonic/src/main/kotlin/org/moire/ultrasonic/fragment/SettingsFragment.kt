@@ -4,7 +4,6 @@ import android.app.Activity
 import android.app.AlertDialog
 import android.content.DialogInterface
 import android.content.Intent
-import android.content.Intent.FLAG_GRANT_PERSISTABLE_URI_PERMISSION
 import android.content.SharedPreferences
 import android.content.SharedPreferences.OnSharedPreferenceChangeListener
 import android.net.Uri
@@ -175,10 +174,7 @@ class SettingsFragment :
                 // Perform operations on the document using its URI.
                 val contentResolver = UApp.applicationContext().contentResolver
 
-                val takeFlags: Int = Intent.FLAG_GRANT_READ_URI_PERMISSION or
-                        Intent.FLAG_GRANT_WRITE_URI_PERMISSION
-// Check for the freshest data.
-                contentResolver.takePersistableUriPermission(uri, takeFlags)
+                contentResolver.takePersistableUriPermission(uri, RW_FLAG)
 
                 setCacheLocation(uri)
 
@@ -256,9 +252,10 @@ class SettingsFragment :
                     intent.putExtra(DocumentsContract.EXTRA_INITIAL_URI, defaultMusicDirectory.path)
                 }
 
-                intent.addFlags(FLAG_GRANT_PERSISTABLE_URI_PERMISSION)
-                startActivityForResult(intent, SELECT_CACHE_ACTIVITY)
+                intent.addFlags(RW_FLAG)
+                intent.addFlags(PERSISTABLE_FLAG)
 
+                startActivityForResult(intent, SELECT_CACHE_ACTIVITY)
 
                 true
             }
@@ -477,5 +474,8 @@ class SettingsFragment :
 
     companion object {
         const val SELECT_CACHE_ACTIVITY = 161161
+        const val RW_FLAG = Intent.FLAG_GRANT_READ_URI_PERMISSION or
+                Intent.FLAG_GRANT_WRITE_URI_PERMISSION
+        const val PERSISTABLE_FLAG = Intent.FLAG_GRANT_PERSISTABLE_URI_PERMISSION
     }
 }
