@@ -2,8 +2,8 @@ package org.moire.ultrasonic.data
 
 import androidx.lifecycle.MutableLiveData
 import androidx.room.Room
+import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.withContext
@@ -24,7 +24,7 @@ import timber.log.Timber
  */
 class ActiveServerProvider(
     private val repository: ServerSettingDao
-) {
+) : CoroutineScope by CoroutineScope(Dispatchers.IO) {
     private var cachedServer: ServerSetting? = null
     private var cachedDatabase: MetaDatabase? = null
     private var cachedServerId: Int? = null
@@ -83,7 +83,7 @@ class ActiveServerProvider(
             return
         }
 
-        GlobalScope.launch(Dispatchers.IO) {
+        launch {
             val serverId = repository.findByIndex(index)?.id ?: 0
             setActiveServerId(serverId)
         }
@@ -133,7 +133,7 @@ class ActiveServerProvider(
      * Sets the minimum Subsonic API version of the current server.
      */
     fun setMinimumApiVersion(apiVersion: String) {
-        GlobalScope.launch(Dispatchers.IO) {
+        launch {
             if (cachedServer != null) {
                 cachedServer!!.minimumApiVersion = apiVersion
                 repository.update(cachedServer!!)
