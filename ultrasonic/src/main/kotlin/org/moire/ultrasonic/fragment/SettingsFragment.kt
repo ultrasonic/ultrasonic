@@ -20,6 +20,8 @@ import androidx.preference.ListPreference
 import androidx.preference.Preference
 import androidx.preference.PreferenceCategory
 import androidx.preference.PreferenceFragmentCompat
+import java.io.File
+import kotlin.math.ceil
 import org.koin.core.component.KoinComponent
 import org.koin.java.KoinJavaComponent.get
 import org.koin.java.KoinJavaComponent.inject
@@ -49,8 +51,6 @@ import org.moire.ultrasonic.util.TimeSpanPreference
 import org.moire.ultrasonic.util.TimeSpanPreferenceDialogFragmentCompat
 import org.moire.ultrasonic.util.Util.toast
 import timber.log.Timber
-import java.io.File
-import kotlin.math.ceil
 
 /**
  * Shows main app settings.
@@ -177,11 +177,9 @@ class SettingsFragment :
                 contentResolver.takePersistableUriPermission(uri, RW_FLAG)
 
                 setCacheLocation(uri)
-
             }
         }
     }
-
 
     override fun onResume() {
         super.onResume()
@@ -475,7 +473,7 @@ class SettingsFragment :
     companion object {
         const val SELECT_CACHE_ACTIVITY = 161161
         const val RW_FLAG = Intent.FLAG_GRANT_READ_URI_PERMISSION or
-                Intent.FLAG_GRANT_WRITE_URI_PERMISSION
+            Intent.FLAG_GRANT_WRITE_URI_PERMISSION
         const val PERSISTABLE_FLAG = Intent.FLAG_GRANT_PERSISTABLE_URI_PERMISSION
     }
 }

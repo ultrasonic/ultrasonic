@@ -25,10 +25,8 @@ import java.util.Locale
 import java.util.SortedSet
 import java.util.TreeSet
 import java.util.regex.Pattern
-import org.koin.java.KoinJavaComponent.inject
 import org.moire.ultrasonic.app.UApp
 import org.moire.ultrasonic.domain.MusicDirectory
-import org.moire.ultrasonic.service.MediaPlayerController
 import timber.log.Timber
 
 object FileUtil {
