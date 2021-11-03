@@ -28,6 +28,7 @@ import org.moire.ultrasonic.util.CancellableTask
 import org.moire.ultrasonic.util.FileUtil
 import org.moire.ultrasonic.util.Settings
 import org.moire.ultrasonic.util.Util
+import org.moire.ultrasonic.util.Util.safeClose
 import timber.log.Timber
 
 /**
@@ -135,9 +136,9 @@ class DownloadFile(
 
     fun delete() {
         cancelDownload()
-        Util.delete(partialFile)
-        Util.delete(completeFile)
-        Util.delete(saveFile)
+        FileUtil.delete(partialFile)
+        FileUtil.delete(completeFile)
+        FileUtil.delete(saveFile)
 
         Util.scanMedia(saveFile)
     }
@@ -156,11 +157,11 @@ class DownloadFile(
     fun cleanup(): Boolean {
         var ok = true
         if (completeFile.exists() || saveFile.exists()) {
-            ok = Util.delete(partialFile)
+            ok = FileUtil.delete(partialFile)
         }
 
         if (saveFile.exists()) {
-            ok = ok and Util.delete(completeFile)
+            ok = ok and FileUtil.delete(completeFile)
         }
 
         return ok
@@ -182,14 +183,14 @@ class DownloadFile(
     private fun doPendingRename() {
         try {
             if (saveWhenDone) {
-                Util.renameFile(completeFile, saveFile)
+                FileUtil.renameFile(completeFile, saveFile)
                 saveWhenDone = false
             } else if (completeWhenDone) {
                 if (save) {
-                    Util.renameFile(partialFile, saveFile)
+                    FileUtil.renameFile(partialFile, saveFile)
                     Util.scanMedia(saveFile)
                 } else {
-                    Util.renameFile(partialFile, completeFile)
+                    FileUtil.renameFile(partialFile, completeFile)
                 }
                 completeWhenDone = false
             }
@@ -221,7 +222,7 @@ class DownloadFile(
                         if (isPlaying) {
                             saveWhenDone = true
                         } else {
-                            Util.renameFile(completeFile, saveFile)
+                            FileUtil.renameFile(completeFile, saveFile)
                         }
                     } else {
                         Timber.i("%s already exists. Skipping.", completeFile)
@@ -291,16 +292,16 @@ class DownloadFile(
                     completeWhenDone = true
                 } else {
                     if (save) {
-                        Util.renameFile(partialFile, saveFile)
+                        FileUtil.renameFile(partialFile, saveFile)
                         Util.scanMedia(saveFile)
                     } else {
-                        Util.renameFile(partialFile, completeFile)
+                        FileUtil.renameFile(partialFile, completeFile)
                     }
                 }
             } catch (all: Exception) {
-                Util.close(outputStream)
-                Util.delete(completeFile)
-                Util.delete(saveFile)
+                outputStream.safeClose()
+                FileUtil.delete(completeFile)
+                FileUtil.delete(saveFile)
                 if (!isCancelled) {
                     isFailed = true
                     if (retryCount > 1) {
@@ -313,8 +314,8 @@ class DownloadFile(
                     Timber.w(all, "Failed to download '%s'.", song)
                 }
             } finally {
-                Util.close(inputStream)
-                Util.close(outputStream)
+                inputStream.safeClose()
+                outputStream.safeClose()
                 CacheCleaner().cleanSpace()
                 downloader.checkDownloads()
             }

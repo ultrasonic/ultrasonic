@@ -43,9 +43,6 @@ import androidx.annotation.AnyRes
 import androidx.media.utils.MediaConstants
 import java.io.Closeable
 import java.io.File
-import java.io.FileInputStream
-import java.io.FileOutputStream
-import java.io.IOException
 import java.io.UnsupportedEncodingException
 import java.security.MessageDigest
 import java.text.DecimalFormat
@@ -112,62 +109,6 @@ object Util {
                 context!!.setTheme(R.style.UltrasonicTheme_Light)
             }
         }
-    }
-
-    @Throws(IOException::class)
-    fun atomicCopy(from: File, to: File) {
-        val tmp = File(String.format(Locale.ROOT, "%s.tmp", to.path))
-        val input = FileInputStream(from)
-        val out = FileOutputStream(tmp)
-        try {
-            input.channel.transferTo(0, from.length(), out.channel)
-            out.close()
-            if (!tmp.renameTo(to)) {
-                throw IOException(
-                    String.format(Locale.ROOT, "Failed to rename %s to %s", tmp, to)
-                )
-            }
-            Timber.i("Copied %s to %s", from, to)
-        } catch (x: IOException) {
-            close(out)
-            delete(to)
-            throw x
-        } finally {
-            close(input)
-            close(out)
-            delete(tmp)
-        }
-    }
-
-    @JvmStatic
-    @Throws(IOException::class)
-    fun renameFile(from: File, to: File) {
-        if (from.renameTo(to)) {
-            Timber.i("Renamed %s to %s", from, to)
-        } else {
-            atomicCopy(from, to)
-        }
-    }
-
-    @JvmStatic
-    fun close(closeable: Closeable?) {
-        try {
-            closeable?.close()
-        } catch (_: Throwable) {
-            // Ignored
-        }
-    }
-
-    @JvmStatic
-    fun delete(file: File?): Boolean {
-        if (file != null && file.exists()) {
-            if (!file.delete()) {
-                Timber.w("Failed to delete file %s", file)
-                return false
-            }
-            Timber.i("Deleted file %s", file)
-        }
-        return true
     }
 
     @JvmStatic
@@ -957,8 +898,22 @@ object Util {
         return context.getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
     }
 
+    /**
+     * Small data class to store information about the current network
+     **/
     data class NetworkInfo(
         var connected: Boolean = false,
         var unmetered: Boolean = false
     )
+
+    /**
+     * Closes a Closeable while ignoring any errors.
+     **/
+    fun Closeable?.safeClose() {
+        try {
+            this?.close()
+        } catch (_: Exception) {
+            // Ignored
+        }
+    }
 }

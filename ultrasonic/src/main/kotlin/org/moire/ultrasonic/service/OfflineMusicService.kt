@@ -41,7 +41,7 @@ import org.moire.ultrasonic.domain.Share
 import org.moire.ultrasonic.domain.UserInfo
 import org.moire.ultrasonic.util.Constants
 import org.moire.ultrasonic.util.FileUtil
-import org.moire.ultrasonic.util.Util
+import org.moire.ultrasonic.util.Util.safeClose
 import timber.log.Timber
 
 // TODO: There are quite a number of deeply nested and complicated functions in this class..
@@ -213,8 +213,8 @@ class OfflineMusicService : MusicService, KoinComponent {
             }
             playlist
         } finally {
-            Util.close(buffer)
-            Util.close(reader)
+            buffer.safeClose()
+            reader.safeClose()
         }
     }
 

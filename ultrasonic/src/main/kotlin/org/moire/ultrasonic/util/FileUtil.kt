@@ -27,8 +27,10 @@ import java.util.TreeSet
 import java.util.regex.Pattern
 import org.moire.ultrasonic.app.UApp
 import org.moire.ultrasonic.domain.MusicDirectory
+import org.moire.ultrasonic.util.Util.safeClose
 import timber.log.Timber
 
+@Suppress("TooManyFunctions")
 object FileUtil {
 
     private val FILE_SYSTEM_UNSAFE = arrayOf("/", "\\", "..", ":", "\"", "?", "*", "<", ">", "|")
@@ -416,7 +418,7 @@ object FileUtil {
             Timber.w("Failed to serialize object to %s", file)
             false
         } finally {
-            Util.close(out)
+            out.safeClose()
         }
     }
 
@@ -438,7 +440,7 @@ object FileUtil {
             Timber.w(all, "Failed to deserialize object from %s", file)
             null
         } finally {
-            Util.close(inStream)
+            inStream.safeClose()
         }
     }
 
@@ -466,8 +468,55 @@ object FileUtil {
             Timber.w("Failed to save playlist: %s", name)
             throw e
         } finally {
-            bw.close()
-            fw.close()
+            bw.safeClose()
+            fw.safeClose()
         }
+    }
+
+    @Throws(IOException::class)
+    fun atomicCopy(from: File, to: File) {
+        val tmp = File(String.format(Locale.ROOT, "%s.tmp", to.path))
+        val input = FileInputStream(from)
+        val out = FileOutputStream(tmp)
+        try {
+            input.channel.transferTo(0, from.length(), out.channel)
+            out.close()
+            if (!tmp.renameTo(to)) {
+                throw IOException(
+                    String.format(Locale.ROOT, "Failed to rename %s to %s", tmp, to)
+                )
+            }
+            Timber.i("Copied %s to %s", from, to)
+        } catch (x: IOException) {
+            out.safeClose()
+            delete(to)
+            throw x
+        } finally {
+            input.safeClose()
+            out.safeClose()
+            delete(tmp)
+        }
+    }
+
+    @JvmStatic
+    @Throws(IOException::class)
+    fun renameFile(from: File, to: File) {
+        if (from.renameTo(to)) {
+            Timber.i("Renamed %s to %s", from, to)
+        } else {
+            atomicCopy(from, to)
+        }
+    }
+
+    @JvmStatic
+    fun delete(file: File?): Boolean {
+        if (file != null && file.exists()) {
+            if (!file.delete()) {
+                Timber.w("Failed to delete file %s", file)
+                return false
+            }
+            Timber.i("Deleted file %s", file)
+        }
+        return true
     }
 }
