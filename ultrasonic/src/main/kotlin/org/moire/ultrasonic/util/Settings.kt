@@ -69,13 +69,20 @@ object Settings {
     @JvmStatic
     val maxBitRate: Int
         get() {
-            val preferences = preferences
-            return preferences.getString(
-                if (Util.networkInfo().unmetered) Constants.PREFERENCES_KEY_MAX_BITRATE_WIFI
-                else Constants.PREFERENCES_KEY_MAX_BITRATE_MOBILE,
-                "0"
-            )!!.toInt()
+            val network = Util.networkInfo()
+
+            if (!network.connected) return 0
+
+            if (network.unmetered) {
+                return maxWifiBitRate
+            } else {
+                return maxMobileBitRate
+            }
         }
+
+    private var maxWifiBitRate by StringIntSetting(Constants.PREFERENCES_KEY_MAX_BITRATE_WIFI)
+
+    private var maxMobileBitRate by StringIntSetting(Constants.PREFERENCES_KEY_MAX_BITRATE_MOBILE)
 
     @JvmStatic
     val preloadCount: Int
