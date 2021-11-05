@@ -23,7 +23,7 @@ ext.versions = [
         room                 : "2.3.0",
         kotlin               : "1.5.31",
         kotlinxCoroutines    : "1.5.2-native-mt",
-        viewModelKtx         : "2.2.0",
+        viewModelKtx         : "2.3.0",
 
         retrofit             : "2.6.4",
         jackson              : "2.9.5",
