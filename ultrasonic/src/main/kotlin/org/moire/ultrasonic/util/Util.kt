@@ -22,9 +22,13 @@ import android.graphics.Canvas
 import android.graphics.drawable.BitmapDrawable
 import android.graphics.drawable.Drawable
 import android.net.ConnectivityManager
+import android.net.Network
+import android.net.NetworkCapabilities.NET_CAPABILITY_INTERNET
+import android.net.NetworkCapabilities.NET_CAPABILITY_NOT_METERED
 import android.net.Uri
 import android.net.wifi.WifiManager
 import android.net.wifi.WifiManager.WifiLock
+import android.os.Build
 import android.os.Bundle
 import android.os.Environment
 import android.os.Parcelable
@@ -374,14 +378,45 @@ object Util {
         return null
     }
 
+    /**
+     * Check if a usable network for downloading media is available
+     *
+     * @return Boolean
+     */
     @JvmStatic
     fun isNetworkConnected(): Boolean {
-        val manager = getConnectivityManager()
-        val networkInfo = manager.activeNetworkInfo
-        val connected = networkInfo != null && networkInfo.isConnected
-        val wifiConnected = connected && networkInfo!!.type == ConnectivityManager.TYPE_WIFI
+        val info = networkInfo()
+        val isUnmetered = info.unmetered
         val wifiRequired = Settings.isWifiRequiredForDownload
-        return connected && (!wifiRequired || wifiConnected)
+        return info.connected && (!wifiRequired || isUnmetered)
+    }
+
+    /**
+     * Query connectivity status
+     *
+     * @return NetworkInfo object
+     */
+    @Suppress("DEPRECATION")
+    fun networkInfo(): NetworkInfo {
+        val manager = getConnectivityManager()
+        val info = NetworkInfo()
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            val network: Network? = manager.activeNetwork
+            val capabilities = manager.getNetworkCapabilities(network)
+
+            if (capabilities != null) {
+                info.unmetered = capabilities.hasCapability(NET_CAPABILITY_NOT_METERED)
+                info.connected = capabilities.hasCapability(NET_CAPABILITY_INTERNET)
+            }
+        } else {
+            val networkInfo = manager.activeNetworkInfo
+            if (networkInfo != null) {
+                info.unmetered = networkInfo.type == ConnectivityManager.TYPE_WIFI
+                info.connected = networkInfo.isConnected
+            }
+        }
+        return info
     }
 
     @JvmStatic
@@ -921,4 +956,9 @@ object Util {
         val context = appContext()
         return context.getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
     }
+
+    data class NetworkInfo(
+        var connected: Boolean = false,
+        var unmetered: Boolean = false
+    )
 }
