@@ -7,7 +7,7 @@ ext.versions = [
 
         navigation           : "2.3.5",
         gradlePlugin         : "4.2.2",
-        androidxcore         : "1.5.0",
+        androidxcore         : "1.6.0",
         ktlint               : "0.37.1",
         ktlintGradle         : "10.2.0",
         detekt               : "1.18.1",
@@ -23,7 +23,7 @@ ext.versions = [
         room                 : "2.3.0",
         kotlin               : "1.5.31",
         kotlinxCoroutines    : "1.5.2-native-mt",
-        viewModelKtx         : "2.2.0",
+        viewModelKtx         : "2.3.0",
 
         retrofit             : "2.6.4",
         jackson              : "2.9.5",
@@ -35,7 +35,7 @@ ext.versions = [
         junit4               : "4.13.2",
         junit5               : "5.8.1",
         mockito              : "4.0.0",
-        mockitoKotlin        : "3.2.0",
+        mockitoKotlin        : "4.0.0",
         kluent               : "1.68",
         apacheCodecs         : "1.15",
         robolectric          : "4.6.1",
