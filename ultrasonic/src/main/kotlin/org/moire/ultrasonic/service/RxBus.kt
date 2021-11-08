@@ -37,13 +37,6 @@ class RxBus {
                 .replay(1)
                 .autoConnect(0)
 
-        val currentPlayingPublisher: PublishSubject<StateWithTrack> =
-            PublishSubject.create()
-        val currentPlayingObservable: Observable<StateWithTrack> =
-            currentPlayingPublisher.observeOn(AndroidSchedulers.mainThread())
-                .replay(1)
-                .autoConnect(0)
-
         val playlistPublisher: PublishSubject<List<DownloadFile>> =
             PublishSubject.create()
         val playlistObservable: Observable<List<DownloadFile>> =

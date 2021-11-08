@@ -185,7 +185,7 @@ class LocalMediaPlayer : KoinComponent {
         // In some cases this function is called twice
         if (this.currentPlaying == currentPlaying) return
         this.currentPlaying = currentPlaying
-        RxBus.currentPlayingPublisher.onNext(RxBus.StateWithTrack(playerState, currentPlaying))
+        RxBus.playerStatePublisher.onNext(RxBus.StateWithTrack(playerState, currentPlaying))
     }
 
     /*

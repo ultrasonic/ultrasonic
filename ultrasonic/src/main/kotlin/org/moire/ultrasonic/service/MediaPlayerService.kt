@@ -70,6 +70,9 @@ class MediaPlayerService : Service() {
     private var notificationBuilder: NotificationCompat.Builder? = null
     private var rxBusSubscription: CompositeDisposable = CompositeDisposable()
 
+    private var currentPlayerState: PlayerState? = null
+    private var currentTrack: DownloadFile? = null
+
     override fun onBind(intent: Intent): IBinder {
         return binder
     }
@@ -103,10 +106,6 @@ class MediaPlayerService : Service() {
         // Subscribing should be after updateNotification to avoid concurrency
         rxBusSubscription += RxBus.playerStateObservable.subscribe {
             playerStateChangedHandler(it.state, it.track)
-        }
-
-        rxBusSubscription += RxBus.currentPlayingObservable.subscribe {
-            currentPlayingChangedHandler(it.state, it.track)
         }
 
         rxBusSubscription += RxBus.mediaSessionTokenObservable.subscribe {
@@ -349,44 +348,15 @@ class MediaPlayerService : Service() {
         UltrasonicAppWidgetProvider4X4.getInstance().notifyChange(context, song, started, false)
     }
 
-    private fun currentPlayingChangedHandler(
-        playerState: PlayerState,
-        currentPlaying: DownloadFile?
-    ) {
-        Util.broadcastNewTrackInfo(this@MediaPlayerService, currentPlaying?.song)
-        Util.broadcastA2dpMetaDataChange(
-            this@MediaPlayerService, playerPosition, currentPlaying,
-            downloader.all.size, downloader.currentPlayingIndex + 1
-        )
-
-        // Update widget
-        val song = currentPlaying?.song
-
-        updateWidget(playerState, song)
-
-        if (currentPlaying != null) {
-            updateNotification(playerState, currentPlaying)
-        } else {
-            stopForeground(true)
-            isInForeground = false
-            stopIfIdle()
-        }
-
-        Timber.d("Processed currently playing track change")
-    }
-
     private fun playerStateChangedHandler(
         playerState: PlayerState,
         currentPlaying: DownloadFile?
     ) {
-
         val context = this@MediaPlayerService
-
-        if (playerState === PlayerState.PAUSED) {
-            playbackStateSerializer.serialize(
-                downloader.playlist, downloader.currentPlayingIndex, playerPosition
-            )
-        }
+        // AVRCP handles these separately so we must differentiate between the cases
+        val isStateChanged = playerState != currentPlayerState
+        val isTrackChanged = currentPlaying != currentTrack
+        if (!isStateChanged && !isTrackChanged) return
 
         val showWhenPaused = playerState !== PlayerState.STOPPED &&
             Settings.isNotificationAlwaysEnabled
@@ -394,12 +364,38 @@ class MediaPlayerService : Service() {
         val show = playerState === PlayerState.STARTED || showWhenPaused
         val song = currentPlaying?.song
 
-        Util.broadcastPlaybackStatusChange(context, playerState)
-        Util.broadcastA2dpPlayStatusChange(
-            context, playerState, song,
-            downloader.playlist.size,
-            downloader.playlist.indexOf(currentPlaying) + 1, playerPosition
-        )
+        if (isStateChanged) {
+            when {
+                playerState === PlayerState.PAUSED -> {
+                    playbackStateSerializer.serialize(
+                        downloader.playlist, downloader.currentPlayingIndex, playerPosition
+                    )
+                }
+                playerState === PlayerState.STARTED -> {
+                    scrobbler.scrobble(currentPlaying, false)
+                }
+                playerState === PlayerState.COMPLETED -> {
+                    scrobbler.scrobble(currentPlaying, true)
+                }
+            }
+
+            Util.broadcastPlaybackStatusChange(context, playerState)
+            Util.broadcastA2dpPlayStatusChange(
+                context, playerState, song,
+                downloader.playlist.size,
+                downloader.playlist.indexOf(currentPlaying) + 1, playerPosition
+            )
+        } else {
+            // State didn't change, only the track
+            Util.broadcastA2dpMetaDataChange(
+                this@MediaPlayerService, playerPosition, currentPlaying,
+                downloader.all.size, downloader.currentPlayingIndex + 1
+            )
+        }
+
+        if (isTrackChanged) {
+            Util.broadcastNewTrackInfo(this@MediaPlayerService, currentPlaying?.song)
+        }
 
         // Update widget
         updateWidget(playerState, song)
@@ -415,11 +411,9 @@ class MediaPlayerService : Service() {
             stopIfIdle()
         }
 
-        if (playerState === PlayerState.STARTED) {
-            scrobbler.scrobble(currentPlaying, false)
-        } else if (playerState === PlayerState.COMPLETED) {
-            scrobbler.scrobble(currentPlaying, true)
-        }
+        currentPlayerState = playerState
+        currentTrack = currentPlaying
+
         Timber.d("Processed player state change")
     }
 
