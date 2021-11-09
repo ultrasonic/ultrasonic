@@ -30,14 +30,15 @@ class Downloader(
     private val externalStorageMonitor: ExternalStorageMonitor,
     private val localMediaPlayer: LocalMediaPlayer
 ) : KoinComponent {
-    val playlist: MutableList<DownloadFile> = ArrayList()
+
+    private val playlist = mutableListOf<DownloadFile>()
 
     var started: Boolean = false
 
-    private val downloadQueue: PriorityQueue<DownloadFile> = PriorityQueue<DownloadFile>()
-    private val activelyDownloading: MutableList<DownloadFile> = ArrayList()
+    private val downloadQueue = PriorityQueue<DownloadFile>()
+    private val activelyDownloading = mutableListOf<DownloadFile>()
 
-    val observableList: MutableLiveData<List<DownloadFile>> = MutableLiveData<List<DownloadFile>>()
+    val observableDownloads = MutableLiveData<List<DownloadFile>>()
 
     private val jukeboxMediaPlayer: JukeboxMediaPlayer by inject()
 
@@ -46,7 +47,7 @@ class Downloader(
     private var executorService: ScheduledExecutorService? = null
     private var wifiLock: WifiManager.WifiLock? = null
 
-    var playlistUpdateRevision: Long = 0
+    private var playlistUpdateRevision: Long = 0
         private set(value) {
             field = value
             RxBus.playlistPublisher.onNext(playlist)
@@ -65,7 +66,7 @@ class Downloader(
         stop()
         clearPlaylist()
         clearBackground()
-        observableList.value = listOf()
+        observableDownloads.value = listOf()
         Timber.i("Downloader destroyed")
     }
 
@@ -183,7 +184,7 @@ class Downloader(
     }
 
     private fun updateLiveData() {
-        observableList.postValue(downloads)
+        observableDownloads.postValue(downloads)
     }
 
     private fun startDownloadOnService(task: DownloadFile) {
@@ -267,6 +268,10 @@ class Downloader(
             )
             return temp.distinct().sorted()
         }
+
+    // Public facing playlist (immutable)
+    @Synchronized
+    fun getPlaylist(): List<DownloadFile> = playlist
 
     @Synchronized
     fun clearPlaylist() {
