@@ -6,7 +6,7 @@
     android:orientation="vertical" >
     
     <LinearLayout 
-		android:layout_height="4dip" 
+		android:layout_height="4dip"
 		android:layout_width="fill_parent" 
 		android:background="@drawable/drop_shadow" />
 
