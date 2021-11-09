@@ -64,7 +64,7 @@
         <item name="list_selector_holo_selected">@drawable/list_selector_holo_dark_selected</item>
     </style>
 
-    <style name="UltrasonicTheme" parent="Theme.MaterialComponents">
+    <style name="UltrasonicTheme.Dark" parent="Theme.MaterialComponents">
         <item name="windowActionBar">false</item>
         <item name="windowNoTitle">true</item>
         <item name="color_background">@color/background_color_grey</item>

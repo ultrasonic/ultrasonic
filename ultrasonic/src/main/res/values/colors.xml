@@ -6,8 +6,6 @@
     <color name="cyan">#0099cc</color>
     <color name="navigation_header_light">#6200EE</color>
     <color name="navigation_header_dark">#BB86FC</color>
-    <color name="ics_opaque">#8033b5e5</color>
-    <color name="md__transparent">#00000000</color>
     <color name="translucent">#80000000</color>
     <color name="background_color_dark">#000000</color>
     <color name="background_color_grey">#333333</color>

@@ -7,7 +7,7 @@
         a:id="@+id/select_album_art"
         a:layout_width="160dip"
         a:layout_height="160dip"
-        a:layout_alignParentLeft="true"
+        a:layout_alignParentStart="true"
         a:layout_alignParentTop="true"
         a:layout_marginEnd="10dip"
         a:contentDescription="@null"

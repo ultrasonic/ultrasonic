@@ -286,38 +286,6 @@
             column="5"/>
     </issue>
 
-    <issue
-        id="UnusedResources"
-        message="The resource `R.drawable.btn_bg` appears to be unused"
-        errorLine1="    &lt;item android:drawable=&quot;@color/ics_opaque&quot; android:state_pressed=&quot;true&quot;/>"
-        errorLine2="^">
-        <location
-            file="src/main/res/drawable/btn_bg.xml"
-            line="14"
-            column="1"/>
-    </issue>
-
-    <issue
-        id="UnusedResources"
-        message="The resource `R.color.ics_opaque` appears to be unused"
-        errorLine1="    &lt;color name=&quot;ics_opaque&quot;>#8033b5e5&lt;/color>"
-        errorLine2="           ~~~~~~~~~~~~~~~~~">
-        <location
-            file="src/main/res/values/colors.xml"
-            line="7"
-            column="12"/>
-    </issue>
-
-    <issue
-        id="UnusedResources"
-        message="The resource `R.color.md__transparent` appears to be unused"
-        errorLine1="    &lt;color name=&quot;md__transparent&quot;>#00000000&lt;/color>"
-        errorLine2="           ~~~~~~~~~~~~~~~~~~~~~~">
-        <location
-            file="src/main/res/values/colors.xml"
-            line="8"
-            column="12"/>
-    </issue>
 
     <issue
         id="UnusedResources"
@@ -341,16 +309,6 @@
             column="1"/>
     </issue>
 
-    <issue
-        id="UnusedResources"
-        message="The resource `R.drawable.line_drawable` appears to be unused"
-        errorLine1="&lt;selector xmlns:android=&quot;http://schemas.android.com/apk/res/android&quot;>"
-        errorLine2="^">
-        <location
-            file="src/main/res/drawable/line_drawable.xml"
-            line="2"
-            column="1"/>
-    </issue>
 
     <issue
         id="UnusedResources"
