@@ -538,7 +538,6 @@ object Util {
     }
 
     /**
-     *
      * Broadcasts the given song info as the new song being played.
      */
     fun broadcastNewTrackInfo(context: Context, song: MusicDirectory.Entry?) {
@@ -955,6 +954,14 @@ object Util {
     fun getConnectivityManager(): ConnectivityManager {
         val context = appContext()
         return context.getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
+    }
+
+    /**
+     * Executes the given block if this is not null.
+     * @return: the return of the block, or null if this is null
+     */
+    fun <T : Any, R> T?.ifNotNull(block: (T) -> R): R? {
+        return this?.let(block)
     }
 
     data class NetworkInfo(

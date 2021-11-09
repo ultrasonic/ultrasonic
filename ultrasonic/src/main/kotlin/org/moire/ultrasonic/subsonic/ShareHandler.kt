@@ -26,6 +26,7 @@ import org.moire.ultrasonic.util.Settings
 import org.moire.ultrasonic.util.ShareDetails
 import org.moire.ultrasonic.util.TimeSpan
 import org.moire.ultrasonic.util.TimeSpanPicker
+import org.moire.ultrasonic.util.Util.ifNotNull
 
 /**
  * This class handles sharing items in the media library
@@ -79,7 +80,7 @@ class ShareHandler(val context: Context) {
 
                 if (!shareDetails.ShareOnServer && shareDetails.Entries.size == 1) return null
                 if (shareDetails.Entries.isEmpty()) {
-                    fragment.arguments?.getString(Constants.INTENT_EXTRA_NAME_ID)?.let {
+                    fragment.arguments?.getString(Constants.INTENT_EXTRA_NAME_ID).ifNotNull {
                         ids.add(it)
                     }
                 } else {

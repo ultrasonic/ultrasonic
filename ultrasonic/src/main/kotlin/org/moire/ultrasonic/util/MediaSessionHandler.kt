@@ -28,6 +28,7 @@ import org.moire.ultrasonic.receiver.MediaButtonIntentReceiver
 import org.moire.ultrasonic.service.DownloadFile
 import org.moire.ultrasonic.service.RxBus
 import org.moire.ultrasonic.service.plusAssign
+import org.moire.ultrasonic.util.Util.ifNotNull
 import timber.log.Timber
 
 private const val INTENT_CODE_MEDIA_BUTTON = 161
@@ -150,7 +151,7 @@ class MediaSessionHandler : KoinComponent {
                 // This probably won't be necessary once we implement more
                 // of the modern media APIs, like the MediaController etc.
                 val event = mediaButtonEvent.extras!!["android.intent.extra.KEY_EVENT"] as KeyEvent?
-                event?.let { RxBus.mediaButtonEventPublisher.onNext(it) }
+                event.ifNotNull { RxBus.mediaButtonEventPublisher.onNext(it) }
                 return true
             }
 
@@ -257,13 +258,10 @@ class MediaSessionHandler : KoinComponent {
 
         val index = cachedPlaylist?.indexOf(currentPlaying)
         cachedPlayingIndex = if (index == null || index < 0) null else index.toLong()
-        cachedPlaylist?.let { setMediaSessionQueue(it) }
+        cachedPlaylist.ifNotNull { setMediaSessionQueue(it) }
 
-        if (
-            cachedPlayingIndex != null && cachedPlaylist != null &&
-            !Settings.shouldDisableNowPlayingListSending
-        )
-            cachedPlayingIndex?.let { playbackStateBuilder.setActiveQueueItemId(it) }
+        if (cachedPlaylist != null && !Settings.shouldDisableNowPlayingListSending)
+            cachedPlayingIndex.ifNotNull { playbackStateBuilder.setActiveQueueItemId(it) }
 
         // Save the playback state
         mediaSession?.setPlaybackState(playbackStateBuilder.build())
@@ -296,11 +294,8 @@ class MediaSessionHandler : KoinComponent {
         playbackStateBuilder.setState(playbackState!!, cachedPosition, 1.0f)
         playbackStateBuilder.setActions(playbackActions!!)
 
-        if (
-            cachedPlayingIndex != null && cachedPlaylist != null &&
-            !Settings.shouldDisableNowPlayingListSending
-        )
-            playbackStateBuilder.setActiveQueueItemId(cachedPlayingIndex!!)
+        if (cachedPlaylist != null && !Settings.shouldDisableNowPlayingListSending)
+            cachedPlayingIndex.ifNotNull { playbackStateBuilder.setActiveQueueItemId(it) }
 
         mediaSession?.setPlaybackState(playbackStateBuilder.build())
     }

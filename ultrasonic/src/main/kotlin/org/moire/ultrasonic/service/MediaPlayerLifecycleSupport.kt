@@ -22,6 +22,7 @@ import org.moire.ultrasonic.domain.PlayerState
 import org.moire.ultrasonic.util.CacheCleaner
 import org.moire.ultrasonic.util.Constants
 import org.moire.ultrasonic.util.Settings
+import org.moire.ultrasonic.util.Util.ifNotNull
 import timber.log.Timber
 
 /**
@@ -113,7 +114,7 @@ class MediaPlayerLifecycleSupport : KoinComponent {
         if (intentAction == Constants.CMD_PROCESS_KEYCODE) {
             if (intent.extras != null) {
                 val event = intent.extras!![Intent.EXTRA_KEY_EVENT] as KeyEvent?
-                event?.let { handleKeyEvent(it) }
+                event.ifNotNull { handleKeyEvent(it) }
             }
         } else {
             handleUltrasonicIntent(intentAction)
