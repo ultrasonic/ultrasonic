@@ -102,7 +102,7 @@ object Util {
         when (Settings.theme.lowercase()) {
             Constants.PREFERENCES_KEY_THEME_DARK,
             "fullscreen" -> {
-                context!!.setTheme(R.style.UltrasonicTheme)
+                context!!.setTheme(R.style.UltrasonicTheme_Dark)
             }
             Constants.PREFERENCES_KEY_THEME_BLACK -> {
                 context!!.setTheme(R.style.UltrasonicTheme_Black)
