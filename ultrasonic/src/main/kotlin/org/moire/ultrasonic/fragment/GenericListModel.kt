@@ -18,9 +18,9 @@ import org.koin.core.component.inject
 import org.moire.ultrasonic.data.ActiveServerProvider
 import org.moire.ultrasonic.data.ServerSetting
 import org.moire.ultrasonic.domain.MusicFolder
-import org.moire.ultrasonic.service.CommunicationErrorUtil
 import org.moire.ultrasonic.service.MusicService
 import org.moire.ultrasonic.service.MusicServiceFactory
+import org.moire.ultrasonic.util.CommunicationError
 import org.moire.ultrasonic.util.Settings
 
 /**
@@ -94,7 +94,7 @@ open class GenericListModel(application: Application) :
 
     private fun handleException(exception: Exception, context: Context) {
         Handler(Looper.getMainLooper()).post {
-            CommunicationErrorUtil.handleError(exception, context)
+            CommunicationError.handleError(exception, context)
         }
     }
 

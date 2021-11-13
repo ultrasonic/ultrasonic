@@ -46,6 +46,7 @@ import java.util.ArrayList
 import java.util.Date
 import java.util.LinkedList
 import java.util.Locale
+import java.util.concurrent.CancellationException
 import java.util.concurrent.Executors
 import java.util.concurrent.ScheduledExecutorService
 import java.util.concurrent.TimeUnit
@@ -67,7 +68,6 @@ import org.moire.ultrasonic.domain.RepeatMode
 import org.moire.ultrasonic.featureflags.Feature
 import org.moire.ultrasonic.featureflags.FeatureStorage
 import org.moire.ultrasonic.fragment.FragmentTitle.Companion.setTitle
-import org.moire.ultrasonic.service.CommunicationErrorUtil
 import org.moire.ultrasonic.service.DownloadFile
 import org.moire.ultrasonic.service.LocalMediaPlayer
 import org.moire.ultrasonic.service.MediaPlayerController
@@ -77,6 +77,7 @@ import org.moire.ultrasonic.subsonic.ImageLoaderProvider
 import org.moire.ultrasonic.subsonic.NetworkAndStorageChecker
 import org.moire.ultrasonic.subsonic.ShareHandler
 import org.moire.ultrasonic.util.CancellationToken
+import org.moire.ultrasonic.util.CommunicationError
 import org.moire.ultrasonic.util.Constants
 import org.moire.ultrasonic.util.Settings
 import org.moire.ultrasonic.util.Util
@@ -84,7 +85,6 @@ import org.moire.ultrasonic.view.AutoRepeatButton
 import org.moire.ultrasonic.view.SongListAdapter
 import org.moire.ultrasonic.view.VisualizerView
 import timber.log.Timber
-import java.util.concurrent.CancellationException
 
 /**
  * Contains the Music Player screen of Ultrasonic with playback controls and the playlist
@@ -236,7 +236,7 @@ class PlayerFragment : Fragment(), GestureDetector.OnGestureListener, KoinCompon
 
         previousButton.setOnClickListener {
             networkAndStorageChecker.warnIfNetworkOrStorageUnavailable()
-            scope.launch(CommunicationErrorUtil.handler(context)) {
+            scope.launch(CommunicationError.getHandler(context)) {
                 mediaPlayerController.previous()
                 onCurrentChanged()
                 onSliderProgressChanged()
@@ -250,7 +250,7 @@ class PlayerFragment : Fragment(), GestureDetector.OnGestureListener, KoinCompon
 
         nextButton.setOnClickListener {
             networkAndStorageChecker.warnIfNetworkOrStorageUnavailable()
-            scope.launch(CommunicationErrorUtil.handler(context)) {
+            scope.launch(CommunicationError.getHandler(context)) {
                 mediaPlayerController.next()
                 onCurrentChanged()
                 onSliderProgressChanged()
@@ -262,14 +262,14 @@ class PlayerFragment : Fragment(), GestureDetector.OnGestureListener, KoinCompon
             changeProgress(incrementTime)
         }
         pauseButton.setOnClickListener {
-            scope.launch(CommunicationErrorUtil.handler(context)) {
+            scope.launch(CommunicationError.getHandler(context)) {
                 mediaPlayerController.pause()
                 onCurrentChanged()
                 onSliderProgressChanged()
             }
         }
         stopButton.setOnClickListener {
-            scope.launch(CommunicationErrorUtil.handler(context)) {
+            scope.launch(CommunicationError.getHandler(context)) {
                 mediaPlayerController.reset()
                 onCurrentChanged()
                 onSliderProgressChanged()
@@ -277,7 +277,7 @@ class PlayerFragment : Fragment(), GestureDetector.OnGestureListener, KoinCompon
         }
         startButton.setOnClickListener {
             networkAndStorageChecker.warnIfNetworkOrStorageUnavailable()
-            scope.launch(CommunicationErrorUtil.handler(context)) {
+            scope.launch(CommunicationError.getHandler(context)) {
                 start()
                 onCurrentChanged()
                 onSliderProgressChanged()
@@ -309,7 +309,7 @@ class PlayerFragment : Fragment(), GestureDetector.OnGestureListener, KoinCompon
 
         progressBar.setOnSeekBarChangeListener(object : OnSeekBarChangeListener {
             override fun onStopTrackingTouch(seekBar: SeekBar) {
-                scope.launch(CommunicationErrorUtil.handler(context)) {
+                scope.launch(CommunicationError.getHandler(context)) {
                     mediaPlayerController.seekTo(progressBar.progress)
                     onSliderProgressChanged()
                 }
@@ -321,7 +321,7 @@ class PlayerFragment : Fragment(), GestureDetector.OnGestureListener, KoinCompon
 
         playlistView.setOnItemClickListener { _, _, position, _ ->
             networkAndStorageChecker.warnIfNetworkOrStorageUnavailable()
-            scope.launch(CommunicationErrorUtil.handler(context)) {
+            scope.launch(CommunicationError.getHandler(context)) {
                 mediaPlayerController.play(position)
                 onCurrentChanged()
                 onSliderProgressChanged()
@@ -388,7 +388,7 @@ class PlayerFragment : Fragment(), GestureDetector.OnGestureListener, KoinCompon
         }
 
         // Query the Jukebox state off-thread
-        scope.launch(CommunicationErrorUtil.handler(context)) {
+        scope.launch(CommunicationError.getHandler(context)) {
             try {
                 jukeboxAvailable = mediaPlayerController.isJukeboxAvailable
             } catch (all: Exception) {
@@ -795,7 +795,7 @@ class PlayerFragment : Fragment(), GestureDetector.OnGestureListener, KoinCompon
                     Locale.ROOT,
                     "%s %s",
                     resources.getString(R.string.download_playlist_error),
-                    CommunicationErrorUtil.getErrorMessage(it, context)
+                    CommunicationError.getErrorMessage(it, context)
                 )
                 Util.toast(context, msg)
             }
@@ -934,7 +934,7 @@ class PlayerFragment : Fragment(), GestureDetector.OnGestureListener, KoinCompon
             return
         }
 
-        onProgressChangedTask = scope.launch(CommunicationErrorUtil.handler(context)) {
+        onProgressChangedTask = scope.launch(CommunicationError.getHandler(context)) {
 
             val isJukeboxEnabled: Boolean = mediaPlayerController.isJukeboxEnabled
             val millisPlayed = max(0, mediaPlayerController.playerPosition)
@@ -1016,7 +1016,7 @@ class PlayerFragment : Fragment(), GestureDetector.OnGestureListener, KoinCompon
     }
 
     private fun changeProgress(ms: Int) {
-        scope.launch(CommunicationErrorUtil.handler(context)) {
+        scope.launch(CommunicationError.getHandler(context)) {
             val msPlayed: Int = max(0, mediaPlayerController.playerPosition)
             val duration = mediaPlayerController.playerDuration
             val seekTo = (msPlayed + ms).coerceAtMost(duration)

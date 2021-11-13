@@ -20,7 +20,6 @@ package org.moire.ultrasonic.util;
 
 import android.app.Activity;
 import android.os.Handler;
-import org.moire.ultrasonic.service.CommunicationErrorUtil;
 
 /**
  * @author Sindre Mehus
@@ -54,12 +53,12 @@ public abstract class BackgroundTask<T> implements ProgressListener
 
 	protected void error(Throwable error)
 	{
-		CommunicationErrorUtil.Companion.handleError(error, activity);
+		CommunicationError.handleError(error, activity);
 	}
 
 	protected String getErrorMessage(Throwable error)
 	{
-		return CommunicationErrorUtil.Companion.getErrorMessage(error, activity);
+		return CommunicationError.getErrorMessage(error, activity);
 	}
 
 	@Override
