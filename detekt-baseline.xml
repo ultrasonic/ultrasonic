@@ -59,7 +59,6 @@
     <ID>NestedBlockDepth:DownloadFile.kt$DownloadFile.DownloadTask$override fun execute()</ID>
     <ID>NestedBlockDepth:DownloadHandler.kt$DownloadHandler$private fun downloadRecursively( fragment: Fragment, id: String, name: String?, isShare: Boolean, isDirectory: Boolean, save: Boolean, append: Boolean, autoPlay: Boolean, shuffle: Boolean, background: Boolean, playNext: Boolean, unpin: Boolean, isArtist: Boolean )</ID>
     <ID>NestedBlockDepth:MediaPlayerService.kt$MediaPlayerService$private fun setupOnSongCompletedHandler()</ID>
-    <ID>ReturnCount:CommunicationErrorHandler.kt$CommunicationErrorHandler.Companion$fun getErrorMessage(error: Throwable, context: Context): String</ID>
     <ID>ReturnCount:ServerRowAdapter.kt$ServerRowAdapter$ private fun popupMenuItemClick(menuItem: MenuItem, position: Int): Boolean</ID>
     <ID>ReturnCount:TrackCollectionFragment.kt$TrackCollectionFragment$override fun onContextItemSelected(menuItem: MenuItem): Boolean</ID>
     <ID>TooGenericExceptionCaught:DownloadFile.kt$DownloadFile$e: Exception</ID>
@@ -74,7 +73,6 @@
     <ID>TooManyFunctions:MediaPlayerService.kt$MediaPlayerService : Service</ID>
     <ID>TooManyFunctions:RESTMusicService.kt$RESTMusicService : MusicService</ID>
     <ID>TooManyFunctions:TrackCollectionFragment.kt$TrackCollectionFragment : Fragment</ID>
-    <ID>UtilityClassWithPublicConstructor:CommunicationErrorHandler.kt$CommunicationErrorHandler</ID>
     <ID>UtilityClassWithPublicConstructor:FragmentTitle.kt$FragmentTitle</ID>
   </CurrentIssues>
 </SmellBaseline>

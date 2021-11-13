@@ -20,12 +20,16 @@ package org.moire.ultrasonic.service
 
 import android.app.AlertDialog
 import android.content.Context
+import android.os.Handler
+import android.os.Looper
 import com.fasterxml.jackson.core.JsonParseException
 import java.io.FileNotFoundException
 import java.io.IOException
 import java.security.cert.CertPathValidatorException
 import java.security.cert.CertificateException
 import javax.net.ssl.SSLException
+import kotlin.coroutines.CoroutineContext
+import kotlinx.coroutines.CoroutineExceptionHandler
 import org.moire.ultrasonic.R
 import org.moire.ultrasonic.api.subsonic.ApiNotSupportedException
 import org.moire.ultrasonic.api.subsonic.SubsonicRESTException
@@ -37,8 +41,19 @@ import timber.log.Timber
  * Contains helper functions to handle the exceptions
  * thrown during the communication with a Subsonic server
  */
-class CommunicationErrorHandler {
+@Suppress("ReturnCount", "UtilityClassWithPublicConstructor")
+class CommunicationErrorUtil {
     companion object {
+        fun handler(context: Context?, handler: ((CoroutineContext, Throwable) -> Unit)? = null):
+            CoroutineExceptionHandler {
+                return CoroutineExceptionHandler { coroutineContext, exception ->
+                    Handler(Looper.getMainLooper()).post {
+                        handleError(exception, context)
+                        handler?.invoke(coroutineContext, exception)
+                    }
+                }
+            }
+
         fun handleError(error: Throwable?, context: Context?) {
             Timber.w(error)
 
@@ -53,7 +68,8 @@ class CommunicationErrorHandler {
                 .create().show()
         }
 
-        fun getErrorMessage(error: Throwable, context: Context): String {
+        fun getErrorMessage(error: Throwable, context: Context?): String {
+            if (context == null) return "Couldn't get Error message, Context is null"
             if (error is IOException && !Util.isNetworkConnected()) {
                 return context.resources.getString(R.string.background_task_no_network)
             } else if (error is FileNotFoundException) {
