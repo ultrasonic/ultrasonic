@@ -35,8 +35,9 @@ import timber.log.Timber
  */
 class DownloadFile(
     val song: MusicDirectory.Entry,
-    private val save: Boolean
+    save: Boolean
 ) : KoinComponent, Identifiable {
+    var shouldSave = save
     val partialFile: File
     val completeFile: File
     private val saveFile: File = FileUtil.getSongFile(song)
@@ -114,7 +115,7 @@ class DownloadFile(
 
     @get:Synchronized
     val isWorkDone: Boolean
-        get() = saveFile.exists() || completeFile.exists() && !save ||
+        get() = saveFile.exists() || completeFile.exists() && !shouldSave ||
             saveWhenDone || completeWhenDone
 
     @get:Synchronized
@@ -124,10 +125,6 @@ class DownloadFile(
     @get:Synchronized
     val isDownloadCancelled: Boolean
         get() = downloadTask != null && downloadTask!!.isCancelled
-
-    fun shouldSave(): Boolean {
-        return save
-    }
 
     fun shouldRetry(): Boolean {
         return (retryCount > 0)
@@ -188,7 +185,7 @@ class DownloadFile(
                 Util.renameFile(completeFile, saveFile)
                 saveWhenDone = false
             } else if (completeWhenDone) {
-                if (save) {
+                if (shouldSave) {
                     Util.renameFile(partialFile, saveFile)
                     Util.scanMedia(saveFile)
                 } else {
@@ -216,11 +213,12 @@ class DownloadFile(
                 if (saveFile.exists()) {
                     Timber.i("%s already exists. Skipping.", saveFile)
                     status.postValue(DownloadStatus.DONE)
+                    Timber.i("UPDATING STATUS")
                     return
                 }
 
                 if (completeFile.exists()) {
-                    if (save) {
+                    if (shouldSave) {
                         if (isPlaying) {
                             saveWhenDone = true
                         } else {
@@ -230,6 +228,7 @@ class DownloadFile(
                         Timber.i("%s already exists. Skipping.", completeFile)
                     }
                     status.postValue(DownloadStatus.DONE)
+                    Timber.i("UPDATING STATUS")
                     return
                 }
 
@@ -252,7 +251,7 @@ class DownloadFile(
                 if (needsDownloading) {
                     // Attempt partial HTTP GET, appending to the file if it exists.
                     val (inStream, partial) = musicService.getDownloadInputStream(
-                        song, partialFile.length(), desiredBitRate, save
+                        song, partialFile.length(), desiredBitRate, shouldSave
                     )
 
                     inputStream = inStream
@@ -293,7 +292,7 @@ class DownloadFile(
                 if (isPlaying) {
                     completeWhenDone = true
                 } else {
-                    if (save) {
+                    if (shouldSave) {
                         Util.renameFile(partialFile, saveFile)
                         Util.scanMedia(saveFile)
                     } else {
@@ -379,6 +378,7 @@ class DownloadFile(
     private fun setProgress(totalBytesCopied: Long) {
         if (song.size != null) {
             progress.postValue((totalBytesCopied * 100 / song.size!!).toInt())
+            Timber.i("UPDATING PROGESS")
         }
     }
 

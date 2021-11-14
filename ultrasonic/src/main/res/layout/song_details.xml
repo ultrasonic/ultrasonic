@@ -17,18 +17,18 @@
             a:id="@+id/song_track"
             a:layout_width="wrap_content"
             a:layout_height="wrap_content"
+            a:paddingEnd="6dip"
             a:layout_gravity="left|center_vertical"
             a:textAppearance="?android:attr/textAppearanceMedium"/>
 
         <TextView
             a:id="@+id/song_title"
-            a:layout_width="0dip"
+            a:layout_width="0dp"
             a:layout_height="wrap_content"
             a:layout_gravity="left|center_vertical"
             a:layout_weight="1"
             a:drawablePadding="4dip"
             a:ellipsize="end"
-            a:paddingStart="6dip"
             a:paddingEnd="4dip"
             a:singleLine="true"
             a:textAppearance="?android:attr/textAppearanceMedium"/>

@@ -55,6 +55,8 @@ class Downloader(
             RxBus.playlistPublisher.onNext(playlist)
         }
 
+    var backgroundPriorityCounter = 100
+
     val downloadChecker = Runnable {
         try {
             Timber.w("Checking Downloads")
@@ -303,6 +305,8 @@ class Downloader(
                 activelyDownloading.remove(download)
             }
         }
+
+        backgroundPriorityCounter = 100
     }
 
     @Synchronized
@@ -327,7 +331,7 @@ class Downloader(
 
     @Synchronized
     fun addToPlaylist(
-        songs: List<MusicDirectory.Entry?>,
+        songs: List<MusicDirectory.Entry>,
         save: Boolean,
         autoPlay: Boolean,
         playNext: Boolean,
@@ -346,13 +350,13 @@ class Downloader(
                 offset = 0
             }
             for (song in songs) {
-                val downloadFile = DownloadFile(song!!, save)
+                val downloadFile = song.getDownloadFile(save)
                 playlist.add(currentPlayingIndex + offset, downloadFile)
                 offset++
             }
         } else {
             for (song in songs) {
-                val downloadFile = DownloadFile(song!!, save)
+                val downloadFile = song.getDownloadFile(save)
                 playlist.add(downloadFile)
             }
         }
@@ -380,7 +384,10 @@ class Downloader(
         // Because of the priority handling we add the songs in the reverse order they
         // were requested, then it is correct in the end.
         for (song in songs.asReversed()) {
-            downloadQueue.add(DownloadFile(song, save))
+            val file = song.getDownloadFile()
+            file.shouldSave = save
+            file.priority = backgroundPriorityCounter++
+            downloadQueue.add(file)
         }
 
         checkDownloads()
@@ -436,7 +443,7 @@ class Downloader(
         val size = playlist.size
         if (size < listSize) {
             for (song in shufflePlayBuffer[listSize - size]) {
-                val downloadFile = DownloadFile(song, false)
+                val downloadFile = song.getDownloadFile(false)
                 playlist.add(downloadFile)
                 playlistUpdateRevision++
             }
@@ -448,7 +455,7 @@ class Downloader(
         if (currIndex > SHUFFLE_BUFFER_LIMIT) {
             val songsToShift = currIndex - 2
             for (song in shufflePlayBuffer[songsToShift]) {
-                playlist.add(DownloadFile(song, false))
+                playlist.add(song.getDownloadFile(false))
                 playlist[0].cancelDownload()
                 playlist.removeAt(0)
                 playlistUpdateRevision++
@@ -475,9 +482,14 @@ class Downloader(
         const val SHUFFLE_BUFFER_LIMIT = 4
     }
 
-    // Extension function
-    fun MusicDirectory.Entry.downloadFile(): DownloadFile {
-        return getDownloadFileForSong(this)
+    /**
+     * Extension function
+     * Gathers the donwload file for a given song, and modifies shouldSave if provided.
+     */
+    fun MusicDirectory.Entry.getDownloadFile(save: Boolean? = null): DownloadFile {
+        return getDownloadFileForSong(this).apply {
+            if (save != null) this.shouldSave = save
+        }
     }
 }
 
