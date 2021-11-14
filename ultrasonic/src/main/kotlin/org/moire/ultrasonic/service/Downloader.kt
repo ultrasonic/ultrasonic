@@ -381,9 +381,8 @@ class Downloader(
     @Synchronized
     fun downloadBackground(songs: List<MusicDirectory.Entry>, save: Boolean) {
 
-        // Because of the priority handling we add the songs in the reverse order they
-        // were requested, then it is correct in the end.
-        for (song in songs.asReversed()) {
+        // By using the counter we ensure that the songs are added in the correct order
+        for (song in songs) {
             val file = song.getDownloadFile()
             file.shouldSave = save
             file.priority = backgroundPriorityCounter++

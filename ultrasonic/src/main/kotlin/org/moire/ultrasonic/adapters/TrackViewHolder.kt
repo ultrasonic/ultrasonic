@@ -219,17 +219,15 @@ class TrackViewHolder(val view: View, var adapter: MultiTypeDiffAdapter<Identifi
         }
     }
 
+
     fun updateDownloadStatus(downloadFile: DownloadFile) {
         if (downloadFile.isWorkDone) {
+            val saved = downloadFile.isSaved
             val newLeftImageType =
-                if (downloadFile.isSaved) ImageType.Pin else ImageType.Downloaded
+                if (saved) ImageType.Pin else ImageType.Downloaded
 
             if (leftImageType != newLeftImageType) {
-                leftImage = if (downloadFile.isSaved) {
-                    imageHelper.pinImage
-                } else {
-                    imageHelper.downloadedImage
-                }
+                leftImage = if (saved) imageHelper.pinImage else imageHelper.downloadedImage
                 leftImageType = newLeftImageType
             }
         } else {
