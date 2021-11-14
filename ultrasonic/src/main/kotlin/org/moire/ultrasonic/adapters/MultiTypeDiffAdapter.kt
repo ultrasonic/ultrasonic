@@ -1,7 +1,6 @@
 package org.moire.ultrasonic.adapters
 
 import android.annotation.SuppressLint
-import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.recyclerview.widget.AdapterListUpdateCallback
 import androidx.recyclerview.widget.AsyncDifferConfig
@@ -144,6 +143,14 @@ class MultiTypeDiffAdapter<T : Identifiable> : MultiTypeAdapter() {
         // Update revision counter
         selectionRevision.postValue(selectionRevision.value!! + 1)
     }
+
+    fun notifyChanged() {
+        // When the download state of an entry was changed by an external process,
+        // increase the revision counter in order to update the UI
+
+        selectionRevision.postValue(selectionRevision.value!! + 1)
+    }
+
 
     fun setSelectionStatusOfAll(select: Boolean): Int {
         // Clear current selection

@@ -61,6 +61,7 @@
     <attr name="share" format="reference"/>
     <attr name="download" format="reference"/>
     <attr name="downloaded" format="reference"/>
+    <attr name="error" format="reference"/>
     <attr name="downloading" format="reference"/>
     <attr name="media_previous" format="reference"/>
     <attr name="media_next" format="reference"/>

@@ -32,6 +32,11 @@ import timber.log.Timber
 
 /**
  * This class represents a single Song or Video that can be downloaded.
+ *
+ * Terminology:
+ * PinnedFile: A "pinned" song. Will stay in cache permanently
+ * CompleteFile: A "downloaded" song. Will be quicker to be deleted if the cache is full
+ *
  */
 class DownloadFile(
     val song: MusicDirectory.Entry,
@@ -63,11 +68,28 @@ class DownloadFile(
     private val activeServerProvider: ActiveServerProvider by inject()
 
     val progress: MutableLiveData<Int> = MutableLiveData(0)
-    val status: MutableLiveData<DownloadStatus> = MutableLiveData(DownloadStatus.IDLE)
+    val status: MutableLiveData<DownloadStatus>
 
     init {
+        val state: DownloadStatus
+
         partialFile = File(saveFile.parent, FileUtil.getPartialFile(saveFile.name))
         completeFile = File(saveFile.parent, FileUtil.getCompleteFile(saveFile.name))
+
+        when {
+            saveFile.exists() -> {
+                state = DownloadStatus.PINNED
+            }
+            completeFile.exists() -> {
+                state = DownloadStatus.DONE
+            }
+            else -> {
+                state = DownloadStatus.IDLE
+            }
+        }
+
+        status = MutableLiveData(state)
+
     }
 
     /**
@@ -143,13 +165,14 @@ class DownloadFile(
 
     fun unpin() {
         if (saveFile.exists()) {
-            if (!saveFile.renameTo(completeFile)) {
+            if (saveFile.renameTo(completeFile)) {
+                status.postValue(DownloadStatus.DONE)
+            } else {
                 Timber.w(
                     "Renaming file failed. Original file: %s; Rename to: %s",
                     saveFile.name, completeFile.name
                 )
             }
-            status.postValue(DownloadStatus.DONE)
         }
     }
 
@@ -212,23 +235,23 @@ class DownloadFile(
             try {
                 if (saveFile.exists()) {
                     Timber.i("%s already exists. Skipping.", saveFile)
-                    status.postValue(DownloadStatus.DONE)
-                    Timber.i("UPDATING STATUS")
+                    status.postValue(DownloadStatus.PINNED)
                     return
                 }
 
                 if (completeFile.exists()) {
+                    var newStatus: DownloadStatus = DownloadStatus.DONE
                     if (shouldSave) {
                         if (isPlaying) {
                             saveWhenDone = true
                         } else {
                             Util.renameFile(completeFile, saveFile)
+                            newStatus = DownloadStatus.PINNED
                         }
                     } else {
                         Timber.i("%s already exists. Skipping.", completeFile)
                     }
-                    status.postValue(DownloadStatus.DONE)
-                    Timber.i("UPDATING STATUS")
+                    status.postValue(newStatus)
                     return
                 }
 
@@ -285,8 +308,6 @@ class DownloadFile(
                     }
 
                     downloadAndSaveCoverArt()
-
-                    status.postValue(DownloadStatus.DONE)
                 }
 
                 if (isPlaying) {
@@ -294,9 +315,11 @@ class DownloadFile(
                 } else {
                     if (shouldSave) {
                         Util.renameFile(partialFile, saveFile)
+                        status.postValue(DownloadStatus.PINNED)
                         Util.scanMedia(saveFile)
                     } else {
                         Util.renameFile(partialFile, completeFile)
+                        status.postValue(DownloadStatus.DONE)
                     }
                 }
             } catch (all: Exception) {
@@ -378,7 +401,6 @@ class DownloadFile(
     private fun setProgress(totalBytesCopied: Long) {
         if (song.size != null) {
             progress.postValue((totalBytesCopied * 100 / song.size!!).toInt())
-            Timber.i("UPDATING PROGESS")
         }
     }
 
@@ -414,6 +436,7 @@ class DownloadFile(
 
     override val id: String
         get() = song.id
+
     override val longId: Long by lazy {
         id.hashCode().toLong()
     }
@@ -424,5 +447,5 @@ class DownloadFile(
 }
 
 enum class DownloadStatus {
-    IDLE, DOWNLOADING, RETRYING, FAILED, ABORTED, DONE
+    IDLE, DOWNLOADING, RETRYING, FAILED, ABORTED, DONE, PINNED, UNKNOWN
 }

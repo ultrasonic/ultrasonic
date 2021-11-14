@@ -39,7 +39,7 @@
             a:layout_height="wrap_content"
             a:layout_gravity="right|center_vertical"
             a:drawablePadding="6dip"
-            a:paddingEnd="6dip"/>
+            a:paddingEnd="12dip"/>
     </LinearLayout>
 
     <LinearLayout

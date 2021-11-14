@@ -9,7 +9,6 @@ import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.TextView
 import androidx.core.view.isVisible
-import androidx.lifecycle.findViewTreeLifecycleOwner
 import androidx.recyclerview.widget.RecyclerView
 import org.koin.core.component.KoinComponent
 import org.koin.core.component.get
@@ -21,6 +20,7 @@ import org.moire.ultrasonic.domain.MusicDirectory
 import org.moire.ultrasonic.featureflags.Feature
 import org.moire.ultrasonic.featureflags.FeatureStorage
 import org.moire.ultrasonic.service.DownloadFile
+import org.moire.ultrasonic.service.DownloadStatus
 import org.moire.ultrasonic.service.MediaPlayerController
 import org.moire.ultrasonic.service.MusicServiceFactory
 import org.moire.ultrasonic.util.Settings
@@ -47,7 +47,7 @@ class TrackViewHolder(val view: View, var adapter: MultiTypeDiffAdapter<Identifi
     var title: TextView = view.findViewById(R.id.song_title)
     var artist: TextView = view.findViewById(R.id.song_artist)
     var duration: TextView = view.findViewById(R.id.song_duration)
-    var status: TextView = view.findViewById(R.id.song_status)
+    var progress: TextView = view.findViewById(R.id.song_status)
 
     var entry: MusicDirectory.Entry? = null
         private set
@@ -55,10 +55,8 @@ class TrackViewHolder(val view: View, var adapter: MultiTypeDiffAdapter<Identifi
         private set
 
     private var isMaximized = false
-    private var leftImage: Drawable? = null
-    private var previousLeftImageType: ImageType? = null
-    private var previousRightImageType: ImageType? = null
-    private var leftImageType: ImageType? = null
+    private var cachedStatus = DownloadStatus.UNKNOWN
+    private var statusImage: Drawable? = null
     private var playing = false
 
     private val useFiveStarRating: Boolean by lazy {
@@ -160,7 +158,8 @@ class TrackViewHolder(val view: View, var adapter: MultiTypeDiffAdapter<Identifi
     // TODO: Should be removed
     fun update() {
 
-        updateDownloadStatus(downloadFile!!)
+        updateProgress(downloadFile!!.progress.value!!)
+        updateStatus(downloadFile!!.status.value!!)
 
         if (useFiveStarRating) {
             val rating = entry?.userRating ?: 0
@@ -220,52 +219,55 @@ class TrackViewHolder(val view: View, var adapter: MultiTypeDiffAdapter<Identifi
     }
 
 
-    fun updateDownloadStatus(downloadFile: DownloadFile) {
-        if (downloadFile.isWorkDone) {
-            val saved = downloadFile.isSaved
-            val newLeftImageType =
-                if (saved) ImageType.Pin else ImageType.Downloaded
+    fun updateStatus(status: DownloadStatus) {
+        if (status == cachedStatus) return
+        cachedStatus = status
 
-            if (leftImageType != newLeftImageType) {
-                leftImage = if (saved) imageHelper.pinImage else imageHelper.downloadedImage
-                leftImageType = newLeftImageType
+
+        Timber.w("STATUS: %s", status)
+
+        when (status) {
+            DownloadStatus.DONE -> {
+                statusImage = imageHelper.downloadedImage
+                progress.text = null
             }
-        } else {
-            leftImageType = ImageType.None
-            leftImage = null
+            DownloadStatus.PINNED -> {
+                statusImage = imageHelper.pinImage
+                progress.text = null
+            }
+            DownloadStatus.FAILED,
+            DownloadStatus.ABORTED -> {
+                statusImage = imageHelper.errorImage
+                progress.text = null
+            }
+            DownloadStatus.DOWNLOADING -> {
+                statusImage = imageHelper.downloadingImage
+            }
+            else -> {
+                statusImage = null
+            }
         }
 
-        val rightImageType: ImageType
-        val rightImage: Drawable?
+        updateImages()
+    }
 
-        if (downloadFile.isDownloading && !downloadFile.isDownloadCancelled) {
-            status.text = Util.formatPercentage(downloadFile.progress.value!!)
-
-            rightImageType = ImageType.Downloading
-            rightImage = imageHelper.downloadingImage
-        } else {
-            rightImageType = ImageType.None
-            rightImage = null
-
-            val statusText = status.text
-            if (!statusText.isNullOrEmpty()) status.text = null
+    fun updateProgress(p: Int) {
+        if (cachedStatus == DownloadStatus.DOWNLOADING) {
+            progress.text = Util.formatPercentage(p)
+        } else  {
+            progress.text = null
         }
+    }
 
-        if (previousLeftImageType != leftImageType || previousRightImageType != rightImageType) {
-            previousLeftImageType = leftImageType
-            previousRightImageType = rightImageType
+    private fun updateImages() {
+        progress.setCompoundDrawablesWithIntrinsicBounds(
+            null, null, statusImage, null
+        )
 
-            status.setCompoundDrawablesWithIntrinsicBounds(
-                leftImage, null, rightImage, null
-            )
-
-            if (rightImage === imageHelper.downloadingImage) {
-                // FIXME
-                val frameAnimation = rightImage as AnimationDrawable?
-
-                frameAnimation?.setVisible(true, true)
-                frameAnimation?.start()
-            }
+        if (statusImage === imageHelper.downloadingImage) {
+            val frameAnimation = statusImage as AnimationDrawable?
+            frameAnimation?.setVisible(true, true)
+            frameAnimation?.start()
         }
     }
 
@@ -293,11 +295,4 @@ class TrackViewHolder(val view: View, var adapter: MultiTypeDiffAdapter<Identifi
         title.isSingleLine = !isMaximized
         artist.isSingleLine = !isMaximized
     }
-
-    enum class ImageType {
-        None, Pin, Downloaded, Downloading
-    }
-
-
-
 }

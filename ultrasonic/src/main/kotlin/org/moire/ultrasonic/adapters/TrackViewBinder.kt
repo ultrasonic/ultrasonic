@@ -78,13 +78,14 @@ class TrackViewBinder(
         // Observe download status
         downloadFile.status.observe(lifecycleOwner, {
                 Timber.w("CAUGHT STATUS CHANGE")
-                holder.updateDownloadStatus(downloadFile)
+                holder.updateStatus(it)
+                holder.adapter.notifyChanged()
             }
         )
 
         downloadFile.progress.observe(lifecycleOwner, {
                 Timber.w("CAUGHT PROGRESS CHANGE")
-                holder.updateDownloadStatus(downloadFile)
+                holder.updateProgress(it)
             }
         )
     }

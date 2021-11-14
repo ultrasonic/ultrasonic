@@ -34,6 +34,7 @@
         <item name="share">@drawable/ic_menu_share_dark</item>
         <item name="download">@drawable/ic_menu_download_dark</item>
         <item name="downloaded">@drawable/stat_sys_download_anim_0_dark</item>
+        <item name="error">@drawable/ic_baseline_error_dark</item>
         <item name="downloading">@drawable/stat_sys_download_dark</item>
         <item name="media_previous">@drawable/media_backward_normal_dark</item>
         <item name="media_next">@drawable/media_forward_normal_dark</item>
@@ -99,6 +100,7 @@
         <item name="share">@drawable/ic_menu_share_dark</item>
         <item name="download">@drawable/ic_menu_download_dark</item>
         <item name="downloaded">@drawable/stat_sys_download_anim_0_dark</item>
+        <item name="error">@drawable/ic_baseline_error_dark</item>
         <item name="downloading">@drawable/stat_sys_download_dark</item>
         <item name="media_previous">@drawable/media_backward_normal_dark</item>
         <item name="media_next">@drawable/media_forward_normal_dark</item>
@@ -163,6 +165,7 @@
         <item name="share">@drawable/ic_menu_share_light</item>
         <item name="download">@drawable/ic_menu_download_light</item>
         <item name="downloaded">@drawable/stat_sys_download_anim_0_light</item>
+        <item name="error">@drawable/ic_baseline_error_light</item>
         <item name="downloading">@drawable/stat_sys_download_light</item>
         <item name="media_previous">@drawable/media_backward_normal_light</item>
         <item name="media_next">@drawable/media_forward_normal_light</item>

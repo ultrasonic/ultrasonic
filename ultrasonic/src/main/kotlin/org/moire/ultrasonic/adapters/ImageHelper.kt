@@ -11,6 +11,7 @@ import org.moire.ultrasonic.util.Util
  */
 class ImageHelper(context: Context) {
 
+    lateinit var errorImage: Drawable
     lateinit var starHollowDrawable: Drawable
     lateinit var starDrawable: Drawable
     lateinit var pinImage: Drawable
@@ -39,6 +40,7 @@ class ImageHelper(context: Context) {
         starDrawable = Util.getDrawableFromAttribute(context, R.attr.star_full)
         pinImage = Util.getDrawableFromAttribute(context, R.attr.pin)
         downloadedImage = Util.getDrawableFromAttribute(context, R.attr.downloaded)
+        errorImage = Util.getDrawableFromAttribute(context, R.attr.error)
         downloadingImage = Util.getDrawableFromAttribute(context, R.attr.downloading)
         playingImage = Util.getDrawableFromAttribute(context, R.attr.media_play_small)
     }
