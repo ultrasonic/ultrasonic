@@ -16,6 +16,7 @@ import com.drakeet.multitype.MultiTypeAdapter
 import org.koin.android.ext.android.inject
 import org.koin.androidx.viewmodel.ext.android.viewModel
 import org.moire.ultrasonic.R
+import org.moire.ultrasonic.adapters.MultiTypeDiffAdapter
 import org.moire.ultrasonic.data.ActiveServerProvider
 import org.moire.ultrasonic.domain.Artist
 import org.moire.ultrasonic.domain.GenericEntry
@@ -33,7 +34,7 @@ import org.moire.ultrasonic.view.SelectMusicFolderView
  * @param T: The type of data which will be used (must extend GenericEntry)
  * @param TA: The Adapter to use (must extend GenericRowAdapter)
  */
-abstract class MultiListFragment<T : Identifiable, TA : MultiTypeAdapter> : Fragment() {
+abstract class MultiListFragment<T : Identifiable> : Fragment() {
     internal val activeServerProvider: ActiveServerProvider by inject()
     internal val serverSettingsModel: ServerSettingsModel by viewModel()
     internal val imageLoaderProvider: ImageLoaderProvider by inject()
@@ -47,7 +48,9 @@ abstract class MultiListFragment<T : Identifiable, TA : MultiTypeAdapter> : Frag
      * The Adapter for the RecyclerView
      * Recommendation: Implement this as a lazy delegate
      */
-    internal abstract val viewAdapter: TA
+    internal val viewAdapter: MultiTypeDiffAdapter<Identifiable> by lazy {
+        MultiTypeDiffAdapter()
+    }
 
     /**
      * The ViewModel to use to get the data
@@ -144,9 +147,9 @@ abstract class MultiListFragment<T : Identifiable, TA : MultiTypeAdapter> : Frag
         liveDataItems = getLiveData(arguments)
 
         // Register an observer to update our UI when the data changes
-//        liveDataItems.observe(viewLifecycleOwner, {
-//                newItems -> viewAdapter.submitList(newItems)
-//        })
+        liveDataItems.observe(viewLifecycleOwner, {
+                newItems -> viewAdapter.submitList(newItems)
+        })
 
         // Setup the Music folder handling
         listModel.getMusicFolders().observe(viewLifecycleOwner, musicFolderObserver)

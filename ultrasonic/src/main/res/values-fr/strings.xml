@@ -142,7 +142,6 @@
     <string name="search.title">Recherche</string>
     <string name="select_album.empty">Aucun titre trouvé</string>
     <string name="select_album.n_selected">%d pistes sélectionnées.</string>
-    <string name="select_album.n_unselected">%d pistes non sélectionnés.</string>
     <string name="select_album.no_network">Avertissement : Aucun réseau disponible.</string>
     <string name="select_album.no_sdcard">Erreur : Aucune carte SD disponible.</string>
     <string name="select_album.play_all">Tout jouer</string>

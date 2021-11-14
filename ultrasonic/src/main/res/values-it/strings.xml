@@ -126,7 +126,6 @@
     <string name="search.title">Cerca</string>
     <string name="select_album.empty">Nessun media trovato</string>
     <string name="select_album.n_selected">%dtracce selezionate.</string>
-    <string name="select_album.n_unselected">%d tracce non selezionate.</string>
     <string name="select_album.no_network">Attenzione: nessuna rete disponibile.</string>
     <string name="select_album.no_sdcard">Errore: Nessuna memoria SD disponibile.</string>
     <string name="select_album.play_all">Riproduci tutto</string>

@@ -145,7 +145,6 @@
     <string name="search.title">Zoeken</string>
     <string name="select_album.empty">Geen media gevonden</string>
     <string name="select_album.n_selected">%d nummers geselecteerd.</string>
-    <string name="select_album.n_unselected">%d nummers gedeselecteerd.</string>
     <string name="select_album.no_network">Waarschuwing: geen internetverbinding.</string>
     <string name="select_album.no_sdcard">Fout: geen SD-kaart beschikbaar.</string>
     <string name="select_album.play_all">Alles afspelen</string>

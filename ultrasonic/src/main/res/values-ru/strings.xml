@@ -142,7 +142,6 @@
     <string name="search.title">Поиск</string>
     <string name="select_album.empty">Медиа не найдена</string>
     <string name="select_album.n_selected">%d треки выбраны.</string>
-    <string name="select_album.n_unselected">%d треки не выбраны.</string>
     <string name="select_album.no_network">Предупреждение: сеть недоступна.</string>
     <string name="select_album.no_sdcard">Ошибка: нет SD-карты</string>
     <string name="select_album.play_all">Воспроизвести все</string>

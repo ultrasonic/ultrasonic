@@ -89,7 +89,7 @@ class AlbumHeader(
         get() = "HEADER"
 
     override val longId: Long
-        get() = id.hashCode().toLong()
+        get() = -1L
 
     override fun compareTo(other: Identifiable): Int {
         return this.longId.compareTo(other.longId)

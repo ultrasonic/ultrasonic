@@ -130,7 +130,6 @@
     <string name="search.title">Hledat</string>
     <string name="select_album.empty">Média nenalezena</string>
     <string name="select_album.n_selected">%d skladeb označeno.</string>
-    <string name="select_album.n_unselected">%d skladeb odznačeno.</string>
     <string name="select_album.no_network">Varování: Připojení nedostupné.</string>
     <string name="select_album.no_sdcard">Chyba: SD karta nedostupná.</string>
     <string name="select_album.play_all">Přehrát vše</string>

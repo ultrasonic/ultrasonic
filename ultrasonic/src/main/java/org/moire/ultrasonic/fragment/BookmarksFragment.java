@@ -226,10 +226,10 @@ public class BookmarksFragment extends Fragment {
             }
         }
 
-        // Display toast: N tracks selected / N tracks unselected
+        // Display toast: N tracks selected
         if (toast)
         {
-            int toastResId = selected ? R.string.select_album_n_selected : R.string.select_album_n_unselected;
+            int toastResId = R.string.select_album_n_selected;
             Util.toast(getContext(), getString(toastResId, selectedCount));
         }
 

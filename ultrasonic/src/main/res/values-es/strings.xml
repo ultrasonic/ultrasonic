@@ -145,7 +145,6 @@
     <string name="search.title">Buscar</string>
     <string name="select_album.empty">No se han encontrado medios</string>
     <string name="select_album.n_selected">%d pista(s) seleccionada(s).</string>
-    <string name="select_album.n_unselected">%d pista(s) deseleccionada(s).</string>
     <string name="select_album.no_network">Atención: No hay red disponible.</string>
     <string name="select_album.no_sdcard">Error: No hay tarjeta SD disponible.</string>
     <string name="select_album.play_all">Reproducir todo</string>

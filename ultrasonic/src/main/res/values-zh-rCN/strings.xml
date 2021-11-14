@@ -141,7 +141,6 @@
     <string name="search.title">搜索</string>
     <string name="select_album.empty">找不到歌曲</string>
     <string name="select_album.n_selected">已选择 %d 首曲目。</string>
-    <string name="select_album.n_unselected">未选择 %d 首曲目。</string>
     <string name="select_album.no_network">警告：网络不可用</string>
     <string name="select_album.no_sdcard">错误：没有SD卡</string>
     <string name="select_album.play_all">播放所有</string>

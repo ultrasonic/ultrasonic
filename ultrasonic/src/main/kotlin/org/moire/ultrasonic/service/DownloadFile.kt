@@ -139,6 +139,8 @@ class DownloadFile(
         Util.delete(completeFile)
         Util.delete(saveFile)
 
+        status.postValue(DownloadStatus.IDLE)
+
         Util.scanMedia(saveFile)
     }
 
@@ -150,6 +152,7 @@ class DownloadFile(
                     saveFile.name, completeFile.name
                 )
             }
+            status.postValue(DownloadStatus.DONE)
         }
     }
 

@@ -128,8 +128,7 @@
     <string name="search.songs">Titel</string>
     <string name="search.title">Suche</string>
     <string name="select_album.empty">Keine Medien gefunden</string>
-    <string name="select_album.n_selected">%d Titel ausgewählt.</string>
-    <string name="select_album.n_unselected">%d Titel abgewählt.</string>
+    <string name="select_album.n_selected">%d Titel ausgewählt</string>
     <string name="select_album.no_network">Warnung: kein Netz.</string>
     <string name="select_album.no_sdcard">Fehler: Keine SD Karte verfügbar.</string>
     <string name="select_album.play_all">Alles wiedergeben</string>

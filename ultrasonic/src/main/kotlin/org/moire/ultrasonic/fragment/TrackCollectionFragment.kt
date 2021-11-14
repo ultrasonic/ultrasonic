@@ -34,7 +34,6 @@ import org.moire.ultrasonic.R
 import org.moire.ultrasonic.adapters.HeaderViewBinder
 import org.moire.ultrasonic.adapters.MultiTypeDiffAdapter
 import org.moire.ultrasonic.adapters.TrackViewBinder
-import org.moire.ultrasonic.adapters.TrackViewHolder
 import org.moire.ultrasonic.data.ActiveServerProvider.Companion.isOffline
 import org.moire.ultrasonic.domain.Identifiable
 import org.moire.ultrasonic.domain.MusicDirectory
@@ -51,7 +50,6 @@ import org.moire.ultrasonic.util.Settings
 import org.moire.ultrasonic.util.Util
 import timber.log.Timber
 import java.util.Collections
-import java.util.TreeSet
 
 /**
  * Displays a group of tracks, eg. the songs of an album, of a playlist etc.
@@ -61,7 +59,7 @@ import java.util.TreeSet
  * TODO: Handle updates (playstatus, download status)
  */
 class TrackCollectionFragment :
-    MultiListFragment<MusicDirectory.Entry, MultiTypeDiffAdapter<Identifiable>>() {
+    MultiListFragment<MusicDirectory.Entry>() {
 
     private var albumButtons: View? = null
     private var emptyView: TextView? = null
@@ -86,8 +84,6 @@ class TrackCollectionFragment :
 
     override val listModel: TrackCollectionModel by viewModels()
 
-    private var selectedSet: TreeSet<Long> = TreeSet()
-
     /**
      * The id of the main layout
      */
@@ -111,19 +107,6 @@ class TrackCollectionFragment :
     override val itemClickTarget: Int = R.id.trackCollectionFragment
 
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        Util.applyTheme(this.context)
-        super.onCreate(savedInstanceState)
-    }
-
-    override fun onCreateView(
-        inflater: LayoutInflater,
-        container: ViewGroup?,
-        savedInstanceState: Bundle?
-    ): View? {
-        return inflater.inflate(R.layout.track_list, container, false)
-    }
-
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         cancellationToken = CancellationToken()
@@ -136,7 +119,7 @@ class TrackCollectionFragment :
             updateDisplay(true)
         }
 
-        listModel.currentList.observe(viewLifecycleOwner, defaultObserver)
+        listModel.currentList.observe(viewLifecycleOwner, updateInterfaceWithEntries)
         listModel.songsForGenre.observe(viewLifecycleOwner, songsForGenreObserver)
 
 //        listView!!.setOnItemClickListener { parent, theView, position, _ ->
@@ -185,9 +168,11 @@ class TrackCollectionFragment :
         selectButton!!.setOnClickListener {
             selectAllOrNone()
         }
+
         playNowButton!!.setOnClickListener {
             playNow(false)
         }
+
         playNextButton!!.setOnClickListener {
             downloadHandler.download(
                 this@TrackCollectionFragment, append = true,
@@ -195,25 +180,29 @@ class TrackCollectionFragment :
                 songs = getSelectedSongs()
             )
         }
+
         playLastButton!!.setOnClickListener {
             playNow(true)
         }
+
         pinButton!!.setOnClickListener {
             downloadBackground(true)
         }
+
         unpinButton!!.setOnClickListener {
             unpin()
         }
+
         downloadButton!!.setOnClickListener {
             downloadBackground(false)
         }
+
         deleteButton!!.setOnClickListener {
             delete()
         }
 
         registerForContextMenu(listView!!)
         setHasOptionsMenu(true)
-
 
         // Create a View Manager
         viewManager = LinearLayoutManager(this.context)
@@ -225,7 +214,6 @@ class TrackCollectionFragment :
             adapter = viewAdapter
         }
 
-
         viewAdapter.register(
             HeaderViewBinder(
                 context = requireContext()
@@ -234,15 +222,19 @@ class TrackCollectionFragment :
 
         viewAdapter.register(
             TrackViewBinder(
-                selectedSet = selectedSet,
                 checkable = true,
                 draggable = false,
-                context = requireContext()
+                context = requireContext(),
+                lifecycleOwner = viewLifecycleOwner
             )
         )
 
-
         enableButtons()
+
+        // Update the buttons when the selection has changed
+        viewAdapter.selectionRevision.observe(viewLifecycleOwner, {
+            enableButtons()
+        })
 
         // Loads the data
         updateDisplay(false)
@@ -387,33 +379,24 @@ class TrackCollectionFragment :
         }
     }
 
-    private val viewHolders: List<TrackViewHolder>
-        get() {
-            val list: MutableList<TrackViewHolder> = mutableListOf()
-            for (i in 0 until listView!!.childCount) {
-                val vh = listView!!.findViewHolderForAdapterPosition(i)
-                if (vh is TrackViewHolder) {
-                    list.add(vh)
-                }
-            }
-            return list
-        }
-
+    /**
+     * Get the size of the underlying list
+     */
     private val childCount: Int
         get() {
+            val count = viewAdapter.getCurrentList().count()
             if (listModel.showHeader) {
-                return listView!!.childCount - 1
+                return count - 1
             } else {
-                return listView!!.childCount
+                return count
             }
         }
 
     private fun playAll(shuffle: Boolean = false, append: Boolean = false) {
         var hasSubFolders = false
 
-        for (vh in viewHolders) {
-            val entry = vh.entry
-            if (entry != null && entry.isDirectory) {
+        for (item in viewAdapter.getCurrentList()) {
+            if (item is MusicDirectory.Entry && item.isDirectory) {
                 hasSubFolders = true
                 break
             }
@@ -436,7 +419,6 @@ class TrackCollectionFragment :
                 isArtist = isArtist
             )
         } else {
-            selectAll(selected = true, toast = false)
             downloadHandler.download(
                 fragment = this,
                 append = append,
@@ -444,49 +426,38 @@ class TrackCollectionFragment :
                 autoPlay = !append,
                 playNext = false,
                 shuffle = shuffle,
-                songs = getSelectedSongs()
+                songs = getAllSongs()
             )
-            selectAll(selected = false, toast = false)
         }
+    }
+
+    @Suppress("UNCHECKED_CAST")
+    private fun getAllSongs(): List<MusicDirectory.Entry> {
+        return viewAdapter.getCurrentList().filter {
+            it is MusicDirectory.Entry && !it.isDirectory
+        } as List<MusicDirectory.Entry>
     }
 
     private fun selectAllOrNone() {
-        val someUnselected = selectedSet.size < childCount
+        val someUnselected = viewAdapter.selectedSet.size < childCount
 
         selectAll(someUnselected, true)
-
     }
 
     private fun selectAll(selected: Boolean, toast: Boolean) {
+        var selectedCount = viewAdapter.selectedSet.size * -1
 
-        var selectedCount = 0
+        selectedCount += viewAdapter.setSelectionStatusOfAll(selected)
 
-        listView!!
-
-        for (vh in viewHolders) {
-            val entry = vh.entry
-
-            if (entry != null && !entry.isDirectory && !entry.isVideo) {
-                vh.isChecked = selected
-                selectedCount++
-            }
-        }
-
-
-        // Display toast: N tracks selected / N tracks unselected
+        // Display toast: N tracks selected
         if (toast) {
-            val toastResId = if (selected)
-                R.string.select_album_n_selected
-            else
-                R.string.select_album_n_unselected
-            Util.toast(activity, getString(toastResId, selectedCount))
+            val toastResId = R.string.select_album_n_selected
+            Util.toast(activity, getString(toastResId, selectedCount.coerceAtLeast(0)))
         }
 
-        enableButtons()
     }
 
-    private fun enableButtons() {
-        val selection = getSelectedSongs()
+    private fun enableButtons(selection: List<MusicDirectory.Entry> = getSelectedSongs()) {
         val enabled = selection.isNotEmpty()
         var unpinEnabled = false
         var deleteEnabled = false
@@ -517,8 +488,7 @@ class TrackCollectionFragment :
         var songs = getSelectedSongs()
 
         if (songs.isEmpty()) {
-            selectAll(selected = true, toast = false)
-            songs = getSelectedSongs()
+            songs = getAllSongs()
         }
 
         downloadBackground(save, songs)
@@ -596,15 +566,12 @@ class TrackCollectionFragment :
             Navigation.findNavController(requireView())
                 .navigate(R.id.trackCollectionFragment, bundle)
         }
-
-        //updateInterfaceWithEntries(musicDirectory)
     }
 
-    private val defaultObserver = Observer(this::updateInterfaceWithEntries)
 
-    private fun updateInterfaceWithEntries(newList: List<MusicDirectory.Entry>) {
+    private val updateInterfaceWithEntries = Observer<List<MusicDirectory.Entry>> {
 
-        val entryList: MutableList<MusicDirectory.Entry> = newList.toMutableList()
+        val entryList: MutableList<MusicDirectory.Entry> = it.toMutableList()
 
         if (listModel.currentListIsSortable && Settings.shouldSortByDisc) {
             Collections.sort(entryList, EntryByDiscAndTrackComparator())
@@ -683,6 +650,7 @@ class TrackCollectionFragment :
         playAllButtonVisible = !(isAlbumList || entryList.isEmpty()) && !allVideos
         shareButtonVisible = !isOffline() && songCount > 0
 
+        // TODO!!
 //        listView!!.removeHeaderView(emptyView!!)
 //        if (entries.isEmpty()) {
 //            emptyView!!.text = getString(R.string.select_album_empty)
@@ -700,9 +668,9 @@ class TrackCollectionFragment :
 
 
         if (songCount > 0 && listModel.showHeader) {
-            var name = listModel.currentDirectory.value?.name
+            val name = listModel.currentDirectory.value?.name
             val intentAlbumName = requireArguments().getString(Constants.INTENT_EXTRA_NAME_NAME, "Name")!!
-            val albumHeader = AlbumHeader(newList, name?: intentAlbumName, songCount)
+            val albumHeader = AlbumHeader(it, name?: intentAlbumName, songCount)
             val mixedList: MutableList<Identifiable> = mutableListOf(albumHeader)
             mixedList.addAll(entryList)
             viewAdapter.submitList(mixedList)
@@ -724,26 +692,17 @@ class TrackCollectionFragment :
 
     }
 
-    private fun getSelectedSongs(): MutableList<MusicDirectory.Entry> {
-        val songs: MutableList<MusicDirectory.Entry> = mutableListOf()
-
-        for (vh in viewHolders) {
-            if (vh.isChecked) {
-                songs.add(vh.entry!!)
-            }
+    private fun getSelectedSongs(): List<MusicDirectory.Entry> {
+        // Walk through selected set and get the Entries based on the saved ids.
+        return viewAdapter.getCurrentList().mapNotNull {
+            if (it is MusicDirectory.Entry && viewAdapter.isSelected(it.longId))
+                it
+            else
+                null
         }
-
-        for (key in selectedSet) {
-            songs.add(viewAdapter.getCurrentList().findLast {
-                it.longId == key
-            } as MusicDirectory.Entry)
-        }
-        return songs
     }
 
-    override val viewAdapter: MultiTypeDiffAdapter<Identifiable> by lazy {
-        MultiTypeDiffAdapter()
-    }
+
 
     override fun setTitle(title: String?) {
         setTitle(this@TrackCollectionFragment, title)

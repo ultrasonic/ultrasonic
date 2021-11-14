@@ -34,7 +34,6 @@ class TrackCollectionModel(application: Application) : GenericListModel(applicat
     val currentDirectory: MutableLiveData<MusicDirectory> = MutableLiveData()
     val currentList: MutableLiveData<List<MusicDirectory.Entry>> = MutableLiveData()
     val songsForGenre: MutableLiveData<MusicDirectory> = MutableLiveData()
-    private val downloader: Downloader by inject()
 
     suspend fun getMusicFolders(refresh: Boolean) {
         withContext(Dispatchers.IO) {

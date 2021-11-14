@@ -9,12 +9,14 @@ import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.TextView
 import androidx.core.view.isVisible
+import androidx.lifecycle.findViewTreeLifecycleOwner
 import androidx.recyclerview.widget.RecyclerView
 import org.koin.core.component.KoinComponent
 import org.koin.core.component.get
 import org.koin.core.component.inject
 import org.moire.ultrasonic.R
 import org.moire.ultrasonic.data.ActiveServerProvider
+import org.moire.ultrasonic.domain.Identifiable
 import org.moire.ultrasonic.domain.MusicDirectory
 import org.moire.ultrasonic.featureflags.Feature
 import org.moire.ultrasonic.featureflags.FeatureStorage
@@ -29,8 +31,9 @@ import timber.log.Timber
  * Used to display songs and videos in a `ListView`.
  * TODO: Video List item
  */
-class TrackViewHolder(val view: View, val selectedSet: MutableSet<Long>) :
+class TrackViewHolder(val view: View, var adapter: MultiTypeDiffAdapter<Identifiable>) :
     RecyclerView.ViewHolder(view), Checkable, KoinComponent {
+
     var check: CheckedTextView = view.findViewById(R.id.song_check)
     var rating: LinearLayout = view.findViewById(R.id.song_rating)
     private var fiveStar1: ImageView = view.findViewById(R.id.song_five_star_1)
@@ -99,6 +102,7 @@ class TrackViewHolder(val view: View, val selectedSet: MutableSet<Long>) :
         }
 
         check.isVisible = (checkable && !song.isVideo)
+        check.isChecked = isSelected
         drag.isVisible = draggable
 
         if (ActiveServerProvider.isOffline()) {
@@ -109,9 +113,6 @@ class TrackViewHolder(val view: View, val selectedSet: MutableSet<Long>) :
         }
         
         update()
-
-        isChecked = isSelected
-
     }
 
     private fun setupStarButtons(song: MusicDirectory.Entry) {
@@ -219,7 +220,6 @@ class TrackViewHolder(val view: View, val selectedSet: MutableSet<Long>) :
     }
 
     fun updateDownloadStatus(downloadFile: DownloadFile) {
-
         if (downloadFile.isWorkDone) {
             val newLeftImageType =
                 if (downloadFile.isSaved) ImageType.Pin else ImageType.Downloaded
@@ -274,10 +274,9 @@ class TrackViewHolder(val view: View, val selectedSet: MutableSet<Long>) :
 
     override fun setChecked(newStatus: Boolean) {
         if (newStatus) {
-            selectedSet.add(downloadFile!!.longId)
-            Timber.d("Selectedset %s", selectedSet.toString())
+            adapter.notifySelected(downloadFile!!.longId)
         } else {
-            selectedSet.remove(downloadFile!!.longId)
+            adapter.notifyUnselected(downloadFile!!.longId)
         }
         check.isChecked = newStatus
     }

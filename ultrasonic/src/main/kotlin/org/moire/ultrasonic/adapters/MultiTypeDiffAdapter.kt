@@ -1,24 +1,23 @@
 package org.moire.ultrasonic.adapters
 
 import android.annotation.SuppressLint
-import android.view.MotionEvent
-import androidx.recyclerview.selection.ItemDetailsLookup
-import androidx.recyclerview.selection.ItemKeyProvider
-import androidx.recyclerview.selection.SelectionTracker
+import androidx.lifecycle.LiveData
+import androidx.lifecycle.MutableLiveData
 import androidx.recyclerview.widget.AdapterListUpdateCallback
 import androidx.recyclerview.widget.AsyncDifferConfig
 import androidx.recyclerview.widget.AsyncListDiffer
 import androidx.recyclerview.widget.AsyncListDiffer.ListListener
 import androidx.recyclerview.widget.DiffUtil
-import androidx.recyclerview.widget.RecyclerView
 import com.drakeet.multitype.MultiTypeAdapter
 import org.moire.ultrasonic.domain.Identifiable
-import timber.log.Timber
+import java.util.TreeSet
 
 class MultiTypeDiffAdapter<T : Identifiable> : MultiTypeAdapter() {
 
-    val diffCallback = GenericDiffCallback<T>()
-    var tracker: SelectionTracker<Long>? = null
+    internal var selectedSet: TreeSet<Long> = TreeSet()
+    internal var selectionRevision: MutableLiveData<Int> = MutableLiveData(0)
+
+    private val diffCallback = GenericDiffCallback<T>()
 
     init {
         setHasStableIds(true)
@@ -28,10 +27,14 @@ class MultiTypeDiffAdapter<T : Identifiable> : MultiTypeAdapter() {
         return getItem(position).longId
     }
 
+    private fun getItem(position: Int): T {
+        return mDiffer.currentList[position]
+    }
+
     override var items: List<Any>
         get() = getCurrentList()
         set(value) {
-            throw Exception("You must use submitList() to add data to the MultiTypeDiffAdapter")
+            throw IllegalAccessException("You must use submitList() to add data to the MultiTypeDiffAdapter")
         }
 
 
@@ -86,9 +89,7 @@ class MultiTypeDiffAdapter<T : Identifiable> : MultiTypeAdapter() {
         mDiffer.submitList(list, commitCallback)
     }
 
-    protected fun getItem(position: Int): T {
-        return mDiffer.currentList[position]
-    }
+
 
     override fun getItemCount(): Int {
         return mDiffer.currentList.size
@@ -130,8 +131,42 @@ class MultiTypeDiffAdapter<T : Identifiable> : MultiTypeAdapter() {
         // Void
     }
 
+    fun notifySelected(id: Long) {
+        selectedSet.add(id)
 
+        // Update revision counter
+        selectionRevision.postValue(selectionRevision.value!! + 1)
+    }
 
+    fun notifyUnselected(id: Long) {
+        selectedSet.remove(id)
+
+        // Update revision counter
+        selectionRevision.postValue(selectionRevision.value!! + 1)
+    }
+
+    fun setSelectionStatusOfAll(select: Boolean): Int {
+        // Clear current selection
+        selectedSet.clear()
+
+        // Update revision counter
+        selectionRevision.postValue(selectionRevision.value!! + 1)
+
+        // Nothing to reselect
+        if (!select) return 0
+
+        // Select them all
+        getCurrentList().mapNotNullTo(selectedSet, { entry ->
+            // Exclude any -1 ids, eg. headers and other UI elements
+            entry.longId.takeIf { it != -1L }
+        })
+
+        return selectedSet.count()
+    }
+
+    fun isSelected(longId: Long): Boolean {
+        return selectedSet.contains(longId)
+    }
 
 
     companion object {
@@ -148,8 +183,6 @@ class MultiTypeDiffAdapter<T : Identifiable> : MultiTypeAdapter() {
                 return oldItem.id == newItem.id
             }
         }
-
-
 
 
     }

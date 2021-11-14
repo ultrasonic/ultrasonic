@@ -146,8 +146,7 @@
     <string name="search.songs">Songs</string>
     <string name="search.title">Search</string>
     <string name="select_album.empty">No media found</string>
-    <string name="select_album.n_selected">%d tracks selected.</string>
-    <string name="select_album.n_unselected">%d tracks unselected.</string>
+    <string name="select_album.n_selected">%d tracks selected</string>
     <string name="select_album.no_network">Warning: No network available.</string>
     <string name="select_album.no_sdcard">Error: No SD card available.</string>
     <string name="select_album.play_all">Play All</string>
@@ -454,24 +453,24 @@
         <item quantity="other">%d songs</item>
     </plurals>
     <plurals name="select_album_n_songs_pinned">
-        <item quantity="one">%d song selected to be pinned.</item>
-        <item quantity="other">%d songs selected to be pinned.</item>
+        <item quantity="one">%d song selected to be pinned</item>
+        <item quantity="other">%d songs selected to be pinned</item>
     </plurals>
     <plurals name="select_album_n_songs_downloaded">
-        <item quantity="one">%d song selected to be downloaded.</item>
-        <item quantity="other">%d songs selected to be downloaded.</item>
+        <item quantity="one">%d song selected to be downloaded</item>
+        <item quantity="other">%d songs selected to be downloaded</item>
     </plurals>
     <plurals name="select_album_n_songs_unpinned">
-        <item quantity="one">%d song selected to be unpinned.</item>
-        <item quantity="other">%d songs selected to be unpinned.</item>
+        <item quantity="one">%d song unpinned</item>
+        <item quantity="other">%d songs unpinned</item>
     </plurals>
     <plurals name="select_album_n_songs_added">
-        <item quantity="one">%d song added to the end of play queue.</item>
-        <item quantity="other">%d songs added to the end of play queue.</item>
+        <item quantity="one">%d song added to the end of play queue</item>
+        <item quantity="other">%d songs added to the end of play queue</item>
     </plurals>
     <plurals name="select_album_n_songs_play_next">
-        <item quantity="one">%d song inserted after current song.</item>
-        <item quantity="other">%d songs inserted after current song.</item>
+        <item quantity="one">%d song inserted after current song</item>
+        <item quantity="other">%d songs inserted after current song</item>
     </plurals>
     <plurals name="select_album_donate_dialog_n_trial_days_left">
         <item quantity="one">%d day left of trial period</item>
