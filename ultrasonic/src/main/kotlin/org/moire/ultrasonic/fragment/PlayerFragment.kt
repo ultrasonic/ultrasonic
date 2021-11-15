@@ -39,6 +39,7 @@ import androidx.lifecycle.lifecycleScope
 import androidx.navigation.Navigation
 import com.mobeta.android.dslv.DragSortListView
 import com.mobeta.android.dslv.DragSortListView.DragSortListener
+import io.reactivex.rxjava3.disposables.Disposable
 import java.text.DateFormat
 import java.text.SimpleDateFormat
 import java.util.ArrayList
@@ -112,6 +113,7 @@ class PlayerFragment : Fragment(), GestureDetector.OnGestureListener, KoinCompon
     private var currentPlaying: DownloadFile? = null
     private var currentSong: MusicDirectory.Entry? = null
     private var onProgressChangedTask: SilentBackgroundTask<Void?>? = null
+    private var rxBusSubscription: Disposable? = null
 
     // Views and UI Elements
     private lateinit var visualizerViewLayout: LinearLayout
@@ -422,7 +424,7 @@ class PlayerFragment : Fragment(), GestureDetector.OnGestureListener, KoinCompon
         )
 
         // Observe playlist changes and update the UI
-        RxBus.playlistObservable.subscribe {
+        rxBusSubscription = RxBus.playlistObservable.subscribe {
             onPlaylistChanged()
         }
 
@@ -488,6 +490,7 @@ class PlayerFragment : Fragment(), GestureDetector.OnGestureListener, KoinCompon
     }
 
     override fun onDestroyView() {
+        rxBusSubscription?.dispose()
         cancellationToken.cancel()
         super.onDestroyView()
     }
