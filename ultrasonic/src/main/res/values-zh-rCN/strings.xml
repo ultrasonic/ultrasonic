@@ -53,7 +53,7 @@
     <string name="delete_playlist">确定要删除 %1$s吗</string>
     <string name="download.bookmark_removed" formatted="false">书签已删除。</string>
     <string name="download.bookmark_set_at_position" formatted="false">书签设置为 %s。</string>
-    <string name="download.empty">空的播放列表</string>
+    <string name="playlist.empty">空的播放列表</string>
     <string name="download.jukebox_not_authorized">不允许远程控制. 请在您的服务器上的 <b>Users &gt; Settings</b> 打开点唱机模式。</string>
     <string name="download.jukebox_off">关闭远程控制，音乐将在手机上播放</string>
     <string name="download.jukebox_offline">离线模式不支持远程控制</string>

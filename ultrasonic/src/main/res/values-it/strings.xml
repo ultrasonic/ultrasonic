@@ -40,7 +40,7 @@
     <string name="delete_playlist">Vuoi eliminare %1$s</string>
     <string name="download.bookmark_removed" formatted="false">Segnalibro rimosso.</string>
     <string name="download.bookmark_set_at_position" formatted="false">Segnalibro impostato su %s.</string>
-    <string name="download.empty">Playlist vuota</string>
+    <string name="playlist.empty">Playlist vuota</string>
     <string name="download.jukebox_not_authorized">Il controllo remoto non è consentito. Per favore abilita la modalità jukebox nelle <b> Impostazioni &gt; Utente </b> nel server Airsonic.</string>
     <string name="download.jukebox_off">Controllo remoto disattivato. La musica verrà riprodotta sullo smartphone.</string>
     <string name="download.jukebox_offline">Il controllo remoto non è disponibile nella modalità offline. </string>

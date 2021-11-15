@@ -9,13 +9,13 @@ import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.TextView
 import androidx.core.view.isVisible
+import androidx.lifecycle.MutableLiveData
 import androidx.recyclerview.widget.RecyclerView
 import org.koin.core.component.KoinComponent
 import org.koin.core.component.get
 import org.koin.core.component.inject
 import org.moire.ultrasonic.R
 import org.moire.ultrasonic.data.ActiveServerProvider
-import org.moire.ultrasonic.domain.Identifiable
 import org.moire.ultrasonic.domain.MusicDirectory
 import org.moire.ultrasonic.featureflags.Feature
 import org.moire.ultrasonic.featureflags.FeatureStorage
@@ -31,8 +31,7 @@ import timber.log.Timber
  * Used to display songs and videos in a `ListView`.
  * TODO: Video List item
  */
-class TrackViewHolder(val view: View, var adapter: MultiTypeDiffAdapter<Identifiable>) :
-    RecyclerView.ViewHolder(view), Checkable, KoinComponent {
+class TrackViewHolder(val view: View) : RecyclerView.ViewHolder(view), Checkable, KoinComponent {
 
     var check: CheckedTextView = view.findViewById(R.id.song_check)
     var rating: LinearLayout = view.findViewById(R.id.song_rating)
@@ -49,6 +48,8 @@ class TrackViewHolder(val view: View, var adapter: MultiTypeDiffAdapter<Identifi
     var duration: TextView = view.findViewById(R.id.song_duration)
     var progress: TextView = view.findViewById(R.id.song_status)
 
+    var itemClickListener: ((View, DownloadFile?) -> Unit)? = null
+
     var entry: MusicDirectory.Entry? = null
         private set
     var downloadFile: DownloadFile? = null
@@ -59,6 +60,8 @@ class TrackViewHolder(val view: View, var adapter: MultiTypeDiffAdapter<Identifi
     private var statusImage: Drawable? = null
     private var playing = false
 
+    var observableChecked = MutableLiveData(false)
+
     private val useFiveStarRating: Boolean by lazy {
         val features: FeatureStorage = get()
         features.isFeatureEnabled(Feature.FIVE_STAR_RATING)
@@ -67,11 +70,15 @@ class TrackViewHolder(val view: View, var adapter: MultiTypeDiffAdapter<Identifi
     private val mediaPlayerController: MediaPlayerController by inject()
 
     lateinit var imageHelper: ImageHelper
-    
+
     init {
         itemView.setOnClickListener {
-            val nowChecked = !check.isChecked
-            isChecked = nowChecked
+            if (itemClickListener != null) {
+                itemClickListener?.invoke(it, downloadFile)
+            } else {
+                val nowChecked = !check.isChecked
+                isChecked = nowChecked
+            }
         }
     }
 
@@ -92,7 +99,6 @@ class TrackViewHolder(val view: View, var adapter: MultiTypeDiffAdapter<Identifi
         title.text = entryDescription.title
         duration.text = entryDescription.duration
 
-
         if (Settings.shouldShowTrackNumber && song.track != null && song.track!! > 0) {
             track.text = entryDescription.trackNumber
         } else {
@@ -100,7 +106,7 @@ class TrackViewHolder(val view: View, var adapter: MultiTypeDiffAdapter<Identifi
         }
 
         check.isVisible = (checkable && !song.isVideo)
-        check.isChecked = isSelected
+        setCheckedSilent(isSelected)
         drag.isVisible = draggable
 
         if (ActiveServerProvider.isOffline()) {
@@ -109,7 +115,7 @@ class TrackViewHolder(val view: View, var adapter: MultiTypeDiffAdapter<Identifi
         } else {
             setupStarButtons(song)
         }
-        
+
         update()
     }
 
@@ -150,9 +156,6 @@ class TrackViewHolder(val view: View, var adapter: MultiTypeDiffAdapter<Identifi
             }
         }
     }
-
-
-
 
     @Synchronized
     // TODO: Should be removed
@@ -218,11 +221,9 @@ class TrackViewHolder(val view: View, var adapter: MultiTypeDiffAdapter<Identifi
         }
     }
 
-
     fun updateStatus(status: DownloadStatus) {
         if (status == cachedStatus) return
         cachedStatus = status
-
 
         Timber.w("STATUS: %s", status)
 
@@ -254,7 +255,7 @@ class TrackViewHolder(val view: View, var adapter: MultiTypeDiffAdapter<Identifi
     fun updateProgress(p: Int) {
         if (cachedStatus == DownloadStatus.DOWNLOADING) {
             progress.text = Util.formatPercentage(p)
-        } else  {
+        } else {
             progress.text = null
         }
     }
@@ -271,13 +272,12 @@ class TrackViewHolder(val view: View, var adapter: MultiTypeDiffAdapter<Identifi
         }
     }
 
+    private fun setCheckedSilent(newStatus: Boolean) {
+        check.isChecked = newStatus
+    }
 
     override fun setChecked(newStatus: Boolean) {
-        if (newStatus) {
-            adapter.notifySelected(downloadFile!!.longId)
-        } else {
-            adapter.notifyUnselected(downloadFile!!.longId)
-        }
+        observableChecked.postValue(newStatus)
         check.isChecked = newStatus
     }
 

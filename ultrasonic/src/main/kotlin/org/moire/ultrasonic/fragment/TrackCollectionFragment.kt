@@ -10,12 +10,10 @@ package org.moire.ultrasonic.fragment
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
-import android.view.LayoutInflater
 import android.view.Menu
 import android.view.MenuInflater
 import android.view.MenuItem
 import android.view.View
-import android.view.ViewGroup
 import android.widget.AdapterView.AdapterContextMenuInfo
 import android.widget.ImageView
 import android.widget.TextView
@@ -27,12 +25,12 @@ import androidx.lifecycle.viewModelScope
 import androidx.navigation.Navigation
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import java.util.Collections
 import kotlinx.coroutines.CoroutineExceptionHandler
 import kotlinx.coroutines.launch
 import org.koin.android.ext.android.inject
 import org.moire.ultrasonic.R
 import org.moire.ultrasonic.adapters.HeaderViewBinder
-import org.moire.ultrasonic.adapters.MultiTypeDiffAdapter
 import org.moire.ultrasonic.adapters.TrackViewBinder
 import org.moire.ultrasonic.data.ActiveServerProvider.Companion.isOffline
 import org.moire.ultrasonic.domain.Identifiable
@@ -49,7 +47,6 @@ import org.moire.ultrasonic.util.EntryByDiscAndTrackComparator
 import org.moire.ultrasonic.util.Settings
 import org.moire.ultrasonic.util.Util
 import timber.log.Timber
-import java.util.Collections
 
 /**
  * Displays a group of tracks, eg. the songs of an album, of a playlist etc.
@@ -105,7 +102,6 @@ class TrackCollectionFragment :
      */
     // FIXME
     override val itemClickTarget: Int = R.id.trackCollectionFragment
-
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
@@ -232,9 +228,12 @@ class TrackCollectionFragment :
         enableButtons()
 
         // Update the buttons when the selection has changed
-        viewAdapter.selectionRevision.observe(viewLifecycleOwner, {
-            enableButtons()
-        })
+        viewAdapter.selectionRevision.observe(
+            viewLifecycleOwner,
+            {
+                enableButtons()
+            }
+        )
 
         // Loads the data
         updateDisplay(false)
@@ -454,7 +453,6 @@ class TrackCollectionFragment :
             val toastResId = R.string.select_album_n_selected
             Util.toast(activity, getString(toastResId, selectedCount.coerceAtLeast(0)))
         }
-
     }
 
     private fun enableButtons(selection: List<MusicDirectory.Entry> = getSelectedSongs()) {
@@ -519,12 +517,14 @@ class TrackCollectionFragment :
     }
 
     private fun delete() {
-        var songs = getSelectedSongs()
+        val songs = getSelectedSongs()
 
-        if (songs.isEmpty()) {
-            selectAll(selected = true, toast = false)
-            songs = getSelectedSongs()
-        }
+        Util.toast(
+            context,
+            resources.getQuantityString(
+                R.plurals.select_album_n_songs_deleted, songs.size, songs.size
+            )
+        )
 
         mediaPlayerController.delete(songs)
     }
@@ -544,8 +544,8 @@ class TrackCollectionFragment :
 
         // Hide more button when results are less than album list size
         if (musicDirectory.getChildren().size < requireArguments().getInt(
-                Constants.INTENT_EXTRA_NAME_ALBUM_LIST_SIZE, 0
-            )
+            Constants.INTENT_EXTRA_NAME_ALBUM_LIST_SIZE, 0
+        )
         ) {
             moreButton!!.visibility = View.GONE
         } else {
@@ -568,7 +568,6 @@ class TrackCollectionFragment :
         }
     }
 
-
     private val updateInterfaceWithEntries = Observer<List<MusicDirectory.Entry>> {
 
         val entryList: MutableList<MusicDirectory.Entry> = it.toMutableList()
@@ -576,7 +575,6 @@ class TrackCollectionFragment :
         if (listModel.currentListIsSortable && Settings.shouldSortByDisc) {
             Collections.sort(entryList, EntryByDiscAndTrackComparator())
         }
-
 
         var allVideos = true
         var songCount = 0
@@ -650,14 +648,6 @@ class TrackCollectionFragment :
         playAllButtonVisible = !(isAlbumList || entryList.isEmpty()) && !allVideos
         shareButtonVisible = !isOffline() && songCount > 0
 
-        // TODO!!
-//        listView!!.removeHeaderView(emptyView!!)
-//        if (entries.isEmpty()) {
-//            emptyView!!.text = getString(R.string.select_album_empty)
-//            emptyView!!.setPadding(10, 10, 10, 10)
-//            listView!!.addHeaderView(emptyView, null, false)
-//        }
-
         if (playAllButton != null) {
             playAllButton!!.isVisible = playAllButtonVisible
         }
@@ -666,18 +656,16 @@ class TrackCollectionFragment :
             shareButton!!.isVisible = shareButtonVisible
         }
 
-
         if (songCount > 0 && listModel.showHeader) {
             val name = listModel.currentDirectory.value?.name
             val intentAlbumName = requireArguments().getString(Constants.INTENT_EXTRA_NAME_NAME, "Name")!!
-            val albumHeader = AlbumHeader(it, name?: intentAlbumName, songCount)
+            val albumHeader = AlbumHeader(it, name ?: intentAlbumName, songCount)
             val mixedList: MutableList<Identifiable> = mutableListOf(albumHeader)
             mixedList.addAll(entryList)
             viewAdapter.submitList(mixedList)
         } else {
             viewAdapter.submitList(entryList)
         }
-
 
         val playAll = requireArguments().getBoolean(Constants.INTENT_EXTRA_NAME_AUTOPLAY, false)
         if (playAll && songCount > 0) {
@@ -688,8 +676,6 @@ class TrackCollectionFragment :
         }
 
         listModel.currentListIsSortable = true
-
-
     }
 
     private fun getSelectedSongs(): List<MusicDirectory.Entry> {
@@ -701,8 +687,6 @@ class TrackCollectionFragment :
                 null
         }
     }
-
-
 
     override fun setTitle(title: String?) {
         setTitle(this@TrackCollectionFragment, title)
@@ -787,16 +771,11 @@ class TrackCollectionFragment :
         menuItem: MenuItem,
         item: MusicDirectory.Entry
     ): Boolean {
-        //TODO
+        // TODO
         return false
     }
 
     override fun onItemClick(item: MusicDirectory.Entry) {
         // nothing
     }
-
-
 }
-
-
-

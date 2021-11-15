@@ -1,16 +1,16 @@
 package org.moire.ultrasonic.util
 
+import java.util.HashSet
 import org.moire.ultrasonic.domain.Identifiable
 import org.moire.ultrasonic.domain.MusicDirectory
 import org.moire.ultrasonic.util.Settings.shouldUseFolderForArtistName
 import org.moire.ultrasonic.util.Util.getGrandparent
-import java.util.HashSet
 
 class AlbumHeader(
     var entries: List<MusicDirectory.Entry>,
     var name: String,
     songCount: Int
-): Identifiable {
+) : Identifiable {
     var isAllVideo: Boolean
         private set
 
@@ -71,7 +71,6 @@ class AlbumHeader(
             }
         }
     }
-
 
     init {
         _artists = HashSet()

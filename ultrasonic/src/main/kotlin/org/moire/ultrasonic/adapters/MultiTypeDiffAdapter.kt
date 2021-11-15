@@ -8,8 +8,8 @@ import androidx.recyclerview.widget.AsyncListDiffer
 import androidx.recyclerview.widget.AsyncListDiffer.ListListener
 import androidx.recyclerview.widget.DiffUtil
 import com.drakeet.multitype.MultiTypeAdapter
-import org.moire.ultrasonic.domain.Identifiable
 import java.util.TreeSet
+import org.moire.ultrasonic.domain.Identifiable
 
 class MultiTypeDiffAdapter<T : Identifiable> : MultiTypeAdapter() {
 
@@ -36,7 +36,6 @@ class MultiTypeDiffAdapter<T : Identifiable> : MultiTypeAdapter() {
             throw IllegalAccessException("You must use submitList() to add data to the MultiTypeDiffAdapter")
         }
 
-
     var mDiffer: AsyncListDiffer<T> = AsyncListDiffer(
         AdapterListUpdateCallback(this),
         AsyncDifferConfig.Builder(diffCallback).build()
@@ -53,7 +52,6 @@ class MultiTypeDiffAdapter<T : Identifiable> : MultiTypeAdapter() {
     init {
         mDiffer.addListListener(mListener)
     }
-
 
     /**
      * Submits a new list to be diffed, and displayed.
@@ -87,8 +85,6 @@ class MultiTypeDiffAdapter<T : Identifiable> : MultiTypeAdapter() {
     fun submitList(list: List<T>?, commitCallback: Runnable?) {
         mDiffer.submitList(list, commitCallback)
     }
-
-
 
     override fun getItemCount(): Int {
         return mDiffer.currentList.size
@@ -151,7 +147,6 @@ class MultiTypeDiffAdapter<T : Identifiable> : MultiTypeAdapter() {
         selectionRevision.postValue(selectionRevision.value!! + 1)
     }
 
-
     fun setSelectionStatusOfAll(select: Boolean): Int {
         // Clear current selection
         selectedSet.clear()
@@ -163,10 +158,13 @@ class MultiTypeDiffAdapter<T : Identifiable> : MultiTypeAdapter() {
         if (!select) return 0
 
         // Select them all
-        getCurrentList().mapNotNullTo(selectedSet, { entry ->
-            // Exclude any -1 ids, eg. headers and other UI elements
-            entry.longId.takeIf { it != -1L }
-        })
+        getCurrentList().mapNotNullTo(
+            selectedSet,
+            { entry ->
+                // Exclude any -1 ids, eg. headers and other UI elements
+                entry.longId.takeIf { it != -1L }
+            }
+        )
 
         return selectedSet.count()
     }
@@ -175,6 +173,18 @@ class MultiTypeDiffAdapter<T : Identifiable> : MultiTypeAdapter() {
         return selectedSet.contains(longId)
     }
 
+    fun moveItem(from: Int, to: Int): List<T> {
+        val list = getCurrentList().toMutableList()
+        val fromLocation = list[from]
+        list.removeAt(from)
+        if (to < from) {
+            list.add(to + 1, fromLocation)
+        } else {
+            list.add(to - 1, fromLocation)
+        }
+        submitList(list)
+        return list as List<T>
+    }
 
     companion object {
         /**
@@ -190,8 +200,5 @@ class MultiTypeDiffAdapter<T : Identifiable> : MultiTypeAdapter() {
                 return oldItem.id == newItem.id
             }
         }
-
-
     }
-
 }

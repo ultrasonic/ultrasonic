@@ -89,7 +89,6 @@ class DownloadFile(
         }
 
         status = MutableLiveData(state)
-
     }
 
     /**

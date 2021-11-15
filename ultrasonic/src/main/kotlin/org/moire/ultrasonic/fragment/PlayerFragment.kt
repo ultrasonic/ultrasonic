@@ -36,8 +36,10 @@ import android.widget.ViewFlipper
 import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import androidx.navigation.Navigation
-import com.mobeta.android.dslv.DragSortListView
-import com.mobeta.android.dslv.DragSortListView.DragSortListener
+import androidx.recyclerview.widget.ItemTouchHelper
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.LinearSmoothScroller
+import androidx.recyclerview.widget.RecyclerView
 import io.reactivex.rxjava3.disposables.Disposable
 import java.text.DateFormat
 import java.text.SimpleDateFormat
@@ -58,9 +60,12 @@ import org.koin.android.ext.android.inject
 import org.koin.core.component.KoinComponent
 import org.koin.core.component.get
 import org.moire.ultrasonic.R
+import org.moire.ultrasonic.adapters.MultiTypeDiffAdapter
+import org.moire.ultrasonic.adapters.TrackViewBinder
 import org.moire.ultrasonic.audiofx.EqualizerController
 import org.moire.ultrasonic.audiofx.VisualizerController
 import org.moire.ultrasonic.data.ActiveServerProvider.Companion.isOffline
+import org.moire.ultrasonic.domain.Identifiable
 import org.moire.ultrasonic.domain.MusicDirectory
 import org.moire.ultrasonic.domain.PlayerState
 import org.moire.ultrasonic.domain.RepeatMode
@@ -81,7 +86,6 @@ import org.moire.ultrasonic.util.Constants
 import org.moire.ultrasonic.util.Settings
 import org.moire.ultrasonic.util.Util
 import org.moire.ultrasonic.view.AutoRepeatButton
-import org.moire.ultrasonic.view.SongListAdapter
 import org.moire.ultrasonic.view.VisualizerView
 import timber.log.Timber
 
@@ -94,6 +98,8 @@ class PlayerFragment :
     GestureDetector.OnGestureListener,
     KoinComponent,
     CoroutineScope by CoroutineScope(Dispatchers.Main) {
+
+    // Settings
     private var swipeDistance = 0
     private var swipeVelocity = 0
     private var jukeboxAvailable = false
@@ -104,6 +110,7 @@ class PlayerFragment :
     // Detectors & Callbacks
     private lateinit var gestureScanner: GestureDetector
     private lateinit var cancellationToken: CancellationToken
+    private lateinit var dragTouchHelper: ItemTouchHelper
 
     // Data & Services
     private val networkAndStorageChecker: NetworkAndStorageChecker by inject()
@@ -114,6 +121,7 @@ class PlayerFragment :
     private lateinit var executorService: ScheduledExecutorService
     private var currentPlaying: DownloadFile? = null
     private var currentSong: MusicDirectory.Entry? = null
+    private lateinit var viewManager: LinearLayoutManager
     private var rxBusSubscription: Disposable? = null
     private var ioScope = CoroutineScope(Dispatchers.IO)
 
@@ -133,7 +141,7 @@ class PlayerFragment :
     private lateinit var albumTextView: TextView
     private lateinit var artistTextView: TextView
     private lateinit var albumArtImageView: ImageView
-    private lateinit var playlistView: DragSortListView
+    private lateinit var playlistView: RecyclerView
     private lateinit var positionTextView: TextView
     private lateinit var downloadTrackTextView: TextView
     private lateinit var downloadTotalDurationTextView: TextView
@@ -145,6 +153,10 @@ class PlayerFragment :
     private lateinit var hollowStar: Drawable
     private lateinit var fullStar: Drawable
     private lateinit var progressBar: SeekBar
+
+    internal val viewAdapter: MultiTypeDiffAdapter<Identifiable> by lazy {
+        MultiTypeDiffAdapter()
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         Util.applyTheme(this.context)
@@ -322,14 +334,7 @@ class PlayerFragment :
             override fun onProgressChanged(seekBar: SeekBar, progress: Int, fromUser: Boolean) {}
         })
 
-        playlistView.setOnItemClickListener { _, _, position, _ ->
-            networkAndStorageChecker.warnIfNetworkOrStorageUnavailable()
-            launch(CommunicationError.getHandler(context)) {
-                mediaPlayerController.play(position)
-                onCurrentChanged()
-                onSliderProgressChanged()
-            }
-        }
+        initPlaylistDisplay()
 
         registerForContextMenu(playlistView)
 
@@ -432,15 +437,12 @@ class PlayerFragment :
 
     // Scroll to current playing.
     private fun scrollToCurrent() {
-        val adapter = playlistView.adapter
-        if (adapter != null) {
-            val count = adapter.count
-            for (i in 0 until count) {
-                if (currentPlaying == playlistView.getItemAtPosition(i)) {
-                    playlistView.smoothScrollToPositionFromTop(i, 40)
-                    return
-                }
-            }
+        val index = mediaPlayerController.playList.indexOf(currentPlaying)
+
+        if (index != -1) {
+            val smoothScroller = LinearSmoothScroller(context)
+            smoothScroller.targetPosition = index
+            viewManager.startSmoothScroll(smoothScroller)
         }
     }
 
@@ -535,7 +537,7 @@ class PlayerFragment :
         super.onCreateContextMenu(menu, view, menuInfo)
         if (view === playlistView) {
             val info = menuInfo as AdapterContextMenuInfo?
-            val downloadFile = playlistView.getItemAtPosition(info!!.position) as DownloadFile
+            val downloadFile = viewAdapter.getCurrentList()[info!!.position] as DownloadFile
             val menuInflater = requireActivity().menuInflater
             menuInflater.inflate(R.menu.nowplaying_context, menu)
             val song: MusicDirectory.Entry?
@@ -561,7 +563,7 @@ class PlayerFragment :
 
     override fun onContextItemSelected(menuItem: MenuItem): Boolean {
         val info = menuItem.menuInfo as AdapterContextMenuInfo
-        val downloadFile = playlistView.getItemAtPosition(info.position) as DownloadFile
+        val downloadFile = viewAdapter.getCurrentList()[info.position] as DownloadFile
         return menuItemSelected(menuItem.itemId, downloadFile) || super.onContextItemSelected(
             menuItem
         )
@@ -842,43 +844,71 @@ class PlayerFragment :
         }
     }
 
+    private fun initPlaylistDisplay() {
+        // Create a View Manager
+        viewManager = LinearLayoutManager(this.context)
+
+        // Hook up the view with the manager and the adapter
+        playlistView.apply {
+            setHasFixedSize(true)
+            layoutManager = viewManager
+            adapter = viewAdapter
+        }
+
+        // Create listener
+        val listener: ((View, DownloadFile?) -> Unit) = { _, file ->
+            val list = mediaPlayerController.playList
+            val index = list.indexOf(file)
+            mediaPlayerController.play(index)
+            onCurrentChanged()
+            onSliderProgressChanged()
+        }
+
+        viewAdapter.register(
+            TrackViewBinder(
+                checkable = false,
+                draggable = true,
+                context = requireContext(),
+                lifecycleOwner = viewLifecycleOwner,
+                listener
+            )
+        )
+
+        dragTouchHelper = ItemTouchHelper(object : ItemTouchHelper.SimpleCallback(
+            ItemTouchHelper.UP or ItemTouchHelper.DOWN, 0
+        ) {
+
+                override fun onMove(
+                    recyclerView: RecyclerView,
+                    viewHolder: RecyclerView.ViewHolder,
+                    target: RecyclerView.ViewHolder
+                ): Boolean {
+
+                    val from = viewHolder.bindingAdapterPosition
+                    val to = target.bindingAdapterPosition
+
+                    // FIXME:
+                    // Needs to be changed in the playlist as well...
+                    //  Move it in the data set
+                    (recyclerView.adapter as MultiTypeDiffAdapter<*>).moveItem(from, to)
+
+                    return true
+                }
+
+                override fun onSwiped(viewHolder: RecyclerView.ViewHolder, direction: Int) {
+                }
+            }
+        )
+
+        dragTouchHelper.attachToRecyclerView(playlistView)
+    }
+
     private fun onPlaylistChanged() {
         val mediaPlayerController = mediaPlayerController
         val list = mediaPlayerController.playList
-        emptyTextView.setText(R.string.download_empty)
-        val adapter = SongListAdapter(context, list)
-        playlistView.adapter = adapter
-        playlistView.setDragSortListener(object : DragSortListener {
-            override fun drop(from: Int, to: Int) {
-                if (from != to) {
-                    val item = adapter.getItem(from)
-                    adapter.remove(item)
-                    adapter.notifyDataSetChanged()
-                    adapter.insert(item, to)
-                    adapter.notifyDataSetChanged()
-                }
-            }
+        emptyTextView.setText(R.string.playlist_empty)
 
-            override fun drag(from: Int, to: Int) {}
-            override fun remove(which: Int) {
-
-                val item = adapter.getItem(which) ?: return
-
-                val currentPlaying = mediaPlayerController.currentPlaying
-                if (currentPlaying == item) {
-                    mediaPlayerController.next()
-                }
-                adapter.remove(item)
-                adapter.notifyDataSetChanged()
-                val songRemoved = String.format(
-                    resources.getString(R.string.download_song_removed),
-                    item.song.title
-                )
-                Util.toast(context, songRemoved)
-                onPlaylistChanged()
-                onCurrentChanged()
-            }
-        })
+        viewAdapter.submitList(list)
 
         emptyTextView.isVisible = list.isEmpty()
 

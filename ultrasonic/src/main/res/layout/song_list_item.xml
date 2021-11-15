@@ -15,7 +15,8 @@
         a:background="@android:color/transparent"
         a:focusable="false"
         a:gravity="center_vertical"
-        a:src="?attr/drag_vertical" />
+        a:src="?attr/drag_vertical"
+        a:importantForAccessibility="no" />
 
     <CheckedTextView
         a:id="@+id/song_check"
@@ -96,6 +97,7 @@
         a:focusable="false"
         a:gravity="center_vertical"
         a:paddingEnd="8dip"
-        a:src="?attr/star_hollow" />
+        a:src="?attr/star_hollow"
+        a:contentDescription="@string/download.menu_star"/>
 
 </LinearLayout>

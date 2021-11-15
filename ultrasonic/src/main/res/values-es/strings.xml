@@ -56,7 +56,7 @@
     <string name="delete_playlist">Quieres eliminar %1$s</string>
     <string name="download.bookmark_removed" formatted="false">Marcador eliminado.</string>
     <string name="download.bookmark_set_at_position" formatted="false">Marcador añadido a %s.</string>
-    <string name="download.empty">La lista de reproducción esta vacía</string>
+    <string name="playlist.empty">La lista de reproducción esta vacía</string>
     <string name="download.jukebox_not_authorized">El control remoto no esta habilitado. Por favor habilita el modo jukebox en <b>Configuración &gt; Usuarios</b> en tu servidor de Subsonic.</string>
     <string name="download.jukebox_off">Control remoto apagado. La música se reproduce en tu dispositivo.</string>
     <string name="download.jukebox_offline">Control remoto no disponible en modo fuera de línea.</string>

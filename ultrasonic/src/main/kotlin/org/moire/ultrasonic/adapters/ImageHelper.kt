@@ -25,7 +25,7 @@ class ImageHelper(context: Context) {
         val themesMatch = theme == currentTheme
         if (!themesMatch) theme = currentTheme
 
-        if (!themesMatch || force ) {
+        if (!themesMatch || force) {
             getDrawables(context)
         }
     }

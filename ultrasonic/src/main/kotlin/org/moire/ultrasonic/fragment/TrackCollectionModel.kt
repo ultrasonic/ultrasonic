@@ -13,11 +13,8 @@ import androidx.lifecycle.MutableLiveData
 import java.util.LinkedList
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
-import org.koin.core.component.inject
 import org.moire.ultrasonic.R
 import org.moire.ultrasonic.domain.MusicDirectory
-import org.moire.ultrasonic.service.DownloadFile
-import org.moire.ultrasonic.service.Downloader
 import org.moire.ultrasonic.service.MusicService
 import org.moire.ultrasonic.service.MusicServiceFactory
 import org.moire.ultrasonic.util.Settings

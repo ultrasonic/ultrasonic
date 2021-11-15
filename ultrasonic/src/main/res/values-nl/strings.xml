@@ -56,7 +56,7 @@
     <string name="delete_playlist">Wil je %1$s verwijderen?</string>
     <string name="download.bookmark_removed" formatted="false">Bladwijzer verwijderd.</string>
     <string name="download.bookmark_set_at_position" formatted="false">Bladwijzer ingesteld op %s.</string>
-    <string name="download.empty">Lege afspeellijst</string>
+    <string name="playlist.empty">Lege afspeellijst</string>
     <string name="download.jukebox_not_authorized">Afstandsbediening wordt niet ondersteund. Schakel jukebox-modus in op je Subsonic-server via <b>Gebruikers &gt; Instellingen</b>.</string>
     <string name="download.jukebox_off">Afstandsbediening uitgeschakeld; muziek wordt afgespeeld op de telefoon.</string>
     <string name="download.jukebox_offline">Afstandsbediening is niet beschikbaar in offline-modus.</string>

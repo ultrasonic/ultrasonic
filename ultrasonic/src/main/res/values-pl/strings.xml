@@ -42,7 +42,7 @@
     <string name="delete_playlist">Czy chcesz usunąć %1$s?</string>
     <string name="download.bookmark_removed" formatted="false">Zakładka usunięta.</string>
     <string name="download.bookmark_set_at_position" formatted="false">Zakładka ustawiona na %s.</string>
-    <string name="download.empty">Playlista jest pusta</string>
+    <string name="playlist.empty">Playlista jest pusta</string>
     <string name="download.jukebox_not_authorized">Kontrola pilotem jest niedostępna. Proszę uruchomić tryb jukebox w <b>Użytkownicy &gt; Ustawienia</b> na serwerze Subsonic.</string>
     <string name="download.jukebox_off">Tryb pilota jest wyłączony. Muzyka jest odtwarzana w telefonie.</string>
     <string name="download.jukebox_offline">Pilot jest niedostępny w trybie offline.</string>

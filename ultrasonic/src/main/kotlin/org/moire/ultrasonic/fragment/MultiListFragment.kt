@@ -8,18 +8,14 @@ import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.LiveData
-import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
-import com.drakeet.multitype.MultiTypeAdapter
 import org.koin.android.ext.android.inject
 import org.koin.androidx.viewmodel.ext.android.viewModel
 import org.moire.ultrasonic.R
 import org.moire.ultrasonic.adapters.MultiTypeDiffAdapter
 import org.moire.ultrasonic.data.ActiveServerProvider
-import org.moire.ultrasonic.domain.Artist
-import org.moire.ultrasonic.domain.GenericEntry
 import org.moire.ultrasonic.domain.Identifiable
 import org.moire.ultrasonic.domain.MusicFolder
 import org.moire.ultrasonic.subsonic.DownloadHandler
@@ -32,7 +28,6 @@ import org.moire.ultrasonic.view.SelectMusicFolderView
 /**
  * An abstract Model, which can be extended to display a list of items of type T from the API
  * @param T: The type of data which will be used (must extend GenericEntry)
- * @param TA: The Adapter to use (must extend GenericRowAdapter)
  */
 abstract class MultiListFragment<T : Identifiable> : Fragment() {
     internal val activeServerProvider: ActiveServerProvider by inject()
@@ -94,7 +89,7 @@ abstract class MultiListFragment<T : Identifiable> : Fragment() {
      */
     @Suppress("CommentOverPrivateProperty")
     private val musicFolderObserver = { folders: List<MusicFolder> ->
-        //viewAdapter.setFolderList(folders, listModel.activeServer.musicFolderId)
+        // viewAdapter.setFolderList(folders, listModel.activeServer.musicFolderId)
     }
 
     /**
@@ -115,7 +110,7 @@ abstract class MultiListFragment<T : Identifiable> : Fragment() {
      */
     fun showFolderHeader(): Boolean {
         return listModel.showSelectFolderHeader(arguments) &&
-                !listModel.isOffline() && !Settings.shouldUseId3Tags
+            !listModel.isOffline() && !Settings.shouldUseId3Tags
     }
 
     open fun setTitle(title: String?) {
@@ -147,9 +142,13 @@ abstract class MultiListFragment<T : Identifiable> : Fragment() {
         liveDataItems = getLiveData(arguments)
 
         // Register an observer to update our UI when the data changes
-        liveDataItems.observe(viewLifecycleOwner, {
-                newItems -> viewAdapter.submitList(newItems)
-        })
+        liveDataItems.observe(
+            viewLifecycleOwner,
+            {
+                newItems ->
+                viewAdapter.submitList(newItems)
+            }
+        )
 
         // Setup the Music folder handling
         listModel.getMusicFolders().observe(viewLifecycleOwner, musicFolderObserver)
@@ -165,7 +164,7 @@ abstract class MultiListFragment<T : Identifiable> : Fragment() {
         }
 
         // Configure whether to show the folder header
-        //viewAdapter.folderHeaderEnabled = showFolderHeader()
+        // viewAdapter.folderHeaderEnabled = showFolderHeader()
     }
 
     @Override
@@ -187,7 +186,7 @@ abstract class MultiListFragment<T : Identifiable> : Fragment() {
     abstract fun onItemClick(item: T)
 }
 
-//abstract class EntryListFragment<T : GenericEntry, TA : GenericRowAdapter<T>> :
+// abstract class EntryListFragment<T : GenericEntry, TA : GenericRowAdapter<T>> :
 //    GenericListFragment<T, TA>() {
 //    @Suppress("LongMethod")
 //    override fun onContextMenuItemSelected(menuItem: MenuItem, item: T): Boolean {
@@ -284,4 +283,4 @@ abstract class MultiListFragment<T : Identifiable> : Fragment() {
 //        bundle.putBoolean(Constants.INTENT_EXTRA_NAME_ARTIST, (item is Artist))
 //        findNavController().navigate(itemClickTarget, bundle)
 //    }
-//}
+// }

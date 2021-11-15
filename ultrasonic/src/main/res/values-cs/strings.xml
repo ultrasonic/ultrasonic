@@ -43,7 +43,7 @@
     <string name="delete_playlist">Opravdu smazat %1$s</string>
     <string name="download.bookmark_removed" formatted="false">Záložka odstraněna.</string>
     <string name="download.bookmark_set_at_position" formatted="false">Záložka vytvořena na %s.</string>
-    <string name="download.empty">Playlist je prázdný</string>
+    <string name="playlist.empty">Playlist je prázdný</string>
     <string name="download.jukebox_not_authorized">Vzdálené ovládání není povoleno. Povolte jukebox mód v <b>Uživatelském &gt; Nastavení</b> na Subsonic serveru.</string>
     <string name="download.jukebox_off">Vzdálené ovládání vypnuto. Hudba je přehrávána na telefonu.</string>
     <string name="download.jukebox_offline">Vzdálené ovládání není dostupné v offline módu.</string>

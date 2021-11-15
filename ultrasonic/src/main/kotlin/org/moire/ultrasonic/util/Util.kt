@@ -862,7 +862,6 @@ object Util {
         var fileFormat: String?,
     )
 
-
     fun getMediaDescriptionForEntry(
         song: MusicDirectory.Entry,
         mediaId: String? = null,
@@ -921,8 +920,8 @@ object Util {
 
         if (artistName != null) {
             if (Settings.shouldDisplayBitrateWithArtist && (
-                        !bitRate.isNullOrBlank() || !fileFormat.isNullOrBlank()
-                        )
+                !bitRate.isNullOrBlank() || !fileFormat.isNullOrBlank()
+                )
             ) {
                 artist.append(artistName).append(" (").append(
                     String.format(
@@ -938,7 +937,6 @@ object Util {
         }
 
         val trackNumber = song.track ?: 0
-
 
         val title = StringBuilder(LINE_LENGTH)
         if (Settings.shouldShowTrackNumber && trackNumber > 0) {

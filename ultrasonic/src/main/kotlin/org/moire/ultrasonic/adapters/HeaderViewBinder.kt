@@ -8,15 +8,14 @@ import android.widget.ImageView
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.drakeet.multitype.ItemViewBinder
+import java.lang.ref.WeakReference
+import java.util.Random
 import org.koin.core.component.KoinComponent
 import org.koin.core.component.inject
 import org.moire.ultrasonic.R
 import org.moire.ultrasonic.subsonic.ImageLoaderProvider
 import org.moire.ultrasonic.util.AlbumHeader
 import org.moire.ultrasonic.util.Util
-import java.lang.ref.WeakReference
-import java.util.Random
-
 
 /**
  * This Binder can bind a list of entries into a Header
@@ -51,7 +50,6 @@ class HeaderViewBinder(
         val context = weakContext.get() ?: return
         val resources = context.resources
 
-
         val artworkSelection = random.nextInt(item.childCount)
 
         imageLoaderProvider.getImageLoader().loadImage(
@@ -60,7 +58,6 @@ class HeaderViewBinder(
         )
 
         holder.titleView.text = item.name
-
 
         // Don't show a header if all entries are videos
         if (item.isAllVideo) {
@@ -74,7 +71,6 @@ class HeaderViewBinder(
         }
         holder.artistView.text = artist
 
-
         val genre: String = if (item.genres.size == 1) {
             item.genres.iterator().next()
         } else {
@@ -83,7 +79,6 @@ class HeaderViewBinder(
 
         holder.genreView.text = genre
 
-
         val year: String = if (item.years.size == 1) {
             item.years.iterator().next().toString()
         } else {
@@ -91,7 +86,6 @@ class HeaderViewBinder(
         }
 
         holder.yearView.text = year
-
 
         val songs = resources.getQuantityString(
             R.plurals.select_album_n_songs, item.childCount,

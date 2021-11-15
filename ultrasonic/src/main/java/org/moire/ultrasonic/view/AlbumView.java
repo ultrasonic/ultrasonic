@@ -37,6 +37,8 @@ import org.moire.ultrasonic.util.Util;
  *
  * @author Sindre Mehus
  */
+
+
 public class AlbumView extends UpdateView
 {
 	private static Drawable starDrawable;

@@ -8,9 +8,7 @@ import androidx.fragment.app.viewModels
 import androidx.lifecycle.LiveData
 import org.koin.core.component.inject
 import org.moire.ultrasonic.R
-import org.moire.ultrasonic.adapters.MultiTypeDiffAdapter
 import org.moire.ultrasonic.adapters.TrackViewBinder
-import org.moire.ultrasonic.domain.Identifiable
 import org.moire.ultrasonic.service.DownloadFile
 import org.moire.ultrasonic.service.Downloader
 import org.moire.ultrasonic.util.Util
@@ -54,7 +52,7 @@ class DownloadsFragment : MultiListFragment<DownloadFile>() {
 
         viewAdapter.register(
             TrackViewBinder(
-                checkable = true,
+                checkable = false,
                 draggable = false,
                 context = requireContext(),
                 lifecycleOwner = viewLifecycleOwner
@@ -65,7 +63,6 @@ class DownloadsFragment : MultiListFragment<DownloadFile>() {
     }
 }
 
-
 class DownloadListModel(application: Application) : GenericListModel(application) {
     private val downloader by inject<Downloader>()
 
@@ -73,6 +70,3 @@ class DownloadListModel(application: Application) : GenericListModel(application
         return downloader.observableDownloads
     }
 }
-
-
-

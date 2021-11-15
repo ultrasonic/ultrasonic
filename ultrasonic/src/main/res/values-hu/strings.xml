@@ -53,7 +53,7 @@
     <string name="delete_playlist">Biztos, hogy törölni akarja? %1$s</string>
     <string name="download.bookmark_removed" formatted="false">Könyvjelző eltávolítva.</string>
     <string name="download.bookmark_set_at_position" formatted="false">Könyvjelző beállítva %s.</string>
-    <string name="download.empty">A várólista üres!</string>
+    <string name="playlist.empty">A várólista üres!</string>
     <string name="download.jukebox_not_authorized">A távvezérlés nem áll rendelkezésre. Kérjük, engedélyezze a Jukebox módot a <b>Felhasználók &gt; Beállítások</b> menüpontban, az Ön Subsonic kiszolgálóján!</string>
     <string name="download.jukebox_off">Távvezérlés kikapcsolása. A zenelejátszás a telefonon történik.</string>
     <string name="download.jukebox_offline">A távvezérlés nem lehetséges kapcsolat nélküli módban!</string>

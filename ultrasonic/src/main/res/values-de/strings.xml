@@ -42,7 +42,7 @@
     <string name="delete_playlist">Möchtest du %1$s löschen</string>
     <string name="download.bookmark_removed" formatted="false">Lesezeichen entfernt</string>
     <string name="download.bookmark_set_at_position" formatted="false">Lesezeichen gesetzt als %s.</string>
-    <string name="download.empty">Wiedergabeliste ist leer</string>
+    <string name="playlist.empty">Wiedergabeliste ist leer</string>
     <string name="download.jukebox_not_authorized">Fernbedienung ist nicht erlaubt. Bitte Jukebox Modus auf dem Subsonic Server in <b>Benutzer > Einstellungen</b> aktivieren.</string>
     <string name="download.jukebox_off">Fernbedienung ausgeschaltet. Musik wird auf dem Telefon wiedergegeben.</string>
     <string name="download.jukebox_offline">Fernbedienungs-Modus is Offline nicht verfügbar.</string>

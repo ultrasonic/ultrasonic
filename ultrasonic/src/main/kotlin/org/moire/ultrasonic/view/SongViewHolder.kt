@@ -1,37 +1,37 @@
-//package org.moire.ultrasonic.view
+// package org.moire.ultrasonic.view
 //
-//import android.content.Context
-//import android.graphics.drawable.AnimationDrawable
-//import android.graphics.drawable.Drawable
-//import android.view.View
-//import android.widget.Checkable
-//import android.widget.CheckedTextView
-//import android.widget.ImageView
-//import android.widget.LinearLayout
-//import android.widget.TextView
-//import androidx.core.view.isVisible
-//import androidx.recyclerview.widget.RecyclerView
-//import org.koin.core.component.KoinComponent
-//import org.koin.core.component.get
-//import org.koin.core.component.inject
-//import org.moire.ultrasonic.R
-//import org.moire.ultrasonic.data.ActiveServerProvider
-//import org.moire.ultrasonic.domain.MusicDirectory
-//import org.moire.ultrasonic.featureflags.Feature
-//import org.moire.ultrasonic.featureflags.FeatureStorage
-//import org.moire.ultrasonic.fragment.DownloadRowAdapter
-//import org.moire.ultrasonic.service.DownloadFile
-//import org.moire.ultrasonic.service.MediaPlayerController
-//import org.moire.ultrasonic.service.MusicServiceFactory
-//import org.moire.ultrasonic.util.Settings
-//import org.moire.ultrasonic.util.Util
-//import timber.log.Timber
+// import android.content.Context
+// import android.graphics.drawable.AnimationDrawable
+// import android.graphics.drawable.Drawable
+// import android.view.View
+// import android.widget.Checkable
+// import android.widget.CheckedTextView
+// import android.widget.ImageView
+// import android.widget.LinearLayout
+// import android.widget.TextView
+// import androidx.core.view.isVisible
+// import androidx.recyclerview.widget.RecyclerView
+// import org.koin.core.component.KoinComponent
+// import org.koin.core.component.get
+// import org.koin.core.component.inject
+// import org.moire.ultrasonic.R
+// import org.moire.ultrasonic.data.ActiveServerProvider
+// import org.moire.ultrasonic.domain.MusicDirectory
+// import org.moire.ultrasonic.featureflags.Feature
+// import org.moire.ultrasonic.featureflags.FeatureStorage
+// import org.moire.ultrasonic.fragment.DownloadRowAdapter
+// import org.moire.ultrasonic.service.DownloadFile
+// import org.moire.ultrasonic.service.MediaPlayerController
+// import org.moire.ultrasonic.service.MusicServiceFactory
+// import org.moire.ultrasonic.util.Settings
+// import org.moire.ultrasonic.util.Util
+// import timber.log.Timber
 //
-///**
+// /**
 // * Used to display songs and videos in a `ListView`.
 // * TODO: Video List item
 // */
-//class SongViewHolder(view: View, context: Context) : RecyclerView.ViewHolder(view), Checkable, KoinComponent {
+// class SongViewHolder(view: View, context: Context) : RecyclerView.ViewHolder(view), Checkable, KoinComponent {
 //    var check: CheckedTextView = view.findViewById(R.id.song_check)
 //    var rating: LinearLayout = view.findViewById(R.id.song_rating)
 //    var fiveStar1: ImageView = view.findViewById(R.id.song_five_star_1)
@@ -252,42 +252,42 @@
 //        }
 //    }
 //
-////    fun updateDownloadStatus2(
-////        downloadFile: DownloadFile,
-////    ) {
-////
-////        var image: Drawable? = null
-////
-////        when (downloadFile.status.value) {
-////            DownloadStatus.DONE -> {
-////                image = if (downloadFile.isSaved) DownloadRowAdapter.pinImage else DownloadRowAdapter.downloadedImage
-////                status.text = null
-////            }
-////            DownloadStatus.DOWNLOADING -> {
-////                status.text = Util.formatPercentage(downloadFile.progress.value!!)
-////                image = DownloadRowAdapter.downloadingImage
-////            }
-////            else -> {
-////                status.text = null
-////            }
-////        }
-////
-////        // TODO: Migrate the image animation stuff from SongView into this class
-////
-////        if (image != null) {
-////            status.setCompoundDrawablesWithIntrinsicBounds(
-////                image, null, null, null
-////            )
-////        }
-////
-////        if (image === DownloadRowAdapter.downloadingImage) {
-////            // FIXME
-//////            val frameAnimation = image as AnimationDrawable
-//////
-//////            frameAnimation.setVisible(true, true)
-//////            frameAnimation.start()
-////        }
-////    }
+// //    fun updateDownloadStatus2(
+// //        downloadFile: DownloadFile,
+// //    ) {
+// //
+// //        var image: Drawable? = null
+// //
+// //        when (downloadFile.status.value) {
+// //            DownloadStatus.DONE -> {
+// //                image = if (downloadFile.isSaved) DownloadRowAdapter.pinImage else DownloadRowAdapter.downloadedImage
+// //                status.text = null
+// //            }
+// //            DownloadStatus.DOWNLOADING -> {
+// //                status.text = Util.formatPercentage(downloadFile.progress.value!!)
+// //                image = DownloadRowAdapter.downloadingImage
+// //            }
+// //            else -> {
+// //                status.text = null
+// //            }
+// //        }
+// //
+// //        // TODO: Migrate the image animation stuff from SongView into this class
+// //
+// //        if (image != null) {
+// //            status.setCompoundDrawablesWithIntrinsicBounds(
+// //                image, null, null, null
+// //            )
+// //        }
+// //
+// //        if (image === DownloadRowAdapter.downloadingImage) {
+// //            // FIXME
+// ////            val frameAnimation = image as AnimationDrawable
+// ////
+// ////            frameAnimation.setVisible(true, true)
+// ////            frameAnimation.start()
+// //        }
+// //    }
 //
 //    override fun setChecked(newStatus: Boolean) {
 //        check.isChecked = newStatus
@@ -313,4 +313,4 @@
 //    }
 //
 //
-//}
+// }

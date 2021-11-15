@@ -104,7 +104,6 @@ dependencies {
     implementation other.koinAndroid
     implementation other.okhttpLogging
     implementation other.fastScroll
-    implementation other.sortListView
     implementation other.colorPickerView
     implementation other.rxJava
     implementation other.rxAndroid

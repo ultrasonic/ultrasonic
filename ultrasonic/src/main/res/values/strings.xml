@@ -56,7 +56,7 @@
     <string name="delete_playlist">Do you want to delete %1$s</string>
     <string name="download.bookmark_removed" formatted="false">Bookmark removed.</string>
     <string name="download.bookmark_set_at_position" formatted="false">Bookmark set at %s.</string>
-    <string name="download.empty">Playlist is empty</string>
+    <string name="playlist.empty">Playlist is empty</string>
     <string name="download.jukebox_not_authorized">Remote control is not allowed. Please enable jukebox mode in <b>Users &gt; Settings</b> on your Subsonic server.</string>
     <string name="download.jukebox_off">Turned off remote control. Music is played on phone.</string>
     <string name="download.jukebox_offline">Remote control is not available in offline mode.</string>
@@ -463,6 +463,10 @@
     <plurals name="select_album_n_songs_unpinned">
         <item quantity="one">%d song unpinned</item>
         <item quantity="other">%d songs unpinned</item>
+    </plurals>
+    <plurals name="select_album_n_songs_deleted">
+        <item quantity="one">%d song deleted</item>
+        <item quantity="other">%d songs deleted</item>
     </plurals>
     <plurals name="select_album_n_songs_added">
         <item quantity="one">%d song added to the end of play queue</item>
