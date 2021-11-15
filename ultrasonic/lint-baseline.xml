@@ -2,6 +2,20 @@
 <issues format="5" by="lint 4.2.2" client="gradle" variant="release" version="4.2.2">
 
     <issue
+        id="ObsoleteLintCustomCheck"
+        message="Lint found an issue registry (`androidx.appcompat.AppCompatIssueRegistry`) which is older than the current API level; these checks may not work correctly.&#xA;&#xA;Recompile the checks against the latest version. Custom check API version is 7 (4.0), current lint API level is 8 (4.1)">
+        <location
+            file="../../../../.gradle/caches/transforms-3/2f10f1fe0ff7ab74304d702879de0789/transformed/appcompat-1.2.0/jars/lint.jar"/>
+    </issue>
+
+    <issue
+        id="ObsoleteLintCustomCheck"
+        message="Lint found an issue registry (`timber.lint.TimberIssueRegistry`) which is older than the current API level; these checks may not work correctly.&#xA;&#xA;Recompile the checks against the latest version. Custom check API version is 1 (3.1), current lint API level is 8 (4.1)">
+        <location
+            file="../../../../.gradle/caches/transforms-3/e9d816753daf5450613abd98ccf3b80c/transformed/jetified-timber-4.7.1/jars/lint.jar"/>
+    </issue>
+
+    <issue
         id="ScopedStorage"
         message="WRITE_EXTERNAL_STORAGE no longer provides write access when targeting Android 10, unless you use `requestLegacyExternalStorage`"
         errorLine1="    &lt;uses-permission android:name=&quot;android.permission.WRITE_EXTERNAL_STORAGE&quot;/>"
@@ -10,60 +24,6 @@
             file="src/main/AndroidManifest.xml"
             line="10"
             column="36"/>
-    </issue>
-
-    <issue
-        id="NotificationIconCompatibility"
-        message="Notification icon ic_stat_play_dark has to have a raster image to support Android versions below 5.0 (API 21)">
-        <location
-            file="src/main/res/drawable/ic_stat_play_dark.xml"/>
-    </issue>
-
-    <issue
-        id="NotificationIconCompatibility"
-        message="Notification icon ic_stat_play_light has to have a raster image to support Android versions below 5.0 (API 21)">
-        <location
-            file="src/main/res/drawable/ic_stat_play_light.xml"/>
-    </issue>
-
-    <issue
-        id="NotificationIconCompatibility"
-        message="Notification icon ic_stat_ultrasonic has to have a raster image to support Android versions below 5.0 (API 21)">
-        <location
-            file="src/main/res/drawable/ic_stat_ultrasonic.xml"/>
-    </issue>
-
-    <issue
-        id="SdCardPath"
-        message="Do not hardcode &quot;/sdcard/&quot;; use `Environment.getExternalStorageDirectory().getPath()` instead"
-        errorLine1="            &quot;/storage/sdcard0/external_sdcard&quot;, &quot;/mnt/extsdcard&quot;, &quot;/mnt/sdcard/external_sd&quot;,"
-        errorLine2="                                                                   ~~~~~~~~~~~~~~~~~~~~~~~">
-        <location
-            file="src/main/kotlin/org/moire/ultrasonic/filepicker/FilePickerAdapter.kt"
-            line="43"
-            column="68"/>
-    </issue>
-
-    <issue
-        id="SdCardPath"
-        message="Do not hardcode &quot;/sdcard/&quot;; use `Environment.getExternalStorageDirectory().getPath()` instead"
-        errorLine1="            &quot;/data/sdext&quot;, &quot;/data/sdext2&quot;, &quot;/data/sdext3&quot;, &quot;/data/sdext4&quot;, &quot;/sdcard1&quot;,"
-        errorLine2="                                                                            ~~~~~~~~">
-        <location
-            file="src/main/kotlin/org/moire/ultrasonic/filepicker/FilePickerAdapter.kt"
-            line="46"
-            column="77"/>
-    </issue>
-
-    <issue
-        id="SdCardPath"
-        message="Do not hardcode &quot;/sdcard/&quot;; use `Environment.getExternalStorageDirectory().getPath()` instead"
-        errorLine1="            &quot;/sdcard2&quot;, &quot;/storage/microsd&quot;, &quot;/data/user&quot;"
-        errorLine2="             ~~~~~~~~">
-        <location
-            file="src/main/kotlin/org/moire/ultrasonic/filepicker/FilePickerAdapter.kt"
-            line="47"
-            column="14"/>
     </issue>
 
     <issue
@@ -95,7 +55,7 @@
         errorLine2="                                                                           ^">
         <location
             file="src/main/res/values-de/strings.xml"
-            line="292"
+            line="290"
             column="76"/>
     </issue>
 
@@ -221,17 +181,6 @@
     </issue>
 
     <issue
-        id="UseCompoundDrawables"
-        message="This tag and its children can be replaced by one `&lt;TextView/>` and a compound drawable"
-        errorLine1="    &lt;LinearLayout"
-        errorLine2="     ~~~~~~~~~~~~">
-        <location
-            file="src/main/res/layout/navigation_header.xml"
-            line="17"
-            column="6"/>
-    </issue>
-
-    <issue
         id="Overdraw"
         message="Possible overdraw: Root element paints background `@drawable/appwidget_dark_bg_trans` with a theme that also paints a background (inferred theme is `@style/NoActionBar`)"
         errorLine1="    a:background=&quot;@drawable/appwidget_dark_bg_trans&quot;"
@@ -288,78 +237,12 @@
 
     <issue
         id="UnusedResources"
-        message="The resource `R.drawable.btn_bg` appears to be unused"
-        errorLine1="    &lt;item android:drawable=&quot;@color/ics_opaque&quot; android:state_pressed=&quot;true&quot;/>"
-        errorLine2="^">
-        <location
-            file="src/main/res/drawable/btn_bg.xml"
-            line="14"
-            column="1"/>
-    </issue>
-
-    <issue
-        id="UnusedResources"
-        message="The resource `R.color.ics_opaque` appears to be unused"
-        errorLine1="    &lt;color name=&quot;ics_opaque&quot;>#8033b5e5&lt;/color>"
-        errorLine2="           ~~~~~~~~~~~~~~~~~">
-        <location
-            file="src/main/res/values/colors.xml"
-            line="7"
-            column="12"/>
-    </issue>
-
-    <issue
-        id="UnusedResources"
-        message="The resource `R.color.md__transparent` appears to be unused"
-        errorLine1="    &lt;color name=&quot;md__transparent&quot;>#00000000&lt;/color>"
-        errorLine2="           ~~~~~~~~~~~~~~~~~~~~~~">
-        <location
-            file="src/main/res/values/colors.xml"
-            line="8"
-            column="12"/>
-    </issue>
-
-    <issue
-        id="UnusedResources"
         message="The resource `R.drawable.ic_menu_arrow` appears to be unused"
         errorLine1="&lt;vector xmlns:android=&quot;http://schemas.android.com/apk/res/android&quot;"
         errorLine2="^">
         <location
             file="src/main/res/drawable/ic_menu_arrow.xml"
             line="1"
-            column="1"/>
-    </issue>
-
-    <issue
-        id="UnusedResources"
-        message="The resource `R.drawable.line` appears to be unused"
-        errorLine1="&lt;shape xmlns:android=&quot;http://schemas.android.com/apk/res/android&quot;"
-        errorLine2="^">
-        <location
-            file="src/main/res/drawable/line.xml"
-            line="2"
-            column="1"/>
-    </issue>
-
-    <issue
-        id="UnusedResources"
-        message="The resource `R.drawable.line_drawable` appears to be unused"
-        errorLine1="&lt;selector xmlns:android=&quot;http://schemas.android.com/apk/res/android&quot;>"
-        errorLine2="^">
-        <location
-            file="src/main/res/drawable/line_drawable.xml"
-            line="2"
-            column="1"/>
-    </issue>
-
-    <issue
-        id="UnusedResources"
-        message="The resource `R.menu.main` appears to be unused"
-        errorLine1="&lt;menu"
-        errorLine2="^">
-        <location
-            file="src/main/res/menu/main.xml"
-            line="2"
             column="1"/>
     </issue>
 
@@ -385,51 +268,51 @@
             column="13"/>
         <location
             file="src/main/res/values-cs/strings.xml"
-            line="99"
+            line="98"
             column="13"/>
         <location
             file="src/main/res/values-de/strings.xml"
-            line="98"
+            line="97"
             column="13"/>
         <location
             file="src/main/res/values-es/strings.xml"
-            line="112"
+            line="111"
             column="13"/>
         <location
             file="src/main/res/values-fr/strings.xml"
-            line="109"
+            line="108"
             column="13"/>
         <location
             file="src/main/res/values-hu/strings.xml"
-            line="109"
+            line="108"
             column="13"/>
         <location
             file="src/main/res/values-it/strings.xml"
-            line="96"
+            line="95"
             column="13"/>
         <location
             file="src/main/res/values-nl/strings.xml"
-            line="112"
+            line="111"
             column="13"/>
         <location
             file="src/main/res/values-pl/strings.xml"
-            line="98"
+            line="97"
             column="13"/>
         <location
             file="src/main/res/values-pt/strings.xml"
-            line="98"
+            line="97"
             column="13"/>
         <location
             file="src/main/res/values-pt-rBR/strings.xml"
-            line="109"
+            line="108"
             column="13"/>
         <location
             file="src/main/res/values-ru/strings.xml"
-            line="109"
+            line="108"
             column="13"/>
         <location
             file="src/main/res/values-zh-rCN/strings.xml"
-            line="108"
+            line="107"
             column="13"/>
     </issue>
 
@@ -444,51 +327,51 @@
             column="13"/>
         <location
             file="src/main/res/values-cs/strings.xml"
-            line="110"
+            line="109"
             column="13"/>
         <location
             file="src/main/res/values-de/strings.xml"
-            line="109"
+            line="108"
             column="13"/>
         <location
             file="src/main/res/values-es/strings.xml"
-            line="125"
+            line="124"
             column="13"/>
         <location
             file="src/main/res/values-fr/strings.xml"
-            line="122"
+            line="121"
             column="13"/>
         <location
             file="src/main/res/values-hu/strings.xml"
-            line="120"
+            line="119"
             column="13"/>
         <location
             file="src/main/res/values-it/strings.xml"
-            line="107"
+            line="106"
             column="13"/>
         <location
             file="src/main/res/values-nl/strings.xml"
-            line="125"
+            line="124"
             column="13"/>
         <location
             file="src/main/res/values-pl/strings.xml"
-            line="109"
+            line="108"
             column="13"/>
         <location
             file="src/main/res/values-pt/strings.xml"
-            line="109"
+            line="108"
             column="13"/>
         <location
             file="src/main/res/values-pt-rBR/strings.xml"
-            line="122"
+            line="121"
             column="13"/>
         <location
             file="src/main/res/values-ru/strings.xml"
-            line="122"
+            line="121"
             column="13"/>
         <location
             file="src/main/res/values-zh-rCN/strings.xml"
-            line="121"
+            line="120"
             column="13"/>
     </issue>
 
@@ -500,6 +383,65 @@
         <location
             file="src/main/res/values/strings.xml"
             line="131"
+            column="13"/>
+        <location
+            file="src/main/res/values-cs/strings.xml"
+            line="114"
+            column="13"/>
+        <location
+            file="src/main/res/values-de/strings.xml"
+            line="113"
+            column="13"/>
+        <location
+            file="src/main/res/values-es/strings.xml"
+            line="129"
+            column="13"/>
+        <location
+            file="src/main/res/values-fr/strings.xml"
+            line="126"
+            column="13"/>
+        <location
+            file="src/main/res/values-hu/strings.xml"
+            line="124"
+            column="13"/>
+        <location
+            file="src/main/res/values-it/strings.xml"
+            line="110"
+            column="13"/>
+        <location
+            file="src/main/res/values-nl/strings.xml"
+            line="129"
+            column="13"/>
+        <location
+            file="src/main/res/values-pl/strings.xml"
+            line="112"
+            column="13"/>
+        <location
+            file="src/main/res/values-pt/strings.xml"
+            line="112"
+            column="13"/>
+        <location
+            file="src/main/res/values-pt-rBR/strings.xml"
+            line="126"
+            column="13"/>
+        <location
+            file="src/main/res/values-ru/strings.xml"
+            line="126"
+            column="13"/>
+        <location
+            file="src/main/res/values-zh-rCN/strings.xml"
+            line="125"
+            column="13"/>
+    </issue>
+
+    <issue
+        id="UnusedResources"
+        message="The resource `R.string.parser_artist_count` appears to be unused"
+        errorLine1="    &lt;string name=&quot;parser.artist_count&quot;>Got %d Artists.&lt;/string>"
+        errorLine2="            ~~~~~~~~~~~~~~~~~~~~~~~~~~">
+        <location
+            file="src/main/res/values/strings.xml"
+            line="132"
             column="13"/>
         <location
             file="src/main/res/values-cs/strings.xml"
@@ -553,12 +495,12 @@
 
     <issue
         id="UnusedResources"
-        message="The resource `R.string.parser_artist_count` appears to be unused"
-        errorLine1="    &lt;string name=&quot;parser.artist_count&quot;>Got %d Artists.&lt;/string>"
-        errorLine2="            ~~~~~~~~~~~~~~~~~~~~~~~~~~">
+        message="The resource `R.string.parser_reading` appears to be unused"
+        errorLine1="    &lt;string name=&quot;parser.reading&quot;>Reading from server.&lt;/string>"
+        errorLine2="            ~~~~~~~~~~~~~~~~~~~~~">
         <location
             file="src/main/res/values/strings.xml"
-            line="132"
+            line="133"
             column="13"/>
         <location
             file="src/main/res/values-cs/strings.xml"
@@ -612,12 +554,12 @@
 
     <issue
         id="UnusedResources"
-        message="The resource `R.string.parser_reading` appears to be unused"
-        errorLine1="    &lt;string name=&quot;parser.reading&quot;>Reading from server.&lt;/string>"
-        errorLine2="            ~~~~~~~~~~~~~~~~~~~~~">
+        message="The resource `R.string.parser_reading_done` appears to be unused"
+        errorLine1="    &lt;string name=&quot;parser.reading_done&quot;>Reading from server. Done!&lt;/string>"
+        errorLine2="            ~~~~~~~~~~~~~~~~~~~~~~~~~~">
         <location
             file="src/main/res/values/strings.xml"
-            line="133"
+            line="134"
             column="13"/>
         <location
             file="src/main/res/values-cs/strings.xml"
@@ -671,65 +613,6 @@
 
     <issue
         id="UnusedResources"
-        message="The resource `R.string.parser_reading_done` appears to be unused"
-        errorLine1="    &lt;string name=&quot;parser.reading_done&quot;>Reading from server. Done!&lt;/string>"
-        errorLine2="            ~~~~~~~~~~~~~~~~~~~~~~~~~~">
-        <location
-            file="src/main/res/values/strings.xml"
-            line="134"
-            column="13"/>
-        <location
-            file="src/main/res/values-cs/strings.xml"
-            line="118"
-            column="13"/>
-        <location
-            file="src/main/res/values-de/strings.xml"
-            line="117"
-            column="13"/>
-        <location
-            file="src/main/res/values-es/strings.xml"
-            line="133"
-            column="13"/>
-        <location
-            file="src/main/res/values-fr/strings.xml"
-            line="130"
-            column="13"/>
-        <location
-            file="src/main/res/values-hu/strings.xml"
-            line="128"
-            column="13"/>
-        <location
-            file="src/main/res/values-it/strings.xml"
-            line="114"
-            column="13"/>
-        <location
-            file="src/main/res/values-nl/strings.xml"
-            line="133"
-            column="13"/>
-        <location
-            file="src/main/res/values-pl/strings.xml"
-            line="116"
-            column="13"/>
-        <location
-            file="src/main/res/values-pt/strings.xml"
-            line="116"
-            column="13"/>
-        <location
-            file="src/main/res/values-pt-rBR/strings.xml"
-            line="130"
-            column="13"/>
-        <location
-            file="src/main/res/values-ru/strings.xml"
-            line="130"
-            column="13"/>
-        <location
-            file="src/main/res/values-zh-rCN/strings.xml"
-            line="129"
-            column="13"/>
-    </issue>
-
-    <issue
-        id="UnusedResources"
         message="The resource `R.string.progress_wait` appears to be unused"
         errorLine1="    &lt;string name=&quot;progress.wait&quot;>Please wait&amp;#8230;&lt;/string>"
         errorLine2="            ~~~~~~~~~~~~~~~~~~~~">
@@ -739,51 +622,51 @@
             column="13"/>
         <location
             file="src/main/res/values-cs/strings.xml"
-            line="123"
-            column="13"/>
-        <location
-            file="src/main/res/values-de/strings.xml"
             line="122"
             column="13"/>
         <location
+            file="src/main/res/values-de/strings.xml"
+            line="121"
+            column="13"/>
+        <location
             file="src/main/res/values-es/strings.xml"
-            line="138"
+            line="137"
             column="13"/>
         <location
             file="src/main/res/values-fr/strings.xml"
-            line="135"
+            line="134"
             column="13"/>
         <location
             file="src/main/res/values-hu/strings.xml"
-            line="133"
+            line="132"
             column="13"/>
         <location
             file="src/main/res/values-it/strings.xml"
-            line="119"
+            line="118"
             column="13"/>
         <location
             file="src/main/res/values-nl/strings.xml"
-            line="138"
+            line="137"
             column="13"/>
         <location
             file="src/main/res/values-pl/strings.xml"
-            line="121"
+            line="120"
             column="13"/>
         <location
             file="src/main/res/values-pt/strings.xml"
-            line="121"
+            line="120"
             column="13"/>
         <location
             file="src/main/res/values-pt-rBR/strings.xml"
-            line="135"
+            line="134"
             column="13"/>
         <location
             file="src/main/res/values-ru/strings.xml"
-            line="135"
+            line="134"
             column="13"/>
         <location
             file="src/main/res/values-zh-rCN/strings.xml"
-            line="134"
+            line="133"
             column="13"/>
     </issue>
 
@@ -798,51 +681,51 @@
             column="13"/>
         <location
             file="src/main/res/values-cs/strings.xml"
-            line="129"
-            column="13"/>
-        <location
-            file="src/main/res/values-de/strings.xml"
             line="128"
             column="13"/>
         <location
+            file="src/main/res/values-de/strings.xml"
+            line="127"
+            column="13"/>
+        <location
             file="src/main/res/values-es/strings.xml"
-            line="144"
+            line="143"
             column="13"/>
         <location
             file="src/main/res/values-fr/strings.xml"
-            line="141"
+            line="140"
             column="13"/>
         <location
             file="src/main/res/values-hu/strings.xml"
-            line="139"
+            line="138"
             column="13"/>
         <location
             file="src/main/res/values-it/strings.xml"
-            line="125"
+            line="124"
             column="13"/>
         <location
             file="src/main/res/values-nl/strings.xml"
-            line="144"
+            line="143"
             column="13"/>
         <location
             file="src/main/res/values-pl/strings.xml"
-            line="127"
+            line="126"
             column="13"/>
         <location
             file="src/main/res/values-pt/strings.xml"
-            line="127"
+            line="126"
             column="13"/>
         <location
             file="src/main/res/values-pt-rBR/strings.xml"
-            line="141"
+            line="140"
             column="13"/>
         <location
             file="src/main/res/values-ru/strings.xml"
-            line="141"
+            line="140"
             column="13"/>
         <location
             file="src/main/res/values-zh-rCN/strings.xml"
-            line="140"
+            line="139"
             column="13"/>
     </issue>
 
@@ -857,51 +740,51 @@
             column="13"/>
         <location
             file="src/main/res/values-cs/strings.xml"
-            line="142"
-            column="13"/>
-        <location
-            file="src/main/res/values-de/strings.xml"
             line="141"
             column="13"/>
         <location
+            file="src/main/res/values-de/strings.xml"
+            line="140"
+            column="13"/>
+        <location
             file="src/main/res/values-es/strings.xml"
-            line="157"
+            line="156"
             column="13"/>
         <location
             file="src/main/res/values-fr/strings.xml"
-            line="154"
+            line="153"
             column="13"/>
         <location
             file="src/main/res/values-hu/strings.xml"
-            line="152"
+            line="151"
             column="13"/>
         <location
             file="src/main/res/values-it/strings.xml"
-            line="138"
+            line="137"
             column="13"/>
         <location
             file="src/main/res/values-nl/strings.xml"
-            line="157"
+            line="156"
             column="13"/>
         <location
             file="src/main/res/values-pl/strings.xml"
-            line="140"
+            line="139"
             column="13"/>
         <location
             file="src/main/res/values-pt/strings.xml"
-            line="140"
+            line="139"
             column="13"/>
         <location
             file="src/main/res/values-pt-rBR/strings.xml"
-            line="154"
+            line="153"
             column="13"/>
         <location
             file="src/main/res/values-ru/strings.xml"
-            line="154"
+            line="153"
             column="13"/>
         <location
             file="src/main/res/values-zh-rCN/strings.xml"
-            line="153"
+            line="152"
             column="13"/>
     </issue>
 
@@ -938,51 +821,51 @@
             column="13"/>
         <location
             file="src/main/res/values-cs/strings.xml"
-            line="158"
-            column="13"/>
-        <location
-            file="src/main/res/values-de/strings.xml"
             line="157"
             column="13"/>
         <location
+            file="src/main/res/values-de/strings.xml"
+            line="156"
+            column="13"/>
+        <location
             file="src/main/res/values-es/strings.xml"
-            line="173"
+            line="172"
             column="13"/>
         <location
             file="src/main/res/values-fr/strings.xml"
-            line="170"
+            line="169"
             column="13"/>
         <location
             file="src/main/res/values-hu/strings.xml"
-            line="168"
+            line="167"
             column="13"/>
         <location
             file="src/main/res/values-it/strings.xml"
-            line="154"
+            line="153"
             column="13"/>
         <location
             file="src/main/res/values-nl/strings.xml"
-            line="173"
+            line="172"
             column="13"/>
         <location
             file="src/main/res/values-pl/strings.xml"
-            line="156"
+            line="155"
             column="13"/>
         <location
             file="src/main/res/values-pt/strings.xml"
-            line="156"
+            line="155"
             column="13"/>
         <location
             file="src/main/res/values-pt-rBR/strings.xml"
-            line="170"
+            line="169"
             column="13"/>
         <location
             file="src/main/res/values-ru/strings.xml"
-            line="170"
+            line="169"
             column="13"/>
         <location
             file="src/main/res/values-zh-rCN/strings.xml"
-            line="169"
+            line="168"
             column="13"/>
     </issue>
 
@@ -997,51 +880,51 @@
             column="13"/>
         <location
             file="src/main/res/values-cs/strings.xml"
-            line="210"
-            column="13"/>
-        <location
-            file="src/main/res/values-de/strings.xml"
             line="209"
             column="13"/>
         <location
+            file="src/main/res/values-de/strings.xml"
+            line="208"
+            column="13"/>
+        <location
             file="src/main/res/values-es/strings.xml"
-            line="225"
+            line="224"
             column="13"/>
         <location
             file="src/main/res/values-fr/strings.xml"
-            line="222"
+            line="221"
             column="13"/>
         <location
             file="src/main/res/values-hu/strings.xml"
-            line="220"
+            line="219"
             column="13"/>
         <location
             file="src/main/res/values-it/strings.xml"
-            line="205"
+            line="204"
             column="13"/>
         <location
             file="src/main/res/values-nl/strings.xml"
-            line="225"
+            line="224"
             column="13"/>
         <location
             file="src/main/res/values-pl/strings.xml"
-            line="208"
+            line="207"
             column="13"/>
         <location
             file="src/main/res/values-pt/strings.xml"
-            line="208"
+            line="207"
             column="13"/>
         <location
             file="src/main/res/values-pt-rBR/strings.xml"
-            line="222"
+            line="221"
             column="13"/>
         <location
             file="src/main/res/values-ru/strings.xml"
-            line="222"
+            line="221"
             column="13"/>
         <location
             file="src/main/res/values-zh-rCN/strings.xml"
-            line="219"
+            line="218"
             column="13"/>
     </issue>
 
@@ -1056,51 +939,51 @@
             column="13"/>
         <location
             file="src/main/res/values-cs/strings.xml"
-            line="275"
-            column="13"/>
-        <location
-            file="src/main/res/values-de/strings.xml"
             line="274"
             column="13"/>
         <location
+            file="src/main/res/values-de/strings.xml"
+            line="273"
+            column="13"/>
+        <location
             file="src/main/res/values-es/strings.xml"
-            line="294"
+            line="293"
             column="13"/>
         <location
             file="src/main/res/values-fr/strings.xml"
-            line="289"
+            line="288"
             column="13"/>
         <location
             file="src/main/res/values-hu/strings.xml"
-            line="287"
+            line="286"
             column="13"/>
         <location
             file="src/main/res/values-it/strings.xml"
-            line="268"
+            line="267"
             column="13"/>
         <location
             file="src/main/res/values-nl/strings.xml"
-            line="294"
+            line="293"
             column="13"/>
         <location
             file="src/main/res/values-pl/strings.xml"
-            line="273"
+            line="272"
             column="13"/>
         <location
             file="src/main/res/values-pt/strings.xml"
-            line="273"
+            line="272"
             column="13"/>
         <location
             file="src/main/res/values-pt-rBR/strings.xml"
-            line="291"
+            line="290"
             column="13"/>
         <location
             file="src/main/res/values-ru/strings.xml"
-            line="289"
+            line="288"
             column="13"/>
         <location
             file="src/main/res/values-zh-rCN/strings.xml"
-            line="287"
+            line="286"
             column="13"/>
     </issue>
 
@@ -1115,51 +998,51 @@
             column="13"/>
         <location
             file="src/main/res/values-cs/strings.xml"
-            line="278"
-            column="13"/>
-        <location
-            file="src/main/res/values-de/strings.xml"
             line="277"
             column="13"/>
         <location
+            file="src/main/res/values-de/strings.xml"
+            line="276"
+            column="13"/>
+        <location
             file="src/main/res/values-es/strings.xml"
-            line="297"
+            line="296"
             column="13"/>
         <location
             file="src/main/res/values-fr/strings.xml"
-            line="292"
+            line="291"
             column="13"/>
         <location
             file="src/main/res/values-hu/strings.xml"
-            line="290"
+            line="289"
             column="13"/>
         <location
             file="src/main/res/values-it/strings.xml"
-            line="271"
+            line="270"
             column="13"/>
         <location
             file="src/main/res/values-nl/strings.xml"
-            line="297"
+            line="296"
             column="13"/>
         <location
             file="src/main/res/values-pl/strings.xml"
-            line="276"
+            line="275"
             column="13"/>
         <location
             file="src/main/res/values-pt/strings.xml"
-            line="276"
+            line="275"
             column="13"/>
         <location
             file="src/main/res/values-pt-rBR/strings.xml"
-            line="294"
+            line="293"
             column="13"/>
         <location
             file="src/main/res/values-ru/strings.xml"
-            line="292"
+            line="291"
             column="13"/>
         <location
             file="src/main/res/values-zh-rCN/strings.xml"
-            line="290"
+            line="289"
             column="13"/>
     </issue>
 
@@ -1185,66 +1068,44 @@
             column="14"/>
         <location
             file="src/main/res/values-cs/strings.xml"
-            line="450"
+            line="448"
             column="14"/>
         <location
             file="src/main/res/values-es/strings.xml"
-            line="472"
+            line="470"
             column="14"/>
         <location
             file="src/main/res/values-fr/strings.xml"
-            line="461"
+            line="459"
             column="14"/>
         <location
             file="src/main/res/values-hu/strings.xml"
-            line="456"
+            line="454"
             column="14"/>
         <location
             file="src/main/res/values-nl/strings.xml"
-            line="472"
+            line="470"
             column="14"/>
         <location
             file="src/main/res/values-pl/strings.xml"
-            line="403"
+            line="401"
             column="14"/>
         <location
             file="src/main/res/values-pt/strings.xml"
-            line="390"
+            line="388"
             column="14"/>
         <location
             file="src/main/res/values-pt-rBR/strings.xml"
-            line="465"
+            line="463"
             column="14"/>
         <location
             file="src/main/res/values-ru/strings.xml"
-            line="473"
+            line="471"
             column="14"/>
         <location
             file="src/main/res/values-zh-rCN/strings.xml"
-            line="454"
+            line="452"
             column="14"/>
-    </issue>
-
-    <issue
-        id="UnusedResources"
-        message="The resource `R.drawable.thumb` appears to be unused"
-        errorLine1="&lt;shape xmlns:android=&quot;http://schemas.android.com/apk/res/android&quot;"
-        errorLine2="^">
-        <location
-            file="src/main/res/drawable/thumb.xml"
-            line="2"
-            column="1"/>
-    </issue>
-
-    <issue
-        id="UnusedResources"
-        message="The resource `R.drawable.thumb_drawable` appears to be unused"
-        errorLine1="&lt;selector xmlns:android=&quot;http://schemas.android.com/apk/res/android&quot;>"
-        errorLine2="^">
-        <location
-            file="src/main/res/drawable/thumb_drawable.xml"
-            line="2"
-            column="1"/>
     </issue>
 
     <issue
@@ -1864,61 +1725,6 @@
     <issue
         id="ContentDescription"
         message="Missing `contentDescription` attribute on image"
-        errorLine1="  &lt;ImageView a:layout_width=&quot;wrap_content&quot; a:layout_height=&quot;wrap_content&quot;"
-        errorLine2="   ~~~~~~~~~">
-        <location
-            file="src/main/res/layout/main_buttons.xml"
-            line="10"
-            column="4"/>
-    </issue>
-
-    <issue
-        id="ContentDescription"
-        message="Missing `contentDescription` attribute on image"
-        errorLine1="    &lt;ImageView"
-        errorLine2="     ~~~~~~~~~">
-        <location
-            file="src/main/res/layout/navigation_header.xml"
-            line="10"
-            column="6"/>
-    </issue>
-
-    <issue
-        id="ContentDescription"
-        message="Missing `contentDescription` attribute on image"
-        errorLine1="        &lt;ImageView"
-        errorLine2="         ~~~~~~~~~">
-        <location
-            file="src/main/res/layout/navigation_header.xml"
-            line="24"
-            column="10"/>
-    </issue>
-
-    <issue
-        id="ContentDescription"
-        message="Missing `contentDescription` attribute on image"
-        errorLine1="        &lt;ImageView"
-        errorLine2="         ~~~~~~~~~">
-        <location
-            file="src/main/res/layout/now_playing.xml"
-            line="18"
-            column="10"/>
-    </issue>
-
-    <issue
-        id="ContentDescription"
-        message="Missing `contentDescription` attribute on image"
-        errorLine1="        &lt;ImageView"
-        errorLine2="         ~~~~~~~~~">
-        <location
-            file="src/main/res/layout/now_playing.xml"
-            line="55"
-            column="10"/>
-    </issue>
-
-    <issue
-        id="ContentDescription"
-        message="Missing `contentDescription` attribute on image"
         errorLine1="    &lt;ImageView"
         errorLine2="     ~~~~~~~~~">
         <location
@@ -1933,7 +1739,7 @@
         errorLine1="    &lt;ImageView"
         errorLine2="     ~~~~~~~~~">
         <location
-            file="src/main/res/layout/server_row.xml"
+            file="src/main/res/layout/song_list_item.xml"
             line="9"
             column="6"/>
     </issue>
@@ -1941,44 +1747,11 @@
     <issue
         id="ContentDescription"
         message="Missing `contentDescription` attribute on image"
-        errorLine1="    &lt;ImageButton"
-        errorLine2="     ~~~~~~~~~~~">
-        <location
-            file="src/main/res/layout/server_row.xml"
-            line="35"
-            column="6"/>
-    </issue>
-
-    <issue
-        id="ContentDescription"
-        message="Missing `contentDescription` attribute on image"
-        errorLine1="    &lt;com.google.android.material.floatingactionbutton.FloatingActionButton"
-        errorLine2="     ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
-        <location
-            file="src/main/res/layout/server_selector.xml"
-            line="12"
-            column="6"/>
-    </issue>
-
-    <issue
-        id="ContentDescription"
-        message="Missing `contentDescription` attribute on image"
-        errorLine1="    &lt;ImageView"
-        errorLine2="     ~~~~~~~~~">
-        <location
-            file="src/main/res/layout/song_list_item.xml"
-            line="10"
-            column="6"/>
-    </issue>
-
-    <issue
-        id="ContentDescription"
-        message="Missing `contentDescription` attribute on image"
         errorLine1="        &lt;ImageView"
         errorLine2="         ~~~~~~~~~">
         <location
             file="src/main/res/layout/song_list_item.xml"
-            line="39"
+            line="38"
             column="10"/>
     </issue>
 
@@ -1989,7 +1762,7 @@
         errorLine2="         ~~~~~~~~~">
         <location
             file="src/main/res/layout/song_list_item.xml"
-            line="49"
+            line="48"
             column="10"/>
     </issue>
 
@@ -2000,7 +1773,7 @@
         errorLine2="         ~~~~~~~~~">
         <location
             file="src/main/res/layout/song_list_item.xml"
-            line="59"
+            line="58"
             column="10"/>
     </issue>
 
@@ -2011,7 +1784,7 @@
         errorLine2="         ~~~~~~~~~">
         <location
             file="src/main/res/layout/song_list_item.xml"
-            line="69"
+            line="68"
             column="10"/>
     </issue>
 
@@ -2022,7 +1795,7 @@
         errorLine2="         ~~~~~~~~~">
         <location
             file="src/main/res/layout/song_list_item.xml"
-            line="79"
+            line="78"
             column="10"/>
     </issue>
 
@@ -2033,7 +1806,7 @@
         errorLine2="     ~~~~~~~~~">
         <location
             file="src/main/res/layout/song_list_item.xml"
-            line="92"
+            line="91"
             column="6"/>
     </issue>
 
@@ -2231,7 +2004,7 @@
         errorLine2="            ~~~~~~~~~~~~~~~~">
         <location
             file="src/main/res/layout/server_edit.xml"
-            line="44"
+            line="43"
             column="13"/>
     </issue>
 
@@ -2255,17 +2028,6 @@
             file="src/main/res/layout/player_slider.xml"
             line="29"
             column="10"/>
-    </issue>
-
-    <issue
-        id="RelativeOverlap"
-        message="`@id/server_name` can overlap `@id/server_menu` if @id/server_name grows due to localized text expansion"
-        errorLine1="    &lt;TextView"
-        errorLine2="     ~~~~~~~~">
-        <location
-            file="src/main/res/layout/server_row.xml"
-            line="18"
-            column="6"/>
     </issue>
 
 </issues>
