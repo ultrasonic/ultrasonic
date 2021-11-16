@@ -38,6 +38,8 @@ class Downloader(
     private val downloadQueue = PriorityQueue<DownloadFile>()
     private val activelyDownloading = mutableListOf<DownloadFile>()
 
+    // TODO: The playlist is now published with RX, while the observableDownloads is using LiveData.
+    // Use the same for both
     val observableDownloads = MutableLiveData<List<DownloadFile>>()
 
     private val jukeboxMediaPlayer: JukeboxMediaPlayer by inject()
