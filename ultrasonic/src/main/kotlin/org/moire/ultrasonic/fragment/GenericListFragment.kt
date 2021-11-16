@@ -182,8 +182,7 @@ abstract class GenericListFragment<T : Identifiable, TA : GenericRowAdapter<T>> 
     abstract fun onItemClick(item: T)
 }
 
-abstract class EntryListFragment<T : GenericEntry, TA : GenericRowAdapter<T>> :
-    GenericListFragment<T, TA>() {
+abstract class EntryListFragment<T : GenericEntry> : MultiListFragment<T>() {
     @Suppress("LongMethod")
     override fun onContextMenuItemSelected(menuItem: MenuItem, item: T): Boolean {
         val isArtist = (item is Artist)

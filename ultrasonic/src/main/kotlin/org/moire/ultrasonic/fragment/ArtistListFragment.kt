@@ -11,7 +11,7 @@ import org.moire.ultrasonic.util.Constants
 /**
  * Displays the list of Artists from the media library
  */
-class ArtistListFragment : EntryListFragment<ArtistOrIndex, ArtistRowAdapter>() {
+class ArtistListFragment : EntryListFragment<ArtistOrIndex>() {
 
     /**
      * The ViewModel to use to get the data
@@ -50,13 +50,14 @@ class ArtistListFragment : EntryListFragment<ArtistOrIndex, ArtistRowAdapter>() 
     /**
      * Provide the Adapter for the RecyclerView with a lazy delegate
      */
-    override val viewAdapter: ArtistRowAdapter by lazy {
-        ArtistRowAdapter(
-            liveDataItems.value ?: listOf(),
-            { entry -> onItemClick(entry) },
-            { menuItem, entry -> onContextMenuItemSelected(menuItem, entry) },
-            imageLoaderProvider.getImageLoader(),
-            onMusicFolderUpdate
-        )
-    }
+    // FIXME
+//    override val viewAdapter: ArtistRowAdapter by lazy {
+//        ArtistRowAdapter(
+//            liveDataItems.value ?: listOf(),
+//            { entry -> onItemClick(entry) },
+//            { menuItem, entry -> onContextMenuItemSelected(menuItem, entry) },
+//            imageLoaderProvider.getImageLoader(),
+//            onMusicFolderUpdate
+//        )
+//    }
 }

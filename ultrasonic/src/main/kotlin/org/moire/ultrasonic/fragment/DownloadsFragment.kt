@@ -35,12 +35,12 @@ class DownloadsFragment : MultiListFragment<DownloadFile>() {
     }
 
     override fun onContextMenuItemSelected(menuItem: MenuItem, item: DownloadFile): Boolean {
-        // Do nothing
+        // TODO: Add code to enable manipulation of the download list
         return true
     }
 
     override fun onItemClick(item: DownloadFile) {
-        // Do nothing
+        // TODO: Add code to enable manipulation of the download list
     }
 
     override fun setTitle(title: String?) {

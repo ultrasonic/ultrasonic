@@ -7,7 +7,6 @@ import androidx.lifecycle.LiveData
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.RecyclerView
 import org.moire.ultrasonic.R
-import org.moire.ultrasonic.adapters.AlbumRowAdapter
 import org.moire.ultrasonic.domain.MusicDirectory
 import org.moire.ultrasonic.util.Constants
 
@@ -15,7 +14,7 @@ import org.moire.ultrasonic.util.Constants
  * Displays a list of Albums from the media library
  * TODO: Check refresh is working
  */
-class AlbumListFragment : EntryListFragment<MusicDirectory.Entry, AlbumRowAdapter>() {
+class AlbumListFragment : EntryListFragment<MusicDirectory.Entry>() {
 
     /**
      * The ViewModel to use to get the data
@@ -55,19 +54,20 @@ class AlbumListFragment : EntryListFragment<MusicDirectory.Entry, AlbumRowAdapte
         return listModel.getAlbumList(refresh or append, refreshListView!!, args)
     }
 
-    /**
-     * Provide the Adapter for the RecyclerView with a lazy delegate
-     */
-    override val viewAdapter: AlbumRowAdapter by lazy {
-        AlbumRowAdapter(
-            liveDataItems.value ?: listOf(),
-            { entry -> onItemClick(entry) },
-            { menuItem, entry -> onContextMenuItemSelected(menuItem, entry) },
-            imageLoaderProvider.getImageLoader(),
-            onMusicFolderUpdate,
-            requireContext()
-        )
-    }
+//    FIXME
+//    /**
+//     * Provide the Adapter for the RecyclerView with a lazy delegate
+//     */
+//    override val viewAdapter: AlbumRowAdapter by lazy {
+//        AlbumRowAdapter(
+//            liveDataItems.value ?: listOf(),
+//            { entry -> onItemClick(entry) },
+//            { menuItem, entry -> onContextMenuItemSelected(menuItem, entry) },
+//            imageLoaderProvider.getImageLoader(),
+//            onMusicFolderUpdate,
+//            requireContext()
+//        )
+//    }
 
     val newBundleClone: Bundle
         get() = arguments?.clone() as Bundle

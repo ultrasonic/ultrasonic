@@ -36,6 +36,7 @@ import timber.log.Timber
 /**
  * Contains the mini-now playing information box displayed at the bottom of the screen
  */
+@Suppress("unused")
 class NowPlayingFragment : Fragment() {
 
     private var downX = 0f
@@ -90,13 +91,13 @@ class NowPlayingFragment : Fragment() {
             if (playerState === PlayerState.PAUSED) {
                 playButton!!.setImageDrawable(
                     getDrawableFromAttribute(
-                        context, R.attr.media_play
+                        requireContext(), R.attr.media_play
                     )
                 )
             } else if (playerState === PlayerState.STARTED) {
                 playButton!!.setImageDrawable(
                     getDrawableFromAttribute(
-                        context, R.attr.media_pause
+                        requireContext(), R.attr.media_pause
                     )
                 )
             }

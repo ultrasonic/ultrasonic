@@ -51,9 +51,7 @@ import timber.log.Timber
 /**
  * Displays a group of tracks, eg. the songs of an album, of a playlist etc.
  * TODO: Move Clickhandler into ViewBinders
- * TODO: Migrate Album/artistsRow
- * TODO: Wrong count (selectall)
- * TODO: Handle updates (playstatus, download status)
+ * TODO: Fix clikc handlers and context menus etc.
  */
 class TrackCollectionFragment :
     MultiListFragment<MusicDirectory.Entry>() {
@@ -255,71 +253,71 @@ class TrackCollectionFragment :
         Timber.d("onContextItemSelected")
         val info = menuItem.menuInfo as AdapterContextMenuInfo? ?: return true
 
-//        val entry = listView!!.getItemAtPosition(info.position) as MusicDirectory.Entry?
-//            ?: return true
-//
-//        val entryId = entry.id
-//
-//        when (menuItem.itemId) {
-//            R.id.menu_play_now -> {
-//                downloadHandler.downloadRecursively(
-//                    this, entryId, save = false, append = false,
-//                    autoPlay = true, shuffle = false, background = false,
-//                    playNext = false, unpin = false, isArtist = false
-//                )
-//            }
-//            R.id.menu_play_next -> {
-//                downloadHandler.downloadRecursively(
-//                    this, entryId, save = false, append = false,
-//                    autoPlay = false, shuffle = false, background = false,
-//                    playNext = true, unpin = false, isArtist = false
-//                )
-//            }
-//            R.id.menu_play_last -> {
-//                downloadHandler.downloadRecursively(
-//                    this, entryId, save = false, append = true,
-//                    autoPlay = false, shuffle = false, background = false,
-//                    playNext = false, unpin = false, isArtist = false
-//                )
-//            }
-//            R.id.menu_pin -> {
-//                downloadHandler.downloadRecursively(
-//                    this, entryId, save = true, append = true,
-//                    autoPlay = false, shuffle = false, background = false,
-//                    playNext = false, unpin = false, isArtist = false
-//                )
-//            }
-//            R.id.menu_unpin -> {
-//                downloadHandler.downloadRecursively(
-//                    this, entryId, save = false, append = false,
-//                    autoPlay = false, shuffle = false, background = false,
-//                    playNext = false, unpin = true, isArtist = false
-//                )
-//            }
-//            R.id.menu_download -> {
-//                downloadHandler.downloadRecursively(
-//                    this, entryId, save = false, append = false,
-//                    autoPlay = false, shuffle = false, background = true,
-//                    playNext = false, unpin = false, isArtist = false
-//                )
-//            }
-//            R.id.select_album_play_all -> {
-//                // TODO: Why is this being handled here?!
-//                playAll()
-//            }
-//            R.id.menu_item_share -> {
-//                val entries: MutableList<MusicDirectory.Entry?> = ArrayList(1)
-//                entries.add(entry)
-//                shareHandler.createShare(
-//                    this, entries, refreshListView,
-//                    cancellationToken!!
-//                )
-//                return true
-//            }
-//            else -> {
-//                return super.onContextItemSelected(menuItem)
-//            }
-//        }
+        val entry = viewAdapter.getCurrentList()[info.position] as MusicDirectory.Entry?
+            ?: return true
+
+        val entryId = entry.id
+
+        when (menuItem.itemId) {
+            R.id.menu_play_now -> {
+                downloadHandler.downloadRecursively(
+                    this, entryId, save = false, append = false,
+                    autoPlay = true, shuffle = false, background = false,
+                    playNext = false, unpin = false, isArtist = false
+                )
+            }
+            R.id.menu_play_next -> {
+                downloadHandler.downloadRecursively(
+                    this, entryId, save = false, append = false,
+                    autoPlay = false, shuffle = false, background = false,
+                    playNext = true, unpin = false, isArtist = false
+                )
+            }
+            R.id.menu_play_last -> {
+                downloadHandler.downloadRecursively(
+                    this, entryId, save = false, append = true,
+                    autoPlay = false, shuffle = false, background = false,
+                    playNext = false, unpin = false, isArtist = false
+                )
+            }
+            R.id.menu_pin -> {
+                downloadHandler.downloadRecursively(
+                    this, entryId, save = true, append = true,
+                    autoPlay = false, shuffle = false, background = false,
+                    playNext = false, unpin = false, isArtist = false
+                )
+            }
+            R.id.menu_unpin -> {
+                downloadHandler.downloadRecursively(
+                    this, entryId, save = false, append = false,
+                    autoPlay = false, shuffle = false, background = false,
+                    playNext = false, unpin = true, isArtist = false
+                )
+            }
+            R.id.menu_download -> {
+                downloadHandler.downloadRecursively(
+                    this, entryId, save = false, append = false,
+                    autoPlay = false, shuffle = false, background = true,
+                    playNext = false, unpin = false, isArtist = false
+                )
+            }
+            R.id.select_album_play_all -> {
+                // TODO: Why is this being handled here?!
+                playAll()
+            }
+            R.id.menu_item_share -> {
+                val entries: MutableList<MusicDirectory.Entry?> = ArrayList(1)
+                entries.add(entry)
+                shareHandler.createShare(
+                    this, entries, refreshListView,
+                    cancellationToken!!
+                )
+                return true
+            }
+            else -> {
+                return super.onContextItemSelected(menuItem)
+            }
+        }
         return true
     }
 
