@@ -35,7 +35,6 @@ import android.widget.TextView
 import android.widget.ViewFlipper
 import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
-import androidx.lifecycle.lifecycleScope
 import androidx.navigation.Navigation
 import com.mobeta.android.dslv.DragSortListView
 import com.mobeta.android.dslv.DragSortListView.DragSortListener
@@ -53,7 +52,8 @@ import java.util.concurrent.TimeUnit
 import kotlin.math.abs
 import kotlin.math.max
 import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Job
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.cancel
 import kotlinx.coroutines.launch
 import org.koin.android.ext.android.inject
 import org.koin.core.component.KoinComponent
@@ -88,12 +88,13 @@ import timber.log.Timber
 
 /**
  * Contains the Music Player screen of Ultrasonic with playback controls and the playlist
- *
- * TODO: This class was more or less straight converted from Java legacy code.
- * There are many places where further cleanup would be nice.
  */
 @Suppress("LargeClass", "TooManyFunctions", "MagicNumber")
-class PlayerFragment : Fragment(), GestureDetector.OnGestureListener, KoinComponent {
+class PlayerFragment :
+    Fragment(),
+    GestureDetector.OnGestureListener,
+    KoinComponent,
+    CoroutineScope by CoroutineScope(Dispatchers.Main) {
     private var swipeDistance = 0
     private var swipeVelocity = 0
     private var jukeboxAvailable = false
@@ -114,9 +115,7 @@ class PlayerFragment : Fragment(), GestureDetector.OnGestureListener, KoinCompon
     private lateinit var executorService: ScheduledExecutorService
     private var currentPlaying: DownloadFile? = null
     private var currentSong: MusicDirectory.Entry? = null
-    private var onProgressChangedTask: Job? = null
     private var rxBusSubscription: Disposable? = null
-    private val scope: CoroutineScope = viewLifecycleOwner.lifecycleScope
 
     // Views and UI Elements
     private lateinit var visualizerViewLayout: LinearLayout
@@ -236,7 +235,7 @@ class PlayerFragment : Fragment(), GestureDetector.OnGestureListener, KoinCompon
 
         previousButton.setOnClickListener {
             networkAndStorageChecker.warnIfNetworkOrStorageUnavailable()
-            scope.launch(CommunicationError.getHandler(context)) {
+            launch(CommunicationError.getHandler(context)) {
                 mediaPlayerController.previous()
                 onCurrentChanged()
                 onSliderProgressChanged()
@@ -250,7 +249,7 @@ class PlayerFragment : Fragment(), GestureDetector.OnGestureListener, KoinCompon
 
         nextButton.setOnClickListener {
             networkAndStorageChecker.warnIfNetworkOrStorageUnavailable()
-            scope.launch(CommunicationError.getHandler(context)) {
+            launch(CommunicationError.getHandler(context)) {
                 mediaPlayerController.next()
                 onCurrentChanged()
                 onSliderProgressChanged()
@@ -262,27 +261,29 @@ class PlayerFragment : Fragment(), GestureDetector.OnGestureListener, KoinCompon
             changeProgress(incrementTime)
         }
         pauseButton.setOnClickListener {
-            scope.launch(CommunicationError.getHandler(context)) {
+            launch(CommunicationError.getHandler(context)) {
                 mediaPlayerController.pause()
                 onCurrentChanged()
                 onSliderProgressChanged()
             }
         }
         stopButton.setOnClickListener {
-            scope.launch(CommunicationError.getHandler(context)) {
+            launch(CommunicationError.getHandler(context)) {
                 mediaPlayerController.reset()
                 onCurrentChanged()
                 onSliderProgressChanged()
             }
         }
+
         startButton.setOnClickListener {
             networkAndStorageChecker.warnIfNetworkOrStorageUnavailable()
-            scope.launch(CommunicationError.getHandler(context)) {
+            launch(CommunicationError.getHandler(context)) {
                 start()
                 onCurrentChanged()
                 onSliderProgressChanged()
             }
         }
+
         shuffleButton.setOnClickListener {
             mediaPlayerController.shuffle()
             Util.toast(activity, R.string.download_menu_shuffle_notification)
@@ -309,7 +310,7 @@ class PlayerFragment : Fragment(), GestureDetector.OnGestureListener, KoinCompon
 
         progressBar.setOnSeekBarChangeListener(object : OnSeekBarChangeListener {
             override fun onStopTrackingTouch(seekBar: SeekBar) {
-                scope.launch(CommunicationError.getHandler(context)) {
+                launch(CommunicationError.getHandler(context)) {
                     mediaPlayerController.seekTo(progressBar.progress)
                     onSliderProgressChanged()
                 }
@@ -321,12 +322,13 @@ class PlayerFragment : Fragment(), GestureDetector.OnGestureListener, KoinCompon
 
         playlistView.setOnItemClickListener { _, _, position, _ ->
             networkAndStorageChecker.warnIfNetworkOrStorageUnavailable()
-            scope.launch(CommunicationError.getHandler(context)) {
+            launch(CommunicationError.getHandler(context)) {
                 mediaPlayerController.play(position)
                 onCurrentChanged()
                 onSliderProgressChanged()
             }
         }
+
         registerForContextMenu(playlistView)
 
         if (arguments != null && requireArguments().getBoolean(
@@ -388,7 +390,7 @@ class PlayerFragment : Fragment(), GestureDetector.OnGestureListener, KoinCompon
         }
 
         // Query the Jukebox state off-thread
-        scope.launch(CommunicationError.getHandler(context)) {
+        launch(CommunicationError.getHandler(context)) {
             try {
                 jukeboxAvailable = mediaPlayerController.isJukeboxAvailable
             } catch (all: Exception) {
@@ -450,6 +452,7 @@ class PlayerFragment : Fragment(), GestureDetector.OnGestureListener, KoinCompon
 
     override fun onDestroyView() {
         rxBusSubscription?.dispose()
+        cancel("CoroutineScope cancelled because the view was destroyed")
         cancellationToken.cancel()
         super.onDestroyView()
     }
@@ -779,7 +782,7 @@ class PlayerFragment : Fragment(), GestureDetector.OnGestureListener, KoinCompon
         Util.toast(context, resources.getString(R.string.download_playlist_saving, playlistName))
         mediaPlayerController.suggestedPlaylistName = playlistName
 
-        scope.launch {
+        launch {
             val entries: MutableList<MusicDirectory.Entry> = LinkedList()
             for (downloadFile in mediaPlayerController.playList) {
                 entries.add(downloadFile.song)
@@ -930,94 +933,88 @@ class PlayerFragment : Fragment(), GestureDetector.OnGestureListener, KoinCompon
     }
 
     @Suppress("LongMethod", "ComplexMethod")
+    @Synchronized
     private fun onSliderProgressChanged() {
-        if (onProgressChangedTask != null) {
-            return
+
+        val isJukeboxEnabled: Boolean = mediaPlayerController.isJukeboxEnabled
+        val millisPlayed: Int = max(0, mediaPlayerController.playerPosition)
+        val duration: Int = mediaPlayerController.playerDuration
+        val playerState: PlayerState = mediaPlayerController.playerState
+
+        if (cancellationToken.isCancellationRequested) return
+        if (currentPlaying != null) {
+            positionTextView.text = Util.formatTotalDuration(millisPlayed.toLong(), true)
+            durationTextView.text = Util.formatTotalDuration(duration.toLong(), true)
+            progressBar.max =
+                if (duration == 0) 100 else duration // Work-around for apparent bug.
+            progressBar.progress = millisPlayed
+            progressBar.isEnabled = currentPlaying!!.isWorkDone || isJukeboxEnabled
+        } else {
+            positionTextView.setText(R.string.util_zero_time)
+            durationTextView.setText(R.string.util_no_time)
+            progressBar.progress = 0
+            progressBar.max = 0
+            progressBar.isEnabled = false
         }
 
-        onProgressChangedTask = scope.launch(CommunicationError.getHandler(context)) {
-
-            val isJukeboxEnabled: Boolean = mediaPlayerController.isJukeboxEnabled
-            val millisPlayed = max(0, mediaPlayerController.playerPosition)
-            val duration = mediaPlayerController.playerDuration
-            val playerState = mediaPlayerController.playerState
-
-            if (cancellationToken.isCancellationRequested) return@launch
-            if (currentPlaying != null) {
-                positionTextView.text = Util.formatTotalDuration(millisPlayed.toLong(), true)
-                durationTextView.text = Util.formatTotalDuration(duration.toLong(), true)
-                progressBar.max =
-                    if (duration == 0) 100 else duration // Work-around for apparent bug.
-                progressBar.progress = millisPlayed
-                progressBar.isEnabled = currentPlaying!!.isWorkDone || isJukeboxEnabled
-            } else {
-                positionTextView.setText(R.string.util_zero_time)
-                durationTextView.setText(R.string.util_no_time)
-                progressBar.progress = 0
-                progressBar.max = 0
-                progressBar.isEnabled = false
-            }
-
-            when (playerState) {
-                PlayerState.DOWNLOADING -> {
-                    val progress =
-                        if (currentPlaying != null) currentPlaying!!.progress.value!! else 0
-                    val downloadStatus = resources.getString(
-                        R.string.download_playerstate_downloading,
-                        Util.formatPercentage(progress)
-                    )
-                    setTitle(this@PlayerFragment, downloadStatus)
-                }
-                PlayerState.PREPARING -> setTitle(
-                    this@PlayerFragment,
-                    R.string.download_playerstate_buffering
+        when (playerState) {
+            PlayerState.DOWNLOADING -> {
+                val progress =
+                    if (currentPlaying != null) currentPlaying!!.progress.value!! else 0
+                val downloadStatus = resources.getString(
+                    R.string.download_playerstate_downloading,
+                    Util.formatPercentage(progress)
                 )
-                PlayerState.STARTED -> {
-                    if (mediaPlayerController.isShufflePlayEnabled) {
-                        setTitle(
-                            this@PlayerFragment,
-                            R.string.download_playerstate_playing_shuffle
-                        )
-                    } else {
-                        setTitle(this@PlayerFragment, R.string.common_appname)
-                    }
-                }
-                PlayerState.IDLE,
-                PlayerState.PREPARED,
-                PlayerState.STOPPED,
-                PlayerState.PAUSED,
-                PlayerState.COMPLETED -> {
-                }
-                else -> setTitle(this@PlayerFragment, R.string.common_appname)
+                setTitle(this@PlayerFragment, downloadStatus)
             }
-
-            when (playerState) {
-                PlayerState.STARTED -> {
-                    pauseButton.isVisible = true
-                    stopButton.isVisible = false
-                    startButton.isVisible = false
-                }
-                PlayerState.DOWNLOADING, PlayerState.PREPARING -> {
-                    pauseButton.isVisible = false
-                    stopButton.isVisible = true
-                    startButton.isVisible = false
-                }
-                else -> {
-                    pauseButton.isVisible = false
-                    stopButton.isVisible = false
-                    startButton.isVisible = true
+            PlayerState.PREPARING -> setTitle(
+                this@PlayerFragment,
+                R.string.download_playerstate_buffering
+            )
+            PlayerState.STARTED -> {
+                if (mediaPlayerController.isShufflePlayEnabled) {
+                    setTitle(
+                        this@PlayerFragment,
+                        R.string.download_playerstate_playing_shuffle
+                    )
+                } else {
+                    setTitle(this@PlayerFragment, R.string.common_appname)
                 }
             }
-
-            // TODO: It would be a lot nicer if MediaPlayerController would send an event
-            //  when this is necessary instead of updating every time
-            displaySongRating()
-            onProgressChangedTask = null
+            PlayerState.IDLE,
+            PlayerState.PREPARED,
+            PlayerState.STOPPED,
+            PlayerState.PAUSED,
+            PlayerState.COMPLETED -> {
+            }
+            else -> setTitle(this@PlayerFragment, R.string.common_appname)
         }
+
+        when (playerState) {
+            PlayerState.STARTED -> {
+                pauseButton.isVisible = true
+                stopButton.isVisible = false
+                startButton.isVisible = false
+            }
+            PlayerState.DOWNLOADING, PlayerState.PREPARING -> {
+                pauseButton.isVisible = false
+                stopButton.isVisible = true
+                startButton.isVisible = false
+            }
+            else -> {
+                pauseButton.isVisible = false
+                stopButton.isVisible = false
+                startButton.isVisible = true
+            }
+        }
+
+        // TODO: It would be a lot nicer if MediaPlayerController would send an event
+        // when this is necessary instead of updating every time
+        displaySongRating()
     }
 
     private fun changeProgress(ms: Int) {
-        scope.launch(CommunicationError.getHandler(context)) {
+        launch(CommunicationError.getHandler(context)) {
             val msPlayed: Int = max(0, mediaPlayerController.playerPosition)
             val duration = mediaPlayerController.playerDuration
             val seekTo = (msPlayed + ms).coerceAtMost(duration)
