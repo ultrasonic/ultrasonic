@@ -1,21 +1,23 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:a="http://schemas.android.com/apk/res/android"
-              a:layout_width="fill_parent"
-              a:layout_height="fill_parent"
-              a:orientation="horizontal">
+    xmlns:tools="http://schemas.android.com/tools"
+    a:layout_width="fill_parent"
+    a:layout_height="fill_parent"
+    a:baselineAligned="false"
+    a:orientation="horizontal">
 
-    <org.moire.ultrasonic.util.MyViewFlipper
+    <ViewFlipper
         a:id="@+id/current_playing_playlist_flipper"
         a:layout_width="0dp"
         a:layout_height="fill_parent"
-        a:layout_weight="1">
+        a:layout_weight="1"
+        tools:ignore="UselessParent">
 
         <FrameLayout
             a:id="@+id/current_playing_album_art_layout"
             a:layout_width="fill_parent"
             a:layout_height="fill_parent"
-            a:layout_weight="1"
-            a:gravity="left"
+            a:gravity="start"
             a:orientation="horizontal">
 
             <ImageView
@@ -31,9 +33,9 @@
                 a:layout_width="fill_parent"
                 a:layout_height="fill_parent"
                 a:gravity="bottom"
-                a:orientation="vertical" >
+                a:orientation="vertical">
 
-                <include layout="@layout/player_media_info"/>
+                <include layout="@layout/player_media_info" />
 
                 <LinearLayout
                     a:id="@+id/song_rating"
@@ -48,10 +50,11 @@
                         a:layout_width="0dip"
                         a:layout_height="fill_parent"
                         a:layout_weight="1"
-                        a:padding="10dip"
                         a:background="@android:color/transparent"
                         a:focusable="false"
                         a:gravity="center_vertical"
+                        a:importantForAccessibility="no"
+                        a:padding="10dip"
                         a:scaleType="fitCenter"
                         a:src="?attr/star_hollow" />
 
@@ -60,10 +63,11 @@
                         a:layout_width="0dip"
                         a:layout_height="fill_parent"
                         a:layout_weight="1"
-                        a:padding="10dip"
                         a:background="@android:color/transparent"
                         a:focusable="false"
                         a:gravity="center_vertical"
+                        a:importantForAccessibility="no"
+                        a:padding="10dip"
                         a:scaleType="fitCenter"
                         a:src="?attr/star_hollow" />
 
@@ -72,10 +76,11 @@
                         a:layout_width="0dip"
                         a:layout_height="fill_parent"
                         a:layout_weight="1"
-                        a:padding="10dip"
                         a:background="@android:color/transparent"
                         a:focusable="false"
                         a:gravity="center_vertical"
+                        a:importantForAccessibility="no"
+                        a:padding="10dip"
                         a:scaleType="fitCenter"
                         a:src="?attr/star_hollow" />
 
@@ -84,10 +89,11 @@
                         a:layout_width="0dip"
                         a:layout_height="fill_parent"
                         a:layout_weight="1"
-                        a:padding="10dip"
                         a:background="@android:color/transparent"
                         a:focusable="false"
                         a:gravity="center_vertical"
+                        a:importantForAccessibility="no"
+                        a:padding="10dip"
                         a:scaleType="fitCenter"
                         a:src="?attr/star_hollow" />
 
@@ -96,10 +102,11 @@
                         a:layout_width="0dip"
                         a:layout_height="fill_parent"
                         a:layout_weight="1"
-                        a:padding="10dip"
                         a:background="@android:color/transparent"
                         a:focusable="false"
                         a:gravity="center_vertical"
+                        a:importantForAccessibility="no"
+                        a:padding="10dip"
                         a:scaleType="fitCenter"
                         a:src="?attr/star_hollow" />
 
@@ -113,15 +120,16 @@
                     a:layout_marginStart="60dip"
                     a:layout_marginEnd="60dip"
                     a:background="@color/translucent"
-                    a:orientation="vertical"/>
+                    a:orientation="vertical" />
 
-                <include layout="@layout/player_slider"/>
-                <include layout="@layout/media_buttons"/>
+                <include layout="@layout/player_slider" />
+
+                <include layout="@layout/media_buttons" />
 
             </LinearLayout>
         </FrameLayout>
 
-        <include layout="@layout/current_playlist"/>
-    </org.moire.ultrasonic.util.MyViewFlipper>
+        <include layout="@layout/current_playlist" />
+    </ViewFlipper>
 
 </LinearLayout>

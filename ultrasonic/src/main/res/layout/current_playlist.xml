@@ -5,8 +5,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     a:orientation="vertical"
     a:layout_width="fill_parent"
-    a:layout_height="fill_parent"
-    a:layout_weight="1">
+    a:layout_height="fill_parent">
 
     <TextView
         a:id="@+id/playlist_empty"
