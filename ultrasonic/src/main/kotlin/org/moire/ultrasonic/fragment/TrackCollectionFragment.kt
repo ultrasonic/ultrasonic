@@ -211,7 +211,7 @@ class TrackCollectionFragment : Fragment() {
 
     val handler = CoroutineExceptionHandler { _, exception ->
         Handler(Looper.getMainLooper()).post {
-            context?.let { CommunicationErrorHandler.handleError(exception, it) }
+            CommunicationErrorHandler.handleError(exception, context)
         }
         refreshAlbumListView!!.isRefreshing = false
     }

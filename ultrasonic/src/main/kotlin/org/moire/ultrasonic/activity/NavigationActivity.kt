@@ -31,6 +31,7 @@ import androidx.navigation.ui.setupWithNavController
 import androidx.preference.PreferenceManager
 import com.google.android.material.button.MaterialButton
 import com.google.android.material.navigation.NavigationView
+import io.reactivex.rxjava3.disposables.Disposable
 import org.koin.android.ext.android.inject
 import org.koin.androidx.viewmodel.ext.android.viewModel
 import org.moire.ultrasonic.R
@@ -43,17 +44,14 @@ import org.moire.ultrasonic.provider.SearchSuggestionProvider
 import org.moire.ultrasonic.service.DownloadFile
 import org.moire.ultrasonic.service.MediaPlayerController
 import org.moire.ultrasonic.service.MediaPlayerLifecycleSupport
+import org.moire.ultrasonic.service.RxBus
 import org.moire.ultrasonic.subsonic.ImageLoaderProvider
 import org.moire.ultrasonic.util.Constants
 import org.moire.ultrasonic.util.FileUtil
-import org.moire.ultrasonic.util.NowPlayingEventDistributor
-import org.moire.ultrasonic.util.NowPlayingEventListener
 import org.moire.ultrasonic.util.PermissionUtil
 import org.moire.ultrasonic.util.ServerColor
 import org.moire.ultrasonic.util.Settings
 import org.moire.ultrasonic.util.SubsonicUncaughtExceptionHandler
-import org.moire.ultrasonic.util.ThemeChangedEventDistributor
-import org.moire.ultrasonic.util.ThemeChangedEventListener
 import org.moire.ultrasonic.util.Util
 import timber.log.Timber
 
@@ -74,15 +72,13 @@ class NavigationActivity : AppCompatActivity() {
     private var headerBackgroundImage: ImageView? = null
 
     private lateinit var appBarConfiguration: AppBarConfiguration
-    private lateinit var nowPlayingEventListener: NowPlayingEventListener
-    private lateinit var themeChangedEventListener: ThemeChangedEventListener
+    private var themeChangedEventSubscription: Disposable? = null
+    private var playerStateSubscription: Disposable? = null
 
     private val serverSettingsModel: ServerSettingsModel by viewModel()
     private val lifecycleSupport: MediaPlayerLifecycleSupport by inject()
     private val mediaPlayerController: MediaPlayerController by inject()
     private val imageLoaderProvider: ImageLoaderProvider by inject()
-    private val nowPlayingEventDistributor: NowPlayingEventDistributor by inject()
-    private val themeChangedEventDistributor: ThemeChangedEventDistributor by inject()
     private val permissionUtil: PermissionUtil by inject()
     private val activeServerProvider: ActiveServerProvider by inject()
     private val serverRepository: ServerSettingDao by inject()
@@ -169,27 +165,21 @@ class NavigationActivity : AppCompatActivity() {
             showWelcomeDialog()
         }
 
-        nowPlayingEventListener = object : NowPlayingEventListener {
-            override fun onDismissNowPlaying() {
-                nowPlayingHidden = true
-                hideNowPlaying()
-            }
+        RxBus.dismissNowPlayingCommandObservable.subscribe {
+            nowPlayingHidden = true
+            hideNowPlaying()
+        }
 
-            override fun onHideNowPlaying() {
-                hideNowPlaying()
-            }
-
-            override fun onShowNowPlaying() {
+        playerStateSubscription = RxBus.playerStateObservable.subscribe {
+            if (it.state === PlayerState.STARTED || it.state === PlayerState.PAUSED)
                 showNowPlaying()
-            }
+            else
+                hideNowPlaying()
         }
 
-        themeChangedEventListener = object : ThemeChangedEventListener {
-            override fun onThemeChanged() { recreate() }
+        themeChangedEventSubscription = RxBus.themeChangedEventObservable.subscribe {
+            recreate()
         }
-
-        nowPlayingEventDistributor.subscribe(nowPlayingEventListener)
-        themeChangedEventDistributor.subscribe(themeChangedEventListener)
 
         serverRepository.liveServerCount().observe(
             this,
@@ -237,8 +227,8 @@ class NavigationActivity : AppCompatActivity() {
 
     override fun onDestroy() {
         super.onDestroy()
-        nowPlayingEventDistributor.unsubscribe(nowPlayingEventListener)
-        themeChangedEventDistributor.unsubscribe(themeChangedEventListener)
+        themeChangedEventSubscription?.dispose()
+        playerStateSubscription?.dispose()
         imageLoaderProvider.clearImageLoader()
         permissionUtil.onForegroundApplicationStopped()
     }

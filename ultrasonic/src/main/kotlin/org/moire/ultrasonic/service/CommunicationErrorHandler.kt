@@ -39,8 +39,10 @@ import timber.log.Timber
  */
 class CommunicationErrorHandler {
     companion object {
-        fun handleError(error: Throwable?, context: Context) {
+        fun handleError(error: Throwable?, context: Context?) {
             Timber.w(error)
+
+            if (context == null) return
 
             AlertDialog.Builder(context)
                 .setIcon(android.R.drawable.ic_dialog_alert)

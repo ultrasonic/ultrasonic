@@ -35,9 +35,11 @@ import android.widget.TextView
 import android.widget.ViewFlipper
 import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.lifecycleScope
 import androidx.navigation.Navigation
 import com.mobeta.android.dslv.DragSortListView
 import com.mobeta.android.dslv.DragSortListView.DragSortListener
+import io.reactivex.rxjava3.disposables.Disposable
 import java.text.DateFormat
 import java.text.SimpleDateFormat
 import java.util.ArrayList
@@ -49,6 +51,7 @@ import java.util.concurrent.ScheduledExecutorService
 import java.util.concurrent.TimeUnit
 import kotlin.math.abs
 import kotlin.math.max
+import kotlinx.coroutines.launch
 import org.koin.android.ext.android.inject
 import org.koin.core.component.KoinComponent
 import org.koin.core.component.get
@@ -66,6 +69,7 @@ import org.moire.ultrasonic.service.DownloadFile
 import org.moire.ultrasonic.service.LocalMediaPlayer
 import org.moire.ultrasonic.service.MediaPlayerController
 import org.moire.ultrasonic.service.MusicServiceFactory.getMusicService
+import org.moire.ultrasonic.service.RxBus
 import org.moire.ultrasonic.subsonic.ImageLoaderProvider
 import org.moire.ultrasonic.subsonic.NetworkAndStorageChecker
 import org.moire.ultrasonic.subsonic.ShareHandler
@@ -88,8 +92,6 @@ import timber.log.Timber
  */
 @Suppress("LargeClass", "TooManyFunctions", "MagicNumber")
 class PlayerFragment : Fragment(), GestureDetector.OnGestureListener, KoinComponent {
-    // Settings
-    private var currentRevision: Long = 0
     private var swipeDistance = 0
     private var swipeVelocity = 0
     private var jukeboxAvailable = false
@@ -111,6 +113,7 @@ class PlayerFragment : Fragment(), GestureDetector.OnGestureListener, KoinCompon
     private var currentPlaying: DownloadFile? = null
     private var currentSong: MusicDirectory.Entry? = null
     private var onProgressChangedTask: SilentBackgroundTask<Void?>? = null
+    private var rxBusSubscription: Disposable? = null
 
     // Views and UI Elements
     private lateinit var visualizerViewLayout: LinearLayout
@@ -419,13 +422,21 @@ class PlayerFragment : Fragment(), GestureDetector.OnGestureListener, KoinCompon
                 }
             }
         )
-        Thread {
+
+        // Observe playlist changes and update the UI
+        rxBusSubscription = RxBus.playlistObservable.subscribe {
+            onPlaylistChanged()
+        }
+
+        // Query the Jukebox state off-thread
+        viewLifecycleOwner.lifecycleScope.launch {
             try {
                 jukeboxAvailable = mediaPlayerController.isJukeboxAvailable
             } catch (all: Exception) {
                 Timber.e(all)
             }
-        }.start()
+        }
+
         view.setOnTouchListener { _, event -> gestureScanner.onTouchEvent(event) }
     }
 
@@ -479,6 +490,7 @@ class PlayerFragment : Fragment(), GestureDetector.OnGestureListener, KoinCompon
     }
 
     override fun onDestroyView() {
+        rxBusSubscription?.dispose()
         cancellationToken.cancel()
         super.onDestroyView()
     }
@@ -797,9 +809,6 @@ class PlayerFragment : Fragment(), GestureDetector.OnGestureListener, KoinCompon
     private fun update(cancel: CancellationToken?) {
         if (cancel!!.isCancellationRequested) return
         val mediaPlayerController = mediaPlayerController
-        if (currentRevision != mediaPlayerController.playListUpdateRevision) {
-            onPlaylistChanged()
-        }
         if (currentPlaying != mediaPlayerController.currentPlaying) {
             onCurrentChanged()
         }
@@ -914,7 +923,6 @@ class PlayerFragment : Fragment(), GestureDetector.OnGestureListener, KoinCompon
 
         emptyTextView.isVisible = list.isEmpty()
 
-        currentRevision = mediaPlayerController.playListUpdateRevision
         when (mediaPlayerController.repeatMode) {
             RepeatMode.OFF -> repeatButton.setImageDrawable(
                 Util.getDrawableFromAttribute(

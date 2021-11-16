@@ -17,18 +17,21 @@ import android.support.v4.media.session.MediaSessionCompat
 import android.support.v4.media.session.PlaybackStateCompat
 import android.support.v4.media.session.PlaybackStateCompat.PLAYBACK_POSITION_UNKNOWN
 import android.view.KeyEvent
+import io.reactivex.rxjava3.disposables.CompositeDisposable
+import kotlin.Pair
 import org.koin.core.component.KoinComponent
 import org.koin.core.component.inject
 import org.moire.ultrasonic.R
-import org.moire.ultrasonic.domain.MusicDirectory
 import org.moire.ultrasonic.domain.PlayerState
 import org.moire.ultrasonic.imageloader.BitmapUtils
 import org.moire.ultrasonic.receiver.MediaButtonIntentReceiver
 import org.moire.ultrasonic.service.DownloadFile
+import org.moire.ultrasonic.service.RxBus
+import org.moire.ultrasonic.service.plusAssign
+import org.moire.ultrasonic.util.Util.ifNotNull
 import timber.log.Timber
 
 private const val INTENT_CODE_MEDIA_BUTTON = 161
-private const val CALL_DIVIDE = 10
 /**
  * Central place to handle the state of the MediaSession
  */
@@ -39,13 +42,13 @@ class MediaSessionHandler : KoinComponent {
     private var playbackActions: Long? = null
     private var cachedPlayingIndex: Long? = null
 
-    private val mediaSessionEventDistributor by inject<MediaSessionEventDistributor>()
     private val applicationContext by inject<Context>()
 
     private var referenceCount: Int = 0
-    private var cachedPlaylist: List<MediaSessionCompat.QueueItem>? = null
-    private var playbackPositionDelayCount: Int = 0
+    private var cachedPlaylist: List<DownloadFile>? = null
     private var cachedPosition: Long = 0
+
+    private val rxBusSubscription: CompositeDisposable = CompositeDisposable()
 
     fun release() {
 
@@ -53,7 +56,8 @@ class MediaSessionHandler : KoinComponent {
         if (referenceCount > 0) return
 
         mediaSession?.isActive = false
-        mediaSessionEventDistributor.releaseCachedMediaSessionToken()
+        RxBus.releaseMediaSessionToken()
+        rxBusSubscription.dispose()
         mediaSession?.release()
         mediaSession = null
 
@@ -72,7 +76,7 @@ class MediaSessionHandler : KoinComponent {
 
         mediaSession = MediaSessionCompat(applicationContext, "UltrasonicService")
         val mediaSessionToken = mediaSession?.sessionToken ?: return
-        mediaSessionEventDistributor.raiseMediaSessionTokenCreatedEvent(mediaSessionToken)
+        RxBus.mediaSessionTokenPublisher.onNext(mediaSessionToken)
 
         updateMediaButtonReceiver()
 
@@ -93,14 +97,14 @@ class MediaSessionHandler : KoinComponent {
                 super.onPlayFromMediaId(mediaId, extras)
 
                 Timber.d("Media Session Callback: onPlayFromMediaId %s", mediaId)
-                mediaSessionEventDistributor.raisePlayFromMediaIdRequestedEvent(mediaId, extras)
+                RxBus.playFromMediaIdCommandPublisher.onNext(Pair(mediaId, extras))
             }
 
             override fun onPlayFromSearch(query: String?, extras: Bundle?) {
                 super.onPlayFromSearch(query, extras)
 
                 Timber.d("Media Session Callback: onPlayFromSearch %s", query)
-                mediaSessionEventDistributor.raisePlayFromSearchRequestedEvent(query, extras)
+                RxBus.playFromSearchCommandPublisher.onNext(Pair(query, extras))
             }
 
             override fun onPause() {
@@ -147,28 +151,36 @@ class MediaSessionHandler : KoinComponent {
                 // This probably won't be necessary once we implement more
                 // of the modern media APIs, like the MediaController etc.
                 val event = mediaButtonEvent.extras!!["android.intent.extra.KEY_EVENT"] as KeyEvent?
-                mediaSessionEventDistributor.raiseMediaButtonEvent(event)
+                event.ifNotNull { RxBus.mediaButtonEventPublisher.onNext(it) }
                 return true
             }
 
             override fun onSkipToQueueItem(id: Long) {
                 super.onSkipToQueueItem(id)
-                mediaSessionEventDistributor.raiseSkipToQueueItemRequestedEvent(id)
+                RxBus.skipToQueueItemCommandPublisher.onNext(id)
             }
         }
         )
 
         // It seems to be the best practice to set this to true for the lifetime of the session
         mediaSession?.isActive = true
-        if (cachedPlaylist != null) setMediaSessionQueue(cachedPlaylist)
+        rxBusSubscription += RxBus.playbackPositionObservable.subscribe {
+            updateMediaSessionPlaybackPosition(it)
+        }
+        rxBusSubscription += RxBus.playlistObservable.subscribe {
+            updateMediaSessionQueue(it)
+        }
+        rxBusSubscription += RxBus.playerStateObservable.subscribe {
+            updateMediaSession(it.state, it.track)
+        }
+
         Timber.i("MediaSessionHandler.initialize Media Session created")
     }
 
-    @Suppress("TooGenericExceptionCaught", "LongMethod")
-    fun updateMediaSession(
-        currentPlaying: DownloadFile?,
-        currentPlayingIndex: Long?,
-        playerState: PlayerState
+    @Suppress("LongMethod", "ComplexMethod")
+    private fun updateMediaSession(
+        playerState: PlayerState,
+        currentPlaying: DownloadFile?
     ) {
         Timber.d("Updating the MediaSession")
 
@@ -187,8 +199,8 @@ class MediaSessionHandler : KoinComponent {
                 metadata.putString(MediaMetadataCompat.METADATA_KEY_ALBUM, song.album)
                 metadata.putString(MediaMetadataCompat.METADATA_KEY_TITLE, song.title)
                 metadata.putBitmap(MediaMetadataCompat.METADATA_KEY_ALBUM_ART, cover)
-            } catch (e: Exception) {
-                Timber.e(e, "Error setting the metadata")
+            } catch (all: Exception) {
+                Timber.e(all, "Error setting the metadata")
             }
         }
 
@@ -244,59 +256,46 @@ class MediaSessionHandler : KoinComponent {
         // Set actions
         playbackStateBuilder.setActions(playbackActions!!)
 
-        cachedPlayingIndex = currentPlayingIndex
-        setMediaSessionQueue(cachedPlaylist)
-        if (
-            currentPlayingIndex != null && cachedPlaylist != null &&
-            !Settings.shouldDisableNowPlayingListSending
-        )
-            playbackStateBuilder.setActiveQueueItemId(currentPlayingIndex)
+        val index = cachedPlaylist?.indexOf(currentPlaying)
+        cachedPlayingIndex = if (index == null || index < 0) null else index.toLong()
+        cachedPlaylist.ifNotNull { setMediaSessionQueue(it) }
+
+        if (cachedPlaylist != null && !Settings.shouldDisableNowPlayingListSending)
+            cachedPlayingIndex.ifNotNull { playbackStateBuilder.setActiveQueueItemId(it) }
 
         // Save the playback state
         mediaSession?.setPlaybackState(playbackStateBuilder.build())
     }
 
-    fun updateMediaSessionQueue(playlist: Iterable<MusicDirectory.Entry>) {
-        // This call is cached because Downloader may initialize earlier than the MediaSession
-        cachedPlaylist = playlist.mapIndexed { id, song ->
-            MediaSessionCompat.QueueItem(
-                Util.getMediaDescriptionForEntry(song),
-                id.toLong()
-            )
-        }
-        setMediaSessionQueue(cachedPlaylist)
+    private fun updateMediaSessionQueue(playlist: List<DownloadFile>) {
+        cachedPlaylist = playlist
+        setMediaSessionQueue(playlist)
     }
 
-    private fun setMediaSessionQueue(queue: List<MediaSessionCompat.QueueItem>?) {
+    private fun setMediaSessionQueue(playlist: List<DownloadFile>) {
         if (mediaSession == null) return
         if (Settings.shouldDisableNowPlayingListSending) return
 
+        val queue = playlist.mapIndexed { id, file ->
+            MediaSessionCompat.QueueItem(
+                Util.getMediaDescriptionForEntry(file.song),
+                id.toLong()
+            )
+        }
         mediaSession?.setQueueTitle(applicationContext.getString(R.string.button_bar_now_playing))
         mediaSession?.setQueue(queue)
     }
 
-    fun updateMediaSessionPlaybackPosition(playbackPosition: Long) {
-
-        cachedPosition = playbackPosition
-        if (mediaSession == null) return
-
+    private fun updateMediaSessionPlaybackPosition(playbackPosition: Int) {
+        cachedPosition = playbackPosition.toLong()
         if (playbackState == null || playbackActions == null) return
 
-        // Playback position is updated too frequently in the player.
-        // This counter makes sure that the MediaSession is updated ~ at every second
-        playbackPositionDelayCount++
-        if (playbackPositionDelayCount < CALL_DIVIDE) return
-
-        playbackPositionDelayCount = 0
         val playbackStateBuilder = PlaybackStateCompat.Builder()
-        playbackStateBuilder.setState(playbackState!!, playbackPosition, 1.0f)
+        playbackStateBuilder.setState(playbackState!!, cachedPosition, 1.0f)
         playbackStateBuilder.setActions(playbackActions!!)
 
-        if (
-            cachedPlayingIndex != null && cachedPlaylist != null &&
-            !Settings.shouldDisableNowPlayingListSending
-        )
-            playbackStateBuilder.setActiveQueueItemId(cachedPlayingIndex!!)
+        if (cachedPlaylist != null && !Settings.shouldDisableNowPlayingListSending)
+            cachedPlayingIndex.ifNotNull { playbackStateBuilder.setActiveQueueItemId(it) }
 
         mediaSession?.setPlaybackState(playbackStateBuilder.build())
     }

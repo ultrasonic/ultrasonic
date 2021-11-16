@@ -19,7 +19,6 @@ import org.koin.core.component.KoinComponent
 import org.koin.core.component.inject
 import org.moire.ultrasonic.util.Constants
 import org.moire.ultrasonic.util.FileUtil
-import org.moire.ultrasonic.util.MediaSessionHandler
 import timber.log.Timber
 
 /**
@@ -30,9 +29,8 @@ import timber.log.Timber
 class PlaybackStateSerializer : KoinComponent {
 
     private val context by inject<Context>()
-    private val mediaSessionHandler by inject<MediaSessionHandler>()
 
-    val lock: Lock = ReentrantLock()
+    private val lock: Lock = ReentrantLock()
     private val setup = AtomicBoolean(false)
 
     private val appScope = CoroutineScope(SupervisorJob() + Dispatchers.IO)
@@ -76,9 +74,6 @@ class PlaybackStateSerializer : KoinComponent {
         )
 
         FileUtil.serialize(context, state, Constants.FILENAME_PLAYLIST_SER)
-
-        // This is called here because the queue is usually serialized after a change
-        mediaSessionHandler.updateMediaSessionQueue(state.songs)
     }
 
     fun deserialize(afterDeserialized: (State?) -> Unit?) {
@@ -106,7 +101,6 @@ class PlaybackStateSerializer : KoinComponent {
             state.currentPlayingPosition
         )
 
-        mediaSessionHandler.updateMediaSessionQueue(state.songs)
         afterDeserialized(state)
     }
 }
