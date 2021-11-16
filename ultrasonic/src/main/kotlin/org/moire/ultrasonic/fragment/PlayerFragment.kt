@@ -929,6 +929,7 @@ class PlayerFragment : Fragment(), GestureDetector.OnGestureListener, KoinCompon
         }
     }
 
+    @Suppress("LongMethod", "ComplexMethod")
     private fun onSliderProgressChanged() {
         if (onProgressChangedTask != null) {
             return
