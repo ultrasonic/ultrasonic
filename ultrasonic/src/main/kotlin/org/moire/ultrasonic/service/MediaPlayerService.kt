@@ -73,6 +73,10 @@ class MediaPlayerService : Service() {
     private var currentPlayerState: PlayerState? = null
     private var currentTrack: DownloadFile? = null
 
+    private val manager: NotificationManagerCompat by lazy {
+        NotificationManagerCompat.from(this)
+    }
+
     override fun onBind(intent: Intent): IBinder {
         return binder
     }
@@ -484,7 +488,6 @@ class MediaPlayerService : Service() {
             channel.lockscreenVisibility = Notification.VISIBILITY_PUBLIC
             channel.setShowBadge(false)
 
-            val manager = getSystemService(NOTIFICATION_SERVICE) as NotificationManager
             manager.createNotificationChannel(channel)
         }
     }
@@ -492,15 +495,15 @@ class MediaPlayerService : Service() {
     fun updateNotification(playerState: PlayerState, currentPlaying: DownloadFile?) {
         val notification = buildForegroundNotification(playerState, currentPlaying)
 
+        if (notification == null) {
+            manager.cancelAll()
+            stopIfIdle()
+            return
+        }
+
         if (Settings.isNotificationEnabled) {
             if (isInForeground) {
-                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-                    val manager = getSystemService(NOTIFICATION_SERVICE) as NotificationManager
-                    manager.notify(NOTIFICATION_ID, notification)
-                } else {
-                    val manager = NotificationManagerCompat.from(this)
-                    manager.notify(NOTIFICATION_ID, notification)
-                }
+                manager.notify(NOTIFICATION_ID, notification)
                 Timber.v("Updated notification")
             } else {
                 startForeground(NOTIFICATION_ID, notification)
@@ -517,7 +520,7 @@ class MediaPlayerService : Service() {
     private fun buildForegroundNotification(
         playerState: PlayerState,
         currentPlaying: DownloadFile?
-    ): Notification {
+    ): Notification? {
 
         // Init
         val context = applicationContext
@@ -578,6 +581,8 @@ class MediaPlayerService : Service() {
             notificationBuilder!!.setContentTitle(
                 getString(R.string.notification_downloading_title)
             )
+        } else {
+            return null
         }
 
         return notificationBuilder!!.build()
