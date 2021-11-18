@@ -43,7 +43,6 @@ import java.text.DateFormat
 import java.text.SimpleDateFormat
 import java.util.ArrayList
 import java.util.Date
-import java.util.LinkedList
 import java.util.Locale
 import java.util.concurrent.CancellationException
 import java.util.concurrent.Executors
@@ -116,6 +115,7 @@ class PlayerFragment :
     private var currentPlaying: DownloadFile? = null
     private var currentSong: MusicDirectory.Entry? = null
     private var rxBusSubscription: Disposable? = null
+    private var ioScope = CoroutineScope(Dispatchers.IO)
 
     // Views and UI Elements
     private lateinit var visualizerViewLayout: LinearLayout
@@ -260,6 +260,7 @@ class PlayerFragment :
             val incrementTime = Settings.incrementTime
             changeProgress(incrementTime)
         }
+
         pauseButton.setOnClickListener {
             launch(CommunicationError.getHandler(context)) {
                 mediaPlayerController.pause()
@@ -267,6 +268,7 @@ class PlayerFragment :
                 onSliderProgressChanged()
             }
         }
+
         stopButton.setOnClickListener {
             launch(CommunicationError.getHandler(context)) {
                 mediaPlayerController.reset()
@@ -389,8 +391,8 @@ class PlayerFragment :
             onPlaylistChanged()
         }
 
-        // Query the Jukebox state off-thread
-        launch(CommunicationError.getHandler(context)) {
+        // Query the Jukebox state in an IO Context
+        ioScope.launch(CommunicationError.getHandler(context)) {
             try {
                 jukeboxAvailable = mediaPlayerController.isJukeboxAvailable
             } catch (all: Exception) {
@@ -782,10 +784,10 @@ class PlayerFragment :
         Util.toast(context, resources.getString(R.string.download_playlist_saving, playlistName))
         mediaPlayerController.suggestedPlaylistName = playlistName
 
-        launch {
-            val entries: MutableList<MusicDirectory.Entry> = LinkedList()
-            for (downloadFile in mediaPlayerController.playList) {
-                entries.add(downloadFile.song)
+        ioScope.launch {
+
+            val entries = mediaPlayerController.playList.map {
+                it.song
             }
             val musicService = getMusicService()
             musicService.createPlaylist(null, playlistName, entries)
