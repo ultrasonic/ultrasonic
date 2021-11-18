@@ -482,7 +482,7 @@ class SettingsFragment :
             val delete = R.string.settings_debug_log_delete
             AlertDialog.Builder(activity)
                 .setMessage(message)
-                .setIcon(android.R.drawable.ic_dialog_info)
+                .setIcon(R.drawable.ic_baseline_info)
                 .setNegativeButton(keep) { dIf: DialogInterface, _: Int ->
                     dIf.cancel()
                 }

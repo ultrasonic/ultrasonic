@@ -50,7 +50,7 @@ public abstract class ModalBackgroundTask<T> extends BackgroundTask<T>
 	private AlertDialog createProgressDialog()
 	{
 		AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
-		builder.setIcon(android.R.drawable.ic_dialog_info);
+		builder.setIcon(R.drawable.ic_baseline_info);
 		builder.setTitle(R.string.background_task_wait);
 		builder.setMessage(R.string.background_task_loading);
 		builder.setCancelable(true);

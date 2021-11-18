@@ -353,7 +353,7 @@ class NavigationActivity : AppCompatActivity() {
             infoDialogDisplayed = true
 
             AlertDialog.Builder(this)
-                .setIcon(android.R.drawable.ic_dialog_info)
+                .setIcon(R.drawable.ic_baseline_info)
                 .setTitle(R.string.main_welcome_title)
                 .setMessage(R.string.main_welcome_text_demo)
                 .setNegativeButton(R.string.main_welcome_cancel) { dialog, _ ->

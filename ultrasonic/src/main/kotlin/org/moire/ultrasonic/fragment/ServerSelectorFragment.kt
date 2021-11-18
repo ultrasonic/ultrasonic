@@ -134,7 +134,7 @@ class ServerSelectorFragment : Fragment() {
      */
     private fun onServerDeleted(index: Int) {
         AlertDialog.Builder(context)
-            .setIcon(android.R.drawable.ic_dialog_alert)
+            .setIcon(R.drawable.ic_baseline_warning)
             .setTitle(R.string.server_menu_delete)
             .setMessage(R.string.server_selector_delete_confirmation)
             .setPositiveButton(R.string.common_delete) { dialog, _ ->

@@ -39,7 +39,7 @@ public class ErrorDialog
 	{
 
 		AlertDialog.Builder builder = new AlertDialog.Builder(activity);
-		builder.setIcon(android.R.drawable.ic_dialog_alert);
+		builder.setIcon(R.drawable.ic_baseline_warning);
 		builder.setTitle(R.string.error_label);
 		builder.setMessage(message);
 		builder.setCancelable(true);

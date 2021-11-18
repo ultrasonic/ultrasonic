@@ -368,7 +368,7 @@ object Util {
     // See https://stackoverflow.com/questions/5436822/
     fun createDialog(
         context: Context?,
-        icon: Int = android.R.drawable.ic_dialog_info,
+        icon: Int = R.drawable.ic_baseline_info,
         title: String,
         message: String?
     ): AlertDialog.Builder {
@@ -385,7 +385,7 @@ object Util {
 
     fun showDialog(
         context: Context,
-        icon: Int = android.R.drawable.ic_dialog_info,
+        icon: Int = R.drawable.ic_baseline_info,
         titleId: Int,
         message: String?
     ) {

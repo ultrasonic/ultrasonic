@@ -509,7 +509,7 @@ class EditServerFragment : Fragment(), OnBackPressedHandler {
     private fun finishActivity() {
         if (areFieldsChanged()) {
             AlertDialog.Builder(context)
-                .setIcon(android.R.drawable.ic_dialog_alert)
+                .setIcon(R.drawable.ic_baseline_warning)
                 .setTitle(R.string.common_confirm)
                 .setMessage(R.string.server_editor_leave_confirmation)
                 .setPositiveButton(R.string.common_ok) { dialog, _ ->

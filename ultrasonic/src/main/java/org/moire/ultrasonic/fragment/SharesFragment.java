@@ -185,7 +185,7 @@ public class SharesFragment extends Fragment {
 
     private void deleteShare(final Share share)
     {
-        new AlertDialog.Builder(getContext()).setIcon(android.R.drawable.ic_dialog_alert).setTitle(R.string.common_confirm).setMessage(getResources().getString(R.string.delete_playlist, share.getName())).setPositiveButton(R.string.common_ok, new DialogInterface.OnClickListener()
+        new AlertDialog.Builder(getContext()).setIcon(R.drawable.ic_baseline_warning).setTitle(R.string.common_confirm).setMessage(getResources().getString(R.string.delete_playlist, share.getName())).setPositiveButton(R.string.common_ok, new DialogInterface.OnClickListener()
         {
             @Override
             public void onClick(DialogInterface dialog, int which)
@@ -240,7 +240,7 @@ public class SharesFragment extends Fragment {
         textView.setText(message);
         textView.setMovementMethod(LinkMovementMethod.getInstance());
 
-        new AlertDialog.Builder(getContext()).setTitle("Share Details").setCancelable(true).setIcon(android.R.drawable.ic_dialog_info).setView(textView).show();
+        new AlertDialog.Builder(getContext()).setTitle("Share Details").setCancelable(true).setIcon(R.drawable.ic_baseline_info).setView(textView).show();
     }
 
     private void updateShareInfo(final Share share)
@@ -278,7 +278,7 @@ public class SharesFragment extends Fragment {
 
         AlertDialog.Builder alertDialog = new AlertDialog.Builder(getContext());
 
-        alertDialog.setIcon(android.R.drawable.ic_dialog_alert);
+        alertDialog.setIcon(R.drawable.ic_baseline_warning);
         alertDialog.setTitle(R.string.playlist_update_info);
         alertDialog.setView(dialogView);
         alertDialog.setPositiveButton(R.string.common_ok, new DialogInterface.OnClickListener()

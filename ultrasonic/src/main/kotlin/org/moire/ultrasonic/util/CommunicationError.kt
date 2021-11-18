@@ -46,7 +46,7 @@ object CommunicationError {
         if (context == null) return
 
         AlertDialog.Builder(context)
-            .setIcon(android.R.drawable.ic_dialog_alert)
+            .setIcon(R.drawable.ic_baseline_warning)
             .setTitle(R.string.error_label)
             .setMessage(getErrorMessage(error!!, context))
             .setCancelable(true)
