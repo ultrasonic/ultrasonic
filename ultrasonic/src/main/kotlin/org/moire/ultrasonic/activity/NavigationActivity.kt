@@ -51,7 +51,7 @@ import org.moire.ultrasonic.util.FileUtil
 import org.moire.ultrasonic.util.PermissionUtil
 import org.moire.ultrasonic.util.ServerColor
 import org.moire.ultrasonic.util.Settings
-import org.moire.ultrasonic.util.SubsonicUncaughtExceptionHandler
+import org.moire.ultrasonic.util.UncaughtExceptionHandler
 import org.moire.ultrasonic.util.Util
 import timber.log.Timber
 
@@ -380,8 +380,8 @@ class NavigationActivity : AppCompatActivity() {
 
     private fun setUncaughtExceptionHandler() {
         val handler = Thread.getDefaultUncaughtExceptionHandler()
-        if (handler !is SubsonicUncaughtExceptionHandler) {
-            Thread.setDefaultUncaughtExceptionHandler(SubsonicUncaughtExceptionHandler(this))
+        if (handler !is UncaughtExceptionHandler) {
+            Thread.setDefaultUncaughtExceptionHandler(UncaughtExceptionHandler(this))
         }
     }
 

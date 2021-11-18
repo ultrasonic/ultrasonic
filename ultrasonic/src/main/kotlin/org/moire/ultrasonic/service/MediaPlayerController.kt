@@ -413,6 +413,10 @@ class MediaPlayerController(
             }
         }
 
+    /**
+     * This function calls the music service directly and
+     * therefore can't be called from the main thread
+     */
     val isJukeboxAvailable: Boolean
         get() {
             try {
