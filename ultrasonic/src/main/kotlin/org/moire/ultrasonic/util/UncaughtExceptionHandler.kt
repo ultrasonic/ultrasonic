@@ -9,7 +9,7 @@ import timber.log.Timber
 /**
  * Logs the stack trace of uncaught exceptions to a file on the SD card.
  */
-class SubsonicUncaughtExceptionHandler(
+class UncaughtExceptionHandler(
     private val context: Context
 ) : Thread.UncaughtExceptionHandler {
     private val defaultHandler: Thread.UncaughtExceptionHandler? =
@@ -31,8 +31,8 @@ class SubsonicUncaughtExceptionHandler(
             throwable.printStackTrace(printWriter)
             Timber.e(throwable, "Uncaught Exception! %s", logMessage)
             Timber.i("Stack trace written to %s", file)
-        } catch (x: Throwable) {
-            Timber.e(x, "Failed to write stack trace to %s", file)
+        } catch (all: Throwable) {
+            Timber.e(all, "Failed to write stack trace to %s", file)
         } finally {
             Util.close(printWriter)
             defaultHandler?.uncaughtException(thread, throwable)

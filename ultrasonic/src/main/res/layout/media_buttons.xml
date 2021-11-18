@@ -11,7 +11,6 @@
         a:id="@+id/button_shuffle"
         a:layout_width="0dip"
         a:layout_height="26dp"
-        a:layout_alignParentLeft="true"
         a:layout_gravity="center"
         a:layout_weight="1"
         a:adjustViewBounds="true"

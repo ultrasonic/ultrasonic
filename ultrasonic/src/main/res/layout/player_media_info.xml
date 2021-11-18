@@ -18,7 +18,9 @@
             a:id="@+id/current_playing_song"
             a:layout_width="wrap_content"
             a:layout_height="wrap_content"
-            a:ellipsize="start"
+            a:layout_marginEnd="10dip"
+            a:paddingRight="30dip"
+            a:ellipsize="marquee"
             a:gravity="left"
             a:singleLine="true"
             a:textAppearance="?android:attr/textAppearanceLarge"
@@ -29,7 +31,7 @@
             a:id="@+id/current_playing_artist"
             a:layout_width="wrap_content"
             a:layout_height="wrap_content"
-            a:ellipsize="start"
+            a:ellipsize="marquee"
             a:gravity="left"
             a:singleLine="true"
             a:textAppearance="?android:attr/textAppearanceSmall"
@@ -62,7 +64,8 @@
             a:ellipsize="start"
             a:gravity="right"
             a:text="0 / 0"
-            a:textAppearance="?android:attr/textAppearanceSmall" />
+            a:textAppearance="?android:attr/textAppearanceSmall"
+            tools:ignore="HardcodedText" />
 
         <TextView
             a:id="@+id/current_total_duration"
