@@ -20,10 +20,10 @@ package org.moire.ultrasonic.util;
 
 import android.app.Activity;
 import android.app.AlertDialog;
-import android.content.DialogInterface;
-import timber.log.Timber;
 
 import org.moire.ultrasonic.R;
+
+import timber.log.Timber;
 
 /**
  * @author Sindre Mehus
@@ -49,27 +49,11 @@ public abstract class ModalBackgroundTask<T> extends BackgroundTask<T>
 
 	private AlertDialog createProgressDialog()
 	{
-		AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
-		builder.setIcon(R.drawable.ic_baseline_info);
+		AlertDialog.Builder builder = new InfoDialog.Builder(getActivity());
 		builder.setTitle(R.string.background_task_wait);
 		builder.setMessage(R.string.background_task_loading);
-		builder.setCancelable(true);
-		builder.setOnCancelListener(new DialogInterface.OnCancelListener()
-		{
-			@Override
-			public void onCancel(DialogInterface dialogInterface)
-			{
-				cancel();
-			}
-		});
-		builder.setPositiveButton(R.string.common_cancel, new DialogInterface.OnClickListener()
-		{
-			@Override
-			public void onClick(DialogInterface dialogInterface, int i)
-			{
-				cancel();
-			}
-		});
+		builder.setOnCancelListener(dialogInterface -> cancel());
+		builder.setPositiveButton(R.string.common_cancel, (dialogInterface, i) -> cancel());
 
 		return builder.create();
 	}
@@ -165,19 +149,12 @@ public abstract class ModalBackgroundTask<T> extends BackgroundTask<T>
 	protected void error(Throwable error)
 	{
 		Timber.w(error);
-		new ErrorDialog(getActivity(), getErrorMessage(error), finishActivityOnCancel);
+		new ErrorDialog(getActivity(), getErrorMessage(error), getActivity(), finishActivityOnCancel);
 	}
 
 	@Override
 	public void updateProgress(final String message)
 	{
-		getHandler().post(new Runnable()
-		{
-			@Override
-			public void run()
-			{
-				progressDialog.setMessage(message);
-			}
-		});
+		getHandler().post(() -> progressDialog.setMessage(message));
 	}
 }

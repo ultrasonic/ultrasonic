@@ -42,6 +42,7 @@ import org.moire.ultrasonic.service.RxBus
 import org.moire.ultrasonic.util.Constants
 import org.moire.ultrasonic.util.FileUtil.defaultMusicDirectory
 import org.moire.ultrasonic.util.FileUtil.ultrasonicDirectory
+import org.moire.ultrasonic.util.InfoDialog
 import org.moire.ultrasonic.util.MediaSessionHandler
 import org.moire.ultrasonic.util.Settings
 import org.moire.ultrasonic.util.Settings.preferences
@@ -480,9 +481,8 @@ class SettingsFragment :
             )
             val keep = R.string.settings_debug_log_keep
             val delete = R.string.settings_debug_log_delete
-            AlertDialog.Builder(activity)
+            InfoDialog.Builder(activity)
                 .setMessage(message)
-                .setIcon(R.drawable.ic_baseline_info)
                 .setNegativeButton(keep) { dIf: DialogInterface, _: Int ->
                     dIf.cancel()
                 }

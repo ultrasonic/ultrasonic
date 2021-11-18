@@ -1,6 +1,5 @@
 package org.moire.ultrasonic.fragment
 
-import android.app.AlertDialog
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -20,6 +19,7 @@ import org.moire.ultrasonic.data.ActiveServerProvider
 import org.moire.ultrasonic.fragment.EditServerFragment.Companion.EDIT_SERVER_INTENT_INDEX
 import org.moire.ultrasonic.model.ServerSettingsModel
 import org.moire.ultrasonic.service.MediaPlayerController
+import org.moire.ultrasonic.util.ErrorDialog
 import org.moire.ultrasonic.util.Util
 import timber.log.Timber
 
@@ -133,8 +133,7 @@ class ServerSelectorFragment : Fragment() {
      * This Callback handles the deletion of a Server Setting
      */
     private fun onServerDeleted(index: Int) {
-        AlertDialog.Builder(context)
-            .setIcon(R.drawable.ic_baseline_warning)
+        ErrorDialog.Builder(context)
             .setTitle(R.string.server_menu_delete)
             .setMessage(R.string.server_selector_delete_confirmation)
             .setPositiveButton(R.string.common_delete) { dialog, _ ->

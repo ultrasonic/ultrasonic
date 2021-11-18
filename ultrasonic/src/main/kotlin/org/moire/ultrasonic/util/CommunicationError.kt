@@ -6,7 +6,6 @@
  */
 package org.moire.ultrasonic.util
 
-import android.app.AlertDialog
 import android.content.Context
 import android.os.Handler
 import android.os.Looper
@@ -45,13 +44,10 @@ object CommunicationError {
 
         if (context == null) return
 
-        AlertDialog.Builder(context)
-            .setIcon(R.drawable.ic_baseline_warning)
-            .setTitle(R.string.error_label)
-            .setMessage(getErrorMessage(error!!, context))
-            .setCancelable(true)
-            .setPositiveButton(R.string.common_ok) { _, _ -> }
-            .create().show()
+        ErrorDialog(
+            context = context,
+            message = getErrorMessage(error!!, context)
+        ).show()
     }
 
     @JvmStatic
