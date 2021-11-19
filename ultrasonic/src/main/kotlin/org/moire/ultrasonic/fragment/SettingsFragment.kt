@@ -55,6 +55,7 @@ import java.io.File
 /**
  * Shows main app settings.
  */
+@Suppress("TooManyFunctions")
 class SettingsFragment :
     PreferenceFragmentCompat(),
     OnSharedPreferenceChangeListener,

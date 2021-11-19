@@ -22,6 +22,7 @@ import org.moire.ultrasonic.domain.MusicDirectory
 import org.moire.ultrasonic.util.FileUtil
 import org.moire.ultrasonic.util.StorageFile
 import org.moire.ultrasonic.util.Util
+import org.moire.ultrasonic.util.Util.safeClose
 import timber.log.Timber
 import java.io.File
 
@@ -187,10 +188,10 @@ class ImageLoader(
                     outputStream = FileOutputStream(file)
                     outputStream.write(bytes)
                 } finally {
-                    Util.close(outputStream)
+                    outputStream.safeClose()
                 }
             } finally {
-                Util.close(inputStream)
+                inputStream.safeClose()
             }
         }
     }

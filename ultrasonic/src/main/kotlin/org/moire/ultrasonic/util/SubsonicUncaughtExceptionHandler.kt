@@ -3,6 +3,7 @@ package org.moire.ultrasonic.util
 import android.content.Context
 import android.os.Build
 import java.io.PrintWriter
+import org.moire.ultrasonic.util.Util.safeClose
 import timber.log.Timber
 import java.io.File
 
@@ -34,7 +35,7 @@ class SubsonicUncaughtExceptionHandler(
         } catch (x: Throwable) {
             Timber.e(x, "Failed to write stack trace to %s", file)
         } finally {
-            Util.close(printWriter)
+            printWriter.safeClose()
             defaultHandler?.uncaughtException(thread, throwable)
         }
     }

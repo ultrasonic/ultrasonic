@@ -23,9 +23,13 @@ import android.graphics.drawable.BitmapDrawable
 import android.graphics.drawable.Drawable
 import android.media.MediaScannerConnection
 import android.net.ConnectivityManager
+import android.net.Network
+import android.net.NetworkCapabilities.NET_CAPABILITY_INTERNET
+import android.net.NetworkCapabilities.NET_CAPABILITY_NOT_METERED
 import android.net.Uri
 import android.net.wifi.WifiManager
 import android.net.wifi.WifiManager.WifiLock
+import android.os.Build
 import android.os.Bundle
 import android.os.Environment
 import android.os.Parcelable
@@ -40,6 +44,7 @@ import androidx.annotation.AnyRes
 import androidx.media.utils.MediaConstants
 import java.io.Closeable
 import java.io.IOException
+import java.io.File
 import java.io.UnsupportedEncodingException
 import java.security.MessageDigest
 import java.text.DecimalFormat
@@ -57,7 +62,6 @@ import org.moire.ultrasonic.domain.PlayerState
 import org.moire.ultrasonic.domain.SearchResult
 import org.moire.ultrasonic.service.DownloadFile
 import timber.log.Timber
-import java.io.File
 
 private const val LINE_LENGTH = 60
 private const val DEGRADE_PRECISION_AFTER = 10
@@ -98,7 +102,7 @@ object Util {
         when (Settings.theme.lowercase()) {
             Constants.PREFERENCES_KEY_THEME_DARK,
             "fullscreen" -> {
-                context!!.setTheme(R.style.UltrasonicTheme)
+                context!!.setTheme(R.style.UltrasonicTheme_Dark)
             }
             Constants.PREFERENCES_KEY_THEME_BLACK -> {
                 context!!.setTheme(R.style.UltrasonicTheme_Black)
@@ -108,44 +112,6 @@ object Util {
                 context!!.setTheme(R.style.UltrasonicTheme_Light)
             }
         }
-    }
-
-    @JvmStatic
-    @Throws(IOException::class)
-    fun renameFile(from: String, to: String) {
-        StorageFile.rename(from, to)
-    }
-
-    @JvmStatic
-    fun close(closeable: Closeable?) {
-        try {
-            closeable?.close()
-        } catch (_: Throwable) {
-            // Ignored
-        }
-    }
-
-    @JvmStatic
-    fun delete(file: String?): Boolean {
-        if (file != null && StorageFile.isPathExists(file)) {
-            if (!StorageFile.getFromPath(file).delete()) {
-                Timber.w("Failed to delete file %s", file)
-                return false
-            }
-            Timber.i("Deleted file %s", file)
-        }
-        return true
-    }
-
-    fun delete(file: File?): Boolean {
-        if (file != null && file.exists()) {
-            if (!file.delete()) {
-                Timber.w("Failed to delete file %s", file)
-                return false
-            }
-            Timber.i("Deleted file %s", file)
-        }
-        return true
     }
 
     @JvmStatic
@@ -356,14 +322,45 @@ object Util {
         return null
     }
 
+    /**
+     * Check if a usable network for downloading media is available
+     *
+     * @return Boolean
+     */
     @JvmStatic
     fun isNetworkConnected(): Boolean {
-        val manager = getConnectivityManager()
-        val networkInfo = manager.activeNetworkInfo
-        val connected = networkInfo != null && networkInfo.isConnected
-        val wifiConnected = connected && networkInfo!!.type == ConnectivityManager.TYPE_WIFI
+        val info = networkInfo()
+        val isUnmetered = info.unmetered
         val wifiRequired = Settings.isWifiRequiredForDownload
-        return connected && (!wifiRequired || wifiConnected)
+        return info.connected && (!wifiRequired || isUnmetered)
+    }
+
+    /**
+     * Query connectivity status
+     *
+     * @return NetworkInfo object
+     */
+    @Suppress("DEPRECATION")
+    fun networkInfo(): NetworkInfo {
+        val manager = getConnectivityManager()
+        val info = NetworkInfo()
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            val network: Network? = manager.activeNetwork
+            val capabilities = manager.getNetworkCapabilities(network)
+
+            if (capabilities != null) {
+                info.unmetered = capabilities.hasCapability(NET_CAPABILITY_NOT_METERED)
+                info.connected = capabilities.hasCapability(NET_CAPABILITY_INTERNET)
+            }
+        } else {
+            val networkInfo = manager.activeNetworkInfo
+            if (networkInfo != null) {
+                info.unmetered = networkInfo.type == ConnectivityManager.TYPE_WIFI
+                info.connected = networkInfo.isConnected
+            }
+        }
+        return info
     }
 
     @JvmStatic
@@ -903,5 +900,24 @@ object Util {
     fun getConnectivityManager(): ConnectivityManager {
         val context = appContext()
         return context.getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
+    }
+
+    /**
+     * Small data class to store information about the current network
+     **/
+    data class NetworkInfo(
+        var connected: Boolean = false,
+        var unmetered: Boolean = false
+    )
+
+    /**
+     * Closes a Closeable while ignoring any errors.
+     **/
+    fun Closeable?.safeClose() {
+        try {
+            this?.close()
+        } catch (_: Exception) {
+            // Ignored
+        }
     }
 }

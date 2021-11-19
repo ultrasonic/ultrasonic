@@ -39,7 +39,7 @@ import org.moire.ultrasonic.domain.Share
 import org.moire.ultrasonic.domain.UserInfo
 import org.moire.ultrasonic.util.Constants
 import org.moire.ultrasonic.util.FileUtil
-import org.moire.ultrasonic.util.Util
+import org.moire.ultrasonic.util.Util.safeClose
 import timber.log.Timber
 import java.io.FileReader
 import java.io.FileWriter
@@ -215,8 +215,8 @@ class OfflineMusicService : MusicService, KoinComponent {
             }
             playlist
         } finally {
-            Util.close(buffer)
-            Util.close(reader)
+            buffer.safeClose()
+            reader.safeClose()
         }
     }
 

@@ -2,6 +2,20 @@
 <issues format="5" by="lint 4.2.2" client="gradle" variant="release" version="4.2.2">
 
     <issue
+        id="ObsoleteLintCustomCheck"
+        message="Lint found an issue registry (`androidx.appcompat.AppCompatIssueRegistry`) which is older than the current API level; these checks may not work correctly.&#xA;&#xA;Recompile the checks against the latest version. Custom check API version is 7 (4.0), current lint API level is 8 (4.1)">
+        <location
+            file="../../../../.gradle/caches/transforms-3/2f10f1fe0ff7ab74304d702879de0789/transformed/appcompat-1.2.0/jars/lint.jar"/>
+    </issue>
+
+    <issue
+        id="ObsoleteLintCustomCheck"
+        message="Lint found an issue registry (`timber.lint.TimberIssueRegistry`) which is older than the current API level; these checks may not work correctly.&#xA;&#xA;Recompile the checks against the latest version. Custom check API version is 1 (3.1), current lint API level is 8 (4.1)">
+        <location
+            file="../../../../.gradle/caches/transforms-3/e9d816753daf5450613abd98ccf3b80c/transformed/jetified-timber-4.7.1/jars/lint.jar"/>
+    </issue>
+
+    <issue
         id="IncludeLayoutParam"
         message="Layout parameter `layout_gravity` ignored unless both `layout_width` and `layout_height` are also specified on `&lt;include>` tag"
         errorLine1="        a:layout_gravity=&quot;center_vertical&quot; />"
@@ -190,78 +204,12 @@
 
     <issue
         id="UnusedResources"
-        message="The resource `R.drawable.btn_bg` appears to be unused"
-        errorLine1="    &lt;item android:drawable=&quot;@color/ics_opaque&quot; android:state_pressed=&quot;true&quot;/>"
-        errorLine2="^">
-        <location
-            file="src/main/res/drawable/btn_bg.xml"
-            line="14"
-            column="1"/>
-    </issue>
-
-    <issue
-        id="UnusedResources"
-        message="The resource `R.color.ics_opaque` appears to be unused"
-        errorLine1="    &lt;color name=&quot;ics_opaque&quot;>#8033b5e5&lt;/color>"
-        errorLine2="           ~~~~~~~~~~~~~~~~~">
-        <location
-            file="src/main/res/values/colors.xml"
-            line="9"
-            column="12"/>
-    </issue>
-
-    <issue
-        id="UnusedResources"
-        message="The resource `R.color.md__transparent` appears to be unused"
-        errorLine1="    &lt;color name=&quot;md__transparent&quot;>#00000000&lt;/color>"
-        errorLine2="           ~~~~~~~~~~~~~~~~~~~~~~">
-        <location
-            file="src/main/res/values/colors.xml"
-            line="10"
-            column="12"/>
-    </issue>
-
-    <issue
-        id="UnusedResources"
         message="The resource `R.drawable.ic_menu_arrow` appears to be unused"
         errorLine1="&lt;vector xmlns:android=&quot;http://schemas.android.com/apk/res/android&quot;"
         errorLine2="^">
         <location
             file="src/main/res/drawable/ic_menu_arrow.xml"
             line="1"
-            column="1"/>
-    </issue>
-
-    <issue
-        id="UnusedResources"
-        message="The resource `R.drawable.line` appears to be unused"
-        errorLine1="&lt;shape xmlns:android=&quot;http://schemas.android.com/apk/res/android&quot;"
-        errorLine2="^">
-        <location
-            file="src/main/res/drawable/line.xml"
-            line="2"
-            column="1"/>
-    </issue>
-
-    <issue
-        id="UnusedResources"
-        message="The resource `R.drawable.line_drawable` appears to be unused"
-        errorLine1="&lt;selector xmlns:android=&quot;http://schemas.android.com/apk/res/android&quot;>"
-        errorLine2="^">
-        <location
-            file="src/main/res/drawable/line_drawable.xml"
-            line="2"
-            column="1"/>
-    </issue>
-
-    <issue
-        id="UnusedResources"
-        message="The resource `R.menu.main` appears to be unused"
-        errorLine1="&lt;menu"
-        errorLine2="^">
-        <location
-            file="src/main/res/menu/main.xml"
-            line="2"
             column="1"/>
     </issue>
 
@@ -1727,28 +1675,6 @@
         <location
             file="src/main/res/layout/help.xml"
             line="24"
-            column="10"/>
-    </issue>
-
-    <issue
-        id="ContentDescription"
-        message="Missing `contentDescription` attribute on image"
-        errorLine1="        &lt;ImageView"
-        errorLine2="         ~~~~~~~~~">
-        <location
-            file="src/main/res/layout/now_playing.xml"
-            line="18"
-            column="10"/>
-    </issue>
-
-    <issue
-        id="ContentDescription"
-        message="Missing `contentDescription` attribute on image"
-        errorLine1="        &lt;ImageView"
-        errorLine2="         ~~~~~~~~~">
-        <location
-            file="src/main/res/layout/now_playing.xml"
-            line="55"
             column="10"/>
     </issue>
 

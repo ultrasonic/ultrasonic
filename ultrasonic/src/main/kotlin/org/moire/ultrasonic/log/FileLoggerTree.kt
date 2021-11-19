@@ -5,7 +5,7 @@ import java.text.SimpleDateFormat
 import java.util.Date
 import java.util.Locale
 import org.moire.ultrasonic.util.FileUtil
-import org.moire.ultrasonic.util.Util
+import org.moire.ultrasonic.util.Util.safeClose
 import timber.log.Timber
 import java.io.File
 
@@ -38,7 +38,7 @@ class FileLoggerTree : Timber.DebugTree() {
             // Using base class DebugTree here, we don't want to try to log this into file
             super.log(6, TAG, String.format("Failed to write log to %s", file), x)
         } finally {
-            if (writer != null) Util.close(writer)
+            writer.safeClose()
         }
     }
 

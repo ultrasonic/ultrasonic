@@ -1,6 +1,5 @@
 package org.moire.ultrasonic.util
 
-import android.net.Uri
 import android.os.AsyncTask
 import android.os.StatFs
 import android.system.Os
@@ -16,7 +15,7 @@ import org.moire.ultrasonic.util.FileUtil.getPlaylistFile
 import org.moire.ultrasonic.util.FileUtil.listFiles
 import org.moire.ultrasonic.util.FileUtil.musicDirectory
 import org.moire.ultrasonic.util.Settings.cacheSizeMB
-import org.moire.ultrasonic.util.Util.delete
+import org.moire.ultrasonic.util.FileUtil.delete
 import org.moire.ultrasonic.util.Util.formatBytes
 import timber.log.Timber
 
@@ -60,9 +59,12 @@ class CacheCleaner {
                 Thread.currentThread().name = "BackgroundCleanup"
                 val files: MutableList<StorageFile> = ArrayList()
                 val dirs: MutableList<StorageFile> = ArrayList()
+
                 findCandidatesForDeletion(musicDirectory, files, dirs)
+
                 sortByAscendingModificationTime(files)
                 val filesToNotDelete = findFilesToNotDelete()
+
                 deleteFiles(files, filesToNotDelete, getMinimumDelete(files), true)
                 deleteEmptyDirs(dirs, filesToNotDelete)
             } catch (all: RuntimeException) {
@@ -76,10 +78,14 @@ class CacheCleaner {
         override fun doInBackground(vararg params: Void?): Void? {
             try {
                 Thread.currentThread().name = "BackgroundSpaceCleanup"
+
                 val files: MutableList<StorageFile> = ArrayList()
                 val dirs: MutableList<StorageFile> = ArrayList()
+
                 findCandidatesForDeletion(musicDirectory, files, dirs)
+
                 val bytesToDelete = getMinimumDelete(files)
+
                 if (bytesToDelete > 0L) {
                     sortByAscendingModificationTime(files)
                     val filesToNotDelete = findFilesToNotDelete()
@@ -99,12 +105,15 @@ class CacheCleaner {
                     ActiveServerProvider::class.java
                 )
                 Thread.currentThread().name = "BackgroundPlaylistsCleanup"
+
                 val server = activeServerProvider.value.getActiveServer().name
                 val playlistFiles = listFiles(getPlaylistDirectory(server))
                 val playlists = params[0]
+
                 for ((_, name) in playlists) {
                     playlistFiles.remove(getPlaylistFile(server, name))
                 }
+
                 for (playlist in playlistFiles) {
                     playlist.delete()
                 }
@@ -119,9 +128,8 @@ class CacheCleaner {
         private const val MIN_FREE_SPACE = 500 * 1024L * 1024L
         private fun deleteEmptyDirs(dirs: Iterable<StorageFile>, doNotDelete: Collection<String>) {
             for (dir in dirs) {
-                if (doNotDelete.contains(dir.getPath())) {
-                    continue
-                }
+                if (doNotDelete.contains(dir.getPath())) continue
+
                 var children = dir.listFiles()
                 if (children != null) {
                     // No songs left in the folder
@@ -140,11 +148,11 @@ class CacheCleaner {
         }
 
         private fun getMinimumDelete(files: List<StorageFile>): Long {
-            if (files.isEmpty()) {
-                return 0L
-            }
+            if (files.isEmpty()) return 0L
+
             val cacheSizeBytes = cacheSizeMB * 1024L * 1024L
             var bytesUsedBySubsonic = 0L
+
             for (file in files) {
                 bytesUsedBySubsonic += file.length()
             }
@@ -154,6 +162,7 @@ class CacheCleaner {
             val minFsAvailability: Long
             val bytesTotalFs: Long
             val bytesAvailableFs: Long
+
             if (files[0].isRawFile()) {
                 val stat = StatFs(files[0].getRawFilePath())
                 bytesTotalFs = stat.blockCountLong * stat.blockSizeLong
@@ -169,6 +178,7 @@ class CacheCleaner {
                 minFsAvailability = bytesTotalFs - MIN_FREE_SPACE
                 descriptor.close()
             }
+
             val bytesToDeleteCacheLimit = (bytesUsedBySubsonic - cacheSizeBytes).coerceAtLeast(0L)
             val bytesToDeleteFsLimit = (bytesUsedFs - minFsAvailability).coerceAtLeast(0L)
             val bytesToDelete = bytesToDeleteCacheLimit.coerceAtLeast(bytesToDeleteFsLimit)
@@ -181,6 +191,7 @@ class CacheCleaner {
             Timber.i("Cache limit       : %s", formatBytes(cacheSizeBytes))
             Timber.i("Cache size before : %s", formatBytes(bytesUsedBySubsonic))
             Timber.i("Minimum to delete : %s", formatBytes(bytesToDelete))
+
             return bytesToDelete
         }
 
@@ -203,6 +214,7 @@ class CacheCleaner {
                 return
             }
             var bytesDeleted = 0L
+
             for (file in files) {
                 if (!deletePartials && bytesDeleted > bytesToDelete) break
                 if (bytesToDelete > bytesDeleted || deletePartials && isPartial(file)) {
@@ -244,10 +256,12 @@ class CacheCleaner {
             val downloader = inject<Downloader>(
                 Downloader::class.java
             )
+
             for (downloadFile in downloader.value.all) {
                 filesToNotDelete.add(downloadFile.partialFile)
                 filesToNotDelete.add(downloadFile.completeOrSaveFile)
             }
+
             filesToNotDelete.add(musicDirectory.getPath())
             return filesToNotDelete
         }

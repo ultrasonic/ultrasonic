@@ -26,9 +26,11 @@ import java.util.TreeSet
 import java.util.regex.Pattern
 import org.moire.ultrasonic.app.UApp
 import org.moire.ultrasonic.domain.MusicDirectory
+import org.moire.ultrasonic.util.Util.safeClose
 import timber.log.Timber
 import java.io.File
 
+@Suppress("TooManyFunctions")
 object FileUtil {
 
     private val FILE_SYSTEM_UNSAFE = arrayOf("/", "\\", "..", ":", "\"", "?", "*", "<", ">", "|")
@@ -423,7 +425,7 @@ object FileUtil {
             Timber.w("Failed to serialize object to %s", file)
             false
         } finally {
-            Util.close(out)
+            out.safeClose()
         }
     }
 
@@ -445,7 +447,7 @@ object FileUtil {
             Timber.w(all, "Failed to deserialize object from %s", file)
             null
         } finally {
-            Util.close(inStream)
+            inStream.safeClose()
         }
     }
 
@@ -473,8 +475,39 @@ object FileUtil {
             Timber.w("Failed to save playlist: %s", name)
             throw e
         } finally {
-            bw.close()
-            fw.close()
+            bw.safeClose()
+            fw.safeClose()
         }
     }
+
+    @JvmStatic
+    @Throws(IOException::class)
+    fun renameFile(from: String, to: String) {
+        StorageFile.rename(from, to)
+    }
+
+    @JvmStatic
+    fun delete(file: File?): Boolean {
+        if (file != null && file.exists()) {
+            if (!file.delete()) {
+                Timber.w("Failed to delete file %s", file)
+                return false
+            }
+            Timber.i("Deleted file %s", file)
+        }
+        return true
+    }
+
+    @JvmStatic
+    fun delete(file: String?): Boolean {
+        if (file != null && StorageFile.isPathExists(file)) {
+            if (!StorageFile.getFromPath(file).delete()) {
+                Timber.w("Failed to delete file %s", file)
+                return false
+            }
+            Timber.i("Deleted file %s", file)
+        }
+        return true
+    }
+
 }
