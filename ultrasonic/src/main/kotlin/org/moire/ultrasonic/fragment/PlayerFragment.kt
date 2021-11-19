@@ -38,17 +38,22 @@ import androidx.fragment.app.Fragment
 import androidx.navigation.Navigation
 import com.mobeta.android.dslv.DragSortListView
 import com.mobeta.android.dslv.DragSortListView.DragSortListener
+import io.reactivex.rxjava3.disposables.Disposable
 import java.text.DateFormat
 import java.text.SimpleDateFormat
 import java.util.ArrayList
 import java.util.Date
-import java.util.LinkedList
 import java.util.Locale
+import java.util.concurrent.CancellationException
 import java.util.concurrent.Executors
 import java.util.concurrent.ScheduledExecutorService
 import java.util.concurrent.TimeUnit
 import kotlin.math.abs
 import kotlin.math.max
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.cancel
+import kotlinx.coroutines.launch
 import org.koin.android.ext.android.inject
 import org.koin.core.component.KoinComponent
 import org.koin.core.component.get
@@ -66,13 +71,14 @@ import org.moire.ultrasonic.service.DownloadFile
 import org.moire.ultrasonic.service.LocalMediaPlayer
 import org.moire.ultrasonic.service.MediaPlayerController
 import org.moire.ultrasonic.service.MusicServiceFactory.getMusicService
+import org.moire.ultrasonic.service.RxBus
 import org.moire.ultrasonic.subsonic.ImageLoaderProvider
 import org.moire.ultrasonic.subsonic.NetworkAndStorageChecker
 import org.moire.ultrasonic.subsonic.ShareHandler
 import org.moire.ultrasonic.util.CancellationToken
+import org.moire.ultrasonic.util.CommunicationError
 import org.moire.ultrasonic.util.Constants
 import org.moire.ultrasonic.util.Settings
-import org.moire.ultrasonic.util.SilentBackgroundTask
 import org.moire.ultrasonic.util.Util
 import org.moire.ultrasonic.view.AutoRepeatButton
 import org.moire.ultrasonic.view.SongListAdapter
@@ -81,15 +87,13 @@ import timber.log.Timber
 
 /**
  * Contains the Music Player screen of Ultrasonic with playback controls and the playlist
- *
- * TODO: This class was more or less straight converted from Java legacy code.
- * There are many places where further cleanup would be nice.
- * The usage of threads and SilentBackgroundTask can be replaced with Coroutines.
  */
 @Suppress("LargeClass", "TooManyFunctions", "MagicNumber")
-class PlayerFragment : Fragment(), GestureDetector.OnGestureListener, KoinComponent {
-    // Settings
-    private var currentRevision: Long = 0
+class PlayerFragment :
+    Fragment(),
+    GestureDetector.OnGestureListener,
+    KoinComponent,
+    CoroutineScope by CoroutineScope(Dispatchers.Main) {
     private var swipeDistance = 0
     private var swipeVelocity = 0
     private var jukeboxAvailable = false
@@ -110,7 +114,8 @@ class PlayerFragment : Fragment(), GestureDetector.OnGestureListener, KoinCompon
     private lateinit var executorService: ScheduledExecutorService
     private var currentPlaying: DownloadFile? = null
     private var currentSong: MusicDirectory.Entry? = null
-    private var onProgressChangedTask: SilentBackgroundTask<Void?>? = null
+    private var rxBusSubscription: Disposable? = null
+    private var ioScope = CoroutineScope(Dispatchers.IO)
 
     // Views and UI Elements
     private lateinit var visualizerViewLayout: LinearLayout
@@ -230,17 +235,11 @@ class PlayerFragment : Fragment(), GestureDetector.OnGestureListener, KoinCompon
 
         previousButton.setOnClickListener {
             networkAndStorageChecker.warnIfNetworkOrStorageUnavailable()
-            object : SilentBackgroundTask<Void?>(activity) {
-                override fun doInBackground(): Void? {
-                    mediaPlayerController.previous()
-                    return null
-                }
-
-                override fun done(result: Void?) {
-                    onCurrentChanged()
-                    onSliderProgressChanged()
-                }
-            }.execute()
+            launch(CommunicationError.getHandler(context)) {
+                mediaPlayerController.previous()
+                onCurrentChanged()
+                onSliderProgressChanged()
+            }
         }
 
         previousButton.setOnRepeatListener {
@@ -250,65 +249,43 @@ class PlayerFragment : Fragment(), GestureDetector.OnGestureListener, KoinCompon
 
         nextButton.setOnClickListener {
             networkAndStorageChecker.warnIfNetworkOrStorageUnavailable()
-            object : SilentBackgroundTask<Boolean?>(activity) {
-                override fun doInBackground(): Boolean {
-                    mediaPlayerController.next()
-                    return true
-                }
-
-                override fun done(result: Boolean?) {
-                    if (result == true) {
-                        onCurrentChanged()
-                        onSliderProgressChanged()
-                    }
-                }
-            }.execute()
+            launch(CommunicationError.getHandler(context)) {
+                mediaPlayerController.next()
+                onCurrentChanged()
+                onSliderProgressChanged()
+            }
         }
 
         nextButton.setOnRepeatListener {
             val incrementTime = Settings.incrementTime
             changeProgress(incrementTime)
         }
+
         pauseButton.setOnClickListener {
-            object : SilentBackgroundTask<Void?>(activity) {
-                override fun doInBackground(): Void? {
-                    mediaPlayerController.pause()
-                    return null
-                }
-
-                override fun done(result: Void?) {
-                    onCurrentChanged()
-                    onSliderProgressChanged()
-                }
-            }.execute()
+            launch(CommunicationError.getHandler(context)) {
+                mediaPlayerController.pause()
+                onCurrentChanged()
+                onSliderProgressChanged()
+            }
         }
+
         stopButton.setOnClickListener {
-            object : SilentBackgroundTask<Void?>(activity) {
-                override fun doInBackground(): Void? {
-                    mediaPlayerController.reset()
-                    return null
-                }
-
-                override fun done(result: Void?) {
-                    onCurrentChanged()
-                    onSliderProgressChanged()
-                }
-            }.execute()
+            launch(CommunicationError.getHandler(context)) {
+                mediaPlayerController.reset()
+                onCurrentChanged()
+                onSliderProgressChanged()
+            }
         }
+
         startButton.setOnClickListener {
             networkAndStorageChecker.warnIfNetworkOrStorageUnavailable()
-            object : SilentBackgroundTask<Void?>(activity) {
-                override fun doInBackground(): Void? {
-                    start()
-                    return null
-                }
-
-                override fun done(result: Void?) {
-                    onCurrentChanged()
-                    onSliderProgressChanged()
-                }
-            }.execute()
+            launch(CommunicationError.getHandler(context)) {
+                start()
+                onCurrentChanged()
+                onSliderProgressChanged()
+            }
         }
+
         shuffleButton.setOnClickListener {
             mediaPlayerController.shuffle()
             Util.toast(activity, R.string.download_menu_shuffle_notification)
@@ -335,16 +312,10 @@ class PlayerFragment : Fragment(), GestureDetector.OnGestureListener, KoinCompon
 
         progressBar.setOnSeekBarChangeListener(object : OnSeekBarChangeListener {
             override fun onStopTrackingTouch(seekBar: SeekBar) {
-                object : SilentBackgroundTask<Void?>(activity) {
-                    override fun doInBackground(): Void? {
-                        mediaPlayerController.seekTo(progressBar.progress)
-                        return null
-                    }
-
-                    override fun done(result: Void?) {
-                        onSliderProgressChanged()
-                    }
-                }.execute()
+                launch(CommunicationError.getHandler(context)) {
+                    mediaPlayerController.seekTo(progressBar.progress)
+                    onSliderProgressChanged()
+                }
             }
 
             override fun onStartTrackingTouch(seekBar: SeekBar) {}
@@ -353,18 +324,13 @@ class PlayerFragment : Fragment(), GestureDetector.OnGestureListener, KoinCompon
 
         playlistView.setOnItemClickListener { _, _, position, _ ->
             networkAndStorageChecker.warnIfNetworkOrStorageUnavailable()
-            object : SilentBackgroundTask<Void?>(activity) {
-                override fun doInBackground(): Void? {
-                    mediaPlayerController.play(position)
-                    return null
-                }
-
-                override fun done(result: Void?) {
-                    onCurrentChanged()
-                    onSliderProgressChanged()
-                }
-            }.execute()
+            launch(CommunicationError.getHandler(context)) {
+                mediaPlayerController.play(position)
+                onCurrentChanged()
+                onSliderProgressChanged()
+            }
         }
+
         registerForContextMenu(playlistView)
 
         if (arguments != null && requireArguments().getBoolean(
@@ -419,13 +385,21 @@ class PlayerFragment : Fragment(), GestureDetector.OnGestureListener, KoinCompon
                 }
             }
         )
-        Thread {
+
+        // Observe playlist changes and update the UI
+        rxBusSubscription = RxBus.playlistObservable.subscribe {
+            onPlaylistChanged()
+        }
+
+        // Query the Jukebox state in an IO Context
+        ioScope.launch(CommunicationError.getHandler(context)) {
             try {
                 jukeboxAvailable = mediaPlayerController.isJukeboxAvailable
             } catch (all: Exception) {
                 Timber.e(all)
             }
-        }.start()
+        }
+
         view.setOnTouchListener { _, event -> gestureScanner.onTouchEvent(event) }
     }
 
@@ -479,6 +453,8 @@ class PlayerFragment : Fragment(), GestureDetector.OnGestureListener, KoinCompon
     }
 
     override fun onDestroyView() {
+        rxBusSubscription?.dispose()
+        cancel("CoroutineScope cancelled because the view was destroyed")
         cancellationToken.cancel()
         super.onDestroyView()
     }
@@ -797,9 +773,6 @@ class PlayerFragment : Fragment(), GestureDetector.OnGestureListener, KoinCompon
     private fun update(cancel: CancellationToken?) {
         if (cancel!!.isCancellationRequested) return
         val mediaPlayerController = mediaPlayerController
-        if (currentRevision != mediaPlayerController.playListUpdateRevision) {
-            onPlaylistChanged()
-        }
         if (currentPlaying != mediaPlayerController.currentPlaying) {
             onCurrentChanged()
         }
@@ -810,33 +783,28 @@ class PlayerFragment : Fragment(), GestureDetector.OnGestureListener, KoinCompon
     private fun savePlaylistInBackground(playlistName: String) {
         Util.toast(context, resources.getString(R.string.download_playlist_saving, playlistName))
         mediaPlayerController.suggestedPlaylistName = playlistName
-        object : SilentBackgroundTask<Void?>(activity) {
-            @Throws(Throwable::class)
-            override fun doInBackground(): Void? {
-                val entries: MutableList<MusicDirectory.Entry> = LinkedList()
-                for (downloadFile in mediaPlayerController.playList) {
-                    entries.add(downloadFile.song)
-                }
-                val musicService = getMusicService()
-                musicService.createPlaylist(null, playlistName, entries)
-                return null
-            }
 
-            override fun done(result: Void?) {
+        ioScope.launch {
+
+            val entries = mediaPlayerController.playList.map {
+                it.song
+            }
+            val musicService = getMusicService()
+            musicService.createPlaylist(null, playlistName, entries)
+        }.invokeOnCompletion {
+            if (it == null || it is CancellationException) {
                 Util.toast(context, R.string.download_playlist_done)
-            }
-
-            override fun error(error: Throwable) {
-                Timber.e(error, "Exception has occurred in savePlaylistInBackground")
+            } else {
+                Timber.e(it, "Exception has occurred in savePlaylistInBackground")
                 val msg = String.format(
                     Locale.ROOT,
                     "%s %s",
                     resources.getString(R.string.download_playlist_error),
-                    getErrorMessage(error)
+                    CommunicationError.getErrorMessage(it, context)
                 )
                 Util.toast(context, msg)
             }
-        }.execute()
+        }
     }
 
     private fun toggleFullScreenAlbumArt() {
@@ -914,7 +882,6 @@ class PlayerFragment : Fragment(), GestureDetector.OnGestureListener, KoinCompon
 
         emptyTextView.isVisible = list.isEmpty()
 
-        currentRevision = mediaPlayerController.playListUpdateRevision
         when (mediaPlayerController.repeatMode) {
             RepeatMode.OFF -> repeatButton.setImageDrawable(
                 Util.getDrawableFromAttribute(
@@ -967,120 +934,95 @@ class PlayerFragment : Fragment(), GestureDetector.OnGestureListener, KoinCompon
         }
     }
 
+    @Suppress("LongMethod", "ComplexMethod")
+    @Synchronized
     private fun onSliderProgressChanged() {
-        if (onProgressChangedTask != null) {
-            return
+
+        val isJukeboxEnabled: Boolean = mediaPlayerController.isJukeboxEnabled
+        val millisPlayed: Int = max(0, mediaPlayerController.playerPosition)
+        val duration: Int = mediaPlayerController.playerDuration
+        val playerState: PlayerState = mediaPlayerController.playerState
+
+        if (cancellationToken.isCancellationRequested) return
+        if (currentPlaying != null) {
+            positionTextView.text = Util.formatTotalDuration(millisPlayed.toLong(), true)
+            durationTextView.text = Util.formatTotalDuration(duration.toLong(), true)
+            progressBar.max =
+                if (duration == 0) 100 else duration // Work-around for apparent bug.
+            progressBar.progress = millisPlayed
+            progressBar.isEnabled = currentPlaying!!.isWorkDone || isJukeboxEnabled
+        } else {
+            positionTextView.setText(R.string.util_zero_time)
+            durationTextView.setText(R.string.util_no_time)
+            progressBar.progress = 0
+            progressBar.max = 0
+            progressBar.isEnabled = false
         }
-        onProgressChangedTask = object : SilentBackgroundTask<Void?>(activity) {
-            var isJukeboxEnabled = false
-            var millisPlayed = 0
-            var duration: Int? = null
-            var playerState: PlayerState? = null
-            override fun doInBackground(): Void? {
-                isJukeboxEnabled = mediaPlayerController.isJukeboxEnabled
-                millisPlayed = max(0, mediaPlayerController.playerPosition)
-                duration = mediaPlayerController.playerDuration
-                playerState = mediaPlayerController.playerState
-                return null
+
+        when (playerState) {
+            PlayerState.DOWNLOADING -> {
+                val progress =
+                    if (currentPlaying != null) currentPlaying!!.progress.value!! else 0
+                val downloadStatus = resources.getString(
+                    R.string.download_playerstate_downloading,
+                    Util.formatPercentage(progress)
+                )
+                setTitle(this@PlayerFragment, downloadStatus)
             }
-
-            @Suppress("LongMethod")
-            override fun done(result: Void?) {
-                if (cancellationToken.isCancellationRequested) return
-                if (currentPlaying != null) {
-                    val millisTotal = if (duration == null) 0 else duration!!
-                    positionTextView.text = Util.formatTotalDuration(millisPlayed.toLong(), true)
-                    durationTextView.text = Util.formatTotalDuration(millisTotal.toLong(), true)
-                    progressBar.max =
-                        if (millisTotal == 0) 100 else millisTotal // Work-around for apparent bug.
-                    progressBar.progress = millisPlayed
-                    progressBar.isEnabled = currentPlaying!!.isWorkDone || isJukeboxEnabled
-                } else {
-                    positionTextView.setText(R.string.util_zero_time)
-                    durationTextView.setText(R.string.util_no_time)
-                    progressBar.progress = 0
-                    progressBar.max = 0
-                    progressBar.isEnabled = false
-                }
-
-                when (playerState) {
-                    PlayerState.DOWNLOADING -> {
-                        val progress =
-                            if (currentPlaying != null) currentPlaying!!.progress.value!! else 0
-                        val downloadStatus = resources.getString(
-                            R.string.download_playerstate_downloading,
-                            Util.formatPercentage(progress)
-                        )
-                        setTitle(this@PlayerFragment, downloadStatus)
-                    }
-                    PlayerState.PREPARING -> setTitle(
+            PlayerState.PREPARING -> setTitle(
+                this@PlayerFragment,
+                R.string.download_playerstate_buffering
+            )
+            PlayerState.STARTED -> {
+                if (mediaPlayerController.isShufflePlayEnabled) {
+                    setTitle(
                         this@PlayerFragment,
-                        R.string.download_playerstate_buffering
+                        R.string.download_playerstate_playing_shuffle
                     )
-                    PlayerState.STARTED -> {
-                        if (mediaPlayerController.isShufflePlayEnabled) {
-                            setTitle(
-                                this@PlayerFragment,
-                                R.string.download_playerstate_playing_shuffle
-                            )
-                        } else {
-                            setTitle(this@PlayerFragment, R.string.common_appname)
-                        }
-                    }
-                    PlayerState.IDLE,
-                    PlayerState.PREPARED,
-                    PlayerState.STOPPED,
-                    PlayerState.PAUSED,
-                    PlayerState.COMPLETED -> {
-                    }
-                    else -> setTitle(this@PlayerFragment, R.string.common_appname)
+                } else {
+                    setTitle(this@PlayerFragment, R.string.common_appname)
                 }
+            }
+            PlayerState.IDLE,
+            PlayerState.PREPARED,
+            PlayerState.STOPPED,
+            PlayerState.PAUSED,
+            PlayerState.COMPLETED -> {
+            }
+            else -> setTitle(this@PlayerFragment, R.string.common_appname)
+        }
 
-                when (playerState) {
-                    PlayerState.STARTED -> {
-                        pauseButton.isVisible = true
-                        stopButton.isVisible = false
-                        startButton.isVisible = false
-                    }
-                    PlayerState.DOWNLOADING, PlayerState.PREPARING -> {
-                        pauseButton.isVisible = false
-                        stopButton.isVisible = true
-                        startButton.isVisible = false
-                    }
-                    else -> {
-                        pauseButton.isVisible = false
-                        stopButton.isVisible = false
-                        startButton.isVisible = true
-                    }
-                }
-
-                // TODO: It would be a lot nicer if MediaPlayerController would send an event
-                //  when this is necessary instead of updating every time
-                displaySongRating()
-                onProgressChangedTask = null
+        when (playerState) {
+            PlayerState.STARTED -> {
+                pauseButton.isVisible = true
+                stopButton.isVisible = false
+                startButton.isVisible = false
+            }
+            PlayerState.DOWNLOADING, PlayerState.PREPARING -> {
+                pauseButton.isVisible = false
+                stopButton.isVisible = true
+                startButton.isVisible = false
+            }
+            else -> {
+                pauseButton.isVisible = false
+                stopButton.isVisible = false
+                startButton.isVisible = true
             }
         }
-        onProgressChangedTask!!.execute()
+
+        // TODO: It would be a lot nicer if MediaPlayerController would send an event
+        // when this is necessary instead of updating every time
+        displaySongRating()
     }
 
     private fun changeProgress(ms: Int) {
-        object : SilentBackgroundTask<Void?>(activity) {
-            var msPlayed = 0
-            var duration: Int? = null
-            var seekTo = 0
-            override fun doInBackground(): Void? {
-                msPlayed = max(0, mediaPlayerController.playerPosition)
-                duration = mediaPlayerController.playerDuration
-                val msTotal = duration!!
-                seekTo = (msPlayed + ms).coerceAtMost(msTotal)
-                mediaPlayerController.seekTo(seekTo)
-                return null
-            }
-
-            override fun done(result: Void?) {
-                progressBar.progress = seekTo
-            }
-        }.execute()
+        launch(CommunicationError.getHandler(context)) {
+            val msPlayed: Int = max(0, mediaPlayerController.playerPosition)
+            val duration = mediaPlayerController.playerDuration
+            val seekTo = (msPlayed + ms).coerceAtMost(duration)
+            mediaPlayerController.seekTo(seekTo)
+            progressBar.progress = seekTo
+        }
     }
 
     override fun onDown(me: MotionEvent): Boolean {

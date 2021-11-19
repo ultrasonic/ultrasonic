@@ -107,6 +107,8 @@ dependencies {
     implementation other.sortListView
     implementation other.colorPickerView
     implementation other.fsaf
+    implementation other.rxJava
+    implementation other.rxAndroid
 
     kapt androidSupport.room
 

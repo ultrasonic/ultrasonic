@@ -3,11 +3,12 @@
   <ManuallySuppressedIssues></ManuallySuppressedIssues>
   <CurrentIssues>
     <ID>ComplexCondition:DownloadHandler.kt$DownloadHandler.&lt;no name provided&gt;$!append &amp;&amp; !playNext &amp;&amp; !unpin &amp;&amp; !background</ID>
+    <ID>ComplexCondition:FilePickerAdapter.kt$FilePickerAdapter$currentDirectory.absolutePath == "/" || currentDirectory.absolutePath == "/storage" || currentDirectory.absolutePath == "/storage/emulated" || currentDirectory.absolutePath == "/mnt"</ID>
     <ID>ComplexMethod:DownloadFile.kt$DownloadFile.DownloadTask$override fun execute()</ID>
+    <ID>ComplexMethod:FilePickerAdapter.kt$FilePickerAdapter$private fun fileLister(currentDirectory: File)</ID>
     <ID>ComplexMethod:SongView.kt$SongView$fun setSong(song: MusicDirectory.Entry, checkable: Boolean, draggable: Boolean)</ID>
     <ID>ComplexMethod:TrackCollectionFragment.kt$TrackCollectionFragment$private fun enableButtons()</ID>
     <ID>ComplexMethod:TrackCollectionFragment.kt$TrackCollectionFragment$private fun updateInterfaceWithEntries(musicDirectory: MusicDirectory)</ID>
-    <ID>FunctionNaming:ThemeChangedEventDistributor.kt$ThemeChangedEventDistributor$fun RaiseThemeChangedEvent()</ID>
     <ID>ImplicitDefaultLocale:DownloadFile.kt$DownloadFile$String.format("DownloadFile (%s)", song)</ID>
     <ID>ImplicitDefaultLocale:DownloadFile.kt$DownloadFile.DownloadTask$String.format("Download of '%s' was cancelled", song)</ID>
     <ID>ImplicitDefaultLocale:DownloadFile.kt$DownloadFile.DownloadTask$String.format("DownloadTask (%s)", song)</ID>
@@ -49,7 +50,6 @@
     <ID>NestedBlockDepth:DownloadFile.kt$DownloadFile.DownloadTask$override fun execute()</ID>
     <ID>NestedBlockDepth:DownloadHandler.kt$DownloadHandler$private fun downloadRecursively( fragment: Fragment, id: String, name: String?, isShare: Boolean, isDirectory: Boolean, save: Boolean, append: Boolean, autoPlay: Boolean, shuffle: Boolean, background: Boolean, playNext: Boolean, unpin: Boolean, isArtist: Boolean )</ID>
     <ID>NestedBlockDepth:MediaPlayerService.kt$MediaPlayerService$private fun setupOnSongCompletedHandler()</ID>
-    <ID>ReturnCount:CommunicationErrorHandler.kt$CommunicationErrorHandler.Companion$fun getErrorMessage(error: Throwable, context: Context): String</ID>
     <ID>ReturnCount:ServerRowAdapter.kt$ServerRowAdapter$ private fun popupMenuItemClick(menuItem: MenuItem, position: Int): Boolean</ID>
     <ID>ReturnCount:TrackCollectionFragment.kt$TrackCollectionFragment$override fun onContextItemSelected(menuItem: MenuItem): Boolean</ID>
     <ID>TooGenericExceptionCaught:DownloadFile.kt$DownloadFile$e: Exception</ID>
@@ -59,12 +59,10 @@
     <ID>TooGenericExceptionCaught:LocalMediaPlayer.kt$LocalMediaPlayer$x: Exception</ID>
     <ID>TooGenericExceptionCaught:LocalMediaPlayer.kt$LocalMediaPlayer.PositionCache$e: Exception</ID>
     <ID>TooGenericExceptionCaught:SongView.kt$SongView$e: Exception</ID>
-    <ID>TooGenericExceptionCaught:SubsonicUncaughtExceptionHandler.kt$SubsonicUncaughtExceptionHandler$x: Throwable</ID>
     <ID>TooGenericExceptionThrown:DownloadFile.kt$DownloadFile.DownloadTask$throw Exception(String.format("Download of '%s' was cancelled", song))</ID>
     <ID>TooManyFunctions:MediaPlayerService.kt$MediaPlayerService : Service</ID>
     <ID>TooManyFunctions:RESTMusicService.kt$RESTMusicService : MusicService</ID>
     <ID>TooManyFunctions:TrackCollectionFragment.kt$TrackCollectionFragment : Fragment</ID>
-    <ID>UtilityClassWithPublicConstructor:CommunicationErrorHandler.kt$CommunicationErrorHandler</ID>
     <ID>UtilityClassWithPublicConstructor:FragmentTitle.kt$FragmentTitle</ID>
   </CurrentIssues>
 </SmellBaseline>

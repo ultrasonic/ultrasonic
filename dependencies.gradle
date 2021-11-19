@@ -42,7 +42,9 @@ ext.versions = [
         timber               : "4.7.1",
         fastScroll           : "2.0.1",
         colorPicker          : "2.2.3",
-        fsaf                 : "1.1"
+        fsaf                 : "1.1",
+        rxJava               : "3.1.2",
+        rxAndroid            : "3.0.0",
 ]
 
 ext.gradlePlugins = [
@@ -91,6 +93,8 @@ ext.other = [
         sortListView       : "com.github.tzugen:drag-sort-listview:$versions.sortListView",
         colorPickerView    : "com.github.skydoves:colorpickerview:$versions.colorPicker",
         fsaf               : "com.github.K1rakishou:Fuck-Storage-Access-Framework:$versions.fsaf",
+        rxJava             : "io.reactivex.rxjava3:rxjava:$versions.rxJava",
+        rxAndroid          : "io.reactivex.rxjava3:rxandroid:$versions.rxAndroid",
 ]
 
 ext.testing = [

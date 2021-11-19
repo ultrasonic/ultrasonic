@@ -13,6 +13,7 @@ import android.content.Intent
 import android.content.IntentFilter
 import android.media.AudioManager
 import android.view.KeyEvent
+import io.reactivex.rxjava3.disposables.Disposable
 import org.koin.core.component.KoinComponent
 import org.koin.core.component.inject
 import org.moire.ultrasonic.R
@@ -20,9 +21,8 @@ import org.moire.ultrasonic.app.UApp.Companion.applicationContext
 import org.moire.ultrasonic.domain.PlayerState
 import org.moire.ultrasonic.util.CacheCleaner
 import org.moire.ultrasonic.util.Constants
-import org.moire.ultrasonic.util.MediaSessionEventDistributor
-import org.moire.ultrasonic.util.MediaSessionEventListener
 import org.moire.ultrasonic.util.Settings
+import org.moire.ultrasonic.util.Util.ifNotNull
 import timber.log.Timber
 
 /**
@@ -34,11 +34,10 @@ class MediaPlayerLifecycleSupport : KoinComponent {
     private val playbackStateSerializer by inject<PlaybackStateSerializer>()
     private val mediaPlayerController by inject<MediaPlayerController>()
     private val downloader by inject<Downloader>()
-    private val mediaSessionEventDistributor by inject<MediaSessionEventDistributor>()
 
     private var created = false
     private var headsetEventReceiver: BroadcastReceiver? = null
-    private lateinit var mediaSessionEventListener: MediaSessionEventListener
+    private var mediaButtonEventSubscription: Disposable? = null
 
     fun onCreate() {
         onCreate(false, null)
@@ -51,13 +50,10 @@ class MediaPlayerLifecycleSupport : KoinComponent {
             return
         }
 
-        mediaSessionEventListener = object : MediaSessionEventListener {
-            override fun onMediaButtonEvent(keyEvent: KeyEvent?) {
-                if (keyEvent != null) handleKeyEvent(keyEvent)
-            }
+        mediaButtonEventSubscription = RxBus.mediaButtonEventObservable.subscribe {
+            handleKeyEvent(it)
         }
 
-        mediaSessionEventDistributor.subscribe(mediaSessionEventListener)
         registerHeadsetReceiver()
         mediaPlayerController.onCreate()
         if (autoPlay) mediaPlayerController.preload()
@@ -75,7 +71,7 @@ class MediaPlayerLifecycleSupport : KoinComponent {
             // Work-around: Serialize again, as the restore() method creates a
             // serialization without current playing info.
             playbackStateSerializer.serialize(
-                downloader.playlist,
+                downloader.getPlaylist(),
                 downloader.currentPlayingIndex,
                 mediaPlayerController.playerPosition
             )
@@ -92,14 +88,13 @@ class MediaPlayerLifecycleSupport : KoinComponent {
         if (!created) return
 
         playbackStateSerializer.serializeNow(
-            downloader.playlist,
+            downloader.getPlaylist(),
             downloader.currentPlayingIndex,
             mediaPlayerController.playerPosition
         )
 
-        mediaSessionEventDistributor.unsubscribe(mediaSessionEventListener)
-
         mediaPlayerController.clear(false)
+        mediaButtonEventSubscription?.dispose()
         applicationContext().unregisterReceiver(headsetEventReceiver)
         mediaPlayerController.onDestroy()
 
@@ -119,7 +114,7 @@ class MediaPlayerLifecycleSupport : KoinComponent {
         if (intentAction == Constants.CMD_PROCESS_KEYCODE) {
             if (intent.extras != null) {
                 val event = intent.extras!![Intent.EXTRA_KEY_EVENT] as KeyEvent?
-                event?.let { handleKeyEvent(it) }
+                event.ifNotNull { handleKeyEvent(it) }
             }
         } else {
             handleUltrasonicIntent(intentAction)

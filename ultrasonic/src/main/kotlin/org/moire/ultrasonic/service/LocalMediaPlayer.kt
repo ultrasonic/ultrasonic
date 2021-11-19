@@ -32,12 +32,10 @@ import org.moire.ultrasonic.data.ActiveServerProvider.Companion.isOffline
 import org.moire.ultrasonic.domain.PlayerState
 import org.moire.ultrasonic.util.CancellableTask
 import org.moire.ultrasonic.util.Constants
-import org.moire.ultrasonic.util.MediaSessionHandler
 import org.moire.ultrasonic.util.Settings
 import org.moire.ultrasonic.util.StreamProxy
 import org.moire.ultrasonic.util.Util
 import timber.log.Timber
-import java.io.File
 
 /**
  * Represents a Media Player which uses the mobile's resources for playback
@@ -47,16 +45,9 @@ class LocalMediaPlayer : KoinComponent {
 
     private val audioFocusHandler by inject<AudioFocusHandler>()
     private val context by inject<Context>()
-    private val mediaSessionHandler by inject<MediaSessionHandler>()
-
-    @JvmField
-    var onCurrentPlayingChanged: ((DownloadFile?) -> Unit?)? = null
 
     @JvmField
     var onSongCompleted: ((DownloadFile?) -> Unit?)? = null
-
-    @JvmField
-    var onPlayerStateChanged: ((PlayerState, DownloadFile?) -> Unit?)? = null
 
     @JvmField
     var onPrepared: (() -> Any?)? = null
@@ -65,6 +56,7 @@ class LocalMediaPlayer : KoinComponent {
     var onNextSongRequested: Runnable? = null
 
     @JvmField
+    @Volatile
     var playerState = PlayerState.IDLE
 
     @JvmField
@@ -133,7 +125,6 @@ class LocalMediaPlayer : KoinComponent {
         // Calling reset() will result in changing this player's state. If we allow
         // the onPlayerStateChanged callback, then the state change will cause this
         // to resurrect the media session which has just been destroyed.
-        onPlayerStateChanged = null
         reset()
         try {
             val i = Intent(AudioEffect.ACTION_CLOSE_AUDIO_EFFECT_CONTROL_SESSION)
@@ -165,21 +156,17 @@ class LocalMediaPlayer : KoinComponent {
     }
 
     @Synchronized
-    fun setPlayerState(playerState: PlayerState) {
-        Timber.i("%s -> %s (%s)", this.playerState.name, playerState.name, currentPlaying)
-        this.playerState = playerState
+    fun setPlayerState(playerState: PlayerState, track: DownloadFile?) {
+        Timber.i("%s -> %s (%s)", this.playerState.name, playerState.name, track)
+        synchronized(playerState) {
+            this.playerState = playerState
+        }
         if (playerState === PlayerState.STARTED) {
             audioFocusHandler.requestAudioFocus()
         }
 
-        if (onPlayerStateChanged != null) {
-            val mainHandler = Handler(context.mainLooper)
+        RxBus.playerStatePublisher.onNext(RxBus.StateWithTrack(playerState, track))
 
-            val myRunnable = Runnable {
-                onPlayerStateChanged?.invoke(playerState, currentPlaying)
-            }
-            mainHandler.post(myRunnable)
-        }
         if (playerState === PlayerState.STARTED && positionCache == null) {
             positionCache = PositionCache()
             val thread = Thread(positionCache)
@@ -195,14 +182,10 @@ class LocalMediaPlayer : KoinComponent {
     */
     @Synchronized
     fun setCurrentPlaying(currentPlaying: DownloadFile?) {
-        Timber.v("setCurrentPlaying %s", currentPlaying)
+        // In some cases this function is called twice
+        if (this.currentPlaying == currentPlaying) return
         this.currentPlaying = currentPlaying
-
-        if (onCurrentPlayingChanged != null) {
-            val mainHandler = Handler(context.mainLooper)
-            val myRunnable = Runnable { onCurrentPlayingChanged!!(currentPlaying) }
-            mainHandler.post(myRunnable)
-        }
+        RxBus.playerStatePublisher.onNext(RxBus.StateWithTrack(playerState, currentPlaying))
     }
 
     /*
@@ -263,7 +246,7 @@ class LocalMediaPlayer : KoinComponent {
         mediaPlayer = nextMediaPlayer!!
 
         setCurrentPlaying(nextPlaying)
-        setPlayerState(PlayerState.STARTED)
+        setPlayerState(PlayerState.STARTED, currentPlaying)
 
         attachHandlersToPlayer(mediaPlayer, nextPlaying!!, false)
 
@@ -344,7 +327,7 @@ class LocalMediaPlayer : KoinComponent {
 
     @Synchronized
     private fun bufferAndPlay(fileToPlay: DownloadFile, position: Int, autoStart: Boolean) {
-        if (playerState !== PlayerState.PREPARED) {
+        if (playerState !== PlayerState.PREPARED && !fileToPlay.isWorkDone) {
             reset()
             bufferTask = BufferTask(fileToPlay, position, autoStart)
             bufferTask!!.start()
@@ -355,6 +338,7 @@ class LocalMediaPlayer : KoinComponent {
 
     @Synchronized
     private fun doPlay(downloadFile: DownloadFile, position: Int, start: Boolean) {
+        setPlayerState(PlayerState.IDLE, downloadFile)
 
         // In many cases we will be resetting the mediaPlayer a second time here.
         // figure out if we can remove this call...
@@ -370,7 +354,6 @@ class LocalMediaPlayer : KoinComponent {
             // downloadFile.updateModificationDate()
             mediaPlayer.setOnCompletionListener(null)
 
-            setPlayerState(PlayerState.IDLE)
             setAudioAttributes(mediaPlayer)
 
             var dataSource: String? = null
@@ -403,7 +386,7 @@ class LocalMediaPlayer : KoinComponent {
                 descriptor.close()
             }
 
-            setPlayerState(PlayerState.PREPARING)
+            setPlayerState(PlayerState.PREPARING, downloadFile)
 
             mediaPlayer.setOnBufferingUpdateListener { mp, percent ->
                 val song = downloadFile.song
@@ -421,7 +404,7 @@ class LocalMediaPlayer : KoinComponent {
 
             mediaPlayer.setOnPreparedListener {
                 Timber.i("Media player prepared")
-                setPlayerState(PlayerState.PREPARED)
+                setPlayerState(PlayerState.PREPARED, downloadFile)
 
                 // Populate seek bar secondary progress if we have a complete file for consistency
                 if (downloadFile.isWorkDone) {
@@ -436,9 +419,9 @@ class LocalMediaPlayer : KoinComponent {
                     cachedPosition = position
                     if (start) {
                         mediaPlayer.start()
-                        setPlayerState(PlayerState.STARTED)
+                        setPlayerState(PlayerState.STARTED, downloadFile)
                     } else {
-                        setPlayerState(PlayerState.PAUSED)
+                        setPlayerState(PlayerState.PAUSED, downloadFile)
                     }
                 }
 
@@ -446,6 +429,7 @@ class LocalMediaPlayer : KoinComponent {
                     onPrepared
                 }
             }
+
             attachHandlersToPlayer(mediaPlayer, downloadFile, partial)
             mediaPlayer.prepareAsync()
         } catch (x: Exception) {
@@ -541,7 +525,7 @@ class LocalMediaPlayer : KoinComponent {
                 Timber.i("Ending position %d of %d", pos, duration)
 
                 if (!isPartial || downloadFile.isWorkDone && abs(duration - pos) < 1000) {
-                    setPlayerState(PlayerState.COMPLETED)
+                    setPlayerState(PlayerState.COMPLETED, downloadFile)
                     if (Settings.gaplessPlayback &&
                         nextPlaying != null &&
                         nextPlayerState === PlayerState.PREPARED
@@ -588,7 +572,7 @@ class LocalMediaPlayer : KoinComponent {
         resetMediaPlayer()
 
         try {
-            setPlayerState(PlayerState.IDLE)
+            setPlayerState(PlayerState.IDLE, currentPlaying)
             mediaPlayer.setOnErrorListener(null)
             mediaPlayer.setOnCompletionListener(null)
         } catch (x: Exception) {
@@ -617,7 +601,7 @@ class LocalMediaPlayer : KoinComponent {
         private val partialFile: String = downloadFile.partialFile
 
         override fun execute() {
-            setPlayerState(PlayerState.DOWNLOADING)
+            setPlayerState(PlayerState.DOWNLOADING, downloadFile)
             while (!bufferComplete() && !isOffline()) {
                 Util.sleepQuietly(1000L)
                 if (isCancelled) {
@@ -720,10 +704,12 @@ class LocalMediaPlayer : KoinComponent {
             while (isRunning) {
                 try {
                     if (playerState === PlayerState.STARTED) {
-                        cachedPosition = mediaPlayer.currentPosition
-                        mediaSessionHandler.updateMediaSessionPlaybackPosition(
-                            cachedPosition.toLong()
-                        )
+                        synchronized(playerState) {
+                            if (playerState === PlayerState.STARTED) {
+                                cachedPosition = mediaPlayer.currentPosition
+                            }
+                        }
+                        RxBus.playbackPositionPublisher.onNext(cachedPosition)
                     }
                     Util.sleepQuietly(100L)
                 } catch (e: Exception) {

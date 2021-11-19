@@ -38,7 +38,6 @@ import org.moire.ultrasonic.data.ActiveServerProvider.Companion.isOffline
 import org.moire.ultrasonic.domain.MusicDirectory
 import org.moire.ultrasonic.fragment.FragmentTitle.Companion.getTitle
 import org.moire.ultrasonic.fragment.FragmentTitle.Companion.setTitle
-import org.moire.ultrasonic.service.CommunicationErrorHandler
 import org.moire.ultrasonic.service.MediaPlayerController
 import org.moire.ultrasonic.subsonic.DownloadHandler
 import org.moire.ultrasonic.subsonic.ImageLoaderProvider
@@ -47,6 +46,7 @@ import org.moire.ultrasonic.subsonic.ShareHandler
 import org.moire.ultrasonic.subsonic.VideoPlayer
 import org.moire.ultrasonic.util.AlbumHeader
 import org.moire.ultrasonic.util.CancellationToken
+import org.moire.ultrasonic.util.CommunicationError
 import org.moire.ultrasonic.util.Constants
 import org.moire.ultrasonic.util.EntryByDiscAndTrackComparator
 import org.moire.ultrasonic.util.Settings
@@ -211,7 +211,7 @@ class TrackCollectionFragment : Fragment() {
 
     val handler = CoroutineExceptionHandler { _, exception ->
         Handler(Looper.getMainLooper()).post {
-            context?.let { CommunicationErrorHandler.handleError(exception, it) }
+            CommunicationError.handleError(exception, context)
         }
         refreshAlbumListView!!.isRefreshing = false
     }

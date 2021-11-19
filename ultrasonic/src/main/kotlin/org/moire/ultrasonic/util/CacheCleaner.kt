@@ -1,10 +1,13 @@
 package org.moire.ultrasonic.util
 
-import android.os.AsyncTask
 import android.os.StatFs
 import android.system.Os
 import java.util.ArrayList
 import java.util.HashSet
+import kotlinx.coroutines.CoroutineExceptionHandler
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 import org.koin.java.KoinJavaComponent.inject
 import org.moire.ultrasonic.data.ActiveServerProvider
 import org.moire.ultrasonic.domain.Playlist
@@ -22,105 +25,85 @@ import timber.log.Timber
 /**
  * Responsible for cleaning up files from the offline download cache on the filesystem.
  */
-class CacheCleaner {
+class CacheCleaner : CoroutineScope by CoroutineScope(Dispatchers.IO) {
+
+    private fun exceptionHandler(tag: String): CoroutineExceptionHandler {
+        return CoroutineExceptionHandler { _, exception ->
+            Timber.w(exception, "Exception in CacheCleaner.$tag")
+        }
+    }
+
     fun clean() {
-        try {
-            BackgroundCleanup().executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR)
-        } catch (all: Exception) {
-            // If an exception is thrown, assume we execute correctly the next time
-            Timber.w(all, "Exception in CacheCleaner.clean")
+        launch(exceptionHandler("clean")) {
+            backgroundCleanup()
         }
     }
 
     fun cleanSpace() {
-        try {
-            BackgroundSpaceCleanup().executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR)
-        } catch (all: Exception) {
-            // If an exception is thrown, assume we execute correctly the next time
-            Timber.w(all, "Exception in CacheCleaner.cleanSpace")
+        launch(exceptionHandler("cleanSpace")) {
+            backgroundSpaceCleanup()
         }
     }
 
     fun cleanPlaylists(playlists: List<Playlist>) {
-        try {
-            BackgroundPlaylistsCleanup().executeOnExecutor(
-                AsyncTask.THREAD_POOL_EXECUTOR,
-                playlists
-            )
-        } catch (all: Exception) {
-            // If an exception is thrown, assume we execute correctly the next time
-            Timber.w(all, "Exception in CacheCleaner.cleanPlaylists")
+        launch(exceptionHandler("cleanPlaylists")) {
+            backgroundPlaylistsCleanup(playlists)
         }
     }
 
-    private class BackgroundCleanup : AsyncTask<Void?, Void?, Void?>() {
-        override fun doInBackground(vararg params: Void?): Void? {
-            try {
-                Thread.currentThread().name = "BackgroundCleanup"
-                val files: MutableList<StorageFile> = ArrayList()
-                val dirs: MutableList<StorageFile> = ArrayList()
+    private fun backgroundCleanup() {
+        try {
+            val files: MutableList<StorageFile> = ArrayList()
+            val dirs: MutableList<StorageFile> = ArrayList()
 
-                findCandidatesForDeletion(musicDirectory, files, dirs)
+            findCandidatesForDeletion(musicDirectory, files, dirs)
+            sortByAscendingModificationTime(files)
+            val filesToNotDelete = findFilesToNotDelete()
 
+            deleteFiles(files, filesToNotDelete, getMinimumDelete(files), true)
+            deleteEmptyDirs(dirs, filesToNotDelete)
+        } catch (all: RuntimeException) {
+            Timber.e(all, "Error in cache cleaning.")
+        }
+    }
+
+    private fun backgroundSpaceCleanup() {
+        try {
+            val files: MutableList<StorageFile> = ArrayList()
+            val dirs: MutableList<StorageFile> = ArrayList()
+
+            findCandidatesForDeletion(musicDirectory, files, dirs)
+
+            val bytesToDelete = getMinimumDelete(files)
+            if (bytesToDelete > 0L) {
                 sortByAscendingModificationTime(files)
                 val filesToNotDelete = findFilesToNotDelete()
-
-                deleteFiles(files, filesToNotDelete, getMinimumDelete(files), true)
-                deleteEmptyDirs(dirs, filesToNotDelete)
-            } catch (all: RuntimeException) {
-                Timber.e(all, "Error in cache cleaning.")
+                deleteFiles(files, filesToNotDelete, bytesToDelete, false)
             }
-            return null
+        } catch (all: RuntimeException) {
+            Timber.e(all, "Error in cache cleaning.")
         }
     }
 
-    private class BackgroundSpaceCleanup : AsyncTask<Void?, Void?, Void?>() {
-        override fun doInBackground(vararg params: Void?): Void? {
-            try {
-                Thread.currentThread().name = "BackgroundSpaceCleanup"
+    private fun backgroundPlaylistsCleanup(vararg params: List<Playlist>) {
+        try {
+            val activeServerProvider = inject<ActiveServerProvider>(
+                ActiveServerProvider::class.java
+            )
 
-                val files: MutableList<StorageFile> = ArrayList()
-                val dirs: MutableList<StorageFile> = ArrayList()
+            val server = activeServerProvider.value.getActiveServer().name
+            val playlistFiles = listFiles(getPlaylistDirectory(server))
+            val playlists = params[0]
 
-                findCandidatesForDeletion(musicDirectory, files, dirs)
-
-                val bytesToDelete = getMinimumDelete(files)
-
-                if (bytesToDelete > 0L) {
-                    sortByAscendingModificationTime(files)
-                    val filesToNotDelete = findFilesToNotDelete()
-                    deleteFiles(files, filesToNotDelete, bytesToDelete, false)
-                }
-            } catch (all: RuntimeException) {
-                Timber.e(all, "Error in cache cleaning.")
+            for ((_, name) in playlists) {
+                playlistFiles.remove(getPlaylistFile(server, name))
             }
-            return null
-        }
-    }
 
-    private class BackgroundPlaylistsCleanup : AsyncTask<List<Playlist>, Void?, Void?>() {
-        override fun doInBackground(vararg params: List<Playlist>): Void? {
-            try {
-                val activeServerProvider = inject<ActiveServerProvider>(
-                    ActiveServerProvider::class.java
-                )
-                Thread.currentThread().name = "BackgroundPlaylistsCleanup"
-
-                val server = activeServerProvider.value.getActiveServer().name
-                val playlistFiles = listFiles(getPlaylistDirectory(server))
-                val playlists = params[0]
-
-                for ((_, name) in playlists) {
-                    playlistFiles.remove(getPlaylistFile(server, name))
-                }
-
-                for (playlist in playlistFiles) {
-                    playlist.delete()
-                }
-            } catch (all: RuntimeException) {
-                Timber.e(all, "Error in playlist cache cleaning.")
+            for (playlist in playlistFiles) {
+                playlist.delete()
             }
-            return null
+        } catch (all: RuntimeException) {
+            Timber.e(all, "Error in playlist cache cleaning.")
         }
     }
 

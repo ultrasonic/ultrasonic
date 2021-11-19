@@ -11,9 +11,9 @@ import android.os.Bundle
 import android.os.Handler
 import android.support.v4.media.MediaBrowserCompat
 import android.support.v4.media.MediaDescriptionCompat
-import android.support.v4.media.session.MediaSessionCompat
 import androidx.media.MediaBrowserServiceCompat
 import androidx.media.utils.MediaConstants
+import io.reactivex.rxjava3.disposables.CompositeDisposable
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
@@ -25,8 +25,6 @@ import org.moire.ultrasonic.data.ActiveServerProvider
 import org.moire.ultrasonic.domain.MusicDirectory
 import org.moire.ultrasonic.domain.SearchCriteria
 import org.moire.ultrasonic.domain.SearchResult
-import org.moire.ultrasonic.util.MediaSessionEventDistributor
-import org.moire.ultrasonic.util.MediaSessionEventListener
 import org.moire.ultrasonic.util.MediaSessionHandler
 import org.moire.ultrasonic.util.Settings
 import org.moire.ultrasonic.util.Util
@@ -73,8 +71,6 @@ private const val SEARCH_LIMIT = 10
 @Suppress("TooManyFunctions", "LargeClass")
 class AutoMediaBrowserService : MediaBrowserServiceCompat() {
 
-    private lateinit var mediaSessionEventListener: MediaSessionEventListener
-    private val mediaSessionEventDistributor by inject<MediaSessionEventDistributor>()
     private val lifecycleSupport by inject<MediaPlayerLifecycleSupport>()
     private val mediaSessionHandler by inject<MediaSessionHandler>()
     private val mediaPlayerController by inject<MediaPlayerController>()
@@ -93,75 +89,24 @@ class AutoMediaBrowserService : MediaBrowserServiceCompat() {
     private val useId3Tags get() = Settings.shouldUseId3Tags
     private val musicFolderId get() = activeServerProvider.getActiveServer().musicFolderId
 
+    private var rxBusSubscription: CompositeDisposable = CompositeDisposable()
+
     @Suppress("MagicNumber")
     override fun onCreate() {
         super.onCreate()
 
-        mediaSessionEventListener = object : MediaSessionEventListener {
-            override fun onMediaSessionTokenCreated(token: MediaSessionCompat.Token) {
-                if (sessionToken == null) {
-                    sessionToken = token
-                }
-            }
-
-            override fun onPlayFromMediaIdRequested(mediaId: String?, extras: Bundle?) {
-                Timber.d(
-                    "AutoMediaBrowserService onPlayFromMediaIdRequested called. mediaId: %s",
-                    mediaId
-                )
-
-                if (mediaId == null) return
-                val mediaIdParts = mediaId.split('|')
-
-                when (mediaIdParts.first()) {
-                    MEDIA_PLAYLIST_ITEM -> playPlaylist(mediaIdParts[1], mediaIdParts[2])
-                    MEDIA_PLAYLIST_SONG_ITEM -> playPlaylistSong(
-                        mediaIdParts[1], mediaIdParts[2], mediaIdParts[3]
-                    )
-                    MEDIA_ALBUM_ITEM -> playAlbum(mediaIdParts[1], mediaIdParts[2])
-                    MEDIA_ALBUM_SONG_ITEM -> playAlbumSong(
-                        mediaIdParts[1], mediaIdParts[2], mediaIdParts[3]
-                    )
-                    MEDIA_SONG_STARRED_ID -> playStarredSongs()
-                    MEDIA_SONG_STARRED_ITEM -> playStarredSong(mediaIdParts[1])
-                    MEDIA_SONG_RANDOM_ID -> playRandomSongs()
-                    MEDIA_SONG_RANDOM_ITEM -> playRandomSong(mediaIdParts[1])
-                    MEDIA_SHARE_ITEM -> playShare(mediaIdParts[1])
-                    MEDIA_SHARE_SONG_ITEM -> playShareSong(mediaIdParts[1], mediaIdParts[2])
-                    MEDIA_BOOKMARK_ITEM -> playBookmark(mediaIdParts[1])
-                    MEDIA_PODCAST_ITEM -> playPodcast(mediaIdParts[1])
-                    MEDIA_PODCAST_EPISODE_ITEM -> playPodcastEpisode(
-                        mediaIdParts[1], mediaIdParts[2]
-                    )
-                    MEDIA_SEARCH_SONG_ITEM -> playSearch(mediaIdParts[1])
-                }
-            }
-
-            override fun onPlayFromSearchRequested(query: String?, extras: Bundle?) {
-                Timber.d("AutoMediaBrowserService onPlayFromSearchRequested query: %s", query)
-                if (query.isNullOrBlank()) playRandomSongs()
-
-                serviceScope.launch {
-                    val criteria = SearchCriteria(query!!, 0, 0, DISPLAY_LIMIT)
-                    val searchResult = callWithErrorHandling { musicService.search(criteria) }
-
-                    // Try to find the best match
-                    if (searchResult != null) {
-                        val song = searchResult.songs
-                            .asSequence()
-                            .sortedByDescending { song -> song.starred }
-                            .sortedByDescending { song -> song.averageRating }
-                            .sortedByDescending { song -> song.userRating }
-                            .sortedByDescending { song -> song.closeness }
-                            .firstOrNull()
-
-                        if (song != null) playSong(song)
-                    }
-                }
-            }
+        rxBusSubscription += RxBus.mediaSessionTokenObservable.subscribe {
+            if (sessionToken == null) sessionToken = it
         }
 
-        mediaSessionEventDistributor.subscribe(mediaSessionEventListener)
+        rxBusSubscription += RxBus.playFromMediaIdCommandObservable.subscribe {
+            playFromMediaId(it.first)
+        }
+
+        rxBusSubscription += RxBus.playFromSearchCommandObservable.subscribe {
+            playFromSearchCommand(it.first)
+        }
+
         mediaSessionHandler.initialize()
 
         val handler = Handler()
@@ -180,9 +125,66 @@ class AutoMediaBrowserService : MediaBrowserServiceCompat() {
         Timber.i("AutoMediaBrowserService onCreate finished")
     }
 
+    @Suppress("MagicNumber", "ComplexMethod")
+    private fun playFromMediaId(mediaId: String?) {
+        Timber.d(
+            "AutoMediaBrowserService onPlayFromMediaIdRequested called. mediaId: %s",
+            mediaId
+        )
+
+        if (mediaId == null) return
+        val mediaIdParts = mediaId.split('|')
+
+        when (mediaIdParts.first()) {
+            MEDIA_PLAYLIST_ITEM -> playPlaylist(mediaIdParts[1], mediaIdParts[2])
+            MEDIA_PLAYLIST_SONG_ITEM -> playPlaylistSong(
+                mediaIdParts[1], mediaIdParts[2], mediaIdParts[3]
+            )
+            MEDIA_ALBUM_ITEM -> playAlbum(mediaIdParts[1], mediaIdParts[2])
+            MEDIA_ALBUM_SONG_ITEM -> playAlbumSong(
+                mediaIdParts[1], mediaIdParts[2], mediaIdParts[3]
+            )
+            MEDIA_SONG_STARRED_ID -> playStarredSongs()
+            MEDIA_SONG_STARRED_ITEM -> playStarredSong(mediaIdParts[1])
+            MEDIA_SONG_RANDOM_ID -> playRandomSongs()
+            MEDIA_SONG_RANDOM_ITEM -> playRandomSong(mediaIdParts[1])
+            MEDIA_SHARE_ITEM -> playShare(mediaIdParts[1])
+            MEDIA_SHARE_SONG_ITEM -> playShareSong(mediaIdParts[1], mediaIdParts[2])
+            MEDIA_BOOKMARK_ITEM -> playBookmark(mediaIdParts[1])
+            MEDIA_PODCAST_ITEM -> playPodcast(mediaIdParts[1])
+            MEDIA_PODCAST_EPISODE_ITEM -> playPodcastEpisode(
+                mediaIdParts[1], mediaIdParts[2]
+            )
+            MEDIA_SEARCH_SONG_ITEM -> playSearch(mediaIdParts[1])
+        }
+    }
+
+    private fun playFromSearchCommand(query: String?) {
+        Timber.d("AutoMediaBrowserService onPlayFromSearchRequested query: %s", query)
+        if (query.isNullOrBlank()) playRandomSongs()
+
+        serviceScope.launch {
+            val criteria = SearchCriteria(query!!, 0, 0, DISPLAY_LIMIT)
+            val searchResult = callWithErrorHandling { musicService.search(criteria) }
+
+            // Try to find the best match
+            if (searchResult != null) {
+                val song = searchResult.songs
+                    .asSequence()
+                    .sortedByDescending { song -> song.starred }
+                    .sortedByDescending { song -> song.averageRating }
+                    .sortedByDescending { song -> song.userRating }
+                    .sortedByDescending { song -> song.closeness }
+                    .firstOrNull()
+
+                if (song != null) playSong(song)
+            }
+        }
+    }
+
     override fun onDestroy() {
         super.onDestroy()
-        mediaSessionEventDistributor.unsubscribe(mediaSessionEventListener)
+        rxBusSubscription.dispose()
         mediaSessionHandler.release()
         serviceJob.cancel()
 

@@ -220,6 +220,6 @@ class DownloadListModel(application: Application) : GenericListModel(application
     private val downloader by inject<Downloader>()
 
     fun getList(): LiveData<List<DownloadFile>> {
-        return downloader.observableList
+        return downloader.observableDownloads
     }
 }

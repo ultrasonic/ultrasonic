@@ -37,6 +37,7 @@ import org.moire.ultrasonic.log.FileLoggerTree.Companion.plantToTimberForest
 import org.moire.ultrasonic.log.FileLoggerTree.Companion.uprootFromTimberForest
 import org.moire.ultrasonic.provider.SearchSuggestionProvider
 import org.moire.ultrasonic.service.MediaPlayerController
+import org.moire.ultrasonic.service.RxBus
 import org.moire.ultrasonic.util.Constants
 import org.moire.ultrasonic.util.FileUtil.defaultMusicDirectory
 import org.moire.ultrasonic.util.FileUtil.ultrasonicDirectory
@@ -45,7 +46,6 @@ import org.moire.ultrasonic.util.Settings
 import org.moire.ultrasonic.util.Settings.preferences
 import org.moire.ultrasonic.util.Settings.shareGreeting
 import org.moire.ultrasonic.util.Settings.shouldUseId3Tags
-import org.moire.ultrasonic.util.ThemeChangedEventDistributor
 import org.moire.ultrasonic.util.TimeSpanPreference
 import org.moire.ultrasonic.util.TimeSpanPreferenceDialogFragmentCompat
 import org.moire.ultrasonic.util.Util.toast
@@ -92,9 +92,6 @@ class SettingsFragment :
 
     private val mediaPlayerControllerLazy = inject<MediaPlayerController>(
         MediaPlayerController::class.java
-    )
-    private val themeChangedEventDistributor = inject<ThemeChangedEventDistributor>(
-        ThemeChangedEventDistributor::class.java
     )
     private val mediaSessionHandler = inject<MediaSessionHandler>(
         MediaSessionHandler::class.java
@@ -225,7 +222,7 @@ class SettingsFragment :
                 showArtistPicture!!.isEnabled = sharedPreferences.getBoolean(key, false)
             }
             Constants.PREFERENCES_KEY_THEME -> {
-                themeChangedEventDistributor.value.RaiseThemeChangedEvent()
+                RxBus.themeChangedEventPublisher.onNext(Unit)
             }
         }
     }

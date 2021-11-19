@@ -4,10 +4,7 @@ import org.koin.android.ext.koin.androidContext
 import org.koin.dsl.module
 import org.moire.ultrasonic.data.ActiveServerProvider
 import org.moire.ultrasonic.subsonic.ImageLoaderProvider
-import org.moire.ultrasonic.util.MediaSessionEventDistributor
 import org.moire.ultrasonic.util.MediaSessionHandler
-import org.moire.ultrasonic.util.NowPlayingEventDistributor
-import org.moire.ultrasonic.util.ThemeChangedEventDistributor
 
 /**
  * This Koin module contains the registration of general classes needed for Ultrasonic
@@ -15,8 +12,5 @@ import org.moire.ultrasonic.util.ThemeChangedEventDistributor
 val applicationModule = module {
     single { ActiveServerProvider(get()) }
     single { ImageLoaderProvider(androidContext()) }
-    single { NowPlayingEventDistributor() }
-    single { ThemeChangedEventDistributor() }
-    single { MediaSessionEventDistributor() }
     single { MediaSessionHandler() }
 }

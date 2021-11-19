@@ -43,8 +43,6 @@ import android.widget.Toast
 import androidx.annotation.AnyRes
 import androidx.media.utils.MediaConstants
 import java.io.Closeable
-import java.io.IOException
-import java.io.File
 import java.io.UnsupportedEncodingException
 import java.security.MessageDigest
 import java.text.DecimalFormat
@@ -482,7 +480,6 @@ object Util {
     }
 
     /**
-     *
      * Broadcasts the given song info as the new song being played.
      */
     fun broadcastNewTrackInfo(context: Context, song: MusicDirectory.Entry?) {
@@ -900,6 +897,14 @@ object Util {
     fun getConnectivityManager(): ConnectivityManager {
         val context = appContext()
         return context.getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
+    }
+
+    /**
+     * Executes the given block if this is not null.
+     * @return: the return of the block, or null if this is null
+     */
+    fun <T : Any, R> T?.ifNotNull(block: (T) -> R): R? {
+        return this?.let(block)
     }
 
     /**

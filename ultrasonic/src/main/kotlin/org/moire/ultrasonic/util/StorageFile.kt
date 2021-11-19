@@ -37,6 +37,10 @@ class StorageFile private constructor(
         return getPath().compareTo(other.getPath())
     }
 
+    override fun toString(): String {
+        return name
+    }
+
     var name: String = fileManager.getName(abstractFile)
 
     var isDirectory: Boolean = fileManager.isDirectory(abstractFile)

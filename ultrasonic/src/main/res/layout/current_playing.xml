@@ -4,7 +4,7 @@
     a:layout_height="fill_parent"
     a:orientation="vertical" >
     
-    <org.moire.ultrasonic.util.MyViewFlipper
+    <ViewFlipper
         a:id="@+id/current_playing_playlist_flipper"
         a:layout_width="fill_parent"
         a:layout_height="0dip"
@@ -14,7 +14,6 @@
             a:id="@+id/current_playing_album_art_layout"
             a:layout_width="fill_parent"
             a:layout_height="fill_parent"
-            a:layout_weight="1"
             a:gravity="start"
             a:orientation="vertical" >
 
@@ -52,7 +51,8 @@
                         a:focusable="false"
                         a:gravity="center_vertical"
                         a:scaleType="fitCenter"
-                        a:src="?attr/star_hollow" />
+                        a:src="?attr/star_hollow"
+                        a:importantForAccessibility="no" />
 
                     <ImageView
                         a:id="@+id/song_five_star_2"
@@ -64,7 +64,8 @@
                         a:focusable="false"
                         a:gravity="center_vertical"
                         a:scaleType="fitCenter"
-                        a:src="?attr/star_hollow" />
+                        a:src="?attr/star_hollow"
+                        a:importantForAccessibility="no" />
 
                     <ImageView
                         a:id="@+id/song_five_star_3"
@@ -76,7 +77,8 @@
                         a:focusable="false"
                         a:gravity="center_vertical"
                         a:scaleType="fitCenter"
-                        a:src="?attr/star_hollow" />
+                        a:src="?attr/star_hollow"
+                        a:importantForAccessibility="no" />
 
                     <ImageView
                         a:id="@+id/song_five_star_4"
@@ -88,7 +90,8 @@
                         a:focusable="false"
                         a:gravity="center_vertical"
                         a:scaleType="fitCenter"
-                        a:src="?attr/star_hollow" />
+                        a:src="?attr/star_hollow"
+                        a:importantForAccessibility="no" />
 
                     <ImageView
                         a:id="@+id/song_five_star_5"
@@ -100,7 +103,8 @@
                         a:focusable="false"
                         a:gravity="center_vertical"
                         a:scaleType="fitCenter"
-                        a:src="?attr/star_hollow" />
+                        a:src="?attr/star_hollow"
+                        a:importantForAccessibility="no" />
 
                 </LinearLayout>
 
@@ -119,7 +123,7 @@
         </RelativeLayout>
 
         <include layout="@layout/current_playlist" />
-    </org.moire.ultrasonic.util.MyViewFlipper>
+    </ViewFlipper>
 
     <include layout="@layout/player_media_info" />
 
