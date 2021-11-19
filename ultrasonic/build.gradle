@@ -106,6 +106,7 @@ dependencies {
     implementation other.fastScroll
     implementation other.sortListView
     implementation other.colorPickerView
+    implementation other.fsaf
 
     kapt androidSupport.room
 

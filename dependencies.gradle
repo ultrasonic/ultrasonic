@@ -42,6 +42,7 @@ ext.versions = [
         timber               : "4.7.1",
         fastScroll           : "2.0.1",
         colorPicker          : "2.2.3",
+        fsaf                 : "1.1"
 ]
 
 ext.gradlePlugins = [
@@ -89,6 +90,7 @@ ext.other = [
         fastScroll         : "com.simplecityapps:recyclerview-fastscroll:$versions.fastScroll",
         sortListView       : "com.github.tzugen:drag-sort-listview:$versions.sortListView",
         colorPickerView    : "com.github.skydoves:colorpickerview:$versions.colorPicker",
+        fsaf               : "com.github.K1rakishou:Fuck-Storage-Access-Framework:$versions.fsaf",
 ]
 
 ext.testing = [

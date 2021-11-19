@@ -1,6 +1,5 @@
 package org.moire.ultrasonic.log
 
-import java.io.File
 import java.io.FileWriter
 import java.text.SimpleDateFormat
 import java.util.Date
@@ -8,6 +7,7 @@ import java.util.Locale
 import org.moire.ultrasonic.util.FileUtil
 import org.moire.ultrasonic.util.Util
 import timber.log.Timber
+import java.io.File
 
 /**
  * A Timber Tree which can be used to log to a file

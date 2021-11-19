@@ -10,7 +10,6 @@ import androidx.core.content.ContextCompat
 import com.squareup.picasso.LruCache
 import com.squareup.picasso.Picasso
 import com.squareup.picasso.RequestCreator
-import java.io.File
 import java.io.FileOutputStream
 import java.io.InputStream
 import java.io.OutputStream
@@ -21,8 +20,10 @@ import org.moire.ultrasonic.api.subsonic.throwOnFailure
 import org.moire.ultrasonic.api.subsonic.toStreamResponse
 import org.moire.ultrasonic.domain.MusicDirectory
 import org.moire.ultrasonic.util.FileUtil
+import org.moire.ultrasonic.util.StorageFile
 import org.moire.ultrasonic.util.Util
 import timber.log.Timber
+import java.io.File
 
 /**
  * Our new image loader which uses Picasso as a backend.
@@ -161,7 +162,8 @@ class ImageLoader(
             val file = FileUtil.getAlbumArtFile(entry)
 
             // Return if have a cache hit
-            if (file.exists()) return
+            if (file != null && File(file).exists()) return
+            File(file!!).createNewFile()
 
             // Can't load empty string ids
             val id = entry.coverArt

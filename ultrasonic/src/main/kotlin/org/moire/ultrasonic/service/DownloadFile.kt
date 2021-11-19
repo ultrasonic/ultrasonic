@@ -9,12 +9,9 @@ package org.moire.ultrasonic.service
 
 import android.text.TextUtils
 import androidx.lifecycle.MutableLiveData
-import java.io.File
-import java.io.FileOutputStream
 import java.io.IOException
 import java.io.InputStream
 import java.io.OutputStream
-import java.io.RandomAccessFile
 import org.koin.core.component.KoinComponent
 import org.koin.core.component.inject
 import org.moire.ultrasonic.data.ActiveServerProvider
@@ -25,6 +22,7 @@ import org.moire.ultrasonic.service.MusicServiceFactory.getMusicService
 import org.moire.ultrasonic.subsonic.ImageLoaderProvider
 import org.moire.ultrasonic.util.CacheCleaner
 import org.moire.ultrasonic.util.CancellableTask
+import org.moire.ultrasonic.util.StorageFile
 import org.moire.ultrasonic.util.FileUtil
 import org.moire.ultrasonic.util.Settings
 import org.moire.ultrasonic.util.Util
@@ -37,9 +35,9 @@ class DownloadFile(
     val song: MusicDirectory.Entry,
     private val save: Boolean
 ) : KoinComponent, Identifiable {
-    val partialFile: File
-    val completeFile: File
-    private val saveFile: File = FileUtil.getSongFile(song)
+    val partialFile: String
+    val completeFile: String
+    private val saveFile: String = FileUtil.getSongFile(song)
     private var downloadTask: CancellableTask? = null
     var isFailed = false
     private var retryCount = MAX_RETRIES
@@ -65,8 +63,8 @@ class DownloadFile(
     val status: MutableLiveData<DownloadStatus> = MutableLiveData(DownloadStatus.IDLE)
 
     init {
-        partialFile = File(saveFile.parent, FileUtil.getPartialFile(saveFile.name))
-        completeFile = File(saveFile.parent, FileUtil.getCompleteFile(saveFile.name))
+        partialFile = FileUtil.getParentPath(saveFile) + "/" + FileUtil.getPartialFile(FileUtil.getNameFromPath(saveFile))
+        completeFile = FileUtil.getParentPath(saveFile) + "/" + FileUtil.getCompleteFile(FileUtil.getNameFromPath(saveFile))
     }
 
     /**
@@ -91,14 +89,14 @@ class DownloadFile(
         }
     }
 
-    val completeOrSaveFile: File
-        get() = if (saveFile.exists()) {
+    val completeOrSaveFile: String
+        get() = if (StorageFile.isPathExists(saveFile)) {
             saveFile
         } else {
             completeFile
         }
 
-    val completeOrPartialFile: File
+    val completeOrPartialFile: String
         get() = if (isCompleteFileAvailable) {
             completeOrSaveFile
         } else {
@@ -106,15 +104,15 @@ class DownloadFile(
         }
 
     val isSaved: Boolean
-        get() = saveFile.exists()
+        get() = StorageFile.isPathExists(saveFile)
 
     @get:Synchronized
     val isCompleteFileAvailable: Boolean
-        get() = saveFile.exists() || completeFile.exists()
+        get() = StorageFile.isPathExists(saveFile) || StorageFile.isPathExists(completeFile)
 
     @get:Synchronized
     val isWorkDone: Boolean
-        get() = saveFile.exists() || completeFile.exists() && !save ||
+        get() = StorageFile.isPathExists(saveFile) || StorageFile.isPathExists(completeFile) && !save ||
             saveWhenDone || completeWhenDone
 
     @get:Synchronized
@@ -143,34 +141,22 @@ class DownloadFile(
     }
 
     fun unpin() {
-        if (saveFile.exists()) {
-            if (!saveFile.renameTo(completeFile)) {
-                Timber.w(
-                    "Renaming file failed. Original file: %s; Rename to: %s",
-                    saveFile.name, completeFile.name
-                )
-            }
+        if (StorageFile.isPathExists(saveFile)) {
+            StorageFile.rename(saveFile, completeFile)
         }
     }
 
     fun cleanup(): Boolean {
         var ok = true
-        if (completeFile.exists() || saveFile.exists()) {
+        if (StorageFile.isPathExists(completeFile) || StorageFile.isPathExists(saveFile)) {
             ok = Util.delete(partialFile)
         }
 
-        if (saveFile.exists()) {
+        if (StorageFile.isPathExists(saveFile)) {
             ok = ok and Util.delete(completeFile)
         }
 
         return ok
-    }
-
-    // In support of LRU caching.
-    fun updateModificationDate() {
-        updateModificationDate(saveFile)
-        updateModificationDate(partialFile)
-        updateModificationDate(completeFile)
     }
 
     fun setPlaying(isPlaying: Boolean) {
@@ -208,15 +194,15 @@ class DownloadFile(
         override fun execute() {
 
             var inputStream: InputStream? = null
-            var outputStream: FileOutputStream? = null
+            var outputStream: OutputStream? = null
             try {
-                if (saveFile.exists()) {
+                if (StorageFile.isPathExists(saveFile)) {
                     Timber.i("%s already exists. Skipping.", saveFile)
                     status.postValue(DownloadStatus.DONE)
                     return
                 }
 
-                if (completeFile.exists()) {
+                if (StorageFile.isPathExists(completeFile)) {
                     if (save) {
                         if (isPlaying) {
                             saveWhenDone = true
@@ -237,8 +223,10 @@ class DownloadFile(
                 val duration = song.duration
                 var fileLength: Long = 0
 
-                if (!partialFile.exists()) {
-                    fileLength = partialFile.length()
+                if (!StorageFile.isPathExists(partialFile)) {
+                    fileLength = 0
+                } else {
+                    fileLength = StorageFile.getFromPath(partialFile).length()
                 }
 
                 needsDownloading = (
@@ -248,20 +236,17 @@ class DownloadFile(
 
                 if (needsDownloading) {
                     // Attempt partial HTTP GET, appending to the file if it exists.
-                    val (inStream, partial) = musicService.getDownloadInputStream(
-                        song, partialFile.length(), desiredBitRate, save
+                    val (inStream, isPartial) = musicService.getDownloadInputStream(
+                        song, fileLength, desiredBitRate, save
                     )
 
                     inputStream = inStream
 
-                    if (partial) {
-                        Timber.i(
-                            "Executed partial HTTP GET, skipping %d bytes",
-                            partialFile.length()
-                        )
+                    if (isPartial) {
+                        Timber.i("Executed partial HTTP GET, skipping %d bytes", fileLength)
                     }
 
-                    outputStream = FileOutputStream(partialFile, partial)
+                    outputStream = StorageFile.getOrCreateFileFromPath(partialFile).getFileOutputStream(isPartial)
 
                     val len = inputStream.copyTo(outputStream) { totalBytesCopied ->
                         setProgress(totalBytesCopied)
@@ -376,30 +361,6 @@ class DownloadFile(
     private fun setProgress(totalBytesCopied: Long) {
         if (song.size != null) {
             progress.postValue((totalBytesCopied * 100 / song.size!!).toInt())
-        }
-    }
-
-    private fun updateModificationDate(file: File) {
-        if (file.exists()) {
-            val ok = file.setLastModified(System.currentTimeMillis())
-            if (!ok) {
-                Timber.i(
-                    "Failed to set last-modified date on %s, trying alternate method",
-                    file
-                )
-                try {
-                    // Try alternate method to update last modified date to current time
-                    // Found at https://code.google.com/p/android/issues/detail?id=18624
-                    // According to the bug, this was fixed in Android 8.0 (API 26)
-                    val raf = RandomAccessFile(file, "rw")
-                    val length = raf.length()
-                    raf.setLength(length + 1)
-                    raf.setLength(length)
-                    raf.close()
-                } catch (e: Exception) {
-                    Timber.w(e, "Failed to set last-modified date on %s", file)
-                }
-            }
         }
     }
 

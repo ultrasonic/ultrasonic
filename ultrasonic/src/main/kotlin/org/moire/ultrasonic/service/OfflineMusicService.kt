@@ -9,9 +9,7 @@ package org.moire.ultrasonic.service
 import android.media.MediaMetadataRetriever
 import java.io.BufferedReader
 import java.io.BufferedWriter
-import java.io.File
-import java.io.FileReader
-import java.io.FileWriter
+import org.moire.ultrasonic.util.StorageFile
 import java.io.InputStream
 import java.io.Reader
 import java.lang.Math.min
@@ -43,6 +41,8 @@ import org.moire.ultrasonic.util.Constants
 import org.moire.ultrasonic.util.FileUtil
 import org.moire.ultrasonic.util.Util
 import timber.log.Timber
+import java.io.FileReader
+import java.io.FileWriter
 
 // TODO: There are quite a number of deeply nested and complicated functions in this class..
 // Simplify them :)
@@ -55,8 +55,8 @@ class OfflineMusicService : MusicService, KoinComponent {
         val root = FileUtil.musicDirectory
         for (file in FileUtil.listFiles(root)) {
             if (file.isDirectory) {
-                val index = Index(file.path)
-                index.id = file.path
+                val index = Index(file.getPath())
+                index.id = file.getPath()
                 index.index = file.name.substring(0, 1)
                 index.name = file.name
                 indexes.add(index)
@@ -100,14 +100,14 @@ class OfflineMusicService : MusicService, KoinComponent {
         name: String?,
         refresh: Boolean
     ): MusicDirectory {
-        val dir = File(id)
+        val dir = StorageFile.getFromPath(id)
         val result = MusicDirectory()
         result.name = dir.name
 
         val seen: MutableCollection<String?> = HashSet()
 
         for (file in FileUtil.listMediaFiles(dir)) {
-            val filename = getName(file)
+            val filename = getName(file.name, file.isDirectory)
             if (filename != null && !seen.contains(filename)) {
                 seen.add(filename)
                 result.addChild(createEntry(file, filename))
@@ -127,7 +127,7 @@ class OfflineMusicService : MusicService, KoinComponent {
             val artistName = artistFile.name
             if (artistFile.isDirectory) {
                 if (matchCriteria(criteria, artistName).also { closeness = it } > 0) {
-                    val artist = Artist(artistFile.path)
+                    val artist = Artist(artistFile.getPath())
                     artist.index = artistFile.name.substring(0, 1)
                     artist.name = artistName
                     artist.closeness = closeness
@@ -205,10 +205,12 @@ class OfflineMusicService : MusicService, KoinComponent {
             var line = buffer.readLine()
             if ("#EXTM3U" != line) return playlist
             while (buffer.readLine().also { line = it } != null) {
-                val entryFile = File(line)
-                val entryName = getName(entryFile)
-                if (entryFile.exists() && entryName != null) {
-                    playlist.addChild(createEntry(entryFile, entryName))
+                if (StorageFile.isPathExists(line)) {
+                    val entryFile = StorageFile.getFromPath(line)
+                    val entryName = getName(entryFile.name, entryFile.isDirectory)
+                    if (entryName != null) {
+                        playlist.addChild(createEntry(entryFile, entryName))
+                    }
                 }
             }
             playlist
@@ -228,8 +230,8 @@ class OfflineMusicService : MusicService, KoinComponent {
         try {
             fw.write("#EXTM3U\n")
             for (e in entries) {
-                var filePath = FileUtil.getSongFile(e).absolutePath
-                if (!File(filePath).exists()) {
+                var filePath = FileUtil.getSongFile(e)
+                if (!StorageFile.isPathExists(filePath)) {
                     val ext = FileUtil.getExtension(filePath)
                     val base = FileUtil.getBaseName(filePath)
                     filePath = "$base.complete.$ext"
@@ -251,7 +253,7 @@ class OfflineMusicService : MusicService, KoinComponent {
 
     override fun getRandomSongs(size: Int): MusicDirectory {
         val root = FileUtil.musicDirectory
-        val children: MutableList<File> = LinkedList()
+        val children: MutableList<StorageFile> = LinkedList()
         listFilesRecursively(root, children)
         val result = MusicDirectory()
         if (children.isEmpty()) {
@@ -261,7 +263,7 @@ class OfflineMusicService : MusicService, KoinComponent {
         val finalSize: Int = min(children.size, size)
         for (i in 0 until finalSize) {
             val file = children[i % children.size]
-            result.addChild(createEntry(file, getName(file)))
+            result.addChild(createEntry(file, getName(file.name, file.isDirectory)))
         }
         return result
     }
@@ -483,28 +485,27 @@ class OfflineMusicService : MusicService, KoinComponent {
 
     companion object {
         private val COMPILE = Pattern.compile(" ")
-        private fun getName(file: File): String? {
-            var name = file.name
-            if (file.isDirectory) {
-                return name
+        private fun getName(fileName: String, isDirectory: Boolean): String? {
+            if (isDirectory) {
+                return fileName
             }
-            if (name.endsWith(".partial") || name.contains(".partial.") ||
-                name == Constants.ALBUM_ART_FILE
+            if (fileName.endsWith(".partial") || fileName.contains(".partial.") ||
+                fileName == Constants.ALBUM_ART_FILE
             ) {
                 return null
             }
-            name = name.replace(".complete", "")
+            val name = fileName.replace(".complete", "")
             return FileUtil.getBaseName(name)
         }
 
         @Suppress("TooGenericExceptionCaught", "ComplexMethod", "LongMethod", "NestedBlockDepth")
-        private fun createEntry(file: File, name: String?): MusicDirectory.Entry {
-            val entry = MusicDirectory.Entry(file.path)
+        private fun createEntry(file: StorageFile, name: String?): MusicDirectory.Entry {
+            val entry = MusicDirectory.Entry(file.getPath())
             entry.isDirectory = file.isDirectory
-            entry.parent = file.parent
-            entry.size = file.length()
-            val root = FileUtil.musicDirectory.path
-            entry.path = file.path.replaceFirst(
+            entry.parent = file.getParent()!!.getPath()
+            entry.size = if (file.isFile) file.length() else 0
+            val root = FileUtil.musicDirectory.getPath()
+            entry.path = file.getPath().replaceFirst(
                 String.format(Locale.ROOT, "^%s/", root).toRegex(), ""
             )
             entry.title = name
@@ -520,7 +521,14 @@ class OfflineMusicService : MusicService, KoinComponent {
                 var hasVideo: String? = null
                 try {
                     val mmr = MediaMetadataRetriever()
-                    mmr.setDataSource(file.path)
+
+                    if (file.isRawFile()) mmr.setDataSource(file.getRawFilePath())
+                    else {
+                        val descriptor = file.getDocumentFileDescriptor("r")!!
+                        mmr.setDataSource(descriptor.fileDescriptor)
+                        descriptor.close()
+                    }
+
                     artist = mmr.extractMetadata(MediaMetadataRetriever.METADATA_KEY_ARTIST)
                     album = mmr.extractMetadata(MediaMetadataRetriever.METADATA_KEY_ALBUM)
                     title = mmr.extractMetadata(MediaMetadataRetriever.METADATA_KEY_TITLE)
@@ -533,8 +541,8 @@ class OfflineMusicService : MusicService, KoinComponent {
                     mmr.release()
                 } catch (ignored: Exception) {
                 }
-                entry.artist = artist ?: file.parentFile!!.parentFile!!.name
-                entry.album = album ?: file.parentFile!!.name
+                entry.artist = artist ?: file.getParent()!!.getParent()!!.name
+                entry.album = album ?: file.getParent()!!.name
                 if (title != null) {
                     entry.title = title
                 }
@@ -589,8 +597,8 @@ class OfflineMusicService : MusicService, KoinComponent {
             }
             entry.suffix = FileUtil.getExtension(file.name.replace(".complete", ""))
             val albumArt = FileUtil.getAlbumArtFile(entry)
-            if (albumArt.exists()) {
-                entry.coverArt = albumArt.path
+            if (albumArt != null && StorageFile.isPathExists(albumArt)) {
+                entry.coverArt = albumArt
             }
             return entry
         }
@@ -598,7 +606,7 @@ class OfflineMusicService : MusicService, KoinComponent {
         @Suppress("NestedBlockDepth")
         private fun recursiveAlbumSearch(
             artistName: String,
-            file: File,
+            file: StorageFile,
             criteria: SearchCriteria,
             albums: MutableList<MusicDirectory.Entry>,
             songs: MutableList<MusicDirectory.Entry>
@@ -606,7 +614,7 @@ class OfflineMusicService : MusicService, KoinComponent {
             var closeness: Int
             for (albumFile in FileUtil.listMediaFiles(file)) {
                 if (albumFile.isDirectory) {
-                    val albumName = getName(albumFile)
+                    val albumName = getName(albumFile.name, albumFile.isDirectory)
                     if (matchCriteria(criteria, albumName).also { closeness = it } > 0) {
                         val album = createEntry(albumFile, albumName)
                         album.artist = artistName
@@ -614,7 +622,7 @@ class OfflineMusicService : MusicService, KoinComponent {
                         albums.add(album)
                     }
                     for (songFile in FileUtil.listMediaFiles(albumFile)) {
-                        val songName = getName(songFile)
+                        val songName = getName(songFile.name, songFile.isDirectory)
                         if (songFile.isDirectory) {
                             recursiveAlbumSearch(artistName, songFile, criteria, albums, songs)
                         } else if (matchCriteria(criteria, songName).also { closeness = it } > 0) {
@@ -626,7 +634,7 @@ class OfflineMusicService : MusicService, KoinComponent {
                         }
                     }
                 } else {
-                    val songName = getName(albumFile)
+                    val songName = getName(albumFile.name, albumFile.isDirectory)
                     if (matchCriteria(criteria, songName).also { closeness = it } > 0) {
                         val song = createEntry(albumFile, songName)
                         song.artist = artistName
@@ -655,7 +663,7 @@ class OfflineMusicService : MusicService, KoinComponent {
             return closeness
         }
 
-        private fun listFilesRecursively(parent: File, children: MutableList<File>) {
+        private fun listFilesRecursively(parent: StorageFile, children: MutableList<StorageFile>) {
             for (file in FileUtil.listMediaFiles(parent)) {
                 if (file.isFile) {
                     children.add(file)

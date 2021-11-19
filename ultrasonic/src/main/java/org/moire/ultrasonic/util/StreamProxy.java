@@ -8,8 +8,6 @@ import org.moire.ultrasonic.service.Supplier;
 
 import java.io.BufferedOutputStream;
 import java.io.BufferedReader;
-import java.io.File;
-import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
@@ -155,8 +153,7 @@ public class StreamProxy implements Runnable
             }
 
             Timber.i("Processing request for file %s", localPath);
-            File file = new File(localPath);
-            if (!file.exists()) {
+            if (!StorageFile.Companion.isPathExists(localPath)) {
                 Timber.e("File %s does not exist", localPath);
                 return false;
             }
@@ -194,12 +191,12 @@ public class StreamProxy implements Runnable
 					while (isRunning && !client.isClosed())
 					{
 						// See if there's more to send
-						File file = downloadFile.isCompleteFileAvailable() ? downloadFile.getCompleteOrSaveFile() : downloadFile.getPartialFile();
+						String file = downloadFile.isCompleteFileAvailable() ? downloadFile.getCompleteOrSaveFile() : downloadFile.getPartialFile();
 						int cbSentThisBatch = 0;
 
-						if (file.exists())
+						if (StorageFile.Companion.isPathExists(file))
 						{
-							FileInputStream input = new FileInputStream(file);
+							InputStream input = StorageFile.Companion.getFromPath(file).getFileInputStream();
 
 							try
 							{

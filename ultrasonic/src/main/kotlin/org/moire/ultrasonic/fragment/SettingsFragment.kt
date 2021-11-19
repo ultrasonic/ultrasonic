@@ -20,7 +20,6 @@ import androidx.preference.ListPreference
 import androidx.preference.Preference
 import androidx.preference.PreferenceCategory
 import androidx.preference.PreferenceFragmentCompat
-import java.io.File
 import kotlin.math.ceil
 import org.koin.core.component.KoinComponent
 import org.koin.java.KoinJavaComponent.get
@@ -51,6 +50,7 @@ import org.moire.ultrasonic.util.TimeSpanPreference
 import org.moire.ultrasonic.util.TimeSpanPreferenceDialogFragmentCompat
 import org.moire.ultrasonic.util.Util.toast
 import timber.log.Timber
+import java.io.File
 
 /**
  * Shows main app settings.
@@ -167,17 +167,28 @@ class SettingsFragment :
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, resultData: Intent?) {
-        if (requestCode == SELECT_CACHE_ACTIVITY && resultCode == Activity.RESULT_OK) {
-            // The result data contains a URI for the document or directory that
-            // the user selected.
-            resultData?.data?.also { uri ->
-                // Perform operations on the document using its URI.
-                val contentResolver = UApp.applicationContext().contentResolver
+        if (
+            requestCode != SELECT_CACHE_ACTIVITY ||
+            resultCode != Activity.RESULT_OK ||
+            resultData == null
+        ) return
 
-                contentResolver.takePersistableUriPermission(uri, RW_FLAG)
+        val read = (resultData.flags and Intent.FLAG_GRANT_READ_URI_PERMISSION) != 0
+        val write = (resultData.flags and Intent.FLAG_GRANT_WRITE_URI_PERMISSION) != 0
+        val persist = (resultData.flags and Intent.FLAG_GRANT_PERSISTABLE_URI_PERMISSION) != 0
 
-                setCacheLocation(uri)
-            }
+        // TODO Should we show an error?
+        if (!read || !write || !persist) return
+
+        // The result data contains a URI for the document or directory that
+        // the user selected.
+        resultData.data?.also { uri ->
+            // Perform operations on the document using its URI.
+            val contentResolver = UApp.applicationContext().contentResolver
+
+            contentResolver.takePersistableUriPermission(uri, RW_FLAG)
+
+            setCacheLocation(uri)
         }
     }
 
@@ -238,7 +249,9 @@ class SettingsFragment :
     }
 
     private fun setupCacheLocationPreference() {
-        cacheLocation!!.summary = Settings.cacheLocation
+        // TODO add means to reset cache directory to its default value
+        val uri = Uri.parse(Settings.cacheLocation)
+        cacheLocation!!.summary = uri.path
         cacheLocation!!.onPreferenceClickListener =
             Preference.OnPreferenceClickListener {
                 val isDefault = Settings.cacheLocation == defaultMusicDirectory.path
@@ -400,6 +413,7 @@ class SettingsFragment :
     }
 
     private fun setHideMedia(hide: Boolean) {
+        // TODO this only hides the media files in the Ultrasonic dir and not in the music cache
         val nomediaDir = File(ultrasonicDirectory, ".nomedia")
         if (hide && !nomediaDir.exists()) {
             if (!nomediaDir.mkdir()) {
@@ -425,7 +439,7 @@ class SettingsFragment :
     private fun setCacheLocation(uri: Uri) {
         if (uri.path != null) {
             cacheLocation!!.summary = uri.path
-            Settings.cacheLocation = uri.path!!
+            Settings.cacheLocation = uri.toString()
 
             // Clear download queue.
             mediaPlayerControllerLazy.value.clear()

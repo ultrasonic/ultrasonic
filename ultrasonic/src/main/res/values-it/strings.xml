@@ -191,7 +191,7 @@
     <string name="settings.directory_cache_time_60">1 ora</string>
     <string name="settings.disc_sort">Ordina Canzoni secondo Disco</string>
     <string name="settings.disc_sort_summary">Ordina lista canzoni secondo il numero disco e traccia</string>
-    <string name="settings.display_bitrate">Visualizza Bitrate Ed Estensione File</string>
+    <string name="settings.display_bitrate">Visualizza Bitrate Ed Estensione FileAdapter</string>
     <string name="settings.display_bitrate_summary">Aggiungi nome artista con bitrare ed estensione file</string>
     <string name="settings.download_transition">Visualizza Download Durante Riproduzione</string>
     <string name="settings.download_transition_summary">Passa al download quando inizia riproduzione</string>

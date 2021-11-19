@@ -1,8 +1,9 @@
 package org.moire.ultrasonic.util
 
+import android.net.Uri
 import android.os.AsyncTask
 import android.os.StatFs
-import java.io.File
+import android.system.Os
 import java.util.ArrayList
 import java.util.HashSet
 import org.koin.java.KoinJavaComponent.inject
@@ -57,8 +58,8 @@ class CacheCleaner {
         override fun doInBackground(vararg params: Void?): Void? {
             try {
                 Thread.currentThread().name = "BackgroundCleanup"
-                val files: MutableList<File> = ArrayList()
-                val dirs: MutableList<File> = ArrayList()
+                val files: MutableList<StorageFile> = ArrayList()
+                val dirs: MutableList<StorageFile> = ArrayList()
                 findCandidatesForDeletion(musicDirectory, files, dirs)
                 sortByAscendingModificationTime(files)
                 val filesToNotDelete = findFilesToNotDelete()
@@ -75,8 +76,8 @@ class CacheCleaner {
         override fun doInBackground(vararg params: Void?): Void? {
             try {
                 Thread.currentThread().name = "BackgroundSpaceCleanup"
-                val files: MutableList<File> = ArrayList()
-                val dirs: MutableList<File> = ArrayList()
+                val files: MutableList<StorageFile> = ArrayList()
+                val dirs: MutableList<StorageFile> = ArrayList()
                 findCandidatesForDeletion(musicDirectory, files, dirs)
                 val bytesToDelete = getMinimumDelete(files)
                 if (bytesToDelete > 0L) {
@@ -116,29 +117,29 @@ class CacheCleaner {
 
     companion object {
         private const val MIN_FREE_SPACE = 500 * 1024L * 1024L
-        private fun deleteEmptyDirs(dirs: Iterable<File>, doNotDelete: Collection<File>) {
+        private fun deleteEmptyDirs(dirs: Iterable<StorageFile>, doNotDelete: Collection<String>) {
             for (dir in dirs) {
-                if (doNotDelete.contains(dir)) {
+                if (doNotDelete.contains(dir.getPath())) {
                     continue
                 }
                 var children = dir.listFiles()
                 if (children != null) {
                     // No songs left in the folder
-                    if (children.size == 1 && children[0].path == getAlbumArtFile(dir).path) {
+                    if (children.size == 1 && children[0].getPath() == getAlbumArtFile(dir.getPath())) {
                         // Delete Artwork files
-                        delete(getAlbumArtFile(dir))
+                        delete(getAlbumArtFile(dir.getPath()))
                         children = dir.listFiles()
                     }
 
                     // Delete empty directory
                     if (children != null && children.isEmpty()) {
-                        delete(dir)
+                        delete(dir.getPath())
                     }
                 }
             }
         }
 
-        private fun getMinimumDelete(files: List<File>): Long {
+        private fun getMinimumDelete(files: List<StorageFile>): Long {
             if (files.isEmpty()) {
                 return 0L
             }
@@ -149,11 +150,25 @@ class CacheCleaner {
             }
 
             // Ensure that file system is not more than 95% full.
-            val stat = StatFs(files[0].path)
-            val bytesTotalFs = stat.blockCountLong * stat.blockSizeLong
-            val bytesAvailableFs = stat.availableBlocksLong * stat.blockSizeLong
-            val bytesUsedFs = bytesTotalFs - bytesAvailableFs
-            val minFsAvailability = bytesTotalFs - MIN_FREE_SPACE
+            val bytesUsedFs: Long
+            val minFsAvailability: Long
+            val bytesTotalFs: Long
+            val bytesAvailableFs: Long
+            if (files[0].isRawFile()) {
+                val stat = StatFs(files[0].getRawFilePath())
+                bytesTotalFs = stat.blockCountLong * stat.blockSizeLong
+                bytesAvailableFs = stat.availableBlocksLong * stat.blockSizeLong
+                bytesUsedFs = bytesTotalFs - bytesAvailableFs
+                minFsAvailability = bytesTotalFs - MIN_FREE_SPACE
+            } else {
+                val descriptor = files[0].getDocumentFileDescriptor("r")!!
+                val stat = Os.fstatvfs(descriptor.fileDescriptor)
+                bytesTotalFs = stat.f_blocks * stat.f_bsize
+                bytesAvailableFs = stat.f_bfree * stat.f_bsize
+                bytesUsedFs = bytesTotalFs - bytesAvailableFs
+                minFsAvailability = bytesTotalFs - MIN_FREE_SPACE
+                descriptor.close()
+            }
             val bytesToDeleteCacheLimit = (bytesUsedBySubsonic - cacheSizeBytes).coerceAtLeast(0L)
             val bytesToDeleteFsLimit = (bytesUsedFs - minFsAvailability).coerceAtLeast(0L)
             val bytesToDelete = bytesToDeleteCacheLimit.coerceAtLeast(bytesToDeleteFsLimit)
@@ -169,18 +184,18 @@ class CacheCleaner {
             return bytesToDelete
         }
 
-        private fun isPartial(file: File): Boolean {
+        private fun isPartial(file: StorageFile): Boolean {
             return file.name.endsWith(".partial") || file.name.contains(".partial.")
         }
 
-        private fun isComplete(file: File): Boolean {
+        private fun isComplete(file: StorageFile): Boolean {
             return file.name.endsWith(".complete") || file.name.contains(".complete.")
         }
 
         @Suppress("NestedBlockDepth")
         private fun deleteFiles(
-            files: Collection<File>,
-            doNotDelete: Collection<File>,
+            files: Collection<StorageFile>,
+            doNotDelete: Collection<String>,
             bytesToDelete: Long,
             deletePartials: Boolean
         ) {
@@ -191,9 +206,9 @@ class CacheCleaner {
             for (file in files) {
                 if (!deletePartials && bytesDeleted > bytesToDelete) break
                 if (bytesToDelete > bytesDeleted || deletePartials && isPartial(file)) {
-                    if (!doNotDelete.contains(file) && file.name != Constants.ALBUM_ART_FILE) {
+                    if (!doNotDelete.contains(file.getPath()) && file.name != Constants.ALBUM_ART_FILE) {
                         val size = file.length()
-                        if (delete(file)) {
+                        if (delete(file.getPath())) {
                             bytesDeleted += size
                         }
                     }
@@ -203,9 +218,9 @@ class CacheCleaner {
         }
 
         private fun findCandidatesForDeletion(
-            file: File,
-            files: MutableList<File>,
-            dirs: MutableList<File>
+            file: StorageFile,
+            files: MutableList<StorageFile>,
+            dirs: MutableList<StorageFile>
         ) {
             if (file.isFile && (isPartial(file) || isComplete(file))) {
                 files.add(file)
@@ -218,14 +233,14 @@ class CacheCleaner {
             }
         }
 
-        private fun sortByAscendingModificationTime(files: MutableList<File>) {
-            files.sortWith { a: File, b: File ->
+        private fun sortByAscendingModificationTime(files: MutableList<StorageFile>) {
+            files.sortWith { a: StorageFile, b: StorageFile ->
                 a.lastModified().compareTo(b.lastModified())
             }
         }
 
-        private fun findFilesToNotDelete(): Set<File> {
-            val filesToNotDelete: MutableSet<File> = HashSet(5)
+        private fun findFilesToNotDelete(): Set<String> {
+            val filesToNotDelete: MutableSet<String> = HashSet(5)
             val downloader = inject<Downloader>(
                 Downloader::class.java
             )
@@ -233,7 +248,7 @@ class CacheCleaner {
                 filesToNotDelete.add(downloadFile.partialFile)
                 filesToNotDelete.add(downloadFile.completeOrSaveFile)
             }
-            filesToNotDelete.add(musicDirectory)
+            filesToNotDelete.add(musicDirectory.getPath())
             return filesToNotDelete
         }
     }

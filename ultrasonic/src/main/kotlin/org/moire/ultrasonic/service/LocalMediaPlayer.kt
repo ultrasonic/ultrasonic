@@ -19,7 +19,7 @@ import android.os.PowerManager
 import android.os.PowerManager.PARTIAL_WAKE_LOCK
 import android.os.PowerManager.WakeLock
 import androidx.lifecycle.MutableLiveData
-import java.io.File
+import org.moire.ultrasonic.util.StorageFile
 import java.net.URLEncoder
 import java.util.Locale
 import kotlin.math.abs
@@ -37,6 +37,7 @@ import org.moire.ultrasonic.util.Settings
 import org.moire.ultrasonic.util.StreamProxy
 import org.moire.ultrasonic.util.Util
 import timber.log.Timber
+import java.io.File
 
 /**
  * Represents a Media Player which uses the mobile's resources for playback
@@ -362,16 +363,17 @@ class LocalMediaPlayer : KoinComponent {
         try {
             downloadFile.setPlaying(false)
 
-            val file = downloadFile.completeOrPartialFile
+            val file = StorageFile.getFromPath(downloadFile.completeOrPartialFile)
             val partial = !downloadFile.isCompleteFileAvailable
 
-            downloadFile.updateModificationDate()
+            // TODO this won't work with SAF, we should use something else, e.g. a recent list
+            // downloadFile.updateModificationDate()
             mediaPlayer.setOnCompletionListener(null)
 
             setPlayerState(PlayerState.IDLE)
             setAudioAttributes(mediaPlayer)
 
-            var dataSource = file.path
+            var dataSource: String? = null
             if (partial) {
                 if (proxy == null) {
                     proxy = StreamProxy(object : Supplier<DownloadFile?>() {
@@ -393,7 +395,14 @@ class LocalMediaPlayer : KoinComponent {
 
             Timber.i("Preparing media player")
 
-            mediaPlayer.setDataSource(dataSource)
+            if (dataSource != null) mediaPlayer.setDataSource(dataSource)
+            else if (file.isRawFile()) mediaPlayer.setDataSource(file.getRawFilePath())
+            else {
+                val descriptor = file.getDocumentFileDescriptor("r")!!
+                mediaPlayer.setDataSource(descriptor.fileDescriptor)
+                descriptor.close()
+            }
+
             setPlayerState(PlayerState.PREPARING)
 
             mediaPlayer.setOnBufferingUpdateListener { mp, percent ->
@@ -452,7 +461,7 @@ class LocalMediaPlayer : KoinComponent {
     @Synchronized
     private fun setupNext(downloadFile: DownloadFile) {
         try {
-            val file = downloadFile.completeOrPartialFile
+            val file = StorageFile.getFromPath(downloadFile.completeOrPartialFile)
 
             // Release the media player if it is not our active player
             if (nextMediaPlayer != null && nextMediaPlayer != mediaPlayer) {
@@ -472,7 +481,12 @@ class LocalMediaPlayer : KoinComponent {
             } catch (ignored: Throwable) {
             }
 
-            nextMediaPlayer!!.setDataSource(file.path)
+            if (file.isRawFile()) nextMediaPlayer!!.setDataSource(file.getRawFilePath())
+            else {
+                val descriptor = file.getDocumentFileDescriptor("r")!!
+                nextMediaPlayer!!.setDataSource(descriptor.fileDescriptor)
+                descriptor.close()
+            }
             setNextPlayerState(PlayerState.PREPARING)
             nextMediaPlayer!!.setOnPreparedListener {
                 try {
@@ -600,7 +614,7 @@ class LocalMediaPlayer : KoinComponent {
         private val autoStart: Boolean = true
     ) : CancellableTask() {
         private val expectedFileSize: Long
-        private val partialFile: File = downloadFile.partialFile
+        private val partialFile: String = downloadFile.partialFile
 
         override fun execute() {
             setPlayerState(PlayerState.DOWNLOADING)
@@ -616,7 +630,8 @@ class LocalMediaPlayer : KoinComponent {
 
         private fun bufferComplete(): Boolean {
             val completeFileAvailable = downloadFile.isWorkDone
-            val size = partialFile.length()
+            val size = if (!StorageFile.isPathExists(partialFile)) 0
+            else StorageFile.getFromPath(partialFile).length()
 
             Timber.i(
                 "Buffering %s (%d/%d, %s)",
@@ -649,7 +664,7 @@ class LocalMediaPlayer : KoinComponent {
 
     private inner class CheckCompletionTask(downloadFile: DownloadFile?) : CancellableTask() {
         private val downloadFile: DownloadFile?
-        private val partialFile: File?
+        private val partialFile: String?
         override fun execute() {
             Thread.currentThread().name = "CheckCompletionTask"
             if (downloadFile == null) {
@@ -673,7 +688,10 @@ class LocalMediaPlayer : KoinComponent {
             val completeFileAvailable = downloadFile!!.isWorkDone
             val state = (playerState === PlayerState.STARTED || playerState === PlayerState.PAUSED)
 
-            Timber.i("Buffering next %s (%d)", partialFile, partialFile!!.length())
+            val length = if (partialFile == null || !StorageFile.isPathExists(partialFile)) 0
+            else StorageFile.getFromPath(partialFile).length()
+
+            Timber.i("Buffering next %s (%d)", partialFile, length)
 
             return completeFileAvailable && state
         }

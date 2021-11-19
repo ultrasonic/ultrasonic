@@ -21,6 +21,7 @@ import android.graphics.BitmapFactory
 import android.graphics.Canvas
 import android.graphics.drawable.BitmapDrawable
 import android.graphics.drawable.Drawable
+import android.media.MediaScannerConnection
 import android.net.ConnectivityManager
 import android.net.Uri
 import android.net.wifi.WifiManager
@@ -38,9 +39,6 @@ import android.widget.Toast
 import androidx.annotation.AnyRes
 import androidx.media.utils.MediaConstants
 import java.io.Closeable
-import java.io.File
-import java.io.FileInputStream
-import java.io.FileOutputStream
 import java.io.IOException
 import java.io.UnsupportedEncodingException
 import java.security.MessageDigest
@@ -51,6 +49,7 @@ import kotlin.math.max
 import kotlin.math.min
 import kotlin.math.roundToInt
 import org.moire.ultrasonic.R
+import org.moire.ultrasonic.app.UApp
 import org.moire.ultrasonic.app.UApp.Companion.applicationContext
 import org.moire.ultrasonic.domain.Bookmark
 import org.moire.ultrasonic.domain.MusicDirectory
@@ -58,6 +57,7 @@ import org.moire.ultrasonic.domain.PlayerState
 import org.moire.ultrasonic.domain.SearchResult
 import org.moire.ultrasonic.service.DownloadFile
 import timber.log.Timber
+import java.io.File
 
 private const val LINE_LENGTH = 60
 private const val DEGRADE_PRECISION_AFTER = 10
@@ -110,39 +110,10 @@ object Util {
         }
     }
 
-    @Throws(IOException::class)
-    fun atomicCopy(from: File, to: File) {
-        val tmp = File(String.format(Locale.ROOT, "%s.tmp", to.path))
-        val input = FileInputStream(from)
-        val out = FileOutputStream(tmp)
-        try {
-            input.channel.transferTo(0, from.length(), out.channel)
-            out.close()
-            if (!tmp.renameTo(to)) {
-                throw IOException(
-                    String.format(Locale.ROOT, "Failed to rename %s to %s", tmp, to)
-                )
-            }
-            Timber.i("Copied %s to %s", from, to)
-        } catch (x: IOException) {
-            close(out)
-            delete(to)
-            throw x
-        } finally {
-            close(input)
-            close(out)
-            delete(tmp)
-        }
-    }
-
     @JvmStatic
     @Throws(IOException::class)
-    fun renameFile(from: File, to: File) {
-        if (from.renameTo(to)) {
-            Timber.i("Renamed %s to %s", from, to)
-        } else {
-            atomicCopy(from, to)
-        }
+    fun renameFile(from: String, to: String) {
+        StorageFile.rename(from, to)
     }
 
     @JvmStatic
@@ -155,6 +126,17 @@ object Util {
     }
 
     @JvmStatic
+    fun delete(file: String?): Boolean {
+        if (file != null && StorageFile.isPathExists(file)) {
+            if (!StorageFile.getFromPath(file).delete()) {
+                Timber.w("Failed to delete file %s", file)
+                return false
+            }
+            Timber.i("Deleted file %s", file)
+        }
+        return true
+    }
+
     fun delete(file: File?): Boolean {
         if (file != null && file.exists()) {
             if (!file.delete()) {
@@ -513,7 +495,7 @@ object Util {
             intent.putExtra("artist", song.artist)
             intent.putExtra("album", song.album)
             val albumArtFile = FileUtil.getAlbumArtFile(song)
-            intent.putExtra("coverart", albumArtFile.absolutePath)
+            intent.putExtra("coverart", albumArtFile)
         } else {
             intent.putExtra("title", "")
             intent.putExtra("artist", "")
@@ -617,8 +599,8 @@ object Util {
 
             if (Settings.shouldSendBluetoothAlbumArt) {
                 val albumArtFile = FileUtil.getAlbumArtFile(song)
-                intent.putExtra("coverart", albumArtFile.absolutePath)
-                intent.putExtra("cover", albumArtFile.absolutePath)
+                intent.putExtra("coverart", albumArtFile)
+                intent.putExtra("cover", albumArtFile)
             }
 
             intent.putExtra("position", playerPosition.toLong())
@@ -777,10 +759,11 @@ object Util {
     }
 
     @JvmStatic
-    fun scanMedia(file: File?) {
-        val uri = Uri.fromFile(file)
-        val scanFileIntent = Intent(Intent.ACTION_MEDIA_SCANNER_SCAN_FILE, uri)
-        appContext().sendBroadcast(scanFileIntent)
+    fun scanMedia(file: String?) {
+        // TODO this doesn't work for URIs
+        MediaScannerConnection.scanFile(
+            UApp.applicationContext(), arrayOf(file),
+            null, null)
     }
 
     fun getResourceFromAttribute(context: Context, resId: Int): Int {

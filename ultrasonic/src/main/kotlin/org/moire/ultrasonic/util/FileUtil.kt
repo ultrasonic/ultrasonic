@@ -13,7 +13,6 @@ import android.os.Environment
 import android.text.TextUtils
 import android.util.Pair
 import java.io.BufferedWriter
-import java.io.File
 import java.io.FileInputStream
 import java.io.FileOutputStream
 import java.io.FileWriter
@@ -28,6 +27,7 @@ import java.util.regex.Pattern
 import org.moire.ultrasonic.app.UApp
 import org.moire.ultrasonic.domain.MusicDirectory
 import timber.log.Timber
+import java.io.File
 
 object FileUtil {
 
@@ -43,12 +43,12 @@ object FileUtil {
     const val SUFFIX_SMALL = ".jpeg-small"
     private const val UNNAMED = "unnamed"
 
-    fun getSongFile(song: MusicDirectory.Entry): File {
+    fun getSongFile(song: MusicDirectory.Entry): String {
         val dir = getAlbumDirectory(song)
 
         // Do not generate new name for offline files. Offline files will have their Path as their Id.
         if (!TextUtils.isEmpty(song.id)) {
-            if (song.id.startsWith(dir.absolutePath)) return File(song.id)
+            if (song.id.startsWith(dir)) return song.id
         }
 
         // Generate a file name for the song
@@ -70,7 +70,7 @@ object FileUtil {
         } else {
             fileName.append(song.suffix)
         }
-        return File(dir, fileName.toString())
+        return "$dir/$fileName"
     }
 
     @JvmStatic
@@ -104,9 +104,9 @@ object FileUtil {
      * @param entry The album entry
      * @return File object. Not guaranteed that it exists
      */
-    fun getAlbumArtFile(entry: MusicDirectory.Entry): File {
+    fun getAlbumArtFile(entry: MusicDirectory.Entry): String? {
         val albumDir = getAlbumDirectory(entry)
-        return getAlbumArtFile(albumDir)
+        return getAlbumArtFileForAlbumDir(albumDir)
     }
 
     /**
@@ -129,7 +129,7 @@ object FileUtil {
      */
     fun getArtistArtKey(name: String?, large: Boolean): String {
         val artist = fileSystemSafe(name)
-        val dir = File(String.format(Locale.ROOT, "%s/%s/%s", musicDirectory.path, artist, UNNAMED))
+        val dir = String.format(Locale.ROOT, "%s/%s/%s", musicDirectory.getPath(), artist, UNNAMED)
         return getAlbumArtKey(dir, large)
     }
 
@@ -139,9 +139,9 @@ object FileUtil {
      * @param large Whether to get the key for the large or the default image
      * @return String The hash key
      */
-    private fun getAlbumArtKey(albumDir: File, large: Boolean): String {
+    private fun getAlbumArtKey(albumDirPath: String, large: Boolean): String {
         val suffix = if (large) SUFFIX_LARGE else SUFFIX_SMALL
-        return String.format(Locale.ROOT, "%s%s", Util.md5Hex(albumDir.path), suffix)
+        return String.format(Locale.ROOT, "%s%s", Util.md5Hex(albumDirPath), suffix)
     }
 
     fun getAvatarFile(username: String?): File? {
@@ -159,10 +159,9 @@ object FileUtil {
      * @return File object. Not guaranteed that it exists
      */
     @JvmStatic
-    fun getAlbumArtFile(albumDir: File): File {
-        val albumArtDir = albumArtDirectory
+    fun getAlbumArtFileForAlbumDir(albumDir: String): String? {
         val key = getAlbumArtKey(albumDir, true)
-        return File(albumArtDir, key)
+        return getAlbumArtFile(key)
     }
 
     /**
@@ -171,11 +170,11 @@ object FileUtil {
      * @return File object. Not guaranteed that it exists
      */
     @JvmStatic
-    fun getAlbumArtFile(cacheKey: String?): File? {
-        val albumArtDir = albumArtDirectory
+    fun getAlbumArtFile(cacheKey: String?): String? {
+        val albumArtDir = albumArtDirectory.absolutePath
         return if (cacheKey == null) {
             null
-        } else File(albumArtDir, cacheKey)
+        } else "$albumArtDir/$cacheKey"
     }
 
     val albumArtDirectory: File
@@ -186,36 +185,30 @@ object FileUtil {
             return albumArtDir
         }
 
-    fun getAlbumDirectory(entry: MusicDirectory.Entry): File {
-        val dir: File
-        if (!TextUtils.isEmpty(entry.path)) {
-            val f = File(fileSystemSafeDir(entry.path))
-            dir = File(
-                String.format(
+    fun getAlbumDirectory(entry: MusicDirectory.Entry): String {
+        val dir: String
+        if (!TextUtils.isEmpty(entry.path) && getParentPath(entry.path!!) != null) {
+            val f = fileSystemSafeDir(entry.path)
+            dir = String.format(
                     Locale.ROOT,
                     "%s/%s",
-                    musicDirectory.path,
-                    if (entry.isDirectory) f.path else f.parent ?: ""
+                    musicDirectory.getPath(),
+                    if (entry.isDirectory) f else getParentPath(f) ?: ""
                 )
-            )
         } else {
             val artist = fileSystemSafe(entry.artist)
             var album = fileSystemSafe(entry.album)
             if (UNNAMED == album) {
                 album = fileSystemSafe(entry.title)
             }
-            dir = File(String.format(Locale.ROOT, "%s/%s/%s", musicDirectory.path, artist, album))
+            dir = String.format(Locale.ROOT, "%s/%s/%s", musicDirectory.getPath(), artist, album)
         }
         return dir
     }
 
-    fun createDirectoryForParent(file: File) {
-        val dir = file.parentFile
-        if (dir != null && !dir.exists()) {
-            if (!dir.mkdirs()) {
-                Timber.e("Failed to create directory %s", dir)
-            }
-        }
+    fun createDirectoryForParent(path: String) {
+        val dir = getParentPath(path) ?: return
+        StorageFile.createDirsOnPath(dir)
     }
 
     @Suppress("SameParameterValue")
@@ -245,13 +238,8 @@ object FileUtil {
         get() = getOrCreateDirectory("music")
 
     @JvmStatic
-    val musicDirectory: File
-        get() {
-            val path = Settings.cacheLocation
-            val dir = File(path)
-            val hasAccess = ensureDirectoryExistsAndIsReadWritable(dir)
-            return if (hasAccess.second) dir else defaultMusicDirectory
-        }
+    val musicDirectory: StorageFile
+        get() = StorageFile.getMediaRoot()
 
     @JvmStatic
     @Suppress("ReturnCount")
@@ -327,6 +315,16 @@ object FileUtil {
      * Never returns `null`, instead a warning is logged, and an empty set is returned.
      */
     @JvmStatic
+    fun listFiles(dir: StorageFile): SortedSet<StorageFile> {
+        val files = dir.listFiles()
+        if (files == null) {
+            Timber.w("Failed to list children for %s", dir.getPath())
+            return TreeSet()
+        }
+        return TreeSet(files.asList())
+    }
+
+    @JvmStatic
     fun listFiles(dir: File): SortedSet<File> {
         val files = dir.listFiles()
         if (files == null) {
@@ -336,7 +334,7 @@ object FileUtil {
         return TreeSet(files.asList())
     }
 
-    fun listMediaFiles(dir: File): SortedSet<File> {
+    fun listMediaFiles(dir: StorageFile): SortedSet<StorageFile> {
         val files = listFiles(dir)
         val iterator = files.iterator()
         while (iterator.hasNext()) {
@@ -348,7 +346,7 @@ object FileUtil {
         return files
     }
 
-    private fun isMediaFile(file: File): Boolean {
+    private fun isMediaFile(file: StorageFile): Boolean {
         val extension = getExtension(file.name)
         return MUSIC_FILE_EXTENSIONS.contains(extension) ||
             VIDEO_FILE_EXTENSIONS.contains(extension)
@@ -391,6 +389,15 @@ object FileUtil {
      */
     fun getPartialFile(name: String): String {
         return String.format(Locale.ROOT, "%s.partial.%s", getBaseName(name), getExtension(name))
+    }
+
+    fun getNameFromPath(path: String): String {
+        return path.substringAfterLast('/')
+    }
+
+    fun getParentPath(path: String): String? {
+        if (!path.contains('/')) return null
+        return path.substringBeforeLast('/')
     }
 
     /**
@@ -453,9 +460,9 @@ object FileUtil {
         try {
             fw.write("#EXTM3U\n")
             for (e in playlist.getChildren()) {
-                var filePath = getSongFile(e).absolutePath
+                var filePath = getSongFile(e)
 
-                if (!File(filePath).exists()) {
+                if (!StorageFile.isPathExists(filePath)) {
                     val ext = getExtension(filePath)
                     val base = getBaseName(filePath)
                     filePath = "$base.complete.$ext"
