@@ -8,14 +8,12 @@
 package org.moire.ultrasonic.model
 
 import android.app.Application
-import android.os.Bundle
 import androidx.lifecycle.MutableLiveData
 import java.util.LinkedList
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import org.moire.ultrasonic.R
 import org.moire.ultrasonic.domain.MusicDirectory
-import org.moire.ultrasonic.service.MusicService
 import org.moire.ultrasonic.service.MusicServiceFactory
 import org.moire.ultrasonic.util.Settings
 import org.moire.ultrasonic.util.Util
@@ -81,7 +79,6 @@ class TrackCollectionModel(application: Application) : GenericListModel(applicat
             updateList(root)
         }
     }
-
 
     // Given a Music directory "songs" it recursively adds all children to "songs"
     private fun getSongsRecursively(
@@ -257,5 +254,4 @@ class TrackCollectionModel(application: Application) : GenericListModel(applicat
     private fun updateList(root: MusicDirectory) {
         currentList.postValue(root.getChildren())
     }
-
 }

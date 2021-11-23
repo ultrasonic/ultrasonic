@@ -10,19 +10,20 @@ import android.widget.PopupMenu
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.drakeet.multitype.ItemViewBinder
+import java.lang.ref.WeakReference
 import org.koin.core.component.KoinComponent
 import org.moire.ultrasonic.R
 import org.moire.ultrasonic.domain.Identifiable
 import org.moire.ultrasonic.domain.MusicFolder
 import org.moire.ultrasonic.service.RxBus
-import java.lang.ref.WeakReference
 
 /**
  * This little view shows the currently selected Folder (or catalog) on the music server.
  * When clicked it will drop down a list of all available Folders and allow you to
  * select one. The intended usage is to supply a filter to lists of artists, albums, etc
  */
-class FolderSelectorBinder(context: Context
+class FolderSelectorBinder(
+    context: Context
 ) : ItemViewBinder<FolderSelectorBinder.FolderHeader, FolderSelectorBinder.ViewHolder>(), KoinComponent {
 
     private val weakContext: WeakReference<Context> = WeakReference(context)
@@ -112,7 +113,7 @@ class FolderSelectorBinder(context: Context
     data class FolderHeader(
         val folders: List<MusicFolder>,
         val selected: String?
-        ): Identifiable {
+    ) : Identifiable {
         override val id: String
             get() = "FOLDERSELECTOR"
 
@@ -123,5 +124,4 @@ class FolderSelectorBinder(context: Context
             return longId.compareTo(other.longId)
         }
     }
-
 }

@@ -24,7 +24,6 @@ import org.moire.ultrasonic.subsonic.DownloadHandler
 import org.moire.ultrasonic.subsonic.ImageLoaderProvider
 import org.moire.ultrasonic.util.Constants
 import org.moire.ultrasonic.util.Util
-import org.moire.ultrasonic.view.SelectMusicFolderView
 
 /**
  * An abstract Model, which can be extended to display a list of items of type T from the API
@@ -38,7 +37,6 @@ abstract class MultiListFragment<T : Identifiable> : Fragment() {
     protected var refreshListView: SwipeRefreshLayout? = null
     internal var listView: RecyclerView? = null
     internal lateinit var viewManager: LinearLayoutManager
-    internal var selectFolderHeader: SelectMusicFolderView? = null
 
     /**
      * The Adapter for the RecyclerView
@@ -162,10 +160,9 @@ abstract class MultiListFragment<T : Identifiable> : Fragment() {
         try {
             bundle = arguments?.clone() as Bundle
         } catch (ignored: Exception) {
-           bundle = Bundle()
+            bundle = Bundle()
         }
 
         return bundle
     }
 }
-

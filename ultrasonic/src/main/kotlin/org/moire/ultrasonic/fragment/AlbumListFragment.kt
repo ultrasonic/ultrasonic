@@ -73,7 +73,6 @@ class AlbumListFragment : EntryListFragment<MusicDirectory.Entry>() {
             addOnScrollListener(scrollListener)
         }
 
-
         viewAdapter.register(
             AlbumRowBinder(
                 { entry -> onItemClick(entry) },
@@ -82,8 +81,6 @@ class AlbumListFragment : EntryListFragment<MusicDirectory.Entry>() {
                 context = requireContext()
             )
         )
-
-
     }
 
     override fun onItemClick(item: MusicDirectory.Entry) {
@@ -94,5 +91,4 @@ class AlbumListFragment : EntryListFragment<MusicDirectory.Entry>() {
         bundle.putString(Constants.INTENT_EXTRA_NAME_PARENT_ID, item.parent)
         findNavController().navigate(itemClickTarget, bundle)
     }
-
 }

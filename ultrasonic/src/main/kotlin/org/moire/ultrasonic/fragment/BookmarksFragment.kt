@@ -26,8 +26,6 @@ class BookmarksFragment : TrackCollectionFragment() {
 
         // Why?
         selectButton?.visibility = View.GONE
-        playNextButton?.visibility = View.GONE
-        playLastButton?.visibility = View.GONE
         moreButton?.visibility = View.GONE
     }
 
@@ -41,26 +39,14 @@ class BookmarksFragment : TrackCollectionFragment() {
     }
 
     override fun enableButtons(selection: List<MusicDirectory.Entry>) {
-        val enabled = selection.isNotEmpty()
-        var unpinEnabled = false
-        var deleteEnabled = false
-        var pinnedCount = 0
-
-        for (song in selection) {
-            val downloadFile = mediaPlayerController.getDownloadFileForSong(song)
-            if (downloadFile.isWorkDone) {
-                deleteEnabled = true
-            }
-            if (downloadFile.isSaved) {
-                pinnedCount++
-                unpinEnabled = true
-            }
-        }
-
-        playNowButton?.isVisible =  (enabled && deleteEnabled)
-        pinButton?.isVisible = (enabled && !isOffline() && selection.size > pinnedCount)
-        unpinButton!!.isVisible = (enabled && unpinEnabled)
-        downloadButton!!.isVisible = (enabled && !deleteEnabled && !isOffline())
-        deleteButton!!.isVisible = (enabled && deleteEnabled)
+        super.enableButtons(selection)
     }
 }
+
+
+
+
+
+
+
+

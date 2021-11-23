@@ -25,6 +25,7 @@ import androidx.lifecycle.viewModelScope
 import androidx.navigation.Navigation
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import java.util.Collections
 import kotlinx.coroutines.CoroutineExceptionHandler
 import kotlinx.coroutines.launch
 import org.koin.android.ext.android.inject
@@ -48,7 +49,6 @@ import org.moire.ultrasonic.util.EntryByDiscAndTrackComparator
 import org.moire.ultrasonic.util.Settings
 import org.moire.ultrasonic.util.Util
 import timber.log.Timber
-import java.util.Collections
 
 /**
  * Displays a group of tracks, eg. the songs of an album, of a playlist etc.
@@ -371,7 +371,7 @@ open class TrackCollectionFragment : MultiListFragment<MusicDirectory.Entry>() {
             }
         }
 
-        val isArtist = arguments?.getBoolean(Constants.INTENT_EXTRA_NAME_ARTIST, false)?: false
+        val isArtist = arguments?.getBoolean(Constants.INTENT_EXTRA_NAME_ARTIST, false) ?: false
 
         // FIXME WHICH id if no arguments?
         val id = arguments?.getString(Constants.INTENT_EXTRA_NAME_ID)
@@ -570,7 +570,7 @@ open class TrackCollectionFragment : MultiListFragment<MusicDirectory.Entry>() {
                 moreButton!!.visibility = View.GONE
             } else {
                 moreButton!!.visibility = View.VISIBLE
-                if (arguments?.getInt(Constants.INTENT_EXTRA_NAME_RANDOM, 0) ?:0 > 0) {
+                if (arguments?.getInt(Constants.INTENT_EXTRA_NAME_RANDOM, 0) ?: 0 > 0) {
                     moreButton!!.setOnClickListener {
                         val offset = requireArguments().getInt(
                             Constants.INTENT_EXTRA_NAME_ALBUM_LIST_OFFSET, 0
@@ -594,7 +594,7 @@ open class TrackCollectionFragment : MultiListFragment<MusicDirectory.Entry>() {
 
         val isAlbumList = arguments?.containsKey(
             Constants.INTENT_EXTRA_NAME_ALBUM_LIST_TYPE
-        )?:false
+        ) ?: false
 
         playAllButtonVisible = !(isAlbumList || entryList.isEmpty()) && !allVideos
         shareButtonVisible = !isOffline() && songCount > 0
@@ -615,11 +615,11 @@ open class TrackCollectionFragment : MultiListFragment<MusicDirectory.Entry>() {
             viewAdapter.submitList(entryList)
         }
 
-        val playAll = arguments?.getBoolean(Constants.INTENT_EXTRA_NAME_AUTOPLAY, false)?:false
+        val playAll = arguments?.getBoolean(Constants.INTENT_EXTRA_NAME_AUTOPLAY, false) ?: false
 
         if (playAll && songCount > 0) {
             playAll(
-                arguments?.getBoolean(Constants.INTENT_EXTRA_NAME_SHUFFLE, false)?:false,
+                arguments?.getBoolean(Constants.INTENT_EXTRA_NAME_SHUFFLE, false) ?: false,
                 false
             )
         }

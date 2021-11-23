@@ -11,7 +11,6 @@ import org.moire.ultrasonic.domain.Artist
 import org.moire.ultrasonic.domain.ArtistOrIndex
 import org.moire.ultrasonic.model.ArtistListModel
 import org.moire.ultrasonic.util.Constants
-import org.moire.ultrasonic.util.Settings
 
 /**
  * Displays the list of Artists from the media library
@@ -43,7 +42,6 @@ class ArtistListFragment : EntryListFragment<ArtistOrIndex>() {
      * after the user has clicked on an item
      */
     override val itemClickTarget = R.id.selectArtistToSelectAlbum
-
 
     /**
      * The central function to pass a query to the model and return a LiveData object
@@ -78,6 +76,5 @@ class ArtistListFragment : EntryListFragment<ArtistOrIndex>() {
         findNavController().navigate(itemClickTarget, bundle)
     }
 
-    //Constants.ALPHABETICAL_BY_NAME
-
+    // Constants.ALPHABETICAL_BY_NAME
 }

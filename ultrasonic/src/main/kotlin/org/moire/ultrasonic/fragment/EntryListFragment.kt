@@ -24,7 +24,7 @@ abstract class EntryListFragment<T : GenericEntry> : MultiListFragment<T>() {
     // FIXME
     fun showFolderHeader(): Boolean {
         return listModel.showSelectFolderHeader(arguments) &&
-                !listModel.isOffline() && !Settings.shouldUseId3Tags
+            !listModel.isOffline() && !Settings.shouldUseId3Tags
     }
 
     @Suppress("LongMethod")

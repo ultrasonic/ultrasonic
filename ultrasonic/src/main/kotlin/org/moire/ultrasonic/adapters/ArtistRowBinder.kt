@@ -31,7 +31,7 @@ class ArtistRowBinder(
     val onItemClick: (ArtistOrIndex) -> Unit,
     val onContextMenuClick: (MenuItem, ArtistOrIndex) -> Boolean,
     private val imageLoader: ImageLoader,
-): ItemViewBinder<ArtistOrIndex, ArtistRowBinder.ViewHolder>(), KoinComponent {
+) : ItemViewBinder<ArtistOrIndex, ArtistRowBinder.ViewHolder>(), KoinComponent {
 
     val layout = R.layout.artist_list_item
     val contextMenuLayout = R.menu.artist_context_menu

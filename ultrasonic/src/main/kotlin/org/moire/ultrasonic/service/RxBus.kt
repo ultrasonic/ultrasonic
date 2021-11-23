@@ -78,7 +78,6 @@ class RxBus {
         val skipToQueueItemCommandObservable: Observable<Long> =
             skipToQueueItemCommandPublisher.observeOn(AndroidSchedulers.mainThread())
 
-
         fun releaseMediaSessionToken() {
             mediaSessionTokenPublisher = PublishSubject.create()
         }

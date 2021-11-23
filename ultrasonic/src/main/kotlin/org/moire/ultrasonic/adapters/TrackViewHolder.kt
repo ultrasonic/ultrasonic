@@ -13,7 +13,6 @@ import androidx.lifecycle.MutableLiveData
 import androidx.recyclerview.widget.RecyclerView
 import org.koin.core.component.KoinComponent
 import org.koin.core.component.get
-import org.koin.core.component.inject
 import org.moire.ultrasonic.R
 import org.moire.ultrasonic.data.ActiveServerProvider
 import org.moire.ultrasonic.domain.MusicDirectory
@@ -21,7 +20,6 @@ import org.moire.ultrasonic.featureflags.Feature
 import org.moire.ultrasonic.featureflags.FeatureStorage
 import org.moire.ultrasonic.service.DownloadFile
 import org.moire.ultrasonic.service.DownloadStatus
-import org.moire.ultrasonic.service.MediaPlayerController
 import org.moire.ultrasonic.service.MusicServiceFactory
 import org.moire.ultrasonic.service.RxBus
 import org.moire.ultrasonic.util.Settings
@@ -130,10 +128,10 @@ class TrackViewHolder(val view: View) : RecyclerView.ViewHolder(view), Checkable
 
         // Minimize or maximize the Text view (if song title is very long)
         itemView.setOnLongClickListener {
-                if (!song.isDirectory) {
-                    maximizeOrMinimize()
-                    true
-                }
+            if (!song.isDirectory) {
+                maximizeOrMinimize()
+                true
+            }
             false
         }
     }
@@ -151,7 +149,6 @@ class TrackViewHolder(val view: View) : RecyclerView.ViewHolder(view), Checkable
             )
         }
     }
-
 
     private fun setupStarButtons(song: MusicDirectory.Entry) {
         if (useFiveStarRating) {
@@ -190,7 +187,6 @@ class TrackViewHolder(val view: View) : RecyclerView.ViewHolder(view), Checkable
             }
         }
     }
-
 
     @Suppress("MagicNumber")
     private fun setFiveStars(rating: Int) {

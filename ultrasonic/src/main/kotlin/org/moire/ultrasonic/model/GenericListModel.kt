@@ -6,8 +6,6 @@ import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
 import androidx.lifecycle.AndroidViewModel
-import androidx.lifecycle.LiveData
-import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import kotlinx.coroutines.Dispatchers
@@ -18,7 +16,6 @@ import org.koin.core.component.inject
 import org.moire.ultrasonic.data.ActiveServerProvider
 import org.moire.ultrasonic.data.ServerSetting
 import org.moire.ultrasonic.domain.MusicDirectory
-import org.moire.ultrasonic.domain.MusicFolder
 import org.moire.ultrasonic.service.MusicService
 import org.moire.ultrasonic.service.MusicServiceFactory
 import org.moire.ultrasonic.util.CommunicationError
@@ -109,10 +106,9 @@ open class GenericListModel(application: Application) :
     ) {
         // Update the list of available folders if enabled
         if (showSelectFolderHeader(args) && !isOffline && !useId3Tags) {
-            //FIXME
+            // FIXME
         }
     }
-
 
     /**
      * Some shared helper functions
@@ -121,8 +117,7 @@ open class GenericListModel(application: Application) :
     // Returns true if the directory contains only folders
     internal fun hasOnlyFolders(musicDirectory: MusicDirectory) =
         musicDirectory.getChildren(includeDirs = true, includeFiles = false).size ==
-                musicDirectory.getChildren(includeDirs = true, includeFiles = true).size
+            musicDirectory.getChildren(includeDirs = true, includeFiles = true).size
 
     internal val allSongsId = "-1"
-
 }

@@ -54,7 +54,7 @@ class AlbumRowBinder(
             val popup = Helper.createPopupMenu(holder.itemView)
 
             popup.setOnMenuItemClickListener { menuItem ->
-                    onContextMenuClick(menuItem, item)
+                onContextMenuClick(menuItem, item)
             }
 
             true
@@ -69,7 +69,6 @@ class AlbumRowBinder(
         )
     }
 
-
     /**
      * Holds the view properties of an Item row
      */
@@ -83,7 +82,6 @@ class AlbumRowBinder(
         var star: ImageView = view.findViewById(R.id.album_star)
         var coverArtId: String? = null
     }
-
 
     /**
      * Handles the star / unstar action for an album
@@ -118,4 +116,3 @@ class AlbumRowBinder(
         return ViewHolder(inflater.inflate(layout, parent, false))
     }
 }
-

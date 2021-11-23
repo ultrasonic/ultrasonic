@@ -2,26 +2,15 @@ package org.moire.ultrasonic.model
 
 import android.app.Application
 import android.os.Bundle
-import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
-import org.moire.ultrasonic.domain.Artist
-import org.moire.ultrasonic.domain.Identifiable
-import org.moire.ultrasonic.domain.MusicDirectory
 import org.moire.ultrasonic.domain.SearchCriteria
 import org.moire.ultrasonic.domain.SearchResult
 import org.moire.ultrasonic.fragment.SearchFragment
 import org.moire.ultrasonic.service.MusicService
 import org.moire.ultrasonic.service.MusicServiceFactory
-import org.moire.ultrasonic.util.BackgroundTask
-import org.moire.ultrasonic.util.Constants
-import org.moire.ultrasonic.util.FragmentBackgroundTask
-import org.moire.ultrasonic.util.MergeAdapter
 import org.moire.ultrasonic.util.Settings
-import org.moire.ultrasonic.view.ArtistAdapter
-import org.moire.ultrasonic.view.EntryAdapter
-import java.util.ArrayList
 
 class SearchListModel(application: Application) : GenericListModel(application) {
 
@@ -35,10 +24,7 @@ class SearchListModel(application: Application) : GenericListModel(application) 
         args: Bundle
     ) {
         super.load(isOffline, useId3Tags, musicService, refresh, args)
-
-
     }
-
 
     suspend fun search(query: String) {
         val maxArtists = Settings.maxArtists
@@ -69,5 +55,4 @@ class SearchListModel(application: Application) : GenericListModel(application) 
 //        list.add(result.songs)
 //        return list
 //    }
-
 }

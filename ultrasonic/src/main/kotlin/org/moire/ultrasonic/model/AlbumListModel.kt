@@ -14,8 +14,6 @@ import org.moire.ultrasonic.util.Settings
 
 class AlbumListModel(application: Application) : GenericListModel(application) {
 
-
-
     val list: MutableLiveData<List<MusicDirectory.Entry>> = MutableLiveData(listOf())
     var lastType: String? = null
     private var loadedUntil: Int = 0
@@ -38,28 +36,28 @@ class AlbumListModel(application: Application) : GenericListModel(application) {
 
     fun getAlbumsOfArtist(musicService: MusicService, refresh: Boolean, id: String, name: String?) {
 
-            var root = MusicDirectory()
-            val musicDirectory = musicService.getArtist(id, name, refresh)
+        var root = MusicDirectory()
+        val musicDirectory = musicService.getArtist(id, name, refresh)
 
-            if (Settings.shouldShowAllSongsByArtist &&
-                musicDirectory.findChild(allSongsId) == null &&
-                hasOnlyFolders(musicDirectory)
-            ) {
-                val allSongs = MusicDirectory.Entry(allSongsId)
+        if (Settings.shouldShowAllSongsByArtist &&
+            musicDirectory.findChild(allSongsId) == null &&
+            hasOnlyFolders(musicDirectory)
+        ) {
+            val allSongs = MusicDirectory.Entry(allSongsId)
 
-                allSongs.isDirectory = true
-                allSongs.artist = name
-                allSongs.parent = id
-                allSongs.title = String.format(
-                    context.resources.getString(R.string.select_album_all_songs), name
-                )
+            allSongs.isDirectory = true
+            allSongs.artist = name
+            allSongs.parent = id
+            allSongs.title = String.format(
+                context.resources.getString(R.string.select_album_all_songs), name
+            )
 
-                root.addFirst(allSongs)
-                root.addAll(musicDirectory.getChildren())
-            } else {
-                root = musicDirectory
-            }
-            list.postValue(root.getChildren())
+            root.addFirst(allSongs)
+            root.addAll(musicDirectory.getChildren())
+        } else {
+            root = musicDirectory
+        }
+        list.postValue(root.getChildren())
     }
 
     override fun load(
@@ -138,5 +136,4 @@ class AlbumListModel(application: Application) : GenericListModel(application) {
             albumListType != "highest" && albumListType != "recent" &&
             albumListType != "frequent"
     }
-
 }
