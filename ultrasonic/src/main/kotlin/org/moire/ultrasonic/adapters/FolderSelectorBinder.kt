@@ -22,9 +22,9 @@ import org.moire.ultrasonic.service.RxBus
  * When clicked it will drop down a list of all available Folders and allow you to
  * select one. The intended usage is to supply a filter to lists of artists, albums, etc
  */
-class FolderSelectorBinder(
-    context: Context
-) : ItemViewBinder<FolderSelectorBinder.FolderHeader, FolderSelectorBinder.ViewHolder>(), KoinComponent {
+class FolderSelectorBinder(context: Context) :
+    ItemViewBinder<FolderSelectorBinder.FolderHeader, FolderSelectorBinder.ViewHolder>(),
+    KoinComponent {
 
     private val weakContext: WeakReference<Context> = WeakReference(context)
 

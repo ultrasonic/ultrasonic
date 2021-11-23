@@ -69,7 +69,8 @@ class ArtistListFragment : EntryListFragment<ArtistOrIndex>() {
         bundle.putString(Constants.INTENT_EXTRA_NAME_NAME, item.name)
         bundle.putString(Constants.INTENT_EXTRA_NAME_PARENT_ID, item.id)
         bundle.putBoolean(Constants.INTENT_EXTRA_NAME_ARTIST, (item is Artist))
-        bundle.putString(Constants.INTENT_EXTRA_NAME_ALBUM_LIST_TYPE, Constants.ALPHABETICAL_BY_NAME)
+        bundle.putString(Constants.INTENT_EXTRA_NAME_ALBUM_LIST_TYPE,
+            Constants.ALPHABETICAL_BY_NAME)
         bundle.putString(Constants.INTENT_EXTRA_NAME_ALBUM_LIST_TITLE, item.name)
         bundle.putInt(Constants.INTENT_EXTRA_NAME_ALBUM_LIST_SIZE, 1000)
         bundle.putInt(Constants.INTENT_EXTRA_NAME_ALBUM_LIST_OFFSET, 0)

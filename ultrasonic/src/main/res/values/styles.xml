@@ -39,7 +39,6 @@
     <attr name="star_full" format="reference"/>
     <attr name="about" format="reference"/>
     <attr name="select_all" format="reference"/>
-    <attr name="add_to_queue" format="reference"/>
     <attr name="browse" format="reference"/>
     <attr name="exit" format="reference"/>
     <attr name="forward" format="reference"/>
@@ -73,7 +72,6 @@
     <attr name="media_play" format="reference"/>
     <attr name="podcasts" format="reference"/>
     <attr name="refresh" format="reference"/>
-    <attr name="media_play_next" format="reference"/>
     <attr name="media_play_small" format="reference"/>
     <attr name="media_stop" format="reference"/>
     <attr name="media_toggle" format="reference"/>

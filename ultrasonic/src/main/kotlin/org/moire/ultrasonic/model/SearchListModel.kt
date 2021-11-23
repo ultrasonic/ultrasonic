@@ -47,12 +47,4 @@ class SearchListModel(application: Application) : GenericListModel(application) 
             songs = result.songs.take(SearchFragment.DEFAULT_SONGS)
         )
     }
-
-//    fun mergeList(result: SearchResult): List<Identifiable> {
-//        val list = mutableListOf<Identifiable>()
-//        list.add(result.artists)
-//        list.add(result.albums)
-//        list.add(result.songs)
-//        return list
-//    }
 }

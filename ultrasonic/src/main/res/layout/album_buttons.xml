@@ -32,7 +32,7 @@
         android:layout_height="32dp"
         android:scaleType="fitCenter"
         android:layout_weight="1"
-        android:src="?attr/media_play_next"
+        android:src="@drawable/ic_play_next"
         android:visibility="gone"
         android:contentDescription="@string/common.play_next" />
 
@@ -42,7 +42,7 @@
         android:layout_height="32dp"
         android:scaleType="fitCenter"
         android:layout_weight="1"
-        android:src="?attr/add_to_queue"
+        android:src="@drawable/ic_play_last"
         android:visibility="gone"
         android:contentDescription="@string/common.play_last" />
 

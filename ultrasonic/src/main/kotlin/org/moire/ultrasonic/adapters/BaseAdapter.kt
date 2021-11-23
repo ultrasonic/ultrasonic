@@ -33,7 +33,7 @@ class BaseAdapter<T : Identifiable> : MultiTypeAdapter() {
     override var items: List<Any>
         get() = getCurrentList()
         set(value) {
-            throw IllegalAccessException("You must use submitList() to add data to the MultiTypeDiffAdapter")
+            throw IllegalAccessException("You must use submitList() to add data to the Adapter")
         }
 
     var mDiffer: AsyncListDiffer<T> = AsyncListDiffer(

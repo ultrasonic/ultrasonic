@@ -18,9 +18,7 @@ class DragSortCallback : ItemTouchHelper.SimpleCallback(UP or DOWN, 0) {
         val from = viewHolder.bindingAdapterPosition
         val to = target.bindingAdapterPosition
 
-        Timber.w("MOVED %s %s", to, from)
-
-        // Move it in the data set
+        // FIXME: Move it in the data set
         (recyclerView.adapter as BaseAdapter<*>).moveItem(from, to)
 
         return true

@@ -167,7 +167,9 @@ class SearchFragment : MultiListFragment<Identifiable>(), KoinComponent {
         inflater.inflate(R.menu.search, menu)
         val searchItem = menu.findItem(R.id.search_item)
         val searchView = searchItem.actionView as SearchView
-        searchView.setSearchableInfo(searchManager.getSearchableInfo(requireActivity().componentName))
+        val searchableInfo = searchManager.getSearchableInfo(requireActivity().componentName)
+        searchView.setSearchableInfo(searchableInfo)
+
         val arguments = arguments
         val autoPlay =
             arguments != null && arguments.getBoolean(Constants.INTENT_EXTRA_NAME_AUTOPLAY, false)
@@ -186,8 +188,10 @@ class SearchFragment : MultiListFragment<Identifiable>(), KoinComponent {
                 Timber.d("onSuggestionClick: %d", position)
                 val cursor = searchView.suggestionsAdapter.cursor
                 cursor.moveToPosition(position)
-                val suggestion =
-                    cursor.getString(2) // TODO: Try to do something with this magic const -- 2 is the index of col containing suggestion name.
+
+                // TODO: Try to do something with this magic const:
+                //  2 is the index of col containing suggestion name.
+                val suggestion = cursor.getString(2)
                 searchView.setQuery(suggestion, true)
                 return true
             }
