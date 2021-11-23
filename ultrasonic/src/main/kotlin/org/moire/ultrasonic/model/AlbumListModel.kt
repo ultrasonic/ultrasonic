@@ -1,10 +1,11 @@
-package org.moire.ultrasonic.fragment
+package org.moire.ultrasonic.model
 
 import android.app.Application
 import android.os.Bundle
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
+import org.moire.ultrasonic.R
 import org.moire.ultrasonic.api.subsonic.models.AlbumListType
 import org.moire.ultrasonic.domain.MusicDirectory
 import org.moire.ultrasonic.service.MusicService
@@ -13,7 +14,9 @@ import org.moire.ultrasonic.util.Settings
 
 class AlbumListModel(application: Application) : GenericListModel(application) {
 
-    val albumList: MutableLiveData<List<MusicDirectory.Entry>> = MutableLiveData(listOf())
+
+
+    val list: MutableLiveData<List<MusicDirectory.Entry>> = MutableLiveData(listOf())
     var lastType: String? = null
     private var loadedUntil: Int = 0
 
@@ -26,11 +29,37 @@ class AlbumListModel(application: Application) : GenericListModel(application) {
         // This way, we keep the scroll position
         val albumListType = args.getString(Constants.INTENT_EXTRA_NAME_ALBUM_LIST_TYPE)!!
 
-        if (refresh || albumList.value!!.isEmpty() || albumListType != lastType) {
+        if (refresh || list.value!!.isEmpty() || albumListType != lastType) {
             lastType = albumListType
             backgroundLoadFromServer(refresh, swipe, args)
         }
-        return albumList
+        return list
+    }
+
+    fun getAlbumsOfArtist(musicService: MusicService, refresh: Boolean, id: String, name: String?) {
+
+            var root = MusicDirectory()
+            val musicDirectory = musicService.getArtist(id, name, refresh)
+
+            if (Settings.shouldShowAllSongsByArtist &&
+                musicDirectory.findChild(allSongsId) == null &&
+                hasOnlyFolders(musicDirectory)
+            ) {
+                val allSongs = MusicDirectory.Entry(allSongsId)
+
+                allSongs.isDirectory = true
+                allSongs.artist = name
+                allSongs.parent = id
+                allSongs.title = String.format(
+                    context.resources.getString(R.string.select_album_all_songs), name
+                )
+
+                root.addFirst(allSongs)
+                root.addAll(musicDirectory.getChildren())
+            } else {
+                root = musicDirectory
+            }
+            list.postValue(root.getChildren())
     }
 
     override fun load(
@@ -58,6 +87,15 @@ class AlbumListModel(application: Application) : GenericListModel(application) {
         // If appending the existing list, set the offset from where to load
         if (append) offset += (size + loadedUntil)
 
+        if (albumListType == Constants.ALBUMS_OF_ARTIST) {
+            return getAlbumsOfArtist(
+                musicService,
+                refresh,
+                args.getString(Constants.INTENT_EXTRA_NAME_ID, ""),
+                args.getString(Constants.INTENT_EXTRA_NAME_NAME, "")
+            )
+        }
+
         if (useId3Tags) {
             musicDirectory = musicService.getAlbumList2(
                 albumListType, size,
@@ -72,13 +110,13 @@ class AlbumListModel(application: Application) : GenericListModel(application) {
 
         currentListIsSortable = isCollectionSortable(albumListType)
 
-        if (append && albumList.value != null) {
+        if (append && list.value != null) {
             val list = ArrayList<MusicDirectory.Entry>()
-            list.addAll(albumList.value!!)
+            list.addAll(this.list.value!!)
             list.addAll(musicDirectory.getAllChild())
-            albumList.postValue(list)
+            this.list.postValue(list)
         } else {
-            albumList.postValue(musicDirectory.getAllChild())
+            list.postValue(musicDirectory.getAllChild())
         }
 
         loadedUntil = offset
@@ -100,4 +138,5 @@ class AlbumListModel(application: Application) : GenericListModel(application) {
             albumListType != "highest" && albumListType != "recent" &&
             albumListType != "frequent"
     }
+
 }

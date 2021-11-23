@@ -1,4 +1,4 @@
-package org.moire.ultrasonic.fragment
+package org.moire.ultrasonic.model
 
 import android.app.Application
 import android.content.Context
@@ -17,6 +17,7 @@ import org.koin.core.component.KoinComponent
 import org.koin.core.component.inject
 import org.moire.ultrasonic.data.ActiveServerProvider
 import org.moire.ultrasonic.data.ServerSetting
+import org.moire.ultrasonic.domain.MusicDirectory
 import org.moire.ultrasonic.domain.MusicFolder
 import org.moire.ultrasonic.service.MusicService
 import org.moire.ultrasonic.service.MusicServiceFactory
@@ -44,8 +45,6 @@ open class GenericListModel(application: Application) :
     open fun showSelectFolderHeader(args: Bundle?): Boolean {
         return true
     }
-
-    internal val musicFolders: MutableLiveData<List<MusicFolder>> = MutableLiveData(listOf())
 
     /**
      * Helper function to check online status
@@ -110,16 +109,20 @@ open class GenericListModel(application: Application) :
     ) {
         // Update the list of available folders if enabled
         if (showSelectFolderHeader(args) && !isOffline && !useId3Tags) {
-            musicFolders.postValue(
-                musicService.getMusicFolders(refresh)
-            )
+            //FIXME
         }
     }
 
+
     /**
-     * Retrieves the available Music Folders in a LiveData
+     * Some shared helper functions
      */
-    fun getMusicFolders(): LiveData<List<MusicFolder>> {
-        return musicFolders
-    }
+
+    // Returns true if the directory contains only folders
+    internal fun hasOnlyFolders(musicDirectory: MusicDirectory) =
+        musicDirectory.getChildren(includeDirs = true, includeFiles = false).size ==
+                musicDirectory.getChildren(includeDirs = true, includeFiles = true).size
+
+    internal val allSongsId = "-1"
+
 }

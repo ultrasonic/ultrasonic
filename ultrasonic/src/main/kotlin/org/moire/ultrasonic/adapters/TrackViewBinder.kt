@@ -22,16 +22,6 @@ class TrackViewBinder(
     private val onClickCallback: ((View, DownloadFile?) -> Unit)? = null
 ) : ItemViewBinder<Identifiable, TrackViewHolder>(), KoinComponent {
 
-//    //
-//    onItemClick: (MusicDirectory.Entry) -> Unit,
-//    onContextMenuClick: (MenuItem, MusicDirectory.Entry) -> Boolean,
-//    onMusicFolderUpdate: (String?) -> Unit,
-//    context: Context,
-//    val lifecycleOwner: LifecycleOwner,
-//    init {
-//        super.submitList(itemList)
-//    }
-
     // Set our layout files
     val layout = R.layout.song_list_item
     val contextMenuLayout = R.menu.artist_context_menu
@@ -44,9 +34,8 @@ class TrackViewBinder(
     }
 
     override fun onBindViewHolder(holder: TrackViewHolder, item: Identifiable) {
-
         val downloadFile: DownloadFile?
-        val _adapter = adapter as MultiTypeDiffAdapter<*>
+        val diffAdapter = adapter as BaseAdapter<*>
 
         when (item) {
             is MusicDirectory.Entry -> {
@@ -66,7 +55,7 @@ class TrackViewBinder(
             file = downloadFile,
             checkable = checkable,
             draggable = draggable,
-            _adapter.isSelected(item.longId)
+            diffAdapter.isSelected(item.longId)
         )
 
         // Notify the adapter of selection changes
@@ -74,18 +63,18 @@ class TrackViewBinder(
             lifecycleOwner,
             { newValue ->
                 if (newValue) {
-                    _adapter.notifySelected(item.longId)
+                    diffAdapter.notifySelected(item.longId)
                 } else {
-                    _adapter.notifyUnselected(item.longId)
+                    diffAdapter.notifyUnselected(item.longId)
                 }
             }
         )
 
         // Listen to changes in selection status and update ourselves
-        _adapter.selectionRevision.observe(
+        diffAdapter.selectionRevision.observe(
             lifecycleOwner,
             {
-                val newStatus = _adapter.isSelected(item.longId)
+                val newStatus = diffAdapter.isSelected(item.longId)
 
                 if (newStatus != holder.check.isChecked) holder.check.isChecked = newStatus
             }
@@ -96,7 +85,7 @@ class TrackViewBinder(
             lifecycleOwner,
             {
                 holder.updateStatus(it)
-                _adapter.notifyChanged()
+                diffAdapter.notifyChanged()
             }
         )
 

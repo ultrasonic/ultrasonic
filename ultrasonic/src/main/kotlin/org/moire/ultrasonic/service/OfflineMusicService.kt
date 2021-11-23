@@ -411,7 +411,7 @@ class OfflineMusicService : MusicService, KoinComponent {
     }
 
     @Throws(OfflineException::class)
-    override fun getBookmarks(): List<Bookmark?>? {
+    override fun getBookmarks(): List<Bookmark> {
         throw OfflineException("getBookmarks isn't available in offline mode")
     }
 

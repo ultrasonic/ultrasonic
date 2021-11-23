@@ -525,11 +525,10 @@ object Util {
     }
 
     @JvmStatic
-    fun getSongsFromBookmarks(bookmarks: Iterable<Bookmark?>): MusicDirectory {
+    fun getSongsFromBookmarks(bookmarks: Iterable<Bookmark>): MusicDirectory {
         val musicDirectory = MusicDirectory()
         var song: MusicDirectory.Entry
         for (bookmark in bookmarks) {
-            if (bookmark == null) continue
             song = bookmark.entry
             song.bookmarkPosition = bookmark.position
             musicDirectory.addChild(song)

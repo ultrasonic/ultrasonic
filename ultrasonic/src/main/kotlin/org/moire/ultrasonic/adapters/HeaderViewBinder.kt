@@ -6,6 +6,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TextView
+import androidx.core.view.isVisible
 import androidx.recyclerview.widget.RecyclerView
 import com.drakeet.multitype.ItemViewBinder
 import java.lang.ref.WeakReference
@@ -57,7 +58,12 @@ class HeaderViewBinder(
             Util.getAlbumImageSize(context)
         )
 
-        holder.titleView.text = item.name
+        if (item.name != null) {
+            holder.titleView.isVisible = true
+            holder.titleView.text = item.name
+        } else {
+            holder.titleView.isVisible = false
+        }
 
         // Don't show a header if all entries are videos
         if (item.isAllVideo) {

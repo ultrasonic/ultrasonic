@@ -8,8 +8,7 @@ import org.moire.ultrasonic.util.Util.getGrandparent
 
 class AlbumHeader(
     var entries: List<MusicDirectory.Entry>,
-    var name: String,
-    songCount: Int
+    var name: String?
 ) : Identifiable {
     var isAllVideo: Boolean
         private set

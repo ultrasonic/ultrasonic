@@ -5,7 +5,7 @@
  * Distributed under terms of the GNU GPLv3 license.
  */
 
-package org.moire.ultrasonic.fragment
+package org.moire.ultrasonic.model
 
 import android.app.Application
 import android.os.Bundle
@@ -22,24 +22,12 @@ import org.moire.ultrasonic.util.Util
 
 /*
 * Model for retrieving different collections of tracks from the API
-* TODO: Refactor this model to extend the GenericListModel
 */
 class TrackCollectionModel(application: Application) : GenericListModel(application) {
-
-    private val allSongsId = "-1"
 
     val currentDirectory: MutableLiveData<MusicDirectory> = MutableLiveData()
     val currentList: MutableLiveData<List<MusicDirectory.Entry>> = MutableLiveData()
     val songsForGenre: MutableLiveData<MusicDirectory> = MutableLiveData()
-
-    suspend fun getMusicFolders(refresh: Boolean) {
-        withContext(Dispatchers.IO) {
-            if (!isOffline()) {
-                val musicService = MusicServiceFactory.getMusicService()
-                musicFolders.postValue(musicService.getMusicFolders(refresh))
-            }
-        }
-    }
 
     suspend fun getMusicDirectory(
         refresh: Boolean,
@@ -94,9 +82,6 @@ class TrackCollectionModel(application: Application) : GenericListModel(applicat
         }
     }
 
-    private fun updateList(root: MusicDirectory) {
-        currentList.postValue(root.getChildren())
-    }
 
     // Given a Music directory "songs" it recursively adds all children to "songs"
     private fun getSongsRecursively(
@@ -119,42 +104,6 @@ class TrackCollectionModel(application: Application) : GenericListModel(applicat
 
                 getSongsRecursively(root, songs)
             }
-        }
-    }
-
-    /*
-    * TODO: This method should be moved to AlbumListModel,
-    * since it displays a list of albums by a specified artist.
-    */
-    suspend fun getArtist(refresh: Boolean, id: String, name: String?) {
-
-        withContext(Dispatchers.IO) {
-            val service = MusicServiceFactory.getMusicService()
-
-            var root = MusicDirectory()
-
-            val musicDirectory = service.getArtist(id, name, refresh)
-
-            if (Settings.shouldShowAllSongsByArtist &&
-                musicDirectory.findChild(allSongsId) == null &&
-                hasOnlyFolders(musicDirectory)
-            ) {
-                val allSongs = MusicDirectory.Entry(allSongsId)
-
-                allSongs.isDirectory = true
-                allSongs.artist = name
-                allSongs.parent = id
-                allSongs.title = String.format(
-                    context.resources.getString(R.string.select_album_all_songs), name
-                )
-
-                root.addFirst(allSongs)
-                root.addAll(musicDirectory.getChildren())
-            } else {
-                root = musicDirectory
-            }
-            currentDirectory.postValue(root)
-            updateList(root)
         }
     }
 
@@ -296,18 +245,17 @@ class TrackCollectionModel(application: Application) : GenericListModel(applicat
         }
     }
 
-    // Returns true if the directory contains only folders
-    private fun hasOnlyFolders(musicDirectory: MusicDirectory) =
-        musicDirectory.getChildren(includeDirs = true, includeFiles = false).size ==
-            musicDirectory.getChildren(includeDirs = true, includeFiles = true).size
-
-    override fun load(
-        isOffline: Boolean,
-        useId3Tags: Boolean,
-        musicService: MusicService,
-        refresh: Boolean,
-        args: Bundle
-    ) {
-        // See To_Do at the top
+    suspend fun getBookmarks() {
+        withContext(Dispatchers.IO) {
+            val service = MusicServiceFactory.getMusicService()
+            val musicDirectory = Util.getSongsFromBookmarks(service.getBookmarks())
+            currentDirectory.postValue(musicDirectory)
+            updateList(musicDirectory)
+        }
     }
+
+    private fun updateList(root: MusicDirectory) {
+        currentList.postValue(root.getChildren())
+    }
+
 }

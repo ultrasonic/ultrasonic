@@ -20,7 +20,7 @@ package org.moire.ultrasonic.view;
 
 import android.content.Context;
 import android.view.LayoutInflater;
-import android.widget.TextView;
+import android.widget.LinearLayout;
 
 import org.moire.ultrasonic.R;
 import org.moire.ultrasonic.domain.Playlist;
@@ -30,12 +30,12 @@ import org.moire.ultrasonic.domain.Playlist;
  *
  * @author Sindre Mehus
  */
-public class PodcatsChannelItemView extends UpdateView
+public class PodcastChannelItemView extends LinearLayout
 {
-	private Context context;
+	private final Context context;
 	private PlaylistAdapter.ViewHolder viewHolder;
 
-	public PodcatsChannelItemView(Context context)
+	public PodcastChannelItemView(Context context)
 	{
 		super(context);
 		this.context = context;
@@ -45,7 +45,7 @@ public class PodcatsChannelItemView extends UpdateView
 	{
 		LayoutInflater.from(context).inflate(R.layout.playlist_list_item, this, true);
 		viewHolder = new PlaylistAdapter.ViewHolder();
-		viewHolder.name = (TextView) findViewById(R.id.playlist_name);
+		viewHolder.name = findViewById(R.id.playlist_name);
 		setTag(viewHolder);
 	}
 
@@ -58,6 +58,5 @@ public class PodcatsChannelItemView extends UpdateView
 	public void setPlaylist(Playlist playlist)
 	{
 		viewHolder.name.setText(playlist.getName());
-		update();
 	}
 }

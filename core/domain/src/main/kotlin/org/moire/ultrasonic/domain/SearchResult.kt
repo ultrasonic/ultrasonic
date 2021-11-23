@@ -6,7 +6,7 @@ import org.moire.ultrasonic.domain.MusicDirectory.Entry
  * The result of a search.  Contains matching artists, albums and songs.
  */
 data class SearchResult(
-    val artists: List<Artist>,
-    val albums: List<Entry>,
-    val songs: List<Entry>
+    val artists: List<Artist> = listOf(),
+    val albums: List<Entry> = listOf(),
+    val songs: List<Entry> = listOf()
 )

@@ -1,5 +1,5 @@
 /*
- * AlbumRowAdapter.kt
+ * AlbumRowBinder.kt
  * Copyright (C) 2009-2021 Ultrasonic developers
  *
  * Distributed under terms of the GNU GPLv3 license.
@@ -9,13 +9,16 @@ package org.moire.ultrasonic.adapters
 
 import android.content.Context
 import android.graphics.drawable.Drawable
+import android.view.LayoutInflater
 import android.view.MenuItem
 import android.view.View
+import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
-import java.lang.Exception
+import com.drakeet.multitype.ItemViewBinder
+import org.koin.core.component.KoinComponent
 import org.moire.ultrasonic.R
 import org.moire.ultrasonic.domain.MusicDirectory
 import org.moire.ultrasonic.imageloader.ImageLoader
@@ -27,22 +30,12 @@ import timber.log.Timber
 /**
  * Creates a Row in a RecyclerView which contains the details of an Album
  */
-class AlbumRowAdapter(
-    itemList: List<MusicDirectory.Entry>,
-    onItemClick: (MusicDirectory.Entry) -> Unit,
-    onContextMenuClick: (MenuItem, MusicDirectory.Entry) -> Boolean,
+class AlbumRowBinder(
+    val onItemClick: (MusicDirectory.Entry) -> Unit,
+    val onContextMenuClick: (MenuItem, MusicDirectory.Entry) -> Boolean,
     private val imageLoader: ImageLoader,
-    onMusicFolderUpdate: (String?) -> Unit,
     context: Context,
-) : GenericRowAdapter<MusicDirectory.Entry>(
-    onItemClick,
-    onContextMenuClick,
-    onMusicFolderUpdate
-) {
-
-    init {
-        super.submitList(itemList)
-    }
+) : ItemViewBinder<MusicDirectory.Entry, AlbumRowBinder.ViewHolder>(), KoinComponent {
 
     private val starDrawable: Drawable =
         Util.getDrawableFromAttribute(context, R.attr.star_full)
@@ -50,34 +43,32 @@ class AlbumRowAdapter(
         Util.getDrawableFromAttribute(context, R.attr.star_hollow)
 
     // Set our layout files
-    override val layout = R.layout.album_list_item
-    override val contextMenuLayout = R.menu.artist_context_menu
+    val layout = R.layout.album_list_item
+    val contextMenuLayout = R.menu.artist_context_menu
 
-    override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
-        if (holder is ViewHolder) {
-            val listPosition = if (selectFolderHeader != null) position - 1 else position
-            val entry = currentList[listPosition]
-            holder.album.text = entry.title
-            holder.artist.text = entry.artist
-            holder.details.setOnClickListener { onItemClick(entry) }
-            holder.details.setOnLongClickListener { view -> createPopupMenu(view, listPosition) }
-            holder.coverArtId = entry.coverArt
-            holder.star.setImageDrawable(if (entry.starred) starDrawable else starHollowDrawable)
-            holder.star.setOnClickListener { onStarClick(entry, holder.star) }
+    override fun onBindViewHolder(holder: ViewHolder, item: MusicDirectory.Entry) {
+        holder.album.text = item.title
+        holder.artist.text = item.artist
+        holder.details.setOnClickListener { onItemClick(item) }
+        holder.details.setOnLongClickListener {
+            val popup = Helper.createPopupMenu(holder.itemView)
 
-            imageLoader.loadImage(
-                holder.coverArt, entry,
-                false, 0, R.drawable.unknown_album
-            )
+            popup.setOnMenuItemClickListener { menuItem ->
+                    onContextMenuClick(menuItem, item)
+            }
+
+            true
         }
+        holder.coverArtId = item.coverArt
+        holder.star.setImageDrawable(if (item.starred) starDrawable else starHollowDrawable)
+        holder.star.setOnClickListener { onStarClick(item, holder.star) }
+
+        imageLoader.loadImage(
+            holder.coverArt, item,
+            false, 0, R.drawable.unknown_album
+        )
     }
 
-    override fun getItemCount(): Int {
-        if (selectFolderHeader != null)
-            return currentList.size + 1
-        else
-            return currentList.size
-    }
 
     /**
      * Holds the view properties of an Item row
@@ -93,12 +84,6 @@ class AlbumRowAdapter(
         var coverArtId: String? = null
     }
 
-    /**
-     * Creates an instance of our ViewHolder class
-     */
-    override fun newViewHolder(view: View): RecyclerView.ViewHolder {
-        return ViewHolder(view)
-    }
 
     /**
      * Handles the star / unstar action for an album
@@ -128,4 +113,9 @@ class AlbumRowAdapter(
             }
         }.start()
     }
+
+    override fun onCreateViewHolder(inflater: LayoutInflater, parent: ViewGroup): ViewHolder {
+        return ViewHolder(inflater.inflate(layout, parent, false))
+    }
 }
+

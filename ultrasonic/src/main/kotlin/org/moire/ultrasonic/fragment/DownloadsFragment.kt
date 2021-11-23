@@ -9,6 +9,7 @@ import androidx.lifecycle.LiveData
 import org.koin.core.component.inject
 import org.moire.ultrasonic.R
 import org.moire.ultrasonic.adapters.TrackViewBinder
+import org.moire.ultrasonic.model.GenericListModel
 import org.moire.ultrasonic.service.DownloadFile
 import org.moire.ultrasonic.service.Downloader
 import org.moire.ultrasonic.util.Util

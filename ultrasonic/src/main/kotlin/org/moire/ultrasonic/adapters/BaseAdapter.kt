@@ -11,7 +11,7 @@ import com.drakeet.multitype.MultiTypeAdapter
 import java.util.TreeSet
 import org.moire.ultrasonic.domain.Identifiable
 
-class MultiTypeDiffAdapter<T : Identifiable> : MultiTypeAdapter() {
+class BaseAdapter<T : Identifiable> : MultiTypeAdapter() {
 
     internal var selectedSet: TreeSet<Long> = TreeSet()
     internal var selectionRevision: MutableLiveData<Int> = MutableLiveData(0)
@@ -43,7 +43,7 @@ class MultiTypeDiffAdapter<T : Identifiable> : MultiTypeAdapter() {
 
     private val mListener =
         ListListener<T> { previousList, currentList ->
-            this@MultiTypeDiffAdapter.onCurrentListChanged(
+            this@BaseAdapter.onCurrentListChanged(
                 previousList,
                 currentList
             )

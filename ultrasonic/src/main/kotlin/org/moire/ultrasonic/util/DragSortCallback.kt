@@ -4,7 +4,7 @@ import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.ItemTouchHelper.DOWN
 import androidx.recyclerview.widget.ItemTouchHelper.UP
 import androidx.recyclerview.widget.RecyclerView
-import org.moire.ultrasonic.adapters.MultiTypeDiffAdapter
+import org.moire.ultrasonic.adapters.BaseAdapter
 import timber.log.Timber
 
 class DragSortCallback : ItemTouchHelper.SimpleCallback(UP or DOWN, 0) {
@@ -21,7 +21,7 @@ class DragSortCallback : ItemTouchHelper.SimpleCallback(UP or DOWN, 0) {
         Timber.w("MOVED %s %s", to, from)
 
         // Move it in the data set
-        (recyclerView.adapter as MultiTypeDiffAdapter<*>).moveItem(from, to)
+        (recyclerView.adapter as BaseAdapter<*>).moveItem(from, to)
 
         return true
     }

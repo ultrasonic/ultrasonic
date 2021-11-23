@@ -154,7 +154,7 @@ interface MusicService {
     fun addChatMessage(message: String)
 
     @Throws(Exception::class)
-    fun getBookmarks(): List<Bookmark?>?
+    fun getBookmarks(): List<Bookmark>
 
     @Throws(Exception::class)
     fun deleteBookmark(id: String)

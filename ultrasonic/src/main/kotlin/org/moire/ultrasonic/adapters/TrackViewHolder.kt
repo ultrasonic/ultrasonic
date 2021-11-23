@@ -23,13 +23,14 @@ import org.moire.ultrasonic.service.DownloadFile
 import org.moire.ultrasonic.service.DownloadStatus
 import org.moire.ultrasonic.service.MediaPlayerController
 import org.moire.ultrasonic.service.MusicServiceFactory
+import org.moire.ultrasonic.service.RxBus
 import org.moire.ultrasonic.util.Settings
 import org.moire.ultrasonic.util.Util
 import timber.log.Timber
 
 /**
  * Used to display songs and videos in a `ListView`.
- * TODO: Video List item
+ * FIXME: Add video List item
  */
 class TrackViewHolder(val view: View) : RecyclerView.ViewHolder(view), Checkable, KoinComponent {
 
@@ -58,7 +59,7 @@ class TrackViewHolder(val view: View) : RecyclerView.ViewHolder(view), Checkable
     private var isMaximized = false
     private var cachedStatus = DownloadStatus.UNKNOWN
     private var statusImage: Drawable? = null
-    private var playing = false
+    private var isPlayingCached = false
 
     var observableChecked = MutableLiveData(false)
 
@@ -66,8 +67,6 @@ class TrackViewHolder(val view: View) : RecyclerView.ViewHolder(view), Checkable
         val features: FeatureStorage = get()
         features.isFeatureEnabled(Feature.FIVE_STAR_RATING)
     }
-
-    private val mediaPlayerController: MediaPlayerController by inject()
 
     lateinit var imageHelper: ImageHelper
 
@@ -116,8 +115,43 @@ class TrackViewHolder(val view: View) : RecyclerView.ViewHolder(view), Checkable
             setupStarButtons(song)
         }
 
-        update()
+        updateProgress(downloadFile!!.progress.value!!)
+        updateStatus(downloadFile!!.status.value!!)
+
+        if (useFiveStarRating) {
+            setFiveStars(entry?.userRating ?: 0)
+        } else {
+            setSingleStar(entry!!.starred)
+        }
+
+        RxBus.playerStateObservable.subscribe {
+            setPlayIcon(it.track == downloadFile)
+        }
+
+        // Minimize or maximize the Text view (if song title is very long)
+        itemView.setOnLongClickListener {
+                if (!song.isDirectory) {
+                    maximizeOrMinimize()
+                    true
+                }
+            false
+        }
     }
+
+    private fun setPlayIcon(isPlaying: Boolean) {
+        if (isPlaying && !isPlayingCached) {
+            isPlayingCached = true
+            title.setCompoundDrawablesWithIntrinsicBounds(
+                imageHelper.playingImage, null, null, null
+            )
+        } else if (!isPlaying && isPlayingCached) {
+            isPlayingCached = false
+            title.setCompoundDrawablesWithIntrinsicBounds(
+                0, 0, 0, 0
+            )
+        }
+    }
+
 
     private fun setupStarButtons(song: MusicDirectory.Entry) {
         if (useFiveStarRating) {
@@ -157,38 +191,6 @@ class TrackViewHolder(val view: View) : RecyclerView.ViewHolder(view), Checkable
         }
     }
 
-    @Synchronized
-    // TODO: Should be removed
-    fun update() {
-
-        updateProgress(downloadFile!!.progress.value!!)
-        updateStatus(downloadFile!!.status.value!!)
-
-        if (useFiveStarRating) {
-            val rating = entry?.userRating ?: 0
-            setFiveStars(rating)
-        } else {
-            setSingleStar(entry!!.starred)
-        }
-
-        val playing = mediaPlayerController.currentPlaying === downloadFile
-
-        if (playing) {
-            if (!this.playing) {
-                this.playing = true
-                title.setCompoundDrawablesWithIntrinsicBounds(
-                    imageHelper.playingImage, null, null, null
-                )
-            }
-        } else {
-            if (this.playing) {
-                this.playing = false
-                title.setCompoundDrawablesWithIntrinsicBounds(
-                    0, 0, 0, 0
-                )
-            }
-        }
-    }
 
     @Suppress("MagicNumber")
     private fun setFiveStars(rating: Int) {

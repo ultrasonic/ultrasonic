@@ -7,12 +7,14 @@ import androidx.lifecycle.LiveData
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.RecyclerView
 import org.moire.ultrasonic.R
+import org.moire.ultrasonic.adapters.AlbumRowBinder
 import org.moire.ultrasonic.domain.MusicDirectory
+import org.moire.ultrasonic.model.AlbumListModel
 import org.moire.ultrasonic.util.Constants
 
 /**
  * Displays a list of Albums from the media library
- * TODO: Check refresh is working
+ * FIXME: Add music folder support
  */
 class AlbumListFragment : EntryListFragment<MusicDirectory.Entry>() {
 
@@ -54,24 +56,6 @@ class AlbumListFragment : EntryListFragment<MusicDirectory.Entry>() {
         return listModel.getAlbumList(refresh or append, refreshListView!!, args)
     }
 
-//    FIXME
-//    /**
-//     * Provide the Adapter for the RecyclerView with a lazy delegate
-//     */
-//    override val viewAdapter: AlbumRowAdapter by lazy {
-//        AlbumRowAdapter(
-//            liveDataItems.value ?: listOf(),
-//            { entry -> onItemClick(entry) },
-//            { menuItem, entry -> onContextMenuItemSelected(menuItem, entry) },
-//            imageLoaderProvider.getImageLoader(),
-//            onMusicFolderUpdate,
-//            requireContext()
-//        )
-//    }
-
-    val newBundleClone: Bundle
-        get() = arguments?.clone() as Bundle
-
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
@@ -81,13 +65,25 @@ class AlbumListFragment : EntryListFragment<MusicDirectory.Entry>() {
                 override fun onLoadMore(page: Int, totalItemsCount: Int, view: RecyclerView?) {
                     // Triggered only when new data needs to be appended to the list
                     // Add whatever code is needed to append new items to the bottom of the list
-                    val appendArgs = newBundleClone
+                    val appendArgs = getArgumentsClone()
                     appendArgs.putBoolean(Constants.INTENT_EXTRA_NAME_APPEND, true)
                     getLiveData(appendArgs)
                 }
             }
             addOnScrollListener(scrollListener)
         }
+
+
+        viewAdapter.register(
+            AlbumRowBinder(
+                { entry -> onItemClick(entry) },
+                { menuItem, entry -> onContextMenuItemSelected(menuItem, entry) },
+                imageLoaderProvider.getImageLoader(),
+                context = requireContext()
+            )
+        )
+
+
     }
 
     override fun onItemClick(item: MusicDirectory.Entry) {
@@ -98,4 +94,5 @@ class AlbumListFragment : EntryListFragment<MusicDirectory.Entry>() {
         bundle.putString(Constants.INTENT_EXTRA_NAME_PARENT_ID, item.parent)
         findNavController().navigate(itemClickTarget, bundle)
     }
+
 }

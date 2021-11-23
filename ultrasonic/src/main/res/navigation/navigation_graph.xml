@@ -26,14 +26,14 @@
         android:label="@string/music_library.label" >
         <action
             android:id="@+id/selectArtistToSelectAlbum"
-            app:destination="@id/trackCollectionFragment" />
+            app:destination="@id/albumListFragment" />
     </fragment>
     <fragment
         android:id="@+id/artistListFragment"
         android:name="org.moire.ultrasonic.fragment.ArtistListFragment" >
         <action
             android:id="@+id/selectArtistToSelectAlbum"
-            app:destination="@id/trackCollectionFragment" />
+            app:destination="@id/albumListFragment" />
     </fragment>
     <fragment
         android:id="@+id/trackCollectionFragment"

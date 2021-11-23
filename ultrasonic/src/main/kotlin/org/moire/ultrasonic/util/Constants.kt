@@ -121,5 +121,6 @@ object Constants {
     const val ALBUM_ART_FILE = "folder.jpeg"
     const val STARRED = "starred"
     const val ALPHABETICAL_BY_NAME = "alphabeticalByName"
+    const val ALBUMS_OF_ARTIST = "albumsOfArtist"
     const val RESULT_CLOSE_ALL = 1337
 }

@@ -16,7 +16,7 @@
 
  Copyright 2020 (C) Jozsef Varga
  */
-package org.moire.ultrasonic.fragment
+package org.moire.ultrasonic.model
 
 import android.app.Application
 import android.os.Bundle

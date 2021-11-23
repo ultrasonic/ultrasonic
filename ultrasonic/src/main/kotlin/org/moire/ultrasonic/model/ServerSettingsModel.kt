@@ -1,4 +1,4 @@
-package org.moire.ultrasonic.fragment
+package org.moire.ultrasonic.model
 
 import android.app.Application
 import android.content.SharedPreferences

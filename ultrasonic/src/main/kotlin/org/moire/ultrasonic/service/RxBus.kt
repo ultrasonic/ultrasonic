@@ -30,6 +30,11 @@ class RxBus {
         val themeChangedEventObservable: Observable<Unit> =
             themeChangedEventPublisher.observeOn(AndroidSchedulers.mainThread())
 
+        val musicFolderChangedEventPublisher: PublishSubject<String> =
+            PublishSubject.create()
+        val musicFolderChangedEventObservable: Observable<String> =
+            musicFolderChangedEventPublisher.observeOn(AndroidSchedulers.mainThread())
+
         val playerStatePublisher: PublishSubject<StateWithTrack> =
             PublishSubject.create()
         val playerStateObservable: Observable<StateWithTrack> =
@@ -72,6 +77,7 @@ class RxBus {
             PublishSubject.create()
         val skipToQueueItemCommandObservable: Observable<Long> =
             skipToQueueItemCommandPublisher.observeOn(AndroidSchedulers.mainThread())
+
 
         fun releaseMediaSessionToken() {
             mediaSessionTokenPublisher = PublishSubject.create()

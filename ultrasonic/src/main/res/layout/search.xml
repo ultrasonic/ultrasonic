@@ -10,7 +10,7 @@
         a:layout_height="0dip"
         a:layout_weight="1.0">
 
-    <ListView
+    <androidx.recyclerview.widget.RecyclerView
             a:id="@+id/search_list"
             a:layout_width="fill_parent"
             a:layout_height="0dip"

@@ -60,7 +60,7 @@ import org.koin.android.ext.android.inject
 import org.koin.core.component.KoinComponent
 import org.koin.core.component.get
 import org.moire.ultrasonic.R
-import org.moire.ultrasonic.adapters.MultiTypeDiffAdapter
+import org.moire.ultrasonic.adapters.BaseAdapter
 import org.moire.ultrasonic.adapters.TrackViewBinder
 import org.moire.ultrasonic.audiofx.EqualizerController
 import org.moire.ultrasonic.audiofx.VisualizerController
@@ -154,8 +154,8 @@ class PlayerFragment :
     private lateinit var fullStar: Drawable
     private lateinit var progressBar: SeekBar
 
-    internal val viewAdapter: MultiTypeDiffAdapter<Identifiable> by lazy {
-        MultiTypeDiffAdapter()
+    internal val viewAdapter: BaseAdapter<Identifiable> by lazy {
+        BaseAdapter()
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -890,7 +890,7 @@ class PlayerFragment :
                     // FIXME:
                     // Needs to be changed in the playlist as well...
                     //  Move it in the data set
-                    (recyclerView.adapter as MultiTypeDiffAdapter<*>).moveItem(from, to)
+                    (recyclerView.adapter as BaseAdapter<*>).moveItem(from, to)
 
                     return true
                 }

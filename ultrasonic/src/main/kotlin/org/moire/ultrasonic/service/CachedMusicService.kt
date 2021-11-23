@@ -399,7 +399,7 @@ class CachedMusicService(private val musicService: MusicService) : MusicService,
     }
 
     @Throws(Exception::class)
-    override fun getBookmarks(): List<Bookmark?>? = musicService.getBookmarks()
+    override fun getBookmarks(): List<Bookmark> = musicService.getBookmarks()
 
     @Throws(Exception::class)
     override fun deleteBookmark(id: String) {

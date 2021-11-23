@@ -8,20 +8,21 @@ import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.LiveData
+import androidx.lifecycle.MutableLiveData
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import org.koin.android.ext.android.inject
 import org.koin.androidx.viewmodel.ext.android.viewModel
 import org.moire.ultrasonic.R
-import org.moire.ultrasonic.adapters.MultiTypeDiffAdapter
+import org.moire.ultrasonic.adapters.BaseAdapter
 import org.moire.ultrasonic.data.ActiveServerProvider
 import org.moire.ultrasonic.domain.Identifiable
-import org.moire.ultrasonic.domain.MusicFolder
+import org.moire.ultrasonic.model.GenericListModel
+import org.moire.ultrasonic.model.ServerSettingsModel
 import org.moire.ultrasonic.subsonic.DownloadHandler
 import org.moire.ultrasonic.subsonic.ImageLoaderProvider
 import org.moire.ultrasonic.util.Constants
-import org.moire.ultrasonic.util.Settings
 import org.moire.ultrasonic.util.Util
 import org.moire.ultrasonic.view.SelectMusicFolderView
 
@@ -43,8 +44,8 @@ abstract class MultiListFragment<T : Identifiable> : Fragment() {
      * The Adapter for the RecyclerView
      * Recommendation: Implement this as a lazy delegate
      */
-    internal val viewAdapter: MultiTypeDiffAdapter<Identifiable> by lazy {
-        MultiTypeDiffAdapter()
+    internal val viewAdapter: BaseAdapter<Identifiable> by lazy {
+        BaseAdapter()
     }
 
     /**
@@ -61,7 +62,9 @@ abstract class MultiListFragment<T : Identifiable> : Fragment() {
     /**
      * The central function to pass a query to the model and return a LiveData object
      */
-    abstract fun getLiveData(args: Bundle? = null): LiveData<List<T>>
+    open fun getLiveData(args: Bundle? = null): LiveData<List<T>> {
+        return MutableLiveData(listOf())
+    }
 
     /**
      * The id of the target in the navigation graph where we should go,
@@ -83,35 +86,6 @@ abstract class MultiListFragment<T : Identifiable> : Fragment() {
      * The id of the RecyclerView
      */
     open val recyclerViewId = R.id.generic_list_recycler
-
-    /**
-     * The observer to be called if the available music folders have changed
-     */
-    @Suppress("CommentOverPrivateProperty")
-    private val musicFolderObserver = { folders: List<MusicFolder> ->
-        // viewAdapter.setFolderList(folders, listModel.activeServer.musicFolderId)
-    }
-
-    /**
-     * What to do when the user has modified the folder filter
-     */
-    val onMusicFolderUpdate = { selectedFolderId: String? ->
-        if (!listModel.isOffline()) {
-            val currentSetting = listModel.activeServer
-            currentSetting.musicFolderId = selectedFolderId
-            serverSettingsModel.updateItem(currentSetting)
-        }
-        viewAdapter.notifyDataSetChanged()
-        listModel.refresh(refreshListView!!, arguments)
-    }
-
-    /**
-     * Whether to show the folder selector
-     */
-    fun showFolderHeader(): Boolean {
-        return listModel.showSelectFolderHeader(arguments) &&
-            !listModel.isOffline() && !Settings.shouldUseId3Tags
-    }
 
     open fun setTitle(title: String?) {
         if (title == null) {
@@ -150,9 +124,6 @@ abstract class MultiListFragment<T : Identifiable> : Fragment() {
             }
         )
 
-        // Setup the Music folder handling
-        listModel.getMusicFolders().observe(viewLifecycleOwner, musicFolderObserver)
-
         // Create a View Manager
         viewManager = LinearLayoutManager(this.context)
 
@@ -184,103 +155,17 @@ abstract class MultiListFragment<T : Identifiable> : Fragment() {
     abstract fun onContextMenuItemSelected(menuItem: MenuItem, item: T): Boolean
 
     abstract fun onItemClick(item: T)
+
+    fun getArgumentsClone(): Bundle {
+        var bundle: Bundle
+
+        try {
+            bundle = arguments?.clone() as Bundle
+        } catch (ignored: Exception) {
+           bundle = Bundle()
+        }
+
+        return bundle
+    }
 }
 
-// abstract class EntryListFragment<T : GenericEntry, TA : GenericRowAdapter<T>> :
-//    GenericListFragment<T, TA>() {
-//    @Suppress("LongMethod")
-//    override fun onContextMenuItemSelected(menuItem: MenuItem, item: T): Boolean {
-//        val isArtist = (item is Artist)
-//
-//        when (menuItem.itemId) {
-//            R.id.menu_play_now ->
-//                downloadHandler.downloadRecursively(
-//                    this,
-//                    item.id,
-//                    save = false,
-//                    append = false,
-//                    autoPlay = true,
-//                    shuffle = false,
-//                    background = false,
-//                    playNext = false,
-//                    unpin = false,
-//                    isArtist = isArtist
-//                )
-//            R.id.menu_play_next ->
-//                downloadHandler.downloadRecursively(
-//                    this,
-//                    item.id,
-//                    save = false,
-//                    append = false,
-//                    autoPlay = true,
-//                    shuffle = true,
-//                    background = false,
-//                    playNext = true,
-//                    unpin = false,
-//                    isArtist = isArtist
-//                )
-//            R.id.menu_play_last ->
-//                downloadHandler.downloadRecursively(
-//                    this,
-//                    item.id,
-//                    save = false,
-//                    append = true,
-//                    autoPlay = false,
-//                    shuffle = false,
-//                    background = false,
-//                    playNext = false,
-//                    unpin = false,
-//                    isArtist = isArtist
-//                )
-//            R.id.menu_pin ->
-//                downloadHandler.downloadRecursively(
-//                    this,
-//                    item.id,
-//                    save = true,
-//                    append = true,
-//                    autoPlay = false,
-//                    shuffle = false,
-//                    background = false,
-//                    playNext = false,
-//                    unpin = false,
-//                    isArtist = isArtist
-//                )
-//            R.id.menu_unpin ->
-//                downloadHandler.downloadRecursively(
-//                    this,
-//                    item.id,
-//                    save = false,
-//                    append = false,
-//                    autoPlay = false,
-//                    shuffle = false,
-//                    background = false,
-//                    playNext = false,
-//                    unpin = true,
-//                    isArtist = isArtist
-//                )
-//            R.id.menu_download ->
-//                downloadHandler.downloadRecursively(
-//                    this,
-//                    item.id,
-//                    save = false,
-//                    append = false,
-//                    autoPlay = false,
-//                    shuffle = false,
-//                    background = true,
-//                    playNext = false,
-//                    unpin = false,
-//                    isArtist = isArtist
-//                )
-//        }
-//        return true
-//    }
-//
-//    override fun onItemClick(item: T) {
-//        val bundle = Bundle()
-//        bundle.putString(Constants.INTENT_EXTRA_NAME_ID, item.id)
-//        bundle.putString(Constants.INTENT_EXTRA_NAME_NAME, item.name)
-//        bundle.putString(Constants.INTENT_EXTRA_NAME_PARENT_ID, item.id)
-//        bundle.putBoolean(Constants.INTENT_EXTRA_NAME_ARTIST, (item is Artist))
-//        findNavController().navigate(itemClickTarget, bundle)
-//    }
-// }
