@@ -194,9 +194,10 @@ public class StreamProxy implements Runnable
 						String file = downloadFile.isCompleteFileAvailable() ? downloadFile.getCompleteOrSaveFile() : downloadFile.getPartialFile();
 						int cbSentThisBatch = 0;
 
-						if (StorageFile.Companion.isPathExists(file))
+						StorageFile storageFile = StorageFile.Companion.getFromPath(file);
+						if (storageFile != null)
 						{
-							InputStream input = StorageFile.Companion.getFromPath(file).getFileInputStream();
+							InputStream input = storageFile.getFileInputStream();
 
 							try
 							{

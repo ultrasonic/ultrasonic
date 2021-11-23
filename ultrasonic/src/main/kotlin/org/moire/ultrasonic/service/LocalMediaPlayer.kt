@@ -368,7 +368,7 @@ class LocalMediaPlayer : KoinComponent {
                 }
                 dataSource = String.format(
                     Locale.getDefault(), "http://127.0.0.1:%d/%s",
-                    proxy!!.port, URLEncoder.encode(dataSource, Constants.UTF_8)
+                    proxy!!.port, URLEncoder.encode(file!!.path, Constants.UTF_8)
                 )
                 Timber.i("Data Source: %s", dataSource)
             } else if (proxy != null) {
@@ -379,7 +379,7 @@ class LocalMediaPlayer : KoinComponent {
             Timber.i("Preparing media player")
 
             if (dataSource != null) mediaPlayer.setDataSource(dataSource)
-            else if (file.isRawFile()) mediaPlayer.setDataSource(file.getRawFilePath())
+            else if (file!!.isRawFile) mediaPlayer.setDataSource(file.rawFilePath)
             else {
                 val descriptor = file.getDocumentFileDescriptor("r")!!
                 mediaPlayer.setDataSource(descriptor.fileDescriptor)
@@ -465,7 +465,7 @@ class LocalMediaPlayer : KoinComponent {
             } catch (ignored: Throwable) {
             }
 
-            if (file.isRawFile()) nextMediaPlayer!!.setDataSource(file.getRawFilePath())
+            if (file!!.isRawFile) nextMediaPlayer!!.setDataSource(file.rawFilePath)
             else {
                 val descriptor = file.getDocumentFileDescriptor("r")!!
                 nextMediaPlayer!!.setDataSource(descriptor.fileDescriptor)
@@ -614,8 +614,7 @@ class LocalMediaPlayer : KoinComponent {
 
         private fun bufferComplete(): Boolean {
             val completeFileAvailable = downloadFile.isWorkDone
-            val size = if (!StorageFile.isPathExists(partialFile)) 0
-            else StorageFile.getFromPath(partialFile).length()
+            val size = StorageFile.getFromPath(partialFile)?.length ?: 0
 
             Timber.i(
                 "Buffering %s (%d/%d, %s)",
@@ -672,8 +671,8 @@ class LocalMediaPlayer : KoinComponent {
             val completeFileAvailable = downloadFile!!.isWorkDone
             val state = (playerState === PlayerState.STARTED || playerState === PlayerState.PAUSED)
 
-            val length = if (partialFile == null || !StorageFile.isPathExists(partialFile)) 0
-            else StorageFile.getFromPath(partialFile).length()
+            val length = if (partialFile == null) 0
+            else StorageFile.getFromPath(partialFile)?.length ?: 0
 
             Timber.i("Buffering next %s (%d)", partialFile, length)
 

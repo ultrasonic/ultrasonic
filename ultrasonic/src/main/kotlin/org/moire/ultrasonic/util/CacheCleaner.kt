@@ -33,21 +33,38 @@ class CacheCleaner : CoroutineScope by CoroutineScope(Dispatchers.IO) {
         }
     }
 
+    // Cache cleaning shouldn't run concurrently, as it is started after every completed download
+    // TODO serializing and throttling these is an ideal task for Rx
     fun clean() {
-        launch(exceptionHandler("clean")) {
-            backgroundCleanup()
+        if (cleaning) return
+        synchronized(lock) {
+            if (cleaning) return
+            cleaning = true
+            launch(exceptionHandler("clean")) {
+                backgroundCleanup()
+            }
         }
     }
 
     fun cleanSpace() {
-        launch(exceptionHandler("cleanSpace")) {
-            backgroundSpaceCleanup()
+        if (spaceCleaning) return
+        synchronized(lock) {
+            if (spaceCleaning) return
+            spaceCleaning = true
+            launch(exceptionHandler("cleanSpace")) {
+                backgroundSpaceCleanup()
+            }
         }
     }
 
     fun cleanPlaylists(playlists: List<Playlist>) {
-        launch(exceptionHandler("cleanPlaylists")) {
-            backgroundPlaylistsCleanup(playlists)
+        if (playlistCleaning) return
+        synchronized(lock) {
+            if (playlistCleaning) return
+            playlistCleaning = true
+            launch(exceptionHandler("cleanPlaylists")) {
+                backgroundPlaylistsCleanup(playlists)
+            }
         }
     }
 
@@ -64,6 +81,8 @@ class CacheCleaner : CoroutineScope by CoroutineScope(Dispatchers.IO) {
             deleteEmptyDirs(dirs, filesToNotDelete)
         } catch (all: RuntimeException) {
             Timber.e(all, "Error in cache cleaning.")
+        } finally {
+            cleaning = false
         }
     }
 
@@ -82,6 +101,8 @@ class CacheCleaner : CoroutineScope by CoroutineScope(Dispatchers.IO) {
             }
         } catch (all: RuntimeException) {
             Timber.e(all, "Error in cache cleaning.")
+        } finally {
+            spaceCleaning = false
         }
     }
 
@@ -104,27 +125,34 @@ class CacheCleaner : CoroutineScope by CoroutineScope(Dispatchers.IO) {
             }
         } catch (all: RuntimeException) {
             Timber.e(all, "Error in playlist cache cleaning.")
+        } finally {
+            playlistCleaning = false
         }
     }
 
     companion object {
+        private val lock = Object()
+        private var cleaning = false
+        private var spaceCleaning = false
+        private var playlistCleaning = false
+
         private const val MIN_FREE_SPACE = 500 * 1024L * 1024L
         private fun deleteEmptyDirs(dirs: Iterable<StorageFile>, doNotDelete: Collection<String>) {
             for (dir in dirs) {
-                if (doNotDelete.contains(dir.getPath())) continue
+                if (doNotDelete.contains(dir.path)) continue
 
                 var children = dir.listFiles()
                 if (children != null) {
                     // No songs left in the folder
-                    if (children.size == 1 && children[0].getPath() == getAlbumArtFile(dir.getPath())) {
+                    if (children.size == 1 && children[0].path == getAlbumArtFile(dir.path)) {
                         // Delete Artwork files
-                        delete(getAlbumArtFile(dir.getPath()))
+                        delete(getAlbumArtFile(dir.path))
                         children = dir.listFiles()
                     }
 
                     // Delete empty directory
                     if (children != null && children.isEmpty()) {
-                        delete(dir.getPath())
+                        delete(dir.path)
                     }
                 }
             }
@@ -137,7 +165,7 @@ class CacheCleaner : CoroutineScope by CoroutineScope(Dispatchers.IO) {
             var bytesUsedBySubsonic = 0L
 
             for (file in files) {
-                bytesUsedBySubsonic += file.length()
+                bytesUsedBySubsonic += file.length
             }
 
             // Ensure that file system is not more than 95% full.
@@ -146,8 +174,8 @@ class CacheCleaner : CoroutineScope by CoroutineScope(Dispatchers.IO) {
             val bytesTotalFs: Long
             val bytesAvailableFs: Long
 
-            if (files[0].isRawFile()) {
-                val stat = StatFs(files[0].getRawFilePath())
+            if (files[0].isRawFile) {
+                val stat = StatFs(files[0].rawFilePath)
                 bytesTotalFs = stat.blockCountLong * stat.blockSizeLong
                 bytesAvailableFs = stat.availableBlocksLong * stat.blockSizeLong
                 bytesUsedFs = bytesTotalFs - bytesAvailableFs
@@ -201,9 +229,9 @@ class CacheCleaner : CoroutineScope by CoroutineScope(Dispatchers.IO) {
             for (file in files) {
                 if (!deletePartials && bytesDeleted > bytesToDelete) break
                 if (bytesToDelete > bytesDeleted || deletePartials && isPartial(file)) {
-                    if (!doNotDelete.contains(file.getPath()) && file.name != Constants.ALBUM_ART_FILE) {
-                        val size = file.length()
-                        if (delete(file.getPath())) {
+                    if (!doNotDelete.contains(file.path) && file.name != Constants.ALBUM_ART_FILE) {
+                        val size = file.length
+                        if (delete(file.path)) {
                             bytesDeleted += size
                         }
                     }
@@ -230,7 +258,7 @@ class CacheCleaner : CoroutineScope by CoroutineScope(Dispatchers.IO) {
 
         private fun sortByAscendingModificationTime(files: MutableList<StorageFile>) {
             files.sortWith { a: StorageFile, b: StorageFile ->
-                a.lastModified().compareTo(b.lastModified())
+                a.lastModified.compareTo(b.lastModified)
             }
         }
 
@@ -245,7 +273,7 @@ class CacheCleaner : CoroutineScope by CoroutineScope(Dispatchers.IO) {
                 filesToNotDelete.add(downloadFile.completeOrSaveFile)
             }
 
-            filesToNotDelete.add(musicDirectory.getPath())
+            filesToNotDelete.add(musicDirectory.path)
             return filesToNotDelete
         }
     }

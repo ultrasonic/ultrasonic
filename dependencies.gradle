@@ -24,6 +24,7 @@ ext.versions = [
         kotlin               : "1.5.31",
         kotlinxCoroutines    : "1.5.2-native-mt",
         viewModelKtx         : "2.3.0",
+        lifecycle            : "2.3.1",
 
         retrofit             : "2.6.4",
         jackson              : "2.9.5",
@@ -66,6 +67,7 @@ ext.androidSupport = [
         roomRuntime           : "androidx.room:room-runtime:$versions.room",
         roomKtx               : "androidx.room:room-ktx:$versions.room",
         viewModelKtx          : "androidx.lifecycle:lifecycle-viewmodel-ktx:$versions.viewModelKtx",
+        lifecycle             : "androidx.lifecycle:lifecycle-process:$versions.lifecycle",
         navigationFragment    : "androidx.navigation:navigation-fragment:$versions.navigation",
         navigationUi          : "androidx.navigation:navigation-ui:$versions.navigation",
         navigationFragmentKtx : "androidx.navigation:navigation-fragment-ktx:$versions.navigation",

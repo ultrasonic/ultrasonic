@@ -131,7 +131,7 @@ object FileUtil {
      */
     fun getArtistArtKey(name: String?, large: Boolean): String {
         val artist = fileSystemSafe(name)
-        val dir = String.format(Locale.ROOT, "%s/%s/%s", musicDirectory.getPath(), artist, UNNAMED)
+        val dir = String.format(Locale.ROOT, "%s/%s/%s", musicDirectory.path, artist, UNNAMED)
         return getAlbumArtKey(dir, large)
     }
 
@@ -194,7 +194,7 @@ object FileUtil {
             dir = String.format(
                     Locale.ROOT,
                     "%s/%s",
-                    musicDirectory.getPath(),
+                    musicDirectory.path,
                     if (entry.isDirectory) f else getParentPath(f) ?: ""
                 )
         } else {
@@ -203,7 +203,7 @@ object FileUtil {
             if (UNNAMED == album) {
                 album = fileSystemSafe(entry.title)
             }
-            dir = String.format(Locale.ROOT, "%s/%s/%s", musicDirectory.getPath(), artist, album)
+            dir = String.format(Locale.ROOT, "%s/%s/%s", musicDirectory.path, artist, album)
         }
         return dir
     }
@@ -241,7 +241,7 @@ object FileUtil {
 
     @JvmStatic
     val musicDirectory: StorageFile
-        get() = StorageFile.getMediaRoot()
+        get() = StorageFile.mediaRoot.value
 
     @JvmStatic
     @Suppress("ReturnCount")
@@ -320,7 +320,7 @@ object FileUtil {
     fun listFiles(dir: StorageFile): SortedSet<StorageFile> {
         val files = dir.listFiles()
         if (files == null) {
-            Timber.w("Failed to list children for %s", dir.getPath())
+            Timber.w("Failed to list children for %s", dir.path)
             return TreeSet()
         }
         return TreeSet(files.asList())
@@ -500,8 +500,9 @@ object FileUtil {
 
     @JvmStatic
     fun delete(file: String?): Boolean {
-        if (file != null && StorageFile.isPathExists(file)) {
-            if (!StorageFile.getFromPath(file).delete()) {
+        if (file != null) {
+            val storageFile = StorageFile.getFromPath(file)
+            if (storageFile != null && !storageFile.delete()) {
                 Timber.w("Failed to delete file %s", file)
                 return false
             }
@@ -509,5 +510,4 @@ object FileUtil {
         }
         return true
     }
-
 }

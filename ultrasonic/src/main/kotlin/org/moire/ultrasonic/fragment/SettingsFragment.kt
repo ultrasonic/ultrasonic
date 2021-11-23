@@ -20,6 +20,7 @@ import androidx.preference.ListPreference
 import androidx.preference.Preference
 import androidx.preference.PreferenceCategory
 import androidx.preference.PreferenceFragmentCompat
+import com.github.k1rakishou.fsaf.FileChooser
 import kotlin.math.ceil
 import org.koin.core.component.KoinComponent
 import org.koin.java.KoinJavaComponent.get
@@ -46,9 +47,11 @@ import org.moire.ultrasonic.util.Settings
 import org.moire.ultrasonic.util.Settings.preferences
 import org.moire.ultrasonic.util.Settings.shareGreeting
 import org.moire.ultrasonic.util.Settings.shouldUseId3Tags
+import org.moire.ultrasonic.util.StorageFile
 import org.moire.ultrasonic.util.TimeSpanPreference
 import org.moire.ultrasonic.util.TimeSpanPreferenceDialogFragmentCompat
 import org.moire.ultrasonic.util.Util.toast
+import org.moire.ultrasonic.util.isUri
 import timber.log.Timber
 import java.io.File
 
@@ -89,6 +92,7 @@ class SettingsFragment :
     private var resumeOnBluetoothDevice: Preference? = null
     private var pauseOnBluetoothDevice: Preference? = null
     private var debugLogToFile: CheckBoxPreference? = null
+    private var customCacheLocation: CheckBoxPreference? = null
 
     private val mediaPlayerControllerLazy = inject<MediaPlayerController>(
         MediaPlayerController::class.java
@@ -137,6 +141,8 @@ class SettingsFragment :
         pauseOnBluetoothDevice = findPreference(Constants.PREFERENCES_KEY_PAUSE_ON_BLUETOOTH_DEVICE)
         debugLogToFile = findPreference(Constants.PREFERENCES_KEY_DEBUG_LOG_TO_FILE)
         showArtistPicture = findPreference(Constants.PREFERENCES_KEY_SHOW_ARTIST_PICTURE)
+        customCacheLocation = findPreference(Constants.PREFERENCES_KEY_CUSTOM_CACHE_LOCATION)
+
         sharingDefaultGreeting!!.text = shareGreeting
         setupClearSearchPreference()
         setupFeatureFlagsPreferences()
@@ -186,7 +192,7 @@ class SettingsFragment :
 
             contentResolver.takePersistableUriPermission(uri, RW_FLAG)
 
-            setCacheLocation(uri)
+            setCacheLocation(uri.toString())
         }
     }
 
@@ -224,6 +230,9 @@ class SettingsFragment :
             Constants.PREFERENCES_KEY_THEME -> {
                 RxBus.themeChangedEventPublisher.onNext(Unit)
             }
+            Constants.PREFERENCES_KEY_CUSTOM_CACHE_LOCATION -> {
+                setupCacheLocationPreference()
+            }
         }
     }
 
@@ -247,12 +256,19 @@ class SettingsFragment :
     }
 
     private fun setupCacheLocationPreference() {
-        // TODO add means to reset cache directory to its default value
+        val isDefault = Settings.cacheLocation == defaultMusicDirectory.path
+
+        if (!Settings.customCacheLocation) {
+            cacheLocation?.isVisible = false
+            if (!isDefault) setCacheLocation(defaultMusicDirectory.path)
+            return
+        }
+
+        cacheLocation?.isVisible = true
         val uri = Uri.parse(Settings.cacheLocation)
         cacheLocation!!.summary = uri.path
         cacheLocation!!.onPreferenceClickListener =
             Preference.OnPreferenceClickListener {
-                val isDefault = Settings.cacheLocation == defaultMusicDirectory.path
 
                 // Choose a directory using the system's file picker.
                 val intent = Intent(Intent.ACTION_OPEN_DOCUMENT_TREE)
@@ -434,14 +450,17 @@ class SettingsFragment :
         sendBluetoothAlbumArt!!.isEnabled = enabled
     }
 
-    private fun setCacheLocation(uri: Uri) {
-        if (uri.path != null) {
-            cacheLocation!!.summary = uri.path
-            Settings.cacheLocation = uri.toString()
-
-            // Clear download queue.
-            mediaPlayerControllerLazy.value.clear()
+    private fun setCacheLocation(path: String) {
+        if (path.isUri()) {
+            val uri = Uri.parse(path)
+            cacheLocation!!.summary = uri.path ?: ""
         }
+
+        Settings.cacheLocation = path
+
+        // Clear download queue.
+        mediaPlayerControllerLazy.value.clear()
+        StorageFile.resetCaches()
     }
 
     private fun setDebugLogToFile(writeLog: Boolean) {

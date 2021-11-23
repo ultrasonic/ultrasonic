@@ -12,8 +12,11 @@ import android.net.Uri
 import com.github.k1rakishou.fsaf.FileManager
 import com.github.k1rakishou.fsaf.document_file.CachingDocumentFile
 import com.github.k1rakishou.fsaf.file.AbstractFile
+import com.github.k1rakishou.fsaf.file.DirectorySegment
+import com.github.k1rakishou.fsaf.file.FileSegment
 import com.github.k1rakishou.fsaf.file.RawFile
 import com.github.k1rakishou.fsaf.manager.base_directory.BaseDirectory
+import org.moire.ultrasonic.R
 import java.io.File
 import java.io.FileInputStream
 import java.io.FileOutputStream
@@ -22,19 +25,20 @@ import java.io.InputStream
 import java.io.OutputStream
 import org.moire.ultrasonic.app.UApp
 import timber.log.Timber
+import java.util.concurrent.ConcurrentHashMap
 
 /**
  * Provides filesystem access abstraction which works
  * both on File based paths and Storage Access Framework Uris
  */
 class StorageFile private constructor(
-    private var parent: StorageFile?,
+    private var parentStorageFile: StorageFile?,
     private var abstractFile: AbstractFile,
     private var fileManager: FileManager
 ): Comparable<StorageFile> {
 
     override fun compareTo(other: StorageFile): Int {
-        return getPath().compareTo(other.getPath())
+        return path.compareTo(other.path)
     }
 
     override fun toString(): String {
@@ -47,25 +51,28 @@ class StorageFile private constructor(
 
     var isFile: Boolean = fileManager.isFile(abstractFile)
 
-    fun length(): Long = fileManager.getLength(abstractFile)
+    val length: Long
+        get() = fileManager.getLength(abstractFile)
 
-    fun lastModified(): Long = fileManager.lastModified(abstractFile)
+    val lastModified: Long
+        get() = fileManager.lastModified(abstractFile)
 
-    fun delete(): Boolean = fileManager.delete(abstractFile)
+    fun delete(): Boolean {
+        val deleted = fileManager.delete(abstractFile)
+        if (!deleted) return false
+        val path = normalizePath(path)
+        storageFilePathDictionary.remove(path)
+        notExistingPathDictionary.putIfAbsent(path, path)
+        return true
+    }
 
     fun listFiles(): Array<StorageFile> {
         val fileList = fileManager.listFiles(abstractFile)
         return fileList.map { file ->  StorageFile(this, file, fileManager) }.toTypedArray()
     }
 
-    fun getFileOutputStream(): OutputStream {
-        if (isRawFile()) return File(abstractFile.getFullPath()).outputStream()
-        return fileManager.getOutputStream(abstractFile)
-            ?: throw IOException("Couldn't retrieve OutputStream")
-    }
-
     fun getFileOutputStream(append: Boolean): OutputStream {
-        if (isRawFile()) return FileOutputStream(File(abstractFile.getFullPath()), append)
+        if (isRawFile) return FileOutputStream(File(abstractFile.getFullPath()), append)
         val mode = if (append) "wa" else "w"
         val descriptor = UApp.applicationContext().contentResolver.openAssetFileDescriptor(
             abstractFile.getFileRoot<CachingDocumentFile>().holder.uri(), mode)
@@ -74,38 +81,43 @@ class StorageFile private constructor(
     }
 
     fun getFileInputStream(): InputStream {
-        if (isRawFile()) return FileInputStream(abstractFile.getFullPath())
+        if (isRawFile) return FileInputStream(abstractFile.getFullPath())
         return fileManager.getInputStream(abstractFile)
             ?: throw IOException("Couldn't retrieve InputStream")
     }
 
-    // TODO there are a few functions which could be getters
-    // They are functions for now to help us distinguish them from similar getters in File. These can be changed after the refactor is complete.
-    fun getPath(): String {
-        if (isRawFile()) return abstractFile.getFullPath()
-        if (getParent() != null) return getParent()!!.getPath() + "/" + name
-        return Uri.parse(abstractFile.getFullPath()).toString()
-    }
+    val path: String
+        get() {
+            if (isRawFile) return abstractFile.getFullPath()
 
-    fun getParent(): StorageFile? {
-        if (isRawFile()) {
-            return StorageFile(
-                null,
-                fileManager.fromRawFile(File(abstractFile.getFullPath()).parentFile!!),
-                fileManager
-            )
+            // We can't assume that the file's Uri is related to its path,
+            // so we generate our own path by concatenating the names on the path.
+            if (parentStorageFile != null) return parentStorageFile!!.path + "/" + name
+            return Uri.parse(abstractFile.getFullPath()).toString()
         }
-        return parent
-    }
 
-    fun isRawFile(): Boolean {
-     return abstractFile is RawFile
-    }
+    val parent: StorageFile?
+        get() {
+            if (isRawFile) {
+                return StorageFile(
+                    null,
+                    fileManager.fromRawFile(File(abstractFile.getFullPath()).parentFile!!),
+                    fileManager
+                )
+            }
+            return parentStorageFile
+        }
 
-    fun getRawFilePath(): String? {
-        return if (abstractFile is RawFile) abstractFile.getFullPath()
-        else null
-    }
+    val isRawFile: Boolean
+        get() {
+            return abstractFile is RawFile
+        }
+
+    val rawFilePath: String?
+        get() {
+            return if (abstractFile is RawFile) abstractFile.getFullPath()
+            else null
+        }
 
     fun getDocumentFileDescriptor(openMode: String): AssetFileDescriptor? {
         return if (abstractFile !is RawFile) {
@@ -117,53 +129,38 @@ class StorageFile private constructor(
     }
 
     companion object {
-        // TODO it would be nice to check the access rights and reset the cache directory on error
-        private val MusicCacheFileManager: Lazy<FileManager> = lazy {
+        // These caches are necessary because SAF is very slow, and the caching in FSAF is buggy.
+        // Ultrasonic assumes that the files won't change while it is in the foreground.
+        // TODO to really handle concurrency we'd need API24.
+        // If this isn't good enough we can add locking.
+        private val storageFilePathDictionary = ConcurrentHashMap<String, StorageFile>()
+        private val notExistingPathDictionary = ConcurrentHashMap<String, String>()
+
+        private val fileManager: ResettableLazy<FileManager> = ResettableLazy {
             val manager = FileManager(UApp.applicationContext())
             manager.registerBaseDir<MusicCacheBaseDirectory>(MusicCacheBaseDirectory())
             manager
         }
 
-        fun getFromParentAndName(parent: StorageFile, name: String): StorageFile {
-            val file = parent.fileManager.findFile(parent.abstractFile, name)
-                ?: parent.fileManager.createFile(parent.abstractFile, name)!!
-            return StorageFile(parent, file, parent.fileManager)
-        }
-
-        fun getMediaRoot(): StorageFile {
-            return StorageFile(
+        val mediaRoot: ResettableLazy<StorageFile> = ResettableLazy {
+            StorageFile(
                 null,
-                MusicCacheFileManager.value.newBaseDirectoryFile<MusicCacheBaseDirectory>()!!,
-                MusicCacheFileManager.value
+                fileManager.value.newBaseDirectoryFile<MusicCacheBaseDirectory>()!!,
+                fileManager.value
             )
         }
 
-        // TODO sometimes getFromPath is called after isPathExists, but the file may be gone because it was deleted in another thread.
-        // Create a function where these two are merged
-        fun getFromPath(path: String): StorageFile {
-            Timber.v("StorageFile getFromPath %s", path)
-            val normalizedPath = normalizePath(path)
-            if (!normalizedPath.isUri()) {
-                return StorageFile(
-                    null,
-                    MusicCacheFileManager.value.fromPath(normalizedPath),
-                    MusicCacheFileManager.value
-                )
+        fun resetCaches() {
+            storageFilePathDictionary.clear()
+            notExistingPathDictionary.clear()
+            fileManager.value.unregisterBaseDir<MusicCacheBaseDirectory>()
+            fileManager.reset()
+            mediaRoot.reset()
+            Timber.v("StorageFile caches were reset")
+            if (!fileManager.value.baseDirectoryExists<MusicCacheBaseDirectory>()) {
+                Settings.cacheLocation = FileUtil.defaultMusicDirectory.path
+                Util.toast(UApp.applicationContext(), R.string.settings_cache_location_error)
             }
-
-            val segments = getUriSegments(normalizedPath)
-                ?: throw IOException("Can't get path because the root has changed")
-
-            var file = StorageFile(null, getMediaRoot().abstractFile, MusicCacheFileManager.value)
-            segments.forEach { segment ->
-                file = StorageFile(
-                    file,
-                    MusicCacheFileManager.value.findFile(file.abstractFile, segment)
-                        ?: throw IOException("File not found"),
-                    file.fileManager
-                )
-            }
-            return file
         }
 
         fun getOrCreateFileFromPath(path: String): StorageFile {
@@ -172,37 +169,70 @@ class StorageFile private constructor(
                 File(normalizedPath).createNewFile()
                 return StorageFile(
                     null,
-                    MusicCacheFileManager.value.fromPath(normalizedPath),
-                    MusicCacheFileManager.value
+                    fileManager.value.fromPath(normalizedPath),
+                    fileManager.value
                 )
             }
 
-            val segments = getUriSegments(normalizedPath)
-                ?: throw IOException("Can't get path because the root has changed")
+            if (storageFilePathDictionary.containsKey(normalizedPath))
+                return storageFilePathDictionary[normalizedPath]!!
 
-            var file = StorageFile(null, getMediaRoot().abstractFile, MusicCacheFileManager.value)
-            segments.forEach { segment ->
-                file = StorageFile(
-                    file,
-                    MusicCacheFileManager.value.findFile(file.abstractFile, segment)
-                    ?: MusicCacheFileManager.value.createFile(file.abstractFile, segment)!!,
-                    file.fileManager
-                )
-            }
+            val parent = getStorageFileForParentDirectory(normalizedPath)
+                ?: throw IOException("Parent directory doesn't exist")
+
+            val name = FileUtil.getNameFromPath(normalizedPath)
+            val file = StorageFile(
+                parent,
+                fileManager.value.findFile(parent.abstractFile, name)
+                    ?: fileManager.value.create(parent.abstractFile,
+                        listOf(FileSegment(name))
+                    )!!,
+                parent.fileManager
+            )
+            storageFilePathDictionary[normalizedPath] = file
+            notExistingPathDictionary.remove(normalizedPath)
             return file
         }
 
         fun isPathExists(path: String): Boolean {
+            return getFromPath(path) != null
+        }
+
+        fun getFromPath(path: String): StorageFile? {
             val normalizedPath = normalizePath(path)
-            if (!normalizedPath.isUri()) return File(normalizedPath).exists()
-
-            val segments = getUriSegments(normalizedPath) ?: return false
-
-            var file = getMediaRoot().abstractFile
-            segments.forEach { segment ->
-                file = MusicCacheFileManager.value.findFile(file, segment) ?: return false
+            if (!normalizedPath.isUri()) {
+                val file = fileManager.value.fromPath(normalizedPath)
+                if (!fileManager.value.exists(file)) return null
+                return StorageFile(null, file, fileManager.value)
             }
-            return true
+
+            if (storageFilePathDictionary.containsKey(normalizedPath))
+                return storageFilePathDictionary[normalizedPath]!!
+            if (notExistingPathDictionary.contains(normalizedPath)) return null
+
+            val parent = getStorageFileForParentDirectory(normalizedPath)
+            if (parent == null) {
+                notExistingPathDictionary.putIfAbsent(normalizedPath, normalizedPath)
+                return null
+            }
+
+            val fileName = FileUtil.getNameFromPath(normalizedPath)
+            var file: StorageFile? = null
+
+            // Listing a bunch of files takes the same time in SAF as finding one,
+            // so we list and cache all of them for performance
+            parent.listFiles().forEach {
+                if (it.name == fileName) file = it
+                storageFilePathDictionary[it.path] = it
+                notExistingPathDictionary.remove(it.path)
+            }
+
+            if (file == null) {
+                notExistingPathDictionary.putIfAbsent(normalizedPath, normalizedPath)
+                return null
+            }
+
+            return file
         }
 
         fun createDirsOnPath(path: String) {
@@ -215,29 +245,81 @@ class StorageFile private constructor(
             val segments = getUriSegments(normalizedPath)
                 ?: throw IOException("Can't get path because the root has changed")
 
-            var file = getMediaRoot().abstractFile
+            var file = mediaRoot.value
             segments.forEach { segment ->
-                file = MusicCacheFileManager.value.createDir(file, segment)
-                    ?: throw IOException("Can't create directory")
+                file = StorageFile(
+                    file,
+                    fileManager.value.create(file.abstractFile, listOf(DirectorySegment(segment)))
+                        ?: throw IOException("Can't create directory"),
+                    fileManager.value
+                )
+
+                notExistingPathDictionary.remove(normalizePath(file.path))
             }
         }
 
         fun rename(pathFrom: String, pathTo: String) {
             val normalizedPathFrom = normalizePath(pathFrom)
+            val fileFrom = getFromPath(normalizedPathFrom) ?: throw IOException("File to rename doesn't exist")
+            rename(fileFrom, pathTo)
+        }
+
+        fun rename(pathFrom: StorageFile?, pathTo: String) {
             val normalizedPathTo = normalizePath(pathTo)
+            if (pathFrom == null || !pathFrom.fileManager.exists(pathFrom.abstractFile)) throw IOException("File to rename doesn't exist")
+            Timber.d("Renaming from %s to %s", pathFrom.path, normalizedPathTo)
 
-            Timber.d("Renaming from %s to %s", normalizedPathFrom, normalizedPathTo)
-
-            val fileFrom = getFromPath(normalizedPathFrom)
-            val parentTo = getFromPath(FileUtil.getParentPath(normalizedPathTo)!!)
+            val parentTo = getFromPath(FileUtil.getParentPath(normalizedPathTo)!!) ?: throw IOException("Destination folder doesn't exist")
             val fileTo = getFromParentAndName(parentTo, FileUtil.getNameFromPath(normalizedPathTo))
+            notExistingPathDictionary.remove(normalizedPathTo)
+            storageFilePathDictionary.remove(normalizePath(pathFrom.path))
 
-            MusicCacheFileManager.value.copyFileContents(fileFrom.abstractFile, fileTo.abstractFile)
-            fileFrom.delete()
+            fileManager.value.copyFileContents(pathFrom.abstractFile, fileTo.abstractFile)
+            pathFrom.delete()
+        }
+
+        private fun getFromParentAndName(parent: StorageFile, name: String): StorageFile {
+            val file = parent.fileManager.findFile(parent.abstractFile, name)
+                ?: parent.fileManager.createFile(parent.abstractFile, name)!!
+            return StorageFile(parent, file, parent.fileManager)
+        }
+
+        private fun getStorageFileForParentDirectory(path: String): StorageFile? {
+            val parentPath = FileUtil.getParentPath(path)!!
+            if (storageFilePathDictionary.containsKey(parentPath))
+                return storageFilePathDictionary[parentPath]!!
+            if (notExistingPathDictionary.contains(parentPath)) return null
+
+            val parent = findStorageFileForParentDirectory(parentPath)
+            if (parent == null) {
+                storageFilePathDictionary.remove(parentPath)
+                notExistingPathDictionary.putIfAbsent(parentPath, parentPath)
+            } else {
+                storageFilePathDictionary[parentPath] = parent
+                notExistingPathDictionary.remove(parentPath)
+            }
+
+            return parent
+        }
+
+        private fun findStorageFileForParentDirectory(path: String): StorageFile? {
+            val segments = getUriSegments(path)
+                ?: throw IOException("Can't get path because the root has changed")
+
+            var file = StorageFile(null, mediaRoot.value.abstractFile, fileManager.value)
+            segments.forEach { segment ->
+                file = StorageFile(
+                    file,
+                    fileManager.value.findFile(file.abstractFile, segment)
+                        ?: return null,
+                    file.fileManager
+                )
+            }
+            return file
         }
 
         private fun getUriSegments(uri: String): List<String>? {
-            val rootPath = getMediaRoot().getPath()
+            val rootPath = mediaRoot.value.path
             if (!uri.startsWith(rootPath)) return null
             val pathWithoutRoot = uri.substringAfter(rootPath)
             return pathWithoutRoot.split('/').filter { it.isNotEmpty() }

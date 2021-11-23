@@ -46,6 +46,7 @@ class DownloadFile(
     private val desiredBitRate: Int = Settings.maxBitRate
 
     var priority = 100
+    var downloadPrepared = false
 
     @Volatile
     private var isPlaying = false
@@ -76,6 +77,13 @@ class DownloadFile(
     }
 
     @Synchronized
+    fun prepare() {
+        // It is necessary to signal that the download will begin shortly on another thread
+        // so it won't get cleaned up accidentally
+        downloadPrepared = true
+    }
+
+    @Synchronized
     fun download() {
         FileUtil.createDirectoryForParent(saveFile)
         isFailed = false
@@ -85,9 +93,7 @@ class DownloadFile(
 
     @Synchronized
     fun cancelDownload() {
-        if (downloadTask != null) {
-            downloadTask!!.cancel()
-        }
+        downloadTask?.cancel()
     }
 
     val completeOrSaveFile: String
@@ -109,20 +115,20 @@ class DownloadFile(
 
     @get:Synchronized
     val isCompleteFileAvailable: Boolean
-        get() = StorageFile.isPathExists(saveFile) || StorageFile.isPathExists(completeFile)
+        get() = StorageFile.isPathExists(completeFile) || StorageFile.isPathExists(saveFile)
 
     @get:Synchronized
     val isWorkDone: Boolean
-        get() = StorageFile.isPathExists(saveFile) || StorageFile.isPathExists(completeFile) && !save ||
-            saveWhenDone || completeWhenDone
+        get() = StorageFile.isPathExists(completeFile) && !save ||
+            StorageFile.isPathExists(saveFile) || saveWhenDone || completeWhenDone
 
     @get:Synchronized
     val isDownloading: Boolean
-        get() = downloadTask != null && downloadTask!!.isRunning
+    get() = downloadPrepared || (downloadTask != null && downloadTask!!.isRunning)
 
     @get:Synchronized
     val isDownloadCancelled: Boolean
-        get() = downloadTask != null && downloadTask!!.isCancelled
+    get() = downloadTask != null && downloadTask!!.isCancelled
 
     fun shouldSave(): Boolean {
         return save
@@ -142,9 +148,8 @@ class DownloadFile(
     }
 
     fun unpin() {
-        if (StorageFile.isPathExists(saveFile)) {
-            StorageFile.rename(saveFile, completeFile)
-        }
+        val file = StorageFile.getFromPath(saveFile) ?: return
+        StorageFile.rename(file, completeFile)
     }
 
     fun cleanup(): Boolean {
@@ -194,6 +199,7 @@ class DownloadFile(
 
         override fun execute() {
 
+            downloadPrepared = false
             var inputStream: InputStream? = null
             var outputStream: OutputStream? = null
             try {
@@ -222,18 +228,12 @@ class DownloadFile(
                 // Some devices seem to throw error on partial file which doesn't exist
                 val needsDownloading: Boolean
                 val duration = song.duration
-                var fileLength: Long = 0
-
-                if (!StorageFile.isPathExists(partialFile)) {
-                    fileLength = 0
-                } else {
-                    fileLength = StorageFile.getFromPath(partialFile).length()
-                }
+                val fileLength = StorageFile.getFromPath(partialFile)?.length ?: 0
 
                 needsDownloading = (
-                    desiredBitRate == 0 || duration == null ||
-                        duration == 0 || fileLength == 0L
-                    )
+                        desiredBitRate == 0 || duration == null ||
+                                duration == 0 || fileLength == 0L
+                        )
 
                 if (needsDownloading) {
                     // Attempt partial HTTP GET, appending to the file if it exists.
@@ -372,7 +372,7 @@ class DownloadFile(
     }
 
     override val id: String
-        get() = song.id
+    get() = song.id
 
     companion object {
         const val MAX_RETRIES = 5

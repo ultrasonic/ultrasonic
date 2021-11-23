@@ -133,6 +133,7 @@ class Downloader(
             return
         }
 
+        Timber.v("Downloader checkDownloadsInternal checking downloads")
         // Check the active downloads for failures or completions and remove them
         // Store the result in a flag to know if changes have occurred
         var listChanged = cleanupActiveDownloads()
@@ -183,6 +184,7 @@ class Downloader(
         if (listChanged) {
             updateLiveData()
         }
+
     }
 
     private fun updateLiveData() {
@@ -190,6 +192,7 @@ class Downloader(
     }
 
     private fun startDownloadOnService(task: DownloadFile) {
+        task.prepare()
         MediaPlayerService.executeOnStartedMediaPlayerService {
             task.download()
         }

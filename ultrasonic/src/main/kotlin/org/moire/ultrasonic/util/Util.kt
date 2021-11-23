@@ -756,7 +756,7 @@ object Util {
     fun scanMedia(file: String?) {
         // TODO this doesn't work for URIs
         MediaScannerConnection.scanFile(
-            UApp.applicationContext(), arrayOf(file),
+            applicationContext(), arrayOf(file),
             null, null)
     }
 

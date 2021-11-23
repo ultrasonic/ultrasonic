@@ -55,8 +55,8 @@ class OfflineMusicService : MusicService, KoinComponent {
         val root = FileUtil.musicDirectory
         for (file in FileUtil.listFiles(root)) {
             if (file.isDirectory) {
-                val index = Index(file.getPath())
-                index.id = file.getPath()
+                val index = Index(file.path)
+                index.id = file.path
                 index.index = file.name.substring(0, 1)
                 index.name = file.name
                 indexes.add(index)
@@ -102,7 +102,7 @@ class OfflineMusicService : MusicService, KoinComponent {
     ): MusicDirectory {
         val dir = StorageFile.getFromPath(id)
         val result = MusicDirectory()
-        result.name = dir.name
+        result.name = dir?.name ?: return result
 
         val seen: MutableCollection<String?> = HashSet()
 
@@ -127,7 +127,7 @@ class OfflineMusicService : MusicService, KoinComponent {
             val artistName = artistFile.name
             if (artistFile.isDirectory) {
                 if (matchCriteria(criteria, artistName).also { closeness = it } > 0) {
-                    val artist = Artist(artistFile.getPath())
+                    val artist = Artist(artistFile.path)
                     artist.index = artistFile.name.substring(0, 1)
                     artist.name = artistName
                     artist.closeness = closeness
@@ -205,12 +205,10 @@ class OfflineMusicService : MusicService, KoinComponent {
             var line = buffer.readLine()
             if ("#EXTM3U" != line) return playlist
             while (buffer.readLine().also { line = it } != null) {
-                if (StorageFile.isPathExists(line)) {
-                    val entryFile = StorageFile.getFromPath(line)
-                    val entryName = getName(entryFile.name, entryFile.isDirectory)
-                    if (entryName != null) {
-                        playlist.addChild(createEntry(entryFile, entryName))
-                    }
+                val entryFile = StorageFile.getFromPath(line) ?: continue
+                val entryName = getName(entryFile.name, entryFile.isDirectory)
+                if (entryName != null) {
+                    playlist.addChild(createEntry(entryFile, entryName))
                 }
             }
             playlist
@@ -500,12 +498,12 @@ class OfflineMusicService : MusicService, KoinComponent {
 
         @Suppress("TooGenericExceptionCaught", "ComplexMethod", "LongMethod", "NestedBlockDepth")
         private fun createEntry(file: StorageFile, name: String?): MusicDirectory.Entry {
-            val entry = MusicDirectory.Entry(file.getPath())
+            val entry = MusicDirectory.Entry(file.path)
             entry.isDirectory = file.isDirectory
-            entry.parent = file.getParent()!!.getPath()
-            entry.size = if (file.isFile) file.length() else 0
-            val root = FileUtil.musicDirectory.getPath()
-            entry.path = file.getPath().replaceFirst(
+            entry.parent = file.parent!!.path
+            entry.size = if (file.isFile) file.length else 0
+            val root = FileUtil.musicDirectory.path
+            entry.path = file.path.replaceFirst(
                 String.format(Locale.ROOT, "^%s/", root).toRegex(), ""
             )
             entry.title = name
@@ -522,7 +520,7 @@ class OfflineMusicService : MusicService, KoinComponent {
                 try {
                     val mmr = MediaMetadataRetriever()
 
-                    if (file.isRawFile()) mmr.setDataSource(file.getRawFilePath())
+                    if (file.isRawFile) mmr.setDataSource(file.rawFilePath)
                     else {
                         val descriptor = file.getDocumentFileDescriptor("r")!!
                         mmr.setDataSource(descriptor.fileDescriptor)
@@ -541,8 +539,8 @@ class OfflineMusicService : MusicService, KoinComponent {
                     mmr.release()
                 } catch (ignored: Exception) {
                 }
-                entry.artist = artist ?: file.getParent()!!.getParent()!!.name
-                entry.album = album ?: file.getParent()!!.name
+                entry.artist = artist ?: file.parent!!.parent!!.name
+                entry.album = album ?: file.parent!!.name
                 if (title != null) {
                     entry.title = title
                 }

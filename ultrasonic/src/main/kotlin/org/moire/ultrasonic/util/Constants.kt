@@ -64,6 +64,7 @@ object Constants {
     const val PREFERENCES_KEY_MAX_BITRATE_WIFI = "maxBitrateWifi"
     const val PREFERENCES_KEY_MAX_BITRATE_MOBILE = "maxBitrateMobile"
     const val PREFERENCES_KEY_CACHE_SIZE = "cacheSize"
+    const val PREFERENCES_KEY_CUSTOM_CACHE_LOCATION = "customCacheLocation"
     const val PREFERENCES_KEY_CACHE_LOCATION = "cacheLocation"
     const val PREFERENCES_KEY_PRELOAD_COUNT = "preloadCount"
     const val PREFERENCES_KEY_HIDE_MEDIA = "hideMedia"

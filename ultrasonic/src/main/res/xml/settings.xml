@@ -261,6 +261,10 @@
             a:key="cacheSize"
             a:title="@string/settings.cache_size"
             app:iconSpaceReserved="false"/>
+        <CheckBoxPreference
+            a:key="customCacheLocation"
+            a:title="@string/settings.custom_cache_location"
+            app:iconSpaceReserved="false"/>
         <Preference
             a:key="cacheLocation"
             a:title="@string/settings.cache_location"

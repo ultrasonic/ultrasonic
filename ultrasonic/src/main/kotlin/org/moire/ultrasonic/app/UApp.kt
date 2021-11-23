@@ -1,6 +1,10 @@
 package org.moire.ultrasonic.app
 
 import android.content.Context
+import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.LifecycleObserver
+import androidx.lifecycle.OnLifecycleEvent
+import androidx.lifecycle.ProcessLifecycleOwner
 import androidx.multidex.MultiDexApplication
 import org.koin.android.ext.koin.androidContext
 import org.koin.core.context.startKoin
@@ -15,6 +19,7 @@ import org.moire.ultrasonic.di.musicServiceModule
 import org.moire.ultrasonic.log.FileLoggerTree
 import org.moire.ultrasonic.log.TimberKoinLogger
 import org.moire.ultrasonic.util.Settings
+import org.moire.ultrasonic.util.StorageFile
 import timber.log.Timber
 import timber.log.Timber.DebugTree
 
@@ -52,6 +57,8 @@ class UApp : MultiDexApplication() {
                 mediaPlayerModule
             )
         }
+
+        ProcessLifecycleOwner.get().lifecycle.addObserver(AppLifecycleListener())
     }
 
     companion object {
@@ -60,5 +67,13 @@ class UApp : MultiDexApplication() {
         fun applicationContext(): Context {
             return instance!!.applicationContext
         }
+    }
+}
+
+class AppLifecycleListener : LifecycleObserver {
+
+    @OnLifecycleEvent(Lifecycle.Event.ON_RESUME)
+    fun onMoveToForeground() {
+        StorageFile.resetCaches()
     }
 }
