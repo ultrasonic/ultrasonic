@@ -315,17 +315,6 @@
     <string name="settings.show_artist_picture">Előadó képének megjelenítése</string>
     <string name="settings.show_artist_picture_summary">Az előadó listában megjeleníti a képeket, amennyiben elérhetőek</string>
     <string name="main.video" tools:ignore="UnusedResources">Videó</string>
-    <string name="settings.view_refresh">Nézet frissítési gyakorisága</string>
-    <string name="settings.view_refresh_500">.5 másodperc</string>
-    <string name="settings.view_refresh_1000">1 másodperc</string>
-    <string name="settings.view_refresh_1500">1.5 másodperc</string>
-    <string name="settings.view_refresh_2000">2 másodperc</string>
-    <string name="settings.view_refresh_2500">2.5 másodperc</string>
-    <string name="settings.view_refresh_3000">3 másodperc</string>
-    <string name="settings.view_refresh_3500">3.5 másodperc</string>
-    <string name="settings.view_refresh_4000">4 másodperc</string>
-    <string name="settings.view_refresh_4500">4.5 másodperc</string>
-    <string name="settings.view_refresh_5000">5 másodperc</string>
     <string name="settings.wifi_required_summary">Streaming csak Wi-Fi hálózaton keresztül.</string>
     <string name="settings.wifi_required_title">Streaming csak Wi-Fivel</string>
     <string name="song_details.all">%1$s%2$s</string>

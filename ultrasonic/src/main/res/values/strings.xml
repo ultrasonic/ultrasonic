@@ -328,17 +328,6 @@
     <string name="settings.show_artist_picture">Show artist picture in artist list</string>
     <string name="settings.show_artist_picture_summary">Displays the artist picture in the artist list if available</string>
     <string name="main.video" tools:ignore="UnusedResources">Video</string>
-    <string name="settings.view_refresh">View Refresh</string>
-    <string name="settings.view_refresh_500">.5 seconds</string>
-    <string name="settings.view_refresh_1000">1 second</string>
-    <string name="settings.view_refresh_1500">1.5 seconds</string>
-    <string name="settings.view_refresh_2000">2 seconds</string>
-    <string name="settings.view_refresh_2500">2.5 seconds</string>
-    <string name="settings.view_refresh_3000">3 seconds</string>
-    <string name="settings.view_refresh_3500">3.5 seconds</string>
-    <string name="settings.view_refresh_4000">4 seconds</string>
-    <string name="settings.view_refresh_4500">4.5 seconds</string>
-    <string name="settings.view_refresh_5000">5 seconds</string>
     <string name="settings.wifi_required_summary">Only download media on unmetered connections</string>
     <string name="settings.wifi_required_title">Download on Wi-Fi only</string>
     <string name="song_details.all">%1$s%2$s</string>

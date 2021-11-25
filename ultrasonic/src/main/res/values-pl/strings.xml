@@ -298,17 +298,6 @@ ponieważ api Subsonic nie wspiera nowego sposobu autoryzacji dla użytkowników
     <string name="settings.use_id3">Przeglądaj używając tagów ID3</string>
     <string name="settings.use_id3_summary">Używa metod z tagów ID3 zamiast metod opartych na systemie plików</string>
     <string name="main.video" tools:ignore="UnusedResources">Wideo</string>
-    <string name="settings.view_refresh">Odświeżanie widoku</string>
-    <string name="settings.view_refresh_500">co pół sekundy</string>
-    <string name="settings.view_refresh_1000">co 1 sekundę</string>
-    <string name="settings.view_refresh_1500">co 1,5 sekundy</string>
-    <string name="settings.view_refresh_2000">co 2 sekundy</string>
-    <string name="settings.view_refresh_2500">co 2,5 sekundy</string>
-    <string name="settings.view_refresh_3000">co 3 sekundy</string>
-    <string name="settings.view_refresh_3500">co 3,5 sekundy</string>
-    <string name="settings.view_refresh_4000">co 4 sekundy</string>
-    <string name="settings.view_refresh_4500">co 4,5 sekundy</string>
-    <string name="settings.view_refresh_5000">co 5 sekund</string>
     <string name="settings.wifi_required_summary">Przesyłanie mediów tylko gdy Wi-fi jest włączone</string>
     <string name="settings.wifi_required_title">Przesyłanie tylko przez Wi-fi</string>
     <string name="song_details.all">%1$s%2$s</string>

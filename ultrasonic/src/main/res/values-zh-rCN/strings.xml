@@ -315,17 +315,6 @@
     <string name="settings.show_artist_picture">在艺术家列表中显示艺术家图片</string>
     <string name="settings.show_artist_picture_summary">如果可用，在艺术家列表中显示艺术家图片</string>
     <string name="main.video" tools:ignore="UnusedResources">视频</string>
-    <string name="settings.view_refresh">刷新视图</string>
-    <string name="settings.view_refresh_500">.5 秒</string>
-    <string name="settings.view_refresh_1000">1 秒</string>
-    <string name="settings.view_refresh_1500">1.5 秒</string>
-    <string name="settings.view_refresh_2000">2 秒</string>
-    <string name="settings.view_refresh_2500">2.5 秒</string>
-    <string name="settings.view_refresh_3000">3 秒</string>
-    <string name="settings.view_refresh_3500">3.5 秒</string>
-    <string name="settings.view_refresh_4000">4 秒</string>
-    <string name="settings.view_refresh_4500">4.5 秒</string>
-    <string name="settings.view_refresh_5000">5 秒</string>
     <string name="settings.wifi_required_summary">仅在连接到 WIFI 时使用流媒体</string>
     <string name="settings.wifi_required_title">仅使用 WIFI</string>
     <string name="song_details.all">%1$s%2$s</string>

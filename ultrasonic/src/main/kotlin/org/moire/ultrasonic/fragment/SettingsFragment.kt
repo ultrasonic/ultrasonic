@@ -81,7 +81,6 @@ class SettingsFragment :
     private var sendBluetoothNotifications: CheckBoxPreference? = null
     private var sendBluetoothAlbumArt: CheckBoxPreference? = null
     private var showArtistPicture: CheckBoxPreference? = null
-    private var viewRefresh: ListPreference? = null
     private var sharingDefaultDescription: EditTextPreference? = null
     private var sharingDefaultGreeting: EditTextPreference? = null
     private var sharingDefaultExpiration: TimeSpanPreference? = null
@@ -130,7 +129,6 @@ class SettingsFragment :
         sendBluetoothAlbumArt = findPreference(Constants.PREFERENCES_KEY_SEND_BLUETOOTH_ALBUM_ART)
         sendBluetoothNotifications =
             findPreference(Constants.PREFERENCES_KEY_SEND_BLUETOOTH_NOTIFICATIONS)
-        viewRefresh = findPreference(Constants.PREFERENCES_KEY_VIEW_REFRESH)
         sharingDefaultDescription =
             findPreference(Constants.PREFERENCES_KEY_DEFAULT_SHARE_DESCRIPTION)
         sharingDefaultGreeting = findPreference(Constants.PREFERENCES_KEY_DEFAULT_SHARE_GREETING)
@@ -371,7 +369,6 @@ class SettingsFragment :
         defaultSongs!!.summary = defaultSongs!!.entry
         chatRefreshInterval!!.summary = chatRefreshInterval!!.entry
         directoryCacheTime!!.summary = directoryCacheTime!!.entry
-        viewRefresh!!.summary = viewRefresh!!.entry
         sharingDefaultExpiration!!.summary = sharingDefaultExpiration!!.text
         sharingDefaultDescription!!.summary = sharingDefaultDescription!!.text
         sharingDefaultGreeting!!.summary = sharingDefaultGreeting!!.text

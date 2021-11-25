@@ -303,17 +303,6 @@
     <string name="settings.show_artist_picture">Obrázek umělce v seznamu umělců</string>
     <string name="settings.show_artist_picture_summary">Zobrazí obrázek umělce v náhledu umělců pokud je dostupný</string>
     <string name="main.video" tools:ignore="UnusedResources">Video</string>
-    <string name="settings.view_refresh">Obnovení náhledu</string>
-    <string name="settings.view_refresh_500">.5 sekundy</string>
-    <string name="settings.view_refresh_1000">1 sekunda</string>
-    <string name="settings.view_refresh_1500">1.5 sekundy</string>
-    <string name="settings.view_refresh_2000">2 sekundy</string>
-    <string name="settings.view_refresh_2500">2.5 sekundy</string>
-    <string name="settings.view_refresh_3000">3 sekundy</string>
-    <string name="settings.view_refresh_3500">3.5 sekundy</string>
-    <string name="settings.view_refresh_4000">4 sekundy</string>
-    <string name="settings.view_refresh_4500">4.5 sekundy</string>
-    <string name="settings.view_refresh_5000">5 sekund</string>
     <string name="settings.wifi_required_summary">Streamovat media pouze přes Wi-Fi připojení</string>
     <string name="settings.wifi_required_title">Streamovat pouze přes Wi-Fi</string>
     <string name="song_details.all">%1$s%2$s</string>

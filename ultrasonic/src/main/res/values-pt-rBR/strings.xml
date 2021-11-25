@@ -319,17 +319,6 @@
     <string name="settings.show_artist_picture">Mostrar Foto do Artista na Lista</string>
     <string name="settings.show_artist_picture_summary">Mostrar a imagem do artista na lista de artistas, se disponível</string>
     <string name="main.video" tools:ignore="UnusedResources">Vídeo</string>
-    <string name="settings.view_refresh">Atualização da Tela</string>
-    <string name="settings.view_refresh_500">.5 segundos</string>
-    <string name="settings.view_refresh_1000">1 segundo</string>
-    <string name="settings.view_refresh_1500">1.5 segundos</string>
-    <string name="settings.view_refresh_2000">2 segundos</string>
-    <string name="settings.view_refresh_2500">2.5 segundos</string>
-    <string name="settings.view_refresh_3000">3 segundos</string>
-    <string name="settings.view_refresh_3500">3.5 segundos</string>
-    <string name="settings.view_refresh_4000">4 segundos</string>
-    <string name="settings.view_refresh_4500">4.5 segundos</string>
-    <string name="settings.view_refresh_5000">5 segundos</string>
     <string name="settings.wifi_required_summary">Somente fazer stream de mídia se conectado por Wi-Fi</string>
     <string name="settings.wifi_required_title">Streaming Somente por Wi-Fi</string>
     <string name="song_details.all">%1$s%2$s</string>

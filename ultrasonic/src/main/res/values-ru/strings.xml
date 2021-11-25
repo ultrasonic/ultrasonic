@@ -317,17 +317,6 @@
     <string name="settings.show_artist_picture">Показать изображение исполнителя в списке исполнителей</string>
     <string name="settings.show_artist_picture_summary">Отображает изображение исполнителя в списке исполнителей, если доступно</string>
     <string name="main.video" tools:ignore="UnusedResources">Видео</string>
-    <string name="settings.view_refresh">Посмотреть Обновить</string>
-    <string name="settings.view_refresh_500">.5 секунд</string>
-    <string name="settings.view_refresh_1000">1 секунда</string>
-    <string name="settings.view_refresh_1500">1.5 секунды</string>
-    <string name="settings.view_refresh_2000">2 секунды</string>
-    <string name="settings.view_refresh_2500">2.5 секунды</string>
-    <string name="settings.view_refresh_3000">3 секунды</string>
-    <string name="settings.view_refresh_3500">3.5 секунды</string>
-    <string name="settings.view_refresh_4000">4 секунды</string>
-    <string name="settings.view_refresh_4500">4.5 секунды</string>
-    <string name="settings.view_refresh_5000">5 секунд</string>
     <string name="settings.wifi_required_summary">Потоковое мультимедиа только при подключении к Wi-Fi</string>
     <string name="settings.wifi_required_title">Только потоковая передача по Wi-Fi</string>
     <string name="song_details.all">%1$s%2$s</string>
