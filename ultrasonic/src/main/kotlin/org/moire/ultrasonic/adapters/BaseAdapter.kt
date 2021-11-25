@@ -10,10 +10,18 @@ import androidx.recyclerview.widget.DiffUtil
 import com.drakeet.multitype.MultiTypeAdapter
 import java.util.TreeSet
 import org.moire.ultrasonic.domain.Identifiable
+import org.moire.ultrasonic.util.BoundedTreeSet
 
 class BaseAdapter<T : Identifiable> : MultiTypeAdapter() {
 
-    internal var selectedSet: TreeSet<Long> = TreeSet()
+    // Update the BoundedTreeSet if selection type is changed
+    internal var selectionType: SelectionType = SelectionType.MULTIPLE
+        set(newValue) {
+            field = newValue
+            selectedSet.setMaxSize(newValue.size)
+        }
+
+    internal var selectedSet: BoundedTreeSet<Long> = BoundedTreeSet(selectionType.size)
     internal var selectionRevision: MutableLiveData<Int> = MutableLiveData(0)
 
     private val diffCallback = GenericDiffCallback<T>()
@@ -25,6 +33,7 @@ class BaseAdapter<T : Identifiable> : MultiTypeAdapter() {
     override fun getItemId(position: Int): Long {
         return getItem(position).longId
     }
+
 
     private fun getItem(position: Int): T {
         return mDiffer.currentList[position]
@@ -183,22 +192,33 @@ class BaseAdapter<T : Identifiable> : MultiTypeAdapter() {
             list.add(to - 1, fromLocation)
         }
         submitList(list)
-        return list as List<T>
+        return list
     }
 
-    companion object {
-        /**
-         * Calculates the differences between data sets
-         */
-        class GenericDiffCallback<T : Identifiable> : DiffUtil.ItemCallback<T>() {
-            @SuppressLint("DiffUtilEquals")
-            override fun areContentsTheSame(oldItem: T, newItem: T): Boolean {
-                return oldItem == newItem
-            }
+    fun hasSingleSelection(): Boolean {
+        return selectionType == SelectionType.SINGLE
+    }
 
-            override fun areItemsTheSame(oldItem: T, newItem: T): Boolean {
-                return oldItem.id == newItem.id
-            }
+    fun hasMultipleSelection(): Boolean {
+        return selectionType == SelectionType.MULTIPLE
+    }
+
+    enum class SelectionType(val size: Int) {
+        SINGLE(1),
+        MULTIPLE(Int.MAX_VALUE)
+    }
+
+    /**
+     * Calculates the differences between data sets
+     */
+    class GenericDiffCallback<T : Identifiable> : DiffUtil.ItemCallback<T>() {
+        @SuppressLint("DiffUtilEquals")
+        override fun areContentsTheSame(oldItem: T, newItem: T): Boolean {
+            return oldItem == newItem
+        }
+
+        override fun areItemsTheSame(oldItem: T, newItem: T): Boolean {
+            return oldItem.id == newItem.id
         }
     }
 }

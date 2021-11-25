@@ -25,6 +25,7 @@ import org.koin.core.component.KoinComponent
 import org.koin.core.component.inject
 import org.moire.ultrasonic.R
 import org.moire.ultrasonic.adapters.ArtistRowBinder
+import org.moire.ultrasonic.adapters.DividerBinder
 import org.moire.ultrasonic.adapters.TrackViewBinder
 import org.moire.ultrasonic.domain.Identifiable
 import org.moire.ultrasonic.domain.MusicDirectory
@@ -36,6 +37,7 @@ import org.moire.ultrasonic.subsonic.NetworkAndStorageChecker
 import org.moire.ultrasonic.subsonic.ShareHandler
 import org.moire.ultrasonic.subsonic.VideoPlayer.Companion.playVideo
 import org.moire.ultrasonic.util.CancellationToken
+import org.moire.ultrasonic.util.CommunicationError
 import org.moire.ultrasonic.util.Constants
 import org.moire.ultrasonic.util.Settings
 import org.moire.ultrasonic.util.Util.toast
@@ -145,6 +147,10 @@ class SearchFragment : MultiListFragment<Identifiable>(), KoinComponent {
                 { menuItem, entry -> onContextMenuItemSelected(menuItem, entry) },
                 imageLoaderProvider.getImageLoader()
             )
+        )
+
+        viewAdapter.register(
+            DividerBinder()
         )
 
         // Fragment was started with a query (e.g. from voice search), try to execute search right away
@@ -415,10 +421,10 @@ class SearchFragment : MultiListFragment<Identifiable>(), KoinComponent {
     }
 
     private fun search(query: String, autoplay: Boolean) {
-        // FIXME add error handler
         // FIXME support autoplay
-        listModel.viewModelScope.launch {
+        listModel.viewModelScope.launch(CommunicationError.getHandler(context)) {
             listModel.search(query)
+
         }
     }
 
@@ -429,7 +435,8 @@ class SearchFragment : MultiListFragment<Identifiable>(), KoinComponent {
 
         val artists = searchResult.artists
         if (artists.isNotEmpty()) {
-            // FIXME: addView(albumsHeading)
+
+            list.add(DividerBinder.Divider(R.string.search_artists))
             list.addAll(artists)
             if (artists.size > DEFAULT_ARTISTS) {
                 // FIXME
@@ -438,7 +445,7 @@ class SearchFragment : MultiListFragment<Identifiable>(), KoinComponent {
         }
         val albums = searchResult.albums
         if (albums.isNotEmpty()) {
-            // mergeAdapter!!.addView(albumsHeading)
+            list.add(DividerBinder.Divider(R.string.search_albums))
             list.addAll(albums)
             // mergeAdapter!!.addAdapter(albumAdapter)
 //            if (albums.size > DEFAULT_ALBUMS) {
@@ -447,8 +454,7 @@ class SearchFragment : MultiListFragment<Identifiable>(), KoinComponent {
         }
         val songs = searchResult.songs
         if (songs.isNotEmpty()) {
-//            mergeAdapter!!.addView(songsHeading)
-
+            list.add(DividerBinder.Divider(R.string.search_albums))
             list.addAll(songs)
 //            if (songs.size > DEFAULT_SONGS) {
 //                moreSongsAdapter = mergeAdapter!!.addView(moreSongsButton, true)

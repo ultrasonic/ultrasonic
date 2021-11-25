@@ -30,6 +30,7 @@ import kotlinx.coroutines.CoroutineExceptionHandler
 import kotlinx.coroutines.launch
 import org.koin.android.ext.android.inject
 import org.moire.ultrasonic.R
+import org.moire.ultrasonic.adapters.BaseAdapter
 import org.moire.ultrasonic.adapters.HeaderViewBinder
 import org.moire.ultrasonic.adapters.TrackViewBinder
 import org.moire.ultrasonic.data.ActiveServerProvider.Companion.isOffline
@@ -431,6 +432,7 @@ open class TrackCollectionFragment : MultiListFragment<MusicDirectory.Entry>() {
         val enabled = selection.isNotEmpty()
         var unpinEnabled = false
         var deleteEnabled = false
+        val multipleSelection = viewAdapter.hasMultipleSelection()
 
         var pinnedCount = 0
 
@@ -446,8 +448,8 @@ open class TrackCollectionFragment : MultiListFragment<MusicDirectory.Entry>() {
         }
 
         playNowButton?.isVisible = enabled
-        playNextButton?.isVisible = enabled
-        playLastButton?.isVisible = enabled
+        playNextButton?.isVisible = enabled && multipleSelection
+        playLastButton?.isVisible = enabled && multipleSelection
         pinButton?.isVisible = (enabled && !isOffline() && selection.size > pinnedCount)
         unpinButton?.isVisible = (enabled && unpinEnabled)
         downloadButton?.isVisible = (enabled && !deleteEnabled && !isOffline())
@@ -562,8 +564,8 @@ open class TrackCollectionFragment : MultiListFragment<MusicDirectory.Entry>() {
 
         val listSize = arguments?.getInt(Constants.INTENT_EXTRA_NAME_ALBUM_LIST_SIZE, 0) ?: 0
 
-        // Hide select button for video lists
-        selectButton!!.isVisible = !allVideos
+        // Hide select button for video lists and singular selection lists
+        selectButton!!.isVisible = (!allVideos && viewAdapter.hasMultipleSelection())
 
         if (songCount > 0) {
             if (listSize == 0 || songCount < listSize) {

@@ -7,26 +7,36 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.viewModelScope
 import kotlinx.coroutines.launch
 import org.moire.ultrasonic.R
+import org.moire.ultrasonic.adapters.BaseAdapter
 import org.moire.ultrasonic.data.ActiveServerProvider.Companion.isOffline
 import org.moire.ultrasonic.domain.MusicDirectory
 import org.moire.ultrasonic.fragment.FragmentTitle.Companion.setTitle
 
 /**
  * Lists the Bookmarks available on the server
+ *
+ * Bookmarks allows to save the play position of tracks, especially useful for longer tracks like
+ * audio books etc.
+ *
+ * Therefore this fragment allows only for singular selection and playback.
+ *
+ * // FIXME: use restore for playback
  */
 class BookmarksFragment : TrackCollectionFragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
         setTitle(this, R.string.button_bar_bookmarks)
+
+        viewAdapter.selectionType = BaseAdapter.SelectionType.SINGLE
     }
 
     override fun setupButtons(view: View) {
         super.setupButtons(view)
 
-        // Why?
-        selectButton?.visibility = View.GONE
-        moreButton?.visibility = View.GONE
+        // Hide select all button
+        //selectButton?.visibility = View.GONE
+        //moreButton?.visibility = View.GONE
     }
 
     override fun getLiveData(args: Bundle?): LiveData<List<MusicDirectory.Entry>> {
@@ -36,10 +46,6 @@ class BookmarksFragment : TrackCollectionFragment() {
             refreshListView?.isRefreshing = false
         }
         return listModel.currentList
-    }
-
-    override fun enableButtons(selection: List<MusicDirectory.Entry>) {
-        super.enableButtons(selection)
     }
 }
 
