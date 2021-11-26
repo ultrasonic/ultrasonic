@@ -28,6 +28,7 @@ import org.moire.ultrasonic.adapters.AlbumRowBinder
 import org.moire.ultrasonic.adapters.ArtistRowBinder
 import org.moire.ultrasonic.adapters.DividerBinder
 import org.moire.ultrasonic.adapters.TrackViewBinder
+import org.moire.ultrasonic.domain.Artist
 import org.moire.ultrasonic.domain.Identifiable
 import org.moire.ultrasonic.domain.MusicDirectory
 import org.moire.ultrasonic.domain.SearchResult
@@ -176,11 +177,11 @@ class SearchFragment : MultiListFragment<Identifiable>(), KoinComponent {
                 return search(query, autoPlay)
             }
         }
-
-        // Fragment was started from the Menu, create empty list
-        // populateList(SearchResult())
     }
 
+    /**
+     * This method create the search bar above the recycler view
+     */
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
         val activity = activity ?: return
         val searchManager = activity.getSystemService(Context.SEARCH_SERVICE) as SearchManager
@@ -191,8 +192,8 @@ class SearchFragment : MultiListFragment<Identifiable>(), KoinComponent {
         searchView.setSearchableInfo(searchableInfo)
 
         val arguments = arguments
-        val autoPlay =
-            arguments != null && arguments.getBoolean(Constants.INTENT_EXTRA_NAME_AUTOPLAY, false)
+        val autoPlay = arguments != null &&
+                arguments.getBoolean(Constants.INTENT_EXTRA_NAME_AUTOPLAY, false)
         val query = arguments?.getString(Constants.INTENT_EXTRA_NAME_QUERY)
 
         // If started with a query, enter it to the searchView
@@ -211,13 +212,13 @@ class SearchFragment : MultiListFragment<Identifiable>(), KoinComponent {
                 val cursor = searchView.suggestionsAdapter.cursor
                 cursor.moveToPosition(position)
 
-                // TODO: Try to do something with this magic const:
-                //  2 is the index of col containing suggestion name.
+                // 2 is the index of col containing suggestion name.
                 val suggestion = cursor.getString(2)
                 searchView.setQuery(suggestion, true)
                 return true
             }
         })
+
         searchView.setOnQueryTextListener(object : SearchView.OnQueryTextListener {
             override fun onQueryTextSubmit(query: String): Boolean {
                 Timber.d("onQueryTextSubmit: %s", query)
@@ -230,6 +231,7 @@ class SearchFragment : MultiListFragment<Identifiable>(), KoinComponent {
                 return true
             }
         })
+
         searchView.setIconifiedByDefault(false)
         searchItem.expandActionView()
     }
@@ -479,7 +481,7 @@ class SearchFragment : MultiListFragment<Identifiable>(), KoinComponent {
         }
 
         // Show/hide the empty text view
-        emptyTextView.isVisible = list.isEmpty()
+        emptyView.isVisible = list.isEmpty()
 
         viewAdapter.submitList(list)
     }
@@ -557,20 +559,15 @@ class SearchFragment : MultiListFragment<Identifiable>(), KoinComponent {
         var DEFAULT_SONGS = Settings.defaultSongs
     }
 
-    // FIXME!!
-    override fun getLiveData(args: Bundle?): LiveData<List<Identifiable>> {
-        return MutableLiveData(listOf())
-    }
-
     // FIXME
     override val itemClickTarget: Int = 0
 
     // FIXME
-    override fun onContextMenuItemSelected(menuItem: MenuItem, item: Identifiable): Boolean {
-        return true
+    override fun onItemClick(item: Identifiable) {
     }
 
-    // FIXME
-    override fun onItemClick(item: Identifiable) {
+    override fun onContextMenuItemSelected(menuItem: MenuItem, item: Identifiable): Boolean {
+        val isArtist = (item is Artist)
+        return EntryListFragment.handleContextMenu(menuItem, item, isArtist, downloadHandler, this)
     }
 }

@@ -4,6 +4,7 @@
     a:layout_height="fill_parent"
     a:orientation="vertical">
 
+    <include layout="@layout/empty_view" />
     <include layout="@layout/recycler_view" />
 
 </LinearLayout>

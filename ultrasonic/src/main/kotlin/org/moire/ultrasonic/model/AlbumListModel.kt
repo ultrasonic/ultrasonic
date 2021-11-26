@@ -13,7 +13,7 @@ import org.moire.ultrasonic.util.Settings
 
 class AlbumListModel(application: Application) : GenericListModel(application) {
 
-    val list: MutableLiveData<List<MusicDirectory.Album>> = MutableLiveData(listOf())
+    val list: MutableLiveData<List<MusicDirectory.Album>> = MutableLiveData()
     var lastType: String? = null
     private var loadedUntil: Int = 0
 
@@ -26,7 +26,7 @@ class AlbumListModel(application: Application) : GenericListModel(application) {
         // This way, we keep the scroll position
         val albumListType = args.getString(Constants.INTENT_EXTRA_NAME_ALBUM_LIST_TYPE)!!
 
-        if (refresh || list.value!!.isEmpty() || albumListType != lastType) {
+        if (refresh || list.value?.isEmpty() != false || albumListType != lastType) {
             lastType = albumListType
             backgroundLoadFromServer(refresh, swipe, args)
         }

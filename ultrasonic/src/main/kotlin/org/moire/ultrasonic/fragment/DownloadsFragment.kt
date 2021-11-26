@@ -11,6 +11,7 @@ import android.app.Application
 import android.os.Bundle
 import android.view.MenuItem
 import android.view.View
+import androidx.core.view.isVisible
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.LiveData
 import org.koin.core.component.inject
@@ -75,6 +76,9 @@ class DownloadsFragment : MultiListFragment<DownloadFile>() {
         )
 
         val liveDataList = listModel.getList()
+
+        emptyTextView.setText(R.string.download_empty)
+        emptyView.isVisible = liveDataList.value?.isEmpty() ?: true
 
         viewAdapter.submitList(liveDataList.value)
     }

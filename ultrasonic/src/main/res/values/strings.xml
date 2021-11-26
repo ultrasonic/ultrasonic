@@ -57,6 +57,7 @@
     <string name="delete_playlist">Do you want to delete %1$s</string>
     <string name="download.bookmark_removed" formatted="false">Bookmark removed.</string>
     <string name="download.bookmark_set_at_position" formatted="false">Bookmark set at %s.</string>
+    <string name="download.empty">Nothing is downloading</string>
     <string name="playlist.empty">Playlist is empty</string>
     <string name="download.jukebox_not_authorized">Remote control is not allowed. Please enable jukebox mode in <b>Users &gt; Settings</b> on your Subsonic server.</string>
     <string name="download.jukebox_off">Turned off remote control. Music is played on phone.</string>

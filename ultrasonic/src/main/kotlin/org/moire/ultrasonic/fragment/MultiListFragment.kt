@@ -13,6 +13,7 @@ import android.view.MenuItem
 import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
+import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
@@ -46,6 +47,7 @@ abstract class MultiListFragment<T : Identifiable> : Fragment() {
     protected var refreshListView: SwipeRefreshLayout? = null
     internal var listView: RecyclerView? = null
     internal lateinit var viewManager: LinearLayoutManager
+    internal lateinit var emptyView: ConstraintLayout
     internal lateinit var emptyTextView: TextView
 
     /**
@@ -71,7 +73,7 @@ abstract class MultiListFragment<T : Identifiable> : Fragment() {
      * The central function to pass a query to the model and return a LiveData object
      */
     open fun getLiveData(args: Bundle? = null): LiveData<List<T>> {
-        return MutableLiveData(listOf())
+        return MutableLiveData()
     }
 
     /**
@@ -90,7 +92,9 @@ abstract class MultiListFragment<T : Identifiable> : Fragment() {
      */
     open val refreshListId = R.id.swipe_refresh_view
     open val recyclerViewId = R.id.recycler_view
-    open val emptyTextViewId = R.id.empty_list_text
+    open val emptyViewId = R.id.empty_list_view
+    open val emptyTextId = R.id.empty_list_text
+
 
     open fun setTitle(title: String?) {
         if (title == null) {
@@ -121,14 +125,14 @@ abstract class MultiListFragment<T : Identifiable> : Fragment() {
         liveDataItems = getLiveData(arguments)
 
         // Link view to display text if the list is empty
-        // FIXME: Hook this up globally.
-        emptyTextView = view.findViewById(emptyTextViewId)
+        emptyView = view.findViewById(emptyViewId)
+        emptyTextView = view.findViewById(emptyTextId)
 
         // Register an observer to update our UI when the data changes
         liveDataItems.observe(
             viewLifecycleOwner,
             { newItems ->
-                emptyTextView.isVisible = newItems.isEmpty()
+                emptyView.isVisible = newItems.isEmpty()
                 viewAdapter.submitList(newItems)
             }
         )

@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout
+    xmlns:a="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    a:layout_width="match_parent"
+    a:layout_height="match_parent"
+    a:visibility="gone"
+    a:id="@+id/empty_list_view"
+    >
+
+    <ImageView
+        a:layout_width="100dip"
+        a:layout_height="100dip"
+        a:layout_marginStart="50dp"
+        a:importantForAccessibility="no"
+        a:layout_marginEnd="50dp"
+        a:layout_marginBottom="8dp"
+        a:src="@drawable/ic_empty"
+        app:layout_constraintBottom_toTopOf="@+id/empty_list_text"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent" />
+
+    <TextView
+        a:id="@+id/empty_list_text"
+        a:layout_width="match_parent"
+        a:layout_height="wrap_content"
+        a:layout_marginTop="80dp"
+        a:layout_marginBottom="20dp"
+        a:drawablePadding="0dp"
+        a:gravity="center"
+        a:padding="12dp"
+        a:text="@string/search.no_match"
+        a:textAppearance="?android:attr/textAppearanceMedium"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+
+</androidx.constraintlayout.widget.ConstraintLayout>

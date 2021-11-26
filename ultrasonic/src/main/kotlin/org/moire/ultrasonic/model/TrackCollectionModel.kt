@@ -19,6 +19,9 @@ import org.moire.ultrasonic.util.Util
 
 /*
 * Model for retrieving different collections of tracks from the API
+*
+* TODO: Remove double data keeping in currentList/currentDirectory and use the base model liveData
+*  For this refactor MusicService to replace MusicDirectories with List<Album> or List<Track>
 */
 class TrackCollectionModel(application: Application) : GenericListModel(application) {
 

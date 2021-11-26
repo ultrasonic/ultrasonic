@@ -157,7 +157,8 @@ class Downloader(
             // Add file to queue if not in one of the queues already.
             if (!download.isWorkDone &&
                 !activelyDownloading.contains(download) &&
-                !downloadQueue.contains(download)
+                !downloadQueue.contains(download) &&
+                download.shouldRetry()
             ) {
                 listChanged = true
                 downloadQueue.add(download)
@@ -281,13 +282,17 @@ class Downloader(
     fun clearPlaylist() {
         playlist.clear()
 
+        val toRemove = mutableListOf<DownloadFile>()
+
         // Cancel all active downloads with a high priority
         for (download in activelyDownloading) {
             if (download.priority < 100) {
                 download.cancelDownload()
-                activelyDownloading.remove(download)
+                toRemove.add(download)
             }
         }
+
+        activelyDownloading.removeAll(toRemove)
 
         playlistUpdateRevision++
         updateLiveData()

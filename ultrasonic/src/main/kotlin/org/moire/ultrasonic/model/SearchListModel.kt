@@ -14,7 +14,7 @@ import org.moire.ultrasonic.util.Settings
 
 class SearchListModel(application: Application) : GenericListModel(application) {
 
-    var searchResult: MutableLiveData<SearchResult?> = MutableLiveData(null)
+    var searchResult: MutableLiveData<SearchResult?> = MutableLiveData()
 
     override fun load(
         isOffline: Boolean,

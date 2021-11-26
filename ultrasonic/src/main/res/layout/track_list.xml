@@ -4,11 +4,7 @@
     a:layout_height="fill_parent"
     a:orientation="vertical" >
 
-    <View
-        a:layout_width="fill_parent"
-        a:layout_height="1dp"
-        a:background="@color/dividerColor" />
-
+    <include layout="@layout/empty_view" />
     <include layout="@layout/recycler_view" />
     <include layout="@layout/album_buttons" />
 

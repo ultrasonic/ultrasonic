@@ -57,7 +57,6 @@ import timber.log.Timber
 open class TrackCollectionFragment : MultiListFragment<MusicDirectory.Entry>() {
 
     private var albumButtons: View? = null
-    private var emptyView: TextView? = null
     internal var selectButton: ImageView? = null
     internal var playNowButton: ImageView? = null
     internal var playNextButton: ImageView? = null
@@ -106,8 +105,6 @@ open class TrackCollectionFragment : MultiListFragment<MusicDirectory.Entry>() {
         listModel.songsForGenre.observe(viewLifecycleOwner, songsForGenreObserver)
 
         setupButtons(view)
-
-        emptyView = view.findViewById(R.id.empty_list_text)
 
         registerForContextMenu(listView!!)
         setHasOptionsMenu(true)
@@ -579,7 +576,7 @@ open class TrackCollectionFragment : MultiListFragment<MusicDirectory.Entry>() {
         }
 
         // Show a text if we have no entries
-        emptyView?.isVisible = entryList.isEmpty()
+        emptyView.isVisible = entryList.isEmpty()
 
         enableButtons()
 
@@ -599,10 +596,8 @@ open class TrackCollectionFragment : MultiListFragment<MusicDirectory.Entry>() {
             val albumHeader = AlbumHeader(it, name ?: intentAlbumName)
             val mixedList: MutableList<Identifiable> = mutableListOf(albumHeader)
             mixedList.addAll(entryList)
-            Timber.e("SUBMITTING MIXED LIST")
             viewAdapter.submitList(mixedList)
         } else {
-            Timber.e("SUBMITTING ENTRY LIST")
             viewAdapter.submitList(entryList)
         }
 

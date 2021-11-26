@@ -1,12 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <merge xmlns:a="http://schemas.android.com/apk/res/android"  xmlns:app="http://schemas.android.com/apk/res-auto">
-    <TextView
-        a:id="@+id/empty_list_text"
-        a:layout_width="fill_parent"
-        a:layout_height="wrap_content"
-        a:padding="10dip"
-        a:text="@string/select_album.empty"
-        a:visibility="gone" />
 
     <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
         a:id="@+id/swipe_refresh_view"

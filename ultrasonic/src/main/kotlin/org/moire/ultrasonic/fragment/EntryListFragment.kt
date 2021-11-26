@@ -7,8 +7,11 @@ import androidx.navigation.fragment.findNavController
 import org.moire.ultrasonic.R
 import org.moire.ultrasonic.domain.Artist
 import org.moire.ultrasonic.domain.GenericEntry
+import org.moire.ultrasonic.domain.Identifiable
 import org.moire.ultrasonic.service.RxBus
+import org.moire.ultrasonic.subsonic.DownloadHandler
 import org.moire.ultrasonic.util.Constants
+import androidx.fragment.app.Fragment
 import org.moire.ultrasonic.util.Settings
 
 /**
@@ -27,91 +30,11 @@ abstract class EntryListFragment<T : GenericEntry> : MultiListFragment<T>() {
             !listModel.isOffline() && !Settings.shouldUseId3Tags
     }
 
-    @Suppress("LongMethod")
+
     override fun onContextMenuItemSelected(menuItem: MenuItem, item: T): Boolean {
         val isArtist = (item is Artist)
 
-        when (menuItem.itemId) {
-            R.id.menu_play_now ->
-                downloadHandler.downloadRecursively(
-                    this,
-                    item.id,
-                    save = false,
-                    append = false,
-                    autoPlay = true,
-                    shuffle = false,
-                    background = false,
-                    playNext = false,
-                    unpin = false,
-                    isArtist = isArtist
-                )
-            R.id.menu_play_next ->
-                downloadHandler.downloadRecursively(
-                    this,
-                    item.id,
-                    save = false,
-                    append = false,
-                    autoPlay = true,
-                    shuffle = true,
-                    background = false,
-                    playNext = true,
-                    unpin = false,
-                    isArtist = isArtist
-                )
-            R.id.menu_play_last ->
-                downloadHandler.downloadRecursively(
-                    this,
-                    item.id,
-                    save = false,
-                    append = true,
-                    autoPlay = false,
-                    shuffle = false,
-                    background = false,
-                    playNext = false,
-                    unpin = false,
-                    isArtist = isArtist
-                )
-            R.id.menu_pin ->
-                downloadHandler.downloadRecursively(
-                    this,
-                    item.id,
-                    save = true,
-                    append = true,
-                    autoPlay = false,
-                    shuffle = false,
-                    background = false,
-                    playNext = false,
-                    unpin = false,
-                    isArtist = isArtist
-                )
-            R.id.menu_unpin ->
-                downloadHandler.downloadRecursively(
-                    this,
-                    item.id,
-                    save = false,
-                    append = false,
-                    autoPlay = false,
-                    shuffle = false,
-                    background = false,
-                    playNext = false,
-                    unpin = true,
-                    isArtist = isArtist
-                )
-            R.id.menu_download ->
-                downloadHandler.downloadRecursively(
-                    this,
-                    item.id,
-                    save = false,
-                    append = false,
-                    autoPlay = false,
-                    shuffle = false,
-                    background = true,
-                    playNext = false,
-                    unpin = false,
-                    isArtist = isArtist
-                )
-        }
-        return true
+        return handleContextMenu(menuItem, item, isArtist, downloadHandler, this)
     }
 
     override fun onItemClick(item: T) {
@@ -135,6 +58,99 @@ abstract class EntryListFragment<T : GenericEntry> : MultiListFragment<T>() {
             }
             viewAdapter.notifyDataSetChanged()
             listModel.refresh(refreshListView!!, arguments)
+        }
+    }
+
+    companion object {
+        @Suppress("LongMethod")
+        internal fun handleContextMenu(
+            menuItem: MenuItem,
+            item: Identifiable,
+            isArtist: Boolean,
+            downloadHandler: DownloadHandler,
+            fragment: Fragment
+        ): Boolean {
+            when (menuItem.itemId) {
+                R.id.menu_play_now ->
+                    downloadHandler.downloadRecursively(
+                        fragment,
+                        item.id,
+                        save = false,
+                        append = false,
+                        autoPlay = true,
+                        shuffle = false,
+                        background = false,
+                        playNext = false,
+                        unpin = false,
+                        isArtist = isArtist
+                    )
+                R.id.menu_play_next ->
+                    downloadHandler.downloadRecursively(
+                        fragment,
+                        item.id,
+                        save = false,
+                        append = false,
+                        autoPlay = true,
+                        shuffle = true,
+                        background = false,
+                        playNext = true,
+                        unpin = false,
+                        isArtist = isArtist
+                    )
+                R.id.menu_play_last ->
+                    downloadHandler.downloadRecursively(
+                        fragment,
+                        item.id,
+                        save = false,
+                        append = true,
+                        autoPlay = false,
+                        shuffle = false,
+                        background = false,
+                        playNext = false,
+                        unpin = false,
+                        isArtist = isArtist
+                    )
+                R.id.menu_pin ->
+                    downloadHandler.downloadRecursively(
+                        fragment,
+                        item.id,
+                        save = true,
+                        append = true,
+                        autoPlay = false,
+                        shuffle = false,
+                        background = false,
+                        playNext = false,
+                        unpin = false,
+                        isArtist = isArtist
+                    )
+                R.id.menu_unpin ->
+                    downloadHandler.downloadRecursively(
+                        fragment,
+                        item.id,
+                        save = false,
+                        append = false,
+                        autoPlay = false,
+                        shuffle = false,
+                        background = false,
+                        playNext = false,
+                        unpin = true,
+                        isArtist = isArtist
+                    )
+                R.id.menu_download ->
+                    downloadHandler.downloadRecursively(
+                        fragment,
+                        item.id,
+                        save = false,
+                        append = false,
+                        autoPlay = false,
+                        shuffle = false,
+                        background = true,
+                        playNext = false,
+                        unpin = false,
+                        isArtist = isArtist
+                    )
+            }
+            return true
         }
     }
 }

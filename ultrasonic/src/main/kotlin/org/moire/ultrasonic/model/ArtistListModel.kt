@@ -31,7 +31,7 @@ import org.moire.ultrasonic.service.MusicService
  * Provides ViewModel which contains the list of available Artists
  */
 class ArtistListModel(application: Application) : GenericListModel(application) {
-    private val artists: MutableLiveData<List<ArtistOrIndex>> = MutableLiveData(listOf())
+    private val artists: MutableLiveData<List<ArtistOrIndex>> = MutableLiveData()
 
     /**
      * Retrieves all available Artists in a LiveData
@@ -39,7 +39,7 @@ class ArtistListModel(application: Application) : GenericListModel(application) 
     fun getItems(refresh: Boolean, swipe: SwipeRefreshLayout): LiveData<List<ArtistOrIndex>> {
         // Don't reload the data if navigating back to the view that was active before.
         // This way, we keep the scroll position
-        if (artists.value!!.isEmpty() || refresh) {
+        if (artists.value?.isEmpty() != false || refresh) {
             backgroundLoadFromServer(refresh, swipe)
         }
         return artists
