@@ -1,5 +1,6 @@
 package org.moire.ultrasonic.domain
 
+import org.moire.ultrasonic.domain.MusicDirectory.Album
 import org.moire.ultrasonic.domain.MusicDirectory.Entry
 
 /**
@@ -7,6 +8,6 @@ import org.moire.ultrasonic.domain.MusicDirectory.Entry
  */
 data class SearchResult(
     val artists: List<Artist> = listOf(),
-    val albums: List<Entry> = listOf(),
+    val albums: List<Album> = listOf(),
     val songs: List<Entry> = listOf()
 )

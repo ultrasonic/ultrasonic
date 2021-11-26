@@ -240,18 +240,13 @@ class DownloadHandler(
                 if (songs.size > maxSongs) {
                     return
                 }
-                for (song in parent.getChildren(includeDirs = false, includeFiles = true)) {
+                for (song in parent.getTracks()) {
                     if (!song.isVideo) {
                         songs.add(song)
                     }
                 }
                 val musicService = getMusicService()
-                for (
-                    (id1, _, _, title) in parent.getChildren(
-                        includeDirs = true,
-                        includeFiles = false
-                    )
-                ) {
+                for ((id1, _, _, title) in parent.getAlbums()) {
                     val root: MusicDirectory = if (
                         !isOffline() &&
                         Settings.shouldUseId3Tags
@@ -271,13 +266,13 @@ class DownloadHandler(
                 }
                 val musicService = getMusicService()
                 val artist = musicService.getArtist(id, "", false)
-                for ((id1) in artist.getChildren()) {
+                for ((id1) in artist) {
                     val albumDirectory = musicService.getAlbum(
                         id1,
                         "",
                         false
                     )
-                    for (song in albumDirectory.getChildren()) {
+                    for (song in albumDirectory.getTracks()) {
                         if (!song.isVideo) {
                             songs.add(song)
                         }

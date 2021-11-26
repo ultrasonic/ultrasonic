@@ -143,10 +143,10 @@ open class RESTMusicService(
         id: String,
         name: String?,
         refresh: Boolean
-    ): MusicDirectory {
+    ): List<MusicDirectory.Album> {
         val response = API.getArtist(id).execute().throwOnFailure()
 
-        return response.body()!!.artist.toMusicDirectoryDomainEntity()
+        return response.body()!!.artist.toDomainEntityList()
     }
 
     @Throws(Exception::class)

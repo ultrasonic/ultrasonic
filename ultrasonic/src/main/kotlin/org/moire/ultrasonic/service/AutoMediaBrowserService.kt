@@ -484,10 +484,12 @@ class AutoMediaBrowserService : MediaBrowserServiceCompat() {
             val albums = if (!isOffline && useId3Tags) {
                 callWithErrorHandling { musicService.getArtist(id, name, false) }
             } else {
-                callWithErrorHandling { musicService.getMusicDirectory(id, name, false) }
+                callWithErrorHandling {
+                    musicService.getMusicDirectory(id, name, false).getAlbums()
+                }
             }
 
-            albums?.getAllChild()?.map { album ->
+            albums?.map { album ->
                 mediaItems.add(
                     album.title ?: "",
                     listOf(MEDIA_ALBUM_ITEM, album.id, album.name)
@@ -517,7 +519,7 @@ class AutoMediaBrowserService : MediaBrowserServiceCompat() {
                     mediaItems.addPlayAllItem(listOf(MEDIA_ALBUM_ITEM, id, name).joinToString("|"))
 
                 // TODO: Paging is not implemented for songs, is it necessary at all?
-                val items = songs.getChildren().take(DISPLAY_LIMIT)
+                val items = songs.getTracks().take(DISPLAY_LIMIT)
                 items.map { item ->
                     if (item.isDirectory)
                         mediaItems.add(
@@ -573,7 +575,7 @@ class AutoMediaBrowserService : MediaBrowserServiceCompat() {
                 }
             }
 
-            albums?.getAllChild()?.map { album ->
+            albums?.getChildren()?.map { album ->
                 mediaItems.add(
                     album.title ?: "",
                     listOf(MEDIA_ALBUM_ITEM, album.id, album.name)
@@ -582,7 +584,7 @@ class AutoMediaBrowserService : MediaBrowserServiceCompat() {
                 )
             }
 
-            if (albums?.getAllChild()?.count() ?: 0 >= DISPLAY_LIMIT)
+            if (albums?.getChildren()?.count() ?: 0 >= DISPLAY_LIMIT)
                 mediaItems.add(
                     R.string.search_more,
                     listOf(MEDIA_ALBUM_PAGE_ID, type.typeName, (page ?: 0) + 1).joinToString("|"),
@@ -624,13 +626,13 @@ class AutoMediaBrowserService : MediaBrowserServiceCompat() {
             val content = callWithErrorHandling { musicService.getPlaylist(id, name) }
 
             if (content != null) {
-                if (content.getAllChild().count() > 1)
+                if (content.getChildren().count() > 1)
                     mediaItems.addPlayAllItem(
                         listOf(MEDIA_PLAYLIST_ITEM, id, name).joinToString("|")
                     )
 
                 // Playlist should be cached as it may contain random elements
-                playlistCache = content.getAllChild()
+                playlistCache = content.getTracks()
                 playlistCache!!.take(DISPLAY_LIMIT).map { item ->
                     mediaItems.add(
                         MediaBrowserCompat.MediaItem(
@@ -657,7 +659,7 @@ class AutoMediaBrowserService : MediaBrowserServiceCompat() {
             if (playlistCache == null) {
                 // This can only happen if Android Auto cached items, but Ultrasonic has forgot them
                 val content = callWithErrorHandling { musicService.getPlaylist(id, name) }
-                playlistCache = content?.getAllChild()
+                playlistCache = content?.getTracks()
             }
             if (playlistCache != null) playSongs(playlistCache)
         }
@@ -668,7 +670,7 @@ class AutoMediaBrowserService : MediaBrowserServiceCompat() {
             if (playlistCache == null) {
                 // This can only happen if Android Auto cached items, but Ultrasonic has forgot them
                 val content = callWithErrorHandling { musicService.getPlaylist(id, name) }
-                playlistCache = content?.getAllChild()
+                playlistCache = content?.getTracks()
             }
             val song = playlistCache?.firstOrNull { x -> x.id == songId }
             if (song != null) playSong(song)
@@ -678,14 +680,14 @@ class AutoMediaBrowserService : MediaBrowserServiceCompat() {
     private fun playAlbum(id: String, name: String) {
         serviceScope.launch {
             val songs = listSongsInMusicService(id, name)
-            if (songs != null) playSongs(songs.getAllChild())
+            if (songs != null) playSongs(songs.getTracks())
         }
     }
 
     private fun playAlbumSong(id: String, name: String, songId: String) {
         serviceScope.launch {
             val songs = listSongsInMusicService(id, name)
-            val song = songs?.getAllChild()?.firstOrNull { x -> x.id == songId }
+            val song = songs?.getTracks()?.firstOrNull { x -> x.id == songId }
             if (song != null) playSong(song)
         }
     }
@@ -717,10 +719,10 @@ class AutoMediaBrowserService : MediaBrowserServiceCompat() {
             val episodes = callWithErrorHandling { musicService.getPodcastEpisodes(id) }
 
             if (episodes != null) {
-                if (episodes.getAllChild().count() > 1)
+                if (episodes.getTracks().count() > 1)
                     mediaItems.addPlayAllItem(listOf(MEDIA_PODCAST_ITEM, id).joinToString("|"))
 
-                episodes.getAllChild().map { episode ->
+                episodes.getTracks().map { episode ->
                     mediaItems.add(
                         MediaBrowserCompat.MediaItem(
                             Util.getMediaDescriptionForEntry(
@@ -741,7 +743,7 @@ class AutoMediaBrowserService : MediaBrowserServiceCompat() {
         serviceScope.launch {
             val episodes = callWithErrorHandling { musicService.getPodcastEpisodes(id) }
             if (episodes != null) {
-                playSongs(episodes.getAllChild())
+                playSongs(episodes.getTracks())
             }
         }
     }
@@ -751,7 +753,7 @@ class AutoMediaBrowserService : MediaBrowserServiceCompat() {
             val episodes = callWithErrorHandling { musicService.getPodcastEpisodes(id) }
             if (episodes != null) {
                 val selectedEpisode = episodes
-                    .getAllChild()
+                    .getTracks()
                     .firstOrNull { episode -> episode.id == episodeId }
                 if (selectedEpisode != null) playSong(selectedEpisode)
             }
@@ -766,7 +768,7 @@ class AutoMediaBrowserService : MediaBrowserServiceCompat() {
             if (bookmarks != null) {
                 val songs = Util.getSongsFromBookmarks(bookmarks)
 
-                songs.getAllChild().map { song ->
+                songs.getTracks().map { song ->
                     mediaItems.add(
                         MediaBrowserCompat.MediaItem(
                             Util.getMediaDescriptionForEntry(
@@ -787,7 +789,7 @@ class AutoMediaBrowserService : MediaBrowserServiceCompat() {
             val bookmarks = callWithErrorHandling { musicService.getBookmarks() }
             if (bookmarks != null) {
                 val songs = Util.getSongsFromBookmarks(bookmarks)
-                val song = songs.getAllChild().firstOrNull { song -> song.id == id }
+                val song = songs.getTracks().firstOrNull { song -> song.id == id }
                 if (song != null) playSong(song)
             }
         }
@@ -926,11 +928,11 @@ class AutoMediaBrowserService : MediaBrowserServiceCompat() {
             val songs = callWithErrorHandling { musicService.getRandomSongs(DISPLAY_LIMIT) }
 
             if (songs != null) {
-                if (songs.getAllChild().count() > 1)
+                if (songs.getChildren().count() > 1)
                     mediaItems.addPlayAllItem(listOf(MEDIA_SONG_RANDOM_ID).joinToString("|"))
 
                 // TODO: Paging is not implemented for songs, is it necessary at all?
-                val items = songs.getAllChild()
+                val items = songs.getTracks()
                 randomSongsCache = items
                 items.map { song ->
                     mediaItems.add(
@@ -954,7 +956,7 @@ class AutoMediaBrowserService : MediaBrowserServiceCompat() {
                 // This can only happen if Android Auto cached items, but Ultrasonic has forgot them
                 // In this case we request a new set of random songs
                 val content = callWithErrorHandling { musicService.getRandomSongs(DISPLAY_LIMIT) }
-                randomSongsCache = content?.getAllChild()
+                randomSongsCache = content?.getTracks()
             }
             if (randomSongsCache != null) playSongs(randomSongsCache)
         }

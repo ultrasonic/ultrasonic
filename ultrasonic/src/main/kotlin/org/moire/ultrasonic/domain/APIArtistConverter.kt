@@ -23,3 +23,7 @@ fun APIArtist.toMusicDirectoryDomainEntity(): MusicDirectory = MusicDirectory().
     name = this@toMusicDirectoryDomainEntity.name
     addAll(this@toMusicDirectoryDomainEntity.albumsList.map { it.toDomainEntity() })
 }
+
+fun APIArtist.toDomainEntityList(): List<MusicDirectory.Album> {
+    return this.albumsList.map { it.toDomainEntity() }
+}

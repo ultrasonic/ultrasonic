@@ -9,12 +9,10 @@ import com.drakeet.multitype.ItemViewBinder
 import org.moire.ultrasonic.R
 import org.moire.ultrasonic.domain.Identifiable
 
-
 /**
  * Creates a row in a RecyclerView which can be used as a divide between different sections
  */
-class DividerBinder: ItemViewBinder<DividerBinder.Divider, DividerBinder.ViewHolder>() {
-
+class DividerBinder : ItemViewBinder<DividerBinder.Divider, DividerBinder.ViewHolder>() {
 
     // Set our layout files
     val layout = R.layout.row_divider
@@ -39,7 +37,7 @@ class DividerBinder: ItemViewBinder<DividerBinder.Divider, DividerBinder.ViewHol
     }
 
     // Class to store our data into
-    data class Divider(val stringId: Int): Identifiable {
+    data class Divider(val stringId: Int) : Identifiable {
         override val id: String
             get() = stringId.toString()
         override val longId: Long
@@ -47,6 +45,4 @@ class DividerBinder: ItemViewBinder<DividerBinder.Divider, DividerBinder.ViewHol
 
         override fun compareTo(other: Identifiable): Int = longId.compareTo(other.longId)
     }
-
-
 }

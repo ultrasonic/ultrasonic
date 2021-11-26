@@ -1,3 +1,10 @@
+/*
+ * DownloadsFragment.kt
+ * Copyright (C) 2009-2021 Ultrasonic developers
+ *
+ * Distributed under terms of the GNU GPLv3 license.
+ */
+
 package org.moire.ultrasonic.fragment
 
 import android.app.Application
@@ -14,6 +21,13 @@ import org.moire.ultrasonic.service.DownloadFile
 import org.moire.ultrasonic.service.Downloader
 import org.moire.ultrasonic.util.Util
 
+/**
+ * Displays currently running downloads.
+ * For now its a read-only view, there are no manipulations of the download list possible.
+ *
+ * A consideration would be to base this class on TrackCollectionFragment and thereby inheriting the
+ * buttons useful to manipulate the list.
+ */
 class DownloadsFragment : MultiListFragment<DownloadFile>() {
 
     /**
@@ -60,7 +74,9 @@ class DownloadsFragment : MultiListFragment<DownloadFile>() {
             )
         )
 
-        viewAdapter.submitList(listModel.getList().value)
+        val liveDataList = listModel.getList()
+
+        viewAdapter.submitList(liveDataList.value)
     }
 }
 

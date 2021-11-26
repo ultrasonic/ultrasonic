@@ -24,6 +24,7 @@ import org.moire.ultrasonic.domain.Share
 import org.moire.ultrasonic.domain.UserInfo
 
 @Suppress("TooManyFunctions")
+
 interface MusicService {
     @Throws(Exception::class)
     fun ping()
@@ -56,7 +57,7 @@ interface MusicService {
     fun getMusicDirectory(id: String, name: String?, refresh: Boolean): MusicDirectory
 
     @Throws(Exception::class)
-    fun getArtist(id: String, name: String?, refresh: Boolean): MusicDirectory
+    fun getArtist(id: String, name: String?, refresh: Boolean): List<MusicDirectory.Album>
 
     @Throws(Exception::class)
     fun getAlbum(id: String, name: String?, refresh: Boolean): MusicDirectory

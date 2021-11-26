@@ -14,6 +14,7 @@ import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.RelativeLayout
 import android.widget.TextView
+import androidx.core.view.isVisible
 import androidx.recyclerview.widget.RecyclerView
 import com.drakeet.multitype.ItemViewBinder
 import org.koin.core.component.KoinComponent
@@ -31,6 +32,7 @@ class ArtistRowBinder(
     val onItemClick: (ArtistOrIndex) -> Unit,
     val onContextMenuClick: (MenuItem, ArtistOrIndex) -> Boolean,
     private val imageLoader: ImageLoader,
+    private val enableSections: Boolean = true
 ) : ItemViewBinder<ArtistOrIndex, ArtistRowBinder.ViewHolder>(), KoinComponent {
 
     val layout = R.layout.artist_list_item
@@ -39,6 +41,7 @@ class ArtistRowBinder(
     override fun onBindViewHolder(holder: ViewHolder, item: ArtistOrIndex) {
         holder.textView.text = item.name
         holder.section.text = getSectionForArtist(item)
+        holder.section.isVisible = enableSections
         holder.layout.setOnClickListener { onItemClick(item) }
         holder.layout.setOnLongClickListener {
             val popup = Helper.createPopupMenu(holder.itemView)

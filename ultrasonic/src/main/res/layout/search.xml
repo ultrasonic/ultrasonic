@@ -1,20 +1,31 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:a="http://schemas.android.com/apk/res/android"
-              a:orientation="vertical"
-              a:layout_width="fill_parent"
-              a:layout_height="fill_parent">
+    a:layout_width="fill_parent"
+    a:layout_height="fill_parent"
+    a:orientation="vertical">
+
+    <TextView
+        a:id="@+id/empty_list_text"
+        a:layout_width="fill_parent"
+        a:layout_height="wrap_content"
+        a:drawablePadding="0dp"
+        a:gravity="center"
+        a:padding="12dp"
+        a:text="@string/search.no_match"
+        a:textAppearance="?android:attr/textAppearanceMedium"
+        a:visibility="gone" />
 
     <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
-        a:id="@+id/search_entries_refresh"
+        a:id="@+id/swipe_refresh_view"
         a:layout_width="fill_parent"
         a:layout_height="0dip"
         a:layout_weight="1.0">
 
-    <androidx.recyclerview.widget.RecyclerView
-            a:id="@+id/search_list"
+        <androidx.recyclerview.widget.RecyclerView
+            a:id="@+id/recycler_view"
             a:layout_width="fill_parent"
             a:layout_height="0dip"
-            a:layout_weight="1.0"/>
+            a:layout_weight="1.0" />
 
     </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
 

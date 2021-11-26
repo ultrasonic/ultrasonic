@@ -5,7 +5,6 @@ import android.os.Bundle
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
-import org.moire.ultrasonic.R
 import org.moire.ultrasonic.api.subsonic.models.AlbumListType
 import org.moire.ultrasonic.domain.MusicDirectory
 import org.moire.ultrasonic.service.MusicService
@@ -14,7 +13,7 @@ import org.moire.ultrasonic.util.Settings
 
 class AlbumListModel(application: Application) : GenericListModel(application) {
 
-    val list: MutableLiveData<List<MusicDirectory.Entry>> = MutableLiveData(listOf())
+    val list: MutableLiveData<List<MusicDirectory.Album>> = MutableLiveData(listOf())
     var lastType: String? = null
     private var loadedUntil: Int = 0
 
@@ -22,7 +21,7 @@ class AlbumListModel(application: Application) : GenericListModel(application) {
         refresh: Boolean,
         swipe: SwipeRefreshLayout,
         args: Bundle
-    ): LiveData<List<MusicDirectory.Entry>> {
+    ): LiveData<List<MusicDirectory.Album>> {
         // Don't reload the data if navigating back to the view that was active before.
         // This way, we keep the scroll position
         val albumListType = args.getString(Constants.INTENT_EXTRA_NAME_ALBUM_LIST_TYPE)!!
@@ -35,29 +34,7 @@ class AlbumListModel(application: Application) : GenericListModel(application) {
     }
 
     fun getAlbumsOfArtist(musicService: MusicService, refresh: Boolean, id: String, name: String?) {
-
-        var root = MusicDirectory()
-        val musicDirectory = musicService.getArtist(id, name, refresh)
-
-        if (Settings.shouldShowAllSongsByArtist &&
-            musicDirectory.findChild(allSongsId) == null &&
-            hasOnlyFolders(musicDirectory)
-        ) {
-            val allSongs = MusicDirectory.Entry(allSongsId)
-
-            allSongs.isDirectory = true
-            allSongs.artist = name
-            allSongs.parent = id
-            allSongs.title = String.format(
-                context.resources.getString(R.string.select_album_all_songs), name
-            )
-
-            root.addFirst(allSongs)
-            root.addAll(musicDirectory.getChildren())
-        } else {
-            root = musicDirectory
-        }
-        list.postValue(root.getChildren())
+        list.postValue(musicService.getArtist(id, name, refresh))
     }
 
     override fun load(
@@ -108,13 +85,15 @@ class AlbumListModel(application: Application) : GenericListModel(application) {
 
         currentListIsSortable = isCollectionSortable(albumListType)
 
+        // TODO: Change signature of  musicService.getAlbumList to return a List
+        @Suppress("UNCHECKED_CAST")
         if (append && list.value != null) {
-            val list = ArrayList<MusicDirectory.Entry>()
+            val list = ArrayList<MusicDirectory.Child>()
             list.addAll(this.list.value!!)
-            list.addAll(musicDirectory.getAllChild())
-            this.list.postValue(list)
+            list.addAll(musicDirectory.getChildren())
+            this.list.postValue(list as List<MusicDirectory.Album>)
         } else {
-            list.postValue(musicDirectory.getAllChild())
+            list.postValue(musicDirectory.getChildren() as List<MusicDirectory.Album>)
         }
 
         loadedUntil = offset

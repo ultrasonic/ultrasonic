@@ -5,7 +5,6 @@ import androidx.recyclerview.widget.ItemTouchHelper.DOWN
 import androidx.recyclerview.widget.ItemTouchHelper.UP
 import androidx.recyclerview.widget.RecyclerView
 import org.moire.ultrasonic.adapters.BaseAdapter
-import timber.log.Timber
 
 class DragSortCallback : ItemTouchHelper.SimpleCallback(UP or DOWN, 0) {
 

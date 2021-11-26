@@ -100,8 +100,8 @@ public class ShufflePlayBuffer
 
 			synchronized (buffer)
 			{
-				buffer.addAll(songs.getChildren());
-				Timber.i("Refilled shuffle play buffer with %d songs.", songs.getChildren().size());
+				buffer.addAll(songs.getTracks());
+				Timber.i("Refilled shuffle play buffer with %d songs.", songs.getTracks().size());
 			}
 		}
 		catch (Exception x)

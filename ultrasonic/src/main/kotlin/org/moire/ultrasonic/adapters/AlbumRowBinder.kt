@@ -31,11 +31,11 @@ import timber.log.Timber
  * Creates a Row in a RecyclerView which contains the details of an Album
  */
 class AlbumRowBinder(
-    val onItemClick: (MusicDirectory.Entry) -> Unit,
-    val onContextMenuClick: (MenuItem, MusicDirectory.Entry) -> Boolean,
+    val onItemClick: (MusicDirectory.Album) -> Unit,
+    val onContextMenuClick: (MenuItem, MusicDirectory.Album) -> Boolean,
     private val imageLoader: ImageLoader,
-    context: Context,
-) : ItemViewBinder<MusicDirectory.Entry, AlbumRowBinder.ViewHolder>(), KoinComponent {
+    context: Context
+) : ItemViewBinder<MusicDirectory.Album, AlbumRowBinder.ViewHolder>(), KoinComponent {
 
     private val starDrawable: Drawable =
         Util.getDrawableFromAttribute(context, R.attr.star_full)
@@ -46,7 +46,7 @@ class AlbumRowBinder(
     val layout = R.layout.album_list_item
     val contextMenuLayout = R.menu.artist_context_menu
 
-    override fun onBindViewHolder(holder: ViewHolder, item: MusicDirectory.Entry) {
+    override fun onBindViewHolder(holder: ViewHolder, item: MusicDirectory.Album) {
         holder.album.text = item.title
         holder.artist.text = item.artist
         holder.details.setOnClickListener { onItemClick(item) }
@@ -86,7 +86,7 @@ class AlbumRowBinder(
     /**
      * Handles the star / unstar action for an album
      */
-    private fun onStarClick(entry: MusicDirectory.Entry, star: ImageView) {
+    private fun onStarClick(entry: MusicDirectory.Album, star: ImageView) {
         entry.starred = !entry.starred
         star.setImageDrawable(if (entry.starred) starDrawable else starHollowDrawable)
         val musicService = getMusicService()

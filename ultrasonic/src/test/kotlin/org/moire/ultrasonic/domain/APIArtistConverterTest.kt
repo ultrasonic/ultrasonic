@@ -42,7 +42,7 @@ class APIArtistConverterTest {
 
         with(convertedEntity) {
             name `should be equal to` entity.name
-            getAllChild() `should be equal to` entity.albumsList
+            getChildren() `should be equal to` entity.albumsList
                 .map { it.toDomainEntity() }.toMutableList()
         }
     }

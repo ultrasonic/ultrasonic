@@ -14,7 +14,6 @@ import java.io.FileReader
 import java.io.FileWriter
 import java.io.InputStream
 import java.io.Reader
-import java.lang.Math.min
 import java.util.ArrayList
 import java.util.HashSet
 import java.util.LinkedList
@@ -119,7 +118,7 @@ class OfflineMusicService : MusicService, KoinComponent {
 
     override fun search(criteria: SearchCriteria): SearchResult {
         val artists: MutableList<Artist> = ArrayList()
-        val albums: MutableList<MusicDirectory.Entry> = ArrayList()
+        val albums: MutableList<MusicDirectory.Album> = ArrayList()
         val songs: MutableList<MusicDirectory.Entry> = ArrayList()
         val root = FileUtil.musicDirectory
         var closeness: Int
@@ -258,7 +257,7 @@ class OfflineMusicService : MusicService, KoinComponent {
             return result
         }
         children.shuffle()
-        val finalSize: Int = min(children.size, size)
+        val finalSize: Int = children.size.coerceAtMost(size)
         for (i in 0 until finalSize) {
             val file = children[i % children.size]
             result.addChild(createEntry(file, getName(file)))
@@ -447,9 +446,10 @@ class OfflineMusicService : MusicService, KoinComponent {
     }
 
     @Throws(OfflineException::class)
-    override fun getArtist(id: String, name: String?, refresh: Boolean): MusicDirectory {
-        throw OfflineException("getArtist isn't available in offline mode")
-    }
+    override fun getArtist(id: String, name: String?, refresh: Boolean):
+        List<MusicDirectory.Album> {
+            throw OfflineException("getArtist isn't available in offline mode")
+        }
 
     @Throws(OfflineException::class)
     override fun getAlbum(id: String, name: String?, refresh: Boolean): MusicDirectory {
@@ -498,7 +498,7 @@ class OfflineMusicService : MusicService, KoinComponent {
         }
 
         @Suppress("TooGenericExceptionCaught", "ComplexMethod", "LongMethod", "NestedBlockDepth")
-        private fun createEntry(file: File, name: String?): MusicDirectory.Entry {
+        private fun createEntry(file: File, name: String?): MusicDirectory.Child {
             val entry = MusicDirectory.Entry(file.path)
             entry.isDirectory = file.isDirectory
             entry.parent = file.parent
@@ -600,7 +600,7 @@ class OfflineMusicService : MusicService, KoinComponent {
             artistName: String,
             file: File,
             criteria: SearchCriteria,
-            albums: MutableList<MusicDirectory.Entry>,
+            albums: MutableList<MusicDirectory.Album>,
             songs: MutableList<MusicDirectory.Entry>
         ) {
             var closeness: Int
@@ -611,7 +611,7 @@ class OfflineMusicService : MusicService, KoinComponent {
                         val album = createEntry(albumFile, albumName)
                         album.artist = artistName
                         album.closeness = closeness
-                        albums.add(album)
+                        albums.add(album as MusicDirectory.Album)
                     }
                     for (songFile in FileUtil.listMediaFiles(albumFile)) {
                         val songName = getName(songFile)
@@ -622,7 +622,7 @@ class OfflineMusicService : MusicService, KoinComponent {
                             song.artist = artistName
                             song.album = albumName
                             song.closeness = closeness
-                            songs.add(song)
+                            songs.add(song as MusicDirectory.Entry)
                         }
                     }
                 } else {
@@ -632,7 +632,7 @@ class OfflineMusicService : MusicService, KoinComponent {
                         song.artist = artistName
                         song.album = songName
                         song.closeness = closeness
-                        songs.add(song)
+                        songs.add(song as MusicDirectory.Entry)
                     }
                 }
             }

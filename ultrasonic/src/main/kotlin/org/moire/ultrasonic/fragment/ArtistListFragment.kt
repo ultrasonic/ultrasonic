@@ -28,16 +28,6 @@ class ArtistListFragment : EntryListFragment<ArtistOrIndex>() {
     override val mainLayout = R.layout.generic_list
 
     /**
-     * The id of the refresh view
-     */
-    override val refreshListId = R.id.generic_list_refresh
-
-    /**
-     * The id of the RecyclerView
-     */
-    override val recyclerViewId = R.id.generic_list_recycler
-
-    /**
      * The id of the target in the navigation graph where we should go,
      * after the user has clicked on an item
      */
@@ -69,8 +59,10 @@ class ArtistListFragment : EntryListFragment<ArtistOrIndex>() {
         bundle.putString(Constants.INTENT_EXTRA_NAME_NAME, item.name)
         bundle.putString(Constants.INTENT_EXTRA_NAME_PARENT_ID, item.id)
         bundle.putBoolean(Constants.INTENT_EXTRA_NAME_ARTIST, (item is Artist))
-        bundle.putString(Constants.INTENT_EXTRA_NAME_ALBUM_LIST_TYPE,
-            Constants.ALPHABETICAL_BY_NAME)
+        bundle.putString(
+            Constants.INTENT_EXTRA_NAME_ALBUM_LIST_TYPE,
+            Constants.ALPHABETICAL_BY_NAME
+        )
         bundle.putString(Constants.INTENT_EXTRA_NAME_ALBUM_LIST_TITLE, item.name)
         bundle.putInt(Constants.INTENT_EXTRA_NAME_ALBUM_LIST_SIZE, 1000)
         bundle.putInt(Constants.INTENT_EXTRA_NAME_ALBUM_LIST_OFFSET, 0)

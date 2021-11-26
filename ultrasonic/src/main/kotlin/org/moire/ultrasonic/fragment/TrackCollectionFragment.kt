@@ -30,7 +30,6 @@ import kotlinx.coroutines.CoroutineExceptionHandler
 import kotlinx.coroutines.launch
 import org.koin.android.ext.android.inject
 import org.moire.ultrasonic.R
-import org.moire.ultrasonic.adapters.BaseAdapter
 import org.moire.ultrasonic.adapters.HeaderViewBinder
 import org.moire.ultrasonic.adapters.TrackViewBinder
 import org.moire.ultrasonic.data.ActiveServerProvider.Companion.isOffline
@@ -86,16 +85,6 @@ open class TrackCollectionFragment : MultiListFragment<MusicDirectory.Entry>() {
     override val mainLayout: Int = R.layout.track_list
 
     /**
-     * The id of the refresh view
-     */
-    override val refreshListId: Int = R.id.generic_list_refresh
-
-    /**
-     * The id of the RecyclerView
-     */
-    override val recyclerViewId = R.id.generic_list_recycler
-
-    /**
      * The id of the target in the navigation graph where we should go,
      * after the user has clicked on an item
      */
@@ -118,7 +107,7 @@ open class TrackCollectionFragment : MultiListFragment<MusicDirectory.Entry>() {
 
         setupButtons(view)
 
-        emptyView = view.findViewById(R.id.select_album_empty)
+        emptyView = view.findViewById(R.id.empty_list_text)
 
         registerForContextMenu(listView!!)
         setHasOptionsMenu(true)
@@ -629,7 +618,7 @@ open class TrackCollectionFragment : MultiListFragment<MusicDirectory.Entry>() {
         listModel.currentListIsSortable = true
     }
 
-    private fun getSelectedSongs(): List<MusicDirectory.Entry> {
+    internal fun getSelectedSongs(): List<MusicDirectory.Entry> {
         // Walk through selected set and get the Entries based on the saved ids.
         return viewAdapter.getCurrentList().mapNotNull {
             if (it is MusicDirectory.Entry && viewAdapter.isSelected(it.longId))

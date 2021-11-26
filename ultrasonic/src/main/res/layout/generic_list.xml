@@ -2,32 +2,8 @@
 <LinearLayout xmlns:a="http://schemas.android.com/apk/res/android"
     a:layout_width="fill_parent"
     a:layout_height="fill_parent"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
     a:orientation="vertical">
 
-    <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
-        a:id="@+id/generic_list_refresh"
-        a:layout_width="fill_parent"
-        a:layout_height="0dip"
-        a:layout_weight="1.0">
-
-        <com.simplecityapps.recyclerview_fastscroll.views.FastScrollRecyclerView
-            a:id="@+id/generic_list_recycler"
-            a:layout_width="match_parent"
-            a:layout_height="match_parent"
-            a:paddingTop="8dp"
-            a:paddingBottom="8dp"
-            a:clipToPadding="false"
-            app:fastScrollAutoHide="true"
-            app:fastScrollAutoHideDelay="2000"
-            app:fastScrollPopupTextSize="28sp"
-            app:fastScrollPopupBackgroundSize="42dp"
-            app:fastScrollPopupBgColor="@color/cyan"
-            app:fastScrollPopupTextColor="@android:color/primary_text_dark"
-            app:fastScrollPopupPosition="adjacent"
-            app:fastScrollTrackColor="@color/dividerColor"
-            app:fastScrollThumbColor="@color/cyan" />
-
-    </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
+    <include layout="@layout/recycler_view" />
 
 </LinearLayout>

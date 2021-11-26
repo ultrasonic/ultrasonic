@@ -21,7 +21,7 @@ class ImageHelper(context: Context) {
     var theme: String
 
     fun rebuild(context: Context, force: Boolean = false) {
-        val currentTheme = Settings.theme!!
+        val currentTheme = Settings.theme
         val themesMatch = theme == currentTheme
         if (!themesMatch) theme = currentTheme
 
@@ -31,7 +31,7 @@ class ImageHelper(context: Context) {
     }
 
     init {
-        theme = Settings.theme!!
+        theme = Settings.theme
         getDrawables(context)
     }
 

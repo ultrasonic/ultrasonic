@@ -1,3 +1,10 @@
+/*
+ * BaseAdapter.kt
+ * Copyright (C) 2009-2021 Ultrasonic developers
+ *
+ * Distributed under terms of the GNU GPLv3 license.
+ */
+
 package org.moire.ultrasonic.adapters
 
 import android.annotation.SuppressLint
@@ -8,10 +15,15 @@ import androidx.recyclerview.widget.AsyncListDiffer
 import androidx.recyclerview.widget.AsyncListDiffer.ListListener
 import androidx.recyclerview.widget.DiffUtil
 import com.drakeet.multitype.MultiTypeAdapter
-import java.util.TreeSet
 import org.moire.ultrasonic.domain.Identifiable
 import org.moire.ultrasonic.util.BoundedTreeSet
 
+/**
+ * The BaseAdapter which extends the MultiTypeAdapter from an external library.
+ * It provides selection support as well as Diffing the submitted lists for performance.
+ *
+ * It should be kept generic enought that it can be used a Base for all lists in the app.
+ */
 class BaseAdapter<T : Identifiable> : MultiTypeAdapter() {
 
     // Update the BoundedTreeSet if selection type is changed
@@ -34,10 +46,11 @@ class BaseAdapter<T : Identifiable> : MultiTypeAdapter() {
         return getItem(position).longId
     }
 
-
     private fun getItem(position: Int): T {
         return mDiffer.currentList[position]
     }
+
+    // override getIt
 
     override var items: List<Any>
         get() = getCurrentList()

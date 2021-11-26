@@ -1,3 +1,10 @@
+/*
+ * MultiListFragment.kt
+ * Copyright (C) 2009-2021 Ultrasonic developers
+ *
+ * Distributed under terms of the GNU GPLv3 license.
+ */
+
 package org.moire.ultrasonic.fragment
 
 import android.os.Bundle
@@ -5,6 +12,8 @@ import android.view.LayoutInflater
 import android.view.MenuItem
 import android.view.View
 import android.view.ViewGroup
+import android.widget.TextView
+import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.LiveData
@@ -37,6 +46,7 @@ abstract class MultiListFragment<T : Identifiable> : Fragment() {
     protected var refreshListView: SwipeRefreshLayout? = null
     internal var listView: RecyclerView? = null
     internal lateinit var viewManager: LinearLayoutManager
+    internal lateinit var emptyTextView: TextView
 
     /**
      * The Adapter for the RecyclerView
@@ -76,14 +86,11 @@ abstract class MultiListFragment<T : Identifiable> : Fragment() {
     open val mainLayout: Int = R.layout.generic_list
 
     /**
-     * The id of the refresh view
+     * The ids of the swipe refresh view, the recycler view and the empty text view
      */
-    open val refreshListId: Int = R.id.generic_list_refresh
-
-    /**
-     * The id of the RecyclerView
-     */
-    open val recyclerViewId = R.id.generic_list_recycler
+    open val refreshListId = R.id.swipe_refresh_view
+    open val recyclerViewId = R.id.recycler_view
+    open val emptyTextViewId = R.id.empty_list_text
 
     open fun setTitle(title: String?) {
         if (title == null) {
@@ -113,11 +120,15 @@ abstract class MultiListFragment<T : Identifiable> : Fragment() {
         // Populate the LiveData. This starts an API request in most cases
         liveDataItems = getLiveData(arguments)
 
+        // Link view to display text if the list is empty
+        // FIXME: Hook this up globally.
+        emptyTextView = view.findViewById(emptyTextViewId)
+
         // Register an observer to update our UI when the data changes
         liveDataItems.observe(
             viewLifecycleOwner,
-            {
-                newItems ->
+            { newItems ->
+                emptyTextView.isVisible = newItems.isEmpty()
                 viewAdapter.submitList(newItems)
             }
         )

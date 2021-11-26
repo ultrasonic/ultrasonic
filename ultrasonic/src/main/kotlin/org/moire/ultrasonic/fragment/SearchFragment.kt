@@ -12,8 +12,8 @@ import android.view.MenuItem
 import android.view.View
 import android.widget.AdapterView.AdapterContextMenuInfo
 import android.widget.ListAdapter
-import android.widget.TextView
 import androidx.appcompat.widget.SearchView
+import androidx.core.view.isVisible
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
@@ -24,6 +24,7 @@ import kotlinx.coroutines.launch
 import org.koin.core.component.KoinComponent
 import org.koin.core.component.inject
 import org.moire.ultrasonic.R
+import org.moire.ultrasonic.adapters.AlbumRowBinder
 import org.moire.ultrasonic.adapters.ArtistRowBinder
 import org.moire.ultrasonic.adapters.DividerBinder
 import org.moire.ultrasonic.adapters.TrackViewBinder
@@ -48,10 +49,6 @@ import timber.log.Timber
  * Initiates a search on the media library and displays the results
  */
 class SearchFragment : MultiListFragment<Identifiable>(), KoinComponent {
-    private var artistsHeading: View? = null
-    private var albumsHeading: View? = null
-    private var songsHeading: View? = null
-    private var notFound: TextView? = null
     private var moreArtistsButton: View? = null
     private var moreAlbumsButton: View? = null
     private var moreSongsButton: View? = null
@@ -71,8 +68,6 @@ class SearchFragment : MultiListFragment<Identifiable>(), KoinComponent {
 
     override val listModel: SearchListModel by viewModels()
 
-    override val recyclerViewId = R.id.search_list
-
     override val mainLayout: Int = R.layout.search
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -87,10 +82,6 @@ class SearchFragment : MultiListFragment<Identifiable>(), KoinComponent {
         )
 
         if (buttons != null) {
-            artistsHeading = buttons.findViewById(R.id.search_artists)
-            albumsHeading = buttons.findViewById(R.id.search_albums)
-            songsHeading = buttons.findViewById(R.id.search_songs)
-            notFound = buttons.findViewById(R.id.search_not_found)
             moreArtistsButton = buttons.findViewById(R.id.search_more_artists)
             moreAlbumsButton = buttons.findViewById(R.id.search_more_albums)
             moreSongsButton = buttons.findViewById(R.id.search_more_songs)
@@ -103,7 +94,7 @@ class SearchFragment : MultiListFragment<Identifiable>(), KoinComponent {
             }
         )
 
-        searchRefresh = view.findViewById(R.id.search_entries_refresh)
+        searchRefresh = view.findViewById(R.id.swipe_refresh_view)
         searchRefresh!!.isEnabled = false
 
 //        list.setOnItemClickListener(OnItemClickListener { parent: AdapterView<*>, view1: View, position: Int, id: Long ->
@@ -132,20 +123,43 @@ class SearchFragment : MultiListFragment<Identifiable>(), KoinComponent {
 
         registerForContextMenu(listView!!)
 
+        // Register our data binders
+        // IMPORTANT:
+        // They need to be added in the order of most specific -> least specific.
+        viewAdapter.register(
+            ArtistRowBinder(
+                onItemClick = { entry -> onItemClick(entry) },
+                onContextMenuClick = { menuItem, entry ->
+                    onContextMenuItemSelected(
+                        menuItem,
+                        entry
+                    )
+                },
+                imageLoader = imageLoaderProvider.getImageLoader(),
+                enableSections = false
+            )
+        )
+
+        viewAdapter.register(
+            AlbumRowBinder(
+                onItemClick = { entry -> onItemClick(entry) },
+                onContextMenuClick = { menuItem, entry ->
+                    onContextMenuItemSelected(
+                        menuItem,
+                        entry
+                    )
+                },
+                imageLoader = imageLoaderProvider.getImageLoader(),
+                context = requireContext()
+            )
+        )
+
         viewAdapter.register(
             TrackViewBinder(
                 checkable = false,
                 draggable = false,
                 context = requireContext(),
                 lifecycleOwner = viewLifecycleOwner
-            )
-        )
-
-        viewAdapter.register(
-            ArtistRowBinder(
-                { entry -> onItemClick(entry) },
-                { menuItem, entry -> onContextMenuItemSelected(menuItem, entry) },
-                imageLoaderProvider.getImageLoader()
             )
         )
 
@@ -164,7 +178,7 @@ class SearchFragment : MultiListFragment<Identifiable>(), KoinComponent {
         }
 
         // Fragment was started from the Menu, create empty list
-        populateList(SearchResult())
+        // populateList(SearchResult())
     }
 
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
@@ -180,11 +194,13 @@ class SearchFragment : MultiListFragment<Identifiable>(), KoinComponent {
         val autoPlay =
             arguments != null && arguments.getBoolean(Constants.INTENT_EXTRA_NAME_AUTOPLAY, false)
         val query = arguments?.getString(Constants.INTENT_EXTRA_NAME_QUERY)
+
         // If started with a query, enter it to the searchView
         if (query != null) {
             searchView.setQuery(query, false)
             searchView.clearFocus()
         }
+
         searchView.setOnSuggestionListener(object : SearchView.OnSuggestionListener {
             override fun onSuggestionSelect(position: Int): Boolean {
                 return true
@@ -423,8 +439,9 @@ class SearchFragment : MultiListFragment<Identifiable>(), KoinComponent {
     private fun search(query: String, autoplay: Boolean) {
         // FIXME support autoplay
         listModel.viewModelScope.launch(CommunicationError.getHandler(context)) {
+            refreshListView?.isRefreshing = true
             listModel.search(query)
-
+            refreshListView?.isRefreshing = false
         }
     }
 
@@ -454,17 +471,15 @@ class SearchFragment : MultiListFragment<Identifiable>(), KoinComponent {
         }
         val songs = searchResult.songs
         if (songs.isNotEmpty()) {
-            list.add(DividerBinder.Divider(R.string.search_albums))
+            list.add(DividerBinder.Divider(R.string.search_songs))
             list.addAll(songs)
 //            if (songs.size > DEFAULT_SONGS) {
 //                moreSongsAdapter = mergeAdapter!!.addView(moreSongsButton, true)
 //            }
         }
 
-        // FIXME
-        if (list.isEmpty()) {
-            // mergeAdapter!!.addView(notFound, false)
-        }
+        // Show/hide the empty text view
+        emptyTextView.isVisible = list.isEmpty()
 
         viewAdapter.submitList(list)
     }
@@ -506,7 +521,7 @@ class SearchFragment : MultiListFragment<Identifiable>(), KoinComponent {
 //        Navigation.findNavController(requireView()).navigate(R.id.searchToSelectAlbum, bundle)
 //    }
 
-    private fun onAlbumSelected(album: MusicDirectory.Entry, autoplay: Boolean) {
+    private fun onAlbumSelected(album: MusicDirectory.Album, autoplay: Boolean) {
         val bundle = Bundle()
         bundle.putString(Constants.INTENT_EXTRA_NAME_ID, album.id)
         bundle.putString(Constants.INTENT_EXTRA_NAME_NAME, album.title)

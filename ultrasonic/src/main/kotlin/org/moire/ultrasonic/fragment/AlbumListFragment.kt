@@ -16,7 +16,7 @@ import org.moire.ultrasonic.util.Constants
  * Displays a list of Albums from the media library
  * FIXME: Add music folder support
  */
-class AlbumListFragment : EntryListFragment<MusicDirectory.Entry>() {
+class AlbumListFragment : EntryListFragment<MusicDirectory.Album>() {
 
     /**
      * The ViewModel to use to get the data
@@ -29,16 +29,6 @@ class AlbumListFragment : EntryListFragment<MusicDirectory.Entry>() {
     override val mainLayout: Int = R.layout.generic_list
 
     /**
-     * The id of the refresh view
-     */
-    override val refreshListId: Int = R.id.generic_list_refresh
-
-    /**
-     * The id of the RecyclerView
-     */
-    override val recyclerViewId = R.id.generic_list_recycler
-
-    /**
      * The id of the target in the navigation graph where we should go,
      * after the user has clicked on an item
      */
@@ -47,7 +37,7 @@ class AlbumListFragment : EntryListFragment<MusicDirectory.Entry>() {
     /**
      * The central function to pass a query to the model and return a LiveData object
      */
-    override fun getLiveData(args: Bundle?): LiveData<List<MusicDirectory.Entry>> {
+    override fun getLiveData(args: Bundle?): LiveData<List<MusicDirectory.Album>> {
         if (args == null) throw IllegalArgumentException("Required arguments are missing")
 
         val refresh = args.getBoolean(Constants.INTENT_EXTRA_NAME_REFRESH)
@@ -83,7 +73,7 @@ class AlbumListFragment : EntryListFragment<MusicDirectory.Entry>() {
         )
     }
 
-    override fun onItemClick(item: MusicDirectory.Entry) {
+    override fun onItemClick(item: MusicDirectory.Album) {
         val bundle = Bundle()
         bundle.putString(Constants.INTENT_EXTRA_NAME_ID, item.id)
         bundle.putBoolean(Constants.INTENT_EXTRA_NAME_IS_ALBUM, item.isDirectory)

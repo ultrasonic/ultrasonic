@@ -12,7 +12,6 @@ import androidx.lifecycle.MutableLiveData
 import java.util.LinkedList
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
-import org.moire.ultrasonic.R
 import org.moire.ultrasonic.domain.MusicDirectory
 import org.moire.ultrasonic.service.MusicServiceFactory
 import org.moire.ultrasonic.util.Settings
@@ -54,25 +53,7 @@ class TrackCollectionModel(application: Application) : GenericListModel(applicat
                 }
             } else {
                 val musicDirectory = service.getMusicDirectory(id, name, refresh)
-
-                if (Settings.shouldShowAllSongsByArtist &&
-                    musicDirectory.findChild(allSongsId) == null &&
-                    hasOnlyFolders(musicDirectory)
-                ) {
-                    val allSongs = MusicDirectory.Entry(allSongsId)
-
-                    allSongs.isDirectory = true
-                    allSongs.artist = name
-                    allSongs.parent = id
-                    allSongs.title = String.format(
-                        context.resources.getString(R.string.select_album_all_songs), name
-                    )
-
-                    root.addChild(allSongs)
-                    root.addAll(musicDirectory.getChildren())
-                } else {
-                    root = musicDirectory
-                }
+                root = musicDirectory
             }
 
             currentDirectory.postValue(root)
@@ -87,13 +68,13 @@ class TrackCollectionModel(application: Application) : GenericListModel(applicat
     ) {
         val service = MusicServiceFactory.getMusicService()
 
-        for (song in parent.getChildren(includeDirs = false, includeFiles = true)) {
+        for (song in parent.getTracks()) {
             if (!song.isVideo && !song.isDirectory) {
                 songs.add(song)
             }
         }
 
-        for ((id1, _, _, title) in parent.getChildren(true, includeFiles = false)) {
+        for ((id1, _, _, title) in parent.getAlbums()) {
             var root: MusicDirectory
 
             if (allSongsId != id1) {
@@ -118,13 +99,14 @@ class TrackCollectionModel(application: Application) : GenericListModel(applicat
                 val songs: MutableCollection<MusicDirectory.Entry> = LinkedList()
                 val artist = service.getArtist(parentId, "", false)
 
-                for ((id1) in artist.getChildren()) {
+                // FIXME is still working?
+                for ((id1) in artist) {
                     if (allSongsId != id1) {
                         val albumDirectory = service.getAlbum(
                             id1, "", false
                         )
 
-                        for (song in albumDirectory.getChildren()) {
+                        for (song in albumDirectory.getTracks()) {
                             if (!song.isVideo) {
                                 songs.add(song)
                             }
@@ -252,6 +234,6 @@ class TrackCollectionModel(application: Application) : GenericListModel(applicat
     }
 
     private fun updateList(root: MusicDirectory) {
-        currentList.postValue(root.getChildren())
+        currentList.postValue(root.getTracks())
     }
 }

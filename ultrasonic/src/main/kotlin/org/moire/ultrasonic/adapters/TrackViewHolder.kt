@@ -276,7 +276,8 @@ class TrackViewHolder(val view: View) : RecyclerView.ViewHolder(view), Checkable
 
     override fun setChecked(newStatus: Boolean) {
         observableChecked.postValue(newStatus)
-        //check.isChecked = newStatus
+        // FIXME, check if working
+        // check.isChecked = newStatus
     }
 
     override fun isChecked(): Boolean {
