@@ -584,7 +584,7 @@ class AutoMediaBrowserService : MediaBrowserServiceCompat() {
                 )
             }
 
-            if (albums?.getChildren()?.count() ?: 0 >= DISPLAY_LIMIT)
+            if (albums?.size ?: 0 >= DISPLAY_LIMIT)
                 mediaItems.add(
                     R.string.search_more,
                     listOf(MEDIA_ALBUM_PAGE_ID, type.typeName, (page ?: 0) + 1).joinToString("|"),
@@ -626,7 +626,7 @@ class AutoMediaBrowserService : MediaBrowserServiceCompat() {
             val content = callWithErrorHandling { musicService.getPlaylist(id, name) }
 
             if (content != null) {
-                if (content.getChildren().count() > 1)
+                if (content.size > 1)
                     mediaItems.addPlayAllItem(
                         listOf(MEDIA_PLAYLIST_ITEM, id, name).joinToString("|")
                     )
@@ -928,7 +928,7 @@ class AutoMediaBrowserService : MediaBrowserServiceCompat() {
             val songs = callWithErrorHandling { musicService.getRandomSongs(DISPLAY_LIMIT) }
 
             if (songs != null) {
-                if (songs.getChildren().count() > 1)
+                if (songs.size > 1)
                     mediaItems.addPlayAllItem(listOf(MEDIA_SONG_RANDOM_ID).joinToString("|"))
 
                 // TODO: Paging is not implemented for songs, is it necessary at all?

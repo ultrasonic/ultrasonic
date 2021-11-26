@@ -118,6 +118,4 @@ open class GenericListModel(application: Application) :
     internal fun hasOnlyFolders(musicDirectory: MusicDirectory) =
         musicDirectory.getChildren(includeDirs = true, includeFiles = false).size ==
             musicDirectory.getChildren(includeDirs = true, includeFiles = true).size
-
-    internal val allSongsId = "-1"
 }

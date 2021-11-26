@@ -9,7 +9,6 @@ package org.moire.ultrasonic.model
 
 import android.app.Application
 import androidx.lifecycle.MutableLiveData
-import java.util.LinkedList
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import org.moire.ultrasonic.domain.MusicDirectory
@@ -38,33 +37,15 @@ class TrackCollectionModel(application: Application) : GenericListModel(applicat
         withContext(Dispatchers.IO) {
 
             val service = MusicServiceFactory.getMusicService()
+            val musicDirectory = service.getMusicDirectory(id, name, refresh)
 
-            var root = MusicDirectory()
-
-            if (allSongsId == id && parentId != null) {
-                val musicDirectory = service.getMusicDirectory(
-                    parentId, name, refresh
-                )
-
-                val songs: MutableList<MusicDirectory.Entry> = LinkedList()
-                getSongsRecursively(musicDirectory, songs)
-
-                for (song in songs) {
-                    if (!song.isDirectory) {
-                        root.addChild(song)
-                    }
-                }
-            } else {
-                val musicDirectory = service.getMusicDirectory(id, name, refresh)
-                root = musicDirectory
-            }
-
-            currentDirectory.postValue(root)
-            updateList(root)
+            currentDirectory.postValue(musicDirectory)
+            updateList(musicDirectory)
         }
     }
 
     // Given a Music directory "songs" it recursively adds all children to "songs"
+    @Suppress("unused")
     private fun getSongsRecursively(
         parent: MusicDirectory,
         songs: MutableList<MusicDirectory.Entry>
@@ -78,13 +59,8 @@ class TrackCollectionModel(application: Application) : GenericListModel(applicat
         }
 
         for ((id1, _, _, title) in parent.getAlbums()) {
-            var root: MusicDirectory
-
-            if (allSongsId != id1) {
-                root = service.getMusicDirectory(id1, title, false)
-
-                getSongsRecursively(root, songs)
-            }
+            val root: MusicDirectory = service.getMusicDirectory(id1, title, false)
+            getSongsRecursively(root, songs)
         }
     }
 
@@ -93,39 +69,7 @@ class TrackCollectionModel(application: Application) : GenericListModel(applicat
         withContext(Dispatchers.IO) {
 
             val service = MusicServiceFactory.getMusicService()
-
-            val musicDirectory: MusicDirectory
-
-            if (allSongsId == id && parentId != null) {
-                val root = MusicDirectory()
-
-                val songs: MutableCollection<MusicDirectory.Entry> = LinkedList()
-                val artist = service.getArtist(parentId, "", false)
-
-                // FIXME is still working?
-                for ((id1) in artist) {
-                    if (allSongsId != id1) {
-                        val albumDirectory = service.getAlbum(
-                            id1, "", false
-                        )
-
-                        for (song in albumDirectory.getTracks()) {
-                            if (!song.isVideo) {
-                                songs.add(song)
-                            }
-                        }
-                    }
-                }
-
-                for (song in songs) {
-                    if (!song.isDirectory) {
-                        root.addChild(song)
-                    }
-                }
-                musicDirectory = root
-            } else {
-                musicDirectory = service.getAlbum(id, name, refresh)
-            }
+            val musicDirectory: MusicDirectory = service.getAlbum(id, name, refresh)
 
             currentDirectory.postValue(musicDirectory)
             updateList(musicDirectory)
@@ -217,7 +161,7 @@ class TrackCollectionModel(application: Application) : GenericListModel(applicat
             for (share in shares) {
                 if (share.id == shareId) {
                     for (entry in share.getEntries()) {
-                        musicDirectory.addChild(entry)
+                        musicDirectory.add(entry)
                     }
                     break
                 }

@@ -25,7 +25,6 @@ import org.moire.ultrasonic.fragment.FragmentTitle.Companion.setTitle
  *
  * Therefore this fragment allows only for singular selection and playback.
  *
- * FIXME: use restore for playback
  */
 class BookmarksFragment : TrackCollectionFragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {

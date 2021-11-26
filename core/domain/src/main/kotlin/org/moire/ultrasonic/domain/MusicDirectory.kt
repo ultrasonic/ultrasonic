@@ -8,16 +8,6 @@ import java.util.Date
 class MusicDirectory : ArrayList<MusicDirectory.Child>() {
     var name: String? = null
 
-    fun addFirst(child: Child) {
-        add(0, child)
-    }
-
-    fun addChild(child: Child) {
-        add(child)
-    }
-
-    fun findChild(id: String): GenericEntry? = lastOrNull { it.id == id }
-
     @JvmOverloads
     fun getChildren(
         includeDirs: Boolean = true,

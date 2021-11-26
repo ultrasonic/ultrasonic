@@ -24,7 +24,7 @@ class APIMusicDirectoryConverterTest {
 
         with(convertedEntity) {
             name `should be equal to` entity.name
-            getChildren().size `should be equal to` entity.childList.size
+            size `should be equal to` entity.childList.size
             getChildren() `should be equal to` entity.childList
                 .map { it.toDomainEntity() }.toMutableList()
         }

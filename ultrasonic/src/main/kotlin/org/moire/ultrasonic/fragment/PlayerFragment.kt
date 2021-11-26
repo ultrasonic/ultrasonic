@@ -229,7 +229,7 @@ class PlayerFragment :
         val ratingLinearLayout = view.findViewById<LinearLayout>(R.id.song_rating)
         if (!useFiveStarRating) ratingLinearLayout.isVisible = false
         hollowStar = Util.getDrawableFromAttribute(view.context, R.attr.star_hollow)
-        fullStar = Util.getDrawableFromAttribute(context!!, R.attr.star_full)
+        fullStar = Util.getDrawableFromAttribute(view.context, R.attr.star_full)
 
         fiveStar1ImageView.setOnClickListener { setSongRating(1) }
         fiveStar2ImageView.setOnClickListener { setSongRating(2) }
@@ -561,14 +561,6 @@ class PlayerFragment :
         }
     }
 
-    override fun onContextItemSelected(menuItem: MenuItem): Boolean {
-        val info = menuItem.menuInfo as AdapterContextMenuInfo
-        val downloadFile = viewAdapter.getCurrentList()[info.position] as DownloadFile
-        return menuItemSelected(menuItem.itemId, downloadFile) || super.onContextItemSelected(
-            menuItem
-        )
-    }
-
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         return menuItemSelected(item.itemId, null) || super.onOptionsItemSelected(item)
     }
@@ -856,7 +848,7 @@ class PlayerFragment :
         }
 
         // Create listener
-        val listener: ((View, DownloadFile?) -> Unit) = { _, file ->
+        val listener: ((DownloadFile) -> Unit) = { file ->
             val list = mediaPlayerController.playList
             val index = list.indexOf(file)
             mediaPlayerController.play(index)
@@ -866,11 +858,12 @@ class PlayerFragment :
 
         viewAdapter.register(
             TrackViewBinder(
+                onItemClick = listener,
+                onContextMenuClick = {_,_ -> true},
                 checkable = false,
                 draggable = true,
                 context = requireContext(),
                 lifecycleOwner = viewLifecycleOwner,
-                listener
             )
         )
 

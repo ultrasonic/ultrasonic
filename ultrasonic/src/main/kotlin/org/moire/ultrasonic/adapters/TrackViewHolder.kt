@@ -7,6 +7,7 @@ import android.widget.Checkable
 import android.widget.CheckedTextView
 import android.widget.ImageView
 import android.widget.LinearLayout
+import android.widget.RelativeLayout
 import android.widget.TextView
 import androidx.core.view.isVisible
 import androidx.lifecycle.MutableLiveData
@@ -29,6 +30,7 @@ import timber.log.Timber
 /**
  * Used to display songs and videos in a `ListView`.
  * FIXME: Add video List item
+ * FIXME: CHECKED bug
  */
 class TrackViewHolder(val view: View) : RecyclerView.ViewHolder(view), Checkable, KoinComponent {
 
@@ -47,8 +49,6 @@ class TrackViewHolder(val view: View) : RecyclerView.ViewHolder(view), Checkable
     var duration: TextView = view.findViewById(R.id.song_duration)
     var progress: TextView = view.findViewById(R.id.song_status)
 
-    var itemClickListener: ((View, DownloadFile?) -> Unit)? = null
-
     var entry: MusicDirectory.Entry? = null
         private set
     var downloadFile: DownloadFile? = null
@@ -66,18 +66,7 @@ class TrackViewHolder(val view: View) : RecyclerView.ViewHolder(view), Checkable
         features.isFeatureEnabled(Feature.FIVE_STAR_RATING)
     }
 
-    lateinit var imageHelper: ImageHelper
-
-    init {
-        itemView.setOnClickListener {
-            if (itemClickListener != null) {
-                itemClickListener?.invoke(it, downloadFile)
-            } else {
-                val nowChecked = !check.isChecked
-                isChecked = nowChecked
-            }
-        }
-    }
+    lateinit var imageHelper: Utils.ImageHelper
 
     fun setSong(
         file: DownloadFile,
@@ -85,7 +74,6 @@ class TrackViewHolder(val view: View) : RecyclerView.ViewHolder(view), Checkable
         draggable: Boolean,
         isSelected: Boolean = false
     ) {
-        Timber.e("BINDING %s", isSelected)
         val song = file.song
         downloadFile = file
         entry = song
@@ -124,15 +112,6 @@ class TrackViewHolder(val view: View) : RecyclerView.ViewHolder(view), Checkable
 
         RxBus.playerStateObservable.subscribe {
             setPlayIcon(it.track == downloadFile)
-        }
-
-        // Minimize or maximize the Text view (if song title is very long)
-        itemView.setOnLongClickListener {
-            if (!song.isDirectory) {
-                maximizeOrMinimize()
-                true
-            }
-            false
         }
     }
 

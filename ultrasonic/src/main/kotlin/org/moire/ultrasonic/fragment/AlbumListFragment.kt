@@ -1,3 +1,10 @@
+/*
+ * AlbumListFragment.kt
+ * Copyright (C) 2009-2021 Ultrasonic developers
+ *
+ * Distributed under terms of the GNU GPLv3 license.
+ */
+
 package org.moire.ultrasonic.fragment
 
 import android.os.Bundle
@@ -26,13 +33,7 @@ class AlbumListFragment : EntryListFragment<MusicDirectory.Album>() {
     /**
      * The id of the main layout
      */
-    override val mainLayout: Int = R.layout.generic_list
-
-    /**
-     * The id of the target in the navigation graph where we should go,
-     * after the user has clicked on an item
-     */
-    override val itemClickTarget: Int = R.id.trackCollectionFragment
+    override val mainLayout: Int = R.layout.list_layout_generic
 
     /**
      * The central function to pass a query to the model and return a LiveData object
@@ -71,6 +72,8 @@ class AlbumListFragment : EntryListFragment<MusicDirectory.Album>() {
                 context = requireContext()
             )
         )
+
+        emptyTextView.setText(R.string.select_album_empty)
     }
 
     override fun onItemClick(item: MusicDirectory.Album) {
@@ -79,6 +82,6 @@ class AlbumListFragment : EntryListFragment<MusicDirectory.Album>() {
         bundle.putBoolean(Constants.INTENT_EXTRA_NAME_IS_ALBUM, item.isDirectory)
         bundle.putString(Constants.INTENT_EXTRA_NAME_NAME, item.title)
         bundle.putString(Constants.INTENT_EXTRA_NAME_PARENT_ID, item.parent)
-        findNavController().navigate(itemClickTarget, bundle)
+        findNavController().navigate(R.id.trackCollectionFragment, bundle)
     }
 }

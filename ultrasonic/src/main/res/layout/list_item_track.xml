@@ -26,7 +26,7 @@
         a:gravity="center_vertical"
         a:paddingEnd="4dip"/>
 
-    <include layout="@layout/song_details" />
+    <include layout="@layout/list_item_track_details" />
 
     <LinearLayout
         a:id="@+id/song_rating"

@@ -2,7 +2,7 @@ package org.moire.ultrasonic.adapters
 
 import android.content.Context
 import android.view.LayoutInflater
-import android.view.View
+import android.view.MenuItem
 import android.view.ViewGroup
 import androidx.lifecycle.LifecycleOwner
 import com.drakeet.multitype.ItemViewBinder
@@ -15,24 +15,26 @@ import org.moire.ultrasonic.service.DownloadFile
 import org.moire.ultrasonic.service.Downloader
 
 class TrackViewBinder(
+    val onItemClick: (DownloadFile) -> Unit,
+    val onContextMenuClick: ((MenuItem, DownloadFile) -> Boolean)? = null,
     val checkable: Boolean,
     val draggable: Boolean,
     context: Context,
     val lifecycleOwner: LifecycleOwner,
-    private val onClickCallback: ((View, DownloadFile?) -> Unit)? = null
 ) : ItemViewBinder<Identifiable, TrackViewHolder>(), KoinComponent {
 
     // Set our layout files
-    val layout = R.layout.song_list_item
-    val contextMenuLayout = R.menu.artist_context_menu
+    val layout = R.layout.list_item_track
+    val contextMenuLayout = R.menu.context_menu_track
 
     private val downloader: Downloader by inject()
-    private val imageHelper: ImageHelper = ImageHelper(context)
+    private val imageHelper: Utils.ImageHelper = Utils.ImageHelper(context)
 
     override fun onCreateViewHolder(inflater: LayoutInflater, parent: ViewGroup): TrackViewHolder {
         return TrackViewHolder(inflater.inflate(layout, parent, false))
     }
 
+    @Suppress("LongMethod")
     override fun onBindViewHolder(holder: TrackViewHolder, item: Identifiable) {
         val downloadFile: DownloadFile?
         val diffAdapter = adapter as BaseAdapter<*>
@@ -57,6 +59,32 @@ class TrackViewBinder(
             draggable = draggable,
             diffAdapter.isSelected(item.longId)
         )
+
+        holder.itemView.setOnLongClickListener {
+            if (onContextMenuClick != null) {
+                val popup = Utils.createPopupMenu(holder.itemView, contextMenuLayout)
+
+                popup.setOnMenuItemClickListener { menuItem ->
+                        onContextMenuClick?.invoke(menuItem, downloadFile)
+                }
+            } else {
+                // Minimize or maximize the Text view (if song title is very long)
+                if (!downloadFile.song.isDirectory) {
+                    holder.maximizeOrMinimize()
+                }
+            }
+
+            true
+        }
+
+        holder.itemView.setOnClickListener {
+            if (!checkable) {
+                onItemClick(downloadFile)
+            } else {
+                val nowChecked = !holder.check.isChecked
+                holder.isChecked = nowChecked
+            }
+        }
 
         // Notify the adapter of selection changes
         holder.observableChecked.observe(
@@ -95,7 +123,5 @@ class TrackViewBinder(
                 holder.updateProgress(it)
             }
         )
-
-        holder.itemClickListener = onClickCallback
     }
 }

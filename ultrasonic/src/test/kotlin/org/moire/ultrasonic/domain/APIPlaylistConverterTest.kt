@@ -26,9 +26,9 @@ class APIPlaylistConverterTest {
 
         with(convertedEntity) {
             name `should be equal to` entity.name
-            getChildren().size `should be equal to` entity.entriesList.size
-            getChildren()[0] `should be equal to` entity.entriesList[0].toDomainEntity()
-            getChildren()[1] `should be equal to` entity.entriesList[1].toDomainEntity()
+            size `should be equal to` entity.entriesList.size
+            this[0] `should be equal to` entity.entriesList[0].toDomainEntity()
+            this[1] `should be equal to` entity.entriesList[1].toDomainEntity()
         }
     }
 

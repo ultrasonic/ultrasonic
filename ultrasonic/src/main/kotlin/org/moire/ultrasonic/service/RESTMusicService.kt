@@ -319,7 +319,7 @@ open class RESTMusicService(
             ) {
                 val entry = podcastEntry.toDomainEntity()
                 entry.track = null
-                musicDirectory.addChild(entry)
+                musicDirectory.add(entry)
             }
         }
 

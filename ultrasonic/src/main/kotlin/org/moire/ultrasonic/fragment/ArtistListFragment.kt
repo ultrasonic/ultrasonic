@@ -25,13 +25,7 @@ class ArtistListFragment : EntryListFragment<ArtistOrIndex>() {
     /**
      * The id of the main layout
      */
-    override val mainLayout = R.layout.generic_list
-
-    /**
-     * The id of the target in the navigation graph where we should go,
-     * after the user has clicked on an item
-     */
-    override val itemClickTarget = R.id.selectArtistToSelectAlbum
+    override val mainLayout = R.layout.list_layout_generic
 
     /**
      * The central function to pass a query to the model and return a LiveData object
@@ -63,6 +57,6 @@ class ArtistListFragment : EntryListFragment<ArtistOrIndex>() {
         bundle.putString(Constants.INTENT_EXTRA_NAME_ALBUM_LIST_TITLE, item.name)
         bundle.putInt(Constants.INTENT_EXTRA_NAME_ALBUM_LIST_SIZE, 1000)
         bundle.putInt(Constants.INTENT_EXTRA_NAME_ALBUM_LIST_OFFSET, 0)
-        findNavController().navigate(itemClickTarget, bundle)
+        findNavController().navigate(R.id.selectArtistToSelectAlbum, bundle)
     }
 }

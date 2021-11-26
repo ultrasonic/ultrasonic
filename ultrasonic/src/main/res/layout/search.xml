@@ -5,7 +5,7 @@
     a:layout_height="match_parent"
     a:orientation="vertical">
 
-    <include layout="@layout/empty_view" />
+    <include layout="@layout/list_parts_empty_view" />
 
     <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
         a:id="@+id/swipe_refresh_view"

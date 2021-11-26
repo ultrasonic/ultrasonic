@@ -3,20 +3,15 @@ package org.moire.ultrasonic.fragment
 import android.app.SearchManager
 import android.content.Context
 import android.os.Bundle
-import android.view.ContextMenu
-import android.view.ContextMenu.ContextMenuInfo
 import android.view.LayoutInflater
 import android.view.Menu
 import android.view.MenuInflater
 import android.view.MenuItem
 import android.view.View
-import android.widget.AdapterView.AdapterContextMenuInfo
 import android.widget.ListAdapter
 import androidx.appcompat.widget.SearchView
 import androidx.core.view.isVisible
 import androidx.fragment.app.viewModels
-import androidx.lifecycle.LiveData
-import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
 import androidx.navigation.Navigation
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
@@ -34,6 +29,7 @@ import org.moire.ultrasonic.domain.MusicDirectory
 import org.moire.ultrasonic.domain.SearchResult
 import org.moire.ultrasonic.fragment.FragmentTitle.Companion.setTitle
 import org.moire.ultrasonic.model.SearchListModel
+import org.moire.ultrasonic.service.DownloadFile
 import org.moire.ultrasonic.service.MediaPlayerController
 import org.moire.ultrasonic.subsonic.NetworkAndStorageChecker
 import org.moire.ultrasonic.subsonic.ShareHandler
@@ -48,6 +44,8 @@ import timber.log.Timber
 
 /**
  * Initiates a search on the media library and displays the results
+ *
+ * FIXME: Handle context click on song
  */
 class SearchFragment : MultiListFragment<Identifiable>(), KoinComponent {
     private var moreArtistsButton: View? = null
@@ -107,18 +105,7 @@ class SearchFragment : MultiListFragment<Identifiable>(), KoinComponent {
 //                expandSongs()
 //            } else {
 //                val item = parent.getItemAtPosition(position)
-//                if (item is Artist) {
-//                    onArtistSelected(item)
-//                } else if (item is MusicDirectory.Entry) {
-//                    val entry = item
-//                    if (entry.isDirectory) {
-//                        onAlbumSelected(entry, false)
-//                    } else if (entry.isVideo) {
-//                        onVideoSelected(entry)
-//                    } else {
-//                        onSongSelected(entry, true)
-//                    }
-//                }
+//
 //            }
 //        })
 
@@ -129,13 +116,8 @@ class SearchFragment : MultiListFragment<Identifiable>(), KoinComponent {
         // They need to be added in the order of most specific -> least specific.
         viewAdapter.register(
             ArtistRowBinder(
-                onItemClick = { entry -> onItemClick(entry) },
-                onContextMenuClick = { menuItem, entry ->
-                    onContextMenuItemSelected(
-                        menuItem,
-                        entry
-                    )
-                },
+                onItemClick = ::onItemClick,
+                onContextMenuClick = ::onContextMenuItemSelected,
                 imageLoader = imageLoaderProvider.getImageLoader(),
                 enableSections = false
             )
@@ -143,13 +125,8 @@ class SearchFragment : MultiListFragment<Identifiable>(), KoinComponent {
 
         viewAdapter.register(
             AlbumRowBinder(
-                onItemClick = { entry -> onItemClick(entry) },
-                onContextMenuClick = { menuItem, entry ->
-                    onContextMenuItemSelected(
-                        menuItem,
-                        entry
-                    )
-                },
+                onItemClick = ::onItemClick,
+                onContextMenuClick = ::onContextMenuItemSelected,
                 imageLoader = imageLoaderProvider.getImageLoader(),
                 context = requireContext()
             )
@@ -157,6 +134,8 @@ class SearchFragment : MultiListFragment<Identifiable>(), KoinComponent {
 
         viewAdapter.register(
             TrackViewBinder(
+                onItemClick = ::onItemClick,
+                onContextMenuClick = ::onContextMenuItemSelected,
                 checkable = false,
                 draggable = false,
                 context = requireContext(),
@@ -193,7 +172,7 @@ class SearchFragment : MultiListFragment<Identifiable>(), KoinComponent {
 
         val arguments = arguments
         val autoPlay = arguments != null &&
-                arguments.getBoolean(Constants.INTENT_EXTRA_NAME_AUTOPLAY, false)
+            arguments.getBoolean(Constants.INTENT_EXTRA_NAME_AUTOPLAY, false)
         val query = arguments?.getString(Constants.INTENT_EXTRA_NAME_QUERY)
 
         // If started with a query, enter it to the searchView
@@ -236,200 +215,11 @@ class SearchFragment : MultiListFragment<Identifiable>(), KoinComponent {
         searchItem.expandActionView()
     }
 
-    // FIXME
-    override fun onCreateContextMenu(menu: ContextMenu, view: View, menuInfo: ContextMenuInfo?) {
-        super.onCreateContextMenu(menu, view, menuInfo)
-        if (activity == null) return
-        val info = menuInfo as AdapterContextMenuInfo?
-//        val selectedItem = list!!.getItemAtPosition(info!!.position)
-//        val isArtist = selectedItem is Artist
-//        val isAlbum = selectedItem is MusicDirectory.Entry && selectedItem.isDirectory
-//        val inflater = requireActivity().menuInflater
-//        if (!isArtist && !isAlbum) {
-//            inflater.inflate(R.menu.select_song_context, menu)
-//        } else {
-//            inflater.inflate(R.menu.generic_context_menu, menu)
-//        }
-//        val shareButton = menu.findItem(R.id.menu_item_share)
-//        val downloadMenuItem = menu.findItem(R.id.menu_download)
-//        if (downloadMenuItem != null) {
-//            downloadMenuItem.isVisible = !isOffline()
-//        }
-//        if (isOffline() || isArtist) {
-//            if (shareButton != null) {
-//                shareButton.isVisible = false
-//            }
-//        }
-    }
-
-    // FIXME
-    override fun onContextItemSelected(menuItem: MenuItem): Boolean {
-        val info = menuItem.menuInfo as AdapterContextMenuInfo
-//        val selectedItem = list!!.getItemAtPosition(info.position)
-//        val artist = if (selectedItem is Artist) selectedItem else null
-//        val entry = if (selectedItem is MusicDirectory.Entry) selectedItem else null
-//        var entryId: String? = null
-//        if (entry != null) {
-//            entryId = entry.id
-//        }
-//        val id = artist?.id ?: entryId ?: return true
-//        var songs: MutableList<MusicDirectory.Entry?> = ArrayList(1)
-//        val itemId = menuItem.itemId
-//        if (itemId == R.id.menu_play_now) {
-//            downloadHandler.downloadRecursively(
-//                this,
-//                id,
-//                false,
-//                false,
-//                true,
-//                false,
-//                false,
-//                false,
-//                false,
-//                false
-//            )
-//        } else if (itemId == R.id.menu_play_next) {
-//            downloadHandler.downloadRecursively(
-//                this,
-//                id,
-//                false,
-//                true,
-//                false,
-//                true,
-//                false,
-//                true,
-//                false,
-//                false
-//            )
-//        } else if (itemId == R.id.menu_play_last) {
-//            downloadHandler.downloadRecursively(
-//                this,
-//                id,
-//                false,
-//                true,
-//                false,
-//                false,
-//                false,
-//                false,
-//                false,
-//                false
-//            )
-//        } else if (itemId == R.id.menu_pin) {
-//            downloadHandler.downloadRecursively(
-//                this,
-//                id,
-//                true,
-//                true,
-//                false,
-//                false,
-//                false,
-//                false,
-//                false,
-//                false
-//            )
-//        } else if (itemId == R.id.menu_unpin) {
-//            downloadHandler.downloadRecursively(
-//                this,
-//                id,
-//                false,
-//                false,
-//                false,
-//                false,
-//                false,
-//                false,
-//                true,
-//                false
-//            )
-//        } else if (itemId == R.id.menu_download) {
-//            downloadHandler.downloadRecursively(
-//                this,
-//                id,
-//                false,
-//                false,
-//                false,
-//                false,
-//                true,
-//                false,
-//                false,
-//                false
-//            )
-//        } else if (itemId == R.id.song_menu_play_now) {
-//            if (entry != null) {
-//                songs = ArrayList(1)
-//                songs.add(entry)
-//                downloadHandler.download(this, false, false, true, false, false, songs)
-//            }
-//        } else if (itemId == R.id.song_menu_play_next) {
-//            if (entry != null) {
-//                songs = ArrayList(1)
-//                songs.add(entry)
-//                downloadHandler.download(this, true, false, false, true, false, songs)
-//            }
-//        } else if (itemId == R.id.song_menu_play_last) {
-//            if (entry != null) {
-//                songs = ArrayList(1)
-//                songs.add(entry)
-//                downloadHandler.download(this, true, false, false, false, false, songs)
-//            }
-//        } else if (itemId == R.id.song_menu_pin) {
-//            if (entry != null) {
-//                songs.add(entry)
-//                toast(
-//                    context,
-//                    resources.getQuantityString(
-//                        R.plurals.select_album_n_songs_pinned,
-//                        songs.size,
-//                        songs.size
-//                    )
-//                )
-//                downloadBackground(true, songs)
-//            }
-//        } else if (itemId == R.id.song_menu_download) {
-//            if (entry != null) {
-//                songs.add(entry)
-//                toast(
-//                    context,
-//                    resources.getQuantityString(
-//                        R.plurals.select_album_n_songs_downloaded,
-//                        songs.size,
-//                        songs.size
-//                    )
-//                )
-//                downloadBackground(false, songs)
-//            }
-//        } else if (itemId == R.id.song_menu_unpin) {
-//            if (entry != null) {
-//                songs.add(entry)
-//                toast(
-//                    context,
-//                    resources.getQuantityString(
-//                        R.plurals.select_album_n_songs_unpinned,
-//                        songs.size,
-//                        songs.size
-//                    )
-//                )
-//                mediaPlayerController.unpin(songs)
-//            }
-//        } else if (itemId == R.id.menu_item_share) {
-//            if (entry != null) {
-//                songs = ArrayList(1)
-//                songs.add(entry)
-//                shareHandler.createShare(this, songs, searchRefresh, cancellationToken!!)
-//            }
-//            return super.onContextItemSelected(menuItem)
-//        } else {
-//            return super.onContextItemSelected(menuItem)
-//        }
-        return true
-    }
-
-    // OK!
     override fun onDestroyView() {
         cancellationToken?.cancel()
         super.onDestroyView()
     }
 
-    // OK!
     private fun downloadBackground(save: Boolean, songs: List<MusicDirectory.Entry?>) {
         val onValid = Runnable {
             networkAndStorageChecker.warnIfNetworkOrStorageUnavailable()
@@ -515,13 +305,13 @@ class SearchFragment : MultiListFragment<Identifiable>(), KoinComponent {
 //        mergeAdapter!!.removeAdapter(moreSongsAdapter)
 //        mergeAdapter!!.notifyDataSetChanged()
 //    }
-//
-//    private fun onArtistSelected(artist: Artist) {
-//        val bundle = Bundle()
-//        bundle.putString(Constants.INTENT_EXTRA_NAME_ID, artist.id)
-//        bundle.putString(Constants.INTENT_EXTRA_NAME_NAME, artist.id)
-//        Navigation.findNavController(requireView()).navigate(R.id.searchToSelectAlbum, bundle)
-//    }
+
+    private fun onArtistSelected(artist: Artist) {
+        val bundle = Bundle()
+        bundle.putString(Constants.INTENT_EXTRA_NAME_ID, artist.id)
+        bundle.putString(Constants.INTENT_EXTRA_NAME_NAME, artist.id)
+        Navigation.findNavController(requireView()).navigate(R.id.searchToSelectAlbum, bundle)
+    }
 
     private fun onAlbumSelected(album: MusicDirectory.Album, autoplay: Boolean) {
         val bundle = Bundle()
@@ -559,15 +349,112 @@ class SearchFragment : MultiListFragment<Identifiable>(), KoinComponent {
         var DEFAULT_SONGS = Settings.defaultSongs
     }
 
-    // FIXME
-    override val itemClickTarget: Int = 0
-
-    // FIXME
     override fun onItemClick(item: Identifiable) {
+        when (item) {
+            is Artist -> {
+                onArtistSelected(item)
+            }
+            is MusicDirectory.Entry -> {
+                if (item.isVideo) {
+                    onVideoSelected(item)
+                } else {
+                    onSongSelected(item, true)
+                }
+            }
+            is MusicDirectory.Album -> {
+                onAlbumSelected(item, false)
+            }
+        }
     }
 
+    @Suppress("LongMethod")
     override fun onContextMenuItemSelected(menuItem: MenuItem, item: Identifiable): Boolean {
         val isArtist = (item is Artist)
-        return EntryListFragment.handleContextMenu(menuItem, item, isArtist, downloadHandler, this)
+        val found = EntryListFragment.handleContextMenu(menuItem, item, isArtist, downloadHandler, this)
+
+        if (found || item !is DownloadFile) return true
+
+        val songs = mutableListOf<MusicDirectory.Entry>()
+
+        when (menuItem.itemId) {
+            R.id.song_menu_play_now -> {
+                songs.add(item.song)
+                downloadHandler.download(
+                    fragment = this,
+                    append = false,
+                    save = false,
+                    autoPlay = true,
+                    playNext = false,
+                    shuffle = false,
+                    songs = songs
+                )
+            }
+            R.id.song_menu_play_next -> {
+                songs.add(item.song)
+                downloadHandler.download(
+                    fragment = this,
+                    append = true,
+                    save = false,
+                    autoPlay = false,
+                    playNext = true,
+                    shuffle = false,
+                    songs = songs
+                )
+            }
+            R.id.song_menu_play_last -> {
+                songs.add(item.song)
+                downloadHandler.download(
+                    fragment = this,
+                    append = true,
+                    save = false,
+                    autoPlay = false,
+                    playNext = false,
+                    shuffle = false,
+                    songs = songs
+                )
+            }
+            R.id.song_menu_pin -> {
+                songs.add(item.song)
+                toast(
+                    context,
+                    resources.getQuantityString(
+                        R.plurals.select_album_n_songs_pinned,
+                        songs.size,
+                        songs.size
+                    )
+                )
+                downloadBackground(true, songs)
+            }
+            R.id.song_menu_download -> {
+                songs.add(item.song)
+                toast(
+                    context,
+                    resources.getQuantityString(
+                        R.plurals.select_album_n_songs_downloaded,
+                        songs.size,
+                        songs.size
+                    )
+                )
+                downloadBackground(false, songs)
+            }
+            R.id.song_menu_unpin -> {
+                songs.add(item.song)
+                toast(
+                    context,
+                    resources.getQuantityString(
+                        R.plurals.select_album_n_songs_unpinned,
+                        songs.size,
+                        songs.size
+                    )
+                )
+                mediaPlayerController.unpin(songs)
+            }
+            R.id.song_menu_share -> {
+                songs.add(item.song)
+                shareHandler.createShare(this, songs, searchRefresh, cancellationToken!!)
+            }
+        }
+
+        return true
     }
 }

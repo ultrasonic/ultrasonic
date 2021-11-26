@@ -77,15 +77,9 @@ abstract class MultiListFragment<T : Identifiable> : Fragment() {
     }
 
     /**
-     * The id of the target in the navigation graph where we should go,
-     * after the user has clicked on an item
-     */
-    protected abstract val itemClickTarget: Int
-
-    /**
      * The id of the main layout
      */
-    open val mainLayout: Int = R.layout.generic_list
+    open val mainLayout: Int = R.layout.list_layout_generic
 
     /**
      * The ids of the swipe refresh view, the recycler view and the empty text view
@@ -94,7 +88,6 @@ abstract class MultiListFragment<T : Identifiable> : Fragment() {
     open val recyclerViewId = R.id.recycler_view
     open val emptyViewId = R.id.empty_list_view
     open val emptyTextId = R.id.empty_list_text
-
 
     open fun setTitle(title: String?) {
         if (title == null) {

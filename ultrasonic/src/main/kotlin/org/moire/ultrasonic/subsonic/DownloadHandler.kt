@@ -219,7 +219,7 @@ class DownloadHandler(
                         for (share in shares) {
                             if (share.id == id) {
                                 for (entry in share.getEntries()) {
-                                    root.addChild(entry)
+                                    root.add(entry)
                                 }
                                 break
                             }

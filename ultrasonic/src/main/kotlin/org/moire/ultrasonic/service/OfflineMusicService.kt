@@ -109,7 +109,7 @@ class OfflineMusicService : MusicService, KoinComponent {
             val filename = getName(file)
             if (filename != null && !seen.contains(filename)) {
                 seen.add(filename)
-                result.addChild(createEntry(file, filename))
+                result.add(createEntry(file, filename))
             }
         }
 
@@ -207,7 +207,7 @@ class OfflineMusicService : MusicService, KoinComponent {
                 val entryFile = File(line)
                 val entryName = getName(entryFile)
                 if (entryFile.exists() && entryName != null) {
-                    playlist.addChild(createEntry(entryFile, entryName))
+                    playlist.add(createEntry(entryFile, entryName))
                 }
             }
             playlist
@@ -260,7 +260,7 @@ class OfflineMusicService : MusicService, KoinComponent {
         val finalSize: Int = children.size.coerceAtMost(size)
         for (i in 0 until finalSize) {
             val file = children[i % children.size]
-            result.addChild(createEntry(file, getName(file)))
+            result.add(createEntry(file, getName(file)))
         }
         return result
     }

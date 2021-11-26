@@ -22,7 +22,7 @@ import org.moire.ultrasonic.util.BoundedTreeSet
  * The BaseAdapter which extends the MultiTypeAdapter from an external library.
  * It provides selection support as well as Diffing the submitted lists for performance.
  *
- * It should be kept generic enought that it can be used a Base for all lists in the app.
+ * It should be kept generic enough that it can be used a Base for all lists in the app.
  */
 class BaseAdapter<T : Identifiable> : MultiTypeAdapter() {
 

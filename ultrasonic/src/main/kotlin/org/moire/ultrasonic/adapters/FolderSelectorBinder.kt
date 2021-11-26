@@ -29,7 +29,7 @@ class FolderSelectorBinder(context: Context) :
     private val weakContext: WeakReference<Context> = WeakReference(context)
 
     // Set our layout files
-    val layout = R.layout.select_album_header
+    val layout = R.layout.list_header_folder
 
     override fun onCreateViewHolder(inflater: LayoutInflater, parent: ViewGroup): ViewHolder {
         return ViewHolder(inflater.inflate(layout, parent, false), weakContext)

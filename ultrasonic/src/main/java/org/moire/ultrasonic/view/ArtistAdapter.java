@@ -19,14 +19,15 @@
 package org.moire.ultrasonic.view;
 
 import android.content.Context;
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.SectionIndexer;
 import android.widget.TextView;
+
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 
 import org.moire.ultrasonic.R;
 import org.moire.ultrasonic.domain.Artist;
@@ -49,7 +50,7 @@ public class ArtistAdapter extends ArrayAdapter<Artist> implements SectionIndexe
 
 	public ArtistAdapter(Context context, List<Artist> artists)
 	{
-		super(context, R.layout.generic_text_list_item, artists);
+		super(context, R.layout.list_item_generic, artists);
 
 		layoutInflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
 
@@ -81,7 +82,7 @@ public class ArtistAdapter extends ArrayAdapter<Artist> implements SectionIndexe
     ) {
         View rowView = convertView;
         if (rowView == null) {
-            rowView = layoutInflater.inflate(R.layout.generic_text_list_item, parent, false);
+            rowView = layoutInflater.inflate(R.layout.list_item_generic, parent, false);
         }
         ((TextView) rowView).setText(getItem(position).getName());
 

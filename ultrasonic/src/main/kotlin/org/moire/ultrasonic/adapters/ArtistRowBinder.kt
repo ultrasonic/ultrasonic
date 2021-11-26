@@ -26,7 +26,6 @@ import org.moire.ultrasonic.util.Settings
 
 /**
  * Creates a Row in a RecyclerView which contains the details of an Artist
- * FIXME: On click wrong display...
  */
 class ArtistRowBinder(
     val onItemClick: (ArtistOrIndex) -> Unit,
@@ -35,8 +34,8 @@ class ArtistRowBinder(
     private val enableSections: Boolean = true
 ) : ItemViewBinder<ArtistOrIndex, ArtistRowBinder.ViewHolder>(), KoinComponent {
 
-    val layout = R.layout.artist_list_item
-    val contextMenuLayout = R.menu.artist_context_menu
+    val layout = R.layout.list_item_artist
+    val contextMenuLayout = R.menu.context_menu_artist
 
     override fun onBindViewHolder(holder: ViewHolder, item: ArtistOrIndex) {
         holder.textView.text = item.name
@@ -44,7 +43,7 @@ class ArtistRowBinder(
         holder.section.isVisible = enableSections
         holder.layout.setOnClickListener { onItemClick(item) }
         holder.layout.setOnLongClickListener {
-            val popup = Helper.createPopupMenu(holder.itemView)
+            val popup = Utils.createPopupMenu(holder.itemView, contextMenuLayout)
 
             popup.setOnMenuItemClickListener { menuItem ->
                 onContextMenuClick(menuItem, item)
@@ -106,8 +105,8 @@ class ArtistRowBinder(
     ) : RecyclerView.ViewHolder(itemView) {
         var section: TextView = itemView.findViewById(R.id.row_section)
         var textView: TextView = itemView.findViewById(R.id.row_artist_name)
-        var layout: RelativeLayout = itemView.findViewById(R.id.row_artist_layout)
-        var coverArt: ImageView = itemView.findViewById(R.id.artist_coverart)
+        var layout: RelativeLayout = itemView.findViewById(R.id.containing_layout)
+        var coverArt: ImageView = itemView.findViewById(R.id.coverart)
         var coverArtId: String? = null
     }
 

@@ -1,9 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:a="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    a:id="@+id/row_artist_layout"
-    a:layout_height="wrap_content"
+    xmlns:tools="http://schemas.android.com/tools"
+    a:id="@+id/containing_layout"
     a:layout_width="match_parent"
+    a:layout_height="wrap_content"
     a:background="?android:attr/selectableItemBackground"
     a:clickable="true"
     a:focusable="true">
@@ -17,17 +18,17 @@
         a:minHeight="56dip"
         a:paddingStart="8dip"
         a:paddingEnd="8dip"
-        a:text="A"
         a:textAppearance="?android:attr/textAppearanceLarge"
-        a:textColor="@color/cyan" />
+        a:textColor="@color/cyan"
+        tools:text="A" />
 
     <com.google.android.material.imageview.ShapeableImageView
-        a:id="@+id/artist_coverart"
+        a:id="@+id/coverart"
         a:layout_width="40dp"
         a:layout_height="40dp"
         a:layout_gravity="center_horizontal|center_vertical"
-        a:layout_marginTop="8dp"
         a:layout_marginStart="2dp"
+        a:layout_marginTop="8dp"
         a:layout_marginEnd="10dp"
         a:layout_toEndOf="@+id/row_section"
         a:scaleType="fitCenter"
@@ -38,13 +39,13 @@
         a:id="@+id/row_artist_name"
         a:layout_width="fill_parent"
         a:layout_height="wrap_content"
-        a:layout_toEndOf="@+id/artist_coverart"
+        a:layout_marginEnd="12dp"
+        a:layout_toEndOf="@+id/coverart"
         a:drawablePadding="6dip"
         a:gravity="center_vertical"
         a:minHeight="56dip"
         a:paddingStart="3dip"
         a:paddingEnd="3dip"
-        a:layout_marginEnd="12dp"
-
         a:textAppearance="?android:attr/textAppearanceMedium" />
+
 </RelativeLayout>

@@ -519,7 +519,7 @@ object Util {
     fun getSongsFromSearchResult(searchResult: SearchResult): MusicDirectory {
         val musicDirectory = MusicDirectory()
         for (entry in searchResult.songs) {
-            musicDirectory.addChild(entry)
+            musicDirectory.add(entry)
         }
         return musicDirectory
     }
@@ -531,7 +531,7 @@ object Util {
         for (bookmark in bookmarks) {
             song = bookmark.entry
             song.bookmarkPosition = bookmark.position
-            musicDirectory.addChild(song)
+            musicDirectory.add(song)
         }
         return musicDirectory
     }

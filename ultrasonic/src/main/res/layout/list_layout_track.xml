@@ -4,8 +4,8 @@
     a:layout_height="fill_parent"
     a:orientation="vertical" >
 
-    <include layout="@layout/empty_view" />
-    <include layout="@layout/recycler_view" />
+    <include layout="@layout/list_parts_empty_view" />
+    <include layout="@layout/list_parts_recycler" />
     <include layout="@layout/album_buttons" />
 
 </LinearLayout>

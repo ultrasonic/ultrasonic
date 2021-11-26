@@ -15,7 +15,7 @@ import org.moire.ultrasonic.domain.Identifiable
 class DividerBinder : ItemViewBinder<DividerBinder.Divider, DividerBinder.ViewHolder>() {
 
     // Set our layout files
-    val layout = R.layout.row_divider
+    val layout = R.layout.list_item_divider
 
     override fun onBindViewHolder(holder: ViewHolder, item: Divider) {
         // Set text

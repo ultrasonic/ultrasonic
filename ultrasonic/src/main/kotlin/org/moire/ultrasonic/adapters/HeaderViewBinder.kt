@@ -30,7 +30,7 @@ class HeaderViewBinder(
     private val imageLoaderProvider: ImageLoaderProvider by inject()
 
     // Set our layout files
-    val layout = R.layout.select_album_header
+    val layout = R.layout.list_header_album
 
     override fun onCreateViewHolder(inflater: LayoutInflater, parent: ViewGroup): ViewHolder {
         return ViewHolder(inflater.inflate(layout, parent, false))

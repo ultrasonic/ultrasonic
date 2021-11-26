@@ -14,9 +14,7 @@ import android.view.Menu
 import android.view.MenuInflater
 import android.view.MenuItem
 import android.view.View
-import android.widget.AdapterView.AdapterContextMenuInfo
 import android.widget.ImageView
-import android.widget.TextView
 import androidx.core.view.isVisible
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.LiveData
@@ -81,13 +79,7 @@ open class TrackCollectionFragment : MultiListFragment<MusicDirectory.Entry>() {
     /**
      * The id of the main layout
      */
-    override val mainLayout: Int = R.layout.track_list
-
-    /**
-     * The id of the target in the navigation graph where we should go,
-     * after the user has clicked on an item
-     */
-    override val itemClickTarget: Int = R.id.trackCollectionFragment
+    override val mainLayout: Int = R.layout.list_layout_track
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
@@ -127,6 +119,8 @@ open class TrackCollectionFragment : MultiListFragment<MusicDirectory.Entry>() {
 
         viewAdapter.register(
             TrackViewBinder(
+                onItemClick = { onItemClick(it.song) },
+                onContextMenuClick = { menu, id -> onContextMenuItemSelected(menu, id.song) },
                 checkable = true,
                 draggable = false,
                 context = requireContext(),
@@ -207,78 +201,6 @@ open class TrackCollectionFragment : MultiListFragment<MusicDirectory.Entry>() {
         val args = getArgumentsClone()
         args.putBoolean(Constants.INTENT_EXTRA_NAME_REFRESH, refresh)
         getLiveData(args)
-    }
-
-    override fun onContextItemSelected(menuItem: MenuItem): Boolean {
-        Timber.d("onContextItemSelected")
-        val info = menuItem.menuInfo as AdapterContextMenuInfo? ?: return true
-
-        val entry = viewAdapter.getCurrentList()[info.position] as MusicDirectory.Entry?
-            ?: return true
-
-        val entryId = entry.id
-
-        when (menuItem.itemId) {
-            R.id.menu_play_now -> {
-                downloadHandler.downloadRecursively(
-                    this, entryId, save = false, append = false,
-                    autoPlay = true, shuffle = false, background = false,
-                    playNext = false, unpin = false, isArtist = false
-                )
-            }
-            R.id.menu_play_next -> {
-                downloadHandler.downloadRecursively(
-                    this, entryId, save = false, append = false,
-                    autoPlay = false, shuffle = false, background = false,
-                    playNext = true, unpin = false, isArtist = false
-                )
-            }
-            R.id.menu_play_last -> {
-                downloadHandler.downloadRecursively(
-                    this, entryId, save = false, append = true,
-                    autoPlay = false, shuffle = false, background = false,
-                    playNext = false, unpin = false, isArtist = false
-                )
-            }
-            R.id.menu_pin -> {
-                downloadHandler.downloadRecursively(
-                    this, entryId, save = true, append = true,
-                    autoPlay = false, shuffle = false, background = false,
-                    playNext = false, unpin = false, isArtist = false
-                )
-            }
-            R.id.menu_unpin -> {
-                downloadHandler.downloadRecursively(
-                    this, entryId, save = false, append = false,
-                    autoPlay = false, shuffle = false, background = false,
-                    playNext = false, unpin = true, isArtist = false
-                )
-            }
-            R.id.menu_download -> {
-                downloadHandler.downloadRecursively(
-                    this, entryId, save = false, append = false,
-                    autoPlay = false, shuffle = false, background = true,
-                    playNext = false, unpin = false, isArtist = false
-                )
-            }
-            R.id.select_album_play_all -> {
-                // TODO: Why is this being handled here?!
-                playAll()
-            }
-            R.id.menu_item_share -> {
-                val entries: MutableList<MusicDirectory.Entry?> = ArrayList(1)
-                entries.add(entry)
-                shareHandler.createShare(
-                    this, entries, refreshListView,
-                    cancellationToken!!
-                )
-                return true
-            }
-            else -> {
-                return super.onContextItemSelected(menuItem)
-            }
-        }
-        return true
     }
 
     override fun onPrepareOptionsMenu(menu: Menu) {
@@ -503,7 +425,7 @@ open class TrackCollectionFragment : MultiListFragment<MusicDirectory.Entry>() {
     private val songsForGenreObserver = Observer<MusicDirectory> { musicDirectory ->
 
         // Hide more button when results are less than album list size
-        if (musicDirectory.getChildren().size < requireArguments().getInt(
+        if (musicDirectory.size < requireArguments().getInt(
             Constants.INTENT_EXTRA_NAME_ALBUM_LIST_SIZE, 0
         )
         ) {
@@ -700,12 +622,74 @@ open class TrackCollectionFragment : MultiListFragment<MusicDirectory.Entry>() {
         return listModel.currentList
     }
 
+    @Suppress("LongMethod")
     override fun onContextMenuItemSelected(
         menuItem: MenuItem,
         item: MusicDirectory.Entry
     ): Boolean {
-        // TODO
-        return false
+        val entryId = item.id
+
+        when (menuItem.itemId) {
+            R.id.menu_play_now -> {
+                downloadHandler.downloadRecursively(
+                    this, entryId, save = false, append = false,
+                    autoPlay = true, shuffle = false, background = false,
+                    playNext = false, unpin = false, isArtist = false
+                )
+            }
+            R.id.menu_play_next -> {
+                downloadHandler.downloadRecursively(
+                    this, entryId, save = false, append = false,
+                    autoPlay = false, shuffle = false, background = false,
+                    playNext = true, unpin = false, isArtist = false
+                )
+            }
+            R.id.menu_play_last -> {
+                downloadHandler.downloadRecursively(
+                    this, entryId, save = false, append = true,
+                    autoPlay = false, shuffle = false, background = false,
+                    playNext = false, unpin = false, isArtist = false
+                )
+            }
+            R.id.menu_pin -> {
+                downloadHandler.downloadRecursively(
+                    this, entryId, save = true, append = true,
+                    autoPlay = false, shuffle = false, background = false,
+                    playNext = false, unpin = false, isArtist = false
+                )
+            }
+            R.id.menu_unpin -> {
+                downloadHandler.downloadRecursively(
+                    this, entryId, save = false, append = false,
+                    autoPlay = false, shuffle = false, background = false,
+                    playNext = false, unpin = true, isArtist = false
+                )
+            }
+            R.id.menu_download -> {
+                downloadHandler.downloadRecursively(
+                    this, entryId, save = false, append = false,
+                    autoPlay = false, shuffle = false, background = true,
+                    playNext = false, unpin = false, isArtist = false
+                )
+            }
+            R.id.select_album_play_all -> {
+                // TODO: Why is this being handled here?!
+                playAll()
+            }
+            R.id.menu_item_share -> {
+                val entries: MutableList<MusicDirectory.Entry?> = ArrayList(1)
+                entries.add(item)
+                shareHandler.createShare(
+                    this, entries, refreshListView,
+                    cancellationToken!!
+                )
+                return true
+            }
+            else -> {
+                return super.onContextItemSelected(menuItem)
+            }
+        }
+        return true
     }
 
     override fun onItemClick(item: MusicDirectory.Entry) {

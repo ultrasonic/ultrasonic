@@ -2,7 +2,7 @@
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:a="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    a:id="@+id/row_artist_layout"
+    a:id="@+id/containing_layout"
     a:layout_width="match_parent"
     a:layout_height="wrap_content"
     a:background="?android:attr/selectableItemBackground"
@@ -10,7 +10,7 @@
     a:focusable="true">
 
     <com.google.android.material.imageview.ShapeableImageView
-        a:id="@+id/album_coverart"
+        a:id="@+id/coverart"
         a:layout_width="64dp"
         a:layout_height="64dp"
         a:layout_gravity="center_horizontal|center_vertical"
@@ -35,8 +35,8 @@
         a:paddingEnd="3dip"
         a:textAppearance="?android:attr/textAppearanceMedium"
         app:layout_constraintEnd_toStartOf="@+id/album_star"
-        app:layout_constraintLeft_toRightOf="@+id/album_coverart"
-        app:layout_constraintStart_toEndOf="@+id/album_coverart"
+        app:layout_constraintLeft_toRightOf="@+id/coverart"
+        app:layout_constraintStart_toEndOf="@+id/coverart"
         app:layout_constraintTop_toTopOf="parent">
 
         <TextView
@@ -72,6 +72,7 @@
         app:layout_constraintLeft_toRightOf="@+id/row_album_details"
         app:layout_constraintStart_toEndOf="@+id/row_album_details"
         app:layout_constraintTop_toTopOf="parent"
-        tools:src="@drawable/ic_star_hollow_dark" />
+        tools:src="@drawable/ic_star_hollow_dark"
+        a:contentDescription="@string/download.menu_star" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

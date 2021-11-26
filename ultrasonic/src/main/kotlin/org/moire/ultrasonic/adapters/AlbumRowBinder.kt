@@ -43,15 +43,15 @@ class AlbumRowBinder(
         Util.getDrawableFromAttribute(context, R.attr.star_hollow)
 
     // Set our layout files
-    val layout = R.layout.album_list_item
-    val contextMenuLayout = R.menu.artist_context_menu
+    val layout = R.layout.list_item_album
+    val contextMenuLayout = R.menu.context_menu_artist
 
     override fun onBindViewHolder(holder: ViewHolder, item: MusicDirectory.Album) {
         holder.album.text = item.title
         holder.artist.text = item.artist
         holder.details.setOnClickListener { onItemClick(item) }
         holder.details.setOnLongClickListener {
-            val popup = Helper.createPopupMenu(holder.itemView)
+            val popup = Utils.createPopupMenu(holder.itemView)
 
             popup.setOnMenuItemClickListener { menuItem ->
                 onContextMenuClick(menuItem, item)
@@ -78,7 +78,7 @@ class AlbumRowBinder(
         var album: TextView = view.findViewById(R.id.album_title)
         var artist: TextView = view.findViewById(R.id.album_artist)
         var details: LinearLayout = view.findViewById(R.id.row_album_details)
-        var coverArt: ImageView = view.findViewById(R.id.album_coverart)
+        var coverArt: ImageView = view.findViewById(R.id.coverart)
         var star: ImageView = view.findViewById(R.id.album_star)
         var coverArtId: String? = null
     }

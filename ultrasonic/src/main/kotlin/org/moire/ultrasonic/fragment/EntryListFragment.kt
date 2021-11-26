@@ -3,6 +3,7 @@ package org.moire.ultrasonic.fragment
 import android.os.Bundle
 import android.view.MenuItem
 import android.view.View
+import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
 import org.moire.ultrasonic.R
 import org.moire.ultrasonic.domain.Artist
@@ -11,7 +12,6 @@ import org.moire.ultrasonic.domain.Identifiable
 import org.moire.ultrasonic.service.RxBus
 import org.moire.ultrasonic.subsonic.DownloadHandler
 import org.moire.ultrasonic.util.Constants
-import androidx.fragment.app.Fragment
 import org.moire.ultrasonic.util.Settings
 
 /**
@@ -30,7 +30,6 @@ abstract class EntryListFragment<T : GenericEntry> : MultiListFragment<T>() {
             !listModel.isOffline() && !Settings.shouldUseId3Tags
     }
 
-
     override fun onContextMenuItemSelected(menuItem: MenuItem, item: T): Boolean {
         val isArtist = (item is Artist)
 
@@ -43,7 +42,7 @@ abstract class EntryListFragment<T : GenericEntry> : MultiListFragment<T>() {
         bundle.putString(Constants.INTENT_EXTRA_NAME_NAME, item.name)
         bundle.putString(Constants.INTENT_EXTRA_NAME_PARENT_ID, item.id)
         bundle.putBoolean(Constants.INTENT_EXTRA_NAME_ARTIST, (item is Artist))
-        findNavController().navigate(itemClickTarget, bundle)
+        findNavController().navigate(R.id.trackCollectionFragment, bundle)
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -149,6 +148,7 @@ abstract class EntryListFragment<T : GenericEntry> : MultiListFragment<T>() {
                         unpin = false,
                         isArtist = isArtist
                     )
+                else -> return false
             }
             return true
         }
