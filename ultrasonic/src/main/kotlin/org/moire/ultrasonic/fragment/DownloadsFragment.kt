@@ -17,7 +17,6 @@ import androidx.lifecycle.LiveData
 import org.koin.core.component.inject
 import org.moire.ultrasonic.R
 import org.moire.ultrasonic.adapters.TrackViewBinder
-import org.moire.ultrasonic.domain.Identifiable
 import org.moire.ultrasonic.model.GenericListModel
 import org.moire.ultrasonic.service.DownloadFile
 import org.moire.ultrasonic.service.Downloader
@@ -56,7 +55,7 @@ class DownloadsFragment : MultiListFragment<DownloadFile>() {
         viewAdapter.register(
             TrackViewBinder(
                 { },
-                { _,_ -> true },
+                { _, _ -> true },
                 checkable = false,
                 draggable = false,
                 context = requireContext(),
@@ -78,7 +77,7 @@ class DownloadsFragment : MultiListFragment<DownloadFile>() {
     }
 
     override fun onItemClick(item: DownloadFile) {
-       // TODO: Add code to enable manipulation of the download list
+        // TODO: Add code to enable manipulation of the download list
     }
 }
 

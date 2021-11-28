@@ -65,7 +65,7 @@ class TrackViewBinder(
                 val popup = Utils.createPopupMenu(holder.itemView, contextMenuLayout)
 
                 popup.setOnMenuItemClickListener { menuItem ->
-                        onContextMenuClick?.invoke(menuItem, downloadFile)
+                    onContextMenuClick?.invoke(menuItem, downloadFile)
                 }
             } else {
                 // Minimize or maximize the Text view (if song title is very long)

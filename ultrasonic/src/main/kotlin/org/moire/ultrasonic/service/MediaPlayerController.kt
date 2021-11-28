@@ -250,6 +250,11 @@ class MediaPlayerController(
         mediaPlayerService?.setNextPlaying()
     }
 
+    @Synchronized
+    fun moveItemInPlaylist(oldPos: Int, newPos: Int) {
+        downloader.moveItemInPlaylist(oldPos, newPos)
+    }
+
     @set:Synchronized
     var repeatMode: RepeatMode
         get() = Settings.repeatMode

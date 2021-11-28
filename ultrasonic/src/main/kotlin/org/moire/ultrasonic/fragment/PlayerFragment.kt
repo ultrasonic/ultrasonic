@@ -859,7 +859,7 @@ class PlayerFragment :
         viewAdapter.register(
             TrackViewBinder(
                 onItemClick = listener,
-                onContextMenuClick = {_,_ -> true},
+                onContextMenuClick = { _, _ -> true },
                 checkable = false,
                 draggable = true,
                 context = requireContext(),
@@ -880,10 +880,9 @@ class PlayerFragment :
                     val from = viewHolder.bindingAdapterPosition
                     val to = target.bindingAdapterPosition
 
-                    // FIXME:
-                    // Needs to be changed in the playlist as well...
-                    //  Move it in the data set
-                    (recyclerView.adapter as BaseAdapter<*>).moveItem(from, to)
+                    // Move it in the data set
+                    mediaPlayerController.moveItemInPlaylist(from, to)
+                    viewAdapter.submitList(mediaPlayerController.playList)
 
                     return true
                 }

@@ -24,6 +24,7 @@ import org.moire.ultrasonic.util.BoundedTreeSet
  *
  * It should be kept generic enough that it can be used a Base for all lists in the app.
  */
+@Suppress("unused", "UNUSED_PARAMETER")
 class BaseAdapter<T : Identifiable> : MultiTypeAdapter() {
 
     // Update the BoundedTreeSet if selection type is changed
@@ -193,19 +194,6 @@ class BaseAdapter<T : Identifiable> : MultiTypeAdapter() {
 
     fun isSelected(longId: Long): Boolean {
         return selectedSet.contains(longId)
-    }
-
-    fun moveItem(from: Int, to: Int): List<T> {
-        val list = getCurrentList().toMutableList()
-        val fromLocation = list[from]
-        list.removeAt(from)
-        if (to < from) {
-            list.add(to + 1, fromLocation)
-        } else {
-            list.add(to - 1, fromLocation)
-        }
-        submitList(list)
-        return list
     }
 
     fun hasSingleSelection(): Boolean {

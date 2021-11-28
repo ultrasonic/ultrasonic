@@ -369,6 +369,20 @@ class Downloader(
         checkDownloads()
     }
 
+    fun moveItemInPlaylist(oldPos: Int, newPos: Int) {
+        val item = playlist[oldPos]
+        playlist.remove(item)
+
+        if (newPos < oldPos) {
+            playlist.add(newPos + 1, item)
+        } else {
+            playlist.add(newPos - 1, item)
+        }
+
+        playlistUpdateRevision++
+        checkDownloads()
+    }
+
     @Synchronized
     fun clearIncomplete() {
         val iterator = playlist.iterator()

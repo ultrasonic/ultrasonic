@@ -370,7 +370,14 @@ class SearchFragment : MultiListFragment<Identifiable>(), KoinComponent {
     @Suppress("LongMethod")
     override fun onContextMenuItemSelected(menuItem: MenuItem, item: Identifiable): Boolean {
         val isArtist = (item is Artist)
-        val found = EntryListFragment.handleContextMenu(menuItem, item, isArtist, downloadHandler, this)
+
+        val found = EntryListFragment.handleContextMenu(
+            menuItem,
+            item,
+            isArtist,
+            downloadHandler,
+            this
+        )
 
         if (found || item !is DownloadFile) return true
 

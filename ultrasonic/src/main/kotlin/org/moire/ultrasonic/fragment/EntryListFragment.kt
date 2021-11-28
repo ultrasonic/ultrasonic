@@ -6,6 +6,7 @@ import android.view.View
 import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
 import org.moire.ultrasonic.R
+import org.moire.ultrasonic.adapters.FolderSelectorBinder
 import org.moire.ultrasonic.domain.Artist
 import org.moire.ultrasonic.domain.GenericEntry
 import org.moire.ultrasonic.domain.Identifiable
@@ -24,7 +25,6 @@ abstract class EntryListFragment<T : GenericEntry> : MultiListFragment<T>() {
     /**
      * Whether to show the folder selector
      */
-    // FIXME
     fun showFolderHeader(): Boolean {
         return listModel.showSelectFolderHeader(arguments) &&
             !listModel.isOffline() && !Settings.shouldUseId3Tags
@@ -55,9 +55,14 @@ abstract class EntryListFragment<T : GenericEntry> : MultiListFragment<T>() {
                 currentSetting.musicFolderId = it
                 serverSettingsModel.updateItem(currentSetting)
             }
+            // FIXME: Needed?
             viewAdapter.notifyDataSetChanged()
             listModel.refresh(refreshListView!!, arguments)
         }
+
+        viewAdapter.register(
+            FolderSelectorBinder(view.context)
+        )
     }
 
     companion object {

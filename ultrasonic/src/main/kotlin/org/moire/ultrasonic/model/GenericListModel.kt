@@ -6,6 +6,7 @@ import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
 import androidx.lifecycle.AndroidViewModel
+import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import kotlinx.coroutines.Dispatchers
@@ -16,14 +17,15 @@ import org.koin.core.component.inject
 import org.moire.ultrasonic.data.ActiveServerProvider
 import org.moire.ultrasonic.data.ServerSetting
 import org.moire.ultrasonic.domain.MusicDirectory
+import org.moire.ultrasonic.domain.MusicFolder
 import org.moire.ultrasonic.service.MusicService
 import org.moire.ultrasonic.service.MusicServiceFactory
 import org.moire.ultrasonic.util.CommunicationError
 import org.moire.ultrasonic.util.Settings
 
 /**
-* An abstract Model, which can be extended to retrieve a list of items from the API
-*/
+ * An abstract Model, which can be extended to retrieve a list of items from the API
+ */
 open class GenericListModel(application: Application) :
     AndroidViewModel(application), KoinComponent {
 
@@ -37,6 +39,8 @@ open class GenericListModel(application: Application) :
 
     var currentListIsSortable = true
     var showHeader = true
+
+    val musicFolders: MutableLiveData<List<MusicFolder>> = MutableLiveData(listOf())
 
     @Suppress("UNUSED_PARAMETER")
     open fun showSelectFolderHeader(args: Bundle?): Boolean {
@@ -105,8 +109,11 @@ open class GenericListModel(application: Application) :
         args: Bundle
     ) {
         // Update the list of available folders if enabled
+        // FIXME && refresh ?
         if (showSelectFolderHeader(args) && !isOffline && !useId3Tags) {
-            // FIXME
+            musicFolders.postValue(
+                musicService.getMusicFolders(refresh)
+            )
         }
     }
 

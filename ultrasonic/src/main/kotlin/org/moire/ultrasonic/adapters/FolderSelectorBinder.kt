@@ -36,15 +36,22 @@ class FolderSelectorBinder(context: Context) :
     }
 
     override fun onBindViewHolder(holder: ViewHolder, item: FolderHeader) {
-        holder.setData(item.selected, item.folders)
+        holder.setData(item)
     }
 
     class ViewHolder(
         view: View,
         private val weakContext: WeakReference<Context>
     ) : RecyclerView.ViewHolder(view) {
-        private var musicFolders: List<MusicFolder> = mutableListOf()
-        private var selectedFolderId: String? = null
+
+        private var data: FolderHeader? = null
+
+        private val selectedFolderId: String?
+            get() = data?.selected
+
+        private val musicFolders: List<MusicFolder>
+            get() = data?.folders ?: mutableListOf()
+
         private val folderName: TextView = itemView.findViewById(R.id.select_folder_name)
         private val layout: LinearLayout = itemView.findViewById(R.id.select_folder_header)
 
@@ -53,9 +60,8 @@ class FolderSelectorBinder(context: Context) :
             layout.setOnClickListener { onFolderClick() }
         }
 
-        fun setData(selectedId: String?, folders: List<MusicFolder>) {
-            selectedFolderId = selectedId
-            musicFolders = folders
+        fun setData(item: FolderHeader) {
+            data = item
             if (selectedFolderId != null) {
                 for ((id, name) in musicFolders) {
                     if (id == selectedFolderId) {
@@ -74,9 +80,11 @@ class FolderSelectorBinder(context: Context) :
             var menuItem = popup.menu.add(
                 MENU_GROUP_MUSIC_FOLDER, -1, 0, R.string.select_artist_all_folders
             )
+
             if (selectedFolderId == null || selectedFolderId!!.isEmpty()) {
                 menuItem.isChecked = true
             }
+
             musicFolders.forEachIndexed { i, musicFolder ->
                 val (id, name) = musicFolder
                 menuItem = popup.menu.add(MENU_GROUP_MUSIC_FOLDER, i, i + 1, name)
@@ -95,7 +103,8 @@ class FolderSelectorBinder(context: Context) :
             val selectedFolder = if (menuItem.itemId == -1) null else musicFolders[menuItem.itemId]
             val musicFolderName = selectedFolder?.name
                 ?: weakContext.get()!!.getString(R.string.select_artist_all_folders)
-            selectedFolderId = selectedFolder?.id
+
+            data?.selected = selectedFolder?.id
 
             menuItem.isChecked = true
             folderName.text = musicFolderName
@@ -111,8 +120,8 @@ class FolderSelectorBinder(context: Context) :
     }
 
     data class FolderHeader(
-        val folders: List<MusicFolder>,
-        val selected: String?
+        var folders: List<MusicFolder>,
+        var selected: String?
     ) : Identifiable {
         override val id: String
             get() = "FOLDERSELECTOR"

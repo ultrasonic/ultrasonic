@@ -9,12 +9,15 @@ package org.moire.ultrasonic.fragment
 
 import android.os.Bundle
 import android.view.View
+import androidx.core.view.isVisible
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.LiveData
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.RecyclerView
 import org.moire.ultrasonic.R
 import org.moire.ultrasonic.adapters.AlbumRowBinder
+import org.moire.ultrasonic.adapters.FolderSelectorBinder
+import org.moire.ultrasonic.domain.Identifiable
 import org.moire.ultrasonic.domain.MusicDirectory
 import org.moire.ultrasonic.model.AlbumListModel
 import org.moire.ultrasonic.util.Constants
@@ -83,5 +86,40 @@ class AlbumListFragment : EntryListFragment<MusicDirectory.Album>() {
         bundle.putString(Constants.INTENT_EXTRA_NAME_NAME, item.title)
         bundle.putString(Constants.INTENT_EXTRA_NAME_PARENT_ID, item.parent)
         findNavController().navigate(R.id.trackCollectionFragment, bundle)
+    }
+
+    /**
+     * What to do when the list has changed
+     */
+    override val defaultObserver: (List<MusicDirectory.Album>) -> Unit = {
+        emptyView.isVisible = it.isEmpty()
+
+        if (showFolderHeader()) {
+            @Suppress("UNCHECKED_CAST")
+            val list = it as MutableList<Identifiable>
+            list.add(0, folderHeader)
+        } else {
+            viewAdapter.submitList(it)
+        }
+    }
+
+    /**
+     * Get a folder header and update it on changes
+     */
+    private val folderHeader: FolderSelectorBinder.FolderHeader by lazy {
+        val header = FolderSelectorBinder.FolderHeader(
+            listModel.musicFolders.value!!,
+            listModel.activeServer.musicFolderId
+        )
+
+        listModel.musicFolders.observe(
+            viewLifecycleOwner,
+            {
+                header.folders = it
+                viewAdapter.notifyItemChanged(0)
+            }
+        )
+
+        header
     }
 }

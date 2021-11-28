@@ -102,6 +102,14 @@ abstract class MultiListFragment<T : Identifiable> : Fragment() {
         }
     }
 
+    /**
+     * What to do when the list has changed
+     */
+    internal open val defaultObserver: ((List<T>) -> Unit) = {
+        emptyView.isVisible = it.isEmpty()
+        viewAdapter.submitList(it)
+    }
+
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
@@ -122,13 +130,7 @@ abstract class MultiListFragment<T : Identifiable> : Fragment() {
         emptyTextView = view.findViewById(emptyTextId)
 
         // Register an observer to update our UI when the data changes
-        liveDataItems.observe(
-            viewLifecycleOwner,
-            { newItems ->
-                emptyView.isVisible = newItems.isEmpty()
-                viewAdapter.submitList(newItems)
-            }
-        )
+        liveDataItems.observe(viewLifecycleOwner, defaultObserver)
 
         // Create a View Manager
         viewManager = LinearLayoutManager(this.context)
@@ -139,9 +141,6 @@ abstract class MultiListFragment<T : Identifiable> : Fragment() {
             layoutManager = viewManager
             adapter = viewAdapter
         }
-
-        // Configure whether to show the folder header
-        // viewAdapter.folderHeaderEnabled = showFolderHeader()
     }
 
     @Override

@@ -7,7 +7,6 @@ import android.widget.Checkable
 import android.widget.CheckedTextView
 import android.widget.ImageView
 import android.widget.LinearLayout
-import android.widget.RelativeLayout
 import android.widget.TextView
 import androidx.core.view.isVisible
 import androidx.lifecycle.MutableLiveData

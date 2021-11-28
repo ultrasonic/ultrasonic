@@ -46,24 +46,24 @@ import org.moire.ultrasonic.util.Constants
 import org.moire.ultrasonic.util.EntryByDiscAndTrackComparator
 import org.moire.ultrasonic.util.Settings
 import org.moire.ultrasonic.util.Util
-import timber.log.Timber
 
 /**
  * Displays a group of tracks, eg. the songs of an album, of a playlist etc.
  * FIXME: Offset when navigating to?
  */
+@Suppress("TooManyFunctions")
 open class TrackCollectionFragment : MultiListFragment<MusicDirectory.Entry>() {
 
     private var albumButtons: View? = null
     internal var selectButton: ImageView? = null
     internal var playNowButton: ImageView? = null
-    internal var playNextButton: ImageView? = null
-    internal var playLastButton: ImageView? = null
+    private var playNextButton: ImageView? = null
+    private var playLastButton: ImageView? = null
     internal var pinButton: ImageView? = null
-    internal var unpinButton: ImageView? = null
-    internal var downloadButton: ImageView? = null
-    internal var deleteButton: ImageView? = null
-    internal var moreButton: ImageView? = null
+    private var unpinButton: ImageView? = null
+    private var downloadButton: ImageView? = null
+    private var deleteButton: ImageView? = null
+    private var moreButton: ImageView? = null
     private var playAllButtonVisible = false
     private var shareButtonVisible = false
     private var playAllButton: MenuItem? = null

@@ -25,15 +25,21 @@
         android:name="org.moire.ultrasonic.fragment.ArtistListFragment"
         android:label="@string/music_library.label" >
         <action
-            android:id="@+id/selectArtistToSelectAlbum"
+            android:id="@+id/artistsListToAlbumsList"
             app:destination="@id/albumListFragment" />
+        <action
+            android:id="@+id/artistsListToTrackCollection"
+            app:destination="@id/trackCollectionFragment" />
     </fragment>
     <fragment
         android:id="@+id/artistListFragment"
         android:name="org.moire.ultrasonic.fragment.ArtistListFragment" >
         <action
-            android:id="@+id/selectArtistToSelectAlbum"
+            android:id="@+id/artistsListToAlbumsList"
             app:destination="@id/albumListFragment" />
+        <action
+            android:id="@+id/artistsListToTrackCollection"
+            app:destination="@id/trackCollectionFragment" />
     </fragment>
     <fragment
         android:id="@+id/trackCollectionFragment"

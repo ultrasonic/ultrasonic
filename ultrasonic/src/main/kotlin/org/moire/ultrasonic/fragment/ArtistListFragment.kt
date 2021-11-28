@@ -9,6 +9,7 @@ import org.moire.ultrasonic.R
 import org.moire.ultrasonic.adapters.ArtistRowBinder
 import org.moire.ultrasonic.domain.Artist
 import org.moire.ultrasonic.domain.ArtistOrIndex
+import org.moire.ultrasonic.domain.Index
 import org.moire.ultrasonic.model.ArtistListModel
 import org.moire.ultrasonic.util.Constants
 
@@ -47,16 +48,29 @@ class ArtistListFragment : EntryListFragment<ArtistOrIndex>() {
         )
     }
 
+    /**
+     * There are different targets depending on what list we show.
+     * If we are showing indexes, we need to go to TrackCollection
+     * If we are showing artists, we need to go to AlbumList
+     */
     override fun onItemClick(item: ArtistOrIndex) {
         val bundle = Bundle()
+
+        // Common arguments
         bundle.putString(Constants.INTENT_EXTRA_NAME_ID, item.id)
         bundle.putString(Constants.INTENT_EXTRA_NAME_NAME, item.name)
         bundle.putString(Constants.INTENT_EXTRA_NAME_PARENT_ID, item.id)
         bundle.putBoolean(Constants.INTENT_EXTRA_NAME_ARTIST, (item is Artist))
-        bundle.putString(Constants.INTENT_EXTRA_NAME_ALBUM_LIST_TYPE, Constants.ALBUMS_OF_ARTIST)
-        bundle.putString(Constants.INTENT_EXTRA_NAME_ALBUM_LIST_TITLE, item.name)
-        bundle.putInt(Constants.INTENT_EXTRA_NAME_ALBUM_LIST_SIZE, 1000)
-        bundle.putInt(Constants.INTENT_EXTRA_NAME_ALBUM_LIST_OFFSET, 0)
-        findNavController().navigate(R.id.selectArtistToSelectAlbum, bundle)
+
+        // Check type
+        if (item is Index) {
+            findNavController().navigate(R.id.artistsListToTrackCollection, bundle)
+        } else {
+            bundle.putString(Constants.INTENT_EXTRA_NAME_ALBUM_LIST_TYPE, Constants.ALBUMS_OF_ARTIST)
+            bundle.putString(Constants.INTENT_EXTRA_NAME_ALBUM_LIST_TITLE, item.name)
+            bundle.putInt(Constants.INTENT_EXTRA_NAME_ALBUM_LIST_SIZE, 1000)
+            bundle.putInt(Constants.INTENT_EXTRA_NAME_ALBUM_LIST_OFFSET, 0)
+            findNavController().navigate(R.id.artistsListToAlbumsList, bundle)
+        }
     }
 }
