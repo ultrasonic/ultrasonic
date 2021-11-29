@@ -604,12 +604,12 @@ open class TrackCollectionFragment : MultiListFragment<MusicDirectory.Entry>() {
                 setTitle(name)
                 if (!isOffline() && Settings.shouldUseId3Tags) {
                     if (isAlbum) {
-                        listModel.getAlbum(refresh, id!!, name, parentId)
+                        listModel.getAlbum(refresh, id!!, name)
                     } else {
                         throw IllegalAccessException("Use AlbumFragment instead!")
                     }
                 } else {
-                    listModel.getMusicDirectory(refresh, id!!, name, parentId)
+                    listModel.getMusicDirectory(refresh, id!!, name)
                 }
             }
 

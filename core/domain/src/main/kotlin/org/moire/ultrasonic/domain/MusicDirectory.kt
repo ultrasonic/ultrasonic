@@ -34,13 +34,13 @@ class MusicDirectory : ArrayList<MusicDirectory.Child>() {
 
     abstract class Child : Identifiable, GenericEntry() {
         abstract override var id: String
-        abstract val parent: String?
-        abstract val isDirectory: Boolean
+        abstract var parent: String?
+        abstract var isDirectory: Boolean
         abstract var album: String?
-        abstract val title: String?
+        abstract var title: String?
         abstract override val name: String?
         abstract val discNumber: Int?
-        abstract val coverArt: String?
+        abstract var coverArt: String?
         abstract val songCount: Long?
         abstract val created: Date?
         abstract var artist: String?
@@ -49,7 +49,7 @@ class MusicDirectory : ArrayList<MusicDirectory.Child>() {
         abstract val year: Int?
         abstract val genre: String?
         abstract var starred: Boolean
-        abstract val path: String?
+        abstract var path: String?
         abstract var closeness: Int
     }
 
@@ -115,12 +115,12 @@ class MusicDirectory : ArrayList<MusicDirectory.Child>() {
 
     data class Album(
         @PrimaryKey override var id: String,
-        override val parent: String? = null,
+        override var parent: String? = null,
         override var album: String? = null,
-        override val title: String? = null,
+        override var title: String? = null,
         override val name: String? = null,
         override val discNumber: Int = 0,
-        override val coverArt: String? = null,
+        override var coverArt: String? = null,
         override val songCount: Long? = null,
         override val created: Date? = null,
         override var artist: String? = null,
@@ -132,6 +132,6 @@ class MusicDirectory : ArrayList<MusicDirectory.Child>() {
         override var path: String? = null,
         override var closeness: Int = 0,
     ) : Child() {
-        override val isDirectory = true
+        override var isDirectory = true
     }
 }

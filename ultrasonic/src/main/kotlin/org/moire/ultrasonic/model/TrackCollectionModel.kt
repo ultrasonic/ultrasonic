@@ -30,8 +30,7 @@ class TrackCollectionModel(application: Application) : GenericListModel(applicat
     suspend fun getMusicDirectory(
         refresh: Boolean,
         id: String,
-        name: String?,
-        parentId: String?
+        name: String?
     ) {
         withContext(Dispatchers.IO) {
 
@@ -42,27 +41,7 @@ class TrackCollectionModel(application: Application) : GenericListModel(applicat
         }
     }
 
-    // Given a Music directory "songs" it recursively adds all children to "songs"
-    @Suppress("unused")
-    private fun getSongsRecursively(
-        parent: MusicDirectory,
-        songs: MutableList<MusicDirectory.Entry>
-    ) {
-        val service = MusicServiceFactory.getMusicService()
-
-        for (song in parent.getTracks()) {
-            if (!song.isVideo && !song.isDirectory) {
-                songs.add(song)
-            }
-        }
-
-        for ((id1, _, _, title) in parent.getAlbums()) {
-            val root: MusicDirectory = service.getMusicDirectory(id1, title, false)
-            getSongsRecursively(root, songs)
-        }
-    }
-
-    suspend fun getAlbum(refresh: Boolean, id: String, name: String?, parentId: String?) {
+    suspend fun getAlbum(refresh: Boolean, id: String, name: String?) {
 
         withContext(Dispatchers.IO) {
 
