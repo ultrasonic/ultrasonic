@@ -18,16 +18,15 @@ import org.moire.ultrasonic.util.Util
 
 /*
 * Model for retrieving different collections of tracks from the API
-*
-* TODO: Remove double data keeping in currentList/currentDirectory and use the base model liveData
-*  For this refactor MusicService to replace MusicDirectories with List<Album> or List<Track>
 */
 class TrackCollectionModel(application: Application) : GenericListModel(application) {
 
-    val currentDirectory: MutableLiveData<MusicDirectory> = MutableLiveData()
     val currentList: MutableLiveData<List<MusicDirectory.Entry>> = MutableLiveData()
     val songsForGenre: MutableLiveData<MusicDirectory> = MutableLiveData()
 
+    /*
+    * Especially when dealing with indexes, this method can return Albums, Entries or a mix of both!
+    */
     suspend fun getMusicDirectory(
         refresh: Boolean,
         id: String,
@@ -39,7 +38,6 @@ class TrackCollectionModel(application: Application) : GenericListModel(applicat
             val service = MusicServiceFactory.getMusicService()
             val musicDirectory = service.getMusicDirectory(id, name, refresh)
 
-            currentDirectory.postValue(musicDirectory)
             updateList(musicDirectory)
         }
     }
@@ -71,7 +69,6 @@ class TrackCollectionModel(application: Application) : GenericListModel(applicat
             val service = MusicServiceFactory.getMusicService()
             val musicDirectory: MusicDirectory = service.getAlbum(id, name, refresh)
 
-            currentDirectory.postValue(musicDirectory)
             updateList(musicDirectory)
         }
     }
@@ -96,8 +93,7 @@ class TrackCollectionModel(application: Application) : GenericListModel(applicat
             } else {
                 musicDirectory = Util.getSongsFromSearchResult(service.getStarred())
             }
-
-            currentDirectory.postValue(musicDirectory)
+            
             updateList(musicDirectory)
         }
     }
@@ -108,7 +104,7 @@ class TrackCollectionModel(application: Application) : GenericListModel(applicat
         withContext(Dispatchers.IO) {
             val service = MusicServiceFactory.getMusicService()
             val videos = service.getVideos(refresh)
-            currentDirectory.postValue(videos)
+            
             if (videos != null) {
                 updateList(videos)
             }
@@ -122,7 +118,7 @@ class TrackCollectionModel(application: Application) : GenericListModel(applicat
             val musicDirectory = service.getRandomSongs(size)
 
             currentListIsSortable = false
-            currentDirectory.postValue(musicDirectory)
+            
             updateList(musicDirectory)
         }
     }
@@ -133,7 +129,6 @@ class TrackCollectionModel(application: Application) : GenericListModel(applicat
             val service = MusicServiceFactory.getMusicService()
             val musicDirectory = service.getPlaylist(playlistId, playlistName)
 
-            currentDirectory.postValue(musicDirectory)
             updateList(musicDirectory)
         }
     }
@@ -143,7 +138,7 @@ class TrackCollectionModel(application: Application) : GenericListModel(applicat
         withContext(Dispatchers.IO) {
             val service = MusicServiceFactory.getMusicService()
             val musicDirectory = service.getPodcastEpisodes(podcastChannelId)
-            currentDirectory.postValue(musicDirectory)
+            
             if (musicDirectory != null) {
                 updateList(musicDirectory)
             }
@@ -166,7 +161,7 @@ class TrackCollectionModel(application: Application) : GenericListModel(applicat
                     break
                 }
             }
-            currentDirectory.postValue(musicDirectory)
+            
             updateList(musicDirectory)
         }
     }
@@ -175,7 +170,7 @@ class TrackCollectionModel(application: Application) : GenericListModel(applicat
         withContext(Dispatchers.IO) {
             val service = MusicServiceFactory.getMusicService()
             val musicDirectory = Util.getSongsFromBookmarks(service.getBookmarks())
-            currentDirectory.postValue(musicDirectory)
+            
             updateList(musicDirectory)
         }
     }

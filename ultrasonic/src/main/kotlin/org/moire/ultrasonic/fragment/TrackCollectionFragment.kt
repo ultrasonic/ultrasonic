@@ -49,7 +49,7 @@ import org.moire.ultrasonic.util.Util
 
 /**
  * Displays a group of tracks, eg. the songs of an album, of a playlist etc.
- * FIXME: Offset when navigating to?
+ * FIXME: Mixed lists are not handled correctly
  */
 @Suppress("TooManyFunctions")
 open class TrackCollectionFragment : MultiListFragment<MusicDirectory.Entry>() {
@@ -93,7 +93,7 @@ open class TrackCollectionFragment : MultiListFragment<MusicDirectory.Entry>() {
             refreshData(true)
         }
 
-        listModel.currentList.observe(viewLifecycleOwner, updateInterfaceWithEntries)
+        // TODO: remove special casing for songsForGenre
         listModel.songsForGenre.observe(viewLifecycleOwner, songsForGenreObserver)
 
         setupButtons(view)
@@ -137,9 +137,6 @@ open class TrackCollectionFragment : MultiListFragment<MusicDirectory.Entry>() {
                 enableButtons()
             }
         )
-
-        // Loads the data
-        refreshData(false)
     }
 
     internal open fun setupButtons(view: View) {
@@ -450,7 +447,7 @@ open class TrackCollectionFragment : MultiListFragment<MusicDirectory.Entry>() {
         }
     }
 
-    private val updateInterfaceWithEntries = Observer<List<MusicDirectory.Entry>> {
+    override val defaultObserver: (List<MusicDirectory.Entry>) -> Unit = {
 
         val entryList: MutableList<MusicDirectory.Entry> = it.toMutableList()
 
@@ -513,9 +510,8 @@ open class TrackCollectionFragment : MultiListFragment<MusicDirectory.Entry>() {
         shareButton?.isVisible = shareButtonVisible
 
         if (songCount > 0 && listModel.showHeader) {
-            val name = listModel.currentDirectory.value?.name
             val intentAlbumName = arguments?.getString(Constants.INTENT_EXTRA_NAME_NAME, "")
-            val albumHeader = AlbumHeader(it, name ?: intentAlbumName)
+            val albumHeader = AlbumHeader(it, intentAlbumName)
             val mixedList: MutableList<Identifiable> = mutableListOf(albumHeader)
             mixedList.addAll(entryList)
             viewAdapter.submitList(mixedList)

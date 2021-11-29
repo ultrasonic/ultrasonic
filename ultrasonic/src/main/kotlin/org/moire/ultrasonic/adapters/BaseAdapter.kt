@@ -17,6 +17,7 @@ import androidx.recyclerview.widget.DiffUtil
 import com.drakeet.multitype.MultiTypeAdapter
 import org.moire.ultrasonic.domain.Identifiable
 import org.moire.ultrasonic.util.BoundedTreeSet
+import timber.log.Timber
 
 /**
  * The BaseAdapter which extends the MultiTypeAdapter from an external library.
@@ -86,6 +87,7 @@ class BaseAdapter<T : Identifiable> : MultiTypeAdapter() {
      * @param list The new list to be displayed.
      */
     fun submitList(list: List<T>?) {
+        Timber.v("Received fresh list, size %s", list?.size)
         mDiffer.submitList(list)
     }
 
