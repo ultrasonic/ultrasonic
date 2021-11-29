@@ -21,7 +21,7 @@ import org.moire.ultrasonic.util.Util
 */
 class TrackCollectionModel(application: Application) : GenericListModel(application) {
 
-    val currentList: MutableLiveData<List<MusicDirectory.Entry>> = MutableLiveData()
+    val currentList: MutableLiveData<List<MusicDirectory.Child>> = MutableLiveData()
     val songsForGenre: MutableLiveData<MusicDirectory> = MutableLiveData()
 
     /*
@@ -72,7 +72,7 @@ class TrackCollectionModel(application: Application) : GenericListModel(applicat
             } else {
                 musicDirectory = Util.getSongsFromSearchResult(service.getStarred())
             }
-            
+
             updateList(musicDirectory)
         }
     }
@@ -83,7 +83,7 @@ class TrackCollectionModel(application: Application) : GenericListModel(applicat
         withContext(Dispatchers.IO) {
             val service = MusicServiceFactory.getMusicService()
             val videos = service.getVideos(refresh)
-            
+
             if (videos != null) {
                 updateList(videos)
             }
@@ -97,7 +97,7 @@ class TrackCollectionModel(application: Application) : GenericListModel(applicat
             val musicDirectory = service.getRandomSongs(size)
 
             currentListIsSortable = false
-            
+
             updateList(musicDirectory)
         }
     }
@@ -117,7 +117,7 @@ class TrackCollectionModel(application: Application) : GenericListModel(applicat
         withContext(Dispatchers.IO) {
             val service = MusicServiceFactory.getMusicService()
             val musicDirectory = service.getPodcastEpisodes(podcastChannelId)
-            
+
             if (musicDirectory != null) {
                 updateList(musicDirectory)
             }
@@ -140,7 +140,7 @@ class TrackCollectionModel(application: Application) : GenericListModel(applicat
                     break
                 }
             }
-            
+
             updateList(musicDirectory)
         }
     }
@@ -149,12 +149,12 @@ class TrackCollectionModel(application: Application) : GenericListModel(applicat
         withContext(Dispatchers.IO) {
             val service = MusicServiceFactory.getMusicService()
             val musicDirectory = Util.getSongsFromBookmarks(service.getBookmarks())
-            
+
             updateList(musicDirectory)
         }
     }
 
     private fun updateList(root: MusicDirectory) {
-        currentList.postValue(root.getTracks())
+        currentList.postValue(root.getChildren())
     }
 }

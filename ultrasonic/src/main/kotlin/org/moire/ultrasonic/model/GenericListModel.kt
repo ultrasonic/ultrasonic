@@ -16,7 +16,6 @@ import org.koin.core.component.KoinComponent
 import org.koin.core.component.inject
 import org.moire.ultrasonic.data.ActiveServerProvider
 import org.moire.ultrasonic.data.ServerSetting
-import org.moire.ultrasonic.domain.MusicDirectory
 import org.moire.ultrasonic.domain.MusicFolder
 import org.moire.ultrasonic.service.MusicService
 import org.moire.ultrasonic.service.MusicServiceFactory
@@ -44,7 +43,7 @@ open class GenericListModel(application: Application) :
 
     @Suppress("UNUSED_PARAMETER")
     open fun showSelectFolderHeader(args: Bundle?): Boolean {
-        return true
+        return false
     }
 
     /**
@@ -109,20 +108,11 @@ open class GenericListModel(application: Application) :
         args: Bundle
     ) {
         // Update the list of available folders if enabled
-        // FIXME && refresh ?
-        if (showSelectFolderHeader(args) && !isOffline && !useId3Tags) {
+        @Suppress("ComplexCondition")
+        if (showSelectFolderHeader(args) && !isOffline && !useId3Tags && refresh) {
             musicFolders.postValue(
                 musicService.getMusicFolders(refresh)
             )
         }
     }
-
-    /**
-     * Some shared helper functions
-     */
-
-    // Returns true if the directory contains only folders
-    internal fun hasOnlyFolders(musicDirectory: MusicDirectory) =
-        musicDirectory.getChildren(includeDirs = true, includeFiles = false).size ==
-            musicDirectory.getChildren(includeDirs = true, includeFiles = true).size
 }

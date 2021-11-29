@@ -51,6 +51,7 @@ class MusicDirectory : ArrayList<MusicDirectory.Child>() {
         abstract var starred: Boolean
         abstract var path: String?
         abstract var closeness: Int
+        abstract var isVideo: Boolean
     }
 
     // TODO: Rename to Track
@@ -77,7 +78,7 @@ class MusicDirectory : ArrayList<MusicDirectory.Child>() {
         override var duration: Int? = null,
         var bitRate: Int? = null,
         override var path: String? = null,
-        var isVideo: Boolean = false,
+        override var isVideo: Boolean = false,
         override var starred: Boolean = false,
         override var discNumber: Int? = null,
         var type: String? = null,
@@ -133,5 +134,6 @@ class MusicDirectory : ArrayList<MusicDirectory.Child>() {
         override var closeness: Int = 0,
     ) : Child() {
         override var isDirectory = true
+        override var isVideo = false
     }
 }

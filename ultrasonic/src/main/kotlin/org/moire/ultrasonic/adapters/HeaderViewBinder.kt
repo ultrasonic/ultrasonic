@@ -15,7 +15,6 @@ import org.koin.core.component.KoinComponent
 import org.koin.core.component.inject
 import org.moire.ultrasonic.R
 import org.moire.ultrasonic.subsonic.ImageLoaderProvider
-import org.moire.ultrasonic.util.AlbumHeader
 import org.moire.ultrasonic.util.Util
 
 /**

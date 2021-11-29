@@ -2,19 +2,25 @@ package org.moire.ultrasonic.fragment
 
 import android.os.Bundle
 import android.view.View
+import androidx.core.view.isVisible
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.LiveData
 import androidx.navigation.fragment.findNavController
 import org.moire.ultrasonic.R
 import org.moire.ultrasonic.adapters.ArtistRowBinder
+import org.moire.ultrasonic.adapters.FolderSelectorBinder
 import org.moire.ultrasonic.domain.Artist
 import org.moire.ultrasonic.domain.ArtistOrIndex
+import org.moire.ultrasonic.domain.Identifiable
 import org.moire.ultrasonic.domain.Index
+import org.moire.ultrasonic.domain.MusicDirectory
 import org.moire.ultrasonic.model.ArtistListModel
 import org.moire.ultrasonic.util.Constants
 
 /**
  * Displays the list of Artists from the media library
+ *
+ * FIXME: FOLDER HEADER NOT POPULATED ON FIST LOAD
  */
 class ArtistListFragment : EntryListFragment<ArtistOrIndex>() {
 
@@ -31,8 +37,8 @@ class ArtistListFragment : EntryListFragment<ArtistOrIndex>() {
     /**
      * The central function to pass a query to the model and return a LiveData object
      */
-    override fun getLiveData(args: Bundle?): LiveData<List<ArtistOrIndex>> {
-        val refresh = args?.getBoolean(Constants.INTENT_EXTRA_NAME_REFRESH) ?: false
+    override fun getLiveData(args: Bundle?, refresh: Boolean): LiveData<List<ArtistOrIndex>> {
+        val refresh = args?.getBoolean(Constants.INTENT_EXTRA_NAME_REFRESH) ?: false || refresh
         return listModel.getItems(refresh, refreshListView!!)
     }
 

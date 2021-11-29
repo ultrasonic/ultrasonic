@@ -40,11 +40,16 @@ class SearchListModel(application: Application) : GenericListModel(application) 
         }
     }
 
-    fun trimResultLength(result: SearchResult): SearchResult {
+    fun trimResultLength(
+        result: SearchResult,
+        maxArtists: Int = SearchFragment.DEFAULT_ARTISTS,
+        maxAlbums: Int = SearchFragment.DEFAULT_ALBUMS,
+        maxSongs: Int = SearchFragment.DEFAULT_SONGS
+    ): SearchResult {
         return SearchResult(
-            artists = result.artists.take(SearchFragment.DEFAULT_ARTISTS),
-            albums = result.albums.take(SearchFragment.DEFAULT_ALBUMS),
-            songs = result.songs.take(SearchFragment.DEFAULT_SONGS)
+            artists = result.artists.take(maxArtists),
+            albums = result.albums.take(maxAlbums),
+            songs = result.songs.take(maxSongs)
         )
     }
 }

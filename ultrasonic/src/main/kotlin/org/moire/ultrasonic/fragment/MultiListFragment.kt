@@ -72,7 +72,7 @@ abstract class MultiListFragment<T : Identifiable> : Fragment() {
     /**
      * The central function to pass a query to the model and return a LiveData object
      */
-    open fun getLiveData(args: Bundle? = null): LiveData<List<T>> {
+    open fun getLiveData(args: Bundle? = null, refresh: Boolean = false): LiveData<List<T>> {
         return MutableLiveData()
     }
 
@@ -123,7 +123,7 @@ abstract class MultiListFragment<T : Identifiable> : Fragment() {
         }
 
         // Populate the LiveData. This starts an API request in most cases
-        liveDataItems = getLiveData(arguments)
+        liveDataItems = getLiveData(arguments, true)
 
         // Link view to display text if the list is empty
         emptyView = view.findViewById(emptyViewId)

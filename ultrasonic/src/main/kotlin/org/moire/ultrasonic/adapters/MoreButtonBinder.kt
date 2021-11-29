@@ -12,33 +12,33 @@ import org.moire.ultrasonic.domain.Identifiable
 /**
  * Creates a row in a RecyclerView which can be used as a divide between different sections
  */
-class DividerBinder : ItemViewBinder<DividerBinder.Divider, DividerBinder.ViewHolder>() {
+class MoreButtonBinder : ItemViewBinder<MoreButtonBinder.MoreButton, RecyclerView.ViewHolder>() {
 
     // Set our layout files
-    val layout = R.layout.list_item_divider
-    val more_button = R.layout.list_item_more_button
+    val layout = R.layout.list_item_more_button
 
-    override fun onBindViewHolder(holder: ViewHolder, item: Divider) {
-        // Set text
-        holder.textView.setText(item.stringId)
+    override fun onBindViewHolder(holder: RecyclerView.ViewHolder, item: MoreButton) {
+        holder.itemView.setOnClickListener {
+            item.onClick()
+        }
     }
 
     override fun onCreateViewHolder(
         inflater: LayoutInflater,
         parent: ViewGroup
-    ): ViewHolder {
+    ): RecyclerView.ViewHolder {
         return ViewHolder(inflater.inflate(layout, parent, false))
     }
 
     // ViewHolder class
-    class ViewHolder(
-        itemView: View
-    ) : RecyclerView.ViewHolder(itemView) {
-        var textView: TextView = itemView.findViewById(R.id.text)
-    }
+    class ViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView)
 
     // Class to store our data into
-    data class Divider(val stringId: Int) : Identifiable {
+    data class MoreButton(
+        val stringId: Int,
+        val onClick: (() -> Unit)
+        ): Identifiable {
+
         override val id: String
             get() = stringId.toString()
         override val longId: Long
@@ -46,4 +46,5 @@ class DividerBinder : ItemViewBinder<DividerBinder.Divider, DividerBinder.ViewHo
 
         override fun compareTo(other: Identifiable): Int = longId.compareTo(other.longId)
     }
+
 }

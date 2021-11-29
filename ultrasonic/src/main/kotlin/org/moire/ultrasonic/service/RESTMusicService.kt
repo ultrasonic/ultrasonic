@@ -350,7 +350,7 @@ open class RESTMusicService(
         size: Int,
         offset: Int,
         musicFolderId: String?
-    ): MusicDirectory {
+    ): List<MusicDirectory.Album> {
         val response = API.getAlbumList(
             fromName(type),
             size,
@@ -361,11 +361,8 @@ open class RESTMusicService(
             musicFolderId
         ).execute().throwOnFailure()
 
-        val childList = response.body()!!.albumList.toDomainEntityList()
-        val result = MusicDirectory()
-        result.addAll(childList)
 
-        return result
+        return response.body()!!.albumList.toDomainEntityList()
     }
 
     @Throws(Exception::class)
@@ -374,7 +371,7 @@ open class RESTMusicService(
         size: Int,
         offset: Int,
         musicFolderId: String?
-    ): MusicDirectory {
+    ): List<MusicDirectory.Album> {
         val response = API.getAlbumList2(
             fromName(type),
             size,
@@ -385,10 +382,7 @@ open class RESTMusicService(
             musicFolderId
         ).execute().throwOnFailure()
 
-        val result = MusicDirectory()
-        result.addAll(response.body()!!.albumList.toDomainEntityList())
-
-        return result
+        return response.body()!!.albumList.toDomainEntityList()
     }
 
     @Throws(Exception::class)

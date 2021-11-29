@@ -24,7 +24,6 @@ import org.moire.ultrasonic.util.Constants
 
 /**
  * Displays a list of Albums from the media library
- * FIXME: Add music folder support
  */
 class AlbumListFragment : EntryListFragment<MusicDirectory.Album>() {
 
@@ -41,10 +40,10 @@ class AlbumListFragment : EntryListFragment<MusicDirectory.Album>() {
     /**
      * The central function to pass a query to the model and return a LiveData object
      */
-    override fun getLiveData(args: Bundle?): LiveData<List<MusicDirectory.Album>> {
+    override fun getLiveData(args: Bundle?, refresh: Boolean): LiveData<List<MusicDirectory.Album>> {
         if (args == null) throw IllegalArgumentException("Required arguments are missing")
 
-        val refresh = args.getBoolean(Constants.INTENT_EXTRA_NAME_REFRESH)
+        val refresh = args.getBoolean(Constants.INTENT_EXTRA_NAME_REFRESH) || refresh
         val append = args.getBoolean(Constants.INTENT_EXTRA_NAME_APPEND)
 
         return listModel.getAlbumList(refresh or append, refreshListView!!, args)
@@ -86,40 +85,5 @@ class AlbumListFragment : EntryListFragment<MusicDirectory.Album>() {
         bundle.putString(Constants.INTENT_EXTRA_NAME_NAME, item.title)
         bundle.putString(Constants.INTENT_EXTRA_NAME_PARENT_ID, item.parent)
         findNavController().navigate(R.id.trackCollectionFragment, bundle)
-    }
-
-    /**
-     * What to do when the list has changed
-     */
-    override val defaultObserver: (List<MusicDirectory.Album>) -> Unit = {
-        emptyView.isVisible = it.isEmpty()
-
-        if (showFolderHeader()) {
-            @Suppress("UNCHECKED_CAST")
-            val list = it as MutableList<Identifiable>
-            list.add(0, folderHeader)
-        } else {
-            viewAdapter.submitList(it)
-        }
-    }
-
-    /**
-     * Get a folder header and update it on changes
-     */
-    private val folderHeader: FolderSelectorBinder.FolderHeader by lazy {
-        val header = FolderSelectorBinder.FolderHeader(
-            listModel.musicFolders.value!!,
-            listModel.activeServer.musicFolderId
-        )
-
-        listModel.musicFolders.observe(
-            viewLifecycleOwner,
-            {
-                header.folders = it
-                viewAdapter.notifyItemChanged(0)
-            }
-        )
-
-        header
     }
 }

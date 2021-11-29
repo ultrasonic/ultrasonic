@@ -33,7 +33,12 @@ class AlbumListModel(application: Application) : GenericListModel(application) {
         return list
     }
 
-    fun getAlbumsOfArtist(musicService: MusicService, refresh: Boolean, id: String, name: String?) {
+    private fun getAlbumsOfArtist(
+        musicService: MusicService,
+        refresh: Boolean,
+        id: String,
+        name: String?
+    ) {
         list.postValue(musicService.getArtist(id, name, refresh))
     }
 
@@ -51,7 +56,7 @@ class AlbumListModel(application: Application) : GenericListModel(application) {
         var offset = args.getInt(Constants.INTENT_EXTRA_NAME_ALBUM_LIST_OFFSET, 0)
         val append = args.getBoolean(Constants.INTENT_EXTRA_NAME_APPEND, false)
 
-        val musicDirectory: MusicDirectory
+        val musicDirectory: List<MusicDirectory.Album>
         val musicFolderId = if (showSelectFolderHeader(args)) {
             activeServerProvider.getActiveServer().musicFolderId
         } else {
@@ -72,10 +77,11 @@ class AlbumListModel(application: Application) : GenericListModel(application) {
         }
 
         if (useId3Tags) {
-            musicDirectory = musicService.getAlbumList2(
-                albumListType, size,
-                offset, musicFolderId
-            )
+            musicDirectory =
+                musicService.getAlbumList2(
+                    albumListType, size,
+                    offset, musicFolderId
+                )
         } else {
             musicDirectory = musicService.getAlbumList(
                 albumListType, size,
@@ -85,15 +91,13 @@ class AlbumListModel(application: Application) : GenericListModel(application) {
 
         currentListIsSortable = isCollectionSortable(albumListType)
 
-        // TODO: Change signature of  musicService.getAlbumList to return a List
-        @Suppress("UNCHECKED_CAST")
         if (append && list.value != null) {
-            val list = ArrayList<MusicDirectory.Child>()
-            list.addAll(this.list.value!!)
-            list.addAll(musicDirectory.getChildren())
-            this.list.postValue(list as List<MusicDirectory.Album>)
+            val newList = ArrayList<MusicDirectory.Album>()
+            newList.addAll(list.value!!)
+            newList.addAll(musicDirectory)
+            this.list.postValue(newList)
         } else {
-            list.postValue(musicDirectory.getChildren() as List<MusicDirectory.Album>)
+            list.postValue(musicDirectory)
         }
 
         loadedUntil = offset

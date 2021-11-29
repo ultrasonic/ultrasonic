@@ -7,7 +7,8 @@ import org.moire.ultrasonic.api.subsonic.models.Album
 
 fun Album.toDomainEntity(): MusicDirectory.Album = MusicDirectory.Album(
     id = this@toDomainEntity.id,
-    title = this@toDomainEntity.name,
+    title = this@toDomainEntity.title,
+    album = this@toDomainEntity.album,
     coverArt = this@toDomainEntity.coverArt,
     artist = this@toDomainEntity.artist,
     artistId = this@toDomainEntity.artistId,

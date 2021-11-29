@@ -28,6 +28,8 @@ import kotlinx.coroutines.CoroutineExceptionHandler
 import kotlinx.coroutines.launch
 import org.koin.android.ext.android.inject
 import org.moire.ultrasonic.R
+import org.moire.ultrasonic.adapters.AlbumHeader
+import org.moire.ultrasonic.adapters.AlbumRowBinder
 import org.moire.ultrasonic.adapters.HeaderViewBinder
 import org.moire.ultrasonic.adapters.TrackViewBinder
 import org.moire.ultrasonic.data.ActiveServerProvider.Companion.isOffline
@@ -39,7 +41,6 @@ import org.moire.ultrasonic.service.MediaPlayerController
 import org.moire.ultrasonic.subsonic.NetworkAndStorageChecker
 import org.moire.ultrasonic.subsonic.ShareHandler
 import org.moire.ultrasonic.subsonic.VideoPlayer
-import org.moire.ultrasonic.util.AlbumHeader
 import org.moire.ultrasonic.util.CancellationToken
 import org.moire.ultrasonic.util.CommunicationError
 import org.moire.ultrasonic.util.Constants
@@ -48,11 +49,16 @@ import org.moire.ultrasonic.util.Settings
 import org.moire.ultrasonic.util.Util
 
 /**
+ *
  * Displays a group of tracks, eg. the songs of an album, of a playlist etc.
- * FIXME: Mixed lists are not handled correctly
+ *
+ * In most cases the data should be just a list of Entries, but there are some cases
+ * where the list can contain Albums as well. This happens especially when having ID3 tags disabled,
+ * or using Offline mode, both in which Indexes instead of Artists are being used.
+ *
  */
 @Suppress("TooManyFunctions")
-open class TrackCollectionFragment : MultiListFragment<MusicDirectory.Entry>() {
+open class TrackCollectionFragment : MultiListFragment<MusicDirectory.Child>() {
 
     private var albumButtons: View? = null
     internal var selectButton: ImageView? = null
@@ -125,6 +131,15 @@ open class TrackCollectionFragment : MultiListFragment<MusicDirectory.Entry>() {
                 draggable = false,
                 context = requireContext(),
                 lifecycleOwner = viewLifecycleOwner
+            )
+        )
+
+        viewAdapter.register(
+            AlbumRowBinder(
+                { entry -> onItemClick(entry) },
+                { menuItem, entry -> onContextMenuItemSelected(menuItem, entry) },
+                imageLoaderProvider.getImageLoader(),
+                context = requireContext()
             )
         )
 
@@ -447,9 +462,9 @@ open class TrackCollectionFragment : MultiListFragment<MusicDirectory.Entry>() {
         }
     }
 
-    override val defaultObserver: (List<MusicDirectory.Entry>) -> Unit = {
+    override val defaultObserver: (List<MusicDirectory.Child>) -> Unit = {
 
-        val entryList: MutableList<MusicDirectory.Entry> = it.toMutableList()
+        val entryList: MutableList<MusicDirectory.Child> = it.toMutableList()
 
         if (listModel.currentListIsSortable && Settings.shouldSortByDisc) {
             Collections.sort(entryList, EntryByDiscAndTrackComparator())
@@ -470,7 +485,7 @@ open class TrackCollectionFragment : MultiListFragment<MusicDirectory.Entry>() {
         val listSize = arguments?.getInt(Constants.INTENT_EXTRA_NAME_ALBUM_LIST_SIZE, 0) ?: 0
 
         // Hide select button for video lists and singular selection lists
-        selectButton!!.isVisible = (!allVideos && viewAdapter.hasMultipleSelection())
+        selectButton!!.isVisible = !allVideos && viewAdapter.hasMultipleSelection() && songCount > 0
 
         if (songCount > 0) {
             if (listSize == 0 || songCount < listSize) {
@@ -550,12 +565,11 @@ open class TrackCollectionFragment : MultiListFragment<MusicDirectory.Entry>() {
     }
 
     @Suppress("LongMethod")
-    override fun getLiveData(args: Bundle?): LiveData<List<MusicDirectory.Entry>> {
+    override fun getLiveData(args: Bundle?, refresh: Boolean): LiveData<List<MusicDirectory.Child>> {
         if (args == null) return listModel.currentList
         val id = args.getString(Constants.INTENT_EXTRA_NAME_ID)
         val isAlbum = args.getBoolean(Constants.INTENT_EXTRA_NAME_IS_ALBUM, false)
         val name = args.getString(Constants.INTENT_EXTRA_NAME_NAME)
-        val parentId = args.getString(Constants.INTENT_EXTRA_NAME_PARENT_ID)
         val playlistId = args.getString(Constants.INTENT_EXTRA_NAME_PLAYLIST_ID)
         val podcastChannelId = args.getString(
             Constants.INTENT_EXTRA_NAME_PODCAST_CHANNEL_ID
@@ -574,7 +588,7 @@ open class TrackCollectionFragment : MultiListFragment<MusicDirectory.Entry>() {
         val albumListOffset = args.getInt(
             Constants.INTENT_EXTRA_NAME_ALBUM_LIST_OFFSET, 0
         )
-        val refresh = args.getBoolean(Constants.INTENT_EXTRA_NAME_REFRESH, true)
+        val refresh = args.getBoolean(Constants.INTENT_EXTRA_NAME_REFRESH, true) || refresh
 
         listModel.viewModelScope.launch(handler) {
             refreshListView?.isRefreshing = true
@@ -621,7 +635,7 @@ open class TrackCollectionFragment : MultiListFragment<MusicDirectory.Entry>() {
     @Suppress("LongMethod")
     override fun onContextMenuItemSelected(
         menuItem: MenuItem,
-        item: MusicDirectory.Entry
+        item: MusicDirectory.Child
     ): Boolean {
         val entryId = item.id
 
@@ -673,13 +687,12 @@ open class TrackCollectionFragment : MultiListFragment<MusicDirectory.Entry>() {
                 playAll()
             }
             R.id.menu_item_share -> {
-                val entries: MutableList<MusicDirectory.Entry?> = ArrayList(1)
-                entries.add(item)
-                shareHandler.createShare(
-                    this, entries, refreshListView,
-                    cancellationToken!!
-                )
-                return true
+                if (item is MusicDirectory.Entry) {
+                    shareHandler.createShare(
+                        this, listOf(item), refreshListView,
+                        cancellationToken!!
+                    )
+                }
             }
             else -> {
                 return super.onContextItemSelected(menuItem)
@@ -688,7 +701,7 @@ open class TrackCollectionFragment : MultiListFragment<MusicDirectory.Entry>() {
         return true
     }
 
-    override fun onItemClick(item: MusicDirectory.Entry) {
+    override fun onItemClick(item: MusicDirectory.Child) {
         when {
             item.isDirectory -> {
                 val bundle = Bundle()
@@ -701,7 +714,7 @@ open class TrackCollectionFragment : MultiListFragment<MusicDirectory.Entry>() {
                     bundle
                 )
             }
-            item.isVideo -> {
+            item is MusicDirectory.Entry && item.isVideo -> {
                 VideoPlayer.playVideo(requireContext(), item)
             }
             else -> {

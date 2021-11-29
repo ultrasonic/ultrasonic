@@ -24,7 +24,6 @@ import org.moire.ultrasonic.fragment.FragmentTitle.Companion.setTitle
  * audio books etc.
  *
  * Therefore this fragment allows only for singular selection and playback.
- *
  */
 class BookmarksFragment : TrackCollectionFragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -35,7 +34,7 @@ class BookmarksFragment : TrackCollectionFragment() {
         viewAdapter.selectionType = BaseAdapter.SelectionType.SINGLE
     }
 
-    override fun getLiveData(args: Bundle?): LiveData<List<MusicDirectory.Entry>> {
+    override fun getLiveData(args: Bundle?, refresh: Boolean): LiveData<List<MusicDirectory.Child>> {
         listModel.viewModelScope.launch(handler) {
             refreshListView?.isRefreshing = true
             listModel.getBookmarks()

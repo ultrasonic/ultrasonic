@@ -575,7 +575,7 @@ class AutoMediaBrowserService : MediaBrowserServiceCompat() {
                 }
             }
 
-            albums?.getChildren()?.map { album ->
+            albums?.map { album ->
                 mediaItems.add(
                     album.title ?: "",
                     listOf(MEDIA_ALBUM_ITEM, album.id, album.name)

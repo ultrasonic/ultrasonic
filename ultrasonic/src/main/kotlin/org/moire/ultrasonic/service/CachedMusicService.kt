@@ -249,7 +249,7 @@ class CachedMusicService(private val musicService: MusicService) : MusicService,
         size: Int,
         offset: Int,
         musicFolderId: String?
-    ): MusicDirectory {
+    ): List<MusicDirectory.Album> {
         return musicService.getAlbumList(type, size, offset, musicFolderId)
     }
 
@@ -259,7 +259,7 @@ class CachedMusicService(private val musicService: MusicService) : MusicService,
         size: Int,
         offset: Int,
         musicFolderId: String?
-    ): MusicDirectory {
+    ): List<MusicDirectory.Album> {
         return musicService.getAlbumList2(type, size, offset, musicFolderId)
     }
 

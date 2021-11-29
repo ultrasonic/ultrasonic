@@ -22,6 +22,8 @@ import org.moire.ultrasonic.R
 import org.moire.ultrasonic.adapters.AlbumRowBinder
 import org.moire.ultrasonic.adapters.ArtistRowBinder
 import org.moire.ultrasonic.adapters.DividerBinder
+import org.moire.ultrasonic.adapters.MoreButtonBinder
+import org.moire.ultrasonic.adapters.MoreButtonBinder.MoreButton
 import org.moire.ultrasonic.adapters.TrackViewBinder
 import org.moire.ultrasonic.domain.Artist
 import org.moire.ultrasonic.domain.Identifiable
@@ -44,18 +46,10 @@ import timber.log.Timber
 
 /**
  * Initiates a search on the media library and displays the results
- *
- * FIXME: Handle context click on song
+ * FIXME: Artist click, display
  */
 class SearchFragment : MultiListFragment<Identifiable>(), KoinComponent {
-    private var moreArtistsButton: View? = null
-    private var moreAlbumsButton: View? = null
-    private var moreSongsButton: View? = null
     private var searchResult: SearchResult? = null
-    private var artistAdapter: ArtistAdapter? = null
-    private var moreArtistsAdapter: ListAdapter? = null
-    private var moreAlbumsAdapter: ListAdapter? = null
-    private var moreSongsAdapter: ListAdapter? = null
     private var searchRefresh: SwipeRefreshLayout? = null
 
     private val mediaPlayerController: MediaPlayerController by inject()
@@ -75,39 +69,19 @@ class SearchFragment : MultiListFragment<Identifiable>(), KoinComponent {
         setTitle(this, R.string.search_title)
         setHasOptionsMenu(true)
 
-        val buttons = LayoutInflater.from(context).inflate(
-            R.layout.search_buttons,
-            listView, false
-        )
-
-        if (buttons != null) {
-            moreArtistsButton = buttons.findViewById(R.id.search_more_artists)
-            moreAlbumsButton = buttons.findViewById(R.id.search_more_albums)
-            moreSongsButton = buttons.findViewById(R.id.search_more_songs)
-        }
-
         listModel.searchResult.observe(
             viewLifecycleOwner,
             {
-                if (it != null) populateList(it)
+                if (it != null) {
+                    // Shorten the display initially
+                    searchResult = it
+                    populateList(listModel.trimResultLength(it))
+                }
             }
         )
 
         searchRefresh = view.findViewById(R.id.swipe_refresh_view)
         searchRefresh!!.isEnabled = false
-
-//        list.setOnItemClickListener(OnItemClickListener { parent: AdapterView<*>, view1: View, position: Int, id: Long ->
-//            if (view1 === moreArtistsButton) {
-//                expandArtists()
-//            } else if (view1 === moreAlbumsButton) {
-//                expandAlbums()
-//            } else if (view1 === moreSongsButton) {
-//                expandSongs()
-//            } else {
-//                val item = parent.getItemAtPosition(position)
-//
-//            }
-//        })
 
         registerForContextMenu(listView!!)
 
@@ -145,6 +119,10 @@ class SearchFragment : MultiListFragment<Identifiable>(), KoinComponent {
 
         viewAdapter.register(
             DividerBinder()
+        )
+
+        viewAdapter.register(
+            MoreButtonBinder()
         )
 
         // Fragment was started with a query (e.g. from voice search), try to execute search right away
@@ -229,45 +207,44 @@ class SearchFragment : MultiListFragment<Identifiable>(), KoinComponent {
     }
 
     private fun search(query: String, autoplay: Boolean) {
-        // FIXME support autoplay
         listModel.viewModelScope.launch(CommunicationError.getHandler(context)) {
             refreshListView?.isRefreshing = true
             listModel.search(query)
             refreshListView?.isRefreshing = false
+        }.invokeOnCompletion {
+            if (it == null && autoplay) {
+                autoplay()
+            }
         }
     }
 
     private fun populateList(result: SearchResult) {
-        val searchResult = listModel.trimResultLength(result)
-
         val list = mutableListOf<Identifiable>()
 
-        val artists = searchResult.artists
+        val artists = result.artists
         if (artists.isNotEmpty()) {
 
             list.add(DividerBinder.Divider(R.string.search_artists))
             list.addAll(artists)
-            if (artists.size > DEFAULT_ARTISTS) {
-                // FIXME
-                // list.add((moreArtistsButton, true)
+            if (searchResult!!.artists.size > artists.size) {
+                list.add(MoreButton(0, ::expandArtists))
             }
         }
-        val albums = searchResult.albums
+        val albums = result.albums
         if (albums.isNotEmpty()) {
             list.add(DividerBinder.Divider(R.string.search_albums))
             list.addAll(albums)
-            // mergeAdapter!!.addAdapter(albumAdapter)
-//            if (albums.size > DEFAULT_ALBUMS) {
-//                moreAlbumsAdapter = mergeAdapter!!.addView(moreAlbumsButton, true)
-//            }
+            if (searchResult!!.albums.size > albums.size) {
+                list.add(MoreButton(1, ::expandAlbums))
+            }
         }
-        val songs = searchResult.songs
+        val songs = result.songs
         if (songs.isNotEmpty()) {
             list.add(DividerBinder.Divider(R.string.search_songs))
             list.addAll(songs)
-//            if (songs.size > DEFAULT_SONGS) {
-//                moreSongsAdapter = mergeAdapter!!.addView(moreSongsButton, true)
-//            }
+            if (searchResult!!.songs.size > songs.size) {
+                list.add(MoreButton(2, ::expandSongs))
+            }
         }
 
         // Show/hide the empty text view
@@ -276,35 +253,17 @@ class SearchFragment : MultiListFragment<Identifiable>(), KoinComponent {
         viewAdapter.submitList(list)
     }
 
-//    private fun expandArtists() {
-//        artistAdapter!!.clear()
-//        for (artist in searchResult!!.artists) {
-//            artistAdapter!!.add(artist)
-//        }
-//        artistAdapter!!.notifyDataSetChanged()
-//        mergeAdapter!!.removeAdapter(moreArtistsAdapter)
-//        mergeAdapter!!.notifyDataSetChanged()
-//    }
-//
-//    private fun expandAlbums() {
-//        albumAdapter!!.clear()
-//        for (album in searchResult!!.albums) {
-//            albumAdapter!!.add(album)
-//        }
-//        albumAdapter!!.notifyDataSetChanged()
-//        mergeAdapter!!.removeAdapter(moreAlbumsAdapter)
-//        mergeAdapter!!.notifyDataSetChanged()
-//    }
-//
-//    private fun expandSongs() {
-//        songAdapter!!.clear()
-//        for (song in searchResult!!.songs) {
-//            songAdapter!!.add(song)
-//        }
-//        songAdapter!!.notifyDataSetChanged()
-//        mergeAdapter!!.removeAdapter(moreSongsAdapter)
-//        mergeAdapter!!.notifyDataSetChanged()
-//    }
+    private fun expandArtists() {
+        populateList(listModel.trimResultLength(searchResult!!, maxArtists = Int.MAX_VALUE))
+    }
+
+    private fun expandAlbums() {
+        populateList(listModel.trimResultLength(searchResult!!, maxAlbums = Int.MAX_VALUE))
+    }
+
+    private fun expandSongs() {
+        populateList(listModel.trimResultLength(searchResult!!, maxSongs = Int.MAX_VALUE))
+    }
 
     private fun onArtistSelected(artist: Artist) {
         val bundle = Bundle()
@@ -341,12 +300,6 @@ class SearchFragment : MultiListFragment<Identifiable>(), KoinComponent {
         } else if (searchResult!!.albums.isNotEmpty()) {
             onAlbumSelected(searchResult!!.albums[0], true)
         }
-    }
-
-    companion object {
-        var DEFAULT_ARTISTS = Settings.defaultArtists
-        var DEFAULT_ALBUMS = Settings.defaultAlbums
-        var DEFAULT_SONGS = Settings.defaultSongs
     }
 
     override fun onItemClick(item: Identifiable) {
@@ -463,5 +416,11 @@ class SearchFragment : MultiListFragment<Identifiable>(), KoinComponent {
         }
 
         return true
+    }
+
+    companion object {
+        var DEFAULT_ARTISTS = Settings.defaultArtists
+        var DEFAULT_ALBUMS = Settings.defaultAlbums
+        var DEFAULT_SONGS = Settings.defaultSongs
     }
 }

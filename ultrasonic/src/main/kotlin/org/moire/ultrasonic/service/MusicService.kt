@@ -90,7 +90,12 @@ interface MusicService {
     fun scrobble(id: String, submission: Boolean)
 
     @Throws(Exception::class)
-    fun getAlbumList(type: String, size: Int, offset: Int, musicFolderId: String?): MusicDirectory
+    fun getAlbumList(
+        type: String,
+        size: Int,
+        offset: Int,
+        musicFolderId: String?
+    ): List<MusicDirectory.Album>
 
     @Throws(Exception::class)
     fun getAlbumList2(
@@ -98,7 +103,7 @@ interface MusicService {
         size: Int,
         offset: Int,
         musicFolderId: String?
-    ): MusicDirectory
+    ): List<MusicDirectory.Album>
 
     @Throws(Exception::class)
     fun getRandomSongs(size: Int): MusicDirectory

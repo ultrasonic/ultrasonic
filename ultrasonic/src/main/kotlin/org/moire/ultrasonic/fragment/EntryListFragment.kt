@@ -3,11 +3,13 @@ package org.moire.ultrasonic.fragment
 import android.os.Bundle
 import android.view.MenuItem
 import android.view.View
+import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
 import org.moire.ultrasonic.R
 import org.moire.ultrasonic.adapters.FolderSelectorBinder
 import org.moire.ultrasonic.domain.Artist
+import org.moire.ultrasonic.domain.ArtistOrIndex
 import org.moire.ultrasonic.domain.GenericEntry
 import org.moire.ultrasonic.domain.Identifiable
 import org.moire.ultrasonic.service.RxBus
@@ -48,21 +50,53 @@ abstract class EntryListFragment<T : GenericEntry> : MultiListFragment<T>() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        // FIXME: What to do when the user has modified the folder filter
         RxBus.musicFolderChangedEventObservable.subscribe {
             if (!listModel.isOffline()) {
                 val currentSetting = listModel.activeServer
                 currentSetting.musicFolderId = it
                 serverSettingsModel.updateItem(currentSetting)
             }
-            // FIXME: Needed?
-            viewAdapter.notifyDataSetChanged()
             listModel.refresh(refreshListView!!, arguments)
         }
 
         viewAdapter.register(
             FolderSelectorBinder(view.context)
         )
+    }
+
+    /**
+     * What to do when the list has changed
+     */
+    override val defaultObserver: (List<T>) -> Unit = {
+        emptyView.isVisible = it.isEmpty()
+
+        if (showFolderHeader()) {
+            val list = mutableListOf<Identifiable>(folderHeader)
+            list.addAll(it)
+            viewAdapter.submitList(list)
+        } else {
+            viewAdapter.submitList(it)
+        }
+    }
+
+    /**
+     * Get a folder header and update it on changes
+     */
+    private val folderHeader: FolderSelectorBinder.FolderHeader by lazy {
+        val header = FolderSelectorBinder.FolderHeader(
+            listModel.musicFolders.value!!,
+            listModel.activeServer.musicFolderId
+        )
+
+        listModel.musicFolders.observe(
+            viewLifecycleOwner,
+            {
+                header.folders = it
+                viewAdapter.notifyItemChanged(0)
+            }
+        )
+
+        header
     }
 
     companion object {

@@ -296,8 +296,18 @@ class OfflineMusicService : MusicService, KoinComponent {
         size: Int,
         offset: Int,
         musicFolderId: String?
-    ): MusicDirectory {
+    ): List<MusicDirectory.Album> {
         throw OfflineException("Album lists not available in offline mode")
+    }
+
+    @Throws(OfflineException::class)
+    override fun getAlbumList2(
+        type: String,
+        size: Int,
+        offset: Int,
+        musicFolderId: String?
+    ): List<MusicDirectory.Album> {
+        throw OfflineException("getAlbumList2 isn't available in offline mode")
     }
 
     @Throws(Exception::class)
@@ -387,16 +397,6 @@ class OfflineMusicService : MusicService, KoinComponent {
     @Throws(Exception::class)
     override fun getMusicFolders(refresh: Boolean): List<MusicFolder> {
         throw OfflineException("Music folders not available in offline mode")
-    }
-
-    @Throws(OfflineException::class)
-    override fun getAlbumList2(
-        type: String,
-        size: Int,
-        offset: Int,
-        musicFolderId: String?
-    ): MusicDirectory {
-        throw OfflineException("getAlbumList2 isn't available in offline mode")
     }
 
     @Throws(OfflineException::class)
@@ -512,7 +512,6 @@ class OfflineMusicService : MusicService, KoinComponent {
         return album
     }
 
-
     /*
      * Extracts some basic data from a File object and applies it to an Album or Entry
      */
@@ -530,7 +529,6 @@ class OfflineMusicService : MusicService, KoinComponent {
             coverArt = albumArt.path
         }
     }
-
 
     /*
      * More extensive variant of Child.populateWithDataFrom(), which also parses the ID3 tags of
@@ -559,7 +557,7 @@ class OfflineMusicService : MusicService, KoinComponent {
 
         artist = meta.artist ?: file.parentFile!!.parentFile!!.name
         album = meta.album ?: file.parentFile!!.name
-        title = meta.title?: title
+        title = meta.title ?: title
         isVideo = meta.hasVideo != null
         track = parseSlashedNumber(meta.track)
         discNumber = parseSlashedNumber(meta.disc)
@@ -659,7 +657,6 @@ class OfflineMusicService : MusicService, KoinComponent {
         }
         return closeness
     }
-
 
     private fun listFilesRecursively(parent: File, children: MutableList<File>) {
         for (file in FileUtil.listMediaFiles(parent)) {
