@@ -43,10 +43,10 @@ class AlbumListFragment : EntryListFragment<MusicDirectory.Album>() {
     ): LiveData<List<MusicDirectory.Album>> {
         if (args == null) throw IllegalArgumentException("Required arguments are missing")
 
-        val refresh = args.getBoolean(Constants.INTENT_REFRESH) || refresh
+        val refresh2 = args.getBoolean(Constants.INTENT_REFRESH) || refresh
         val append = args.getBoolean(Constants.INTENT_APPEND)
 
-        return listModel.getAlbumList(refresh or append, refreshListView!!, args)
+        return listModel.getAlbumList(refresh2 or append, refreshListView!!, args)
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {

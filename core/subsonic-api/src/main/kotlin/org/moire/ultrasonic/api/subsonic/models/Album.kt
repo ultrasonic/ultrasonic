@@ -18,6 +18,7 @@ data class Album(
     val duration: Int = 0,
     val year: Int = 0,
     val genre: String = "",
+    val playCount: Int = 0,
     @JsonProperty("song") val songList: List<MusicDirectoryChild> = emptyList(),
     @JsonProperty("starred") val starredDate: String = ""
 )

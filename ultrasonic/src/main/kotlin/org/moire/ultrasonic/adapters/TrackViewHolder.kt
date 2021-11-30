@@ -28,13 +28,11 @@ import timber.log.Timber
 
 /**
  * Used to display songs and videos in a `ListView`.
- * FIXME: Add video List item
- * FIXME: CHECKED bug
  */
 class TrackViewHolder(val view: View) : RecyclerView.ViewHolder(view), Checkable, KoinComponent {
 
     var check: CheckedTextView = view.findViewById(R.id.song_check)
-    var rating: LinearLayout = view.findViewById(R.id.song_rating)
+    private var rating: LinearLayout = view.findViewById(R.id.song_rating)
     private var fiveStar1: ImageView = view.findViewById(R.id.song_five_star_1)
     private var fiveStar2: ImageView = view.findViewById(R.id.song_five_star_2)
     private var fiveStar3: ImageView = view.findViewById(R.id.song_five_star_3)
@@ -90,7 +88,7 @@ class TrackViewHolder(val view: View) : RecyclerView.ViewHolder(view), Checkable
         }
 
         check.isVisible = (checkable && !song.isVideo)
-        setCheckedSilent(isSelected)
+        initChecked(isSelected)
         drag.isVisible = draggable
 
         if (ActiveServerProvider.isOffline()) {
@@ -107,6 +105,11 @@ class TrackViewHolder(val view: View) : RecyclerView.ViewHolder(view), Checkable
             setFiveStars(entry?.userRating ?: 0)
         } else {
             setSingleStar(entry!!.starred)
+        }
+
+        if (song.isVideo) {
+            artist.isVisible = false
+            progress.isVisible = false
         }
 
         RxBus.playerStateObservable.subscribe {
@@ -248,14 +251,23 @@ class TrackViewHolder(val view: View) : RecyclerView.ViewHolder(view), Checkable
         }
     }
 
-    private fun setCheckedSilent(newStatus: Boolean) {
+    /*
+     * Set the checked value and re-init the MutableLiveData.
+     * If we would post a new value, there might be a short glitch where the track is shown with its
+     * old selection status before the posted value has been processed.
+     */
+    private fun initChecked(newStatus: Boolean) {
+        observableChecked = MutableLiveData(newStatus)
         check.isChecked = newStatus
     }
 
+    /*
+     * To be correct, this method doesn't directly set the checked status.
+     * It only notifies the observable. If the selection tracker accepts the selection
+     *  (might be false for Singular SelectionTrackers) then it will cause the actual modification.
+     */
     override fun setChecked(newStatus: Boolean) {
         observableChecked.postValue(newStatus)
-        // FIXME, check if working
-        // check.isChecked = newStatus
     }
 
     override fun isChecked(): Boolean {

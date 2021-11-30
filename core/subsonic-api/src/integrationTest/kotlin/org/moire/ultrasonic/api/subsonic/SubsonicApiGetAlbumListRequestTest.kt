@@ -2,9 +2,9 @@ package org.moire.ultrasonic.api.subsonic
 
 import org.amshove.kluent.`should be equal to`
 import org.junit.Test
+import org.moire.ultrasonic.api.subsonic.models.Album
 import org.moire.ultrasonic.api.subsonic.models.AlbumListType
 import org.moire.ultrasonic.api.subsonic.models.AlbumListType.BY_GENRE
-import org.moire.ultrasonic.api.subsonic.models.MusicDirectoryChild
 
 /**
  * Integration tests for [SubsonicAPIDefinition] for getAlbumList call.
@@ -28,8 +28,8 @@ class SubsonicApiGetAlbumListRequestTest : SubsonicAPIClientTest() {
         assertResponseSuccessful(response)
         with(response.body()!!.albumList) {
             size `should be equal to` 2
-            this[1] `should be equal to` MusicDirectoryChild(
-                id = "9997", parent = "9996", isDir = true,
+            this[1] `should be equal to` Album(
+                id = "9997", parent = "9996",
                 title = "Endless Forms Most Beautiful", album = "Endless Forms Most Beautiful",
                 artist = "Nightwish", year = 2015, genre = "Symphonic Metal",
                 coverArt = "9997", playCount = 11,

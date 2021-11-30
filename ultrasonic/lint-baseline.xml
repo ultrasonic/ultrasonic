@@ -2,20 +2,6 @@
 <issues format="5" by="lint 4.2.2" client="gradle" variant="release" version="4.2.2">
 
     <issue
-        id="ObsoleteLintCustomCheck"
-        message="Lint found an issue registry (`androidx.appcompat.AppCompatIssueRegistry`) which is older than the current API level; these checks may not work correctly.&#xA;&#xA;Recompile the checks against the latest version. Custom check API version is 7 (4.0), current lint API level is 8 (4.1)">
-        <location
-            file="../../../../.gradle/caches/transforms-3/2f10f1fe0ff7ab74304d702879de0789/transformed/appcompat-1.2.0/jars/lint.jar"/>
-    </issue>
-
-    <issue
-        id="ObsoleteLintCustomCheck"
-        message="Lint found an issue registry (`timber.lint.TimberIssueRegistry`) which is older than the current API level; these checks may not work correctly.&#xA;&#xA;Recompile the checks against the latest version. Custom check API version is 1 (3.1), current lint API level is 8 (4.1)">
-        <location
-            file="../../../../.gradle/caches/transforms-3/e9d816753daf5450613abd98ccf3b80c/transformed/jetified-timber-4.7.1/jars/lint.jar"/>
-    </issue>
-
-    <issue
         id="ScopedStorage"
         message="WRITE_EXTERNAL_STORAGE no longer provides write access when targeting Android 10, unless you use `requestLegacyExternalStorage`"
         errorLine1="    &lt;uses-permission android:name=&quot;android.permission.WRITE_EXTERNAL_STORAGE&quot;/>"
@@ -24,17 +10,6 @@
             file="src/main/AndroidManifest.xml"
             line="10"
             column="36"/>
-    </issue>
-
-    <issue
-        id="IncludeLayoutParam"
-        message="Layout parameter `layout_gravity` ignored unless both `layout_width` and `layout_height` are also specified on `&lt;include>` tag"
-        errorLine1="        a:layout_gravity=&quot;center_vertical&quot; />"
-        errorLine2="        ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
-        <location
-            file="src/main/res/layout/video_list_item.xml"
-            line="17"
-            column="9"/>
     </issue>
 
     <issue
@@ -200,17 +175,6 @@
             file="src/main/res/layout/appwidget4x4.xml"
             line="8"
             column="5"/>
-    </issue>
-
-    <issue
-        id="Overdraw"
-        message="Possible overdraw: Root element paints background `?android:attr/selectableItemBackground` with a theme that also paints a background (inferred theme is `@style/NoActionBar`)"
-        errorLine1="    a:background=&quot;?android:attr/selectableItemBackground&quot;"
-        errorLine2="    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
-        <location
-            file="src/main/res/drawable/ic_baseline_info_24.xml"
-            line="1"
-            column="1"/>
     </issue>
 
     <issue
@@ -1020,7 +984,62 @@
             column="13"/>
         <location
             file="src/main/res/values-zh-rCN/strings.xml"
-            line="289"
+            line="288"
+            column="13"/>
+    </issue>
+
+    <issue
+        id="UnusedResources"
+        message="The resource `R.string.select_album_all_songs` appears to be unused"
+        errorLine1="    &lt;string name=&quot;select_album_all_songs&quot;>All Songs by %s&lt;/string>"
+        errorLine2="            ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
+        <location
+            file="src/main/res/values/strings.xml"
+            line="381"
+            column="13"/>
+        <location
+            file="src/main/res/values-cs/strings.xml"
+            line="351"
+            column="13"/>
+        <location
+            file="src/main/res/values-de/strings.xml"
+            line="346"
+            column="13"/>
+        <location
+            file="src/main/res/values-es/strings.xml"
+            line="374"
+            column="13"/>
+        <location
+            file="src/main/res/values-fr/strings.xml"
+            line="365"
+            column="13"/>
+        <location
+            file="src/main/res/values-hu/strings.xml"
+            line="363"
+            column="13"/>
+        <location
+            file="src/main/res/values-nl/strings.xml"
+            line="374"
+            column="13"/>
+        <location
+            file="src/main/res/values-pl/strings.xml"
+            line="346"
+            column="13"/>
+        <location
+            file="src/main/res/values-pt/strings.xml"
+            line="346"
+            column="13"/>
+        <location
+            file="src/main/res/values-pt-rBR/strings.xml"
+            line="367"
+            column="13"/>
+        <location
+            file="src/main/res/values-ru/strings.xml"
+            line="365"
+            column="13"/>
+        <location
+            file="src/main/res/values-zh-rCN/strings.xml"
+            line="363"
             column="13"/>
     </issue>
 
@@ -1084,17 +1103,6 @@
             file="src/main/res/values-zh-rCN/strings.xml"
             line="440"
             column="14"/>
-    </issue>
-
-    <issue
-        id="UselessParent"
-        message="This `LinearLayout` layout or its `LinearLayout` parent is useless"
-        errorLine1="    &lt;LinearLayout"
-        errorLine2="     ~~~~~~~~~~~~">
-        <location
-            file="src/main/res/layout/video_details.xml"
-            line="9"
-            column="6"/>
     </issue>
 
     <issue
@@ -1500,17 +1508,6 @@
             file="src/main/res/layout/list_item_track.xml"
             line="79"
             column="10"/>
-    </issue>
-
-    <issue
-        id="ContentDescription"
-        message="Missing `contentDescription` attribute on image"
-        errorLine1="    &lt;ImageView"
-        errorLine2="     ~~~~~~~~~">
-        <location
-            file="src/main/res/layout/video_list_item.xml"
-            line="19"
-            column="6"/>
     </issue>
 
     <issue

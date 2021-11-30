@@ -868,7 +868,8 @@ class PlayerFragment :
         )
 
         dragTouchHelper = ItemTouchHelper(object : ItemTouchHelper.SimpleCallback(
-            ItemTouchHelper.UP or ItemTouchHelper.DOWN, 0
+            ItemTouchHelper.UP or ItemTouchHelper.DOWN,
+            ItemTouchHelper.LEFT or ItemTouchHelper.RIGHT
         ) {
 
                 override fun onMove(
@@ -887,7 +888,20 @@ class PlayerFragment :
                     return true
                 }
 
+                // Swipe to delete from playlist
                 override fun onSwiped(viewHolder: RecyclerView.ViewHolder, direction: Int) {
+                    val pos = viewHolder.bindingAdapterPosition
+                    val file = mediaPlayerController.playList[pos]
+                    mediaPlayerController.removeFromPlaylist(file)
+
+                    val songRemoved = String.format(
+                        resources.getString(R.string.download_song_removed),
+                        file.song.title
+                    )
+                    Util.toast(context, songRemoved)
+
+                    viewAdapter.submitList(mediaPlayerController.playList)
+                    viewAdapter.notifyDataSetChanged()
                 }
             }
         )

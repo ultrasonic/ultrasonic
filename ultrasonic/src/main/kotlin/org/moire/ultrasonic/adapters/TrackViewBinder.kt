@@ -53,6 +53,9 @@ class TrackViewBinder(
 
         holder.imageHelper = imageHelper
 
+        // Remove observer before binding
+        holder.observableChecked.removeObservers(lifecycleOwner)
+
         holder.setSong(
             file = downloadFile,
             checkable = checkable,
@@ -65,7 +68,7 @@ class TrackViewBinder(
                 val popup = Utils.createPopupMenu(holder.itemView, contextMenuLayout)
 
                 popup.setOnMenuItemClickListener { menuItem ->
-                    onContextMenuClick?.invoke(menuItem, downloadFile)
+                    onContextMenuClick.invoke(menuItem, downloadFile)
                 }
             } else {
                 // Minimize or maximize the Text view (if song title is very long)
@@ -78,22 +81,22 @@ class TrackViewBinder(
         }
 
         holder.itemView.setOnClickListener {
-            if (!checkable) {
-                onItemClick(downloadFile)
-            } else {
+            if (checkable && !downloadFile.song.isVideo) {
                 val nowChecked = !holder.check.isChecked
                 holder.isChecked = nowChecked
+            } else {
+                onItemClick(downloadFile)
             }
         }
 
         // Notify the adapter of selection changes
         holder.observableChecked.observe(
             lifecycleOwner,
-            { newValue ->
-                if (newValue) {
-                    diffAdapter.notifySelected(item.longId)
+            { isCheckedNow ->
+                if (isCheckedNow) {
+                    diffAdapter.notifySelected(holder.entry!!.longId)
                 } else {
-                    diffAdapter.notifyUnselected(item.longId)
+                    diffAdapter.notifyUnselected(holder.entry!!.longId)
                 }
             }
         )

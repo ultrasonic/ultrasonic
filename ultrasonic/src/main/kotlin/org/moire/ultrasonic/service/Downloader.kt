@@ -120,7 +120,7 @@ class Downloader(
     }
 
     @Synchronized
-    @Suppress("ComplexMethod")
+    @Suppress("ComplexMethod", "ComplexCondition")
     fun checkDownloadsInternal() {
         if (
             !Util.isExternalStoragePresent() ||
@@ -502,7 +502,7 @@ class Downloader(
 
     /**
      * Extension function
-     * Gathers the donwload file for a given song, and modifies shouldSave if provided.
+     * Gathers the download file for a given song, and modifies shouldSave if provided.
      */
     fun MusicDirectory.Entry.getDownloadFile(save: Boolean? = null): DownloadFile {
         return getDownloadFileForSong(this).apply {

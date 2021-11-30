@@ -42,8 +42,8 @@ empty-blocks:
 complexity:
   active: true
   TooManyFunctions:
-    thresholdInFiles: 20
-    thresholdInClasses: 20
+    thresholdInFiles: 25
+    thresholdInClasses: 25
     thresholdInInterfaces: 20
     thresholdInObjects: 30
   LabeledExpression:

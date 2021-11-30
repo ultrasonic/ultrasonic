@@ -299,6 +299,7 @@ class MediaPlayerController(
     }
 
     @Synchronized
+    // TODO: If a playlist contains an item twice, this call will wrongly remove all
     fun removeFromPlaylist(downloadFile: DownloadFile) {
         if (downloadFile == localMediaPlayer.currentPlaying) {
             reset()

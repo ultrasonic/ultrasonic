@@ -34,7 +34,10 @@ class BookmarksFragment : TrackCollectionFragment() {
         viewAdapter.selectionType = BaseAdapter.SelectionType.SINGLE
     }
 
-    override fun getLiveData(args: Bundle?, refresh: Boolean): LiveData<List<MusicDirectory.Child>> {
+    override fun getLiveData(
+        args: Bundle?,
+        refresh: Boolean
+    ): LiveData<List<MusicDirectory.Child>> {
         listModel.viewModelScope.launch(handler) {
             refreshListView?.isRefreshing = true
             listModel.getBookmarks()

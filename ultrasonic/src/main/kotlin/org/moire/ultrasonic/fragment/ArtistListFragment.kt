@@ -33,8 +33,8 @@ class ArtistListFragment : EntryListFragment<ArtistOrIndex>() {
      * The central function to pass a query to the model and return a LiveData object
      */
     override fun getLiveData(args: Bundle?, refresh: Boolean): LiveData<List<ArtistOrIndex>> {
-        val refresh = args?.getBoolean(Constants.INTENT_REFRESH) ?: false || refresh
-        return listModel.getItems(refresh, refreshListView!!)
+        val refresh2 = args?.getBoolean(Constants.INTENT_REFRESH) ?: false || refresh
+        return listModel.getItems(refresh2, refreshListView!!)
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {

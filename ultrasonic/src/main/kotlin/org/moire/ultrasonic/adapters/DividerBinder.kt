@@ -16,7 +16,7 @@ class DividerBinder : ItemViewBinder<DividerBinder.Divider, DividerBinder.ViewHo
 
     // Set our layout files
     val layout = R.layout.list_item_divider
-    val more_button = R.layout.list_item_more_button
+    val moreButton = R.layout.list_item_more_button
 
     override fun onBindViewHolder(holder: ViewHolder, item: Divider) {
         // Set text

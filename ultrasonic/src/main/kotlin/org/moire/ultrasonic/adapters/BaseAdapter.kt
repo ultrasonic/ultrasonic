@@ -166,7 +166,6 @@ class BaseAdapter<T : Identifiable> : MultiTypeAdapter() {
     fun notifyChanged() {
         // When the download state of an entry was changed by an external process,
         // increase the revision counter in order to update the UI
-
         selectionRevision.postValue(selectionRevision.value!! + 1)
     }
 

@@ -3,6 +3,7 @@ package org.moire.ultrasonic.api.subsonic
 import org.amshove.kluent.`should be equal to`
 import org.amshove.kluent.`should not be`
 import org.junit.Test
+import org.moire.ultrasonic.api.subsonic.models.Album
 import org.moire.ultrasonic.api.subsonic.models.Artist
 import org.moire.ultrasonic.api.subsonic.models.MusicDirectoryChild
 import org.moire.ultrasonic.api.subsonic.models.SearchTwoResult
@@ -32,9 +33,8 @@ class SubsonicApiSearchTwoTest : SubsonicAPIClientTest() {
             artistList.size `should be equal to` 1
             artistList[0] `should be equal to` Artist(id = "522", name = "The Prodigy")
             albumList.size `should be equal to` 1
-            albumList[0] `should be equal to` MusicDirectoryChild(
-                id = "8867", parent = "522",
-                isDir = true, title = "Always Outnumbered, Never Outgunned",
+            albumList[0] `should be equal to` Album(
+                id = "8867", parent = "522", title = "Always Outnumbered, Never Outgunned",
                 album = "Always Outnumbered, Never Outgunned", artist = "The Prodigy",
                 year = 2004, genre = "Electronic", coverArt = "8867", playCount = 0,
                 created = parseDate("2016-10-23T20:57:27.000Z")
