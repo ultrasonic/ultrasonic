@@ -52,8 +52,6 @@ class BaseAdapter<T : Identifiable> : MultiTypeAdapter() {
         return mDiffer.currentList[position]
     }
 
-    // override getIt
-
     override var items: List<Any>
         get() = getCurrentList()
         set(value) {

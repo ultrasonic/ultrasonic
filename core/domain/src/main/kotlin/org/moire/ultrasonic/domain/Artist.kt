@@ -11,21 +11,4 @@ data class Artist(
     override var coverArt: String? = null,
     override var albumCount: Long? = null,
     override var closeness: Int = 0
-) : ArtistOrIndex(id) {
-
-    fun compareTo(other: Artist): Int {
-        when {
-            this.closeness == other.closeness -> {
-                return 0
-            }
-            this.closeness > other.closeness -> {
-                return -1
-            }
-            else -> {
-                return 1
-            }
-        }
-    }
-
-    override fun compareTo(other: Identifiable) = compareTo(other as Artist)
-}
+) : ArtistOrIndex(id)

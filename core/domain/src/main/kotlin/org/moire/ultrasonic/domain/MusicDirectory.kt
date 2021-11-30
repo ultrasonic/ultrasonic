@@ -32,7 +32,7 @@ class MusicDirectory : ArrayList<MusicDirectory.Child>() {
         }
     }
 
-    abstract class Child : Identifiable, GenericEntry() {
+    abstract class Child : GenericEntry() {
         abstract override var id: String
         abstract var parent: String?
         abstract var isDirectory: Boolean

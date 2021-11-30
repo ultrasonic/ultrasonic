@@ -49,13 +49,11 @@ import org.moire.ultrasonic.util.Settings
 import org.moire.ultrasonic.util.Util
 
 /**
- *
  * Displays a group of tracks, eg. the songs of an album, of a playlist etc.
  *
  * In most cases the data should be just a list of Entries, but there are some cases
  * where the list can contain Albums as well. This happens especially when having ID3 tags disabled,
  * or using Offline mode, both in which Indexes instead of Artists are being used.
- *
  */
 @Suppress("TooManyFunctions")
 open class TrackCollectionFragment : MultiListFragment<MusicDirectory.Child>() {
@@ -96,7 +94,7 @@ open class TrackCollectionFragment : MultiListFragment<MusicDirectory.Child>() {
         // Setup refresh handler
         refreshListView = view.findViewById(refreshListId)
         refreshListView?.setOnRefreshListener {
-            refreshData(true)
+            getLiveData(arguments, true)
         }
 
         // TODO: remove special casing for songsForGenre
@@ -209,12 +207,6 @@ open class TrackCollectionFragment : MultiListFragment<MusicDirectory.Child>() {
         refreshListView?.isRefreshing = false
     }
 
-    private fun refreshData(refresh: Boolean = false) {
-        val args = getArgumentsClone()
-        args.putBoolean(Constants.INTENT_EXTRA_NAME_REFRESH, refresh)
-        getLiveData(args)
-    }
-
     override fun onPrepareOptionsMenu(menu: Menu) {
         super.onPrepareOptionsMenu(menu)
         playAllButton = menu.findItem(R.id.select_album_play_all)
@@ -293,8 +285,6 @@ open class TrackCollectionFragment : MultiListFragment<MusicDirectory.Child>() {
         }
 
         val isArtist = arguments?.getBoolean(Constants.INTENT_EXTRA_NAME_ARTIST, false) ?: false
-
-        // FIXME WHICH id if no arguments?
         val id = arguments?.getString(Constants.INTENT_EXTRA_NAME_ID)
 
         if (hasSubFolders && id != null) {
@@ -565,7 +555,10 @@ open class TrackCollectionFragment : MultiListFragment<MusicDirectory.Child>() {
     }
 
     @Suppress("LongMethod")
-    override fun getLiveData(args: Bundle?, refresh: Boolean): LiveData<List<MusicDirectory.Child>> {
+    override fun getLiveData(
+        args: Bundle?,
+        refresh: Boolean
+    ): LiveData<List<MusicDirectory.Child>> {
         if (args == null) return listModel.currentList
         val id = args.getString(Constants.INTENT_EXTRA_NAME_ID)
         val isAlbum = args.getBoolean(Constants.INTENT_EXTRA_NAME_IS_ALBUM, false)
@@ -588,7 +581,7 @@ open class TrackCollectionFragment : MultiListFragment<MusicDirectory.Child>() {
         val albumListOffset = args.getInt(
             Constants.INTENT_EXTRA_NAME_ALBUM_LIST_OFFSET, 0
         )
-        val refresh = args.getBoolean(Constants.INTENT_EXTRA_NAME_REFRESH, true) || refresh
+        val refresh2 = args.getBoolean(Constants.INTENT_EXTRA_NAME_REFRESH, true) || refresh
 
         listModel.viewModelScope.launch(handler) {
             refreshListView?.isRefreshing = true
@@ -610,7 +603,7 @@ open class TrackCollectionFragment : MultiListFragment<MusicDirectory.Child>() {
                 listModel.getStarred()
             } else if (getVideos != 0) {
                 setTitle(R.string.main_videos)
-                listModel.getVideos(refresh)
+                listModel.getVideos(refresh2)
             } else if (getRandomTracks != 0) {
                 setTitle(R.string.main_songs_random)
                 listModel.getRandom(albumListSize)
@@ -618,12 +611,12 @@ open class TrackCollectionFragment : MultiListFragment<MusicDirectory.Child>() {
                 setTitle(name)
                 if (!isOffline() && Settings.shouldUseId3Tags) {
                     if (isAlbum) {
-                        listModel.getAlbum(refresh, id!!, name)
+                        listModel.getAlbum(refresh2, id!!, name)
                     } else {
                         throw IllegalAccessException("Use AlbumFragment instead!")
                     }
                 } else {
-                    listModel.getMusicDirectory(refresh, id!!, name)
+                    listModel.getMusicDirectory(refresh2, id!!, name)
                 }
             }
 

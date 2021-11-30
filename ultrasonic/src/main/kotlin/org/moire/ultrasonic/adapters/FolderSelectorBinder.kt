@@ -128,9 +128,5 @@ class FolderSelectorBinder(context: Context) :
 
         override val longId: Long
             get() = -1L
-
-        override fun compareTo(other: Identifiable): Int {
-            return longId.compareTo(other.longId)
-        }
     }
 }

@@ -3,17 +3,16 @@ package org.moire.ultrasonic.fragment
 import android.app.SearchManager
 import android.content.Context
 import android.os.Bundle
-import android.view.LayoutInflater
 import android.view.Menu
 import android.view.MenuInflater
 import android.view.MenuItem
 import android.view.View
-import android.widget.ListAdapter
 import androidx.appcompat.widget.SearchView
 import androidx.core.view.isVisible
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.viewModelScope
 import androidx.navigation.Navigation
+import androidx.navigation.fragment.findNavController
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import kotlinx.coroutines.launch
 import org.koin.core.component.KoinComponent
@@ -26,7 +25,9 @@ import org.moire.ultrasonic.adapters.MoreButtonBinder
 import org.moire.ultrasonic.adapters.MoreButtonBinder.MoreButton
 import org.moire.ultrasonic.adapters.TrackViewBinder
 import org.moire.ultrasonic.domain.Artist
+import org.moire.ultrasonic.domain.ArtistOrIndex
 import org.moire.ultrasonic.domain.Identifiable
+import org.moire.ultrasonic.domain.Index
 import org.moire.ultrasonic.domain.MusicDirectory
 import org.moire.ultrasonic.domain.SearchResult
 import org.moire.ultrasonic.fragment.FragmentTitle.Companion.setTitle
@@ -41,12 +42,10 @@ import org.moire.ultrasonic.util.CommunicationError
 import org.moire.ultrasonic.util.Constants
 import org.moire.ultrasonic.util.Settings
 import org.moire.ultrasonic.util.Util.toast
-import org.moire.ultrasonic.view.ArtistAdapter
 import timber.log.Timber
 
 /**
  * Initiates a search on the media library and displays the results
- * FIXME: Artist click, display
  */
 class SearchFragment : MultiListFragment<Identifiable>(), KoinComponent {
     private var searchResult: SearchResult? = null
@@ -265,11 +264,28 @@ class SearchFragment : MultiListFragment<Identifiable>(), KoinComponent {
         populateList(listModel.trimResultLength(searchResult!!, maxSongs = Int.MAX_VALUE))
     }
 
-    private fun onArtistSelected(artist: Artist) {
+    private fun onArtistSelected(item: ArtistOrIndex) {
         val bundle = Bundle()
-        bundle.putString(Constants.INTENT_EXTRA_NAME_ID, artist.id)
-        bundle.putString(Constants.INTENT_EXTRA_NAME_NAME, artist.id)
-        Navigation.findNavController(requireView()).navigate(R.id.searchToSelectAlbum, bundle)
+
+        // Common arguments
+        bundle.putString(Constants.INTENT_EXTRA_NAME_ID, item.id)
+        bundle.putString(Constants.INTENT_EXTRA_NAME_NAME, item.name)
+        bundle.putString(Constants.INTENT_EXTRA_NAME_PARENT_ID, item.id)
+        bundle.putBoolean(Constants.INTENT_EXTRA_NAME_ARTIST, (item is Artist))
+
+        // Check type
+        if (item is Index) {
+            findNavController().navigate(R.id.searchToTrackCollection, bundle)
+        } else {
+            bundle.putString(
+                Constants.INTENT_EXTRA_NAME_ALBUM_LIST_TYPE,
+                Constants.ALBUMS_OF_ARTIST
+            )
+            bundle.putString(Constants.INTENT_EXTRA_NAME_ALBUM_LIST_TITLE, item.name)
+            bundle.putInt(Constants.INTENT_EXTRA_NAME_ALBUM_LIST_SIZE, 1000)
+            bundle.putInt(Constants.INTENT_EXTRA_NAME_ALBUM_LIST_OFFSET, 0)
+            findNavController().navigate(R.id.searchToAlbumsList, bundle)
+        }
     }
 
     private fun onAlbumSelected(album: MusicDirectory.Album, autoplay: Boolean) {
@@ -278,14 +294,21 @@ class SearchFragment : MultiListFragment<Identifiable>(), KoinComponent {
         bundle.putString(Constants.INTENT_EXTRA_NAME_NAME, album.title)
         bundle.putBoolean(Constants.INTENT_EXTRA_NAME_IS_ALBUM, album.isDirectory)
         bundle.putBoolean(Constants.INTENT_EXTRA_NAME_AUTOPLAY, autoplay)
-        Navigation.findNavController(requireView()).navigate(R.id.searchToSelectAlbum, bundle)
+        Navigation.findNavController(requireView()).navigate(R.id.searchToTrackCollection, bundle)
     }
 
     private fun onSongSelected(song: MusicDirectory.Entry, append: Boolean) {
         if (!append) {
             mediaPlayerController.clear()
         }
-        mediaPlayerController.addToPlaylist(listOf(song), false, false, false, false, false)
+        mediaPlayerController.addToPlaylist(
+            listOf(song),
+            save = false,
+            autoPlay = false,
+            playNext = false,
+            shuffle = false,
+            newPlaylist = false
+        )
         mediaPlayerController.play(mediaPlayerController.playlistSize - 1)
         toast(context, resources.getQuantityString(R.plurals.select_album_n_songs_added, 1, 1))
     }
@@ -304,7 +327,7 @@ class SearchFragment : MultiListFragment<Identifiable>(), KoinComponent {
 
     override fun onItemClick(item: Identifiable) {
         when (item) {
-            is Artist -> {
+            is ArtistOrIndex -> {
                 onArtistSelected(item)
             }
             is MusicDirectory.Entry -> {

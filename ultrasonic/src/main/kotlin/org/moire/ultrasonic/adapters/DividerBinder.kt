@@ -41,9 +41,5 @@ class DividerBinder : ItemViewBinder<DividerBinder.Divider, DividerBinder.ViewHo
     data class Divider(val stringId: Int) : Identifiable {
         override val id: String
             get() = stringId.toString()
-        override val longId: Long
-            get() = stringId.toLong()
-
-        override fun compareTo(other: Identifiable): Int = longId.compareTo(other.longId)
     }
 }

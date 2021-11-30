@@ -9,7 +9,6 @@ import androidx.navigation.fragment.findNavController
 import org.moire.ultrasonic.R
 import org.moire.ultrasonic.adapters.FolderSelectorBinder
 import org.moire.ultrasonic.domain.Artist
-import org.moire.ultrasonic.domain.ArtistOrIndex
 import org.moire.ultrasonic.domain.GenericEntry
 import org.moire.ultrasonic.domain.Identifiable
 import org.moire.ultrasonic.service.RxBus
@@ -49,6 +48,10 @@ abstract class EntryListFragment<T : GenericEntry> : MultiListFragment<T>() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+
+        // Call a cheap function on ServerSettingsModel to make sure it is initialized by Koin,
+        // because it can't be initialized from inside the callback
+        serverSettingsModel.toString()
 
         RxBus.musicFolderChangedEventObservable.subscribe {
             if (!listModel.isOffline()) {

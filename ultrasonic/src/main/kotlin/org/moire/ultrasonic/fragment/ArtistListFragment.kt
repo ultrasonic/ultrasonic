@@ -2,25 +2,20 @@ package org.moire.ultrasonic.fragment
 
 import android.os.Bundle
 import android.view.View
-import androidx.core.view.isVisible
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.LiveData
+import androidx.navigation.NavController
 import androidx.navigation.fragment.findNavController
 import org.moire.ultrasonic.R
 import org.moire.ultrasonic.adapters.ArtistRowBinder
-import org.moire.ultrasonic.adapters.FolderSelectorBinder
 import org.moire.ultrasonic.domain.Artist
 import org.moire.ultrasonic.domain.ArtistOrIndex
-import org.moire.ultrasonic.domain.Identifiable
 import org.moire.ultrasonic.domain.Index
-import org.moire.ultrasonic.domain.MusicDirectory
 import org.moire.ultrasonic.model.ArtistListModel
 import org.moire.ultrasonic.util.Constants
 
 /**
- * Displays the list of Artists from the media library
- *
- * FIXME: FOLDER HEADER NOT POPULATED ON FIST LOAD
+ * Displays the list of Artists or Indexes (folders) from the media library
  */
 class ArtistListFragment : EntryListFragment<ArtistOrIndex>() {
 
@@ -60,23 +55,32 @@ class ArtistListFragment : EntryListFragment<ArtistOrIndex>() {
      * If we are showing artists, we need to go to AlbumList
      */
     override fun onItemClick(item: ArtistOrIndex) {
-        val bundle = Bundle()
+        Companion.onItemClick(item, findNavController())
+    }
 
-        // Common arguments
-        bundle.putString(Constants.INTENT_EXTRA_NAME_ID, item.id)
-        bundle.putString(Constants.INTENT_EXTRA_NAME_NAME, item.name)
-        bundle.putString(Constants.INTENT_EXTRA_NAME_PARENT_ID, item.id)
-        bundle.putBoolean(Constants.INTENT_EXTRA_NAME_ARTIST, (item is Artist))
+    companion object {
+        fun onItemClick(item: ArtistOrIndex, navController: NavController) {
+            val bundle = Bundle()
 
-        // Check type
-        if (item is Index) {
-            findNavController().navigate(R.id.artistsListToTrackCollection, bundle)
-        } else {
-            bundle.putString(Constants.INTENT_EXTRA_NAME_ALBUM_LIST_TYPE, Constants.ALBUMS_OF_ARTIST)
-            bundle.putString(Constants.INTENT_EXTRA_NAME_ALBUM_LIST_TITLE, item.name)
-            bundle.putInt(Constants.INTENT_EXTRA_NAME_ALBUM_LIST_SIZE, 1000)
-            bundle.putInt(Constants.INTENT_EXTRA_NAME_ALBUM_LIST_OFFSET, 0)
-            findNavController().navigate(R.id.artistsListToAlbumsList, bundle)
+            // Common arguments
+            bundle.putString(Constants.INTENT_EXTRA_NAME_ID, item.id)
+            bundle.putString(Constants.INTENT_EXTRA_NAME_NAME, item.name)
+            bundle.putString(Constants.INTENT_EXTRA_NAME_PARENT_ID, item.id)
+            bundle.putBoolean(Constants.INTENT_EXTRA_NAME_ARTIST, (item is Artist))
+
+            // Check type
+            if (item is Index) {
+                navController.navigate(R.id.artistsListToTrackCollection, bundle)
+            } else {
+                bundle.putString(
+                    Constants.INTENT_EXTRA_NAME_ALBUM_LIST_TYPE,
+                    Constants.ALBUMS_OF_ARTIST
+                )
+                bundle.putString(Constants.INTENT_EXTRA_NAME_ALBUM_LIST_TITLE, item.name)
+                bundle.putInt(Constants.INTENT_EXTRA_NAME_ALBUM_LIST_SIZE, 1000)
+                bundle.putInt(Constants.INTENT_EXTRA_NAME_ALBUM_LIST_OFFSET, 0)
+                navController.navigate(R.id.artistsListToAlbumsList, bundle)
+            }
         }
     }
 }

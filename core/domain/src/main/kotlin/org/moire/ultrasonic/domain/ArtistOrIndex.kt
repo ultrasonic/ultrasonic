@@ -15,4 +15,21 @@ abstract class ArtistOrIndex(
     open var albumCount: Long? = null,
     @Ignore
     open var closeness: Int = 0
-) : GenericEntry()
+) : GenericEntry() {
+
+    fun compareTo(other: ArtistOrIndex): Int {
+        when {
+            this.closeness == other.closeness -> {
+                return 0
+            }
+            this.closeness > other.closeness -> {
+                return -1
+            }
+            else -> {
+                return 1
+            }
+        }
+    }
+
+    override fun compareTo(other: Identifiable) = compareTo(other as ArtistOrIndex)
+}

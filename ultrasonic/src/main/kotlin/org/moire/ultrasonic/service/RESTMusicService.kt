@@ -361,7 +361,6 @@ open class RESTMusicService(
             musicFolderId
         ).execute().throwOnFailure()
 
-
         return response.body()!!.albumList.toDomainEntityList()
     }
 

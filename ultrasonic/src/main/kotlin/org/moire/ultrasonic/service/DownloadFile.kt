@@ -436,10 +436,6 @@ class DownloadFile(
     override val id: String
         get() = song.id
 
-    override val longId: Long by lazy {
-        id.hashCode().toLong()
-    }
-
     companion object {
         const val MAX_RETRIES = 5
     }

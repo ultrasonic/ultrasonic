@@ -24,6 +24,7 @@ import org.koin.core.component.KoinComponent
 import org.koin.core.component.inject
 import org.moire.ultrasonic.data.ActiveServerProvider
 import org.moire.ultrasonic.domain.Artist
+import org.moire.ultrasonic.domain.ArtistOrIndex
 import org.moire.ultrasonic.domain.Bookmark
 import org.moire.ultrasonic.domain.ChatMessage
 import org.moire.ultrasonic.domain.Genre
@@ -122,7 +123,7 @@ class OfflineMusicService : MusicService, KoinComponent {
     }
 
     override fun search(criteria: SearchCriteria): SearchResult {
-        val artists: MutableList<Artist> = ArrayList()
+        val artists: MutableList<ArtistOrIndex> = ArrayList()
         val albums: MutableList<MusicDirectory.Album> = ArrayList()
         val songs: MutableList<MusicDirectory.Entry> = ArrayList()
         val root = FileUtil.musicDirectory
@@ -131,7 +132,7 @@ class OfflineMusicService : MusicService, KoinComponent {
             val artistName = artistFile.name
             if (artistFile.isDirectory) {
                 if (matchCriteria(criteria, artistName).also { closeness = it } > 0) {
-                    val artist = Artist(artistFile.path)
+                    val artist = Index(artistFile.path)
                     artist.index = artistFile.name.substring(0, 1)
                     artist.name = artistName
                     artist.closeness = closeness
