@@ -39,10 +39,10 @@ abstract class EntryListFragment<T : GenericEntry> : MultiListFragment<T>() {
 
     override fun onItemClick(item: T) {
         val bundle = Bundle()
-        bundle.putString(Constants.INTENT_EXTRA_NAME_ID, item.id)
-        bundle.putString(Constants.INTENT_EXTRA_NAME_NAME, item.name)
-        bundle.putString(Constants.INTENT_EXTRA_NAME_PARENT_ID, item.id)
-        bundle.putBoolean(Constants.INTENT_EXTRA_NAME_ARTIST, (item is Artist))
+        bundle.putString(Constants.INTENT_ID, item.id)
+        bundle.putString(Constants.INTENT_NAME, item.name)
+        bundle.putString(Constants.INTENT_PARENT_ID, item.id)
+        bundle.putBoolean(Constants.INTENT_ARTIST, (item is Artist))
         findNavController().navigate(R.id.trackCollectionFragment, bundle)
     }
 

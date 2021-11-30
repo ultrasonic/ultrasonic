@@ -284,8 +284,8 @@ open class TrackCollectionFragment : MultiListFragment<MusicDirectory.Child>() {
             }
         }
 
-        val isArtist = arguments?.getBoolean(Constants.INTENT_EXTRA_NAME_ARTIST, false) ?: false
-        val id = arguments?.getString(Constants.INTENT_EXTRA_NAME_ID)
+        val isArtist = arguments?.getBoolean(Constants.INTENT_ARTIST, false) ?: false
+        val id = arguments?.getString(Constants.INTENT_ID)
 
         if (hasSubFolders && id != null) {
             downloadHandler.downloadRecursively(
@@ -428,7 +428,7 @@ open class TrackCollectionFragment : MultiListFragment<MusicDirectory.Child>() {
 
         // Hide more button when results are less than album list size
         if (musicDirectory.size < requireArguments().getInt(
-            Constants.INTENT_EXTRA_NAME_ALBUM_LIST_SIZE, 0
+            Constants.INTENT_ALBUM_LIST_SIZE, 0
         )
         ) {
             moreButton!!.visibility = View.GONE
@@ -437,15 +437,15 @@ open class TrackCollectionFragment : MultiListFragment<MusicDirectory.Child>() {
         }
 
         moreButton!!.setOnClickListener {
-            val theGenre = requireArguments().getString(Constants.INTENT_EXTRA_NAME_GENRE_NAME)
-            val size = requireArguments().getInt(Constants.INTENT_EXTRA_NAME_ALBUM_LIST_SIZE, 0)
+            val theGenre = requireArguments().getString(Constants.INTENT_GENRE_NAME)
+            val size = requireArguments().getInt(Constants.INTENT_ALBUM_LIST_SIZE, 0)
             val theOffset = requireArguments().getInt(
-                Constants.INTENT_EXTRA_NAME_ALBUM_LIST_OFFSET, 0
+                Constants.INTENT_ALBUM_LIST_OFFSET, 0
             ) + size
             val bundle = Bundle()
-            bundle.putString(Constants.INTENT_EXTRA_NAME_GENRE_NAME, theGenre)
-            bundle.putInt(Constants.INTENT_EXTRA_NAME_ALBUM_LIST_SIZE, size)
-            bundle.putInt(Constants.INTENT_EXTRA_NAME_ALBUM_LIST_OFFSET, theOffset)
+            bundle.putString(Constants.INTENT_GENRE_NAME, theGenre)
+            bundle.putInt(Constants.INTENT_ALBUM_LIST_SIZE, size)
+            bundle.putInt(Constants.INTENT_ALBUM_LIST_OFFSET, theOffset)
 
             Navigation.findNavController(requireView())
                 .navigate(R.id.trackCollectionFragment, bundle)
@@ -472,7 +472,7 @@ open class TrackCollectionFragment : MultiListFragment<MusicDirectory.Child>() {
             }
         }
 
-        val listSize = arguments?.getInt(Constants.INTENT_EXTRA_NAME_ALBUM_LIST_SIZE, 0) ?: 0
+        val listSize = arguments?.getInt(Constants.INTENT_ALBUM_LIST_SIZE, 0) ?: 0
 
         // Hide select button for video lists and singular selection lists
         selectButton!!.isVisible = !allVideos && viewAdapter.hasMultipleSelection() && songCount > 0
@@ -482,15 +482,15 @@ open class TrackCollectionFragment : MultiListFragment<MusicDirectory.Child>() {
                 moreButton!!.visibility = View.GONE
             } else {
                 moreButton!!.visibility = View.VISIBLE
-                if (arguments?.getInt(Constants.INTENT_EXTRA_NAME_RANDOM, 0) ?: 0 > 0) {
+                if (arguments?.getInt(Constants.INTENT_RANDOM, 0) ?: 0 > 0) {
                     moreButton!!.setOnClickListener {
                         val offset = requireArguments().getInt(
-                            Constants.INTENT_EXTRA_NAME_ALBUM_LIST_OFFSET, 0
+                            Constants.INTENT_ALBUM_LIST_OFFSET, 0
                         ) + listSize
                         val bundle = Bundle()
-                        bundle.putInt(Constants.INTENT_EXTRA_NAME_RANDOM, 1)
-                        bundle.putInt(Constants.INTENT_EXTRA_NAME_ALBUM_LIST_SIZE, listSize)
-                        bundle.putInt(Constants.INTENT_EXTRA_NAME_ALBUM_LIST_OFFSET, offset)
+                        bundle.putInt(Constants.INTENT_RANDOM, 1)
+                        bundle.putInt(Constants.INTENT_ALBUM_LIST_SIZE, listSize)
+                        bundle.putInt(Constants.INTENT_ALBUM_LIST_OFFSET, offset)
                         Navigation.findNavController(requireView()).navigate(
                             R.id.trackCollectionFragment, bundle
                         )
@@ -505,7 +505,7 @@ open class TrackCollectionFragment : MultiListFragment<MusicDirectory.Child>() {
         enableButtons()
 
         val isAlbumList = arguments?.containsKey(
-            Constants.INTENT_EXTRA_NAME_ALBUM_LIST_TYPE
+            Constants.INTENT_ALBUM_LIST_TYPE
         ) ?: false
 
         playAllButtonVisible = !(isAlbumList || entryList.isEmpty()) && !allVideos
@@ -515,7 +515,7 @@ open class TrackCollectionFragment : MultiListFragment<MusicDirectory.Child>() {
         shareButton?.isVisible = shareButtonVisible
 
         if (songCount > 0 && listModel.showHeader) {
-            val intentAlbumName = arguments?.getString(Constants.INTENT_EXTRA_NAME_NAME, "")
+            val intentAlbumName = arguments?.getString(Constants.INTENT_NAME, "")
             val albumHeader = AlbumHeader(it, intentAlbumName)
             val mixedList: MutableList<Identifiable> = mutableListOf(albumHeader)
             mixedList.addAll(entryList)
@@ -524,11 +524,11 @@ open class TrackCollectionFragment : MultiListFragment<MusicDirectory.Child>() {
             viewAdapter.submitList(entryList)
         }
 
-        val playAll = arguments?.getBoolean(Constants.INTENT_EXTRA_NAME_AUTOPLAY, false) ?: false
+        val playAll = arguments?.getBoolean(Constants.INTENT_AUTOPLAY, false) ?: false
 
         if (playAll && songCount > 0) {
             playAll(
-                arguments?.getBoolean(Constants.INTENT_EXTRA_NAME_SHUFFLE, false) ?: false,
+                arguments?.getBoolean(Constants.INTENT_SHUFFLE, false) ?: false,
                 false
             )
         }
@@ -560,28 +560,22 @@ open class TrackCollectionFragment : MultiListFragment<MusicDirectory.Child>() {
         refresh: Boolean
     ): LiveData<List<MusicDirectory.Child>> {
         if (args == null) return listModel.currentList
-        val id = args.getString(Constants.INTENT_EXTRA_NAME_ID)
-        val isAlbum = args.getBoolean(Constants.INTENT_EXTRA_NAME_IS_ALBUM, false)
-        val name = args.getString(Constants.INTENT_EXTRA_NAME_NAME)
-        val playlistId = args.getString(Constants.INTENT_EXTRA_NAME_PLAYLIST_ID)
-        val podcastChannelId = args.getString(
-            Constants.INTENT_EXTRA_NAME_PODCAST_CHANNEL_ID
-        )
-        val playlistName = args.getString(Constants.INTENT_EXTRA_NAME_PLAYLIST_NAME)
-        val shareId = args.getString(Constants.INTENT_EXTRA_NAME_SHARE_ID)
-        val shareName = args.getString(Constants.INTENT_EXTRA_NAME_SHARE_NAME)
-        val genreName = args.getString(Constants.INTENT_EXTRA_NAME_GENRE_NAME)
+        val id = args.getString(Constants.INTENT_ID)
+        val isAlbum = args.getBoolean(Constants.INTENT_IS_ALBUM, false)
+        val name = args.getString(Constants.INTENT_NAME)
+        val playlistId = args.getString(Constants.INTENT_PLAYLIST_ID)
+        val podcastChannelId = args.getString(Constants.INTENT_PODCAST_CHANNEL_ID)
+        val playlistName = args.getString(Constants.INTENT_PLAYLIST_NAME)
+        val shareId = args.getString(Constants.INTENT_SHARE_ID)
+        val shareName = args.getString(Constants.INTENT_SHARE_NAME)
+        val genreName = args.getString(Constants.INTENT_GENRE_NAME)
 
-        val getStarredTracks = args.getInt(Constants.INTENT_EXTRA_NAME_STARRED, 0)
-        val getVideos = args.getInt(Constants.INTENT_EXTRA_NAME_VIDEOS, 0)
-        val getRandomTracks = args.getInt(Constants.INTENT_EXTRA_NAME_RANDOM, 0)
-        val albumListSize = args.getInt(
-            Constants.INTENT_EXTRA_NAME_ALBUM_LIST_SIZE, 0
-        )
-        val albumListOffset = args.getInt(
-            Constants.INTENT_EXTRA_NAME_ALBUM_LIST_OFFSET, 0
-        )
-        val refresh2 = args.getBoolean(Constants.INTENT_EXTRA_NAME_REFRESH, true) || refresh
+        val getStarredTracks = args.getInt(Constants.INTENT_STARRED, 0)
+        val getVideos = args.getInt(Constants.INTENT_VIDEOS, 0)
+        val getRandomTracks = args.getInt(Constants.INTENT_RANDOM, 0)
+        val albumListSize = args.getInt(Constants.INTENT_ALBUM_LIST_SIZE, 0)
+        val albumListOffset = args.getInt(Constants.INTENT_ALBUM_LIST_OFFSET, 0)
+        val refresh2 = args.getBoolean(Constants.INTENT_REFRESH, true) || refresh
 
         listModel.viewModelScope.launch(handler) {
             refreshListView?.isRefreshing = true
@@ -698,10 +692,10 @@ open class TrackCollectionFragment : MultiListFragment<MusicDirectory.Child>() {
         when {
             item.isDirectory -> {
                 val bundle = Bundle()
-                bundle.putString(Constants.INTENT_EXTRA_NAME_ID, item.id)
-                bundle.putBoolean(Constants.INTENT_EXTRA_NAME_IS_ALBUM, item.isDirectory)
-                bundle.putString(Constants.INTENT_EXTRA_NAME_NAME, item.title)
-                bundle.putString(Constants.INTENT_EXTRA_NAME_PARENT_ID, item.parent)
+                bundle.putString(Constants.INTENT_ID, item.id)
+                bundle.putBoolean(Constants.INTENT_IS_ALBUM, item.isDirectory)
+                bundle.putString(Constants.INTENT_NAME, item.title)
+                bundle.putString(Constants.INTENT_PARENT_ID, item.parent)
                 Navigation.findNavController(requireView()).navigate(
                     R.id.trackCollectionFragment,
                     bundle

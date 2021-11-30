@@ -33,7 +33,7 @@ class ArtistListFragment : EntryListFragment<ArtistOrIndex>() {
      * The central function to pass a query to the model and return a LiveData object
      */
     override fun getLiveData(args: Bundle?, refresh: Boolean): LiveData<List<ArtistOrIndex>> {
-        val refresh = args?.getBoolean(Constants.INTENT_EXTRA_NAME_REFRESH) ?: false || refresh
+        val refresh = args?.getBoolean(Constants.INTENT_REFRESH) ?: false || refresh
         return listModel.getItems(refresh, refreshListView!!)
     }
 
@@ -63,22 +63,19 @@ class ArtistListFragment : EntryListFragment<ArtistOrIndex>() {
             val bundle = Bundle()
 
             // Common arguments
-            bundle.putString(Constants.INTENT_EXTRA_NAME_ID, item.id)
-            bundle.putString(Constants.INTENT_EXTRA_NAME_NAME, item.name)
-            bundle.putString(Constants.INTENT_EXTRA_NAME_PARENT_ID, item.id)
-            bundle.putBoolean(Constants.INTENT_EXTRA_NAME_ARTIST, (item is Artist))
+            bundle.putString(Constants.INTENT_ID, item.id)
+            bundle.putString(Constants.INTENT_NAME, item.name)
+            bundle.putString(Constants.INTENT_PARENT_ID, item.id)
+            bundle.putBoolean(Constants.INTENT_ARTIST, (item is Artist))
 
             // Check type
             if (item is Index) {
                 navController.navigate(R.id.artistsListToTrackCollection, bundle)
             } else {
-                bundle.putString(
-                    Constants.INTENT_EXTRA_NAME_ALBUM_LIST_TYPE,
-                    Constants.ALBUMS_OF_ARTIST
-                )
-                bundle.putString(Constants.INTENT_EXTRA_NAME_ALBUM_LIST_TITLE, item.name)
-                bundle.putInt(Constants.INTENT_EXTRA_NAME_ALBUM_LIST_SIZE, 1000)
-                bundle.putInt(Constants.INTENT_EXTRA_NAME_ALBUM_LIST_OFFSET, 0)
+                bundle.putString(Constants.INTENT_ALBUM_LIST_TYPE, Constants.ALBUMS_OF_ARTIST)
+                bundle.putString(Constants.INTENT_ALBUM_LIST_TITLE, item.name)
+                bundle.putInt(Constants.INTENT_ALBUM_LIST_SIZE, 1000)
+                bundle.putInt(Constants.INTENT_ALBUM_LIST_OFFSET, 0)
                 navController.navigate(R.id.artistsListToAlbumsList, bundle)
             }
         }

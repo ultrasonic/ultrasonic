@@ -43,8 +43,8 @@ class AlbumListFragment : EntryListFragment<MusicDirectory.Album>() {
     ): LiveData<List<MusicDirectory.Album>> {
         if (args == null) throw IllegalArgumentException("Required arguments are missing")
 
-        val refresh = args.getBoolean(Constants.INTENT_EXTRA_NAME_REFRESH) || refresh
-        val append = args.getBoolean(Constants.INTENT_EXTRA_NAME_APPEND)
+        val refresh = args.getBoolean(Constants.INTENT_REFRESH) || refresh
+        val append = args.getBoolean(Constants.INTENT_APPEND)
 
         return listModel.getAlbumList(refresh or append, refreshListView!!, args)
     }
@@ -59,7 +59,7 @@ class AlbumListFragment : EntryListFragment<MusicDirectory.Album>() {
                     // Triggered only when new data needs to be appended to the list
                     // Add whatever code is needed to append new items to the bottom of the list
                     val appendArgs = getArgumentsClone()
-                    appendArgs.putBoolean(Constants.INTENT_EXTRA_NAME_APPEND, true)
+                    appendArgs.putBoolean(Constants.INTENT_APPEND, true)
                     getLiveData(appendArgs)
                 }
             }
@@ -80,10 +80,10 @@ class AlbumListFragment : EntryListFragment<MusicDirectory.Album>() {
 
     override fun onItemClick(item: MusicDirectory.Album) {
         val bundle = Bundle()
-        bundle.putString(Constants.INTENT_EXTRA_NAME_ID, item.id)
-        bundle.putBoolean(Constants.INTENT_EXTRA_NAME_IS_ALBUM, item.isDirectory)
-        bundle.putString(Constants.INTENT_EXTRA_NAME_NAME, item.title)
-        bundle.putString(Constants.INTENT_EXTRA_NAME_PARENT_ID, item.parent)
+        bundle.putString(Constants.INTENT_ID, item.id)
+        bundle.putBoolean(Constants.INTENT_IS_ALBUM, item.isDirectory)
+        bundle.putString(Constants.INTENT_NAME, item.title)
+        bundle.putString(Constants.INTENT_PARENT_ID, item.parent)
         findNavController().navigate(R.id.trackCollectionFragment, bundle)
     }
 }

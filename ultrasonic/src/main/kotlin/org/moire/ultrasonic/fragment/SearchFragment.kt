@@ -127,8 +127,8 @@ class SearchFragment : MultiListFragment<Identifiable>(), KoinComponent {
         // Fragment was started with a query (e.g. from voice search), try to execute search right away
         val arguments = arguments
         if (arguments != null) {
-            val query = arguments.getString(Constants.INTENT_EXTRA_NAME_QUERY)
-            val autoPlay = arguments.getBoolean(Constants.INTENT_EXTRA_NAME_AUTOPLAY, false)
+            val query = arguments.getString(Constants.INTENT_QUERY)
+            val autoPlay = arguments.getBoolean(Constants.INTENT_AUTOPLAY, false)
             if (query != null) {
                 return search(query, autoPlay)
             }
@@ -149,8 +149,8 @@ class SearchFragment : MultiListFragment<Identifiable>(), KoinComponent {
 
         val arguments = arguments
         val autoPlay = arguments != null &&
-            arguments.getBoolean(Constants.INTENT_EXTRA_NAME_AUTOPLAY, false)
-        val query = arguments?.getString(Constants.INTENT_EXTRA_NAME_QUERY)
+            arguments.getBoolean(Constants.INTENT_AUTOPLAY, false)
+        val query = arguments?.getString(Constants.INTENT_QUERY)
 
         // If started with a query, enter it to the searchView
         if (query != null) {
@@ -268,32 +268,29 @@ class SearchFragment : MultiListFragment<Identifiable>(), KoinComponent {
         val bundle = Bundle()
 
         // Common arguments
-        bundle.putString(Constants.INTENT_EXTRA_NAME_ID, item.id)
-        bundle.putString(Constants.INTENT_EXTRA_NAME_NAME, item.name)
-        bundle.putString(Constants.INTENT_EXTRA_NAME_PARENT_ID, item.id)
-        bundle.putBoolean(Constants.INTENT_EXTRA_NAME_ARTIST, (item is Artist))
+        bundle.putString(Constants.INTENT_ID, item.id)
+        bundle.putString(Constants.INTENT_NAME, item.name)
+        bundle.putString(Constants.INTENT_PARENT_ID, item.id)
+        bundle.putBoolean(Constants.INTENT_ARTIST, (item is Artist))
 
         // Check type
         if (item is Index) {
             findNavController().navigate(R.id.searchToTrackCollection, bundle)
         } else {
-            bundle.putString(
-                Constants.INTENT_EXTRA_NAME_ALBUM_LIST_TYPE,
-                Constants.ALBUMS_OF_ARTIST
-            )
-            bundle.putString(Constants.INTENT_EXTRA_NAME_ALBUM_LIST_TITLE, item.name)
-            bundle.putInt(Constants.INTENT_EXTRA_NAME_ALBUM_LIST_SIZE, 1000)
-            bundle.putInt(Constants.INTENT_EXTRA_NAME_ALBUM_LIST_OFFSET, 0)
+            bundle.putString(Constants.INTENT_ALBUM_LIST_TYPE, Constants.ALBUMS_OF_ARTIST)
+            bundle.putString(Constants.INTENT_ALBUM_LIST_TITLE, item.name)
+            bundle.putInt(Constants.INTENT_ALBUM_LIST_SIZE, 1000)
+            bundle.putInt(Constants.INTENT_ALBUM_LIST_OFFSET, 0)
             findNavController().navigate(R.id.searchToAlbumsList, bundle)
         }
     }
 
     private fun onAlbumSelected(album: MusicDirectory.Album, autoplay: Boolean) {
         val bundle = Bundle()
-        bundle.putString(Constants.INTENT_EXTRA_NAME_ID, album.id)
-        bundle.putString(Constants.INTENT_EXTRA_NAME_NAME, album.title)
-        bundle.putBoolean(Constants.INTENT_EXTRA_NAME_IS_ALBUM, album.isDirectory)
-        bundle.putBoolean(Constants.INTENT_EXTRA_NAME_AUTOPLAY, autoplay)
+        bundle.putString(Constants.INTENT_ID, album.id)
+        bundle.putString(Constants.INTENT_NAME, album.title)
+        bundle.putBoolean(Constants.INTENT_IS_ALBUM, album.isDirectory)
+        bundle.putBoolean(Constants.INTENT_AUTOPLAY, autoplay)
         Navigation.findNavController(requireView()).navigate(R.id.searchToTrackCollection, bundle)
     }
 

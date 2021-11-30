@@ -24,7 +24,7 @@ class AlbumListModel(application: Application) : GenericListModel(application) {
     ): LiveData<List<MusicDirectory.Album>> {
         // Don't reload the data if navigating back to the view that was active before.
         // This way, we keep the scroll position
-        val albumListType = args.getString(Constants.INTENT_EXTRA_NAME_ALBUM_LIST_TYPE)!!
+        val albumListType = args.getString(Constants.INTENT_ALBUM_LIST_TYPE)!!
 
         if (refresh || list.value?.isEmpty() != false || albumListType != lastType) {
             lastType = albumListType
@@ -51,10 +51,10 @@ class AlbumListModel(application: Application) : GenericListModel(application) {
     ) {
         super.load(isOffline, useId3Tags, musicService, refresh, args)
 
-        val albumListType = args.getString(Constants.INTENT_EXTRA_NAME_ALBUM_LIST_TYPE)!!
-        val size = args.getInt(Constants.INTENT_EXTRA_NAME_ALBUM_LIST_SIZE, 0)
-        var offset = args.getInt(Constants.INTENT_EXTRA_NAME_ALBUM_LIST_OFFSET, 0)
-        val append = args.getBoolean(Constants.INTENT_EXTRA_NAME_APPEND, false)
+        val albumListType = args.getString(Constants.INTENT_ALBUM_LIST_TYPE)!!
+        val size = args.getInt(Constants.INTENT_ALBUM_LIST_SIZE, 0)
+        var offset = args.getInt(Constants.INTENT_ALBUM_LIST_OFFSET, 0)
+        val append = args.getBoolean(Constants.INTENT_APPEND, false)
 
         val musicDirectory: List<MusicDirectory.Album>
         val musicFolderId = if (showSelectFolderHeader(args)) {
@@ -71,8 +71,8 @@ class AlbumListModel(application: Application) : GenericListModel(application) {
             return getAlbumsOfArtist(
                 musicService,
                 refresh,
-                args.getString(Constants.INTENT_EXTRA_NAME_ID, ""),
-                args.getString(Constants.INTENT_EXTRA_NAME_NAME, "")
+                args.getString(Constants.INTENT_ID, ""),
+                args.getString(Constants.INTENT_NAME, "")
             )
         }
 
@@ -106,7 +106,7 @@ class AlbumListModel(application: Application) : GenericListModel(application) {
     override fun showSelectFolderHeader(args: Bundle?): Boolean {
         if (args == null) return false
 
-        val albumListType = args.getString(Constants.INTENT_EXTRA_NAME_ALBUM_LIST_TYPE)!!
+        val albumListType = args.getString(Constants.INTENT_ALBUM_LIST_TYPE)!!
 
         val isAlphabetical = (albumListType == AlbumListType.SORTED_BY_NAME.toString()) ||
             (albumListType == AlbumListType.SORTED_BY_ARTIST.toString())

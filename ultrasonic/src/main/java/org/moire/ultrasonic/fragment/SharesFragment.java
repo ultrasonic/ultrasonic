@@ -104,8 +104,8 @@ public class SharesFragment extends Fragment {
                 }
 
                 Bundle bundle = new Bundle();
-                bundle.putString(Constants.INTENT_EXTRA_NAME_SHARE_ID, share.getId());
-                bundle.putString(Constants.INTENT_EXTRA_NAME_SHARE_NAME, share.getName());
+                bundle.putString(Constants.INTENT_SHARE_ID, share.getId());
+                bundle.putString(Constants.INTENT_SHARE_NAME, share.getName());
                 Navigation.findNavController(view).navigate(R.id.trackCollectionFragment, bundle);
             }
         });

@@ -123,15 +123,15 @@ class NowPlayingFragment : Fragment() {
                     val bundle = Bundle()
 
                     if (Settings.shouldUseId3Tags) {
-                        bundle.putBoolean(Constants.INTENT_EXTRA_NAME_IS_ALBUM, true)
-                        bundle.putString(Constants.INTENT_EXTRA_NAME_ID, song.albumId)
+                        bundle.putBoolean(Constants.INTENT_IS_ALBUM, true)
+                        bundle.putString(Constants.INTENT_ID, song.albumId)
                     } else {
-                        bundle.putBoolean(Constants.INTENT_EXTRA_NAME_IS_ALBUM, false)
-                        bundle.putString(Constants.INTENT_EXTRA_NAME_ID, song.parent)
+                        bundle.putBoolean(Constants.INTENT_IS_ALBUM, false)
+                        bundle.putString(Constants.INTENT_ID, song.parent)
                     }
 
-                    bundle.putString(Constants.INTENT_EXTRA_NAME_NAME, song.album)
-                    bundle.putString(Constants.INTENT_EXTRA_NAME_NAME, song.album)
+                    bundle.putString(Constants.INTENT_NAME, song.album)
+                    bundle.putString(Constants.INTENT_NAME, song.album)
 
                     Navigation.findNavController(requireActivity(), R.id.nav_host_fragment)
                         .navigate(R.id.trackCollectionFragment, bundle)

@@ -114,7 +114,7 @@ abstract class MultiListFragment<T : Identifiable> : Fragment() {
         super.onViewCreated(view, savedInstanceState)
 
         // Set the title if available
-        setTitle(arguments?.getString(Constants.INTENT_EXTRA_NAME_ALBUM_LIST_TITLE))
+        setTitle(arguments?.getString(Constants.INTENT_ALBUM_LIST_TITLE))
 
         // Setup refresh handler
         refreshListView = view.findViewById(refreshListId)

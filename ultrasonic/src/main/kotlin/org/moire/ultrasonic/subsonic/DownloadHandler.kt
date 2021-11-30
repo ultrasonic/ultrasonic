@@ -49,7 +49,7 @@ class DownloadHandler(
                 false
             )
             val playlistName: String? = fragment.arguments?.getString(
-                Constants.INTENT_EXTRA_NAME_PLAYLIST_NAME
+                Constants.INTENT_PLAYLIST_NAME
             )
             if (playlistName != null) {
                 mediaPlayerController.suggestedPlaylistName = playlistName

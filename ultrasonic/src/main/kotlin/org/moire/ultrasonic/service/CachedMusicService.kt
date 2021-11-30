@@ -416,7 +416,7 @@ class CachedMusicService(private val musicService: MusicService) : MusicService,
     override fun getVideos(refresh: Boolean): MusicDirectory? {
         checkSettingsChanged()
         var cache =
-            if (refresh) null else cachedMusicDirectories[Constants.INTENT_EXTRA_NAME_VIDEOS]
+            if (refresh) null else cachedMusicDirectories[Constants.INTENT_VIDEOS]
         var dir = cache?.get()
         if (dir == null) {
             dir = musicService.getVideos(refresh)
@@ -424,7 +424,7 @@ class CachedMusicService(private val musicService: MusicService) : MusicService,
                 Settings.directoryCacheTime.toLong(), TimeUnit.SECONDS
             )
             cache.set(dir)
-            cachedMusicDirectories.put(Constants.INTENT_EXTRA_NAME_VIDEOS, cache)
+            cachedMusicDirectories.put(Constants.INTENT_VIDEOS, cache)
         }
         return dir
     }
