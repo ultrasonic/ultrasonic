@@ -41,7 +41,6 @@ open class GenericListModel(application: Application) :
 
     val musicFolders: MutableLiveData<List<MusicFolder>> = MutableLiveData(listOf())
 
-    @Suppress("UNUSED_PARAMETER")
     open fun showSelectFolderHeader(args: Bundle?): Boolean {
         return false
     }
