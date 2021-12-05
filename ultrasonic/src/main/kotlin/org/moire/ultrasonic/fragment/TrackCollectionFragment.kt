@@ -18,7 +18,6 @@ import android.widget.ImageView
 import androidx.core.view.isVisible
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.LiveData
-import androidx.lifecycle.Observer
 import androidx.lifecycle.viewModelScope
 import androidx.navigation.Navigation
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -54,6 +53,8 @@ import org.moire.ultrasonic.util.Util
  * In most cases the data should be just a list of Entries, but there are some cases
  * where the list can contain Albums as well. This happens especially when having ID3 tags disabled,
  * or using Offline mode, both in which Indexes instead of Artists are being used.
+ *
+ * TODO: Remove more button and introduce endless scrolling
  */
 @Suppress("TooManyFunctions")
 open class TrackCollectionFragment : MultiListFragment<MusicDirectory.Child>() {
@@ -96,9 +97,6 @@ open class TrackCollectionFragment : MultiListFragment<MusicDirectory.Child>() {
         refreshListView?.setOnRefreshListener {
             getLiveData(arguments, true)
         }
-
-        // TODO: remove special casing for songsForGenre
-        listModel.songsForGenre.observe(viewLifecycleOwner, songsForGenreObserver)
 
         setupButtons(view)
 
@@ -424,34 +422,6 @@ open class TrackCollectionFragment : MultiListFragment<MusicDirectory.Child>() {
         mediaPlayerController.unpin(songs)
     }
 
-    private val songsForGenreObserver = Observer<MusicDirectory> { musicDirectory ->
-
-        // Hide more button when results are less than album list size
-        if (musicDirectory.size < requireArguments().getInt(
-            Constants.INTENT_ALBUM_LIST_SIZE, 0
-        )
-        ) {
-            moreButton!!.visibility = View.GONE
-        } else {
-            moreButton!!.visibility = View.VISIBLE
-        }
-
-        moreButton!!.setOnClickListener {
-            val theGenre = requireArguments().getString(Constants.INTENT_GENRE_NAME)
-            val size = requireArguments().getInt(Constants.INTENT_ALBUM_LIST_SIZE, 0)
-            val theOffset = requireArguments().getInt(
-                Constants.INTENT_ALBUM_LIST_OFFSET, 0
-            ) + size
-            val bundle = Bundle()
-            bundle.putString(Constants.INTENT_GENRE_NAME, theGenre)
-            bundle.putInt(Constants.INTENT_ALBUM_LIST_SIZE, size)
-            bundle.putInt(Constants.INTENT_ALBUM_LIST_OFFSET, theOffset)
-
-            Navigation.findNavController(requireView())
-                .navigate(R.id.trackCollectionFragment, bundle)
-        }
-    }
-
     override val defaultObserver: (List<MusicDirectory.Child>) -> Unit = {
 
         val entryList: MutableList<MusicDirectory.Child> = it.toMutableList()
@@ -483,18 +453,9 @@ open class TrackCollectionFragment : MultiListFragment<MusicDirectory.Child>() {
             } else {
                 moreButton!!.visibility = View.VISIBLE
                 if (arguments?.getInt(Constants.INTENT_RANDOM, 0) ?: 0 > 0) {
-                    moreButton!!.setOnClickListener {
-                        val offset = requireArguments().getInt(
-                            Constants.INTENT_ALBUM_LIST_OFFSET, 0
-                        ) + listSize
-                        val bundle = Bundle()
-                        bundle.putInt(Constants.INTENT_RANDOM, 1)
-                        bundle.putInt(Constants.INTENT_ALBUM_LIST_SIZE, listSize)
-                        bundle.putInt(Constants.INTENT_ALBUM_LIST_OFFSET, offset)
-                        Navigation.findNavController(requireView()).navigate(
-                            R.id.trackCollectionFragment, bundle
-                        )
-                    }
+                    moreRandomTracks()
+                } else if (arguments?.getString(Constants.INTENT_GENRE_NAME, "") ?: "" != "") {
+                    moreSongsForGenre()
                 }
             }
         }
@@ -534,6 +495,40 @@ open class TrackCollectionFragment : MultiListFragment<MusicDirectory.Child>() {
         }
 
         listModel.currentListIsSortable = true
+    }
+
+    private fun moreSongsForGenre(args: Bundle = requireArguments()) {
+        moreButton!!.setOnClickListener {
+            val theGenre = args.getString(Constants.INTENT_GENRE_NAME)
+            val size = args.getInt(Constants.INTENT_ALBUM_LIST_SIZE, 0)
+            val theOffset = args.getInt(
+                Constants.INTENT_ALBUM_LIST_OFFSET, 0
+            ) + size
+            val bundle = Bundle()
+            bundle.putString(Constants.INTENT_GENRE_NAME, theGenre)
+            bundle.putInt(Constants.INTENT_ALBUM_LIST_SIZE, size)
+            bundle.putInt(Constants.INTENT_ALBUM_LIST_OFFSET, theOffset)
+
+            Navigation.findNavController(requireView())
+                .navigate(R.id.trackCollectionFragment, bundle)
+        }
+    }
+
+    private fun moreRandomTracks() {
+        val listSize = arguments?.getInt(Constants.INTENT_ALBUM_LIST_SIZE, 0) ?: 0
+
+        moreButton!!.setOnClickListener { it: View? ->
+            val offset = requireArguments().getInt(
+                Constants.INTENT_ALBUM_LIST_OFFSET, 0
+            ) + listSize
+            val bundle = Bundle()
+            bundle.putInt(Constants.INTENT_RANDOM, 1)
+            bundle.putInt(Constants.INTENT_ALBUM_LIST_SIZE, listSize)
+            bundle.putInt(Constants.INTENT_ALBUM_LIST_OFFSET, offset)
+            Navigation.findNavController(requireView()).navigate(
+                R.id.trackCollectionFragment, bundle
+            )
+        }
     }
 
     internal fun getSelectedSongs(): List<MusicDirectory.Entry> {

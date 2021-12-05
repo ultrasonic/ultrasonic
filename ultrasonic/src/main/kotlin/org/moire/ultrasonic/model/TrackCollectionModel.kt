@@ -22,7 +22,6 @@ import org.moire.ultrasonic.util.Util
 class TrackCollectionModel(application: Application) : GenericListModel(application) {
 
     val currentList: MutableLiveData<List<MusicDirectory.Child>> = MutableLiveData()
-    val songsForGenre: MutableLiveData<MusicDirectory> = MutableLiveData()
 
     /*
     * Especially when dealing with indexes, this method can return Albums, Entries or a mix of both!
@@ -56,7 +55,7 @@ class TrackCollectionModel(application: Application) : GenericListModel(applicat
         withContext(Dispatchers.IO) {
             val service = MusicServiceFactory.getMusicService()
             val musicDirectory = service.getSongsByGenre(genre, count, offset)
-            songsForGenre.postValue(musicDirectory)
+            updateList(musicDirectory)
         }
     }
 

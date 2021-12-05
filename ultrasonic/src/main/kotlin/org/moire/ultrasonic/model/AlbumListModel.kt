@@ -63,6 +63,12 @@ class AlbumListModel(application: Application) : GenericListModel(application) {
             null
         }
 
+        // If we are refreshing the random list, we want to avoid items moving across the screen,
+        // by clearing the list first
+        if (refresh && albumListType == "random") {
+            list.postValue(listOf())
+        }
+
         // Handle the logic for endless scrolling:
         // If appending the existing list, set the offset from where to load
         if (append) offset += (size + loadedUntil)
@@ -95,7 +101,7 @@ class AlbumListModel(application: Application) : GenericListModel(application) {
             val newList = ArrayList<MusicDirectory.Album>()
             newList.addAll(list.value!!)
             newList.addAll(musicDirectory)
-            this.list.postValue(newList)
+            list.postValue(newList)
         } else {
             list.postValue(musicDirectory)
         }

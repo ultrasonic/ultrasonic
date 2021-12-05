@@ -35,6 +35,11 @@ class AlbumListFragment : EntryListFragment<MusicDirectory.Album>() {
     override val mainLayout: Int = R.layout.list_layout_generic
 
     /**
+     * Whether to refresh the data onViewCreated
+     */
+    override val refreshOnCreation: Boolean = false
+
+    /**
      * The central function to pass a query to the model and return a LiveData object
      */
     override fun getLiveData(

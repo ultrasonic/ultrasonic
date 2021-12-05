@@ -89,6 +89,11 @@ abstract class MultiListFragment<T : Identifiable> : Fragment() {
     open val emptyViewId = R.id.empty_list_view
     open val emptyTextId = R.id.empty_list_text
 
+    /**
+     * Whether to refresh the data onViewCreated
+     */
+    open val refreshOnCreation: Boolean = true
+
     open fun setTitle(title: String?) {
         if (title == null) {
             FragmentTitle.setTitle(
@@ -106,7 +111,7 @@ abstract class MultiListFragment<T : Identifiable> : Fragment() {
      * What to do when the list has changed
      */
     internal open val defaultObserver: ((List<T>) -> Unit) = {
-        emptyView.isVisible = it.isEmpty()
+        emptyView.isVisible = it.isEmpty() && !(refreshListView?.isRefreshing?:false)
         viewAdapter.submitList(it)
     }
 
@@ -123,7 +128,7 @@ abstract class MultiListFragment<T : Identifiable> : Fragment() {
         }
 
         // Populate the LiveData. This starts an API request in most cases
-        liveDataItems = getLiveData(arguments, true)
+        liveDataItems = getLiveData(arguments, refreshOnCreation)
 
         // Link view to display text if the list is empty
         emptyView = view.findViewById(emptyViewId)

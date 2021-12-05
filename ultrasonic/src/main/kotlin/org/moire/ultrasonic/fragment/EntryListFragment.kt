@@ -71,7 +71,7 @@ abstract class EntryListFragment<T : GenericEntry> : MultiListFragment<T>() {
      * What to do when the list has changed
      */
     override val defaultObserver: (List<T>) -> Unit = {
-        emptyView.isVisible = it.isEmpty()
+        emptyView.isVisible = it.isEmpty() && !(refreshListView?.isRefreshing?:false)
 
         if (showFolderHeader()) {
             val list = mutableListOf<Identifiable>(folderHeader)
