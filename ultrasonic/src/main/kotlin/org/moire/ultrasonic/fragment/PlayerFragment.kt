@@ -37,6 +37,7 @@ import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import androidx.navigation.Navigation
 import androidx.recyclerview.widget.ItemTouchHelper
+import androidx.recyclerview.widget.ItemTouchHelper.ACTION_STATE_DRAG
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.LinearSmoothScroller
 import androidx.recyclerview.widget.RecyclerView
@@ -859,7 +860,6 @@ class PlayerFragment :
         viewAdapter.register(
             TrackViewBinder(
                 onItemClick = listener,
-                onContextMenuClick = { _, _ -> true },
                 checkable = false,
                 draggable = true,
                 context = requireContext(),
@@ -902,6 +902,26 @@ class PlayerFragment :
 
                     viewAdapter.submitList(mediaPlayerController.playList)
                     viewAdapter.notifyDataSetChanged()
+                }
+
+                override fun onSelectedChanged(
+                    viewHolder: RecyclerView.ViewHolder?,
+                    actionState: Int
+                ) {
+                    super.onSelectedChanged(viewHolder, actionState)
+
+                    if (actionState == ACTION_STATE_DRAG) {
+                        viewHolder?.itemView?.alpha = 0.6f
+                    }
+                }
+
+                override fun clearView(
+                    recyclerView: RecyclerView,
+                    viewHolder: RecyclerView.ViewHolder
+                ) {
+                    super.clearView(recyclerView, viewHolder)
+
+                    viewHolder.itemView.alpha = 1.0f
                 }
             }
         )
