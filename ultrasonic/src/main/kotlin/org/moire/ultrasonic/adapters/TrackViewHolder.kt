@@ -11,6 +11,7 @@ import android.widget.TextView
 import androidx.core.view.isVisible
 import androidx.lifecycle.MutableLiveData
 import androidx.recyclerview.widget.RecyclerView
+import io.reactivex.rxjava3.disposables.Disposable
 import org.koin.core.component.KoinComponent
 import org.koin.core.component.get
 import org.moire.ultrasonic.R
@@ -55,6 +56,8 @@ class TrackViewHolder(val view: View) : RecyclerView.ViewHolder(view), Checkable
     private var cachedStatus = DownloadStatus.UNKNOWN
     private var statusImage: Drawable? = null
     private var isPlayingCached = false
+
+    private var rxSubscription: Disposable? = null
 
     var observableChecked = MutableLiveData(false)
 
@@ -112,9 +115,13 @@ class TrackViewHolder(val view: View) : RecyclerView.ViewHolder(view), Checkable
             progress.isVisible = false
         }
 
-        RxBus.playerStateObservable.subscribe {
+        rxSubscription = RxBus.playerStateObservable.subscribe {
             setPlayIcon(it.track == downloadFile)
         }
+    }
+
+    fun dispose() {
+        rxSubscription?.dispose()
     }
 
     private fun setPlayIcon(isPlaying: Boolean) {

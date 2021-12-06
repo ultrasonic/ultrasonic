@@ -16,12 +16,14 @@
         a:layout_height="wrap_content"
         a:paddingEnd="6dip"
         a:textAppearance="?android:attr/textAppearanceMedium"
+        a:visibility="visible"
         app:layout_constraintBottom_toTopOf="@+id/song_artist"
         app:layout_constraintEnd_toStartOf="@+id/song_title"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintVertical_chainStyle="packed"
-        tools:text="Track" />
+        tools:text="Track"
+        tools:visibility="visible" />
 
     <TextView
         a:id="@+id/song_title"
@@ -62,7 +64,7 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toStartOf="@+id/song_duration"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/song_track"
+        app:layout_constraintTop_toBottomOf="@+id/song_title"
         tools:text="Artist" />
 
     <TextView

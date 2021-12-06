@@ -864,7 +864,9 @@ class PlayerFragment :
                 draggable = true,
                 context = requireContext(),
                 lifecycleOwner = viewLifecycleOwner,
-            )
+            ).apply { this.startDrag = { holder ->
+                dragTouchHelper.startDrag(holder)
+            } }
         )
 
         dragTouchHelper = ItemTouchHelper(object : ItemTouchHelper.SimpleCallback(
@@ -922,6 +924,10 @@ class PlayerFragment :
                     super.clearView(recyclerView, viewHolder)
 
                     viewHolder.itemView.alpha = 1.0f
+                }
+
+                override fun isLongPressDragEnabled(): Boolean {
+                    return false
                 }
             }
         )

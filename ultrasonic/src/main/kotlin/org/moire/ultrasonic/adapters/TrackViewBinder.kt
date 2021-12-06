@@ -1,9 +1,13 @@
 package org.moire.ultrasonic.adapters
 
+import android.annotation.SuppressLint
 import android.content.Context
 import android.view.LayoutInflater
 import android.view.MenuItem
+import android.view.MotionEvent
+import android.view.View
 import android.view.ViewGroup
+import androidx.core.view.MotionEventCompat
 import androidx.lifecycle.LifecycleOwner
 import com.drakeet.multitype.ItemViewBinder
 import org.koin.core.component.KoinComponent
@@ -23,6 +27,8 @@ class TrackViewBinder(
     val lifecycleOwner: LifecycleOwner,
 ) : ItemViewBinder<Identifiable, TrackViewHolder>(), KoinComponent {
 
+    var startDrag: ((TrackViewHolder) -> Unit)? = null
+
     // Set our layout files
     val layout = R.layout.list_item_track
     val contextMenuLayout = R.menu.context_menu_track
@@ -34,6 +40,7 @@ class TrackViewBinder(
         return TrackViewHolder(inflater.inflate(layout, parent, false))
     }
 
+    @SuppressLint("ClickableViewAccessibility")
     @Suppress("LongMethod")
     override fun onBindViewHolder(holder: TrackViewHolder, item: Identifiable) {
         val downloadFile: DownloadFile?
@@ -89,6 +96,13 @@ class TrackViewBinder(
             }
         }
 
+        holder.drag.setOnTouchListener { _, event ->
+            if (event.action == MotionEvent.ACTION_DOWN) {
+                startDrag?.invoke(holder)
+            }
+            false
+        }
+
         // Notify the adapter of selection changes
         holder.observableChecked.observe(
             lifecycleOwner,
@@ -126,5 +140,10 @@ class TrackViewBinder(
                 holder.updateProgress(it)
             }
         )
+    }
+
+    override fun onViewRecycled(holder: TrackViewHolder) {
+        holder.dispose()
+        super.onViewRecycled(holder)
     }
 }
