@@ -15,8 +15,8 @@
         a:gravity="center_vertical"
         a:importantForAccessibility="no"
         a:paddingStart="5dip"
-        a:paddingEnd="0dip"
-        a:src="?attr/drag_vertical" />
+        a:paddingEnd="6dip"
+        a:src="@drawable/ic_drag_vertical" />
 
     <CheckedTextView
         a:id="@+id/song_check"
