@@ -5,9 +5,7 @@ import android.content.Context
 import android.view.LayoutInflater
 import android.view.MenuItem
 import android.view.MotionEvent
-import android.view.View
 import android.view.ViewGroup
-import androidx.core.view.MotionEventCompat
 import androidx.lifecycle.LifecycleOwner
 import com.drakeet.multitype.ItemViewBinder
 import org.koin.core.component.KoinComponent

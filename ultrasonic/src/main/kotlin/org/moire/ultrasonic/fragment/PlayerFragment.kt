@@ -864,9 +864,11 @@ class PlayerFragment :
                 draggable = true,
                 context = requireContext(),
                 lifecycleOwner = viewLifecycleOwner,
-            ).apply { this.startDrag = { holder ->
-                dragTouchHelper.startDrag(holder)
-            } }
+            ).apply {
+                this.startDrag = { holder ->
+                    dragTouchHelper.startDrag(holder)
+                }
+            }
         )
 
         dragTouchHelper = ItemTouchHelper(object : ItemTouchHelper.SimpleCallback(
