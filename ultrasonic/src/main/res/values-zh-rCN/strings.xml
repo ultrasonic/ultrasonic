@@ -432,10 +432,10 @@
     <string name="api.subsonic.upgrade_client">版本不兼容，请升级 Ultrasonic 应用。</string>
     <string name="api.subsonic.upgrade_server">不兼容的版本。请升级Subsonic 服务。</string>
 
-    <!-- Subsonic feature flags -->
-    <string name="feature_flags_category_title">特性标志</string>
-    <string name="feature_flags_five_star_rating_title">为歌曲使用五星评分</string>
-    <string name="feature_flags_five_star_rating_description">对歌曲使用五星级评级系统
+    <!-- Subsonic features  -->
+    <string name="settings.features_title">特性标志</string>
+    <string name="settings.five_star_rating_title">为歌曲使用五星评分</string>
+    <string name="settings.five_star_rating_description">对歌曲使用五星级评级系统
 而不是简单地为项目加星标/取消星标。</string>
 
 </resources>
