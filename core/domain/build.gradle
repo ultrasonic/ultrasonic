@@ -1,12 +1,6 @@
 apply from: bootstrap.androidModule
 apply plugin: 'kotlin-kapt'
 
-ext {
-    jacocoExclude = [
-            '**/domain/**'
-    ]
-}
-
 dependencies {
     implementation libs.roomRuntime
     implementation libs.roomKtx

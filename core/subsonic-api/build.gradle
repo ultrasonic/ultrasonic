@@ -20,11 +20,3 @@ dependencies {
     testImplementation libs.mockWebServer
     testImplementation libs.apacheCodecs
 }
-
-ext {
-    // Excluding data classes
-    jacocoExclude = [
-            '**/models/**',
-            '**/di/**'
-    ]
-}
