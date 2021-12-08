@@ -15,6 +15,7 @@ import androidx.recyclerview.widget.AsyncListDiffer
 import androidx.recyclerview.widget.AsyncListDiffer.ListListener
 import androidx.recyclerview.widget.DiffUtil
 import com.drakeet.multitype.MultiTypeAdapter
+import com.simplecityapps.recyclerview_fastscroll.views.FastScrollRecyclerView
 import org.moire.ultrasonic.domain.Identifiable
 import org.moire.ultrasonic.util.BoundedTreeSet
 import timber.log.Timber
@@ -26,7 +27,7 @@ import timber.log.Timber
  * It should be kept generic enough that it can be used a Base for all lists in the app.
  */
 @Suppress("unused", "UNUSED_PARAMETER")
-class BaseAdapter<T : Identifiable> : MultiTypeAdapter() {
+class BaseAdapter<T : Identifiable> : MultiTypeAdapter(), FastScrollRecyclerView.SectionedAdapter {
 
     // Update the BoundedTreeSet if selection type is changed
     internal var selectionType: SelectionType = SelectionType.MULTIPLE
@@ -220,5 +221,16 @@ class BaseAdapter<T : Identifiable> : MultiTypeAdapter() {
         override fun areItemsTheSame(oldItem: T, newItem: T): Boolean {
             return oldItem.id == newItem.id
         }
+    }
+
+    override fun getSectionName(position: Int): String {
+        val type = getItemViewType(position)
+        val binder = types.getType<Any>(type).delegate
+
+        if (binder is Utils.SectionedBinder) {
+            return binder.getSectionName(items[position] as Identifiable)
+        }
+
+        return ""
     }
 }

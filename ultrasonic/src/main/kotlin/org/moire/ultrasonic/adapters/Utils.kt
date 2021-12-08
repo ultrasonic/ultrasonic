@@ -7,6 +7,7 @@ import android.view.View
 import android.widget.PopupMenu
 import org.moire.ultrasonic.R
 import org.moire.ultrasonic.data.ActiveServerProvider
+import org.moire.ultrasonic.domain.Identifiable
 import org.moire.ultrasonic.util.Settings
 import org.moire.ultrasonic.util.Util
 
@@ -68,5 +69,9 @@ object Utils {
             downloadingImage = Util.getDrawableFromAttribute(context, R.attr.downloading)
             playingImage = Util.getDrawableFromAttribute(context, R.attr.media_play_small)
         }
+    }
+
+    interface SectionedBinder {
+        fun getSectionName(item: Identifiable): String
     }
 }

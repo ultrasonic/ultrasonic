@@ -517,7 +517,7 @@ open class TrackCollectionFragment : MultiListFragment<MusicDirectory.Child>() {
     private fun moreRandomTracks() {
         val listSize = arguments?.getInt(Constants.INTENT_ALBUM_LIST_SIZE, 0) ?: 0
 
-        moreButton!!.setOnClickListener { it: View? ->
+        moreButton!!.setOnClickListener {
             val offset = requireArguments().getInt(
                 Constants.INTENT_ALBUM_LIST_OFFSET, 0
             ) + listSize

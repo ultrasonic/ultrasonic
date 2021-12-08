@@ -20,6 +20,7 @@ import com.drakeet.multitype.ItemViewBinder
 import org.koin.core.component.KoinComponent
 import org.moire.ultrasonic.R
 import org.moire.ultrasonic.domain.ArtistOrIndex
+import org.moire.ultrasonic.domain.Identifiable
 import org.moire.ultrasonic.imageloader.ImageLoader
 import org.moire.ultrasonic.util.FileUtil
 import org.moire.ultrasonic.util.Settings
@@ -32,14 +33,16 @@ class ArtistRowBinder(
     val onContextMenuClick: (MenuItem, ArtistOrIndex) -> Boolean,
     private val imageLoader: ImageLoader,
     private val enableSections: Boolean = true
-) : ItemViewBinder<ArtistOrIndex, ArtistRowBinder.ViewHolder>(), KoinComponent {
+) : ItemViewBinder<ArtistOrIndex, ArtistRowBinder.ViewHolder>(),
+    KoinComponent,
+    Utils.SectionedBinder {
 
     val layout = R.layout.list_item_artist
     val contextMenuLayout = R.menu.context_menu_artist
 
     override fun onBindViewHolder(holder: ViewHolder, item: ArtistOrIndex) {
         holder.textView.text = item.name
-        holder.section.text = getSectionForArtist(item)
+        holder.section.text = getSectionForDisplay(item)
         holder.section.isVisible = enableSections
         holder.layout.setOnClickListener { onItemClick(item) }
         holder.layout.setOnLongClickListener {
@@ -70,7 +73,14 @@ class ArtistRowBinder(
         }
     }
 
-    private fun getSectionForArtist(item: ArtistOrIndex): String {
+    override fun getSectionName(item: Identifiable): String {
+        val index = adapter.items.indexOf(item)
+        if (index == -1 || item !is ArtistOrIndex) return ""
+
+        return getSectionFromName(item.name ?: "")
+    }
+
+    private fun getSectionForDisplay(item: ArtistOrIndex): String {
         val index = adapter.items.indexOf(item)
 
         if (index == -1) return " "
