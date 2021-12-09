@@ -53,7 +53,7 @@
     <string name="delete_playlist">Biztos, hogy törölni akarja? %1$s</string>
     <string name="download.bookmark_removed" formatted="false">Könyvjelző eltávolítva.</string>
     <string name="download.bookmark_set_at_position" formatted="false">Könyvjelző beállítva %s.</string>
-    <string name="download.empty">A várólista üres!</string>
+    <string name="playlist.empty">A várólista üres!</string>
     <string name="download.jukebox_not_authorized">A távvezérlés nem áll rendelkezésre. Kérjük, engedélyezze a Jukebox módot a <b>Felhasználók &gt; Beállítások</b> menüpontban, az Ön Subsonic kiszolgálóján!</string>
     <string name="download.jukebox_off">Távvezérlés kikapcsolása. A zenelejátszás a telefonon történik.</string>
     <string name="download.jukebox_offline">A távvezérlés nem lehetséges kapcsolat nélküli módban!</string>
@@ -140,7 +140,6 @@
     <string name="search.title">Keresés</string>
     <string name="select_album.empty">Nem található média!</string>
     <string name="select_album.n_selected">%d dal kijelölve.</string>
-    <string name="select_album.n_unselected">%d dal visszavonva.</string>
     <string name="select_album.no_network">Figyelem: Hálózat nem áll rendelkezésre!</string>
     <string name="select_album.no_sdcard">Hiba: SD kártya nem áll rendelkezésre!</string>
     <string name="select_album.play_all">Összes lejátszása</string>
@@ -316,17 +315,6 @@
     <string name="settings.show_artist_picture">Előadó képének megjelenítése</string>
     <string name="settings.show_artist_picture_summary">Az előadó listában megjeleníti a képeket, amennyiben elérhetőek</string>
     <string name="main.video" tools:ignore="UnusedResources">Videó</string>
-    <string name="settings.view_refresh">Nézet frissítési gyakorisága</string>
-    <string name="settings.view_refresh_500">.5 másodperc</string>
-    <string name="settings.view_refresh_1000">1 másodperc</string>
-    <string name="settings.view_refresh_1500">1.5 másodperc</string>
-    <string name="settings.view_refresh_2000">2 másodperc</string>
-    <string name="settings.view_refresh_2500">2.5 másodperc</string>
-    <string name="settings.view_refresh_3000">3 másodperc</string>
-    <string name="settings.view_refresh_3500">3.5 másodperc</string>
-    <string name="settings.view_refresh_4000">4 másodperc</string>
-    <string name="settings.view_refresh_4500">4.5 másodperc</string>
-    <string name="settings.view_refresh_5000">5 másodperc</string>
     <string name="settings.wifi_required_summary">Streaming csak Wi-Fi hálózaton keresztül.</string>
     <string name="settings.wifi_required_title">Streaming csak Wi-Fivel</string>
     <string name="song_details.all">%1$s%2$s</string>

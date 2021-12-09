@@ -39,7 +39,7 @@ import org.moire.ultrasonic.data.ActiveServerProvider
 import org.moire.ultrasonic.data.ServerSettingDao
 import org.moire.ultrasonic.domain.PlayerState
 import org.moire.ultrasonic.fragment.OnBackPressedHandler
-import org.moire.ultrasonic.fragment.ServerSettingsModel
+import org.moire.ultrasonic.model.ServerSettingsModel
 import org.moire.ultrasonic.provider.SearchSuggestionProvider
 import org.moire.ultrasonic.service.DownloadFile
 import org.moire.ultrasonic.service.MediaPlayerController
@@ -319,7 +319,7 @@ class NavigationActivity : AppCompatActivity() {
         super.onNewIntent(intent)
         if (intent == null) return
 
-        if (intent.getBooleanExtra(Constants.INTENT_EXTRA_NAME_SHOW_PLAYER, false)) {
+        if (intent.getBooleanExtra(Constants.INTENT_SHOW_PLAYER, false)) {
             findNavController(R.id.nav_host_fragment).navigate(R.id.playerFragment)
             return
         }
@@ -335,8 +335,8 @@ class NavigationActivity : AppCompatActivity() {
             suggestions.saveRecentQuery(query, null)
 
             val bundle = Bundle()
-            bundle.putString(Constants.INTENT_EXTRA_NAME_QUERY, query)
-            bundle.putBoolean(Constants.INTENT_EXTRA_NAME_AUTOPLAY, autoPlay)
+            bundle.putString(Constants.INTENT_QUERY, query)
+            bundle.putBoolean(Constants.INTENT_AUTOPLAY, autoPlay)
             findNavController(R.id.nav_host_fragment).navigate(R.id.searchFragment, bundle)
         }
     }

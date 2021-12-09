@@ -50,13 +50,15 @@
     <string name="common.play_shuffled">Play Shuffled</string>
     <string name="common.public">Public</string>
     <string name="common.save">Save</string>
+    <string name="common.select_all">Select all</string>
     <string name="common.title">Title</string>
     <string name="common.unpin">Unpin</string>
     <string name="common.various_artists">Various Artists</string>
     <string name="delete_playlist">Do you want to delete %1$s</string>
     <string name="download.bookmark_removed" formatted="false">Bookmark removed.</string>
     <string name="download.bookmark_set_at_position" formatted="false">Bookmark set at %s.</string>
-    <string name="download.empty">Playlist is empty</string>
+    <string name="download.empty">Nothing is downloading</string>
+    <string name="playlist.empty">Playlist is empty</string>
     <string name="download.jukebox_not_authorized">Remote control is not allowed. Please enable jukebox mode in <b>Users &gt; Settings</b> on your Subsonic server.</string>
     <string name="download.jukebox_off">Turned off remote control. Music is played on phone.</string>
     <string name="download.jukebox_offline">Remote control is not available in offline mode.</string>
@@ -146,8 +148,7 @@
     <string name="search.songs">Songs</string>
     <string name="search.title">Search</string>
     <string name="select_album.empty">No media found</string>
-    <string name="select_album.n_selected">%d tracks selected.</string>
-    <string name="select_album.n_unselected">%d tracks unselected.</string>
+    <string name="select_album.n_selected">%d tracks selected</string>
     <string name="select_album.no_network">Warning: No network available.</string>
     <string name="select_album.no_sdcard">Error: No SD card available.</string>
     <string name="select_album.play_all">Play All</string>
@@ -328,17 +329,6 @@
     <string name="settings.show_artist_picture">Show artist picture in artist list</string>
     <string name="settings.show_artist_picture_summary">Displays the artist picture in the artist list if available</string>
     <string name="main.video" tools:ignore="UnusedResources">Video</string>
-    <string name="settings.view_refresh">View Refresh</string>
-    <string name="settings.view_refresh_500">.5 seconds</string>
-    <string name="settings.view_refresh_1000">1 second</string>
-    <string name="settings.view_refresh_1500">1.5 seconds</string>
-    <string name="settings.view_refresh_2000">2 seconds</string>
-    <string name="settings.view_refresh_2500">2.5 seconds</string>
-    <string name="settings.view_refresh_3000">3 seconds</string>
-    <string name="settings.view_refresh_3500">3.5 seconds</string>
-    <string name="settings.view_refresh_4000">4 seconds</string>
-    <string name="settings.view_refresh_4500">4.5 seconds</string>
-    <string name="settings.view_refresh_5000">5 seconds</string>
     <string name="settings.wifi_required_summary">Only download media on unmetered connections</string>
     <string name="settings.wifi_required_title">Download on Wi-Fi only</string>
     <string name="song_details.all">%1$s%2$s</string>
@@ -454,24 +444,28 @@
         <item quantity="other">%d songs</item>
     </plurals>
     <plurals name="select_album_n_songs_pinned">
-        <item quantity="one">%d song selected to be pinned.</item>
-        <item quantity="other">%d songs selected to be pinned.</item>
+        <item quantity="one">%d song selected to be pinned</item>
+        <item quantity="other">%d songs selected to be pinned</item>
     </plurals>
     <plurals name="select_album_n_songs_downloaded">
-        <item quantity="one">%d song selected to be downloaded.</item>
-        <item quantity="other">%d songs selected to be downloaded.</item>
+        <item quantity="one">%d song selected to be downloaded</item>
+        <item quantity="other">%d songs selected to be downloaded</item>
     </plurals>
     <plurals name="select_album_n_songs_unpinned">
-        <item quantity="one">%d song selected to be unpinned.</item>
-        <item quantity="other">%d songs selected to be unpinned.</item>
+        <item quantity="one">%d song unpinned</item>
+        <item quantity="other">%d songs unpinned</item>
+    </plurals>
+    <plurals name="select_album_n_songs_deleted">
+        <item quantity="one">%d song deleted</item>
+        <item quantity="other">%d songs deleted</item>
     </plurals>
     <plurals name="select_album_n_songs_added">
-        <item quantity="one">%d song added to the end of play queue.</item>
-        <item quantity="other">%d songs added to the end of play queue.</item>
+        <item quantity="one">%d song added to the end of play queue</item>
+        <item quantity="other">%d songs added to the end of play queue</item>
     </plurals>
     <plurals name="select_album_n_songs_play_next">
-        <item quantity="one">%d song inserted after current song.</item>
-        <item quantity="other">%d songs inserted after current song.</item>
+        <item quantity="one">%d song inserted after current song</item>
+        <item quantity="other">%d songs inserted after current song</item>
     </plurals>
     <plurals name="select_album_donate_dialog_n_trial_days_left">
         <item quantity="one">%d day left of trial period</item>

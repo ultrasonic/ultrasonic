@@ -1,32 +1,34 @@
 <?xml version="1.0" encoding="utf-8"?>
-
-<LinearLayout
-    xmlns:a="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:a="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    a:orientation="vertical"
     a:layout_width="fill_parent"
-    a:layout_height="fill_parent">
+    a:layout_height="fill_parent"
+    a:orientation="vertical">
 
     <TextView
         a:id="@+id/playlist_empty"
-        a:text="@string/download.empty"
         a:layout_width="fill_parent"
         a:layout_height="wrap_content"
-        a:padding="10dip"/>
+        a:padding="10dip"
+        a:text="@string/playlist.empty" />
 
-    <com.mobeta.android.dslv.DragSortListView
+
+    <com.simplecityapps.recyclerview_fastscroll.views.FastScrollRecyclerView
         a:id="@+id/playlist_view"
         a:layout_width="fill_parent"
         a:layout_height="0dip"
         a:layout_weight="1"
-        a:fastScrollEnabled="true"
-        a:textFilterEnabled="true"
-        app:drag_handle_id="@+id/song_drag"
-        app:remove_enabled="true"
-        app:remove_mode="flingRemove"
-        app:fling_handle_id="@+id/song_drag"
-        app:drag_start_mode="onMove"
-        app:float_background_color="?attr/color_background"
-        app:float_alpha="0.7" />
+        a:clipToPadding="false"
+        a:paddingTop="8dp"
+        a:paddingBottom="8dp"
+        app:fastScrollAutoHide="true"
+        app:fastScrollAutoHideDelay="2000"
+        app:fastScrollPopupBackgroundSize="42dp"
+        app:fastScrollPopupBgColor="@color/cyan"
+        app:fastScrollPopupPosition="adjacent"
+        app:fastScrollPopupTextColor="@android:color/primary_text_dark"
+        app:fastScrollPopupTextSize="28sp"
+        app:fastScrollThumbColor="@color/cyan"
+        app:fastScrollTrackColor="@color/dividerColor" />
 
 </LinearLayout>

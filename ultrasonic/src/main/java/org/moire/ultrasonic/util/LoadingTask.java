@@ -19,6 +19,7 @@ public abstract class LoadingTask<T> extends BackgroundTask<T>
 		this.cancel = cancel;
 	}
 
+
 	@Override
 	public void execute()
 	{

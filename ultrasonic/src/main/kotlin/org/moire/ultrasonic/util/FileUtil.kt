@@ -119,7 +119,7 @@ object FileUtil {
      * @param large Whether to get the key for the large or the default image
      * @return String The hash key
      */
-    fun getAlbumArtKey(entry: MusicDirectory.Entry?, large: Boolean): String? {
+    fun getAlbumArtKey(entry: MusicDirectory.Child?, large: Boolean): String? {
         if (entry == null) return null
         val albumDir = getAlbumDirectory(entry)
         return getAlbumArtKey(albumDir, large)
@@ -190,7 +190,7 @@ object FileUtil {
             return albumArtDir
         }
 
-    fun getAlbumDirectory(entry: MusicDirectory.Entry): File {
+    fun getAlbumDirectory(entry: MusicDirectory.Child): File {
         val dir: File
         if (!TextUtils.isEmpty(entry.path)) {
             val f = File(fileSystemSafeDir(entry.path))
@@ -457,7 +457,7 @@ object FileUtil {
 
         try {
             fw.write("#EXTM3U\n")
-            for (e in playlist.getChildren()) {
+            for (e in playlist.getTracks()) {
                 var filePath = getSongFile(e).absolutePath
 
                 if (!File(filePath).exists()) {

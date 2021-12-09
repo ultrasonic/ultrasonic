@@ -201,21 +201,21 @@ class MainFragment : Fragment(), KoinComponent {
 
     private fun showStarredSongs() {
         val bundle = Bundle()
-        bundle.putInt(Constants.INTENT_EXTRA_NAME_STARRED, 1)
+        bundle.putInt(Constants.INTENT_STARRED, 1)
         Navigation.findNavController(requireView()).navigate(R.id.mainToTrackCollection, bundle)
     }
 
     private fun showRandomSongs() {
         val bundle = Bundle()
-        bundle.putInt(Constants.INTENT_EXTRA_NAME_RANDOM, 1)
-        bundle.putInt(Constants.INTENT_EXTRA_NAME_ALBUM_LIST_SIZE, Settings.maxSongs)
+        bundle.putInt(Constants.INTENT_RANDOM, 1)
+        bundle.putInt(Constants.INTENT_ALBUM_LIST_SIZE, Settings.maxSongs)
         Navigation.findNavController(requireView()).navigate(R.id.mainToTrackCollection, bundle)
     }
 
     private fun showArtists() {
         val bundle = Bundle()
         bundle.putString(
-            Constants.INTENT_EXTRA_NAME_ALBUM_LIST_TITLE,
+            Constants.INTENT_ALBUM_LIST_TITLE,
             requireContext().resources.getString(R.string.main_artists_title)
         )
         Navigation.findNavController(requireView()).navigate(R.id.mainToArtistList, bundle)
@@ -224,10 +224,10 @@ class MainFragment : Fragment(), KoinComponent {
     private fun showAlbumList(type: String, titleIndex: Int) {
         val bundle = Bundle()
         val title = requireContext().resources.getString(titleIndex, "")
-        bundle.putString(Constants.INTENT_EXTRA_NAME_ALBUM_LIST_TYPE, type)
-        bundle.putString(Constants.INTENT_EXTRA_NAME_ALBUM_LIST_TITLE, title)
-        bundle.putInt(Constants.INTENT_EXTRA_NAME_ALBUM_LIST_SIZE, Settings.maxAlbums)
-        bundle.putInt(Constants.INTENT_EXTRA_NAME_ALBUM_LIST_OFFSET, 0)
+        bundle.putString(Constants.INTENT_ALBUM_LIST_TYPE, type)
+        bundle.putString(Constants.INTENT_ALBUM_LIST_TITLE, title)
+        bundle.putInt(Constants.INTENT_ALBUM_LIST_SIZE, Settings.maxAlbums)
+        bundle.putInt(Constants.INTENT_ALBUM_LIST_OFFSET, 0)
         Navigation.findNavController(requireView()).navigate(R.id.mainToAlbumList, bundle)
     }
 
@@ -237,7 +237,7 @@ class MainFragment : Fragment(), KoinComponent {
 
     private fun showVideos() {
         val bundle = Bundle()
-        bundle.putInt(Constants.INTENT_EXTRA_NAME_VIDEOS, 1)
+        bundle.putInt(Constants.INTENT_VIDEOS, 1)
         Navigation.findNavController(requireView()).navigate(R.id.mainToTrackCollection, bundle)
     }
 

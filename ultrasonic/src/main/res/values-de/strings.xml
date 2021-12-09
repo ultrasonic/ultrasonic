@@ -42,7 +42,7 @@
     <string name="delete_playlist">Möchtest du %1$s löschen</string>
     <string name="download.bookmark_removed" formatted="false">Lesezeichen entfernt</string>
     <string name="download.bookmark_set_at_position" formatted="false">Lesezeichen gesetzt als %s.</string>
-    <string name="download.empty">Wiedergabeliste ist leer</string>
+    <string name="playlist.empty">Wiedergabeliste ist leer</string>
     <string name="download.jukebox_not_authorized">Fernbedienung ist nicht erlaubt. Bitte Jukebox Modus auf dem Subsonic Server in <b>Benutzer > Einstellungen</b> aktivieren.</string>
     <string name="download.jukebox_off">Fernbedienung ausgeschaltet. Musik wird auf dem Telefon wiedergegeben.</string>
     <string name="download.jukebox_offline">Fernbedienungs-Modus is Offline nicht verfügbar.</string>
@@ -128,8 +128,7 @@
     <string name="search.songs">Titel</string>
     <string name="search.title">Suche</string>
     <string name="select_album.empty">Keine Medien gefunden</string>
-    <string name="select_album.n_selected">%d Titel ausgewählt.</string>
-    <string name="select_album.n_unselected">%d Titel abgewählt.</string>
+    <string name="select_album.n_selected">%d Titel ausgewählt</string>
     <string name="select_album.no_network">Warnung: kein Netz.</string>
     <string name="select_album.no_sdcard">Fehler: Keine SD Karte verfügbar.</string>
     <string name="select_album.play_all">Alles wiedergeben</string>
@@ -299,17 +298,6 @@
     <string name="settings.use_id3">Durchsuchen von ID3-Tags</string>
     <string name="settings.use_id3_summary">Nutze ID3 Tag Methode anstatt Dateisystem-Methode</string>
     <string name="main.video" tools:ignore="UnusedResources">Film</string>
-    <string name="settings.view_refresh">Aktualisierungsinterval</string>
-    <string name="settings.view_refresh_500">.5 Sekunden</string>
-    <string name="settings.view_refresh_1000">1 Sekunde</string>
-    <string name="settings.view_refresh_1500">1.5 Sekunden</string>
-    <string name="settings.view_refresh_2000">2 Sekunden</string>
-    <string name="settings.view_refresh_2500">2.5 Sekunden</string>
-    <string name="settings.view_refresh_3000">3 Sekunden</string>
-    <string name="settings.view_refresh_3500">3.5 Sekunden</string>
-    <string name="settings.view_refresh_4000">4 Sekunden</string>
-    <string name="settings.view_refresh_4500">4.5 Sekunden</string>
-    <string name="settings.view_refresh_5000">5 Sekunden</string>
     <string name="settings.wifi_required_summary">Nur bei WLAN verbindung streamen</string>
     <string name="settings.wifi_required_title">Nur über WLAN streamen</string>
     <string name="song_details.all">%1$s%2$s</string>

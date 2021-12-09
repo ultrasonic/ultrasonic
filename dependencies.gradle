@@ -30,7 +30,6 @@ ext.versions = [
         okhttp               : "3.12.13",
         koin                 : "3.0.2",
         picasso              : "2.71828",
-        sortListView         : "1.0.1",
 
         junit4               : "4.13.2",
         junit5               : "5.8.1",
@@ -45,6 +44,7 @@ ext.versions = [
         colorPicker          : "2.2.3",
         rxJava               : "3.1.2",
         rxAndroid            : "3.0.0",
+        multiType            : "4.3.0",
 ]
 
 ext.gradlePlugins = [
@@ -91,10 +91,10 @@ ext.other = [
         dexter             : "com.karumi:dexter:$versions.dexter",
         timber             : "com.jakewharton.timber:timber:$versions.timber",
         fastScroll         : "com.simplecityapps:recyclerview-fastscroll:$versions.fastScroll",
-        sortListView       : "com.github.tzugen:drag-sort-listview:$versions.sortListView",
         colorPickerView    : "com.github.skydoves:colorpickerview:$versions.colorPicker",
         rxJava             : "io.reactivex.rxjava3:rxjava:$versions.rxJava",
         rxAndroid          : "io.reactivex.rxjava3:rxandroid:$versions.rxAndroid",
+        multiType          : "com.drakeet.multitype:multitype:$versions.multiType",
 ]
 
 ext.testing = [

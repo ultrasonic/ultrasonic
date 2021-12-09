@@ -32,11 +32,17 @@ import timber.log.Timber
 
 /**
  * This class represents a single Song or Video that can be downloaded.
+ *
+ * Terminology:
+ * PinnedFile: A "pinned" song. Will stay in cache permanently
+ * CompleteFile: A "downloaded" song. Will be quicker to be deleted if the cache is full
+ *
  */
 class DownloadFile(
     val song: MusicDirectory.Entry,
-    private val save: Boolean
+    save: Boolean
 ) : KoinComponent, Identifiable {
+    var shouldSave = save
     val partialFile: File
     val completeFile: File
     private val saveFile: File = FileUtil.getSongFile(song)
@@ -62,11 +68,27 @@ class DownloadFile(
     private val activeServerProvider: ActiveServerProvider by inject()
 
     val progress: MutableLiveData<Int> = MutableLiveData(0)
-    val status: MutableLiveData<DownloadStatus> = MutableLiveData(DownloadStatus.IDLE)
+    val status: MutableLiveData<DownloadStatus>
 
     init {
+        val state: DownloadStatus
+
         partialFile = File(saveFile.parent, FileUtil.getPartialFile(saveFile.name))
         completeFile = File(saveFile.parent, FileUtil.getCompleteFile(saveFile.name))
+
+        when {
+            saveFile.exists() -> {
+                state = DownloadStatus.PINNED
+            }
+            completeFile.exists() -> {
+                state = DownloadStatus.DONE
+            }
+            else -> {
+                state = DownloadStatus.IDLE
+            }
+        }
+
+        status = MutableLiveData(state)
     }
 
     /**
@@ -114,7 +136,7 @@ class DownloadFile(
 
     @get:Synchronized
     val isWorkDone: Boolean
-        get() = saveFile.exists() || completeFile.exists() && !save ||
+        get() = saveFile.exists() || completeFile.exists() && !shouldSave ||
             saveWhenDone || completeWhenDone
 
     @get:Synchronized
@@ -124,10 +146,6 @@ class DownloadFile(
     @get:Synchronized
     val isDownloadCancelled: Boolean
         get() = downloadTask != null && downloadTask!!.isCancelled
-
-    fun shouldSave(): Boolean {
-        return save
-    }
 
     fun shouldRetry(): Boolean {
         return (retryCount > 0)
@@ -139,12 +157,16 @@ class DownloadFile(
         Util.delete(completeFile)
         Util.delete(saveFile)
 
+        status.postValue(DownloadStatus.IDLE)
+
         Util.scanMedia(saveFile)
     }
 
     fun unpin() {
         if (saveFile.exists()) {
-            if (!saveFile.renameTo(completeFile)) {
+            if (saveFile.renameTo(completeFile)) {
+                status.postValue(DownloadStatus.DONE)
+            } else {
                 Timber.w(
                     "Renaming file failed. Original file: %s; Rename to: %s",
                     saveFile.name, completeFile.name
@@ -185,7 +207,7 @@ class DownloadFile(
                 Util.renameFile(completeFile, saveFile)
                 saveWhenDone = false
             } else if (completeWhenDone) {
-                if (save) {
+                if (shouldSave) {
                     Util.renameFile(partialFile, saveFile)
                     Util.scanMedia(saveFile)
                 } else {
@@ -212,21 +234,23 @@ class DownloadFile(
             try {
                 if (saveFile.exists()) {
                     Timber.i("%s already exists. Skipping.", saveFile)
-                    status.postValue(DownloadStatus.DONE)
+                    status.postValue(DownloadStatus.PINNED)
                     return
                 }
 
                 if (completeFile.exists()) {
-                    if (save) {
+                    var newStatus: DownloadStatus = DownloadStatus.DONE
+                    if (shouldSave) {
                         if (isPlaying) {
                             saveWhenDone = true
                         } else {
                             Util.renameFile(completeFile, saveFile)
+                            newStatus = DownloadStatus.PINNED
                         }
                     } else {
                         Timber.i("%s already exists. Skipping.", completeFile)
                     }
-                    status.postValue(DownloadStatus.DONE)
+                    status.postValue(newStatus)
                     return
                 }
 
@@ -249,7 +273,7 @@ class DownloadFile(
                 if (needsDownloading) {
                     // Attempt partial HTTP GET, appending to the file if it exists.
                     val (inStream, partial) = musicService.getDownloadInputStream(
-                        song, partialFile.length(), desiredBitRate, save
+                        song, partialFile.length(), desiredBitRate, shouldSave
                     )
 
                     inputStream = inStream
@@ -283,18 +307,18 @@ class DownloadFile(
                     }
 
                     downloadAndSaveCoverArt()
-
-                    status.postValue(DownloadStatus.DONE)
                 }
 
                 if (isPlaying) {
                     completeWhenDone = true
                 } else {
-                    if (save) {
+                    if (shouldSave) {
                         Util.renameFile(partialFile, saveFile)
+                        status.postValue(DownloadStatus.PINNED)
                         Util.scanMedia(saveFile)
                     } else {
                         Util.renameFile(partialFile, completeFile)
+                        status.postValue(DownloadStatus.DONE)
                     }
                 }
             } catch (all: Exception) {
@@ -418,5 +442,5 @@ class DownloadFile(
 }
 
 enum class DownloadStatus {
-    IDLE, DOWNLOADING, RETRYING, FAILED, ABORTED, DONE
+    IDLE, DOWNLOADING, RETRYING, FAILED, ABORTED, DONE, PINNED, UNKNOWN
 }

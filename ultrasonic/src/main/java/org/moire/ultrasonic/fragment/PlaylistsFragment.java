@@ -102,9 +102,9 @@ public class PlaylistsFragment extends Fragment {
                 }
 
                 Bundle bundle = new Bundle();
-                bundle.putString(Constants.INTENT_EXTRA_NAME_ID, playlist.getId());
-                bundle.putString(Constants.INTENT_EXTRA_NAME_PLAYLIST_ID, playlist.getId());
-                bundle.putString(Constants.INTENT_EXTRA_NAME_PLAYLIST_NAME, playlist.getName());
+                bundle.putString(Constants.INTENT_ID, playlist.getId());
+                bundle.putString(Constants.INTENT_PLAYLIST_ID, playlist.getId());
+                bundle.putString(Constants.INTENT_PLAYLIST_NAME, playlist.getName());
                 Navigation.findNavController(getView()).navigate(R.id.trackCollectionFragment, bundle);
             }
         });
@@ -187,16 +187,16 @@ public class PlaylistsFragment extends Fragment {
             downloadHandler.getValue().downloadPlaylist(this, playlist.getId(), playlist.getName(), false, false, false, false, true, false, false);
         } else if (itemId == R.id.playlist_menu_play_now) {
             bundle = new Bundle();
-            bundle.putString(Constants.INTENT_EXTRA_NAME_PLAYLIST_ID, playlist.getId());
-            bundle.putString(Constants.INTENT_EXTRA_NAME_PLAYLIST_NAME, playlist.getName());
-            bundle.putBoolean(Constants.INTENT_EXTRA_NAME_AUTOPLAY, true);
+            bundle.putString(Constants.INTENT_PLAYLIST_ID, playlist.getId());
+            bundle.putString(Constants.INTENT_PLAYLIST_NAME, playlist.getName());
+            bundle.putBoolean(Constants.INTENT_AUTOPLAY, true);
             Navigation.findNavController(getView()).navigate(R.id.trackCollectionFragment, bundle);
         } else if (itemId == R.id.playlist_menu_play_shuffled) {
             bundle = new Bundle();
-            bundle.putString(Constants.INTENT_EXTRA_NAME_PLAYLIST_ID, playlist.getId());
-            bundle.putString(Constants.INTENT_EXTRA_NAME_PLAYLIST_NAME, playlist.getName());
-            bundle.putBoolean(Constants.INTENT_EXTRA_NAME_AUTOPLAY, true);
-            bundle.putBoolean(Constants.INTENT_EXTRA_NAME_SHUFFLE, true);
+            bundle.putString(Constants.INTENT_PLAYLIST_ID, playlist.getId());
+            bundle.putString(Constants.INTENT_PLAYLIST_NAME, playlist.getName());
+            bundle.putBoolean(Constants.INTENT_AUTOPLAY, true);
+            bundle.putBoolean(Constants.INTENT_SHUFFLE, true);
             Navigation.findNavController(getView()).navigate(R.id.trackCollectionFragment, bundle);
         } else if (itemId == R.id.playlist_menu_delete) {
             deletePlaylist(playlist);

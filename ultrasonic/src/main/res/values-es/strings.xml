@@ -56,7 +56,7 @@
     <string name="delete_playlist">Quieres eliminar %1$s</string>
     <string name="download.bookmark_removed" formatted="false">Marcador eliminado.</string>
     <string name="download.bookmark_set_at_position" formatted="false">Marcador añadido a %s.</string>
-    <string name="download.empty">La lista de reproducción esta vacía</string>
+    <string name="playlist.empty">La lista de reproducción esta vacía</string>
     <string name="download.jukebox_not_authorized">El control remoto no esta habilitado. Por favor habilita el modo jukebox en <b>Configuración &gt; Usuarios</b> en tu servidor de Subsonic.</string>
     <string name="download.jukebox_off">Control remoto apagado. La música se reproduce en tu dispositivo.</string>
     <string name="download.jukebox_offline">Control remoto no disponible en modo fuera de línea.</string>
@@ -145,7 +145,6 @@
     <string name="search.title">Buscar</string>
     <string name="select_album.empty">No se han encontrado medios</string>
     <string name="select_album.n_selected">%d pista(s) seleccionada(s).</string>
-    <string name="select_album.n_unselected">%d pista(s) deseleccionada(s).</string>
     <string name="select_album.no_network">Atención: No hay red disponible.</string>
     <string name="select_album.no_sdcard">Error: No hay tarjeta SD disponible.</string>
     <string name="select_album.play_all">Reproducir todo</string>
@@ -323,17 +322,6 @@
     <string name="settings.show_artist_picture">Mostrar la imagen del artista en la lista de artistas</string>
     <string name="settings.show_artist_picture_summary">Muestra la imagen del artista en la lista de artistas si está disponible</string>
     <string name="main.video" tools:ignore="UnusedResources">Vídeo</string>
-    <string name="settings.view_refresh">Refresco de la vista</string>
-    <string name="settings.view_refresh_500">.5 segundos</string>
-    <string name="settings.view_refresh_1000">1 segundo</string>
-    <string name="settings.view_refresh_1500">1.5 segundos</string>
-    <string name="settings.view_refresh_2000">2 segundos</string>
-    <string name="settings.view_refresh_2500">2.5 segundos</string>
-    <string name="settings.view_refresh_3000">3 segundos</string>
-    <string name="settings.view_refresh_3500">3.5 segundos</string>
-    <string name="settings.view_refresh_4000">4 segundos</string>
-    <string name="settings.view_refresh_4500">4.5 segundos</string>
-    <string name="settings.view_refresh_5000">5 segundos</string>
     <string name="settings.wifi_required_summary">Solo trasmitir medios si esta conectado a la Wi-Fi</string>
     <string name="settings.wifi_required_title">Trasmitir solo por Wi-Fi</string>
     <string name="song_details.all">%1$s%2$s</string>

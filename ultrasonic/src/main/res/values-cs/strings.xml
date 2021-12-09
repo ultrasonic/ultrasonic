@@ -43,7 +43,7 @@
     <string name="delete_playlist">Opravdu smazat %1$s</string>
     <string name="download.bookmark_removed" formatted="false">Záložka odstraněna.</string>
     <string name="download.bookmark_set_at_position" formatted="false">Záložka vytvořena na %s.</string>
-    <string name="download.empty">Playlist je prázdný</string>
+    <string name="playlist.empty">Playlist je prázdný</string>
     <string name="download.jukebox_not_authorized">Vzdálené ovládání není povoleno. Povolte jukebox mód v <b>Uživatelském &gt; Nastavení</b> na Subsonic serveru.</string>
     <string name="download.jukebox_off">Vzdálené ovládání vypnuto. Hudba je přehrávána na telefonu.</string>
     <string name="download.jukebox_offline">Vzdálené ovládání není dostupné v offline módu.</string>
@@ -130,7 +130,6 @@
     <string name="search.title">Hledat</string>
     <string name="select_album.empty">Média nenalezena</string>
     <string name="select_album.n_selected">%d skladeb označeno.</string>
-    <string name="select_album.n_unselected">%d skladeb odznačeno.</string>
     <string name="select_album.no_network">Varování: Připojení nedostupné.</string>
     <string name="select_album.no_sdcard">Chyba: SD karta nedostupná.</string>
     <string name="select_album.play_all">Přehrát vše</string>
@@ -304,17 +303,6 @@
     <string name="settings.show_artist_picture">Obrázek umělce v seznamu umělců</string>
     <string name="settings.show_artist_picture_summary">Zobrazí obrázek umělce v náhledu umělců pokud je dostupný</string>
     <string name="main.video" tools:ignore="UnusedResources">Video</string>
-    <string name="settings.view_refresh">Obnovení náhledu</string>
-    <string name="settings.view_refresh_500">.5 sekundy</string>
-    <string name="settings.view_refresh_1000">1 sekunda</string>
-    <string name="settings.view_refresh_1500">1.5 sekundy</string>
-    <string name="settings.view_refresh_2000">2 sekundy</string>
-    <string name="settings.view_refresh_2500">2.5 sekundy</string>
-    <string name="settings.view_refresh_3000">3 sekundy</string>
-    <string name="settings.view_refresh_3500">3.5 sekundy</string>
-    <string name="settings.view_refresh_4000">4 sekundy</string>
-    <string name="settings.view_refresh_4500">4.5 sekundy</string>
-    <string name="settings.view_refresh_5000">5 sekund</string>
     <string name="settings.wifi_required_summary">Streamovat media pouze přes Wi-Fi připojení</string>
     <string name="settings.wifi_required_title">Streamovat pouze přes Wi-Fi</string>
     <string name="song_details.all">%1$s%2$s</string>

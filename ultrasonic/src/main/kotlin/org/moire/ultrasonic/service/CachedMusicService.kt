@@ -41,7 +41,7 @@ class CachedMusicService(private val musicService: MusicService) : MusicService,
 
     // Old style TimeLimitedCache
     private val cachedMusicDirectories: LRUCache<String, TimeLimitedCache<MusicDirectory?>>
-    private val cachedArtist: LRUCache<String, TimeLimitedCache<MusicDirectory?>>
+    private val cachedArtist: LRUCache<String, TimeLimitedCache<List<MusicDirectory.Album>>>
     private val cachedAlbum: LRUCache<String, TimeLimitedCache<MusicDirectory?>>
     private val cachedUserInfo: LRUCache<String, TimeLimitedCache<UserInfo?>>
     private val cachedLicenseValid = TimeLimitedCache<Boolean>(120, TimeUnit.SECONDS)
@@ -148,20 +148,21 @@ class CachedMusicService(private val musicService: MusicService) : MusicService,
     }
 
     @Throws(Exception::class)
-    override fun getArtist(id: String, name: String?, refresh: Boolean): MusicDirectory {
-        checkSettingsChanged()
-        var cache = if (refresh) null else cachedArtist[id]
-        var dir = cache?.get()
-        if (dir == null) {
-            dir = musicService.getArtist(id, name, refresh)
-            cache = TimeLimitedCache(
-                Settings.directoryCacheTime.toLong(), TimeUnit.SECONDS
-            )
-            cache.set(dir)
-            cachedArtist.put(id, cache)
+    override fun getArtist(id: String, name: String?, refresh: Boolean):
+        List<MusicDirectory.Album> {
+            checkSettingsChanged()
+            var cache = if (refresh) null else cachedArtist[id]
+            var dir = cache?.get()
+            if (dir == null) {
+                dir = musicService.getArtist(id, name, refresh)
+                cache = TimeLimitedCache(
+                    Settings.directoryCacheTime.toLong(), TimeUnit.SECONDS
+                )
+                cache.set(dir)
+                cachedArtist.put(id, cache)
+            }
+            return dir
         }
-        return dir
-    }
 
     @Throws(Exception::class)
     override fun getAlbum(id: String, name: String?, refresh: Boolean): MusicDirectory {
@@ -248,7 +249,7 @@ class CachedMusicService(private val musicService: MusicService) : MusicService,
         size: Int,
         offset: Int,
         musicFolderId: String?
-    ): MusicDirectory {
+    ): List<MusicDirectory.Album> {
         return musicService.getAlbumList(type, size, offset, musicFolderId)
     }
 
@@ -258,7 +259,7 @@ class CachedMusicService(private val musicService: MusicService) : MusicService,
         size: Int,
         offset: Int,
         musicFolderId: String?
-    ): MusicDirectory {
+    ): List<MusicDirectory.Album> {
         return musicService.getAlbumList2(type, size, offset, musicFolderId)
     }
 
@@ -399,7 +400,7 @@ class CachedMusicService(private val musicService: MusicService) : MusicService,
     }
 
     @Throws(Exception::class)
-    override fun getBookmarks(): List<Bookmark?>? = musicService.getBookmarks()
+    override fun getBookmarks(): List<Bookmark> = musicService.getBookmarks()
 
     @Throws(Exception::class)
     override fun deleteBookmark(id: String) {
@@ -415,7 +416,7 @@ class CachedMusicService(private val musicService: MusicService) : MusicService,
     override fun getVideos(refresh: Boolean): MusicDirectory? {
         checkSettingsChanged()
         var cache =
-            if (refresh) null else cachedMusicDirectories[Constants.INTENT_EXTRA_NAME_VIDEOS]
+            if (refresh) null else cachedMusicDirectories[Constants.INTENT_VIDEOS]
         var dir = cache?.get()
         if (dir == null) {
             dir = musicService.getVideos(refresh)
@@ -423,7 +424,7 @@ class CachedMusicService(private val musicService: MusicService) : MusicService,
                 Settings.directoryCacheTime.toLong(), TimeUnit.SECONDS
             )
             cache.set(dir)
-            cachedMusicDirectories.put(Constants.INTENT_EXTRA_NAME_VIDEOS, cache)
+            cachedMusicDirectories.put(Constants.INTENT_VIDEOS, cache)
         }
         return dir
     }

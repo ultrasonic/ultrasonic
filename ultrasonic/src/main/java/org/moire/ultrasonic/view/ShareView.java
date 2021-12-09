@@ -20,7 +20,7 @@ package org.moire.ultrasonic.view;
 
 import android.content.Context;
 import android.view.LayoutInflater;
-import android.widget.TextView;
+import android.widget.LinearLayout;
 
 import org.moire.ultrasonic.R;
 import org.moire.ultrasonic.domain.Share;
@@ -30,9 +30,9 @@ import org.moire.ultrasonic.domain.Share;
  *
  * @author Joshua Bahnsen
  */
-public class ShareView extends UpdateView
+public class ShareView extends LinearLayout
 {
-	private Context context;
+	private final Context context;
 	private ShareAdapter.ViewHolder viewHolder;
 
 	public ShareView(Context context)
@@ -45,8 +45,8 @@ public class ShareView extends UpdateView
 	{
 		LayoutInflater.from(context).inflate(R.layout.share_list_item, this, true);
 		viewHolder = new ShareAdapter.ViewHolder();
-		viewHolder.url = (TextView) findViewById(R.id.share_url);
-		viewHolder.description = (TextView) findViewById(R.id.share_description);
+		viewHolder.url = findViewById(R.id.share_url);
+		viewHolder.description = findViewById(R.id.share_description);
 		setTag(viewHolder);
 	}
 
@@ -60,6 +60,5 @@ public class ShareView extends UpdateView
 	{
 		viewHolder.url.setText(share.getName());
 		viewHolder.description.setText(share.getDescription());
-		update();
 	}
 }

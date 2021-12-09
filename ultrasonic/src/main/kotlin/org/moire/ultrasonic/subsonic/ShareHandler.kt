@@ -80,7 +80,7 @@ class ShareHandler(val context: Context) {
 
                 if (!shareDetails.ShareOnServer && shareDetails.Entries.size == 1) return null
                 if (shareDetails.Entries.isEmpty()) {
-                    fragment.arguments?.getString(Constants.INTENT_EXTRA_NAME_ID).ifNotNull {
+                    fragment.arguments?.getString(Constants.INTENT_ID).ifNotNull {
                         ids.add(it)
                     }
                 } else {

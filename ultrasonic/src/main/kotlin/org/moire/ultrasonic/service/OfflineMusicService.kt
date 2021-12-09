@@ -14,7 +14,6 @@ import java.io.FileReader
 import java.io.FileWriter
 import java.io.InputStream
 import java.io.Reader
-import java.lang.Math.min
 import java.util.ArrayList
 import java.util.HashSet
 import java.util.LinkedList
@@ -25,6 +24,7 @@ import org.koin.core.component.KoinComponent
 import org.koin.core.component.inject
 import org.moire.ultrasonic.data.ActiveServerProvider
 import org.moire.ultrasonic.domain.Artist
+import org.moire.ultrasonic.domain.ArtistOrIndex
 import org.moire.ultrasonic.domain.Bookmark
 import org.moire.ultrasonic.domain.ChatMessage
 import org.moire.ultrasonic.domain.Genre
@@ -44,8 +44,6 @@ import org.moire.ultrasonic.util.FileUtil
 import org.moire.ultrasonic.util.Util
 import timber.log.Timber
 
-// TODO: There are quite a number of deeply nested and complicated functions in this class..
-// Simplify them :)
 @Suppress("TooManyFunctions")
 class OfflineMusicService : MusicService, KoinComponent {
     private val activeServerProvider: ActiveServerProvider by inject()
@@ -95,6 +93,9 @@ class OfflineMusicService : MusicService, KoinComponent {
         return indexes
     }
 
+    /*
+    * Especially when dealing with indexes, this method can return Albums, Entries or a mix of both!
+    */
     override fun getMusicDirectory(
         id: String,
         name: String?,
@@ -110,7 +111,11 @@ class OfflineMusicService : MusicService, KoinComponent {
             val filename = getName(file)
             if (filename != null && !seen.contains(filename)) {
                 seen.add(filename)
-                result.addChild(createEntry(file, filename))
+                if (file.isFile) {
+                    result.add(createEntry(file, filename))
+                } else {
+                    result.add(createAlbum(file, filename))
+                }
             }
         }
 
@@ -118,8 +123,8 @@ class OfflineMusicService : MusicService, KoinComponent {
     }
 
     override fun search(criteria: SearchCriteria): SearchResult {
-        val artists: MutableList<Artist> = ArrayList()
-        val albums: MutableList<MusicDirectory.Entry> = ArrayList()
+        val artists: MutableList<ArtistOrIndex> = ArrayList()
+        val albums: MutableList<MusicDirectory.Album> = ArrayList()
         val songs: MutableList<MusicDirectory.Entry> = ArrayList()
         val root = FileUtil.musicDirectory
         var closeness: Int
@@ -127,7 +132,7 @@ class OfflineMusicService : MusicService, KoinComponent {
             val artistName = artistFile.name
             if (artistFile.isDirectory) {
                 if (matchCriteria(criteria, artistName).also { closeness = it } > 0) {
-                    val artist = Artist(artistFile.path)
+                    val artist = Index(artistFile.path)
                     artist.index = artistFile.name.substring(0, 1)
                     artist.name = artistName
                     artist.closeness = closeness
@@ -208,7 +213,7 @@ class OfflineMusicService : MusicService, KoinComponent {
                 val entryFile = File(line)
                 val entryName = getName(entryFile)
                 if (entryFile.exists() && entryName != null) {
-                    playlist.addChild(createEntry(entryFile, entryName))
+                    playlist.add(createEntry(entryFile, entryName))
                 }
             }
             playlist
@@ -258,10 +263,10 @@ class OfflineMusicService : MusicService, KoinComponent {
             return result
         }
         children.shuffle()
-        val finalSize: Int = min(children.size, size)
+        val finalSize: Int = children.size.coerceAtMost(size)
         for (i in 0 until finalSize) {
             val file = children[i % children.size]
-            result.addChild(createEntry(file, getName(file)))
+            result.add(createEntry(file, getName(file)))
         }
         return result
     }
@@ -292,8 +297,18 @@ class OfflineMusicService : MusicService, KoinComponent {
         size: Int,
         offset: Int,
         musicFolderId: String?
-    ): MusicDirectory {
+    ): List<MusicDirectory.Album> {
         throw OfflineException("Album lists not available in offline mode")
+    }
+
+    @Throws(OfflineException::class)
+    override fun getAlbumList2(
+        type: String,
+        size: Int,
+        offset: Int,
+        musicFolderId: String?
+    ): List<MusicDirectory.Album> {
+        throw OfflineException("getAlbumList2 isn't available in offline mode")
     }
 
     @Throws(Exception::class)
@@ -386,16 +401,6 @@ class OfflineMusicService : MusicService, KoinComponent {
     }
 
     @Throws(OfflineException::class)
-    override fun getAlbumList2(
-        type: String,
-        size: Int,
-        offset: Int,
-        musicFolderId: String?
-    ): MusicDirectory {
-        throw OfflineException("getAlbumList2 isn't available in offline mode")
-    }
-
-    @Throws(OfflineException::class)
     override fun getVideoUrl(id: String): String? {
         throw OfflineException("getVideoUrl isn't available in offline mode")
     }
@@ -411,7 +416,7 @@ class OfflineMusicService : MusicService, KoinComponent {
     }
 
     @Throws(OfflineException::class)
-    override fun getBookmarks(): List<Bookmark?>? {
+    override fun getBookmarks(): List<Bookmark> {
         throw OfflineException("getBookmarks isn't available in offline mode")
     }
 
@@ -447,9 +452,10 @@ class OfflineMusicService : MusicService, KoinComponent {
     }
 
     @Throws(OfflineException::class)
-    override fun getArtist(id: String, name: String?, refresh: Boolean): MusicDirectory {
-        throw OfflineException("getArtist isn't available in offline mode")
-    }
+    override fun getArtist(id: String, name: String?, refresh: Boolean):
+        List<MusicDirectory.Album> {
+            throw OfflineException("getArtist isn't available in offline mode")
+        }
 
     @Throws(OfflineException::class)
     override fun getAlbum(id: String, name: String?, refresh: Boolean): MusicDirectory {
@@ -481,188 +487,201 @@ class OfflineMusicService : MusicService, KoinComponent {
         throw OfflineException("getPodcastsChannels isn't available in offline mode")
     }
 
-    companion object {
-        private val COMPILE = Pattern.compile(" ")
-        private fun getName(file: File): String? {
-            var name = file.name
-            if (file.isDirectory) {
-                return name
-            }
-            if (name.endsWith(".partial") || name.contains(".partial.") ||
-                name == Constants.ALBUM_ART_FILE
-            ) {
-                return null
-            }
-            name = name.replace(".complete", "")
-            return FileUtil.getBaseName(name)
+    private fun getName(file: File): String? {
+        var name = file.name
+        if (file.isDirectory) {
+            return name
         }
-
-        @Suppress("TooGenericExceptionCaught", "ComplexMethod", "LongMethod", "NestedBlockDepth")
-        private fun createEntry(file: File, name: String?): MusicDirectory.Entry {
-            val entry = MusicDirectory.Entry(file.path)
-            entry.isDirectory = file.isDirectory
-            entry.parent = file.parent
-            entry.size = file.length()
-            val root = FileUtil.musicDirectory.path
-            entry.path = file.path.replaceFirst(
-                String.format(Locale.ROOT, "^%s/", root).toRegex(), ""
-            )
-            entry.title = name
-            if (file.isFile) {
-                var artist: String? = null
-                var album: String? = null
-                var title: String? = null
-                var track: String? = null
-                var disc: String? = null
-                var year: String? = null
-                var genre: String? = null
-                var duration: String? = null
-                var hasVideo: String? = null
-                try {
-                    val mmr = MediaMetadataRetriever()
-                    mmr.setDataSource(file.path)
-                    artist = mmr.extractMetadata(MediaMetadataRetriever.METADATA_KEY_ARTIST)
-                    album = mmr.extractMetadata(MediaMetadataRetriever.METADATA_KEY_ALBUM)
-                    title = mmr.extractMetadata(MediaMetadataRetriever.METADATA_KEY_TITLE)
-                    track = mmr.extractMetadata(MediaMetadataRetriever.METADATA_KEY_CD_TRACK_NUMBER)
-                    disc = mmr.extractMetadata(MediaMetadataRetriever.METADATA_KEY_DISC_NUMBER)
-                    year = mmr.extractMetadata(MediaMetadataRetriever.METADATA_KEY_YEAR)
-                    genre = mmr.extractMetadata(MediaMetadataRetriever.METADATA_KEY_GENRE)
-                    duration = mmr.extractMetadata(MediaMetadataRetriever.METADATA_KEY_DURATION)
-                    hasVideo = mmr.extractMetadata(MediaMetadataRetriever.METADATA_KEY_HAS_VIDEO)
-                    mmr.release()
-                } catch (ignored: Exception) {
-                }
-                entry.artist = artist ?: file.parentFile!!.parentFile!!.name
-                entry.album = album ?: file.parentFile!!.name
-                if (title != null) {
-                    entry.title = title
-                }
-                entry.isVideo = hasVideo != null
-                Timber.i("Offline Stuff: %s", track)
-                if (track != null) {
-                    var trackValue = 0
-                    try {
-                        val slashIndex = track.indexOf('/')
-                        if (slashIndex > 0) {
-                            track = track.substring(0, slashIndex)
-                        }
-                        trackValue = track.toInt()
-                    } catch (ex: Exception) {
-                        Timber.e(ex, "Offline Stuff")
-                    }
-                    Timber.i("Offline Stuff: Setting Track: %d", trackValue)
-                    entry.track = trackValue
-                }
-                if (disc != null) {
-                    var discValue = 0
-                    try {
-                        val slashIndex = disc.indexOf('/')
-                        if (slashIndex > 0) {
-                            disc = disc.substring(0, slashIndex)
-                        }
-                        discValue = disc.toInt()
-                    } catch (ignored: Exception) {
-                    }
-                    entry.discNumber = discValue
-                }
-                if (year != null) {
-                    var yearValue = 0
-                    try {
-                        yearValue = year.toInt()
-                    } catch (ignored: Exception) {
-                    }
-                    entry.year = yearValue
-                }
-                if (genre != null) {
-                    entry.genre = genre
-                }
-                if (duration != null) {
-                    var durationValue: Long = 0
-                    try {
-                        durationValue = duration.toLong()
-                        durationValue = TimeUnit.MILLISECONDS.toSeconds(durationValue)
-                    } catch (ignored: Exception) {
-                    }
-                    entry.setDuration(durationValue)
-                }
-            }
-            entry.suffix = FileUtil.getExtension(file.name.replace(".complete", ""))
-            val albumArt = FileUtil.getAlbumArtFile(entry)
-            if (albumArt.exists()) {
-                entry.coverArt = albumArt.path
-            }
-            return entry
-        }
-
-        @Suppress("NestedBlockDepth")
-        private fun recursiveAlbumSearch(
-            artistName: String,
-            file: File,
-            criteria: SearchCriteria,
-            albums: MutableList<MusicDirectory.Entry>,
-            songs: MutableList<MusicDirectory.Entry>
+        if (name.endsWith(".partial") || name.contains(".partial.") ||
+            name == Constants.ALBUM_ART_FILE
         ) {
-            var closeness: Int
-            for (albumFile in FileUtil.listMediaFiles(file)) {
-                if (albumFile.isDirectory) {
-                    val albumName = getName(albumFile)
-                    if (matchCriteria(criteria, albumName).also { closeness = it } > 0) {
-                        val album = createEntry(albumFile, albumName)
-                        album.artist = artistName
-                        album.closeness = closeness
-                        albums.add(album)
-                    }
-                    for (songFile in FileUtil.listMediaFiles(albumFile)) {
-                        val songName = getName(songFile)
-                        if (songFile.isDirectory) {
-                            recursiveAlbumSearch(artistName, songFile, criteria, albums, songs)
-                        } else if (matchCriteria(criteria, songName).also { closeness = it } > 0) {
-                            val song = createEntry(albumFile, songName)
-                            song.artist = artistName
-                            song.album = albumName
-                            song.closeness = closeness
-                            songs.add(song)
-                        }
-                    }
-                } else {
-                    val songName = getName(albumFile)
-                    if (matchCriteria(criteria, songName).also { closeness = it } > 0) {
+            return null
+        }
+        name = name.replace(".complete", "")
+        return FileUtil.getBaseName(name)
+    }
+
+    private fun createEntry(file: File, name: String?): MusicDirectory.Entry {
+        val entry = MusicDirectory.Entry(file.path)
+        entry.populateWithDataFrom(file, name)
+        return entry
+    }
+
+    private fun createAlbum(file: File, name: String?): MusicDirectory.Album {
+        val album = MusicDirectory.Album(file.path)
+        album.populateWithDataFrom(file, name)
+        return album
+    }
+
+    /*
+     * Extracts some basic data from a File object and applies it to an Album or Entry
+     */
+    private fun MusicDirectory.Child.populateWithDataFrom(file: File, name: String?) {
+        isDirectory = file.isDirectory
+        parent = file.parent
+        val root = FileUtil.musicDirectory.path
+        path = file.path.replaceFirst(
+            String.format(Locale.ROOT, "^%s/", root).toRegex(), ""
+        )
+        title = name
+
+        val albumArt = FileUtil.getAlbumArtFile(file)
+        if (albumArt.exists()) {
+            coverArt = albumArt.path
+        }
+    }
+
+    /*
+     * More extensive variant of Child.populateWithDataFrom(), which also parses the ID3 tags of
+     * a given track file.
+     */
+    private fun MusicDirectory.Entry.populateWithDataFrom(file: File, name: String?) {
+        (this as MusicDirectory.Child).populateWithDataFrom(file, name)
+
+        val meta = RawMetadata(null)
+
+        try {
+            val mmr = MediaMetadataRetriever()
+            mmr.setDataSource(file.path)
+            meta.artist = mmr.extractMetadata(MediaMetadataRetriever.METADATA_KEY_ARTIST)
+            meta.album = mmr.extractMetadata(MediaMetadataRetriever.METADATA_KEY_ALBUM)
+            meta.title = mmr.extractMetadata(MediaMetadataRetriever.METADATA_KEY_TITLE)
+            meta.track = mmr.extractMetadata(MediaMetadataRetriever.METADATA_KEY_CD_TRACK_NUMBER)
+            meta.disc = mmr.extractMetadata(MediaMetadataRetriever.METADATA_KEY_DISC_NUMBER)
+            meta.year = mmr.extractMetadata(MediaMetadataRetriever.METADATA_KEY_YEAR)
+            meta.genre = mmr.extractMetadata(MediaMetadataRetriever.METADATA_KEY_GENRE)
+            meta.duration = mmr.extractMetadata(MediaMetadataRetriever.METADATA_KEY_DURATION)
+            meta.hasVideo = mmr.extractMetadata(MediaMetadataRetriever.METADATA_KEY_HAS_VIDEO)
+            mmr.release()
+        } catch (ignored: Exception) {
+        }
+
+        artist = meta.artist ?: file.parentFile!!.parentFile!!.name
+        album = meta.album ?: file.parentFile!!.name
+        title = meta.title ?: title
+        isVideo = meta.hasVideo != null
+        track = parseSlashedNumber(meta.track)
+        discNumber = parseSlashedNumber(meta.disc)
+        year = meta.year?.toIntOrNull()
+        genre = meta.genre
+        duration = parseDuration(meta.duration)
+        size = file.length()
+        suffix = FileUtil.getExtension(file.name.replace(".complete", ""))
+    }
+
+    /*
+     * Parses a number from a string in the format of 05/21,
+     * where the first number is the track number
+     * and the second the number of total tracks
+     */
+    private fun parseSlashedNumber(string: String?): Int? {
+        if (string == null) return null
+
+        val slashIndex = string.indexOf('/')
+        if (slashIndex > 0)
+            return string.substring(0, slashIndex).toIntOrNull()
+        else
+            return string.toIntOrNull()
+    }
+
+    /*
+     * Parses a duration from a String
+     */
+    private fun parseDuration(string: String?): Int? {
+        if (string == null) return null
+
+        val duration: Long? = string.toLongOrNull()
+
+        if (duration != null)
+            return TimeUnit.MILLISECONDS.toSeconds(duration).toInt()
+        else
+            return null
+    }
+
+    // TODO: Simplify this deeply nested and complicated function
+    @Suppress("NestedBlockDepth")
+    private fun recursiveAlbumSearch(
+        artistName: String,
+        file: File,
+        criteria: SearchCriteria,
+        albums: MutableList<MusicDirectory.Album>,
+        songs: MutableList<MusicDirectory.Entry>
+    ) {
+        var closeness: Int
+        for (albumFile in FileUtil.listMediaFiles(file)) {
+            if (albumFile.isDirectory) {
+                val albumName = getName(albumFile)
+                if (matchCriteria(criteria, albumName).also { closeness = it } > 0) {
+                    val album = createAlbum(albumFile, albumName)
+                    album.artist = artistName
+                    album.closeness = closeness
+                    albums.add(album)
+                }
+                for (songFile in FileUtil.listMediaFiles(albumFile)) {
+                    val songName = getName(songFile)
+                    if (songFile.isDirectory) {
+                        recursiveAlbumSearch(artistName, songFile, criteria, albums, songs)
+                    } else if (matchCriteria(criteria, songName).also { closeness = it } > 0) {
                         val song = createEntry(albumFile, songName)
                         song.artist = artistName
-                        song.album = songName
+                        song.album = albumName
                         song.closeness = closeness
                         songs.add(song)
                     }
                 }
-            }
-        }
-
-        private fun matchCriteria(criteria: SearchCriteria, name: String?): Int {
-            val query = criteria.query.lowercase(Locale.ROOT)
-            val queryParts = COMPILE.split(query)
-            val nameParts = COMPILE.split(
-                name!!.lowercase(Locale.ROOT)
-            )
-            var closeness = 0
-            for (queryPart in queryParts) {
-                for (namePart in nameParts) {
-                    if (namePart == queryPart) {
-                        closeness++
-                    }
-                }
-            }
-            return closeness
-        }
-
-        private fun listFilesRecursively(parent: File, children: MutableList<File>) {
-            for (file in FileUtil.listMediaFiles(parent)) {
-                if (file.isFile) {
-                    children.add(file)
-                } else {
-                    listFilesRecursively(file, children)
+            } else {
+                val songName = getName(albumFile)
+                if (matchCriteria(criteria, songName).also { closeness = it } > 0) {
+                    val song = createEntry(albumFile, songName)
+                    song.artist = artistName
+                    song.album = songName
+                    song.closeness = closeness
+                    songs.add(song)
                 }
             }
         }
+    }
+
+    private fun matchCriteria(criteria: SearchCriteria, name: String?): Int {
+        val query = criteria.query.lowercase(Locale.ROOT)
+        val queryParts = COMPILE.split(query)
+        val nameParts = COMPILE.split(
+            name!!.lowercase(Locale.ROOT)
+        )
+        var closeness = 0
+        for (queryPart in queryParts) {
+            for (namePart in nameParts) {
+                if (namePart == queryPart) {
+                    closeness++
+                }
+            }
+        }
+        return closeness
+    }
+
+    private fun listFilesRecursively(parent: File, children: MutableList<File>) {
+        for (file in FileUtil.listMediaFiles(parent)) {
+            if (file.isFile) {
+                children.add(file)
+            } else {
+                listFilesRecursively(file, children)
+            }
+        }
+    }
+
+    data class RawMetadata(val id: String?) {
+        var artist: String? = null
+        var album: String? = null
+        var title: String? = null
+        var track: String? = null
+        var disc: String? = null
+        var year: String? = null
+        var genre: String? = null
+        var duration: String? = null
+        var hasVideo: String? = null
+    }
+
+    companion object {
+        private val COMPILE = Pattern.compile(" ")
     }
 }

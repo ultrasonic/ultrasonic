@@ -12,7 +12,6 @@
         <item name="star_full">@drawable/ic_star_full_dark</item>
         <item name="about">@drawable/ic_menu_about_dark</item>
         <item name="select_all">@drawable/ic_menu_select_all_dark</item>
-        <item name="add_to_queue">@drawable/ic_menu_add_to_queue_dark</item>
         <item name="browse">@drawable/ic_menu_browse_dark</item>
         <item name="exit">@drawable/ic_menu_exit_dark</item>
         <item name="backward">@drawable/ic_menu_backward_dark</item>
@@ -34,6 +33,7 @@
         <item name="share">@drawable/ic_menu_share_dark</item>
         <item name="download">@drawable/ic_menu_download_dark</item>
         <item name="downloaded">@drawable/stat_sys_download_anim_0_dark</item>
+        <item name="error">@drawable/ic_baseline_error_dark</item>
         <item name="downloading">@drawable/stat_sys_download_dark</item>
         <item name="media_previous">@drawable/media_backward_normal_dark</item>
         <item name="media_next">@drawable/media_forward_normal_dark</item>
@@ -45,7 +45,6 @@
         <item name="media_play">@drawable/media_start_normal_dark</item>
         <item name="podcasts">@drawable/ic_menu_podcasts_dark</item>
         <item name="refresh">@drawable/ic_menu_refresh_dark</item>
-        <item name="media_play_next">@drawable/media_play_next_dark</item>
         <item name="media_play_small">@drawable/ic_stat_play_dark</item>
         <item name="media_stop">@drawable/media_stop_normal_dark</item>
         <item name="media_toggle">@drawable/media_toggle_list_normal_dark</item>
@@ -58,10 +57,10 @@
         <item name="filepicker_subdirectory_up">@drawable/ic_subdirectory_up_dark</item>
         <item name="filepicker_sd_card">@drawable/ic_sd_storage_dark</item>
         <item name="drag_queue">@drawable/ic_drag_queue_dark</item>
-        <item name="drag_vertical">@drawable/ic_drag_vertical_dark</item>
         <item name="more_vert">@drawable/ic_more_vert_dark</item>
         <item name="list_selector_holo">@drawable/list_selector_holo_dark</item>
         <item name="list_selector_holo_selected">@drawable/list_selector_holo_dark_selected</item>
+        <item name="colorControlNormal">@color/selected_menu_background_light</item>
     </style>
 
     <style name="UltrasonicTheme.Dark" parent="Theme.MaterialComponents">
@@ -77,7 +76,6 @@
         <item name="star_full">@drawable/ic_star_full_dark</item>
         <item name="about">@drawable/ic_menu_about_dark</item>
         <item name="select_all">@drawable/ic_menu_select_all_dark</item>
-        <item name="add_to_queue">@drawable/ic_menu_add_to_queue_dark</item>
         <item name="browse">@drawable/ic_menu_browse_dark</item>
         <item name="exit">@drawable/ic_menu_exit_dark</item>
         <item name="backward">@drawable/ic_menu_backward_dark</item>
@@ -99,6 +97,7 @@
         <item name="share">@drawable/ic_menu_share_dark</item>
         <item name="download">@drawable/ic_menu_download_dark</item>
         <item name="downloaded">@drawable/stat_sys_download_anim_0_dark</item>
+        <item name="error">@drawable/ic_baseline_error_dark</item>
         <item name="downloading">@drawable/stat_sys_download_dark</item>
         <item name="media_previous">@drawable/media_backward_normal_dark</item>
         <item name="media_next">@drawable/media_forward_normal_dark</item>
@@ -110,7 +109,6 @@
         <item name="media_play">@drawable/media_start_normal_dark</item>
         <item name="podcasts">@drawable/ic_menu_podcasts_dark</item>
         <item name="refresh">@drawable/ic_menu_refresh_dark</item>
-        <item name="media_play_next">@drawable/media_play_next_dark</item>
         <item name="media_play_small">@drawable/ic_stat_play_dark</item>
         <item name="media_stop">@drawable/media_stop_normal_dark</item>
         <item name="media_toggle">@drawable/media_toggle_list_normal_dark</item>
@@ -123,10 +121,10 @@
         <item name="filepicker_subdirectory_up">@drawable/ic_subdirectory_up_dark</item>
         <item name="filepicker_sd_card">@drawable/ic_sd_storage_dark</item>
         <item name="drag_queue">@drawable/ic_drag_queue_dark</item>
-        <item name="drag_vertical">@drawable/ic_drag_vertical_dark</item>
         <item name="more_vert">@drawable/ic_more_vert_dark</item>
         <item name="list_selector_holo">@drawable/list_selector_holo_dark</item>
         <item name="list_selector_holo_selected">@drawable/list_selector_holo_dark_selected</item>
+        <item name="colorControlNormal">@color/selected_menu_background_light</item>
     </style>
 
     <style name="UltrasonicTheme.Light" parent="Theme.MaterialComponents.Light">
@@ -141,7 +139,6 @@
         <item name="star_full">@drawable/ic_star_full_light</item>
         <item name="about">@drawable/ic_menu_about_light</item>
         <item name="select_all">@drawable/ic_menu_select_all_light</item>
-        <item name="add_to_queue">@drawable/ic_menu_add_to_queue_light</item>
         <item name="browse">@drawable/ic_menu_browse_light</item>
         <item name="exit">@drawable/ic_menu_exit_light</item>
         <item name="backward">@drawable/ic_menu_backward_light</item>
@@ -163,6 +160,7 @@
         <item name="share">@drawable/ic_menu_share_light</item>
         <item name="download">@drawable/ic_menu_download_light</item>
         <item name="downloaded">@drawable/stat_sys_download_anim_0_light</item>
+        <item name="error">@drawable/ic_baseline_error_light</item>
         <item name="downloading">@drawable/stat_sys_download_light</item>
         <item name="media_previous">@drawable/media_backward_normal_light</item>
         <item name="media_next">@drawable/media_forward_normal_light</item>
@@ -174,7 +172,6 @@
         <item name="media_play">@drawable/media_start_normal_light</item>
         <item name="podcasts">@drawable/ic_menu_podcasts_light</item>
         <item name="refresh">@drawable/ic_menu_refresh_light</item>
-        <item name="media_play_next">@drawable/media_play_next_light</item>
         <item name="media_play_small">@drawable/ic_stat_play_light</item>
         <item name="media_stop">@drawable/media_stop_normal_light</item>
         <item name="media_toggle">@drawable/media_toggle_list_normal_light</item>
@@ -187,9 +184,9 @@
         <item name="filepicker_subdirectory_up">@drawable/ic_subdirectory_up_light</item>
         <item name="filepicker_sd_card">@drawable/ic_sd_storage_light</item>
         <item name="drag_queue">@drawable/ic_drag_queue_light</item>
-        <item name="drag_vertical">@drawable/ic_drag_vertical_light</item>
         <item name="more_vert">@drawable/ic_more_vert_light</item>
         <item name="list_selector_holo">@drawable/list_selector_holo_light</item>
         <item name="list_selector_holo_selected">@drawable/list_selector_holo_light_selected</item>
+        <item name="colorControlNormal">@color/selected_menu_background_dark</item>
     </style>
 </resources>
