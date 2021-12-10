@@ -5,10 +5,10 @@ package org.moire.ultrasonic.domain
 
 import org.moire.ultrasonic.api.subsonic.models.Album
 
-fun Album.toDomainEntity(): MusicDirectory.Entry = MusicDirectory.Entry(
+fun Album.toDomainEntity(): MusicDirectory.Album = MusicDirectory.Album(
     id = this@toDomainEntity.id,
-    isDirectory = true,
-    title = this@toDomainEntity.name,
+    title = this@toDomainEntity.name ?: this@toDomainEntity.title,
+    album = this@toDomainEntity.album,
     coverArt = this@toDomainEntity.coverArt,
     artist = this@toDomainEntity.artist,
     artistId = this@toDomainEntity.artistId,
@@ -24,4 +24,4 @@ fun Album.toMusicDirectoryDomainEntity(): MusicDirectory = MusicDirectory().appl
     addAll(this@toMusicDirectoryDomainEntity.songList.map { it.toDomainEntity() })
 }
 
-fun List<Album>.toDomainEntityList(): List<MusicDirectory.Entry> = this.map { it.toDomainEntity() }
+fun List<Album>.toDomainEntityList(): List<MusicDirectory.Album> = this.map { it.toDomainEntity() }

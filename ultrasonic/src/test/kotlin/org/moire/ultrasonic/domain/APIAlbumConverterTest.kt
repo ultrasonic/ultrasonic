@@ -50,8 +50,8 @@ class APIAlbumConverterTest {
 
         with(convertedEntity) {
             name `should be equal to` null
-            getChildren().size `should be equal to` entity.songList.size
-            getChildren()[0] `should be equal to` entity.songList[0].toDomainEntity()
+            size `should be equal to` entity.songList.size
+            this[0] `should be equal to` entity.songList[0].toDomainEntity()
         }
     }
 

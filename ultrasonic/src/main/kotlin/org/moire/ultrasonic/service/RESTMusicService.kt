@@ -143,10 +143,10 @@ open class RESTMusicService(
         id: String,
         name: String?,
         refresh: Boolean
-    ): MusicDirectory {
+    ): List<MusicDirectory.Album> {
         val response = API.getArtist(id).execute().throwOnFailure()
 
-        return response.body()!!.artist.toMusicDirectoryDomainEntity()
+        return response.body()!!.artist.toDomainEntityList()
     }
 
     @Throws(Exception::class)
@@ -319,7 +319,7 @@ open class RESTMusicService(
             ) {
                 val entry = podcastEntry.toDomainEntity()
                 entry.track = null
-                musicDirectory.addChild(entry)
+                musicDirectory.add(entry)
             }
         }
 
@@ -350,7 +350,7 @@ open class RESTMusicService(
         size: Int,
         offset: Int,
         musicFolderId: String?
-    ): MusicDirectory {
+    ): List<MusicDirectory.Album> {
         val response = API.getAlbumList(
             fromName(type),
             size,
@@ -361,11 +361,7 @@ open class RESTMusicService(
             musicFolderId
         ).execute().throwOnFailure()
 
-        val childList = response.body()!!.albumList.toDomainEntityList()
-        val result = MusicDirectory()
-        result.addAll(childList)
-
-        return result
+        return response.body()!!.albumList.toDomainEntityList()
     }
 
     @Throws(Exception::class)
@@ -374,7 +370,7 @@ open class RESTMusicService(
         size: Int,
         offset: Int,
         musicFolderId: String?
-    ): MusicDirectory {
+    ): List<MusicDirectory.Album> {
         val response = API.getAlbumList2(
             fromName(type),
             size,
@@ -385,10 +381,7 @@ open class RESTMusicService(
             musicFolderId
         ).execute().throwOnFailure()
 
-        val result = MusicDirectory()
-        result.addAll(response.body()!!.albumList.toDomainEntityList())
-
-        return result
+        return response.body()!!.albumList.toDomainEntityList()
     }
 
     @Throws(Exception::class)

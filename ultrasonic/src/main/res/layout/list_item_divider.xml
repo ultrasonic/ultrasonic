@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:a="http://schemas.android.com/apk/res/android"
+    a:orientation="vertical"
+    a:layout_width="fill_parent"
+    a:layout_height="wrap_content">
+
+    <TextView
+        a:id="@+id/text"
+        a:text="@string/search.artists"
+        a:layout_width="fill_parent"
+        a:layout_height="wrap_content"
+        a:textAppearance="?android:attr/textAppearanceSmall"
+        a:textColor="#EFEFEF"
+        a:textStyle="bold"
+        a:background="#ff555555"
+        a:gravity="center_vertical"
+        a:paddingStart="4dp"/>
+
+</LinearLayout>
+

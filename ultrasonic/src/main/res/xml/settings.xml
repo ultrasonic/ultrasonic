@@ -48,13 +48,6 @@
             a:summary="@string/settings.disc_sort_summary"
             a:title="@string/settings.disc_sort"
             app:iconSpaceReserved="false"/>
-        <ListPreference
-            a:defaultValue="1000"
-            a:entries="@array/viewRefreshNames"
-            a:entryValues="@array/viewRefreshValues"
-            a:key="viewRefresh"
-            a:title="@string/settings.view_refresh"
-            app:iconSpaceReserved="false"/>
     </PreferenceCategory>
     <PreferenceCategory
         a:title="@string/settings.playback_control_title"

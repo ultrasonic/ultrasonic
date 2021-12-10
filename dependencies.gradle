@@ -10,7 +10,7 @@ ext.versions = [
         androidxcore         : "1.6.0",
         ktlint               : "0.37.1",
         ktlintGradle         : "10.2.0",
-        detekt               : "1.18.1",
+        detekt               : "1.19.0",
         jacoco               : "0.8.7",
         preferences          : "1.1.1",
         media                : "1.3.1",
@@ -31,11 +31,10 @@ ext.versions = [
         okhttp               : "3.12.13",
         koin                 : "3.0.2",
         picasso              : "2.71828",
-        sortListView         : "1.0.1",
 
         junit4               : "4.13.2",
         junit5               : "5.8.1",
-        mockito              : "4.0.0",
+        mockito              : "4.1.0",
         mockitoKotlin        : "4.0.0",
         kluent               : "1.68",
         apacheCodecs         : "1.15",
@@ -46,6 +45,7 @@ ext.versions = [
         fsaf                 : "1.1",
         rxJava               : "3.1.2",
         rxAndroid            : "3.0.0",
+        multiType            : "4.3.0",
 ]
 
 ext.gradlePlugins = [
@@ -92,11 +92,11 @@ ext.other = [
         picasso            : "com.squareup.picasso:picasso:$versions.picasso",
         timber             : "com.jakewharton.timber:timber:$versions.timber",
         fastScroll         : "com.simplecityapps:recyclerview-fastscroll:$versions.fastScroll",
-        sortListView       : "com.github.tzugen:drag-sort-listview:$versions.sortListView",
         colorPickerView    : "com.github.skydoves:colorpickerview:$versions.colorPicker",
         fsaf               : "com.github.K1rakishou:Fuck-Storage-Access-Framework:$versions.fsaf",
         rxJava             : "io.reactivex.rxjava3:rxjava:$versions.rxJava",
         rxAndroid          : "io.reactivex.rxjava3:rxandroid:$versions.rxAndroid",
+        multiType          : "com.drakeet.multitype:multitype:$versions.multiType",
 ]
 
 ext.testing = [

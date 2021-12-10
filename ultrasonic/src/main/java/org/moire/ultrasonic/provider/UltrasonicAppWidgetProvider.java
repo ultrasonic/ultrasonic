@@ -191,7 +191,7 @@ public class UltrasonicAppWidgetProvider extends AppWidgetProvider
 	{
 		Intent intent = new Intent(context, NavigationActivity.class).addFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
 		if (playerActive)
-			intent.putExtra(Constants.INTENT_EXTRA_NAME_SHOW_PLAYER, true);
+			intent.putExtra(Constants.INTENT_SHOW_PLAYER, true);
 
 		intent.setAction("android.intent.action.MAIN");
 		intent.addCategory("android.intent.category.LAUNCHER");

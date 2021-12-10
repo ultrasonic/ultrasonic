@@ -42,7 +42,7 @@ class APISearchConverterTest {
     fun `Should convert SearchTwoResult to domain entity`() {
         val entity = SearchTwoResult(
             listOf(Artist(id = "82", name = "great-artist-name")),
-            listOf(MusicDirectoryChild(id = "762", artist = "bzz")),
+            listOf(Album(id = "762", artist = "bzz")),
             listOf(MusicDirectoryChild(id = "9118", parent = "112"))
         )
 

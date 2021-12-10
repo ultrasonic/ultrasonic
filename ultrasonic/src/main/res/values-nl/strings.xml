@@ -56,7 +56,7 @@
     <string name="delete_playlist">Wil je %1$s verwijderen?</string>
     <string name="download.bookmark_removed" formatted="false">Bladwijzer verwijderd.</string>
     <string name="download.bookmark_set_at_position" formatted="false">Bladwijzer ingesteld op %s.</string>
-    <string name="download.empty">Lege afspeellijst</string>
+    <string name="playlist.empty">Lege afspeellijst</string>
     <string name="download.jukebox_not_authorized">Afstandsbediening wordt niet ondersteund. Schakel jukebox-modus in op je Subsonic-server via <b>Gebruikers &gt; Instellingen</b>.</string>
     <string name="download.jukebox_off">Afstandsbediening uitgeschakeld; muziek wordt afgespeeld op de telefoon.</string>
     <string name="download.jukebox_offline">Afstandsbediening is niet beschikbaar in offline-modus.</string>
@@ -145,7 +145,6 @@
     <string name="search.title">Zoeken</string>
     <string name="select_album.empty">Geen media gevonden</string>
     <string name="select_album.n_selected">%d nummers geselecteerd.</string>
-    <string name="select_album.n_unselected">%d nummers gedeselecteerd.</string>
     <string name="select_album.no_network">Waarschuwing: geen internetverbinding.</string>
     <string name="select_album.no_sdcard">Fout: geen SD-kaart beschikbaar.</string>
     <string name="select_album.play_all">Alles afspelen</string>
@@ -323,17 +322,6 @@
     <string name="settings.show_artist_picture">Artiestfoto tonen op artiestenlijst</string>
     <string name="settings.show_artist_picture_summary">Toont de artiestfoto op de artiestenlijst (indien beschikbaar)</string>
     <string name="main.video" tools:ignore="UnusedResources">Video</string>
-    <string name="settings.view_refresh">Verversen</string>
-    <string name="settings.view_refresh_500">0,5 seconden</string>
-    <string name="settings.view_refresh_1000">1 seconde</string>
-    <string name="settings.view_refresh_1500">1,5 seconden</string>
-    <string name="settings.view_refresh_2000">2 seconden</string>
-    <string name="settings.view_refresh_2500">2,5 seconden</string>
-    <string name="settings.view_refresh_3000">3 seconden</string>
-    <string name="settings.view_refresh_3500">3,5 seconden</string>
-    <string name="settings.view_refresh_4000">4 seconden</string>
-    <string name="settings.view_refresh_4500">4,5 seconden</string>
-    <string name="settings.view_refresh_5000">5 seconden</string>
     <string name="settings.wifi_required_summary">Alleen streamen via wifi-verbindingen</string>
     <string name="settings.wifi_required_title">Alleen streamen via wifi</string>
     <string name="song_details.all">%1$s%2$s</string>

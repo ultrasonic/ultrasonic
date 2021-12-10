@@ -24,6 +24,7 @@ import org.moire.ultrasonic.domain.Share
 import org.moire.ultrasonic.domain.UserInfo
 
 @Suppress("TooManyFunctions")
+
 interface MusicService {
     @Throws(Exception::class)
     fun ping()
@@ -56,7 +57,7 @@ interface MusicService {
     fun getMusicDirectory(id: String, name: String?, refresh: Boolean): MusicDirectory
 
     @Throws(Exception::class)
-    fun getArtist(id: String, name: String?, refresh: Boolean): MusicDirectory
+    fun getArtist(id: String, name: String?, refresh: Boolean): List<MusicDirectory.Album>
 
     @Throws(Exception::class)
     fun getAlbum(id: String, name: String?, refresh: Boolean): MusicDirectory
@@ -89,7 +90,12 @@ interface MusicService {
     fun scrobble(id: String, submission: Boolean)
 
     @Throws(Exception::class)
-    fun getAlbumList(type: String, size: Int, offset: Int, musicFolderId: String?): MusicDirectory
+    fun getAlbumList(
+        type: String,
+        size: Int,
+        offset: Int,
+        musicFolderId: String?
+    ): List<MusicDirectory.Album>
 
     @Throws(Exception::class)
     fun getAlbumList2(
@@ -97,7 +103,7 @@ interface MusicService {
         size: Int,
         offset: Int,
         musicFolderId: String?
-    ): MusicDirectory
+    ): List<MusicDirectory.Album>
 
     @Throws(Exception::class)
     fun getRandomSongs(size: Int): MusicDirectory
@@ -154,7 +160,7 @@ interface MusicService {
     fun addChatMessage(message: String)
 
     @Throws(Exception::class)
-    fun getBookmarks(): List<Bookmark?>?
+    fun getBookmarks(): List<Bookmark>
 
     @Throws(Exception::class)
     fun deleteBookmark(id: String)

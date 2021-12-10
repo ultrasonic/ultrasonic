@@ -89,7 +89,7 @@ class ImageLoader(
     @JvmOverloads
     fun loadImage(
         view: View?,
-        entry: MusicDirectory.Entry?,
+        entry: MusicDirectory.Child?,
         large: Boolean,
         size: Int,
         defaultResourceId: Int = R.drawable.unknown_album

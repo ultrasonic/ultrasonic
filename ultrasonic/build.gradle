@@ -105,11 +105,11 @@ dependencies {
     implementation other.koinAndroid
     implementation other.okhttpLogging
     implementation other.fastScroll
-    implementation other.sortListView
     implementation other.colorPickerView
     implementation other.fsaf
     implementation other.rxJava
     implementation other.rxAndroid
+    implementation other.multiType
 
     kapt androidSupport.room
 

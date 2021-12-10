@@ -91,11 +91,10 @@ object FileUtil {
 
     @JvmStatic
     fun getPlaylistDirectory(server: String? = null): File {
-        val playlistDir: File
-        if (server != null) {
-            playlistDir = File(playlistDirectory, server)
+        val playlistDir: File = if (server != null) {
+            File(playlistDirectory, server)
         } else {
-            playlistDir = playlistDirectory
+            playlistDirectory
         }
         ensureDirectoryExistsAndIsReadWritable(playlistDir)
         return playlistDir
@@ -106,7 +105,7 @@ object FileUtil {
      * @param entry The album entry
      * @return File object. Not guaranteed that it exists
      */
-    fun getAlbumArtFile(entry: MusicDirectory.Entry): String? {
+    fun getAlbumArtFile(entry: MusicDirectory.Child): String? {
         val albumDir = getAlbumDirectory(entry)
         return getAlbumArtFileForAlbumDir(albumDir)
     }
@@ -117,7 +116,7 @@ object FileUtil {
      * @param large Whether to get the key for the large or the default image
      * @return String The hash key
      */
-    fun getAlbumArtKey(entry: MusicDirectory.Entry?, large: Boolean): String? {
+    fun getAlbumArtKey(entry: MusicDirectory.Child?, large: Boolean): String? {
         if (entry == null) return null
         val albumDir = getAlbumDirectory(entry)
         return getAlbumArtKey(albumDir, large)
@@ -137,7 +136,7 @@ object FileUtil {
 
     /**
      * Get the cache key for a given album entry
-     * @param albumDir The album directory
+     * @param albumDirPath The album directory
      * @param large Whether to get the key for the large or the default image
      * @return String The hash key
      */
@@ -187,7 +186,7 @@ object FileUtil {
             return albumArtDir
         }
 
-    fun getAlbumDirectory(entry: MusicDirectory.Entry): String {
+    fun getAlbumDirectory(entry: MusicDirectory.Child): String {
         val dir: String
         if (!TextUtils.isEmpty(entry.path) && getParentPath(entry.path!!) != null) {
             val f = fileSystemSafeDir(entry.path)
@@ -461,7 +460,7 @@ object FileUtil {
 
         try {
             fw.write("#EXTM3U\n")
-            for (e in playlist.getChildren()) {
+            for (e in playlist.getTracks()) {
                 var filePath = getSongFile(e)
 
                 if (!StorageFile.isPathExists(filePath)) {

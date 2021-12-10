@@ -403,9 +403,9 @@ object Util {
     }
 
     @JvmStatic
-    fun getDrawableFromAttribute(context: Context?, attr: Int): Drawable {
+    fun getDrawableFromAttribute(context: Context, attr: Int): Drawable {
         val attrs = intArrayOf(attr)
-        val ta = context!!.obtainStyledAttributes(attrs)
+        val ta = context.obtainStyledAttributes(attrs)
         val drawableFromTheme: Drawable? = ta.getDrawable(0)
         ta.recycle()
         return drawableFromTheme!!
@@ -461,20 +461,19 @@ object Util {
     fun getSongsFromSearchResult(searchResult: SearchResult): MusicDirectory {
         val musicDirectory = MusicDirectory()
         for (entry in searchResult.songs) {
-            musicDirectory.addChild(entry)
+            musicDirectory.add(entry)
         }
         return musicDirectory
     }
 
     @JvmStatic
-    fun getSongsFromBookmarks(bookmarks: Iterable<Bookmark?>): MusicDirectory {
+    fun getSongsFromBookmarks(bookmarks: Iterable<Bookmark>): MusicDirectory {
         val musicDirectory = MusicDirectory()
         var song: MusicDirectory.Entry
         for (bookmark in bookmarks) {
-            if (bookmark == null) continue
             song = bookmark.entry
             song.bookmarkPosition = bookmark.position
-            musicDirectory.addChild(song)
+            musicDirectory.add(song)
         }
         return musicDirectory
     }
@@ -689,7 +688,8 @@ object Util {
     }
 
     @JvmOverloads
-    fun formatTotalDuration(totalDuration: Long, inMilliseconds: Boolean = false): String {
+    fun formatTotalDuration(totalDuration: Long?, inMilliseconds: Boolean = false): String {
+        if (totalDuration == null) return ""
         var millis = totalDuration
         if (!inMilliseconds) {
             millis = totalDuration * 1000
@@ -795,7 +795,15 @@ object Util {
         )
     }
 
-    @Suppress("ComplexMethod", "LongMethod")
+    data class ReadableEntryDescription(
+        var artist: String,
+        var title: String,
+        val trackNumber: String,
+        val duration: String,
+        var bitrate: String?,
+        var fileFormat: String?,
+    )
+
     fun getMediaDescriptionForEntry(
         song: MusicDirectory.Entry,
         mediaId: String? = null,
@@ -803,15 +811,39 @@ object Util {
     ): MediaDescriptionCompat {
 
         val descriptionBuilder = MediaDescriptionCompat.Builder()
+        val desc = readableEntryDescription(song)
+        val title: String
+
+        if (groupNameId != null)
+            descriptionBuilder.setExtras(
+                Bundle().apply {
+                    putString(
+                        MediaConstants.DESCRIPTION_EXTRAS_KEY_CONTENT_STYLE_GROUP_TITLE,
+                        appContext().getString(groupNameId)
+                    )
+                }
+            )
+
+        if (desc.trackNumber.isNotEmpty()) {
+            title = "${desc.trackNumber} - ${desc.title}"
+        } else {
+            title = desc.title
+        }
+
+        descriptionBuilder.setTitle(title)
+        descriptionBuilder.setSubtitle(desc.artist)
+        descriptionBuilder.setMediaId(mediaId)
+
+        return descriptionBuilder.build()
+    }
+
+    @Suppress("ComplexMethod", "LongMethod")
+    fun readableEntryDescription(song: MusicDirectory.Entry): ReadableEntryDescription {
         val artist = StringBuilder(LINE_LENGTH)
         var bitRate: String? = null
+        var trackText = ""
 
         val duration = song.duration
-        if (duration != null) {
-            artist.append(
-                String.format(Locale.ROOT, "%s  ", formatTotalDuration(duration.toLong()))
-            )
-        }
 
         if (song.bitRate != null && song.bitRate!! > 0)
             bitRate = String.format(
@@ -849,8 +881,9 @@ object Util {
         val trackNumber = song.track ?: 0
 
         val title = StringBuilder(LINE_LENGTH)
-        if (Settings.shouldShowTrackNumber && trackNumber > 0)
-            title.append(String.format(Locale.ROOT, "%02d - ", trackNumber))
+        if (Settings.shouldShowTrackNumber && trackNumber > 0) {
+            trackText = String.format(Locale.ROOT, "%02d.", trackNumber)
+        }
 
         title.append(song.title)
 
@@ -865,21 +898,14 @@ object Util {
             ).append(')')
         }
 
-        if (groupNameId != null)
-            descriptionBuilder.setExtras(
-                Bundle().apply {
-                    putString(
-                        MediaConstants.DESCRIPTION_EXTRAS_KEY_CONTENT_STYLE_GROUP_TITLE,
-                        appContext().getString(groupNameId)
-                    )
-                }
-            )
-
-        descriptionBuilder.setTitle(title)
-        descriptionBuilder.setSubtitle(artist)
-        descriptionBuilder.setMediaId(mediaId)
-
-        return descriptionBuilder.build()
+        return ReadableEntryDescription(
+            artist = artist.toString(),
+            title = title.toString(),
+            trackNumber = trackText,
+            duration = formatTotalDuration(duration?.toLong()),
+            bitrate = bitRate,
+            fileFormat = fileFormat,
+        )
     }
 
     fun getPendingIntentForMediaAction(

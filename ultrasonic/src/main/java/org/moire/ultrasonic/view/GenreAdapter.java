@@ -48,7 +48,7 @@ public class GenreAdapter extends ArrayAdapter<Genre> implements SectionIndexer
 
 	public GenreAdapter(Context context, List<Genre> genres)
 	{
-		super(context, R.layout.generic_text_list_item, genres);
+		super(context, R.layout.list_item_generic, genres);
 
         layoutInflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
 
@@ -75,7 +75,7 @@ public class GenreAdapter extends ArrayAdapter<Genre> implements SectionIndexer
     public View getView(int position, @Nullable View convertView, @NonNull ViewGroup parent) {
         View rowView = convertView;
         if (rowView == null) {
-            rowView = layoutInflater.inflate(R.layout.generic_text_list_item, parent, false);
+            rowView = layoutInflater.inflate(R.layout.list_item_generic, parent, false);
         }
 
         ((TextView) rowView).setText(getItem(position).getName());

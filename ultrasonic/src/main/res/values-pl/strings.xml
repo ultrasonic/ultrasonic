@@ -42,7 +42,7 @@
     <string name="delete_playlist">Czy chcesz usunąć %1$s?</string>
     <string name="download.bookmark_removed" formatted="false">Zakładka usunięta.</string>
     <string name="download.bookmark_set_at_position" formatted="false">Zakładka ustawiona na %s.</string>
-    <string name="download.empty">Playlista jest pusta</string>
+    <string name="playlist.empty">Playlista jest pusta</string>
     <string name="download.jukebox_not_authorized">Kontrola pilotem jest niedostępna. Proszę uruchomić tryb jukebox w <b>Użytkownicy &gt; Ustawienia</b> na serwerze Subsonic.</string>
     <string name="download.jukebox_off">Tryb pilota jest wyłączony. Muzyka jest odtwarzana w telefonie.</string>
     <string name="download.jukebox_offline">Pilot jest niedostępny w trybie offline.</string>
@@ -128,7 +128,6 @@
     <string name="search.title">Wyszukiwanie</string>
     <string name="select_album.empty">Brak mediów</string>
     <string name="select_album.n_selected">Zaznaczono %d utworów.</string>
-    <string name="select_album.n_unselected">Odznaczono %d utworów.</string>
     <string name="select_album.no_network">Uwaga: sieć niedostępna.</string>
     <string name="select_album.no_sdcard">Błąd: Niedostępna karta SD.</string>
     <string name="select_album.play_all">Odtwórz wszystkie</string>
@@ -299,17 +298,6 @@ ponieważ api Subsonic nie wspiera nowego sposobu autoryzacji dla użytkowników
     <string name="settings.use_id3">Przeglądaj używając tagów ID3</string>
     <string name="settings.use_id3_summary">Używa metod z tagów ID3 zamiast metod opartych na systemie plików</string>
     <string name="main.video" tools:ignore="UnusedResources">Wideo</string>
-    <string name="settings.view_refresh">Odświeżanie widoku</string>
-    <string name="settings.view_refresh_500">co pół sekundy</string>
-    <string name="settings.view_refresh_1000">co 1 sekundę</string>
-    <string name="settings.view_refresh_1500">co 1,5 sekundy</string>
-    <string name="settings.view_refresh_2000">co 2 sekundy</string>
-    <string name="settings.view_refresh_2500">co 2,5 sekundy</string>
-    <string name="settings.view_refresh_3000">co 3 sekundy</string>
-    <string name="settings.view_refresh_3500">co 3,5 sekundy</string>
-    <string name="settings.view_refresh_4000">co 4 sekundy</string>
-    <string name="settings.view_refresh_4500">co 4,5 sekundy</string>
-    <string name="settings.view_refresh_5000">co 5 sekund</string>
     <string name="settings.wifi_required_summary">Przesyłanie mediów tylko gdy Wi-fi jest włączone</string>
     <string name="settings.wifi_required_title">Przesyłanie tylko przez Wi-fi</string>
     <string name="song_details.all">%1$s%2$s</string>

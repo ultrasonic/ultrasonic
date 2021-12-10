@@ -704,7 +704,7 @@ class MediaPlayerService : Service() {
         val intent = Intent(this, NavigationActivity::class.java)
             .addFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP)
         val flags = PendingIntent.FLAG_UPDATE_CURRENT
-        intent.putExtra(Constants.INTENT_EXTRA_NAME_SHOW_PLAYER, true)
+        intent.putExtra(Constants.INTENT_SHOW_PLAYER, true)
         return PendingIntent.getActivity(this, 0, intent, flags)
     }
 

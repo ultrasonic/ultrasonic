@@ -1,0 +1,93 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:a="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    a:id="@+id/linearLayout"
+    a:layout_width="fill_parent"
+    a:layout_height="wrap_content"
+    a:layout_gravity="center_vertical"
+    a:layout_marginStart="4dp"
+    a:layout_weight="1">
+
+
+    <TextView
+        a:id="@+id/song_track"
+        a:layout_width="wrap_content"
+        a:layout_height="wrap_content"
+        a:paddingEnd="6dip"
+        a:textAppearance="?android:attr/textAppearanceMedium"
+        a:visibility="visible"
+        app:layout_constraintBottom_toTopOf="@+id/song_artist"
+        app:layout_constraintEnd_toStartOf="@+id/song_title"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_chainStyle="packed"
+        tools:text="Track"
+        tools:visibility="visible" />
+
+    <TextView
+        a:id="@+id/song_title"
+        a:layout_width="0dp"
+        a:layout_height="wrap_content"
+        a:drawablePadding="4dip"
+        a:ellipsize="end"
+        a:paddingEnd="4dip"
+        a:singleLine="true"
+        a:textAppearance="?android:attr/textAppearanceMedium"
+        app:layout_constraintBottom_toTopOf="@+id/song_artist"
+        app:layout_constraintEnd_toStartOf="@+id/barrier"
+        app:layout_constraintStart_toEndOf="@+id/song_track"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="1.0"
+        app:layout_constraintVertical_chainStyle="packed"
+        tools:text="Title" />
+
+    <TextView
+        a:id="@+id/song_artist"
+        a:layout_width="0dp"
+        a:layout_height="wrap_content"
+        a:ellipsize="middle"
+        a:paddingStart="1dip"
+        a:paddingEnd="4dip"
+        a:singleLine="true"
+        a:textAppearance="?android:attr/textAppearanceSmall"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toStartOf="@+id/barrier"
+        app:layout_constraintStart_toStartOf="parent"
+        tools:text="Artist" />
+
+    <TextView
+        a:id="@+id/song_status"
+        a:layout_width="wrap_content"
+        a:layout_height="wrap_content"
+        a:drawablePadding="6dip"
+        a:paddingEnd="12dip"
+        a:textAlignment="textEnd"
+        app:layout_constraintBottom_toTopOf="@+id/song_duration"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="1.0"
+        app:layout_constraintStart_toStartOf="@+id/song_duration"
+        app:layout_constraintTop_toTopOf="parent"
+        tools:text="100%" />
+
+    <TextView
+        a:id="@+id/song_duration"
+        a:layout_width="wrap_content"
+        a:layout_height="wrap_content"
+        a:paddingStart="3dip"
+        a:paddingEnd="9dip"
+        a:singleLine="true"
+        a:textAppearance="?android:attr/textAppearanceSmall"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        tools:text="Duration" />
+
+    <androidx.constraintlayout.widget.Barrier
+        a:id="@+id/barrier"
+        a:layout_width="wrap_content"
+        a:layout_height="wrap_content"
+        app:barrierDirection="left"
+        app:constraint_referenced_ids="song_status,song_duration" />
+
+
+</androidx.constraintlayout.widget.ConstraintLayout>

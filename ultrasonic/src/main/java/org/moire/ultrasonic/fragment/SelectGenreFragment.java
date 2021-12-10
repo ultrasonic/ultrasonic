@@ -75,9 +75,9 @@ public class SelectGenreFragment extends Fragment {
                 if (genre != null)
                 {
                     Bundle bundle = new Bundle();
-                    bundle.putString(Constants.INTENT_EXTRA_NAME_GENRE_NAME, genre.getName());
-                    bundle.putInt(Constants.INTENT_EXTRA_NAME_ALBUM_LIST_SIZE, Settings.getMaxSongs());
-                    bundle.putInt(Constants.INTENT_EXTRA_NAME_ALBUM_LIST_OFFSET, 0);
+                    bundle.putString(Constants.INTENT_GENRE_NAME, genre.getName());
+                    bundle.putInt(Constants.INTENT_ALBUM_LIST_SIZE, Settings.getMaxSongs());
+                    bundle.putInt(Constants.INTENT_ALBUM_LIST_OFFSET, 0);
                     Navigation.findNavController(view).navigate(R.id.trackCollectionFragment, bundle);
                 }
             }

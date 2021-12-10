@@ -53,7 +53,7 @@
     <string name="delete_playlist">确定要删除 %1$s吗</string>
     <string name="download.bookmark_removed" formatted="false">书签已删除。</string>
     <string name="download.bookmark_set_at_position" formatted="false">书签设置为 %s。</string>
-    <string name="download.empty">空的播放列表</string>
+    <string name="playlist.empty">空的播放列表</string>
     <string name="download.jukebox_not_authorized">不允许远程控制. 请在您的服务器上的 <b>Users &gt; Settings</b> 打开点唱机模式。</string>
     <string name="download.jukebox_off">关闭远程控制，音乐将在手机上播放</string>
     <string name="download.jukebox_offline">离线模式不支持远程控制</string>
@@ -141,7 +141,6 @@
     <string name="search.title">搜索</string>
     <string name="select_album.empty">找不到歌曲</string>
     <string name="select_album.n_selected">已选择 %d 首曲目。</string>
-    <string name="select_album.n_unselected">未选择 %d 首曲目。</string>
     <string name="select_album.no_network">警告：网络不可用</string>
     <string name="select_album.no_sdcard">错误：没有SD卡</string>
     <string name="select_album.play_all">播放所有</string>
@@ -316,17 +315,6 @@
     <string name="settings.show_artist_picture">在艺术家列表中显示艺术家图片</string>
     <string name="settings.show_artist_picture_summary">如果可用，在艺术家列表中显示艺术家图片</string>
     <string name="main.video" tools:ignore="UnusedResources">视频</string>
-    <string name="settings.view_refresh">刷新视图</string>
-    <string name="settings.view_refresh_500">.5 秒</string>
-    <string name="settings.view_refresh_1000">1 秒</string>
-    <string name="settings.view_refresh_1500">1.5 秒</string>
-    <string name="settings.view_refresh_2000">2 秒</string>
-    <string name="settings.view_refresh_2500">2.5 秒</string>
-    <string name="settings.view_refresh_3000">3 秒</string>
-    <string name="settings.view_refresh_3500">3.5 秒</string>
-    <string name="settings.view_refresh_4000">4 秒</string>
-    <string name="settings.view_refresh_4500">4.5 秒</string>
-    <string name="settings.view_refresh_5000">5 秒</string>
     <string name="settings.wifi_required_summary">仅在连接到 WIFI 时使用流媒体</string>
     <string name="settings.wifi_required_title">仅使用 WIFI</string>
     <string name="song_details.all">%1$s%2$s</string>
