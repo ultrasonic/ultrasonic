@@ -1,6 +1,5 @@
 package org.moire.ultrasonic.util
 
-import android.os.StatFs
 import android.system.Os
 import java.util.ArrayList
 import java.util.HashSet
@@ -174,21 +173,13 @@ class CacheCleaner : CoroutineScope by CoroutineScope(Dispatchers.IO) {
             val bytesTotalFs: Long
             val bytesAvailableFs: Long
 
-            if (files[0].isRawFile) {
-                val stat = StatFs(files[0].rawFilePath)
-                bytesTotalFs = stat.blockCountLong * stat.blockSizeLong
-                bytesAvailableFs = stat.availableBlocksLong * stat.blockSizeLong
-                bytesUsedFs = bytesTotalFs - bytesAvailableFs
-                minFsAvailability = bytesTotalFs - MIN_FREE_SPACE
-            } else {
-                val descriptor = files[0].getDocumentFileDescriptor("r")!!
-                val stat = Os.fstatvfs(descriptor.fileDescriptor)
-                bytesTotalFs = stat.f_blocks * stat.f_bsize
-                bytesAvailableFs = stat.f_bfree * stat.f_bsize
-                bytesUsedFs = bytesTotalFs - bytesAvailableFs
-                minFsAvailability = bytesTotalFs - MIN_FREE_SPACE
-                descriptor.close()
-            }
+            val descriptor = files[0].getDocumentFileDescriptor("r")!!
+            val stat = Os.fstatvfs(descriptor.fileDescriptor)
+            bytesTotalFs = stat.f_blocks * stat.f_bsize
+            bytesAvailableFs = stat.f_bfree * stat.f_bsize
+            bytesUsedFs = bytesTotalFs - bytesAvailableFs
+            minFsAvailability = bytesTotalFs - MIN_FREE_SPACE
+            descriptor.close()
 
             val bytesToDeleteCacheLimit = (bytesUsedBySubsonic - cacheSizeBytes).coerceAtLeast(0L)
             val bytesToDeleteFsLimit = (bytesUsedFs - minFsAvailability).coerceAtLeast(0L)

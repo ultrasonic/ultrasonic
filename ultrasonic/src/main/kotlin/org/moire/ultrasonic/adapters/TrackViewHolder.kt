@@ -211,8 +211,6 @@ class TrackViewHolder(val view: View) : RecyclerView.ViewHolder(view), Checkable
         if (status == cachedStatus) return
         cachedStatus = status
 
-        Timber.w("STATUS: %s", status)
-
         when (status) {
             DownloadStatus.DONE -> {
                 statusImage = imageHelper.downloadedImage

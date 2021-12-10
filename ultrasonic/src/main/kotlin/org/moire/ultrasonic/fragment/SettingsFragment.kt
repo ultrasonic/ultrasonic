@@ -20,7 +20,6 @@ import androidx.preference.ListPreference
 import androidx.preference.Preference
 import androidx.preference.PreferenceCategory
 import androidx.preference.PreferenceFragmentCompat
-import com.github.k1rakishou.fsaf.FileChooser
 import kotlin.math.ceil
 import org.koin.core.component.KoinComponent
 import org.koin.java.KoinJavaComponent.get

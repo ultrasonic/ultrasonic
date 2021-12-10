@@ -378,10 +378,12 @@ class LocalMediaPlayer : KoinComponent {
 
             Timber.i("Preparing media player")
 
-            if (dataSource != null) mediaPlayer.setDataSource(dataSource)
-            else if (file!!.isRawFile) mediaPlayer.setDataSource(file.rawFilePath)
-            else {
-                val descriptor = file.getDocumentFileDescriptor("r")!!
+            if (dataSource != null) {
+                Timber.v("LocalMediaPlayer doPlay dataSource: %s", dataSource)
+                mediaPlayer.setDataSource(dataSource)
+            } else {
+                Timber.v("LocalMediaPlayer doPlay Path: %s", file!!.path)
+                val descriptor = file!!.getDocumentFileDescriptor("r")!!
                 mediaPlayer.setDataSource(descriptor.fileDescriptor)
                 descriptor.close()
             }
@@ -465,12 +467,11 @@ class LocalMediaPlayer : KoinComponent {
             } catch (ignored: Throwable) {
             }
 
-            if (file!!.isRawFile) nextMediaPlayer!!.setDataSource(file.rawFilePath)
-            else {
-                val descriptor = file.getDocumentFileDescriptor("r")!!
-                nextMediaPlayer!!.setDataSource(descriptor.fileDescriptor)
-                descriptor.close()
-            }
+            Timber.v("LocalMediaPlayer setupNext Path: %s", file!!.path)
+            val descriptor = file!!.getDocumentFileDescriptor("r")!!
+            nextMediaPlayer!!.setDataSource(descriptor.fileDescriptor)
+            descriptor.close()
+
             setNextPlayerState(PlayerState.PREPARING)
             nextMediaPlayer!!.setOnPreparedListener {
                 try {

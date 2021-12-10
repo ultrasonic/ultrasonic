@@ -41,6 +41,7 @@ import org.moire.ultrasonic.util.Constants
 import org.moire.ultrasonic.util.FileUtil
 import org.moire.ultrasonic.util.Util.safeClose
 import timber.log.Timber
+import java.io.File
 import java.io.FileReader
 import java.io.FileWriter
 
@@ -526,7 +527,7 @@ class OfflineMusicService : MusicService, KoinComponent {
         title = name
 
         val albumArt = FileUtil.getAlbumArtFile(this)
-        if (albumArt != null && StorageFile.isPathExists(albumArt)) {
+        if (albumArt != null && File(albumArt).exists()) {
             coverArt = albumArt
         }
     }
@@ -543,12 +544,9 @@ class OfflineMusicService : MusicService, KoinComponent {
         try {
             val mmr = MediaMetadataRetriever()
 
-            if (file.isRawFile) mmr.setDataSource(file.rawFilePath)
-            else {
-                val descriptor = file.getDocumentFileDescriptor("r")!!
-                mmr.setDataSource(descriptor.fileDescriptor)
-                descriptor.close()
-            }
+            val descriptor = file.getDocumentFileDescriptor("r")!!
+            mmr.setDataSource(descriptor.fileDescriptor)
+            descriptor.close()
 
             meta.artist = mmr.extractMetadata(MediaMetadataRetriever.METADATA_KEY_ARTIST)
             meta.album = mmr.extractMetadata(MediaMetadataRetriever.METADATA_KEY_ALBUM)

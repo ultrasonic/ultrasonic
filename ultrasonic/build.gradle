@@ -98,7 +98,6 @@ dependencies {
     implementation androidSupport.navigationFragmentKtx
     implementation androidSupport.navigationUiKtx
     implementation androidSupport.navigationFeature
-    implementation androidSupport.lifecycle
 
     implementation other.kotlinStdlib
     implementation other.kotlinxCoroutines
@@ -106,7 +105,6 @@ dependencies {
     implementation other.okhttpLogging
     implementation other.fastScroll
     implementation other.colorPickerView
-    implementation other.fsaf
     implementation other.rxJava
     implementation other.rxAndroid
     implementation other.multiType
