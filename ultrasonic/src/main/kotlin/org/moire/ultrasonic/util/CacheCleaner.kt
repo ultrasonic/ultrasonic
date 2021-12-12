@@ -11,13 +11,13 @@ import org.koin.java.KoinJavaComponent.inject
 import org.moire.ultrasonic.data.ActiveServerProvider
 import org.moire.ultrasonic.domain.Playlist
 import org.moire.ultrasonic.service.Downloader
+import org.moire.ultrasonic.util.FileUtil.delete
 import org.moire.ultrasonic.util.FileUtil.getAlbumArtFile
 import org.moire.ultrasonic.util.FileUtil.getPlaylistDirectory
 import org.moire.ultrasonic.util.FileUtil.getPlaylistFile
 import org.moire.ultrasonic.util.FileUtil.listFiles
 import org.moire.ultrasonic.util.FileUtil.musicDirectory
 import org.moire.ultrasonic.util.Settings.cacheSizeMB
-import org.moire.ultrasonic.util.FileUtil.delete
 import org.moire.ultrasonic.util.Util.formatBytes
 import timber.log.Timber
 

@@ -52,7 +52,6 @@ import kotlin.math.max
 import kotlin.math.min
 import kotlin.math.roundToInt
 import org.moire.ultrasonic.R
-import org.moire.ultrasonic.app.UApp
 import org.moire.ultrasonic.app.UApp.Companion.applicationContext
 import org.moire.ultrasonic.domain.Bookmark
 import org.moire.ultrasonic.domain.MusicDirectory
@@ -757,7 +756,8 @@ object Util {
         // TODO this doesn't work for URIs
         MediaScannerConnection.scanFile(
             applicationContext(), arrayOf(file),
-            null, null)
+            null, null
+        )
     }
 
     fun getResourceFromAttribute(context: Context, resId: Int): Int {

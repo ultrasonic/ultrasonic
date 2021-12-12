@@ -13,6 +13,7 @@ import android.os.Environment
 import android.text.TextUtils
 import android.util.Pair
 import java.io.BufferedWriter
+import java.io.File
 import java.io.FileInputStream
 import java.io.FileOutputStream
 import java.io.FileWriter
@@ -28,7 +29,6 @@ import org.moire.ultrasonic.app.UApp
 import org.moire.ultrasonic.domain.MusicDirectory
 import org.moire.ultrasonic.util.Util.safeClose
 import timber.log.Timber
-import java.io.File
 
 @Suppress("TooManyFunctions")
 object FileUtil {
@@ -191,11 +191,11 @@ object FileUtil {
         if (!TextUtils.isEmpty(entry.path) && getParentPath(entry.path!!) != null) {
             val f = fileSystemSafeDir(entry.path)
             dir = String.format(
-                    Locale.ROOT,
-                    "%s/%s",
-                    musicDirectory.path,
-                    if (entry.isDirectory) f else getParentPath(f) ?: ""
-                )
+                Locale.ROOT,
+                "%s/%s",
+                musicDirectory.path,
+                if (entry.isDirectory) f else getParentPath(f) ?: ""
+            )
         } else {
             val artist = fileSystemSafe(entry.artist)
             var album = fileSystemSafe(entry.album)

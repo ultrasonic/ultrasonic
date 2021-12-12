@@ -9,8 +9,8 @@ package org.moire.ultrasonic.util
 
 import android.net.Uri
 import androidx.documentfile.provider.DocumentFile
-import org.moire.ultrasonic.R
 import java.io.File
+import org.moire.ultrasonic.R
 import org.moire.ultrasonic.app.UApp
 import timber.log.Timber
 
@@ -21,7 +21,7 @@ import timber.log.Timber
 object Storage {
 
     val mediaRoot: ResettableLazy<AbstractFile> = ResettableLazy {
-            getRoot()!!
+        getRoot()!!
     }
 
     private fun getRoot(): AbstractFile? {

@@ -22,9 +22,9 @@ import org.moire.ultrasonic.service.MusicServiceFactory.getMusicService
 import org.moire.ultrasonic.subsonic.ImageLoaderProvider
 import org.moire.ultrasonic.util.CacheCleaner
 import org.moire.ultrasonic.util.CancellableTask
-import org.moire.ultrasonic.util.Storage
 import org.moire.ultrasonic.util.FileUtil
 import org.moire.ultrasonic.util.Settings
+import org.moire.ultrasonic.util.Storage
 import org.moire.ultrasonic.util.Util
 import org.moire.ultrasonic.util.Util.safeClose
 import timber.log.Timber
@@ -73,8 +73,10 @@ class DownloadFile(
     init {
         val state: DownloadStatus
 
-        partialFile = FileUtil.getParentPath(saveFile) + "/" + FileUtil.getPartialFile(FileUtil.getNameFromPath(saveFile))
-        completeFile = FileUtil.getParentPath(saveFile) + "/" + FileUtil.getCompleteFile(FileUtil.getNameFromPath(saveFile))
+        partialFile = FileUtil.getParentPath(saveFile) + "/" +
+            FileUtil.getPartialFile(FileUtil.getNameFromPath(saveFile))
+        completeFile = FileUtil.getParentPath(saveFile) + "/" +
+            FileUtil.getCompleteFile(FileUtil.getNameFromPath(saveFile))
 
         when {
             Storage.isPathExists(saveFile) -> {
@@ -146,11 +148,11 @@ class DownloadFile(
 
     @get:Synchronized
     val isDownloading: Boolean
-    get() = downloadPrepared || (downloadTask != null && downloadTask!!.isRunning)
+        get() = downloadPrepared || (downloadTask != null && downloadTask!!.isRunning)
 
     @get:Synchronized
     val isDownloadCancelled: Boolean
-    get() = downloadTask != null && downloadTask!!.isCancelled
+        get() = downloadTask != null && downloadTask!!.isCancelled
 
     fun shouldRetry(): Boolean {
         return (retryCount > 0)
@@ -254,9 +256,8 @@ class DownloadFile(
                 val fileLength = Storage.getFromPath(partialFile)?.length ?: 0
 
                 needsDownloading = (
-                        desiredBitRate == 0 || duration == null ||
-                                duration == 0 || fileLength == 0L
-                        )
+                    desiredBitRate == 0 || duration == null || duration == 0 || fileLength == 0L
+                    )
 
                 if (needsDownloading) {
                     // Attempt partial HTTP GET, appending to the file if it exists.
@@ -270,7 +271,8 @@ class DownloadFile(
                         Timber.i("Executed partial HTTP GET, skipping %d bytes", fileLength)
                     }
 
-                    outputStream = Storage.getOrCreateFileFromPath(partialFile).getFileOutputStream(isPartial)
+                    outputStream = Storage.getOrCreateFileFromPath(partialFile)
+                        .getFileOutputStream(isPartial)
 
                     val len = inputStream.copyTo(outputStream) { totalBytesCopied ->
                         setProgress(totalBytesCopied)
@@ -395,7 +397,7 @@ class DownloadFile(
     }
 
     override val id: String
-    get() = song.id
+        get() = song.id
 
     companion object {
         const val MAX_RETRIES = 5

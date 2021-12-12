@@ -9,14 +9,14 @@ package org.moire.ultrasonic.util
 
 import android.content.res.AssetFileDescriptor
 import androidx.documentfile.provider.DocumentFile
-import org.moire.ultrasonic.app.UApp
 import java.io.File
 import java.io.FileInputStream
 import java.io.FileOutputStream
 import java.io.InputStream
 import java.io.OutputStream
+import org.moire.ultrasonic.app.UApp
 
-class JavaFile(override val parent: AbstractFile?, val file: File): AbstractFile() {
+class JavaFile(override val parent: AbstractFile?, val file: File) : AbstractFile() {
     override val name: String = file.name
     override val isDirectory: Boolean = file.isDirectory
     override val isFile: Boolean = file.isFile
@@ -33,7 +33,7 @@ class JavaFile(override val parent: AbstractFile?, val file: File): AbstractFile
 
     override fun listFiles(): Array<AbstractFile> {
         val fileList = file.listFiles()
-        return fileList?.map { file ->  JavaFile(this, file) }?.toTypedArray() ?: emptyArray()
+        return fileList?.map { file -> JavaFile(this, file) }?.toTypedArray() ?: emptyArray()
     }
 
     override fun getFileOutputStream(append: Boolean): OutputStream {

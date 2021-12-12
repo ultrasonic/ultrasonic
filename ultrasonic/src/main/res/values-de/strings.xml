@@ -343,7 +343,6 @@
     <string name="share_default_greeting">Hör dir mal die Musik an, die ich mit dir über %s geteilt habe.</string>
     <string name="share_via">Titel teilen über</string>
     <string name="menu.share">Freigabe</string>
-    <string name="select_album_all_songs">Alle Titel von %s</string>
     <string name="settings.show_all_songs_by_artist">Alle Titel nach Künstler sortieren</string>
     <string name="settings.show_all_songs_by_artist_summary">Einen neuen Eintrag in der Künstleransicht hinzufügen, um auf alle Lieder eines Künstlers zuzugreifen</string>
     <string name="download.menu_show_artist">Künstler zeigen</string>

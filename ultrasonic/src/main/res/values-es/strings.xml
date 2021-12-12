@@ -371,7 +371,6 @@
     <string name="share_default_greeting">Echa un vistazo a esta música que te comparto desde %s</string>
     <string name="share_via">Compartir canciones vía</string>
     <string name="menu.share">Compartir</string>
-    <string name="select_album_all_songs">Todas las canciones por %s</string>
     <string name="settings.show_all_songs_by_artist">Mostrar todas las canciones por artista</string>
     <string name="settings.show_all_songs_by_artist_summary">Añadir nueva entrada en la vista de artista para acceder a todas las canciones de un artista</string>
     <string name="download.menu_show_artist">Mostrar artista</string>

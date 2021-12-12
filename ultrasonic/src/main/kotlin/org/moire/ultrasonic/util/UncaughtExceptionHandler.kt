@@ -2,10 +2,10 @@ package org.moire.ultrasonic.util
 
 import android.content.Context
 import android.os.Build
+import java.io.File
 import java.io.PrintWriter
 import org.moire.ultrasonic.util.Util.safeClose
 import timber.log.Timber
-import java.io.File
 
 /**
  * Logs the stack trace of uncaught exceptions to a file on the SD card.

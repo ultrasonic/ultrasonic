@@ -360,7 +360,6 @@
     <string name="share_default_greeting">Hallgasd meg ezt a zenét, megosztottam innen: %s</string>
     <string name="share_via">Dalok megosztása ezzel</string>
     <string name="menu.share">Megosztás</string>
-    <string name="select_album_all_songs">%s minden dala</string>
     <string name="settings.show_all_songs_by_artist">Az előadó összes dalának megjelenítése</string>
     <string name="settings.show_all_songs_by_artist_summary">Új bejegyzés hozzáadása az előadóhoz, az előadó összes dalának eléréséhez.</string>
     <string name="download.menu_show_artist">Ugrás az előadóhoz</string>

@@ -1,32 +1,54 @@
+/*
+ * StorageFile.kt
+ * Copyright (C) 2009-2021 Ultrasonic developers
+ *
+ * Distributed under terms of the GNU GPLv3 license.
+ */
+
 package org.moire.ultrasonic.util
 
 import android.content.res.AssetFileDescriptor
 import android.net.Uri
 import android.provider.DocumentsContract
 import android.webkit.MimeTypeMap
-import androidx.documentfile.provider.DocumentFile
-import org.moire.ultrasonic.app.UApp
-import timber.log.Timber
 import java.io.IOException
 import java.io.InputStream
 import java.io.OutputStream
 import java.util.concurrent.ConcurrentHashMap
+import org.moire.ultrasonic.app.UApp
+import timber.log.Timber
 
 class StorageFile(
     override val parent: StorageFile?,
     var uri: Uri,
     override val name: String,
     override val isDirectory: Boolean
-): AbstractFile() {
-    private val documentFile: DocumentFile = DocumentFile.fromSingleUri(UApp.applicationContext(), uri)!!
-
+) : AbstractFile() {
     override val isFile: Boolean = !isDirectory
 
     override val length: Long
-        get() = documentFile.length()
+        get() {
+            val resolver = UApp.applicationContext().contentResolver
+            val column = arrayOf(DocumentsContract.Document.COLUMN_SIZE)
+            resolver.query(uri, column, null, null, null)?.use { cursor ->
+                if (cursor.moveToFirst()) {
+                    return cursor.getLong(0)
+                }
+            }
+            return 0
+        }
 
     override val lastModified: Long
-        get() = documentFile.lastModified()
+        get() {
+            val resolver = UApp.applicationContext().contentResolver
+            val column = arrayOf(DocumentsContract.Document.COLUMN_LAST_MODIFIED)
+            resolver.query(uri, column, null, null, null)?.use { cursor ->
+                if (cursor.moveToFirst()) {
+                    return cursor.getLong(0)
+                }
+            }
+            return 0
+        }
 
     override val path: String
         get() {
@@ -94,7 +116,6 @@ class StorageFile(
     }
 
     override fun getFromPath(path: String): StorageFile? {
-
         if (storageFilePathDictionary.containsKey(path))
             return storageFilePathDictionary[path]!!
         if (notExistingPathDictionary.contains(path)) return null
@@ -108,7 +129,7 @@ class StorageFile(
         val fileName = FileUtil.getNameFromPath(path)
         var file: StorageFile? = null
 
-        Timber.v("StorageFile getFromPath path: $path")
+        Timber.v("StorageFile getFromPath listing files on path: $path")
         parent.listFiles().forEach {
             if (it.name == fileName) file = it as StorageFile
             storageFilePathDictionary[it.path] = it as StorageFile
@@ -149,18 +170,28 @@ class StorageFile(
 
     @Synchronized
     override fun rename(pathFrom: AbstractFile, pathTo: String) {
-        val storagePathFrom = pathFrom as StorageFile
-        if (!storagePathFrom.documentFile.exists()) throw IOException("File to rename doesn't exist")
-        Timber.d("Renaming from %s to %s", storagePathFrom.path, pathTo)
+        val fileFrom = pathFrom as StorageFile
+        if (!fileFrom.exists()) throw IOException("File to rename doesn't exist")
+        Timber.d("Renaming from %s to %s", fileFrom.path, pathTo)
 
-        val parentTo = getFromPath(FileUtil.getParentPath(pathTo)!!) ?: throw IOException("Destination folder doesn't exist")
+        val parentTo = getFromPath(FileUtil.getParentPath(pathTo)!!)
+            ?: throw IOException("Destination folder doesn't exist")
         val fileTo = getFromParentAndName(parentTo, FileUtil.getNameFromPath(pathTo))
 
-        copyFileContents(storagePathFrom.documentFile, fileTo.documentFile)
-        storagePathFrom.delete()
+        copyFileContents(fileFrom, fileTo)
+        fileFrom.delete()
 
         notExistingPathDictionary.remove(pathTo)
-        storageFilePathDictionary.remove(storagePathFrom.path)
+        storageFilePathDictionary.remove(fileFrom.path)
+    }
+
+    private fun exists(): Boolean {
+        val resolver = UApp.applicationContext().contentResolver
+        val column = arrayOf(DocumentsContract.Document.COLUMN_DISPLAY_NAME)
+        resolver.query(uri, column, null, null, null)?.use { cursor ->
+            if (cursor.count != 0) return true
+        }
+        return false
     }
 
     private fun getChildren(): List<StorageFile> {
@@ -209,9 +240,9 @@ class StorageFile(
             DocumentsContract.Document.COLUMN_MIME_TYPE
         )
 
-        private fun copyFileContents(sourceFile: DocumentFile, destinationFile: DocumentFile) {
-            UApp.applicationContext().contentResolver.openInputStream(sourceFile.uri)?.use { inputStream ->
-                UApp.applicationContext().contentResolver.openOutputStream(destinationFile.uri)?.use { outputStream ->
+        private fun copyFileContents(sourceFile: AbstractFile, destinationFile: AbstractFile) {
+            sourceFile.getFileInputStream().use { inputStream ->
+                destinationFile.getFileOutputStream(false).use { outputStream ->
                     inputStream.copyInto(outputStream)
                 }
             }
@@ -238,9 +269,7 @@ class StorageFile(
                 return storageFilePathDictionary[parentPath]!!
             if (notExistingPathDictionary.contains(parentPath)) return null
 
-            val start = System.currentTimeMillis()
             val parent = findStorageFileForParentDirectory(parentPath)
-            val end = System.currentTimeMillis()
 
             if (parent == null) {
                 storageFilePathDictionary.remove(parentPath)
@@ -253,6 +282,7 @@ class StorageFile(
             return parent
         }
 
+        @Suppress("NestedBlockDepth")
         private fun findStorageFileForParentDirectory(path: String): StorageFile? {
             val segments = getUriSegments(path)
                 ?: throw IOException("Can't get path because the root has changed")

@@ -187,7 +187,6 @@ class Downloader(
         if (listChanged) {
             updateLiveData()
         }
-
     }
 
     private fun updateLiveData() {

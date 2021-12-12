@@ -20,6 +20,7 @@ import androidx.preference.ListPreference
 import androidx.preference.Preference
 import androidx.preference.PreferenceCategory
 import androidx.preference.PreferenceFragmentCompat
+import java.io.File
 import kotlin.math.ceil
 import org.koin.core.component.KoinComponent
 import org.koin.java.KoinJavaComponent.get
@@ -52,7 +53,6 @@ import org.moire.ultrasonic.util.TimeSpanPreferenceDialogFragmentCompat
 import org.moire.ultrasonic.util.Util.toast
 import org.moire.ultrasonic.util.isUri
 import timber.log.Timber
-import java.io.File
 
 /**
  * Shows main app settings.

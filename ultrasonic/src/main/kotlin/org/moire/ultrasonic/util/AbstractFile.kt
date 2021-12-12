@@ -12,7 +12,7 @@ import java.io.IOException
 import java.io.InputStream
 import java.io.OutputStream
 
-abstract class AbstractFile: Comparable<AbstractFile> {
+abstract class AbstractFile : Comparable<AbstractFile> {
     abstract val name: String
     abstract val isDirectory: Boolean
     abstract val isFile: Boolean

@@ -9,7 +9,9 @@ package org.moire.ultrasonic.service
 import android.media.MediaMetadataRetriever
 import java.io.BufferedReader
 import java.io.BufferedWriter
-import org.moire.ultrasonic.util.Storage
+import java.io.File
+import java.io.FileReader
+import java.io.FileWriter
 import java.io.InputStream
 import java.io.Reader
 import java.util.ArrayList
@@ -40,11 +42,9 @@ import org.moire.ultrasonic.domain.UserInfo
 import org.moire.ultrasonic.util.AbstractFile
 import org.moire.ultrasonic.util.Constants
 import org.moire.ultrasonic.util.FileUtil
+import org.moire.ultrasonic.util.Storage
 import org.moire.ultrasonic.util.Util.safeClose
 import timber.log.Timber
-import java.io.File
-import java.io.FileReader
-import java.io.FileWriter
 
 @Suppress("TooManyFunctions")
 class OfflineMusicService : MusicService, KoinComponent {
@@ -501,7 +501,6 @@ class OfflineMusicService : MusicService, KoinComponent {
         val name = fileName.replace(".complete", "")
         return FileUtil.getBaseName(name)
     }
-
 
     private fun createEntry(file: AbstractFile, name: String?): MusicDirectory.Entry {
         val entry = MusicDirectory.Entry(file.path)

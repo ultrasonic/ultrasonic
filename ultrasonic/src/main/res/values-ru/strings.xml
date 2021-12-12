@@ -362,7 +362,6 @@
     <string name="share_default_greeting">Проверьте эту музыку, с которой я поделился %s</string>
     <string name="share_via">Поделиться треками через</string>
     <string name="menu.share">Поделиться</string>
-    <string name="select_album_all_songs">Все треки %s</string>
     <string name="settings.show_all_songs_by_artist">Показать все треки исполнителя</string>
     <string name="settings.show_all_songs_by_artist_summary">Добавить новую запись в представлении исполнителя, чтобы получить доступ ко всем песням для исполнителя</string>
     <string name="download.menu_show_artist">Показать исполнителей</string>

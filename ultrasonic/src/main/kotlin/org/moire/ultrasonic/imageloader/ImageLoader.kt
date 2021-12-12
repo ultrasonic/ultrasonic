@@ -10,6 +10,7 @@ import androidx.core.content.ContextCompat
 import com.squareup.picasso.LruCache
 import com.squareup.picasso.Picasso
 import com.squareup.picasso.RequestCreator
+import java.io.File
 import java.io.FileOutputStream
 import java.io.InputStream
 import java.io.OutputStream
@@ -22,7 +23,6 @@ import org.moire.ultrasonic.domain.MusicDirectory
 import org.moire.ultrasonic.util.FileUtil
 import org.moire.ultrasonic.util.Util.safeClose
 import timber.log.Timber
-import java.io.File
 
 /**
  * Our new image loader which uses Picasso as a backend.
