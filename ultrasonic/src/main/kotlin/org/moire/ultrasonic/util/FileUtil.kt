@@ -209,7 +209,7 @@ object FileUtil {
 
     fun createDirectoryForParent(path: String) {
         val dir = getParentPath(path) ?: return
-        StorageFile.createDirsOnPath(dir)
+        Storage.createDirsOnPath(dir)
     }
 
     @Suppress("SameParameterValue")
@@ -239,8 +239,8 @@ object FileUtil {
         get() = getOrCreateDirectory("music")
 
     @JvmStatic
-    val musicDirectory: StorageFile
-        get() = StorageFile.mediaRoot.value
+    val musicDirectory: AbstractFile
+        get() = Storage.mediaRoot.value
 
     @JvmStatic
     @Suppress("ReturnCount")
@@ -316,7 +316,7 @@ object FileUtil {
      * Never returns `null`, instead a warning is logged, and an empty set is returned.
      */
     @JvmStatic
-    fun listFiles(dir: StorageFile): SortedSet<StorageFile> {
+    fun listFiles(dir: AbstractFile): SortedSet<AbstractFile> {
         val files = dir.listFiles()
         if (files == null) {
             Timber.w("Failed to list children for %s", dir.path)
@@ -335,7 +335,7 @@ object FileUtil {
         return TreeSet(files.asList())
     }
 
-    fun listMediaFiles(dir: StorageFile): SortedSet<StorageFile> {
+    fun listMediaFiles(dir: AbstractFile): SortedSet<AbstractFile> {
         val files = listFiles(dir)
         val iterator = files.iterator()
         while (iterator.hasNext()) {
@@ -347,7 +347,7 @@ object FileUtil {
         return files
     }
 
-    private fun isMediaFile(file: StorageFile): Boolean {
+    private fun isMediaFile(file: AbstractFile): Boolean {
         val extension = getExtension(file.name)
         return MUSIC_FILE_EXTENSIONS.contains(extension) ||
             VIDEO_FILE_EXTENSIONS.contains(extension)
@@ -463,7 +463,7 @@ object FileUtil {
             for (e in playlist.getTracks()) {
                 var filePath = getSongFile(e)
 
-                if (!StorageFile.isPathExists(filePath)) {
+                if (!Storage.isPathExists(filePath)) {
                     val ext = getExtension(filePath)
                     val base = getBaseName(filePath)
                     filePath = "$base.complete.$ext"
@@ -482,7 +482,7 @@ object FileUtil {
     @JvmStatic
     @Throws(IOException::class)
     fun renameFile(from: String, to: String) {
-        StorageFile.rename(from, to)
+        Storage.rename(from, to)
     }
 
     @JvmStatic
@@ -500,7 +500,7 @@ object FileUtil {
     @JvmStatic
     fun delete(file: String?): Boolean {
         if (file != null) {
-            val storageFile = StorageFile.getFromPath(file)
+            val storageFile = Storage.getFromPath(file)
             if (storageFile != null && !storageFile.delete()) {
                 Timber.w("Failed to delete file %s", file)
                 return false

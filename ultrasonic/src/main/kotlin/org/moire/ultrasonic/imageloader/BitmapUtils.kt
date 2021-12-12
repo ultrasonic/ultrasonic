@@ -5,7 +5,6 @@ import android.graphics.BitmapFactory
 import android.os.Build
 import org.moire.ultrasonic.domain.MusicDirectory
 import org.moire.ultrasonic.util.FileUtil
-import org.moire.ultrasonic.util.StorageFile
 import org.moire.ultrasonic.util.Util
 import timber.log.Timber
 import java.io.File

@@ -69,8 +69,8 @@ class CacheCleaner : CoroutineScope by CoroutineScope(Dispatchers.IO) {
 
     private fun backgroundCleanup() {
         try {
-            val files: MutableList<StorageFile> = ArrayList()
-            val dirs: MutableList<StorageFile> = ArrayList()
+            val files: MutableList<AbstractFile> = ArrayList()
+            val dirs: MutableList<AbstractFile> = ArrayList()
 
             findCandidatesForDeletion(musicDirectory, files, dirs)
             sortByAscendingModificationTime(files)
@@ -87,8 +87,8 @@ class CacheCleaner : CoroutineScope by CoroutineScope(Dispatchers.IO) {
 
     private fun backgroundSpaceCleanup() {
         try {
-            val files: MutableList<StorageFile> = ArrayList()
-            val dirs: MutableList<StorageFile> = ArrayList()
+            val files: MutableList<AbstractFile> = ArrayList()
+            val dirs: MutableList<AbstractFile> = ArrayList()
 
             findCandidatesForDeletion(musicDirectory, files, dirs)
 
@@ -136,28 +136,26 @@ class CacheCleaner : CoroutineScope by CoroutineScope(Dispatchers.IO) {
         private var playlistCleaning = false
 
         private const val MIN_FREE_SPACE = 500 * 1024L * 1024L
-        private fun deleteEmptyDirs(dirs: Iterable<StorageFile>, doNotDelete: Collection<String>) {
+        private fun deleteEmptyDirs(dirs: Iterable<AbstractFile>, doNotDelete: Collection<String>) {
             for (dir in dirs) {
                 if (doNotDelete.contains(dir.path)) continue
 
                 var children = dir.listFiles()
-                if (children != null) {
-                    // No songs left in the folder
-                    if (children.size == 1 && children[0].path == getAlbumArtFile(dir.path)) {
-                        // Delete Artwork files
-                        delete(getAlbumArtFile(dir.path))
-                        children = dir.listFiles()
-                    }
+                // No songs left in the folder
+                if (children.size == 1 && children[0].path == getAlbumArtFile(dir.path)) {
+                    // Delete Artwork files
+                    delete(getAlbumArtFile(dir.path))
+                    children = dir.listFiles()
+                }
 
-                    // Delete empty directory
-                    if (children != null && children.isEmpty()) {
-                        delete(dir.path)
-                    }
+                // Delete empty directory
+                if (children.isEmpty()) {
+                    delete(dir.path)
                 }
             }
         }
 
-        private fun getMinimumDelete(files: List<StorageFile>): Long {
+        private fun getMinimumDelete(files: List<AbstractFile>): Long {
             if (files.isEmpty()) return 0L
 
             val cacheSizeBytes = cacheSizeMB * 1024L * 1024L
@@ -197,17 +195,17 @@ class CacheCleaner : CoroutineScope by CoroutineScope(Dispatchers.IO) {
             return bytesToDelete
         }
 
-        private fun isPartial(file: StorageFile): Boolean {
+        private fun isPartial(file: AbstractFile): Boolean {
             return file.name.endsWith(".partial") || file.name.contains(".partial.")
         }
 
-        private fun isComplete(file: StorageFile): Boolean {
+        private fun isComplete(file: AbstractFile): Boolean {
             return file.name.endsWith(".complete") || file.name.contains(".complete.")
         }
 
         @Suppress("NestedBlockDepth")
         private fun deleteFiles(
-            files: Collection<StorageFile>,
+            files: Collection<AbstractFile>,
             doNotDelete: Collection<String>,
             bytesToDelete: Long,
             deletePartials: Boolean
@@ -232,9 +230,9 @@ class CacheCleaner : CoroutineScope by CoroutineScope(Dispatchers.IO) {
         }
 
         private fun findCandidatesForDeletion(
-            file: StorageFile,
-            files: MutableList<StorageFile>,
-            dirs: MutableList<StorageFile>
+            file: AbstractFile,
+            files: MutableList<AbstractFile>,
+            dirs: MutableList<AbstractFile>
         ) {
             if (file.isFile && (isPartial(file) || isComplete(file))) {
                 files.add(file)
@@ -247,8 +245,8 @@ class CacheCleaner : CoroutineScope by CoroutineScope(Dispatchers.IO) {
             }
         }
 
-        private fun sortByAscendingModificationTime(files: MutableList<StorageFile>) {
-            files.sortWith { a: StorageFile, b: StorageFile ->
+        private fun sortByAscendingModificationTime(files: MutableList<AbstractFile>) {
+            files.sortWith { a: AbstractFile, b: AbstractFile ->
                 a.lastModified.compareTo(b.lastModified)
             }
         }

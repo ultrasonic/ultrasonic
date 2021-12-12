@@ -153,7 +153,7 @@ public class StreamProxy implements Runnable
             }
 
             Timber.i("Processing request for file %s", localPath);
-            if (!StorageFile.Companion.isPathExists(localPath)) {
+            if (!Storage.INSTANCE.isPathExists(localPath)) {
                 Timber.e("File %s does not exist", localPath);
                 return false;
             }
@@ -194,7 +194,7 @@ public class StreamProxy implements Runnable
 						String file = downloadFile.isCompleteFileAvailable() ? downloadFile.getCompleteOrSaveFile() : downloadFile.getPartialFile();
 						int cbSentThisBatch = 0;
 
-						StorageFile storageFile = StorageFile.Companion.getFromPath(file);
+						AbstractFile storageFile = Storage.INSTANCE.getFromPath(file);
 						if (storageFile != null)
 						{
 							InputStream input = storageFile.getFileInputStream();

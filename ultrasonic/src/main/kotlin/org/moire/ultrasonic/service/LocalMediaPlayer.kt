@@ -19,7 +19,7 @@ import android.os.PowerManager
 import android.os.PowerManager.PARTIAL_WAKE_LOCK
 import android.os.PowerManager.WakeLock
 import androidx.lifecycle.MutableLiveData
-import org.moire.ultrasonic.util.StorageFile
+import org.moire.ultrasonic.util.Storage
 import java.net.URLEncoder
 import java.util.Locale
 import kotlin.math.abs
@@ -347,7 +347,7 @@ class LocalMediaPlayer : KoinComponent {
         try {
             downloadFile.setPlaying(false)
 
-            val file = StorageFile.getFromPath(downloadFile.completeOrPartialFile)
+            val file = Storage.getFromPath(downloadFile.completeOrPartialFile)
             val partial = !downloadFile.isCompleteFileAvailable
 
             // TODO this won't work with SAF, we should use something else, e.g. a recent list
@@ -447,7 +447,7 @@ class LocalMediaPlayer : KoinComponent {
     @Synchronized
     private fun setupNext(downloadFile: DownloadFile) {
         try {
-            val file = StorageFile.getFromPath(downloadFile.completeOrPartialFile)
+            val file = Storage.getFromPath(downloadFile.completeOrPartialFile)
 
             // Release the media player if it is not our active player
             if (nextMediaPlayer != null && nextMediaPlayer != mediaPlayer) {
@@ -615,7 +615,7 @@ class LocalMediaPlayer : KoinComponent {
 
         private fun bufferComplete(): Boolean {
             val completeFileAvailable = downloadFile.isWorkDone
-            val size = StorageFile.getFromPath(partialFile)?.length ?: 0
+            val size = Storage.getFromPath(partialFile)?.length ?: 0
 
             Timber.i(
                 "Buffering %s (%d/%d, %s)",
@@ -673,7 +673,7 @@ class LocalMediaPlayer : KoinComponent {
             val state = (playerState === PlayerState.STARTED || playerState === PlayerState.PAUSED)
 
             val length = if (partialFile == null) 0
-            else StorageFile.getFromPath(partialFile)?.length ?: 0
+            else Storage.getFromPath(partialFile)?.length ?: 0
 
             Timber.i("Buffering next %s (%d)", partialFile, length)
 

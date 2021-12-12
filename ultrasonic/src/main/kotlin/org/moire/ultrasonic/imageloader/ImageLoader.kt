@@ -20,8 +20,6 @@ import org.moire.ultrasonic.api.subsonic.throwOnFailure
 import org.moire.ultrasonic.api.subsonic.toStreamResponse
 import org.moire.ultrasonic.domain.MusicDirectory
 import org.moire.ultrasonic.util.FileUtil
-import org.moire.ultrasonic.util.StorageFile
-import org.moire.ultrasonic.util.Util
 import org.moire.ultrasonic.util.Util.safeClose
 import timber.log.Timber
 import java.io.File

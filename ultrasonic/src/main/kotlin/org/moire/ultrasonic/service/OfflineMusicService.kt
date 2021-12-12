@@ -9,7 +9,7 @@ package org.moire.ultrasonic.service
 import android.media.MediaMetadataRetriever
 import java.io.BufferedReader
 import java.io.BufferedWriter
-import org.moire.ultrasonic.util.StorageFile
+import org.moire.ultrasonic.util.Storage
 import java.io.InputStream
 import java.io.Reader
 import java.util.ArrayList
@@ -37,6 +37,7 @@ import org.moire.ultrasonic.domain.SearchCriteria
 import org.moire.ultrasonic.domain.SearchResult
 import org.moire.ultrasonic.domain.Share
 import org.moire.ultrasonic.domain.UserInfo
+import org.moire.ultrasonic.util.AbstractFile
 import org.moire.ultrasonic.util.Constants
 import org.moire.ultrasonic.util.FileUtil
 import org.moire.ultrasonic.util.Util.safeClose
@@ -102,7 +103,7 @@ class OfflineMusicService : MusicService, KoinComponent {
         name: String?,
         refresh: Boolean
     ): MusicDirectory {
-        val dir = StorageFile.getFromPath(id)
+        val dir = Storage.getFromPath(id)
         val result = MusicDirectory()
         result.name = dir?.name ?: return result
 
@@ -211,7 +212,7 @@ class OfflineMusicService : MusicService, KoinComponent {
             var line = buffer.readLine()
             if ("#EXTM3U" != line) return playlist
             while (buffer.readLine().also { line = it } != null) {
-                val entryFile = StorageFile.getFromPath(line) ?: continue
+                val entryFile = Storage.getFromPath(line) ?: continue
                 val entryName = getName(entryFile.name, entryFile.isDirectory)
                 if (entryName != null) {
                     playlist.add(createEntry(entryFile, entryName))
@@ -235,7 +236,7 @@ class OfflineMusicService : MusicService, KoinComponent {
             fw.write("#EXTM3U\n")
             for (e in entries) {
                 var filePath = FileUtil.getSongFile(e)
-                if (!StorageFile.isPathExists(filePath)) {
+                if (!Storage.isPathExists(filePath)) {
                     val ext = FileUtil.getExtension(filePath)
                     val base = FileUtil.getBaseName(filePath)
                     filePath = "$base.complete.$ext"
@@ -257,7 +258,7 @@ class OfflineMusicService : MusicService, KoinComponent {
 
     override fun getRandomSongs(size: Int): MusicDirectory {
         val root = FileUtil.musicDirectory
-        val children: MutableList<StorageFile> = LinkedList()
+        val children: MutableList<AbstractFile> = LinkedList()
         listFilesRecursively(root, children)
         val result = MusicDirectory()
         if (children.isEmpty()) {
@@ -502,13 +503,13 @@ class OfflineMusicService : MusicService, KoinComponent {
     }
 
 
-    private fun createEntry(file: StorageFile, name: String?): MusicDirectory.Entry {
+    private fun createEntry(file: AbstractFile, name: String?): MusicDirectory.Entry {
         val entry = MusicDirectory.Entry(file.path)
         entry.populateWithDataFrom(file, name)
         return entry
     }
 
-    private fun createAlbum(file: StorageFile, name: String?): MusicDirectory.Album {
+    private fun createAlbum(file: AbstractFile, name: String?): MusicDirectory.Album {
         val album = MusicDirectory.Album(file.path)
         album.populateWithDataFrom(file, name)
         return album
@@ -517,7 +518,7 @@ class OfflineMusicService : MusicService, KoinComponent {
     /*
      * Extracts some basic data from a File object and applies it to an Album or Entry
      */
-    private fun MusicDirectory.Child.populateWithDataFrom(file: StorageFile, name: String?) {
+    private fun MusicDirectory.Child.populateWithDataFrom(file: AbstractFile, name: String?) {
         isDirectory = file.isDirectory
         parent = file.parent!!.path
         val root = FileUtil.musicDirectory.path
@@ -536,7 +537,7 @@ class OfflineMusicService : MusicService, KoinComponent {
      * More extensive variant of Child.populateWithDataFrom(), which also parses the ID3 tags of
      * a given track file.
      */
-    private fun MusicDirectory.Entry.populateWithDataFrom(file: StorageFile, name: String?) {
+    private fun MusicDirectory.Entry.populateWithDataFrom(file: AbstractFile, name: String?) {
         (this as MusicDirectory.Child).populateWithDataFrom(file, name)
 
         val meta = RawMetadata(null)
@@ -607,7 +608,7 @@ class OfflineMusicService : MusicService, KoinComponent {
     @Suppress("NestedBlockDepth")
     private fun recursiveAlbumSearch(
         artistName: String,
-        file: StorageFile,
+        file: AbstractFile,
         criteria: SearchCriteria,
         albums: MutableList<MusicDirectory.Album>,
         songs: MutableList<MusicDirectory.Entry>
@@ -664,7 +665,7 @@ class OfflineMusicService : MusicService, KoinComponent {
         return closeness
     }
 
-    private fun listFilesRecursively(parent: StorageFile, children: MutableList<StorageFile>) {
+    private fun listFilesRecursively(parent: AbstractFile, children: MutableList<AbstractFile>) {
         for (file in FileUtil.listMediaFiles(parent)) {
             if (file.isFile) {
                 children.add(file)

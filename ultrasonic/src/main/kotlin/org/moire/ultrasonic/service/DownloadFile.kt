@@ -22,7 +22,7 @@ import org.moire.ultrasonic.service.MusicServiceFactory.getMusicService
 import org.moire.ultrasonic.subsonic.ImageLoaderProvider
 import org.moire.ultrasonic.util.CacheCleaner
 import org.moire.ultrasonic.util.CancellableTask
-import org.moire.ultrasonic.util.StorageFile
+import org.moire.ultrasonic.util.Storage
 import org.moire.ultrasonic.util.FileUtil
 import org.moire.ultrasonic.util.Settings
 import org.moire.ultrasonic.util.Util
@@ -77,10 +77,10 @@ class DownloadFile(
         completeFile = FileUtil.getParentPath(saveFile) + "/" + FileUtil.getCompleteFile(FileUtil.getNameFromPath(saveFile))
 
         when {
-            StorageFile.isPathExists(saveFile) -> {
+            Storage.isPathExists(saveFile) -> {
                 state = DownloadStatus.PINNED
             }
-            StorageFile.isPathExists(completeFile) -> {
+            Storage.isPathExists(completeFile) -> {
                 state = DownloadStatus.DONE
             }
             else -> {
@@ -119,7 +119,7 @@ class DownloadFile(
     }
 
     val completeOrSaveFile: String
-        get() = if (StorageFile.isPathExists(saveFile)) {
+        get() = if (Storage.isPathExists(saveFile)) {
             saveFile
         } else {
             completeFile
@@ -133,16 +133,16 @@ class DownloadFile(
         }
 
     val isSaved: Boolean
-        get() = StorageFile.isPathExists(saveFile)
+        get() = Storage.isPathExists(saveFile)
 
     @get:Synchronized
     val isCompleteFileAvailable: Boolean
-        get() = StorageFile.isPathExists(completeFile) || StorageFile.isPathExists(saveFile)
+        get() = Storage.isPathExists(completeFile) || Storage.isPathExists(saveFile)
 
     @get:Synchronized
     val isWorkDone: Boolean
-        get() = StorageFile.isPathExists(completeFile) && !shouldSave ||
-            StorageFile.isPathExists(saveFile) || saveWhenDone || completeWhenDone
+        get() = Storage.isPathExists(completeFile) && !shouldSave ||
+            Storage.isPathExists(saveFile) || saveWhenDone || completeWhenDone
 
     @get:Synchronized
     val isDownloading: Boolean
@@ -168,18 +168,18 @@ class DownloadFile(
     }
 
     fun unpin() {
-        val file = StorageFile.getFromPath(saveFile) ?: return
-        StorageFile.rename(file, completeFile)
+        val file = Storage.getFromPath(saveFile) ?: return
+        Storage.rename(file, completeFile)
         status.postValue(DownloadStatus.DONE)
     }
 
     fun cleanup(): Boolean {
         var ok = true
-        if (StorageFile.isPathExists(completeFile) || StorageFile.isPathExists(saveFile)) {
+        if (Storage.isPathExists(completeFile) || Storage.isPathExists(saveFile)) {
             ok = FileUtil.delete(partialFile)
         }
 
-        if (StorageFile.isPathExists(saveFile)) {
+        if (Storage.isPathExists(saveFile)) {
             ok = ok and FileUtil.delete(completeFile)
         }
 
@@ -224,13 +224,13 @@ class DownloadFile(
             var inputStream: InputStream? = null
             var outputStream: OutputStream? = null
             try {
-                if (StorageFile.isPathExists(saveFile)) {
+                if (Storage.isPathExists(saveFile)) {
                     Timber.i("%s already exists. Skipping.", saveFile)
                     status.postValue(DownloadStatus.PINNED)
                     return
                 }
 
-                if (StorageFile.isPathExists(completeFile)) {
+                if (Storage.isPathExists(completeFile)) {
                     var newStatus: DownloadStatus = DownloadStatus.DONE
                     if (shouldSave) {
                         if (isPlaying) {
@@ -251,7 +251,7 @@ class DownloadFile(
                 // Some devices seem to throw error on partial file which doesn't exist
                 val needsDownloading: Boolean
                 val duration = song.duration
-                val fileLength = StorageFile.getFromPath(partialFile)?.length ?: 0
+                val fileLength = Storage.getFromPath(partialFile)?.length ?: 0
 
                 needsDownloading = (
                         desiredBitRate == 0 || duration == null ||
@@ -270,7 +270,7 @@ class DownloadFile(
                         Timber.i("Executed partial HTTP GET, skipping %d bytes", fileLength)
                     }
 
-                    outputStream = StorageFile.getOrCreateFileFromPath(partialFile).getFileOutputStream(isPartial)
+                    outputStream = Storage.getOrCreateFileFromPath(partialFile).getFileOutputStream(isPartial)
 
                     val len = inputStream.copyTo(outputStream) { totalBytesCopied ->
                         setProgress(totalBytesCopied)

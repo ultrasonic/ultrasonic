@@ -1,242 +1,213 @@
-/*
- * StorageFile.kt
- * Copyright (C) 2009-2021 Ultrasonic developers
- *
- * Distributed under terms of the GNU GPLv3 license.
- */
-
 package org.moire.ultrasonic.util
 
 import android.content.res.AssetFileDescriptor
 import android.net.Uri
+import android.provider.DocumentsContract
 import android.webkit.MimeTypeMap
 import androidx.documentfile.provider.DocumentFile
-import org.moire.ultrasonic.R
-import java.io.File
+import org.moire.ultrasonic.app.UApp
+import timber.log.Timber
 import java.io.IOException
 import java.io.InputStream
 import java.io.OutputStream
-import org.moire.ultrasonic.app.UApp
-import timber.log.Timber
 import java.util.concurrent.ConcurrentHashMap
 
-/**
- * Provides filesystem access abstraction which works
- * both on File based paths and Storage Access Framework Uris
- */
-class StorageFile private constructor(
-    private var parentStorageFile: StorageFile?,
-    private var documentFile: DocumentFile
-): Comparable<StorageFile> {
+class StorageFile(
+    override val parent: StorageFile?,
+    var uri: Uri,
+    override val name: String,
+    override val isDirectory: Boolean
+): AbstractFile() {
+    private val documentFile: DocumentFile = DocumentFile.fromSingleUri(UApp.applicationContext(), uri)!!
 
-    override fun compareTo(other: StorageFile): Int {
-        return path.compareTo(other.path)
-    }
+    override val isFile: Boolean = !isDirectory
 
-    override fun toString(): String {
-        return name
-    }
-
-    var name: String = documentFile.name!!
-
-    var isDirectory: Boolean = documentFile.isDirectory
-
-    var isFile: Boolean = documentFile.isFile
-
-    val length: Long
+    override val length: Long
         get() = documentFile.length()
 
-    val lastModified: Long
+    override val lastModified: Long
         get() = documentFile.lastModified()
 
-    fun delete(): Boolean {
-        val deleted = documentFile.delete()
+    override val path: String
+        get() {
+            // We can't assume that the file's Uri is related to its path,
+            // so we generate our own path by concatenating the names on the path.
+            if (parent != null) return parent.path + "/" + name
+            return uri.toString()
+        }
+
+    override fun delete(): Boolean {
+        val deleted = DocumentsContract.deleteDocument(
+            UApp.applicationContext().contentResolver,
+            uri
+        )
         if (!deleted) return false
         storageFilePathDictionary.remove(path)
         notExistingPathDictionary.putIfAbsent(path, path)
-        listedPathDictionary.remove(path)
-        listedPathDictionary.remove(parent?.path)
         return true
     }
 
-    fun listFiles(): Array<StorageFile> {
-        val fileList = documentFile.listFiles()
-        return fileList.map { file ->  StorageFile(this, file) }.toTypedArray()
+    override fun listFiles(): Array<AbstractFile> {
+        return getChildren().toTypedArray()
     }
 
-    fun getFileOutputStream(append: Boolean): OutputStream {
+    override fun getFileOutputStream(append: Boolean): OutputStream {
         val mode = if (append) "wa" else "w"
         val descriptor = UApp.applicationContext().contentResolver.openAssetFileDescriptor(
-            documentFile.uri, mode)
+            uri,
+            mode
+        )
         return descriptor?.createOutputStream()
             ?: throw IOException("Couldn't retrieve OutputStream")
     }
 
-    fun getFileInputStream(): InputStream {
-        return UApp.applicationContext().contentResolver.openInputStream(documentFile.uri)
+    override fun getFileInputStream(): InputStream {
+        return UApp.applicationContext().contentResolver.openInputStream(uri)
             ?: throw IOException("Couldn't retrieve InputStream")
     }
 
-    val path: String
-        get() {
-            // We can't assume that the file's Uri is related to its path,
-            // so we generate our own path by concatenating the names on the path.
-            if (parentStorageFile != null) return parentStorageFile!!.path + "/" + name
-            return documentFile.uri.toString()
-        }
-
-    val parent: StorageFile?
-        get() {
-            return parentStorageFile
-        }
-
-    fun getDocumentFileDescriptor(openMode: String): AssetFileDescriptor? {
+    override fun getDocumentFileDescriptor(openMode: String): AssetFileDescriptor? {
         return UApp.applicationContext().contentResolver.openAssetFileDescriptor(
-            documentFile.uri,
+            uri,
             openMode
         )
     }
 
+    @Synchronized
+    override fun getOrCreateFileFromPath(path: String): AbstractFile {
+        if (storageFilePathDictionary.containsKey(path))
+            return storageFilePathDictionary[path]!!
+
+        val parent = getStorageFileForParentDirectory(path)
+            ?: throw IOException("Parent directory doesn't exist")
+
+        val name = FileUtil.getNameFromPath(path)
+        val file = getFromParentAndName(parent, name)
+
+        storageFilePathDictionary[path] = file
+        notExistingPathDictionary.remove(path)
+        return file
+    }
+
+    override fun isPathExists(path: String): Boolean {
+        return getFromPath(path) != null
+    }
+
+    override fun getFromPath(path: String): StorageFile? {
+
+        if (storageFilePathDictionary.containsKey(path))
+            return storageFilePathDictionary[path]!!
+        if (notExistingPathDictionary.contains(path)) return null
+
+        val parent = getStorageFileForParentDirectory(path)
+        if (parent == null) {
+            notExistingPathDictionary.putIfAbsent(path, path)
+            return null
+        }
+
+        val fileName = FileUtil.getNameFromPath(path)
+        var file: StorageFile? = null
+
+        Timber.v("StorageFile getFromPath path: $path")
+        parent.listFiles().forEach {
+            if (it.name == fileName) file = it as StorageFile
+            storageFilePathDictionary[it.path] = it as StorageFile
+            notExistingPathDictionary.remove(it.path)
+        }
+
+        if (file == null) {
+            notExistingPathDictionary.putIfAbsent(path, path)
+            return null
+        }
+
+        return file
+    }
+
+    @Synchronized
+    override fun createDirsOnPath(path: String) {
+        val segments = getUriSegments(path)
+            ?: throw IOException("Can't get path because the root has changed")
+
+        var file = Storage.mediaRoot.value as StorageFile
+        segments.forEach { segment ->
+            val foundFile = file.listFiles().singleOrNull { it.name == segment }
+            if (foundFile != null) {
+                file = foundFile as StorageFile
+            } else {
+                val createdUri = DocumentsContract.createDocument(
+                    UApp.applicationContext().contentResolver,
+                    file.uri,
+                    DocumentsContract.Document.MIME_TYPE_DIR,
+                    segment
+                ) ?: throw IOException("Can't create directory")
+
+                file = StorageFile(file, createdUri, segment, true)
+            }
+            notExistingPathDictionary.remove(file.path)
+        }
+    }
+
+    @Synchronized
+    override fun rename(pathFrom: AbstractFile, pathTo: String) {
+        val storagePathFrom = pathFrom as StorageFile
+        if (!storagePathFrom.documentFile.exists()) throw IOException("File to rename doesn't exist")
+        Timber.d("Renaming from %s to %s", storagePathFrom.path, pathTo)
+
+        val parentTo = getFromPath(FileUtil.getParentPath(pathTo)!!) ?: throw IOException("Destination folder doesn't exist")
+        val fileTo = getFromParentAndName(parentTo, FileUtil.getNameFromPath(pathTo))
+
+        copyFileContents(storagePathFrom.documentFile, fileTo.documentFile)
+        storagePathFrom.delete()
+
+        notExistingPathDictionary.remove(pathTo)
+        storageFilePathDictionary.remove(storagePathFrom.path)
+    }
+
+    private fun getChildren(): List<StorageFile> {
+        val resolver = UApp.applicationContext().contentResolver
+        val childrenUri = DocumentsContract.buildChildDocumentsUriUsingTree(
+            uri,
+            DocumentsContract.getDocumentId(uri)
+        )
+
+        return resolver.query(childrenUri, columns, null, null, null)?.use { cursor ->
+            val result = mutableListOf<StorageFile>()
+
+            while (cursor.moveToNext()) {
+                val documentId = cursor.getString(0)
+                val displayName = cursor.getString(1)
+                val mimeType = cursor.getString(2)
+
+                val documentUri = DocumentsContract.buildDocumentUriUsingTree(uri, documentId)
+
+                val storageFile = StorageFile(
+                    this,
+                    documentUri,
+                    displayName,
+                    (mimeType == DocumentsContract.Document.MIME_TYPE_DIR)
+                )
+
+                result += storageFile
+            }
+            return@use result
+        } ?: emptyList()
+    }
+
     companion object {
-        // These caches are necessary because SAF is very slow, and the caching in FSAF is buggy.
+        // These caches are necessary because SAF is very slow.
         // Ultrasonic assumes that the files won't change while it is in the foreground.
         // TODO to really handle concurrency we'd need API24.
         // If this isn't good enough we can add locking.
-        private val storageFilePathDictionary = ConcurrentHashMap<String, StorageFile>()
-        private val notExistingPathDictionary = ConcurrentHashMap<String, String>()
-        private val listedPathDictionary = ConcurrentHashMap<String, String>()
+        val storageFilePathDictionary = ConcurrentHashMap<String, StorageFile>()
+        val notExistingPathDictionary = ConcurrentHashMap<String, String>()
 
-        val mediaRoot: ResettableLazy<StorageFile> = ResettableLazy {
-                StorageFile(null, getRoot()!!)
-        }
+        val mimeTypeMap: MimeTypeMap = MimeTypeMap.getSingleton()
 
-        private fun getRoot(): DocumentFile? {
-            return if (Settings.cacheLocation.isUri()) {
-                DocumentFile.fromTreeUri(
-                    UApp.applicationContext(),
-                    Uri.parse(Settings.cacheLocation)
-                )
-            } else {
-                DocumentFile.fromFile(File(Settings.cacheLocation))
-            }
-        }
-
-        fun resetCaches() {
-            storageFilePathDictionary.clear()
-            notExistingPathDictionary.clear()
-            listedPathDictionary.clear()
-            mediaRoot.reset()
-            Timber.i("StorageFile caches were reset")
-            val root = getRoot()
-            if (root == null || !root.exists()) {
-                Settings.cacheLocation = FileUtil.defaultMusicDirectory.path
-                Util.toast(UApp.applicationContext(), R.string.settings_cache_location_error)
-            }
-        }
-
-        @Synchronized
-        fun getOrCreateFileFromPath(path: String): StorageFile {
-            if (storageFilePathDictionary.containsKey(path))
-                return storageFilePathDictionary[path]!!
-
-            val parent = getStorageFileForParentDirectory(path)
-                ?: throw IOException("Parent directory doesn't exist")
-
-            val name = FileUtil.getNameFromPath(path)
-            val file = StorageFile(
-                parent,
-                parent.documentFile.findFile(name)
-                    ?: parent.documentFile.createFile(
-                        MimeTypeMap.getSingleton().getMimeTypeFromExtension(name.extension())!!,
-                        name.withoutExtension()
-                    )!!
-            )
-
-            storageFilePathDictionary[path] = file
-            notExistingPathDictionary.remove(path)
-            return file
-        }
-
-        fun isPathExists(path: String): Boolean {
-            return getFromPath(path) != null
-        }
-
-        fun getFromPath(path: String): StorageFile? {
-
-            if (storageFilePathDictionary.containsKey(path))
-                return storageFilePathDictionary[path]!!
-            if (notExistingPathDictionary.contains(path)) return null
-
-            val parent = getStorageFileForParentDirectory(path)
-            if (parent == null) {
-                notExistingPathDictionary.putIfAbsent(path, path)
-                return null
-            }
-
-            // If the parent was fully listed, but the searched file isn't cached, it doesn't exists.
-            if (listedPathDictionary.containsKey(parent.path)) return null
-
-            val fileName = FileUtil.getNameFromPath(path)
-            var file: StorageFile? = null
-
-            //Timber.v("StorageFile getFromPath path: %s", path)
-            // Listing a bunch of files takes the same time in SAF as finding one,
-            // so we list and cache all of them for performance
-
-            parent.listFiles().forEach {
-                if (it.name == fileName) file = it
-                storageFilePathDictionary[it.path] = it
-                notExistingPathDictionary.remove(it.path)
-            }
-
-            listedPathDictionary[parent.path] = parent.path
-
-            if (file == null) {
-                notExistingPathDictionary.putIfAbsent(path, path)
-                return null
-            }
-
-            return file
-        }
-
-        @Synchronized
-        fun createDirsOnPath(path: String) {
-            val segments = getUriSegments(path)
-                ?: throw IOException("Can't get path because the root has changed")
-
-            var file = mediaRoot.value
-            segments.forEach { segment ->
-                file = StorageFile(
-                    file,
-                    file.documentFile.findFile(segment) ?:
-                    file.documentFile.createDirectory(segment)
-                        ?: throw IOException("Can't create directory")
-                )
-
-                notExistingPathDictionary.remove(file.path)
-                listedPathDictionary.remove(file.path)
-            }
-        }
-
-        fun rename(pathFrom: String, pathTo: String) {
-            val fileFrom = getFromPath(pathFrom) ?: throw IOException("File to rename doesn't exist")
-            rename(fileFrom, pathTo)
-        }
-
-        @Synchronized
-        fun rename(pathFrom: StorageFile?, pathTo: String) {
-            if (pathFrom == null || !pathFrom.documentFile.exists()) throw IOException("File to rename doesn't exist")
-            Timber.d("Renaming from %s to %s", pathFrom.path, pathTo)
-
-            val parentTo = getFromPath(FileUtil.getParentPath(pathTo)!!) ?: throw IOException("Destination folder doesn't exist")
-            val fileTo = getFromParentAndName(parentTo, FileUtil.getNameFromPath(pathTo))
-
-            copyFileContents(pathFrom.documentFile, fileTo.documentFile)
-            pathFrom.delete()
-
-            notExistingPathDictionary.remove(pathTo)
-            storageFilePathDictionary.remove(pathFrom.path)
-        }
+        private val columns = arrayOf(
+            DocumentsContract.Document.COLUMN_DOCUMENT_ID,
+            DocumentsContract.Document.COLUMN_DISPLAY_NAME,
+            DocumentsContract.Document.COLUMN_MIME_TYPE
+        )
 
         private fun copyFileContents(sourceFile: DocumentFile, destinationFile: DocumentFile) {
             UApp.applicationContext().contentResolver.openInputStream(sourceFile.uri)?.use { inputStream ->
@@ -247,12 +218,18 @@ class StorageFile private constructor(
         }
 
         private fun getFromParentAndName(parent: StorageFile, name: String): StorageFile {
-            val file = parent.documentFile.findFile(name)
-                ?: parent.documentFile.createFile(
-                    MimeTypeMap.getSingleton().getMimeTypeFromExtension(name.extension())!!,
-                    name.withoutExtension()
-                )!!
-            return StorageFile(parent, file)
+            val foundFile = parent.listFiles().firstOrNull { it.name == name }
+
+            if (foundFile != null) return foundFile as StorageFile
+
+            val createdUri = DocumentsContract.createDocument(
+                UApp.applicationContext().contentResolver,
+                parent.uri,
+                mimeTypeMap.getMimeTypeFromExtension(name.extension())!!,
+                name.withoutExtension()
+            ) ?: throw IOException("Can't create file")
+
+            return StorageFile(parent, createdUri, name, false)
         }
 
         private fun getStorageFileForParentDirectory(path: String): StorageFile? {
@@ -261,10 +238,9 @@ class StorageFile private constructor(
                 return storageFilePathDictionary[parentPath]!!
             if (notExistingPathDictionary.contains(parentPath)) return null
 
-            //val start = System.currentTimeMillis()
+            val start = System.currentTimeMillis()
             val parent = findStorageFileForParentDirectory(parentPath)
-            //val end = System.currentTimeMillis()
-            //Timber.v("StorageFile getStorageFileForParentDirectory searching for %s, time: %d", parentPath, end-start)
+            val end = System.currentTimeMillis()
 
             if (parent == null) {
                 storageFilePathDictionary.remove(parentPath)
@@ -281,47 +257,38 @@ class StorageFile private constructor(
             val segments = getUriSegments(path)
                 ?: throw IOException("Can't get path because the root has changed")
 
-            var file = StorageFile(null, mediaRoot.value.documentFile)
+            var file = Storage.mediaRoot.value as StorageFile
             segments.forEach { segment ->
                 val currentPath = file.path + "/" + segment
                 if (notExistingPathDictionary.contains(currentPath)) return null
                 if (storageFilePathDictionary.containsKey(currentPath)) {
                     file = storageFilePathDictionary[currentPath]!!
                 } else {
-                    // If the parent was fully listed, but the searched file isn't cached, it doesn't exists.
-                    if (listedPathDictionary.containsKey(file.path)) return null
                     var foundFile: StorageFile? = null
                     file.listFiles().forEach {
-                        if (it.name == segment) foundFile = it
-                        storageFilePathDictionary[it.path] = it
+                        if (it.name == segment) foundFile = it as StorageFile
+                        storageFilePathDictionary[it.path] = it as StorageFile
                         notExistingPathDictionary.remove(it.path)
                     }
-
-                    listedPathDictionary[file.path] = file.path
 
                     if (foundFile == null) {
                         notExistingPathDictionary.putIfAbsent(path, path)
                         return null
                     }
 
-                    file = StorageFile(file, foundFile!!.documentFile)
+                    file = foundFile!!
                 }
             }
             return file
         }
 
         private fun getUriSegments(uri: String): List<String>? {
-            val rootPath = mediaRoot.value.path
+            val rootPath = Storage.mediaRoot.value.path
             if (!uri.startsWith(rootPath)) return null
             val pathWithoutRoot = uri.substringAfter(rootPath)
             return pathWithoutRoot.split('/').filter { it.isNotEmpty() }
         }
     }
-}
-
-fun String.isUri(): Boolean {
-    // TODO is there a better way to tell apart a path and an URI?
-    return this.contains(':')
 }
 
 fun String.extension(): String {

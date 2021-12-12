@@ -49,7 +49,7 @@ import org.moire.ultrasonic.subsonic.ImageLoaderProvider
 import org.moire.ultrasonic.util.Constants
 import org.moire.ultrasonic.util.ServerColor
 import org.moire.ultrasonic.util.Settings
-import org.moire.ultrasonic.util.StorageFile
+import org.moire.ultrasonic.util.Storage
 import org.moire.ultrasonic.util.UncaughtExceptionHandler
 import org.moire.ultrasonic.util.Util
 import timber.log.Timber
@@ -214,7 +214,7 @@ class NavigationActivity : AppCompatActivity() {
     override fun onResume() {
         super.onResume()
 
-        StorageFile.resetCaches()
+        Storage.reset()
         setMenuForServerCapabilities()
 
         // Lifecycle support's constructor registers some event receivers so it should be created early

@@ -46,7 +46,7 @@ import org.moire.ultrasonic.util.Settings
 import org.moire.ultrasonic.util.Settings.preferences
 import org.moire.ultrasonic.util.Settings.shareGreeting
 import org.moire.ultrasonic.util.Settings.shouldUseId3Tags
-import org.moire.ultrasonic.util.StorageFile
+import org.moire.ultrasonic.util.Storage
 import org.moire.ultrasonic.util.TimeSpanPreference
 import org.moire.ultrasonic.util.TimeSpanPreferenceDialogFragmentCompat
 import org.moire.ultrasonic.util.Util.toast
@@ -456,7 +456,7 @@ class SettingsFragment :
 
         // Clear download queue.
         mediaPlayerControllerLazy.value.clear()
-        StorageFile.resetCaches()
+        Storage.reset()
     }
 
     private fun setDebugLogToFile(writeLog: Boolean) {
