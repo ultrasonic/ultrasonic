@@ -401,6 +401,14 @@ object FileUtil {
         return path.substringBeforeLast('/')
     }
 
+    fun getSaveFile(name: String): String {
+        val baseName = getBaseName(name)
+        if (baseName.endsWith(".partial") || baseName.endsWith(".complete")) {
+            return "${getBaseName(baseName)}.${getExtension(name)}"
+        }
+        return name
+    }
+
     /**
      * Returns the file name of a .complete file of the given file.
      *

@@ -267,7 +267,8 @@ class Downloader(
             temp.addAll(downloadQueue)
             temp.addAll(
                 playlist.filter {
-                    when (it.status.value) {
+                    if (!it.lazyStatus.isInitialized()) false
+                    else when (it.status.value) {
                         DownloadStatus.DOWNLOADING -> true
                         else -> false
                     }

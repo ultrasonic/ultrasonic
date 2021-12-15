@@ -28,24 +28,32 @@ class StorageFile(
 
     override val length: Long
         get() {
-            val resolver = UApp.applicationContext().contentResolver
-            val column = arrayOf(DocumentsContract.Document.COLUMN_SIZE)
-            resolver.query(uri, column, null, null, null)?.use { cursor ->
-                if (cursor.moveToFirst()) {
-                    return cursor.getLong(0)
+            try {
+                val resolver = UApp.applicationContext().contentResolver
+                val column = arrayOf(DocumentsContract.Document.COLUMN_SIZE)
+                resolver.query(uri, column, null, null, null)?.use { cursor ->
+                    if (cursor.moveToFirst()) {
+                        return cursor.getLong(0)
+                    }
                 }
+            } catch (_: IllegalArgumentException) {
+                Timber.d("Tried to get length of $uri but it probably doesn't exists")
             }
             return 0
         }
 
     override val lastModified: Long
         get() {
-            val resolver = UApp.applicationContext().contentResolver
-            val column = arrayOf(DocumentsContract.Document.COLUMN_LAST_MODIFIED)
-            resolver.query(uri, column, null, null, null)?.use { cursor ->
-                if (cursor.moveToFirst()) {
-                    return cursor.getLong(0)
+            try {
+                val resolver = UApp.applicationContext().contentResolver
+                val column = arrayOf(DocumentsContract.Document.COLUMN_LAST_MODIFIED)
+                resolver.query(uri, column, null, null, null)?.use { cursor ->
+                    if (cursor.moveToFirst()) {
+                        return cursor.getLong(0)
+                    }
                 }
+            } catch (_: IllegalArgumentException) {
+                Timber.d("Tried to get length of $uri but it probably doesn't exists")
             }
             return 0
         }
@@ -129,7 +137,6 @@ class StorageFile(
         val fileName = FileUtil.getNameFromPath(path)
         var file: StorageFile? = null
 
-        Timber.v("StorageFile getFromPath listing files on path: $path")
         parent.listFiles().forEach {
             if (it.name == fileName) file = it as StorageFile
             storageFilePathDictionary[it.path] = it as StorageFile

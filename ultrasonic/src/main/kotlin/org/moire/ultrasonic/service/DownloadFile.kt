@@ -42,8 +42,8 @@ class DownloadFile(
     save: Boolean
 ) : KoinComponent, Identifiable {
     val partialFile: String
-    val completeFile: String
-    private val saveFile: String = FileUtil.getSongFile(song)
+    lateinit var completeFile: String
+    val saveFile: String = FileUtil.getSongFile(song)
     var shouldSave = save
     private var downloadTask: CancellableTask? = null
     var isFailed = false
@@ -68,29 +68,30 @@ class DownloadFile(
     private val activeServerProvider: ActiveServerProvider by inject()
 
     val progress: MutableLiveData<Int> = MutableLiveData(0)
-    val status: MutableLiveData<DownloadStatus>
+
+    val lazyStatus: Lazy<DownloadStatus> = lazy {
+        when {
+            Storage.isPathExists(saveFile) -> {
+                DownloadStatus.PINNED
+            }
+            Storage.isPathExists(completeFile) -> {
+                DownloadStatus.DONE
+            }
+            else -> {
+                DownloadStatus.IDLE
+            }
+        }
+    }
+
+    val status: MutableLiveData<DownloadStatus> by lazy {
+        MutableLiveData(lazyStatus.value)
+    }
 
     init {
-        val state: DownloadStatus
-
         partialFile = FileUtil.getParentPath(saveFile) + "/" +
             FileUtil.getPartialFile(FileUtil.getNameFromPath(saveFile))
         completeFile = FileUtil.getParentPath(saveFile) + "/" +
             FileUtil.getCompleteFile(FileUtil.getNameFromPath(saveFile))
-
-        when {
-            Storage.isPathExists(saveFile) -> {
-                state = DownloadStatus.PINNED
-            }
-            Storage.isPathExists(completeFile) -> {
-                state = DownloadStatus.DONE
-            }
-            else -> {
-                state = DownloadStatus.IDLE
-            }
-        }
-
-        status = MutableLiveData(state)
     }
 
     /**

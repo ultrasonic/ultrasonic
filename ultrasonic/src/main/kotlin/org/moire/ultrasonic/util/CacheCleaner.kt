@@ -259,7 +259,8 @@ class CacheCleaner : CoroutineScope by CoroutineScope(Dispatchers.IO) {
 
             for (downloadFile in downloader.value.all) {
                 filesToNotDelete.add(downloadFile.partialFile)
-                filesToNotDelete.add(downloadFile.completeOrSaveFile)
+                filesToNotDelete.add(downloadFile.completeFile)
+                filesToNotDelete.add(downloadFile.saveFile)
             }
 
             filesToNotDelete.add(musicDirectory.path)

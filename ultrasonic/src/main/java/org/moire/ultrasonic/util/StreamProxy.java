@@ -153,13 +153,27 @@ public class StreamProxy implements Runnable
             }
 
             Timber.i("Processing request for file %s", localPath);
-            if (!Storage.INSTANCE.isPathExists(localPath)) {
-                Timber.e("File %s does not exist", localPath);
-                return false;
-            }
+			if (Storage.INSTANCE.isPathExists(localPath)) return true;
 
-            return true;
-        }
+			// Usually the .partial file will be requested here, but sometimes it has already
+			// been renamed, so check if it is completed since
+			String saveFileName = FileUtil.INSTANCE.getSaveFile(localPath);
+			String completeFileName = FileUtil.INSTANCE.getCompleteFile(saveFileName);
+
+			if (Storage.INSTANCE.isPathExists(saveFileName)) {
+				localPath = saveFileName;
+				return true;
+			}
+
+			if (Storage.INSTANCE.isPathExists(completeFileName)) {
+				localPath = completeFileName;
+				return true;
+			}
+
+			Timber.e("File %s does not exist", localPath);
+			return false;
+
+		}
 
 		@Override
 		public void run()
