@@ -16,6 +16,10 @@ import java.io.InputStream
 import java.io.OutputStream
 import org.moire.ultrasonic.app.UApp
 
+/**
+ * The java.io.File based implementation of AbstractFile
+ * This class is used when the Ultrasonic directory is set as media storage
+ */
 class JavaFile(override val parent: AbstractFile?, val file: File) : AbstractFile() {
     override val name: String = file.name
     override val isDirectory: Boolean = file.isDirectory

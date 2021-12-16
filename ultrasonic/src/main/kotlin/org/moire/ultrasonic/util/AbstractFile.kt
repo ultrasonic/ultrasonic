@@ -12,6 +12,9 @@ import java.io.IOException
 import java.io.InputStream
 import java.io.OutputStream
 
+/**
+ * Contains the abstract file operations which Ultrasonic uses during the media store access
+ */
 abstract class AbstractFile : Comparable<AbstractFile> {
     abstract val name: String
     abstract val isDirectory: Boolean

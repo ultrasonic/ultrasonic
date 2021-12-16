@@ -69,7 +69,13 @@ class DownloadFile(
 
     val progress: MutableLiveData<Int> = MutableLiveData(0)
 
-    val lazyStatus: Lazy<DownloadStatus> = lazy {
+    // We must be able to query if the status is initialized.
+    // The status is lazy because DownloadFiles are usually created in bulk, and
+    // checking their status possibly means a slow SAF operation.
+    val isStatusInitialized: Boolean
+        get() = lazyInitialStatus.isInitialized()
+
+    private val lazyInitialStatus: Lazy<DownloadStatus> = lazy {
         when {
             Storage.isPathExists(saveFile) -> {
                 DownloadStatus.PINNED
@@ -84,7 +90,7 @@ class DownloadFile(
     }
 
     val status: MutableLiveData<DownloadStatus> by lazy {
-        MutableLiveData(lazyStatus.value)
+        MutableLiveData(lazyInitialStatus.value)
     }
 
     init {

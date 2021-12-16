@@ -24,21 +24,6 @@ object Storage {
         getRoot()!!
     }
 
-    private fun getRoot(): AbstractFile? {
-        return if (Settings.cacheLocation.isUri()) {
-            val documentFile = DocumentFile.fromTreeUri(
-                UApp.applicationContext(),
-                Uri.parse(Settings.cacheLocation)
-            ) ?: return null
-            if (!documentFile.exists()) return null
-            StorageFile(null, documentFile.uri, documentFile.name!!, documentFile.isDirectory)
-        } else {
-            val file = File(Settings.cacheLocation)
-            if (!file.exists()) return null
-            JavaFile(null, file)
-        }
-    }
-
     fun reset() {
         StorageFile.storageFilePathDictionary.clear()
         StorageFile.notExistingPathDictionary.clear()
@@ -73,6 +58,21 @@ object Storage {
 
     fun rename(pathFrom: AbstractFile, pathTo: String) {
         mediaRoot.value.rename(pathFrom, pathTo)
+    }
+
+    private fun getRoot(): AbstractFile? {
+        return if (Settings.cacheLocation.isUri()) {
+            val documentFile = DocumentFile.fromTreeUri(
+                UApp.applicationContext(),
+                Uri.parse(Settings.cacheLocation)
+            ) ?: return null
+            if (!documentFile.exists()) return null
+            StorageFile(null, documentFile.uri, documentFile.name!!, documentFile.isDirectory)
+        } else {
+            val file = File(Settings.cacheLocation)
+            if (!file.exists()) return null
+            JavaFile(null, file)
+        }
     }
 }
 

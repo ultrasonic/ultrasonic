@@ -18,6 +18,10 @@ import java.util.concurrent.ConcurrentHashMap
 import org.moire.ultrasonic.app.UApp
 import timber.log.Timber
 
+/**
+ * The DocumentsContract based implementation of AbstractFile
+ * This class is used when a user selected directory is set as media storage
+ */
 class StorageFile(
     override val parent: StorageFile?,
     var uri: Uri,
