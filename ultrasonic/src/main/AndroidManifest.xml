@@ -145,8 +145,7 @@
 
         <provider
             android:name=".provider.SearchSuggestionProvider"
-            android:authorities="org.moire.ultrasonic.provider.SearchSuggestionProvider"
-            tools:ignore="ExportedContentProvider" />
+            android:authorities="org.moire.ultrasonic.provider.SearchSuggestionProvider"/>
 
         <receiver
             android:name=".receiver.A2dpIntentReceiver"
