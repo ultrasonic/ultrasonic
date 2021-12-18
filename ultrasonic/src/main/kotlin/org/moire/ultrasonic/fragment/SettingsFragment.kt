@@ -40,6 +40,7 @@ import org.moire.ultrasonic.provider.SearchSuggestionProvider
 import org.moire.ultrasonic.service.MediaPlayerController
 import org.moire.ultrasonic.service.RxBus
 import org.moire.ultrasonic.util.Constants
+import org.moire.ultrasonic.util.ErrorDialog
 import org.moire.ultrasonic.util.FileUtil.defaultMusicDirectory
 import org.moire.ultrasonic.util.FileUtil.ultrasonicDirectory
 import org.moire.ultrasonic.util.InfoDialog
@@ -183,8 +184,12 @@ class SettingsFragment :
         val write = (resultData.flags and Intent.FLAG_GRANT_WRITE_URI_PERMISSION) != 0
         val persist = (resultData.flags and Intent.FLAG_GRANT_PERSISTABLE_URI_PERMISSION) != 0
 
-        // TODO Should we show an error?
-        if (!read || !write || !persist) return
+        if (!read || !write || !persist) {
+            ErrorDialog.Builder(context)
+                .setMessage(R.string.settings_cache_location_error)
+                .show()
+            return
+        }
 
         // The result data contains a URI for the document or directory that
         // the user selected.
