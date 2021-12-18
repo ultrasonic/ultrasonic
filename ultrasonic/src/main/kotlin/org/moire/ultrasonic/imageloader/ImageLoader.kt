@@ -21,7 +21,7 @@ import org.moire.ultrasonic.api.subsonic.throwOnFailure
 import org.moire.ultrasonic.api.subsonic.toStreamResponse
 import org.moire.ultrasonic.domain.MusicDirectory
 import org.moire.ultrasonic.util.FileUtil
-import org.moire.ultrasonic.util.Util
+import org.moire.ultrasonic.util.Util.safeClose
 import timber.log.Timber
 
 /**
@@ -161,7 +161,8 @@ class ImageLoader(
             val file = FileUtil.getAlbumArtFile(entry)
 
             // Return if have a cache hit
-            if (file.exists()) return
+            if (file != null && File(file).exists()) return
+            File(file!!).createNewFile()
 
             // Can't load empty string ids
             val id = entry.coverArt
@@ -185,10 +186,10 @@ class ImageLoader(
                     outputStream = FileOutputStream(file)
                     outputStream.write(bytes)
                 } finally {
-                    Util.close(outputStream)
+                    outputStream.safeClose()
                 }
             } finally {
-                Util.close(inputStream)
+                inputStream.safeClose()
             }
         }
     }

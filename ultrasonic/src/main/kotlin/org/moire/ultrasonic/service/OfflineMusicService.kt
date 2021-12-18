@@ -39,9 +39,11 @@ import org.moire.ultrasonic.domain.SearchCriteria
 import org.moire.ultrasonic.domain.SearchResult
 import org.moire.ultrasonic.domain.Share
 import org.moire.ultrasonic.domain.UserInfo
+import org.moire.ultrasonic.util.AbstractFile
 import org.moire.ultrasonic.util.Constants
 import org.moire.ultrasonic.util.FileUtil
-import org.moire.ultrasonic.util.Util
+import org.moire.ultrasonic.util.Storage
+import org.moire.ultrasonic.util.Util.safeClose
 import timber.log.Timber
 
 @Suppress("TooManyFunctions")
@@ -101,14 +103,14 @@ class OfflineMusicService : MusicService, KoinComponent {
         name: String?,
         refresh: Boolean
     ): MusicDirectory {
-        val dir = File(id)
+        val dir = Storage.getFromPath(id)
         val result = MusicDirectory()
-        result.name = dir.name
+        result.name = dir?.name ?: return result
 
         val seen: MutableCollection<String?> = HashSet()
 
         for (file in FileUtil.listMediaFiles(dir)) {
-            val filename = getName(file)
+            val filename = getName(file.name, file.isDirectory)
             if (filename != null && !seen.contains(filename)) {
                 seen.add(filename)
                 if (file.isFile) {
@@ -210,16 +212,16 @@ class OfflineMusicService : MusicService, KoinComponent {
             var line = buffer.readLine()
             if ("#EXTM3U" != line) return playlist
             while (buffer.readLine().also { line = it } != null) {
-                val entryFile = File(line)
-                val entryName = getName(entryFile)
-                if (entryFile.exists() && entryName != null) {
+                val entryFile = Storage.getFromPath(line) ?: continue
+                val entryName = getName(entryFile.name, entryFile.isDirectory)
+                if (entryName != null) {
                     playlist.add(createEntry(entryFile, entryName))
                 }
             }
             playlist
         } finally {
-            Util.close(buffer)
-            Util.close(reader)
+            buffer.safeClose()
+            reader.safeClose()
         }
     }
 
@@ -233,8 +235,8 @@ class OfflineMusicService : MusicService, KoinComponent {
         try {
             fw.write("#EXTM3U\n")
             for (e in entries) {
-                var filePath = FileUtil.getSongFile(e).absolutePath
-                if (!File(filePath).exists()) {
+                var filePath = FileUtil.getSongFile(e)
+                if (!Storage.isPathExists(filePath)) {
                     val ext = FileUtil.getExtension(filePath)
                     val base = FileUtil.getBaseName(filePath)
                     filePath = "$base.complete.$ext"
@@ -256,7 +258,7 @@ class OfflineMusicService : MusicService, KoinComponent {
 
     override fun getRandomSongs(size: Int): MusicDirectory {
         val root = FileUtil.musicDirectory
-        val children: MutableList<File> = LinkedList()
+        val children: MutableList<AbstractFile> = LinkedList()
         listFilesRecursively(root, children)
         val result = MusicDirectory()
         if (children.isEmpty()) {
@@ -266,7 +268,7 @@ class OfflineMusicService : MusicService, KoinComponent {
         val finalSize: Int = children.size.coerceAtMost(size)
         for (i in 0 until finalSize) {
             val file = children[i % children.size]
-            result.add(createEntry(file, getName(file)))
+            result.add(createEntry(file, getName(file.name, file.isDirectory)))
         }
         return result
     }
@@ -487,27 +489,26 @@ class OfflineMusicService : MusicService, KoinComponent {
         throw OfflineException("getPodcastsChannels isn't available in offline mode")
     }
 
-    private fun getName(file: File): String? {
-        var name = file.name
-        if (file.isDirectory) {
-            return name
+    private fun getName(fileName: String, isDirectory: Boolean): String? {
+        if (isDirectory) {
+            return fileName
         }
-        if (name.endsWith(".partial") || name.contains(".partial.") ||
-            name == Constants.ALBUM_ART_FILE
+        if (fileName.endsWith(".partial") || fileName.contains(".partial.") ||
+            fileName == Constants.ALBUM_ART_FILE
         ) {
             return null
         }
-        name = name.replace(".complete", "")
+        val name = fileName.replace(".complete", "")
         return FileUtil.getBaseName(name)
     }
 
-    private fun createEntry(file: File, name: String?): MusicDirectory.Entry {
+    private fun createEntry(file: AbstractFile, name: String?): MusicDirectory.Entry {
         val entry = MusicDirectory.Entry(file.path)
         entry.populateWithDataFrom(file, name)
         return entry
     }
 
-    private fun createAlbum(file: File, name: String?): MusicDirectory.Album {
+    private fun createAlbum(file: AbstractFile, name: String?): MusicDirectory.Album {
         val album = MusicDirectory.Album(file.path)
         album.populateWithDataFrom(file, name)
         return album
@@ -516,18 +517,18 @@ class OfflineMusicService : MusicService, KoinComponent {
     /*
      * Extracts some basic data from a File object and applies it to an Album or Entry
      */
-    private fun MusicDirectory.Child.populateWithDataFrom(file: File, name: String?) {
+    private fun MusicDirectory.Child.populateWithDataFrom(file: AbstractFile, name: String?) {
         isDirectory = file.isDirectory
-        parent = file.parent
+        parent = file.parent!!.path
         val root = FileUtil.musicDirectory.path
         path = file.path.replaceFirst(
             String.format(Locale.ROOT, "^%s/", root).toRegex(), ""
         )
         title = name
 
-        val albumArt = FileUtil.getAlbumArtFile(file)
-        if (albumArt.exists()) {
-            coverArt = albumArt.path
+        val albumArt = FileUtil.getAlbumArtFile(this)
+        if (albumArt != null && File(albumArt).exists()) {
+            coverArt = albumArt
         }
     }
 
@@ -535,14 +536,18 @@ class OfflineMusicService : MusicService, KoinComponent {
      * More extensive variant of Child.populateWithDataFrom(), which also parses the ID3 tags of
      * a given track file.
      */
-    private fun MusicDirectory.Entry.populateWithDataFrom(file: File, name: String?) {
+    private fun MusicDirectory.Entry.populateWithDataFrom(file: AbstractFile, name: String?) {
         (this as MusicDirectory.Child).populateWithDataFrom(file, name)
 
         val meta = RawMetadata(null)
 
         try {
             val mmr = MediaMetadataRetriever()
-            mmr.setDataSource(file.path)
+
+            val descriptor = file.getDocumentFileDescriptor("r")!!
+            mmr.setDataSource(descriptor.fileDescriptor)
+            descriptor.close()
+
             meta.artist = mmr.extractMetadata(MediaMetadataRetriever.METADATA_KEY_ARTIST)
             meta.album = mmr.extractMetadata(MediaMetadataRetriever.METADATA_KEY_ALBUM)
             meta.title = mmr.extractMetadata(MediaMetadataRetriever.METADATA_KEY_TITLE)
@@ -556,8 +561,8 @@ class OfflineMusicService : MusicService, KoinComponent {
         } catch (ignored: Exception) {
         }
 
-        artist = meta.artist ?: file.parentFile!!.parentFile!!.name
-        album = meta.album ?: file.parentFile!!.name
+        artist = meta.artist ?: file.parent!!.parent!!.name
+        album = meta.album ?: file.parent!!.name
         title = meta.title ?: title
         isVideo = meta.hasVideo != null
         track = parseSlashedNumber(meta.track)
@@ -565,7 +570,7 @@ class OfflineMusicService : MusicService, KoinComponent {
         year = meta.year?.toIntOrNull()
         genre = meta.genre
         duration = parseDuration(meta.duration)
-        size = file.length()
+        size = if (file.isFile) file.length else 0
         suffix = FileUtil.getExtension(file.name.replace(".complete", ""))
     }
 
@@ -602,7 +607,7 @@ class OfflineMusicService : MusicService, KoinComponent {
     @Suppress("NestedBlockDepth")
     private fun recursiveAlbumSearch(
         artistName: String,
-        file: File,
+        file: AbstractFile,
         criteria: SearchCriteria,
         albums: MutableList<MusicDirectory.Album>,
         songs: MutableList<MusicDirectory.Entry>
@@ -610,7 +615,7 @@ class OfflineMusicService : MusicService, KoinComponent {
         var closeness: Int
         for (albumFile in FileUtil.listMediaFiles(file)) {
             if (albumFile.isDirectory) {
-                val albumName = getName(albumFile)
+                val albumName = getName(albumFile.name, albumFile.isDirectory)
                 if (matchCriteria(criteria, albumName).also { closeness = it } > 0) {
                     val album = createAlbum(albumFile, albumName)
                     album.artist = artistName
@@ -618,7 +623,7 @@ class OfflineMusicService : MusicService, KoinComponent {
                     albums.add(album)
                 }
                 for (songFile in FileUtil.listMediaFiles(albumFile)) {
-                    val songName = getName(songFile)
+                    val songName = getName(songFile.name, songFile.isDirectory)
                     if (songFile.isDirectory) {
                         recursiveAlbumSearch(artistName, songFile, criteria, albums, songs)
                     } else if (matchCriteria(criteria, songName).also { closeness = it } > 0) {
@@ -630,7 +635,7 @@ class OfflineMusicService : MusicService, KoinComponent {
                     }
                 }
             } else {
-                val songName = getName(albumFile)
+                val songName = getName(albumFile.name, albumFile.isDirectory)
                 if (matchCriteria(criteria, songName).also { closeness = it } > 0) {
                     val song = createEntry(albumFile, songName)
                     song.artist = artistName
@@ -659,7 +664,7 @@ class OfflineMusicService : MusicService, KoinComponent {
         return closeness
     }
 
-    private fun listFilesRecursively(parent: File, children: MutableList<File>) {
+    private fun listFilesRecursively(parent: AbstractFile, children: MutableList<AbstractFile>) {
         for (file in FileUtil.listMediaFiles(parent)) {
             if (file.isFile) {
                 children.add(file)

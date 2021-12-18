@@ -205,6 +205,9 @@ class MediaPlayerService : Service() {
 
     @Synchronized
     fun setNextPlaying() {
+        // Download the next few songs if necessary
+        downloader.checkDownloads()
+
         if (!Settings.gaplessPlayback) {
             localMediaPlayer.clearNextPlaying(true)
             return
@@ -289,7 +292,6 @@ class MediaPlayerService : Service() {
                     localMediaPlayer.play(downloader.getPlaylist()[index])
                 }
             }
-            downloader.checkDownloads()
             setNextPlaying()
         }
     }

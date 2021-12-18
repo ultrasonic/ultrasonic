@@ -1,15 +1,11 @@
 package org.moire.ultrasonic.util;
 
-import timber.log.Timber;
-
 import org.moire.ultrasonic.domain.MusicDirectory;
 import org.moire.ultrasonic.service.DownloadFile;
 import org.moire.ultrasonic.service.Supplier;
 
 import java.io.BufferedOutputStream;
 import java.io.BufferedReader;
-import java.io.File;
-import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
@@ -23,6 +19,8 @@ import java.net.SocketTimeoutException;
 import java.net.URLDecoder;
 import java.net.UnknownHostException;
 import java.util.StringTokenizer;
+
+import timber.log.Timber;
 
 public class StreamProxy implements Runnable
 {
@@ -103,66 +101,79 @@ public class StreamProxy implements Runnable
 		Timber.i("Proxy interrupted. Shutting down.");
 	}
 
-    private class StreamToMediaPlayerTask implements Runnable {
-        String localPath;
-        Socket client;
-        int cbSkip;
+	private class StreamToMediaPlayerTask implements Runnable {
+		String localPath;
+		Socket client;
+		int cbSkip;
 
-        StreamToMediaPlayerTask(Socket client) {
-            this.client = client;
-        }
+		StreamToMediaPlayerTask(Socket client) {
+			this.client = client;
+		}
 
-        private String readRequest() {
-            InputStream is;
-            String firstLine;
-            try {
-                is = client.getInputStream();
-                BufferedReader reader = new BufferedReader(new InputStreamReader(is), 8192);
-                firstLine = reader.readLine();
-            } catch (IOException e) {
-                Timber.e(e, "Error parsing request");
-                return null;
-            }
+		private String readRequest() {
+			InputStream is;
+			String firstLine;
+			try {
+				is = client.getInputStream();
+				BufferedReader reader = new BufferedReader(new InputStreamReader(is), 8192);
+				firstLine = reader.readLine();
+			} catch (IOException e) {
+				Timber.e(e, "Error parsing request");
+				return null;
+			}
 
-            if (firstLine == null) {
-                Timber.i("Proxy client closed connection without a request.");
-                return null;
-            }
+			if (firstLine == null) {
+				Timber.i("Proxy client closed connection without a request.");
+				return null;
+			}
 
-            StringTokenizer st = new StringTokenizer(firstLine);
-            st.nextToken(); // method
-            String uri = st.nextToken();
-            String realUri = uri.substring(1);
-            Timber.i(realUri);
+			StringTokenizer st = new StringTokenizer(firstLine);
+			st.nextToken(); // method
+			String uri = st.nextToken();
+			String realUri = uri.substring(1);
+			Timber.i(realUri);
 
-            return realUri;
-        }
+			return realUri;
+		}
 
-        boolean processRequest() {
-            final String uri = readRequest();
-            if (uri == null || uri.isEmpty()) {
-                return false;
-            }
+		boolean processRequest() {
+			final String uri = readRequest();
+			if (uri == null || uri.isEmpty()) {
+				return false;
+			}
 
-            // Read HTTP headers
-            Timber.i("Processing request: %s", uri);
+			// Read HTTP headers
+			Timber.i("Processing request: %s", uri);
 
-            try {
-                localPath = URLDecoder.decode(uri, Constants.UTF_8);
-            } catch (UnsupportedEncodingException e) {
-                Timber.e(e, "Unsupported encoding");
-                return false;
-            }
+			try {
+				localPath = URLDecoder.decode(uri, Constants.UTF_8);
+			} catch (UnsupportedEncodingException e) {
+				Timber.e(e, "Unsupported encoding");
+				return false;
+			}
 
-            Timber.i("Processing request for file %s", localPath);
-            File file = new File(localPath);
-            if (!file.exists()) {
-                Timber.e("File %s does not exist", localPath);
-                return false;
-            }
+			Timber.i("Processing request for file %s", localPath);
+			if (Storage.INSTANCE.isPathExists(localPath)) return true;
 
-            return true;
-        }
+			// Usually the .partial file will be requested here, but sometimes it has already
+			// been renamed, so check if it is completed since
+			String saveFileName = FileUtil.INSTANCE.getSaveFile(localPath);
+			String completeFileName = FileUtil.INSTANCE.getCompleteFile(saveFileName);
+
+			if (Storage.INSTANCE.isPathExists(saveFileName)) {
+				localPath = saveFileName;
+				return true;
+			}
+
+			if (Storage.INSTANCE.isPathExists(completeFileName)) {
+				localPath = completeFileName;
+				return true;
+			}
+
+			Timber.e("File %s does not exist", localPath);
+			return false;
+
+		}
 
 		@Override
 		public void run()
@@ -194,12 +205,13 @@ public class StreamProxy implements Runnable
 					while (isRunning && !client.isClosed())
 					{
 						// See if there's more to send
-						File file = downloadFile.isCompleteFileAvailable() ? downloadFile.getCompleteOrSaveFile() : downloadFile.getPartialFile();
+						String file = downloadFile.isCompleteFileAvailable() ? downloadFile.getCompleteOrSaveFile() : downloadFile.getPartialFile();
 						int cbSentThisBatch = 0;
 
-						if (file.exists())
+						AbstractFile storageFile = Storage.INSTANCE.getFromPath(file);
+						if (storageFile != null)
 						{
-							FileInputStream input = new FileInputStream(file);
+							InputStream input = storageFile.getFileInputStream();
 
 							try
 							{

@@ -9,12 +9,9 @@ package org.moire.ultrasonic.service
 
 import android.text.TextUtils
 import androidx.lifecycle.MutableLiveData
-import java.io.File
-import java.io.FileOutputStream
 import java.io.IOException
 import java.io.InputStream
 import java.io.OutputStream
-import java.io.RandomAccessFile
 import org.koin.core.component.KoinComponent
 import org.koin.core.component.inject
 import org.moire.ultrasonic.data.ActiveServerProvider
@@ -27,7 +24,9 @@ import org.moire.ultrasonic.util.CacheCleaner
 import org.moire.ultrasonic.util.CancellableTask
 import org.moire.ultrasonic.util.FileUtil
 import org.moire.ultrasonic.util.Settings
+import org.moire.ultrasonic.util.Storage
 import org.moire.ultrasonic.util.Util
+import org.moire.ultrasonic.util.Util.safeClose
 import timber.log.Timber
 
 /**
@@ -42,10 +41,10 @@ class DownloadFile(
     val song: MusicDirectory.Entry,
     save: Boolean
 ) : KoinComponent, Identifiable {
+    val partialFile: String
+    lateinit var completeFile: String
+    val saveFile: String = FileUtil.getSongFile(song)
     var shouldSave = save
-    val partialFile: File
-    val completeFile: File
-    private val saveFile: File = FileUtil.getSongFile(song)
     private var downloadTask: CancellableTask? = null
     var isFailed = false
     private var retryCount = MAX_RETRIES
@@ -53,6 +52,7 @@ class DownloadFile(
     private val desiredBitRate: Int = Settings.maxBitRate
 
     var priority = 100
+    var downloadPrepared = false
 
     @Volatile
     private var isPlaying = false
@@ -68,27 +68,36 @@ class DownloadFile(
     private val activeServerProvider: ActiveServerProvider by inject()
 
     val progress: MutableLiveData<Int> = MutableLiveData(0)
-    val status: MutableLiveData<DownloadStatus>
 
-    init {
-        val state: DownloadStatus
+    // We must be able to query if the status is initialized.
+    // The status is lazy because DownloadFiles are usually created in bulk, and
+    // checking their status possibly means a slow SAF operation.
+    val isStatusInitialized: Boolean
+        get() = lazyInitialStatus.isInitialized()
 
-        partialFile = File(saveFile.parent, FileUtil.getPartialFile(saveFile.name))
-        completeFile = File(saveFile.parent, FileUtil.getCompleteFile(saveFile.name))
-
+    private val lazyInitialStatus: Lazy<DownloadStatus> = lazy {
         when {
-            saveFile.exists() -> {
-                state = DownloadStatus.PINNED
+            Storage.isPathExists(saveFile) -> {
+                DownloadStatus.PINNED
             }
-            completeFile.exists() -> {
-                state = DownloadStatus.DONE
+            Storage.isPathExists(completeFile) -> {
+                DownloadStatus.DONE
             }
             else -> {
-                state = DownloadStatus.IDLE
+                DownloadStatus.IDLE
             }
         }
+    }
 
-        status = MutableLiveData(state)
+    val status: MutableLiveData<DownloadStatus> by lazy {
+        MutableLiveData(lazyInitialStatus.value)
+    }
+
+    init {
+        partialFile = FileUtil.getParentPath(saveFile) + "/" +
+            FileUtil.getPartialFile(FileUtil.getNameFromPath(saveFile))
+        completeFile = FileUtil.getParentPath(saveFile) + "/" +
+            FileUtil.getCompleteFile(FileUtil.getNameFromPath(saveFile))
     }
 
     /**
@@ -96,6 +105,13 @@ class DownloadFile(
      */
     fun getBitRate(): Int {
         return if (song.bitRate == null) desiredBitRate else song.bitRate!!
+    }
+
+    @Synchronized
+    fun prepare() {
+        // It is necessary to signal that the download will begin shortly on another thread
+        // so it won't get cleaned up accidentally
+        downloadPrepared = true
     }
 
     @Synchronized
@@ -108,19 +124,17 @@ class DownloadFile(
 
     @Synchronized
     fun cancelDownload() {
-        if (downloadTask != null) {
-            downloadTask!!.cancel()
-        }
+        downloadTask?.cancel()
     }
 
-    val completeOrSaveFile: File
-        get() = if (saveFile.exists()) {
+    val completeOrSaveFile: String
+        get() = if (Storage.isPathExists(saveFile)) {
             saveFile
         } else {
             completeFile
         }
 
-    val completeOrPartialFile: File
+    val completeOrPartialFile: String
         get() = if (isCompleteFileAvailable) {
             completeOrSaveFile
         } else {
@@ -128,20 +142,20 @@ class DownloadFile(
         }
 
     val isSaved: Boolean
-        get() = saveFile.exists()
+        get() = Storage.isPathExists(saveFile)
 
     @get:Synchronized
     val isCompleteFileAvailable: Boolean
-        get() = saveFile.exists() || completeFile.exists()
+        get() = Storage.isPathExists(completeFile) || Storage.isPathExists(saveFile)
 
     @get:Synchronized
     val isWorkDone: Boolean
-        get() = saveFile.exists() || completeFile.exists() && !shouldSave ||
-            saveWhenDone || completeWhenDone
+        get() = Storage.isPathExists(completeFile) && !shouldSave ||
+            Storage.isPathExists(saveFile) || saveWhenDone || completeWhenDone
 
     @get:Synchronized
     val isDownloading: Boolean
-        get() = downloadTask != null && downloadTask!!.isRunning
+        get() = downloadPrepared || (downloadTask != null && downloadTask!!.isRunning)
 
     @get:Synchronized
     val isDownloadCancelled: Boolean
@@ -153,9 +167,9 @@ class DownloadFile(
 
     fun delete() {
         cancelDownload()
-        Util.delete(partialFile)
-        Util.delete(completeFile)
-        Util.delete(saveFile)
+        Storage.delete(partialFile)
+        Storage.delete(completeFile)
+        Storage.delete(saveFile)
 
         status.postValue(DownloadStatus.IDLE)
 
@@ -163,36 +177,22 @@ class DownloadFile(
     }
 
     fun unpin() {
-        if (saveFile.exists()) {
-            if (saveFile.renameTo(completeFile)) {
-                status.postValue(DownloadStatus.DONE)
-            } else {
-                Timber.w(
-                    "Renaming file failed. Original file: %s; Rename to: %s",
-                    saveFile.name, completeFile.name
-                )
-            }
-        }
+        val file = Storage.getFromPath(saveFile) ?: return
+        Storage.rename(file, completeFile)
+        status.postValue(DownloadStatus.DONE)
     }
 
     fun cleanup(): Boolean {
         var ok = true
-        if (completeFile.exists() || saveFile.exists()) {
-            ok = Util.delete(partialFile)
+        if (Storage.isPathExists(completeFile) || Storage.isPathExists(saveFile)) {
+            ok = Storage.delete(partialFile)
         }
 
-        if (saveFile.exists()) {
-            ok = ok and Util.delete(completeFile)
+        if (Storage.isPathExists(saveFile)) {
+            ok = ok and Storage.delete(completeFile)
         }
 
         return ok
-    }
-
-    // In support of LRU caching.
-    fun updateModificationDate() {
-        updateModificationDate(saveFile)
-        updateModificationDate(partialFile)
-        updateModificationDate(completeFile)
     }
 
     fun setPlaying(isPlaying: Boolean) {
@@ -204,14 +204,14 @@ class DownloadFile(
     private fun doPendingRename() {
         try {
             if (saveWhenDone) {
-                Util.renameFile(completeFile, saveFile)
+                Storage.rename(completeFile, saveFile)
                 saveWhenDone = false
             } else if (completeWhenDone) {
                 if (shouldSave) {
-                    Util.renameFile(partialFile, saveFile)
+                    Storage.rename(partialFile, saveFile)
                     Util.scanMedia(saveFile)
                 } else {
-                    Util.renameFile(partialFile, completeFile)
+                    Storage.rename(partialFile, completeFile)
                 }
                 completeWhenDone = false
             }
@@ -229,22 +229,23 @@ class DownloadFile(
 
         override fun execute() {
 
+            downloadPrepared = false
             var inputStream: InputStream? = null
-            var outputStream: FileOutputStream? = null
+            var outputStream: OutputStream? = null
             try {
-                if (saveFile.exists()) {
+                if (Storage.isPathExists(saveFile)) {
                     Timber.i("%s already exists. Skipping.", saveFile)
                     status.postValue(DownloadStatus.PINNED)
                     return
                 }
 
-                if (completeFile.exists()) {
+                if (Storage.isPathExists(completeFile)) {
                     var newStatus: DownloadStatus = DownloadStatus.DONE
                     if (shouldSave) {
                         if (isPlaying) {
                             saveWhenDone = true
                         } else {
-                            Util.renameFile(completeFile, saveFile)
+                            Storage.rename(completeFile, saveFile)
                             newStatus = DownloadStatus.PINNED
                         }
                     } else {
@@ -259,33 +260,26 @@ class DownloadFile(
                 // Some devices seem to throw error on partial file which doesn't exist
                 val needsDownloading: Boolean
                 val duration = song.duration
-                var fileLength: Long = 0
-
-                if (!partialFile.exists()) {
-                    fileLength = partialFile.length()
-                }
+                val fileLength = Storage.getFromPath(partialFile)?.length ?: 0
 
                 needsDownloading = (
-                    desiredBitRate == 0 || duration == null ||
-                        duration == 0 || fileLength == 0L
+                    desiredBitRate == 0 || duration == null || duration == 0 || fileLength == 0L
                     )
 
                 if (needsDownloading) {
                     // Attempt partial HTTP GET, appending to the file if it exists.
-                    val (inStream, partial) = musicService.getDownloadInputStream(
-                        song, partialFile.length(), desiredBitRate, shouldSave
+                    val (inStream, isPartial) = musicService.getDownloadInputStream(
+                        song, fileLength, desiredBitRate, shouldSave
                     )
 
                     inputStream = inStream
 
-                    if (partial) {
-                        Timber.i(
-                            "Executed partial HTTP GET, skipping %d bytes",
-                            partialFile.length()
-                        )
+                    if (isPartial) {
+                        Timber.i("Executed partial HTTP GET, skipping %d bytes", fileLength)
                     }
 
-                    outputStream = FileOutputStream(partialFile, partial)
+                    outputStream = Storage.getOrCreateFileFromPath(partialFile)
+                        .getFileOutputStream(isPartial)
 
                     val len = inputStream.copyTo(outputStream) { totalBytesCopied ->
                         setProgress(totalBytesCopied)
@@ -298,7 +292,7 @@ class DownloadFile(
                     outputStream.close()
 
                     if (isCancelled) {
-                        status.postValue(DownloadStatus.ABORTED)
+                        status.postValue(DownloadStatus.CANCELLED)
                         throw Exception(String.format("Download of '%s' was cancelled", song))
                     }
 
@@ -313,18 +307,18 @@ class DownloadFile(
                     completeWhenDone = true
                 } else {
                     if (shouldSave) {
-                        Util.renameFile(partialFile, saveFile)
+                        Storage.rename(partialFile, saveFile)
                         status.postValue(DownloadStatus.PINNED)
                         Util.scanMedia(saveFile)
                     } else {
-                        Util.renameFile(partialFile, completeFile)
+                        Storage.rename(partialFile, completeFile)
                         status.postValue(DownloadStatus.DONE)
                     }
                 }
             } catch (all: Exception) {
-                Util.close(outputStream)
-                Util.delete(completeFile)
-                Util.delete(saveFile)
+                outputStream.safeClose()
+                Storage.delete(completeFile)
+                Storage.delete(saveFile)
                 if (!isCancelled) {
                     isFailed = true
                     if (retryCount > 1) {
@@ -337,8 +331,8 @@ class DownloadFile(
                     Timber.w(all, "Failed to download '%s'.", song)
                 }
             } finally {
-                Util.close(inputStream)
-                Util.close(outputStream)
+                inputStream.safeClose()
+                outputStream.safeClose()
                 CacheCleaner().cleanSpace()
                 downloader.checkDownloads()
             }
@@ -403,30 +397,6 @@ class DownloadFile(
         }
     }
 
-    private fun updateModificationDate(file: File) {
-        if (file.exists()) {
-            val ok = file.setLastModified(System.currentTimeMillis())
-            if (!ok) {
-                Timber.i(
-                    "Failed to set last-modified date on %s, trying alternate method",
-                    file
-                )
-                try {
-                    // Try alternate method to update last modified date to current time
-                    // Found at https://code.google.com/p/android/issues/detail?id=18624
-                    // According to the bug, this was fixed in Android 8.0 (API 26)
-                    val raf = RandomAccessFile(file, "rw")
-                    val length = raf.length()
-                    raf.setLength(length + 1)
-                    raf.setLength(length)
-                    raf.close()
-                } catch (e: Exception) {
-                    Timber.w(e, "Failed to set last-modified date on %s", file)
-                }
-            }
-        }
-    }
-
     override fun compareTo(other: Identifiable) = compareTo(other as DownloadFile)
 
     fun compareTo(other: DownloadFile): Int {
@@ -442,5 +412,5 @@ class DownloadFile(
 }
 
 enum class DownloadStatus {
-    IDLE, DOWNLOADING, RETRYING, FAILED, ABORTED, DONE, PINNED, UNKNOWN
+    IDLE, DOWNLOADING, RETRYING, FAILED, CANCELLED, DONE, PINNED, UNKNOWN
 }

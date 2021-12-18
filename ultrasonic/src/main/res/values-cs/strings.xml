@@ -348,7 +348,6 @@
     <string name="share_default_greeting">Mrkni na hudbu sdílenou z %s</string>
     <string name="share_via">Sdílet skladby přes</string>
     <string name="menu.share">Sdílení</string>
-    <string name="select_album_all_songs">Všechny skladby od %s</string>
     <string name="settings.show_all_songs_by_artist">Zobrazit všechny skladby umělce</string>
     <string name="settings.show_all_songs_by_artist_summary">Přidat nový zápis v náhledu umělců pro přístup ke všem skladbám umělce</string>
     <string name="download.menu_show_artist">Zobrazit umělce</string>
@@ -368,28 +367,6 @@
     <string name="settings.debug.log_keep">Zachovat soubory</string>
     <string name="settings.debug.log_delete">Smazat soubory</string>
     <string name="settings.debug.log_deleted">Smazat soubory logů.</string>
-    <string name="permissions.access_error">Ultrasonic nemá přístup k odkládacím souborům hudby. Umístění odkládacího adresáře bylo změněno na výchozí hodnotu.</string>
-    <string name="permissions.message_box_title">Varování</string>
-    <string name="permissions.permission_missing">Ultrasonic vyžaduje práva čtení/zápisu do hudebního odkládacího adresáře. Umístění odkládacího adresáře bylo změněno na výchozí hodnotu.</string>
-    <string name="permissions.rationale_title">Vyžádání oprávnění</string>
-    <string name="permissions.rationale_description_failed">Ultrasonic vyžaduje práva čtení/zápisu do hudebního odkládacího adresáře.\nPovolte aplikaci Ultrasonic přístup do souborového systému.</string>
-    <string name="permissions.permanent_denial_title">Oprávnění dlouhodobě zamítnuto</string>
-    <string name="permissions.permanent_denial_description">Ultrasonic vyžaduje práva čtení/zápisu do hudebního odkládacího adresáře. Tyto zle povolit v nastavení aplikace. Pokud tuto žádost zamítnete, bude použit výchozí odkládací adresář.</string>
-    <string name="permissions.open_settings">Otevřít nastavení</string>
-    <string name="permissions.rationale_description_initial">Pro změnu umístění odkládacího adresáře potřebuje Ultrasonic práva čtení/zápisu do souborového systému.</string>
-
-    <string name="filepicker.select_folder">Vybrat adresář</string>
-    <string name="filepicker.create_folder">Vytvořit nový adresář</string>
-    <string name="filepicker.create_folder_failed">Selhání vytvoření nového adresáře</string>
-    <string name="filepicker.internal">%1$s (interní)</string>
-    <string name="filepicker.default_app_folder">Výchozí adresář aplikace na %1$s (externí)</string>
-    <string name="filepicker.enter_folder_name">Zadat jméno adresáře</string>
-    <string name="filepicker.create">Vytvořit</string>
-    <string name="filepicker.name_invalid">Zadejte platné jméno adresáře</string>
-    <string name="filepicker.already_exists">Tento adresář již existuje.\nZadejte prosím jiné jméno adresáře</string>
-    <string name="filepicker.select">Vybrat</string>
-    <string name="filepicker.default">Použít výchozí</string>
-    <string name="filepicker.available_drives">Dostupná úložiště:</string>
 
     <string name="server_selector.label">Nakonfigurované servery</string>
     <string name="server_selector.delete_confirmation">Opravdu chcete odebrat server?</string>

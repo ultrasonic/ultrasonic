@@ -11,6 +11,7 @@ import android.content.Context
 import android.os.Build
 import android.os.Environment
 import android.text.TextUtils
+import android.util.Pair
 import java.io.BufferedWriter
 import java.io.File
 import java.io.FileInputStream
@@ -24,11 +25,16 @@ import java.util.Locale
 import java.util.SortedSet
 import java.util.TreeSet
 import java.util.regex.Pattern
-import org.koin.java.KoinJavaComponent
 import org.moire.ultrasonic.app.UApp
 import org.moire.ultrasonic.domain.MusicDirectory
+import org.moire.ultrasonic.util.Util.safeClose
 import timber.log.Timber
 
+/**
+ * Provides Ultrasonic specific functions for managing the library files.
+ * Base storage functions like rename, create, delete should be handled in Storage.kt
+ */
+@Suppress("TooManyFunctions")
 object FileUtil {
 
     private val FILE_SYSTEM_UNSAFE = arrayOf("/", "\\", "..", ":", "\"", "?", "*", "<", ">", "|")
@@ -43,16 +49,12 @@ object FileUtil {
     const val SUFFIX_SMALL = ".jpeg-small"
     private const val UNNAMED = "unnamed"
 
-    private val permissionUtil = KoinJavaComponent.inject<PermissionUtil>(
-        PermissionUtil::class.java
-    )
-
-    fun getSongFile(song: MusicDirectory.Entry): File {
+    fun getSongFile(song: MusicDirectory.Entry): String {
         val dir = getAlbumDirectory(song)
 
         // Do not generate new name for offline files. Offline files will have their Path as their Id.
         if (!TextUtils.isEmpty(song.id)) {
-            if (song.id.startsWith(dir.absolutePath)) return File(song.id)
+            if (song.id.startsWith(dir)) return song.id
         }
 
         // Generate a file name for the song
@@ -74,7 +76,7 @@ object FileUtil {
         } else {
             fileName.append(song.suffix)
         }
-        return File(dir, fileName.toString())
+        return "$dir/$fileName"
     }
 
     @JvmStatic
@@ -91,13 +93,16 @@ object FileUtil {
             return playlistDir
         }
 
+    /**
+     * Get the directory where we store local copies of the playlists.
+     * It is always inside Ultrasonic base directory.
+     */
     @JvmStatic
     fun getPlaylistDirectory(server: String? = null): File {
-        val playlistDir: File
-        if (server != null) {
-            playlistDir = File(playlistDirectory, server)
+        val playlistDir: File = if (server != null) {
+            File(playlistDirectory, server)
         } else {
-            playlistDir = playlistDirectory
+            playlistDirectory
         }
         ensureDirectoryExistsAndIsReadWritable(playlistDir)
         return playlistDir
@@ -108,9 +113,9 @@ object FileUtil {
      * @param entry The album entry
      * @return File object. Not guaranteed that it exists
      */
-    fun getAlbumArtFile(entry: MusicDirectory.Entry): File {
+    fun getAlbumArtFile(entry: MusicDirectory.Child): String? {
         val albumDir = getAlbumDirectory(entry)
-        return getAlbumArtFile(albumDir)
+        return getAlbumArtFileForAlbumDir(albumDir)
     }
 
     /**
@@ -133,19 +138,19 @@ object FileUtil {
      */
     fun getArtistArtKey(name: String?, large: Boolean): String {
         val artist = fileSystemSafe(name)
-        val dir = File(String.format(Locale.ROOT, "%s/%s/%s", musicDirectory.path, artist, UNNAMED))
+        val dir = String.format(Locale.ROOT, "%s/%s/%s", musicDirectory.path, artist, UNNAMED)
         return getAlbumArtKey(dir, large)
     }
 
     /**
      * Get the cache key for a given album entry
-     * @param albumDir The album directory
+     * @param albumDirPath The album directory
      * @param large Whether to get the key for the large or the default image
      * @return String The hash key
      */
-    private fun getAlbumArtKey(albumDir: File, large: Boolean): String {
+    private fun getAlbumArtKey(albumDirPath: String, large: Boolean): String {
         val suffix = if (large) SUFFIX_LARGE else SUFFIX_SMALL
-        return String.format(Locale.ROOT, "%s%s", Util.md5Hex(albumDir.path), suffix)
+        return String.format(Locale.ROOT, "%s%s", Util.md5Hex(albumDirPath), suffix)
     }
 
     fun getAvatarFile(username: String?): File? {
@@ -163,10 +168,9 @@ object FileUtil {
      * @return File object. Not guaranteed that it exists
      */
     @JvmStatic
-    fun getAlbumArtFile(albumDir: File): File {
-        val albumArtDir = albumArtDirectory
+    fun getAlbumArtFileForAlbumDir(albumDir: String): String? {
         val key = getAlbumArtKey(albumDir, true)
-        return File(albumArtDir, key)
+        return getAlbumArtFile(key)
     }
 
     /**
@@ -175,11 +179,11 @@ object FileUtil {
      * @return File object. Not guaranteed that it exists
      */
     @JvmStatic
-    fun getAlbumArtFile(cacheKey: String?): File? {
-        val albumArtDir = albumArtDirectory
+    fun getAlbumArtFile(cacheKey: String?): String? {
+        val albumArtDir = albumArtDirectory.absolutePath
         return if (cacheKey == null) {
             null
-        } else File(albumArtDir, cacheKey)
+        } else "$albumArtDir/$cacheKey"
     }
 
     val albumArtDirectory: File
@@ -190,17 +194,15 @@ object FileUtil {
             return albumArtDir
         }
 
-    fun getAlbumDirectory(entry: MusicDirectory.Child): File {
-        val dir: File
-        if (!TextUtils.isEmpty(entry.path)) {
-            val f = File(fileSystemSafeDir(entry.path))
-            dir = File(
-                String.format(
-                    Locale.ROOT,
-                    "%s/%s",
-                    musicDirectory.path,
-                    if (entry.isDirectory) f.path else f.parent ?: ""
-                )
+    private fun getAlbumDirectory(entry: MusicDirectory.Child): String {
+        val dir: String
+        if (!TextUtils.isEmpty(entry.path) && getParentPath(entry.path!!) != null) {
+            val f = fileSystemSafeDir(entry.path)
+            dir = String.format(
+                Locale.ROOT,
+                "%s/%s",
+                musicDirectory.path,
+                if (entry.isDirectory) f else getParentPath(f) ?: ""
             )
         } else {
             val artist = fileSystemSafe(entry.artist)
@@ -208,18 +210,14 @@ object FileUtil {
             if (UNNAMED == album) {
                 album = fileSystemSafe(entry.title)
             }
-            dir = File(String.format(Locale.ROOT, "%s/%s/%s", musicDirectory.path, artist, album))
+            dir = String.format(Locale.ROOT, "%s/%s/%s", musicDirectory.path, artist, album)
         }
         return dir
     }
 
-    fun createDirectoryForParent(file: File) {
-        val dir = file.parentFile
-        if (dir != null && !dir.exists()) {
-            if (!dir.mkdirs()) {
-                Timber.e("Failed to create directory %s", dir)
-            }
-        }
+    fun createDirectoryForParent(path: String) {
+        val dir = getParentPath(path) ?: return
+        Storage.createDirsOnPath(dir)
     }
 
     @Suppress("SameParameterValue")
@@ -237,57 +235,51 @@ object FileUtil {
     @JvmStatic
     val ultrasonicDirectory: File
         get() {
+            @Suppress("DEPRECATION")
             return if (Build.VERSION.SDK_INT < Build.VERSION_CODES.M) File(
                 Environment.getExternalStorageDirectory(),
                 "Android/data/org.moire.ultrasonic"
             ) else UApp.applicationContext().getExternalFilesDir(null)!!
         }
 
-    // After Android M, the location of the files must be queried differently.
-    // GetExternalFilesDir will always return a directory which Ultrasonic
-    // can access without any extra privileges.
     @JvmStatic
     val defaultMusicDirectory: File
         get() = getOrCreateDirectory("music")
 
     @JvmStatic
-    val musicDirectory: File
-        get() {
-            val path = Settings.cacheLocation
-            val dir = File(path)
-            val hasAccess = ensureDirectoryExistsAndIsReadWritable(dir)
-            if (!hasAccess) permissionUtil.value.handlePermissionFailed(null)
-            return if (hasAccess) dir else defaultMusicDirectory
-        }
+    val musicDirectory: AbstractFile
+        get() = Storage.mediaRoot.value
 
     @JvmStatic
     @Suppress("ReturnCount")
-    fun ensureDirectoryExistsAndIsReadWritable(dir: File?): Boolean {
+    fun ensureDirectoryExistsAndIsReadWritable(dir: File?): Pair<Boolean, Boolean> {
+        val noAccess = Pair(false, false)
+
         if (dir == null) {
-            return false
+            return noAccess
         }
         if (dir.exists()) {
             if (!dir.isDirectory) {
                 Timber.w("%s exists but is not a directory.", dir)
-                return false
+                return noAccess
             }
         } else {
             if (dir.mkdirs()) {
                 Timber.i("Created directory %s", dir)
             } else {
                 Timber.w("Failed to create directory %s", dir)
-                return false
+                return noAccess
             }
         }
         if (!dir.canRead()) {
             Timber.w("No read permission for directory %s", dir)
-            return false
+            return noAccess
         }
         if (!dir.canWrite()) {
             Timber.w("No write permission for directory %s", dir)
-            return false
+            return Pair(true, false)
         }
-        return true
+        return Pair(true, true)
     }
 
     /**
@@ -332,6 +324,12 @@ object FileUtil {
      * Never returns `null`, instead a warning is logged, and an empty set is returned.
      */
     @JvmStatic
+    fun listFiles(dir: AbstractFile): SortedSet<AbstractFile> {
+        val files = dir.listFiles()
+        return TreeSet(files.asList())
+    }
+
+    @JvmStatic
     fun listFiles(dir: File): SortedSet<File> {
         val files = dir.listFiles()
         if (files == null) {
@@ -341,7 +339,7 @@ object FileUtil {
         return TreeSet(files.asList())
     }
 
-    fun listMediaFiles(dir: File): SortedSet<File> {
+    fun listMediaFiles(dir: AbstractFile): SortedSet<AbstractFile> {
         val files = listFiles(dir)
         val iterator = files.iterator()
         while (iterator.hasNext()) {
@@ -353,7 +351,7 @@ object FileUtil {
         return files
     }
 
-    private fun isMediaFile(file: File): Boolean {
+    private fun isMediaFile(file: AbstractFile): Boolean {
         val extension = getExtension(file.name)
         return MUSIC_FILE_EXTENSIONS.contains(extension) ||
             VIDEO_FILE_EXTENSIONS.contains(extension)
@@ -398,6 +396,23 @@ object FileUtil {
         return String.format(Locale.ROOT, "%s.partial.%s", getBaseName(name), getExtension(name))
     }
 
+    fun getNameFromPath(path: String): String {
+        return path.substringAfterLast('/')
+    }
+
+    fun getParentPath(path: String): String? {
+        if (!path.contains('/')) return null
+        return path.substringBeforeLast('/')
+    }
+
+    fun getSaveFile(name: String): String {
+        val baseName = getBaseName(name)
+        if (baseName.endsWith(".partial") || baseName.endsWith(".complete")) {
+            return "${getBaseName(baseName)}.${getExtension(name)}"
+        }
+        return name
+    }
+
     /**
      * Returns the file name of a .complete file of the given file.
      *
@@ -421,7 +436,7 @@ object FileUtil {
             Timber.w("Failed to serialize object to %s", file)
             false
         } finally {
-            Util.close(out)
+            out.safeClose()
         }
     }
 
@@ -443,7 +458,7 @@ object FileUtil {
             Timber.w(all, "Failed to deserialize object from %s", file)
             null
         } finally {
-            Util.close(inStream)
+            inStream.safeClose()
         }
     }
 
@@ -458,9 +473,9 @@ object FileUtil {
         try {
             fw.write("#EXTM3U\n")
             for (e in playlist.getTracks()) {
-                var filePath = getSongFile(e).absolutePath
+                var filePath = getSongFile(e)
 
-                if (!File(filePath).exists()) {
+                if (!Storage.isPathExists(filePath)) {
                     val ext = getExtension(filePath)
                     val base = getBaseName(filePath)
                     filePath = "$base.complete.$ext"
@@ -471,8 +486,8 @@ object FileUtil {
             Timber.w("Failed to save playlist: %s", name)
             throw e
         } finally {
-            bw.close()
-            fw.close()
+            bw.safeClose()
+            fw.safeClose()
         }
     }
 }

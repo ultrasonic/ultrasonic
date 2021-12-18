@@ -3,6 +3,7 @@ package org.moire.ultrasonic.imageloader
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import android.os.Build
+import java.io.File
 import org.moire.ultrasonic.domain.MusicDirectory
 import org.moire.ultrasonic.util.FileUtil
 import org.moire.ultrasonic.util.Util
@@ -31,8 +32,8 @@ class BitmapUtils {
             if (entry == null) return null
             val albumArtFile = FileUtil.getAlbumArtFile(entry)
             val bitmap: Bitmap? = null
-            if (albumArtFile.exists()) {
-                return getBitmapFromDisk(albumArtFile.path, size, bitmap)
+            if (albumArtFile != null && File(albumArtFile).exists()) {
+                return getBitmapFromDisk(albumArtFile, size, bitmap)
             }
             return null
         }
@@ -43,8 +44,8 @@ class BitmapUtils {
         ): Bitmap? {
             val albumArtFile = FileUtil.getAlbumArtFile(filename)
             val bitmap: Bitmap? = null
-            if (albumArtFile != null && albumArtFile.exists()) {
-                return getBitmapFromDisk(albumArtFile.path, size, bitmap)
+            if (albumArtFile != null && File(albumArtFile).exists()) {
+                return getBitmapFromDisk(albumArtFile, size, bitmap)
             }
             return null
         }

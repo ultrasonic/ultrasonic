@@ -360,7 +360,6 @@
     <string name="share_default_greeting">看看我从 %s 分享的这首音乐</string>
     <string name="share_via">分享歌曲通过</string>
     <string name="menu.share">分享</string>
-    <string name="select_album_all_songs">%s 的所有歌曲</string>
     <string name="settings.show_all_songs_by_artist">按艺术家显示所有歌曲</string>
     <string name="settings.show_all_songs_by_artist_summary">在艺术家视图中添加新条目以访问艺术家的所有歌曲</string>
     <string name="download.menu_show_artist">显示艺术家</string>
@@ -382,27 +381,7 @@
     <string name="settings.debug.log_deleted">删除日志文件</string>
     <string name="notification.downloading_title">在后台下载媒体…</string>
 
-    <string name="permissions.access_error">Ultrasonic 无法访问音乐文件缓存，缓存位置已重置为默认路径。</string>
-    <string name="permissions.message_box_title">警告</string>
-    <string name="permissions.permission_missing">Ultrasonic 需要对音乐缓存目录的读/写权限，缓存位置已重置为默认路径。</string>
-    <string name="permissions.rationale_title">需要权限</string>
-    <string name="permissions.rationale_description_failed">Ultrasonic 需要对音乐缓存目录具有读/写权限。\n请允许 Ultrasonic 访问文件系统。</string>
-    <string name="permissions.permanent_denial_description">Ultrasonic 需要对音乐缓存目录具有读/写权限。您可以在应用程序设置中授予该权限，否则将以默认路径作为缓存目录。</string>
-    <string name="permissions.open_settings">打开设置</string>
-    <string name="permissions.rationale_description_initial">为了更改缓存位置，Ultrasonic 需要对文件系统具有读/写权限。</string>
 
-    <string name="filepicker.select_folder">选择文件夹</string>
-    <string name="filepicker.create_folder">创建文件夹</string>
-    <string name="filepicker.create_folder_failed">无法创建文件夹</string>
-    <string name="filepicker.internal">%1$s (内置)</string>
-    <string name="filepicker.default_app_folder">默认应用文件夹 %1$s (外置)</string>
-    <string name="filepicker.enter_folder_name">输入文件夹名称</string>
-    <string name="filepicker.create">创建</string>
-    <string name="filepicker.name_invalid">请输入一个有效的文件夹名称</string>
-    <string name="filepicker.already_exists">该文件夹已存在。\n请为该文件夹提供另一个名称</string>
-    <string name="filepicker.select">选择</string>
-    <string name="filepicker.default">使用默认值</string>
-    <string name="filepicker.available_drives">可用驱动器：</string>
 
     <string name="server_selector.label">配置服务器</string>
     <string name="server_selector.delete_confirmation">您确定要删除此服务器吗？</string>

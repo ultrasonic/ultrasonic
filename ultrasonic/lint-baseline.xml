@@ -2,14 +2,17 @@
 <issues format="5" by="lint 4.2.2" client="gradle" variant="release" version="4.2.2">
 
     <issue
-        id="ScopedStorage"
-        message="WRITE_EXTERNAL_STORAGE no longer provides write access when targeting Android 10, unless you use `requestLegacyExternalStorage`"
-        errorLine1="    &lt;uses-permission android:name=&quot;android.permission.WRITE_EXTERNAL_STORAGE&quot;/>"
-        errorLine2="                                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
+        id="ObsoleteLintCustomCheck"
+        message="Lint found an issue registry (`androidx.appcompat.AppCompatIssueRegistry`) which is older than the current API level; these checks may not work correctly.&#xA;&#xA;Recompile the checks against the latest version. Custom check API version is 7 (4.0), current lint API level is 8 (4.1)">
         <location
-            file="src/main/AndroidManifest.xml"
-            line="10"
-            column="36"/>
+            file="../../../../.gradle/caches/transforms-3/cfd0dffad81bb5ff9173a2c6d47f5e0a/transformed/appcompat-1.2.0/jars/lint.jar"/>
+    </issue>
+
+    <issue
+        id="ObsoleteLintCustomCheck"
+        message="Lint found an issue registry (`timber.lint.TimberIssueRegistry`) which is older than the current API level; these checks may not work correctly.&#xA;&#xA;Recompile the checks against the latest version. Custom check API version is 1 (3.1), current lint API level is 8 (4.1)">
+        <location
+            file="../../../../.gradle/caches/transforms-3/9362f92689454001c7932b460b41bbdb/transformed/jetified-timber-4.7.1/jars/lint.jar"/>
     </issue>
 
     <issue
@@ -120,17 +123,6 @@
             file="src/main/res/layout/time_span_dialog.xml"
             line="28"
             column="9"/>
-    </issue>
-
-    <issue
-        id="UseCompoundDrawables"
-        message="This tag and its children can be replaced by one `&lt;TextView/>` and a compound drawable"
-        errorLine1="&lt;LinearLayout xmlns:a=&quot;http://schemas.android.com/apk/res/android&quot;"
-        errorLine2=" ~~~~~~~~~~~~">
-        <location
-            file="src/main/res/layout/filepicker_item_file_lister.xml"
-            line="2"
-            column="2"/>
     </issue>
 
     <issue
@@ -754,71 +746,12 @@
 
     <issue
         id="UnusedResources"
-        message="The resource `R.string.settings_cache_location_error` appears to be unused"
-        errorLine1="    &lt;string name=&quot;settings.cache_location_error&quot;>Invalid cache location. Using default.&lt;/string>"
-        errorLine2="            ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
-        <location
-            file="src/main/res/values/strings.xml"
-            line="177"
-            column="13"/>
-        <location
-            file="src/main/res/values-cs/strings.xml"
-            line="156"
-            column="13"/>
-        <location
-            file="src/main/res/values-de/strings.xml"
-            line="155"
-            column="13"/>
-        <location
-            file="src/main/res/values-es/strings.xml"
-            line="171"
-            column="13"/>
-        <location
-            file="src/main/res/values-fr/strings.xml"
-            line="168"
-            column="13"/>
-        <location
-            file="src/main/res/values-hu/strings.xml"
-            line="166"
-            column="13"/>
-        <location
-            file="src/main/res/values-it/strings.xml"
-            line="152"
-            column="13"/>
-        <location
-            file="src/main/res/values-nl/strings.xml"
-            line="171"
-            column="13"/>
-        <location
-            file="src/main/res/values-pl/strings.xml"
-            line="154"
-            column="13"/>
-        <location
-            file="src/main/res/values-pt/strings.xml"
-            line="154"
-            column="13"/>
-        <location
-            file="src/main/res/values-pt-rBR/strings.xml"
-            line="168"
-            column="13"/>
-        <location
-            file="src/main/res/values-ru/strings.xml"
-            line="168"
-            column="13"/>
-        <location
-            file="src/main/res/values-zh-rCN/strings.xml"
-            line="167"
-            column="13"/>
-    </issue>
-
-    <issue
-        id="UnusedResources"
         message="The resource `R.string.settings_invalid_username` appears to be unused"
         errorLine1="    &lt;string name=&quot;settings.invalid_username&quot;>Please specify a valid username (no trailing spaces).&lt;/string>"
         errorLine2="            ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
         <location
             file="src/main/res/values/strings.xml"
-            line="229"
+            line="230"
             column="13"/>
         <location
             file="src/main/res/values-cs/strings.xml"
@@ -877,7 +810,7 @@
         errorLine2="            ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
         <location
             file="src/main/res/values/strings.xml"
-            line="298"
+            line="299"
             column="13"/>
         <location
             file="src/main/res/values-cs/strings.xml"
@@ -936,7 +869,7 @@
         errorLine2="            ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
         <location
             file="src/main/res/values/strings.xml"
-            line="301"
+            line="302"
             column="13"/>
         <location
             file="src/main/res/values-cs/strings.xml"
@@ -990,61 +923,6 @@
 
     <issue
         id="UnusedResources"
-        message="The resource `R.string.select_album_all_songs` appears to be unused"
-        errorLine1="    &lt;string name=&quot;select_album_all_songs&quot;>All Songs by %s&lt;/string>"
-        errorLine2="            ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
-        <location
-            file="src/main/res/values/strings.xml"
-            line="381"
-            column="13"/>
-        <location
-            file="src/main/res/values-cs/strings.xml"
-            line="351"
-            column="13"/>
-        <location
-            file="src/main/res/values-de/strings.xml"
-            line="346"
-            column="13"/>
-        <location
-            file="src/main/res/values-es/strings.xml"
-            line="374"
-            column="13"/>
-        <location
-            file="src/main/res/values-fr/strings.xml"
-            line="365"
-            column="13"/>
-        <location
-            file="src/main/res/values-hu/strings.xml"
-            line="363"
-            column="13"/>
-        <location
-            file="src/main/res/values-nl/strings.xml"
-            line="374"
-            column="13"/>
-        <location
-            file="src/main/res/values-pl/strings.xml"
-            line="346"
-            column="13"/>
-        <location
-            file="src/main/res/values-pt/strings.xml"
-            line="346"
-            column="13"/>
-        <location
-            file="src/main/res/values-pt-rBR/strings.xml"
-            line="367"
-            column="13"/>
-        <location
-            file="src/main/res/values-ru/strings.xml"
-            line="365"
-            column="13"/>
-        <location
-            file="src/main/res/values-zh-rCN/strings.xml"
-            line="363"
-            column="13"/>
-    </issue>
-
-    <issue
-        id="UnusedResources"
         message="The resource `R.string.settings_server_address_unset` appears to be unused"
         errorLine1="    &lt;string name=&quot;settings.server_address_unset&quot; translatable=&quot;false&quot;>http://example.com&lt;/string>"
         errorLine2="            ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
@@ -1061,47 +939,47 @@
         errorLine2="             ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
         <location
             file="src/main/res/values/strings.xml"
-            line="470"
-            column="14"/>
-        <location
-            file="src/main/res/values-cs/strings.xml"
-            line="436"
-            column="14"/>
-        <location
-            file="src/main/res/values-es/strings.xml"
-            line="458"
-            column="14"/>
-        <location
-            file="src/main/res/values-fr/strings.xml"
             line="447"
             column="14"/>
         <location
+            file="src/main/res/values-cs/strings.xml"
+            line="413"
+            column="14"/>
+        <location
+            file="src/main/res/values-es/strings.xml"
+            line="436"
+            column="14"/>
+        <location
+            file="src/main/res/values-fr/strings.xml"
+            line="425"
+            column="14"/>
+        <location
             file="src/main/res/values-hu/strings.xml"
-            line="442"
+            line="420"
             column="14"/>
         <location
             file="src/main/res/values-nl/strings.xml"
-            line="458"
+            line="436"
             column="14"/>
         <location
             file="src/main/res/values-pl/strings.xml"
-            line="389"
+            line="388"
             column="14"/>
         <location
             file="src/main/res/values-pt/strings.xml"
-            line="376"
+            line="375"
             column="14"/>
         <location
             file="src/main/res/values-pt-rBR/strings.xml"
-            line="451"
+            line="429"
             column="14"/>
         <location
             file="src/main/res/values-ru/strings.xml"
-            line="459"
+            line="437"
             column="14"/>
         <location
             file="src/main/res/values-zh-rCN/strings.xml"
-            line="440"
+            line="419"
             column="14"/>
     </issue>
 
@@ -1403,17 +1281,6 @@
     <issue
         id="ContentDescription"
         message="Missing `contentDescription` attribute on image"
-        errorLine1="    &lt;ImageView"
-        errorLine2="     ~~~~~~~~~">
-        <location
-            file="src/main/res/layout/filepicker_item_file_lister.xml"
-            line="10"
-            column="6"/>
-    </issue>
-
-    <issue
-        id="ContentDescription"
-        message="Missing `contentDescription` attribute on image"
         errorLine1="        &lt;ImageView a:id=&quot;@+id/help_back&quot;"
         errorLine2="         ~~~~~~~~~">
         <location
@@ -1441,72 +1308,6 @@
         <location
             file="src/main/res/layout/help.xml"
             line="24"
-            column="10"/>
-    </issue>
-
-    <issue
-        id="ContentDescription"
-        message="Missing `contentDescription` attribute on image"
-        errorLine1="    &lt;ImageView"
-        errorLine2="     ~~~~~~~~~">
-        <location
-            file="src/main/res/layout/list_header_folder.xml"
-            line="15"
-            column="6"/>
-    </issue>
-
-    <issue
-        id="ContentDescription"
-        message="Missing `contentDescription` attribute on image"
-        errorLine1="        &lt;ImageView"
-        errorLine2="         ~~~~~~~~~">
-        <location
-            file="src/main/res/layout/list_item_track.xml"
-            line="39"
-            column="10"/>
-    </issue>
-
-    <issue
-        id="ContentDescription"
-        message="Missing `contentDescription` attribute on image"
-        errorLine1="        &lt;ImageView"
-        errorLine2="         ~~~~~~~~~">
-        <location
-            file="src/main/res/layout/list_item_track.xml"
-            line="49"
-            column="10"/>
-    </issue>
-
-    <issue
-        id="ContentDescription"
-        message="Missing `contentDescription` attribute on image"
-        errorLine1="        &lt;ImageView"
-        errorLine2="         ~~~~~~~~~">
-        <location
-            file="src/main/res/layout/list_item_track.xml"
-            line="59"
-            column="10"/>
-    </issue>
-
-    <issue
-        id="ContentDescription"
-        message="Missing `contentDescription` attribute on image"
-        errorLine1="        &lt;ImageView"
-        errorLine2="         ~~~~~~~~~">
-        <location
-            file="src/main/res/layout/list_item_track.xml"
-            line="69"
-            column="10"/>
-    </issue>
-
-    <issue
-        id="ContentDescription"
-        message="Missing `contentDescription` attribute on image"
-        errorLine1="        &lt;ImageView"
-        errorLine2="         ~~~~~~~~~">
-        <location
-            file="src/main/res/layout/list_item_track.xml"
-            line="79"
             column="10"/>
     </issue>
 

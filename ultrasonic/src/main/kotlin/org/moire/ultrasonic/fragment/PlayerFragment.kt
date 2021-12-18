@@ -419,9 +419,11 @@ class PlayerFragment :
             onCurrentChanged()
         }
         val handler = Handler()
+
+        // TODO Use Rx for Update instead of polling!
         val runnable = Runnable { handler.post { update(cancellationToken) } }
         executorService = Executors.newSingleThreadScheduledExecutor()
-        executorService.scheduleWithFixedDelay(runnable, 0L, 250L, TimeUnit.MILLISECONDS)
+        executorService.scheduleWithFixedDelay(runnable, 0L, 500L, TimeUnit.MILLISECONDS)
 
         if (mediaPlayerController.keepScreenOn) {
             requireActivity().window.addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON)

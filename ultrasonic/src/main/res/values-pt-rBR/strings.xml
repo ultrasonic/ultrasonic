@@ -364,7 +364,6 @@
     <string name="share_default_greeting">Confira esta música que compartilhei do %s</string>
     <string name="share_via">Compartilhar músicas via</string>
     <string name="menu.share">Compartilhar</string>
-    <string name="select_album_all_songs">Todas as Músicas de %s</string>
     <string name="settings.show_all_songs_by_artist">Mostrar Todas as Músicas por Artista</string>
     <string name="settings.show_all_songs_by_artist_summary">Adicionar nova entrada em artista para acessar todas as músicas do artista</string>
     <string name="download.menu_show_artist">Mostrar Artista</string>
@@ -386,28 +385,7 @@
     <string name="settings.debug.log_deleted">Arquivos de log excluídos.</string>
     <string name="notification.downloading_title">Baixado mídia em segundo plano…</string>
 
-    <string name="permissions.access_error">O Ultrasonic não pôde acessar o cache dos arquivos de música. O local do cache foi redefinido para o caminho padrão.</string>
-    <string name="permissions.message_box_title">Atenção</string>
-    <string name="permissions.permission_missing">O Ultrasonic precisa de permissão de leitura/escrita no diretório de cache das músicas. O diretório de cache foi redefinido para seu valor padrão.</string>
-    <string name="permissions.rationale_title">Pedido de permissão</string>
-    <string name="permissions.rationale_description_failed">O Ultrasonic precisa de permissão de leitura/escrita no diretório de cache das músicas.\nPermita que o Ultrasonic acesse o sistema de arquivos.</string>
-    <string name="permissions.permanent_denial_title">Permissões negadas permanentemente</string>
-    <string name="permissions.permanent_denial_description">O Ultrasonic precisa de acesso de leitura/escrita no local do cache. Você pode concedê-los nas configurações do aplicativo. Se você rejeitar esta solicitação, a pasta padrão será usada como local do cache.</string>
-    <string name="permissions.open_settings">Abrir configurações</string>
-    <string name="permissions.rationale_description_initial">Para poder alterar a localização do cache, o Ultrasonic precisa de permissão de leitura/escrita no sistema de arquivos.</string>
 
-    <string name="filepicker.select_folder">Selecionar uma pasta</string>
-    <string name="filepicker.create_folder">Criar uma nova pasta</string>
-    <string name="filepicker.create_folder_failed">Erro ao criar a nova pasta</string>
-    <string name="filepicker.internal">%1$s (Interno)</string>
-    <string name="filepicker.default_app_folder">Pasta padrão do aplicativo %1$s (Externo)</string>
-    <string name="filepicker.enter_folder_name">Digite o nome da pasta</string>
-    <string name="filepicker.create">Criar</string>
-    <string name="filepicker.name_invalid">Digite um nome válido para a pasta</string>
-    <string name="filepicker.already_exists">Esta pasta já existe.\nDigite outro nome para a pasta</string>
-    <string name="filepicker.select">Selecionar</string>
-    <string name="filepicker.default">Usar o padrão</string>
-    <string name="filepicker.available_drives">Unidades disponíveis:</string>
 
     <string name="server_selector.label">Servidores Configurados</string>
     <string name="server_selector.delete_confirmation">Quer realmente excluir o servidor?</string>

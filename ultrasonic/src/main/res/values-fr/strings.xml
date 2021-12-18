@@ -362,7 +362,6 @@
     <string name="share_default_greeting">Regardez cette musique que j\'ai partagée depuis %s</string>
     <string name="share_via">Partager des titres via</string>
     <string name="menu.share">Partager</string>
-    <string name="select_album_all_songs">Tous les titres de %s</string>
     <string name="settings.show_all_songs_by_artist">Voir tous les titres par artiste</string>
     <string name="settings.show_all_songs_by_artist_summary">Ajouter une nouvelle entrée dans la vue artiste pour accéder à toutes les titres d\'un artiste</string>
     <string name="download.menu_show_artist">Afficher l\'artiste</string>
@@ -382,28 +381,7 @@
     <string name="settings.debug.log_keep">Conserver les fichiers</string>
     <string name="settings.debug.log_delete">Supprimer les fichiers</string>
     <string name="settings.debug.log_deleted">Fichiers de log supprimés</string>
-    <string name="permissions.access_error">Ultrasonic ne peut pas accéder au cache. Le répertoire de cache a été réinitialisé sur le chemin par défaut.</string>
-    <string name="permissions.message_box_title">Attention</string>
-    <string name="permissions.permission_missing">Ultrasonic requiert les droits de lecture/écriture sur le répertoire de cache. Le répertoire de cache a été réinitialisé à la valeur par défaut.</string>
-    <string name="permissions.rationale_title">Demande de permission</string>
-    <string name="permissions.rationale_description_failed">Ultrasonic requiert les droits de lecture/écriture sur le répertoire de cache. Veuillez autoriser Ultrasonic à accéder au système de fichiers.</string>
-    <string name="permissions.permanent_denial_title">Permissions refusées de manière permanente</string>
-    <string name="permissions.permanent_denial_description">Ultrasonic requiert les droits de lecture/écriture sur le répertoire de cache. Vous pouvez les activer dans les paramètres Android de l’application. Si vous rejetez cette permission, le répertoire par défaut sera utilisé pour le cache.</string>
-    <string name="permissions.open_settings">Ouvrir les paramètres</string>
-    <string name="permissions.rationale_description_initial">Afin de pouvoir modifier le répertoire de cache, Ultrasonic requiert les droits de lecture/écriture sur le système de fichiers.</string>
 
-    <string name="filepicker.select_folder">Sélectionner un dossier</string>
-    <string name="filepicker.create_folder">Créer un dossier</string>
-    <string name="filepicker.create_folder_failed">Impossible de créer un dossier</string>
-    <string name="filepicker.internal">%1$s (Interne)</string>
-    <string name="filepicker.default_app_folder">Répertoire par défaut de l’application : %1$s (Mémoire externe)</string>
-    <string name="filepicker.enter_folder_name">Saisir le nom du dossier</string>
-    <string name="filepicker.create">Créer</string>
-    <string name="filepicker.name_invalid">Veuillez entrer un nom de dossier valide</string>
-    <string name="filepicker.already_exists">Ce dossier existe déjà.\nVeuillez donner un autre nom</string>
-    <string name="filepicker.select">Sélectionner</string>
-    <string name="filepicker.default">Utiliser la valeur par défaut</string>
-    <string name="filepicker.available_drives">Emplacements de stockage disponibles :</string>
 
     <string name="server_selector.label">Serveurs configurés</string>
     <string name="server_selector.delete_confirmation">Êtes-vous sûr de vouloir supprimer ce serveur ?</string>

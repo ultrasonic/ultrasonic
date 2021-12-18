@@ -47,10 +47,9 @@ import org.moire.ultrasonic.service.MediaPlayerLifecycleSupport
 import org.moire.ultrasonic.service.RxBus
 import org.moire.ultrasonic.subsonic.ImageLoaderProvider
 import org.moire.ultrasonic.util.Constants
-import org.moire.ultrasonic.util.FileUtil
-import org.moire.ultrasonic.util.PermissionUtil
 import org.moire.ultrasonic.util.ServerColor
 import org.moire.ultrasonic.util.Settings
+import org.moire.ultrasonic.util.Storage
 import org.moire.ultrasonic.util.UncaughtExceptionHandler
 import org.moire.ultrasonic.util.Util
 import timber.log.Timber
@@ -58,6 +57,7 @@ import timber.log.Timber
 /**
  * The main Activity of Ultrasonic which loads all other screens as Fragments
  */
+@Suppress("TooManyFunctions")
 class NavigationActivity : AppCompatActivity() {
     private var chatMenuItem: MenuItem? = null
     private var bookmarksMenuItem: MenuItem? = null
@@ -79,7 +79,6 @@ class NavigationActivity : AppCompatActivity() {
     private val lifecycleSupport: MediaPlayerLifecycleSupport by inject()
     private val mediaPlayerController: MediaPlayerController by inject()
     private val imageLoaderProvider: ImageLoaderProvider by inject()
-    private val permissionUtil: PermissionUtil by inject()
     private val activeServerProvider: ActiveServerProvider by inject()
     private val serverRepository: ServerSettingDao by inject()
 
@@ -89,7 +88,6 @@ class NavigationActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         setUncaughtExceptionHandler()
-        permissionUtil.onForegroundApplicationStarted(this)
         Util.applyTheme(this)
 
         super.onCreate(savedInstanceState)
@@ -216,6 +214,7 @@ class NavigationActivity : AppCompatActivity() {
     override fun onResume() {
         super.onResume()
 
+        Storage.reset()
         setMenuForServerCapabilities()
 
         // Lifecycle support's constructor registers some event receivers so it should be created early
@@ -230,7 +229,6 @@ class NavigationActivity : AppCompatActivity() {
         themeChangedEventSubscription?.dispose()
         playerStateSubscription?.dispose()
         imageLoaderProvider.clearImageLoader()
-        permissionUtil.onForegroundApplicationStopped()
     }
 
     override fun onKeyDown(keyCode: Int, event: KeyEvent?): Boolean {
@@ -343,10 +341,6 @@ class NavigationActivity : AppCompatActivity() {
 
     private fun loadSettings() {
         PreferenceManager.setDefaultValues(this, R.xml.settings, false)
-        val preferences = Settings.preferences
-        if (!preferences.contains(Constants.PREFERENCES_KEY_CACHE_LOCATION)) {
-            Settings.cacheLocation = FileUtil.defaultMusicDirectory.path
-        }
     }
 
     private fun exit() {

@@ -76,7 +76,7 @@ style:
   UnnecessaryAbstractClass:
     active: false
   ReturnCount:
-    max: 3
+    max: 5
 
 comments:
   active: true
