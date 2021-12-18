@@ -216,7 +216,7 @@
     <string name="settings.directory_cache_time_60">1 hour</string>
     <string name="settings.disc_sort">Sort Songs By Disc</string>
     <string name="settings.disc_sort_summary">Sort song list by disc number and track number</string>
-    <string name="settings.display_bitrate">Display Bitrate and FileAdapter Suffix</string>
+    <string name="settings.display_bitrate">Display Bitrate and File Suffix</string>
     <string name="settings.display_bitrate_summary">Append artist name with bitrate and file suffix</string>
     <string name="settings.download_transition">Show Downloads on Play</string>
     <string name="settings.download_transition_summary">Transition to download activity when starting playback</string>

@@ -356,7 +356,7 @@ class LocalMediaPlayer : KoinComponent {
 
             setAudioAttributes(mediaPlayer)
 
-            var dataSource: String? = null
+            var streamUrl: String? = null
             if (partial) {
                 if (proxy == null) {
                     proxy = StreamProxy(object : Supplier<DownloadFile?>() {
@@ -366,11 +366,11 @@ class LocalMediaPlayer : KoinComponent {
                     })
                     proxy!!.start()
                 }
-                dataSource = String.format(
+                streamUrl = String.format(
                     Locale.getDefault(), "http://127.0.0.1:%d/%s",
                     proxy!!.port, URLEncoder.encode(file!!.path, Constants.UTF_8)
                 )
-                Timber.i("Data Source: %s", dataSource)
+                Timber.i("Data Source: %s", streamUrl)
             } else if (proxy != null) {
                 proxy?.stop()
                 proxy = null
@@ -378,12 +378,12 @@ class LocalMediaPlayer : KoinComponent {
 
             Timber.i("Preparing media player")
 
-            if (dataSource != null) {
-                Timber.v("LocalMediaPlayer doPlay dataSource: %s", dataSource)
-                mediaPlayer.setDataSource(dataSource)
+            if (streamUrl != null) {
+                Timber.v("LocalMediaPlayer doPlay dataSource: %s", streamUrl)
+                mediaPlayer.setDataSource(streamUrl)
             } else {
                 Timber.v("LocalMediaPlayer doPlay Path: %s", file!!.path)
-                val descriptor = file!!.getDocumentFileDescriptor("r")!!
+                val descriptor = file.getDocumentFileDescriptor("r")!!
                 mediaPlayer.setDataSource(descriptor.fileDescriptor)
                 descriptor.close()
             }
@@ -468,7 +468,7 @@ class LocalMediaPlayer : KoinComponent {
             }
 
             Timber.v("LocalMediaPlayer setupNext Path: %s", file!!.path)
-            val descriptor = file!!.getDocumentFileDescriptor("r")!!
+            val descriptor = file.getDocumentFileDescriptor("r")!!
             nextMediaPlayer!!.setDataSource(descriptor.fileDescriptor)
             descriptor.close()
 

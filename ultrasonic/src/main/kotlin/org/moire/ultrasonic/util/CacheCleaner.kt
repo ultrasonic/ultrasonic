@@ -11,13 +11,13 @@ import org.koin.java.KoinJavaComponent.inject
 import org.moire.ultrasonic.data.ActiveServerProvider
 import org.moire.ultrasonic.domain.Playlist
 import org.moire.ultrasonic.service.Downloader
-import org.moire.ultrasonic.util.FileUtil.delete
 import org.moire.ultrasonic.util.FileUtil.getAlbumArtFile
 import org.moire.ultrasonic.util.FileUtil.getPlaylistDirectory
 import org.moire.ultrasonic.util.FileUtil.getPlaylistFile
 import org.moire.ultrasonic.util.FileUtil.listFiles
 import org.moire.ultrasonic.util.FileUtil.musicDirectory
 import org.moire.ultrasonic.util.Settings.cacheSizeMB
+import org.moire.ultrasonic.util.Storage.delete
 import org.moire.ultrasonic.util.Util.formatBytes
 import timber.log.Timber
 
@@ -144,7 +144,7 @@ class CacheCleaner : CoroutineScope by CoroutineScope(Dispatchers.IO) {
                 // No songs left in the folder
                 if (children.size == 1 && children[0].path == getAlbumArtFile(dir.path)) {
                     // Delete Artwork files
-                    delete(getAlbumArtFile(dir.path))
+                    delete(children[0].path)
                     children = dir.listFiles()
                 }
 
@@ -166,17 +166,14 @@ class CacheCleaner : CoroutineScope by CoroutineScope(Dispatchers.IO) {
             }
 
             // Ensure that file system is not more than 95% full.
-            val bytesUsedFs: Long
-            val minFsAvailability: Long
-            val bytesTotalFs: Long
-            val bytesAvailableFs: Long
-
             val descriptor = files[0].getDocumentFileDescriptor("r")!!
             val stat = Os.fstatvfs(descriptor.fileDescriptor)
-            bytesTotalFs = stat.f_blocks * stat.f_bsize
-            bytesAvailableFs = stat.f_bfree * stat.f_bsize
-            bytesUsedFs = bytesTotalFs - bytesAvailableFs
-            minFsAvailability = bytesTotalFs - MIN_FREE_SPACE
+
+            val bytesTotalFs: Long = stat.f_blocks * stat.f_bsize
+            val bytesAvailableFs: Long = stat.f_bfree * stat.f_bsize
+            val bytesUsedFs: Long = bytesTotalFs - bytesAvailableFs
+            val minFsAvailability: Long = bytesTotalFs - MIN_FREE_SPACE
+
             descriptor.close()
 
             val bytesToDeleteCacheLimit = (bytesUsedBySubsonic - cacheSizeBytes).coerceAtLeast(0L)

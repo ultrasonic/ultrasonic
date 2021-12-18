@@ -221,7 +221,7 @@ class TrackViewHolder(val view: View) : RecyclerView.ViewHolder(view), Checkable
                 progress.text = null
             }
             DownloadStatus.FAILED,
-            DownloadStatus.ABORTED -> {
+            DownloadStatus.CANCELLED -> {
                 statusImage = imageHelper.errorImage
                 progress.text = null
             }

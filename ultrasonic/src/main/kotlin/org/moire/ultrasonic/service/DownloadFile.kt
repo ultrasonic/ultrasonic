@@ -167,9 +167,9 @@ class DownloadFile(
 
     fun delete() {
         cancelDownload()
-        FileUtil.delete(partialFile)
-        FileUtil.delete(completeFile)
-        FileUtil.delete(saveFile)
+        Storage.delete(partialFile)
+        Storage.delete(completeFile)
+        Storage.delete(saveFile)
 
         status.postValue(DownloadStatus.IDLE)
 
@@ -185,11 +185,11 @@ class DownloadFile(
     fun cleanup(): Boolean {
         var ok = true
         if (Storage.isPathExists(completeFile) || Storage.isPathExists(saveFile)) {
-            ok = FileUtil.delete(partialFile)
+            ok = Storage.delete(partialFile)
         }
 
         if (Storage.isPathExists(saveFile)) {
-            ok = ok and FileUtil.delete(completeFile)
+            ok = ok and Storage.delete(completeFile)
         }
 
         return ok
@@ -204,14 +204,14 @@ class DownloadFile(
     private fun doPendingRename() {
         try {
             if (saveWhenDone) {
-                FileUtil.renameFile(completeFile, saveFile)
+                Storage.rename(completeFile, saveFile)
                 saveWhenDone = false
             } else if (completeWhenDone) {
                 if (shouldSave) {
-                    FileUtil.renameFile(partialFile, saveFile)
+                    Storage.rename(partialFile, saveFile)
                     Util.scanMedia(saveFile)
                 } else {
-                    FileUtil.renameFile(partialFile, completeFile)
+                    Storage.rename(partialFile, completeFile)
                 }
                 completeWhenDone = false
             }
@@ -245,7 +245,7 @@ class DownloadFile(
                         if (isPlaying) {
                             saveWhenDone = true
                         } else {
-                            FileUtil.renameFile(completeFile, saveFile)
+                            Storage.rename(completeFile, saveFile)
                             newStatus = DownloadStatus.PINNED
                         }
                     } else {
@@ -292,7 +292,7 @@ class DownloadFile(
                     outputStream.close()
 
                     if (isCancelled) {
-                        status.postValue(DownloadStatus.ABORTED)
+                        status.postValue(DownloadStatus.CANCELLED)
                         throw Exception(String.format("Download of '%s' was cancelled", song))
                     }
 
@@ -307,18 +307,18 @@ class DownloadFile(
                     completeWhenDone = true
                 } else {
                     if (shouldSave) {
-                        FileUtil.renameFile(partialFile, saveFile)
+                        Storage.rename(partialFile, saveFile)
                         status.postValue(DownloadStatus.PINNED)
                         Util.scanMedia(saveFile)
                     } else {
-                        FileUtil.renameFile(partialFile, completeFile)
+                        Storage.rename(partialFile, completeFile)
                         status.postValue(DownloadStatus.DONE)
                     }
                 }
             } catch (all: Exception) {
                 outputStream.safeClose()
-                FileUtil.delete(completeFile)
-                FileUtil.delete(saveFile)
+                Storage.delete(completeFile)
+                Storage.delete(saveFile)
                 if (!isCancelled) {
                     isFailed = true
                     if (retryCount > 1) {
@@ -412,5 +412,5 @@ class DownloadFile(
 }
 
 enum class DownloadStatus {
-    IDLE, DOWNLOADING, RETRYING, FAILED, ABORTED, DONE, PINNED, UNKNOWN
+    IDLE, DOWNLOADING, RETRYING, FAILED, CANCELLED, DONE, PINNED, UNKNOWN
 }

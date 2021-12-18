@@ -30,6 +30,10 @@ import org.moire.ultrasonic.domain.MusicDirectory
 import org.moire.ultrasonic.util.Util.safeClose
 import timber.log.Timber
 
+/**
+ * Provides Ultrasonic specific functions for managing the library files.
+ * Base storage functions like rename, create, delete should be handled in Storage.kt
+ */
 @Suppress("TooManyFunctions")
 object FileUtil {
 
@@ -89,6 +93,10 @@ object FileUtil {
             return playlistDir
         }
 
+    /**
+     * Get the directory where we store local copies of the playlists.
+     * It is always inside Ultrasonic base directory.
+     */
     @JvmStatic
     fun getPlaylistDirectory(server: String? = null): File {
         val playlistDir: File = if (server != null) {
@@ -186,7 +194,7 @@ object FileUtil {
             return albumArtDir
         }
 
-    fun getAlbumDirectory(entry: MusicDirectory.Child): String {
+    private fun getAlbumDirectory(entry: MusicDirectory.Child): String {
         val dir: String
         if (!TextUtils.isEmpty(entry.path) && getParentPath(entry.path!!) != null) {
             val f = fileSystemSafeDir(entry.path)
@@ -318,10 +326,6 @@ object FileUtil {
     @JvmStatic
     fun listFiles(dir: AbstractFile): SortedSet<AbstractFile> {
         val files = dir.listFiles()
-        if (files == null) {
-            Timber.w("Failed to list children for %s", dir.path)
-            return TreeSet()
-        }
         return TreeSet(files.asList())
     }
 
@@ -485,36 +489,5 @@ object FileUtil {
             bw.safeClose()
             fw.safeClose()
         }
-    }
-
-    @JvmStatic
-    @Throws(IOException::class)
-    fun renameFile(from: String, to: String) {
-        Storage.rename(from, to)
-    }
-
-    @JvmStatic
-    fun delete(file: File?): Boolean {
-        if (file != null && file.exists()) {
-            if (!file.delete()) {
-                Timber.w("Failed to delete file %s", file)
-                return false
-            }
-            Timber.i("Deleted file %s", file)
-        }
-        return true
-    }
-
-    @JvmStatic
-    fun delete(file: String?): Boolean {
-        if (file != null) {
-            val storageFile = Storage.getFromPath(file)
-            if (storageFile != null && !storageFile.delete()) {
-                Timber.w("Failed to delete file %s", file)
-                return false
-            }
-            Timber.i("Deleted file %s", file)
-        }
-        return true
     }
 }

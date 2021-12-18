@@ -60,6 +60,15 @@ object Storage {
         mediaRoot.value.rename(pathFrom, pathTo)
     }
 
+    fun delete(path: String): Boolean {
+        val storageFile = getFromPath(path)
+        if (storageFile != null && !storageFile.delete()) {
+            Timber.w("Failed to delete file %s", path)
+            return false
+        }
+        return true
+    }
+
     private fun getRoot(): AbstractFile? {
         return if (Settings.cacheLocation.isUri()) {
             val documentFile = DocumentFile.fromTreeUri(

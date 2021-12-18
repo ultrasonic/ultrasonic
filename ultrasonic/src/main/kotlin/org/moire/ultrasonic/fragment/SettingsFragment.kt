@@ -167,6 +167,10 @@ class SettingsFragment :
         update()
     }
 
+    /**
+     * This function will be called when we return from the file picker
+     * with a new custom cache location
+     */
     override fun onActivityResult(requestCode: Int, resultCode: Int, resultData: Intent?) {
         if (
             requestCode != SELECT_CACHE_ACTIVITY ||

@@ -16,7 +16,7 @@
         a:layout_width="wrap_content"
         a:layout_height="wrap_content"
         a:layout_gravity="center_vertical"
-        a:contentDescription="@null"
+        a:importantForAccessibility="no"
         a:src="?attr/select_folder" />
 
     <LinearLayout
