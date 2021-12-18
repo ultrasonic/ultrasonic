@@ -1,7 +1,7 @@
 ext.versions = [
         minSdk               : 21,
-        targetSdk            : 29,
-        compileSdk           : 29,
+        targetSdk            : 30,
+        compileSdk           : 30,
         // You need to run ./gradlew wrapper after updating the version
         gradle               : '7.2',
 
@@ -10,7 +10,7 @@ ext.versions = [
         androidxcore         : "1.6.0",
         ktlint               : "0.37.1",
         ktlintGradle         : "10.2.0",
-        detekt               : "1.18.1",
+        detekt               : "1.19.0",
         jacoco               : "0.8.7",
         preferences          : "1.1.1",
         media                : "1.3.1",
@@ -33,12 +33,11 @@ ext.versions = [
 
         junit4               : "4.13.2",
         junit5               : "5.8.1",
-        mockito              : "4.0.0",
+        mockito              : "4.2.0",
         mockitoKotlin        : "4.0.0",
         kluent               : "1.68",
         apacheCodecs         : "1.15",
         robolectric          : "4.6.1",
-        dexter               : "6.2.3",
         timber               : "4.7.1",
         fastScroll           : "2.0.1",
         colorPicker          : "2.2.3",
@@ -88,7 +87,6 @@ ext.other = [
         koinAndroid        : "io.insert-koin:koin-android:$versions.koin",
         koinViewModel      : "io.insert-koin:koin-android-viewmodel:$versions.koin",
         picasso            : "com.squareup.picasso:picasso:$versions.picasso",
-        dexter             : "com.karumi:dexter:$versions.dexter",
         timber             : "com.jakewharton.timber:timber:$versions.timber",
         fastScroll         : "com.simplecityapps:recyclerview-fastscroll:$versions.fastScroll",
         colorPickerView    : "com.github.skydoves:colorpickerview:$versions.colorPicker",
