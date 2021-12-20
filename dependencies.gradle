@@ -3,10 +3,10 @@ ext.versions = [
         targetSdk            : 30,
         compileSdk           : 31,
         // You need to run ./gradlew wrapper after updating the version
-        gradle               : '7.2',
+        gradle               : '7.3.2',
 
         navigation           : "2.3.5",
-        gradlePlugin         : "4.2.2",
+        gradlePlugin         : "7.0.0",
         androidxcore         : "1.6.0",
         ktlint               : "0.43.2",
         ktlintGradle         : "10.2.0",
@@ -25,9 +25,9 @@ ext.versions = [
         kotlinxCoroutines    : "1.5.2-native-mt",
         viewModelKtx         : "2.3.0",
 
-        retrofit             : "2.6.4",
+        retrofit             : "2.9.0",
         jackson              : "2.9.5",
-        okhttp               : "3.12.13",
+        okhttp               : "3.14.19",
         koin                 : "3.0.2",
         picasso              : "2.71828",
 
