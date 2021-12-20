@@ -18,7 +18,7 @@ internal class VersionInterceptor(
         val newRequest = originalRequest.newBuilder()
             .url(
                 originalRequest
-                    .url()
+                    .url
                     .newBuilder()
                     .addQueryParameter("v", protocolVersion.restApiVersion)
                     .build()

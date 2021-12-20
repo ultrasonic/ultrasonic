@@ -18,7 +18,7 @@ class PasswordHexInterceptor(private val password: String) : Interceptor {
 
     override fun intercept(chain: Chain): Response {
         val originalRequest = chain.request()
-        val updatedUrl = originalRequest.url().newBuilder()
+        val updatedUrl = originalRequest.url.newBuilder()
             .addEncodedQueryParameter("p", passwordHex).build()
         return chain.proceed(originalRequest.newBuilder().url(updatedUrl).build())
     }
