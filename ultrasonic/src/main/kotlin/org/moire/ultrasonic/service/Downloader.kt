@@ -44,7 +44,7 @@ class Downloader(
 
     private val jukeboxMediaPlayer: JukeboxMediaPlayer by inject()
 
-    // TODO is this cache necessary?
+    // This cache helps us to avoid creating duplicate DownloadFile instances when showing Entries
     private val downloadFileCache = LRUCache<MusicDirectory.Entry, DownloadFile>(100)
 
     private var executorService: ScheduledExecutorService? = null

@@ -38,7 +38,6 @@ import org.moire.ultrasonic.service.MediaPlayerController
 import org.moire.ultrasonic.service.RxBus
 import org.moire.ultrasonic.util.Constants
 import org.moire.ultrasonic.util.ErrorDialog
-import org.moire.ultrasonic.util.FileUtil.defaultMusicDirectory
 import org.moire.ultrasonic.util.FileUtil.ultrasonicDirectory
 import org.moire.ultrasonic.util.InfoDialog
 import org.moire.ultrasonic.util.MediaSessionHandler
@@ -287,7 +286,7 @@ class SettingsFragment :
         val intent = Intent(Intent.ACTION_OPEN_DOCUMENT_TREE)
 
         if (Settings.cacheLocationUri != "" && Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            intent.putExtra(DocumentsContract.EXTRA_INITIAL_URI, defaultMusicDirectory.path)
+            intent.putExtra(DocumentsContract.EXTRA_INITIAL_URI, Settings.cacheLocationUri)
         }
 
         intent.addFlags(RW_FLAG)
