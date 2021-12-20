@@ -456,8 +456,8 @@ class OfflineMusicService : MusicService, KoinComponent {
     @Throws(OfflineException::class)
     override fun getArtist(id: String, name: String?, refresh: Boolean):
         List<MusicDirectory.Album> {
-            throw OfflineException("getArtist isn't available in offline mode")
-        }
+        throw OfflineException("getArtist isn't available in offline mode")
+    }
 
     @Throws(OfflineException::class)
     override fun getAlbum(id: String, name: String?, refresh: Boolean): MusicDirectory {

@@ -1,7 +1,7 @@
 package org.moire.ultrasonic.api.subsonic
 
-import org.amshove.kluent.`should be equal to`
 import org.amshove.kluent.`should be`
+import org.amshove.kluent.`should be equal to`
 import org.amshove.kluent.`should not be`
 import org.junit.Test
 import org.moire.ultrasonic.api.subsonic.models.MusicDirectory

@@ -150,19 +150,19 @@ class CachedMusicService(private val musicService: MusicService) : MusicService,
     @Throws(Exception::class)
     override fun getArtist(id: String, name: String?, refresh: Boolean):
         List<MusicDirectory.Album> {
-            checkSettingsChanged()
-            var cache = if (refresh) null else cachedArtist[id]
-            var dir = cache?.get()
-            if (dir == null) {
-                dir = musicService.getArtist(id, name, refresh)
-                cache = TimeLimitedCache(
-                    Settings.directoryCacheTime.toLong(), TimeUnit.SECONDS
-                )
-                cache.set(dir)
-                cachedArtist.put(id, cache)
-            }
-            return dir
+        checkSettingsChanged()
+        var cache = if (refresh) null else cachedArtist[id]
+        var dir = cache?.get()
+        if (dir == null) {
+            dir = musicService.getArtist(id, name, refresh)
+            cache = TimeLimitedCache(
+                Settings.directoryCacheTime.toLong(), TimeUnit.SECONDS
+            )
+            cache.set(dir)
+            cachedArtist.put(id, cache)
         }
+        return dir
+    }
 
     @Throws(Exception::class)
     override fun getAlbum(id: String, name: String?, refresh: Boolean): MusicDirectory {

@@ -134,55 +134,55 @@ object Settings {
 
     @JvmStatic
     var shouldUseFolderForArtistName
-    by BooleanSetting(Constants.PREFERENCES_KEY_USE_FOLDER_FOR_ALBUM_ARTIST, false)
+        by BooleanSetting(Constants.PREFERENCES_KEY_USE_FOLDER_FOR_ALBUM_ARTIST, false)
 
     @JvmStatic
     var shouldShowTrackNumber
-    by BooleanSetting(Constants.PREFERENCES_KEY_SHOW_TRACK_NUMBER, false)
+        by BooleanSetting(Constants.PREFERENCES_KEY_SHOW_TRACK_NUMBER, false)
 
     @JvmStatic
     var defaultAlbums
-    by StringIntSetting(Constants.PREFERENCES_KEY_DEFAULT_ALBUMS, "5")
+        by StringIntSetting(Constants.PREFERENCES_KEY_DEFAULT_ALBUMS, "5")
 
     @JvmStatic
     var maxAlbums
-    by StringIntSetting(Constants.PREFERENCES_KEY_MAX_ALBUMS, "20")
+        by StringIntSetting(Constants.PREFERENCES_KEY_MAX_ALBUMS, "20")
 
     @JvmStatic
     var defaultSongs
-    by StringIntSetting(Constants.PREFERENCES_KEY_DEFAULT_SONGS, "10")
+        by StringIntSetting(Constants.PREFERENCES_KEY_DEFAULT_SONGS, "10")
 
     @JvmStatic
     var maxSongs
-    by StringIntSetting(Constants.PREFERENCES_KEY_MAX_SONGS, "25")
+        by StringIntSetting(Constants.PREFERENCES_KEY_MAX_SONGS, "25")
 
     @JvmStatic
     var maxArtists
-    by StringIntSetting(Constants.PREFERENCES_KEY_MAX_ARTISTS, "10")
+        by StringIntSetting(Constants.PREFERENCES_KEY_MAX_ARTISTS, "10")
 
     @JvmStatic
     var defaultArtists
-    by StringIntSetting(Constants.PREFERENCES_KEY_DEFAULT_ARTISTS, "3")
+        by StringIntSetting(Constants.PREFERENCES_KEY_DEFAULT_ARTISTS, "3")
 
     @JvmStatic
     var bufferLength
-    by StringIntSetting(Constants.PREFERENCES_KEY_BUFFER_LENGTH, "5")
+        by StringIntSetting(Constants.PREFERENCES_KEY_BUFFER_LENGTH, "5")
 
     @JvmStatic
     var incrementTime
-    by StringIntSetting(Constants.PREFERENCES_KEY_INCREMENT_TIME, "5")
+        by StringIntSetting(Constants.PREFERENCES_KEY_INCREMENT_TIME, "5")
 
     @JvmStatic
     var mediaButtonsEnabled
-    by BooleanSetting(Constants.PREFERENCES_KEY_MEDIA_BUTTONS, true)
+        by BooleanSetting(Constants.PREFERENCES_KEY_MEDIA_BUTTONS, true)
 
     @JvmStatic
     var showNowPlaying
-    by BooleanSetting(Constants.PREFERENCES_KEY_SHOW_NOW_PLAYING, true)
+        by BooleanSetting(Constants.PREFERENCES_KEY_SHOW_NOW_PLAYING, true)
 
     @JvmStatic
     var gaplessPlayback
-    by BooleanSetting(Constants.PREFERENCES_KEY_GAPLESS_PLAYBACK, false)
+        by BooleanSetting(Constants.PREFERENCES_KEY_GAPLESS_PLAYBACK, false)
 
     @JvmStatic
     var shouldTransitionOnPlayback by BooleanSetting(
@@ -192,7 +192,7 @@ object Settings {
 
     @JvmStatic
     var shouldUseId3Tags
-    by BooleanSetting(Constants.PREFERENCES_KEY_ID3_TAGS, false)
+        by BooleanSetting(Constants.PREFERENCES_KEY_ID3_TAGS, false)
 
     @JvmStatic
     var tempLoss by StringIntSetting(Constants.PREFERENCES_KEY_TEMP_LOSS, "1")
@@ -225,19 +225,19 @@ object Settings {
     )
 
     var shouldClearPlaylist
-    by BooleanSetting(Constants.PREFERENCES_KEY_CLEAR_PLAYLIST, false)
+        by BooleanSetting(Constants.PREFERENCES_KEY_CLEAR_PLAYLIST, false)
 
     var shouldSortByDisc
-    by BooleanSetting(Constants.PREFERENCES_KEY_DISC_SORT, false)
+        by BooleanSetting(Constants.PREFERENCES_KEY_DISC_SORT, false)
 
     var shouldClearBookmark
-    by BooleanSetting(Constants.PREFERENCES_KEY_CLEAR_BOOKMARK, false)
+        by BooleanSetting(Constants.PREFERENCES_KEY_CLEAR_BOOKMARK, false)
 
     var singleButtonPlayPause
-    by BooleanSetting(
-        Constants.PREFERENCES_KEY_SINGLE_BUTTON_PLAY_PAUSE,
-        false
-    )
+        by BooleanSetting(
+            Constants.PREFERENCES_KEY_SINGLE_BUTTON_PLAY_PAUSE,
+            false
+        )
 
     // Inverted for readability
     var shouldSendBluetoothNotifications by BooleanSetting(
@@ -246,20 +246,20 @@ object Settings {
     )
 
     var shouldSendBluetoothAlbumArt
-    by BooleanSetting(Constants.PREFERENCES_KEY_SEND_BLUETOOTH_ALBUM_ART, true)
+        by BooleanSetting(Constants.PREFERENCES_KEY_SEND_BLUETOOTH_ALBUM_ART, true)
 
     var shouldDisableNowPlayingListSending
-    by BooleanSetting(Constants.PREFERENCES_KEY_DISABLE_SEND_NOW_PLAYING_LIST, false)
+        by BooleanSetting(Constants.PREFERENCES_KEY_DISABLE_SEND_NOW_PLAYING_LIST, false)
 
     @JvmStatic
     var viewRefreshInterval
-    by StringIntSetting(Constants.PREFERENCES_KEY_VIEW_REFRESH, "1000")
+        by StringIntSetting(Constants.PREFERENCES_KEY_VIEW_REFRESH, "1000")
 
     var shouldAskForShareDetails
-    by BooleanSetting(Constants.PREFERENCES_KEY_ASK_FOR_SHARE_DETAILS, true)
+        by BooleanSetting(Constants.PREFERENCES_KEY_ASK_FOR_SHARE_DETAILS, true)
 
     var defaultShareDescription
-    by StringSetting(Constants.PREFERENCES_KEY_DEFAULT_SHARE_DESCRIPTION, "")
+        by StringSetting(Constants.PREFERENCES_KEY_DEFAULT_SHARE_DESCRIPTION, "")
 
     @JvmStatic
     val shareGreeting: String?
