@@ -1,7 +1,7 @@
 ext.versions = [
         minSdk               : 21,
         targetSdk            : 30,
-        compileSdk           : 30,
+        compileSdk           : 31,
         // You need to run ./gradlew wrapper after updating the version
         gradle               : '7.2',
 
