@@ -38,7 +38,6 @@ import org.moire.ultrasonic.service.MediaPlayerController
 import org.moire.ultrasonic.service.RxBus
 import org.moire.ultrasonic.util.Constants
 import org.moire.ultrasonic.util.ErrorDialog
-import org.moire.ultrasonic.util.FileUtil.defaultMusicDirectory
 import org.moire.ultrasonic.util.FileUtil.ultrasonicDirectory
 import org.moire.ultrasonic.util.InfoDialog
 import org.moire.ultrasonic.util.MediaSessionHandler
@@ -50,7 +49,6 @@ import org.moire.ultrasonic.util.Storage
 import org.moire.ultrasonic.util.TimeSpanPreference
 import org.moire.ultrasonic.util.TimeSpanPreferenceDialogFragmentCompat
 import org.moire.ultrasonic.util.Util.toast
-import org.moire.ultrasonic.util.isUri
 import timber.log.Timber
 
 /**
@@ -171,31 +169,36 @@ class SettingsFragment :
      */
     override fun onActivityResult(requestCode: Int, resultCode: Int, resultData: Intent?) {
         if (
-            requestCode != SELECT_CACHE_ACTIVITY ||
-            resultCode != Activity.RESULT_OK ||
-            resultData == null
-        ) return
+            requestCode == SELECT_CACHE_ACTIVITY &&
+            resultCode == Activity.RESULT_OK &&
+            resultData != null
+        ) {
+            val read = (resultData.flags and Intent.FLAG_GRANT_READ_URI_PERMISSION) != 0
+            val write = (resultData.flags and Intent.FLAG_GRANT_WRITE_URI_PERMISSION) != 0
+            val persist = (resultData.flags and Intent.FLAG_GRANT_PERSISTABLE_URI_PERMISSION) != 0
 
-        val read = (resultData.flags and Intent.FLAG_GRANT_READ_URI_PERMISSION) != 0
-        val write = (resultData.flags and Intent.FLAG_GRANT_WRITE_URI_PERMISSION) != 0
-        val persist = (resultData.flags and Intent.FLAG_GRANT_PERSISTABLE_URI_PERMISSION) != 0
+            if (read && write && persist) {
+                if (resultData.data != null) {
+                    // The result data contains a URI for the document or directory that
+                    // the user selected.
+                    val uri = resultData.data!!
+                    val contentResolver = UApp.applicationContext().contentResolver
 
-        if (!read || !write || !persist) {
+                    contentResolver.takePersistableUriPermission(uri, RW_FLAG)
+                    setCacheLocation(uri.toString())
+                    setupCacheLocationPreference()
+                    return
+                }
+            }
             ErrorDialog.Builder(context)
                 .setMessage(R.string.settings_cache_location_error)
                 .show()
-            return
         }
 
-        // The result data contains a URI for the document or directory that
-        // the user selected.
-        resultData.data?.also { uri ->
-            // Perform operations on the document using its URI.
-            val contentResolver = UApp.applicationContext().contentResolver
-
-            contentResolver.takePersistableUriPermission(uri, RW_FLAG)
-
-            setCacheLocation(uri.toString())
+        if (Settings.cacheLocationUri == "") {
+            Settings.customCacheLocation = false
+            customCacheLocation?.isChecked = false
+            setupCacheLocationPreference()
         }
     }
 
@@ -234,7 +237,12 @@ class SettingsFragment :
                 RxBus.themeChangedEventPublisher.onNext(Unit)
             }
             Constants.PREFERENCES_KEY_CUSTOM_CACHE_LOCATION -> {
-                setupCacheLocationPreference()
+                if (Settings.customCacheLocation) {
+                    selectCacheLocation()
+                } else {
+                    if (Settings.cacheLocationUri != "") setCacheLocation("")
+                    setupCacheLocationPreference()
+                }
             }
         }
     }
@@ -259,34 +267,32 @@ class SettingsFragment :
     }
 
     private fun setupCacheLocationPreference() {
-        val isDefault = Settings.cacheLocation == defaultMusicDirectory.path
-
         if (!Settings.customCacheLocation) {
             cacheLocation?.isVisible = false
-            if (!isDefault) setCacheLocation(defaultMusicDirectory.path)
             return
         }
 
         cacheLocation?.isVisible = true
-        val uri = Uri.parse(Settings.cacheLocation)
+        val uri = Uri.parse(Settings.cacheLocationUri)
         cacheLocation!!.summary = uri.path
-        cacheLocation!!.onPreferenceClickListener =
-            Preference.OnPreferenceClickListener {
+        cacheLocation!!.onPreferenceClickListener = Preference.OnPreferenceClickListener {
+            selectCacheLocation()
+            true
+        }
+    }
 
-                // Choose a directory using the system's file picker.
-                val intent = Intent(Intent.ACTION_OPEN_DOCUMENT_TREE)
+    private fun selectCacheLocation() {
+        // Choose a directory using the system's file picker.
+        val intent = Intent(Intent.ACTION_OPEN_DOCUMENT_TREE)
 
-                if (!isDefault && Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-                    intent.putExtra(DocumentsContract.EXTRA_INITIAL_URI, defaultMusicDirectory.path)
-                }
+        if (Settings.cacheLocationUri != "" && Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            intent.putExtra(DocumentsContract.EXTRA_INITIAL_URI, Settings.cacheLocationUri)
+        }
 
-                intent.addFlags(RW_FLAG)
-                intent.addFlags(PERSISTABLE_FLAG)
+        intent.addFlags(RW_FLAG)
+        intent.addFlags(PERSISTABLE_FLAG)
 
-                startActivityForResult(intent, SELECT_CACHE_ACTIVITY)
-
-                true
-            }
+        startActivityForResult(intent, SELECT_CACHE_ACTIVITY)
     }
 
     private fun setupBluetoothDevicePreferences() {
@@ -393,7 +399,6 @@ class SettingsFragment :
         sharingDefaultExpiration!!.summary = sharingDefaultExpiration!!.text
         sharingDefaultDescription!!.summary = sharingDefaultDescription!!.text
         sharingDefaultGreeting!!.summary = sharingDefaultGreeting!!.text
-        cacheLocation!!.summary = Settings.cacheLocation
         if (!mediaButtonsEnabled!!.isChecked) {
             lockScreenEnabled!!.isChecked = false
             lockScreenEnabled!!.isEnabled = false
@@ -438,15 +443,16 @@ class SettingsFragment :
     }
 
     private fun setCacheLocation(path: String) {
-        if (path.isUri()) {
+        if (path != "") {
             val uri = Uri.parse(path)
             cacheLocation!!.summary = uri.path ?: ""
         }
 
-        Settings.cacheLocation = path
+        Settings.cacheLocationUri = path
 
         // Clear download queue.
         mediaPlayerControllerLazy.value.clear()
+        mediaPlayerControllerLazy.value.clearCaches()
         Storage.reset()
     }
 
