@@ -23,12 +23,9 @@ import androidx.preference.PreferenceFragmentCompat
 import java.io.File
 import kotlin.math.ceil
 import org.koin.core.component.KoinComponent
-import org.koin.java.KoinJavaComponent.get
 import org.koin.java.KoinJavaComponent.inject
 import org.moire.ultrasonic.R
 import org.moire.ultrasonic.app.UApp
-import org.moire.ultrasonic.featureflags.Feature
-import org.moire.ultrasonic.featureflags.FeatureStorage
 import org.moire.ultrasonic.fragment.FragmentTitle.Companion.setTitle
 import org.moire.ultrasonic.log.FileLoggerTree
 import org.moire.ultrasonic.log.FileLoggerTree.Companion.deleteLogFiles
@@ -142,7 +139,6 @@ class SettingsFragment :
 
         sharingDefaultGreeting!!.text = shareGreeting
         setupClearSearchPreference()
-        setupFeatureFlagsPreferences()
         setupCacheLocationPreference()
         setupBluetoothDevicePreferences()
 
@@ -367,21 +363,6 @@ class SettingsFragment :
                     suggestions.clearHistory()
                     toast(activity, R.string.settings_search_history_cleared)
                     false
-                }
-        }
-    }
-
-    private fun setupFeatureFlagsPreferences() {
-        val featureStorage = get<FeatureStorage>(FeatureStorage::class.java)
-        val useFiveStarRating = findPreference<Preference>(
-            Constants.PREFERENCES_KEY_USE_FIVE_STAR_RATING
-        ) as CheckBoxPreference?
-        if (useFiveStarRating != null) {
-            useFiveStarRating.isChecked = featureStorage.isFeatureEnabled(Feature.FIVE_STAR_RATING)
-            useFiveStarRating.onPreferenceChangeListener =
-                Preference.OnPreferenceChangeListener { _: Preference?, o: Any? ->
-                    featureStorage.changeFeatureFlag(Feature.FIVE_STAR_RATING, (o as Boolean?)!!)
-                    true
                 }
         }
     }

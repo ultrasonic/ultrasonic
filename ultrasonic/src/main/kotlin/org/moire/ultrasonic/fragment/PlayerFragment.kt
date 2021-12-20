@@ -70,8 +70,6 @@ import org.moire.ultrasonic.domain.Identifiable
 import org.moire.ultrasonic.domain.MusicDirectory
 import org.moire.ultrasonic.domain.PlayerState
 import org.moire.ultrasonic.domain.RepeatMode
-import org.moire.ultrasonic.featureflags.Feature
-import org.moire.ultrasonic.featureflags.FeatureStorage
 import org.moire.ultrasonic.fragment.FragmentTitle.Companion.setTitle
 import org.moire.ultrasonic.service.DownloadFile
 import org.moire.ultrasonic.service.LocalMediaPlayer
@@ -210,7 +208,7 @@ class PlayerFragment :
         val width = size.x
         val height = size.y
         setHasOptionsMenu(true)
-        useFiveStarRating = get<FeatureStorage>().isFeatureEnabled(Feature.FIVE_STAR_RATING)
+        useFiveStarRating = Settings.useFiveStarRating
         swipeDistance = (width + height) * PERCENTAGE_OF_SCREEN_FOR_SWIPE / 100
         swipeVelocity = swipeDistance
         gestureScanner = GestureDetector(context, this)

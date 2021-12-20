@@ -8,15 +8,12 @@ package org.moire.ultrasonic.service
 
 import android.content.Intent
 import org.koin.core.component.KoinComponent
-import org.koin.core.component.get
 import org.koin.core.component.inject
 import org.moire.ultrasonic.app.UApp
 import org.moire.ultrasonic.data.ActiveServerProvider
 import org.moire.ultrasonic.domain.MusicDirectory
 import org.moire.ultrasonic.domain.PlayerState
 import org.moire.ultrasonic.domain.RepeatMode
-import org.moire.ultrasonic.featureflags.Feature
-import org.moire.ultrasonic.featureflags.FeatureStorage
 import org.moire.ultrasonic.service.MediaPlayerService.Companion.executeOnStartedMediaPlayerService
 import org.moire.ultrasonic.service.MediaPlayerService.Companion.getInstance
 import org.moire.ultrasonic.service.MediaPlayerService.Companion.runningInstance
@@ -473,8 +470,7 @@ class MediaPlayerController(
 
     @Suppress("TooGenericExceptionCaught") // The interface throws only generic exceptions
     fun setSongRating(rating: Int) {
-        val features: FeatureStorage = get()
-        if (!features.isFeatureEnabled(Feature.FIVE_STAR_RATING)) return
+        if (!Settings.useFiveStarRating) return
         if (localMediaPlayer.currentPlaying == null) return
         val song = localMediaPlayer.currentPlaying!!.song
         song.userRating = rating

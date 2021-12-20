@@ -345,14 +345,14 @@
             app:iconSpaceReserved="false"/>
     </PreferenceCategory>
     <PreferenceCategory
-        a:title="@string/feature_flags_category_title"
+        a:title="@string/settings.features_title"
         app:iconSpaceReserved="false">
         <CheckBoxPreference
+            a:defaultValue="false"
             a:key="use_five_star_rating"
-            a:persistent="false"
-            a:title="@string/feature_flags_five_star_rating_title"
-            a:summary="@string/feature_flags_five_star_rating_description"
-            app:iconSpaceReserved="false"/>
+            a:summary="@string/settings.five_star_rating_description"
+            a:title="@string/settings.five_star_rating_title"
+            app:iconSpaceReserved="false" />
     </PreferenceCategory>
     <PreferenceCategory
         a:title="@string/settings.debug.title"

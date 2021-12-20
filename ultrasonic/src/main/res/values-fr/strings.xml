@@ -439,10 +439,10 @@
     <string name="api.subsonic.upgrade_client">Versions incompatibles. Veuillez mette à jour l\'application Android Ultrasonic.</string>
     <string name="api.subsonic.upgrade_server">Versions incompatibles. Veuillez mette à jour le serveur Subsonic.</string>
 
-    <!-- Subsonic feature flags -->
-    <string name="feature_flags_category_title">Drapeaux des fonctionnalités</string>
-    <string name="feature_flags_five_star_rating_title">Utiliser les étoiles pour noter les morceaux</string>
-    <string name="feature_flags_five_star_rating_description">Utiliser un système de notation à base d\'étoiles pour les morceaux
+    <!-- Subsonic features  -->
+    <string name="settings.features_title">Drapeaux des fonctionnalités</string>
+    <string name="settings.five_star_rating_title">Utiliser les étoiles pour noter les morceaux</string>
+    <string name="settings.five_star_rating_description">Utiliser un système de notation à base d\'étoiles pour les morceaux
          au lieu de simplement mettre en avant les morceaux.
     </string>
 

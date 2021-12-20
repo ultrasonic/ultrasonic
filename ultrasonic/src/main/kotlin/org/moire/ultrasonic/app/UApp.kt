@@ -9,7 +9,6 @@ import org.moire.ultrasonic.BuildConfig
 import org.moire.ultrasonic.di.appPermanentStorage
 import org.moire.ultrasonic.di.applicationModule
 import org.moire.ultrasonic.di.baseNetworkModule
-import org.moire.ultrasonic.di.featureFlagsModule
 import org.moire.ultrasonic.di.mediaPlayerModule
 import org.moire.ultrasonic.di.musicServiceModule
 import org.moire.ultrasonic.log.FileLoggerTree
@@ -47,7 +46,6 @@ class UApp : MultiDexApplication() {
                 applicationModule,
                 appPermanentStorage,
                 baseNetworkModule,
-                featureFlagsModule,
                 musicServiceModule,
                 mediaPlayerModule
             )

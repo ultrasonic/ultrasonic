@@ -453,10 +453,10 @@
     <string name="api.subsonic.upgrade_client">Несовместимые версии. Пожалуйста, обновите приложение Ultrasonic для Android.</string>
     <string name="api.subsonic.upgrade_server">Несовместимые версии. Пожалуйста, обновите Subsonic сервер.</string>
 
-    <!-- Subsonic feature flags -->
-    <string name="feature_flags_category_title">Флаги</string>
-    <string name="feature_flags_five_star_rating_title">Использовать пятизвездочный рейтинг для песен</string>
-    <string name="feature_flags_five_star_rating_description">Использовать пятизвездочную систему рейтинга для песен
+    <!-- Subsonic features  -->
+    <string name="settings.features_title">Флаги</string>
+    <string name="settings.five_star_rating_title">Использовать пятизвездочный рейтинг для песен</string>
+    <string name="settings.five_star_rating_description">Использовать пятизвездочную систему рейтинга для песен
         вместо того, чтобы просто ставить/не ставить звезды.</string>
 
 </resources>

@@ -450,10 +450,10 @@
     <string name="api.subsonic.upgrade_client">Versiones incompatibles. Por favor actualiza la aplicación de Android Ultrasonic.</string>
     <string name="api.subsonic.upgrade_server">Versiones incompatibles. Por favor actualiza el servidor de Subsonic.</string>
 
-    <!-- Subsonic feature flags -->
-    <string name="feature_flags_category_title">Funciones experimentales</string>
-    <string name="feature_flags_five_star_rating_title">Use cinco estrellas para las canciones</string>
-    <string name="feature_flags_five_star_rating_description">Utilice el sistema de calificación de cinco estrellas para canciones
+    <!-- Subsonic features  -->
+    <string name="settings.features_title">Funciones experimentales</string>
+    <string name="settings.five_star_rating_title">Use cinco estrellas para las canciones</string>
+    <string name="settings.five_star_rating_description">Utilice el sistema de calificación de cinco estrellas para canciones
          en lugar de simplemente destacar / desestimar elementos.
     </string>
 

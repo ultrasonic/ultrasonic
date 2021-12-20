@@ -297,11 +297,6 @@ object Settings {
             return 0
         }
 
-    var shouldShowAllSongsByArtist by BooleanSetting(
-        Constants.PREFERENCES_KEY_SHOW_ALL_SONGS_BY_ARTIST,
-        false
-    )
-
     @JvmStatic
     var resumeOnBluetoothDevice by IntSetting(
         Constants.PREFERENCES_KEY_RESUME_ON_BLUETOOTH_DEVICE,
@@ -319,6 +314,18 @@ object Settings {
     @JvmStatic
     val preferences: SharedPreferences
         get() = PreferenceManager.getDefaultSharedPreferences(Util.appContext())
+
+    var useFiveStarRating by BooleanSetting(Constants.PREFERENCES_KEY_USE_FIVE_STAR_RATING, false)
+
+    // TODO: Remove in December 2022
+    fun migrateFeatureStorage() {
+        val sp = appContext.getSharedPreferences("feature_flags", Context.MODE_PRIVATE)
+        useFiveStarRating = sp.getBoolean("FIVE_STAR_RATING", false)
+    }
+
+    fun hasKey(key: String): Boolean {
+        return preferences.contains(key)
+    }
 
     private val appContext: Context
         get() {
