@@ -8,7 +8,7 @@ ext.versions = [
         navigation           : "2.3.5",
         gradlePlugin         : "4.2.2",
         androidxcore         : "1.6.0",
-        ktlint               : "0.37.1",
+        ktlint               : "0.43.2",
         ktlintGradle         : "10.2.0",
         detekt               : "1.19.0",
         jacoco               : "0.8.7",

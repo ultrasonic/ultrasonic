@@ -75,7 +75,7 @@ jobs:
             tx push -s
   generate_signed_apk:
     docker:
-      - image: circleci/android:api-28
+      - image: circleci/android:api-30
     working_directory: ~/ultrasonic
     steps:
       - checkout
