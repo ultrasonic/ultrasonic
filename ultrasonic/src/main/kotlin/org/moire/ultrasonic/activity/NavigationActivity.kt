@@ -158,6 +158,12 @@ class NavigationActivity : AppCompatActivity() {
         var showWelcomeScreen = Util.isFirstRun()
         val areServersMigrated: Boolean = serverSettingsModel.migrateFromPreferences()
 
+        // Migrate Feature storage if needed
+        // TODO: Remove in December 2022
+        if (!Settings.hasKey(Constants.PREFERENCES_KEY_USE_FIVE_STAR_RATING)) {
+            Settings.migrateFeatureStorage()
+        }
+
         // If there are any servers in the DB, do not show the welcome screen
         showWelcomeScreen = showWelcomeScreen and !areServersMigrated
 

@@ -13,12 +13,9 @@ import androidx.lifecycle.MutableLiveData
 import androidx.recyclerview.widget.RecyclerView
 import io.reactivex.rxjava3.disposables.Disposable
 import org.koin.core.component.KoinComponent
-import org.koin.core.component.get
 import org.moire.ultrasonic.R
 import org.moire.ultrasonic.data.ActiveServerProvider
 import org.moire.ultrasonic.domain.MusicDirectory
-import org.moire.ultrasonic.featureflags.Feature
-import org.moire.ultrasonic.featureflags.FeatureStorage
 import org.moire.ultrasonic.service.DownloadFile
 import org.moire.ultrasonic.service.DownloadStatus
 import org.moire.ultrasonic.service.MusicServiceFactory
@@ -61,11 +58,6 @@ class TrackViewHolder(val view: View) : RecyclerView.ViewHolder(view), Checkable
 
     var observableChecked = MutableLiveData(false)
 
-    private val useFiveStarRating: Boolean by lazy {
-        val features: FeatureStorage = get()
-        features.isFeatureEnabled(Feature.FIVE_STAR_RATING)
-    }
-
     lateinit var imageHelper: Utils.ImageHelper
 
     fun setSong(
@@ -74,6 +66,7 @@ class TrackViewHolder(val view: View) : RecyclerView.ViewHolder(view), Checkable
         draggable: Boolean,
         isSelected: Boolean = false
     ) {
+        val useFiveStarRating = Settings.useFiveStarRating
         val song = file.song
         downloadFile = file
         entry = song
@@ -98,7 +91,7 @@ class TrackViewHolder(val view: View) : RecyclerView.ViewHolder(view), Checkable
             star.isVisible = false
             rating.isVisible = false
         } else {
-            setupStarButtons(song)
+            setupStarButtons(song, useFiveStarRating)
         }
 
         updateProgress(downloadFile!!.progress.value!!)
@@ -138,7 +131,7 @@ class TrackViewHolder(val view: View) : RecyclerView.ViewHolder(view), Checkable
         }
     }
 
-    private fun setupStarButtons(song: MusicDirectory.Entry) {
+    private fun setupStarButtons(song: MusicDirectory.Entry, useFiveStarRating: Boolean) {
         if (useFiveStarRating) {
             // Hide single star
             star.isVisible = false

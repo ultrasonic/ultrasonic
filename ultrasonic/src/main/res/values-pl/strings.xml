@@ -404,10 +404,10 @@ ponieważ api Subsonic nie wspiera nowego sposobu autoryzacji dla użytkowników
     <string name="api.subsonic.upgrade_client">Brak zgodności wersji. Uaktualnij aplikację Ultrasonic na Androida.</string>
     <string name="api.subsonic.upgrade_server">Brak zgodności wersji. Uaktualnij serwer Subsonic.</string>
 
-    <!-- Subsonic feature flags -->
-    <string name="feature_flags_category_title">Flagi funkcji</string>
-    <string name="feature_flags_five_star_rating_title">Użyj pięciu gwiazdek dla utworów</string>
-    <string name="feature_flags_five_star_rating_description">W przypadku utworów użyj systemu pięciu gwiazdek
+    <!-- Subsonic features  -->
+    <string name="settings.features_title">Flagi funkcji</string>
+    <string name="settings.five_star_rating_title">Użyj pięciu gwiazdek dla utworów</string>
+    <string name="settings.five_star_rating_description">W przypadku utworów użyj systemu pięciu gwiazdek
          zamiast po prostu grać gwiazdkami / bez gwiazd.
     </string>
 
