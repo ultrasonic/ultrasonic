@@ -4,16 +4,15 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.AdapterView
-import android.widget.AdapterView.OnItemClickListener
-import android.widget.ListView
+import android.widget.LinearLayout
+import android.widget.TextView
+import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import androidx.navigation.Navigation
 import org.koin.core.component.KoinComponent
 import org.moire.ultrasonic.R
 import org.moire.ultrasonic.data.ActiveServerProvider.Companion.isOffline
 import org.moire.ultrasonic.util.Constants
-import org.moire.ultrasonic.util.MergeAdapter
 import org.moire.ultrasonic.util.Settings
 import org.moire.ultrasonic.util.Util
 
@@ -21,26 +20,26 @@ import org.moire.ultrasonic.util.Util
  * Displays the Main screen of Ultrasonic, where the music library can be browsed
  */
 class MainFragment : Fragment(), KoinComponent {
-    private var list: ListView? = null
 
-    private lateinit var musicTitle: View
-    private lateinit var artistsButton: View
-    private lateinit var albumsButton: View
-    private lateinit var genresButton: View
-    private lateinit var videosTitle: View
-    private lateinit var songsTitle: View
-    private lateinit var randomSongsButton: View
-    private lateinit var songsStarredButton: View
-    private lateinit var albumsTitle: View
-    private lateinit var albumsNewestButton: View
-    private lateinit var albumsRandomButton: View
-    private lateinit var albumsHighestButton: View
-    private lateinit var albumsStarredButton: View
-    private lateinit var albumsRecentButton: View
-    private lateinit var albumsFrequentButton: View
-    private lateinit var albumsAlphaByNameButton: View
-    private lateinit var albumsAlphaByArtistButton: View
-    private lateinit var videosButton: View
+    private lateinit var list: LinearLayout
+    private lateinit var musicTitle: TextView
+    private lateinit var artistsButton: TextView
+    private lateinit var albumsButton: TextView
+    private lateinit var genresButton: TextView
+    private lateinit var videosTitle: TextView
+    private lateinit var songsTitle: TextView
+    private lateinit var randomSongsButton: TextView
+    private lateinit var songsStarredButton: TextView
+    private lateinit var albumsTitle: TextView
+    private lateinit var albumsNewestButton: TextView
+    private lateinit var albumsRandomButton: TextView
+    private lateinit var albumsHighestButton: TextView
+    private lateinit var albumsStarredButton: TextView
+    private lateinit var albumsRecentButton: TextView
+    private lateinit var albumsFrequentButton: TextView
+    private lateinit var albumsAlphaByNameButton: TextView
+    private lateinit var albumsAlphaByArtistButton: TextView
+    private lateinit var videosButton: TextView
 
     override fun onCreate(savedInstanceState: Bundle?) {
         Util.applyTheme(this.context)
@@ -59,8 +58,8 @@ class MainFragment : Fragment(), KoinComponent {
         list = view.findViewById(R.id.main_list)
 
         setupButtons()
-
-        if (list != null) setupMenuList(list!!)
+        setupClickListener()
+        setupItemVisibility()
 
         super.onViewCreated(view, savedInstanceState)
     }
@@ -71,133 +70,127 @@ class MainFragment : Fragment(), KoinComponent {
         val currentId3Setting = Settings.shouldUseId3Tags
 
         // If setting has changed...
-        if (currentId3Setting != shouldUseId3) {
-            shouldUseId3 = currentId3Setting
+        if (currentId3Setting != cachedId3Setting) {
+            cachedId3Setting = currentId3Setting
             shouldRestart = true
         }
 
         // then setup the list anew.
         if (shouldRestart) {
-            if (list != null) setupMenuList(list!!)
+            setupItemVisibility()
         }
     }
 
     private fun setupButtons() {
-        val buttons = layoutInflater.inflate(R.layout.main_buttons, list, false)
-        musicTitle = buttons.findViewById(R.id.main_music)
-        artistsButton = buttons.findViewById(R.id.main_artists_button)
-        albumsButton = buttons.findViewById(R.id.main_albums_button)
-        genresButton = buttons.findViewById(R.id.main_genres_button)
-        videosTitle = buttons.findViewById(R.id.main_videos_title)
-        songsTitle = buttons.findViewById(R.id.main_songs)
-        randomSongsButton = buttons.findViewById(R.id.main_songs_button)
-        songsStarredButton = buttons.findViewById(R.id.main_songs_starred)
-        albumsTitle = buttons.findViewById(R.id.main_albums)
-        albumsNewestButton = buttons.findViewById(R.id.main_albums_newest)
-        albumsRandomButton = buttons.findViewById(R.id.main_albums_random)
-        albumsHighestButton = buttons.findViewById(R.id.main_albums_highest)
-        albumsStarredButton = buttons.findViewById(R.id.main_albums_starred)
-        albumsRecentButton = buttons.findViewById(R.id.main_albums_recent)
-        albumsFrequentButton = buttons.findViewById(R.id.main_albums_frequent)
-        albumsAlphaByNameButton = buttons.findViewById(R.id.main_albums_alphaByName)
-        albumsAlphaByArtistButton = buttons.findViewById(R.id.main_albums_alphaByArtist)
-        videosButton = buttons.findViewById(R.id.main_videos)
+        musicTitle = list.findViewById(R.id.main_music)
+        artistsButton = list.findViewById(R.id.main_artists_button)
+        albumsButton = list.findViewById(R.id.main_albums_button)
+        genresButton = list.findViewById(R.id.main_genres_button)
+        videosTitle = list.findViewById(R.id.main_videos_title)
+        songsTitle = list.findViewById(R.id.main_songs)
+        randomSongsButton = list.findViewById(R.id.main_songs_button)
+        songsStarredButton = list.findViewById(R.id.main_songs_starred)
+        albumsTitle = list.findViewById(R.id.main_albums)
+        albumsNewestButton = list.findViewById(R.id.main_albums_newest)
+        albumsRandomButton = list.findViewById(R.id.main_albums_random)
+        albumsHighestButton = list.findViewById(R.id.main_albums_highest)
+        albumsStarredButton = list.findViewById(R.id.main_albums_starred)
+        albumsRecentButton = list.findViewById(R.id.main_albums_recent)
+        albumsFrequentButton = list.findViewById(R.id.main_albums_frequent)
+        albumsAlphaByNameButton = list.findViewById(R.id.main_albums_alphaByName)
+        albumsAlphaByArtistButton = list.findViewById(R.id.main_albums_alphaByArtist)
+        videosButton = list.findViewById(R.id.main_videos)
     }
 
-    private fun setupMenuList(list: ListView) {
+    private fun setupItemVisibility() {
+        // Cache some values
+        cachedId3Setting = Settings.shouldUseId3Tags
+        val isOnline = !isOffline()
 
-        // TODO: Should use RecyclerView
-        val adapter = MergeAdapter()
+        // Music
+        musicTitle.isVisible = true
+        artistsButton.isVisible = true
+        albumsButton.isVisible = isOnline
+        genresButton.isVisible = true
 
-        shouldUseId3 = Settings.shouldUseId3Tags
+        // Songs
+        songsTitle.isVisible = isOnline
+        randomSongsButton.isVisible = true
+        songsStarredButton.isVisible = isOnline
 
-        if (!isOffline()) {
-            adapter.addView(musicTitle, false)
-            adapter.addViews(listOf(artistsButton, albumsButton, genresButton), true)
-            adapter.addView(songsTitle, false)
-            adapter.addViews(listOf(randomSongsButton, songsStarredButton), true)
-            adapter.addView(albumsTitle, false)
-            adapter.addViews(
-                listOf(
-                    albumsNewestButton,
-                    albumsRecentButton,
-                    albumsFrequentButton
-                ),
-                true
-            )
-            if (!shouldUseId3) {
-                adapter.addView(albumsHighestButton, true)
-            }
-            adapter.addViews(
-                listOf(
-                    albumsRandomButton,
-                    albumsStarredButton,
-                    albumsAlphaByNameButton,
-                    albumsAlphaByArtistButton
-                ),
-                true
-            )
-            adapter.addView(videosTitle, false)
-            adapter.addViews(listOf(videosButton), true)
-        } else {
-            // Offline supported calls
-            adapter.addView(musicTitle, false)
-            adapter.addViews(listOf(artistsButton, genresButton), true)
-            adapter.addView(songsTitle, false)
-            adapter.addView(randomSongsButton, true)
-        }
+        // Albums
+        albumsTitle.isVisible = isOnline
+        albumsNewestButton.isVisible = isOnline
+        albumsRecentButton.isVisible = isOnline
+        albumsFrequentButton.isVisible = isOnline
+        albumsHighestButton.isVisible = isOnline && !cachedId3Setting
+        albumsRandomButton.isVisible = isOnline
+        albumsStarredButton.isVisible = isOnline
+        albumsAlphaByNameButton.isVisible = isOnline
+        albumsAlphaByArtistButton.isVisible = isOnline
 
-        list.adapter = adapter
-        list.onItemClickListener = listListener
+        // Videos
+        videosTitle.isVisible = isOnline
+        videosButton.isVisible = isOnline
     }
 
-    private val listListener =
-        OnItemClickListener { _: AdapterView<*>?, view: View, _: Int, _: Long ->
-            when {
-                view === albumsNewestButton -> {
-                    showAlbumList("newest", R.string.main_albums_newest)
-                }
-                view === albumsRandomButton -> {
-                    showAlbumList("random", R.string.main_albums_random)
-                }
-                view === albumsHighestButton -> {
-                    showAlbumList("highest", R.string.main_albums_highest)
-                }
-                view === albumsRecentButton -> {
-                    showAlbumList("recent", R.string.main_albums_recent)
-                }
-                view === albumsFrequentButton -> {
-                    showAlbumList("frequent", R.string.main_albums_frequent)
-                }
-                view === albumsStarredButton -> {
-                    showAlbumList(Constants.STARRED, R.string.main_albums_starred)
-                }
-                view === albumsAlphaByNameButton -> {
-                    showAlbumList(Constants.ALPHABETICAL_BY_NAME, R.string.main_albums_alphaByName)
-                }
-                view === albumsAlphaByArtistButton -> {
-                    showAlbumList("alphabeticalByArtist", R.string.main_albums_alphaByArtist)
-                }
-                view === songsStarredButton -> {
-                    showStarredSongs()
-                }
-                view === artistsButton -> {
-                    showArtists()
-                }
-                view === albumsButton -> {
-                    showAlbumList(Constants.ALPHABETICAL_BY_NAME, R.string.main_albums_title)
-                }
-                view === randomSongsButton -> {
-                    showRandomSongs()
-                }
-                view === genresButton -> {
-                    showGenres()
-                }
-                view === videosButton -> {
-                    showVideos()
-                }
-            }
+    private fun setupClickListener() {
+        albumsNewestButton.setOnClickListener {
+            showAlbumList("newest", R.string.main_albums_newest)
         }
+
+        albumsRandomButton.setOnClickListener {
+            showAlbumList("random", R.string.main_albums_random)
+        }
+
+        albumsHighestButton.setOnClickListener {
+            showAlbumList("highest", R.string.main_albums_highest)
+        }
+
+        albumsRecentButton.setOnClickListener {
+            showAlbumList("recent", R.string.main_albums_recent)
+        }
+
+        albumsFrequentButton.setOnClickListener {
+            showAlbumList("frequent", R.string.main_albums_frequent)
+        }
+
+        albumsStarredButton.setOnClickListener {
+            showAlbumList(Constants.STARRED, R.string.main_albums_starred)
+        }
+
+        albumsAlphaByNameButton.setOnClickListener {
+            showAlbumList(Constants.ALPHABETICAL_BY_NAME, R.string.main_albums_alphaByName)
+        }
+
+        albumsAlphaByArtistButton.setOnClickListener {
+            showAlbumList("alphabeticalByArtist", R.string.main_albums_alphaByArtist)
+        }
+
+        songsStarredButton.setOnClickListener {
+            showStarredSongs()
+        }
+
+        artistsButton.setOnClickListener {
+            showArtists()
+        }
+
+        albumsButton.setOnClickListener {
+            showAlbumList(Constants.ALPHABETICAL_BY_NAME, R.string.main_albums_title)
+        }
+
+        randomSongsButton.setOnClickListener {
+            showRandomSongs()
+        }
+
+        genresButton.setOnClickListener {
+            showGenres()
+        }
+
+        videosButton.setOnClickListener {
+            showVideos()
+        }
+    }
 
     private fun showStarredSongs() {
         val bundle = Bundle()
@@ -242,6 +235,6 @@ class MainFragment : Fragment(), KoinComponent {
     }
 
     companion object {
-        private var shouldUseId3 = false
+        private var cachedId3Setting = false
     }
 }
