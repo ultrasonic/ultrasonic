@@ -450,10 +450,10 @@
     <string name="api.subsonic.upgrade_client">Incompatibele versies. Werk de Ultrasonic Android-app bij.</string>
     <string name="api.subsonic.upgrade_server">Incompatibele versies. Werk je Subsonic-server bij.</string>
 
-    <!-- Subsonic feature flags -->
-    <string name="feature_flags_category_title">Experimentele functies</string>
-    <string name="feature_flags_five_star_rating_title">Gebruik vijf sterren voor nummers</string>
-    <string name="feature_flags_five_star_rating_description">Gebruik vijf sterren ratingsysteem voor liedjes
+    <!-- Subsonic features  -->
+    <string name="settings.features_title">Experimentele functies</string>
+    <string name="settings.five_star_rating_title">Gebruik vijf sterren voor nummers</string>
+    <string name="settings.five_star_rating_description">Gebruik vijf sterren ratingsysteem voor liedjes
          in plaats van items simpelweg in de hoofdrol te zetten / niet te verwijderen.
     </string>
 

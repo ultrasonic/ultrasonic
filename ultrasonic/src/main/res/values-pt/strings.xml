@@ -389,10 +389,10 @@
     <string name="api.subsonic.upgrade_client">Versões incompativeis. Atualize o aplicativo Ultrasonic para Android.</string>
     <string name="api.subsonic.upgrade_server">Versões incompativeis. Atualize o servidor Ultrasonic.</string>
 
-    <!-- Subsonic feature flags -->
-    <string name="feature_flags_category_title">Bandeiras de recursos</string>
-    <string name="feature_flags_five_star_rating_title">Use classificação de cinco estrelas para músicas</string>
-    <string name="feature_flags_five_star_rating_description">Use o sistema de classificação de cinco estrelas para músicas
+    <!-- Subsonic features  -->
+    <string name="settings.features_title">Bandeiras de recursos</string>
+    <string name="settings.five_star_rating_title">Use classificação de cinco estrelas para músicas</string>
+    <string name="settings.five_star_rating_description">Use o sistema de classificação de cinco estrelas para músicas
          em vez de simplesmente estrelar / não estrelar itens.
     </string>
 

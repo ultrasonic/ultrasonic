@@ -434,10 +434,10 @@
     <string name="api.subsonic.upgrade_client">Nem kompatibilis verzió. Kérjük, frissítse az Ultrasonic Android alkalmazást!</string>
     <string name="api.subsonic.upgrade_server">Nem kompatibilis verzió. Kérjük, frissítse a Subsonic kiszolgálót!</string>
 
-    <!-- Subsonic feature flags -->
-    <string name="feature_flags_category_title">Jellemzők Zászlók</string>
-    <string name="feature_flags_five_star_rating_title">Öt csillagos értékelés használata a dalokhoz</string>
-    <string name="feature_flags_five_star_rating_description">Öt csillag használata az értékeléshez az egyszerű
+    <!-- Subsonic features  -->
+    <string name="settings.features_title">Jellemzők Zászlók</string>
+    <string name="settings.five_star_rating_title">Öt csillagos értékelés használata a dalokhoz</string>
+    <string name="settings.five_star_rating_description">Öt csillag használata az értékeléshez az egyszerű
         csillaggal jelölés helyett.
     </string>
 

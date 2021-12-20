@@ -428,10 +428,10 @@
     <string name="api.subsonic.upgrade_client">Nekompatibilní verze. Aktualizujte prosím Ultrasonic Android aplikaci.</string>
     <string name="api.subsonic.upgrade_server">Nekompatibilní verze. Aktualizujte prosím Subsonic server.</string>
 
-    <!-- Subsonic feature flags -->
-    <string name="feature_flags_category_title">Příznaky funkcí</string>
-    <string name="feature_flags_five_star_rating_title">Používat pět hvězdiček pro hodnocení skladeb</string>
-    <string name="feature_flags_five_star_rating_description">Používat pět hvězdiček pro hodnocení skladeb
+    <!-- Subsonic features  -->
+    <string name="settings.features_title">Příznaky funkcí</string>
+    <string name="settings.five_star_rating_title">Používat pět hvězdiček pro hodnocení skladeb</string>
+    <string name="settings.five_star_rating_description">Používat pět hvězdiček pro hodnocení skladeb
         namísto jednoduchého jednohvězdičkového hodnocení.
     </string>
 
