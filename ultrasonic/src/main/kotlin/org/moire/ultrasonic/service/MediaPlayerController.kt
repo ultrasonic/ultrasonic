@@ -281,6 +281,11 @@ class MediaPlayerController(
     }
 
     @Synchronized
+    fun clearCaches() {
+        downloader.clearDownloadFileCache()
+    }
+
+    @Synchronized
     fun clearIncomplete() {
         reset()
 
