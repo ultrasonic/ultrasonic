@@ -9,11 +9,9 @@ package org.moire.ultrasonic.util
 
 import android.annotation.SuppressLint
 import android.app.Activity
-import android.app.AlertDialog
 import android.app.PendingIntent
 import android.content.ContentResolver
 import android.content.Context
-import android.content.DialogInterface
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.graphics.Bitmap
@@ -363,34 +361,6 @@ object Util {
     @JvmStatic
     fun isExternalStoragePresent(): Boolean =
         Environment.MEDIA_MOUNTED == Environment.getExternalStorageState()
-
-    // The AlertDialog requires an Activity context, app context is not enough
-    // See https://stackoverflow.com/questions/5436822/
-    fun createDialog(
-        context: Context?,
-        icon: Int = android.R.drawable.ic_dialog_info,
-        title: String,
-        message: String?
-    ): AlertDialog.Builder {
-        return AlertDialog.Builder(context)
-            .setIcon(icon)
-            .setTitle(title)
-            .setMessage(message)
-            .setPositiveButton(R.string.common_ok) {
-                dialog: DialogInterface,
-                _: Int ->
-                dialog.dismiss()
-            }
-    }
-
-    fun showDialog(
-        context: Context,
-        icon: Int = android.R.drawable.ic_dialog_info,
-        titleId: Int,
-        message: String?
-    ) {
-        createDialog(context, icon, context.getString(titleId, ""), message).show()
-    }
 
     @JvmStatic
     fun sleepQuietly(millis: Long) {

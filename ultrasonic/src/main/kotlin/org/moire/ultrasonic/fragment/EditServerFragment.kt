@@ -1,6 +1,5 @@
 package org.moire.ultrasonic.fragment
 
-import android.app.AlertDialog
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -37,6 +36,7 @@ import org.moire.ultrasonic.model.ServerSettingsModel
 import org.moire.ultrasonic.service.MusicServiceFactory
 import org.moire.ultrasonic.util.Constants
 import org.moire.ultrasonic.util.ErrorDialog
+import org.moire.ultrasonic.util.InfoDialog
 import org.moire.ultrasonic.util.ModalBackgroundTask
 import org.moire.ultrasonic.util.ServerColor
 import org.moire.ultrasonic.util.Util
@@ -470,24 +470,22 @@ class EditServerFragment : Fragment(), OnBackPressedHandler {
                     )
                 }
 
-                Util.showDialog(
-                    context = requireActivity(),
-                    titleId = R.string.settings_testing_ok,
-                    message = dialogText
-                )
+                InfoDialog.Builder(requireActivity())
+                    .setTitle(R.string.settings_testing_ok)
+                    .setMessage(dialogText)
+                    .show()
             }
 
             override fun error(error: Throwable) {
                 Timber.w(error)
                 ErrorDialog(
-                    activity,
-                    String.format(
+                    context = activity,
+                    message = String.format(
                         "%s %s",
                         resources.getString(R.string.settings_connection_failure),
                         getErrorMessage(error)
-                    ),
-                    false
-                )
+                    )
+                ).show()
             }
         }
         task.execute()
@@ -508,8 +506,7 @@ class EditServerFragment : Fragment(), OnBackPressedHandler {
      */
     private fun finishActivity() {
         if (areFieldsChanged()) {
-            AlertDialog.Builder(context)
-                .setIcon(android.R.drawable.ic_dialog_alert)
+            ErrorDialog.Builder(context)
                 .setTitle(R.string.common_confirm)
                 .setMessage(R.string.server_editor_leave_confirmation)
                 .setPositiveButton(R.string.common_ok) { dialog, _ ->

@@ -647,7 +647,7 @@ class MediaPlayerService : Service() {
             4 -> {
                 keycode = KeyEvent.KEYCODE_MEDIA_STOP
                 label = getString(R.string.buttons_stop)
-                icon = R.drawable.ic_baseline_close_24
+                icon = R.drawable.ic_baseline_close
             }
             else -> return null
         }

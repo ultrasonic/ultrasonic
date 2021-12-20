@@ -1,6 +1,11 @@
+/*
+ * NavigationActivity.kt
+ * Copyright (C) 2009-2021 Ultrasonic developers
+ *
+ * Distributed under terms of the GNU GPLv3 license.
+ */
 package org.moire.ultrasonic.activity
 
-import android.app.AlertDialog
 import android.app.SearchManager
 import android.content.Intent
 import android.content.res.ColorStateList
@@ -47,6 +52,7 @@ import org.moire.ultrasonic.service.MediaPlayerLifecycleSupport
 import org.moire.ultrasonic.service.RxBus
 import org.moire.ultrasonic.subsonic.ImageLoaderProvider
 import org.moire.ultrasonic.util.Constants
+import org.moire.ultrasonic.util.InfoDialog
 import org.moire.ultrasonic.util.ServerColor
 import org.moire.ultrasonic.util.Settings
 import org.moire.ultrasonic.util.Storage
@@ -358,8 +364,7 @@ class NavigationActivity : AppCompatActivity() {
         if (!infoDialogDisplayed) {
             infoDialogDisplayed = true
 
-            AlertDialog.Builder(this)
-                .setIcon(android.R.drawable.ic_dialog_info)
+            InfoDialog.Builder(this)
                 .setTitle(R.string.main_welcome_title)
                 .setMessage(R.string.main_welcome_text_demo)
                 .setNegativeButton(R.string.main_welcome_cancel) { dialog, _ ->
