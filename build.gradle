@@ -13,11 +13,11 @@ buildscript {
         maven { url "https://plugins.gradle.org/m2/" }
     }
     dependencies {
-        classpath gradlePlugins.gradle
-        classpath gradlePlugins.kotlin
-        classpath gradlePlugins.ktlintGradle
-        classpath gradlePlugins.detekt
-        classpath gradlePlugins.jacoco
+        classpath libs.gradle
+        classpath libs.kotlin
+        classpath libs.ktlintGradle
+        classpath libs.detekt
+        classpath libs.jacoco
     }
 }
 
@@ -47,6 +47,6 @@ allprojects {
 apply from: 'gradle_scripts/jacoco.gradle'
 
 wrapper {
-    gradleVersion(versions.gradle)
+    gradleVersion(libs.versions.gradle.get())
     distributionType("all")
 }

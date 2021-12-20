@@ -53,14 +53,14 @@ tasks.withType(Test) {
 }
 
 dependencies {
-    api other.kotlinStdlib
+    api libs.kotlinStdlib
 
-    testImplementation testing.junit
-    testRuntimeOnly testing.junitVintage
+    testImplementation libs.junit
+    testRuntimeOnly libs.junitVintage
 }
 
 jacoco {
-    toolVersion(versions.jacoco)
+    toolVersion(libs.versions.jacoco.get())
 }
 
 ext {

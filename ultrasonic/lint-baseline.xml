@@ -1,19 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<issues format="5" by="lint 4.2.2" client="gradle" variant="release" version="4.2.2">
-
-    <issue
-        id="ObsoleteLintCustomCheck"
-        message="Lint found an issue registry (`androidx.appcompat.AppCompatIssueRegistry`) which is older than the current API level; these checks may not work correctly.&#xA;&#xA;Recompile the checks against the latest version. Custom check API version is 7 (4.0), current lint API level is 8 (4.1)">
-        <location
-            file="../../../../.gradle/caches/transforms-3/cfd0dffad81bb5ff9173a2c6d47f5e0a/transformed/appcompat-1.2.0/jars/lint.jar"/>
-    </issue>
-
-    <issue
-        id="ObsoleteLintCustomCheck"
-        message="Lint found an issue registry (`timber.lint.TimberIssueRegistry`) which is older than the current API level; these checks may not work correctly.&#xA;&#xA;Recompile the checks against the latest version. Custom check API version is 1 (3.1), current lint API level is 8 (4.1)">
-        <location
-            file="../../../../.gradle/caches/transforms-3/9362f92689454001c7932b460b41bbdb/transformed/jetified-timber-4.7.1/jars/lint.jar"/>
-    </issue>
+<issues format="6" by="lint 7.0.4" type="baseline" client="gradle" name="AGP (7.0.4)" variant="all" version="7.0.4">
 
     <issue
         id="InflateParams"
@@ -82,6 +68,20 @@
     </issue>
 
     <issue
+        id="TrustAllX509TrustManager"
+        message="`checkClientTrusted` is empty, which could cause insecure network traffic due to trusting arbitrary TLS/SSL certificates presented by peers">
+        <location
+            file="org/moire/ultrasonic/api/subsonic/SubsonicAPIClient$allowSelfSignedCertificates$trustManager$1.class"/>
+    </issue>
+
+    <issue
+        id="TrustAllX509TrustManager"
+        message="`checkServerTrusted` is empty, which could cause insecure network traffic due to trusting arbitrary TLS/SSL certificates presented by peers">
+        <location
+            file="org/moire/ultrasonic/api/subsonic/SubsonicAPIClient$allowSelfSignedCertificates$trustManager$1.class"/>
+    </issue>
+
+    <issue
         id="ExportedContentProvider"
         message="Exported content providers can provide access to potentially sensitive data"
         errorLine1="        &lt;provider"
@@ -101,6 +101,182 @@
             file="src/main/AndroidManifest.xml"
             line="81"
             column="10"/>
+    </issue>
+
+    <issue
+        id="IntentFilterExportedReceiver"
+        message="As of Android 12, `android:exported` must be set; use `true` to make the activity \&#xA;available to other apps, and `false` otherwise. For launcher activities, this should be set to `true`."
+        errorLine1="        &lt;activity android:name=&quot;.activity.NavigationActivity&quot;"
+        errorLine2="         ~~~~~~~~">
+        <location
+            file="src/main/AndroidManifest.xml"
+            line="41"
+            column="10"/>
+    </issue>
+
+    <issue
+        id="IntentFilterExportedReceiver"
+        message="As of Android 12, `android:exported` must be set; use `true` to make the activity \&#xA;available to other apps, and `false` otherwise."
+        errorLine1="        &lt;receiver android:name=&quot;.receiver.MediaButtonIntentReceiver&quot;>"
+        errorLine2="         ~~~~~~~~">
+        <location
+            file="src/main/AndroidManifest.xml"
+            line="76"
+            column="10"/>
+    </issue>
+
+    <issue
+        id="IntentFilterExportedReceiver"
+        message="As of Android 12, `android:exported` must be set; use `true` to make the activity \&#xA;available to other apps, and `false` otherwise."
+        errorLine1="        &lt;receiver android:name=&quot;.receiver.UltrasonicIntentReceiver&quot;>"
+        errorLine2="         ~~~~~~~~">
+        <location
+            file="src/main/AndroidManifest.xml"
+            line="81"
+            column="10"/>
+    </issue>
+
+    <issue
+        id="IntentFilterExportedReceiver"
+        message="As of Android 12, `android:exported` must be set; use `true` to make the activity \&#xA;available to other apps, and `false` otherwise."
+        errorLine1="        &lt;receiver android:name=&quot;.receiver.BluetoothIntentReceiver&quot;>"
+        errorLine2="         ~~~~~~~~">
+        <location
+            file="src/main/AndroidManifest.xml"
+            line="93"
+            column="10"/>
+    </issue>
+
+    <issue
+        id="IntentFilterExportedReceiver"
+        message="As of Android 12, `android:exported` must be set; use `true` to make the activity \&#xA;available to other apps, and `false` otherwise."
+        errorLine1="        &lt;receiver"
+        errorLine2="         ~~~~~~~~">
+        <location
+            file="src/main/AndroidManifest.xml"
+            line="101"
+            column="10"/>
+    </issue>
+
+    <issue
+        id="IntentFilterExportedReceiver"
+        message="As of Android 12, `android:exported` must be set; use `true` to make the activity \&#xA;available to other apps, and `false` otherwise."
+        errorLine1="        &lt;receiver"
+        errorLine2="         ~~~~~~~~">
+        <location
+            file="src/main/AndroidManifest.xml"
+            line="112"
+            column="10"/>
+    </issue>
+
+    <issue
+        id="IntentFilterExportedReceiver"
+        message="As of Android 12, `android:exported` must be set; use `true` to make the activity \&#xA;available to other apps, and `false` otherwise."
+        errorLine1="        &lt;receiver"
+        errorLine2="         ~~~~~~~~">
+        <location
+            file="src/main/AndroidManifest.xml"
+            line="123"
+            column="10"/>
+    </issue>
+
+    <issue
+        id="IntentFilterExportedReceiver"
+        message="As of Android 12, `android:exported` must be set; use `true` to make the activity \&#xA;available to other apps, and `false` otherwise."
+        errorLine1="        &lt;receiver"
+        errorLine2="         ~~~~~~~~">
+        <location
+            file="src/main/AndroidManifest.xml"
+            line="134"
+            column="10"/>
+    </issue>
+
+    <issue
+        id="UnspecifiedImmutableFlag"
+        message="Missing `PendingIntent` mutability flag"
+        errorLine1="        return PendingIntent.getActivity(this, 0, intent, flags)"
+        errorLine2="                                                          ~~~~~">
+        <location
+            file="src/main/kotlin/org/moire/ultrasonic/service/MediaPlayerService.kt"
+            line="708"
+            column="59"/>
+    </issue>
+
+    <issue
+        id="UnspecifiedImmutableFlag"
+        message="Missing `PendingIntent` mutability flag"
+        errorLine1="            PendingIntent.FLAG_CANCEL_CURRENT"
+        errorLine2="            ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
+        <location
+            file="src/main/kotlin/org/moire/ultrasonic/util/MediaSessionHandler.kt"
+            line="323"
+            column="13"/>
+    </issue>
+
+    <issue
+        id="UnspecifiedImmutableFlag"
+        message="Missing `PendingIntent` mutability flag"
+        errorLine1="  PendingIntent pendingIntent = PendingIntent.getActivity(context, 10, intent, PendingIntent.FLAG_UPDATE_CURRENT);"
+        errorLine2="                                                                               ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
+        <location
+            file="src/main/java/org/moire/ultrasonic/provider/UltrasonicAppWidgetProvider.java"
+            line="198"
+            column="80"/>
+    </issue>
+
+    <issue
+        id="UnspecifiedImmutableFlag"
+        message="Missing `PendingIntent` mutability flag"
+        errorLine1="  pendingIntent = PendingIntent.getBroadcast(context, 11, intent, 0);"
+        errorLine2="                                                                  ~">
+        <location
+            file="src/main/java/org/moire/ultrasonic/provider/UltrasonicAppWidgetProvider.java"
+            line="206"
+            column="67"/>
+    </issue>
+
+    <issue
+        id="UnspecifiedImmutableFlag"
+        message="Missing `PendingIntent` mutability flag"
+        errorLine1="  pendingIntent = PendingIntent.getBroadcast(context, 12, intent, 0);"
+        errorLine2="                                                                  ~">
+        <location
+            file="src/main/java/org/moire/ultrasonic/provider/UltrasonicAppWidgetProvider.java"
+            line="212"
+            column="67"/>
+    </issue>
+
+    <issue
+        id="UnspecifiedImmutableFlag"
+        message="Missing `PendingIntent` mutability flag"
+        errorLine1="  pendingIntent = PendingIntent.getBroadcast(context, 13, intent, 0);"
+        errorLine2="                                                                  ~">
+        <location
+            file="src/main/java/org/moire/ultrasonic/provider/UltrasonicAppWidgetProvider.java"
+            line="218"
+            column="67"/>
+    </issue>
+
+    <issue
+        id="UnspecifiedImmutableFlag"
+        message="Missing `PendingIntent` mutability flag"
+        errorLine1="        return PendingIntent.getBroadcast(context, requestCode, intent, flags)"
+        errorLine2="                                                                        ~~~~~">
+        <location
+            file="src/main/kotlin/org/moire/ultrasonic/util/Util.kt"
+            line="891"
+            column="73"/>
+    </issue>
+
+    <issue
+        id="NotifyDataSetChanged"
+        message="It will always be more efficient to use more specific change events if you can. Rely on `notifyDataSetChanged` as a last resort."
+        errorLine1="                    viewAdapter.notifyDataSetChanged()"
+        errorLine2="                    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
+        <location
+            file="src/main/kotlin/org/moire/ultrasonic/fragment/PlayerFragment.kt"
+            line="908"
+            column="21"/>
     </issue>
 
     <issue
@@ -200,54 +376,6 @@
             file="src/main/res/values/strings.xml"
             line="114"
             column="13"/>
-        <location
-            file="src/main/res/values-cs/strings.xml"
-            line="98"
-            column="13"/>
-        <location
-            file="src/main/res/values-de/strings.xml"
-            line="97"
-            column="13"/>
-        <location
-            file="src/main/res/values-es/strings.xml"
-            line="111"
-            column="13"/>
-        <location
-            file="src/main/res/values-fr/strings.xml"
-            line="108"
-            column="13"/>
-        <location
-            file="src/main/res/values-hu/strings.xml"
-            line="108"
-            column="13"/>
-        <location
-            file="src/main/res/values-it/strings.xml"
-            line="95"
-            column="13"/>
-        <location
-            file="src/main/res/values-nl/strings.xml"
-            line="111"
-            column="13"/>
-        <location
-            file="src/main/res/values-pl/strings.xml"
-            line="97"
-            column="13"/>
-        <location
-            file="src/main/res/values-pt/strings.xml"
-            line="97"
-            column="13"/>
-        <location
-            file="src/main/res/values-pt-rBR/strings.xml"
-            line="108"
-            column="13"/>
-        <location
-            file="src/main/res/values-ru/strings.xml"
-            line="108"
-            column="13"/>
-        <location
-            file="src/main/res/values-zh-rCN/strings.xml"
-            line="107"
-            column="13"/>
     </issue>
 
     <issue
@@ -258,54 +386,6 @@
         <location
             file="src/main/res/values/strings.xml"
             line="128"
-            column="13"/>
-        <location
-            file="src/main/res/values-cs/strings.xml"
-            line="109"
-            column="13"/>
-        <location
-            file="src/main/res/values-de/strings.xml"
-            line="108"
-            column="13"/>
-        <location
-            file="src/main/res/values-es/strings.xml"
-            line="124"
-            column="13"/>
-        <location
-            file="src/main/res/values-fr/strings.xml"
-            line="121"
-            column="13"/>
-        <location
-            file="src/main/res/values-hu/strings.xml"
-            line="119"
-            column="13"/>
-        <location
-            file="src/main/res/values-it/strings.xml"
-            line="106"
-            column="13"/>
-        <location
-            file="src/main/res/values-nl/strings.xml"
-            line="124"
-            column="13"/>
-        <location
-            file="src/main/res/values-pl/strings.xml"
-            line="108"
-            column="13"/>
-        <location
-            file="src/main/res/values-pt/strings.xml"
-            line="108"
-            column="13"/>
-        <location
-            file="src/main/res/values-pt-rBR/strings.xml"
-            line="121"
-            column="13"/>
-        <location
-            file="src/main/res/values-ru/strings.xml"
-            line="121"
-            column="13"/>
-        <location
-            file="src/main/res/values-zh-rCN/strings.xml"
-            line="120"
             column="13"/>
     </issue>
 
@@ -318,54 +398,6 @@
             file="src/main/res/values/strings.xml"
             line="133"
             column="13"/>
-        <location
-            file="src/main/res/values-cs/strings.xml"
-            line="114"
-            column="13"/>
-        <location
-            file="src/main/res/values-de/strings.xml"
-            line="113"
-            column="13"/>
-        <location
-            file="src/main/res/values-es/strings.xml"
-            line="129"
-            column="13"/>
-        <location
-            file="src/main/res/values-fr/strings.xml"
-            line="126"
-            column="13"/>
-        <location
-            file="src/main/res/values-hu/strings.xml"
-            line="124"
-            column="13"/>
-        <location
-            file="src/main/res/values-it/strings.xml"
-            line="110"
-            column="13"/>
-        <location
-            file="src/main/res/values-nl/strings.xml"
-            line="129"
-            column="13"/>
-        <location
-            file="src/main/res/values-pl/strings.xml"
-            line="112"
-            column="13"/>
-        <location
-            file="src/main/res/values-pt/strings.xml"
-            line="112"
-            column="13"/>
-        <location
-            file="src/main/res/values-pt-rBR/strings.xml"
-            line="126"
-            column="13"/>
-        <location
-            file="src/main/res/values-ru/strings.xml"
-            line="126"
-            column="13"/>
-        <location
-            file="src/main/res/values-zh-rCN/strings.xml"
-            line="125"
-            column="13"/>
     </issue>
 
     <issue
@@ -376,54 +408,6 @@
         <location
             file="src/main/res/values/strings.xml"
             line="134"
-            column="13"/>
-        <location
-            file="src/main/res/values-cs/strings.xml"
-            line="115"
-            column="13"/>
-        <location
-            file="src/main/res/values-de/strings.xml"
-            line="114"
-            column="13"/>
-        <location
-            file="src/main/res/values-es/strings.xml"
-            line="130"
-            column="13"/>
-        <location
-            file="src/main/res/values-fr/strings.xml"
-            line="127"
-            column="13"/>
-        <location
-            file="src/main/res/values-hu/strings.xml"
-            line="125"
-            column="13"/>
-        <location
-            file="src/main/res/values-it/strings.xml"
-            line="111"
-            column="13"/>
-        <location
-            file="src/main/res/values-nl/strings.xml"
-            line="130"
-            column="13"/>
-        <location
-            file="src/main/res/values-pl/strings.xml"
-            line="113"
-            column="13"/>
-        <location
-            file="src/main/res/values-pt/strings.xml"
-            line="113"
-            column="13"/>
-        <location
-            file="src/main/res/values-pt-rBR/strings.xml"
-            line="127"
-            column="13"/>
-        <location
-            file="src/main/res/values-ru/strings.xml"
-            line="127"
-            column="13"/>
-        <location
-            file="src/main/res/values-zh-rCN/strings.xml"
-            line="126"
             column="13"/>
     </issue>
 
@@ -436,54 +420,6 @@
             file="src/main/res/values/strings.xml"
             line="135"
             column="13"/>
-        <location
-            file="src/main/res/values-cs/strings.xml"
-            line="116"
-            column="13"/>
-        <location
-            file="src/main/res/values-de/strings.xml"
-            line="115"
-            column="13"/>
-        <location
-            file="src/main/res/values-es/strings.xml"
-            line="131"
-            column="13"/>
-        <location
-            file="src/main/res/values-fr/strings.xml"
-            line="128"
-            column="13"/>
-        <location
-            file="src/main/res/values-hu/strings.xml"
-            line="126"
-            column="13"/>
-        <location
-            file="src/main/res/values-it/strings.xml"
-            line="112"
-            column="13"/>
-        <location
-            file="src/main/res/values-nl/strings.xml"
-            line="131"
-            column="13"/>
-        <location
-            file="src/main/res/values-pl/strings.xml"
-            line="114"
-            column="13"/>
-        <location
-            file="src/main/res/values-pt/strings.xml"
-            line="114"
-            column="13"/>
-        <location
-            file="src/main/res/values-pt-rBR/strings.xml"
-            line="128"
-            column="13"/>
-        <location
-            file="src/main/res/values-ru/strings.xml"
-            line="128"
-            column="13"/>
-        <location
-            file="src/main/res/values-zh-rCN/strings.xml"
-            line="127"
-            column="13"/>
     </issue>
 
     <issue
@@ -494,54 +430,6 @@
         <location
             file="src/main/res/values/strings.xml"
             line="136"
-            column="13"/>
-        <location
-            file="src/main/res/values-cs/strings.xml"
-            line="117"
-            column="13"/>
-        <location
-            file="src/main/res/values-de/strings.xml"
-            line="116"
-            column="13"/>
-        <location
-            file="src/main/res/values-es/strings.xml"
-            line="132"
-            column="13"/>
-        <location
-            file="src/main/res/values-fr/strings.xml"
-            line="129"
-            column="13"/>
-        <location
-            file="src/main/res/values-hu/strings.xml"
-            line="127"
-            column="13"/>
-        <location
-            file="src/main/res/values-it/strings.xml"
-            line="113"
-            column="13"/>
-        <location
-            file="src/main/res/values-nl/strings.xml"
-            line="132"
-            column="13"/>
-        <location
-            file="src/main/res/values-pl/strings.xml"
-            line="115"
-            column="13"/>
-        <location
-            file="src/main/res/values-pt/strings.xml"
-            line="115"
-            column="13"/>
-        <location
-            file="src/main/res/values-pt-rBR/strings.xml"
-            line="129"
-            column="13"/>
-        <location
-            file="src/main/res/values-ru/strings.xml"
-            line="129"
-            column="13"/>
-        <location
-            file="src/main/res/values-zh-rCN/strings.xml"
-            line="128"
             column="13"/>
     </issue>
 
@@ -554,54 +442,6 @@
             file="src/main/res/values/strings.xml"
             line="141"
             column="13"/>
-        <location
-            file="src/main/res/values-cs/strings.xml"
-            line="122"
-            column="13"/>
-        <location
-            file="src/main/res/values-de/strings.xml"
-            line="121"
-            column="13"/>
-        <location
-            file="src/main/res/values-es/strings.xml"
-            line="137"
-            column="13"/>
-        <location
-            file="src/main/res/values-fr/strings.xml"
-            line="134"
-            column="13"/>
-        <location
-            file="src/main/res/values-hu/strings.xml"
-            line="132"
-            column="13"/>
-        <location
-            file="src/main/res/values-it/strings.xml"
-            line="118"
-            column="13"/>
-        <location
-            file="src/main/res/values-nl/strings.xml"
-            line="137"
-            column="13"/>
-        <location
-            file="src/main/res/values-pl/strings.xml"
-            line="120"
-            column="13"/>
-        <location
-            file="src/main/res/values-pt/strings.xml"
-            line="120"
-            column="13"/>
-        <location
-            file="src/main/res/values-pt-rBR/strings.xml"
-            line="134"
-            column="13"/>
-        <location
-            file="src/main/res/values-ru/strings.xml"
-            line="134"
-            column="13"/>
-        <location
-            file="src/main/res/values-zh-rCN/strings.xml"
-            line="133"
-            column="13"/>
     </issue>
 
     <issue
@@ -613,54 +453,6 @@
             file="src/main/res/values/strings.xml"
             line="147"
             column="13"/>
-        <location
-            file="src/main/res/values-cs/strings.xml"
-            line="128"
-            column="13"/>
-        <location
-            file="src/main/res/values-de/strings.xml"
-            line="127"
-            column="13"/>
-        <location
-            file="src/main/res/values-es/strings.xml"
-            line="143"
-            column="13"/>
-        <location
-            file="src/main/res/values-fr/strings.xml"
-            line="140"
-            column="13"/>
-        <location
-            file="src/main/res/values-hu/strings.xml"
-            line="138"
-            column="13"/>
-        <location
-            file="src/main/res/values-it/strings.xml"
-            line="124"
-            column="13"/>
-        <location
-            file="src/main/res/values-nl/strings.xml"
-            line="143"
-            column="13"/>
-        <location
-            file="src/main/res/values-pl/strings.xml"
-            line="126"
-            column="13"/>
-        <location
-            file="src/main/res/values-pt/strings.xml"
-            line="126"
-            column="13"/>
-        <location
-            file="src/main/res/values-pt-rBR/strings.xml"
-            line="140"
-            column="13"/>
-        <location
-            file="src/main/res/values-ru/strings.xml"
-            line="140"
-            column="13"/>
-        <location
-            file="src/main/res/values-zh-rCN/strings.xml"
-            line="139"
-            column="13"/>
     </issue>
 
     <issue
@@ -671,54 +463,6 @@
         <location
             file="src/main/res/values/strings.xml"
             line="159"
-            column="13"/>
-        <location
-            file="src/main/res/values-cs/strings.xml"
-            line="140"
-            column="13"/>
-        <location
-            file="src/main/res/values-de/strings.xml"
-            line="139"
-            column="13"/>
-        <location
-            file="src/main/res/values-es/strings.xml"
-            line="155"
-            column="13"/>
-        <location
-            file="src/main/res/values-fr/strings.xml"
-            line="152"
-            column="13"/>
-        <location
-            file="src/main/res/values-hu/strings.xml"
-            line="150"
-            column="13"/>
-        <location
-            file="src/main/res/values-it/strings.xml"
-            line="136"
-            column="13"/>
-        <location
-            file="src/main/res/values-nl/strings.xml"
-            line="155"
-            column="13"/>
-        <location
-            file="src/main/res/values-pl/strings.xml"
-            line="138"
-            column="13"/>
-        <location
-            file="src/main/res/values-pt/strings.xml"
-            line="138"
-            column="13"/>
-        <location
-            file="src/main/res/values-pt-rBR/strings.xml"
-            line="152"
-            column="13"/>
-        <location
-            file="src/main/res/values-ru/strings.xml"
-            line="152"
-            column="13"/>
-        <location
-            file="src/main/res/values-zh-rCN/strings.xml"
-            line="151"
             column="13"/>
     </issue>
 
@@ -753,54 +497,6 @@
             file="src/main/res/values/strings.xml"
             line="230"
             column="13"/>
-        <location
-            file="src/main/res/values-cs/strings.xml"
-            line="208"
-            column="13"/>
-        <location
-            file="src/main/res/values-de/strings.xml"
-            line="207"
-            column="13"/>
-        <location
-            file="src/main/res/values-es/strings.xml"
-            line="223"
-            column="13"/>
-        <location
-            file="src/main/res/values-fr/strings.xml"
-            line="220"
-            column="13"/>
-        <location
-            file="src/main/res/values-hu/strings.xml"
-            line="218"
-            column="13"/>
-        <location
-            file="src/main/res/values-it/strings.xml"
-            line="203"
-            column="13"/>
-        <location
-            file="src/main/res/values-nl/strings.xml"
-            line="223"
-            column="13"/>
-        <location
-            file="src/main/res/values-pl/strings.xml"
-            line="206"
-            column="13"/>
-        <location
-            file="src/main/res/values-pt/strings.xml"
-            line="206"
-            column="13"/>
-        <location
-            file="src/main/res/values-pt-rBR/strings.xml"
-            line="220"
-            column="13"/>
-        <location
-            file="src/main/res/values-ru/strings.xml"
-            line="220"
-            column="13"/>
-        <location
-            file="src/main/res/values-zh-rCN/strings.xml"
-            line="217"
-            column="13"/>
     </issue>
 
     <issue
@@ -812,54 +508,6 @@
             file="src/main/res/values/strings.xml"
             line="299"
             column="13"/>
-        <location
-            file="src/main/res/values-cs/strings.xml"
-            line="273"
-            column="13"/>
-        <location
-            file="src/main/res/values-de/strings.xml"
-            line="272"
-            column="13"/>
-        <location
-            file="src/main/res/values-es/strings.xml"
-            line="292"
-            column="13"/>
-        <location
-            file="src/main/res/values-fr/strings.xml"
-            line="287"
-            column="13"/>
-        <location
-            file="src/main/res/values-hu/strings.xml"
-            line="285"
-            column="13"/>
-        <location
-            file="src/main/res/values-it/strings.xml"
-            line="266"
-            column="13"/>
-        <location
-            file="src/main/res/values-nl/strings.xml"
-            line="292"
-            column="13"/>
-        <location
-            file="src/main/res/values-pl/strings.xml"
-            line="271"
-            column="13"/>
-        <location
-            file="src/main/res/values-pt/strings.xml"
-            line="271"
-            column="13"/>
-        <location
-            file="src/main/res/values-pt-rBR/strings.xml"
-            line="289"
-            column="13"/>
-        <location
-            file="src/main/res/values-ru/strings.xml"
-            line="287"
-            column="13"/>
-        <location
-            file="src/main/res/values-zh-rCN/strings.xml"
-            line="285"
-            column="13"/>
     </issue>
 
     <issue
@@ -870,54 +518,6 @@
         <location
             file="src/main/res/values/strings.xml"
             line="302"
-            column="13"/>
-        <location
-            file="src/main/res/values-cs/strings.xml"
-            line="276"
-            column="13"/>
-        <location
-            file="src/main/res/values-de/strings.xml"
-            line="275"
-            column="13"/>
-        <location
-            file="src/main/res/values-es/strings.xml"
-            line="295"
-            column="13"/>
-        <location
-            file="src/main/res/values-fr/strings.xml"
-            line="290"
-            column="13"/>
-        <location
-            file="src/main/res/values-hu/strings.xml"
-            line="288"
-            column="13"/>
-        <location
-            file="src/main/res/values-it/strings.xml"
-            line="269"
-            column="13"/>
-        <location
-            file="src/main/res/values-nl/strings.xml"
-            line="295"
-            column="13"/>
-        <location
-            file="src/main/res/values-pl/strings.xml"
-            line="274"
-            column="13"/>
-        <location
-            file="src/main/res/values-pt/strings.xml"
-            line="274"
-            column="13"/>
-        <location
-            file="src/main/res/values-pt-rBR/strings.xml"
-            line="292"
-            column="13"/>
-        <location
-            file="src/main/res/values-ru/strings.xml"
-            line="290"
-            column="13"/>
-        <location
-            file="src/main/res/values-zh-rCN/strings.xml"
-            line="288"
             column="13"/>
     </issue>
 
@@ -940,46 +540,6 @@
         <location
             file="src/main/res/values/strings.xml"
             line="447"
-            column="14"/>
-        <location
-            file="src/main/res/values-cs/strings.xml"
-            line="413"
-            column="14"/>
-        <location
-            file="src/main/res/values-es/strings.xml"
-            line="436"
-            column="14"/>
-        <location
-            file="src/main/res/values-fr/strings.xml"
-            line="425"
-            column="14"/>
-        <location
-            file="src/main/res/values-hu/strings.xml"
-            line="420"
-            column="14"/>
-        <location
-            file="src/main/res/values-nl/strings.xml"
-            line="436"
-            column="14"/>
-        <location
-            file="src/main/res/values-pl/strings.xml"
-            line="388"
-            column="14"/>
-        <location
-            file="src/main/res/values-pt/strings.xml"
-            line="375"
-            column="14"/>
-        <location
-            file="src/main/res/values-pt-rBR/strings.xml"
-            line="429"
-            column="14"/>
-        <location
-            file="src/main/res/values-ru/strings.xml"
-            line="437"
-            column="14"/>
-        <location
-            file="src/main/res/values-zh-rCN/strings.xml"
-            line="419"
             column="14"/>
     </issue>
 
