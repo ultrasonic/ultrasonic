@@ -1,6 +1,6 @@
 // Top-level build file where you can add configuration options common to all sub-projects/modules.
 buildscript {
-    apply from: 'dependencies.gradle'
+    apply from: 'gradle/versions.gradle'
 
     ext.bootstrap = [
             kotlinModule : "${project.rootDir}/gradle_scripts/kotlin-module-bootstrap.gradle",

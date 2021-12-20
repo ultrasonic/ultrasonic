@@ -10,7 +10,7 @@ jobs:
       - checkout
       - restore_cache:
           keys:
-            - v1-ultrasonic-{{ .Branch }}-{{ checksum "dependencies.gradle" }}
+            - v1-ultrasonic-{{ .Branch }}-{{ checksum "gradle/libs.versions.toml" }}
             - v1-ultrasonic-{{ .Branch }}
             - v1-ultrasonic
       - run:
@@ -44,7 +44,7 @@ jobs:
       - save_cache:
           paths:
             - ~/.gradle
-          key:  v1-ultrasonic-{{ .Branch }}-{{ checksum "dependencies.gradle" }}
+          key:  v1-ultrasonic-{{ .Branch }}-{{ checksum "gradle/libs.versions.toml" }}
       - store_artifacts:
           path: ultrasonic/build/reports
           destination: reports
@@ -81,7 +81,7 @@ jobs:
       - checkout
       - restore_cache:
           keys:
-            - v1-ultrasonic-{{ .Branch }}-{{ checksum "dependencies.gradle" }}
+            - v1-ultrasonic-{{ .Branch }}-{{ checksum "gradle/libs.versions.toml" }}
             - v1-ultrasonic-{{ .Branch }}
             - v1-ultrasonic
       - run:
