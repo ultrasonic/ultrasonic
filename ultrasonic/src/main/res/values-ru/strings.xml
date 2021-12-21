@@ -53,7 +53,6 @@
     <string name="delete_playlist">Вы хотите удалить %1$s</string>
     <string name="download.bookmark_removed" formatted="false">Закладка удалена</string>
     <string name="download.bookmark_set_at_position" formatted="false">Закладка установлена ​​на %s</string>
-    <string name="playlist.empty">Плейлист пустой</string>
     <string name="download.jukebox_not_authorized">Пульт дистанционного управления не допускается. Пожалуйста, включите режим музыкального автомата в <b> Пользователи &gt; Настройки </b>на вашем Subsonic сервере.</string>
     <string name="download.jukebox_off">Пульт управления выключен. Музыка играет на телефоне</string>
     <string name="download.jukebox_offline">Пульт дистанционного управления недоступен в автономном режиме.</string>
@@ -141,7 +140,6 @@
     <string name="search.songs">Песни</string>
     <string name="search.title">Поиск</string>
     <string name="select_album.empty">Медиа не найдена</string>
-    <string name="select_album.n_selected">%d треки выбраны.</string>
     <string name="select_album.no_network">Предупреждение: сеть недоступна.</string>
     <string name="select_album.no_sdcard">Ошибка: нет SD-карты</string>
     <string name="select_album.play_all">Воспроизвести все</string>
@@ -206,9 +204,7 @@
     <string name="settings.directory_cache_time_60">1 час</string>
     <string name="settings.disc_sort">Время кэша каталогов</string>
     <string name="settings.disc_sort_summary">Сортировать список песен по номеру диска и треку</string>
-    <string name="settings.display_bitrate">Отображать битрейт и суффикс файла</string>
     <string name="settings.display_bitrate_summary">Добавить имя исполнителя с битрейтом и суффиксом файла</string>
-    <string name="settings.download_transition">Показать загрузки при воспроизведении</string>
     <string name="settings.download_transition_summary">Переход к загрузке активности при запуске воспроизведения</string>
     <string name="settings.gapless_playback">Воспроизведение без промежутка</string>
     <string name="settings.gapless_playback_summary">Включить воспроизведение без паузы</string>
@@ -317,8 +313,6 @@
     <string name="settings.show_artist_picture">Показать изображение исполнителя в списке исполнителей</string>
     <string name="settings.show_artist_picture_summary">Отображает изображение исполнителя в списке исполнителей, если доступно</string>
     <string name="main.video" tools:ignore="UnusedResources">Видео</string>
-    <string name="settings.wifi_required_summary">Потоковое мультимедиа только при подключении к Wi-Fi</string>
-    <string name="settings.wifi_required_title">Только потоковая передача по Wi-Fi</string>
     <string name="song_details.all">%1$s%2$s</string>
     <string name="song_details.kbps">%d kbps</string>
     <string name="util.bytes_format.byte">0 B</string>
@@ -372,7 +366,6 @@
     <string name="settings.playback.bluetooth_all">Все устройства Bluetooth</string>
     <string name="settings.playback.bluetooth_a2dp">Только аудио (A2DP) устройства</string>
     <string name="settings.playback.bluetooth_disabled">Отключено</string>
-    <string name="settings.playback.single_button_bluetooth_device">Одна кнопка Воспроизведение/Пауза на устройстве Bluetooth</string>
     <string name="settings.playback.single_button_bluetooth_device_summary">Включение этого может помочь со старыми устройствами Bluetooth, когда Воспроизведение/Пауза работает некорректно.</string>
     <string name="settings.debug.title">Настройки отладки</string>
     <string name="settings.debug.log_to_file">Записать журнал отладки в файл</string>
@@ -381,8 +374,6 @@
     <string name="settings.debug.log_keep">Сохранить файлы</string>
     <string name="settings.debug.log_delete">Удалить файлы</string>
     <string name="settings.debug.log_deleted">Удаленные файлы журналов.</string>
-
-
     <string name="server_selector.label">Настроенные серверы</string>
     <string name="server_selector.delete_confirmation">Вы уверены, что хотите удалить сервер?</string>
     <string name="server_editor.label">Редактирование сервера</string>
@@ -404,36 +395,6 @@
         <item quantity="many">%d песен</item>
         <item quantity="other">%d песен</item>
     </plurals>
-    <plurals name="select_album_n_songs_pinned">
-        <item quantity="one">%d песня выбрана для закрепления.</item>
-        <item quantity="few">%d песни выбрано для закрепления.</item>
-        <item quantity="many">%d песен выбрано для закрепления.</item>
-        <item quantity="other">%d песен выбрано для закрепления.</item>
-    </plurals>
-    <plurals name="select_album_n_songs_downloaded">
-        <item quantity="one">%d песня выбрана для загрузки.</item>
-        <item quantity="few">%d песни выбрано для загрузки.</item>
-        <item quantity="many">%d песен выбрано для загрузки.</item>
-        <item quantity="other">%d песен выбрано для загрузки.</item>
-    </plurals>
-    <plurals name="select_album_n_songs_unpinned">
-        <item quantity="one">%d песня выбрана для открепления.</item>
-        <item quantity="few">%d песни выбрано для открепления.</item>
-        <item quantity="many">%d песен выбрано для открепления.</item>
-        <item quantity="other">%d песен выбрано для открепления.</item>
-    </plurals>
-    <plurals name="select_album_n_songs_added">
-        <item quantity="one">%d песня добавлена в конец очереди воспроизведения.</item>
-        <item quantity="few">%d песни добавлено в конец очереди воспроизведения.</item>
-        <item quantity="many">%d песен добавлено в конец очереди воспроизведения.</item>
-        <item quantity="other">%d песен добавлено в конец очереди воспроизведения.</item>
-    </plurals>
-    <plurals name="select_album_n_songs_play_next">
-        <item quantity="one">%d песня вставлена после текущей песни.</item>
-        <item quantity="few">%d песни вставлено после текущей песни.</item>
-        <item quantity="many">%d песен вставлено после текущей песни.</item>
-        <item quantity="other">%d песен вставлено после текущей песни.</item>
-    </plurals>
     <plurals name="select_album_donate_dialog_n_trial_days_left">
         <item quantity="one">Остался %d день пробного периода</item>
         <item quantity="few">Осталось %d дня пробного периода</item>
@@ -453,10 +414,4 @@
     <string name="api.subsonic.upgrade_client">Несовместимые версии. Пожалуйста, обновите приложение Ultrasonic для Android.</string>
     <string name="api.subsonic.upgrade_server">Несовместимые версии. Пожалуйста, обновите Subsonic сервер.</string>
 
-    <!-- Subsonic features  -->
-    <string name="settings.features_title">Флаги</string>
-    <string name="settings.five_star_rating_title">Использовать пятизвездочный рейтинг для песен</string>
-    <string name="settings.five_star_rating_description">Использовать пятизвездочную систему рейтинга для песен
-        вместо того, чтобы просто ставить/не ставить звезды.</string>
-
-</resources>
+    </resources>

@@ -28,7 +28,9 @@
     <string name="button_bar.playlists">播放列表</string>
     <string name="button_bar.search">搜索</string>
     <string name="chat.send_a_message">发送消息</string>
+    <string name="common.album">专辑</string>
     <string name="common.appname">Ultrasonic</string>
+    <string name="common.artist">艺术家</string>
     <string name="common.cancel">取消</string>
     <string name="common.comment">评论</string>
     <string name="common.confirm">确认</string>
@@ -48,11 +50,14 @@
     <string name="common.play_shuffled">随机播放</string>
     <string name="common.public">公开</string>
     <string name="common.save">保存</string>
+    <string name="common.select_all">选择所有</string>
+    <string name="common.title">标题</string>
     <string name="common.unpin">取消固定</string>
     <string name="common.various_artists">群星</string>
     <string name="delete_playlist">确定要删除 %1$s吗</string>
     <string name="download.bookmark_removed" formatted="false">书签已删除。</string>
     <string name="download.bookmark_set_at_position" formatted="false">书签设置为 %s。</string>
+    <string name="download.empty">未下载任何内容</string>
     <string name="playlist.empty">空的播放列表</string>
     <string name="download.jukebox_not_authorized">不允许远程控制. 请在您的服务器上的 <b>Users &gt; Settings</b> 打开点唱机模式。</string>
     <string name="download.jukebox_off">关闭远程控制，音乐将在手机上播放</string>
@@ -116,6 +121,7 @@
     <string name="menu.common">公共</string>
     <string name="menu.deleted_playlist">已删除播放列表 %s</string>
     <string name="menu.deleted_playlist_error">播放列表删除失败%s</string>
+    <string name="menu.downloads">下载</string>
     <string name="menu.exit">退出</string>
     <string name="menu.navigation">导航</string>
     <string name="menu.settings">设置</string>
@@ -140,7 +146,6 @@
     <string name="search.songs">歌曲</string>
     <string name="search.title">搜索</string>
     <string name="select_album.empty">找不到歌曲</string>
-    <string name="select_album.n_selected">已选择 %d 首曲目。</string>
     <string name="select_album.no_network">警告：网络不可用</string>
     <string name="select_album.no_sdcard">错误：没有SD卡</string>
     <string name="select_album.play_all">播放所有</string>
@@ -163,6 +168,7 @@
     <string name="settings.buffer_length_5">5 秒</string>
     <string name="settings.buffer_length_60">1 分钟</string>
     <string name="settings.buffer_length_8">8 秒</string>
+    <string name="settings.custom_cache_location">使用自定义的缓存路径</string>
     <string name="settings.cache_location">缓存路径</string>
     <string name="settings.cache_location_error">缓存路径错误，正在使用默认路径。</string>
     <string name="settings.cache_size">缓存大小</string>
@@ -287,6 +293,7 @@
     <string name="settings.server_scaling_title">服务器端专辑图片缩放</string>
     <string name="settings.server_unused">未启用</string>
     <string name="settings.server_username">用户名</string>
+    <string name="settings.server_color">服务器颜色</string>
     <string name="settings.show_lockscreen_controls">锁屏显示控制器</string>
     <string name="settings.show_lockscreen_controls_summary">在锁定屏幕上显示播放控件</string>
     <string name="settings.show_notification">显示通知</string>
@@ -315,8 +322,8 @@
     <string name="settings.show_artist_picture">在艺术家列表中显示艺术家图片</string>
     <string name="settings.show_artist_picture_summary">如果可用，在艺术家列表中显示艺术家图片</string>
     <string name="main.video" tools:ignore="UnusedResources">视频</string>
-    <string name="settings.wifi_required_summary">仅在连接到 WIFI 时使用流媒体</string>
-    <string name="settings.wifi_required_title">仅使用 WIFI</string>
+    <string name="settings.wifi_required_summary">仅未计量的网络用于下载媒体</string>
+    <string name="settings.wifi_required_title">仅使用Wi-Fi进行下载</string>
     <string name="song_details.all">%1$s%2$s</string>
     <string name="song_details.kbps">%d kbps</string>
     <string name="util.bytes_format.byte">0 B</string>
@@ -330,10 +337,13 @@
     <string name="widget.sdcard_missing">没有 SD 卡</string>
     <string name="settings.share_description_default">默认分享说明</string>
     <string name="settings.sharing_title">分享</string>
+    <string name="settings.sharing_always_ask_for_details_summary">在服务端创建分享时始终要求提供说明和到期时间</string>
     <string name="settings.sharing_always_ask_for_details">始终询问详细信息</string>
     <string name="settings.share_expiration_default">默认有效期</string>
     <string name="do_not_show_dialog_again">不再显示此对话框</string>
     <string name="share_set_share_options">设置分享选项</string>
+    <string name="share_on_server">在服务端创建分享链接</string>
+    <string name="settings.share_on_server_summary">分享将在服务端创建一个链接，如果不能创建，那么只会分享歌曲的信息</string>
     <string name="no_expiration">无期限</string>
     <string name="download.toggle_playlist">切换播放列表</string>
     <string name="download.bookmark_set">设为书签</string>
@@ -356,6 +366,7 @@
     <string name="settings.share_expiration">有效期</string>
     <string name="download_song_removed">%s已从播放列表中移除</string>
     <string name="download.share_playlist">分享播放列表</string>
+    <string name="download.share_song">分享当前曲目</string>
     <string name="settings.share_greeting_default">默认分享问候语</string>
     <string name="share_default_greeting">看看我从 %s 分享的这首音乐</string>
     <string name="share_via">分享歌曲通过</string>
@@ -380,8 +391,6 @@
     <string name="settings.debug.log_delete">删除文件</string>
     <string name="settings.debug.log_deleted">删除日志文件</string>
     <string name="notification.downloading_title">在后台下载媒体…</string>
-
-
 
     <string name="server_selector.label">配置服务器</string>
     <string name="server_selector.delete_confirmation">您确定要删除此服务器吗？</string>
@@ -410,6 +419,9 @@
     <plurals name="select_album_n_songs_unpinned">
         <item quantity="other">已选择 %d 首歌曲取消固定。</item>
     </plurals>
+    <plurals name="select_album_n_songs_deleted">
+        <item quantity="other">%d 首歌曲被删除</item>
+    </plurals>
     <plurals name="select_album_n_songs_added">
         <item quantity="other">已将 %d 首歌曲添加到播放队列的末尾。</item>
     </plurals>
@@ -433,7 +445,7 @@
     <string name="api.subsonic.upgrade_server">不兼容的版本。请升级Subsonic 服务。</string>
 
     <!-- Subsonic features  -->
-    <string name="settings.features_title">特性标志</string>
+    <string name="settings.features_title">特性</string>
     <string name="settings.five_star_rating_title">为歌曲使用五星评分</string>
     <string name="settings.five_star_rating_description">对歌曲使用五星级评级系统
 而不是简单地为项目加星标/取消星标。</string>

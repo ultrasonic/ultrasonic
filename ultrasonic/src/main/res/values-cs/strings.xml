@@ -43,7 +43,6 @@
     <string name="delete_playlist">Opravdu smazat %1$s</string>
     <string name="download.bookmark_removed" formatted="false">Záložka odstraněna.</string>
     <string name="download.bookmark_set_at_position" formatted="false">Záložka vytvořena na %s.</string>
-    <string name="playlist.empty">Playlist je prázdný</string>
     <string name="download.jukebox_not_authorized">Vzdálené ovládání není povoleno. Povolte jukebox mód v <b>Uživatelském &gt; Nastavení</b> na Subsonic serveru.</string>
     <string name="download.jukebox_off">Vzdálené ovládání vypnuto. Hudba je přehrávána na telefonu.</string>
     <string name="download.jukebox_offline">Vzdálené ovládání není dostupné v offline módu.</string>
@@ -129,7 +128,6 @@
     <string name="search.songs">Skladby</string>
     <string name="search.title">Hledat</string>
     <string name="select_album.empty">Média nenalezena</string>
-    <string name="select_album.n_selected">%d skladeb označeno.</string>
     <string name="select_album.no_network">Varování: Připojení nedostupné.</string>
     <string name="select_album.no_sdcard">Chyba: SD karta nedostupná.</string>
     <string name="select_album.play_all">Přehrát vše</string>
@@ -194,9 +192,7 @@
     <string name="settings.directory_cache_time_60">1 hodina</string>
     <string name="settings.disc_sort">Řadit skladby podle čísla CD</string>
     <string name="settings.disc_sort_summary">Řadit seznam skladeb dle čísla CD a čísla skladby</string>
-    <string name="settings.display_bitrate">Zobrazovat bitrate a příponu souboru</string>
     <string name="settings.display_bitrate_summary">Připojovat jméno umělce, bitrate a příponu souboru</string>
-    <string name="settings.download_transition">Zobrazit stahování při přehrávání</string>
     <string name="settings.download_transition_summary">Při spuštění přehrávání přepnout na aktivitu stahování</string>
     <string name="settings.gapless_playback">Přehrávání bez pauz</string>
     <string name="settings.gapless_playback_summary">Zapnout přehrávání bez pauz</string>
@@ -303,8 +299,6 @@
     <string name="settings.show_artist_picture">Obrázek umělce v seznamu umělců</string>
     <string name="settings.show_artist_picture_summary">Zobrazí obrázek umělce v náhledu umělců pokud je dostupný</string>
     <string name="main.video" tools:ignore="UnusedResources">Video</string>
-    <string name="settings.wifi_required_summary">Streamovat media pouze přes Wi-Fi připojení</string>
-    <string name="settings.wifi_required_title">Streamovat pouze přes Wi-Fi</string>
     <string name="song_details.all">%1$s%2$s</string>
     <string name="song_details.kbps">%d kbps</string>
     <string name="util.bytes_format.byte">0 B</string>
@@ -358,7 +352,6 @@
     <string name="settings.playback.bluetooth_all">Všechny bluetooth přístroje</string>
     <string name="settings.playback.bluetooth_a2dp">Pouze audio (A2DP) přístroje</string>
     <string name="settings.playback.bluetooth_disabled">Vypnuto</string>
-    <string name="settings.playback.single_button_bluetooth_device">Jedno tlačítko přehráváná/pauza na bluetooth přístroji</string>
     <string name="settings.playback.single_button_bluetooth_device_summary">Povolení tohoto nastavení může pomoci zlepšit funkci spuštění/pozastavení přehrávání na starších bluetooth přístrojích</string>
     <string name="settings.debug.title">Možnosti ladění aplikace</string>
     <string name="settings.debug.log_to_file">Zapisovat logy ladění do souboru</string>
@@ -367,7 +360,6 @@
     <string name="settings.debug.log_keep">Zachovat soubory</string>
     <string name="settings.debug.log_delete">Smazat soubory</string>
     <string name="settings.debug.log_deleted">Smazat soubory logů.</string>
-
     <string name="server_selector.label">Nakonfigurované servery</string>
     <string name="server_selector.delete_confirmation">Opravdu chcete odebrat server?</string>
     <string name="server_editor.label">Úprava serveru</string>
@@ -383,36 +375,13 @@
     <plurals name="select_album_n_songs">
         <item quantity="one">%d skladba</item>
         <item quantity="few">%d skladby</item>
+        <item quantity="many">%d skladeb</item>
         <item quantity="other">%d skladeb</item>
-    </plurals>
-    <plurals name="select_album_n_songs_pinned">
-        <item quantity="one">%d skladba vybrána pro připnutí.</item>
-        <item quantity="few">%d skladby vybrány pro připnutí.</item>
-        <item quantity="other">%d skladeb vybráno pro připnutí.</item>
-    </plurals>
-    <plurals name="select_album_n_songs_downloaded">
-        <item quantity="one">%d skladba vybrána pro stažení.</item>
-        <item quantity="few">%d skladby vybrány pro stažení.</item>
-        <item quantity="other">%d skladeb vybráno pro stažení.</item>
-    </plurals>
-    <plurals name="select_album_n_songs_unpinned">
-        <item quantity="one">%d skladba vybrána pro odepnutí.</item>
-        <item quantity="few">%d skladby vybrány pro odepnutí.</item>
-        <item quantity="other">%d skladeb vybráno pro odepnutí.</item>
-    </plurals>
-    <plurals name="select_album_n_songs_added">
-        <item quantity="one">%d skladba přidána na konec fronty přehrávání.</item>
-        <item quantity="few">%d skladyb přidány na konec fronty přehrávání.</item>
-        <item quantity="other">%d skladeb přidáno na konec fronty přehrávání.</item>
-    </plurals>
-    <plurals name="select_album_n_songs_play_next">
-        <item quantity="one">%d skladba přidána za aktuální skladbu.</item>
-        <item quantity="few">%d skladby přidány za aktuální skladbu.</item>
-        <item quantity="other">%d skladeb přidáno za aktuální skladbu.</item>
     </plurals>
     <plurals name="select_album_donate_dialog_n_trial_days_left">
         <item quantity="one">Zbývá %d den zkušební doby</item>
         <item quantity="few">Zbývají %d dny zkušební doby</item>
+        <item quantity="many">Zbývá %d dní zkušební doby</item>
         <item quantity="other">Zbývá %d dní zkušební doby</item>
     </plurals>
 
@@ -428,11 +397,4 @@
     <string name="api.subsonic.upgrade_client">Nekompatibilní verze. Aktualizujte prosím Ultrasonic Android aplikaci.</string>
     <string name="api.subsonic.upgrade_server">Nekompatibilní verze. Aktualizujte prosím Subsonic server.</string>
 
-    <!-- Subsonic features  -->
-    <string name="settings.features_title">Příznaky funkcí</string>
-    <string name="settings.five_star_rating_title">Používat pět hvězdiček pro hodnocení skladeb</string>
-    <string name="settings.five_star_rating_description">Používat pět hvězdiček pro hodnocení skladeb
-        namísto jednoduchého jednohvězdičkového hodnocení.
-    </string>
-
-</resources>
+    </resources>
