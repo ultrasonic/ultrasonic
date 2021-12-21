@@ -375,13 +375,11 @@
     <plurals name="select_album_n_songs">
         <item quantity="one">%d skladba</item>
         <item quantity="few">%d skladby</item>
-        <item quantity="many">%d skladeb</item>
         <item quantity="other">%d skladeb</item>
     </plurals>
     <plurals name="select_album_donate_dialog_n_trial_days_left">
         <item quantity="one">Zbývá %d den zkušební doby</item>
         <item quantity="few">Zbývají %d dny zkušební doby</item>
-        <item quantity="many">Zbývá %d dní zkušební doby</item>
         <item quantity="other">Zbývá %d dní zkušební doby</item>
     </plurals>
 
