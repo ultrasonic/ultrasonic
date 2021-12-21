@@ -39,15 +39,15 @@ class MusicDirectory : ArrayList<MusicDirectory.Child>() {
         abstract var album: String?
         abstract var title: String?
         abstract override val name: String?
-        abstract val discNumber: Int?
+        abstract var discNumber: Int?
         abstract var coverArt: String?
-        abstract val songCount: Long?
-        abstract val created: Date?
+        abstract var songCount: Long?
+        abstract var created: Date?
         abstract var artist: String?
-        abstract val artistId: String?
-        abstract val duration: Int?
-        abstract val year: Int?
-        abstract val genre: String?
+        abstract var artistId: String?
+        abstract var duration: Int?
+        abstract var year: Int?
+        abstract var genre: String?
         abstract var starred: Boolean
         abstract var path: String?
         abstract var closeness: Int
@@ -120,15 +120,15 @@ class MusicDirectory : ArrayList<MusicDirectory.Child>() {
         override var album: String? = null,
         override var title: String? = null,
         override val name: String? = null,
-        override val discNumber: Int = 0,
+        override var discNumber: Int? = 0,
         override var coverArt: String? = null,
-        override val songCount: Long? = null,
-        override val created: Date? = null,
+        override var songCount: Long? = null,
+        override var created: Date? = null,
         override var artist: String? = null,
-        override val artistId: String? = null,
-        override val duration: Int = 0,
-        override val year: Int = 0,
-        override val genre: String? = null,
+        override var artistId: String? = null,
+        override var duration: Int? = 0,
+        override var year: Int? = 0,
+        override var genre: String? = null,
         override var starred: Boolean = false,
         override var path: String? = null,
         override var closeness: Int = 0,

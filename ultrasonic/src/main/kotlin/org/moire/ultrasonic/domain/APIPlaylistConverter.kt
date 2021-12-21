@@ -12,7 +12,7 @@ internal val playlistDateFormat by lazy(NONE) { SimpleDateFormat.getInstance() }
 
 fun APIPlaylist.toMusicDirectoryDomainEntity(): MusicDirectory = MusicDirectory().apply {
     name = this@toMusicDirectoryDomainEntity.name
-    addAll(this@toMusicDirectoryDomainEntity.entriesList.map { it.toDomainEntity() })
+    addAll(this@toMusicDirectoryDomainEntity.entriesList.map { it.toTrackEntity() })
 }
 
 fun APIPlaylist.toDomainEntity(): Playlist = Playlist(

@@ -22,5 +22,5 @@ fun APIShare.toDomainEntity(): Share = Share(
     url = this@toDomainEntity.url,
     username = this@toDomainEntity.username,
     visitCount = this@toDomainEntity.visitCount.toLong(),
-    entries = this@toDomainEntity.items.toDomainEntityList().toMutableList()
+    entries = this@toDomainEntity.items.toTrackList().toMutableList()
 )
