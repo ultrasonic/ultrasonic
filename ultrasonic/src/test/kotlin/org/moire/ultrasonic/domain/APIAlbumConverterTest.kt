@@ -51,7 +51,7 @@ class APIAlbumConverterTest {
         with(convertedEntity) {
             name `should be equal to` null
             size `should be equal to` entity.songList.size
-            this[0] `should be equal to` entity.songList[0].toDomainEntity()
+            this[0] `should be equal to` entity.songList[0].toTrackEntity()
         }
     }
 

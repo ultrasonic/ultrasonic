@@ -1,5 +1,10 @@
-// Converts MusicDirectory entity from [org.moire.ultrasonic.api.subsonic.SubsonicAPIClient]
-// to app domain entities.
+/*
+ * APIMusicDirectoryConverter.kt
+ * Copyright (C) 2009-2021 Ultrasonic developers
+ *
+ * Distributed under terms of the GNU GPLv3 license.
+ */
+
 @file:JvmName("APIMusicDirectoryConverter")
 package org.moire.ultrasonic.domain
 
@@ -9,48 +14,90 @@ import java.util.Locale
 import org.moire.ultrasonic.api.subsonic.models.MusicDirectory as APIMusicDirectory
 import org.moire.ultrasonic.api.subsonic.models.MusicDirectoryChild
 
+/*
+ * Converts MusicDirectory entity from [org.moire.ultrasonic.api.subsonic.SubsonicAPIClient]
+ * to app domain entities.
+ *
+ * Unlike other API endpoints getMusicDirectory doesn't return instances of Albums or Songs,
+ * but just children, which can be albums or songs.
+ */
+
 internal val dateFormat: DateFormat by lazy {
     SimpleDateFormat.getDateTimeInstance(DateFormat.SHORT, DateFormat.SHORT, Locale.getDefault())
 }
 
-fun MusicDirectoryChild.toDomainEntity(): MusicDirectory.Entry = MusicDirectory.Entry(id).apply {
-    parent = this@toDomainEntity.parent
-    isDirectory = this@toDomainEntity.isDir
-    title = this@toDomainEntity.title
-    album = this@toDomainEntity.album
-    albumId = this@toDomainEntity.albumId
-    artist = this@toDomainEntity.artist
-    artistId = this@toDomainEntity.artistId
-    track = this@toDomainEntity.track
-    year = this@toDomainEntity.year
-    genre = this@toDomainEntity.genre
-    contentType = this@toDomainEntity.contentType
-    suffix = this@toDomainEntity.suffix
-    transcodedContentType = this@toDomainEntity.transcodedContentType
-    transcodedSuffix = this@toDomainEntity.transcodedSuffix
-    coverArt = this@toDomainEntity.coverArt
-    size = this@toDomainEntity.size
-    duration = this@toDomainEntity.duration
-    bitRate = this@toDomainEntity.bitRate
-    path = this@toDomainEntity.path
-    isVideo = this@toDomainEntity.isVideo
-    created = this@toDomainEntity.created?.time
-    starred = this@toDomainEntity.starred != null
-    discNumber = this@toDomainEntity.discNumber
-    type = this@toDomainEntity.type
-    if (this@toDomainEntity.streamId.isNotBlank()) {
-        id = this@toDomainEntity.streamId
-    }
-    if (this@toDomainEntity.publishDate != null) {
-        artist = dateFormat.format(this@toDomainEntity.publishDate!!.time)
-    }
-    userRating = this@toDomainEntity.userRating
-    averageRating = this@toDomainEntity.averageRating
+fun MusicDirectoryChild.toTrackEntity(): MusicDirectory.Entry = MusicDirectory.Entry(id).apply {
+    populateCommonProps(this, this@toTrackEntity)
+    populateTrackProps(this, this@toTrackEntity)
 }
 
-fun List<MusicDirectoryChild>.toDomainEntityList() = this.map { it.toDomainEntity() }
+fun MusicDirectoryChild.toAlbumEntity(): MusicDirectory.Album = MusicDirectory.Album(id).apply {
+    populateCommonProps(this, this@toAlbumEntity)
+}
+
+private fun populateCommonProps(
+    entry: MusicDirectory.Child,
+    source: MusicDirectoryChild
+) {
+    entry.parent = source.parent
+    entry.isDirectory = source.isDir
+    entry.title = source.title
+    entry.album = source.album
+    entry.artist = source.artist
+    entry.artistId = source.artistId
+    entry.year = source.year
+    entry.genre = source.genre
+    entry.coverArt = source.coverArt
+    entry.duration = source.duration
+    entry.path = source.path
+    entry.isVideo = source.isVideo
+    entry.created = source.created?.time
+    entry.starred = source.starred != null
+    entry.discNumber = source.discNumber
+
+    if (source.streamId.isNotBlank()) {
+        entry.id = source.streamId
+    }
+    if (source.publishDate != null) {
+        entry.artist = dateFormat.format(source.publishDate!!.time)
+    }
+}
+
+private fun populateTrackProps(
+    entry: MusicDirectory.Entry,
+    source: MusicDirectoryChild
+) {
+    entry.size = source.size
+    entry.contentType = source.contentType
+    entry.suffix = source.suffix
+    entry.transcodedContentType = source.transcodedContentType
+    entry.transcodedSuffix = source.transcodedSuffix
+    entry.track = source.track
+    entry.albumId = source.albumId
+    entry.bitRate = source.bitRate
+    entry.type = source.type
+    entry.userRating = source.userRating
+    entry.averageRating = source.averageRating
+}
+
+fun List<MusicDirectoryChild>.toDomainEntityList(): List<MusicDirectory.Child> {
+    val newList: MutableList<MusicDirectory.Child> = mutableListOf()
+
+    forEach {
+        if (it.isDir)
+            newList.add(it.toAlbumEntity())
+        else
+            newList.add(it.toTrackEntity())
+    }
+
+    return newList
+}
+
+fun List<MusicDirectoryChild>.toTrackList(): List<MusicDirectory.Entry> = this.map {
+    it.toTrackEntity()
+}
 
 fun APIMusicDirectory.toDomainEntity(): MusicDirectory = MusicDirectory().apply {
     name = this@toDomainEntity.name
-    addAll(this@toDomainEntity.childList.map { it.toDomainEntity() })
+    addAll(this@toDomainEntity.childList.toDomainEntityList())
 }

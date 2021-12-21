@@ -26,7 +26,7 @@ class APIMusicDirectoryConverterTest {
             name `should be equal to` entity.name
             size `should be equal to` entity.childList.size
             getChildren() `should be equal to` entity.childList
-                .map { it.toDomainEntity() }.toMutableList()
+                .map { it.toTrackEntity() }.toMutableList()
         }
     }
 
@@ -44,7 +44,7 @@ class APIMusicDirectoryConverterTest {
             starred = Calendar.getInstance(), userRating = 3, averageRating = 2.99F
         )
 
-        val convertedEntity = entity.toDomainEntity()
+        val convertedEntity = entity.toTrackEntity()
 
         with(convertedEntity) {
             id `should be equal to` entity.id
@@ -84,7 +84,7 @@ class APIMusicDirectoryConverterTest {
             artist = "some-artist", publishDate = Calendar.getInstance()
         )
 
-        val convertedEntity = entity.toDomainEntity()
+        val convertedEntity = entity.toTrackEntity()
 
         with(convertedEntity) {
             id `should be equal to` entity.streamId
@@ -100,7 +100,7 @@ class APIMusicDirectoryConverterTest {
 
         domainList.size `should be equal to` entitiesList.size
         domainList.forEachIndexed { index, entry ->
-            entry `should be equal to` entitiesList[index].toDomainEntity()
+            entry `should be equal to` entitiesList[index].toTrackEntity()
         }
     }
 }
