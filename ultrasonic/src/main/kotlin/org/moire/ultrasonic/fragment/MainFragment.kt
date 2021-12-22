@@ -4,7 +4,6 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.ScrollView
 import android.widget.TextView
 import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
@@ -12,6 +11,7 @@ import androidx.navigation.Navigation
 import org.koin.core.component.KoinComponent
 import org.moire.ultrasonic.R
 import org.moire.ultrasonic.data.ActiveServerProvider.Companion.isOffline
+import org.moire.ultrasonic.databinding.MainBinding
 import org.moire.ultrasonic.util.Constants
 import org.moire.ultrasonic.util.Settings
 import org.moire.ultrasonic.util.Util
@@ -21,7 +21,6 @@ import org.moire.ultrasonic.util.Util
  */
 class MainFragment : Fragment(), KoinComponent {
 
-    private lateinit var list: ScrollView
     private lateinit var musicTitle: TextView
     private lateinit var artistsButton: TextView
     private lateinit var albumsButton: TextView
@@ -41,6 +40,8 @@ class MainFragment : Fragment(), KoinComponent {
     private lateinit var albumsAlphaByArtistButton: TextView
     private lateinit var videosButton: TextView
 
+    private var binding: MainBinding? = null
+
     override fun onCreate(savedInstanceState: Bundle?) {
         Util.applyTheme(this.context)
         super.onCreate(savedInstanceState)
@@ -50,13 +51,12 @@ class MainFragment : Fragment(), KoinComponent {
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? {
-        return inflater.inflate(R.layout.main, container, false)
+    ): View {
+        binding = MainBinding.inflate(inflater, container, false)
+        return binding!!.root
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        list = view.findViewById(R.id.main_list)
-
         setupButtons()
         setupClickListener()
         setupItemVisibility()
@@ -81,25 +81,30 @@ class MainFragment : Fragment(), KoinComponent {
         }
     }
 
+    override fun onDestroyView() {
+        super.onDestroyView()
+        binding = null
+    }
+
     private fun setupButtons() {
-        musicTitle = list.findViewById(R.id.main_music)
-        artistsButton = list.findViewById(R.id.main_artists_button)
-        albumsButton = list.findViewById(R.id.main_albums_button)
-        genresButton = list.findViewById(R.id.main_genres_button)
-        videosTitle = list.findViewById(R.id.main_videos_title)
-        songsTitle = list.findViewById(R.id.main_songs)
-        randomSongsButton = list.findViewById(R.id.main_songs_button)
-        songsStarredButton = list.findViewById(R.id.main_songs_starred)
-        albumsTitle = list.findViewById(R.id.main_albums)
-        albumsNewestButton = list.findViewById(R.id.main_albums_newest)
-        albumsRandomButton = list.findViewById(R.id.main_albums_random)
-        albumsHighestButton = list.findViewById(R.id.main_albums_highest)
-        albumsStarredButton = list.findViewById(R.id.main_albums_starred)
-        albumsRecentButton = list.findViewById(R.id.main_albums_recent)
-        albumsFrequentButton = list.findViewById(R.id.main_albums_frequent)
-        albumsAlphaByNameButton = list.findViewById(R.id.main_albums_alphaByName)
-        albumsAlphaByArtistButton = list.findViewById(R.id.main_albums_alphaByArtist)
-        videosButton = list.findViewById(R.id.main_videos)
+        musicTitle = binding!!.mainMusic
+        artistsButton = binding!!.mainArtistsButton
+        albumsButton = binding!!.mainAlbumsButton
+        genresButton = binding!!.mainGenresButton
+        videosTitle = binding!!.mainVideosTitle
+        songsTitle = binding!!.mainSongs
+        randomSongsButton = binding!!.mainSongsButton
+        songsStarredButton = binding!!.mainSongsStarred
+        albumsTitle = binding!!.mainAlbums
+        albumsNewestButton = binding!!.mainAlbumsNewest
+        albumsRandomButton = binding!!.mainAlbumsRandom
+        albumsHighestButton = binding!!.mainAlbumsHighest
+        albumsStarredButton = binding!!.mainAlbumsStarred
+        albumsRecentButton = binding!!.mainAlbumsRecent
+        albumsFrequentButton = binding!!.mainAlbumsFrequent
+        albumsAlphaByNameButton = binding!!.mainAlbumsAlphaByName
+        albumsAlphaByArtistButton = binding!!.mainAlbumsAlphaByArtist
+        videosButton = binding!!.mainVideos
     }
 
     private fun setupItemVisibility() {
