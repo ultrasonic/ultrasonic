@@ -4,7 +4,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.LinearLayout
+import android.widget.ScrollView
 import android.widget.TextView
 import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
@@ -21,7 +21,7 @@ import org.moire.ultrasonic.util.Util
  */
 class MainFragment : Fragment(), KoinComponent {
 
-    private lateinit var list: LinearLayout
+    private lateinit var list: ScrollView
     private lateinit var musicTitle: TextView
     private lateinit var artistsButton: TextView
     private lateinit var albumsButton: TextView
