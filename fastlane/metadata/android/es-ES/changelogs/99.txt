@@ -1,0 +1,3 @@
+Mejoras
+
+- #662: Mejorar las migraciones de bases de datos.

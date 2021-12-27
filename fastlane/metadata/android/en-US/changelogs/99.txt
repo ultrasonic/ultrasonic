@@ -1,0 +1,3 @@
+Enhancements
+
+- #662: Improve database migrations.
