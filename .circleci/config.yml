@@ -125,7 +125,6 @@ workflows:
             branches:
               only:
                 - develop
-                - master
       - generate_signed_apk:
           filters:
             tags:
