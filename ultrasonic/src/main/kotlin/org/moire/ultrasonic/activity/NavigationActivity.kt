@@ -208,8 +208,8 @@ class NavigationActivity : AppCompatActivity() {
             selectServerButton?.text = getString(R.string.main_setup_server, activeServer.name)
         else selectServerButton?.text = activeServer.name
 
-        val foregroundColor = ServerColor.getForegroundColor(this, activeServer.color)
-        val backgroundColor = ServerColor.getBackgroundColor(this, activeServer.color)
+        val foregroundColor = ServerColor.getForegroundColor(this, null)
+        val backgroundColor = ServerColor.getBackgroundColor(this, null)
 
         if (activeServer.index == 0)
             selectServerButton?.icon =

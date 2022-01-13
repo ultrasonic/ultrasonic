@@ -9,7 +9,7 @@ import androidx.sqlite.db.SupportSQLiteDatabase
  * Room Database to be used to store global data for the whole app.
  * This could be settings or data that are not specific to any remote music database
  */
-@Database(entities = [ServerSetting::class], version = 4)
+@Database(entities = [ServerSetting::class], version = 3)
 abstract class AppDatabase : RoomDatabase() {
 
     /**
