@@ -6,6 +6,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
 import android.widget.ImageView
+import android.widget.TextView
 import androidx.core.content.ContextCompat
 import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
@@ -67,6 +68,8 @@ class EditServerFragment : Fragment(), OnBackPressedHandler {
     private var currentColor: Int = 0
     private var selectedColor: Int? = null
 
+    private var editServerColorText: TextView? = null
+
     @Override
     override fun onCreate(savedInstanceState: Bundle?) {
         Util.applyTheme(this.context)
@@ -94,6 +97,7 @@ class EditServerFragment : Fragment(), OnBackPressedHandler {
         jukeboxSwitch = view.findViewById(R.id.edit_jukebox)
         saveButton = view.findViewById(R.id.edit_save)
         testButton = view.findViewById(R.id.edit_test)
+        editServerColorText = view.findViewById(R.id.edit_server_color_text)
 
         val index = arguments?.getInt(
             EDIT_SERVER_INTENT_INDEX,
@@ -182,6 +186,7 @@ class EditServerFragment : Fragment(), OnBackPressedHandler {
 //        }
 
         serverColorImageView?.isVisible = false
+        editServerColorText?.isVisible = false
     }
 
     @Suppress("unused")
