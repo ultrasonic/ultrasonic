@@ -108,8 +108,8 @@ internal class ServerRowAdapter(
         }
 
         // Set colors
-        icon?.setTint(ServerColor.getForegroundColor(context, setting?.color))
-        background?.setTint(ServerColor.getBackgroundColor(context, setting?.color))
+        icon?.setTint(ServerColor.getForegroundColor(context, null))
+        background?.setTint(ServerColor.getBackgroundColor(context, null))
 
         // Set the final drawables
         image?.setImageDrawable(icon)
