@@ -48,8 +48,8 @@ android {
     lintOptions {
         baselineFile file("lint-baseline.xml")
         ignore 'MissingTranslation'
+        ignore 'UnusedQuantity'
         warning 'ImpliedQuantity'
-        warning 'UnusedQuantity'
         disable 'IconMissingDensityFolder', "VectorPath"
         abortOnError true
         warningsAsErrors true
