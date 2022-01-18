@@ -103,7 +103,7 @@
     <string name="main.albums_recent">Kürzlich gespielt</string>
     <string name="main.albums_starred">Mit Stern</string>
     <string name="main.albums_title">Alben</string>
-    <string name="main.artists_title">Künstler*in</string>
+    <string name="main.artists_title">Künstler*innen</string>
     <string name="main.genres_title">Genres</string>
     <string name="main.music">Musik</string>
     <string name="main.offline">Offline</string>
@@ -134,7 +134,7 @@
     <string name="playlist.updated_info_error">Aktualisierung der Wiedergabeliste %s ist fehlgeschlagen</string>
     <string name="progress.wait">Bitte warten&#8230;</string>
     <string name="search.albums">Alben</string>
-    <string name="search.artists">Künstler*in</string>
+    <string name="search.artists">Künstler*innen</string>
     <string name="search.label">Suche</string>
     <string name="search.more">Zeige mehr</string>
     <string name="search.no_match">Keine Treffer, bitte erneut versuchen</string>
