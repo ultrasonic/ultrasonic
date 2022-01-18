@@ -1,0 +1,14 @@
+Bug fixes
+- #609: Weird scrobbling behaviour (offset).
+
+Enhancements
+- #599: Moved server selector and settings to the Navigation menu.
+- #600: Migrate Permission utitlity to Kotlin, increase min SDK to 17.
+- #604: Implement a Download view.
+- #613: targetSdkVersion must be 30 or higher.
+- #622: Refactor events.
+- #641: Remove feature storage.
+- #642: Remove MergeAdapter and SackOfViewsAdapter.
+- #649: Unify error dialog handling.
+- #652: Updated custom cache location handling to remove isUri.
+- #662: Improve database migrations.
