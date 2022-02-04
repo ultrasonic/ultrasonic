@@ -40,7 +40,6 @@
     <string name="delete_playlist">Vuoi eliminare %1$s</string>
     <string name="download.bookmark_removed" formatted="false">Segnalibro rimosso.</string>
     <string name="download.bookmark_set_at_position" formatted="false">Segnalibro impostato su %s.</string>
-    <string name="playlist.empty">Playlist vuota</string>
     <string name="download.jukebox_not_authorized">Il controllo remoto non è consentito. Per favore abilita la modalità jukebox nelle <b> Impostazioni &gt; Utente </b> nel server Airsonic.</string>
     <string name="download.jukebox_off">Controllo remoto disattivato. La musica verrà riprodotta sullo smartphone.</string>
     <string name="download.jukebox_offline">Il controllo remoto non è disponibile nella modalità offline. </string>
@@ -125,7 +124,6 @@
     <string name="search.songs">Canzoni</string>
     <string name="search.title">Cerca</string>
     <string name="select_album.empty">Nessun media trovato</string>
-    <string name="select_album.n_selected">%dtracce selezionate.</string>
     <string name="select_album.no_network">Attenzione: nessuna rete disponibile.</string>
     <string name="select_album.no_sdcard">Errore: Nessuna memoria SD disponibile.</string>
     <string name="select_album.play_all">Riproduci tutto</string>
@@ -190,9 +188,7 @@
     <string name="settings.directory_cache_time_60">1 ora</string>
     <string name="settings.disc_sort">Ordina Canzoni secondo Disco</string>
     <string name="settings.disc_sort_summary">Ordina lista canzoni secondo il numero disco e traccia</string>
-    <string name="settings.display_bitrate">Visualizza Bitrate Ed Estensione File</string>
     <string name="settings.display_bitrate_summary">Aggiungi nome artista con bitrare ed estensione file</string>
-    <string name="settings.download_transition">Visualizza Download Durante Riproduzione</string>
     <string name="settings.download_transition_summary">Passa al download quando inizia riproduzione</string>
     <string name="settings.gapless_playback">Riproduzione Ininterrotta</string>
     <string name="settings.gapless_playback_summary">Abilita riproduzione ininterrotta</string>

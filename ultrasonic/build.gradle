@@ -9,8 +9,8 @@ android {
 
     defaultConfig {
         applicationId "org.moire.ultrasonic"
-        versionCode 98
-        versionName "2.24.0"
+        versionCode 99
+        versionName "3.0.0"
 
         minSdkVersion versions.minSdk
         targetSdkVersion versions.targetSdk
@@ -48,6 +48,7 @@ android {
     lintOptions {
         baselineFile file("lint-baseline.xml")
         ignore 'MissingTranslation'
+        ignore 'UnusedQuantity'
         warning 'ImpliedQuantity'
         disable 'IconMissingDensityFolder', "VectorPath"
         abortOnError true
@@ -57,6 +58,12 @@ android {
     kotlinOptions {
         jvmTarget = "1.8"
     }
+
+    buildFeatures {
+        viewBinding true
+        dataBinding true
+    }
+
     compileOptions {
         sourceCompatibility JavaVersion.VERSION_1_8
         targetCompatibility JavaVersion.VERSION_1_8

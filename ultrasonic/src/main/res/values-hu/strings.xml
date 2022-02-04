@@ -53,7 +53,6 @@
     <string name="delete_playlist">Biztos, hogy törölni akarja? %1$s</string>
     <string name="download.bookmark_removed" formatted="false">Könyvjelző eltávolítva.</string>
     <string name="download.bookmark_set_at_position" formatted="false">Könyvjelző beállítva %s.</string>
-    <string name="playlist.empty">A várólista üres!</string>
     <string name="download.jukebox_not_authorized">A távvezérlés nem áll rendelkezésre. Kérjük, engedélyezze a Jukebox módot a <b>Felhasználók &gt; Beállítások</b> menüpontban, az Ön Subsonic kiszolgálóján!</string>
     <string name="download.jukebox_off">Távvezérlés kikapcsolása. A zenelejátszás a telefonon történik.</string>
     <string name="download.jukebox_offline">A távvezérlés nem lehetséges kapcsolat nélküli módban!</string>
@@ -139,7 +138,6 @@
     <string name="search.songs">Dalok</string>
     <string name="search.title">Keresés</string>
     <string name="select_album.empty">Nem található média!</string>
-    <string name="select_album.n_selected">%d dal kijelölve.</string>
     <string name="select_album.no_network">Figyelem: Hálózat nem áll rendelkezésre!</string>
     <string name="select_album.no_sdcard">Hiba: SD kártya nem áll rendelkezésre!</string>
     <string name="select_album.play_all">Összes lejátszása</string>
@@ -204,9 +202,7 @@
     <string name="settings.directory_cache_time_60">1 óra</string>
     <string name="settings.disc_sort">Dalok rendezése albumok szerint</string>
     <string name="settings.disc_sort_summary">Dalok rendezése albumsorszám és dalsorszám szerint.</string>
-    <string name="settings.display_bitrate">Bitráta és fájlkiterjesztés megjelenítése</string>
     <string name="settings.display_bitrate_summary">Bitráta és fájlkiterjesztés megjelenítése az előadónév mellett.</string>
-    <string name="settings.download_transition">Letöltés megjelenítése</string>
     <string name="settings.download_transition_summary">Letöltési aktivitás megjelenítése a lejátszás indításakor.</string>
     <string name="settings.gapless_playback">Egybefüggő lejátszás</string>
     <string name="settings.gapless_playback_summary">Kihagyás (dalszünet) nélküli egybefüggő lejátszás (Gapless).</string>
@@ -315,8 +311,6 @@
     <string name="settings.show_artist_picture">Előadó képének megjelenítése</string>
     <string name="settings.show_artist_picture_summary">Az előadó listában megjeleníti a képeket, amennyiben elérhetőek</string>
     <string name="main.video" tools:ignore="UnusedResources">Videó</string>
-    <string name="settings.wifi_required_summary">Streaming csak Wi-Fi hálózaton keresztül.</string>
-    <string name="settings.wifi_required_title">Streaming csak Wi-Fivel</string>
     <string name="song_details.all">%1$s%2$s</string>
     <string name="song_details.kbps">%d kbps</string>
     <string name="util.bytes_format.byte">0 B</string>
@@ -370,7 +364,6 @@
     <string name="settings.playback.bluetooth_all">Minden Bluetooth eszköz</string>
     <string name="settings.playback.bluetooth_a2dp">Csak audio (A2DP) eszközök</string>
     <string name="settings.playback.bluetooth_disabled">Kikapcsolva</string>
-    <string name="settings.playback.single_button_bluetooth_device">Egy gombos Lejátszás/Szünet a Bluetooth eszközökön</string>
     <string name="settings.playback.single_button_bluetooth_device_summary">Régebbi Bluetooth eszközök esetén segíthet, ha a Lejátszás/Szünet nem működik megfelelően</string>
     <string name="settings.debug.title">Hibakeresési lehetőségek</string>
     <string name="settings.debug.log_to_file">Hibakeresési napló írása fájlba</string>
@@ -379,8 +372,6 @@
     <string name="settings.debug.log_keep">Fájlok megtartása</string>
     <string name="settings.debug.log_delete">Fájlok törlése</string>
     <string name="settings.debug.log_deleted">Naplófájlok törölve.</string>
-
-
     <string name="server_selector.label">Beállított szerverek</string>
     <string name="server_selector.delete_confirmation">Biztosan törölni szeretnéd a szervert?</string>
     <string name="server_editor.label">Szerver szerkesztése</string>
@@ -396,26 +387,6 @@
     <plurals name="select_album_n_songs">
         <item quantity="one">%d dal</item>
         <item quantity="other">%d dal</item>
-    </plurals>
-    <plurals name="select_album_n_songs_pinned">
-        <item quantity="one">%d dal kijelölve tárolásra.</item>
-        <item quantity="other">%d dal kijelölve tárolásra.</item>
-    </plurals>
-    <plurals name="select_album_n_songs_downloaded">
-        <item quantity="one">%d dal kijelölve letöltésre.</item>
-        <item quantity="other">%d dal kijelölve letöltésre.</item>
-    </plurals>
-    <plurals name="select_album_n_songs_unpinned">
-        <item quantity="one">%d dal tárolása visszavonva.</item>
-        <item quantity="other">%d dal tárolása visszavonva.</item>
-    </plurals>
-    <plurals name="select_album_n_songs_added">
-        <item quantity="one">%d dal hozzáadva a várólistához utolsóként.</item>
-        <item quantity="other">%d dal hozzáadva a várólistához utolsóként.</item>
-    </plurals>
-    <plurals name="select_album_n_songs_play_next">
-        <item quantity="one">%d dal hozzáadva a várólistához következőként.</item>
-        <item quantity="other">%d dal hozzáadva a várólistához következőként.</item>
     </plurals>
     <plurals name="select_album_donate_dialog_n_trial_days_left">
         <item quantity="one">%d nap van hátra a próba időszakból.</item>
@@ -434,11 +405,4 @@
     <string name="api.subsonic.upgrade_client">Nem kompatibilis verzió. Kérjük, frissítse az Ultrasonic Android alkalmazást!</string>
     <string name="api.subsonic.upgrade_server">Nem kompatibilis verzió. Kérjük, frissítse a Subsonic kiszolgálót!</string>
 
-    <!-- Subsonic features  -->
-    <string name="settings.features_title">Jellemzők Zászlók</string>
-    <string name="settings.five_star_rating_title">Öt csillagos értékelés használata a dalokhoz</string>
-    <string name="settings.five_star_rating_description">Öt csillag használata az értékeléshez az egyszerű
-        csillaggal jelölés helyett.
-    </string>
-
-</resources>
+    </resources>

@@ -50,12 +50,14 @@
     <string name="common.play_shuffled">Willekeurig afspelen</string>
     <string name="common.public">Openbaar</string>
     <string name="common.save">Opslaan</string>
+    <string name="common.select_all">Alles selecteren</string>
     <string name="common.title">Titel</string>
     <string name="common.unpin">Losmaken</string>
     <string name="common.various_artists">Verschillende artiesten</string>
     <string name="delete_playlist">Wil je %1$s verwijderen?</string>
     <string name="download.bookmark_removed" formatted="false">Bladwijzer verwijderd.</string>
     <string name="download.bookmark_set_at_position" formatted="false">Bladwijzer ingesteld op %s.</string>
+    <string name="download.empty">Er wordt niks gedownload</string>
     <string name="playlist.empty">Lege afspeellijst</string>
     <string name="download.jukebox_not_authorized">Afstandsbediening wordt niet ondersteund. Schakel jukebox-modus in op je Subsonic-server via <b>Gebruikers &gt; Instellingen</b>.</string>
     <string name="download.jukebox_off">Afstandsbediening uitgeschakeld; muziek wordt afgespeeld op de telefoon.</string>
@@ -108,6 +110,7 @@
     <string name="main.genres_title">Genres</string>
     <string name="main.music">Muziek</string>
     <string name="main.offline">Offline</string>
+    <string name="main.setup_server">%s - Server instellen</string>
     <string name="main.shuffle">Willekeurig afspelen</string>
     <string name="main.songs_random">Willekeurig</string>
     <string name="main.songs_starred">Favorieten</string>
@@ -120,6 +123,7 @@
     <string name="menu.common">Algemeen</string>
     <string name="menu.deleted_playlist">Afspeellijst %s verwijderd</string>
     <string name="menu.deleted_playlist_error">Afspeellijst %s kan niet worden verwijderd</string>
+    <string name="menu.downloads">Downloads</string>
     <string name="menu.exit">Afsluiten</string>
     <string name="menu.navigation">Navigatie</string>
     <string name="menu.settings">Instellingen</string>
@@ -144,7 +148,7 @@
     <string name="search.songs">Nummers</string>
     <string name="search.title">Zoeken</string>
     <string name="select_album.empty">Geen media gevonden</string>
-    <string name="select_album.n_selected">%d nummers geselecteerd.</string>
+    <string name="select_album.n_selected">%d nummers geselecteerd</string>
     <string name="select_album.no_network">Waarschuwing: geen internetverbinding.</string>
     <string name="select_album.no_sdcard">Fout: geen SD-kaart beschikbaar.</string>
     <string name="select_album.play_all">Alles afspelen</string>
@@ -167,6 +171,7 @@
     <string name="settings.buffer_length_5">5 seconden</string>
     <string name="settings.buffer_length_60">1 minuut</string>
     <string name="settings.buffer_length_8">8 seconden</string>
+    <string name="settings.custom_cache_location">Aangepaste cachelocatie gebruiken</string>
     <string name="settings.cache_location">Cachelocatie</string>
     <string name="settings.cache_location_error">Ongeldige cachelocatie; de standaardlocatie wordt gebruikt.</string>
     <string name="settings.cache_size">Cachegrootte</string>
@@ -294,6 +299,7 @@
     <string name="settings.server_scaling_title">Verkleinde afbeeldingen ophalen van server</string>
     <string name="settings.server_unused">Ongebruikt</string>
     <string name="settings.server_username">Gebruikersnaam</string>
+    <string name="settings.server_color">Serverkleur</string>
     <string name="settings.show_lockscreen_controls">Vergrendelschermbediening tonen</string>
     <string name="settings.show_lockscreen_controls_summary">Toont afspeelbediening op het vergrendelscherm</string>
     <string name="settings.show_notification">Melding tonen</string>
@@ -322,8 +328,8 @@
     <string name="settings.show_artist_picture">Artiestfoto tonen op artiestenlijst</string>
     <string name="settings.show_artist_picture_summary">Toont de artiestfoto op de artiestenlijst (indien beschikbaar)</string>
     <string name="main.video" tools:ignore="UnusedResources">Video</string>
-    <string name="settings.wifi_required_summary">Alleen streamen via wifi-verbindingen</string>
-    <string name="settings.wifi_required_title">Alleen streamen via wifi</string>
+    <string name="settings.wifi_required_summary">Haal media alleen op bij gebruik van onbeperkte dataverbindingen</string>
+    <string name="settings.wifi_required_title">Alleen ophalen via wifi</string>
     <string name="song_details.all">%1$s%2$s</string>
     <string name="song_details.kbps">%d kbps</string>
     <string name="util.bytes_format.byte">0 B</string>
@@ -381,7 +387,7 @@
     <string name="settings.playback.bluetooth_all">Alle bluetoothapparaten</string>
     <string name="settings.playback.bluetooth_a2dp">Alleen audio-apparaten (AD2P)</string>
     <string name="settings.playback.bluetooth_disabled">Uitgeschakeld</string>
-    <string name="settings.playback.single_button_bluetooth_device">Eén afspeel-/pauzeerknop op bluetoothapparaat</string>
+    <string name="settings.playback.single_button_bluetooth_device">Bluetoothapparaat met één afspeel- en pauzeknop</string>
     <string name="settings.playback.single_button_bluetooth_device_summary">Schakel dit in bij gebruik van oudere bluetoothapparaten om de afspeel- en pauzeerknop goed te laten werken</string>
     <string name="settings.debug.title">Foutopsporingsopties</string>
     <string name="settings.debug.log_to_file">Foutopsporingslogboek bijhouden</string>
@@ -391,8 +397,6 @@
     <string name="settings.debug.log_delete">Verwijderen</string>
     <string name="settings.debug.log_deleted">De logboeken zijn verwijderd.</string>
     <string name="notification.downloading_title">Bezig met downloaden van media op de achtergrond…</string>
-
-
 
     <string name="server_selector.label">Ingestelde servers:</string>
     <string name="server_selector.delete_confirmation">Weet je zeker dat je deze server wilt verwijderen?</string>
@@ -414,24 +418,28 @@
         <item quantity="other">%d nummers</item>
     </plurals>
     <plurals name="select_album_n_songs_pinned">
-        <item quantity="one">%d vast te maken nummer geselecteerd.</item>
-        <item quantity="other">%d vast te maken nummers geselecteerd.</item>
+        <item quantity="one">%d vast te maken nummer geselecteerd</item>
+        <item quantity="other">%d vast te maken nummers geselecteerd</item>
     </plurals>
     <plurals name="select_album_n_songs_downloaded">
-        <item quantity="one">%d te downloaden nummer geselecteerd.</item>
-        <item quantity="other">%d te downloaden nummers geselecteerd.</item>
+        <item quantity="one">%d te downloaden nummer geselecteerd</item>
+        <item quantity="other">%d te downloaden nummers geselecteerd</item>
     </plurals>
     <plurals name="select_album_n_songs_unpinned">
-        <item quantity="one">%d los te maken nummer geselecteerd.</item>
-        <item quantity="other">%d los te maken nummers geselecteerd.</item>
+        <item quantity="one">%d nummer losgemaakt</item>
+        <item quantity="other">%d nummers losgemaakt</item>
+    </plurals>
+    <plurals name="select_album_n_songs_deleted">
+        <item quantity="one">%d nummer verwijderd</item>
+        <item quantity="other">%d nummers verwijderd</item>
     </plurals>
     <plurals name="select_album_n_songs_added">
-        <item quantity="one">%d nummer toegevoegd aan het einde van afspeelwachtrij.</item>
-        <item quantity="other">%d nummers toegevoegd aan het einde van afspeelwachtrij.</item>
+        <item quantity="one">%d nummer toegevoegd aan het einde van afspeelwachtrij</item>
+        <item quantity="other">%d nummers toegevoegd aan het einde van afspeelwachtrij</item>
     </plurals>
     <plurals name="select_album_n_songs_play_next">
-        <item quantity="one">%d nummer ingevoegd na het huidige nummer.</item>
-        <item quantity="other">%d nummers ingevoegd na het huidige nummer.</item>
+        <item quantity="one">%d nummer ingevoegd na het huidige nummer</item>
+        <item quantity="other">%d nummers ingevoegd na het huidige nummer</item>
     </plurals>
     <plurals name="select_album_donate_dialog_n_trial_days_left">
         <item quantity="one">Nog %d dag over van de proefperiode</item>
@@ -451,10 +459,10 @@
     <string name="api.subsonic.upgrade_server">Incompatibele versies. Werk je Subsonic-server bij.</string>
 
     <!-- Subsonic features  -->
-    <string name="settings.features_title">Experimentele functies</string>
-    <string name="settings.five_star_rating_title">Gebruik vijf sterren voor nummers</string>
-    <string name="settings.five_star_rating_description">Gebruik vijf sterren ratingsysteem voor liedjes
-         in plaats van items simpelweg in de hoofdrol te zetten / niet te verwijderen.
+    <string name="settings.features_title">Functies</string>
+    <string name="settings.five_star_rating_title">Vijf sterren gebruiken voor nummers</string>
+    <string name="settings.five_star_rating_description">Toon vijf sterren om nummers te beoordelen
+         in plaats van items toe te voegen aan of te verwijderen uit de favorieten.
     </string>
 
 </resources>

@@ -6,15 +6,13 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
 import android.widget.ImageView
+import android.widget.TextView
 import androidx.core.content.ContextCompat
+import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
 import com.google.android.material.switchmaterial.SwitchMaterial
 import com.google.android.material.textfield.TextInputLayout
-import com.skydoves.colorpickerview.ColorPickerDialog
-import com.skydoves.colorpickerview.flag.BubbleFlag
-import com.skydoves.colorpickerview.flag.FlagMode
-import com.skydoves.colorpickerview.listeners.ColorEnvelopeListener
 import java.io.IOException
 import java.net.MalformedURLException
 import java.net.URL
@@ -43,8 +41,6 @@ import org.moire.ultrasonic.util.Util
 import retrofit2.Response
 import timber.log.Timber
 
-private const val DIALOG_PADDING = 12
-
 /**
  * Displays a form where server settings can be created / edited
  */
@@ -71,6 +67,8 @@ class EditServerFragment : Fragment(), OnBackPressedHandler {
     private var isInstanceStateSaved: Boolean = false
     private var currentColor: Int = 0
     private var selectedColor: Int? = null
+
+    private var editServerColorText: TextView? = null
 
     @Override
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -99,6 +97,7 @@ class EditServerFragment : Fragment(), OnBackPressedHandler {
         jukeboxSwitch = view.findViewById(R.id.edit_jukebox)
         saveButton = view.findViewById(R.id.edit_save)
         testButton = view.findViewById(R.id.edit_test)
+        editServerColorText = view.findViewById(R.id.edit_server_color_text)
 
         val index = arguments?.getInt(
             EDIT_SERVER_INTENT_INDEX,
@@ -147,7 +146,7 @@ class EditServerFragment : Fragment(), OnBackPressedHandler {
         } else {
             // Creating a new server
             FragmentTitle.setTitle(this, R.string.server_editor_new_label)
-            updateColor(null)
+            // updateColor(null)
             currentServerSetting = ServerSetting()
             saveButton!!.setOnClickListener {
                 if (getFields()) {
@@ -163,33 +162,37 @@ class EditServerFragment : Fragment(), OnBackPressedHandler {
             }
         }
 
-        serverColorImageView!!.setOnClickListener {
-            val bubbleFlag = BubbleFlag(context)
-            bubbleFlag.flagMode = FlagMode.LAST
-            ColorPickerDialog.Builder(context).apply {
-                this.colorPickerView.setInitialColor(currentColor)
-                this.colorPickerView.flagView = bubbleFlag
-            }
-                .attachAlphaSlideBar(false)
-                .setPositiveButton(
-                    getString(R.string.common_ok),
-                    ColorEnvelopeListener { envelope, _ ->
-                        selectedColor = envelope.color
-                        updateColor(envelope.color)
-                    }
-                )
-                .setNegativeButton(getString(R.string.common_cancel)) {
-                    dialogInterface, _ ->
-                    dialogInterface.dismiss()
-                }
-                .setBottomSpace(DIALOG_PADDING)
-                .show()
-        }
+//        serverColorImageView!!.setOnClickListener {
+//            val bubbleFlag = BubbleFlag(context)
+//            bubbleFlag.flagMode = FlagMode.LAST
+//            ColorPickerDialog.Builder(context).apply {
+//                this.colorPickerView.setInitialColor(currentColor)
+//                this.colorPickerView.flagView = bubbleFlag
+//            }
+//                .attachAlphaSlideBar(false)
+//                .setPositiveButton(
+//                    getString(R.string.common_ok),
+//                    ColorEnvelopeListener { envelope, _ ->
+//                        selectedColor = envelope.color
+//                        updateColor(envelope.color)
+//                    }
+//                )
+//                .setNegativeButton(getString(R.string.common_cancel)) {
+//                    dialogInterface, _ ->
+//                    dialogInterface.dismiss()
+//                }
+//                .setBottomSpace(DIALOG_PADDING)
+//                .show()
+//        }
+
+        serverColorImageView?.isVisible = false
+        editServerColorText?.isVisible = false
     }
 
-    private fun updateColor(color: Int?) {
+    @Suppress("unused")
+    private fun updateColor() {
         val image = ContextCompat.getDrawable(requireContext(), R.drawable.thumb_drawable)
-        currentColor = ServerColor.getBackgroundColor(requireContext(), color)
+        currentColor = ServerColor.getBackgroundColor(requireContext(), null)
         image?.setTint(currentColor)
         serverColorImageView?.background = image
     }
@@ -254,7 +257,7 @@ class EditServerFragment : Fragment(), OnBackPressedHandler {
         selfSignedSwitch!!.isChecked = savedInstanceState.getBoolean(::selfSignedSwitch.name)
         ldapSwitch!!.isChecked = savedInstanceState.getBoolean(::ldapSwitch.name)
         jukeboxSwitch!!.isChecked = savedInstanceState.getBoolean(::jukeboxSwitch.name)
-        updateColor(savedInstanceState.getInt(::serverColorImageView.name))
+        // updateColor(savedInstanceState.getInt(::serverColorImageView.name))
         if (savedInstanceState.containsKey(::selectedColor.name))
             selectedColor = savedInstanceState.getInt(::selectedColor.name)
         isInstanceStateSaved = savedInstanceState.getBoolean(::isInstanceStateSaved.name)
@@ -273,7 +276,7 @@ class EditServerFragment : Fragment(), OnBackPressedHandler {
         selfSignedSwitch!!.isChecked = currentServerSetting!!.allowSelfSignedCertificate
         ldapSwitch!!.isChecked = currentServerSetting!!.ldapSupport
         jukeboxSwitch!!.isChecked = currentServerSetting!!.jukeboxByDefault
-        updateColor(currentServerSetting!!.color)
+        // updateColor(currentServerSetting!!.color)
     }
 
     /**
@@ -322,7 +325,7 @@ class EditServerFragment : Fragment(), OnBackPressedHandler {
         if (isValid) {
             currentServerSetting!!.name = serverNameEditText!!.editText?.text.toString()
             currentServerSetting!!.url = serverAddressEditText!!.editText?.text.toString()
-            currentServerSetting!!.color = selectedColor
+            // currentServerSetting!!.color = selectedColor
             currentServerSetting!!.userName = userNameEditText!!.editText?.text.toString()
             currentServerSetting!!.password = passwordEditText!!.editText?.text.toString()
             currentServerSetting!!.allowSelfSignedCertificate = selfSignedSwitch!!.isChecked

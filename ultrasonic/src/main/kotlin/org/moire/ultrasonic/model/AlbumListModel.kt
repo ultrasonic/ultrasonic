@@ -65,7 +65,7 @@ class AlbumListModel(application: Application) : GenericListModel(application) {
 
         // If we are refreshing the random list, we want to avoid items moving across the screen,
         // by clearing the list first
-        if (refresh && albumListType == "random") {
+        if (refresh && !append && albumListType == "random") {
             list.postValue(listOf())
         }
 

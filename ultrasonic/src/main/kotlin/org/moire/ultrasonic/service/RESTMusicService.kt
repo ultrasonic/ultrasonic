@@ -41,6 +41,7 @@ import org.moire.ultrasonic.domain.toDomainEntity
 import org.moire.ultrasonic.domain.toDomainEntityList
 import org.moire.ultrasonic.domain.toIndexList
 import org.moire.ultrasonic.domain.toMusicDirectoryDomainEntity
+import org.moire.ultrasonic.domain.toTrackEntity
 import org.moire.ultrasonic.util.FileUtil
 import org.moire.ultrasonic.util.Settings
 import timber.log.Timber
@@ -317,7 +318,7 @@ open class RESTMusicService(
                 "skipped" != podcastEntry.status &&
                 "error" != podcastEntry.status
             ) {
-                val entry = podcastEntry.toDomainEntity()
+                val entry = podcastEntry.toTrackEntity()
                 entry.track = null
                 musicDirectory.add(entry)
             }

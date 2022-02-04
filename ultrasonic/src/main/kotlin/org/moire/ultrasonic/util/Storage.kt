@@ -31,7 +31,8 @@ object Storage {
         Timber.i("StorageFile caches were reset")
         val root = getRoot()
         if (root == null) {
-            Settings.cacheLocation = FileUtil.defaultMusicDirectory.path
+            Settings.customCacheLocation = false
+            Settings.cacheLocationUri = ""
             Util.toast(UApp.applicationContext(), R.string.settings_cache_location_error)
         }
     }
@@ -70,22 +71,16 @@ object Storage {
     }
 
     private fun getRoot(): AbstractFile? {
-        return if (Settings.cacheLocation.isUri()) {
+        return if (Settings.customCacheLocation) {
             val documentFile = DocumentFile.fromTreeUri(
                 UApp.applicationContext(),
-                Uri.parse(Settings.cacheLocation)
+                Uri.parse(Settings.cacheLocationUri)
             ) ?: return null
             if (!documentFile.exists()) return null
             StorageFile(null, documentFile.uri, documentFile.name!!, documentFile.isDirectory)
         } else {
-            val file = File(Settings.cacheLocation)
-            if (!file.exists()) return null
+            val file = File(FileUtil.defaultMusicDirectory.path)
             JavaFile(null, file)
         }
     }
-}
-
-fun String.isUri(): Boolean {
-    // TODO is there a better way to tell apart a path and an URI?
-    return this.contains(':')
 }

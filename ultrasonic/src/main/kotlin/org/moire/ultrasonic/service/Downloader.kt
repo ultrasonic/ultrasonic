@@ -44,6 +44,7 @@ class Downloader(
 
     private val jukeboxMediaPlayer: JukeboxMediaPlayer by inject()
 
+    // This cache helps us to avoid creating duplicate DownloadFile instances when showing Entries
     private val downloadFileCache = LRUCache<MusicDirectory.Entry, DownloadFile>(100)
 
     private var executorService: ScheduledExecutorService? = null
@@ -280,6 +281,11 @@ class Downloader(
     // Public facing playlist (immutable)
     @Synchronized
     fun getPlaylist(): List<DownloadFile> = playlist
+
+    @Synchronized
+    fun clearDownloadFileCache() {
+        downloadFileCache.clear()
+    }
 
     @Synchronized
     fun clearPlaylist() {

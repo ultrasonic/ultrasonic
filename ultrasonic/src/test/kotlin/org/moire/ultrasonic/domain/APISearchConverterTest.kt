@@ -34,7 +34,7 @@ class APISearchConverterTest {
             artists `should not be equal to` null
             artists.size `should be equal to` 0
             songs.size `should be equal to` entity.matchList.size
-            songs[0] `should be equal to` entity.matchList[0].toDomainEntity()
+            songs[0] `should be equal to` entity.matchList[0].toTrackEntity()
         }
     }
 
@@ -54,7 +54,7 @@ class APISearchConverterTest {
             albums.size `should be equal to` entity.albumList.size
             albums[0] `should be equal to` entity.albumList[0].toDomainEntity()
             songs.size `should be equal to` entity.songList.size
-            songs[0] `should be equal to` entity.songList[0].toDomainEntity()
+            songs[0] `should be equal to` entity.songList[0].toTrackEntity()
         }
     }
 
@@ -74,7 +74,7 @@ class APISearchConverterTest {
             albums.size `should be equal to` entity.albumList.size
             albums[0] `should be equal to` entity.albumList[0].toDomainEntity()
             songs.size `should be equal to` entity.songList.size
-            songs[0] `should be equal to` entity.songList[0].toDomainEntity()
+            songs[0] `should be equal to` entity.songList[0].toTrackEntity()
         }
     }
 }

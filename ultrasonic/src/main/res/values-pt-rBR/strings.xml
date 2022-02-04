@@ -28,7 +28,9 @@
     <string name="button_bar.playlists">Playlists</string>
     <string name="button_bar.search">Pesquisa</string>
     <string name="chat.send_a_message">Enviar uma mensagem</string>
+    <string name="common.album">Álbum</string>
     <string name="common.appname">Ultrasonic</string>
+    <string name="common.artist">Artista</string>
     <string name="common.cancel">Cancelar</string>
     <string name="common.comment">Comentar</string>
     <string name="common.confirm">Confirmar</string>
@@ -48,12 +50,12 @@
     <string name="common.play_shuffled">Tocar Aleatoriamente</string>
     <string name="common.public">Público</string>
     <string name="common.save">Salvar</string>
+    <string name="common.title">Título</string>
     <string name="common.unpin">Desafixar</string>
     <string name="common.various_artists">Vários Artistas</string>
     <string name="delete_playlist">Você quer excluir %1$s</string>
     <string name="download.bookmark_removed" formatted="false">Favorito removido.</string>
     <string name="download.bookmark_set_at_position" formatted="false">Favorito marcado em %s.</string>
-    <string name="playlist.empty">Playlist está vazia</string>
     <string name="download.jukebox_not_authorized">Controle remoto não está permitido. Habilite o modo jukebox em <b>Usuário &gt; Configurações</b> no seu servidor Subsonic.</string>
     <string name="download.jukebox_off">Controle remoto desligado. Música tocada no celular.</string>
     <string name="download.jukebox_offline">Controle remoto não está disponível no modo offline.</string>
@@ -117,6 +119,7 @@
     <string name="menu.common">Comum</string>
     <string name="menu.deleted_playlist">Playlist excluída %s</string>
     <string name="menu.deleted_playlist_error">Falha ao excluir a playlist %s</string>
+    <string name="menu.downloads">Downloads</string>
     <string name="menu.exit">Sair</string>
     <string name="menu.navigation">Navegação</string>
     <string name="menu.settings">Configurações</string>
@@ -141,7 +144,6 @@
     <string name="search.songs">Músicas</string>
     <string name="search.title">Pesquisar</string>
     <string name="select_album.empty">Nenhuma mídia encontrada</string>
-    <string name="select_album.n_selected">%d faixas selecionadas.</string>
     <string name="select_album.no_network">Aviso: Nenhuma rede disponível.</string>
     <string name="select_album.no_sdcard">Erro: Nenhum cartão SD disponível.</string>
     <string name="select_album.play_all">Tocar Tudo</string>
@@ -206,7 +208,7 @@
     <string name="settings.directory_cache_time_60">1 hora</string>
     <string name="settings.disc_sort">Classificar Músicas por Álbum</string>
     <string name="settings.disc_sort_summary">Classificar músicas pelo número do álbum e faixas</string>
-    <string name="settings.display_bitrate">Mostrar Taxa de Bits e Sufixo de Arquivo</string>
+    <string name="settings.display_bitrate">Mostrar Bitrate se Sufixo do Arquivo</string>
     <string name="settings.display_bitrate_summary">Adicionar o nome do artista com a taxa de bits e sufixo do arquivo</string>
     <string name="settings.download_transition">Mostrar Downloads na Reprodução</string>
     <string name="settings.download_transition_summary">Transição para atividade de download quando iniciar reprodução</string>
@@ -319,8 +321,6 @@
     <string name="settings.show_artist_picture">Mostrar Foto do Artista na Lista</string>
     <string name="settings.show_artist_picture_summary">Mostrar a imagem do artista na lista de artistas, se disponível</string>
     <string name="main.video" tools:ignore="UnusedResources">Vídeo</string>
-    <string name="settings.wifi_required_summary">Somente fazer stream de mídia se conectado por Wi-Fi</string>
-    <string name="settings.wifi_required_title">Streaming Somente por Wi-Fi</string>
     <string name="song_details.all">%1$s%2$s</string>
     <string name="song_details.kbps">%d kbps</string>
     <string name="util.bytes_format.byte">0 B</string>
@@ -334,10 +334,13 @@
     <string name="widget.sdcard_missing">Sem cartão SD</string>
     <string name="settings.share_description_default">Descrição Padrão do Compartilhamento</string>
     <string name="settings.sharing_title">Compartilhamento</string>
+    <string name="settings.sharing_always_ask_for_details_summary">Sempre pedir descrição e expiração ao criar um compartilhamento no servidor</string>
     <string name="settings.sharing_always_ask_for_details">Sempre Perguntar por Detalhes</string>
     <string name="settings.share_expiration_default">Tempo Padrão para Expirar</string>
     <string name="do_not_show_dialog_again">Não mostrar este diálogo novamente</string>
     <string name="share_set_share_options">Configurações de Compartilhamento</string>
+    <string name="share_on_server">Criar Compartilhamento no Servidor</string>
+    <string name="settings.share_on_server_summary">Compartilhar cria o compartilhamento no servidor e compartilha sua URL. Se desativado, somente os detalhes da música são compartilhados</string>
     <string name="no_expiration">Não Expira</string>
     <string name="download.toggle_playlist">Alternar Playlist</string>
     <string name="download.bookmark_set">Definir como Favorito</string>
@@ -360,6 +363,7 @@
     <string name="settings.share_expiration">Tempo até expirar</string>
     <string name="download_song_removed">\"%s\" foi removido da playlist</string>
     <string name="download.share_playlist">Compartilhar Playlist</string>
+    <string name="download.share_song">Compartilhar a Música Atual</string>
     <string name="settings.share_greeting_default">Saudação Padrão do Compartilhamento</string>
     <string name="share_default_greeting">Confira esta música que compartilhei do %s</string>
     <string name="share_via">Compartilhar músicas via</string>
@@ -374,7 +378,6 @@
     <string name="settings.playback.bluetooth_all">Todos os dispositivos Bluetooth</string>
     <string name="settings.playback.bluetooth_a2dp">Somente dispositivos de áudio (A2DP)</string>
     <string name="settings.playback.bluetooth_disabled">Desativado</string>
-    <string name="settings.playback.single_button_bluetooth_device">Botão Único para Reproduzir/Pausar</string>
     <string name="settings.playback.single_button_bluetooth_device_summary">Ativar isso pode ajudar com dispositivos Bluetooth mais antigos quando Reproduzir/Pausar não funciona corretamente</string>
     <string name="settings.debug.title">Opções de Depuração</string>
     <string name="settings.debug.log_to_file">Log de Depuração em Arquivo</string>
@@ -384,8 +387,6 @@
     <string name="settings.debug.log_delete">Excluir arquivos</string>
     <string name="settings.debug.log_deleted">Arquivos de log excluídos.</string>
     <string name="notification.downloading_title">Baixado mídia em segundo plano…</string>
-
-
 
     <string name="server_selector.label">Servidores Configurados</string>
     <string name="server_selector.delete_confirmation">Quer realmente excluir o servidor?</string>
@@ -406,26 +407,6 @@
         <item quantity="one">%d música</item>
         <item quantity="other">%d músicas</item>
     </plurals>
-    <plurals name="select_album_n_songs_pinned">
-        <item quantity="one">%d música selecionada para ser fixada.</item>
-        <item quantity="other">%d músicas selecionadas para serem fixadas.</item>
-    </plurals>
-    <plurals name="select_album_n_songs_downloaded">
-        <item quantity="one">%d música selecionada para ser baixada.</item>
-        <item quantity="other">%d músicas selecionadas para serem baixadas.</item>
-    </plurals>
-    <plurals name="select_album_n_songs_unpinned">
-        <item quantity="one">%d música selecionada para ser desfixada.</item>
-        <item quantity="other">%d músicas selecionadas para serem desfixadas.</item>
-    </plurals>
-    <plurals name="select_album_n_songs_added">
-        <item quantity="one">%d música adicionada ao final da playlist.</item>
-        <item quantity="other">%d músicas adicionadas ao final da playlist.</item>
-    </plurals>
-    <plurals name="select_album_n_songs_play_next">
-        <item quantity="one">%d música adicionada após a atual.</item>
-        <item quantity="other">%d músicas adicionadas após a atual.</item>
-    </plurals>
     <plurals name="select_album_donate_dialog_n_trial_days_left">
         <item quantity="one">%d dia restante do período de teste</item>
         <item quantity="other">%d dias restantes do período de teste</item>
@@ -443,11 +424,4 @@
     <string name="api.subsonic.upgrade_client">Versões incompativeis. Atualize o aplicativo Ultrasonic para Android.</string>
     <string name="api.subsonic.upgrade_server">Versões incompativeis. Atualize o servidor Ultrasonic.</string>
 
-    <!-- Subsonic features  -->
-    <string name="settings.features_title">Sinalização de Recursos</string>
-    <string name="settings.five_star_rating_title">Usar Classif. 5 Estrelas para Músicas</string>
-    <string name="settings.five_star_rating_description">Usar o sistema de classificação de 5 estrelas para músicas
-         em vez de simplesmente estrelar/não estrelar itens
-    </string>
-
-</resources>
+    </resources>
