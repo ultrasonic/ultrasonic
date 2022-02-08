@@ -18,22 +18,24 @@
  */
 package org.moire.ultrasonic.receiver;
 
+import android.annotation.SuppressLint;
 import android.bluetooth.BluetoothDevice;
 import android.bluetooth.BluetoothProfile;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
-import timber.log.Timber;
 
 import org.moire.ultrasonic.util.Constants;
 import org.moire.ultrasonic.util.Settings;
-import org.moire.ultrasonic.util.Util;
+
+import timber.log.Timber;
 
 /**
  * Resume or pause playback on Bluetooth A2DP connect/disconnect.
  *
  * @author Sindre Mehus
  */
+@SuppressLint("MissingPermission")
 public class BluetoothIntentReceiver extends BroadcastReceiver
 {
 	@Override

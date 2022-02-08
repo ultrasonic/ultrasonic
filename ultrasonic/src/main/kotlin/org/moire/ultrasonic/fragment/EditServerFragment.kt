@@ -456,11 +456,11 @@ class EditServerFragment : Fragment(), OnBackPressedHandler {
             override fun done(responseString: String) {
                 var dialogText = responseString
                 if (arrayOf(
-                    currentServerSetting!!.chatSupport,
-                    currentServerSetting!!.bookmarkSupport,
-                    currentServerSetting!!.shareSupport,
-                    currentServerSetting!!.podcastSupport
-                ).any { x -> x == false }
+                        currentServerSetting!!.chatSupport,
+                        currentServerSetting!!.bookmarkSupport,
+                        currentServerSetting!!.shareSupport,
+                        currentServerSetting!!.podcastSupport
+                    ).any { x -> x == false }
                 ) {
                     dialogText = String.format(
                         Locale.ROOT,

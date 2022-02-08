@@ -30,13 +30,13 @@ import timber.log.Timber
 object CommunicationError {
     fun getHandler(context: Context?, handler: ((CoroutineContext, Throwable) -> Unit)? = null):
         CoroutineExceptionHandler {
-            return CoroutineExceptionHandler { coroutineContext, exception ->
-                Handler(Looper.getMainLooper()).post {
-                    handleError(exception, context)
-                    handler?.invoke(coroutineContext, exception)
-                }
+        return CoroutineExceptionHandler { coroutineContext, exception ->
+            Handler(Looper.getMainLooper()).post {
+                handleError(exception, context)
+                handler?.invoke(coroutineContext, exception)
             }
         }
+    }
 
     @JvmStatic
     fun handleError(error: Throwable?, context: Context?) {

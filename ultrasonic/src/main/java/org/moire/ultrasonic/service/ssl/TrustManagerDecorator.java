@@ -26,6 +26,8 @@
  */
 package org.moire.ultrasonic.service.ssl;
 
+import android.annotation.SuppressLint;
+
 import java.security.cert.CertificateException;
 import java.security.cert.X509Certificate;
 
@@ -34,6 +36,7 @@ import javax.net.ssl.X509TrustManager;
 /**
  * @since 4.1
  */
+@SuppressLint("CustomX509TrustManager")
 class TrustManagerDecorator implements X509TrustManager
 {
 

@@ -83,7 +83,7 @@ class SubsonicAPIClient(
 
     // Create the Retrofit instance, and register a special converter factory
     // It will update our protocol version to the correct version, once we made a successful call
-    val retrofit: Retrofit = Retrofit.Builder()
+    private val retrofit: Retrofit = Retrofit.Builder()
         .baseUrl("${config.baseUrl}/rest/")
         .client(okHttpClient)
         .addConverterFactory(
@@ -113,13 +113,16 @@ class SubsonicAPIClient(
         this.addInterceptor(loggingInterceptor)
     }
 
-    @SuppressWarnings("TrustAllX509TrustManager", "EmptyFunctionBlock")
     private fun OkHttpClient.Builder.allowSelfSignedCertificates() {
-        val trustManager = object : X509TrustManager {
-            override fun checkClientTrusted(p0: Array<out X509Certificate>?, p1: String?) {}
-            override fun checkServerTrusted(p0: Array<out X509Certificate>?, p1: String?) {}
-            override fun getAcceptedIssuers(): Array<X509Certificate> = emptyArray()
-        }
+        val trustManager =
+            @Suppress("CustomX509TrustManager")
+            object : X509TrustManager {
+                @Suppress("TrustAllX509TrustManager")
+                override fun checkClientTrusted(p0: Array<out X509Certificate>?, p1: String?) {}
+                @Suppress("TrustAllX509TrustManager")
+                override fun checkServerTrusted(p0: Array<out X509Certificate>?, p1: String?) {}
+                override fun getAcceptedIssuers(): Array<X509Certificate> = emptyArray()
+            }
 
         val sslContext = SSLContext.getInstance("SSL")
         sslContext.init(null, arrayOf(trustManager), SecureRandom())

@@ -149,9 +149,9 @@ class MediaPlayerLifecycleSupport : KoinComponent {
                 } else if (state == 1) {
                     if (!mediaPlayerController.isJukeboxEnabled &&
                         sp.getBoolean(
-                            spKey,
-                            false
-                        ) && mediaPlayerController.playerState === PlayerState.PAUSED
+                                spKey,
+                                false
+                            ) && mediaPlayerController.playerState === PlayerState.PAUSED
                     ) {
                         mediaPlayerController.start()
                     }
