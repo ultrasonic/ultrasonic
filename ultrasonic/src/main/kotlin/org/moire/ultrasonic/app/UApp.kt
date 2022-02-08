@@ -38,7 +38,10 @@ class UApp : MultiDexApplication() {
         }
 
         startKoin {
-            logger(TimberKoinLogger(Level.INFO))
+            // TODO Currently there is a bug in Koin which makes necessary to set the loglevel to ERROR
+            logger(TimberKoinLogger(Level.ERROR))
+            // logger(TimberKoinLogger(Level.INFO))
+
             // declare Android context
             androidContext(this@UApp)
             // declare modules to use

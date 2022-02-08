@@ -338,9 +338,9 @@ class PlayerFragment :
         registerForContextMenu(playlistView)
 
         if (arguments != null && requireArguments().getBoolean(
-            Constants.INTENT_SHUFFLE,
-            false
-        )
+                Constants.INTENT_SHUFFLE,
+                false
+            )
         ) {
             networkAndStorageChecker.warnIfNetworkOrStorageUnavailable()
             mediaPlayerController.isShufflePlayEnabled = true

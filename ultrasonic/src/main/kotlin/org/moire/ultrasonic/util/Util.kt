@@ -708,6 +708,7 @@ object Util {
         return versionName
     }
 
+    @Suppress("DEPRECATION")
     fun getVersionCode(context: Context): Int {
         var versionCode = 0
         val pm = context.packageManager

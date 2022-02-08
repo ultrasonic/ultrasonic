@@ -10,9 +10,9 @@ jobs:
       - checkout
       - restore_cache:
           keys:
-            - v1-ultrasonic-{{ .Branch }}-{{ checksum "dependencies.gradle" }}
-            - v1-ultrasonic-{{ .Branch }}
-            - v1-ultrasonic
+            - v2-ultrasonic-{{ .Branch }}-{{ checksum "gradle/libs.versions.toml" }}
+            - v2-ultrasonic-{{ .Branch }}
+            - v2-ultrasonic
       - run:
           name: configure gradle.properties for CI building
           command: |
@@ -44,7 +44,7 @@ jobs:
       - save_cache:
           paths:
             - ~/.gradle
-          key:  v1-ultrasonic-{{ .Branch }}-{{ checksum "dependencies.gradle" }}
+          key:  v1-ultrasonic-{{ .Branch }}-{{ checksum "gradle/libs.versions.toml" }}
       - store_artifacts:
           path: ultrasonic/build/reports
           destination: reports
@@ -81,9 +81,9 @@ jobs:
       - checkout
       - restore_cache:
           keys:
-            - v1-ultrasonic-{{ .Branch }}-{{ checksum "dependencies.gradle" }}
-            - v1-ultrasonic-{{ .Branch }}
-            - v1-ultrasonic
+            - v2-ultrasonic-{{ .Branch }}-{{ checksum "gradle/libs.versions.toml" }}
+            - v2-ultrasonic-{{ .Branch }}
+            - v2-ultrasonic
       - run:
           name: decrypt ultrasonic-keystore
           command: openssl aes-256-cbc -K ${ULTRASONIC_KEYSTORE_KEY} -iv ${ULTRASONIC_KEYSTORE_IV} -in ultrasonic-keystore.enc -out ultrasonic-keystore -d

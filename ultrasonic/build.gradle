@@ -9,8 +9,8 @@ android {
 
     defaultConfig {
         applicationId "org.moire.ultrasonic"
-        versionCode 99
-        versionName "3.0.0"
+        versionCode 100
+        versionName "3.0.1"
 
         minSdkVersion versions.minSdk
         targetSdkVersion versions.targetSdk
@@ -85,54 +85,54 @@ dependencies {
     implementation project(':core:domain')
     implementation project(':core:subsonic-api')
 
-    api(other.picasso) {
+    api(libs.picasso) {
         exclude group: "com.android.support"
     }
 
-    implementation androidSupport.core
-    implementation androidSupport.support
-    implementation androidSupport.design
-    implementation androidSupport.multidex
-    implementation androidSupport.roomRuntime
-    implementation androidSupport.roomKtx
-    implementation androidSupport.viewModelKtx
-    implementation androidSupport.constraintLayout
-    implementation androidSupport.preferences
-    implementation androidSupport.media
+    implementation libs.core
+    implementation libs.support
+    implementation libs.design
+    implementation libs.multidex
+    implementation libs.roomRuntime
+    implementation libs.roomKtx
+    implementation libs.viewModelKtx
+    implementation libs.constraintLayout
+    implementation libs.preferences
+    implementation libs.media
 
-    implementation androidSupport.navigationFragment
-    implementation androidSupport.navigationUi
-    implementation androidSupport.navigationFragmentKtx
-    implementation androidSupport.navigationUiKtx
-    implementation androidSupport.navigationFeature
+    implementation libs.navigationFragment
+    implementation libs.navigationUi
+    implementation libs.navigationFragmentKtx
+    implementation libs.navigationUiKtx
+    implementation libs.navigationFeature
 
-    implementation other.kotlinStdlib
-    implementation other.kotlinxCoroutines
-    implementation other.koinAndroid
-    implementation other.okhttpLogging
-    implementation other.fastScroll
-    implementation other.colorPickerView
-    implementation other.rxJava
-    implementation other.rxAndroid
-    implementation other.multiType
+    implementation libs.kotlinStdlib
+    implementation libs.kotlinxCoroutines
+    implementation libs.koinAndroid
+    implementation libs.okhttpLogging
+    implementation libs.fastScroll
+    implementation libs.colorPickerView
+    implementation libs.rxJava
+    implementation libs.rxAndroid
+    implementation libs.multiType
 
-    kapt androidSupport.room
+    kapt libs.room
 
-    testImplementation other.kotlinReflect
-    testImplementation testing.junit
-    testRuntimeOnly testing.junitVintage
-    testImplementation testing.kotlinJunit
-    testImplementation testing.kluent
-    testImplementation testing.mockito
-    testImplementation testing.mockitoInline
-    testImplementation testing.mockitoKotlin
-    testImplementation testing.robolectric
+    testImplementation libs.kotlinReflect
+    testImplementation libs.junit
+    testRuntimeOnly libs.junitVintage
+    testImplementation libs.kotlinJunit
+    testImplementation libs.kluent
+    testImplementation libs.mockito
+    testImplementation libs.mockitoInline
+    testImplementation libs.mockitoKotlin
+    testImplementation libs.robolectric
 
-    implementation other.timber
+    implementation libs.timber
 }
 
 jacoco {
-    toolVersion(versions.jacoco)
+    toolVersion(libs.versions.jacoco.get())
 }
 
 // Excluding all java classes and stuff that should not be covered
@@ -156,7 +156,7 @@ ext {
 }
 
 jacoco {
-    toolVersion(versions.jacoco)
+    toolVersion(libs.versions.jacoco.get())
 }
 
 tasks.withType(Test) {
