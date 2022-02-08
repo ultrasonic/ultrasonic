@@ -10,7 +10,7 @@ fun ApiBookmark.toDomainEntity(): Bookmark = Bookmark(
     comment = this@toDomainEntity.comment,
     created = this@toDomainEntity.created?.time,
     changed = this@toDomainEntity.changed?.time,
-    entry = this@toDomainEntity.entry.toDomainEntity()
+    entry = this@toDomainEntity.entry.toTrackEntity()
 )
 
 fun List<ApiBookmark>.toDomainEntitiesList(): List<Bookmark> = map { it.toDomainEntity() }

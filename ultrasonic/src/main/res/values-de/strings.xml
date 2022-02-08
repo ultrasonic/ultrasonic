@@ -14,35 +14,47 @@
     <string name="button_bar.chat">Chat</string>
     <string name="button_bar.home">Ultrasonic Hauptseite</string>
     <string name="button_bar.now_playing">Aktuelle Wiedergabe</string>
+    <string name="buttons.play">Abspielen</string>
+    <string name="buttons.pause">Pause</string>
+    <string name="buttons.repeat">Wiederholen</string>
+    <string name="buttons.shuffle">Zufall</string>
+    <string name="buttons.stop">Stop</string>
+    <string name="buttons.next">Nächstes</string>
+    <string name="buttons.previous">Vorheriges</string>
     <string name="podcasts.label">Podcast</string>
     <string name="podcasts_channels.empty">Keine Podcast Kanäle registriert</string>
     <string name="button_bar.podcasts">Podcast</string>
     <string name="button_bar.playlists">Wiedergabeliste</string>
     <string name="button_bar.search">Suche</string>
     <string name="chat.send_a_message">Nachricht senden</string>
+    <string name="common.album">Album</string>
     <string name="common.appname">Ultrasonic</string>
+    <string name="common.artist">Künstler</string>
     <string name="common.cancel">Abbrechen</string>
     <string name="common.comment">Kommentar</string>
     <string name="common.confirm">Bestätigen</string>
     <string name="common.delete">Löschen</string>
     <string name="common.download">Herunterladen</string>
     <string name="common.info">Details</string>
-    <string name="common.multiple_genres">Mehrere Genre</string>
+    <string name="common.multiple_genres">Mehrere Genres</string>
     <string name="common.name">Name</string>
     <string name="common.ok">OK</string>
     <string name="common.pin">Anheften</string>
+    <string name="common.pause">Pause</string>
+    <string name="common.play">Abspielen</string>
     <string name="common.play_last">Zuletzt spielen</string>
     <string name="common.play_next">Als nächstes spielen</string>
+    <string name="common.play_previous">Vorheriges abspielen</string>
     <string name="common.play_now">Jetzt spielen</string>
     <string name="common.play_shuffled">Zufällig spielen</string>
     <string name="common.public">Öffentlich</string>
     <string name="common.save">Speichern</string>
+    <string name="common.title">Titel</string>
     <string name="common.unpin">Lösen</string>
     <string name="common.various_artists">Verschiedene Künstler</string>
     <string name="delete_playlist">Möchtest du %1$s löschen</string>
     <string name="download.bookmark_removed" formatted="false">Lesezeichen entfernt</string>
     <string name="download.bookmark_set_at_position" formatted="false">Lesezeichen gesetzt als %s.</string>
-    <string name="playlist.empty">Wiedergabeliste ist leer</string>
     <string name="download.jukebox_not_authorized">Fernbedienung ist nicht erlaubt. Bitte Jukebox Modus auf dem Subsonic Server in <b>Benutzer > Einstellungen</b> aktivieren.</string>
     <string name="download.jukebox_off">Fernbedienung ausgeschaltet. Musik wird auf dem Telefon wiedergegeben.</string>
     <string name="download.jukebox_offline">Fernbedienungs-Modus is Offline nicht verfügbar.</string>
@@ -94,6 +106,7 @@
     <string name="main.genres_title">Genres</string>
     <string name="main.music">Musik</string>
     <string name="main.offline">Offline</string>
+    <string name="main.setup_server">%s - Server einrichten</string>
     <string name="main.shuffle">Gemischte Wiedergabe</string>
     <string name="main.songs_random">Zufällig</string>
     <string name="main.songs_starred">Mit Stern</string>
@@ -104,6 +117,7 @@
     <string name="menu.common">Allgemein</string>
     <string name="menu.deleted_playlist">Wiedergabeliste %s gelöscht</string>
     <string name="menu.deleted_playlist_error">Löschen der Wiedergabeliste %s ist fehlgeschlagen</string>
+    <string name="menu.downloads">Downloads</string>
     <string name="menu.exit">Ende</string>
     <string name="menu.navigation">Navigation</string>
     <string name="menu.settings">Einstellungen</string>
@@ -111,7 +125,7 @@
     <string name="music_library.label">Medienbibliothek</string>
     <string name="music_library.label_offline">Offline Medien</string>
     <string name="music_service.retry">Netzwerkfehler. Neuer Versuch %1$d von %2$d.</string>
-    <string name="parser.artist_count">Habe %d Künstler.</string>
+    <string name="parser.artist_count">%d Künstler gefunden</string>
     <string name="parser.reading">Lese vom Server.</string>
     <string name="parser.reading_done">Lese vom Server. Fertig!</string>
     <string name="playlist.label">Wiedergabelisten</string>
@@ -128,7 +142,6 @@
     <string name="search.songs">Titel</string>
     <string name="search.title">Suche</string>
     <string name="select_album.empty">Keine Medien gefunden</string>
-    <string name="select_album.n_selected">%d Titel ausgewählt</string>
     <string name="select_album.no_network">Warnung: kein Netz.</string>
     <string name="select_album.no_sdcard">Fehler: Keine SD Karte verfügbar.</string>
     <string name="select_album.play_all">Alles wiedergeben</string>
@@ -136,7 +149,7 @@
     <string name="select_artist.folder">Ordner wählen</string>
     <string name="select_genre.empty">Keine Genres gefunden</string>
     <string name="select_playlist.empty">Keine Wiedergabelisten auf dem Server</string>
-    <string name="service.connecting">Kontaktierse Server, bitte warten.</string>
+    <string name="service.connecting">Kontaktiere Server, bitte warten.</string>
     <string name="settings.appearance_title">Aussehen</string>
     <string name="settings.buffer_length">Puffer-Länge</string>
     <string name="settings.buffer_length_0">Deaktiviert</string>
@@ -183,7 +196,7 @@
     <string name="settings.default_albums">Standard Alben</string>
     <string name="settings.default_artists">Standard Künstler</string>
     <string name="settings.default_songs">Standard Titel</string>
-    <string name="settings.directory_cache_time">Verzeichnis Chache-Zeit</string>
+    <string name="settings.directory_cache_time">Cache-Zeit für Verzeichnisse</string>
     <string name="settings.directory_cache_time_0">Deaktiviert</string>
     <string name="settings.directory_cache_time_1">1 Minute</string>
     <string name="settings.directory_cache_time_10">10 Minuten</string>
@@ -193,9 +206,8 @@
     <string name="settings.directory_cache_time_60">1 hour</string>
     <string name="settings.disc_sort">Sortiere Titel nach CD</string>
     <string name="settings.disc_sort_summary">Sortierung der Titelliste nach CD-Nummer und Titelnummer</string>
-    <string name="settings.display_bitrate">Bitrate und Dateiendung zeigen</string>
-    <string name="settings.display_bitrate_summary">Bitrate und Dateityp hinter dem Künstler anzeigen</string>
-    <string name="settings.download_transition">Herunterladen bei Wiedergabe</string>
+    <string name="settings.display_bitrate">Bitrate und Dateiendung anzeigen</string>
+    <string name="settings.display_bitrate_summary">Bitrate und Dateityp hinter der Künstler*in anzeigen</string>
     <string name="settings.download_transition_summary">Herunterladen zusammen mit der Wiedergabe starten.</string>
     <string name="settings.gapless_playback">Lückenlose Wiedergabe</string>
     <string name="settings.gapless_playback_summary">Lückenlose Wiedergabe aktivieren</string>
@@ -206,7 +218,7 @@
     <string name="settings.invalid_url">Bitte eine gültige URL angeben.</string>
     <string name="settings.invalid_username">Bitte einen gültigen Benutzernamen eingeben (ohne führende Leerzeichen).</string>
     <string name="settings.max_albums">Maximale Alben</string>
-    <string name="settings.max_artists">Maximale Künstler</string>
+    <string name="settings.max_artists">Max Künstler</string>
     <string name="settings.max_bitrate_112">112 Kbps</string>
     <string name="settings.max_bitrate_128">128 Kbps</string>
     <string name="settings.max_bitrate_160">160 Kbps</string>
@@ -217,12 +229,12 @@
     <string name="settings.max_bitrate_64">64 Kbps</string>
     <string name="settings.max_bitrate_80">80 Kbps</string>
     <string name="settings.max_bitrate_96">96 Kbps</string>
-    <string name="settings.max_bitrate_mobile">Maximale Bitragte - Mobil</string>
+    <string name="settings.max_bitrate_mobile">Max Bitrate - Mobil</string>
     <string name="settings.max_bitrate_unlimited">Unbegrenzt</string>
-    <string name="settings.max_bitrate_wifi">Maximale Bitrate - WLAN</string>
+    <string name="settings.max_bitrate_wifi">Max Bitrate - WLAN</string>
     <string name="settings.max_songs">Maximale Titel</string>
     <string name="settings.media_button_summary">Auf Telefon, Headset und Bluetooth-Media-Tasten reagieren</string>
-    <string name="settings.media_button_title">Media Tasten</string>
+    <string name="settings.media_button_title">Medien Tasten</string>
     <string name="settings.network_timeout">Netzwerk Zeitüberschreitung</string>
     <string name="settings.network_timeout_105000">105 Sekunden</string>
     <string name="settings.network_timeout_120000">120 Sekunden</string>
@@ -245,6 +257,7 @@
     <string name="settings.preload_unlimited">Unbegrenzt</string>
     <string name="settings.playback.resume_play_on_headphones_plug.title">Fortsetzen mit Kopfhörer</string>
     <string name="settings.playback.resume_play_on_headphones_plug.summary">Die App setzt eine pausierte Wiedergabe beim Anschließen der Kopfhörer fort.</string>
+    <string name="settings.scrobble_title">Gespielte Musik scrobbeln</string>
     <string name="settings.search_1">1</string>
     <string name="settings.search_10">10</string>
     <string name="settings.search_100">100</string>
@@ -289,6 +302,7 @@
     <string name="settings.testing_unlicensed">Verbindung OK, Server nicht lizensiert.</string>
     <string name="settings.theme_light">Hell</string>
     <string name="settings.theme_dark">Dunkel</string>
+    <string name="settings.theme_black">Schwarz</string>
     <string name="settings.theme_title">Thema</string>
     <string name="settings.title.allow_self_signed_certificate">Selbst-signierte HTTPS Zertifikate erlauben</string>
     <string name="settings.title.enable_ldap_users_support">LDAP Benutzeranmeldung aktivieren</string>
@@ -298,8 +312,8 @@
     <string name="settings.use_id3">Durchsuchen von ID3-Tags</string>
     <string name="settings.use_id3_summary">Nutze ID3 Tag Methode anstatt Dateisystem-Methode</string>
     <string name="main.video" tools:ignore="UnusedResources">Film</string>
-    <string name="settings.wifi_required_summary">Nur bei WLAN verbindung streamen</string>
-    <string name="settings.wifi_required_title">Nur über WLAN streamen</string>
+    <string name="settings.wifi_required_summary">Medien nur über gebührenfreie Verbindungen herunterladen</string>
+    <string name="settings.wifi_required_title">Nur über WLAN herunterladen</string>
     <string name="song_details.all">%1$s%2$s</string>
     <string name="song_details.kbps">%d kbps</string>
     <string name="util.bytes_format.byte">0 B</string>
@@ -312,11 +326,13 @@
     <string name="widget.sdcard_busy">SD Karte nicht verfügbar</string>
     <string name="widget.sdcard_missing">Keine SD Karte</string>
     <string name="settings.share_description_default">Standard Beschreibung einer Freigabe</string>
-    <string name="settings.sharing_title">Teilen</string>
+    <string name="settings.sharing_title">Freigaben</string>
     <string name="settings.sharing_always_ask_for_details">Immer nach Details fragen</string>
     <string name="settings.share_expiration_default">Standard Ablaufzeit</string>
     <string name="do_not_show_dialog_again">Dialog nicht wieder anzeigen</string>
-    <string name="share_set_share_options">Ferigabeoptionen</string>
+    <string name="share_set_share_options">Freigabeoptionen</string>
+    <string name="share_on_server">Freigabe auf Server erstellen</string>
+    <string name="settings.share_on_server_summary">Teilen erzeugt eine Freigabe auf dem Server und sendet die URL. Wenn ausgeschaltet, werden nur die Lied-Details geteilt.</string>
     <string name="no_expiration">Kein Ablaufdatum</string>
     <string name="download.toggle_playlist">Wiedergabeliste umschalten</string>
     <string name="download.bookmark_set">Lesezeichen setzen</string>
@@ -339,7 +355,8 @@
     <string name="settings.share_expiration">Ablaufzeit</string>
     <string name="download_song_removed">%s wurde von der Wiedergabeliste entfernt</string>
     <string name="download.share_playlist">Wiedergabeliste teilen</string>
-    <string name="settings.share_greeting_default">Standard Begrüßung beim Teilen</string>
+    <string name="download.share_song">Aktuelles Lied teilen</string>
+    <string name="settings.share_greeting_default">Standard Freigabe-Begrüßung</string>
     <string name="share_default_greeting">Hör dir mal die Musik an, die ich mit dir über %s geteilt habe.</string>
     <string name="share_via">Titel teilen über</string>
     <string name="menu.share">Freigabe</string>
@@ -347,11 +364,19 @@
     <string name="settings.show_all_songs_by_artist_summary">Einen neuen Eintrag in der Künstleransicht hinzufügen, um auf alle Lieder eines Künstlers zuzugreifen</string>
     <string name="download.menu_show_artist">Künstler zeigen</string>
     <string name="common_multiple_years">Mehrere Jahre</string>
+    <string name="settings.playback.resume_on_bluetooth_device">Wiedergabe fortsetzen, wenn ein Bluetooth Gerät verbunden wurde</string>
+    <string name="settings.playback.pause_on_bluetooth_device">Wiedergabe pausieren, wenn ein Bluetooth Gerät getrennt wurde</string>
+    <string name="settings.playback.bluetooth_all">Alle Bluetooth Geräte</string>
+    <string name="settings.playback.bluetooth_a2dp">Nur Audio (A2DP) Geräte</string>
+    <string name="settings.playback.bluetooth_disabled">Deaktiviert</string>
+    <string name="settings.debug.log_keep">Dateien behalten</string>
+    <string name="settings.debug.log_delete">Dateien löschen</string>
+    <string name="settings.debug.log_deleted">Logeinträge gelöscht</string>
     <string name="server_editor.new_label">Server hinzufügen</string>
     <!-- Subsonic api errors -->
     <string name="api.subsonic.generic">Allgemeiner API Fehler: %1$s</string>
     <string name="api.subsonic.generic.no.message">Keine Nachricht vom Server erhalten</string>
-    <string name="api.subsonic.token_auth_not_supported_for_ldap">Autorisirung mit Token ist für LDAP Benutzer nicht möglich.</string>
+    <string name="api.subsonic.token_auth_not_supported_for_ldap">Autorisierung mit Token ist für LDAP Benutzer nicht möglich.</string>
     <string name="api.subsonic.not_authenticated">Falscher Benutzername oder Kennwort.</string>
     <string name="api.subsonic.not_authorized">Nicht autorisiert. Bitte die Rechte auf dem Subsonic Server überprüfen.</string>
     <string name="api.subsonic.param_missing">Erforderlicher Parameter fehlt.</string>
@@ -361,10 +386,8 @@
     <string name="api.subsonic.upgrade_server">Inkompatible Versionen. Bitte den subsonic Server aktualisieren.</string>
 
     <!-- Subsonic features  -->
-    <string name="settings.features_title">Funktionseinstellungem</string>
-    <string name="settings.five_star_rating_title">Verwenden Sie Fünf-Sterne-Bewertung für Songs</string>
-    <string name="settings.five_star_rating_description">Verwenden Sie Fünf-Sterne-Bewertungssystem für Songs
-         anstatt einfach Elemente zu markieren / zu entfernen.
-    </string>
+    <string name="settings.features_title">Besonderheiten</string>
+    <string name="settings.five_star_rating_title">Fünf-Stern Bewertung</string>
+    <string name="settings.five_star_rating_description">Benutze Bewertungssystem mit fünf Sternen anstatt Lieder mit bloß einem Stern zu markieren.</string>
 
 </resources>

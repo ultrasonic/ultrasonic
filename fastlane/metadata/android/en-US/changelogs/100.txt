@@ -1,0 +1,4 @@
+Others
+
+- #671: Bump versions.mockito from 4.1.0 to 4.3.1.
+- Update translations.

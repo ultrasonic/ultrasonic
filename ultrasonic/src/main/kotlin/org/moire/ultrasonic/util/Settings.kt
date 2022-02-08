@@ -112,9 +112,8 @@ object Settings {
     )
 
     @JvmStatic
-    var cacheLocation by StringSetting(
-        Constants.PREFERENCES_KEY_CACHE_LOCATION,
-        FileUtil.defaultMusicDirectory.path
+    var cacheLocationUri by StringSetting(
+        Constants.PREFERENCES_KEY_CACHE_LOCATION, ""
     )
 
     @JvmStatic

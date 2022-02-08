@@ -50,12 +50,14 @@
     <string name="common.play_shuffled">Reproducción aleatoria</string>
     <string name="common.public">Public</string>
     <string name="common.save">Guardar</string>
+    <string name="common.select_all">Seleccionar todo</string>
     <string name="common.title">Título</string>
     <string name="common.unpin">Desanclar</string>
     <string name="common.various_artists">Varios artistas</string>
     <string name="delete_playlist">Quieres eliminar %1$s</string>
     <string name="download.bookmark_removed" formatted="false">Marcador eliminado.</string>
     <string name="download.bookmark_set_at_position" formatted="false">Marcador añadido a %s.</string>
+    <string name="download.empty">Nada se esta descargando</string>
     <string name="playlist.empty">La lista de reproducción esta vacía</string>
     <string name="download.jukebox_not_authorized">El control remoto no esta habilitado. Por favor habilita el modo jukebox en <b>Configuración &gt; Usuarios</b> en tu servidor de Subsonic.</string>
     <string name="download.jukebox_off">Control remoto apagado. La música se reproduce en tu dispositivo.</string>
@@ -108,6 +110,7 @@
     <string name="main.genres_title">Géneros</string>
     <string name="main.music">Música</string>
     <string name="main.offline">Sin conexión</string>
+    <string name="main.setup_server">%s - Configurar servidor</string>
     <string name="main.shuffle">Reproducción aleatoria</string>
     <string name="main.songs_random">Aleatorio</string>
     <string name="main.songs_starred">Me gusta</string>
@@ -120,6 +123,7 @@
     <string name="menu.common">Común</string>
     <string name="menu.deleted_playlist">Eliminada lista de reproducción %s</string>
     <string name="menu.deleted_playlist_error">Fallo al eliminar la lista de reproducción %s</string>
+    <string name="menu.downloads">Descargas</string>
     <string name="menu.exit">Salir</string>
     <string name="menu.navigation">Navegación</string>
     <string name="menu.settings">Configuración</string>
@@ -167,6 +171,7 @@
     <string name="settings.buffer_length_5">5 segundos</string>
     <string name="settings.buffer_length_60">1 minuto</string>
     <string name="settings.buffer_length_8">8 segundos</string>
+    <string name="settings.custom_cache_location">Usar ubicación de caché personalizada</string>
     <string name="settings.cache_location">Ubicación de la Caché</string>
     <string name="settings.cache_location_error">Ubicación de la caché no válida. Usando la localización predeterminada.</string>
     <string name="settings.cache_size">Tamaño de la caché</string>
@@ -209,8 +214,8 @@
     <string name="settings.directory_cache_time_60">1 hora</string>
     <string name="settings.disc_sort">Ordenar canciones por disco</string>
     <string name="settings.disc_sort_summary">Ordena las canciones por el número de disco y el número de pista</string>
-    <string name="settings.display_bitrate">Mostrar bitrate y extensión</string>
-    <string name="settings.display_bitrate_summary">Añadir al nombre del artista el bitrate la extensión del fichero</string>
+    <string name="settings.display_bitrate">Mostrar tasa de bits y la extensión del archivo</string>
+    <string name="settings.display_bitrate_summary">Añadir el nombre del artista con la tasa de bits y la extensión del archivo</string>
     <string name="settings.download_transition">Mostrar descargas en reproducción</string>
     <string name="settings.download_transition_summary">Mostrar la actividad de descarga cuando comienza la reproducción</string>
     <string name="settings.gapless_playback">Reproducción sin pausas</string>
@@ -294,6 +299,7 @@
     <string name="settings.server_scaling_title">Escalado de caratulas en el servidor</string>
     <string name="settings.server_unused">Sin usar</string>
     <string name="settings.server_username">Nombre de usuario</string>
+    <string name="settings.server_color">Color del servidor</string>
     <string name="settings.show_lockscreen_controls">Mostrar controles en la pantalla de bloqueo</string>
     <string name="settings.show_lockscreen_controls_summary">Mostrar controles de reproducción en la pantalla de bloqueo</string>
     <string name="settings.show_notification">Mostrar notificación</string>
@@ -322,8 +328,8 @@
     <string name="settings.show_artist_picture">Mostrar la imagen del artista en la lista de artistas</string>
     <string name="settings.show_artist_picture_summary">Muestra la imagen del artista en la lista de artistas si está disponible</string>
     <string name="main.video" tools:ignore="UnusedResources">Vídeo</string>
-    <string name="settings.wifi_required_summary">Solo trasmitir medios si esta conectado a la Wi-Fi</string>
-    <string name="settings.wifi_required_title">Trasmitir solo por Wi-Fi</string>
+    <string name="settings.wifi_required_summary">Solo descargar medios en conexiones sin medir</string>
+    <string name="settings.wifi_required_title">Descargar solo por Wi-Fi</string>
     <string name="song_details.all">%1$s%2$s</string>
     <string name="song_details.kbps">%d kbps</string>
     <string name="util.bytes_format.byte">0 B</string>
@@ -381,7 +387,7 @@
     <string name="settings.playback.bluetooth_all">Todos los dispositivos Bluetooth</string>
     <string name="settings.playback.bluetooth_a2dp">Solo dispositivos de audio (A2DP)</string>
     <string name="settings.playback.bluetooth_disabled">Deshabilitado</string>
-    <string name="settings.playback.single_button_bluetooth_device">Reproducir / Pausar con un solo botón en el dispositivo Bluetooth</string>
+    <string name="settings.playback.single_button_bluetooth_device">Dispositivo Bluetooth con solo un único botón Reproducir / Pausa</string>
     <string name="settings.playback.single_button_bluetooth_device_summary">Habilitar esto puede ayudar con los dispositivos Bluetooth más antiguos cuando la reproducción / pausa no funciona correctamente</string>
     <string name="settings.debug.title">Opciones de depuración</string>
     <string name="settings.debug.log_to_file">Escribir registro de depuración en un archivo</string>
@@ -391,8 +397,6 @@
     <string name="settings.debug.log_delete">Borrar archivos</string>
     <string name="settings.debug.log_deleted">Archivos de registro eliminados.</string>
     <string name="notification.downloading_title">Descargando medios en segundo plano…</string>
-
-
 
     <string name="server_selector.label">Servidores configurados</string>
     <string name="server_selector.delete_confirmation">¿Seguro que deseas borrar el servidor?</string>
@@ -414,23 +418,27 @@
         <item quantity="other">%d canciones</item>
     </plurals>
     <plurals name="select_album_n_songs_pinned">
-        <item quantity="one">%d canción seleccionada para ser anclada.</item>
-        <item quantity="other">%d canciones seleccionadas para ser ancladas.</item>
+        <item quantity="one">%d canción seleccionada para ser anclada</item>
+        <item quantity="other">%d canciones seleccionadas para ser ancladas</item>
     </plurals>
     <plurals name="select_album_n_songs_downloaded">
-        <item quantity="one">%d canción seleccionada para ser descargada.</item>
-        <item quantity="other">%d canciones seleccionadas para ser descargadas.</item>
+        <item quantity="one">%d canción seleccionada para ser descargada</item>
+        <item quantity="other">%d canciones seleccionadas para ser descargadas</item>
     </plurals>
     <plurals name="select_album_n_songs_unpinned">
-        <item quantity="one">%d canción seleccionada para ser desanclada.</item>
-        <item quantity="other">%d canciones seleccionadas para ser desancladas.</item>
+        <item quantity="one">%d canción desanclada</item>
+        <item quantity="other">%d canciones desancladas</item>
+    </plurals>
+    <plurals name="select_album_n_songs_deleted">
+        <item quantity="one">%d canción eliminada</item>
+        <item quantity="other">%d canciones eliminadas</item>
     </plurals>
     <plurals name="select_album_n_songs_added">
-        <item quantity="one">%d canción añadida al final de la cola de reproducción.</item>
-        <item quantity="other">%d canciones añadidas al final de la cola de reproducción.</item>
+        <item quantity="one">%d canción añadida al final de la cola de reproducción</item>
+        <item quantity="other">%d canciones añadidas al final de la cola de reproducción</item>
     </plurals>
     <plurals name="select_album_n_songs_play_next">
-        <item quantity="one">%d canción insertada después de la canción actual.</item>
+        <item quantity="one">%d canción insertada después de la canción actual</item>
         <item quantity="other">%d canciones insertadas después de la canción actual.</item>
     </plurals>
     <plurals name="select_album_donate_dialog_n_trial_days_left">
@@ -451,10 +459,10 @@
     <string name="api.subsonic.upgrade_server">Versiones incompatibles. Por favor actualiza el servidor de Subsonic.</string>
 
     <!-- Subsonic features  -->
-    <string name="settings.features_title">Funciones experimentales</string>
+    <string name="settings.features_title">Características</string>
     <string name="settings.five_star_rating_title">Use cinco estrellas para las canciones</string>
     <string name="settings.five_star_rating_description">Utilice el sistema de calificación de cinco estrellas para canciones
-         en lugar de simplemente destacar / desestimar elementos.
+         en lugar de simplemente marcar / desmarcar elementos.
     </string>
 
 </resources>
