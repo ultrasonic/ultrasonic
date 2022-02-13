@@ -78,7 +78,6 @@
     <string name="equalizer.label">Ekvalizér</string>
     <string name="equalizer.preset">Vybrat předvolbu</string>
     <string name="error.label">Chyba</string>
-    <string name="help.url">file:///android_asset/html/en/index.html</string>
     <string name="jukebox.is_default">Jukebox jako výchozí</string>
     <string name="lyrics.nomatch">Text skladby nenalezen</string>
     <string name="main.albums_alphaByArtist">Podle umělce</string>

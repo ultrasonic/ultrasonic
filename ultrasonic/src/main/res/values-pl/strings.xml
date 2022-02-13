@@ -77,7 +77,6 @@
     <string name="equalizer.label">Korektor dźwięku</string>
     <string name="equalizer.preset">Wybierz preset</string>
     <string name="error.label">Błąd</string>
-    <string name="help.url">file:///android_asset/html/en/index.html</string>
     <string name="jukebox.is_default">Jukebox domyślnie</string>
     <string name="lyrics.nomatch">Brak tekstu utworu</string>
     <string name="main.albums_alphaByArtist">wg artystów</string>

@@ -1,46 +1,47 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:a="http://schemas.android.com/apk/res/android"
-                a:layout_width="fill_parent"
-                a:layout_height="fill_parent">
+    a:layout_width="fill_parent"
+    a:layout_height="fill_parent">
 
-    <LinearLayout a:id="@+id/help_buttons"
-                  a:layout_width="fill_parent"
-                  a:layout_height="wrap_content"
-                  a:padding="4dip"
-                  a:gravity="center_horizontal" >
+    <TextView
+        a:id="@+id/help_title"
+        a:layout_width="match_parent"
+        a:layout_height="wrap_content"
+        a:gravity="center"
+        a:padding="18dp"
+        a:text="@string/common.appname"
+        a:textSize="25sp" />
 
-        <ImageView a:id="@+id/help_back"
-                a:layout_width="wrap_content"
-                a:layout_height="fill_parent"
-                a:src="?attr/backward"
-                a:layout_weight="1" />
-        
-        <ImageView a:id="@+id/help_stop"
-                a:layout_width="wrap_content"
-                a:layout_height="fill_parent"
-                a:src="?attr/stop"
-                a:layout_weight="1" />
+    <TextView
+        a:id="@+id/help_text"
+        a:layout_width="match_parent"
+        a:layout_height="wrap_content"
+        a:layout_below="@+id/help_title"
+        a:layout_marginTop="0dp"
+        a:padding="20dp"
+        a:textSize="16sp"
+        a:text="@string/about.text"
+         />
 
-        <ImageView a:id="@+id/help_forward"
-                a:layout_width="wrap_content"
-                a:layout_height="fill_parent" 
-                a:src="?attr/forward"
-                a:layout_weight="1" />
-                
-    </LinearLayout>
+    <Button
+        a:id="@+id/help_webpage"
+        a:layout_width="match_parent"
+        a:layout_height="wrap_content"
+        a:layout_above="@+id/help_report"
+        a:layout_marginLeft="10dp"
+        a:layout_marginRight="10dp"
+        a:text="@string/about.webpage"
+         />
 
-    <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
-        a:id="@+id/help_refresh"
-        a:layout_width="fill_parent"
-        a:layout_height="match_parent"
-        a:layout_below="@id/help_buttons">
+    <Button
+        a:id="@+id/help_report"
+        a:layout_width="match_parent"
+        a:layout_height="wrap_content"
+        a:layout_alignParentBottom="true"
+        a:layout_marginLeft="10dp"
+        a:layout_marginRight="10dp"
+        a:layout_marginBottom="20dp"
+        a:text="@string/about.report"
+         />
 
-        <WebView
-            a:id="@+id/help_contents"
-            a:layout_width="fill_parent"
-            a:layout_height="match_parent"
-            a:fadingEdge="vertical"
-            a:fadingEdgeLength="12dip" />
-
-    </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
-  </RelativeLayout>
+</RelativeLayout>

@@ -93,7 +93,6 @@
     <string name="equalizer.label">均衡器</string>
     <string name="equalizer.preset">选择预设</string>
     <string name="error.label">错误</string>
-    <string name="help.url">file:///android_asset/html/en/index.html</string>
     <string name="jukebox.is_default">默认自动点唱机</string>
     <string name="lyrics.nomatch">找不到歌词</string>
     <string name="main.albums_alphaByArtist">按艺术家排序</string>

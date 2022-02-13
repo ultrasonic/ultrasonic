@@ -90,7 +90,6 @@
     <string name="equalizer.label">Equalizer</string>
     <string name="equalizer.preset">Voreinstellung wählen</string>
     <string name="error.label">Fehler</string>
-    <string name="help.url">file:///android_asset/html/de/index.html</string>
     <string name="jukebox.is_default">Jukebox als Standard</string>
     <string name="lyrics.nomatch">Keine Liedtexte gefunden</string>
     <string name="main.albums_alphaByArtist">Nach Künstler</string>
