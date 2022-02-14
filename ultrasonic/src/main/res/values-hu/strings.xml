@@ -88,7 +88,6 @@
     <string name="equalizer.label">Equalizer</string>
     <string name="equalizer.preset">Profil kiválasztása</string>
     <string name="error.label">Hiba!</string>
-    <string name="help.url">file:///android_asset/html/en/index.html</string>
     <string name="jukebox.is_default">Jukebox alapértelmezésként</string>
     <string name="lyrics.nomatch">Dalszöveg nem található!</string>
     <string name="main.albums_alphaByArtist">Előadónév szerint</string>

@@ -94,7 +94,6 @@
     <string name="equalizer.label">Equalizer</string>
     <string name="equalizer.preset">Kies een voorinstelling</string>
     <string name="error.label">Fout</string>
-    <string name="help.url">file:///android_asset/html/en/index.html</string>
     <string name="jukebox.is_default">Standaard starten in jukebox-modus</string>
     <string name="lyrics.nomatch">Geen songtekst gevonden</string>
     <string name="main.albums_alphaByArtist">Op artiest</string>

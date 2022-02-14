@@ -94,7 +94,6 @@
     <string name="equalizer.label">Equalizer</string>
     <string name="equalizer.preset">Select Preset</string>
     <string name="error.label">Error</string>
-    <string name="help.url">file:///android_asset/html/en/index.html</string>
     <string name="jukebox.is_default">Jukebox By Default</string>
     <string name="lyrics.nomatch">No lyrics found</string>
     <string name="main.albums_alphaByArtist">By Artist</string>
@@ -415,6 +414,12 @@
     <string name="server_editor.advanced">Advanced settings</string>
     <string name="server_editor.disabled_feature">One or more features were disabled because the server doesn\'t support them.\nYou can run this test again anytime.</string>
     <string name="server_menu.demo">Demo Server</string>
+
+    <string name="about.webpage">Visit webpage</string>
+    <string name="about.report">Report a bug</string>
+    <string name="about.text"><b>Ultrasonic</b> is a free and open-source music streaming Android client for Subsonic API (version 1.7.0 or higher) compatible servers.\n\nWith <b>Ultrasonic</b> you can easily stream or download music from your home computer to your Android phone using your Subsonic compatible media server. The Subsonic server software requires additional configuration separate from Ultrasonic.\n\nBy default, Ultrasonic is not configured. Once you\'ve set up your own server, please change the server configuration so that it connects to your own computer.</string>
+    <string name="about.webpage.url">https://ultrasonic.github.io/</string>
+    <string name="about.report.url">https://github.com/ultrasonic/ultrasonic/issues</string>
 
     <plurals name="select_album_n_songs">
         <item quantity="one">%d song</item>

@@ -88,7 +88,6 @@
     <string name="equalizer.label">Эквалайзер</string>
     <string name="equalizer.preset">Выберите предустановку</string>
     <string name="error.label">Ошибка</string>
-    <string name="help.url">file:///android_asset/html/en/index.html</string>
     <string name="jukebox.is_default">Jukebox по умолчанию</string>
     <string name="lyrics.nomatch">Текст не найден</string>
     <string name="main.albums_alphaByArtist">По исполнителю</string>

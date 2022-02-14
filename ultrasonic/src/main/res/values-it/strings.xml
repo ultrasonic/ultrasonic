@@ -75,7 +75,6 @@
     <string name="equalizer.label">Equalizzatore</string>
     <string name="equalizer.preset">Selezione Preset</string>
     <string name="error.label">Errore</string>
-    <string name="help.url">file:///android_asset/html/en/index.html</string>
     <string name="jukebox.is_default">Jukebox per impostazione predefinita</string>
     <string name="lyrics.nomatch">Nessun testo trovato</string>
     <string name="main.albums_alphaByArtist">Per Artista</string>
