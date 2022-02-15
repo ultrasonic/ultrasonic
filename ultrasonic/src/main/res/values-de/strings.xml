@@ -3,6 +3,7 @@
 
     <string name="background_task.loading">Lade&#8230;</string>
     <string name="background_task.network_error">Ein Netzwerkfehler ist aufgetreten. Bitte die Serveradresse prüfen oder später noch einmal versuchen.</string>
+    <string name="background_task.unsupported_api">Server api v%1$s does not support this function.</string>
     <string name="background_task.no_network">Dieses Programm benötigt eine Netzwerkverbindung. Bitte das WLAN oder Mobilfunk einschalten.</string>
     <string name="background_task.not_found">Ressource nicht gefunden. Bitte die Serveradresse überprüfen.</string>
     <string name="background_task.parse_error">Antwort nicht verstanden. Bitte die Serveradresse überprüfen.</string>
@@ -29,7 +30,7 @@
     <string name="chat.send_a_message">Nachricht senden</string>
     <string name="common.album">Album</string>
     <string name="common.appname">Ultrasonic</string>
-    <string name="common.artist">Künstler</string>
+    <string name="common.artist">Künstler*in</string>
     <string name="common.cancel">Abbrechen</string>
     <string name="common.comment">Kommentar</string>
     <string name="common.confirm">Bestätigen</string>
@@ -51,10 +52,11 @@
     <string name="common.save">Speichern</string>
     <string name="common.title">Titel</string>
     <string name="common.unpin">Lösen</string>
-    <string name="common.various_artists">Verschiedene Künstler</string>
+    <string name="common.various_artists">Mehrere Künstler*innen</string>
     <string name="delete_playlist">Möchtest du %1$s löschen</string>
     <string name="download.bookmark_removed" formatted="false">Lesezeichen entfernt</string>
     <string name="download.bookmark_set_at_position" formatted="false">Lesezeichen gesetzt als %s.</string>
+    <string name="playlist.empty">Wiedergabeliste ist leer</string>
     <string name="download.jukebox_not_authorized">Fernbedienung ist nicht erlaubt. Bitte Jukebox Modus auf dem Subsonic Server in <b>Benutzer > Einstellungen</b> aktivieren.</string>
     <string name="download.jukebox_off">Fernbedienung ausgeschaltet. Musik wird auf dem Telefon wiedergegeben.</string>
     <string name="download.jukebox_offline">Fernbedienungs-Modus is Offline nicht verfügbar.</string>
@@ -92,7 +94,7 @@
     <string name="error.label">Fehler</string>
     <string name="jukebox.is_default">Jukebox als Standard</string>
     <string name="lyrics.nomatch">Keine Liedtexte gefunden</string>
-    <string name="main.albums_alphaByArtist">Nach Künstler</string>
+    <string name="main.albums_alphaByArtist">Nach Künstler*in</string>
     <string name="main.albums_alphaByName">Nach Namen</string>
     <string name="main.albums_frequent">Am häufigsten gespielt</string>
     <string name="main.albums_highest">Am besten bewertet</string>
@@ -101,7 +103,7 @@
     <string name="main.albums_recent">Kürzlich gespielt</string>
     <string name="main.albums_starred">Mit Stern</string>
     <string name="main.albums_title">Alben</string>
-    <string name="main.artists_title">Künstler</string>
+    <string name="main.artists_title">Künstler*innen</string>
     <string name="main.genres_title">Genres</string>
     <string name="main.music">Musik</string>
     <string name="main.offline">Offline</string>
@@ -124,7 +126,7 @@
     <string name="music_library.label">Medienbibliothek</string>
     <string name="music_library.label_offline">Offline Medien</string>
     <string name="music_service.retry">Netzwerkfehler. Neuer Versuch %1$d von %2$d.</string>
-    <string name="parser.artist_count">%d Künstler gefunden</string>
+    <string name="parser.artist_count">%dInterpreten gefunden</string>
     <string name="parser.reading">Lese vom Server.</string>
     <string name="parser.reading_done">Lese vom Server. Fertig!</string>
     <string name="playlist.label">Wiedergabelisten</string>
@@ -133,7 +135,7 @@
     <string name="playlist.updated_info_error">Aktualisierung der Wiedergabeliste %s ist fehlgeschlagen</string>
     <string name="progress.wait">Bitte warten&#8230;</string>
     <string name="search.albums">Alben</string>
-    <string name="search.artists">Künstler</string>
+    <string name="search.artists">Künstler*innen</string>
     <string name="search.label">Suche</string>
     <string name="search.more">Zeige mehr</string>
     <string name="search.no_match">Keine Treffer, bitte erneut versuchen</string>
@@ -193,7 +195,7 @@
     <string name="settings.clear_search_history">Suchverlauf löschen</string>
     <string name="settings.connection_failure">Verbindungsfehler</string>
     <string name="settings.default_albums">Standard Alben</string>
-    <string name="settings.default_artists">Standard Künstler</string>
+    <string name="settings.default_artists">Standard Interpreten</string>
     <string name="settings.default_songs">Standard Titel</string>
     <string name="settings.directory_cache_time">Cache-Zeit für Verzeichnisse</string>
     <string name="settings.directory_cache_time_0">Deaktiviert</string>
@@ -217,7 +219,7 @@
     <string name="settings.invalid_url">Bitte eine gültige URL angeben.</string>
     <string name="settings.invalid_username">Bitte einen gültigen Benutzernamen eingeben (ohne führende Leerzeichen).</string>
     <string name="settings.max_albums">Maximale Alben</string>
-    <string name="settings.max_artists">Max Künstler</string>
+    <string name="settings.max_artists">Max Interpeten</string>
     <string name="settings.max_bitrate_112">112 Kbps</string>
     <string name="settings.max_bitrate_128">128 Kbps</string>
     <string name="settings.max_bitrate_160">160 Kbps</string>
@@ -306,8 +308,8 @@
     <string name="settings.title.allow_self_signed_certificate">Selbst-signierte HTTPS Zertifikate erlauben</string>
     <string name="settings.title.enable_ldap_users_support">LDAP Benutzeranmeldung aktivieren</string>
     <string name="settings.summary.enable_ldap_users_support">Dies zwingt die App, das Kennwort immer auf die alte Weise zu senden, da Subsonic api keine neue Autorisierung für LDAP-Benutzer unterstützt.</string>
-    <string name="settings.use_folder_for_album_artist">Nutze Ordner für Künstlernamen</string>
-    <string name="settings.use_folder_for_album_artist_summary">Annehmen, dass der Ordner der obersten Ebene der Name des Albumkünstlers ist</string>
+    <string name="settings.use_folder_for_album_artist">Nutze Ordner für Interpretennamen</string>
+    <string name="settings.use_folder_for_album_artist_summary">Annehmen, dass der Ordner der obersten Ebene der Name der Interpreten ist</string>
     <string name="settings.use_id3">Durchsuchen von ID3-Tags</string>
     <string name="settings.use_id3_summary">Nutze ID3 Tag Methode anstatt Dateisystem-Methode</string>
     <string name="main.video" tools:ignore="UnusedResources">Film</string>
@@ -360,8 +362,9 @@
     <string name="share_via">Titel teilen über</string>
     <string name="menu.share">Freigabe</string>
     <string name="settings.show_all_songs_by_artist">Alle Titel nach Künstler sortieren</string>
-    <string name="settings.show_all_songs_by_artist_summary">Einen neuen Eintrag in der Künstleransicht hinzufügen, um auf alle Lieder eines Künstlers zuzugreifen</string>
-    <string name="download.menu_show_artist">Künstler zeigen</string>
+    <string name="settings.show_all_songs_by_artist_summary">Einen neuen Eintrag in der Interpretenansicht hinzufügen, um auf alle Lieder eines Künstlers zuzugreifen</string>
+    <string name="download.menu_show_artist">Künstler*in zeigen</string>
+    <string name="albumArt">Album Cover</string>
     <string name="common_multiple_years">Mehrere Jahre</string>
     <string name="settings.playback.resume_on_bluetooth_device">Wiedergabe fortsetzen, wenn ein Bluetooth Gerät verbunden wurde</string>
     <string name="settings.playback.pause_on_bluetooth_device">Wiedergabe pausieren, wenn ein Bluetooth Gerät getrennt wurde</string>
@@ -371,7 +374,18 @@
     <string name="settings.debug.log_keep">Dateien behalten</string>
     <string name="settings.debug.log_delete">Dateien löschen</string>
     <string name="settings.debug.log_deleted">Logeinträge gelöscht</string>
+    <string name="server_selector.label">Configured servers</string>
+    <string name="server_selector.delete_confirmation">Are you sure you want to delete the server?</string>
+    <string name="server_editor.label">Editing server</string>
     <string name="server_editor.new_label">Server hinzufügen</string>
+    <string name="server_editor.leave_confirmation">Are you sure you want to leave and lose your changes?</string>
+    <string name="server_editor.required">This field is required</string>
+    <string name="server_menu.edit">Edit</string>
+    <string name="server_menu.delete">Löschen</string>
+    <string name="server_menu.move_up">Move up</string>
+    <string name="server_menu.move_down">Move down</string>
+    <string name="server_editor.authentication">Authentication</string>
+    <string name="server_editor.advanced">Advanced settings</string>
     <!-- Subsonic api errors -->
     <string name="api.subsonic.generic">Allgemeiner API Fehler: %1$s</string>
     <string name="api.subsonic.generic.no.message">Keine Nachricht vom Server erhalten</string>

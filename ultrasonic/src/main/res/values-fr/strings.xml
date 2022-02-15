@@ -56,6 +56,7 @@
     <string name="delete_playlist">Voulez-vous supprimer %1$s</string>
     <string name="download.bookmark_removed" formatted="false">Signet supprimé.</string>
     <string name="download.bookmark_set_at_position" formatted="false">Signet ajouté à %s.</string>
+    <string name="playlist.empty">La playlist est vide</string>
     <string name="download.jukebox_not_authorized">La télécommande n\'est pas autorisée. Veuillez activer le mode jukebox dans <b>Utilisateurs &gt; Paramètres</b> à partir de votre serveur Subsonic.</string>
     <string name="download.jukebox_off">Mode jukebox désactivé. La musique est jouée sur l\'appareil.</string>
     <string name="download.jukebox_offline">Le mode jukebox n\'est pas disponible en mode déconnecté.</string>
@@ -425,4 +426,9 @@
     <string name="api.subsonic.upgrade_client">Versions incompatibles. Veuillez mette à jour l\'application Android Ultrasonic.</string>
     <string name="api.subsonic.upgrade_server">Versions incompatibles. Veuillez mette à jour le serveur Subsonic.</string>
 
-    </resources>
+    <string name="settings.five_star_rating_title">Utiliser les étoiles pour noter les morceaux</string>
+    <string name="settings.five_star_rating_description">Utiliser un système de notation à base d\'étoiles pour les morceaux
+         au lieu de simplement mettre en avant les morceaux.
+    </string>
+
+</resources>

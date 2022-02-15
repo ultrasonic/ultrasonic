@@ -412,6 +412,9 @@
     <string name="server_editor.disabled_feature">Una o más funciones se han deshabilitado porque el servidor no las admite.\nPuedes ejecutar esta prueba nuevamente en cualquier momento.</string>
     <string name="server_menu.demo">Servidor de demostración</string>
 
+    <string name="about.webpage">Visitar la página web</string>
+    <string name="about.report">Informar de un error</string>
+    <string name="about.text"><b>Ultrasonic</b> es un cliente Android de streaming de música gratuito y de código abierto para servidores compatibles con la API de Subsonic (versión 1.7.0 o superior).\n\nCon <b>Ultrasonic</b> puede transmitir o descargar fácilmente música desde su ordenador de casa a su teléfono Android utilizando su servidor multimedia compatible con Subsonic. El software del servidor Subsonic requiere una configuración adicional aparte de Ultrasonic.\n\nPor defecto, Ultrasonic no está configurado. Una vez que hayas configurado tu propio servidor, cambia la configuración del servidor para que se conecte a tu propio ordenador.</string>
     <plurals name="select_album_n_songs">
         <item quantity="one">%d canción</item>
         <item quantity="other">%d canciones</item>

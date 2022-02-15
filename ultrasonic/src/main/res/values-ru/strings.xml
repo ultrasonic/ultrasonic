@@ -53,6 +53,7 @@
     <string name="delete_playlist">Вы хотите удалить %1$s</string>
     <string name="download.bookmark_removed" formatted="false">Закладка удалена</string>
     <string name="download.bookmark_set_at_position" formatted="false">Закладка установлена ​​на %s</string>
+    <string name="playlist.empty">Плейлист пустой</string>
     <string name="download.jukebox_not_authorized">Пульт дистанционного управления не допускается. Пожалуйста, включите режим музыкального автомата в <b> Пользователи &gt; Настройки </b>на вашем Subsonic сервере.</string>
     <string name="download.jukebox_off">Пульт управления выключен. Музыка играет на телефоне</string>
     <string name="download.jukebox_offline">Пульт дистанционного управления недоступен в автономном режиме.</string>
@@ -413,4 +414,8 @@
     <string name="api.subsonic.upgrade_client">Несовместимые версии. Пожалуйста, обновите приложение Ultrasonic для Android.</string>
     <string name="api.subsonic.upgrade_server">Несовместимые версии. Пожалуйста, обновите Subsonic сервер.</string>
 
-    </resources>
+    <string name="settings.five_star_rating_title">Использовать пятизвездочный рейтинг для песен</string>
+    <string name="settings.five_star_rating_description">Использовать пятизвездочную систему рейтинга для песен
+        вместо того, чтобы просто ставить/не ставить звезды.</string>
+
+</resources>

@@ -53,6 +53,7 @@
     <string name="delete_playlist">Biztos, hogy törölni akarja? %1$s</string>
     <string name="download.bookmark_removed" formatted="false">Könyvjelző eltávolítva.</string>
     <string name="download.bookmark_set_at_position" formatted="false">Könyvjelző beállítva %s.</string>
+    <string name="playlist.empty">A várólista üres!</string>
     <string name="download.jukebox_not_authorized">A távvezérlés nem áll rendelkezésre. Kérjük, engedélyezze a Jukebox módot a <b>Felhasználók &gt; Beállítások</b> menüpontban, az Ön Subsonic kiszolgálóján!</string>
     <string name="download.jukebox_off">Távvezérlés kikapcsolása. A zenelejátszás a telefonon történik.</string>
     <string name="download.jukebox_offline">A távvezérlés nem lehetséges kapcsolat nélküli módban!</string>
@@ -404,4 +405,9 @@
     <string name="api.subsonic.upgrade_client">Nem kompatibilis verzió. Kérjük, frissítse az Ultrasonic Android alkalmazást!</string>
     <string name="api.subsonic.upgrade_server">Nem kompatibilis verzió. Kérjük, frissítse a Subsonic kiszolgálót!</string>
 
-    </resources>
+    <string name="settings.five_star_rating_title">Öt csillagos értékelés használata a dalokhoz</string>
+    <string name="settings.five_star_rating_description">Öt csillag használata az értékeléshez az egyszerű
+        csillaggal jelölés helyett.
+    </string>
+
+</resources>

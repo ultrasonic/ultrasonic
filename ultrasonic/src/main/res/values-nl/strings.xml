@@ -412,6 +412,9 @@
     <string name="server_editor.disabled_feature">Eén of meerdere functies zijn uitgeschakeld omdat de server ze niet ondersteunt.\nVoer deze test later opnieuw uit.</string>
     <string name="server_menu.demo">Demoserver</string>
 
+    <string name="about.webpage">Website openen</string>
+    <string name="about.report">Bug melden</string>
+    <string name="about.text"><b>Ultrasonic</b> is een gratis, open source muziekstreamingclient voor Android, die gebruikmaakt van servers die compatibel zijn met de Subsonic-api (versie 1.7.0 of hoger).\n\nMet <b>Ultrasonic</b> kun je eenvoudig muziek streamen of downloaden van je computer naar je Android-telefoon met behulp van een met Subsonic compatibele mediaserver. Let op: de Subsonic-serversoftware vereist aanvullende configuratie.\n\nStandaard is Ultrasonic niet ingesteld. Zet je eigen server op en wijzig de serverconfiguratie in die van je eigen.</string>
     <plurals name="select_album_n_songs">
         <item quantity="one">%d nummer</item>
         <item quantity="other">%d nummers</item>

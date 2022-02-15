@@ -3,6 +3,7 @@
 
     <string name="background_task.loading">Ładowanie&#8230;</string>
     <string name="background_task.network_error">Wystąpił błąd sieci. Proszę sprawdzić adres serwera i spróbować później.</string>
+    <string name="background_task.unsupported_api">Server api v%1$s does not support this function.</string>
     <string name="background_task.no_network">Ta aplikacja wymaga dostępu do sieci. Proszę włączyć wi-fi lub dane komórkowe.</string>
     <string name="background_task.not_found">Nie znaleziono zasobów. Proszę sprawdzić adres serwera.</string>
     <string name="background_task.parse_error">Brak prawidłowej odpowiedzi. Proszę sprawdzić adres serwera.</string>
@@ -14,6 +15,7 @@
     <string name="button_bar.chat">Czat</string>
     <string name="button_bar.home">Ultrasonic</string>
     <string name="button_bar.now_playing">Teraz gra</string>
+    <string name="buttons.shuffle">Wymieszaj</string>
     <string name="podcasts.label">Podcasty</string>
     <string name="podcasts_channels.empty">Brak kanałów</string>
     <string name="button_bar.podcasts">Podcast</string>
@@ -42,6 +44,7 @@
     <string name="delete_playlist">Czy chcesz usunąć %1$s?</string>
     <string name="download.bookmark_removed" formatted="false">Zakładka usunięta.</string>
     <string name="download.bookmark_set_at_position" formatted="false">Zakładka ustawiona na %s.</string>
+    <string name="playlist.empty">Playlista jest pusta</string>
     <string name="download.jukebox_not_authorized">Kontrola pilotem jest niedostępna. Proszę uruchomić tryb jukebox w <b>Użytkownicy &gt; Ustawienia</b> na serwerze Subsonic.</string>
     <string name="download.jukebox_off">Tryb pilota jest wyłączony. Muzyka jest odtwarzana w telefonie.</string>
     <string name="download.jukebox_offline">Pilot jest niedostępny w trybie offline.</string>
@@ -105,6 +108,7 @@
     <string name="menu.exit">Zakończ</string>
     <string name="menu.navigation">Nawigacja</string>
     <string name="menu.settings">Ustawienia</string>
+    <string name="menu.refresh">Refresh</string>
     <string name="music_library.label">Biblioteka mediów</string>
     <string name="music_library.label_offline">Media offline</string>
     <string name="music_service.retry">Wystąpił błąd sieci. Ponawiam %1$d z %2$d.</string>
@@ -341,7 +345,23 @@ ponieważ api Subsonic nie wspiera nowego sposobu autoryzacji dla użytkowników
     <string name="download.menu_show_artist">Wyświetlaj artystę</string>
     <string name="albumArt">Okładka</string>
     <string name="common_multiple_years">Z różnych lat</string>
+    <string name="settings.playback.resume_on_bluetooth_device">Resume when a Bluetooth device is connected</string>
+    <string name="settings.playback.pause_on_bluetooth_device">Pause when a Bluetooth device is disconnected</string>
+    <string name="settings.playback.bluetooth_all">All Bluetooth devices</string>
+    <string name="settings.playback.bluetooth_a2dp">Only audio (A2DP) devices</string>
+    <string name="settings.playback.bluetooth_disabled">Wyłączone</string>
+    <string name="server_selector.label">Configured servers</string>
+    <string name="server_selector.delete_confirmation">Are you sure you want to delete the server?</string>
+    <string name="server_editor.label">Editing server</string>
     <string name="server_editor.new_label">Dodaj serwer</string>
+    <string name="server_editor.leave_confirmation">Are you sure you want to leave and lose your changes?</string>
+    <string name="server_editor.required">This field is required</string>
+    <string name="server_menu.edit">Edit</string>
+    <string name="server_menu.delete">Usuń</string>
+    <string name="server_menu.move_up">Move up</string>
+    <string name="server_menu.move_down">Move down</string>
+    <string name="server_editor.authentication">Authentication</string>
+    <string name="server_editor.advanced">Advanced settings</string>
     <plurals name="select_album_n_songs">
         <item quantity="one">%d utwór</item>
         <item quantity="few">%d utwory</item>
@@ -367,4 +387,9 @@ ponieważ api Subsonic nie wspiera nowego sposobu autoryzacji dla użytkowników
     <string name="api.subsonic.upgrade_client">Brak zgodności wersji. Uaktualnij aplikację Ultrasonic na Androida.</string>
     <string name="api.subsonic.upgrade_server">Brak zgodności wersji. Uaktualnij serwer Subsonic.</string>
 
-    </resources>
+    <string name="settings.five_star_rating_title">Użyj pięciu gwiazdek dla utworów</string>
+    <string name="settings.five_star_rating_description">W przypadku utworów użyj systemu pięciu gwiazdek
+         zamiast po prostu grać gwiazdkami / bez gwiazd.
+    </string>
+
+</resources>

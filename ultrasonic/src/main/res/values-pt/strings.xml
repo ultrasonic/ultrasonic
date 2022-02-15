@@ -3,6 +3,7 @@
 
     <string name="background_task.loading">Carregando&#8230;</string>
     <string name="background_task.network_error">Ocorreu um erro de rede. Verifique o endereço do servidor ou tente mais tarde.</string>
+    <string name="background_task.unsupported_api">Server api v%1$s does not support this function.</string>
     <string name="background_task.no_network">Este aplicativo requer acesso à rede. Ligue o Wi-Fi ou a rede de dados.</string>
     <string name="background_task.not_found">Recurso não encontrado. Verifique o endereço do servidor.</string>
     <string name="background_task.parse_error">Não entendi a resposta. Verifique o endereço do servidor.</string>
@@ -14,6 +15,7 @@
     <string name="button_bar.chat">Chat</string>
     <string name="button_bar.home">Menu Principal</string>
     <string name="button_bar.now_playing">Tocando Agora</string>
+    <string name="buttons.shuffle">Misturar</string>
     <string name="podcasts.label">Podcasts</string>
     <string name="podcasts_channels.empty">Nenhum canal de podcasts registrado</string>
     <string name="button_bar.podcasts">Podcast</string>
@@ -42,6 +44,7 @@
     <string name="delete_playlist">Você quer apagar %1$s</string>
     <string name="download.bookmark_removed" formatted="false">Favorito removido.</string>
     <string name="download.bookmark_set_at_position" formatted="false">Favorito marcado em %s.</string>
+    <string name="playlist.empty">Playlist está vazia</string>
     <string name="download.jukebox_not_authorized">Controle remoto não está permitido. Habilite o modo jukebox em <b>Usuário &gt; Configurações</b> no seu servidor Subsonic.</string>
     <string name="download.jukebox_off">Controle remoto desligado. Música tocada no celular.</string>
     <string name="download.jukebox_offline">Controle remoto não está disponível no modo offline.</string>
@@ -105,6 +108,7 @@
     <string name="menu.exit">Sair</string>
     <string name="menu.navigation">Navegação</string>
     <string name="menu.settings">Configurações</string>
+    <string name="menu.refresh">Refresh</string>
     <string name="music_library.label">Biblioteca de Mídia</string>
     <string name="music_library.label_offline">Mídia Offline</string>
     <string name="music_service.retry">Ocorreu um erro de rede. Tentativa %1$d de %2$d.</string>
@@ -339,8 +343,25 @@
     <string name="settings.show_all_songs_by_artist">Todas as Músicas do Artista</string>
     <string name="settings.show_all_songs_by_artist_summary">Adicionar nova entrada em artista para ver todas as músicas do artista</string>
     <string name="download.menu_show_artist">Mostrar Artista</string>
+    <string name="albumArt">albumArt</string>
     <string name="common_multiple_years">Múltiplos Anos</string>
+    <string name="settings.playback.resume_on_bluetooth_device">Resume when a Bluetooth device is connected</string>
+    <string name="settings.playback.pause_on_bluetooth_device">Pause when a Bluetooth device is disconnected</string>
+    <string name="settings.playback.bluetooth_all">All Bluetooth devices</string>
+    <string name="settings.playback.bluetooth_a2dp">Only audio (A2DP) devices</string>
+    <string name="settings.playback.bluetooth_disabled">Disabilitando</string>
+    <string name="server_selector.label">Configured servers</string>
+    <string name="server_selector.delete_confirmation">Are you sure you want to delete the server?</string>
+    <string name="server_editor.label">Editing server</string>
     <string name="server_editor.new_label">Adicionar Servidor</string>
+    <string name="server_editor.leave_confirmation">Are you sure you want to leave and lose your changes?</string>
+    <string name="server_editor.required">This field is required</string>
+    <string name="server_menu.edit">Edit</string>
+    <string name="server_menu.delete">Apagar</string>
+    <string name="server_menu.move_up">Move up</string>
+    <string name="server_menu.move_down">Move down</string>
+    <string name="server_editor.authentication">Authentication</string>
+    <string name="server_editor.advanced">Advanced settings</string>
     <plurals name="select_album_n_songs">
         <item quantity="one">%d música</item>
         <item quantity="other">%d músicas</item>
@@ -362,4 +383,9 @@
     <string name="api.subsonic.upgrade_client">Versões incompativeis. Atualize o aplicativo Ultrasonic para Android.</string>
     <string name="api.subsonic.upgrade_server">Versões incompativeis. Atualize o servidor Ultrasonic.</string>
 
-    </resources>
+    <string name="settings.five_star_rating_title">Use classificação de cinco estrelas para músicas</string>
+    <string name="settings.five_star_rating_description">Use o sistema de classificação de cinco estrelas para músicas
+         em vez de simplesmente estrelar / não estrelar itens.
+    </string>
+
+</resources>

@@ -5,6 +5,7 @@
     <string name="button_bar.bookmarks">書籤</string>
     <string name="button_bar.browse">媒體庫</string>
     <string name="button_bar.now_playing">正在播放</string>
+    <string name="button_bar.playlists">播放清單</string>
     <string name="button_bar.search">搜尋</string>
     <string name="common.cancel">取消</string>
     <string name="common.comment">註記</string>
@@ -29,13 +30,20 @@
     <string name="main.albums_title">專輯</string>
     <string name="main.artists_title">作者</string>
     <string name="main.offline">離線</string>
+    <string name="main.songs_random">隨機</string>
+    <string name="main.songs_starred">已加星號</string>
     <string name="menu.about">關於</string>
     <string name="menu.exit">離開</string>
     <string name="menu.settings">設定</string>
     <string name="music_library.label">媒體庫</string>
     <string name="playlist.label">播放清單</string>
+    <string name="search.albums">專輯</string>
+    <string name="search.artists">作者</string>
     <string name="search.label">搜尋</string>
     <string name="search.title">搜尋</string>
+    <string name="settings.buffer_length_0">已停用</string>
+    <string name="settings.buffer_length_120">2 分</string>
+    <string name="settings.buffer_length_60">1 分</string>
     <string name="settings.directory_cache_time_0">已停用</string>
     <string name="settings.directory_cache_time_1">1 分</string>
     <string name="settings.directory_cache_time_10">10 分</string>
@@ -43,4 +51,9 @@
     <string name="settings.directory_cache_time_30">30 分</string>
     <string name="settings.directory_cache_time_5">5 分</string>
     <string name="settings.directory_cache_time_60">1 小時</string>
+    <string name="settings.server_name">名稱</string>
+    <string name="time_span_disabled">已停用</string>
+    <string name="share_comment">註記</string>
+    <string name="settings.playback.bluetooth_disabled">已停用</string>
+    <string name="server_menu.delete">刪除</string>
     </resources>

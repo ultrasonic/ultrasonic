@@ -15,6 +15,7 @@
     <string name="button_bar.chat">Chat</string>
     <string name="button_bar.home">Ultrasonic Menu</string>
     <string name="button_bar.now_playing">Právě hraje</string>
+    <string name="buttons.shuffle">Náhodně</string>
     <string name="podcasts.label">Podcasty</string>
     <string name="podcasts_channels.empty">Není registrován žádný podcast kanál</string>
     <string name="button_bar.podcasts">Podcasty</string>
@@ -43,6 +44,7 @@
     <string name="delete_playlist">Opravdu smazat %1$s</string>
     <string name="download.bookmark_removed" formatted="false">Záložka odstraněna.</string>
     <string name="download.bookmark_set_at_position" formatted="false">Záložka vytvořena na %s.</string>
+    <string name="playlist.empty">Playlist je prázdný</string>
     <string name="download.jukebox_not_authorized">Vzdálené ovládání není povoleno. Povolte jukebox mód v <b>Uživatelském &gt; Nastavení</b> na Subsonic serveru.</string>
     <string name="download.jukebox_off">Vzdálené ovládání vypnuto. Hudba je přehrávána na telefonu.</string>
     <string name="download.jukebox_offline">Vzdálené ovládání není dostupné v offline módu.</string>
@@ -396,4 +398,9 @@
     <string name="api.subsonic.upgrade_client">Nekompatibilní verze. Aktualizujte prosím Ultrasonic Android aplikaci.</string>
     <string name="api.subsonic.upgrade_server">Nekompatibilní verze. Aktualizujte prosím Subsonic server.</string>
 
-    </resources>
+    <string name="settings.five_star_rating_title">Používat pět hvězdiček pro hodnocení skladeb</string>
+    <string name="settings.five_star_rating_description">Používat pět hvězdiček pro hodnocení skladeb
+        namísto jednoduchého jednohvězdičkového hodnocení.
+    </string>
+
+</resources>

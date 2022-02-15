@@ -13,6 +13,7 @@
     <string name="button_bar.browse">Libreria multimediale</string>
     <string name="button_bar.chat">Chat</string>
     <string name="button_bar.now_playing">In riproduzione</string>
+    <string name="buttons.shuffle">Casuale</string>
     <string name="podcasts.label">Podcast</string>
     <string name="podcasts_channels.empty">Nessun canale podcast registrato</string>
     <string name="button_bar.podcasts">Podcast</string>
@@ -40,6 +41,7 @@
     <string name="delete_playlist">Vuoi eliminare %1$s</string>
     <string name="download.bookmark_removed" formatted="false">Segnalibro rimosso.</string>
     <string name="download.bookmark_set_at_position" formatted="false">Segnalibro impostato su %s.</string>
+    <string name="playlist.empty">Playlist vuota</string>
     <string name="download.jukebox_not_authorized">Il controllo remoto non è consentito. Per favore abilita la modalità jukebox nelle <b> Impostazioni &gt; Utente </b> nel server Airsonic.</string>
     <string name="download.jukebox_off">Controllo remoto disattivato. La musica verrà riprodotta sullo smartphone.</string>
     <string name="download.jukebox_offline">Il controllo remoto non è disponibile nella modalità offline. </string>
@@ -297,6 +299,7 @@
     <string name="widget.sdcard_busy">Scheda SD non disponibile</string>
     <string name="widget.sdcard_missing">Nessuna scheda SD</string>
     <string name="settings.share_description_default">Descrizione Predefinita di Condivisione</string>
+    <string name="download.menu_clear_playlist">Pulisci Playlist</string>
     <string name="settings.share_milliseconds">Millisecondi</string>
     <string name="settings.share_seconds">Secondi</string>
     <string name="settings.share_minutes">Minuti</string>
@@ -308,5 +311,7 @@
     <string name="share_comment">Commenta</string>
     <string name="download_song_removed">\"%s\" è stato rimosso dalla playlist</string>
     <string name="share_via">Condividi canzoni via</string>
+    <string name="settings.playback.bluetooth_disabled">Disabilitato</string>
+    <string name="server_menu.delete">Elimina</string>
     <string name="api.subsonic.trial_period_is_over">Il periodo di prova è terminato.</string>
     </resources>
