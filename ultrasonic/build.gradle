@@ -67,11 +67,12 @@ android {
         }
     }
     lint {
+        baseline = file("lint-baseline.xml")
         abortOnError true
-        disable 'IconMissingDensityFolder', 'VectorPath'
-        ignore 'MissingTranslation', 'UnusedQuantity'
-        warning 'ImpliedQuantity'
         warningsAsErrors true
+        disable 'IconMissingDensityFolder', 'VectorPath'
+        ignore 'MissingTranslation', 'UnusedQuantity', 'MissingQuantity'
+        warning 'ImpliedQuantity'
     }
 
 }
