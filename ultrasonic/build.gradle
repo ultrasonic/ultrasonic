@@ -14,8 +14,8 @@ android {
 
         minSdkVersion versions.minSdk
         targetSdkVersion versions.targetSdk
+        resConfigs 'cs', 'de', 'en', 'es', 'fr', 'hu', 'it', 'nl', 'pl', 'pt', 'pt-rBR', 'ru', 'zh-rCN', 'zh-rTW'
 
-        resConfigs "cs", "de", "en", "es", "fr", "hu", "it", "nl", "pl", "pt", "pt-rBR", "ru", "zh-rCN", "zh-rTW"
     }
 
     buildTypes {
@@ -40,20 +40,12 @@ android {
         main.java.srcDirs += "${projectDir}/src/main/kotlin"
         test.java.srcDirs += "${projectDir}/src/test/kotlin"
     }
-
     packagingOptions {
-        exclude 'META-INF/LICENSE'
+        resources {
+            excludes += ['META-INF/LICENSE']
+        }
     }
 
-    lintOptions {
-        baselineFile file("lint-baseline.xml")
-        ignore 'MissingTranslation'
-        ignore 'UnusedQuantity'
-        warning 'ImpliedQuantity'
-        disable 'IconMissingDensityFolder', "VectorPath"
-        abortOnError true
-        warningsAsErrors true
-    }
 
     kotlinOptions {
         jvmTarget = "1.8"
@@ -73,6 +65,13 @@ android {
         arguments {
             arg("room.schemaLocation", "$buildDir/schemas".toString())
         }
+    }
+    lint {
+        abortOnError true
+        disable 'IconMissingDensityFolder', 'VectorPath'
+        ignore 'MissingTranslation', 'UnusedQuantity'
+        warning 'ImpliedQuantity'
+        warningsAsErrors true
     }
 
 }
