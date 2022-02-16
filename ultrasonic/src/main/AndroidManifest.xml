@@ -40,7 +40,6 @@
 
         <activity android:name=".activity.NavigationActivity"
             android:configChanges="orientation|keyboardHidden"
-            android:label="@string/common.appname"
             android:launchMode="singleTask">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />

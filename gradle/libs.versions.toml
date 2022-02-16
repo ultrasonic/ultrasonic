@@ -3,7 +3,7 @@
 gradle                 = "7.3.2"
 
 navigation             = "2.3.5"
-gradlePlugin           = "7.0.4"
+gradlePlugin           = "7.1.1"
 androidxcore           = "1.6.0"
 ktlint                 = "0.43.2"
 ktlintGradle           = "10.2.0"
