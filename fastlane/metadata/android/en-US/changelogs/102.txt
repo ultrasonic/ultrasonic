@@ -1,0 +1,2 @@
+Bug fixes
+- #688: Connection failure.

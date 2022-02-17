@@ -1,4 +1,3 @@
 Mejoras
-
 - #683: Reescribir el acerca de y eliminar el webview.
 - #685: Posibilidad de seleccionar el color del servidor.

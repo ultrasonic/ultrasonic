@@ -1,4 +1,3 @@
 Enhancements
-
 - #683: Rewrite the about and remove the webview.
 - #685: Server coloring feature.
