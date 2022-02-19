@@ -276,7 +276,7 @@ open class TrackCollectionFragment : MultiListFragment<MusicDirectory.Child>() {
         var hasSubFolders = false
 
         for (item in viewAdapter.getCurrentList()) {
-            if (item is MusicDirectory.Entry && item.isDirectory) {
+            if (item is MusicDirectory.Child && item.isDirectory) {
                 hasSubFolders = true
                 break
             }
