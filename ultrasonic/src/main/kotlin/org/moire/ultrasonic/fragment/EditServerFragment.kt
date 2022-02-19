@@ -110,25 +110,24 @@ class EditServerFragment : Fragment(), OnBackPressedHandler {
             FragmentTitle.setTitle(this, R.string.server_editor_label)
             val serverSetting = serverSettingsModel.getServerSetting(index)
             serverSetting.observe(
-                viewLifecycleOwner,
-                { t ->
-                    if (t != null) {
-                        currentServerSetting = t
-                        if (!isInstanceStateSaved) setFields()
-                        // Remove the minimum API version so it can be detected again
-                        if (currentServerSetting?.minimumApiVersion != null) {
-                            currentServerSetting!!.minimumApiVersion = null
-                            serverSettingsModel.updateItem(currentServerSetting)
-                            if (
-                                activeServerProvider.getActiveServer().id ==
-                                currentServerSetting!!.id
-                            ) {
-                                MusicServiceFactory.resetMusicService()
-                            }
+                viewLifecycleOwner
+            ) { t ->
+                if (t != null) {
+                    currentServerSetting = t
+                    if (!isInstanceStateSaved) setFields()
+                    // Remove the minimum API version so it can be detected again
+                    if (currentServerSetting?.minimumApiVersion != null) {
+                        currentServerSetting!!.minimumApiVersion = null
+                        serverSettingsModel.updateItem(currentServerSetting)
+                        if (
+                            activeServerProvider.getActiveServer().id ==
+                            currentServerSetting!!.id
+                        ) {
+                            MusicServiceFactory.resetMusicService()
                         }
                     }
                 }
-            )
+            }
             saveButton!!.setOnClickListener {
                 if (currentServerSetting != null) {
                     if (getFields()) {
@@ -185,6 +184,11 @@ class EditServerFragment : Fragment(), OnBackPressedHandler {
                 .setBottomSpace(DIALOG_PADDING)
                 .show()
         }
+    }
+
+    override fun onStop() {
+        Util.hideKeyboard(activity)
+        super.onStop()
     }
 
     private fun updateColor(color: Int?) {
@@ -511,7 +515,6 @@ class EditServerFragment : Fragment(), OnBackPressedHandler {
                 .setMessage(R.string.server_editor_leave_confirmation)
                 .setPositiveButton(R.string.common_ok) { dialog, _ ->
                     dialog.dismiss()
-                    Util.hideKeyboard(activity)
                     findNavController().navigateUp()
                 }
                 .setNegativeButton(R.string.common_cancel) { dialog, _ ->
@@ -519,7 +522,6 @@ class EditServerFragment : Fragment(), OnBackPressedHandler {
                 }
                 .show()
         } else {
-            Util.hideKeyboard(activity)
             findNavController().navigateUp()
         }
     }

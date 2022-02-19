@@ -41,6 +41,7 @@ import org.moire.ultrasonic.util.CancellationToken
 import org.moire.ultrasonic.util.CommunicationError
 import org.moire.ultrasonic.util.Constants
 import org.moire.ultrasonic.util.Settings
+import org.moire.ultrasonic.util.Util
 import org.moire.ultrasonic.util.Util.toast
 import timber.log.Timber
 
@@ -50,6 +51,7 @@ import timber.log.Timber
 class SearchFragment : MultiListFragment<Identifiable>(), KoinComponent {
     private var searchResult: SearchResult? = null
     private var searchRefresh: SwipeRefreshLayout? = null
+    private var searchView: SearchView? = null
 
     private val mediaPlayerController: MediaPlayerController by inject()
 
@@ -69,15 +71,14 @@ class SearchFragment : MultiListFragment<Identifiable>(), KoinComponent {
         setHasOptionsMenu(true)
 
         listModel.searchResult.observe(
-            viewLifecycleOwner,
-            {
-                if (it != null) {
-                    // Shorten the display initially
-                    searchResult = it
-                    populateList(listModel.trimResultLength(it))
-                }
+            viewLifecycleOwner
+        ) {
+            if (it != null) {
+                // Shorten the display initially
+                searchResult = it
+                populateList(listModel.trimResultLength(it))
             }
-        )
+        }
 
         searchRefresh = view.findViewById(R.id.swipe_refresh_view)
         searchRefresh!!.isEnabled = false
@@ -143,9 +144,9 @@ class SearchFragment : MultiListFragment<Identifiable>(), KoinComponent {
         val searchManager = activity.getSystemService(Context.SEARCH_SERVICE) as SearchManager
         inflater.inflate(R.menu.search, menu)
         val searchItem = menu.findItem(R.id.search_item)
-        val searchView = searchItem.actionView as SearchView
+        searchView = searchItem.actionView as SearchView
         val searchableInfo = searchManager.getSearchableInfo(requireActivity().componentName)
-        searchView.setSearchableInfo(searchableInfo)
+        searchView!!.setSearchableInfo(searchableInfo)
 
         val arguments = arguments
         val autoPlay = arguments != null &&
@@ -154,31 +155,31 @@ class SearchFragment : MultiListFragment<Identifiable>(), KoinComponent {
 
         // If started with a query, enter it to the searchView
         if (query != null) {
-            searchView.setQuery(query, false)
-            searchView.clearFocus()
+            searchView!!.setQuery(query, false)
+            searchView!!.clearFocus()
         }
 
-        searchView.setOnSuggestionListener(object : SearchView.OnSuggestionListener {
+        searchView!!.setOnSuggestionListener(object : SearchView.OnSuggestionListener {
             override fun onSuggestionSelect(position: Int): Boolean {
                 return true
             }
 
             override fun onSuggestionClick(position: Int): Boolean {
                 Timber.d("onSuggestionClick: %d", position)
-                val cursor = searchView.suggestionsAdapter.cursor
+                val cursor = searchView!!.suggestionsAdapter.cursor
                 cursor.moveToPosition(position)
 
                 // 2 is the index of col containing suggestion name.
                 val suggestion = cursor.getString(2)
-                searchView.setQuery(suggestion, true)
+                searchView!!.setQuery(suggestion, true)
                 return true
             }
         })
 
-        searchView.setOnQueryTextListener(object : SearchView.OnQueryTextListener {
+        searchView!!.setOnQueryTextListener(object : SearchView.OnQueryTextListener {
             override fun onQueryTextSubmit(query: String): Boolean {
                 Timber.d("onQueryTextSubmit: %s", query)
-                searchView.clearFocus()
+                searchView!!.clearFocus()
                 search(query, autoPlay)
                 return true
             }
@@ -188,11 +189,12 @@ class SearchFragment : MultiListFragment<Identifiable>(), KoinComponent {
             }
         })
 
-        searchView.setIconifiedByDefault(false)
+        searchView!!.setIconifiedByDefault(false)
         searchItem.expandActionView()
     }
 
     override fun onDestroyView() {
+        Util.hideKeyboard(activity)
         cancellationToken?.cancel()
         super.onDestroyView()
     }
