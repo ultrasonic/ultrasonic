@@ -56,7 +56,7 @@ class AboutFragment : Fragment() {
             versionName
         )
 
-        setTitle(this@AboutFragment, title)
+        setTitle(this@AboutFragment, getString(R.string.menu_about))
         titleText?.text = title
 
         webPageButton?.setOnClickListener {
