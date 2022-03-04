@@ -46,6 +46,7 @@ import org.moire.ultrasonic.util.Constants
 import org.moire.ultrasonic.util.EntryByDiscAndTrackComparator
 import org.moire.ultrasonic.util.Settings
 import org.moire.ultrasonic.util.Util
+import org.moire.ultrasonic.util.Util.toast
 
 /**
  * Displays a group of tracks, eg. the songs of an album, of a playlist etc.
@@ -619,56 +620,80 @@ open class TrackCollectionFragment : MultiListFragment<MusicDirectory.Child>() {
         menuItem: MenuItem,
         item: MusicDirectory.Child
     ): Boolean {
-        val entryId = item.id
+        val songs = getClickedSong(item)
 
         when (menuItem.itemId) {
-            R.id.menu_play_now -> {
-                downloadHandler.downloadRecursively(
-                    this, entryId, save = false, append = false,
-                    autoPlay = true, shuffle = false, background = false,
-                    playNext = false, unpin = false, isArtist = false
+            R.id.song_menu_play_now -> {
+                downloadHandler.download(
+                    fragment = this,
+                    append = false,
+                    save = false,
+                    autoPlay = true,
+                    playNext = false,
+                    shuffle = false,
+                    songs = songs
                 )
             }
-            R.id.menu_play_next -> {
-                downloadHandler.downloadRecursively(
-                    this, entryId, save = false, append = false,
-                    autoPlay = false, shuffle = false, background = false,
-                    playNext = true, unpin = false, isArtist = false
+            R.id.song_menu_play_next -> {
+                downloadHandler.download(
+                    fragment = this,
+                    append = true,
+                    save = false,
+                    autoPlay = false,
+                    playNext = true,
+                    shuffle = false,
+                    songs = songs
                 )
             }
-            R.id.menu_play_last -> {
-                downloadHandler.downloadRecursively(
-                    this, entryId, save = false, append = true,
-                    autoPlay = false, shuffle = false, background = false,
-                    playNext = false, unpin = false, isArtist = false
+            R.id.song_menu_play_last -> {
+                downloadHandler.download(
+                    fragment = this,
+                    append = true,
+                    save = false,
+                    autoPlay = false,
+                    playNext = false,
+                    shuffle = false,
+                    songs = songs
                 )
             }
-            R.id.menu_pin -> {
-                downloadHandler.downloadRecursively(
-                    this, entryId, save = true, append = true,
-                    autoPlay = false, shuffle = false, background = false,
-                    playNext = false, unpin = false, isArtist = false
+            R.id.song_menu_pin -> {
+                toast(
+                    context,
+                    resources.getQuantityString(
+                        R.plurals.select_album_n_songs_pinned,
+                        songs.size,
+                        songs.size
+                    )
                 )
+                downloadBackground(true, songs)
             }
-            R.id.menu_unpin -> {
-                downloadHandler.downloadRecursively(
-                    this, entryId, save = false, append = false,
-                    autoPlay = false, shuffle = false, background = false,
-                    playNext = false, unpin = true, isArtist = false
+            R.id.song_menu_unpin -> {
+                toast(
+                    context,
+                    resources.getQuantityString(
+                        R.plurals.select_album_n_songs_unpinned,
+                        songs.size,
+                        songs.size
+                    )
                 )
+                mediaPlayerController.unpin(songs)
             }
-            R.id.menu_download -> {
-                downloadHandler.downloadRecursively(
-                    this, entryId, save = false, append = false,
-                    autoPlay = false, shuffle = false, background = true,
-                    playNext = false, unpin = false, isArtist = false
+            R.id.song_menu_download -> {
+                toast(
+                    context,
+                    resources.getQuantityString(
+                        R.plurals.select_album_n_songs_downloaded,
+                        songs.size,
+                        songs.size
+                    )
                 )
+                downloadBackground(false, songs)
             }
             R.id.select_album_play_all -> {
                 // TODO: Why is this being handled here?!
                 playAll()
             }
-            R.id.menu_item_share -> {
+            R.id.song_menu_share -> {
                 if (item is MusicDirectory.Entry) {
                     shareHandler.createShare(
                         this, listOf(item), refreshListView,
@@ -681,6 +706,16 @@ open class TrackCollectionFragment : MultiListFragment<MusicDirectory.Child>() {
             }
         }
         return true
+    }
+
+    internal fun getClickedSong(item: MusicDirectory.Child): List<MusicDirectory.Entry> {
+        //This can probably be done better
+        return viewAdapter.getCurrentList().mapNotNull {
+            if (it is MusicDirectory.Entry && (it.id == item.id))
+                it
+            else
+                null
+        }
     }
 
     override fun onItemClick(item: MusicDirectory.Child) {
