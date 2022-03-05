@@ -709,7 +709,7 @@ open class TrackCollectionFragment : MultiListFragment<MusicDirectory.Child>() {
     }
 
     internal fun getClickedSong(item: MusicDirectory.Child): List<MusicDirectory.Entry> {
-        //This can probably be done better
+        // This can probably be done better
         return viewAdapter.getCurrentList().mapNotNull {
             if (it is MusicDirectory.Entry && (it.id == item.id))
                 it
