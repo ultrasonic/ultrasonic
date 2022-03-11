@@ -247,9 +247,10 @@ open class TrackCollectionFragment : MultiListFragment<MusicDirectory.Child>() {
         super.onDestroyView()
     }
 
-    private fun playNow(append: Boolean) {
-        val selectedSongs = getSelectedSongs()
-
+    private fun playNow(
+        append: Boolean,
+        selectedSongs: List<MusicDirectory.Entry> = getSelectedSongs()
+    ) {
         if (selectedSongs.isNotEmpty()) {
             downloadHandler.download(
                 this, append, false, !append, playNext = false,
@@ -375,7 +376,10 @@ open class TrackCollectionFragment : MultiListFragment<MusicDirectory.Child>() {
         downloadBackground(save, songs)
     }
 
-    private fun downloadBackground(save: Boolean, songs: List<MusicDirectory.Entry?>) {
+    private fun downloadBackground(
+        save: Boolean,
+        songs: List<MusicDirectory.Entry?>
+    ) {
         val onValid = Runnable {
             networkAndStorageChecker.warnIfNetworkOrStorageUnavailable()
             mediaPlayerController.downloadBackground(songs, save)
@@ -399,9 +403,7 @@ open class TrackCollectionFragment : MultiListFragment<MusicDirectory.Child>() {
         onValid.run()
     }
 
-    internal fun delete() {
-        val songs = getSelectedSongs()
-
+    internal fun delete(songs: List<MusicDirectory.Entry> = getSelectedSongs()) {
         Util.toast(
             context,
             resources.getQuantityString(
@@ -412,8 +414,7 @@ open class TrackCollectionFragment : MultiListFragment<MusicDirectory.Child>() {
         mediaPlayerController.delete(songs)
     }
 
-    internal fun unpin() {
-        val songs = getSelectedSongs()
+    internal fun unpin(songs: List<MusicDirectory.Entry> = getSelectedSongs()) {
         Util.toast(
             context,
             resources.getQuantityString(
@@ -624,19 +625,11 @@ open class TrackCollectionFragment : MultiListFragment<MusicDirectory.Child>() {
 
         when (menuItem.itemId) {
             R.id.song_menu_play_now -> {
-                downloadHandler.download(
-                    fragment = this,
-                    append = false,
-                    save = false,
-                    autoPlay = true,
-                    playNext = false,
-                    shuffle = false,
-                    songs = songs
-                )
+                playNow(false, songs)
             }
             R.id.song_menu_play_next -> {
                 downloadHandler.download(
-                    fragment = this,
+                    fragment = this@TrackCollectionFragment,
                     append = true,
                     save = false,
                     autoPlay = false,
@@ -646,47 +639,15 @@ open class TrackCollectionFragment : MultiListFragment<MusicDirectory.Child>() {
                 )
             }
             R.id.song_menu_play_last -> {
-                downloadHandler.download(
-                    fragment = this,
-                    append = true,
-                    save = false,
-                    autoPlay = false,
-                    playNext = false,
-                    shuffle = false,
-                    songs = songs
-                )
+                playNow(true, songs)
             }
             R.id.song_menu_pin -> {
-                toast(
-                    context,
-                    resources.getQuantityString(
-                        R.plurals.select_album_n_songs_pinned,
-                        songs.size,
-                        songs.size
-                    )
-                )
                 downloadBackground(true, songs)
             }
             R.id.song_menu_unpin -> {
-                toast(
-                    context,
-                    resources.getQuantityString(
-                        R.plurals.select_album_n_songs_unpinned,
-                        songs.size,
-                        songs.size
-                    )
-                )
-                mediaPlayerController.unpin(songs)
+                unpin(songs)
             }
             R.id.song_menu_download -> {
-                toast(
-                    context,
-                    resources.getQuantityString(
-                        R.plurals.select_album_n_songs_downloaded,
-                        songs.size,
-                        songs.size
-                    )
-                )
                 downloadBackground(false, songs)
             }
             R.id.select_album_play_all -> {
