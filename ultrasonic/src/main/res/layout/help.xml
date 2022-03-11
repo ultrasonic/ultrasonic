@@ -3,25 +3,43 @@
     a:layout_width="fill_parent"
     a:layout_height="fill_parent">
 
-    <TextView
-        a:id="@+id/help_title"
-        a:layout_width="match_parent"
+    <ScrollView
+        a:id="@+id/SCROLLER_ID"
+        a:layout_width="fill_parent"
         a:layout_height="wrap_content"
-        a:gravity="center"
-        a:padding="18dp"
-        a:text="@string/common.appname"
-        a:textSize="25sp" />
+        a:layout_above="@+id/help_webpage"
+        a:layout_alignParentTop="true"
+        a:fillViewport="true"
+        a:layout_marginBottom="10dp"
+        a:scrollbars="vertical">
 
-    <TextView
-        a:id="@+id/help_text"
-        a:layout_width="match_parent"
-        a:layout_height="wrap_content"
-        a:layout_below="@+id/help_title"
-        a:layout_marginTop="0dp"
-        a:padding="20dp"
-        a:textSize="16sp"
-        a:text="@string/about.text"
-         />
+        <RelativeLayout
+            a:layout_width="wrap_content"
+            a:layout_height="wrap_content">
+
+            <TextView
+                a:id="@+id/help_title"
+                a:layout_width="match_parent"
+                a:layout_height="wrap_content"
+                a:gravity="center"
+                a:padding="18dp"
+                a:text="@string/common.appname"
+                a:textSize="25sp" />
+
+            <TextView
+                a:id="@+id/help_text"
+                a:layout_width="match_parent"
+                a:layout_height="wrap_content"
+                a:layout_below="@id/help_title"
+                a:layout_marginTop="0dp"
+                a:padding="20dp"
+                a:text="@string/about.text"
+                a:textSize="16sp" />
+
+        </RelativeLayout>
+
+    </ScrollView>
+
 
     <Button
         a:id="@+id/help_webpage"
