@@ -217,8 +217,8 @@
     <string name="settings.disc_sort_summary">Sort song list by disc number and track number</string>
     <string name="settings.display_bitrate">Display Bitrate and File Suffix</string>
     <string name="settings.display_bitrate_summary">Append artist name with bitrate and file suffix</string>
-    <string name="settings.download_transition">Show Downloads on Play</string>
-    <string name="settings.download_transition_summary">Transition to download activity when starting playback</string>
+    <string name="settings.download_transition">Stay in Downloads on Play</string>
+    <string name="settings.download_transition_summary">Stay in media view when starting playback (do not switch to player view)</string>
     <string name="settings.gapless_playback">Gapless Playback</string>
     <string name="settings.gapless_playback_summary">Enable gapless playback</string>
     <string name="settings.hide_media_summary">Hide music files from other apps.</string>
@@ -285,12 +285,12 @@
     <string name="settings.search_75">75</string>
     <string name="settings.search_history_cleared">Search history cleared</string>
     <string name="settings.search_title">Search Settings</string>
+    <string name="settings.send_bluetooth_notification_summary">Send playback notifications via Bluetooth</string>
+    <string name="settings.send_bluetooth_notification">Send Bluetooth Notification</string>
     <string name="settings.send_bluetooth_album_art_summary">Send album art over Bluetooth (May cause Bluetooth notifications to fail)</string>
     <string name="settings.send_bluetooth_album_art">Album Art Over Bluetooth</string>
     <string name="settings.disable_send_now_playing_list_summary">Now Playing List won\'t be sent to connected devices. This may restore compatibility with AVRCP 1.3 devices, when current track display is not updated</string>
     <string name="settings.disable_send_now_playing_list">Disable sending of Now Playing List</string>
-    <string name="settings.send_bluetooth_notification_summary">Send playback notifications via Bluetooth</string>
-    <string name="settings.send_bluetooth_notification">Send Bluetooth Notification</string>
     <string name="settings.server_manage_servers">Manage Servers</string>
     <string name="settings.server_address">Server Address</string>
     <string name="settings.server_name">Name</string>
@@ -320,8 +320,7 @@
     <string name="settings.theme_title">Theme</string>
     <string name="settings.title.allow_self_signed_certificate">Allow self-signed HTTPS certificate</string>
     <string name="settings.title.enable_ldap_users_support">Force plain password authentication</string>
-    <string name="settings.summary.enable_ldap_users_support">This forces the app to always send the password unencrypted.
-        Useful if the Subsonic server does not support the new authentication API for the users.</string>
+    <string name="settings.summary.enable_ldap_users_support">This forces the app to always send the password unencrypted. Useful if the Subsonic server does not support the new authentication API for the users.</string>
     <string name="settings.use_folder_for_album_artist">Use Folders For Artist Name</string>
     <string name="settings.use_folder_for_album_artist_summary">Assume top-level folder is the name of the album artist</string>
     <string name="settings.use_id3">Browse Using ID3 Tags</string>
@@ -389,7 +388,7 @@
     <string name="settings.playback.bluetooth_all">All Bluetooth devices</string>
     <string name="settings.playback.bluetooth_a2dp">Only audio (A2DP) devices</string>
     <string name="settings.playback.bluetooth_disabled">Disabled</string>
-    <string name="settings.playback.single_button_bluetooth_device">Bluetooth device with only a single  Play/Pause button</string>
+    <string name="settings.playback.single_button_bluetooth_device">Bluetooth device with a single Play/Pause button</string>
     <string name="settings.playback.single_button_bluetooth_device_summary">Enabling this may help with older Bluetooth devices when Play/Pause doesn\'t work correctly</string>
     <string name="settings.debug.title">Debug options</string>
     <string name="settings.debug.log_to_file">Write debug log to file</string>
@@ -469,8 +468,7 @@
     <!-- Subsonic features  -->
     <string name="settings.features_title">Features</string>
     <string name="settings.five_star_rating_title">Use five star rating for songs</string>
-    <string name="settings.five_star_rating_description">Use five star rating system for songs
-        instead of simply starring/unstarring items.
+    <string name="settings.five_star_rating_description">Use five star rating system for songs instead of simply starring/unstarring items.
     </string>
 
 </resources>
