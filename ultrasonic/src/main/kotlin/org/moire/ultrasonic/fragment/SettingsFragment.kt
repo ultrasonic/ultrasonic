@@ -468,7 +468,7 @@ class SettingsFragment :
             val message = getString(
                 R.string.settings_debug_log_summary,
                 fileNum.toString(),
-                ceil(fileSize / 1000 * 1000.0).toString(),
+                ceil(fileSize.toDouble() / 1000 / 1000).toString(),
                 ultrasonicDirectory
             )
             val keep = R.string.settings_debug_log_keep
