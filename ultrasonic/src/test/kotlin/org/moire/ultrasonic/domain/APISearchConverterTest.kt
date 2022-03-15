@@ -50,7 +50,7 @@ class APISearchConverterTest {
 
         with(convertedEntity) {
             artists.size `should be equal to` entity.artistList.size
-            artists[0] `should be equal to` entity.artistList[0].toDomainEntity()
+            artists[0] `should be equal to` entity.artistList[0].toIndexEntity()
             albums.size `should be equal to` entity.albumList.size
             albums[0] `should be equal to` entity.albumList[0].toDomainEntity()
             songs.size `should be equal to` entity.songList.size
