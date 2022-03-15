@@ -13,7 +13,7 @@ fun APISearchResult.toDomainEntity(): SearchResult = SearchResult(
 )
 
 fun SearchTwoResult.toDomainEntity(): SearchResult = SearchResult(
-    this.artistList.map { it.toDomainEntity() },
+    this.artistList.map { it.toIndexEntity() },
     this.albumList.map { it.toDomainEntity() },
     this.songList.map { it.toTrackEntity() }
 )
