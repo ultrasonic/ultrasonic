@@ -190,6 +190,10 @@ object Settings {
     )
 
     @JvmStatic
+    var showNowPlayingDetails
+            by BooleanSetting(Constants.PREFERENCES_KEY_SHOW_NOW_PLAYING_DETAILS, false)
+
+    @JvmStatic
     var shouldUseId3Tags
         by BooleanSetting(Constants.PREFERENCES_KEY_ID3_TAGS, false)
 

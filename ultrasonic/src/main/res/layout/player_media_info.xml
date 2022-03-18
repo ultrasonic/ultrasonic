@@ -9,6 +9,7 @@
     a:layout_marginEnd="12dp" >
 
     <LinearLayout
+        a:id="@+id/current_playing"
         a:layout_width="wrap_content"
         a:layout_height="wrap_content"
         a:layout_alignParentLeft="true"
@@ -19,9 +20,9 @@
             a:layout_width="wrap_content"
             a:layout_height="wrap_content"
             a:layout_marginEnd="10dip"
-            a:paddingRight="30dip"
             a:ellipsize="marquee"
             a:gravity="left"
+            a:paddingRight="30dip"
             a:singleLine="true"
             a:textAppearance="?android:attr/textAppearanceLarge"
             a:textStyle="bold"
@@ -78,5 +79,15 @@
 
     </LinearLayout>
 
+    <TextView
+        a:id="@+id/current_playing_details"
+        a:layout_width="fill_parent"
+        a:layout_height="wrap_content"
+        a:layout_below="@id/current_playing"
+        a:ellipsize="start"
+        a:gravity="center_horizontal"
+        a:singleLine="true"
+        a:textAppearance="?android:attr/textAppearanceSmall"
+        tools:text="Details" />
 
 </RelativeLayout>

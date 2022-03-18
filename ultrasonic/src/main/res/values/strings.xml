@@ -323,6 +323,8 @@
     <string name="settings.summary.enable_ldap_users_support">This forces the app to always send the password unencrypted. Useful if the Subsonic server does not support the new authentication API for the users.</string>
     <string name="settings.use_folder_for_album_artist">Use Folders For Artist Name</string>
     <string name="settings.use_folder_for_album_artist_summary">Assume top-level folder is the name of the album artist</string>
+    <string name="settings.show_now_playing_details_summary">Show more song details in Now Playing (genre, year, bitrate)</string>
+    <string name="settings.show_now_playing_details">Show details in Now Playing</string>
     <string name="settings.use_id3">Browse Using ID3 Tags</string>
     <string name="settings.use_id3_summary">Use ID3 tag methods instead of file system based methods</string>
     <string name="settings.show_artist_picture">Show artist picture in artist list</string>
@@ -332,6 +334,7 @@
     <string name="settings.wifi_required_title">Download on Wi-Fi only</string>
     <string name="song_details.all">%1$s%2$s</string>
     <string name="song_details.kbps">%d kbps</string>
+    <string name="song_details.nowplaying">%1$s&#160; • &#160;%2$d&#160; • &#160;%3$d kbps %4$s</string>
     <string name="util.bytes_format.byte">0 B</string>
     <string name="util.bytes_format.gigabyte">0.00 GB</string>
     <string name="util.bytes_format.kilobyte">0 KB</string>
@@ -468,7 +471,6 @@
     <!-- Subsonic features  -->
     <string name="settings.features_title">Features</string>
     <string name="settings.five_star_rating_title">Use five star rating for songs</string>
-    <string name="settings.five_star_rating_description">Use five star rating system for songs instead of simply starring/unstarring items.
-    </string>
+    <string name="settings.five_star_rating_description">Use five star rating system for songs instead of simply starring/unstarring items.</string>
 
 </resources>
