@@ -8,7 +8,7 @@ import java.util.Locale
 import java.util.TimeZone
 import okhttp3.mockwebserver.MockResponse
 import okhttp3.mockwebserver.MockWebServer
-import okio.Okio
+import okio.buffer
 import okio.source
 import org.amshove.kluent.`should be`
 import org.amshove.kluent.`should contain`
@@ -41,12 +41,12 @@ fun MockWebServer.enqueueResponse(resourceName: String) {
 }
 
 fun Any.loadJsonResponse(name: String): String {
-    val source = Okio.buffer(javaClass.classLoader.getResourceAsStream(name).source())
+    val source = javaClass.classLoader.getResourceAsStream(name)!!.source().buffer()
     return source.readString(Charset.forName("UTF-8"))
 }
 
 fun Any.loadResourceStream(name: String): InputStream {
-    val source = Okio.buffer(javaClass.classLoader.getResourceAsStream(name).source())
+    val source = javaClass.classLoader.getResourceAsStream(name)!!.source().buffer()
     return source.inputStream()
 }
 
